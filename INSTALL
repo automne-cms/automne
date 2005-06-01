@@ -1,0 +1,49 @@
+-------------------------------------------------------
+AUTOMNE :: INSTALLATION
+-------------------------------------------------------
+$Id: INSTALL,v 1.1.1.1 2005/06/01 13:15:37 sebastien Exp $
+
+English version is at the bottom of this document.
+
+1 - Prérequis
+-------------------------------------------------------
+
+Système Linux, Windows (NT, 2000, XP ou 2003) ou Solaris.
+PHP 4.3.x (pour des raisons de sécurité, la version 4.3.11 est conseillée. Automne n'est pas compatible avec PHP 5.x).
+Apache 1.3.x (pour des raisons de sécurité, la version 1.3.33 est conseillée).
+MySQL 3.23.x (pour des raisons de performance, une version 4.0.x est conseillée).
+
+Pour de meilleures performances, installez PHP avec le module CLI (Command Line Interface) voir www.php.net pour plus d'informations.
+
+
+2- Installation
+-------------------------------------------------------
+
+Copiez les fichiers install.php et automne-xxx.tar.gz contenu dans l'archive téléchargée sur Sourceforge à la racine de votre site web.
+Attention, il est impératif qu'Automne soit installé à la racine de votre serveur web.
+Installer Automne dans un sous repertoire de cette racine ne fonctionnera pas.
+L'adresse par laquelle Automne sera accessible doit être de la forme :
+http://sous_domaine.domaine/
+et non :
+http://sous_domaine.domaine/repertoire/
+
+Lancez le fichier install.php depuis un navigateur web (l'adresse doit donc être http://sous_domaine.domaine/install.php)
+Suivez ensuite les instructions données par le script d'installation.
+
+Note : Si vous avez installé le module CLI de PHP, choisissez durant l'installation l'option "Script en tache de fond".
+Vous devez pour cela connaitre l'emplacement de ce module CLI sur le serveur.
+
+
+3- Notes utiles
+-------------------------------------------------------
+Une fois l'installation complétée, supprimez les fichiers install.php ainsi que automne-xxx.tar.gz
+Laisser ces fichiers sur un site en production représente une faille de sécurité très importante !
+
+Un ensemble de documents techniques utiles sur Automne sont disponibles en téléchargement sur Sourceforge.
+Des guides d'administration courant d'Automne sont disponibles au format PDF dans l'administration du logiciel (voir l'icone "?" en haut à droite de l'interface d'administration).
+
+
+-------------------------------------------------------
+ENGLISH VERSION
+-------------------------------------------------------
+
