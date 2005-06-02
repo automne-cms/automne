@@ -18,7 +18,7 @@
 // | Author: Devin Doucette <darksnoopy@shaw.ca> (for archives classes)   |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.2 2005/06/02 07:43:24 sebastien Exp $
+// $Id: install.php,v 1.3 2005/06/02 13:04:56 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -75,7 +75,7 @@ switch ($install_language) {
 		$step1_title = 'Décompression de l\'archive :';
 		$step1_extraction_to = 'Décompression de %s vers %s';
 		$step1_extraction_ok = 'Décompression réalisée avec succès';
-		$step1_extraction_error = 'Erreur de décompression ...';
+		$step1_extraction_error = 'Erreur de décompression ... Veuillez décompresser manuellement l\'archive %s dans ce repertoire et relancez l\'installation.';
 		$step1_package_extraction = 'Lancer la décompression de l\'archive %s...';
 		
 		//GPL STEP
@@ -189,7 +189,7 @@ switch ($install_language) {
 		$step1_title = 'Archive extraction:';
 		$step1_extraction_to = 'Extract %s to %s';
 		$step1_extraction_ok = 'Extraction successful';
-		$step1_extraction_error = 'Extraction error...';
+		$step1_extraction_error = 'Extraction error... Please decompress manually the file %s in this repertory and start again the installation.';
 		$step1_package_extraction = 'Launch extraction of package %s...';
 		
 		//GPL STEP
@@ -343,7 +343,7 @@ if ($archiveFound && $step==1) {
 		if (!$archive->hasError()) {
 			$content .= $step1_extraction_ok.'<br />';
 		} else {
-			$content .= $step1_extraction_error.'<br />';
+			$error .= sprintf($step1_extraction_error,$archiveFile).'<br />';
 		}
 		unset($archive);
 		
@@ -354,8 +354,11 @@ if ($archiveFound && $step==1) {
 		$content .= '
 		<form action="'.$_SERVER["PHP_SELF"].'" method="post" onsubmit="check();">
 			<input type="hidden" name="step" value="gpl" />
-			<input type="hidden" name="install_language" value="'.$install_language.'" />
-			<input type="submit" class="submit" value="'.$label_next.'" />
+			<input type="hidden" name="install_language" value="'.$install_language.'" />';
+			if (!$error) {
+				$content .= '<input type="submit" class="submit" value="'.$label_next.'" />';
+			}
+		$content .= '
 		</form>
 		';
 	} else {
@@ -1440,7 +1443,7 @@ class CMS_archive_install
 	  */
 	function _raiseError($errorMessage)
 	{
-		$content .= "<br /><pre><b>AUTOMNE INSTALLATION PROCESS error : ".$errorMessage."".$backTrace."</b></pre><br />\n";
+		echo "<br /><pre><b>AUTOMNE INSTALLATION PROCESS error : ".$errorMessage."".$backTrace."</b></pre><br />\n";
 		flush();
 		$this->_errRaised = true;
 	}
@@ -1670,13 +1673,8 @@ class CMS_tar_file_install extends CMS_archive_install
 					if ($file['type'] == 5) {
 						if (!is_dir($file['name'])) {
 							
-							/*if ($this->options['forceWriting']) {
-								chmod($file['name'], 1777);
-							}*/
 							if (!$this->options['dontUseFilePerms']) {
 								@mkdir($file['name'], $file['stat'][2]);
-								//pr($file['name'].' : '.$file['stat'][4]);
-								//pr($file['name'].' : '.$file['stat'][5]);
 								@chown($file['name'], $file['stat'][4]);
 								@chgrp($file['name'], $file['stat'][5]);
 							} else {
@@ -1691,15 +1689,11 @@ class CMS_tar_file_install extends CMS_archive_install
 								@fwrite($new, @fread($fp, $file['stat'][7]));
 								@fread($fp, (512 - $file['stat'][7] % 512) == 512 ? 0 : (512 - $file['stat'][7] % 512));
 								@fclose($new);
-								//pr($file['name'].' : '.$file['stat'][2]);
 								if (!$this->options['dontUseFilePerms']) {
 									@chmod($file['name'], $file['stat'][2]);
 									@chown($file['name'], $file['stat'][4]);
 									@chgrp($file['name'], $file['stat'][5]);
 								}
-								/*if ($this->options['forceWriting']) {
-									chmod($file['name'], 0777);
-								}*/
 							} else {
 								$this->_raiseError(get_class($this)." : extract_files : Could not open {$file['name']} for writing.");
 							}
