@@ -18,7 +18,7 @@
 // | Author: Devin Doucette <darksnoopy@shaw.ca> (for archives classes)   |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.1.1.1 2005/06/01 13:15:37 sebastien Exp $
+// $Id: install.php,v 1.2 2005/06/02 07:43:24 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -175,7 +175,7 @@ switch ($install_language) {
 		<br />
 		Merci d\'utiliser Automne !<br />
 		<br />
-		Pour toutes questions, contactez le support à l\'adresse <a href="mailto:support@automne.ws" target="_blank">support@automne.ws</a>.';
+		Pour toutes questions, contactez le support Automne sur le site <a href="http://www.automne.ws" target="_blank">www.automne.ws</a>.';
 	break;
 	case "en":
 	default:
@@ -188,27 +188,27 @@ switch ($install_language) {
 		$error_step1_cant_extract = 'Error, Can\'t extract archive wanted %s. It is not a valid format...';
 		$step1_title = 'Archive extraction:';
 		$step1_extraction_to = 'Extract %s to %s';
-		$step1_extraction_ok = 'Extraction successfull';
+		$step1_extraction_ok = 'Extraction successful';
 		$step1_extraction_error = 'Extraction error...';
 		$step1_package_extraction = 'Launch extraction of package %s...';
 		
 		//GPL STEP
-		$stepGPL_title = 'Exploitation license:';
-		$stepGPL_explanation = 'The use of Automne is subjected to acceptance of following license GNU-GPL.';
-		$stepGPL_licenseNotFound = 'License file does not exists, You can consult it here : <a href="http://www.gnu.org/copyleft/gpl.html" target="_blank">http://www.gnu.org/copyleft/gpl.html</a>';
+		$stepGPL_title = 'User License:';
+		$stepGPL_explanation = 'The use of Automne is subjected to acceptance of following GNU-GPL license.';
+		$stepGPL_licenseNotFound = 'License file does not exist, You can consult it here : <a href="http://www.gnu.org/copyleft/gpl.html" target="_blank">http://www.gnu.org/copyleft/gpl.html</a>';
 		$stepGPL_accept = 'Do you agree with terms of this license?';
 		$stepGPL_yes = 'I accept the terms of the license.';
 		$stepGPL_no = 'I do not accept the terms of the license.';
 		
 		//STEP 2
-		$error_step2_no_cms_rc_admin = 'Error, can\'t found %s/cms_rc_admin.php';
+		$error_step2_no_cms_rc_admin = 'Error, cannot find %s/cms_rc_admin.php';
 		$error_step2_missing_host = 'Error, Missing Database Host parameter';
 		$error_step2_missing_name = 'Error, Missing Database Name parameter';
 		$error_step2_missing_user = 'Error, Missing Database User parameter';
 		$error_step2_DB_connection_failed = 'Error, Database engine connection failed';
 		$error_step2_DB_incorrect_name = 'Error, Incorrect Database Name, Database selection failed';
 		$step2_title = 'Database identification:';
-		$step2_explanation = 'Information of connection at the database is provided to you by your provider. Take care that the database that you will use exists. If the database does not exist, this script will try to create it if you have the sufficient privileges.';
+		$step2_explanation = 'Information of connection to the database is provided to you by your web administrator. Take care that the database that you will use exists. If the database does not exist, this script will try to create it if you have the sufficient privileges.';
 		$step2_DB_host = 'Database Host';
 		$step2_DB_name = 'Database Name';
 		$step2_DB_user = 'Database User';
@@ -225,24 +225,24 @@ switch ($install_language) {
 		//STEP 4
 		$error_step4_enter_url = 'Error, You must enter an URL ...';
 		$step4_title = 'Website URL:';
-		$step4_enter_url = 'Enter the URL of the website (default value should be good). It is the URL of the server Document Root.<br />If you enter a domain name, this last must exist. You will be able to modify that constantly in the administration of the site.';
+		$step4_enter_url = 'Enter the URL of the website (default value should be correct). It is the URL of the server Document Root.<br />If you enter a domain name, this must exist. You will be able to modify this at any time in the administration platform of the site.';
 		$step4_url = 'URL * : http://';
 		
 		//STEP 5
-		$error_step5_perms_files = 'Error, You must enter a permission for files ...';
-		$error_step5_perms_dirs = 'Error, You must enter a permission for directories ...';
+		$error_step5_perms_files = 'Error, You must enter permission values for files ...';
+		$error_step5_perms_dirs = 'Error, You must enter permission values for directories ...';
 		$step5_title = 'Files and directories permissions:';
-		$step5_explanation = 'Automne generates a lot of files and directories. Following rights have been detected to be used by the server for files and directories creation.<br />Do you agree with using these rights when Automne creates files or directories?<br />Beware, modifying these rights can involve errors on the server if it does not accept them. Modify them only if you know what you do.';
+		$step5_explanation = 'Automne generates many files and directories. The following rights have been detected to be used by the server for files and directories creation.<br />Do you agree with using these rights when Automne creates files or directories?<br />Warning, modifying these rights can involve errors on the server if it does not accept them. Modify them only if you are sure of the values. Else, please contact your administrator';
 		$step5_files_perms = 'Files permissions';
 		$step5_dirs_perms = 'Directories permissions';
 		
 		//STEP 6
 		$error_step6_choose_option = 'Error, You must choose an option ...';
 		$step6_title = 'Choose regeneration method:';
-		$step6_explanation = 'Automne generate all final user pages. This generation can be made of two manner :<br />
+		$step6_explanation = 'Automne generates all web pages. This generation can be accomplished using one of two methods :<br />
 			<ul>
-				<li>By a pop-up window. Slow but works fine on all servers. You must choose that on mutualized servers (or with Easyphp or others solutions who does not use a complete version of PHP).</li>
-				<li>By a background script. Fast but does not work on all servers. You can choose this if you are on a dedicated server who has PHP-CLI installed and if you know the path of PHP-CLI on the server.</li>
+				<li>Pop-up window. Slow but works fine on all servers. You must choose this method for mutualized servers (or with Easyphp or other solutions that do not use a complete version of PHP).</li>
+				<li>Background script. Fast but does not work on all servers. You can choose this method if you are on a dedicated server who has PHP-CLI installed and if you know the path of PHP-CLI on the server.</li>
 			</ul>';
 		$step6_popup = 'Pop-up window';
 		$step6_bg = 'Background script';
@@ -267,8 +267,8 @@ switch ($install_language) {
 		$error_step8_label = 'Error, Please to enter a name for your site.';
 		$step8_title = 'Installation finalisation:';
 		$step8_CLI_explanation = 'Automne uses .htaccess files to protect some directories.<br />The Free.fr hosting service does not accept the current syntax of these files. If you are on Free.fr, check the box below to modify the .htaccess files.';
-		$step8_freefr = 'Check if you are on Free.fr hosting service';
-		$step8_no_application_email = 'Check if you want to cancel application email sending';
+		$step8_freefr = 'Check box if you are on Free.fr hosting service';
+		$step8_no_application_email = 'Check box if you want to cancel application email sending';
 		$step8_application_label = 'Enter a name for your site.';
 		$step8_label = 'Site name';
 		
@@ -280,18 +280,18 @@ switch ($install_language) {
 		You can reach the site administration at this address:<br />
 		<a href="/automne/admin/" target="_blank">%s/automne/admin/</a><br />
 		Default login is "root" and password is "automne".<br />
-		Think of quickly changing the password in the user profile!<br />
+		Please modify the password in the user profile!<br />
 		<br />
-		If you chose the Demo installation, the public part will be visible at the address <a href="/" target="_blank">%s</a> once you will have connected first to the administration of your Web site.<br />
+		If you selected the Demo installation, the public site will be visible at the address <a href="/" target="_blank">%s</a> once you will have connected first to the administration of your Web site.<br />
 		<br />
 		You can now remove the package file used for this installation as well as the file install.php.<br />
-		Beware, leaving these files on a production website represent an important security hole for your Web site!<br />
+		Warning, leaving these files on a production website may represent an important security hole for your Web site!<br />
 		<br />
-		If you wish to modify some options seized during this installation, start again the file install.php or edit the file config.php at the root of your Web site.<br />
+		If you wish to modify options saved during this installation, start again the file install.php or edit the file config.php at the root of your Web site.<br />
 		<br />
-		Thanks for using Automne !<br />
+		Thank you for using Automne!<br />
 		<br />
-		For all questions, contact the support at the address <a href="mailto:support@automne.ws" target="_blank">support@automne.ws</a>.';
+		For all questions, contact the automne support team via the web site <a href="http://www.automne.ws" target="_blank">www.automne.ws</a>.';
 	break;
 }
 

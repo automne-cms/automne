@@ -1,7 +1,7 @@
 -------------------------------------------------------
 AUTOMNE :: INSTALLATION
 -------------------------------------------------------
-$Id: INSTALL,v 1.1.1.1 2005/06/01 13:15:37 sebastien Exp $
+$Id: INSTALL,v 1.2 2005/06/02 07:43:24 sebastien Exp $
 
 English version is at the bottom of this document.
 
@@ -9,7 +9,7 @@ English version is at the bottom of this document.
 -------------------------------------------------------
 
 Système Linux, Windows (NT, 2000, XP ou 2003) ou Solaris.
-PHP 4.3.x (pour des raisons de sécurité, la version 4.3.11 est conseillée. Automne n'est pas compatible avec PHP 5.x).
+PHP 4.3.x (pour des raisons de sécurité, la version 4.3.11 est conseillée. Automne n'est pas compatible avec PHP 5.x pour le moment).
 Apache 1.3.x (pour des raisons de sécurité, la version 1.3.33 est conseillée).
 MySQL 3.23.x (pour des raisons de performance, une version 4.0.x est conseillée).
 
@@ -46,4 +46,38 @@ Des guides d'administration courant d'Automne sont disponibles au format PDF dan
 -------------------------------------------------------
 ENGLISH VERSION
 -------------------------------------------------------
+
+1 - System requirements
+-------------------------------------------------------
+
+Linux, Windows (NT, 2000, XP or 2003) or Solaris system.
+PHP 4.3.x (for security matters, we recommend version 4.3.11. Automne is not compatible with PHP 5.x for the moment).
+Apache 1.3.x ((for security matters, we recommend version 1.3.33).
+MySQL 3.23.x (for performance matters, we recommend version 4.0.x).
+
+For greater performance, install PHP with the CLI (Command Line Interface) module : see www.php.net for more information.
+
+
+2- Installation
+-------------------------------------------------------
+
+Copy the content from the install.php and automne-xxx.tar.gz files in the archive downloaded from Sourceforge to the root of your website. Caution : Automne has to be installed on the root of your web server. If you install Automne in a sub-directory of this root, it will not function.
+The address where Automne will be reachable must be of this type :
+http://sous_domaine.domaine/
+and not :
+http://sous_domaine.domaine/repertoire/
+
+Launch the install.php file from a web browser (the address will be : http://sous_domaine.domaine/install.php)
+Then follow the instructions given by the installation script.
+
+NB : If you installed the CLI module of PHP, choose the "script en tâche de fond" option during the installation. To do so, you will need to know the location of this module on the server. 
+
+
+3- Useful notes
+-------------------------------------------------------
+Once you completed the installation, delete the following files : install.php and automne-xxx.tar.gz
+Keeping this files on a website on production may represent a security threat!
+
+Several useful technical documents about Automne can be downloaded on Sourceforge.
+Administration guides are also available in Automne's administration (click on the "?" icon in the top right corner of the administration platform).
 
