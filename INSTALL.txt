@@ -1,7 +1,7 @@
 -------------------------------------------------------
 AUTOMNE :: INSTALLATION
 -------------------------------------------------------
-$Id: INSTALL.txt,v 1.1 2005/06/03 12:41:30 sebastien Exp $
+$Id: INSTALL.txt,v 1.2 2005/06/03 13:08:01 sebastien Exp $
 
 English version is at the bottom of this document.
 
@@ -26,7 +26,7 @@ L'adresse par laquelle Automne sera accessible doit être de la forme :
 http://sous_domaine.domaine/
 et non :
 http://sous_domaine.domaine/repertoire/
-
+ 
 Lancez le fichier install.php depuis un navigateur web (l'adresse doit donc être http://sous_domaine.domaine/install.php)
 Suivez ensuite les instructions données par le script d'installation.
 
