@@ -18,7 +18,7 @@
 // | Author: Devin Doucette <darksnoopy@shaw.ca> (for archives classes)   |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.5 2005/06/03 09:20:27 sebastien Exp $
+// $Id: install.php,v 1.6 2005/06/03 12:43:22 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -409,7 +409,7 @@ if ($step === 'gpl') {
 			<input type="hidden" name="cms_action" value="acceptlicense" />
 			<input type="hidden" name="install_language" value="'.$install_language.'" />
 			<label for="yes"><input id="yes" type="radio" name="license" value="yes" /> '.$stepGPL_yes.'</label><br />
-			<label for="no"><input id="no" type="radio" name="license" value="no" selected="selected" /> '.$stepGPL_no.'</label><br />
+			<label for="no"><input id="no" type="radio" name="license" value="no" checked="checked" /> '.$stepGPL_no.'</label><br />
 			<input type="submit" class="submit" value="'.$label_next.'" />
 		</form>
 		';
