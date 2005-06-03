@@ -18,7 +18,7 @@
 // | Author: Devin Doucette <darksnoopy@shaw.ca> (for archives classes)   |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.3 2005/06/02 13:04:56 sebastien Exp $
+// $Id: install.php,v 1.4 2005/06/03 09:16:35 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -29,7 +29,7 @@
   */
 
 //Remove notices
-@error_reporting(E_ALL ^ E_NOTICE);
+error_reporting(E_ALL ^ E_NOTICE);
 @set_time_limit(0);
 
 //Installation languages
