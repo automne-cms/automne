@@ -1,7 +1,7 @@
 -------------------------------------------------------
 AUTOMNE :: INSTALLATION
 -------------------------------------------------------
-$Id: INSTALL.txt,v 1.4 2005/06/03 13:14:18 cedric Exp $
+$Id: INSTALL.txt,v 1.5 2005/06/06 14:42:34 sebastien Exp $
 
 English version is at the bottom of this document.
 
@@ -40,7 +40,7 @@ Une fois l'installation complétée, supprimez les fichiers install.php ainsi que 
 Laisser ces fichiers sur un site en production représente une faille de sécurité très importante !
 
 Un ensemble de documents techniques utiles sur Automne sont disponibles en téléchargement sur Sourceforge.
-Des guides d'administration courant d'Automne sont disponibles au format PDF dans l'administration du logiciel (voir l'icone "?" en haut à droite de l'interface d'administration).
+Des guides d'administration courant d'Automne sont disponibles dans l'administration du logiciel (voir l'icone "?" en haut à droite de l'interface d'administration).
 
 
 -------------------------------------------------------
