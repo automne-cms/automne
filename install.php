@@ -18,7 +18,7 @@
 // | Author: Devin Doucette <darksnoopy@shaw.ca> (for archives classes)   |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.6 2005/06/03 12:43:22 sebastien Exp $
+// $Id: install.php,v 1.7 2005/08/31 14:33:17 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -330,8 +330,9 @@ if ($archiveFound && $step==1) {
 		if (!$archive->hasError()) {
 			$archive->set_options(array('basedir'=>$_SERVER['DOCUMENT_ROOT']."/", 'overwrite'=>1, 'level'=>1, 'dontUseFilePerms'=>1, 'forceWriting'=>1));
 			if (is_dir($_SERVER['DOCUMENT_ROOT']))  {
-				if (method_exists($archive, 'extract_files') && $archive->extract_files()) {
-					$content .= sprintf($step1_extraction_to,$archiveFile,$_SERVER['DOCUMENT_ROOT']).'<br />';
+				if (method_exists($archive, 'extract_files')) {
+					$extractArchive = true;
+					$content .= sprintf($step1_extraction_to,$archiveFile,$_SERVER['DOCUMENT_ROOT']).' ...<br /><br />';
 				}
 			} else {
 				$error .= $error_step1_directory_not_exists.'<br />';
@@ -339,28 +340,7 @@ if ($archiveFound && $step==1) {
 		} else {
 			$error .= sprintf($error_step1_cant_extract,$archiveFile).'<br />';
 		}
-		
-		if (!$archive->hasError()) {
-			$content .= $step1_extraction_ok.'<br />';
-		} else {
-			$error .= sprintf($step1_extraction_error,$archiveFile).'<br />';
-		}
-		unset($archive);
-		
 		$title ='<h1>'.$step1_title.'</h1>';
-		if ($error) {
-			$content .= '<span class="error">'.$error.'</span><br />';
-		}
-		$content .= '
-		<form action="'.$_SERVER["PHP_SELF"].'" method="post" onsubmit="check();">
-			<input type="hidden" name="step" value="gpl" />
-			<input type="hidden" name="install_language" value="'.$install_language.'" />';
-			if (!$error) {
-				$content .= '<input type="submit" class="submit" value="'.$label_next.'" />';
-			}
-		$content .= '
-		</form>
-		';
 	} else {
 		$title ='<h1>'.$step1_title.'</h1>';
 		if ($error) {
@@ -1340,11 +1320,42 @@ echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 <div id="logo">&nbsp;</div>
 '.$title.'
 <div class="contener">
-	'.$content.'
-</div>
-</body>
-</html>';
-
+	'.$content;
+if (!$extractArchive) {
+	echo '
+		</div>
+		</body>
+		</html>
+	';
+} else {
+	$archive->extract_files();
+	$content = '<br />';
+	if (!$archive->hasError()) {
+		$content .= $step1_extraction_ok.'<br />';
+	} else {
+		$error .= sprintf($step1_extraction_error,$archiveFile).'<br />';
+	}
+	unset($archive);
+	if ($error) {
+		$content .= '<span class="error">'.$error.'</span><br />';
+	}
+	$content .= '
+	<form action="'.$_SERVER["PHP_SELF"].'" method="post" onsubmit="check();">
+		<input type="hidden" name="step" value="gpl" />
+		<input type="hidden" name="install_language" value="'.$install_language.'" />';
+	if (!$error) {
+		$content .= '<input type="submit" class="submit" value="'.$label_next.'" />';
+	}
+	$content .= '
+	</form>
+	';
+	
+	echo $content.'
+		</div>
+		</body>
+		</html>
+	';
+}
 // +----------------------------------------------------------------------+
 // | Installation Classes & Functions                                     |
 // +----------------------------------------------------------------------+
@@ -1694,6 +1705,8 @@ class CMS_tar_file_install extends CMS_archive_install
 									@chown($file['name'], $file['stat'][4]);
 									@chgrp($file['name'], $file['stat'][5]);
 								}
+								//need to send datas to browser else we can loose connection ...
+								echo $file['name']." done ...<br />";
 							} else {
 								$this->_raiseError(get_class($this)." : extract_files : Could not open {$file['name']} for writing.");
 							}
