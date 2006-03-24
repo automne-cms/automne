@@ -1,7 +1,7 @@
 -------------------------------------------------------
 AUTOMNE :: INSTALLATION
 -------------------------------------------------------
-$Id: INSTALL.txt,v 1.5 2005/06/06 14:42:34 sebastien Exp $
+$Id: INSTALL.txt,v 1.6 2006/03/24 11:34:13 sebastien Exp $
 
 English version is at the bottom of this document.
 
@@ -30,9 +30,9 @@ http://sous_domaine.domaine/repertoire/
 Lancez le fichier install.php depuis un navigateur web (l'adresse doit donc être http://sous_domaine.domaine/install.php)
 Suivez ensuite les instructions données par le script d'installation.
 
-Note : Si vous avez installé le module CLI de PHP, choisissez durant l'installation l'option "Script en tache de fond".
-Vous devez pour cela connaitre l'emplacement de ce module CLI sur le serveur.
-
+Notes : 
+- Si vous avez installé le module CLI de PHP, choisissez durant l'installation l'option "Script en tache de fond". Vous devez pour cela connaitre l'emplacement de ce module CLI sur le serveur.
+- Si vous installez Automne sur un serveur Windows, veillez à ne pas avoir d'espace dans le chemin d'installation (exemple : par défaut, easyphp s'installe dans le répertoire program files ce qui ne fonctionnera pas avec Automne).
 
 3- Notes utiles
 -------------------------------------------------------
@@ -70,8 +70,9 @@ http://sous_domaine.domaine/repertoire/
 Launch the install.php file from a web browser (the address will be : http://sous_domaine.domaine/install.php)
 Then follow the instructions given by the installation script.
 
-NB : If you installed the CLI module of PHP, choose the "script en tâche de fond" option during the installation. To do so, you will need to know the location of this module on the server. 
-
+NB : 
+- If you installed the CLI module of PHP, choose the "script en tâche de fond" option during the installation. To do so, you will need to know the location of this module on the server.
+- If you install Automne on a Windows server, take care to not have spaces in the installation path (example:  by default, easyphp use the folder program files what will not function with Automne).
 
 3- Useful notes
 -------------------------------------------------------
