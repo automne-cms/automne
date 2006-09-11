@@ -18,7 +18,7 @@
 // | Author: Devin Doucette <darksnoopy@shaw.ca> (for archives classes)   |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.7 2005/08/31 14:33:17 sebastien Exp $
+// $Id: install.php,v 1.8 2006/09/11 08:38:49 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -296,9 +296,9 @@ switch ($install_language) {
 }
 
 //check file position, must be the same of DOCUMENT_ROOT
-if ($_SERVER['DOCUMENT_ROOT'] != str_replace("\\", "/",getcwd()) && $_SERVER['DOCUMENT_ROOT'] != str_replace("\\", "/",getcwd()).'/') {
-	die(sprintf($label_docroot,$_SERVER['DOCUMENT_ROOT']));
-}
+//if ($_SERVER['DOCUMENT_ROOT'] != str_replace("\\", "/",getcwd()) && $_SERVER['DOCUMENT_ROOT'] != str_replace("\\", "/",getcwd()).'/') {
+//	die(sprintf($label_docroot,$_SERVER['DOCUMENT_ROOT']));
+//}
 
 // +----------------------------------------------------------------------+
 // | STEP 1 : Uncompress archive                                          |
