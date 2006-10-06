@@ -1,7 +1,7 @@
 -------------------------------------------------------
 AUTOMNE :: INSTALLATION
 -------------------------------------------------------
-$Id: INSTALL.txt,v 1.6 2006/03/24 11:34:13 sebastien Exp $
+$Id: INSTALL.txt,v 1.7 2006/10/06 08:16:15 sebastien Exp $
 
 English version is at the bottom of this document.
 
@@ -9,9 +9,9 @@ English version is at the bottom of this document.
 -------------------------------------------------------
 
 Système Linux, Windows (NT, 2000, XP ou 2003) ou Solaris.
-PHP 4.3.x (pour des raisons de sécurité, la version 4.3.11 est conseillée. Automne n'est pas compatible avec PHP 5.x pour le moment).
-Apache 1.3.x ou 2.0.x (pour des raisons de sécurité, la version 1.3.33 est conseillée).
-MySQL 3.23.x (pour des raisons de performance, une version 4.0.x est conseillée).
+PHP 4.3.8 minimum (pour des raisons de sécurité, la version 4.4.2 est conseillée. Automne n'est pas compatible avec PHP 5.x pour le moment).
+Apache 1.3.x ou 2.0.x (pour des raisons de sécurité, la version 1.3.34 est conseillée).
+MySQL 4.0.x (une version 3.23.xx fonctionnera mais les futures versions d'Automne seront incompatibles avec cette version de MySQL).
 
 Pour de meilleures performances, installez PHP avec le module CLI (Command Line Interface) voir www.php.net pour plus d'informations.
 
@@ -34,7 +34,7 @@ Notes :
 - Si vous avez installé le module CLI de PHP, choisissez durant l'installation l'option "Script en tache de fond". Vous devez pour cela connaitre l'emplacement de ce module CLI sur le serveur.
 - Si vous installez Automne sur un serveur Windows, veillez à ne pas avoir d'espace dans le chemin d'installation (exemple : par défaut, easyphp s'installe dans le répertoire program files ce qui ne fonctionnera pas avec Automne).
 
-3- Notes utiles
+/!\ Important
 -------------------------------------------------------
 Une fois l'installation complétée, supprimez les fichiers install.php ainsi que automne-xxx.tar.gz
 Laisser ces fichiers sur un site en production représente une faille de sécurité très importante !
@@ -51,9 +51,9 @@ ENGLISH VERSION
 -------------------------------------------------------
 
 Linux, Windows (NT, 2000, XP or 2003) or Solaris system.
-PHP 4.3.x (for security matters, we recommend version 4.3.11. Automne is not compatible with PHP 5.x for the moment).
-Apache 1.3.x or 2.0.x ((for security matters, we recommend version 1.3.33).
-MySQL 3.23.x (for performance matters, we recommend version 4.0.x).
+PHP 4.3.8 (for security matters, we recommend version 4.4.2. Automne is not compatible with PHP 5.x for the moment).
+Apache 1.3.x or 2.0.x (for security matters, we recommend version 1.3.34).
+MySQL 3.23.x (for evolution matters, we recommend version 4.0.x).
 
 For greater performance, install PHP with the CLI (Command Line Interface) module : see www.php.net for more information.
 
@@ -63,18 +63,18 @@ For greater performance, install PHP with the CLI (Command Line Interface) modul
 
 Copy the content from the install.php and automne-xxx.tar.gz files in the archive downloaded from Sourceforge to the root of your website. Caution : Automne has to be installed on the root of your web server. If you install Automne in a sub-directory of this root, it will not function.
 The address where Automne will be reachable must be of this type :
-http://sous_domaine.domaine/
+http://sub_domain.domain/
 and not :
-http://sous_domaine.domaine/repertoire/
+http://sub_domain.domain/directory/
 
-Launch the install.php file from a web browser (the address will be : http://sous_domaine.domaine/install.php)
+Launch the install.php file from a web browser (the address will be : http://sub_domain.domain/install.php)
 Then follow the instructions given by the installation script.
 
 NB : 
-- If you installed the CLI module of PHP, choose the "script en tâche de fond" option during the installation. To do so, you will need to know the location of this module on the server.
+- If you installed the CLI module of PHP, choose the "Background script" option during the installation. To do so, you will need to know the location of this module on the server.
 - If you install Automne on a Windows server, take care to not have spaces in the installation path (example:  by default, easyphp use the folder program files what will not function with Automne).
 
-3- Useful notes
+/!\ Important
 -------------------------------------------------------
 Once you completed the installation, delete the following files : install.php and automne-xxx.tar.gz
 Keeping this files on a website on production may represent a security threat!

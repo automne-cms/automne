@@ -18,7 +18,7 @@
 // | Author: Devin Doucette <darksnoopy@shaw.ca> (for archives classes)   |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.8 2006/09/11 08:38:49 sebastien Exp $
+// $Id: install.php,v 1.9 2006/10/06 08:16:15 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -33,14 +33,14 @@ error_reporting(E_ALL ^ E_NOTICE);
 @set_time_limit(0);
 
 //Installation languages
-$install_language = ($_GET["install_language"].$_POST["install_language"]) ? $_GET["install_language"].$_POST["install_language"]:'';
+$install_language = ($_REQUEST["install_language"]) ? $_REQUEST["install_language"]:'';
 $accepted_languages = array('en','fr');
 $install_language = (in_array($install_language , $accepted_languages) === true) ? $install_language : '';
 
 //Current installation step
-$step = ($_GET["step"].$_POST["step"]) ? $_GET["step"].$_POST["step"]:1;
-$accepted_step = array('0','1','2','3','4','5','6','7','8','9','gpl');
-$step = (in_array($step , $accepted_step) === true) ? $step:1;
+$step = ($_REQUEST["step"]) ? $_REQUEST["step"]:'check';
+$accepted_step = array('0','1','2','3','4','5','6','7','8','9','gpl','check');
+$step = (in_array($step , $accepted_step) === true) ? $step:'check';
 
 $content = $title = '';
 
@@ -48,7 +48,7 @@ $content = $title = '';
 // | STEP 0 : Installation language                                       |
 // +----------------------------------------------------------------------+
 if ($install_language == '') {
-	$title ='<h1>Installation language / Langue d\'installation :</h1>';
+	$title = '<h1>Installation language / Langue d\'installation :</h1>';
 	$content .= '
 	<form action="'.$_SERVER["PHP_SELF"].'" method="post" onsubmit="check();">
 		<input type="hidden" name="step" value="'.$step.'" />
@@ -57,8 +57,7 @@ if ($install_language == '') {
 		<label for="fr"><input id="fr" type="radio" name="install_language" value="fr" checked="checked" /> Français</label><br />
 		<label for="en"><input id="en" type="radio" name="install_language" value="en" /> English</label><br />
 		<input type="submit" class="submit" value=" OK " />
-	</form>
-	';
+	</form>';
 	$step = 0;
 }
 
@@ -68,6 +67,18 @@ switch ($install_language) {
 		//General labels
 		$label_next = 'Suivant';
 		$label_docroot = "Erreur, ce fichier doit ce trouver à la racine du serveur web ! (%s)";
+		
+		//STEP check
+		$error_stepCheck_php_error = 'Erreur, Votre version de PHP ('.phpversion().') n\'est pas compatible avec Automne. Vous devez avoir une version supérieure à la 4.3.7 et inférieure à la version 5.0.0.';
+		$error_stepCheck_dir_not_writable_error = 'Erreur, Apache ne possède pas les droits d\'écriture sur le répertoire racine de votre site web.';
+		$error_stepCheck_safe_mode_error = 'Attention ! L\'option "safe_mode" est active sur votre configuration de PHP. Cette option est fortement déconseillée car l\'ensemble des fonctions d\'Automne ne seront pas disponibles et/ou leurs fonctionnement sera dégradé.';
+		$error_stepCheck_magic_quotes_error = 'Attention ! L\'option "magic_quotes_gpc" est active sur votre configuration de PHP. Cette option est fortement déconseillée car l\'ensemble des fonctions d\'Automne ne seront pas disponibles et/ou leurs fonctionnement sera dégradé.';
+		$error_stepCheck_gd_error = 'Erreur, l\'extension GD n\'est pas installée sur votre serveur. Vérifiez votre installation de PHP.';
+		$error_stepCheck_gd_gif_error = 'Erreur, les fonctionnalités de traitement d\'images GIF ne sont pas installées (Extension GD). Vérifiez votre installation de PHP.';
+		$error_stepCheck_gd_jpeg_error = 'Erreur, les fonctionnalités de traitement d\'images JPEG ne sont pas installées (Extension GD). Vérifiez votre installation de PHP.';
+		$error_stepCheck_gd_png_error = 'Erreur, les fonctionnalités de traitement d\'images PNG ne sont pas installées (Extension GD). Vérifiez votre installation de PHP.';
+		$stepCheck_title = 'Compatibilité de votre système :';
+		$stepCheck_installation_stopped = 'Vous ne pouvez poursuivre l\'installation d\'Automne ...';
 		
 		//STEP 1
 		$error_step1_directory_not_exists = 'Erreur, Le repertoire d\'extraction n\'exise pas';
@@ -145,10 +156,6 @@ switch ($install_language) {
 		
 		//STEP 8
 		$error_step8_sessions = 'Erreur, Vous avez un problème avec la création de sessions utilisateurs. Vous devez corriger cela avant d\'utiliser Automne !';
-		$error_step8_gd_error = 'Erreur, l\'extension GD n\'est pas installée sur votre serveur. Vérifiez votre installation de PHP.';
-		$error_step8_gd_gif_error = 'Erreur, les fonctionnalités de traitement d\'images GIF ne sont pas installées (Extension GD). Vérifiez votre installation de PHP.';
-		$error_step8_gd_jpeg_error = 'Erreur, les fonctionnalités de traitement d\'images JPEG ne sont pas installées (Extension GD). Vérifiez votre installation de PHP.';
-		$error_step8_gd_png_error = 'Erreur, les fonctionnalités de traitement d\'images PNG ne sont pas installées (Extension GD). Vérifiez votre installation de PHP.';
 		$error_step8_smtp_error = 'Erreur, Aucun serveur SMTP trouvé. Vérifiez votre installation de PHP ou cochez la case ci-dessous si vous souhaitez désactiver l\'envoi d\'email par l\'application.';
 		$error_step8_label = 'Erreur, Merci de saisir un nom pour votre site.';
 		$step8_title = 'Finalisation de l\'installation :';
@@ -175,13 +182,25 @@ switch ($install_language) {
 		<br />
 		Merci d\'utiliser Automne !<br />
 		<br />
-		Pour toutes questions, contactez le support Automne sur le site <a href="http://www.automne.ws" target="_blank">www.automne.ws</a>.';
+		Pour toutes questions, contactez le support Automne sur le forum du site <a href="http://www.automne.ws" target="_blank">www.automne.ws</a>.';
 	break;
 	case "en":
 	default:
 		//General labels
 		$label_next = 'Next';
 		$label_docroot = "Error, this file Must be at the server Document Root ! (%s)";
+		
+		//STEP check
+		$error_stepCheck_php_error = 'Error, Your PHP version ('.phpversion().') is not compatible with Automne. You must have a version greater than 4.3.7 and lower than 5.0.0.';
+		$error_stepCheck_dir_not_writable_error = 'Error, Apache does not have write permissions on your website root directory.';
+		$error_stepCheck_safe_mode_error = 'Beware ! The "safe_mode" option is active on your PHP configuration. This option is strongly disadvised because some Automne functions will not be available or should be degraded.';
+		$error_stepCheck_magic_quotes_error = 'Beware ! The "magic_quotes_gpc" option is active on your PHP configuration. This option is strongly disadvised because some Automne functions will not be available or should be degraded.';
+		$error_stepCheck_gd_error = 'Error, GD extension is not installed on your server. Please Check your PHP installation.';
+		$error_stepCheck_gd_gif_error = 'Error, functionalities of GIF image processing are not installed (GD Extension). Please Check your PHP installation.';
+		$error_stepCheck_gd_jpeg_error = 'Error, functionalities of JPEG image processing are not installed (GD Extension). Please Check your PHP installation.';
+		$error_stepCheck_gd_png_error = 'Error, functionalities of PNG image processing are not installed (GD Extension). Please Check your PHP installation.';
+		$stepCheck_title = 'System compatibility:';
+		$stepCheck_installation_stopped = 'You cannot continue Automne installation...';
 		
 		//STEP 1
 		$error_step1_directory_not_exists = 'Error, Extraction directory does not exist';
@@ -259,10 +278,6 @@ switch ($install_language) {
 		
 		//STEP 8
 		$error_step8_sessions = 'Error, You have a problem with server session creation. You must correct it before using Automne !';
-		$error_step8_gd_error = 'Error, GD extension is not installed on your server. Please Check your PHP installation.';
-		$error_step8_gd_gif_error = 'Error, functionalities of GIF image processing are not installed (GD Extension). Please Check your PHP installation.';
-		$error_step8_gd_jpeg_error = 'Error, functionalities of JPEG image processing are not installed (GD Extension). Please Check your PHP installation.';
-		$error_step8_gd_png_error = 'Error, functionalities of PNG image processing are not installed (GD Extension). Please Check your PHP installation.';
 		$error_step8_smtp_error = 'Error, No SMTP server found. Please Check your PHP installation or check the box below to cancel the application email sending.';
 		$error_step8_label = 'Error, Please to enter a name for your site.';
 		$step8_title = 'Installation finalisation:';
@@ -295,10 +310,69 @@ switch ($install_language) {
 	break;
 }
 
-//check file position, must be the same of DOCUMENT_ROOT
-//if ($_SERVER['DOCUMENT_ROOT'] != str_replace("\\", "/",getcwd()) && $_SERVER['DOCUMENT_ROOT'] != str_replace("\\", "/",getcwd()).'/') {
-//	die(sprintf($label_docroot,$_SERVER['DOCUMENT_ROOT']));
-//}
+// +----------------------------------------------------------------------+
+// | STEP check : System check compatibility                              |
+// +----------------------------------------------------------------------+
+if ($step === 'check') {
+	//check for php compatibility
+	if (version_compare(phpversion(), "4.3.8", ">=") && version_compare(phpversion(), "5.0.0", "<")) {
+		//check for document root writing
+		if (function_exists('is_executable') //assume we are on windows platform because this function does not exists before PHP5.0.0 (so files are always executable)
+			&& !@is_executable(dirname(__FILE__))) {
+			$error .= $error_stepCheck_dir_not_writable_error.'<br /><br />';
+			$stopInstallation = true;
+		}
+		//check for GD
+		if (!function_exists("imagecopyresampled")) {
+			$error .= $error_stepCheck_gd_error.'<br /><br />';
+			$stopInstallation = true;
+		} else {
+			if (!function_exists("imagecreatefromgif")) {
+				$error .= $error_stepCheck_gd_gif_error.'<br /><br />';
+				$stopInstallation = true;
+			}
+			if (!function_exists("imagecreatefromjpeg")) {
+				$error .= $error_stepCheck_gd_jpeg_error.'<br /><br />';
+				$stopInstallation = true;
+			}
+			if (!function_exists("imagecreatefrompng")) {
+				$error .= $error_stepCheck_gd_png_error.'<br /><br />';
+				$stopInstallation = true;
+			}
+		}
+		//check for safe_mode
+		if (ini_get ( 'safe_mode' )) {
+			$error .= $error_stepCheck_safe_mode_error.'<br /><br />';
+		}
+		//check for magic quotes
+		if (get_magic_quotes_gpc()) {
+			$error .= $error_stepCheck_magic_quotes_error.'<br /><br />';
+		}
+	} else {
+		$error .= $error_stepCheck_php_error.'<br /><br />';
+		$stopInstallation = true;
+	}
+	if ($error) {
+		$title ='<h1>'.$stepCheck_title.'</h1>';
+		if ($error) {
+			$content .= '<span class="error">'.$error.'</span><br />';
+		}
+		if (!$stopInstallation) {
+			$content .= '
+			<form action="'.$_SERVER["PHP_SELF"].'" method="post" onsubmit="check();">
+				<input type="hidden" name="step" value="1" />
+				<input type="hidden" name="install_language" value="'.$install_language.'" />
+				<input type="submit" class="submit" value="'.$label_next.'" />
+			</form>
+			';
+		} else {
+			$content .= $stepCheck_installation_stopped;
+		}
+	} else {
+		//all is ok, skip to next step
+		$step = 1;
+	}
+}
 
 // +----------------------------------------------------------------------+
 // | STEP 1 : Uncompress archive                                          |
@@ -407,7 +481,7 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'].'/cms_rc_admin.php')) {
 	if ($step == 2 && file_exists($_SERVER['DOCUMENT_ROOT'].'/config.php')) {
 		$step = 3;
 	}
-} elseif ($step > 1) {
+} elseif ($step != 'check' && $step != 'gpl' && $step > 1) {
 	die(sprintf($error_step2_no_cms_rc_admin,$_SERVER['DOCUMENT_ROOT']));
 }
 
@@ -615,6 +689,8 @@ if ($step == 4) {
 		</form>
 		';
 	} else {
+		CMS_websitesCatalog::writeRootRedirection();
+		/*
 		$websites = CMS_websitesCatalog::getAll();
 		foreach($websites as $aWebsite) {
 			if ($aWebsite->isMain()) {
@@ -622,7 +698,7 @@ if ($step == 4) {
 				$aWebsite->writeToPersistence();
 				$aWebsite->writeRootRedirection();
 			}
-		}
+		}*/
 		
 		//go to next step
 		$step = 5;
@@ -1004,7 +1080,8 @@ if ($step == 8) {
 		}
 		
 		//modify .htaccess files for Free.fr
-		if ($_POST["freeHosting"] == 1) {
+		//temporary useless : free is on PHP5 : incompatible for now
+		/*if ($_POST["freeHosting"] == 1) {
 			//search .htaccess files for modules
 			$htaccessFiles = CMS_file::getFileList($_SERVER['DOCUMENT_ROOT'].'/automne_modules_files/*.htaccess');
 			//define known .htaccess files (can't search them because it's overide memory limit on Free)
@@ -1032,7 +1109,7 @@ if ($step == 8) {
 					$htaccessFile->writeToPersistence();
 				}
 			}
-		}
+		}*/
 		
 		//No application email
 		if ($_POST["no_application_email"] == 1)  {
@@ -1100,21 +1177,6 @@ if ($step == 8) {
 		$error .= $error_step8_sessions.'<br />';
 	}
 	
-	//GD Test
-	if (!function_exists("imagecopyresampled")) {
-		$error .= $error_step8_gd_error.'<br />';
-	} else {
-		if (!function_exists("imagecreatefromgif")) {
-			$error .= $error_step8_gd_gif_error.'<br />';
-		}
-		if (!function_exists("imagecreatefromjpeg")) {
-			$error .= $error_step8_gd_jpeg_error.'<br />';
-		}
-		if (!function_exists("imagecreatefrompng")) {
-			$error .= $error_step8_gd_png_error.'<br />';
-		}
-	}
-	
 	//SMTP Test
 	if (!$_POST["no_application_email"]) {
 		$no_email = false;
@@ -1134,7 +1196,7 @@ if ($step == 8) {
 			<input type="hidden" name="cms_action" value="finalisation" />
 			<input type="hidden" name="install_language" value="'.$install_language.'" />
 			'.$step8_CLI_explanation.'<br /><br />
-			<label for="freeHosting"><input type="checkbox" id="freeHosting" name="freeHosting" value="1" /> '.$step8_freefr.'</label><br />';
+			<!--<label for="freeHosting"><input type="checkbox" id="freeHosting" name="freeHosting" value="1" /> '.$step8_freefr.'</label><br />-->';
 			if ($no_application_email) {
 				$content .= '<br /><label for="no_application_email"><input type="checkbox" id="no_application_email" name="no_application_email" value="1" /> '.$step8_no_application_email.'</label><br />';
 			}
