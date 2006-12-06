@@ -18,7 +18,7 @@
 // | Author: Devin Doucette <darksnoopy@shaw.ca> (for archives classes)   |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.10 2006/10/11 15:44:15 sebastien Exp $
+// $Id: install.php,v 1.11 2006/12/06 17:07:15 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -691,6 +691,13 @@ if ($step == 4) {
 	} else {
 		$tmp = new CMS_websitesCatalog();
 		if (method_exists($tmp, 'writeRootRedirection')) {
+			$websites = CMS_websitesCatalog::getAll();
+			foreach($websites as $aWebsite) {
+				if ($aWebsite->isMain()) {
+					$aWebsite->setURL($_POST["website"]);
+					$aWebsite->writeToPersistence();
+				}
+			}
 			CMS_websitesCatalog::writeRootRedirection();
 		} else {
 			$websites = CMS_websitesCatalog::getAll();
