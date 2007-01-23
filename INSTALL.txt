@@ -1,7 +1,7 @@
 -------------------------------------------------------
 AUTOMNE :: INSTALLATION
 -------------------------------------------------------
-$Id: INSTALL.txt,v 1.7 2006/10/06 08:16:15 sebastien Exp $
+$Id: INSTALL.txt,v 1.8 2007/01/23 18:30:47 sebastien Exp $
 
 English version is at the bottom of this document.
 
@@ -9,7 +9,7 @@ English version is at the bottom of this document.
 -------------------------------------------------------
 
 Système Linux, Windows (NT, 2000, XP ou 2003) ou Solaris.
-PHP 4.3.8 minimum (pour des raisons de sécurité, la version 4.4.2 est conseillée. Automne n'est pas compatible avec PHP 5.x pour le moment).
+PHP 4.3.8 minimum (pour des raisons de sécurité, la version 4.4.4 est conseillée. Automne n'est pas compatible avec PHP 5.x pour le moment).
 Apache 1.3.x ou 2.0.x (pour des raisons de sécurité, la version 1.3.34 est conseillée).
 MySQL 4.0.x (une version 3.23.xx fonctionnera mais les futures versions d'Automne seront incompatibles avec cette version de MySQL).
 
@@ -31,7 +31,7 @@ Lancez le fichier install.php depuis un navigateur web (l'adresse doit donc être
 Suivez ensuite les instructions données par le script d'installation.
 
 Notes : 
-- Si vous avez installé le module CLI de PHP, choisissez durant l'installation l'option "Script en tache de fond". Vous devez pour cela connaitre l'emplacement de ce module CLI sur le serveur.
+- Si vous avez installé le module CLI de PHP, choisissez durant l'installation l'option "Script en tache de fond".
 - Si vous installez Automne sur un serveur Windows, veillez à ne pas avoir d'espace dans le chemin d'installation (exemple : par défaut, easyphp s'installe dans le répertoire program files ce qui ne fonctionnera pas avec Automne).
 
 /!\ Important
@@ -51,7 +51,7 @@ ENGLISH VERSION
 -------------------------------------------------------
 
 Linux, Windows (NT, 2000, XP or 2003) or Solaris system.
-PHP 4.3.8 (for security matters, we recommend version 4.4.2. Automne is not compatible with PHP 5.x for the moment).
+PHP 4.3.8 (for security matters, we recommend version 4.4.4. Automne is not compatible with PHP 5.x for the moment).
 Apache 1.3.x or 2.0.x (for security matters, we recommend version 1.3.34).
 MySQL 3.23.x (for evolution matters, we recommend version 4.0.x).
 
@@ -71,7 +71,7 @@ Launch the install.php file from a web browser (the address will be : http://sub
 Then follow the instructions given by the installation script.
 
 NB : 
-- If you installed the CLI module of PHP, choose the "Background script" option during the installation. To do so, you will need to know the location of this module on the server.
+- If you installed the CLI module of PHP, choose the "Background script" option during the installation.
 - If you install Automne on a Windows server, take care to not have spaces in the installation path (example:  by default, easyphp use the folder program files what will not function with Automne).
 
 /!\ Important
