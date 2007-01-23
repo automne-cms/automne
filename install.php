@@ -18,7 +18,7 @@
 // | Author: Devin Doucette <darksnoopy@shaw.ca> (for archives classes)   |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.11 2006/12/06 17:07:15 sebastien Exp $
+// $Id: install.php,v 1.12 2007/01/23 18:28:48 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -71,12 +71,13 @@ switch ($install_language) {
 		//STEP check
 		$error_stepCheck_php_error = 'Erreur, Votre version de PHP ('.phpversion().') n\'est pas compatible avec Automne. Vous devez avoir une version supérieure à la 4.3.7 et inférieure à la version 5.0.0.';
 		$error_stepCheck_dir_not_writable_error = 'Erreur, Apache ne possède pas les droits d\'écriture sur le répertoire racine de votre site web.';
-		$error_stepCheck_safe_mode_error = 'Attention ! L\'option "safe_mode" est active sur votre configuration de PHP. Cette option est fortement déconseillée car l\'ensemble des fonctions d\'Automne ne seront pas disponibles et/ou leurs fonctionnement sera dégradé.';
+		$error_stepCheck_safe_mode_error = 'Attention ! L\'option "safe_mode" est active sur votre configuration de PHP. Cette option est fortement déconseillée car une partie des fonctions d\'Automne ne seront pas disponibles et/ou leurs fonctionnement sera imprévisible.';
 		$error_stepCheck_magic_quotes_error = 'Attention ! L\'option "magic_quotes_gpc" est active sur votre configuration de PHP. Cette option est fortement déconseillée car l\'ensemble des fonctions d\'Automne ne seront pas disponibles et/ou leurs fonctionnement sera dégradé.';
 		$error_stepCheck_gd_error = 'Erreur, l\'extension GD n\'est pas installée sur votre serveur. Vérifiez votre installation de PHP.';
 		$error_stepCheck_gd_gif_error = 'Erreur, les fonctionnalités de traitement d\'images GIF ne sont pas installées (Extension GD). Vérifiez votre installation de PHP.';
 		$error_stepCheck_gd_jpeg_error = 'Erreur, les fonctionnalités de traitement d\'images JPEG ne sont pas installées (Extension GD). Vérifiez votre installation de PHP.';
 		$error_stepCheck_gd_png_error = 'Erreur, les fonctionnalités de traitement d\'images PNG ne sont pas installées (Extension GD). Vérifiez votre installation de PHP.';
+		$error_stepCheck_memory_limit_error = 'Erreur, l\'utilisation mémoire des scripts PHP ne peut être modifiée et elle est limitée à %so. Veuillez modifier votre configuration pour allouer un minimum de 16Mo de mémoire ou bien pour laisser les scripts PHP choisir leur utilisation mémoire.';
 		$stepCheck_title = 'Compatibilité de votre système :';
 		$stepCheck_installation_stopped = 'Vous ne pouvez poursuivre l\'installation d\'Automne ...';
 		
@@ -135,12 +136,17 @@ switch ($install_language) {
 		
 		//STEP 6
 		$error_step6_choose_option = 'Erreur, vous devez choisir une option ...';
-		$step6_title = 'Méthode de régénération :';
-		$step6_explanation = 'Automne génère les pages finales des visiteurs. Cette génération peut-être faite de deux manière :<br />
-			<ul>
-				<li>Par une fenêtre pop-up. Processus assez lent mais qui fonctionne sur tous les serveurs. Vous devez choisir cela sur les serveurs mutualisés (ou sur Easyphp et autres solutions n\'utilisant pas une version complète de PHP)</li>
-				<li>Par un script en tache de fond. Processus rapide mais qui ne fonctionne pas sur tous les serveurs. Vous pouvez choisir cela sur les serveurs dédiés qui ont l\'éxécutable PHP-CLI installé (éxécutable en ligne de commande) et si vous connaissez sont chemin d\'installation sur le serveur.</li>
-			</ul>';
+		$step6_title = 'Fonctionnement des scripts :';
+		$step6_explanation = 'Certaines opérations complêxes d\'Automne nécessites l\'utilisation de scripts serveurs.<br />
+		Veuillez choisir la méthode d\'exécution de ces scripts :<br />
+		<ul>
+			<li>Par une fenêtre pop-up. Processus assez lent mais qui fonctionne sur tous les serveurs. Vous devez choisir cela sur les serveurs mutualisés (ou sur Easyphp et autres solutions n\'utilisant pas une version complète de PHP)</li>
+			<li>Scripts en tache de fond. Processus rapide mais qui ne fonctionne pas sur tous les serveurs. Vous pouvez choisir cela sur les serveurs dédiés qui ont l\'exécutable PHP-CLI installé (<a href="http://fr.php.net/manual/fr/features.commandline.php" target="_blank">Utiliser PHP en ligne de commande</a>).<br />Détection de la présence de PHP-CLI sur votre serveur : <span style="color:red;">%s</span></li>
+		</ul>';
+		$step6_CLIDetection_nosystem = 'Indisponible : Fonctions "system", "exec" et "passthru" désactivées.';
+		$step6_CLIDetection_windows = 'Détection impossible sur un serveur Windows';
+		$step6_CLIDetection_available = 'Disponible';
+		$step6_CLIDetection_unavailable = 'Indisponible';
 		$step6_popup = 'Fenêtre pop-up';
 		$step6_bg = 'Script en tache de fond';
 		
@@ -149,7 +155,7 @@ switch ($install_language) {
 		$error_step7_tmp_path = 'Erreur, Vous devez spécifier un répertoire temporaire ...';
 		$error_step7_valid_tmp_path = 'Erreur, Vous devez spécifier un répertoire temporaire valide ...';
 		$step7_title = 'Paramètres de régénération :';
-		$step7_CLI_explanation = 'Entrez ici le chemin vers l\'éxécutable PHP-CLI (sur les serveurs Unix il s\'agit généralement de /usr/local/bin/php. Sur les serveurs Windows il s\'agit généralement de c:\php\cli\cli.exe).';
+		$step7_CLI_explanation = 'Entrez ici le chemin vers l\'éxécutable PHP-CLI (Sur les serveurs Windows il s\'agit généralement de c:\php\cli\cli.exe).';
 		$step7_CLI = 'Chemin vers l\'éxécutable PHP-CLI';
 		$step7_tmp_path_explanation = 'Aucun répertoire temporaire n\'a put être identifié sur ce serveur. <br />Merci d\'entrer un repertoire temporaire ici (Le chemin complet du repertoire est requis, ex /tmp or c:\tmp). Ce repertoire doit être inscriptible par le serveur web.';
 		$step7_tmp_path = 'Chemin du repertoire temporaire';
@@ -169,14 +175,14 @@ switch ($install_language) {
 		$step9_title = 'Installation terminée !';
 		$step9_alldone = 'L\'installation d\'Automne est terminée.<br />
 		<br />Vous pouvez accéder à l\'administration du site à cette adresse :<br />
-		<a href="/automne/admin/" target="_blank">%s/automne/admin/</a><br />
-		L\'identifiant par défaut est "root" et le mot de passe "automne".<br />
+		<a href="/automne/admin/" target="_blank">%s/automne/admin/</a><br /><br />
+		L\'identifiant par défaut est "<strong>root</strong>" et le mot de passe "<strong>automne</strong>".<br />
 		Pensez à changer rapidement le mot de passe dans le profil utilisateur !<br />
 		<br />
 		Si vous avez choisi l\'installation de la Démo, la partie publique sera visible à l\'adresse <a href="/" target="_blank">%s</a> une fois que vous vous serez connecté une première fois à l\'administration de votre site.<br />
 		<br />
 		Vous pouvez supprimer l\'archive ayant servie à cette installation ainsi que le fichier install.php.<br />
-		Attention, laisser ces fichiers sur un site en production représente une faille importante de sécurité pour votre site !<br />
+		<span style="color:red;">Attention</span> : laisser ces fichiers sur un site en production représente une faille importante de sécurité pour votre site !<br />
 		<br />
 		Si vous souhaitez modifier certaines options saisies lors de cette installation, relancez le fichier install.php ou éditez le fichier config.php se trouvant à la racine de votre site web.<br />
 		<br />
@@ -199,6 +205,7 @@ switch ($install_language) {
 		$error_stepCheck_gd_gif_error = 'Error, functionalities of GIF image processing are not installed (GD Extension). Please Check your PHP installation.';
 		$error_stepCheck_gd_jpeg_error = 'Error, functionalities of JPEG image processing are not installed (GD Extension). Please Check your PHP installation.';
 		$error_stepCheck_gd_png_error = 'Error, functionalities of PNG image processing are not installed (GD Extension). Please Check your PHP installation.';
+		$error_stepCheck_memory_limit_error = 'Error, memory usage of PHP scripts can not be changed and it is limited to %sB. Please correct your configuration to allow a minimum of 16MB of memory or let PHP scripts to choose their memory usage.';
 		$stepCheck_title = 'System compatibility:';
 		$stepCheck_installation_stopped = 'You cannot continue Automne installation...';
 		
@@ -257,12 +264,17 @@ switch ($install_language) {
 		
 		//STEP 6
 		$error_step6_choose_option = 'Error, You must choose an option ...';
-		$step6_title = 'Choose regeneration method:';
-		$step6_explanation = 'Automne generates all web pages. This generation can be accomplished using one of two methods :<br />
-			<ul>
-				<li>Pop-up window. Slow but works fine on all servers. You must choose this method for mutualized servers (or with Easyphp or other solutions that do not use a complete version of PHP).</li>
-				<li>Background script. Fast but does not work on all servers. You can choose this method if you are on a dedicated server who has PHP-CLI installed and if you know the path of PHP-CLI on the server.</li>
-			</ul>';
+		$step6_title = 'Scripts operation:';
+		$step6_explanation = 'Some complex operations in Automne needs usage of server scripts.<br />
+		Please choose those scripts execution method :<br />
+		<ul>
+			<li>Pop-up window. Slow but works fine on all servers. You must choose this method for mutualized servers (or with Easyphp or other solutions that do not use a complete version of PHP).</li>
+			<li>Background script. Fast but does not work on all servers. You can choose this method if you are on a dedicated server who has PHP-CLI installed (<a href="http://www.php.net/manual/en/features.commandline.php" target="_blank">Using PHP from the command line</a>).<br />PHP-CLI detection on your server: <span style="color:red;">%s</span></li>
+		</ul>';
+		$step6_CLIDetection_nosystem = 'Unavailable : Functions "system", "exec" and "passthru" inactive.';
+		$step6_CLIDetection_windows = 'Detection impossible on Windows server';
+		$step6_CLIDetection_available = 'Available';
+		$step6_CLIDetection_unavailable = 'Unavailable';
 		$step6_popup = 'Pop-up window';
 		$step6_bg = 'Background script';
 		
@@ -271,7 +283,7 @@ switch ($install_language) {
 		$error_step7_tmp_path = 'Error, You must specify a temporary path ...';
 		$error_step7_valid_tmp_path = 'Error, You must specify a valid temporary path ...';
 		$step7_title = 'Regeneration parameters:';
-		$step7_CLI_explanation = 'Enter here the path to the PHP-CLI executable (on Unix servers it is usually /usr/local/bin/php on Windows servers it is usually c:\php\cli\cli.exe).';
+		$step7_CLI_explanation = 'Enter here the path to the PHP-CLI executable (on Windows server it is usually c:\php\cli\cli.exe).';
 		$step7_CLI = 'PHP-CLI path';
 		$step7_tmp_path_explanation = 'No Path founded for the temporary directory on this server. <br />Please enter a temporary path here (full path needed ex : /tmp or c:\tmp). This directory must be writable by the server.';
 		$step7_tmp_path = 'Temp path';
@@ -293,14 +305,14 @@ switch ($install_language) {
 		Automne installation is done.<br />
 		<br />
 		You can reach the site administration at this address:<br />
-		<a href="/automne/admin/" target="_blank">%s/automne/admin/</a><br />
-		Default login is "root" and password is "automne".<br />
+		<a href="/automne/admin/" target="_blank">%s/automne/admin/</a><br /><br />
+		Default login is "<strong>root</strong>" and password is "<strong>automne</strong>".<br />
 		Please modify the password in the user profile!<br />
 		<br />
 		If you selected the Demo installation, the public site will be visible at the address <a href="/" target="_blank">%s</a> once you will have connected first to the administration of your Web site.<br />
 		<br />
 		You can now remove the package file used for this installation as well as the file install.php.<br />
-		Warning, leaving these files on a production website may represent an important security hole for your Web site!<br />
+		<span style="color:red;">Warning</span>, leaving these files on a production website may represent an important security hole for your Web site!<br />
 		<br />
 		If you wish to modify options saved during this installation, start again the file install.php or edit the file config.php at the root of your Web site.<br />
 		<br />
@@ -339,6 +351,12 @@ if ($step === 'check') {
 				$error .= $error_stepCheck_gd_png_error.'<br /><br />';
 				$stopInstallation = true;
 			}
+		}
+		//check for memory_limit
+		@ini_set('memory_limit', '16M');
+		if (ini_get('memory_limit') < 16) {
+			$error .= sprintf($error_stepCheck_memory_limit_error,ini_get('memory_limit')).'<br /><br />';
+			$stopInstallation = true;
 		}
 		//check for safe_mode
 		if (ini_get ( 'safe_mode' )) {
@@ -826,14 +844,32 @@ if ($step == 6) {
 		if ($error) {
 			$content .= '<span class="error">'.$error.'</span><br />';
 		}
+		
+		//detect CLI
+		if (!(function_exists('exec') || !function_exists('passthru')) && !function_exists('system')) {
+			$clidetection = $step6_CLIDetection_nosystem;
+			$cliAvailable = false;
+		} elseif ($_SERVER["WINDIR"] || $_SERVER["windir"]) {
+			$clidetection = $step6_CLIDetection_windows;
+			$cliAvailable = true;
+		} else {
+			if (substr(CMS_patch::executeCommand('which php 2>&1',$error),0,1) == '/' && !$error) {
+				$clidetection = $step6_CLIDetection_available;
+				$cliAvailable = true;
+			} else {
+				$clidetection = $step6_CLIDetection_unavailable;
+				$cliAvailable = false;
+			}
+		}
+		
 		$content .= '
 		<form action="'.$_SERVER["PHP_SELF"].'" method="post" onsubmit="check();">
 			<input type="hidden" name="step" value="6" />
 			<input type="hidden" name="cms_action" value="regenerator" />
 			<input type="hidden" name="install_language" value="'.$install_language.'" />
-			'.$step6_explanation.'
-			<label for="popup"><input id="popup" type="radio" name="regenerator" value="1" checked="checked" /> '.$step6_popup.'</label><br />
-			<label for="cli"><input id="cli" type="radio" name="regenerator" value="2" /> '.$step6_bg.'</label><br />
+			'.sprintf($step6_explanation,$clidetection).'
+			<label for="popup"><input id="popup" type="radio" name="regenerator" value="1"'.((!$cliAvailable || $_SERVER["WINDIR"] || $_SERVER["windir"]) ? ' checked="true"' : '').' /> '.$step6_popup.'</label><br />
+			<label for="cli"><input id="cli" type="radio" name="regenerator" value="2"'.(!$cliAvailable ? ' disabled="true"' : ' checked="true"').' /> '.$step6_bg.'</label><br />
 			<input type="submit" class="submit" value="'.$label_next.'" />
 		</form>
 		';
@@ -859,7 +895,6 @@ if ($step == 6) {
 
 if ($step == 7) {
 	$error ='';
-	
 	//check for errors
 	if ($_POST["cms_action"] == "regeneratorParams") {
 		//get values in standard_rc.xml file
@@ -888,22 +923,6 @@ if ($step == 7) {
 				}
 				$configFile->setContent($configFileContent);
 				$configFile->writeToPersistence();
-			} else {
-				//add CLI path to all scripts php files
-				$scriptsFiles = CMS_file::getFileList(PATH_PACKAGES_FS.'/scripts/*.php');
-				foreach ($scriptsFiles as $aScriptFile) {
-					$scriptFile = new CMS_file($aScriptFile["name"]);
-					$scriptFileContent = $scriptFile->readContent("array","rtrim");
-					//check if file is a script (search start of bang line)
-					if (strpos($scriptFileContent[0], "#!") !== false) {
-						//then set the new bang line
-						$scriptFileContent[0] = '#!'.$cliPath.' -q';
-						$scriptFile->setContent($scriptFileContent);
-						$scriptFile->writeToPersistence();
-						//then set it executable
-						CMS_file::makeExecutable($aScriptFile["name"]);
-					}
-				}
 			}
 		}
 		
@@ -961,15 +980,8 @@ if ($step == 7) {
 		$moduleParameters = $module->getParameters(false,true);
 		
 		//found CLI path
-		if ($moduleParameters['USE_BACKGROUND_REGENERATOR'][0] == 1) {
-			if ($_SERVER["WINDIR"] || $_SERVER["windir"]) {
-				$cliPath = ($_POST["cliPath"]) ? $_POST["cliPath"] : PATH_PHP_CLI_WINDOWS;
-			} else {
-				$regeneratorFile = new CMS_file(PATH_PACKAGES_FS.'/scripts/regenerator.php');
-				$regeneratorContent = $regeneratorFile->readContent("array","rtrim");
-				$unixCliPath = trim(str_replace("#!","",str_replace("-q","", $regeneratorContent[0])));
-				$cliPath = ($_POST["cliPath"]) ? $_POST["cliPath"] : $unixCliPath;
-			}
+		if ($moduleParameters['USE_BACKGROUND_REGENERATOR'][0] == 1 && ($_SERVER["WINDIR"] || $_SERVER["windir"])) {
+			$cliPath = ($_POST["cliPath"]) ? $_POST["cliPath"] : PATH_PHP_CLI_WINDOWS;
 		}
 		//test temporary directory and create it if none founded
 		$tmpPath ='';
@@ -1005,7 +1017,7 @@ if ($step == 7) {
 				$tmpPath ='';
 			}
 		}
-		if ($moduleParameters['USE_BACKGROUND_REGENERATOR'][0] == 1 || !$tmpPath) {
+		if (($moduleParameters['USE_BACKGROUND_REGENERATOR'][0] == 1 && ($_SERVER["WINDIR"] || $_SERVER["windir"])) || !$tmpPath) {
 			$title = '<h1>'.$step7_title.'</h1>';
 			if ($error) {
 				$content .= '<span class="error">'.$error.'</span><br />';
@@ -1087,38 +1099,6 @@ if ($step == 8) {
 			";
 			$q = new CMS_query($sql);
 		}
-		
-		//modify .htaccess files for Free.fr
-		//temporary useless : free is on PHP5 : incompatible for now
-		/*if ($_POST["freeHosting"] == 1) {
-			//search .htaccess files for modules
-			$htaccessFiles = CMS_file::getFileList($_SERVER['DOCUMENT_ROOT'].'/automne_modules_files/*.htaccess');
-			//define known .htaccess files (can't search them because it's overide memory limit on Free)
-			$htaccessFiles[]["name"] = $_SERVER['DOCUMENT_ROOT'].'/automne/.htaccess';
-			$htaccessFiles[]["name"] = $_SERVER['DOCUMENT_ROOT'].'/automne/admin/.htaccess';
-			$htaccessFiles[]["name"] = $_SERVER['DOCUMENT_ROOT'].'/automne/phpMyAdmin/.htaccess';
-			$htaccessFiles[]["name"] = $_SERVER['DOCUMENT_ROOT'].'/automne/templates/images/.htaccess';
-			$htaccessFiles[]["name"] = $_SERVER['DOCUMENT_ROOT'].'/automne_bin/.htaccess';
-			$htaccessFiles[]["name"] = $_SERVER['DOCUMENT_ROOT'].'/automne_linx_files/.htaccess';
-			$htaccessFiles[]["name"] = $_SERVER['DOCUMENT_ROOT'].'/sql/.htaccess';
-			
-			foreach ($htaccessFiles as $aHtaccessFile) {
-				$htaccessFile = new CMS_file($aHtaccessFile["name"]);
-				$htaccessFileContent = $htaccessFile->readContent();
-				//check wich type of htacces it is
-				if (strpos($htaccessFileContent, "LimitExcept ") !== false) {
-					//then set the new content
-					$htaccessFileContent = 'allow from all';
-					$htaccessFile->setContent($htaccessFileContent);
-					$htaccessFile->writeToPersistence();
-				} elseif (strpos($htaccessFileContent, "Limit ") !== false) {
-					//then set the new content
-					$htaccessFileContent = 'deny from all';
-					$htaccessFile->setContent($htaccessFileContent);
-					$htaccessFile->writeToPersistence();
-				}
-			}
-		}*/
 		
 		//No application email
 		if ($_POST["no_application_email"] == 1)  {
@@ -1204,8 +1184,7 @@ if ($step == 8) {
 			<input type="hidden" name="step" value="8" />
 			<input type="hidden" name="cms_action" value="finalisation" />
 			<input type="hidden" name="install_language" value="'.$install_language.'" />
-			'.$step8_CLI_explanation.'<br /><br />
-			<!--<label for="freeHosting"><input type="checkbox" id="freeHosting" name="freeHosting" value="1" /> '.$step8_freefr.'</label><br />-->';
+			'.$step8_CLI_explanation.'<br /><br />';
 			if ($no_application_email) {
 				$content .= '<br /><label for="no_application_email"><input type="checkbox" id="no_application_email" name="no_application_email" value="1" /> '.$step8_no_application_email.'</label><br />';
 			}
