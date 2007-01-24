@@ -18,7 +18,7 @@
 // | Author: Devin Doucette <darksnoopy@shaw.ca> (for archives classes)   |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.12 2007/01/23 18:28:48 sebastien Exp $
+// $Id: install.php,v 1.13 2007/01/24 10:04:08 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -416,6 +416,8 @@ if ($step == 1) {
 //if archive founded, uncompress it
 if ($archiveFound && $step==1) {
 	if ($_POST["cms_action"] == 'extract') {
+		//to avoid error on server with lots of PHP extensions, extend memory limit during this step
+		@ini_set('memory_limit', '32M');
 		$archive = new CMS_gzip_file_install($_SERVER['DOCUMENT_ROOT']."/".$archiveFile);
 		$error='';
 		
