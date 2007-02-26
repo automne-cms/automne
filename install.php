@@ -18,7 +18,7 @@
 // | Author: Devin Doucette <darksnoopy@shaw.ca> (for archives classes)   |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.15 2007/02/26 10:05:10 sebastien Exp $
+// $Id: install.php,v 1.16 2007/02/26 10:36:56 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -906,7 +906,6 @@ if ($step == 7) {
 		//get values in standard_rc.xml file
 		$module = CMS_modulesCatalog::getByCodename('standard');
 		$moduleParameters = $module->getParameters(false,true);
-		
 		// CLI path
 		if ($moduleParameters['USE_BACKGROUND_REGENERATOR'][0] == 1 && !$_POST["cliPath"]) {
 			$error .= $error_step7_CLI_path.'<br />';
@@ -929,7 +928,7 @@ if ($step == 7) {
 				}
 				$configFile->setContent($configFileContent);
 				$configFile->writeToPersistence();
-			} else {
+			}/* else {
 				//makes files executables
 				$scriptsFiles = CMS_file::getFileList(PATH_PACKAGES_FS.'/scripts/*.php'); 	 
 				foreach ($scriptsFiles as $aScriptFile) {
@@ -944,14 +943,10 @@ if ($step == 7) {
 					}
 					//then set it executable
 					CMS_file::makeExecutable($aScriptFile["name"]);
+					pr($aScriptFile["name"]);
 				}
-			}
-		}
-		
-		//CHMOD scripts with good values
-		$scriptsFiles = CMS_file::getFileList(PATH_PACKAGES_FS.'/scripts/*.php');
-		foreach ($scriptsFiles as $aScriptFile) {
-			@chmod($aScriptFile["name"], octdec(DIRS_CHMOD));
+				exit;
+			}*/
 		}
 		
 		//Temporary path (if needed)
@@ -1005,6 +1000,14 @@ if ($step == 7) {
 		if ($moduleParameters['USE_BACKGROUND_REGENERATOR'][0] == 1 && ($_SERVER["WINDIR"] || $_SERVER["windir"])) {
 			$cliPath = ($_POST["cliPath"]) ? $_POST["cliPath"] : PATH_PHP_CLI_WINDOWS;
 		}
+		
+		//CHMOD scripts with good values
+		$scriptsFiles = CMS_file::getFileList(PATH_PACKAGES_FS.'/scripts/*.php');
+		foreach ($scriptsFiles as $aScriptFile) {
+			//then set it executable
+			CMS_file::makeExecutable($aScriptFile["name"]);
+		}
+		
 		//test temporary directory and create it if none founded
 		$tmpPath ='';
 		if (@is_dir(ini_get("session.save_path")) && is_object(@dir(ini_get("session.save_path")))) {
