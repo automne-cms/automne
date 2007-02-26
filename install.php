@@ -18,7 +18,7 @@
 // | Author: Devin Doucette <darksnoopy@shaw.ca> (for archives classes)   |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.14 2007/02/26 09:43:20 sebastien Exp $
+// $Id: install.php,v 1.15 2007/02/26 10:05:10 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -721,20 +721,16 @@ if ($step == 4) {
 		if (method_exists($tmp, 'writeRootRedirection')) {
 			$websites = CMS_websitesCatalog::getAll();
 			foreach($websites as $aWebsite) {
-				if ($aWebsite->isMain()) {
-					$aWebsite->setURL($_POST["website"]);
-					$aWebsite->writeToPersistence();
-				}
+				$aWebsite->setURL($_POST["website"]);
+				$aWebsite->writeToPersistence();
 			}
 			CMS_websitesCatalog::writeRootRedirection();
 		} else {
 			$websites = CMS_websitesCatalog::getAll();
 			foreach($websites as $aWebsite) {
-				if ($aWebsite->isMain()) {
-					$aWebsite->setURL($_POST["website"]);
-					$aWebsite->writeToPersistence();
-					$aWebsite->writeRootRedirection();
-				}
+				$aWebsite->setURL($_POST["website"]);
+				$aWebsite->writeToPersistence();
+				$aWebsite->writeRootRedirection();
 			}
 		}
 		//go to next step
