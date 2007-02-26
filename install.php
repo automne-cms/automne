@@ -18,7 +18,7 @@
 // | Author: Devin Doucette <darksnoopy@shaw.ca> (for archives classes)   |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.13 2007/01/24 10:04:08 sebastien Exp $
+// $Id: install.php,v 1.14 2007/02/26 09:43:20 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -184,8 +184,11 @@ switch ($install_language) {
 		Vous pouvez supprimer l\'archive ayant servie à cette installation ainsi que le fichier install.php.<br />
 		<span style="color:red;">Attention</span> : laisser ces fichiers sur un site en production représente une faille importante de sécurité pour votre site !<br />
 		<br />
-		Si vous souhaitez modifier certaines options saisies lors de cette installation, relancez le fichier install.php ou éditez le fichier config.php se trouvant à la racine de votre site web.<br />
+		Si vous souhaitez modifier certaines options saisies lors de cette installation, relancez le fichier install.php ou éditez le fichier config.php se trouvant à la racine de votre site web ou le fichier de paramètres /automne/classes/modules/standard_rc.xml.<br />
 		<br />
+		Pour profiter des fonctionnalités de publication et dépublication automatique, planifiez l\'execution du script /automne/classes/scripts/daily_routine.php toutes les nuits dans votre crontab (ou dans les taches planifiées de windows).<br />
+		Exemple : 0 0 * * * www-data php '.$_SERVER['DOCUMENT_ROOT'].'/automne/classes/scripts/daily_routine.php (ici www-data est l\'utilisateur utilisé pour éxecuter Apache).
+		<br /><br />
 		Merci d\'utiliser Automne !<br />
 		<br />
 		Pour toutes questions, contactez le support Automne sur le forum du site <a href="http://www.automne.ws" target="_blank">www.automne.ws</a>.';
@@ -314,8 +317,12 @@ switch ($install_language) {
 		You can now remove the package file used for this installation as well as the file install.php.<br />
 		<span style="color:red;">Warning</span>, leaving these files on a production website may represent an important security hole for your Web site!<br />
 		<br />
-		If you wish to modify options saved during this installation, start again the file install.php or edit the file config.php at the root of your Web site.<br />
+		If you wish to modify options saved during this installation, start again the file install.php or edit the file config.php at the root of your Web site or the parameter file /automne/classes/modules/standard_rc.xml.<br />
 		<br />
+		If you want to use automatic publication and depublication fonctionnalities, plan the execution of the script /automne/classes/scripts/daily_routine.php every nigths in your crontab.<br />
+		Example : 0 0 * * * www-data php '.$_SERVER['DOCUMENT_ROOT'].'/automne/classes/scripts/daily_routine.php (here www-data is the Apache user).
+		<br /><br />
+		
 		Thank you for using Automne!<br />
 		<br />
 		For all questions, contact the automne support team via the web site <a href="http://www.automne.ws" target="_blank">www.automne.ws</a>.';
@@ -353,10 +360,11 @@ if ($step === 'check') {
 			}
 		}
 		//check for memory_limit
-		@ini_set('memory_limit', '16M');
-		if (ini_get('memory_limit') < 16) {
-			$error .= sprintf($error_stepCheck_memory_limit_error,ini_get('memory_limit')).'<br /><br />';
-			$stopInstallation = true;
+		if(function_exists('memory_get_usage')) {
+			if (ini_get('memory_limit') < 16) {
+				$error .= sprintf($error_stepCheck_memory_limit_error,ini_get('memory_limit')).'<br /><br />';
+				$stopInstallation = true;
+			}
 		}
 		//check for safe_mode
 		if (ini_get ( 'safe_mode' )) {
@@ -925,6 +933,22 @@ if ($step == 7) {
 				}
 				$configFile->setContent($configFileContent);
 				$configFile->writeToPersistence();
+			} else {
+				//makes files executables
+				$scriptsFiles = CMS_file::getFileList(PATH_PACKAGES_FS.'/scripts/*.php'); 	 
+				foreach ($scriptsFiles as $aScriptFile) {
+					$scriptFile = new CMS_file($aScriptFile["name"]);
+					$scriptFileContent = $scriptFile->readContent("array","rtrim");
+					//check if file is a script with a bang line (search start of bang line)
+					if (strpos($scriptFileContent[0], "#!") !== false) {
+						//then set the new bang line
+						$scriptFileContent[0] = '#!'.$cliPath.' -q';
+						$scriptFile->setContent($scriptFileContent);
+						$scriptFile->writeToPersistence(); 	 
+					}
+					//then set it executable
+					CMS_file::makeExecutable($aScriptFile["name"]);
+				}
 			}
 		}
 		
