@@ -18,7 +18,7 @@
 // | Author: Devin Doucette <darksnoopy@shaw.ca> (for archives classes)   |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.16 2007/02/26 10:36:56 sebastien Exp $
+// $Id: install.php,v 1.17 2007/09/04 13:24:12 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -165,7 +165,7 @@ switch ($install_language) {
 		$error_step8_smtp_error = 'Erreur, Aucun serveur SMTP trouvé. Vérifiez votre installation de PHP ou cochez la case ci-dessous si vous souhaitez désactiver l\'envoi d\'email par l\'application.';
 		$error_step8_label = 'Erreur, Merci de saisir un nom pour votre site.';
 		$step8_title = 'Finalisation de l\'installation :';
-		$step8_CLI_explanation = 'Automne utilise des fichiers .htaccess pour protéger l\'accès de certains repertoires.<br />Le service d\'hébergement de Free.fr n\'accepte pas la syntaxe courante de ces fichiers. Si vous hébergez Automne chez Free.fr, cochez la case ci-dessous pour modifier ces fichiers .htaccess';
+		$step8_htaccess_explanation = 'Automne utilise des fichiers .htaccess pour protéger l\'accès de certains repertoires et spécifier certaines configurations.<br />Vérifiez que le serveur d\'hébergement que vous utilisez accepte bien l\'utilisation des fichiers .htaccess';
 		$step8_freefr = 'Cochez si vous êtes hébergé par Free.fr';
 		$step8_no_application_email = 'Cochez si vous souhaitez désactiver l\'envoi d\'email par l\'application';
 		$step8_application_label = 'Saisissez un nom pour votre site.';
@@ -296,7 +296,7 @@ switch ($install_language) {
 		$error_step8_smtp_error = 'Error, No SMTP server found. Please Check your PHP installation or check the box below to cancel the application email sending.';
 		$error_step8_label = 'Error, Please to enter a name for your site.';
 		$step8_title = 'Installation finalisation:';
-		$step8_CLI_explanation = 'Automne uses .htaccess files to protect some directories.<br />The Free.fr hosting service does not accept the current syntax of these files. If you are on Free.fr, check the box below to modify the .htaccess files.';
+		$step8_htaccess_explanation = 'Automne uses .htaccess files to protect some directories and specify some configurations.<br />Check that the hosting server that you use accepts the usage of the .htaccess files.';
 		$step8_freefr = 'Check box if you are on Free.fr hosting service';
 		$step8_no_application_email = 'Check box if you want to cancel application email sending';
 		$step8_application_label = 'Enter a name for your site.';
@@ -852,12 +852,14 @@ if ($step == 6) {
 		}
 		
 		//detect CLI
+		$windows = false;
 		if (!(function_exists('exec') || !function_exists('passthru')) && !function_exists('system')) {
 			$clidetection = $step6_CLIDetection_nosystem;
 			$cliAvailable = false;
 		} elseif ($_SERVER["WINDIR"] || $_SERVER["windir"]) {
 			$clidetection = $step6_CLIDetection_windows;
 			$cliAvailable = true;
+			$windows = true;
 		} else {
 			if (substr(CMS_patch::executeCommand('which php 2>&1',$error),0,1) == '/' && !$error) {
 				$clidetection = $step6_CLIDetection_available;
@@ -874,8 +876,8 @@ if ($step == 6) {
 			<input type="hidden" name="cms_action" value="regenerator" />
 			<input type="hidden" name="install_language" value="'.$install_language.'" />
 			'.sprintf($step6_explanation,$clidetection).'
-			<label for="popup"><input id="popup" type="radio" name="regenerator" value="1"'.((!$cliAvailable || $_SERVER["WINDIR"] || $_SERVER["windir"]) ? ' checked="true"' : '').' /> '.$step6_popup.'</label><br />
-			<label for="cli"><input id="cli" type="radio" name="regenerator" value="2"'.(!$cliAvailable ? ' disabled="true"' : ' checked="true"').' /> '.$step6_bg.'</label><br />
+			<label for="popup"><input id="popup" type="radio" name="regenerator" value="1"'.((!$cliAvailable || $windows) ? ' checked="true"' : '').' /> '.$step6_popup.'</label><br />
+			<label for="cli"><input id="cli" type="radio" name="regenerator" value="2"'.(!$cliAvailable ? ' disabled="true"' : (!$windows) ? ' checked="true"' : '').' /> '.$step6_bg.'</label><br />
 			<input type="submit" class="submit" value="'.$label_next.'" />
 		</form>
 		';
@@ -918,12 +920,12 @@ if ($step == 7) {
 				$skip = false;
 				foreach ($configFileContent as $lineNb => $aLineOfConfigFile) {
 					if (strpos($aLineOfConfigFile, "PATH_PHP_CLI_WINDOWS") !== false) {
-						$configFileContent[$lineNb] = 'define("PATH_PHP_CLI_WINDOWS", "'.$cliPath.'");';
+						$configFileContent[$lineNb] = 'define("PATH_PHP_CLI_WINDOWS", \''.$cliPath.'\');';
 						$skip = true;
 					}
 				}
 				if (!$skip) {
-					$configFileContent[sizeof($configFileContent)-1] = 'define("PATH_PHP_CLI_WINDOWS", "'.$cliPath.'");';
+					$configFileContent[sizeof($configFileContent)-1] = 'define("PATH_PHP_CLI_WINDOWS", \''.$cliPath.'\');';
 					$configFileContent[sizeof($configFileContent)] = '?>';
 				}
 				$configFile->setContent($configFileContent);
@@ -975,12 +977,12 @@ if ($step == 7) {
 				$skip = false;
 				foreach ($configFileContent as $lineNb => $aLineOfConfigFile) {
 					if (strpos($aLineOfConfigFile, "PATH_PHP_TMP") !== false) {
-						$configFileContent[$lineNb] = 'define("PATH_PHP_TMP", "'.$tmpPath.'");';
+						$configFileContent[$lineNb] = 'define("PATH_PHP_TMP", \''.$tmpPath.'\');';
 						$skip = true;
 					}
 				}
 				if (!$skip) {
-					$configFileContent[sizeof($configFileContent)-1] = 'define("PATH_PHP_TMP", "'.$tmpPath.'");';
+					$configFileContent[sizeof($configFileContent)-1] = 'define("PATH_PHP_TMP", \''.$tmpPath.'\');';
 					$configFileContent[sizeof($configFileContent)] = '?>';
 				}
 				$configFile->setContent($configFileContent);
@@ -994,13 +996,11 @@ if ($step == 7) {
 	if ($error || $_POST["cms_action"] != "regeneratorParams") {
 		//get values in standard_rc.xml file
 		$module = CMS_modulesCatalog::getByCodename('standard');
-		$moduleParameters = $module->getParameters(false,true);
-		
+		$moduleParameters = $module->getParameters(false,true, true);
 		//found CLI path
 		if ($moduleParameters['USE_BACKGROUND_REGENERATOR'][0] == 1 && ($_SERVER["WINDIR"] || $_SERVER["windir"])) {
 			$cliPath = ($_POST["cliPath"]) ? $_POST["cliPath"] : PATH_PHP_CLI_WINDOWS;
 		}
-		
 		//CHMOD scripts with good values
 		$scriptsFiles = CMS_file::getFileList(PATH_PACKAGES_FS.'/scripts/*.php');
 		foreach ($scriptsFiles as $aScriptFile) {
@@ -1018,9 +1018,8 @@ if ($step == 7) {
 			@mkdir($_SERVER['DOCUMENT_ROOT']."/tmp");
 			if (@is_dir($_SERVER['DOCUMENT_ROOT']."/tmp") && is_object(@dir($_SERVER['DOCUMENT_ROOT']."/tmp"))) {
 				$tmpPath = $_SERVER['DOCUMENT_ROOT']."/tmp";
-				
 				if ($_SERVER["WINDIR"] || $_SERVER["windir"]) {
-					$tmpPath .= '\\\\';
+					$tmpPath .= '/';
 				}
 				//add tmp path to config.php file
 				$configFile = new CMS_file($_SERVER['DOCUMENT_ROOT']."/config.php");
@@ -1028,12 +1027,12 @@ if ($step == 7) {
 				$skip = false;
 				foreach ($configFileContent as $lineNb => $aLineOfConfigFile) {
 					if (strpos($aLineOfConfigFile, "PATH_PHP_TMP") !== false) {
-						$configFileContent[$lineNb] = 'define("PATH_PHP_TMP", "'.$tmpPath.'");';
+						$configFileContent[$lineNb] = 'define("PATH_PHP_TMP", \''.$tmpPath.'\');';
 						$skip = true;
 					}
 				}
 				if (!$skip) {
-					$configFileContent[sizeof($configFileContent)-1] = 'define("PATH_PHP_TMP", "'.$tmpPath.'");';
+					$configFileContent[sizeof($configFileContent)-1] = 'define("PATH_PHP_TMP", \''.$tmpPath.'\');';
 					$configFileContent[sizeof($configFileContent)] = '?>';
 				}
 				$configFile->setContent($configFileContent);
@@ -1074,7 +1073,6 @@ if ($step == 7) {
 			$step = 8;
 		}
 	} else {
-		
 		//go to next step
 		$step = 8;
 	}
@@ -1209,7 +1207,7 @@ if ($step == 8) {
 			<input type="hidden" name="step" value="8" />
 			<input type="hidden" name="cms_action" value="finalisation" />
 			<input type="hidden" name="install_language" value="'.$install_language.'" />
-			'.$step8_CLI_explanation.'<br /><br />';
+			'.$step8_htaccess_explanation.'<br /><br />';
 			if ($no_application_email) {
 				$content .= '<br /><label for="no_application_email"><input type="checkbox" id="no_application_email" name="no_application_email" value="1" /> '.$step8_no_application_email.'</label><br />';
 			}
@@ -1436,12 +1434,16 @@ if (!$extractArchive) {
 // +----------------------------------------------------------------------+
 
 //Usefull function to dump a var.
-function pr_install($data)
-{
-	$content .= "<pre>";
-	print_r($data);
-	$content .= "</pre>";
-	flush();
+function pr_install($data,$useVarDump = false) {
+	if (!$useVarDump) {
+		echo "<pre>".print_r($data,true)."</pre>";
+		flush();
+	} else {
+		echo "<pre>";
+		var_dump($data);
+		echo "</pre>";
+		flush();
+	}
 }
 /**
   * Class CMS_archive_install, CMS_tar_file_install, CMS_gzip_file_install
