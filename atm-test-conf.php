@@ -17,7 +17,7 @@ Use it at WebServer root.
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: atm-test-conf.php,v 1.2 2008/10/24 12:19:52 sebastien Exp $
+// $Id: atm-test-conf.php,v 1.3 2008/10/24 12:26:05 sebastien Exp $
 
 /**
   * Automne 3.3.X Serveurs configuration Tests
@@ -66,9 +66,9 @@ if (!function_exists('mysql_connect')) {
 	echo 'MySQL extension OK (please check version manually : 4.0.0 minimumm)'."\n";
 }
 //Files writing
-$randomFile = dirname(__FILE__).'/test_'.md5(mt_rand().microtime()).'.tmp';
+$randomFile = realpath(dirname(__FILE__)).'/test_'.md5(mt_rand().microtime()).'.tmp';
 if (!@touch($randomFile) || !file_exists($randomFile)) {
-	echo 'Error, No permissions to write files on this directory'."\n";
+	echo 'Error, No permissions to write files on this directory ('.realpath(dirname(__FILE__)).')'."\n";
 } else {
 	if (!@unlink($randomFile)) {
 		echo 'Error, No permissions to delete file on this directory ('.$randomFile.')'."\n";
