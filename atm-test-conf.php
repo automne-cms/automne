@@ -17,7 +17,7 @@ Use it at WebServer root.
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: atm-test-conf.php,v 1.1 2008/10/24 10:33:47 sebastien Exp $
+// $Id: atm-test-conf.php,v 1.2 2008/10/24 12:19:52 sebastien Exp $
 
 /**
   * Automne 3.3.X Serveurs configuration Tests
@@ -145,7 +145,6 @@ if (strtolower(substr(PHP_OS, 0, 3)) === 'win') {
 @ini_set('magic_quotes_runtime', 0);
 @ini_set('magic_quotes_sybase', 0);
 @ini_set('session.use_trans_sid', 0);
-@ini_set('allow_call_time_pass_reference', 0);
 if (ini_get('magic_quotes_gpc') != 0) {
 	echo 'Error, PHP magic_quotes_gpc cannot be changed and has not the right value'."\n";
 }
@@ -157,9 +156,6 @@ if (ini_get('magic_quotes_sybase') != 0) {
 }
 if (ini_get('session.use_trans_sid') != 0) {
 	echo 'Error, PHP session.use_trans_sid cannot be changed and has not the right value'."\n";
-}
-if (ini_get('allow_call_time_pass_reference') != 0) {
-	echo 'Error, PHP allow_call_time_pass_reference cannot be changed and has not the right value'."\n";
 }
 ?>
 </pre>
