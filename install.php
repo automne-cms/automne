@@ -18,7 +18,7 @@
 // | Author: Devin Doucette <darksnoopy@shaw.ca> (for archives classes)   |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.17 2007/09/04 13:24:12 sebastien Exp $
+// $Id: install.php,v 1.18 2008/10/24 10:33:28 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -31,6 +31,13 @@
 //Remove notices
 error_reporting(E_ALL ^ E_NOTICE);
 @set_time_limit(0);
+//try to remove magic quotes
+@ini_set('magic_quotes_gpc', 0);
+@ini_set('magic_quotes_runtime', 0);
+@ini_set('magic_quotes_sybase', 0);
+//try to change some misconfigurations
+@ini_set('session.use_trans_sid', 0);
+@ini_set('allow_call_time_pass_reference', 0);
 
 //Installation languages
 $install_language = ($_REQUEST["install_language"]) ? $_REQUEST["install_language"]:'';
