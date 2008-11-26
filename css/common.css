@@ -1,0 +1,160 @@
+body{
+	background:				url(/img/common/backgroundBody.gif) repeat left top;
+	color:					#362c26;
+	font-family:			arial, sans-serif;
+	font-size:				12px;
+	margin:					0px;
+}
+ul{
+	margin-left:			0px;
+	padding-left:			40px;
+}
+img{
+	border:					none;
+	vertical-align:			top;
+}
+a{
+	text-decoration:		none;
+}
+#main{
+	background:				#a59893 url(/img/common/backgroundMain.gif) repeat-x left top;
+	padding-bottom:			30px;
+}
+#container{
+	margin:					0px auto;
+	width:					970px;
+}
+#menuLeft{
+	float:					left;
+	width:					171px;
+}
+#menuLeft ul{
+	list-style:				none;
+	margin:					0px;
+	padding:				0px;
+}
+#menuLeft a.CMS_lvl1{
+	display:				block;
+	position:				absolute;
+	text-indent:			-5000px;
+	width:					1%;
+}
+#menuLeft ul.CMS_lvl2{
+	background:				url(/img/common/separatorMenuLeft.gif) no-repeat left top;
+	margin:					0 15px 0 12px;
+	min-height:				305px;
+	padding-top:			2px;
+}
+#menuLeft li.CMS_lvl2{
+	background:				url(/img/common/separatorMenuLeft.gif) no-repeat left bottom;
+	padding-bottom:			2px;
+}
+#menuLeft .CMS_lvl2 li.CMS_open,
+#menuLeft .CMS_lvl2 li.CMS_current{
+	background-color:		#61534c;
+}
+#menuLeft a{
+	color:					#FFFFFF;
+	display:				block;
+}
+#menuLeft a.CMS_lvl2{
+	background:				url(/img/common/puceMenuLeftLvl2.gif) no-repeat 6px 9px;
+	font-weight:			bold;
+	padding:				7px 0px 5px 28px;
+	text-transform:			uppercase;
+}
+#menuLeft a.CMS_lvl2:hover{
+	background-color:		#61534c;
+}
+#menuLeft ul.CMS_lvl3{
+	padding:				0 0 0 26px;
+}
+#menuLeft a.CMS_lvl3{
+	background:				url(/img/common/puceMenuLeftLvl3.gif) no-repeat 0px 4px;
+	padding:				0 0 0 12px;
+}
+#menuLeft a.CMS_lvl3:hover,
+#menuLeft .CMS_lvl3 .CMS_current a.CMS_lvl3{
+	background:				url(/img/common/puceMenuLeftLvl3Hover.gif) no-repeat 0px 4px;
+	color:					#b9e740;
+}
+#menuLeft ul.CMS_lvl4{
+	display:				none;
+}
+#content{
+	float:					left;
+}
+#footer{
+	background:				url(/img/common/backgroundFooter.gif) repeat-x left top;
+	height:					30px;
+	width:					100%;
+}
+#menuBottom{
+	background:				url(/img/common/menuBottomRight.gif) no-repeat 842px 3px;
+	margin:					0px auto;
+	padding:				0 128px 0 0px;
+	width:					842px;
+}
+#menuBottom ul{
+	background:				url(/img/common/menuBottomLeft.gif) no-repeat left top;
+	float:					right;
+	list-style:				none;
+	margin:					3px 0 0 0px;
+	padding:				0px 0px 0px 16px;
+}
+#menuBottom li{
+	background:				url(/img/common/menuBottomCenter.gif) repeat-x left top;
+	float:					left;
+}
+#menuBottom a{
+	background:				url(/img/common/puceMenuBottom.gif) no-repeat left 3px;
+	color:					#FFFFFF;
+	line-height:			19px;
+	margin-left:			10px;
+	padding-left:			10px;
+}
+#menuBottom a:hover{
+	background:				url(/img/common/puceMenuBottomHover.gif) no-repeat left 3px;
+	color:					#ffa03e;
+}
+.imgRight{
+	float:					right;
+	margin:					0 0 5px 10px;
+}
+.imgLeft{
+	float:					left;
+	margin:					0 10px 5px 0;
+}
+.shadowR{
+	background:				url(/img/common/shadowR.gif) repeat-y right top;
+}
+.shadowB{
+	background:				url(/img/common/shadowB.gif) repeat-x left bottom;
+}
+.shadowTR{
+	background:				url(/img/common/shadowTR.gif) no-repeat right top;
+}
+.shadowBL{
+	background:				url(/img/common/shadowBL.gif) no-repeat left bottom;
+}
+.shadowBR{
+	background:				url(/img/common/shadowBR.gif) no-repeat right bottom;
+	padding:				0 5px 6px 0;
+}
+.shadowBR img{
+	background-color:		#FFFFFF;
+	/*padding:				8px 6px 17px 6px;*/
+	padding:				2px;
+}
+.spacer{
+	clear:					both;
+}
+.sIFR-alternate{
+	display:				block;
+	position:				absolute;
+	text-indent:			-5000px;
+	width:					1%;
+}
+.center {
+	margin:				0px auto 0px auto;
+}

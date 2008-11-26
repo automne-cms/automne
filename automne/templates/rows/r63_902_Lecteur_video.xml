@@ -1,0 +1,47 @@
+<row>
+	<block module="standard" type="file" id="videofile">
+		<div class="video">
+			<?php
+			//////////////////////////////////////////////
+			//    	   Player configuration    	        //
+			//////////////////////////////////////////////
+			
+			//Player width/height (value expressed in pixels)
+			$width = 320;
+			$height = 240;
+			
+			// You can configure it more precisely in the /automne/playerflv/config_playerflv.xml configuration file
+			// A configuration generator exists http://flv-player.net/players/maxi/generator/
+			
+			$player = '/automne/playerflv/player_flv.swf';
+			$conf = '/automne/playerflv/config_playerflv.xml';
+			
+			if ({{type}} == 'flv') {
+				echo '
+				<object type="application/x-shockwave-flash" data="'.$player.'" width="'.$width.'" height="'.$height.'">
+				    <param name="movie" value="'.$player.'" />
+				    <param name="allowFullScreen" value="true" />
+				    <param name="FlashVars" value="flv={{href}}&configxml='.$conf.'" />
+				</object>';
+			} else {
+				switch($cms_language->getCode()){
+					case 'en':
+						echo '
+						<p>You have to send a flv file. To convert your video, you can use :
+						<br/> - the <a href="http://www.adobe.com/products/flash/flashpro/productinfo/encoder">Flash video encoder</a> provided by Adobe in Flash Professional
+						<br/> - a free alternative program such as <a href="http://mediacoder.sourceforge.net">MediaCoder</a>
+						</p>';
+					break;
+					default:
+						echo '
+						<p>Editez cette rangée pour insérer un fichier flv. Pour convertir votre vidéo vous pouvez utiliser :
+						<br/> - le <a href="http://www.adobe.com/products/flash/flashpro/productinfo/encoder">Flash Video Encoder</a> fourni par Adobe Flash Professionnel
+						<br/> - une alternative gratuite telle que le programme <a href="http://mediacoder.sourceforge.net">MediaCoder</a>
+						</p>';
+					break;
+				}
+			}
+			?>
+		</div>
+	</block>
+</row>

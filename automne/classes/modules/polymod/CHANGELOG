@@ -1,0 +1,169 @@
+v0.99 (14/12/2007)
+[BUG] : in moduleUsage which cannot handle more than 1 usage for a given page and module
+[BUG] : In keyword search, only searchable fields should be used.
+[BUG] : when removing all associated values of a multi object field
+[BUG] : during search for objects with one category field without categories set
+[BUG] : In user-group field : selected or excluded users params does not work
+[BUG] : In object image and object file, images type is not properly checked
+[BUG] : In forms controler if user has not the same language as the rows
+[REFACTOR] : Add a "right clic" edition for wysiwyg plugins. Polymod elements can be edited with a right clic directly
+[FEATURE] : Add an atm-xml tag. Typically used for Ajax query on a row part.
+[FEATURE] : In wysiwyg you can right clic on modules elements to modify them
+[FEATURE] : Add a filter by users/groups for email notification field
+[FEATURE] : Add a 'like' operator on string object to search on incomplete values (using % wilcard)
+[FEATURE] : Add notification field support into atm-form tag
+
+v0.98
+[BUG] : in plugin interpretation in frontend if htmlvalue is not used
+[BUG] : in rows, with block parameters on fields with poly_objetcs
+[BUG] : in search engine for objects with multiple categories field which are not required
+[BUG] : in search engine for objects with categories not set (no value at all for a category field of an object)
+[BUG] : in user/group object : can't remove the last selected user/group of a given field
+[BUG] : in getVarContent method of CMS_poly_definition_functions, the fourth argument must be optionnal for compatibility with old systems
+[BUG] : in file object with ftp file usage
+[BUG] : in plugins usage if plugin definition use \r (windows carriage return)
+[BUG] : In text object for getLabel method, parsing not correctly done.
+[BUG] : If object use more than one multi-object fields, second field modification duplicate objects
+[REFACTOR] : All help messages are completed and reformated.
+[REFACTOR] : add return parameter on atm-search-result tag
+[FEATURE] : Add random type to atm-search-order tag
+[FEATURE] : Add front-end forms management (allow object creation/modification in front-end with atm-form tag)
+[FEATURE] : Add a parameter on category fields to set a default value
+[FEATURE] : Add a parameter on date fields to set an object creation date
+[FEATURE] : Add a parameter on date fields to set an object update date
+[FEATURE] : Add a parameter on date fields to set an offset on creation/update date
+[FEATURE] : Add a parameter on file fields to allow/disallow files types (by extension)
+[FEATURE] : Add a parameter on string fields to set a regexp mask to match
+[FEATURE] : Add a parameter on user/group fields to set an object creation user
+[FEATURE] : Add a boolean field
+
+v0.97 : From this version, Polymod need at least Automne 3.3.0
+[BUG] : missing getFieldOrderSQL method in CMS_poly_object class
+[BUG] : in rows edition : remove empty fieldsets
+[BUG] : Can't remove composed titles on objects
+[BUG] : in validations if user has no right on any objects of the module.
+[BUG] : in some cases, var content can't be passed through getVarContent method and force usage of GLOBALS vars. 
+[REFACTOR] : Right management on categories is refactored according to the new system in place in Automne v3.3.0. This is still experimental and should properly be tested before updating any production website.
+[REFACTOR] : Remove unused and obsolete 'bypass' parameter on object categories
+[REFACTOR] : object categories : add associateUnused parameter. Allow the association of unused categories in rows selection
+[REFACTOR] : object Text : Add height and width parameters to text editor
+[REFACTOR] : keywords search now works only on 'searchable' fields
+[REFACTOR] : add 'label' to multi poly objects getValues method
+[REFACTOR] : remove a lot of useless sizeof()
+[REFACTOR] : completely refactor definitions compilation. Now, compilation and execution can be done during two different process (in a different environment). Beware here, some old module rows (with specific PHP code) can be broken
+[REFACTOR] : remove link to categories rights on module index
+[FEATURE] : Add object "email notification"
+[FEATURE] : Add object "language"
+[FEATURE] : Add experimental POLYMOD_SEARCH_RETURN_OBJECTSLIGHT search type (load only objects without subobjects datas. Used to optimize some searchs)
+[FEATURE] : Add redirection to item.php page to be usable by another module.
+[FEATURE] : Add hook methods scriptTask and scriptInfo (usable since Automne 3.3.0)
+[FEATURE] : Add Validation hooks which are used by objects which need to do some stuff during validations (usable since Automne 3.3.0)
+[FEATURE] : add description on all objects fields
+[FEATURE] : Add cross-modules wysiwyg plugins usage
+
+v0.96
+[BUG] : when loading an empty poly_object, public value is not used for object fields loading
+[REFACTOR] : some module ASE features are refactored
+[FEATURE] : Add a method to bypass rights for categories object. This feature is highly experimental and need to be properly tested (specially in migrations)
+[FEATURE] : object Categories : add root parameter to categoryLineage
+
+v0.95
+[BUG] : object file : files type parameter does not save correctly
+[BUG] : change missing message 1260 of standard module by 190 of polymod module in polymod_object_infos.php
+[BUG] : object Categories : missing a getParamsValues() in categoriesTree method
+[BUG] : in CMS_polymod_definition_parsing : if atm-result or atm-noresult tags are outside of their atm-search : frontend code crash
+[BUG] : some minor interface bugs are corrected
+[BUG] : if atm-search-order tag use a multi object field for sorting value. The function is still not properly supported but does not crash any more
+[BUG] : in plugins system, method used to check item validity is not well formed
+[BUG] : object Categories : in categoriesTree, categories lineage parsing is not properly done so in some rare case, generated tree is completely messed up
+[REFACTOR] : add variables support in direction attribute of tag atm-search-order
+[FEATURE] : Add auto include of CSS files in pages using a polymodule. CSS file included is /css/codename.css. It is only included if file exists
+[FEATURE] : Add language object
+[FEATURE] : Add ASE module support (use Xapian search engine if it is present).
+
+v0.94
+[BUG] : if use two same rows in a page, search in rows share some values
+[REFACTOR] : object users/groups : add parameters to include / exclude some users/groups
+[FEATURE] : Add direct field query for search orders
+
+v0.93
+[BUG] : correct problem in search with no results in some case
+[BUG] : correct definitions problem with \' in if condition and \' in php code
+[BUG] : Wysiwyg plugin : getSelection() method does not exist on IE, use createRange() instead
+[REFACTOR] : Wysiwyg plugin : add a test on span tag selection to get only polymod span tag
+[REFACTOR] : Correct possible issue : replace $_SERVER["PHP_SELF"] by $_SERVER["SCRIPT_NAME"]
+[REFACTOR] : object users/groups : get only active user in getListOfNamesForObject method
+[REFACTOR] : object categories : add a root parameter on selectOptions atm-function and on getAllCategoriesAsArray
+
+v0.92
+[BUG] : atm-search-order by field value does not work.
+[REFACTOR] : Change /rss/index.php to /rss/rss.php
+[FEATURE] : start to add addtionnal operators on search conditions.
+[FEATURE] : add <, >, <=, >= search operators on date field object
+[FEATURE] : add multiple search conditions on a same field.
+
+v0.91
+[REFACTOR] : Change modules_admin.php : all polymod administration is now externalised in a distinct file.
+[REFACTOR] : create a file to call for all frontend includes for polymod. Easier to manage.
+[FEATURE] : add RSS feature.
+
+v0.90
+[FEATURE] : add WYSIWYG plugins
+[FEATURE] : add category atm-function on object categories
+
+v0.89
+[REFACTOR] : continue to externalize all search specific clauses to each concerned components
+[REFACTOR] : factorisation of getvar, getSession and getRequest methods in one method : getVarContent.
+[FEATURE] : add PHP vars frontend management (like request vars : {var:type:name})
+[FEATURE] : add 'like' search for direct fields value for fields text, string and date
+
+v0.88
+[BUG] : on some labels (objects date and text)
+[BUG] : in search : profile parameter mismatch
+[FEATURE] : auto set date on fields date (if option is checked)
+[FEATURE] : Add user/group object
+
+v0.87
+[BUG] : in categories object, getValue method for label request (if object does not use multipleCategories)
+[BUG] : in categories object, getValue method, missing id return (if object does not use multipleCategories)
+[BUG] : in search object, for search on categories, lineage clause is too large
+[BUG] : in categories object, categoriesTree method : categories tree are not properly created in rare cases
+[BUG] : in categories object, categoriesTree method : categories tree are not properly ordered
+[BUG] : in poly_object and category object, can't remove a selected value from a list
+[BUG] : in categories object, if category is not set, object can't be found anymore
+[BUG] : add missing check on categories usage
+[REFACTOR] : search date start is now one year ago (instead of one month ago)
+[REFACTOR] : start to externalize all search specific clauses to each concerned components
+[REFACTOR] : replace some global cache by static cache
+[FEATURE] : on categories object, add files categories management
+[FEATURE] : on categories object, add a search option for objects which not categorised
+[FEATURE] : Allow multiple category fields in the same object (so 'category' search type is now deprecated, category search is doing by searching field id directly)
+
+v0.86
+[BUG] : MODULE_TREATMENT_PAGECONTENT_HEADER_CODE process does not work if regeneration is not done fromscratch, so all polymod classes are not included
+[BUG] : change htmlspecialchars gestion on vars (for image, file and string objects)
+[BUG] : change files and images upload management (buggy with editable multi objects fields)
+[BUG] : in categories object, getAllUsedCategoriesForField method return empty array if a category is not set for one object (empty value)
+[FEATURE] : add {maxloops} var replacement in atm-loop tags
+[FEATURE] : add selected items management on categoriesTree function
+[FEATURE] : show polymod version number in top-right of index modules pages
+
+v0.85 : 
+[BUG][REFACTOR] : lots of changes and corrections on all objects classes
+[BUG] : add atm-search-limit, atm-search-page, atm-search-order tags as tag which can receive a block parameter value
+[REFACTOR] : change frontend search result method, now allow multiple atm-result and atm-noresult for a same search
+[FEATURE] : allow frontend search on edited objects (with public attribute (optional) on atm-search tag)
+[FEATURE] : object previsualisation
+[FEATURE] : add atm-setvar frontend tag (to set a var value. Usefull to attribute a session var for example)
+[FEATURE] : add session frontend vars management (like request vars)
+
+v0.8 : 
+[BUG] : completely refactor object deletion and validation, more efficient
+[REFACTOR] : add methods on objects
+
+v0.75 :
+[BUG] : lots of bugs corrected.
+[REFACTOR] : change some stuff in definition parsing, search and in objects of the catalog
+[FEATURE] : add file and image to object catalog
+
+v0.7 : initial import - July 2006. Development started in december 2005

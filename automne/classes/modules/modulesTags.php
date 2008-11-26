@@ -1,0 +1,322 @@
+<?php
+/* vim: set expandtab tabstop=4 shiftwidth=4: */
+// +----------------------------------------------------------------------+
+// | Automne (TM)														  |
+// +----------------------------------------------------------------------+
+// | Copyright (c) 2000-2009 WS Interactive								  |
+// +----------------------------------------------------------------------+
+// | Automne is subject to version 2.0 or above of the GPL license.		  |
+// | The license text is bundled with this package in the file			  |
+// | LICENSE-GPL, and is available through the world-wide-web at		  |
+// | http://www.gnu.org/copyleft/gpl.html.								  |
+// +----------------------------------------------------------------------+
+// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// +----------------------------------------------------------------------+
+//
+// $Id: modulesTags.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+
+/**
+  * Class CMS_modulesTags
+  *
+  * represent all modules tags processing.
+  *
+  * @package CMS
+  * @subpackage modules
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  */
+
+class CMS_modulesTags extends CMS_grandFather
+{
+	/**
+	  * The modules treatment definition.
+	  * @var multidimensional array
+	  * @access private
+	  */
+	protected $_modulesTreatment = array();
+	
+	/**
+	  * Automne modules
+	  * @var array
+	  * @access private
+	  */
+	protected $_modules = array();
+	
+	/**
+	  * The current treatment mode.
+	  * @var integer
+	  * @access private
+	  */
+	protected $_treatmentMode = '';
+	
+	/**
+	  * The current visualization mode.
+	  * @var integer
+	  * @access private
+	  */
+	protected $_visualizationMode = '';
+	
+	/**
+	  * The current object treated.
+	  * @var object
+	  * @access private
+	  */
+	protected $_treatedObject = '';
+	
+	protected $_parser;
+	protected $_definitionArray;
+	protected $_definition;
+	protected $_wantedTags;
+	protected $_treatmentParameters;
+	
+	/**
+	  * Constructor.
+	  * initializes object.
+	  * @param integer $treatmentMode The current treatment mode (see constants on top of this file for accepted values).
+	  * @param integer $visualizationMode The current visualization mode (see constants on top of cms_page class for accepted values).
+	  * @param object $treatedObject The reference object to treat.
+	  *
+	  * @return void
+	  * @access public
+	  */
+	function __construct($treatmentMode, $visualizationMode, &$treatedObject) 
+	{
+		$this->_treatmentMode = $treatmentMode;
+		$this->_visualizationMode = $visualizationMode;
+		$this->_treatedObject = &$treatedObject;
+		$this->_modules = CMS_modulesCatalog::getAll("id");
+		foreach ($this->_modules as $codename => $aModule) {
+			$moduleTreatment = $aModule->getWantedTags($this->_treatmentMode, $this->_visualizationMode, $this->_treatedObject);
+			if (is_array($moduleTreatment) && $moduleTreatment) {
+				//if module return tags, save it.
+				$this->_modulesTreatment[$codename] = $moduleTreatment;
+			} else {
+				//else remove useless modules from list
+				unset ($this->_modules[$codename]);
+			}
+		}
+		return true;
+	}
+	
+	/** 
+	  * Get the tags to be treated by modules for the specified treatment mode, visualization mode and object.
+	  *
+	  * @return array of tags to be treated.
+	  * @access public
+	  */
+	function getWantedTags() {
+		if (!isset($this->_wantedTags)) {
+			$this->_wantedTags = array();
+			if (is_array($this->_modules) && $this->_modules) {
+				foreach ($this->_modules as $aModule) {
+					if (is_array($this->_modulesTreatment[$aModule->getCodename()]) && $this->_modulesTreatment[$aModule->getCodename()]) {
+						foreach ($this->_modulesTreatment[$aModule->getCodename()] as $tagName => $aTagToTreat) {
+							$this->_wantedTags[]=array("tagName" => $tagName, "selfClosed" => $aTagToTreat["selfClosed"], "parameters" => $aTagToTreat["parameters"]);
+						}
+					}
+				}
+			}
+		}
+		return $this->_wantedTags;
+	}
+	
+	/** 
+	  * Treat given content tag by modules for the specified treatment mode, visualization mode and object.
+	  *
+	  * @param string $tag The CMS_XMLTag.
+	  * @param array $treatmentParameters : optionnal parameters used for the treatment. Usually an array of objects.
+	  * @return string the tag content treated.
+	  * @access public
+	  */
+	function treatWantedTag(&$tag, $treatmentParameters = array()) 
+	{
+		if (!$this->_modules || !$this->_modulesTreatment) {
+			$this->raiseError("Object not initialized");
+			return false;
+		}
+		if (!is_a($tag,"CMS_XMLTag")) {
+			$this->raiseError("Tag parameter must be a CMS_XMLTag object");
+			return false;
+		}
+		if ($treatmentParameters) {
+			$this->_treatmentParameters = $treatmentParameters;
+		}
+		$tagContents = '';
+		$hasMatch = false;
+		foreach ($this->_modulesTreatment as $aModuleCodeName => $moduleTags) {
+			if (isset($moduleTags[$tag->getName()]) && is_array($moduleTags[$tag->getName()]) && $moduleTags[$tag->getName()]) {
+				//check if tag parameters match to query the module
+				if (is_array($moduleTags[$tag->getName()]["parameters"]) && $moduleTags[$tag->getName()]["parameters"]) {
+					$match = true;
+					foreach ($moduleTags[$tag->getName()]["parameters"] as $aParameter => $value) {
+						$match = ($tag->getAttribute($aParameter) == $value || preg_match('#^'.$value.'$#i', $tag->getAttribute($aParameter)) > 0) ? $match:false;
+					}
+					if ($match) {
+						$hasMatch = true;
+						$tagContents = $this->_modules[$aModuleCodeName]->treatWantedTag($tag, $tagContents, $this->_treatmentMode, $this->_visualizationMode, $this->_treatedObject, $this->_treatmentParameters);
+					}
+				} else {
+					//else no tag parameters so query the module
+					$hasMatch = true;
+					$tagContents = $this->_modules[$aModuleCodeName]->treatWantedTag($tag, $tagContents, $this->_treatmentMode, $this->_visualizationMode, $this->_treatedObject, $this->_treatmentParameters);
+				}
+			}
+		}
+		if (!$hasMatch) {
+			return $tag->getContent();
+		}
+		return $tagContents;
+	}
+	
+	function setTreatmentParameters($treatmentParameters = array()) {
+		$this->_treatmentParameters = $treatmentParameters;
+		return true;
+	}
+	
+	function setDefinition($definition) {
+		$this->_definition = trim($definition);
+	}
+	
+	protected function _parse($options) {
+		if (!$this->_definition) {
+			$this->raiseError('Can\'t parse empty definition');
+			return false;
+		}
+		//load wanted tags if not already done
+		$this->getWantedTags();
+		//parse definiton
+		$this->_parser = &new CMS_xml2Array($this->_definition, $options);
+		if ($this->_parser->hasError()) {
+			$this->raiseError('Malformed definition to compute : '.$this->_parser->getParsingError());
+			return false;
+		}
+		//get parsed definition array
+		$this->_definitionArray = $this->_parser->getParsedArray();
+	}
+	
+	function getParsingError() {
+		return $this->_parser->getParsingError();
+	}
+	
+	function getTags($tagFilters = array(), $enclose = false) {
+		if (!$this->_parser) {
+			if ($enclose) {
+				$options = CMS_xml2Array::XML_PROTECT_ENTITIES
+						 | CMS_xml2Array::XML_CORRECT_ENTITIES
+						 | CMS_xml2Array::XML_DONT_THROW_ERROR
+						 | CMS_xml2Array::XML_ENCLOSE;
+			} else {
+				$options = CMS_xml2Array::XML_PROTECT_ENTITIES
+						  | CMS_xml2Array::XML_CORRECT_ENTITIES
+						  | CMS_xml2Array::XML_DONT_THROW_ERROR;
+			}
+			$this->_parse($options);
+		}
+		if (!$this->_definitionArray) {
+			$this->raiseError('Can\'t treat empty definition');
+			return false;
+		}
+		//then return tags definition
+		return $this->_getTags($this->_definitionArray, $tagFilters, 0);
+	}
+	
+	/**
+	  * Compute recursively all parsed definition tags 
+	  * and send them to callback methods (according to $this->_tagsCallBack)
+	  *
+	  * @param multidimentionnal array $definition : the reference of the definition to compute
+	  * @param integer $level : the current level of recursion (default : 0)
+	  * @return string the PHP / HTML content computed
+	  * @access private
+	  */
+	protected function _getTags(&$definition, $tagFilters, $level = 0) {
+		$tags = array();
+		if (is_array($definition) && is_array($definition[0])) {
+			//loop on subtags
+			foreach (array_keys($definition) as $key) {
+				if (isset($definition[$key]['childrens'])) {
+					$tags = array_merge($this->_getTags($definition[$key]['childrens'], $tagFilters, ++$level), $tags);
+				}
+				if (isset($definition[$key]['nodename']) && $this->_isWanted($definition[$key]) && (!$tagFilters || in_array($definition[$key]['nodename'], $tagFilters))) {
+					$xmlTag = new CMS_XMLTag($definition[$key]['nodename'], $definition[$key]['attributes']);
+					$xml = array($definition[$key]);
+					$xmlTag->setTextContent($this->_parser->toXML($xml));
+					$tags[] = $xmlTag;
+				}
+			}
+		}
+		return $tags;
+	}
+	
+	function treatContent($enclose = false) {
+		if (!$this->_parser) {
+			if ($enclose) {
+				$options = CMS_xml2Array::XML_PROTECT_ENTITIES
+						 | CMS_xml2Array::XML_CORRECT_ENTITIES
+						 | CMS_xml2Array::XML_DONT_THROW_ERROR
+						 | CMS_xml2Array::XML_ENCLOSE;
+			} else {
+				$options = CMS_xml2Array::XML_PROTECT_ENTITIES
+						  | CMS_xml2Array::XML_CORRECT_ENTITIES
+						  | CMS_xml2Array::XML_DONT_THROW_ERROR;
+			}
+			$this->_parse($options);
+		}
+		if (!$this->_definitionArray) {
+			$this->raiseError('Can\'t treat empty definition');
+			return false;
+		}
+		//then return computed definition
+		return $this->_computeTags($this->_definitionArray);
+	}
+	
+	/**
+	  * Compute recursively all parsed definition tags 
+	  * and send them to callback methods (according to $this->_tagsCallBack)
+	  *
+	  * @param multidimentionnal array $definition : the reference of the definition to compute
+	  * @param integer $level : the current level of recursion (default : 0)
+	  * @return string the PHP / HTML content computed
+	  * @access private
+	  */
+	protected function _computeTags(&$definition, $level = 0) {
+		$code = '';
+		if (is_array($definition) && is_array($definition[0])) {
+			//loop on subtags
+			foreach (array_keys($definition) as $key) {
+				if (isset($definition[$key]['nodename']) && $this->_isWanted($definition[$key]) && !isset($definition[$key]['childrens'])) {
+					$xmlTag = new CMS_XMLTag($definition[$key]['nodename'], $definition[$key]['attributes']);
+					$xml = array($definition[$key]);
+					$xmlTag->setTextContent($this->_parser->toXML($xml));
+					$code .= $this->treatWantedTag($xmlTag);
+				} elseif (isset($definition[$key]['childrens'])) {
+					$childrens = $this->_computeTags($definition[$key]['childrens'], ++$level);
+					unset($definition[$key]['childrens']);
+					$definition[$key]['childrens'][0]['textnode'] = $childrens;
+					$xml = array($definition[$key]);
+					if (isset($definition[$key]['nodename']) && $this->_isWanted($definition[$key])) {
+						$xmlTag = new CMS_XMLTag($definition[$key]['nodename'], $definition[$key]['attributes']);
+						$xmlTag->setTextContent($this->_parser->toXML($xml));
+						$code .= $this->treatWantedTag($xmlTag);
+					} else {
+						//append computed tags as code
+						$code .= $this->_parser->toXML($xml);
+					}
+				} else {
+					$xml = array($definition[$key]);
+					$code .= $this->_parser->toXML($xml);
+				}
+			}
+		}
+		return $code;
+	}
+	
+	protected function _isWanted($node) {
+		foreach ($this->_wantedTags as $tag) {
+			if ($node['nodename'] == $tag['tagName']) {
+				return true;
+			}
+		}
+		return false;
+	}
+}
+?>

@@ -1,0 +1,122 @@
+#container{
+	background:				url(/img/interieur/backgroundContainer.gif) repeat-y 107px top;
+}
+#header{
+	background:				url(/img/interieur/header.jpg) no-repeat left top;
+	height:					185px;
+}
+#lienAccueil{
+	display:				block;
+	float:					left;
+	height:					120px;
+	margin:					10px 0 0 70px;
+	outline:				none;
+	text-indent:			-5000px;
+	width:					260px;
+}
+#backgroundBottomContainer{
+	background:				url(/img/interieur/backgroundBottomContainer.gif) no-repeat left bottom;
+	margin:					0 42px 0 107px;
+	height:					1%;
+}
+#menuLeft{
+	background:				url(/img/interieur/backgroundMenuLeft.gif) repeat-x left top;
+}
+#menuLeftBottom{
+	bottom:					0px;
+	height:					30px;
+	left:					0px;
+	position:				absolute;
+	width:					171px;
+}
+#content{
+	background:				url(/img/interieur/backgroundContent.jpg) no-repeat left top;
+	min-height:				101px;
+	padding:				0 61px 50px 50px;
+	text-align:				justify;
+	width:					539px;
+}
+#breadcrumbs, #content #breadcrumbs a{
+	color:					#6fae03;
+}
+#breadcrumbs{
+	background:				url(/img/interieur/breadcrumbs.gif) no-repeat left top;
+	left:					-28px;
+	padding:				0 0 0 15px;
+	position:				relative;
+}
+#content #breadcrumbs a:hover{
+	font-weight:			bold;
+}
+#title{
+	background:				url(/img/interieur/h1.gif) no-repeat left 18px;
+	padding:				12px 0px 12px 20px;
+}
+h1{
+	background:				url(/img/common/backgroundTitle.png) no-repeat right bottom;
+	color:					#6fae03;
+	display:				inline;
+	font-size:				18px;
+	font-weight:			bold;
+	margin:					0px;
+	padding:				0 15px 8px 0;
+}
+h2{
+	background:				url(/img/interieur/h2.jpg) no-repeat left top;
+	color:					#FFFFFF;
+	font-size:				12px;
+	font-weight:			bold;
+	left:					-28px;
+	line-height:			23px;
+	padding-left:			23px;
+	padding-right:			5px;
+	position:				relative;
+	width:					536px;
+}
+h3{
+	background:				url(/img/interieur/h3.gif) no-repeat left 3px;
+	color:					#473933;
+	font-size:				12px;
+	font-weight:			bold;
+	padding-left:			6px;
+}
+#content a{
+	color:					#eb2685;
+}
+#content a:hover{
+	color:					#FD78B8;
+}
+#content #top{
+	background:			url(/img/interieur/top.gif) no-repeat left top;
+	color:				#75665e;
+	float:				right;
+	padding:			3px 0 0 15px;
+}
+#content #top:hover{
+	color:				#50433d;
+}
+#content .blocLien, #content .blocLien:hover{
+	color:				#FFFFFF;
+}
+.blocLienTop{
+	background-color:	#70ae03;
+	cursor:				pointer;
+	display:			block;
+	float:				left;
+	font-size:			12px;
+	font-weight:		bold;
+	line-height:		22px;
+	padding:			0 3px;
+}
+.blocLienBottom{
+	background:			#63554f url(/img/interieur/blocLienBottom.gif) no-repeat right	2px;
+	clear:				left;
+	cursor:				pointer;
+	display:			block;
+	float:				left;
+	left:				45px;
+	line-height:		11px;
+	padding:			0 20px 0 3px;
+	position:			relative;
+	top:				-3px;
+}

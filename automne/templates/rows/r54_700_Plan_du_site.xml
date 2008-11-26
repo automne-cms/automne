@@ -1,0 +1,15 @@
+<row>
+	<atm-linx type="recursivelinks">
+		<selection>
+			<start><nodespec type="relative" value="root" /></start>
+			<condition property="lvl" operator="&lt;=">
+				<value type="data">3</value>
+			</condition>
+		</selection>
+		<display>
+			<mode>open</mode>
+			<htmltemplate><li class="{{lvlClass}} {{typeClass}}"><a id="{{currentID}}" href="{{href}}">{{title}}</a>{{sublevel}}</li></htmltemplate>
+			<subleveltemplate><ul class="{{lvlClass}}">{{sublevel}}</ul></subleveltemplate>
+		</display>
+	</atm-linx>
+</row>

@@ -1,0 +1,22 @@
+<row>
+	<block module="standard" type="image" id="image" maxWidth="500">
+		<div class="center" style="width:{{imageWidth}}px;">{{data}}
+			<div class="legend">{{linkLabel}}</div>
+		</div>
+	</block>
+	<!--
+	Here : all possibles {{variables}} for this block type
+	data : html code to include picture with link if enlarge picture
+	label : picture's caption
+	linkLabel : html href on pictures's caption if enlarge picture
+	imageZoomHtml : html code to include enlarge picture
+	imagePath : picture folder path
+	imageName : picture file name
+	imageZoomHref : enlarge picture file path
+	imageZoomName : enlarge picture file name
+	imageWidth : picture width
+	imageHeight : picture height
+	imageZoomWidth : enlarge picture width
+	imageZoomHeight : enlarge picture height
+	-->
+</row>

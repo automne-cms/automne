@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+<head>
+	<title><atm-constant name="APPLICATION_LABEL" /> : <atm-title /></title>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<atm-css-tags files="/css/common.css,/css/accueil.css" media="screen" />
+	<!--[if lte IE 6]> 
+		<link rel="stylesheet" type="text/css" href="/css/ie6.css" media="screen" />
+	<![endif]-->
+	<atm-js-tags files="/js/sifr.js,/js/common.js" />
+	<atm-meta-tags />
+</head>
+<body>
+	<div id="main">
+		<div id="container">
+			<div id="header"></div>
+			<h1><atm-title /></h1>
+			<div id="menuLeft">
+				<div id="menuLeftBottom">
+					<ul class="CMS_lvl2">
+						<atm-linx type="sublinks">
+							<selection>
+								<start><nodespec type="node" value="2" /></start>
+							</selection>
+							<display>
+								<htmltemplate><li class="CMS_lvl2"><a class="CMS_lvl2" href="{{href}}">{{title}}</a></li></htmltemplate>
+							</display>
+						</atm-linx>
+					</ul>
+				</div>
+			</div>
+			<div id="content">
+				<div id="firstCol">
+					<atm-clientspace module="standard" id="first" />
+				</div>
+				<div id="secondCol">
+					<atm-clientspace module="standard" id="second" />
+				</div>
+			</div>
+			<div class="spacer"></div>
+		</div>
+	</div>
+	<div id="footer">
+		<div id="menuBottom">
+			<ul>
+				<atm-linx type="sublinks">
+					<selection>
+						<start><nodespec type="node" value="7" /></start>
+					</selection>
+					<display>
+						<htmltemplate><li><a href="{{href}}">{{title}}</a></li></htmltemplate>
+					</display>
+				</atm-linx>
+			</ul>
+			<div class="spacer"></div>
+		</div>
+	</div>
+</body>
+</html>

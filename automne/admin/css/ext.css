@@ -1,0 +1,145 @@
+/*overwrite some EXT styles*/
+.x-tab-strip-text {
+	font-size:		13px !important;
+}
+.x-layout-cmini-east {
+	width:			8px !important;
+}
+.ext-el-mask {
+	opacity:		0.8;
+}
+/* toolbar specific*/
+.x-toolbar {
+	overflow:		hidden;
+	zoom:			1;
+}
+.x-toolbar-left {
+	float:			left;
+}
+.x-toolbar-right {
+	float:			right;
+}
+.x-toolbar .ytb-text {
+	line-height:	1.5em;
+}
+.x-btn button {
+	font-size:		12px;
+}
+.x-grid3-hd-row td,
+.x-grid3-row td,
+.x-grid3-summary-row td {
+	font-size:		12px;
+}
+/*
+ * FileUploadField component styles
+ */
+.x-form-file-wrap {
+    position:		relative;
+    height:			50px;
+}
+.x-form-file-wrap .x-form-file {
+	position:		absolute;
+	right:			0;
+	-moz-opacity:	0;
+	filter:			alpha(opacity: 0);
+	opacity:		0;
+	z-index:		2;
+    height:			22px;
+}
+.x-form-file-wrap .x-form-file-btn {
+	position:		absolute;
+	right:			0;
+	z-index:		1;
+}
+.x-form-file-wrap .x-form-file-text {
+    position:		absolute;
+    left:			0;
+    z-index:		3;
+    color:			#777;
+}
+.x-form-file-wrap .x-form-page-text {
+    position:		absolute;
+    left:			0;
+    z-index:		3;
+}
+.x-form-file-wrap .x-form-fileinfos{
+	position:		absolute;
+	top:			28px;
+	height:			20px;
+}
+.x-form-fileinfos img {
+	vertical-align:	-3px;
+}
+/*
+ * ImageUploadField component styles
+ */
+.x-form-fileinfos-img img {
+	vertical-align: top;
+	border:			1px solid black;
+	margin-right:	3px;
+}
+
+#imagecrop-rzwrap{
+    border:			1px dashed green;
+}
+#imagecrop-rzwrap .x-resizable-handle{
+    width:			11px;
+    height:			11px;
+    background:		transparent url(/automne/admin/img/sizer/square.gif) no-repeat;
+    margin:			0px;
+	line-height:	11px;
+}
+#imagecrop-rzwrap .x-resizable-handle-east, 
+#imagecrop-rzwrap .x-resizable-handle-west{
+    top:			45%;
+}
+#imagecrop-rzwrap .x-resizable-handle-north, 
+#imagecrop-rzwrap .x-resizable-handle-south{
+    left:			45%;
+}
+/*Ext.ux.LiveDataPanel*/
+.load-indicator {
+	width:			75px;
+	height:			53px;
+	position:		absolute;
+	visibility:		hidden;
+	text-align:		center;
+	background:		#fff url(/automne/admin/img/livedata/bg.gif) repeat-x;
+	border:			1px solid #99BBE8;
+}
+.load-indicator span {
+	font-size:		10px; 
+	position:		absolute; 
+	bottom:			0px; 
+	left:			0px; 
+	text-align:		center; 
+	width:			75px;
+	font-family:	tahoma,arial,helvetica;
+}
+/*Ext.ux.ItemSelector*/
+.ux-mselect{
+    overflow:auto;
+    background:white;
+    position:relative; /* for calculating scroll offsets */
+    zoom:1;
+    overflow:auto;	
+}
+.ux-mselect-item{
+    font:normal 12px tahoma, arial, helvetica, sans-serif;
+    padding:2px;
+    border:1px solid #fff;
+    white-space: nowrap;
+    cursor:pointer;
+}
+.ux-mselect-selected{
+	border:1px dotted #a3bae9 !important;
+    background:#DFE8F6;
+    cursor:pointer;
+}
+
+.x-view-drag-insert-above { 
+    border-top:1px dotted #3366cc; 
+} 
+.x-view-drag-insert-below { 
+    border-bottom:1px dotted #3366cc; 
+} 

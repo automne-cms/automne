@@ -1,0 +1,86 @@
+<row>
+	<block module="pnews" id="newssearch" language="fr">
+		<div id="newssearch">
+			<script type="text/javascript">
+				var pageURL = '{page:self:url}';
+			</script>
+			<form action="{page:self:url}" method="get">
+				<h2>Rechercher des actualités : </h2>
+				<div class="newsForm">
+					<div class="formKeywords">
+						<label for="keyword">Mots Clés : </label><br /><input type="text" id="keyword" name="keyword" value="{request:string:keyword}" /><br />
+					</div>
+					<div class="formCat">
+					<label for="cat">Catégorie : </label><br />
+						<select id="cat" name="cat">
+							<option value=""> </option>
+							<atm-function function="selectOptions" object="{['object1']['fields'][5]}" selected="{request:int:cat}"></atm-function>
+						</select>
+					</div>
+					<div id="loadingSearch"><img src="/img/loading-news.gif" alt="Chargement ..." title="Chargement ..." /></div>
+					<input type="submit" class="button" name="search" id="submitSearch" value="ok" />
+					<div class="spacer"></div>
+				</div>
+			</form>
+		</div>
+		<div id="searchresult">
+			<atm-xml what="{request:string:out} == 'xml'">
+				<atm-search what="{['object1']}" name="newsresult">
+					<atm-search-param search="newsresult" type="{['object1']['fields'][5]['fieldID']}" value="{request:int:cat}" mandatory="false" />
+					<atm-search-param search="newsresult" type="keywords" value="{request:string:keyword}" mandatory="false" />
+					<atm-search-param search="newsresult" type="item" value="{request:int:item}" mandatory="false" />
+					<atm-search-limit search="newsresult" value="10" />
+					<atm-search-page search="newsresult" value="{request:int:page}" />
+					<atm-search-order search="newsresult" type="objectID" direction="desc" />
+					<atm-result search="newsresult">
+						<atm-if what="{firstresult} &amp;&amp; !{request:int:item}">
+							<div id="maxResults">{maxresults} résultat(s) pour votre recherche.</div>
+						</atm-if>
+						<div class="newsTitle">
+							<h2><a href="{page:self:url}?item={['object1']['id']}" title="{['object1']['label']}">{['object1']['label']}</a></h2><span>{['object1']['formatedDateStart']|d/m/Y}</span><div class="spacer"></div>
+						</div>
+						<div class="newsContent">
+							<atm-if what="{['object1']['fields'][4]['imageName']}">
+							<div class="imgRight shadowR">
+								<div class="shadowB">
+									<div class="shadowTR">
+										<div class="shadowBL">
+											<div class="shadowBR">
+												{['object1']['fields'][4]['imageHTML']}
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							</atm-if>
+							<atm-if what="{request:int:item} == {['object1']['id']}">
+								<strong>{['object1']['fields'][2]['value']}</strong>
+								<br />{['object1']['fields'][3]['value']}
+							</atm-if>
+							<atm-if what="!{request:int:item}">
+								{['object1']['fields'][2]['value']}
+							</atm-if>
+							<a href="{page:self:url}?item={['object1']['id']}" class="blocLien"  title="En savoir plus concernant '{['object1']['label']}'">
+								<span class="blocLienTop">{['object1']['label']}</span>
+								<span class="blocLienBottom">En savoir plus</span>
+							</a>
+							<div class="spacer"></div>
+						</div>
+						
+						<atm-if what="{lastresult} &amp;&amp; !{request:int:item}">
+							<div class="pages" id="pages">
+								<atm-function function="pages" maxpages="{maxpages}" currentpage="{currentpage}" displayedpage="5">
+								    <pages><a href="{page:self:url}?cat={request:int:cat}&amp;keyword={request:string:keyword}&amp;page={n}">{n}</a> </pages>
+								    <currentpage><strong>{n}</strong> </currentpage>
+								    <previous><a href="{page:self:url}?cat={request:int:cat}&amp;keyword={request:string:keyword}&amp;page={n}"><img src="/img/interieur/newsPrevious.gif" alt="page précédente" title="page précédente" /></a> </previous>
+								    <next><a href="{page:self:url}?cat={request:int:cat}&amp;keyword={request:string:keyword}&amp;page={n}"><img src="/img/interieur/newsNext.gif" alt="page suivante" title="page suivante" /></a> </next>
+								</atm-function> 
+							</div>
+						</atm-if>
+					</atm-result>
+					<atm-noresult search="newsresult">Aucun résultat trouvé pour votre recherche ...</atm-noresult>
+				</atm-search>
+			</atm-xml>
+		</div>
+	</block>  
+</row>

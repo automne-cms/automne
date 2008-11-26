@@ -1,0 +1,19 @@
+#menuLeft{
+	display:				inline;
+}
+#menuLeft ul.CMS_lvl2{
+	height:					305px;
+}
+#content{
+	height:					305px;
+}
+#title h1{
+	background-image:		none;
+}
+h2{
+	width:					558px;
+}
+#firstCol h2{
+	background-image:		none;
+	width:					210px;
+}

@@ -1,0 +1,14 @@
+<config>
+	<param name="showvolume" value="1"/>
+	<param name="showstop" value="1" />
+	<param name="sliderwidth" value="20"/>
+	<param name="sliderheight" value="10"/>
+	<param name="buttonwidth" value="26"/>
+	<param name="bgcolor1" value="b3b3b3"/>
+    <param name="bgcolor2" value="707070"/>
+    <param name="slidercolor1" value="dbdbdb"/>
+    <param name="slidercolor2" value="787878"/>
+    <param name="sliderovercolor" value="595959"/>
+    <param name="buttonovercolor" value="e3e3e3"/>
+	<param name="loadingcolor" value="00bd00"/>
+</config>

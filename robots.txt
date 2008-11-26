@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /automne/
+Disallow: /automne_bin/
+Disallow: /automne_linx_files/
+Disallow: /sql/
+Disallow: /imagezoom.php

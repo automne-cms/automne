@@ -1,0 +1,507 @@
+<?php
+/* vim: set expandtab tabstop=4 shiftwidth=4: */
+// +----------------------------------------------------------------------+
+// | Automne (TM)														  |
+// +----------------------------------------------------------------------+
+// | Copyright (c) 2000-2009 WS Interactive								  |
+// +----------------------------------------------------------------------+
+// | Automne is subject to version 2.0 or above of the GPL license.		  |
+// | The license text is bundled with this package in the file			  |
+// | LICENSE-GPL, and is available through the world-wide-web at		  |
+// | http://www.gnu.org/copyleft/gpl.html.								  |
+// +----------------------------------------------------------------------+
+// | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr> &            |
+// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// +----------------------------------------------------------------------+
+//
+// $Id: website.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+
+/**
+  * Class CMS_website
+  *
+  * represent a website placed on a page in the tree structure. A websites defines mainly a directory
+  * where the pages files will be placed. 
+  * Beware ! Because of the label-to-directory relationship, label should'nt be changeable after the website creation.
+  * This condition is enforced here.
+  *
+  * @package CMS
+  * @subpackage tree
+  * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
+  */
+
+class CMS_website extends CMS_grandFather
+{
+	/**
+	  * DB id
+	  * @var integer
+	  * @access private
+	  */
+	protected $_id;
+	
+	/**
+	  * Label of the website
+	  * @var string
+	  * @access private
+	  */
+	protected $_label;
+
+	/**
+	  * URL of the website (does NOT start with http://)
+	  * @var string
+	  * @access private
+	  */
+	protected $_url;
+
+	/**
+	  * Root page.
+	  * @var CMS_page
+	  * @access private
+	  */
+	protected $_root;
+
+	/**
+	  * Is this website the main website ?
+	  * @var boolean
+	  * @access private
+	  */
+	protected $_isMain = false;
+
+	/**
+	  * Website order
+	  * @var integer
+	  * @access private
+	  */
+	protected $_order;
+
+	/**
+	  * Default Meta values for website
+	  * @var boolean
+	  * @access private
+	  */
+	protected $_meta = array(
+		'keywords' => '',
+		'description' => '',
+		'category' => '',
+		'author' => '',
+		'replyto' => '',
+		'copyright' => '',
+		'language' => '',
+		'robots' => '',
+		'favicon' => '',
+	);
+	
+	/**
+	  * Constructor.
+	  * initializes the website if the id is given.
+	  *
+	  * @param integer $id DB id
+	  * @return void
+	  * @access public
+	  */
+	function __construct($id = 0)
+	{
+		static $applicationWebroot;
+		if ($id) {
+			if (($id == 1 && !is_object($applicationWebroot)) || $id != 1) {
+				if (!SensitiveIO::isPositiveInteger($id)) {
+					$this->raiseError("Id is not a positive integer");
+					return;
+				}
+				$sql = "
+					select
+						*
+					from
+						websites
+					where
+						id_web='$id'
+				";
+				$q = new CMS_query($sql);
+				if ($q->getNumRows()) {
+					$data = $q->getArray();
+					$this->_id = $id;
+					$this->_label = $data["label_web"];
+					$this->_url = $data["url_web"];
+					$this->_root = new CMS_page($data["root_web"]);
+					$this->_order = $data["order_web"];
+					//the main website has The main page (ID 1) as root
+					if ($data["root_web"] == APPLICATION_ROOT_PAGE_ID) {
+						$this->_isMain = true;
+					}
+					$this->_meta['keywords'] = $data["keywords_web"];
+					$this->_meta['description'] = $data["description_web"];
+					$this->_meta['category'] = $data["category_web"];
+					$this->_meta['author'] = $data["author_web"];
+					$this->_meta['replyto'] = $data["replyto_web"];
+					$this->_meta['copyright'] = $data["copyright_web"];
+					$this->_meta['language'] = $data["language_web"];
+					$this->_meta['robots'] = $data["robots_web"];
+					$this->_meta['favicon'] = $data["favicon_web"];
+				} else {
+					$this->raiseError("Unknown ID :".$id);
+				}
+				if ($id == 1) {
+					$applicationWebroot = $this;
+				}
+			} else {
+				$this->_id = $id;
+				$this->_label = $applicationWebroot->_label;
+				$this->_url = $applicationWebroot->_url;
+				$this->_root = $applicationWebroot->_root;
+				$this->_order = $applicationWebroot->_order;
+				$this->_isMain = $applicationWebroot->_isMain;
+				$this->_meta = $applicationWebroot->_meta;
+			}
+		}
+	}
+	
+	/**
+	  * Gets the DB ID of the instance.
+	  *
+	  * @return integer the DB id
+	  * @access public
+	  */
+	function getID()
+	{
+		return $this->_id;
+	}
+	
+	/**
+	  * Get a website meta value
+	  *
+	  * @param string $meta The meta name to get
+	  * @return string the website meta value
+	  * @access public
+	  */
+	function getMeta($meta) {
+		if (!isset($this->_meta[$meta])) {
+			$this->raiseError("Unknown meta to get : ".$meta);
+			return false;
+		}
+		return $this->_meta[$meta];
+	}
+	
+	/**
+	  * Set a website meta value
+	  *
+	  * @param string $meta The meta name to set
+	  * @param string $value The meta value to get
+	  * @return boolean true on success, false on failure
+	  * @access public
+	  */
+	function setMeta($meta, $value) {
+		if (!isset($this->_meta[$meta])) {
+			$this->raiseError("Unknown meta to set : ".$meta);
+			return false;
+		}
+		$this->_meta[$meta] = $value;
+		return true;
+	}
+	
+	/**
+	  * Is this the main website ?
+	  *
+	  * @return boolean
+	  * @access public
+	  */
+	function isMain()
+	{
+		return $this->_isMain;
+	}
+	
+	/**
+	  * Gets the label
+	  *
+	  * @return string The label
+	  * @access public
+	  */
+	function getLabel()
+	{
+		return $this->_label;
+	}
+	
+	/**
+	  * Sets the label.
+	  *
+	  * @param string $label The label to set
+	  * @return boolean true on success, false on failure.
+	  * @access public
+	  */
+	function setLabel($label)
+	{
+		//label should'nt be changed once set
+		if ($this->_id) {
+			$this->raiseError("Trying to change the label of a website already existing");
+			return false;
+		}
+		if ($label) {
+			$old_label = $this->_label;
+			$this->_label = $label;
+			
+			//now test to see if a directory already exists with that name (Because label must _not_ be moveable once set)
+			if (!$this->_isMain && is_dir($this->getPagesPath(PATH_RELATIVETO_FILESYSTEM))) {
+				$this->_label = $old_label;
+				$this->raiseError("Label to set has same directory for pages than a previously set one.");
+				return false;
+			} else {
+				return true;
+			}
+		} else {
+			$this->raiseError("Label can't be empty");
+			return false;
+		}
+	}
+	
+	/**
+	  * Gets the url (including http://).
+	  *
+	  * @return string the URL
+	  * @access public
+	  */
+	function getURL($includeHTTP = true)
+	{
+		if ($includeHTTP) {
+			return (substr($this->_url,0,4) != 'http') ? "http://".$this->_url : $this->_url;
+		} else {
+			return (substr($this->_url,0,4) != 'http') ? $this->_url : substr($this->_url,7);
+		}
+	}
+	
+	/**
+	  * Sets the url. Can be empty. Will be riden of http://.
+	  *
+	  * @param string $url The url to set
+	  * @return boolean true on success, false on failure.
+	  * @access public
+	  */
+	function setURL($url)
+	{
+		if (substr($url, 0, 7) == "http://") {
+			$url = substr($url, 7);
+		}
+		if ($url) {
+			if (substr($url, strlen($url) - 1) == "/") {
+				$url = substr($url, 0, -1);
+			}
+			$this->_url = $url;
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	  * Gets the root page.
+	  *
+	  * @return CMS_page The Root page
+	  * @access public
+	  */
+	function getRoot()
+	{
+		return $this->_root;
+	}
+	
+	/**
+	  * Sets the root page.
+	  *
+	  * @param CMS_page $page The new root page to set.
+	  * @return boolean true on success, false on failure
+	  * @access public
+	  */
+	function setRoot($page)
+	{
+		if (is_a($page, "CMS_page")) {
+			$ws = CMS_tree::getPageWebsite($page);
+			if ($ws->getRoot() == $page && $ws->getID() != $this->_id) {
+				$this->raiseError("Root page to set is already a root page for the website : ".$ws->getLabel());
+				return false;
+			} else {
+				$this->_root = $page;
+				return true;
+			}
+		} else {
+			$this->raiseError("Root page to set is not a page");
+			return false;
+		}
+	}
+	
+	/**
+	  * Gets the pages directory. It's derived from the label
+	  *
+	  * @param string $relativeTo Can be PATH_RELATIVETO_WEBROOT for relative to website root, or PATH_RELATIVETO_FILESYSTEM for relative to filesystem root
+	  * @return string The pages directory.
+	  * @access public
+	  */
+	function getPagesPath($relativeTo)
+	{
+		if ($this->_label) {
+			if (SensitiveIO::isInSet($relativeTo, array(PATH_RELATIVETO_WEBROOT, PATH_RELATIVETO_FILESYSTEM))) {
+				$relative = ($relativeTo == PATH_RELATIVETO_WEBROOT) ? PATH_PAGES_WR : PATH_PAGES_FS;
+				if ($this->_isMain) {
+					return $relative;
+				} else {
+					return $relative."/".SensitiveIO::sanitizeAsciiString($this->_label);
+				}
+			} else {
+				$this->raiseError("Can't give pages path relative to anything other than WR or FS");
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	  * Gets the pages directory. It's derived from the label
+	  *
+	  * @param string $relativeTo Can be PATH_RELATIVETO_WEBROOT for relative to website root, or PATH_RELATIVETO_FILESYSTEM for relative to filesystem root
+	  * @return string The pages directory.
+	  * @access public
+	  */
+	function getHTMLPagesPath($relativeTo)
+	{
+		if ($this->_label) {
+			if (SensitiveIO::isInSet($relativeTo, array(PATH_RELATIVETO_WEBROOT, PATH_RELATIVETO_FILESYSTEM))) {
+				$relative = ($relativeTo == PATH_RELATIVETO_WEBROOT) ? PATH_PAGES_HTML_WR : PATH_PAGES_HTML_FS;
+				if ($this->_isMain) {
+					return $relative;
+				} else {
+					return $relative."/".SensitiveIO::sanitizeAsciiString($this->_label);
+				}
+			} else {
+				$this->raiseError("Can't give pages path relative to anything other than WR or FS");
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	  * Totally destroys the website, including its directory
+	  * After deletion from database, launch a regen of the whole tree.
+	  *
+	  * @return void
+	  * @access public
+	  */
+	function destroy()
+	{
+		if ($this->_id) {
+			$sql = "
+				delete
+				from
+					websites
+				where
+					id_web='".$this->_id."'
+			";
+			$q = new CMS_query($sql);
+			
+			//deletes the pages and html directory (with all the pages inside)
+			if (!$this->_isMain) {
+				$dir = $this->getPagesPath(PATH_RELATIVETO_FILESYSTEM);
+				if ($opendir = @opendir($dir)) {
+					while (false !== ($readdir = readdir($opendir))) {
+						if($readdir !== '..' && $readdir !== '.') {
+							$readdir = trim($readdir);
+							if (is_file($dir.'/'.$readdir)) {
+								@unlink($dir.'/'.$readdir);
+							}
+						}
+					}
+					closedir($opendir);
+					@rmdir($dir);
+				}
+				$dir = $this->getHTMLPagesPath(PATH_RELATIVETO_FILESYSTEM);
+				if ($opendir = @opendir($dir)) {
+					while (false !== ($readdir = readdir($opendir))) {
+						if($readdir !== '..' && $readdir !== '.') {
+							$readdir = trim($readdir);
+							if (is_file($dir.'/'.$readdir)) {
+								@unlink($dir.'/'.$readdir);
+							}
+						}
+					}
+					closedir($opendir);
+					@rmdir($dir);
+				}
+			}
+			
+			//regenerates all the pages
+			CMS_tree::regenerateAllPages(true);
+		}
+		unset($this);
+	}
+	
+	/**
+	  * Writes the website into persistence (MySQL for now).
+	  *
+	  * @return boolean true on success, false on failure
+	  * @access public
+	  */
+	function writeToPersistence()
+	{
+		if (!sensitiveIO::isPositiveInteger($this->_order)) {
+			//get max order
+			$sql = "
+				select 
+					max(order_web) as order_max
+				from
+					websites
+			";
+			$q = new CMS_query($sql);
+			if ($q->hasError() || !$q->getNumRows()) {
+				CMS_grandFather::raiseError('Error to get max order from websites table ... ');
+				return false;
+			}
+			$this->_order = ($q->getValue('order_max')+1) ;
+		}
+		$sql_fields = "
+			label_web='".SensitiveIO::sanitizeSQLString($this->_label)."',
+			url_web='".SensitiveIO::sanitizeSQLString($this->_url)."',
+			root_web='".$this->_root->getID()."',
+			keywords_web='".SensitiveIO::sanitizeSQLString($this->_meta['keywords'])."',
+			description_web='".SensitiveIO::sanitizeSQLString($this->_meta['description'])."',
+			category_web='".SensitiveIO::sanitizeSQLString($this->_meta['category'])."',
+			author_web='".SensitiveIO::sanitizeSQLString($this->_meta['author'])."',
+			replyto_web='".SensitiveIO::sanitizeSQLString($this->_meta['replyto'])."',
+			copyright_web='".SensitiveIO::sanitizeSQLString($this->_meta['copyright'])."',
+			language_web='".SensitiveIO::sanitizeSQLString($this->_meta['language'])."',
+			robots_web='".SensitiveIO::sanitizeSQLString($this->_meta['robots'])."',
+			favicon_web='".SensitiveIO::sanitizeSQLString($this->_meta['favicon'])."',
+			order_web='".SensitiveIO::sanitizeSQLString($this->_order)."'
+		";
+		if ($this->_id) {
+			$sql = "
+				update
+					websites
+				set
+					".$sql_fields."
+				where
+					id_web='".$this->_id."'
+			";
+		} else {
+			$sql = "
+				insert into
+					websites
+				set
+					".$sql_fields;
+		}
+		$q = new CMS_query($sql);
+		if ($q->hasError()) {
+			return false;
+		} elseif (!$this->_id) {
+			$this->_id = $q->getLastInsertedID();
+		}
+		//create the page directory
+		if (!is_dir($this->getPagesPath(PATH_RELATIVETO_FILESYSTEM))) {
+			@mkdir($this->getPagesPath(PATH_RELATIVETO_FILESYSTEM));
+			@chmod($this->getPagesPath(PATH_RELATIVETO_FILESYSTEM), octdec(DIRS_CHMOD));
+		}
+		if (!is_dir($this->getHTMLPagesPath(PATH_RELATIVETO_FILESYSTEM))) {
+			//create the html directory
+			@mkdir($this->getHTMLPagesPath(PATH_RELATIVETO_FILESYSTEM));
+			@chmod($this->getHTMLPagesPath(PATH_RELATIVETO_FILESYSTEM), octdec(DIRS_CHMOD));
+		}
+		return true;
+	}
+}
+?>

@@ -1,0 +1,32 @@
+# Automne general .htaccess file. 
+# Author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+# $Id: .htaccess,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+
+# Declare errors documents. 
+# The 404.php must be the 404 error document, otherwise, change PATH_SPECIAL_PAGE_NOT_FOUND_WR constant value in cms_rc.php file accordingly and keep the PHP header of the file 404.php in your new error document.
+ErrorDocument 404 /404.php
+ErrorDocument 403 /403.php
+
+# Remove files listing
+Options -indexes
+
+# Directory Index
+DirectoryIndex index.php
+
+# Files access
+Allow from all
+
+# Add PHP5 CGI Handler (for Hubble only ...)
+AddHandler php5-cgi .php
+
+# Some PHP configurations
+<IfModule mod_mime.c>
+	<IfModule mod_php5.c>
+		php_flag magic_quotes_gpc		Off
+		php_flag magic_quotes_runtime	Off
+		php_flag magic_quotes_sybase	Off
+		php_flag allow_call_time_pass_reference Off
+		php_flag session.use_trans_sid 	Off
+		php_flag register_globals 		Off
+	</IfModule>
+</IfModule>

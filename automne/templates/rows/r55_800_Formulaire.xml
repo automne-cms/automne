@@ -1,0 +1,5 @@
+<row>
+<div class="cms_forms">
+	<block module="cms_forms" id="form">{{data}}</block>
+</div>
+</row>

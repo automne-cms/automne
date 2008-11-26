@@ -1,0 +1,86 @@
+<row>
+	<block module="standard" type="varchar" id="titre">
+		<?php 
+		$frontend = (strpos($_SERVER["SCRIPT_NAME"], 'automne/admin') === false) ? true : false;
+		/////////////////////////////////////////////////
+		//              Googlemaps settings            //
+		/////////////////////////////////////////////////
+		
+		// Height (value expressed in pixels) :
+		$height = 400;
+		// Width (value expressed in pixels) :
+		$width = 400;
+		// Zoom value :
+		$zoom = 12;
+		// View type (SATELLITE/NORMAL/HYBRID) :
+		$vue = "SATELLITE";
+
+		$address = <<<END
+		{{data}}
+END;
+		if (defined('GOOGLE_MAPS_KEY') && GOOGLE_MAPS_KEY) {
+			echo "
+			<script src=\"http://maps.google.com/maps?file=api&amp;v=2&amp;key=".GOOGLE_MAPS_KEY."\"type=\"text/javascript\">
+			</script>
+			";
+		echo "<p id=\"map\" style=\"width: ".$width."px; height: ".$height."px\"></p>";
+		?>
+		    <script type="text/javascript">
+		    //<![CDATA[
+			function showAddress(address) {
+			  geocoder.getLatLng(
+			    address,
+			    function(point) {
+			      if (!point) {
+			        //alert(address + " introuvable");
+			      } else {
+			        map.setCenter(point, <?php echo $zoom; ?>);
+					map.setMapType(G_<?php echo $vue; ?>_MAP);
+					
+					var marker = new GMarker(point);
+			        map.addOverlay(marker);
+					GEvent.addListener(marker, "click", function() {
+			           var html = '<div style="width: 210px; padding-right: 10px">'+address+'<\/div>';
+			           marker.openInfoWindowHtml(html);
+			         });
+			      }
+			    }
+			  );
+			}
+		
+		    var map = new GMap2(document.getElementById("map"));
+			map.addControl(new GSmallMapControl());
+		    var geocoder = new GClientGeocoder();
+			<?php 
+			echo 'var address = \''.addcslashes($address,"'").'\';';
+			?>
+			showAddress(address);
+			//]]>
+		    </script>
+		<?php
+		} elseif(!$frontend) {
+			switch($cms_language->getCode()){
+				case 'en':
+					echo "
+					<p>
+						To qualify for service Googlemaps you have to got a valid Google key on
+						<a href='http://code.google.com/apis/maps/signup.html'>the following website</a>.
+						<br/>Then you have to copy this key in the config.php file (located at the root of your website) add the following line :
+						<pre>define(\"GOOGLE_MAPS_KEY\", \"INSERT_GOOGLE_KEY_HERE\");</pre>
+						Then insert your key between the empty quotes.
+					</p>";
+				break;
+				default:
+					echo "
+					<p>
+						Pour utiliser le service Googlemaps vous devez récupérer une clé Google valide sur <a href='http://code.google.com/apis/maps/signup.html'>ce site</a>.
+						<br/>Ensuite, écrivez la ligne ci-dessous dans le fichier config.php (situé à la racine de votre site) :
+						<pre>define(\"GOOGLE_MAPS_KEY\", \"INSERT_GOOGLE_KEY_HERE\");</pre>
+						Insérez votre clé entre les apostrophes.
+					</p>";
+				break;
+			}
+		}
+		?>
+	</block>
+</row>

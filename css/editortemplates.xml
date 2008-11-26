@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<Templates>
+	<Template title="Tableau paramétré pour Automne.">
+		<Description>Ceci est un exemple de tableau paramétré pour Automne, vous pouvez en créer en éditant le fichier de styles editortemplates.xml</Description>
+		<Html>
+			<![CDATA[
+				<table class="CMS_table" cellpadding="2" cellspacing="1" border="0">
+					<tr>
+						<th class="CMS_th">titre</th>
+						<th class="CMS_th">titre</th>
+						<th class="CMS_th">titre</th>
+						<th class="CMS_th">titre</th>
+					</tr>
+					<tr>
+						<td class="CMS_td">cellule</td>
+						<td class="CMS_td">cellule</td>
+						<td class="CMS_td">cellule</td>
+						<td class="CMS_td">cellule</td>
+					</tr>
+					<tr>
+						<td class="CMS_td2">cellule</td>
+						<td class="CMS_td2">cellule</td>
+						<td class="CMS_td2">cellule</td>
+						<td class="CMS_td2">cellule</td>
+					</tr>
+					<tr>
+						<td class="CMS_td">cellule</td>
+						<td class="CMS_td">cellule</td>
+						<td class="CMS_td">cellule</td>
+						<td class="CMS_td">cellule</td>
+					</tr>
+					<tr>
+						<td class="CMS_td2">cellule</td>
+						<td class="CMS_td2">cellule</td>
+						<td class="CMS_td2">cellule</td>
+						<td class="CMS_td2">cellule</td>
+					</tr>
+				</table>
+			]]>
+		</Html>
+	</Template>
+</Templates>

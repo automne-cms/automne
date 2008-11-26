@@ -1,0 +1,5 @@
+<row>
+<block module="standard" type="flash" id="fla">
+<div class="flash">{{data}}</div>
+</block>
+</row>

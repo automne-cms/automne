@@ -1,0 +1,5 @@
+#Protected Automne files.
+#Automne Patch System does not update this files (one file per line)
+#filenames are CASE SENSITIVE and are specified from WEBROOT
+/automne/UPDATE.DENY
+/config.conf

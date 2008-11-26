@@ -1,0 +1,47 @@
+<row>
+	<block module="standard" type="varchar" id="first">
+		<!--
+			Automne block varchar.
+			Can store a 255 characters string
+		-->
+		{{data}}
+		<br /><br />
+	</block>
+	<block module="standard" type="text" id="second">
+		<!--
+			Automne block text.
+			Can store a long text
+		-->
+		{{data}}
+		<br /><br />
+	</block>
+	<block module="standard" type="image" id="third" minWidth="100" maxWidth="300">
+		<!--
+			Automne block image.
+			Can store a image and a legend for it
+		-->
+		<div class="image">	
+			{{data}}
+			<div class="legend">
+				{{linkLabel}}
+			</div>
+		</div>
+		<br /><br />
+	</block>
+	<block module="standard" type="file" id="fourth">
+		<!--
+			Automne block file.
+			Can store a file to download
+		-->
+		{{data}}
+		<br /><br />
+	</block>
+	<block module="standard" type="flash" id="fifth">
+		<!--
+			Automne block flash.
+			Can store a flash animation
+		-->
+		{{data}}
+		<br /><br />
+	</block>
+</row>

@@ -1,0 +1,127 @@
+/* $Id: pnews.css,v 1.1.1.1 2008/11/26 17:12:35 sebastien Exp $ */
+/* Styles used by news module */
+/*
+/* news */
+.page5 #title{
+	background-image:		url(/img/interieur/h1News.gif);
+}
+.page5 h1{
+	color:					#ec2685;
+}
+#newssearch{
+	margin:					0 0 20px 0;
+}
+#newssearch h2{
+	background:				url(/img/interieur/h2News.gif) no-repeat left top;
+	left:					-17px;
+	margin-bottom:			0px;
+}
+.newsForm{
+	background-color:		#e6dfdd;
+	border-left:			1px solid #847773;
+	border-right:			1px solid #847773;
+	border-bottom:			1px solid #847773;
+	padding:				5px 0 11px 0;
+	width:					537px;
+}
+.formKeywords, .formCat{
+	float:					left;
+}
+.formKeywords{
+	padding:				0 8px 0 12px;
+}
+.formCat{
+	background:				url(/img/interieur/formCat.gif) no-repeat left 4px;
+	padding:				0 10px 0 10px;
+}
+#keyword{
+	height:					18px;
+	width:					200px;
+	background-color:		#FFFFFF;
+}
+#cat{
+	height:					20px;
+	width:					200px;
+}
+#newssearch #submitSearch{
+	background:				url(/img/interieur/submitSearch.gif) no-repeat left top;
+	border:					0px;
+	color:					#FFFFFF;
+	cursor:					pointer;
+	height:					18px;
+	margin:					14px 0 0 0px;
+	padding:				0px;
+	width:					21px;
+}
+#searchresult{
+	height:					1%;
+}
+#searchresult #maxResults{
+	background-color:		#e6dfdd;
+	border-top:				1px solid #60524b;
+	border-bottom:			1px solid #60524b;
+	padding:				5px;
+	margin-bottom:			25px;
+}
+.newsTitle{
+	background:				url(/img/interieur/newsTitle.jpg) repeat-x left bottom;
+	height:					1%;
+}
+.newsTitle h2{
+	background:				url(/img/interieur/h2Puce.gif) no-repeat 15px 7px;
+	color:					#60524b;
+	font-size:				12px;
+	font-weight:			bold;
+	float:					left;
+	left:					0px;
+	line-height:			auto;
+	padding:				0px 0 0 24px;
+	position:				static;
+	margin:					0px;
+	width:					auto;
+}
+#content .newsTitle h2 a{
+	color:					#60524b;
+	font-size:				12px;
+	font-weight:			bold;
+}
+#content .newsTitle h2 a:hover{
+	color:					#7f746f;
+}
+.newsTitle span{
+	border-left:			1px dotted #e92394;
+	color:					#e92394;
+	font-size:				11px;
+	float:					right;
+	padding:				0 10px 0 5px;
+	margin:					5px 0 0 0;
+}
+.newsContent {
+	padding:				15px 17px 20px 22px;
+	height:					1%;
+}
+#searchresult .newsContent {
+	margin:					0 0 20px 0;
+	background-color:		#dcd6d5;
+}
+#pages{
+	text-align:				center;
+}
+#content #pages a{
+	color:					#a89b96;
+}
+#pages img {
+	vertical-align:			0px;
+}
+#newssearch input,
+#newssearch select {
+	background-color:	#FFFFFF;
+	border:				1px solid #a59893;
+	color:				#72635b;
+	padding:			0px;
+}
+#loadingSearch {
+	display:			none;
+	float:				right;
+	margin:				0 5px 0 5px;
+}

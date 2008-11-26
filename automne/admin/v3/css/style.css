@@ -1,0 +1,51 @@
+.bold {font-weight : bold;}
+
+.italic {font-style : italic;}
+
+.underline {text-decoration : underline;}
+
+.line-through {text-decoration : line-through;}
+
+.overline {text-decoration : overline;}
+
+.sub {vertical-align : sub;}
+
+.top {vertical-align : super;}
+
+.larger {font-size : larger;}
+
+.large {font-size : large;}
+
+.x-large {font-size : x-large;}
+
+.smaller {font-size : smaller;}
+
+.small {font-size : small;}
+
+.x-small {font-size : x-small;}
+
+.arial {font-family : arial;}
+
+.verdana {font-family : verdana;}
+
+.helvetica {font-family : helvetica;}
+
+.sans-serif {font-family : sans-serif;}
+
+.red {color : red;}
+
+.blue {color : blue;}
+
+.green {color : green;}
+
+.black {color : black;}
+
+.white {color : white;}
+
+.yellow {color : yellow;}
+
+.orange {color : orange;}
+
+.grey {color : #999999;}
+
+.brown {color : brown;}

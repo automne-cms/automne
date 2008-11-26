@@ -1,0 +1,19 @@
+<row>
+<block module="standard" type="file" id="fichier">
+<div class="file"><img src="/automne_modules_files/standard/icons/{{type}}.gif" alt="Document {{type}}" title="Document {{type}}" /> {{data}} ({{size}})
+<!--
+	Here : all possibles variables for this block type
+	<ul>
+	<li>Download : {{data}}</li>
+	<li>URL : {{href}}</li>
+	<li>Label : {{label}}</li>
+	<li>JSLabel : {{jslabel}}</li>
+	<li>filename : {{filename}}</li>
+	<li>original filename : {{originalfilename}}</li>
+	<li>size : {{size}}</li>
+	<li>type : {{type}}</li>
+	</ul>
+-->
+</div>
+</block>
+</row>

@@ -1,0 +1,112 @@
+/*editPopup*/
+#CMS_editPopup {
+	position:				absolute;
+	font:					bold 10px Verdana,Arial,Helvetica,sans-serif;
+	border:					1px solid #8C837F;
+	background-color:		#EAF4D9;
+	cursor:					move;
+	padding:				0 0 0 0;
+	width:					182px;
+	z-index:				1001;
+}
+body>#CMS_editPopup{
+	position:				fixed;
+}
+#CMS_editPopup form {
+	margin:					0px !important;
+	padding:				0px !important;
+}
+#CMS_editPopup td {
+	padding:				0px !important;
+	margin:					0px !important;
+}
+#CMS_editPopup img {
+	padding:				0px !important;
+	margin:					0px !important;
+}
+#CMS_editPopupHead {
+	height:					25px;
+	width:					182px;
+}
+#CMS_imgMaximizePopup {
+	display:				none;
+}
+#CMS_editPopupHead td {
+	white-space:			nowrap;
+}
+#CMS_imgMinimizePopup,
+#CMS_imgMaximizePopup,
+#CMS_imgClosePopup {
+	cursor: 				pointer;
+}
+#CMS_actionMenu {
+	margin:					0 0 0 0;
+	width:					182px;
+	background-color:		#A8A6A7;
+}
+.CMS_dhtml_input_submit {
+	text-align: 			left;
+	cursor: 				pointer;
+	border: 				0px solid #FFFFFF;
+	padding: 				2px;
+	color:					#6D5E59 !important;
+	background-color:		#FFFFFF;
+	font:					normal 10px verdana,arial,helvetica;
+	height:					34px;
+	width:					154px;
+	vertical-align:			top;
+}
+#CMS_popupOpener {
+	position:				absolute;
+	right:					0px;
+	top:					0px;
+	width:					12px;
+	height:					12px;
+	cursor: 				pointer;
+}
+body>#CMS_popupOpener{
+	position:				fixed;
+}
+#CMS_editPopupLoad {
+	display:				none;
+}
+.hideit {
+	display:none;
+	visibility:hidden;
+}
+.showit {
+	display:block;
+	visibility:visible;
+}
+.admin_clientSpace {
+	border: 			#FF0000 1px dashed; 
+}
+.admin_input_text {
+	border-style:		solid;
+	border-width:		1px;
+	border-color:		#A1A19E;
+	background-color:	#EFF8CF;
+	font-family:		verdana,arial,helvetica;
+	font-size:			10px; 
+}
+input.CMS_input_image {
+	border: 			none;
+	width:				22px;
+	height:				22px;
+	padding:			0px;
+	margin:				0px;
+}
+select.CMS_input_select {
+	width:				auto;
+	height:				auto;
+	padding:			0px;
+	margin:				0px;
+}
+.admin_bottomDashed {
+	background-color:	#FFFFFF;
+	border-bottom: 		#FF0000 1px dashed; 
+	font-family:		arial,verdana;
+	color:				#595959;
+	font-size:			11px;
+	width:				100%;
+}

@@ -1,0 +1,14 @@
+Pour mettre à jour blackbird :
+
+- Replacer tous les chemins relatifs dans /automne/blackbirdjs/blackbird.css par des chemins absolus
+- ajouter un z-index:50000; sur l'ID #blackbird dans blackbird.css
+- protéger le texte de la licence avec //@@ ... //!@@
+- ligne 11, changer le namespace dans blackbird.js par : var NAMESPACE = 'blackbird';
+- ligne 28, enlever warn et profile du tableau messageTypes 
+- ligne 275, ajouter 
+		isVisible:
+			function() { return isVisible(); },
+		show:
+			function() { show(); },
+- ligne 186, changer la position par défaut à bas droite :
+position = ( state && state.pos === null ) ? 2 : ( state.pos + 1 ) % 4; //set to initial position ('bottomLeft') or move to next position

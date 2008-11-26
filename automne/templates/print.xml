@@ -1,0 +1,42 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+<head>
+	<title><atm-constant name="APPLICATION_LABEL" /> : <atm-title /></title>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<link rel="stylesheet" type="text/css" href="/css/print.css" />
+</head>
+<body>
+<h1><atm-title /></h1>
+<h3>
+<atm-linx type="desclinks">
+	<selection>
+		<start><nodespec type="relative" value="root" reloffset="1" /></start>
+		<stop><nodespec type="relative" value="self" /></stop>
+	</selection>
+	<display>
+		<htmltemplate>
+		&raquo;&nbsp;{{title}}
+		</htmltemplate>
+	</display>
+</atm-linx>
+</h3>
+{{data}}
+<hr />
+<div align="center">
+	<small>
+		<atm-last-update format="d/m/Y">Dernière mise à jour le {{date}}<br /></atm-last-update>
+		<atm-linx type="direct">
+			<selection>
+				<start><nodespec type="relative" value="self" /></start>
+			</selection>
+			<display>
+				<htmltemplate>
+				Page  "{{title}}" ({{href}})
+				</htmltemplate>
+			</display>
+		</atm-linx><br />
+		Tiré du site http://<?php echo $_SERVER["HTTP_HOST"]; ?>
+	</small>
+</div>
+<script language="JavaScript">window.print();</script>
+</body>
+</html>

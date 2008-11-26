@@ -1,0 +1,5 @@
+<row>
+<block module="standard" type="varchar" id="titre">
+<h1>{{data}}</h1>
+</block>
+</row>

@@ -1,0 +1,38 @@
+<row>
+	<block module="standard" type="file" id="mp3file">
+		<div class="audio">
+			<?php
+			//////////////////////////////////////////////
+			//       		Player settings        		//
+			//////////////////////////////////////////////
+			
+			//Player width/height (value expressed in pixels)
+			$width = 200;
+			$height = 20;
+			
+			// You can configure it more precisely in the /automne/playermp3/config_playermp3.xml configuration file.
+			// A configuration generator exists http://flash-mp3-player.net/players/maxi/generator/
+			
+			$player = '/automne/playermp3/player_mp3.swf';
+			$conf = '/automne/playermp3/config_playermp3.xml';
+			
+			if ({{type}} == 'mp3') {
+				echo '
+				<object type="application/x-shockwave-flash" data="'.$player.'" width="'.$width.'" height="'.$height.'">
+				     <param name="movie" value="'.$player.'" />
+				     <param name="FlashVars" value="mp3={{href}}&configxml='.$conf.'" />
+				</object>';
+			} else {
+				switch($cms_language->getCode()){
+					case 'en':
+						echo '<p>You have to send an mp3 file.</p>';
+					break;
+					default:
+						echo '<p>Editez cette rangée pour insérer un fichier mp3.</p>';
+					break;
+				}
+			}
+			?>
+		</div>
+	</block>
+</row>
