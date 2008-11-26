@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: groups.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: groups.php,v 1.2 2008/11/26 18:08:13 sebastien Exp $
 
 /**
   * PHP page : Load groups search window.

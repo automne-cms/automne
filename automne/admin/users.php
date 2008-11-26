@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: users.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: users.php,v 1.2 2008/11/26 18:08:13 sebastien Exp $
 
 /**
   * PHP page : Load users search window.
@@ -166,7 +166,7 @@ $jscontent = <<<END
 	var renderGroups = function(groups) {
 		var stringGroups = '', groupsLength = groups.length;
 		if (groupsLength) {
-			for (var i = 0; i < groupsLength; i++) stringGroups += '<a href="#" ext:qtip="'+ groups[i].description +'">'+ groups[i].label +'</a>, ';
+			for (var i = 0; i < groupsLength; i++) stringGroups += '<span class="atm-help" ext:qtip="'+ groups[i].description +'">'+ groups[i].label +'</span>, ';
 			stringGroups = stringGroups.substr(0, (stringGroups.length -2));
 		}
 		return stringGroups;
