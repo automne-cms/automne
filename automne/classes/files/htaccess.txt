@@ -1,0 +1,22 @@
+# $Id: htaccess.txt,v 1.1 2008/11/27 17:28:30 sebastien Exp $
+#DEPLOY ALL HTACCESS FILES
+htaccess	/	root
+htaccess	/automne	no
+htaccess	/automne/admin	yes
+htaccess	/automne/admin-v3	yes
+htaccess	/automne/blackbirdjs	yes
+htaccess	/automne/codemirror	yes
+htaccess	/automne/ext	yes
+htaccess	/automne/fckeditor	yes
+htaccess	/automne/phpMyAdmin	yes
+htaccess	/automne/playerflv	yes
+htaccess	/automne/playermp3	yes
+htaccess	/automne/swfobject	yes
+htaccess	/automne/swfupload	yes
+htaccess	/automne/upload	yes
+htaccess	/automne/templates/images	yes
+htaccess	/automne/templates/rows/images	yes
+htaccess	/automne_bin	no
+htaccess	/automne_linx_files	no
+htaccess	/automne_modules_files/*/deleted	no
+htaccess	/sql	no

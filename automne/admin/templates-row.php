@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-row.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: templates-row.php,v 1.2 2008/11/27 17:25:36 sebastien Exp $
 
 /**
   * PHP page : Load page rows search window.
@@ -243,6 +243,7 @@ $jscontent = <<<END
 				} else {
 					resultsPanel.setTitle('{$cms_language->getJSMessage(MESSAGE_PAGE_NORESULTS)}');
 				}
+				rowWindow.syncSize();
 			}},
 			scope : this
 		}
@@ -383,16 +384,26 @@ $jscontent = <<<END
 	//redo windows layout
 	rowWindow.doLayout();
 	
-	//set resize event to resize inner panels (needed for IE)
-	rowWindow.on('resize', function() {
-		resultsPanel.syncSize();
-		searchPanel.syncSize();
-	});
-	
 	//this flag is needed, because form construction, launch multiple search queries before complete page construct so we check in rowWindow.search if construction is ok
 	rowWindow.ok = true;
 	//launch search
 	rowWindow.search();
+	
+	//syncsize windows layout
+	//rowWindow.syncSize();
+	//set resize event to resize inner panels (needed for IE)
+	/*rowWindow.on('resize', function() {
+		pr('resize');
+		//pr(arguments);
+		//resultsPanel.repaint();
+		//searchPanel.repaint();
+	});*/
+	
+	
+	//fatherWindow.syncSize();
+	//resultsPanel.syncSize();
+	//searchPanel.syncSize();
+	
 
 	//add selection events to selection model
 	var qtips = [];

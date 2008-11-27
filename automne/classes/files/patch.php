@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: patch.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: patch.php,v 1.2 2008/11/27 17:25:37 sebastien Exp $
 
 /**
   * Class CMS_patch
@@ -28,20 +28,20 @@
 class CMS_patch extends CMS_grandFather
 {
 	/**
-	 * Automne current user
-	 * @var CMS_user the user
+	 * Patch $this->_report
+	 * @var array
 	 * @access public
 	 */
-	protected $_user = "";
+	protected $_return = array();
 	
 	/**
 	 * Constructor
 	 * 
 	 * @return void
 	 */
-	function __construct(&$cms_user) 
+	function __construct() 
 	{
-		$this->_user=$cms_user;
+		//nothing
 	}
 	
 	/**
@@ -358,17 +358,24 @@ class CMS_patch extends CMS_grandFather
 		}
 	}
 	
+	protected function _verbose($text) {
+		$this->_return[] = array('type' => 'verbose', 'error' => 0, 'text' => $text);
+	}
+	
+	protected function _report($text, $isErrror = false) {
+		$this->_return[] = array('type' => 'report', 'error' => ($isErrror) ? 1 : 0, 'text' => $text);
+	}
+	
 	/**
 	 * Do patch installation
 	 *
 	 * @param array of install command to do, view documentation for format
 	 *  This array MUST be checked before by checkInstall method to ensure it format is as correct as possible
-	 *  Return string errors or correct installation report using external report and verbose functions.
 	 * @param array of excluded commands
 	 * @return void
 	 * @access public
 	 */
-	function doInstall(&$array,$excludeCommand=array())
+	function doInstall(&$array,$excludeCommand=array(), $stopOnErrors = true)
 	{
 		if (is_array($array)) {
 			$error = '';
@@ -385,9 +392,10 @@ class CMS_patch extends CMS_grandFather
 						case ">": //add or update a file or folder
 							//copy file or folder
 							if (CMS_FILE::copyTo($patchFile,$originalFile)) {
-								verbose(' -> File '.$patchFile.' successfully copied to '.$originalFile);
+								$this->_verbose(' -> File '.$patchFile.' successfully copied to '.$originalFile);
 							} else {
-								report('Error during copy of '.$patchFile.' to '.$originalFile,true);
+								$this->_report('Error during copy of '.$patchFile.' to '.$originalFile,true);
+								if ($stopOnErrors) return;
 							}
 							if (!$installParams[2])
 								break;
@@ -396,27 +404,29 @@ class CMS_patch extends CMS_grandFather
 							if (!$filesNOK) {
 								switch ($installParams[2]) {
 									case 'r':
-										verbose(' -> File(s) '.$originalFile.' are readable.');
+										$this->_verbose(' -> File(s) '.$originalFile.' are readable.');
 									break;
 									case 'w':
-										verbose(' -> File(s) '.$originalFile.' are writable.');
+										$this->_verbose(' -> File(s) '.$originalFile.' are writable.');
 									break;
 									case 'x':
-										verbose(' -> File(s) '.$originalFile.' are executable.');
+										$this->_verbose(' -> File(s) '.$originalFile.' are executable.');
 									break;
 									default:
-										verbose(' -> File(s) '.$originalFile.' successfully chmoded with value '.$installParams[2]);
+										$this->_verbose(' -> File(s) '.$originalFile.' successfully chmoded with value '.$installParams[2]);
 									break;
 								}
 							} else {
-								report('Error during chmod operation of '.$originalFile.'. Can\'t apply chmod value \''.$installParams[2].'\' on files :<br />'.$filesNOK.'<br />',true);
+								$this->_report('Error during chmod operation of '.$originalFile.'. Can\'t apply chmod value \''.$installParams[2].'\' on files :<br />'.$filesNOK.'<br />',true);
+								if ($stopOnErrors) return;
 							}
 						break;
 						case "<": //delete a file or folder (recursively)
 							if (CMS_FILE::deleteFile($originalFile)) {
-								verbose(' -> File '.$originalFile.' successfully deleted');
+								$this->_verbose(' -> File '.$originalFile.' successfully deleted');
 							} else {
-								report('Error during deletion of '.$originalFile,true);
+								$this->_report('Error during deletion of '.$originalFile,true);
+								if ($stopOnErrors) return;
 							}
 						break;
 						case "+": //concatenate module xml file
@@ -441,44 +451,49 @@ class CMS_patch extends CMS_grandFather
 							
 							//set new parameters to the module
 							if ($module->setAndWriteParameters($resultParameters)) {
-								verbose(' -> File '.$patchFile.' successfully merged with module '.$installParams[2].' parameters');
+								$this->_verbose(' -> File '.$patchFile.' successfully merged with module '.$installParams[2].' parameters');
 							} else {
-								report('Error during merging of '.$patchFile.' with module '.$installParams[2].' parameters',true);
+								$this->_report('Error during merging of '.$patchFile.' with module '.$installParams[2].' parameters',true);
+								if ($stopOnErrors) return;
 							}
 						break;
 						case "x": //execute SQL or PHP file
 							//exec sql script with help of some phpMyAdmin classes
 							if (substr($patchFile,-4,4)=='.sql') {
 								if ($this->executeSqlScript($patchFile)) {
-									verbose(' -> File '.$patchFile.' successfully executed');
+									$this->_verbose(' -> File '.$patchFile.' successfully executed');
 								} else {
-									report('Error during execution of '.$patchFile,true);
+									$this->_report('Error during execution of '.$patchFile,true);
+									if ($stopOnErrors) return;
 								}
 							} elseif (substr($patchFile,-4,4)=='.php') {
 								//exec php script
 								$executionReturn = $this->executePhpScript($patchFile);
 								if ($executionReturn===false) {
-									report('Error during execution of '.$patchFile,true);
+									$this->_report('Error during execution of '.$patchFile,true);
+									if ($stopOnErrors) return;
 								} else {
 									$executionReturn = ($executionReturn) ? ' -> Return :<br /><div style="border:1px;background-color:#000080;color:#C0C0C0;padding:5px;">'.$executionReturn.'</div><br />':'';
-									report(' -> File '.$patchFile.' executed<br />'.$executionReturn);
+									$this->_report(' -> File '.$patchFile.' executed<br />'.$executionReturn);
 								}
 							}
 						break;
 						case "co": //execute change owner
 							$filesNOK = $this->changeOwner($installParams[2],$originalFile);
 							if (!$filesNOK) {
-								verbose(' -> Owner of file(s) '.$originalFile.' successfully changed to '.$installParams[2]);
+								$this->_verbose(' -> Owner of file(s) '.$originalFile.' successfully changed to '.$installParams[2]);
 							} else {
-								report('Error during operation on '.$originalFile.'. Can\'t change owner to \''.$installParams[2].'\' on files :<br />'.$filesNOK.'<br />',true);
+								$this->_report('Error during operation on '.$originalFile.'. Can\'t change owner to \''.$installParams[2].'\' on files :<br />'.$filesNOK.'<br />',true);
+								if ($stopOnErrors) return;
 							}
 						break;
 						case "cg": //execute change group
 							$filesNOK = $this->changeGroup($installParams[2],$originalFile);
 							if (!$filesNOK) {
-								verbose(' -> Group of file(s) '.$originalFile.' successfully changed to '.$installParams[2]);
+								$this->_verbose(' -> Group of file(s) '.$originalFile.' successfully changed to '.$installParams[2]);
 							} else {
-								report('Error during operation on '.$originalFile.'. Can\'t change group to \''.$installParams[2].'\' on files :<br />'.$filesNOK.'<br />',true);
+								$this->_report('Error during operation on '.$originalFile.'. Can\'t change group to \''.$installParams[2].'\' on files :<br />'.$filesNOK.'<br />',true);
+								if ($stopOnErrors) return;
 							}
 						break;
 						/* removed : too dangerous
@@ -487,14 +502,15 @@ class CMS_patch extends CMS_grandFather
 							$executionReturn = $this->executeCommand($installParams[1],$errorReturn);
 							$executionReturn = ($executionReturn) ? ' -> Command return is :<br /><div style="border:1px;background-color:#000080;color:#C0C0C0;padding:5px;"><pre>'.sensitiveIO::decodeWindowsChars($executionReturn).'</pre></div><br />':'';
 							if ($errorReturn!=0) {
-								report('Error during execution of command \''.$installParams[1].'\'<br />Error return code is :<br />'.$errorReturn.'<br />'.$executionReturn,true);
+								$this->_report('Error during execution of command \''.$installParams[1].'\'<br />Error return code is :<br />'.$errorReturn.'<br />'.$executionReturn,true);
+								if ($stopOnErrors) return;
 							} else {
-								report(' -> Command \''.$installParams[1].'\' executed<br />'.$executionReturn);
+								$this->_report(' -> Command \''.$installParams[1].'\' executed<br />'.$executionReturn);
 							}
 						break;
 						*/
 						case "rc":
-							CMS_patch::automneGeneralChmodScript();
+							$this->automneGeneralScript();
 						break;
 						case "htaccess":
 							$installParams[1] = (substr($installParams[1], -1) == '/') ? substr($installParams[1], 0, -1) : $installParams[1];
@@ -502,12 +518,14 @@ class CMS_patch extends CMS_grandFather
 								if (is_dir($path) && CMS_file::makeWritable($path)) {
 									if (CMS_file::copyTo(PATH_HTACCESS_FS.'/htaccess_'.$installParams[2], $path.'/.htaccess')) {
 										CMS_file::chmodFile(FILES_CHMOD, $path.'/.htaccess');
-										verbose(' -> File '.$path.'/.htaccess ('.$installParams[2].') successfully writen');
+										$this->_report('File '.$path.'/.htaccess ('.$installParams[2].') successfully writen');
 									} else {
-										report('Error during operation on '.$path.'/.htaccess. Can\'t write file.<br />',true);
+										$this->_report('Error during operation on '.$path.'/.htaccess. Can\'t write file.<br />', true);
+										if ($stopOnErrors) return;
 									}
 								} else {
-									report('Error during operation. '.$path.' must be a writable directory.<br />',true);
+									$this->_report('Error during operation. '.$path.' must be a writable directory.<br />',true);
+									if ($stopOnErrors) return;
 								}
 							}
 						break;
@@ -519,7 +537,8 @@ class CMS_patch extends CMS_grandFather
 						break;
 					}
 				} else {
-					report('Error during operation of "'.$aInstallCheck.'". Command execution is not allowed.<br />',true);
+					$this->_report('Error during operation of "'.$aInstallCheck.'". Command execution is not allowed.<br />',true);
+					if ($stopOnErrors) return;
 				}
 			}
 			return $error;
@@ -750,31 +769,33 @@ class CMS_patch extends CMS_grandFather
 	 * @return boolean true on success, false on failure.
 	 * @access public
 	 */
-	function automneGeneralChmodScript()
+	function automneGeneralScript()
 	{
-		$chmodScript = new CMS_file(PATH_REALROOT_FS.PATH_AUTOMNE_CHMOD_SCRIPT_WR);
+		$chmodScript = new CMS_file(PATH_AUTOMNE_CHMOD_SCRIPT_FS);
 		if ($chmodScript->exists()) {
 			$commandLine = $chmodScript->readContent("array");
 		} else {
-			report('Error : File '.PATH_REALROOT_FS.PATH_AUTOMNE_CHMOD_SCRIPT_WR.' does not exists ...',true);
+			$this->_report('Error : File '.PATH_AUTOMNE_CHMOD_SCRIPT_FS.' does not exists ...',true);
 			return false;
 		}
-		$automnePatch = new CMS_patch($cms_user);
-		
 		//read command lines and do maximum check on it before starting the installation process
-		verbose(' -> Read chmod script...');
-		$installError = $automnePatch->checkInstall($commandLine,$errorsInfos);
+		$this->_verbose('Read script...');
+		$installError = $this->checkInstall($commandLine,$errorsInfos, false);
 		
 		//start command process
-		verbose('Execute chmod script...');
-		$automnePatch->doInstall($commandLine);
+		$this->_verbose('Execute script...');
+		$this->doInstall($commandLine);
 		if ($installError) {
-			report('Error with command :');
-			report($installError);
+			$this->_report('Error with command :');
+			$this->_report($installError);
 			return false;
 		} else {
 			return true;
 		}
+	}
+	
+	function getReturn() {
+		return $this->_return;
 	}
 	
 	/**

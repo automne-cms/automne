@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: server.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: server.php,v 1.2 2008/11/27 17:25:36 sebastien Exp $
 
 /**
   * PHP page : Load server detail window.
@@ -35,7 +35,7 @@ $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
 
-//CHECKS user has templates clearance
+//CHECKS user has admin clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) { //templates
 	CMS_grandFather::raiseError('User has no administration rights');
 	$view->setActionMessage('Vous n\'avez pas les droits d\'administrateur ...');
@@ -46,7 +46,7 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) { /
 
 //Test PHP version
 $content = '
-<h1>This page test all needed parameters to run Automne.</h1>
+<h1>Tester les paramètres du serveur nécessaires à Automne :</h1>
 <ul class="atm-server">';
 if (version_compare(PHP_VERSION, "5.2.0") === -1) {
 	$content .= '<li class="atm-pic-cancel">Error, PHP version ('.PHP_VERSION.') not match</li>';
@@ -196,6 +196,23 @@ $content .='</ul>';
 
 $content = sensitiveIO::sanitizeJSString($content);
 
+//Files tab
+$filescontent = '
+<h1>Vérifier les droits d\'accès aux fichiers :</h1>
+	<h2>Pour Automne : </h2>
+	Permet de valider qu\'Automne possède bien les droits nécessaire sur l\'ensemble des fichiers du site.<br /><br />
+	<div id="launchFilesCheck"></div><br />
+	<div id="filesCheckProgress"></div><br />
+	<div id="filesCheckDetail"></div>
+	<br />
+	<h2>Pour les utilisateurs : </h2>
+	Permet de valider que les utilisateurs et internautes possèdent bien les droits nécessaire sur l\'ensemble des fichiers du site.<br /><br />
+	<div id="launchHtaccessCheck"></div><br />
+	<div id="htaccessCheckProgress"></div><br />
+	<div id="htaccessCheckDetail"></div>
+';
+$filescontent = sensitiveIO::sanitizeJSString($filescontent);
+
 $jscontent = <<<END
 	var serverWindow = Ext.getCmp('{$winId}');
 	//set window title
@@ -206,9 +223,88 @@ $jscontent = <<<END
 	var propertiesTip = new Ext.ToolTip({
 		target:		 serverWindow.tools['help'],
 		title:			 '{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP)}',
-		html:			 'Cette page vous permet de voir l\'état des différents paramètres du serveur nécessaire à l\'execution d\'Automne.',
+		html:			 'Cette page vous permet de voir l\'état des différents paramètres du serveur nécessaire à l\'éxécution d\'Automne.',
 		dismissDelay:	0
 	});
+	
+	//create files objects
+	var progressFiles = new Ext.ProgressBar({
+		id:				'filesCheckProgressBar'
+    });
+	var progressHtaccess = new Ext.ProgressBar({
+		id:				'htaccessCheckProgressBar'
+    });
+	var launchFilesCheck = new Ext.Button({
+		id:				'launchFilesCheck',
+		text:			'Vérifier',
+		listeners:		{'click':function(){
+			launchFilesCheck.disable();
+	        progressFiles.wait({
+	            interval:	200,
+	            increment:	15,
+				text:		'En cours ...'
+	        });
+			Automne.server.call({
+				url:				'server-check.php',
+				params: 			{
+					action:				'check-files'
+				},
+				fcnCallback: 		function(response, options, content) {
+					if (!filesCheckDetail.rendered) {
+						filesCheckDetail.render('filesCheckDetail');
+					}
+					Ext.get('filesCheckDetailText').dom.innerHTML = content;
+					progressFiles.updateText('').reset();
+					launchFilesCheck.enable();
+				},
+				callBackScope:		this
+			});
+		},scope:this}
+    });
+	var launchHtaccessCheck = new Ext.Button({
+		id:				'launchHtaccessCheck',
+		text:			'Vérifier',
+		listeners:		{'click':function(){
+			launchHtaccessCheck.disable();
+	        progressHtaccess.wait({
+	            interval:	200,
+	            increment:	15,
+				text:		'En cours ...'
+	        });
+			Automne.server.call({
+				url:				'server-check.php',
+				params: 			{
+					action:				'check-htaccess'
+				},
+				fcnCallback: 		function(response, options, content) {
+					if (!htaccessCheckDetail.rendered) {
+						htaccessCheckDetail.render('htaccessCheckDetail');
+					}
+					Ext.get('htaccessCheckDetailText').dom.innerHTML = content;
+					progressHtaccess.updateText('').reset();
+					launchHtaccessCheck.enable();
+				},
+				callBackScope:		this
+			});
+		},scope:this}
+    });
+	var filesCheckDetail = new Ext.form.FieldSet({
+		title:			'Détails',
+		collapsible:	true,
+		collapsed:		false,
+		height:			220,
+		autoScroll:		true,
+		html:			'<div id="filesCheckDetailText"></div>'
+	});
+	var htaccessCheckDetail = new Ext.form.FieldSet({
+		title:			'Détails',
+		collapsible:	true,
+		collapsed:		false,
+		height:			220,
+		autoScroll:		true,
+		html:			'<div id="htaccessCheckDetailText"></div>'
+	});
+	
 	//create center panel
 	var center = new Ext.TabPanel({
 		activeTab:			 0,
@@ -236,6 +332,27 @@ $jscontent = <<<END
 			border:				false,
 			bodyStyle: 			'padding:5px',
 			html: 				'$content'
+		},{
+			id:					'serverFiles',
+			title:				'Accès aux fichiers',
+			autoScroll:			true,
+			border:				false,
+			bodyStyle: 			'padding:5px',
+			html:				'$filescontent',
+			listeners:			{'activate':function(){
+				if (!progressFiles.rendered) {
+					progressFiles.render('filesCheckProgress');
+				}
+				if (!launchFilesCheck.rendered) {
+					launchFilesCheck.render('launchFilesCheck');
+				}
+				if (!progressHtaccess.rendered) {
+					progressHtaccess.render('htaccessCheckProgress');
+				}
+				if (!launchHtaccessCheck.rendered) {
+					launchHtaccessCheck.render('launchHtaccessCheck');
+				}
+			}, scope:this}
 		},{
 			xtype:				'framePanel',
 			title:				'Informations PHP',

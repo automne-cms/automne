@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: meta_admin.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: meta_admin.php,v 1.2 2008/11/27 17:25:37 sebastien Exp $
 
 /**
   * PHP page : logs by user
@@ -264,7 +264,7 @@ $one_action->addHidden("cms_action", "clear_table");
 if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
     //ACTIONS : tree manipulation ***********************
     //Duplicate a branch
-    $one_action =& $actions->addAction($cms_language->getMessage(MESSAGE_PAGE_ACTION_DUPLICATE_TITLE),
+    /*$one_action =& $actions->addAction($cms_language->getMessage(MESSAGE_PAGE_ACTION_DUPLICATE_TITLE),
                                         $cms_language->getMessage(MESSAGE_PAGE_ACTION_DUPLICATE_BRANCH),
                                         'tree_duplicate_branch.php');
     $one_action->addAttribute("method", "get");
@@ -297,16 +297,16 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
     $one_action =& $actions->addAction($cms_language->getMessage(MESSAGE_PAGE_PARAMETERS),
                                         $cms_language->getMessage(MESSAGE_PAGE_UPDATE),
                                         'patch.php');
-	
+	*/
 	//Accesses rights to the files
-    $one_action =& $actions->addAction($cms_language->getMessage(MESSAGE_PAGE_PARAMETERS),
+    /*$one_action =& $actions->addAction($cms_language->getMessage(MESSAGE_PAGE_PARAMETERS),
                                         $cms_language->getMessage(MESSAGE_PAGE_FILE_ACCESSES_RIGHTS),
                                         'patch.php');
 	$one_action->addHidden("cms_action", "validate");
 	$one_action->addHidden("verbose", "1");
 	$one_action->addHidden("report", "1");
 	$one_action->addHidden("force", "1");
-	$one_action->addHidden("commandLine", "rc");
+	$one_action->addHidden("commandLine", "rc");*/
 }
 
 $dialog = new CMS_dialog();

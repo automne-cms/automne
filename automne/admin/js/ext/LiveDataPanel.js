@@ -170,24 +170,25 @@ Ext.DataView.override({
 		}
 	}
 });
-Ext.BoxComponent.override({
-	setSize : function(w, h){
-		if(typeof w == 'object'){
-			h = w.height;
-			w = w.width;
-		}
-		if(!this.boxReady){
-			this.width = w;
-			this.height = h;
-			return this;
-		}
-		if(this.lastSize && this.lastSize.width == w && this.lastSize.height == h){
-			return this;
-		}
-		this.lastSize = {width: w, height: h};
-		var adj = this.adjustSize(w, h);
-		var aw = adj.width, ah = adj.height;
-		if(aw !== undefined || ah !== undefined){			 
+if (Ext.isIE) {
+	Ext.BoxComponent.override({
+		setSize : function(w, h){
+			if(typeof w == 'object'){
+				h = w.height;
+				w = w.width;
+			}
+			if(!this.boxReady){
+				this.width = w;
+				this.height = h;
+				return this;
+			}
+			if(this.lastSize && this.lastSize.width == w && this.lastSize.height == h){
+				return this;
+			}
+			this.lastSize = {width: w, height: h};
+			var adj = this.adjustSize(w, h);
+			var aw = adj.width, ah = adj.height;
+			
 			var rz = this.getResizeEl();
 			if(!this.deferHeight && aw !== undefined && ah !== undefined){
 				rz.setSize(aw, ah);
@@ -196,9 +197,12 @@ Ext.BoxComponent.override({
 			}else if(aw !== undefined && !isNaN(aw)){
 				rz.setWidth(aw);
 			}
-			this.onResize(aw, ah, w, h);
+			if(aw !== undefined || ah !== undefined){
+				this.onResize(aw, ah, w, h);
+			}
 			this.fireEvent('resize', this, aw, ah, w, h);
+			
+			return this;
 		}
-		return this;
-	}
-});
+	});
+}

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: cms_rc.php,v 1.2 2008/11/27 17:24:38 sebastien Exp $
 
 /**
   * rc file, contains editable constants
@@ -706,8 +706,8 @@ if (!defined("PATH_WINDOWS_BIN_FS")) {
   *	Automne general chmod configuration file
   *	Default : PATH_PACKAGES_WR."/scripts/automneChmod"
   */
-if (!defined("PATH_AUTOMNE_CHMOD_SCRIPT_WR")) {
-	define("PATH_AUTOMNE_CHMOD_SCRIPT_WR", PATH_PACKAGES_WR."/scripts/automneChmod.txt");
+if (!defined("PATH_AUTOMNE_CHMOD_SCRIPT_FS")) {
+	define("PATH_AUTOMNE_CHMOD_SCRIPT_FS", PATH_PACKAGES_FS."/files/htaccess.txt");
 }
 /**
   *	Automne mime types file

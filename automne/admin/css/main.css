@@ -623,10 +623,22 @@ ul.categoriesList {
 }
 /*server page*/
 ul.atm-server {
-	padding:			20px 0 0 0;
+	padding:			10px 0 0 0;
 }
 ul.atm-server li {
 	background-repeat:	no-repeat;
     background-position:top left;
 	padding:			2px 0 6px 20px;
+}
+.x-panel-body h1 {
+	color:				#4B7800;
+	font-weight:		bold;
+	font-size:			13px;
+	padding-bottom:		10px;
+}
+.x-panel-body h2 {
+	color:				#4B7800;
+	font-weight:		bold;
+	font-size:			12px;
+	padding-bottom:		6px;
 }
