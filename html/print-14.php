@@ -1,7 +1,7 @@
-<?php //Generated on Tue, 25 Nov 2008 16:54:13 +0100 by Automne (TM) 4.0.0a
+<?php //Generated on Fri, 28 Nov 2008 15:56:49 +0100 by Automne (TM) 4.0.0a1
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: http://automne4/web/fr/print-14-gestion-des-droits.php');
+	header('Location: http://localhost/web/fr/print-14-gestion-des-droits.php');
 	exit;
 }
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
@@ -36,14 +36,13 @@ Gestion des droits
 	
 		<div class="text"><div class="text"><p>Dans cette page doit se trouver des explications sur :</p><ul><li>Droits sur les pages</li><li>Droits sur les modules</li><li>Droits sur les cat&eacute;gories</li><li>Droits d'administration</li><li>L'utilisateur &quot;anonyme&quot;</li></ul></div></div>
 	
-	<div class="spacer"></div>
 <br />
 <hr />
 <div align="center">
 	<small>
 		Dernière mise à jour le 14/11/2008<br />
 		
-				Page  "Gestion des droits" (http://automne4/web/fr/14-gestion-des-droits.php)
+				Page  "Gestion des droits" (http://localhost/web/fr/14-gestion-des-droits.php)
 				
 <br />
 		Tiré du site http://<?php echo $_SERVER["HTTP_HOST"];   ?>

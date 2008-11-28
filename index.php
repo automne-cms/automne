@@ -1,6 +1,6 @@
 <?php
-if (strtolower($_SERVER['HTTP_HOST']) == 'automne4') {
-	// http://automne4
+if (strtolower(parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST)) == 'localhost' || strtolower($_SERVER['HTTP_HOST']) == 'localhost') {
+	// http://localhost
 if (file_exists($_SERVER['DOCUMENT_ROOT'].'/html/2.php')) {
 	$cms_page_included = true;
 	require($_SERVER['DOCUMENT_ROOT'].'/html/2.php');
@@ -9,8 +9,8 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'].'/html/2.php')) {
 	exit;
 }
 
-} elseif (strtolower($_SERVER['HTTP_HOST']) == 'automne4') {
-	// http://automne4
+} elseif (strtolower(parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST)) == 'localhost' || strtolower($_SERVER['HTTP_HOST']) == 'localhost') {
+	// http://localhost
 if (file_exists($_SERVER['DOCUMENT_ROOT'].'/html/2.php')) {
 	$cms_page_included = true;
 	require($_SERVER['DOCUMENT_ROOT'].'/html/2.php');
@@ -20,7 +20,7 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'].'/html/2.php')) {
 }
 
 } else {
-	// http://automne4
+	// http://localhost
 if (file_exists($_SERVER['DOCUMENT_ROOT'].'/html/2.php')) {
 	$cms_page_included = true;
 	require($_SERVER['DOCUMENT_ROOT'].'/html/2.php');

@@ -1,7 +1,7 @@
-<?php //Generated on Tue, 25 Nov 2008 16:53:30 +0100 by Automne (TM) 4.0.0a
+<?php //Generated on Fri, 28 Nov 2008 15:56:36 +0100 by Automne (TM) 4.0.0a1
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: http://automne4/web/fr/print-3-presentation.php');
+	header('Location: http://localhost/web/fr/print-3-presentation.php');
 	exit;
 }
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
@@ -30,7 +30,6 @@ Présentation
 	
 		<div class="text"><p style="text-align: left;">Dans cette page, il faut pr&eacute;senter le CMS. Quels sont ces cas d'utilisations les plus adapt&eacute;s (Sites institutionnels multilangues, intranet, extranet, etc.) et ses forces (modulaire, simple d'usage, solide, perenne, resistant &agrave; la charge, etc.).</p></div>
 	
-	<div class="spacer"></div>
 
 
 
@@ -40,9 +39,9 @@ Présentation
 <hr />
 <div align="center">
 	<small>
-		Dernière mise à jour le 24/11/2008<br />
+		Dernière mise à jour le 28/11/2008<br />
 		
-				Page  "Présentation" (http://automne4/web/fr/3-presentation.php)
+				Page  "Présentation" (http://localhost/web/fr/3-presentation.php)
 				
 <br />
 		Tiré du site http://<?php echo $_SERVER["HTTP_HOST"];   ?>

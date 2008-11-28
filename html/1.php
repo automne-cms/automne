@@ -1,20 +1,20 @@
 <?php header('HTTP/1.x 302 Found',true,302);
-header("Location: http://automne4/web/fr/2-accueil.php");
+header("Location: http://localhost/web/fr/2-accueil.php");
 exit;
- ?><?php //Generated on Fri, 21 Nov 2008 12:18:23 +0100 by Automne (TM) 4.0.0a
+ ?><?php //Generated on Fri, 28 Nov 2008 15:56:32 +0100 by Automne (TM) 4.0.0a1
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: http://automne4/web/1-demo-automne.php');
+	header('Location: http://localhost/web/1-demo-automne.php');
 	exit;
 }
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
  ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";  ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 <head>
-	<link rel="icon" type="image/x-icon" href="http://automne4/favicon.ico" />
+	<link rel="icon" type="image/x-icon" href="http://localhost/favicon.ico" />
 	<meta name="language" content="fr" />
 	<meta name="generator" content="Automne (TM)" />
-	<meta name="identifier-url" content="http://automne4" />
+	<meta name="identifier-url" content="http://localhost" />
 	<script type="text/javascript" src="/js/CMS_functions.js"></script>
 
 </head>

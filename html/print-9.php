@@ -1,7 +1,7 @@
-<?php //Generated on Tue, 25 Nov 2008 16:53:37 +0100 by Automne (TM) 4.0.0a
+<?php //Generated on Fri, 28 Nov 2008 15:56:43 +0100 by Automne (TM) 4.0.0a1
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: http://automne4/web/fr/print-9-contact.php');
+	header('Location: http://localhost/web/fr/print-9-contact.php');
 	exit;
 }
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
@@ -31,7 +31,7 @@ $mod_cms_forms["module"] = 'cms_forms';
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: print-9.php,v 1.1.1.1 2008/11/26 17:12:36 sebastien Exp $
+// $Id: print-9.php,v 1.2 2008/11/28 14:54:14 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -550,7 +550,7 @@ $mod_cms_forms["module"] = 'cms_forms';
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: print-9.php,v 1.1.1.1 2008/11/26 17:12:36 sebastien Exp $
+// $Id: print-9.php,v 1.2 2008/11/28 14:54:14 sebastien Exp $
 
 /**
   * Template CMS_forms_formular
@@ -624,7 +624,7 @@ if ($form->getID() && $form->isPublic()) {
 	<small>
 		Dernière mise à jour le 07/11/2008<br />
 		
-				Page  "Contact" (http://automne4/web/fr/9-contact.php)
+				Page  "Contact" (http://localhost/web/fr/9-contact.php)
 				
 <br />
 		Tiré du site http://<?php echo $_SERVER["HTTP_HOST"];   ?>
