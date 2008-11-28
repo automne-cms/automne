@@ -1,80 +1,80 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
-<head>
-	<title><atm-constant name="APPLICATION_LABEL" /> : <atm-title /></title>
-	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-	<atm-css-tags files="/css/common.css,/css/interieur.css" media="screen" />
-	<!--[if lte IE 6]> 
-	<link rel="stylesheet" type="text/css" href="/css/ie6.css" media="screen" />
-	<![endif]-->
-	<atm-js-tags files="/js/sifr.js,/js/common.js" />
-	<atm-meta-tags />
-</head>
-<body>
- <div id="main">
-  <div id="container">
-   <div id="header">
-    <atm-linx type="direct">
-     <selection>
-      <start><nodespec type="node" value="2" /></start>
-     </selection>
-     <display>
-      <htmltemplate>
-       <a id="lienAccueil" href="{{href}}" title="Retour à l'accueil">Retour à l'accueil</a>
-      </htmltemplate>
-     </display>
-    </atm-linx>
-   </div>
-   <div id="backgroundBottomContainer">
-    <div id="menuLeft">
-     <atm-linx type="recursivelinks">
-      <selection>
-       <start><nodespec type="node" value="2" /></start>
-      </selection>
-      <display>
-      <mode>close</mode>
-       <htmltemplate><li class="{{lvlClass}} {{typeClass}} {{currentClass}}"><a class="{{lvlClass}}" href="{{href}}">{{title}}</a>{{sublevel}}</li></htmltemplate>
-       <subleveltemplate><ul class="{{lvlClass}}">{{sublevel}}</ul></subleveltemplate>
-      </display>
-     </atm-linx>
-    </div>
-    <div id="content" class="page{{pageID}}">
-     <div id="breadcrumbs">
-      <atm-linx type="desclinks">
-       <selection>
-        <start><nodespec type="node" value="2" /></start>
-        <stop><nodespec type="relative" value="father" reloffset="1" /></stop>
-       </selection>
-       <display>
-        <htmltemplate><a href="{{href}}">{{title}}</a> > </htmltemplate>
-       </display>
-      </atm-linx>
-     </div>
-     <div id="title">
-      <h1><atm-title /></h1>
-     </div>
-     <atm-clientspace module="standard" id="first" />
-     <a href="#header" id="top" title="haut de la page">Haut</a>
-    </div>
-    <div class="spacer"></div>
-   </div>
-  </div>
- </div>
- <div id="footer">
-  <div id="menuBottom">
-   <ul>
-    <atm-linx type="sublinks">
-     <selection>
-      <start><nodespec type="node" value="7" /></start>
-     </selection>
-     <display>
-      <htmltemplate><li><a href="{{href}}">{{title}}</a></li></htmltemplate>
-     </display>
-    </atm-linx>
-   </ul>
-   <div class="spacer"></div>
-  </div>
- </div>
-</body>
+	<head>
+		<title><atm-constant name="APPLICATION_LABEL" /> : <atm-title /></title>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+		<atm-css-tags files="/css/common.css,/css/interieur.css" media="screen" />
+		<!--[if lte IE 6]> 
+		<link rel="stylesheet" type="text/css" href="/css/ie6.css" media="screen" />
+		<![endif]-->
+		<atm-js-tags files="/js/sifr.js,/js/common.js" />
+		<atm-meta-tags />
+	</head>
+	<body>
+		<div id="main">
+			<div id="container">
+				<div id="header">
+					<atm-linx type="direct">
+						<selection>
+							<start><nodespec type="node" value="2" /></start>
+						</selection>
+						<display>
+							<htmltemplate>
+								<a id="lienAccueil" href="{{href}}" title="Retour à l'accueil">Retour à l'accueil</a>
+							</htmltemplate>
+						</display>
+					</atm-linx>
+				</div>
+				<div id="backgroundBottomContainer">
+					<div id="menuLeft">
+						<atm-linx type="recursivelinks">
+							<selection>
+								<start><nodespec type="node" value="2" /></start>
+							</selection>
+							<display>
+								<mode>close</mode>
+								<htmltemplate><li class="{{lvlClass}} {{typeClass}} {{currentClass}}"><a class="{{lvlClass}}" href="{{href}}">{{title}}</a>{{sublevel}}</li></htmltemplate>
+								<subleveltemplate><ul class="{{lvlClass}}">{{sublevel}}</ul></subleveltemplate>
+							</display>
+						</atm-linx>
+					</div>
+					<div id="content" class="page{{pageID}}">
+						<div id="breadcrumbs">
+							<atm-linx type="desclinks">
+								<selection>
+									<start><nodespec type="node" value="2" /></start>
+									<stop><nodespec type="relative" value="father" reloffset="1" /></stop>
+								</selection>
+								<display>
+									<htmltemplate><a href="{{href}}">{{title}}</a> > </htmltemplate>
+								</display>
+							</atm-linx>
+						</div>
+						<div id="title">
+							<h1><atm-title /></h1>
+						</div>
+						<atm-clientspace module="standard" id="first" />
+						<a href="#header" id="top" title="haut de la page">Haut</a>
+					</div>
+					<div class="spacer"></div>
+				</div>
+			</div>
+		</div>
+		<div id="footer">
+			<div id="menuBottom">
+				<ul>
+					<atm-linx type="sublinks">
+						<selection>
+							<start><nodespec type="node" value="7" /></start>
+						</selection>
+						<display>
+							<htmltemplate><li><a href="{{href}}">{{title}}</a></li></htmltemplate>
+						</display>
+					</atm-linx>
+				</ul>
+				<div class="spacer"></div>
+			</div>
+		</div>
+	</body>
 </html>

@@ -135,7 +135,14 @@ Ext.extend(Automne.block, Ext.util.Observable, {
 		var y = (this.size.height - 20 > 0) ? this.position.y + this.size.height - 20 : this.position.y; 
 		this.mask.setStyle('position', 'absolute');
 		this.mask.setDisplayed('block');
-		this.mask.setBounds(this.position.x + this.size.width - (position + 4), y, (position + 4), 20);
+		/*var right = false;
+		this.elements.each(function(el){
+			if (el.getStyle('float') == 'right') {
+				right = true;
+			}
+		}, this);*/
+		//this.mask.setBounds(this.position.x + (right ? (this.size.width - (position + 4)) : 0), y, (position + 4), 20);
+		this.mask.setBounds(this.position.x + parseInt((this.size.width - (position + 4)) / 2), y, (position + 4), 20);
 		this.mask.show();
 	},
 	onMouseIn: function() {

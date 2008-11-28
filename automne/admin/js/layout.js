@@ -87,8 +87,6 @@ Automne.BorderLayout = Ext.extend(Ext.layout.BorderLayout, {
 			var totalWidth = (b.width + m.left + m.right);
 			centerX += totalWidth;
 			centerW -= totalWidth;
-			pr('west : ');
-			pr(b);
 			west.applyLayout(b);
 		}
 		if(e && e.isVisible()){
@@ -109,8 +107,6 @@ Automne.BorderLayout = Ext.extend(Ext.layout.BorderLayout, {
 				width: centerW - (m.left+m.right),
 				height: centerH - (m.top+m.bottom)
 			};
-			pr('center : ');
-			pr(centerBox);
 			c.applyLayout(centerBox);
 		/*}*/
 		if(collapsed){

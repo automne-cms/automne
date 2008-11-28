@@ -11,7 +11,7 @@
 						<label for="keyword">Mots Clés : </label><br /><input type="text" id="keyword" name="keyword" value="{request:string:keyword}" /><br />
 					</div>
 					<div class="formCat">
-					<label for="cat">Catégorie : </label><br />
+						<label for="cat">Catégorie : </label><br />
 						<select id="cat" name="cat">
 							<option value=""> </option>
 							<atm-function function="selectOptions" object="{['object1']['fields'][5]}" selected="{request:int:cat}"></atm-function>
@@ -41,17 +41,17 @@
 						</div>
 						<div class="newsContent">
 							<atm-if what="{['object1']['fields'][4]['imageName']}">
-							<div class="imgRight shadowR">
-								<div class="shadowB">
-									<div class="shadowTR">
-										<div class="shadowBL">
-											<div class="shadowBR">
-												{['object1']['fields'][4]['imageHTML']}
+								<div class="imgRight shadowR">
+									<div class="shadowB">
+										<div class="shadowTR">
+											<div class="shadowBL">
+												<div class="shadowBR">
+													{['object1']['fields'][4]['imageHTML']}
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
-							</div>
 							</atm-if>
 							<atm-if what="{request:int:item} == {['object1']['id']}">
 								<strong>{['object1']['fields'][2]['value']}</strong>
@@ -60,7 +60,7 @@
 							<atm-if what="!{request:int:item}">
 								{['object1']['fields'][2]['value']}
 							</atm-if>
-							<a href="{page:self:url}?item={['object1']['id']}" class="blocLien"  title="En savoir plus concernant '{['object1']['label']}'">
+							<a href="{page:self:url}?item={['object1']['id']}" class="blocLien"	title="En savoir plus concernant '{['object1']['label']}'">
 								<span class="blocLienTop">{['object1']['label']}</span>
 								<span class="blocLienBottom">En savoir plus</span>
 							</a>
@@ -70,10 +70,10 @@
 						<atm-if what="{lastresult} &amp;&amp; !{request:int:item}">
 							<div class="pages" id="pages">
 								<atm-function function="pages" maxpages="{maxpages}" currentpage="{currentpage}" displayedpage="5">
-								    <pages><a href="{page:self:url}?cat={request:int:cat}&amp;keyword={request:string:keyword}&amp;page={n}">{n}</a> </pages>
-								    <currentpage><strong>{n}</strong> </currentpage>
-								    <previous><a href="{page:self:url}?cat={request:int:cat}&amp;keyword={request:string:keyword}&amp;page={n}"><img src="/img/interieur/newsPrevious.gif" alt="page précédente" title="page précédente" /></a> </previous>
-								    <next><a href="{page:self:url}?cat={request:int:cat}&amp;keyword={request:string:keyword}&amp;page={n}"><img src="/img/interieur/newsNext.gif" alt="page suivante" title="page suivante" /></a> </next>
+									<pages><a href="{page:self:url}?cat={request:int:cat}&amp;keyword={request:string:keyword}&amp;page={n}">{n}</a> </pages>
+									<currentpage><strong>{n}</strong> </currentpage>
+									<previous><a href="{page:self:url}?cat={request:int:cat}&amp;keyword={request:string:keyword}&amp;page={n}"><img src="/img/interieur/newsPrevious.gif" alt="page précédente" title="page précédente" /></a> </previous>
+									<next><a href="{page:self:url}?cat={request:int:cat}&amp;keyword={request:string:keyword}&amp;page={n}"><img src="/img/interieur/newsNext.gif" alt="page suivante" title="page suivante" /></a> </next>
 								</atm-function> 
 							</div>
 						</atm-if>
@@ -82,5 +82,5 @@
 				</atm-search>
 			</atm-xml>
 		</div>
-	</block>  
-</row>
+	</block>	
+			</row>

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: template.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: template.php,v 1.2 2008/11/28 14:41:24 sebastien Exp $
 
 /**
   * PHP page : Load template detail window.
@@ -398,10 +398,10 @@ $jscontent = <<<END
 							stylesheet: 	["/automne/codemirror/css/xmlcolors.css", "/automne/codemirror/css/jscolors.css", "/automne/codemirror/css/csscolors.css"],
 							path: 			"/automne/codemirror/js/",
 							textWrapping:	false,
-							dumbTabs:		true,
-							content:		Ext.getCmp('defText-{$templateId}').getValue().replace(/\t/g, '    ')
+							content:		Ext.getCmp('defText-{$templateId}').getValue().replace(/\t/g, '  ')
 						});
 						field.disable();
+						Ext.getCmp('reindent-{$templateId}').show();
 					}
 				}, scope:this}
 			}, {
@@ -473,6 +473,14 @@ $jscontent = <<<END
 						win.show(button.getEl());
 					}
 				}
+			}, {
+				id:				'reindent-{$templateId}',
+				text:			'Réindenter',
+				anchor:			'',
+				hidden:			true,
+				listeners:		{'click':function(button) {
+					editor.reindent();
+				}, scope:this}
 			},{
 				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
 				anchor:			'',
@@ -480,7 +488,7 @@ $jscontent = <<<END
 				handler:		function() {
 					var form = Ext.getCmp('templateDef-{$templateId}').getForm();
 					if (editor) {
-						form.setValues({'defText-{$templateId}': editor.getCode()});
+						form.setValues({'defText-{$templateId}': editor.getCode().replace(/  /g, "\t")});
 					}
 					form.submit({
 						params:{

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: row.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: row.php,v 1.2 2008/11/28 14:41:24 sebastien Exp $
 
 /**
   * PHP page : Load row detail window.
@@ -321,14 +321,10 @@ $jscontent = <<<END
 							stylesheet: 	["/automne/codemirror/css/xmlcolors.css", "/automne/codemirror/css/jscolors.css", "/automne/codemirror/css/csscolors.css"],
 							path: 			"/automne/codemirror/js/",
 							textWrapping:	false,
-							dumbTabs:		true,
-							content:		Ext.getCmp('defText-{$rowId}').getValue().replace(/\t/g, '    ')
-							/*,
-							initCallback:function(){
-								editor.reindent();
-							}*/
+							content:		Ext.getCmp('defText-{$rowId}').getValue().replace(/\t/g, '  ')
 						});
 						field.disable();
+						Ext.getCmp('reindent-{$rowId}').show();
 					}
 				}, scope:this}
 			},{
@@ -400,6 +396,14 @@ $jscontent = <<<END
 						win.show(button.getEl());
 					}
 				}
+			}, {
+				id:				'reindent-{$rowId}',
+				text:			'Réindenter',
+				anchor:			'',
+				hidden:			true,
+				listeners:		{'click':function(button) {
+					editor.reindent();
+				}, scope:this}
 			},{
 				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
 				anchor:			'',
@@ -407,7 +411,7 @@ $jscontent = <<<END
 				handler:		function() {
 					var form = Ext.getCmp('rowDef-{$rowId}').getForm();
 					if (editor) {
-						form.setValues({'defText-{$rowId}': editor.getCode()});
+						form.setValues({'defText-{$rowId}': editor.getCode().replace(/  /g, "\t")});
 					}
 					form.submit({
 						params:{

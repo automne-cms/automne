@@ -1,38 +1,38 @@
 <row>
-<block module="pnews" id="lastNews" language="fr">
-	<atm-search what="{['object1']}" name="lastNews">
-		<atm-search-limit search="lastNews" value="1" />
-		<atm-search-order search="lastNews" type="publication date after" direction="desc" />
-		<atm-result  search="lastNews">
-			<div class="newsTop">
-				<h3><a href="{page:5:url}?item={['object1']['id']}">{['object1']['fields'][1]['value']}</a></h3>
-				<span>{['object1']['formatedDateStart']|d/m/Y}</span>
-				<div class="spacer"></div>
-			</div>
-			<div class="newsContent">
-				<atm-if what="{['object1']['fields'][4]['imageWidth']}">
-					<div class="imgRight shadowR">
-						<div class="shadowB">
-							<div class="shadowTR">
-								<div class="shadowBL">
-									<div class="shadowBR">
-										<img src="{['object1']['fields'][4]['imagePath']}/{['object1']['fields'][4]['imageName']}" alt="{['object1']['fields'][4]['imageLabel']}" title="{['object1']['fields'][4]['imageLabel']}" />
+	<block module="pnews" id="lastNews" language="fr">
+		<atm-search what="{['object1']}" name="lastNews">
+			<atm-search-limit search="lastNews" value="1" />
+			<atm-search-order search="lastNews" type="publication date after" direction="desc" />
+			<atm-result	search="lastNews">
+				<div class="newsTop">
+					<h3><a href="{page:5:url}?item={['object1']['id']}">{['object1']['fields'][1]['value']}</a></h3>
+					<span>{['object1']['formatedDateStart']|d/m/Y}</span>
+					<div class="spacer"></div>		 
+				</div>
+				<div class="newsContent">
+					<atm-if what="{['object1']['fields'][4]['imageWidth']}">					
+						<div class="imgRight shadowR">			
+							<div class="shadowB">
+								<div class="shadowTR">
+									<div class="shadowBL">
+										<div class="shadowBR">
+											<img src="{['object1']['fields'][4]['imagePath']}/{['object1']['fields'][4]['imageName']}" alt="{['object1']['fields'][4]['imageLabel']}" title="{['object1']['fields'][4]['imageLabel']}" />
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
+					</atm-if>
+					{['object1']['fields'][2]['htmlvalue']}
+					<div class="spacer"></div>
+					<div class="newsBottom">
+						<a class="newsAll" href="{page:5:url}">Toute l'actualite</a>
+						<atm-function function="rss" object="{['object1']}" selected="3">
+							<a class="newsRSS" title="{description}" href="{url}"><img src="/img/common/rss.gif" alt="{label}" /></a>
+						</atm-function>
 					</div>
-				</atm-if>
-				{['object1']['fields'][2]['htmlvalue']}
-				<div class="spacer"></div>
-				<div class="newsBottom">
-					<a class="newsAll" href="{page:5:url}">Toute l'actualite</a>
-					<atm-function function="rss" object="{['object1']}" selected="3">
-						<a class="newsRSS" title="{description}" href="{url}"><img src="/img/common/rss.gif" alt="{label}" /></a>
-					</atm-function>
 				</div>
-			</div>
-		</atm-result>
-	</atm-search>
-</block>
+			</atm-result>
+		</atm-search>
+	</block>
 </row>
