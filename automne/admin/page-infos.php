@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-infos.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: page-infos.php,v 1.2 2008/12/18 10:36:43 sebastien Exp $
 
 /**
   * PHP page : Load page infos
@@ -111,7 +111,8 @@ $fromtab = sensitiveIO::request('fromTab', array('edit', 'edited', 'public'));
 $tab = sensitiveIO::request('tab', array('edit', 'edited', 'public'));
 $followRedirect = sensitiveIO::request('followRedirect') ? true : false;
 $regenerate = sensitiveIO::request('regenerate') ? true : false;
-$reload = sensitiveIO::request('regenerate') ? true : false;
+$reload = sensitiveIO::request('reload') ? true : false;
+$noreload = sensitiveIO::request('noreload') ? true : false;
 
 //Default tab to open
 if ($tab && !$fromtab) {
@@ -410,6 +411,73 @@ foreach ($userPanels as $panel => $panelStatus) {
 				if (panel) {
 					panel.setDisabled(".$panelDisabled.");
 				} else {
+					//create search panels
+					var search = new Ext.Panel({
+						id:			'atmSearchPanel',
+						x:			18,
+						y:			48,
+						width:		400,
+						height:		36,
+						border:		true,
+						frame:		true,
+						shadow:		true,
+						floating:	true,
+						hideMode:	'display',
+						listeners:	{
+							'show':function(panel){
+								panel.items.first().focus(true, 100);
+							}, scope:this
+						},
+						items:[{
+							xtype:			'trigger',
+							emptyText:		'Rechercher ...',
+							triggerClass:	'x-form-search-trigger',
+							width:			385,
+							onTriggerClick:	function(){
+								this.fireEvent('blur', this);
+								Automne.view.search(this.getValue());
+							},
+							listeners:	{
+								'render':function(field){
+									field.focus(true, 100);
+								},
+								'blur':function(field){
+									var search = Ext.getCmp('atmSearchPanel');
+									if (search.allowBlur) {
+										field.getEl().blur();
+										search.hide();
+										Ext.getCmp('atmSearchTopPanel').hide();
+									}
+								},
+								'focus':function(field){
+									Ext.getCmp('atmSearchPanel').allowBlur = true;
+								},
+								'specialkey':function(field, e) {
+									if (Ext.EventObject.getKey() == Ext.EventObject.ENTER) {
+										field.fireEvent('blur', field);
+										Automne.view.search(field.getValue());
+									}
+								},
+								scope:this
+							}
+						}]
+					});
+					var searchTop = new Ext.Panel({
+						id:			'atmSearchTopPanel',
+						x:			18,
+						y:			20,
+						width:		41,
+						height:		29,
+						border:		false,
+						shadow:		false,
+						floating:	true,
+						bodyStyle:	'background:transparent;',
+						hideMode:	'display',
+						html:		'<img src=\"".PATH_ADMIN_IMAGES_WR."/searchTop.png\" />'
+					});
+					//set blur event on document to remove search
+					Ext.getDoc().on('blur', Automne.view.removeSearch);
+					
 					panel = new Automne.panel ({
 						title:			'".sensitiveIO::sanitizeJSString($panelTitle)."',
 						id:				'".$panel."',
@@ -418,10 +486,24 @@ foreach ($userPanels as $panel => $panelStatus) {
 							'beforeactivate' : {
 								fn: function(panel, e) {
 									if (e.type == 'mousedown') {
-										Automne.message.show('TODOV4 : Show search panel');
-										
-										
-										
+										var search = Ext.getCmp('atmSearchPanel');
+										var searchTop = Ext.getCmp('atmSearchTopPanel');
+										if (!search.rendered) {
+											search.allowBlur = false;
+											search.render(document.body);
+											searchTop.render(document.body);
+										} else {
+											if (search.isVisible()) {
+												search.hide();
+												searchTop.hide();
+											} else {
+												search.setPosition(search.x, search.y)
+												searchTop.setPosition(searchTop.x, searchTop.y)
+												search.allowBlur = false;
+												search.show();
+												searchTop.show();
+											}
+										}
 									}
 									return false;
 								},
@@ -647,17 +729,36 @@ foreach ($userPanels as $panel => $panelStatus) {
 							}));";
 						} else {
 							//move page
-							if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) 
-									&& $cms_page->getID() != APPLICATION_ROOT_PAGE_ID) {
+							$father = CMS_tree::getAncestor($cms_page, 1);
+							$draggable = is_object($father) && $cms_user->hasPageClearance($father->getID(), CLEARANCE_PAGE_EDIT)
+			 							&& (!$hasSiblings || ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) && $cms_page->getID() != APPLICATION_ROOT_PAGE_ID));
+							
+							if ($draggable) {
 								$panelContent .= "
 								menu.addItem(new Ext.menu.Item({
 									text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_MOVE_PAGE_INFO)."\">".$cms_language->getJSMessage(MESSAGE_PAGE_MOVE_PAGE)."</span>',
 									iconCls: 'atm-pic-move',
 									handler: function() {
-										Automne.message.show('TODOV4 : Show move panel');
+										//create window element
+										var win = new Automne.Window({
+											id:				'pageMoveWindow',
+											currentPage:	".$cms_page->getID().",
+											autoLoad:		{
+												url:		'tree.php',
+												params:		{
+													winId:		'pageMoveWindow',
+													currentPage:".$cms_page->getID().",
+													enableDD:	true,
+													heading:	'Déplacez vos pages à l\'aide des icônes flêchées',
+													title:		'Déplacement de pages'
+												},
+												nocache:	true,
+												scope:		this
+											}
+										});
+										win.show(this.getEl());
 									}
-								}));
-								";
+								}));";
 							}
 							//page copy
 							$panelContent .= $pageCopy;
@@ -736,12 +837,21 @@ foreach ($userPanels as $panel => $panelStatus) {
 											icon: 				Ext.MessageBox.WARNING,
 											fn: 				function (button) {
 												if (button == 'ok') {
+													Automne.tabPanels.setActiveTab('public');
 													Automne.server.call({
 														url:				'page-controler.php',
 														params: 			{
 															currentPage:		'".$cms_page->getID()."',
 															action:				'cancel_editions'
-														}
+														},
+														fcnCallback: 		function() {
+															//then reload page infos
+															Automne.tabPanels.getPageInfos({
+																pageId:		'".$cms_page->getID()."',
+																noreload:	true
+															});
+														},
+														callBackScope:		this
 													});
 												}
 											}
@@ -797,12 +907,27 @@ foreach ($userPanels as $panel => $panelStatus) {
 											icon: 				Ext.MessageBox.WARNING,
 											fn: 				function (button) {
 												if (button == 'ok') {
+													//send to public or edited tab
+													var pubTab = Automne.tabPanels.getItem('public');
+													if (!pubTab.disabled) {
+														Automne.tabPanels.setActiveTab('public');
+													} else {
+														Automne.tabPanels.setActiveTab('edited');
+													}
 													Automne.server.call({
 														url:				'page-controler.php',
 														params: 			{
 															currentPage:		'".$cms_page->getID()."',
 															action:				'cancel_draft'
-														}
+														},
+														fcnCallback: 		function() {
+															//then reload page infos
+															Automne.tabPanels.getPageInfos({
+																pageId:		'".$cms_page->getID()."',
+																noreload:	true
+															});
+														},
+														callBackScope:		this
 													});
 												}
 											}
@@ -813,12 +938,23 @@ foreach ($userPanels as $panel => $panelStatus) {
 									text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_DRAFT_TO_VALIDATION_INFO)."\">".$cms_language->getJSMessage(MESSAGE_PAGE_DRAFT_TO_VALIDATION)."</span>',
 									iconCls: 'atm-pic-draft-validation',
 									handler: function () {
+										//goto previz tab
+										Automne.tabPanels.setActiveTab('edited', true);
+										//submit page to validation
 										Automne.server.call({
 											url:				'page-controler.php',
 											params: 			{
 												currentPage:		'".$cms_page->getID()."',
 												action:				'submit_for_validation'
-											}
+											},
+											fcnCallback: 		function() {
+												//then reload page infos
+												Automne.tabPanels.getPageInfos({
+													pageId:		'".$cms_page->getID()."',
+													noreload:	true
+												});
+											},
+											callBackScope:		this
 										});
 									}
 								}));";
@@ -877,7 +1013,8 @@ foreach ($userPanels as $panel => $panelStatus) {
 				}
 				if ($hasLock && sensitiveIO::isPositiveInteger($hasLock)) {
 					$lockUser = CMS_profile_usersCatalog::getById($hasLock);
-					$panelTip .= '<br /><br /><strong>'.$cms_language->getMessage(MESSAGE_PAGE_LOCKEDBY).' </strong>'.$lockUser->getFullName();
+					$lockDate = $cms_page->getLockDate();
+					$panelTip .= '<br /><br /><strong>'.$cms_language->getMessage(MESSAGE_PAGE_LOCKEDBY).' </strong>'.$lockUser->getFullName().' le '.$lockDate->getLocalizedDate($cms_language->getDateFormat().' à H:i:s');
 				} elseif (!$isEditable) {
 					$panelTip .= '<br /><br />'.$cms_language->getMessage(MESSAGE_PAGE_EDIT_CONTENT_TIP_DISABLED_DESC);
 				}
@@ -1016,6 +1153,9 @@ foreach ($userPanels as $panel => $panelStatus) {
 
 $jscontent .= '
 	var panel = Automne.tabPanels.getItem(\''.$active.'\');
+	if ('.($noreload ? 'true' : 'false').') {
+		panel.noreload();
+	}
 	Automne.tabPanels.setActiveTab(panel);
 	Automne.tabPanels.setPageId(\''.$pageId.'\');
 	Automne.tabPanels.endUpdate();

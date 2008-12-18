@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: linxescatalog.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: linxescatalog.php,v 1.2 2008/12/18 10:40:54 sebastien Exp $
 
 /**
   * Class CMS_linxesCatalog
@@ -101,21 +101,20 @@ class CMS_linxesCatalog extends CMS_grandFather
 	  * @return array(integer) The DB IDs of pages watching the one in argument
 	  * @access public
 	  */
-	function getWatchers(&$page)
-	{
+	function getWatchers($page) {
 		//check argument is a page
-		if (!is_a($page, "CMS_page")) {
-			CMS_grandFather::raiseError("Page must be instance of CMS_page");
+		if (!is_a($page, "CMS_page") && !sensitiveIO::isPositiveInteger($page)) {
+			CMS_grandFather::raiseError("Page must be instance of CMS_page or positive integer");
 			return false;
 		}
-
+		$pageId = (is_object($page)) ? $page->getID() : $page;
 		$sql = "
 			select
 				page_lwa
 			from
 				linx_watch_public
 			where
-				target_lwa='".$page->getID()."'
+				target_lwa='".$pageId."'
 		";
 		$q = new CMS_query($sql);
 		
@@ -123,7 +122,6 @@ class CMS_linxesCatalog extends CMS_grandFather
 		while ($id = $q->getValue("page_lwa")) {
 			$watchers[] = $id;
 		}
-		
 		return $watchers;
 	}
 
@@ -135,29 +133,26 @@ class CMS_linxesCatalog extends CMS_grandFather
 	  * @return array(integer) The DB IDs of pages linking the one in argument
 	  * @access public
 	  */
-	function getLinkers(&$page)
-	{
+	function getLinkers($page) {
 		//check argument is a page
-		if (!is_a($page, "CMS_page")) {
-			CMS_grandFather::raiseError("Page must be instance of CMS_page");
+		if (!is_a($page, "CMS_page") && !sensitiveIO::isPositiveInteger($page)) {
+			CMS_grandFather::raiseError("Page must be instance of CMS_page or positive integer");
 			return false;
 		}
-		
+		$pageId = (is_object($page)) ? $page->getID() : $page;
 		$sql = "
 			select
 				start_lre
 			from
 				linx_real_public
 			where
-				stop_lre='".$page->getID()."'
+				stop_lre='".$pageId."'
 		";
 		$q = new CMS_query($sql);
-		
 		$linkers = array();
 		while ($id = $q->getValue("start_lre")) {
 			$linkers[] = $id;
 		}
-		
 		return $linkers;
 	}
 	

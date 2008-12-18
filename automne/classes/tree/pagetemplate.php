@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: pagetemplate.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: pagetemplate.php,v 1.2 2008/12/18 10:41:04 sebastien Exp $
 
 /**
   * Class CMS_pageTemplate
@@ -1036,6 +1036,61 @@ class CMS_pageTemplate extends CMS_grandFather
 			return true;
 		}
 		return true;
+	}
+	
+	function getJSonDescription($user, $cms_language, $withDefinition = false) {
+		//get websites
+		$websites = CMS_websitesCatalog::getAll();
+		$hasPages = $this->hasPages();
+		$websitesList = '';
+		$websitesDenied = $this->getWebsitesDenied();
+		foreach ($websites as $id => $website) {
+			if (!isset($websitesDenied[$id])) {
+				$websitesList .= ($websitesList) ? ', ':'';
+				$websitesList .= $website->getLabel();
+			}
+		}
+		$description = sensitiveIO::ellipsis($this->getDescription(), 50);
+		if ($description != $this->getDescription()) {
+			$description = '<span ext:qtip="'.htmlspecialchars($this->getDescription()).'">'.$description.'</span>';
+		}
+		$description = $withDefinition ? $description.'<br />' : '';
+		//append template definition if needed
+		$definitionDatas = ($withDefinition) ? $this->getDefinition() : '';
+		if ($user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) {
+			$edit = array(
+				'url' 		=> 'template.php',
+				'params'	=> array(
+					'template' => $this->getID()
+				)
+			);
+		} else {
+			$edit = false;
+		}
+		return array(
+			'id'			=> $this->getID(),
+			'label'			=> $this->getLabel(),
+			'type'			=> 'Modèle de page',
+			'image'			=> PATH_TEMPLATES_IMAGES_WR.'/'. (($this->getImage()) ? $this->getImage() : 'nopicto.gif'),
+			'groups'		=> implode(', ', $this->getGroups()),
+			'websites'		=> $websitesList,
+			'desc'			=> $this->getDescription(),
+			'filter'		=> $this->getLabel().' '.implode(', ', $this->getGroups()),
+			'description'	=> 	'<div'.(!$this->isUseable() ? ' class="atm-inactive"' : '').'>'.
+									'<img src="'.(PATH_TEMPLATES_IMAGES_WR.'/'. (($this->getImage()) ? $this->getImage() : 'nopicto.gif')).'" style="float:left;margin-right:3px;width:80px;" />'.
+									$description.
+									'Sites : <strong>'.$websitesList.'</strong><br />'.
+									'Groupes : <strong>'.implode(', ', $this->getGroups()).'</strong><br />'.
+									'Actif : <strong>'.($this->isUseable() ? 'Oui':'Non').'</strong><br />'.
+									'Employé : <strong>'.($hasPages ? 'Oui':'Non').'</strong>'.($hasPages ? ' - <a href="#" onclick="Automne.view.search(\'template:'.$this->getID().'\');return false;">Voir</a>'.
+									($user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) ? ' / <a href="#" onclick="Automne.server.call(\'templates-controler.php\', \'\', {templateId:'.$this->getID().', action:\'regenerate\'});return false;">Régénérer</a>' : '').' les pages.' : '').
+									'<br class="x-form-clear" />'.
+								'</div>',
+			'activated'		=> $this->isUseable() ? true : false,
+			'used'			=> $hasPages,
+			'definition'	=> $definitionDatas,
+			'edit'			=> $edit
+		);
 	}
 }
 ?>

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-add.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: page-add.php,v 1.2 2008/12/18 10:36:42 sebastien Exp $
 
 /**
   * PHP page : Load add-page window infos. Set title and template then redirect to page content edition
@@ -86,8 +86,8 @@ $jscontent = <<<END
 	var lookup = {};
 	var thumbTemplate = new Ext.XTemplate(
 		'<tpl for=".">',
-			'<div class="thumb-wrap" id="{name}">',
-			'<div class="thumb"><img src="{image}" title="{name}"></div>',
+			'<div class="thumb-wrap" id="{label}">',
+			'<div class="thumb"><img src="{image}" title="{label}"></div>',
 			'<span>{shortName}</span></div>',
 		'</tpl>'
 	);
@@ -98,7 +98,7 @@ $jscontent = <<<END
 			'<tpl for=".">',
 				'<img src="{image}"><div class="details-info">',
 				'<b>{$cms_language->getJsMessage(MESSAGE_PAGE_NAME)}:</b>',
-				'<span>{name}</span>',
+				'<span>{label}</span>',
 				'<span>{desc}</span>',
 				'<b>{$cms_language->getJsMessage(MESSAGE_PAGE_GROUPS)}:</b>',
 				'<span>{groups}</span>',
@@ -113,7 +113,7 @@ $jscontent = <<<END
 		url: 			'page-templates-datas.php',
 		baseParams:		{website:{$website->getID()}},
 		root: 			'results',
-		fields: 		['id', 'name', 'desc', 'image', 'groups', 'filter', 'websites'],
+		fields: 		['id', 'label', 'desc', 'image', 'groups', 'filter', 'websites'],
 		listeners: {
 			'load': 		{fn:function(){ view.select(0);}, single:true}
 		}
@@ -154,8 +154,8 @@ $jscontent = <<<END
 		    }}
 		},
 		prepareData: function(data){
-	    	data.shortName = data.name.ellipse(15);
-	    	lookup[data.name] = data;
+	    	data.shortName = data.label.ellipse(15);
+	    	lookup[data.label] = data;
 	    	return data;
 		}
 	});

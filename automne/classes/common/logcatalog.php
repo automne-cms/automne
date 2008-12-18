@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: logcatalog.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: logcatalog.php,v 1.2 2008/12/18 10:39:46 sebastien Exp $
 
 /**
   * Class CMS_log_catalog
@@ -209,6 +209,7 @@ class CMS_log_catalog extends CMS_grandFather
 		return array(	CMS_log::MESSAGE_LOG_ACTION_RESOURCE_EDIT_BASEDATA		=> CMS_log::LOG_ACTION_RESOURCE_EDIT_BASEDATA,
 						CMS_log::MESSAGE_LOG_ACTION_RESOURCE_EDIT_CONTENT		=> CMS_log::LOG_ACTION_RESOURCE_EDIT_CONTENT,
 						CMS_log::MESSAGE_LOG_ACTION_RESOURCE_EDIT_SIBLINGSORDER	=> CMS_log::LOG_ACTION_RESOURCE_EDIT_SIBLINGSORDER,
+						CMS_log::MESSAGE_LOG_ACTION_RESOURCE_EDIT_MOVE			=> CMS_log::LOG_ACTION_RESOURCE_EDIT_MOVE,
 						CMS_log::MESSAGE_LOG_ACTION_RESOURCE_DELETE				=> CMS_log::LOG_ACTION_RESOURCE_DELETE,
 						CMS_log::MESSAGE_LOG_ACTION_RESOURCE_UNDELETE			=> CMS_log::LOG_ACTION_RESOURCE_UNDELETE,
 						CMS_log::MESSAGE_LOG_ACTION_RESOURCE_ARCHIVE			=> CMS_log::LOG_ACTION_RESOURCE_ARCHIVE,

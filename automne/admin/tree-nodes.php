@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: tree-nodes.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: tree-nodes.php,v 1.2 2008/12/18 10:36:44 sebastien Exp $
 
 /**
   * PHP page : Load tree window infos
@@ -142,22 +142,30 @@ foreach ($siblings as $sibling) {
 		
 		$pageTitle = (PAGE_LINK_NAME_IN_TREE) ? $sibling->getLinkTitle() : $sibling->getTitle();
 		$hasSiblings = CMS_tree::hasSiblings($sibling) ? true : false;
-		//does this node draggable ?
-		$draggable = ($enableDD/* && $cms_user->hasPageClearance($sibling->getID(), CLEARANCE_PAGE_EDIT)*/);
-		//does this node can be a drop target ?
-		$allowDrop = ($enableDD && !$maxlevelReached && (!$hasSiblings || ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) && $sibling->getID() != APPLICATION_ROOT_PAGE_ID)));
-		
+		$ddtext = '';
+		$draggable = $allowDrop = false;
+		if ($enableDD) {
+			//does this node draggable ? (/!\ only public nodes can be draggable)
+			$draggable = ($cms_user->hasPageClearance($sibling->getID(), CLEARANCE_PAGE_EDIT)
+				 && (!$hasSiblings || ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) && $sibling->getID() != APPLICATION_ROOT_PAGE_ID))
+				 && $sibling->getPublication() == RESOURCE_PUBLICATION_PUBLIC);
+			
+			//does this node can be a drop target ?
+			$allowDrop = (!$maxlevelReached && $cms_user->hasPageClearance($sibling->getId(), CLEARANCE_PAGE_EDIT));
+			//$ddtext = $allowDrop ? ' allowDrop' : '';
+		}
 		$nodes[] = array(
 			'id'		=>	'page'.$sibling->getID(), 
 			'onClick'	=>	sprintf($onClick, $sibling->getID()),
 			'onSelect'	=>	sprintf($onSelect, $sibling->getID()),
-			'text'		=>	htmlspecialchars($pageTitle).' (' .$property. ')',
+			'text'		=>	htmlspecialchars($pageTitle).' (' .$property. ')'.$ddtext,
 			'status'	=>	$sibling->getStatus()->getHTML(true, $cms_user, MOD_STANDARD_CODENAME, $sibling->getID()),
 			'leaf'		=>	($maxlevelReached || !$hasSiblings), 
 			/*'qtip'		=>	'tip for page '.$sibling->getTitle(),
 			'qtipTitle'	=>	'tip title',*/
 			'draggable'	=>	$draggable,
 			'allowDrop'	=>	$allowDrop,
+			'allowChildren' => true, //allow appening a node by DD even if it is a leaf
 			'disabled'	=>	false,
 			'uiProvider'=>	'page',
 			'selected'	=>	($sibling->getID() == $currentPage),

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: groups-datas.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: groups-datas.php,v 1.2 2008/12/18 10:36:42 sebastien Exp $
 
 /**
   * PHP page : Load groups datas
@@ -59,10 +59,10 @@ if ($userId) {
 }
 if ($userId && $filter) {
 	//search users
-	$groups = CMS_profile_usersGroupsCatalog::search($search, $letter, $userId, $sort, $dir, $start, $limit);
+	$groups = CMS_profile_usersGroupsCatalog::search($search, $letter, $userId, array(), $sort, $dir, $start, $limit);
 } else {
 	//search users
-	$groups = CMS_profile_usersGroupsCatalog::search($search, $letter, false, $sort, $dir, $start, $limit);
+	$groups = CMS_profile_usersGroupsCatalog::search($search, $letter, false, array(), $sort, $dir, $start, $limit);
 }
 //loop over groups to get all required infos
 foreach ($groups as $group) {
@@ -82,10 +82,10 @@ foreach ($groups as $group) {
 
 if ($userId && $filter) {
 	//total users count for search
-	$groupsDatas['totalCount'] = sizeof(CMS_profile_usersGroupsCatalog::search($search, $letter, $userId, $sort, $dir, 0, 0, false));
+	$groupsDatas['totalCount'] = sizeof(CMS_profile_usersGroupsCatalog::search($search, $letter, $userId, array(), $sort, $dir, 0, 0, false));
 } else {
 	//total users count for search
-	$groupsDatas['totalCount'] = sizeof(CMS_profile_usersGroupsCatalog::search($search, $letter, false, $sort, $dir, 0, 0, false));
+	$groupsDatas['totalCount'] = sizeof(CMS_profile_usersGroupsCatalog::search($search, $letter, false, array(), $sort, $dir, 0, 0, false));
 }
 
 $view->setContent($groupsDatas);

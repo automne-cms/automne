@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-previsualization.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: page-previsualization.php,v 1.2 2008/12/18 10:36:43 sebastien Exp $
 
 /**
   * PHP page : page previsualization
@@ -46,7 +46,4 @@ if (!$cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)) {
 }
 
 echo $cms_page->getContent($cms_language, $visual_mode);
-
-/*only for stats*/
-if (STATS_DEBUG) view_stat();
 ?>

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-templates-datas.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: page-templates-datas.php,v 1.2 2008/12/18 10:36:43 sebastien Exp $
 
 /**
   * PHP page : Load page templates infos
@@ -74,7 +74,7 @@ if ($currentTpl) {
 		
 		$templates[] = array(
 			'id'			=> $matchTpl->getID(), 
-			'name'			=> $matchTpl->getLabel(), 
+			'label'			=> $matchTpl->getLabel(), 
 			'image'			=> $src,
 			'groups'		=> implode(', ', $matchTpl->getGroups()),
 			'compatible'	=> true,
@@ -101,7 +101,7 @@ if ($currentTpl) {
 		
 		$templates[] = array(
 			'id'			=> $noMatchTpl->getID(), 
-			'name'			=> $noMatchTpl->getLabel(), 
+			'label'			=> $noMatchTpl->getLabel(), 
 			'image'			=> $src,
 			'groups'		=> implode(', ', $noMatchTpl->getGroups()),
 			'compatible'	=> false,
@@ -126,7 +126,7 @@ if ($currentTpl) {
 		
 		array_unshift($templates,array(
 			'id'			=> $pageTplId, 
-			'name'			=> $pageTemplate->getLabel(), 
+			'label'			=> $pageTemplate->getLabel(), 
 			'image'			=> $src,
 			'groups'		=> implode(', ', $pageTemplate->getGroups()),
 			'compatible'	=> true,
@@ -165,8 +165,6 @@ if ($currentTpl) {
 	$templates = CMS_pageTemplatesCatalog::getAll($viewinactive, $keyword, $groups, $website, $pageTplIds, $cms_user, $start, $limit);
 	$templatesDatas['total'] = sizeof(CMS_pageTemplatesCatalog::getAll($viewinactive, $keyword, $groups, $website, $pageTplIds, $cms_user, 0, 0, false));
 	
-	//get websites
-	$websites = CMS_websitesCatalog::getAll();
 	foreach ($templates as $template) {
 		if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //templates
 			if ($delete) {
@@ -193,44 +191,7 @@ if ($currentTpl) {
 				$template->writeToPersistence();
 			}
 		}
-		$hasPages = $template->hasPages();
-		$websitesList = '';
-		$websitesDenied = $template->getWebsitesDenied();
-		foreach ($websites as $id => $website) {
-			if (!isset($websitesDenied[$id])) {
-				$websitesList .= ($websitesList) ? ', ':'';
-				$websitesList .= $website->getLabel();
-			}
-		}
-		$description = sensitiveIO::ellipsis($template->getDescription(), 50);
-		if ($description != $template->getDescription()) {
-			$description = '<span ext:qtip="'.htmlspecialchars($template->getDescription()).'">'.$description.'</span>';
-		}
-		$description = $description ? $description.'<br />' : '';
-		//append template definition if needed
-		$definitionDatas = ($definition) ? $template->getDefinition() : '';
-		$templatesDatas['results'][] = array(
-			'id'			=> $template->getID(),
-			'name'			=> $template->getLabel(),
-			'image'			=> PATH_TEMPLATES_IMAGES_WR.'/'. (($template->getImage()) ? $template->getImage() : 'nopicto.gif'),
-			'groups'		=> implode(', ', $template->getGroups()),
-			'websites'		=> $websitesList,
-			'desc'			=> $template->getDescription(),
-			'filter'		=> $template->getLabel().' '.implode(', ', $template->getGroups()),
-			'description'	=> 	'<div'.(!$template->isUseable() ? ' class="atm-inactive"' : '').'>'.
-									'<img src="'.(PATH_TEMPLATES_IMAGES_WR.'/'. (($template->getImage()) ? $template->getImage() : 'nopicto.gif')).'" style="float:left;margin-right:3px;width:80px;" />'.
-									$description.
-									'Sites : <strong>'.$websitesList.'</strong><br />'.
-									'Groupes : <strong>'.implode(', ', $template->getGroups()).'</strong><br />'.
-									'Actif : <strong>'.($template->isUseable() ? 'Oui':'Non').'</strong><br />'.
-									'Employé : <strong>'.($hasPages ? 'Oui':'Non').'</strong>'.($hasPages ? ' - <a href="#" onclick="Automne.message.show(\'TODO\');return false;">Voir</a>'.
-									($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) ? ' / <a href="#" onclick="Automne.server.call(\'templates-controler.php\', \'\', {templateId:'.$template->getID().', action:\'regenerate\'});return false;">Régénérer</a>' : '').' les pages.' : '').
-									'<br class="x-form-clear" />'.
-								'</div>',
-			'activated'		=> $template->isUseable() ? true : false,
-			'used'			=> $hasPages,
-			'definition'	=> $definitionDatas
-		);
+		$templatesDatas['results'][] = $template->getJSonDescription($cms_user, $cms_language, $definition);
 	}
 }
 $view->setContent($templatesDatas);

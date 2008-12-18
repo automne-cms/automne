@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-properties.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: page-properties.php,v 1.2 2008/12/18 10:36:43 sebastien Exp $
 
 /**
   * PHP page : Load page properties window.
@@ -391,7 +391,7 @@ if (CMS_tree::hasSiblings($cms_page)) {
 							maxlevel:	1,
 							hideMenu:	true,
 							window:		false,
-							heading:	'".$cms_language->getJSMessage(MESSAGE_PAGE_SUBPAGES_LIST_MESSAGE)." ".sensitiveIO::sanitizeJSString($cms_page->getTitle()).".".($cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT) ? $cms_language->getJSMessage(MESSAGE_PAGE_DRAGANDDROP_MESSAGE) : '')."',
+							heading:	'".$cms_language->getJSMessage(MESSAGE_PAGE_SUBPAGES_LIST_MESSAGE)." ".sensitiveIO::sanitizeJSString($cms_page->getTitle()).".".($cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT) ? ' '.$cms_language->getJSMessage(MESSAGE_PAGE_DRAGANDDROP_MESSAGE) : '')."',
 							enableDD:	".($cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT) ? 'true' : 'false')."
 						},
 						nocache:	true,
@@ -525,7 +525,7 @@ if ($editable) {
 				page:			$pageId
 			},
 			root: 			'results',
-			fields: 		['id', 'name', 'image', 'groups', 'compatible', 'description'],
+			fields: 		['id', 'label', 'image', 'groups', 'compatible', 'description'],
 			prepareData: 	function(data){
 		    	data.qtip = Ext.util.Format.htmlEncode(data.description);
 				data.cls = data.compatible ? '' : 'atm-red';
@@ -539,7 +539,7 @@ if ($editable) {
 		allowBlank: 		false,
 		selectOnFocus:		true,
 		editable:			false,
-		tpl: 				'<tpl for="."><div ext:qtip="{qtip}" class="x-combo-list-item {cls}">{name}</div></tpl>',
+		tpl: 				'<tpl for="."><div ext:qtip="{qtip}" class="x-combo-list-item {cls}">{label}</div></tpl>',
     	updateConfig:		fieldUpdateConfig,
 		autosize:			'height'
 	});

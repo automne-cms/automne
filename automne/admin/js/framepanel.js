@@ -18,6 +18,8 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 	allowFrameNav: 		false,
 	//force next frame reload (even if url is the same)
 	forceReload:		false,
+	//avoid auto page reload
+	noReload:			false,
 	//does this frame is editable ?
 	editable:			false,
 	//constructor
@@ -79,6 +81,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 						Ext.getCmp('editSaveDraft').hide();
 						Ext.getCmp('editCancelAdd').show();
 						Ext.get('selectedRow').update('<span class="atm-text-alert">'+ al.csClickOnRed +'</span>');
+						Automne.message.show(al.csClickOnRed);
 						this.frameEl.dom.contentWindow.Automne.content.showZones('add');
 					}
 				},{
@@ -104,13 +107,13 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 						url: 				'page-rows-datas.php',
 						root: 				'results',
 						totalProperty: 		'total',
-						fields:				['id', 'name', 'image'],
+						fields:				['id', 'label', 'image'],
 						id: 				'id'
 					}),
 					forceSelection:		true,
 					valueField:			'id',
 					hiddenName: 		'addRow',
-					displayField:		'name',
+					displayField:		'label',
 					typeAhead: 			false,
 					allowBlank: 		false,
 					selectOnFocus:		true,
@@ -126,7 +129,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 					hidden:				true,
 					tpl: new Ext.XTemplate(
 						'<tpl for=\".\"><div class=\"search-item atm-search-item\">',
-							'<table border="0"><tr><td valign="middle" style="width:72px;"><img src="{image}" /></td><td valign="middle" style="padding:4px;"><strong>{name}</strong></td></tr></table>',
+							'<table border="0"><tr><td valign="middle" style="width:72px;"><img src="{image}" /></td><td valign="middle" style="padding:4px;"><strong>{label}</strong></td></tr></table>',
 						'</div></tpl>'
 					),
 					itemSelector: 		'div.atm-search-item'
@@ -155,6 +158,8 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 						var cs = this.frameEl.dom.contentWindow.Automne.content.getCS(comboParams.cs);
 						//send all datas to server to create new row and get row HTML code
 						Automne.server.call('page-content-controler.php', cs.addNewRow, params, cs);
+						//hide all drop zones
+						this.frameEl.dom.contentWindow.Automne.content.hideZones();
 						//init toolbar and row mask
 						this.frameEl.dom.contentWindow.Automne.content.init();
 					}
@@ -223,12 +228,15 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 									params: 			{
 										currentPage:		this.pageId,
 										action:				'submit_for_validation'
-									}/*,
-									fcnCallback: 		function() {
-										
-										
 									},
-									callBackScope:		this*/
+									fcnCallback: 		function() {
+										//then reload page infos
+										Automne.tabPanels.getPageInfos({
+											pageId:		this.pageId,
+											noreload:	true
+										});
+									},
+									callBackScope:		this
 								});
 							}
 						});
@@ -274,9 +282,10 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 			this.setDisabled(false);
 		}
 		//if frame element is known (this is not the first activation of panel), then force reload it
-		if (this.frameEl && (this.pageId != Automne.tabPanels.pageId || this.frameDocument.documentURI.indexOf(this.frameURL) === -1 || newTab.id == 'edit')) {
+		if (!this.noReload && this.frameEl && (this.pageId != Automne.tabPanels.pageId || (this.frameDocument && this.frameDocument.documentURI.indexOf(this.frameURL) === -1) || newTab.id == 'edit')) {
 			this.reload();
 		}
+		this.noReload = false;
 		return true;
 	},
 	//after panel is activated (tab panel clicked)
@@ -300,7 +309,9 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 	//set load and resize events on frame if not already exists
 	setFrameEvents: function() {
 		if (this.frameEvents === false && this.frameEl) {
-			this.frameEl.on('load', this.loadFrameInfos, this);
+			this.frameEl.on({
+				'load': this.loadFrameInfos, scope:this
+			});
 			this.on('resize', this.resize, this);
 			this.frameEvents = true;
 		}
@@ -312,14 +323,26 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 		}
 		//get frame and document from event
 		this.loadFrameDocument();
+		
+		//for all browsers except gecko, set an onclick event to remove search engine if displayed
+		//use onclick because ext event does not work on iframe document
+		if (!Ext.isGecko && !this.frameDocument.onclick) {
+			this.frameDocument.onclick = Automne.view.removeSearch;
+		}
+		
 		//catch frame links
 		if (!this.allowFrameNav) {
 			pr('Catch '+ this.id +' frame links');
 			this.catchFrameLinks();
 		}
 		//if this frame is the edit one, launch edition mode
-		if (this.id == 'edit' && this.frameEl.dom.contentWindow && this.frameEl.dom.contentWindow.launchEdit) {
+		if (this.id == 'edit' && this.getDoc()) {
 			pr('launch edit mode');
+			//force reload page infos without reloading the frame itself
+			Automne.tabPanels.getPageInfos({
+				pageId:		this.pageId,
+				noreload:	true
+			});
 		}
 	},
 	//resize frame according to panel size
@@ -344,6 +367,10 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 				this.forceReload = false;
 			}
 		}
+	},
+	//noreload of the page
+	noreload: function() {
+		this.noReload = true;
 	},
 	//set a flag to force next reload of the frame (even if url is the same)
 	setForceReload: function(force) {
@@ -370,8 +397,22 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 		if (!this.frameEl) {
 			return false;
 		}
-		this.frameDocument = (Ext.isIE) ? this.frameEl.dom.contentWindow.document : this.frameEl.dom.contentDocument;
+		this.frameDocument = this.getDoc();//(Ext.isIE) ? this.frameEl.dom.contentWindow.document : this.frameEl.dom.contentDocument;
 		return true;
+	},
+	// private
+	getDoc : function(){
+        if (!this.frameEl) {
+			return false;
+		}
+		return Ext.isIE ? this.getWin().document : (this.frameEl.dom.contentDocument || this.getWin().document);
+	},
+    // private
+	getWin : function(){
+        if (!this.frameEl) {
+			return false;
+		}
+		return Ext.isIE ? this.frameEl.dom.contentWindow : window.frames[this.frameEl.dom.name];
 	}
 });
 Ext.reg('framePanel', Automne.framePanel);

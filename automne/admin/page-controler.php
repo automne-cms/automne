@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-controler.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: page-controler.php,v 1.2 2008/12/18 10:36:43 sebastien Exp $
 
 /**
   * PHP page : Receive pages updates
@@ -37,6 +37,8 @@ define("MESSAGE_PAGE_ERROR_LOCKED", 334);
 define("MESSAGE_PAGE_ACTION_SIBLINGMOVE_ERROR", 166);
 define("MESSAGE_PAGE_ACTION_EMAIL_SIBLINGSORDER_SUBJECT", 170);
 define("MESSAGE_PAGE_ACTION_EMAIL_SIBLINGSORDER_BODY", 171);
+define("MESSAGE_PAGE_ACTION_EMAIL_MOVE_SUBJECT", 597);
+define("MESSAGE_PAGE_ACTION_EMAIL_MOVE_BODY", 598);
 define("MESSAGE_PAGE_ACTION_EMAIL_CONTENT_SUBJECT", 182);
 define("MESSAGE_PAGE_ACTION_EMAIL_CONTENT_BODY", 183);
 define("MESSAGE_PAGE_ACTION_EMAIL_DELETE_SUBJECT", 123);
@@ -290,6 +292,21 @@ switch ($action) {
 			if ($cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)) {
 				if ($newParent == $oldParent) {
 					//this is a reordering
+					//the page used is the father of the current page
+					//load parent page
+					$cms_page = CMS_tree::getPageByID($newParent);
+					$currentPage = $newParent;
+					if ($cms_page->hasError()) {
+						CMS_grandFather::raiseError('Selected page ('.$currentPage.') has error ...');
+						$view->show();
+					}
+					//check for user rights on page
+					if (!$cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)) {
+						CMS_grandFather::raiseError('User has no edition rights on page ('.$currentPage.') ...');
+						$view->show();
+					}
+					$initialStatus = $cms_page->getStatus()->getHTML(false, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getID());
+					
 					$newPagesOrder = explode(',',$value);
 					if (CMS_tree::changePagesOrder($newPagesOrder, $cms_user)) {
 						$edited = RESOURCE_EDITION_SIBLINGSORDER;
@@ -300,10 +317,19 @@ switch ($action) {
 						$cms_page->raiseError('Error during move of page '.$cms_page->getID().'. Can\'t apply new order.');
 					}
 				} else {
-					//TODOV4
+					//this is a page moving
+					$newPagesOrder = explode(',',$value);
+					if (CMS_tree::movePage($cms_page, CMS_tree::getPageByID($newParent), $newPagesOrder, $cms_user)) {
+						$edited = RESOURCE_EDITION_MOVE;
+						//must reload page
+						$cms_page = CMS_tree::getPageByID($cms_page->getID());
+					} else {
+						$cms_message = 'Erreur lors du déplacement de la page...';
+						$cms_page->raiseError('Error during move of page '.$cms_page->getID().'.');
+					}
 				}
 			} else {
-				$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_SIBLINGMOVE_ERROR);
+				$cms_message = 'Erreur lors du déplacement de la page... Vous n\'avez pas les droits d\'édition sur cette page.';
 				$cms_page->raiseError('Error during move of page '.$cms_page->getID().'. User does not have edition rights on current page.');
 			}
 		}
@@ -511,6 +537,13 @@ if ($edited) {
 				$subjects = array();
 				$bodies = array();
 				switch ($edited) {
+					case RESOURCE_EDITION_MOVE:
+						foreach ($languages as $language) {
+							$subjects[$language->getCode()] = $language->getMessage(MESSAGE_PAGE_ACTION_EMAIL_MOVE_SUBJECT);
+							$bodies[$language->getCode()] = $language->getMessage(MESSAGE_EMAIL_VALIDATION_AWAITS)
+									."\n".$language->getMessage(MESSAGE_PAGE_ACTION_EMAIL_MOVE_BODY, array($cms_page->getTitle().' (ID : '.$cms_page->getID().')', $cms_user->getFullName()));
+						}
+					break;
 					case RESOURCE_EDITION_SIBLINGSORDER:
 						foreach ($languages as $language) {
 							$subjects[$language->getCode()] = $language->getMessage(MESSAGE_PAGE_ACTION_EMAIL_SIBLINGSORDER_SUBJECT);
@@ -568,6 +601,9 @@ if ($edited) {
 			//log event
 			$log = new CMS_log();
 			switch ($edited) {
+				case RESOURCE_EDITION_MOVE:
+					$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_EDIT_MOVE, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getStatus(), "", $cms_page);
+				break;
 				case RESOURCE_EDITION_SIBLINGSORDER:
 					$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_EDIT_SIBLINGSORDER, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getStatus(), "", $cms_page);
 				break;

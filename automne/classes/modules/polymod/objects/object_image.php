@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_image.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: object_image.php,v 1.2 2008/12/18 10:40:29 sebastien Exp $
 
 /**
   * Class CMS_object_image
@@ -624,6 +624,9 @@ class CMS_object_image extends CMS_object_common
 	  */
 	function getValue($name, $parameters = '') {
 		switch($name) {
+			case 'label':
+				return $this->getLabel();
+			break;
 			case 'imageHTML':
 				//get module codename
 				$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());

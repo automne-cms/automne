@@ -234,17 +234,16 @@ Automne.treeNode = Ext.extend(Ext.tree.TreeNodeUI, {
 			this.disabled = false;
 		}
 		var href = a.href ? a.href : Ext.isGecko ? "" : "#";
+		var text = !a.draggable && !a.allowDrop ? '<a hidefocus="on" class="x-tree-node-anchor" href="'+ href +'" tabIndex="1" '+ (a.hrefTarget ? ' target="'+ a.hrefTarget +'"' : '') + '>'+ n.text +'</a>' : n.text;
 		var buf = ['<li class="x-tree-node">',
 			'<div ext:tree-node-id="',n.id,'" class="x-tree-node-el x-tree-node-leaf x-unselectable ', a.cls,'" unselectable="on">',
 				'<span class="x-tree-node-indent">',this.indentMarkup,'</span>',
 				'<img src="', this.emptyIcon, '" class="x-tree-ec-icon x-tree-elbow" />',
 				'<img src="', a.icon || this.emptyIcon, '" unselectable="on" />',
 				a.status,
-				'<span class="atm-tree-page ',disabledCls,'" unselectable="on">',
-					'<a hidefocus="on" class="x-tree-node-anchor" href="',href,'" tabIndex="1" ',
-					 a.hrefTarget ? ' target="'+a.hrefTarget+'"' : '', '>',n.text,'</a>',
+				'<span class="atm-tree-page ',disabledCls, a.draggable ? ' atm-drag' : '','" unselectable="on">',
+					text,
 				'</span>',
-				a.draggable ? '<img src="'+ this.emptyIcon+ '" class="atm-drag" />' : '',
 			'</div>',
 			'<ul class="x-tree-node-ct" style="display:none;"></ul>',
 			'</li>'].join('');
@@ -264,7 +263,7 @@ Automne.treeNode = Ext.extend(Ext.tree.TreeNodeUI, {
 		this.iconNode = cs[2];
 		this.anchor = cs[4].firstChild;
 		this.textNode = cs[4].firstChild.firstChild;
-		this.dragNode = (cs[5]) ? cs[5] : cs[4];
+		this.dragNode = (cs[4]) ? cs[4] : cs[3];
 		if (a.expanded) n.expand();
 		if (a.selected) {
 			n.select();
@@ -326,4 +325,33 @@ Automne.treeLoader = Ext.extend(Ext.tree.TreeLoader, {
 		//call parent method processResponse to process json datas
 		Automne.treeLoader.superclass.processResponse.call(this, response, options.node, options.sentCallback);
 	}
+});
+
+Ext.tree.TreeDropZone.override({
+	// private
+    getDropPoint : function(e, n, dd){
+        var tn = n.node;
+        if(tn.isRoot){
+            return tn.allowChildren !== false ? "append" : false; // always append for root
+        }
+        var dragEl = n.ddel;
+        var t = Ext.lib.Dom.getY(dragEl), b = t + dragEl.offsetHeight;
+        var y = Ext.lib.Event.getPageY(e);
+        var noAppend = tn.allowChildren === false;// || tn.isLeaf(); changed this to allow appening into a leaf node
+        if(this.appendOnly || tn.parentNode.allowChildren === false){
+            return noAppend ? false : "append";
+        }
+        var noBelow = false;
+        if(!this.allowParentInsert){
+            noBelow = tn.hasChildNodes() && tn.isExpanded();
+        }
+        var q = (b - t) / (noAppend ? 2 : 3);
+        if(y >= t && y < (t + q)){
+            return "above";
+        }else if(!noBelow && (noAppend || y >= b-q && y <= b)){
+            return "below";
+        }else{
+            return "append";
+        }
+    }
 });

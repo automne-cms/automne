@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: profileusersgroupscatalog.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: profileusersgroupscatalog.php,v 1.2 2008/12/18 10:41:12 sebastien Exp $
 
 /**
   * Class CMS_profile_usersGroupsCatalog
@@ -130,11 +130,12 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	  * @return array(CMS_profile_usersGroup)
 	  * @access public
 	  */
-	function search($search = '', $letter = '', $userId = false, $order = '', $direction = 'asc', $start = 0, $limit = 0, $returnObjects = true) {
+	function search($search = '', $letter = '', $userId = false, $groupsIds = array(), $order = '', $direction = 'asc', $start = 0, $limit = 0, $returnObjects = true, &$score = array()) {
 		$start = (int) $start;
 		$limit = (int) $limit;
 		$direction = (in_array(strtolower($direction), array('asc', 'desc'))) ? strtolower($direction) : 'asc';
-		$keywordsWhere = $letterWhere = $groupWhere = $orderBy = '';
+		$keywordsWhere = $letterWhere = $groupWhere = $orderClause = $orderBy = '';
+		$select = 'id_prg';
 		if ($search) {
 			//clean user keywords (never trust user input, user is evil)
 			$keyword = strtr($search, ",;", "  ");
@@ -144,9 +145,6 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 			foreach ($words as $aWord) {
 				if ($aWord && $aWord!='' && strlen($aWord) >= 3) {
 					$aWord = str_replace(array('%','_'), array('\%','\_'), $aWord);
-					if (htmlentities($aWord) != $aWord) {
-						$cleanedWords[] = htmlentities($aWord);
-					}
 					$cleanedWords[] = $aWord;
 				}
 			}
@@ -158,6 +156,10 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 				$keywordsWhere .= ($keywordsWhere) ? ' and ' : '';
 				$keywordsWhere .= " label_prg like '%".sensitiveIO::sanitizeSQLString($cleanedWord)."%'";
 			}
+			
+			//$keywordsWhere = ' (';
+			$select .= " , MATCH (label_prg, description_prg) AGAINST ('".sensitiveIO::sanitizeSQLString($search)."') as m ";
+			$keywordsWhere = " (MATCH (label_prg, description_prg) AGAINST ('".sensitiveIO::sanitizeSQLString($search)."') or (".$keywordsWhere."))";
 		}
 		if ($letter && strlen($letter) === 1) {
 			$letterWhere .= ($keywordsWhere) ? ' and ' : '';
@@ -171,35 +173,46 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 			$groupWhere .= ($keywordsWhere || $letterWhere) ? ' and ' : '';
 			$groupWhere .= " id_prg in (".implode(',',$userGroups).")";
 		}
-		if ($order) {
-			$founded = false;
-			$sql = "DESCRIBE profilesUsersGroups";
-			$q = new CMS_query($sql);
-			while ($field = $q->getValue('Field')) {
-				if ($field == $order.'_prg') {
-					$founded = true;
+		if ($groupsIds) {
+			$groupWhere .= ($keywordsWhere || $letterWhere || $groupWhere) ? ' and ' : '';
+			$groupWhere .= " id_prg in (".sensitiveIO::sanitizeSQLString(implode(',',$groupsIds)).")";
+		}
+		if ($order != 'score') {
+			if ($order) {
+				$founded = false;
+				$sql = "DESCRIBE profilesUsersGroups";
+				$q = new CMS_query($sql);
+				while ($field = $q->getValue('Field')) {
+					if ($field == $order.'_prg') {
+						$founded = true;
+					}
 				}
-			}
-			if ($founded) {
-				$orderBy = $order.'_prg';
+				if ($founded) {
+					$orderBy = $order.'_prg';
+				} else {
+					$orderBy = 'label_prg';
+				}
 			} else {
 				$orderBy = 'label_prg';
 			}
+			if ($orderBy) {
+				$orderClause = "order by
+					".$orderBy."
+					".$direction;
+			}
 		} else {
-			$orderBy = 'label_prg';
+			$orderClause = " order by m ".$direction;
 		}
 		$sql = "
 			select
-				id_prg
+				".$select."
 			from
 				profilesUsersGroups
 			".(($keywordsWhere || $letterWhere || $groupWhere) ? 'where' : '')."
 			".$keywordsWhere."
 			".$letterWhere."
 			".$groupWhere."
-			order by
-				".$orderBy."
-				".$direction."
+			".$orderClause."
 		";
 		if ($limit) {
 			$sql .= "limit 
@@ -209,7 +222,12 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 		//pr($sql);
 		//pr($q->getNumRows());
 		$groups = array();
-		while ($id = $q->getValue("id_prg")) {
+		while ($r = $q->getArray()) {
+			$id = $r['id_prg'];
+			//set match score if exists
+			if (isset($r['m'])) {
+				$score[$id] = $r['m'];
+			}
 			if ($returnObjects) {
 				$group = CMS_profile_usersGroupsCatalog::getById($id);
 				if (is_a($group, "CMS_profile_usersGroup") && !$group->hasError()) {

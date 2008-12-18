@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-rows-datas.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: page-rows-datas.php,v 1.2 2008/12/18 10:36:43 sebastien Exp $
 
 /**
   * PHP page : Load page templates infos
@@ -98,52 +98,7 @@ foreach ($rows as $row) {
 			$row->writeToPersistence();
 		}
 	}
-	$hasClientSpaces = $row->hasClientSpaces();
-	
-	$description = sensitiveIO::ellipsis($row->getDescription(), 50);
-	if ($description != $row->getDescription()) {
-		$description = '<span ext:qtip="'.htmlspecialchars($row->getDescription()).'">'.$description.'</span>';
-	}
-	$description = $description ? $description.'<br />' : '';
-	//append template definition if needed
-	$definitionDatas = $definition ? $row->getDefinition() : '';
-	//templates filters
-	$filteredTemplates = '';
-	if ($row->getFilteredTemplates()) {
-		foreach ($row->getFilteredTemplates() as $tplId) {
-			$template = CMS_pageTemplatesCatalog::getByID($tplId);
-			if (is_object($template) && !$template->hasError()) {
-				$filteredTemplates .= ($filteredTemplates) ? ', ' : '';
-				$filteredTemplates .= $template->getLabel();
-			}
-		}
-	}
-	$filtersInfos = '';
-	$filtersInfos .= ($filteredTemplates) ? 'Aux modèles : '.$filteredTemplates : '';
-	$filtersInfos = ($filtersInfos) ? '<br />Usage restreint : <strong>'.$filtersInfos.'</strong>' : '';
-	
-	$rowsDatas['results'][] = array(
-		'id'			=> $row->getID(),
-		'name'			=> $row->getLabel(),
-		'image'			=> $row->getImage(),
-		'groups'		=> implode(', ', $row->getGroups()),
-		'desc'			=> $row->getDescription(),
-		'filter'		=> $row->getLabel().' '.implode(', ', $row->getGroups()),
-		'tplfilter'		=> implode(',', $row->getFilteredTemplates()),
-		'description'	=> 	'<div'.(!$row->isUseable() ? ' class="atm-inactive"' : '').'>'.
-								'<img src="'.$row->getImage().'" style="float:left;margin-right:3px;width:70px;" />'.
-								$description.
-								'Groupes : <strong>'.implode(', ', $row->getGroups()).'</strong><br />'.
-								'Actif : <strong>'.($row->isUseable() ? 'Oui':'Non').'</strong><br />'.
-								'Employé : <strong>'.($hasClientSpaces ? 'Oui':'Non').'</strong>'.($hasClientSpaces ? ' - <a href="#" onclick="Automne.message.show(\'TODO\');return false;">Voir</a>'.
-								($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) ? ' / <a href="#" onclick="Automne.server.call(\'rows-controler.php\', \'\', {rowId:'.$row->getID().', action:\'regenerate\'});return false;">Régénérer</a>' : '').' les pages.' : '').
-								$filtersInfos.
-								'<br class="x-form-clear" />'.
-							'</div>',
-		'activated'		=> $row->isUseable() ? true : false,
-		'used'			=> $hasClientSpaces,
-		'definition'	=> $definitionDatas
-	);
+	$rowsDatas['results'][] = $row->getJSonDescription($cms_user, $cms_language, $definition);
 }
 
 $view->setContent($rowsDatas);

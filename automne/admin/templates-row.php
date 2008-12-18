@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-row.php,v 1.2 2008/11/27 17:25:36 sebastien Exp $
+// $Id: templates-row.php,v 1.3 2008/12/18 10:36:44 sebastien Exp $
 
 /**
   * PHP page : Load page rows search window.
@@ -228,7 +228,7 @@ $jscontent = <<<END
 		url:			'page-rows-datas.php',
 		id:				'id',
 		remoteSort:		true,
-		fields:			['id', 'name', 'description', 'groups', 'templates', 'activated', 'image', 'used'],
+		fields:			['id', 'label', 'description', 'groups', 'templates', 'activated', 'image', 'used'],
 		listeners:		{
 			'load': 		{fn:function(store, records, options){
 				//Update results title
@@ -252,7 +252,7 @@ $jscontent = <<<END
 	var resultTpl = new Ext.XTemplate(
 	'<tpl for=".">',
 	'	<div class="atm-result x-unselectable" id="object-{id}">',
-	'		<div class="atm-title">{name}</div>',
+	'		<div class="atm-title">{label}</div>',
 	'		<div class="atm-description">{description}</div>',
 	'	</div>',
 	'</tpl>');

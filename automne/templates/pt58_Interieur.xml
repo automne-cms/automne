@@ -31,6 +31,9 @@
 						<atm-linx type="recursivelinks">
 							<selection>
 								<start><nodespec type="node" value="2" /></start>
+								<condition property="lvl" operator="&lt;=">
+									<value type="data">2</value>
+								</condition>
 							</selection>
 							<display>
 								<mode>close</mode>

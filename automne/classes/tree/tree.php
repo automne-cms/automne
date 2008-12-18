@@ -15,7 +15,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: tree.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: tree.php,v 1.2 2008/12/18 10:41:04 sebastien Exp $
 
 /**
   * Class CMS_tree
@@ -385,7 +385,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return array(CMS_page) The ancestors, from root to the page. Minimum is array(rootpage) if lineage of root wanted. Return false if break in lineage or page is archived or deleted.
 	  * @access public
 	  */
-	function getLineage($ancestor, $page, $IO_CMS_page=true)
+	function getLineage($ancestor, $page, $IO_CMS_page=true, $publicTree = false)
 	{
 		static $fathers;
 		if ($IO_CMS_page && (!is_a($ancestor, "CMS_page") || !is_a($page, "CMS_page"))) {
@@ -395,15 +395,16 @@ class CMS_tree extends CMS_grandFather
 		$lineage = array($page);
 		$currentPageID = ($IO_CMS_page) ? $page->getID() : $page;
 		$ancestorPageID = ($IO_CMS_page) ? $ancestor->getID() : $ancestor;
+		$table = ($publicTree) ? 'linx_tree_public' : 'linx_tree_edited';
 		while ($currentPageID != APPLICATION_ROOT_PAGE_ID && $currentPageID != $ancestorPageID) {
 			if (!isset($fathers[$currentPageID])) {
 				$sql = "
 					select
 						father_ltr
 					from
-						linx_tree_edited
+						".$table."
 					where
-						sibling_ltr='".$currentPageID."'
+						sibling_ltr='".sensitiveIO::sanitizeSQLString($currentPageID)."'
 				";
 				$q = new CMS_query($sql);
 				if ($q->getNumRows()) {
@@ -438,6 +439,39 @@ class CMS_tree extends CMS_grandFather
 	}
 	
 	/**
+	  * Returns page father
+	  * Static function.
+	  *
+	  * @param mixed $page : the page id or the cms_page object to get father of
+	  * @param boolean $outputObject : if true, return father as a cms_page object, otherwise, return father page Id (default false)
+	  * @param boolean $publicTree : if true, return public father page, else, return edited father (default false : edited)
+	  * @return mixed, cms_page or page id
+	  * @access public
+	  */
+	function getFather($page, $outputObject = false, $publicTree = false) {
+		//check argument is a page
+		if (!is_a($page, "CMS_page") && !sensitiveIO::isPositiveInteger($page)) {
+			CMS_grandFather::raiseError("Page must be instance of CMS_page or positive integer");
+			return false;
+		}
+		$pageId = (is_object($page)) ? $page->getID() : $page;
+		$table = ($publicTree) ? 'linx_tree_public' : 'linx_tree_edited';
+		$sql = "
+			select
+				father_ltr
+			from
+				".$table."
+			where
+				sibling_ltr='".sensitiveIO::sanitizeSQLString($pageId)."'
+		";
+		$q = new CMS_query($sql);
+		if (!$q->getNumRows()) {
+			return false;
+		}
+		return $outputObject ? CMS_tree::getPageByID($q->getValue("father_ltr")) : $q->getValue("father_ltr");
+	}
+	
+	/**
 	  * Returns the ancestor of the given page, at the given offset.
 	  * Offset : 	positive : 1 is for father, 2 for grand-father, and so on.
 	  * 			negative : -1 for the root sibling, -2 for the root grand-son (which are ancestors of $page)
@@ -449,7 +483,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return CMS_page The ancestor, or false if not found
 	  * @access public
 	  */
-	function getAncestor(&$page, $offset, $stopAtWebsites = false)
+	function getAncestor(&$page, $offset, $stopAtWebsites = false, $publicTree = false)
 	{
 		if (!is_a($page, "CMS_page")) {
 			CMS_grandFather::raiseError("Page must be instance of CMS_page");
@@ -461,7 +495,7 @@ class CMS_tree extends CMS_grandFather
 		} else {
 			$root = CMS_tree::getRoot();
 		}
-		$lineage = CMS_tree::getLineage($root->getID(), $page->getID(), false);
+		$lineage = CMS_tree::getLineage($root->getID(), $page->getID(), false, $publicTree);
 		if (!$lineage) {
 			return false;
 		}
@@ -528,7 +562,7 @@ class CMS_tree extends CMS_grandFather
 		
 		//move pages
 		foreach ($newSiblingOrder as $newOrder => $sibling) {
-			$newOrder = $newOrder+1; //because array keys start to 0 and sibling number to 1
+			$newOrder += 1; //because array keys start to 0 and sibling number to 1
 			//move the siblings order
 			$sql = "
 				update
@@ -544,6 +578,349 @@ class CMS_tree extends CMS_grandFather
 		//set the father status editions
 		$father->addEdition(RESOURCE_EDITION_SIBLINGSORDER, $user);
 		$father->writeToPersistence();
+		return true;
+	}
+	
+	/**
+	  * Revert siblings order from public state (used when a reordering is not validated).
+	  * Take care to set never validated pages to the end of public order
+	  * Static function.
+	  *
+	  * @param CMS_page $page The pages to revert siblings order
+	  * @return boolean true on success, false on failure
+	  * @access public
+	  */
+	function revertSiblingsOrder($page) {
+		//check arguments are pages
+		if (!is_a($page, "CMS_page")) {
+			CMS_grandFather::raiseError("Page must be an instance of CMS_page");
+			return false;
+		}
+		//get public siblings order
+		$sql = 
+			"select 
+				*
+			from
+				linx_tree_public
+			where
+				father_ltr='".sensitiveIO::sanitizeSQLString($page->getID())."'
+			order by 
+				order_ltr asc";
+		$q = new CMS_query($sql);
+		$publicOrders = array();
+		while($r = $q->getArray()) {
+			$publicOrders[$r['sibling_ltr']] = $r['order_ltr'];
+		}
+		//get edited siblings order (to get the never validated pages)
+		$sql = 
+			"select 
+				*
+			from
+				linx_tree_public
+			where
+				father_ltr='".sensitiveIO::sanitizeSQLString($page->getID())."'
+			order by 
+				order_ltr asc";
+		$q = new CMS_query($sql);
+		$editedOrders = array();
+		while($r = $q->getArray()) {
+			$editedOrders[$r['sibling_ltr']] = $r['order_ltr'];
+		}
+		
+		//delete all siblings from edited table
+		$sql = "
+			delete from
+				linx_tree_edited
+			where
+				father_ltr='".$page->getID()."'
+		";
+		$q = new CMS_query($sql);
+		
+		//add all siblings from public order
+		$neworder = 0;
+		foreach ($publicOrders as $sibling => $order) {
+			$neworder++;
+			$sql = "
+				insert into
+					linx_tree_edited
+				set
+					father_ltr='".$page->getID()."',
+					sibling_ltr='".$sibling."',
+					order_ltr='".$neworder."'
+			";
+			$q = new CMS_query($sql);
+			unset($editedOrders[$sibling]);
+		}
+		//and set never validated page if any at end of order
+		foreach ($editedOrders as $sibling => $order) {
+			$neworder++;
+			$sql = "
+				insert into
+					linx_tree_edited
+				set
+					father_ltr='".$page->getID()."',
+					sibling_ltr='".$sibling."',
+					order_ltr='".$neworder."'
+			";
+			$q = new CMS_query($sql);
+			unset($editedOrders[$sibling]);
+		}
+		return true;
+	}
+	
+	/**
+	  * Revert page move from public state (used when a move is not validated).
+	  * This function must only be used on page which was already validated once
+	  * Static function.
+	  *
+	  * @param CMS_page $page The page to revert move
+	  * @return boolean true on success, false on failure
+	  * @access public
+	  */
+	function revertPageMove($page) {
+		//check arguments are pages
+		if (!is_a($page, "CMS_page")) {
+			CMS_grandFather::raiseError("Page must be an instance of CMS_page");
+			return false;
+		}
+		//get current (edited) page father
+		$sql = 
+			"select 
+				father_ltr
+			from
+				linx_tree_edited
+			where
+				sibling_ltr='".sensitiveIO::sanitizeSQLString($page->getID())."'
+			";
+		$q = new CMS_query($sql);
+		$father = $q->getValue('father_ltr');
+		//get old (public) page position
+		$sql = 
+			"select 
+				father_ltr, order_ltr
+			from
+				linx_tree_public
+			where
+				sibling_ltr='".sensitiveIO::sanitizeSQLString($page->getID())."'
+			";
+		$q = new CMS_query($sql);
+		$r = $q->getArray();
+		$oldFather = $r['father_ltr'];
+		$oldPosition = $r['order_ltr'];
+		//remove page from current (edited) position
+		$sql = "
+			delete from
+				linx_tree_edited
+			where
+				sibling_ltr='".sensitiveIO::sanitizeSQLString($page->getID())."'
+		";
+		$q = new CMS_query($sql);
+		// compact old siblings order
+		CMS_tree::compactSiblingOrder(CMS_tree::getPageById($father));
+		//get current order of siblings for old father
+		$sql = 
+			"select 
+				sibling_ltr
+			from
+				linx_tree_edited
+			where
+				father_ltr='".sensitiveIO::sanitizeSQLString($oldFather)."'
+			order by order_ltr asc
+			";
+		$q = new CMS_query($sql);
+		$siblingsOrder = array();
+		while($id = $q->getValue('sibling_ltr')) {
+			$siblingsOrder[] = $id;
+		}
+		//set moved page into siblings at it's old position
+		$newSiblingOrder = array_slice($siblingsOrder, 0, $oldPosition - 1);
+		$newSiblingOrder[] = $page->getID();
+		$newSiblingOrder = array_merge($newSiblingOrder, array_slice($siblingsOrder, $oldPosition - 1));
+		//set new pages order
+		foreach ($newSiblingOrder as $newOrder => $sibling) {
+			$newOrder += 1; //because array keys start to 0 and sibling number to 1
+			if ($sibling != $page->getID()) {
+				//move the siblings order
+				$sql = "
+					update
+						linx_tree_edited
+					set
+						order_ltr='".$newOrder."'
+					where
+						sibling_ltr='".$sibling."'
+				";
+			} else {
+				//move the siblings order
+				$sql = "
+					insert into
+						linx_tree_edited
+					set
+						father_ltr='".$oldFather."',
+						sibling_ltr='".$sibling."',
+						order_ltr='".$newOrder."'
+				";
+			}
+			$q = new CMS_query($sql);
+		}
+		return true;
+	}
+	
+	/**
+	  * Publish the siblings order of a page : all its siblings order will go from _edited to _public
+	  * Static function.
+	  *
+	  * @param CMS_page $page The page whose siblings are well ordered
+	  * @return boolean true on success, false on failure
+	  * @access public
+	  */
+	function publishSiblingsOrder(&$page)
+	{
+		//check arguments are pages
+		if (!is_a($page, "CMS_page")) {
+			CMS_grandFather::raiseError("Page must be an instance of CMS_page");
+			return false;
+		}
+		
+		//if page was nevervalidated, do nothing
+		if ($page->getPublication() == RESOURCE_PUBLICATION_NEVERVALIDATED) {
+			return false;
+		}
+
+		//calculate the siblings ids to add
+		$siblings = CMS_tree::getSiblings($page);
+		$siblings_published = array();
+		foreach ($siblings as $sibling) {
+			if ($sibling->getPublication() == RESOURCE_PUBLICATION_PUBLIC) {
+				$siblings_published[] = $sibling;
+			}
+		}
+		
+		//delete all siblings from old table
+		$sql = "
+			delete from
+				linx_tree_public
+			where
+				father_ltr='".$page->getID()."'
+		";
+		$q = new CMS_query($sql);
+		
+		//add all siblings
+		$order = 0;
+		foreach ($siblings_published as $sibling) {
+			$order++;
+			$sql = "
+				insert into
+					linx_tree_public
+				set
+					father_ltr='".$page->getID()."',
+					sibling_ltr='".$sibling->getID()."',
+					order_ltr='".$order."'
+			";
+			$q = new CMS_query($sql);
+		}
+		return true;
+	}
+	
+	/**
+	  * Publish the move of a page : page new position pass from edited to public
+	  * Static function.
+	  *
+	  * @param CMS_page $page The page which move
+	  * @return boolean true on success, false on failure
+	  * @access public
+	  */
+	function publishPageMove(&$page)
+	{
+		//check arguments are pages
+		if (!is_a($page, "CMS_page")) {
+			CMS_grandFather::raiseError("Page must be an instance of CMS_page");
+			return false;
+		}
+		
+		//if page was nevervalidated, do nothing
+		if ($page->getPublication() == RESOURCE_PUBLICATION_NEVERVALIDATED) {
+			return false;
+		}
+		
+		//get current old (public) page father
+		$sql = 
+			"select 
+				father_ltr
+			from
+				linx_tree_public
+			where
+				sibling_ltr='".sensitiveIO::sanitizeSQLString($page->getID())."'
+			";
+		$q = new CMS_query($sql);
+		$oldFather = $q->getValue('father_ltr');
+		//get new (edited) page position
+		$sql = 
+			"select 
+				father_ltr, order_ltr
+			from
+				linx_tree_edited
+			where
+				sibling_ltr='".sensitiveIO::sanitizeSQLString($page->getID())."'
+			";
+		$q = new CMS_query($sql);
+		$r = $q->getArray();
+		$newFather = $r['father_ltr'];
+		$newPosition = $r['order_ltr'];
+		//remove page from current (public) position
+		$sql = "
+			delete from
+				linx_tree_public
+			where
+				sibling_ltr='".sensitiveIO::sanitizeSQLString($page->getID())."'
+		";
+		$q = new CMS_query($sql);
+		// compact old public siblings order
+		CMS_tree::compactSiblingOrder(CMS_tree::getPageById($oldFather), true);
+		//get current order of siblings for new father
+		$sql = 
+			"select 
+				sibling_ltr
+			from
+				linx_tree_public
+			where
+				father_ltr='".sensitiveIO::sanitizeSQLString($newFather)."'
+			order by order_ltr asc
+			";
+		$q = new CMS_query($sql);
+		$siblingsOrder = array();
+		while($id = $q->getValue('sibling_ltr')) {
+			$siblingsOrder[] = $id;
+		}
+		//set moved page into siblings at it's old position
+		$newSiblingOrder = array_slice($siblingsOrder, 0, $newPosition - 1);
+		$newSiblingOrder[] = $page->getID();
+		$newSiblingOrder = array_merge($newSiblingOrder, array_slice($siblingsOrder, $newPosition - 1));
+		//set new pages order
+		foreach ($newSiblingOrder as $newOrder => $sibling) {
+			$newOrder += 1; //because array keys start to 0 and sibling number to 1
+			if ($sibling != $page->getID()) {
+				//move the siblings order
+				$sql = "
+					update
+						linx_tree_public
+					set
+						order_ltr='".$newOrder."'
+					where
+						sibling_ltr='".$sibling."'
+				";
+			} else {
+				//move the siblings order
+				$sql = "
+					insert into
+						linx_tree_public
+					set
+						father_ltr='".$newFather."',
+						sibling_ltr='".$sibling."',
+						order_ltr='".$newOrder."'
+				";
+			}
+			$q = new CMS_query($sql);
+		}
 		return true;
 	}
 	
@@ -636,7 +1013,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return boolean true on succes, false if error
 	  * @access public
 	  */
-	function compactSiblingOrder(&$page)
+	function compactSiblingOrder(&$page, $publicTree = false)
 	{
 		$proceed = true;
 		// Chekcs
@@ -644,13 +1021,14 @@ class CMS_tree extends CMS_grandFather
 			CMS_grandFather::raiseError("Page must be instance of CMS_page");
 			return false;
 		}
+		$table = ($publicTree) ? "linx_tree_public" : "linx_tree_edited";
 		// Checks if any hole in list order (more orders than records in siblings)
 		$sql = "
 			select
 				count(*),
 				max(order_ltr)
 			from
-				linx_tree_edited
+				".$table."
 			where
 				father_ltr='".$page->getID()."'
 		";
@@ -662,7 +1040,7 @@ class CMS_tree extends CMS_grandFather
 				select
 					id_ltr
 				from
-					linx_tree_edited
+					".$table."
 				where
 					father_ltr='".$page->getID()."'
 				order by
@@ -674,7 +1052,7 @@ class CMS_tree extends CMS_grandFather
 				$order++;
 				$sql = "
 					update
-						linx_tree_edited
+						".$table."
 					set
 						order_ltr='".$order."'
 					where
@@ -736,95 +1114,62 @@ class CMS_tree extends CMS_grandFather
 	  *
 	  * @param CMS_page $page The page to move
 	  * @param CMS_page $newFather The new father of the page
+	  * @param array of CMS_page id $newSiblingOrder The sibling pages to move in the good order
+	  * @param CMS_profile_user $user The user operating the change.
 	  * @return string The error string (abbreviated) or false if no error
 	  * @access public
 	  */
-	function movePage(&$page, &$newFather)
+	function movePage(&$page, &$newFather, $newSiblingOrder, &$user)
 	{
 		//check arguments are pages
 		if (!is_a($page, "CMS_page") || !is_a($newFather, "CMS_page")) {
-			CMS_grandFather::raiseError("Ancestor and page must be instances of CMS_page");
-			return "PAGES";
+			CMS_grandFather::_raiseError("CMS_tree : movePage : ancestor and page must be instances of CMS_page");
+			return false;
 		}
-		//can't move page to the same father (useless...)
+		//get page current father
 		$father = CMS_tree::getAncestor($page, 1);
+		//can't move page to the same father (useless...)
 		if (is_object($father) && $newFather->getID() == $father->getID()) {
-			return "FATHER_IS_IDENTICAL";
+			CMS_grandFather::_raiseError("CMS_tree : movePage : can't move page under the same father (use changePagesOrder instead)");
+			return false;
 		}
-		
-		//check that the page has already been validated
-		if ($page->getPublication() == RESOURCE_PUBLICATION_NEVERVALIDATED) {
-			CMS_grandFather::raiseError("Can't move a page that was never validated");
-			return "PAGE_NEVER_VALIDATED";
-		}
-
 		//check that the page to move ain't the root.
 		$root = CMS_tree::getRoot();
 		if ($root->getID() == $page->getID()) {
-			CMS_grandFather::raiseError("Can't move root");
-			return "MOVE_ROOT";
+			CMS_grandFather::_raiseError("CMS_tree : movePage : can't move root");
+			return false;
 		}
-
 		//check that the page to move ain't an ancestor of new father.
 		$lineage = CMS_tree::getLineage($page, $newFather);
 		if ($lineage) {
-			CMS_grandFather::raiseError("Can't move a page to a descendant of it");
-			return "FATHER_IS_DESCENDANT";
+			CMS_grandFather::_raiseError("CMS_tree : movePage : can't move a page to a descendant of it");
+			return false;
 		}
 		
-		$siblings_edited = CMS_tree::getSiblings($newFather, false);
-		//check that the new father siblings are consistent in public and edited trees
-		//Seb : this test seems to be useless. I think, it is only used for sibling orders and if an error append in public siblings it is not a big error because sibling validation validate all sibling orders of a given father page
-		//I keep code here in case of bug I will not have thought
-		/*$siblings_public = CMS_tree::getSiblings($newFather, true);
-		if (sizeof($siblings_edited) != sizeof($siblings_public)) {
-			CMS_grandFather::raiseError("Can't move a page to a father that has new pages never validated");
-			return "FATHER_SIBLINGS_NEVER_VALIDATED";
-		}*/
-		
-		//get the future sibling order of the page
-		$new_sibling_order = sizeof($siblings_edited) + 1;
-		unset($siblings_edited);
-		unset($siblings_public);
-		
-		//here, we need to destroy all html files of this page and all of those siblings.
-		//linx files are deleted by CMS_tree::regenerateAllPages(true); below
-		$pageSiblings = CMS_tree::getAllSiblings($page->getID(),true);
-		$pagesToUnlink = array_merge($pageSiblings, array($page->getID()));
-		foreach ($pagesToUnlink as $pageID) {
-			$pageToUnlink = new CMS_page($pageID);
-			$pageToUnlink->deleteFiles();
-		}
-		
-		//detach the page from the public and edited trees
-		CMS_tree::detachPageFromTree($page, true);
+		//detach the page from the edited tree
 		CMS_tree::detachPageFromTree($page, false);
+		//attach the page to the edited tree under the new father
+		CMS_tree::attachPageToTree($page, $newFather, false);
+		//set new pages order
+		foreach ($newSiblingOrder as $newOrder => $sibling) {
+			$newOrder += 1; //because array keys start to 0 and sibling number to 1
+			//move the siblings order
+			$sql = "
+				update
+					linx_tree_edited
+				set
+					order_ltr='".$newOrder."'
+				where
+					sibling_ltr='".$sibling."'
+			";
+			$q = new CMS_query($sql);
+		}
 		
-		//Add page to both trees
-		$sql = "
-			insert into
-				linx_tree_edited
-			set
-				father_ltr='".$newFather->getID()."',
-				sibling_ltr='".$page->getID()."',
-				order_ltr='".$new_sibling_order."'
-		";
-		$q = new CMS_query($sql);
-
-		$sql = "
-			insert into
-				linx_tree_public
-			set
-				father_ltr='".$newFather->getID()."',
-				sibling_ltr='".$page->getID()."',
-				order_ltr='".$new_sibling_order."'
-		";
-		$q = new CMS_query($sql);
+		//set the page status editions
+		$page->addEdition(RESOURCE_EDITION_MOVE, $user);
+		$page->writeToPersistence();
 		
-		//Must regenerate all pages files (because of website stuff)
-		CMS_tree::regenerateAllPages(true);
-		
-		return false;
+		return true;
 	}
 	
 	/**
@@ -879,22 +1224,27 @@ class CMS_tree extends CMS_grandFather
 	  * Attach a page to the tree (references it in the linx_tree tables)
 	  * Static function.
 	  *
-	  * @param CMS_page $page The page to attach
-	  * @param CMS_page $ancestor The father to attach to
+	  * @param mixed $page The page to attach
+	  * @param mixed $ancestor The father to attach to
 	  * @param boolean $publicTree Do we want to fetch the public tree or the edited one ?
 	  * @return boolean true on success, false on failure
 	  * @access private
 	  */
-	function attachPageToTree(&$page, &$ancestor, $publicTree = false)
+	function attachPageToTree($page, $ancestor, $publicTree = false)
 	{
-		//check arguments are pages
-		if (!is_a($page, "CMS_page") || !is_a($ancestor, "CMS_page")) {
-			CMS_grandFather::raiseError("Pages must be instances of CMS_page");
+		//check argument is a page
+		if (!is_a($page, "CMS_page") && !sensitiveIO::isPositiveInteger($page)) {
+			CMS_grandFather::raiseError("Page must be instance of CMS_page or positive integer");
 			return false;
 		}
-		
+		$pageId = (is_object($page)) ? $page->getID() : $page;
+		//check argument is a page
+		if (!is_a($ancestor, "CMS_page") && !sensitiveIO::isPositiveInteger($ancestor)) {
+			CMS_grandFather::raiseError("Ancestor must be instance of CMS_page or positive integer");
+			return false;
+		}
+		$ancestorId = (is_object($ancestor)) ? $ancestor->getID() : $ancestor;
 		$table = ($publicTree) ? "linx_tree_public" : "linx_tree_edited";
-		
 		//check that the page ain't already in the tree
 		$sql = "
 			select
@@ -902,7 +1252,7 @@ class CMS_tree extends CMS_grandFather
 			from
 				".$table."
 			where
-				sibling_ltr='".$page->getID()."'
+				sibling_ltr='".sensitiveIO::sanitizeSQLString($pageId)."'
 		";
 		$q = new CMS_query($sql);
 		if ($q->getNumRows()) {
@@ -916,7 +1266,7 @@ class CMS_tree extends CMS_grandFather
 				from
 					linx_tree_edited
 				where
-					sibling_ltr='".$page->getID()."'
+					sibling_ltr='".sensitiveIO::sanitizeSQLString($pageId)."'
 			";
 			$q = new CMS_query($sql);
 			if ($q->getNumRows()) {
@@ -930,7 +1280,7 @@ class CMS_tree extends CMS_grandFather
 					from
 						".$table."
 					where
-						father_ltr='".$ancestor->getID()."'
+						father_ltr='".sensitiveIO::sanitizeSQLString($ancestorId)."'
 				";
 				$q = new CMS_query($sql);
 				$sibling_order = $q->getValue("mo") + 1;
@@ -943,7 +1293,7 @@ class CMS_tree extends CMS_grandFather
 				from
 					".$table."
 				where
-					father_ltr='".$ancestor->getID()."'
+					father_ltr='".sensitiveIO::sanitizeSQLString($ancestorId)."'
 			";
 			$q = new CMS_query($sql);
 			$sibling_order = $q->getValue("mo") + 1;
@@ -953,8 +1303,8 @@ class CMS_tree extends CMS_grandFather
 			insert into
 				".$table."
 			set
-				father_ltr='".$ancestor->getID()."',
-				sibling_ltr='".$page->getID()."',
+				father_ltr='".sensitiveIO::sanitizeSQLString($ancestorId)."',
+				sibling_ltr='".sensitiveIO::sanitizeSQLString($pageId)."',
 				order_ltr='".$sibling_order."'
 		";
 		$q = new CMS_query($sql);
@@ -1013,75 +1363,8 @@ class CMS_tree extends CMS_grandFather
 				sibling_ltr='".$page->getID()."'
 		";
 		$q = new CMS_query($sql);
-		
-		//change sibling order of the rightmost old brothers
-		$sql = "
-			update
-				".$table."
-			set
-				order_ltr=order_ltr - 1
-			where
-				father_ltr='".$father->getID()."'
-				and order_ltr > '".$current_sibling_order."'
-		";
-		$q = new CMS_query($sql);
-		
-		return true;
-	}
-	
-	/**
-	  * Publish the siblings order of a page : all its siblings order will go from _edited to _public
-	  * Static function.
-	  *
-	  * @param CMS_page $page The page whose siblings are well ordered
-	  * @return boolean true on success, false on failure
-	  * @access public
-	  */
-	function publishSiblingsOrder(&$page)
-	{
-		//check arguments are pages
-		if (!is_a($page, "CMS_page")) {
-			CMS_grandFather::raiseError("Page must be an instance of CMS_page");
-			return false;
-		}
-		
-		//if page was nevervalidated, do nothing
-		if ($page->getPublication() == RESOURCE_PUBLICATION_NEVERVALIDATED) {
-			return false;
-		}
-
-		//calculate the siblings ids to add
-		$siblings = CMS_tree::getSiblings($page);
-		$siblings_published = array();
-		foreach ($siblings as $sibling) {
-			if ($sibling->getPublication() == RESOURCE_PUBLICATION_PUBLIC) {
-				$siblings_published[] = $sibling;
-			}
-		}
-		
-		//delete all siblings from old table
-		$sql = "
-			delete from
-				linx_tree_public
-			where
-				father_ltr='".$page->getID()."'
-		";
-		$q = new CMS_query($sql);
-		
-		//add all siblings
-		$order = 0;
-		foreach ($siblings_published as $sibling) {
-			$order++;
-			$sql = "
-				insert into
-					linx_tree_public
-				set
-					father_ltr='".$page->getID()."',
-					sibling_ltr='".$sibling->getID()."',
-					order_ltr='".$order."'
-			";
-			$q = new CMS_query($sql);
-		}
+		//compact siblings orders of father
+		CMS_tree::compactSiblingOrder($father, $publicTree);
 		
 		return true;
 	}

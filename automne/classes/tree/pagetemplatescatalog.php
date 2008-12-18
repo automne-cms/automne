@@ -15,7 +15,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: pagetemplatescatalog.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: pagetemplatescatalog.php,v 1.2 2008/12/18 10:41:04 sebastien Exp $
 
 /**
   * Class CMS_pageTemplatesCatalog
@@ -57,14 +57,9 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 	  * @return array(CMS_pageTemplate)
 	  * @access public
 	  */
-	function getAll($includeInactive = false, $keyword = '', $groups = array(), $website = '', $tplIds = array(), $user = false, $start = 0, $limit = 0, $returnObjects = true) {
-		$sql = "
-			select
-				id_pt
-			from
-				pageTemplates
-		";
+	function getAll($includeInactive = false, $keyword = '', $groups = array(), $website = '', $tplIds = array(), $user = false, $start = 0, $limit = 0, $returnObjects = true, &$score = array()) {
 		$where = 'private_pt=0';
+		$select = 'id_pt';
 		//keywords
 		if ($keyword) {
 			//clean user keywords (never trust user input, user is evil)
@@ -75,7 +70,6 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 			foreach ($words as $aWord) {
 				if ($aWord && $aWord!='' && strlen($aWord) >= 3) {
 					$aWord = str_replace(array('%','_'), array('\%','\_'), $aWord);
-					if (htmlentities($aWord) != $aWord) $cleanedWords[] = htmlentities($aWord);
 					$cleanedWords[] = $aWord;
 				}
 			}
@@ -83,14 +77,24 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 				//if no words after cleaning, return
 				return array();
 			}
+			$keywordWhere = '';
 			foreach ($cleanedWords as $cleanedWord) {
-				$where .= ($where) ? ' and ' : '';
-				$where .= " (
+				$keywordWhere .= ($keywordWhere) ? ' and ' : '';
+				$keywordWhere .= " (
 					description_pt like '%".sensitiveIO::sanitizeSQLString($cleanedWord)."%'
 					or label_pt like '%".sensitiveIO::sanitizeSQLString($cleanedWord)."%'
 				)";
 			}
+			$where .= ($where) ? ' and ' : '';
+			$where .= " ((".$keywordWhere.") or MATCH (label_pt, description_pt) AGAINST ('".sensitiveIO::sanitizeSQLString($keyword)."') )";
+			$select .= " , MATCH (label_pt, description_pt) AGAINST ('".sensitiveIO::sanitizeSQLString($keyword)."') as m ";
 		}
+		$sql = "
+			select
+				".$select."
+			from
+				pageTemplates
+		";
 		//groups
 		if ($groups) {
 			foreach ($groups as $group) {
@@ -142,7 +146,11 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 		}
 		$sql = $sql.($where ? ' where '.$where : '');
 		//order
-		$sql .= " order by label_pt ";
+		if (strpos($sql, 'MATCH') === false) {
+			$sql .= " order by label_pt ";
+		} else {
+			$sql .= " order by m desc ";
+		}
 		//limit
 		if ($start || $limit) {
 			$sql .= " limit ".sensitiveIO::sanitizeSQLString($start).",".sensitiveIO::sanitizeSQLString($limit);
@@ -150,7 +158,12 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 		//pr($sql);
 		$q = new CMS_query($sql);
 		$pts = array();
-		while ($id = $q->getValue("id_pt")) {
+		while ($r = $q->getArray()) {
+			$id = $r['id_pt'];
+			//set match score if exists
+			if (isset($r['m'])) {
+				$score[$id] = $r['m'];
+			}
 			if ($returnObjects) {
 				$pt = new CMS_pageTemplate($id);
 				if (!$pt->hasError()) {

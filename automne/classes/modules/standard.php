@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: standard.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: standard.php,v 1.2 2008/12/18 10:40:12 sebastien Exp $
 
 /**
   * Class CMS_module_standard
@@ -43,6 +43,10 @@ class CMS_module_standard extends CMS_module
 	const MESSAGE_MOD_STANDARD_VALIDATION_EDITION_OFPAGE = 45;
 	const MESSAGE_MOD_STANDARD_VALIDATION_SIBLINGSORDER = 46;
 	const MESSAGE_MOD_STANDARD_VALIDATION_SIBLINGSORDER_OFPAGE = 47;
+	
+	const MESSAGE_MOD_STANDARD_VALIDATION_MOVE = 592;
+	const MESSAGE_MOD_STANDARD_VALIDATION_MOVE_OFPAGE = 594;
+	
 	const MESSAGE_MOD_STANDARD_URL_PREVIZ = 48;
 	const MESSAGE_MOD_STANDARD_URL_ONLINE = 49;
 	const MESSAGE_MOD_STANDARD_URL_EDIT = 261;
@@ -52,6 +56,12 @@ class CMS_module_standard extends CMS_module
 	const MESSAGE_MOD_STANDARD_ROWS_EXPLANATION = 1219;
 	const MESSAGE_MOD_STANDARD_TEMPLATE_EXPLANATION = 1222;
 	const MESSAGE_MOD_STANDARD_PLUGIN = 1403;
+	
+	const MESSAGE_MOD_STANDARD_LINKTITLE = 133;
+	const MESSAGE_MOD_STANDARD_ID = 863;
+	const MESSAGE_MOD_STANDARD_TEMPLATE = 72;
+	const MESSAGE_MOD_STANDARD_STATUS = 160;
+	const MESSAGE_MOD_STANDARD_PAGE = 1328;
 	
 	/**
 	  * Gets the administration frontend path. No centralized admin for the standard module.
@@ -155,6 +165,11 @@ class CMS_module_standard extends CMS_module
 			$all_validations = array_merge($all_validations, $validations);
 		}
 		
+		$validations = $this->getValidationsByEditions($user, RESOURCE_EDITION_MOVE);
+		if ($validations) {
+			$all_validations = array_merge($all_validations, $validations);
+		}
+		
 		if (!$all_validations) {
 			return false;
 		} else {
@@ -194,6 +209,11 @@ class CMS_module_standard extends CMS_module
 			$all_validations = array_merge($all_validations, $validations);
 		}
 		
+		$validations = $this->getValidationsInfoByEditions($user, RESOURCE_EDITION_MOVE);
+		if ($validations) {
+			$all_validations = array_merge($all_validations, $validations);
+		}
+		
 		if (!$all_validations) {
 			return false;
 		} else {
@@ -221,7 +241,7 @@ class CMS_module_standard extends CMS_module
 			return false;
 		}
 		if (!$getEditionType) {
-			$getEditionType = RESOURCE_EDITION_LOCATION + RESOURCE_EDITION_CONTENT + RESOURCE_EDITION_SIBLINGSORDER;
+			$getEditionType = RESOURCE_EDITION_LOCATION + RESOURCE_EDITION_CONTENT + RESOURCE_EDITION_SIBLINGSORDER + RESOURCE_EDITION_MOVE;
 		}
 		
 		$sql = "
@@ -339,6 +359,42 @@ class CMS_module_standard extends CMS_module
 				if (!$validation->hasError()) {
 					$validation->setValidationTypeLabel($language->getMessage(self::MESSAGE_MOD_STANDARD_VALIDATION_SIBLINGSORDER));
 					$validation->setValidationLabel($language->getMessage(self::MESSAGE_MOD_STANDARD_VALIDATION_SIBLINGSORDER_OFPAGE)." ".$page->getTitle());
+					$validation->setValidationShortLabel($page->getTitle());
+					$validation->addHelpUrl($language->getMessage(self::MESSAGE_MOD_STANDARD_URL_PREVIZ),
+						PATH_ADMIN_WR.'/page-previsualization.php?currentPage='.$id);
+					if ($page->getPublication() == RESOURCE_PUBLICATION_PUBLIC) {
+						$validation->addHelpUrl($language->getMessage(self::MESSAGE_MOD_STANDARD_URL_ONLINE),
+							$page->getURL());
+					}
+					//Back to edition location
+					$validation->addHelpUrl($language->getMessage(self::MESSAGE_MOD_STANDARD_URL_EDIT), 
+							PATH_ADMIN_WR.'/page-content.php?page='.$id, "_self", 'Automne.tabPanels.setActiveTab(\'edit\');Automne.utils.getPageById('. $id .');');
+					$validation->setEditorsStack($page->getEditorsStack());
+					return $validation;
+				} else {
+					return false;
+				}
+			
+			//RESOURCE_EDITION_MOVE
+			} elseif (($r["location"] == RESOURCE_LOCATION_USERSPACE
+					&&	$r["proposedFor"] == 0
+					&&	$r["editions"] & RESOURCE_EDITION_MOVE
+					&&	!($r["validationsRefused"] & RESOURCE_EDITION_MOVE)) && ($getEditionType & RESOURCE_EDITION_MOVE)) {
+				
+				//check if the page is editable by the user. If not, can't validate it
+				if (!$user->hasPageClearance($id, CLEARANCE_PAGE_EDIT)) {
+					return false;
+				}
+				
+				$language = $user->getLanguage();
+				
+				$editions = RESOURCE_EDITION_MOVE;
+				
+				$page = $this->getResourceByID($id);
+				$validation = new CMS_resourceValidation($this->_codename, $editions, $page);
+				if (!$validation->hasError()) {
+					$validation->setValidationTypeLabel($language->getMessage(self::MESSAGE_MOD_STANDARD_VALIDATION_MOVE));
+					$validation->setValidationLabel($language->getMessage(self::MESSAGE_MOD_STANDARD_VALIDATION_MOVE_OFPAGE)." ".$page->getTitle());
 					$validation->setValidationShortLabel($page->getTitle());
 					$validation->addHelpUrl($language->getMessage(self::MESSAGE_MOD_STANDARD_URL_PREVIZ),
 						PATH_ADMIN_WR.'/page-previsualization.php?currentPage='.$id);
@@ -488,6 +544,41 @@ class CMS_module_standard extends CMS_module
 			}
 		}
 		
+		if ($editions & RESOURCE_EDITION_MOVE) {
+			//siblings order change
+			$sql = "
+				select
+					id_pag
+				from
+					pages,
+					resources,
+					resourceStatuses
+				where
+					resource_pag = id_res
+					and status_res = id_rs
+					and location_rs = '".RESOURCE_LOCATION_USERSPACE."'
+					and proposedFor_rs = 0
+					and editions_rs & ".RESOURCE_EDITION_MOVE."
+					and not (validationsRefused_rs & ".RESOURCE_EDITION_MOVE.")
+			";
+			$q = new CMS_query($sql);
+			while ($data = $q->getArray()) {
+				$id = $data["id_pag"];
+				//check if the page is editable by the user. If not, can't validate it
+				if (!$user->hasPageClearance($id, CLEARANCE_PAGE_EDIT)) {
+					continue;
+				}
+				
+				$editions = RESOURCE_EDITION_MOVE;
+				
+				$validation = new CMS_resourceValidationInfo($this->_codename, $editions, $id);
+				if (!$validation->hasError()) {
+					$validation->setValidationTypeLabel($language->getMessage(self::MESSAGE_MOD_STANDARD_VALIDATION_MOVE));
+					$validations[] = $validation;
+				}
+			}
+		}
+		
 		return $validations;
 	}
 	
@@ -568,6 +659,27 @@ class CMS_module_standard extends CMS_module
 			";
 			$q_ord = new CMS_query($sql_ord);
 			$nb_ord = $q_ord->getNumRows();
+		}
+		
+		if ($editions & RESOURCE_EDITION_MOVE) {
+			//siblings order change
+			$sql_mov = "
+				select
+					id_pag
+				from
+					pages,
+					resources,
+					resourceStatuses
+				where
+					resource_pag = id_res
+					and status_res = id_rs
+					and location_rs = '".RESOURCE_LOCATION_USERSPACE."'
+					and proposedFor_rs = 0
+					and editions_rs & ".RESOURCE_EDITION_MOVE."
+					and not (validationsRefused_rs & ".RESOURCE_EDITION_MOVE.")
+			";
+			$q_mov = new CMS_query($sql_mov);
+			$nb_mov = $q_mov->getNumRows();
 		}
 		
 		//Location change
@@ -663,6 +775,38 @@ class CMS_module_standard extends CMS_module
 			}
 		}
 		
+		//move change
+		if ($nb_mov) {
+			while ($data = $q_mov->getArray()) {
+				$id = $data["id_pag"];
+				//check if the page is editable by the user. If not, can't validate it
+				if (!$user->hasPageClearance($id, CLEARANCE_PAGE_EDIT)) {
+					continue;
+				}
+				
+				$editions = RESOURCE_EDITION_MOVE;
+				
+				$page = $this->getResourceByID($id);
+				$validation = new CMS_resourceValidation($this->_codename, $editions, $page);
+				if (!$validation->hasError()) {
+					$validation->setValidationTypeLabel($language->getMessage(self::MESSAGE_MOD_STANDARD_VALIDATION_MOVE));
+					$validation->setValidationLabel($language->getMessage(self::MESSAGE_MOD_STANDARD_VALIDATION_MOVE_OFPAGE)." ".$page->getTitle());
+					$validation->setValidationShortLabel($page->getTitle());
+					$validation->addHelpUrl($language->getMessage(self::MESSAGE_MOD_STANDARD_URL_PREVIZ),
+						PATH_ADMIN_WR.'/page-previsualization.php?currentPage='.$id);
+					if ($page->getPublication() == RESOURCE_PUBLICATION_PUBLIC) {
+						$validation->addHelpUrl($language->getMessage(self::MESSAGE_MOD_STANDARD_URL_ONLINE),
+							$page->getURL());
+					}
+					//Back to edition location
+					$validation->addHelpUrl($language->getMessage(self::MESSAGE_MOD_STANDARD_URL_EDIT), 
+							PATH_ADMIN_WR.'/page-content.php?page='.$id, "_self", 'Automne.tabPanels.setActiveTab(\'edit\');Automne.utils.getPageById('. $id .');');
+					$validation->setEditorsStack($page->getEditorsStack());
+					$validations[] = $validation;
+				}
+			}
+		}
+		
 		return $validations;
 	}
 	
@@ -696,7 +840,7 @@ class CMS_module_standard extends CMS_module
 		$regen_pages = array();
 		if ($result == VALIDATION_OPTION_ACCEPT) {
 			//2.1. If editions contains SIBLINGSORDER, all pages monitoring this one for father changes should regen
-			if ($editions & RESOURCE_EDITION_SIBLINGSORDER) {
+			if ($editions & RESOURCE_EDITION_SIBLINGSORDER || $editions & RESOURCE_EDITION_MOVE) {
 				$temp_regen = CMS_linxesCatalog::getWatchers($page);
 				if ($temp_regen) {
 					$regen_pages = array_merge($regen_pages, $temp_regen);
@@ -709,8 +853,7 @@ class CMS_module_standard extends CMS_module
 				if ($temp_regen) {
 					$regen_pages = array_merge($regen_pages, $temp_regen);
 				}
-				
-				$father = CMS_tree::getAncestor($page, 1);
+				$father = CMS_tree::getFather($page);
 				if ($father) {
 					$temp_regen = CMS_linxesCatalog::getWatchers($father);
 					if ($temp_regen) {
@@ -718,12 +861,10 @@ class CMS_module_standard extends CMS_module
 					}
 				}
 			}
-			
 			//2.3. If editions contains CONTENT, only the page should be regen
 			if ($editions & RESOURCE_EDITION_CONTENT) {
 				//do nothing, the page is already in the array
 			}
-			
 			$regen_pages = array_unique($regen_pages);
 		}
 
@@ -738,13 +879,24 @@ class CMS_module_standard extends CMS_module
 			return false;
 		}
 
-		//re-instanciate the page object that have changed
-		$page = CMS_tree::getPageByID($resourceValidation->getResourceID());
+		if ($result == VALIDATION_OPTION_REFUSE && ($editions & RESOURCE_EDITION_SIBLINGSORDER || $editions & RESOURCE_EDITION_MOVE)) {
+			//validation was refused, move the page to it's original position
+			if ($editions & RESOURCE_EDITION_SIBLINGSORDER) {
+				//revert page order to the old one
+				CMS_tree::revertSiblingsOrder($page);
+			} elseif ($editions & RESOURCE_EDITION_MOVE) {
+				//revert page move to the old position
+				CMS_tree::revertPageMove($page);
+			}
+		}
 		
 		//if validation was not accepted, nothing more to do
 		if ($result != VALIDATION_OPTION_ACCEPT) {
 			return true;
 		}
+		
+		//re-instanciate the page object that have changed
+		$page = CMS_tree::getPageByID($resourceValidation->getResourceID());
 
 		//page was moved out of userspace
 		if ($editions & RESOURCE_EDITION_LOCATION) {
@@ -757,14 +909,8 @@ class CMS_module_standard extends CMS_module
 				CMS_tree::detachPageFromTree($page, false);
 				
 				//can't regenerate the page now
-				if (in_array($page->getID(), $regen_pages)) {
-					$regen = array();
-					foreach ($regen_pages as $rp) {
-						if ($rp != $page->getID()) {
-							$regen[] = $rp;
-						}
-					}
-					$regen_pages = $regen;
+				if ($key = array_search($page->getID(), $regen_pages)) {
+					unset($regen_pages[$key]);
 				}
 			}
 		} elseif (($editions & RESOURCE_EDITION_BASEDATA && $publication_before != RESOURCE_PUBLICATION_NEVERVALIDATED && $page->getPublication() != RESOURCE_PUBLICATION_PUBLIC && CMS_tree::isInPublicTree($page))) {
@@ -774,24 +920,17 @@ class CMS_module_standard extends CMS_module
 			CMS_tree::detachPageFromTree($page, true);
 			
 			//can't regenerate the page now
-			if (in_array($page->getID(), $regen_pages)) {
-				$regen = array();
-				foreach ($regen_pages as $rp) {
-					if ($rp != $page->getID()) {
-						$regen[] = $rp;
-					}
-				}
-				$regen_pages = $regen;
+			if ($key = array_search($page->getID(), $regen_pages)) {
+				unset($regen_pages[$key]);
 			}
 		} else {
 			//LINX_TREE RECORDS GENERATION
 			//1. If the page has never been validated
-			
 			if ($publication_before == RESOURCE_PUBLICATION_NEVERVALIDATED) {
 				//test the father's editions. If SIBLINGSORDER, only attach the page, else validate all of siblings orders
-				$father = CMS_tree::getAncestor($page, 1);
+				$father = CMS_tree::getFather($page, true);
 				$father_status = $father->getStatus();
-				if ($father_status->getEditions() & RESOURCE_EDITION_SIBLINGSORDER) {
+				if ($father_status->getEditions() & RESOURCE_EDITION_SIBLINGSORDER || $editions & RESOURCE_EDITION_MOVE) {
 					CMS_tree::attachPageToTree($page, $father, true);
 				} else {
 					CMS_tree::publishSiblingsOrder($father);
@@ -801,8 +940,23 @@ class CMS_module_standard extends CMS_module
 			
 			$grand_root = CMS_tree::getRoot();
 			if ($page->getPublication() == RESOURCE_PUBLICATION_PUBLIC && $page->getID() != $grand_root->getID()) {
-				$father = CMS_tree::getAncestor($page, 1);
-				CMS_tree::attachPageToTree($page, $father, true);
+				$father = CMS_tree::getFather($page);
+				if ($editions & RESOURCE_EDITION_MOVE) {
+					//publish page move
+					CMS_tree::publishPageMove($page);
+					//regenerate all pages which link moved page
+					$temp_regen = CMS_linxesCatalog::getLinkers($page);
+					if ($temp_regen) {
+						$regen_pages = array_merge($regen_pages, $temp_regen);
+					}
+					//and regenerate all page who watch new father page
+					$temp_regen = CMS_linxesCatalog::getWatchers($father);
+					if ($temp_regen) {
+						$regen_pages = array_merge($regen_pages, $temp_regen);
+					}
+				} else {
+					CMS_tree::attachPageToTree($page, $father, true);
+				}
 			}
 			
 			//PAGE REGENERATION
@@ -810,7 +964,7 @@ class CMS_module_standard extends CMS_module
 			$launchRegnerator = ($lastValidation && !$regen_pages) ? true:false;
 			CMS_tree::submitToRegenerator($page->getID(), true, $launchRegnerator);
 		}
-		
+		$regen_pages = array_unique($regen_pages);
 		//2. the linked pages
 		CMS_tree::submitToRegenerator($regen_pages, false,!$lastValidation);
 		
@@ -1447,8 +1601,7 @@ class CMS_module_standard extends CMS_module
 					case "atm-linx":
 						$linx_args = array("page"=>$treatedObject, "publicTree"=>true);
 						$linx = $tag->getRepresentationInstance($linx_args);
-						$linx->register();
-						return $linx->getOutput();
+						return $linx->getOutput(true);
 					break;
 				}
 				return '';
@@ -1598,7 +1751,7 @@ class CMS_module_standard extends CMS_module
 						}
 					break;
 					case "body":
-						$statsCode = '<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat(); if (VIEW_SQL && isset($_SESSION["cms_context"]) && is_object($_SESSION["cms_context"])) {save_stat();}} ?>';
+						$statsCode = '<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat();} ?>';
 						//Append stats code
 						return str_replace('</body>', $statsCode."\n".'</body>', $tag->getContent());
 					break;
@@ -1840,6 +1993,112 @@ class CMS_module_standard extends CMS_module
 			return 'Page : <a class="admin" href="#" onclick="Automne.utils.getPageById('.$page->getID().');return false;">'.htmlspecialchars($label).' ('.$parameters['pageid'].')</a>';
 		}
 		return $cms_language->getMessage(66).' ('.$parameters['pageid'].')';
+	}
+	
+	/**
+	  * Search module objects by Id
+	  *
+	  * @param string $keyword : the search keywords
+	  * @param CMS_profile_user $user : the user which make the search
+	  * @param booolean : public search (default : false)
+	  * @param array : the results score returned by reference
+	  * @return array : results elements Ids
+	  * @access public
+	  */
+	function search ($keyword, &$user, $public = false, &$score = array()) {
+		$search = new CMS_search();
+		$pageResults = $search->getSearch($keyword, $user, $public, true);
+		$score = $pageResults['score'];
+		return $pageResults['results'];
+	}
+	
+	/**
+	  * Get search results objects for module by Id
+	  *
+	  * @param array : the results score ids
+	  * @return array : results elements (cms_page)
+	  * @access public
+	  */
+	function getSearchResults($resultsIds, $user) {
+		$results = array();
+		$cms_language = $user->getLanguage();
+		foreach ($resultsIds as $id) {
+			$page = CMS_tree::getPageById($id);
+			
+			//Resource related informations
+			$htmlStatus = $pubRange = '';
+			$status = $page->getStatus();
+			if (is_object($status)) {
+				$htmlStatus = $status->getHTML(false, $user, $this->getCodename(), $page->getID());
+				$pubRange = $status->getPublicationRange($cms_language);
+			}
+			$pageTemplateLabel = ($page->getTemplate()) ? $page->getTemplate()->getLabel() : '';
+			//page panel tip content
+			$panelTip = '
+			'.$cms_language->getMessage(self::MESSAGE_MOD_STANDARD_LINKTITLE).' : <strong>'.$page->getLinkTitle().'</strong><br />
+			'.$cms_language->getMessage(self::MESSAGE_MOD_STANDARD_ID).' : <strong>'.$page->getID().'</strong><br />
+			'.$cms_language->getMessage(self::MESSAGE_MOD_STANDARD_STATUS).' : <strong>'.$page->getStatus()->getStatusLabel($cms_language).'</strong><br />
+			'.$cms_language->getMessage(self::MESSAGE_MOD_STANDARD_TEMPLATE).' : <strong>'.$pageTemplateLabel.'</strong>';
+			
+			$edit = false;
+			if ($user->hasPageClearance($page->getID(), CLEARANCE_PAGE_EDIT)) {
+				$edit = array(
+					'type'			=> 'function',
+					'function'		=> "(function(button, window) {
+						Automne.message.popup({
+							msg: 				'Modifier la page \'".sensitiveIO::sanitizeJSString($page->getTitle())."\' fermera la recherche en cours. Etes vous sur ?',
+							buttons: 			Ext.MessageBox.OKCANCEL,
+							animEl: 			button.getEl(),
+							closable: 			false,
+							icon: 				Ext.MessageBox.QUESTION,
+							scope:				this,
+							fn: 				function (button) {
+								if (button == 'cancel') {
+									return;
+								}
+								//view page
+								Automne.utils.getPageById(".$page->getID().", 'edit');
+								//close window
+								window.close();
+							}
+						});
+					})",
+				);
+			}
+			
+			$results[$id] = array(
+				'id'			=> $id,
+				'type'			=> $cms_language->getMessage(self::MESSAGE_MOD_STANDARD_PAGE),
+				'status'		=> $htmlStatus,
+				'pubrange'		=> $pubRange,
+				'label'			=> $page->getTitle(),
+				'description'	=> $panelTip,
+				'edit'			=> $edit,
+				'view'			=> array(
+					'type'			=> 'function',
+					'function'		=> "(function(button, window) {
+						Automne.message.popup({
+							msg: 				'Voir la page \'".sensitiveIO::sanitizeJSString($page->getTitle())."\' fermera la recherche en cours. Etes vous sur ?',
+							buttons: 			Ext.MessageBox.OKCANCEL,
+							animEl: 			button.getEl(),
+							closable: 			false,
+							icon: 				Ext.MessageBox.QUESTION,
+							scope:				this,
+							fn: 				function (button) {
+								if (button == 'cancel') {
+									return;
+								}
+								//view page
+								Automne.utils.getPageById(".$page->getID().", 'public');
+								//close window
+								window.close();
+							}
+						});
+					})",
+				),
+			);
+		}
+		return $results;
 	}
 }
 ?>

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-copy.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: page-copy.php,v 1.2 2008/12/18 10:36:43 sebastien Exp $
 
 /**
   * PHP page : Load copy-page window.
@@ -86,7 +86,7 @@ $jscontent = <<<END
 	//if we are in a window context
 	
 	//set window title
-	copyPageWindow.setTitle('{$cms_language->getJsMessage(MESSAGE_PAGE_COPY)} {$pageTitle}');
+	copyPageWindow.setTitle('{$cms_language->getJsMessage(MESSAGE_PAGE_COPY)} \'{$pageTitle}\'');
 	//set help button on top of page
 	copyPageWindow.tools['help'].show();
 	//add a tooltip on button
@@ -102,7 +102,9 @@ $jscontent = <<<END
 	var copyOptions = new Ext.form.FormPanel({
 		region:			'north',
 		labelWidth: 	220,
-		autoHeight:		true,
+		/*autoHeight:		true,*/
+		height:			60,
+		border:			false,
 		bodyStyle:		'padding:5px;',
 		url:			'page-controler.php',
 		labelAlign:		'right',
@@ -130,7 +132,7 @@ $jscontent = <<<END
 					page:			$pageId
 				},
 				root: 			'results',
-				fields: 		['id', 'name', 'image', 'groups', 'compatible', 'description'],
+				fields: 		['id', 'label', 'image', 'groups', 'compatible', 'description'],
 				prepareData: 	function(data){
 			    	data.qtip = Ext.util.Format.htmlEncode(data.description);
 					data.cls = data.compatible ? '' : 'atm-red';
@@ -143,7 +145,7 @@ $jscontent = <<<END
 			allowBlank: 		false,
 			selectOnFocus:		true,
 			editable:			false,
-			tpl: 				'<tpl for="."><div ext:qtip="{qtip}" class="x-combo-list-item {cls}">{name}</div></tpl>'
+			tpl: 				'<tpl for="."><div ext:qtip="{qtip}" class="x-combo-list-item {cls}">{label}</div></tpl>'
 		}]
 	})
 	
@@ -236,7 +238,8 @@ $jscontent = <<<END
 	copyPageWindow.addButtons(buttons);
 	copyPageWindow.doLayout();
 	copyPageWindow.setWidth(copyPageWindow.width);
-	copyPageWindow.setHeight(copyPageWindow.height);
+	copyPageWindow.setHeight(copyPageWindow.height - 70); //to correct a bug when add buttons to window
+	
 END;
 
 $view->addJavascript($jscontent);

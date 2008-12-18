@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: poly_object.php,v 1.2 2008/12/18 10:40:37 sebastien Exp $
 
 /**
   * Class CMS_poly_object
@@ -1077,7 +1077,11 @@ class CMS_poly_object extends CMS_resource
 				return $this->_ID;
 			break;
 			case 'label':
-				return $this->getLabel();
+				if ($parameters == 'js') {
+					return sensitiveIO::sanitizeJSString($this->getLabel());
+				} else {
+					return $this->getLabel();
+				}
 			break;
 			case 'objectname':
 				return $this->getFieldLabel($cms_language);

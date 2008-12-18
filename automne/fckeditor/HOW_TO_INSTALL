@@ -8,6 +8,7 @@ Pour mettre à jour fckeditor :
 6- ajouter le repertoire automnePlugin présent dans fckeditor original dans la nouvelle version et déclarer les modules dans le fichier fckconfig.php
 7- reprendre le /automne/fckeditor/editor/css/fck_editorarea.css modifié pour Automne (appelé par /css/editor.css)
 8- modifier le filemanager (supprimer les connecteurs autre que PHP et changer les fichiers de configuration en conséquence).
+9- protéger la licence du fichier fckeditor.js par //<< ... //!>>
 
 -- Optionnel --
 

@@ -14,7 +14,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: search.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: search.php,v 1.2 2008/12/18 10:39:46 sebastien Exp $
 
 /**
   * Class CMS_search
@@ -70,16 +70,17 @@ class CMS_search extends CMS_grandFather {
 	  * @access public
 	  * param integer $searchType : the type of the search (see constants)
 	  */
-	function getSearch($keywords,&$user, $start='0', $max=self::MAX_RESULTS_BY_PAGE,$public=false){
+	function getSearch($keywords, $user, $public = false, $withPageContent = false){
 		if(is_a($user,'CMS_profile_user')){
 			$cms_language = $user->getLanguage();
 		} else {
 			$cms_language = new CMS_language('fr');
 		}
 		$results = array();
-		$messages = array();
-		$message = '';
-		$foundLinkToIDs = $foundLinkFromIDs = $foundPagesFromTemplate = $foundPagesFromRow = array();
+		/*$messages = array();
+		$message = '';*/
+		$where = $order = '';
+		$foundLinkToIDs = $foundLinkFromIDs = $foundPagesFromTemplate = $foundPagesFromRow = $matches = array();
 		// Clean keywords
 		$keywords = SensitiveIO::sanitizeSQLString($keywords);
 		$keywords = strtr($keywords, ",;", "  ");
@@ -87,11 +88,8 @@ class CMS_search extends CMS_grandFather {
 		$blocks=array_map("trim",array_unique(explode(" ", $keywords)));
 		$cleanedBlocks = array();
 		foreach ($blocks as $block) {
-			if ($block !== '' && (strlen($block) >= 3 || sensitiveIO::isPositiveInteger($block))) {
+			if ($block !== '' || sensitiveIO::isPositiveInteger($block)) {
 				$block = str_replace(array('%','_'), array('\%','\_'), $block);
-				if (htmlentities($block) != $block) {
-					$cleanedBlocks[] = htmlentities($block);
-				}
 				$cleanedBlocks[] = $block;
 			}
 		}
@@ -122,13 +120,13 @@ class CMS_search extends CMS_grandFather {
 							$foundLinkToIDs = array();
 							$where='';
 							$count = 0;
-							$messagesIDs = array();
+							/*$messagesIDs = array();*/
 							foreach ($allDatas[self::SEARCH_TYPE_LINKTO] as $block) {
 								$tabValues = explode(':',$block);
 								if(SensitiveIO::isPositiveInteger($tabValues[1])){
 									$where.= ($count) ? ' or ':'';
 									$count++;
-									$messagesIDs[] = $tabValues[1];
+									/*$messagesIDs[] = $tabValues[1];*/
 									$where .= " start_lre = '".$tabValues[1]."' ";
 								}
 							}
@@ -148,9 +146,9 @@ class CMS_search extends CMS_grandFather {
 									$foundLinkToIDs[]=$arr["stop_lre"];
 								}
 							}
-							if($messagesIDs){
+							/*if($messagesIDs){
 								$messages[] = $cms_language->getMessage(self::MESSAGE_RESULTS_RELATIONS,array(implode(' '.$cms_language->getMessage(self::MESSAGE_RESULTS_OR).' ',$messagesIDs)),MOD_STANDARD_CODENAME);
-							}
+							}*/
 						}
 					break;
 					case self::SEARCH_TYPE_LINKFROM:
@@ -158,13 +156,13 @@ class CMS_search extends CMS_grandFather {
 							$foundLinkFromIDs = array();
 							$where='';
 							$count = 0;
-							$messagesIDs = array();
+							/*$messagesIDs = array();*/
 							foreach ($allDatas[self::SEARCH_TYPE_LINKFROM] as $block) {
 								$tabValues = explode(':',$block);
 								if(SensitiveIO::isPositiveInteger($tabValues[1])){
 									$where.= ($count) ? ' or ':'';
 									$count++;
-									$messagesIDs[] = $tabValues[1];
+									/*$messagesIDs[] = $tabValues[1];*/
 									$where .= " stop_lre = '".$tabValues[1]."' ";
 								}
 							}
@@ -186,130 +184,194 @@ class CMS_search extends CMS_grandFather {
 								// Count links number
 								$allLinksNumber += count($foundLinkFromIDs);
 							}
-							if($messagesIDs){
+							/*if($messagesIDs){
 								$messages[] = $cms_language->getMessage(self::MESSAGE_RESULTS_LINKS,array(implode(' '.$cms_language->getMessage(self::MESSAGE_RESULTS_OR).' ',$messagesIDs)),MOD_STANDARD_CODENAME);
-							}
+							}*/
 						}
 					break;
 					case self::SEARCH_TYPE_TEMPLATE:
 						if(isset($allDatas[self::SEARCH_TYPE_TEMPLATE])){
 							$foundPagesFromTemplate = array();
-							$messagesIDs = array();
+							/*$messagesIDs = array();*/
 							foreach ($allDatas[self::SEARCH_TYPE_TEMPLATE] as $block) {
 								$tabValues = explode(':',$block);
 								if(SensitiveIO::isPositiveInteger($tabValues[1])){
 									$template = new CMS_pageTemplate($tabValues[1]);
-									$messagesIDs[] = '"'.$template->getLabel().'"';
+									//$messagesIDs[] = '"'.$template->getLabel().'"';
 									$foundPagesFromTemplate = array_unique(array_merge(CMS_pageTemplatesCatalog::getPagesByTemplate($tabValues[1]),$foundPagesFromTemplate));
 								}
 							}
 							$allLinksNumber += count($foundPagesFromTemplate);
-							if($messagesIDs){
+							/*if($messagesIDs){
 								$message = (count($messagesIDs) > 1) ? self::MESSAGE_RESULTS_TEMPLATES : self::MESSAGE_RESULTS_TEMPLATE;
 								$messages[] = $cms_language->getMessage($message,array(implode(' '.$cms_language->getMessage(self::MESSAGE_RESULTS_OR).' ',$messagesIDs)),MOD_STANDARD_CODENAME);
-							}
+							}*/
 						}
 					break;
 					case self::SEARCH_TYPE_ROW:
 						if(isset($allDatas[self::SEARCH_TYPE_ROW])){
 							$foundPagesFromRow = array();
-							$messagesIDs = array();
+							//$messagesIDs = array();
 							foreach ($allDatas[self::SEARCH_TYPE_ROW] as $block) {
 								$tabValues = explode(':',$block);
 								if(SensitiveIO::isPositiveInteger($tabValues[1])){
 									$row = new CMS_row($tabValues[1]);
-									$messagesIDs[] = '"'.$row->getLabel().'"';
+									//$messagesIDs[] = '"'.$row->getLabel().'"';
 									$foundPagesFromRow = array_unique(array_merge(CMS_rowsCatalog::getPagesByRow($tabValues[1]),CMS_rowsCatalog::getPagesByRow($tabValues[1], false, true),$foundPagesFromRow));
 								}
 							}
 							$allLinksNumber += count($foundPagesFromRow);
-							if($messagesIDs){
+							/*if($messagesIDs){
 								$message = (count($messagesIDs) > 1) ? self::MESSAGE_RESULTS_ROWS : self::MESSAGE_RESULTS_ROW;
 								$messages[] = $cms_language->getMessage($message,array(implode(' '.$cms_language->getMessage(self::MESSAGE_RESULTS_OR).' ',$messagesIDs)),MOD_STANDARD_CODENAME);
-							}
+							}*/
 						}
 					break;
 				}
 			}
 			$foundIDs = array_unique(array_merge($foundLinkToIDs, $foundLinkFromIDs, $foundPagesFromTemplate, $foundPagesFromRow));
-			// Main sql request (keywords)
+			// Main sql requests (for pageId and keywords)
 			if($allDatas[self::SEARCH_TYPE_DEFAULT]){
-			$count = 0;
-			$where='';
-				$messagesWords = array();
-				$messagesIdentifiers = array();
-				foreach ($allDatas[self::SEARCH_TYPE_DEFAULT] as $block) {
-					$where.= ($count) ? ' or ':'';
-					$count++;
+				$count = 0;
+				$where='';
+				/*$messagesWords = array();
+				$messagesIdentifiers = array();*/
+				foreach ($allDatas[self::SEARCH_TYPE_DEFAULT] as $key => $block) {
 					if (SensitiveIO::isPositiveInteger($block)) {
-						$messagesIdentifiers[] = '"'.$block.'"';
+						$where.= ($count) ? ' or ':'';
+						$count++;
+						//$messagesIdentifiers[] = '"'.$block.'"';
 						$where .=" (page_pbd like '%".$block."%')";
-					} else {
-						$messagesWords[] = '"'.$block.'"';
-						$where .= " (
-							title_pbd like '".$block."%'
-							or linkTitle_pbd like '%".$block."%'
-							or keywords_pbd like '%".$block."%'
-							or description_pbd like '%".$block."%'
-							or category_pbd like '%".$block."%'
-						)";
+						unset($allDatas[self::SEARCH_TYPE_DEFAULT][$key]);
 					}
 				}
-				if($messagesWords){
-					$messages[] = $cms_language->getMessage(self::MESSAGE_RESULTS_KEYWORDS,array(implode(' '.$cms_language->getMessage(self::MESSAGE_RESULTS_OR).' ',$messagesWords)),MOD_STANDARD_CODENAME);
-					$order = " title_pbd ";
+				$order = '';
+				if ($allDatas[self::SEARCH_TYPE_DEFAULT]) {
+					$suffix = ($public) ? '_public' : '_edited';
+					//$messages[] = $cms_language->getMessage(self::MESSAGE_RESULTS_KEYWORDS,array($keywords),MOD_STANDARD_CODENAME);
+					if (!$withPageContent) {
+						//Search in page metadatas
+						$count = 0;
+						foreach ($allDatas[self::SEARCH_TYPE_DEFAULT] as $block) {
+							$where.= ($count) ? ' or ':'';
+							$count++;
+							$where .= " (
+								title_pbd like '%".$block."%'
+								or linkTitle_pbd like '%".$block."%'
+								or keywords_pbd like '%".$block."%'
+								or description_pbd like '%".$block."%'
+								or category_pbd like '%".$block."%'
+							)";
+							
+						}
+						if($foundIDs){
+							$where .= " and page_pbd in (".implode($foundIDs,',').") ";
+						}
+						// Set SQL
+						$sql ="
+							select
+								page_pbd
+							from
+								pagesBaseData".$suffix."
+							where
+								".$where."
+						";
+						$q = new CMS_query($sql);
+						//pr($sql);
+						$results = array();
+						$count=0;
+						$foundIDs = array();
+						while ($id = $q->getValue('page_pbd')) {
+							$foundIDs[] = $id;
+						}
+						
+						$order = "
+					 		order by title_pbd asc
+						";
+					} else {
+						//Search in page content (fulltext search)
+						$keywords = implode(' ', $allDatas[self::SEARCH_TYPE_DEFAULT]);
+						$selects = array(
+							'pagesBaseData'.$suffix 	=> array('page' => 'page_pbd', 	'match' => 'title_pbd,linkTitle_pbd,keywords_pbd,description_pbd'),
+							'blocksVarchars'.$suffix	=> array('page' => 'page', 		'match' => 'value'),
+							'blocksTexts'.$suffix		=> array('page' => 'page', 		'match' => 'value', 'entities' => true),
+							'blocksImages'.$suffix		=> array('page' => 'page', 		'match' => 'label'),
+							'blocksFiles'.$suffix		=> array('page' => 'page', 		'match' => 'label'),
+						);
+						$matches = array();
+						foreach ($selects as $table => $select) {
+							// Set SQL
+							$sql ="
+								select 
+									".$select['page']." as pageId, MATCH (".$select['match'].") AGAINST ('".sensitiveIO::sanitizeSQLString($keywords)."') as m1
+									".(isset($select['entities']) && $keywords != htmlentities($keywords) ? " , MATCH (".$select['match'].") AGAINST ('".sensitiveIO::sanitizeSQLString(htmlentities($keywords))."') as m2 ": '')."
+								from 
+									".$table."
+								where 
+									MATCH (".$select['match'].") AGAINST ('".sensitiveIO::sanitizeSQLString($keywords)."')
+									".(isset($select['entities']) && $keywords != htmlentities($keywords) ? " or MATCH (".$select['match'].") AGAINST ('".sensitiveIO::sanitizeSQLString(htmlentities($keywords))."') ": '')."
+								";
+							//pr($sql);
+							$q = new CMS_query($sql);
+							while ($r = $q->getArray()) {
+								if (!isset($matches[$r['pageId']]) || (isset($matches[$r['pageId']]) && $r['m1'] > $matches[$r['pageId']])) {
+									$matches[$r['pageId']] = $r['m1'];
+								}
+								if (isset($r['m2']) && (!isset($matches[$r['pageId']]) || (isset($matches[$r['pageId']]) && $r['m2'] > $matches[$r['pageId']]))) {
+									$matches[$r['pageId']] = $r['m2'];
+								}
+							}
+						}
+						//sort page Ids by relevance
+						arsort($matches, SORT_NUMERIC);
+						//$matches = array_keys($matches);
+						
+						$order = "
+					 		order by field(page_pbd, ".implode(',',array_reverse(array_keys($matches))).") desc
+						";
+						
+						$foundIDs = ($foundIDs) ? array_intersect(array_keys($matches), $foundIDs) : array_keys($matches);
+					}
 				} else {
-					$order = " id_pbd ";
+					$order = " order by page_pbd ";
 				}
-				if($messagesIdentifiers){
+				
+				/*if($messagesIdentifiers){
 					$messages[] = $cms_language->getMessage(self::MESSAGE_RESULTS_IDS,array(implode(' '.$cms_language->getMessage(self::MESSAGE_RESULTS_OR).' ',$messagesIdentifiers)),MOD_STANDARD_CODENAME);
-				}
-				if($allDatas[self::SEARCH_TYPE_DEFAULT] && $foundIDs){
-					$where .= " and ";
-				}
-				if($foundIDs){
-					$where .= " page_pbd in (".implode($foundIDs,',').") ";
-				}
-				// Set SQL
+				}*/
+			}
+			if ($foundIDs) {
 				$select = ' page_pbd ';
 				$from = ($public) ? 'pagesBaseData_public':'pagesBaseData_edited';
-				$sql ="
-					select
-						".$select."
-					from
-						".$from."
-					where
-						".$where."
-					order by
+				$where .= ($where && $foundIDs) ? " and " : '';
+				$where .= ($foundIDs) ? " page_pbd in (".implode($foundIDs,',').") " : '';
+				if ($where) {
+					// Set SQL
+					$sql ="
+						select
+							".$select."
+						from
+							".$from."
+						where
+							".$where."
 						".$order."
-				";
-				$q = new CMS_query($sql);
-				$results = array();
-				$count=0;
-				while ($arr = $q->getArray()) {
-					$id = $arr["page_pbd"];
-					if ($user->hasPageClearance($id, CLEARANCE_PAGE_VIEW)) {
-						$count++;
-						if ($count>$start && sizeof($results)<$max) {
-							$results[] = $id;
+					";
+					$q = new CMS_query($sql);
+					//pr($sql);
+					$results = array();
+					$count=0;
+					while ($arr = $q->getArray()) {
+						$id = $arr["page_pbd"];
+						if ($user->hasPageClearance($id, CLEARANCE_PAGE_VIEW)) {
+							$count++;
+							$results[$id] = $id;
 						}
 					}
 				}
 			}
-			// If no main sql request (keywords), but results from other search types
-			if(!$allDatas[self::SEARCH_TYPE_DEFAULT] && $foundIDs){
-				$count=0;
-				$results = array();
-				foreach ($foundIDs as $id) {
-					$count++;
-					if ($count > $start && sizeof($results)<$max) {
-						$results[] = $id;
-					}
-				}
-				sort($results);
-			}
+			
 			// Set message
-			if($messages){
+			/*if($messages){
 				$counter = 0;
 				$message = $cms_language->getMessage(self::MESSAGE_RESULTS_LIST).' ';
 				foreach($messages as $messageToDisplay){
@@ -319,27 +381,19 @@ class CMS_search extends CMS_grandFather {
 					$message .= $messageToDisplay;
 					$message .= ($counter == count($messages)) ? '.' : ' ';
 				}
-			}
-		}
-		// Create CMS_page tab results
-		if($results){
-			foreach (array_keys($results) as $key){
-				$page = new CMS_page($results[$key]);
-				if (!$page->hasError()) {
-					$results[$key] = $page;
-				}
-			}
+			}*/
 		} else {
-			$message = ($message) ? $message : $cms_language->getMessage(self::MESSAGE_RESULTS_NOTHING);
+			//$message = ($message) ? $message : $cms_language->getMessage(self::MESSAGE_RESULTS_NOTHING);
 			// No results
 			$count = 0;
-			$results = false;
 		}
+		
 		return array(
 			'nbresult'		=>	$count,
 			'nblinksresult'	=>	$allLinksNumber,
 			'results'		=>	$results,
-			'message'		=>	$message
+			'score'			=>	$matches,
+			/*'message'		=>	$message*/
 		);
 	}
 }

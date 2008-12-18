@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: polymod.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: polymod.php,v 1.2 2008/12/18 10:40:12 sebastien Exp $
 
 /**
   * Class CMS_polymod
@@ -306,11 +306,11 @@ class CMS_polymod extends CMS_modulePolymodValidation
 							<select onchange="Ext.get(\'help'.$this->_codename.'\').getUpdater().update({url: \''.PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/polymod-help.php\',params: {module: \''.$this->_codename.'\',object: this.value}});">
 								<option value="">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_CHOOSE).'</option>
 								<optgroup label="'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_ROW_TAGS_EXPLANATION,false,MOD_POLYMOD_CODENAME).'">
-									<option value="block"'.$selected['block'].'>'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_BLOCK_TAGS,false,MOD_POLYMOD_CODENAME).'</option>
-									<option value="search"'.$selected['search'].'>'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_SEARCH_TAGS,false,MOD_POLYMOD_CODENAME).'</option>
-									<option value="working"'.$selected['working'].'>'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_WORKING_TAGS,false,MOD_POLYMOD_CODENAME).'</option>
-									<option value="vars"'.$selected['vars'].'>'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_BLOCK_GENRAL_VARS,false,MOD_POLYMOD_CODENAME).'</option>
-									<option value="forms"'.$selected['forms'].'>'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_BLOCK_FORMS,false,MOD_POLYMOD_CODENAME).'</option>
+									<option value="block">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_BLOCK_TAGS,false,MOD_POLYMOD_CODENAME).'</option>
+									<option value="search">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_SEARCH_TAGS,false,MOD_POLYMOD_CODENAME).'</option>
+									<option value="working">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_WORKING_TAGS,false,MOD_POLYMOD_CODENAME).'</option>
+									<option value="vars">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_BLOCK_GENRAL_VARS,false,MOD_POLYMOD_CODENAME).'</option>
+									<option value="forms">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_BLOCK_FORMS,false,MOD_POLYMOD_CODENAME).'</option>
 								</optgroup>
 								<optgroup label="'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_ROW_OBJECTS_VARS_EXPLANATION,false,MOD_POLYMOD_CODENAME).'">';
 									$modulesCode[$this->_codename] .= CMS_poly_module_structure::viewObjectInfosList($this->_codename, $treatmentParameters["language"], @$treatmentParameters['request'][$this->_codename.'object']);
@@ -422,39 +422,6 @@ class CMS_polymod extends CMS_modulePolymodValidation
 		}
 		return $modulesCode;
 	}
-
-	/**
-	  * Set or get the module useage for a given page id
-	  *
-	  * @param integer $pageID page ID to get or set useage
-	  * @param string $module module codename to set or get useage (default = polymod for generic polymod useage).
-	  * @param boolean $setUseage, if false (get mode : default), return the useage of the module for the given page ID, else (set mode), set the useage of the module for the given page ID
-	  * @param boolean $reset: reset all usage for given module and page ID
-	  *
-	  * @return boolean : for setUseage = false (get mode) : the module useage for given page ID else for setUseage = true (set mode) true on success, false on failure
-	  * @access public
-	  * @static
-	  
-	function moduleUsage($pageID, $module = 'polymod', $setUseage = false, $reset = false) {
-		static $moduleUseage;
-		if ($reset && isset($moduleUseage[$module]["pageUseModule"][$pageID])) {
-			unset($moduleUseage[$module]["pageUseModule"][$pageID]);
-			return true;
-		}
-		if ($setUseage) {
-			if (!is_array($setUseage)) $setUseage = array($setUseage);
-			if (!isset($moduleUseage[$module]["pageUseModule"][$pageID])) {
-				//save page id for given module codename
-				$moduleUseage[$module]["pageUseModule"][$pageID] = $setUseage;
-			} else {
-				//save page id for given module codename
-				$moduleUseage[$module]["pageUseModule"][$pageID] = array_merge_recursive($moduleUseage[$module]["pageUseModule"][$pageID], $setUseage);
-			}
-			return true;
-		} else {
-			return isset($moduleUseage[$module]["pageUseModule"][$pageID]) ? $moduleUseage[$module]["pageUseModule"][$pageID] : null;
-		}
-	}*/
 
 	/**
 	  * Gets a tag representation instance
@@ -680,6 +647,159 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			}
 		}
 		return $objectsInfos;
+	}
+	
+	/**
+	  * Search module objects by Id
+	  *
+	  * @param string $keyword : the search keywords
+	  * @param CMS_profile_user $user : the user which make the search
+	  * @param booolean : public search (default : false)
+	  * @param array : the results score returned by reference
+	  * @return array : results elements Ids
+	  * @access public
+	  */
+	function search ($keyword, &$user, $public = false, &$score = array()) {
+		//objects
+		$objects = $this->getObjects();
+		$results = array();
+		$score = array();
+		foreach ($objects as $object) {
+			//create search object for current object
+			$search = new CMS_object_search($object);
+			$search->addWhereCondition("keywords", $keyword);
+			$results = $search->search(CMS_object_search::POLYMOD_SEARCH_RETURN_IDS) + $results;
+			$score = $search->getScore() + $score;
+			//sort results score
+			arsort($score, SORT_NUMERIC);
+		}
+		return $results;
+	}
+	
+	/**
+	  * Get search results objects for module by Id
+	  *
+	  * @param array : the results score ids
+	  * @return array : results elements (cms_page)
+	  * @access public
+	  */
+	function getSearchResults($resultsIds, &$user) {
+		if (!$resultsIds || !is_array($resultsIds)) {
+			return array();
+		}
+		$cms_language = $user->getLanguage();
+		//get results object types
+		$sql = "
+			select
+				object_type_id_moo as type, id_moo as id
+			from
+				mod_object_polyobjects
+			where
+				id_moo in (".sensitiveIO::sanitizeSQLString(implode(',', $resultsIds)).")
+		";
+		$q = new CMS_query($sql);
+		$resultsType = array();
+		while($r = $q->getArray()) {
+			$resultsType[$r['type']][] = $r['id'];
+		}
+		$results = array();
+		foreach ($resultsType as $type => $ids) {
+			//load current object definition
+			$object = new CMS_poly_object_definition($type);
+			//create search object for current object
+			$search = new CMS_object_search($object);
+			$search->addWhereCondition("items", $ids);
+			$items = $search->search();
+			$objectLabel = $object->getLabel($cms_language);
+			// Check if need to use a specific display for search results
+			$resultsDefinition = $object->getValue('resultsDefinition');
+			if ($resultsDefinition) {
+				$definitionParsing = new CMS_polymod_definition_parsing($resultsDefinition, true, CMS_polymod_definition_parsing::PARSE_MODE);
+				$itemsResourcesFiles = '';
+				// Add specific css and js files we use the resultsDefinition
+				if (file_exists(PATH_CSS_FS.'/modules/'.$this->getCodename().'.css')){
+					$itemsResourcesFiles .= '<link rel="stylesheet" type="text/css" href="'.PATH_CSS_WR.'/modules/'.$this->getCodename().'.css" />';
+				}
+				$jsFiles = $this->getJSFiles();
+				if ($jsFiles) {
+					foreach ($jsFiles as $jsfile) {
+						$itemsResourcesFiles .= '<script type="text/javascript" src="'.$jsfile.'"></script>'."\n";
+					}
+				}
+				
+			} else {
+				//load fields objects for object
+				$objectFields = CMS_poly_object_catalog::getFieldsDefinition($object->getID());
+			}
+			//loop on results items
+			foreach ($items as $item) {
+				//Resource related informations
+				$htmlStatus = $pubRange = '';
+				$lock = $deleted = $primaryResource = false;
+				if ($object->isPrimaryResource()) {
+					$status = $item->getStatus();
+					if (is_object($status)) {
+						$htmlStatus = $status->getHTML(false, $user, $this->getCodename(), $item->getID());
+						$pubRange = $status->getPublicationRange($cms_language);
+						$lock = $item->getLock();
+						$deleted = ($item->getProposedLocation() == RESOURCE_LOCATION_DELETED);
+					}
+					$primaryResource = true;
+				}
+				//Edit
+				$edit = false;
+				if (!$deleted && (!$lock || $lock == $user->getUserId())) {
+					$edit = array(
+						'url'		=> PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/item.php?polymod='.$this->getCodename().'&object='.$type.'&item='.$item->getID(),
+						'type'		=> 'frame',
+					);
+				}
+				//Previz
+				$view = false;
+				if ($object->getValue("previewURL")) {
+					$view = array(
+						'url'		=> $item->getPrevizPageURL(),
+						'type'		=> 'frame',
+					);
+				}
+				//HTML description
+				$description = POLYMOD_DEBUG ? '<span class="atm-text-alert"> (ID : '.$item->getID().')</span>' : '';
+				if($resultsDefinition){
+					//set execution parameters
+					$parameters = array();
+					$parameters['module'] 	= $this->getCodename();
+					$parameters['objectID'] = $object->getID();
+					$parameters['public'] 	= false;
+					$parameters['item']		= $item;
+					$description .= $definitionParsing->getContent(CMS_polymod_definition_parsing::OUTPUT_RESULT, $parameters);
+					if ($itemsResourcesFiles) {
+						$description = $itemsResourcesFiles.$description;
+					}
+				} else {
+					$itemFieldsObjects = $item->getFieldsObjects();
+					//Add all needed fields to description
+					foreach ($itemFieldsObjects as $fieldID => $itemField) {
+						//if field is a poly object
+						if ($objectFields[$fieldID]->getValue('searchlist')) {
+							$description .= $objectFields[$fieldID]->getLabel($cms_language).' : <strong>'.$itemField->getHTMLDescription().'</strong><br />';
+						}
+					}
+				}
+				$results[$item->getID()] = array(
+					'id'			=> $item->getID(),
+					'type'			=> $objectLabel,
+					'status'		=> $htmlStatus,
+					'pubrange'		=> $pubRange,
+					'label'			=> $item->getLabel(),
+					'description'	=> $description,
+					//these parameters are sent to resource-controler.php when edit window is closed (used to unlock item)
+					'resource'		=> $primaryResource ? array('module' => $this->getCodename(), 'resource' => $item->getID(), 'action' => 'unlock') : false,
+					'edit'			=> $edit,
+					'view'			=> $view,
+				);
+			}
+		}
+		return $results;
 	}
 }
 ?>

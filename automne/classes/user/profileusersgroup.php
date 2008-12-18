@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: profileusersgroup.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: profileusersgroup.php,v 1.2 2008/12/18 10:41:12 sebastien Exp $
 
 /**
   * Class CMS_profile_usersGroup
@@ -73,7 +73,7 @@ class CMS_profile_usersGroup extends CMS_profile
 	  * Users in group
 	  *
 	  * @var array(integer)
-	  * For memory purpouses will store reference user id not user object
+	  * For memory purposes will store reference user id not user object
 	  * @access private
 	  */
 	protected $_users;
@@ -635,6 +635,29 @@ class CMS_profile_usersGroup extends CMS_profile
 			$q = new CMS_query($sql);
 		}
 		return true;
+	}
+	
+	function getJSonDescription($user, $cms_language) {
+		$users = $this->getUsersRef();
+		$groupUsers = ($users) ? '<a href="#" onclick="Automne.view.search(\'group:'.$this->getGroupId().'\');return false;" ext:qtip="Cliquez pour voir les utilisateurs de ce groupe" class="atm-help">'.sizeof($users).' Utilisateur(s)</a>' : 'Aucun';
+		if ($user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
+			$edit = array(
+				'url' 		=> 'group.php',
+				'params'	=> array(
+					'groupId' => $this->getGroupId()
+				)
+			);
+		} else {
+			$edit = false;
+		}
+		return array(
+			'id'			=> $this->getGroupId(),
+			'label'			=> $this->getLabel(),
+			'type'			=> 'Groupe d\'utilisateurs',
+			'description'	=> $this->getDescription().'<br />
+								Utilisateurs : '.$groupUsers,
+			'edit'			=> $edit
+		);
 	}
 }
 ?>

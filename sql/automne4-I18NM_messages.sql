@@ -1,4 +1,4 @@
-# $Id: automne4-I18NM_messages.sql,v 1.1.1.1 2008/11/26 17:12:36 sebastien Exp $
+# $Id: automne4-I18NM_messages.sql,v 1.2 2008/12/18 10:35:59 sebastien Exp $
 #
 # Suppression avant mise à  jour du Contenu de la table `I18NM_messages` pour le module standard
 #
@@ -17,7 +17,7 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (5, 'standard'
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (6, 'standard', NOW(), 'Public', 'Public');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (7, 'standard', NOW(), 'Propriétés', 'Properties');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (8, 'standard', NOW(), 'Contenu', 'Content');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (9, 'standard', NOW(), 'Ordre des liens', 'Order of links');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (9, 'standard', NOW(), 'Ordre des pages', 'Order of pages');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (10, 'standard', NOW(), 'Aucun', 'None');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (11, 'standard', NOW(), 'Site', 'Site');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (12, 'standard', NOW(), 'Admin', 'Admin');
@@ -54,8 +54,8 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (42, 'standard
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (43, 'standard', NOW(), 'Suppression / archivage de la page :', 'Deletion / archiving of the page :');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (44, 'standard', NOW(), 'Création / modification de page', 'Creation / modification of page');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (45, 'standard', NOW(), 'Création / modification de la page :', 'Creation / modification of the page :');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (46, 'standard', NOW(), 'Ordre du menu', 'Order of sub page links');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (47, 'standard', NOW(), 'Modification de l\'ordre du menu de navigation de la page :', 'Modification of link order for the page :');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (46, 'standard', NOW(), 'Ordre des pages', 'Order of pages');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (47, 'standard', NOW(), 'Modification de l\'ordre des sous pages de la page :', 'Modification of sub pages order for the page :');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (48, 'standard', NOW(), 'Prévisualiser la page', 'Preview');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (49, 'standard', NOW(), 'Page en ligne', 'On line');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (50, 'standard', NOW(), 'Erreur de login, nouvel essai', 'Login error, please try again.');
@@ -171,8 +171,8 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (164, 'standar
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (165, 'standard', NOW(), 'Bas', 'Down');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (166, 'standard', NOW(), 'Erreur lors de la modification de l\'ordre des pages.', 'Error while trying to modify the order of the sub-pages.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (168, 'standard', NOW(), 'Nouveau groupe', 'New group');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (170, 'standard', NOW(), 'Modification de l\'ordre du menu', 'Order of sub-page links modification');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (171, 'standard', NOW(), 'Modification de l\'ordre du menu de navigation de la page \'%s\' par l\'utilisateur %s.', 'Order of sub page links modification for page \'%s\' by user %s');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (170, 'standard', NOW(), 'Modification de l\'ordre des pages', 'Order of pages modification');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (171, 'standard', NOW(), 'Modification de l\'ordre des sous-pages de la page \'%s\' par l\'utilisateur %s.', 'Order of sub pages modification for page \'%s\' by user %s');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (172, 'standard', NOW(), 'Modification des propriétés d\'une page', 'Page properties modification');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (173, 'standard', NOW(), 'Modification des propriétés de la page \'%s\' par l\'utilisateur %s', 'Modification of page properties for page \'%s\' by user %s');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (174, 'standard', NOW(), 'Modification de la page : %s', 'Page modification : %s');
@@ -351,7 +351,7 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (346, 'standar
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (347, 'standard', NOW(), 'Titre du lien', 'Link title');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (348, 'standard', NOW(), 'Choisissez le modèle à utiliser pour la nouvelle page :', 'Choose new page template:');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (349, 'standard', NOW(), 'Vous n\'avez pas renseigné toutes les informations requises', 'You have not filled all the required informations');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (350, 'standard', NOW(), 'Cette fenêtre vous permet de créer copier la page et son contenu à un autre point de l\'arborescence des pages du site. Vous pouvez aussi changer le modèle utilisé et choisir de ne pas copier le contenu mais uniquement sa structure.', 'This window allows you to create the page and copy its contents to another item on the site\'s tree pages. You can also change the template used and choose not to copy the content but only its structure.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (350, 'standard', NOW(), 'Cette fenêtre vous permet de copier la page et son contenu à un autre point de l\'arborescence des pages du site. Vous pouvez aussi changer le modèle utilisé et choisir de ne pas copier le contenu mais uniquement sa structure.', 'This window allows you to copy the page and its contents under another page on the site\'s tree pages. You can also change the template used and choose not to copy the content but only its structure.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (351, 'standard', NOW(), 'Copier le contenu de la page', 'Copy page content');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (352, 'standard', NOW(), 'Remplacer le modèle de la page par', 'Replace page template by');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (353, 'standard', NOW(), 'Modèle compatible', 'Matching template');
@@ -593,6 +593,13 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (588, 'standar
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (589, 'standard', NOW(), 'Modification de ou des rangées sélectionnés.', 'Modification of the or these selected rows.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (590, 'standard', NOW(), 'Création d\'une nouvelle rangée.', 'Create a new row.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (591, 'standard', NOW(), 'Veuillez vous reconnecter pour voir les modifications.', 'Please reconnect to see the modifications.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (592, 'standard', NOW(), 'Déplacement de pages', 'Moving pages');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (593, 'standard', NOW(), 'Déplacement de page', 'Page moving');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (594, 'standard', NOW(), 'Déplacement de la page :', 'Moving page :');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (595, 'standard', NOW( ),'Déplacement de page à valider', 'Move of page pending validation');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (596, 'standard', NOW( ),'Déplacement de page validation refusée', 'Move of page validation refused');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (597, 'standard', NOW(), 'Déplacement d\'une page', 'Moving a page');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (598, 'standard', NOW(), 'Déplacement de la page \'%s\' par l\'utilisateur %s.', 'Moving of page \'%s\' by user %s');
 
 
 # End of Automne 4 specific messages
@@ -703,7 +710,7 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (907, 'standar
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (908, 'standard', NOW(), 'Utilisateur', 'User');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (909, 'standard', NOW(), 'Statut après', 'Status after');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (910, 'standard', NOW(), 'Journal des actions pour %s', 'Logged action for resource %s');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (911, 'standard', NOW(), 'Changement de l\'ordre du menu de navigation', 'Order of sub page links modification');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (911, 'standard', NOW(), 'Changement de l\'ordre des pages', 'Order of pages modification');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (912, 'standard', NOW(), 'Cet email est généré automatiquement par Automne concernant votre site %s.\r\nSite : %s\r\nAdministration du site : %s', 'This email was automatically generated by Automne regarding your website %s.\r\nWebsite: %s\r\nAdministration platform: %s');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (913, 'standard', NOW(), 'Modification de votre profil d\'utilisateur', 'Modify your user profile');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (914, 'standard', NOW(), 'Votre profil a été modifié. Vos identifiants sont :\r\nIdentifiant : %s\r\n\r\nModification(s) effectuée(s) : \r\n', 'Your user profile has been updated.\r\nLogin : %s\r\n\r\nModification type:\r\n');
@@ -941,8 +948,8 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1148', 'stan
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1149', 'standard', NOW( ),'A dépublier', 'Pending un-publication');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1150', 'standard', NOW( ),'Dépublication refusée', 'Un-publication refused');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1151', 'standard', NOW( ),'Non publié','Un-published');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1152', 'standard', NOW( ),'Ordre des liens à valider', 'Order of links pending validation');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1153', 'standard', NOW( ),'Ordre des liens validation refusée', 'Order of links validation refused');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1152', 'standard', NOW( ),'Ordre des pages à valider', 'Order of pages pending validation');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1153', 'standard', NOW( ),'Ordre des pages validation refusée', 'Order of pages validation refused');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1154', 'standard', NOW( ),'Nouveau, à  archiver', 'New, pending archiving');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1155', 'standard', NOW( ),'Nouveau, archivage refusé', 'New, archiving refused');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1156', 'standard', NOW( ),'Nouveau, à  supprimer' , 'New, pending deletion');

@@ -14,7 +14,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: rowscatalog.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: rowscatalog.php,v 1.2 2008/12/18 10:40:46 sebastien Exp $
 
 /**
   * Class CMS_rowsCatalog
@@ -57,13 +57,8 @@ class CMS_rowsCatalog extends CMS_grandFather
 	  * @param integer $count : number of rows founded (passed by reference)
 	  * @access public
 	  */
-	function getAll($includeInactive = false, $keyword = '', $groups = array(), $rowIds = array(), $user = false, $tplId = false, $csId = false, $start = 0, $limit = 0, $returnObjects = true) {
-		$sql = "
-			select
-				id_row
-			from
-				mod_standard_rows
-		";
+	function getAll($includeInactive = false, $keyword = '', $groups = array(), $rowIds = array(), $user = false, $tplId = false, $csId = false, $start = 0, $limit = 0, $returnObjects = true, &$score = array()) {
+		$select = 'id_row';
 		$where = '';
 		//keywords
 		if ($keyword) {
@@ -75,7 +70,6 @@ class CMS_rowsCatalog extends CMS_grandFather
 			foreach ($words as $aWord) {
 				if ($aWord && $aWord!='' && strlen($aWord) >= 3) {
 					$aWord = str_replace(array('%','_'), array('\%','\_'), $aWord);
-					if (htmlentities($aWord) != $aWord) $cleanedWords[] = htmlentities($aWord);
 					$cleanedWords[] = $aWord;
 				}
 			}
@@ -83,14 +77,24 @@ class CMS_rowsCatalog extends CMS_grandFather
 				//if no words after cleaning, return
 				return array();
 			}
+			$keywordWhere = '';
 			foreach ($cleanedWords as $cleanedWord) {
-				$where .= ($where) ? ' and ' : '';
-				$where .= " (
+				$keywordWhere .= ($keywordWhere) ? ' and ' : '';
+				$keywordWhere .= " (
 					description_row like '%".sensitiveIO::sanitizeSQLString($cleanedWord)."%'
 					or label_row like '%".sensitiveIO::sanitizeSQLString($cleanedWord)."%'
 				)";
 			}
+			$where .= ($where) ? ' and ' : '';
+			$where .= " ((".$keywordWhere.") or MATCH (label_row, description_row) AGAINST ('".sensitiveIO::sanitizeSQLString($keyword)."') )";
+			$select .= " , MATCH (label_row, description_row) AGAINST ('".sensitiveIO::sanitizeSQLString($keyword)."') as m ";
 		}
+		$sql = "
+			select
+				".$select."
+			from
+				mod_standard_rows
+		";
 		//groups
 		if ($groups) {
 			foreach ($groups as $group) {
@@ -143,7 +147,11 @@ class CMS_rowsCatalog extends CMS_grandFather
 		}
 		$sql = $sql.($where ? ' where '.$where : '');
 		//order
-		$sql .= " order by label_row ";
+		if (strpos($sql, 'MATCH') === false) {
+			$sql .= " order by label_row ";
+		} else {
+			$sql .= " order by m desc ";
+		}
 		//limit
 		if ($start || $limit) {
 			$sql .= " limit ".sensitiveIO::sanitizeSQLString($start).",".sensitiveIO::sanitizeSQLString($limit);
@@ -151,7 +159,12 @@ class CMS_rowsCatalog extends CMS_grandFather
 		//pr($sql);
 		$q = new CMS_query($sql);
 		$rows = array();
-		while ($id = $q->getValue("id_row")) {
+		while ($r = $q->getArray()) {
+			$id = $r['id_row'];
+			//set match score if exists
+			if (isset($r['m'])) {
+				$score[$id] = $r['m'];
+			}
 			if ($returnObjects) {
 				$row = new CMS_row($id);
 				if (!$row->hasError()) {

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: row-help.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: row-help.php,v 1.2 2008/12/18 10:36:43 sebastien Exp $
 
 /**
   * PHP page : Load template help window.
@@ -43,6 +43,7 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES)) { //rows
 }
 
 //include modules codes in output file
+$row = '';
 $modulesCodes = new CMS_modulesCodes();
 $modulesCodeInclude = $modulesCodes->getModulesCodes(MODULE_TREATMENT_ROWS_EDITION_LABELS, PAGE_VISUALMODE_CLIENTSPACES_FORM, $row, array("language" => $cms_language, "user" => $cms_user));
 $modulesTab = '';

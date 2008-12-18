@@ -816,6 +816,9 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 	background-image:				url(/automne/admin/img/pictos/pictos.png);
 	background-position:			left -1132px;
 }
+#sidePanel .atm-move{
+	background-image:				url(/automne/admin/img/status/tiny/mouvalider.gif);
+}
 #sidePanel .atm-favorite{
 	background-image:				url(/automne/admin/img/pictos/pictos.png);
 	background-position:			left -700px;

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: search-pages.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: search-pages.php,v 1.2 2008/12/18 10:36:43 sebastien Exp $
 
 /**
   * PHP page : return search pages results
@@ -31,11 +31,6 @@ $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_JSON);
 
-/*
-	$query = isset($_REQUEST['query']) ? $_REQUEST['query'] : '';
-	$start = (isset($_REQUEST['start']) && sensitiveIO::isPositiveInteger($_REQUEST['start'])) ? $_REQUEST['start'] : 0;
-	$limit = (isset($_REQUEST['limit']) && sensitiveIO::isPositiveInteger($_REQUEST['limit'])) ? $_REQUEST['limit'] : 10;
-*/
 $query = sensitiveIO::request('query', '', '');
 $start = sensitiveIO::request('start', 'sensitiveIO::isPositiveInteger', 0);
 $limit = sensitiveIO::request('limit', 'sensitiveIO::isPositiveInteger', 10);
@@ -45,21 +40,24 @@ if (!$query || strlen($query) < 3) {
 	$view->show();
 }
 //lauch search
-$results = CMS_search::getSearch($query, $cms_user,$start,$limit,false);
-
+$results = CMS_search::getSearch($query, $cms_user, false, false);
 //pr($results);
 $pages = array();
+$count = 0;
 if (isset($results['results']) && is_array($results['results'])) {
 	foreach ($results['results'] as $result) {
-		if (is_object($result)) {
-			$pages[] = array(
-				'pageId' 	=> $result->getID(),
-				'title' 	=> $result->getTitle().' ('.$result->getID().')',
-				'status' 	=> $result->getStatus()->getHTML(true, $cms_user, MOD_STANDARD_CODENAME, $result->getID()),
-				'lineage' 	=> CMS_tree::getLineage(APPLICATION_ROOT_PAGE_ID, $result->getID(), false),
-			);
-		} else {
-			$results['nbresult']--;
+		if ($count >= $start && sizeof($pages) < $limit) {
+			$page = CMS_tree::getPageById($result);
+			if ($page && !$page->hasError()) {
+				$pages[] = array(
+					'pageId' 	=> $page->getID(),
+					'title' 	=> $page->getTitle().' ('.$page->getID().')',
+					'status' 	=> $page->getStatus()->getHTML(true, $cms_user, MOD_STANDARD_CODENAME, $page->getID()),
+					'lineage' 	=> CMS_tree::getLineage(APPLICATION_ROOT_PAGE_ID, $page->getID(), false),
+				);
+			} else {
+				$results['nbresult']--;
+			}
 		}
 	}
 }

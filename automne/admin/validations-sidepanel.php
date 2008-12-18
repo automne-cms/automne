@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: validations-sidepanel.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: validations-sidepanel.php,v 1.2 2008/12/18 10:36:44 sebastien Exp $
 
 /**
   * PHP page : Load side panel validations infos.
@@ -71,6 +71,8 @@ if ($cms_user->hasValidationClearance() && APPLICATION_ENFORCES_WORKFLOW) {
 					$class = 'atm-delete';
 				} elseif ($editions & RESOURCE_EDITION_SIBLINGSORDER) {
 					$class = 'atm-order';
+				} elseif ($editions & RESOURCE_EDITION_MOVE) {
+					$class = 'atm-move';
 				}
 				$content .= '<li><div class="'.$class.' atm-sidepic"></div><a atm:action="validations" atm:module="'.$codename.'" atm:editions="'.$editions.'" href="#">'.$label." : ".sizeof($validations).'</a></li>';
 			}

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: template.php,v 1.2 2008/11/28 14:41:24 sebastien Exp $
+// $Id: template.php,v 1.3 2008/12/18 10:36:43 sebastien Exp $
 
 /**
   * PHP page : Load template detail window.
@@ -398,7 +398,9 @@ $jscontent = <<<END
 							stylesheet: 	["/automne/codemirror/css/xmlcolors.css", "/automne/codemirror/css/jscolors.css", "/automne/codemirror/css/csscolors.css"],
 							path: 			"/automne/codemirror/js/",
 							textWrapping:	false,
-							content:		Ext.getCmp('defText-{$templateId}').getValue().replace(/\t/g, '  ')
+							initCallback:	function(){
+								editor.reindent();
+							}
 						});
 						field.disable();
 						Ext.getCmp('reindent-{$templateId}').show();

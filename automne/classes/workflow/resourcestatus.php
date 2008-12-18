@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: resourcestatus.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: resourcestatus.php,v 1.2 2008/12/18 10:41:19 sebastien Exp $
 
 /**
   * Class CMS_resourceStatus
@@ -94,6 +94,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @access private
 	  */
 	protected $_lockStatus;
+	protected $_lockDate;
 	
 	/**
 	  * resource draft status
@@ -602,6 +603,33 @@ class CMS_resourceStatus extends CMS_grandFather {
 	}
 	
 	/**
+	  * Gets the locksmith date of a lock placed on the resource.
+	  *
+	  * @return CMS_date the locksmithData : date where the lock was placed
+	  * @access public
+	  */
+	function getLockDate()
+	{
+		if (!isset($this->_lockDate) || !is_object($this->_lockDate)) {
+			$this->_lockDate = new CMS_date();
+			$sql = "
+				select
+					date_lok
+				from
+					locks
+				where
+					resource_lok = '".$this->_id."'
+			";
+			$q = new CMS_query($sql);
+			if ($q->getNumRows()) {
+				$this->_lockDate->setFromDBValue($q->getValue("date_lok"));
+			}
+		}
+		return $this->_lockDate;
+	}
+	
+	
+	/**
 	  * Locks the page. Takes the user DB ID and place it as locksmith data. Impossible if resource is already locked.
 	  *
 	  * @param CMS_profile_user $user The user placing the lock
@@ -613,12 +641,15 @@ class CMS_resourceStatus extends CMS_grandFather {
 		if ($this->getLock()) {
 			return false;
 		}
+		$this->_lockDate = new CMS_date();
+		$this->_lockDate->setNow();
 		$sql = "
 			insert into
 				locks
 			set
 				resource_lok = '".$this->_id."',
-				locksmithData_lok = '".$user->getUserID()."'
+				locksmithData_lok = '".$user->getUserID()."',
+				date_lok = '".$this->_lockDate->getDBValue()."'
 		";
 		$q = new CMS_query($sql);
 		//set object lock status
@@ -642,6 +673,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 		";
 		$q = new CMS_query($sql);
 		$this->_lockStatus = false;
+		$this->_lockDate = false;
 	}
 	
 	/**
@@ -694,7 +726,15 @@ class CMS_resourceStatus extends CMS_grandFather {
 		
 		if ($this->_editions & RESOURCE_EDITION_SIBLINGSORDER) {
 			if ($this->_validationsRefused & RESOURCE_EDITION_SIBLINGSORDER) {
-				$img_siblings = "mouvrefuse";
+				//$img_siblings = "orderefuse";
+			} else {
+				$img_siblings = "ordervalider";
+				$modified=true;
+			}
+		}
+		if ($this->_editions & RESOURCE_EDITION_MOVE) {
+			if ($this->_validationsRefused & RESOURCE_EDITION_MOVE) {
+				//$img_siblings = "mouvrefuse";
 			} else {
 				$img_siblings = "mouvalider";
 				$modified=true;
@@ -798,6 +838,13 @@ class CMS_resourceStatus extends CMS_grandFather {
 		}
 		if ($this->_editions & RESOURCE_EDITION_SIBLINGSORDER) {
 			if ($this->_validationsRefused & RESOURCE_EDITION_SIBLINGSORDER) {
+				$img_siblings = "orderefuse";
+			} else {
+				$img_siblings = "ordervalider";
+			}
+		}
+		if ($this->_editions & RESOURCE_EDITION_MOVE) {
+			if ($this->_validationsRefused & RESOURCE_EDITION_MOVE) {
 				$img_siblings = "mouvrefuse";
 			} else {
 				$img_siblings = "mouvalider";
@@ -928,7 +975,8 @@ class CMS_resourceStatus extends CMS_grandFather {
 			MESSAGE_RESOURCE_EDITION_BASEDATA		=> RESOURCE_EDITION_BASEDATA,
 			MESSAGE_RESOURCE_EDITION_CONTENT		=> RESOURCE_EDITION_CONTENT,
 			MESSAGE_RESOURCE_EDITION_SIBLINGSORDER	=> RESOURCE_EDITION_SIBLINGSORDER,
-			MESSAGE_RESOURCE_EDITION_LOCATION		=> RESOURCE_EDITION_LOCATION);
+			MESSAGE_RESOURCE_EDITION_LOCATION		=> RESOURCE_EDITION_LOCATION,
+			MESSAGE_RESOURCE_EDITION_MOVE			=> RESOURCE_EDITION_MOVE);
 	}
 	
 	/**
@@ -977,8 +1025,10 @@ class CMS_resourceStatus extends CMS_grandFather {
 			'carre-o' => 1149, //Page pending un-publication
 			'carre-r' => 1150, //Page refused un-publication
 			'carre-v' => 1151, //Page unpublished
-			'mouvalider' => 1152, //Order of links pending validation
-			'mouvrefuse' => 1153, //Order of links refused validation
+			'ordervalider' => 1152, //Order of links pending validation
+			'orderefuse' => 1153, //Order of links refused validation
+			'mouvalider' => 595, //Move of page pending validation
+			'mouvrefuse' => 596, //Move of page refused validation
 			'rond_arc-o' => 1154, //New page pending archive
 			'rond_arc-r' => 1155, //New page refused archive
 			'rond_sup-o' => 1156, //New page pending deletion

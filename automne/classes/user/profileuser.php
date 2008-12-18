@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: profileuser.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: profileuser.php,v 1.2 2008/12/18 10:41:12 sebastien Exp $
 
 /**
   * Class CMS_profile_user
@@ -817,6 +817,42 @@ class CMS_profile_user extends CMS_profile
 		$this->_alerts->delAllWithOneKey($module);
 		$this->_alerts->add($module, $level);
 		return true;
+	}
+	
+	function getJSonDescription($user, $cms_language) {
+		//groups of user
+		$userGroups = array();
+		$groups = CMS_profile_usersGroupsCatalog::getGroupsOfUser($this);
+		$userGroups = '';
+		if ($groups) {
+			foreach ($groups as $group) {
+				$userGroups .= ($userGroups) ? ', ' : '';
+				$userGroups .= '<a href="#" onclick="Automne.view.search(\'group:'.$group->getGroupId().'\');return false;" ext:qtip="'.htmlspecialchars($group->getDescription()).' (Cliquez pour voir les utilisateurs)" class="atm-help">'.$group->getLabel().'</a>';
+			}
+		} else {
+			$userGroups = 'Aucun';
+		}
+		if ($user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
+			$edit = array(
+				'url' 		=> 'user.php',
+				'params'	=> array(
+					'userId' 	=> $this->getUserId()
+				)
+			);
+		} else {
+			$edit = false;
+		}
+		return array(
+			'id'			=> $this->getUserId(),
+			'label'			=> $this->getFullName(),
+			'type'			=> 'Utilisateur',
+			'description'	=> '
+				Nom : <strong>'.$this->getLastname().'</strong><br />
+				Prénom : <strong>'.$this->getFirstname().'</strong><br />
+				Email : <a href="mailto:'.$this->getEmail().'" ext:qtip="Ecrire à '.htmlspecialchars($this->getFullName()).'">'.$this->getEmail().'</a><br />
+				Groupes : '.$userGroups,
+			'edit'			=> $edit
+		);
 	}
 }
 ?>

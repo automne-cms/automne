@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: linxdisplay.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: linxdisplay.php,v 1.2 2008/12/18 10:40:54 sebastien Exp $
 
 /**
   * Class CMS_linxDisplay
@@ -254,6 +254,13 @@ class CMS_linxDisplay extends CMS_grandFather
 							"{{typeClass}}" => ($subPages) ? $sub : "CMS_nosub",
 							"{{sublevel}}" 	=> ($recurse) ? $this->getRecursiveOutput($parsedPage, $level+1, $subPages, $pages, $public, $lineage) : "",
 						);
+						if (!$recurse) {
+							//needed to update link targets which is used after to register watched links
+							$it = new RecursiveArrayIterator($subPages);
+							foreach ($it as $pageID => $element) {
+								unset($pages[$pageID]);
+							}
+						}
 						$pagehtml = str_replace(array_keys($replace), $replace, $pagehtml);
 					}
 					//add APPLICATION_ENFORCES_ACCESS_CONTROL php access checking
@@ -272,6 +279,9 @@ class CMS_linxDisplay extends CMS_grandFather
 						'?>';
 					}
 					$rank++;
+				} else {
+					//needed to update link targets which is used after to register watched links
+					unset($pages[$pageID]);
 				}
 				$levelhtml .= $pagehtml;
 			}

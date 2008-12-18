@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: server.php,v 1.2 2008/11/27 17:25:36 sebastien Exp $
+// $Id: server.php,v 1.3 2008/12/18 10:36:43 sebastien Exp $
 
 /**
   * PHP page : Load server detail window.
@@ -46,7 +46,7 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) { /
 
 //Test PHP version
 $content = '
-<h1>Tester les paramètres du serveur nécessaires à Automne :</h1>
+<h1>Test des paramètres du serveur nécessaires au fonctionnement d\'Automne :</h1>
 <ul class="atm-server">';
 if (version_compare(PHP_VERSION, "5.2.0") === -1) {
 	$content .= '<li class="atm-pic-cancel">Error, PHP version ('.PHP_VERSION.') not match</li>';

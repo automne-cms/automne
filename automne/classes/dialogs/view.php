@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: view.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: view.php,v 1.2 2008/12/18 10:39:54 sebastien Exp $
 
 /**
   * Class CMS_view
@@ -427,9 +427,6 @@ class CMS_view extends CMS_grandFather
 				if (SYSTEM_DEBUG && STATS_DEBUG) {
 					$return .= 
 					'	<stats><![CDATA['.view_stat(true).']]></stats>'."\n";
-					if (VIEW_SQL && isset($_SESSION["cms_context"]) && is_object($_SESSION["cms_context"])) {
-						save_stat();
-					}
 				}
 				echo $return;
 			break;

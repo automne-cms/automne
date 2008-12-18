@@ -5,59 +5,51 @@
 		/////////////////////////////////////////////////
 		//              Googlemaps settings            //
 		/////////////////////////////////////////////////
+		// To qualify for service Googlemaps you have to got a valid Google key on the following website :
+		// http://code.google.com/apis/maps/signup.html
+		// Then you have to copy this key in the config.php file (located at the root of your website) add the following line :
+		// define("GOOGLE_MAPS_KEY", "INSERT_GOOGLE_KEY_HERE");
+		// And insert your key between the quotes.
 		
 		// Height (value expressed in pixels) :
-		$height = 400;
+		$mapHeight = 400;
 		// Width (value expressed in pixels) :
-		$width = 400;
+		$mapWidth = 400;
 		// Zoom value :
 		$zoom = 12;
 		// View type (SATELLITE/NORMAL/HYBRID) :
-		$vue = "SATELLITE";
+		$vue = "HYBRID";
 
 		$address = <<<END
 		{{data}}
 END;
 		if (defined('GOOGLE_MAPS_KEY') && GOOGLE_MAPS_KEY) {
-			echo "
-			<script src=\"http://maps.google.com/maps?file=api&amp;v=2&amp;key=".GOOGLE_MAPS_KEY."\"type=\"text/javascript\">
-			</script>
-			";
-		echo "<p id=\"map\" style=\"width: ".$width."px; height: ".$height."px\"></p>";
-		?>
+			$mapId = 'map-'.md5(rand());
+			echo '
+			<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key='.GOOGLE_MAPS_KEY.'" type="text/javascript"></script>
+			<p id="'.$mapId.'" style="width:'.$mapWidth.'px; height:'.$mapHeight.'px"></p>
 		    <script type="text/javascript">
-		    //<![CDATA[
-			function showAddress(address) {
-			  geocoder.getLatLng(
-			    address,
-			    function(point) {
-			      if (!point) {
-			        //alert(address + " introuvable");
-			      } else {
-			        map.setCenter(point, <?php echo $zoom; ?>);
-					map.setMapType(G_<?php echo $vue; ?>_MAP);
-					
-					var marker = new GMarker(point);
-			        map.addOverlay(marker);
-					GEvent.addListener(marker, "click", function() {
-			           var html = '<div style="width: 210px; padding-right: 10px">'+address+'<\/div>';
-			           marker.openInfoWindowHtml(html);
-			         });
-			      }
-			    }
-			  );
-			}
-		
-		    var map = new GMap2(document.getElementById("map"));
-			map.addControl(new GSmallMapControl());
-		    var geocoder = new GClientGeocoder();
-			<?php 
-			echo 'var address = \''.addcslashes($address,"'").'\';';
-			?>
-			showAddress(address);
-			//]]>
-		    </script>
-		<?php
+		    (function(){
+				var map = new GMap2(document.getElementById("'.$mapId.'"));
+				map.addControl(new GSmallMapControl());
+			    var geocoder = new GClientGeocoder();
+				geocoder.getLatLng(
+					\''.sensitiveIO::sanitizeJSString($address,"'").'\',
+					function(point) {
+						if (point) {
+							map.setCenter(point, '.$zoom.');
+							map.setMapType(G_'.$vue.'_MAP);
+							var marker = new GMarker(point);
+							map.addOverlay(marker);
+							GEvent.addListener(marker, "click", function() {
+								marker.openInfoWindowHtml(\'<div style="width: 210px; padding-right: 10px">'.sensitiveIO::sanitizeJSString($address,"'").'<\/div>\');
+							});
+						}
+					}
+				);
+			})();
+			</script>
+		';
 		} elseif(!$frontend) {
 			switch($cms_language->getCode()){
 				case 'en':
@@ -67,7 +59,7 @@ END;
 						<a href='http://code.google.com/apis/maps/signup.html'>the following website</a>.
 						<br/>Then you have to copy this key in the config.php file (located at the root of your website) add the following line :
 						<pre>define(\"GOOGLE_MAPS_KEY\", \"INSERT_GOOGLE_KEY_HERE\");</pre>
-						Then insert your key between the empty quotes.
+						And insert your key between the quotes.
 					</p>";
 				break;
 				default:

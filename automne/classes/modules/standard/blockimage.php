@@ -16,7 +16,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>  			  |
 // +----------------------------------------------------------------------+
 //
-// $Id: blockimage.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: blockimage.php,v 1.2 2008/12/18 10:40:46 sebastien Exp $
 
 /**
   * Class CMS_block_image
@@ -182,14 +182,19 @@ class CMS_block_image extends CMS_block
 				$form_data=$this->_replaceBlockVars($data, $html_attributes, RESOURCE_DATA_LOCATION_EDITION, false);
 			} else {
 				$replace = array(
-						'{{data}}'			=> '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/image.gif" alt="X" title="X" '.$html_attributes.' />',
-						'{{linkLabel}}'		 => $data["label"],
-						'{{imageZoomHtml}}'	 => '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/image.gif" alt="X" title="X" '.$html_attributes.' />',
-						'{{imageZoomName}}'	 => $data["enlargedFile"],
-						'{{imageWidth}}'         => 80,
-						'{{imageHeight}}'         => 80,
-						'{{imageZoomWidth}}'         => 80,
-						'{{imageZoomHeight}}'         => 80
+					'{{data}}'				=> '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/image.gif" alt="X" title="X" '.$html_attributes.' />',
+					'{{label}}'				=> htmlspecialchars($data["label"]),
+					'{{jslabel}}'			=> addslashes(htmlspecialchars($data["label"])),
+					'{{linkLabel}}'			=> htmlspecialchars($data["label"]),
+					'{{imageZoomHtml}}'	 	=> '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/image.gif" alt="X" title="X" '.$html_attributes.' />',
+					'{{imagePath}}'			=> PATH_MODULES_FILES_STANDARD_WR,
+					'{{imageName}}'			=> 'image.gif',
+					'{{imageZoomHref}}'		=> '',
+					'{{imageZoomName}}'	 	=> '',
+					'{{imageWidth}}'        => '80',
+					'{{imageHeight}}'       => '80',
+					'{{imageZoomWidth}}'    => '0',
+					'{{imageZoomHeight}}'   => '0',
 				);
 				$form_data = str_replace(array_keys($replace), $replace, $this->_definition);
 			}
@@ -199,15 +204,21 @@ class CMS_block_image extends CMS_block
 			$this->_hasContent = false;
 			$this->_editable = false;
 			$replace = array(
-				'{{data}}'			=> '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/image.gif" alt="X" title="X" '.$html_attributes.' />',
-				'{{linkLabel}}'		 => $data["label"],
-				'{{imageZoomHtml}}'	 => '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/image.gif" alt="X" title="X" '.$html_attributes.' />',
-				'{{imageZoomName}}'	 => $data["enlargedFile"],
-				'{{imageWidth}}'         => 80,
-				'{{imageHeight}}'         => 80,
-				'{{imageZoomWidth}}'         => 80,
-				'{{imageZoomHeight}}'         => 80
+				'{{data}}'				=> '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/image.gif" alt="X" title="X" '.$html_attributes.' />',
+				'{{label}}'				=> htmlspecialchars($data["label"]),
+				'{{jslabel}}'			=> addslashes(htmlspecialchars($data["label"])),
+				'{{linkLabel}}'			=> htmlspecialchars($data["label"]),
+				'{{imageZoomHtml}}'	 	=> '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/image.gif" alt="X" title="X" '.$html_attributes.' />',
+				'{{imagePath}}'			=> PATH_MODULES_FILES_STANDARD_WR,
+				'{{imageName}}'			=> 'image.gif',
+				'{{imageZoomHref}}'		=> '',
+				'{{imageZoomName}}'	 	=> '',
+				'{{imageWidth}}'        => '80',
+				'{{imageHeight}}'       => '80',
+				'{{imageZoomWidth}}'    => '0',
+				'{{imageZoomHeight}}'   => '0',
 			);
+			
 			$form_data = str_replace(array_keys($replace), $replace, $this->_definition);
 			return $this->_getHTMLForm($language, $page, $clientSpace, $row, $this->_tagID, $form_data);
 			break;
@@ -268,18 +279,19 @@ class CMS_block_image extends CMS_block
 				$linkLabel = $currentLink->getHTML($data['label'],MOD_STANDARD_CODENAME, $location);
 			} else {
 				$html = $html_img;
-				$linkLabel = $data["label"];
+				$linkLabel = htmlspecialchars($data["label"]);
 			}
 		}
 		$replace = array(
 			'{{data}}'			=> $html,
-			'{{label}}'			=> $data["label"],
+			'{{label}}'			=> htmlspecialchars($data["label"]),
+			'{{jslabel}}'		=> addslashes(htmlspecialchars($data["label"])),
 			'{{linkLabel}}'		=> $linkLabel,
 			'{{imageZoomHtml}}'	=> $html_imgZoomHtml,
 			'{{imagePath}}'		=> PATH_MODULES_FILES_STANDARD_WR.'/'.$folder,
 			'{{imageName}}'		=> $data["file"],
 			'{{imageZoomHref}}'	=> $html_imageZoomHref,
-			'{{imageZoomName}}'	=> $html_imgZoomName
+			'{{imageZoomName}}'	=> $html_imgZoomName,
 		);
 		if (strpos($this->_definition,'Width}}') !== false || strpos($this->_definition,'Height}}') !== false) {
 			list($sizeX, $sizeY) = @getimagesize(PATH_MODULES_FILES_STANDARD_FS.'/'.$folder.'/'.$data["file"]);

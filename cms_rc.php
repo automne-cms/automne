@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc.php,v 1.2 2008/11/27 17:24:38 sebastien Exp $
+// $Id: cms_rc.php,v 1.3 2008/12/18 10:34:00 sebastien Exp $
 
 /**
   * rc file, contains editable constants
@@ -851,8 +851,8 @@ if (STATS_DEBUG) {
 		$content = 
 		'File ' .$_SERVER['SCRIPT_NAME'] ."\n".
 		'Loaded in ' . $time . ' seconds'."\n".
+		'Loaded PHP files : '. $GLOBALS["files_loaded"] ."\n".
 		'SQL requests : ' . sprintf('%.5f',$GLOBALS["total_time"]) . ' seconds ('. $GLOBALS["sql_nb_requests"] .' requests)'."\n".
-		'PHP files : '. $GLOBALS["files_loaded"] ."\n".
 		'% SQL/PHP : '. $rapportSQL .' / '. $rapportPHP .' %'."\n";
 		if (function_exists('xdebug_get_profiler_filename') && xdebug_get_profiler_filename()) {
 			$content .= 'XDebug Profile : '. xdebug_get_profiler_filename()."\n";
@@ -860,23 +860,40 @@ if (STATS_DEBUG) {
 		if (function_exists('xdebug_get_profiler_filename') && xdebug_get_tracefile_name()) {
 			$content .= 'XDebug Trace : '. xdebug_get_tracefile_name()."\n";
 		}
+		if (VIEW_SQL && isset($_SESSION["cms_context"]) && is_object($_SESSION["cms_context"]) && $_SERVER["SCRIPT_NAME"]!="/automne/admin/stat.php") {
+			$stats = $_SESSION["cms_context"]->getSessionVar('automneStats');
+			if (!$stats) {
+				$stats = array();
+			}
+			//limit to last 10 stats
+			if (sizeof($stats) >= 10) {
+				$stats = array_slice($stats, sizeof($stats) - 9);
+			}
+			$stat = array(
+				'stat_time_start'		=> $GLOBALS["time_start"],
+				'stat_time_end'			=> getmicrotime(),
+				'stat_total_time'		=> $GLOBALS["total_time"],
+				'stat_sql_nb_requests'	=> $GLOBALS["sql_nb_requests"],
+				'stat_sql_table'		=> $GLOBALS["sql_table"],
+				'stat_content_name'		=> basename($_SERVER["SCRIPT_NAME"]),
+				'stat_files_table'		=> $GLOBALS["files_table"],
+				'stat_files_loaded'		=> $GLOBALS["files_loaded"],
+			);
+			$statName = 'stat-'.md5(rand());
+			$stats[$statName] = $stat;
+			$_SESSION["cms_context"]->setSessionVar('automneStats', $stats);
+		}
 		if (!$return) {
+			$content = '<pre>'.$content.'</pre>';
+			if (isset($statName)) {
+				$content .= '<a href="/automne/admin/stat.php?stat='.$statName.'" target="_blank">View statistics</a>';
+			}
 			echo $content;
 		} else {
+			if (isset($statName)) {
+				$content .= '<a href="/automne/admin/stat.php?stat='.$statName.'" target="_blank">View statistics</a>';
+			}
 			return $content;
-		}
-	}
-	if (VIEW_SQL) {
-		function save_stat() {
-			/* Saving all stats info in context for stat.php file */
-			$_SESSION["cms_context"]->setSessionVar('stat_time_start',$GLOBALS["time_start"]);
-			$_SESSION["cms_context"]->setSessionVar('stat_time_end',getmicrotime());
-			$_SESSION["cms_context"]->setSessionVar('stat_total_time',$GLOBALS["total_time"]);
-			$_SESSION["cms_context"]->setSessionVar('stat_sql_nb_requests',$GLOBALS["sql_nb_requests"]);
-			$_SESSION["cms_context"]->setSessionVar('stat_sql_table',$GLOBALS["sql_table"]);
-			$_SESSION["cms_context"]->setSessionVar('stat_content_name',basename($_SERVER["SCRIPT_NAME"]));
-			$_SESSION["cms_context"]->setSessionVar('stat_files_table',$GLOBALS["files_table"]);
-			$_SESSION["cms_context"]->setSessionVar('stat_files_loaded',$GLOBALS["files_loaded"]);
 		}
 	}
 	$GLOBALS["sql_nb_requests"] = $GLOBALS["total_time"] = $GLOBALS["files_time"] = 0;
@@ -1041,6 +1058,7 @@ define("RESOURCE_EDITION_BASEDATA", 1);
 define("RESOURCE_EDITION_CONTENT", 2);
 define("RESOURCE_EDITION_SIBLINGSORDER", 4);
 define("RESOURCE_EDITION_LOCATION", 8);
+define("RESOURCE_EDITION_MOVE", 16);
 /**
   * Resource publications statuses.
   * 	Nevervalidated : the page was created and no validator moved it into public space.

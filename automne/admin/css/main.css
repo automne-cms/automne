@@ -282,10 +282,9 @@ span.atm-tab * {
 	cursor:				default !important;
 }
 .atm-drag {
-	background:			url(/automne/admin/img/drag.gif) no-repeat 4px 7px !important;
+	background:			url(/automne/admin/img/drag.gif) no-repeat right 2px !important;
 	cursor:				move !important;
-	height:				18px;
-	width:				16px;
+	padding-right:		15px;
 }
 /*SEARCH*/
 .atm-search-item {
@@ -515,10 +514,20 @@ ul.categoriesList {
 }
 .atm-results .atm-title .atm-label{
 	width:			100%;
-	padding-left:	3px;
+}
+.atm-results .atm-label .atm-status{
+	vertical-align:	middle;
 }
 .atm-result {
 	background:		#f1f1f1 url(/automne/admin/img/livedata/bg.gif) repeat-x;
+}
+.atm-result .atm-type{
+	border-bottom:	1px solid #e5e8ea;
+	border-top:		1px solid #FFFFFF;
+	font-weight:	bold;
+	font-size:		11px;
+	color:			#F28300;
+	padding:		1px 8px 1px 3px;
 }
 .atm-results .atm-pubrange {
 	font-size:		11px;

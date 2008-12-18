@@ -31,6 +31,10 @@ Automne.Window = Ext.extend(Ext.Window, {
 				handler: 		Ext.emptyFn
 			}]
 		});
+		//set winId for autoLoad if missing
+		if (config.id && config.autoLoad && config.autoLoad.params && !config.autoLoad.params.winId) {
+			config.autoLoad.params.winId = config.id;
+		}
 		// preprocessing
 		this.currentPage = (config.currentPage) ? config.currentPage : false;
 		arguments[0] = config;

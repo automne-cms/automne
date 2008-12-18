@@ -1,3 +1,4 @@
+//<<
 /*
  * FCKeditor - The text editor for Internet - http://www.fckeditor.net
  * Copyright (C) 2003-2008 Frederico Caldeira Knabben
@@ -24,7 +25,7 @@
  * instances in a HTML page in the client side. For server side
  * operations, use the specific integration system.
  */
-
+//!>>
 // FCKeditor Class
 var FCKeditor = function( instanceName, width, height, toolbarSet, value )
 {

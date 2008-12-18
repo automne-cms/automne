@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: row.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: row.php,v 1.2 2008/12/18 10:40:46 sebastien Exp $
 
 /**
   * Class CMS_row
@@ -779,6 +779,65 @@ class CMS_row extends CMS_grandFather
 			$this->_id = $q->getLastInsertedID();
 		}
 		return true;
+	}
+	
+	function getJSonDescription($user, $cms_language, $withDefinition = false) {
+		$hasClientSpaces = $this->hasClientSpaces();
+		$description = sensitiveIO::ellipsis($this->getDescription(), 50);
+		if ($description != $this->getDescription()) {
+			$description = '<span ext:qtip="'.htmlspecialchars($this->getDescription()).'">'.$description.'</span>';
+		}
+		$description = $description ? $description.'<br />' : '';
+		//append template definition if needed
+		$definitionDatas = $withDefinition ? $this->getDefinition() : '';
+		//templates filters
+		$filteredTemplates = '';
+		if ($this->getFilteredTemplates()) {
+			foreach ($this->getFilteredTemplates() as $tplId) {
+				$template = CMS_pageTemplatesCatalog::getByID($tplId);
+				if (is_object($template) && !$template->hasError()) {
+					$filteredTemplates .= ($filteredTemplates) ? ', ' : '';
+					$filteredTemplates .= $template->getLabel();
+				}
+			}
+		}
+		$filtersInfos = '';
+		$filtersInfos .= ($filteredTemplates) ? 'Aux modèles : '.$filteredTemplates : '';
+		$filtersInfos = ($filtersInfos) ? '<br />Usage restreint : <strong>'.$filtersInfos.'</strong>' : '';
+		if ($user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES)) {
+			$edit = array(
+				'url' 		=> 'row.php',
+				'params'	=> array(
+					'row' 		=> $this->getID()
+				)
+			);
+		} else {
+			$edit = false;
+		}
+		return array(
+			'id'			=> $this->getID(),
+			'label'			=> $this->getLabel(),
+			'type'			=> 'Modèle de Rangée',
+			'image'			=> $this->getImage(),
+			'groups'		=> implode(', ', $this->getGroups()),
+			'desc'			=> $this->getDescription(),
+			'filter'		=> $this->getLabel().' '.implode(', ', $this->getGroups()),
+			'tplfilter'		=> implode(',', $this->getFilteredTemplates()),
+			'description'	=> 	'<div'.(!$this->isUseable() ? ' class="atm-inactive"' : '').'>'.
+									'<img src="'.$this->getImage().'" style="float:left;margin-right:3px;width:70px;" />'.
+									$description.
+									'Groupes : <strong>'.implode(', ', $this->getGroups()).'</strong><br />'.
+									'Actif : <strong>'.($this->isUseable() ? 'Oui':'Non').'</strong><br />'.
+									'Employé : <strong>'.($hasClientSpaces ? 'Oui':'Non').'</strong>'.($hasClientSpaces ? ' - <a href="#" onclick="Automne.view.search(\'row:'.$this->getID().'\');return false;">Voir</a>'.
+									($user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) ? ' / <a href="#" onclick="Automne.server.call(\'rows-controler.php\', \'\', {rowId:'.$this->getID().', action:\'regenerate\'});return false;">Régénérer</a>' : '').' les pages.' : '').
+									$filtersInfos.
+									'<br class="x-form-clear" />'.
+								'</div>',
+			'activated'		=> $this->isUseable() ? true : false,
+			'used'			=> $hasClientSpaces,
+			'definition'	=> $definitionDatas,
+			'edit'			=> $edit,
+		);
 	}
 }
 ?>

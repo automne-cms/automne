@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: dialog.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: dialog.php,v 1.2 2008/12/18 10:39:54 sebastien Exp $
 
 /**
   * Class CMS_dialog
@@ -685,7 +685,6 @@ class CMS_dialog extends CMS_JSDialog
 					/*only for stats*/
 					if (STATS_DEBUG && $_SERVER["SCRIPT_NAME"]!="/automne/admin/stat.php") {
 						view_stat();
-						if (VIEW_SQL) save_stat();
 					}
 				}
 			break;

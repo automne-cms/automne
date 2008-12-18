@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: log.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: log.php,v 1.2 2008/12/18 10:39:46 sebastien Exp $
 
 /**
   * Class CMS_log
@@ -35,6 +35,7 @@ class CMS_log extends CMS_grandFather
 	const LOG_ACTION_RESOURCE_EDIT_BASEDATA = 1;
 	const LOG_ACTION_RESOURCE_EDIT_CONTENT = 2;
 	const LOG_ACTION_RESOURCE_EDIT_SIBLINGSORDER = 16;
+	const LOG_ACTION_RESOURCE_EDIT_MOVE = 32;
 	const LOG_ACTION_RESOURCE_DELETE = 3;
 	const LOG_ACTION_RESOURCE_UNDELETE = 4;
 	const LOG_ACTION_RESOURCE_ARCHIVE = 5;
@@ -69,6 +70,7 @@ class CMS_log extends CMS_grandFather
 	const MESSAGE_LOG_ACTION_RESOURCE_EDIT_BASEDATA = 871;
 	const MESSAGE_LOG_ACTION_RESOURCE_EDIT_CONTENT = 872;
 	const MESSAGE_LOG_ACTION_RESOURCE_EDIT_SIBLINGSORDER = 911;
+	const MESSAGE_LOG_ACTION_RESOURCE_EDIT_MOVE = 593;
 	const MESSAGE_LOG_ACTION_RESOURCE_DELETE = 873;
 	const MESSAGE_LOG_ACTION_RESOURCE_UNDELETE = 874;
 	const MESSAGE_LOG_ACTION_RESOURCE_ARCHIVE = 875;

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: resource.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: resource.php,v 1.2 2008/12/18 10:41:19 sebastien Exp $
 
 /**
   * Class CMS_resource
@@ -141,6 +141,17 @@ class CMS_resource extends CMS_grandFather
 	function getLock()
 	{
 		return $this->_status->getLock();
+	}
+	
+	/**
+	  * Gets the locksmith data of a lock placed on the resource.
+	  *
+	  * @return integer the locksmithData : DB ID of the user who placed the lock
+	  * @access public
+	  */
+	function getLockDate()
+	{
+		return $this->_status->getLockDate();
 	}
 	
 	/**

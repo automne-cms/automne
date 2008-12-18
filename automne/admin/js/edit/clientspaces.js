@@ -312,18 +312,24 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 			this.registerZone(type, box.x, box.y + 5, box.width, 10);
 		}
 	},
-	hideZones: function() {
+	hideZones: function(exception) {
 		for(var i = 0, dropLen = this.zones.length; i < dropLen; i++) {
-			if (this.zones[i].dropZone) {
-				this.zones[i].dropZone.unreg();
-				Ext.destroy(this.zones[i].dropZone);
-			} else {
-				this.zones[i].removeAllListeners();
+			if (!exception || this.zones[i].id != exception.id) {
+				if (this.zones[i].dropZone) {
+					this.zones[i].dropZone.unreg();
+					Ext.destroy(this.zones[i].dropZone);
+				} else {
+					this.zones[i].removeAllListeners();
+				}
+				Ext.destroy(this.zones[i]);
 			}
-			Ext.destroy(this.zones[i]);
 		}
-		delete this.zones;
-		this.zones = [];
+		if (!exception) {
+			delete this.zones;
+			this.zones = [];
+		} else {
+			this.zones = [exception];
+		}
 	},
 	registerZone: function(type, x, y, width, height) {
 		var zonesLen = this.zones.length;
@@ -409,13 +415,17 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 			});
 			zone.dropZone = drop;
 		} else {
-			zone.on('mousedown', function() {
+			zone.on('mousedown', function(e, zone) {
+				zone = Ext.get(zone);
+				zone.removeAllListeners();
+				zone.addClass('atm-drop-zone-hover');
 				parent.Ext.get('selectedRow').update(Automne.locales.csSelectRowAdd);
+				Automne.message.show(Automne.locales.csSelectRow);
 				parent.Ext.getCmp('addSelectedRow').show();
 				//add new row
 				this.cs.getNewRow(this.csIndex);
 				//hide all drop zones
-				Automne.content.hideZones();
+				Automne.content.hideZones(zone);
 			}, zone);
 			zone.addClassOnOver('atm-drop-zone-hover');
 			zone.dom.title = zone.dom.alt = Automne.locales.csClickToAdd;

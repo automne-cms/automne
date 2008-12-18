@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: page.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: page.php,v 1.2 2008/12/18 10:41:04 sebastien Exp $
 
 /**
   * Class CMS_page
@@ -1570,7 +1570,7 @@ class CMS_page extends CMS_resource
 		}
 		parent::validateEdition($edition);
 		
-		if ($edition & RESOURCE_EDITION_SIBLINGSORDER) {
+		if ($edition & RESOURCE_EDITION_SIBLINGSORDER || $edition & RESOURCE_EDITION_MOVE) {//TODOV4 : check this for RESOURCE_EDITION_MOVE
 			CMS_tree::publishSiblingsOrder($this);
 		}
 	}

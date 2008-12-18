@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: linx.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: linx.php,v 1.2 2008/12/18 10:40:54 sebastien Exp $
 
 /**
   * Class CMS_linx
@@ -193,7 +193,7 @@ class CMS_linx extends CMS_grandFather
 	  * @return string The HTML
 	  * @access public
 	  */
-	function getOutput()
+	function getOutput($register = false)
 	{
 		$output = '';
 		if ($this->_type == 'recursivelinks') {
@@ -225,6 +225,9 @@ class CMS_linx extends CMS_grandFather
 				}
 			}
 		}
+		if ($register) {
+			$this->register();
+		}
 		return $output;
 	}
 
@@ -244,7 +247,7 @@ class CMS_linx extends CMS_grandFather
 				$sql .= "('".$this->_page->getID()."' ,'".((is_object($target)) ? $target->getID() : $target)."') ";
 			}
 			$sql = "
-				insert into
+				replace into
 					linx_real_public (start_lre, stop_lre)
 				values 
 					".$sql;
@@ -258,7 +261,7 @@ class CMS_linx extends CMS_grandFather
 				$sql .= "('".$this->_page->getID()."' ,'".$fwID."') ";
 			}
 			$sql = "
-				insert into
+				replace into
 					linx_watch_public (page_lwa, target_lwa)
 				values 
 					".$sql;

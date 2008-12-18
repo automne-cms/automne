@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: upload-controler.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: upload-controler.php,v 1.2 2008/12/18 10:36:44 sebastien Exp $
 
 /**
   * PHP controler : Receive upload files
@@ -100,7 +100,7 @@ $fileDatas = array(
 	'extension'		=> $file->getExtension(),
 	'success'		=> true
 );
-
+CMS_grandFather::raiseError(print_r($fileDatas,true));
 $view->setContent($fileDatas);
 $view->show();
 ?>

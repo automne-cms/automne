@@ -115,12 +115,13 @@
 }
 .atm-drop-zone {
 	z-index:			11000;
-	background:			red;
-	opacity:			0.4;
-	filter:				alpha(opacity=40);
+	background:			red url(/automne/admin/img/pictos/add.gif) repeat-x;
+	opacity:			0.5;
+	filter:				alpha(opacity=50);
+	
 }
 .atm-drop-zone-hover {
-	background:			green;
+	background:			green url(/automne/admin/img/pictos/ok.gif) repeat-x;
 }
 .atm-block-mask {
 	z-index:			9200;

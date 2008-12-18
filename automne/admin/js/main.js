@@ -193,7 +193,9 @@ Automne.server = {
 	},
 	//hide loading spinner after server call
 	hideSpinner: function () {
-		Ext.get('atm-server-call').hide();
+		if (!Ext.Ajax.isLoading()) {
+			Ext.get('atm-server-call').hide();
+		}
 	},
 	//method used for a server call : eval response
 	evalResponse: function (response, options) {
@@ -576,7 +578,43 @@ Automne.view = {
 		return win;
 	},
 	user: function(userId) {
-		Automne.message.show('TODOV4 : Show user '+ userId +' (function Automne.view.user)');
+		Automne.view.search('user:'+userId);
+	},
+	search: function(search) {
+		if (search) {
+			var windowId = 'searchWindow';
+			if (Ext.WindowMgr.get(windowId)) {
+				Ext.WindowMgr.bringToFront(windowId);
+				Ext.WindowMgr.get(windowId).search(search);
+			} else {
+				//create window element
+				var win = new Automne.Window({
+					id:				'searchWindow',
+					width:			800,
+					height:			600,
+					autoLoad:		{
+						url:		'/automne/admin/search.php',
+						params:		{
+							winId:	'searchWindow',
+							search:	search
+						},
+						nocache:	true,
+						scope:		this
+					}
+				});
+				//display window
+				win.show();
+			}
+		}
+	},
+	removeSearch: function() {
+		var searchField = Ext.getCmp('atmSearchPanel');
+		if (searchField) {
+			if (searchField.rendered) {
+				var field = searchField.findByType('trigger')[0];
+				field.fireEvent('blur', field);
+			}
+		}
 	},
 	maxScripts:		0,
 	currentScripts:	0,
@@ -598,7 +636,7 @@ Automne.view = {
 			av.maxScripts = av.currentScripts;
 		}
 		if (av.currentScripts || av.scriptsUpdate || scriptsUpdate) {
-			pr('current scripts : '+av.currentScripts+', scriptsUpdate : '+av.scriptsUpdate+', update : '+scriptsUpdate);
+			pr('Scripts left : '+av.currentScripts+', scriptsUpdate : '+av.scriptsUpdate+', update : '+scriptsUpdate);
 		}
 		var el = Ext.get('headPanelBar');
 		if (el) {
@@ -900,9 +938,9 @@ Automne.content = {
 			Automne.content.cs[csId].showZones(type);
 		}
 	},
-	hideZones: function() {
+	hideZones: function(exception) {
 		for (var csId in Automne.content.cs) {
-			Automne.content.cs[csId].hideZones();
+			Automne.content.cs[csId].hideZones(exception);
 		}
 	},
 	stopUpdate: function() {
@@ -1041,7 +1079,7 @@ Automne.console = {
 				eval('window.console.'+ type +'(data);')
 			}
 			//show with blackbird
-			if (Automne.context.debug & 2) {
+			if (Automne.context.debug & 8) {
 				try {
 					if(!window.blackbird.isVisible()) {
 						window.blackbird.show();

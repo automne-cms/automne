@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-content-block-image.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: page-content-block-image.php,v 1.2 2008/12/18 10:36:43 sebastien Exp $
 
 /**
   * PHP page : Load block image interface
@@ -219,7 +219,7 @@ $jscontent = <<<END
 						module:			'standard'
 					},
 					linkConfig: {
-						label:			false,
+						label:			false
 					},
 					value:	'{$linkDatas }'
 		        }]

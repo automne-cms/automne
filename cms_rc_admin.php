@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc_admin.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: cms_rc_admin.php,v 1.2 2008/12/18 10:34:00 sebastien Exp $
 
 /**
   * Administration rc file.
@@ -131,6 +131,7 @@ define("MESSAGE_RESOURCE_EDITION_BASEDATA", 7);
 define("MESSAGE_RESOURCE_EDITION_CONTENT", 8);
 define("MESSAGE_RESOURCE_EDITION_SIBLINGSORDER", 9);
 define("MESSAGE_RESOURCE_EDITION_LOCATION", 41);
+define("MESSAGE_RESOURCE_EDITION_MOVE", 592);
 
 define("MESSAGE_RESOURCE_LOCATION_USERSPACE", 13);
 define("MESSAGE_RESOURCE_LOCATION_ARCHIVED", 14);

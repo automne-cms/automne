@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: favorites-sidepanel.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: favorites-sidepanel.php,v 1.2 2008/12/18 10:36:42 sebastien Exp $
 
 /**
   * PHP page : Load side panel favorites infos.
@@ -46,58 +46,7 @@ if ($favorites) {
 } else {
 	$content .= 'Aucune page dans vos favoris.';
 }
-/*
-//VALIDATIONS PENDING
-$validationpanel = '';
-if ($cms_user->hasValidationClearance() && APPLICATION_ENFORCES_WORKFLOW) {
-	$modulesValidations = CMS_modulesCatalog::getAllValidations($cms_user, true);
-	$validationsCount = 0;
-	//panel content
-	$content .= '<div id="validationsPanel">';
-	if ($modulesValidations && sizeof($modulesValidations)) {
-		foreach ($modulesValidations as $codename => $moduleValidations) {
-			//if module is not standard, echo its name, the number of validations to do and a link to its admin frontend
-			if ($codename == MOD_STANDARD_CODENAME) {
-				$modLabel = $cms_language->getMessage(MESSAGE_PAGE_STANDARD_MODULE_LABEL);
-			} else {
-				$mod = CMS_modulesCatalog::getByCodename($codename);
-				$modLabel = $mod->getLabel($cms_language);
-			}
-			$content .= '<h3>'.$modLabel.' :</h3>
-			<ul>';
-			//sort the validations by type label
-			$validationsSorted = array();
-			foreach ($moduleValidations as $validation) {
-				$validationsSorted[$validation->getValidationTypeLabel()][] = $validation;
-			}
-			ksort($validationsSorted);
-			foreach ($validationsSorted as $label => $validations) {
-				$validation = $validations[0];
-				$validationsCount += sizeof($validations);
-				$editions = $validation->getEditions();
-				if ($editions & RESOURCE_EDITION_CONTENT || $editions & RESOURCE_EDITION_BASEDATA) {
-					$class = 'atm-validations';
-				} elseif ($editions & RESOURCE_EDITION_LOCATION) {
-					$class = 'atm-delete';
-				} elseif ($editions & RESOURCE_EDITION_SIBLINGSORDER) {
-					$class = 'atm-order';
-				}
-				$content .= '<li><div class="'.$class.'"></div><a atm:action="validations" atm:module="'.$codename.'" atm:editions="'.$editions.'" href="#">'.$label." : ".sizeof($validations).'</a></li>';
-			}
-			$content .= '</ul>';
-		}
-	} else {
-		$content .= $cms_language->getMessage(MESSAGE_PAGE_NO_VALIDATIONS_PENDING);
-	}
-	$content .= '</div>';
-}
 
-$jscontent = <<<END
-	var validationsPanel = Ext.getCmp('validationsPanel');
-	validationsPanel.setTitle('{$cms_language->getJSMessage(MESSAGE_PAGE_VALIDATIONS_PENDING)} : {$validationsCount}');
-END;
-$view->addJavascript($jscontent);
-*/
 //send content
 $view->setContent($content);
 $view->show();

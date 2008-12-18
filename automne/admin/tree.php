@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: tree.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: tree.php,v 1.2 2008/12/18 10:36:44 sebastien Exp $
 
 /**
   * PHP page : Load tree window infos. Presents a portion of the pages tree. Can be used by any admin page.
@@ -203,7 +203,6 @@ if ($hideMenu) {
 					}),
 					listeners: {'specialkey':function(field, e) {
 							if (Ext.EventObject.getKey() == Ext.EventObject.ENTER) {
-								pr(field.getValue());
 								field.doQuery(field.getValue());
 							}
 						},

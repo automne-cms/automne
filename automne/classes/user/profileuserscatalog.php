@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: profileuserscatalog.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: profileuserscatalog.php,v 1.2 2008/12/18 10:41:12 sebastien Exp $
 
 /**
   * Class CMS_profile_usersCatalog
@@ -145,7 +145,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	function getAll($activeOnly = false, $withDeleted = false, $returnObjects = true, $attrs = array()) {
         $attrWhere = '';
         if($attrs and is_array($attrs)){
-                $availableAttrs = array('login_pru','firstName_pru','lastName_pru','contactData_pru','profile_pru','language_pru','dn_pru','textEditor_pru','dn_pru');
+                $availableAttrs = array('id_pru','login_pru','firstName_pru','lastName_pru','contactData_pru','profile_pru','language_pru','dn_pru','dn_pru');
                 foreach($attrs as $attrName => $attrValue){
                         // Check $attrName is available
                         if(in_array($attrName,$availableAttrs)){
@@ -212,12 +212,21 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	  * @return array(CMS_profile_user)
 	  * @access public
 	  */
-	function search($search = '', $letter = '', $group = '', $order = '', $direction = 'asc', $start = 0, $limit = 0, $activeOnly = false, $returnObjects = true) {
+	function search($search = '', $letter = '', $group = '', $order = '', $direction = 'asc', $start = 0, $limit = 0, $activeOnly = false, $returnObjects = true, &$score = array()) {
 		$start = (int) $start;
 		$limit = (int) $limit;
 		$group = (int) $group;
 		$direction = (in_array(strtolower($direction), array('asc', 'desc'))) ? strtolower($direction) : 'asc';
-		$keywordsWhere = $letterWhere = $groupWhere = $orderBy = '';
+		$keywordsWhere = $letterWhere = $groupWhere = $orderBy = $orderClause = $idWhere = '';
+		$select = 'id_pru';
+		if (substr($search, 0, 5) == 'user:' && sensitiveIO::isPositiveInteger(substr($search, 5))) {
+			$idWhere = " and id_pru = '".sensitiveIO::sanitizeSQLString(substr($search, 5))."'";
+			$search = '';
+		}
+		if (substr($search, 0, 6) == 'group:' && sensitiveIO::isPositiveInteger(substr($search, 6))) {
+			$group = substr($search, 6);
+			$search = '';
+		}
 		if ($search) {
 			//clean user keywords (never trust user input, user is evil)
 			$keyword = strtr($search, ",;", "  ");
@@ -238,12 +247,16 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 				return array();
 			}
 			foreach ($cleanedWords as $cleanedWord) {
-				$keywordsWhere .= " and (
+				$keywordsWhere .= ($keywordsWhere) ? " and " : '';
+				$keywordsWhere .= " (
 					lastName_pru like '%".sensitiveIO::sanitizeSQLString($cleanedWord)."%'
 					or firstName_pru like '%".sensitiveIO::sanitizeSQLString($cleanedWord)."%'
 					or login_pru like '%".sensitiveIO::sanitizeSQLString($cleanedWord)."%'
 				)";
 			}
+			$keywordsWhere = ' and (('.$keywordsWhere.')';
+			$select .= " , MATCH (lastName_pru, firstName_pru, login_pru) AGAINST ('".sensitiveIO::sanitizeSQLString($search)."') as m ";
+			$keywordsWhere .= " or MATCH (lastName_pru, firstName_pru, login_pru) AGAINST ('".sensitiveIO::sanitizeSQLString($search)."') )";
 		}
 		if ($letter && strlen($letter) === 1) {
 			$letterWhere = " and lastName_pru like '".sensitiveIO::sanitizeSQLString($letter)."%'";
@@ -255,26 +268,35 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 			}
 			$groupWhere = " and id_pru in (".implode(',',$groupUsers).")";
 		}
-		if ($order) {
-			$founded = false;
-			$sql = "DESCRIBE profilesUsers";
-			$q = new CMS_query($sql);
-			while ($field = $q->getValue('Field')) {
-				if ($field == $order.'_pru') {
-					$founded = true;
+		if ($order != 'score') {
+			if ($order) {
+				$founded = false;
+				$sql = "DESCRIBE profilesUsers";
+				$q = new CMS_query($sql);
+				while ($field = $q->getValue('Field')) {
+					if ($field == $order.'_pru') {
+						$founded = true;
+					}
 				}
-			}
-			if ($founded) {
-				$orderBy = $order.'_pru';
+				if ($founded) {
+					$orderBy = $order.'_pru';
+				} else {
+					$orderBy = 'lastName_pru,firstName_pru';
+				}
 			} else {
 				$orderBy = 'lastName_pru,firstName_pru';
 			}
-		} else {
-			$orderBy = 'lastName_pru,firstName_pru';
+			if ($orderBy) {
+				$orderClause = "order by
+					".$orderBy."
+					".$direction;
+			}
+		} elseif ($search) {
+			$orderClause = " order by m ".$direction;
 		}
 		$sql = "
 			select
-				id_pru
+				".$select."
 			from
 				profilesUsers
 			where 
@@ -283,9 +305,8 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 			".$keywordsWhere."
 			".$letterWhere."
 			".$groupWhere."
-			order by
-				".$orderBy."
-				".$direction."
+			".$idWhere."
+			".$orderClause."
 		";
 		if ($limit) {
 			$sql .= "limit 
@@ -295,7 +316,12 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 		//pr($sql);
 		//pr($q->getNumRows());
 		$users = array();
-		while ($id = $q->getValue("id_pru")) {
+		while ($r = $q->getArray()) {
+			$id = $r['id_pru'];
+			//set match score if exists
+			if (isset($r['m'])) {
+				$score[$id] = $r['m'];
+			}
 			if ($returnObjects) {
 				$usr = CMS_profile_usersCatalog::getByID($id);
 				if (is_a($usr, "CMS_profile_user") && !$usr->hasError()) {
@@ -307,6 +333,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 				$users[] = $id;
 			}
 		}
+		//pr($score);
 		return $users;
 	}
 	

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_search.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: object_search.php,v 1.2 2008/12/18 10:40:23 sebastien Exp $
 
 /**
   * Class CMS_object_search
@@ -131,6 +131,14 @@ class CMS_object_search extends CMS_grandFather
 	protected $_fieldsDefinitions;
 	
 	/**
+	  * Current search results score (only for keywords search)
+	  * 
+	  * @var array(integer $resultId => float score)
+	  * @access private
+	  */
+	protected $_score = array();
+	
+	/**
 	  * Constructor
 	  * 
 	  * @access public
@@ -215,6 +223,16 @@ class CMS_object_search extends CMS_grandFather
 			"publication date before", //Date end (to)
 			//"publication date end" //end of publication : system field : hidden
 		);
+	}
+	
+	/**
+	 * Get all results score for current search
+	 *
+	 * @return array of results score array(integer $resultId => float score)
+	 * @access public
+	 */
+	function getScore() {
+		return $this->_score;
 	}
 	
 	/**
@@ -712,24 +730,6 @@ class CMS_object_search extends CMS_grandFather
 							}
 							$xapianResults = $search->getMatches();
 						} else {
-							//clean user keywords (never trust user input, user is evil)
-							$keyword = strtr($value, ",;", "  ");
-							$words=array();
-							$words=array_map("trim",array_unique(explode(" ", $keyword)));
-							$cleanedWords = array();
-							foreach ($words as $aWord) {
-								if ($aWord && $aWord!='' && strlen($aWord) >= 3) {
-									$aWord = str_replace(array('%','_'), array('\%','\_'), $aWord);
-									if (htmlentities($aWord) != $aWord) {
-										$cleanedWords[] = htmlentities($aWord);
-									}
-									$cleanedWords[] = $aWord;
-								}
-							}
-							if (!$cleanedWords) {
-								//if no words after cleaning, return
-								break;
-							}
 							//get fields
 							if (!isset($this->_fieldsDefinitions[$type]) || !is_object($this->_fieldsDefinitions[$type])) {
 								//get object fields definition
@@ -750,6 +750,56 @@ class CMS_object_search extends CMS_grandFather
 							$where = ($IDs) ? ' objectID in ('.implode(',',$IDs).') and ':'';
 							//filter on specified fields
 							$where .= ($fields) ? ' objectFieldID  in ('.implode(',',$fields).') and ':'';
+							
+							//first do a fulltext search
+							$tables = array(
+								'mod_subobject_text',
+								'mod_subobject_string',
+							);
+							$fullTextResults = array();
+							foreach ($tables as $key => $table) {
+								$sqlTmp = "
+									select 
+										objectID, match (value) against ('".$value."') as m1 ".($value != htmlentities($value) ? ", match (value) against ('".htmlentities($value)."') as m2" : '')."
+									from
+										".$table.$statusSuffix."
+									where
+										".$where."
+										(match (value) against ('".$value."')
+										".($value != htmlentities($value) ? "or match (value) against ('".htmlentities($value)."')" : '').")
+								";
+								$qTmp = new cms_query($sqlTmp);
+								//pr($sqlTmp);
+								$IDs = array();
+								while ($r = $qTmp->getArray()) {
+									if (!isset($this->_score[$r['objectID']]) || (isset($this->_score[$r['objectID']]) && $r['m1'] > $this->_score[$r['objectID']])) {
+										$this->_score[$r['objectID']] = $r['m1'];
+									}
+									if (isset($r['m2']) && (!isset($this->_score[$r['objectID']]) || (isset($this->_score[$r['objectID']]) && $r['m2'] > $this->_score[$r['objectID']]))) {
+										$this->_score[$r['objectID']] = $r['m2'];
+									}
+									$fullTextResults[$r['objectID']] = $r['objectID'];
+								}
+							}
+							
+							//clean user keywords (never trust user input, user is evil)
+							$keyword = strtr($value, ",;", "  ");
+							$words=array();
+							$words=array_map("trim",array_unique(explode(" ", $keyword)));
+							$cleanedWords = array();
+							foreach ($words as $aWord) {
+								if ($aWord && $aWord!='' && strlen($aWord) >= 3) {
+									$aWord = str_replace(array('%','_'), array('\%','\_'), $aWord);
+									if (htmlentities($aWord) != $aWord) {
+										$cleanedWords[] = htmlentities($aWord);
+									}
+									$cleanedWords[] = $aWord;
+								}
+							}
+							if (!$cleanedWords) {
+								//if no words after cleaning, return
+								break;
+							}
 							$where .= '(';
 							//then add keywords
 							$count='0';
@@ -789,6 +839,17 @@ class CMS_object_search extends CMS_grandFather
 								where
 									$where
 							";
+							//append fulltext results if any
+							if ($fullTextResults) {
+								$sql .= "
+								union distinct
+								select
+									distinct id_moo as objectID
+								from
+									mod_object_polyobjects
+								where
+									id_moo in (".implode(',', $fullTextResults).")";
+							}
 						}
 					}
 					break;
@@ -864,7 +925,7 @@ class CMS_object_search extends CMS_grandFather
 					$sql = $objectField->getFieldSearchSQL($type, $value, $operator, $where, $this->_public);
 					break;
 				}
-				if ($sql || isset($xapianResults)) {
+				if ($sql || isset($xapianResults) || isset($fullTextResults)) {
 				    if ($sql) {
 						//pr($sql);
 					   	//$this->raiseError($sql);
@@ -875,7 +936,7 @@ class CMS_object_search extends CMS_grandFather
 					            $IDs[$id] = $id;
 					        }
 					    }
-					} else {
+					} elseif (isset($xapianResults)) {
 						$IDs = array();
 						foreach ($xapianResults as $id) {
 							$IDs[$id] = $id;
@@ -890,6 +951,16 @@ class CMS_object_search extends CMS_grandFather
 							if ($this->_orderConditions['relevance']) {
 								unset($this->_orderConditions['relevance']);
 							}
+						}
+					} else {
+						//if we only have objectID as orderCondition or if order by relevance is queried, use order provided by MySQL Fulltext
+						if ($this->_orderConditions['relevance']) {
+							if ($this->_orderConditions['relevance'] == 'desc') {
+								$this->_orderConditions = array('itemsOrdered' => array_reverse($fullTextResults,true));
+							} else {
+								$this->_orderConditions = array('itemsOrdered' => $fullTextResults);
+							}
+							unset($this->_orderConditions['relevance']);
 						}
 					}
 					//if no results, no need to continue
