@@ -1,6 +1,6 @@
 # Automne general .htaccess file. 
 # Author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-# $Id: .htaccess,v 1.4 2008/12/18 10:34:00 sebastien Exp $
+# $Id: .htaccess,v 1.5 2008/12/18 10:52:32 sebastien Exp $
 
 # Declare errors documents. 
 # The 404.php must be the 404 error document, otherwise, change PATH_SPECIAL_PAGE_NOT_FOUND_WR constant value in cms_rc.php file accordingly and keep the PHP header of the file 404.php in your new error document.
