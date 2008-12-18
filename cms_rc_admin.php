@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc_admin.php,v 1.2 2008/12/18 10:34:00 sebastien Exp $
+// $Id: cms_rc_admin.php,v 1.3 2008/12/18 13:40:40 sebastien Exp $
 
 /**
   * Administration rc file.
@@ -24,10 +24,10 @@
 
 //include general configuration file
 require_once(dirname(__FILE__)."/cms_rc.php");
-
+//Set session name
+session_name('AutomneSession');
 //start session
 @session_start();
-
 /**
   * Define User Type if APPLICATION_ENFORCES_ACCESS_CONTROL is True
   */

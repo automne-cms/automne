@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc_frontend.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: cms_rc_frontend.php,v 1.2 2008/12/18 13:40:40 sebastien Exp $
 
 /**
   * Frontend rc file.
@@ -24,7 +24,8 @@
 
 //include general configuration file
 require_once(dirname(__FILE__)."/cms_rc.php");
-
+//Set session name
+session_name('AutomneSession');
 //start session
 @session_start();
 
