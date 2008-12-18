@@ -17,7 +17,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: mod_cms_forms_header.php,v 1.1.1.1 2008/11/26 17:12:16 sebastien Exp $
+// $Id: mod_cms_forms_header.php,v 1.2 2008/12/18 13:57:31 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -30,6 +30,8 @@
   */
 
 //start session (needed for form validation count)
+//Set session name
+session_name('AutomneSession');
 @session_start();
 
 //Requirements
@@ -75,6 +77,8 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 				//check for valid session / logout attempt / and autologin
 				if (!is_a($_SESSION["cms_context"], 'CMS_context') || $_REQUEST["logout"] == 'true') {
 					@session_destroy();
+					//Set session name
+					session_name('AutomneSession');
 					@session_start();
 					if ($_REQUEST["logout"] != 'true' && CMS_context::autoLoginSucceeded()) {
 						//declare form ok action

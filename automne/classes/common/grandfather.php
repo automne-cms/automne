@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: grandfather.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: grandfather.php,v 1.2 2008/12/18 13:56:21 sebastien Exp $
 
 /**
   * Class CMS_grandFather
@@ -76,7 +76,7 @@ class CMS_grandFather
 			$this->_debug = $systemDebug;
 		}
 		//second condition are for static calls (made by static methods)
-		if (APPLICATION_EXEC_TYPE == 'http' && ((!isset($this) && $systemDebug) || $this->_debug)) {
+		if (!defined('APPLICATION_EXEC_TYPE') || (APPLICATION_EXEC_TYPE == 'http' && ((!isset($this) && $systemDebug) || $this->_debug))) {
 			$backTrace = '';
 			if (isset($_SESSION) && isset($_SESSION["cms_context"]) && is_a($_SESSION["cms_context"],'CMS_context')) {
 				$className = (isset($this)) ? get_class($this) : 'staticcall';

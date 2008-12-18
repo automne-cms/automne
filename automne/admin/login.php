@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: login.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: login.php,v 1.2 2008/12/18 13:55:59 sebastien Exp $
 
 /**
   * PHP page : Login
@@ -54,6 +54,8 @@ case "login":
 	$permanent = isset($_POST["permanent"]) ? $_POST["permanent"] : 0;
 	$cms_context = new CMS_context($_POST["login"], $_POST["pass"], $permanent);
 	if (!$cms_context->hasError()) {
+		//Set session name
+		session_name('AutomneSession');
 		@session_start();
 		$_SESSION["cms_context"] = $cms_context;
 		$cms_user = $_SESSION["cms_context"]->getUser();

@@ -13,12 +13,14 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: polymodFrontEnd.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: polymodFrontEnd.php,v 1.2 2008/12/18 13:56:11 sebastien Exp $
 
 /**
   * Main Include File of the Frontend Package : polymod
   * Includes all of the package files.
   */
+//Set session name
+session_name('AutomneSession');
 @session_start();
 //Delete polymod session if already exists
 if (isset($_SESSION['polyModule']) && $_SESSION['polyModule']) {

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: sender.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: sender.php,v 1.2 2008/12/18 13:56:57 sebastien Exp $
 
 /**
   * Class CMS_forms_sender
@@ -212,6 +212,8 @@ class CMS_forms_sender extends CMS_grandFather {
 	function getSenderForContext($cms_context = false) {
 		//first check for an existing sender with the same session_id
 		if (!session_id()) {
+			//Set session name
+			session_name('AutomneSession');
 			@session_start();
 		}
 		/*$sql = "

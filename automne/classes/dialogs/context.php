@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: context.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: context.php,v 1.2 2008/12/18 13:56:47 sebastien Exp $
 
 /**
   * Class CMS_context
@@ -172,6 +172,8 @@ class CMS_context extends CMS_grandFather
 	{
 		if (is_a($user, "CMS_profile_user")) {
 			$this->_userID = $user->getUserId();
+			//Set session name
+			session_name('AutomneSession');
 			@session_start();
 			$sql = "
 				insert into
@@ -350,6 +352,8 @@ class CMS_context extends CMS_grandFather
 	  */
 	function checkSession()
 	{
+		//Set session name
+		session_name('AutomneSession');
 		@session_start() ;
 		
 		//fetch all deletable sessions
@@ -545,6 +549,8 @@ class CMS_context extends CMS_grandFather
 		if (isset($_COOKIE[CMS_context::getAutoLoginCookieName()])) {
 			$cms_context = new CMS_context("", "", true);
 			if (!$cms_context->hasError()) {
+				//Set session name
+				session_name('AutomneSession');
 				@session_start();
 				$_SESSION["cms_context"] = $cms_context;
 				return true;
@@ -564,6 +570,8 @@ class CMS_context extends CMS_grandFather
 	static function resetSessionCookies() {
 		// Reset cookie
 		session_id(md5(uniqid(mt_rand(), true)));
+		//Set session name
+		session_name('AutomneSession');
 		@session_start();
 		unset($_SESSION) ;
 		if (isset($_COOKIE[session_name()])) {
