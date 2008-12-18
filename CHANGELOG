@@ -11,6 +11,7 @@ V4.0.0 (in progress)
 [FEATURE] : Use SWFUpload 2.1.0 flash/javascript library for all files upload management
 [FEATURE] : Update FCKEditor to version 2.6.3 : Add Safari, Opera and Camino support. Add some features (new style system, revamped undo system, blockquotes support, etc.) and a better stability. 
 [FEATURE] : Use ExtJS 2.2 javascript library for all admin management
+[FEATURE] : Add validation on page moving
 
 ---------------------------------------------------------
 View V3.X.X changelog for previous Automne versions
