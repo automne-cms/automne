@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_date.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: object_date.php,v 1.2 2009/02/03 14:27:35 sebastien Exp $
 
 /**
   * Class CMS_object_date
@@ -249,7 +249,7 @@ class CMS_object_date extends CMS_object_common
 		if ($params['updateDate']) {
 			$date->setNow();
 		}
-		if ($wasNull && $params['moveDate'] && ($params['setNow'] || $params['creationDate'] || $params['updateDate'])) {
+		if ($params['moveDate'] && (($params['setNow'] && $wasNull) || ($params['creationDate'] && $wasNull) || $params['updateDate'])) {
 			$date->moveDate($params['moveDate']);
 		}
 		if (!$params['creationDate'] && !$params['updateDate']) {

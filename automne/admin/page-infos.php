@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-infos.php,v 1.2 2008/12/18 10:36:43 sebastien Exp $
+// $Id: page-infos.php,v 1.3 2009/02/03 14:24:44 sebastien Exp $
 
 /**
   * PHP page : Load page infos
@@ -686,7 +686,15 @@ foreach ($userPanels as $panel => $panelStatus) {
 													params: 			{
 														currentPage:		'".$cms_page->getID()."',
 														action:				'unlock'
-													}
+													},
+													fcnCallback: 		function() {
+														//then reload page infos
+														Automne.tabPanels.getPageInfos({
+															pageId:		'".$cms_page->getID()."',
+															noreload:	true
+														});
+													},
+													callBackScope:		this
 												});
 											}
 										}

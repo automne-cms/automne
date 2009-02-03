@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object.php,v 1.2 2008/12/18 10:40:37 sebastien Exp $
+// $Id: poly_object.php,v 1.3 2009/02/03 14:27:45 sebastien Exp $
 
 /**
   * Class CMS_poly_object
@@ -625,7 +625,7 @@ class CMS_poly_object extends CMS_resource
 		} else {//else return only the first object field value
 			if (is_array($this->_objectValues)) {
 				$keys = array_keys($this->_objectValues);
-				if (isset($this->_objectValues[$keys[0]]) && is_object($this->_objectValues[$keys[0]])) {
+				if (isset($keys[0]) && isset($this->_objectValues[$keys[0]]) && is_object($this->_objectValues[$keys[0]])) {
 					return $this->_objectValues[$keys[0]]->getLabel();
 				}
 			}
@@ -1110,7 +1110,7 @@ class CMS_poly_object extends CMS_resource
 			case 'formatedDateEnd':
 				if($this->_objectResourceStatus == 1) {
 					$date = parent::getPublicationDateEnd();
-					if (is_a('CMS_date',$date)) {
+					if (is_a($date, 'CMS_date')) {
 						if (strtolower($parameters) == 'rss') {
 							$parameters = 'r';
 						}
@@ -1429,7 +1429,7 @@ class CMS_poly_object extends CMS_resource
 					global $cms_language;
 					if ($parameters['type'] == 'validate') {
 						return $cms_language->getMessage(MESSAGE_OBJECT_VALIDATION_AWAIT_NOTIFICATION, false, MOD_POLYMOD_CODENAME);
-					} elseif ($parameters['task'] == 'delete') {
+					} elseif ($parameters['type'] == 'delete') {
 						return $cms_language->getMessage(MESSAGE_OBJECT_DELETION_AWAIT_NOTIFICATION, false, MOD_POLYMOD_CODENAME);
 					}
 				break;

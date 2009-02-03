@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: items.php,v 1.2 2008/11/27 17:25:37 sebastien Exp $
+// $Id: items.php,v 1.3 2009/02/03 14:25:51 sebastien Exp $
 
 /**
   * PHP page : Load polymod items search window.
@@ -235,7 +235,7 @@ $possible_sorts = array('cms_object_boolean',
 					);
 // check witch fields are sortable
 foreach ($objectFields as $fieldID => $field) {
-	if(in_array(get_class($field->getTypeObject()), $possible_sorts)){
+	if(in_array(strtolower(get_class($field->getTypeObject())), $possible_sorts)){
 		$items_possible[$field->getID()] = $field->getLabel($cms_language);
 	}
 }
@@ -496,8 +496,7 @@ $jscontent = <<<END
 	'		<div class="atm-title">',
 	'			<table>',
 	'				<tr>',
-	'					<td>{status}</td>',
-	'					<td class="atm-label">{label}</td>',
+	'					<td class="atm-label">{status}&nbsp;{label}</td>',
 	'					<td class="atm-pubrange">{pubrange}</td>',
 	'				</tr>',
 	'			</table>',

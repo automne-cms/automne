@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: index.php,v 1.2 2008/12/18 13:40:29 sebastien Exp $
+// $Id: index.php,v 1.3 2009/02/03 14:24:43 sebastien Exp $
 
 /**
   * PHP page : index
@@ -23,6 +23,7 @@
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
+
 session_name('AutomneSession');
 session_start();
 session_destroy();

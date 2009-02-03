@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: upload-controler.php,v 1.2 2008/12/18 10:36:44 sebastien Exp $
+// $Id: upload-controler.php,v 1.3 2009/02/03 14:24:44 sebastien Exp $
 
 /**
   * PHP controler : Receive upload files
@@ -36,8 +36,7 @@ if (isset($_POST['Automne_4_autologin'])) {
 if (isset($_POST['userAgent'])) {
 	$_SERVER['HTTP_USER_AGENT'] = urldecode($_POST['userAgent']);
 }
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
-
+require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 //load interface instance
 $view = CMS_view::getInstance();
 //set default display mode for this page
@@ -62,7 +61,7 @@ $fileDatas = array(
 
 // Check the upload
 if (!isset($_FILES["Filedata"]) || !is_uploaded_file($_FILES["Filedata"]["tmp_name"]) || $_FILES["Filedata"]["error"] != 0) {
-	CMS_grandFather::raiseError('Uploaded file has error : '.print_r($_FILES["Filedata"], true));
+	CMS_grandFather::raiseError('Uploaded file has an error : '.print_r($_FILES, true));
 	$fileDatas['error'] = SFWUPLOAD_UPLOAD_FAILED;
 	$view->setContent($fileDatas);
 	$view->show();
@@ -100,7 +99,6 @@ $fileDatas = array(
 	'extension'		=> $file->getExtension(),
 	'success'		=> true
 );
-CMS_grandFather::raiseError(print_r($fileDatas,true));
 $view->setContent($fileDatas);
 $view->show();
 ?>

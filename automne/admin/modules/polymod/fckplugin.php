@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: fckplugin.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: fckplugin.php,v 1.2 2009/02/03 14:25:51 sebastien Exp $
 
 /**
   * PHP page : module polymod admin
@@ -39,6 +39,7 @@ define("MESSAGE_PAGE_FIELD_PUBLICATION", 258);
 define("MESSAGE_PAGE_FIELD_ACTIONS", 259);
 define("MESSAGE_PAGE_ACTION_DATE", 1284);
 define("MESSAGE_PAGE_ACTION_PREVIZ", 811);
+define("MESSAGE_PAGE_CHOOSE", 1049);
 
 /**
   * Messages from this module 

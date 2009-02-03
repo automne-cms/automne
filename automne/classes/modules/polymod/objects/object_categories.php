@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_categories.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: object_categories.php,v 1.2 2009/02/03 14:27:35 sebastien Exp $
 
 /**
   * Class CMS_object_categories
@@ -930,7 +930,7 @@ class CMS_object_categories extends CMS_object_common
 	  */
 	function categoriesTree($values, $tags) {
 		global $cms_user, $cms_language;
-		if ($values['usedcategories'] == 'true' || $values['usedcategories'] == '1' || !isset($values['usedcategories'])) {
+		if (!isset($values['usedcategories']) || $values['usedcategories'] == 'true' || $values['usedcategories'] == '1') {
 			$restrictToUsedCategories = true;
 		} else {
 			$restrictToUsedCategories = false;
@@ -951,9 +951,9 @@ class CMS_object_categories extends CMS_object_common
 		$itemPattern = $xml2Array->getXMLInTag($tags, 'item');
 		$templatePattern = $xml2Array->getXMLInTag($tags, 'template');
 		$selectedPattern = $xml2Array->getXMLInTag($tags, 'itemselected');
-		$maxlevel = (int) $values['maxlevel'];
-		$selectedID = (int) $values['selected'];
-		$disableCategories = explode(';',$values['disable']);
+		$maxlevel = isset($values['maxlevel']) ? (int) $values['maxlevel'] : 0; 
+		$selectedID = isset($values['selected']) ? (int) $values['selected'] : 0; 
+		$disableCategories = isset($values['disable']) ? explode(';',$values['disable']) : array(); 
 		
 		if (!$itemPattern) {
 			$this->raiseError("No 'item' tag found or tag empty");
@@ -979,7 +979,7 @@ class CMS_object_categories extends CMS_object_common
 			foreach ($viewvableCategoriesForProfile as $catID => $lineage) {
 				//restrict to used categories
 				if ($restrictToUsedCategories) {
-					if (!$usedCategoriesTree[$catID]) {
+					if (!isset($usedCategoriesTree[$catID])) { 
 						unset($viewvableCategoriesForProfile[$catID]);
 					}
 				}
@@ -1291,6 +1291,62 @@ class CMS_object_categories extends CMS_object_common
 						and (".$sql.")
 						$where";
 			}
+		}
+		return $sql;
+	}
+	
+	/**
+	  * Get field order SQL request (used by class CMS_object_search)
+	  *
+	  * @param integer $fieldID : this field id in object (aka $this->_field->getID())
+	  * @param mixed $direction : the direction to search (asc/desc)
+	  * @param string $operator : additionnal search operator
+	  * @param string $where : where clauses to add to SQL
+	  * @param boolean $public : values are public or edited ? (default is edited)
+	  * @return string : the SQL request
+	  * @access public
+	  */
+	function getFieldOrderSQL($fieldID, $direction, $operator, $where, $public = false) {
+		global $cms_language;
+		$statusSuffix = ($public) ? "_public":"_edited";
+		$supportedOperator = array('label');
+		if ($operator && !in_array($operator, $supportedOperator)) {
+			$this->_raiseError(get_class($this)." : getFieldSearchSQL : unkown search operator : ".$operator.", use default search instead");
+			$operator = false;
+		}
+		if ($operator == 'label' && !is_object($cms_language)) {
+			$this->_raiseError(get_class($this)." : getFieldSearchSQL : unkown cms_language to use for label search order, use default search instead");
+			$operator = false;
+		}
+		
+		$sql = '';
+		$fromTable = 'mod_subobject_integer';
+		
+		if (!$operator) {
+			// create sql
+			$sql = "
+			select
+				distinct objectID
+			from
+				".$fromTable.$statusSuffix."
+			where
+				objectFieldID = '".SensitiveIO::sanitizeSQLString($fieldID)."'
+				$where
+			order by value ".$direction;
+		} elseif ($operator == 'label') {
+			// create sql
+			$sql = "
+			select
+				distinct objectID
+			from
+				".$fromTable.$statusSuffix.",
+				modulesCategories_i18nm
+			where
+				objectFieldID = '".SensitiveIO::sanitizeSQLString($fieldID)."'
+				and category_mcl = value
+				and language_mcl = '".$cms_language->getCode()."'
+				$where
+			order by label_mcl ".$direction;
 		}
 		return $sql;
 	}

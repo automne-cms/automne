@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-controler.php,v 1.2 2008/12/18 10:36:43 sebastien Exp $
+// $Id: page-controler.php,v 1.3 2009/02/03 14:24:43 sebastien Exp $
 
 /**
   * PHP page : Receive pages updates
@@ -74,13 +74,14 @@ if (!$cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)) {
 	$view->show();
 }
 //check for lock
-if ($cms_page->getLock() && $cms_page->getLock() != $cms_user->getUserId()) {
-	CMS_grandFather::raiseError('Page '.$currentPage.' is currently locked by another user and can\'t be updated.');
-	$lockuser = CMS_profile_usersCatalog::getByID($cms_page->getLock());
-	$view->setActionMessage($cms_language->getMessage(MESSAGE_PAGE_ERROR_LOCKED, array($lockuser->getFullName())));
-	$view->show();
+if ($action != 'unlock' || ($action == 'unlock' && !$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL))) {
+	if ($cms_page->getLock() && $cms_page->getLock() != $cms_user->getUserId()) {
+		CMS_grandFather::raiseError('Page '.$currentPage.' is currently locked by another user and can\'t be updated.');
+		$lockuser = CMS_profile_usersCatalog::getByID($cms_page->getLock());
+		$view->setActionMessage($cms_language->getMessage(MESSAGE_PAGE_ERROR_LOCKED, array($lockuser->getFullName())));
+		$view->show();
+	}
 }
-
 $initialStatus = $cms_page->getStatus()->getHTML(false, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getID());
 //page edited status
 $edited = false;

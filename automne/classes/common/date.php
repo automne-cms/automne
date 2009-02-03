@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: date.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: date.php,v 1.2 2009/02/03 14:26:36 sebastien Exp $
 
 /**
   * Class CMS_date
@@ -470,7 +470,8 @@ class CMS_date extends CMS_grandFather
 	  */
 	function isNull()
 	{
-		return $this->getTimestamp() <= 1;
+		//return $this->getTimestamp() <= 1; //bugy with dates before 01/01/1970 (unix timestamp start)
+		return !((int) $this->_day && (int) $this->_month && (int) $this->_year);
 	}
 	
 	/**

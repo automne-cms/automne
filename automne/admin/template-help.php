@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: template-help.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: template-help.php,v 1.2 2009/02/03 14:24:44 sebastien Exp $
 
 /**
   * PHP page : Load template help window.
@@ -43,6 +43,7 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //
 }
 
 //include modules codes in output file
+$template = '';
 $modulesCodes = new CMS_modulesCodes();
 $modulesCodeInclude = $modulesCodes->getModulesCodes(MODULE_TREATMENT_TEMPLATES_EDITION_LABELS, PAGE_VISUALMODE_CLIENTSPACES_FORM, $template, array("language" => $cms_language, "user" => $cms_user));
 $modulesTab = '';

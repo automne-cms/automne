@@ -14,7 +14,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: rowscatalog.php,v 1.2 2008/12/18 10:40:46 sebastien Exp $
+// $Id: rowscatalog.php,v 1.3 2009/02/03 14:27:58 sebastien Exp $
 
 /**
   * Class CMS_rowsCatalog
@@ -131,6 +131,7 @@ class CMS_rowsCatalog extends CMS_grandFather
 		//user
 		if (is_object($user) && !$user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 			$groupsDenied = $user->getRowGroupsDenied();
+			$groupsDenied = $groupsDenied->getElements();
 			if ($groupsDenied) {
 				$where .= ($where) ? ' and (' : '(';
 				foreach ($groupsDenied as $group) {

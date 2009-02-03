@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: validations-sidepanel.php,v 1.2 2008/12/18 10:36:44 sebastien Exp $
+// $Id: validations-sidepanel.php,v 1.3 2009/02/03 14:24:44 sebastien Exp $
 
 /**
   * PHP page : Load side panel validations infos.
@@ -89,6 +89,9 @@ $jscontent = <<<END
 	validationsPanel.setTitle('{$cms_language->getJSMessage(MESSAGE_PAGE_VALIDATIONS_PENDING)} : {$validationsCount}');
 END;
 $view->addJavascript($jscontent);
+
+// Reset cookie
+	//CMS_context::resetSessionCookies();
 
 //send content
 $view->setContent($content);

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-content-controler.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: page-content-controler.php,v 1.2 2009/02/03 14:24:43 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on page content
@@ -105,6 +105,26 @@ switch ($action) {
 		if ($row) {
 			$clientSpace->writeToPersistence();
 			$datas = $row->getData($cms_language, $cms_page, $clientSpace, $visualMode);
+			//instanciate modules treatments for page content tags
+			$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_PAGECONTENT_TAGS, PAGE_VISUALMODE_FORM, $cms_page);
+			$modulesTreatment->setTreatmentParameters(array("language" => $cms_language));
+			$modulesTreatment->setDefinition($datas);
+			$datas = $modulesTreatment->treatContent(true);
+			//append JS and CSS class needed by modules blocks
+			$modules = $row->getModules();
+			foreach ($modules as $module) {
+				$jsFiles = $module->getJSFiles();
+				foreach ($jsFiles as $jsFile) {
+					$view->addJSFile($jsFile);
+				}
+				$cssFiles = $module->getCSSFiles();
+				if (isset($cssFiles['screen'])) {
+					foreach ($cssFiles['screen'] as $cssFile) {
+						$view->addCSSFile($cssFile);
+					}
+				}
+			}
+			
 			$view->setContent($datas);
 			$edited = true;
 		} else {

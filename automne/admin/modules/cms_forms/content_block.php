@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: content_block.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: content_block.php,v 1.2 2009/02/03 14:25:35 sebastien Exp $
 
 /**
   * PHP page : page content block edition : cms_forms
@@ -49,8 +49,16 @@ define("MESSAGE_PAGE_FIELD_FORM_OPEN", 44);
 define("MESSAGE_PAGE_ACTION_UNSELECT", 66);
 define("MESSAGE_PAGE_EMPTY", 6);
 
-//RIGHTS CHECK
-$cms_page = $cms_context->getPage();
+$tpl = sensitiveIO::request('template', 'sensitiveIO::isPositiveInteger');
+$rowId = sensitiveIO::request('rowType', 'sensitiveIO::isPositiveInteger');
+$rowTag = sensitiveIO::request('rowTag');
+$cs = sensitiveIO::request('cs');
+$currentPage = is_object($cms_context) ? sensitiveIO::request('page', 'sensitiveIO::isPositiveInteger', $cms_context->getPageID()) : '';
+$blockId = sensitiveIO::request('block');
+$blockClass = sensitiveIO::request('blockClass');
+$codename = sensitiveIO::request('module', CMS_modulesCatalog::getAllCodenames());
+
+$cms_page = CMS_tree::getPageByID($currentPage);
 
 if (!$cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)
 	|| !$cms_user->hasModuleClearance(MOD_CMS_FORMS_CODENAME, CLEARANCE_MODULE_EDIT)) {
@@ -59,20 +67,24 @@ if (!$cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)
 }
 
 //ARGUMENTS CHECK
-if (!SensitiveIO::isPositiveInteger($_POST["page"])
-	|| !$_POST["clientSpace"]
-	|| !$_POST["row"]
-	|| !$_POST["block"]) {
+if (!$cs
+	|| !$rowTag
+	|| !$rowId
+	|| !$blockId) {
 	die("Data missing.");
 }
-
+/*
 $cms_block = new CMS_block_cms_forms();
 $cms_block->initializeFromBasicAttributes($_POST["block"]);
+*/
+//instanciate block
+$cms_block = new CMS_block_polymod();
+$cms_block->initializeFromID($blockId, $rowId);
 
 $cms_module = CMS_modulesCatalog::getByCodename(MOD_CMS_FORMS_CODENAME);
 
 // Language
-if ($_REQUEST["items_language"] != '') {
+if (isset($_REQUEST["items_language"])) {
 	$_SESSION["cms_context"]->setSessionVar("items_language", $_REQUEST["items_language"]);
 } elseif ($_SESSION["cms_context"]->getSessionVar("items_language") == '') {
 	$_SESSION["cms_context"]->setSessionVar("items_language", $cms_module->getParameters("default_language"));
@@ -94,24 +106,26 @@ case "validate":
 	//checks and assignments
 	$cms_message = "";
 	$value = array('formID' => $_POST["value"]);
-	if (!$cms_block->writeToPersistence($_POST["page"], $_POST["clientSpace"], $_POST["row"], RESOURCE_LOCATION_EDITION, false, array("value"=>$value))) {
+	if (!$cms_block->writeToPersistence($cms_page->getID(), $cs, $rowTag, RESOURCE_LOCATION_EDITION, false, array("value"=>$value))) {
 		$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_VALIDATE_ERROR)."\n";
 	}
 	if (!$cms_message) {
-		header("Location: ".PATH_ADMIN_SPECIAL_PAGE_CONTENT_WR."?".session_name()."=".session_id());
-		exit;
+		$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
+		//grab block content
+		$data = $cms_block->getRawData($cms_page->getID(), $cs, $rowTag, RESOURCE_LOCATION_EDITION, false);
 	}
 	break;
 case "disassociate":
 	//checks and assignments
 	$cms_message = "";
 	$value = array();
-	if (!$cms_block->writeToPersistence($_POST["page"], $_POST["clientSpace"], $_POST["row"], RESOURCE_LOCATION_EDITION, false, array("value"=>$value))) {
+	if (!$cms_block->writeToPersistence($cms_page->getID(), $cs, $rowTag, RESOURCE_LOCATION_EDITION, false, array("value"=>$value))) {
 		$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_VALIDATE_ERROR)."\n";
 	}
 	if (!$cms_message) {
-		header("Location: ".PATH_ADMIN_SPECIAL_PAGE_CONTENT_WR."?".session_name()."=".session_id());
-		exit;
+		$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
+		//grab block content
+		$data = $cms_block->getRawData($cms_page->getID(), $cs, $rowTag, RESOURCE_LOCATION_EDITION, false);
 	}
 	break;
 case "previz":
@@ -119,12 +133,11 @@ case "previz":
 	$previz = $_POST["item"];
 default:
 	//grab block content
-	$data = $cms_block->getRawData($_POST["page"], $_POST["clientSpace"], $_POST["row"], RESOURCE_LOCATION_EDITION, false);
+	$data = $cms_block->getRawData($cms_page->getID(), $cs, $rowTag, RESOURCE_LOCATION_EDITION, false);
 	break;
 }
 
 $dialog = new CMS_dialog();
-$dialog->setBackLink(PATH_ADMIN_SPECIAL_PAGE_CONTENT_WR);
 $dialog->setTitle($cms_language->getMessage(MESSAGE_PAGE_TITLE, false, MOD_CMS_FORMS_CODENAME));
 if ($cms_message) {
 	$dialog->setActionMessage($cms_message);
@@ -146,10 +159,11 @@ $content .= '
 	<legend class="admin">'.$cms_language->getMessage(MESSAGE_PAGE_FIND_FORM, false, MOD_CMS_FORMS_CODENAME).'</legend>
 	<table width="100%" border="0" cellpadding="3" cellspacing="0">
 	<form action="'.$_SERVER["SCRIPT_NAME"].'" method="post">
-	<input type="hidden" name="page" value="'.$_POST["page"].'" />
-	<input type="hidden" name="clientSpace" value="'.$_POST["clientSpace"].'" />
-	<input type="hidden" name="row" value="'.$_POST["row"].'" />
-	<input type="hidden" name="block" value="'.$_POST["block"].'" />
+	<input type="hidden" name="page" value="'.$cms_page->getID().'" />
+	<input type="hidden" name="cs" value="'.$cs.'" />
+	<input type="hidden" name="rowTag" value="'.$rowTag.'" />
+	<input type="hidden" name="rowType" value="'.$rowId.'" />
+	<input type="hidden" name="block" value="'.$blockId.'" />
 	<input type="hidden" name="cms_action" value="search" />';
 
 //
@@ -230,10 +244,11 @@ if (!sizeof($items)) {
 					<tr>
 						<form action="'.$_SERVER["SCRIPT_NAME"].'" method="post">
 						<input type="hidden" name="cms_action" value="previz" />
-						<input type="hidden" name="page" value="'.$_POST["page"].'" />
-						<input type="hidden" name="clientSpace" value="'.$_POST["clientSpace"].'" />
-						<input type="hidden" name="row" value="'.$_POST["row"].'" />
-						<input type="hidden" name="block" value="'.$_POST["block"].'" />
+						<input type="hidden" name="page" value="'.$cms_page->getID().'" />
+						<input type="hidden" name="cs" value="'.$cs.'" />
+						<input type="hidden" name="rowTag" value="'.$rowTag.'" />
+						<input type="hidden" name="rowType" value="'.$rowId.'" />
+						<input type="hidden" name="block" value="'.$blockId.'" />
 						<input type="hidden" name="item" value="' . $obj->getID() . '" />
 							<td><input type="submit" class="admin_input_'.$td_class.'" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_PREVIZ).'" /></td>
 						</form>';
@@ -241,10 +256,11 @@ if (!sizeof($items)) {
 							$content .= '
 							<form action="'.$_SERVER["SCRIPT_NAME"].'" method="post">
 							<input type="hidden" name="cms_action" value="validate" />
-							<input type="hidden" name="page" value="'.$_POST["page"].'" />
-							<input type="hidden" name="clientSpace" value="'.$_POST["clientSpace"].'" />
-							<input type="hidden" name="row" value="'.$_POST["row"].'" />
-							<input type="hidden" name="block" value="'.$_POST["block"].'" />
+							<input type="hidden" name="page" value="'.$cms_page->getID().'" />
+							<input type="hidden" name="cs" value="'.$cs.'" />
+							<input type="hidden" name="rowTag" value="'.$rowTag.'" />
+							<input type="hidden" name="rowType" value="'.$rowId.'" />
+							<input type="hidden" name="block" value="'.$blockId.'" />
 							<input type="hidden" name="value" value="' . $obj->getID() . '" />
 								<td class="admin"><input type="submit" class="admin_input_'.$td_class.'" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_SELECT, false, MOD_CMS_FORMS_CODENAME).'" /></td>
 							</form>';
@@ -252,10 +268,11 @@ if (!sizeof($items)) {
 							$content .= '
 							<form action="'.$_SERVER["SCRIPT_NAME"].'" method="post">
 							<input type="hidden" name="cms_action" value="disassociate" />
-							<input type="hidden" name="page" value="'.$_POST["page"].'" />
-							<input type="hidden" name="clientSpace" value="'.$_POST["clientSpace"].'" />
-							<input type="hidden" name="row" value="'.$_POST["row"].'" />
-							<input type="hidden" name="block" value="'.$_POST["block"].'" />
+							<input type="hidden" name="page" value="'.$cms_page->getID().'" />
+							<input type="hidden" name="cs" value="'.$cs.'" />
+							<input type="hidden" name="rowTag" value="'.$rowTag.'" />
+							<input type="hidden" name="rowType" value="'.$rowId.'" />
+							<input type="hidden" name="block" value="'.$blockId.'" />
 								<td class="admin"><input type="submit" class="admin_input_'.$td_class.'" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_UNSELECT, false, MOD_CMS_FORMS_CODENAME).'" /></td>
 							</form>';
 						}

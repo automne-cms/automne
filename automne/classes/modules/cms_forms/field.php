@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: field.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: field.php,v 1.2 2009/02/03 14:27:16 sebastien Exp $
 
 /**
   * Class CMS_forms_field
@@ -234,7 +234,6 @@ class CMS_forms_field extends CMS_grandFather {
 			name_fld='".SensitiveIO::sanitizeSQLString($this->_name)."',
 			label_fld='".SensitiveIO::sanitizeSQLString($this->_label)."',
 			type_fld='".SensitiveIO::sanitizeSQLString($this->_type)."',
-			options_fld='',
 			dataValidation_fld='".SensitiveIO::sanitizeSQLString($this->_dataValidation)."',
 			defaultValue_fld='".SensitiveIO::sanitizeSQLString($this->_value)."',
 			required_fld='".SensitiveIO::sanitizeSQLString($this->_required)."',

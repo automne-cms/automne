@@ -178,8 +178,8 @@ Automne.server = {
 				params: 		(params) ? params : ''
 			}, defaultConfig);
 		}
-		// send request
-		Ext.Ajax.request(config);
+		// send request and return request number
+		return Ext.Ajax.request(config);
 	},
 	//show loading spinner on server call
 	showSpinner: function (conn, options) {
@@ -262,12 +262,28 @@ Automne.server = {
 				pr(e);
 			}
 		}
+		//extract json jsfiles and cssfiles in response if any
+		var jsFiles = {}, cssFiles = {};
+		if (options.evalJSon !== false && xml && xml.getElementsByTagName('jsfiles').length) {
+			try{
+				eval('jsFiles = '+xml.getElementsByTagName('jsfiles').item(0).firstChild.nodeValue+';');
+			} catch(e) {
+				pr(e);
+			}
+		}
+		if (options.evalJSon !== false && xml && xml.getElementsByTagName('cssfiles').length) {
+			try{
+				eval('cssFiles = '+xml.getElementsByTagName('cssfiles').item(0).firstChild.nodeValue+';');
+			} catch(e) {
+				pr(e);
+			}
+		}
 		if (xml && xml.getElementsByTagName('disconnected').length) {
 			Automne.view.disconnect();
 		}
 		if (options.fcnCallback != '' && typeof options.fcnCallback == 'function') {
 			//send to callback if any
-			options.fcnCallback.call(options.callBackScope || options.scope || this || window, response, options, jsonResponse || content);
+			options.fcnCallback.call(options.callBackScope || options.scope || this || window, response, options, jsonResponse || content, jsFiles, cssFiles);
 		} else {
 			return jsonResponse || content;
 		}
@@ -666,7 +682,7 @@ Automne.view = {
 	},
 	disconnect: function() {
 		//check for authenticated user
-		Automne.server.call('login.php?cms_action=login');
+		Automne.server.call('login.php?cms_action=reconnect');
 	}
 };
 /////////////////////////////
@@ -919,6 +935,17 @@ Automne.content = {
 		ac.updateTimer = setInterval(ac.updateCSMasks, 3000);
 		//init toolbar and row mask
 		ac.init();
+	},
+	getRowForEl: function(el) {
+		var ac = Automne.content;
+		for (var csId in ac.cs) {
+			for(var i = 0, rowsLen = ac.cs[csId].rows.length; i < rowsLen; i++) {
+				if (ac.cs[csId].rows[i].hasElement(el)) {
+					return ac.cs[csId].rows[i];
+				}
+			}
+		}
+		return false;
 	},
 	getCS: function(csId) {
 		return Automne.content.cs[csId];

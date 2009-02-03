@@ -1,4 +1,4 @@
-# $Id: automne4-I18NM_messages.sql,v 1.2 2008/12/18 10:35:59 sebastien Exp $
+# $Id: automne4-I18NM_messages.sql,v 1.3 2009/02/03 14:35:04 sebastien Exp $
 #
 # Suppression avant mise à  jour du Contenu de la table `I18NM_messages` pour le module standard
 #
@@ -1015,10 +1015,248 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1215', 'stan
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1216', 'standard', NOW(), '[Le dn (Distinguished Name) "%s" existe dejà ]', '[Sorry, the LDAP dn "%s" is already used]');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1217', 'standard', NOW(), 'Gestion des accès par groupes d\'utilisateurs', 'Users groups categories access management');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1218', 'standard', NOW(), 'Se souvenir de mon compte', 'Remember me');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1219', 'standard', NOW(), '<strong>Titre ou sous-titre (255 charact&egrave;res max) :</strong><br /><strong>&lt;block module=&quot;standard&quot; type=&quot;</strong><strong>varchar&quot; id=&quot;</strong>uniqueID<strong>&quot;&gt; ... &lt;/block&gt;</strong><ul><li><strong>uniqueID :</strong> Identifiant unique du bloc dans la rang&eacute;e.</li></ul>Les valeurs suivantes seront remplac&eacute;es dans le tag :<br /><ul><li><strong>{{data}} : </strong>Contenu textuel.</li></ul><strong>Texte mis en forme (HTML) :</strong><br /><strong>&lt;block module=&quot;standard&quot; type=&quot;text&quot; id=&quot;</strong>uniqueID<strong>&quot;&gt; ... &lt;/block&gt;</strong><ul><li><strong>uniqueID :</strong> Identifiant unique du bloc dans la rang&eacute;e.</li></ul>Les valeurs suivantes seront remplac&eacute;es dans le tag :<br /><ul><li><strong>{{data}} : </strong>Contenu mis en forme (HTML).</li></ul><strong>Image :</strong><br /><strong> &lt;block module=&quot;standard&quot; type=&quot;image&quot; id=&quot;</strong>uniqueID<strong>&quot; maxWidth=&quot;</strong>value<strong>&quot; minWidth=&quot;</strong>value<strong>&quot;&gt; ... &lt;/block&gt;</strong><br /><ul><li><strong>uniqueID :</strong> Identifiant unique du bloc dans la rang&eacute;e.</li><li><strong>value : </strong>Valeur minimum ou maximum autoris&eacute;e pour l\'image en pixels. Les attributs maxWidth et minWidth sont optionnels.</li></ul>Les valeurs suivantes seront remplac&eacute;es dans le tag :<br /><ul><li><strong>{{data}} : </strong>Code de l\'image et lien vers l\'image zoom si elle existe.</li><li><strong>{{linkLabel}} : </strong>Nom de l\'image si il existe.</li></ul><strong>Fichier - Pi&egrave;ce jointe :</strong><br /><strong>&lt;block module=&quot;standard&quot; type=&quot;file&quot; id=&quot;</strong>uniqueID<strong>&quot;&gt; ... &lt;/block&gt;</strong><ul><li><strong>uniqueID :</strong> Identifiant unique du bloc dans la rang&eacute;e.</li></ul>Les valeurs suivantes seront remplac&eacute;es dans le tag :<br /><ul><li><strong>{{data}} : </strong>Lien vers le fichier si il existe.</li><li><strong>{{href}} : </strong>Adresse (URL) du fichier.<br /></li><li><strong>{{label}} : </strong>Libell&eacute; du fichier.<br /></li><li><strong>{{jslabel}} : </strong>Libell&eacute; du fichier (&eacute;chapp&eacute; pour insertion dans du javascript ou un attribut de tag)<br /></li><li><strong>{{size}} : </strong>Taille du fichier en m&eacute;ga octets.<br /></li><li><strong>{{filename}} : </strong>Nom du fichier.<br /></li><li><strong>{{originalfilename}} : </strong>Nom original du fichier.<br /></li><li><strong>{{type}} : </strong>Extention du fichier.<br /></li></ul><strong>Animation Flash :</strong><br /><strong>&lt;block module=&quot;standard&quot; type=&quot;flash&quot; id=&quot;</strong>uniqueID<strong>&quot;&gt; ... &lt;/block&gt;</strong><ul><li><strong>uniqueID :</strong> Identifiant unique du bloc dans la rang&eacute;e.</li></ul>Les valeurs suivantes seront remplac&eacute;es dans le tag :<br /><ul><li><strong>{{data}} :</strong> Contenu de l\'animation flash.</li></ul>', '<ol><li>Title or sub-title<br />&lt;block module="standard" type="varchar" id="uniqueID"&gt;{{data}}&lt;/block&gt;</li><li>Free text<br />&lt;block module="standard" type="text" id="uniqueID"&gt;{{data}}&lt;/block&gt;</li><li>Image<br />&lt;block module="standard" type="image" id="uniqueID"&gt;{{data}} and / or {{linkLabel}}&lt;/block&gt;<br />NB : Attributes maxWidth and minWidth enable you to control the width of the image for each block image.</li><li>File<br />&lt;block module="standard" type="file" id="uniqueID"&gt;{{data}}&lt;/block&gt;</li><li>Flash Animation<br />&lt;block module="standard" type="flash" id="uniqueID"&gt;{{data}}&lt;/block&gt;</li></ol><b>uniqueID :</b> Unique identifier of the block for the row.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1219', 'standard', NOW(), '<div class="rowComment">
+	<h1>Titre ou sous-titre (255 charact&egrave;res max) :</h1>
+	<div class="retrait"><span class="code">&lt;block module=&quot;standard&quot; type=&quot;varchar&quot; id=&quot;<span class="keyword">uniqueID</span>&quot;&gt;<span class="vertclair">{{data}}</span>&lt;/block&gt;</span>
+	<ul>
+	<li>
+	<span class="keyword">uniqueID :</span>&nbsp;Identifiant unique du bloc dans la rang&eacute;e.</li></ul>Les valeurs suivantes seront remplac&eacute;es dans le tag :
+	<ul>
+	<li>
+	<span class="vertclair">{{data}} :</span>&nbsp;Contenu textuel.</li></ul>
+	</div>
+	
+	<h1>Texte mis en forme (HTML) :</h1>
+	<div class="retrait"><span class="code">&lt;block module=&quot;standard&quot; type=&quot;text&quot; id=&quot;<span class="keyword">uniqueID</span>&quot;&gt;<span class="vertclair">{{data}}</span>&lt;/block&gt;</span>
+	<ul>
+	<li>
+	<span class="keyword">uniqueID :</span>&nbsp;Identifiant unique du bloc dans la rang&eacute;e.</li></ul>Les valeurs suivantes seront remplac&eacute;es dans le tag :
+	<ul>
+	<li>
+	<span class="vertclair">{{data}} :</span>&nbsp;Contenu mis en forme (HTML).</li></ul>
+	</div>
+	
+	<h1>Image :</h1>
+	<div class="retrait"><span class="code">&lt;block module=&quot;standard&quot; type=&quot;image&quot; id=&quot;<span class="keyword">uniqueID</span>&quot; maxWidth=&quot;<span class="keyword">value</span>&quot; minWidth=&quot;<span class="keyword">value</span>&quot;&gt;<span class="vertclair">{{data}}</span>&lt;/block&gt;</span>
+	<ul>
+	<li>
+	<span class="keyword">uniqueID :</span>&nbsp;Identifiant unique du bloc dans la rang&eacute;e.</li>
+	<li>
+	<span class="keyword">value :</span>&nbsp;Valeur minimum ou maximum autoris&eacute;e pour l\'image en pixels. Les attributs maxWidth et minWidth sont optionnels.</li></ul>Les valeurs suivantes seront remplac&eacute;es dans le tag :
+	<br/>
+	<ul>
+	<li><span class="vertclair">{{data}} :</span>&nbsp;Code de l\'image et lien vers l\'image zoom si elle existe.</li>
+	<li><span class="vertclair">{{label}}</span> ou <span class="vertclair">{{linkLabel}} :</span>&nbsp;Nom / Légende de l\'image si il existe.</li>
+	<li><span class="vertclair">{{jslabel}} :</span>&nbsp;Nom de l\'image  (&eacute;chapp&eacute; pour insertion dans du javascript ou un attribut de tag).</li>
+	<li><span class="vertclair">{{imageZoomHtml}} :</span>&nbsp;Code HTML affichant l\'image zoom si elle existe.</li>
+	<li><span class="vertclair">{{imagePath}} :</span>&nbsp;Répertoire de l\'image sur le serveur.</li>
+	<li><span class="vertclair">{{imageName}} :</span>&nbsp;Nom du fichier image sur le serveur.</li>
+	<li><span class="vertclair">{{imageZoomHref}} :</span>&nbsp;Adresse (répertoire et nom) du fichier Image zoom sur le serveur.</li>
+	<li><span class="vertclair">{{imageZoomName}} :</span>&nbsp;Nom du fichier image zoom sur le serveur.</li>
+	<li><span class="vertclair">{{imageWidth}} :</span>&nbsp;Largeur du fichier image sur le serveur.</li>
+	<li><span class="vertclair">{{imageHeight}} :</span>&nbsp;Hauteur du fichier image sur le serveur.</li>
+	<li><span class="vertclair">{{imageZoomWidth}} :</span>&nbsp;Largeur du fichier image zoom sur le serveur.</li>
+	<li><span class="vertclair">{{imageZoomHeight}} :</span>&nbsp;Hauteur du fichier image zoom sur le serveur.</li>
+	</ul>
+	</div>
+	
+	<h1>Fichier - Pi&egrave;ce jointe :</h1>
+	<div class="retrait"><span class="code">&lt;block module=&quot;standard&quot; type=&quot;file&quot; id=&quot;<span class="keyword">uniqueID</span>&quot;&gt;<span class="vertclair">{{data}}</span>&lt;/block&gt;</span>
+	<ul>
+	<li>
+	<span class="keyword">uniqueID :</span>&nbsp;Identifiant unique du bloc dans la rang&eacute;e.</li></ul>
+	Les valeurs suivantes seront remplac&eacute;es dans le tag :
+	<ul>
+	<li>
+	<span class="vertclair">{{data}} :</span>&nbsp;Lien vers le fichier si il existe.</li>
+	<li>
+	<span class="vertclair">{{href}} :</span>&nbsp;Adresse (URL) du fichier.
+	</li>
+	<li>
+	<span class="vertclair">{{label}} :</span>&nbsp;Libell&eacute; du fichier.
+	</li>
+	<li>
+	<span class="vertclair">{{jslabel}} :</span>&nbsp;Libell&eacute; du fichier (&eacute;chapp&eacute; pour insertion dans du javascript ou un attribut de tag).
+	</li>
+	<li>
+	<span class="vertclair">{{size}} :</span>&nbsp;Taille du fichier en m&eacute;ga octets.
+	</li>
+	<li>
+	<span class="vertclair">{{filename}} :</span>&nbsp;Nom du fichier.
+	</li>
+	<li>
+	<span class="vertclair">{{originalfilename}} :</span>&nbsp;Nom original du fichier.
+	</li>
+	<li>
+	<span class="vertclair">{{type}} :</span>&nbsp;Extention du fichier.
+	</li>
+	<li>
+	<span class="vertclair">{{icon}} :</span>&nbsp;Icône de ce type de fichier si elle existe.
+	</li>
+	</ul>
+	</div>
+	
+	<h1>Animation Flash :</h1>
+	<div class="retrait"><span class="code">&lt;block module=&quot;standard&quot; type=&quot;flash&quot; id=&quot;<span class="keyword">uniqueID</span>&quot;&gt;<span class="vertclair">{{data}}</span>&lt;/block&gt;</span>
+	<ul>
+	<li>
+	<span class="keyword">uniqueID :</span>&nbsp;Identifiant unique du bloc dans la rang&eacute;e.</li></ul>Les valeurs suivantes seront remplac&eacute;es dans le tag :
+	<br/>
+	<ul>
+	<li>
+	<span class="vertclair">{{data}} :</span>&nbsp;Contenu de l\'animation flash.</li></ul>
+	</div>
+</div>', '<ol><li>Title or sub-title<br />&lt;block module="standard" type="varchar" id="uniqueID"&gt;{{data}}&lt;/block&gt;</li><li>Free text<br />&lt;block module="standard" type="text" id="uniqueID"&gt;{{data}}&lt;/block&gt;</li><li>Image<br />&lt;block module="standard" type="image" id="uniqueID"&gt;{{data}} and / or {{linkLabel}}&lt;/block&gt;<br />NB : Attributes maxWidth and minWidth enable you to control the width of the image for each block image.</li><li>File<br />&lt;block module="standard" type="file" id="uniqueID"&gt;{{data}}&lt;/block&gt;</li><li>Flash Animation<br />&lt;block module="standard" type="flash" id="uniqueID"&gt;{{data}}&lt;/block&gt;</li></ol><b>uniqueID :</b> Unique identifier of the block for the row.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1220', 'standard', NOW(), 'Syntaxe des rangées pour le module \'%s\'', 'Rows syntax for the module \'%s\'');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1221', 'standard', NOW(), 'Syntaxe des modèles pour le module \'%s\'', 'Templates syntax for the module \'%s\'');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1222', 'standard', NOW(), '<strong> 	Titre de la page courante :<br />&lt;atm-title /&gt;</strong><br /><br /><strong> 	M&eacute;ta-donn&eacute;es de la page courante :<br />&lt;atm-meta-tags /&gt;</strong><br /><br /><strong> 	Valeur d\'une constante (voir les fichiers de constantes d\'Automne) :<br />&lt;atm-constant name=&quot;</strong>constantName<strong>&quot; /&gt;</strong><br /><ul><li><strong>constantName :</strong> Nom de la constante &agrave; afficher. </li></ul><strong> 	Lien(s) vers une ou plusieur pages :<br />&lt;atm-linx type=&quot;</strong>linxType<strong>&quot;&gt;</strong>linxDefinition<strong>&lt;/atm-linx&gt;</strong><br /><ul><li><strong>linxType :</strong> Type de lien parmi :<ul>    <li><strong>direct :</strong> Lien direct vers une page donn&eacute;e.</li>    <li><strong>sublinks :</strong> Liens vers les sous pages de la page courante.</li>    <li><strong>desclinks :</strong> Historique de navigation d\'une page &agrave; une autre.</li>    <li><strong>recursivelinks :</strong> Arborescence de sous liens depuis une page donn&eacute;e.</li></ul></li><li><strong>linxDefinition :</strong> Voir la documentation Automne pour le d&eacute;tail.</li></ul><strong> 	Zone de contenu : Permet l\'affichage de rang&eacute;es de contenu :<br />&lt;atm-clientspace module=&quot;standard&quot; id=&quot;</strong>uniqueID<strong>&quot; /&gt;</strong><br /><ul><li><strong>uniqueID :</strong> Identifiant unique de la zone de contenu dans le mod&egrave;le. </li></ul><strong> Lien vers la page d\'impression :<br />&lt;atm-print-link&gt;</strong>{{href}}<strong>&lt;/atm-print-link&gt;</strong><br /><ul><li><strong>{{href}} :</strong> sera remplac&eacute; par le lien vers la page imprimable.</li></ul>', '<ol>\r\n<li>\r\n	Title of the current page:<br />\r\n	&lt;atm-title /&gt;\r\n</li>\r\n<li>\r\n	Metadata of the current page:<br />\r\n	&lt;atm-meta-tags /&gt;\r\n</li>\r\n<li>\r\n	Value of a constant (see Automne constants files):<br />\r\n	&lt;atm-constant name="constantName" /&gt;<br />\r\n	<b>constantName :</b> Name of the constant to display.\r\n</li>\r\n<li>\r\n	link(s) to one or several pages:<br />\r\n	&lt;atm-linx type="linxType"&gt;linxDefinition&lt;/atm-linx&gt;<br />\r\n	<b>linxType :</b> link type between:\r\n	<ul>\r\n		<li>\'direct\' : Direct link to a given page.</li>\r\n		<li>\'sublinks\' : Links to subpages of the current page.</li>\r\n		<li>\'desclinks\' : Navigation history from a page to another.</li>\r\n		<li>\'recursivelinks\' : Tree structure of sublinks from a given page.</li>\r\n	</ul>\r\n	<b>linxDefinition :</b> See Automne documentation for the detail.\r\n</li>\r\n<li>\r\n	Content zone : Alow use of content rows :<br />\r\n	&lt;atm-clientspace module="standard" id="uniqueID" /&gt;<br />\r\n	<b>uniqueID :</b> Unique identifier of the content zone for the template.\r\n</li>\r\n<li>\r\n	Link to the printable page :<br />\r\n	&lt;atm-print-link&gt;{{href}}&lt;/atm-print-link&gt;<br />\r\n	<b>{{href}} :</b> will be replaced by the link to the printable page.\r\n</li>\r\n</ol>');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1222', 'standard', NOW(), '
+<div class="rowComment">
+	<h1>Titre de la page courante :</h1>
+	<div class="retrait"><span class="code">&lt;atm-title /&gt;</span></div>
+	<h1>M&eacute;ta-donn&eacute;es de la page courante :</h1>
+	<div class="retrait"><span class="code">&lt;atm-meta-tags /&gt;</span>
+	<br /><strong>Ce tag est obligatoire dans tous les modèles.</strong>
+	</div>
+	<h1>Valeur d\'une constante (voir les fichiers de constantes d\'Automne) :</h1>
+	<div class="retrait"><span class="code">&lt;atm-constant name=&quot;<span class="keyword">constantName</span>&quot; /&gt;</span>
+	<ul>
+		<li>
+			<span class="keyword">constantName :</span>&nbsp;Nom de la constante &agrave; afficher.
+		</li>
+	</ul>
+	</div>
+	<h1>Lien(s) vers une ou plusieur pages :</h1>
+	<div class="retrait"><span class="code">&lt;atm-linx type=&quot;<span class="keyword">linxType</span>&quot;&gt;<span class="vertclair">linxDefinition</span>&lt;/atm-linx&gt;</span>
+		<ul>
+			<li>
+				<span class="keyword">
+					linxType :
+				</span>
+				&nbsp;Type de lien parmi :
+				<ul>
+					<li>
+						<span class="keyword">
+							direct :
+						</span>
+						&nbsp;Lien direct vers une page donn&eacute;e.
+					</li>
+					<li>
+						<span class="keyword">
+							sublinks :
+						</span>
+						&nbsp;Liens vers les sous pages de la page courante.
+					</li>
+					<li>
+						<span class="keyword">
+							desclinks :
+						</span>
+						&nbsp;Historique de navigation d\'une page &agrave; une autre.
+					</li>
+					<li>
+						<span class="keyword">
+							recursivelinks :
+						</span>
+						&nbsp;Arborescence de sous liens depuis une page donn&eacute;e.
+					</li>
+				</ul>
+			</li>
+			<li>
+				<span class="vertclair">
+					linxDefinition :
+				</span>
+				&nbsp;<a href="http://www.automne.ws/docs/" target="_blank">Voir la documentation Automne pour le d&eacute;tail</a>.
+			</li>
+		</ul>
+	</div>
+	<h1>Zone de contenu : Permet l\'affichage de rang&eacute;es de contenu :</h1>
+	<div class="retrait"><span class="code">&lt;atm-clientspace module=&quot;standard&quot; id=&quot;<span class="keyword">uniqueID</span>&quot; /&gt;</span>
+		<ul>
+			<li>
+				<span class="keyword">
+					uniqueID :
+				</span>
+				&nbsp;Identifiant unique de la zone de contenu dans le mod&egrave;le.
+			</li>
+		</ul>
+	</div>
+	<h1>Lien vers la page d\'impression :</h1>
+	<div class="retrait"><span class="code">&lt;atm-print-link keeprequest=&quot;<span class="keyword">true</span>&quot;&gt;<span class="vertclair">{{href}}</span>&lt;/atm-print-link&gt;</span>
+	<ul>
+		<li>
+			<span class="vertclair">
+				{{href}} :
+			</span>
+			&nbsp;Remplac&eacute; par le lien vers la page imprimable.
+		</li>
+		<li>
+			<span class="keyword">
+				Attribut keeprequest :
+			</span>
+			&nbsp;Optionnel, permet de conserver les attributs GET avec lesquels la page à imprimer est appelée (defaut : false)
+		</li>
+	</ul>
+	</div>
+	<h1>Date de dernière mise à jour :</h1>
+	<div class="retrait"><span class="code">&lt;atm-last-update format=&quot;<span class="keyword">d-m-Y</span>&quot;&gt;<span class="vertclair">{{date}} {{firstname}} {{lastname}}</span>&lt;/atm-last-update&gt;</span>
+	<ul>
+		<li>
+			<span class="vertclair">
+				{{date}} :
+			</span>
+			&nbsp;Date de la dernière mise à jour du contenu de la page. Le format de la date à afficher est donné par l\'attribut <span class="keyword">format</span> du tag.
+		</li>
+		<li>
+			<span class="vertclair">
+				{{firstname}} :
+			</span>
+			&nbsp;Prénom de la personne responsable de la dernière mise à jour.
+		</li>
+		<li>
+			<span class="vertclair">
+				{{lastname}} :
+			</span>
+			&nbsp;Nom de la personne responsable de la dernière mise à jour.
+		</li>
+	</ul>
+	</div>
+	<h1>Fichiers Javascripts de la page :</h1>
+	<div class="retrait"><span class="code">&lt;atm-js-tags files=&quot;<span class="keyword">/js/js1.js,/js/js2.js</span>&quot; /&gt;</span>
+		<ul>
+			<li>
+				<span class="keyword">
+					Attribut files :
+				</span>
+				&nbsp;Fichiers javascript à inclure dans la page (séparés par des virgules).
+				<br/>
+					Les fichiers ainsi listés seront concaténés et compressés avant d\'être servi à l\'internaute. Une gestion avancée du cache sur le navigateur de l\'internaute est employé.
+			</li>
+		</ul>
+	</div>
+	<h1>Feuilles de styles CSS de la page :</h1>
+	<div class="retrait"><span class="code">&lt;atm-css-tags files=&quot;<span class="keyword">/css/css1.css,/css/css2.css</span>&quot; /&gt;</span>
+		<ul>
+			<li>
+				<span class="keyword">
+					Attribut files :
+				</span>
+				&nbsp;Feuilles de styles CSS à inclure dans la page (séparés par des virgules).
+				<br/>
+					Les fichiers ainsi listés seront concaténés et compressés avant d\'être servi à l\'internaute. Une gestion avancée du cache sur le navigateur de l\'internaute est employé. Seul le média <span class="keyword">screen</span> est concerné pour ces fichiers.
+			</li>
+		</ul>
+	</div>
+	<h1>Identifiant de la page :</h1>
+	<div class="retrait"><span class="code"><span class="keyword">{{pageID}}</span></span>
+	<ul>
+		<li>
+			<span class="keyword">
+				{{pageID}} :
+			</span>
+			&nbsp;Remplacé par l\'identifiant de la page en cours.
+		</li>
+	</ul>
+	</div>
+</div>', '<ol>\r\n<li>\r\n	Title of the current page:<br />\r\n	&lt;atm-title /&gt;\r\n</li>\r\n<li>\r\n	Metadata of the current page:<br />\r\n	&lt;atm-meta-tags /&gt;\r\n</li>\r\n<li>\r\n	Value of a constant (see Automne constants files):<br />\r\n	&lt;atm-constant name="constantName" /&gt;<br />\r\n	<b>constantName :</b> Name of the constant to display.\r\n</li>\r\n<li>\r\n	link(s) to one or several pages:<br />\r\n	&lt;atm-linx type="linxType"&gt;linxDefinition&lt;/atm-linx&gt;<br />\r\n	<b>linxType :</b> link type between:\r\n	<ul>\r\n		<li>\'direct\' : Direct link to a given page.</li>\r\n		<li>\'sublinks\' : Links to subpages of the current page.</li>\r\n		<li>\'desclinks\' : Navigation history from a page to another.</li>\r\n		<li>\'recursivelinks\' : Tree structure of sublinks from a given page.</li>\r\n	</ul>\r\n	<b>linxDefinition :</b> See Automne documentation for the detail.\r\n</li>\r\n<li>\r\n	Content zone : Alow use of content rows :<br />\r\n	&lt;atm-clientspace module="standard" id="uniqueID" /&gt;<br />\r\n	<b>uniqueID :</b> Unique identifier of the content zone for the template.\r\n</li>\r\n<li>\r\n	Link to the printable page :<br />\r\n	&lt;atm-print-link&gt;{{href}}&lt;/atm-print-link&gt;<br />\r\n	<b>{{href}} :</b> will be replaced by the link to the printable page.\r\n</li>\r\n</ol>');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1223', 'standard', NOW(), 'Catégorie supprimée', 'Deleted category');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1224', 'standard', NOW(), 'Gestion des Applications', 'Manage Applications');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1225', 'standard', NOW(), 'Application à éditer', 'Edit application');
@@ -1324,8 +1562,18 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (81, 'cms_form
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (82, 'cms_forms', NOW(), 'Aucun champ pouvant servir à retenir le compte utilisateur n''a été trouvé dans le formulaire.', 'No field which can be used to remember user account was found in the form.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (83, 'cms_forms', NOW(), 'Cette action n\'est pas autorisée durant l\'édition ou la prévisualisation de la page.', 'This action is not allowed during edition / previsualisation of the page.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (84, 'cms_forms', NOW(), 'Vous devez avoir \'%s\' actif dans votre profil pour pouvoir Créer / Editer un formulaire.', 'You must have \'%s\' active in your profile to Create / Edit a form.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (85, 'cms_forms', NOW(), '<strong>Formulaire &agrave; choisir pour une page :</strong><br /><strong>&lt;block module=&quot;cms_forms&quot; id=&quot;form&quot;&gt;</strong>{{data}}<strong>&lt;/block&gt;<br /></strong><ul><li><strong>{{data}} : </strong>Sera remplacé par le formulaire &agrave; afficher.</li></ul>', 'TODO');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (86, 'cms_forms', NOW(), '<strong>Formulaire &agrave; afficher pour toutes les pages employant le modèle :</strong><br /><strong>&lt;atm-clientspace module=&quot;cms_forms&quot; id=&quot;form&quot; type=&quot;formular&quot; formID=&quot;</strong>formID<strong>&quot;/&gt;<br /></strong><ul><li><strong>formID : </strong>Identifiant du formulaire &agrave; afficher.</li></ul>', 'TODO');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (85, 'cms_forms', NOW(), '<div class="rowComment">
+<h1>Formulaire &agrave; choisir pour une page :</h1>
+<div class="retrait"><span class="code">&lt;block module=&quot;cms_forms&quot; id=&quot;form&quot;&gt;<span class="vertclair">{{data}}</span>&lt;/block&gt;</span>
+<ul><li><span class="vertclair">{{data}} : </span>Sera remplacé par le formulaire &agrave; afficher.</li></ul>
+</div>
+</div>', 'TODO');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (86, 'cms_forms', NOW(), '<div class="rowComment">
+<h1>Formulaire &agrave; afficher pour toutes les pages employant le modèle :</h1>
+<div class="retrait"><span class="code">&lt;atm-clientspace module=&quot;cms_forms&quot; id=&quot;form&quot; type=&quot;formular&quot; formID=&quot;<span class="keyword">formID</span>&quot;/&gt;</span>
+<ul><li><span class="keyword">formID : </span>Identifiant du formulaire &agrave; afficher.</li></ul>
+</div>
+</div>', 'TODO');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (87, 'cms_forms', NOW(), 'Assistant de création de formulaires', 'Forms creation wizard');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (88, 'cms_forms', NOW(), 'Adresse d\'émission', 'Sender address');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (89, 'cms_forms', NOW(), 'Avec la date de soumission', 'With submission date');

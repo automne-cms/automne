@@ -26,9 +26,9 @@
 			sIFR.replaceElement(named({sSelector:"#firstCol>h2", sFlashSrc:"/swf/eurostile.swf", sColor:"#6FAE03", sBgColor:"Null", nPaddingTop:0, nPaddingBottom:0, sFlashVars:"textalign=left", sWmode:"transparent"}));
 			var div = document.getElementById('content');
 			if(div.className != "page5"){
-				sIFR.replaceElement(named({sSelector:"#title>h1", sFlashSrc:"/swf/eurostile.swf", sColor:"#6FAE03", sBgColor:"Null", nPaddingTop:6, nPaddingBottom:0, sFlashVars:"textalign=left", sWmode:"transparent"}));
+				sIFR.replaceElement(named({sSelector:"#content h1", sFlashSrc:"/swf/eurostile.swf", sColor:"#6FAE03", sBgColor:"Null", nPaddingTop:6, nPaddingBottom:0, sFlashVars:"textalign=left", sWmode:"transparent"}));
 			}else{
-				sIFR.replaceElement(named({sSelector:"#title>h1", sFlashSrc:"/swf/eurostile.swf", sColor:"#EC2685", sBgColor:"Null", nPaddingTop:6, nPaddingBottom:0, sFlashVars:"textalign=left", sWmode:"transparent"}));	
+				sIFR.replaceElement(named({sSelector:"#content h1", sFlashSrc:"/swf/eurostile.swf", sColor:"#EC2685", sBgColor:"Null", nPaddingTop:6, nPaddingBottom:0, sFlashVars:"textalign=left", sWmode:"transparent"}));	
 			}
 		}
 		return true;

@@ -13,25 +13,13 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_forms.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: cms_forms.php,v 1.2 2009/02/03 14:27:04 sebastien Exp $
 
 /**
   * Codename of the module
   */
 define("MOD_CMS_FORMS_CODENAME", "cms_forms");
 
-/**
- * Module main classes and client space
- */
-require_once(PATH_MODULES_FS."/".MOD_CMS_FORMS_CODENAME."/action.php");
-require_once(PATH_MODULES_FS."/".MOD_CMS_FORMS_CODENAME."/record.php");
-require_once(PATH_MODULES_FS."/".MOD_CMS_FORMS_CODENAME."/field.php");
-require_once(PATH_MODULES_FS."/".MOD_CMS_FORMS_CODENAME."/form.php");
-require_once(PATH_MODULES_FS."/".MOD_CMS_FORMS_CODENAME."/formssearch.php");
-require_once(PATH_MODULES_FS."/".MOD_CMS_FORMS_CODENAME."/formcategories.php");
-require_once(PATH_MODULES_FS."/".MOD_CMS_FORMS_CODENAME."/sender.php");
-require_once(PATH_MODULES_FS."/".MOD_CMS_FORMS_CODENAME."/sendingssearch.php");
-require_once(PATH_MODULES_FS."/".MOD_CMS_FORMS_CODENAME."/block.php");
 
 /**
   * Messages
@@ -296,6 +284,38 @@ class CMS_module_cms_forms extends CMS_moduleValidation
 			break;
 		}
 		return $modulesCode;
+	}
+	
+	/**
+	  * Module autoload handler
+	  *
+	  * @param string $classname the classname required for loading
+	  * @return string : the file to use for required classname
+	  * @access public
+	  */
+	function load($classname) {
+		static $classes;
+		if (!isset($classes)) {
+			$classes = array(
+				/**
+				 * Module main classes
+				 */
+				'cms_forms_action' 				=> PATH_MODULES_FS."/".MOD_CMS_FORMS_CODENAME."/action.php",
+				'cms_forms_record' 				=> PATH_MODULES_FS."/".MOD_CMS_FORMS_CODENAME."/record.php",
+				'cms_forms_field' 				=> PATH_MODULES_FS."/".MOD_CMS_FORMS_CODENAME."/field.php",
+				'cms_forms_formular' 			=> PATH_MODULES_FS."/".MOD_CMS_FORMS_CODENAME."/form.php",
+				'cms_forms_search' 				=> PATH_MODULES_FS."/".MOD_CMS_FORMS_CODENAME."/formssearch.php",
+				'cms_forms_formularcategories' 	=> PATH_MODULES_FS."/".MOD_CMS_FORMS_CODENAME."/formcategories.php",
+				'cms_forms_sender' 				=> PATH_MODULES_FS."/".MOD_CMS_FORMS_CODENAME."/sender.php",
+				'cms_forms_sendingssearch' 		=> PATH_MODULES_FS."/".MOD_CMS_FORMS_CODENAME."/sendingssearch.php",
+				'cms_block_cms_forms' 			=> PATH_MODULES_FS."/".MOD_CMS_FORMS_CODENAME."/block.php",
+			);
+		}
+		$file = '';
+		if (isset($classes[strtolower($classname)])) {
+			$file = $classes[strtolower($classname)];
+		}
+		return $file;
 	}
 }
 ?>

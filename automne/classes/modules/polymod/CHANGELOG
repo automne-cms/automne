@@ -1,3 +1,87 @@
+v1.03 (29/01/09)
+[BUG] : Pass by URL the param "pluginDefinition" to keep the plugin selection when navigate by page
+[BUG] : We must do a complete search (from 0 to 1000 results) for xapian + polymod search. So we limit to 1000 results and we start from page 0. Polymod will calculate the page to display after Xapian treatment.
+[BUG] : redefine temporarily the "PATH_ADMIN_SPECIAL_TREE_WR" constant in object_href, because it is defined in cms_rc_admin and sometimes, only cms_rc_frontend is available
+[BUG] : if user has no CLEARANCE_MODULE_VIEW, he cannot see anything in FE (with APPLICATION_ENFORCES_ACCESS_CONTROL)
+[BUG] : if a plugins definition use a language available only in frontside, definition compilation does not work.
+[BUG] : if a category field is not required we should found objects without categories in public search
+[BUG] : in object page, if field is not mandatory and value is empty
+[BUG] : in rss feeds, if rss feed does not use a common language like EN or FR
+[BUG] : in atm-xml tag, if multiple tags are present in the same page, headercode is not correctlyy appended
+[BUG] : object polyobject : getValue for formatedDateEnd
+[BUG] : object date : moveDate does not work properly
+[BUG] : in object notification (for awaiting validations). Background scripts does not work because cms_user is not loaded
+[REFACTOR] : Display "parameters" button only if can find parameters
+[REFACTOR] : Change the use of "loadSubObjects" parameter : now used to force loading objects for names lists (getListOfNamesForObject).
+[REFACTOR] : object email : add a parameter to store email sending date.
+[FEATURE] : Set a cache for "getListOfNamesForObject" return.
+[FEATURE] : Object Language : Add optionnal inputParam from "hidden" attribute to hidde some languages. Usage : hidden="fr,en,es".
+[FEATURE] : Object categories : Add "not in" and "not in strict" parameters for getFieldSearchSQL : allow to search objects which are not associed to a value.
+[FEATURE] : Add optional attribute "keepOrder" for getListBoxes() parameters. This attribute permit to keep the selected items order if any.
+[FEATURE] : add block value to item search type in tag atm-search param
+[FEATURE] : Object categories : add label operator for atm-search-order tag
+[FEATURE] : add operator support for tag atm-search-order
+
+v1.02 (09/06/08)
+[BUG] : object_common : treat integer params : value must be numerical characters (and not only numeric variable)
+[BUG] : object page : setValues does not work properly
+[BUG] : objects with secondary resource are not properly deleted if primary resource object is deleted
+[BUG] : add a check to avoid object deletion if it had wysiwyg plugin or RSS feed
+[BUG] : change escape method to use htmlspecialchars in search input fields
+[BUG] : object usergroups, set values cause a duplication of datas in DB.
+[BUG] : in print page if page use rows with XML callback
+[REFACTOR] : function page : tag <pages> is no longer required
+[REFACTOR] : RSS : UTF-8 encoding and add namespaces (media + atom)
+[REFACTOR] : add support for not known file icons
+[REFACTOR] : object text : add a "hasvalue" var to know if a text exists in field
+[REFACTOR] : add a cache on plugin usage into an object text. If more than one plugincode is used in a text, then all items of a  same type are searched in one time.
+[REFACTOR] : Change field search parameters by ASE existence
+[REFACTOR] : language parameter for rows is now optionnal
+[REFACTOR] : add an unselectable attribute to images outputed by polymod plugin to avoid user manipulation in wysiwyg
+[FEATURE] : parameters management for polymod module
+[FEATURE] : object href : Add popupWidth and popupHeight vars
+[FEATURE] : object file : Add a parameter for thumbnail : max height
+[FEATURE] : object image : Add a parameter for field : max height
+[FEATURE] : add a column to display if a field is searchable or not
+[FEATURE] : New objects property : "admin results display" to allow specific displays for admin results
+[FEATURE] : object_float : add a new parameter : unit
+[FEATURE] : object_integer : add a new parameter : unit
+
+v1.01 (22/04/2008)
+[BUG] : missing call to MODULE_TREATMENT_BEFORE_VALIDATION_TREATMENT and MODULE_TREATMENT_AFTER_VALIDATION_TREATMENT for objects without resource
+[BUG] : in keywords search, results stack is not properly used
+[BUG] : default sort direction in admin search should be 'desc'
+[BUG] : on object right check (method userHasClearance of poly_object)
+[BUG] : object categories on method categoryLineage : missing a check on attributes
+[BUG] : remove possibility to change object resource type
+[BUG] : in wysiwyg code, insertion if script tag is used
+[BUG] : in object float and object string, if regexp format is set, required parameter is not proprely checked
+[BUG] : in object search, profile rights are not properly checked for fields with some visible and invisible categories
+[REFACTOR] : object file : extend file check + set file name as label if no label set
+[REFACTOR] : object usergroup : Add sorting by lastname and firstname
+[REFACTOR] : object float : add specific sort method
+[REFACTOR] : object image : add a parameter to image size displayed in admin search results
+[FEATURE] : Add access to fields descriptions into rows
+[FEATURE] : add object page to specify an Automne page in an object field
+
+v1.00 (31/01/2008)
+[BUG] : when saving an optional multi_poly_object without any values set
+[BUG] : if searching with 'items' whithout any value set
+[BUG] : during search for objects with one category field without categories set and with no others integer values
+[BUG] : in maxpages and maxresults in atm-result when search are imbricated
+[BUG] : in user rights management for atm-form
+[BUG] : in object users/groups, if no user nor group are associated but we try to get a value (with getValue method)
+[BUG] : with atm-plugin, if an invalid item follow a valid one
+[REFACTOR] : add the required function for boolean field
+[REFACTOR] : add operators with 'or null' and 'and not null' values in date objects
+[REFACTOR] : In object categories, add operators root for atm-input tag
+[REFACTOR] : Add atm-input operators help
+[REFACTOR] : object list ordering now take care of accentued characters
+[REFACTOR] : in categories field, add width/height parameters for multi-categories listboxes
+[FEATURE] : Add callback operations into atm-input fields (TODO : help messages)
+[FEATURE] : Add float object
+[FEATURE] : Add object sort in admin search
+
 v0.99 (14/12/2007)
 [BUG] : in moduleUsage which cannot handle more than 1 usage for a given page and module
 [BUG] : In keyword search, only searchable fields should be used.
@@ -13,7 +97,7 @@ v0.99 (14/12/2007)
 [FEATURE] : Add a 'like' operator on string object to search on incomplete values (using % wilcard)
 [FEATURE] : Add notification field support into atm-form tag
 
-v0.98
+v0.98 (20/11/2007)
 [BUG] : in plugin interpretation in frontend if htmlvalue is not used
 [BUG] : in rows, with block parameters on fields with poly_objetcs
 [BUG] : in search engine for objects with multiple categories field which are not required

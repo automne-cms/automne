@@ -36,7 +36,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 	initComponent: function() {
 		var al = Automne.locales;
 		Ext.apply(this, {
-			html:  			'<iframe id="' + this.id + 'Frame" width="100%" height="100%" frameborder="no" src="#">&nbsp;</iframe>',
+			html:  			'<iframe id="' + this.id + 'Frame" width="100%" height="100%" frameborder="no" src="' + Ext.SSL_SECURE_URL + '">&nbsp;</iframe>',
 			hideBorders:	true,
 			height:			'100%',
 			autoScroll:		true,
@@ -191,11 +191,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 									params: 			{
 										currentPage:		this.pageId,
 										action:				'validate_draft'
-									}/*,
-									fcnCallback: 		function() {
-										
-									},
-									callBackScope:		this*/
+									}
 								});
 							}
 						});
@@ -378,10 +374,6 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 	},
 	//frame url setters and getters
 	setFrameURL: function(url) { 
-		/*if (url != this.getFrameURL()) {
-			this.forceReload = true;
-			pr('force reload of '+this.id+' frame ('+this.getFrameURL()+') with url '+url);
-		}*/
 		this.frameURL = url;
 	},
 	getFrameURL: function(withDomain) {
@@ -397,7 +389,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 		if (!this.frameEl) {
 			return false;
 		}
-		this.frameDocument = this.getDoc();//(Ext.isIE) ? this.frameEl.dom.contentWindow.document : this.frameEl.dom.contentDocument;
+		this.frameDocument = this.getDoc();
 		return true;
 	},
 	// private

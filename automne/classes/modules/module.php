@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: module.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: module.php,v 1.2 2009/02/03 14:27:04 sebastien Exp $
 
 /**
   * Class CMS_module
@@ -194,21 +194,11 @@ class CMS_module extends CMS_grandFather
 	  * @access public
 	  */
 	function isPolymod() {
-		/*$sql = "select
-					1
-				from
-					modules
-				where
-					codename_mod='".sensitiveIO::sanitizeSQLString($this->_codename)."'
-					and isPolymod_mod='1'
-				";
-		$q = new CMS_query($sql);
-		return ($q->getNumRows()) ? true:false;*/
 		return ($this->_isPolymod) ? true : false;
 	}
 	
 	/**
-	  * Sets the polymod status.
+	  * Sets the polymod status of the module
 	  *
 	  * @param boolean $isPolymod The polymod status to set
 	  * @return boolean true on success, false on failure.
@@ -802,14 +792,15 @@ class CMS_module extends CMS_grandFather
 									$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-css-tags");
 									$files = is_array($files) ? $files : array();
 									//append module css files
-									if (file_exists(PATH_CSS_FS.'/modules/'.$this->_codename.'.css')) {
-										$files[] = PATH_CSS_WR.'/modules/'.$this->_codename.'.css';
+									$moduleCSSFiles = $this->getCSSFiles();
+									if (isset($moduleCSSFiles['screen'])) {
+										$files = array_merge($files, $moduleCSSFiles['screen']);
 									}
 									//get old print files for this tag already needed by other modules
 									$printFiles = CMS_module::moduleUsage($treatedObject->getID(), "atm-css-tags-print");
 									$printFiles = is_array($printFiles) ? $printFiles : array();
-									if (file_exists(PATH_CSS_FS.'/modules/'.$this->_codename.'-print.css')) {
-										$printFiles[] = PATH_CSS_WR.'/modules/'.$this->_codename.'-print.css';
+									if (isset($moduleCSSFiles['print'])) {
+										$printFiles = array_merge($files, $moduleCSSFiles['print']);
 									}
 								break;
 							}
@@ -829,15 +820,21 @@ class CMS_module extends CMS_grandFather
 						$usage = CMS_module::moduleUsage($treatedObject->getID(), $this->_codename);
 						if (isset($usage['block'])) {
 							if (!isset($usage['atm-css-tags'])) {
-								if (file_exists(PATH_CSS_FS.'/modules/'.$this->_codename.'.css')) {
+								//append module css files
+								$moduleCSSFiles = $this->getCSSFiles();
+								if (isset($moduleCSSFiles['screen'])) {
 									$tagContent .= "\n".
-									'	<!-- load the style of '.$this->_codename.' module -->'."\n".
-									'	<link rel="stylesheet" type="text/css" href="'.PATH_CSS_WR.'/modules/'.$this->_codename.'.css" />'."\n";
+									'	<!-- load the style of '.$this->_codename.' module -->'."\n";
+									foreach ($moduleCSSFiles['screen'] as $cssfile) {
+										$tagContent .= '	<link rel="stylesheet" type="text/css" href="'.$cssfile.'" />'."\n";
+									}
 								}
-								if (file_exists(PATH_CSS_FS.'/modules/'.$this->_codename.'-print.css')) {
+								if (isset($moduleCSSFiles['print'])) {
 									$tagContent .= "\n".
-									'       <!-- load the print style of '.$this->_codename.' module -->'."\n".
-									'       <link rel="stylesheet" type="text/css" media="print" href="'.PATH_CSS_WR.'/modules/'.$this->_codename.'-print.css" />'."\n";
+									'	<!-- load the style of '.$this->_codename.' module -->'."\n";
+									foreach ($moduleCSSFiles['print'] as $cssfile) {
+										$tagContent .= '	<link rel="stylesheet" type="text/css" media="print" href="'.$cssfile.'" />'."\n";
+									}
 								}
 							}
 							if (!isset($usage['atm-js-tags'])) {
@@ -876,6 +873,23 @@ class CMS_module extends CMS_grandFather
 				}
 			} catch(Exception $e) {}
 			sort($files);
+		}
+		return $files;
+	}
+	
+	/**
+	  * Return the module CSS files
+	  * 
+	  * @return array : the module css file in /css/modules/codename
+	  * @access public
+	  */
+	function getCSSFiles() {
+		$files = array();
+		if (file_exists(PATH_CSS_FS.'/modules/'.$this->_codename.'.css')) {
+			$files['screen'][] = PATH_CSS_WR.'/modules/'.$this->_codename.'.css';
+		}
+		if (file_exists(PATH_CSS_FS.'/modules/'.$this->_codename.'-print.css')) {
+			$files['print'][] = PATH_CSS_WR.'/modules/'.$this->_codename.'-print.css';
 		}
 		return $files;
 	}

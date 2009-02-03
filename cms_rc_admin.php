@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc_admin.php,v 1.3 2008/12/18 13:40:40 sebastien Exp $
+// $Id: cms_rc_admin.php,v 1.4 2009/02/03 14:24:06 sebastien Exp $
 
 /**
   * Administration rc file.
@@ -86,10 +86,12 @@ if (APPLICATION_EXEC_TYPE == 'http') {
 	} else {
 		//load interface instance
 		$view = CMS_view::getInstance();
-		//set default display mode for this page
-		//$view->setDisplayMode(CMS_view::SHOW_RAW);
 		//set disconnected status
 		$view->setDisconnected(true);
+		//set default display mode for this page
+		if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
+			$view->setDisplayMode(CMS_view::SHOW_RAW);
+		}
 		$view->show();
 	}
 }

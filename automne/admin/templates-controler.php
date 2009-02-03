@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-controler.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: templates-controler.php,v 1.2 2009/02/03 14:24:44 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on templates
@@ -94,12 +94,13 @@ switch ($action) {
 				CMS_file::moveTo($image, $movedImage);
 				CMS_file::chmodFile(FILES_CHMOD, $movedImage);
 				$image = pathinfo($movedImage, PATHINFO_BASENAME);
-			} elseif ($template->getImage()) {
+			} elseif ($image && $template->getImage()) {
 				//keep old file
 				$image = $template->getImage();
 			} else {
 				$image = 'nopicto.gif';
 			}
+			pr($image);
 			$template->setImage($image);
 			//groups
 			$template->delAllGroups();

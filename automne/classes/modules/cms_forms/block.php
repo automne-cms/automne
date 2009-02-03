@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: block.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: block.php,v 1.2 2009/02/03 14:27:16 sebastien Exp $
 
 /**
   * Class CMS_block_cms_forms
@@ -330,8 +330,29 @@ class CMS_block_cms_forms extends CMS_block
 	  */
 	protected function _getHTMLForm($language, &$page, &$clientSpace, &$row, $blockID, $data)
 	{
+		//global $cms_user;
+		//$html = parent::_getHTMLForm($language, $page, $clientSpace, $row, $blockID, '<div class="atm-form-block">'.$data.'</div>');
+		
+		
+		
 		global $cms_user;
+		$this->_jsBlockClass = 'Automne.blockCMS_Forms';
+		$rawDatas = $this->getRawData($page->getID(), $clientSpace->getTagID(), $row->getTagID(), RESOURCE_LOCATION_EDITION, false);
+		$datas = array(
+			'page'			=> isset($rawDatas['page']) ? $rawDatas['page'] : '',
+			'clientSpaceID'	=> isset($rawDatas['clientSpaceID']) ? $rawDatas['clientSpaceID'] : '',
+			'rowID'			=> isset($rawDatas['rowID']) ? $rawDatas['rowID'] : '',
+			'blockID'		=> isset($rawDatas['blockID']) ? $rawDatas['blockID'] : '',
+			'module'		=> MOD_CMS_FORMS_CODENAME
+		);
+		$this->_value = $datas;
+		
 		$html = parent::_getHTMLForm($language, $page, $clientSpace, $row, $blockID, '<div class="atm-form-block">'.$data.'</div>');
+		//load interface instance
+		$view = CMS_view::getInstance();
+		//append JS block class file
+		$view->addJSFile(PATH_ADMIN_WR.'/js/edit/block-cms-forms.js');
+		
 		return $html;
 	}
 	

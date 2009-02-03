@@ -30,7 +30,7 @@ Automne.frameWindow = Ext.extend(Automne.Window, {
 	//component initialisation (after constructor)
 	initComponent: function() {
 		Ext.apply(this, {
-			html:  			'<iframe id="' + this.id + 'Frame" width="100%" height="100%" frameborder="no" src="#">&nbsp;</iframe>',
+			html:  			'<iframe id="' + this.id + 'Frame" width="100%" height="100%" frameborder="no" src="' + Ext.SSL_SECURE_URL + '">&nbsp;</iframe>',
 			hideBorders:	true,
 			autoScroll:		true
 		});
@@ -68,11 +68,8 @@ Automne.frameWindow = Ext.extend(Automne.Window, {
 	//function called after each load of a new page frame
 	loadFrameInfos: function() {
 		//get frame and document from event
-		this.frameDocument = (Ext.isIE) ? this.frameEl.dom.contentWindow.document : this.frameEl.dom.contentDocument;
-		if (!this.allowFrameNav) {
-			pr('catch '+this.id+' frame links');
-			this.catchFrameLinks();
-		}
+		this.loadFrameDocument();
+		//set title
 		this.setTitle(this.frameDocument.title);
 	},
 	//resize frame according to panel size
@@ -80,65 +77,16 @@ Automne.frameWindow = Ext.extend(Automne.Window, {
 		this.frameEl.setWidth(this.body.getBox().width);
 		this.frameEl.setHeight(this.body.getBox().height);
 	},
-	//catch all click into frame links and form submission to redirect action
-	catchFrameLinks: function () {
-		/*var links = Ext.DomQuery.select('a', this.frameDocument);
-		for (var i=0; i < links.length; i++) {
-			var link = Ext.get(links[i]);
-			if (link.dom.target != "_blank") {
-				link.on('click', function(e) {
-					e.stopEvent();
-					pr('load '+this.id+' frame infos');
-					//call server to get page infos using page url
-					Automne.server.call('page-infos.php?pageurl=' + this.dom.href);
-				}, link);
-			}
-		}
-		var forms = Ext.DomQuery.select('form', this.frameDocument);
-		for (var i=0; i < forms.length; i++) {
-			var form = Ext.get(forms[i]);
-			if (form.dom.target != "_blank") {
-				form.on('submit', function(e) {
-					e.stopEvent();
-					//send a message to user
-					Ext.MessageBox.show({ //TODOV4 : rationaliser la création d'alerte et récup les label par ajax
-						title: 'Action impossible', 
-						msg: 'Vous ne pouvez pas soumettre un formulaire depuis une page non publique.',
-						buttons: Ext.MessageBox.OK,
-						icon: Ext.MessageBox.WARNING,
-						animEl: this
-					});
-				}, form);
-			}
-		}*/
-	},
 	//reload frame content
 	reload: function (force) {
 		this.forceReload = force || this.forceReload;
 		if (this.loadFrameDocument()) {
-			pr('Reload '+this.id)
 			if (this.frameDocument) {
-				this.frameDocument.location = this.frameURL + (this.frameURL.indexOf('?') !== -1 ? '&' : '?') +'time='+ (new Date()).getTime();
-				this.forceReload = false;
-			}
-		}
-		
-		/*this.forceReload = force || this.forceReload;
-		if (!this.frameDocument) {
-			//get frame document
-			this.frameDocument = (Ext.isIE) ? this.frameEl.dom.contentWindow.document : this.frameEl.dom.contentDocument;
-		}
-		if (this.frameDocument) {
-			//remove domain from urls*/
-			//var documentURL = (this.frameDocument.location.href.indexOf("http://") === 0) ? this.frameDocument.location.href.replace(/http:\/\/[^\/]*/, '') : this.frameDocument.location.href;
-			//var frameURL = (this.frameURL.indexOf("http://") === 0) ? this.frameURL.replace(/http:\/\/[^\/]*/, '') : this.frameURL;
-			//and if url are different or if force is needed, then change frame location
-			/*if (this.forceReload || documentURL != frameURL) {
-				pr('Reload '+this.id)
+				pr('Reload frame '+ this.id +' => Get : '+this.frameURL);
 				this.frameDocument.location = this.frameURL;
 				this.forceReload = false;
 			}
-		}*/
+		}
 	},
 	//set a flag to force next reload of the frame (even if url is the same)
 	setForceReload: function(force) {
@@ -155,8 +103,22 @@ Automne.frameWindow = Ext.extend(Automne.Window, {
 		if (!this.frameEl) {
 			return false;
 		}
-		this.frameDocument = (Ext.isIE) ? this.frameEl.dom.contentWindow.document : this.frameEl.dom.contentDocument;
+		this.frameDocument = this.getDoc();
 		return true;
+	},
+	// private
+	getDoc : function(){
+        if (!this.frameEl) {
+			return false;
+		}
+		return Ext.isIE ? this.getWin().document : (this.frameEl.dom.contentDocument || this.getWin().document);
+	},
+    // private
+	getWin : function(){
+        if (!this.frameEl) {
+			return false;
+		}
+		return Ext.isIE ? this.frameEl.dom.contentWindow : window.frames[this.frameEl.dom.name];
 	}
 });
 Ext.reg('frameWindow', Automne.frameWindow);

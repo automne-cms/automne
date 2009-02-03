@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: view.php,v 1.2 2008/12/18 10:39:54 sebastien Exp $
+// $Id: view.php,v 1.3 2009/02/03 14:26:45 sebastien Exp $
 
 /**
   * Class CMS_view
@@ -82,15 +82,20 @@ class CMS_view extends CMS_grandFather
 	  * Create a link for a group of JS files used into client page
 	  *
 	  * @param array $files : for static calls : array of files path to send to client (FS relative)
+	  * @param string $media : useless for JS files (only for compatibility with getCSS method)
+	  * @param boolean $onlyFiles : return only array of JS files to add instead of HTML code (default false)
 	  * @return void
 	  * @access public
 	  */
-	function getJavascript($jsarray = array()) {
+	function getJavascript($jsarray = array(), $media = 'screen', $onlyFiles = false) {
 		$jsarray = (isset($this) && isset($this->_js)) ? $this->_js : $jsarray;
 		$version = AUTOMNE_VERSION.'-'.AUTOMNE_SUBVERSION.(SYSTEM_DEBUG ? 'd':'');
 		$return = '';
+		if ($onlyFiles) {
+			return $jsarray;
+		}
 		if ($jsarray) {
-			$return .= '<script src="'.PATH_JS_WR.'/jsmanager.php?version='.$version.'&amp;files='.implode(',',$jsarray).'" type="text/javascript"></script>'."\n";
+			$return .= '<script src="'.CMS_view::getJSManagerURL().'&amp;files='.implode(',',$jsarray).'" type="text/javascript"></script>'."\n";
 		}
 		if (isset($this) && isset($this->_jscontent)) {
 			$return .= "\n".'<script type="text/javascript">'.$this->_jscontent.'</script>'."\n";
@@ -108,18 +113,27 @@ class CMS_view extends CMS_grandFather
 		$this->_jscontent .= $js;
 	}
 	
+	function getJSManagerURL() {
+		$version = AUTOMNE_VERSION.'-'.AUTOMNE_SUBVERSION.(SYSTEM_DEBUG ? 'd':'');
+		return PATH_JS_WR.'/jsmanager.php?version='.$version;
+	}
+	
 	/**
 	  * Create a link for a group of CSS files used into client page
 	  *
 	  * @param array $files : for static calls : array of files path to send to client (FS relative)
+	  * @param string $media : the media to add to CSS HTML code returned (default : screen)
+	  * @param boolean $onlyFiles : return only array of CSS files to add instead of HTML code (default false)
 	  * @return void
 	  * @access public
 	  */
-	function getCSS($cssarray = array(), $media = 'screen') {
+	function getCSS($cssarray = array(), $media = 'screen', $onlyFiles = false) {
 		$cssarray = (isset($this) && isset($this->_css)) ? $this->_css : $cssarray;
-		$version = AUTOMNE_VERSION.'-'.AUTOMNE_SUBVERSION.(SYSTEM_DEBUG ? 'd':'');
+		if ($onlyFiles) {
+			return $cssarray;
+		}
 		if ($cssarray) {
-			return '<link rel="stylesheet" type="text/css" href="'.PATH_CSS_WR.'/cssmanager.php?version='.$version.'&amp;files='.implode(',',$cssarray).'" media="'.$media.'" />'."\n";
+			return '<link rel="stylesheet" type="text/css" href="'.CMS_view::getCSSManagerURL().'&amp;files='.implode(',',$cssarray).'" media="'.$media.'" />'."\n";
 		}
 		return '';
 	}
@@ -128,6 +142,11 @@ class CMS_view extends CMS_grandFather
 		if (!in_array($css, $this->_css)) {
 			$this->_css[] = $css;
 		}
+	}
+	
+	function getCSSManagerURL() {
+		$version = AUTOMNE_VERSION.'-'.AUTOMNE_SUBVERSION.(SYSTEM_DEBUG ? 'd':'');
+		return PATH_CSS_WR.'/cssmanager.php?version='.$version;
 	}
 	
 	/**
@@ -427,6 +446,24 @@ class CMS_view extends CMS_grandFather
 				if (SYSTEM_DEBUG && STATS_DEBUG) {
 					$return .= 
 					'	<stats><![CDATA['.view_stat(true).']]></stats>'."\n";
+				}
+				$jsfiles = CMS_view::getJavascript(array(), 'screen', true);
+				if ($jsfiles) {
+					$files = array(
+						'files' 	=> $jsfiles,
+						'manager'	=> CMS_view::getJSManagerURL()
+					);
+					$return .= 
+					'	<jsfiles><![CDATA['.sensitiveIO::jsonEncode($files).']]></jsfiles>'."\n";
+				}
+				$cssfiles = CMS_view::getCSS(array(), 'screen', true);
+				if ($cssfiles) {
+					$files = array(
+						'files' 	=> $cssfiles,
+						'manager'	=> CMS_view::getCSSManagerURL()
+					);
+					$return .= 
+					'	<cssfiles><![CDATA['.sensitiveIO::jsonEncode($files).']]></cssfiles>'."\n";
 				}
 				echo $return;
 			break;

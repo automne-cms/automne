@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: grandfather.php,v 1.2 2008/12/18 13:56:21 sebastien Exp $
+// $Id: grandfather.php,v 1.3 2009/02/03 14:26:36 sebastien Exp $
 
 /**
   * Class CMS_grandFather
@@ -98,7 +98,7 @@ class CMS_grandFather
 		if (!isset($this) || $this->_log) {
 			$fd = @fopen(PATH_MAIN_FS.'/'.self::ERROR_LOG, "a");
 			if (is_resource($fd)) {
-				@fwrite($fd, date("Y-m-d H:i:s", mktime())."|".$errorMessage."\n", 4096);
+				@fwrite($fd, date("Y-m-d H:i:s", mktime()).'|'.APPLICATION_EXEC_TYPE.'|'.$errorMessage."\n", 4096);
 				@fclose($fd);
 				@chmod (PATH_MAIN_FS.'/'.self::ERROR_LOG, octdec(FILES_CHMOD));
 			}
@@ -117,21 +117,7 @@ class CMS_grandFather
 	  * @access public
 	  */
 	public function raiseError($errorMessage) {
-		/*$bt = debug_backtrace();
-		if (isset($bt[2]) && $bt[1]['class'] == 'CMS_grandFather' && $bt[1]['function'] == '__call') {
-			//if error is sent by generic __call method of this class, display point of call
-			$errorMessage = str_replace($_SERVER['DOCUMENT_ROOT'], '', $bt[2]['file']).' (line '.$bt[2]['line'].') : '.$errorMessage;
-		} elseif (isset($bt[1])) {
-			//if error came from object execution
-			if ($bt[1]['function'] != 'PHPErrorHandler') {
-				$errorMessage = (isset($bt[1]['class']) ? $bt[1]['class'].$bt[1]['type'] : '').$bt[1]['function'].' (line '.$bt[0]['line'].') : '.$errorMessage;
-			}
-		} elseif (isset($bt[0])) {
-			//if error came from file execution
-			$errorMessage = str_replace($_SERVER['DOCUMENT_ROOT'], '', $bt[0]['file']).' (line '.$bt[0]['line'].') : '.$errorMessage;
-		}*/
 		$errorMessage = sensitiveIO::getCallInfos().' : '.$errorMessage;
-		//$errorMessage = $errorMessage.print_r($bt,true);
 		CMS_grandFather::_raiseError($errorMessage);
 	}
 
@@ -226,7 +212,7 @@ class CMS_grandFather
 	  * @access public
 	  */
 	static function autoload($classname) {
-		static $classes;
+		static $classes, $modules;
 		if (!isset($classes)) {
 			$classes = array(
 				//common
@@ -288,24 +274,9 @@ class CMS_grandFather
 				'cms_modulestags'					=> PATH_MODULES_FS.'/modulesTags.php',
 				'cms_moduleclientspace'				=> PATH_MODULES_FS.'/moduleclientspace.php',
 				'cms_superresource'					=> PATH_MODULES_FS.'/super_resource.php',
-
-				//polymod (TODOV4 : ce block gagnerai à être mis dans le polymod lui même pour simplifier les MAJ)
 				'cms_polymod'						=> PATH_MODULES_FS.'/polymod.php',
 				'cms_modulepolymodvalidation' 		=> PATH_MODULES_FS.'/modulePolymodValidation.php',
-				'cms_poly_object_field' 			=> PATH_MODULES_FS.'/polymod/polyobjects/poly_object_field.php',
-				'cms_poly_object' 					=> PATH_MODULES_FS.'/polymod/polyobjects/poly_object.php',
-				'cms_poly_object_definition' 		=> PATH_MODULES_FS.'/polymod/polyobjects/poly_object_definition.php',
-				'cms_poly_object_catalog' 			=> PATH_MODULES_FS.'/polymod/polyobjects/poly_object_catalog.php',
-				'cms_multi_poly_object' 			=> PATH_MODULES_FS.'/polymod/polyobjects/multi_poly_object.php',
-				'cms_object_search' 				=> PATH_MODULES_FS.'/polymod/object_search.php',
-				'cms_poly_plugin_definitions' 		=> PATH_MODULES_FS.'/polymod/poly_plugin_definition.php',
-				'cms_object_i18nm' 					=> PATH_MODULES_FS.'/polymod/object_i18nm.php',
-				'cms_polymod_definition_parsing' 	=> PATH_MODULES_FS.'/polymod/poly_definition_parsing.php',
-				'cms_poly_module_structure' 		=> PATH_MODULES_FS.'/polymod/poly_module_structure.php',
-				'cms_poly_rss_definitions' 			=> PATH_MODULES_FS.'/polymod/poly_rss_definition.php',
-				'cms_block_polymod' 				=> PATH_MODULES_FS.'/polymod/block.php',
-				'cms_poly_definition_functions' 	=> PATH_MODULES_FS.'/polymod/poly_definition_funtions.php',
-
+				
 				//standard
 				'cms_rowscatalog' 					=> PATH_MODULES_FS.'/standard/rowscatalog.php',
 				'cms_row' 							=> PATH_MODULES_FS.'/standard/row.php',
@@ -363,7 +334,7 @@ class CMS_grandFather
 
 				//JSMin
 				'jsmin' 							=> PATH_MAIN_FS.'/jsmin/jsmin.php',
-				
+
 				//CSSMin
 				'cssmin' 							=> PATH_MAIN_FS.'/cssmin/cssmin.php',
 			);
@@ -378,20 +349,35 @@ class CMS_grandFather
 				//here, we need to stop
 				return false;
 			}
-		} elseif (strpos($classname, 'CMS_object_') === 0 //polymod objects lazy loading
-					&& file_exists(PATH_MODULES_FS.'/polymod/objects/object_'.substr($classname,11).'.php')) {
-			$file = PATH_MODULES_FS.'/polymod/objects/object_'.substr($classname,11).'.php';
-		} elseif (strpos($classname, 'CMS_subobject_') === 0 //polymod subobjects lazy loading
-					&& file_exists(PATH_MODULES_FS.'/polymod/subobjects/subobject_'.substr($classname,14).'.php')) {
-			$file = PATH_MODULES_FS.'/polymod/subobjects/subobject_'.substr($classname,14).'.php';
 		}
+		if (!$file) {
+			//try modules Autoload
+			if (!isset($modules)) {
+				$modules = CMS_modulesCatalog::getAll("id");
+			}
+			$polymodDone = false;
+			foreach($modules as $codename => $module) {
+				if (((!$polymodDone && $module->isPolymod()) || !$module->isPolymod()) && method_exists($module, 'load')) {
+					if (!$polymodDone && $module->isPolymod()) {
+						$polymodDone = false;
+					}
+					$file = $module->load($classname);
+				} elseif ($polymodDone && $module->isPolymod()) {
+					unset($module[$codename]);
+				}
+				if ($file) {
+					break;
+				}
+			}
+		}
+		
 		if ($file) {
 			require_once($file);
 			/*only for stats*/
 			if (STATS_DEBUG) $GLOBALS["files_loaded"]++;
 			if (STATS_DEBUG && VIEW_SQL) $GLOBALS["files_table"][] = $file;
 		} else {
-			//Try into Zend Framework
+			//register Zend Framework Autoload
 			require_once(PATH_MAIN_FS.'/Zend/Loader.php');
 			/*only for stats*/
 			if (STATS_DEBUG) $GLOBALS["files_loaded"]++;

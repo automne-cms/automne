@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_string.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: object_string.php,v 1.2 2009/02/03 14:27:35 sebastien Exp $
 
 /**
   * Class CMS_object_string
@@ -28,8 +28,8 @@
 class CMS_object_string extends CMS_object_common
 {
 	/**
-  * Polymod Messages
-  */
+ 	 * Polymod Messages
+ 	 */
 	const MESSAGE_OBJECT_STRING_LABEL = 185;
 	const MESSAGE_OBJECT_STRING_DESCRIPTION = 186;
 	const MESSAGE_OBJECT_STRING_PARAMETER_MAXLENGTH = 187;

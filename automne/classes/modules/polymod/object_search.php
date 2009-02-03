@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_search.php,v 1.2 2008/12/18 10:40:23 sebastien Exp $
+// $Id: object_search.php,v 1.3 2009/02/03 14:27:25 sebastien Exp $
 
 /**
   * Class CMS_object_search
@@ -286,7 +286,7 @@ class CMS_object_search extends CMS_grandFather
 				return false;
 			}
 			$this->_whereConditions['items'][] = array('value' => $value, 'operator' => $operator);
-			$this->_orderConditions['itemsOrdered'] = $value;
+			$this->_orderConditions['itemsOrdered']['order'] = $value;
 			break;
 		case "profile":
 			if (!is_a($value,'CMS_profile_user')) {
@@ -377,35 +377,36 @@ class CMS_object_search extends CMS_grandFather
 	 * @param string $direction , the direction to give (asc or desc, default is asc)
 	 * @return void or false if an error occured
 	 */
-	function addOrderCondition($type, $direction = 'asc') {
+	function addOrderCondition($type, $direction = 'asc', $operator = false) {
 		if (!$type || !in_array($direction,array('asc','desc'))) {
 			return;
 		}
+		$value = array('direction' => $direction, 'operator' => $operator);
 		switch($type) {
 		case "objectID":
-			$this->_orderConditions['objectID'] = $direction;
+			$this->_orderConditions['objectID'] = $value;
 			break;
 		case "publication date after": // Date start
 			if ($this->_object->isPrimaryResource()) {
-				$this->_orderConditions['publication date after'] = $direction;
+				$this->_orderConditions['publication date after'] = $value;
 			}
 			break;
 		case "publication date before": // Date End
 			if ($this->_object->isPrimaryResource()) {
-				$this->_orderConditions['publication date before'] = $direction;
+				$this->_orderConditions['publication date before'] = $value;
 			}
 			break;
 		case "publication date end": // End Date of publication
 			if ($this->_object->isPrimaryResource()) {
-				$this->_orderConditions['publication date end'] = $direction;
+				$this->_orderConditions['publication date end'] = $value;
 			}
 			break;
 		case "random": // Random ordering
-			$this->_orderConditions['random'] = $direction;
+			$this->_orderConditions['random'] = $value;
 			break;
 		case "relevance": // Only if ASE module exists
 			if (class_exists('CMS_module_ase')) {
-				$this->_orderConditions['relevance'] = $direction;
+				$this->_orderConditions['relevance'] = $value;
 			} else {
 				$this->raiseError('Sorting by relevance is not active if module ASE does not exists ... ');
 				return false;
@@ -413,7 +414,7 @@ class CMS_object_search extends CMS_grandFather
 			break;
 		default:
 			if (sensitiveIO::IsPositiveInteger($type)) {
-				$this->_orderConditions[$type] = $direction;
+				$this->_orderConditions[$type] = $value;
 				break;
 			}
 			$this->raiseError('Unknown type : '.$type);
@@ -715,8 +716,10 @@ class CMS_object_search extends CMS_grandFather
 							$moduleInterface->addFilter('items', $IDs);
 							//set module interface to search engine
 							$search->setModuleInterface($module, $moduleInterface);
-							//set page number and max results
+							//set page number and max results for xapian query
+							//we must do a complete search all the time so we start from page 0
 							$page = 0;
+							//we limit to a maximum of 1000 results
 							$maxResults = 1000;
 							//then search
 							if (!$search->query($page, $maxResults)) {
@@ -944,9 +947,9 @@ class CMS_object_search extends CMS_grandFather
 						//if we only have objectID as orderCondition or if order by relevance is queried, use order provided by Xapian
 						if (($this->_orderConditions['objectID'] && sizeof($this->_orderConditions) <= 1) || $this->_orderConditions['relevance']) {
 							if ($this->_orderConditions['relevance'] == 'desc') {
-								$this->_orderConditions = array('itemsOrdered' => array_reverse($IDs,true));
+								$this->_orderConditions = array('itemsOrdered' => array('order' => array_reverse($IDs,true)));
 							} else {
-								$this->_orderConditions = array('itemsOrdered' => $IDs);
+								$this->_orderConditions = array('itemsOrdered' => array('order' => $IDs));
 							}
 							if ($this->_orderConditions['relevance']) {
 								unset($this->_orderConditions['relevance']);
@@ -956,9 +959,9 @@ class CMS_object_search extends CMS_grandFather
 						//if we only have objectID as orderCondition or if order by relevance is queried, use order provided by MySQL Fulltext
 						if ($this->_orderConditions['relevance']) {
 							if ($this->_orderConditions['relevance'] == 'desc') {
-								$this->_orderConditions = array('itemsOrdered' => array_reverse($fullTextResults,true));
+								$this->_orderConditions = array('itemsOrdered' => array('order' => array_reverse($fullTextResults,true)));
 							} else {
-								$this->_orderConditions = array('itemsOrdered' => $fullTextResults);
+								$this->_orderConditions = array('itemsOrdered' => array('order' => $fullTextResults));
 							}
 							unset($this->_orderConditions['relevance']);
 						}
@@ -1037,76 +1040,81 @@ class CMS_object_search extends CMS_grandFather
 		$statusSuffix = ($this->_public) ? "_public":"_edited";
 		$ids = array();
 		//loop on each order conditions
-		foreach ($this->_orderConditions as $type => $direction) {
+		foreach ($this->_orderConditions as $type => $value) {
 			$sql = '';
-			//add previously founded ids to where clause
-			$where = (is_array($this->_resultsIds) && $this->_resultsIds) ? ' and objectID in ('.implode(',',$this->_resultsIds).')':'';
-			switch($type) {
-			case "publication date after": // Date start
-				$sql = "
-						select
-							distinct objectID
-						from
-							mod_subobject_integer".$statusSuffix.",
-							resources,
-							resourceStatuses
-						where
-							objectFieldID = '0'
-							and value = id_res
-							and status_res=id_rs
-							$where
-						order by publicationDateStart_rs ".$direction;
-				break;
-			case "publication date before": // Date End
-				$sql = "
-						select
-							distinct objectID
-						from
-							mod_subobject_integer".$statusSuffix.",
-							resources,
-							resourceStatuses
-						where
-							objectFieldID = '0'
-							and value = id_res
-							and status_res=id_rs
-							$where
-						order by publicationDateStart_rs ".$direction;
-				break;
-			case "publication date end": // End Date of publication
-				$sql = "
-						select
-							distinct objectID
-						from
-							mod_subobject_integer".$statusSuffix.",
-							resources,
-							resourceStatuses
-						where
-							objectFieldID = '0'
-							and value = id_res
-							and status_res=id_rs
-							$where
-						order by publicationDateEnd_rs ".$direction;
-				break;
-			case "relevance":
-				//this order is replaced by an itemsOrdered order at the end of _getIds method
-				break;
-			default:
-				if(sensitiveIO::isPositiveInteger($type)) {
-					if (!is_object($this->_fieldsDefinitions[$type])) {
-						//get object fields definition
-						$this->_fieldsDefinitions = CMS_poly_object_catalog::getFieldsDefinition($this->_object->getID());
+			
+			if ($value['direction']) {
+				$direction = $value['direction'];
+				$operator = $value['operator'];
+				//add previously founded ids to where clause
+				$where = (is_array($this->_resultsIds) && $this->_resultsIds) ? ' and objectID in ('.implode(',',$this->_resultsIds).')':'';
+				switch($type) {
+				case "publication date after": // Date start
+					$sql = "
+							select
+								distinct objectID
+							from
+								mod_subobject_integer".$statusSuffix.",
+								resources,
+								resourceStatuses
+							where
+								objectFieldID = '0'
+								and value = id_res
+								and status_res=id_rs
+								$where
+							order by publicationDateStart_rs ".$direction;
+					break;
+				case "publication date before": // Date End
+					$sql = "
+							select
+								distinct objectID
+							from
+								mod_subobject_integer".$statusSuffix.",
+								resources,
+								resourceStatuses
+							where
+								objectFieldID = '0'
+								and value = id_res
+								and status_res=id_rs
+								$where
+							order by publicationDateStart_rs ".$direction;
+					break;
+				case "publication date end": // End Date of publication
+					$sql = "
+							select
+								distinct objectID
+							from
+								mod_subobject_integer".$statusSuffix.",
+								resources,
+								resourceStatuses
+							where
+								objectFieldID = '0'
+								and value = id_res
+								and status_res=id_rs
+								$where
+							order by publicationDateEnd_rs ".$direction;
+					break;
+				case "relevance":
+					//this order is replaced by an itemsOrdered order at the end of _getIds method
+					break;
+				default:
+					if(sensitiveIO::isPositiveInteger($type)) {
+						if (!is_object($this->_fieldsDefinitions[$type])) {
+							//get object fields definition
+							$this->_fieldsDefinitions = CMS_poly_object_catalog::getFieldsDefinition($this->_object->getID());
+						}
+						//get type object for field
+						$objectField = $this->_fieldsDefinitions[$type]->getTypeObject();
+						$operator = '';
+						$sql = $objectField->getFieldOrderSQL($type, $direction, $operator, $where, $this->_public);
 					}
-					//get type object for field
-					$objectField = $this->_fieldsDefinitions[$type]->getTypeObject();
-					$operator = '';
-					$sql = $objectField->getFieldOrderSQL($type, $direction, $operator, $where, $this->_public);
+					break;
 				}
-				break;
 			}
 			if ($sql) {
 				//add sort by object ID if any
 				if (isset($this->_orderConditions['objectID'])) {
-					$sql .= " , objectID ".$this->_orderConditions['objectID'];
+					$sql .= " , objectID ".$this->_orderConditions['objectID']['direction'];
 				}
 				// limit search if needed
 				if ($this->_numRows > 0 && $this->_itemsPerPage > 0) {
@@ -1132,7 +1140,7 @@ class CMS_object_search extends CMS_grandFather
 			
 			// Prepare objectID order if exists and if it is unique order clause
 			if (isset($this->_orderConditions['objectID']) && sizeof($this->_orderConditions) === 1) {
-				$orderClause = " order by objectID ".$this->_orderConditions['objectID'];
+				$orderClause = " order by objectID ".$this->_orderConditions['objectID']['direction'];
 			} elseif (isset($this->_orderConditions['random']) && sizeof($this->_orderConditions) === 1) {
 				$orderClause = " order by rand() ";
 			} else {
@@ -1172,9 +1180,9 @@ class CMS_object_search extends CMS_grandFather
 				";
 			
 			// Sort result by itemsOrdered
-			if (isset($this->_orderConditions['itemsOrdered']) && is_array($this->_orderConditions['itemsOrdered'])) {
+			if (isset($this->_orderConditions['itemsOrdered']) && is_array($this->_orderConditions['itemsOrdered']['order']) && $this->_orderConditions['itemsOrdered']['order']) {
 				$sql .= "
-			 	order by field(objectID, ".implode(',',array_reverse($this->_orderConditions['itemsOrdered'])).") desc
+			 	order by field(objectID, ".implode(',',array_reverse($this->_orderConditions['itemsOrdered']['order'])).") desc
 				";
 			}
 			
@@ -1190,17 +1198,6 @@ class CMS_object_search extends CMS_grandFather
 				}
 			}
 		}
-		/*//resort result according to previous sorting orders
-		if ($this->_orderConditions['itemsOrdered'] && is_array($this->_orderConditions['itemsOrdered']) && $this->_orderConditions['itemsOrdered']) {
-			$orderedIds = array();
-			foreach ($this->_orderConditions['itemsOrdered'] as $id) {
-				if ($ids[$id]) {
-					$orderedIds[$id] = $id;
-					unset($ids[$id]);
-				}
-			}
-			$ids = array_merge($orderedIds,$ids);
-		}*/
 		return $ids;
 	}
 	
@@ -1278,6 +1275,7 @@ class CMS_object_search extends CMS_grandFather
 	 * @return array(CMS_poly_object)
 	 */
 	function search($return = self::POLYMOD_SEARCH_RETURN_OBJECTS, $loadSubObjects = false) {
+		global $cms_user;
 		if ($return == self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT && !$this->_public) {
 			$this->raiseError('Return type can\'t be self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT in a non-public search.');
 			$return = self::POLYMOD_SEARCH_RETURN_OBJECTS;
@@ -1287,6 +1285,13 @@ class CMS_object_search extends CMS_grandFather
 			$return = self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT;
 		}
 		$items = array();
+		// Check module rights : to get any results, user should has at least CLEARANCE_MODULE_VIEW
+		if((!$this->_public || ($this->_public && APPLICATION_ENFORCES_ACCESS_CONTROL)) && (!is_object($cms_user) || !$cms_user->hasModuleClearance($this->_object->getValue('module'),CLEARANCE_MODULE_VIEW))){
+			if (!is_object($cms_user)) {
+				$this->_raiseError(__CLASS__.' : '.__FUNCTION__.' : cms_user not loaded when trying to get objects subject to rights ...');
+			}
+			return $items;
+		}
 		//get all ids and numrows
 		$this->_resultsIds = $this->_getIds();
 		//if results

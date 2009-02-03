@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_integer.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: object_integer.php,v 1.2 2009/02/03 14:27:35 sebastien Exp $
 
 /**
   * Class CMS_object_integer
@@ -91,8 +91,8 @@ class CMS_object_integer extends CMS_object_common
 										'type'                  => 'string',
 										'required'              => false,
 										'internalName'  => 'unit',
-										'externalName'  => MESSAGE_OBJECT_INTEGER_PARAMETER_UNIT,
-										'description'   => MESSAGE_OBJECT_INTEGER_PARAMETER_UNIT_DESC,
+										'externalName'  => self::MESSAGE_OBJECT_INTEGER_PARAMETER_UNIT,
+										'description'   => self::MESSAGE_OBJECT_INTEGER_PARAMETER_UNIT_DESC,
 									),
 							);
 	
@@ -273,8 +273,8 @@ class CMS_object_integer extends CMS_object_common
 		$labels = parent::getLabelsStructure($language);
 		$params = $this->getParamsValues();
 		unset($labels['structure']['value']);
-		if($params['unit']){
-			$labels['structure']['unit'] = $language->getMessage(MESSAGE_OBJECT_INTEGER_PARAMETER_UNIT_DESCRIPTION,array($params['unit']) ,MOD_POLYMOD_CODENAME);
+		if(isset($params['unit']) && $params['unit']){
+			$labels['structure']['unit'] = $language->getMessage(self::MESSAGE_OBJECT_INTEGER_PARAMETER_UNIT_DESCRIPTION,array($params['unit']) ,MOD_POLYMOD_CODENAME);
 		}
 		return $labels;
     }

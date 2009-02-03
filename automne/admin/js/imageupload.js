@@ -6,6 +6,28 @@
  * http://extjs.com/license
  */
 Automne.ImageUploadField = Ext.extend(Automne.FileUploadField,  {
+	// private
+	initComponent: function(){
+		Automne.ImageUploadField.superclass.initComponent.call(this);
+		//append max filesize limit to fieldLabel
+		if (this.minWidth || this.maxWidth || this.minHeight || this.maxHeight) {
+			this.fieldLabel += '<br /><small>';
+			var al = Automne.locales;
+			if (this.minWidth) {
+				this.fieldLabel += al.min +' '+ this.minWidth +'px '+ al.width +'<br />';
+			}
+			if (this.maxWidth) {
+				this.fieldLabel += al.max +' '+ this.maxWidth +'px '+ al.width +'<br />';
+			}
+			if (this.minHeight) {
+				this.fieldLabel += al.min +' '+ this.minHeight +'px '+ al.height +'<br />';
+			}
+			if (this.maxHeight) {
+				this.fieldLabel += al.max +' '+ this.maxHeight +'px '+ al.height +'<br />';
+			}
+			this.fieldLabel += '</small>';
+		}
+	},
 	onRender : function(ct, position){
 		Automne.ImageUploadField.superclass.onRender.call(this, ct, position);
 		this.infoEl.addClass('x-form-fileinfos-img');
@@ -40,6 +62,7 @@ Automne.ImageUploadField = Ext.extend(Automne.FileUploadField,  {
 						}
 						if ((this.maxWidth && img.dom.naturalWidth > this.maxWidth) || img.dom.naturalWidth < this.minWidth || (this.maxHeight && img.dom.naturalHeight > this.maxHeight) || img.dom.naturalHeight < this.minHeight) {
 							this.markInvalid(Automne.locales.maxImageSize);
+							
 						} else {
 							this.clearInvalid();
 						}

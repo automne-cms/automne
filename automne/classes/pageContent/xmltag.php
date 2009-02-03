@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: xmltag.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: xmltag.php,v 1.2 2009/02/03 14:28:07 sebastien Exp $
 
 /**
   * Class CMS_XMLTag
@@ -210,7 +210,10 @@ class CMS_XMLTag extends CMS_grandFather
 		switch ($this->_name) {
 			case "atm-linx":
 				if ($this->_attributes["type"] && $args["page"] && isset($args["publicTree"])) {
-					return new CMS_linx($this->_attributes["type"], $this->getContent(), $args["page"], $args["publicTree"]);
+					$linxArgs = array();
+					$linxArgs['id'] = isset($this->_attributes["id"]) ? $this->_attributes["id"] : false;
+					$linxArgs['class'] = isset($this->_attributes["class"]) ? $this->_attributes["class"] : false;
+					return new CMS_linx($this->_attributes["type"], $this->getContent(), $args["page"], $args["publicTree"], $linxArgs);
 				} else {
 					return false;
 				}

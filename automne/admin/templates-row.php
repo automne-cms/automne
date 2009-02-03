@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-row.php,v 1.3 2008/12/18 10:36:44 sebastien Exp $
+// $Id: templates-row.php,v 1.4 2009/02/03 14:24:44 sebastien Exp $
 
 /**
   * PHP page : Load page rows search window.
@@ -84,7 +84,7 @@ $searchPanel .= "{
 },";
 $allGroups = CMS_rowsCatalog::getAllGroups();
 if ($allGroups) {
-	$columns = sizeof($allGroups) < 3 ? sizeof($allGroups) : 3;
+	$columns = sizeof($allGroups) < 2 ? sizeof($allGroups) : 2;
 	$searchPanel .= "{
 		xtype: 		'checkboxgroup',
 		fieldLabel: 'Groupes',

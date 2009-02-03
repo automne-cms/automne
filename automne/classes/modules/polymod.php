@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: polymod.php,v 1.2 2008/12/18 10:40:12 sebastien Exp $
+// $Id: polymod.php,v 1.3 2009/02/03 14:27:04 sebastien Exp $
 
 /**
   * Class CMS_polymod
@@ -552,6 +552,11 @@ class CMS_polymod extends CMS_modulePolymodValidation
 		if (!sensitiveIO::isPositiveInteger($parameters['object'])) {
 			return false;
 		}
+		//instanciate root user to avoid rights problems during item loading
+		global $cms_user;
+		if (!is_object($cms_user)) {
+			$GLOBALS['cms_user'] = new CMS_profile_user(1);
+		}
 		//instanciate script related item (use edited object because the script can launch writing of values into object)
 		$item = CMS_poly_object_catalog::getObjectByID($parameters['object'],false,false);
 		if (!is_object($item) || $item->hasError()) {
@@ -577,12 +582,55 @@ class CMS_polymod extends CMS_modulePolymodValidation
 		}
 		//instanciate script related object (use edited object because the script can launch writing of values into object)
 		$object = CMS_poly_object_catalog::getObjectByID($parameters['object'],false,false);
+		global $cms_language;
 		if (!is_object($object) || $object->hasError()) {
-			return parent::scriptInfo($parameters);
+			return $this->getLabel($cms_language). ' : '.parent::scriptInfo($parameters);
 		}
 		//then pass query to object
 		$return = $object->scriptInfo($parameters);
-		return ($return) ? $return : parent::scriptInfo($parameters);
+		return $this->getLabel($cms_language). ' : '.(($return) ? $return : parent::scriptInfo($parameters));
+	}
+
+	/**
+	  * Module autoload handler
+	  *
+	  * @param string $classname the classname required for loading
+	  * @return string : the file to use for required classname
+	  * @access public
+	  */
+	function load($classname) {
+		static $classes;
+		if (!isset($classes)) {
+			$classes = array(
+				/**
+				 * Module main classes
+				 */
+				'cms_poly_object_field' 			=> PATH_MODULES_FS.'/polymod/polyobjects/poly_object_field.php',
+				'cms_poly_object' 					=> PATH_MODULES_FS.'/polymod/polyobjects/poly_object.php',
+				'cms_poly_object_definition' 		=> PATH_MODULES_FS.'/polymod/polyobjects/poly_object_definition.php',
+				'cms_poly_object_catalog' 			=> PATH_MODULES_FS.'/polymod/polyobjects/poly_object_catalog.php',
+				'cms_multi_poly_object' 			=> PATH_MODULES_FS.'/polymod/polyobjects/multi_poly_object.php',
+				'cms_object_search' 				=> PATH_MODULES_FS.'/polymod/object_search.php',
+				'cms_poly_plugin_definitions' 		=> PATH_MODULES_FS.'/polymod/poly_plugin_definition.php',
+				'cms_object_i18nm' 					=> PATH_MODULES_FS.'/polymod/object_i18nm.php',
+				'cms_polymod_definition_parsing' 	=> PATH_MODULES_FS.'/polymod/poly_definition_parsing.php',
+				'cms_poly_module_structure' 		=> PATH_MODULES_FS.'/polymod/poly_module_structure.php',
+				'cms_poly_rss_definitions' 			=> PATH_MODULES_FS.'/polymod/poly_rss_definition.php',
+				'cms_block_polymod' 				=> PATH_MODULES_FS.'/polymod/block.php',
+				'cms_poly_definition_functions' 	=> PATH_MODULES_FS.'/polymod/poly_definition_funtions.php',
+			);
+		}
+		$file = '';
+		if (isset($classes[strtolower($classname)])) {
+			$file = $classes[strtolower($classname)];
+		} elseif (strpos($classname, 'CMS_object_') === 0 //polymod objects lazy loading
+					&& file_exists(PATH_MODULES_FS.'/polymod/objects/object_'.substr($classname,11).'.php')) {
+			$file = PATH_MODULES_FS.'/polymod/objects/object_'.substr($classname,11).'.php';
+		} elseif (strpos($classname, 'CMS_subobject_') === 0 //polymod subobjects lazy loading
+					&& file_exists(PATH_MODULES_FS.'/polymod/subobjects/subobject_'.substr($classname,14).'.php')) {
+			$file = PATH_MODULES_FS.'/polymod/subobjects/subobject_'.substr($classname,14).'.php';
+		}
+		return $file;
 	}
 
 	/**

@@ -13,7 +13,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>     		  |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_page.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: object_page.php,v 1.2 2009/02/03 14:27:35 sebastien Exp $
 
 /**
   * Class CMS_object_page
@@ -25,27 +25,28 @@
   * @author Jérémie Bryon <jeremie.bryon@ws-interactive.fr>
   */
 
-/**
-  * Polymod Messages
-  */
-define("MESSAGE_OBJECT_PAGE_LABEL", 406);
-define("MESSAGE_OBJECT_PAGE_DESCRIPTION", 407);
-
 class CMS_object_page extends CMS_object_integer
 {
+	/**
+ 	 * Polymod Messages
+ 	 */
+	const MESSAGE_OBJECT_PAGE_LABEL = 406;
+	const MESSAGE_OBJECT_PAGE_DESCRIPTION = 407;
+	const MESSAGE_PAGE_TREEH1 = 1049;
+	
 	/**
 	  * object label
 	  * @var integer
 	  * @access private
 	  */
-	var $_objectLabel = MESSAGE_OBJECT_PAGE_LABEL;
+	var $_objectLabel = self::MESSAGE_OBJECT_PAGE_LABEL;
 	
 	/**
 	  * object description
 	  * @var integer
 	  * @access private
 	  */
-	var $_objectDescription = MESSAGE_OBJECT_PAGE_DESCRIPTION;
+	var $_objectDescription = self::MESSAGE_OBJECT_PAGE_DESCRIPTION;
 	
 	/**
 	  * all subFields definition
@@ -159,7 +160,7 @@ class CMS_object_page extends CMS_object_integer
 			$grand_root = CMS_tree::getRoot();
 			$href = PATH_ADMIN_SPECIAL_TREE_WR;
 			$href .= '?root='.$grand_root->getID();
-			$windowTitle = SensitiveIO::sanitizeHTMLString($language->getMessage(MESSAGE_PAGE_TREEH1));
+			$windowTitle = SensitiveIO::sanitizeHTMLString($language->getMessage(self::MESSAGE_PAGE_TREEH1));
 			$href .= '&amp;heading='.$windowTitle;
 			$href .= '&amp;encodedOnClick='.base64_encode("window.opener.document.getElementById('".$fieldName."').value = '%s';self.close();");
 			$href .= '&encodedPageLink='.base64_encode('false');

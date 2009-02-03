@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_common.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: object_common.php,v 1.2 2009/02/03 14:27:35 sebastien Exp $
 
 /**
   * Class CMS_object_common
@@ -756,7 +756,6 @@ abstract class CMS_object_common extends CMS_grandFather
 	  */
 	function getFieldOrderSQL($fieldID, $direction, $operator, $where, $public = false) {
 		$statusSuffix = ($public) ? "_public":"_edited";
-		//operators are not supported for now : TODO
 		$supportedOperator = array();
 		if ($operator && !in_array($operator, $supportedOperator)) {
 			$this->raiseError("Unknown search operator : ".$operator.", use default search instead");

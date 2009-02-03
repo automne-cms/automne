@@ -24,7 +24,7 @@
  * It defines the FCKeditor class that can be used to create editor
  * instances in PHP pages on server side.
  */
-// $Id: fckeditor.php,v 1.1.1.1 2008/11/26 17:12:14 sebastien Exp $
+// $Id: fckeditor.php,v 1.2 2009/02/03 14:31:41 sebastien Exp $
 
 /**
  * Check if browser is compatible with FCKeditor.
@@ -313,38 +313,40 @@ class FCKeditor
 	  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
 	  */
 	function createAutomneLinks($text, $module = MOD_STANDARD_CODENAME) {
-		/*
-		 * we need to do some replacements to be completely conform with Automne
-		 * you can add here all dirty tags to be removed from editor's output
-		 */
-		$replace = array(
-			"%7B%7B" 					=> "{{",	//in case of internal links copy/paste, editor encode {{
-			"%7D%7D" 					=> "}}",	//in case of internal links copy/paste, editor encode }}
-			"/>" 						=> " />",	//xhtml missing space on auto-closed tags
-			"<o:p>" 					=> "",		//dirty tags from MS Word pasting
-			"</o:p>" 					=> "",
-			"<!--[if !supportLists]-->" => "",
-			"<!--[endif]-->" 			=> "",
-		);
-		$text = str_replace(array_keys($replace),$replace,$text);
-		$text = sensitiveIO::decodeWindowsChars($text);
-		
-		$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_WYSIWYG_OUTER_TAGS, RESOURCE_DATA_LOCATION_EDITION, new CMS_date());
-		$wantedTags = $modulesTreatment->getWantedTags();
-		
-		//create regular expression on wanted tags
-		$exp = '';
-		foreach ($wantedTags as $aWantedTag) {
-			$exp .= ($exp) ? '|<'.$aWantedTag["tagName"] : '<'.$aWantedTag["tagName"];
-		}
-		//is parsing needed (value contain some of these wanted tags)
-		if (is_array($wantedTags) && $wantedTags && preg_match('#('.$exp.')+#' ,$text) !== false) {
-			$modulesTreatment->setTreatmentParameters(array('module' => $module));
-			$modulesTreatment->setDefinition($text);
-			$text = $modulesTreatment->treatContent(true);
-		}
 		//if post only contain a space or empty paragraph then the block is empty.
 		$text = ($text=='&nbsp;' || $text=='<p></p>' || $text=='<div></div>') ? '' : $text;
+		if ($text) {
+			/*
+			 * we need to do some replacements to be completely conform with Automne
+			 * you can add here all dirty tags to be removed from editor's output
+			 */
+			$replace = array(
+				"%7B%7B" 					=> "{{",	//in case of internal links copy/paste, editor encode {{
+				"%7D%7D" 					=> "}}",	//in case of internal links copy/paste, editor encode }}
+				"/>" 						=> " />",	//xhtml missing space on auto-closed tags
+				"<o:p>" 					=> "",		//dirty tags from MS Word pasting
+				"</o:p>" 					=> "",
+				"<!--[if !supportLists]-->" => "",
+				"<!--[endif]-->" 			=> "",
+			);
+			$text = str_replace(array_keys($replace),$replace,$text);
+			$text = sensitiveIO::decodeWindowsChars($text);
+			
+			$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_WYSIWYG_OUTER_TAGS, RESOURCE_DATA_LOCATION_EDITION, new CMS_date());
+			$wantedTags = $modulesTreatment->getWantedTags();
+			
+			//create regular expression on wanted tags
+			$exp = '';
+			foreach ($wantedTags as $aWantedTag) {
+				$exp .= ($exp) ? '|<'.$aWantedTag["tagName"] : '<'.$aWantedTag["tagName"];
+			}
+			//is parsing needed (value contain some of these wanted tags)
+			if (is_array($wantedTags) && $wantedTags && preg_match('#('.$exp.')+#' ,$text) !== false) {
+				$modulesTreatment->setTreatmentParameters(array('module' => $module));
+				$modulesTreatment->setDefinition($text);
+				$text = $modulesTreatment->treatContent(true);
+			}
+		}
 		return $text;
 	}
 }

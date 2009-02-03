@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: content_block.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: content_block.php,v 1.2 2009/02/03 14:25:51 sebastien Exp $
 
 /**
   * PHP page : page content block edition : text
@@ -107,6 +107,7 @@ case "setParameters":
 					case 'keywords':
 					case 'category':
 					case 'limit':
+					case 'item':
 						if ($paramValue && !$_POST["value"]['search'][$searchName][$paramType]) { //mandatory ?
 							$formok = false;
 						}
@@ -198,6 +199,25 @@ if (sizeof($blockParamsDefinition['search'])) {
 			$searchParamContent = '';
 			foreach ($searchParams as $paramType => $paramValue) {
 				switch ($paramType) {
+					case 'item':
+						$objectsNames = CMS_poly_object_catalog::getListOfNamesForObject($object->getID(), true, array());
+						if (sizeof($objectsNames)) {
+							$s_object_listbox = CMS_moduleCategories_catalog::getListBox(
+								array (
+								'field_name' 		=> 'value[search]['.$searchName.']['.$paramType.']',		// Select field name to get value in
+								'items_possible' 	=> $objectsNames,							// array of all categories availables: array(ID => label)
+								'default_value' 	=> $data["value"]['search'][$searchName][$paramType],	// Same format
+								'attributes' 		=> 'class="admin_input_text" style="width:250px;"'
+								));
+						} else {
+							$s_object_listbox = $cms_language(MESSAGE_EMPTY_OBJECTS_SET);
+						}
+						$searchParamContent .= '
+							<tr>
+								<td class="admin">'.$mandatory.$object->getLabel($cms_language).'&nbsp;:</td>
+								<td class="admin">'.$s_object_listbox.'</td>
+							</tr>';
+					break;
 					case 'keywords':
 						// Keywords
 						$mandatory = ($paramValue == true) ? '<span class="admin_text_alert">*</span> ':'';
@@ -311,7 +331,7 @@ if (sizeof($blockParamsDefinition['search'])) {
 								$objectType = $field->getTypeObject();
 								if (method_exists($objectType, 'getListOfNamesForObject')) {
 									//check if we can associate unused objects
-									if (method_exists($objectType, 'getParamsValues') && $params = $objectType->getParamsValues() && isset($params['associateUnused']) && isset($params['associateUnused'])) {
+									if (method_exists($objectType, 'getParamsValues') && $params = $objectType->getParamsValues() && isset($params['associateUnused'])) {
 										$objectsNames = $objectType->getListOfNamesForObject(true, array(), false);
 									} else {
 										$objectsNames = $objectType->getListOfNamesForObject(true);

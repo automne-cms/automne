@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: jsmanager.php,v 1.1.1.1 2008/11/26 17:12:36 sebastien Exp $
+// $Id: jsmanager.php,v 1.2 2009/02/03 14:34:29 sebastien Exp $
 
 /**
   * Javascript manager
@@ -58,8 +58,8 @@ if (isset($_GET['files'])) {
 				//swfobject file
 				$jsfiles [] = PATH_MAIN_FS.'/swfobject/swfobject.js';
 				//SWF Upload
-				$jsfiles [] = PATH_MAIN_FS.'/swfupload/swfupload.js';
-				$jsfiles [] = PATH_MAIN_FS.'/swfupload/swfupload.cookies.js';
+				//$jsfiles [] = PATH_MAIN_FS.'/swfupload/swfupload.js';
+				//$jsfiles [] = PATH_MAIN_FS.'/swfupload/swfupload.cookies.js';
 				
 				$jsfiles [] = PATH_ADMIN_FS.'/js/fileupload.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/imageupload.js';

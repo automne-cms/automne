@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: row.php,v 1.3 2008/12/18 10:36:43 sebastien Exp $
+// $Id: row.php,v 1.4 2009/02/03 14:24:44 sebastien Exp $
 
 /**
   * PHP page : Load row detail window.
@@ -82,7 +82,7 @@ $imageDatas = sensitiveIO::jsonEncode($imageDatas);
 $allGroups = CMS_rowsCatalog::getAllGroups();
 $groupsfield = '';
 if ($allGroups) {
-	$columns = sizeof($allGroups) < 6 ? sizeof($allGroups) : 6;
+	$columns = sizeof($allGroups) < 5 ? sizeof($allGroups) : 5;
 	$groupsfield .= "{
 		xtype: 		'checkboxgroup',
 		fieldLabel: '<span class=\"atm-help\" ext:qtip=\"Vous pouvez utiliser des groupes pour catégoriser votre modèle de rangée. Vous pourrez ainsi simplifier sa sélection mais aussi associer des droits aux utilisateurs sur ces groupes. Ceci permettra de limiter l\'usage de certains modèles spécifiques à certains profils d\'utilisateurs.\">Groupes</span>',

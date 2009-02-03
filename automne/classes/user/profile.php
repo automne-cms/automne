@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: profile.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: profile.php,v 1.2 2009/02/03 14:28:18 sebastien Exp $
 
 /**
   * Class CMS_Profile
@@ -939,7 +939,7 @@ class CMS_profile extends CMS_grandFather
 	function hasRowGroupsDenied($rowGroup)
 	{
 		$row_denied = $this->_rowGroupsDenied->getElementsWithOneValue($rowGroup, 1);
-		if ($this->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL) || !$row_denied[0]) {
+		if ($this->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL) || !isset($row_denied[0]) || !$row_denied[0]) {
 				return false;
 		}
 		return true;

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: linx.php,v 1.2 2008/12/18 10:40:54 sebastien Exp $
+// $Id: linx.php,v 1.3 2009/02/03 14:28:07 sebastien Exp $
 
 /**
   * Class CMS_linx
@@ -121,6 +121,13 @@ class CMS_linx extends CMS_grandFather
 	protected $_crosswebsite = false;
 	
 	/**
+	  * Optionnal linx args (such as id or class) to append to generated code
+	  * @var boolean (default : false)
+	  * @access private
+	  */
+	protected $_args = array();
+	
+	/**
 	  * Constructor.
 	  * initializes the linx.
 	  *
@@ -131,7 +138,7 @@ class CMS_linx extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($type, $tagContent, $page, $publicTree = false)
+	function __construct($type, $tagContent, $page, $publicTree = false, $args = array())
 	{
 		if (!SensitiveIO::isInSet($type, CMS_linxesCatalog::getAllTypes())) {
 			$this->raiseError("Constructor has an unknown type : ".$type);
@@ -140,6 +147,7 @@ class CMS_linx extends CMS_grandFather
 			$this->raiseError("Constructor was not given a valid CMS_page");
 			return;
 		} else {
+			$this->_args = $args;
 			$this->_type = $type;
 			$this->_page = $page;
 			$this->_publicTree = $publicTree;
@@ -227,6 +235,37 @@ class CMS_linx extends CMS_grandFather
 		}
 		if ($register) {
 			$this->register();
+		}
+		//append args to generated linx code
+		if ($this->_args) {
+			//append atm-row class and row-id to all first level tags founded in row datas
+			$domdocument = new CMS_DOMDocument();
+			try {
+				$domdocument->loadXML('<linx>'.$output.'</linx>');
+			} catch (DOMException $e) {
+				$this->raiseError('Parse error for row : '.$e->getMessage()." :\n".htmlspecialchars($data));
+				return '';
+			}
+			$rowNodes = $domdocument->getElementsByTagName('linx');
+			if ($rowNodes->length == 1) {
+				$rowXML = $rowNodes->item(0);
+			}
+			$elements = array();
+			foreach($rowXML->childNodes as $rowChildNode) {
+				if (is_a($rowChildNode, 'DOMElement') && $rowChildNode->tagName != 'script') {
+					if ($this->_args['class'] !== false) {
+						if ($rowChildNode->hasAttribute('class')) {
+							$rowChildNode->setAttribute('class', $rowChildNode->getAttribute('class').' '.$this->_args['class']);
+						} else {
+							$rowChildNode->setAttribute('class', $this->_args['class']);
+						}
+					}
+					if ($this->_args['id'] !== false) {
+						$rowChildNode->setAttribute('id', $this->_args['id']);
+					}
+				}
+			}
+			$output = CMS_DOMDocument::DOMElementToString($rowXML, true);
 		}
 		return $output;
 	}

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: login.php,v 1.2 2008/12/18 13:55:59 sebastien Exp $
+// $Id: login.php,v 1.3 2009/02/03 14:24:43 sebastien Exp $
 
 /**
   * PHP page : Login
@@ -109,6 +109,19 @@ case "login":
 		});";
 	}
 	break;
+case 'reconnect':
+		//display error login window on top of login form
+		$loginError = "
+		Automne.message.popup({
+			title: '{$language->getJsMessage(MESSAGE_ERROR_TITLE)}',
+			msg: 'Votre session a expiré. Veuillez vous reconnecter...',
+			buttons: Ext.MessageBox.OK,
+			icon: Ext.MessageBox.ERROR,
+			fn:function() {
+				Ext.fly('loginField').dom.select();
+			}
+		});";
+	break;
 default:
 	// First attempt to obtain $_COOKIE information from domain
 	if ((!isset($_REQUEST["cms_action"]) || $_REQUEST["cms_action"] != 'logout') && CMS_context::autoLoginSucceeded()) {
@@ -147,7 +160,7 @@ if (!isset($_GET['loginform'])) {
 	//Send Login form window
 	
 	$applicationLabel = addcslashes(APPLICATION_LABEL, "'");
-	$htmlForm = '<iframe id="formframe" width="100%" height="100%" frameborder="0" src="'.$_SERVER['SCRIPT_NAME'].'?loginform=true">&nbsp;</iframe>';
+	$htmlForm = '<iframe id="formframe" width="100%" height="100%" frameborder="0" src="'.$_SERVER['SCRIPT_NAME'].'?loginform=true&amp;_ts='.time().'">&nbsp;</iframe>';
 	$jscontent = 
 <<<END
 	var loginWindow = new Ext.Window({
@@ -169,6 +182,8 @@ if (!isset($_GET['loginform'])) {
 	};
 	loginWindow.on('close', loginWindow.closeAndBack);
 	loginWindow.show();
+	//display login error window if any
+	{$loginError}
 END;
 	//send content
 	$view->addJavascript($jscontent);

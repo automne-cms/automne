@@ -14,7 +14,7 @@
 // | Authors: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>     |
 // +----------------------------------------------------------------------+
 //
-// $Id: href.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: href.php,v 1.2 2009/02/03 14:26:36 sebastien Exp $
 
 /**
   * Class Href
@@ -553,7 +553,7 @@ class CMS_href extends CMS_grandFather
 				case RESOURCE_DATA_LOCATION_PUBLIC:
 				case RESOURCE_DATA_LOCATION_EDITED:
 				default:
-					if ($href = CMS_tree::getPageValue($this->_internalLink, 'url')) {
+					if (sensitiveIO::isPositiveInteger($this->_internalLink) && $href = CMS_tree::getPageValue($this->_internalLink, 'url')) {
 						$href = (strpos($href,PATH_PAGES_WR) !== false) ? $href : PATH_PAGES_WR.$href;
 					}
 					break;

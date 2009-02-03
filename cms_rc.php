@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc.php,v 1.3 2008/12/18 10:34:00 sebastien Exp $
+// $Id: cms_rc.php,v 1.4 2009/02/03 14:24:06 sebastien Exp $
 
 /**
   * rc file, contains editable constants
@@ -22,7 +22,6 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &
   * @author Cédric Soret <cedric.soret@ws-interactive.fr>
   */
-
 //include general configuration file
 if (@file_exists(dirname(__FILE__)."/config.php")) {
 	@include_once(dirname(__FILE__)."/config.php");

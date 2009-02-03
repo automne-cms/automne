@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: search.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: search.php,v 1.2 2009/02/03 14:25:51 sebastien Exp $
 
 /**
   * PHP page : Load polyobjects items datas
@@ -195,13 +195,13 @@ $itemsDatas['total'] = $search->getNumRows();
 if ($resultsDefinition) {
 	$definitionParsing = new CMS_polymod_definition_parsing($resultsDefinition, true, CMS_polymod_definition_parsing::PARSE_MODE);
 	// Add specific css if we use the resultsDefinition
-	if (file_exists(PATH_CSS_FS.'/modules/'.$codename.'.css')) {
+	/*if (file_exists(PATH_CSS_FS.'/modules/'.$codename.'.css')) {
 		$itemsDatas['css'] = PATH_CSS_WR.'/modules/'.$codename.'.css';
 	}
 	// Add specific js if we use the resultsDefinition
-	if (file_exists(PATH_JS_FS.'/modules/'.$codename.'.css')) {
+	if (file_exists(PATH_JS_FS.'/modules/'.$codename.'.js')) {
 		$itemsDatas['js'] = PATH_JS_WR.'/modules/'.$codename.'.js';
-	}
+	}*/
 }
 //loop on results items
 foreach ($items as $item) {
