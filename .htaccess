@@ -1,6 +1,6 @@
 # Automne general .htaccess file. 
 # Author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-# $Id: .htaccess,v 1.6 2008/12/18 17:10:33 sebastien Exp $
+# $Id: .htaccess,v 1.7 2009/02/09 10:06:50 sebastien Exp $
 
 # Declare errors documents. 
 # The 404.php must be the 404 error document, otherwise, change PATH_SPECIAL_PAGE_NOT_FOUND_WR constant value in cms_rc.php file accordingly and keep the PHP header of the file 404.php in your new error document.
@@ -17,7 +17,7 @@ DirectoryIndex index.php
 Allow from all
 
 # Add PHP5 CGI Handler (for Hubble only ...)
-#AddHandler php5-cgi .php
+AddHandler php5-cgi .php
 
 # Some PHP configurations
 <IfModule mod_mime.c>

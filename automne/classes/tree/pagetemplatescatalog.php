@@ -15,7 +15,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: pagetemplatescatalog.php,v 1.2 2008/12/18 10:41:04 sebastien Exp $
+// $Id: pagetemplatescatalog.php,v 1.3 2009/02/09 10:04:18 sebastien Exp $
 
 /**
   * Class CMS_pageTemplatesCatalog
@@ -318,43 +318,45 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 
 				//Copying template clientspaces rows definitions
 				if (!$dontCopyClientSpaces) {
-					if ($tplFrom) {
-						$sql = "
-							select
-								*
-							from
-								`mod_standard_clientSpaces_edited`
-							where
-								`template_cs`='".$tplFrom."'
-						";
-					} else {
-						$sql = "
-							select
-								*
-							from
-								`mod_standard_clientSpaces_edited`
-							where
-								`template_cs`='".$model->getID()."'
-						";
+					$suffixes = array('archived', 'deleted', 'edited', 'edition', 'public');
+					foreach ($suffixes as $suffix) {
+						if ($tplFrom) {
+							$sql = "
+								select
+									*
+								from
+									`mod_standard_clientSpaces_".$suffix."`
+								where
+									`template_cs`='".$tplFrom."'
+							";
+						} else {
+							$sql = "
+								select
+									*
+								from
+									`mod_standard_clientSpaces_".$suffix."`
+								where
+									`template_cs`='".$model->getID()."'
+							";
+						}
+						$q = new CMS_query($sql);
+						while ($arr = $q->getArray()) {
+							$sql1 = "
+								insert into
+									`mod_standard_clientSpaces_".$suffix."`
+								set
+									`template_cs`='".$tpl->getID()."',
+									`tagID_cs`='".SensitiveIO::sanitizeSQLString($arr["tagID_cs"])."',
+									`rowsDefinition_cs`='".SensitiveIO::sanitizeSQLString($arr["rowsDefinition_cs"])."',
+									`type_cs`='".$arr["type_cs"]."',
+									`order_cs`='".$arr["order_cs"]."'
+							";
+							$q1 = new CMS_query($sql1);
+							unset($q1);
+						}
+						unset($q);
 					}
-					$q = new CMS_query($sql);
-					while ($arr = $q->getArray()) {
-						$sql1 = "
-							insert into
-								`mod_standard_clientSpaces_edited`
-							set
-								`template_cs`='".$tpl->getID()."',
-								`tagID_cs`='".SensitiveIO::sanitizeSQLString($arr["tagID_cs"])."',
-								`rowsDefinition_cs`='".SensitiveIO::sanitizeSQLString($arr["rowsDefinition_cs"])."',
-								`type_cs`='".$arr["type_cs"]."',
-								`order_cs`='".$arr["order_cs"]."'
-						";
-						$q1 = new CMS_query($sql1);
-						unset($q1);
-					}
-					unset($q);
 				}
-
 				//CMS_Template to return
 				$ret = $tpl ;
 			}

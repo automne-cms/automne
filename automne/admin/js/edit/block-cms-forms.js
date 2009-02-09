@@ -4,25 +4,24 @@
   * @class Automne.blockPolymod
   * @extends Automne.block
   */
-Automne.blockPolymod = Ext.extend(Automne.block, {
-	blockClass:	'CMS_block_polymod',
+Automne.blockCMS_Forms = Ext.extend(Automne.block, {
+	blockClass:	'CMS_block_cms_forms',
 	win:		false,
 	edit: 		function() {
 		//create window with block edition elements
 		this.win = new parent.Automne.frameWindow({
-			id:				'blockPolymodWindow',
+			id:				'blockCMSFormsWindow',
 			width:			800,
 			height:			600,
-			frameURL:		'/automne/admin/modules/polymod/content_block.php?' + Ext.urlEncode({
-				winId:			'blockPolymodWindow',
+			frameURL:		'/automne/admin/modules/cms_forms/content_block.php?' + Ext.urlEncode({
+				winId:			'blockCMSFormsWindow',
 				cs:				this.row.clientspace.getId(),
 				page:			this.row.clientspace.page,
 				template:		this.row.template,
 				rowType:		this.row.rowType,
 				rowTag:			this.row.rowTagID,
 				block:			this.getId(),
-				blockClass:		this.blockClass,
-				module:			this.value.module
+				blockClass:		this.blockClass
 			}),
 			allowFrameNav:	true
 		});
@@ -31,19 +30,12 @@ Automne.blockPolymod = Ext.extend(Automne.block, {
 	},
 	admin: function() {
 		//create module admin window
-		this.win = new parent.Automne.Window({
-			id:				'module'+ this.value.module +'Window',
+		this.win = new parent.Automne.frameWindow({
+			id:				'moduleCMSFormsWindow',
 			width:			800,
 			height:			600,
-			autoLoad:		{
-				url:		'/automne/admin/module.php',
-				params:		{
-					winId:		'module'+ this.value.module +'Window',
-					module:		this.value.module
-				},
-				nocache:	true,
-				scope:		this
-			}
+			frameURL:		'/automne/admin/modules/cms_forms/index.php',
+			allowFrameNav:	true
 		});
 		this.win.show();
 		this.win.on('close', this.updateRow, this);

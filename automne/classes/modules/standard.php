@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: standard.php,v 1.2 2008/12/18 10:40:12 sebastien Exp $
+// $Id: standard.php,v 1.3 2009/02/09 10:03:27 sebastien Exp $
 
 /**
   * Class CMS_module_standard
@@ -1362,21 +1362,21 @@ class CMS_module_standard extends CMS_module
 		$return = array();
 		switch ($treatmentMode) {
 			case MODULE_TREATMENT_CLIENTSPACE_TAGS :
-				if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
+				/*if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
 					$return = array (
 						"atm-clientspace" 	=> array("selfClosed" => true, "parameters" => array()),
 						"title" 			=> array("selfClosed" => false, "parameters" => array()),
 						"atm-meta-tags" 	=> array("selfClosed" => true, "parameters" => array()),
 						"atm-css-tags" 		=> array("selfClosed" => true, "parameters" => array()),
 						"atm-js-tags" 		=> array("selfClosed" => true, "parameters" => array()),
-						"atm-linx" 			=> array("selfClosed" => false, "parameters" => array()),
+						//"atm-linx" 			=> array("selfClosed" => false, "parameters" => array()),
 						
 					);
-				} else {
+				} else {*/
 					$return = array (
 						"atm-clientspace" => array("selfClosed" => true, "parameters" => array()),
 					);
-				}
+				//}
 			break;
 			case MODULE_TREATMENT_BLOCK_TAGS :
 				$return = array (
@@ -1501,6 +1501,7 @@ class CMS_module_standard extends CMS_module
 				//load CS datas
 				switch ($tag->getName()) {
 					case 'atm-meta-tags':
+						pr('atm-meta-tags !!!!!!!!!!!');
 						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
 							//add needed javascripts
 							$metaDatas = '<script type="text/javascript">'."\n".
@@ -1521,7 +1522,7 @@ class CMS_module_standard extends CMS_module
 					break;
 					case "atm-js-tags":
 					case "atm-css-tags":
-						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
+						//if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
 							$files = $tag->getAttribute('files');
 							if (!$files) {
 								return '';
@@ -1550,7 +1551,7 @@ class CMS_module_standard extends CMS_module
 							//save files
 							CMS_module::moduleUsage($treatedObject->getID(), $tag->getName(), $files);
 							return '<?php echo CMS_view::'.$method.'(array(\''.implode('\',\'', $files).'\')'.($media ? ', \''.$media.'\'' : '').'); ?>'."\n";
-						}
+						//}
 					break;
 					case 'title':
 						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
@@ -1559,12 +1560,12 @@ class CMS_module_standard extends CMS_module
 						}
 					break;
 					case 'atm-linx':
-						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
+						/*if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
 							$linx_args = array("page"=> $treatmentParameters["page"], "publicTree"=>false);
 							$linx = $tag->getRepresentationInstance($linx_args);
 							$linx->setDebug(false);
 							return $linx->getOutput();
-						}
+						}*/
 					break;
 					case 'atm-clientspace':
 					default:
@@ -1599,7 +1600,7 @@ class CMS_module_standard extends CMS_module
 			case MODULE_TREATMENT_LINXES_TAGS:
 				switch ($tag->getName()) {
 					case "atm-linx":
-						$linx_args = array("page"=>$treatedObject, "publicTree"=>true);
+						$linx_args = array("page"=> $treatedObject, "publicTree"=> true);
 						$linx = $tag->getRepresentationInstance($linx_args);
 						return $linx->getOutput(true);
 					break;
@@ -1613,10 +1614,17 @@ class CMS_module_standard extends CMS_module
 				}
 				switch ($tag->getName()) {
 					case "atm-linx":
+						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
+							$linx_args = array("page"=> $treatedObject, "publicTree"=> false);
+							$linx = $tag->getRepresentationInstance($linx_args);
+							$linx->setDebug(false);
+							$linx->setLog(false);
+							return $linx->getOutput();
+						} else
 						//for public and print visualmode, this treatment is done by MODULE_TREATMENT_LINXES_TAGS mode during page file linx treatment
 						if ($visualizationMode != PAGE_VISUALMODE_HTML_PUBLIC 
 							&& $visualizationMode != PAGE_VISUALMODE_PRINT) {
-							$linx_args = array("page"=>$treatedObject, "publicTree"=>false);
+							$linx_args = array("page"=> $treatedObject, "publicTree"=> false);
 							$linx = $tag->getRepresentationInstance($linx_args);
 							return $linx->getOutput();
 						}
@@ -1701,25 +1709,36 @@ class CMS_module_standard extends CMS_module
 								'	}'."\n".
 								'}'."\n".
 								'? >'."\n";*/
-						} elseif ($visualizationMode == PAGE_VISUALMODE_FORM 
-									|| $visualizationMode == PAGE_VISUALMODE_HTML_EDITION ) {
-							if ($visualizationMode == PAGE_VISUALMODE_FORM) {
-								global $cms_user;
-								$isValidator = (is_object($cms_user) && $cms_user->hasPageClearance($treatedObject->getID(), CLEARANCE_PAGE_EDIT) && $cms_user->hasValidationClearance(MOD_STANDARD_CODENAME)) ? 'true' : 'false';
-								//add needed javascripts
-								$metaDatas .= '<script type="text/javascript">'."\n".
-									'var atmRowsDatas = {};'."\n".
-									'var atmBlocksDatas = {};'."\n".
-									'var atmCSDatas = {};'."\n".
-									'var atmIsValidator = '.$isValidator.';'."\n".
-									'var atmIsValidable = true;'."\n".
-									'var atmHasPreview = true;'."\n".
-								'</script>';
-								//append JS from current view instance
-								$view = CMS_view::getInstance();
-								$metaDatas .= $view->getJavascript();
-								$metaDatas .= CMS_view::getCSS(array('edit'));
-							}
+						} elseif ($visualizationMode == PAGE_VISUALMODE_FORM) {
+							global $cms_user;
+							$isValidator = (is_object($cms_user) && $cms_user->hasPageClearance($treatedObject->getID(), CLEARANCE_PAGE_EDIT) && $cms_user->hasValidationClearance(MOD_STANDARD_CODENAME)) ? 'true' : 'false';
+							//add needed javascripts
+							$metaDatas .= '<script type="text/javascript">'."\n".
+								'var atmRowsDatas = {};'."\n".
+								'var atmBlocksDatas = {};'."\n".
+								'var atmCSDatas = {};'."\n".
+								'var atmIsValidator = '.$isValidator.';'."\n".
+								'var atmIsValidable = true;'."\n".
+								'var atmHasPreview = true;'."\n".
+							'</script>';
+							//append JS from current view instance
+							$view = CMS_view::getInstance();
+							$metaDatas .= $view->getJavascript();
+							$metaDatas .= CMS_view::getCSS(array('edit'));
+						} else if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
+							//add needed javascripts
+							$metaDatas .= '<script type="text/javascript">'."\n".
+								'var atmRowsDatas = {};'."\n".
+								'var atmBlocksDatas = {};'."\n".
+								'var atmCSDatas = {};'."\n".
+								'var atmIsValidator = false;'."\n".
+								'var atmIsValidable = false;'."\n".
+								'var atmHasPreview = false;'."\n".
+							'</script>';
+							//append JS from current view instance
+							$view = CMS_view::getInstance();
+							$metaDatas .= $view->getJavascript();
+							$metaDatas .= CMS_view::getCSS(array('edit'));
 						}
 						//if page template already use atm-js-tags tag, no need to add JS again
 						if (!is_array($usage) || !isset($usage['atm-js-tags'])) {

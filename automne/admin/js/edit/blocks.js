@@ -115,13 +115,13 @@ Ext.extend(Automne.block, Ext.util.Observable, {
 			var visible = false;
 			switch(controlId) {
 				case 'del':
-					visible = (this.row.userRight && this.hasContent) ? true : false;
+					visible = (this.row.userRight && this.editable && this.hasContent) ? true : false;
 				break;
 				case 'modify':
 					visible = (this.row.userRight && this.editable) ? true : false;
 				break;
 				case 'admin':
-					visible = (this.row.userRight && this.administrable) ? true : false;
+					visible = (/*this.row.userRight && */this.administrable) ? true : false;
 				break;
 			}
 			ctrl.setVisible(visible);

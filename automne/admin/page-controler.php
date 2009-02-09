@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-controler.php,v 1.3 2009/02/03 14:24:43 sebastien Exp $
+// $Id: page-controler.php,v 1.4 2009/02/09 10:01:43 sebastien Exp $
 
 /**
   * PHP page : Receive pages updates
@@ -180,6 +180,18 @@ switch ($action) {
 		if ($cms_page->getLock()) {
 			$cms_page->unlock();
 			$cms_page->writeToPersistence();
+		}
+	break;
+	case 'regenerate':
+		if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) && $cms_page->getPublication() == RESOURCE_PUBLICATION_PUBLIC) {
+			$cms_page->regenerate(true);
+			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
+			//reload public tab
+			$jscontent = '
+			if (Automne.tabPanels.getActiveTab().id == \'public\') {
+				Automne.tabPanels.getActiveTab().reload();
+			}';
+			$view->addJavascript($jscontent);
 		}
 	break;
 	case "cancel_draft":
@@ -357,7 +369,7 @@ switch ($action) {
 						$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
 						$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : update template, value : '.$value);
 					} else {
-						$edited = RESOURCE_EDITION_BASEDATA;
+						//$edited = RESOURCE_EDITION_BASEDATA;
 						$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 					}
 				} else {

@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: module.php,v 1.2 2009/02/03 14:27:04 sebastien Exp $
+// $Id: module.php,v 1.3 2009/02/09 10:03:27 sebastien Exp $
 
 /**
   * Class CMS_module
@@ -700,11 +700,11 @@ class CMS_module extends CMS_grandFather
 		$return = array();
 		switch ($treatmentMode) {
 			case MODULE_TREATMENT_CLIENTSPACE_TAGS :
-				if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
+				/*if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
 					$return["atm-meta-tags"] = array("selfClosed" => true, "parameters" => array());
 					$return["atm-css-tags"] = array("selfClosed" => true, "parameters" => array());
 					$return["atm-js-tags"] = array("selfClosed" => true, "parameters" => array());
-				}
+				}*/
 			break;
 			case MODULE_TREATMENT_BLOCK_TAGS :
 				$return = array (
@@ -760,7 +760,7 @@ class CMS_module extends CMS_grandFather
 				$return = $block->getData($treatmentParameters["language"], $treatmentParameters["page"], $treatmentParameters["clientSpace"], $treatedObject, $visualizationMode);
 				return $return;
 			break;
-			case MODULE_TREATMENT_CLIENTSPACE_TAGS :
+			//case MODULE_TREATMENT_CLIENTSPACE_TAGS :
 				
 			case MODULE_TREATMENT_PAGECONTENT_TAGS :
 				/*if (!is_a($treatedObject,"CMS_page")) {

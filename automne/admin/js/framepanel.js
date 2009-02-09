@@ -314,6 +314,10 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 	},
 	//function called after each load of a new page frame
 	loadFrameInfos: function() {
+		if (this.id != 'public' && this.getEl().isMasked()) {
+			//remove mask on frame
+			this.getEl().unmask();
+		}
 		if (this.disabled) {
 			this.setDisabled(false);
 		}
@@ -359,8 +363,13 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 		if (this.loadFrameDocument()) {
 			if (this.frameDocument) {
 				pr('Reload '+ this.id +' tab => Get : '+this.frameURL);
+				//set mask on frame during reload
+				if (this.id != 'public') {
+					this.getEl().mask(Automne.locales.loading);
+				}
 				this.frameDocument.location = this.frameURL;
 				this.forceReload = false;
+				
 			}
 		}
 	},

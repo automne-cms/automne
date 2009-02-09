@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: page.php,v 1.2 2008/12/18 10:41:04 sebastien Exp $
+// $Id: page.php,v 1.3 2009/02/09 10:04:18 sebastien Exp $
 
 /**
   * Class CMS_page
@@ -223,6 +223,7 @@ class CMS_page extends CMS_resource
 	  * Sets the page template
 	  *
 	  * @param integer $templateID The DB ID of the new template to set
+	  * @param CMS_profile_user $user the user who did the edition (if not set, the edition is not considered)
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
@@ -232,7 +233,10 @@ class CMS_page extends CMS_resource
 			$this->raiseError("TemplateID is not a positive integer");
 			return false;
 		}
-		
+		//comment this because this is not submitted to validation...
+		/*if ($user) {
+			$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
+		}*/
 		$this->_templateID = $templateID;
 		return true;
 	}

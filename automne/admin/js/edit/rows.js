@@ -90,14 +90,20 @@ Ext.extend(Automne.row, Ext.util.Observable, {
 		this.blocks[block.id] = block;
 		this.blocks[block.id].setRow(this);
 	},
+	hasElement: function(el) {
+		if (this.elements.indexOf(el) !== -1) {
+			return true;
+		}
+		return false;
+	},
 	getBox: function() {
 		//init values
 		this.size = {width:0, height:0};
 		this.position = {x:0, y:0};
-		//then add size of each blocks into rows
-		for(var blockId in this.blocks) {
-			//get row size and position
-			var box = this.blocks[blockId].getBox();
+		//then add size of each elements into rows
+		this.elements.each(function(el) {
+			//get el size and position
+			var box = el.getBox();
 			//x
 			if (!this.position.x || box.x < this.position.x) {
 				this.position.x = parseInt(box.x, 10);
@@ -114,7 +120,7 @@ Ext.extend(Automne.row, Ext.util.Observable, {
 			if (!this.size.height || (box.height + (box.y - this.position.y)) > this.size.height) {
 				this.size.height = parseInt(box.height + (box.y - this.position.y), 10);
 			}
-		}
+		}, this);
 		return {x:this.position.x, y:this.position.y, width:this.size.width, height:this.size.height};
 	},
 	onMouseIn : function () {
@@ -237,6 +243,7 @@ Ext.extend(Automne.row, Ext.util.Observable, {
 		}
 	},
 	createControls : function() {
+		//beware here, orders matters
 		this.controls['del'] 	= this.mask.top.insertHtml('beforeEnd','<span class="atm-row-control atm-row-control-del"></span>', true);
 		this.controls['drag'] 	= this.mask.top.insertHtml('beforeEnd','<span class="atm-row-drag atm-row-control-drag"></span>', true);
 		this.controls['top'] 	= this.mask.top.insertHtml('beforeEnd','<span class="atm-row-control atm-row-control-top"></span>', true);
@@ -319,6 +326,7 @@ Ext.extend(Automne.row, Ext.util.Observable, {
 	},
 	addControls : function() {
 		var position = this.mask.top.getWidth() - 3;
+		var hasMoveCtrl = false;
 		for (var controlId in this.controls) {
 			var ctrl = this.controls[controlId];
 			//check for each controls if they should be visible or not
@@ -329,21 +337,27 @@ Ext.extend(Automne.row, Ext.util.Observable, {
 				break;
 				case 'top':
 					visible = this.csOrder > 1;
+					hasMoveCtrl = visible ? true : hasMoveCtrl;
 				break;
 				case 'bottom':
 					visible = (this.csOrder + 2 < this.clientspace.getRowsNb());
+					hasMoveCtrl = visible ? true : hasMoveCtrl;
 				break;
 				case 'left':
 					visible = this.clientspace.getBrother('left') ? true : false;
+					hasMoveCtrl = visible ? true : hasMoveCtrl;
 				break;
 				case 'right':
 					visible = this.clientspace.getBrother('right') ? true : false;
+					hasMoveCtrl = visible ? true : hasMoveCtrl;
 				break;
 				case 'up':
 					visible = (this.csOrder > 0 || this.clientspace.getBrother('top')) ? true : false;
+					hasMoveCtrl = visible ? true : hasMoveCtrl;
 				break;
 				case 'down':
 					visible = ((this.csOrder + 1 < this.clientspace.getRowsNb()) || this.clientspace.getBrother('bottom')) ? true : false;
+					hasMoveCtrl = visible ? true : hasMoveCtrl;
 				break;
 				case 'drag':
 					visible = true;
@@ -357,6 +371,10 @@ Ext.extend(Automne.row, Ext.util.Observable, {
 			} else if (visible && controlId == 'del') {
 				ctrl.dom.style.left = '3px';
 			}
+		}
+		//remove drag if their is no others move controls
+		if (!hasMoveCtrl) {
+			this.controls['drag'].setVisible(false);
 		}
 	},
 	onDel: function() {

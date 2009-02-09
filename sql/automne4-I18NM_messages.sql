@@ -1,4 +1,4 @@
-# $Id: automne4-I18NM_messages.sql,v 1.3 2009/02/03 14:35:04 sebastien Exp $
+# $Id: automne4-I18NM_messages.sql,v 1.4 2009/02/09 10:05:47 sebastien Exp $
 #
 # Suppression avant mise à  jour du Contenu de la table `I18NM_messages` pour le module standard
 #
@@ -655,7 +655,7 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (848, 'standar
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (849, 'standard', NOW(), 'Les rangées utilisent du code XHTML associé à  des tags Automne spécifiques à  votre site %s. <br /> Attention, Automne n\'utilisera pas le code non conforme à  l\'XHTML.', 'Style-rows use XHTML in conjunction with Automne tags specific to your site %s.<br />Attention, Automne will not use non-conformed xHTML.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (850, 'standard', NOW(), 'Vers le haut', 'Move up');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (851, 'standard', NOW(), 'Vers le bas', 'Move down');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (852, 'standard', NOW(), 'Modification des zones modifiables du modèle %s', 'Modification of default content management zones for template %s');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (852, 'standard', NOW(), 'Modification des rangées par défaut du modèle %s', 'Modification of default rows for template %s');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (853, 'standard', NOW(), 'Nom', 'Name');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (854, 'standard', NOW(), 'Supprimer', 'Delete');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (855, 'standard', NOW(), 'Insérer la rangée', 'Add Style-row');

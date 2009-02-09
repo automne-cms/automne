@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-properties.php,v 1.2 2008/12/18 10:36:43 sebastien Exp $
+// $Id: page-properties.php,v 1.3 2009/02/09 10:01:43 sebastien Exp $
 
 /**
   * PHP page : Load page properties window.
@@ -515,7 +515,7 @@ if ($editable) {
 		forceSelection:		true,
 		mode:				'remote',
 		valueField:			'id',
-		displayField:		'name',
+		displayField:		'label',
 		value:				'{$pageTplLabel}',
 		triggerAction: 		'all',
 		store:				new Automne.JsonStore({

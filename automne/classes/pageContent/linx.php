@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: linx.php,v 1.3 2009/02/03 14:28:07 sebastien Exp $
+// $Id: linx.php,v 1.4 2009/02/09 10:04:06 sebastien Exp $
 
 /**
   * Class CMS_linx
@@ -190,8 +190,6 @@ class CMS_linx extends CMS_grandFather
 			if ($default) {
 				$this->_displays[] = $default;
 			}
-			//computes the targets (from selection)
-			$this->_targets = $this->_buildTargets();
 		}
 	}
 
@@ -203,6 +201,9 @@ class CMS_linx extends CMS_grandFather
 	  */
 	function getOutput($register = false)
 	{
+		//computes the targets (from selection)
+		$this->_targets = $this->_buildTargets();
+		//set output
 		$output = '';
 		if ($this->_type == 'recursivelinks') {
 			$root = CMS_tree::getRoot();
@@ -234,7 +235,7 @@ class CMS_linx extends CMS_grandFather
 			}
 		}
 		if ($register) {
-			$this->register();
+			$this->_register();
 		}
 		//append args to generated linx code
 		if ($this->_args) {
@@ -274,9 +275,9 @@ class CMS_linx extends CMS_grandFather
 	  * Register the linx in the surveillance tables
 	  *
 	  * @return string The HTML
-	  * @access public
+	  * @access private
 	  */
-	function register()
+	protected function _register()
 	{
 		//register "real" links
 		if (is_array($this->_targets) && $this->_targets) {

@@ -1396,6 +1396,10 @@ td.x-grid3-hd-over, td.sort-desc, td.sort-asc, td.x-grid3-hd-menu-open{
 	background-image:				url(/automne/admin/img/pictos/pictos.png);
 	background-position:			0px -388px;
 }
+.x-menu-item .atm-pic-scripts{
+	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-position:			0px -964px;
+}
 .x-menu-item .x-btn-center .atm-pic-cancel,
 .atm-server .atm-pic-cancel{
 	background-image:				url(/automne/admin/img/pictos/pictos.png);

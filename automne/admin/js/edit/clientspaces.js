@@ -78,6 +78,7 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 	moveRowAt: function(row, newIndex) {
 		//get the current row at queried index
 		var oldPositionRow = this.getRow(newIndex);
+		var sameCS = row.clientspace.getId() == this.getId();
 		//check if returned row is before or after the row to move
 		if (!oldPositionRow || (oldPositionRow.csOrder > row.csOrder && row.clientspace.getId() == this.getId())) { //insert after
 			//if no row at specified index, get last row of CS and put row after
@@ -88,10 +89,10 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 			//get the element following the last of the old row
 			var el = this.getElNextRow(oldPositionRow);
 			if (el) {
-				this.moveElsBeforeEl(row.elements, el, row.getBox());
+				this.moveElsBeforeEl(row, el, sameCS);
 			}
 		} else { //insert before
-			this.moveElsBeforeEl(row.elements, oldPositionRow.elements.first(), row.getBox());
+			this.moveElsBeforeEl(row, oldPositionRow.elements.first(), sameCS);
 		}
 		//if row is not from this current CS, add it
 		if(row.clientspace.getId() != this.getId()) {
@@ -144,20 +145,34 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 		}
 		return el;
 	},
-	moveElsBeforeEl: function(elsToMove, targetEl, elsBox) {
+	moveElsBeforeEl: function(rowToMove, targetEl, sameCS) {
 		//stop CS update and row mask
 		Automne.content.stopUpdate();
 		Automne.content.stopRowsMask();
+		
+		var elsToMove = rowToMove.elements;
+		var elsBox = rowToMove.getBox();
+		
 		var animateMoveStatus = (parent.Ext.getCmp('editAnimations')) ? parent.Ext.getCmp('editAnimations').checked : true;
 		if (animateMoveStatus) {
-			var positionFrom = elsToMove.first().getXY();
-			var positionTo = targetEl.getBox();
+			var positionFrom = elsBox;
+			//try to get the row of the target el to get more accurate final position
+			var elRow;
+			if (elRow = Automne.content.getRowForEl(targetEl)) {
+				var positionTo = elRow.getBox();
+			} else {
+				var positionTo = targetEl.getBox();
+			}
+			//if row is moved in the same CS, keep x position of the row (this is a simple translation)
+			if (sameCS) {
+				positionTo.x = elsBox.x;
+			}
 			var moveOffset = {x:0, y:0};
-			moveOffset.x = (positionFrom[0] < positionTo.x) ? positionTo.x - positionFrom[0] : (positionFrom[0] > positionTo.x) ? - (positionFrom[0] - positionTo.x) : 0;
-			if (positionFrom[1] < positionTo.y) {
-				moveOffset.y = (moveOffset.x == 0) ? positionTo.y - positionFrom[1] - elsBox.height : positionTo.y - positionFrom[1];
-			} else if (positionFrom[1] > positionTo.y) {
-				moveOffset.y = - (positionFrom[1] - positionTo.y);
+			moveOffset.x = (positionFrom.x < positionTo.x) ? positionTo.x - positionFrom.x : (positionFrom.x > positionTo.x) ? - (positionFrom.x - positionTo.x) : 0;
+			if (positionFrom.y < positionTo.y) {
+				moveOffset.y = (moveOffset.x == 0) ? positionTo.y - positionFrom.y - elsBox.height : positionTo.y - positionFrom.y;
+			} else if (positionFrom.y > positionTo.y) {
+				moveOffset.y = - (positionFrom.y - positionTo.y);
 			} else {
 				moveOffset.y = 0
 			}
@@ -421,6 +436,7 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 				zone.addClass('atm-drop-zone-hover');
 				parent.Ext.get('selectedRow').update(Automne.locales.csSelectRowAdd);
 				Automne.message.show(Automne.locales.csSelectRow);
+				parent.Ext.getCmp('addRowCombo').show();
 				parent.Ext.getCmp('addSelectedRow').show();
 				//add new row
 				this.cs.getNewRow(this.csIndex);
@@ -444,8 +460,7 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 		});
 		combo.show();
 	},
-	addNewRow: function(response, options) {
-		var content = response.responseXML.getElementsByTagName('content').item(0).firstChild.nodeValue;
+	addNewRow: function(response, options, content, jsFiles, cssFiles) {
 		var newIndex = options.params.index
 		//get the current row at queried index
 		var oldPositionRow = this.getRow(newIndex);
@@ -461,54 +476,101 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 		} else { //insert before
 			var el = oldPositionRow.elements.first();
 		}
-		//insert row HTML at specified index
-		el.insertHtml('beforebegin',Ext.util.Format.stripScripts(content));
-		//load scripts in response
-		var re = /(?:<script([^>]*)?>)((\n|\r|.)*?)(?:<\/script>)/ig;
-		var atmRowsDatas = {};
-		var atmBlocksDatas = {};
-		while(match = re.exec(content)){
-			if(match[2] && match[2].length > 0){
-				eval(match[2]);
+		//function to append the new row
+		var createRow = function() {
+			//insert row HTML at specified index
+			el.insertHtml('beforebegin',Ext.util.Format.stripScripts(content));
+			//load scripts in response
+			var re = /(?:<script([^>]*)?>)((\n|\r|.)*?)(?:<\/script>)/ig;
+			var atmRowsDatas = {};
+			var atmBlocksDatas = {};
+			while(match = re.exec(content)){
+				if(match[2] && match[2].length > 0){
+					eval(match[2]);
+				}
 			}
-		}
-		//add row to CS
-		for(var rowId in atmRowsDatas) {
-			var row = new Automne.row(atmRowsDatas[rowId]);
-			this.addRow(row);
-		}
-		//instanciate all blocks objects
-		var blocks = {};
-		for (var blockId in atmBlocksDatas) {
-			blocks[blockId] = eval('new '+atmBlocksDatas[blockId].jsBlockClass+'(atmBlocksDatas[blockId])');
-			//add block to row
-			row.addBlock(blocks[blockId]);
-		}
-		//if no change in row index, no need to redo enumeration
-		if(row.csOrder == newIndex) {
-			return;
-		}
-		//redo rows index enumeration
-		var oldIndex = row.csOrder;
-		var rows = [];
-		var i = 0;
-		var curIndex = 0;
-		while(this.rows[i] || newIndex >= curIndex) {
-			if (i != oldIndex) {
-				curIndex = rows.length;
-				if (curIndex == newIndex) {
-					rows[curIndex] = this.rows[oldIndex];
-					rows[curIndex].setCSOrder(curIndex);
+			//add row to CS
+			for(var rowId in atmRowsDatas) {
+				var row = new Automne.row(atmRowsDatas[rowId]);
+				this.addRow(row);
+			}
+			//instanciate all blocks objects
+			var blocks = {};
+			for (var blockId in atmBlocksDatas) {
+				blocks[blockId] = eval('new '+atmBlocksDatas[blockId].jsBlockClass+'(atmBlocksDatas[blockId])');
+				//add block to row
+				row.addBlock(blocks[blockId]);
+			}
+			//if no change in row index, no need to redo enumeration
+			if(row.csOrder == newIndex) {
+				return;
+			}
+			//redo rows index enumeration
+			var oldIndex = row.csOrder;
+			var rows = [];
+			var i = 0;
+			var curIndex = 0;
+			while(this.rows[i] || newIndex >= curIndex) {
+				if (i != oldIndex) {
 					curIndex = rows.length;
+					if (curIndex == newIndex) {
+						rows[curIndex] = this.rows[oldIndex];
+						rows[curIndex].setCSOrder(curIndex);
+						curIndex = rows.length;
+					}
+					if (this.rows[i]) {
+						rows[curIndex] = this.rows[i];
+						rows[curIndex].setCSOrder(curIndex);
+					}
 				}
-				if (this.rows[i]) {
-					rows[curIndex] = this.rows[i];
-					rows[curIndex].setCSOrder(curIndex);
+				i++;
+			}
+			this.rows = rows;
+		}
+		
+		//check if we need to append some css files
+		if (cssFiles.files) {
+			var documentCSS = Ext.select('link', true, this.document);
+			var cssFilesToAppend = [];
+			for(var i = 0, jslen = cssFiles.files.length; i < jslen; i++) {
+				var exists = false;
+				documentCSS.each(function(link) {
+					if (link.dom.rel && link.dom.rel=='stylesheet' && link.dom.href.indexOf(cssFiles.files[i]) !== -1) {
+						exists = true;
+					}
+				}, this);
+				if (!exists) {
+					cssFilesToAppend.push(cssFiles.files[i]);
 				}
 			}
-			i++;
+			if (cssFilesToAppend.length) {
+				el.insertHtml('beforebegin','<link rel="stylesheet" type="text/css" href="'+ cssFiles.manager +'&amp;files='+ cssFilesToAppend.toString() +'" media="screen" />');
+			}
 		}
-		this.rows = rows;
+		//check if we need to append some js files
+		if (jsFiles.files) {
+			var documentJS = Ext.select('script', true, this.document);
+			var jsFilesToAppend = [];
+			for(var i = 0, jslen = jsFiles.files.length; i < jslen; i++) {
+				var exists = false;
+				documentJS.each(function(script) {
+					if (script.dom.src && script.dom.src.indexOf(jsFiles.files[i]) !== -1) {
+						exists = true;
+					}
+				}, this);
+				if (!exists) {
+					jsFilesToAppend.push(jsFiles.files[i]);
+				}
+			}
+			if (jsFilesToAppend.length) {
+				var scriptEl = el.insertHtml('beforebegin','<script type="text/javascript" src="'+ jsFiles.manager +'&amp;files='+ jsFilesToAppend.toString() +'"></script>', true);
+				scriptEl.on('load', createRow, this);
+			} else {
+				createRow.call(this);
+			}
+		} else {
+			createRow.call(this);
+		}
 	},
 	removeListeners: function() {
 		//remove listeners on all rows elements

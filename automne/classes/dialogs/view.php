@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: view.php,v 1.3 2009/02/03 14:26:45 sebastien Exp $
+// $Id: view.php,v 1.4 2009/02/09 10:03:05 sebastien Exp $
 
 /**
   * Class CMS_view
@@ -97,7 +97,7 @@ class CMS_view extends CMS_grandFather
 		if ($jsarray) {
 			$return .= '<script src="'.CMS_view::getJSManagerURL().'&amp;files='.implode(',',$jsarray).'" type="text/javascript"></script>'."\n";
 		}
-		if (isset($this) && isset($this->_jscontent)) {
+		if (isset($this) && isset($this->_jscontent) && $this->_jscontent) {
 			$return .= "\n".'<script type="text/javascript">'.$this->_jscontent.'</script>'."\n";
 		}
 		return $return;

@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: pagetemplate.php,v 1.2 2008/12/18 10:41:04 sebastien Exp $
+// $Id: pagetemplate.php,v 1.3 2009/02/09 10:04:18 sebastien Exp $
 
 /**
   * Class CMS_pageTemplate
@@ -829,7 +829,6 @@ class CMS_pageTemplate extends CMS_grandFather
 		}
 		$definition = $tpl->readContent();
 		//we need to remove doctype if any
-		//$definition = preg_replace(array('#^(.*)<html#sU', '#</html>(.*)$#sU'), array('<html', '</html>'), $definition);
 		$definition = preg_replace('#<!doctype[^>]*>#siU', '', $definition);
 		$modulesTreatment->setDefinition($definition);
 		
@@ -982,58 +981,6 @@ class CMS_pageTemplate extends CMS_grandFather
 			return false;
 		} elseif (!$this->_id) {
 			$this->_id = $q->getLastInsertedID();
-		}
-		return true;
-	}
-	
-	/**
-	  * Verify Template separation. If not correctly done, make it.
-	  *
-	  * @return boolean true on success, false on failure
-	  * @access public
-	  */
-	function checkTemplateSeparation()
-	{
-		if (!$this->_private) {
-			$sql = "
-				select
-					id_pag
-				from
-					pages
-				where
-					template_pag='".$this->_id."'
-			";
-			$q = new CMS_query($sql);
-			$pagesToSeparate = array();
-			while ($data = $q->getArray()) {
-				$pagesToSeparate[] = $data["id_pag"];
-			}
-			
-			//if separation needed, proceed
-			if (is_array($pagesToSeparate) && $pagesToSeparate) {
-				foreach ($pagesToSeparate as $apageID) {
-					$duplicateTemplate = CMS_pageTemplatesCatalog::getCloneFromID($this->_id, false, true);
-					
-					if (!is_a($duplicateTemplate, "CMS_pageTemplate")) {
-						$this->raiseError("Template duplication error on template : ".$this->_id." for page : ".$apageID);
-						return false;
-					} else {
-						$duplicateTemplate->setPrivate(true);
-						$duplicateTemplate->writeToPersistence();
-						//update page record
-						$sql = "
-							update
-								pages
-							set
-								template_pag = '" . $duplicateTemplate->getID() . "'
-							where
-								id_pag = '" . $apageID . "'
-						";
-						$q_update = new CMS_query($sql);
-					}
-				}
-			}
-			return true;
 		}
 		return true;
 	}

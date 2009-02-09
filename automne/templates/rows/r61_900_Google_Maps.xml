@@ -27,26 +27,29 @@ END;
 			$mapId = 'map-'.md5(rand());
 			echo '
 			<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key='.GOOGLE_MAPS_KEY.'" type="text/javascript"></script>
-			<p id="'.$mapId.'" style="width:'.$mapWidth.'px; height:'.$mapHeight.'px"></p>
+			<p id="'.$mapId.'" style="width:'.$mapWidth.'px; height:'.$mapHeight.'px">Saisissez une adresse à afficher.</p>
 		    <script type="text/javascript">
 		    (function(){
-				var map = new GMap2(document.getElementById("'.$mapId.'"));
-				map.addControl(new GSmallMapControl());
-			    var geocoder = new GClientGeocoder();
-				geocoder.getLatLng(
-					\''.sensitiveIO::sanitizeJSString($address,"'").'\',
-					function(point) {
-						if (point) {
-							map.setCenter(point, '.$zoom.');
-							map.setMapType(G_'.$vue.'_MAP);
-							var marker = new GMarker(point);
-							map.addOverlay(marker);
-							GEvent.addListener(marker, "click", function() {
-								marker.openInfoWindowHtml(\'<div style="width: 210px; padding-right: 10px">'.sensitiveIO::sanitizeJSString($address,"'").'<\/div>\');
-							});
+				var div = document.getElementById("'.$mapId.'");
+				if (div && typeof GMap2 != \'undefined\') {
+					var map = new GMap2(div);
+					map.addControl(new GSmallMapControl());
+				    var geocoder = new GClientGeocoder();
+					geocoder.getLatLng(
+						\''.sensitiveIO::sanitizeJSString($address,"'").'\',
+						function(point) {
+							if (point) {
+								map.setCenter(point, '.$zoom.');
+								map.setMapType(G_'.$vue.'_MAP);
+								var marker = new GMarker(point);
+								map.addOverlay(marker);
+								GEvent.addListener(marker, "click", function() {
+									marker.openInfoWindowHtml(\'<div style="width: 210px; padding-right: 10px">'.sensitiveIO::sanitizeJSString($address,"'").'<\/div>\');
+								});
+							}
 						}
-					}
-				);
+					);
+				}
 			})();
 			</script>
 		';

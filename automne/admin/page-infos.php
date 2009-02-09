@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-infos.php,v 1.3 2009/02/03 14:24:44 sebastien Exp $
+// $Id: page-infos.php,v 1.4 2009/02/09 10:01:43 sebastien Exp $
 
 /**
   * PHP page : Load page infos
@@ -617,6 +617,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 				- cancel draft 
 				- submit draft to validation
 				- validate
+				- regenerate
 				*/
 				$panelTitle = $cms_language->getMessage(MESSAGE_PAGE_ACTION);
 				$panelPicto = 'atm-pic-big-action';
@@ -892,6 +893,24 @@ foreach ($userPanels as $panel => $panelStatus) {
 											resource:			'".$cms_page->getID()."',
 											module:				'".MOD_STANDARD_CODENAME."',
 											evalMessage:		false
+										});
+									}
+								}));";
+							}
+							if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) && $cms_page->getPublication() == RESOURCE_PUBLICATION_PUBLIC) {
+								//regenerate
+								$panelContent .= "
+								menu.addSeparator();
+								menu.addItem(new Ext.menu.Item({
+									text: '<span ext:qtip=\"Permet de recréer entièrement la page visible sur le site.\">Régénérer la page</span>',
+									iconCls: 'atm-pic-scripts',
+									handler: function () {
+										Automne.server.call({
+											url:				'page-controler.php',
+											params: 			{
+												currentPage:		'".$cms_page->getID()."',
+												action:				'regenerate'
+											}
 										});
 									}
 								}));";
