@@ -1,7 +1,7 @@
-<?php //Generated on Fri, 28 Nov 2008 15:56:43 +0100 by Automne (TM) 4.0.0a1
+<?php //Generated on Mon, 09 Feb 2009 12:09:22 +0100 by Automne (TM) 4.0.0a3
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: http://localhost/web/fr/print-9-contact.php');
+	header('Location: http://127.0.0.1/web/fr/print-9-contact.php');
 	exit;
 }
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
@@ -31,7 +31,7 @@ $mod_cms_forms["module"] = 'cms_forms';
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: print-9.php,v 1.2 2008/11/28 14:54:14 sebastien Exp $
+// $Id: print-9.php,v 1.3 2009/02/09 11:07:34 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -44,6 +44,8 @@ $mod_cms_forms["module"] = 'cms_forms';
   */
 
 //start session (needed for form validation count)
+//Set session name
+session_name('AutomneSession');
 @session_start();
 
 //Requirements
@@ -89,6 +91,8 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 				//check for valid session / logout attempt / and autologin
 				if (!is_a($_SESSION["cms_context"], 'CMS_context') || $_REQUEST["logout"] == 'true') {
 					@session_destroy();
+					//Set session name
+					session_name('AutomneSession');
 					@session_start();
 					if ($_REQUEST["logout"] != 'true' && CMS_context::autoLoginSucceeded()) {
 						//declare form ok action
@@ -519,10 +523,15 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 <h3>
 
 		
+
 &raquo;
+
+
 &nbsp;
+
 Contact
 		
+
 
 </h3>
 
@@ -550,7 +559,7 @@ $mod_cms_forms["module"] = 'cms_forms';
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: print-9.php,v 1.2 2008/11/28 14:54:14 sebastien Exp $
+// $Id: print-9.php,v 1.3 2009/02/09 11:07:34 sebastien Exp $
 
 /**
   * Template CMS_forms_formular
@@ -622,15 +631,16 @@ if ($form->getID() && $form->isPublic()) {
 <hr />
 <div align="center">
 	<small>
-		Dernière mise à jour le 07/11/2008<br />
 		
-				Page  "Contact" (http://localhost/web/fr/9-contact.php)
+		
+				Page  "Contact" (http://127.0.0.1/web/fr/9-contact.php)
 				
+
 <br />
 		Tiré du site http://<?php echo $_SERVER["HTTP_HOST"];   ?>
 	</small>
 </div>
 <script language="JavaScript">window.print();</script>
-<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat(); if (VIEW_SQL && isset($_SESSION["cms_context"]) && is_object($_SESSION["cms_context"])) {save_stat();}}  ?>
+<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat();}  ?>
 </body>
 </html>

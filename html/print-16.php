@@ -1,7 +1,7 @@
-<?php //Generated on Fri, 28 Nov 2008 15:56:52 +0100 by Automne (TM) 4.0.0a1
+<?php //Generated on Mon, 09 Feb 2009 12:09:30 +0100 by Automne (TM) 4.0.0a3
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: http://localhost/web/fr/print-16-fonctions-annexes.php');
+	header('Location: http://127.0.0.1/web/fr/print-16-fonctions-annexes.php');
 	exit;
 }
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
@@ -17,16 +17,25 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 <h3>
 
 		
+
 &raquo;
+
+
 &nbsp;
+
 Fonctionnalités
 		
 
 		
+
 &raquo;
+
+
 &nbsp;
+
 Fonctions annexes
 		
+
 
 </h3>
 
@@ -34,21 +43,22 @@ Fonctions annexes
 
 	
 	
-		<div class="text"><div class="text"><p>Dans cette page doit se trouver des explications sur :</p><ul><li>Gestion Multi-sites</li><li>S&eacute;curiser l'acc&egrave;s au contenu cot&eacute; public des sites (Intranet / Extranet)</li><li>Connexion LDAP</li><li>SSO (single Sign On)</li></ul></div></div>
+		<div class="text"><p>Dans cette page doit se trouver des explications sur :</p> <ul>     <li>Gestion Multi-sites</li>     <li>S&eacute;curiser l'acc&egrave;s au contenu cot&eacute; public des sites (Intranet / Extranet)</li>     <li>Connexion LDAP</li>     <li>SSO (single Sign On)</li> </ul></div>
 	
 <br />
 <hr />
 <div align="center">
 	<small>
-		Dernière mise à jour le 14/11/2008<br />
 		
-				Page  "Fonctions annexes" (http://localhost/web/fr/16-fonctions-annexes.php)
+		
+				Page  "Fonctions annexes" (http://127.0.0.1/web/fr/16-fonctions-annexes.php)
 				
+
 <br />
 		Tiré du site http://<?php echo $_SERVER["HTTP_HOST"];   ?>
 	</small>
 </div>
 <script language="JavaScript">window.print();</script>
-<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat(); if (VIEW_SQL && isset($_SESSION["cms_context"]) && is_object($_SESSION["cms_context"])) {save_stat();}}  ?>
+<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat();}  ?>
 </body>
 </html>

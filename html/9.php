@@ -1,7 +1,7 @@
-<?php //Generated on Fri, 28 Nov 2008 15:56:43 +0100 by Automne (TM) 4.0.0a1
+<?php //Generated on Mon, 09 Feb 2009 12:09:22 +0100 by Automne (TM) 4.0.0a3
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: http://localhost/web/fr/9-contact.php');
+	header('Location: http://127.0.0.1/web/fr/9-contact.php');
 	exit;
 }
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
@@ -31,7 +31,7 @@ $mod_cms_forms["module"] = 'cms_forms';
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 9.php,v 1.2 2008/11/28 14:54:13 sebastien Exp $
+// $Id: 9.php,v 1.3 2009/02/09 11:07:33 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -44,6 +44,8 @@ $mod_cms_forms["module"] = 'cms_forms';
   */
 
 //start session (needed for form validation count)
+//Set session name
+session_name('AutomneSession');
 @session_start();
 
 //Requirements
@@ -89,6 +91,8 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 				//check for valid session / logout attempt / and autologin
 				if (!is_a($_SESSION["cms_context"], 'CMS_context') || $_REQUEST["logout"] == 'true') {
 					@session_destroy();
+					//Set session name
+					session_name('AutomneSession');
 					@session_start();
 					if ($_REQUEST["logout"] != 'true' && CMS_context::autoLoginSucceeded()) {
 						//declare form ok action
@@ -519,10 +523,10 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 		<![endif]-->
 		<?php echo CMS_view::getJavascript(array('/js/sifr.js','/js/common.js','/js/CMS_functions.js'));  ?>
 
-		<link rel="icon" type="image/x-icon" href="http://localhost/favicon.ico" />
+		<link rel="icon" type="image/x-icon" href="http://127.0.0.1/favicon.ico" />
 	<meta name="language" content="fr" />
 	<meta name="generator" content="Automne (TM)" />
-	<meta name="identifier-url" content="http://localhost" />
+	<meta name="identifier-url" content="http://127.0.0.1" />
 	<!-- load the style of cms_forms module -->
 	<link rel="stylesheet" type="text/css" href="/css/modules/cms_forms.css" />
 
@@ -533,26 +537,33 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 				<div id="header">
 					
 								
-<a id="lienAccueil" href="http://localhost/web/fr/2-accueil.php" title="Retour à l'accueil">Retour à l'accueil</a>
+
+<a id="lienAccueil" href="http://127.0.0.1/web/fr/2-accueil.php" title="Retour à l'accueil">Retour à l'accueil</a>
+
 
 							
+
 
 				</div>
 				<div id="backgroundBottomContainer">
 					<div id="menuLeft">
-						<ul class="CMS_lvl1"><li class="CMS_lvl1 CMS_open "><a class="CMS_lvl1" href="http://localhost/web/fr/2-accueil.php">Accueil</a><ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_nosub "><a class="CMS_lvl2" href="http://localhost/web/fr/3-presentation.php">Présentation</a></li>
-<li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://localhost/web/fr/4-fonctionnalites.php">Fonctionnalités</a></li>
-<li class="CMS_lvl2 CMS_nosub "><a class="CMS_lvl2" href="http://localhost/web/fr/5-actualite.php">Actualités</a></li>
-<li class="CMS_lvl2 CMS_nosub "><a class="CMS_lvl2" href="http://localhost/web/fr/6-mediatheque.php">Médiathèque</a></li>
+						<ul class="CMS_lvl1"><li class="CMS_lvl1 CMS_open "><a class="CMS_lvl1" href="http://127.0.0.1/web/fr/2-accueil.php">Accueil</a><ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_nosub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/3-presentation.php">Présentation</a></li>
+<li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/4-fonctionnalites.php">Fonctionnalités</a></li>
+<li class="CMS_lvl2 CMS_nosub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/5-actualite.php">Actualités</a></li>
+<li class="CMS_lvl2 CMS_nosub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/6-mediatheque.php">Médiathèque</a></li>
 </ul>
 </li>
 </ul>
 
+
+
 					</div>
 					<div id="content" class="page9">
 						<div id="breadcrumbs">
-							<a href="http://localhost/web/fr/2-accueil.php">Accueil</a>
+							<a href="http://127.0.0.1/web/fr/2-accueil.php">Accueil</a>
+
  &gt; 
+
 
 						</div>
 						<div id="title">
@@ -583,7 +594,7 @@ $mod_cms_forms["module"] = 'cms_forms';
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 9.php,v 1.2 2008/11/28 14:54:13 sebastien Exp $
+// $Id: 9.php,v 1.3 2009/02/09 11:07:33 sebastien Exp $
 
 /**
   * Template CMS_forms_formular
@@ -661,13 +672,17 @@ if ($form->getID() && $form->isPublic()) {
 		<div id="footer">
 			<div id="menuBottom">
 				<ul>
-					<li><a href="http://localhost/web/fr/8-plan-du-site.php">Plan du site</a></li>
-<li><a href="http://localhost/web/fr/9-contact.php">Contact</a></li>
+					<li><a href="http://127.0.0.1/web/fr/8-plan-du-site.php">Plan du site</a></li>
+
+
+<li><a href="http://127.0.0.1/web/fr/9-contact.php">Contact</a></li>
+
+
 
 				</ul>
 				<div class="spacer"></div>
 			</div>
 		</div>
-	<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat(); if (VIEW_SQL && isset($_SESSION["cms_context"]) && is_object($_SESSION["cms_context"])) {save_stat();}}  ?>
+	<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat();}  ?>
 </body>
 </html>
