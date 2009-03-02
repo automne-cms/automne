@@ -17,7 +17,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: mod_cms_forms_header.php,v 1.2 2008/12/18 13:57:31 sebastien Exp $
+// $Id: mod_cms_forms_header.php,v 1.3 2009/03/02 12:56:00 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -28,32 +28,14 @@
   * @subpackage module
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
-
-//start session (needed for form validation count)
-//Set session name
-session_name('AutomneSession');
-@session_start();
-
 //Requirements
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
-require_once(PATH_PACKAGES_FS."/workflow.php");
-require_once(PATH_PACKAGES_FS."/common.php");
-require_once(PATH_MODULES_FS."/super_resource.php");
-require_once(PATH_PACKAGES_FS."/pageContent/xml2Array.php");
-require_once(PATH_PACKAGES_FS."/tree/page.php");
-require_once(PATH_PACKAGES_FS."/tree/pagetemplatescatalog.php");
-require_once(PATH_PACKAGES_FS."/tree/tree.php");
-require_once(PATH_PACKAGES_FS."/tree/website.php");
-require_once(PATH_PACKAGES_FS."/tree/websitescatalog.php");
-require_once(PATH_MODULES_FS."/module.php");
-require_once(PATH_MODULES_FS."/moduleValidation.php");
-require_once(PATH_MODULES_FS."/moduleclientspace.php");
-require_once(PATH_MODULES_FS."/standard/block.php");
-require_once(PATH_MODULES_FS."/cms_forms.php");
-require_once(PATH_PACKAGES_FS."/workflow/resource.php");
-require_once(PATH_PACKAGES_FS."/workflow/resourcestatus.php");
-require_once(PATH_PACKAGES_FS."/user.php");
-require_once(PATH_PACKAGES_FS.'/polymodFrontEnd.php');
+
+//force loading module cms_forms
+if (!class_exists('CMS_module_cms_forms')) {
+	die('Cannot find cms_forms module ...');
+}
+
 //set current page ID
 $mod_cms_forms["pageID"] = $parameters['pageID'] = '{{pageID}}';
 
@@ -64,9 +46,10 @@ function curlyBracesVars($text) {
 
 //if page has forms
 if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
-	$sender = CMS_forms_sender::getSenderForContext($_SESSION["cms_context"]);
+	$sender = CMS_forms_sender::getSenderForContext((isset($_SESSION["cms_context"]) ? $_SESSION["cms_context"] : false));
 	foreach($mod_cms_forms["usedforms"] as $formID) {
 		$form = new CMS_forms_formular($formID);
+		$cms_forms_msg[$form->getID()] = $cms_forms_error_msg[$form->getID()] = '';
 		//if form exists and is public
 		if ($form->getID() && $form->isPublic()) {
 			/***********************************************************
@@ -185,8 +168,10 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 												}
 											}
 										} else {
-											$text = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($alreadyFoldAction->getString("text"))).'";');
-											$cms_forms_msg[$form->getID()] .= nl2br($text);
+											if ($alreadyFoldAction->getString("text")) {
+												$text = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($alreadyFoldAction->getString("text"))).'";');
+												$cms_forms_msg[$form->getID()] .= nl2br($text);
+											}
 										}
 									}
 									break 2; //then quit actions loop
@@ -268,8 +253,10 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 											}
 										}
 									} else { //append message to form error message
-										$text = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($action->getString("text"))).'";');
-										$cms_forms_error_msg[$form->getID()] .= nl2br($text).'<br />';
+										if ($action->getString("text")) {
+											$text = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($action->getString("text"))).'";');
+											$cms_forms_error_msg[$form->getID()] .= nl2br($text).'<br />';
+										}
 									}
 									break 2; //then quit actions loop
 								}
@@ -414,8 +401,10 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 										} else {
 											unset($_SESSION["cms_context"]);
 											//append message to form error message
-											$text = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($action->getString("text"))).'";');
-											$cms_forms_error_msg[$form->getID()] .= nl2br($text).'<br />';
+											if ($action->getString("text")) {
+												$text = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($action->getString("text"))).'";');
+												$cms_forms_error_msg[$form->getID()] .= nl2br($text).'<br />';
+											}
 											break 2; //quit actions loop
 										}
 									} else {

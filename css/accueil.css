@@ -37,6 +37,10 @@ h2{
 	font-weight:			bold;
 	padding-bottom:			8px;
 }
+.lastNews{
+	background:				url(/img/accueil/newsBottom.gif) no-repeat 9px bottom;
+	padding-bottom:			25px;
+}
 .newsTop{
 	background:				url(/img/accueil/newsTop.gif) no-repeat left top;
 	line-height:			23px;
@@ -63,10 +67,10 @@ h2{
 	font-size:				11px;
 	float:					right;
 }
-.newsContent{
-	background:				#f2eeec url(/img/accueil/newsBottom.gif) no-repeat left bottom;
+.lastNews .newsContent{
+	background-color:		#f2eeec;
 	margin:					0  13px 0 9px;
-	padding:				20px 10px 10px 22px;
+	padding:				20px 10px 0px 22px;
 }
 .newsBottom{
 	text-align:				right;

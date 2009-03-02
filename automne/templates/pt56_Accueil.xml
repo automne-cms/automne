@@ -2,8 +2,8 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 <head>
-	<title><atm-constant name="APPLICATION_LABEL" /> : <atm-title /></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<title><atm-constant name="APPLICATION_LABEL" /> : <atm-title /></title>
 	<atm-css-tags files="/css/common.css,/css/accueil.css" media="screen" />
 	<!--[if lte IE 6]> 
 		<link rel="stylesheet" type="text/css" href="/css/ie6.css" media="screen" />

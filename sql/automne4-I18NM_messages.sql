@@ -1,4 +1,4 @@
-# $Id: automne4-I18NM_messages.sql,v 1.4 2009/02/09 10:05:47 sebastien Exp $
+# $Id: automne4-I18NM_messages.sql,v 1.5 2009/03/02 12:58:49 sebastien Exp $
 #
 # Suppression avant mise à  jour du Contenu de la table `I18NM_messages` pour le module standard
 #
@@ -58,7 +58,7 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (46, 'standard
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (47, 'standard', NOW(), 'Modification de l\'ordre des sous pages de la page :', 'Modification of sub pages order for the page :');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (48, 'standard', NOW(), 'Prévisualiser la page', 'Preview');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (49, 'standard', NOW(), 'Page en ligne', 'On line');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (50, 'standard', NOW(), 'Erreur de login, nouvel essai', 'Login error, please try again.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (50, 'standard', NOW(), 'Erreur d\'identification, veuillez réessayer ...', 'Login error, please try again...');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (51, 'standard', NOW(), 'Bienvenue sur %s', 'Welcome to %s');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (52, 'standard', NOW(), 'Identification', 'Please enter your access codes');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (53, 'standard', NOW(), 'Langue', 'Language');
@@ -837,7 +837,13 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1038, 'standa
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1039, 'standard', NOW(), 'Redirection', 'Redirection');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1040, 'standard', NOW(), 'Forcer la mise à  jour (balise Pragma en `no-cache`)', 'Force refresh setting (Pragma value) to `no-cache`');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1041, 'standard', NOW(), 'Balises meta courantes (visibles dans le code source de la page)', 'Common meta tags (visible in source code)');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1042, 'standard', NOW(), 'Valeurs : all, index, follow, noindex, nofollow', 'values : all, index, follow, noindex, nofollow');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1042, 'standard', NOW(), 'Valeurs : <strong>all, index, follow, noindex, nofollow</strong><br />
+Exemples :
+<ul>
+	<li><strong>index, follow</strong> : Je souhaite que ma page soit indexée et archivée par les moteurs de recherche et les archiveurs (comportement par défaut).</li>
+	<li><strong>index, follow, noarchive</strong> : Je souhaite que ma page soit indexée mais pas archivée par les moteurs de recherche et les archiveurs.</li>
+	<li><strong>noindex, nofollow, noarchive</strong> : Je souhaite que ma page ne soit ni indexée ni archivée par les moteurs de recherche et les archiveurs.</li>
+</ul>', 'values : all, index, follow, noindex, nofollow');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1043, 'standard', NOW(), 'Données de référencement', 'Search enging referencing content');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1044, 'standard', NOW(), 'Catégorie', 'Category');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1045, 'standard', NOW(), 'Le fichier à  télécharger dépasse les limites autorisées par ce\r\nserveur : %s.', 'This file is too big. Server limits upload to %s.');
@@ -887,7 +893,19 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1089, 'standa
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1090, 'standard', NOW(), 'Tà¢ches', 'Task');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1091, 'standard', NOW(), 'Rechercher', 'Search');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1092, 'standard', NOW(), 'Résultat', 'Result');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1093, 'standard', NOW(), 'Le navigateur utilisé est obsolète.<br />\r\nMerci de le mettre à  jour avec une version plus récente :<br />\r\n<ul>\r\n<li><a href="http://www.mozilla.com/firefox/" target="_blank">Mozilla - Firefox</a></li>\r\n<li><a href="http://www.microsoft.com/ie/" target="_blank">Internet Explorer</a></li>\r\n</ul>', 'Your navigator is obsolete...<br />\r\nPlease update it with a more recent version:<br />\r\n<ul>\r\n<li><a href="http://www.mozilla.com/firefox/" target="_blank">Mozilla - Firefox</a></li>\r\n<li><a href="http://www.microsoft.com/ie/" target="_blank">Internet Explorer</a></li>\r\n</ul>');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1093, 'standard', NOW(), 'Le navigateur utilisé est obsolète<br />et incompatible avec Automne 4.<br />
+Pour une expérience optimale d\'Automne,<br />merci d\'employer une version plus récente :<br />
+<ul>
+	<li><a href="http://www.mozilla.com/firefox/" target="_blank">Mozilla - Firefox</a></li>
+	<li><a href="http://www.apple.com/fr/safari/" target="_blank">Apple - Safari</a></li>
+	<li><a href="http://www.microsoft.com/ie/" target="_blank">Microsoft - Internet Explorer</a></li>
+</ul>', 'Your navigator is obsolete...<br />
+Please use a more recent version:<br />
+<ul>
+	<li><a href="http://www.mozilla.com/firefox/" target="_blank">Mozilla - Firefox</a></li>
+	<li><a href="http://www.apple.com/safari/" target="_blank">Apple - Safari</a></li>
+	<li><a href="http://www.microsoft.com/ie/" target="_blank">Microsoft - Internet Explorer</a></li>
+</ul>');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1095, 'standard', NOW(), 'Remplacer le modèle de la page copiée par', 'Replace template?');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1096, 'standard', NOW(), '[Impossible de remplacer le modèle, aucune correspondance trouvée]', '[Impossible to replace template, no match found]');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1097, 'standard', NOW(), 'Annuler les modifications des propriétés de la page \'%s\' ?', 'Confirm cancelling property changes for page \'%s\' ?');

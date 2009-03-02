@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: jsmanager.php,v 1.2 2009/02/03 14:34:29 sebastien Exp $
+// $Id: jsmanager.php,v 1.3 2009/03/02 12:58:18 sebastien Exp $
 
 /**
   * Javascript manager
@@ -48,9 +48,7 @@ if (isset($_GET['files'])) {
 				$jsfiles [] = PATH_ADMIN_FS.'/js/tree.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/combobox.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/json.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/editor.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/menu.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/linkfield.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/string.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/layout.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/framewindow.js';
@@ -63,7 +61,8 @@ if (isset($_GET['files'])) {
 				
 				$jsfiles [] = PATH_ADMIN_FS.'/js/fileupload.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/imageupload.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/linkfield-2.js';
+				$jsfiles [] = PATH_ADMIN_FS.'/js/emptyfield.js';
+				$jsfiles [] = PATH_ADMIN_FS.'/js/linkfield.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/pagefield.js';
 			break;
 			case 'edit':

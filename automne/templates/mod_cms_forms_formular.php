@@ -17,7 +17,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: mod_cms_forms_formular.php,v 1.1.1.1 2008/11/26 17:12:16 sebastien Exp $
+// $Id: mod_cms_forms_formular.php,v 1.2 2009/03/02 12:56:00 sebastien Exp $
 
 /**
   * Template CMS_forms_formular
@@ -31,16 +31,11 @@
 
 //Requirements
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
-require_once(PATH_PACKAGES_FS."/workflow.php");
-require_once(PATH_PACKAGES_FS."/common/language.php");
-require_once(PATH_PACKAGES_FS."/common/date.php");
-require_once(PATH_MODULES_FS."/super_resource.php");
-require_once(PATH_PACKAGES_FS."/pageContent/xml2Array.php");
-require_once(PATH_MODULES_FS."/module.php");
-require_once(PATH_MODULES_FS."/moduleValidation.php");
-require_once(PATH_MODULES_FS."/moduleclientspace.php");
-require_once(PATH_MODULES_FS."/standard/block.php");
-require_once(PATH_MODULES_FS."/cms_forms.php");
+//force loading module cms_forms
+if (!class_exists('CMS_module_cms_forms')) {
+	die('Cannot find cms_forms module ...');
+}
+
 //set current page ID
 $mod_cms_forms["pageID"] = '{{pageID}}';
 //Instanciate Form
@@ -51,8 +46,8 @@ $cms_language = $form->getLanguage();
 if ($form->getID() && $form->isPublic()) {
 	echo '<a name="formAnchor'.$form->getID().'"></a>';
 	//Create or append (from header) form required message
-	if (isset($cms_forms_required[$form->getID()]) && is_array($cms_forms_required[$form->getID()]) && $cms_forms_required[$form->getID()]) {
-		$cms_forms_error_msg[$form->getID()] .= $cms_language->getMessage(MESSAGE_CMS_FORMS_REQUIRED_FIELDS, false, MOD_CMS_FORMS_CODENAME).'<ul>';
+	if (isset($cms_forms_required[$form->getID()]) && $cms_forms_required[$form->getID()] && is_array($cms_forms_required[$form->getID()]) && $cms_forms_required[$form->getID()]) {
+		$cms_forms_error_msg[$form->getID()] .= $cms_language->getMessage(CMS_forms_formular::MESSAGE_CMS_FORMS_REQUIRED_FIELDS, false, MOD_CMS_FORMS_CODENAME).'<ul>';
 		foreach ($cms_forms_required[$form->getID()] as $fieldName) {
 			$field = $form->getFieldByName($fieldName, true);
 			$cms_forms_error_msg[$form->getID()] .= '<li>'.$field->getAttribute('label').'</li>';
@@ -60,8 +55,8 @@ if ($form->getID() && $form->isPublic()) {
 		$cms_forms_error_msg[$form->getID()] .= '</ul>';
 	}
 	//Create or append (from header) form malformed message
-	if (isset($cms_forms_malformed[$form->getID()]) && is_array($cms_forms_malformed[$form->getID()]) && $cms_forms_malformed[$form->getID()]) {
-		$cms_forms_error_msg[$form->getID()] .= $cms_language->getMessage(MESSAGE_CMS_FORMS_MALFORMED_FIELDS, false, MOD_CMS_FORMS_CODENAME).'<ul>';
+	if (isset($cms_forms_malformed[$form->getID()]) && $cms_forms_malformed[$form->getID()] && is_array($cms_forms_malformed[$form->getID()]) && $cms_forms_malformed[$form->getID()]) {
+		$cms_forms_error_msg[$form->getID()] .= $cms_language->getMessage(CMS_forms_formular::MESSAGE_CMS_FORMS_MALFORMED_FIELDS, false, MOD_CMS_FORMS_CODENAME).'<ul>';
 		foreach ($cms_forms_malformed[$form->getID()] as $fieldName) {
 			$field = $form->getFieldByName($fieldName, true);
 			$cms_forms_error_msg[$form->getID()] .= '<li>'.$field->getAttribute('label').'</li>';
@@ -69,17 +64,17 @@ if ($form->getID() && $form->isPublic()) {
 		$cms_forms_error_msg[$form->getID()] .= '</ul>';
 	}
 	//Create or append (from header) form error message
-	if (isset($cms_forms_error_msg[$form->getID()]) && $cms_forms_error_msg[$form->getID()]) {
+	if (isset($cms_forms_error_msg[$form->getID()]) && $cms_forms_error_msg[$form->getID()] && $cms_forms_error_msg[$form->getID()]) {
 		echo '<div class="cms_forms_error_msg">'.$cms_forms_error_msg[$form->getID()].'</div>';
 	}
 	//display form or form message
-	if (!isset($cms_forms_msg[$form->getID()])) {
+	if (!isset($cms_forms_msg[$form->getID()]) || !$cms_forms_msg[$form->getID()]) {
 		//check if form is already folded by sender
 		if (!$form->isAlreadyFolded($sender)) { 
 			echo $form->getContent(CMS_forms_formular::ALLOW_FORM_SUBMIT);
 		}
 	}
-	if (isset($cms_forms_msg[$form->getID()])) {
+	if (isset($cms_forms_msg[$form->getID()]) && $cms_forms_msg[$form->getID()]) {
 		echo '<div class="cms_forms_msg">'.$cms_forms_msg[$form->getID()].'</div>';
 	}
 }
