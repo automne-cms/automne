@@ -1,0 +1,14 @@
+Pour mettre à jour phpMyAdmin :
+
+1- Dans le fichier config.inc.php, ajouter les la config de single sign on :
+$cfg['Servers'][$i]['auth_type'] = 'signon';
+$cfg['Servers'][$i]['SignonSession'] = 'AutomneSession';
+$cfg['Servers'][$i]['SignonURL']     = 'atmAuth.php';
+
+2- dans le fichier libraires/auth/signon.auth.lib.php, dans la fonction PMA_auth_check(), ligne 115, ajouter les lignes de limitation de la base à voir :
+//Added for Automne : Do not remove
+//set the database name to connect
+if (isset($_SESSION['PMA_single_signon_only_db'])) {
+	$GLOBALS['cfg']['Server']['only_db']=$_SESSION['PMA_single_signon_only_db'];
+}
+//End Added for Automne : Do not remove
