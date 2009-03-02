@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-infos.php,v 1.4 2009/02/09 10:01:43 sebastien Exp $
+// $Id: page-infos.php,v 1.5 2009/03/02 11:25:15 sebastien Exp $
 
 /**
   * PHP page : Load page infos
@@ -183,19 +183,52 @@ if ($pageUrl && !$pageId) {
 }
 if (!isset($cms_page) || !is_object($cms_page) || $cms_page->hasError()) {
 	if ($pageUrl && !$isAutomne) {
-		$jscontent = "
-			Automne.message.popup({
-				title: 		'Voulez-vous quitter Automne ?', 
-				msg: 		'Le lien vers \'{$pageUrl}\' semble être un lien externe à votre site. Le suivre vous fera quitter l\'administration d\'Automne, Etes-vous sur de vouloir continuer ?',
-				buttons:	Ext.MessageBox.YESNO,
-				icon: 		Ext.MessageBox.QUESTION,
-				fn: 		function (button) {
-								if (button == 'yes') {
-									window.location = '{$pageUrl}';
+		if ($pageUrl == '/' && $_SERVER['HTTP_HOST'] != parse_url(CMS_websitesCatalog::getMainURL(), PHP_URL_HOST)) {
+			//Website domain is not properly set
+			if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
+				$jscontent = "
+					Automne.message.popup({
+						title: 		'Le nom de domaine du site est incorrect.', 
+						msg: 		'Le site actuel n\'est pas correctement configuré. Le nom de domaine actuel est \'".$_SERVER['HTTP_HOST']."\' mais votre site est configuré pour le nom de domaine \'".parse_url(CMS_websitesCatalog::getMainURL(), PHP_URL_HOST)."\'. Avant de continuer, modifiez le nom de domaine dans \'Gestion des sites\' pour correspondre au nom de domaine actuel.',
+						buttons:	Ext.MessageBox.OK,
+						icon: 		Ext.MessageBox.WARNING,
+						fn: 		function (button) {
+										var window = new Automne.frameWindow({
+											id:				'websitesWindow',
+											frameURL:		'/automne/admin-v3/websites.php',
+											allowFrameNav:	true,
+											width:			750,
+											height:			580
+										});
+										window.show();
+									}
+					});
+				";
+			} else {
+				$jscontent = "
+					Automne.message.popup({
+						title: 		'Le nom de domaine du site est incorrect.', 
+						msg: 		'Le site actuel n\'est pas correctement configuré. Le nom de domaine actuel est \'".$_SERVER['HTTP_HOST']."\' alors que votre site est configuré pour le nom de domaine \'".parse_url(CMS_websitesCatalog::getMainURL(), PHP_URL_HOST)."\'. Veuillez prévenez un administrateur du site en lui précisant ce message d\'erreur.',
+						buttons:	Ext.MessageBox.OK,
+						icon: 		Ext.MessageBox.ERROR
+					});
+				";
+			}
+		} else {
+			$jscontent = "
+				Automne.message.popup({
+					title: 		'Voulez-vous quitter Automne ?', 
+					msg: 		'Le lien vers \'{$pageUrl}\' semble être un lien externe à votre site. Le suivre vous fera quitter l\'administration d\'Automne, Etes-vous sur de vouloir continuer ?',
+					buttons:	Ext.MessageBox.YESNO,
+					icon: 		Ext.MessageBox.QUESTION,
+					fn: 		function (button) {
+									if (button == 'yes') {
+										window.location = '{$pageUrl}';
+									}
 								}
-							}
-			});
-		";
+				});
+			";
+		}
 		$view->addJavascript($jscontent);
 		if ($from) {
 			$cms_page = CMS_tree::getPageByID($from);
@@ -624,20 +657,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 				$panelDisabled = $cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_VIEW) ? 'false' : 'true';
 				$panelTipTitle = $cms_language->getMessage(MESSAGE_PAGE_ACTION_TIP_TITLE);
 				$panelTip = $cms_language->getMessage(MESSAGE_PAGE_ACTION_TIP_DESC);
-				
 				if ($cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_VIEW)) {
-					//check if panel exists. If not, create it, otherwise change properties
-					$panelContent = "
-					//check if menu exists, else create it
-					if (!Ext.menu.MenuMgr.get('".$panel."Menu')) {
-						var menu = new Automne.Menu({
-							id: '".$panel."Menu'
-						});
-					} else {
-						var menu = Ext.menu.MenuMgr.get('".$panel."Menu');
-						menu.removeAll();
-					}";
-					
 					$hasSiblings = CMS_tree::hasSiblings($cms_page);
 					
 					$pageCopy = "
@@ -995,39 +1015,51 @@ foreach ($userPanels as $panel => $panelStatus) {
 						$panelContent .= $pageCopy;
 					}
 				}
-				$panelContent .= "
-				if (panel) {
-					panel.setDisabled(".$panelDisabled.");
-				} else {
-					panel = new Automne.panel ({
-						title:			'".sensitiveIO::sanitizeJSString($panelTitle)."',
-						id:				'".$panel."',
-						disabled:		".$panelDisabled.",
-						listeners:		{
-							'beforeactivate' : {
-								fn: function(panel, e) {
-									if (e.type == 'mousedown') {
-										if (menu.isVisible()) {
-											menu.hide();
-										} else {
-											panel.loadTabEl();
-											menu.show(panel.tabEl);
+				if ($panelContent) {
+					//check if panel exists. If not, create it, otherwise change properties
+					$panelContent = "
+					//check if menu exists, else create it
+					if (!Ext.menu.MenuMgr.get('".$panel."Menu')) {
+						var menu = new Automne.Menu({
+							id: '".$panel."Menu'
+						});
+					} else {
+						var menu = Ext.menu.MenuMgr.get('".$panel."Menu');
+						menu.removeAll();
+					}".$panelContent."
+					if (panel) {
+						panel.setDisabled(".$panelDisabled.");
+					} else {
+						panel = new Automne.panel ({
+							title:			'".sensitiveIO::sanitizeJSString($panelTitle)."',
+							id:				'".$panel."',
+							disabled:		".$panelDisabled.",
+							listeners:		{
+								'beforeactivate' : {
+									fn: function(panel, e) {
+										if (e.type == 'mousedown') {
+											if (menu.isVisible()) {
+												menu.hide();
+											} else {
+												panel.loadTabEl();
+												menu.show(panel.tabEl);
+											}
 										}
-									}
-									return false;
-								},
-								scope: this
+										return false;
+									},
+									scope: this
+								}
+							}";
+							if ($panelPicto) {
+								$panelContent .= ',
+								iconCls:	\''.$panelPicto.'\'';
 							}
-						}";
-						if ($panelPicto) {
-							$panelContent .= ',
-							iconCls:	\''.$panelPicto.'\'';
-						}
-					$panelContent .= '
-					});
-					Automne.tabPanels.insert('.$index.', panel);
+						$panelContent .= '
+						});
+						Automne.tabPanels.insert('.$index.', panel);
+					}
+					';
 				}
-				';
 			break;
 			case 'edit':
 				$panelTitle = $cms_language->getMessage(MESSAGE_PAGE_EDIT_CONTENT);
@@ -1103,6 +1135,12 @@ foreach ($userPanels as $panel => $panelStatus) {
 					} else {
 						$panelURL = $cms_page->getURL();
 					}
+					//check for website host
+					$pageHost = parse_url($panelURL, PHP_URL_HOST);
+					if ($pageHost && strtolower($_SERVER['HTTP_HOST']) != strtolower($pageHost)) {
+						//page host is not the same of current host so change it to avoid JS restriction
+						$panelURL = str_replace($pageHost, $_SERVER['HTTP_HOST'], $panelURL);
+					}
 				}
 			break;
 		}
@@ -1132,6 +1170,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 					});
 					Automne.tabPanels.insert('.$index.', panel);
 				}
+				panel.setToolTip(\''.sensitiveIO::sanitizeJSString($panelTipTitle).'\', \''.sensitiveIO::sanitizeJSString($panelTip).'\');
 				';
 			break;
 			case 'framePanel':
@@ -1142,6 +1181,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 					panel.setDisabled('.$panelDisabled.');
 					panel.setFrameURL(\''.$panelURL.'\');
 					panel.setPageId(\''.$pageId.'\');
+					panel.setReloadable(true);
 				} else {
 					panel = new Automne.framePanel ({
 						title:			\''.sensitiveIO::sanitizeJSString($panelTitle).'\',
@@ -1150,6 +1190,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 						pageId:			\''.$pageId.'\',
 						allowFrameNav:	'.$allowFrameNav.',
 						editable:		'.$panelEditable.',
+						reloadable:		true,
 						disabled:		'.$panelDisabled;
 						if ($panelPicto) {
 							$jscontent .= ',
@@ -1159,15 +1200,22 @@ foreach ($userPanels as $panel => $panelStatus) {
 					});
 					Automne.tabPanels.insert('.$index.', panel);
 				}
+				panel.setToolTip(\''.sensitiveIO::sanitizeJSString($panelTipTitle).'\', \''.sensitiveIO::sanitizeJSString($panelTip).'\');
 				';
 			break;
 			default:
-				$jscontent .= $panelContent;
+				if ($panelContent) {
+					$jscontent .= $panelContent.'
+					panel.setToolTip(\''.sensitiveIO::sanitizeJSString($panelTipTitle).'\', \''.sensitiveIO::sanitizeJSString($panelTip).'\');'
+					;
+				} else {
+					$jscontent .= '
+					//then remove panel
+					if (panel) Automne.tabPanels.remove(\''.$panel.'\');
+					';
+				}
 			break;
 		}
-		$jscontent .= '
-		panel.setToolTip(\''.sensitiveIO::sanitizeJSString($panelTipTitle).'\', \''.sensitiveIO::sanitizeJSString($panelTip).'\');
-		';
 	} else {
 		//remove panel
 		$jscontent .= '

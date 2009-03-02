@@ -16,7 +16,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>  			  |
 // +----------------------------------------------------------------------+
 //
-// $Id: blockimage.php,v 1.2 2008/12/18 10:40:46 sebastien Exp $
+// $Id: blockimage.php,v 1.3 2009/03/02 11:29:12 sebastien Exp $
 
 /**
   * Class CMS_block_image
@@ -526,14 +526,12 @@ class CMS_block_image extends CMS_block
 	*/
 	function getFilePath($originalName, &$page,&$clientspace,&$row,&$block, $withPath = true, $isEnlarged = false)
 	{
-		$name = ($isEnlarged) ? "imageEnlarged" : "image";
-		$name .= strtoupper(SensitiveIO::sanitizeAsciiString($clientspace))."_";
-		$name .= strtoupper(SensitiveIO::sanitizeAsciiString($row))."_";
-		$name .= strtoupper(SensitiveIO::sanitizeAsciiString($block))."_";
-		$name .= strtoupper(SensitiveIO::sanitizeAsciiString($this->_tagID))."_";
-		$name = md5($name);
+		$name = md5(uniqid());
 		$name .= SensitiveIO::sanitizeAsciiString($originalName);
 		$name = "p".$page->getID()."_".$name;
+		if (strlen($name) > 255) {
+			$name = sensitiveIO::ellipsis($name, 255, '-');
+		}
 		if ($withPath) {
 			return PATH_MODULES_FILES_STANDARD_FS."/edition/".$name;
 		} else {

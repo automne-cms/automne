@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: linxdisplay.php,v 1.2 2008/12/18 10:40:54 sebastien Exp $
+// $Id: linxdisplay.php,v 1.3 2009/03/02 11:29:21 sebastien Exp $
 
 /**
   * Class CMS_linxDisplay
@@ -123,10 +123,10 @@ class CMS_linxDisplay extends CMS_grandFather
 			$title = $page->getTitle($public);
 			$jsTitle = str_replace("'", "\'", $title);
 			$replace = array(
-				"{{title}}"         => $linkTitle,
-				"{{jstitle}}"       => $jsLinkTitle,
-				"{{pagetitle}}"     => $title,
-				"{{jspagetitle}}"   => $jsTitle,
+				"{{title}}"         => htmlspecialchars($linkTitle),
+				"{{jstitle}}"       => htmlspecialchars($jsLinkTitle),
+				"{{pagetitle}}"     => htmlspecialchars($title),
+				"{{jspagetitle}}"   => htmlspecialchars($jsTitle),
 				"{{desc}}"          => $page->getDescription($public),
 				"{{href}}"          => $page->getURL(),
 				"{{id}}"            => $page->getID(),
@@ -215,10 +215,10 @@ class CMS_linxDisplay extends CMS_grandFather
                     $jsTitle = str_replace("'", "\'", $title);
 					//set pages infos in html template
 					$replace = array(
-						"{{title}}"         => $linkTitle,
-                        "{{jstitle}}"       => $jsLinkTitle,
-                        "{{pagetitle}}"     => $title,
-                        "{{jspagetitle}}"   => $jsTitle,
+						"{{title}}"         => htmlspecialchars($linkTitle),
+                        "{{jstitle}}"       => htmlspecialchars($jsLinkTitle),
+                        "{{pagetitle}}"     => htmlspecialchars($title),
+                        "{{jspagetitle}}"   => htmlspecialchars($jsTitle),
   	                    "{{desc}}"          => $page->getDescription($public),
   	                    "{{href}}"          => $page->getURL(),
   	                    "{{id}}"            => $page->getID(),
@@ -285,7 +285,7 @@ class CMS_linxDisplay extends CMS_grandFather
 				}
 				$levelhtml .= $pagehtml;
 			}
-			if (strpos($this->_subleveltemplate , "{{sublevel}}") !== false) {
+			if ($levelhtml && strpos($this->_subleveltemplate , "{{sublevel}}") !== false) {
 				$replace = array(
 					"{{sublevel}}" 	=> $levelhtml,
 					"{{lvlClass}}" 	=> "CMS_lvl".($level+1),

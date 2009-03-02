@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: linx.php,v 1.4 2009/02/09 10:04:06 sebastien Exp $
+// $Id: linx.php,v 1.5 2009/03/02 11:29:21 sebastien Exp $
 
 /**
   * Class CMS_linx
@@ -244,7 +244,7 @@ class CMS_linx extends CMS_grandFather
 			try {
 				$domdocument->loadXML('<linx>'.$output.'</linx>');
 			} catch (DOMException $e) {
-				$this->raiseError('Parse error for row : '.$e->getMessage()." :\n".htmlspecialchars($data));
+				$this->raiseError('Parse error for linx : '.$e->getMessage()." :\n".htmlspecialchars($output));
 				return '';
 			}
 			$rowNodes = $domdocument->getElementsByTagName('linx');

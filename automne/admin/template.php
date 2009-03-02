@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: template.php,v 1.4 2009/02/03 14:24:44 sebastien Exp $
+// $Id: template.php,v 1.5 2009/03/02 11:25:15 sebastien Exp $
 
 /**
   * PHP page : Load template detail window.
@@ -302,7 +302,8 @@ $jscontent = <<<END
 				emptyText: 		'{$cms_language->getJsMessage(MESSAGE_SELECT_PICTURE)}',
 				fieldLabel: 	'<span class="atm-help" ext:qtip="Utilisez une vignette représentant le visuel du modèle de page pour permettre une selection plus aisée.">Vignette</span>',
 				name: 			'image',
-				uploadCfg:	{
+				maxWidth:		240,
+	            uploadCfg:	{
 					file_size_limit:		'{$maxFileSize}',
 					file_types:				'*.jpg;*.png;*.gif',
 					file_types_description:	'{$cms_language->getJsMessage(MESSAGE_IMAGE)} ...'
@@ -327,26 +328,29 @@ $jscontent = <<<END
 				scope:			this,
 				handler:		function() {
 					var form = Ext.getCmp('templateDatas-{$templateId}').getForm();
-					form.submit({
-						params:{
-							action:		'properties',
-							templateId:	templateWindow.templateId
-						},
-						success:function(form, action){
-							//if it is a successful user creation
-							if (action.result.success != false && isNaN(parseInt(templateWindow.templateId))) {
-								//set userId
-								templateWindow.templateId = action.result.success.templateId;
-								//display hidden elements
-								Ext.getCmp('templateDef-{$templateId}').enable();
-								Ext.getCmp('templateRows-{$templateId}').enable();
-								if (Ext.getCmp('print-{$templateId}')) {
-									Ext.getCmp('print-{$templateId}').enable();
+					pr(form.isValid());
+					if (form.isValid()) {
+						form.submit({
+							params:{
+								action:		'properties',
+								templateId:	templateWindow.templateId
+							},
+							success:function(form, action){
+								//if it is a successful user creation
+								if (action.result.success != false && isNaN(parseInt(templateWindow.templateId))) {
+									//set userId
+									templateWindow.templateId = action.result.success.templateId;
+									//display hidden elements
+									Ext.getCmp('templateDef-{$templateId}').enable();
+									Ext.getCmp('templateRows-{$templateId}').enable();
+									if (Ext.getCmp('print-{$templateId}')) {
+										Ext.getCmp('print-{$templateId}').enable();
+									}
 								}
-							}
-						},
-						scope:this
-					});
+							},
+							scope:this
+						});
+					}
 				}
 			}]
 		},{

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: readStandardParam.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: readStandardParam.php,v 1.2 2009/03/02 11:28:31 sebastien Exp $
 
 /**
   *function needed to easylly read the standard_rc.xml file
@@ -24,14 +24,21 @@
   */
 
 $filename = PATH_MODULES_FS.'/standard_rc.xml';
-$file = new DOMDocument('1.0', APPLICATION_DEFAULT_ENCODING);
-if (file_exists($filename) && @$file->load($filename)) {
+if (file_exists($filename)) {
+	$source = file_get_contents($filename);
+	$doctype = !APPLICATION_IS_WINDOWS ? '<!DOCTYPE automne SYSTEM "'.PATH_PACKAGES_FS.'/files/xhtml.ent">' : '<!DOCTYPE automne ['.file_get_contents(PATH_PACKAGES_FS.'/files/xhtml.ent').']>';
+	$source = '<?xml version="1.0" encoding="'.APPLICATION_DEFAULT_ENCODING.'"?>
+	'.$doctype.'
+	'.$source;
+	$options = LIBXML_DTDLOAD;
+	$file = new DOMDocument('1.0', APPLICATION_DEFAULT_ENCODING);
+	$file->loadXml($source, $options);
 	$paramTags = $file->getElementsByTagName('param');
 	foreach ($paramTags as $paramTag) {
-		$parameters[$paramTag->getAttribute("name")] = trim($paramTag->nodeValue);
+		$parameters[$paramTag->getAttribute("name")] = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? utf8_decode(trim($paramTag->nodeValue)) : trim($paramTag->nodeValue);
 	}
 } else {
-	print_r('<pre>'.__FUNCTION__.' : malformed definition file : '.PATH_MODULES_FS.'/standard_rc.xml</pre>');
+	print_r('<pre>'.basename(__FILE__).' : malformed definition file : '.PATH_MODULES_FS.'/standard_rc.xml</pre>');
 	//file unreadable, initialize parameters with empty array
 	$parameters = array();
 }

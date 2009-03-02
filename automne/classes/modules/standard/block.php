@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: block.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: block.php,v 1.2 2009/03/02 11:29:12 sebastien Exp $
 
 /**
   * Class CMS_block
@@ -80,7 +80,7 @@ class CMS_block extends CMS_grandFather
 	  * @param boolean $public The needed precision for USERSPACE location
 	  * @access public
 	  */
-	function __construct($id=0, $location=RESOURCE_LOCATION_USERSPACE, $public=false)
+	function CMS_block($id=0, $location=RESOURCE_LOCATION_USERSPACE, $public=false)
 	{
 	}
 	

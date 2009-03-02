@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: resource.php,v 1.2 2008/12/18 10:41:19 sebastien Exp $
+// $Id: resource.php,v 1.3 2009/03/02 11:29:53 sebastien Exp $
 
 /**
   * Class CMS_resource
@@ -63,7 +63,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($id=0)
+	function CMS_resource($id=0)
 	{
 		if ($id) {
 			if (SensitiveIO::isPositiveInteger($id)) {
@@ -374,7 +374,7 @@ class CMS_resource extends CMS_grandFather
 			return false;
 		}
 		
-		if ($this->_status->setProposedFor($location)) {
+		if (is_object($this->_status) && $this->_status->setProposedFor($location)) {
 			//add the edition
 			$this->_status->addEdition(RESOURCE_EDITION_LOCATION);
 			//add the user to the editors

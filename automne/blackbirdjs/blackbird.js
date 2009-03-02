@@ -125,7 +125,7 @@
 				var filters = document.getElementById( IDs.filters ).getElementsByTagName( 'SPAN' );
 
 				var active = 0;
-				for ( entry in messageTypes ) {
+				for (var entry in messageTypes ) {
 					if ( messageTypes[ entry ] ) active++;
 				}
 				var oneActiveFilter = ( active == 1 && messageTypes[ type ] );
@@ -216,7 +216,7 @@
 
 	function setState() {
 		var props = [];
-		for ( entry in state ) {
+		for (var entry in state ) {
 			var value = ( state[ entry ] && state[ entry ].constructor === String ) ? '"' + state[ entry ] + '"' : state[ entry ]; 
 			props.push( entry + ':' + value );
 		}

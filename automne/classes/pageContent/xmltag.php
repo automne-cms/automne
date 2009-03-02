@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: xmltag.php,v 1.2 2009/02/03 14:28:07 sebastien Exp $
+// $Id: xmltag.php,v 1.3 2009/03/02 11:29:21 sebastien Exp $
 
 /**
   * Class CMS_XMLTag
@@ -198,7 +198,6 @@ class CMS_XMLTag extends CMS_grandFather
 					return $instance;
 				} else {
 					//module didn't returned a valid object instance
-					$this->raiseError("No object returned from module");
 					return false;
 				}
 			} else {

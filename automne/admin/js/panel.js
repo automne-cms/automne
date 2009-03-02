@@ -1,8 +1,15 @@
 /**
+  * Automne Javascript file
+  *
   * Automne.panel Extension Class for Ext.Panel
-  * Add some basic controls on panel such as beforeactivate events, tooltip management
+  * Add some basic controls on panel such as beforeactivate events, tooltip management, ...
+  * Use Automne format for all panel content update
   * @class Automne.panel
   * @extends Ext.Panel
+  * @package CMS
+  * @subpackage JS
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * $Id: panel.js,v 1.2 2009/03/02 11:26:54 sebastien Exp $
   */
 Automne.panel = Ext.extend(Ext.Panel, {
 	//tab element

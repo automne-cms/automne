@@ -1,3 +1,15 @@
+/**
+  * Automne Javascript file
+  *
+  * Automne.PageField Extension Class for Ext.form.NumberField
+  * Provide a form field which can be used to point a specific Automne page
+  * @class Automne.PageField
+  * @extends Ext.form.NumberField
+  * @package CMS
+  * @subpackage JS
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * $Id: pagefield.js,v 1.2 2009/03/02 11:26:54 sebastien Exp $
+  */
 Automne.PageField = Ext.extend(Ext.form.NumberField,  {
 	allowDecimals : false,
 	allowNegative : false,

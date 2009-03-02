@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: standard.php,v 1.3 2009/02/09 10:03:27 sebastien Exp $
+// $Id: standard.php,v 1.4 2009/03/02 11:28:31 sebastien Exp $
 
 /**
   * Class CMS_module_standard
@@ -1501,7 +1501,6 @@ class CMS_module_standard extends CMS_module
 				//load CS datas
 				switch ($tag->getName()) {
 					case 'atm-meta-tags':
-						pr('atm-meta-tags !!!!!!!!!!!');
 						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
 							//add needed javascripts
 							$metaDatas = '<script type="text/javascript">'."\n".

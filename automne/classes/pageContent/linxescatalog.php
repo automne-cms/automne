@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: linxescatalog.php,v 1.2 2008/12/18 10:40:54 sebastien Exp $
+// $Id: linxescatalog.php,v 1.3 2009/03/02 11:29:21 sebastien Exp $
 
 /**
   * Class CMS_linxesCatalog
@@ -173,18 +173,20 @@ class CMS_linxesCatalog extends CMS_grandFather
 		}
 		if ($type == self::PAGE_LINK_TO) {
 			$select = ' distinct(start_lre) as id ';
-			$where = " stop_lre='".$pageID."' ";
+			$where = " page_pbd=start_lre and stop_lre='".$pageID."' ";
 		} else {
 			$select = ' distinct(stop_lre)  as id ';
-			$where = " start_lre='".$pageID."' ";
+			$where = "  page_pbd=stop_lre and start_lre='".$pageID."' ";
 		}
 		$sql ="
 			select
 				".$select."
 			from
-				linx_real_public
+				linx_real_public,
+				pagesBaseData_edited
 			where
 				".$where;
+		//pr($sql);
 		$q = new CMS_query($sql);
 		$relations = array();
 		while ($id = $q->getValue('id')){

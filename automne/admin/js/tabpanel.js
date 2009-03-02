@@ -1,8 +1,14 @@
 /**
+  * Automne Javascript file
+  *
   * Automne.tabPanel Extension Class for Ext.tabPanel
   * Provide all frame and windows panel management
   * @class Automne.tabPanel
   * @extends Ext.tabPanel
+  * @package CMS
+  * @subpackage JS
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * $Id: tabpanel.js,v 1.2 2009/03/02 11:26:54 sebastien Exp $
   */
 Automne.tabPanel = Ext.extend(Ext.TabPanel, { 
 	pageId:		false,
@@ -14,44 +20,44 @@ Automne.tabPanel = Ext.extend(Ext.TabPanel, {
 		this.on({'beforetabchange': this.beforeChangePanel, 'tabchange': this.afterChangePanel, scope: this});
 	},
 	/**
-     * Sets the specified tab as the active tab. This method fires the {@link #beforetabchange} event which
-     * can return false to cancel the tab change.
-     * @param {String/Panel} tab The id or tab Panel to activate
-     */
-    setActiveTab : function(item, force){
-        item = this.getComponent(item);
-        if(!item || this.fireEvent('beforetabchange', this, item, this.activeTab, force) === false){
-            return;
-        }
-        if(!this.rendered){
-            this.activeTab = item;
-            return;
-        }
-        if(this.activeTab != item){
-            if(this.activeTab){
-                var oldEl = this.getTabEl(this.activeTab);
-                if(oldEl){
-                    Ext.fly(oldEl).removeClass('x-tab-strip-active');
-                }
-                this.activeTab.fireEvent('deactivate', this.activeTab);
-            }
-            var el = this.getTabEl(item);
-            Ext.fly(el).addClass('x-tab-strip-active');
-            this.activeTab = item;
-            this.stack.add(item);
+	 * Sets the specified tab as the active tab. This method fires the {@link #beforetabchange} event which
+	 * can return false to cancel the tab change.
+	 * @param {String/Panel} tab The id or tab Panel to activate
+	 */
+	setActiveTab : function(item, force){
+		item = this.getComponent(item);
+		if(!item || this.fireEvent('beforetabchange', this, item, this.activeTab, force) === false){
+			return;
+		}
+		if(!this.rendered){
+			this.activeTab = item;
+			return;
+		}
+		if(this.activeTab != item){
+			if(this.activeTab){
+				var oldEl = this.getTabEl(this.activeTab);
+				if(oldEl){
+					Ext.fly(oldEl).removeClass('x-tab-strip-active');
+				}
+				this.activeTab.fireEvent('deactivate', this.activeTab);
+			}
+			var el = this.getTabEl(item);
+			Ext.fly(el).addClass('x-tab-strip-active');
+			this.activeTab = item;
+			this.stack.add(item);
 
-            this.layout.setActiveItem(item);
-            if(this.layoutOnTabChange && item.doLayout){
-                item.doLayout();
-            }
-            if(this.scrolling){
-                this.scrollToTab(item, this.animScroll);
-            }
+			this.layout.setActiveItem(item);
+			if(this.layoutOnTabChange && item.doLayout){
+				item.doLayout();
+			}
+			if(this.scrolling){
+				this.scrollToTab(item, this.animScroll);
+			}
 
-            item.fireEvent('activate', item);
-            this.fireEvent('tabchange', this, item, force);
-        }
-    },
+			item.fireEvent('activate', item);
+			this.fireEvent('tabchange', this, item, force);
+		}
+	},
 	//function called before each panel change.
 	beforeChangePanel: function(tabPanel, newTab, oldTab, force) {
 		return newTab.beforeActivate(tabPanel, newTab, oldTab, force);
@@ -125,5 +131,130 @@ Automne.tabPanel = Ext.extend(Ext.TabPanel, {
 			Automne.tabPanels.isFavorite = false;
 			favoriteTab.removeClass('x-tab-strip-hatch');
 		}
-	}
+	},
+	// private
+    onRender : function(ct, position){
+        Ext.TabPanel.superclass.onRender.call(this, ct, position);
+
+        if(this.plain){
+            var pos = this.tabPosition == 'top' ? 'header' : 'footer';
+            this[pos].addClass('x-tab-panel-'+pos+'-plain');
+        }
+
+        var st = this[this.stripTarget];
+
+        this.stripWrap = st.createChild({cls:'x-tab-strip-wrap', cn:{
+            tag:'ul', cls:'x-tab-strip x-tab-strip-'+this.tabPosition}});
+
+        var beforeEl = (this.tabPosition=='bottom' ? this.stripWrap : null);
+        this.stripSpacer = st.createChild({cls:'x-tab-strip-spacer'}, beforeEl);
+        this.strip = new Ext.Element(this.stripWrap.dom.firstChild);
+        
+        this.edge = this.strip.createChild({tag:'li', cls:'x-tab-edge'});
+        this.strip.createChild({cls:'x-clear'});
+
+        this.body.addClass('x-tab-panel-body-'+this.tabPosition);
+
+        if(!this.itemTpl){
+            var tt = new Ext.Template(
+                 '<li class="{cls}" id="{id}"><a class="x-tab-strip-close" onclick="return false;"></a><a class="x-tab-strip-reload" onclick="return false;"></a>',
+                 '<a class="x-tab-right" href="#" onclick="return false;"><em class="x-tab-left">',
+                 '<span class="x-tab-strip-inner"><span class="x-tab-strip-text {iconCls}">{text}</span></span>',
+                 '</em></a></li>'
+            );
+            tt.disableFormats = true;
+            tt.compile();
+            Ext.TabPanel.prototype.itemTpl = tt;
+        }
+
+        this.items.each(this.initTab, this);
+    },
+	// private
+    findTargets : function(e){
+        var item = null;
+        var itemEl = e.getTarget('li', this.strip);
+        if(itemEl){
+            item = this.getComponent(itemEl.id.split(this.idDelimiter)[1]);
+            if(item.disabled){
+                return {
+                    close : null,
+                    reload: null,
+					item : null,
+                    el : null
+                };
+            }
+        }
+        return {
+            close : e.getTarget('.x-tab-strip-close', this.strip),
+            reload : e.getTarget('.x-tab-strip-reload', this.strip),
+            item : item,
+            el : itemEl
+        };
+    },
+	// private
+    onStripMouseDown: function(e){
+        if(e.button != 0){
+            return;
+        }
+        e.preventDefault();
+        var t = this.findTargets(e);
+        if(t.close){
+            this.remove(t.item);
+            return;
+        }
+        if(t.reload){
+            this.reload(t.item);
+            return;
+        }
+        if(t.item && t.item != this.activeTab){
+            this.setActiveTab(t.item);
+        }
+    },
+	reload: function(item) {
+		if (item.id == Automne.tabPanels.getActiveTab().id) {
+			Automne.message.show(Automne.locales.refresh, '', item);
+			item.reload();
+		}
+	},
+	/**
+     * Sets the specified tab as the active tab. This method fires the {@link #beforetabchange} event which
+     * can return false to cancel the tab change.
+     * @param {String/Panel} tab The id or tab Panel to activate
+     */
+    setActiveTab : function(item){
+        item = this.getComponent(item);
+        if(!item || this.fireEvent('beforetabchange', this, item, this.activeTab) === false){
+            return;
+        }
+        if(!this.rendered){
+            this.activeTab = item;
+            return;
+        }
+        if(this.activeTab != item){
+            if(this.activeTab){
+                var oldEl = this.getTabEl(this.activeTab);
+                if(oldEl){
+                    Ext.fly(oldEl).removeClass('x-tab-strip-active');
+					if(this.activeTab.reloadable) Ext.fly(oldEl).removeClass('x-tab-strip-reloadable');
+                }
+                this.activeTab.fireEvent('deactivate', this.activeTab);
+            }
+            var el = this.getTabEl(item);
+            Ext.fly(el).addClass('x-tab-strip-active');
+            if(item.reloadable) Ext.fly(el).addClass('x-tab-strip-reloadable');
+			this.activeTab = item;
+            this.stack.add(item);
+
+            this.layout.setActiveItem(item);
+            if(this.layoutOnTabChange && item.doLayout){
+                item.doLayout();
+            }
+            if(this.scrolling){
+                this.scrollToTab(item, this.animScroll);
+            }
+
+            item.fireEvent('activate', item);
+            this.fireEvent('tabchange', this, item);
+        }
+    }
 });

@@ -506,13 +506,18 @@ ul.x-tab-strip-bottom{
 .x-tab-strip-bottom .x-tab-strip-active .x-tab-left {
 	background-image:url(/automne/ext/resources/images/gray/tabs/tab-btm-left-bg.gif);
 }
-
 .x-tab-strip .x-tab-strip-closable a.x-tab-strip-close {
 	background-image:url(/automne/ext/resources/images/gray/tabs/tab-close.gif);
 }
 .x-tab-strip .x-tab-strip-closable a.x-tab-strip-close:hover{
 	background-image:url(/automne/ext/resources/images/gray/tabs/tab-close.gif);
 }
+.x-tab-strip-reloadable{position:relative;}
+.x-tab-strip-reloadable .x-tab-left{padding-right:19px;}
+.x-tab-strip a.x-tab-strip-reload{background-image:url(/automne/admin/img/tabs/tab-reload.gif);opacity:0;-moz-opacity:0;background-repeat:no-repeat;display:none;width:0;height:0;position:absolute;top:3px;right:3px;cursor:pointer;z-index:2;}
+.x-tab-strip-reloadable  a.x-tab-strip-reload{display:block;}
+.x-tab-strip .x-tab-strip-active a.x-tab-strip-reload{opacity:.8;-moz-opacity:.8;width:11px;height:11px;}
+.x-tab-strip .x-tab-strip-active a.x-tab-strip-reload:hover{background-image:url(/automne/admin/img/tabs/tab-reload.gif);opacity:1;-moz-opacity:1;}
 
 .x-tab-panel-body {
     border-color:#d0d0d0;
@@ -712,7 +717,7 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 	height:							40px;
 	padding:						10px 0px 0px 33px;
 	text-transform:					uppercase;
-	width:							140px;
+	width:							165px;
 }
 #sidePanel #headPanel #headPanelClient{
 	background:						url(/automne/admin/img/panel/client-bullet.gif) no-repeat 27px 8px;
@@ -765,7 +770,7 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 	right:							0px;
 	position:						absolute;
 	top:							0px;
-	width:							105px;
+	width:							90px;
 }
 #sidePanel #headPanel #headPanelAutomneLink{
 	height:							15px;
@@ -1066,6 +1071,7 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 /* menu */
 .x-menu{
 	background:						url(/automne/admin/img/menu/menu.gif) repeat-y top left;
+	border-color:					#a0c85a;
 	padding:						0px;
 }
 .x-menu-list{
@@ -1461,4 +1467,65 @@ td.x-grid3-hd-over, td.sort-desc, td.sort-asc, td.x-grid3-hd-menu-open{
 }
 .x-progress-text-back{
 	color:							#78b70f;
+}
+
+/* date */
+.x-date-middle{
+	background:						url(/automne/admin/img/shared/hd-sprite.gif) repeat-x 0 -86px;
+}
+.x-date-left{
+	background:						url(/automne/admin/img/shared/hd-sprite.gif) no-repeat left -43px;
+}
+.x-date-right {
+	background:						url(/automne/admin/img/shared/hd-sprite.gif) no-repeat right 0px;
+}
+.x-date-right a {
+    background-image:				url(/automne/admin/img/shared/right-btn.gif);
+}
+.x-date-left a{
+	background-image:				url(/automne/admin/img/shared/left-btn.gif);
+}
+.x-date-inner th {
+    background:						#d6efac url(/automne/admin/img/shared/glass-bg.gif) repeat-x left top;
+	border-color:					#b2da6b;
+	color:							#629902;
+	font-size:						11px;
+}
+.x-date-inner .x-date-selected a{
+    background:						#d6efac url(/automne/admin/img/shared/glass-bg.gif) repeat-x left top;
+}
+.x-date-bottom {
+    border-top:						1px solid #b2da6b;
+    background:						#d6efac url(/automne/admin/img/shared/glass-bg.gif) repeat-x left top;
+}
+.x-date-mp-btns {
+    background:						#d6efac url(/automne/admin/img/shared/glass-bg.gif) repeat-x left top;
+}
+td.x-date-mp-sel a {
+    background:						#d6efac url(/automne/admin/img/shared/glass-bg.gif) repeat-x left top;
+	border:							1px solid #6aa503;
+}
+.x-date-inner .x-date-today a{
+	border-color:					#6aa503;
+}
+.x-date-inner .x-date-selected a {
+	border-color:					#6aa503;
+}
+.x-date-inner a:hover, .x-date-inner .x-date-disabled a:hover{
+    background: 					#e9f7d2;
+}
+td.x-date-mp-month a,td.x-date-mp-year a {
+	color:							#626262;
+}
+td.x-date-mp-month a:hover,td.x-date-mp-year a:hover {
+	color:							#626262;
+	background:						#e9f7d2;
+}
+.x-date-mp-ybtn a {
+    background:						url(/automne/admin/img/panel/tool-sprites.gif) no-repeat;
+}
+.x-date-mp-btns button{
+	background-color:				#e3e5e6;
+	border-color:					#6e7a80;
+	color:							black;
 }

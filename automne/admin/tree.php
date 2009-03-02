@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: tree.php,v 1.2 2008/12/18 10:36:44 sebastien Exp $
+// $Id: tree.php,v 1.3 2009/03/02 11:25:15 sebastien Exp $
 
 /**
   * PHP page : Load tree window infos. Presents a portion of the pages tree. Can be used by any admin page.
@@ -116,7 +116,7 @@ if ($enableDD === 'false') {
 	if ($el) {
 		//replace value of element by clicked page Id
 		$onClick = sensitiveIO::sanitizeJSString('
-				var el = Ext.get(\''.$el.'\');
+				var el = Ext.get(\''.$el.'\') || Ext.getCmp(\''.$winId.'\').currentEl;
 				el.dom.value=\'%s\';
 				el.highlight("C3CD31", {duration: 2 });
 				Ext.getCmp(\''.$winId.'\').close();

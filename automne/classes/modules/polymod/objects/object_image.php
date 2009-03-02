@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_image.php,v 1.2 2008/12/18 10:40:29 sebastien Exp $
+// $Id: object_image.php,v 1.3 2009/03/02 11:28:56 sebastien Exp $
 
 /**
   * Class CMS_object_image
@@ -428,7 +428,9 @@ class CMS_object_image extends CMS_object_common
 			//create thumbnail path
 			$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
 			$filename = "r".$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($_FILES[$prefixName.$this->_field->getID().'_0']["name"]));
-
+			if (strlen($filename) > 255) {
+				$filename = sensitiveIO::ellipsis($filename, 255, '-');
+			}
 			if (!move_uploaded_file($_FILES[$prefixName.$this->_field->getID().'_0']["tmp_name"], $path."/".$filename)) {
 				return false;
 			}
@@ -543,7 +545,9 @@ class CMS_object_image extends CMS_object_common
 			//create thumbnail path
 			$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
 			$filename = "r".$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($_FILES[$prefixName.$this->_field->getID().'_2']["name"]));
-
+			if (strlen($filename) > 255) {
+				$filename = sensitiveIO::ellipsis($filename, 255, '-');
+			}
 			if (!move_uploaded_file($_FILES[$prefixName.$this->_field->getID().'_2']["tmp_name"], $path."/".$filename)) {
 				return false;
 			}
@@ -571,6 +575,7 @@ class CMS_object_image extends CMS_object_common
 	  */
 	function getHTMLDescription() {
 		//image tag with link to image or image zoom if any
+		$img = '';
 		if ($this->_subfieldValues[0]->getValue()) {
 			$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
 			$params = $this->getParamsValues();

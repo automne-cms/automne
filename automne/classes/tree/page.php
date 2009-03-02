@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: page.php,v 1.3 2009/02/09 10:04:18 sebastien Exp $
+// $Id: page.php,v 1.4 2009/03/02 11:29:38 sebastien Exp $
 
 /**
   * Class CMS_page
@@ -151,7 +151,10 @@ class CMS_page extends CMS_resource
 				//initialize super-class
 				parent::__construct($data);
 			} else {
-				$this->raiseError("Unknown ID :".$id);
+				//display this error only if we are in HTTP mode (not cli) because it is only relevant in this mode
+				if (!defined('APPLICATION_EXEC_TYPE') || APPLICATION_EXEC_TYPE == 'http') {
+					$this->raiseError("Unknown ID :".$id);
+				}
 			}
 		} else {
 			//initialize super-class
@@ -760,6 +763,9 @@ class CMS_page extends CMS_resource
 		if ($this->getRefresh()) {
 			$metaDatas .= '	<meta http-equiv="refresh" content="'.SensitiveIO::sanitizeHTMLString($this->getRefresh()).'" />'."\n";
 		}
+		if ($this->getMetas()) {
+			$metaDatas .= $this->getMetas()."\n";
+		}
 		return $metaDatas;
 	}
 	
@@ -1135,6 +1141,47 @@ class CMS_page extends CMS_resource
 	}
 	
 	/**
+	  * Gets the metas base data
+	  *
+	  * @param boolean $public Do we want the edited or public value ?
+	  * @param boolean $queryWebsite : Do we get the meta value from website if does not exists for the page itself ?
+	  * @return string The replyto
+	  * @access public
+	  */
+	function getMetas($public = false, $queryWebsite = true)
+	{
+		if (!$this->_checkBaseData($public)) {
+			return false;
+		}
+		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
+		
+		return (!$this->{$var}["metas"] && $queryWebsite) ? $this->getMetaFromWebsite('metas') : $this->{$var}["metas"];
+	}
+	
+	/**
+	  * Sets the metas base data.
+	  *
+	  * @param string $data The new base data to set
+	  * @param CMS_profile_user &$user the user who did the edition
+	  * @return boolean true on success, false on failure
+	  * @access public
+	  */
+	function setMetas($data, &$user)
+	{
+		if (!is_a($user, "CMS_profile_user")) {
+			$this->raiseError("Didn't received a valid user");
+			return false;
+		}
+		if (!$this->_checkBaseData(false)) {
+			return false;
+		}
+		
+		$this->_editedBaseData["metas"] = $data;
+		$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
+		return true;
+	}
+	
+	/**
 	  * Gets the copyright base data
 	  *
 	  * @param boolean $public Do we want the edited or public value ?
@@ -1191,7 +1238,7 @@ class CMS_page extends CMS_resource
 		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
 		if ($this->{$var}["language"]) {
 			return $this->{$var}["language"];
-		} elseif ($queryWebsite) {
+		} elseif ($queryWebsite && $this->getMetaFromWebsite('language')) {		    
 			return $this->getMetaFromWebsite('language');
 		} else {
 			//assume application default language is the good one ...
@@ -1667,6 +1714,7 @@ class CMS_page extends CMS_resource
 			$this->{$var}["pragma"] = '';
 			$this->{$var}["refresh"] = '';
 			$this->{$var}["refreshUrl"] = '';
+			$this->{$var}["metas"] = '';
 			$this->{$var}["reminderOn"] = new CMS_date();
 			$this->{$var}["redirect"] = new CMS_href();
 			switch ($this->_status->getLocation()) {
@@ -1710,6 +1758,7 @@ class CMS_page extends CMS_resource
 				$this->{$var}["pragma"] = $data["pragma_pbd"];
 				$this->{$var}["refresh"] = $data["refresh_pbd"];
 				$this->{$var}["refreshUrl"] = $data["refreshUrl_pbd"];
+				$this->{$var}["metas"] = $data["metas_pbd"];
 				$this->{$var}["redirect"] = new CMS_href($data["redirect_pbd"]);
 			}
 		}
@@ -1832,7 +1881,8 @@ class CMS_page extends CMS_resource
 				pragma_pbd='".SensitiveIO::sanitizeSQLString($this->_editedBaseData["pragma"])."',
 				refresh_pbd='".SensitiveIO::sanitizeSQLString($this->_editedBaseData["refresh"])."',
 				redirect_pbd='".SensitiveIO::sanitizeSQLString($this->_editedBaseData["redirect"]->getTextDefinition())."',
-				refreshUrl_pbd='".SensitiveIO::sanitizeSQLString($this->_editedBaseData["refreshUrl"])."'
+				refreshUrl_pbd='".SensitiveIO::sanitizeSQLString($this->_editedBaseData["refreshUrl"])."',
+				metas_pbd='".SensitiveIO::sanitizeSQLString($this->_editedBaseData["metas"])."'
 			";
 			if ($this->_baseDataID) {
 				$sql = "
@@ -1903,6 +1953,7 @@ class CMS_page extends CMS_resource
 			$pg->setPragma($this->getPragma(), $user);
 			$pg->setRefresh($this->getRefresh(), $user);
 			$pg->setRedirectLink($this->getRedirectLink(), $user);
+			$pg->setMetas($this->getMetas(), $user);
 			if (SensitiveIO::isPositiveInteger($this->getReminderPeriodicity())) {
 				$pg->setReminderPeriodicity($this->getReminderPeriodicity(), $user);
 			}

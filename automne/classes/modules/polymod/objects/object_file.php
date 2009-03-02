@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_file.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: object_file.php,v 1.2 2009/03/02 11:28:56 sebastien Exp $
 
 /**
   * Class CMS_object_file
@@ -569,7 +569,9 @@ class CMS_object_file extends CMS_object_common
 			//create thumbnail path
 			$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
 			$filename = "r".$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($_FILES[$prefixName.$this->_field->getID().'_1']["name"]));
-			
+			if (strlen($filename) > 255) {
+				$filename = sensitiveIO::ellipsis($filename, 255, '-');
+			}
 			if (!move_uploaded_file($_FILES[$prefixName.$this->_field->getID().'_1']["tmp_name"], $path."/".$filename)) {
 				return false;
 			}
@@ -679,6 +681,9 @@ class CMS_object_file extends CMS_object_common
 				}
 				
 				$new_filename = 'r'.$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($filename));
+				if (strlen($new_filename) > 255) {
+					$new_filename = sensitiveIO::ellipsis($new_filename, 255, '-');
+				}
 				$destination_path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/';
 				$ftp_dir = PATH_REALROOT_FS.$params['ftpDir'];
 				if (@file_exists($ftp_dir.$filename) && is_file($ftp_dir.$filename)) {
@@ -772,7 +777,9 @@ class CMS_object_file extends CMS_object_common
 			//create thumnail path
 			$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
 			$filename = "r".$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($_FILES[$prefixName.$this->_field->getID().'_4']["name"]));
-			
+			if (strlen($filename) > 255) {
+				$filename = sensitiveIO::ellipsis($filename, 255, '-');
+			}
 			if (!move_uploaded_file($_FILES[$prefixName.$this->_field->getID().'_4']["tmp_name"], $path."/".$filename)) {
 				return false;
 			}

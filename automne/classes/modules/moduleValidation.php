@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: moduleValidation.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: moduleValidation.php,v 1.2 2009/03/02 11:28:30 sebastien Exp $
 
 /**
   * Class CMS_moduleValidation
@@ -60,7 +60,7 @@ class CMS_moduleValidation extends CMS_module
 	  * @return void
 	  * @access public
 	  */
-	function __construct($codename)
+	function CMS_moduleValidation($codename)
 	{
 		//Initialize object.
 		parent::__construct($codename);

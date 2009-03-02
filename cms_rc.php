@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc.php,v 1.4 2009/02/03 14:24:06 sebastien Exp $
+// $Id: cms_rc.php,v 1.5 2009/03/02 11:23:21 sebastien Exp $
 
 /**
   * rc file, contains editable constants
@@ -27,6 +27,11 @@ if (@file_exists(dirname(__FILE__)."/config.php")) {
 	@include_once(dirname(__FILE__)."/config.php");
 } elseif(!isset($_SERVER['SCRIPT_NAME']) || $_SERVER['SCRIPT_NAME'] != '/install.php') {
 	die('Cannot find config.php file, please run Automne installation again ...');
+}
+
+//check PHP version requirement
+if (version_compare(phpversion(), "5.2.0", "<")) {
+	die('Automne require PHP version 5.2.0 minimum. Your current version is : '.phpversion());
 }
 
 // ****************************************************************
@@ -203,7 +208,7 @@ if (!defined("DIRS_CHMOD")) {
  * Default : ldap://localhost
  */
 if (!defined("APPLICATION_LDAP_SERVER")) {
-	define("APPLICATION_LDAP_SERVER", "ldap://192.168.0.1");
+	define("APPLICATION_LDAP_SERVER", "ldap://localhost");
 }
 
 /**
@@ -216,10 +221,10 @@ if (!defined("APPLICATION_LDAP_PORT")) {
 
 /**
  * LDAP Server base DN
- * Default : c=ws,o=automne
+ * Default : dc=ws,o=automne
  */
 if (!defined("APPLICATION_LDAP_BASE_DN")) {
-	define("APPLICATION_LDAP_BASE_DN", "dc=wsextranet,dc=net");
+	define("APPLICATION_LDAP_BASE_DN", "dc=ws,dc=automne");
 }
 
 /**
@@ -227,7 +232,7 @@ if (!defined("APPLICATION_LDAP_BASE_DN")) {
  * Default : anonymous
  */
 if (!defined("APPLICATION_LDAP_AUTH_USER")) {
-	define("APPLICATION_LDAP_AUTH_USER", "cn=anonymous,dc=wsextranet,dc=net");
+	define("APPLICATION_LDAP_AUTH_USER", "cn=anonymous,dc=ws,dc=net");
 }
 
 /**
@@ -416,6 +421,14 @@ if (!defined("PATH_TEMPLATES_ROWS_WR")) {
 if (!defined("PATH_TEMPLATES_ROWS_FS")) {
 	define("PATH_TEMPLATES_ROWS_FS", PATH_MAIN_FS."/templates/rows");
 }
+
+if (!defined("PATH_MAIL_TEMPLATES_FS")) {
+	define("PATH_MAIL_TEMPLATES_FS", PATH_TEMPLATES_FS.'/mail/mail.xml');
+}
+if (!defined("PATH_PRINT_TEMPLATES_FS")) {
+	define("PATH_PRINT_TEMPLATES_FS", PATH_TEMPLATES_FS.'/print.xml');
+}
+
 /**
   *	CSS file paths (where is css definition files)
   *	Default : DOCUMENT_ROOT."/css"
@@ -535,68 +548,12 @@ if (!defined("PATH_ADMIN_JS_FS")) {
 }
 
 /**
-  *	Administration special pages paths : page previsualization
-  *	Default : PATH_ADMIN_xx."/page-previsualization.php"
-  
-if (!defined("PATH_ADMIN_SPECIAL_PAGEPREVIZ_WR")) {
-	define("PATH_ADMIN_SPECIAL_PAGEPREVIZ_WR", PATH_ADMIN_WR."/page-previsualization.php");
-}*/
-
-/**
   *	Administration special pages paths : login page
   *	Default : PATH_ADMIN_xx."/index.php"
   */
 if (!defined("PATH_ADMIN_SPECIAL_LOGIN_WR")) {
 	define("PATH_ADMIN_SPECIAL_LOGIN_WR", PATH_ADMIN_WR."/index.php");
 }
-
-/**
-  *	Administration special pages paths : frames page
-  *	Default : PATH_ADMIN_xx."/frames.php"
-  
-if (!defined("PATH_ADMIN_SPECIAL_FRAMES_WR")) {
-	define("PATH_ADMIN_SPECIAL_FRAMES_WR", PATH_ADMIN_WR."/frames.php");
-}*/
-
-/**
-  *	Administration special pages paths : entry page
-  *	Default : PATH_ADMIN_xx."/entry.php"
-  
-if (!defined("PATH_ADMIN_SPECIAL_ENTRY_WR")) {
-	define("PATH_ADMIN_SPECIAL_ENTRY_WR", PATH_ADMIN_WR."/entry.php");
-}*/
-
-/**
-  *	Administration special redirection pages : exit from frameset
-  *	Default : PATH_ADMIN_xx."/redirOutFrames.php"
-  
-if (!defined("PATH_ADMIN_SPECIAL_OUT_FRAMES_WR")) {
-	define("PATH_ADMIN_SPECIAL_OUT_FRAMES_WR", PATH_ADMIN_WR."/redirOutFrames.php");
-}*/
-
-/**
-  *	Administration special pages paths : tree page
-  *	Default : PATH_ADMIN_xx."/entry.php"
-  
-if (!defined("PATH_ADMIN_SPECIAL_TREE_WR")) {
-	define("PATH_ADMIN_SPECIAL_TREE_WR", PATH_ADMIN_WR."/tree.php");
-}*/
-
-/**
-  *	Administration special pages paths : page summary
-  *	Default : PATH_ADMIN_xx."/page_summary.php"
-  
-if (!defined("PATH_ADMIN_SPECIAL_PAGE_SUMMARY_WR")) {
-	define("PATH_ADMIN_SPECIAL_PAGE_SUMMARY_WR", PATH_ADMIN_WR."/page_summary.php");
-}*/
-
-/**
-  *	Administration special pages paths : page content edition
-  *	Default : PATH_ADMIN_xx."/page_content.php"
-  
-if (!defined("PATH_ADMIN_SPECIAL_PAGE_CONTENT_WR")) {
-	define("PATH_ADMIN_SPECIAL_PAGE_CONTENT_WR", PATH_ADMIN_WR."/page_content.php");
-}*/
 
 /**
   *	This constant was used before Automne V4 for admin session management purposes.
@@ -610,29 +567,10 @@ if (!defined("PATH_ADMIN_SPECIAL_SESSION_CHECK_FS")) {
 /**
   *	Administration special pages paths : page templates client spaces edition
   *	Default : PATH_ADMIN_xx."/template_clientSpaces.php"
-  
-if (!defined("PATH_ADMIN_SPECIAL_CLIENTSPACES_EDITION_WR")) {
-	define("PATH_ADMIN_SPECIAL_CLIENTSPACES_EDITION_WR", PATH_ADMIN_WR."/template_clientSpaces.php");
-}*/
-
-/**
-  *	Administration special pages paths : page templates client spaces edition
-  *	Default : PATH_ADMIN_xx."/template_clientSpaces.php"
   */
 if (!defined("PATH_ADMIN_SPECIAL_SERVER_RESPONSE_WR")) {
 	define("PATH_ADMIN_SPECIAL_SERVER_RESPONSE_WR", PATH_ADMIN_WR."/serverResponse.php");
 }
-
-/**
-  *	Administration special pages paths : 'tree string', i.e. the string used by the wysiwyg applet to get the tree structure
-  *	Default : PATH_MAIN_xx."/tree_string.txt"
-  
-if (!defined("PATH_ADMIN_SPECIAL_TREESTRING_FS")) {
-	define("PATH_ADMIN_SPECIAL_TREESTRING_FS", PATH_REALROOT_FS."/tree_string.txt");
-}
-if (!defined("PATH_ADMIN_SPECIAL_TREESTRING_WR")) {
-	define("PATH_ADMIN_SPECIAL_TREESTRING_WR", "/tree_string.txt");
-}*/
 
 /**
   *	Pages templates path
@@ -800,9 +738,11 @@ if (!defined('FILE_UPLOAD_EXTENSIONS_DENIED')) {
 // ** CONSTANTS ARE NOT EDITABLE BEYOND THIS POINT               **
 // ****************************************************************
 
-//check PHP version requirement
-if (version_compare(phpversion(), "5.2.0", "<")) {
-	die('Automne require PHP version 5.2.0 minimum. Your current version is : '.phpversion());
+/**
+  * Define execution Type
+  */
+if (!defined("APPLICATION_EXEC_TYPE")) {
+	define("APPLICATION_EXEC_TYPE", "http");
 }
 
 //augment memory_limit
@@ -814,7 +754,7 @@ if (ini_get('memory_limit') < (int) APPLICATION_MEMORY_LIMIT) {
 @ini_set('magic_quotes_runtime', 0);
 @ini_set('magic_quotes_sybase', 0);
 //try to change some misconfigurations
-@ini_set('session.use_trans_sid', 0);
+@ini_set('session.gc_probability', 0);
 @ini_set('allow_call_time_pass_reference', 0);
 
 //remove NOTICE to avoid useless notice messages.
@@ -839,6 +779,9 @@ if (!defined("AUTOMNE_VERSION") && file_exists(PATH_REALROOT_FS."/VERSION")) {
 if (!defined("AUTOMNE_SUBVERSION")) {
 	define("AUTOMNE_SUBVERSION", 0);
 }
+
+//include base packages
+require_once(PATH_PACKAGES_FS."/common/grandfather.php");
 
 if (STATS_DEBUG) {
 	function view_stat($return = false){ 
@@ -970,12 +913,13 @@ if (get_magic_quotes_gpc()) {
 if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])
 	&& strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8' 
 	&& $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
-	function utf8_decode_callback ($input, $index = '') {
+	function utf8_decode_callback (&$input, $index = '') {
 		if (is_string($input)) {
 			//to preserve the euro sign
 			$input = strtr($input, array("\xe2\x82\xac" => "\xc2\x80"));
 			//then decode UTF-8 content
-			return utf8_decode($input);
+			$input = utf8_decode($input);
+			return $input;
 		} elseif (is_array($input)) {
 			array_walk_recursive($input, 'utf8_decode_callback');
 			return $input;
@@ -1010,6 +954,43 @@ function compress_handler( $p_buffer, $p_mode ) {
 	}
 }
 
+function start_atm_session() {
+	// verify if PHP supports session, die if it does not
+	if (!@function_exists('session_name')) {
+	    die('Session is not available');
+	} elseif (ini_get('session.auto_start') == true && session_name() != 'AutomneSession') {
+	    // Do not delete the existing session, it might be used by other 
+	    // applications; instead just close it.
+	    session_write_close();
+	}
+	// session cookie settings
+	session_set_cookie_params(0, '/', '', false);
+	
+	// cookies are safer (use @ini_set() in case this function is disabled)
+	@ini_set('session.use_cookies', true);
+	
+	// but not all user allow cookies
+	@ini_set('session.use_only_cookies', false);
+	@ini_set('session.use_trans_sid', true);
+	// delete session/cookies when browser is closed
+	@ini_set('session.cookie_lifetime', 0);
+	
+	// warn but dont work with bug
+	@ini_set('session.bug_compat_42', false);
+	@ini_set('session.bug_compat_warn', true);
+	
+	// use more secure session ids
+	@ini_set('session.hash_function', 1);
+	
+	// some pages (e.g. stylesheet) may be cached on clients, but not in shared
+	// proxy servers
+	session_cache_limiter('private');
+	
+	$session_name = 'AutomneSession';
+	@session_name($session_name);
+	
+	@session_start();
+}
 
 define("MODULE_TREATMENT_PAGECONTENT_HEADER_CODE", 1);
 define("MODULE_TREATMENT_PAGECONTENT_FOOTER_CODE", 2);
@@ -1121,7 +1102,4 @@ define("ALERT_LEVEL_PAGE_ALERTS", 4);
 define("VALIDATION_OPTION_ACCEPT", 1);
 define("VALIDATION_OPTION_REFUSE", 2);
 define("VALIDATION_OPTION_TRANSFER", 4);
-
-//include base packages
-require_once(PATH_PACKAGES_FS."/common/grandfather.php");
 ?>

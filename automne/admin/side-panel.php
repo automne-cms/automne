@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: side-panel.php,v 1.2 2008/12/18 10:36:43 sebastien Exp $
+// $Id: side-panel.php,v 1.3 2009/03/02 11:25:15 sebastien Exp $
 
 /**
   * PHP page : Load side panel infos.
@@ -365,9 +365,10 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES) || $cms_use
 		$content .= '<li><div class="atm-rows atm-sidepic"></div><a atm:action="rows" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_ROWS_TEMPLATES).'</a></li>';
 	}
 	if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //templates
-		$content .= '<li><div class="atm-styles atm-sidepic"></div><a atm:action="styles" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_STYLESHEETS).'</a></li>
-		<li><div class="atm-wysiwyg-styles atm-sidepic"></div><a atm:action="wysiwyg-styles" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_WYSIWYG_STYLES).'</a></li>
-		<li><div class="atm-wysiwyg-toolbar atm-sidepic"></div><a atm:action="wysiwyg-toolbar" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_WYSIWYG_TOOLBAR).'</a></li>';
+		//TODOV4
+		/*$content .= '<li><div class="atm-styles atm-sidepic"></div><a atm:action="styles" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_STYLESHEETS).'</a></li>
+		<li><div class="atm-wysiwyg-styles atm-sidepic"></div><a atm:action="wysiwyg-styles" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_WYSIWYG_STYLES).'</a></li>*/
+		$content .= '<li><div class="atm-wysiwyg-toolbar atm-sidepic"></div><a atm:action="wysiwyg-toolbar" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_WYSIWYG_TOOLBAR).'</a></li>';
 	}
 	$content .= '
 		</ul>
@@ -400,9 +401,10 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) || $c
 	if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 		$content .= '
 			<li><div class="atm-modules atm-sidepic"></div><a atm:action="modules" href="#">Gestion des modules</a></li>
-			<li><div class="atm-websites atm-sidepic"></div><a atm:action="websites" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_SITE_MANAGEMENT).'</a></li>
-			<li><div class="atm-languages atm-sidepic"></div><a atm:action="languages" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_LANGUAGE_MANAGEMENT).'</a></li>
-			<li><div class="atm-server atm-sidepic"></div><a href="'.PATH_MAIN_WR.'/phpMyAdmin/" target="_blank">Base de données</a></li>
+			<li><div class="atm-websites atm-sidepic"></div><a atm:action="websites" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_SITE_MANAGEMENT).'</a></li>';
+			//TODOV4
+			/*<li><div class="atm-languages atm-sidepic"></div><a atm:action="languages" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_LANGUAGE_MANAGEMENT).'</a></li>*/
+		$content .= '<li><div class="atm-server atm-sidepic"></div><a href="'.PATH_PHPMYADMIN_WR.'" target="_blank">Base de données</a></li>
 			<li><div class="atm-server atm-sidepic"></div><a atm:action="server" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_SERVER_SETTINGS).'</a></li>
 			<li><div class="atm-parameters atm-sidepic"></div><a atm:action="parameters" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_AUTUMN_SETTINGS).'</a></li>';
 	}
@@ -453,16 +455,29 @@ $jscontent = <<<END
 		el: 			'headPanel',
 		listeners:{'render':function(){
 			Ext.get('headPanelLogout').on('mousedown', function(){
+				//remove all events on window
+				Ext.EventManager.removeAll(window);
 				window.location.href = '/automne/admin/?cms_action=logout';
 			}, this);
+			//side panel collapse stick
 			var panelStick = Ext.get('headPanelStick');
 			panelStick.addClassOnOver('over');
+			//get state of side panel (collapsed or not)
+			if (!Ext.state.Manager.get('side-panel-collapsible', true)) {
+				Automne.east.collapsible = false;
+				panelStick.addClass('pinned');
+			} else {
+				//then start timer to collapse it
+				Automne.east.collapseTimer();
+			}
 			panelStick.on('mousedown', function(e, el){
 				var el = Ext.get(el);
 				if (Automne.east.collapsible == true) {
+					Ext.state.Manager.set('side-panel-collapsible', false);
 					Automne.east.collapsible = false;
 					el.addClass('pinned');
 				} else {
+					Ext.state.Manager.set('side-panel-collapsible', true);
 					Automne.east.collapsible = true;
 					el.removeClass('pinned');
 				}
@@ -508,10 +523,9 @@ $jscontent = <<<END
 		win.show(t);
 	}
 	
-	var cb = center.body;
-	cb.on('mousedown', doAction, null, {delegate:'a'});
-	//cb.on('click', Ext.emptyFn, null, {delegate:'a', preventDefault:true});
-	
+	if (center.body) {
+		center.body.on('mousedown', doAction, null, {delegate:'a'});
+	}
     var actions = {
     	'validations' : function(t){
     		openWindow(t, 'validations.php', {

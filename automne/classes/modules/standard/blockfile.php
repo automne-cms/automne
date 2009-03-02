@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: blockfile.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: blockfile.php,v 1.2 2009/03/02 11:29:12 sebastien Exp $
 
 /**
   * Class CMS_block_file
@@ -408,13 +408,12 @@ class CMS_block_file extends CMS_block
 	  */
 	function getFilePath($originalName, &$page,&$clientspace,&$row,&$block, $withPath = true)
 	{
-		$name = strtoupper(SensitiveIO::sanitizeAsciiString($clientspace))."_";
-		$name .= strtoupper(SensitiveIO::sanitizeAsciiString($row))."_";
-		$name .= strtoupper(SensitiveIO::sanitizeAsciiString($block))."_";
-		$name .= "file".strtoupper(SensitiveIO::sanitizeAsciiString($this->_tagID))."_";
-		$name = md5($name);
+		$name = md5(uniqid());
 		$name .= SensitiveIO::sanitizeAsciiString($originalName);
 		$name = "p".$page->getID()."_".$name;
+		if (strlen($name) > 255) {
+			$name = sensitiveIO::ellipsis($name, 255, '-');
+		}
 		if ($withPath) {
 			return PATH_MODULES_FILES_STANDARD_FS."/edition/".$name;
 		} else {

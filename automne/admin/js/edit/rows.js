@@ -1,19 +1,15 @@
 /**
- * @class Automne.row
- * @extends Ext.util.Observable
- * @constructor
- * @param {Object} config The configuration options. All rows specifications :
- *  {
- * 		id:					'row unique id in page',
- * 		template:			'template id',
- * 		clientSpaceTagID:	'CS tag ID',
- * 		rowTagID:			'Row tag ID',
- * 		rowType:			'Row type',
- * 		userRight:			'does user has rights to edit row',
- * 		document:			current frame document we working with,
- * 		elements:			[array of HTML elements which compose the row]
- * 	}
- */
+  * Automne Javascript file
+  *
+  * Automne.row Extension Class for Ext.util.Observable
+  * Create extendable row content element which is embeded into clientspaces and contains block elements
+  * @class Automne.row
+  * @extends Ext.util.Observable
+  * @package CMS
+  * @subpackage JS
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * $Id: rows.js,v 1.3 2009/03/02 11:27:03 sebastien Exp $
+  */
 Automne.row = function(config){
 	config = config || {};
 	if(config.initialConfig){
@@ -283,7 +279,7 @@ Ext.extend(Automne.row, Ext.util.Observable, {
 							repairXY: [box.x,box.y],
 							ddel: proxy.dom
 						}
-			        },
+					},
 					// Provide coordinates for the proxy to slide back to on failed drag.
 					// This is the original XY coordinates of the draggable element.
 					getRepairXY: function() {

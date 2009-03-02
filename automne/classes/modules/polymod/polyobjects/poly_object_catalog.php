@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object_catalog.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: poly_object_catalog.php,v 1.2 2009/03/02 11:29:02 sebastien Exp $
 
 /**
   * static Class CMS_poly_object_catalog
@@ -452,18 +452,25 @@ class CMS_poly_object_catalog
 	  * @access public
 	  * @static
 	  */
-	function getListOfNamesForObject($objectID, $public = false, $searchConditions = array()) {
-		$return = array();
-		$items = CMS_poly_object_catalog::getAllObjects($objectID, $public, $searchConditions, true, POLYMOD_SEARCH_RETURN_OBJECTSLIGHT_EDITED);
+	function getListOfNamesForObject($objectID, $public = false, $searchConditions = array(), $loadSubObjects = false) {
+		static $listNames;
+		$paramsHash = md5(serialize(func_get_args()));
+		if (isset($listNames[$paramsHash])) {
+			return $listNames[$paramsHash];
+		}
+		$listNames[$paramsHash] = array();
+		if ($loadSubObjects) {
+			$items = CMS_poly_object_catalog::getAllObjects($objectID, $public, $searchConditions, true);
+		} else {
+			$items = CMS_poly_object_catalog::getAllObjects($objectID, $public, $searchConditions, true, POLYMOD_SEARCH_RETURN_OBJECTSLIGHT_EDITED);
+		}
 		foreach ($items as $item) {
-			$return[$item->getID()] = $item->getLabel();
+			$listNames[$paramsHash][$item->getID()] = $item->getLabel();
 		}
 		//natsort objects by name case insensitive
-		//natcasesort($return);
-		uasort($return, array('CMS_poly_object_catalog','_natecasecomp'));
-		return $return;
+		uasort($listNames[$paramsHash], array('CMS_poly_object_catalog','_natecasecomp'));
+		return $listNames[$paramsHash];
 	}
-	
 	//Callback function for natural sorting without care of accentuation
 	function _natecasecomp($str1, $str2) {
 		$str1 = sensitiveIO::sanitizeAsciiString($str1);

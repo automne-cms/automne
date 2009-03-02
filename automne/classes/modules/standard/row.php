@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: row.php,v 1.2 2008/12/18 10:40:46 sebastien Exp $
+// $Id: row.php,v 1.3 2009/03/02 11:29:12 sebastien Exp $
 
 /**
   * Class CMS_row
@@ -563,6 +563,27 @@ class CMS_row extends CMS_grandFather
 				$rowNodes = $domdocument->getElementsByTagName('row');
 				if ($rowNodes->length == 1) {
 					$rowXML = $rowNodes->item(0);
+				}
+				//search for valid tags
+				$hasValidTag = false;
+				foreach($rowXML->childNodes as $rowChildNode) {
+					if (is_a($rowChildNode, 'DOMElement') && $rowChildNode->tagName != 'script') {
+						$hasValidTag = true;
+					}
+				}
+				if (!$hasValidTag) {
+					//append atm-row class and row-id to all first level tags founded in row datas
+					$domdocument = new CMS_DOMDocument();
+					try {
+						$domdocument->loadXML('<row><div class="atm-dummy-row-tag">'.$data.'</div></row>');
+					} catch (DOMException $e) {
+						$this->raiseError('Parse error for row : '.$e->getMessage()." :\n".htmlspecialchars($data));
+						return '';
+					}
+					$rowNodes = $domdocument->getElementsByTagName('row');
+					if ($rowNodes->length == 1) {
+						$rowXML = $rowNodes->item(0);
+					}
 				}
 				$elements = array();
 				$rowId = 'row-'.$this->_tagID;

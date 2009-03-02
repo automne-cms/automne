@@ -68,7 +68,7 @@ Ext.lib.Dom.getXY = function(el) {
 
 //append a specific class on tip with a valid title
 Ext.override(Ext.ToolTip, {
-    showAt: function(xy){
+	showAt: function(xy){
 		this.lastActive = new Date();
 		this.clearTimers();
 		Ext.ToolTip.superclass.showAt.call(this, xy);

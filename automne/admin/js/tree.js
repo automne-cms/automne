@@ -1,8 +1,14 @@
 /**
+  * Automne Javascript file
+  *
   * Automne.treePanel Extension Class for Ext.tree.TreePanel
   * Allow use of a json response embeded in an XML return (for error management)
   * @class Automne.treePanel
   * @extends Ext.tree.TreePanel
+  * @package CMS
+  * @subpackage JS
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * $Id: tree.js,v 1.3 2009/03/02 11:26:54 sebastien Exp $
   */
 Automne.treePanel = Ext.extend(Ext.tree.TreePanel, {
 	filterMenu:		false,
@@ -38,7 +44,7 @@ Automne.treePanel = Ext.extend(Ext.tree.TreePanel, {
 		this.searchBox = Ext.getCmp('searchBox');
 	},
 	// private
-    initEvents : function(){
+	initEvents : function(){
 		Automne.treePanel.superclass.initEvents.call(this);
 		if (this.filterMenu) {
 			this.filterMenu.items.each(function(item){
@@ -49,7 +55,7 @@ Automne.treePanel = Ext.extend(Ext.tree.TreePanel, {
 			this.searchBox.on('beforequery', this.filterSearch, this);
 			this.searchBox.on('beforeselect', this.searchBeforeSelect, this);
 		}
-    },
+	},
 	filterVisibility: function(el, checked) {
 		//check for value change then reload tree
 		if (checked) {
@@ -274,11 +280,11 @@ Automne.treeNode = Ext.extend(Ext.tree.TreeNodeUI, {
 		}
 	},
 	getDDHandles : function(){
-        return [this.dragNode];
-    },
+		return [this.dragNode];
+	},
 	// private
-    onMove : function(tree, node, oldParent, newParent, index, refNode){
-        // call parent
+	onMove : function(tree, node, oldParent, newParent, index, refNode){
+		// call parent
 		Automne.treeNode.superclass.onMove.apply(this, arguments);
 		//send new node position to server
 		var value = '';
@@ -295,7 +301,7 @@ Automne.treeNode = Ext.extend(Ext.tree.TreeNodeUI, {
 				value:			value
 			}
 		});
-    }
+	}
 });
 
 /**
@@ -329,29 +335,29 @@ Automne.treeLoader = Ext.extend(Ext.tree.TreeLoader, {
 
 Ext.tree.TreeDropZone.override({
 	// private
-    getDropPoint : function(e, n, dd){
-        var tn = n.node;
-        if(tn.isRoot){
-            return tn.allowChildren !== false ? "append" : false; // always append for root
-        }
-        var dragEl = n.ddel;
-        var t = Ext.lib.Dom.getY(dragEl), b = t + dragEl.offsetHeight;
-        var y = Ext.lib.Event.getPageY(e);
-        var noAppend = tn.allowChildren === false;// || tn.isLeaf(); changed this to allow appening into a leaf node
-        if(this.appendOnly || tn.parentNode.allowChildren === false){
-            return noAppend ? false : "append";
-        }
-        var noBelow = false;
-        if(!this.allowParentInsert){
-            noBelow = tn.hasChildNodes() && tn.isExpanded();
-        }
-        var q = (b - t) / (noAppend ? 2 : 3);
-        if(y >= t && y < (t + q)){
-            return "above";
-        }else if(!noBelow && (noAppend || y >= b-q && y <= b)){
-            return "below";
-        }else{
-            return "append";
-        }
-    }
+	getDropPoint : function(e, n, dd){
+		var tn = n.node;
+		if(tn.isRoot){
+			return tn.allowChildren !== false ? "append" : false; // always append for root
+		}
+		var dragEl = n.ddel;
+		var t = Ext.lib.Dom.getY(dragEl), b = t + dragEl.offsetHeight;
+		var y = Ext.lib.Event.getPageY(e);
+		var noAppend = tn.allowChildren === false;// || tn.isLeaf(); changed this to allow appening into a leaf node
+		if(this.appendOnly || tn.parentNode.allowChildren === false){
+			return noAppend ? false : "append";
+		}
+		var noBelow = false;
+		if(!this.allowParentInsert){
+			noBelow = tn.hasChildNodes() && tn.isExpanded();
+		}
+		var q = (b - t) / (noAppend ? 2 : 3);
+		if(y >= t && y < (t + q)){
+			return "above";
+		}else if(!noBelow && (noAppend || y >= b-q && y <= b)){
+			return "below";
+		}else{
+			return "append";
+		}
+	}
 });

@@ -1,8 +1,14 @@
 /**
-  * Automne.blockPolymod Extension Class for Automne.block
-  * Add specific controls for polymod block
-  * @class Automne.blockPolymod
+  * Automne Javascript file
+  *
+  * Automne.blockCMS_Forms Extension Class for Automne.block
+  * Add specific controls for cms_forms block
+  * @class Automne.blockCMS_Forms
   * @extends Automne.block
+  * @package CMS
+  * @subpackage JS
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * $Id: block-cms-forms.js,v 1.2 2009/03/02 11:27:02 sebastien Exp $
   */
 Automne.blockCMS_Forms = Ext.extend(Automne.block, {
 	blockClass:	'CMS_block_cms_forms',

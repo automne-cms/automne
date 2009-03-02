@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: validations-sidepanel.php,v 1.3 2009/02/03 14:24:44 sebastien Exp $
+// $Id: validations-sidepanel.php,v 1.4 2009/03/02 11:25:15 sebastien Exp $
 
 /**
   * PHP page : Load side panel validations infos.
@@ -39,9 +39,9 @@ $content = '';
 
 //VALIDATIONS PENDING
 $validationpanel = '';
+$validationsCount = 0;
 if ($cms_user->hasValidationClearance() && APPLICATION_ENFORCES_WORKFLOW) {
 	$modulesValidations = CMS_modulesCatalog::getAllValidations($cms_user, true);
-	$validationsCount = 0;
 	//panel content
 	$content .= '<div id="validationsPanel">';
 	if ($modulesValidations && sizeof($modulesValidations)) {
@@ -90,8 +90,7 @@ $jscontent = <<<END
 END;
 $view->addJavascript($jscontent);
 
-// Reset cookie
-	//CMS_context::resetSessionCookies();
+//CMS_context::resetSessionCookies();
 
 //send content
 $view->setContent($content);

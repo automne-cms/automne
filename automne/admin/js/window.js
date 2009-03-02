@@ -1,8 +1,14 @@
 /**
+  * Automne Javascript file
+  *
   * Automne.Window Extension Class for Ext.Window
   * Manager for windows update through ajax request. Allow fine error management
   * @class Automne.Window
   * @extends Ext.Window
+  * @package CMS
+  * @subpackage JS
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * $Id: window.js,v 1.3 2009/03/02 11:26:54 sebastien Exp $
   */
 Automne.Window = Ext.extend(Ext.Window, {
 	currentPage:	false,
@@ -103,15 +109,15 @@ Automne.Window = Ext.extend(Ext.Window, {
 		this.lastZIndex = index;
 	},
 	// private - used for dragging : correct a z-index pb with modal group during dragging 
-    ghost : function(cls){
-        //get initial z-index of window element
+	ghost : function(cls){
+		//get initial z-index of window element
 		var zindex = parseInt(this.el.getStyle('z-index'));
 		//call parent to get ghost
 		var g = Automne.Window.superclass.ghost.apply(this, arguments); 
 		//set initial z-index to ghost
 		g.setStyle('z-index', zindex);
 		return g;
-    },
+	},
 	updateResource: function (action, module, resourceId) {
 		if (action == 'delete' && this.resources[module] && this.resources[module][resourceId] && this.update) {
 			this.update();
@@ -159,16 +165,19 @@ Automne.windowRenderer = Ext.extend(Ext.Updater.BasicRenderer, {
 	//render response into window body
 	doRender: function(response, options, content) {
 		if (options.el.dom && content) {
+			//pr(content);
+			//pr(options.el);
 			options.el.dom.innerHTML = content;
 		} else {
 			options.el.dom.innerHTML = '';
 		}
 		if (response.responseXML.getElementsByTagName('jscontent').length) {
-			/*try {*/
+			//pr(response.responseXML.getElementsByTagName('jscontent').item(0).firstChild.nodeValue);
+			try {
 				eval(response.responseXML.getElementsByTagName('jscontent').item(0).firstChild.nodeValue);
-			/*} catch(e) {
-				pr(e);
-			}*/
+			} catch(e) {
+				pr(e, 'error');
+			}
 		}
 		if (options.el.dom && !content && !response.responseXML.getElementsByTagName('jscontent').length) {
 			options.el.dom.innerHTML = Automne.locales.loadingError;
@@ -182,13 +191,13 @@ Automne.windowRenderer = Ext.extend(Ext.Updater.BasicRenderer, {
   * @extends Ext.WindowGroup
   */
 Automne.ModalWindowGroup = function(){
-    var list = {};
-    var accessList = [];
-    var front = null;
+	var list = {};
+	var accessList = [];
+	var front = null;
 	var daughtersList = {};
-    // private
-    var sortWindows = function(d1, d2){
-        return (!d1._lastAccess || d1._lastAccess < d2._lastAccess) ? -1 : 1;
+	// private
+	var sortWindows = function(d1, d2){
+		return (!d1._lastAccess || d1._lastAccess < d2._lastAccess) ? -1 : 1;
 	};
 
 	// private

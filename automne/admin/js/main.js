@@ -6,6 +6,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * $Id: main.js,v 1.4 2009/03/02 11:26:54 sebastien Exp $
   */
 
 Ext.namespace('Automne');
@@ -29,7 +30,7 @@ Automne = {
 	*************************************/
 	init: function() {
 		//check for navigator version
-		if (!(Ext.isIE && (Ext.isIE6 || Ext.isIE7)) && !(Ext.isGecko || Ext.isSafari || Ext.isOpera )) {
+		if (Ext.isGecko2 || Ext.isIE6 ||  Ext.isSafari2 || !(Ext.isIE || Ext.isGecko || Ext.isSafari || Ext.isOpera)) {
 			window.top.location.replace('./navigator.php');
 		}
 		//check for inframe
@@ -47,6 +48,108 @@ Automne = {
 		});
 		Ext.state.Manager.setProvider(Automne.cookie);
 		
+		//set Global Ajax events
+		Ext.Ajax.on({'beforerequest': Automne.server.showSpinner, 'requestcomplete': Automne.server.hideSpinner, scope: this});
+		
+		//create viewport
+		Automne.createViewPort();
+		
+		//check for authenticated user
+		Automne.server.call('login.php' + ((Automne.logout) ? '?cms_action=logout' : ''));
+		
+		//remove loading element
+		setTimeout(function(){
+			Ext.get('atm-center').remove();
+			Ext.get('atm-loading-mask').fadeOut({remove:true, callback:Automne.end});
+		}, 250);
+	},
+	//load Automne admin interface
+	load: function(context) {
+		//keep old user Id
+		var oldUser = false;
+		if (Automne.context && Automne.context.userId) {
+			oldUser = Automne.context.userId
+		}
+		//set new context.
+		Automne.context = context;
+		//if it is a new connexion or a new user, load interface
+		if (!oldUser || oldUser != Automne.context.userId) {
+			//if user is not the same than the old one, recreate viewport.
+			if (oldUser && oldUser != Automne.context.userId && Ext.get('sidePanel')) {
+				Automne.createViewPort();
+			} else {
+				//set window events
+				Automne.preventUnload();
+				Automne.catchF5(document, window);
+			}
+			//load east panel
+			Automne.east.load({
+				url:		'side-panel.php',
+				params:		{
+					winId:		'sidePanel'
+				},
+				nocache:	true,
+				scope:		this
+			});
+			if (window.location.search.indexOf('pageId') !== -1) {
+				//get page to display from url parameters
+				var config = Ext.urlDecode(window.location.search.substr(1));
+				if (config.tab) {
+					config.fromTab = config.tab;
+				}
+			} else {
+				//need to get public frame infos
+				var config = {
+					pageUrl:		Ext.getCmp('public').getFrameURL(),
+					followRedirect:	true
+				}
+			}
+			//get page infos and force reload public frame (if active)
+			Automne.tabPanels.getPageInfos(config, function(){
+				if (Automne.tabPanels.getActiveTab().id == 'public') {
+					Automne.tabPanels.getActiveTab().reload();
+				}
+			});
+			
+			//display east panel
+			Automne.east.expand();
+		}
+	},
+	catchF5: function(doc, win) {
+		var catchF5 = function(e) {
+			var ev = !Ext.isIE ? e.browserEvent : this.event;
+			if (ev && ev.keyCode == Ext.EventObject.F5/* && (!e || (e && !e.ctrlKey && !e.shiftKey))*/) {
+				if (!Ext.isIE) {
+					e.stopEvent();
+				} else {
+					ev.keyCode=0;
+				}
+				Automne.tabPanels.getActiveTab().reload();
+				Automne.message.show(Automne.locales.refresh, '', Automne.tabPanels.getActiveTab());
+				return false;
+			}
+			return true;
+		}
+		//set F5 event
+		if (!Ext.isIE) {
+			Ext.EventManager.on(doc, 'keypress', catchF5);
+		} else {
+			doc.onkeydown = catchF5.createDelegate(win);
+		}
+	},
+	preventUnload: function() {
+		//set window unload event
+		Ext.EventManager.on(window, 'beforeunload', function(e) {
+			e.stopEvent();
+			e.browserEvent.returnValue = Automne.locales.quitConfirm;
+			return false;
+		});
+	},
+	createViewPort: function() {
+		//if viewport already exists : destroy it
+		if (Automne.viewPort) {
+			Automne.viewPort.destroy();
+		}
 		//create viewport and first tab panel
 		Automne.viewPort = new Ext.Viewport({
 			layout:			'border',
@@ -75,7 +178,7 @@ Automne = {
 					layout:			'atm-border',
 					collapsible: 	true,
 					collapseMode:	'mini',
-					collapsed:		true,
+					collapsed:		!Ext.state.Manager.get('side-panel-collapsible', true),
 					split:			true,
 					width: 			290,
 					minWidth:		290,
@@ -84,58 +187,10 @@ Automne = {
 				}) 
 			]
 		});
-		//set Global Ajax events
-		Ext.Ajax.on({'beforerequest': Automne.server.showSpinner, 'requestcomplete': Automne.server.hideSpinner, scope: this});
-		
-		//check for authenticated user
-		Automne.server.call('login.php' + ((Automne.logout) ? '?cms_action=logout' : ''));
-		
-		//remove loading element
-		setTimeout(function(){
-			Ext.get('atm-center').remove();
-			Ext.get('atm-loading-mask').fadeOut({remove:true, callback:Automne.end});
-		}, 250);
-	},
-	//load Automne admin interface
-	load: function() {
-		//set viewPort var
-		Automne.viewPort = Ext.getCmp('viewPort');
 		//set tabPanels var
 		Automne.tabPanels = Ext.getCmp('tabPanels');
 		//set east panel var
 		Automne.east = Ext.getCmp('sidePanel');
-		Automne.east.load({
-			url:		'side-panel.php',
-			params:		{
-				winId:		'sidePanel'
-			},
-			nocache:	true,
-			scope:		this
-		});
-		if (window.location.search.indexOf('pageId') !== -1) {
-			//get page to display from url parameters
-			var config = Ext.urlDecode(window.location.search.substr(1));
-			if (config.tab) {
-				config.fromTab = config.tab;
-			}
-		} else {
-			//need to get public frame infos
-			var config = {
-				pageUrl:		Ext.getCmp('public').getFrameURL(),
-				followRedirect:	true
-			}
-		}
-		//get page infos and force reload public frame (if active)
-		Automne.tabPanels.getPageInfos(config, function(){
-			if (Automne.tabPanels.getActiveTab().id == 'public') {
-				Automne.tabPanels.getActiveTab().reload();
-			}
-		});
-		
-		//display east panel
-		Automne.east.expand();
-		//then start timer to collapse it
-		Automne.east.collapseTimer();
 	},
 	end: function() {
 		//check for input focus in current page
@@ -148,7 +203,7 @@ Automne = {
 					try {
 						focusok = Automne.utils.focusinput(iframes[i].contentWindow.document);
 					} catch(e) {
-						pr(e);
+						pr(e, 'error');
 					}
 				}
 			}
@@ -248,7 +303,7 @@ Automne.server = {
 			try{
 				eval('jsonResponse = '+xml.getElementsByTagName('jsoncontent').item(0).firstChild.nodeValue+';');
 			} catch(e) {
-				pr(e);
+				pr(e, 'error');
 			}
 		} else if(options.evalContent !== false && xml && xml.getElementsByTagName('content').length) {
 			content = xml.getElementsByTagName('content').item(0).firstChild.nodeValue;
@@ -259,7 +314,7 @@ Automne.server = {
 			try{
 				eval(xml.getElementsByTagName('jscontent').item(0).firstChild.nodeValue);
 			} catch(e) {
-				pr(e);
+				pr(e, 'error');
 			}
 		}
 		//extract json jsfiles and cssfiles in response if any
@@ -268,14 +323,14 @@ Automne.server = {
 			try{
 				eval('jsFiles = '+xml.getElementsByTagName('jsfiles').item(0).firstChild.nodeValue+';');
 			} catch(e) {
-				pr(e);
+				pr(e, 'error');
 			}
 		}
 		if (options.evalJSon !== false && xml && xml.getElementsByTagName('cssfiles').length) {
 			try{
 				eval('cssFiles = '+xml.getElementsByTagName('cssfiles').item(0).firstChild.nodeValue+';');
 			} catch(e) {
-				pr(e);
+				pr(e, 'error');
 			}
 		}
 		if (xml && xml.getElementsByTagName('disconnected').length) {
@@ -309,7 +364,6 @@ Automne.server = {
 Automne.message = {
 	msgCt:		false,
 	show: function (title, message, el){
-		pr('Show message');
 		if(!Automne.message.msgCt){
 			Automne.message.msgCt = Ext.DomHelper.insertFirst(document.body, {id:'atm-msg-div'}, true);
 		}
@@ -332,7 +386,7 @@ Automne.message = {
 		}
 		Automne.message.msgCt.alignTo(el || document, 't-t');
 		var m = Ext.DomHelper.insertFirst(Automne.message.msgCt, {html:boxtpl}, true);
-		m.slideIn('t').pause(4).ghost("t", {remove:true});
+		m.slideIn('t').pause(3).ghost("t", {remove:true});
 		if (win && win.on) {
 			win.on('close',function(){m.remove();});
 		}
@@ -413,6 +467,25 @@ Automne.utils = {
 		pr('getValidationByID for module : '+module+', resource : '+resourceId);
 		var el = Ext.get(el);
 		var e = Ext.EventObject;
+		if (el.dom.ownerDocument != document) {
+			//if call came from a frame, open directly the validations page (cannot create menu in frame)
+			var win = new Automne.Window({
+				id:				'validationsWindow',
+				autoLoad:		{
+					url:			'validations.php',
+					params:			{
+						winId:			'validationsWindow',
+						resource:		resourceId,
+						module:			module
+					},
+					nocache:	true,
+					scope:		this
+				}
+			});
+			//display window
+			win.show(el);
+			return true;
+		}
 		//check if menu exists, else create it
 		if (!Ext.menu.MenuMgr.get('validationMenu')) {
 			var menu = new Automne.Menu({
@@ -484,22 +557,6 @@ Automne.utils = {
 			}
 		}
 	},
-	editor: function(el, startValue) {
-		//complete last edit if editor already exists
-		if (Automne.utils.edit) Automne.utils.edit.completeEdit();
-		//create an editor for this element
-		Automne.utils.edit = new Automne.Editor(el);
-		//then start edition
-		Automne.utils.edit.startEdit(null, startValue);
-	},
-	//generic function to delete editor
-	deleteEditor: function() {
-		if (Automne.utils.edit) {
-			Automne.utils.edit.cancelEdit();
-			Automne.utils.edit.destroy();
-			Automne.utils.edit = false;
-		}
-	},
 	//catch all click into root to redirect action
 	catchLinks: function(root, source) {
 		if (root.dom) {
@@ -569,12 +626,23 @@ Automne.utils = {
 ///////////////////////
 Automne.view = {
 	tree: function(eId, heading, currentPage) {
+		if (typeof eId == 'object') {
+			var e =  Ext.get(eId);
+			eId = e.id;
+		} else {
+			var e = Ext.get(eId);
+		}
+		if (!e) {
+			pr('Can\'t get element '+ eId +'for tree');
+			return false;
+		}
 		pr('tree for el : '+eId+', heading : '+heading+ ', page : '+currentPage);
 		//create window element
 		var winid = Ext.id();
 		var win = new Automne.Window({
 			id:				winid,
 			currentPage:	(currentPage) ? currentPage : 1,
+			currentEl:		e,
 			autoLoad:		{
 				url:		'tree.php',
 				params:		{
@@ -588,9 +656,7 @@ Automne.view = {
 			}
 		});
 		//display window
-		win.show(eId);
-		//set window specific updater
-		win.body.getUpdater().renderer = new Automne.windowRenderer();
+		win.show(e);
 		return win;
 	},
 	user: function(userId) {

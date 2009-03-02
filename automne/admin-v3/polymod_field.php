@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: polymod_field.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: polymod_field.php,v 1.2 2009/03/02 11:27:33 sebastien Exp $
 
 /**
   * PHP page : polymod admin
@@ -142,8 +142,8 @@ case "newtype";
 		//save the data
 		$field->writeToPersistence();
 		
-		//header("Location: modules_admin.php?moduleCodename=".$moduleCodename."&object=".$object->getID()."&field=".$field->getID()."&cms_message_id=".MESSAGE_ACTION_OPERATION_DONE."&".session_name()."=".session_id());
-		//exit;
+		header("Location: modules_admin.php?moduleCodename=".$moduleCodename."&object=".$object->getID()."&field=".$field->getID()."&cms_message_id=".MESSAGE_ACTION_OPERATION_DONE."&".session_name()."=".session_id());
+		exit;
 	} elseif ($_POST["cms_action"] != "validate") {
 		$cms_message = '';
 	}

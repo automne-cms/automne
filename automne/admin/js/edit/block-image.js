@@ -1,8 +1,14 @@
 /**
+  * Automne Javascript file
+  *
   * Automne.blockImage Extension Class for Automne.block
   * Add specific controls for image block
   * @class Automne.blockImage
   * @extends Automne.block
+  * @package CMS
+  * @subpackage JS
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * $Id: block-image.js,v 1.2 2009/03/02 11:27:02 sebastien Exp $
   */
 Automne.blockImage = Ext.extend(Automne.block, {
 	blockClass:	'CMS_block_image',

@@ -1,8 +1,14 @@
 /**
+  * Automne Javascript file
+  *
   * Automne.Menu Extension Class for Ext.menu.Menu
-  * Provide a delayed mouseout event
+  * Provide a delayed mouseout event to Ext.menu.Menu object
   * @class Automne.Menu
   * @extends Ext.menu.Menu
+  * @package CMS
+  * @subpackage JS
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * $Id: menu.js,v 1.2 2009/03/02 11:26:54 sebastien Exp $
   */
 Automne.Menu = Ext.extend(Ext.menu.Menu, {
 	mouseOutTimeOut:false,

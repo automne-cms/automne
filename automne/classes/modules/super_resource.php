@@ -10,10 +10,10 @@
 // | LICENSE-GPL, and is available through the world-wide-web at		  |
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
-// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: super_resource.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: super_resource.php,v 1.2 2009/03/02 11:28:31 sebastien Exp $
 
 /**
   * General-purpose Class
@@ -118,7 +118,7 @@ class CMS_superResource extends CMS_resource
 	  * @return void
 	  * @access public
 	  */
-	function __construct($id = 0,$public=false)
+	function CMS_superResource($id = 0,$public=false)
 	{
 		if (!class_exists("CMS_date") || !class_exists("SensitiveIO")) {
 			die("CMS_superResource need at least CMS_date and SensitiveIO to run ...");
@@ -334,6 +334,12 @@ class CMS_superResource extends CMS_resource
 			//here you can verifiy string data
 			switch ($this->_tableData[$stringName][0]) {
 				case "email":
+                    //null case
+                    if(is_null($stringValue)){
+                        $this->_tableData[$stringName][1] = null;
+                        break;
+                    }
+
 					if (!SensitiveIO::isValidEmail($stringValue)) {
 						$this->raiseError("Try to set an uncorrect email format :".$stringValue);
 						return false;
@@ -427,6 +433,12 @@ class CMS_superResource extends CMS_resource
 	function setInteger($integerName,$integerValue)
 	{
 		if ($this->_tableData[$integerName][0]=="integer" || $this->_tableData[$integerName][0]=="positiveInteger") {
+			//null case
+			if(is_null($integerValue)){
+				$this->_tableData[$integerName][1] = null;
+				return true;
+			}
+
 			//here you can verifiy string data
 			switch ($this->_tableData[$integerName][0]) {
 				case "integer":
@@ -1226,6 +1238,8 @@ class CMS_superResource extends CMS_resource
 				$count++;
 				$where .= " ".$label.$this->_tableSufix." ".$operator." '".SensitiveIO::sanitizeSQLString($condition)."' ";
 			}
+		} else {
+			$where = '';
 		}
 		
 		//order clause
@@ -1238,6 +1252,8 @@ class CMS_superResource extends CMS_resource
 				$count++;
 				$order .= " ".$orderLabel.$this->_tableSufix." ".$orderType." ";
 			}
+		} else {
+			$order = '';
 		}
 		
 		//from clause
@@ -1291,11 +1307,18 @@ class CMS_superResource extends CMS_resource
 			$sql_fields .= ($count) ? ",":'';
 			$count++;
 			switch($aData[0]) {
-				case 'string':
-				case 'html':
-				case 'email':
 				case 'integer':
 				case 'positiveInteger':
+				case 'email':
+                    if(is_null($this->_tableData[$label][1])){
+                        $sql_fields .= " `".$label.$this->_tableSufix."`=NULL";
+                    }
+                    else{
+                        $sql_fields .= " `".$label.$this->_tableSufix."`='".SensitiveIO::sanitizeSQLString($this->_tableData[$label][1])."'";
+                    }
+                    break;
+				case 'string':
+				case 'html':
 				case 'image':
 				case 'file':
 				case 'internalLink':

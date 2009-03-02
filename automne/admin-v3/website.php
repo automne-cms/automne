@@ -15,7 +15,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: website.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: website.php,v 1.2 2009/03/02 11:27:33 sebastien Exp $
 
 /**
   * PHP page : page base data
@@ -53,6 +53,7 @@ define("MESSAGE_PAGE_FIELD_FAVICON", 1343);
 define("MESSAGE_PAGE_FIELD_FAVICON_COMMENT", 1344);
 define("MESSAGE_PAGE_CHOOSE", 1132);
 define("MESSAGE_PAGE_FIELD_LABEL_DESC", 1431);
+define("MESSAGE_PAGE_META_DATA_LABEL", 393);
 
 //RIGHTS CHECK
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES)) {
@@ -114,6 +115,7 @@ case "validate":
 		$website->setMeta('copyright', $_POST['copyright']);
 		$website->setMeta('language', $_POST['language']);
 		$website->setMeta('favicon', $_POST['favicon']);
+		$website->setMeta('metas', $_POST['metas']);
 		if (!$website->hasError()) {
 			$website->writeToPersistence();
 			CMS_tree::regenerateAllPages(true);
@@ -198,8 +200,8 @@ $content .= '
 		<td class="admin"><input type="text" size="30" maxlength="255" class="admin_input_long_text" name="category" value="'.htmlspecialchars($website->getMeta('category')).'" />&nbsp;</td>
 	</tr>
 	<tr>
-		<td class="admin" align="right">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_ROBOTS).'</td>
-		<td class="admin"><input type="text" size="15" maxlength="255" class="admin_input_text" name="robots" value="'.htmlspecialchars($website->getMeta('robots')).'" /> <span class="admin_comment">('.$cms_language->getMessage(MESSAGE_PAGE_FIELD_ROBOTS_COMMENT).')</span>&nbsp;</td>
+		<td class="admin" align="right" valign="top">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_ROBOTS).'</td>
+		<td class="admin"><input type="text" size="15" maxlength="255" class="admin_input_text" name="robots" value="'.htmlspecialchars($website->getMeta('robots')).'" /><br /><span class="admin_comment">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_ROBOTS_COMMENT).'</span>&nbsp;</td>
 	</tr>
 	<tr>
 		<td class="admin" align="right">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_AUTHOR).'</td>
@@ -212,6 +214,10 @@ $content .= '
 	<tr>
 		<td class="admin" align="right">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_COPYRIGHT).'</td>
 		<td class="admin"><input type="text" size="30" maxlength="255" class="admin_input_long_text" name="copyright" value="'.htmlspecialchars($website->getMeta('copyright')).'" />&nbsp;</td>
+	</tr>
+	<tr>
+		<td class="admin" align="right">'.$cms_language->getJsMessage(MESSAGE_PAGE_META_DATA_LABEL).'</td>
+		<td class="admin"><textarea cols="45" rows="2" class="admin_long_textarea" name="metas">'.htmlspecialchars($website->getMeta('metas')).'</textarea>&nbsp;</td>
 	</tr>
 	<tr>
 		<td class="admin" align="right"><span class="admin_text_alert">*</span> '.$cms_language->getMessage(MESSAGE_PAGE_FIELD_LANGUAGE).'</td>

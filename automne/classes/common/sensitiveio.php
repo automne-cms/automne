@@ -10,11 +10,11 @@
 // | LICENSE-GPL, and is available through the world-wide-web at		  |
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
-// | Authors: Antoine Pouch <antoine.pouch@ws-interactive.fr>             |
+// | Authors: Antoine Pouch <antoine.pouch@ws-interactive.fr>			  |
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: sensitiveio.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: sensitiveio.php,v 1.2 2009/03/02 11:28:06 sebastien Exp $
 
 /**
   * Class SensitiveIO
@@ -233,7 +233,7 @@ class SensitiveIO extends CMS_grandfather
 			extract($email);
 		}
 		if (ereg('^[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+'.'@'.
-                 	'[-!#$%&\'*+\\/0-9=?A-Z^_`a-z{|}~]+\.'.
+				 	'[-!#$%&\'*+\\/0-9=?A-Z^_`a-z{|}~]+\.'.
 			'[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+$', $email)) { //TODOV4
 
 			if ($checkDomain && function_exists('checkdnsrr')) {
@@ -275,10 +275,9 @@ class SensitiveIO extends CMS_grandfather
 		if (is_array($formatStringParameters)) {
 			// Check equal amount of parameters for concatination
 			if (count($formatStringParameters) != substr_count($formatString, "%s")) {
-				//TODOV4 : remove ."\n".print_r(debug_backtrace(), true) at end of this error message
 				CMS_grandFather::raiseError("Invalid format :\nParameters : ".
 					count($formatStringParameters)."\nReplacements to do : " .
-					substr_count($formatString,"%s"). "\n".'('.implode(' - ',$formatStringParameters).' -> '.$formatString.')'."\n".print_r(debug_backtrace(), true));
+					substr_count($formatString,"%s"). "\n".'('.implode(' - ',$formatStringParameters).' -> '.$formatString.')');/*."\n".print_r(debug_backtrace(), true))*/
 			} else {
 				// Replace %s
 				$exploded = explode("%s", $formatString);
@@ -318,33 +317,33 @@ class SensitiveIO extends CMS_grandfather
 	  * @access public
 	  */
 	function decodeWindowsChars($input) {
-	    if (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
+		if (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
 			$entities = array(
-		        '‚' => '&#8218;',
-		        'ƒ' => '&#402;',
-		        '„' => '&#8222;',
-		        '…' => '&#8230;',
-		        '†' => '&#8224;',
-		        '‡' => '&#8225;',
-		        'ˆ' => '&#710;',
-		        '‰' => '&#8240;',
-		        'Š' => '&#352;',
-		        '‹' => '&#8249;',
-		        'Œ' => '&#338;',
-		        '‘' => '&#8216;',
-		        '’' => '&#8217;',
-		        '“' => '&#8220;',
-		        '”' => '&#8221;',
-		        '•' => '&#8226;',
-		        '–' => '&#8211;',
-		        '—' => '&#8212;',
-		        '˜' => '&#732;',
-		        '™' => '&#8482;',
-		        'š' => '&#353;',
-		        '›' => '&#8250;',
-		        'œ' => '&#339;',
-		        'Ÿ' => '&#376;',
-		        '€' => '&#8364;',
+				'‚' => '&#8218;',
+				'ƒ' => '&#402;',
+				'„' => '&#8222;',
+				'…' => '&#8230;',
+				'†' => '&#8224;',
+				'‡' => '&#8225;',
+				'ˆ' => '&#710;',
+				'‰' => '&#8240;',
+				'Š' => '&#352;',
+				'‹' => '&#8249;',
+				'Œ' => '&#338;',
+				'‘' => '&#8216;',
+				'’' => '&#8217;',
+				'“' => '&#8220;',
+				'”' => '&#8221;',
+				'•' => '&#8226;',
+				'–' => '&#8211;',
+				'—' => '&#8212;',
+				'˜' => '&#732;',
+				'™' => '&#8482;',
+				'š' => '&#353;',
+				'›' => '&#8250;',
+				'œ' => '&#339;',
+				'Ÿ' => '&#376;',
+				'€' => '&#8364;',
 				'ÿ' => ' ',
 				'‡' => 'f',
 				'‚' => 'é',
@@ -373,8 +372,8 @@ class SensitiveIO extends CMS_grandfather
 		$tmpFile->writeTopersistence();
 		//then execute it as a require file (this is most like a real PHP execution)
 		ob_start();
-    	require $tmpFile->getFilename();
-    	$return = ob_get_clean();
+		require $tmpFile->getFilename();
+		$return = ob_get_clean();
 		$tmpFile->delete();
 		return $return;
 	}
@@ -390,7 +389,7 @@ class SensitiveIO extends CMS_grandfather
 	function jsonEncode ($datas) {
 		if (!is_array($datas)) {
 			CMS_grandFather::raiseError('Datas must be an array ...');
-			return array();
+			return $datas;
 		}
 		//encode nodes array in utf-8 if needed
 		if (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
@@ -408,11 +407,11 @@ class SensitiveIO extends CMS_grandfather
 	  * @return string the value troncated
 	  * @access public
 	  */
-	function ellipsis($value, $length) {
+	function ellipsis($value, $length, $ellipsis = '...') {
 		if (strlen($value) <= $length) {
 			return $value;
 		}
-		return substr($value, 0, ceil(($length - 3)/2)) . '...' . substr($value, - floor(($length - 3)/2));
+		return substr($value, 0, ceil(($length - strlen($ellipsis))/2)) . $ellipsis . substr($value, - floor(($length - strlen($ellipsis))/2));
 	}
 
 	/**
@@ -424,10 +423,10 @@ class SensitiveIO extends CMS_grandfather
 	function getCallInfos() {
 		$callInfos = '';
 		$bt = debug_backtrace();
-		if (isset($bt[3]) && $bt[2]['class'] == 'CMS_grandFather' && ($bt[2]['function'] == '__call')) {
+		if (isset($bt[3]) && isset($bt[2]['class']) && $bt[2]['class'] == 'CMS_grandFather' && ($bt[2]['function'] == '__call')) {
 			//if error is sent by generic __call or autoload method of grandFather class, display point of call
 			$callInfos = str_replace($_SERVER['DOCUMENT_ROOT'], '', $bt[3]['file']).' (line '.$bt[3]['line'].')';
-		} elseif (isset($bt[4]) && $bt[2]['class'] == 'CMS_grandFather' && ($bt[2]['function'] == 'autoload')) {
+		} elseif (isset($bt[4]) && isset($bt[2]['class']) && $bt[2]['class'] == 'CMS_grandFather' && ($bt[2]['function'] == 'autoload')) {
 			//if error is sent by generic __call or autoload method of grandFather class, display point of call
 			$callInfos = str_replace($_SERVER['DOCUMENT_ROOT'], '', $bt[4]['file']).' (line '.$bt[4]['line'].')';
 		} elseif (isset($bt[2])) {
@@ -440,6 +439,59 @@ class SensitiveIO extends CMS_grandfather
 			$callInfos = str_replace($_SERVER['DOCUMENT_ROOT'], '', $bt[1]['file']).' (line '.$bt[1]['line'].')';
 		}
 		return $callInfos;
+	}
+	
+	function printBackTrace($backtrace) {
+		if (!is_array($backtrace)) {
+			return false;
+		}
+		$output = '';
+		foreach ($backtrace as $bt) {
+			$args = '';
+			if (isset($bt['args']) && is_array($bt['args'])) {
+		  		foreach ($bt['args'] as $a) {
+					 if ($args) {
+						 $args .= ', ';
+					 }
+					 switch (gettype($a)) {
+						 case 'integer':
+						 case 'double':
+							 $args .= $a;
+							 break;
+						 case 'string':
+							 $a = htmlspecialchars(substr($a, 0, 64)).((strlen($a) > 64) ? '...' : '');
+							 $args .= "\"$a\"";
+							 break;
+						 case 'array':
+							 $args .= 'Array('.count($a).')';
+							 break;
+						 case 'object':
+							 $args .= 'Object('.get_class($a).')';
+							 break;
+						 case 'resource':
+							 $args .= 'Resource('.strstr($a, '#').')';
+							 break;
+						 case 'boolean':
+							 $args .= $a ? 'True' : 'False';
+							 break;
+						 case 'NULL':
+							 $args .= 'Null';
+							 break;
+						 default:
+							 $args .= 'Unknown';
+							 break;
+					 }
+				 }
+			}
+			$output .= "<br />\n";
+			$output .= "<b>file:</b> {$bt['line']} - {$bt['file']}<br />\n";
+			if (isset($bt['class']) && isset($bt['type'])) {
+				$output .= "<b>call:</b> {$bt['class']}{$bt['type']}{$bt['function']}($args)<br />\n";
+			} else {
+				$output .= "<b>call:</b> {$bt['function']}($args)<br />\n";
+			}
+		}
+		return $output;
 	}
 }
 ?>

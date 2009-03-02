@@ -1,10 +1,15 @@
-/*
- * Ext JS Library 2.2
- * Copyright(c) 2006-2008, Ext JS, LLC.
- * licensing@extjs.com
- * 
- * http://extjs.com/license
- */
+/**
+  * Automne Javascript file
+  *
+  * Automne.ImageUploadField Extension Class for Automne.FileUploadField
+  * Provide a field wich is dedicated to image upload
+  * @class Automne.ImageUploadField
+  * @extends Automne.FileUploadField
+  * @package CMS
+  * @subpackage JS
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * $Id: imageupload.js,v 1.3 2009/03/02 11:26:53 sebastien Exp $
+  */
 Automne.ImageUploadField = Ext.extend(Automne.FileUploadField,  {
 	// private
 	initComponent: function(){
@@ -28,17 +33,83 @@ Automne.ImageUploadField = Ext.extend(Automne.FileUploadField,  {
 			this.fieldLabel += '</small>';
 		}
 	},
+	/**
+	 * Validates a value according to the field's validation rules and marks the field as invalid
+	 * if the validation fails
+	 * @param {Mixed} value The value to validate
+	 * @return {Boolean} True if the value is valid, else false
+	 */
+	validateValue : function(value){
+		if(value.length < 1 || value === this.emptyText){ // if it's blank
+			 if(this.allowBlank){
+				 this.clearInvalid();
+				 return true;
+			 }else{
+				 this.markInvalid(this.blankText);
+				 return false;
+			 }
+		}
+		if (value && this.minWidth || this.maxWidth || this.minHeight || this.maxHeight) {
+			var al = Automne.locales;
+			var w = this.preview.dom.naturalWidth;
+			var h = this.preview.dom.naturalHeight;
+			if (this.minWidth > w) {
+				this.markInvalid(al.maxImageSize);
+				return false;
+			}
+			if (this.maxWidth < w) {
+				this.markInvalid(al.maxImageSize);
+				return false;
+			}
+			if (this.minHeight > h) {
+				this.markInvalid(al.maxImageSize);
+				return false;
+			}
+			if (this.maxHeight < h) {
+				this.markInvalid(al.maxImageSize);
+				return false;
+			}
+		}
+		//check image size
+		return true;
+	},
+	// private
+	onResize : function(w, h){
+		Automne.ImageUploadField.superclass.onResize.call(this, w, h);
+		this.wrap.setWidth(w);
+		this.infoEl.setWidth(w);
+		var w = w - this.button.getEl().getWidth() - this.buttonOffset;
+		if (this.preview) {
+			this.wrap.setHeight(this.preview.getHeight() + 34);
+		} else {
+			this.wrap.setHeight(55);
+		}
+		if (!this.progress) {
+			//progress bar
+			this.progress = new Ext.ProgressBar({
+				text:			Automne.locales.init,
+				hidden:			true,
+				width:			w,
+				style:			'position:absolute;'
+			});
+			this.progress.render(this.wrap);
+		} else {
+			this.progress.setWidth(w);
+		}
+		this.el.setWidth(w);
+	},
 	onRender : function(ct, position){
 		Automne.ImageUploadField.superclass.onRender.call(this, ct, position);
 		this.infoEl.addClass('x-form-fileinfos-img');
 	},
 	//display all current file infos
 	loadFileInfos: function() {
+		var al = Automne.locales;
 		var html = '';
 		if (this.fileinfos['filename'] && this.fileinfos['filepath']) {
 			html = '<a href="'+ this.fileinfos['filepath']+ '/' +this.fileinfos['filename'] +'" target="_blank">'+ this.ellipsis(this.fileinfos['filename'], 51) +'</a>';
 			if (this.fileinfos['filesize']) {
-				html += ' ('+ this.fileinfos['filesize'] + Automne.locales.byte +')';
+				html += ' ('+ this.fileinfos['filesize'] + al.byte +')';
 			}
 			this.setValue(this.fileinfos['filename'], this.fileinfos['filepath']);
 		} else {
@@ -51,7 +122,7 @@ Automne.ImageUploadField = Ext.extend(Automne.FileUploadField,  {
 		}
 			
 		if (html) {
-			this.preview = this.infoEl.insertHtml('afterBegin','<img src="'+ this.fileinfos['filepath']+ '/' +this.fileinfos['filename'] +'?time='+ (new Date()).getTime() +'" ext:qtip="'+ Automne.locales.clickOriginal +'" class="atm-help" width="50" />', true);
+			this.preview = this.infoEl.insertHtml('afterBegin','<img src="'+ this.fileinfos['filepath']+ '/' +this.fileinfos['filename'] +'?time='+ (new Date()).getTime() +'" ext:qtip="'+ al.clickOriginal +'" class="atm-help" width="50" />', true);
 			this.preview.on({
 				'load':{
 					fn:function(e, el) {
@@ -61,8 +132,7 @@ Automne.ImageUploadField = Ext.extend(Automne.FileUploadField,  {
 							img.dom.width = img.dom.naturalWidth;
 						}
 						if ((this.maxWidth && img.dom.naturalWidth > this.maxWidth) || img.dom.naturalWidth < this.minWidth || (this.maxHeight && img.dom.naturalHeight > this.maxHeight) || img.dom.naturalHeight < this.minHeight) {
-							this.markInvalid(Automne.locales.maxImageSize);
-							
+							this.markInvalid(al.maxImageSize);
 						} else {
 							this.clearInvalid();
 						}
@@ -80,14 +150,14 @@ Automne.ImageUploadField = Ext.extend(Automne.FileUploadField,  {
 				}
 			});
 			if (!this.editEl) {
-				this.editEl = this.infoEl.insertHtml('beforeEnd','<span class="atm-block-control atm-block-control-modify">&nbsp;</span>', true);
+				this.editEl = this.infoEl.insertHtml('beforeEnd','<span class="atm-block-control atm-block-control-modify" ext:qtip="'+al.updateImage+'">&nbsp;</span>', true);
 				this.editEl.on('mousedown', this.editFile, this);
 				this.editEl.addClassOnOver('atm-block-control-modify-on');
 			} else {
 				this.infoEl.appendChild(this.editEl);
 			}
 			if (!this.deleteEl) {
-				this.deleteEl = this.infoEl.insertHtml('beforeEnd','<span class="atm-block-control atm-block-control-del">&nbsp;</span>', true);
+				this.deleteEl = this.infoEl.insertHtml('beforeEnd','<span class="atm-block-control atm-block-control-del" ext:qtip="'+al.removeImage+'">&nbsp;</span>', true);
 				this.deleteEl.on('mousedown', this.deleteFile, this);
 				this.deleteEl.addClassOnOver('atm-block-control-del-on');
 			} else {

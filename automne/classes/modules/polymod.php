@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: polymod.php,v 1.3 2009/02/03 14:27:04 sebastien Exp $
+// $Id: polymod.php,v 1.4 2009/03/02 11:28:31 sebastien Exp $
 
 /**
   * Class CMS_polymod
@@ -50,6 +50,8 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	const MESSAGE_PAGE_MANAGE_OBJECTS = 108;
 	const MESSAGE_ALERT_LEVEL_VALIDATION = 514;
 	const MESSAGE_ALERT_LEVEL_VALIDATION_DESCRIPTION = 513;
+	const MESSAGE_PAGE_RSS_TAG_EXPLANATION = 313;
+	
 	/**
 	  * Standard Messages
 	  */

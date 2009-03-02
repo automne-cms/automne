@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: moduleclientspace.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: moduleclientspace.php,v 1.2 2009/03/02 11:28:30 sebastien Exp $
 
 /**
   * Class CMS_moduleClientspace
@@ -103,30 +103,19 @@ class CMS_moduleClientspace extends CMS_grandFather
 		// Add attributes
 		// Foreach attribute, adds a line to $data, after first php tag
 		if (is_array($this->_attributes) && $this->_attributes) {
+			$attrs = '';
 			while (list($k,$v) = each($this->_attributes)) {
 				//Foreach attribute, Adding a line to $data, after first php tag
-				$data = 
-				'<?php'."\n".
-				'$mod_'.$codename.'["'.$k.'"] = '.var_export($v,true).';'.
-				substr(trim($data), 5, strlen($data));
+				$attrs .= 
+				'$mod_'.$codename.'["'.$k.'"] = '.var_export($v,true).';'."\n";
 			}
 			// At least declare array of attributes to erase any previous one
 			$data = 
 				'<?php'."\n".
-				'$mod_'.$codename.' = array();'.
+				'$mod_'.$codename.' = array();'."\n".
+				$attrs."\n".
 				substr(trim($data), 5, strlen($data));
 		}
-		
-		//must eval() the data if in anything other that PUBLIC visualization mode
-		/*if ($visualizationMode != PAGE_VISUALMODE_HTML_PUBLIC
-				 && $visualizationMode != PAGE_VISUALMODE_PRINT) {
-			
-			ob_start();
-			//strip the php tags at the beginning and end
-			eval(substr(trim($data), 5, -2));
-			$data = ob_get_contents();
-			ob_end_clean();
-		}*/
 		return $data;
 	}
 	
@@ -187,5 +176,4 @@ class CMS_moduleClientspace extends CMS_grandFather
 		}
 	}
 }
-
 ?>

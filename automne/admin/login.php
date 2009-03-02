@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: login.php,v 1.3 2009/02/03 14:24:43 sebastien Exp $
+// $Id: login.php,v 1.4 2009/03/02 11:25:15 sebastien Exp $
 
 /**
   * PHP page : Login
@@ -49,16 +49,15 @@ $view = CMS_view::getInstance();
 $loginError = '';
 
 //Action management	
-switch (isset($_POST["cms_action"])) {
+if (!isset($_REQUEST["cms_action"])) {
+	$_REQUEST["cms_action"] = 'default';
+}
+switch ($_REQUEST["cms_action"]) {
 case "login":
 	$permanent = isset($_POST["permanent"]) ? $_POST["permanent"] : 0;
 	$cms_context = new CMS_context($_POST["login"], $_POST["pass"], $permanent);
-	if (!$cms_context->hasError()) {
-		//Set session name
-		session_name('AutomneSession');
-		@session_start();
+	if (!$cms_context->hasError() && ($cms_user = $cms_context->getUser()) && $cms_user->hasAdminAccess()) {
 		$_SESSION["cms_context"] = $cms_context;
-		$cms_user = $_SESSION["cms_context"]->getUser();
 		//launch the daily routine in case it's not in the cron
 		CMS_module_standard::processDailyRoutine();
 		$userSessionsInfos = CMS_context::getSessionInfos();
@@ -74,12 +73,10 @@ case "login":
 		
 		//then set context, remove login window and load Automne interface
 		$jscontent = '
-		//set user context
-		Automne.context = '.sensitiveIO::jsonEncode($userSessionsInfos).';
 		//remove event closeAndBack on window
-		Ext.WindowMgr.get(\'loginWindow\').un(\'close\', Ext.WindowMgr.get(\'loginWindow\').closeAndBack);
+		Ext.WindowMgr.get(\'loginWindow\').un(\'beforeclose\', Ext.WindowMgr.get(\'loginWindow\').closeAndBack);
 		//add event to load Automne interface after close
-		Ext.WindowMgr.get(\'loginWindow\').on(\'close\', Automne.load);
+		Ext.WindowMgr.get(\'loginWindow\').on(\'close\', Automne.load.createDelegate(this, ['.sensitiveIO::jsonEncode($userSessionsInfos).']));
 		//display welcome message
 		Automne.message.show(\''.sensitiveIO::sanitizeJSString($welcome).'\');
 		if (Ext.Element.cache[\'loginField\']) {delete Ext.Element.cache[\'loginField\']};
@@ -99,7 +96,6 @@ case "login":
 		//display error login window on top of login form
 		$loginError = "
 		parent.Automne.message.popup({
-			title: '{$language->getJsMessage(MESSAGE_ERROR_TITLE)}',
 			msg: '{$language->getJsMessage(MESSAGE_ERROR_LOGIN_INCORRECT)}',
 			buttons: Ext.MessageBox.OK,
 			icon: Ext.MessageBox.ERROR,
@@ -113,45 +109,54 @@ case 'reconnect':
 		//display error login window on top of login form
 		$loginError = "
 		Automne.message.popup({
-			title: '{$language->getJsMessage(MESSAGE_ERROR_TITLE)}',
-			msg: 'Votre session a expiré. Veuillez vous reconnecter...',
+			msg: 'Votre session est expirée. Veuillez vous reconnecter ...',
 			buttons: Ext.MessageBox.OK,
 			icon: Ext.MessageBox.ERROR,
 			fn:function() {
-				Ext.fly('loginField').dom.select();
+				//Ext.fly('loginField').dom.select();
 			}
 		});";
 	break;
 default:
 	// First attempt to obtain $_COOKIE information from domain
-	if ((!isset($_REQUEST["cms_action"]) || $_REQUEST["cms_action"] != 'logout') && CMS_context::autoLoginSucceeded()) {
-		$cms_user = $_SESSION["cms_context"]->getUser();
-		//launch the daily routine incase it's not in the cron
-		CMS_module_standard::processDailyRoutine();
-		//then set context and load Automne interface
-		$userSessionsInfos = CMS_context::getSessionInfos();
-		//welcome message
-		$welcome = $language->getJsMessage(MESSAGE_PAGE_USER_WELCOME, array($userSessionsInfos['fullname']));
-		if ($userSessionsInfos['hasValidations']) {
-			$welcome .= '<br /><br />'.(($userSessionsInfos['awaitingValidation']) ? $language->getJsMessage(MESSAGE_PAGE_USER_VALIDATIONS, array($userSessionsInfos['awaitingValidation'])) : $language->getJsMessage(MESSAGE_PAGE_USER_NOVALIDATION));
+	if (!isset($_REQUEST["loginform"]) && (!isset($_REQUEST["cms_action"]) || $_REQUEST["cms_action"] != 'logout') && CMS_context::autoLoginSucceeded()) {
+		if (!$_SESSION["cms_context"]->hasError() && ($cms_user = $_SESSION["cms_context"]->getUser()) && $cms_user->hasAdminAccess()) {
+			//launch the daily routine incase it's not in the cron
+			CMS_module_standard::processDailyRoutine();
+			//then set context and load Automne interface
+			$userSessionsInfos = CMS_context::getSessionInfos();
+			//welcome message
+			$welcome = $language->getJsMessage(MESSAGE_PAGE_USER_WELCOME, array($userSessionsInfos['fullname']));
+			if ($userSessionsInfos['hasValidations']) {
+				$welcome .= '<br /><br />'.(($userSessionsInfos['awaitingValidation']) ? $language->getJsMessage(MESSAGE_PAGE_USER_VALIDATIONS, array($userSessionsInfos['awaitingValidation'])) : $language->getJsMessage(MESSAGE_PAGE_USER_NOVALIDATION));
+			}
+			if (SYSTEM_DEBUG && $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
+				$welcome .= '<br /><br /><span class="atm-red">Attention, le debuggage est actif.</span> Pressez F2 pour voir la fenêtre de log.';
+			}
+			$jscontent = '
+			//load interface
+			Automne.load('.sensitiveIO::jsonEncode($userSessionsInfos).');
+			//display welcome message
+			Automne.message.show(\''.sensitiveIO::sanitizeJSString($welcome).'\');
+			';
+			//add all JS locales
+			$jscontent .= CMS_context::getJSLocales();
+			$view->addJavascript($jscontent);
+			$view->show(CMS_view::SHOW_RAW);
+		} else {
+			//display error login window on top of login form
+			$loginError = "
+			Automne.message.popup({
+				msg: '{$language->getJsMessage(MESSAGE_ERROR_LOGIN_INCORRECT)}',
+				buttons: Ext.MessageBox.OK,
+				icon: Ext.MessageBox.ERROR,
+				fn:function() {
+					//Ext.fly('loginField').dom.select();
+				}
+			});";
 		}
-		if (SYSTEM_DEBUG && $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
-			$welcome .= '<br /><br /><span class="atm-red">Attention, le debuggage est actif.</span> Pressez F2 pour voir la fenêtre de log.';
-		}
-		$jscontent = '
-		//set user context
-		Automne.context = '.sensitiveIO::jsonEncode($userSessionsInfos).';
-		//load interface
-		Automne.load();
-		//display welcome message
-		Automne.message.show(\''.sensitiveIO::sanitizeJSString($welcome).'\');
-		';
-		//add all JS locales
-		$jscontent .= CMS_context::getJSLocales();
-		$view->addJavascript($jscontent);
-		$view->show(CMS_view::SHOW_RAW);
 	}
-	// Reset cookie
+	// Reset cookie (kill current session)
 	CMS_context::resetSessionCookies();
 	break;
 }
@@ -160,27 +165,30 @@ if (!isset($_GET['loginform'])) {
 	//Send Login form window
 	
 	$applicationLabel = addcslashes(APPLICATION_LABEL, "'");
-	$htmlForm = '<iframe id="formframe" width="100%" height="100%" frameborder="0" src="'.$_SERVER['SCRIPT_NAME'].'?loginform=true&amp;_ts='.time().'">&nbsp;</iframe>';
+	$loginURL = $_SERVER['SCRIPT_NAME'].'?loginform=true&_ts='.time();
 	$jscontent = 
 <<<END
-	var loginWindow = new Ext.Window({
-		title: 		'{$language->getJsMessage(MESSAGE_PAGE_TITLE, array($applicationLabel))}',
-		id:			'loginWindow',
-		iconCls:	'atm-pic-logo',
-		width: 		400,
-		height:		218,
-		resizable:	false,
-		modal: 		true,
-		layout: 	'fit',
-		plain:		true,
-		bodyStyle:	'padding:5px;',
-		buttonAlign:'center',
-		html: '{$htmlForm}'
+	var loginWindow = new Automne.frameWindow({
+		title: 			'{$language->getJsMessage(MESSAGE_PAGE_TITLE, array($applicationLabel))}',
+		id:				'loginWindow',
+		frameURL:		'{$loginURL}',
+		allowFrameNav:	true,
+		width: 			400,
+		height:			218,
+		resizable:		false,
+		maximizable:	false,
+		layout: 		'fit',
+		plain:			true,
+		bodyStyle:		'padding:5px;',
+		buttonAlign:	'center'
 	});
 	loginWindow.closeAndBack = function() {
+		if (Ext.EventManager) {
+			Ext.EventManager.removeAll(window);
+		}
 		document.location.replace('/');
 	};
-	loginWindow.on('close', loginWindow.closeAndBack);
+	loginWindow.on('beforeclose', loginWindow.closeAndBack);
 	loginWindow.show();
 	//display login error window if any
 	{$loginError}
@@ -226,7 +234,6 @@ END;
 					this.getEl().dom.submit();
 				} else {
 					Ext.MessageBox.show({
-						title: '{$language->getJsMessage(MESSAGE_ERROR_TITLE)}',
 						msg: '{$language->getJsMessage(MESSAGE_ERROR_REQUIRED_FIELD)}',
 						buttons: Ext.MessageBox.OK,
 						icon: Ext.MessageBox.ERROR,
@@ -263,7 +270,7 @@ END;
 				<div class="x-panel-mr">
 					<div class="x-panel-mc">
 						<div style="width: 362px; height: 126px;" class="x-panel-body">
-							<form id="loginForm" class="x-form" method="post" action="login.php?loginform=true">
+							<form id="loginForm" class="x-form" method="post" action="'.$_SERVER['SCRIPT_NAME'].'?loginform=true">
 								<input value="login" class="x-form-hidden x-form-field" size="20" autocomplete="on" name="cms_action" type="hidden" />
 									<div class="x-form-item" tabindex="-1">
 										<label for="loginField" style="width: 90px;" class="x-form-item-label">'.$language->getMessage(MESSAGE_PAGE_LOGIN).':</label>
@@ -322,6 +329,9 @@ END;
 	</div>';
 	//send content
 	$view->setContent($content);
+	//remove errors from display
+	$view->getErrors(true);
+	//send datas to display
 	$view->show(CMS_view::SHOW_HTML);
 }
 ?>

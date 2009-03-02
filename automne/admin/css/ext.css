@@ -142,4 +142,11 @@
 } 
 .x-view-drag-insert-below { 
     border-bottom:1px dotted #3366cc; 
-} 
+}
+.x-form-emptyfield{
+	padding:3px 0 3px 3px;
+}
+.x-accordion-hd .x-panel-header-text {
+	color:#4B7800 !important;
+	font-weight:bold !important;
+}

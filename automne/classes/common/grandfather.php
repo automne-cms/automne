@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: grandfather.php,v 1.3 2009/02/03 14:26:36 sebastien Exp $
+// $Id: grandfather.php,v 1.4 2009/03/02 11:28:06 sebastien Exp $
 
 /**
   * Class CMS_grandFather
@@ -76,24 +76,30 @@ class CMS_grandFather
 			$this->_debug = $systemDebug;
 		}
 		//second condition are for static calls (made by static methods)
-		if (!defined('APPLICATION_EXEC_TYPE') || (APPLICATION_EXEC_TYPE == 'http' && ((!isset($this) && $systemDebug) || $this->_debug))) {
-			$backTrace = '';
+		if (!defined('APPLICATION_EXEC_TYPE') || (APPLICATION_EXEC_TYPE == 'http' && ((!isset($this) && $systemDebug) || (isset($this) && $this->_debug)))) {
+			$backTrace = $backTraceLink = '';
 			if (isset($_SESSION) && isset($_SESSION["cms_context"]) && is_a($_SESSION["cms_context"],'CMS_context')) {
-				$className = (isset($this)) ? get_class($this) : 'staticcall';
-				if (!isset($errorNumber[$className])) {
-					$errorNumber[$className] = 0;
+				$backtraces = !isset($_SESSION['automneBacktraces']) ? array() : $_SESSION['automneBacktraces'];
+				//limit to last 10 backtraces
+				if (sizeof($backtraces) >= 10) {
+					$backtraces = array_slice($backtraces, sizeof($backtraces) - 9);
 				}
-				$errorNumber[$className]++;
-				$_SESSION["backTrace"][$className][$errorNumber[$className]] = debug_backtrace();
-				$_SESSION["backTraceVars"][$className][$errorNumber[$className]] = get_defined_vars();
-				$backTrace = '/automne/admin/backTrace.php?errorNumber='.$errorNumber[$className].'&amp;className='.$className; //' (<a href="/automne/admin/backTrace.php?errorNumber='.$errorNumber[$className].'&amp;className='.$className.'" target="_blank" class="admin">View BackTrace</a>)';
+				$bt = array_reverse(debug_backtrace());
+				$backtrace = array(
+					'summary'		=> sensitiveIO::printBackTrace($bt),
+					'backtrace'		=> print_r($bt,true),
+					'vars'			=> print_r(get_defined_vars(),true),
+				);
+				$backtraceName = 'bt-'.md5(rand());
+				$backtraces[$backtraceName] = $backtrace;
+				$_SESSION['automneBacktraces'] = $backtraces;
+				$backTraceLink = '/automne/admin/backTrace.php?bt='.$backtraceName;
 			}
 			//append error to current view
 			$view = CMS_view::getInstance();
-			$view->addError(array('error' => $errorMessage, 'backtrace' => $backTrace));
-			//echo "<pre><b>".self::SYSTEM_LABEL." ".AUTOMNE_VERSION." error : ".$errorMessage."".$backTrace."</b></pre>\n";
-			//flush();
+			$view->addError(array('error' => $errorMessage, 'backtrace' => $backTraceLink));
 		}
+		
 		//second condition are for static calls (made by static methods)
 		if (!isset($this) || $this->_log) {
 			$fd = @fopen(PATH_MAIN_FS.'/'.self::ERROR_LOG, "a");
@@ -118,7 +124,7 @@ class CMS_grandFather
 	  */
 	public function raiseError($errorMessage) {
 		$errorMessage = sensitiveIO::getCallInfos().' : '.$errorMessage;
-		CMS_grandFather::_raiseError($errorMessage);
+		self::_raiseError($errorMessage);
 	}
 
 	/**
@@ -180,10 +186,6 @@ class CMS_grandFather
 							E_STRICT			=> 'Runtime Notice',
 							E_RECOVERABLE_ERROR	=> 'Catchable Fatal Error'
 						);
-		//TODOV4 : temporary skip notice from admin directory
-		/*if (defined('PATH_ADMIN_WR') && $errno == E_NOTICE && strpos($errfile, PATH_ADMIN_WR) !== false) {
-			return true;
-		}*/
 		CMS_grandFather::raiseError('PHP '.$errortype[$errno].' : '.$errstr.' line '.$errline.' of file '.$errfile);
 		return true;
 	}

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 404.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: 404.php,v 1.2 2009/03/02 11:23:21 sebastien Exp $
 
 /**
   * Automne 404 error handler
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_URI'] && $_SERVER['REQUEST_URI'] != $_SERVER['SCRIPT_NAME'
 //do redirection to page if founded
 if ($redirectTo) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: '.$redirectTo.($_SERVER['REDIRECT_QUERY_STRING'] ? '?'.$_SERVER['REDIRECT_QUERY_STRING'] : ''));
+	header('Location: '.$redirectTo.(isset($_SERVER['REDIRECT_QUERY_STRING']) ? '?'.$_SERVER['REDIRECT_QUERY_STRING'] : ''));
 	exit;
 }
 //then if no page founded, display 404 error page
@@ -81,15 +81,14 @@ if (isset($pathinfo['extension']) && in_array(strtolower($pathinfo['extension'])
 }
 //send an email if needed
 if (ERROR404_EMAIL_ALERT && sensitiveIO::isValidEmail(APPLICATION_MAINTAINER_EMAIL)) {
-	$referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
 	$body ="A 404 Error occured on your website.\n";
-	$body .="--------------------------------------\n\n";
-	$body .='The requested file : '.CMS_websitesCatalog::getMainURL().$_SERVER['REQUEST_URI'].' was not found.'."\n";
-	$body .='From (Referer) : '.$referer."\n\n";
-	$body .='Date : '.date('r')."\n";
-	$body .='User : '.$_SERVER['REMOTE_ADDR'].' ('.$_SERVER['HTTP_ACCEPT_LANGUAGE'].')'."\n";
+	$body .="\n\n";
+	$body .='The requested file : '.CMS_websitesCatalog::getMainURL().$_SERVER['REQUEST_URI'].' was not found.'."\n\n";
+	$body .='From (Referer) : '.(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '')."\n\n";
+	$body .='Date : '.date('r')."\n\n";
+	$body .='User : '.$_SERVER['REMOTE_ADDR'].' ('.$_SERVER['HTTP_ACCEPT_LANGUAGE'].')'."\n\n";
 	$body .='Browser : '.$_SERVER['HTTP_USER_AGENT']."\n\n";
-	$body .='Host : '.$_SERVER['HTTP_HOST'].' '.$_SERVER['SERVER_ADDR']."\n\n";
+	$body .='Host : '.$_SERVER['HTTP_HOST'].' ('.$_SERVER['SERVER_ADDR'].")\n\n";
 	$body .='This email is automaticaly sent from your website. You can stop this sending with the parameter ERROR404 EMAIL ALERT.';
 	
 	$mail= new CMS_email();
@@ -97,6 +96,12 @@ if (ERROR404_EMAIL_ALERT && sensitiveIO::isValidEmail(APPLICATION_MAINTAINER_EMA
 	$mail->setBody($body);
 	$mail->setEmailFrom(APPLICATION_MAINTAINER_EMAIL."<".APPLICATION_MAINTAINER_EMAIL.">");
 	$mail->setEmailTo(APPLICATION_MAINTAINER_EMAIL);
+	
+	$mainURL = CMS_websitesCatalog::getMainURL();
+	$cms_language = CMS_languagesCatalog::getByCode('en');
+	$mail->setFooter($cms_language->getMessage(CMS_emailsCatalog::MESSAGE_EMAIL_BODY_URLS, array(APPLICATION_LABEL, $mainURL."/", $mainURL.PATH_ADMIN_WR."/")));
+	$mail->setTemplate(PATH_MAIL_TEMPLATES_FS);
+	
 	$mail->sendEmail();
 }
 //check for alternative 404 file and display it if any

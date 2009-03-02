@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: profile.php,v 1.2 2009/02/03 14:28:18 sebastien Exp $
+// $Id: profile.php,v 1.3 2009/03/02 11:29:46 sebastien Exp $
 
 /**
   * Class CMS_Profile
@@ -268,6 +268,19 @@ class CMS_profile extends CMS_grandFather
 	}
 	
 	/**
+	  * Has Administration Access
+	  * Need an admin clearance or a validation clearance or a page edition clearance or a module admin clearance
+	  *
+	  * @param  integer $clearance clearance to test for
+	  * @return boolean
+	  * @access public
+	  */
+	function hasAdminAccess()
+	{
+		return $this->_adminClearance || $this->hasValidationClearance() || $this->hasEditablePages() || $this->hasEditableModules();
+	}
+	
+	/**
 	  * Sets Page Clearances
 	  *
 	  * @param  CMS_stack $pageClearances page clearances for this profile
@@ -418,6 +431,27 @@ class CMS_profile extends CMS_grandFather
 		$roots = array();
 		foreach ($clearances as $clearance) {
 			if ($clearance[1] >= CLEARANCE_PAGE_EDIT) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	  * Does profile has editable clearances roots (page IDs)
+	  *
+	  * @return boolean
+	  * @access public
+	  */
+	function hasEditableModules()
+	{
+		if ($this->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
+			return true;
+		}
+		$clearances = $this->_moduleClearances->getElements();
+		$roots = array();
+		foreach ($clearances as $clearance) {
+			if ($clearance[1] >= CLEARANCE_MODULE_EDIT) {
 				return true;
 			}
 		}

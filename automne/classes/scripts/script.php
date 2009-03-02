@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: script.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: script.php,v 1.2 2009/03/02 11:29:31 sebastien Exp $
 
 /**
   * background script : regenerator
@@ -172,9 +172,10 @@ class automne_script extends backgroundScript
 							$this->raiseError(processManager::MASTER_SCRIPT_NAME." : script : ".$data["id_reg"]." - sub_system : ".$sub_system);
 						}
 						$scriptsArray[] = array(
-									"PID" => $PIDfile,
-									"startTime" => getmicrotime(),
-									"scriptID" => $data["id_reg"] );
+									"PID" 			=> $PIDfile,
+									"startTime" 	=> getmicrotime(),
+									"scriptID" 		=> $data["id_reg"],
+									"scriptDatas"	=> $data);
 					}
 				} else {
 					// no more scripts to process
@@ -216,7 +217,7 @@ class automne_script extends backgroundScript
 							if ($this->_debug) {
 								$this->raiseError(processManager::MASTER_SCRIPT_NAME." : Script : ".$aScript["PID"]." NOT OK !");
 							}
-							$this->raiseError(processManager::MASTER_SCRIPT_NAME.' : Error on task : '.$aScript["scriptID"].' ... skip it.');
+							$this->raiseError(processManager::MASTER_SCRIPT_NAME.' : Error on task : '.$aScript["scriptID"].' ... skip it. '.print_r($aScript['scriptDatas'], true));
 							//$break = true;
 							unset($scriptsArray[$nb]);
 							

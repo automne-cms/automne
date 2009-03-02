@@ -14,7 +14,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: search.php,v 1.2 2008/12/18 10:39:46 sebastien Exp $
+// $Id: search.php,v 1.3 2009/03/02 11:28:06 sebastien Exp $
 
 /**
   * Class CMS_search
@@ -120,13 +120,11 @@ class CMS_search extends CMS_grandFather {
 							$foundLinkToIDs = array();
 							$where='';
 							$count = 0;
-							/*$messagesIDs = array();*/
 							foreach ($allDatas[self::SEARCH_TYPE_LINKTO] as $block) {
 								$tabValues = explode(':',$block);
 								if(SensitiveIO::isPositiveInteger($tabValues[1])){
 									$where.= ($count) ? ' or ':'';
 									$count++;
-									/*$messagesIDs[] = $tabValues[1];*/
 									$where .= " start_lre = '".$tabValues[1]."' ";
 								}
 							}
@@ -145,10 +143,10 @@ class CMS_search extends CMS_grandFather {
 								while ($arr = $q->getArray()){
 									$foundLinkToIDs[]=$arr["stop_lre"];
 								}
+								// Count links number
+								$allLinksNumber += count($foundLinkToIDs);
+								$where = $select = '';
 							}
-							/*if($messagesIDs){
-								$messages[] = $cms_language->getMessage(self::MESSAGE_RESULTS_RELATIONS,array(implode(' '.$cms_language->getMessage(self::MESSAGE_RESULTS_OR).' ',$messagesIDs)),MOD_STANDARD_CODENAME);
-							}*/
 						}
 					break;
 					case self::SEARCH_TYPE_LINKFROM:
@@ -162,7 +160,6 @@ class CMS_search extends CMS_grandFather {
 								if(SensitiveIO::isPositiveInteger($tabValues[1])){
 									$where.= ($count) ? ' or ':'';
 									$count++;
-									/*$messagesIDs[] = $tabValues[1];*/
 									$where .= " stop_lre = '".$tabValues[1]."' ";
 								}
 							}
@@ -183,48 +180,32 @@ class CMS_search extends CMS_grandFather {
 								}
 								// Count links number
 								$allLinksNumber += count($foundLinkFromIDs);
+								$where = $select = '';
 							}
-							/*if($messagesIDs){
-								$messages[] = $cms_language->getMessage(self::MESSAGE_RESULTS_LINKS,array(implode(' '.$cms_language->getMessage(self::MESSAGE_RESULTS_OR).' ',$messagesIDs)),MOD_STANDARD_CODENAME);
-							}*/
 						}
 					break;
 					case self::SEARCH_TYPE_TEMPLATE:
 						if(isset($allDatas[self::SEARCH_TYPE_TEMPLATE])){
 							$foundPagesFromTemplate = array();
-							/*$messagesIDs = array();*/
 							foreach ($allDatas[self::SEARCH_TYPE_TEMPLATE] as $block) {
 								$tabValues = explode(':',$block);
 								if(SensitiveIO::isPositiveInteger($tabValues[1])){
-									$template = new CMS_pageTemplate($tabValues[1]);
-									//$messagesIDs[] = '"'.$template->getLabel().'"';
 									$foundPagesFromTemplate = array_unique(array_merge(CMS_pageTemplatesCatalog::getPagesByTemplate($tabValues[1]),$foundPagesFromTemplate));
 								}
 							}
 							$allLinksNumber += count($foundPagesFromTemplate);
-							/*if($messagesIDs){
-								$message = (count($messagesIDs) > 1) ? self::MESSAGE_RESULTS_TEMPLATES : self::MESSAGE_RESULTS_TEMPLATE;
-								$messages[] = $cms_language->getMessage($message,array(implode(' '.$cms_language->getMessage(self::MESSAGE_RESULTS_OR).' ',$messagesIDs)),MOD_STANDARD_CODENAME);
-							}*/
 						}
 					break;
 					case self::SEARCH_TYPE_ROW:
 						if(isset($allDatas[self::SEARCH_TYPE_ROW])){
 							$foundPagesFromRow = array();
-							//$messagesIDs = array();
 							foreach ($allDatas[self::SEARCH_TYPE_ROW] as $block) {
 								$tabValues = explode(':',$block);
 								if(SensitiveIO::isPositiveInteger($tabValues[1])){
-									$row = new CMS_row($tabValues[1]);
-									//$messagesIDs[] = '"'.$row->getLabel().'"';
 									$foundPagesFromRow = array_unique(array_merge(CMS_rowsCatalog::getPagesByRow($tabValues[1]),CMS_rowsCatalog::getPagesByRow($tabValues[1], false, true),$foundPagesFromRow));
 								}
 							}
 							$allLinksNumber += count($foundPagesFromRow);
-							/*if($messagesIDs){
-								$message = (count($messagesIDs) > 1) ? self::MESSAGE_RESULTS_ROWS : self::MESSAGE_RESULTS_ROW;
-								$messages[] = $cms_language->getMessage($message,array(implode(' '.$cms_language->getMessage(self::MESSAGE_RESULTS_OR).' ',$messagesIDs)),MOD_STANDARD_CODENAME);
-							}*/
 						}
 					break;
 				}
@@ -234,13 +215,10 @@ class CMS_search extends CMS_grandFather {
 			if($allDatas[self::SEARCH_TYPE_DEFAULT]){
 				$count = 0;
 				$where='';
-				/*$messagesWords = array();
-				$messagesIdentifiers = array();*/
 				foreach ($allDatas[self::SEARCH_TYPE_DEFAULT] as $key => $block) {
 					if (SensitiveIO::isPositiveInteger($block)) {
 						$where.= ($count) ? ' or ':'';
 						$count++;
-						//$messagesIdentifiers[] = '"'.$block.'"';
 						$where .=" (page_pbd like '%".$block."%')";
 						unset($allDatas[self::SEARCH_TYPE_DEFAULT][$key]);
 					}
@@ -248,7 +226,6 @@ class CMS_search extends CMS_grandFather {
 				$order = '';
 				if ($allDatas[self::SEARCH_TYPE_DEFAULT]) {
 					$suffix = ($public) ? '_public' : '_edited';
-					//$messages[] = $cms_language->getMessage(self::MESSAGE_RESULTS_KEYWORDS,array($keywords),MOD_STANDARD_CODENAME);
 					if (!$withPageContent) {
 						//Search in page metadatas
 						$count = 0;
@@ -335,10 +312,6 @@ class CMS_search extends CMS_grandFather {
 				} else {
 					$order = " order by page_pbd ";
 				}
-				
-				/*if($messagesIdentifiers){
-					$messages[] = $cms_language->getMessage(self::MESSAGE_RESULTS_IDS,array(implode(' '.$cms_language->getMessage(self::MESSAGE_RESULTS_OR).' ',$messagesIdentifiers)),MOD_STANDARD_CODENAME);
-				}*/
 			}
 			if ($foundIDs) {
 				$select = ' page_pbd ';
@@ -369,21 +342,7 @@ class CMS_search extends CMS_grandFather {
 					}
 				}
 			}
-			
-			// Set message
-			/*if($messages){
-				$counter = 0;
-				$message = $cms_language->getMessage(self::MESSAGE_RESULTS_LIST).' ';
-				foreach($messages as $messageToDisplay){
-					$message .= ($counter) ? $cms_language->getMessage(self::MESSAGE_RESULTS_AND) : '';
-					$counter++;
-					$message .= ($counter <= count($messages)) ? ' ' : '';
-					$message .= $messageToDisplay;
-					$message .= ($counter == count($messages)) ? '.' : ' ';
-				}
-			}*/
 		} else {
-			//$message = ($message) ? $message : $cms_language->getMessage(self::MESSAGE_RESULTS_NOTHING);
 			// No results
 			$count = 0;
 		}
@@ -393,7 +352,6 @@ class CMS_search extends CMS_grandFather {
 			'nblinksresult'	=>	$allLinksNumber,
 			'results'		=>	$results,
 			'score'			=>	$matches,
-			/*'message'		=>	$message*/
 		);
 	}
 }

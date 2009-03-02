@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: index.php,v 1.3 2009/02/03 14:24:43 sebastien Exp $
+// $Id: index.php,v 1.4 2009/03/02 11:25:14 sebastien Exp $
 
 /**
   * PHP page : index
@@ -23,10 +23,10 @@
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
-
+/*
 session_name('AutomneSession');
 session_start();
-session_destroy();
+session_destroy();*/
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 
 define("MESSAGE_PAGE_TITLE", 51);

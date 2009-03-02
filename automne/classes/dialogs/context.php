@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: context.php,v 1.2 2008/12/18 13:56:47 sebastien Exp $
+// $Id: context.php,v 1.3 2009/03/02 11:28:14 sebastien Exp $
 
 /**
   * Class CMS_context
@@ -116,34 +116,8 @@ class CMS_context extends CMS_grandFather
 					$this->raiseError("user_id found don't instanciate a valid user object. ID : ".$user->getUserID());
 				}
 			} else {
-				//check if table is at the new md5 encoded format
-				$sql = "
-					DESCRIBE
-						 profilesUsers password_pru
-				";
-				$q = new CMS_query($sql);
-				
-				if($q->getValue("Type")=="varchar(20)") {
-					//alter table to store md5 encoded password on 32 characters
-					$sql = "ALTER TABLE 
-								profilesUsers
-							CHANGE 
-								password_pru password_pru VARCHAR( 32 ) NOT NULL
-					";
-					$q = new CMS_query($sql);
-					if (!$q->hasError()) {
-						//then MD5 encode all passwords in database
-						$users = CMS_profile_usersCatalog::getAll();
-						foreach ($users as $aUser) {
-							$aUser->encodePassword();
-							$aUser->writeToPersistence();
-						}
-					} else {
-						$this->raiseError("Login/password MD5 conversion failed...");
-					}
-				} else {
-					$this->raiseError("Bad login/password");
-				}
+				$this->setDebug(false);
+				$this->raiseError("Bad login/password");
 			}
 		}
 		
@@ -172,9 +146,6 @@ class CMS_context extends CMS_grandFather
 	{
 		if (is_a($user, "CMS_profile_user")) {
 			$this->_userID = $user->getUserId();
-			//Set session name
-			session_name('AutomneSession');
-			@session_start();
 			$sql = "
 				insert into
 					sessions
@@ -352,10 +323,6 @@ class CMS_context extends CMS_grandFather
 	  */
 	function checkSession()
 	{
-		//Set session name
-		session_name('AutomneSession');
-		@session_start() ;
-		
 		//fetch all deletable sessions
 		$sql = "
 			select
@@ -549,9 +516,6 @@ class CMS_context extends CMS_grandFather
 		if (isset($_COOKIE[CMS_context::getAutoLoginCookieName()])) {
 			$cms_context = new CMS_context("", "", true);
 			if (!$cms_context->hasError()) {
-				//Set session name
-				session_name('AutomneSession');
-				@session_start();
 				$_SESSION["cms_context"] = $cms_context;
 				return true;
 			}
@@ -568,18 +532,23 @@ class CMS_context extends CMS_grandFather
 	  * @static
 	  */
 	static function resetSessionCookies() {
-		// Reset cookie
-		session_id(md5(uniqid(mt_rand(), true)));
-		//Set session name
-		session_name('AutomneSession');
-		@session_start();
+		//Regenerate session id
+		//session_id(md5(uniqid(mt_rand(), true)));
+		session_regenerate_id(true);
+		//Start session
+		//start_atm_session();
+		//unset session
 		unset($_SESSION) ;
+		//remove cookies
 		if (isset($_COOKIE[session_name()])) {
 			CMS_context::setCookie(session_name());
 		}
 		if (isset($_COOKIE[CMS_context::getAutoLoginCookieName()])) {
 			CMS_context::setCookie(CMS_context::getAutoLoginCookieName());
 		}
+		//remove phpMyAdmin cookie if any
+		@setcookie(session_name(), '', time() - 3600, '/automne/phpMyAdmin/', '', 0);
+		//then destroy session
 		@session_destroy();
 	}
 	
@@ -632,6 +601,7 @@ class CMS_context extends CMS_grandFather
 		$sessionInfos = array();
 		$user = $_SESSION["cms_context"]->getUser();
 		$sessionInfos['fullname'] = $user->getFullName();
+		$sessionInfos['userId'] = $user->getUserId();
 		$sessionInfos['language'] = $user->getLanguage()->getCode();
 		$sessionInfos['animation'] = $user->getAnimation();
 		$sessionInfos['tooltips'] = $user->getTooltips();

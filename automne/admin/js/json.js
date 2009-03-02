@@ -1,8 +1,14 @@
 /**
+  * Automne Javascript file
+  *
   * Automne.JsonReader Extension Class for Ext.data.JsonReader
   * Manager for json update through ajax request. Allow fine error management
   * @class Automne.JsonReader
   * @extends Ext.data.JsonReader
+  * @package CMS
+  * @subpackage JS
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * $Id: json.js,v 1.2 2009/03/02 11:26:53 sebastien Exp $
   */
 Automne.JsonReader = Ext.extend(Ext.data.JsonReader, {
 	read : function(response){
@@ -44,7 +50,7 @@ Ext.extend(Automne.JsonStore, Ext.data.Store, {
 	loadRecords : function(o, options, success){
 		if (o && o.records) {
 			for(var i = 0, len = o.records.length; i < len; i++){
-	            o.records[i].data = this.prepareData(o.records[i].data);
+				o.records[i].data = this.prepareData(o.records[i].data);
 			}
 		}
 		Automne.JsonStore.superclass.loadRecords.call(this, o, options, success);

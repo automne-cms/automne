@@ -1,8 +1,14 @@
 /**
+  * Automne Javascript file
+  *
   * Automne.frameWindow Extension Class for Ext.Panel
   * Provide all events and watch for a contained frame
   * @class Automne.frameWindow
   * @extends Automne.Window
+  * @package CMS
+  * @subpackage JS
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * $Id: framewindow.js,v 1.3 2009/03/02 11:26:53 sebastien Exp $
   */
 Automne.frameWindow = Ext.extend(Automne.Window, { 
 	//frame url to use at next frame reload
@@ -30,7 +36,7 @@ Automne.frameWindow = Ext.extend(Automne.Window, {
 	//component initialisation (after constructor)
 	initComponent: function() {
 		Ext.apply(this, {
-			html:  			'<iframe id="' + this.id + 'Frame" width="100%" height="100%" frameborder="no" src="' + Ext.SSL_SECURE_URL + '">&nbsp;</iframe>',
+			html:  			'<iframe id="' + this.id + 'Frame" width="100%" height="100%" frameborder="no" class="x-hide-visibility" src="' + Ext.SSL_SECURE_URL + '">&nbsp;</iframe>',
 			hideBorders:	true,
 			autoScroll:		true
 		});
@@ -70,7 +76,11 @@ Automne.frameWindow = Ext.extend(Automne.Window, {
 		//get frame and document from event
 		this.loadFrameDocument();
 		//set title
-		this.setTitle(this.frameDocument.title);
+		if (!this.title || this.title == '&nbsp;') {
+			this.setTitle(this.frameDocument.title);
+		}
+		//show frame
+		this.frameEl.removeClass('x-hide-visibility');
 	},
 	//resize frame according to panel size
 	resize: function() {
@@ -108,14 +118,14 @@ Automne.frameWindow = Ext.extend(Automne.Window, {
 	},
 	// private
 	getDoc : function(){
-        if (!this.frameEl) {
+		if (!this.frameEl) {
 			return false;
 		}
 		return Ext.isIE ? this.getWin().document : (this.frameEl.dom.contentDocument || this.getWin().document);
 	},
-    // private
+	// private
 	getWin : function(){
-        if (!this.frameEl) {
+		if (!this.frameEl) {
 			return false;
 		}
 		return Ext.isIE ? this.frameEl.dom.contentWindow : window.frames[this.frameEl.dom.name];

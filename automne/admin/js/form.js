@@ -1,15 +1,21 @@
 /**
+  * Automne Javascript file
+  *
   * Automne.FormPanel Extension Class for Ext.FormPanel
   * Use an Automne.BasicForm instead of Ext.form.BasicForm to handle Automne return format
   * @class Automne.FormPanel
   * @extends Ext.FormPanel
+  * @package CMS
+  * @subpackage JS
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * $Id: form.js,v 1.2 2009/03/02 11:26:53 sebastien Exp $
   */
 Automne.FormPanel = Ext.extend(Ext.FormPanel, {
 	// private
-    createForm: function(){
-        delete this.initialConfig.listeners;
-        return new Automne.BasicForm(null, this.initialConfig);
-    }
+	createForm: function(){
+		delete this.initialConfig.listeners;
+		return new Automne.BasicForm(null, this.initialConfig);
+	}
 });
 Ext.reg('atmForm', Automne.FormPanel);
 /**

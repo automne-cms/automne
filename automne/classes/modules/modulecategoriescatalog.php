@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modulecategoriescatalog.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: modulecategoriescatalog.php,v 1.2 2009/03/02 11:28:30 sebastien Exp $
 
 /**
   * Class CMS_moduleCategories_catalog
@@ -743,8 +743,8 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 				}
 			}
 		}
+		$ctgs = array();
 		if (is_array($root_categories) && $root_categories) {
-			$ctgs = array();
 			foreach ($root_categories as $obj) {
 				$obj->setAttribute('language', $cms_language);
 				$ctgs[$obj->getID()] = htmlspecialchars($obj->getLabel());

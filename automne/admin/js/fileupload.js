@@ -1,3 +1,15 @@
+/**
+  * Automne Javascript file
+  *
+  * Automne.FileUploadField Extension Class for Ext.form.TextField
+  * Provide an file upload field
+  * @class Automne.FileUploadField
+  * @extends Ext.form.TextField
+  * @package CMS
+  * @subpackage JS
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * $Id: fileupload.js,v 1.3 2009/03/02 11:26:53 sebastien Exp $
+  */
 Automne.FileUploadField = Ext.extend(Ext.form.TextField,  {
 	/**
 	 * @cfg {String} buttonText The button text to display on the upload button (defaults to
@@ -36,7 +48,7 @@ Automne.FileUploadField = Ext.extend(Ext.form.TextField,  {
 	},
 	UPLOAD_ERROR: {
 		HTTP_ERROR				  		: -200,
-		MISSING_UPLOAD_URL	      		: -210,
+		MISSING_UPLOAD_URL		  		: -210,
 		IO_ERROR				  		: -220,
 		SECURITY_ERROR			  		: -230,
 		UPLOAD_LIMIT_EXCEEDED	  		: -240,
@@ -163,7 +175,7 @@ Automne.FileUploadField = Ext.extend(Ext.form.TextField,  {
 		this.infoEl.setWidth(w);
 		var w = w - this.button.getEl().getWidth() - this.buttonOffset;
 		
-		this.wrap.setHeight(50);
+		this.wrap.setHeight(55);
 		if (!this.progress) {
 			//progress bar
 			this.progress = new Ext.ProgressBar({
@@ -221,6 +233,24 @@ Automne.FileUploadField = Ext.extend(Ext.form.TextField,  {
 		this.value = v;
 		this.hiddenField.value = v;
 	},
+	/**
+	 * Validates a value according to the field's validation rules and marks the field as invalid
+	 * if the validation fails
+	 * @param {Mixed} value The value to validate
+	 * @return {Boolean} True if the value is valid, else false
+	 */
+	validateValue : function(value){
+		if(value.length < 1 || value === this.emptyText){ // if it's blank
+			 if(this.allowBlank){
+				 this.clearInvalid();
+				 return true;
+			 }else{
+				 this.markInvalid(this.blankText);
+				 return false;
+			 }
+		}
+		return true;
+	},
 	// private
 	preFocus : Ext.emptyFn,
 	
@@ -256,7 +286,7 @@ Automne.FileUploadField = Ext.extend(Ext.form.TextField,  {
 		this.infoEl.update(html);
 		if (html) {
 			if (!this.deleteEl) {
-				this.deleteEl = this.infoEl.insertHtml('beforeEnd','<span class="atm-block-control atm-block-control-del">&nbsp;</span>', true);
+				this.deleteEl = this.infoEl.insertHtml('beforeEnd','<span class="atm-block-control atm-block-control-del" ext:qtip="'+Automne.locales.removeFile+'">&nbsp;</span>', true);
 				this.deleteEl.on('mousedown', this.deleteFile, this);
 				this.deleteEl.addClassOnOver('atm-block-control-del-on');
 			} else {
@@ -296,10 +326,10 @@ Automne.FileUploadField = Ext.extend(Ext.form.TextField,  {
 		this.setValue('');
 		progress.show();
 		progress.wait({
-            interval:	200,
-            increment:	15,
+			interval:	200,
+			increment:	15,
 			text:		'\''+ file + '\'' + ' : Envoi en cours ...'
-        });
+		});
 		this.fireEvent('startupload', this, file);
 		
 		//create form to submit file
@@ -353,8 +383,8 @@ Automne.FileUploadField = Ext.extend(Ext.form.TextField,  {
 				cls:		'x-form-file',
 				tag:		'input', 
 				type:		'file',
-		        size:		1
-	        });
+				size:		1
+			});
 			this.fileInput.on('change', function(){
 				var v = this.fileInput.dom.value;
 				this.setValue(v);

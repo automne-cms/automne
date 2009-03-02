@@ -1,8 +1,14 @@
 /**
+  * Automne Javascript file
+  *
   * Automne.blockText Extension Class for Automne.block
   * Add specific controls for text block
   * @class Automne.blockText
   * @extends Automne.block
+  * @package CMS
+  * @subpackage JS
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * $Id: block-text.js,v 1.2 2009/03/02 11:27:02 sebastien Exp $
   */
 Automne.blockText = Ext.extend(Automne.block, {
 	blockClass:	'CMS_block_text',

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: website.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: website.php,v 1.2 2009/03/02 11:29:38 sebastien Exp $
 
 /**
   * Class CMS_website
@@ -88,6 +88,7 @@ class CMS_website extends CMS_grandFather
 		'language' => '',
 		'robots' => '',
 		'favicon' => '',
+		'metas' => '',
 	);
 	
 	/**
@@ -136,6 +137,7 @@ class CMS_website extends CMS_grandFather
 					$this->_meta['language'] = $data["language_web"];
 					$this->_meta['robots'] = $data["robots_web"];
 					$this->_meta['favicon'] = $data["favicon_web"];
+					$this->_meta['metas'] = $data["metas_web"];
 				} else {
 					$this->raiseError("Unknown ID :".$id);
 				}
@@ -467,6 +469,7 @@ class CMS_website extends CMS_grandFather
 			language_web='".SensitiveIO::sanitizeSQLString($this->_meta['language'])."',
 			robots_web='".SensitiveIO::sanitizeSQLString($this->_meta['robots'])."',
 			favicon_web='".SensitiveIO::sanitizeSQLString($this->_meta['favicon'])."',
+			metas_web='".SensitiveIO::sanitizeSQLString($this->_meta['metas'])."',
 			order_web='".SensitiveIO::sanitizeSQLString($this->_order)."'
 		";
 		if ($this->_id) {

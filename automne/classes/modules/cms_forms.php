@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_forms.php,v 1.2 2009/02/03 14:27:04 sebastien Exp $
+// $Id: cms_forms.php,v 1.3 2009/03/02 11:28:30 sebastien Exp $
 
 /**
   * Codename of the module
@@ -27,6 +27,15 @@ define("MOD_CMS_FORMS_CODENAME", "cms_forms");
 define("MESSAGE_MOD_CMS_FORMS_ROWS_EXPLANATION", 85);
 define("MESSAGE_MOD_CMS_FORMS_TEMPLATE_EXPLANATION", 86);
 define('MESSAGE_MOD_CMS_FORMS_PLUGIN', 87);
+/*
+define ("CMS_FORMS_REMOVE_FORM_SUBMIT", 0);
+define ("CMS_FORMS_ALLOW_FORM_SUBMIT", 1);
+
+define("MESSAGE_CMS_FORMS_REQUIRED_FIELDS", 67);
+define("MESSAGE_CMS_FORMS_MALFORMED_FIELDS", 68);
+define("MESSAGE_CMS_FORMS_EMAIL_SUBJECT", 69);
+define("MESSAGE_CMS_FORMS_SUBMIT_NOT_ALLOWED", 83);
+*/
 
 /**
   * Class CMS_module_cms_forms
@@ -62,122 +71,8 @@ class CMS_module_cms_forms extends CMS_moduleValidation
 		if ($this->hasParameters() && $s = $this->getParameters("default_language")) {
 			return $s;
 		} else {
-			return "en";
+			return APPLICATION_DEFAULT_LANGUAGE;
 		}
-	}
-	
-	/** 
-	  * Get the tags to be treated by this module for the specified treatment mode, visualization mode and object.
-	  * @param integer $treatmentMode The current treatment mode (see constants on top of CMS_modulesTags class for accepted values).
-	  * @param integer $visualizationMode The current visualization mode (see constants on top of cms_page class for accepted values).
-	  * @return array of tags to be treated.
-	  * @access public
-	  */
-	function getWantedTags($treatmentMode, $visualizationMode) 
-	{
-		$return = array();
-		switch ($treatmentMode) {
-			case MODULE_TREATMENT_CLIENTSPACE_TAGS :
-				$return = array (
-					"atm-clientspace" => array("selfClosed" => true, "parameters" => array("module" => MOD_CMS_FORMS_CODENAME)),
-				);
-			break;
-			case MODULE_TREATMENT_BLOCK_TAGS :
-				//Call module clientspace content
-				$return = array (
-					"block" => array("selfClosed" => false, "parameters" => array("module" => MOD_CMS_FORMS_CODENAME)),
-				);
-			break;
-			case MODULE_TREATMENT_PAGECONTENT_TAGS :
-				//Add module CSS after atm-meta-tags content
-				$return = array (
-					"atm-meta-tags" => array("selfClosed" => true, "parameters" => array()),
-				);
-			break;
-		}
-		return $return;
-	}
-	
-	/** 
-	  * Treat given content tag by this module for the specified treatment mode, visualization mode and object.
-	  *
-	  * @param string $tag The CMS_XMLTag.
- 	  * @param string $tagContent previous tag content.
-	  * @param integer $treatmentMode The current treatment mode (see constants on top of CMS_modulesTags class for accepted values).
-	  * @param integer $visualizationMode The current visualization mode (see constants on top of cms_page class for accepted values).
-	  * @param object $treatedObject The reference object to treat.
-	  * @param array $treatmentParameters : optionnal parameters used for the treatment. Usually an array of objects.
-	  * @return string the tag content treated.
-	  * @access public
-	  */
-	function treatWantedTag(&$tag, $tagContent, $treatmentMode, $visualizationMode, &$treatedObject, $treatmentParameters)
-	{
-		switch ($treatmentMode) {
-			case MODULE_TREATMENT_CLIENTSPACE_TAGS:
-				if (!is_a($treatedObject,"CMS_pageTemplate")) {
-					$this->raiseError('$treatedObject must be a CMS_pageTemplate object');
-					return false;
-				}
-				if (!is_a($treatmentParameters["page"],"CMS_page")) {
-					$this->raiseError('$treatmentParameters["page"] must be a CMS_page object');
-					return false;
-				}
-				if (!is_a($treatmentParameters["language"],"CMS_language")) {
-					$this->raiseError('$treatmentParameters["language"] must be a CMS_language object');
-					return false;
-				}
-				if (!sensitiveIO::IsPositiveInteger($tag->getAttribute('formID'))) {
-					$this->raiseError('Attribute formID must be a positive integer');
-					return false;
-				}
-				//call cms_forms clientspace content
-				$cs = new CMS_moduleClientspace($tag->getAttributes());
-				$html = $cs->getClientspaceData(MOD_CMS_FORMS_CODENAME, new CMS_date(), $treatmentParameters["page"], $visualizationMode);
-				if ($visualizationMode != PAGE_VISUALMODE_PRINT) {
-					//save in global var the page ID who need this module so we can add the header module code later.
-					$GLOBALS[MOD_CMS_FORMS_CODENAME]["pageUseModule"][$treatmentParameters["page"]->getID()][] = $tag->getAttribute('formID');
-				}
-				return $html;
-			break;
-			case MODULE_TREATMENT_BLOCK_TAGS:
-				if (!is_a($treatedObject,"CMS_row")) {
-					$this->raiseError('$treatedObject must be a CMS_row object');
-					return false;
-				}
-				if (!is_a($treatmentParameters["page"],"CMS_page")) {
-					$this->raiseError('$treatmentParameters["page"] must be a CMS_page object');
-					return false;
-				}
-				if (!is_a($treatmentParameters["language"],"CMS_language")) {
-					$this->raiseError('$treatmentParameters["language"] must be a CMS_language object');
-					return false;
-				}
-				if (!is_a($treatmentParameters["clientSpace"],"CMS_moduleClientspace")) {
-					$this->raiseError('$treatmentParameters["clientSpace"] must be a CMS_moduleClientspace object');
-					return false;
-				}
-				//create the block data
-				$block = $tag->getRepresentationInstance();
-				return $block->getData($treatmentParameters["language"], $treatmentParameters["page"], $treatmentParameters["clientSpace"], $treatedObject, $visualizationMode);
-			break;
-			case MODULE_TREATMENT_PAGECONTENT_TAGS :
-				if (!is_a($treatedObject,"CMS_page")) {
-					$this->raiseError('$treatedObject must be a CMS_page object');
-					return false;
-				}
-				//Add module CSS after atm-meta-tags content
-				if (!$tagContent) {
-					$tagContent = $tag->getContent();
-				}
-				if (isset($GLOBALS[MOD_CMS_FORMS_CODENAME]["pageUseModule"][$treatedObject->getID()]) && sizeof($GLOBALS[MOD_CMS_FORMS_CODENAME]["pageUseModule"][$treatedObject->getID()])) {
-					$tagContent .= 
-					'	<!-- load the style of '.MOD_CMS_FORMS_CODENAME.' module -->'."\n".
-					'	<link rel="stylesheet" type="text/css" href="/css/modules/'.MOD_CMS_FORMS_CODENAME.'.css" />'."\n";
-				}
-				return $tagContent;
-			break;
-		}
-		return $tag->getContent();
 	}
 	
 	/**
@@ -268,12 +163,6 @@ class CMS_module_cms_forms extends CMS_moduleValidation
 					return $modulesCode;
 				}
 			break;
-			/*case MODULE_TREATMENT_EDITOR_PLUGINS:
-				if ($treatmentParameters["editor"] == "fckeditor") {
-					$language = $treatmentParameters["user"]->getLanguage();
-					$modulesCode[MOD_CMS_FORMS_CODENAME] = $language->getMessage(MESSAGE_MOD_CMS_FORMS_PLUGIN, false, MOD_CMS_FORMS_CODENAME);
-				}
-			break;*/
 			case MODULE_TREATMENT_ROWS_EDITION_LABELS :
 				$modulesCode[MOD_CMS_FORMS_CODENAME] = $treatmentParameters["language"]->getMessage(MESSAGE_MOD_CMS_FORMS_ROWS_EXPLANATION, false, MOD_CMS_FORMS_CODENAME);
 				return $modulesCode;

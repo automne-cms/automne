@@ -15,7 +15,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: tree.php,v 1.2 2008/12/18 10:41:04 sebastien Exp $
+// $Id: tree.php,v 1.3 2009/03/02 11:29:38 sebastien Exp $
 
 /**
   * Class CMS_tree
@@ -1203,20 +1203,21 @@ class CMS_tree extends CMS_grandFather
 				id_pag
 			from
 				pages,
+				pagesBaseData_public,
 				resources,
 				resourceStatuses
 			where
-				resource_pag=id_res
+				page_pbd = id_pag
+				and resource_pag=id_res
 				and status_res=id_rs
 				and location_rs='".RESOURCE_LOCATION_USERSPACE."'
 				and publication_rs='".RESOURCE_PUBLICATION_PUBLIC."'
 		";
 		$q = new CMS_query($sql);
-		while ($id = $q->getValue("id_pag")) {
-			$regen_pages[] = $id;
-			//$pg = CMS_tree::getPageByID($id); useless !
-		}
-		
+	    while ($id = $q->getValue("id_pag")) {
+		    $regen_pages[] = $id;
+		    //$pg = CMS_tree::getPageByID($id); useless !
+	    }
 		CMS_tree::submitToRegenerator($regen_pages, $fromScratch);
 	}
 	

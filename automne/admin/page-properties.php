@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-properties.php,v 1.3 2009/02/09 10:01:43 sebastien Exp $
+// $Id: page-properties.php,v 1.4 2009/03/02 11:25:15 sebastien Exp $
 
 /**
   * PHP page : Load page properties window.
@@ -38,7 +38,7 @@ define("MESSAGE_PAGE_FIELD_PAGE", 1303);
 define("MESSAGE_PAGE_INFO_CLICK_TO_EDIT", 331);
 define("MESSAGE_PAGE_FIELD_TITLE", 132);
 define("MESSAGE_PAGE_FIELD_LINKTITLE", 133);
-define("MESSAGE_PAGE_INFO_ID", 70);
+define("MESSAGE_PAGE_INFO_ID", 54);
 define("MESSAGE_PAGE_INFO_URL", 1099);
 define("MESSAGE_PAGE_INFO_TEMPLATE", 72);
 define("MESSAGE_PAGE_INFO_WEBSITE", 1076);
@@ -112,17 +112,13 @@ define("MESSAGE_PAGE_PROPERTIES_LABEL", 8);
 define("MESSAGE_PAGE_DATE_ALERT_LABEL", 1079);
 define("MESSAGE_PAGE_SEARCH_ENGINE_LABEL", 1080);
 define("MESSAGE_PAGE_ALIAS_LABEL", 399);
-
+define("MESSAGE_PAGE_SAVE", 952);
 
 //load interface instance
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
 
-/*
-	$winId = (isset($_REQUEST['winId'])) ? $_REQUEST['winId'] : 'propertiesWindow';
-	$currentPage = (isset($_REQUEST['currentPage']) && sensitiveIO::isPositiveInteger($_REQUEST['currentPage'])) ? $_REQUEST['currentPage'] : $cms_context->getPageID();
-*/
 $winId = sensitiveIO::request('winId', '', 'propertiesWindow');
 $currentPage = sensitiveIO::request('currentPage', 'sensitiveIO::isPositiveInteger', $cms_context->getPageID());
 
@@ -145,13 +141,19 @@ if ($cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)) {
 	$editable = false;
 }
 
+if (!$editable) {
+	$disabled = 'disabled:true,';
+} else {
+	$disabled = '';
+}
+
 /***************************************\
 *             PAGE PROPERTIES           *
 \***************************************/
 
 $pageId = $cms_page->getID();
-$pageTitle = sensitiveIO::sanitizeJSString($cms_page->getTitle());
-$pageLinkTitle = sensitiveIO::sanitizeJSString($cms_page->getLinkTitle());
+$pageTitle = $cms_page->getTitle();
+$pageLinkTitle = $cms_page->getLinkTitle();
 $status = $cms_page->getStatus()->getHTML(false, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getID());
 $lineage = CMS_tree::getLineage($cms_user->getPageClearanceRoot($cms_page->getID()), $cms_page);
 
@@ -201,51 +203,12 @@ if ($cms_page->getURL()) {
 //mandatory 
 $mandatory='<span class="atm-text-alert" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_INFO_REQUIRED_FIELD).'">*</span> ';
 
-$propertiesTable = sensitiveIO::sanitizeJSString(
-	'<table id="atm-properties-table" class="atm-table">
-		<tr class="atm-odd" height="32">
-			<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_TITLE_INFO).'">'.$mandatory.$cms_language->getMessage(MESSAGE_PAGE_FIELD_TITLE).'</th>
-			<td'.($editable ? ' class="atm-editable" atm:config="editorStringReq" atm:field="title" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_INFO_CLICK_TO_EDIT).'"' : '').'>'.$pageTitle.'</td>
-		</tr>
-		<tr class="atm-even" height="32">
-			<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_LINK_LABEL_POINTING).'">'.$mandatory.$cms_language->getMessage(MESSAGE_PAGE_FIELD_LINKTITLE).'</th>
-			<td'.($editable ? ' class="atm-editable" atm:config="editorStringReq" atm:field="linkTitle" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_INFO_CLICK_TO_EDIT).'"' : '').'>'.$pageLinkTitle.'</td>
-		</tr>
-		<tr class="atm-odd" height="32">
-			<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_IDENTIFIER_INFO).'">'.$cms_language->getMessage(MESSAGE_PAGE_INFO_ID).'</th>
-			<td>'.$cms_page->getID().'</td>
-		</tr>
-		<tr class="atm-even" height="36">
-			<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_INFO_FORCEURLREFRESH).'">'.$cms_language->getMessage(MESSAGE_PAGE_INFO_URL).'</th>
-			<td'.($cms_page->getURL() && $editable ? ' class="atm-editable" atm:config="editorURL" atm:field="updateURL"' : '').'>'.$pageUrl.'</td>
-		</tr>
-		<tr class="atm-odd" height="32">
-			<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_TEMPLATE_USED_INFO).'">'.$cms_language->getMessage(MESSAGE_PAGE_INFO_TEMPLATE).'</th>
-			<td'.($editable ? ' class="atm-editable" atm:config="editorSelectTpl" atm:field="template" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_INFO_CLICK_TO_EDIT).'"' : '').'>'.$pageTplLabel.'</td>
-		</tr>
-		<tr class="atm-even" height="32">
-			<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_BELONG_SITE).'">'.$cms_language->getMessage(MESSAGE_PAGE_INFO_WEBSITE).'</th>
-			<td>'.$cms_page->getWebsite()->getLabel().'</td>
-		</tr>
-		<tr class="atm-odd" height="60">
-			<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_RELATION_BETWEEN_PAGE).'">'.$cms_language->getMessage(MESSAGE_PAGE_INFO_LINKS_RELATIONS).'</th>
-			<td>
-				<ul>
-					<li><a href="'.PATH_ADMIN_WR.'/search.php?search='.CMS_search::SEARCH_TYPE_LINKFROM.':'.$cms_page->getID().'">'.$cms_language->getMessage(MESSAGE_PAGE_RESULTS_RELATIONS,array(count($linksTo)),MOD_STANDARD_CODENAME).'</a></li>
-					<li><a href="'.PATH_ADMIN_WR.'/search.php?search='.CMS_search::SEARCH_TYPE_LINKTO.':'.$cms_page->getID().'">'.$cms_language->getMessage(MESSAGE_PAGE_RESULTS_LINKS,array(count($linksFrom)),MOD_STANDARD_CODENAME).'</a></li>
-				</ul>
-			</td>
-		</tr>
-		<tr class="atm-even" height="32">
-			<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_PRINTABLE_VERSION).'">'.$cms_language->getMessage(MESSAGE_PAGE_INFO_PRINT).'</th>
-			<td>'.$print.'</td>
-		</tr>
-		<tr class="atm-odd">
-			<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_AUTOMATIC_REDIRECTION).'">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_REDIRECT).'</th>
-			<td'.($editable ? ' class="atm-editable" atm:config="editorRedirect" atm:field="redirection" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_INFO_CLICK_TO_EDIT).'"' : '').'>'.$redirect.'</td>
-		</tr>
-	</table>'
-);
+$websiteLabel = sensitiveIO::sanitizeJSString($cms_page->getWebsite()->getLabel());
+
+$pageRelations = sensitiveIO::sanitizeJSString('<ul>
+	<li><a href="#" onclick="Automne.view.search(\''.CMS_search::SEARCH_TYPE_LINKFROM.':'.$cms_page->getID().'\');">'.$cms_language->getMessage(MESSAGE_PAGE_RESULTS_RELATIONS,array(count($linksTo)),MOD_STANDARD_CODENAME).'</a></li>
+	<li><a href="#" onclick="Automne.view.search(\''.CMS_search::SEARCH_TYPE_LINKTO.':'.$cms_page->getID().'\');">'.$cms_language->getMessage(MESSAGE_PAGE_RESULTS_LINKS,array(count($linksFrom)),MOD_STANDARD_CODENAME).'</a></li>
+</ul>');
 
 /***************************************\
 *         PAGE DATES & ALERTS           *
@@ -262,31 +225,6 @@ $reminderPeriodicity = $cms_page->getReminderPeriodicity();
 $reminderDate = $reminder_date->getLocalizedDate($dateFormat);
 $reminderMessage = htmlspecialchars($cms_page->getReminderOnMessage());
 
-$datesTable = sensitiveIO::sanitizeJSString(
-	'<table id="atm-date-table" class="atm-table">
-		<tr class="atm-odd" height="32">
-			<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_DATE_START_PUBLICATION).' '.$cms_language->getMessage(MESSAGE_PAGE_FIELD_DATE_COMMENT, array($date_mask)).'">'.$mandatory.$cms_language->getMessage(MESSAGE_PAGE_FIELD_PUBDATE_BEG).'</th>
-			<td'.($editable ? ' class="atm-editable" atm:config="editorDateReq" atm:field="pubdatestart" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_INFO_CLICK_TO_EDIT).'"' : '').'>'.$pubStart.'</td>
-		</tr>
-		<tr class="atm-even" height="32">
-			<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_DATE_END_PUBLICATION).' '.$cms_language->getMessage(MESSAGE_PAGE_FIELD_DATE_COMMENT, array($date_mask)).'">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_PUBDATE_END).'</th>
-			<td'.($editable ? ' class="atm-editable" atm:config="editorDate" atm:field="pubdateend" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_INFO_CLICK_TO_EDIT).'"' : '').'>'.$pubEnd.'</td>
-		</tr>
-		<tr class="atm-odd" height="32">
-			<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_DELAY_ALERT_MESSAGE).' '.$cms_language->getMessage(MESSAGE_PAGE_FIELD_REMINDERDELAY_COMMENT).'">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_REMINDERDELAY).'</th>
-			<td'.($editable ? ' class="atm-editable" atm:config="editorInt" atm:field="reminderdelay" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_INFO_CLICK_TO_EDIT).'"' : '').'>'.$reminderPeriodicity.'</td>
-		</tr>
-		<tr class="atm-even" height="32">
-			<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_DATE_RECEPTION_ALERT_MESSAGE).'">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_REMINDERDATE).'</th>
-			<td'.($editable ? ' class="atm-editable" atm:config="editorDate" atm:field="reminderdate" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_INFO_CLICK_TO_EDIT).'"' : '').'>'.$reminderDate.'</td>
-		</tr>
-		<tr class="atm-odd">
-			<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_ALERT_MESSAGE_INFO).'">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_REMINDERMESSAGE).'</th>
-			<td'.($editable ? ' class="atm-editable" atm:config="editorTextarea" atm:field="remindertext" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_INFO_CLICK_TO_EDIT).'"' : '').'>'.$reminderMessage.'</td>
-		</tr>
-	</table>'
-);
-
 /***************************************\
 *            SEARCH ENGINES             *
 \***************************************/
@@ -294,27 +232,6 @@ $description = htmlspecialchars($cms_page->getDescription());
 $keywords = htmlspecialchars($cms_page->getKeywords());
 $category = htmlspecialchars($cms_page->getCategory());
 $robots = htmlspecialchars($cms_page->getRobots());
-
-$searchEngineTable = sensitiveIO::sanitizeJSString(
-	'<table id="atm-search-table" class="atm-table">
-		<tr class="atm-odd">
-			<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_DESC_INFO).'">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_DESCRIPTION).'</th>
-			<td'.($editable ? ' class="atm-editable" atm:config="editorTextarea" atm:field="descriptiontext" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_INFO_CLICK_TO_EDIT).'"' : '').'>'.$description.'</td>
-		</tr>
-		<tr class="atm-even">
-			<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_KEYWORD_INFO).'">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_KEYWORDS).'</th>
-			<td'.($editable ? ' class="atm-editable" atm:config="editorTextarea" atm:field="keywordstext" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_INFO_CLICK_TO_EDIT).'"' : '').'>'.$keywords.'</td>
-		</tr>
-		<tr class="atm-odd">
-			<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_CATEGORY_INFO).'">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_CATEGORY).'</th>
-			<td'.($editable ? ' class="atm-editable" atm:config="editorTextarea" atm:field="categorytext" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_INFO_CLICK_TO_EDIT).'"' : '').'>'.$category.'</td>
-		</tr>
-		<tr class="atm-even">
-			<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_ROBOTS_INFO).' '.$cms_language->getMessage(MESSAGE_PAGE_FIELD_ROBOTS_COMMENT).'" height="32">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_ROBOTS).'</th>
-			<td'.($editable ? ' class="atm-editable" atm:config="editorString" atm:field="robotstext" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_INFO_CLICK_TO_EDIT).'"' : '').'>'.$robots.'</td>
-		</tr>
-	</table>'
-);
 
 /***************************************\
 *              META-DATAS               *
@@ -327,9 +244,7 @@ if (!NO_PAGES_EXTENDED_META_TAGS) {
 $language = CMS_languagesCatalog::getByCode($cms_page->getLanguage());
 $pageLanguage = htmlspecialchars($language->getLabel());
 $languageValue = htmlspecialchars($language->getCode());
-
-$pragma = ($cms_page->getPragma() != '') ? $cms_language->getMessage(MESSAGE_PAGE_FIELD_PRAGMA_COMMENTS) : $cms_language->getMessage(MESSAGE_PAGE_BROWSER_DEFAULT_VALUE);
-$pragmaValue = ($cms_page->getPragma() != '') ? 1 : 0;
+$pragmaValue = ($cms_page->getPragma() != '') ? 'true' : 'false';
 
 $languages = CMS_languagesCatalog::getAllLanguages();
 $languagesDatas = array();
@@ -337,41 +252,7 @@ foreach ($languages as $aLanguage) {
 	$languagesDatas[] = array($aLanguage->getCode(), $aLanguage->getLabel());
 }
 $languagesDatas = sensitiveIO::jsonEncode($languagesDatas);
-
-$meta = 'TODO';
-
-$metaDatasTable = 
-'<table id="atm-meta-table" class="atm-table">';
-if (!NO_PAGES_EXTENDED_META_TAGS) {
-	$metaDatasTable .='
-	<tr class="atm-odd">
-		<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_AUTHOR_INFO).'" height="32">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_AUTHOR).'</th>
-		<td'.($editable ? ' class="atm-editable" atm:config="editorString" atm:field="authortext" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_INFO_CLICK_TO_EDIT).'"' : '').'>'.$author.'</td>
-	</tr>
-	<tr class="atm-even">
-		<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_MAIL_INFO).'" height="32">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_REPLYTO).'</th>
-		<td'.($editable ? ' class="atm-editable" atm:config="editorString" atm:field="replytotext" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_INFO_CLICK_TO_EDIT).'"' : '').'>'.$replyTo.'</td>
-	</tr>
-	<tr class="atm-odd">
-		<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_COPYRIGHT_INFO).'" height="32">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_COPYRIGHT).'</th>
-		<td'.($editable ? ' class="atm-editable" atm:config="editorString" atm:field="copyrighttext" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_INFO_CLICK_TO_EDIT).'"' : '').'>'.$copyright.'</td>
-	</tr>';
-}
-$metaDatasTable .='
-	<tr class="atm-even">
-		<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_LANGUAGE_USED_INFO).'" height="32">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_LANGUAGE).'</th>
-		<td'.($editable ? ' class="atm-editable" atm:config="editorSelectLanguage" atm:field="language" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_INFO_CLICK_TO_EDIT).'"' : '').'>'.$pageLanguage.'</td>
-	</tr>
-	<tr class="atm-odd">
-		<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_BROWSER_CACHE_INFO).'" height="32">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_PRAGMA).'</th>
-		<td'.($editable ? ' class="atm-editable" atm:config="editorPragma" atm:field="pragmatext" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_INFO_CLICK_TO_EDIT).'"' : '').'>'.$pragma.'</td>
-	</tr>
-	<tr class="atm-odd">
-		<th ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_META_DATA_INFO).'">'.$cms_language->getMessage(MESSAGE_PAGE_META_DATA_LABEL).'</th>
-		<td'.(($editable && $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) ? ' class="atm-editable" atm:config="editorTextarea" atm:field="metatext" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_INFO_CLICK_TO_EDIT).'"' : '').'>'.$meta.'</td>
-	</tr>
-</table>';
-$metaDatasTable = sensitiveIO::sanitizeJSString($metaDatasTable);
+$metas = htmlspecialchars($cms_page->getMetas());
 
 /***************************************\
 *               SUB-PAGES               *
@@ -438,11 +319,6 @@ $jscontent = <<<END
 		html: 			'{$cms_language->getJsMessage(MESSAGE_PAGE_TOOLBAR_HELP_INFO)}',
 		dismissDelay:	0
     });
-	//generic update fields configuration
-	var fieldUpdateConfig = {
-		url:				'page-controler.php',
-		params: 			{currentPage:'{$pageId}'}
-	};
 	//unlock page just before window close
 	propertiesWindow.on('beforeclose', function() {
 		//send server call
@@ -456,182 +332,35 @@ $jscontent = <<<END
 		return true;
 	});
 END;
-if ($editable) {
-	$jscontent .= <<<END
-	//close editor on window close
-	propertiesWindow.on('close', Automne.utils.deleteEditor);
-	
-	/***************************************\
-	*             EDITORS                   *
-	\***************************************/
-	
-	//set conf for required text editor
-	Ext.StoreMgr.add('editorStringReq', {
-		xtype:				'textfield',
-		allowBlank: 		false,
-		maxLength:			255,
-		selectOnFocus:		true,
-		updateConfig:		fieldUpdateConfig,
-		autosize:			'width'
-	});
-	//set conf for required text editor
-	Ext.StoreMgr.add('editorString', {
-		xtype:				'textfield',
-		allowBlank: 		true,
-		maxLength:			255,
-		selectOnFocus:		true,
-		updateConfig:		fieldUpdateConfig,
-		autosize:			'width'
-	});
-	//set conf for url update editor
-	Ext.StoreMgr.add('editorURL', {
-		xtype:				'checkbox',
-		allowBlank: 		false,
-		maxLength:			255,
-		selectOnFocus:		true,
-		value:				{$cms_page->getRefreshURL()},
-		boxLabel:			'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_FORCEURLREFRESH_COMMENT)}',
-		renderer:			function (field, el) {
-			return '<a href="{$cms_page->getURL()}" target="_blank">{$cms_page->getURL()}</a><input type="hidden" value="'+ field.getValue() +'" />' + (field.getValue() ? ' (<em>{$cms_language->getJSMessage(MESSAGE_PAGE_UPDATE_NEXT_VALIDATION)}</em>)' : '');
-		},
-		updateConfig:		fieldUpdateConfig
-	});
-	//set conf for pragma update editor
-	Ext.StoreMgr.add('editorPragma', {
-		xtype:				'checkbox',
-		allowBlank: 		false,
-		maxLength:			255,
-		selectOnFocus:		true,
-		value:				{$pragmaValue},
-		boxLabel:			'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_PRAGMA_COMMENTS)}',
-		renderer:			function (field, el) {
-			return '<input type="hidden" value="'+ field.getValue() +'" />' + (field.getValue() ? '{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_PRAGMA_COMMENTS)}' : '{$cms_language->getJsMessage(MESSAGE_PAGE_BROWSER_DEFAULT_VALUE)}');
-		},
-		updateConfig:		fieldUpdateConfig
-	});
-	//set conf for template switching
-	Ext.StoreMgr.add('editorSelectTpl', {
-		xtype:				'combo',
-		forceSelection:		true,
-		mode:				'remote',
-		valueField:			'id',
-		displayField:		'label',
-		value:				'{$pageTplLabel}',
-		triggerAction: 		'all',
-		store:				new Automne.JsonStore({
-			url: 			'page-templates-datas.php',
-			baseParams:		{
-				template: 		{$pageTplId},
-				page:			$pageId
-			},
-			root: 			'results',
-			fields: 		['id', 'label', 'image', 'groups', 'compatible', 'description'],
-			prepareData: 	function(data){
-		    	data.qtip = Ext.util.Format.htmlEncode(data.description);
-				data.cls = data.compatible ? '' : 'atm-red';
-				return data;
-			}
-		}),
-		renderer:			function(field) {
-			var value = (field.store.getAt(field.store.find(field.valueField, field.getValue()))) ? field.store.getAt(field.store.find(field.valueField, field.getValue())).get(field.displayField) : field.getValue();
-			return '<input type="hidden" value="'+ field.getValue() +'" />' + value;
-		},
-		allowBlank: 		false,
-		selectOnFocus:		true,
-		editable:			false,
-		tpl: 				'<tpl for="."><div ext:qtip="{qtip}" class="x-combo-list-item {cls}">{label}</div></tpl>',
-    	updateConfig:		fieldUpdateConfig,
-		autosize:			'height'
-	});
-	//set conf for language switching
-	Ext.StoreMgr.add('editorSelectLanguage', {
-		xtype:				'combo',
-		forceSelection:		true,
-		mode:				'local',
-		valueField:			'id',
-		displayField:		'name',
-		value:				'{$languageValue}',
-		triggerAction: 		'all',
-		store:				new Ext.data.SimpleStore({
-		    fields: 	['id', 'name'],
-		    data : 		{$languagesDatas}
-		}),
-		renderer:			function(field) {
-			var value = (field.store.getAt(field.store.find(field.valueField, field.getValue()))) ? field.store.getAt(field.store.find(field.valueField, field.getValue())).get(field.displayField) : field.getValue();
-			return '<input type="hidden" value="'+ field.getValue() +'" />' + value;
-		},
-		allowBlank: 		false,
-		selectOnFocus:		true,
-		editable:			false,
-		updateConfig:		fieldUpdateConfig,
-		autosize:			'height'
-	});
-	//set conf for page redirection
-	Ext.StoreMgr.add('editorRedirect', {
-		xtype:				'linkfield',
-		selectOnFocus:		true,
-		value:				'{$redirectValue}',
-		updateConfig:		fieldUpdateConfig,
-		height:				70,
-		allowBlur:			true,
-		renderer:			function (field, el) {
-			field.getComputedValue(el);
-			return '';
-		},
-		linkConfig: {
-			admin: 				true,				// Link has label ?
-			label: 				false,				// Link has label ?
-			internal: 			true,				// Link can target an Automne page ?
-			external: 			true,				// Link can target an external resource ?
-			file: 				false,				// Link can target a file ?
-			destination:		false,				// Can select a destination for the link ?
-			currentPage:		'{$pageId}',		// Current page to open tree
-			module:				'{$module}', 
-			visualmode:			'{$visualmode}'
-		}
-	});
-	var dateRenderer = function (field) {
-		var value = field.getValue();
-		return value ? value.dateFormat('{$dateFormat}') : '';
-	};
-	//set conf for required dates
-	Ext.StoreMgr.add('editorDateReq', {
-		xtype:				'datefield',
-		allowBlank: 		false,
-		format:				'{$dateFormat}',
-		renderer:			dateRenderer,
-		updater:			dateRenderer,
-		selectOnFocus:		true,
-		updateConfig:		fieldUpdateConfig,
-		width:				100
-	});
-	//set conf for non-required dates
-	Ext.StoreMgr.add('editorDate', {
-		xtype:				'datefield',
-		allowBlank: 		true,
-		format:				'{$dateFormat}',
-		renderer:			dateRenderer,
-		updater:			dateRenderer,
-		selectOnFocus:		true,
-		updateConfig:		fieldUpdateConfig,
-		width:				100
-	});
-	//set conf for non-required integer
-	Ext.StoreMgr.add('editorInt', {
-		xtype:				'numberfield',
-		allowBlank: 		true,
-		selectOnFocus:		true,
-		updateConfig:		fieldUpdateConfig
-	});
-	//set conf for non-required text area
-	Ext.StoreMgr.add('editorTextarea', {
-		xtype:				'textarea',
-		allowBlank: 		true,
-		selectOnFocus:		true,
-		updateConfig:		fieldUpdateConfig
-	});
-END;
+
+//sanitize some js string
+$pageTitle = sensitiveIO::sanitizeJSString($pageTitle);
+$pageLinkTitle = sensitiveIO::sanitizeJSString($pageLinkTitle);
+$pageTplLabel = sensitiveIO::sanitizeJSString($pageTplLabel);
+
+if (!NO_PAGES_EXTENDED_META_TAGS) {
+	$extendedMetas = "{
+		{$disabled}
+		fieldLabel:		'<span ext:qtip=\"{$cms_language->getJSMessage(MESSAGE_PAGE_AUTHOR_INFO)}\" class=\"atm-help\">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_AUTHOR)}</span>',
+		name:			'authortext',
+		value:			'{$author}'
+	},{
+		{$disabled}
+		fieldLabel:		'<span ext:qtip=\"{$cms_language->getJSMessage(MESSAGE_PAGE_MAIL_INFO)}\" class=\"atm-help\">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_REPLYTO)}</span>',
+		name:			'replytotext',
+		value:			'{$replyTo}',
+		vtype:			'email'
+	},{
+		{$disabled}
+		fieldLabel:		'<span ext:qtip=\"{$cms_language->getJSMessage(MESSAGE_PAGE_COPYRIGHT_INFO)}\" class=\"atm-help\">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_COPYRIGHT)}</span>',
+		name:			'copyrighttext',
+		value:			'{$copyright}'
+	},";
+} else {
+	$extendedMetas = '';
 }
+
+
 $jscontent .= <<<END
 	//create center panel
 	var center = new Ext.TabPanel({
@@ -641,64 +370,371 @@ $jscontent .= <<<END
 		plain:				true,
         enableTabScroll:	true,
 		defaults:			{
-			autoScroll: true,
-			listeners:{
-				'activate':{
-					fn:function(panel) {
-						//set all editors on panel by class name
-						Ext.select('table .atm-editable', true, panel.id).each(function(el){
-							el.on('click', function(el) {
-								if(this.getAttributeNS('atm', 'config')) Automne.utils.editor(this);
-							}, el);
-						});
-						//delete editor on scroll
-						Ext.EventManager.on(panel.body, 'scroll', Automne.utils.deleteEditor, this);
-					},
-					single:true,
-					scope:this
-				}, 
-				'deactivate':{
-					fn:		Automne.utils.deleteEditor,
-					scope:	this
-				}
-			}
+			autoScroll: true
 		},
         items:[{
-				title:	'{$cms_language->getJsMessage(MESSAGE_PAGE_PROPERTIES_LABEL)}',
-				id:		'propertiesPanel',
-				html:	'{$propertiesTable}'
-			},{
-				title:	'{$cms_language->getJsMessage(MESSAGE_PAGE_DATE_ALERT_LABEL)}',
-				id:		'datesPanel',
-				html: 	'{$datesTable}'
-            },{
-				title:	'{$cms_language->getJsMessage(MESSAGE_PAGE_SEARCH_ENGINE_LABEL)}',
-				id:		'searchEnginePanel',
-				html:	'{$searchEngineTable}'
-            },{
-				title:	'{$cms_language->getJsMessage(MESSAGE_PAGE_META_DATA)}',
-				id:		'metaPanel',
-				html:	'{$metaDatasTable}'
-            }/*,{
-				title:	'{$cms_language->getJsMessage(MESSAGE_PAGE_ALIAS_LABEL)}',
-				id:		'aliasPanel',
-				html:	'TODOV4'
-            }*/
+				title:				'Propriétés',
+				id:					'propertiesPanel',
+				autoScroll:			true,
+				layout: 			'accordion',
+				border:				false,
+				bodyBorder: 		false,
+				defaults: {
+					// applied to each contained panel
+					bodyStyle: 			'padding:5px',
+					border:				false,
+					autoScroll:			true
+				},
+				layoutConfig: {
+					// layout-specific configs go here
+					animate: 			true
+				},
+				items:[{
+					title:			'Contenu',
+					id:				'pageContentPanel',
+					layout: 		'form',
+					xtype:			'atmForm',
+					url:			'page-controler.php',
+					collapsible:	true,
+					labelAlign:		'right',
+					defaultType:	'textfield',
+					labelWidth:		120,
+					defaults: {
+						xtype:			'textfield',
+						anchor:			'97%',
+						allowBlank:		true
+					},
+					items:[{
+						{$disabled}
+						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_TITLE_INFO)}" class="atm-help">{$mandatory}{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_TITLE)}</span>',
+						name:			'title',
+						value:			'{$pageTitle}',
+						allowBlank:		false
+					},{
+						{$disabled}
+						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_LINK_LABEL_POINTING)}" class="atm-help">{$mandatory}{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_LINKTITLE)}</span>',
+						name:			'linkTitle',
+						value:			'{$pageLinkTitle}',
+						allowBlank:		false
+					},{
+						{$disabled}
+						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_TEMPLATE_USED_INFO)}" class="atm-help">{$mandatory}{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_TEMPLATE)}</span>',
+						name:			'template',
+						hiddenName:		'template',
+						xtype:			'atmCombo',
+						forceSelection:	true,
+						mode:			'remote',
+						valueField:		'id',
+						displayField:	'label',
+						value:			'{$pageTplId}',
+						triggerAction: 	'all',
+						store:			new Automne.JsonStore({
+							url: 			'page-templates-datas.php',
+							baseParams:		{
+								template: 		{$pageTplId},
+								page:			$pageId
+							},
+							root: 			'results',
+							fields: 		['id', 'label', 'image', 'groups', 'compatible', 'description'],
+							prepareData: 	function(data){
+						    	data.qtip = Ext.util.Format.htmlEncode(data.description);
+								data.cls = data.compatible ? '' : 'atm-red';
+								return data;
+							}
+						}),
+						allowBlank: 		false,
+						selectOnFocus:		true,
+						editable:			false,
+						tpl: 				'<tpl for="."><div ext:qtip="{qtip}" class="x-combo-list-item {cls}">{label}</div></tpl>',
+						anchor:				''
+					},{
+						{$disabled}
+						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_FORCEURLREFRESH)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_URL)}</span>',
+						name:			'updateURL',
+						inputValue:		'1',
+						height:			45,
+						xtype:			'checkbox',
+						boxLabel:		'Cochez la case pour mettre à jour l\'adresse de la page.<br />Adresse actuelle : {$pageUrl}'
+					},{
+						{$disabled}
+						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_AUTOMATIC_REDIRECTION)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_REDIRECT)}</span>',
+						name:			'redirection',
+						xtype: 			'atmLinkField',
+						selectOnFocus:	true,
+						value:			'{$redirectValue}',
+						allowBlur:		true,
+						linkConfig: {
+							admin: 				true,				// Link has label ?
+							label: 				false,				// Link has label ?
+							internal: 			true,				// Link can target an Automne page ?
+							external: 			true,				// Link can target an external resource ?
+							file: 				false,				// Link can target a file ?
+							destination:		false,				// Can select a destination for the link ?
+							currentPage:		'{$pageId}',		// Current page to open tree
+							module:				'{$module}', 
+							visualmode:			'{$visualmode}'
+						}
+					},
+					
+					{
+						title:			'Informations',
+						/*layout: 		'form',*/
+						xtype:			'fieldset',
+						autoHeight:		true,
+						autoWidth:		true,
+						collapsed:		false,
+						defaults: {
+							xtype:			'atmEmptyfield'
+						},
+						items:[{
+							fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_IDENTIFIER_INFO)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_ID)}</span>',
+							name:			'pageId',
+							xtype:			'atmEmptyfield',
+							value:			'{$pageId}'
+						},{
+							fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_BELONG_SITE)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_WEBSITE)}</span>',
+							name:			'pageWebsite',
+							xtype:			'atmEmptyfield',
+							value:			'{$websiteLabel}'
+						},{
+							fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_RELATION_BETWEEN_PAGE)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_LINKS_RELATIONS)}</span>',
+							name:			'pageRelations',
+							xtype:			'atmEmptyfield',
+							value:			'{$pageRelations}'
+						},{
+							fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_PRINTABLE_VERSION)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_PRINT)}</span>',
+							name:			'pagePrint',
+							xtype:			'atmEmptyfield',
+							value:			'{$print}'
+						}]
+					}],
+					buttons:[{
+						{$disabled}
+						text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+						name:			'submitPageContent',
+						anchor:			'',
+						scope:			this,
+						handler:		function() {
+							var form = Ext.getCmp('pageContentPanel').getForm();
+							form.submit({
+								params:{
+									action:		'pageContent',
+									pageId:		'{$pageId}'
+								},
+								scope:this
+							});
+						}
+					}]
+				},{
+					title:			'{$cms_language->getJSMessage(MESSAGE_PAGE_DATE_ALERT_LABEL)}',
+					id:				'pageDatesPanel',
+					layout: 		'form',
+					xtype:			'atmForm',
+					url:			'page-controler.php',
+					collapsible:	true,
+					defaultType:	'textfield',
+					collapsed:		true,
+					labelAlign:		'right',
+					labelWidth:		135,
+					defaults: {
+						xtype:			'textfield',
+						anchor:			'97%',
+						allowBlank:		true
+					},
+					items:[{
+						{$disabled}
+						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_DATE_START_PUBLICATION)} {$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_DATE_COMMENT, array($date_mask))}" class="atm-help">{$mandatory}{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_PUBDATE_BEG)}</span>',
+						name:			'pubdatestart',
+						value:			'{$pubStart}',
+						xtype:			'datefield',
+						allowBlank: 	false,
+						format:			'{$dateFormat}',
+						width:			100,
+						anchor:			''
+					},{
+						{$disabled}
+						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_DATE_END_PUBLICATION)} {$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_DATE_COMMENT, array($date_mask))}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_PUBDATE_END)}</span>',
+						name:			'pubdateend',
+						value:			'{$pubEnd}',
+						xtype:			'datefield',
+						format:			'{$dateFormat}',
+						width:			100,
+						anchor:			''
+					},{
+						{$disabled}
+						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_DELAY_ALERT_MESSAGE)} {$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_REMINDERDELAY_COMMENT)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_REMINDERDELAY)}</span>',
+						name:			'reminderdelay',
+						value:			'{$reminderPeriodicity}',
+						width:			30,
+						anchor:			''
+					},{
+						{$disabled}
+						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_DATE_RECEPTION_ALERT_MESSAGE)} {$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_DATE_COMMENT, array($date_mask))}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_REMINDERDATE)}</span>',
+						name:			'reminderdate',
+						value:			'{$reminderDate}',
+						xtype:			'datefield',
+						format:			'{$dateFormat}',
+						width:			100,
+						anchor:			''
+					},{
+						{$disabled}
+						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_ALERT_MESSAGE_INFO)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_REMINDERMESSAGE)}</span>',
+						name:			'remindertext',
+						value:			'{$reminderMessage}',
+						xtype:			'textarea'
+					}],
+					buttons:[{
+						{$disabled}
+						text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+						name:			'submitPageDates',
+						scope:			this,
+						handler:		function() {
+							var form = Ext.getCmp('pageDatesPanel').getForm();
+							form.submit({params:{
+								action:		'pageDates',
+								pageId:		'{$pageId}'
+							}});
+						}
+					}]
+				},{
+					title:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SEARCH_ENGINE_LABEL)}',
+					id:				'pageSearchEnginesPanel',
+					layout: 		'form',
+					xtype:			'atmForm',
+					url:			'page-controler.php',
+					collapsible:	true,
+					defaultType:	'textfield',
+					collapsed:		true,
+					labelAlign:		'right',
+					defaults: {
+						xtype:			'textfield',
+						anchor:			'97%',
+						allowBlank:		true
+					},
+					items:[{
+						{$disabled}
+						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_DESC_INFO)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_DESCRIPTION)}</span>',
+						name:			'descriptiontext',
+						value:			'{$description}',
+						xtype:			'textarea'
+					},{
+						{$disabled}
+						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_KEYWORD_INFO)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS)}</span>',
+						name:			'keywordstext',
+						value:			'{$keywords}',
+						xtype:			'textarea'
+					},{
+						{$disabled}
+						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_CATEGORY_INFO)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_CATEGORY)}</span>',
+						name:			'categorytext',
+						value:			'{$category}',
+						xtype:			'textarea'
+					},{
+						{$disabled}
+						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_ROBOTS_INFO)} {$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_ROBOTS_COMMENT)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_ROBOTS)}</span>',
+						name:			'robotstext',
+						value:			'{$robots}'
+					}],
+					buttons:[{
+						{$disabled}
+						text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+						name:			'submitPageSearchEngine',
+						scope:			this,
+						handler:		function() {
+							var form = Ext.getCmp('pageSearchEnginesPanel').getForm();
+							form.submit({params:{
+								action:		'pageSearchEngines',
+								pageId:		'{$pageId}'
+							}});
+						}
+					}]
+				},{
+					title:			'{$cms_language->getJSMessage(MESSAGE_PAGE_META_DATA)}',
+					id:				'pageMetasPanel',
+					layout: 		'form',
+					xtype:			'atmForm',
+					url:			'page-controler.php',
+					collapsible:	true,
+					defaultType:	'textfield',
+					collapsed:		true,
+					labelAlign:		'right',
+					labelWidth:		120,
+					defaults: {
+						xtype:			'textfield',
+						anchor:			'97%',
+						allowBlank:		true
+					},
+					items:[{$extendedMetas}{
+						{$disabled}
+						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_LANGUAGE_USED_INFO)}" class="atm-help">{$mandatory}{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_LANGUAGE)}</span>',
+						name:			'language',
+						hiddenName:		'language',
+						xtype:			'combo',
+						forceSelection:	true,
+						mode:			'local',
+						valueField:		'id',
+						displayField:	'name',
+						value:			'{$languageValue}',
+						triggerAction: 	'all',
+						store:			new Ext.data.SimpleStore({
+						    fields: 		['id', 'name'],
+						    data : 			{$languagesDatas}
+						}),
+						allowBlank: 		false,
+						selectOnFocus:		true,
+						editable:			false,
+						anchor:				''
+					},{
+						{$disabled}
+						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_BROWSER_CACHE_INFO)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_PRAGMA)}</span>',
+						name:			'pragmatext',
+						inputValue:		'1',
+						checked:		{$pragmaValue},
+						xtype:			'checkbox',
+						boxLabel:		'{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_PRAGMA_COMMENTS)}'
+					},{
+						{$disabled}
+						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_META_DATA_INFO)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_META_DATA_LABEL)}</span>',
+						name:			'metatext',
+						value:			'{$metas}',
+						xtype:			'textarea'
+					}],
+					buttons:[{
+						{$disabled}
+						text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+						name:			'submitPageMetas',
+						scope:			this,
+						handler:		function() {
+							var form = Ext.getCmp('pageMetasPanel').getForm();
+							form.submit({params:{
+								action:		'pageMetas',
+								pageId:		'{$pageId}'
+							}});
+						}
+					}]
+				}]
+			}
 			{$siblings}
 			{$logs}
         ]
     });
 	// Panel for the north
-	var top = new Ext.BoxComponent({
+	var top = new Ext.Panel({
 		region:			'north',
 		el: 			'north',
-		/*style:			'padding:5px;',*/
+		border:			false,
 		autoHeight: 	true
 	});
+	top.on('render', function(){
+		propertiesWindow.syncSize();
+	}, this);
 	propertiesWindow.add(top);
 	propertiesWindow.add(center);
 	//redo windows layout
 	propertiesWindow.doLayout();
+	top.on('resize', function(){
+		propertiesWindow.syncSize();
+	}, this);
 END;
 $view->addJavascript($jscontent);
 

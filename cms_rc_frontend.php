@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc_frontend.php,v 1.2 2008/12/18 13:40:40 sebastien Exp $
+// $Id: cms_rc_frontend.php,v 1.3 2009/03/02 11:23:21 sebastien Exp $
 
 /**
   * Frontend rc file.
@@ -25,9 +25,7 @@
 //include general configuration file
 require_once(dirname(__FILE__)."/cms_rc.php");
 //Set session name
-session_name('AutomneSession');
-//start session
-@session_start();
+start_atm_session();
 
 // Start output buffering for compression so we don't prevent
 // headers from being sent if there's a blank line in an included file
@@ -38,13 +36,6 @@ ob_start( 'compress_handler' );
   */
 if (!defined("APPLICATION_USER_TYPE")) {
 	define("APPLICATION_USER_TYPE", "frontend");
-}
-
-/**
-  * Define execution Type
-  */
-if (!defined("APPLICATION_EXEC_TYPE")) {
-	define("APPLICATION_EXEC_TYPE", "http");
 }
 
 /**
@@ -99,7 +90,7 @@ if (!APPLICATION_ENFORCES_ACCESS_CONTROL) {
 	}
 } else {
 	//check if user session exists
-	if ($_SESSION["cms_context"]) {
+	if (isset($_SESSION["cms_context"])) {
 		//check session object
 		if (is_a($_SESSION["cms_context"], "CMS_context")) {
 			$_SESSION["cms_context"]->checkSession();
@@ -171,6 +162,9 @@ function getWebsites() {
   * @access public
   */
 function getPageURL($pageID, $withMainURL = true) {
+	if (!$withMainURL) {
+		CMS_grandFather::raiseError('$withMainURL parameter is no longer available in this version of Automne');
+	}
 	return CMS_tree::getPageValue($pageID, 'url');
 }
 function getLineage() {

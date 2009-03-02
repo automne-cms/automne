@@ -1,6 +1,5 @@
-# $Id: htaccess.txt,v 1.1 2008/11/27 17:28:30 sebastien Exp $
+# $Id: htaccess.txt,v 1.2 2009/03/02 11:28:21 sebastien Exp $
 #DEPLOY ALL HTACCESS FILES
-htaccess	/	root
 htaccess	/automne	no
 htaccess	/automne/admin	yes
 htaccess	/automne/admin-v3	yes

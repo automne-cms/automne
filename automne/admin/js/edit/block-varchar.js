@@ -1,8 +1,14 @@
 /**
+  * Automne Javascript file
+  *
   * Automne.blockVarchar Extension Class for Automne.block
   * Add specific controls for varchar block
   * @class Automne.blockVarchar
   * @extends Automne.block
+  * @package CMS
+  * @subpackage JS
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * $Id: block-varchar.js,v 1.2 2009/03/02 11:27:02 sebastien Exp $
   */
 Automne.blockVarchar = Ext.extend(Automne.block, {
 	blockClass:	'CMS_block_varchar',
@@ -45,12 +51,12 @@ Automne.blockVarchar = Ext.extend(Automne.block, {
 				e.stopEvent();
 			}
 			if(!Ext.isIE && (e.isNavKeyPress() || k == e.BACKSPACE || (k == e.DELETE && e.button == -1))){
-	            return;
-	        }
-	        var c = e.getCharCode(), cc = String.fromCharCode(c);
-	        if(Ext.isIE && (e.isSpecialKey() || !cc)){
-	            return;
-	        }
+				return;
+			}
+			var c = e.getCharCode(), cc = String.fromCharCode(c);
+			if(Ext.isIE && (e.isSpecialKey() || !cc)){
+				return;
+			}
 			if(Ext.util.Format.htmlEncode(this.getRawValue()).length >= this.maxLength) {
 				e.stopEvent();
 			}

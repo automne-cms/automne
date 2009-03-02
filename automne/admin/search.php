@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: search.php,v 1.1 2008/12/18 10:36:43 sebastien Exp $
+// $Id: search.php,v 1.2 2009/03/02 11:25:15 sebastien Exp $
 
 /**
   * PHP page : Load page search window.
@@ -377,7 +377,7 @@ $jscontent = <<<END
 						try {
 							eval(datas.edit.function+'(button, searchWindow);');
 						} catch(e){
-							pr(e);
+							pr(e, 'error');
 						}
 					}
 				}
@@ -444,7 +444,7 @@ $jscontent = <<<END
 						try {
 							eval(datas.view.function+'(button, searchWindow);');
 						} catch(e){
-							pr(e);
+							pr(e, 'error');
 						}
 					}
 				}

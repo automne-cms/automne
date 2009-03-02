@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: pagetemplate.php,v 1.3 2009/02/09 10:04:18 sebastien Exp $
+// $Id: pagetemplate.php,v 1.4 2009/03/02 11:29:38 sebastien Exp $
 
 /**
   * Class CMS_pageTemplate
@@ -31,10 +31,6 @@
 
 class CMS_pageTemplate extends CMS_grandFather
 {
-	/**
-	  * Name of the print template
-	  */
-		const PAGE_PRINT_TEMPLATE_NAME = "print.xml";
 	/**
 	  * DB id
 	  * @var integer
@@ -601,7 +597,7 @@ class CMS_pageTemplate extends CMS_grandFather
 				$this->writeToPersistence();
 			}
 			//build the filename
-			$filename = "pt".$this->_id."_".SensitiveIO::sanitizeAsciiString($this->_label).".xml";
+			$filename = 'pt'.$this->_id.'_'.SensitiveIO::sanitizeAsciiString($this->_label).'.xml';
 		}
 		
 		//save old definition (before replacement)
@@ -673,7 +669,7 @@ class CMS_pageTemplate extends CMS_grandFather
 			//separate processing for PRINT visualmode
 			if ($visualizationMode == PAGE_VISUALMODE_PRINT) {
 				//now put the data inside the template
-				$template_data = file_get_contents(PATH_TEMPLATES_FS . "/" . self::PAGE_PRINT_TEMPLATE_NAME);
+				$template_data = file_get_contents(PATH_PRINT_TEMPLATES_FS);
 				return str_replace("{{data}}", $data, $template_data);
 			} else {
 				//add the cdata that is after the last tag
@@ -915,7 +911,7 @@ class CMS_pageTemplate extends CMS_grandFather
 				}
 	            
 	            //deletes the image file
-				if ($this->getImage()) {
+				if ($this->getImage() && $this->getImage() != 'nopicto.gif') {
 					@unlink(PATH_TEMPLATES_IMAGES_FS."/".$this->getImage());
 				}
 			}

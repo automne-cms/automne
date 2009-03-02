@@ -1,15 +1,15 @@
 /**
- * @class Automne.cs
- * @extends Ext.util.Observable
- * @constructor
- * @param {Object} config The configuration options. All cs specifications :
- *  {
- * 		id:					'cs unique id in page',
- * 		template:			'template id',
- * 		document:			current frame document we working with,
- * 		rows:				[array of possibles rows and labels]
- * 	}
- */
+  * Automne Javascript file
+  *
+  * Automne.cs Extension Class for Ext.util.Observable
+  * Create extendable clientspace content element which is contain rows
+  * @class Automne.cs
+  * @extends Ext.util.Observable
+  * @package CMS
+  * @subpackage JS
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * $Id: clientspaces.js,v 1.4 2009/03/02 11:27:02 sebastien Exp $
+  */
 Automne.cs = function(config){
 	config = config || {};
 	if(config.initialConfig){
@@ -435,7 +435,7 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 				zone.removeAllListeners();
 				zone.addClass('atm-drop-zone-hover');
 				parent.Ext.get('selectedRow').update(Automne.locales.csSelectRowAdd);
-				Automne.message.show(Automne.locales.csSelectRow);
+				parent.Automne.message.show(Automne.locales.csSelectRow, '', parent.Automne.tabPanels.getActiveTab().frameEl);
 				parent.Ext.getCmp('addRowCombo').show();
 				parent.Ext.getCmp('addSelectedRow').show();
 				//add new row

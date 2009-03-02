@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-redirect-info.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: page-redirect-info.php,v 1.2 2009/03/02 11:25:15 sebastien Exp $
 
 /**
   * PHP page : Redirection page info
@@ -51,12 +51,16 @@ if (isset($page) && !$page->hasError()) {
 			$redirect = $redirectlink->getHTML($label, MOD_STANDARD_CODENAME, RESOURCE_DATA_LOCATION_EDITED);
 		}
 	}
+	$content = '
+	<div id="atm-center">
+		<div class="atm-alert">'.$cms_language->getMessage(MESSAGE_PAGE_REDIRECT, array($redirect)).'</div>
+	</div>';
+} else {
+	$content = '
+	<div id="atm-center">
+		<div class="atm-alert">Cette page comporte une redirection vers une page qui n\'existe pas ou comporte une erreur. Elle ne présente donc pas de contenu visible.</div>
+	</div>';
 }
-$content = '
-<div id="atm-center">
-	<div class="atm-alert">'.$cms_language->getMessage(MESSAGE_PAGE_REDIRECT, array($redirect)).'</div>
-</div>';
-
 $view->setContent($content);
 $view->show(CMS_view::SHOW_HTML);
 ?>

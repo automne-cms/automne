@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: profileuser.php,v 1.2 2008/12/18 10:41:12 sebastien Exp $
+// $Id: profileuser.php,v 1.3 2009/03/02 11:29:46 sebastien Exp $
 
 /**
   * Class CMS_profile_user
@@ -354,17 +354,6 @@ class CMS_profile_user extends CMS_profile
 	}
 	
 	/**
-	  * encode Password
-	  *
-	  * @return  void
-	  * @access public
-	  */
-	function encodePassword()
-	{
-		$this->_password = md5($this->_password);
-	}
-	
-	/**
 	  * have Password
 	  *
 	  * @return  void
@@ -625,17 +614,6 @@ class CMS_profile_user extends CMS_profile
 		} else {
 			$this->raiseError("Validation object required");
 		}
-	}
-	
-	/**
-	  * destroys the cmsprofile from persistence (MySQL for now).
-	  *
-	  * @return void
-	  * @access public
-	  */
-	function destroy()
-	{
-		return false;
 	}
 	
 	/**

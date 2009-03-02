@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: email.php,v 1.2 2008/11/27 17:25:37 sebastien Exp $
+// $Id: email.php,v 1.3 2009/03/02 11:28:06 sebastien Exp $
 
 /**
   * Class CMS_email
@@ -51,6 +51,22 @@ class CMS_email extends CMS_grandFather
 	  * @access private
 	  */
 	protected $_body;
+	
+	/**
+	  * Footer of email
+	  *
+	  * @var string
+	  * @access private
+	  */
+	protected $_footer;
+	
+	/**
+	  * HTML Template of email
+	  *
+	  * @var string
+	  * @access private
+	  */
+	protected $_template;
 	
 	/**
 	  * Email destination address(')
@@ -126,7 +142,7 @@ class CMS_email extends CMS_grandFather
       * @var array
       * @access private
       */
-  	protected $_drop = array('automne@votredomain.com', 'root@localhost', 'postmaster@localhost');
+  	protected $_drop = array('automne@votredomain.com', 'root@localhost', 'nobody@localhost', 'postmaster@localhost');
 	
 	/**
 	  * Constructor.
@@ -182,7 +198,7 @@ class CMS_email extends CMS_grandFather
 	  */
 	function setSubject($subject)
 	{
-		$this->_subject = "[".APPLICATION_LABEL."] ".html_entity_decode($subject);
+		$this->_subject = html_entity_decode($subject);
 	}
 	
 	/**
@@ -220,6 +236,58 @@ class CMS_email extends CMS_grandFather
 	}
 	
 	/**
+	  * Sets Email footer
+	  *
+	  * @param String $footer 
+	  * @return void
+	  * @access public
+	  * 
+	  */
+	function setFooter($footer)
+	{
+		$this->_footer = html_entity_decode($footer);
+	}
+	
+	/**
+	  * Gets Email footer
+	  * @return String
+	  * @access public
+	  */
+	function getFooter()
+	{
+		return $this->_footer;
+	}
+	
+	/**
+	  * Sets Email template
+	  *
+	  * @param String $template path (relative to FS) 
+	  * @return boolean
+	  * @access public
+	  * 
+	  */
+	function setTemplate($template)
+	{
+		if (is_file($template)) {
+			$this->_template = $template;
+			return true;
+		} else {
+			$this->raiseError('Cannot get template file : '.$template);
+			return false;
+		}
+	}
+	
+	/**
+	  * Gets Email template (relative to FS)
+	  * @return String
+	  * @access public
+	  */
+	function getTemplate()
+	{
+		return $this->_template;
+	}
+	
+	/**
 	  * Sets Email recipient
 	  *
 	  * @param mixed $emailTo string or array of emails
@@ -229,13 +297,13 @@ class CMS_email extends CMS_grandFather
 	function setEmailTo($emailTo)
 	{
 		if (!is_array($emailTo)) {
-			if (!SensitiveIO::isValidEmail($emailTo)) {
-				$this->raiseError('Invalid emailTo : '.$email);
+			if (!sensitiveIO::isValidEmail($emailTo)) {
+				//$this->raiseError('Invalid emailTo : '.$emailTo);
 				return false;
 			}
 		} else {
 			foreach ($emailTo as $email) {
-				if (!SensitiveIO::isValidEmail($email)) {
+				if (!sensitiveIO::isValidEmail($email)) {
 					$this->raiseError('Invalid emailTo : '.$email);
 					return false;
 				}
@@ -391,6 +459,10 @@ class CMS_email extends CMS_grandFather
 	  * @access public
 	  */
 	function sendEmail(){
+		if ($this->hasError()) {
+			$this->raiseError('Cannot send email, error appened');
+			return false;
+		}
 		global $cms_user;
 		$emailSent = true;
 		if (NO_APPLICATION_MAIL) {
@@ -404,14 +476,28 @@ class CMS_email extends CMS_grandFather
 		$OB="----=_OuterBoundary_000";
 		$IB="----=_InnerBoundery_001";
 		
-		$Html = $this->_emailHTML ? $this->_emailHTML : $this->convertTextToHTML($this->_body);
-		$Text = $this->_body ? $this->_body : "Sorry, but you need an HTML compatible mailer to read this mail...";
+		if ($this->_emailHTML) { //if HTML content is provided for email, use it
+			$Html = $this->_emailHTML;
+		} elseif ($this->_template) { //else if template is provided for email HTML, use it
+			$template = new CMS_file($this->_template);
+			$templateContent = $template->getContent();
+			$replace = array(
+				'{{subject}}' 	=> $this->_subject,
+				'{{body}}' 		=> $this->convertTextToHTML($this->_body),
+				'{{footer}}' 	=> $this->convertTextToHTML($this->_footer),
+				'{{href}}'		=> CMS_websitesCatalog::getMainURL(),
+			);
+			$Html = str_replace(array_keys($replace), $replace, $templateContent);
+		} else { //else use text content converted to HTML
+			$Html = $this->convertTextToHTML($this->_body.($this->_footer ? "\n\n".$this->_footer : ''));
+		}
+		$Text = $this->_body ? $this->_body.($this->_footer ? "\n\n".$this->_footer : '') : "Sorry, but you need an HTML compatible mailer to read this mail...";
 		$From = ($this->_emailFrom) ? $this->_emailFrom : APPLICATION_POSTMASTER_EMAIL;
 		$FromName = ($this->_fromName) ? $this->_fromName : '';
 		$toUsers = (is_array($this->_emailTo) && $this->_emailTo) ? $this->_emailTo : array($this->_emailTo);
 		$toNames = (is_array($this->_toName) && $this->_toName) ? $this->_toName : array($this->_toName);
 		$Error = ($this->_error) ? $this->_error : '';
-		$Subject = $this->_subject;
+		$Subject = "[".APPLICATION_LABEL."] ".$this->_subject;
 		$AttmFiles = $this->_files;
 		$encoding = ($this->_emailEncoding) ? $this->_emailEncoding : APPLICATION_DEFAULT_ENCODING;
 		

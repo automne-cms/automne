@@ -1,8 +1,14 @@
 /**
+  * Automne Javascript file
+  *
   * Automne.framePanel Extension Class for Ext.Panel
   * Provide all events and watch for contained frames
   * @class Automne.framePanel
   * @extends Ext.Panel
+  * @package CMS
+  * @subpackage JS
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * $Id: framepanel.js,v 1.5 2009/03/02 11:26:53 sebastien Exp $
   */
 Automne.framePanel = Ext.extend(Automne.panel, { 
 	//frame url to use at next frame reload
@@ -36,7 +42,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 	initComponent: function() {
 		var al = Automne.locales;
 		Ext.apply(this, {
-			html:  			'<iframe id="' + this.id + 'Frame" width="100%" height="100%" frameborder="no" src="' + Ext.SSL_SECURE_URL + '">&nbsp;</iframe>',
+			html:  			'<iframe id="' + this.id + 'Frame" width="100%" height="100%" class="x-hide-visibility" frameborder="no" src="' + Ext.SSL_SECURE_URL + '">&nbsp;</iframe>',
 			hideBorders:	true,
 			height:			'100%',
 			autoScroll:		true,
@@ -81,7 +87,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 						Ext.getCmp('editSaveDraft').hide();
 						Ext.getCmp('editCancelAdd').show();
 						Ext.get('selectedRow').update('<span class="atm-text-alert">'+ al.csClickOnRed +'</span>');
-						Automne.message.show(al.csClickOnRed);
+						Automne.message.show(al.csClickOnRed, '', Automne.tabPanels.getActiveTab().frameEl);
 						this.frameEl.dom.contentWindow.Automne.content.showZones('add');
 					}
 				},{
@@ -323,7 +329,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 		}
 		//get frame and document from event
 		this.loadFrameDocument();
-		
+		Automne.catchF5(this.getDoc(), this.getWin());
 		//for all browsers except gecko, set an onclick event to remove search engine if displayed
 		//use onclick because ext event does not work on iframe document
 		if (!Ext.isGecko && !this.frameDocument.onclick) {
@@ -344,6 +350,8 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 				noreload:	true
 			});
 		}
+		//show frame
+		this.frameEl.removeClass('x-hide-visibility');
 	},
 	//resize frame according to panel size
 	resize: function() {
@@ -370,6 +378,17 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 				this.frameDocument.location = this.frameURL;
 				this.forceReload = false;
 				
+			}
+		}
+	},
+	setReloadable: function(reloadable) {
+		this.reloadable = reloadable;
+		if (Automne.tabPanels.getActiveTab().id == this.id) {
+			var el = Automne.tabPanels.getTabEl(this);
+        	if(reloadable) {
+				Ext.fly(el).addClass('x-tab-strip-reloadable');
+			} else {
+				Ext.fly(el).removeClass('x-tab-strip-reloadable');
 			}
 		}
 	},
@@ -403,14 +422,14 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 	},
 	// private
 	getDoc : function(){
-        if (!this.frameEl) {
+		if (!this.frameEl) {
 			return false;
 		}
 		return Ext.isIE ? this.getWin().document : (this.frameEl.dom.contentDocument || this.getWin().document);
 	},
-    // private
+	// private
 	getWin : function(){
-        if (!this.frameEl) {
+		if (!this.frameEl) {
 			return false;
 		}
 		return Ext.isIE ? this.frameEl.dom.contentWindow : window.frames[this.frameEl.dom.name];

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: server.php,v 1.3 2008/12/18 10:36:43 sebastien Exp $
+// $Id: server.php,v 1.4 2009/03/02 11:25:15 sebastien Exp $
 
 /**
   * PHP page : Load server detail window.
@@ -159,7 +159,7 @@ if (strtolower(substr(PHP_OS, 0, 3)) === 'win') {
 	//test CLI version
 	$return = executeCommand('php -v',$error);
 	if (strpos(strtolower($return), '(cli)') === false) {
-		$content .= '<li class="atm-pic-cancel">Error, installed php is not the CLI version : <br />'.$return."\n";
+		$content .= '<li class="atm-pic-cancel">Error, installed php is not the CLI version : '.$return."\n";
 	} else {
 		$cliversion = trim(str_replace('php ', '', substr(strtolower($return), 0, strpos(strtolower($return), '(cli)'))));
 		if (version_compare($cliversion, "5.2.0") === -1) {
@@ -184,9 +184,6 @@ if (ini_get('magic_quotes_runtime') != 0) {
 }
 if (ini_get('magic_quotes_sybase') != 0) {
 	$content .= '<li class="atm-pic-cancel">Error, PHP magic_quotes_sybase is active and cannot be changed</li>';
-}
-if (ini_get('session.use_trans_sid') != 0) {
-	$content .= '<li class="atm-pic-cancel">Error, PHP session.use_trans_sid is active and cannot be changed</li>';
 }
 if (ini_get('register_globals') != 0) {
 	$content .= '<li class="atm-pic-cancel">Error, PHP register_globals is active and cannot be changed</li>';

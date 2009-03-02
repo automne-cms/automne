@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc_admin.php,v 1.4 2009/02/03 14:24:06 sebastien Exp $
+// $Id: cms_rc_admin.php,v 1.5 2009/03/02 11:23:21 sebastien Exp $
 
 /**
   * Administration rc file.
@@ -25,21 +25,13 @@
 //include general configuration file
 require_once(dirname(__FILE__)."/cms_rc.php");
 //Set session name
-session_name('AutomneSession');
-//start session
-@session_start();
+start_atm_session();
+
 /**
   * Define User Type if APPLICATION_ENFORCES_ACCESS_CONTROL is True
   */
 if (!defined("APPLICATION_USER_TYPE")) {
 	define("APPLICATION_USER_TYPE", "admin");
-}
-
-/**
-  * Define execution Type
-  */
-if (!defined("APPLICATION_EXEC_TYPE")) {
-	define("APPLICATION_EXEC_TYPE", "http");
 }
 
 // Start output buffering for compression so we don't prevent
@@ -51,9 +43,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], PATH_ADMIN_MODULES_WR) === 0
 	&& file_exists(PATH_MODULES_FS.'/'.pathinfo(str_replace(PATH_ADMIN_MODULES_WR.'/', '', $_SERVER['SCRIPT_NAME']),PATHINFO_DIRNAME).'.php')) {
 	require_once(PATH_MODULES_FS.'/'.pathinfo(str_replace(PATH_ADMIN_MODULES_WR.'/', '', $_SERVER['SCRIPT_NAME']),PATHINFO_DIRNAME).'.php');
 }
-//TODOV4 ici, si des objets de modules se trouvent dans un backtrace précédent, ils posent pb au chargement d'une nouvelle page, d'ou un unset ...
-//une meilleure solution sera à trouver
-if (isset($_SESSION["backTrace"]) && strpos($_SERVER['SCRIPT_NAME'], 'backTrace.php') === false) unset($_SESSION["backTrace"]);
 //check for authentification
 if (APPLICATION_EXEC_TYPE == 'http') {
 	//check user privileges
@@ -64,7 +53,7 @@ if (APPLICATION_EXEC_TYPE == 'http') {
 		$cms_context =& $_SESSION["cms_context"];
 		$cms_user = $_SESSION["cms_context"]->getUser();
 		$cms_language = $cms_user->getLanguage();
-	
+		
 		if (isset($_GET["cms_message_id"]) && SensitiveIO::isPositiveInteger($_GET["cms_message_id"]))	{
 			$cms_message = $cms_language->getMessage($_GET["cms_message_id"]);
 		} else {
@@ -77,11 +66,11 @@ if (APPLICATION_EXEC_TYPE == 'http') {
 		$cms_context =& $_SESSION["cms_context"];
 		$cms_user = $_SESSION["cms_context"]->getUser();
 		$cms_language = $cms_user->getLanguage();
-	
-		if ($_GET["cms_message_id"] && SensitiveIO::isPositiveInteger($_GET["cms_message_id"]))	{
+		
+		if (isset($_GET["cms_message_id"]) && SensitiveIO::isPositiveInteger($_GET["cms_message_id"]))	{
 			$cms_message = $cms_language->getMessage($_GET["cms_message_id"]);
 		} else {
-			$cms_message = ($_GET["cms_message"]) ? SensitiveIO::sanitizeHTMLString($_GET["cms_message"]) : false;
+			$cms_message = (isset($_GET["cms_message"])) ? SensitiveIO::sanitizeHTMLString($_GET["cms_message"]) : false;
 		}
 	} else {
 		//load interface instance
@@ -90,7 +79,7 @@ if (APPLICATION_EXEC_TYPE == 'http') {
 		$view->setDisconnected(true);
 		//set default display mode for this page
 		if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
-			$view->setDisplayMode(CMS_view::SHOW_RAW);
+			$view->setDisplayMode(4); //4 = CMS_view::SHOW_RAW : this constant cannot be used here because this file can be parsed by PHP4
 		}
 		$view->show();
 	}
@@ -101,7 +90,6 @@ if (!class_exists('CMS_module_standard')) {
 	die('Cannot find standard module ...');
 }
 
-//TODOV4 : remove those messages from here
 //some commonly used messages
 
 /**

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_forms_edit.php,v 1.1.1.1 2008/11/26 17:12:14 sebastien Exp $
+// $Id: cms_forms_edit.php,v 1.2 2009/03/02 11:30:15 sebastien Exp $
 
 /**
   * Javascript plugin for FCKeditor
@@ -135,7 +135,7 @@ $content = '';
 		</style>
 	</head>
 	<body>
-		<script language="JavaScript" type="text/javascript">window.name = "cms_forms";</script>
+		<!--<script language="JavaScript" type="text/javascript">window.name = "cms_forms";</script>-->
 <?php
 // +----------------------------------------------------------------------+
 // | Actions                                                              |

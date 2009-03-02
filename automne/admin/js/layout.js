@@ -1,11 +1,17 @@
 /**
+  * Automne Javascript file
+  *
   * Automne.BorderLayout Extension Class for Ext.layout.BorderLayout
   * Provide a border layout with all zone created from an ajax response
   * @class Automne.BorderLayout
   * @extends Ext.layout.BorderLayout
+  * @package CMS
+  * @subpackage JS
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * $Id: layout.js,v 1.4 2009/03/02 11:26:53 sebastien Exp $
   */
 Automne.BorderLayout = Ext.extend(Ext.layout.BorderLayout, {
-    // private	
+	// private	
 	monitorResize:true,
 	// private
 	rendered : false,

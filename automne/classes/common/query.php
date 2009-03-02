@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: query.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: query.php,v 1.2 2009/03/02 11:28:06 sebastien Exp $
 
 /**
   * Class CMS_query
@@ -194,7 +194,11 @@
 	  * @access public
 	  */
 	public function getAll($fetchMode = PDO::FETCH_BOTH, $column = 0) {
-		return $this->_result->fetchAll($fetchMode, $column);
+		if($fetchMode & PDO::FETCH_COLUMN > 0){
+			return $this->_result->fetchAll($fetchMode, $column);
+		} else {
+			return $this->_result->fetchAll($fetchMode);
+		}
 	}
 	
 	/**

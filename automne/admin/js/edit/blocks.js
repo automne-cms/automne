@@ -1,9 +1,15 @@
 /**
- * @class Automne.block
- * @extends Ext.util.Observable
- * @constructor
- * @param {Object} config The configuration options. All block specifications
- */
+  * Automne Javascript file
+  *
+  * Automne.block Extension Class for Ext.util.Observable
+  * Create extendable block content element which is embeded into rows
+  * @class Automne.block
+  * @extends Ext.util.Observable
+  * @package CMS
+  * @subpackage JS
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * $Id: blocks.js,v 1.5 2009/03/02 11:27:02 sebastien Exp $
+  */
 Automne.block = function(config){
 	config = config || {};
 	if(config.initialConfig){

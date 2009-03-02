@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: block.php,v 1.2 2009/02/03 14:27:16 sebastien Exp $
+// $Id: block.php,v 1.3 2009/03/02 11:28:40 sebastien Exp $
 
 /**
   * Class CMS_block_cms_forms
@@ -109,7 +109,7 @@ class CMS_block_cms_forms extends CMS_block
 		switch ($visualizationMode) {
 		case PAGE_VISUALMODE_HTML_PUBLIC:
 		case PAGE_VISUALMODE_PRINT:
-			if ($data && sensitiveIO::IsPositiveInteger($data["value"]['formID'])) {
+			if (isset($data["value"]['formID']) && sensitiveIO::IsPositiveInteger($data["value"]['formID'])) {
 				//$form = new CMS_forms_formular($data["value"]['formID']);
 				//$html = $form->getContent(CMS_FORMS_PHP_FORM_CALL);
 				

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-controler.php,v 1.2 2009/02/03 14:24:44 sebastien Exp $
+// $Id: templates-controler.php,v 1.3 2009/03/02 11:25:15 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on templates
@@ -67,6 +67,8 @@ if (sensitiveIO::isPositiveInteger($templateId)) {
 	}
 } elseif ($templateId == 'print') {
 	$templateFile = new CMS_file(PATH_TEMPLATES_FS."/print.xml");
+} else {
+	$template = false;
 }
 
 $cms_message = '';
@@ -90,17 +92,20 @@ switch ($action) {
 				//move and rename uploaded file
 				$image = str_replace(PATH_MAIN_WR.'/upload/', PATH_MAIN_FS.'/upload/', $image);
 				$basename = pathinfo($image, PATHINFO_BASENAME);
-				$movedImage = PATH_TEMPLATES_IMAGES_FS.'/'.SensitiveIO::sanitizeAsciiString($basename);
+				$movedImage = PATH_TEMPLATES_IMAGES_FS.'/pt'.$template->getID().'_'.SensitiveIO::sanitizeAsciiString($basename);
 				CMS_file::moveTo($image, $movedImage);
 				CMS_file::chmodFile(FILES_CHMOD, $movedImage);
 				$image = pathinfo($movedImage, PATHINFO_BASENAME);
 			} elseif ($image && $template->getImage()) {
 				//keep old file
 				$image = $template->getImage();
+			} elseif (!$image && $template->getImage()) {
+				//remove old file
+				unlink(PATH_TEMPLATES_IMAGES_FS.'/'.$template->getImage());
+				$image = 'nopicto.gif';
 			} else {
 				$image = 'nopicto.gif';
 			}
-			pr($image);
 			$template->setImage($image);
 			//groups
 			$template->delAllGroups();

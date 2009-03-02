@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: filesManagement.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: filesManagement.php,v 1.2 2009/03/02 11:28:21 sebastien Exp $
 
 /**
   * Class CMS_file
@@ -920,9 +920,12 @@ class CMS_file extends CMS_grandFather
 	static function sendFiles($files, $contentType = 'text/html') {
 		//check for the closest last modification date
 		$lastdate = '';
-		foreach ($files as $file) {
+		foreach ($files as $key => $file) {
 			if (file_exists($file)) {
 				$lastdate = (filemtime($file) > $lastdate) ? filemtime($file) : $lastdate;
+			} else {
+				CMS_grandFather::raiseError('Can\'t find file : '.$file.', skip it.');
+				unset($files[$key]);
 			}
 		}
 		if (file_exists($_SERVER['SCRIPT_FILENAME'])) {
@@ -959,9 +962,7 @@ class CMS_file extends CMS_grandFather
 		if (!($datas = $cache->load($id))) {
 			// datas cache missing so create it
 			foreach ($files as $file) {
-				if (file_exists($file)) {
-					$datas .= file_get_contents($file);
-				}
+				$datas .= file_get_contents($file);
 			}
 			//minimize JS files if needed
 			if (!SYSTEM_DEBUG && $contentType == 'text/javascript') {

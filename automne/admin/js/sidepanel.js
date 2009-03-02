@@ -1,8 +1,14 @@
 /**
+  * Automne Javascript file
+  *
   * Automne.sidePanel Extension Class for Ext.Panel
   * Provide all mouseover events and watch for contained panels
   * @class Automne.sidePanel
   * @extends Ext.Panel
+  * @package CMS
+  * @subpackage JS
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * $Id: sidepanel.js,v 1.2 2009/03/02 11:26:54 sebastien Exp $
   */
 Automne.sidePanel = Ext.extend(Automne.panel, { 
 	hasMouseOver:		false,
@@ -10,8 +16,8 @@ Automne.sidePanel = Ext.extend(Automne.panel, {
 	mouseOutTimeOut:	false,
 	collapsible:		true,
 	collapseDefaults: {
-        duration:		1
-    },
+		duration:		1
+	},
 	//on first render add mouse in/out events
 	onRender: function(ct, position) {
 		// call parent onRender
@@ -45,7 +51,9 @@ Automne.sidePanel = Ext.extend(Automne.panel, {
 	collapseTimer: function() {
 		if (this.mouseOutTimeOut === false) {
 			this.mouseOutTimeOut = new Ext.util.DelayedTask(function(){
-				this.collapse();
+				if (this.collapsible) {
+					this.collapse();
+				}
 			}, this);
 		}
 		this.mouseOutTimeOut.delay(2000);

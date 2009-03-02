@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-controler.php,v 1.4 2009/02/09 10:01:43 sebastien Exp $
+// $Id: page-controler.php,v 1.5 2009/03/02 11:25:15 sebastien Exp $
 
 /**
   * PHP page : Receive pages updates
@@ -61,6 +61,36 @@ $currentPage = sensitiveIO::request('currentPage', 'sensitiveIO::isPositiveInteg
 $field = sensitiveIO::request('field', '', '');
 $action = sensitiveIO::request('action', '', '');
 $value = sensitiveIO::request('value', '', '');
+
+//pageContent
+$template = sensitiveIO::request('template', 'sensitiveIO::isPositiveInteger');
+$title = sensitiveIO::request('title');
+$linktitle = sensitiveIO::request('linktitle');
+$redirection = sensitiveIO::request('redirection');
+$redirection = sensitiveIO::request('redirection');
+$updateURL = sensitiveIO::request('redirection') ? true : false;
+
+//pageDates
+$pubdateend = sensitiveIO::request('pubdateend');
+$pubdatestart = sensitiveIO::request('pubdatestart');
+$reminderdate = sensitiveIO::request('reminderdate');
+$reminderdelay = sensitiveIO::request('reminderdelay', 'sensitiveIO::isPositiveInteger');
+$remindertext = sensitiveIO::request('remindertext');
+
+//pageSearchEngines
+$categorytext = sensitiveIO::request('categorytext');
+$descriptiontext = sensitiveIO::request('descriptiontext');
+$keywordstext = sensitiveIO::request('keywordstext');
+$robotstext = sensitiveIO::request('robotstext');
+
+//pageMetas
+$authortext = sensitiveIO::request('authortext');
+$copyrighttext = sensitiveIO::request('copyrighttext');
+$language = sensitiveIO::request('language');
+$metatext = sensitiveIO::request('metatext');
+$replytotext = sensitiveIO::request('replytotext');
+$pragmatext = sensitiveIO::request('pragmatext', 'sensitiveIO::isPositiveInteger');
+
 
 //load page
 $cms_page = CMS_tree::getPageByID($currentPage);
@@ -370,6 +400,11 @@ switch ($action) {
 						$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : update template, value : '.$value);
 					} else {
 						//$edited = RESOURCE_EDITION_BASEDATA;
+						$cms_page->regenerate(true);
+						$jscontent = '
+						Automne.tabPanels.getActiveTab().reload();
+						';
+						$view->addJavascript($jscontent);
 						$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 					}
 				} else {
@@ -407,6 +442,11 @@ switch ($action) {
 					$cms_page->setPublicationDates($dt_beg, $cms_page->getPublicationDateEnd());
 					if ($cms_page->writeToPersistence()) {
 						$edited = RESOURCE_EDITION_BASEDATA;
+						$cms_page->regenerate(true);
+						$jscontent = '
+						Automne.tabPanels.getActiveTab().reload();
+						';
+						$view->addJavascript($jscontent);
 						$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 					} else {
 						$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
@@ -428,6 +468,11 @@ switch ($action) {
 					$cms_page->setPublicationDates($cms_page->getPublicationDateStart(), $dt_end);
 					if ($cms_page->writeToPersistence()) {
 						$edited = RESOURCE_EDITION_BASEDATA;
+						$cms_page->regenerate(true);
+						$jscontent = '
+						Automne.tabPanels.getActiveTab().reload();
+						';
+						$view->addJavascript($jscontent);
 						$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 					} else {
 						$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
@@ -453,7 +498,7 @@ switch ($action) {
 					}
 				}
 			break;
-			//string without double quotes and tags (metas)
+			//string trimed, without double quotes and tags (metas)
 			case 'remindertext':
 				$method = isset($method) ? $method : 'setReminderOnMessage';
 			case 'keywordstext':
@@ -470,27 +515,31 @@ switch ($action) {
 				$method = isset($method) ? $method : 'setDescription';
 			case 'robotstext':
 				$method = isset($method) ? $method : 'setRobots';
-				$value = strip_tags(str_replace('"','',$value));
-			//trimmed string
-			case 'metatext':
-				$method = isset($method) ? $method : 'setMeta';
-			case 'language':
-				$method = isset($method) ? $method : 'setLanguage';
+				$value = str_replace('"','',$value);
+			//string trimmed without tags
 			case 'title':
 				$method = isset($method) ? $method : 'setTitle';
 			case 'linkTitle':
 				$method = isset($method) ? $method : 'setLinkTitle';
+				$value = strip_tags($value);
+			//string trimmed
+			case 'metatext':
+				$method = isset($method) ? $method : 'setMetas';
+				if ($field == 'metatext') $value = htmlspecialchars_decode($value);
+			case 'language':
+				$method = isset($method) ? $method : 'setLanguage';
 				$value = trim($value);
+				pr($value, true);
 			//Integer
 			case 'reminderdelay':
 				$method = isset($method) ? $method : 'setReminderPeriodicity';
-				if (!$value) $value = 0;
+				if (!$value && $field == 'reminderdelay') $value = 0;
 			//Boolean
 			case 'pragmatext':
 				$method = isset($method) ? $method : 'setPragma';
 			case 'updateURL':
 				$method = isset($method) ? $method : 'setRefreshUrl';
-				$value = ($value == 'true') ? true : (($value == 'false') ? false : $value);
+				$value = ($value === 'true') ? true : (($value === 'false') ? false : $value);
 				if (method_exists($cms_page , $method)) {
 					if (!$cms_page->$method($value, $cms_user)) {
 						$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
@@ -538,7 +587,6 @@ if ($edited) {
 		Automne.utils.updateStatus(\''.$statusId.'\', response.responseXML.getElementsByTagName(\'status\').item(0).firstChild.nodeValue, response.responseXML.getElementsByTagName(\'tinystatus\').item(0).firstChild.nodeValue);
 		';
 		$view->addJavascript($jscontent);
-		
 		if ($action == 'update'
 			|| $action == 'submit_for_validation'
 			|| $action == 'delete'
@@ -598,6 +646,7 @@ if ($edited) {
 					break;
 				}
 				$potentialValidators = CMS_profile_usersCatalog::getValidators(MOD_STANDARD_CODENAME);
+				
 				$validators = array();
 				foreach ($potentialValidators as $aPotentialValidator) {
 					if ($aPotentialValidator->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)) {

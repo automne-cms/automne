@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: module.php,v 1.3 2009/02/09 10:03:27 sebastien Exp $
+// $Id: module.php,v 1.4 2009/03/02 11:28:30 sebastien Exp $
 
 /**
   * Class CMS_module
@@ -82,7 +82,7 @@ class CMS_module extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($codename='')
+	function CMS_module($codename='')
 	{
 		static $modules;
 		if ($codename) {
@@ -218,22 +218,23 @@ class CMS_module extends CMS_grandFather
 	  */
 	function getParameters($onlyOne = false, $withType=false, $reset = false)
 	{
-		static $moduleParameters;
 		if ($this->_hasParameters) {
 			if ($reset) {
 				unset($moduleParameters);
 			}
 			if (!isset($moduleParameters[$this->_codename])) {
 				$filename = PATH_MODULES_FS."/".$this->_codename."_rc.xml";
-				$file = new CMS_DOMDocument();
-				if (file_exists($filename) && @$file->load($filename)) {
+				if (file_exists($filename)) {
+					$file = new CMS_DOMDocument();
+					$file->loadXML(file_get_contents($filename));
 					$paramTags = $file->getElementsByTagName('param');
 					$moduleParameters[$this->_codename] = array();
 					foreach ($paramTags as $paramTag) {
+						$value = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? utf8_decode(trim($paramTag->nodeValue)) : trim($paramTag->nodeValue);
 						if ($withType) {
-							$moduleParameters[$this->_codename][$paramTag->getAttribute("name")] = array(trim($paramTag->nodeValue),$paramTag->getAttribute("type"));
+							$moduleParameters[$this->_codename][$paramTag->getAttribute("name")] = array($value, $paramTag->getAttribute("type"));
 						} else {
-							$moduleParameters[$this->_codename][$paramTag->getAttribute("name")] = trim($paramTag->nodeValue);
+							$moduleParameters[$this->_codename][$paramTag->getAttribute("name")] = trim($value);
 						}
 					}
 				} else {
@@ -700,11 +701,9 @@ class CMS_module extends CMS_grandFather
 		$return = array();
 		switch ($treatmentMode) {
 			case MODULE_TREATMENT_CLIENTSPACE_TAGS :
-				/*if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
-					$return["atm-meta-tags"] = array("selfClosed" => true, "parameters" => array());
-					$return["atm-css-tags"] = array("selfClosed" => true, "parameters" => array());
-					$return["atm-js-tags"] = array("selfClosed" => true, "parameters" => array());
-				}*/
+				$return = array (
+					"atm-clientspace" => array("selfClosed" => true, "parameters" => array("module" => $this->_codename)),
+				);
 			break;
 			case MODULE_TREATMENT_BLOCK_TAGS :
 				$return = array (
@@ -735,6 +734,39 @@ class CMS_module extends CMS_grandFather
 	function treatWantedTag(&$tag, $tagContent, $treatmentMode, $visualizationMode, &$treatedObject, $treatmentParameters)
 	{
 		switch ($treatmentMode) {
+			case MODULE_TREATMENT_CLIENTSPACE_TAGS:
+				if (!is_a($treatedObject,"CMS_pageTemplate")) {
+					$this->raiseError('$treatedObject must be a CMS_pageTemplate object');
+					return false;
+				}
+				if (!is_a($treatmentParameters["page"],"CMS_page")) {
+					$this->raiseError('$treatmentParameters["page"] must be a CMS_page object');
+					return false;
+				}
+				if (!is_a($treatmentParameters["language"],"CMS_language")) {
+					$this->raiseError('$treatmentParameters["language"] must be a CMS_language object');
+					return false;
+				}
+				$args = array("template" => $treatedObject->getID());
+				if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM
+					|| $visualizationMode == PAGE_VISUALMODE_HTML_EDITION
+					|| $visualizationMode == PAGE_VISUALMODE_FORM) {
+					$args["editedMode"] = true;
+				}
+				$cs = $tag->getRepresentationInstance($args);
+				if (is_object($cs)) {
+					$html = $cs->getData($treatmentParameters["language"], $treatmentParameters["page"], $visualizationMode, false);
+				} else {
+					//call generic module clientspace content
+					$cs = new CMS_moduleClientspace($tag->getAttributes());
+					$html = $cs->getClientspaceData($this->_codename, $treatmentParameters["language"], $treatmentParameters["page"], $visualizationMode);
+				}
+				if ($visualizationMode != PAGE_VISUALMODE_PRINT) {
+					//save in global var the page ID who need this module so we can add the header code later.
+					CMS_module::moduleUsage($treatmentParameters["page"]->getID(), $this->_codename, array('block' => true));
+				}
+				return $html;
+			break;
 			case MODULE_TREATMENT_BLOCK_TAGS:
 				if (!is_a($treatedObject,"CMS_row")) {
 					$this->raiseError('$treatedObject must be a CMS_row object');
@@ -753,15 +785,25 @@ class CMS_module extends CMS_grandFather
 					return false;
 				}
 				$attributes = $tag->getAttributes();
-				//save in global var the page ID who need this module so we can add the header code later.
-				CMS_module::moduleUsage($treatmentParameters["page"]->getID(), $this->_codename, array('block' => true));
 				//create the block data
 				$block = $tag->getRepresentationInstance();
-				$return = $block->getData($treatmentParameters["language"], $treatmentParameters["page"], $treatmentParameters["clientSpace"], $treatedObject, $visualizationMode);
-				return $return;
+				//if block exists, use it
+				if ($block) {
+					//save in global var the page ID who need this module so we can add the header code later.
+					CMS_module::moduleUsage($treatmentParameters["page"]->getID(), $this->_codename, array('block' => true));
+					
+					return $block->getData($treatmentParameters["language"], $treatmentParameters["page"], $treatmentParameters["clientSpace"], $treatedObject, $visualizationMode);
+				} else {
+					//else call module clientspace content
+					$cs = new CMS_moduleClientspace($tag->getAttributes());
+					$return = $cs->getClientspaceData($this->_codename, new CMS_date(), $treatmentParameters["page"], $visualizationMode);
+					if ($visualizationMode != PAGE_VISUALMODE_PRINT) {
+						//save in global var the page ID who need this module so we can add the header code later.
+						CMS_module::moduleUsage($treatmentParameters["page"]->getID(), $this->_codename, array('block' => true));
+					}
+					return $return;
+				}
 			break;
-			//case MODULE_TREATMENT_CLIENTSPACE_TAGS :
-				
 			case MODULE_TREATMENT_PAGECONTENT_TAGS :
 				/*if (!is_a($treatedObject,"CMS_page")) {
 					$this->raiseError('$treatedObject must be a CMS_page object');

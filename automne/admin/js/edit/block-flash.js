@@ -1,8 +1,14 @@
 /**
+  * Automne Javascript file
+  *
   * Automne.blockFlash Extension Class for Automne.block
   * Add specific controls for flash block
   * @class Automne.blockFlash
   * @extends Automne.block
+  * @package CMS
+  * @subpackage JS
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * $Id: block-flash.js,v 1.2 2009/03/02 11:27:02 sebastien Exp $
   */
 Automne.blockFlash = Ext.extend(Automne.block, {
 	blockClass:	'CMS_block_flash',

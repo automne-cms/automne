@@ -13,7 +13,7 @@
 // | Author: Andre Haynes <andre.haynes@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: emailscatalog.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: emailscatalog.php,v 1.2 2009/03/02 11:28:06 sebastien Exp $
 
 /**
   * Class CMS_emailsCatalog
@@ -25,10 +25,10 @@
   * @author Andre Haynes <andre.haynes@ws-interactive.fr>
   */
 
-define("MESSAGE_EMAIL_BODY_URLS", 912);
-
 class CMS_emailsCatalog extends CMS_grandFather
 {
+	const MESSAGE_EMAIL_BODY_URLS = 912;
+	
 	/**
 	  *
 	  * @vare array(CMS_email)
@@ -47,6 +47,7 @@ class CMS_emailsCatalog extends CMS_grandFather
 	  */
 	function setUserMessages($users, $messages, $subjects, $alertLevel = ALERT_LEVEL_VALIDATION, $module = MOD_STANDARD_CODENAME) {
 		$mainURL = CMS_websitesCatalog::getMainURL();
+		$template = (is_file(PATH_MAIL_TEMPLATES_FS)) ? PATH_MAIL_TEMPLATES_FS : '';
 		foreach ($users as $user) {
 			//if is integer create user object
 			if (!is_a($user,"CMS_user_profile") && SensitiveIO::isPositiveInteger($user)) {
@@ -54,19 +55,20 @@ class CMS_emailsCatalog extends CMS_grandFather
 			}
 			//if user hasn't alert level for this module, skip it
 			if (!$user->hasAlertLevel($alertLevel, $module)) {
-				CMS_grandFather::raiseError('user '.$user->getFullName().' has no alerts for level '.$alertLevel.' for module '.$module);
+				//CMS_grandFather::raiseError('user '.$user->getFullName().' has no alerts for level '.$alertLevel.' for module '.$module);
 				continue;
 			}
 			$userLang = $user->getLanguage();
-			$body_addition = $userLang->getMessage(MESSAGE_EMAIL_BODY_URLS, array(APPLICATION_LABEL, $mainURL."/", $mainURL.PATH_ADMIN_WR."/"));
 			$email = new CMS_email();
 			if ($user->getEmail()) {
 				if ($email->setEmailTo($user->getEmail())) {
 					$email->setSubject($subjects[$userLang->getCode()]);
-					$email->setBody($messages[$userLang->getCode()]."\n\n".$body_addition);
+					$email->setBody($messages[$userLang->getCode()]);
+					$email->setFooter($userLang->getMessage(self::MESSAGE_EMAIL_BODY_URLS, array(APPLICATION_LABEL, $mainURL."/", $mainURL.PATH_ADMIN_WR."/")));
+					$email->setTemplate($template);
 					$this->_messages[] = $email;
 				} else {
-					$this->raiseError("Email Catalog: mail not registered:".$user->getEmail());
+					$this->raiseError("Email Catalog: email invalid (".$user->getEmail().") for user : ".$user->getFullName());
 				}
 			}
 		}
