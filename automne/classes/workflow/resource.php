@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: resource.php,v 1.3 2009/03/02 11:29:53 sebastien Exp $
+// $Id: resource.php,v 1.4 2009/03/03 15:13:43 sebastien Exp $
 
 /**
   * Class CMS_resource
@@ -261,6 +261,7 @@ class CMS_resource extends CMS_grandFather
 			if ($edition == RESOURCE_EDITION_CONTENT) {
 				$this->_status->setValidated();
 			}
+			$this->_status->validatePublicationDates();
 			return true;
 		} else {
 			return false;
@@ -450,9 +451,9 @@ class CMS_resource extends CMS_grandFather
 	  * @return CMS_date the publication date start.
 	  * @access public
 	  */
-	function getPublicationDateStart()
+	function getPublicationDateStart($public = true)
 	{
-		return $this->_status->getPublicationDateStart();
+		return $this->_status->getPublicationDateStart($public);
 	}
 	
 	/**
@@ -461,9 +462,9 @@ class CMS_resource extends CMS_grandFather
 	  * @return CMS_date the publication date end.
 	  * @access public
 	  */
-	function getPublicationDateEnd()
+	function getPublicationDateEnd($public = true)
 	{
-		return $this->_status->getPublicationDateEnd();
+		return $this->_status->getPublicationDateEnd($public);
 	}
 	
 	/**

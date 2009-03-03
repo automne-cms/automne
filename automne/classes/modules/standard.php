@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: standard.php,v 1.4 2009/03/02 11:28:31 sebastien Exp $
+// $Id: standard.php,v 1.5 2009/03/03 15:12:32 sebastien Exp $
 
 /**
   * Class CMS_module_standard
@@ -1687,7 +1687,7 @@ class CMS_module_standard extends CMS_module
 						return '<?php echo CMS_view::'.$method.'(array(\''.implode('\',\'', $files).'\')'.($media ? ', \''.$media.'\'' : '').'); ?>'."\n";
 					break;
 					case "atm-meta-tags":
-						$metaDatas = $treatedObject->getMetaTags();
+						$metaDatas = $treatedObject->getMetaTags($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC ? true : false);
 						$usage = CMS_module::moduleUsage($treatedObject->getID(), $this->_codename);
 						//if page template already use atm-js-tags tag, no need to add JS again
 						if (!is_array($usage) || !isset($usage['atm-js-tags'])) {

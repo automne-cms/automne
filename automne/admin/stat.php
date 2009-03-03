@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: stat.php,v 1.1 2008/12/18 10:36:43 sebastien Exp $
+// $Id: stat.php,v 1.2 2009/03/03 15:11:07 sebastien Exp $
 
 /**
   * Automne Debug Statistics viewver
@@ -22,7 +22,6 @@
   */
 
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
-require_once(PATH_ADMIN_SPECIAL_SESSION_CHECK_FS);
 
 $SQL_TIME_MARK = ($_REQUEST["SQL_TIME_MARK"]) ? $_REQUEST["SQL_TIME_MARK"] : '0.001';
 $statName = ($_REQUEST['stat']) ? $_REQUEST['stat'] : '';
@@ -48,7 +47,7 @@ if (!$statName || !isset($stats[$statName])) {
 	$dialog->show();
 	exit;
 }
-pr(sizeof($stats));
+
 $sql_table = $stats[$statName]['stat_sql_table'];
 $files_loaded = $stats[$statName]['stat_files_table'];
 

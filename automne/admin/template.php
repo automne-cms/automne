@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: template.php,v 1.5 2009/03/02 11:25:15 sebastien Exp $
+// $Id: template.php,v 1.6 2009/03/03 15:11:07 sebastien Exp $
 
 /**
   * PHP page : Load template detail window.
@@ -328,7 +328,6 @@ $jscontent = <<<END
 				scope:			this,
 				handler:		function() {
 					var form = Ext.getCmp('templateDatas-{$templateId}').getForm();
-					pr(form.isValid());
 					if (form.isValid()) {
 						form.submit({
 							params:{

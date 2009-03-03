@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: fileupload.js,v 1.3 2009/03/02 11:26:53 sebastien Exp $
+  * $Id: fileupload.js,v 1.4 2009/03/03 15:11:39 sebastien Exp $
   */
 Automne.FileUploadField = Ext.extend(Ext.form.TextField,  {
 	/**
@@ -447,7 +447,7 @@ Automne.FileUploadField = Ext.extend(Ext.form.TextField,  {
 			this.validate();
 			this.fireEvent('uploadfailure', this, file, errorCode, message);
 		} catch (ex) {
-			pr(ex);
+			pr(ex, 'error');
 		}
 	}
 });

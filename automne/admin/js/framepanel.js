@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: framepanel.js,v 1.5 2009/03/02 11:26:53 sebastien Exp $
+  * $Id: framepanel.js,v 1.6 2009/03/03 15:11:39 sebastien Exp $
   */
 Automne.framePanel = Ext.extend(Automne.panel, { 
 	//frame url to use at next frame reload
@@ -42,7 +42,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 	initComponent: function() {
 		var al = Automne.locales;
 		Ext.apply(this, {
-			html:  			'<iframe id="' + this.id + 'Frame" width="100%" height="100%" class="x-hide-visibility" frameborder="no" src="' + Ext.SSL_SECURE_URL + '">&nbsp;</iframe>',
+			html:  			'<iframe id="' + this.id + 'Frame" width="100%" height="100%" frameborder="no" src="' + Ext.SSL_SECURE_URL + '">&nbsp;</iframe>',
 			hideBorders:	true,
 			height:			'100%',
 			autoScroll:		true,
@@ -191,7 +191,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 								}
 								//goto public tab
 								Automne.tabPanels.setActiveTab('public', true);
-								pr('set public as active after validation');
+								pr('Set public as active after validation');
 								Automne.server.call({
 									url:				'page-controler.php',
 									params: 			{
@@ -224,7 +224,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 								}
 								//goto previz tab
 								Automne.tabPanels.setActiveTab('edited', true);
-								pr('set edited as active after submit to validation');
+								pr('Set edited as active after submit to validation');
 								Automne.server.call({
 									url:				'page-controler.php',
 									params: 			{
@@ -255,7 +255,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 					handler:		function(button) {
 						var window = new Automne.frameWindow({
 							id:				'editPrevizDraftWindow',
-							frameURL:		'/automne/admin/page-previsualization.php?page='+this.pageId+'&draft=true',
+							frameURL:		'/automne/admin/page-previsualization.php?currentPage='+this.pageId+'&draft=true',
 							allowFrameNav:	false,
 							width:			750,
 							height:			580
@@ -284,7 +284,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 			this.setDisabled(false);
 		}
 		//if frame element is known (this is not the first activation of panel), then force reload it
-		if (!this.noReload && this.frameEl && (this.pageId != Automne.tabPanels.pageId || (this.frameDocument && this.frameDocument.documentURI.indexOf(this.frameURL) === -1) || newTab.id == 'edit')) {
+		if (!this.noReload && this.frameEl && (this.pageId != Automne.tabPanels.pageId || (this.frameDocument && this.frameDocument.location.href.indexOf(this.frameURL) === -1) || newTab.id == 'edit')) {
 			this.reload();
 		}
 		this.noReload = false;
@@ -294,6 +294,9 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 	afterActivate: function (tabPanel, newTab, force) {
 		if (force && this.disabled) {
 			this.setDisabled(false);
+		}
+		if (this.body && !Ext.isIE) {
+			this.body.addClass('x-hide-visibility');
 		}
 		//if frame element is not known (first activation of panel), then set event on it and load it
 		if (!this.frameEl) {
@@ -343,7 +346,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 		}
 		//if this frame is the edit one, launch edition mode
 		if (this.id == 'edit' && this.getDoc()) {
-			pr('launch edit mode');
+			pr('Launch edit mode');
 			//force reload page infos without reloading the frame itself
 			Automne.tabPanels.getPageInfos({
 				pageId:		this.pageId,
@@ -351,7 +354,11 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 			});
 		}
 		//show frame
-		this.frameEl.removeClass('x-hide-visibility');
+		this.body.removeClass('x-hide-visibility');
+		//to avoid IE bug on frame load
+		if (Ext.isIE) {
+			this.resize();
+		}
 	},
 	//resize frame according to panel size
 	resize: function() {
@@ -372,7 +379,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 			if (this.frameDocument) {
 				pr('Reload '+ this.id +' tab => Get : '+this.frameURL);
 				//set mask on frame during reload
-				if (this.id != 'public') {
+				if (this.id != 'public' && !Ext.isIE) {
 					this.getEl().mask(Automne.locales.loading);
 				}
 				this.frameDocument.location = this.frameURL;
@@ -420,7 +427,6 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 		this.frameDocument = this.getDoc();
 		return true;
 	},
-	// private
 	getDoc : function(){
 		if (!this.frameEl) {
 			return false;

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc.php,v 1.5 2009/03/02 11:23:21 sebastien Exp $
+// $Id: cms_rc.php,v 1.6 2009/03/03 15:10:54 sebastien Exp $
 
 /**
   * rc file, contains editable constants
@@ -807,9 +807,9 @@ if (STATS_DEBUG) {
 			if (!$stats) {
 				$stats = array();
 			}
-			//limit to last 10 stats
-			if (sizeof($stats) >= 10) {
-				$stats = array_slice($stats, sizeof($stats) - 9);
+			//limit to last 4 stats
+			if (sizeof($stats) >= 4) {
+				$stats = array_slice($stats, sizeof($stats) - 3);
 			}
 			$stat = array(
 				'stat_time_start'		=> $GLOBALS["time_start"],

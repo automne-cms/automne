@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: page.php,v 1.4 2009/03/02 11:29:38 sebastien Exp $
+// $Id: page.php,v 1.5 2009/03/03 15:13:26 sebastien Exp $
 
 /**
   * Class CMS_page
@@ -686,10 +686,11 @@ class CMS_page extends CMS_resource
 	/**
 	  * Get HTML meta tags for a given page
 	  *
+	  * @param boolean $public Do we want the edited or public value ? (default : false => edited).
 	  * @return string : HTML meta tags infos infos
 	  * @access public
 	  */
-	function getMetaTags() {
+	function getMetaTags($public = false) {
 		$website = $this->getWebsite();
 		$favicon = '';
 		$metaDatas = '';
@@ -725,46 +726,46 @@ class CMS_page extends CMS_resource
 		} elseif (file_exists(PATH_REALROOT_FS.'/img/favicon.png')) {
 			$metaDatas .= '<link rel="icon" type="image/png" href="'.$website->getURL().'/img/favicon.png" />'."\n";
 		}
-		if ($this->getDescription()) {
-			$metaDatas .= '	<meta name="description" content="'.SensitiveIO::sanitizeHTMLString($this->getDescription()).'" />'."\n";
+		if ($this->getDescription($public)) {
+			$metaDatas .= '	<meta name="description" content="'.SensitiveIO::sanitizeHTMLString($this->getDescription($public)).'" />'."\n";
 		}
-		if ($this->getKeywords()) {
-			$metaDatas .= '	<meta name="keywords" content="'.SensitiveIO::sanitizeHTMLString($this->getKeywords()).'" />'."\n";
+		if ($this->getKeywords($public)) {
+			$metaDatas .= '	<meta name="keywords" content="'.SensitiveIO::sanitizeHTMLString($this->getKeywords($public)).'" />'."\n";
 		}
-		if ($this->getCategory()) {
-			$metaDatas .= '	<meta name="category" content="'.SensitiveIO::sanitizeHTMLString($this->getCategory()).'" />'."\n";
+		if ($this->getCategory($public)) {
+			$metaDatas .= '	<meta name="category" content="'.SensitiveIO::sanitizeHTMLString($this->getCategory($public)).'" />'."\n";
 		}
-		if ($this->getRobots()) {
-			$metaDatas .= '	<meta name="robots" content="'.SensitiveIO::sanitizeHTMLString($this->getRobots()).'" />'."\n";
+		if ($this->getRobots($public)) {
+			$metaDatas .= '	<meta name="robots" content="'.SensitiveIO::sanitizeHTMLString($this->getRobots($public)).'" />'."\n";
 		}
-		if ($this->getLanguage()) {
-			$metaDatas .= '	<meta name="language" content="'.SensitiveIO::sanitizeHTMLString($this->getLanguage()).'" />'."\n";
+		if ($this->getLanguage($public)) {
+			$metaDatas .= '	<meta name="language" content="'.SensitiveIO::sanitizeHTMLString($this->getLanguage($public)).'" />'."\n";
 		}
 		if (!NO_PAGES_EXTENDED_META_TAGS) {
-			if ($this->getAuthor()) {
-				$metaDatas .= '	<meta name="author" content="'.SensitiveIO::sanitizeHTMLString($this->getAuthor()).'" />'."\n";
+			if ($this->getAuthor($public)) {
+				$metaDatas .= '	<meta name="author" content="'.SensitiveIO::sanitizeHTMLString($this->getAuthor($public)).'" />'."\n";
 			}
-			if ($this->getReplyto()) {
-				$metaDatas .= '	<meta name="reply-to" content="'.SensitiveIO::sanitizeHTMLString($this->getReplyto()).'" />'."\n";
+			if ($this->getReplyto($public)) {
+				$metaDatas .= '	<meta name="reply-to" content="'.SensitiveIO::sanitizeHTMLString($this->getReplyto($public)).'" />'."\n";
 			}
-			if ($this->getCopyright()) {
-				$metaDatas .= '	<meta name="copyright" content="'.SensitiveIO::sanitizeHTMLString($this->getCopyright()).'" />'."\n";
+			if ($this->getCopyright($public)) {
+				$metaDatas .= '	<meta name="copyright" content="'.SensitiveIO::sanitizeHTMLString($this->getCopyright($public)).'" />'."\n";
 			}
 		}
 		$metaDatas .= 
 			'	<meta name="generator" content="'.CMS_grandFather::SYSTEM_LABEL.'" />'."\n".
 			'	<meta name="identifier-url" content="'.$website->getURL().'" />'."\n";
-		if ($this->getReminderPeriodicity() && $this->getReminderPeriodicity()>0) {
-			$metaDatas .= '	<meta name="revisit-after" content="'.$this->getReminderPeriodicity().' days" />'."\n";
+		if ($this->getReminderPeriodicity($public) && $this->getReminderPeriodicity($public) > 0) {
+			$metaDatas .= '	<meta name="revisit-after" content="'.$this->getReminderPeriodicity($public).' days" />'."\n";
 		}
-		if ($this->getPragma()) {
-			$metaDatas .= '	<meta http-equiv="pragma" content="'.SensitiveIO::sanitizeHTMLString($this->getPragma()).'" />'."\n";
+		if ($this->getPragma($public)) {
+			$metaDatas .= '	<meta http-equiv="pragma" content="no-cache" />'."\n";
 		}
-		if ($this->getRefresh()) {
-			$metaDatas .= '	<meta http-equiv="refresh" content="'.SensitiveIO::sanitizeHTMLString($this->getRefresh()).'" />'."\n";
+		if ($this->getRefresh($public)) {
+			$metaDatas .= '	<meta http-equiv="refresh" content="'.SensitiveIO::sanitizeHTMLString($this->getRefresh($public)).'" />'."\n";
 		}
-		if ($this->getMetas()) {
-			$metaDatas .= $this->getMetas()."\n";
+		if ($this->getMetas($public)) {
+			$metaDatas .= $this->getMetas($public)."\n";
 		}
 		return $metaDatas;
 	}
@@ -1941,7 +1942,7 @@ class CMS_page extends CMS_resource
 			$pg->setLinkTitle($this->getLinkTitle(), $user);
 			$pg->setDescription($this->getDescription(), $user);
 			$pg->setKeywords($this->getKeywords(), $user);
-			$pg->setPublicationDates($this->getPublicationDateStart(), $this->getPublicationDateEnd());
+			$pg->setPublicationDates($this->getPublicationDateStart(false), $this->getPublicationDateEnd(false));
 			$pg->setReminderOn($this->getReminderOn(), $user);
 			$pg->setReminderOnMessage($this->getReminderOnMessage(), $user);
 			$pg->setCategory($this->getCategory(), $user);

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object_catalog.php,v 1.2 2009/03/02 11:29:02 sebastien Exp $
+// $Id: poly_object_catalog.php,v 1.3 2009/03/03 15:12:57 sebastien Exp $
 
 /**
   * static Class CMS_poly_object_catalog
@@ -411,7 +411,7 @@ class CMS_poly_object_catalog
 	  * @access public
 	  * @static
 	  */
-	function &getAllObjects($objectID, $public = false, $searchConditions = array(), $returnObjects = true, $searchMethod = false) {
+	function getAllObjects($objectID, $public = false, $searchConditions = array(), $returnObjects = true, $searchMethod = false) {
 		$return = array();
 		if (strpos($objectID,'multi|') !== false) {
 			$objectID = substr($objectID, 6);

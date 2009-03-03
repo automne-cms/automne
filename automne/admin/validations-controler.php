@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: validations-controler.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: validations-controler.php,v 1.2 2009/03/03 15:11:07 sebastien Exp $
 
 /**
   * PHP controler : Receive validations actions
@@ -92,7 +92,6 @@ switch ($action) {
 		$mod = CMS_modulesCatalog::getByCodename($module);
 		//load module resource by ID
 		$resource = $mod->getResourceByID($resource);
-		
 		//Clean old validations
 		CMS_resourceValidation::cleanOldValidations();
 		//get validation

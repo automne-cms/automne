@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: grandfather.php,v 1.4 2009/03/02 11:28:06 sebastien Exp $
+// $Id: grandfather.php,v 1.5 2009/03/03 15:12:13 sebastien Exp $
 
 /**
   * Class CMS_grandFather
@@ -80,20 +80,19 @@ class CMS_grandFather
 			$backTrace = $backTraceLink = '';
 			if (isset($_SESSION) && isset($_SESSION["cms_context"]) && is_a($_SESSION["cms_context"],'CMS_context')) {
 				$backtraces = !isset($_SESSION['automneBacktraces']) ? array() : $_SESSION['automneBacktraces'];
-				//limit to last 10 backtraces
-				if (sizeof($backtraces) >= 10) {
-					$backtraces = array_slice($backtraces, sizeof($backtraces) - 9);
+				//limit to last 3 backtraces
+				if (sizeof($backtraces) >= 3) {
+					$backtraces = array_slice($backtraces, sizeof($backtraces) - 2);
 				}
-				$bt = array_reverse(debug_backtrace());
+				/*$bt = array_reverse(debug_backtrace());
 				$backtrace = array(
 					'summary'		=> sensitiveIO::printBackTrace($bt),
 					'backtrace'		=> print_r($bt,true),
-					'vars'			=> print_r(get_defined_vars(),true),
 				);
 				$backtraceName = 'bt-'.md5(rand());
 				$backtraces[$backtraceName] = $backtrace;
 				$_SESSION['automneBacktraces'] = $backtraces;
-				$backTraceLink = '/automne/admin/backTrace.php?bt='.$backtraceName;
+				$backTraceLink = '/automne/admin/backTrace.php?bt='.$backtraceName;*/
 			}
 			//append error to current view
 			$view = CMS_view::getInstance();

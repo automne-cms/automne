@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: resourcestatus.php,v 1.2 2008/12/18 10:41:19 sebastien Exp $
+// $Id: resourcestatus.php,v 1.3 2009/03/03 15:13:43 sebastien Exp $
 
 /**
   * Class CMS_resourceStatus
@@ -87,6 +87,20 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @access private
 	  */
 	protected $_publicationDateEnd;
+	
+	/**
+	  * Edited Publication Date, start.
+	  * @var CMS_date
+	  * @access private
+	  */
+	protected $_publicationDateStartEdited;
+
+	/**
+	  * Edited Publication Date, end.
+	  * @var CMS_date
+	  * @access private
+	  */
+	protected $_publicationDateEndEdited;
 
 	/**
 	  * resource locksmith status
@@ -135,6 +149,10 @@ class CMS_resourceStatus extends CMS_grandFather {
 					$this->_publicationDateStart->setFromDBValue($data["publicationDateStart_rs"]);
 					$this->_publicationDateEnd = new CMS_date();
 					$this->_publicationDateEnd->setFromDBValue($data["publicationDateEnd_rs"]);
+					$this->_publicationDateStartEdited = new CMS_date();
+					$this->_publicationDateStartEdited->setFromDBValue($data["publicationDateStartEdited_rs"]);
+					$this->_publicationDateEndEdited = new CMS_date();
+					$this->_publicationDateEndEdited->setFromDBValue($data["publicationDateEndEdited_rs"]);
 					$this->_publication = $data["publication_rs"];
 					//We must adjust the publication because of the publication dates
 					$this->_adjustPublication();
@@ -152,6 +170,10 @@ class CMS_resourceStatus extends CMS_grandFather {
 				$this->_publicationDateStart->setFromDBValue($data["publicationDateStart_rs"]);
 				$this->_publicationDateEnd = new CMS_date();
 				$this->_publicationDateEnd->setFromDBValue($data["publicationDateEnd_rs"]);
+				$this->_publicationDateStartEdited = new CMS_date();
+				$this->_publicationDateStartEdited->setFromDBValue($data["publicationDateStartEdited_rs"]);
+				$this->_publicationDateEndEdited = new CMS_date();
+				$this->_publicationDateEndEdited->setFromDBValue($data["publicationDateEndEdited_rs"]);
 				$this->_publication = $data["publication_rs"];
 				//We must adjust the publication because of the publication dates
 				$this->_adjustPublication();
@@ -162,6 +184,8 @@ class CMS_resourceStatus extends CMS_grandFather {
 		} else {
 			$this->_publicationDateStart = new CMS_date();
 			$this->_publicationDateEnd = new CMS_date();
+			$this->_publicationDateStartEdited = new CMS_date();
+			$this->_publicationDateEndEdited = new CMS_date();
 		}
 	}
 	
@@ -506,9 +530,9 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return CMS_date the publication date start.
 	  * @access public
 	  */
-	function getPublicationDateStart()
+	function getPublicationDateStart($public = true)
 	{
-		return $this->_publicationDateStart;
+		return $public ? $this->_publicationDateStart : $this->_publicationDateStartEdited;
 	}
 	
 	/**
@@ -521,7 +545,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	function setPublicationDateStart($date)
 	{
 		if (is_a($date, "CMS_date")) {
-			$this->_publicationDateStart = $date;
+			$this->_publicationDateStartEdited = $date;
 			$this->_adjustPublication();
 			return true;
 		} else {
@@ -535,9 +559,9 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return CMS_date the publication date end.
 	  * @access public
 	  */
-	function getPublicationDateEnd()
+	function getPublicationDateEnd($public = true)
 	{
-		return $this->_publicationDateEnd;
+		return $public ? $this->_publicationDateEnd : $this->_publicationDateEndEdited;
 	}
 	
 	/**
@@ -550,12 +574,23 @@ class CMS_resourceStatus extends CMS_grandFather {
 	function setPublicationDateEnd($date)
 	{
 		if (is_a($date, "CMS_date")) {
-			$this->_publicationDateEnd = $date;
+			$this->_publicationDateEndEdited = $date;
 			$this->_adjustPublication();
 			return true;
 		} else {
 			return false;
 		}
+	}
+	
+	/**
+	  * Validate the publication dates range
+	  *
+	  * @return void
+	  * @access public
+	  */
+	function validatePublicationDates() {
+		$this->_publicationDateStart = $this->_publicationDateStartEdited;
+		$this->_publicationDateEnd = $this->_publicationDateEndEdited;
 	}
 	
 	/**
@@ -919,7 +954,9 @@ class CMS_resourceStatus extends CMS_grandFather {
 			validationsRefused_rs='".SensitiveIO::sanitizeSQLString($this->_validationsRefused)."',
 			publication_rs='".SensitiveIO::sanitizeSQLString($this->_publication)."',
 			publicationDateStart_rs='".$this->_publicationDateStart->getDBValue()."',
-			publicationDateEnd_rs='".$this->_publicationDateEnd->getDBValue()."'
+			publicationDateEnd_rs='".$this->_publicationDateEnd->getDBValue()."',
+			publicationDateStartEdited_rs='".$this->_publicationDateStartEdited->getDBValue()."',
+			publicationDateEndEdited_rs='".$this->_publicationDateEndEdited->getDBValue()."'
 		";
 		if ($this->_id) {
 			$sql = "

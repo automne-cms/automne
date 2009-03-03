@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: profileuser.php,v 1.3 2009/03/02 11:29:46 sebastien Exp $
+// $Id: profileuser.php,v 1.4 2009/03/03 15:13:35 sebastien Exp $
 
 /**
   * Class CMS_profile_user
@@ -765,6 +765,16 @@ class CMS_profile_user extends CMS_profile
 	  */
 	function writeProfileToPersistence() {
 		return parent::writeToPersistence();
+	}
+	
+	/**
+      * Checks if the user is in a given group
+      * @param integer $group_id
+      * @return boolean true if the user is in the group. false otherwise
+      */
+	public function hasGroup($groupId){
+		$groups = CMS_profile_usersGroupsCatalog::getGroupsOfUser($this, true);
+		return in_array($groupId, $groups);
 	}
 	
 	/**

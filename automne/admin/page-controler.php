@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-controler.php,v 1.5 2009/03/02 11:25:15 sebastien Exp $
+// $Id: page-controler.php,v 1.6 2009/03/03 15:11:06 sebastien Exp $
 
 /**
   * PHP page : Receive pages updates
@@ -61,36 +61,6 @@ $currentPage = sensitiveIO::request('currentPage', 'sensitiveIO::isPositiveInteg
 $field = sensitiveIO::request('field', '', '');
 $action = sensitiveIO::request('action', '', '');
 $value = sensitiveIO::request('value', '', '');
-
-//pageContent
-$template = sensitiveIO::request('template', 'sensitiveIO::isPositiveInteger');
-$title = sensitiveIO::request('title');
-$linktitle = sensitiveIO::request('linktitle');
-$redirection = sensitiveIO::request('redirection');
-$redirection = sensitiveIO::request('redirection');
-$updateURL = sensitiveIO::request('redirection') ? true : false;
-
-//pageDates
-$pubdateend = sensitiveIO::request('pubdateend');
-$pubdatestart = sensitiveIO::request('pubdatestart');
-$reminderdate = sensitiveIO::request('reminderdate');
-$reminderdelay = sensitiveIO::request('reminderdelay', 'sensitiveIO::isPositiveInteger');
-$remindertext = sensitiveIO::request('remindertext');
-
-//pageSearchEngines
-$categorytext = sensitiveIO::request('categorytext');
-$descriptiontext = sensitiveIO::request('descriptiontext');
-$keywordstext = sensitiveIO::request('keywordstext');
-$robotstext = sensitiveIO::request('robotstext');
-
-//pageMetas
-$authortext = sensitiveIO::request('authortext');
-$copyrighttext = sensitiveIO::request('copyrighttext');
-$language = sensitiveIO::request('language');
-$metatext = sensitiveIO::request('metatext');
-$replytotext = sensitiveIO::request('replytotext');
-$pragmatext = sensitiveIO::request('pragmatext', 'sensitiveIO::isPositiveInteger');
-
 
 //load page
 $cms_page = CMS_tree::getPageByID($currentPage);
@@ -377,189 +347,204 @@ switch ($action) {
 			}
 		}
 	break;
-	case 'update':
-		switch ($field) {
-			case 'template': //template change
-				if (sensitiveIO::isPositiveInteger($value)) {
-					$tpl_original = $cms_page->getTemplate();
-					//hack if page has no valid template attached
-					if (!is_a($tpl_original, "CMS_pageTemplate")) {
-						$tpl_original = new CMS_pageTemplate();
-					}
-					$tpl = new CMS_pageTemplate($value);
-					
-					$tpl_copy = CMS_pageTemplatesCatalog::getCloneFromID($tpl->getID(), false, true, false, $tpl_original->getID());
-					$cms_page->setTemplate($tpl_copy->getID());
-					//destroy old template only if it's a copy
-					if ($tpl_original->isPrivate()) {
-						$tpl_original->destroy();
-					}
-					//save the page data
-					if (!$cms_page->writeToPersistence()) {
-						$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
-						$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : update template, value : '.$value);
-					} else {
-						//$edited = RESOURCE_EDITION_BASEDATA;
-						$cms_page->regenerate(true);
-						$jscontent = '
-						Automne.tabPanels.getActiveTab().reload();
-						';
-						$view->addJavascript($jscontent);
-						$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
-					}
-				} else {
-					$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
-					$cms_page->raiseError('Error during set template for page '.$cms_page->getID().'. Value set : '.$value);
-				}
-			break;
-			case 'redirection': //redirection link
-				$redirection = new CMS_href($value);
-				if ($redirection->getLinkType() != RESOURCE_LINK_TYPE_INTERNAL || $redirection->getInternalLink() != $cms_page->getID()) {
-					$cms_page->setRedirectLink($redirection,$cms_user);
-					if ($cms_page->writeToPersistence()) {
-						$edited = RESOURCE_EDITION_BASEDATA;
-						$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
-					} else {
-						$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
-						$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : update redirection, value : '.$value);
-					}
-				} else {
-					$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
-					$cms_page->raiseError('Error during set redirection for page '.$cms_page->getID().'. Value set : '.$value);
-				}
-			break;
-			case 'pubdatestart':
-				$dt_beg = new CMS_date();
-				$dt_beg->setDebug(false);
-				$dt_beg->setFormat($cms_language->getDateFormat());
-				if (!$dt_beg->setLocalizedDate($value, false)) {
-					$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD, array($cms_language->getMessage(MESSAGE_PAGE_FIELD_PUBDATE_BEG)));
-					$cms_page->raiseError('Error during set pubdatestart : date format not match : '.$value);
-				} elseif (!$cms_page->getPublicationDateEnd()->isNull() && CMS_date::compare($dt_beg, $cms_page->getPublicationDateEnd(), '>')) {
+	case 'pageContent':
+		$template = sensitiveIO::request('template', 'sensitiveIO::isPositiveInteger');
+		$title = strip_tags(sensitiveIO::request('title'));
+		$linktitle = strip_tags(sensitiveIO::request('linkTitle'));
+		$redirection = sensitiveIO::request('redirection');
+		$updateURL = sensitiveIO::request('updateURL') ? true : false;
+		//base datas has changed so write the new ones
+		if ($cms_page->getTitle() != $title || $cms_page->getLinkTitle() != $linktitle || $updateURL || $cms_page->getRedirectLink()->getTextDefinition() != $redirection) {
+			if (!$cms_page->setTitle($title, $cms_user)) {
+				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
+				$cms_page->raiseError('Error during set title for page '.$cms_page->getID().'. Value set : '.$title);
+			}
+			if (!$cms_page->setLinkTitle($linktitle, $cms_user)) {
+				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
+				$cms_page->raiseError('Error during set link title for page '.$cms_page->getID().'. Value set : '.$linktitle);
+			}
+			if (!$cms_page->setRefreshUrl($updateURL, $cms_user)) {
+				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
+				$cms_page->raiseError('Error during set refresh url for page '.$cms_page->getID().'. Value set : '.$updateURL);
+			}
+			$redirection = new CMS_href($redirection);
+			if ($redirection->getLinkType() != RESOURCE_LINK_TYPE_INTERNAL || $redirection->getInternalLink() != $cms_page->getID()) {
+				$cms_page->setRedirectLink($redirection,$cms_user);
+			}
+			if (!$cms_page->hasError() && $cms_page->writeToPersistence()) {
+				$edited = RESOURCE_EDITION_BASEDATA;
+				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
+			} else {
+				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
+				$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : update pageContent');
+			}
+		}
+		//Page template update
+		$tpl_original = $cms_page->getTemplate();
+		//first check if page template is updated
+		if (sensitiveIO::isPositiveInteger($template) && CMS_pageTemplatesCatalog::getTemplateIDForCloneID($tpl_original->getID()) != $template) {
+			//hack if page has no valid template attached
+			if (!is_a($tpl_original, "CMS_pageTemplate")) {
+				$tpl_original = new CMS_pageTemplate();
+			}
+			$tpl = new CMS_pageTemplate($template);
+			
+			$tpl_copy = CMS_pageTemplatesCatalog::getCloneFromID($tpl->getID(), false, true, false, $tpl_original->getID());
+			$cms_page->setTemplate($tpl_copy->getID());
+			//destroy old template only if it's a copy
+			if ($tpl_original->isPrivate()) {
+				$tpl_original->destroy();
+			}
+			//save the page data
+			if (!$cms_page->writeToPersistence()) {
+				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
+				$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : update template. New template set : '.$template);
+			} else {
+				$cms_page->regenerate(true);
+				$jscontent = '
+				Automne.tabPanels.getActiveTab().reload();
+				';
+				$view->addJavascript($jscontent);
+				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
+			}
+		}
+	break;
+	case 'pageDates':
+		$pubdatestart = sensitiveIO::request('pubdatestart');
+		$pubdateend = sensitiveIO::request('pubdateend');
+		$reminderdate = sensitiveIO::request('reminderdate');
+		$reminderdelay = sensitiveIO::request('reminderdelay', 'sensitiveIO::isPositiveInteger', 0);
+		$remindertext = strip_tags(sensitiveIO::request('remindertext'));
+		
+		$reminderDate = $cms_page->getReminderOn();
+		$dt_remind = new CMS_date();
+		$dt_remind->setDebug(false);
+		$dt_remind->setFormat($cms_language->getDateFormat());
+		$dt_remind->setLocalizedDate($reminderdate, true);
+		
+		if (!$cms_page->setReminderOnMessage($remindertext, $cms_user)) {
+			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
+			$cms_page->raiseError('Error during set reminder message for page '.$cms_page->getID().'. Value set : '.$remindertext);
+		}
+		if (!$cms_page->setReminderPeriodicity($reminderdelay, $cms_user)) {
+			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
+			$cms_page->raiseError('Error during set reminder delay for page '.$cms_page->getID().'. Value set : '.$reminderdelay);
+		}
+		if (!$dt_remind->setLocalizedDate($reminderdate, true)) {
+			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
+			$cms_page->raiseError('Error during set reminderdate for page '.$cms_page->getID().'. Value set : '.$reminderdate);
+		} else {
+			$cms_page->setReminderOn($dt_remind, $cms_user);
+		}
+		if (!$cms_page->hasError() && $cms_page->writeToPersistence()) {
+			$edited = RESOURCE_EDITION_BASEDATA;
+			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
+		} else {
+			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
+			$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : update pageMetas');
+		}
+		
+		
+		$dt_beg = new CMS_date();
+		$dt_beg->setDebug(false);
+		$dt_beg->setFormat($cms_language->getDateFormat());
+		$dateStart = $cms_page->getPublicationDateStart(false);
+		
+		$dt_end = new CMS_date();
+		$dt_end->setDebug(false);
+		$dt_end->setFormat($cms_language->getDateFormat());
+		$dateEnd = $cms_page->getPublicationDateEnd(false);
+		
+		if ($dt_beg->setLocalizedDate($pubdatestart, false) && $dt_end->setLocalizedDate($pubdateend, true)) {
+			//check if dates has changed
+			if (!CMS_date::compare($dateStart, $dt_beg, '==') || !CMS_date::compare($dateEnd, $dt_end, '==')) {
+				if (!$dt_end->isNull() && CMS_date::compare($dt_beg, $dt_end, '>')) {
 					$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_DATES);
-					$cms_page->raiseError('Error during set pubdatestart : date start is higher than date end : '.$value);
+					$cms_page->raiseError('Error during set pubdatestart : date start is higher than date end. Values set for date start : '.$pubdatestart.', for date end : '.$pubdateend);
 				} else {
-					$cms_page->setPublicationDates($dt_beg, $cms_page->getPublicationDateEnd());
-					if ($cms_page->writeToPersistence()) {
-						$edited = RESOURCE_EDITION_BASEDATA;
-						$cms_page->regenerate(true);
-						$jscontent = '
-						Automne.tabPanels.getActiveTab().reload();
-						';
-						$view->addJavascript($jscontent);
-						$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
-					} else {
-						$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
-						$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : update pubdatestart, value : '.$value);
-					}
-				}
-			break;
-			case 'pubdateend':
-				$dt_end = new CMS_date();
-				$dt_end->setDebug(false);
-				$dt_end->setFormat($cms_language->getDateFormat());
-				if (!$dt_end->setLocalizedDate($value, true)) {
-					$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD, array($cms_language->getMessage(MESSAGE_PAGE_FIELD_PUBDATE_END)));
-					$cms_page->raiseError('Error during set pubdateend : date format not match : '.$value);
-				} elseif (!$dt_end->isNull() && CMS_date::compare($cms_page->getPublicationDateStart(), $dt_end, '>')) {
-					$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_DATES);
-					$cms_page->raiseError('Error during set pubdateend : date start is higher than date end : '.$value);
-				} else {
-					$cms_page->setPublicationDates($cms_page->getPublicationDateStart(), $dt_end);
-					if ($cms_page->writeToPersistence()) {
-						$edited = RESOURCE_EDITION_BASEDATA;
-						$cms_page->regenerate(true);
-						$jscontent = '
-						Automne.tabPanels.getActiveTab().reload();
-						';
-						$view->addJavascript($jscontent);
-						$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
-					} else {
-						$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
-						$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : update pubdateend, value : '.$value);
-					}
-				}
-			break;
-			case 'reminderdate':
-				$dt_remind = new CMS_date();
-				$dt_remind->setDebug(false);
-				$dt_remind->setFormat($cms_language->getDateFormat());
-				if (!$dt_remind->setLocalizedDate($value, true)) {
-					$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
-					$cms_page->raiseError('Error during set reminderdate for page '.$cms_page->getID().'. Value set : '.$value);
-				} else {
-					$cms_page->setReminderOn($dt_remind, $cms_user);
+					$cms_page->setPublicationDates($dt_beg, $dt_end);
 					if ($cms_page->writeToPersistence()) {
 						$edited = RESOURCE_EDITION_BASEDATA;
 						$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 					} else {
 						$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
-						$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : update reminderdate, value : '.$value);
+						$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : update pubdatestart, value : '.$pubdatestart);
 					}
 				}
-			break;
-			//string trimed, without double quotes and tags (metas)
-			case 'remindertext':
-				$method = isset($method) ? $method : 'setReminderOnMessage';
-			case 'keywordstext':
-				$method = isset($method) ? $method : 'setKeywords';
-			case 'categorytext':
-				$method = isset($method) ? $method : 'setCategory';
-			case 'authortext':
-				$method = isset($method) ? $method : 'setAuthor';
-			case 'replytotext':
-				$method = isset($method) ? $method : 'setReplyto';
-			case 'copyrighttext':
-				$method = isset($method) ? $method : 'setCopyright';
-			case 'descriptiontext':
-				$method = isset($method) ? $method : 'setDescription';
-			case 'robotstext':
-				$method = isset($method) ? $method : 'setRobots';
-				$value = str_replace('"','',$value);
-			//string trimmed without tags
-			case 'title':
-				$method = isset($method) ? $method : 'setTitle';
-			case 'linkTitle':
-				$method = isset($method) ? $method : 'setLinkTitle';
-				$value = strip_tags($value);
-			//string trimmed
-			case 'metatext':
-				$method = isset($method) ? $method : 'setMetas';
-				if ($field == 'metatext') $value = htmlspecialchars_decode($value);
-			case 'language':
-				$method = isset($method) ? $method : 'setLanguage';
-				$value = trim($value);
-				pr($value, true);
-			//Integer
-			case 'reminderdelay':
-				$method = isset($method) ? $method : 'setReminderPeriodicity';
-				if (!$value && $field == 'reminderdelay') $value = 0;
-			//Boolean
-			case 'pragmatext':
-				$method = isset($method) ? $method : 'setPragma';
-			case 'updateURL':
-				$method = isset($method) ? $method : 'setRefreshUrl';
-				$value = ($value === 'true') ? true : (($value === 'false') ? false : $value);
-				if (method_exists($cms_page , $method)) {
-					if (!$cms_page->$method($value, $cms_user)) {
-						$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
-						$cms_page->raiseError('Error during set '.$field.' for page '.$cms_page->getID().'. Value set : '.$value);
-					} elseif (!$cms_page->writeToPersistence()) {
-						$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
-						$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : update '.$field.', value : '.$value);
-					} else {
-						$edited = RESOURCE_EDITION_BASEDATA;
-						$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
-					}
-				} else {
-					$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
-					$cms_page->raiseError('Error during set '.$field.' for page '.$cms_page->getID().'. Unknown method : '.$method.'. Value set : '.$value);
-				}
-			break;
-			default:
-				CMS_grandFather::raiseError('Unknown field '.$field.' to update for page '.$currentPage.' with value : '.$value);
-				$view->show();
-			break;
+			}
+		} else {
+			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
+			$cms_page->raiseError('Error during set publication dates start/end for page '.$cms_page->getID().'. Values set for date start : '.$pubdatestart.', for date end : '.$pubdateend);
+		}
+	break;
+	case 'pageSearchEngines':
+		$categorytext = str_replace('"','',strip_tags(sensitiveIO::request('categorytext')));
+		$descriptiontext = str_replace('"','',strip_tags(sensitiveIO::request('descriptiontext')));
+		$keywordstext = str_replace('"','',strip_tags(sensitiveIO::request('keywordstext')));
+		$robotstext = str_replace('"','',strip_tags(sensitiveIO::request('robotstext')));
+		
+		if (!$cms_page->setCategory($categorytext, $cms_user)) {
+			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
+			$cms_page->raiseError('Error during set category for page '.$cms_page->getID().'. Value set : '.$categorytext);
+		}
+		if (!$cms_page->setDescription($descriptiontext, $cms_user)) {
+			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
+			$cms_page->raiseError('Error during set description for page '.$cms_page->getID().'. Value set : '.$descriptiontext);
+		}
+		if (!$cms_page->setKeywords($keywordstext, $cms_user)) {
+			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
+			$cms_page->raiseError('Error during set keywords for page '.$cms_page->getID().'. Value set : '.$keywordstext);
+		}
+		if (!$cms_page->setRobots($robotstext, $cms_user)) {
+			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
+			$cms_page->raiseError('Error during set robots for page '.$cms_page->getID().'. Value set : '.$robotstext);
+		}
+		if (!$cms_page->hasError() && $cms_page->writeToPersistence()) {
+			$edited = RESOURCE_EDITION_BASEDATA;
+			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
+		} else {
+			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
+			$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : update pageSearchEngines');
+		}
+	break;
+	case 'pageMetas':
+		$authortext = str_replace('"','',strip_tags(sensitiveIO::request('authortext')));
+		$copyrighttext = str_replace('"','',strip_tags(sensitiveIO::request('copyrighttext')));
+		$language = sensitiveIO::request('language');
+		$metatext = sensitiveIO::request('metatext');
+		$replytotext = str_replace('"','',strip_tags(sensitiveIO::request('replytotext', 'sensitiveIO::isValidEmail')));
+		$pragma = sensitiveIO::request('pragmatext', 'sensitiveIO::isPositiveInteger', 0);
+		
+		if (!$cms_page->setAuthor($authortext, $cms_user)) {
+			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
+			$cms_page->raiseError('Error during set author for page '.$cms_page->getID().'. Value set : '.$authortext);
+		}
+		if (!$cms_page->setCopyright($copyrighttext, $cms_user)) {
+			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
+			$cms_page->raiseError('Error during set copyright for page '.$cms_page->getID().'. Value set : '.$copyrighttext);
+		}
+		if (!$cms_page->setLanguage($language, $cms_user)) {
+			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
+			$cms_page->raiseError('Error during set language for page '.$cms_page->getID().'. Value set : '.$language);
+		}
+		if (!$cms_page->setMetas($metatext, $cms_user)) {
+			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
+			$cms_page->raiseError('Error during set metas for page '.$cms_page->getID().'. Value set : '.$metatext);
+		}
+		if (!$cms_page->setReplyto($replytotext, $cms_user)) {
+			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
+			$cms_page->raiseError('Error during set replyto for page '.$cms_page->getID().'. Value set : '.$replytotext);
+		}
+		if (!$cms_page->setPragma($pragma, $cms_user)) {
+			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
+			$cms_page->raiseError('Error during set pragma for page '.$cms_page->getID().'. Value set : '.$pragma);
+		}
+		if (!$cms_page->hasError() && $cms_page->writeToPersistence()) {
+			$edited = RESOURCE_EDITION_BASEDATA;
+			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
+		} else {
+			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
+			$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : update pageMetas');
 		}
 	break;
 	default:

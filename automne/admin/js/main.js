@@ -6,7 +6,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: main.js,v 1.4 2009/03/02 11:26:54 sebastien Exp $
+  * $Id: main.js,v 1.5 2009/03/03 15:11:40 sebastien Exp $
   */
 
 Ext.namespace('Automne');
@@ -451,6 +451,8 @@ Automne.utils = {
 				count++;
 			}
 		});
+		//update validation panel
+		Automne.server.call('validations-sidepanel.php');
 		pr('switchStatus : '+ statusId +' : '+ count +' statuses switched');
 	},
 	//remove a resource anywhere in the view.

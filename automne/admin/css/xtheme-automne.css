@@ -606,34 +606,35 @@ ul.x-tab-strip-bottom{
 body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc {
     background-color: #D6DCDF;
 }
-.x-window #north .atm-status{
+.x-window #pagePropTopPanel .atm-status{
 	display:						block;
 	float:							left;
 	padding-right:					5px;
 }
-.x-window #north #pageTitle{
+.x-window #pagePropTopPanel #pagePropTitle{
 	background-color:				#f6ffe7;
 	border-bottom:					1px solid #cfd4d6;
 	padding:						5px 5px 5px 5px;
 }
-.x-window #north .title{
+.x-window #pagePropTopPanel .title{
 	color:							#5a6063;
 	display:						block;
 	font-weight:					bold;
 	padding-top:					3px;
 	font-size:						15px;
 }
-.x-window #north #breadcrumbs{
+.x-window #pagePropTopPanel #breadcrumbs{
 	clear:							left;
 	color:							#5a6063;
 	padding:						6px 5px 5px 5px;
+	background:						#F0F0F0;
 }
-.x-window #north #breadcrumbs a{
+.x-window #pagePropTopPanel #breadcrumbs a{
 	color:							#75a91e;
 	font-weight:					bold;
 	text-decoration:				none;
 }
-.x-window #north #breadcrumbs a:hover{
+.x-window #pagePropTopPanel #breadcrumbs a:hover{
 	text-decoration:				underline;
 }
 

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: item.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: item.php,v 1.2 2009/03/03 15:11:48 sebastien Exp $
 
 /**
   * PHP page : module polymod admin
@@ -455,8 +455,8 @@ $content .= '
 	}
 	
 if ($object->isPrimaryResource()) {
-	$pub_start = $item->getPublicationDateStart();
-	$pub_end = $item->getPublicationDateEnd();
+	$pub_start = $item->getPublicationDateStart(false);
+	$pub_end = $item->getPublicationDateEnd(false);
 	$date_mask = $cms_language->getDateFormatMask();
 	$content .='
 	<tr>

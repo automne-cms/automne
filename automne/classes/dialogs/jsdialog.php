@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: jsdialog.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: jsdialog.php,v 1.2 2009/03/03 15:12:21 sebastien Exp $
 
 /**
   * Class CMS_JSDialog
@@ -707,7 +707,6 @@ class CMS_JSDialog extends CMS_grandFather
 				for (var i=0; i < forms.length; i++) {
 					var form = forms[i];
 					if (form.target != "_blank" && form.action.indexOf("automne/admin") == -1 && form.action.indexOf("http://") != -1) {
-						pr(form.action);
 						CMS_addEvent(form, \'submit\', stopLink);
 					}
 				}

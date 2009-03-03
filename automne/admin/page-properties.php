@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-properties.php,v 1.4 2009/03/02 11:25:15 sebastien Exp $
+// $Id: page-properties.php,v 1.5 2009/03/03 15:11:07 sebastien Exp $
 
 /**
   * PHP page : Load page properties window.
@@ -215,35 +215,35 @@ $pageRelations = sensitiveIO::sanitizeJSString('<ul>
 \***************************************/
 
 $dateFormat = $cms_language->getDateFormat();
-$pub_start = $cms_page->getPublicationDateStart();
-$pub_end = $cms_page->getPublicationDateEnd();
+$pub_start = $cms_page->getPublicationDateStart(false);
+$pub_end = $cms_page->getPublicationDateEnd(false);
 $reminder_date = $cms_page->getReminderOn();
 $date_mask = $cms_language->getDateFormatMask();
 $pubStart = $pub_start->getLocalizedDate($dateFormat);
 $pubEnd = $pub_end->getLocalizedDate($dateFormat);
 $reminderPeriodicity = $cms_page->getReminderPeriodicity();
 $reminderDate = $reminder_date->getLocalizedDate($dateFormat);
-$reminderMessage = htmlspecialchars($cms_page->getReminderOnMessage());
+$reminderMessage = sensitiveIO::sanitizeJSString(htmlspecialchars($cms_page->getReminderOnMessage()));
 
 /***************************************\
 *            SEARCH ENGINES             *
 \***************************************/
-$description = htmlspecialchars($cms_page->getDescription());
-$keywords = htmlspecialchars($cms_page->getKeywords());
-$category = htmlspecialchars($cms_page->getCategory());
-$robots = htmlspecialchars($cms_page->getRobots());
+$description = sensitiveIO::sanitizeJSString($cms_page->getDescription());
+$keywords = sensitiveIO::sanitizeJSString($cms_page->getKeywords());
+$category = sensitiveIO::sanitizeJSString($cms_page->getCategory());
+$robots = sensitiveIO::sanitizeJSString($cms_page->getRobots());
 
 /***************************************\
 *              META-DATAS               *
 \***************************************/
 if (!NO_PAGES_EXTENDED_META_TAGS) {
-	$author = htmlspecialchars($cms_page->getAuthor());
-	$replyTo = htmlspecialchars($cms_page->getReplyto());
-	$copyright = htmlspecialchars($cms_page->getCopyright());
+	$author = sensitiveIO::sanitizeJSString($cms_page->getAuthor());
+	$replyTo = sensitiveIO::sanitizeJSString($cms_page->getReplyto());
+	$copyright = sensitiveIO::sanitizeJSString($cms_page->getCopyright());
 }
 $language = CMS_languagesCatalog::getByCode($cms_page->getLanguage());
-$pageLanguage = htmlspecialchars($language->getLabel());
-$languageValue = htmlspecialchars($language->getCode());
+$pageLanguage = sensitiveIO::sanitizeJSString($language->getLabel());
+$languageValue = $language->getCode();
 $pragmaValue = ($cms_page->getPragma() != '') ? 'true' : 'false';
 
 $languages = CMS_languagesCatalog::getAllLanguages();
@@ -252,7 +252,7 @@ foreach ($languages as $aLanguage) {
 	$languagesDatas[] = array($aLanguage->getCode(), $aLanguage->getLabel());
 }
 $languagesDatas = sensitiveIO::jsonEncode($languagesDatas);
-$metas = htmlspecialchars($cms_page->getMetas());
+$metas = sensitiveIO::sanitizeJSString($cms_page->getMetas());
 
 /***************************************\
 *               SUB-PAGES               *
@@ -360,6 +360,25 @@ if (!NO_PAGES_EXTENDED_META_TAGS) {
 	$extendedMetas = '';
 }
 
+//create page lineage
+$lineageTitle = '';
+if (is_array($lineage) && sizeof($lineage)) {
+	foreach ($lineage as $ancestor) {
+		if ($ancestor->getID() != $cms_page->getID()) {
+			$lineageTitle .= '&nbsp;/&nbsp;<a href="#" onclick="Automne.utils.getPageById('.$ancestor->getID().');Ext.getCmp(\''.$winId.'\').close();">'.htmlspecialchars($ancestor->getTitle()).'</a>';
+		} else {
+			$lineageTitle .= '&nbsp;/&nbsp;'.htmlspecialchars($ancestor->getTitle());
+		}
+	}
+}
+
+$pageTopPanel = sensitiveIO::sanitizeJSString('<div id="pagePropTopPanel">
+	<div id="pagePropTitle">
+	'.$status.'
+	<span class="title">'.$cms_page->getTitle().'</span>
+	</div>
+	<div id="breadcrumbs">'.$lineageTitle.'</div>
+</div>');
 
 $jscontent .= <<<END
 	//create center panel
@@ -452,7 +471,6 @@ $jscontent .= <<<END
 						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_FORCEURLREFRESH)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_URL)}</span>',
 						name:			'updateURL',
 						inputValue:		'1',
-						height:			45,
 						xtype:			'checkbox',
 						boxLabel:		'Cochez la case pour mettre à jour l\'adresse de la page.<br />Adresse actuelle : {$pageUrl}'
 					},{
@@ -474,11 +492,8 @@ $jscontent .= <<<END
 							module:				'{$module}', 
 							visualmode:			'{$visualmode}'
 						}
-					},
-					
-					{
+					},{
 						title:			'Informations',
-						/*layout: 		'form',*/
 						xtype:			'fieldset',
 						autoHeight:		true,
 						autoWidth:		true,
@@ -519,7 +534,7 @@ $jscontent .= <<<END
 							form.submit({
 								params:{
 									action:		'pageContent',
-									pageId:		'{$pageId}'
+									currentPage:'{$pageId}'
 								},
 								scope:this
 							});
@@ -592,7 +607,7 @@ $jscontent .= <<<END
 							var form = Ext.getCmp('pageDatesPanel').getForm();
 							form.submit({params:{
 								action:		'pageDates',
-								pageId:		'{$pageId}'
+								currentPage:'{$pageId}'
 							}});
 						}
 					}]
@@ -644,7 +659,7 @@ $jscontent .= <<<END
 							var form = Ext.getCmp('pageSearchEnginesPanel').getForm();
 							form.submit({params:{
 								action:		'pageSearchEngines',
-								pageId:		'{$pageId}'
+								currentPage:'{$pageId}'
 							}});
 						}
 					}]
@@ -708,7 +723,7 @@ $jscontent .= <<<END
 							var form = Ext.getCmp('pageMetasPanel').getForm();
 							form.submit({params:{
 								action:		'pageMetas',
-								pageId:		'{$pageId}'
+								currentPage:'{$pageId}'
 							}});
 						}
 					}]
@@ -721,46 +736,16 @@ $jscontent .= <<<END
 	// Panel for the north
 	var top = new Ext.Panel({
 		region:			'north',
-		el: 			'north',
 		border:			false,
-		autoHeight: 	true
+		/*autoHeight: 	true,*/
+		height:			56,
+		html:			'{$pageTopPanel}'
 	});
-	top.on('render', function(){
-		propertiesWindow.syncSize();
-	}, this);
 	propertiesWindow.add(top);
 	propertiesWindow.add(center);
 	//redo windows layout
 	propertiesWindow.doLayout();
-	top.on('resize', function(){
-		propertiesWindow.syncSize();
-	}, this);
 END;
 $view->addJavascript($jscontent);
-
-//create page lineage
-$lineageTitle = '';
-if (is_array($lineage) && sizeof($lineage)) {
-	foreach ($lineage as $ancestor) {
-		if ($ancestor->getID() != $cms_page->getID()) {
-			$lineageTitle .= '&nbsp;/&nbsp;<a href="#" onclick="Automne.utils.getPageById('.$ancestor->getID().');Ext.getCmp(\''.$winId.'\').close();">'.htmlspecialchars($ancestor->getTitle()).'</a>';
-		} else {
-			$lineageTitle .= '&nbsp;/&nbsp;'.htmlspecialchars($ancestor->getTitle());
-		}
-	}
-}
-
-$content = '
-<div id="north">
-	<div id="pageTitle">
-	'.$status.'
-	<span class="title">'.$cms_page->getTitle().'</span>
-	</div>
-	<div id="breadcrumbs">'.$lineageTitle.'</div>
-</div>';
-
-//send content
-$view->setContent($content);
-
 $view->show();
 ?>
