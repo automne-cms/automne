@@ -9,7 +9,7 @@ Pour mettre à jour fckeditor :
 7- reprendre le /automne/fckeditor/editor/css/fck_editorarea.css modifié pour Automne (appelé par /css/editor.css)
 8- modifier le filemanager (supprimer les connecteurs autre que PHP et changer les fichiers de configuration en conséquence).
 9- protéger la licence du fichier fckeditor.js par //<< ... //!>>
-
+10- rechercher dans les sources (editor/) FCKDomTools.SetElementStyles(D,{position:'absolute',zIndex:FCKConfig.FloatingPanelsZIndex} et le remplacer par FCKDomTools.SetElementStyles(D,{position:'fixed',zIndex:FCKConfig.FloatingPanelsZIndex} pour corriger le pb des menu de sélection des styles de l'éditeur qui scrollent avec la page éditée.
 -- Optionnel --
 
 1- Supprimer les langues inutiles (dans editor/lang/) pour alléger l'archive

@@ -24,7 +24,7 @@
  * Follow this link for more information:
  * http://docs.fckeditor.net/FCKeditor_2.x/Developers_Guide/Configuration/Configuration_Options
  */
-// $Id: fckconfig.php,v 1.1.1.1 2008/11/26 17:12:14 sebastien Exp $
+// $Id: fckconfig.php,v 1.2 2009/03/04 12:38:25 sebastien Exp $
 
 //for this page, HTML output compression is not welcome.
 define("ENABLE_HTML_COMPRESSION", false);
@@ -132,7 +132,7 @@ FCKConfig.FormatOutput		= true ;
 //changed for Automne
 FCKConfig.FormatIndentator	= '    ' ;
 
-FCKConfig.EMailProtection = 'encode' ; // none | encode | function
+FCKConfig.EMailProtection = 'none' ; // none | encode | function
 FCKConfig.EMailProtectionFunction = 'mt(NAME,DOMAIN,SUBJECT,BODY)' ;
 
 FCKConfig.StartupFocus	= false ;
@@ -147,7 +147,7 @@ FCKConfig.ToolbarStartExpanded	= true ;
 FCKConfig.ToolbarCanCollapse	= true ;
 FCKConfig.IgnoreEmptyParagraphValue = true ;
 //changed for Automne
-FCKConfig.FloatingPanelsZIndex = 12000 ;
+FCKConfig.FloatingPanelsZIndex = 15000 ;
 FCKConfig.HtmlEncodeOutput = false ;
 //changed for Automne
 FCKConfig.TemplateReplaceAll = false ;
