@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc.php,v 1.6 2009/03/03 15:10:54 sebastien Exp $
+// $Id: cms_rc.php,v 1.7 2009/03/04 09:54:51 sebastien Exp $
 
 /**
   * rc file, contains editable constants
@@ -780,9 +780,6 @@ if (!defined("AUTOMNE_SUBVERSION")) {
 	define("AUTOMNE_SUBVERSION", 0);
 }
 
-//include base packages
-require_once(PATH_PACKAGES_FS."/common/grandfather.php");
-
 if (STATS_DEBUG) {
 	function view_stat($return = false){ 
 		$time_end = getmicrotime();
@@ -842,6 +839,9 @@ if (STATS_DEBUG) {
 	$GLOBALS["files_loaded"] = 4; //Start at 4 : 3 config files and the require at the end of this file
 	$GLOBALS["time_start"] = getmicrotime();
 }
+
+//include base packages
+require_once(PATH_PACKAGES_FS."/common/grandfather.php");
 
 /**
   * Debug mode configuration changes.

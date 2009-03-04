@@ -1,15 +1,15 @@
-<?php //Generated on Mon, 09 Feb 2009 12:09:14 +0100 by Automne (TM) 4.0.0a3
+<?php //Generated on Tue, 03 Mar 2009 11:47:09 +0100 by Automne (TM) 4.0.0b1
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: http://127.0.0.1/web/fr/print-3-presentation.php');
+	header('Location: http://automne4/web/fr/print-3-presentation.php');
 	exit;
 }
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
  ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";  ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 <head>
-	<title>Automne 4 : Présentation</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<title>Automne 4 : Présentation</title>
 	<link rel="stylesheet" type="text/css" href="/css/print.css" />
 </head>
 <body>
@@ -25,11 +25,14 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 
 Présentation
 		
-
-
 </h3>
 
 
+<h2>Préviz avant validation</h2>
+
+
+	
+	
 
 	
 	
@@ -37,19 +40,14 @@ Présentation
 	
 
 
-
-	
-	
 <br />
 <hr />
 <div align="center">
 	<small>
+		Dernière mise à jour le 27/02/2009<br />
 		
-		
-				Page  "Présentation" (http://127.0.0.1/web/fr/3-presentation.php)
-				
-
-<br />
+				Page  "Présentation" (http://automne4/web/fr/3-presentation.php)
+				<br />
 		Tiré du site http://<?php echo $_SERVER["HTTP_HOST"];   ?>
 	</small>
 </div>

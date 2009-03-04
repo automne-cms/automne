@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: blocks.js,v 1.5 2009/03/02 11:27:02 sebastien Exp $
+  * $Id: blocks.js,v 1.6 2009/03/04 09:55:38 sebastien Exp $
   */
 Automne.block = function(config){
 	config = config || {};
@@ -174,7 +174,6 @@ Ext.extend(Automne.block, Ext.util.Observable, {
 		}
 	},
 	onDel: function() {
-		pr('del');
 		Automne.message.popup({
 			msg: 				Automne.locales.blockDeleteConfirm,
 			buttons: 			parent.Ext.MessageBox.OKCANCEL,

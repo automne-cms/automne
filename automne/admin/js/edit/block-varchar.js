@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: block-varchar.js,v 1.2 2009/03/02 11:27:02 sebastien Exp $
+  * $Id: block-varchar.js,v 1.3 2009/03/04 09:55:38 sebastien Exp $
   */
 Automne.blockVarchar = Ext.extend(Automne.block, {
 	blockClass:	'CMS_block_varchar',
@@ -71,8 +71,6 @@ Automne.blockVarchar = Ext.extend(Automne.block, {
 		if (blockStyle['background-color'] == 'transparent') {
 			blockStyle['background-color'] = '#FFFFFF';
 		}
-		
-		pr(blockStyle);
 		textareaEl.setStyle(blockStyle);
 		Ext.get(textarea.textSizeEl).setStyle(blockStyle);
 		textarea.autoSize();

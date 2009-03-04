@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: patch.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: patch.php,v 1.2 2009/03/04 09:55:57 sebastien Exp $
 
 /**
   * PHP page : Patch
@@ -27,7 +27,6 @@
 //for this page, HTML output compression is not welcome.
 define("ENABLE_HTML_COMPRESSION", false);
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
-require_once(PATH_ADMIN_SPECIAL_SESSION_CHECK_FS);
 
 define("MESSAGE_PAGE_TITLE", 1165);
 define("MESSAGE_PAGE_CLEARANCE_ERROR", 65);
@@ -60,10 +59,11 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 // | VARS                                                                 |
 // +----------------------------------------------------------------------+
 
-$cms_action = ($_GET["cms_action"]) ? $_GET["cms_action"]:$_POST["cms_action"];
-$verbose = ($_GET["verbose"]) ? $_GET["verbose"]:$_POST["verbose"];
-$force = ($_GET["force"]) ? $_GET["force"]:$_POST["force"];
-$report = ($_GET["report"]) ? $_GET["report"]:$_POST["report"];
+$cms_action = sensitiveIO::request('cms_action');
+$verbose = sensitiveIO::request('verbose');
+$force = sensitiveIO::request('force');
+$report = sensitiveIO::request('report');
+$commandLine = $filename = '';
 
 // +----------------------------------------------------------------------+
 // | ACTIONS                                                              |
@@ -117,7 +117,6 @@ if ($cms_message || (!$filename && !$commandLine && !$cms_action)) {
 	$dialog = new CMS_dialog();
 	$content = '';
 	$dialog->setTitle($cms_language->getMessage(MESSAGE_PAGE_TITLE));
-	$dialog->setBackLink("meta_admin.php");
 	if ($cms_message) {
 		$dialog->setActionMessage($cms_message);
 	}
@@ -201,7 +200,7 @@ if ($cms_message || (!$filename && !$commandLine && !$cms_action)) {
 		// +----------------------------------------------------------------------+
 		// | PATCH FILE TREATMENT                                                 |
 		// +----------------------------------------------------------------------+
-		
+		$send = '';
 		//if it's a patch resume, no need to re-decompress the file
 		if ($cms_action!='errorsCorrected') {
 			//patch uncompress
@@ -285,13 +284,35 @@ if ($cms_message || (!$filename && !$commandLine && !$cms_action)) {
 		
 		//start Installation process
 		report('Start applying patch file...');
-		$installError = $automnePatch->doInstall($install);
+		$automnePatch->doInstall($install);
+		$installError = false;
+		$return = $automnePatch->getReturn();
+		foreach ($return as $line) {
+			switch($line['type']) {
+				case 'verbose':
+					verbose($line['text']);
+				break;
+				case 'report':
+					switch ($line['error']) {
+						case 0:
+							report($line['text'],false);
+						break;
+						case 1:
+							report($line['text'],true);
+							$installError = true;
+						break;
+					}
+				break;
+			}
+		}
+		
 		if ($installError) {
 			report('Error during installation process :');
 			report($installError,true);
 		} else {
 			report('-> Patch installation done without error.');
 		}
+		
 		
 		//remove temporary files
 		report('Start cleaning temporary files...');

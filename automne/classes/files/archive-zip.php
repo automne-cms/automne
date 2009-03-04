@@ -14,7 +14,7 @@
 // | Author: Devin Doucette <darksnoopy@shaw.ca>                          |
 // +----------------------------------------------------------------------+
 //
-// $Id: archive-zip.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: archive-zip.php,v 1.2 2009/03/04 09:56:31 sebastien Exp $
 
 /**
   * Class CMS_archive
@@ -38,7 +38,7 @@ class CMS_zip_file extends CMS_archive
 	 * @param string $name, the full filename of the archive
 	 * @return void
 	 */
-	function __construct($name)
+	function CMS_zip_file($name)
 	{
 		if (trim($name) == '') {
 			$this->raiseError("Not a valid name given to archive ".$name);

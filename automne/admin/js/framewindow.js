@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: framewindow.js,v 1.4 2009/03/03 15:11:39 sebastien Exp $
+  * $Id: framewindow.js,v 1.5 2009/03/04 09:55:28 sebastien Exp $
   */
 Automne.frameWindow = Ext.extend(Automne.Window, { 
 	//frame url to use at next frame reload
@@ -53,13 +53,13 @@ Automne.frameWindow = Ext.extend(Automne.Window, {
 	},
 	//after panel is activated (tab panel clicked)
 	onShow: function () {
-		if (!Ext.isIE) {
-			this.body.addClass('x-hide-visibility');
-		}
 		//if frame element is not known (first activation of panel), then set event on it and load it
 		if (!this.frameEl) {
 			this.frameEl = Ext.get(this.id + 'Frame');
 			if (this.frameEl) {
+				if (!Ext.isIE) {
+					this.frameEl.addClass('x-hide-visibility');
+				}
 				//set frame events
 				this.setFrameEvents();
 				this.reload();
@@ -83,7 +83,7 @@ Automne.frameWindow = Ext.extend(Automne.Window, {
 			this.setTitle(this.frameDocument.title);
 		}
 		//show frame
-		this.body.removeClass('x-hide-visibility');
+		this.frameEl.removeClass('x-hide-visibility');
 	},
 	//resize frame according to panel size
 	resize: function() {
@@ -129,27 +129,18 @@ Automne.frameWindow = Ext.extend(Automne.Window, {
 	// private
 	getDoc : function(){
 		if (!this.frameEl) return false;
-		var win = this.getWin();
-		if (!win) return false;
-		return Ext.isIE ? win.document : (this.frameEl.dom.contentDocument || win.document);
+		return Ext.isIE ? this.getWin().document : (this.frameEl.dom.contentDocument || this.getWin().document);
 	},
 	// private
 	getWin : function(){
 		if (!this.frameEl || !this.frameEl.dom) {
 			return false;
 		}
-		if (Ext.isIE) {
-			try {
-				var win = this.frameEl.dom.contentWindow;
-			} catch (e) {
-				pr(e, 'error');
-			}
-		} else {
-			try {
-				var win = window.frames[this.frameEl.dom.name];
-			} catch (e) {
-				pr(e, 'error');
-			}
+		var win = false;
+		try {
+			win = this.frameEl.dom.contentWindow || window.frames[this.frameEl.dom.name];
+		} catch (e) {
+			pr(e, 'error');
 		}
 		return win;
 	}

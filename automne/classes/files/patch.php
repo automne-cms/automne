@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: patch.php,v 1.2 2008/11/27 17:25:37 sebastien Exp $
+// $Id: patch.php,v 1.3 2009/03/04 09:56:31 sebastien Exp $
 
 /**
   * Class CMS_patch
@@ -59,7 +59,7 @@ class CMS_patch extends CMS_grandFather
 				switch ($checkParams[0]) {
 					case "V:":
 						$versions = array_map("trim",explode("|",$checkParams[1]));
-						if (!$checkParams[2]) {
+						if (!isset($checkParams[2])) {
 							$return = (in_array(AUTOMNE_VERSION,$versions)) ? $return:false;
 						} elseif ($checkParams[1]=="none") {
 							$return = true;
@@ -113,7 +113,6 @@ class CMS_patch extends CMS_grandFather
 				if ($updateDenyFile->exists()) {
 					$updateDeny = $updateDenyFile->readContent("array");
 				} else {
-					//todo : auto create this file if missing
 					$this->raiseError("File ".UPDATE_DENY." does not exist");
 					return false;
 				}
@@ -158,17 +157,6 @@ class CMS_patch extends CMS_grandFather
 								}
 							}
 						break;
-						//check presence of a 2nd parameter
-						/* removed : too dangerous
-						case "ex":
-							if (!$installParams[1]) {
-								$error .= "Error at line : ".$line.", need a command to execute<br />";
-								$errorsInfo[] = array('no' => 4, 'line' => $line, 'command' => $aInstallCheck);
-								$filesExists=false;
-								unset($array[$line-1]);
-							}
-						break;
-						*/
 					}
 					if ($filesExists) {
 						//then if files are ok, check installation request
@@ -198,7 +186,7 @@ class CMS_patch extends CMS_grandFather
 								}
 								
 								//check right presence and format
-								if ($installParams[2]) {
+								if (isset($installParams[2]) && $installParams[2]) {
 									if (!$this->_checkRightFormat($installParams[2])) {
 										$error .= "Error at line : ".$line.", right command malformed<br />";
 										$errorsInfo[] = array('no' => 8, 'line' => $line, 'command' => $aInstallCheck);
@@ -316,16 +304,6 @@ class CMS_patch extends CMS_grandFather
 									unset($array[$line-1]);
 								}
 							break;
-							/* removed : too dangerous
-							case "ex": //execute command in exec
-								//only check passthru() and exec() command presence
-								if (!function_exists("passthru") && !function_exists("exec")) {
-									$error .= "Error at line : ".$line.", passthru() and exec() commands not available, please correct your PHP configuration or contact your technical administrator<br />";
-									$errorsInfo[] = array('no' => 24, 'line' => $line, 'command' => $aInstallCheck);
-									unset($array[$line-1]);
-								}
-							break;
-							*/
 							case "rc":
 								//do nothing
 							break;
@@ -378,7 +356,6 @@ class CMS_patch extends CMS_grandFather
 	function doInstall(&$array,$excludeCommand=array(), $stopOnErrors = true)
 	{
 		if (is_array($array)) {
-			$error = '';
 			foreach ($array as $line => $aInstallCheck) {
 				$line++; //to have the correct line number
 				$installParams = array_map("trim",explode("\t",$aInstallCheck));
@@ -397,7 +374,7 @@ class CMS_patch extends CMS_grandFather
 								$this->_report('Error during copy of '.$patchFile.' to '.$originalFile,true);
 								if ($stopOnErrors) return;
 							}
-							if (!$installParams[2])
+							if (!isset($installParams[2]))
 								break;
 						case "ch": //execute chmod
 							$filesNOK = $this->applyChmod($installParams[2],$originalFile);
@@ -437,18 +414,18 @@ class CMS_patch extends CMS_grandFather
 							//load the XML data of the source the files
 							$sourceXML = new CMS_file($patchFile);
 							$domdocument = new CMS_DOMDocument();
-							$domdocument->loadXML($sourceXML->readContent("string"));
+							try {
+								$domdocument->loadXML($sourceXML->readContent("string"));
+							} catch (DOMException $e) {}
 							$paramsTags = $domdocument->getElementsByTagName('param');
 							$sourceParameters = array();
 							foreach ($paramsTags as $aTag) {
-								$attributes = $aTag->getAttributes();
 								$name = ($aTag->hasAttribute('name')) ? $aTag->getAttribute('name') : '';
 								$type = ($aTag->hasAttribute('type')) ? $aTag->getAttribute('type') : '';
 								$sourceParameters[$name] = array(CMS_DOMDocument::DOMElementToString($aTag, true),$type);
 							}
 							//merge the two tables of parameters
 							$resultParameters = array_merge($sourceParameters,$moduleParameters);
-							
 							//set new parameters to the module
 							if ($module->setAndWriteParameters($resultParameters)) {
 								$this->_verbose(' -> File '.$patchFile.' successfully merged with module '.$installParams[2].' parameters');
@@ -541,7 +518,6 @@ class CMS_patch extends CMS_grandFather
 					if ($stopOnErrors) return;
 				}
 			}
-			return $error;
 		} else {
 			$this->raiseError("Param must be an array");
 			return false;

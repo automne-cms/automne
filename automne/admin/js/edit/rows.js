@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: rows.js,v 1.3 2009/03/02 11:27:03 sebastien Exp $
+  * $Id: rows.js,v 1.4 2009/03/04 09:55:38 sebastien Exp $
   */
 Automne.row = function(config){
 	config = config || {};
@@ -128,7 +128,7 @@ Ext.extend(Automne.row, Ext.util.Observable, {
 		}
 		this.getBox();
 		if (this.show()) {
-			pr('over '+ this.id +' - index : '+ this.csOrder );
+			pr('Over '+ this.id +' - Index : '+ this.csOrder );
 			this.hasMouseOver = true;
 			Automne.content.setRowOver(this, true);
 		}
@@ -159,7 +159,7 @@ Ext.extend(Automne.row, Ext.util.Observable, {
 		}
 		this.hasMouseOver = false;
 		Automne.content.setRowOver(this, false);
-		pr('out '+this.id);
+		pr('Out '+this.id);
 		this.hide();
 	},
 	//show row control elements
@@ -459,7 +459,7 @@ Ext.extend(Automne.row, Ext.util.Observable, {
 		cs.moveRowAt(this, index);
 	},
 	destroy : function(button){
-		pr('destroy row');
+		pr('Destroy row');
 		if (button && button != 'ok') {
 			return false;
 		}

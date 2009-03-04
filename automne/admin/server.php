@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: server.php,v 1.4 2009/03/02 11:25:15 sebastien Exp $
+// $Id: server.php,v 1.5 2009/03/04 09:55:16 sebastien Exp $
 
 /**
   * PHP page : Load server detail window.
@@ -355,6 +355,12 @@ $jscontent = <<<END
 			title:				'Informations PHP',
 			id:					'phpDatas',
 			frameURL:			'/automne/admin/phpinfo.php',
+			allowFrameNav:		true
+		},{
+			xtype:				'framePanel',
+			title:				'Mises à jour',
+			id:					'updatesPanel',
+			frameURL:			'/automne/admin-v3/patch.php',
 			allowFrameNav:		true
 		}]
 	});

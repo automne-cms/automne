@@ -17,7 +17,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: mod_cms_forms_header.php,v 1.3 2009/03/02 12:56:00 sebastien Exp $
+// $Id: mod_cms_forms_header.php,v 1.4 2009/03/04 09:58:34 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -58,15 +58,13 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 			//check for authentification action in form
 			if ($form->getActionsByType(CMS_forms_action::ACTION_AUTH)) {
 				//check for valid session / logout attempt / and autologin
-				if (!is_a($_SESSION["cms_context"], 'CMS_context') || $_REQUEST["logout"] == 'true') {
+				if (!isset($_SESSION["cms_context"]) || (isset($_SESSION["cms_context"]) && !is_a($_SESSION["cms_context"], 'CMS_context')) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] == 'true')) {
 					@session_destroy();
-					//Set session name
-					session_name('AutomneSession');
-					@session_start();
-					if ($_REQUEST["logout"] != 'true' && CMS_context::autoLoginSucceeded()) {
+					start_atm_session();
+					if (!isset($_REQUEST["logout"]) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] != 'true') && CMS_context::autoLoginSucceeded()) {
 						//declare form ok action
 						$cms_forms_okAction[$form->getID()] = true;
-					} elseif ($_REQUEST["logout"] == 'true') {
+					} elseif (isset($_REQUEST["logout"]) && $_REQUEST["logout"] == 'true') {
 						// Reset cookie
 						CMS_context::resetSessionCookies();
 						//then reload current page (to load public user)
@@ -74,7 +72,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 						exit;
 					}
 				}
-				if (is_a($_SESSION["cms_context"], 'CMS_context') && $_REQUEST["logout"] != 'true' && CMS_context::autoLoginSucceeded()) {
+				if (isset($_SESSION["cms_context"]) && is_a($_SESSION["cms_context"], 'CMS_context') && (!isset($_REQUEST["logout"]) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] != 'true')) && CMS_context::autoLoginSucceeded()) {
 					//declare form ok action
 					$cms_forms_okAction[$form->getID()] = true;
 				}
@@ -101,7 +99,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 				//then launch form ok action if needed
 				if ($cms_forms_okAction[$form->getID()]) {
 					//if we have an encoded referer, use it
-					if ($_REQUEST['referer'] && ($url = base64_decode($_REQUEST['referer']))) {
+					if (isset($_REQUEST['referer']) && $_REQUEST['referer'] && ($url = base64_decode($_REQUEST['referer']))) {
 						header("Location: ".$url);
 						exit;
 					}

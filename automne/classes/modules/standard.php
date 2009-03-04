@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: standard.php,v 1.5 2009/03/03 15:12:32 sebastien Exp $
+// $Id: standard.php,v 1.6 2009/03/04 09:56:43 sebastien Exp $
 
 /**
   * Class CMS_module_standard
@@ -1257,7 +1257,15 @@ class CMS_module_standard extends CMS_module
 				}
 			}
 		} catch(Exception $e) {}
-		
+		//clean all files older than 30 days in cache directory
+		$month = time() - 2592000; //30 days
+		try{
+			foreach ( new DirectoryIterator(PATH_MAIN_FS.'/cache') as $file) {
+				if ($file->isFile() && $file->getFilename() != ".htaccess" && $file->getMTime() < $month) {
+					@unlink($file->getPathname());
+				}
+			}
+		} catch(Exception $e) {}
 		//clean tmp dir
 		try{
 			foreach ( new DirectoryIterator(PATH_TMP_FS) as $file) {

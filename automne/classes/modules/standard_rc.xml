@@ -1,7 +1,7 @@
 <cms-module-parameters>
 	<param name="APPLICATION_LABEL" type="text">Automne 4</param>
-	<param name="APPLICATION_MAINTAINER_EMAIL" type="text">sebastien.pauchet@ws-interactive.fr</param>
-	<param name="APPLICATION_POSTMASTER_EMAIL" type="text">sebastien.pauchet@ws-interactive.fr</param>
+	<param name="APPLICATION_MAINTAINER_EMAIL" type="text">root@localhost</param>
+	<param name="APPLICATION_POSTMASTER_EMAIL" type="text">root@localhost</param>
 	<param name="PAGE_LINK_NAME_IN_TREE" type="boolean">0</param>
 	<param name="USE_PRINT_PAGES" type="boolean">1</param>
 	<param name="OPEN_ZOOMIMAGE_IN_POPUP" type="boolean">1</param>

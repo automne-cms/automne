@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: xmldomdocument.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: xmldomdocument.php,v 1.2 2009/03/04 09:57:52 sebastien Exp $
 
 /**
   * Class CMS_DOMDocument
@@ -73,7 +73,7 @@ class CMS_DOMDocument extends DOMDocument {
 			}
 			$output = $doc->saveXML();
 			//remove xml declaration
-			$output = substr($output, strlen('<?xml version="1.0" encoding="'.APPLICATION_DEFAULT_ENCODING.'"?>')+1);
+			$output = substr($output, strlen('<?xml version="1.0" encoding="'.APPLICATION_DEFAULT_ENCODING.'"?>')+1, -1);
 		} else {
 			// import node
 			$domNode = $doc->importNode($domelement, true);

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object.php,v 1.3 2009/02/03 14:27:45 sebastien Exp $
+// $Id: poly_object.php,v 1.4 2009/03/04 09:57:45 sebastien Exp $
 
 /**
   * Class CMS_poly_object
@@ -1345,7 +1345,7 @@ class CMS_poly_object extends CMS_resource
 	  */
 	function scriptTask($parameters) {
 		//if script concern a field, pass to it
-		if (sensitiveIO::isPositiveInteger($parameters['field'])) {
+		if (isset($parameters['field']) && sensitiveIO::isPositiveInteger($parameters['field'])) {
 			if (!is_object($this->_objectValues[$parameters['field']]) || !method_exists($this->_objectValues[$parameters['field']],'scriptTask')) {
 				return false;
 			}

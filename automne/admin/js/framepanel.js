@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: framepanel.js,v 1.6 2009/03/03 15:11:39 sebastien Exp $
+  * $Id: framepanel.js,v 1.7 2009/03/04 09:55:28 sebastien Exp $
   */
 Automne.framePanel = Ext.extend(Automne.panel, { 
 	//frame url to use at next frame reload
@@ -428,9 +428,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 		return true;
 	},
 	getDoc : function(){
-		if (!this.frameEl) {
-			return false;
-		}
+		if (!this.frameEl) return false;
 		return Ext.isIE ? this.getWin().document : (this.frameEl.dom.contentDocument || this.getWin().document);
 	},
 	// private
@@ -438,7 +436,13 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 		if (!this.frameEl) {
 			return false;
 		}
-		return Ext.isIE ? this.frameEl.dom.contentWindow : window.frames[this.frameEl.dom.name];
+		var win = false;
+		try {
+			win = this.frameEl.dom.contentWindow || window.frames[this.frameEl.dom.name];
+		} catch (e) {
+			pr(e, 'error');
+		}
+		return win;
 	}
 });
 Ext.reg('framePanel', Automne.framePanel);
