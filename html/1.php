@@ -1,7 +1,7 @@
 <?php header('HTTP/1.x 302 Found',true,302);
-header("Location: http://automne4/web/fr/2-automne-version-4-gouter-a-la-simplicite.php");
+header("Location: http://automne4/web/fr/2-accueil.php");
 exit;
- ?><?php //Generated on Mon, 02 Mar 2009 17:11:05 +0100 by Automne (TM) 4.0.0b1
+ ?><?php //Generated on Wed, 04 Mar 2009 11:06:48 +0100 by Automne (TM) 4.0.0b1
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
 	header('Location: http://automne4/web/1-demo-automne.php');

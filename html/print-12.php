@@ -1,4 +1,4 @@
-<?php //Generated on Thu, 26 Feb 2009 17:26:39 +0100 by Automne (TM) 4.0.0b1
+<?php //Generated on Wed, 04 Mar 2009 11:07:01 +0100 by Automne (TM) 4.0.0b1
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
 	header('Location: http://automne4/web/fr/print-12-modules.php');

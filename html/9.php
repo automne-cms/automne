@@ -1,4 +1,4 @@
-<?php //Generated on Thu, 26 Feb 2009 17:26:36 +0100 by Automne (TM) 4.0.0b1
+<?php //Generated on Wed, 04 Mar 2009 11:06:58 +0100 by Automne (TM) 4.0.0b1
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
 	header('Location: http://automne4/web/fr/9-contact.php');
@@ -33,7 +33,7 @@ $mod_cms_forms["usedforms"] = array (
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 9.php,v 1.4 2009/03/04 10:01:26 sebastien Exp $
+// $Id: 9.php,v 1.5 2009/03/04 10:02:08 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -74,15 +74,13 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 			//check for authentification action in form
 			if ($form->getActionsByType(CMS_forms_action::ACTION_AUTH)) {
 				//check for valid session / logout attempt / and autologin
-				if (!is_a($_SESSION["cms_context"], 'CMS_context') || $_REQUEST["logout"] == 'true') {
+				if (!isset($_SESSION["cms_context"]) || (isset($_SESSION["cms_context"]) && !is_a($_SESSION["cms_context"], 'CMS_context')) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] == 'true')) {
 					@session_destroy();
-					//Set session name
-					session_name('AutomneSession');
-					@session_start();
-					if ($_REQUEST["logout"] != 'true' && CMS_context::autoLoginSucceeded()) {
+					start_atm_session();
+					if (!isset($_REQUEST["logout"]) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] != 'true') && CMS_context::autoLoginSucceeded()) {
 						//declare form ok action
 						$cms_forms_okAction[$form->getID()] = true;
-					} elseif ($_REQUEST["logout"] == 'true') {
+					} elseif (isset($_REQUEST["logout"]) && $_REQUEST["logout"] == 'true') {
 						// Reset cookie
 						CMS_context::resetSessionCookies();
 						//then reload current page (to load public user)
@@ -90,7 +88,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 						exit;
 					}
 				}
-				if (is_a($_SESSION["cms_context"], 'CMS_context') && $_REQUEST["logout"] != 'true' && CMS_context::autoLoginSucceeded()) {
+				if (isset($_SESSION["cms_context"]) && is_a($_SESSION["cms_context"], 'CMS_context') && (!isset($_REQUEST["logout"]) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] != 'true')) && CMS_context::autoLoginSucceeded()) {
 					//declare form ok action
 					$cms_forms_okAction[$form->getID()] = true;
 				}
@@ -117,7 +115,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 				//then launch form ok action if needed
 				if ($cms_forms_okAction[$form->getID()]) {
 					//if we have an encoded referer, use it
-					if ($_REQUEST['referer'] && ($url = base64_decode($_REQUEST['referer']))) {
+					if (isset($_REQUEST['referer']) && $_REQUEST['referer'] && ($url = base64_decode($_REQUEST['referer']))) {
 						header("Location: ".$url);
 						exit;
 					}
@@ -527,18 +525,18 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 					
 								
 
-<a id="lienAccueil" href="http://automne4/web/fr/2-automne-version-4-gouter-a-la-simplicite.php" title="Retour à l'accueil">Retour à l'accueil</a>
+<a id="lienAccueil" href="http://automne4/web/fr/2-accueil.php" title="Retour à l'accueil">Retour à l'accueil</a>
 
 
 							
 				</div>
 				<div id="backgroundBottomContainer">
 					<div id="menuLeft">
-						<ul class="CMS_lvl1"><li class="CMS_lvl1 CMS_open "><a class="CMS_lvl1" href="http://automne4/web/fr/2-automne-version-4-gouter-a-la-simplicite.php">Accueil</a><ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://automne4/web/fr/4-fonctionnalites.php">Fonctionnalités</a></li><li class="CMS_lvl2 CMS_nosub "><a class="CMS_lvl2" href="http://automne4/web/fr/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_nosub "><a class="CMS_lvl2" href="http://automne4/web/fr/5-actualite.php">Actualités</a></li><li class="CMS_lvl2 CMS_nosub "><a class="CMS_lvl2" href="http://automne4/web/fr/6-mediatheque.php">Médiathèque</a></li></ul></li></ul>
+						<ul class="CMS_lvl1"><li class="CMS_lvl1 CMS_open "><a class="CMS_lvl1" href="http://automne4/web/fr/2-accueil.php">Accueil</a><ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://automne4/web/fr/4-fonctionnalites.php">Fonctionnalités</a></li><li class="CMS_lvl2 CMS_nosub "><a class="CMS_lvl2" href="http://automne4/web/fr/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_nosub "><a class="CMS_lvl2" href="http://automne4/web/fr/5-actualite.php">Actualités</a></li><li class="CMS_lvl2 CMS_nosub "><a class="CMS_lvl2" href="http://automne4/web/fr/6-mediatheque.php">Médiathèque</a></li></ul></li></ul>
 					</div>
 					<div id="content" class="page9">
 						<div id="breadcrumbs">
-							<a href="http://automne4/web/fr/2-automne-version-4-gouter-a-la-simplicite.php">Accueil</a>
+							<a href="http://automne4/web/fr/2-accueil.php">Accueil</a>
 
  &gt; 
 						</div>
@@ -572,7 +570,7 @@ $mod_cms_forms["formID"] = '2';
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 9.php,v 1.4 2009/03/04 10:01:26 sebastien Exp $
+// $Id: 9.php,v 1.5 2009/03/04 10:02:08 sebastien Exp $
 
 /**
   * Template CMS_forms_formular

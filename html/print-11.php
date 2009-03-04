@@ -1,4 +1,4 @@
-<?php //Generated on Mon, 02 Mar 2009 17:40:32 +0100 by Automne (TM) 4.0.0b1
+<?php //Generated on Wed, 04 Mar 2009 11:07:00 +0100 by Automne (TM) 4.0.0b1
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
 	header('Location: http://automne4/web/fr/print-11-gestion-de-contenu.php');
