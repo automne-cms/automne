@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: items.php,v 1.3 2009/02/03 14:25:51 sebastien Exp $
+// $Id: items.php,v 1.4 2009/03/06 10:51:14 sebastien Exp $
 
 /**
   * PHP page : Load polymod items search window.
@@ -113,7 +113,7 @@ $searchLists = '';
 //Add all subobjects or special fields (like categories) to search if any
 foreach ($objectFields as $fieldID => $field) {
 	//check if field is searchable
-	if ($field->getValue('searchable')) {
+	if ($field->getValue('searchable') || $field->getValue('indexable')) {
 		//check if field has a method to provide a list of names
 		$objectType = $field->getTypeObject();
 		if (method_exists($objectType, 'getListOfNamesForObject')) {

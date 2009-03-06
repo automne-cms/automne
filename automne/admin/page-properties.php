@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-properties.php,v 1.5 2009/03/03 15:11:07 sebastien Exp $
+// $Id: page-properties.php,v 1.6 2009/03/06 10:51:52 sebastien Exp $
 
 /**
   * PHP page : Load page properties window.
@@ -303,6 +303,10 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_VIEWLOG)) {
 					}
 	            }";
 }
+//sanitize some js string
+$pageTitle = sensitiveIO::sanitizeJSString($pageTitle);
+$pageLinkTitle = sensitiveIO::sanitizeJSString($pageLinkTitle);
+$pageTplLabel = sensitiveIO::sanitizeJSString($pageTplLabel);
 
 $jscontent = <<<END
 	var propertiesWindow = Ext.getCmp('{$winId}');
@@ -323,20 +327,17 @@ $jscontent = <<<END
 	propertiesWindow.on('beforeclose', function() {
 		//send server call
 		Automne.server.call({
-			url:				'page-controler.php',
+			url:				'resource-controler.php',
 			params: 			{
-				currentPage:		'{$pageId}',
-				action:				'unlock'
-			}
+				resource:		'{$pageId}',
+				module:			'standard',
+				action:			'unlock'
+			},
+			callBackScope:		this
 		});
 		return true;
 	});
 END;
-
-//sanitize some js string
-$pageTitle = sensitiveIO::sanitizeJSString($pageTitle);
-$pageLinkTitle = sensitiveIO::sanitizeJSString($pageLinkTitle);
-$pageTplLabel = sensitiveIO::sanitizeJSString($pageTplLabel);
 
 if (!NO_PAGES_EXTENDED_META_TAGS) {
 	$extendedMetas = "{

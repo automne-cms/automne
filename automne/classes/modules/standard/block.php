@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: block.php,v 1.2 2009/03/02 11:29:12 sebastien Exp $
+// $Id: block.php,v 1.3 2009/03/06 10:52:34 sebastien Exp $
 
 /**
   * Class CMS_block
@@ -351,7 +351,7 @@ class CMS_block extends CMS_grandFather
 			//append div with atm-empty-block class around datas
 			$domdocument = new CMS_DOMDocument();
 			try {
-				$domdocument->loadXML('<block><div class="atm-empty-block">'.$data.'</div></block>');
+				$domdocument->loadXML('<block><div class="atm-empty-block atm-block-helper">'.$data.'</div></block>');
 			} catch (DOMException $e) {
 				$this->raiseError('Parse error for block : '.$e->getMessage()." :\n".htmlspecialchars($data));
 				return '';

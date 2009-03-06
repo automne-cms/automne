@@ -25,6 +25,11 @@
 							</div>
 						</atm-if>
 						{['object1']['fields'][2]['htmlvalue']}
+						<atm-if what="{['object1']['fields'][3]['value']}">
+							<a href="{page:5:url}?item={['object1']['id']}" class="blocLien" title="En savoir plus concernant '{['object1']['label']}'">
+								<span class="blocLienBottom">En savoir plus</span>
+							</a>
+						</atm-if>
 						<div class="spacer"></div>
 						<div class="newsBottom">
 							<a class="newsAll" href="{page:5:url}">Toute l'actualite</a>

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-controler.php,v 1.6 2009/03/03 15:11:06 sebastien Exp $
+// $Id: page-controler.php,v 1.7 2009/03/06 10:51:52 sebastien Exp $
 
 /**
   * PHP page : Receive pages updates
@@ -84,7 +84,7 @@ if ($action != 'unlock' || ($action == 'unlock' && !$cms_user->hasAdminClearance
 }
 $initialStatus = $cms_page->getStatus()->getHTML(false, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getID());
 //page edited status
-$edited = false;
+$edited = $logAction = false;
 switch ($action) {
 	case 'creation':
 		$father = sensitiveIO::request('father', 'sensitiveIO::isPositiveInteger', false);
@@ -156,7 +156,8 @@ switch ($action) {
 			if (is_a($duplicatedPage, 'CMS_page') && !$duplicatedPage->hasError()) {
 				//attach duplicated page to tree
 				if (CMS_tree::attachPageToTree($duplicatedPage, $cms_page)) {
-					$edited = true;
+					$edited = RESOURCE_EDITION_CONTENT;
+					$logAction = CMS_log::LOG_ACTION_RESOURCE_SUBMIT_DRAFT;
 					$cms_page = $duplicatedPage;
 					//append 'copy of' to page title
 					$cms_page->setTitle($cms_language->getMessage(MESSAGE_PAGE_COPY_OF).' '.$cms_page->getTitle(), $cms_user);
@@ -174,12 +175,6 @@ switch ($action) {
 				$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ERROR_COPY);
 				$cms_page->raiseError('Error during copy of page '.$copiedPage.'. duplicate method return false or an invalid page.');
 			}
-		}
-	break;
-	case 'unlock':
-		if ($cms_page->getLock()) {
-			$cms_page->unlock();
-			$cms_page->writeToPersistence();
 		}
 	break;
 	case 'regenerate':
@@ -201,9 +196,8 @@ switch ($action) {
 			CMS_moduleClientSpace_standard_catalog::moveClientSpaces($tpl->getID(), RESOURCE_DATA_LOCATION_EDITION, RESOURCE_DATA_LOCATION_DEVNULL, false);
 			CMS_blocksCatalog::moveBlocks($cms_page, RESOURCE_DATA_LOCATION_EDITION, RESOURCE_DATA_LOCATION_DEVNULL, false);
 			
-			$log = new CMS_log();
-			$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_DELETE_DRAFT, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getStatus(), "", $cms_page);
-			$edited = RESOURCE_EDITION_CONTENT;
+			$logAction = CMS_log::LOG_ACTION_RESOURCE_DELETE_DRAFT;
+			$edited = true;
 			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 		}
 	break;
@@ -213,35 +207,42 @@ switch ($action) {
 		@set_time_limit(9000);
 		//ignore user abort to avoid interuption of process
 		@ignore_user_abort(true);
+		//unlock page
+		$cms_page->unlock();
 		$tpl = $cms_page->getTemplate();
 		//put draft datas into edited
 		CMS_moduleClientSpace_standard_catalog::moveClientSpaces($tpl->getID(), RESOURCE_DATA_LOCATION_EDITION, RESOURCE_DATA_LOCATION_EDITED, true);
 		CMS_blocksCatalog::moveBlocks($cms_page, RESOURCE_DATA_LOCATION_EDITION, RESOURCE_DATA_LOCATION_EDITED, true);
-		//change page editions (add CONTENT), move data from _edition to _edited and unlock the page
+		//change page editions (add CONTENT), move data from _edition to _edited
 		$cms_page->addEdition(RESOURCE_EDITION_CONTENT, $cms_user);
 		$cms_page->writeToPersistence();
 		//delete draft datas
 		CMS_moduleClientSpace_standard_catalog::moveClientSpaces($tpl->getID(), RESOURCE_DATA_LOCATION_EDITION, RESOURCE_DATA_LOCATION_DEVNULL, false);
 		CMS_blocksCatalog::moveBlocks($cms_page, RESOURCE_DATA_LOCATION_EDITION, RESOURCE_DATA_LOCATION_DEVNULL, false);
-		$edited = RESOURCE_EDITION_CONTENT;
 		$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 		//if we only want to submit to validation, break here
 		if ($action == 'submit_for_validation') {
+			$edited = RESOURCE_EDITION_CONTENT;
+			$logAction = CMS_log::LOG_ACTION_RESOURCE_SUBMIT_DRAFT;
 			//reload current tab
-			$jscontent = 'Automne.tabPanels.getActiveTab().reload();';
+			$jscontent = '
+			//goto previz tab
+			Automne.tabPanels.setActiveTab(\'edited\', true);';
 			$view->addJavascript($jscontent);
 			break;
 		}
-		//log draft submission
-		$log = new CMS_log();
-		$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_SUBMIT_DRAFT, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getStatus(), "", $cms_page);
+		$logAction = CMS_log::LOG_ACTION_RESOURCE_VALIDATE_EDITION;
 		//then validate this page content
-		$validation = new CMS_resourceValidation(MOD_STANDARD_CODENAME, $edited, $cms_page);
+		$validation = new CMS_resourceValidation(MOD_STANDARD_CODENAME, RESOURCE_EDITION_CONTENT, $cms_page);
 		$mod = CMS_modulesCatalog::getByCodename(MOD_STANDARD_CODENAME);
 		$mod->processValidation($validation, VALIDATION_OPTION_ACCEPT);
-		//log this validation
-		$log = new CMS_log();
-		$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_VALIDATE_EDITION, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getStatus(), "", $cms_page);
+		$edited = true;
+		
+		//reload current tab
+		$jscontent = '
+		//goto previz tab
+		Automne.tabPanels.setActiveTab(\'public\', true);';
+		$view->addJavascript($jscontent);
 	break;
 	case 'cancel_editions':
 		// Copy clientspaces and data from public to edited tables
@@ -252,10 +253,8 @@ switch ($action) {
 		$cms_page->cancelAllEditions();
 		$cms_page->writeToPersistence();
 		
-		$log = new CMS_log();
-		$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_CANCEL_EDITIONS, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getStatus(), "", $cms_page);
-		
-		$edited = RESOURCE_EDITION_CONTENT;
+		$edited = true;
+		$logAction = CMS_log::LOG_ACTION_RESOURCE_CANCEL_EDITIONS;
 		$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 	break;
 	case "delete":
@@ -263,6 +262,7 @@ switch ($action) {
 		if ($cms_page->setProposedLocation(RESOURCE_LOCATION_DELETED, $cms_user)) {
 			$cms_page->writeToPersistence();
 			$edited = RESOURCE_EDITION_LOCATION;
+			$logAction = CMS_log::LOG_ACTION_RESOURCE_DELETE;
 			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 		}
 	break;
@@ -271,6 +271,7 @@ switch ($action) {
 		if ($cms_page->setProposedLocation(RESOURCE_LOCATION_ARCHIVED, $cms_user)) {
 			$cms_page->writeToPersistence();
 			$edited = RESOURCE_EDITION_LOCATION;
+			$logAction = CMS_log::LOG_ACTION_RESOURCE_ARCHIVE;
 			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 		}
     break;
@@ -278,21 +279,17 @@ switch ($action) {
 		$cms_page->removeProposedLocation();
 		$cms_page->writeToPersistence();
 		
-		$edited = RESOURCE_EDITION_LOCATION;
+		$edited = true;
+		$logAction = CMS_log::LOG_ACTION_RESOURCE_UNARCHIVE;
 		$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
-		
-		$log = new CMS_log();
-		$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_UNARCHIVE, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getStatus(), "", $cms_page);
 	break;
 	case "undelete":
 		$cms_page->removeProposedLocation();
 		$cms_page->writeToPersistence();
 		
-		$edited = RESOURCE_EDITION_LOCATION;
+		$edited = true;
+		$logAction = CMS_log::LOG_ACTION_RESOURCE_UNDELETE;
 		$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
-		
-		$log = new CMS_log();
-		$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_UNDELETE, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getStatus(), "", $cms_page);
 	break;
 	case 'move':
 		$newParent = sensitiveIO::request('newParent');
@@ -323,6 +320,7 @@ switch ($action) {
 					$newPagesOrder = explode(',',$value);
 					if (CMS_tree::changePagesOrder($newPagesOrder, $cms_user)) {
 						$edited = RESOURCE_EDITION_SIBLINGSORDER;
+						$logAction = CMS_log::LOG_ACTION_RESOURCE_EDIT_SIBLINGSORDER;
 						//must reload page
 						$cms_page = CMS_tree::getPageByID($cms_page->getID());
 					} else {
@@ -334,6 +332,7 @@ switch ($action) {
 					$newPagesOrder = explode(',',$value);
 					if (CMS_tree::movePage($cms_page, CMS_tree::getPageByID($newParent), $newPagesOrder, $cms_user)) {
 						$edited = RESOURCE_EDITION_MOVE;
+						$logAction = CMS_log::LOG_ACTION_RESOURCE_EDIT_MOVE;
 						//must reload page
 						$cms_page = CMS_tree::getPageByID($cms_page->getID());
 					} else {
@@ -373,6 +372,7 @@ switch ($action) {
 			}
 			if (!$cms_page->hasError() && $cms_page->writeToPersistence()) {
 				$edited = RESOURCE_EDITION_BASEDATA;
+				$logAction = CMS_log::LOG_ACTION_RESOURCE_EDIT_BASEDATA;
 				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 			} else {
 				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
@@ -438,6 +438,7 @@ switch ($action) {
 		}
 		if (!$cms_page->hasError() && $cms_page->writeToPersistence()) {
 			$edited = RESOURCE_EDITION_BASEDATA;
+			$logAction = CMS_log::LOG_ACTION_RESOURCE_EDIT_BASEDATA;
 			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 		} else {
 			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
@@ -465,6 +466,7 @@ switch ($action) {
 					$cms_page->setPublicationDates($dt_beg, $dt_end);
 					if ($cms_page->writeToPersistence()) {
 						$edited = RESOURCE_EDITION_BASEDATA;
+						$logAction = CMS_log::LOG_ACTION_RESOURCE_EDIT_BASEDATA;
 						$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 					} else {
 						$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
@@ -501,6 +503,7 @@ switch ($action) {
 		}
 		if (!$cms_page->hasError() && $cms_page->writeToPersistence()) {
 			$edited = RESOURCE_EDITION_BASEDATA;
+			$logAction = CMS_log::LOG_ACTION_RESOURCE_EDIT_BASEDATA;
 			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 		} else {
 			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
@@ -541,6 +544,7 @@ switch ($action) {
 		}
 		if (!$cms_page->hasError() && $cms_page->writeToPersistence()) {
 			$edited = RESOURCE_EDITION_BASEDATA;
+			$logAction = CMS_log::LOG_ACTION_RESOURCE_EDIT_BASEDATA;
 			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 		} else {
 			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
@@ -572,10 +576,7 @@ if ($edited) {
 		Automne.utils.updateStatus(\''.$statusId.'\', response.responseXML.getElementsByTagName(\'status\').item(0).firstChild.nodeValue, response.responseXML.getElementsByTagName(\'tinystatus\').item(0).firstChild.nodeValue);
 		';
 		$view->addJavascript($jscontent);
-		if ($action == 'update'
-			|| $action == 'submit_for_validation'
-			|| $action == 'delete'
-			|| $action == 'archive' ) {
+		if ($edited && $edited !== true) {
 			//send validators emails
 			if (APPLICATION_ENFORCES_WORKFLOW) {
 				$group_email = new CMS_emailsCatalog();
@@ -645,33 +646,12 @@ if ($edited) {
 				$mod = CMS_modulesCatalog::getByCodename(MOD_STANDARD_CODENAME);
 				$mod->processValidation($validation, VALIDATION_OPTION_ACCEPT);
 			}
-			//log event
-			$log = new CMS_log();
-			switch ($edited) {
-				case RESOURCE_EDITION_MOVE:
-					$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_EDIT_MOVE, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getStatus(), "", $cms_page);
-				break;
-				case RESOURCE_EDITION_SIBLINGSORDER:
-					$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_EDIT_SIBLINGSORDER, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getStatus(), "", $cms_page);
-				break;
-				case RESOURCE_EDITION_BASEDATA:
-					$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_EDIT_BASEDATA, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getStatus(), "", $cms_page);
-				break;
-				case RESOURCE_EDITION_CONTENT:
-					$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_SUBMIT_DRAFT, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getStatus(), "", $cms_page);
-				break;
-				case RESOURCE_EDITION_LOCATION:
-					switch ($action) {
-						case 'delete':
-							$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_DELETE, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getStatus(), "", $cms_page);
-						break;
-						case 'archive':
-							$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_ARCHIVE, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getStatus(), "", $cms_page);
-						break;
-					}
-				break;
-			}
 		}
+	}
+	//log event
+	if ($logAction) {
+		$log = new CMS_log();
+		$log->logResourceAction($logAction, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getStatus(), "", $cms_page);
 	}
 }
 $view->show();

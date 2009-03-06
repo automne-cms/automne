@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: standard.php,v 1.6 2009/03/04 09:56:43 sebastien Exp $
+// $Id: standard.php,v 1.7 2009/03/06 10:52:34 sebastien Exp $
 
 /**
   * Class CMS_module_standard
@@ -1637,16 +1637,16 @@ class CMS_module_standard extends CMS_module
 						}
 					break;
 					case "atm-title":
-						return SensitiveIO::sanitizeHTMLString($treatedObject->getTitle());
+						return SensitiveIO::sanitizeHTMLString($treatedObject->getTitle($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC));
 					break;
 					case "atm-main-url":
 						return CMS_websitesCatalog::getMainURL();
 					break;
 					case "atm-keywords":
-						return '<meta name="keywords" content="'.SensitiveIO::sanitizeHTMLString($treatedObject->getKeywords()).'" />';
+						return '<meta name="keywords" content="'.SensitiveIO::sanitizeHTMLString($treatedObject->getKeywords($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC)).'" />';
 					break;
 					case "atm-description":
-						return '<meta name="description" content="'.SensitiveIO::sanitizeHTMLString($treatedObject->getDescription()).'" />';
+						return '<meta name="description" content="'.SensitiveIO::sanitizeHTMLString($treatedObject->getDescription($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC)).'" />';
 					break;
 					case "atm-last-update":
 						$lastlog = CMS_log_catalog::getByResourceAction(MOD_STANDARD_CODENAME, $treatedObject->getID(), CMS_log::LOG_ACTION_RESOURCE_SUBMIT_DRAFT, 1);
@@ -1695,7 +1695,7 @@ class CMS_module_standard extends CMS_module
 						return '<?php echo CMS_view::'.$method.'(array(\''.implode('\',\'', $files).'\')'.($media ? ', \''.$media.'\'' : '').'); ?>'."\n";
 					break;
 					case "atm-meta-tags":
-						$metaDatas = $treatedObject->getMetaTags($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC ? true : false);
+						$metaDatas = $treatedObject->getMetaTags($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC);
 						$usage = CMS_module::moduleUsage($treatedObject->getID(), $this->_codename);
 						//if page template already use atm-js-tags tag, no need to add JS again
 						if (!is_array($usage) || !isset($usage['atm-js-tags'])) {

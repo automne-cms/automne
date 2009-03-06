@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-infos.php,v 1.6 2009/03/03 15:11:07 sebastien Exp $
+// $Id: page-infos.php,v 1.7 2009/03/06 10:51:52 sebastien Exp $
 
 /**
   * PHP page : Load page infos
@@ -315,7 +315,7 @@ if ($cms_user->hasEditablePages()) {
 }
 
 //remove lock on pages which user has locked
-if ($cms_page->getLock() == $cms_user->getUserId()) {
+if ($cms_page->getLock() == $cms_user->getUserId() && $fromtab != 'edit') {
 	$cms_page->unlock();
 }
 
@@ -344,7 +344,7 @@ if ($cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)) {
 	//is page editable (not proposed to deleted or archived location and with editable CS)
 	if ($cms_page->getProposedLocation() != RESOURCE_LOCATION_DELETED
 		&& $cms_page->getProposedLocation() != RESOURCE_LOCATION_ARCHIVED
-		&& !$cms_page->getLock()) {
+		&& (!$cms_page->getLock() || ($cms_page->getLock() == $cms_user->getUserId() && $fromtab == 'edit'))) {
 		//module specific actions (only for standard module)
 		$modules = $cms_page->getModules();
 		if ($modules) {
@@ -354,9 +354,9 @@ if ($cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)) {
 				}
 			}
 		}
-	} elseif ($cms_page->getLock()) {
-		$hasLock = $cms_page->getLock();
-	}
+	}// elseif ($cms_page->getLock()) {
+	$hasLock = $cms_page->getLock();
+	//}
 } elseif ($cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_VIEW)) {
 	//allow page copy
 	$userPanels['action']['visible'] 	= true;
@@ -625,7 +625,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 			case 'properties':
 				$panelTitle = $cms_language->getMessage(MESSAGE_PAGE_EDIT_PROPERTIES);
 				$panelPicto = 'atm-pic-big-properties';
-				$panelDisabled = 'false';
+				$panelDisabled = $hasLock ? 'true' : 'false';
 				$panelTipTitle = $cms_language->getMessage(MESSAGE_PAGE_EDIT_PROPERTIES_TIP_TITLE);
 				$panelTip = $cms_language->getMessage(MESSAGE_PAGE_EDIT_PROPERTIES_TIP_DESC);
 				$panelURL = 'page-properties.php';
@@ -682,13 +682,85 @@ foreach ($userPanels as $panel => $panelStatus) {
 							win.show(this.getEl());
 						}
 					}));";
+				} else {
+					$pageCopy = '';
+				}
+				
+				//draft
+				if ($cms_page->isDraft()) {
+					//cancel draft and submit draft to validation
+					$pageDraft = "
+					menu.addSeparator();
+					menu.addItem(new Ext.menu.Item({
+						text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_DELETE_DRAFT_INFO)."\">".$cms_language->getJSMessage(MESSAGE_PAGE_DELETE_DRAFT)."</span>',
+						iconCls: 'atm-pic-draft-deletion',
+						handler: function(){
+							Automne.message.popup({
+								msg: 				'".$cms_language->getJSMessage(MESSAGE_PAGE_DELETE_DRAFT_CONFIRM)."',
+								buttons: 			Ext.MessageBox.OKCANCEL,
+								animEl: 			this.getEl(),
+								closable: 			false,
+								icon: 				Ext.MessageBox.WARNING,
+								fn: 				function (button) {
+									if (button == 'ok') {
+										//send to public or edited tab
+										var pubTab = Automne.tabPanels.getItem('public');
+										if (!pubTab.disabled) {
+											Automne.tabPanels.setActiveTab('public');
+										} else {
+											Automne.tabPanels.setActiveTab('edited');
+										}
+										Automne.server.call({
+											url:				'page-controler.php',
+											params: 			{
+												currentPage:		'".$cms_page->getID()."',
+												action:				'cancel_draft'
+											},
+											fcnCallback: 		function() {
+												//then reload page infos
+												Automne.tabPanels.getPageInfos({
+													pageId:		'".$cms_page->getID()."',
+													noreload:	true
+												});
+											},
+											callBackScope:		this
+										});
+									}
+								}
+							});
+						}
+					}));
+					menu.addItem(new Ext.menu.Item({
+						text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_DRAFT_TO_VALIDATION_INFO)."\">".$cms_language->getJSMessage(MESSAGE_PAGE_DRAFT_TO_VALIDATION)."</span>',
+						iconCls: 'atm-pic-draft-validation',
+						handler: function () {
+							//submit page to validation
+							Automne.server.call({
+								url:				'page-controler.php',
+								params: 			{
+									currentPage:		'".$cms_page->getID()."',
+									action:				'submit_for_validation'
+								},
+								fcnCallback: 		function() {
+									//then reload page infos
+									Automne.tabPanels.getPageInfos({
+										pageId:		'".$cms_page->getID()."',
+										noreload:	true
+									});
+								},
+								callBackScope:		this
+							});
+						}
+					}));";
+				} else {
+					$pageDraft = '';
 				}
 				
 				if ($cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)) {
 					if ($lock = $cms_page->getLock()) {
 						//unlock
-						if ($cms_user->getUserID() == $lock || $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
-							$lockUser = CMS_profile_usersCatalog::getById($hasLock);
+						if ($fromtab != 'edit' && ($cms_user->getUserID() == $lock || $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL))) {
+							$lockUser = CMS_profile_usersCatalog::getById($lock);
 							$panelContent .= "
 							menu.addItem(new Ext.menu.Item({
 								text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_UNLOCK_LOCKED_PAGE, array(htmlspecialchars($lockUser->getFullName())))."\">Dévérouiller la page</span>',
@@ -703,17 +775,11 @@ foreach ($userPanels as $panel => $panelStatus) {
 										fn: 				function (button) {
 											if (button == 'ok') {
 												Automne.server.call({
-													url:				'page-controler.php',
+													url:				'resource-controler.php',
 													params: 			{
-														currentPage:		'".$cms_page->getID()."',
-														action:				'unlock'
-													},
-													fcnCallback: 		function() {
-														//then reload page infos
-														Automne.tabPanels.getPageInfos({
-															pageId:		'".$cms_page->getID()."',
-															noreload:	true
-														});
+														resource:		'".$cms_page->getID()."',
+														module:			'standard',
+														action:			'unlock'
 													},
 													callBackScope:		this
 												});
@@ -722,6 +788,8 @@ foreach ($userPanels as $panel => $panelStatus) {
 									});
 								}
 							}));";
+						} elseif ($fromtab == 'edit' && $cms_user->getUserID() == $lock) {
+							$panelContent .= $pageDraft;
 						}
 					} else {
 						if ($cms_page->getProposedLocation() == RESOURCE_LOCATION_DELETED) {
@@ -936,76 +1004,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 								}));";
 							}
 							//separator
-							$panelContent .= "'-'";
-							//draft
-							if ($cms_page->isDraft()) {
-								//cancel draft and submit draft to validation
-								$panelContent .= "
-								menu.addSeparator();
-								menu.addItem(new Ext.menu.Item({
-									text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_DELETE_DRAFT_INFO)."\">".$cms_language->getJSMessage(MESSAGE_PAGE_DELETE_DRAFT)."</span>',
-									iconCls: 'atm-pic-draft-deletion',
-									handler: function(){
-										Automne.message.popup({
-											msg: 				'".$cms_language->getJSMessage(MESSAGE_PAGE_DELETE_DRAFT_CONFIRM)."',
-											buttons: 			Ext.MessageBox.OKCANCEL,
-											animEl: 			this.getEl(),
-											closable: 			false,
-											icon: 				Ext.MessageBox.WARNING,
-											fn: 				function (button) {
-												if (button == 'ok') {
-													//send to public or edited tab
-													var pubTab = Automne.tabPanels.getItem('public');
-													if (!pubTab.disabled) {
-														Automne.tabPanels.setActiveTab('public');
-													} else {
-														Automne.tabPanels.setActiveTab('edited');
-													}
-													Automne.server.call({
-														url:				'page-controler.php',
-														params: 			{
-															currentPage:		'".$cms_page->getID()."',
-															action:				'cancel_draft'
-														},
-														fcnCallback: 		function() {
-															//then reload page infos
-															Automne.tabPanels.getPageInfos({
-																pageId:		'".$cms_page->getID()."',
-																noreload:	true
-															});
-														},
-														callBackScope:		this
-													});
-												}
-											}
-										});
-									}
-								}));
-								menu.addItem(new Ext.menu.Item({
-									text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_DRAFT_TO_VALIDATION_INFO)."\">".$cms_language->getJSMessage(MESSAGE_PAGE_DRAFT_TO_VALIDATION)."</span>',
-									iconCls: 'atm-pic-draft-validation',
-									handler: function () {
-										//goto previz tab
-										Automne.tabPanels.setActiveTab('edited', true);
-										//submit page to validation
-										Automne.server.call({
-											url:				'page-controler.php',
-											params: 			{
-												currentPage:		'".$cms_page->getID()."',
-												action:				'submit_for_validation'
-											},
-											fcnCallback: 		function() {
-												//then reload page infos
-												Automne.tabPanels.getPageInfos({
-													pageId:		'".$cms_page->getID()."',
-													noreload:	true
-												});
-											},
-											callBackScope:		this
-										});
-									}
-								}));";
-							}
+							$panelContent .= "'-'".$pageDraft;
 						}
 					}
 				} elseif ($cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_VIEW)) {

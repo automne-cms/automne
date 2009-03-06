@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: framepanel.js,v 1.7 2009/03/04 09:55:28 sebastien Exp $
+  * $Id: framepanel.js,v 1.8 2009/03/06 10:51:33 sebastien Exp $
   */
 Automne.framePanel = Ext.extend(Automne.panel, { 
 	//frame url to use at next frame reload
@@ -42,7 +42,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 	initComponent: function() {
 		var al = Automne.locales;
 		Ext.apply(this, {
-			html:  			'<iframe id="' + this.id + 'Frame" width="100%" height="100%" frameborder="no" src="' + Ext.SSL_SECURE_URL + '">&nbsp;</iframe>',
+			html:  			'<iframe id="' + this.id + 'Frame" width="100%" height="100%" frameborder="no"' + (!Ext.isIE ? ' class="x-hide-visibility"' : '') + ' src="' + Ext.SSL_SECURE_URL + '">&nbsp;</iframe>',
 			hideBorders:	true,
 			height:			'100%',
 			autoScroll:		true,
@@ -189,9 +189,6 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 								if (button == 'cancel') {
 									return;
 								}
-								//goto public tab
-								Automne.tabPanels.setActiveTab('public', true);
-								pr('Set public as active after validation');
 								Automne.server.call({
 									url:				'page-controler.php',
 									params: 			{
@@ -222,9 +219,6 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 								if (button == 'cancel') {
 									return;
 								}
-								//goto previz tab
-								Automne.tabPanels.setActiveTab('edited', true);
-								pr('Set edited as active after submit to validation');
 								Automne.server.call({
 									url:				'page-controler.php',
 									params: 			{
@@ -295,9 +289,6 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 		if (force && this.disabled) {
 			this.setDisabled(false);
 		}
-		if (this.body && !Ext.isIE) {
-			this.body.addClass('x-hide-visibility');
-		}
 		//if frame element is not known (first activation of panel), then set event on it and load it
 		if (!this.frameEl) {
 			this.frameEl = Ext.get(this.id + 'Frame');
@@ -354,7 +345,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 			});
 		}
 		//show frame
-		this.body.removeClass('x-hide-visibility');
+		this.frameEl.removeClass('x-hide-visibility');
 		//to avoid IE bug on frame load
 		if (Ext.isIE) {
 			this.resize();
@@ -382,9 +373,8 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 				if (this.id != 'public' && !Ext.isIE) {
 					this.getEl().mask(Automne.locales.loading);
 				}
-				this.frameDocument.location = this.frameURL;
+				this.frameDocument.location = this.frameURL + ((this.frameURL.indexOf('?') === -1) ? '?' : '&') + '_dc='+ (new Date()).getTime();
 				this.forceReload = false;
-				
 			}
 		}
 	},

@@ -59,11 +59,11 @@
 							</atm-if>
 							<atm-if what="!{request:int:item}">
 								{['object1']['fields'][2]['value']}
+								<a href="{page:self:url}?item={['object1']['id']}" class="blocLien"	title="En savoir plus concernant '{['object1']['label']}'">
+									<span class="blocLienTop">{['object1']['label']}</span>
+									<span class="blocLienBottom">En savoir plus</span>
+								</a>
 							</atm-if>
-							<a href="{page:self:url}?item={['object1']['id']}" class="blocLien"	title="En savoir plus concernant '{['object1']['label']}'">
-								<span class="blocLienTop">{['object1']['label']}</span>
-								<span class="blocLienBottom">En savoir plus</span>
-							</a>
 							<div class="spacer"></div>
 						</div>
 						
@@ -83,4 +83,4 @@
 			</atm-xml>
 		</div>
 	</block>	
-			</row>
+</row>

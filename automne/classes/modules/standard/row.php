@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: row.php,v 1.3 2009/03/02 11:29:12 sebastien Exp $
+// $Id: row.php,v 1.4 2009/03/06 10:52:34 sebastien Exp $
 
 /**
   * Class CMS_row
@@ -653,7 +653,7 @@ class CMS_row extends CMS_grandFather
 				return $modulesTreatment->getParsingError();
 			}
 		} else {
-			$this->raiseError('Can not found row definition file ...');
+			$this->raiseError('No row definition file founded for row : '.$this->getLabel());
 			return true;
 		}
 	}

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_search.php,v 1.3 2009/02/03 14:27:25 sebastien Exp $
+// $Id: object_search.php,v 1.4 2009/03/06 10:52:34 sebastien Exp $
 
 /**
   * Class CMS_object_search
@@ -740,8 +740,9 @@ class CMS_object_search extends CMS_grandFather
 							}
 							//search only in "searchable" fields
 							$fields = array();
+							$aseExists = (class_exists('CMS_module_ase') && $this->_object->getValue('indexable')) ? true : false;
 							foreach ($this->_fieldsDefinitions as $fieldDefinition) {
-								if ($fieldDefinition->getValue('searchable')) {
+								if ($fieldDefinition->getValue(($aseExists ? 'indexable' : 'searchable'))) {
 									$fields[] = $fieldDefinition->getID();
 								}
 							}

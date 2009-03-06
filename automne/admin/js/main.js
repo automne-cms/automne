@@ -6,7 +6,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: main.js,v 1.5 2009/03/03 15:11:40 sebastien Exp $
+  * $Id: main.js,v 1.6 2009/03/06 10:51:33 sebastien Exp $
   */
 
 Ext.namespace('Automne');
@@ -422,7 +422,7 @@ Automne.utils = {
 		});
 	},
 	//update a resource status anywhere in the view
-	updateStatus: function (statusId, newStatus, newTinyStatus) {
+	updateStatus: function (statusId, newStatus, newTinyStatus, unlock) {
 		//check for public tab : if status is for current viewved page, it must be reloaded
 		if (Automne.tabPanels) {
 			var publicPanel = Automne.tabPanels.getItem('public');
@@ -432,7 +432,7 @@ Automne.utils = {
 					Automne.tabPanels.getPageInfos({
 						pageUrl:		publicPanel.getFrameURL(),
 						regenerate:		(Automne.tabPanels.getActiveTab().id == 'public'),
-						reload:			true
+						reload:			(unlock == true ? false : true)
 					});
 					pr('switchStatus : page founded and reloaded');
 				}
@@ -451,8 +451,9 @@ Automne.utils = {
 				count++;
 			}
 		});
-		//update validation panel
-		Automne.server.call('validations-sidepanel.php');
+		//try to refresh validation panel
+		var validationPanel = Ext.getCmp('validationsPanel');
+		if (validationPanel) validationPanel.refresh();
 		pr('switchStatus : '+ statusId +' : '+ count +' statuses switched');
 	},
 	//remove a resource anywhere in the view.
@@ -1098,11 +1099,13 @@ Automne.content = {
 						pr('End edition from '+ source +' and unlock page '+ Automne.tabPanels.pageId);
 						//unlock page
 						Automne.server.call({
-							url:				'page-controler.php',
+							url:				'resource-controler.php',
 							params: 			{
-								currentPage:		Automne.tabPanels.pageId,
-								action:				'unlock'
-							}
+								resource:		Automne.tabPanels.pageId,
+								module:			'standard',
+								action:			'unlock'
+							},
+							callBackScope:		this
 						});
 					}
 				});
@@ -1111,11 +1114,13 @@ Automne.content = {
 				pr('End edition from '+ source +' and unlock page '+ Automne.tabPanels.pageId);
 				//unlock page
 				Automne.server.call({
-					url:				'page-controler.php',
+					url:				'resource-controler.php',
 					params: 			{
-						currentPage:		Automne.tabPanels.pageId,
-						action:				'unlock'
-					}
+						resource:		Automne.tabPanels.pageId,
+						module:			'standard',
+						action:			'unlock'
+					},
+					callBackScope:		this
 				});
 			break;
 		}

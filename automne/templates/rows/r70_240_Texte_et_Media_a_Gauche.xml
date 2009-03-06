@@ -1,0 +1,85 @@
+<row>
+	<div class="imgLeft">
+		<block module="pmedia" id="medias" language="fr">
+			<atm-search what="{['object2']}" name="mediaresult">
+				<atm-search-param search="mediaresult" type="item" value="block" mandatory="true" />
+				<atm-result search="mediaresult">
+					<atm-if what="{['object2']['fields'][9]['fileExtension']} != 'flv' &amp;&amp; {['object2']['fields'][9]['fileExtension']} != 'mp3' &amp;&amp; {['object2']['fields'][9]['fileExtension']} != 'jpg' &amp;&amp; {['object2']['fields'][9]['fileExtension']} != 'gif' &amp;&amp; {['object2']['fields'][9]['fileExtension']} != 'png'">
+						<a href="{['object2']['fields'][9]['filePath']}/{['object2']['fields'][9]['filename']}" target="_blank" title="Télécharger le document '{['object2']['fields'][9]['fileLabel']}' ({['object2']['fields'][9]['fileExtension']} - {['object2']['fields'][9]['fileSize']}Mo)"><atm-if what="{['object2']['fields'][9]['fileIcon']}"><img src="{['object2']['fields'][9]['fileIcon']}" alt="Fichier {['object2']['fields'][9]['fileExtension']}" title="Fichier {['object2']['fields'][9]['fileExtension']}" /></atm-if> {['object2']['label']}</a>
+						<atm-if what="{['object2']['fields'][9]['thumbnail']}">
+							<div class="shadowR">
+								<div class="shadowB">
+									<div class="shadowTR">
+										<div class="shadowBL">
+											<div class="shadowBR">
+												<img src="{['object2']['fields'][9]['filePath']}/{['object2']['fields'][9]['thumbnail']}" alt="{['object2']['label']}" title="{['object2']['label']}" />
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</atm-if>
+					</atm-if>
+					<atm-if what="{['object2']['fields'][9]['fileExtension']} == 'flv'">
+						<atm-if what="{['object2']['fields'][9]['thumbnail']}">
+							<script type="text/javascript">
+								swfobject.embedSWF('/automne/playerflv/player_flv.swf', 'media-{['object2']['id']}', '320', '200', '9.0.0', '/automne/swfobject/expressInstall.swf', {flv:'{['object2']['fields'][9]['filePath']}/{['object2']['fields'][9]['filename']}', configxml:'/automne/playerflv/config_playerflv.xml', startimage:'{['object2']['fields'][9]['filePath']}/{['object2']['fields'][9]['thumbnail']}'}, {allowfullscreen:true, wmode:'transparent'}, false);
+							</script>
+						</atm-if>
+						<atm-if what="!{['object2']['fields'][9]['thumbnail']}">
+							<script type="text/javascript">
+								swfobject.embedSWF('/automne/playerflv/player_flv.swf', 'media-{['object2']['id']}', '320', '200', '9.0.0', '/automne/swfobject/expressInstall.swf', {flv:'{['object2']['fields'][9]['filePath']}/{['object2']['fields'][9]['filename']}', configxml:'/automne/playerflv/config_playerflv.xml'}, {allowfullscreen:true, wmode:'transparent'}, false);
+							</script>
+						</atm-if>
+						<div id="media-{['object2']['id']}" class="pmedias-video" style="width:320px;height:200px;">
+							<p><a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a></p>
+						</div>
+					</atm-if>
+					<atm-if what="{['object2']['fields'][9]['fileExtension']} == 'mp3'">
+						<script type="text/javascript">
+							swfobject.embedSWF('/automne/playermp3/player_mp3.swf', 'media-{['object2']['id']}', '200', '20', '9.0.0', '/automne/swfobject/expressInstall.swf', {mp3:'{['object2']['fields'][9]['filePath']}/{['object2']['fields'][9]['filename']}', configxml:'/automne/playermp3/config_playermp3.xml'}, {wmode:'transparent'}, false);
+						</script>
+						<div id="media-{['object2']['id']}" class="pmedias-audio" style="width:200px;height:20px;">
+							<p><a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a></p>
+						</div>
+						<atm-if what="{['object2']['fields'][9]['thumbnail']}">
+							<div class="shadowR">
+								<div class="shadowB">
+									<div class="shadowTR">
+										<div class="shadowBL">
+											<div class="shadowBR">
+												<img src="{['object2']['fields'][9]['filePath']}/{['object2']['fields'][9]['thumbnail']}" alt="{['object2']['label']}" title="{['object2']['label']}" />
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</atm-if>
+					</atm-if>
+					<atm-if what="{['object2']['fields'][9]['fileExtension']} == 'jpg' || {['object2']['fields'][9]['fileExtension']} == 'gif' || {['object2']['fields'][9]['fileExtension']} == 'png'">
+						<div class="shadowR">
+							<div class="shadowB">
+								<div class="shadowTR">
+									<div class="shadowBL">
+										<div class="shadowBR">
+											<atm-if what="{['object2']['fields'][9]['thumbnail']}">
+												<a href="{['object2']['fields'][9]['filePath']}/{['object2']['fields'][9]['filename']}" onclick="javascript:CMS_openPopUpImage('/imagezoom.php?location=public&amp;module=pmedia&amp;file={['object2']['fields'][9]['filename']}&amp;label={['object2']['label']|js}');return false;" target="_blank" title="Voir l'image '{['object2']['label']}' ({['object2']['fields'][9]['fileExtension']} - {['object2']['fields'][9]['fileSize']}Mo)"><img src="{['object2']['fields'][9]['filePath']}/{['object2']['fields'][9]['thumbnail']}" alt="{['object2']['label']}" title="{['object2']['label']}" /></a>
+											</atm-if>
+											<atm-if what="!{['object2']['fields'][9]['thumbnail']}">
+												<img src="{['object2']['fields'][9]['filePath']}/{['object2']['fields'][9]['filename']}" alt="{['object2']['label']}" title="{['object2']['label']}" style="max-width:200px;" />
+											</atm-if>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</atm-if>
+				</atm-result>
+			</atm-search>
+		</block>
+	</div>
+	<block module="standard" type="text" id="texte">
+		<div class="text">{{data}}</div>
+		<div class="spacer"></div>
+	</block>
+</row>

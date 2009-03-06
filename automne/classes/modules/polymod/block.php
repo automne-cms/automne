@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: block.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: block.php,v 1.2 2009/03/06 10:52:34 sebastien Exp $
 
 /**
   * Class CMS_block_polymod
@@ -384,7 +384,7 @@ class CMS_block_polymod extends CMS_block
 		);
 		$this->_value = $datas;
 		
-		$html = parent::_getHTMLForm($language, $page, $clientSpace, $row, $blockID, '<div class="atm-polymod-block">'.$data.'</div>');
+		$html = parent::_getHTMLForm($language, $page, $clientSpace, $row, $blockID, '<div class="atm-polymod-block atm-block-helper">'.$data.'</div>');
 		//load interface instance
 		$view = CMS_view::getInstance();
 		//append JS block class file

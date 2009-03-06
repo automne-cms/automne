@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: framewindow.js,v 1.5 2009/03/04 09:55:28 sebastien Exp $
+  * $Id: framewindow.js,v 1.6 2009/03/06 10:51:33 sebastien Exp $
   */
 Automne.frameWindow = Ext.extend(Automne.Window, { 
 	//frame url to use at next frame reload
@@ -36,7 +36,7 @@ Automne.frameWindow = Ext.extend(Automne.Window, {
 	//component initialisation (after constructor)
 	initComponent: function() {
 		Ext.apply(this, {
-			html:  			'<iframe id="' + this.id + 'Frame" width="100%" height="100%" frameborder="no" src="' + Ext.SSL_SECURE_URL + '">&nbsp;</iframe>',
+			html:  			'<iframe id="' + this.id + 'Frame" width="100%" height="100%"' + (!Ext.isIE ? ' class="x-hide-visibility"' : '') + ' frameborder="no" src="' + Ext.SSL_SECURE_URL + '">&nbsp;</iframe>',
 			hideBorders:	true,
 			autoScroll:		true
 		});
@@ -57,9 +57,6 @@ Automne.frameWindow = Ext.extend(Automne.Window, {
 		if (!this.frameEl) {
 			this.frameEl = Ext.get(this.id + 'Frame');
 			if (this.frameEl) {
-				if (!Ext.isIE) {
-					this.frameEl.addClass('x-hide-visibility');
-				}
 				//set frame events
 				this.setFrameEvents();
 				this.reload();
@@ -96,7 +93,7 @@ Automne.frameWindow = Ext.extend(Automne.Window, {
 		if (this.loadFrameDocument()) {
 			if (this.frameDocument) {
 				pr('Reload frame '+ this.id +' => Get : '+this.frameURL);
-				this.frameDocument.location = this.frameURL;
+				this.frameDocument.location = this.frameURL + ((this.frameURL.indexOf('?') === -1) ? '?' : '&') + '_dc='+ (new Date()).getTime();
 				this.forceReload = false;
 			}
 		}

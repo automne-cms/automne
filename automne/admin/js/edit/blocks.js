@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: blocks.js,v 1.6 2009/03/04 09:55:38 sebastien Exp $
+  * $Id: blocks.js,v 1.7 2009/03/06 10:51:23 sebastien Exp $
   */
 Automne.block = function(config){
 	config = config || {};
@@ -46,7 +46,24 @@ Ext.extend(Automne.block, Ext.util.Observable, {
 	disabledTabs:		[],
 	initComponent : function() {
 		//get all elements with HTML elements
-		this.elements = (this.elements.length) ? Ext.select('#'+this.elements.join(',#'), true, this.document) : new Ext.CompositeElement();
+		var elements = (this.elements.length) ? Ext.select('#'+this.elements.join(',#'), true, this.document) : new Ext.CompositeElement();
+		this.elements = new Ext.CompositeElement();
+		elements.each(function(el){
+			if (!el.hasClass('atm-block-helper')) {
+				this.elements.add(el);
+			} else {
+				var first = el.first();
+				if (first) {
+					var el = first;
+					while(el) {
+						this.elements.add(el);
+						el = el.next();
+					}
+				} else {
+					this.elements.add(el);
+				}
+			}
+		}, this);
 	},
 	getId : function(){
 		return this.id;

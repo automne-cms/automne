@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: favorites-sidepanel.php,v 1.2 2008/12/18 10:36:42 sebastien Exp $
+// $Id: favorites-sidepanel.php,v 1.3 2009/03/06 10:51:51 sebastien Exp $
 
 /**
   * PHP page : Load side panel favorites infos.
@@ -35,14 +35,15 @@ $content = '';
 
 $favorites = $cms_user->getFavorites();
 if ($favorites) {
-	$content .= '<ul>';
 	foreach($favorites as $pageId) {
 		$page = CMS_tree::getPageById($pageId);
-		if (is_object($page) && !$page->hasError()) {
+		if (is_object($page) && $page->getTitle() && !$page->hasError()) {
 			$content .= '<li><a href="#" atm:action="favorite" atm:page="'.$pageId.'" alt="'.htmlspecialchars($page->getTitle()).'" title="'.htmlspecialchars($page->getTitle()).'">'.$page->getStatus()->getHTML(true, $cms_user, MOD_STANDARD_CODENAME, $page->getID()).'&nbsp;'.sensitiveIO::ellipsis($page->getTitle(), 32).'&nbsp;('.$pageId.')</a></li>';
 		}
 	}
-	$content .= '</ul>';
+}
+if ($content) {
+	$content = '<ul>'.$content.'</ul>';
 } else {
 	$content .= 'Aucune page dans vos favoris.';
 }

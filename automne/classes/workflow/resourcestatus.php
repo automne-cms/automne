@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: resourcestatus.php,v 1.3 2009/03/03 15:13:43 sebastien Exp $
+// $Id: resourcestatus.php,v 1.4 2009/03/06 10:52:34 sebastien Exp $
 
 /**
   * Class CMS_resourceStatus
@@ -31,7 +31,7 @@
 class CMS_resourceStatus extends CMS_grandFather {
 	const MESSAGE_STATUS_LOCKED = 1320;
 	const MESSAGE_STATUS_DRAFT = 1421;
-	
+	const MESSAGE_STATUS_LOCKEDBY = 321;
 	/**
 	  * DB id
 	  * @var integer
@@ -891,8 +891,14 @@ class CMS_resourceStatus extends CMS_grandFather {
 		$label = $this->_getStatusLabel($img_status);
 		$label.= (isset($img_siblings)) ? ', '.$this->_getStatusLabel($img_siblings):'';
 		
-		if ($this->getLock()) {
-			$label .= ' - '.$language->getMessage(self::MESSAGE_STATUS_LOCKED);
+		if ($lockUserId = $this->getLock()) {
+			$lockUser = CMS_profile_usersCatalog::getById($lockUserId);
+			$lockDate = $this->getLockDate();
+			if (is_object($lockUser) && is_object($lockDate)) {
+				$label .= ' - '.$language->getMessage(self::MESSAGE_STATUS_LOCKEDBY).' '.$lockUser->getFullName().' ('.$lockDate->getLocalizedDate($language->getDateFormat().' - H:i:s').')';
+			} else {
+				$label .= ' - '.$language->getMessage(self::MESSAGE_STATUS_LOCKED);
+			}
 		}
 		if ($this->getDraft() && $img_status == 'rond-o') {
 			$label .= $language->getMessage(self::MESSAGE_STATUS_DRAFT);
