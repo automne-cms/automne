@@ -1,4 +1,4 @@
-/* $Id: pnews.css,v 1.1.1.1 2008/11/26 17:12:35 sebastien Exp $ */
+/* $Id: pnews.css,v 1.2 2009/03/06 11:03:42 sebastien Exp $ */
 /* Styles used by news module */
 /*
 /* news */
@@ -124,4 +124,19 @@
 	display:			none;
 	float:				right;
 	margin:				0 5px 0 5px;
+}
+.blocLienBottom{
+	background:			#63554f url(/img/interieur/blocLienBottom.gif) no-repeat right	2px;
+	clear:				left;
+	cursor:				pointer;
+	display:			block;
+	float:				left;
+	left:				45px;
+	line-height:		11px;
+	padding:			0 20px 0 3px;
+	position:			relative;
+	top:				-3px;
+}
+.blocLien, .blocLien:hover{
+	color:				#FFFFFF;
 }

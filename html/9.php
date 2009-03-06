@@ -1,7 +1,7 @@
-<?php //Generated on Wed, 04 Mar 2009 11:06:58 +0100 by Automne (TM) 4.0.0b1
+<?php //Generated on Fri, 06 Mar 2009 12:04:28 +0100 by Automne (TM) 4.0.0b1
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: http://automne4/web/fr/9-contact.php');
+	header('Location: http://127.0.0.1/web/fr/9-contact.php');
 	exit;
 }
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
@@ -33,7 +33,7 @@ $mod_cms_forms["usedforms"] = array (
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 9.php,v 1.5 2009/03/04 10:02:08 sebastien Exp $
+// $Id: 9.php,v 1.6 2009/03/06 11:01:49 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -512,10 +512,10 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 		<![endif]-->
 		<?php echo CMS_view::getJavascript(array('/js/sifr.js','/js/common.js','/js/CMS_functions.js'));  ?>
 
-		<link rel="icon" type="image/x-icon" href="http://automne4/favicon.ico" />
+		<link rel="icon" type="image/x-icon" href="http://127.0.0.1/favicon.ico" />
 	<meta name="language" content="fr" />
 	<meta name="generator" content="Automne (TM)" />
-	<meta name="identifier-url" content="http://automne4" />
+	<meta name="identifier-url" content="http://127.0.0.1" />
 
 	</head>
 	<body>
@@ -525,18 +525,18 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 					
 								
 
-<a id="lienAccueil" href="http://automne4/web/fr/2-accueil.php" title="Retour à l'accueil">Retour à l'accueil</a>
+<a id="lienAccueil" href="http://127.0.0.1/web/fr/2-accueil.php" title="Retour à l'accueil">Retour à l'accueil</a>
 
 
 							
 				</div>
 				<div id="backgroundBottomContainer">
 					<div id="menuLeft">
-						<ul class="CMS_lvl1"><li class="CMS_lvl1 CMS_open "><a class="CMS_lvl1" href="http://automne4/web/fr/2-accueil.php">Accueil</a><ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://automne4/web/fr/4-fonctionnalites.php">Fonctionnalités</a></li><li class="CMS_lvl2 CMS_nosub "><a class="CMS_lvl2" href="http://automne4/web/fr/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_nosub "><a class="CMS_lvl2" href="http://automne4/web/fr/5-actualite.php">Actualités</a></li><li class="CMS_lvl2 CMS_nosub "><a class="CMS_lvl2" href="http://automne4/web/fr/6-mediatheque.php">Médiathèque</a></li></ul></li></ul>
+						<ul class="CMS_lvl1"><li class="CMS_lvl1 CMS_open "><a class="CMS_lvl1" href="http://127.0.0.1/web/fr/2-accueil.php">Accueil</a><ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/24-documentation.php">Fonctionnalités</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/31-exemples-de-modules.php">Exemples de modules</a></li></ul></li></ul>
 					</div>
 					<div id="content" class="page9">
 						<div id="breadcrumbs">
-							<a href="http://automne4/web/fr/2-accueil.php">Accueil</a>
+							<a href="http://127.0.0.1/web/fr/2-accueil.php">Accueil</a>
 
  &gt; 
 						</div>
@@ -544,6 +544,10 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 							<h1>Contact</h1>
 						</div>
 						
+
+<div class="text"><p>Ce formulaire vous permet d'envoyer une demande de contact. Pour le transformer (Champs, actions, email de destination), modifiez le dans les propri&eacute;t&eacute;s du module &quot;Formulaire&quot;.</p><p>&nbsp;</p></div>
+
+
 <div class="cms_forms">
 	<?php $mod_cms_forms = array();
 $mod_cms_forms["module"] = 'cms_forms';
@@ -570,7 +574,7 @@ $mod_cms_forms["formID"] = '2';
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 9.php,v 1.5 2009/03/04 10:02:08 sebastien Exp $
+// $Id: 9.php,v 1.6 2009/03/06 11:01:49 sebastien Exp $
 
 /**
   * Template CMS_forms_formular
@@ -643,8 +647,8 @@ if ($form->getID() && $form->isPublic()) {
 		<div id="footer">
 			<div id="menuBottom">
 				<ul>
-					<li><a href="http://automne4/web/fr/8-plan-du-site.php">Plan du site</a></li>
-<li><a href="http://automne4/web/fr/9-contact.php">Contact</a></li>
+					<li><a href="http://127.0.0.1/web/fr/8-plan-du-site.php">Plan du site</a></li>
+<li><a href="http://127.0.0.1/web/fr/9-contact.php">Contact</a></li>
 				</ul>
 				<div class="spacer"></div>
 			</div>

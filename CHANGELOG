@@ -8,7 +8,7 @@ V4.0.0 (in progress)
 [REFACTOR] : use PDO instead of direct Mysql functions
 [REFACTOR] : use autoload system for classes loading
 [REFACTOR] : move FCKEditor folder to /automne, more consistent, because it can be used in admin and frontend
-[FEATURE] : Update FCKEditor to version 2.6.3 : Add Safari, Opera and Camino support. Add some features (new style system, revamped undo system, blockquotes support, etc.) and a better stability. 
+[FEATURE] : Update FCKEditor to version 2.6.4 : Add Safari, Opera and Camino support. Add some features (new style system, revamped undo system, blockquotes support, etc.) and a better stability. 
 [FEATURE] : Use ExtJS 2.2 javascript library for all admin management
 [FEATURE] : Add validation on page moving
 [FEATURE] : Add mysql fulltext search on users, groups, templates, rows, standard and polymod modules

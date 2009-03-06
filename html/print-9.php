@@ -1,7 +1,7 @@
-<?php //Generated on Wed, 04 Mar 2009 11:06:58 +0100 by Automne (TM) 4.0.0b1
+<?php //Generated on Fri, 06 Mar 2009 12:04:29 +0100 by Automne (TM) 4.0.0b1
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: http://automne4/web/fr/print-9-contact.php');
+	header('Location: http://127.0.0.1/web/fr/print-9-contact.php');
 	exit;
 }
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
@@ -33,7 +33,7 @@ $mod_cms_forms["usedforms"] = array (
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: print-9.php,v 1.5 2009/03/04 10:02:09 sebastien Exp $
+// $Id: print-9.php,v 1.6 2009/03/06 11:01:50 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -522,6 +522,10 @@ Contact
 		
 </h3>
 
+
+<div class="text"><p>Ce formulaire vous permet d'envoyer une demande de contact. Pour le transformer (Champs, actions, email de destination), modifiez le dans les propri&eacute;t&eacute;s du module &quot;Formulaire&quot;.</p><p>&nbsp;</p></div>
+
+
 <div class="cms_forms">
 	<?php $mod_cms_forms = array();
 $mod_cms_forms["module"] = 'cms_forms';
@@ -548,7 +552,7 @@ $mod_cms_forms["formID"] = '2';
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: print-9.php,v 1.5 2009/03/04 10:02:09 sebastien Exp $
+// $Id: print-9.php,v 1.6 2009/03/06 11:01:50 sebastien Exp $
 
 /**
   * Template CMS_forms_formular
@@ -617,7 +621,7 @@ if ($form->getID() && $form->isPublic()) {
 	<small>
 		
 		
-				Page  "Contact" (http://automne4/web/fr/9-contact.php)
+				Page  "Contact" (http://127.0.0.1/web/fr/9-contact.php)
 				<br />
 		Tiré du site http://<?php echo $_SERVER["HTTP_HOST"];   ?>
 	</small>

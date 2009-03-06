@@ -1,20 +1,22 @@
 <?php
-//Generated on Fri, 28 Nov 2008 15:56:43 +0100 by Automne (TM) 4.0.0a1
+//Generated on Fri, 06 Mar 2009 12:04:28 +0100 by Automne (TM) 4.0.0b1
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: http://localhost/web/fr/9-contact.php');
+	header('Location: http://127.0.0.1/web/fr/9-contact.php');
 	exit;
 }
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 ?>
 <?php
 $mod_cms_forms = array();
+$mod_cms_forms["module"] = 'cms_forms';
+$mod_cms_forms["id"] = 'cms_forms_header';
+$mod_cms_forms["type"] = 'header';
 $mod_cms_forms["usedforms"] = array (
   0 => '2',
 );
-$mod_cms_forms["type"] = 'header';
-$mod_cms_forms["id"] = 'cms_forms_header';
-$mod_cms_forms["module"] = 'cms_forms';
+
+
 /* vim: set expandtab tabstop=4 shiftwidth=4: */
 // +----------------------------------------------------------------------+
 // | Automne (TM)                                                         |
@@ -33,7 +35,7 @@ $mod_cms_forms["module"] = 'cms_forms';
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 9.php.linx,v 1.2 2008/11/28 14:54:37 sebastien Exp $
+// $Id: 9.php.linx,v 1.3 2009/03/06 11:00:57 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -44,30 +46,14 @@ $mod_cms_forms["module"] = 'cms_forms';
   * @subpackage module
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
-
-//start session (needed for form validation count)
-@session_start();
-
 //Requirements
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
-require_once(PATH_PACKAGES_FS."/workflow.php");
-require_once(PATH_PACKAGES_FS."/common.php");
-require_once(PATH_MODULES_FS."/super_resource.php");
-require_once(PATH_PACKAGES_FS."/pageContent/xml2Array.php");
-require_once(PATH_PACKAGES_FS."/tree/page.php");
-require_once(PATH_PACKAGES_FS."/tree/pagetemplatescatalog.php");
-require_once(PATH_PACKAGES_FS."/tree/tree.php");
-require_once(PATH_PACKAGES_FS."/tree/website.php");
-require_once(PATH_PACKAGES_FS."/tree/websitescatalog.php");
-require_once(PATH_MODULES_FS."/module.php");
-require_once(PATH_MODULES_FS."/moduleValidation.php");
-require_once(PATH_MODULES_FS."/moduleclientspace.php");
-require_once(PATH_MODULES_FS."/standard/block.php");
-require_once(PATH_MODULES_FS."/cms_forms.php");
-require_once(PATH_PACKAGES_FS."/workflow/resource.php");
-require_once(PATH_PACKAGES_FS."/workflow/resourcestatus.php");
-require_once(PATH_PACKAGES_FS."/user.php");
-require_once(PATH_PACKAGES_FS.'/polymodFrontEnd.php');
+
+//force loading module cms_forms
+if (!class_exists('CMS_module_cms_forms')) {
+	die('Cannot find cms_forms module ...');
+}
+
 //set current page ID
 $mod_cms_forms["pageID"] = $parameters['pageID'] = '9';
 
@@ -78,9 +64,10 @@ function curlyBracesVars($text) {
 
 //if page has forms
 if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
-	$sender = CMS_forms_sender::getSenderForContext($_SESSION["cms_context"]);
+	$sender = CMS_forms_sender::getSenderForContext((isset($_SESSION["cms_context"]) ? $_SESSION["cms_context"] : false));
 	foreach($mod_cms_forms["usedforms"] as $formID) {
 		$form = new CMS_forms_formular($formID);
+		$cms_forms_msg[$form->getID()] = $cms_forms_error_msg[$form->getID()] = '';
 		//if form exists and is public
 		if ($form->getID() && $form->isPublic()) {
 			/***********************************************************
@@ -89,13 +76,13 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 			//check for authentification action in form
 			if ($form->getActionsByType(CMS_forms_action::ACTION_AUTH)) {
 				//check for valid session / logout attempt / and autologin
-				if (!is_a($_SESSION["cms_context"], 'CMS_context') || $_REQUEST["logout"] == 'true') {
+				if (!isset($_SESSION["cms_context"]) || (isset($_SESSION["cms_context"]) && !is_a($_SESSION["cms_context"], 'CMS_context')) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] == 'true')) {
 					@session_destroy();
-					@session_start();
-					if ($_REQUEST["logout"] != 'true' && CMS_context::autoLoginSucceeded()) {
+					start_atm_session();
+					if (!isset($_REQUEST["logout"]) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] != 'true') && CMS_context::autoLoginSucceeded()) {
 						//declare form ok action
 						$cms_forms_okAction[$form->getID()] = true;
-					} elseif ($_REQUEST["logout"] == 'true') {
+					} elseif (isset($_REQUEST["logout"]) && $_REQUEST["logout"] == 'true') {
 						// Reset cookie
 						CMS_context::resetSessionCookies();
 						//then reload current page (to load public user)
@@ -103,7 +90,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 						exit;
 					}
 				}
-				if (is_a($_SESSION["cms_context"], 'CMS_context') && $_REQUEST["logout"] != 'true' && CMS_context::autoLoginSucceeded()) {
+				if (isset($_SESSION["cms_context"]) && is_a($_SESSION["cms_context"], 'CMS_context') && (!isset($_REQUEST["logout"]) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] != 'true')) && CMS_context::autoLoginSucceeded()) {
 					//declare form ok action
 					$cms_forms_okAction[$form->getID()] = true;
 				}
@@ -130,7 +117,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 				//then launch form ok action if needed
 				if ($cms_forms_okAction[$form->getID()]) {
 					//if we have an encoded referer, use it
-					if ($_REQUEST['referer'] && ($url = base64_decode($_REQUEST['referer']))) {
+					if (isset($_REQUEST['referer']) && $_REQUEST['referer'] && ($url = base64_decode($_REQUEST['referer']))) {
 						header("Location: ".$url);
 						exit;
 					}
@@ -197,8 +184,10 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 												}
 											}
 										} else {
-											$text = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($alreadyFoldAction->getString("text"))).'";');
-											$cms_forms_msg[$form->getID()] .= nl2br($text);
+											if ($alreadyFoldAction->getString("text")) {
+												$text = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($alreadyFoldAction->getString("text"))).'";');
+												$cms_forms_msg[$form->getID()] .= nl2br($text);
+											}
 										}
 									}
 									break 2; //then quit actions loop
@@ -280,8 +269,10 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 											}
 										}
 									} else { //append message to form error message
-										$text = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($action->getString("text"))).'";');
-										$cms_forms_error_msg[$form->getID()] .= nl2br($text).'<br />';
+										if ($action->getString("text")) {
+											$text = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($action->getString("text"))).'";');
+											$cms_forms_error_msg[$form->getID()] .= nl2br($text).'<br />';
+										}
 									}
 									break 2; //then quit actions loop
 								}
@@ -426,8 +417,10 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 										} else {
 											unset($_SESSION["cms_context"]);
 											//append message to form error message
-											$text = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($action->getString("text"))).'";');
-											$cms_forms_error_msg[$form->getID()] .= nl2br($text).'<br />';
+											if ($action->getString("text")) {
+												$text = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($action->getString("text"))).'";');
+												$cms_forms_error_msg[$form->getID()] .= nl2br($text).'<br />';
+											}
 											break 2; //quit actions loop
 										}
 									} else {
@@ -512,21 +505,19 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n"; ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 	<head>
-		<title>Automne 4 : Contact</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-		<?php echo CMS_view::getCSS(array('/css/common.css','/css/interieur.css'), 'screen'); ?>
+		<title>Automne 4 : Contact</title>
+		<?php echo CMS_view::getCSS(array('/css/common.css','/css/interieur.css','/css/modules/cms_forms.css'), 'screen'); ?>
 
 		<!--[if lte IE 6]> 
 		<link rel="stylesheet" type="text/css" href="/css/ie6.css" media="screen" />
 		<![endif]-->
 		<?php echo CMS_view::getJavascript(array('/js/sifr.js','/js/common.js','/js/CMS_functions.js')); ?>
 
-		<link rel="icon" type="image/x-icon" href="http://localhost/favicon.ico" />
+		<link rel="icon" type="image/x-icon" href="http://127.0.0.1/favicon.ico" />
 	<meta name="language" content="fr" />
 	<meta name="generator" content="Automne (TM)" />
-	<meta name="identifier-url" content="http://localhost" />
-	<!-- load the style of cms_forms module -->
-	<link rel="stylesheet" type="text/css" href="/css/modules/cms_forms.css" />
+	<meta name="identifier-url" content="http://127.0.0.1" />
 
 	</head>
 	<body>
@@ -549,6 +540,9 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 						<atm-linx type="recursivelinks">
 							<selection>
 								<start><nodespec type="node" value="2"></nodespec></start>
+								<condition property="lvl" operator="&lt;=">
+									<value type="data">2</value>
+								</condition>
 							</selection>
 							<display>
 								<mode>close</mode>
@@ -573,12 +567,18 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 							<h1>Contact</h1>
 						</div>
 						
+
+<div class="text"><p>Ce formulaire vous permet d'envoyer une demande de contact. Pour le transformer (Champs, actions, email de destination), modifiez le dans les propri&eacute;t&eacute;s du module &quot;Formulaire&quot;.</p><p>&nbsp;</p></div>
+
+
 <div class="cms_forms">
 	<?php $mod_cms_forms = array();
-$mod_cms_forms["formID"] = '2';
-$mod_cms_forms["type"] = 'formular';
-$mod_cms_forms["id"] = 'cms_forms';
 $mod_cms_forms["module"] = 'cms_forms';
+$mod_cms_forms["id"] = 'cms_forms';
+$mod_cms_forms["type"] = 'formular';
+$mod_cms_forms["formID"] = '2';
+
+
 /* vim: set expandtab tabstop=4 shiftwidth=4: */
 // +----------------------------------------------------------------------+
 // | Automne (TM)                                                         |
@@ -597,7 +597,7 @@ $mod_cms_forms["module"] = 'cms_forms';
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 9.php.linx,v 1.2 2008/11/28 14:54:37 sebastien Exp $
+// $Id: 9.php.linx,v 1.3 2009/03/06 11:00:57 sebastien Exp $
 
 /**
   * Template CMS_forms_formular
@@ -611,16 +611,11 @@ $mod_cms_forms["module"] = 'cms_forms';
 
 //Requirements
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
-require_once(PATH_PACKAGES_FS."/workflow.php");
-require_once(PATH_PACKAGES_FS."/common/language.php");
-require_once(PATH_PACKAGES_FS."/common/date.php");
-require_once(PATH_MODULES_FS."/super_resource.php");
-require_once(PATH_PACKAGES_FS."/pageContent/xml2Array.php");
-require_once(PATH_MODULES_FS."/module.php");
-require_once(PATH_MODULES_FS."/moduleValidation.php");
-require_once(PATH_MODULES_FS."/moduleclientspace.php");
-require_once(PATH_MODULES_FS."/standard/block.php");
-require_once(PATH_MODULES_FS."/cms_forms.php");
+//force loading module cms_forms
+if (!class_exists('CMS_module_cms_forms')) {
+	die('Cannot find cms_forms module ...');
+}
+
 //set current page ID
 $mod_cms_forms["pageID"] = '9';
 //Instanciate Form
@@ -631,8 +626,8 @@ $cms_language = $form->getLanguage();
 if ($form->getID() && $form->isPublic()) {
 	echo '<a name="formAnchor'.$form->getID().'"></a>';
 	//Create or append (from header) form required message
-	if (isset($cms_forms_required[$form->getID()]) && is_array($cms_forms_required[$form->getID()]) && $cms_forms_required[$form->getID()]) {
-		$cms_forms_error_msg[$form->getID()] .= $cms_language->getMessage(MESSAGE_CMS_FORMS_REQUIRED_FIELDS, false, MOD_CMS_FORMS_CODENAME).'<ul>';
+	if (isset($cms_forms_required[$form->getID()]) && $cms_forms_required[$form->getID()] && is_array($cms_forms_required[$form->getID()]) && $cms_forms_required[$form->getID()]) {
+		$cms_forms_error_msg[$form->getID()] .= $cms_language->getMessage(CMS_forms_formular::MESSAGE_CMS_FORMS_REQUIRED_FIELDS, false, MOD_CMS_FORMS_CODENAME).'<ul>';
 		foreach ($cms_forms_required[$form->getID()] as $fieldName) {
 			$field = $form->getFieldByName($fieldName, true);
 			$cms_forms_error_msg[$form->getID()] .= '<li>'.$field->getAttribute('label').'</li>';
@@ -640,8 +635,8 @@ if ($form->getID() && $form->isPublic()) {
 		$cms_forms_error_msg[$form->getID()] .= '</ul>';
 	}
 	//Create or append (from header) form malformed message
-	if (isset($cms_forms_malformed[$form->getID()]) && is_array($cms_forms_malformed[$form->getID()]) && $cms_forms_malformed[$form->getID()]) {
-		$cms_forms_error_msg[$form->getID()] .= $cms_language->getMessage(MESSAGE_CMS_FORMS_MALFORMED_FIELDS, false, MOD_CMS_FORMS_CODENAME).'<ul>';
+	if (isset($cms_forms_malformed[$form->getID()]) && $cms_forms_malformed[$form->getID()] && is_array($cms_forms_malformed[$form->getID()]) && $cms_forms_malformed[$form->getID()]) {
+		$cms_forms_error_msg[$form->getID()] .= $cms_language->getMessage(CMS_forms_formular::MESSAGE_CMS_FORMS_MALFORMED_FIELDS, false, MOD_CMS_FORMS_CODENAME).'<ul>';
 		foreach ($cms_forms_malformed[$form->getID()] as $fieldName) {
 			$field = $form->getFieldByName($fieldName, true);
 			$cms_forms_error_msg[$form->getID()] .= '<li>'.$field->getAttribute('label').'</li>';
@@ -649,17 +644,17 @@ if ($form->getID() && $form->isPublic()) {
 		$cms_forms_error_msg[$form->getID()] .= '</ul>';
 	}
 	//Create or append (from header) form error message
-	if (isset($cms_forms_error_msg[$form->getID()]) && $cms_forms_error_msg[$form->getID()]) {
+	if (isset($cms_forms_error_msg[$form->getID()]) && $cms_forms_error_msg[$form->getID()] && $cms_forms_error_msg[$form->getID()]) {
 		echo '<div class="cms_forms_error_msg">'.$cms_forms_error_msg[$form->getID()].'</div>';
 	}
 	//display form or form message
-	if (!isset($cms_forms_msg[$form->getID()])) {
+	if (!isset($cms_forms_msg[$form->getID()]) || !$cms_forms_msg[$form->getID()]) {
 		//check if form is already folded by sender
 		if (!$form->isAlreadyFolded($sender)) { 
 			echo $form->getContent(CMS_forms_formular::ALLOW_FORM_SUBMIT);
 		}
 	}
-	if (isset($cms_forms_msg[$form->getID()])) {
+	if (isset($cms_forms_msg[$form->getID()]) && $cms_forms_msg[$form->getID()]) {
 		echo '<div class="cms_forms_msg">'.$cms_forms_msg[$form->getID()].'</div>';
 	}
 }
@@ -687,6 +682,6 @@ if ($form->getID() && $form->isPublic()) {
 				<div class="spacer"></div>
 			</div>
 		</div>
-	<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat(); if (VIEW_SQL && isset($_SESSION["cms_context"]) && is_object($_SESSION["cms_context"])) {save_stat();}} ?>
+	<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat();} ?>
 </body>
 </html>
