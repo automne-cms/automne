@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_forms.js,v 1.1.1.1 2008/11/26 17:12:14 sebastien Exp $
+// $Id: cms_forms.js,v 1.2 2009/03/13 11:08:35 sebastien Exp $
 
 /**
   * Javascript plugin for FCKeditor
@@ -88,7 +88,13 @@ function getFieldCode()
 			var e = FCK.EditorDocument.getElementById(label.htmlFor);
 			FCK.Selection.SelectNode(e);
 			selectedElement = FCK.Selection.GetSelectedElement();
+			alert(selectedElement);
 		}
+	} else if (selectedElement.htmlFor) {
+		//get corresponding tag for selected label
+		var e = FCK.EditorDocument.getElementById(selectedElement.htmlFor);
+		FCK.Selection.SelectNode(e);
+		selectedElement = FCK.Selection.GetSelectedElement();
 	}
 	if (!selectedElement || !selectedElement.name) {
 		alert(FCKLang['DlgCMSFormsPleaseSelect']);
@@ -96,7 +102,6 @@ function getFieldCode()
 		window.parent.Cancel() ;
 	}
 	GetE('fieldName').value = selectedElement.name;
-	
 	return true;
 }
 function getFieldPosition() {
