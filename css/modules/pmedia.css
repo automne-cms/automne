@@ -16,6 +16,14 @@
 	background:				url(/img/interieur/h2Media.gif) no-repeat left top;
 	left:					-17px;
 	margin-bottom:			0px;
+	color:					#FFFFFF;
+	font-size:				12px;
+	font-weight:			bold;
+	line-height:			23px;
+	padding-left:			23px;
+	padding-right:			5px;
+	position:				relative;
+	width:					539px;
 }
 .mediaForm{
 	background-color:		#edeae9;
