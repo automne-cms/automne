@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: side-panel.php,v 1.3 2009/03/02 11:25:15 sebastien Exp $
+// $Id: side-panel.php,v 1.4 2009/04/02 13:55:54 sebastien Exp $
 
 /**
   * PHP page : Load side panel infos.
@@ -365,10 +365,9 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES) || $cms_use
 		$content .= '<li><div class="atm-rows atm-sidepic"></div><a atm:action="rows" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_ROWS_TEMPLATES).'</a></li>';
 	}
 	if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //templates
-		//TODOV4
-		/*$content .= '<li><div class="atm-styles atm-sidepic"></div><a atm:action="styles" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_STYLESHEETS).'</a></li>
-		<li><div class="atm-wysiwyg-styles atm-sidepic"></div><a atm:action="wysiwyg-styles" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_WYSIWYG_STYLES).'</a></li>*/
-		$content .= '<li><div class="atm-wysiwyg-toolbar atm-sidepic"></div><a atm:action="wysiwyg-toolbar" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_WYSIWYG_TOOLBAR).'</a></li>';
+		$content .= '<li><div class="atm-styles atm-sidepic"></div><a atm:action="styles" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_STYLESHEETS).'</a></li>
+		<li><div class="atm-wysiwyg-styles atm-sidepic"></div><a atm:action="javascripts" href="#">Scripts Javascript</a></li>
+		<li><div class="atm-wysiwyg-toolbar atm-sidepic"></div><a atm:action="wysiwyg-toolbar" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_WYSIWYG_TOOLBAR).'</a></li>';
 	}
 	$content .= '
 		</ul>
@@ -404,7 +403,7 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) || $c
 			<li><div class="atm-websites atm-sidepic"></div><a atm:action="websites" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_SITE_MANAGEMENT).'</a></li>';
 			//TODOV4
 			/*<li><div class="atm-languages atm-sidepic"></div><a atm:action="languages" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_LANGUAGE_MANAGEMENT).'</a></li>*/
-		$content .= '<li><div class="atm-server atm-sidepic"></div><a href="'.PATH_PHPMYADMIN_WR.'" target="_blank">Base de données</a></li>
+		$content .= '<li><div class="atm-database atm-sidepic"></div><a href="'.PATH_PHPMYADMIN_WR.'" target="_blank">Base de données</a></li>
 			<li><div class="atm-server atm-sidepic"></div><a atm:action="server" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_SERVER_SETTINGS).'</a></li>
 			<li><div class="atm-parameters atm-sidepic"></div><a atm:action="parameters" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_AUTUMN_SETTINGS).'</a></li>';
 	}
@@ -614,10 +613,14 @@ $jscontent = <<<END
 			}, 800, 600);
     	},
 		'styles' : function(t){
-    		/*openWindow(t, 'templates.php', {
+    		openWindow(t, 'templates.php', {
 				type:		'css'
-			}, 800, 600);*/
-			Automne.message.show('TODOV4 : Show styles panel');
+			}, 800, 600);
+    	},
+		'javascripts' : function(t){
+    		openWindow(t, 'templates.php', {
+				type:		'js'
+			}, 800, 600);
     	},
 		'wysiwyg-styles' : function(t){
     		/*openWindow(t, 'templates.php', {
@@ -642,15 +645,7 @@ $jscontent = <<<END
 			window.show();
     	},
 		'scripts' : function(t){
-    		var window = new Automne.frameWindow({
-				id:				'scriptsWindow',
-				frameURL:		'/automne/admin-v3/meta_admin.php',
-				allowFrameNav:	true,
-				width:			750,
-				height:			580,
-				animateTarget:	t
-			});
-			window.show();
+    		openWindow(t, 'server-scripts.php', {}, 800, 600);
     	},
 		'logs' : function(t){
     		var window = new Automne.frameWindow({
@@ -681,15 +676,9 @@ $jscontent = <<<END
     		openWindow(t, 'server.php', {}, 800, 600);
     	},
 		'parameters' : function(t){
-    		var window = new Automne.frameWindow({
-				id:				'parametersWindow',
-				frameURL:		'/automne/admin-v3/module_parameters.php?module=standard',
-				allowFrameNav:	true,
-				width:			750,
-				height:			580,
-				animateTarget:	t
-			});
-			window.show();
+    		openWindow(t, 'module-parameters.php', {
+				module:		'standard'
+			}, 800, 600);
     	}
     };
 	

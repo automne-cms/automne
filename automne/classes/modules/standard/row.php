@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: row.php,v 1.4 2009/03/06 10:52:34 sebastien Exp $
+// $Id: row.php,v 1.5 2009/04/02 13:57:58 sebastien Exp $
 
 /**
   * Class CMS_row
@@ -597,7 +597,7 @@ class CMS_row extends CMS_grandFather
 						if ($rowChildNode->hasAttribute('id')) {
 							$elementId = $rowChildNode->getAttribute('id');
 						} else {
-							$elementId = 'el-'.md5(uniqid());
+							$elementId = 'el-'.md5(mt_rand().microtime());
 							$rowChildNode->setAttribute('id',$elementId);
 						}
 						$elements[] = $elementId;

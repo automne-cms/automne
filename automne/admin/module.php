@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: module.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: module.php,v 1.2 2009/04/02 13:55:54 sebastien Exp $
 
 /**
   * PHP page : Load module backend window
@@ -74,7 +74,10 @@ foreach ($objectsInfos as $objectsInfo) {
 	if (isset($options['objectId']) && $options['objectId'] == $objectsInfo['objectId']) {
 		$activeTab = $objectWinId;
 	}
-	if ($objectsInfo['objectId'] != 'categories') {
+	if ($objectsInfo['objectId'] == 'categories') {
+		$url = 'modules-categories.php';
+	}
+	if (!isset($objectsInfo['frame']) || $objectsInfo['frame'] == false) {
 		$items .= "{
 			title:	'{$label}',
 			id:		'{$objectWinId}',
@@ -89,10 +92,10 @@ foreach ($objectsInfos as $objectsInfo) {
 		}";
 	} else {
 		$items .= "{
-			xtype:			'framePanel',
 			title:			'{$label}',
 			id:				'{$objectWinId}',
-			frameURL:		'/automne/admin-v3/modulecategories.php?module={$codename}',
+			xtype:			'framePanel',
+			frameURL:		'{$url}',
 			allowFrameNav:	true
 		}";
 	}

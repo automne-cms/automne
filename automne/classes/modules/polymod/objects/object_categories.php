@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_categories.php,v 1.2 2009/02/03 14:27:35 sebastien Exp $
+// $Id: object_categories.php,v 1.3 2009/04/02 13:58:00 sebastien Exp $
 
 /**
   * Class CMS_object_categories
@@ -242,7 +242,7 @@ class CMS_object_categories extends CMS_object_common
 		global $cms_user;
 		$params = $this->getParamsValues();
 		$prefixName = (isset($inputParams['prefix'])) ? $inputParams['prefix'] : '';
-		$rootCategory = (SensitiveIO::isPositiveInteger($inputParams['root'])) ? $inputParams['root'] : false;
+		$rootCategory = (isset($inputParams['root']) && SensitiveIO::isPositiveInteger($inputParams['root'])) ? $inputParams['root'] : false;
 		//get module codename
 		$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
 		if ($params['multiCategories']) {
@@ -303,7 +303,7 @@ class CMS_object_categories extends CMS_object_common
 				if (!sensitiveIO::isPositiveInteger($params['defaultValue'])) {
 					$html .= '<option value="0">'.$language->getMessage(self::MESSAGE_CHOOSE_OBJECT).'</option>';
 				}
-				if (is_object($this->_subfieldValues[0]) && !is_null($this->_subfieldValues[0]->getValue())) {
+				if (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0]) && !is_null($this->_subfieldValues[0]->getValue())) {
 					$selectedValue = $this->_subfieldValues[0]->getValue();
 				} elseif (sensitiveIO::isPositiveInteger($params['defaultValue'])) {
 					$selectedValue = $params['defaultValue'];
@@ -319,7 +319,7 @@ class CMS_object_categories extends CMS_object_common
 				$html .= $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET);
 			}
 			if (POLYMOD_DEBUG) {
-				$html .= '<span class="admin_text_alert"> (Field : '.$fieldID.' - Value : '.((is_object($this->_subfieldValues[0])) ? $this->_subfieldValues[0]->getValue() : '').')</span>';
+				$html .= '<span class="admin_text_alert"> (Field : '.$fieldID.' - Value : '.((isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0])) ? $this->_subfieldValues[0]->getValue() : '').')</span>';
 			}
 		}
 		//append html hidden field which store field name
@@ -750,8 +750,8 @@ class CMS_object_categories extends CMS_object_common
 				} else {
 					switch ($name) {
 						case 'label':
-							$category = CMS_moduleCategories_catalog::getByID($this->_subfieldValues[0]->getValue());
-							if (!$category->hasError()) {
+							$category = isset($this->_subfieldValues[0]) ? CMS_moduleCategories_catalog::getByID($this->_subfieldValues[0]->getValue()) : '';
+							if (is_object($category) && !$category->hasError()) {
 								return htmlspecialchars($category->getLabel($cms_language));
 							}
 							return '';

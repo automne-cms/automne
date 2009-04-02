@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: rss.php,v 1.2 2009/03/02 12:58:37 sebastien Exp $
+// $Id: rss.php,v 1.3 2009/04/02 14:01:26 sebastien Exp $
 
 /**
   * PHP page : generate Polymod RSS Feeds
@@ -77,9 +77,6 @@ if (!$data || $error || substr(trim($data),0,7) != '<title>') {
 	$rssTitle = '<title>'.((is_object($label) && is_object($cms_language)) ? $label->getValue($cms_language->getCode()) : 'Error').'</title>';
 }
 
-// Encoding
-$encoding = 'UTF-8';
-
 $content = 
 '<?xml version="1.0" encoding="'.$encoding.'" ?>'."\n".
 '<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss" xmlns:atom="http://www.w3.org/2005/Atom">'."\n".
@@ -92,7 +89,7 @@ $content =
 '		'.$copyrightTag.
 '		<generator>'.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION.'</generator>'."\n".
 '		'.$emailTag.
-'		<webMaster>'.APPLICATION_POSTMASTER_EMAIL.'</webMaster>'."\n".
+'		<webMaster>'.APPLICATION_MAINTAINER_EMAIL.'</webMaster>'."\n".
 '		<docs>http://blogs.law.harvard.edu/tech/rss</docs>'."\n".
 '		<ttl>'.$ttl.'</ttl>'."\n";
 if (!$error) {
@@ -105,13 +102,13 @@ if (!$error) {
 	'    <description><![CDATA[';
 	switch ($error) {
 		case 1:
-			$content .= 'Error : RSS ID not found or not a valid integer ... Please contact the webmaster here : '.APPLICATION_POSTMASTER_EMAIL;
+			$content .= 'Error : RSS ID not found or not a valid integer ... Please contact the webmaster here : '.APPLICATION_MAINTAINER_EMAIL;
 		break;
 		case 2:
-			$content .= 'Error : Invalid RSS ID found ... Please contact the webmaster here : '.APPLICATION_POSTMASTER_EMAIL;
+			$content .= 'Error : Invalid RSS ID found ... Please contact the webmaster here : '.APPLICATION_MAINTAINER_EMAIL;
 		break;
 		case 3:
-			$content .= 'Error : RSS Content generation error or no valid content for this RSS feed ... Please contact the webmaster here : '.APPLICATION_POSTMASTER_EMAIL;;
+			$content .= 'Error : RSS Content generation error or no valid content for this RSS feed ... Please contact the webmaster here : '.APPLICATION_MAINTAINER_EMAIL;;
 		break;
 	}
 	$content .=']]></description>'."\n".
@@ -122,13 +119,13 @@ $content .=
 '	</channel>'."\n".
 '</rss>';
 
-if($encoding == 'UTF-8'){
+if('utf-8' != strtolower(APPLICATION_DEFAULT_ENCODING)){
 	$content = utf8_encode($content);
 }
 
 //send RSS content
 if (!isset($_REQUEST['previz'])) {
-	header('Content-type: text/xml; charset='.$encoding);
+	header('Content-type: text/xml; charset=UTF-8');
 	echo $content;
 } else {
 	echo '<pre>'.htmlspecialchars($content).'</pre>';

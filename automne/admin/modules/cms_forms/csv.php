@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: csv.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: csv.php,v 1.2 2009/04/02 13:55:53 sebastien Exp $
 
 /**
   * PHP page : module cms_forms frontend
@@ -105,7 +105,7 @@ if (sizeof($formDatas)) {
 //Then send CSV file
 header("Cache-Control: public"); //This is needed to avoid bug with IE in HTTPS
 header("Pragma:"); //This is needed to avoid bug with IE in HTTPS
-header("Content-type: text/csv");
+header('Content-type: text/csv; charset='.APPLICATION_DEFAULT_ENCODING);
 header("Content-Disposition: attachment; filename=export_".sensitiveIO::sanitizeAsciiString($form->getAttribute('name'))."_".date('Ymd').".csv");
 echo $csv;
 ?>

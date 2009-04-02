@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cssmanager.php,v 1.1.1.1 2008/11/26 17:12:35 sebastien Exp $
+// $Id: cssmanager.php,v 1.2 2009/04/02 14:00:33 sebastien Exp $
 
 /**
   * CSS manager
@@ -39,8 +39,6 @@ if (isset($_GET['files'])) {
 				$cssfiles [] = PATH_MAIN_FS.'/ext/resources/css/ext-all.css';
 				$cssfiles [] = PATH_ADMIN_FS.'/css/xtheme-automne.css'; //Automne theme
 				$cssfiles [] = PATH_ADMIN_FS.'/css/ext.css'; //overwrite some ext definitions
-				//Ext ux BufferedGridToolbar
-				//$cssfiles [] = PATH_MAIN_FS.'/ext/ux/widgets/grid/BufferedGrid.css';
 			break;
 			case 'main':
 				//Main Automne CSS file

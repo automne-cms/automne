@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: upload-controler.php,v 1.3 2009/02/03 14:24:44 sebastien Exp $
+// $Id: upload-controler.php,v 1.4 2009/04/02 13:55:55 sebastien Exp $
 
 /**
   * PHP controler : Receive upload files
@@ -25,7 +25,7 @@
   */
 
 //Workaround for the Flash Cookie Bug
-if (isset($_POST[session_name()])) {
+/*if (isset($_POST[session_name()])) {
 	$_COOKIE[session_name()] = urldecode($_POST[session_name()]);
 	session_id($_COOKIE[session_name()]);
 }
@@ -35,7 +35,7 @@ if (isset($_POST['Automne_4_autologin'])) {
 //Workaround for the Flash User Agent Bug
 if (isset($_POST['userAgent'])) {
 	$_SERVER['HTTP_USER_AGENT'] = urldecode($_POST['userAgent']);
-}
+}*/
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 //load interface instance
 $view = CMS_view::getInstance();
@@ -67,19 +67,23 @@ if (!isset($_FILES["Filedata"]) || !is_uploaded_file($_FILES["Filedata"]["tmp_na
 	$view->show();
 }
 //move uploaded file (and rename it if needed)
-$count = 2;
-$name = $_FILES["Filedata"]["name"];
-while (file_exists(PATH_MAIN_FS.'/upload/'.$name)) {
-	$pathinfo = pathinfo($_FILES["Filedata"]["name"]);
-	$name = $pathinfo['filename'].'-'.$count++.'.'.$pathinfo['extension'];
+$originalFilename = $_FILES["Filedata"]["name"];
+if (strlen($originalFilename) > 255) {
+	$originalFilename = sensitiveIO::ellipsis($originalFilename, 255, '-');
 }
-if (!@move_uploaded_file($_FILES["Filedata"]["tmp_name"], PATH_MAIN_FS.'/upload/'.$name)) {
-	CMS_grandFather::raiseError('Can\'t move uploaded file to : '.PATH_MAIN_FS.'/upload/'.$name);
+$count = 2;
+$filename = $originalFilename;
+while (file_exists(PATH_MAIN_FS.'/upload/'.$filename)) {
+	$pathinfo = pathinfo($originalFilename);
+	$filename = $pathinfo['filename'].'-'.$count++.'.'.$pathinfo['extension'];
+}
+if (!@move_uploaded_file($_FILES["Filedata"]["tmp_name"], PATH_MAIN_FS.'/upload/'.$filename)) {
+	CMS_grandFather::raiseError('Can\'t move uploaded file to : '.PATH_MAIN_FS.'/upload/'.$filename);
 	$fileDatas['error'] = SFWUPLOAD_FILE_VALIDATION_FAILED;
 	$view->setContent($fileDatas);
 	$view->show();
 }
-$file = new CMS_file(PATH_MAIN_FS.'/upload/'.$name);
+$file = new CMS_file(PATH_MAIN_FS.'/upload/'.$filename);
 $file->chmod(FILES_CHMOD);
 
 //check file extension

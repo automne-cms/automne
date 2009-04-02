@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: dialog.php,v 1.2 2008/12/18 10:39:54 sebastien Exp $
+// $Id: dialog.php,v 1.3 2009/04/02 13:57:59 sebastien Exp $
 
 /**
   * Class CMS_dialog
@@ -1044,92 +1044,92 @@ class CMS_dialog extends CMS_JSDialog
 	  */
 	protected function _parseContent($body)
 	{
-		//TODOV4
-		//if ($this->_dontParse) {
-			return $this->_content;
-		//}
-		
-		$titleTagname = "dialog-title";
-		$pagesTagname = "dialog-pages";
-		$pagesExtraTagname = "dialog-pages-param";
-		$body = "<html>".$body."</html>";
-		$parser = new CMS_XMLParser(XMLPARSER_DATA_TYPE_CDATA, $body, false);
-		
-		// Check if dialog-pages tags
-		if ($parser->addWantedTag($pagesTagname, false) && $parser->addWantedTag($titleTagname, false) && $parser->parse()) {
-			$content = '';
-			$tags = $parser->getTags();
-			$offset = 0;
-			
-			foreach ($tags as $tag) {
-				if ($tag->getName() == $titleTagname) {
-					$tagReplacement = $this->_getTitleDesign($tag->getInnerContent(), $tag->getAttribute("type"), $tag->getAttribute("picto"));
-				} else {
-					$extra='';
-					$maxPages = $tag->getAttribute("maxPages");
-					$boomarkName= ($tag->getAttribute("boomarkName")) ? $tag->getAttribute("boomarkName"):'bookmark';
-					
-					$subparser = new CMS_XMLParser(
-							XMLPARSER_DATA_TYPE_CDATA, "<html>".$tag->getInnerContent()."</html>");
-					if ($subparser->addWantedTag($pagesExtraTagname, true) && $subparser->parse()) {
-						$innerTags = $subparser->getTags();
-						
-						foreach ($innerTags as $innerTag) {
-							$extra .= '&'.$innerTag->getAttribute("name").'='.$innerTag->getAttribute("value");
-						}
-					}
-					
-					$links = '<b>';
-					
-					// Loop through and create page links
-					for($i=0; $i < $maxPages; $i++) {
-						$currentBookmark = ($boomarkName!='bookmark') ? $this->_context->getSessionVar($boomarkName):$this->_context->getBookmark();
-						if (($i+1) == $currentBookmark) {
-							$links .= ' <span class="admin_current">'.($i+1).'</span> ';
-						} else {
-							$links .= '<a class="admin" href='.$_SERVER['SCRIPT_NAME'].'?'.$boomarkName.'='.($i+1);
-							if ($extra) {
-								$links .= $extra;
-							}
-							$links .= '>'.($i+1);
-							$links .= '</a> ';
-						}
-					}
-					
-					$links .= '</b>';
-					
-					$user = $this->_context->getUser();
-					$language = $user->getLanguage();
-					$tagReplacement = '
-						<table border="0" cellpadding="3" cellspacing="0">
-						  <tr>
-							<td class="admin">
-							  '.$language->getMessage(282).' : '.$links.'
-							</td>
-						  </tr>
-						</table>
-					';
-				}
-				//add the cdata from the end of last tag to the beginning of the current tag
-				$content .= substr($body, $offset, $tag->getStartByte() - $offset);
-				
-				// concatenate replacement
-				$content .= $tagReplacement;
-				$offset = $tag->getEndByte();
-				
-			}
-			
-			// concatenate cdata after last tag
-			$content .= substr($body, $offset);
-			
-			// strip html tags
-			$content = substr($content, strlen("<html>"));
-			$content = substr($content, 0, -strlen("</html>"));
-			
-			return $content;
-		} else {
+		if ($this->_dontParse) {
 			return $this->_content;
 		}
+		$datas = str_replace("\n", '§§', $body);
+		//dialog-title
+		while (true) {
+			$regs= array();
+			preg_match('/<dialog-title [^>]*>.*<\/dialog-title>/U', $datas, $regs);
+			if (isset($regs[0]) && $regs[0]) {
+				$domdocument = new CMS_DOMDocument();
+				try {
+					$domdocument->loadXML('<dummy>'.$regs[0].'</dummy>');
+				} catch (DOMException $e) {
+					$this->raiseError('Parse error during search for module-param parameters : '.$e->getMessage()." :\n".htmlspecialchars($regs[2]));
+					return $this->_content;
+				}
+				$paramsTags = $domdocument->getElementsByTagName('dialog-title');
+				foreach ($paramsTags as $paramTag) {
+					$param_value = $this->_getTitleDesign(utf8_decode($paramTag->textContent), $paramTag->getAttribute("type"));
+				}
+				$datas = str_replace($regs[0], $param_value, $datas);
+			} else {
+				break;
+			}
+		}
+		//dialog-pages
+		/* Exemple :
+		<dialog-pages maxPages="22" boomarkName="rowsBookmark">
+			<dialog-pages-param name="currentOnglet" value="1" />
+		</dialog-pages>
+		*/
+		while (true) {
+			$regs= array();
+			preg_match('/<dialog-pages [^>]*>.*<\/dialog-pages>/', $datas, $regs);
+			if (isset($regs[0])) {
+				$domdocument = new CMS_DOMDocument();
+				try {
+					$domdocument->loadXML('<dummy>'.$regs[0].'</dummy>');
+				} catch (DOMException $e) {
+					$this->raiseError('Parse error during search for module-param parameters : '.$e->getMessage()." :\n".htmlspecialchars($regs[2]));
+					return $this->_content;
+				}
+				$paramsTags = $domdocument->getElementsByTagName('dialog-pages');
+				foreach ($paramsTags as $paramTag) {
+					$maxPages = ((int) $paramTag->getAttribute("maxPages")) ? (int) $paramTag->getAttribute("maxPages") : 1;
+					$boomarkName = $paramTag->getAttribute("boomarkName") ? $paramTag->getAttribute("boomarkName") : 'bookmark';
+				}
+				$paramsTags = $domdocument->getElementsByTagName('dialog-pages-param');
+				$extra = '';
+				foreach ($paramsTags as $paramTag) {
+					$extra .= '&amp;'.$paramTag->getAttribute("name").'='.$paramTag->getAttribute("value");
+				}
+				$links = '<b>';
+				// Loop through and create page links
+				for($i=0; $i < $maxPages; $i++) {
+					$currentBookmark = ($boomarkName != 'bookmark') ? $this->_context->getSessionVar($boomarkName) : $this->_context->getBookmark();
+					if (($i+1) == $currentBookmark) {
+						$links .= ' <span class="admin_current">'.($i+1).'</span> ';
+					} else {
+						$links .= '<a class="admin" href='.$_SERVER['SCRIPT_NAME'].'?'.$boomarkName.'='.($i+1);
+						if ($extra) {
+							$links .= $extra;
+						}
+						$links .= '>'.($i+1);
+						$links .= '</a> ';
+					}
+				}
+				$links .= '</b>';
+				$user = $this->_context->getUser();
+				$language = $user->getLanguage();
+				$tagReplacement = '
+					<table border="0" cellpadding="3" cellspacing="0">
+					  <tr>
+						<td class="admin">
+						  '.$language->getMessage(282).' : '.$links.'
+						</td>
+					  </tr>
+					</table>
+				';
+				$datas = str_replace($regs[0], $tagReplacement, $datas);
+			} else {
+				break;
+			}
+		}
+		$datas = str_replace("§§", "\n", $datas);
+		return $datas;
 	}
 	
 	/**

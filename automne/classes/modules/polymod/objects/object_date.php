@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_date.php,v 1.2 2009/02/03 14:27:35 sebastien Exp $
+// $Id: object_date.php,v 1.3 2009/04/02 13:58:00 sebastien Exp $
 
 /**
   * Class CMS_object_date
@@ -254,7 +254,7 @@ class CMS_object_date extends CMS_object_common
 		}
 		if (!$params['creationDate'] && !$params['updateDate']) {
 			$html .= '<input type="text"'.$htmlParameters.' id="'.$prefixName.$this->_field->getID().'_0" name="'.$prefixName.$this->_field->getID().'_0" value="'.$date->getLocalizedDate($language->getDateFormat()).'" />';
-			if ($inputParams['calendar']) {
+			if (isset($inputParams['calendar']) && $inputParams['calendar']) {
 				$html .= '&nbsp;<img src="' .PATH_ADMIN_IMAGES_WR .'/calendar/calendar.gif" class="admin_input_submit_content" align="absmiddle" title="'.$language->getMessage(MESSAGE_PAGE_ACTION_DATE).'" onclick="displayCalendar(document.getElementById(\''.$prefixName.$this->_field->getID().'_0\'),\''.$language->getCode().'\',this);return false;" />';
 			}
 		} else {
@@ -293,7 +293,7 @@ class CMS_object_date extends CMS_object_common
 		$params = $this->getParamsValues();
 		$date = new CMS_date();
 		$date->setFormat($cms_language->getDateFormat());
-		if ($values[$prefixName.$this->_field->getID().'_0']) {
+		if (isset($values[$prefixName.$this->_field->getID().'_0'])) {
 			if (!$date->setLocalizedDate($values[$prefixName.$this->_field->getID().'_0'], !$this->_field->getValue('required'))) {
 				return false;
 			}

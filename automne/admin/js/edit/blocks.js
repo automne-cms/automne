@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: blocks.js,v 1.7 2009/03/06 10:51:23 sebastien Exp $
+  * $Id: blocks.js,v 1.8 2009/04/02 13:55:53 sebastien Exp $
   */
 Automne.block = function(config){
 	config = config || {};
@@ -155,17 +155,9 @@ Ext.extend(Automne.block, Ext.util.Observable, {
 			}
 		}
 		this.getBox();
-		//var y = (this.size.height - 20 > 0) ? this.position.y + this.size.height - 20 : this.position.y; 
 		var y = (this.size.height - 20 > 0) ? this.position.y + 2 : this.position.y; 
 		this.mask.setStyle('position', 'absolute');
 		this.mask.setDisplayed('block');
-		/*var right = false;
-		this.elements.each(function(el){
-			if (el.getStyle('float') == 'right') {
-				right = true;
-			}
-		}, this);*/
-		//this.mask.setBounds(this.position.x + (right ? (this.size.width - (position + 4)) : 0), y, (position + 4), 20);
 		this.mask.setBounds(this.position.x + parseInt((this.size.width - (position + 4)) / 2), y, (position + 4), 20);
 		this.mask.show();
 	},
@@ -240,25 +232,25 @@ Ext.extend(Automne.block, Ext.util.Observable, {
 		this.elements.removeClass('atm-block-on');
 		this.row.mouseOut();
 		//stop showing rows mask
-		Automne.content.stopRowsMask();
+		atmContent.stopRowsMask();
 		//disable buttons
-		if (parent.Ext.getCmp('editAddRow')) {
-			parent.Ext.getCmp('editAddRow').hide();
-			parent.Ext.getCmp('editSaveDraft').hide();
-			parent.Ext.getCmp('editValidateDraft').hide();
+		if (parent.Ext.getCmp('editAddRow'+ atmContent.editId)) {
+			parent.Ext.getCmp('editAddRow'+ atmContent.editId).hide();
+			parent.Ext.getCmp('editSaveDraft'+ atmContent.editId).hide();
+			parent.Ext.getCmp('editValidateDraft'+ atmContent.editId).hide();
 			//disable all tabs
 			this.disabledTabs = parent.Automne.tabPanels.disableTabs(['edit']);
 		}
 	},
 	startEditInterface: function() {
 		//allow row mask to be displayed
-		Automne.content.startRowsMask();
+		atmContent.startRowsMask();
 		//enable add row
-		if (parent.Ext.getCmp('editAddRow')) {
-			parent.Ext.getCmp('editAddRow').show();
+		if (parent.Ext.getCmp('editAddRow'+ atmContent.editId)) {
+			parent.Ext.getCmp('editAddRow'+ atmContent.editId).show();
 			//these buttons must be shown only if context allow it
-			parent.Ext.getCmp('editSaveDraft').setVisible(Automne.content.isValidable);
-			parent.Ext.getCmp('editValidateDraft').setVisible(Automne.content.isValidator);
+			parent.Ext.getCmp('editSaveDraft'+ atmContent.editId).setVisible(atmContent.isValidable);
+			parent.Ext.getCmp('editValidateDraft'+ atmContent.editId).setVisible(atmContent.isValidator);
 			//enable all tabs
 			parent.Automne.tabPanels.enableTabs(this.disabledTabs);
 			this.disabledTabs = [];

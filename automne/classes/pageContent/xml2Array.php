@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: xml2Array.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: xml2Array.php,v 1.2 2009/04/02 13:57:59 sebastien Exp $
 
 /**
   * Class CMS_xml2Array
@@ -34,14 +34,11 @@ class CMS_xml2Array extends CMS_grandFather
 	const ARRAY2XML_START_TAG = 1;
 	const ARRAY2XML_END_TAG = -1;
 	
-	const XML_PROTECTED_ENTITIES = "&,¤/< ,£µ";
-	const XML_UNTRANSLATED_ENTITIES = "amp,nbsp,lt,gt";
+	protected $_autoClosedTagsList = array('br', 'hr', 'meta', 'input', 'img', 'link', 'area', 'param', 'col', 'frame');
 	
 	protected $_params;
 	
 	protected $_arrOutput = array();
-	
-	protected $_autoclosedTag = array('br', 'hr', 'meta', 'input', 'img', 'link', 'area', 'param', 'col', 'frame');
 	
 	protected $_parsingError;
 	
@@ -63,20 +60,12 @@ class CMS_xml2Array extends CMS_grandFather
 			}
 			//add encoding declaration
 			$xml = '<?xml version="1.0" encoding="'.APPLICATION_DEFAULT_ENCODING.'"?>'."\n".$xml;
-			/*if ($this->_params & self::XML_PROTECT_ENTITIES) {
-				$xml = $this->_protectEntities($xml);
-			}*/
-			
-			
 			if ($this->_params & self::XML_PROTECT_ENTITIES) {
 				$xml = $this->_codeEntities($xml);
 			}
 			if ($this->_params & self::XML_CORRECT_ENTITIES) {
 				$xml = $this->_correctEntities($xml);
 			}
-			
-			//$xml = utf8_encode($xml);
-			//pr(htmlspecialchars($xml));
 			if(!xml_parse($parser, $xml )) {
 				$this->_parsingError = sprintf("Parse error %s at line %d",
 						xml_error_string(xml_get_error_code($parser)),
@@ -90,6 +79,10 @@ class CMS_xml2Array extends CMS_grandFather
 		}
 	}
 	
+	function getAutoClosedTagsList() {
+		return $this->_autoClosedTagsList;
+	}
+	
 	/**
 	  * Replaces the entities found in the text by special strings that will be translated back after parsing
 	  *
@@ -99,16 +92,19 @@ class CMS_xml2Array extends CMS_grandFather
 	  */
 	protected function _codeEntities($data)
 	{
-		$entities = explode(",", self::XML_UNTRANSLATED_ENTITIES);
-		foreach ($entities as $entity) {
-			$data = str_replace("&".$entity.";", "/".$entity."]", $data);
-		}
+		$entities = array(
+			'/amp]' => '&amp;',
+			'/nbsp]' => '&nbsp;',
+			'/lt]' => '&lt;',
+			'/gt]' => '&gt;',
+		);
+		$data = str_replace($entities, array_keys($entities), $data);
 		//translate ones that are not HTMLized
-		$entities = explode("/", self::XML_PROTECTED_ENTITIES);
-		foreach ($entities as $entity) {
-			$entity = explode(",", $entity);
-			$data = str_replace($entity[0], $entity[1], $data);
-		}
+		$entities = array(
+			'&' => '¤',
+			'< ' => '£µ',
+		);
+		$data = str_replace(array_keys($entities), $entities, $data);
 		return $data;
 	}
 	
@@ -121,11 +117,11 @@ class CMS_xml2Array extends CMS_grandFather
 	  */
 	protected function _correctEntities($data)
 	{
-		$entities = explode("/", self::XML_PROTECTED_ENTITIES);
-		foreach ($entities as $entity) {
-			$entity = explode(",", $entity);
-			$data = str_replace($entity[0], $entity[1], $data);
-		}
+		$entities = array(
+			'&' => '¤',
+			'< ' => '£µ',
+		);
+		$data = str_replace(array_keys($entities), $entities, $data);
 		return $data;
 	}
 	
@@ -138,10 +134,13 @@ class CMS_xml2Array extends CMS_grandFather
 	  */
 	protected function _decodeEntities($data)
 	{
-		$entities = explode(",", self::XML_UNTRANSLATED_ENTITIES);
-		foreach ($entities as $entity) {
-			$data = str_replace("/".$entity."]", "&".$entity.";", $data);
-		}
+		$entities = array(
+			'/amp]' => '&amp;',
+			'/nbsp]' => '&nbsp;',
+			'/lt]' => '&lt;',
+			'/gt]' => '&gt;',
+		);
+		$data = str_replace(array_keys($entities), $entities, $data);
 		return $data;
 	}
 	
@@ -152,24 +151,16 @@ class CMS_xml2Array extends CMS_grandFather
 	  * @return string
 	  * @access private
 	  */
-	function _uncorrectEntities($data)
+	protected function _uncorrectEntities($data)
 	{
-		$entities = explode("/", self::XML_PROTECTED_ENTITIES);
-		foreach ($entities as $entity) {
-			$entity = explode(",", $entity);
-			$data = str_replace($entity[1], $entity[0], $data);
-		}
+		$entities = array(
+			'&' => '¤',
+			'< ' => '£µ',
+		);
+		$data = str_replace($entities, array_keys($entities), $data);
 		return $data;
 	}
 	
-	/*protected function _protectEntities($data) {
-		return str_replace('&amp;amp;', '&amp;', str_replace('&', '&amp;', $data));
-	}
-	
-	protected function _unProtectEntities($data) {
-		return str_replace('&amp;', '&', $data);
-	}
-	*/
 	protected function _unProtectPIEntities($data) {
 		$replace = array(
 			'&amp;&amp;' => '&&',
@@ -198,14 +189,12 @@ class CMS_xml2Array extends CMS_grandFather
 	//called on data for xml
 	protected function _tagData($parser, $tagData) {
 		if($tagData) {
-			
 			if ($this->_params & self::XML_PROTECT_ENTITIES) {
 				$tagData = $this->_decodeEntities($tagData);
 			}
 			if ($this->_params & self::XML_CORRECT_ENTITIES) {
 				$tagData = $this->_uncorrectEntities($tagData);
 			}
-			
 			$last_element=count($this->_arrOutput)-1;
 			$this->_arrOutput[$last_element]['childrens'][] = array("textnode" => $tagData);
 		}
@@ -214,33 +203,22 @@ class CMS_xml2Array extends CMS_grandFather
 	//called on data for xml
 	protected function _charData($parser, $tagData) {
 		//here we have a mess with & so try to correct it
-		//static $last;
 		if($tagData) {
-			/*if ($last) {
-				//$tagData = $last.$tagData;
-				$tagData = preg_replace('#&amp;([a-z]+);#U', '&\1;', htmlspecialchars(htmlspecialchars_decode($last.$tagData)));
-				$last = null;
+			if ($this->_params & self::XML_PROTECT_ENTITIES) {
+				$tagData = $this->_decodeEntities($tagData);
 			}
-			if ($tagData == '&') {
-				$last = $tagData;
-			} else {*/
-				
-				if ($this->_params & self::XML_PROTECT_ENTITIES) {
-					$tagData = $this->_decodeEntities($tagData);
-				}
-				if ($this->_params & self::XML_CORRECT_ENTITIES) {
-					$tagData = $this->_uncorrectEntities($tagData);
-				}
-				
-				$last_element=count($this->_arrOutput)-1;
-				$this->_arrOutput[$last_element]['childrens'][] = array("textnode" => $tagData);
-			//}
+			if ($this->_params & self::XML_CORRECT_ENTITIES) {
+				$tagData = $this->_uncorrectEntities($tagData);
+			}
+			$last_element = count($this->_arrOutput)-1;
+			$this->_arrOutput[$last_element]['childrens'][] = array("textnode" => $tagData);
 		}
 	}
 	
 	//called when finished parsing
 	protected function _tagClosed($parser, $name) {
-		$this->_arrOutput[count($this->_arrOutput)-2]['childrens'][] = $this->_arrOutput[count($this->_arrOutput)-1];
+		$count = count($this->_arrOutput);
+		$this->_arrOutput[$count - 2]['childrens'][] = $this->_arrOutput[$count - 1];
 		array_pop($this->_arrOutput);
 	}
 	
@@ -248,8 +226,6 @@ class CMS_xml2Array extends CMS_grandFather
 	protected function _piData($parser, $piType, $piData) {
 		if(trim($piData) && $piType == 'php') {
 			$last_element=count($this->_arrOutput)-1;
-			
-			
 			if ($this->_params & self::XML_PROTECT_ENTITIES) {
 				$piData = $this->_decodeEntities($piData);
 			}
@@ -265,17 +241,9 @@ class CMS_xml2Array extends CMS_grandFather
 	
 	protected function _entityData($parser, $tagData) {
 		if(trim($tagData)) {
-			$last_element=count($this->_arrOutput)-1;
+			$last_element = count($this->_arrOutput)-1;
 			$this->_arrOutput[$last_element]['childrens'][] = array("textnode" => $tagData);
 		}
-	}
-	
-	protected function _parseXMLValue($tvalue)
-	{
-		//$tvalue = htmlentities($tvalue);
-		//$tvalue = $this->_protectEntities(htmlspecialchars($tvalue));
-		//$tvalue = htmlspecialchars($tvalue);
-		return $tvalue;
 	}
 	
 	function toXML(&$definition, $part = false)
@@ -289,19 +257,20 @@ class CMS_xml2Array extends CMS_grandFather
 			parent::raiseError("No definition found");
 			return '';
 		}
-		for ($c = 0; $c < count($definition); $c++){
+		$defLen = count($definition);
+		for ($c = 0; $c < $defLen; $c++){
 			//assign node value
           	if( isset($definition[$c]["textnode"]) ){
 				$result .= $definition[$c]["textnode"];
 			} elseif (isset($definition[$c]["phpnode"]) ){
 				$result .= '<?php '.$definition[$c]["phpnode"].' ?>';
 			} else {
-				$autoclosed = (in_array($definition[$c]["nodename"], $this->_autoclosedTag) || (strpos($definition[$c]["nodename"], 'atm') === 0 && !isset($definition[$c]["childrens"])));
+				$autoclosed = (in_array($definition[$c]["nodename"], $this->_autoClosedTagsList) || (strpos($definition[$c]["nodename"], 'atm') === 0 && !isset($definition[$c]["childrens"])));
 				if (!$part || $part == self::ARRAY2XML_START_TAG) {
 					$result .='<' . $definition[$c]["nodename"];
 					if(is_array($definition[$c]["attributes"])) {
 						while (list($key, $value) = each($definition[$c]["attributes"])){
-							$result .=' ' . $key.'="' . $this->_parseXMLValue($value) . '"';
+							$result .=' ' . $key.'="' . $value . '"';
 						}
 					}
 					$result .= $autoclosed ? ' />' : '>';

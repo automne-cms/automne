@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_definition_funtions.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: poly_definition_funtions.php,v 1.2 2009/04/02 13:58:00 sebastien Exp $
 
 /**
   * static Class CMS_poly_definition_functions
@@ -362,7 +362,7 @@ class CMS_poly_definition_functions
 					if (isset($_REQUEST['polymodFields'][$fieldID])) {
 						if (!$item->setValues($fieldID, $_REQUEST,'')) {
 							$polymodFormsError[$formID]['malformed'][] = $fieldID;
-							} elseif (!$polymodFormsError[$formID]['required'][$fieldID] && function_exists('form_'.$formID.'_'.$fieldID)
+							} elseif (!isset($polymodFormsError[$formID]['required'][$fieldID]) && function_exists('form_'.$formID.'_'.$fieldID)
 										&& !call_user_func('form_'.$formID.'_'.$fieldID, $formID, $fieldID, $item)) {
 								$polymodFormsError[$formID]['malformed'][] = $fieldID;
 						}

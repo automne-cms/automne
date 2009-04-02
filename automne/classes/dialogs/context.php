@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: context.php,v 1.3 2009/03/02 11:28:14 sebastien Exp $
+// $Id: context.php,v 1.4 2009/04/02 13:57:59 sebastien Exp $
 
 /**
   * Class CMS_context
@@ -146,6 +146,23 @@ class CMS_context extends CMS_grandFather
 	{
 		if (is_a($user, "CMS_profile_user")) {
 			$this->_userID = $user->getUserId();
+			$sql = "
+			select 
+				id_ses 
+			from 
+				sessions 
+			where 
+				phpid_ses='".sensitiveIO::sanitizeSQLString(session_id())."' 
+				and user_ses='".sensitiveIO::sanitizeSQLString($this->_userID)."'";
+			$q = new CMS_query($sql);
+			if ($q->getNumRows() > 0) {
+				//delete old session record
+				$sql = "
+					delete from
+						sessions
+					where id_ses = '".$q->getValue('id_ses')."'";
+				$q = new CMS_query($sql);
+			}
 			$sql = "
 				insert into
 					sessions
@@ -338,6 +355,8 @@ class CMS_context extends CMS_grandFather
 					and TO_DAYS(NOW()) >= cookie_expire_ses
 				)
 		";
+		//$date = new CMS_date();
+		//$date->raiseError($sql);
 		$q = new CMS_query($sql);
 		if ($q->getNumRows()) {
 			// Remove locks
@@ -377,18 +396,18 @@ class CMS_context extends CMS_grandFather
 				where
 					phpid_ses='".session_id()."'
 					and http_user_agent_ses like '".SensitiveIO::sanitizeSQLString($_SERVER['HTTP_USER_AGENT'])."'
-				";
-				if (CHECK_REMOTE_IP_MASK) {
-					//Check for a range in IPv4 or for the exact address in IPv6
-					if (filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-						$a_ip_seq = @explode(".", $_SERVER['REMOTE_ADDR']);
-						$sql .= "and remote_addr_ses like '".SensitiveIO::sanitizeSQLString($a_ip_seq[0].".".$a_ip_seq[1].".")."%'
-						";
-					} else {
-						$sql .= "and remote_addr_ses = '".SensitiveIO::sanitizeSQLString($_SERVER['REMOTE_ADDR'])."'
-						";
-					}
+			";
+			if (CHECK_REMOTE_IP_MASK) {
+				//Check for a range in IPv4 or for the exact address in IPv6
+				if (filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+					$a_ip_seq = @explode(".", $_SERVER['REMOTE_ADDR']);
+					$sql .= " and remote_addr_ses like '".SensitiveIO::sanitizeSQLString($a_ip_seq[0].".".$a_ip_seq[1].".")."%'
+					";
+				} else {
+					$sql .= " and remote_addr_ses = '".SensitiveIO::sanitizeSQLString($_SERVER['REMOTE_ADDR'])."'
+					";
 				}
+			}
 			$q = new CMS_query($sql);
 			if ($q->getNumRows()) {
 				$sql = "

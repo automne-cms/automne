@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: date.php,v 1.2 2009/02/03 14:26:36 sebastien Exp $
+// $Id: date.php,v 1.3 2009/04/02 13:57:59 sebastien Exp $
 
 /**
   * Class CMS_date
@@ -237,15 +237,19 @@ class CMS_date extends CMS_grandFather
 	function setYear($value)
 	{
 		if(!ctype_digit($value)){
-        	$this->raiseError('Value must be numeric : '.$value);
-        	return false;
-        }
-		$y = $this->_fillWithZeros($value, 4);
-		if ($y === false) {
-			$this->raiseError("Incorrect year : ".$value);
+			$this->_raiseError(__CLASS__.' : '.__FUNCTION__.' : value must be numeric : '.$value);
+			return false;
+		}
+		//$value = $this->_fillWithZeros($value, 4);
+		$value = (int) $value;
+		if ($value < 100) {
+			$value += ($value > 30) ? 1900 : 2000;
+		}
+		if (!$value || strlen((string) $value) != 4) {
+			$this->_raiseError("Date : incorrect year : ".$value);
 			return false;
 		} else {
-			$this->_year = $y;
+			$this->_year = $value;
 			return true;
 		}
 	}

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: validations.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: validations.php,v 1.2 2009/04/02 13:55:55 sebastien Exp $
 
 /**
   * PHP page : Load page validations window.
@@ -96,9 +96,11 @@ if (!$editions && !$resource) {
 			}
 		} else {
 			$validations = $mod->getValidations($cms_user);
-			foreach ($validations as $aValidation) {
-				if ($aValidation->getResourceID() == $resource->getID() && !$aValidation->hasError()) {
-					$validation = $aValidation;
+			if (is_array($validations)) {
+				foreach ($validations as $aValidation) {
+					if ($aValidation->getResourceID() == $resource->getID() && !$aValidation->hasError()) {
+						$validation = $aValidation;
+					}
 				}
 			}
 		}
@@ -558,7 +560,7 @@ $jscontent = <<<END
 					}]
 				}],
 				buttons: [{
-					text: 					'Valider cet élément',
+					text: 					'Valider ce choix',
 					handler:				function() {
 						var form = validateForm.getForm();
 						//set mask events on form validation

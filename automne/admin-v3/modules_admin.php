@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modules_admin.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: modules_admin.php,v 1.2 2009/04/02 13:56:08 sebastien Exp $
 
 /**
   * PHP page : modules admin
@@ -107,7 +107,7 @@ case "validate_module":
 		$module->setAndWriteParameters($new_parameters);
 	}
 	if ($_GET["module"]=='standard') {
-		$dialog->reloadAll();
+		//$dialog->reloadAll();
 	}
 	$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 	if ($_GET["module"]=='standard') {

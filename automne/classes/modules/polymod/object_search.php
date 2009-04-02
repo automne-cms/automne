@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_search.php,v 1.4 2009/03/06 10:52:34 sebastien Exp $
+// $Id: object_search.php,v 1.5 2009/04/02 13:58:00 sebastien Exp $
 
 /**
   * Class CMS_object_search
@@ -157,10 +157,8 @@ class CMS_object_search extends CMS_grandFather
 		
 		//add search object type condition
 		$this->addWhereCondition("object", $this->_object);
-		// add user permissions on module if categories used
-		// always for admin (edited)
-		// only if APPLICATION_ENFORCES_ACCESS_CONTROL in public pages
-		if ($this->_object->hasCategories() && (!$this->_public || ($this->_public && APPLICATION_ENFORCES_ACCESS_CONTROL))) {
+		///if object has categories and if cms_user exists, check user rights
+		if ($this->_object->hasCategories() && is_object($cms_user)) {
 			$this->addWhereCondition("profile", $cms_user);
 		}
 		
@@ -570,7 +568,8 @@ class CMS_object_search extends CMS_grandFather
 				case "profile":
 					//get field of categories for searched object type (assume it uses categories)
 					$categoriesFields = CMS_poly_object_catalog::objectHasCategories($this->_object->getId());
-					if (APPLICATION_ENFORCES_ACCESS_CONTROL && !$this->_public)  {
+					//BUG : in websites without APPLICATION_ENFORCES_ACCESS_CONTROL, backend rights on categories are checked on visibility instead of edition
+					if (/*APPLICATION_ENFORCES_ACCESS_CONTROL && */!$this->_public)  {
 						$clearance = CLEARANCE_MODULE_EDIT;
 						$strict = true;
 					} else {
@@ -1335,9 +1334,9 @@ class CMS_object_search extends CMS_grandFather
 				$objectValues = $subObjectValues;
 				$objectValues[$aResultID] = &$this->_values[$aResultID];
 				//instanciate object
-				$obj = &new CMS_poly_object($this->_object->getID(), $aResultID, $objectValues, $this->_public, $loadSubObjects, $loadSubObjectsValues);
+				$obj = new CMS_poly_object($this->_object->getID(), $aResultID, $objectValues, $this->_public, $loadSubObjects, $loadSubObjectsValues);
 				if (!$obj->hasError()) {
-					$items[$aResultID] = &$obj;
+					$items[$aResultID] = $obj;
 					$count++;
 				}
 			}

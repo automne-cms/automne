@@ -13,7 +13,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_boolean.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: object_boolean.php,v 1.2 2009/04/02 13:58:00 sebastien Exp $
 
 /**
   * Class CMS_object_integer
@@ -175,7 +175,7 @@ class CMS_object_boolean extends CMS_object_common
 	  */
 	function setValues($values,$prefixName) {
 		if (is_object($this->_subfieldValues[0])) {
-			$value = $values[$prefixName.$this->_field->getID().'_0'];
+			$value = isset($values[$prefixName.$this->_field->getID().'_0']) ? $values[$prefixName.$this->_field->getID().'_0'] : 0;
 			// Convert boolean to integer
 			$value = ($value) ? 1 : 0;
 			if (!$this->_subfieldValues[0]->setValue($value)) {

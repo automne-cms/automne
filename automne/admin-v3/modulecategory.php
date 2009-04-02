@@ -13,7 +13,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: modulecategory.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: modulecategory.php,v 1.2 2009/04/02 13:56:08 sebastien Exp $
 
 /**
   * PHP page : module admin frontend
@@ -78,30 +78,30 @@ array_unshift($all_languages, $userlanguage);
 // +----------------------------------------------------------------------+
 
 // Current category object to manipulate
-$item = new CMS_moduleCategory($_POST["item"]);
+$item = new CMS_moduleCategory($_REQUEST["item"]);
 $item->setAttribute('language', $cms_language);
 $item->setAttribute('moduleCodename', $cms_module_codename);
-if (!$_POST["parentID"]) {
+if (!$_REQUEST["parentID"]) {
 	$parentCategory = $item->getParent();
 } else {
 	// Parent category
-	$parentCategory = CMS_moduleCategories_catalog::getById($_POST["parentID"]);
+	$parentCategory = CMS_moduleCategories_catalog::getById($_REQUEST["parentID"]);
 }
 $parentCategory->setAttribute('language', $cms_language);
 
-switch ($_POST["cms_action"]) {
+switch ($_REQUEST["cms_action"]) {
 case "validate":
 	//checks and assignments
 	$cms_message = "";
 	$item->setDebug(false);
 	
 	//check mandatory fields
-	if (!$_POST["label_".$cms_module->getDefaultLanguageCodename()]) {
+	if (!$_REQUEST["label_".$cms_module->getDefaultLanguageCodename()]) {
 		$cms_message .= $cms_language->getMessage(MESSAGE_FORM_ERROR_MANDATORY_FIELDS);
 	} else {
 		// If insertion, must be saved once added to its parent
 		if (!$cms_message) {
-			$newParentCategory = CMS_moduleCategories_catalog::getById($_POST["parentID"]);
+			$newParentCategory = CMS_moduleCategories_catalog::getById($_REQUEST["parentID"]);
 			if (!$newParentCategory->hasError()) {
 				// Detach from current category
 				$oldParentCategory = $item->getParent();
@@ -129,12 +129,12 @@ case "validate":
 	// Save all translated datas
 	foreach ($all_languages as $aLanguage) {
 		$lng = $aLanguage->getCode();
-		$item->setLabel($_POST["label_".$lng], $aLanguage);
-		$item->setDescription($_POST["description_".$lng], $aLanguage);
-		$item->setFile($_POST["file_".$lng], $aLanguage);
+		$item->setLabel($_REQUEST["label_".$lng], $aLanguage);
+		$item->setDescription($_REQUEST["description_".$lng], $aLanguage);
+		$item->setFile($_REQUEST["file_".$lng], $aLanguage);
 		
 		// File upload management
-		if ($_POST["edit_file_".$lng]) {
+		if ($_REQUEST["edit_file_".$lng]) {
 			$o_file_upload = new CMS_fileUpload("file_".$lng, true);
 			$o_file_upload->setPath('origin', $item->getFilePath($aLanguage, true, PATH_RELATIVETO_FILESYSTEM));
 			// Delete previous file
@@ -142,7 +142,8 @@ case "validate":
 			// Proceed to upload if needed (must write to persistence to get the item ID)
 			if ($_FILES["file_".$lng]["name"] && $item->writeToPersistence()) {
 				$destination_path = $item->getFilePath($aLanguage, true, PATH_RELATIVETO_FILESYSTEM, false);
-				$destination_path .= "/cat-".$item->getID()."-file".strrchr($_FILES["file_".$lng]["name"], ".");
+				$extension = pathinfo($_FILES["file_".$lng]["name"], PATHINFO_EXTENSION);
+				$destination_path .= "/cat-".$item->getID()."-file".$extension;
 				$o_file_upload->setPath('destination', $destination_path);
 				if (!$o_file_upload->doUpload()) {
 					$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_FILE_ERROR)."\n";
@@ -155,9 +156,10 @@ case "validate":
 	
 	// Icon upload management
 	$o_file_upload = new CMS_fileUpload_dialog("file");
-	$o_file_upload->setOrigin($item->getIconPath(true, PATH_RELATIVETO_FILESYSTEM), $_POST["edit_icon"]);
+	$o_file_upload->setOrigin($item->getIconPath(true, PATH_RELATIVETO_FILESYSTEM), $_REQUEST["edit_icon"]);
 	if ($o_file_upload->ready() && $item->writeToPersistence()) {
-		$o_file_upload->setDestination($item->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, false)."/cat-".$item->getID()."-icon".strrchr($_FILES["file_".$lng]["name"], "."));
+		$extension = pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
+		$o_file_upload->setDestination($item->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, false)."/cat-".$item->getID()."-icon".$extension);
 	}
 	if (!$o_file_upload->doUpload()) {
 		$cms_message .= $o_file_upload->getErrorMessage($cms_language);
@@ -171,8 +173,8 @@ case "validate":
 	}
 	$item->setDebug(SYSTEM_DEBUG);
 	if (!$cms_message) {
-		header("Location: modulecategories.php?root=".$item->getAttribute('rootID')."&cms_message_id=".MESSAGE_ACTION_OPERATION_DONE."&".session_name()."=".session_id());
-		exit;
+		//header("Location: modulecategories.php?root=".$item->getAttribute('rootID')."&cms_message_id=".MESSAGE_ACTION_OPERATION_DONE."&".session_name()."=".session_id());
+		//exit;
 	}
 	break;
 }
@@ -193,7 +195,7 @@ if (!function_exists("build_category_tree_options")) {
 		
 		global $cms_module_codename, $cms_language, $parentCategory, $cms_module, $cms_user;
 		//if category is not itself (to avoid infinite loop in lineage)
-		if ($category->getID() != $_POST["item"]) {
+		if ($category->getID() != $_REQUEST["item"]) {
 			$category->setAttribute('language', $cms_language);
 			$sel = ($parentCategory->getId() > 0 && $parentCategory->getId() == $category->getID()) ? ' selected="selected"' : '' ;
 			$label = htmlspecialchars($category->getLabel());
@@ -233,7 +235,7 @@ $dialog->setTitle($cms_language->getMessage(MESSAGE_PAGE_TITLE_MODULE, array($cm
 if ($_REQUEST["backlink"]) {
 	$dialog->setBacklink($_REQUEST["backlink"]);
 } else {
-	$dialog->setBacklink("modulecategories.php");
+	//$dialog->setBacklink("modulecategories.php");
 }
 if ($cms_message) {
 	$dialog->setActionMessage($cms_message);
@@ -254,7 +256,7 @@ $content = '
 	<form name="Formular" action="'.$_SERVER["SCRIPT_NAME"].'" method="post" enctype="multipart/form-data">
 	<input type="hidden" name="cms_action" value="validate" />
 	<input type="hidden" name="backlink" value="'.$_REQUEST["backlink"].'" />
-	<input type="hidden" name="item" value="'.$_POST["item"].'" />';
+	<input type="hidden" name="item" value="'.$_REQUEST["item"].'" />';
 if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 	// Select parent category
 	$attrs = array(
@@ -269,7 +271,7 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 	$root_categories = CMS_module::getModuleCategories($attrs);
 } else {
 	$parentID = $item->getAttribute('parentID');
-	if ((sensitiveIO::isPositiveInteger($parentID) && $cms_user->hasModuleCategoryClearance($parentID, CLEARANCE_MODULE_MANAGE, $cms_module_codename)) || !$_POST["item"]) {
+	if ((sensitiveIO::isPositiveInteger($parentID) && $cms_user->hasModuleCategoryClearance($parentID, CLEARANCE_MODULE_MANAGE, $cms_module_codename)) || !$_REQUEST["item"]) {
 		$root_categories = $cms_user->getRootModuleCategoriesManagable($cms_module_codename, true);
 	}
 }

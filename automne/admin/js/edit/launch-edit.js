@@ -5,26 +5,16 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: launch-edit.js,v 1.2 2009/03/02 11:27:02 sebastien Exp $
+  * $Id: launch-edit.js,v 1.3 2009/04/02 13:55:53 sebastien Exp $
   */
 var atmRowsDatas = {};
 var atmBlocksDatas = {};
 var atmCSDatas = {};
+var atmContent;
 
 Ext.onReady(function(){
-	//copy some parent vars
-	if (parent) {
-		pr = parent.pr;
-		Automne.locales = parent.Automne.locales;
-		Automne.message = parent.Automne.message;
-		Ext.MessageBox = parent.Ext.MessageBox;
-	}
-	//set validator status
-	Automne.content.isValidator = atmIsValidator;
-	//set validator status
-	Automne.content.isValidable = atmIsValidable;
-	//set preview status
-	Automne.content.hasPreview = atmHasPreview;
+	//init edition with editId from parent
+	atmContent = new Automne.content(Ext.urlDecode(window.location.search).editId);
 	//launch edition
-	Automne.content.edit(atmCSDatas, atmRowsDatas, atmBlocksDatas);
+	atmContent.edit(atmCSDatas, atmRowsDatas, atmBlocksDatas);
 });

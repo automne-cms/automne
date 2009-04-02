@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 404.php,v 1.2 2009/03/02 11:23:21 sebastien Exp $
+// $Id: 404.php,v 1.3 2009/04/02 13:54:46 sebastien Exp $
 
 /**
   * Automne 404 error handler
@@ -94,7 +94,7 @@ if (ERROR404_EMAIL_ALERT && sensitiveIO::isValidEmail(APPLICATION_MAINTAINER_EMA
 	$mail= new CMS_email();
 	$mail->setSubject("404 Error in ".APPLICATION_LABEL);
 	$mail->setBody($body);
-	$mail->setEmailFrom(APPLICATION_MAINTAINER_EMAIL."<".APPLICATION_MAINTAINER_EMAIL.">");
+	$mail->setEmailFrom(APPLICATION_POSTMASTER_EMAIL."<".APPLICATION_POSTMASTER_EMAIL.">");
 	$mail->setEmailTo(APPLICATION_MAINTAINER_EMAIL);
 	
 	$mainURL = CMS_websitesCatalog::getMainURL();

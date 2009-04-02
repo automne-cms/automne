@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: validations-controler.php,v 1.2 2009/03/03 15:11:07 sebastien Exp $
+// $Id: validations-controler.php,v 1.3 2009/04/02 13:55:55 sebastien Exp $
 
 /**
   * PHP controler : Receive validations actions
@@ -88,6 +88,7 @@ $jscontent = '';
 
 switch ($action) {
 	case 'validateById':
+		$validationIds = array();
 		//load module
 		$mod = CMS_modulesCatalog::getByCodename($module);
 		//load module resource by ID
@@ -99,22 +100,20 @@ switch ($action) {
 			if (method_exists($mod, "getValidationByID")) {
 				$validation = $mod->getValidationByID($resource->getID(),$cms_user);
 				if (is_a($validation,"CMS_resourceValidation") && !$validation->hasError()) {
-					$validationId = $validation->getID();
+					$validationIds[] = $validation->getID();
 				}
 			} else {
 				$validations = $mod->getValidations($cms_user);
 				foreach ($validations as $aValidation) {
 					if ($aValidation->getResourceID() == $resource->getID()) {
-						$validationId = $aValidation->getID();
+						$validationIds[] = $aValidation->getID();
 					}
 				}
 			}
 		}
-		if (!$validationId) {//stop
+		if (!sizeof($validationIds)) {//stop
 			CMS_grandFather::raiseError('No validation founded for module '.$module.' and resource ID '.$resource->getID());
 			break;
-		} else {
-			$validationIds = array($validationId);
 		}
 		$acceptStatus = VALIDATION_OPTION_ACCEPT;
 	case 'batch-validate':

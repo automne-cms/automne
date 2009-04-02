@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_file.php,v 1.2 2009/03/02 11:28:56 sebastien Exp $
+// $Id: object_file.php,v 1.3 2009/04/02 13:58:00 sebastien Exp $
 
 /**
   * Class CMS_object_file
@@ -276,7 +276,7 @@ class CMS_object_file extends CMS_object_common
 	  */
 	function checkMandatory($values,$prefixName) {
 		//check for image extension before doing anything
-		if ($_FILES[$prefixName.$this->_field->getID().'_1']["name"]
+		if (isset($_FILES[$prefixName.$this->_field->getID().'_1']) && $_FILES[$prefixName.$this->_field->getID().'_1']["name"]
 			 && !in_array(strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_1']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
 			return false;
 		}
@@ -302,7 +302,7 @@ class CMS_object_file extends CMS_object_common
 		//check files extension
 		if ($params['allowedType'] || $params['disallowedType']) {
 			//for external file if any
-			if ($values[$prefixName.$this->_field->getID().'_externalfile']) {
+			if (isset($values[$prefixName.$this->_field->getID().'_externalfile']) && $values[$prefixName.$this->_field->getID().'_externalfile']) {
 				$extension = strtolower(pathinfo($values[$prefixName.$this->_field->getID().'_externalfile'], PATHINFO_EXTENSION));
 				if (!$extension) return false;
 				//extension must be in allowed list
@@ -315,7 +315,7 @@ class CMS_object_file extends CMS_object_common
 				}
 			}
 			//for uploaded file if any
-			if ($_FILES[$prefixName.$this->_field->getID().'_4']['name']) {
+			if (isset($_FILES[$prefixName.$this->_field->getID().'_4']) && $_FILES[$prefixName.$this->_field->getID().'_4']['name']) {
 				$extension = strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_4']['name'], PATHINFO_EXTENSION));
 				if (!$extension) return false;
 				//extension must be in allowed list
@@ -417,7 +417,7 @@ class CMS_object_file extends CMS_object_common
 			</tr>';
 		}
 		// If delete old file and no new file, set "delete" hidden input to mandatory check
-		if(!$_FILES[$prefixName.$this->_field->getID().'_4']['name'] && $_REQUEST[$prefixName.$this->_field->getID().'_delete']){
+		if((!isset($_FILES[$prefixName.$this->_field->getID().'_4']) || !$_FILES[$prefixName.$this->_field->getID().'_4']['name']) && isset($_REQUEST[$prefixName.$this->_field->getID().'_delete']) && $_REQUEST[$prefixName.$this->_field->getID().'_delete']){
 			$html .='<input name="'.$prefixName.$this->_field->getID().'_delete" id="'.$prefixName.$this->_field->getID().'_delete" type="hidden" value="1" />';
 		}
 		//current file
@@ -521,7 +521,7 @@ class CMS_object_file extends CMS_object_common
 		//get module codename
 		$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
 		//delete old files ?
-		if ($values[$prefixName.$this->_field->getID().'_delete'] == 1) {
+		if (isset($values[$prefixName.$this->_field->getID().'_delete']) && $values[$prefixName.$this->_field->getID().'_delete'] == 1) {
 			//thumbnail
 			if ($this->_subfieldValues[1]->getValue()) {
 				@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[1]->getValue());
@@ -544,12 +544,12 @@ class CMS_object_file extends CMS_object_common
 			}
 		}
 		
-		if (!$this->_subfieldValues[0]->setValue(htmlspecialchars($values[$prefixName.$this->_field->getID().'_0']))) {
+		if (!isset($values[$prefixName.$this->_field->getID().'_0']) && !$this->_subfieldValues[0]->setValue(htmlspecialchars($values[$prefixName.$this->_field->getID().'_0']))) {
 			return false;
 		}
 		
 		//thumbnail
-		if ($_FILES[$prefixName.$this->_field->getID().'_1']['name'] && !$_FILES[$prefixName.$this->_field->getID().'_1']['error']) {
+		if (isset($_FILES[$prefixName.$this->_field->getID().'_1']) && $_FILES[$prefixName.$this->_field->getID().'_1']['name'] && !$_FILES[$prefixName.$this->_field->getID().'_1']['error']) {
 			//check for image type before doing anything
 			if (!in_array(strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_1']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
 				return false;
@@ -643,16 +643,16 @@ class CMS_object_file extends CMS_object_common
 					return false;
 				}
 			}
-		} elseif ($_FILES[$prefixName.$this->_field->getID().'_1']['name'] && $_FILES[$prefixName.$this->_field->getID().'_1']['error'] != 0) {
+		} elseif (isset($_FILES[$prefixName.$this->_field->getID().'_1']) && $_FILES[$prefixName.$this->_field->getID().'_1']['name'] && $_FILES[$prefixName.$this->_field->getID().'_1']['error'] != 0) {
 			return false;
-		} elseif ($values[$prefixName.$this->_field->getID().'_1_hidden'] && $values[$prefixName.$this->_field->getID().'_delete'] != 1) {
+		} elseif (isset($values[$prefixName.$this->_field->getID().'_1_hidden']) && $values[$prefixName.$this->_field->getID().'_1_hidden'] && $values[$prefixName.$this->_field->getID().'_delete'] != 1) {
 			if(!$this->_subfieldValues[1]->setValue($values[$prefixName.$this->_field->getID().'_1_hidden'])) {
 				return false;
 			}
 		}
 		//File
 		//1- from external location
-		if ($values[$prefixName.$this->_field->getID().'_externalfile']) {
+		if (isset($values[$prefixName.$this->_field->getID().'_externalfile']) && $values[$prefixName.$this->_field->getID().'_externalfile']) {
 			//destroy old file if any
 			if ($this->_subfieldValues[4]->getValue()) {
 				@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[4]->getValue());
@@ -744,7 +744,7 @@ class CMS_object_file extends CMS_object_common
 			}*/
 		} else
 		//2- from post
-		if ($_FILES[$prefixName.$this->_field->getID().'_4']['name'] && !$_FILES[$prefixName.$this->_field->getID().'_4']['error']) {
+		if (isset($_FILES[$prefixName.$this->_field->getID().'_4']) && $_FILES[$prefixName.$this->_field->getID().'_4']['name'] && !$_FILES[$prefixName.$this->_field->getID().'_4']['error']) {
 			//check file extension
 			if ($params['allowedType'] || $params['disallowedType']) {
 				$extension = strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_4']['name'], PATHINFO_EXTENSION));
@@ -800,11 +800,11 @@ class CMS_object_file extends CMS_object_common
 			if (!$this->_subfieldValues[2]->setValue($filesize)) {
 				return false;
 			}
-		} elseif ($_FILES[$prefixName.$this->_field->getID().'_4']['name'] && $_FILES[$prefixName.$this->_field->getID().'_4']['error'] != 0) {
+		} elseif (isset($_FILES[$prefixName.$this->_field->getID().'_4']) && $_FILES[$prefixName.$this->_field->getID().'_4']['name'] && $_FILES[$prefixName.$this->_field->getID().'_4']['error'] != 0) {
 			return false;
 		} else
 		//from hidden fields (previously set but not already saved)
-		if ($values[$prefixName.$this->_field->getID().'_4_hidden'] && $values[$prefixName.$this->_field->getID().'_delete'] != 1) {
+		if (isset($values[$prefixName.$this->_field->getID().'_4_hidden']) && $values[$prefixName.$this->_field->getID().'_4_hidden'] && $values[$prefixName.$this->_field->getID().'_delete'] != 1) {
 			//set label as image name if none set
 			if ($values[$prefixName.$this->_field->getID().'_0']) {
 				if (!$this->_subfieldValues[0]->setValue(htmlspecialchars($values[$prefixName.$this->_field->getID().'_0']))) {

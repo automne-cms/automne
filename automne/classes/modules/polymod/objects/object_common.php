@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_common.php,v 1.2 2009/02/03 14:27:35 sebastien Exp $
+// $Id: object_common.php,v 1.3 2009/04/02 13:58:00 sebastien Exp $
 
 /**
   * Class CMS_object_common
@@ -153,11 +153,13 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @static
       */
 	function serializeHTMLParameters($inputParams) {
-		$htmlParameters = '';
-		foreach ($inputParams as $k => $v) {
-			if (in_array($k, array('id','class','cols','size','rows','style','tabindex','disabled','dir','lang','width','height','onchange',))) {
-				$htmlParameters .= ' '.$k.'="'.$v.'"';
-			}
+		$htmlParameters = '';		
+		if(is_array($inputParams)){
+		    foreach ($inputParams as $k => $v) {
+			    if (in_array($k, array('id','class','cols','size','rows','style','tabindex','disabled','dir','lang','width','height','onchange',))) {
+				    $htmlParameters .= ' '.$k.'="'.$v.'"';
+			    }
+		    }
 		}
 		return $htmlParameters;
 	}

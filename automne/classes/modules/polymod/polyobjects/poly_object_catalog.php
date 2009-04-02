@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object_catalog.php,v 1.3 2009/03/03 15:12:57 sebastien Exp $
+// $Id: poly_object_catalog.php,v 1.4 2009/04/02 13:58:00 sebastien Exp $
 
 /**
   * static Class CMS_poly_object_catalog
@@ -462,7 +462,7 @@ class CMS_poly_object_catalog
 		if ($loadSubObjects) {
 			$items = CMS_poly_object_catalog::getAllObjects($objectID, $public, $searchConditions, true);
 		} else {
-			$items = CMS_poly_object_catalog::getAllObjects($objectID, $public, $searchConditions, true, POLYMOD_SEARCH_RETURN_OBJECTSLIGHT_EDITED);
+			$items = CMS_poly_object_catalog::getAllObjects($objectID, $public, $searchConditions, true, CMS_object_search::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT_EDITED);
 		}
 		foreach ($items as $item) {
 			$listNames[$paramsHash][$item->getID()] = $item->getLabel();

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object_definition.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: poly_object_definition.php,v 1.2 2009/04/02 13:58:00 sebastien Exp $
 
 /**
   * Class CMS_poly_object_definition
@@ -137,18 +137,18 @@ class CMS_poly_object_definition extends CMS_grandFather
 			$datas = $dbValues;
 		}
 		if (is_array($datas) && $datas) {
-			$this->_ID = (int) $datas['id_mod'];
-			$this->_objectValues["labelID"] = (int) $datas['label_id_mod'];
-			$this->_objectValues["descriptionID"] = (int) $datas['description_id_mod'];
-			$this->_objectValues["resourceUsage"] = (int) $datas['resource_usage_mod'];
-			$this->_objectValues["admineditable"] = (int) $datas['admineditable_mod'];
-			$this->_objectValues["module"] = $datas['module_mod'];
-			$this->_objectValues["composedLabel"] = $datas['composedLabel_mod'];
-			$this->_objectValues["previewURL"] = $datas['previewURL_mod'];
-			$this->_objectValues["indexable"] = ($datas['indexable_mod']) ? 1 : 0;
-			$this->_objectValues["indexURL"] = $datas['indexURL_mod'];
-			$this->_objectValues["compiledIndexURL"] = $datas['compiledIndexURL_mod'];
-			$this->_objectValues["resultsDefinition"] = $datas['resultsDefinition_mod'];
+			$this->_ID = isset($datas['id_mod']) ? (int) $datas['id_mod'] : 0;
+			$this->_objectValues["labelID"] = isset($datas['label_id_mod']) ? (int) $datas['label_id_mod'] : 0;
+			$this->_objectValues["descriptionID"] = isset($datas['description_id_mod']) ? (int) $datas['description_id_mod'] : 0;
+			$this->_objectValues["resourceUsage"] = isset($datas['resource_usage_mod']) ? (int) $datas['resource_usage_mod'] : 0;
+			$this->_objectValues["admineditable"] = isset($datas['admineditable_mod']) ? (int) $datas['admineditable_mod'] : 0;
+			$this->_objectValues["module"] = isset($datas['module_mod']) ? $datas['module_mod'] : '';
+			$this->_objectValues["composedLabel"] = isset($datas['composedLabel_mod']) ? $datas['composedLabel_mod'] : '';
+			$this->_objectValues["previewURL"] = isset($datas['previewURL_mod']) ? $datas['previewURL_mod'] : '';
+			$this->_objectValues["indexable"] = (isset($datas['indexable_mod']) && $datas['indexable_mod']) ? 1 : 0;
+			$this->_objectValues["indexURL"] = isset($datas['indexURL_mod']) ? $datas['indexURL_mod'] : '';
+			$this->_objectValues["compiledIndexURL"] = isset($datas['compiledIndexURL_mod']) ? $datas['compiledIndexURL_mod'] : '';
+			$this->_objectValues["resultsDefinition"] = isset($datas['resultsDefinition_mod']) ? $datas['resultsDefinition_mod'] : '';
 		}
 	}
 	

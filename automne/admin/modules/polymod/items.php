@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: items.php,v 1.4 2009/03/06 10:51:14 sebastien Exp $
+// $Id: items.php,v 1.5 2009/04/02 13:55:53 sebastien Exp $
 
 /**
   * PHP page : Load polymod items search window.
@@ -650,10 +650,14 @@ $jscontent = <<<END
 							delete objectsWindows[window.id];
 							//refresh search list
 							moduleObjectWindow.search();
+							//enable button to allow creation of a other items
+							Ext.getCmp('{$winId}createItem').enable();
 						}}
 					});
 					//display window
 					objectsWindows[windowId].show(button.getEl());
+					//disable button to avoid creation of a second item
+					button.disable();
 				}
 			},
 			scope:		resultsPanel

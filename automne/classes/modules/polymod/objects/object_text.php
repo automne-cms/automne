@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_text.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: object_text.php,v 1.2 2009/04/02 13:58:00 sebastien Exp $
 
 /**
   * Class CMS_object_text
@@ -241,7 +241,7 @@ class CMS_object_text extends CMS_object_common
 		$params = $this->getParamsValues();
 		if (!$params['html']) {
 			//remove html characters if any then convert line breaks to <br /> tags
-			$value = nl2br(htmlspecialchars(strip_tags($values[$prefixName.$this->_field->getID().'_0'])));
+			$value = isset($values[$prefixName.$this->_field->getID().'_0']) ? nl2br(htmlspecialchars(strip_tags($values[$prefixName.$this->_field->getID().'_0']))) : '';
 		} else {
 			$value = FCKeditor::createAutomneLinks($values[$prefixName.$this->_field->getID().'_0'], CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID()));
 		}

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: logcatalog.php,v 1.2 2008/12/18 10:39:46 sebastien Exp $
+// $Id: logcatalog.php,v 1.3 2009/04/02 13:57:59 sebastien Exp $
 
 /**
   * Class CMS_log_catalog
@@ -195,7 +195,9 @@ class CMS_log_catalog extends CMS_grandFather
 						CMS_log::MESSAGE_LOG_ACTION_TEMPLATE_EDIT_ROW					=> CMS_log::LOG_ACTION_TEMPLATE_EDIT_ROW,
 						CMS_log::MESSAGE_LOG_ACTION_TEMPLATE_DELETE						=> CMS_log::LOG_ACTION_TEMPLATE_DELETE,
 						CMS_log::MESSAGE_LOG_ACTION_TEMPLATE_DELETE_ROW					=> CMS_log::LOG_ACTION_TEMPLATE_DELETE_ROW,
-						CMS_log::MESSAGE_LOG_ACTION_TEMPLATE_EDIT_CSS					=> CMS_log::LOG_ACTION_TEMPLATE_EDIT_CSS);
+						CMS_log::MESSAGE_LOG_ACTION_TEMPLATE_EDIT_FILE					=> CMS_log::LOG_ACTION_TEMPLATE_EDIT_FILE,
+						CMS_log::MESSAGE_LOG_ACTION_TEMPLATE_DELETE_FILE				=> CMS_log::LOG_ACTION_TEMPLATE_DELETE_FILE,
+						CMS_log::MESSAGE_LOG_ACTION_SEND_EMAIL							=> CMS_log::LOG_ACTION_SEND_EMAIL);
 	}
 
 	/**
@@ -230,7 +232,9 @@ class CMS_log_catalog extends CMS_grandFather
 						CMS_log::MESSAGE_LOG_ACTION_TEMPLATE_EDIT_ROW			=> CMS_log::LOG_ACTION_TEMPLATE_EDIT_ROW,
 						CMS_log::MESSAGE_LOG_ACTION_TEMPLATE_DELETE				=> CMS_log::LOG_ACTION_TEMPLATE_DELETE,
 						CMS_log::MESSAGE_LOG_ACTION_TEMPLATE_DELETE_ROW			=> CMS_log::LOG_ACTION_TEMPLATE_DELETE_ROW,
-						CMS_log::MESSAGE_LOG_ACTION_TEMPLATE_EDIT_CSS			=> CMS_log::LOG_ACTION_TEMPLATE_EDIT_CSS);
+						CMS_log::MESSAGE_LOG_ACTION_TEMPLATE_EDIT_FILE			=> CMS_log::LOG_ACTION_TEMPLATE_EDIT_FILE,
+						CMS_log::MESSAGE_LOG_ACTION_TEMPLATE_DELETE_FILE		=> CMS_log::LOG_ACTION_TEMPLATE_DELETE_FILE,
+						CMS_log::MESSAGE_LOG_ACTION_SEND_EMAIL					=> CMS_log::LOG_ACTION_SEND_EMAIL);
 	}
 }
 ?>

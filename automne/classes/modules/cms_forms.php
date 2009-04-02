@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_forms.php,v 1.3 2009/03/02 11:28:30 sebastien Exp $
+// $Id: cms_forms.php,v 1.4 2009/04/02 13:57:58 sebastien Exp $
 
 /**
   * Codename of the module
@@ -48,6 +48,8 @@ define("MESSAGE_CMS_FORMS_SUBMIT_NOT_ALLOWED", 83);
   */
 class CMS_module_cms_forms extends CMS_moduleValidation
 {
+	const MESSAGE_CMS_FORMS_FORMS = 1;
+	
 	/**
 	  * Gets a form by its internal ID
 	  *
@@ -205,6 +207,47 @@ class CMS_module_cms_forms extends CMS_moduleValidation
 			$file = $classes[strtolower($classname)];
 		}
 		return $file;
+	}
+	
+	/**
+	  * Return a list of objects infos to be displayed in module index according to user privileges
+	  *
+	  * @return string : HTML scripts infos
+	  * @access public
+	  */
+	function getObjectsInfos($user) {
+		$objectsInfos = array();
+		$cms_language = $user->getLanguage();
+		if (APPLICATION_ENFORCES_ACCESS_CONTROL === false ||
+			 (APPLICATION_ENFORCES_ACCESS_CONTROL === true
+				&& $user->hasModuleClearance($this->getCodename(), CLEARANCE_MODULE_EDIT)) ) {
+			$objectsInfos[] = array(
+							'label'			=> $cms_language->getMessage(self::MESSAGE_CMS_FORMS_FORMS, false, MOD_CMS_FORMS_CODENAME),
+							'adminLabel'	=> $cms_language->getMessage(self::MESSAGE_PAGE_MANAGE_OBJECTS, array($cms_language->getMessage(self::MESSAGE_CMS_FORMS_FORMS, false, MOD_CMS_FORMS_CODENAME))),
+							'description'	=> $cms_language->getMessage(self::MESSAGE_PAGE_MANAGE_OBJECTS, array($cms_language->getMessage(self::MESSAGE_CMS_FORMS_FORMS, false, MOD_CMS_FORMS_CODENAME))),
+							'objectId'		=> 'cms_forms',
+							'url'			=> PATH_ADMIN_MODULES_WR.'/'.MOD_CMS_FORMS_CODENAME.'/items.php',
+							'module'		=> $this->getCodename(),
+							'class'			=> 'atm-elements',
+							'frame'			=> true
+						);
+						
+		}
+		//Categories
+		//if user has some categories to manage
+		$userManageCategories = $user->getRootModuleCategoriesManagable($this->getCodename());
+		if ((is_array($userManageCategories) && $userManageCategories) || $user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
+			$objectsInfos[] = array(
+				'label'			=> $cms_language->getMessage(self::MESSAGE_PAGE_CATEGORIES),
+				'adminLabel'	=> $cms_language->getMessage(self::MESSAGE_PAGE_ADMIN_CATEGORIES),
+				'description'	=> $cms_language->getMessage(self::MESSAGE_PAGE_CATEGORIES_USED, array($this->getLabel($cms_language))),
+				'objectId'		=> 'categories',
+				'url'			=> PATH_ADMIN_WR.'/modules-categories.php',
+				'module'		=> $this->getCodename(),
+				'class'			=> 'atm-categories',
+			);
+		}
+		return $objectsInfos;
 	}
 }
 ?>

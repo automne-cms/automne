@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-copy.php,v 1.2 2008/12/18 10:36:43 sebastien Exp $
+// $Id: page-copy.php,v 1.3 2009/04/02 13:55:54 sebastien Exp $
 
 /**
   * PHP page : Load copy-page window.
@@ -32,7 +32,7 @@ define("MESSAGE_PAGE_COPY_CONTENT",351);
 define("MESSAGE_PAGE_REPLACE_TEMPLATE",352);
 define("MESSAGE_PAGE_MATCHING_TEMPLATE",353);
 define("MESSAGE_PAGE_UNMATCHING_TEMPLATE",354);
-define("MESSAGE_PAGE_SELECT_COPIED_FATHER",355);
+define("MESSAGE_PAGE_SELECT_COPIED_MOTHER",355);
 define("MESSAGE_PAGE_COPY_OK",1361);
 define("MESSAGE_PAGE_COPY_FATHER_INFO",356);
 define("MESSAGE_PAGE_COPY_KEEP_CONTENT",357);
@@ -66,7 +66,7 @@ if (!$cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_VIEW)) {
 }
 
 $pageId = $cms_page->getID();
-$pageTitle = $cms_page->getTitle(true);
+$pageTitle = sensitiveIO::sanitizeJSString($cms_page->getTitle(true));
 
 $onClick = base64_encode("
 	this.node.select();
@@ -79,7 +79,7 @@ if (!is_a($pageTemplate, "CMS_pageTemplate")) {
 	$pageTemplate = new CMS_pageTemplate();
 }
 $pageTplId = CMS_pageTemplatesCatalog::getTemplateIDForCloneID($pageTemplate->getID());
-$pageTplLabel = $pageTemplate->getLabel();
+$pageTplLabel = sensitiveIO::sanitizeJSString($pageTemplate->getLabel());
 
 $jscontent = <<<END
 	var copyPageWindow = Ext.getCmp('{$winId}');
@@ -150,7 +150,7 @@ $jscontent = <<<END
 	})
 	
 	var pagesTree = {
-		title:			'{$cms_language->getJsMessage(MESSAGE_PAGE_SELECT_COPIED_FATHER)}',
+		title:			'{$cms_language->getJsMessage(MESSAGE_PAGE_SELECT_COPIED_MOTHER)}',
 		id:				'pagesTree',
 		region:			'center',
 		layout: 		'atm-border',

@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: clientspaces.js,v 1.4 2009/03/02 11:27:02 sebastien Exp $
+  * $Id: clientspaces.js,v 1.5 2009/04/02 13:55:53 sebastien Exp $
   */
 Automne.cs = function(config){
 	config = config || {};
@@ -64,7 +64,7 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 			this.rows[i].setCSOrder(i);
 		}
 		//redo CS mask
-		Automne.content.updateCSMasks();
+		atmContent.updateCSMasks();
 	},
 	getRowsNb: function(row) {
 		return this.rows.length;
@@ -147,18 +147,18 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 	},
 	moveElsBeforeEl: function(rowToMove, targetEl, sameCS) {
 		//stop CS update and row mask
-		Automne.content.stopUpdate();
-		Automne.content.stopRowsMask();
+		atmContent.stopUpdate();
+		atmContent.stopRowsMask();
 		
 		var elsToMove = rowToMove.elements;
 		var elsBox = rowToMove.getBox();
 		
-		var animateMoveStatus = (parent.Ext.getCmp('editAnimations')) ? parent.Ext.getCmp('editAnimations').checked : true;
+		var animateMoveStatus = (parent.Ext.getCmp('editAnimations'+ atmContent.editId)) ? parent.Ext.getCmp('editAnimations'+ atmContent.editId).checked : true;
 		if (animateMoveStatus) {
 			var positionFrom = elsBox;
 			//try to get the row of the target el to get more accurate final position
 			var elRow;
-			if (elRow = Automne.content.getRowForEl(targetEl)) {
+			if (elRow = atmContent.getRowForEl(targetEl)) {
 				var positionTo = elRow.getBox();
 			} else {
 				var positionTo = targetEl.getBox();
@@ -193,15 +193,15 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 					el.show();
 					//if this is the last element, restart CS update and row mask
 					if(count == elsToMove.getCount()) {
-						Automne.content.startUpdate();
-						Automne.content.startRowsMask();
+						atmContent.startUpdate();
+						atmContent.startRowsMask();
 					}
 				}, scope:this, remove:true});
 			}, this);
 		} else {
 			elsToMove.insertBefore(targetEl);
-			Automne.content.startUpdate();
-			Automne.content.startRowsMask();
+			atmContent.startUpdate();
+			atmContent.startRowsMask();
 		}
 		if (targetEl == this.marker) {
 			this.marker.hide();
@@ -421,10 +421,10 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 						this.el.cs.moveRowAt(dd.row, this.el.csIndex);
 					} else {
 						//allow row mask to be displayed
-						Automne.content.startRowsMask();
+						atmContent.startRowsMask();
 					}
 					//hide all drop zones
-					Automne.content.hideZones();
+					atmContent.hideZones();
 					return true;
 				}
 			});
@@ -434,14 +434,14 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 				zone = Ext.get(zone);
 				zone.removeAllListeners();
 				zone.addClass('atm-drop-zone-hover');
-				parent.Ext.get('selectedRow').update(Automne.locales.csSelectRowAdd);
+				parent.Ext.get('selectedRow'+ atmContent.editId).update(Automne.locales.csSelectRowAdd);
 				parent.Automne.message.show(Automne.locales.csSelectRow, '', parent.Automne.tabPanels.getActiveTab().frameEl);
-				parent.Ext.getCmp('addRowCombo').show();
-				parent.Ext.getCmp('addSelectedRow').show();
+				parent.Ext.getCmp('addRowCombo'+ atmContent.editId).show();
+				parent.Ext.getCmp('addSelectedRow'+ atmContent.editId).show();
 				//add new row
 				this.cs.getNewRow(this.csIndex);
 				//hide all drop zones
-				Automne.content.hideZones(zone);
+				atmContent.hideZones(zone);
 			}, zone);
 			zone.addClassOnOver('atm-drop-zone-hover');
 			zone.dom.title = zone.dom.alt = Automne.locales.csClickToAdd;
@@ -449,7 +449,7 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 	},
 	getNewRow: function(index) {
 		//display window to select row to add according to queried CS
-		var combo = parent.Ext.getCmp('addRowCombo');
+		var combo = parent.Ext.getCmp('addRowCombo'+ atmContent.editId);
 		//set combo params for row queries
 		combo.store.baseParams = Ext.apply(combo.store.baseParams, {
 			cs:				this.getId(),

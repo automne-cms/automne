@@ -909,11 +909,10 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 	background-image:				url(/automne/admin/img/pictos/pictos.png);
 	background-position:			left -1180px;
 }
-
-
-
-
-
+#sidePanel .atm-database{
+	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-position:			left -1204px;
+}
 
 #sidePanel .x-panel-header{
 	background:						url(/automne/admin/img/panel/top-bullet.gif) no-repeat 0px 9px;

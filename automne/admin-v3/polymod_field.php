@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: polymod_field.php,v 1.2 2009/03/02 11:27:33 sebastien Exp $
+// $Id: polymod_field.php,v 1.3 2009/04/02 13:56:08 sebastien Exp $
 
 /**
   * PHP page : polymod admin
@@ -47,6 +47,10 @@ define("MESSAGE_PAGE_FIELD_STANDARD_OBJECTS", 1247);
 define("MESSAGE_PAGE_FIELD_POLY_OBJECTS", 1248);
 define("MESSAGE_PAGE_FIELD_DESCRIPTION", 139);
 define("MESSAGE_PAGE_TREEH1", 1049);
+
+define("MESSAGE_FIELD_NO", 1082);
+define("MESSAGE_FIELD_YES", 1083);
+
 //Polymod messages
 define("MESSAGE_PAGE_FIELD_INDEXABLE", 322);
 

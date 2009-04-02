@@ -14,7 +14,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_usergroup.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: object_usergroup.php,v 1.2 2009/04/02 13:58:00 sebastien Exp $
 
 /**
   * Class CMS_object_usergroup
@@ -247,6 +247,7 @@ class CMS_object_usergroup extends CMS_object_common
       */
 	function getInput($fieldID, $language, $inputParams) {
 		global $cms_user;
+		$html = '';
 		$params = $this->getParamsValues();
 		if (isset($inputParams['prefix'])) {
 			$prefixName = $inputParams['prefix'];

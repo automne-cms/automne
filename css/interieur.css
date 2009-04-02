@@ -36,6 +36,9 @@
 	text-align:				justify;
 	width:					539px;
 }
+#content li {
+	text-align:				left;
+}
 #breadcrumbs, #content #breadcrumbs a{
 	color:					#6fae03;
 }
@@ -62,14 +65,13 @@ h1{
 	padding:				0 15px 8px 0;
 }
 h2{
-	background:				url(/img/interieur/h2.jpg) no-repeat left top;
-	color:					#FFFFFF;
-	font-size:				12px;
+	background:				url(/img/interieur/h2.gif) no-repeat 0px 4px;
+	color:					#6FAE03;
+	font-size:				13px;
 	font-weight:			bold;
-	left:					-28px;
-	line-height:			23px;
-	padding-left:			23px;
 	padding-right:			5px;
+	left:					-10px;
+	padding-left:			9px;
 	position:				relative;
 	width:					536px;
 }
@@ -98,6 +100,9 @@ h3{
 #content .blocLien, #content .blocLien:hover{
 	color:				#FFFFFF;
 }
+.text {
+	line-height:		1.3em;
+}
 .blocLienTop{
 	background-color:	#70ae03;
 	cursor:				pointer;
@@ -119,4 +124,35 @@ h3{
 	padding:			0 20px 0 3px;
 	position:			relative;
 	top:				-3px;
+}
+.treeRight {
+	border:				1px dotted #EB2685;
+	position:			relative;
+	right:				-40px;
+	margin-left:		-30px;
+	max-width:			200px;
+	z-index:			2;
+}
+.treeRight ul {
+	padding-left:		10px;
+	margin:				0px;
+}
+.treeRight ul li {
+	list-style:			none;
+}
+a.CMS_current {
+	font-weight:		bold;
+	cursor:				default;
+}
+#content a.CMS_current:hover {
+	color:				#EB2685;
+}
+code {
+	background-color:yellow;
+}
+blockquote {
+	background-color:orange;
+}
+cite {
+	background-color:red;
 }

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: groups.php,v 1.2 2008/11/26 18:08:13 sebastien Exp $
+// $Id: groups.php,v 1.3 2009/04/02 13:55:54 sebastien Exp $
 
 /**
   * PHP page : Load groups search window.
@@ -214,10 +214,14 @@ $jscontent = <<<END
 						if (groupsWindow && groupsWindow.launchSearch) {
 							groupsWindow.launchSearch();
 						}
+						//enable button to allow creation of a other groups
+						Ext.getCmp('createGroup').enable();
 					}}
 				});
 				//display window
 				groupWindows[0].show(button.getEl());
+				//disable button to avoid creation of a second group
+				button.disable();
 			},
 			scope:		groupsWindow
 		})],

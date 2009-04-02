@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: block-text.js,v 1.2 2009/03/02 11:27:02 sebastien Exp $
+  * $Id: block-text.js,v 1.3 2009/04/02 13:55:53 sebastien Exp $
   */
 Automne.blockText = Ext.extend(Automne.block, {
 	blockClass:	'CMS_block_text',
@@ -137,6 +137,17 @@ Automne.blockText = Ext.extend(Automne.block, {
 				if (!this.FCKEditor) {
 					this.FCKTimer.delay(5);
 					return;
+				} else {
+					//get all iframes and set them to position fixed
+					var catchFrames = new Ext.util.DelayedTask(function() {
+						var iframes = bd.select('iframe', true);
+						iframes.each(function(iframe){
+							if (iframe.id.indexOf('fck-' + this.row.rowTagID + '-' + this.id) == -1 && iframe.getStyle('position') == 'absolute') {
+								iframe.setStyle('position', 'fixed');
+							}
+						}, this);
+					}, this);
+					catchFrames.delay(1000);
 				}
 			} else {
 				this.FCKTimer.delay(10);

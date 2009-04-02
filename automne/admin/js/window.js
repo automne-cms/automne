@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: window.js,v 1.3 2009/03/02 11:26:54 sebastien Exp $
+  * $Id: window.js,v 1.4 2009/04/02 13:55:54 sebastien Exp $
   */
 Automne.Window = Ext.extend(Ext.Window, {
 	currentPage:	false,
@@ -89,7 +89,7 @@ Automne.Window = Ext.extend(Ext.Window, {
 		//call parent
 		Automne.Window.superclass.show.apply(this, arguments); 
 		//set window specific updater
-		this.getUpdater().renderer = new Automne.windowRenderer();
+		this.getUpdater().renderer = new Automne.windowRenderer(this);
 	},
 	setZIndex : function(index, leaveMaskAlone){
 		//here if window is a modal one, we can leave the mask in place (used by Automne.ModalWindowGroup) 
@@ -140,24 +140,21 @@ Automne.Window = Ext.extend(Ext.Window, {
   * @extends Ext.Updater.BasicRenderer
   */
 Automne.windowRenderer = Ext.extend(Ext.Updater.BasicRenderer, {
+	window:false,
+	constructor: function (window) {
+		this.window = window;
+	},
 	//this is the method called after request
 	render: function(el, response, updateManager, callback) {
 		if (response.status != '200') {
-			if (el.dom) {
-				el.dom.innerHTML = Automne.locales.loadingError+ ' (code : '+ response.status +')';
-			} else {
-				Automne.message.popup({
-					msg: 				Automne.locales.loadingError+ ' (code : '+ response.status +')',
-					buttons: 			Ext.MessageBox.OK,
-					closable: 			false,
-					icon: 				Ext.MessageBox.ERROR
-				});
-			}
+			if (el.dom) el.dom.innerHTML = '';
+			Automne.server.failureResponse(response, options, null, 'html');
 		}
 		//redirect to automne evalResponse for errors management
 		Automne.server.evalResponse(response, {
 			scope:			response.argument.options.scope || this,
 			el:				el,
+			window:			this.window,
 			fcnCallback:	this.doRender,
 			evalJS:			false
 		});
@@ -165,22 +162,30 @@ Automne.windowRenderer = Ext.extend(Ext.Updater.BasicRenderer, {
 	//render response into window body
 	doRender: function(response, options, content) {
 		if (options.el.dom && content) {
-			//pr(content);
-			//pr(options.el);
 			options.el.dom.innerHTML = content;
 		} else {
 			options.el.dom.innerHTML = '';
 		}
 		if (response.responseXML.getElementsByTagName('jscontent').length) {
-			//pr(response.responseXML.getElementsByTagName('jscontent').item(0).firstChild.nodeValue);
 			try {
 				eval(response.responseXML.getElementsByTagName('jscontent').item(0).firstChild.nodeValue);
 			} catch(e) {
 				pr(e, 'error');
+				if (options.el.dom && !content) {
+					options.el.dom.innerHTML = '';
+					if (options.window) {
+						options.window.close();
+					}
+					Automne.server.failureResponse(response, options, e, 'js');
+				}
 			}
 		}
 		if (options.el.dom && !content && !response.responseXML.getElementsByTagName('jscontent').length) {
-			options.el.dom.innerHTML = Automne.locales.loadingError;
+			options.el.dom.innerHTML = '';
+			if (options.window) {
+				options.window.close();
+			}
+			Automne.server.failureResponse(response, options, null, 'html');
 		}
 	}
 });

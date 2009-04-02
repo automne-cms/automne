@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: polymod.php,v 1.4 2009/03/02 11:28:31 sebastien Exp $
+// $Id: polymod.php,v 1.5 2009/04/02 13:57:58 sebastien Exp $
 
 /**
   * Class CMS_polymod
@@ -46,17 +46,10 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	const MESSAGE_PAGE_BLOCK_FORMS = 382;
 	const MESSAGE_PAGE_BLOCK_FORMS_EXPLANATION = 383;
 	const MESSAGE_PAGE_CATEGORIES_USED = 500;
-	const MESSAGE_PAGE_CATEGORIES = 166;
-	const MESSAGE_PAGE_MANAGE_OBJECTS = 108;
 	const MESSAGE_ALERT_LEVEL_VALIDATION = 514;
 	const MESSAGE_ALERT_LEVEL_VALIDATION_DESCRIPTION = 513;
 	const MESSAGE_PAGE_RSS_TAG_EXPLANATION = 313;
 	
-	/**
-	  * Standard Messages
-	  */
-	const MESSAGE_PAGE_ADMIN_CATEGORIES = 1206;
-	const MESSAGE_PAGE_CHOOSE = 1132;
 	/**
 	  * Gets resource by its internal ID (not the resource table DB ID)
 	  * This function need to stay here because sometimes it is directly queried
@@ -287,7 +280,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 						}
 						$modulesCode[$this->_codename] .= '
 						//output empty XML response
-						header("Content-Type: text/xml");
+						header("Content-Type: text/xml; charset='.APPLICATION_DEFAULT_ENCODING.'");
 						echo "<"."?xml version=\"1.0\" encoding=\"'.APPLICATION_DEFAULT_ENCODING.'\"?".">
 						<response xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">
 						<error>0</error>
@@ -658,7 +651,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 					if(sizeof($objectFields)) {
 						$objectsInfos[] = array(
 							'label'			=> $anObjectType->getLabel($cms_language),
-							'adminLabel'	=> $cms_language->getMessage(self::MESSAGE_PAGE_MANAGE_OBJECTS, array($anObjectType->getLabel($cms_language)), MOD_POLYMOD_CODENAME),
+							'adminLabel'	=> $cms_language->getMessage(self::MESSAGE_PAGE_MANAGE_OBJECTS, array($anObjectType->getLabel($cms_language))),
 							'description'	=> $anObjectType->getDescription($cms_language),
 							'objectId'		=> $anObjectType->getID(),
 							'url'			=> PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/items.php',
@@ -686,11 +679,11 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			$userManageCategories = $user->getRootModuleCategoriesManagable($this->getCodename());
 			if ((is_array($userManageCategories) && $userManageCategories) || $user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 				$objectsInfos[] = array(
-					'label'			=> $cms_language->getMessage(self::MESSAGE_PAGE_CATEGORIES, false, MOD_POLYMOD_CODENAME),
+					'label'			=> $cms_language->getMessage(self::MESSAGE_PAGE_CATEGORIES),
 					'adminLabel'	=> $cms_language->getMessage(self::MESSAGE_PAGE_ADMIN_CATEGORIES),
 					'description'	=> $cms_language->getMessage(self::MESSAGE_PAGE_CATEGORIES_USED, false, MOD_POLYMOD_CODENAME).htmlspecialchars(implode(', ', $catFieldsNames)),
 					'objectId'		=> 'categories',
-					'url'			=> PATH_ADMIN_WR.'/categories.php',
+					'url'			=> PATH_ADMIN_WR.'/modules-categories.php',
 					'module'		=> $this->getCodename(),
 					'class'			=> 'atm-categories',
 				);

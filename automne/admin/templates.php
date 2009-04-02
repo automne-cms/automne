@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: templates.php,v 1.2 2009/04/02 13:55:55 sebastien Exp $
 
 /**
   * PHP page : Load templates management window
@@ -34,7 +34,7 @@ $view = CMS_view::getInstance();
 $view->setDisplayMode(CMS_view::SHOW_RAW);
 
 $winId = sensitiveIO::request('winId', '', 'templatesWindow');
-$type = sensitiveIO::request('type', array('template','row','css','wysiwyg-toolbar','wysiwyg-style'));
+$type = sensitiveIO::request('type', array('template','row','css','js','wysiwyg-toolbar'));
 
 //CHECKS user has templates or rows clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES) && !$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) {
@@ -78,51 +78,37 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES)) { //rows
 	},";
 }
 if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //templates
-	/*$items .= "{
+	$items .= "{
 		title:	'Feuilles de styles',
 		id:		'cssPanel',
 		xtype:	'atmPanel',
 		layout:	'atm-border',
 		autoLoad:		{
-			url:		'templates-css.php',
+			url:		'templates-files.php',
 			params:		{
 				winId:		'cssPanel',
-				fatherId:	'{$winId}'
+				fatherId:	'{$winId}',
+				type:		'css'
 			},
 			nocache:	true,
 			scope:		center
 		}
 	},{
-		title:	'Styles Wysiwyg',
-		id:		'cssWysiwygPanel',
+		title:	'Scripts Javascripts',
+		id:		'jsPanel',
 		xtype:	'atmPanel',
 		layout:	'atm-border',
 		autoLoad:		{
-			url:		'templates-wysiwyg-style.php',
+			url:		'templates-files.php',
 			params:		{
-				winId:		'cssWysiwygPanel',
-				fatherId:	'{$winId}'
+				winId:		'jsPanel',
+				fatherId:	'{$winId}',
+				type:		'js'
 			},
 			nocache:	true,
 			scope:		center
 		}
 	},{
-		title:	'Barres d\'outils Wysiwyg',
-		id:		'toolbarWysiwygPanel',
-		xtype:	'atmPanel',
-		layout:	'atm-border',
-		autoLoad:		{
-			url:		'templates-wysiwyg-toolbar.php',
-			params:		{
-				winId:		'toolbarWysiwygPanel',
-				fatherId:	'{$winId}'
-			},
-			nocache:	true,
-			scope:		center
-		}
-	},";*/
-
-	$items .= "{
 		xtype:			'framePanel',
 		title:			'Barres d\'outils Wysiwyg',
 		id:				'toolbarWysiwygPanel',
@@ -135,20 +121,20 @@ $items = substr($items, 0, -1);
 
 switch($type) {
 	case 'row':
-		$activeTab = 1;
+		$activeTab = 'rowPanel';
 	break;
 	case 'css':
-		$activeTab = 2;
+		$activeTab = 'cssPanel';
+	break;
+	case 'js':
+		$activeTab = 'jsPanel';
 	break;
 	case 'wysiwyg-toolbar':
-		$activeTab = 2; //3
-	break;
-	case 'wysiwyg-style':
-		$activeTab = 4;
+		$activeTab = 'toolbarWysiwygPanel';
 	break;
 	case 'template':
 	default:
-		$activeTab = 0;
+		$activeTab = 'templatePanel';
 	break;
 }
 

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modules-categories-rights.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: modules-categories-rights.php,v 1.2 2009/04/02 13:55:54 sebastien Exp $
 
 /**
   * PHP page : Load modules categories rights interface
@@ -30,9 +30,6 @@ define("MESSAGE_PAGE_EMPTY_SET", 265);
 define("MESSAGE_PAGE_FIELD_PAGES", 213);
 define("MESSAGE_PAGE_DEPTH", 1339);
 define("MESSAGE_PAGE_LEVELS", 498);
-
-
-
 
 //load interface instance
 $view = CMS_view::getInstance();

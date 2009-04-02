@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc.php,v 1.7 2009/03/04 09:54:51 sebastien Exp $
+// $Id: cms_rc.php,v 1.8 2009/04/02 13:54:47 sebastien Exp $
 
 /**
   * rc file, contains editable constants
@@ -314,6 +314,14 @@ if ($_SERVER["DOCUMENT_ROOT"] != dirname(__FILE__)) {
 	//rewrite server document root if needed
 	$_SERVER["DOCUMENT_ROOT"] = dirname(__FILE__);
 }
+//rewrite some server conf if HTTP_X_FORWARDED exists
+if (isset($_SERVER["HTTP_X_FORWARDED_HOST"])) {
+	$_SERVER["HTTP_HOST"] = $_SERVER["HTTP_X_FORWARDED_HOST"];
+}
+if (isset($_SERVER["HTTP_X_FORWARDED_SERVER"])) {
+	$_SERVER["HTTP_SERVER"] = $_SERVER["HTTP_X_FORWARDED_SERVER"];
+}
+
 //check we're not in a subdir
 if (!is_dir($_SERVER["DOCUMENT_ROOT"].PATH_MAIN_WR)) {
 	define("PATH_REALROOT_FS", substr($_SERVER["DOCUMENT_ROOT"], 0, strrpos($_SERVER["DOCUMENT_ROOT"], "html") - 1));
@@ -759,6 +767,9 @@ if (ini_get('memory_limit') < (int) APPLICATION_MEMORY_LIMIT) {
 
 //remove NOTICE to avoid useless notice messages.
 error_reporting(APPLICATION_ERROR_REPORTING);
+
+//set default Apache Content-Type
+header('Content-Type: text/html; charset='.APPLICATION_DEFAULT_ENCODING);
 
 //load standard config file parameters (PATH_MODULES_FS.'/standard_rc.xml')
 require_once(PATH_PACKAGES_FS."/modules/readStandardParam.php");

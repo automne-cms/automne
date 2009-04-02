@@ -7,6 +7,9 @@
 #content{
 	height:					305px;
 }
+#content em {
+	font-style:				normal;
+}
 #title h1{
 	background-image:		none;
 }

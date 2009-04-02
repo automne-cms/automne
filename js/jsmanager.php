@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: jsmanager.php,v 1.3 2009/03/02 12:58:18 sebastien Exp $
+// $Id: jsmanager.php,v 1.4 2009/04/02 14:01:19 sebastien Exp $
 
 /**
   * Javascript manager
@@ -69,7 +69,7 @@ if (isset($_GET['files'])) {
 				//Automne license (protected)
 				$jsfiles [] = PATH_ADMIN_FS.'/js/license.js';
 				//Automne JS files
-				$jsfiles [] = PATH_ADMIN_FS.'/js/main.js';
+				$jsfiles [] = PATH_ADMIN_FS.'/js/edit/content.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/edit/blocks.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/edit/rows.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/edit/clientspaces.js';
@@ -120,7 +120,7 @@ if (isset($_GET['files'])) {
 				$jsfiles [] = PATH_ADMIN_FS.'/js/ext/MultiSelect.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/ext/ItemSelector.js';
 				
-				//set debug sources files here
+				//set specific source debug files here
 				//$jsfiles [] = PATH_MAIN_FS.'/ext/source/data/Connection.js';
 				
 				$jsfiles [] = PATH_ADMIN_FS.'/js/blank.js';

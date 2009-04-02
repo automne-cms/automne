@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: linxnodespec.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: linxnodespec.php,v 1.2 2009/04/02 13:57:59 sebastien Exp $
 
 /**
   * Class CMS_linxNodespec
@@ -50,6 +50,13 @@ class CMS_linxNodespec extends CMS_grandFather
 	  */
 	protected $_relativeOffset;
 	
+	/**
+	  * Does this links display pages accross websites ?
+	  * @var boolean (default : false)
+	  * @access private
+	  */
+	protected $_crosswebsite = false;
+	
 
 	/**
 	  * Constructor.
@@ -59,10 +66,11 @@ class CMS_linxNodespec extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($type, $value, $relativeOffset)
+	function __construct($type, $value, $relativeOffset, $crosswebsite = false)
 	{
 		$authorized_types = array("node", "relative");
 		$authorized_string_values = array("self", "brother", "father", "root");
+		$this->_crosswebsite = $crosswebsite;
 		if (!SensitiveIO::isInSet($type, $authorized_types)) {
 			$this->raiseError("Type unknown : ".$type);
 			return;
@@ -121,7 +129,7 @@ class CMS_linxNodespec extends CMS_grandFather
 			switch ($this->_value) {
 			case "root":
 				$offset = abs($this->_relativeOffset) * -1;
-				$pg = CMS_tree::getAncestor($page, $offset, true);
+				$pg = CMS_tree::getAncestor($page, $offset, $this->_crosswebsite, $publicTree);
 				if (is_a($pg, 'CMS_page') && !$pg->hasError()) {
 					return $pg;
 				} else {
@@ -130,7 +138,7 @@ class CMS_linxNodespec extends CMS_grandFather
 				break;
 			case "father":
 				$offset = abs($this->_relativeOffset);
-				$pg = CMS_tree::getAncestor($page, $offset, $publicTree);
+				$pg = CMS_tree::getAncestor($page, $offset, $this->_crosswebsite, $publicTree);
 				if (is_a($pg, 'CMS_page') && !$pg->hasError()) {
 					return $pg;
 				} else {
@@ -161,7 +169,7 @@ class CMS_linxNodespec extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function createNodespec($tag) {
+	function createNodespec($tag, $crosswebsite = false) {
 		if (!is_a($tag, "DOMElement")) {
 			CMS_grandFather::raiseError('Tag is not a DOMElement instance');
 			return false;
@@ -170,7 +178,7 @@ class CMS_linxNodespec extends CMS_grandFather
 			CMS_grandFather::raiseError('Nodespec property is not well formed');
 			return false;
 		}
-		return new CMS_linxNodespec($tag->getAttribute("type"), $tag->getAttribute("value"), $tag->getAttribute("reloffset"));
+		return new CMS_linxNodespec($tag->getAttribute("type"), $tag->getAttribute("value"), $tag->getAttribute("reloffset"), $crosswebsite);
 	}
 }
 

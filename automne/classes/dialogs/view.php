@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: view.php,v 1.4 2009/02/09 10:03:05 sebastien Exp $
+// $Id: view.php,v 1.5 2009/04/02 13:57:59 sebastien Exp $
 
 /**
   * Class CMS_view
@@ -359,7 +359,7 @@ class CMS_view extends CMS_grandFather
 			case self::SHOW_JSON :
 			case self::SHOW_RAW :
 			case self::SHOW_XML :
-				header('Content-Type: text/xml');
+				header('Content-Type: text/xml; charset='.APPLICATION_DEFAULT_ENCODING);
 				echo 
 				'<?xml version="1.0" encoding="'.APPLICATION_DEFAULT_ENCODING.'"?>'."\n".
 				'<response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">'."\n";
@@ -369,7 +369,7 @@ class CMS_view extends CMS_grandFather
 			break;
 			case self::SHOW_HTML :
 			default:
-				header('Content-Type: text/html');
+				header('Content-Type: text/html; charset='.APPLICATION_DEFAULT_ENCODING);
 				if ($this->_disconnected) {
 					header("Location: ".PATH_ADMIN_SPECIAL_LOGIN_WR."?cms_action=logout");
 					exit;

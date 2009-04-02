@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: processmanager.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: processmanager.php,v 1.2 2009/04/02 13:58:01 sebastien Exp $
 
 /**
   * background script process manager.
@@ -261,7 +261,7 @@ class processManager
 		//Displayed in alphabetical order (noted on Windows platforms)
 		$PIDFiles=array();
 		while (false !== ($file = $tempDir->read())) {
-			if (eregi($scriptAppLbl, $file) && !eregi(".ok", $file)) { //TODOV4
+			if (stripos($file, $scriptAppLbl) !== false && strpos($file, ".ok") === false) {
 				$PIDFiles[]= $file;
 			}
 		}

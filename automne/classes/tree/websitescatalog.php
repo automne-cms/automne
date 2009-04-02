@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: websitescatalog.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: websitescatalog.php,v 1.2 2009/04/02 13:58:01 sebastien Exp $
 
 /**
   * Class CMS_websitesCatalog
@@ -284,7 +284,15 @@ class CMS_websitesCatalog extends CMS_grandFather
 			}
 		}
 		//append php tags
-		$content = '<?php'."\n".$content.'?>';
+		$content = '<?php'."\n".
+		'//rewrite some server conf if HTTP_X_FORWARDED exists'."\n".
+		'if (isset($_SERVER["HTTP_X_FORWARDED_HOST"])) {'."\n".
+		'	$_SERVER["HTTP_HOST"] = $_SERVER["HTTP_X_FORWARDED_HOST"];'."\n".
+		'}'."\n".
+		'if (isset($_SERVER["HTTP_X_FORWARDED_SERVER"])) {'."\n".
+		'	$_SERVER["HTTP_SERVER"] = $_SERVER["HTTP_X_FORWARDED_SERVER"];'."\n".
+		'}'."\n".
+		$content.'?>';
 		//and write general redirection file
 		$indexPath = PATH_REALROOT_FS;
 		$fp = @fopen($indexPath . "/".$filename, "wb");

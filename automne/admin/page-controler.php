@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-controler.php,v 1.7 2009/03/06 10:51:52 sebastien Exp $
+// $Id: page-controler.php,v 1.8 2009/04/02 13:55:54 sebastien Exp $
 
 /**
   * PHP page : Receive pages updates
@@ -231,13 +231,20 @@ switch ($action) {
 			$view->addJavascript($jscontent);
 			break;
 		}
+		
 		$logAction = CMS_log::LOG_ACTION_RESOURCE_VALIDATE_EDITION;
 		//then validate this page content
 		$validation = new CMS_resourceValidation(MOD_STANDARD_CODENAME, RESOURCE_EDITION_CONTENT, $cms_page);
 		$mod = CMS_modulesCatalog::getByCodename(MOD_STANDARD_CODENAME);
 		$mod->processValidation($validation, VALIDATION_OPTION_ACCEPT);
 		$edited = true;
-		
+		//check for basedatas edition pending
+		if ($cms_page->getStatus()->getEditions() & RESOURCE_EDITION_BASEDATA) {
+			//then validate this page basedatas content
+			$validation = new CMS_resourceValidation(MOD_STANDARD_CODENAME, RESOURCE_EDITION_BASEDATA, $cms_page);
+			$mod = CMS_modulesCatalog::getByCodename(MOD_STANDARD_CODENAME);
+			$mod->processValidation($validation, VALIDATION_OPTION_ACCEPT);
+		}
 		//reload current tab
 		$jscontent = '
 		//goto previz tab

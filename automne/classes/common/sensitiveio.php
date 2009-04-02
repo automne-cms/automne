@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: sensitiveio.php,v 1.2 2009/03/02 11:28:06 sebastien Exp $
+// $Id: sensitiveio.php,v 1.3 2009/04/02 13:57:59 sebastien Exp $
 
 /**
   * Class SensitiveIO
@@ -484,6 +484,12 @@ class SensitiveIO extends CMS_grandfather
 				 }
 			}
 			$output .= "<br />\n";
+			if(!isset($bt['file'])){
+                $bt['file'] = 'Unknown File';
+            }
+			if(!isset($bt['line'])){
+                $bt['line'] = 'Unknown Line';
+            }
 			$output .= "<b>file:</b> {$bt['line']} - {$bt['file']}<br />\n";
 			if (isset($bt['class']) && isset($bt['type'])) {
 				$output .= "<b>call:</b> {$bt['class']}{$bt['type']}{$bt['function']}($args)<br />\n";

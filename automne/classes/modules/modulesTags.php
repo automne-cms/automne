@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modulesTags.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: modulesTags.php,v 1.2 2009/04/02 13:57:58 sebastien Exp $
 
 /**
   * Class CMS_modulesTags
@@ -184,7 +184,7 @@ class CMS_modulesTags extends CMS_grandFather
 		//load wanted tags if not already done
 		$this->getWantedTags();
 		//parse definiton
-		$this->_parser = &new CMS_xml2Array($this->_definition, $options);
+		$this->_parser = new CMS_xml2Array($this->_definition, $options);
 		if ($this->_parser->hasError()) {
 			$this->raiseError('Malformed definition to compute : '.$this->_parser->getParsingError());
 			return false;

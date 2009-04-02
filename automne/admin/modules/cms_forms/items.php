@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: items.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: items.php,v 1.2 2009/04/02 13:55:53 sebastien Exp $
 
 /**
   * PDFForms module : index
@@ -119,7 +119,7 @@ case "delete":
 $dialog = new CMS_dialog();
 $content = '';
 $dialog->setTitle($cms_language->getMessage(MESSAGE_PAGE_TITLE_MODULE, array($cms_module->getLabel($cms_language)))." :: ".$cms_language->getMessage(MESSAGE_PAGE_TITLE));
-$dialog->setBacklink("index.php");
+//$dialog->setBacklink("index.php");
 
 if ($cms_message) {
 	$dialog->setActionMessage($cms_message);

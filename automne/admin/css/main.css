@@ -28,6 +28,18 @@ strong {
 .atm-help {
 	cursor:				help;
 }
+.atm-debug {
+	height:				100px;
+	width:				556px;
+	overflow:			auto;
+	background-color:	white;
+	border:				1px solid grey;
+	padding:			2px;
+}
+.x-form-item .atm-help {
+	background:			#FFFFFF url(/automne/admin/img/atm-help.png) top left no-repeat;
+	padding-left:		6px;
+}
 .atm-right {
 	float:				right;
 	clear:				both;
@@ -650,4 +662,7 @@ ul.atm-server li {
 	font-weight:		bold;
 	font-size:			12px;
 	padding-bottom:		6px;
+}
+#blackbird .mainBody a {
+	color:				white;
 }

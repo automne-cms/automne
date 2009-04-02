@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: grandfather.php,v 1.5 2009/03/03 15:12:13 sebastien Exp $
+// $Id: grandfather.php,v 1.6 2009/04/02 13:57:59 sebastien Exp $
 
 /**
   * Class CMS_grandFather
@@ -84,7 +84,7 @@ class CMS_grandFather
 				if (sizeof($backtraces) >= 3) {
 					$backtraces = array_slice($backtraces, sizeof($backtraces) - 2);
 				}
-				/*$bt = array_reverse(debug_backtrace());
+				$bt = array_reverse(debug_backtrace());
 				$backtrace = array(
 					'summary'		=> sensitiveIO::printBackTrace($bt),
 					'backtrace'		=> print_r($bt,true),
@@ -92,7 +92,7 @@ class CMS_grandFather
 				$backtraceName = 'bt-'.md5(rand());
 				$backtraces[$backtraceName] = $backtrace;
 				$_SESSION['automneBacktraces'] = $backtraces;
-				$backTraceLink = '/automne/admin/backTrace.php?bt='.$backtraceName;*/
+				$backTraceLink = '/automne/admin/backtrace.php?bt='.$backtraceName;
 			}
 			//append error to current view
 			$view = CMS_view::getInstance();

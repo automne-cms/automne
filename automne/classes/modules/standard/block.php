@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: block.php,v 1.3 2009/03/06 10:52:34 sebastien Exp $
+// $Id: block.php,v 1.4 2009/04/02 13:57:58 sebastien Exp $
 
 /**
   * Class CMS_block
@@ -363,7 +363,7 @@ class CMS_block extends CMS_grandFather
 		}
 		
 		$elements = array();
-		$uniqueId = 'block-'.md5(uniqid());
+		$uniqueId = 'block-'.md5(mt_rand().microtime());
 		foreach($blockXML->childNodes as $blockChildNode) {
 			if (is_a($blockChildNode, 'DOMElement') && $blockChildNode->tagName != 'script') {
 				if ($blockChildNode->hasAttribute('class')) {
@@ -371,7 +371,7 @@ class CMS_block extends CMS_grandFather
 				} else {
 					$blockChildNode->setAttribute('class','atm-block '.$uniqueId);
 				}
-				$elementId = 'el-'.md5(uniqid());
+				$elementId = 'el-'.md5(mt_rand().microtime());
 				$blockChildNode->setAttribute('id',$elementId);
 				$elements[] = $elementId;
 			}

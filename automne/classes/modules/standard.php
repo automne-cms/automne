@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: standard.php,v 1.7 2009/03/06 10:52:34 sebastien Exp $
+// $Id: standard.php,v 1.8 2009/04/02 13:57:59 sebastien Exp $
 
 /**
   * Class CMS_module_standard
@@ -62,6 +62,44 @@ class CMS_module_standard extends CMS_module
 	const MESSAGE_MOD_STANDARD_TEMPLATE = 72;
 	const MESSAGE_MOD_STANDARD_STATUS = 160;
 	const MESSAGE_MOD_STANDARD_PAGE = 1328;
+	
+	const MESSAGE_PARAM_APPLICATION_LABEL = 599;
+	const MESSAGE_PARAM_APPLICATION_MAINTAINER_EMAIL = 600;
+	const MESSAGE_PARAM_APPLICATION_POSTMASTER_EMAIL = 601;
+	const MESSAGE_PARAM_PAGE_LINK_NAME_IN_TREE = 602;
+	const MESSAGE_PARAM_USE_PRINT_PAGES = 603;
+	const MESSAGE_PARAM_OPEN_ZOOMIMAGE_IN_POPUP = 604;
+	const MESSAGE_PARAM_SYSTEM_DEBUG = 605;
+	const MESSAGE_PARAM_STATS_DEBUG = 606;
+	const MESSAGE_PARAM_POLYMOD_DEBUG = 607;
+	const MESSAGE_PARAM_VIEW_SQL = 608;
+	const MESSAGE_PARAM_NO_APPLICATION_MAIL = 609;
+	const MESSAGE_PARAM_NO_PAGES_EXTENDED_META_TAGS = 610;
+	const MESSAGE_PARAM_APPLICATION_LDAP_AUTH = 611;
+	const MESSAGE_PARAM_USE_BACKGROUND_REGENERATOR = 612;
+	const MESSAGE_PARAM_ERROR404_EMAIL_ALERT = 613;
+	const MESSAGE_PARAM_APPLICATION_ENFORCES_ACCESS_CONTROL = 614;
+	const MESSAGE_PARAM_ALLOW_IMAGES_IN_WYSIWYG = 615;
+	const MESSAGE_PARAM_LOG_SENDING_MAIL = 616;
+	
+	const MESSAGE_PARAM_APPLICATION_LABEL_DESC = 617;
+	const MESSAGE_PARAM_APPLICATION_MAINTAINER_EMAIL_DESC = 618;
+	const MESSAGE_PARAM_APPLICATION_POSTMASTER_EMAIL_DESC = 619;
+	const MESSAGE_PARAM_PAGE_LINK_NAME_IN_TREE_DESC = 620;
+	const MESSAGE_PARAM_USE_PRINT_PAGES_DESC = 621;
+	const MESSAGE_PARAM_OPEN_ZOOMIMAGE_IN_POPUP_DESC = 622;
+	const MESSAGE_PARAM_SYSTEM_DEBUG_DESC = 623;
+	const MESSAGE_PARAM_STATS_DEBUG_DESC = 624;
+	const MESSAGE_PARAM_POLYMOD_DEBUG_DESC = 625;
+	const MESSAGE_PARAM_VIEW_SQL_DESC = 626;
+	const MESSAGE_PARAM_NO_APPLICATION_MAIL_DESC = 627;
+	const MESSAGE_PARAM_NO_PAGES_EXTENDED_META_TAGS_DESC = 628;
+	const MESSAGE_PARAM_APPLICATION_LDAP_AUTH_DESC = 629;
+	const MESSAGE_PARAM_USE_BACKGROUND_REGENERATOR_DESC = 630;
+	const MESSAGE_PARAM_ERROR404_EMAIL_ALERT_DESC = 631;
+	const MESSAGE_PARAM_APPLICATION_ENFORCES_ACCESS_CONTROL_DESC = 632;
+	const MESSAGE_PARAM_ALLOW_IMAGES_IN_WYSIWYG_DESC = 633;
+	const MESSAGE_PARAM_LOG_SENDING_MAIL_DESC = 634;
 	
 	/**
 	  * Gets the administration frontend path. No centralized admin for the standard module.
@@ -1964,15 +2002,15 @@ class CMS_module_standard extends CMS_module
 			break;
 			case MODULE_TREATMENT_ALERTS :
 				$modulesCode[MOD_STANDARD_CODENAME] = array(
-					ALERT_LEVEL_PROFILE 	=> array('label' => MESSAGE_ALERT_LEVEL_PROFILE, 'description' => MESSAGE_ALERT_LEVEL_PROFILE_DESCRIPTION)
+					ALERT_LEVEL_PROFILE 	=> array('label' => CMS_profile::MESSAGE_ALERT_LEVEL_PROFILE, 'description' => CMS_profile::MESSAGE_ALERT_LEVEL_PROFILE_DESCRIPTION)
 				);
 				//only if user has validation clearances
 				if ($treatmentParameters['user']->hasValidationClearance(MOD_STANDARD_CODENAME)) {
-					$modulesCode[MOD_STANDARD_CODENAME][ALERT_LEVEL_VALIDATION] = array('label' => MESSAGE_ALERT_LEVEL_VALIDATION, 'description' => MESSAGE_ALERT_LEVEL_VALIDATION_DESCRIPTION);
+					$modulesCode[MOD_STANDARD_CODENAME][ALERT_LEVEL_VALIDATION] = array('label' => CMS_profile::MESSAGE_ALERT_LEVEL_VALIDATION, 'description' => CMS_profile::MESSAGE_ALERT_LEVEL_VALIDATION_DESCRIPTION);
 				}
 				//only if user has edition clearances
 				if ($treatmentParameters['user']->hasEditablePages()) {
-					$modulesCode[MOD_STANDARD_CODENAME][ALERT_LEVEL_PAGE_ALERTS] = array('label' => MESSAGE_ALERT_LEVEL_PAGE_ALERTS, 'description' => MESSAGE_ALERT_LEVEL_PAGE_ALERTS_DESCRIPTION);
+					$modulesCode[MOD_STANDARD_CODENAME][ALERT_LEVEL_PAGE_ALERTS] = array('label' => CMS_profile::MESSAGE_ALERT_LEVEL_PAGE_ALERTS, 'description' => CMS_profile::MESSAGE_ALERT_LEVEL_PAGE_ALERTS_DESCRIPTION);
 				}
 				return $modulesCode;
 			break;
@@ -2016,7 +2054,7 @@ class CMS_module_standard extends CMS_module
 		
 		if (is_object($page) && !$page->hasError()) {
 			$label = @$page->getTitle();
-			return 'Page : <a class="admin" href="#" onclick="Automne.utils.getPageById('.$page->getID().');return false;">'.htmlspecialchars($label).' ('.$parameters['pageid'].')</a>';
+			return 'Page : <a class="admin" href="#" onclick="Automne.utils.getPageById('.$page->getID().');Ext.getCmp(\'scriptsWindow\').close();return false;">'.htmlspecialchars($label).' ('.$parameters['pageid'].')</a>';
 		}
 		return $cms_language->getMessage(66).' ('.$parameters['pageid'].')';
 	}

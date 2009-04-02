@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_image.php,v 1.3 2009/03/02 11:28:56 sebastien Exp $
+// $Id: object_image.php,v 1.4 2009/04/02 13:58:00 sebastien Exp $
 
 /**
   * Class CMS_object_image
@@ -210,7 +210,7 @@ class CMS_object_image extends CMS_object_common
 			return false;
 		}
 		//check for image extension before doing anything
-		if ($_FILES[$prefixName.$this->_field->getID().'_2']["name"]
+		if (isset($_FILES[$prefixName.$this->_field->getID().'_2']) && $_FILES[$prefixName.$this->_field->getID().'_2']["name"]
 			 && !in_array(strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_2']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
 			return false;
 		}
@@ -373,7 +373,7 @@ class CMS_object_image extends CMS_object_common
 		//get module codename
 		$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
 		//delete old images ?
-		if ($values[$prefixName.$this->_field->getID().'_delete'] == 1) {
+		if (isset($values[$prefixName.$this->_field->getID().'_delete']) && $values[$prefixName.$this->_field->getID().'_delete'] == 1) {
 			if ($this->_subfieldValues[0]->getValue()) {
 				@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[0]->getValue());
 				$this->_subfieldValues[0]->setValue('');
@@ -395,7 +395,7 @@ class CMS_object_image extends CMS_object_common
 		}
 
 		//thumbnail
-		if ($_FILES[$prefixName.$this->_field->getID().'_0']['name'] && !$_FILES[$prefixName.$this->_field->getID().'_0']['error']) {
+		if (isset($_FILES[$prefixName.$this->_field->getID().'_0']) && $_FILES[$prefixName.$this->_field->getID().'_0']['name'] && !$_FILES[$prefixName.$this->_field->getID().'_0']['error']) {
 			//check for image type before doing anything
 			if (!in_array(strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_0']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
 				return false;
@@ -522,9 +522,9 @@ class CMS_object_image extends CMS_object_common
 					}
 				}
 			}
-		} elseif ($_FILES[$prefixName.$this->_field->getID().'_0']['name'] && $_FILES[$prefixName.$this->_field->getID().'_0']['error'] != 0) {
+		} elseif (isset($_FILES[$prefixName.$this->_field->getID().'_0']) && $_FILES[$prefixName.$this->_field->getID().'_0']['name'] && $_FILES[$prefixName.$this->_field->getID().'_0']['error'] != 0) {
 			return false;
-		} elseif ($values[$prefixName.$this->_field->getID().'_0_hidden'] && $values[$prefixName.$this->_field->getID().'_delete'] != 1) {
+		} elseif (isset($values[$prefixName.$this->_field->getID().'_0_hidden']) && $values[$prefixName.$this->_field->getID().'_0_hidden'] && $values[$prefixName.$this->_field->getID().'_delete'] != 1) {
 			//set label as image name if none set
 			if ($values[$prefixName.$this->_field->getID().'_1']) {
 				if (!$this->_subfieldValues[1]->setValue(htmlspecialchars($values[$prefixName.$this->_field->getID().'_1']))) {
@@ -557,9 +557,9 @@ class CMS_object_image extends CMS_object_common
 			if (!$this->_subfieldValues[2]->setValue($filename)) {
 				return false;
 			}
-		} elseif ($_FILES[$prefixName.$this->_field->getID().'_2']['name'] && $_FILES[$prefixName.$this->_field->getID().'_2']['error'] != 0) {
+		} elseif (isset($_FILES[$prefixName.$this->_field->getID().'_2']) && $_FILES[$prefixName.$this->_field->getID().'_2']['name'] && $_FILES[$prefixName.$this->_field->getID().'_2']['error'] != 0) {
 			return false;
-		} elseif ($values[$prefixName.$this->_field->getID().'_2_hidden'] && $values[$prefixName.$this->_field->getID().'_delete'] != 1) {
+		} elseif (isset($values[$prefixName.$this->_field->getID().'_2_hidden']) && $values[$prefixName.$this->_field->getID().'_2_hidden'] && $values[$prefixName.$this->_field->getID().'_delete'] != 1) {
 			if(!$this->_subfieldValues[2]->setValue($values[$prefixName.$this->_field->getID().'_2_hidden'])) {
 				return false;
 			}

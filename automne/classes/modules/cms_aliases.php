@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_aliases.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: cms_aliases.php,v 1.2 2009/04/02 13:57:58 sebastien Exp $
 
 /**
   * Class CMS_module_cms_aliases
@@ -38,6 +38,8 @@ require_once(PATH_MODULES_FS."/".MOD_CMS_ALIAS_CODENAME."/resource.php");
 
 class CMS_module_cms_aliases extends CMS_moduleValidation
 {
+	const MESSAGE_CMS_ALIAS_ALIASES = 1;
+	
 	/**
 	  * Array of resources infos
 	  * The first record is the primary resource of the module.
@@ -88,6 +90,33 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 	{
 		parent::getResourceByID($resourceID);
 		return new CMS_resource_cms_aliases($resourceID);
+	}
+	
+	/**
+	  * Return a list of objects infos to be displayed in module index according to user privileges
+	  *
+	  * @return string : HTML scripts infos
+	  * @access public
+	  */
+	function getObjectsInfos($user) {
+		$objectsInfos = array();
+		$cms_language = $user->getLanguage();
+		if (APPLICATION_ENFORCES_ACCESS_CONTROL === false ||
+			 (APPLICATION_ENFORCES_ACCESS_CONTROL === true
+				&& $user->hasModuleClearance($this->getCodename(), CLEARANCE_MODULE_EDIT)) ) {
+			$objectsInfos[] = array(
+							'label'			=> $cms_language->getMessage(self::MESSAGE_CMS_ALIAS_ALIASES, false, MOD_CMS_ALIAS_CODENAME),
+							'adminLabel'	=> $cms_language->getMessage(self::MESSAGE_PAGE_MANAGE_OBJECTS, array($cms_language->getMessage(self::MESSAGE_CMS_ALIAS_ALIASES, false, MOD_CMS_ALIAS_CODENAME))),
+							'description'	=> $cms_language->getMessage(self::MESSAGE_PAGE_MANAGE_OBJECTS, array($cms_language->getMessage(self::MESSAGE_CMS_ALIAS_ALIASES, false, MOD_CMS_ALIAS_CODENAME))),
+							'objectId'		=> 'cms_aliases',
+							'url'			=> PATH_ADMIN_MODULES_WR.'/'.MOD_CMS_ALIAS_CODENAME.'/index.php',
+							'module'		=> $this->getCodename(),
+							'class'			=> 'atm-elements',
+							'frame'			=> true
+						);
+						
+		}
+		return $objectsInfos;
 	}
 }
 ?>

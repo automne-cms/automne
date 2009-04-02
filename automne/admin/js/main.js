@@ -6,12 +6,13 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: main.js,v 1.6 2009/03/06 10:51:33 sebastien Exp $
+  * $Id: main.js,v 1.7 2009/04/02 13:55:54 sebastien Exp $
   */
 
+//Declare Automne namespace
 Ext.namespace('Automne');
 
-// create application
+//Create application
 Automne = {
 	/*************************************
 	*		Automne public vars		 *
@@ -30,11 +31,9 @@ Automne = {
 	*************************************/
 	init: function() {
 		//check for navigator version
-		if (Ext.isGecko2 || Ext.isIE6 ||  Ext.isSafari2 || !(Ext.isIE || Ext.isGecko || Ext.isSafari || Ext.isOpera)) {
+		if (Ext.isGecko2 || Ext.isIE6 ||  Ext.isSafari2 || !(Ext.isIE || Ext.isGecko || Ext.isSafari || Ext.isOpera || Ext.isChrome)) {
 			window.top.location.replace('./navigator.php');
 		}
-		//check for inframe
-		//if (window.top != window.self) window.top.location.replace('./index.php');
 		//init quicktips
 		Ext.QuickTips.init();
 		// Remove autohide on quicktip
@@ -49,8 +48,11 @@ Automne = {
 		Ext.state.Manager.setProvider(Automne.cookie);
 		
 		//set Global Ajax events
-		Ext.Ajax.on({'beforerequest': Automne.server.showSpinner, 'requestcomplete': Automne.server.hideSpinner, scope: this});
-		
+		Ext.Ajax.on({'beforerequest': Automne.server.showSpinner, 'requestcomplete': Automne.server.hideSpinner, 'requestexception': Automne.server.requestException, scope: this});
+		// Default headers to pass in every request
+		Ext.Ajax.defaultHeaders = {
+		    'X_Powered_By': 'Automne'
+		};
 		//create viewport
 		Automne.createViewPort();
 		
@@ -118,7 +120,7 @@ Automne = {
 	catchF5: function(doc, win) {
 		var catchF5 = function(e) {
 			var ev = !Ext.isIE ? e.browserEvent : this.event;
-			if (ev && ev.keyCode == Ext.EventObject.F5/* && (!e || (e && !e.ctrlKey && !e.shiftKey))*/) {
+			if (ev && ev.keyCode == Ext.EventObject.F5 && ev.charCode != Ext.EventObject.F5/* && (!e || (e && !e.ctrlKey && !e.shiftKey))*/) {
 				if (!Ext.isIE) {
 					e.stopEvent();
 				} else {
@@ -131,10 +133,12 @@ Automne = {
 			return true;
 		}
 		//set F5 event
-		if (!Ext.isIE) {
-			Ext.EventManager.on(doc, 'keypress', catchF5);
-		} else {
-			doc.onkeydown = catchF5.createDelegate(win);
+		if (!Ext.isOpera && !Ext.isSafari && !Ext.isChrome) {
+			if (!Ext.isIE) {
+				Ext.EventManager.on(doc, 'keypress', catchF5);
+			} else {
+				doc.onkeydown = catchF5.createDelegate(win);
+			}
 		}
 	},
 	preventUnload: function() {
@@ -256,17 +260,7 @@ Automne.server = {
 	evalResponse: function (response, options) {
 		//check for XML content
 		if (response.responseXML == undefined) {
-			var msg = Automne.locales.ajaxError;
-			if (response.responseText) {
-				msg += '<br />' + response.responseText;
-			}
-			//TODOV4 : this message must be on top of all (try to set zindex highter)
-			Automne.message.popup({
-				msg: 				msg,
-				buttons: 			Ext.MessageBox.OK,
-				closable: 			false,
-				icon: 				Ext.MessageBox.ERROR
-			});
+			Automne.server.failureResponse(response, options, null, 'call');
 			return;
 		}
 		var content = '';
@@ -304,6 +298,7 @@ Automne.server = {
 				eval('jsonResponse = '+xml.getElementsByTagName('jsoncontent').item(0).firstChild.nodeValue+';');
 			} catch(e) {
 				pr(e, 'error');
+				Automne.server.failureResponse(response, options, e, 'json');
 			}
 		} else if(options.evalContent !== false && xml && xml.getElementsByTagName('content').length) {
 			content = xml.getElementsByTagName('content').item(0).firstChild.nodeValue;
@@ -315,6 +310,7 @@ Automne.server = {
 				eval(xml.getElementsByTagName('jscontent').item(0).firstChild.nodeValue);
 			} catch(e) {
 				pr(e, 'error');
+				Automne.server.failureResponse(response, options, e, 'js');
 			}
 		}
 		//extract json jsfiles and cssfiles in response if any
@@ -343,12 +339,39 @@ Automne.server = {
 			return jsonResponse || content;
 		}
 	},
-	//method used for a server call : eval response
-	failureResponse: function (response, options) {
-		//TODOV4 : test this function
-		var msg = Automne.locales.ajaxError;
-		if (response && response.responseText) {
-			msg += '<br />' + response.responseText;
+	//method used for a server call : request exception
+	requestException: function(conn, response, options) {
+		Automne.server.hideSpinner();
+		Automne.server.failureResponse(response, options, null, 'http');
+	},
+	//method used for a server call : failure response
+	failureResponse: function (response, options, e, type) {
+		var al = Automne.locales;
+		var msg = '';
+		switch(type) {
+			case 'js':
+				msg = al.jsError;
+			break;
+			case 'json':
+				msg = al.jsonError;
+			break;
+			case 'html':
+			default:
+				msg = al.loadingError;
+			break;
+		}
+		msg += '<br /><br />'+ al.contactAdministrator +'<br /><br />';
+		if (response) {
+			if (e) {
+				msg += 'Message : '+ e.name +' : '+ e.message +'<br />';
+			}
+			msg += 'Address : '+ response.argument.url +'<br />'+
+			'Parameters : '+ Ext.urlEncode(response.argument.params) +'<br />'+
+			'Status : '+ response.status +' ('+ response.statusText +')<br />'+
+			'Response Headers : <pre class="atm-debug">'+ response.getAllResponseHeaders +'</pre>';
+			if (response.responseText) {
+				msg += '<br />Server return : <pre class="atm-debug">' + (!e ? response.responseText :  Ext.util.Format.htmlEncode(response.responseText)) +'</pre><br />';
+			}
 		}
 		Automne.message.popup({
 			msg: 				msg,
@@ -561,7 +584,7 @@ Automne.utils = {
 		}
 	},
 	//catch all click into root to redirect action
-	catchLinks: function(root, source) {
+	catchLinks: function(root, source, win) {
 		if (root.dom) {
 			root = root.dom;
 		}
@@ -583,7 +606,7 @@ Automne.utils = {
 					link.on('click', function(e) {
 						pr('Click on link '+this.dom.href);
 						e.stopEvent();
-						Automne.content.endEdition('link', this);
+						win.atmContent.endEdition('link', this);
 					}, link);
 				}
 			}
@@ -607,7 +630,7 @@ Automne.utils = {
 					}, form);
 				}
 			} else {
-				if (form.dom.target != "_blank" && form.dom.action && form.dom.action.indexOf(root.location.href) === -1) {
+				if (form.dom.target != "_blank" && form.dom.action && form.dom.action.indexOf && form.dom.action.indexOf(root.location.href) === -1) {
 					form.on('submit', function(e) {
 						e.stopEvent();
 						//send a message to user
@@ -701,10 +724,13 @@ Automne.view = {
 			}
 		}
 	},
+	//Scripts related methods
 	maxScripts:		0,
 	currentScripts:	0,
 	scriptsUpdate: 	false,
 	scriptsTip:		false,
+	getScriptsDetails:false,
+	getScriptsQueue:false,
 	scripts: function(scriptsleft, options) {
 		var av = Automne.view;
 		av.currentScripts = parseInt(scriptsleft);
@@ -726,27 +752,40 @@ Automne.view = {
 		var el = Ext.get('headPanelBar');
 		if (el) {
 			//request scripts count refresh
-			if (scriptsUpdate) {
+			if (scriptsUpdate || av.getScriptsDetails || av.getScriptsQueue) {
 				setTimeout(function(){
 					Automne.server.call('scripts.php', '', {
-						refreshScripts: true, 
-						nospinner: 		true
+						refreshScripts: 	true, 
+						nospinner: 			true,
+						details:			av.getScriptsDetails,
+						queue:				av.getScriptsQueue
 					});
 				}, 5000);
 			}
+			Automne.view.updateScriptBars();
+		} else {
+			av.scriptsUpdate = false;
+		}
+	},
+	updateScriptBars: function() {
+		var av = Automne.view;
+		var el = Ext.get('headPanelBar');
+		var toptext = av.currentScripts ? 'Scripts en cours de traitement ... '+av.currentScripts+' scripts restant' : 'Aucun script en cours de traitement.';
+		if (el) {
 			var size = (av.currentScripts != 0 && av.maxScripts != 0) ? parseInt((av.currentScripts * 247) / av.maxScripts) : 0;
 			size += 30; //for padding
 			el.setWidth(size, true);
 			if (Ext.get('headPanelBarInfos')) {
 				if (av.scriptsTip) av.scriptsTip.destroy();
-				var toptext = av.currentScripts ? 'Scripts en cours de traitement ... '+av.currentScripts+' scripts restant' : 'Aucun script en cours de traitement.';
 				av.scriptsTip = new Ext.ToolTip({
 					target: 		Ext.get('headPanelBarInfos'),
 					html: 			toptext
 				});
 			}
-		} else {
-			av.scriptsUpdate = false;
+		}
+		if (Ext.getCmp('scriptsProgressBar')) {
+			var progressScripts = Ext.getCmp('scriptsProgressBar');
+			progressScripts.updateProgress((av.currentScripts / av.maxScripts), toptext );
 		}
 	},
 	disconnect: function() {
@@ -921,212 +960,7 @@ Automne.categories = {
 		li.insertHtml('beforeEnd', content);
 	}
 };
-//////////////////////////
-// PAGE CONTENT METHODS //
-//////////////////////////
-Automne.content = {
-	cs: 			{}, 
-	updateTimer:	false,
-	updateCSMask:	false,
-	rowMask:		false,
-	rowOver:		false,
-	isValidator:	false,
-	isValidable:	false,
-	hasPreview:		false,
-	init: function() {
-		var ac = Automne.content;
-		//ac.edition = true;
-		if (parent.Ext.getCmp('editCancelAdd')) {
-			parent.Ext.getCmp('editCancelAdd').hide();
-			parent.Ext.getCmp('addRowCombo').hide();
-			parent.Ext.getCmp('addSelectedRow').hide();
-			parent.Ext.getCmp('editAddRow').show();
-			//these buttons must be shown only if context allow it
-			parent.Ext.getCmp('editSaveDraft').setVisible(Automne.content.isValidable);
-			parent.Ext.getCmp('editValidateDraft').setVisible(Automne.content.isValidator);
-			parent.Ext.getCmp('editPrevizDraft').setVisible(Automne.content.hasPreview);
-			parent.Ext.get('selectedRow').update('');
-		}
-		//allow row mask to be displayed
-		ac.startRowsMask();
-		//add unload event on document to remove listeners
-		Ext.getDoc().on('unload', function() {
-			pr('Clear edition frame objects');
-			//clear update timer interval
-			clearInterval(ac.updateTimer);
-			//remove all listeners
-			for (var csId in ac.cs) {
-				ac.cs[csId].removeListeners();
-				delete ac.cs[csId];
-			}
-		}, this);
-	},
-	edit: function(csDatas, rowsDatas, blocksDatas) {
-		var ac = Automne.content;
-		//instanciate all rows objects
-		var rows = {};
-		for (var rowId in rowsDatas) {
-			rows[rowId] = new Automne.row(rowsDatas[rowId]);
-		}
-		//instanciate all blocks objects
-		var blocks = {};
-		for (var blockId in blocksDatas) {
-			blocks[blockId] = eval('new '+blocksDatas[blockId].jsBlockClass+'(blocksDatas[blockId])');
-			//add block to row
-			if (rows['row-'+blocksDatas[blockId].row]) {
-				rows['row-'+blocksDatas[blockId].row].addBlock(blocks[blockId]);
-			}
-		}
-		//instanciate all clientspaces objects
-		ac.cs = {};
-		for (var csId in csDatas) {
-			ac.cs[csId] = new Automne.cs(csDatas[csId]);
-			//associate rows and CS
-			var count = 0;
-			for(var rowId in rows) {
-				if (rows[rowId].getCsId() == csId) {
-					ac.cs[csId].addRow(rows[rowId]);
-				}
-			}
-			//show CS
-			ac.cs[csId].show();
-		}
-		//then for each CS objects, set brothers clientspaces
-		for (var csId in ac.cs) {
-			for (var csId2 in ac.cs) {
-				if (csId != csId2) {
-					ac.cs[csId].setBrother(ac.cs[csId2]);
-				}
-			}
-		}
-		ac.updateCSMask = true;
-		ac.rowMask = true;
-		ac.updateTimer = setInterval(ac.updateCSMasks, 3000);
-		//init toolbar and row mask
-		ac.init();
-	},
-	getRowForEl: function(el) {
-		var ac = Automne.content;
-		for (var csId in ac.cs) {
-			for(var i = 0, rowsLen = ac.cs[csId].rows.length; i < rowsLen; i++) {
-				if (ac.cs[csId].rows[i].hasElement(el)) {
-					return ac.cs[csId].rows[i];
-				}
-			}
-		}
-		return false;
-	},
-	getCS: function(csId) {
-		return Automne.content.cs[csId];
-	},
-	updateCSMasks: function() {
-		if (Automne.content.updateCSMask) {
-			for (var csId in Automne.content.cs) {
-				Automne.content.cs[csId].updateMask();
-			}
-		}
-	},
-	showZones: function(type) {
-		type = type || 'drop';
-		//stop showing rows mask
-		Automne.content.stopRowsMask();
-		for (var csId in Automne.content.cs) {
-			Automne.content.cs[csId].showZones(type);
-		}
-	},
-	hideZones: function(exception) {
-		for (var csId in Automne.content.cs) {
-			Automne.content.cs[csId].hideZones(exception);
-		}
-	},
-	stopUpdate: function() {
-		Automne.content.updateCSMask = false;
-	},
-	startUpdate: function() {
-		Automne.content.updateCSMask = true;
-		Automne.content.updateCSMasks();
-	},
-	startRowsMask: function() {
-		Automne.content.rowMask = true;
-	},
-	stopRowsMask: function() {
-		Automne.content.rowMask = false;
-	},
-	setRowOver: function(row, status) {
-		if (status && Automne.content.rowOver !== false && Automne.content.rowOver.getId() != row.getId()) {
-			if (status) {
-				Automne.content.rowOver.mouseOut();
-			} else {
-				return;
-			}
-		}
-		Automne.content.rowOver = row;
-	},
-	endEdition: function(source, el) {
-		switch (source) {
-			case 'link':
-				Automne.message.popup({
-					msg: 				Automne.locales.endEdition,
-					buttons: 			Ext.MessageBox.YESNOCANCEL,
-					animEl: 			el,
-					closable: 			false,
-					icon: 				Ext.MessageBox.QUESTION,
-					scope:				this,
-					fn: 				function (button) {
-						if (button == 'cancel') {
-							return;
-						}
-						//call server to get page infos using page url
-						if (button == 'yes') {
-							Automne.tabPanels.getPageInfos({
-								pageUrl:		el.dom.href
-							}, function(response, params) {
-								pr('Submit page content '+ params.params.from +' to validation.');
-								//submit content to validation
-								Automne.server.call({
-									url:				'page-controler.php',
-									params: 			{
-										currentPage:		params.params.from,
-										action:				'submit_for_validation'
-									}
-								});
-							}, {from: Automne.tabPanels.pageId});
-						} else {
-							Automne.tabPanels.getPageInfos({
-								pageUrl:		el.dom.href
-							});
-						}
-						pr('End edition from '+ source +' and unlock page '+ Automne.tabPanels.pageId);
-						//unlock page
-						Automne.server.call({
-							url:				'resource-controler.php',
-							params: 			{
-								resource:		Automne.tabPanels.pageId,
-								module:			'standard',
-								action:			'unlock'
-							},
-							callBackScope:		this
-						});
-					}
-				});
-			break;
-			case 'tab':
-				pr('End edition from '+ source +' and unlock page '+ Automne.tabPanels.pageId);
-				//unlock page
-				Automne.server.call({
-					url:				'resource-controler.php',
-					params: 			{
-						resource:		Automne.tabPanels.pageId,
-						module:			'standard',
-						action:			'unlock'
-					},
-					callBackScope:		this
-				});
-			break;
-		}
-		return true;
-	}
-}
+
 ////////////////
 // JS LOCALES //
 ////////////////
@@ -1154,7 +988,7 @@ Automne.console = {
 	},
 	pr:	function (data, type, backtrace) {
 		if (Automne && Automne.context && Automne.context.debug & 1) {
-			type = type || 'log'; //use 'dir' for exploring variable in IE
+			var type = type || 'log'; //use 'dir' for exploring variable in IE
 			//use firebug if available
 			if (typeof window.console != 'undefined' && window.console.info) {
 				switch (type) {

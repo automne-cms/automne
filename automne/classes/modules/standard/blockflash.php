@@ -14,7 +14,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: blockflash.php,v 1.2 2009/03/02 11:29:12 sebastien Exp $
+// $Id: blockflash.php,v 1.3 2009/04/02 13:57:58 sebastien Exp $
 
 /**
   * Class CMS_block_flash
@@ -170,7 +170,7 @@ class CMS_block_flash extends CMS_block
 			return '';
 		}
 		
-		$id = ($data["name"]) ? 'flash-'.sensitiveIO::sanitizeHTMLString($name) : 'flash-'.md5(uniqid());
+		$id = ($data["name"]) ? 'flash-'.sensitiveIO::sanitizeHTMLString($name) : 'flash-'.md5(mt_rand().microtime());
 		$html = '<script type="text/javascript">'."\n".
 		'	swfobject.embedSWF(\''.$src.'\', \''.$id.'\', \''.$data['width'].'\', \''.$data['height'].'\', \''.$data['version'].'\', "'.PATH_MAIN_WR.'/swfobject/expressInstall.swf", {'.sensitiveIO::sanitizeJSString($data['flashvars'], false, false).'}, {'.sensitiveIO::sanitizeJSString($data['params'], false, false).'}, {'.sensitiveIO::sanitizeJSString($data['attributes'], false, false).'});'."\n".
 		'</script>'."\n".
@@ -401,7 +401,7 @@ class CMS_block_flash extends CMS_block
 	  */
 	function getFilePath($originalName, &$page,&$clientspace,&$row,&$block, $withPath = true)
 	{
-		$name = md5(uniqid());
+		$name = md5(mt_rand().microtime());
 		$name .= SensitiveIO::sanitizeAsciiString($originalName);
 		$name = "p".$page->getID()."_".$name;
 		if (strlen($name) > 255) {

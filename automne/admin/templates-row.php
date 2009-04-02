@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-row.php,v 1.4 2009/02/03 14:24:44 sebastien Exp $
+// $Id: templates-row.php,v 1.5 2009/04/02 13:55:54 sebastien Exp $
 
 /**
   * PHP page : Load page rows search window.
@@ -368,11 +368,14 @@ $jscontent = <<<END
 							delete objectsWindows[window.id];
 							//refresh search list
 							rowWindow.search();
+							//enable button to allow creation of a other items
+							Ext.getCmp('{$winId}createItem').enable();
 						}}
 					});
-
 					//display window
 					objectsWindows[windowId].show(button.getEl());
+					//disable button to avoid creation of a second item
+					button.disable();
 				}
 			},
 			scope:		resultsPanel

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: users-groups.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: users-groups.php,v 1.2 2009/04/02 13:55:55 sebastien Exp $
 
 /**
   * PHP page : Load page users-groups search window.
@@ -105,12 +105,24 @@ $jscontent = <<<END
 				newTab.launchSearch();
 			}
 			return true;
+		},'tabchange' : function(tabPanel, newTab) {
+			if (newTab.rendered) {
+				newTab.doLayout();
+			}
+			return true;
 		}}
     });
 	
 	usersGroupsWindow.add(center);
 	//redo windows layout
 	usersGroupsWindow.doLayout();
+	
+	//set resize event to fix grid size
+	usersGroupsWindow.on('resize', function(panel, width, height, rawwidth, rawheight){
+		panel.items.each(function(tabpanel) {
+			tabpanel.doLayout();
+		});
+	});
 END;
 $view->addJavascript($jscontent);
 $view->show();

@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: module.php,v 1.4 2009/03/02 11:28:30 sebastien Exp $
+// $Id: module.php,v 1.5 2009/04/02 13:57:58 sebastien Exp $
 
 /**
   * Class CMS_module
@@ -32,6 +32,15 @@
 
 class CMS_module extends CMS_grandFather
 {
+	/**
+	  * Standard Messages
+	  */
+	const MESSAGE_PAGE_ADMIN_CATEGORIES = 1206;
+	const MESSAGE_PAGE_CHOOSE = 1132;
+	const MESSAGE_PAGE_CATEGORIES = 636;
+	const MESSAGE_PAGE_MANAGE_OBJECTS = 635;
+	const MESSAGE_PAGE_CATEGORIES_USED = 637;
+	
 	/**
 	  * DB id
 	  * @var integer

@@ -17,7 +17,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: mod_cms_forms_header.php,v 1.4 2009/03/04 09:58:34 sebastien Exp $
+// $Id: mod_cms_forms_header.php,v 1.5 2009/04/02 13:59:37 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -61,7 +61,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 				if (!isset($_SESSION["cms_context"]) || (isset($_SESSION["cms_context"]) && !is_a($_SESSION["cms_context"], 'CMS_context')) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] == 'true')) {
 					@session_destroy();
 					start_atm_session();
-					if (!isset($_REQUEST["logout"]) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] != 'true') && CMS_context::autoLoginSucceeded()) {
+					if ((!isset($_REQUEST["logout"]) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] != 'true')) && CMS_context::autoLoginSucceeded()) {
 						//declare form ok action
 						$cms_forms_okAction[$form->getID()] = true;
 					} elseif (isset($_REQUEST["logout"]) && $_REQUEST["logout"] == 'true') {
@@ -80,7 +80,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 				$actions = $form->getActionsByType(CMS_forms_action::ACTION_FORMOK);
 				$action = array_shift($actions);
 				//check if form ok send to a page and if user has rights for this page
-				if (is_object($cms_user) && $action->getString("value") == "page") {
+				if (isset($cms_user) && is_object($cms_user) && $action->getString("value") == "page") {
 					//for compatibility with old versions of module
 					if (sensitiveIO::isPositiveInteger($action->getString('text'))) {
 						$redirect = new CMS_href();
@@ -97,7 +97,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 					}
 				}
 				//then launch form ok action if needed
-				if ($cms_forms_okAction[$form->getID()]) {
+				if (isset($cms_forms_okAction[$form->getID()]) && $cms_forms_okAction[$form->getID()]) {
 					//if we have an encoded referer, use it
 					if (isset($_REQUEST['referer']) && $_REQUEST['referer'] && ($url = base64_decode($_REQUEST['referer']))) {
 						header("Location: ".$url);
@@ -378,13 +378,13 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 							case CMS_forms_action::ACTION_AUTH :
 								$login = $password = $permanent = '';
 								$values = explode(';',$action->getString('value'));
-								if (is_object($fields[$values[0]])) {
+								if (isset($values[0]) && isset($fields[$values[0]]) && is_object($fields[$values[0]])) {
 									$login = $_POST[$fields[$values[0]]->getAttribute('name')];
 								}
-								if (is_object($fields[$values[1]])) {
+								if (isset($values[1]) && isset($fields[$values[1]]) && is_object($fields[$values[1]])) {
 									$password = $_POST[$fields[$values[1]]->getAttribute('name')];
 								}
-								if (is_object($fields[$values[2]])) {
+								if (isset($values[2]) && isset($fields[$values[2]]) && is_object($fields[$values[2]])) {
 									$permanent = $_POST[$fields[$values[2]]->getAttribute('name')];
 								}
 								if ($login && $password) {

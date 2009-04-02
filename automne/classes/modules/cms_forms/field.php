@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: field.php,v 1.2 2009/02/03 14:27:16 sebastien Exp $
+// $Id: field.php,v 1.3 2009/04/02 13:57:59 sebastien Exp $
 
 /**
   * Class CMS_forms_field
@@ -403,7 +403,7 @@ class CMS_forms_field extends CMS_grandFather {
 					$formTags[$aTag->getAttribute('id')]->setAttribute("options",$options);
 					
 				} elseif ($aTag->tagName == 'label') {
-					$formTags[$aTag->getAttribute('for')]->setAttribute("label",CMS_DOMDocument::DOMElementToString($aTag, true));
+					$formTags[$aTag->getAttribute('for')]->setAttribute("label", str_replace("\n", "", CMS_DOMDocument::DOMElementToString($aTag, true)));
 				}
 				//is field required ?
 				if (in_array('req',$fieldIDDatas)) {
@@ -415,7 +415,11 @@ class CMS_forms_field extends CMS_grandFather {
 				}
 			}
 		}
+		foreach ($formTags as $field) {
+			$field->writeToPersistence();
+		}
 		//add form object
+		$formTags = array();
 		$formTags['form'] = new CMS_forms_formular($formId);
 		
 		//compare DB form fields if any and add missing ones
@@ -527,6 +531,7 @@ class CMS_forms_field extends CMS_grandFather {
 				$return[$id] = $id;
 			}
 		}
+		
 		return $return;
 	}
 	

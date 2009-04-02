@@ -14,7 +14,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: modulecategory.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: modulecategory.php,v 1.2 2009/04/02 13:57:58 sebastien Exp $
 
 /**
   * Class CMS_moduleCategory
@@ -296,7 +296,13 @@ class CMS_moduleCategory extends CMS_grandFather {
 	  * @return CMS_moduleCategory
 	  */
 	function &getParent() {
-		return CMS_moduleCategories_catalog::getById($this->_parentID);
+		if (sensitiveIO::isPositiveInteger($this->_parentID)) {
+			return CMS_moduleCategories_catalog::getById($this->_parentID);
+		} else {
+			$parent = new CMS_moduleCategory(0);
+			$parent->setAttribute('moduleCodename', $this->_moduleCodename);
+			return $parent;
+		}
 	}
 	
 	/**

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: scriptsmanager.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: scriptsmanager.php,v 1.2 2009/04/02 13:58:01 sebastien Exp $
 
 /**
   * Class CMS_scriptsManager
@@ -227,7 +227,7 @@ class CMS_scriptsManager
 		$modules = array();
 		while ($data = $q->getArray()) {
 			//instanciate module if not exists
-			if (!$modules[$data['module_reg']]) {
+			if (!isset($modules[$data['module_reg']])) {
 				$modules[$data['module_reg']] = CMS_modulesCatalog::getByCodename($data['module_reg']);
 			}
 			$scripts[$data['id_reg']] = $modules[$data['module_reg']]->scriptInfo(unserialize($data['parameters_reg']));

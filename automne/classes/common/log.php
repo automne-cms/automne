@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: log.php,v 1.2 2008/12/18 10:39:46 sebastien Exp $
+// $Id: log.php,v 1.3 2009/04/02 13:57:59 sebastien Exp $
 
 /**
   * Class CMS_log
@@ -54,15 +54,16 @@ class CMS_log extends CMS_grandFather
 	const LOG_ACTION_PROFILE_GROUP_DELETE = 13;
 	const LOG_ACTION_PROFILE_USER_EDIT = 14;
 	const LOG_ACTION_PROFILE_USER_DELETE = 15;
-	  
+	
 	const LOG_ACTION_TEMPLATE_EDIT = 20;
 	const LOG_ACTION_TEMPLATE_EDIT_ROW = 21;
 	const LOG_ACTION_TEMPLATE_DELETE = 22;
 	const LOG_ACTION_TEMPLATE_DELETE_ROW = 23;
 	
-	const LOG_ACTION_TEMPLATE_EDIT_CSS = 24;
+	const LOG_ACTION_TEMPLATE_DELETE_FILE = 24;
+	const LOG_ACTION_TEMPLATE_EDIT_FILE = 29;
 	
-	const LOG_ACTION_SEND_EMAIL = 25;
+	const LOG_ACTION_SEND_EMAIL = 28;
 	
 	/**
 	  * Log actions messages
@@ -94,7 +95,9 @@ class CMS_log extends CMS_grandFather
 	const MESSAGE_LOG_ACTION_TEMPLATE_EDIT_ROW = 891;
 	const MESSAGE_LOG_ACTION_TEMPLATE_DELETE = 892;
 	const MESSAGE_LOG_ACTION_TEMPLATE_DELETE_ROW = 893;
-	const MESSAGE_LOG_ACTION_TEMPLATE_EDIT_CSS = 1110;
+	
+	const MESSAGE_LOG_ACTION_TEMPLATE_EDIT_FILE = 1110;
+	const MESSAGE_LOG_ACTION_TEMPLATE_DELETE_FILE = 638;
 	
 	const MESSAGE_LOG_ACTION_SEND_EMAIL = 573;
 	

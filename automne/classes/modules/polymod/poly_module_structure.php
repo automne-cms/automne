@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_module_structure.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: poly_module_structure.php,v 1.2 2009/04/02 13:58:01 sebastien Exp $
 
 /**
   * static Class CMS_poly_module_structure
@@ -186,7 +186,7 @@ class CMS_poly_module_structure
 					if ($language && is_a($language, 'CMS_language')) {
 						$structure[substr($fieldID,5)]['translatedpath'] = $translatedpath.':'.sensitiveIO::sanitizeAsciiString($objectInfos[$object]->getLabel($language));
 						$count = 1;
-						while ($translationtable[$structure[substr($fieldID,5)]['translatedpath']]) {
+						while (isset($translationtable[$structure[substr($fieldID,5)]['translatedpath']])) {
 							$count++;
 							$structure[substr($fieldID,5)]['translatedpath'] = $translatedpath.':'.sensitiveIO::sanitizeAsciiString($objectInfos[$object]->getLabel($language)).$count;
 						}
@@ -204,7 +204,7 @@ class CMS_poly_module_structure
 					if ($language && is_a($language, 'CMS_language')) {
 						$structure[substr($fieldID,5)]['translatedpath'] = $translatedpath.':'.sensitiveIO::sanitizeAsciiString($objectDef->getFieldLabel($language));
 						$count = 1;
-						while ($translationtable[$structure[substr($fieldID,5)]['translatedpath']]) {
+						while (isset($translationtable[$structure[substr($fieldID,5)]['translatedpath']])) {
 							$count++;
 							$structure[substr($fieldID,5)]['translatedpath'] = $translatedpath.':'.sensitiveIO::sanitizeAsciiString($objectDef->getFieldLabel($language)).$count;
 						}

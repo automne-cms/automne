@@ -8,9 +8,10 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: framepanel.js,v 1.8 2009/03/06 10:51:33 sebastien Exp $
+  * $Id: framepanel.js,v 1.9 2009/04/02 13:55:54 sebastien Exp $
   */
 Automne.framePanel = Ext.extend(Automne.panel, { 
+	xtype:				'framePanel',
 	//frame url to use at next frame reload
 	frameURL:			'',
 	pageId:				false,
@@ -28,6 +29,8 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 	noReload:			false,
 	//does this frame is editable ?
 	editable:			false,
+	//buttons edition id suffix
+	editId:				null,
 	//constructor
 	constructor: function(config) { 
 		// preprocessing
@@ -41,6 +44,9 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 	//component initialisation (after constructor)
 	initComponent: function() {
 		var al = Automne.locales;
+		if (this.editable) {
+			this.editId = this.id + 'Frame';
+		}
 		Ext.apply(this, {
 			html:  			'<iframe id="' + this.id + 'Frame" width="100%" height="100%" frameborder="no"' + (!Ext.isIE ? ' class="x-hide-visibility"' : '') + ' src="' + Ext.SSL_SECURE_URL + '">&nbsp;</iframe>',
 			hideBorders:	true,
@@ -53,9 +59,8 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 					tooltip:		al.optionsDetail,
 					iconCls:		'atm-pic-option',
 					menu: 			{
-						id: 			'editOptionsMenu',
 						items: [{
-							id:				'editAnimations',
+							id:				'editAnimations'+ this.editId,
 							text: 			'<span ext:qtip="'+ al.optAnimateDetail +'">'+ al.optAnimate +'</span>',
 							checked: 		true,
 							stateful:		true,
@@ -64,7 +69,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 								return {checked: this.checked};
 							}
 						},{
-							id:				'editScroll',
+							id:				'editScroll'+ this.editId,
 							text: 			'<span ext:qtip="'+ al.optMoveDetail +'">'+ al.optMove +'</span>',
 							checked: 		true,
 							stateful:		true,
@@ -75,23 +80,23 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 						}
 					]}
 				},'-',{
-					id:				'editAddRow',
+					id:				'editAddRow'+ this.editId,
 					xtype:			'tbbutton',
 					text:			al.newRow,
 					tooltip:		al.newRowTip,
 					scope:			this,
 					iconCls:		'atm-pic-add',
 					handler:		function() {
-						Ext.getCmp('editAddRow').hide();
-						Ext.getCmp('editValidateDraft').hide();
-						Ext.getCmp('editSaveDraft').hide();
-						Ext.getCmp('editCancelAdd').show();
-						Ext.get('selectedRow').update('<span class="atm-text-alert">'+ al.csClickOnRed +'</span>');
+						Ext.getCmp('editAddRow'+ this.editId).hide();
+						Ext.getCmp('editValidateDraft'+ this.editId).hide();
+						Ext.getCmp('editSaveDraft'+ this.editId).hide();
+						Ext.getCmp('editCancelAdd'+ this.editId).show();
+						Ext.get('selectedRow'+ this.editId).update('<span class="atm-text-alert">'+ al.csClickOnRed +'</span>');
 						Automne.message.show(al.csClickOnRed, '', Automne.tabPanels.getActiveTab().frameEl);
-						this.frameEl.dom.contentWindow.Automne.content.showZones('add');
+						this.frameEl.dom.contentWindow.atmContent.showZones('add');
 					}
 				},{
-					id:				'editCancelAdd',
+					id:				'editCancelAdd'+ this.editId,
 					xtype:			'tbbutton',
 					text:			'Annuler',
 					tooltip:		al.csCancelRowAdd,
@@ -100,15 +105,15 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 					iconCls:		'atm-pic-cancel',
 					handler:		function() {
 						//init toolbar and row mask
-						this.frameEl.dom.contentWindow.Automne.content.init();
+						this.frameEl.dom.contentWindow.atmContent.init();
 						//hide all drop zones
-						this.frameEl.dom.contentWindow.Automne.content.hideZones();
+						this.frameEl.dom.contentWindow.atmContent.hideZones();
 					}
 				},'-',{
 					xtype:			'tbtext',
-					text:			'<span id="selectedRow"></span>'
+					text:			'<span id="selectedRow'+ this.editId +'"></span>'
 				},new Automne.ComboBox({
-					id: 	'addRowCombo',
+					id: 	'addRowCombo'+ this.editId,
 					store: new Automne.JsonStore({
 						url: 				'page-rows-datas.php',
 						root: 				'results',
@@ -140,7 +145,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 					),
 					itemSelector: 		'div.atm-search-item'
 				}),{
-					id:				'addSelectedRow',
+					id:				'addSelectedRow'+ this.editId,
 					xtype:			'tbbutton',
 					text:			al.add,
 					tooltip:		al.csAddRowToPosition,
@@ -149,7 +154,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 					iconCls:		'atm-pic-ok',
 					handler:		function() {
 						//display window to select row to add according to queried CS
-						var combo = Ext.getCmp('addRowCombo');
+						var combo = Ext.getCmp('addRowCombo'+this.editId);
 						var comboParams = combo.store.baseParams;
 						//get combo value
 						var params = {
@@ -161,16 +166,16 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 							rowType:		combo.getValue(),
 							visualMode:		comboParams.visualMode
 						};
-						var cs = this.frameEl.dom.contentWindow.Automne.content.getCS(comboParams.cs);
+						var cs = this.frameEl.dom.contentWindow.atmContent.getCS(comboParams.cs);
 						//send all datas to server to create new row and get row HTML code
 						Automne.server.call('page-content-controler.php', cs.addNewRow, params, cs);
 						//hide all drop zones
-						this.frameEl.dom.contentWindow.Automne.content.hideZones();
+						this.frameEl.dom.contentWindow.atmContent.hideZones();
 						//init toolbar and row mask
-						this.frameEl.dom.contentWindow.Automne.content.init();
+						this.frameEl.dom.contentWindow.atmContent.init();
 					}
 				}, '->',{
-					id:				'editValidateDraft',
+					id:				'editValidateDraft'+ this.editId,
 					xtype:			'tbbutton',
 					iconCls:		'atm-pic-validate',
 					text:			al.validateDraft,
@@ -200,7 +205,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 						});
 					}
 				},{
-					id:				'editSaveDraft',
+					id:				'editSaveDraft'+ this.editId,
 					xtype:			'tbbutton',
 					iconCls:		'atm-pic-draft-validation',
 					text:			al.SubmitToValid,
@@ -238,7 +243,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 						});
 					}
 				},{
-					id:				'editPrevizDraft',
+					id:				'editPrevizDraft'+ this.editId,
 					xtype:			'tbbutton',
 					iconCls:		'atm-pic-draft-previz',
 					text:			'Aperçu',
@@ -272,7 +277,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 	//before panel is activated (tab panel clicked)
 	beforeActivate: function(tabPanel, newTab, oldTab, force) {
 		if (oldTab && oldTab.id == 'edit' && (newTab.id == 'edited' || newTab.id == 'public')) {
-			Automne.content.endEdition('tab');
+			oldTab.frameEl.dom.contentWindow.atmContent.endEdition('tab');
 		}
 		if (force && this.disabled) {
 			this.setDisabled(false);
@@ -361,7 +366,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 	},
 	//catch all click into frame links and form submission to redirect action
 	catchFrameLinks: function () {
-		Automne.utils.catchLinks(this.frameDocument, this.id);
+		Automne.utils.catchLinks(this.frameDocument, this.id, this.frameEl.dom.contentWindow);
 	},
 	//reload frame content
 	reload: function (force) {
@@ -373,7 +378,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 				if (this.id != 'public' && !Ext.isIE) {
 					this.getEl().mask(Automne.locales.loading);
 				}
-				this.frameDocument.location = this.frameURL + ((this.frameURL.indexOf('?') === -1) ? '?' : '&') + '_dc='+ (new Date()).getTime();
+				this.frameDocument.location = this.frameURL + ((this.frameURL.indexOf('?') === -1) ? '?' : '&') + '_dc='+ (new Date()).getTime() + ((this.editable) ? '&editId='+ this.editId : '');
 				this.forceReload = false;
 			}
 		}

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: xmldomdocument.php,v 1.2 2009/03/04 09:57:52 sebastien Exp $
+// $Id: xmldomdocument.php,v 1.3 2009/04/02 13:57:59 sebastien Exp $
 
 /**
   * Class CMS_DOMDocument
@@ -59,6 +59,15 @@ class CMS_DOMDocument extends DOMDocument {
 			CMS_grandFather::raiseError('Domelement is not a DOMElement instance');
 			return false;
 		}
+		static $getAutoClosedTagsList;
+		if (!$getAutoClosedTagsList) {
+			$xml2Array = new CMS_xml2Array();
+			$tagsList = $xml2Array->getAutoClosedTagsList();
+			$getAutoClosedTagsList = array();
+			foreach ($tagsList as $tag) {
+				$getAutoClosedTagsList['<'.$tag.'></'.$tag.'>'] = '<'.$tag.'/>';
+			}
+		}
 		$output = '';
 		//create DOMDocument
 		$doc = new CMS_DOMDocument();
@@ -71,16 +80,17 @@ class CMS_DOMDocument extends DOMDocument {
 				$doc->appendChild($domNode);
 				$i++;
 			}
-			$output = $doc->saveXML();
+			$output = @$doc->saveXML(null, LIBXML_NOEMPTYTAG);
 			//remove xml declaration
 			$output = substr($output, strlen('<?xml version="1.0" encoding="'.APPLICATION_DEFAULT_ENCODING.'"?>')+1, -1);
 		} else {
-			// import node
+			// import node20
 			$domNode = $doc->importNode($domelement, true);
 			// append node
-			//$doc->appendChild($domNode);
-			$output = $doc->saveXML($domNode);
+			$output = $doc->saveXML($domNode, LIBXML_NOEMPTYTAG);
 		}
+		//replace tags like <br></br> by auto closed tags
+		$output = str_replace(array_keys($getAutoClosedTagsList), $getAutoClosedTagsList, $output);
 		return $output;
 	}
 }

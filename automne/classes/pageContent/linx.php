@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: linx.php,v 1.5 2009/03/02 11:29:21 sebastien Exp $
+// $Id: linx.php,v 1.6 2009/04/02 13:57:59 sebastien Exp $
 
 /**
   * Class CMS_linx
@@ -339,7 +339,7 @@ class CMS_linx extends CMS_grandFather
 				$nodespecs = $start->getElementsByTagName('nodespec');
 				if ($nodespecs->length > 0) {
 					$nodespec = $nodespecs->item(0);
-					$nodespec = CMS_linxNodespec::createNodespec($nodespec);
+					$nodespec = CMS_linxNodespec::createNodespec($nodespec, $this->_crosswebsite);
 				}
 				$pg = $nodespec->getTarget($this->_page, $this->_publicTree);
 				if ($pg) {

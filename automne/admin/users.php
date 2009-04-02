@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: users.php,v 1.2 2008/11/26 18:08:13 sebastien Exp $
+// $Id: users.php,v 1.3 2009/04/02 13:55:55 sebastien Exp $
 
 /**
   * PHP page : Load users search window.
@@ -306,10 +306,14 @@ $jscontent = <<<END
 						if (usersWindow && usersWindow.launchSearch) {
 							usersWindow.launchSearch();
 						}
+						//enable button to allow creation of a other users
+						Ext.getCmp('createUser').enable();
 					}}
 				});
 				//display window
 				userWindows[0].show(button.getEl());
+				//disable button to avoid creation of a second user
+				button.disable();
 			},
 			scope:		usersWindow
 		})],

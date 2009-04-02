@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modulecategoriescatalog.php,v 1.2 2009/03/02 11:28:30 sebastien Exp $
+// $Id: modulecategoriescatalog.php,v 1.3 2009/04/02 13:57:58 sebastien Exp $
 
 /**
   * Class CMS_moduleCategories_catalog
@@ -130,7 +130,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 			CMS_grandFather::raiseError("Category is already child of parent given");
 			return false;
 		}
-		CMS_moduleCategories_catalog::compactSiblingsOrder($parentCategory->getID());
+		CMS_moduleCategories_catalog::compactSiblingsOrder($parentCategory);
 		$category->setAttribute('parentID', $parentCategory->getID());
 		if ($parentCategory->isRoot()) {
 			$category->setAttribute('rootID', $parentCategory->getID());
@@ -184,9 +184,10 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	 * @access public
 	 * @param CMS_moduleCategory $category 
 	 * @param CMS_moduleCategory $parentCategory
+	 * @param integer $index : the new index for the new parent (if false, put the category at last position)
 	 * @return boolean true on success, false on failure
 	 */
-	function moveCategory(&$category, &$newParentCategory) {
+	function moveCategory(&$category, &$newParentCategory, $index = false) {
 		if (!is_a($newParentCategory, 'CMS_moduleCategory')) {
 			CMS_grandFather::raiseError("Bad parent given, not a valid CMS_moduleCategory instance");
 			return false;
@@ -195,16 +196,32 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 			CMS_grandFather::raiseError("Bad category given, not a valid CMS_moduleCategory instance");
 			return false;
 		}
-		if ($category->hasParent($newParentCategory)) {
+		if ($category->hasParent($newParentCategory) && $index === false) {
 			CMS_grandFather::raiseError("Category is already child of new parent given");
 			return false;
 		}
-		$oldParentCategory = $category->getParent();
-		if (CMS_moduleCategories_catalog::attachCategory($category, $newParentCategory)) {
-			return CMS_moduleCategories_catalog::compactSiblingsOrder($oldParentCategory->getID());
+		if ($category->hasParent($newParentCategory)) {
+			//this is only a change of category index so  move category to new index
+			return CMS_moduleCategories_catalog::moveCategoryIndex($category, $index);
 		} else {
-			CMS_grandFather::raiseError("Movement failed for category ".$category->getID());
-			return false;
+			$oldParentCategory = $category->getParent();
+			if (CMS_moduleCategories_catalog::attachCategory($category, $newParentCategory)) {
+				if (!CMS_moduleCategories_catalog::compactSiblingsOrder($oldParentCategory)) {
+					CMS_grandFather::raiseError("Cannot compact sibling order for parent category");
+					return false;
+				}
+				if (!$index) {
+					return true;
+				} else {
+					//reload category
+					$category = new CMS_moduleCategory($category->getID());
+					//then move category to new index
+					return CMS_moduleCategories_catalog::moveCategoryIndex($category, $index);
+				}
+			} else {
+				CMS_grandFather::raiseError("Movement failed for category ".$category->getID());
+				return false;
+			}
 		}
 	}
 	
@@ -216,7 +233,16 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	 * @access public
 	 * @return boolean
 	 */
-	function compactSiblingsOrder($category_id) {
+	function compactSiblingsOrder($category, $codename = false) {
+		if (is_a($category, 'CMS_moduleCategory')) {
+			$categoryId = $category->getID();
+			$codename = $category->getAttribute('moduleCodename');
+		} else if(sensitiveIO::isPositiveInteger($category)) {
+			$categoryId = $category;
+		} else {
+			CMS_grandFather::raiseError("Category parameter is not a valid ID nor a valid category");
+			return false;
+		}
 		// Checks if any hole in list order (more orders than records in siblings)
 		$proceed = true;
 		$sql = "
@@ -226,8 +252,11 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 			from
 				modulesCategories
 			where
-				parent_mca='".SensitiveIO::sanitizeSQLString($category_id)."'
+				parent_mca = '".SensitiveIO::sanitizeSQLString($categoryId)."'
 		";
+		if ($codename) {
+			$sql .= " and module_mca = '".SensitiveIO::sanitizeSQLString($codename)."'";
+		}
 		$q = new CMS_query($sql);
 		$arr = $q->getArray();
 		if ((int) $arr["m"] != (int) $arr["COUNT(*)"]) {
@@ -238,13 +267,17 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 				from
 					modulesCategories
 				where
-					parent_mca='".SensitiveIO::sanitizeSQLString($category_id)."'
+					parent_mca='".SensitiveIO::sanitizeSQLString($categoryId)."'";
+			if ($codename) {
+				$sql .= " and module_mca = '".SensitiveIO::sanitizeSQLString($codename)."'";
+			}
+			$sql .= "
 				order by
 					order_mca
 			";
 			$q = new CMS_query($sql);
 			$order=0;
-			while ($link_id = $q->getValue("id")) {
+			while ($linkId = $q->getValue("id")) {
 				$order++;
 				$sql = "
 					update
@@ -252,16 +285,89 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 					set
 						order_mca='".$order."'
 					where
-						id_mca='".$link_id."'
+						id_mca='".$linkId."'
 				";
 				$qU = new CMS_query($sql);
 				if ($qU->hasError()) {
-					CMS_grandFather::raiseError("Error while reordering siblings of category ".$category_id);
+					CMS_grandFather::raiseError("Error while reordering siblings of category ".$categoryId);
 					$proceed = false;
 				}
 			}
 		}
 		return $proceed;
+	}
+	
+	/**
+	 * Moves position of a category in list at given index
+	 * 
+	 * @access public
+	 * @param CMS_moduleCategory $category 
+	 * @param integer $index values (start to 1)
+	 * @return boolean true on succes, false on failure
+	 */
+	function moveCategoryIndex($category, $index) {
+		// Checks : pages must be CMS_moduleCategory and offset in (1, -1)
+		if (!is_a($category, "CMS_moduleCategory")) {
+			CMS_grandFather::raiseError("Category to move not valid.");
+			return false;
+		}
+		if (!SensitiveIO::isPositiveInteger($index)) {
+			CMS_grandFather::raiseError("Index must be a positive integer : ".$index);
+			return false;
+		}
+		//if index is the same than current coregory index, do nothing
+		if ($category->getAttribute('order') == $index) {
+			return true;
+		}
+		
+		// Find the siblings to switch order
+		$parent = $category->getParent();
+		
+		// Use this function to compact of siblings order
+		if (!is_a($parent, 'CMS_moduleCategory') 
+				|| !CMS_moduleCategories_catalog::compactSiblingsOrder($parent)) {
+			CMS_grandFather::raiseError("Reordering siblings failed for category ".$parent->getID());
+			return false;
+		}
+		
+		if ($category->getAttribute('order') < $index) {
+			//move sibling order
+			$sql = "
+				update
+					modulesCategories
+				set
+					order_mca = order_mca - 1
+				where
+					order_mca > '".$category->getAttribute('order')."'
+					and order_mca <= '".$index."'
+					and parent_mca = '".$parent->getID()."'
+			";
+			$q = new CMS_query($sql);
+		} else {
+			//move sibling order
+			$sql = "
+				update
+					modulesCategories
+				set
+					order_mca = order_mca + 1
+				where
+					order_mca < '".$category->getAttribute('order')."'
+					and order_mca >= '".$index."'
+					and parent_mca = '".$parent->getID()."'
+			";
+			$q = new CMS_query($sql);
+		}
+		//move category index
+		$sql = "
+			update
+				modulesCategories
+			set
+				order_mca = ".$index."
+			where
+				id_mca='".$category->getID()."'
+		";
+		$q = new CMS_query($sql);
+		return true;
 	}
 	
 	/**

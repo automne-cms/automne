@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modulecategories.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: modulecategories.php,v 1.2 2009/04/02 13:56:08 sebastien Exp $
 
 /**
   * PHP page : Presents list of module categories for given module
@@ -273,7 +273,11 @@ if (!function_exists("build_category_tree")) {
 $dialog = new CMS_dialog();
 $content = '';
 $dialog->setTitle($cms_language->getMessage(MESSAGE_PAGE_TITLE_MODULE, array($cms_module->getLabel($cms_language)))." :: ".$cms_language->getMessage(MESSAGE_PAGE_TITLE, false));
-
+if (isset($_REQUEST["backlink"])) {
+	$dialog->setBacklink($_REQUEST["backlink"]);
+} else {
+	$dialog->setBacklink($cms_module->getAdminFrontendPath(PATH_RELATIVETO_WEBROOT));
+}
 if ($cms_message) {
 	$dialog->setActionMessage($cms_message);
 }

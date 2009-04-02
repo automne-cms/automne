@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: rows.js,v 1.4 2009/03/04 09:55:38 sebastien Exp $
+  * $Id: rows.js,v 1.5 2009/04/02 13:55:53 sebastien Exp $
   */
 Automne.row = function(config){
 	config = config || {};
@@ -128,9 +128,9 @@ Ext.extend(Automne.row, Ext.util.Observable, {
 		}
 		this.getBox();
 		if (this.show()) {
-			pr('Over '+ this.id +' - Index : '+ this.csOrder );
+			//pr('Over '+ this.id +' - Index : '+ this.csOrder );
 			this.hasMouseOver = true;
-			Automne.content.setRowOver(this, true);
+			atmContent.setRowOver(this, true);
 		}
 	},
 	//on mouseout : launch timer to hide zone
@@ -158,13 +158,13 @@ Ext.extend(Automne.row, Ext.util.Observable, {
 			this.mouseOutTimeOut.cancel();
 		}
 		this.hasMouseOver = false;
-		Automne.content.setRowOver(this, false);
-		pr('Out '+this.id);
+		atmContent.setRowOver(this, false);
+		//pr('Out '+this.id);
 		this.hide();
 	},
 	//show row control elements
 	show : function(){
-		if (!Automne.content.rowMask) {
+		if (!atmContent.rowMask) {
 			return false;
 		}
 		//if surounding mask does not exists, create it
@@ -197,9 +197,9 @@ Ext.extend(Automne.row, Ext.util.Observable, {
 		//scroll frame if necessary
 		this.scroll();
 		//append template and rows name to top bar
-		if (parent.Ext.get('selectedRow')) {
-			parent.Ext.get('selectedRow').update(Automne.locales.rowType +' <strong>'+ this.label +'</strong>');
-			parent.Ext.get('selectedRow').dom.className = this.id;
+		if (parent.Ext.get('selectedRow'+ atmContent.editId)) {
+			parent.Ext.get('selectedRow'+ atmContent.editId).update(Automne.locales.rowType +' <strong>'+ this.label +'</strong>');
+			parent.Ext.get('selectedRow'+ atmContent.editId).dom.className = this.id;
 		}
 		//add controls to top bar
 		this.addControls();
@@ -207,7 +207,7 @@ Ext.extend(Automne.row, Ext.util.Observable, {
 	},
 	//hide row control elements
 	hide : function(){
-		if (!Automne.content.rowMask) {
+		if (!atmContent.rowMask) {
 			return false;
 		}
 		if (this.mask && this.mask.hide) {
@@ -218,13 +218,13 @@ Ext.extend(Automne.row, Ext.util.Observable, {
 			this.blocks[blockId].hide();
 		}
 		//remove top label if another row is not already displayed
-		if (parent.Ext.get('selectedRow') && parent.Ext.get('selectedRow').hasClass(this.id)) {
-			parent.Ext.get('selectedRow').update('');
+		if (parent.Ext.get('selectedRow'+ atmContent.editId) && parent.Ext.get('selectedRow'+ atmContent.editId).hasClass(this.id)) {
+			parent.Ext.get('selectedRow'+ atmContent.editId).update('');
 		}
 	},
 	//scroll frame if necessary to show the top of row mask
 	scroll: function () {
-		var scrollStatus = (parent.Ext.getCmp('editScroll')) ? parent.Ext.getCmp('editScroll').checked : true;
+		var scrollStatus = (parent.Ext.getCmp('editScroll'+ atmContent.editId)) ? parent.Ext.getCmp('editScroll'+ atmContent.editId).checked : true;
 		if (scrollStatus) {
 			var html = Ext.get(this.document.body.parentNode);
 			var box = this.getBox();
@@ -293,15 +293,15 @@ Ext.extend(Automne.row, Ext.util.Observable, {
 						//hide row mask
 						this.row.hide();
 						//show all drop zones
-						Automne.content.showZones('drop');
+						atmContent.showZones('drop');
 						return true;
 					},
 					afterRepair: function() {
 						this.dragging = false;
 						//hide all drop zones
-						Automne.content.hideZones();
+						atmContent.hideZones();
 						//allow row mask to be displayed
-						Automne.content.startRowsMask();
+						atmContent.startRowsMask();
 					},
 					onDrag: function(e) {
 						//check scroll top position
