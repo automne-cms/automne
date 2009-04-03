@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-infos.php,v 1.7 2009/03/06 10:51:52 sebastien Exp $
+// $Id: page-infos.php,v 1.8 2009/04/03 13:02:45 sebastien Exp $
 
 /**
   * PHP page : Load page infos
@@ -130,6 +130,8 @@ if (!$pageUrl && !$pageId && !$from) {
 
 $jscontent = '';
 $isAutomne = $querystring = false;
+//current http host
+$httpHost = parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST'];
 if ($pageUrl && !$pageId) {
 	//extract page id from given url
 	$pathinfo = pathinfo($pageUrl);
@@ -157,11 +159,7 @@ if ($pageUrl && !$pageId) {
 		}
 	} else {
 		//search page id by domain address
-		if (isset($urlinfo['host'])) {
-			$domain = $urlinfo['host'];
-		} else {
-			$domain = parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST'];
-		}
+		$domain = isset($urlinfo['host']) ? $urlinfo['host'] : $httpHost;
 		//get websites
 		$websites = CMS_websitesCatalog::getAll('order');
 		$founded = false;
@@ -183,13 +181,13 @@ if ($pageUrl && !$pageId) {
 }
 if (!isset($cms_page) || !is_object($cms_page) || $cms_page->hasError()) {
 	if ($pageUrl && !$isAutomne) {
-		if ($pageUrl == '/' && parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) != parse_url(CMS_websitesCatalog::getMainURL(), PHP_URL_HOST)) {
+		if ($pageUrl == '/' && $httpHost != parse_url(CMS_websitesCatalog::getMainURL(), PHP_URL_HOST)) {
 			//Website domain is not properly set
 			if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 				$jscontent = "
 					Automne.message.popup({
 						title: 		'Le nom de domaine du site est incorrect.', 
-						msg: 		'Le site actuel n\'est pas correctement configuré. Le nom de domaine actuel est \'".parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST)."\' mais votre site est configuré pour le nom de domaine \'".parse_url(CMS_websitesCatalog::getMainURL(), PHP_URL_HOST)."\'. Avant de continuer, modifiez le nom de domaine dans \'Gestion des sites\' pour correspondre au nom de domaine actuel.',
+						msg: 		'Le site actuel n\'est pas correctement configuré. Le nom de domaine actuel est \'".$httpHost."\' mais votre site est configuré pour le nom de domaine \'".parse_url(CMS_websitesCatalog::getMainURL(), PHP_URL_HOST)."\'. Avant de continuer, modifiez le nom de domaine dans \'Gestion des sites\' pour correspondre au nom de domaine actuel.',
 						buttons:	Ext.MessageBox.OK,
 						icon: 		Ext.MessageBox.WARNING,
 						fn: 		function (button) {
@@ -208,7 +206,7 @@ if (!isset($cms_page) || !is_object($cms_page) || $cms_page->hasError()) {
 				$jscontent = "
 					Automne.message.popup({
 						title: 		'Le nom de domaine du site est incorrect.', 
-						msg: 		'Le site actuel n\'est pas correctement configuré. Le nom de domaine actuel est \'".parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST)."\' alors que votre site est configuré pour le nom de domaine \'".parse_url(CMS_websitesCatalog::getMainURL(), PHP_URL_HOST)."\'. Veuillez prévenez un administrateur du site en lui précisant ce message d\'erreur.',
+						msg: 		'Le site actuel n\'est pas correctement configuré. Le nom de domaine actuel est \'".$httpHost."\' alors que votre site est configuré pour le nom de domaine \'".parse_url(CMS_websitesCatalog::getMainURL(), PHP_URL_HOST)."\'. Veuillez prévenez un administrateur du site en lui précisant ce message d\'erreur.',
 						buttons:	Ext.MessageBox.OK,
 						icon: 		Ext.MessageBox.ERROR
 					});
@@ -1136,7 +1134,6 @@ foreach ($userPanels as $panel => $panelStatus) {
 					}
 					//check for website host
 					$pageHost = parse_url($panelURL, PHP_URL_HOST);
-					$httpHost = ($_SERVER['HTTP_HOST'] && parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST)) ? parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST'];
 					if ($pageHost && $_SERVER['HTTP_HOST'] && strtolower($httpHost) != strtolower($pageHost)) {
 						//page host is not the same of current host so change it to avoid JS restriction
 						$panelURL = str_replace($pageHost, $httpHost, $panelURL);
