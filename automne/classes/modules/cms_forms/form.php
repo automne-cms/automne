@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: form.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: form.php,v 1.2 2009/04/07 12:25:00 sebastien Exp $
 
 /**
   * Class CMS_forms_formular
@@ -727,7 +727,8 @@ class CMS_forms_formular extends CMS_grandFather {
 	 */
 	function isAlreadyFolded($sender) {
 		if (!is_a($sender, 'CMS_forms_sender')) {
-			$sender = CMS_forms_sender::getSenderForContext($_SESSION["cms_context"]);
+			$context = isset($_SESSION["cms_context"]) ? $_SESSION["cms_context"] : '';
+			$sender = CMS_forms_sender::getSenderForContext($context);
 		}
 		//get number of responses for sender for this form
 		if (!$this->getAttribute('responses')) {

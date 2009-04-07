@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: resource.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: resource.php,v 1.2 2009/04/07 12:25:01 sebastien Exp $
 
 /**
   * Class CMS_resource_cms_aliases
@@ -435,16 +435,16 @@ class CMS_resource_cms_aliases extends CMS_resource
 	* @access public
 	*/
 	function redirect() {
-		$params = ($_SERVER['QUERY_STRING'])? '?'.$_SERVER['QUERY_STRING']:'';
+		$params = isset($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : '';
 		if ($this->getPageID()) {
 			//it's a redirection to an Automne Page
 			$page = new CMS_page($this->getPageID());
 			if (!$page->hasError()) {
-				$pageURL = getPageURL($this->getPageID());
+				$pageURL = CMS_tree::getPageValue($this->getPageID(), 'url');
 				if ($pageURL) {
-					header("Location: ".getMainURL().$pageURL.$params);
+					header("Location: ".$pageURL.$params);
 				} else {
-					header("Location: ".getMainURL().$params);
+					header("Location: ".CMS_websitesCatalog::getMainURL().$params);
 				}
 				exit;
 			}  else {

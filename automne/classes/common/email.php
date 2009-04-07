@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: email.php,v 1.3 2009/03/02 11:28:06 sebastien Exp $
+// $Id: email.php,v 1.4 2009/04/07 12:25:00 sebastien Exp $
 
 /**
   * Class CMS_email
@@ -573,10 +573,6 @@ class CMS_email extends CMS_grandFather
 				$headers.="Content-Type: multipart/mixed;\n\tboundary=\"".$OB."\"\n";
 				//Check drop emails list (Automne default emails)
 				if (!in_array($to, $this->_drop) && !in_array($From, $this->_drop)) {
-					//TODOV4 : remove this test email
-					//$Subject = $Subject.' ('.$to.')';
-					//$to = 'sebastien.pauchet@ws-interactive.fr';
-					
 					//send emails
 					$sent = @mail($to,$this->EncodeHeader($Subject),$Msg,$headers);
 					$emailSent = $emailSent && $sent;

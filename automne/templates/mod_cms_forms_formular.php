@@ -17,7 +17,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: mod_cms_forms_formular.php,v 1.2 2009/03/02 12:56:00 sebastien Exp $
+// $Id: mod_cms_forms_formular.php,v 1.3 2009/04/07 12:25:17 sebastien Exp $
 
 /**
   * Template CMS_forms_formular
@@ -70,7 +70,7 @@ if ($form->getID() && $form->isPublic()) {
 	//display form or form message
 	if (!isset($cms_forms_msg[$form->getID()]) || !$cms_forms_msg[$form->getID()]) {
 		//check if form is already folded by sender
-		if (!$form->isAlreadyFolded($sender)) { 
+		if (isset($sender) && !$form->isAlreadyFolded($sender)) { 
 			echo $form->getContent(CMS_forms_formular::ALLOW_FORM_SUBMIT);
 		}
 	}

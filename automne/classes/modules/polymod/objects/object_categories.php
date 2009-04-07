@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_categories.php,v 1.3 2009/04/02 13:58:00 sebastien Exp $
+// $Id: object_categories.php,v 1.4 2009/04/07 12:25:01 sebastien Exp $
 
 /**
   * Class CMS_object_categories
@@ -526,7 +526,7 @@ class CMS_object_categories extends CMS_object_common
 				//need to remove all unused categories from list
 				$categoriesToKeep = array();
 				foreach ($usedCategories as $catID) {
-					$cats = explode(';',$catArbo[$catID]);
+					$cats = isset($catArbo[$catID]) ? explode(';',$catArbo[$catID]) : array();
 					foreach ($cats as $aCat) {
 						$categoriesToKeep[$aCat] = $aCat;
 					}

@@ -17,7 +17,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: mod_cms_forms_header.php,v 1.5 2009/04/02 13:59:37 sebastien Exp $
+// $Id: mod_cms_forms_header.php,v 1.6 2009/04/07 12:25:17 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -142,7 +142,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 						switch ($action->getInteger('type')) {
 							case CMS_forms_action::ACTION_ALREADY_FOLD:
 								//check if form is already folded by sender
-								if ($form->isAlreadyFolded($sender)) { 
+								if (isset($sender) && $form->isAlreadyFolded($sender)) { 
 									//get form CMS_forms_action::ACTION_ALREADY_FOLD action
 									$alreadyFoldAction = array_shift($form->getActionsByType(CMS_forms_action::ACTION_ALREADY_FOLD));
 									if (is_object($alreadyFoldAction)) {
@@ -261,10 +261,10 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 							break;
 							case CMS_forms_action::ACTION_DB:
 								//create id for sender if not already have one
-								if (!$sender->getID()) {
+								if (isset($sender) && !$sender->getID()) {
 									$sender->writeToPersistence();
 								}
-								if ($sender->getID()) {
+								if (isset($sender) && $sender->getID()) {
 									foreach ($fields as $aField) {
 										//insert datas of each field
 										if ((($aField->getAttribute('type') != 'file' && $_POST[$aField->getAttribute('name')]) || ($aField->getAttribute('type') == 'file' && $_FILES[$aField->getAttribute('name')]['name']))
@@ -452,7 +452,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 				*                  FORM ALREADY FOLDED                     *
 				***********************************************************/
 				//check if form is already folded by sender and if it need page redirection
-				if ($form->isAlreadyFolded($sender)) { 
+				if (isset($sender) && $form->isAlreadyFolded($sender)) { 
 					//get form CMS_forms_action::ACTION_ALREADY_FOLD action
 					$alreadyFoldAction = array_shift($form->getActionsByType(CMS_forms_action::ACTION_ALREADY_FOLD));
 					if (is_object($alreadyFoldAction)) {
