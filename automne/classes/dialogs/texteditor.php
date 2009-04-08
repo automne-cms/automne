@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: texteditor.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: texteditor.php,v 1.2 2009/04/08 15:12:10 sebastien Exp $
 
 /**
   * Class CMS_dialog
@@ -186,7 +186,7 @@ class CMS_textEditor extends CMS_grandFather
 	{
 		//include modules javascript codes in output file
 		$modulesCodes = new CMS_modulesCodes();
-		$modulesJSCodeInclude = $modulesCodes->getModulesCodes(MODULE_TREATMENT_EDITOR_JSCODE, '', $this, array("editor" => $this->_editor, "language" => $this->_language, "formName" => $this->_form));
+		$modulesJSCodeInclude = $modulesCodes->getModulesCodes(MODULE_TREATMENT_EDITOR_JSCODE, '', $this, array("language" => $this->_language, "formName" => $this->_form));
 		$modulesJSCodeInclude = (sizeof($modulesJSCodeInclude)) ? implode("\n",$modulesJSCodeInclude) : "";
 		return $modulesJSCodeInclude;
 	}
