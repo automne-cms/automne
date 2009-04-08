@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: tabpanel.js,v 1.2 2009/03/02 11:26:54 sebastien Exp $
+  * $Id: tabpanel.js,v 1.3 2009/04/08 09:38:24 sebastien Exp $
   */
 Automne.tabPanel = Ext.extend(Ext.TabPanel, { 
 	pageId:		false,
@@ -76,6 +76,10 @@ Automne.tabPanel = Ext.extend(Ext.TabPanel, {
 			from:		this.pageId,
 			fromTab:	this.getActiveTab().id
 		});
+		if ((!params.pageId || params.pageId == 'false') && !params.pageUrl) {
+			pr('Drop page info request, no valid infos to request ...');
+			return false;
+		}
 		if (params.fromTab == false) {
 			params.fromTab = 'public';
 		}

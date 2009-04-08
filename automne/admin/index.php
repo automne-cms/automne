@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: index.php,v 1.5 2009/03/03 15:11:06 sebastien Exp $
+// $Id: index.php,v 1.6 2009/04/08 09:38:08 sebastien Exp $
 
 /**
   * PHP page : index
@@ -62,7 +62,13 @@ if (isset($_REQUEST["cms_action"]) && $_REQUEST["cms_action"] == 'logout') {
 	$content .= '<script type="text/javascript">Automne.logout = true;</script>';
 }
 $content .= '
-<div id="atm-server-call"></div>';
+<div id="atm-server-call"></div>
+<!-- Fields required for history management -->
+<form id="history-form" class="x-hidden">
+    <input type="hidden" id="x-history-field" />
+    <iframe id="x-history-frame"></iframe>
+</form>
+';
 
 $view->setContent($content);
 $view->show(CMS_view::SHOW_HTML);

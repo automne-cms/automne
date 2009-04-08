@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-infos.php,v 1.8 2009/04/03 13:02:45 sebastien Exp $
+// $Id: page-infos.php,v 1.9 2009/04/08 09:38:08 sebastien Exp $
 
 /**
   * PHP page : Load page infos
@@ -1240,6 +1240,8 @@ $jscontent .= '
 	pr(\'Cannot found tabPanels element ...\');
 }
 ';
+//set pageId as header of response
+header('X-Automne-PageId: '.$pageId);
 $view->addJavascript($jscontent);
 $view->show();
 ?>

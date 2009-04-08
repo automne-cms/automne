@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-content-block-file.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: page-content-block-file.php,v 1.2 2009/04/08 09:38:08 sebastien Exp $
 
 /**
   * PHP page : Load block file interface
@@ -96,7 +96,7 @@ if ($rawDatas['file'] && file_exists(PATH_MODULES_FILES_STANDARD_FS.'/edition/'.
 }
 $filePath = $fileDatas['filepath'];
 $fileDatas = sensitiveIO::jsonEncode($fileDatas);
-
+$fileValue = sensitiveIO::sanitizeJSString($rawDatas["label"]);
 $jscontent = <<<END
 	var blockWindow = Ext.getCmp('{$winId}');
 	//set window title
@@ -133,7 +133,7 @@ $jscontent = <<<END
 			items:[{
 				fieldLabel:		'{$cms_language->getJSMessage(MESSAGE_FILE_LABEL)}',
 				name:			'filelabel',
-				value:			'{$rawDatas["label"]}',
+				value:			'{$fileValue}',
 				allowBlank:		true
 			},{
 	            xtype: 			'atmFileUploadField',

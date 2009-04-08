@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: framepanel.js,v 1.9 2009/04/02 13:55:54 sebastien Exp $
+  * $Id: framepanel.js,v 1.10 2009/04/08 09:38:24 sebastien Exp $
   */
 Automne.framePanel = Ext.extend(Automne.panel, { 
 	xtype:				'framePanel',
@@ -328,13 +328,13 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 		}
 		//get frame and document from event
 		this.loadFrameDocument();
-		Automne.catchF5(this.getDoc(), this.getWin());
+		var win = this.getWin();
+		Automne.catchF5(this.getDoc(), win);
 		//for all browsers except gecko, set an onclick event to remove search engine if displayed
 		//use onclick because ext event does not work on iframe document
 		if (!Ext.isGecko && !this.frameDocument.onclick) {
 			this.frameDocument.onclick = Automne.view.removeSearch;
 		}
-		
 		//catch frame links
 		if (!this.allowFrameNav) {
 			pr('Catch '+ this.id +' frame links');
@@ -348,6 +348,22 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 				pageId:		this.pageId,
 				noreload:	true
 			});
+		}
+		//check if page load came from a valid frame click
+		if (win.location.href && win.location.search.indexOf('_dc') === -1) {
+			//force reload page infos without reloading the frame itself
+			Automne.tabPanels.getPageInfos({
+				pageUrl:	win.location.href,
+				noreload:	true
+			}, function(response){
+				if (response.getResponseHeader['X-Automne-PageId']) {
+					//add page to history
+					Ext.History.add('page:' + response.getResponseHeader['X-Automne-PageId'], true);
+				}
+			});
+		} else if(this.pageId && this.pageId != 'false') {
+			//add page to history
+			Ext.History.add('page:' + this.pageId, true);
 		}
 		//show frame
 		this.frameEl.removeClass('x-hide-visibility');

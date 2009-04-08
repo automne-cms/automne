@@ -6,7 +6,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: main.js,v 1.7 2009/04/02 13:55:54 sebastien Exp $
+  * $Id: main.js,v 1.8 2009/04/08 09:38:24 sebastien Exp $
   */
 
 //Declare Automne namespace
@@ -83,6 +83,7 @@ Automne = {
 				//set window events
 				Automne.preventUnload();
 				Automne.catchF5(document, window);
+				Automne.historyChange();
 			}
 			//load east panel
 			Automne.east.load({
@@ -106,13 +107,17 @@ Automne = {
 					followRedirect:	true
 				}
 			}
-			//get page infos and force reload public frame (if active)
-			Automne.tabPanels.getPageInfos(config, function(){
-				if (Automne.tabPanels.getActiveTab().id == 'public') {
-					Automne.tabPanels.getActiveTab().reload();
-				}
-			});
-			
+			//if token history is founded, use it
+			if (window.location.hash.indexOf('#') !== -1) {
+				Automne.getToHistory(window.location.hash);
+			} else {
+				//get page infos and force reload public frame (if active)
+				Automne.tabPanels.getPageInfos(config, function(){
+					if (Automne.tabPanels.getActiveTab().id == 'public') {
+						Automne.tabPanels.getActiveTab().reload();
+					}
+				});
+			}
 			//display east panel
 			Automne.east.expand();
 		}
@@ -148,6 +153,31 @@ Automne = {
 			e.browserEvent.returnValue = Automne.locales.quitConfirm;
 			return false;
 		});
+	},
+	historyChange: function() {
+		Ext.History.init();
+		// Handle history change event in order to restore the UI to the appropriate history state
+	    Ext.History.on('change', function(token){
+			if(token){
+				Automne.getToHistory(token);
+			}
+		});
+	},
+	getToHistory: function(token)  {
+		if (token.indexOf('#') === 0) {
+			token = token.substr(1);
+		}
+		var parts = token.split(':');
+		var action = parts[0];
+		var value = parts[1];
+		switch (action) {
+			case 'page':
+				//call server to get page infos using page url
+				Automne.tabPanels.getPageInfos({
+					pageId:		value
+				});
+			break;
+		}
 	},
 	createViewPort: function() {
 		//if viewport already exists : destroy it
@@ -630,7 +660,11 @@ Automne.utils = {
 					}, form);
 				}
 			} else {
-				if (form.dom.target != "_blank" && form.dom.action && form.dom.action.indexOf && form.dom.action.indexOf(root.location.href) === -1) {
+				//pr(root.location.href);
+				//pr(form.dom.action);
+				//pr(form.dom.action.indexOf(root.location.href));
+				//pr(root.location.href.indexOf(form.dom.action));
+				/*if (form.dom.target != "_blank" && form.dom.action && form.dom.action.indexOf && form.dom.action.indexOf(root.location.href) === -1 && root.location.href.indexOf(form.dom.action) === -1) {
 					form.on('submit', function(e) {
 						e.stopEvent();
 						//send a message to user
@@ -642,7 +676,7 @@ Automne.utils = {
 							animEl: this
 						});
 					}, form);
-				}
+				}*/
 			}
 		}
 	}
