@@ -6,7 +6,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: content.js,v 1.1 2009/04/02 13:55:53 sebastien Exp $
+  * $Id: content.js,v 1.2 2009/04/10 15:26:09 sebastien Exp $
   */
 
 //copy some parent vars
@@ -15,8 +15,17 @@ if (parent) {
 	Ext.namespace('Automne');
 	pr = parent.pr;
 	Automne = parent.Automne;
+	Automne.locales = parent.Automne.locales;
+	Automne.message = parent.Automne.message;
 	Ext.MessageBox = parent.Ext.MessageBox;
 }
+/*if (parent) {
+	pr = parent.pr;
+	Automne.locales = parent.Automne.locales;
+	Automne.message = parent.Automne.message;
+	Ext.MessageBox = parent.Ext.MessageBox;
+}*/
+
 //////////////////////////
 // PAGE CONTENT METHODS //
 //////////////////////////
@@ -241,4 +250,45 @@ Ext.extend(Automne.content, Ext.util.Observable, {
 		}
 		return true;
 	}
+});
+Ext.override(Ext.dd.DragDrop, {
+	handleMouseDown: function(e, oDD){
+        //Handle DD problem on IE7
+		//if (this.primaryButtonOnly && e.button != 0) {
+        //	return;
+        //}
+
+        if (this.isLocked()) {
+        	return;
+        }
+
+        this.DDM.refreshCache(this.groups);
+
+        var pt = new Ext.lib.Point(Ext.lib.Event.getPageX(e), Ext.lib.Event.getPageY(e));
+        if (!this.hasOuterHandles && !this.DDM.isOverTarget(pt, this) )  {
+        } else {
+            if (this.clickValidator(e)) {
+
+                // set the initial element position
+                this.setStartPosition();
+
+
+                this.b4MouseDown(e);
+                this.onMouseDown(e);
+
+                this.DDM.handleMouseDown(e, this);
+
+                this.DDM.stopEvent(e);
+            } else {
+
+				
+            }
+        }
+    },
+	clickValidator: function(e) {
+        var target = e.getTarget() || e.browserEvent.srcElement; //Handle DD problem on IE7
+        return ( this.isValidHandleChild(target) &&
+                    (this.id == this.handleElId ||
+                        this.DDM.handleWasClicked(target, this.id)) );
+    }
 });

@@ -6,7 +6,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: main.js,v 1.8 2009/04/08 09:38:24 sebastien Exp $
+  * $Id: main.js,v 1.9 2009/04/10 15:26:27 sebastien Exp $
   */
 
 //Declare Automne namespace
@@ -395,9 +395,11 @@ Automne.server = {
 			if (e) {
 				msg += 'Message : '+ e.name +' : '+ e.message +'<br />';
 			}
-			msg += 'Address : '+ response.argument.url +'<br />'+
-			'Parameters : '+ Ext.urlEncode(response.argument.params) +'<br />'+
-			'Status : '+ response.status +' ('+ response.statusText +')<br />'+
+			if (response.argument) {
+				msg += 'Address : '+ response.argument.url +'<br />'+
+				'Parameters : '+ Ext.urlEncode(response.argument.params) +'<br />';
+			}
+			msg += 'Status : '+ response.status +' ('+ response.statusText +')<br />'+
 			'Response Headers : <pre class="atm-debug">'+ response.getAllResponseHeaders +'</pre>';
 			if (response.responseText) {
 				msg += '<br />Server return : <pre class="atm-debug">' + (!e ? response.responseText :  Ext.util.Format.htmlEncode(response.responseText)) +'</pre><br />';
@@ -622,7 +624,8 @@ Automne.utils = {
 		var links = Ext.DomQuery.select('a', root).concat(Ext.DomQuery.select('area', root));
 		for (var i=0; i < links.length; i++) {
 			var link = Ext.get(links[i]);
-			if (link.dom.target != "_blank" && link.dom.href && link.dom.href.substr(-1) != '#') {
+			//only links with href, which are not in a new window, not an anchor and not a javascript instruction
+			if (link.dom.target != "_blank" && link.dom.href && link.dom.href.substr(-1) != '#' && link.dom.href.indexOf('javascript') !== 0) {
 				if (source != 'edit') {
 					link.on('click', function(e) {
 						pr('Click on link '+this.dom.href);

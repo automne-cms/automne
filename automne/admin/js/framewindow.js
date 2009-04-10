@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: framewindow.js,v 1.6 2009/03/06 10:51:33 sebastien Exp $
+  * $Id: framewindow.js,v 1.7 2009/04/10 15:26:27 sebastien Exp $
   */
 Automne.frameWindow = Ext.extend(Automne.Window, { 
 	//frame url to use at next frame reload
@@ -76,7 +76,7 @@ Automne.frameWindow = Ext.extend(Automne.Window, {
 		//get frame and document from event
 		this.loadFrameDocument();
 		//set title
-		if (!this.title || this.title == '&nbsp;') {
+		if (this.frameDocument && this.frameDocument.title && (!this.title || this.title == '&nbsp;')) {
 			this.setTitle(this.frameDocument.title);
 		}
 		//show frame

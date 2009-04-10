@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: search.php,v 1.2 2009/03/02 11:25:15 sebastien Exp $
+// $Id: search.php,v 1.3 2009/04/10 15:26:40 sebastien Exp $
 
 /**
   * PHP page : Load page search window.
@@ -141,14 +141,14 @@ if ($elements) {
 		columns: 	1,
 		items: [";
 		foreach ($elements as $element => $label) {
+			$label = sensitiveIO::sanitizeJSString($label);
 			//if search use special search code, only search on standard module
 			$checked = (!$search || (isset($checkedElements[$element]) && $checkedElements[$element])) ? 'true' : 'false';
 			$searchPanel .= "{boxLabel: '{$label}', inputValue:'{$element}',  checked: {$checked}, name: 'elements[]', listeners: {'check':searchWindow.search}},";
 		}
 		//remove last comma from groups
 		$searchPanel = substr($searchPanel, 0, -1);
-		$searchPanel .= "
-		]
+		$searchPanel .= "]
 	},";
 }
 $searchCodes = sensitiveIO::jsonEncode($searchCodes);
@@ -373,9 +373,9 @@ $jscontent = <<<END
 							//display window
 							objectsWindows[windowId].show(button.getEl());
 						}
-					} else if (type == 'function' && datas.edit.function) {
+					} else if (type == 'function' && datas.edit.func) {
 						try {
-							eval(datas.edit.function+'(button, searchWindow);');
+							eval(datas.edit.func+'(button, searchWindow);');
 						} catch(e){
 							pr(e, 'error');
 						}
@@ -440,9 +440,9 @@ $jscontent = <<<END
 							//display window
 							objectsWindows[windowId].show(button.getEl());
 						}
-					} else if (type == 'function' && datas.view.function) {
+					} else if (type == 'function' && datas.view.func) {
 						try {
-							eval(datas.view.function+'(button, searchWindow);');
+							eval(datas.view.func+'(button, searchWindow);');
 						} catch(e){
 							pr(e, 'error');
 						}

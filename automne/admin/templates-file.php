@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-file.php,v 1.1 2009/04/02 13:55:54 sebastien Exp $
+// $Id: templates-file.php,v 1.2 2009/04/10 15:26:41 sebastien Exp $
 
 /**
   * PHP page : Load print template window.
@@ -86,7 +86,7 @@ if (!is_file($file)) {
 		border:			false,
 		bodyStyle: 		'padding-bottom:10px'
 	},";
-	$anchor = '-105';
+	$anchor = '-110';
 	$action = 'create';
 } else {
 	//file edition
@@ -100,7 +100,7 @@ if (!is_file($file)) {
 	$file = new CMS_file($file);
 	$fileDefinition = $file->readContent();
 	$labelField = '';
-	$anchor = '-50';
+	$anchor = '-60';
 	$action = 'update';
 }
 
@@ -252,6 +252,9 @@ $jscontent = <<<END
 	fileWindow.add(center);
 	//redo windows layout
 	fileWindow.doLayout();
+	if (Ext.isIE) {
+		center.syncSize(); //needed for IE7
+	}
 END;
 $view->addJavascript($jscontent);
 $view->show();

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-content-controler.php,v 1.2 2009/02/03 14:24:43 sebastien Exp $
+// $Id: page-content-controler.php,v 1.3 2009/04/10 15:26:58 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on page content
@@ -67,9 +67,9 @@ $attributes = sensitiveIO::request('flashattributes');
 $imagelink = sensitiveIO::request('imagelink');
 $imagelabel = sensitiveIO::request('imagelabel');
 $zoomname = sensitiveIO::request('zoomname');
+
 //unset requests to avoid them to have interaction with evaluated page codes
 sensitiveIO::unsetRequest(array_keys($_REQUEST));
-
 //try to instanciate the requested page
 $cms_page = CMS_tree::getPageByID($currentPage);
 

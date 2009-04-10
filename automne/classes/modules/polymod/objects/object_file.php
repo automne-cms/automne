@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_file.php,v 1.3 2009/04/02 13:58:00 sebastien Exp $
+// $Id: object_file.php,v 1.4 2009/04/10 15:22:02 sebastien Exp $
 
 /**
   * Class CMS_object_file
@@ -294,7 +294,7 @@ class CMS_object_file extends CMS_object_common
 			}
 			//must have file in upload field or in hidden field or file must be already set
 			//if deleted is checked, file must be set in upload field
-			if((!$this->_subfieldValues[4]->getValue() && !$_FILES[$prefixName.$this->_field->getID().'_4']['name'] && !$values[$prefixName.$this->_field->getID().'_4_hidden']) || ($values[$prefixName.$this->_field->getID().'_delete'] == 1 && !$_FILES[$prefixName.$this->_field->getID().'_4']['name'])) {
+			if((!$this->_subfieldValues[4]->getValue() && !$_FILES[$prefixName.$this->_field->getID().'_4']['name'] && !$values[$prefixName.$this->_field->getID().'_4_hidden']) || (isset($values[$prefixName.$this->_field->getID().'_delete']) && $values[$prefixName.$this->_field->getID().'_delete'] == 1 && !$_FILES[$prefixName.$this->_field->getID().'_4']['name'])) {
 				return false;
 			}
 		}
@@ -804,7 +804,7 @@ class CMS_object_file extends CMS_object_common
 			return false;
 		} else
 		//from hidden fields (previously set but not already saved)
-		if (isset($values[$prefixName.$this->_field->getID().'_4_hidden']) && $values[$prefixName.$this->_field->getID().'_4_hidden'] && $values[$prefixName.$this->_field->getID().'_delete'] != 1) {
+		if (isset($values[$prefixName.$this->_field->getID().'_4_hidden']) && $values[$prefixName.$this->_field->getID().'_4_hidden'] && (isset($values[$prefixName.$this->_field->getID().'_delete']) && $values[$prefixName.$this->_field->getID().'_delete'] != 1)) {
 			//set label as image name if none set
 			if ($values[$prefixName.$this->_field->getID().'_0']) {
 				if (!$this->_subfieldValues[0]->setValue(htmlspecialchars($values[$prefixName.$this->_field->getID().'_0']))) {

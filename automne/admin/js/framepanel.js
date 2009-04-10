@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: framepanel.js,v 1.10 2009/04/08 09:38:24 sebastien Exp $
+  * $Id: framepanel.js,v 1.11 2009/04/10 15:26:27 sebastien Exp $
   */
 Automne.framePanel = Ext.extend(Automne.panel, { 
 	xtype:				'framePanel',
@@ -350,7 +350,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 			});
 		}
 		//check if page load came from a valid frame click
-		if (win.location.href && win.location.search.indexOf('_dc') === -1) {
+		if (this.id == 'public' && win.location.href && win.location.search.indexOf('_dc') === -1) {
 			//force reload page infos without reloading the frame itself
 			Automne.tabPanels.getPageInfos({
 				pageUrl:	win.location.href,
@@ -361,7 +361,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 					Ext.History.add('page:' + response.getResponseHeader['X-Automne-PageId'], true);
 				}
 			});
-		} else if(this.pageId && this.pageId != 'false') {
+		} else if(this.id == 'public' && this.pageId && this.pageId != 'false') {
 			//add page to history
 			Ext.History.add('page:' + this.pageId, true);
 		}

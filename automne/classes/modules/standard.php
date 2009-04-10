@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: standard.php,v 1.8 2009/04/02 13:57:59 sebastien Exp $
+// $Id: standard.php,v 1.9 2009/04/10 15:22:02 sebastien Exp $
 
 /**
   * Class CMS_module_standard
@@ -2108,7 +2108,7 @@ class CMS_module_standard extends CMS_module
 			if ($user->hasPageClearance($page->getID(), CLEARANCE_PAGE_EDIT)) {
 				$edit = array(
 					'type'			=> 'function',
-					'function'		=> "(function(button, window) {
+					'func'			=> "(function(button, window) {
 						Automne.message.popup({
 							msg: 				'Modifier la page \'".sensitiveIO::sanitizeJSString($page->getTitle())."\' fermera la recherche en cours. Etes vous sur ?',
 							buttons: 			Ext.MessageBox.OKCANCEL,
@@ -2140,7 +2140,7 @@ class CMS_module_standard extends CMS_module
 				'edit'			=> $edit,
 				'view'			=> array(
 					'type'			=> 'function',
-					'function'		=> "(function(button, window) {
+					'func'			=> "(function(button, window) {
 						Automne.message.popup({
 							msg: 				'Voir la page \'".sensitiveIO::sanitizeJSString($page->getTitle())."\' fermera la recherche en cours. Etes vous sur ?',
 							buttons: 			Ext.MessageBox.OKCANCEL,

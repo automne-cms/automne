@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: user-admin-rights.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: user-admin-rights.php,v 1.2 2009/04/10 15:26:41 sebastien Exp $
 
 /**
   * PHP page : Load modules categories rights interface
@@ -112,6 +112,7 @@ foreach ($admins as $level => $messages) {
 		},";
 	}
 }
+$adminTab = substr($adminTab, 0, -1);
 $adminTabSubmit = '';
 if (!$disableFields) {
 	$adminTabSubmit = ",buttons:[{

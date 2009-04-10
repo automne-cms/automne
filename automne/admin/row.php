@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: row.php,v 1.4 2009/02/03 14:24:44 sebastien Exp $
+// $Id: row.php,v 1.5 2009/04/10 15:26:58 sebastien Exp $
 
 /**
   * PHP page : Load row detail window.
@@ -435,6 +435,9 @@ $jscontent = <<<END
 	if (isNaN(parseInt(rowWindow.rowId))) {
 		//hide elements
 		Ext.getCmp('rowDef-{$rowId}').disable();
+	}
+	if (Ext.isIE) {
+		center.syncSize(); //needed for IE7
 	}
 END;
 $view->addJavascript($jscontent);

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_forms.php,v 1.1.1.1 2008/11/26 17:12:14 sebastien Exp $
+// $Id: cms_forms.php,v 1.2 2009/04/10 15:24:38 sebastien Exp $
 
 /**
   * Javascript plugin for FCKeditor
@@ -140,6 +140,7 @@ $content = '';
 // +----------------------------------------------------------------------+
 // | Actions                                                              |
 // +----------------------------------------------------------------------+
+
 switch ($step) {
 	case 2:
 		//analyse the form from his xhtml code
@@ -203,11 +204,11 @@ switch ($step) {
 			break;
 			case "validate" :
 				//generate form xhtml code
-				$xhtmlFieldMask = '
-					<tr>
-						<td style="text-align:right;">{{label}}</td>
-						<td>{{input}}</td>
-					</tr>';
+				$xhtmlFieldMask = 
+					'<tr>'."\n".
+					'<td style="text-align:right;">{{label}}</td>'."\n".
+					'<td>{{input}}</td>'."\n".
+					'</tr>';
 				$xhtml = '<form id="cms_forms_'.$formTags['form']->getID().'">';
 				//hidden form fields on top
 				foreach ($formTags as $aFormField) {
@@ -222,8 +223,8 @@ switch ($step) {
 						}
 					}
 				}
-				$xhtml .= '
-				<table cellspacing="1" cellpadding="1" width="100%" align="center" border="0">';
+				$xhtml .= 
+				'<table cellspacing="1" cellpadding="1" width="100%" align="center" border="0">';
 				foreach ($formTags as $aFormField) {
 					if ($aFormField->getAttribute("type") != 'hidden') {
 						$label = $input = '&nbsp;';
@@ -240,8 +241,8 @@ switch ($step) {
 						}
 					}
 				}
-				$xhtml .= '</table>
-				</form>';
+				$xhtml .= '</table>'."\n".
+				'</form>';
 				//then go to next step (send xhtml to wysiwyg)
 				$step = 4;
 			break;

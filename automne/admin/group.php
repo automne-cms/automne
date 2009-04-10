@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: group.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: group.php,v 1.2 2009/04/10 15:26:58 sebastien Exp $
 
 /**
   * PHP page : Load group detail window.
@@ -401,7 +401,9 @@ $jscontent = <<<END
 			}
 		});
 	}
-	//center.syncSize();
+	if (Ext.isIE) {
+		center.syncSize(); //needed for IE7
+	}
 END;
 $view->addJavascript($jscontent);
 $view->show();

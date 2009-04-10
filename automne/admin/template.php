@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: template.php,v 1.6 2009/03/03 15:11:07 sebastien Exp $
+// $Id: template.php,v 1.7 2009/04/10 15:26:41 sebastien Exp $
 
 /**
   * PHP page : Load template detail window.
@@ -527,7 +527,9 @@ $jscontent = <<<END
 			Ext.getCmp('print-{$templateId}').disable();
 		}
 	}
-	//center.syncSize();
+	if (Ext.isIE) {
+		center.syncSize(); //needed for IE7
+	}
 END;
 $view->addJavascript($jscontent);
 $view->show();

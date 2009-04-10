@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: automneLink.php,v 1.1.1.1 2008/11/26 17:12:14 sebastien Exp $
+// $Id: automneLink.php,v 1.2 2009/04/10 15:24:38 sebastien Exp $
 
 /**
   * Javascript plugin for FCKeditor
@@ -65,7 +65,7 @@ define("MESSAGE_PAGE_TREE_TITLE", 935);
 						url:		'/automne/admin/tree.php',
 						params:		{
 							winId:			'FCKPagesTree',
-							editable:		true,
+							editable:		false,
 							currentPage:	currentPage,
 							window:			false,
 							encodedOnClick:	'<?php echo base64_encode('this.node.select();Ext.get(\'nodeText\').dom.value=this.node.text;Ext.get(\'txtUrl\').dom.value=\'%s\';'); ?>',

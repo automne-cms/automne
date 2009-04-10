@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: user.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: user.php,v 1.2 2009/04/10 15:26:41 sebastien Exp $
 
 /**
   * PHP page : Load user detail window.
@@ -714,7 +714,9 @@ $jscontent = <<<END
 			}
 		});
 	}
-	//center.syncSize();
+	if (Ext.isIE) {
+		center.syncSize(); //needed for IE7
+	}
 END;
 $view->addJavascript($jscontent);
 $view->show();

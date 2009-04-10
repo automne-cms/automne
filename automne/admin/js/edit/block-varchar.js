@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: block-varchar.js,v 1.3 2009/03/04 09:55:38 sebastien Exp $
+  * $Id: block-varchar.js,v 1.4 2009/04/10 15:26:09 sebastien Exp $
   */
 Automne.blockVarchar = Ext.extend(Automne.block, {
 	blockClass:	'CMS_block_varchar',
@@ -69,7 +69,12 @@ Automne.blockVarchar = Ext.extend(Automne.block, {
 		var blockStyle = blockEl.getStyles('font-size', 'color', 'font-family', 'font-weight', 'font-style', 'background-color', 'background-repeat', 'background-position', 'background-image', 'padding-right', 'padding-top', 'padding-left', 'padding-bottom');
 		//overwrite transparent bg color to avoid visibility of block behind textarea
 		if (blockStyle['background-color'] == 'transparent') {
-			blockStyle['background-color'] = '#FFFFFF';
+			blockStyle['background-color'] = 'white';
+		}
+		for (var name in blockStyle) { //to avoid error on IE
+			if (blockStyle[name] == undefined) {
+				delete blockStyle[name];
+			}
 		}
 		textareaEl.setStyle(blockStyle);
 		Ext.get(textarea.textSizeEl).setStyle(blockStyle);

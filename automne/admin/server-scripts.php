@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: server-scripts.php,v 1.1 2009/04/02 13:55:54 sebastien Exp $
+// $Id: server-scripts.php,v 1.2 2009/04/10 15:26:41 sebastien Exp $
 
 /**
   * PHP page : Load server detail window.
@@ -91,13 +91,15 @@ $jscontent = <<<END
 	        if(text){
 	            this.updateText(text);
 	        }
-	        if(this.rendered){
-		        var w = Math.floor(value*this.el.dom.firstChild.offsetWidth);
-		        this.progressBar.setWidth(w, true);
-		        if(this.textTopEl){
-		            //textTopEl should be the same width as the bar so overflow will clip as the bar moves
-		            this.textTopEl.removeClass('x-hidden').setWidth(w, true);
-		        }
+	        if(this.rendered && this.el && this.el.dom && this.el.dom.firstChild && !isNaN(value)){
+				var w = Math.floor(value*this.el.dom.firstChild.offsetWidth);
+		        if (w) {
+					this.progressBar.setWidth(w, true);
+			        if(this.textTopEl){
+			            //textTopEl should be the same width as the bar so overflow will clip as the bar moves
+			            this.textTopEl.removeClass('x-hidden').setWidth(w, true);
+			        }
+				}
 	        }
 	        this.fireEvent('update', this, value, text);
 	        return this;
