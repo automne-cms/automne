@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: items.php,v 1.2 2009/04/02 13:55:53 sebastien Exp $
+// $Id: items.php,v 1.3 2009/04/14 08:30:46 sebastien Exp $
 
 /**
   * PDFForms module : index
@@ -192,6 +192,14 @@ $content .= '
 
 $items = $search->search();
 
+if (sizeof($user_categories)) {
+	$content .= '
+		<form action="item.php" method="post" style="position:relative;left:640px;">
+		<input type="hidden" name="items_language" value="'.$items_language->getCode().'" />
+		<input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_NEW).'" />
+		</form><br />';
+}
+
 if (!sizeof($items)) {
 	$content .= $cms_language->getMessage(MESSAGE_PAGE_EMPTY, false, MOD_CMS_FORMS_CODENAME) . "<br /><br />";
 } else {
@@ -246,14 +254,14 @@ if (!sizeof($items)) {
 	
 	$content .= '
 		</table>';
-}
-if (sizeof($user_categories) && $haveWysiwyg) { //if user has no right on categories he can't edit/create items
-	$content .='
-	<br />
-	<form action="item.php" method="post">
-	<input type="hidden" name="items_language" value="'.$items_language->getCode().'" />
-	<input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_NEW).'" />
-	</form>';
+		
+	if (sizeof($user_categories)) {
+		$content .= '
+			<form action="item.php" method="post" style="position:relative;left:640px;">
+		<input type="hidden" name="items_language" value="'.$items_language->getCode().'" />
+		<input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_NEW).'" />
+		</form><br />';
+	}
 }
 $dialog->setContent($content);
 $dialog->show();
