@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: polymod-help.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: polymod-help.php,v 1.2 2009/04/15 12:07:22 sebastien Exp $
 
 /**
   * PHP page : Load polymod help for object.
@@ -33,6 +33,6 @@ $object = sensitiveIO::request('object');
 $modulesCodes = new CMS_modulesCodes();
 $modulesCodeInclude = $modulesCodes->getModulesCodes(MODULE_TREATMENT_ROWS_EDITION_LABELS, PAGE_VISUALMODE_CLIENTSPACES_FORM, '', array("language" => $cms_language, "user" => $cms_user, 'request' => array($module => true, $module.'object' => $object)));
 
-$view->setContent(utf8_encode($modulesCodeInclude[$module]));
+$view->setContent($modulesCodeInclude[$module]);
 $view->show(CMS_view::SHOW_HTML);
 ?>

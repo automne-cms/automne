@@ -6,7 +6,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: main.js,v 1.9 2009/04/10 15:26:27 sebastien Exp $
+  * $Id: main.js,v 1.10 2009/04/15 12:07:22 sebastien Exp $
   */
 
 //Declare Automne namespace
@@ -485,7 +485,7 @@ Automne.utils = {
 			if (publicTab) {
 				if (Ext.select('span.' + statusId, false, publicTab).getCount()) {
 					Automne.tabPanels.getPageInfos({
-						pageUrl:		publicPanel.getFrameURL(),
+						pageId:			publicPanel.pageId,
 						regenerate:		(Automne.tabPanels.getActiveTab().id == 'public'),
 						reload:			(unlock == true ? false : true)
 					});
