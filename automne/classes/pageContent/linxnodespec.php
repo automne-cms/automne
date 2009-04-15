@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: linxnodespec.php,v 1.2 2009/04/02 13:57:59 sebastien Exp $
+// $Id: linxnodespec.php,v 1.3 2009/04/15 12:27:02 sebastien Exp $
 
 /**
   * Class CMS_linxNodespec
@@ -129,7 +129,7 @@ class CMS_linxNodespec extends CMS_grandFather
 			switch ($this->_value) {
 			case "root":
 				$offset = abs($this->_relativeOffset) * -1;
-				$pg = CMS_tree::getAncestor($page, $offset, $this->_crosswebsite, $publicTree);
+				$pg = CMS_tree::getAncestor($page, $offset, !$this->_crosswebsite, $publicTree);
 				if (is_a($pg, 'CMS_page') && !$pg->hasError()) {
 					return $pg;
 				} else {
@@ -138,7 +138,7 @@ class CMS_linxNodespec extends CMS_grandFather
 				break;
 			case "father":
 				$offset = abs($this->_relativeOffset);
-				$pg = CMS_tree::getAncestor($page, $offset, $this->_crosswebsite, $publicTree);
+				$pg = CMS_tree::getAncestor($page, $offset, !$this->_crosswebsite, $publicTree);
 				if (is_a($pg, 'CMS_page') && !$pg->hasError()) {
 					return $pg;
 				} else {

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: texteditor.php,v 1.2 2009/04/08 15:12:10 sebastien Exp $
+// $Id: texteditor.php,v 1.3 2009/04/15 12:27:35 sebastien Exp $
 
 /**
   * Class CMS_dialog
@@ -209,7 +209,7 @@ class CMS_textEditor extends CMS_grandFather
 			$attrs['field'],							// Field name
 			$attrs['value'],							// Default value
 			$_SERVER["HTTP_USER_AGENT"],				// HTTP User agent
-			$attrs['texteditor'],						// User editor preferences
+			'',											// DEPRECATED
 			$attrs['language'],							// language
 			$attrs['width'],							// textarea width
 			$attrs['rows']								// textarea rows
