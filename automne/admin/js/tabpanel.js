@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: tabpanel.js,v 1.3 2009/04/08 09:38:24 sebastien Exp $
+  * $Id: tabpanel.js,v 1.4 2009/04/16 13:40:08 sebastien Exp $
   */
 Automne.tabPanel = Ext.extend(Ext.TabPanel, { 
 	pageId:		false,
@@ -119,11 +119,16 @@ Automne.tabPanel = Ext.extend(Ext.TabPanel, {
 		return enabled;
 	},
 	setDraft: function(isDraft) {
-		var editTab = Ext.get(Automne.tabPanels.getTabEl(Automne.tabPanels.getItem('edit')));
-		if (isDraft) {
-			editTab.addClass('x-tab-strip-hatch');
-		} else {
-			editTab.removeClass('x-tab-strip-hatch');
+		var editTab = Automne.tabPanels.getItem('edit');
+		if (editTab) {
+			var editTabEl = Ext.get(Automne.tabPanels.getTabEl(editTab));
+			if (editTabEl) {
+				if (isDraft) {
+					editTabEl.addClass('x-tab-strip-hatch');
+				} else {
+					editTabEl.removeClass('x-tab-strip-hatch');
+				}
+			}
 		}
 	},
 	setFavorite: function(isFavorite) {

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-infos.php,v 1.10 2009/04/16 12:35:15 sebastien Exp $
+// $Id: page-infos.php,v 1.11 2009/04/16 13:40:18 sebastien Exp $
 
 /**
   * PHP page : Load page infos
@@ -235,7 +235,7 @@ if (!isset($cms_page) || !is_object($cms_page) || $cms_page->hasError()) {
 	} else {
 		$jscontent = "
 			//disable all tabs except search and tree
-			Automne.tabPanels.items.each(function(panel) {
+			tabs.items.each(function(panel) {
 				if (panel.id != 'search' && panel.id != 'tree') {
 					panel.disable();
 				} else {
@@ -370,7 +370,8 @@ $jscontent = '
 //def some vars
 var panel;
 if (Automne.tabPanels) {
-	Automne.tabPanels.beginUpdate();
+	var tabs = Automne.tabPanels;
+	tabs.beginUpdate();
 ';
 
 //then for each framePanels, found the one which is enabled and go to it
@@ -423,7 +424,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 	//load panel
 	$jscontent .= '
 	//Panel '.$panel.'
-	panel = Automne.tabPanels.getItem(\''.$panel.'\');
+	panel = tabs.getItem(\''.$panel.'\');
 	';
 	if ($panelStatus['visible']) {
 		//init vars
@@ -547,7 +548,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 						}
 					$panelContent .= '
 					});
-					Automne.tabPanels.insert('.$index.', panel);
+					tabs.insert('.$index.', panel);
 				}
 				';
 			break;
@@ -584,13 +585,13 @@ foreach ($userPanels as $panel => $panelStatus) {
 											url:				'users-controler.php',
 											params: 			{
 												action:			'favorites',
-												pageId:			Automne.tabPanels.pageId,
+												pageId:			tabs.pageId,
 												userId:			".$cms_user->getUserId().",
-												status:			!Automne.tabPanels.isFavorite
+												status:			!tabs.isFavorite
 											},
 											fcnCallback: 		function(response, options, jsonResponse) {
 												if (jsonResponse.success == true) {
-													Automne.tabPanels.setFavorite(options.params.status);
+													tabs.setFavorite(options.params.status);
 													//reload favorite panel if exists
 													var favorites = Ext.get('atm-favorites-pages');
 													if (favorites) {
@@ -616,7 +617,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 						}
 					$panelContent .= '
 					});
-					Automne.tabPanels.insert('.$index.', panel);
+					tabs.insert('.$index.', panel);
 				}
 				';
 			break;
@@ -701,11 +702,11 @@ foreach ($userPanels as $panel => $panelStatus) {
 								fn: 				function (button) {
 									if (button == 'ok') {
 										//send to public or edited tab
-										var pubTab = Automne.tabPanels.getItem('public');
+										var pubTab = tabs.getItem('public');
 										if (!pubTab.disabled) {
-											Automne.tabPanels.setActiveTab('public');
+											tabs.setActiveTab('public');
 										} else {
-											Automne.tabPanels.setActiveTab('edited');
+											tabs.setActiveTab('edited');
 										}
 										Automne.server.call({
 											url:				'page-controler.php',
@@ -715,7 +716,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 											},
 											fcnCallback: 		function() {
 												//then reload page infos
-												Automne.tabPanels.getPageInfos({
+												tabs.getPageInfos({
 													pageId:		'".$cms_page->getID()."',
 													noreload:	true
 												});
@@ -740,7 +741,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 								},
 								fcnCallback: 		function() {
 									//then reload page infos
-									Automne.tabPanels.getPageInfos({
+									tabs.getPageInfos({
 										pageId:		'".$cms_page->getID()."',
 										noreload:	true
 									});
@@ -931,7 +932,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 											icon: 				Ext.MessageBox.WARNING,
 											fn: 				function (button) {
 												if (button == 'ok') {
-													Automne.tabPanels.setActiveTab('public');
+													tabs.setActiveTab('public');
 													Automne.server.call({
 														url:				'page-controler.php',
 														params: 			{
@@ -940,7 +941,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 														},
 														fcnCallback: 		function() {
 															//then reload page infos
-															Automne.tabPanels.getPageInfos({
+															tabs.getPageInfos({
 																pageId:		'".$cms_page->getID()."',
 																noreload:	true
 															});
@@ -1052,7 +1053,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 							}
 						$panelContent .= '
 						});
-						Automne.tabPanels.insert('.$index.', panel);
+						tabs.insert('.$index.', panel);
 					}
 					';
 				}
@@ -1164,7 +1165,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 						}
 					$jscontent .= '
 					});
-					Automne.tabPanels.insert('.$index.', panel);
+					tabs.insert('.$index.', panel);
 				}
 				panel.setToolTip(\''.sensitiveIO::sanitizeJSString($panelTipTitle).'\', \''.sensitiveIO::sanitizeJSString($panelTip).'\');
 				';
@@ -1194,7 +1195,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 						}
 					$jscontent .= '
 					});
-					Automne.tabPanels.insert('.$index.', panel);
+					tabs.insert('.$index.', panel);
 				}
 				panel.setToolTip(\''.sensitiveIO::sanitizeJSString($panelTipTitle).'\', \''.sensitiveIO::sanitizeJSString($panelTip).'\');
 				';
@@ -1207,31 +1208,32 @@ foreach ($userPanels as $panel => $panelStatus) {
 				} else {
 					$jscontent .= '
 					//then remove panel
-					if (panel) Automne.tabPanels.remove(\''.$panel.'\');
+					if (panel) tabs.remove(\''.$panel.'\');
 					';
 				}
 			break;
 		}
 	} else {
+		$index--;
 		//remove panel
 		$jscontent .= '
 		//then remove panel
-		if (panel) Automne.tabPanels.remove(\''.$panel.'\');
+		if (panel) tabs.remove(\''.$panel.'\');
 		';
 	}
 	$index++;
 }
 
 $jscontent .= '
-	var panel = Automne.tabPanels.getItem(\''.$active.'\');
+	var panel = tabs.getItem(\''.$active.'\');
 	if ('.($noreload ? 'true' : 'false').') {
 		panel.noreload();
 	}
-	Automne.tabPanels.setActiveTab(panel);
-	Automne.tabPanels.setPageId(\''.$pageId.'\');
-	Automne.tabPanels.endUpdate();
-	Automne.tabPanels.setDraft('.$cms_page->isDraft().');
-	Automne.tabPanels.setFavorite('.$cms_user->isFavorite($pageId).');
+	tabs.setActiveTab(panel);
+	tabs.setPageId(\''.$pageId.'\');
+	tabs.endUpdate();
+	tabs.setDraft('.$cms_page->isDraft().');
+	tabs.setFavorite('.$cms_user->isFavorite($pageId).');
 	if ('.($reload ? 'true' : 'false').') {
 		panel.reload();
 	}
