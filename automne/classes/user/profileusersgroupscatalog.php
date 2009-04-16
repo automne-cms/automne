@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: profileusersgroupscatalog.php,v 1.2 2008/12/18 10:41:12 sebastien Exp $
+// $Id: profileusersgroupscatalog.php,v 1.3 2009/04/16 12:35:49 sebastien Exp $
 
 /**
   * Class CMS_profile_usersGroupsCatalog
@@ -450,8 +450,10 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 		";
 		$q = new CMS_query($sql);
 		$letters = array();
-		while ($letter = $q->getValue("initial")) {
-			$letters[] = ucfirst($letter);
+		while (($letter = $q->getValue("initial")) !== false) {
+			if (trim($letter)) {
+				$letters[] = ucfirst($letter);
+			}
 		}
 		return $letters;
 	}

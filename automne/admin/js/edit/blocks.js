@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: blocks.js,v 1.8 2009/04/02 13:55:53 sebastien Exp $
+  * $Id: blocks.js,v 1.9 2009/04/16 12:34:38 sebastien Exp $
   */
 Automne.block = function(config){
 	config = config || {};
@@ -160,6 +160,9 @@ Ext.extend(Automne.block, Ext.util.Observable, {
 		this.mask.setDisplayed('block');
 		this.mask.setBounds(this.position.x + parseInt((this.size.width - (position + 4)) / 2), y, (position + 4), 20);
 		this.mask.show();
+		while (!this.row.checkBlockControlIntersection(this.id, this.mask)) {
+			this.mask.setY(this.mask.getY() + 22);
+		}
 	},
 	onMouseIn: function() {
 		this.row.onMouseIn();

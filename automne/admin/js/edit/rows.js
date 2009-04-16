@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: rows.js,v 1.5 2009/04/02 13:55:53 sebastien Exp $
+  * $Id: rows.js,v 1.6 2009/04/16 12:35:26 sebastien Exp $
   */
 Automne.row = function(config){
 	config = config || {};
@@ -576,6 +576,16 @@ Ext.extend(Automne.row, Ext.util.Observable, {
 			this.mask.destroy();
 		}
 		delete this.document;
+	},
+	checkBlockControlIntersection: function(id, mask) {
+		for (var blockId in this.blocks) {
+			if (blockId != id && this.blocks[blockId].mask && this.blocks[blockId].mask.isDisplayed()) {
+				if (this.blocks[blockId].mask.getRegion().intersect(mask.getRegion())) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 });
 

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-infos.php,v 1.9 2009/04/08 09:38:08 sebastien Exp $
+// $Id: page-infos.php,v 1.10 2009/04/16 12:35:15 sebastien Exp $
 
 /**
   * PHP page : Load page infos
@@ -683,9 +683,8 @@ foreach ($userPanels as $panel => $panelStatus) {
 				} else {
 					$pageCopy = '';
 				}
-				
 				//draft
-				if ($cms_page->isDraft()) {
+				if ($fromtab == 'edit' && $cms_user->getUserID() == $cms_page->getLock()) {
 					//cancel draft and submit draft to validation
 					$pageDraft = "
 					menu.addSeparator();

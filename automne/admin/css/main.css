@@ -40,6 +40,10 @@ strong {
 	background:			#FFFFFF url(/automne/admin/img/atm-help.png) top left no-repeat;
 	padding-left:		6px;
 }
+.x-form-item img.atm-help {
+	background:			none;
+	padding-left:		0;
+}
 .atm-right {
 	float:				right;
 	clear:				both;

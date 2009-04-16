@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: framepanel.js,v 1.11 2009/04/10 15:26:27 sebastien Exp $
+  * $Id: framepanel.js,v 1.12 2009/04/16 12:35:00 sebastien Exp $
   */
 Automne.framePanel = Ext.extend(Automne.panel, { 
 	xtype:				'framePanel',
@@ -276,7 +276,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 	},
 	//before panel is activated (tab panel clicked)
 	beforeActivate: function(tabPanel, newTab, oldTab, force) {
-		if (oldTab && oldTab.id == 'edit' && (newTab.id == 'edited' || newTab.id == 'public')) {
+		if (oldTab && oldTab.id == 'edit' && (newTab.id == 'edited' || newTab.id == 'public') && oldTab.frameEl && oldTab.frameEl.dom && oldTab.frameEl.dom.contentWindow && oldTab.frameEl.dom.contentWindow.atmContent) {
 			oldTab.frameEl.dom.contentWindow.atmContent.endEdition('tab');
 		}
 		if (force && this.disabled) {
