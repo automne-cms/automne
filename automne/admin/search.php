@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: search.php,v 1.3 2009/04/10 15:26:40 sebastien Exp $
+// $Id: search.php,v 1.4 2009/04/20 15:13:04 sebastien Exp $
 
 /**
   * PHP page : Load page search window.
@@ -153,11 +153,12 @@ if ($elements) {
 }
 $searchCodes = sensitiveIO::jsonEncode($searchCodes);
 $searchPanel = substr($searchPanel, 0, -1);
+$appTitle = sensitiveIO::sanitizeJSString(APPLICATION_LABEL);
 $jscontent = <<<END
 	var searchWindow = Ext.getCmp('{$winId}');
 	
 	//set window title
-	searchWindow.setTitle('Rechercher dans Automne');
+	searchWindow.setTitle('Rechercher dans \'{$appTitle}\'');
 	//set help button on top of page
 	searchWindow.tools['help'].show();
 	//add a tooltip on button

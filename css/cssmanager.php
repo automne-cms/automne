@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cssmanager.php,v 1.2 2009/04/02 14:00:33 sebastien Exp $
+// $Id: cssmanager.php,v 1.3 2009/04/20 15:13:45 sebastien Exp $
 
 /**
   * CSS manager
@@ -35,7 +35,7 @@ if (isset($_GET['files'])) {
 	foreach (explode(',',$_GET['files']) as $file) {
 		switch ($file) {
 			case 'ext':
-				//Ext CSS file
+				//Ext CSS files
 				$cssfiles [] = PATH_MAIN_FS.'/ext/resources/css/ext-all.css';
 				$cssfiles [] = PATH_ADMIN_FS.'/css/xtheme-automne.css'; //Automne theme
 				$cssfiles [] = PATH_ADMIN_FS.'/css/ext.css'; //overwrite some ext definitions
@@ -43,11 +43,13 @@ if (isset($_GET['files'])) {
 			case 'main':
 				//Main Automne CSS file
 				$cssfiles [] = PATH_ADMIN_FS.'/css/main.css';
-				$cssfiles [] = PATH_ADMIN_FS.'/css/ie.css';
-				$cssfiles [] = PATH_ADMIN_FS.'/css/ie6.css';
+			break;
+			case 'info':
+				//Automne info CSS file
+				$cssfiles [] = PATH_ADMIN_FS.'/css/info.css';
 			break;
 			case 'edit':
-				//Main Automne CSS file
+				//Automne edition CSS file
 				$cssfiles [] = PATH_ADMIN_FS.'/css/edit.css';
 			break;
 			case 'blackbird':

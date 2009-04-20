@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: framepanel.js,v 1.12 2009/04/16 12:35:00 sebastien Exp $
+  * $Id: framepanel.js,v 1.13 2009/04/20 15:13:04 sebastien Exp $
   */
 Automne.framePanel = Ext.extend(Automne.panel, { 
 	xtype:				'framePanel',
@@ -332,8 +332,12 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 		Automne.catchF5(this.getDoc(), win);
 		//for all browsers except gecko, set an onclick event to remove search engine if displayed
 		//use onclick because ext event does not work on iframe document
-		if (!Ext.isGecko && !this.frameDocument.onclick) {
-			this.frameDocument.onclick = Automne.view.removeSearch;
+		try {
+			if (!Ext.isGecko && !this.frameDocument.onclick) {
+				this.frameDocument.onclick = Automne.view.removeSearch;
+			}
+		} catch (e) {
+			pr(e, 'error');
 		}
 		//catch frame links
 		if (!this.allowFrameNav) {

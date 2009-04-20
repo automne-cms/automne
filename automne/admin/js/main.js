@@ -6,7 +6,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: main.js,v 1.10 2009/04/15 12:07:22 sebastien Exp $
+  * $Id: main.js,v 1.11 2009/04/20 15:13:04 sebastien Exp $
   */
 
 //Declare Automne namespace
@@ -138,11 +138,13 @@ Automne = {
 			return true;
 		}
 		//set F5 event
-		if (!Ext.isOpera && !Ext.isSafari && !Ext.isChrome) {
-			if (!Ext.isIE) {
-				Ext.EventManager.on(doc, 'keypress', catchF5);
-			} else {
-				doc.onkeydown = catchF5.createDelegate(win);
+		if (doc) {
+			if (!Ext.isOpera && !Ext.isSafari && !Ext.isChrome) {
+				if (!Ext.isIE) {
+					Ext.EventManager.on(doc, 'keypress', catchF5);
+				} else if (win) {
+					doc.onkeydown = catchF5.createDelegate(win);
+				}
 			}
 		}
 	},
@@ -158,6 +160,7 @@ Automne = {
 		Ext.History.init();
 		// Handle history change event in order to restore the UI to the appropriate history state
 	    Ext.History.on('change', function(token){
+			pr(arguments);
 			if(token){
 				Automne.getToHistory(token);
 			}
@@ -169,13 +172,18 @@ Automne = {
 		}
 		var parts = token.split(':');
 		var action = parts[0];
-		var value = parts[1];
+		var value = parts[1].trim();
 		switch (action) {
 			case 'page':
-				//call server to get page infos using page url
-				Automne.tabPanels.getPageInfos({
-					pageId:		value
-				});
+				//go to the page only if it is not already displayed
+				if (value != Automne.tabPanels.pageId) {
+					//call server to get page infos using page url
+					Automne.tabPanels.getPageInfos({
+						pageId:		value
+					});
+				} else {
+					pr('History query page : '+ value +', which is already displayed so skip query');
+				}
 			break;
 		}
 	},
@@ -394,6 +402,9 @@ Automne.server = {
 		if (response) {
 			if (e) {
 				msg += 'Message : '+ e.name +' : '+ e.message +'<br />';
+				if (e.lineNumber && e.fileName) {
+					msg += 'Line : '+ e.lineNumber +' of file '+ e.fileName +'<br />';
+				}
 			}
 			if (response.argument) {
 				msg += 'Address : '+ response.argument.url +'<br />'+
@@ -727,28 +738,36 @@ Automne.view = {
 	},
 	search: function(search) {
 		if (search) {
-			var windowId = 'searchWindow';
-			if (Ext.WindowMgr.get(windowId)) {
-				Ext.WindowMgr.bringToFront(windowId);
-				Ext.WindowMgr.get(windowId).search(search);
-			} else {
-				//create window element
-				var win = new Automne.Window({
-					id:				'searchWindow',
-					width:			800,
-					height:			600,
-					autoLoad:		{
-						url:		'/automne/admin/search.php',
-						params:		{
-							winId:	'searchWindow',
-							search:	search
-						},
-						nocache:	true,
-						scope:		this
-					}
+			//if search is a positive integer, get page
+			if (!isNaN(parseInt(search, 10))) {
+				//force reload page infos without reloading the frame itself
+				Automne.tabPanels.getPageInfos({
+					pageId:		search
 				});
-				//display window
-				win.show();
+			} else {
+				var windowId = 'searchWindow';
+				if (Ext.WindowMgr.get(windowId)) {
+					Ext.WindowMgr.bringToFront(windowId);
+					Ext.WindowMgr.get(windowId).search(search);
+				} else {
+					//create window element
+					var win = new Automne.Window({
+						id:				'searchWindow',
+						width:			800,
+						height:			600,
+						autoLoad:		{
+							url:		'/automne/admin/search.php',
+							params:		{
+								winId:	'searchWindow',
+								search:	search
+							},
+							nocache:	true,
+							scope:		this
+						}
+					});
+					//display window
+					win.show();
+				}
 			}
 		}
 	},

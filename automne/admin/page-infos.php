@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-infos.php,v 1.11 2009/04/16 13:40:18 sebastien Exp $
+// $Id: page-infos.php,v 1.12 2009/04/20 15:13:03 sebastien Exp $
 
 /**
   * PHP page : Load page infos
@@ -291,13 +291,15 @@ $hasPreviz = $hasPublic = $hasDraft = $isEditable = $hasLock = $hasRedirect = fa
 $userPanels = array(
 	'search' 	=> array('type' => 'searchPanel', 	'visible' => true), //TODOV4 : checker si le user peut voir la recherche
 	'tree' 		=> array('type' => 'winPanel', 		'visible' => false),
-	'favorite' 	=> array('type' => 'favoritePanel', 'visible' => true),
+	'favorite' 	=> array('type' => 'favoritePanel', 'visible' => $cms_user->hasModuleClearance(MOD_STANDARD_CODENAME, CLEARANCE_MODULE_VIEW)),
 	'action' 	=> array('type' => 'menuPanel', 	'visible' => false),
 	'add' 		=> array('type' => 'winPanel', 		'visible' => false),
 	'properties'=> array('type' => 'winPanel', 		'visible' => false),
 	'edit' 		=> array('type' => 'framePanel', 	'visible' => false),
 	'edited' 	=> array('type' => 'framePanel', 	'visible' => false),
 	'public' 	=> array('type' => 'framePanel', 	'visible' => true),
+	'nopages' 	=> array('type' => 'framePanel', 	'visible' => false),
+	'norights' 	=> array('type' => 'framePanel', 	'visible' => false),
 );
 
 //check for public page
@@ -308,7 +310,7 @@ if ($cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_VIEW)) {
 }
 
 //check for tree access
-if ($cms_user->hasEditablePages()) {
+if ($cms_user->hasViewvablePages()) {
 	$userPanels['tree']['visible']= true;
 }
 
@@ -352,9 +354,8 @@ if ($cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)) {
 				}
 			}
 		}
-	}// elseif ($cms_page->getLock()) {
+	}
 	$hasLock = $cms_page->getLock();
-	//}
 } elseif ($cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_VIEW)) {
 	//allow page copy
 	$userPanels['action']['visible'] 	= true;
@@ -418,6 +419,17 @@ if ($regenerate || ($active == 'public' && !file_exists($cms_page->getURL(false,
 
 $redirectlink = $cms_page->getRedirectLink(true);
 $hasRedirect = $redirectlink->hasValidHREF();
+
+//if no pages rights or no page at all, then activate infos panel
+if (!$userPanels['edited']['visible'] && !$userPanels['edit']['visible'] && !$userPanels['public']['visible']) {
+	if (!$userPanels['action']['visible'] && !$userPanels['tree']['visible']) {
+		$active = 'nopages';
+		$userPanels['nopages']['visible'] = true;
+	} else {
+		$active = 'norights';
+		$userPanels['norights']['visible'] = true;
+	}
+}
 
 $index = 0;
 foreach ($userPanels as $panel => $panelStatus) {
@@ -517,23 +529,31 @@ foreach ($userPanels as $panel => $panelStatus) {
 						listeners:		{
 							'beforeactivate' : {
 								fn: function(panel, e) {
+									try {
+										//this test is to avoid IE bug if this method is called without browser event as origin
+										if (e.type) {}
+									} catch (e){
+										return false;
+									}
 									if (e.type == 'mousedown') {
 										var search = Ext.getCmp('atmSearchPanel');
 										var searchTop = Ext.getCmp('atmSearchTopPanel');
-										if (!search.rendered) {
-											search.allowBlur = false;
-											search.render(document.body);
-											searchTop.render(document.body);
-										} else {
-											if (search.isVisible()) {
-												search.hide();
-												searchTop.hide();
-											} else {
-												search.setPosition(search.x, search.y)
-												searchTop.setPosition(searchTop.x, searchTop.y)
+										if (search && searchTop) {
+											if (!search.rendered) {
 												search.allowBlur = false;
-												search.show();
-												searchTop.show();
+												search.render(document.body);
+												searchTop.render(document.body);
+											} else {
+												if (search.isVisible()) {
+													search.hide();
+													searchTop.hide();
+												} else {
+													search.setPosition(search.x, search.y)
+													searchTop.setPosition(searchTop.x, searchTop.y)
+													search.allowBlur = false;
+													search.show();
+													searchTop.show();
+												}
 											}
 										}
 									}
@@ -580,7 +600,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 						listeners:		{
 							'beforeactivate' : {
 								fn: function(panel, e) {
-									if (e.type == 'mousedown') {
+									if (e && e.type && e.type == 'mousedown') {
 										Automne.server.call({
 											url:				'users-controler.php',
 											params: 			{
@@ -1140,6 +1160,22 @@ foreach ($userPanels as $panel => $panelStatus) {
 					}
 				}
 			break;
+			case 'nopages':
+				$panelTitle = APPLICATION_LABEL;
+				$panelDisabled = 'false';
+				$panelTipTitle = APPLICATION_LABEL;
+				$panelTip = 'Vous n\'avez pas le droit de voir les pages du ou des site(s) ...';
+				$panelURL = PATH_ADMIN_WR.'/no-pages.php';
+				$allowFrameNav = 'true';
+			break;
+			case 'norights':
+				$panelTitle = APPLICATION_LABEL;
+				$panelDisabled = 'false';
+				$panelTipTitle = APPLICATION_LABEL;
+				$panelTip = 'Vous n\'avez pas le droit de voir la page demandée ...';
+				$panelURL = PATH_ADMIN_WR.'/no-rights.php';
+				$allowFrameNav = 'true';
+			break;
 		}
 		switch ($panelStatus['type']) {
 			case 'winPanel':
@@ -1223,18 +1259,19 @@ foreach ($userPanels as $panel => $panelStatus) {
 	}
 	$index++;
 }
-
 $jscontent .= '
 	var panel = tabs.getItem(\''.$active.'\');
-	if ('.($noreload ? 'true' : 'false').') {
-		panel.noreload();
+	if (panel) {
+		if ('.($noreload ? 'true' : 'false').') {
+			panel.noreload();
+		}
+		tabs.setActiveTab(panel);
 	}
-	tabs.setActiveTab(panel);
 	tabs.setPageId(\''.$pageId.'\');
 	tabs.endUpdate();
 	tabs.setDraft('.$cms_page->isDraft().');
 	tabs.setFavorite('.$cms_user->isFavorite($pageId).');
-	if ('.($reload ? 'true' : 'false').') {
+	if ('.($reload ? 'true' : 'false').' && panel) {
 		panel.reload();
 	}
 } else {

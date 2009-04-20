@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: side-panel.php,v 1.4 2009/04/02 13:55:54 sebastien Exp $
+// $Id: side-panel.php,v 1.5 2009/04/20 15:13:04 sebastien Exp $
 
 /**
   * PHP page : Load side panel infos.
@@ -164,7 +164,7 @@ if ($cms_user->hasValidationClearance() && APPLICATION_ENFORCES_WORKFLOW) {
 $modules = CMS_modulesCatalog::getALL();
 $modulesPanels = '';
 //MODULE STANDARD
-if (isset($modules[MOD_STANDARD_CODENAME]) && $cms_user->hasModuleClearance(MOD_STANDARD_CODENAME, CLEARANCE_MODULE_EDIT)) {
+if (isset($modules[MOD_STANDARD_CODENAME]) && $cms_user->hasModuleClearance(MOD_STANDARD_CODENAME, CLEARANCE_MODULE_VIEW)) {
 	$module = $modules[MOD_STANDARD_CODENAME];
 	$content .= '
 	<div id="module'.$module->getCodename().'DivPanel">

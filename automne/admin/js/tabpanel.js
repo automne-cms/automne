@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: tabpanel.js,v 1.4 2009/04/16 13:40:08 sebastien Exp $
+  * $Id: tabpanel.js,v 1.5 2009/04/20 15:13:04 sebastien Exp $
   */
 Automne.tabPanel = Ext.extend(Ext.TabPanel, { 
 	pageId:		false,
@@ -92,6 +92,8 @@ Automne.tabPanel = Ext.extend(Ext.TabPanel, {
 			}
 		});
 		pr('Load '+params.fromTab+' frame infos');
+		//uncomment this line to see source call
+		//pr(this.getPageInfos.caller.toString());
 		Automne.server.call('/automne/admin/page-infos.php?' + Ext.urlEncode(params), fcn, fcnparams, scope);
 	},
 	disableTabs:function(exceptions) {
@@ -132,13 +134,18 @@ Automne.tabPanel = Ext.extend(Ext.TabPanel, {
 		}
 	},
 	setFavorite: function(isFavorite) {
-		var favoriteTab = Ext.get(Automne.tabPanels.getTabEl(Automne.tabPanels.getItem('favorite')));
-		if (isFavorite) {
-			Automne.tabPanels.isFavorite = true;
-			favoriteTab.addClass('x-tab-strip-hatch');
-		} else {
-			Automne.tabPanels.isFavorite = false;
-			favoriteTab.removeClass('x-tab-strip-hatch');
+		var favoriteTab = Automne.tabPanels.getItem('favorite')
+		Automne.tabPanels.isFavorite = false;
+		if (favoriteTab) {
+			var favoriteTabEl = Ext.get(Automne.tabPanels.getTabEl(favoriteTab));
+			if (favoriteTabEl) {
+				if (isFavorite) {
+					Automne.tabPanels.isFavorite = true;
+					favoriteTabEl.addClass('x-tab-strip-hatch');
+				} else {
+					favoriteTabEl.removeClass('x-tab-strip-hatch');
+				}
+			}
 		}
 	},
 	// private

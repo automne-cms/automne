@@ -1,0 +1,15 @@
+/*$Id: info.css,v 1.1 2009/04/20 15:13:04 sebastien Exp $*/
+body{
+	background-color:	#e9f1da;
+	font-family:		arial,verdana,helvetica,sans-serif;
+	font-size:			12px;
+	margin:				0;
+	padding:			0;
+}
+.atm-alert {
+	border:				1px solid #dde6cb;
+}
+a{
+	text-decoration:	none;
+	color:				#5f900b;
+}

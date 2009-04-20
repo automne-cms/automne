@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-redirect-info.php,v 1.2 2009/03/02 11:25:15 sebastien Exp $
+// $Id: page-redirect-info.php,v 1.3 2009/04/20 15:13:03 sebastien Exp $
 
 /**
   * PHP page : Redirection page info
@@ -32,6 +32,7 @@ define("MESSAGE_PAGE_PAGE", 1303);
 //load interface instance
 $view = CMS_view::getInstance();
 $view->addCSSFile('main');
+$view->addCSSFile('info');
 
 if (isset($_GET['pageId']) && sensitiveIO::isPositiveInteger($_GET['pageId'])) {
 	$page = CMS_tree::getpageById($_GET['pageId']);

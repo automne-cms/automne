@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: index.php,v 1.6 2009/04/08 09:38:08 sebastien Exp $
+// $Id: index.php,v 1.7 2009/04/20 15:13:03 sebastien Exp $
 
 /**
   * PHP page : index
@@ -33,6 +33,15 @@ $language = CMS_languagesCatalog::getDefaultLanguage(true);
 
 //load interface instance
 $view = CMS_view::getInstance();
+
+//Disconnect user
+if (isset($_REQUEST["cms_action"]) && $_REQUEST["cms_action"] == 'logout') {
+	// Reset cookie (kill current session)
+	CMS_context::resetSessionCookies();
+	header("Location: ".PATH_ADMIN_WR.'/');
+	exit;
+}
+
 //set main and ext CSS
 $view->addCSSFile('ext');
 $view->addCSSFile('main');
@@ -47,7 +56,7 @@ if (SYSTEM_DEBUG) {
 }
 
 //set title
-$view->settitle($language->getMessage(MESSAGE_PAGE_TITLE, array(APPLICATION_LABEL)));
+$view->setTitle($language->getMessage(MESSAGE_PAGE_TITLE, array(APPLICATION_LABEL)));
 
 $content = '
 <div id="atm-loading-mask"></div>
