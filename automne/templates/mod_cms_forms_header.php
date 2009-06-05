@@ -17,7 +17,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: mod_cms_forms_header.php,v 1.6 2009/04/07 12:25:17 sebastien Exp $
+// $Id: mod_cms_forms_header.php,v 1.7 2009/06/05 15:24:03 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -93,6 +93,9 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 						if (($redirect->getLinkType() == RESOURCE_LINK_TYPE_INTERNAL && $cms_user->hasPageClearance($redirect->getInternalLink(), CLEARANCE_PAGE_VIEW)) || $redirect->getLinkType() == RESOURCE_LINK_TYPE_EXTERNAL) {
 							//declare form ok action
 							$cms_forms_okAction[$form->getID()] = true;
+						} else {
+							//declare form not action
+							$cms_forms_okAction[$form->getID()] = false;
 						}
 					}
 				}

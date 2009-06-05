@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc_admin.php,v 1.6 2009/04/02 13:54:47 sebastien Exp $
+// $Id: cms_rc_admin.php,v 1.7 2009/06/05 15:30:36 sebastien Exp $
 
 /**
   * Administration rc file.
@@ -36,7 +36,9 @@ if (!defined("APPLICATION_USER_TYPE")) {
 
 // Start output buffering for compression so we don't prevent
 // headers from being sent if there's a blank line in an included file
-ob_start( 'compress_handler' );
+if (!defined('HTML_COMPRESSION_STARTED')) {
+	ob_start( 'compress_handler' );
+}
 
 //If we are into an admin module, load it
 if (strpos($_SERVER['SCRIPT_NAME'], PATH_ADMIN_MODULES_WR) === 0 

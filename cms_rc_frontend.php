@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc_frontend.php,v 1.3 2009/03/02 11:23:21 sebastien Exp $
+// $Id: cms_rc_frontend.php,v 1.4 2009/06/05 15:30:36 sebastien Exp $
 
 /**
   * Frontend rc file.
@@ -29,7 +29,9 @@ start_atm_session();
 
 // Start output buffering for compression so we don't prevent
 // headers from being sent if there's a blank line in an included file
-ob_start( 'compress_handler' );
+if (!defined('HTML_COMPRESSION_STARTED')) {
+	ob_start( 'compress_handler' );
+}
 
 /**
   * Define User Type if APPLICATION_ENFORCES_ACCESS_CONTROL is True

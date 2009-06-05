@@ -1,4 +1,4 @@
-# $Id: automne4-I18NM_messages.sql,v 1.7 2009/04/02 14:07:07 sebastien Exp $
+# $Id: automne4-I18NM_messages.sql,v 1.8 2009/06/05 15:30:05 sebastien Exp $
 #
 # Suppression avant mise à  jour du Contenu de la table `I18NM_messages` pour le module standard
 #
@@ -2006,7 +2006,7 @@ Cette fonction permet d\'afficher une liste class&eacute;e par ordre alphab&eacu
 	<li><span class="keyword">selectedID </span><strong>: </strong>Identifiant de la cat&eacute;gorie &agrave; selectionner dans la liste (facultatif)</li>
 	<li><span class="keyword">usedcategories </span>: Bool&eacute;en <span class="vertclair">true, false</span>, affiche uniquement les cat&eacute;gories utilis&eacute;es (facultatif, d&eacute;faut : true).</li>
 	<li><span class="keyword">editableonly </span>: Bool&eacute;en <span class="vertclair">true, false</span>, arffiche uniquement les cat&eacute;gories &eacute;ditables (facultatif, d&eacute;faut : false).</li>
-	<li><span class="keyword">root </span>: L\'identifiant de la cat&eacute;gorie &agrave;&agrave; employer comme racine.</li>
+	<li><span class="keyword">root </span>: L\'identifiant de la cat&eacute;gorie &agrave; employer comme racine.</li>
 </ul>', 'TODO');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (166, 'polymod', NOW(), 'Catégories', 'Categories');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (167, 'polymod', NOW(), 'Permet de catégoriser les objets et de gérer leurs droits d\'accès', 'Allows you to categorize objects and to manage their access rights');
@@ -2035,9 +2035,9 @@ INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (1
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (190, 'polymod', NOW(), 'Multiples objets \'%s\'', 'Multiple objects \'%s\'');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (191, 'polymod', NOW(), 'Objet composé de multiples objets \'%s\'', 'Object composed with Multiple objects \'%s\'');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (192, 'polymod', NOW(), 'Ces objets peuvent être édités ?', 'These objects can be edited?');
-INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (193, 'polymod', NOW(), 'Création d\'un objet \'%s\' à associer', 'Create \'%s\' object to associate');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (193, 'polymod', NOW(), 'Création d\'un élément \'%s\' à associer', 'Create \'%s\' element to associate');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (194, 'polymod', NOW(), 'Edition d\'un objet \'%s\'', 'Edit \'%s\' object');
-INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (195, 'polymod', NOW(), 'Objets \'%s\' associés', 'Associated \'%s\' objects');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (195, 'polymod', NOW(), 'Eléments \'%s\' actuellement associés', 'Currently associated \'%s\' elements');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (196, 'polymod', NOW(), 'Associer un objet \'%s\' existant', 'Associate an existing object \'%s\'');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (197, 'polymod', NOW(), 'Forcer le chargement des sous objets ?', 'Force subobjects loading?');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (198, 'polymod', NOW(), 'Attention, ce paramètre doit rester désactivé sauf si des données sont manquantes lors de certains chargements. Activer ce paramètre peut entraîner une perte de performance très importante.', 'Attention, this parameter must remain inactived except if data are missing during some loadings. Activate this parameter can involve a very significant loss of performance.');
@@ -2047,10 +2047,10 @@ INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (2
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (202, 'polymod', NOW(), 'Largeur maximum de la vignette en pixels', 'Maximum width of the thumbnail in pixels');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (203, 'polymod', NOW(), 'Date de début de publication formatée. Remplacez \'format\' par la valeur correspondant au format accepté en PHP pour la <a href="http://www.php.net/date" class="admin" target="_blank">\'fonction date\'</a>', 'Formatted date. Replace \'format\' by the format value accepted in PHP for the <a href="http://www.php.net/date" class="admin" target="_blank">\'date function\'</a>');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (204, 'polymod', NOW(), 'Date de fin de publication formatée (si elle existe). Remplacez \'format\' par la valeur correspondant au format accepté en PHP pour la <a href="http://www.php.net/date" class="admin" target="_blank">\'fonction date\'</a>', 'Formatted date. Replace \'format\' by the format value accepted in PHP for the <a href="http://www.php.net/date" class="admin" target="_blank">\'date function\'</a>');
-INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (205, 'polymod', NOW(), 'Utiliser l\'image originale comme image zoom', 'Use original image as zoom');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (205, 'polymod', NOW(), 'Utiliser la vignette originale pour l\'image zoom', 'Use original thumbnail as zoom');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (206, 'polymod', NOW(), 'Vignette', 'Thumbnail');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (207, 'polymod', NOW(), 'Image zoom', 'Zoom image');
-INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (208, 'polymod', NOW(), '(Sera redimensionnée à %s pixels de large)', '(Will be resized to %s pixels width)');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (208, 'polymod', NOW(), '(La vignette sera redimensionnée à %s pixels de large)', '(Thumbnail will be resized to %s pixels width)');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (209, 'polymod', NOW(), 'Utiliser une image zoom distincte', 'Use distinct zoom image');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (210, 'polymod', NOW(), '(Si vous n\'utilisez pas d\'image zoom distincte)', '(If you do no uses a distinct image zoom)');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (211, 'polymod', NOW(), 'Conserver l\'image originale comme image zoom', 'Keep original image as an image zoom');
@@ -2408,8 +2408,8 @@ INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (4
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (412, 'polymod', NOW(), '(Si la vignette dépasse cette hauteur elle sera redimensionnée)', '(If the thumbnail exceeds this width it will be resized)');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (413, 'polymod', NOW(), 'Hauteur maximum de l\'image en pixels', 'Image maximum height in pixels');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (414, 'polymod', NOW(), 'Hauteur maximum de la vignette en pixels', 'Thumbnail maximum height in pixels');
-INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (415, 'polymod', NOW(), '(Sera redimensionnée à %s pixels de hauteur)', '(Will be resized to %s pixels height)');
-INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (416, 'polymod', NOW(), '(Sera redimensionnée à %s pixels de largeur et %s  pixels de hauteur)', '(Will be resized to %s pixels width and %s pixels height)');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (415, 'polymod', NOW(), '(La vignettte sera redimensionnée à %s pixels de hauteur)', '(Thumbnail will be resized to %s pixels height)');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (416, 'polymod', NOW(), '(La vignettte sera redimensionnée à %s pixels de largeur et %s  pixels de hauteur)', '(Thumbnail will be resized to %s pixels width and %s pixels height)');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (417, 'polymod', NOW(), 'Unité', 'Unit');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (418, 'polymod', NOW(), '(Sera affichée à côté de la valeur)', '(Will be display front of value)');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (419, 'polymod', NOW(), 'Unité : "%s"', 'Unit : "%s"');
@@ -2441,6 +2441,11 @@ INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (5
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (512, 'polymod', NOW(), 'Création d\'un nouvel élément %s.', 'Create a new %s element.');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (513, 'polymod', NOW(), 'Recevez un email pour toute validation en attente dans ce module.', 'Receive an email for validation pending in this module.');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (514, 'polymod', NOW(), 'Validations', 'Validations');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (515, 'polymod', NOW(), 'Heures', 'Hours');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (516, 'polymod', NOW(), 'Modifié l\'élément associé sélectionné', 'Modify selected associated element');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (517, 'polymod', NOW(), 'Enlever l\'élément associé sélectionné', 'Remove selected associated element');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (518, 'polymod', NOW(), 'Choisissez les éléments \'%s\' à associer', 'Choose elements \'%s\' to associate');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (519, 'polymod', NOW(), 'Choisissez l\'aide à afficher : ', 'Choose help to display: ');
 
 #
 # Contenu de la table `I18NM_messages` module News

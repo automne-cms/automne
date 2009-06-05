@@ -24,7 +24,7 @@
  * Follow this link for more information:
  * http://docs.fckeditor.net/FCKeditor_2.x/Developers_Guide/Configuration/Configuration_Options
  */
-// $Id: fckconfig.php,v 1.2 2009/03/04 12:38:25 sebastien Exp $
+// $Id: fckconfig.php,v 1.3 2009/06/05 15:23:00 sebastien Exp $
 
 //for this page, HTML output compression is not welcome.
 define("ENABLE_HTML_COMPRESSION", false);
@@ -291,10 +291,7 @@ FCKConfig.RemoveFormatTags = 'b,big,code,del,dfn,em,font,i,ins,kbd,q,samp,small,
 // Attributes that will be removed
 FCKConfig.RemoveAttributes = 'class,style,lang,width,height,align,hspace,valign' ;
 
-FCKConfig.CustomStyles =
-{
-	'Red Title'	: { Element : 'h3', Styles : { 'color' : 'Red' } }
-};
+FCKConfig.CustomStyles = {};
 
 // Do not add, rename or remove styles here. Only apply definition changes.
 FCKConfig.CoreStyles =

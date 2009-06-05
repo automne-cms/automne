@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc.php,v 1.8 2009/04/02 13:54:47 sebastien Exp $
+// $Id: cms_rc.php,v 1.9 2009/06/05 15:30:36 sebastien Exp $
 
 /**
   * rc file, contains editable constants
@@ -592,7 +592,7 @@ if (!defined("PATH_TEMPLATES_FS")) {
 }
 
 /**
-  *	Temp path (where automne updates patch are uncompressed, files uploaded, etc.
+  *	Temp path (where automne updates patch are uncompressed, etc.)
   *	Default : PATH_MAIN_xx."/tmp"
   */
 if (!defined("PATH_TMP_WR")) {
@@ -601,7 +601,26 @@ if (!defined("PATH_TMP_WR")) {
 if (!defined("PATH_TMP_FS")) {
 	define("PATH_TMP_FS", PATH_MAIN_FS."/tmp");
 }
-
+/**
+  *	Upload path (where automne files are uploaded)
+  *	Default : PATH_MAIN_xx."/upload"
+  */
+if (!defined("PATH_UPLOAD_WR")) {
+	define("PATH_UPLOAD_WR", PATH_MAIN_WR."/upload");
+}
+if (!defined("PATH_UPLOAD_FS")) {
+	define("PATH_UPLOAD_FS", PATH_MAIN_FS."/upload");
+}
+/**
+  *	Cache path (where automne files are cached)
+  *	Default : PATH_MAIN_xx."/cache"
+  */
+if (!defined("PATH_CACHE_WR")) {
+	define("PATH_CACHE_WR", PATH_MAIN_WR."/cache");
+}
+if (!defined("PATH_CACHE_FS")) {
+	define("PATH_CACHE_FS", PATH_MAIN_FS."/cache");
+}
 /**
   *	Pages templates rows definition files path
   *	Default : PATH_MAIN_xx."/templates/rows"
@@ -768,9 +787,10 @@ if (ini_get('memory_limit') < (int) APPLICATION_MEMORY_LIMIT) {
 //remove NOTICE to avoid useless notice messages.
 error_reporting(APPLICATION_ERROR_REPORTING);
 
-//set default Apache Content-Type
-header('Content-Type: text/html; charset='.APPLICATION_DEFAULT_ENCODING);
-
+//set default Apache Content-Type if header is not already sent
+if (!headers_sent()) {
+	header('Content-Type: text/html; charset='.APPLICATION_DEFAULT_ENCODING);
+}
 //load standard config file parameters (PATH_MODULES_FS.'/standard_rc.xml')
 require_once(PATH_PACKAGES_FS."/modules/readStandardParam.php");
 //set default level of output compression (if any)
@@ -850,9 +870,23 @@ if (STATS_DEBUG) {
 	$GLOBALS["files_loaded"] = 4; //Start at 4 : 3 config files and the require at the end of this file
 	$GLOBALS["time_start"] = getmicrotime();
 }
-
 //include base packages
 require_once(PATH_PACKAGES_FS."/common/grandfather.php");
+
+/**
+  * Set PHP error handler
+  */
+set_error_handler (array('CMS_grandFather','PHPErrorHandler'));
+
+/**
+  * Set Automne autoload handler
+  */
+spl_autoload_register (array('CMS_grandFather','autoload'));
+
+/**
+  * Set shutdown function
+  */
+register_shutdown_function(array('CMS_view','quit'));
 
 /**
   * Debug mode configuration changes.
@@ -944,21 +978,17 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])
 }
 
 /**
-  * Check if output compression is enabled
-  */
-function compress_is_enabled() {
-	return ( ENABLE_HTML_COMPRESSION
-			 && 'ob_gzhandler' != ini_get('output_handler')
-			 && extension_loaded( 'zlib' )
-			 && !ini_get('zlib.output_compression')
-			);
-}
-
-/**
   * Launch output compression if enabled
   */
 function compress_handler( $p_buffer, $p_mode ) {
-	if ( compress_is_enabled() ) {
+	if (ENABLE_HTML_COMPRESSION
+			 && !headers_sent()
+			 && 'ob_gzhandler' != ini_get('output_handler')
+			 && extension_loaded( 'zlib' )
+			 && !ini_get('zlib.output_compression')) {
+		if (!defined('HTML_COMPRESSION_STARTED')) {
+			define('HTML_COMPRESSION_STARTED', true);
+		}
 		return ob_gzhandler( $p_buffer, $p_mode );
 	} else {
 		return $p_buffer;
@@ -973,6 +1003,10 @@ function start_atm_session() {
 	    // Do not delete the existing session, it might be used by other 
 	    // applications; instead just close it.
 	    session_write_close();
+	}
+	//if session already exists, return
+	if (session_name() == 'AutomneSession') {
+		return;
 	}
 	// session cookie settings
 	session_set_cookie_params(0, '/', '', false);
@@ -995,11 +1029,9 @@ function start_atm_session() {
 	
 	// some pages (e.g. stylesheet) may be cached on clients, but not in shared
 	// proxy servers
-	session_cache_limiter('private');
+	//session_cache_limiter('private'); //removed because this option allow cache of session pages which is not what we want.
 	
-	$session_name = 'AutomneSession';
-	@session_name($session_name);
-	
+	@session_name('AutomneSession');
 	@session_start();
 }
 

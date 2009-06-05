@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: jsmanager.php,v 1.4 2009/04/02 14:01:19 sebastien Exp $
+// $Id: jsmanager.php,v 1.5 2009/06/05 15:29:51 sebastien Exp $
 
 /**
   * Javascript manager
@@ -64,11 +64,15 @@ if (isset($_GET['files'])) {
 				$jsfiles [] = PATH_ADMIN_FS.'/js/emptyfield.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/linkfield.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/pagefield.js';
+				//FCKEditor
+				$jsfiles [] = PATH_MAIN_FS.'/fckeditor/fckeditor.js';
+				$jsfiles [] = PATH_ADMIN_FS.'/js/fckeditor.js';
 			break;
 			case 'edit':
 				//Automne license (protected)
 				$jsfiles [] = PATH_ADMIN_FS.'/js/license.js';
 				//Automne JS files
+				//$jsfiles [] = PATH_ADMIN_FS.'/js/main.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/edit/content.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/edit/blocks.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/edit/rows.js';
@@ -102,23 +106,24 @@ if (isset($_GET['files'])) {
 				//Ext license (protected)
 				$jsfiles [] = PATH_MAIN_FS.'/ext/license.js';
 				//Ext and base adapter
-				if (SYSTEM_DEBUG) {
-					$jsfiles [] = PATH_MAIN_FS.'/ext/source/core/Ext.js';
-					$jsfiles [] = PATH_MAIN_FS.'/ext/source/adapter/ext-base.js';
-				} else {
-					$jsfiles [] = PATH_MAIN_FS.'/ext/adapter/ext/ext-base.js';
-				}
+				$jsfiles [] = PATH_MAIN_FS.'/ext/adapter/ext/ext-base.js';
 				$jsfiles [] = (SYSTEM_DEBUG) ? PATH_MAIN_FS.'/ext/ext-all-debug.js' : PATH_MAIN_FS.'/ext/ext-all.js';
-				//need to override some Ext methods
+				//Need to override some Ext methods
 				$jsfiles [] = PATH_ADMIN_FS.'/js/ext/garbage.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/ext/element.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/ext/store.js';
+				$jsfiles [] = PATH_ADMIN_FS.'/js/ext/Button.js';
+				//Correct some Ext bugs
+				$jsfiles [] = PATH_ADMIN_FS.'/js/ext/bug.js';
+				
 				//Ext.ux.LiveDataPanel
 				$jsfiles [] = PATH_ADMIN_FS.'/js/ext/LiveDataPanel.js';
 				//Ext.ux.ItemSelector
+				$jsfiles [] = PATH_ADMIN_FS.'/js/ext/Multiselect.js';
+				$jsfiles [] = PATH_ADMIN_FS.'/js/ext/Multiselect2.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/ext/DDView.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/ext/MultiSelect.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/ext/ItemSelector.js';
+				
+				$jsfiles [] = PATH_ADMIN_FS.'/js/ext/Connection.js';
 				
 				//set specific source debug files here
 				//$jsfiles [] = PATH_MAIN_FS.'/ext/source/data/Connection.js';
