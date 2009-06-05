@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_search.php,v 1.5 2009/04/02 13:58:00 sebastien Exp $
+// $Id: object_search.php,v 1.6 2009/06/05 15:02:18 sebastien Exp $
 
 /**
   * Class CMS_object_search
@@ -957,7 +957,7 @@ class CMS_object_search extends CMS_grandFather
 						}
 					} else {
 						//if we only have objectID as orderCondition or if order by relevance is queried, use order provided by MySQL Fulltext
-						if ($this->_orderConditions['relevance']) {
+						if (isset($this->_orderConditions['relevance']) && $this->_orderConditions['relevance']) {
 							if ($this->_orderConditions['relevance'] == 'desc') {
 								$this->_orderConditions = array('itemsOrdered' => array('order' => array_reverse($fullTextResults,true)));
 							} else {
@@ -1042,8 +1042,7 @@ class CMS_object_search extends CMS_grandFather
 		//loop on each order conditions
 		foreach ($this->_orderConditions as $type => $value) {
 			$sql = '';
-			
-			if ($value['direction']) {
+			if (isset($value['direction']) && $value['direction']) {
 				$direction = $value['direction'];
 				$operator = $value['operator'];
 				//add previously founded ids to where clause
@@ -1178,7 +1177,6 @@ class CMS_object_search extends CMS_grandFather
 				
 				$orderClause
 				";
-			
 			// Sort result by itemsOrdered
 			if (isset($this->_orderConditions['itemsOrdered']) && is_array($this->_orderConditions['itemsOrdered']['order']) && $this->_orderConditions['itemsOrdered']['order']) {
 				$sql .= "

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: items.php,v 1.5 2009/04/02 13:55:53 sebastien Exp $
+// $Id: items.php,v 1.6 2009/06/05 15:01:07 sebastien Exp $
 
 /**
   * PHP page : Load polymod items search window.
@@ -337,6 +337,15 @@ $searchPanel .= "{
 	}]
 },";
 
+$description = sensitiveIO::sanitizeJSString($object->getDescription($cms_language));
+if ($description) {
+	$searchPanel .= "{
+		xtype:			'panel',
+		border:			false,
+		html:			'<div style=\"color:grey;padding-top:15px;\">{$description}</div>'
+	},";
+}
+
 //remove last comma from search panel items
 $searchPanel = substr($searchPanel, 0, -1);
 
@@ -501,7 +510,9 @@ $jscontent = <<<END
 	'				</tr>',
 	'			</table>',
 	'		</div>',
-	'		<div class="atm-description">{description}</div>',
+	'		<tpl if="values.description.length != 0">',
+	'			<div class="atm-description">{description}<div style="clear:both;height:1px;">&nbsp;</div></div>',
+	'		</tpl>',
 	'	</div>',
 	'</tpl>');
 	resultTpl.compile();
@@ -541,13 +552,22 @@ $jscontent = <<<END
 						Ext.WindowMgr.bringToFront(objectsWindows[windowId]);
 					} else {
 						//create window element
-						objectsWindows[windowId] = new Automne.frameWindow({
+						objectsWindows[windowId] = new Automne.Window({
 							id:				windowId,
 							objectId:		objectId,
-							frameURL:		'{$editURL}?polymod={$codename}&object={$objectId}&item='+objectId,
+							autoLoad:		{
+								url:			'{$editURL}',
+								params:			{
+									winId:			windowId,
+									module:			'{$codename}',
+									type:			'{$objectId}',
+									item:			objectId
+								},
+								nocache:		true,
+								scope:			this
+							},
 							modal:			false,
 							father:			fatherWindow,
-							allowFrameNav:	true,
 							width:			750,
 							height:			580,
 							animateTarget:	button,
@@ -637,12 +657,20 @@ $jscontent = <<<END
 					Ext.WindowMgr.bringToFront(objectsWindows[windowId]);
 				} else {
 					//create window element
-					objectsWindows[windowId] = new Automne.frameWindow({
+					objectsWindows[windowId] = new Automne.Window({
 						id:				windowId,
-						frameURL:		'{$editURL}?polymod={$codename}&object={$objectId}',
+						autoLoad:		{
+							url:			'{$editURL}',
+							params:			{
+								winId:			windowId,
+								module:			'{$codename}',
+								type:			'{$objectId}'
+							},
+							nocache:		true,
+							scope:			this
+						},
 						modal:			false,
 						father:			fatherWindow,
-						allowFrameNav:	true,
 						width:			750,
 						height:			580,
 						animateTarget:	button,
@@ -669,10 +697,15 @@ $jscontent = <<<END
 	//redo windows layout
 	moduleObjectWindow.doLayout();
 	
+	/*setTimeout(function(){
+		//resultsPanel.syncSize();
+		resultsPanel.syncSize();
+		moduleObjectWindow.doLayout();
+		//searchPanel.doLayout();
+	}, 500);*/
 	//set resize event to resize inner panels (needed for IE)
 	/*moduleObjectWindow.on('resize', function() {
-		resultsPanel.syncSize();
-		searchPanel.syncSize();
+		
 	});*/
 	
 	//this flag is needed, because form construction, launch multiple search queries before complete page construct so we check in moduleObjectWindow.search if construction is ok
@@ -773,7 +806,11 @@ $jscontent = <<<END
 	//highlight node update after div update
 	store.on('update', function(store, record, operation, node){
 		if (operation == 'update-data-view') {
-			Ext.fly(node).select('*:not(script)').highlight("C3CD31", {duration: 1});
+			Ext.fly(node).fadeIn({
+			    endOpacity: 1,
+			    easing: 'easeIn',
+			    duration: .6
+			});
 		}
 	});
 END;

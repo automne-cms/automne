@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_categories.php,v 1.4 2009/04/07 12:25:01 sebastien Exp $
+// $Id: object_categories.php,v 1.5 2009/06/05 15:02:18 sebastien Exp $
 
 /**
   * Class CMS_object_categories
@@ -211,22 +211,72 @@ class CMS_object_categories extends CMS_object_common
 	  * @access public
 	  */
 	function getHTMLAdmin($fieldID, $language, $prefixName) {
-		//is this field mandatory ?
-		$mandatory = ($this->_field->getValue('required')) ? '<span class="admin_text_alert">*</span> ':'';
-		$html = '<tr><td class="admin" align="right" valign="top">'.$mandatory.$this->getFieldLabel($language).'</td><td class="admin">'."\n";
-		//add description if any
-		if ($this->getFieldDescription($language)) {
-			$html .= '<dialog-title type="admin_h3">'.$this->getFieldDescription($language).'</dialog-title><br />';
+		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
+		global $cms_user;
+		$params = $this->getParamsValues();
+		$prefixName = (isset($inputParams['prefix'])) ? $inputParams['prefix'] : '';
+		$rootCategory = (isset($inputParams['root']) && SensitiveIO::isPositiveInteger($inputParams['root'])) ? $inputParams['root'] : false;
+		//get module codename
+		$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
+		if ($params['multiCategories']) {
+			// Get categories
+			$a_all_categories = $this->getAllCategoriesAsArray($language, false, $moduleCodename, CLEARANCE_MODULE_EDIT, $rootCategory, true);
+			$associated_items = $availableCategories = array();
+			if (is_array($a_all_categories) && $a_all_categories) {
+				foreach (array_keys($this->_subfieldValues) as $subFieldID) {
+					if (is_object($this->_subfieldValues[$subFieldID])) {
+						$associated_items[$this->_subfieldValues[$subFieldID]->getValue()] = $this->_subfieldValues[$subFieldID]->getValue();
+					}
+				}
+				foreach ($a_all_categories as $id => $category) {
+					$availableCategories[] = array($id, $category);
+				}
+			} else {
+				$availableCategories[] = array('', $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET));
+			}
+			$return['xtype'] 			= 'multiselect';
+			$return['name'] 			= 'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]';
+			$return['dataFields'] 		= array('id', 'label');
+			$return['data'] 			= $availableCategories;
+			$return['value'] 			= implode(',',$associated_items);
+			$return['valueField'] 		= "id";
+			$return['displayField'] 	= "label";
+			if (SensitiveIO::isPositiveInteger($params['selectHeight'])) {
+				$return['height'] 		= $params['selectHeight'];
+			}
+			$return['width'] 			= SensitiveIO::isPositiveInteger($params['selectWidth']) ? SensitiveIO::isPositiveInteger($params['selectWidth']) : '100%';
+		} else {
+			if (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0]) && !is_null($this->_subfieldValues[0]->getValue())) {
+				$selectedValue = $this->_subfieldValues[0]->getValue() ? $this->_subfieldValues[0]->getValue() : '';
+			} elseif (sensitiveIO::isPositiveInteger($params['defaultValue'])) {
+				$selectedValue = $params['defaultValue'];
+			} else {
+				$selectedValue = '';
+			}
+			$return['xtype'] 			= 'atmCombo';
+			$return['name'] 			= 'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]';
+			$return['hiddenName'] 		= $return['name'];
+			$return['forceSelection'] 	= true;
+			$return['mode'] 			= 'remote';
+			$return['valueField'] 		= 'id';
+			$return['displayField'] 	= 'label';
+			$return['triggerAction'] 	= 'all';
+			$return['allowBlank']		= true;
+			$return['selectOnFocus']	= true;
+			$return['editable']			= false;
+			$return['value']			= $selectedValue;
+			$return['store'] 			= array(
+				'url'			=> PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/list-categories.php',
+				'baseParams'	=> array(
+					'fieldId'		=> $this->_field->getID(),
+					'module'		=> $moduleCodename,
+					'query'			=> ''
+				),
+				'root' 			=> 'objects',
+				'fields' 		=> array('id', 'label')
+			);
 		}
-		$inputParams = array(
-			'class' 	=> 'admin_input_text',
-			'no_admin'	=> false,
-			'prefix'	=>	$prefixName,
-			'form' 		=> 'frmitem',
-		);
-		$html .= $this->getInput($fieldID, $language, $inputParams);
-		$html .= '</td></tr>'."\n";
-		return $html;
+		return $return;
 	}
 	
 	/**
@@ -357,6 +407,7 @@ class CMS_object_categories extends CMS_object_common
 	  */
 	function setValues($values,$prefixName) {
 		if (isset($values['list'.$prefixName.$this->_field->getID().'_0'])) {
+			$values['list'.$prefixName.$this->_field->getID().'_0'] = str_replace(',',';',$values['list'.$prefixName.$this->_field->getID().'_0']);
 			$valuesArray = explode(';',$values['list'.$prefixName.$this->_field->getID().'_0']);
 			foreach(array_keys($this->_subfieldValues) as $subFieldID) {
 				$value = (isset($valuesArray[$subFieldID])) ? $valuesArray[$subFieldID] : false;
@@ -1043,6 +1094,7 @@ class CMS_object_categories extends CMS_object_common
 			$replace = array(
 				'{id}' => $catID,
 				'{label}' => $category->getLabel($cms_language),
+				'{description}' => $category->getDescription($cms_language),
 				'{sublevel}' => $subcats,
 				'{lvl}' => $level
 			);
@@ -1090,7 +1142,7 @@ class CMS_object_categories extends CMS_object_common
 		$return = "";
 		if (is_array($categories) && $categories) {
 			foreach ($categories as $catID => $catLabel) {
-				$selected = ($catID == $values['selected']) ? ' selected="selected"':'';
+				$selected = (isset($values['selected']) && $catID == $values['selected']) ? ' selected="selected"':'';
 				$return .= '<option value="'.$catID.'"'.$selected.'>'.$catLabel.'</option>';
 			}
 		}

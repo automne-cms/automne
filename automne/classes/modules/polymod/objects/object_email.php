@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_email.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: object_email.php,v 1.2 2009/06/05 15:02:18 sebastien Exp $
 
 /**
   * Class CMS_object_email
@@ -547,50 +547,6 @@ class CMS_object_email extends CMS_object_common
 	/**
 	  * get HTML admin (used to enter object values in admin)
 	  *
-	  * @param integer $fieldID, the current field id
-	  * @param CMS_language $language, the current admin language
-	  * @param string prefixname : the prefix to use for post names
-	  * @return string : the html admin
-	  * @access public
-	  
-	function getHTMLAdmin($fieldID, $language, $prefixName) {
-		global $cms_user;
-		$params = $this->getParamsValues();
-		//instanciate sending date object
-		$sendingDate = new CMS_date();
-		$sendingDate->setFromDBValue($this->_subfieldValues[1]->getValue());
-		
-		//create html
-		$html = '<tr><td class="admin" align="right" valign="top">&nbsp;</td><td class="admin">'."\n";
-		//add description if any
-		if ($this->getFieldDescription($language)) {
-			$html .= '<dialog-title type="admin_h3">'.$this->getFieldDescription($language).'</dialog-title><br />';
-		}
-		if ($params['chooseSendEmail']) {
-			$checked = ($this->_subfieldValues[0]->getValue() == '1') ? 'checked="checked"' : '';
-			if ($sendingDate->isNull()) {
-				$lastSendingDate = $language->getMessage(self::MESSAGE_OBJECT_EMAIL_NEVER, false, MOD_POLYMOD_CODENAME);
-			} else {
-				$lastSendingDate = $sendingDate->getLocalizedDate($language->getDateFormat()).' '.date('H:i:s',$sendingDate->getTimestamp());
-			}
-			$html .= '<label for="'.$prefixName.$this->_field->getID().'_0"><input type="checkbox" '.$checked.' id="'.$prefixName.$this->_field->getID().'_0" name="'.$prefixName.$this->_field->getID().'_0" value="1" />&nbsp;'.$this->getFieldLabel($language).'</label>
-			<small>('.$language->getMessage(self::MESSAGE_OBJECT_EMAIL_LAST_SENDING, false, MOD_POLYMOD_CODENAME).' : '.$lastSendingDate.')</small>
-			<input type="hidden" name="'.$prefixName.$this->_field->getID().'_1" value="'.$sendingDate->getLocalizedDate($language->getDateFormat()).'" />';
-		} else {
-			$html .= '
-			<input type="hidden" name="'.$prefixName.$this->_field->getID().'_0" value="1" />
-			<input type="hidden" name="'.$prefixName.$this->_field->getID().'_1" value="'.$sendingDate->getLocalizedDate($language->getDateFormat()).'" />';
-		}
-		if (POLYMOD_DEBUG) {
-			$html .= '<span class="admin_text_alert"> (Field : '.$fieldID.' - Value : '.$this->_subfieldValues[0]->getValue().' - '.$this->_subfieldValues[1]->getValue().')</span>';
-		}
-		$html .= '</td></tr>'."\n";
-		return $html;
-	}*/
-	
-	/**
-	  * get HTML admin (used to enter object values in admin)
-	  *
 	  * @param integer $fieldID, the current field id (only for poly object compatibility)
 	  * @param CMS_language $language, the current admin language
 	  * @param string prefixname : the prefix to use for post names
@@ -598,36 +554,68 @@ class CMS_object_email extends CMS_object_common
 	  * @access public
 	  */
 	function getHTMLAdmin($fieldID, $language, $prefixName) {
+		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
 		$params = $this->getParamsValues();
-		//create html for each subfields
-		$date_mask = $language->getDateFormatMask();
-		$html = '<tr><td class="admin" align="right" valign="top">&nbsp;</td><td class="admin">'."\n";
-		//add description if any
-		if ($this->getFieldDescription($language)) {
-			$html .= '<dialog-title type="admin_h3">'.$this->getFieldDescription($language).'</dialog-title><br />';
+		
+		//instanciate sending date object
+		$sendingDate = new CMS_date();
+		$sendingDate->setFromDBValue($this->_subfieldValues[1]->getValue());
+		if ($sendingDate->isNull()) {
+			$lastSendingDate = $language->getMessage(self::MESSAGE_OBJECT_EMAIL_NEVER, false, MOD_POLYMOD_CODENAME);
+		} else {
+			$lastSendingDate = $sendingDate->getLocalizedDate($language->getDateFormat()).' '.date('H:i:s',$sendingDate->getTimestamp());
 		}
-		$inputParams = array(
-			'class' 	=> 'admin_input_text',
-			'prefix'	=>	$prefixName,
-			'form'		=> 'frmitem',
+		$label = $return['title'];
+		$return = array(
+			'layout'	=> 'column',
+			'xtype'		=> 'panel',
+			'border'	=> false,
+			'items'		=> array(
+				($params['chooseSendEmail'] ? 
+					array(
+						'width'			=> '100%',
+						'layout'		=> 'form',
+						'border'		=> false,
+						'items'			=> array(array(
+							'id'			=> 'polymodFieldsValue['.$prefixName.$this->_field->getID().'_0]',
+							'name'			=> 'polymodFieldsValue['.$prefixName.$this->_field->getID().'_0]',
+							'xtype'			=> 'checkbox',
+							'fieldLabel'	=> '&nbsp;',
+							'labelSeparator'=> '',
+							'inputValue'	=> 1,
+							'anchor'		=> false,
+							'checked'		=> !!$this->_subfieldValues[0]->getValue(),
+							'boxLabel'		=> $label.'&nbsp;<small>('.$language->getMessage(self::MESSAGE_OBJECT_EMAIL_LAST_SENDING, false, MOD_POLYMOD_CODENAME).' : '.$lastSendingDate.')</small>'
+						))
+					)
+				 : array(
+						'width'			=> '100%',
+						'layout'		=> 'fit',
+						'border'		=> true,
+						'padding'		=> '5',
+						'bodyStyle'		=> 'margin:10px 0 15px 0',
+						'html'			=> $label.' : '.$language->getMessage(self::MESSAGE_OBJECT_EMAIL_LAST_SENDING, false, MOD_POLYMOD_CODENAME).' : '.$lastSendingDate
+					))
+				,array(
+					'columnWidth'	=> 1,
+					'layout'		=> 'form',
+					'border'		=> false,
+					'hideLabels'	=> true,
+					'items'			=> array(array(
+						'xtype'			=> 'hidden',
+						'value'			=> $this->_subfieldValues[1]->getValue(),
+						'id'			=> 'polymodFieldsValue['.$prefixName.$this->_field->getID().'_1]',
+						'name'			=> 'polymodFieldsValue['.$prefixName.$this->_field->getID().'_1]'
+					),array(
+						'xtype'			=> 'hidden',
+						'value'			=> $this->_subfieldValues[2]->getValue(),
+						'id'			=> 'polymodFieldsValue['.$prefixName.$this->_field->getID().'_2]',
+						'name'			=> 'polymodFieldsValue['.$prefixName.$this->_field->getID().'_2]'
+					))
+				)
+			)
 		);
-		$html .= $this->getInput($fieldID, $language, $inputParams);
-		
-		if ($params['chooseSendEmail']) {
-			//instanciate sending date object
-			$sendingDate = new CMS_date();
-			$sendingDate->setFromDBValue($this->_subfieldValues[1]->getValue());
-			if ($sendingDate->isNull()) {
-				$lastSendingDate = $language->getMessage(self::MESSAGE_OBJECT_EMAIL_NEVER, false, MOD_POLYMOD_CODENAME);
-			} else {
-				$lastSendingDate = $sendingDate->getLocalizedDate($language->getDateFormat()).' '.date('H:i:s',$sendingDate->getTimestamp());
-			}
-			$html .= '&nbsp;<label for="'.$prefixName.$this->_field->getID().'_0">'.$this->getFieldLabel($language).'</label>
-			<small>('.$language->getMessage(self::MESSAGE_OBJECT_EMAIL_LAST_SENDING, false, MOD_POLYMOD_CODENAME).' : '.$lastSendingDate.')</small>';
-		}
-		
-		$html .= '</td></tr>'."\n";
-		return $html;
+		return $return;
 	}
 	
 	/**

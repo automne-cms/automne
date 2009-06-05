@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: pagefield.js,v 1.2 2009/03/02 11:26:54 sebastien Exp $
+  * $Id: pagefield.js,v 1.3 2009/06/05 15:01:06 sebastien Exp $
   */
 Automne.PageField = Ext.extend(Ext.form.NumberField,  {
 	allowDecimals : false,
@@ -21,7 +21,7 @@ Automne.PageField = Ext.extend(Ext.form.NumberField,  {
 	},
 	// private
 	onRender : function(ct, position){
-		Automne.FileUploadField.superclass.onRender.call(this, ct, position);
+		Automne.PageField.superclass.onRender.call(this, ct, position);
 		
 		this.wrap = this.el.wrap({cls:'x-form-field-wrap x-form-file-wrap'});
 		this.el.addClass('x-form-page-text');
@@ -36,7 +36,7 @@ Automne.PageField = Ext.extend(Ext.form.NumberField,  {
 			cls: 			'x-form-file-btn' + (btnCfg.iconCls ? ' x-btn-text-icon' : '')
 		}));
 		this.button.on('click', this.selectPages, this);
-	},
+    },
 	// private
 	onResize : function(w, h){
 		Automne.PageField.superclass.onResize.call(this, w, h);

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-content-controler.php,v 1.3 2009/04/10 15:26:58 sebastien Exp $
+// $Id: page-content-controler.php,v 1.4 2009/06/05 15:01:04 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on page content
@@ -247,6 +247,35 @@ switch ($action) {
 			if ($action == 'update-block-text') {
 				$value = FCKeditor::createAutomneLinks($value);
 			}
+			//here, parse content value to avoid future parsing errors
+			$defXML = new CMS_DOMDocument();
+			try {
+				$defXML->loadXML('<dummy>'.$value.'</dummy>');
+			} catch (DOMException $e) {
+				CMS_grandFather::raiseError('Parse error for block content text in page '.$cms_page->getID().' : '.$e->getMessage());
+				//Send an error to user about his content
+				$jscontent = "
+				Automne.message.popup({
+					msg: 				'Le code de votre contenu est mal formatté et il ne peut être enregistré.<br />Evitez tout copier-coller de texte depuis un éditeur de texte externe. Employez les outils \'Coller comme texte\' ou \'Coller de Word\' de la barre d\'outils dans ce cas.<br />Vérifiez le code source de votre contenu : Il doit être composé de XHTML valide.',
+					buttons: 			Ext.MessageBox.OK,
+					closable: 			true,
+					icon: 				Ext.MessageBox.ERROR
+				});";
+				$view->addJavascript($jscontent);
+				$view->show();
+			}
+			if (strpos($value, '<w:') !== false) {
+				//Send an error to user about his content
+				$jscontent = "
+				Automne.message.popup({
+					msg: 				'Le code de votre contenu est mal formatté et il ne peut être enregistré.<br />Evitez tout copier-coller de texte depuis un éditeur de texte externe. Employez les outils \'Coller comme texte\' ou \'Coller de Word\' de la barre d\'outils dans ce cas.<br />Vérifiez le code source de votre contenu : Il doit être composé de XHTML valide.',
+					buttons: 			Ext.MessageBox.OK,
+					closable: 			true,
+					icon: 				Ext.MessageBox.ERROR
+				});";
+				$view->addJavascript($jscontent);
+				$view->show();
+			}
 			$cms_block->writeToPersistence($cms_page->getID(), $cs, $rowTag, RESOURCE_LOCATION_EDITION, false, array("value" => $value));
 			//instanciate the clientspace
 			$clientSpace = CMS_moduleClientSpace_standard_catalog::getByTemplateAndTagID($tpl, $cs, $visualMode == PAGE_VISUALMODE_FORM);
@@ -286,9 +315,9 @@ switch ($action) {
 				'file' => '',
 				'label'=> ($filelabel) ? $filelabel : pathinfo($filename, PATHINFO_BASENAME)
 			);
-			if ($filename && strpos($filename, PATH_MAIN_WR.'/upload/') !== false) {
+			if ($filename && strpos($filename, PATH_UPLOAD_WR.'/') !== false) {
 				//move and rename uploaded file 
-				$filename = str_replace(PATH_MAIN_WR.'/upload/', PATH_MAIN_FS.'/upload/', $filename);
+				$filename = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $filename);
 				$basename = pathinfo($filename, PATHINFO_BASENAME);
 				$newFilename = $cms_block->getFilePath($basename, $cms_page, $cs, $rowTag, $blockId, true);
 				CMS_file::moveTo($filename, $newFilename);
@@ -347,9 +376,9 @@ switch ($action) {
 				'flashvars' => $flashvars,
 				'attributes'=> $attributes,
 			);
-			if ($filename && strpos($filename, PATH_MAIN_WR.'/upload/') !== false) {
+			if ($filename && strpos($filename, PATH_UPLOAD_WR.'/') !== false) {
 				//move and rename uploaded file 
-				$filename = str_replace(PATH_MAIN_WR.'/upload/', PATH_MAIN_FS.'/upload/', $filename);
+				$filename = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $filename);
 				$basename = pathinfo($filename, PATHINFO_BASENAME);
 				$newFilename = $cms_block->getFilePath($basename, $cms_page, $cs, $rowTag, $blockId, true);
 				CMS_file::moveTo($filename, $newFilename);
@@ -410,9 +439,9 @@ switch ($action) {
 				'externalLink' 	=> '',
 			);
 			//Image
-			if ($filename && strpos($filename, PATH_MAIN_WR.'/upload/') !== false) {
+			if ($filename && strpos($filename, PATH_UPLOAD_WR.'/') !== false) {
 				//move and rename uploaded file 
-				$filename = str_replace(PATH_MAIN_WR.'/upload/', PATH_MAIN_FS.'/upload/', $filename);
+				$filename = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $filename);
 				$basename = pathinfo($filename, PATHINFO_BASENAME);
 				$newFilename = $cms_block->getFilePath($basename, $cms_page, $cs, $rowTag, $blockId, true);
 				CMS_file::moveTo($filename, $newFilename);
@@ -425,9 +454,9 @@ switch ($action) {
 				$data["file"] = '';
 			}
 			//Image Zoom
-			if ($zoomname && strpos($zoomname, PATH_MAIN_WR.'/upload/') !== false) {
+			if ($zoomname && strpos($zoomname, PATH_UPLOAD_WR.'/') !== false) {
 				//move and rename uploaded file 
-				$zoomname = str_replace(PATH_MAIN_WR.'/upload/', PATH_MAIN_FS.'/upload/', $zoomname);
+				$zoomname = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $zoomname);
 				$basename = pathinfo($zoomname, PATHINFO_BASENAME);
 				$newFilename = $cms_block->getFilePath($basename, $cms_page, $cs, $rowTag, $blockId, true);
 				CMS_file::moveTo($zoomname, $newFilename);
@@ -484,7 +513,10 @@ if ($cms_message) {
 //Eval PHP content if any
 $content = $view->getContent();
 if (strpos($content, '<?php') !== false) {
+	ob_start();
 	$content = sensitiveIO::evalPHPCode($content);
+	$return = ob_get_clean();
+	$content = $return.$content;
 	//set datas as returned content
 	$view->setContent($content);
 }

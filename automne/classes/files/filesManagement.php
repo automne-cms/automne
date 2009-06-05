@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: filesManagement.php,v 1.2 2009/03/02 11:28:21 sebastien Exp $
+// $Id: filesManagement.php,v 1.3 2009/06/05 15:02:19 sebastien Exp $
 
 /**
   * Class CMS_file
@@ -778,8 +778,7 @@ class CMS_file extends CMS_grandFather
 			//move the file (ie : rename it)
 			return rename($from, $to);
 		} else {
-			//create directory
-			return CMS_file::makeDir($to);
+			return false;
 		}
 	}
 	
@@ -949,17 +948,21 @@ class CMS_file extends CMS_grandFather
 			'caching' => true
 		);
 		$backendOptions = array(
-			'cache_dir' => PATH_MAIN_FS.'/cache/', // Directory where to put the cache files
+			'cache_dir' => PATH_CACHE_FS.'/', // Directory where to put the cache files
 			'cache_file_umask' => octdec(FILES_CHMOD),
 			'hashed_directory_umask' => octdec(DIRS_CHMOD),
 		);
 		// getting a Zend_Cache_Core object
-		$cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
+		try {
+			$cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
+		} catch (Zend_Cache_Exception $e) {
+			CMS_query::raiseError($e->getMessage());
+		}
 		$compress = 'ob_gzhandler' != ini_get('output_handler') && extension_loaded( 'zlib' ) && !ini_get('zlib.output_compression');
 		//create cache id from files, compression status and last time files access
 		$id = md5(implode(',',$files).'-'.$compress.'-'.$lastdate);
 		$datas = '';
-		if (!($datas = $cache->load($id))) {
+		if (!isset($cache) || !($datas = $cache->load($id))) {
 			// datas cache missing so create it
 			foreach ($files as $file) {
 				$datas .= file_get_contents($file);
@@ -976,7 +979,9 @@ class CMS_file extends CMS_grandFather
 			if ($compress) {
 				$datas = gzencode($datas, 9);
 			}
-			$cache->save($datas, $id);
+			if (isset($cache)) {
+				$cache->save($datas, $id);
+			}
 		}
 		//send headers
 		header('Content-Type: '.$contentType);

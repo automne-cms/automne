@@ -1,4 +1,4 @@
-/*$Id: ext.css,v 1.3 2009/04/20 15:13:04 sebastien Exp $*/
+/*$Id: ext.css,v 1.4 2009/06/05 15:01:05 sebastien Exp $*/
 /*overwrite some EXT styles*/
 .x-tab-strip-text {
 	font-size:		13px !important;
@@ -30,6 +30,9 @@
 .x-grid3-row td,
 .x-grid3-summary-row td {
 	font-size:		12px;
+}
+#validation-actions .x-toolbar-ct {
+	width:auto !important;
 }
 /*
  * FileUploadField component styles

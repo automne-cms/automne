@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modulePolymodValidation.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: modulePolymodValidation.php,v 1.2 2009/06/05 15:02:19 sebastien Exp $
 
 /**
   * Class CMS_modulePolymodValidation
@@ -813,27 +813,23 @@ class CMS_modulePolymodValidation extends CMS_module
 				return false;
 			}
 			//delete all files of the locationToDir
-			$locationToFilesList = $locationToDir->getFileList(PATH_MODULES_FILES_FS."/".$module."/".$locationTo.'/r'.$resourceID.'_*');
-			//then delete them
-			foreach($locationToFilesList as $aFile) {
-				if (!CMS_file::deleteFile($aFile['name'])) {
-					$this->raiseError("Can't delete file ".$aFile['name']);
+			foreach(glob(PATH_MODULES_FILES_FS."/".$module."/".$locationTo.'/r'.$resourceID.'_*', GLOB_NOSORT) as $file) {
+				if (!CMS_file::deleteFile($file)) {
+					$this->raiseError("Can't delete file ".$file);
 					return false;
 				}
 			}
-			//then get all files of the locationFromDir
-			$locationFromFilesList = $locationFromDir->getFileList(PATH_MODULES_FILES_FS."/".$module."/".$locationFrom.'/r'.$resourceID.'_*');
 			//then copy or move them to the locationToDir
-			foreach($locationFromFilesList as $aFile) {
-				$to = str_replace('/'.$locationFrom.'/','/'.$locationTo.'/',$aFile['name']);
+			foreach(glob(PATH_MODULES_FILES_FS."/".$module."/".$locationFrom.'/r'.$resourceID.'_*', GLOB_NOSORT) as $file) {
+				$to = str_replace('/'.$locationFrom.'/','/'.$locationTo.'/',$file);
 				if ($copyOnly) {
-					if (!CMS_file::copyTo($aFile['name'],$to)) {
-						$this->raiseError("Can't copy file ".$aFile['name']." to ".$to);
+					if (!CMS_file::copyTo($file,$to)) {
+						$this->raiseError("Can't copy file ".$file." to ".$to);
 						return false;
 					}
 				} else {
-					if (!CMS_file::moveTo($aFile['name'],$to)) {
-						$this->raiseError("Can't move file ".$aFile['name']." to ".$to);
+					if (!CMS_file::moveTo($file,$to)) {
+						$this->raiseError("Can't move file ".$file." to ".$to);
 						return false;
 					}
 				}
@@ -842,11 +838,9 @@ class CMS_modulePolymodValidation extends CMS_module
 			}
 		} else {
 			//then get all files of the locationFromDir
-			$locationFromFilesList = $locationFromDir->getFileList(PATH_MODULES_FILES_FS."/".$module."/".$locationFrom.'/r'.$resourceID.'_*');
-			//then delete them
-			foreach($locationFromFilesList as $aFile) {
-				if (!CMS_file::deleteFile($aFile['name'])) {
-					$this->raiseError("Can't delete file ".$aFile['name']);
+			foreach(glob(PATH_MODULES_FILES_FS."/".$module."/".$locationFrom.'/r'.$resourceID.'_*', GLOB_NOSORT) as $file) {
+				if (!CMS_file::deleteFile($file)) {
+					$this->raiseError("Can't delete file ".$file);
 					return false;
 				}
 			}

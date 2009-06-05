@@ -13,7 +13,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_boolean.php,v 1.2 2009/04/02 13:58:00 sebastien Exp $
+// $Id: object_boolean.php,v 1.3 2009/06/05 15:02:18 sebastien Exp $
 
 /**
   * Class CMS_object_integer
@@ -105,23 +105,13 @@ class CMS_object_boolean extends CMS_object_common
 	  * @access public
 	  */
 	function getHTMLAdmin($fieldID, $language, $prefixName) {
-		//is this field mandatory ?
-		$mandatory = ($this->_field->getValue('required')) ? '<span class="admin_text_alert">*</span> ':'';
-		//create html for each subfields
-		$html = '<tr><td class="admin" align="right" valign="top">'.$mandatory.'<label for="'.$prefixName.$this->_field->getID().'_0'.'">'.$this->getFieldLabel($language).'</label></td><td class="admin">'."\n";
-		//add description if any
-		if ($this->getFieldDescription($language)) {
-			$html .= '<dialog-title type="admin_h3">'.$this->getFieldDescription($language).'</dialog-title><br />';
-		}
-		$inputParams = array(
-			'class' 	=> 'admin_input_text',
-			'prefix'	=>	$prefixName,
-			'size'  	=> 60,
-			'form'		=> 'frmitem',
-		);
-		$html .= $this->getInput($fieldID, $language, $inputParams);
-		$html .= '</td></tr>'."\n";
-		return $html;
+		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
+		$return['xtype'] =	'checkbox';
+		$return['checked'] = !!$this->_subfieldValues[0]->getValue();
+		$return['anchor'] = '';
+		$return['inputValue'] =	1;
+		$return['boxLabel'] = '&nbsp;'; //needed to avoid checkbox to be centered
+		return $return;
 	}
 	
 	/**
@@ -185,5 +175,4 @@ class CMS_object_boolean extends CMS_object_common
 		return true;
 	}
 }
-
 ?>

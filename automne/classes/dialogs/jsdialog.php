@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: jsdialog.php,v 1.2 2009/03/03 15:12:21 sebastien Exp $
+// $Id: jsdialog.php,v 1.3 2009/06/05 15:02:19 sebastien Exp $
 
 /**
   * Class CMS_JSDialog
@@ -567,6 +567,11 @@ class CMS_JSDialog extends CMS_grandFather
 						}
 					}
 					return true;
+				}
+				if (parent && parent.Automne && parent.Ext) {
+					var Automne = parent.Automne;
+					var Ext = parent.Ext;
+					var pr = parent.pr;
 				}
 			</script>';
 		if (isset($this) && is_a($this, 'CMS_dialog')) {

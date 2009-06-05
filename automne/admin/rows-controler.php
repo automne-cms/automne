@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: rows-controler.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: rows-controler.php,v 1.2 2009/06/05 15:01:04 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on templates
@@ -87,9 +87,9 @@ switch ($action) {
 			$row->setDefinition('<row></row>');
 		}
 		//remove the old file if any and if new one is different
-		if ($newimage && strpos($newimage, PATH_MAIN_WR.'/upload/') !== false) {
+		if ($newimage && strpos($newimage, PATH_UPLOAD_WR.'/') !== false) {
 			//move and rename uploaded file
-			$newimage = str_replace(PATH_MAIN_WR.'/upload/', PATH_MAIN_FS.'/upload/', $newimage);
+			$newimage = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $newimage);
 			$basename = pathinfo($newimage, PATHINFO_BASENAME);
 			$movedImage = PATH_TEMPLATES_ROWS_FS.'/images/'.SensitiveIO::sanitizeAsciiString($basename);
 			CMS_file::moveTo($newimage, $movedImage);

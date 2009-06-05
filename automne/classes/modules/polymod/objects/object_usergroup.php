@@ -14,7 +14,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_usergroup.php,v 1.2 2009/04/02 13:58:00 sebastien Exp $
+// $Id: object_usergroup.php,v 1.3 2009/06/05 15:02:18 sebastien Exp $
 
 /**
   * Class CMS_object_usergroup
@@ -219,21 +219,83 @@ class CMS_object_usergroup extends CMS_object_common
 	  * @access public
 	  */
 	function getHTMLAdmin($fieldID, $language, $prefixName) {
-		//is this field mandatory ?
-		$mandatory = ($this->_field->getValue('required')) ? '<span class="admin_text_alert">*</span> ':'';
-		$html = '<tr><td class="admin" align="right" valign="top">'.$mandatory.$this->getFieldLabel($language).'</td><td class="admin">'."\n";
-		//add description if any
-		if ($this->getFieldDescription($language)) {
-			$html .= '<dialog-title type="admin_h3">'.$this->getFieldDescription($language).'</dialog-title><br />';
+		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
+		global $cms_user;
+		$params = $this->getParamsValues();
+		$return['name'] 			= $return['id'] 			= 'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]';
+		if ($params['multiUserGroup']) {
+			// Get all users or groups
+			$a_all_users = $this->getListOfNamesForObject();
+			$associatedItems = $availableItems = array();
+			if (is_array($a_all_users) && $a_all_users) {
+				foreach (array_keys($this->_subfieldValues) as $subFieldID) {
+					if (is_object($this->_subfieldValues[$subFieldID])) {
+						$associatedItems[$this->_subfieldValues[$subFieldID]->getValue()] = $this->_subfieldValues[$subFieldID]->getValue();
+					}
+				}
+				foreach ($a_all_users as $id => $user) {
+					$availableItems[] = array($id, $user);
+				}
+			} else {
+				$availableItems[] = array('', $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET));
+				$return['disabled'] = true;
+				$return['value']	= '';
+			}
+			$return['xtype'] 			= 'multiselect';
+			$return['dataFields'] 		= array('id', 'label');
+			$return['data'] 			= $availableItems;
+			$return['value'] 			= implode(',',$associatedItems);
+			$return['valueField'] 		= "id";
+			$return['displayField'] 	= "label";
+			$return['width'] 			= '97%';
+		} else {
+			$usersDatas = array();
+			if ($params['isCurrentUser']) {
+				$usersDatas[] = array($cms_user->getUserId(), $cms_user->getFullName());
+				$return['disabled']	= true;
+				$return['value']	= $cms_user->getUserId();
+			} elseif ($params['creationUser']) {
+				if (sensitiveIO::isPositiveInteger($this->_subfieldValues[0]->getValue())) {
+					$user = CMS_profile_usersCatalog::getByID($this->_subfieldValues[0]->getValue());
+				} else {
+					$user = $cms_user;
+				}
+				$usersDatas[] = array($user->getUserId(), $user->getFullName());
+				$return['disabled'] = true;
+				$return['value']	= $user->getUserId();
+			} else {
+				// Get all users or groups
+				$a_all_users = $this->getListOfNamesForObject();
+				if (is_array($a_all_users) && $a_all_users) {
+					$usersDatas[] = array('', $language->getMessage(self::MESSAGE_CHOOSE_OBJECT));
+					foreach($a_all_users as $userGroupID => $aUserGroupLabel) {
+						$usersDatas[] = array($userGroupID, $aUserGroupLabel);
+					}
+					$return['value']	= $this->_subfieldValues[0]->getValue();
+				} else {
+					$usersDatas[] = array('', $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET));
+					$return['disabled'] = true;
+					$return['value']	= '';
+				}
+			}
+			$return['hiddenName'] 		= $return['name'];
+			unset($return['id']);
+			$return['xtype'] 			= 'atmCombo';
+			$return['forceSelection'] 	= true;
+			$return['mode'] 			= 'local';
+			$return['valueField'] 		= 'id';
+			$return['displayField'] 	= 'name';
+			$return['triggerAction'] 	= 'all';
+			$return['store'] 			= array(
+				'xtype'			=> 'arraystore',
+				'fields' 		=> array('id', 'name'),
+				'data' 			=> $usersDatas
+			);
+			$return['selectOnFocus'] 	= true;
+			$return['editable'] 		= false;
+			$return['anchor'] 			= false;
 		}
-		$inputParams = array(
-			'class' 	=> 'admin_input_text',
-			'no_admin'	=> false,
-			'prefix'	=>	$prefixName,
-		);
-		$html .= $this->getInput($fieldID, $language, $inputParams);
-		$html .= '</td></tr>'."\n";
-		return $html;
+		return $return;
 	}
 	
 	/**
@@ -398,6 +460,7 @@ class CMS_object_usergroup extends CMS_object_common
 				return true;
 			} else {
 				// No params
+				$values['list'.$prefixName.$this->_field->getID().'_0'] = str_replace(',',';',$values['list'.$prefixName.$this->_field->getID().'_0']);
 				$valuesArray = explode(';',$values['list'.$prefixName.$this->_field->getID().'_0']);
 				foreach(array_keys($this->_subfieldValues) as $subFieldID) {
 					$value = (isset($valuesArray[$subFieldID])) ? $valuesArray[$subFieldID] : false;

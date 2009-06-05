@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: search.php,v 1.4 2009/04/20 15:13:04 sebastien Exp $
+// $Id: search.php,v 1.5 2009/06/05 15:01:05 sebastien Exp $
 
 /**
   * PHP page : Load page search window.
@@ -511,7 +511,11 @@ $jscontent = <<<END
 	//highlight node update after dv update
 	store.on('update', function(store, record, operation, node){
 		if (operation == 'update-data-view') {
-			Ext.fly(node).select('*').highlight("C3CD31", {duration: 1});
+			Ext.fly(node).fadeIn({
+			    endOpacity: 1,
+			    easing: 'easeIn',
+			    duration: .6
+			});
 		}
 	});
 END;

@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: fileupload.js,v 1.4 2009/03/03 15:11:39 sebastien Exp $
+  * $Id: fileupload.js,v 1.5 2009/06/05 15:01:06 sebastien Exp $
   */
 Automne.FileUploadField = Ext.extend(Ext.form.TextField,  {
 	/**
@@ -128,7 +128,7 @@ Automne.FileUploadField = Ext.extend(Ext.form.TextField,  {
 		
 		this.fileInput.on('change', function(){
 			var v = this.fileInput.dom.value;
-			this.setValue(v);
+			//this.setValue(v);
 			this.fireEvent('fileselected', this, v);
 		}, this);
 		
@@ -205,33 +205,40 @@ Automne.FileUploadField = Ext.extend(Ext.form.TextField,  {
 		return this.getValue();
 	},
 	setValue: function(v, path) {
-		this.getEl().dom.value = this.ellipsis(v, 51);
-		if (v && path) {
-			v = path +'/'+ v;
-		} else if(this.fileinfos['filepath']) {
-			v = this.fileinfos['filepath'] +'/'+ v;
-		} else if(v && this.fileinfos.module) {
-			//send all datas to server to get file infos if any
-			Automne.server.call('file-infos.php', function(response, options, jsonResponse) {
-				this.fileinfos = jsonResponse;
-				this.loadFileInfos();
-			}, {
-				file:			v,
-				module:			this.fileinfos.module,
-				visualisation:	this.fileinfos.visualisation
-			}, this);
-			
-			v = '';
+		if (typeof v == 'object') {
+			this.fileinfos = v;
+			this.loadFileInfos();
 		} else {
-			v = '';
+			this.getEl().dom.value = this.ellipsis(v, 51);
+			if (v && path) {
+				v = path +'/'+ v;
+				this.fileinfos.filepath = path;
+			} else if(v) {
+				if(this.fileinfos.module && this.fileinfos.visualisation) {
+					//send all datas to server to get file infos if any
+					Automne.server.call('file-infos.php', function(response, options, jsonResponse) {
+						this.fileinfos = Ext.applyIf(jsonResponse, this.fileinfos);
+						this.loadFileInfos();
+					}, {
+						file:			v,
+						module:			this.fileinfos.module,
+						visualisation:	this.fileinfos.visualisation
+					}, this);
+					v = this.getEl().dom.value = '';
+				} else if (this.fileinfos.filepath) {
+					v = this.fileinfos.filepath +'/'+ v;
+				}
+			} else {
+				v = this.getEl().dom.value = '';
+			}
+			if(this.emptyText && this.el && v !== undefined && v !== null && v !== ''){
+				this.el.removeClass(this.emptyClass);
+			} else if(this.emptyText && this.el) {
+				this.applyEmptyText();
+			}
+			this.value = v;
+			this.hiddenField.value = v;
 		}
-		if(this.emptyText && this.el && v !== undefined && v !== null && v !== ''){
-			this.el.removeClass(this.emptyClass);
-		} else if(this.emptyText && this.el) {
-			this.applyEmptyText();
-		}
-		this.value = v;
-		this.hiddenField.value = v;
 	},
 	/**
 	 * Validates a value according to the field's validation rules and marks the field as invalid
@@ -309,7 +316,20 @@ Automne.FileUploadField = Ext.extend(Ext.form.TextField,  {
 				return false;
 			}
 		}
-		
+		//check for file type if any
+		if (this.uploadCfg.disallowed_file_types) {
+			var disallowedTypes = this.uploadCfg.disallowed_file_types.split(/;/);
+			var ok = true;
+			for(var i = 0; i < disallowedTypes.length; i++) {
+				if (disallowedTypes[i] && file.toLowerCase().indexOf(disallowedTypes[i].substring(2).toLowerCase()) !== -1) {
+					ok = false;
+				}
+			}
+			if (!ok) {
+				this.fileError(file, this.QUEUE_ERROR.INVALID_FILETYPE, '');
+				return false;
+			}
+		}
 		//var block = this.settings.custom_settings.block;
 		if (this.fireEvent('beforestartupload', this, file) === false) {
 			return false;
@@ -356,7 +376,7 @@ Automne.FileUploadField = Ext.extend(Ext.form.TextField,  {
 		} else if (jsonResponse.error !== 0) {
 			this.fileError(options.file, jsonResponse.error, '');
 		} else {
-			this.fileinfos = jsonResponse;
+			this.fileinfos = Ext.applyIf(jsonResponse, this.fileinfos);
 			this.loadFileInfos();
 		}
 		//validate field value (remove the invalid label)
@@ -387,7 +407,7 @@ Automne.FileUploadField = Ext.extend(Ext.form.TextField,  {
 			});
 			this.fileInput.on('change', function(){
 				var v = this.fileInput.dom.value;
-				this.setValue(v);
+				//this.setValue(v);
 				this.fireEvent('fileselected', this, v);
 			}, this);
 		}

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-add.php,v 1.2 2008/12/18 10:36:42 sebastien Exp $
+// $Id: page-add.php,v 1.3 2009/06/05 15:01:04 sebastien Exp $
 
 /**
   * PHP page : Load add-page window infos. Set title and template then redirect to page content edition
@@ -235,7 +235,8 @@ $jscontent = <<<END
 				Automne.server.call({
 					url:				'page-controler.php',
 					params: 			{
-						title:				values.title,
+						title:				values
+						.title,
 						linktitle:			values.linktitle,
 						template:			templateId,
 						emptytpl:			values.emptytpl,
@@ -263,8 +264,8 @@ $jscontent = <<<END
 	
 	addPageWindow.addButtons(buttons);
 	addPageWindow.doLayout();
-	addPageWindow.setWidth(addPageWindow.width);
-	addPageWindow.setHeight(addPageWindow.height);
+	//addPageWindow.setWidth(addPageWindow.width);
+	//addPageWindow.setHeight(addPageWindow.height);
 END;
 
 $view->addJavascript($jscontent);

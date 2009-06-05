@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-redirect-info.php,v 1.3 2009/04/20 15:13:03 sebastien Exp $
+// $Id: page-redirect-info.php,v 1.4 2009/06/05 15:01:04 sebastien Exp $
 
 /**
   * PHP page : Redirection page info
@@ -38,6 +38,7 @@ if (isset($_GET['pageId']) && sensitiveIO::isPositiveInteger($_GET['pageId'])) {
 	$page = CMS_tree::getpageById($_GET['pageId']);
 }
 if (isset($page) && !$page->hasError()) {
+	$redirect = '';
 	$redirectlink = $page->getRedirectLink();
 	if ($redirectlink->hasValidHREF()) {
 		if ($redirectlink->getLinkType() == RESOURCE_LINK_TYPE_INTERNAL) {

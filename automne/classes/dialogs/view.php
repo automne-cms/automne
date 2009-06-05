@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: view.php,v 1.5 2009/04/02 13:57:59 sebastien Exp $
+// $Id: view.php,v 1.6 2009/06/05 15:02:19 sebastien Exp $
 
 /**
   * Class CMS_view
@@ -61,6 +61,12 @@ class CMS_view extends CMS_grandFather
 	private $_rawdatas = array();
 	private $_redirect = '';
 	private $_disconnected = false;
+	private $_sent = false;
+	private $_contentTags = array(
+		self::SHOW_JSON => 'jsoncontent',
+		self::SHOW_XML => 'content',
+		self::SHOW_RAW => 'content',
+	);
 	/**
 	  * Create and get class instance
 	  * This is a singleton : the class is always the same anywhere
@@ -109,8 +115,26 @@ class CMS_view extends CMS_grandFather
 		}
 	}
 	
+	/**
+	  * Add javascript
+	  *
+	  * @param string $js : Javascript code to add
+	  * @return void
+	  * @access public
+	  */
 	function addJavascript($js) {
 		$this->_jscontent .= $js;
+	}
+	
+	/**
+	  * Set javascript
+	  *
+	  * @param string $js : Javascript code to set
+	  * @return void
+	  * @access public
+	  */
+	function setJavascript($js) {
+		$this->_jscontent = $js;
 	}
 	
 	function getJSManagerURL() {
@@ -160,6 +184,9 @@ class CMS_view extends CMS_grandFather
 	static function quit() {
 		//check for error to be released
 		$view = CMS_view::getInstance();
+		if (!$view->isSent() && $view->getDisplayMode() != self::SHOW_HTML) {
+			$view->show();
+		}
 		if ($view->hasErrors()) {
 			echo $view->getErrors();
 		}
@@ -170,14 +197,13 @@ class CMS_view extends CMS_grandFather
 	}
 	
 	/**
-	  * Redirect to page according to current mode
+	  * Does the view has been sent to user ?
 	  *
-	  * @param string $redirect
-	  * @return void
+	  * @return boolean
 	  * @access public
 	  */
-	function redirect($redirect) {
-		//TODOV4
+	function isSent() {
+		return $this->_sent;
 	}
 	
 	/**
@@ -189,6 +215,23 @@ class CMS_view extends CMS_grandFather
 	  */
 	function setContent($content) {
 		$this->_content = $content;
+	}
+	
+	/**
+	  * Add content
+	  *
+	  * @param string $content
+	  * @return void
+	  * @access public
+	  */
+	function addContent($content) {
+		if (is_array($this->_content) && is_array($content)) {
+			$this->_content = array_merge_recursive($this->_content, $content);
+		} elseif (is_array($content)) {
+			$this->_content = $content;
+		} else {
+			$this->_content .= $content;
+		}
 	}
 	
 	/**
@@ -210,6 +253,16 @@ class CMS_view extends CMS_grandFather
 	  */
 	function setDisplayMode($mode = '') {
 		$this->_displayMode = ($mode) ? $mode : $this->_displayMode;
+	}
+	
+	/**
+	  * Get current display mode
+	  *
+	  * @return constant : display mode
+	  * @access public
+	  */
+	function getDisplayMode() {
+		return $this->_displayMode;
 	}
 	
 	/**
@@ -359,7 +412,7 @@ class CMS_view extends CMS_grandFather
 			case self::SHOW_JSON :
 			case self::SHOW_RAW :
 			case self::SHOW_XML :
-				header('Content-Type: text/xml; charset='.APPLICATION_DEFAULT_ENCODING);
+				header('Content-Type: text/xml; charset='.APPLICATION_DEFAULT_ENCODING, true);
 				echo 
 				'<?xml version="1.0" encoding="'.APPLICATION_DEFAULT_ENCODING.'"?>'."\n".
 				'<response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">'."\n";
@@ -369,7 +422,7 @@ class CMS_view extends CMS_grandFather
 			break;
 			case self::SHOW_HTML :
 			default:
-				header('Content-Type: text/html; charset='.APPLICATION_DEFAULT_ENCODING);
+				header('Content-Type: text/html; charset='.APPLICATION_DEFAULT_ENCODING, true);
 				if ($this->_disconnected) {
 					header("Location: ".PATH_ADMIN_SPECIAL_LOGIN_WR."?cms_action=logout");
 					exit;
@@ -381,6 +434,7 @@ class CMS_view extends CMS_grandFather
 				echo '</html>';
 			break;
 		}
+		$this->_sent = true;
 		//this method must stop all further script execution
 		exit;
 	}
@@ -483,6 +537,21 @@ class CMS_view extends CMS_grandFather
 	}
 	
 	/**
+	  * set content tag : overwrite default content tag used
+	  *
+	  * @param string $tag : the new content tag name to use for current display mode
+	  * @return boolean
+	  * @access private
+	  */
+	function setContentTag($tag) {
+		if (!$tag) {
+			return false;
+		}
+		$this->_contentTags[$this->_displayMode] = $tag;
+		return true;
+	}
+	
+	/**
 	  * Shows body of html page
 	  *
 	  * @return void
@@ -498,7 +567,7 @@ class CMS_view extends CMS_grandFather
 				}
 				if ($this->_content) {
 					$return .= 
-					'	<jsoncontent><![CDATA['.sensitiveIO::jsonEncode($this->_content).']]></jsoncontent>'."\n";
+					'	<'.$this->_contentTags[$this->_displayMode].'><![CDATA['.sensitiveIO::jsonEncode($this->_content).']]></'.$this->_contentTags[$this->_displayMode].'>'."\n";
 				}
 				echo $return;
 			break;
@@ -510,7 +579,7 @@ class CMS_view extends CMS_grandFather
 				}
 				if ($this->_content) {
 					$return .= 
-					'	<content><![CDATA['.$this->_content.']]></content>'."\n";
+					'	<'.$this->_contentTags[$this->_displayMode].'><![CDATA['.$this->_content.']]></'.$this->_contentTags[$this->_displayMode].'>'."\n";
 				}
 				echo $return;
 			break;
@@ -523,7 +592,7 @@ class CMS_view extends CMS_grandFather
 				if ($this->_content) {
 					//TODOV4 : check for XML conformity of $this->_content
 					$return .= 
-					'	<content>'.$this->_content.'</content>'."\n";
+					'	<'.$this->_contentTags[$this->_displayMode].'>'.$this->_content.'</'.$this->_contentTags[$this->_displayMode].'>'."\n";
 				}
 				echo $return;
 			break;

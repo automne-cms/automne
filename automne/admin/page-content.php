@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-content.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: page-content.php,v 1.2 2009/06/05 15:01:04 sebastien Exp $
 
 /**
   * PHP page : page previsualization
@@ -62,6 +62,7 @@ if (!$cms_page->isDraft()) {
 	CMS_moduleClientSpace_standard_catalog::moveClientSpaces($tpl->getID(), RESOURCE_DATA_LOCATION_EDITED, RESOURCE_DATA_LOCATION_EDITION, true);
 	CMS_blocksCatalog::moveBlocks($cms_page, RESOURCE_DATA_LOCATION_EDITED, RESOURCE_DATA_LOCATION_EDITION, true);
 }
+
 //add ext and edit JS files
 $view->addJSFile('ext');
 $view->addJSFile('edit');

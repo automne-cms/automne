@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: editPage.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: editPage.php,v 1.2 2009/06/05 15:01:07 sebastien Exp $
 
 /**
   * PHP JS page : allow frontend page edition
@@ -26,7 +26,6 @@
 define("ENABLE_HTML_COMPRESSION", false);
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 require_once(PATH_ADMIN_SPECIAL_SESSION_CHECK_FS);
-error_reporting(0);
 define("MESSAGE_POPUP_ACTION_MAXIMIZE", 1313);
 
 //set header content-type

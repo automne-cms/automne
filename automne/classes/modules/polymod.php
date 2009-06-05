@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: polymod.php,v 1.5 2009/04/02 13:57:58 sebastien Exp $
+// $Id: polymod.php,v 1.6 2009/06/05 15:02:19 sebastien Exp $
 
 /**
   * Class CMS_polymod
@@ -49,6 +49,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	const MESSAGE_ALERT_LEVEL_VALIDATION = 514;
 	const MESSAGE_ALERT_LEVEL_VALIDATION_DESCRIPTION = 513;
 	const MESSAGE_PAGE_RSS_TAG_EXPLANATION = 313;
+	const MESSAGE_PAGE_ROW_TAGS_CHOOSE = 519;
 	
 	/**
 	  * Gets resource by its internal ID (not the resource table DB ID)
@@ -280,13 +281,12 @@ class CMS_polymod extends CMS_modulePolymodValidation
 						}
 						$modulesCode[$this->_codename] .= '
 						//output empty XML response
-						header("Content-Type: text/xml; charset='.APPLICATION_DEFAULT_ENCODING.'");
-						echo "<"."?xml version=\"1.0\" encoding=\"'.APPLICATION_DEFAULT_ENCODING.'\"?".">
-						<response xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">
-						<error>0</error>
-						<errormessage/>
-						</response>";
-						exit;'."\n".'} ?>';
+						$view = CMS_view::getInstance();
+						//set default display mode for this page
+						$view->setDisplayMode(CMS_view::SHOW_RAW);
+						$view->setContentTag(\'data\');
+						$view->setContent(\'\');
+						$view->show();'."\n".'} ?>';
 					}
 				}
 				return $modulesCode;
@@ -298,7 +298,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 					if (!isset($treatmentParameters['request'])) {
 						//add form to choose object to display
 						$modulesCode[$this->_codename] = '
-							<select onchange="Ext.get(\'help'.$this->_codename.'\').getUpdater().update({url: \''.PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/polymod-help.php\',params: {module: \''.$this->_codename.'\',object: this.value}});">
+							<h1>'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_ROW_TAGS_CHOOSE,false,MOD_POLYMOD_CODENAME).'<select onchange="Ext.get(\'help'.$this->_codename.'\').getUpdater().update({url: \''.PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/polymod-help.php\',params: {module: \''.$this->_codename.'\',object: this.value}});">
 								<option value="">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_CHOOSE).'</option>
 								<optgroup label="'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_ROW_TAGS_EXPLANATION,false,MOD_POLYMOD_CODENAME).'">
 									<option value="block">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_BLOCK_TAGS,false,MOD_POLYMOD_CODENAME).'</option>
@@ -312,7 +312,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 								$modulesCode[$this->_codename] .= '
 								</optgroup>';
 							$modulesCode[$this->_codename] .= '
-							</select>
+							</select></h1>
 							<div id="help'.$this->_codename.'"></div>
 						';
 					}

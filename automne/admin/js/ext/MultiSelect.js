@@ -1,163 +1,63 @@
-/*
- * Ext JS Library 2.2
- * Copyright(c) 2006-2008, Ext JS, LLC.
- * licensing@extjs.com
- * 
- * http://extjs.com/license
- */
+//version 3.0
 
-/*
- * Note that this control should still be treated as an example and that the API will most likely
- * change once it is ported into the Ext core as a standard form control.  This is still planned
- * for a future release, so this should not yet be treated as a final, stable API at this time.
- */
- 
-/** 
- * @class Ext.ux.MultiSelect
- * @extends Ext.form.Field
- * A control that allows selection and form submission of multiple list items. The MultiSelect control
- * depends on the Ext.ux.DDView class to provide drag/drop capability both within the list and also 
- * between multiple MultiSelect controls (see the Ext.ux.ItemSelector).
- * 
- *  @history
- *	2008-06-19 bpm Original code contributed by Toby Stuart
- *	2008-06-19 bpm Docs and demo code clean up
- * 
- * @constructor
- * Create a new MultiSelect
- * @param {Object} config Configuration options
- */
 Ext.ux.Multiselect = Ext.extend(Ext.form.Field,  {
-	/**
-	 * @cfg {String} legend Wraps the object with a fieldset and specified legend.
-	 */
-	/**
-	 * @cfg {Store} store The {@link Ext.data.Store} used by the underlying Ext.ux.DDView.
-	 */
-	/**
-	 * @cfg {Ext.ux.DDView} view The Ext.ux.DDView used to render the multiselect list.
-	 */
-	/**
-	 * @cfg {String/Array} dragGroup The ddgroup name(s) for the DDView's DragZone (defaults to undefined). 
-	 */ 
-	/**
-	 * @cfg {String/Array} dropGroup The ddgroup name(s) for the DDView's DropZone (defaults to undefined). 
-	 */ 
-	/**
-	 * @cfg {Object/Array} tbar The top toolbar of the control. This can be a {@link Ext.Toolbar} object, a 
-	 * toolbar config, or an array of buttons/button configs to be added to the toolbar.
-	 */
-	/**
-	 * @cfg {String} fieldName The name of the field to sort by when sorting is enabled.
-	 */
-	/**
-	 * @cfg {String} appendOnly True if the list should only allow append drops when drag/drop is enabled 
-	 * (use for lists which are sorted, defaults to false).
-	 */
-	appendOnly:false,
-	/**
-	 * @cfg {Array} dataFields Inline data definition when not using a pre-initialised store. Known to cause problems 
-	 * in some browswers for very long lists. Use store for large datasets.
-	 */
+	store:null,
 	dataFields:[],
-	/**
-	 * @cfg {Array} data Inline data when not using a pre-initialised store. Known to cause problems in some 
-	 * browswers for very long lists. Use store for large datasets.
-	 */
 	data:[],
-	/**
-	 * @cfg {Number} width Width in pixels of the control (defaults to 100).
-	 */
 	width:100,
-	/**
-	 * @cfg {Number} height Height in pixels of the control (defaults to 100).
-	 */
 	height:100,
-	/**
-	 * @cfg {String/Number} displayField Name/Index of the desired display field in the dataset (defaults to 0).
-	 */
 	displayField:0,
-	/**
-	 * @cfg {String/Number} valueField Name/Index of the desired value field in the dataset (defaults to 1).
-	 */
 	valueField:1,
-	/**
-	 * @cfg {Boolean} allowBlank True to require at least one item in the list to be selected, false to allow no 
-	 * selection (defaults to true).
-	 */
 	allowBlank:true,
-	/**
-	 * @cfg {Number} minLength Minimum number of selections allowed (defaults to 0).
-	 */
 	minLength:0,
-	/**
-	 * @cfg {Number} maxLength Maximum number of selections allowed (defaults to Number.MAX_VALUE). 
-	 */
 	maxLength:Number.MAX_VALUE,
-	/**
-	 * @cfg {String} blankText Default text displayed when the control contains no items (defaults to the same value as
-	 * {@link Ext.form.TextField#blankText}.
-	 */
-	blankText:Ext.form.TextField.prototype.blankText,
-	/**
-	 * @cfg {String} minLengthText Validation message displayed when {@link #minLength} is not met (defaults to 'Minimum {0} 
-	 * item(s) required').  The {0} token will be replaced by the value of {@link #minLength}.
-	 */
+	//blankText:Ext.form.TextField.prototype.blankText,
 	minLengthText:'Minimum {0} item(s) required',
-	/**
-	 * @cfg {String} maxLengthText Validation message displayed when {@link #maxLength} is not met (defaults to 'Maximum {0} 
-	 * item(s) allowed').  The {0} token will be replaced by the value of {@link #maxLength}.
-	 */
 	maxLengthText:'Maximum {0} item(s) allowed',
-	/**
-	 * @cfg {String} delimiter The string used to delimit between items when set or returned as a string of values
-	 * (defaults to ',').
-	 */
-	delimiter:',',
-	
-	// DDView settings
 	copy:false,
 	allowDup:false,
 	allowTrash:false,
+	legend:null,
 	focusClass:undefined,
+	delimiter:',',
+	view:null,
+	dragGroup:null,
+	dropGroup:null,
+	tbar:null,
+	appendOnly:false,
+	sortField:null,
 	sortDir:'ASC',
-	
-	// private
 	defaultAutoCreate : {tag: "div"},
 	
-	// private
-	initComponent: function(){
+    initComponent: function(){
 		Ext.ux.Multiselect.superclass.initComponent.call(this);
 		this.addEvents({
 			'dblclick' : true,
 			'click' : true,
 			'change' : true,
 			'drop' : true
-		});	 
+		});		
 	},
-	
-	// private
-	onRender: function(ct, position){
+    onRender: function(ct, position){
+		var fs, cls, tpl;
 		Ext.ux.Multiselect.superclass.onRender.call(this, ct, position);
-		
-		var cls = 'ux-mselect';
-		var fs = new Ext.form.FieldSet({
+
+		cls = 'ux-mselect';
+
+		fs = new Ext.form.FieldSet({
 			renderTo:this.el,
 			title:this.legend,
 			height:this.height,
 			width:this.width,
-			style:"padding:0;",
+			style:"padding:1px;",
 			tbar:this.tbar
 		});
 		//if(!this.legend)fs.el.down('.'+fs.headerCls).remove();
 		fs.body.addClass(cls);
 
-		var tpl = '<tpl for="."><div class="' + cls + '-item';
-		if(Ext.isIE || Ext.isIE7){
-			tpl+='" unselectable=on';
-		}else{
-			tpl+=' x-unselectable"';
-		}
+		tpl = '<tpl for="."><div class="' + cls + '-item';
+		if(Ext.isIE || Ext.isIE7)tpl+='" unselectable=on';
+		else tpl+=' x-unselectable"';
 		tpl+='>{' + this.displayField + '}</div></tpl>';
 
 		if(!this.store){
@@ -168,21 +68,11 @@ Ext.ux.Multiselect = Ext.extend(Ext.form.Field,  {
 		}
 
 		this.view = new Ext.ux.DDView({
-			multiSelect: true, 
-			store: this.store, 
-			selectedClass: cls+"-selected", 
-			tpl:tpl,
-			allowDup:this.allowDup, 
-			copy: this.copy, 
-			allowTrash: this.allowTrash, 
-			dragGroup: this.dragGroup, 
-			dropGroup: this.dropGroup, 
-			itemSelector:"."+cls+"-item",
-			isFormField:false, 
-			applyTo:fs.body,
-			appendOnly:this.appendOnly,
-			sortField:this.sortField, 
-			sortDir:this.sortDir
+			multiSelect: true, store: this.store, selectedClass: cls+"-selected", tpl:tpl,
+			allowDup:this.allowDup, copy: this.copy, allowTrash: this.allowTrash, 
+			dragGroup: this.dragGroup, dropGroup: this.dropGroup, itemSelector:"."+cls+"-item",
+			isFormField:false, applyTo:fs.body, appendOnly:this.appendOnly,
+			sortField:this.sortField, sortDir:this.sortDir
 		});
 
 		fs.add(this.view);
@@ -191,7 +81,7 @@ Ext.ux.Multiselect = Ext.extend(Ext.form.Field,  {
 		this.view.on('beforeClick', this.onViewBeforeClick, this);
 		this.view.on('dblclick', this.onViewDblClick, this);
 		this.view.on('drop', function(ddView, n, dd, e, data){
-			return this.fireEvent("drop", ddView, n, dd, e, data);
+	    	return this.fireEvent("drop", ddView, n, dd, e, data);
 		}, this);
 		
 		this.hiddenName = this.name;
@@ -204,10 +94,8 @@ Ext.ux.Multiselect = Ext.extend(Ext.form.Field,  {
 		fs.doLayout();
 	},
 	
-	// private
 	initValue:Ext.emptyFn,
 	
-	// private
 	onViewClick: function(vw, index, node, e) {
 		var arrayIndex = this.preClickSelections.indexOf(index);
 		if (arrayIndex  != -1)
@@ -216,28 +104,26 @@ Ext.ux.Multiselect = Ext.extend(Ext.form.Field,  {
 			this.view.clearSelections(true);
 			this.view.select(this.preClickSelections);
 		}
+		// This code mimics holding down the CTRL key when selecting items via the mouse
+        if(this.preClickSelections != '' && arrayIndex == -1){
+        	this.preClickSelections[this.preClickSelections.length] = index;
+        	this.view.select(this.preClickSelections);
+        }
 		this.fireEvent('change', this, this.getValue(), this.hiddenField.dom.value);
 		this.hiddenField.dom.value = this.getValue();
 		this.fireEvent('click', this, e);
-		this.validate();		
+		this.validate();
 	},
 
-	// private
 	onViewBeforeClick: function(vw, index, node, e) {
 		this.preClickSelections = this.view.getSelectedIndexes();
 		if (this.disabled) {return false;}
 	},
 
-	// private
 	onViewDblClick : function(vw, index, node, e) {
 		return this.fireEvent('dblclick', vw, index, node, e);
-	},  
+	},	
 	
-	/**
-	 * Returns an array of data values for the selected items in the list. The values will be separated
-	 * by {@link #delimiter}.
-	 * @return {Array} value An array of string data values
-	 */
 	getValue: function(valueField){
 		var returnArray = [];
 		var selectionsArray = this.view.getSelectedIndexes();
@@ -247,11 +133,16 @@ Ext.ux.Multiselect = Ext.extend(Ext.form.Field,  {
 		}
 		return returnArray.join(this.delimiter);
 	},
-
-	/**
-	 * Sets a delimited string (using {@link #delimiter}) or array of data values into the list.
-	 * @param {String/Array} values The values to set
-	 */
+	 // private
+    /*initValue : function(){
+        if(this.value !== undefined){
+            this.setValue(this.value);
+        }else if(this.el.dom.value.length > 0 && this.el.dom.value != this.emptyText){
+            this.setValue(this.el.dom.value);
+        }
+        // reference to original value for reset
+        this.originalValue = this.getValue();
+    },*/
 	setValue: function(values) {
 		var index;
 		var selections = [];
@@ -271,49 +162,381 @@ Ext.ux.Multiselect = Ext.extend(Ext.form.Field,  {
 		this.validate();
 	},
 	
-	// inherit docs
 	reset : function() {
 		this.setValue('');
 	},
 	
-	// inherit docs
 	getRawValue: function(valueField) {
-		var tmp = this.getValue(valueField);
-		if (tmp.length) {
-			tmp = tmp.split(this.delimiter);
-		}
-		else{
-			tmp = [];
-		}
-		return tmp;
-	},
+        var tmp = this.getValue(valueField);
+        if (tmp.length) {
+            tmp = tmp.split(this.delimiter);
+        }
+        else{
+            tmp = [];
+        }
+        return tmp;
+    },
 
-	// inherit docs
-	setRawValue: function(values){
-		setValue(values);
-	},
+    setRawValue: function(values){
+        this.setValue(values);
+    },
 
-	// inherit docs
-	validateValue : function(value){
-		if (value.length < 1) { // if it has no value
-			 if (this.allowBlank) {
-				 this.clearInvalid();
-				 return true;
-			 } else {
-				 this.markInvalid(this.blankText);
-				 return false;
-			 }
-		}
-		if (value.length < this.minLength) {
-			this.markInvalid(String.format(this.minLengthText, this.minLength));
-			return false;
-		}
-		if (value.length > this.maxLength) {
-			this.markInvalid(String.format(this.maxLengthText, this.maxLength));
-			return false;
-		}
-		return true;
-	}
+    validateValue : function(value){
+        if (value.length < 1) { // if it has no value
+             if (this.allowBlank) {
+                 this.clearInvalid();
+                 return true;
+             } else {
+                 this.markInvalid(this.blankText);
+                 return false;
+             }
+        }
+        if (value.length < this.minLength) {
+            this.markInvalid(String.format(this.minLengthText, this.minLength));
+            return false;
+        }
+        if (value.length > this.maxLength) {
+            this.markInvalid(String.format(this.maxLengthText, this.maxLength));
+            return false;
+        }
+        return true;
+    }
 });
 
 Ext.reg("multiselect", Ext.ux.Multiselect);
+
+Ext.ux.ItemSelector = Ext.extend(Ext.form.Field,  {
+	msWidth:200,
+	msHeight:300,
+	hideNavIcons:false,
+	imagePath:"/automne/admin/img/multiselect/",
+	iconUp:"up2.gif",
+	iconDown:"down2.gif",
+	iconLeft:"left2.gif",
+	iconRight:"right2.gif",
+	iconTop:"top2.gif",
+	iconBottom:"bottom2.gif",
+	drawUpIcon:true,
+	drawDownIcon:true,
+	drawLeftIcon:true,
+	drawRightIcon:true,
+	drawTopIcon:true,
+	drawBotIcon:true,
+	fromStore:null,
+	toStore:null,
+	fromData:null, 
+	toData:null,
+	displayField:0,
+	valueField:1,
+	switchToFrom:false,
+	allowDup:false,
+	focusClass:undefined,
+	delimiter:',',
+	readOnly:false,
+	toLegend:null,
+	fromLegend:null,
+	toSortField:null,
+	fromSortField:null,
+	toSortDir:'ASC',
+	fromSortDir:'ASC',
+	toTBar:null,
+	fromTBar:null,
+	bodyStyle:null,
+	border:false,
+	defaultAutoCreate:{tag: "div"},
+	
+    initComponent: function(){
+		Ext.ux.ItemSelector.superclass.initComponent.call(this);
+		this.addEvents({
+			'rowdblclick' : true,
+			'change' : true
+		});			
+	},
+
+    onRender: function(ct, position){
+		Ext.ux.ItemSelector.superclass.onRender.call(this, ct, position);
+
+		this.fromMultiselect = new Ext.ux.Multiselect({
+			legend: this.fromLegend,
+			delimiter: this.delimiter,
+			allowDup: this.allowDup,
+			copy: this.allowDup,
+			allowTrash: this.allowDup,
+			dragGroup: this.readOnly ? null : "drop2-"+this.el.dom.id,
+			dropGroup: this.readOnly ? null : "drop1-"+this.el.dom.id,
+			width: this.msWidth,
+			height: this.msHeight,
+			dataFields: this.dataFields,
+			data: this.fromData,
+			displayField: this.displayField,
+			valueField: this.valueField,
+			store: this.fromStore,
+			isFormField: false,
+			tbar: this.fromTBar,
+			appendOnly: true,
+			sortField: this.fromSortField,
+			sortDir: this.fromSortDir
+		});
+		this.fromMultiselect.on('dblclick', this.onRowDblClick, this);
+
+		if (!this.toStore) {
+			this.toStore = new Ext.data.SimpleStore({
+				fields: this.dataFields,
+				data : this.toData
+			});
+		}
+		this.toStore.on('add', this.valueChanged, this);
+		this.toStore.on('remove', this.valueChanged, this);
+		this.toStore.on('load', this.valueChanged, this);
+
+		this.toMultiselect = new Ext.ux.Multiselect({
+			legend: this.toLegend,
+			delimiter: this.delimiter,
+			allowDup: this.allowDup,
+			dragGroup: this.readOnly ? null : "drop1-"+this.el.dom.id,
+			//dropGroup: this.readOnly ? null : "drop2-"+this.el.dom.id+(this.toSortField ? "" : ",drop1-"+this.el.dom.id),
+			dropGroup: this.readOnly ? null : "drop2-"+this.el.dom.id+",drop1-"+this.el.dom.id,
+			width: this.msWidth,
+			height: this.msHeight,
+			displayField: this.displayField,
+			valueField: this.valueField,
+			store: this.toStore,
+			isFormField: false,
+			tbar: this.toTBar,
+			sortField: this.toSortField,
+			sortDir: this.toSortDir
+		});
+		this.toMultiselect.on('dblclick', this.onRowDblClick, this);
+				
+		var p = new Ext.Panel({
+			bodyStyle:this.bodyStyle,
+			border:this.border,
+			layout:"table",
+			layoutConfig:{columns:3}
+		});
+		p.add(this.switchToFrom ? this.toMultiselect : this.fromMultiselect);
+		var icons = new Ext.Panel({header:false});
+		p.add(icons);
+		p.add(this.switchToFrom ? this.fromMultiselect : this.toMultiselect);
+		p.render(this.el);
+		icons.el.down('.'+icons.bwrapCls).remove();
+
+		if (this.imagePath!="" && this.imagePath.charAt(this.imagePath.length-1)!="/")
+			this.imagePath+="/";
+		this.iconUp = this.imagePath + (this.iconUp || 'up2.gif');
+		this.iconDown = this.imagePath + (this.iconDown || 'down2.gif');
+		this.iconLeft = this.imagePath + (this.iconLeft || 'left2.gif');
+		this.iconRight = this.imagePath + (this.iconRight || 'right2.gif');
+		this.iconTop = this.imagePath + (this.iconTop || 'top2.gif');
+		this.iconBottom = this.imagePath + (this.iconBottom || 'bottom2.gif');
+		var el=icons.getEl();
+		if (!this.toSortField) {
+			this.toTopIcon = el.createChild({tag:'img', src:this.iconTop, style:{cursor:'pointer', margin:'2px'}});
+			el.createChild({tag: 'br'});
+			this.upIcon = el.createChild({tag:'img', src:this.iconUp, style:{cursor:'pointer', margin:'2px'}});
+			el.createChild({tag: 'br'});
+		}
+		this.addIcon = el.createChild({tag:'img', src:this.switchToFrom?this.iconLeft:this.iconRight, style:{cursor:'pointer', margin:'2px'}});
+		el.createChild({tag: 'br'});
+		this.removeIcon = el.createChild({tag:'img', src:this.switchToFrom?this.iconRight:this.iconLeft, style:{cursor:'pointer', margin:'2px'}});
+		el.createChild({tag: 'br'});
+		if (!this.toSortField) {
+			this.downIcon = el.createChild({tag:'img', src:this.iconDown, style:{cursor:'pointer', margin:'2px'}});
+			el.createChild({tag: 'br'});
+			this.toBottomIcon = el.createChild({tag:'img', src:this.iconBottom, style:{cursor:'pointer', margin:'2px'}});
+		}
+		if (!this.readOnly) {
+			if (!this.toSortField) {
+				this.toTopIcon.on('click', this.toTop, this);
+				this.upIcon.on('click', this.up, this);
+				this.downIcon.on('click', this.down, this);
+				this.toBottomIcon.on('click', this.toBottom, this);
+			}
+			this.addIcon.on('click', this.fromTo, this);
+			this.removeIcon.on('click', this.toFrom, this);
+		}
+		if (!this.drawUpIcon || this.hideNavIcons) { this.upIcon.dom.style.display='none'; }
+		if (!this.drawDownIcon || this.hideNavIcons) { this.downIcon.dom.style.display='none'; }
+		if (!this.drawLeftIcon || this.hideNavIcons) { this.addIcon.dom.style.display='none'; }
+		if (!this.drawRightIcon || this.hideNavIcons) { this.removeIcon.dom.style.display='none'; }
+		if (!this.drawTopIcon || this.hideNavIcons) { this.toTopIcon.dom.style.display='none'; }
+		if (!this.drawBotIcon || this.hideNavIcons) { this.toBottomIcon.dom.style.display='none'; }
+
+		var tb = p.body.first();
+		this.el.setWidth(p.body.first().getWidth());
+		p.body.removeClass();
+		
+		this.hiddenName = this.name;
+		var hiddenTag={tag: "input", type: "hidden", value: "", name:this.name};
+		this.hiddenField = this.el.createChild(hiddenTag);
+		this.valueChanged(this.toStore);
+	},
+	
+	initValue:Ext.emptyFn,
+	
+	toTop : function() {
+		var selectionsArray = this.toMultiselect.view.getSelectedIndexes();
+		var records = [];
+		if (selectionsArray.length > 0) {
+			selectionsArray.sort();
+			for (var i=0; i<selectionsArray.length; i++) {
+				record = this.toMultiselect.view.store.getAt(selectionsArray[i]);
+				records.push(record);
+			}
+			selectionsArray = [];
+			for (var i=records.length-1; i>-1; i--) {
+				record = records[i];
+				this.toMultiselect.view.store.remove(record);
+				this.toMultiselect.view.store.insert(0, record);
+				selectionsArray.push(((records.length - 1) - i));
+			}
+		}
+		this.toMultiselect.view.refresh();
+		this.toMultiselect.view.select(selectionsArray);
+	},
+
+	toBottom : function() {
+		var selectionsArray = this.toMultiselect.view.getSelectedIndexes();
+		var records = [];
+		if (selectionsArray.length > 0) {
+			selectionsArray.sort();
+			for (var i=0; i<selectionsArray.length; i++) {
+				record = this.toMultiselect.view.store.getAt(selectionsArray[i]);
+				records.push(record);
+			}
+			selectionsArray = [];
+			for (var i=0; i<records.length; i++) {
+				record = records[i];
+				this.toMultiselect.view.store.remove(record);
+				this.toMultiselect.view.store.add(record);
+				selectionsArray.push((this.toMultiselect.view.store.getCount()) - (records.length - i));
+			}
+		}
+		this.toMultiselect.view.refresh();
+		this.toMultiselect.view.select(selectionsArray);
+	},
+	
+	up : function() {
+		var record = null;
+		var selectionsArray = this.toMultiselect.view.getSelectedIndexes();
+		selectionsArray.sort();
+		var newSelectionsArray = [];
+		if (selectionsArray.length > 0) {
+			for (var i=0; i<selectionsArray.length; i++) {
+				record = this.toMultiselect.view.store.getAt(selectionsArray[i]);
+				if ((selectionsArray[i] - 1) >= 0) {
+					this.toMultiselect.view.store.remove(record);
+					this.toMultiselect.view.store.insert(selectionsArray[i] - 1, record);
+					newSelectionsArray.push(selectionsArray[i] - 1);
+				}
+			}
+			this.toMultiselect.view.refresh();
+			this.toMultiselect.view.select(newSelectionsArray);
+		}
+	},
+
+	down : function() {
+		var record = null;
+		var selectionsArray = this.toMultiselect.view.getSelectedIndexes();
+		selectionsArray.sort();
+		selectionsArray.reverse();
+		var newSelectionsArray = [];
+		if (selectionsArray.length > 0) {
+			for (var i=0; i<selectionsArray.length; i++) {
+				record = this.toMultiselect.view.store.getAt(selectionsArray[i]);
+				if ((selectionsArray[i] + 1) < this.toMultiselect.view.store.getCount()) {
+					this.toMultiselect.view.store.remove(record);
+					this.toMultiselect.view.store.insert(selectionsArray[i] + 1, record);
+					newSelectionsArray.push(selectionsArray[i] + 1);
+				}
+			}
+			this.toMultiselect.view.refresh();
+			this.toMultiselect.view.select(newSelectionsArray);
+		}
+	},
+	
+	fromTo : function() {
+		var selectionsArray = this.fromMultiselect.view.getSelectedIndexes();
+		var records = [];
+		if (selectionsArray.length > 0) {
+			for (var i=0; i<selectionsArray.length; i++) {
+				record = this.fromMultiselect.view.store.getAt(selectionsArray[i]);
+				records.push(record);
+			}
+			if(!this.allowDup)selectionsArray = [];
+			for (var i=0; i<records.length; i++) {
+				record = records[i];
+				if(this.allowDup){
+					var x=new Ext.data.Record();
+					record.id=x.id;
+					delete x;	
+					this.toMultiselect.view.store.add(record);
+				}else{
+					this.fromMultiselect.view.store.remove(record);
+					this.toMultiselect.view.store.add(record);
+					selectionsArray.push((this.toMultiselect.view.store.getCount() - 1));
+				}
+			}
+		}
+		this.toMultiselect.view.refresh();
+		this.fromMultiselect.view.refresh();
+		if(this.toSortField)this.toMultiselect.store.sort(this.toSortField, this.toSortDir);
+		if(this.allowDup)this.fromMultiselect.view.select(selectionsArray);
+		else this.toMultiselect.view.select(selectionsArray);
+	},
+	
+	toFrom : function() {
+		var selectionsArray = this.toMultiselect.view.getSelectedIndexes();
+		var records = [];
+		if (selectionsArray.length > 0) {
+			for (var i=0; i<selectionsArray.length; i++) {
+				record = this.toMultiselect.view.store.getAt(selectionsArray[i]);
+				records.push(record);
+			}
+			selectionsArray = [];
+			for (var i=0; i<records.length; i++) {
+				record = records[i];
+				this.toMultiselect.view.store.remove(record);
+				if(!this.allowDup){
+					this.fromMultiselect.view.store.add(record);
+					selectionsArray.push((this.fromMultiselect.view.store.getCount() - 1));
+				}
+			}
+		}
+		this.fromMultiselect.view.refresh();
+		this.toMultiselect.view.refresh();
+		if(this.fromSortField)this.fromMultiselect.store.sort(this.fromSortField, this.fromSortDir);
+		this.fromMultiselect.view.select(selectionsArray);
+	},
+	
+	valueChanged: function(store) {
+		var record = null;
+		var values = [];
+		for (var i=0; i<store.getCount(); i++) {
+			record = store.getAt(i);
+			values.push(record.get(this.valueField));
+		}
+		this.hiddenField.dom.value = values.join(this.delimiter);
+		this.fireEvent('change', this, this.getValue(), this.hiddenField.dom.value);
+	},
+	
+	getValue : function() {
+		return this.hiddenField.dom.value;
+	},
+	
+	onRowDblClick : function(vw, index, node, e) {
+		return this.fireEvent('rowdblclick', vw, index, node, e);
+	},
+	
+	reset: function(){
+		range = this.toMultiselect.store.getRange();
+		this.toMultiselect.store.removeAll();
+		if (!this.allowDup) {
+			this.fromMultiselect.store.add(range);
+			this.fromMultiselect.store.sort(this.displayField,'ASC');
+		}
+		this.valueChanged(this.toMultiselect.store);
+	}
+});
+
+Ext.reg("itemselector", Ext.ux.ItemSelector);

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: validations.php,v 1.2 2009/04/02 13:55:55 sebastien Exp $
+// $Id: validations.php,v 1.3 2009/06/05 15:01:05 sebastien Exp $
 
 /**
   * PHP page : Load page validations window.
@@ -249,9 +249,12 @@ $jscontent = <<<END
 			}},
 			'beforeload': 	{fn:function(store, options){ 
 				if (!options.params.module || !options.params.editions) {
-					var record = validationsTypeStore.getById(Ext.getCmp('validationsType').getValue());
-					options.params.module = record.get('module');
-					options.params.editions = record.get('editions');
+					var validationsType = Ext.getCmp('validationsType');
+					if (validationsType) {
+						var record = validationsTypeStore.getById(validationsType.getValue());
+						options.params.module = record.get('module');
+						options.params.editions = record.get('editions');
+					}
 				}
 				return true;
 			}}
@@ -530,7 +533,7 @@ $jscontent = <<<END
 			var validateForm = new Automne.FormPanel({
 				url:				'validations-controler.php',
 				renderTo:			'validation-form',
-				bodyStyle:			'padding:5px 5px 0',
+				padding:			'5px 5px 0',
 				title:				'{$cms_language->getJSMessage(MESSAGE_PAGE_VALIDATION)}',
 				anchor:				'100%',
 				border:				false,
@@ -599,6 +602,9 @@ $jscontent = <<<END
 			});
 			Ext.getCmp('batchValidation').disable();
 			detailPanel.body.slideIn('b', {stopFx:true,duration:.3});
+			setTimeout(function(){
+				validateForm.doLayout();
+			}, 100);
 		}
 	}
 	//add selection events to selection model
@@ -608,24 +614,25 @@ $jscontent = <<<END
 	
 	//redo windows layout
 	validationsWindow.doLayout();
-	validationsWindow.setWidth(validationsWindow.width);
-	validationsWindow.setHeight(validationsWindow.height);
+	//validationsWindow.setWidth(validationsWindow.width);
+	//validationsWindow.setHeight(validationsWindow.height);
 	
 	//add event on combo box to switch validations type
-	Ext.getCmp('validationsType').on('select', function(combo, record, index) {
-		module = record.data.module;
-		editions = record.data.editions;
-		//display loading mask
-		loadMask.show();
-		//reload validations store
-		store.reload({params:{
-			start:			0,
-			limit:			{$recordsPerPage},
-			module:			record.data.module,
-			editions:		record.data.editions
-		}});
-	});
-	
+	setTimeout(function(){
+		Ext.getCmp('validationsType').on('select', function(combo, record, index) {
+			module = record.data.module;
+			editions = record.data.editions;
+			//display loading mask
+			loadMask.show();
+			//reload validations store
+			store.reload({params:{
+				start:			0,
+				limit:			{$recordsPerPage},
+				module:			record.data.module,
+				editions:		record.data.editions
+			}});
+		});
+	}, 100);
 END;
 $view->addJavascript($jscontent);
 $view->show();

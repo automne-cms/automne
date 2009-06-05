@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: page.php,v 1.6 2009/03/06 10:52:34 sebastien Exp $
+// $Id: page.php,v 1.7 2009/06/05 15:02:17 sebastien Exp $
 
 /**
   * Class CMS_page
@@ -590,6 +590,7 @@ class CMS_page extends CMS_resource
 			$this->raiseError('Malformed linx file');
 			return false;
 		}
+		
 		//write significant url page
 		$pagePath = $this->_getFilePath(PATH_RELATIVETO_FILESYSTEM)."/".$this->_getFilename();
 		$redirectionFile = new CMS_file($pagePath);

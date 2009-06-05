@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: framewindow.js,v 1.7 2009/04/10 15:26:27 sebastien Exp $
+  * $Id: framewindow.js,v 1.8 2009/06/05 15:01:06 sebastien Exp $
   */
 Automne.frameWindow = Ext.extend(Automne.Window, { 
 	//frame url to use at next frame reload
@@ -35,7 +35,7 @@ Automne.frameWindow = Ext.extend(Automne.Window, {
 	},
 	//component initialisation (after constructor)
 	initComponent: function() {
-		Ext.apply(this, {
+		Ext.applyIf(this, {
 			html:  			'<iframe id="' + this.id + 'Frame" width="100%" height="100%"' + (!Ext.isIE ? ' class="x-hide-visibility"' : '') + ' frameborder="no" src="' + Ext.SSL_SECURE_URL + '">&nbsp;</iframe>',
 			hideBorders:	true,
 			autoScroll:		true

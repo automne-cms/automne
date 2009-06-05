@@ -28,7 +28,8 @@
   */
 
 @ini_set('memory_limit', "32M");
-
+//define application type
+define('APPLICATION_EXEC_TYPE', 'cli');
 //must calculate the document root
 $_SERVER["DOCUMENT_ROOT"] = realpath(substr(dirname(__FILE__), 0, strlen(dirname(__FILE__)) - strpos(strrev(dirname(__FILE__)), "enmotua") - strlen("automne") - 1));
 

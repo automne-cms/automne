@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: template.php,v 1.7 2009/04/10 15:26:41 sebastien Exp $
+// $Id: template.php,v 1.8 2009/06/05 15:01:05 sebastien Exp $
 
 /**
   * PHP page : Load template detail window.
@@ -337,7 +337,7 @@ $jscontent = <<<END
 							success:function(form, action){
 								//if it is a successful user creation
 								if (action.result.success != false && isNaN(parseInt(templateWindow.templateId))) {
-									//set userId
+									//set templateId
 									templateWindow.templateId = action.result.success.templateId;
 									//display hidden elements
 									Ext.getCmp('templateDef-{$templateId}').enable();
@@ -397,8 +397,13 @@ $jscontent = <<<END
 				listeners:		{'check':function(field, checked) {
 					if (checked) {
 						editor = CodeMirror.fromTextArea('defText-{$templateId}', {
-							parserfile: 	["parsexml.js", "parsecss.js", "tokenizejavascript.js", "parsejavascript.js", "parsehtmlmixed.js"],
-							stylesheet: 	["/automne/codemirror/css/xmlcolors.css", "/automne/codemirror/css/jscolors.css", "/automne/codemirror/css/csscolors.css"],
+							iframeClass:	'x-form-text',
+							lineNumbers:	true,
+							parserfile: 	["parsexml.js", "parsecss.js", "tokenizejavascript.js", "parsejavascript.js",
+					                     	"../contrib/php/js/tokenizephp.js", "../contrib/php/js/parsephp.js",
+					                     	"../contrib/php/js/parsephphtmlmixed.js"],
+					        /*continuousScanning: 500,*/
+							stylesheet: 	["/automne/codemirror/css/xmlcolors.css", "/automne/codemirror/css/jscolors.css", "/automne/codemirror/css/csscolors.css", "/automne/codemirror/contrib/php/css/phpcolors.css"],
 							path: 			"/automne/codemirror/js/",
 							textWrapping:	false,
 							initCallback:	function(){
@@ -414,7 +419,7 @@ $jscontent = <<<END
 				xtype:			'textarea',
 				name:			'definition',
 				cls:			'atm-code',
-				anchor:			'0, -70',
+				anchor:			'-35, -70',
 				enableKeyEvents:true,
 				value:			Ext.get('tpl-definition-{$templateId}').dom.value,
 				listeners:{'keypress': function(field, e){

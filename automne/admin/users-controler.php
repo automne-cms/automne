@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: users-controler.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: users-controler.php,v 1.2 2009/06/05 15:01:05 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on users
@@ -81,7 +81,7 @@ $service = sensitiveIO::request('service');
 $state = sensitiveIO::request('state');
 $zipcode = sensitiveIO::request('zipcode');
 //alerts
-$alerts = sensitiveIO::request('alerts');
+$alerts = sensitiveIO::request('alerts', 'is_array', array());
 //groups
 $groupId = sensitiveIO::request('groupId', 'sensitiveIO::isPositiveInteger');
 //modules
@@ -542,6 +542,7 @@ switch ($action) {
 		$content = array('success' => false);
 		if (is_a($user, "CMS_profile_user")) {
 			//set all alerts levels
+			$user->resetAlertLevel();
 			foreach($alerts as $codename => $levels) {
 				$level = array_sum($levels);
 				$user->setAlertLevel($level, $codename);

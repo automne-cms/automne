@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: sensitiveio.php,v 1.3 2009/04/02 13:57:59 sebastien Exp $
+// $Id: sensitiveio.php,v 1.4 2009/06/05 15:02:20 sebastien Exp $
 
 /**
   * Class SensitiveIO
@@ -45,7 +45,7 @@ class SensitiveIO extends CMS_grandfather
 	  * @return mixed : the original value if it pass the filter or boolean false otherwise
 	  * @access public
 	  */
-	function request($name, $filter = '', $default = false) {
+	static function request($name, $filter = '', $default = false) {
 		if (!isset($_REQUEST[$name])) {
 			return $default;
 		}
@@ -80,7 +80,7 @@ class SensitiveIO extends CMS_grandfather
 	  * @return void
 	  * @access public
 	  */
-	function unsetRequest($requests) {
+	static function unsetRequest($requests) {
 		if (!is_array($requests)) {
 			$requests = array($requests);
 		}
@@ -105,7 +105,7 @@ class SensitiveIO extends CMS_grandfather
 	  * @return boolean true if the input is a positive integer, false otherwise
 	  * @access public
 	  */
-	function isPositiveInteger($input) {
+	static function isPositiveInteger($input) {
 		return (is_numeric($input) && $input > 0 && (int)$input == $input);
 	}
 
@@ -118,7 +118,7 @@ class SensitiveIO extends CMS_grandfather
 	  * @return boolean true if the input is part of the set, false otherwise
 	  * @access public
 	  */
-	function isInSet($input, $set) {
+	static function isInSet($input, $set) {
 		return (is_array($set) && in_array($input, $set));
 	}
 
@@ -131,7 +131,7 @@ class SensitiveIO extends CMS_grandfather
 	  * @return string the sanitized string
 	  * @access public
 	  */
-	function sanitizeSQLString($input) {
+	static function sanitizeSQLString($input) {
 		return CMS_query::echap($input);
 	}
 
@@ -143,7 +143,7 @@ class SensitiveIO extends CMS_grandfather
 	  * @return string the sanitized string
 	  * @access public
 	  */
-	function stripPHPTags($input) {
+	static function stripPHPTags($input) {
 		return str_replace(array("<?php", "<?", "?>"), "", $input);
 	}
 
@@ -156,7 +156,7 @@ class SensitiveIO extends CMS_grandfather
 	  * @return string the sanitized string
 	  * @access public
 	  */
-	function sanitizeHTMLString($input) {
+	static function sanitizeHTMLString($input) {
 		return htmlspecialchars($input);
 	}
 
@@ -169,7 +169,7 @@ class SensitiveIO extends CMS_grandfather
 	  * @return string the sanitized string
 	  * @access public
 	  */
-	function sanitizeAsciiString($input) {
+	static function sanitizeAsciiString($input) {
 		$sanitized = strtr($input, " ÀÁÂÃÄÅÆàáâãäåæÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñÞßÿý",
 								   "_AAAAAAAaaaaaaaOOOOOOOooooooEEEEeeeeeCceIIIIiiiiUUUUuuuuNntsyy");
 		$sanitized = preg_replace("#[^[a-zA-Z0-9_.-]]*#", "", $sanitized);
@@ -186,7 +186,7 @@ class SensitiveIO extends CMS_grandfather
 	  * @return string the sanitized string
 	  * @access public
 	  */
-	function sanitizeURLString($input) {
+	static function sanitizeURLString($input) {
 		//convert accentuated characters
 		$sanitized = strtr(trim($input), "’' @ÀÁÂÃÄÅÆàáâãäåæÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñÞßÿý",
 								   		 "---aaaaaaaaaaaaaaaoooooooooooooeeeeeeeeecceiiiiiiiiuuuuuuuunntsyy");
@@ -209,7 +209,7 @@ class SensitiveIO extends CMS_grandfather
 	  * @return string the sanitized string
 	  * @access public
 	  */
-	function sanitizeJSString($input, $minimize = false, $addslashes = true) {
+	static function sanitizeJSString($input, $minimize = false, $addslashes = true) {
 		if ($minimize) {
 			$input = JSMin::minify($input);
 		}
@@ -228,7 +228,7 @@ class SensitiveIO extends CMS_grandfather
 	  * @return boolean
 	  * @access public
 	  */
-	function isValidEmail($email, $checkDomain = false) {
+	static function isValidEmail($email, $checkDomain = false) {
 		if (is_array($email)) {
 			extract($email);
 		}
@@ -256,7 +256,7 @@ class SensitiveIO extends CMS_grandfather
 	  * @return boolean
 	  * @access public
 	  */
-	function isValidPassword($input) {
+	static function isValidPassword($input) {
 		return strlen($input) >= MINIMUM_PASSWORD_LENGTH;
 	}
 
@@ -270,7 +270,7 @@ class SensitiveIO extends CMS_grandfather
 	  * @return String
 	  * @access public
 	  */
-	function arraySprintf($formatString, $formatStringParameters = false) {
+	static function arraySprintf($formatString, $formatStringParameters = false) {
 		// To do catch error so that same number of %s as values in array
 		if (is_array($formatStringParameters)) {
 			// Check equal amount of parameters for concatination
@@ -304,7 +304,7 @@ class SensitiveIO extends CMS_grandfather
 	  * @return boolean true if the input is in range, false otherwise
 	  * @access public
 	  */
-	function isUnderRange($input, $min, $max) {
+	static function isUnderRange($input, $min, $max) {
 		return ($input && intval($input) == $input && $input <= $max && $input >= $min);
 	}
 
@@ -316,7 +316,7 @@ class SensitiveIO extends CMS_grandfather
 	  * @return string decoded
 	  * @access public
 	  */
-	function decodeWindowsChars($input) {
+	static function decodeWindowsChars($input) {
 		if (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
 			$entities = array(
 				'‚' => '&#8218;',
@@ -365,7 +365,7 @@ class SensitiveIO extends CMS_grandfather
 	  * @return string with code evalued (all PHP code is replaced by his output value)
 	  * @access public
 	  */
-	function evalPHPCode($input) {
+	static function evalPHPCode($input) {
 		//write all content to evaluate as a tmp file.
 		$tmpFile = new CMS_file(PATH_TMP_FS.'/eval_'.md5(mt_rand().microtime()).'.tmp');
 		$tmpFile->setContent($input);
@@ -386,14 +386,14 @@ class SensitiveIO extends CMS_grandfather
 	  * @return string json encoded datas
 	  * @access public
 	  */
-	function jsonEncode ($datas) {
+	static function jsonEncode ($datas) {
 		if (!is_array($datas)) {
-			CMS_grandFather::raiseError('Datas must be an array ...');
+			CMS_grandFather::raiseError('Datas must be an array ... (from : '.sensitiveIO::getCallInfos().')');
 			return $datas;
 		}
 		//encode nodes array in utf-8 if needed
 		if (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
-			$func = create_function('&$data,$key', '$data = is_string($data) ? utf8_encode($data) : $data;');
+			$func = create_function('&$data,$key', '$data = is_string($data) ? utf8_encode(str_replace(\'€\', \'&euro;\', $data)) : $data;');
 			array_walk_recursive($datas, $func);
 		}
 		return json_encode($datas);
@@ -407,7 +407,7 @@ class SensitiveIO extends CMS_grandfather
 	  * @return string the value troncated
 	  * @access public
 	  */
-	function ellipsis($value, $length, $ellipsis = '...') {
+	static function ellipsis($value, $length, $ellipsis = '...') {
 		if (strlen($value) <= $length) {
 			return $value;
 		}
@@ -420,7 +420,7 @@ class SensitiveIO extends CMS_grandfather
 	  * @return string the caller call info
 	  * @access public
 	  */
-	function getCallInfos() {
+	static function getCallInfos() {
 		$callInfos = '';
 		$bt = debug_backtrace();
 		if (isset($bt[3]) && isset($bt[2]['class']) && $bt[2]['class'] == 'CMS_grandFather' && ($bt[2]['function'] == '__call')) {
@@ -441,7 +441,7 @@ class SensitiveIO extends CMS_grandfather
 		return $callInfos;
 	}
 	
-	function printBackTrace($backtrace) {
+	static function printBackTrace($backtrace) {
 		if (!is_array($backtrace)) {
 			return false;
 		}

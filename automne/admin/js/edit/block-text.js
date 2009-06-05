@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: block-text.js,v 1.3 2009/04/02 13:55:53 sebastien Exp $
+  * $Id: block-text.js,v 1.4 2009/06/05 15:01:06 sebastien Exp $
   */
 Automne.blockText = Ext.extend(Automne.block, {
 	blockClass:	'CMS_block_text',
@@ -70,7 +70,7 @@ Automne.blockText = Ext.extend(Automne.block, {
 			var styleEl = dh.append(this.elements.first(), {tag:'div'}, true);
 			styleEl.setVisibilityMode(Ext.Element.DISPLAY);
 			styleEl.hide();
-			var tagList = ['b', 'strong', 'i', 'em', {tag:'a', href:'/', html:'text'}, 'p', {tag:'ul', children:[{tag:'li'}]}, {tag:'ol', children:[{tag:'li'}]}, 'span', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'img', 'small', 'abbr', 'acronym', 'blockquotes'];
+			var tagList = ['b', 'strong', 'i', 'em', {tag:'a', href:'/', html:'text'}, 'p', {tag:'ul', children:[{tag:'li'}]}, {tag:'ol', children:[{tag:'li'}]}, 'span', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'img', 'small', 'abbr', 'acronym', 'blockquote', 'cite', 'code'];
 			var elements = new Ext.CompositeElement([this.elements.first()]);
 			for(var i = 0, tagLen = tagList.length; i < tagLen; i++) {
 				if (typeof tagList[i] == 'string') {
@@ -164,7 +164,7 @@ Automne.blockText = Ext.extend(Automne.block, {
 		if (this.FCKEditor) {
 			this.value = this.FCKEditor.GetData();
 			//send all datas to server to update block content and get new row HTML code
-			Automne.server.call('page-content-controler.php', this.row.replaceContent, {
+			Automne.server.call('page-content-controler.php', this.stopEdition, {
 				action:			'update-block-text',
 				cs:				this.row.clientspace.getId(),
 				page:			this.row.clientspace.page,
@@ -173,17 +173,24 @@ Automne.blockText = Ext.extend(Automne.block, {
 				rowTag:			this.row.rowTagID,
 				block:			this.getId(),
 				blockClass:		this.blockClass,
-				value:			this.value
-			}, this.row);
+				value:			this.value,
+				stopParams:		[cancelCtrl, validateCtrl, ctrlCont, textCont, cont, tb]
+			}, this);
 		}
-		//stop block edition
-		this.stopEdition(cancelCtrl, validateCtrl, ctrlCont, textCont, cont, tb);
+		
 	},
-	stopEdition: function(cancelCtrl, validateCtrl, ctrlCont, textCont, cont, tb) {
-		this.endModify();
-		var elements = new Ext.CompositeElement([cancelCtrl, validateCtrl, ctrlCont, textCont, cont, tb]);
-		elements.removeAllListeners();
-		elements.remove();
-		delete elements;
+	stopEdition: function(response, option) {
+		//if user is disconnected, then with this check, we do not close the editor. 
+		//So it can login and submit his text again without loose everything
+		if (response.responseXML && response.responseXML.getElementsByTagName('content').length) {
+			//stop block edition
+			this.endModify();
+			var elements = new Ext.CompositeElement(option.params.stopParams);
+			elements.removeAllListeners();
+			elements.remove();
+			delete elements;
+			//replace row content
+			this.row.replaceContent(response, option);
+		}
 	}
 });

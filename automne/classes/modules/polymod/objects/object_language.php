@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_language.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: object_language.php,v 1.2 2009/06/05 15:02:18 sebastien Exp $
 
 /**
   * Class CMS_object_language
@@ -81,22 +81,40 @@ class CMS_object_language extends CMS_object_common
 	  * @access public
 	  */
 	function getHTMLAdmin($fieldID, $language, $prefixName) {
-		//is this field mandatory ?
-		$mandatory = ($this->_field->getValue('required')) ? '<span class="admin_text_alert">*</span> ':'';
-		//create html for each subfields
-		$html = '<tr><td class="admin" align="right" valign="top">'.$mandatory.$this->getFieldLabel($language).'</td><td class="admin">'."\n";
-		//add description if any
-		if ($this->getFieldDescription($language)) {
-			$html .= '<dialog-title type="admin_h3">'.$this->getFieldDescription($language).'</dialog-title><br />';
+		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
+		//get module
+		$module = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
+		// Get languages
+		$a_all_languages = CMS_languagesCatalog::getAllLanguages($module);
+		$languagesDatas = array();
+		if (is_array($a_all_languages) && $a_all_languages) {
+			$languages = CMS_languagesCatalog::getAllLanguages();
+			$languagesDatas[] = array('', $language->getMessage(self::MESSAGE_OBJECT_LANGUAGE_CHOOSE_OBJECT));
+			foreach ($languages as $aLanguage) {
+				$languagesDatas[] = array($aLanguage->getCode(), $aLanguage->getLabel());
+			}
+		} else {
+			$languagesDatas[] = array('', $language->getMessage(self::MESSAGE_OBJECT_LANGUAGE_EMPTY_OBJECTS_SET));
+			$return['disabled'] 			= true;
 		}
-		$inputParams = array(
-			'class' 	=> 'admin_input_text',
-			'prefix'	=>	$prefixName,
-			'form'		=> 'frmitem',
+		$return['hiddenName'] 		= $return['name'];
+		unset($return['id']);
+		$return['xtype'] 			= 'atmCombo';
+		$return['forceSelection'] 	= true;
+		$return['mode'] 			= 'local';
+		$return['valueField'] 		= 'id';
+		$return['displayField'] 	= 'name';
+		$return['value'] 			= $this->_subfieldValues[0]->getValue();
+		$return['triggerAction'] 	= 'all';
+		$return['store'] 			= array(
+			'xtype'			=> 'arraystore',
+			'fields' 		=> array('id', 'name'),
+			'data' 			=> $languagesDatas
 		);
-		$html .= $this->getInput($fieldID, $language, $inputParams);
-		$html .= '</td></tr>'."\n";
-		return $html;
+		$return['selectOnFocus'] 	= true;
+		$return['editable'] 		= false;
+		$return['anchor'] 			= false;
+		return $return;
 	}
 	
 	/**

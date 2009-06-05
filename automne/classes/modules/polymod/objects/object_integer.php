@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_integer.php,v 1.2 2009/02/03 14:27:35 sebastien Exp $
+// $Id: object_integer.php,v 1.3 2009/06/05 15:02:18 sebastien Exp $
 
 /**
   * Class CMS_object_integer
@@ -157,33 +157,34 @@ class CMS_object_integer extends CMS_object_common
 	}
 	
 	/**
-      * get HTML admin (used to enter object values in admin)
-      *
-      * @param integer $fieldID, the current field id (only for poly object compatibility)
-      * @param CMS_language $language, the current admin language
-      * @param string prefixname : the prefix to use for post names
-      * @return string : the html admin
-      * @access public
-      */
-    function getHTMLAdmin($fieldID, $language, $prefixName) {
-	//is this field mandatory ?
-	$mandatory = ($this->_field->getValue('required')) ? '<span class="admin_text_alert">*</span> ':'';
-	//create html for each subfields
-	$html = '<tr><td class="admin" align="right" valign="top">'.$mandatory.$this->getFieldLabel($language).'</td><td class="admin">'."\n";
-	//add description if any
-	if ($this->getFieldDescription($language)) {
-		$html .= '<dialog-title type="admin_h3">'.$this->getFieldDescription($language).'</dialog-title><br />';
+	  * get HTML admin (used to enter object values in admin)
+	  *
+	  * @param integer $fieldID, the current field id (only for poly object compatibility)
+	  * @param CMS_language $language, the current admin language
+	  * @param string prefixname : the prefix to use for post names
+	  * @return string : the html admin
+	  * @access public
+	  */
+	function getHTMLAdmin($fieldID, $language, $prefixName) {
+		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
+		$params = $this->getParamsValues();
+		$return['xtype'] =	'numberfield';
+		$return['allowDecimals'] =	false;
+		if (isset($params['canBeNegative'])) {
+			$return['allowNegative'] =	$params['canBeNegative'];
+		}
+		if (isset($params['canBeNull'])) {
+			$return['minValue'] = ($params['canBeNull']) ? 0 : 1;
+			$return['value'] = (!$params['canBeNull'] && !$return['value']) ? false : $return['value'];
+		}
+		$return['anchor'] = false;
+		$return['width'] = 200;
+		if (isset($params['unit']) && $params['unit']) {
+			$return['labelSeparator'] = '';
+			$return['fieldLabel'] .= ' :<br /><small>'.$language->getMessage(self::MESSAGE_OBJECT_INTEGER_PARAMETER_UNIT, false, MOD_POLYMOD_CODENAME).' : '.$params['unit'].'</small>';
+		}
+		return $return;
 	}
-	$inputParams = array(
-	    'class'         => 'admin_input_text',
-	    'prefix'        =>      $prefixName,
-	    'size'          => 15,
-	    'form'          => 'frmitem',
-	);
-	$html .= $this->getInput($fieldID, $language, $inputParams);
-	$html .= '</td></tr>'."\n";
-	return $html;
-    }
 
     /**
       * get object values structure available with getValue method

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: tree.php,v 1.3 2009/03/02 11:25:15 sebastien Exp $
+// $Id: tree.php,v 1.4 2009/06/05 15:01:05 sebastien Exp $
 
 /**
   * PHP page : Load tree window infos. Presents a portion of the pages tree. Can be used by any admin page.
@@ -84,6 +84,7 @@ $heading = sensitiveIO::request('heading', '', $cms_language->getMessage(MESSAGE
 $heading = checkNotFalse($heading) ? $heading : '';
 $hideMenu = (sensitiveIO::request('hideMenu', 'checkNotFalse')) ? true : false;
 $window = sensitiveIO::request('window', '', true);
+//$window = (sensitiveIO::request('window', 'checkNotFalse', 'true')) ? 'true' : 'false';
 $winId = sensitiveIO::request('winId', '', 'treeWindow');
 $el = sensitiveIO::request('el');
 $currentPage = sensitiveIO::request('currentPage', 'sensitiveIO::isPositiveInteger');

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: module.php,v 1.2 2009/04/02 13:55:54 sebastien Exp $
+// $Id: module.php,v 1.3 2009/06/05 15:01:04 sebastien Exp $
 
 /**
   * PHP page : Load module backend window
@@ -65,13 +65,15 @@ $items = '';
 $activeTab = 0;
 foreach ($objectsInfos as $objectsInfo) {
 	$items .= ($items) ? ',':'';
-	$label = sensitiveIO::sanitizeJSString($objectsInfo['label']);
+	$label = $objectsInfo['description'] ? '<span ext:qtip="'.sensitiveIO::sanitizeJSString($objectsInfo['description']).'">'.sensitiveIO::sanitizeJSString($objectsInfo['label']).'</span>' : sensitiveIO::sanitizeJSString($objectsInfo['label']);
 	$url = (isset($objectsInfo['url'])) ? $objectsInfo['url'] : PATH_ADMIN_MODULES_WR.'/'.$codename.'/items.php';
 	$objectWinId = 'module'. $codename . $objectsInfo['objectId'] .'Panel';
 	$objectsInfo['winId'] = $objectWinId;
 	$objectsInfo['fatherId'] = $winId;
 	$params = sensitiveIO::jsonEncode($objectsInfo);
 	if (isset($options['objectId']) && $options['objectId'] == $objectsInfo['objectId']) {
+		$activeTab = $objectWinId;
+	} elseif($activeTab === 0) {
 		$activeTab = $objectWinId;
 	}
 	if ($objectsInfo['objectId'] == 'categories') {

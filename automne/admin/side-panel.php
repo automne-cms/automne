@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: side-panel.php,v 1.5 2009/04/20 15:13:04 sebastien Exp $
+// $Id: side-panel.php,v 1.6 2009/06/05 15:01:05 sebastien Exp $
 
 /**
   * PHP page : Load side panel infos.
@@ -547,15 +547,7 @@ $jscontent = <<<END
 			window.show();
     	},
 		'duplicate-branch' : function(t){
-    		var window = new Automne.frameWindow({
-				id:				'duplicateWindow',
-				frameURL:		'/automne/admin-v3/tree_duplicate_branch.php',
-				allowFrameNav:	true,
-				width:			750,
-				height:			580,
-				animateTarget:	t
-			});
-			window.show();
+    		openWindow(t, 'tree-duplicate.php', {}, 750, 580);
     	},
 		'module' : function(t){
     		switch(t.getAttributeNS('atm', 'version')) {

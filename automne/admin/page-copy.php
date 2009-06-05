@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-copy.php,v 1.3 2009/04/02 13:55:54 sebastien Exp $
+// $Id: page-copy.php,v 1.4 2009/06/05 15:01:04 sebastien Exp $
 
 /**
   * PHP page : Load copy-page window.
@@ -237,9 +237,6 @@ $jscontent = <<<END
 	
 	copyPageWindow.addButtons(buttons);
 	copyPageWindow.doLayout();
-	copyPageWindow.setWidth(copyPageWindow.width);
-	copyPageWindow.setHeight(copyPageWindow.height - 70); //to correct a bug when add buttons to window
-	
 END;
 
 $view->addJavascript($jscontent);

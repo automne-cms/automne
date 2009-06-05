@@ -8,9 +8,19 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: combobox.js,v 1.2 2009/03/02 11:26:53 sebastien Exp $
+  * $Id: combobox.js,v 1.3 2009/06/05 15:01:06 sebastien Exp $
   */
 Automne.ComboBox = Ext.extend(Ext.form.ComboBox, {
+	initComponent : function(){
+		if (this.store && this.store.xtype && !(this.store instanceof Ext.Component)) {
+			this.store = Ext.ComponentMgr.create(this.store, this.store.xtype);
+		}
+		//test store, if exists but is not a valid object, load Automne.JsonStore instead
+		if (this.store && !this.store.isLoaded) {
+			this.store = new Automne.JsonStore(this.store); 
+		}
+		Automne.ComboBox.superclass.initComponent.call(this);
+	},
 	/**
 	 * Sets the specified value into the field.  If the value finds a match, the corresponding record text
 	 * will be displayed in the field.  If the value does not match the data value of an existing item,

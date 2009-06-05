@@ -1,11 +1,11 @@
 <cms-module-parameters>
 	<param name="APPLICATION_LABEL" type="text">Automne 4</param>
-	<param name="APPLICATION_MAINTAINER_EMAIL" type="email">root@localhost</param>
-	<param name="APPLICATION_POSTMASTER_EMAIL" type="email">root@localhost</param>
+	<param name="APPLICATION_MAINTAINER_EMAIL" type="email">root@localhost.com</param>
+	<param name="APPLICATION_POSTMASTER_EMAIL" type="email">root@localhost.com</param>
 	<param name="SYSTEM_DEBUG" type="boolean">1</param>
-	<param name="STATS_DEBUG" type="boolean">0</param>
-	<param name="VIEW_SQL" type="boolean">0</param>
-	<param name="POLYMOD_DEBUG" type="boolean">0</param>
+	<param name="STATS_DEBUG" type="boolean">1</param>
+	<param name="VIEW_SQL" type="boolean">1</param>
+	<param name="POLYMOD_DEBUG" type="boolean">1</param>
 	<param name="APPLICATION_ENFORCES_ACCESS_CONTROL" type="boolean">0</param>
 	<param name="APPLICATION_LDAP_AUTH" type="boolean">0</param>
 	<param name="USE_BACKGROUND_REGENERATOR" type="boolean">1</param>

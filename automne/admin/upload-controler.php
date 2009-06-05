@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: upload-controler.php,v 1.4 2009/04/02 13:55:55 sebastien Exp $
+// $Id: upload-controler.php,v 1.5 2009/06/05 15:01:05 sebastien Exp $
 
 /**
   * PHP controler : Receive upload files
@@ -36,6 +36,7 @@ if (isset($_POST['Automne_4_autologin'])) {
 if (isset($_POST['userAgent'])) {
 	$_SERVER['HTTP_USER_AGENT'] = urldecode($_POST['userAgent']);
 }*/
+
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 //load interface instance
 $view = CMS_view::getInstance();
@@ -73,17 +74,17 @@ if (strlen($originalFilename) > 255) {
 }
 $count = 2;
 $filename = $originalFilename;
-while (file_exists(PATH_MAIN_FS.'/upload/'.$filename)) {
+while (file_exists(PATH_UPLOAD_FS.'/'.$filename)) {
 	$pathinfo = pathinfo($originalFilename);
 	$filename = $pathinfo['filename'].'-'.$count++.'.'.$pathinfo['extension'];
 }
-if (!@move_uploaded_file($_FILES["Filedata"]["tmp_name"], PATH_MAIN_FS.'/upload/'.$filename)) {
-	CMS_grandFather::raiseError('Can\'t move uploaded file to : '.PATH_MAIN_FS.'/upload/'.$filename);
+if (!@move_uploaded_file($_FILES["Filedata"]["tmp_name"], PATH_UPLOAD_FS.'/'.$filename)) {
+	CMS_grandFather::raiseError('Can\'t move uploaded file to : '.PATH_UPLOAD_FS.'/'.$filename);
 	$fileDatas['error'] = SFWUPLOAD_FILE_VALIDATION_FAILED;
 	$view->setContent($fileDatas);
 	$view->show();
 }
-$file = new CMS_file(PATH_MAIN_FS.'/upload/'.$filename);
+$file = new CMS_file(PATH_UPLOAD_FS.'/'.$filename);
 $file->chmod(FILES_CHMOD);
 
 //check file extension

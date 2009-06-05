@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: imageupload.js,v 1.3 2009/03/02 11:26:53 sebastien Exp $
+  * $Id: imageupload.js,v 1.4 2009/06/05 15:01:06 sebastien Exp $
   */
 Automne.ImageUploadField = Ext.extend(Automne.FileUploadField,  {
 	// private
@@ -136,7 +136,9 @@ Automne.ImageUploadField = Ext.extend(Automne.FileUploadField,  {
 						} else {
 							this.clearInvalid();
 						}
-						this.wrap.setHeight(el.clientHeight + 34);
+						if ((el.clientHeight + 34) > 55) {
+							this.wrap.setHeight(el.clientHeight + 34);
+						}
 					},
 					scope:this
 				},

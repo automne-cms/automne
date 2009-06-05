@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: query.php,v 1.2 2009/03/02 11:28:06 sebastien Exp $
+// $Id: query.php,v 1.3 2009/06/05 15:02:20 sebastien Exp $
 
 /**
   * Class CMS_query
@@ -240,7 +240,12 @@
 	  * @access public
 	  */
 	static function echap($input) {
-		$db = (is_array(self::$_connection)) ? current(self::$_connection) : new PDO(APPLICATION_DB_DSN, APPLICATION_DB_USER, APPLICATION_DB_PASSWORD, array(PDO::ATTR_PERSISTENT => APPLICATION_DB_PERSISTENT_CONNNECTION, PDO::ERRMODE_EXCEPTION => true, PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true));
+		try {
+			$db = (is_array(self::$_connection)) ? current(self::$_connection) : new PDO(APPLICATION_DB_DSN, APPLICATION_DB_USER, APPLICATION_DB_PASSWORD, array(PDO::ATTR_PERSISTENT => APPLICATION_DB_PERSISTENT_CONNNECTION, PDO::ERRMODE_EXCEPTION => true, PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true));
+		} catch (PDOException $e) {
+			CMS_query::raiseError($e->getMessage());
+			exit;
+		}
 		return substr($db->quote($input),1,-1);
 	}
 }

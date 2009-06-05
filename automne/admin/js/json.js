@@ -8,21 +8,13 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: json.js,v 1.2 2009/03/02 11:26:53 sebastien Exp $
+  * $Id: json.js,v 1.3 2009/06/05 15:01:06 sebastien Exp $
   */
 Automne.JsonReader = Ext.extend(Ext.data.JsonReader, {
 	read : function(response){
 		//eval response for errors management
-		Automne.server.evalResponse(response, {scope:this});
-		//extract json datas from response
-		var jsonResponse = '{}';
-		if (response.responseXML.getElementsByTagName('jsoncontent').length) {
-			jsonResponse = response.responseXML.getElementsByTagName('jsoncontent').item(0).firstChild.nodeValue;
-		}
-		//overwrite responseText with json response
-		response.responseText = jsonResponse;
-		//call parent method read to process json datas
-		return Automne.JsonReader.superclass.read.call(this, response);
+		var json = Automne.server.evalResponse(response, {scope:this});
+		return this.readRecords(json);
 	},
 	readRecords : function(o){
 		//call parent method to process json datas
@@ -40,10 +32,14 @@ Automne.JsonReader = Ext.extend(Ext.data.JsonReader, {
   * @class Automne.JsonStore
   * @extends Ext.data.Store
   */
-Automne.JsonStore = function(c){
-	Automne.JsonStore.superclass.constructor.call(this, Ext.apply(c, {
+Automne.JsonStore = function(config){
+	/*Automne.JsonStore.superclass.constructor.call(this, Ext.apply(c, {
 		proxy: !c.data ? new Ext.data.HttpProxy({url: c.url}) : undefined,
 		reader: new Automne.JsonReader(c, c.fields)
+	}));*/
+	
+	Automne.JsonStore.superclass.constructor.call(this, Ext.apply(config, {
+		reader: new Automne.JsonReader(config)
 	}));
 };
 Ext.extend(Automne.JsonStore, Ext.data.Store, {
@@ -64,3 +60,4 @@ Ext.extend(Automne.JsonStore, Ext.data.Store, {
 		return data;
 	}
 });
+Ext.reg('atmJsonstore', Automne.JsonStore);

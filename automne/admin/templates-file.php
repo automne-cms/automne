@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-file.php,v 1.2 2009/04/10 15:26:41 sebastien Exp $
+// $Id: templates-file.php,v 1.3 2009/06/05 15:01:05 sebastien Exp $
 
 /**
   * PHP page : Load print template window.
@@ -175,6 +175,8 @@ $jscontent = <<<END
 					editor = CodeMirror.fromTextArea('defText-{$fileId}', {
 						{$codemirrorConf}
 						path: 			"/automne/codemirror/js/",
+						iframeClass:	'x-form-text',
+						lineNumbers:	true,
 						textWrapping:	false,
 						initCallback:	function(){
 							editor.reindent();
@@ -189,7 +191,7 @@ $jscontent = <<<END
 			xtype:			'textarea',
 			name:			'definition',
 			cls:			'atm-code',
-			anchor:			'97%, {$anchor}',
+			anchor:			'-35, {$anchor}',
 			enableKeyEvents:true,
 			fieldLabel:		'Définition',
 			/*hideLabel:		true,*/

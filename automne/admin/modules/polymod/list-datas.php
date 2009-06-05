@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: list-datas.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: list-datas.php,v 1.2 2009/06/05 15:01:07 sebastien Exp $
 
 /**
   * PHP page : Load polyobjects items datas
@@ -53,10 +53,12 @@ if (!$cms_user->hasModuleClearance($codename, CLEARANCE_MODULE_EDIT)) {
 	$view->show();
 }
 //CHECKS objectId
-if (!$objectId) {
+if (!$objectId && !$fieldId) {
 	CMS_grandFather::raiseError('Missing objectId to list in module '.$codename);
 	$view->setContent($objectsDatas);
 	$view->show();
+} elseif (!$objectId && $fieldId) {
+	$objectId = CMS_poly_object_catalog::getObjectIDForField($fieldId);
 }
 
 //load current object definition
@@ -74,7 +76,7 @@ if ($objectFields[$fieldId]) {
 		foreach($objectsNames as $id => $label) {
 			$objectsDatas['objects'][] = array(
 				'id'			=> $id,
-				'label'			=> $label,
+				'label'			=> html_entity_decode($label, ENT_COMPAT, strtoupper(APPLICATION_DEFAULT_ENCODING)),
 			);
 		}
 	}

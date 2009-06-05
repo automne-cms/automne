@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_float.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: object_float.php,v 1.2 2009/06/05 15:02:18 sebastien Exp $
 
 /**
   * Class CMS_object_float
@@ -104,23 +104,21 @@ class CMS_object_float extends CMS_object_string {
 	  * @access public
 	  */
 	function getHTMLAdmin($fieldID, $language, $prefixName) {
-		//is this field mandatory ?
-		$mandatory = ($this->_field->getValue('required')) ? '<span class="admin_text_alert">*</span> ':'';
-		//create html for each subfields
-		$html = '<tr><td class="admin" align="right" valign="top">'.$mandatory.$this->getFieldLabel($language).'</td><td class="admin">'."\n";
-		//add description if any
-		if ($this->getFieldDescription($language)) {
-			$html .= '<dialog-title type="admin_h3">'.$this->getFieldDescription($language).'</dialog-title><br />';
+		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
+		$params = $this->getParamsValues();
+		$return['xtype'] =	'numberfield';
+		$return['allowDecimals'] =	true;
+		$return['allowNegative'] =	$params['canBeNegative'];
+		$return['anchor'] = false;
+		$return['width'] = 200;
+		$return['maxLength'] = $params['maxLength'];
+		$return['decimalPrecision'] = 8;
+		$return['decimalSeparator'] = '.';
+		if ($params['unit']) {
+			$return['labelSeparator'] = '';
+			$return['fieldLabel'] .= ' :<br /><small>'.$language->getMessage(self::MESSAGE_OBJECT_FLOAT_PARAMETER_UNIT, false, MOD_POLYMOD_CODENAME).' : '.$params['unit'].'</small>';
 		}
-		$inputParams = array(
-			'class' 	=> 'admin_input_text',
-			'prefix'	=>	$prefixName,
-			'size'  	=> 15,
-			'form'		=> 'frmitem',
-		);
-		$html .= $this->getInput($fieldID, $language, $inputParams);
-		$html .= '</td></tr>'."\n";
-		return $html;
+		return $return;
 	}
 	
 	/**

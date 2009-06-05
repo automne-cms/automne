@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: blockscatalog.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: blockscatalog.php,v 1.2 2009/06/05 15:02:17 sebastien Exp $
 
 /**
   * Class CMS_blocksCatalog
@@ -92,8 +92,57 @@ class CMS_blocksCatalog extends CMS_grandFather
 			}
 		}
 		
+		//second, move the files
+		$locationFromDir = new CMS_file(PATH_MODULES_FILES_STANDARD_FS."/".$locationFrom, CMS_file::FILE_SYSTEM, CMS_file::TYPE_DIRECTORY);
+		//cut here if the locationFromDir doesn't exists. That means the module doesn't have files
+		if (!$locationFromDir->exists()) {
+			return true;
+		}
+		if ($locationTo != RESOURCE_DATA_LOCATION_DEVNULL) {
+			$locationToDir = new CMS_file(PATH_MODULES_FILES_STANDARD_FS."/".$locationTo, CMS_file::FILE_SYSTEM, CMS_file::TYPE_DIRECTORY);
+			//cut here if the locationToDir doesn't exists.
+			if (!$locationToDir->exists()) {
+				CMS_grandFather::raiseError("LocationToDir does not exists : ".PATH_MODULES_FILES_STANDARD_FS."/".$locationTo);
+				return false;
+			}
+			//delete all files of the locationToDir
+			foreach(glob(PATH_MODULES_FILES_STANDARD_FS."/".$locationTo.'/p'.$page->getID().'_*', GLOB_NOSORT) as $file) {
+				if (!CMS_file::deleteFile($file)) {
+					CMS_grandFather::raiseError("Can't delete file ".$file);
+					return false;
+				}
+			}
+			//then copy or move them to the locationToDir
+			foreach(glob(PATH_MODULES_FILES_STANDARD_FS."/".$locationFrom.'/p'.$page->getID().'_*', GLOB_NOSORT) as $file) {
+				$to = str_replace('/'.$locationFrom.'/','/'.$locationTo.'/',$file);
+				if ($copyOnly) {
+					if (!CMS_file::copyTo($file,$to)) {
+						CMS_grandFather::raiseError("Can't copy file ".$file." to ".$to);
+						return false;
+					}
+				} else {
+					if (!CMS_file::moveTo($file,$to)) {
+						CMS_grandFather::raiseError("Can't move file ".$file." to ".$to);
+						return false;
+					}
+				}
+				//then chmod new file
+				CMS_file::chmodFile(FILES_CHMOD,$to);
+			}
+		}
+		//cleans the initial dir if not a copy
+		if (!$copyOnly) {
+			//then get all files of the locationFromDir
+			foreach(glob(PATH_MODULES_FILES_STANDARD_FS."/".$locationFrom.'/p'.$page->getID().'_*', GLOB_NOSORT) as $file) {
+				if (!CMS_file::deleteFile($file)) {
+					CMS_grandFather::raiseError("Can't delete file ".$file);
+					return false;
+				}
+			}
+		}
+		
 		//move the files
-		$initial_path = PATH_MODULES_FILES_STANDARD_FS."/".$locationFrom;
+		/*$initial_path = PATH_MODULES_FILES_STANDARD_FS."/".$locationFrom;
 		if (!is_dir($initial_path)) {
 			CMS_grandFather::raiseError("Can't open dir ".$initial_path." : permission denied or dir does not exists ");
 			return false;
@@ -143,7 +192,7 @@ class CMS_blocksCatalog extends CMS_grandFather
 					unlink($initial_path."/".$file);
 				}
 			}
-		}
+		}*/
 		return true;
 	}
 	

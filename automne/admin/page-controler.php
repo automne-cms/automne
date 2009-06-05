@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-controler.php,v 1.8 2009/04/02 13:55:54 sebastien Exp $
+// $Id: page-controler.php,v 1.9 2009/06/05 15:01:04 sebastien Exp $
 
 /**
   * PHP page : Receive pages updates
@@ -556,6 +556,64 @@ switch ($action) {
 		} else {
 			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
 			$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : update pageMetas');
+		}
+	break;
+	case 'tree-duplicate':
+		$pageFromId = sensitiveIO::request('pageFrom', 'sensitiveIO::isPositiveInteger', false);
+		$pageToId = sensitiveIO::request('pageTo', 'sensitiveIO::isPositiveInteger', false);
+		
+		//CHECKS user has duplication clearance
+		if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_DUPLICATE_BRANCH)) {
+			CMS_grandFather::raiseError('User has no rights to duplicate branch...');
+			$cms_message = 'Vous n\'avez pas le droit de dupliquer les branches d\'arborescences.';
+		} else {
+			//augment the execution time, because things here can be quite lengthy
+			@set_time_limit(9000);
+			//ignore user abort to avoid interuption of process
+			@ignore_user_abort(true);
+			
+			//Proceeds with tree duplication
+			//First node page
+			$pageFrom = CMS_tree::getPageByID($pageFromId);
+			//First destination page
+			$pageTo = CMS_tree::getPageByID($pageToId);
+			$pageDuplicated = array();
+			
+			function duplicatePage($user, $page, $pageToAttachTo) {
+				global $pageDuplicated;
+				if (is_a($page, "CMS_page") && is_a($pageToAttachTo, "CMS_page") && $page->getTemplate()) {
+					//Duplicate page template
+					$tpl = $page->getTemplate();
+					$tpl_copy = CMS_pageTemplatesCatalog::getCloneFromID($tpl->getID(), false, true, false, $tpl->getID());
+					$_tplID = $tpl_copy->getID();
+					//Create copy of given page
+					$newPage = $page->duplicate($user, $_tplID) ;
+					//Move to destination in tree
+					if (is_null($newPage) || !CMS_tree::attachPageToTree($newPage, $pageToAttachTo) ) {
+						return null;
+					}
+					$pageDuplicated[] = $newPage->getID();
+					//Proceed with siblings
+					$sibs = CMS_tree::getSiblings($page);
+					if (!$sibs || !sizeof($sibs)) {
+						return $pageToAttachTo;
+					} else {
+						$pageToAttachTo = $newPage ;
+					}
+					foreach ($sibs as $sib) {
+						if ($user->hasPageClearance($sib->getID(), CLEARANCE_PAGE_EDIT) && !in_array($sib->getID(),$pageDuplicated)) {
+							duplicatePage($user, $sib, $pageToAttachTo);
+						}
+					}
+				}
+			}
+			if (!$pageFrom->hasError() && !$pageTo->hasError()) {
+				//Do recursivly
+				duplicatePage($cms_user, $pageFrom, $pageTo) ;
+				$cms_message = 'Duplication des pages effectuée.';
+			} else {
+				$cms_message = 'Erreur sur la page de départ ou de destination de la duplication.';
+			}
 		}
 	break;
 	default:

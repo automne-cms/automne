@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: standard.php,v 1.9 2009/04/10 15:22:02 sebastien Exp $
+// $Id: standard.php,v 1.10 2009/06/05 15:02:19 sebastien Exp $
 
 /**
   * Class CMS_module_standard
@@ -1289,7 +1289,7 @@ class CMS_module_standard extends CMS_module
 		//clean all files older than 24h in upload directory
 		$yesterday = time() - 86400; //24h
 		try{
-			foreach ( new DirectoryIterator(PATH_MAIN_FS.'/upload') as $file) {
+			foreach ( new DirectoryIterator(PATH_UPLOAD_FS) as $file) {
 				if ($file->isFile() && $file->getFilename() != ".htaccess" && $file->getMTime() < $yesterday) {
 					@unlink($file->getPathname());
 				}
@@ -1298,7 +1298,7 @@ class CMS_module_standard extends CMS_module
 		//clean all files older than 30 days in cache directory
 		$month = time() - 2592000; //30 days
 		try{
-			foreach ( new DirectoryIterator(PATH_MAIN_FS.'/cache') as $file) {
+			foreach ( new DirectoryIterator(PATH_CACHE_FS) as $file) {
 				if ($file->isFile() && $file->getFilename() != ".htaccess" && $file->getMTime() < $month) {
 					@unlink($file->getPathname());
 				}
@@ -1701,8 +1701,9 @@ class CMS_module_standard extends CMS_module
 						);
 						return str_replace(array_keys($replace), $replace, $tag->getInnerContent());
 					break;
-					case "atm-js-tags":
+					/*case "atm-js-tags":
 					case "atm-css-tags":
+						pr($this->_codename);
 						$files = $tag->getAttribute('files');
 						if (!$files) {
 							return '';
@@ -1729,8 +1730,68 @@ class CMS_module_standard extends CMS_module
 							break;
 						}
 						//save files
+						pr($files);
 						CMS_module::moduleUsage($treatedObject->getID(), $tag->getName(), $files);
-						return '<?php echo CMS_view::'.$method.'(array(\''.implode('\',\'', $files).'\')'.($media ? ', \''.$media.'\'' : '').'); ?>'."\n";
+						return '<?php echo CMS_view::'.$method.'(array(\''.implode('\',\'', $files).'\')'.($media ? ', \''.$media.'\'' : '').'); ? >'."\n";
+					break;*/
+					case "atm-js-tags":
+					case "atm-css-tags":
+						$usage = CMS_module::moduleUsage($treatedObject->getID(), $this->_codename);
+						$tagFiles = $tag->getAttribute('files');
+						$tagFiles = array_map('trim', explode(',', $tagFiles));
+						//only if current page use a block of this module
+						if ($tagFiles) {
+							//save in global var the page ID who use this tag
+							CMS_module::moduleUsage($treatedObject->getID(), $this->_codename, array($tag->getName() => true));
+							$return = ''; //overwrite previous modules return to append files of this module
+							//save new modules files
+							switch ($tag->getName()) {
+								case "atm-js-tags":
+									//get old files for this tag already needed by other modules
+									$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-js-tags");
+									$files = is_array($files) ? $files : array();
+									
+									//append module js files
+									$files = array_merge($files, $tagFiles);
+									//append CMS_function.js file
+									if (!isset($usage['js-files']) && file_exists(PATH_JS_FS.'/CMS_functions.js')) {
+										$files = array_merge($files, array(PATH_JS_WR.'/CMS_functions.js'));
+									}
+									//save files
+									CMS_module::moduleUsage($treatedObject->getID(), $tag->getName(), $files, true);
+								break;
+								case "atm-css-tags":
+									//get old files for this tag already needed by other modules
+									$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-css-tags");
+									$files = is_array($files) ? $files : array();
+									$media = $tag->getAttribute('media') ? $tag->getAttribute('media') : 'all';
+									//append module css files
+									if (!isset($files[$media])) {
+										$files[$media] = array();
+									}
+									$files[$media] = array_merge($files[$media], $tagFiles);
+									//save files
+									CMS_module::moduleUsage($treatedObject->getID(), "atm-css-tags", $files, true);
+								break;
+							}
+							//Create return for all saved modules files
+							switch ($tag->getName()) {
+								case "atm-js-tags":
+									//get old files for this tag already needed by other modules
+									$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-js-tags");
+									$return .= '<?php echo CMS_view::getJavascript(array(\''.implode('\',\'', $files).'\')); ?>'."\n";
+								break;
+								case "atm-css-tags":
+									$media = $tag->getAttribute('media') ? $tag->getAttribute('media') : 'all';
+									//get old files for this tag already needed by other modules
+									$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-css-tags");
+									if (isset($files[$media])) {
+										$return .= '	<?php echo CMS_view::getCSS(array(\''.implode('\',\'', $files[$media]).'\'), \''.$media.'\'); ?>'."\n";
+									}
+								break;
+							}
+							return $return;
+						}
 					break;
 					case "atm-meta-tags":
 						$metaDatas = $treatedObject->getMetaTags($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC);
@@ -1738,6 +1799,8 @@ class CMS_module_standard extends CMS_module
 						//if page template already use atm-js-tags tag, no need to add JS again
 						if (!is_array($usage) || !isset($usage['atm-js-tags'])) {
 							$metaDatas .= '	<script type="text/javascript" src="/js/CMS_functions.js"></script>'."\n";
+							//save JS handled
+							CMS_module::moduleUsage($treatedObject->getID(), $this->_codename, array('js-files' => true));
 						}
 						if ($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC) {
 							/*$metaDatas .= 
@@ -1884,7 +1947,7 @@ class CMS_module_standard extends CMS_module
 				 * (.*)\<\/a> : any characters after followed by "</a>". Content found into the "()" (last parameters of the link and link content) is the third variable : "\\3"
 				 * /U : PCRE_UNGREEDY stop to the first finded occurence.
 				*/
-				$pattern = "/<a([^>]*){{(\d+)}}(.*)\<\/a>/U";
+				$pattern = "/<a([^>]*){{(\d+)}}(.*)\<\/a>/Us";
 				if ($tag->getName() == 'a' && $treatmentParameters['module'] == MOD_STANDARD_CODENAME) {
 					if ($tag->getAttribute('noselection') == 'true') {
 						$replacement = "<atm-linx type=\"direct\"><selection><start><nodespec type=\"node\" value=\"\\2\"/></start></selection><noselection>".$tag->getInnerContent()."</noselection><display><htmltemplate><a\\1{{href}}\\3</a></htmltemplate></display></atm-linx>";

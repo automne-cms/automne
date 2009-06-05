@@ -15,7 +15,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: dialoghref.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: dialoghref.php,v 1.2 2009/06/05 15:02:19 sebastien Exp $
 
 /**
   * Class CMS_dialog_href
@@ -167,22 +167,24 @@ class CMS_dialog_href extends CMS_grandFather
 			$this->_href->setFileLink($filename);
 		}
 		// Target and Popup > (width, height)
-		switch ($_POST[$this->_prefix.'link_target']) {
-		case "popup":
-			if ((int) $_POST[$this->_prefix.'link_popup_width'] > 0 || (int) $_POST[$this->_prefix.'link_popup_height'] > 0) {
-				$this->_href->setPopup($_POST[$this->_prefix.'link_popup_width'], $_POST[$this->_prefix.'link_popup_height']);
-			} else {
+		if (isset($_POST[$this->_prefix.'link_target'])) {
+			switch ($_POST[$this->_prefix.'link_target']) {
+			case "popup":
+				if ((int) $_POST[$this->_prefix.'link_popup_width'] > 0 || (int) $_POST[$this->_prefix.'link_popup_height'] > 0) {
+					$this->_href->setPopup($_POST[$this->_prefix.'link_popup_width'], $_POST[$this->_prefix.'link_popup_height']);
+				} else {
+					$this->_href->setPopup('','');
+				}
+				break;
+			case "top":
+				$this->_href->setTarget('_top');
 				$this->_href->setPopup('','');
+				break;
+			case "blank":
+				$this->_href->setTarget('_blank');
+				$this->_href->setPopup('','');
+				break;
 			}
-			break;
-		case "top":
-			$this->_href->setTarget('_top');
-			$this->_href->setPopup('','');
-			break;
-		case "blank":
-			$this->_href->setTarget('_blank');
-			$this->_href->setPopup('','');
-			break;
 		}
 		return true;
 	}
@@ -223,28 +225,39 @@ class CMS_dialog_href extends CMS_grandFather
 					$fileprefix = ($fieldID) ? 'r'.$resourceID."_f".$fieldID."_" : 'r'.$resourceID."_";
 				break;
 			}
-			//remove the old file if any
-			if (is_file($this->_href->getFileLink(true, $module, $locationType, PATH_RELATIVETO_FILESYSTEM))) {
-				if (!unlink($this->_href->getFileLink(true, $module, $locationType, PATH_RELATIVETO_FILESYSTEM))) {
-					$this->raiseError("Could not delete old linked file");
-				}
-			}
-			if ($datas[3] && strpos($datas[3], PATH_MAIN_WR.'/upload/') !== false) {
+			if ($datas[3] && strpos($datas[3], PATH_UPLOAD_WR.'/') !== false) {
 				//move and rename uploaded file 
-				$datas[3] = str_replace(PATH_MAIN_WR.'/upload/', PATH_MAIN_FS.'/upload/', $datas[3]);
+				$datas[3] = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $datas[3]);
 				$basename = pathinfo($datas[3], PATHINFO_BASENAME);
 				$path = $this->_href->getFileLink(true, $module, $locationType, PATH_RELATIVETO_FILESYSTEM, false);
 				$newFilename = $path.'/'.$fileprefix.$basename;
 				CMS_file::moveTo($datas[3], $newFilename);
 				CMS_file::chmodFile(FILES_CHMOD, $newFilename);
 				$datas[3] = pathinfo($newFilename, PATHINFO_BASENAME);
+				//remove the old file if any
+				if (is_file($this->_href->getFileLink(true, $module, $locationType, PATH_RELATIVETO_FILESYSTEM))) {
+					if (!unlink($this->_href->getFileLink(true, $module, $locationType, PATH_RELATIVETO_FILESYSTEM))) {
+						$this->raiseError("Could not delete old linked file");
+					}
+				}
 			} elseif ($datas[3]) {
 				//keep old file
 				$datas[3] = pathinfo($datas[3], PATHINFO_BASENAME);
 			} else {
 				$datas[3] = '';
+				//remove the old file if any
+				if (is_file($this->_href->getFileLink(true, $module, $locationType, PATH_RELATIVETO_FILESYSTEM))) {
+					if (!unlink($this->_href->getFileLink(true, $module, $locationType, PATH_RELATIVETO_FILESYSTEM))) {
+						$this->raiseError("Could not delete old linked file");
+					}
+				}
 			}
 			$this->_href->setFileLink($datas[3]);
+		} elseif (is_file($this->_href->getFileLink(true, $module, $locationType, PATH_RELATIVETO_FILESYSTEM))) {
+			//remove the old file
+			if (!unlink($this->_href->getFileLink(true, $module, $locationType, PATH_RELATIVETO_FILESYSTEM))) {
+				$this->raiseError("Could not delete old linked file");
+			}
 		}
 		// Target and Popup > (width, height)
 		list($width, $height) = explode(',',$datas[6]);

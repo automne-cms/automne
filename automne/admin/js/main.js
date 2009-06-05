@@ -6,7 +6,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: main.js,v 1.11 2009/04/20 15:13:04 sebastien Exp $
+  * $Id: main.js,v 1.12 2009/06/05 15:01:06 sebastien Exp $
   */
 
 //Declare Automne namespace
@@ -58,7 +58,6 @@ Automne = {
 		
 		//check for authenticated user
 		Automne.server.call('login.php' + ((Automne.logout) ? '?cms_action=logout' : ''));
-		
 		//remove loading element
 		setTimeout(function(){
 			Ext.get('atm-center').remove();
@@ -160,7 +159,6 @@ Automne = {
 		Ext.History.init();
 		// Handle history change event in order to restore the UI to the appropriate history state
 	    Ext.History.on('change', function(token){
-			pr(arguments);
 			if(token){
 				Automne.getToHistory(token);
 			}
@@ -289,16 +287,20 @@ Automne.server = {
 		}
 	},
 	//hide loading spinner after server call
-	hideSpinner: function () {
+	hideSpinner: function (ajax, response, options) {
 		if (!Ext.Ajax.isLoading()) {
 			Ext.get('atm-server-call').hide();
+		}
+		//check for return error
+		if (response == undefined || (response.responseXML == undefined && response.getResponseHeader('Content-Type').indexOf('text/xml') !== -1) || response.responseText == '') {
+			Automne.server.failureResponse(response, options, null, 'call');
 		}
 	},
 	//method used for a server call : eval response
 	evalResponse: function (response, options) {
 		//check for XML content
-		if (response.responseXML == undefined) {
-			Automne.server.failureResponse(response, options, null, 'call');
+		if (response == undefined || response.responseXML == undefined) {
+			//here, error is handled by hideSpinner method, so simply quit
 			return;
 		}
 		var content = '';
@@ -333,8 +335,10 @@ Automne.server = {
 		if (options.evalJSon !== false && xml && xml.getElementsByTagName('jsoncontent').length) {
 			var jsonResponse = {};
 			try{
-				eval('jsonResponse = '+xml.getElementsByTagName('jsoncontent').item(0).firstChild.nodeValue+';');
+				//eval('jsonResponse = '+xml.getElementsByTagName('jsoncontent').item(0).firstChild.nodeValue+';');
+				jsonResponse = Ext.decode(xml.getElementsByTagName('jsoncontent').item(0).firstChild.nodeValue);
 			} catch(e) {
+				jsonResponse = {};
 				pr(e, 'error');
 				Automne.server.failureResponse(response, options, e, 'json');
 			}
@@ -355,15 +359,19 @@ Automne.server = {
 		var jsFiles = {}, cssFiles = {};
 		if (options.evalJSon !== false && xml && xml.getElementsByTagName('jsfiles').length) {
 			try{
-				eval('jsFiles = '+xml.getElementsByTagName('jsfiles').item(0).firstChild.nodeValue+';');
+				//eval('jsFiles = '+xml.getElementsByTagName('jsfiles').item(0).firstChild.nodeValue+';');
+				jsFiles = Ext.decode(xml.getElementsByTagName('jsfiles').item(0).firstChild.nodeValue);
 			} catch(e) {
+				jsFiles = {};
 				pr(e, 'error');
 			}
 		}
 		if (options.evalJSon !== false && xml && xml.getElementsByTagName('cssfiles').length) {
 			try{
-				eval('cssFiles = '+xml.getElementsByTagName('cssfiles').item(0).firstChild.nodeValue+';');
+				//eval('cssFiles = '+xml.getElementsByTagName('cssfiles').item(0).firstChild.nodeValue+';');
+				cssFiles = Ext.decode(xml.getElementsByTagName('cssfiles').item(0).firstChild.nodeValue);
 			} catch(e) {
+				cssFiles = {};
 				pr(e, 'error');
 			}
 		}
@@ -399,21 +407,30 @@ Automne.server = {
 			break;
 		}
 		msg += '<br /><br />'+ al.contactAdministrator +'<br /><br />';
-		if (response) {
+		if (e || response) {
 			if (e) {
-				msg += 'Message : '+ e.name +' : '+ e.message +'<br />';
+				msg += 'Message : '+ e.name +' : '+ e.message +'<br /><br />';
 				if (e.lineNumber && e.fileName) {
-					msg += 'Line : '+ e.lineNumber +' of file '+ e.fileName +'<br />';
+					msg += 'Line : '+ e.lineNumber +' of file '+ e.fileName +'<br /><br />';
 				}
 			}
-			if (response.argument) {
-				msg += 'Address : '+ response.argument.url +'<br />'+
-				'Parameters : '+ Ext.urlEncode(response.argument.params) +'<br />';
-			}
-			msg += 'Status : '+ response.status +' ('+ response.statusText +')<br />'+
-			'Response Headers : <pre class="atm-debug">'+ response.getAllResponseHeaders +'</pre>';
-			if (response.responseText) {
-				msg += '<br />Server return : <pre class="atm-debug">' + (!e ? response.responseText :  Ext.util.Format.htmlEncode(response.responseText)) +'</pre><br />';
+			if (response) {
+				if (response.argument) {
+					msg += 'Address : '+ response.argument.url +'<br /><br />'+
+					'Parameters : '+ Ext.urlEncode(response.argument.params) +'<br /><br />';
+				} else if (options.url) {
+					msg += 'Address : '+ options.url +'<br /><br />';
+					if (options.params) {
+						msg += 'Parameters : '+ Ext.urlEncode(options.params) +'<br /><br />';
+					}
+				}
+				if (response.status) {
+					msg += 'Status : '+ response.status +' ('+ response.statusText +')<br /><br />'+
+					'Response Headers : <pre class="atm-debug">'+ response.getAllResponseHeaders() +'</pre>';
+				}
+				if (response.responseText) {
+					msg += '<br />Server return : <pre class="atm-debug">' + (!e ? response.responseText :  Ext.util.Format.htmlEncode(response.responseText)) +'</pre><br />';
+				}
 			}
 		}
 		Automne.message.popup({
@@ -710,7 +727,7 @@ Automne.view = {
 			pr('Can\'t get element '+ eId +'for tree');
 			return false;
 		}
-		pr('tree for el : '+eId+', heading : '+heading+ ', page : '+currentPage);
+		pr('Tree for el : '+eId+', heading : '+heading+ ', page : '+currentPage);
 		//create window element
 		var winid = Ext.id();
 		var win = new Automne.Window({
@@ -841,7 +858,14 @@ Automne.view = {
 		}
 		if (Ext.getCmp('scriptsProgressBar')) {
 			var progressScripts = Ext.getCmp('scriptsProgressBar');
-			progressScripts.updateProgress((av.currentScripts / av.maxScripts), toptext );
+			v = av.currentScripts / av.maxScripts;
+			if (!isNaN(v) && v != 0) {
+				progressScripts.updateProgress((av.currentScripts / av.maxScripts), toptext );
+			} else {
+				progressScripts.reset();
+				progressScripts.updateProgress(0, toptext );
+			}
+			
 		}
 	},
 	disconnect: function() {
@@ -1044,6 +1068,8 @@ Automne.console = {
 	},
 	pr:	function (data, type, backtrace) {
 		if (Automne && Automne.context && Automne.context.debug & 1) {
+			//uncomment this line to view function caller
+			//data += ' '+pr.caller.toString();
 			var type = type || 'log'; //use 'dir' for exploring variable in IE
 			//use firebug if available
 			if (typeof window.console != 'undefined' && window.console.info) {
@@ -1090,6 +1116,7 @@ Automne.console = {
 				case 'log': //default
 				default:
 					window.blackbird.info(data);
+					//window.Ext.log(data); //use this to log info within Ext console
 				break;
 			}
 		}

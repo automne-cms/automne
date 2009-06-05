@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modules-categories.php,v 1.1 2009/04/02 13:55:54 sebastien Exp $
+// $Id: modules-categories.php,v 1.2 2009/06/05 15:01:04 sebastien Exp $
 
 /**
   * PHP page : Load module categories tree window.
@@ -100,9 +100,9 @@ $jscontent = <<<END
 				Ext.getCmp('{$codename}CatsDelete').setDisabled(!node.attributes.deletable);
 			},
 			'beforemovenode':function(tree, node, oldParent, newParent, index) {
-				if (oldParent == newParent) {
+				/*if (oldParent == newParent) {
 					return false;
-				}
+				}*/
 				Automne.server.call({
 					url:				'modules-categories-controler.php',
 					params: 			{

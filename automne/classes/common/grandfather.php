@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: grandfather.php,v 1.6 2009/04/02 13:57:59 sebastien Exp $
+// $Id: grandfather.php,v 1.7 2009/06/05 15:02:19 sebastien Exp $
 
 /**
   * Class CMS_grandFather
@@ -36,7 +36,7 @@ class CMS_grandFather
 	  * Log file
 	  * Default : "cms_error_log"
 	  */
-	const ERROR_LOG = "/cms_error_log";
+	const ERROR_LOG = "cms_error_log";
 
 	/**
 	  * True if this object has raised an error.
@@ -87,7 +87,7 @@ class CMS_grandFather
 				$bt = array_reverse(debug_backtrace());
 				$backtrace = array(
 					'summary'		=> sensitiveIO::printBackTrace($bt),
-					'backtrace'		=> print_r($bt,true),
+					'backtrace'		=> @print_r($bt,true),
 				);
 				$backtraceName = 'bt-'.md5(rand());
 				$backtraces[$backtraceName] = $backtrace;
@@ -185,7 +185,8 @@ class CMS_grandFather
 							E_STRICT			=> 'Runtime Notice',
 							E_RECOVERABLE_ERROR	=> 'Catchable Fatal Error'
 						);
-		CMS_grandFather::raiseError('PHP '.$errortype[$errno].' : '.$errstr.' line '.$errline.' of file '.$errfile);
+		$errorLabel = isset($errortype[$errno]) ? $errortype[$errno] : 'Errror '.$errno;
+		CMS_grandFather::raiseError('PHP '.$errorLabel.' : '.$errstr.' line '.$errline.' of file '.$errfile);
 		return true;
 	}
 
@@ -246,12 +247,12 @@ class CMS_grandFather
 				'cms_dialog' 						=> PATH_PACKAGES_FS.'/dialogs/dialog.php', //Deprecated
 				'cms_jsdialog' 						=> PATH_PACKAGES_FS.'/dialogs/jsdialog.php', //Deprecated
 				'cms_view' 							=> PATH_PACKAGES_FS.'/dialogs/view.php',
-				'cms_submenus' 						=> PATH_PACKAGES_FS.'/dialogs/submenus.php',
-				'cms_submenu' 						=> PATH_PACKAGES_FS.'/dialogs/submenu.php',
+				'cms_submenus' 						=> PATH_PACKAGES_FS.'/dialogs/submenus.php', //Deprecated
+				'cms_submenu' 						=> PATH_PACKAGES_FS.'/dialogs/submenu.php', //Deprecated
 				'cms_dialog_listboxes' 				=> PATH_PACKAGES_FS.'/dialogs/dialoglistboxes.php',
 				'cms_dialog_href' 					=> PATH_PACKAGES_FS.'/dialogs/dialoghref.php',
-				'cms_fileupload_dialog' 			=> PATH_PACKAGES_FS.'/dialogs/fileupload.php',
-				'cms_loadingdialog' 				=> PATH_PACKAGES_FS.'/dialogs/loadingDialog.php',
+				'cms_fileupload_dialog' 			=> PATH_PACKAGES_FS.'/dialogs/fileupload.php', //Deprecated
+				'cms_loadingdialog' 				=> PATH_PACKAGES_FS.'/dialogs/loadingDialog.php', //Deprecated
 				'cms_texteditor' 					=> PATH_PACKAGES_FS.'/dialogs/texteditor.php',
 
 				//files
@@ -299,7 +300,7 @@ class CMS_grandFather
 				'cms_linxdisplay' 					=> PATH_PACKAGES_FS.'/pageContent/linxdisplay.php',
 				'cms_linxnodespec' 					=> PATH_PACKAGES_FS.'/pageContent/linxnodespec.php',
 				'cms_xmltag' 						=> PATH_PACKAGES_FS.'/pageContent/xmltag.php',
-				'cms_xmlparser' 					=> PATH_PACKAGES_FS.'/pageContent/xmlparser.php', //shadow class, for compatibility
+				'cms_xmlparser' 					=> PATH_PACKAGES_FS.'/pageContent/xmlparser.php', //Deprecated : shadow class, for compatibility
 				'cms_domdocument'					=> PATH_PACKAGES_FS.'/pageContent/xmldomdocument.php',
 
 				//scripts
@@ -399,19 +400,4 @@ class CMS_Exception extends Exception  {
 		CMS_grandFather::raiseError($message);
 	}
 }
-
-/**
-  * Set PHP error handler
-  */
-set_error_handler (array('CMS_grandFather','PHPErrorHandler'));
-
-/**
-  * Set Automne autoload handler
-  */
-spl_autoload_register (array('CMS_grandFather','autoload'));
-
-/**
-  * Set shutdown function
-  */
-register_shutdown_function(array('CMS_view','quit'));
 ?>

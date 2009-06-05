@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_text.php,v 1.2 2009/04/02 13:58:00 sebastien Exp $
+// $Id: object_text.php,v 1.3 2009/06/05 15:02:18 sebastien Exp $
 
 /**
   * Class CMS_object_text
@@ -156,6 +156,48 @@ class CMS_object_text extends CMS_object_common
 			}
 		}
 		return $input;
+	}
+	
+	/**
+	  * get HTML admin (used to enter object values in admin)
+	  *
+	  * @param integer $fieldID, the current field id (only for poly object compatibility)
+	  * @param CMS_language $language, the current admin language
+	  * @param string prefixname : the prefix to use for post names
+	  * @return string : the html admin
+	  * @access public
+	  */
+	function getHTMLAdmin($fieldID, $language, $prefixName) {
+		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
+		$params = $this->getParamsValues();
+		if ($params['html']) {
+			global $cms_user;
+			// Insert prefered text editor for textarea field
+			$module = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
+			$toolbarset = (!$params['toolbar']) ? $module : $params['toolbar'] ;
+			//create field value
+			$value = $this->_subfieldValues[0]->getValue();
+			if (class_exists('CMS_wysiwyg_toolbar')) {
+				$toolbar = CMS_wysiwyg_toolbar::getByCode($toolbarset, $cms_user);
+				$value = $toolbar->hasModulePlugins() ? FCKeditor::parsePluginsTags($value, $module) : $value;
+			}
+			$return['xtype'] =	'fckeditor';
+			$return['id'] =		'fckeditor'.md5(mt_rand().microtime());
+			$return['value'] =	(string) $value;
+			$return['editor'] = array(
+				'ToolbarSet' 		=> $toolbarset,
+				'DefaultLanguage'	=> $language->getCode()
+			);
+		} else {
+			$return['xtype'] = 'textarea';
+		}
+		if (sensitiveIO::isPositiveInteger($params['toolbarHeight'])) {
+			$return['height'] = $params['toolbarHeight'];
+		}
+		if (sensitiveIO::isPositiveInteger($params['toolbarWidth'])) {
+			$return['width'] = $params['toolbarWidth'];
+		}
+		return $return;
 	}
 	
 	/**

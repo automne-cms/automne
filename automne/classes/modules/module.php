@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: module.php,v 1.5 2009/04/02 13:57:58 sebastien Exp $
+// $Id: module.php,v 1.6 2009/06/05 15:02:19 sebastien Exp $
 
 /**
   * Class CMS_module
@@ -720,9 +720,9 @@ class CMS_module extends CMS_grandFather
 				);
 			break;
 			case MODULE_TREATMENT_PAGECONTENT_TAGS :
-				$return["atm-meta-tags"] = array("selfClosed" => true, "parameters" => array());
 				$return["atm-css-tags"] = array("selfClosed" => true, "parameters" => array());
 				$return["atm-js-tags"] = array("selfClosed" => true, "parameters" => array());
+				$return["atm-meta-tags"] = array("selfClosed" => true, "parameters" => array());
 			break;
 		}
 		return $return;
@@ -822,46 +822,64 @@ class CMS_module extends CMS_grandFather
 					case "atm-js-tags":
 					case "atm-css-tags":
 						$usage = CMS_module::moduleUsage($treatedObject->getID(), $this->_codename);
+						$return = ''; //overwrite previous modules return to append files of this module
 						//only if current page use a block of this module
 						if (isset($usage['block'])) {
 							//save in global var the page ID who use this tag
 							CMS_module::moduleUsage($treatedObject->getID(), $this->_codename, array($tag->getName() => true));
-							$return = '';
-							$media = $tag->getAttribute('media');
+							//save new modules files
 							switch ($tag->getName()) {
 								case "atm-js-tags":
-									$method = 'getJavascript';
-									//get old files for this tag already needed by other modules
-									$otherfiles = CMS_module::moduleUsage($treatedObject->getID(), "atm-js-tags");
-									$otherfiles = is_array($otherfiles) ? $otherfiles : array();
-									//append module js files
-									$files = array_merge($otherfiles, $this->getJSFiles());
+									if (!isset($usage['js-files'])) {
+										//get old files for this tag already needed by other modules
+										$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-js-tags");
+										$files = is_array($files) ? $files : array();
+										
+										//append module js files
+										$files = array_merge($files, $this->getJSFiles());
+										//save files
+										CMS_module::moduleUsage($treatedObject->getID(), $tag->getName(), $files, true);
+										//save JS handled
+										CMS_module::moduleUsage($treatedObject->getID(), $this->_codename, array('js-files' => true));
+									}
 								break;
 								case "atm-css-tags":
-									$method = 'getCSS';
-									//get old files for this tag already needed by other modules
-									$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-css-tags");
-									$files = is_array($files) ? $files : array();
-									//append module css files
-									$moduleCSSFiles = $this->getCSSFiles();
-									if (isset($moduleCSSFiles['screen'])) {
-										$files = array_merge($files, $moduleCSSFiles['screen']);
-									}
-									//get old print files for this tag already needed by other modules
-									$printFiles = CMS_module::moduleUsage($treatedObject->getID(), "atm-css-tags-print");
-									$printFiles = is_array($printFiles) ? $printFiles : array();
-									if (isset($moduleCSSFiles['print'])) {
-										$printFiles = array_merge($files, $moduleCSSFiles['print']);
+									$media = $tag->getAttribute('media') ? $tag->getAttribute('media') : 'all';
+									if (!isset($usage['css-media'][$media])) {
+										$return = ''; //overwrite previous modules return to append files of this module
+										//get old files for this tag already needed by other modules
+										$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-css-tags");
+										$files = is_array($files) ? $files : array();
+										//append module css files
+										$moduleCSSFiles = $this->getCSSFiles();
+										foreach ($moduleCSSFiles as $filesMedia => $mediaFiles) {
+											if (!isset($files[$filesMedia])) {
+												$files[$filesMedia] = array();
+											}
+											$files[$filesMedia] = array_merge($files[$filesMedia], $moduleCSSFiles[$filesMedia]);
+										}
+										//save files
+										CMS_module::moduleUsage($treatedObject->getID(), "atm-css-tags", $files, true);
+										//save media handled
+										CMS_module::moduleUsage($treatedObject->getID(), $this->_codename, array('css-media' => array($media => true)));
 									}
 								break;
 							}
-							//save files
-							CMS_module::moduleUsage($treatedObject->getID(), $tag->getName(), $files);
-							$return .= '<?php echo CMS_view::'.$method.'(array(\''.implode('\',\'', $files).'\')'.($media ? ', \''.$media.'\'' : '').'); ?>'."\n";
-							if (isset($printFiles) && $printFiles) {
-								//save files
-								CMS_module::moduleUsage($treatedObject->getID(), "atm-css-tags-print", $printFiles);
-								$return .= '	<?php echo CMS_view::'.$method.'(array(\''.implode('\',\'', $printFiles).'\'), \'print\'); ?>'."\n";
+							//Create return for all saved modules files
+							switch ($tag->getName()) {
+								case "atm-js-tags":
+									//get old files for this tag already needed by other modules
+									$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-js-tags");
+									$return .= '<?php echo CMS_view::getJavascript(array(\''.implode('\',\'', $files).'\')); ?>'."\n";
+								break;
+								case "atm-css-tags":
+									$media = $tag->getAttribute('media') ? $tag->getAttribute('media') : 'all';
+									//get old files for this tag already needed by other modules
+									$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-css-tags");
+									if (isset($files[$media])) {
+										$return .= '<?php echo CMS_view::getCSS(array(\''.implode('\',\'', $files[$media]).'\'), \''.$media.'\'); ?>'."\n";
+									}
+								break;
 							}
 							return $return;
 						}
@@ -870,22 +888,17 @@ class CMS_module extends CMS_grandFather
 						//if this page use a row of this module then add the css file if exists to the page
 						$usage = CMS_module::moduleUsage($treatedObject->getID(), $this->_codename);
 						if (isset($usage['block'])) {
-							if (!isset($usage['atm-css-tags'])) {
-								//append module css files
-								$moduleCSSFiles = $this->getCSSFiles();
-								if (isset($moduleCSSFiles['screen'])) {
+							//append module css files
+							$moduleCSSFiles = $this->getCSSFiles();
+							foreach ($moduleCSSFiles as $media => $mediaFiles) {
+								if (!isset($usage['css-media'][$media])) {
 									$tagContent .= "\n".
-									'	<!-- load the style of '.$this->_codename.' module -->'."\n";
-									foreach ($moduleCSSFiles['screen'] as $cssfile) {
-										$tagContent .= '	<link rel="stylesheet" type="text/css" href="'.$cssfile.'" />'."\n";
+									'	<!-- load the style of '.$this->_codename.' module for media '.$media.' -->'."\n";
+									foreach ($moduleCSSFiles[$media] as $cssfile) {
+										$tagContent .= '	<link rel="stylesheet" type="text/css" href="'.$cssfile.'" media="'.$media.'" />'."\n";
 									}
-								}
-								if (isset($moduleCSSFiles['print'])) {
-									$tagContent .= "\n".
-									'	<!-- load the style of '.$this->_codename.' module -->'."\n";
-									foreach ($moduleCSSFiles['print'] as $cssfile) {
-										$tagContent .= '	<link rel="stylesheet" type="text/css" media="print" href="'.$cssfile.'" />'."\n";
-									}
+									//save media handled
+									CMS_module::moduleUsage($treatedObject->getID(), $this->_codename, array('css-media' => array($media => true)));
 								}
 							}
 							if (!isset($usage['atm-js-tags'])) {
@@ -896,6 +909,8 @@ class CMS_module extends CMS_grandFather
 										$tagContent .= '	<script type="text/javascript" src="'.$jsfile.'"></script>'."\n";
 									}
 								}
+								//save JS handled
+								CMS_module::moduleUsage($treatedObject->getID(), $this->_codename, array('js-files' => true));
 							}
 						}
 						return $tagContent;
@@ -936,11 +951,16 @@ class CMS_module extends CMS_grandFather
 	  */
 	function getCSSFiles() {
 		$files = array();
-		if (file_exists(PATH_CSS_FS.'/modules/'.$this->_codename.'.css')) {
-			$files['screen'][] = PATH_CSS_WR.'/modules/'.$this->_codename.'.css';
-		}
-		if (file_exists(PATH_CSS_FS.'/modules/'.$this->_codename.'-print.css')) {
-			$files['print'][] = PATH_CSS_WR.'/modules/'.$this->_codename.'-print.css';
+		$medias = array('all', 'aural', 'braille', 'embossed', 'handheld', 'print', 'projection', 'screen', 'tty', 'tv');
+		foreach ($medias as $media) {
+			if ($media == 'all') {
+				if (file_exists(PATH_CSS_FS.'/modules/'.$this->_codename.'.css')) {
+					$files['all'][] = PATH_CSS_WR.'/modules/'.$this->_codename.'.css';
+				}
+			}
+			if (file_exists(PATH_CSS_FS.'/modules/'.$this->_codename.'-'.$media.'.css')) {
+				$files[$media][] = PATH_CSS_WR.'/modules/'.$this->_codename.'-'.$media.'.css';
+			}
 		}
 		return $files;
 	}
@@ -998,7 +1018,6 @@ class CMS_module extends CMS_grandFather
 		}
 		if ($reset && isset($moduleUseage[$module]["pageUseModule"][$pageID])) {
 			unset($moduleUseage[$module]["pageUseModule"][$pageID]);
-			return true;
 		}
 		if ($setUseage) {
 			if (!is_array($setUseage)) $setUseage = array($setUseage);

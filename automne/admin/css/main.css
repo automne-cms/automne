@@ -1,4 +1,4 @@
-/*$Id: main.css,v 1.6 2009/04/20 15:13:04 sebastien Exp $*/
+/*$Id: main.css,v 1.7 2009/06/05 15:01:05 sebastien Exp $*/
 body {
 	font-family:		tahoma,arial,helvetica,sans-serif;
 	font-size:			small;
@@ -31,13 +31,14 @@ strong {
 }
 .atm-debug {
 	height:				100px;
-	width:				556px;
+	width:				516px;
 	overflow:			auto;
 	background-color:	white;
 	border:				1px solid grey;
 	padding:			2px;
 }
-.x-form-item .atm-help {
+.x-form-item .atm-help,
+.x-fieldset-header-text .atm-help {
 	background:			#FFFFFF url(/automne/admin/img/atm-help.png) top left no-repeat;
 	padding-left:		6px;
 }
@@ -209,31 +210,40 @@ span.atm-tab * {
 	background-position:0px -177px;
 }
 
-.x-tab-strip .x-tab-strip-over span.atm-pic-big-search, .x-tab-strip .x-tab-strip-active span.atm-pic-big-search{
+/*.x-tab-strip .x-tab-strip-over span.atm-pic-big-search, */
+.x-tab-strip .x-tab-strip-active span.atm-pic-big-search{
 	background-position:5px -297px;
 }
-.x-tab-strip .x-tab-strip-over span.atm-pic-big-tree, .x-tab-strip .x-tab-strip-active span.atm-pic-big-tree{
+/*.x-tab-strip .x-tab-strip-over span.atm-pic-big-tree, */
+.x-tab-strip .x-tab-strip-active span.atm-pic-big-tree{
 	background-position:5px -327px;
 }
-.x-tab-strip .x-tab-strip-over span.atm-pic-big-favorite, .x-tab-strip .x-tab-strip-active span.atm-pic-big-favorite{
+/*.x-tab-strip .x-tab-strip-over span.atm-pic-big-favorite, */
+.x-tab-strip .x-tab-strip-active span.atm-pic-big-favorite{
 	background-position:5px -357px;
 }
-.x-tab-strip .x-tab-strip-over span.atm-pic-big-action, .x-tab-strip .x-tab-strip-active span.atm-pic-big-action{
+/*.x-tab-strip .x-tab-strip-over span.atm-pic-big-action, */
+.x-tab-strip .x-tab-strip-active span.atm-pic-big-action{
 	background-position:0px -387px;
 }
-.x-tab-strip .x-tab-strip-over span.atm-pic-big-add, .x-tab-strip .x-tab-strip-active span.atm-pic-big-add{
+/*.x-tab-strip .x-tab-strip-over span.atm-pic-big-add, */
+.x-tab-strip .x-tab-strip-active span.atm-pic-big-add{
 	background-position:0px -417px;
 }
-.x-tab-strip .x-tab-strip-over span.atm-pic-big-properties, .x-tab-strip .x-tab-strip-active span.atm-pic-big-properties{
+/*.x-tab-strip .x-tab-strip-over span.atm-pic-big-properties, */
+.x-tab-strip .x-tab-strip-active span.atm-pic-big-properties{
 	background-position:0px -447px;
 }
-.x-tab-strip .x-tab-strip-over span.atm-pic-big-edit, .x-tab-strip .x-tab-strip-active span.atm-pic-big-edit{
+/*.x-tab-strip .x-tab-strip-over span.atm-pic-big-edit, */
+.x-tab-strip .x-tab-strip-active span.atm-pic-big-edit{
 	background-position:0px -507px;
 }
-.x-tab-strip .x-tab-strip-over span.atm-pic-big-draft, .x-tab-strip .x-tab-strip-active span.atm-pic-big-draft{
+/*.x-tab-strip .x-tab-strip-over span.atm-pic-big-draft, */
+.x-tab-strip .x-tab-strip-active span.atm-pic-big-draft{
 	background-position:0px -537px;
 }
-.x-tab-strip .x-tab-strip-over span.atm-pic-big-edited, .x-tab-strip .x-tab-strip-active span.atm-pic-big-edited{
+/*.x-tab-strip .x-tab-strip-over span.atm-pic-big-edited, */
+.x-tab-strip .x-tab-strip-active span.atm-pic-big-edited{
 	background-position:0px -477px;
 }
 
@@ -526,6 +536,9 @@ ul.categoriesList {
 	padding:		3px;
 	border-bottom:	1px solid #e5e8ea;
 }
+/*.atm-results .atm-title *{
+	background-color:transparent !important;
+}*/
 .atm-results .atm-title table{
 	width:			100%;
 }
@@ -557,7 +570,11 @@ ul.categoriesList {
 	zoom:			1;
 	padding:		3px 8px 3px 3px;
 	border-top:		1px solid #fff;
-}
+	/*background-color:transparent !important;*/
+}/*
+.atm-results .atm-description * {
+	background-color:transparent !important;
+}*/
 .atm-results .atm-description .atm-text-alert {
 	float:			right;
 }
@@ -670,4 +687,14 @@ ul.atm-server li {
 }
 #blackbird .mainBody a {
 	color:				white;
+}
+.CodeMirror-line-numbers {
+	width: 2.2em;
+	color: #aaa;
+	background-color: #eee;
+	text-align: right;
+	padding-right: .3em;
+	font-size: 10pt;
+	font-family: monospace;
+	padding-top: .4em;
 }

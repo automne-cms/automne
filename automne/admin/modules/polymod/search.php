@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: search.php,v 1.2 2009/02/03 14:25:51 sebastien Exp $
+// $Id: search.php,v 1.3 2009/06/05 15:01:07 sebastien Exp $
 
 /**
   * PHP page : Load polyobjects items datas
@@ -43,6 +43,10 @@ $limit = sensitiveIO::request('limit', 'sensitiveIO::isPositiveInteger', $_SESSI
 $limitToItems = sensitiveIO::request('items');
 if ($limitToItems) {
 	$limitToItems = explode(',',$limitToItems);
+}
+$limitToOrderedItems = sensitiveIO::request('itemsOrdered');
+if ($limitToOrderedItems) {
+	$limitToOrderedItems = explode(',',$limitToOrderedItems);
 }
 //Some actions to do on items founded
 $unlock = sensitiveIO::request('unlock') ? true : false;
@@ -166,25 +170,27 @@ if ($_SESSION["cms_context"]->getSessionVar('items_'.$object->getID().'_kwrds') 
 	$search->addWhereCondition("keywords", $_SESSION["cms_context"]->getSessionVar('items_'.$object->getID().'_kwrds'));
 }
 
-//If we must limit to some specific items (usually used during refresh of some listing elements
+//If we must limit to some specific items (usually used during refresh of some listing elements)
 if ($limitToItems) {
 	$search->addWhereCondition("items", $limitToItems);
-}
-
-// Params : paginate limit
-$search->setAttribute('itemsPerPage', $limit);
-$search->setAttribute('page', ($start / $limit));
-
-// Params : set default direction direction
-if(!$_SESSION["cms_context"]->getSessionVar('direction_'.$object->getID())){
-	$_SESSION["cms_context"]->setSessionVar('direction_'.$object->getID(), 'desc');
-}
-
-// Params : order
-if($_SESSION["cms_context"]->getSessionVar('sort_'.$object->getID())){
-	$search->addOrderCondition($_SESSION["cms_context"]->getSessionVar('sort_'.$object->getID()),$_SESSION["cms_context"]->getSessionVar('direction_'.$object->getID()));
+} elseif ($limitToOrderedItems) {//If we must limit to some specific items ordered (usually used for polymod multi_poly_object field)
+	$search->addWhereCondition("itemsOrdered", $limitToOrderedItems);
 } else {
-	$search->addOrderCondition('objectID', $_SESSION["cms_context"]->getSessionVar('direction_'.$object->getID()));
+	// Params : paginate limit
+	$search->setAttribute('itemsPerPage', $limit);
+	$search->setAttribute('page', ($start / $limit));
+	
+	// Params : set default direction direction
+	if(!$_SESSION["cms_context"]->getSessionVar('direction_'.$object->getID())){
+		$_SESSION["cms_context"]->setSessionVar('direction_'.$object->getID(), 'desc');
+	}
+	
+	// Params : order
+	if($_SESSION["cms_context"]->getSessionVar('sort_'.$object->getID())){
+		$search->addOrderCondition($_SESSION["cms_context"]->getSessionVar('sort_'.$object->getID()),$_SESSION["cms_context"]->getSessionVar('direction_'.$object->getID()));
+	} else {
+		$search->addOrderCondition('objectID', $_SESSION["cms_context"]->getSessionVar('direction_'.$object->getID()));
+	}
 }
 $items = $search->search();
 
@@ -194,14 +200,6 @@ $itemsDatas['total'] = $search->getNumRows();
 //Get parsed result definition
 if ($resultsDefinition) {
 	$definitionParsing = new CMS_polymod_definition_parsing($resultsDefinition, true, CMS_polymod_definition_parsing::PARSE_MODE);
-	// Add specific css if we use the resultsDefinition
-	/*if (file_exists(PATH_CSS_FS.'/modules/'.$codename.'.css')) {
-		$itemsDatas['css'] = PATH_CSS_WR.'/modules/'.$codename.'.css';
-	}
-	// Add specific js if we use the resultsDefinition
-	if (file_exists(PATH_JS_FS.'/modules/'.$codename.'.js')) {
-		$itemsDatas['js'] = PATH_JS_WR.'/modules/'.$codename.'.js';
-	}*/
 }
 //loop on results items
 foreach ($items as $item) {

@@ -9,7 +9,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: linkfield.js,v 1.2 2009/03/02 11:26:54 sebastien Exp $
+  * $Id: linkfield.js,v 1.3 2009/06/05 15:01:06 sebastien Exp $
   */
 Automne.LinkField = Ext.extend(Ext.form.Field,  {
 	separator:'|',
@@ -191,7 +191,8 @@ Automne.LinkField = Ext.extend(Ext.form.Field,  {
 			defaults: {
 				xtype:			'textfield',
 				anchor:			'97%',
-				allowBlank:		false
+				allowBlank:		false,
+				hideMode:		'offsets'
 			},
 			listeners:{
 				'render':function(form){

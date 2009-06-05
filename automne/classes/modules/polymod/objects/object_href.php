@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_href.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: object_href.php,v 1.2 2009/06/05 15:02:18 sebastien Exp $
 
 /**
   * Class CMS_object_href
@@ -45,6 +45,7 @@ class CMS_object_href extends CMS_object_common
 	  * Standard Messages
 	  */
 	const MESSAGE_OBJECT_HREF_FIELD_NONE = 10;
+	const MESSAGE_OBJECT_HREF_ALL_FILES = 530;
 	/**
 	  * object label
 	  * @var integer
@@ -114,17 +115,25 @@ class CMS_object_href extends CMS_object_common
 	  *
 	  * @param array $values : the POST result values
 	  * @param string prefixname : the prefix used for post names
+	  * @param boolean newFormat : new automne v4 format (default false for compatibility)
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function checkMandatory($values,$prefixName) {
+	function checkMandatory($values,$prefixName, $newFormat = false) {
 		//if field is required check values
 		if ($this->_field->getValue('required')) {
-			//create a sub prefix
-			$subPrefixName = 'href'.$prefixName.$this->_field->getID().'_0';
-			//must have type and label
-			if (!$values[$subPrefixName."link_type"] || !$values[$subPrefixName.'link_label']) {
-				return false;
+			if ($newFormat) {
+				$href = new CMS_href($values['href'.$prefixName.$this->_field->getID().'_0']);
+				if (!$href->hasValidHREF()) {
+					return false;
+				}
+			} else {
+				//create a sub prefix
+				$subPrefixName = 'href'.$prefixName.$this->_field->getID().'_0';
+				//must have type and label
+				if (!$values[$subPrefixName."link_type"] || !$values[$subPrefixName.'link_label']) {
+					return false;
+				}
 			}
 		}
 		return true;
@@ -140,21 +149,27 @@ class CMS_object_href extends CMS_object_common
 	  * @access public
 	  */
 	function getHTMLAdmin($fieldID, $language, $prefixName) {
-		//is this field mandatory ?
-		$mandatory = ($this->_field->getValue('required')) ? '<span class="admin_text_alert">*</span> ':'';
-		$html = '<tr><td class="admin" align="right" valign="top">'.$mandatory.$this->getFieldLabel($language).'</td><td class="admin" style="border-left:1px solid #4d4d4d;">'."\n";
-		//add description if any
-		if ($this->getFieldDescription($language)) {
-			$html .= '<dialog-title type="admin_h3">'.$this->getFieldDescription($language).'</dialog-title><br />';
-		}
-		$inputParams = array(
-			'class' 	=> 'admin',
-			'prefix'	=>	$prefixName,
-			'no_admin'	=> false,
+		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
+		//$params = $this->getParamsValues();
+		//get module codename
+		$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
+		//create field value
+		$maxFileSize = CMS_file::getMaxUploadFileSize('K');
+		$value = $this->_subfieldValues[0]->getValue();
+		$return['name'] = $return['id'] = 'polymodFieldsValue[href'.$prefixName.$this->_field->getID().'_0]';
+		$return['xtype'] =	'atmLinkField';
+		$return['value'] =	(string) $value;
+		$return['uploadCfg'] =	array(
+			'file_size_limit'		=> $maxFileSize,
+			'file_types'			=>	'*.*',
+			'file_types_description'=> $language->getMessage(self::MESSAGE_OBJECT_HREF_ALL_FILES).' ...'
 		);
-		$html .= $this->getInput($fieldID, $language, $inputParams).'
-		</td></tr>'."\n";
-		return $html;
+		$return['fileinfos'] =	array(
+			'module'				=> $moduleCodename,
+			'visualisation'			=> RESOURCE_DATA_LOCATION_EDITED
+		);
+		$return['linkConfig'] =	array();
+		return $return;
 	}
 	
 	/**
@@ -222,33 +237,49 @@ class CMS_object_href extends CMS_object_common
 	  *
 	  * @param array $values : the POST result values
 	  * @param string $prefixname : the prefix used for post names
+	  * @param boolean newFormat : new automne v4 format (default false for compatibility)
 	  * @param integer $objectID : the current object id. Must be set, but default is blank for compatibility with other objects
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName, $objectID = '') {
+	function setValues($values,$prefixName, $newFormat = false, $objectID = '') {
 		if (!sensitiveIO::isPositiveInteger($objectID)) {
 			$this->raiseError('ObjectID must be a positive integer : '.$objectID);
 			return false;
 		}
-		
 		//get module codename
 		$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
 		//create a sub prefix for CMS_dialog_href object
 		$subPrefixName = 'href'.$prefixName.$this->_field->getID().'_0';
 		//create object CMS_href & CMS_dialog_href
 		$hrefDialog = new CMS_dialog_href(new CMS_href($this->_subfieldValues[0]->getValue()), $subPrefixName);
-		//check for http://
-		if ($values[$subPrefixName.'link_external'] && strpos($values[$subPrefixName.'link_external'], 'http://') !== 0) {
-			$values[$subPrefixName.'link_external'] = 'http://'.$values[$subPrefixName.'link_external'];
-		}
-		$hrefDialog->doPost($moduleCodename, $objectID, $this->_field->getID());
-		if ($hrefDialog->hasError()) {
-			return false;
-		}
-		$href = $hrefDialog->getHREF();
-		if (!$this->_subfieldValues[0]->setValue($href->getTextDefinition())) {
-			return false;
+		if ($newFormat) {
+			$hrefDialog->create($values[$subPrefixName], $moduleCodename, $objectID, $this->_field->getID());
+			if ($hrefDialog->hasError()) {
+				return false;
+			}
+			$href = $hrefDialog->getHREF();
+			if (!$this->_subfieldValues[0]->setValue($href->getTextDefinition())) {
+				return false;
+			}
+			$content = array('datas' => array(
+				'polymodFieldsValue['.$subPrefixName.']' => $this->_subfieldValues[0]->getValue(),
+			));
+			$view = CMS_view::getInstance();
+			$view->addContent($content);
+		} else {
+			//check for http://
+			if ($values[$subPrefixName.'link_external'] && strpos($values[$subPrefixName.'link_external'], 'http://') !== 0) {
+				$values[$subPrefixName.'link_external'] = 'http://'.$values[$subPrefixName.'link_external'];
+			}
+			$hrefDialog->doPost($moduleCodename, $objectID, $this->_field->getID());
+			if ($hrefDialog->hasError()) {
+				return false;
+			}
+			$href = $hrefDialog->getHREF();
+			if (!$this->_subfieldValues[0]->setValue($href->getTextDefinition())) {
+				return false;
+			}
 		}
 		return true;
 	}

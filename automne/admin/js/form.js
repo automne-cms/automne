@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: form.js,v 1.2 2009/03/02 11:26:53 sebastien Exp $
+  * $Id: form.js,v 1.3 2009/06/05 15:01:06 sebastien Exp $
   */
 Automne.FormPanel = Ext.extend(Ext.FormPanel, {
 	// private
@@ -27,6 +27,6 @@ Ext.reg('atmForm', Automne.FormPanel);
 Automne.BasicForm = Ext.extend(Ext.form.BasicForm, {
 	errorReader:		new Automne.JsonReader({}, new Ext.data.Record.create([
 	   {name: 'success'},
-	   {name: 'errors'}
+	   {name: 'infos'}
 	]))
 });

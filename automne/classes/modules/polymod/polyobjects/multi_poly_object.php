@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: multi_poly_object.php,v 1.2 2009/04/02 13:58:00 sebastien Exp $
+// $Id: multi_poly_object.php,v 1.3 2009/06/05 15:02:17 sebastien Exp $
 
 /**
   * Class CMS_multi_poly_object
@@ -56,10 +56,16 @@ class CMS_multi_poly_object extends CMS_object_common
 	const MESSAGE_MULTI_OBJECT_REQUIRED_DESCRIPTION = 366;
 	const MESSAGE_MULTI_OBJECT_IDS_DESCRIPTION = 398;
   	const MESSAGE_MULTI_OBJECT_FIELD_DESC_DESCRIPTION = 402;
+	const MESSAGE_MULTI_OBJECT_EDIT_ELEMENT = 516;
+  	const MESSAGE_MULTI_OBJECT_DISASSOCIATE_ELEMENT = 517;
+  	const MESSAGE_MULTI_OBJECT_CHOOSE_ELEMENT = 518;
 
 	const MESSAGE_EMPTY_OBJECTS_SET = 265;
 	const MESSAGE_CHOOSE_OBJECT = 1132;
-
+	const MESSAGE_PAGE_ACTION_MODIFIY = 261;
+	const MESSAGE_PAGE_ACTION_NEW = 262;
+	const MESSAGE_PAGE_ACTION_DESASSOCIATE = 1268;
+	const MESSAGE_PAGE_ACTION_ASSOCIATE = 1267;
 	/**
 	  * CMS_object_field reference
 	  * @var CMS_object_field
@@ -439,260 +445,306 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @access public
 	  */
 	function getHTMLAdmin($fieldID, $language, $prefixName) {
-		//check if this multi object has editable param
+		global $cms_user;
 		$params = $this->getParamsValues();
+		
+		//is this field mandatory ?
+		$mandatory = $this->_field->getValue('required') ? '<span class="atm-red">*</span> ' : '';
+		$desc = $this->getFieldDescription($language);
+		if (POLYMOD_DEBUG) {
+			$values = array();
+			foreach (array_keys($this->_subfieldValues) as $subFieldID) {
+				if (is_object($this->_subfieldValues[$subFieldID])) {
+					$values[$subFieldID] = sensitiveIO::ellipsis(strip_tags($this->_subfieldValues[$subFieldID]->getValue()), 50);
+				}
+			}
+			$desc .= $desc ? '<br />' : '';
+			$desc .= '<span class="atm-red">Field : '.$fieldID.' - Value(s) : <ul>';
+			foreach ($values as $subFieldID => $value) {
+				$desc .= '<li>'.$subFieldID.'&nbsp;:&nbsp;'.$value.'</li>';
+			}
+			$desc .= '</ul></span>';
+		}
+		
+		$label = $desc ? '<span class="atm-help" ext:qtip="'.htmlspecialchars($desc).'">'.$mandatory.$this->getFieldLabel($language).'</span>' : $mandatory.$this->getFieldLabel($language);
+		
 		if ($params['editable']) {
-			//is this field mandatory ?
-			$mandatory = ($this->_field->getValue('required')) ? '<span class="admin_text_alert">*</span> ':'';
-			//set new prefix name
-			$subPrefixName = 'list'.$prefixName.$this->_field->getID().'_0';
 			//get object definition
 			$objectDef = $this->getObjectDefinition();
-			//load fields objects for object
-			$objectFields = CMS_poly_object_catalog::getFieldsDefinition($objectDef->getID());
+			$associatedItems = array();
+			foreach (array_keys($this->_subfieldValues) as $subFieldID) {
+				if (is_object($this->_subfieldValues[$subFieldID])) {
+					$associatedItems[$this->_subfieldValues[$subFieldID]->getValue()] = $this->_subfieldValues[$subFieldID]->getValue();
+				}
+			}
+			$items = array();
+			if (!$params['doNotUseExternalSubObjects']) {
+				//get Object definition
+				$objectDef = $this->getObjectDefinition();
+				//get module codename
+				$moduleCodename = $objectDef->getValue('module');
+				$listId = 'list'.md5(mt_rand().microtime());
+				$select = array(
+					'layout'	=> 'column',
+					'xtype'		=> 'panel',
+					'border'	=> false,
+					'items'		=> array(
+						array(
+							'columnWidth'	=> 1,
+							'layout'		=> 'form',
+							'border'		=> false,
+							'hideLabel'		=> true,
+							'items'			=> array(array(
+								'anchor'			=> '99%',
+								'hideLabel'			=> true,
+								'xtype' 			=> 'atmCombo',
+								'id' 				=> $listId,
+								'forceSelection' 	=> true,
+								'mode' 				=> 'remote',
+								'valueField' 		=> 'id',
+								'displayField' 		=> 'label',
+								'triggerAction' 	=> 'all',
+								'allowBlank'		=> true,
+								'selectOnFocus'		=> true,
+								'editable'			=> false,
+								'store' 			=> array(
+									'url'			=> PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/list-objects.php',
+									'baseParams'	=> array(
+										'objectId'		=> $objectDef->getID(),
+										'module'		=> $moduleCodename,
+										'removeIds'		=> implode(',',$associatedItems)
+									),
+									'root' 			=> 'objects',
+									'fields' 		=> array('id', 'label')
+								)
+							))
+						),array(
+							'width'			=> 60,
+							'layout'		=> 'form',
+							'border'		=> false,
+							'hideLabel'		=> true,
+							'items'			=> array(array(
+								'xtype'			=> 'button',
+								'text'			=> $language->getMessage(self::MESSAGE_PAGE_ACTION_ASSOCIATE),
+								'handler'		=> sensitiveIO::sanitizeJSString('function(){
+									var list = Ext.getCmp(\''.$listId.'\');
+									var id = list.getValue();
+									if (id) {
+										var cmp = Ext.getCmp(\'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]\');
+										var values = cmp.getRawValue();
+										values.unshift(id);
+										cmp.setValue(values.join(cmp.delimiter));
+										list.reset();
+										list.store.baseParams.removeIds = values.join(cmp.delimiter);
+										list.store.load();
+									}
+								}', false, false),
+								'scope'			=> 'this'
+							))
+						)
+					)
+				);
+				$items[] = array(
+					'width'			=> '100%',
+					'layout'		=> 'fit',
+					'border'		=> false,
+					'bodyStyle'		=> 'margin:5px 0 3px 0',
+					'html'			=> $language->getMessage(self::MESSAGE_MULTI_OBJECT_CHOOSE_ELEMENT,array($objectDef->getObjectLabel($language)), MOD_POLYMOD_CODENAME)
+				);
+				$items[] = $select;
+			}
+			
+			$editURL = PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/item.php';
+			$searchURL = PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/search.php';
+			$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
+			$items[] = array(
+					'width'			=> '100%',
+					'layout'		=> 'fit',
+					'border'		=> false,
+					'bodyStyle'		=> 'margin:5px 0 3px 0',
+					'html'			=> $language->getMessage(self::MESSAGE_MULTI_OBJECT_LIST_ZONE,array($objectDef->getObjectLabel($language)), MOD_POLYMOD_CODENAME)
+				);
+			$items[] = array(
+				'xtype'			=> "multiselect2",
+	            'hideLabel'		=> true,
+	            'id'			=>	'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]',
+				'name'			=>	'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]',
+				'allowBlank'	=> !$this->_field->getValue('required'),
+	            'valueField'	=> 'id',
+				'displayField'	=> 'label',
+				'tpl'			=> sensitiveIO::sanitizeJSString('<tpl for="rows">
+                    <dl>
+                        <tpl for="parent.columns">
+                        <dt style="width:{width}%;text-align:{align};"><em unselectable="on" class="atm-title">
+                            <span ext:qtip="{[fm.htmlEncode(parent.description)]}">{[values.tpl.apply(parent)]}</span>
+							{[parent.pubrange ? " - ("+parent.pubrange+")" : ""]}
+                        </em></dt>
+                        </tpl>
+                        <div class="x-clear"></div>
+                    </dl>
+                </tpl>'),
+				'store'			=> array(
+					'xtype'				=> 'atmJsonstore',
+					'root'				=> 'results',
+					'totalProperty'		=> 'total',
+					'url'				=> $searchURL,
+					'id'				=> 'id',
+					'remoteSort'		=> true,
+					'baseParams'		=> array(
+						'module'			=> $moduleCodename,
+						'objectId'			=> $this->_objectID
+					),
+					'fields'			=> array('id', 'status', 'pubrange', 'label', 'description', 'locked', 'deleted', 'previz', 'edit')
+				),
+				'value' 		=> implode(',',$associatedItems),
+	            'width'			=> 'auto',
+				'height'		=> 'auto',
+				'cls'			=> 'x-list-body',
+				'tbar'			=> array(
+					array(
+						'text'		=> $language->getMessage(self::MESSAGE_PAGE_ACTION_MODIFIY),
+						'tooltip'	=> $language->getMessage(self::MESSAGE_MULTI_OBJECT_EDIT_ELEMENT, false, MOD_POLYMOD_CODENAME),
+						'handler'	=> sensitiveIO::sanitizeJSString('function(button){
+							var cmp = Ext.getCmp(\'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]\');
+							var selected = cmp.view.getSelectedRecords();
+							if (!selected.length || selected.length > 1) {
+								return;
+							}
+							var objectId = selected[0].id;
+							var windowId = \'module'.$moduleCodename.'EditWindow\'+objectId;
+							/*create window element*/
+							var window = new Automne.Window({
+								id:				windowId,
+								objectId:		objectId,
+								autoLoad:		{
+									url:			\''.$editURL.'\',
+									params:			{
+										winId:			windowId,
+										module:			\''.$moduleCodename.'\',
+										type:			\''.$this->_objectID.'\',
+										item:			objectId
+									},
+									nocache:		true,
+									scope:			this
+								},
+								modal:			true,
+								width:			750,
+								height:			580,
+								animateTarget:	button,
+								listeners:{\'close\':function(window){
+									var cmp = Ext.getCmp(\'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]\');
+									cmp.store.reload();
+								}}
+							});
+							/*display window*/
+							window.show(button.getEl());
+						}', false, false),
+						'scope'		=> 'this'
+					), array(
+						'text'		=> $language->getMessage(self::MESSAGE_PAGE_ACTION_DESASSOCIATE),
+						'tooltip'	=> $language->getMessage(self::MESSAGE_MULTI_OBJECT_DISASSOCIATE_ELEMENT, false, MOD_POLYMOD_CODENAME),
+						'handler'	=> sensitiveIO::sanitizeJSString('function(){
+							var cmp = Ext.getCmp(\'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]\');
+							var selected = cmp.view.getSelectedRecords();
+							if (!selected.length || selected.length > 1) {
+								return;
+							}
+							var objectId = selected[0].id;
+							var values = cmp.getRawValue();
+							values.remove(objectId);
+							cmp.setValue(values.join(cmp.delimiter));
+							if (\''.$listId.'\') {
+								var list = Ext.getCmp(\''.$listId.'\');
+								list.store.baseParams.removeIds = values.join(cmp.delimiter);
+								list.store.load();
+							}
+						}', false, false),
+						'scope'		=> 'this'
+					),'->', array(
+						'text'		=> $language->getMessage(self::MESSAGE_PAGE_ACTION_NEW),
+						'tooltip'	=> $language->getMessage(self::MESSAGE_MULTI_OBJECT_CREATE_ZONE,array($objectDef->getObjectLabel($language)), MOD_POLYMOD_CODENAME),
+						'handler'	=> sensitiveIO::sanitizeJSString('function(button){
+							var objectId = \'create\';
+							var windowId = \'module'.$moduleCodename.'EditWindow\'+objectId;
+							/*create window element*/
+							var window = new Automne.Window({
+								id:				windowId,
+								objectId:		\'\',
+								autoLoad:		{
+									url:			\''.$editURL.'\',
+									params:			{
+										winId:			windowId,
+										module:			\''.$moduleCodename.'\',
+										type:			\''.$this->_objectID.'\'
+									},
+									nocache:		true,
+									scope:			this
+								},
+								modal:			true,
+								width:			750,
+								height:			580,
+								animateTarget:	button,
+								listeners:{\'close\':function(window){
+									var cmp = Ext.getCmp(\'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]\');
+									if (window.objectId) {
+										var values = cmp.getRawValue();
+										values.unshift(window.objectId);
+										cmp.setValue(values.join(cmp.delimiter));
+									}
+								}}
+							});
+							/*display window*/
+							window.show(button.getEl());
+						}', false, false),
+						'scope'		=> 'this'
+					),
+				),
+	            'ddReorder'		=> true
+			);
+			$return = array(
+				'title' 		=>	$label,
+				'xtype'			=>	'fieldset',
+				'autoHeight'	=>	true,
+				'layout'		=>	'form',
+				'defaults'		=> 	array(
+					'anchor'		=> '97%',
+				),
+				'items'			=>	$items
+			);
+			return $return;
+		} else {
+			$return = array(
+				'allowBlank'	=>	!$this->_field->getValue('required'),
+				'fieldLabel' 	=>	$label,
+				'id'			=>	'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]',
+				'name'			=>	'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]'
+			);
 			//get searched objects conditions
 			$searchedObjects = (is_array($params['searchedObjects'])) ? $params['searchedObjects'] : array();
-			if (!$params['doNotUseExternalSubObjects']) {
-				//get list of all objects usable
-				$objectsNames = CMS_poly_object_catalog::getListOfNamesForObject($objectDef->getID(), false, $searchedObjects);
-				$searchedObjectsIDs = array_keys($objectsNames);
-			} else {
-				//only load objects ids
-				$searchedObjectsIDs = CMS_poly_object_catalog::getAllObjects($objectDef->getID(), false, $searchedObjects, false);
-			}
-			//is this field in edition ?
-			if ($_POST["edit".$subPrefixName] == true) {
-				//load edited object
-				$object = new CMS_poly_object($objectDef->getID(),$_POST["editedField"]);
-				$editmode = true;
-			} else {
-				//create fake object
-				$object = new CMS_poly_object($objectDef->getID());
-				$editmode = false;
-			}
-			//create associated object arrays
-			$subObjects = array();
-			$associated_items = array();
-			foreach (array_keys($this->_subfieldValues) as $subFieldID) {
-				//if object is not in the objectsNames array then it is certainly deleted or excluded so remove it from list
-				if (is_object($this->_subfieldValues[$subFieldID])
-					&& is_object($this->_objectValues[$subFieldID])
-					&& in_array($this->_objectValues[$subFieldID]->getID(), $searchedObjectsIDs)
-					) {
-					//load poly objects
-					$subObjects[] = $this->_objectValues[$subFieldID];
-					$associated_items[] = $this->_objectValues[$subFieldID]->getID();
-				}
-			}
-
-			//create javascript
-			$html .= '
-			<script type="text/javascript">
-			<!-- //
-				function add_'.$subPrefixName.'() {
-					document.getElementById("cms_action").value = "add";
-					document.getElementById("editedField").value = "'.$this->_field->getID().'";
-					document.getElementById("info").value = "'.$subPrefixName.'";
-					document.getElementById("frmitem").submit();
-					return true;
-				}
-				function associate_'.$subPrefixName.'() {
-					if (!document.getElementById("associate'.$prefixName.$this->_field->getID().'_0").value) {
-						return false;
-					}
-					document.getElementById("cms_action").value = "associate";
-					document.getElementById("editedField").value = "'.$this->_field->getID().'";
-					document.getElementById("info").value = "'.$subPrefixName.'";
-					document.getElementById("frmitem").submit();
-					return true;
-				}
-				function disassociate_'.$subPrefixName.'(objectID) {
-					document.getElementById("cms_action").value = "disassociate";
-					document.getElementById("editedField").value = objectID;
-					document.getElementById("info").value = "'.$subPrefixName.'";
-					document.getElementById("frmitem").submit();
-					return true;
-				}
-				function delete_'.$subPrefixName.'(objectID) {
-					document.getElementById("cms_action").value = "delete";
-					document.getElementById("editedField").value = objectID;
-					document.getElementById("info").value = "'.$subPrefixName.'";
-					document.getElementById("frmitem").submit();
-					return true;
-				}
-				function edit_'.$subPrefixName.'(objectID) {
-					document.getElementById("cms_action").value = "edit";
-					document.getElementById("editedField").value = objectID;
-					document.getElementById("info").value = "'.$subPrefixName.'";
-					document.getElementById("frmitem").submit();
-					return true;
-				}
-				function canceledit_'.$subPrefixName.'() {
-					document.getElementById("cms_action").value = "canceledit";
-					document.getElementById("editedField").value = "";
-					document.getElementById("info").value = "'.$subPrefixName.'";
-					document.getElementById("frmitem").submit();
-					return true;
-				}
-			//-->
-			</script>
-			';
-			//create html
-			$html .= '<tr><td class="admin" align="right" valign="top">'.$mandatory. $this->getFieldLabel($language).'</td><td class="admin">'."\n";
-			//add description if any
-			if ($this->getFieldDescription($language)) {
-				$html .= '<dialog-title type="admin_h3">'.$this->getFieldDescription($language).'</dialog-title><br />';
-			}
-			//draw create/edit object form
-			$fieldsetMessage = (!$editmode) ? $language->getMessage(self::MESSAGE_MULTI_OBJECT_CREATE_ZONE,array($objectDef->getObjectLabel($language)), MOD_POLYMOD_CODENAME) : $language->getMessage(self::MESSAGE_MULTI_OBJECT_EDIT_ZONE,array($objectDef->getObjectLabel($language)), MOD_POLYMOD_CODENAME);
-			$html .= '
-			<fieldset>
-				<legend>'.$fieldsetMessage.'</legend>
-				<table border="0" cellpadding="3" cellspacing="2">';
-			if ($editmode) {
-				$html .= '<input type="hidden" name="edit'.$prefixName.$this->_field->getID().'" value="'.$object->getID().'" />';
-			}
-
-			foreach ($objectFields as $fieldID => $aFieldObject) {
-				$html .= $object->getHTMLAdmin($fieldID, $language,$subPrefixName);
-			}
-			$buttonMessage = (!$editmode) ? $language->getMessage(MESSAGE_BUTTON_ADD) : $language->getMessage(MESSAGE_BUTTON_EDIT);
-			$html .= '
-					<tr>
-						<td colspan="2"><input type="button" onclick="add_'.$subPrefixName.'();" class="admin_input_submit" value="'.$buttonMessage.'" /></td>
-					</tr>
-				</table>
-			</fieldset>';
-			if (!$params['doNotUseExternalSubObjects']) {
-				//draw object list (if any)
-				$options = '';
-				if (is_array($objectsNames) && $objectsNames) {
-					foreach ($objectsNames as $objectID => $objectName) {
-						if (!in_array($objectID,$associated_items)) {
-							$options .= '<option value="'.$objectID.'">'.$objectName.'</option>'."\n";
-						}
+			$objectsNames = CMS_poly_object_catalog::getListOfNamesForObject($this->_objectID, false, $searchedObjects);
+			$associatedItems = $availableItems = array();
+			if (is_array($objectsNames) && $objectsNames) {
+				foreach (array_keys($this->_subfieldValues) as $subFieldID) {
+					if (is_object($this->_subfieldValues[$subFieldID])) {
+						$associatedItems[$this->_subfieldValues[$subFieldID]->getValue()] = $this->_subfieldValues[$subFieldID]->getValue();
 					}
 				}
-				if ($options) {
-					$html .= '
-					<fieldset>
-						<legend>'.$language->getMessage(self::MESSAGE_MULTI_OBJECT_ADD_ZONE,array($objectDef->getObjectLabel($language)), MOD_POLYMOD_CODENAME).'</legend><br />
-						<select name="associate'.$prefixName.$this->_field->getID().'_0" class="admin_input_text" id="associate'.$prefixName.$this->_field->getID().'_0">
-							<option value="">'.$language->getMessage(self::MESSAGE_CHOOSE_OBJECT).'</option>
-						  	'.$options.'
-						</select>
-						<input type="button" onclick="associate_'.$subPrefixName.'();" class="admin_input_submit" value="'.$language->getMessage(MESSAGE_PAGE_ACTION_ASSOCIATE).'" />
-						<br /><br />
-					</fieldset>';
+				foreach ($objectsNames as $id => $name) {
+					$availableItems[] = array($id, $name);
 				}
+			} else {
+				$availableItems[] = array('', $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET));
+				$return['disabled'] 	= true;
 			}
-			//draw list of associated objects
-			$html .= '
-			<fieldset>
-				<legend>'.$language->getMessage(self::MESSAGE_MULTI_OBJECT_LIST_ZONE,array($objectDef->getObjectLabel($language)), MOD_POLYMOD_CODENAME).'</legend>';
-				if (is_array($subObjects) && $subObjects) {
-					$html .= '
-					<ul class="sortable" id="sortlist'.$prefixName.$this->_field->getID().'_0">
-					<div class="admin_content" style="position:relative;left:0px;">';
-						$count = 0;
-						foreach ($subObjects as $item) {
-							$count++;
-							$td_class = ($count % 2 == 0) ? "admin_lightgreybg" : "admin_darkgreybg";
-							$bg_color = ($count % 2 == 0) ? "#F6F6F5" : "#EBEBEA";
-							if ($editmode && $_POST["editedField"] == $item->getID()) {
-								$bg_color = "#D8FA90";
-							}
-							$itemFieldsObjects = &$item->getFieldsObjects();
-							$html .= '
-								<li id="f'.$item->getID().'">
-								<div style="padding:5px 0px 0px 5px;color:#4d4d4d;background-color:'.$bg_color.';">
-									<table border="0" width="100%" cellpadding="2" cellspacing="0">
-										<tr valign="top">';
-										if ($objectDef->isPrimaryResource()) {
-											$status = $item->getStatus();
-											$html .= '<td width="1" align="center" class="admin">'.$status->getHTML(false, $cms_user, $polyModuleCodename, $item->getID()).'</td>';
-										}
-							$html .= '
-											<td class="admin">
-												<b>' . $item->getLabel() . ((POLYMOD_DEBUG) ? '<span class="admin_text_alert"> (ID : '.$item->getID().')</span>' : '') .'</b><br />';
-										if ($objectDef->isPrimaryResource()) {
-											$html .= $language->getMessage(MESSAGE_PAGE_FIELD_PUBLICATION).' :
-													<span class="admin_subTitle">'.htmlspecialchars($status->getPublicationRange($cms_language)).'</span><br />';
-										}
-										//Add all needed fields to description
-							foreach ($itemFieldsObjects as $fieldID => $itemField) {
-								//if field is a poly object
-								if ($objectFields[$fieldID]->getValue('searchlist')) {
-									$html .= $objectFields[$fieldID]->getLabel($cms_language).' : <span class="admin_subTitle">'.$itemField->getHTMLDescription().'</span><br />';
-								}
-							}
-							$html .= '
-											</td>
-											<td valign="middle" align="right">
-												<table border="0" cellpadding="2" cellspacing="0">
-													<tr>';
-										// Careful lock
-										if ($objectDef->isPrimaryResource() && $lock = $item->getLock()) {
-											//actions are impossible, but lock can be eventually removed if its the user who placed the lock
-											if ($cms_user->getUserID() == $lock ||
-												$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
-												$html .= '<td class="admin"><input type="button" onclick="alert(\'TODO\');" class="admin_input_'.$td_class.'" value="'.$language->getMessage(MESSAGE_PAGE_ACTION_UNLOCK).'" /></td>';
-											}
-										} else {
-											if ($objectDef->isPrimaryResource() && $item->getProposedLocation() == RESOURCE_LOCATION_DELETED) {
-												// Undelete
-												$html .= '<td class="admin"><input type="button" onclick="alert(\'TODO\');" class="admin_input_'.$td_class.'" value="'.$language->getMessage(MESSAGE_PAGE_ACTION_UNDELETE).'" /></td>';
-											} else {
-												// Edit, Disassociate, Delete
-												if (!$editmode || $_POST["editedField"] != $item->getID()) {
-													$html .= '<td class="admin"><input type="button" onclick="edit_'.$subPrefixName.'('.$item->getID().');" class="admin_input_'.$td_class.'" value="'.$language->getMessage(MESSAGE_PAGE_ACTION_EDIT).'" /></td>';
-												} else {
-													$html .= '<td class="admin"><input type="button" onclick="canceledit_'.$subPrefixName.'();" class="admin_input_'.$td_class.'" value="'.$language->getMessage(MESSAGE_PAGE_ACTION_CANCELEDIT).'" /></td>';
-												}
-												if (!$params['doNotUseExternalSubObjects']) {
-													$html .= '<td class="admin"><input type="button" onclick="disassociate_'.$subPrefixName.'('.$item->getID().');" class="admin_input_'.$td_class.'" value="'.$language->getMessage(MESSAGE_PAGE_ACTION_DISASSOCIATE).'" /></td>';
-												}
-													$html .= '<td class="admin"><input type="button" onclick="if (confirm(\''.addslashes($language->getMessage(MESSAGE_PAGE_ACTION_DELETECONFIRM, array(htmlspecialchars($objectDef->getLabel($language)),htmlspecialchars($item->getLabel())), MOD_POLYMOD_CODENAME)) . ' ?\')) {delete_'.$subPrefixName.'('.$item->getID().');}" class="admin_input_'.$td_class.'" value="'.$language->getMessage(MESSAGE_PAGE_ACTION_DELETE).'" /></td>';
-											}
-										}
-										$html .= '
-								               		</tr>
-												</table>
-											</td>
-											<td width="36" align="center" valign="middle" style="cursor:move;"><img src="'.PATH_ADMIN_IMAGES_WR.'/drag.gif" border="0" /></td>
-										</tr>
-									</table>
-								</div>';
-							$html .= '
-								<div style="clear:both;"></div>
-								</li>';
-						}
-					$html .= '</div>
-					</ul>';
-				} else {
-					$html .= $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET);
-				}
-
-			$html .= '</fieldset>
-			<input type="hidden" name="list'.$prefixName.$this->_field->getID().'_0" id="list'.$prefixName.$this->_field->getID().'_0" value="'.implode(';',$associated_items).'" />';
-			if (POLYMOD_DEBUG) {
-				$html .= '<span class="admin_text_alert"> (Field : '.$this->_field->getID().' - Multi of : '.$this->_objectID.' - Values : '.implode(';',$associated_items).')</span>';
-			}
-			$html .= '</td></tr>'."\n";
-			return $html;
-		} else {
-			//is this field mandatory ?
-			$mandatory = ($this->_field->getValue('required')) ? '<span class="admin_text_alert">*</span> ':'';
-			//create html
-			$html = '<tr><td class="admin" align="right" valign="top">'.$mandatory. $this->getFieldLabel($language).'</td><td class="admin">'."\n";
-			$inputParams = array(
-				'class' 	=> 'admin_input_text',
-				'no_admin'	=> false,
-				'prefix'	=>	$prefixName,
-			);
-			$html .= $this->getInput($fieldID, $language, $inputParams);
-			$html .= '</td></tr>'."\n";
-			return $html;
+			$return['xtype'] 			= 'multiselect';
+			$return['dataFields'] 		= array('id', 'label');
+			$return['data'] 			= $availableItems;
+			$return['value'] 			= implode(',',$associatedItems);
+			$return['valueField'] 		= "id";
+			$return['displayField'] 	= "label";
+			$return['width'] 			= '100%';
+			
+			return $return;
 		}
 	}
 
@@ -792,10 +844,11 @@ class CMS_multi_poly_object extends CMS_object_common
 	  *
 	  * @param array $values : the POST result values
 	  * @param string prefixname : the prefix used for post names
+	  * @param boolean newFormat : new automne v4 format (default false for compatibility)
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function checkMandatory($values,$prefixName) {
+	function checkMandatory($values,$prefixName, $newFormat = false) {
 		//if field is required check values
 		if ($this->_field->getValue('required')) {
 			//if this multi object hasn't editable param
@@ -814,11 +867,13 @@ class CMS_multi_poly_object extends CMS_object_common
 	  *
 	  * @param array $values : the POST result values
 	  * @param string prefixname : the prefix used for post names
+	  * @param boolean newFormat : new automne v4 format (default false for compatibility)
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName) {
+	function setValues($values,$prefixName, $newFormat = false) {
 		if (isset($values['list'.$prefixName.$this->_field->getID().'_0'])) {
+			$values['list'.$prefixName.$this->_field->getID().'_0'] = str_replace(',',';',$values['list'.$prefixName.$this->_field->getID().'_0']);
 			$valuesArray = explode(';',$values['list'.$prefixName.$this->_field->getID().'_0']);
 			foreach(array_keys($this->_subfieldValues) as $subFieldID) {
 				$value = (isset($valuesArray[$subFieldID])) ? $valuesArray[$subFieldID] : false;

@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: window.js,v 1.4 2009/04/02 13:55:54 sebastien Exp $
+  * $Id: window.js,v 1.5 2009/06/05 15:01:06 sebastien Exp $
   */
 Automne.Window = Ext.extend(Ext.Window, {
 	currentPage:	false,
@@ -72,18 +72,30 @@ Automne.Window = Ext.extend(Ext.Window, {
 		return true;
 	},
 	addButtons: function (buttons) {
-		// tables are required to maintain order and for correct IE layout
-		var tb = this.footer.createChild({cls:'x-panel-btns-ct', cn: {
-			cls:"x-panel-btns x-panel-btns-"+this.buttonAlign,
-			html:'<table cellspacing="0"><tbody><tr></tr></tbody></table><div class="x-clear"></div>'
-		}}, null, true);
-		var tr = tb.getElementsByTagName('tr')[0];
-		for(var i = 0, len = buttons.length; i < len; i++) {
-			var b = buttons[i];
-			var td = document.createElement('td');
-			td.className = 'x-panel-btn-td';
-			b.render(tr.appendChild(td));
-		}
+		this.buttons = buttons;
+		if(this.buttons && this.buttons.length > 0){
+            this.fbar = new Ext.Toolbar({
+                items: this.buttons,
+                toolbarCls: 'x-panel-fbar'
+            });
+        }
+        this.toolbars = [];
+        if(this.fbar){
+            this.fbar = Ext.create(this.fbar, 'toolbar');
+            this.fbar.enableOverflow = false;
+            if(this.fbar.items){
+                this.fbar.items.each(function(c){
+                    c.minWidth = c.minWidth || this.minButtonWidth;
+                }, this);
+            }
+            this.fbar.toolbarCls = 'x-panel-fbar';
+
+            var bct = this.footer.createChild({cls: 'x-panel-btns x-panel-btns-'+this.buttonAlign});
+            this.fbar.ownerCt = this;
+            this.fbar.render(bct);
+            bct.createChild({cls:'x-clear'});
+            this.toolbars.push(this.fbar);
+        }
 	},
 	show: function() {
 		//call parent

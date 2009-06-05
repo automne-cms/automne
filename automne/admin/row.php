@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: row.php,v 1.5 2009/04/10 15:26:58 sebastien Exp $
+// $Id: row.php,v 1.6 2009/06/05 15:01:04 sebastien Exp $
 
 /**
   * PHP page : Load row detail window.
@@ -317,8 +317,12 @@ $jscontent = <<<END
 				listeners:		{'check':function(field, checked) {
 					if (checked) {
 						editor = CodeMirror.fromTextArea('defText-{$rowId}', {
-							parserfile: 	["parsexml.js", "parsecss.js", "tokenizejavascript.js", "parsejavascript.js", "parsehtmlmixed.js"],
-							stylesheet: 	["/automne/codemirror/css/xmlcolors.css", "/automne/codemirror/css/jscolors.css", "/automne/codemirror/css/csscolors.css"],
+							iframeClass:	'x-form-text',
+							lineNumbers:	true,
+							parserfile:		["parsexml.js", "parsecss.js", "tokenizejavascript.js", "parsejavascript.js",
+											"../contrib/php/js/tokenizephp.js", "../contrib/php/js/parsephp.js",
+											"../contrib/php/js/parsephphtmlmixed.js"],
+					        stylesheet: 	["/automne/codemirror/css/xmlcolors.css", "/automne/codemirror/css/jscolors.css", "/automne/codemirror/css/csscolors.css", "/automne/codemirror/contrib/php/css/phpcolors.css"],
 							path: 			"/automne/codemirror/js/",
 							textWrapping:	false,
 							initCallback:	function(){
@@ -334,7 +338,7 @@ $jscontent = <<<END
 				xtype:			'textarea',
 				name:			'definition',
 				cls:			'atm-code',
-				anchor:			'0, -70',
+				anchor:			'-35, -70',
 				enableKeyEvents:true,
 				value:			Ext.get('row-definition-{$rowId}').dom.value,
 				listeners:{'keypress': function(field, e){

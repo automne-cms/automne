@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: module-parameters.php,v 1.1 2009/04/02 13:55:54 sebastien Exp $
+// $Id: module-parameters.php,v 1.2 2009/06/05 15:01:04 sebastien Exp $
 
 /**
   * PHP page : Load module parameters window.
@@ -161,10 +161,14 @@ $jscontent = <<<END
 			name:			'submitParams',
 			handler:		function() {
 				var form = Ext.getCmp('moduleParamPanel-{$codename}').getForm();
-				form.submit({params:{
-					action:		'submit-parameters',
-					module:		'{$codename}'
-				}});
+				if (form.isValid()) {
+					form.submit({params:{
+						action:		'submit-parameters',
+						module:		'{$codename}'
+					}});
+				} else {
+					Automne.message.show('Le formulaire est incomplet ou possède des valeurs incorrectes ...', '', moduleParamWindow);
+				}
 			}
 		}]
 	});
@@ -172,6 +176,9 @@ $jscontent = <<<END
 	moduleParamWindow.add(center);
 	//redo windows layout
 	moduleParamWindow.doLayout();
+	if (Ext.isIE7) {
+		center.syncSize();
+	}
 END;
 
 $view->addJavascript($jscontent);

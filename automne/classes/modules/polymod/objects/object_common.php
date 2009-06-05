@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_common.php,v 1.3 2009/04/02 13:58:00 sebastien Exp $
+// $Id: object_common.php,v 1.4 2009/06/05 15:02:18 sebastien Exp $
 
 /**
   * Class CMS_object_common
@@ -175,22 +175,60 @@ abstract class CMS_object_common extends CMS_grandFather
 	  */
 	function getHTMLAdmin($fieldID, $language, $prefixName) {
 		//is this field mandatory ?
-		$mandatory = ($this->_field->getValue('required')) ? '<span class="admin_text_alert">*</span> ':'';
-		//create html for each subfields
-		$html = '<tr><td class="admin" align="right" valign="top">'.$mandatory.$this->getFieldLabel($language).'</td><td class="admin">'."\n";
-		//add description if any
-		if ($this->getFieldDescription($language)) {
-			$html .= '<dialog-title type="admin_h3">'.$this->getFieldDescription($language).'</dialog-title><br />';
+		$mandatory = $this->_field->getValue('required') ? '<span class="atm-red">*</span> ' : '';
+		$desc = $this->getFieldDescription($language);
+		if (POLYMOD_DEBUG) {
+			$values = array();
+			foreach (array_keys($this->_subfieldValues) as $subFieldID) {
+				if (is_object($this->_subfieldValues[$subFieldID])) {
+					$values[$subFieldID] = sensitiveIO::ellipsis(strip_tags($this->_subfieldValues[$subFieldID]->getValue()), 50);
+				}
+			}
+			$desc .= $desc ? '<br />' : '';
+			$desc .= '<span class="atm-red">Field : '.$fieldID.' - Value(s) : <ul>';
+			foreach ($values as $subFieldID => $value) {
+				$desc .= '<li>'.$subFieldID.'&nbsp;:&nbsp;'.$value.'</li>';
+			}
+			$desc .= '</ul></span>';
 		}
-		$inputParams = array(
-			'class' 	=> 'admin_input_text',
-			'prefix'	=>	$prefixName,
-			'size'  	=> 60,
-			'form'		=> 'frmitem',
-		);
-		$html .= $this->getInput($fieldID, $language, $inputParams);
-		$html .= '</td></tr>'."\n";
-		return $html;
+		
+		$label = $desc ? '<span class="atm-help" ext:qtip="'.htmlspecialchars($desc).'">'.$mandatory.$this->getFieldLabel($language).'</span>' : $mandatory.$this->getFieldLabel($language);
+		$return = array();
+		if (sizeof($this->_subfields) === 1) {
+			$return = array(
+				'allowBlank'	=>	!$this->_field->getValue('required'),
+				'fieldLabel' 	=>	$label,
+				'xtype'			=>	'textfield',
+				'id'			=>	'polymodFieldsValue['.$prefixName.$this->_field->getID().'_0]',
+				'name'			=>	'polymodFieldsValue['.$prefixName.$this->_field->getID().'_0]',
+				'value'			=>	$this->_subfieldValues[0]->getValue()
+			);
+		} else {
+			$fields = array();
+			foreach ($this->_subfields as $subFieldID => $subFieldDefinition) {
+				if (is_object($this->_subfieldValues[$subFieldID])) {
+					$fields[] = array(
+						'hideLabel' 	=>	true,
+						'xtype'			=>	'textfield',
+						'id'			=>	'polymodFieldsValue['.$prefixName.$this->_field->getID().'_'.$subFieldID.']',
+						'name'			=>	'polymodFieldsValue['.$prefixName.$this->_field->getID().'_'.$subFieldID.']',
+						'value'			=>	$this->_subfieldValues[$subFieldID]->getValue()
+					);
+				}
+			}
+			$return = array(
+				'title' 		=>	$label,
+				'xtype'			=>	'fieldset',
+				'autoHeight'	=>	true,
+				'defaultType'	=>	'textfield',
+				'defaults'		=> 	array(
+					'anchor'		=>	'97%',
+					'allowBlank'	=>	!$this->_field->getValue('required')
+				),
+				'items'			=>	$fields
+			);
+		}
+		return $return;
 	}
 
 	/**
@@ -240,10 +278,11 @@ abstract class CMS_object_common extends CMS_grandFather
 	  *
 	  * @param array $values : the POST result values
 	  * @param string prefixname : the prefix used for post names
+	  * @param boolean newFormat : new automne v4 format (default false for compatibility)
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName) {
+	function setValues($values,$prefixName, $newFormat = false) {
 		foreach ($this->_subfields as $subFieldID => $subFieldDefinition) {
 			if (is_object($this->_subfieldValues[$subFieldID])) {
 				//if no value set for it, return false
@@ -260,10 +299,11 @@ abstract class CMS_object_common extends CMS_grandFather
 	  *
 	  * @param array $values : the POST result values
 	  * @param string prefixname : the prefix used for post names
+	  * @param boolean newFormat : new automne v4 format (default false for compatibility)
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function checkMandatory($values,$prefixName) {
+	function checkMandatory($values, $prefixName, $newFormat = false) {
 		//if field is required check values
 		if ($this->_field->getValue('required')) {
 			//check each subfield values

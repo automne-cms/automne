@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: login.php,v 1.4 2009/03/02 11:25:15 sebastien Exp $
+// $Id: login.php,v 1.5 2009/06/05 15:01:04 sebastien Exp $
 
 /**
   * PHP page : Login
@@ -177,10 +177,8 @@ if (!isset($_GET['loginform'])) {
 		height:			218,
 		resizable:		false,
 		maximizable:	false,
-		layout: 		'fit',
-		plain:			true,
-		bodyStyle:		'padding:5px;',
-		buttonAlign:	'center'
+		autoScroll:		false,
+		bodyStyle:		'padding:5px;overflow:hidden;'
 	});
 	loginWindow.closeAndBack = function() {
 		if (Ext.EventManager) {
@@ -199,9 +197,22 @@ END;
 	
 } else {
 	//Send Login form frame window (in which login form is displayed)
-	$view->addJSFile('ext');
+	//$view->addJSFile('ext');
+	//$view->addCSSFile('ext');
+	//set main and ext CSS
 	$view->addCSSFile('ext');
+	$view->addCSSFile('main');
+	if (SYSTEM_DEBUG) {
+		$view->addCSSFile('blackbird');
+	}
+	$view->addJSFile('ext');
+	if (SYSTEM_DEBUG) {
+		$view->addJSFile('blackbird');
+	}
+	$view->addJSFile('codemirror');
+	$view->addJSFile('main');
 	
+	$loginURL = $_SERVER['SCRIPT_NAME'].'?loginform=true';
 	$jscontent = 
 <<<END
 	Ext.onReady(function() {
@@ -258,8 +269,7 @@ END;
 END;
 	$view->addJavascript($jscontent);
 	//set form HTML
-	$content = '
-	<div class="x-panel x-form-label-left" style="width: 374px;">
+	$content = '<div class="x-panel x-form-label-left" style="width: 374px;">
 		<div class="x-panel-tl">
 			<div class="x-panel-tr">
 				<div class="x-panel-tc"></div>
@@ -306,19 +316,21 @@ END;
 						<div class="x-panel-footer">
 							<div class="x-panel-btns-ct">
 								<div class="x-panel-btns x-panel-btns-center" id="formsButton">
-									<table cellspacing="0">
-										<tbody>
-											<tr>
-												<td class="x-panel-btn-td">
-													<div id="submitButton"></div>
-												</td>
-												<td class="x-panel-btn-td">
-													<div id="cancelButton"></div>
-												</td>
-											</tr>
-										</tbody>
-									</table>
-									<div class="x-clear"></div>
+									<div class="x-panel-fbar x-small-editor x-toolbar-layout-ct" style="width:auto;">
+										<table cellspacing="0" class="x-toolbar-ct">
+											<tbody>
+												<tr>
+													<td class="x-panel-btn-td">
+														<div id="submitButton"></div>
+													</td>
+													<td class="x-panel-btn-td">
+														<div id="cancelButton"></div>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										<div class="x-clear"></div>
+									</div>
 								</div>
 							</div>
 						</div>

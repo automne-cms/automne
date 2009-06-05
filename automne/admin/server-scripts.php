@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: server-scripts.php,v 1.2 2009/04/10 15:26:41 sebastien Exp $
+// $Id: server-scripts.php,v 1.3 2009/06/05 15:01:05 sebastien Exp $
 
 /**
   * PHP page : Load server detail window.
@@ -44,28 +44,31 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES)) {
 //Scripts content
 $content = '
 	<h1>Régénération des pages : </h1>
-	Permet recréer les pages visibles coté client des différents sites.<br /><br />
-	<div id="regeneratePages"></div>
-	<br />
-	<table cellspacing="5">
-		<tr>
-			<td id="regenerateAll"></td>
-			<td id="regenerateTree"></td>
-		</tr>
-	</table>
-	<br />
-	<h1>Scripts en cours : </h1>
-	Permet de visualiser les scripts en cours de traitement sur le serveur.<br /><br />
-	<table cellspacing="5">
-		<tr>
-			<td id="scriptsRestart"></td>
-			<td id="scriptsStop"></td>
-			<td id="scriptsClear"></td>
-		</tr>
-	</table><br />
-	<div id="scriptsProgress"></div><br />
-	<div id="scriptsDetail"></div><br />
-	<div id="scriptsQueue"></div>
+	<div style="width:100%;">
+		Permet recréer les pages visibles coté client des différents sites.<br /><br />
+		<div id="regeneratePages"></div>
+		<br />
+		<table cellspacing="5">
+			<tr>
+				<td id="regenerateAll"></td>
+				<td id="regenerateTree"></td>
+			</tr>
+		</table>
+		<br />
+		<h1>Scripts en cours : </h1>
+		Permet de visualiser les scripts en cours de traitement sur le serveur.<br /><br />
+		<table cellspacing="5">
+			<tr>
+				<td id="scriptsRestart"></td>
+				<td id="scriptsStop"></td>
+				<td id="scriptsClear"></td>
+			</tr>
+		</table><br />
+		
+		<div style="height:35px;"><div id="scriptsProgress" style="height:30px;"></div></div><br />
+		<div id="scriptsDetail"></div><br />
+		<div id="scriptsQueue"></div>
+	</div>
 ';
 $content = sensitiveIO::sanitizeJSString($content);
 
@@ -148,7 +151,7 @@ $jscontent = <<<END
 	var regeneratePages = new Ext.form.FieldSet({
 		title:			'Régénération des pages sélectionnées',
 		collapsed:		false,
-		height:			95,
+		width:			'97%',
 		autoScroll:		true,
 		layout: 		'form',
 		labelWidth:		120,
@@ -320,9 +323,6 @@ $jscontent = <<<END
 		html:				'$content',
 		listeners:			{
 			'bodyresize':function(){
-				if (!progressScripts.rendered) {
-					progressScripts.render('scriptsProgress');
-				}
 				if (!regenerateAll.rendered) {
 					regenerateAll.render('regenerateAll');
 				}
@@ -347,14 +347,20 @@ $jscontent = <<<END
 				if (!scriptsQueue.rendered) {
 					scriptsQueue.render('scriptsQueue');
 				}
-				Automne.view.updateScriptBars();
+				if (!progressScripts.rendered) {
+					progressScripts.on('afterrender', function(){
+						Automne.view.updateScriptBars();
+					}, this);
+					progressScripts.render('scriptsProgress');
+				}
+				
 			},
 			scope:this}
 	});
 	
 	serverWindow.add(center);
-	//redo windows layout
-	serverWindow.doLayout();
+	//redo windows layout (timeout is for IE)
+	setTimeout(function(){serverWindow.doLayout();}, 100);
 	serverWindow.on({
 		'beforeclose':function(){
 			Automne.view.getScriptsDetails = false;

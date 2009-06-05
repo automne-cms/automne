@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-controler.php,v 1.3 2009/03/02 11:25:15 sebastien Exp $
+// $Id: templates-controler.php,v 1.4 2009/06/05 15:01:05 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on templates
@@ -88,9 +88,9 @@ switch ($action) {
 					unlink(PATH_TEMPLATES_IMAGES_FS.'/'.$template->getImage());
 				}
 			}
-			if ($image && strpos($image, PATH_MAIN_WR.'/upload/') !== false) {
+			if ($image && strpos($image, PATH_UPLOAD_WR.'/') !== false) {
 				//move and rename uploaded file
-				$image = str_replace(PATH_MAIN_WR.'/upload/', PATH_MAIN_FS.'/upload/', $image);
+				$image = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $image);
 				$basename = pathinfo($image, PATHINFO_BASENAME);
 				$movedImage = PATH_TEMPLATES_IMAGES_FS.'/pt'.$template->getID().'_'.SensitiveIO::sanitizeAsciiString($basename);
 				CMS_file::moveTo($image, $movedImage);
@@ -133,7 +133,7 @@ switch ($action) {
 				$template->denyWebsite($deniedWebsite);
 			}
 			//XML definition file
-			if ($definitionfile && strpos($definitionfile, PATH_MAIN_WR.'/upload/') !== false) {
+			if ($definitionfile && strpos($definitionfile, PATH_UPLOAD_WR.'/') !== false) {
 				//read uploaded file
 				$definitionfile = new CMS_file($definitionfile, CMS_file::WEBROOT);
 				$template->setDebug(false);
@@ -156,84 +156,73 @@ switch ($action) {
 		} else {
 			//CREATION
 			$template = new CMS_pageTemplate();
-			//check XML definition file
-			if ($definitionfile && strpos($definitionfile, PATH_MAIN_WR.'/upload/') !== false) {
-				if ($label) {
-					$template->setlabel($label);
-					//read uploaded file
-					$definitionfile = new CMS_file($definitionfile, CMS_file::WEBROOT);
-					$template->setDebug(false);
-	                $template->setLog(false);
-					$error = $template->setDefinition($definitionfile->readContent());
-					if ($error !== true) {
-						$cms_message = $cms_language->getMessage(MESSAGE_PAGE_MALFORMED_DEFINITION_FILE)."\n\n".$error;
+			if ($label) {
+				$template->setlabel($label);
+				$template->setDebug(false);
+                $template->setLog(false);
+			}
+			if (!$cms_message) {
+				//description
+				$template->setDescription($description);
+				//remove the old file if any and if new one is different
+				if ($image) {
+					if (is_file(PATH_TEMPLATES_IMAGES_FS.'/'.$template->getImage())
+						 && $image != PATH_TEMPLATES_IMAGES_WR.'/'.$template->getImage()
+						 && $template->getImage() != 'nopicto.gif') {
+						unlink(PATH_TEMPLATES_IMAGES_FS.'/'.$template->getImage());
 					}
 				}
-				if (!$cms_message) {
-					//description
-					$template->setDescription($description);
-					//remove the old file if any and if new one is different
-					if ($image) {
-						if (is_file(PATH_TEMPLATES_IMAGES_FS.'/'.$template->getImage())
-							 && $image != PATH_TEMPLATES_IMAGES_WR.'/'.$template->getImage()
-							 && $template->getImage() != 'nopicto.gif') {
-							unlink(PATH_TEMPLATES_IMAGES_FS.'/'.$template->getImage());
-						}
-					}
-					if ($image && strpos($image, PATH_MAIN_WR.'/upload/') !== false) {
-						//move and rename uploaded file
-						$image = str_replace(PATH_MAIN_WR.'/upload/', PATH_MAIN_FS.'/upload/', $image);
-						$basename = pathinfo($image, PATHINFO_BASENAME);
-						$movedImage = PATH_TEMPLATES_IMAGES_FS.'/'.SensitiveIO::sanitizeAsciiString($basename);
-						CMS_file::moveTo($image, $movedImage);
-						CMS_file::chmodFile(FILES_CHMOD, $movedImage);
-						$image = pathinfo($movedImage, PATHINFO_BASENAME);
-					} elseif ($template->getImage()) {
-						//keep old file
-						$image = $template->getImage();
-					} else {
-						$image = 'nopicto.gif';
-					}
-					$template->setImage($image);
-					//groups
-					$template->delAllGroups();
-					foreach ($groups as $group) {
+				if ($image && strpos($image, PATH_UPLOAD_WR.'/') !== false) {
+					//move and rename uploaded file
+					$image = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $image);
+					$basename = pathinfo($image, PATHINFO_BASENAME);
+					$movedImage = PATH_TEMPLATES_IMAGES_FS.'/'.SensitiveIO::sanitizeAsciiString($basename);
+					CMS_file::moveTo($image, $movedImage);
+					CMS_file::chmodFile(FILES_CHMOD, $movedImage);
+					$image = pathinfo($movedImage, PATHINFO_BASENAME);
+				} elseif ($template->getImage()) {
+					//keep old file
+					$image = $template->getImage();
+				} else {
+					$image = 'nopicto.gif';
+				}
+				$template->setImage($image);
+				//groups
+				$template->delAllGroups();
+				foreach ($groups as $group) {
+					$template->addGroup($group);
+				}
+				if ($newgroups) {
+					foreach ($newgroups as $group) {
 						$template->addGroup($group);
 					}
-					if ($newgroups) {
-						foreach ($newgroups as $group) {
-							$template->addGroup($group);
-						}
-						if ($nouserrights) {
-							CMS_profile_usersCatalog::denyTemplateGroupsToUsers($newgroups);
-						}
+					if ($nouserrights) {
+						CMS_profile_usersCatalog::denyTemplateGroupsToUsers($newgroups);
 					}
-					//websites denied
-					$websites = CMS_websitesCatalog::getAll();
-					$deniedWebsites = array();
-					foreach ($websites as $id => $website) {
-						if (!in_array($id, $selectedWebsites)) {
-							$deniedWebsites[] = $id;
-						}
+				}
+				//websites denied
+				$websites = CMS_websitesCatalog::getAll();
+				$deniedWebsites = array();
+				foreach ($websites as $id => $website) {
+					if (!in_array($id, $selectedWebsites)) {
+						$deniedWebsites[] = $id;
 					}
-					$template->delAllWebsiteDenied();
-					foreach ($deniedWebsites as $deniedWebsite) {
-						$template->denyWebsite($deniedWebsite);
-					}
-					if (!$cms_message && !$template->hasError()) {
-						$template->writeToPersistence();
-						$log = new CMS_log();
-						$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT, $cms_user, "Template : ".$template->getLabel()." (create template)");
-						$content = array('success' => array('templateId' => $template->getID()));
-						$cms_message = 'Modèle créé avec succès.';
-						$view->setContent($content);
-					}
-				} else {
-					//clean template
-					$template->destroy(true);
+				}
+				$template->delAllWebsiteDenied();
+				foreach ($deniedWebsites as $deniedWebsite) {
+					$template->denyWebsite($deniedWebsite);
+				}
+				if (!$cms_message && !$template->hasError()) {
+					$template->writeToPersistence();
+					$log = new CMS_log();
+					$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT, $cms_user, "Template : ".$template->getLabel()." (create template)");
+					$content = array('success' => array('templateId' => $template->getID()));
+					$cms_message = 'Modèle créé avec succès.';
+					$view->setContent($content);
 				}
 			} else {
-				$cms_message = 'Erreur : Définition XML manquante !';
+				//clean template
+				$template->destroy(true);
 			}
 		}
 	break;

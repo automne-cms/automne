@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-properties.php,v 1.6 2009/03/06 10:51:52 sebastien Exp $
+// $Id: page-properties.php,v 1.7 2009/06/05 15:01:04 sebastien Exp $
 
 /**
   * PHP page : Load page properties window.
@@ -350,7 +350,17 @@ if (!NO_PAGES_EXTENDED_META_TAGS) {
 		fieldLabel:		'<span ext:qtip=\"{$cms_language->getJSMessage(MESSAGE_PAGE_MAIL_INFO)}\" class=\"atm-help\">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_REPLYTO)}</span>',
 		name:			'replytotext',
 		value:			'{$replyTo}',
-		vtype:			'email'
+		allowBlank:		true,
+		validator:		function(value){
+			if (!value) {
+				return true;
+			}
+			var vt = Ext.form.VTypes;
+            if(!vt['email'](value, this)){
+                return vt['emailText'];
+            }
+			return true;
+		}
 	},{
 		{$disabled}
 		fieldLabel:		'<span ext:qtip=\"{$cms_language->getJSMessage(MESSAGE_PAGE_COPYRIGHT_INFO)}\" class=\"atm-help\">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_COPYRIGHT)}</span>',
@@ -466,14 +476,15 @@ $jscontent .= <<<END
 						selectOnFocus:		true,
 						editable:			false,
 						tpl: 				'<tpl for="."><div ext:qtip="{qtip}" class="x-combo-list-item {cls}">{label}</div></tpl>',
-						anchor:				''
+						anchor:				false
 					},{
 						{$disabled}
 						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_FORCEURLREFRESH)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_URL)}</span>',
 						name:			'updateURL',
 						inputValue:		'1',
 						xtype:			'checkbox',
-						boxLabel:		'Cochez la case pour mettre à jour l\'adresse de la page.<br />Adresse actuelle : {$pageUrl}'
+						boxLabel:		'Cochez la case pour mettre à jour l\'adresse de la page.<br />Adresse actuelle : {$pageUrl}',
+						height:			40
 					},{
 						{$disabled}
 						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_AUTOMATIC_REDIRECTION)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_REDIRECT)}</span>',
@@ -528,7 +539,7 @@ $jscontent .= <<<END
 						{$disabled}
 						text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
 						name:			'submitPageContent',
-						anchor:			'',
+						anchor:			false,
 						scope:			this,
 						handler:		function() {
 							var form = Ext.getCmp('pageContentPanel').getForm();
@@ -551,7 +562,7 @@ $jscontent .= <<<END
 					defaultType:	'textfield',
 					collapsed:		true,
 					labelAlign:		'right',
-					labelWidth:		135,
+					labelWidth:		145,
 					defaults: {
 						xtype:			'textfield',
 						anchor:			'97%',
@@ -566,7 +577,7 @@ $jscontent .= <<<END
 						allowBlank: 	false,
 						format:			'{$dateFormat}',
 						width:			100,
-						anchor:			''
+						anchor:			false
 					},{
 						{$disabled}
 						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_DATE_END_PUBLICATION)} {$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_DATE_COMMENT, array($date_mask))}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_PUBDATE_END)}</span>',
@@ -575,14 +586,14 @@ $jscontent .= <<<END
 						xtype:			'datefield',
 						format:			'{$dateFormat}',
 						width:			100,
-						anchor:			''
+						anchor:			false
 					},{
 						{$disabled}
 						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_DELAY_ALERT_MESSAGE)} {$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_REMINDERDELAY_COMMENT)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_REMINDERDELAY)}</span>',
 						name:			'reminderdelay',
 						value:			'{$reminderPeriodicity}',
 						width:			30,
-						anchor:			''
+						anchor:			false
 					},{
 						{$disabled}
 						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_DATE_RECEPTION_ALERT_MESSAGE)} {$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_DATE_COMMENT, array($date_mask))}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_REMINDERDATE)}</span>',
@@ -591,7 +602,7 @@ $jscontent .= <<<END
 						xtype:			'datefield',
 						format:			'{$dateFormat}',
 						width:			100,
-						anchor:			''
+						anchor:			false
 					},{
 						{$disabled}
 						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_ALERT_MESSAGE_INFO)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_REMINDERMESSAGE)}</span>',
@@ -699,7 +710,7 @@ $jscontent .= <<<END
 						allowBlank: 		false,
 						selectOnFocus:		true,
 						editable:			false,
-						anchor:				''
+						anchor:				false
 					},{
 						{$disabled}
 						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_BROWSER_CACHE_INFO)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_PRAGMA)}</span>',

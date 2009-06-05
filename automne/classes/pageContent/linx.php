@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: linx.php,v 1.6 2009/04/02 13:57:59 sebastien Exp $
+// $Id: linx.php,v 1.7 2009/06/05 15:02:17 sebastien Exp $
 
 /**
   * Class CMS_linx
@@ -172,7 +172,6 @@ class CMS_linx extends CMS_grandFather
 			}
 			$displays = $domdocument->getElementsByTagName('display');
 			
-			
 			//get the displays objects
 			$unsortedDisplays = array();
 			foreach ($displays as $display) {
@@ -229,7 +228,7 @@ class CMS_linx extends CMS_grandFather
 						}
 						$output .= $display->getSubLevelOutput($displayOutput);
 					} elseif(is_object($this->_noselection)) {
-						$output .= $this->_noselection->getInnerContent();
+						$output .= CMS_DOMDocument::DOMElementToString($this->_noselection, true);
 					}
 				}
 			}
@@ -488,17 +487,15 @@ class CMS_linx extends CMS_grandFather
 		$public_targets = array();
 		if (is_array($targets)) {
 			foreach ($targets as $target) {
-				if ($target->getPublication() == RESOURCE_PUBLICATION_PUBLIC) {
+				if ($target->isUseable() && $target->getPublication() == RESOURCE_PUBLICATION_PUBLIC) {
 					$public_targets[] = $target;
 				}
 			}
 		}
 		$targets = $public_targets;
-		
 		if (!$targets || !$this->_selectionCondition) {
 			return $targets;
 		}
-		
 		$selected_targets = array();
 		$sizeofTargets = sizeof($targets);
 		for ($i = 0 ; $i < $sizeofTargets ; $i++) {

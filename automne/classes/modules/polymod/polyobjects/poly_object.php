@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object.php,v 1.4 2009/03/04 09:57:45 sebastien Exp $
+// $Id: poly_object.php,v 1.5 2009/06/05 15:02:17 sebastien Exp $
 
 /**
   * Class CMS_poly_object
@@ -233,7 +233,8 @@ class CMS_poly_object extends CMS_resource
 		$datas = $search->search(CMS_object_search::POLYMOD_SEARCH_RETURN_DATAS);
 		unset($search);
 		if (!$this->_public && (!$datas || !$datas[$this->_ID])) {
-			$this->raiseError('No datas found for edited item '.$this->_ID.'. Current user should have no rights on this item...');
+			//remove this error because it could be raised when object is just deleted
+			//$this->raiseError('No datas found for edited item '.$this->_ID.'. Current user should have no rights on this item...');
 			return false;
 		}
 		//then populate object(s) values
@@ -505,21 +506,52 @@ class CMS_poly_object extends CMS_resource
 		if (is_object($this->_objectFieldsDefinition[$fieldID])) {
 			if (is_a($this->_objectValues[$fieldID],'CMS_poly_object')) {
 				//is this field mandatory ?
-				$mandatory = ($this->_objectFieldsDefinition[$fieldID]->getValue('required')) ? '<span class="admin_text_alert">*</span> ':'';
-				//create html for each subfields
-				$html = '<tr><td class="admin" align="right" valign="top">'.$mandatory.$this->_objectFieldsDefinition[$fieldID]->getLabel($language).'</td><td class="admin">'."\n";
-				//add description if any
-				if ($this->_objectFieldsDefinition[$fieldID]->getFieldDescription($language)) {
-					$html .= '<dialog-title type="admin_h3">'.$this->_objectFieldsDefinition[$fieldID]->getFieldDescription($language).'</dialog-title><br />';
+				$mandatory = $this->_objectFieldsDefinition[$fieldID]->getValue('required') ? '<span class="atm-red">*</span> ' : '';
+				$desc = $this->_objectFieldsDefinition[$fieldID]->getFieldDescription($language);
+				if (POLYMOD_DEBUG) {
+					$desc .= $desc ? '<br />' : '';
+					$desc .= '<span class="atm-red">Field : '.$fieldID.' - Value(s) : <ul>';
+					$desc .= '<li>'.$fieldID.'&nbsp;:&nbsp;'.$this->_polyObjectValues[$fieldID]->getValue().'</li>';
+					$desc .= '</ul></span>';
 				}
-				$inputParams = array(
-					'class' 	=> 'admin_input_text',
-					'prefix'	=>	$prefixName,
-					'form'		=> 'frmitem',
+				$label = $desc ? '<span class="atm-help" ext:qtip="'.htmlspecialchars($desc).'">'.$mandatory.$this->_objectFieldsDefinition[$fieldID]->getLabel($language).'</span>' : $mandatory.$this->_objectFieldsDefinition[$fieldID]->getLabel($language);
+				$return = array(
+					'allowBlank'	=>	!$this->_objectFieldsDefinition[$fieldID]->getValue('required'),
+					'fieldLabel' 	=>	$label,
+					'name'			=>	'polymodFieldsValue['.$prefixName.$this->_objectFieldsDefinition[$fieldID]->getID().'_0]',
 				);
-				$html .= $this->getInput($fieldID, $language, $inputParams);
-				$html .= '</td></tr>'."\n";
-				return $html;
+				//get Object definition
+				$objectDef = $this->getObjectDefinition();
+				//get module codename
+				$moduleCodename = $objectDef->getValue('module');
+				if (isset($this->_polyObjectValues[$fieldID]) && is_object($this->_polyObjectValues[$fieldID]) && !is_null($this->_polyObjectValues[$fieldID]->getValue())) {
+					$selectedValue = $this->_polyObjectValues[$fieldID]->getValue() ? $this->_polyObjectValues[$fieldID]->getValue() : '';
+				} else {
+					$selectedValue = '';
+				}
+				
+				$return['xtype'] 			= 'atmCombo';
+				$return['hiddenName'] 		= $return['name'];
+				$return['forceSelection'] 	= true;
+				$return['mode'] 			= 'remote';
+				$return['valueField'] 		= 'id';
+				$return['displayField'] 	= 'label';
+				$return['triggerAction'] 	= 'all';
+				$return['allowBlank']		= true;
+				$return['selectOnFocus']	= true;
+				$return['editable']			= false;
+				$return['value']			= $selectedValue;
+				$return['store'] 			= array(
+					'url'			=> PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/list-objects.php',
+					'baseParams'	=> array(
+						'objectId'		=> $this->_objectValues[$fieldID]->getObjectID(),
+						'module'		=> $moduleCodename,
+						'query'			=> ''
+					),
+					'root' 			=> 'objects',
+					'fields' 		=> array('id', 'label')
+				);
+				return $return;
 			} else {
 				//return html for other type of objects fields
 				return $this->_objectValues[$fieldID]->getHTMLAdmin($fieldID, $language, $prefixName);
@@ -585,10 +617,11 @@ class CMS_poly_object extends CMS_resource
 	  *
 	  * @param array $values : the POST result values
 	  * @param string prefixname : the prefix used for post names
+	  * @param boolean newFormat : new automne v4 format (default false for compatibility)
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function checkMandatory($fieldID,$values,$prefixName) {
+	function checkMandatory($fieldID, $values, $prefixName, $newFormat = false) {
 		if (is_object($this->_objectFieldsDefinition[$fieldID])) {
 			if (is_a($this->_objectValues[$fieldID],'CMS_poly_object')) {
 				//check values for poly object field
@@ -600,7 +633,7 @@ class CMS_poly_object extends CMS_resource
 				}
 			} else {
 				//check value for other type of objects fields
-				return $this->_objectValues[$fieldID]->checkMandatory($values,$prefixName);
+				return $this->_objectValues[$fieldID]->checkMandatory($values, $prefixName, $newFormat);
 			}
 		} else {
 			return false;
@@ -682,16 +715,18 @@ class CMS_poly_object extends CMS_resource
 	  * @param integer $fieldID : the object field id to set values
 	  * @param array $values : the POST result values
 	  * @param string $prefixname : the prefix used for post names
+	  * @param boolean newFormat : new automne v4 format (default false for compatibility)
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($fieldID, $values, $prefix) {
+	function setValues($fieldID, $values, $prefix, $newFormat = false) {
 		if (is_object($this->_objectValues[$fieldID])) {
 			if (is_a($this->_objectValues[$fieldID],'CMS_poly_object')) {
 				//set values for poly object field in $this->_polyObjectValues
 				if (is_a($this->_polyObjectValues[$fieldID],'CMS_subobject_integer')) {
 					if (isset($values[$prefix.$fieldID.'_0'])) {
-						return $this->_polyObjectValues[$fieldID]->setValue($values[$prefix.$fieldID.'_0']);
+						$value = $values[$prefix.$fieldID.'_0'] ? $values[$prefix.$fieldID.'_0'] : 0;
+						return $this->_polyObjectValues[$fieldID]->setValue($value);
 					} else {
 						return true;
 					}
@@ -701,14 +736,14 @@ class CMS_poly_object extends CMS_resource
 				//set values for other type of objects fields
 				if (!method_exists($this->_objectValues[$fieldID], 'needIDToSetValues')) {
 					//for object who does not need object id
-					return $this->_objectValues[$fieldID]->setValues($values, $prefix);
+					return $this->_objectValues[$fieldID]->setValues($values, $prefix, $newFormat);
 				} else {
 					//for object who need object id
 					if (!$this->getID()) {
 						//if object has not id yet, save it
 						$this->writeToPersistence();
 					}
-					return $this->_objectValues[$fieldID]->setValues($values, $prefix, $this->getID());
+					return $this->_objectValues[$fieldID]->setValues($values, $prefix, $newFormat, $this->getID());
 				}
 			}
 		} else {
@@ -1416,7 +1451,7 @@ class CMS_poly_object extends CMS_resource
 	  * @access public
 	  */
 	function scriptInfo($parameters) {
-		if (sensitiveIO::isPositiveInteger($parameters['field'])) {
+		if (isset($parameters['field']) && sensitiveIO::isPositiveInteger($parameters['field'])) {
 			if (!is_object($this->_objectValues[$parameters['field']]) || !method_exists($this->_objectValues[$parameters['field']],'scriptInfo')) {
 				return false;
 			}
@@ -1428,9 +1463,9 @@ class CMS_poly_object extends CMS_resource
 				case 'emailNotification':
 					global $cms_language;
 					if ($parameters['type'] == 'validate') {
-						return $cms_language->getMessage(MESSAGE_OBJECT_VALIDATION_AWAIT_NOTIFICATION, false, MOD_POLYMOD_CODENAME);
+						return $cms_language->getMessage(self::MESSAGE_OBJECT_VALIDATION_AWAIT_NOTIFICATION, false, MOD_POLYMOD_CODENAME);
 					} elseif ($parameters['type'] == 'delete') {
-						return $cms_language->getMessage(MESSAGE_OBJECT_DELETION_AWAIT_NOTIFICATION, false, MOD_POLYMOD_CODENAME);
+						return $cms_language->getMessage(self::MESSAGE_OBJECT_DELETION_AWAIT_NOTIFICATION, false, MOD_POLYMOD_CODENAME);
 					}
 				break;
 				default:

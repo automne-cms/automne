@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-page.php,v 1.5 2009/04/02 13:55:54 sebastien Exp $
+// $Id: templates-page.php,v 1.6 2009/06/05 15:01:05 sebastien Exp $
 
 /**
   * PHP page : Load page templates search window.
@@ -408,7 +408,19 @@ $jscontent = <<<END
 			xtype:		'button',
 			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_DELETE)}',
 			handler:	function(button) {
-				refresh(selectedObjects, {del:true});
+				Automne.message.popup({
+					msg: 				'Confirmez-vous la suppression définitive du ou des modèles de pages sélectionnés ?',
+					buttons: 			Ext.MessageBox.OKCANCEL,
+					animEl: 			button,
+					closable: 			false,
+					icon: 				Ext.MessageBox.QUESTION,
+					scope:				this,
+					fn: 				function (button) {
+						if (button == 'ok') {
+							refresh(selectedObjects, {del:true});
+						}
+					}
+				});
 			},
 			scope:		resultsPanel,
 			disabled:	true
@@ -549,7 +561,11 @@ $jscontent = <<<END
 	//highlight node update after dv update
 	store.on('update', function(store, record, operation, node){
 		if (operation == 'update-data-view') {
-			Ext.fly(node).select('*').highlight("C3CD31", {duration: 1});
+			Ext.fly(node).fadeIn({
+			    endOpacity: 1,
+			    easing: 'easeIn',
+			    duration: .6
+			});
 		}
 	});
 END;

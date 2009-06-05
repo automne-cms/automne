@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: profile.php,v 1.4 2009/04/02 13:58:01 sebastien Exp $
+// $Id: profile.php,v 1.5 2009/06/05 15:02:17 sebastien Exp $
 
 /**
   * Class CMS_Profile
@@ -1255,6 +1255,7 @@ class CMS_profile extends CMS_grandFather
 		static $rootCategories;
 		$mode = 'mode_'.(string)$this->_id.'_'.($clearance === false ? 'false' : (string)$clearance).'_'.(string)$module.'_'.(string)$strict;
 		if (!isset($rootCategories[$mode])) {
+			$rootCategories[$mode] = array();
 			if (SensitiveIO::isPositiveInteger($this->_id)) {
 				// Take only categories from given module
 				$stack_categoriesClearances = $this->_moduleCategoriesClearances->getCategoriesClearances($module);

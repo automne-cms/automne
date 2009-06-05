@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_date.php,v 1.3 2009/04/02 13:58:00 sebastien Exp $
+// $Id: object_date.php,v 1.4 2009/06/05 15:02:18 sebastien Exp $
 
 /**
   * Class CMS_object_date
@@ -42,6 +42,7 @@ class CMS_object_date extends CMS_object_common
 	const MESSAGE_OBJECT_DATE_PARAMETER_UPDATE_DATE = 371;
 	const MESSAGE_OBJECT_DATE_OPERATOR_DESCRIPTION = 380;
 	const MESSAGE_OBJECT_DATE_OPERATOR_TITLE = 390;
+	const MESSAGE_OBJECT_DATE_HOURS = 515;
 	
 	/**
 	  * Standard Messages
@@ -194,7 +195,7 @@ class CMS_object_date extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLAdmin($fieldID, $language, $prefixName) {
+	/*function getHTMLAdmin($fieldID, $language, $prefixName) {
 		$params = $this->getParamsValues();
 		//is this field mandatory ?
 		$mandatory = ($this->_field->getValue('required')) ? '<span class="admin_text_alert">*</span> ':'';
@@ -216,6 +217,106 @@ class CMS_object_date extends CMS_object_common
 		$html .= $this->getInput($fieldID, $language, $inputParams);
 		$html .= '</td></tr>'."\n";
 		return $html;
+	}*/
+	
+	/**
+	  * get HTML admin (used to enter object values in admin)
+	  *
+	  * @param integer $fieldID, the current field id (only for poly object compatibility)
+	  * @param CMS_language $language, the current admin language
+	  * @param string prefixname : the prefix to use for post names
+	  * @return string : the html admin
+	  * @access public
+	  */
+	function getHTMLAdmin($fieldID, $language, $prefixName) {
+		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
+		$params = $this->getParamsValues();
+		
+		//is this field mandatory ?
+		$mandatory = $this->_field->getValue('required') ? '<span class="atm-red">*</span> ' : '';
+		$desc = $this->getFieldDescription($language);
+		
+		//create object CMS_date
+		$date = new CMS_date();
+		$date->setFromDBValue($this->_subfieldValues[0]->getValue());
+		$dateFormat = $language->getDateFormat();
+		$dateMask = $language->getDateFormatMask();
+		$wasNull = ($date->isNull()) ? true : false;
+		if ($date->isNull() && ($params['setNow'] || $params['creationDate'])) {
+			$date->setNow();
+		}
+		if ($params['updateDate']) {
+			$date->setNow();
+		}
+		if ($params['moveDate'] && (($params['setNow'] && $wasNull) || ($params['creationDate'] && $wasNull) || $params['updateDate'])) {
+			$date->moveDate($params['moveDate']);
+		}
+		if (!$params['creationDate'] && !$params['updateDate']) {
+			$desc .= ($desc ? ' - ' : '').$language->getMessage(self::MESSAGE_OBJECT_DATE_DATE_COMMENT, array($dateMask));
+		}
+		if (POLYMOD_DEBUG) {
+			$values = array();
+			foreach (array_keys($this->_subfieldValues) as $subFieldID) {
+				if (is_object($this->_subfieldValues[$subFieldID])) {
+					$values[$subFieldID] = sensitiveIO::ellipsis(strip_tags($this->_subfieldValues[$subFieldID]->getValue()), 50);
+				}
+			}
+			$desc .= $desc ? '<br />' : '';
+			$desc .= '<span class="atm-red">Field : '.$fieldID.' - Value(s) : <ul>';
+			foreach ($values as $subFieldID => $value) {
+				$desc .= '<li>'.$subFieldID.'&nbsp;:&nbsp;'.$value.'</li>';
+			}
+			$desc .= '</ul></span>';
+		}
+		$label = $desc ? '<span class="atm-help" ext:qtip="'.htmlspecialchars($desc).'">'.$mandatory.$this->getFieldLabel($language).'</span>' : $mandatory.$this->getFieldLabel($language);
+		
+		if ($params['withHMS']) {
+			$hms = !$date->isNull() ? $date->getHour().':'.$date->getMinute().':'.$date->getSecond() : '';
+			$return = array(
+				'layout'	=> 'column',
+				'xtype'		=> 'panel',
+				'border'	=> false,
+				'items'		=> array(
+					array(
+						'width'			=> 210,
+						'layout'		=> 'form',
+						'border'		=> false,
+						'items'			=> array(array(
+							'allowBlank'	=> !$this->_field->getValue('required'),
+							'id'			=> $return['id'],
+							'name'			=> $return['name'],
+							'xtype'			=> 'datefield',
+							'fieldLabel'	=> $label,
+							'value'			=> !$date->isNull() ? $date->getLocalizedDate($dateFormat) : '',
+							'format'		=> $dateFormat,
+							'disabled'		=>	($params['creationDate'] || $params['updateDate'])
+						))
+					),array(
+						'columnWidth'	=> 1,
+						'layout'		=> 'form',
+						'border'		=> false,
+						'labelWidth'	=> 55,
+						'items'			=> array(array(
+							'xtype'			=> 'textfield',
+							'fieldLabel'	=> '<span class="atm-help" ext:qtip="'.htmlspecialchars($language->getMessage(self::MESSAGE_OBJECT_DATE_DATE_COMMENT, array($language->getMessage(self::MESSAGE_OBJECT_DATE_HMS_FORMAT, false, MOD_POLYMOD_CODENAME)))).'">'.$language->getMessage(self::MESSAGE_OBJECT_DATE_HOURS, false, MOD_POLYMOD_CODENAME).'</span>',
+							'value'			=> $hms,
+							'id'			=> 'polymodFieldsValue['.$prefixName.$this->_field->getID().'_1]',
+							'name'			=> 'polymodFieldsValue['.$prefixName.$this->_field->getID().'_1]',
+							'disabled'		=>	($params['creationDate'] || $params['updateDate'])
+						))
+					)
+				)
+			);
+		} else {
+			$return['fieldLabel'] =	$label;
+			$return['xtype'] =	'datefield';
+			$return['value'] =	!$date->isNull() ? $date->getLocalizedDate($dateFormat) : '';
+			$return['format'] =	$dateFormat;
+			$return['width'] =	100;
+			$return['anchor'] =	false;
+			$return['disabled'] = ($params['creationDate'] || $params['updateDate']);
+		}
+		return $return;
 	}
 	
 	/**

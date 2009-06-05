@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object_catalog.php,v 1.4 2009/04/02 13:58:00 sebastien Exp $
+// $Id: poly_object_catalog.php,v 1.5 2009/06/05 15:02:17 sebastien Exp $
 
 /**
   * static Class CMS_poly_object_catalog
@@ -595,7 +595,7 @@ class CMS_poly_object_catalog
 			return false;
 		}
 		//get object definition
-		$objectDef = new CMS_poly_object_definition($this->_objectID);
+		$objectDef = new CMS_poly_object_definition($objectID);
 		//if object is a primary resource, destroy all resources associated to objects
 		if ($objectDef->isPrimaryResource()) {
 			//get resources Ids

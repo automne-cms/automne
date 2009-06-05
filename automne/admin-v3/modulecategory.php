@@ -13,7 +13,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: modulecategory.php,v 1.2 2009/04/02 13:56:08 sebastien Exp $
+// $Id: modulecategory.php,v 1.3 2009/06/05 15:01:37 sebastien Exp $
 
 /**
   * PHP page : module admin frontend
@@ -131,8 +131,6 @@ case "validate":
 		$lng = $aLanguage->getCode();
 		$item->setLabel($_REQUEST["label_".$lng], $aLanguage);
 		$item->setDescription($_REQUEST["description_".$lng], $aLanguage);
-		$item->setFile($_REQUEST["file_".$lng], $aLanguage);
-		
 		// File upload management
 		if ($_REQUEST["edit_file_".$lng]) {
 			$o_file_upload = new CMS_fileUpload("file_".$lng, true);
@@ -143,11 +141,15 @@ case "validate":
 			if ($_FILES["file_".$lng]["name"] && $item->writeToPersistence()) {
 				$destination_path = $item->getFilePath($aLanguage, true, PATH_RELATIVETO_FILESYSTEM, false);
 				$extension = pathinfo($_FILES["file_".$lng]["name"], PATHINFO_EXTENSION);
-				$destination_path .= "/cat-".$item->getID()."-file".$extension;
+				$destination_path .= "/cat-".$item->getID()."-file-".$lng.".".$extension;
 				$o_file_upload->setPath('destination', $destination_path);
 				if (!$o_file_upload->doUpload()) {
 					$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_FILE_ERROR)."\n";
 				}
+			}
+			//remove old one if any
+			if ($item->getFilePath($aLanguage, false, PATH_RELATIVETO_FILESYSTEM, true) && is_file($item->getFilePath($aLanguage, true, PATH_RELATIVETO_FILESYSTEM, true))) {
+				@unlink($item->getFilePath($aLanguage, true, PATH_RELATIVETO_FILESYSTEM, true));
 			}
 			$item->setFile($o_file_upload->getFilename(), $aLanguage);
 			$item->writeToPersistence();
@@ -155,19 +157,24 @@ case "validate":
 	}
 	
 	// Icon upload management
-	$o_file_upload = new CMS_fileUpload_dialog("file");
-	$o_file_upload->setOrigin($item->getIconPath(true, PATH_RELATIVETO_FILESYSTEM), $_REQUEST["edit_icon"]);
-	if ($o_file_upload->ready() && $item->writeToPersistence()) {
-		$extension = pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
-		$o_file_upload->setDestination($item->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, false)."/cat-".$item->getID()."-icon".$extension);
+	if ($_REQUEST["edit_icon"]) {
+		$o_file_upload = new CMS_fileUpload_dialog("file");
+		$o_file_upload->setOrigin($item->getIconPath(true, PATH_RELATIVETO_FILESYSTEM), $_REQUEST["edit_icon"]);
+		if ($o_file_upload->ready() && $item->writeToPersistence()) {
+			$extension = pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
+			$o_file_upload->setDestination($item->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, false)."/cat-".$item->getID()."-icon.".$extension);
+		}
+		if (!$o_file_upload->doUpload()) {
+			$cms_message .= $o_file_upload->getErrorMessage($cms_language);
+		} else {
+			//remove old one if any
+			if ($item->getIconPath(false, PATH_RELATIVETO_FILESYSTEM, true) && is_file($item->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, true))) {
+				@unlink($item->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, true));
+			}
+			$item->setAttribute('icon', $o_file_upload->getFilename());
+			$item->writeToPersistence();
+		}
 	}
-	if (!$o_file_upload->doUpload()) {
-		$cms_message .= $o_file_upload->getErrorMessage($cms_language);
-	} else {
-		$item->setAttribute('icon', $o_file_upload->getFilename());
-		$item->writeToPersistence();
-	}
-	
 	if (!$cms_message && !$item->writeToPersistence()) {
 		$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_ACTION_SAVE_ERROR);
 	}
@@ -364,8 +371,6 @@ foreach ($all_languages as $aLanguage) {
 	</tr>';
 }
 $content .='
-	
-	
 	<tr>
 		<td colspan="2">
 			<br />

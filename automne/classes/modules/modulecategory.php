@@ -14,7 +14,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: modulecategory.php,v 1.2 2009/04/02 13:57:58 sebastien Exp $
+// $Id: modulecategory.php,v 1.3 2009/06/05 15:02:19 sebastien Exp $
 
 /**
   * Class CMS_moduleCategory
@@ -441,6 +441,9 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * @param CMS_language $language 
 	 */
 	function setLabel($value, $language = false) {
+		if (!$this->_labels) {
+			$this->_retrieveLabels();
+		}
 		if (is_a($language, 'CMS_language')) {
 			$this->_labels[$language->getCode()] = $value;
 			return true;
@@ -481,6 +484,9 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * @param CMS_language $language 
 	 */
 	function setDescription($value, $language = false) {
+		if(!$this->_descriptions) {
+			$this->_retrieveLabels();
+		}
 		if (is_a($language, 'CMS_language')) {
 			$this->_descriptions[$language->getCode()] = $value;
 			return true;
@@ -521,6 +527,9 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * @param CMS_language $language 
 	 */
 	function setFile($value, $language = false) {
+		if(!$this->_files) {
+			$this->_retrieveLabels();
+		}
 		if (is_a($language, 'CMS_language')) {
 			$this->_files[$language->getCode()] = $value;
 			return true;

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: profileuser.php,v 1.4 2009/03/03 15:13:35 sebastien Exp $
+// $Id: profileuser.php,v 1.5 2009/06/05 15:02:17 sebastien Exp $
 
 /**
   * Class CMS_profile_user
@@ -804,6 +804,18 @@ class CMS_profile_user extends CMS_profile
 	function setAlertLevel($level, $module) {
 		$this->_alerts->delAllWithOneKey($module);
 		$this->_alerts->add($module, $level);
+		return true;
+	}
+	
+	/**
+	  * Reset Alert Level
+	  *
+	  * @return true
+	  * @access public
+	  */
+	function resetAlertLevel() {
+		// Initiate Stack objects
+		$this->_alerts = new CMS_stack();
 		return true;
 	}
 	

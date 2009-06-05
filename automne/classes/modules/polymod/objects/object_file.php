@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_file.php,v 1.4 2009/04/10 15:22:02 sebastien Exp $
+// $Id: object_file.php,v 1.5 2009/06/05 15:02:18 sebastien Exp $
 
 /**
   * Class CMS_object_file
@@ -67,6 +67,11 @@ class CMS_object_file extends CMS_object_common
 	const MESSAGE_OBJECT_FILE_PARAMETER_ALLOWED_TYPE_DESC = 375;
 	const MESSAGE_OBJECT_FILE_PARAMETER_DISALLOWED_TYPE = 376;
 	const MESSAGE_OBJECT_FILE_PARAMETER_DISALLOWED_TYPE_DESC = 375;
+	
+	//Standard Message
+	const MESSAGE_ALL_FILE = 530;
+	const MESSAGE_SELECT_FILE = 534;
+	const MESSAGE_SELECT_PICTURE = 528;
 	
 	/**
 	  * File types constants
@@ -199,7 +204,7 @@ class CMS_object_file extends CMS_object_common
 	  * @var array()
 	  * @access private
 	  */
-	protected $_allowedExtensions = array("gif","jpg","jpeg","jpe","png");
+	protected $_allowedExtensions = array("gif","jpg","png");
 	
 	/**
 	  * Constructor.
@@ -271,65 +276,117 @@ class CMS_object_file extends CMS_object_common
 	  *
 	  * @param array $values : the POST result values
 	  * @param string prefixname : the prefix used for post names
+	  * @param boolean newFormat : new automne v4 format (default false for compatibility)
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function checkMandatory($values,$prefixName) {
-		//check for image extension before doing anything
-		if (isset($_FILES[$prefixName.$this->_field->getID().'_1']) && $_FILES[$prefixName.$this->_field->getID().'_1']["name"]
-			 && !in_array(strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_1']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
-			return false;
-		}
+	function checkMandatory($values, $prefixName, $newFormat = false) {
 		//load parameters
 		$params = $this->getParamsValues();
-		//if field is required check values
-		if ($this->_field->getValue('required')) {
-			// FTP file
-			if($params['allowFtp'] && is_dir(PATH_REALROOT_FS.$params['ftpDir'])){
-				$filename = $values[$prefixName.$this->_field->getID().'_externalfile'];//substr($values[$prefixName.$this->_field->getID().'_externalfile'], 1);
-				$ftp_dir = PATH_REALROOT_FS.$params['ftpDir'];
-				if (@file_exists($ftp_dir.$filename) && is_file($ftp_dir.$filename)) {
-					return true;
-				}
-			}
-			//must have file in upload field or in hidden field or file must be already set
-			//if deleted is checked, file must be set in upload field
-			if((!$this->_subfieldValues[4]->getValue() && !$_FILES[$prefixName.$this->_field->getID().'_4']['name'] && !$values[$prefixName.$this->_field->getID().'_4_hidden']) || (isset($values[$prefixName.$this->_field->getID().'_delete']) && $values[$prefixName.$this->_field->getID().'_delete'] == 1 && !$_FILES[$prefixName.$this->_field->getID().'_4']['name'])) {
+		if ($newFormat) {
+			//check for image extension before doing anything
+			if (isset($values[$prefixName.$this->_field->getID().'_1']) && $values[$prefixName.$this->_field->getID().'_1']
+				 && !in_array(strtolower(pathinfo($values[$prefixName.$this->_field->getID().'_1'], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
 				return false;
 			}
-		}
-		
-		//check files extension
-		if ($params['allowedType'] || $params['disallowedType']) {
-			//for external file if any
-			if (isset($values[$prefixName.$this->_field->getID().'_externalfile']) && $values[$prefixName.$this->_field->getID().'_externalfile']) {
-				$extension = strtolower(pathinfo($values[$prefixName.$this->_field->getID().'_externalfile'], PATHINFO_EXTENSION));
-				if (!$extension) return false;
-				//extension must be in allowed list
-				if ($params['allowedType'] && !in_array($extension, explode(',',strtolower($params['allowedType'])))) {
-					return false;
-				}
-				//extension must not be in disallowed list
-				if ($params['disallowedType'] && in_array($extension, explode(',',strtolower($params['disallowedType'])))) {
+			//if field is required check values
+			if ($this->_field->getValue('required')) {
+				// FTP file
+				if($params['allowFtp'] && is_dir(PATH_REALROOT_FS.$params['ftpDir']) && isset($values[$prefixName.$this->_field->getID().'_externalfile']) && $values[$prefixName.$this->_field->getID().'_externalfile']){
+					$filename = $values[$prefixName.$this->_field->getID().'_externalfile'];
+					$ftp_dir = PATH_REALROOT_FS.$params['ftpDir'];
+					if (!file_exists($ftp_dir.$filename) || !is_file($ftp_dir.$filename)) {
+						return false;
+					}
+				} else if(!$values[$prefixName.$this->_field->getID().'_4']) {
 					return false;
 				}
 			}
-			//for uploaded file if any
-			if (isset($_FILES[$prefixName.$this->_field->getID().'_4']) && $_FILES[$prefixName.$this->_field->getID().'_4']['name']) {
-				$extension = strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_4']['name'], PATHINFO_EXTENSION));
-				if (!$extension) return false;
-				//extension must be in allowed list
-				if ($params['allowedType'] && !in_array($extension, explode(',',strtolower($params['allowedType'])))) {
-					return false;
+			
+			//check files extension
+			if ($params['allowedType'] || $params['disallowedType']) {
+				//for external file if any
+				if (isset($values[$prefixName.$this->_field->getID().'_externalfile']) && $values[$prefixName.$this->_field->getID().'_externalfile']) {
+					$extension = strtolower(pathinfo($values[$prefixName.$this->_field->getID().'_externalfile'], PATHINFO_EXTENSION));
+					if (!$extension) return false;
+					//extension must be in allowed list
+					if ($params['allowedType'] && !in_array($extension, explode(',',strtolower($params['allowedType'])))) {
+						return false;
+					}
+					//extension must not be in disallowed list
+					if ($params['disallowedType'] && in_array($extension, explode(',',strtolower($params['disallowedType'])))) {
+						return false;
+					}
 				}
-				//extension must not be in disallowed list
-				if ($params['disallowedType'] && in_array($extension, explode(',',strtolower($params['disallowedType'])))) {
+				//for uploaded file if any
+				if (isset($values[$prefixName.$this->_field->getID().'_4']) && $values[$prefixName.$this->_field->getID().'_4']) {
+					$extension = strtolower(pathinfo($values[$prefixName.$this->_field->getID().'_4'], PATHINFO_EXTENSION));
+					if (!$extension) return false;
+					//extension must be in allowed list
+					if ($params['allowedType'] && !in_array($extension, explode(',',strtolower($params['allowedType'])))) {
+						return false;
+					}
+					//extension must not be in disallowed list
+					if ($params['disallowedType'] && in_array($extension, explode(',',strtolower($params['disallowedType'])))) {
+						return false;
+					}
+				}
+			}
+			return true;
+		} else {
+			//check for image extension before doing anything
+			if (isset($_FILES[$prefixName.$this->_field->getID().'_1']) && $_FILES[$prefixName.$this->_field->getID().'_1']["name"]
+				 && !in_array(strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_1']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
+				return false;
+			}
+			//if field is required check values
+			if ($this->_field->getValue('required')) {
+				// FTP file
+				if($params['allowFtp'] && is_dir(PATH_REALROOT_FS.$params['ftpDir'])){
+					$filename = $values[$prefixName.$this->_field->getID().'_externalfile'];//substr($values[$prefixName.$this->_field->getID().'_externalfile'], 1);
+					$ftp_dir = PATH_REALROOT_FS.$params['ftpDir'];
+					if (@file_exists($ftp_dir.$filename) && is_file($ftp_dir.$filename)) {
+						return true;
+					}
+				}
+				//must have file in upload field or in hidden field or file must be already set
+				//if deleted is checked, file must be set in upload field
+				if((!$this->_subfieldValues[4]->getValue() && !$_FILES[$prefixName.$this->_field->getID().'_4']['name'] && !$values[$prefixName.$this->_field->getID().'_4_hidden']) || (isset($values[$prefixName.$this->_field->getID().'_delete']) && $values[$prefixName.$this->_field->getID().'_delete'] == 1 && !$_FILES[$prefixName.$this->_field->getID().'_4']['name'])) {
 					return false;
 				}
 			}
+			
+			//check files extension
+			if ($params['allowedType'] || $params['disallowedType']) {
+				//for external file if any
+				if (isset($values[$prefixName.$this->_field->getID().'_externalfile']) && $values[$prefixName.$this->_field->getID().'_externalfile']) {
+					$extension = strtolower(pathinfo($values[$prefixName.$this->_field->getID().'_externalfile'], PATHINFO_EXTENSION));
+					if (!$extension) return false;
+					//extension must be in allowed list
+					if ($params['allowedType'] && !in_array($extension, explode(',',strtolower($params['allowedType'])))) {
+						return false;
+					}
+					//extension must not be in disallowed list
+					if ($params['disallowedType'] && in_array($extension, explode(',',strtolower($params['disallowedType'])))) {
+						return false;
+					}
+				}
+				//for uploaded file if any
+				if (isset($_FILES[$prefixName.$this->_field->getID().'_4']) && $_FILES[$prefixName.$this->_field->getID().'_4']['name']) {
+					$extension = strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_4']['name'], PATHINFO_EXTENSION));
+					if (!$extension) return false;
+					//extension must be in allowed list
+					if ($params['allowedType'] && !in_array($extension, explode(',',strtolower($params['allowedType'])))) {
+						return false;
+					}
+					//extension must not be in disallowed list
+					if ($params['disallowedType'] && in_array($extension, explode(',',strtolower($params['disallowedType'])))) {
+						return false;
+					}
+				}
+			}
+			return true;
 		}
-		
-		return true;
 	}
 	
 	/**
@@ -342,24 +399,106 @@ class CMS_object_file extends CMS_object_common
 	  * @access public
 	  */
 	function getHTMLAdmin($fieldID, $language, $prefixName) {
-		//is this field mandatory ?
-		$mandatory = ($this->_field->getValue('required')) ? '<span class="admin_text_alert">*</span> ':'';
-		$html = '<tr><td class="admin" align="right" valign="top">'.$mandatory.$this->getFieldLabel($language).'</td><td class="admin" style="border-left:1px solid #4d4d4d;">'."\n";
-		//add description if any
-		if ($this->getFieldDescription($language)) {
-			$html .= '<dialog-title type="admin_h3">'.$this->getFieldDescription($language).'</dialog-title><br />';
-		}
-		$inputParams = array(
-			'class' 	=> 'admin_input_text',
-			'tdclass' 	=> 'admin',
-			'thclass' 	=> 'admin',
-			'style' 	=> 'width:320px;',
-			'size' 		=> '45',
-			'prefix'	=>	$prefixName,
+		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
+		$params = $this->getParamsValues();
+		$maxFileSize = CMS_file::getMaxUploadFileSize('K');
+		//get module codename
+		$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
+		
+		//Title
+		unset($return['items'][0]['hideLabel']);
+		$return['items'][0]['fieldLabel']	= $language->getMessage(self::MESSAGE_OBJECT_FILE_FIELD_LABEL, false, MOD_POLYMOD_CODENAME);
+		$return['items'][0]['allowBlank']	= true;
+		
+		//File
+		unset($return['items'][4]['hideLabel']);
+		$return['items'][4]['fieldLabel']	= $language->getMessage(self::MESSAGE_OBJECT_FILE_FIELD_SOURCEFILE, false, MOD_POLYMOD_CODENAME);
+		$return['items'][4]['xtype']		= 'atmFileUploadField';
+		$return['items'][4]['emptyText']	= $language->getMessage(self::MESSAGE_SELECT_FILE);
+		$return['items'][4]['uploadCfg']	= array(
+			'file_size_limit'					=> $maxFileSize,
+			'file_types_description'			=> $language->getMessage(self::MESSAGE_ALL_FILE).' ...'
 		);
-		$html .= $this->getInput($fieldID, $language, $inputParams);
-		$html .= '</td></tr>'."\n";
-		return $html;
+		$return['items'][4]['uploadCfg']['file_types'] = $params['allowedType'] ? '*.'.str_replace(',', ';*.', $params['allowedType']) : '*.*';
+		if ($params['disallowedType']) {
+			$return['items'][4]['uploadCfg']['disallowed_file_types'] = '*.'.str_replace(',', ';*.', $params['disallowedType']);
+		}
+		//File datas
+		if ($this->_subfieldValues[4]->getValue() && file_exists(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[4]->getValue())) {
+			$file = new CMS_file(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[4]->getValue());
+			$fileDatas = array(
+				'filename'		=> $file->getName(false),
+				'filepath'		=> $file->getFilePath(CMS_file::WEBROOT),
+				'filesize'		=> $file->getFileSize(),
+				'fileicon'		=> $file->getFileIcon(CMS_file::WEBROOT),
+				'extension'		=> $file->getExtension(),
+			);
+		} else {
+			$fileDatas = array(
+				'filename'		=> '',
+				'filepath'		=> '',
+				'filesize'		=> '',
+				'fileicon'		=> '',
+				'extension'		=> '',
+			);
+		}
+		$return['items'][4]['fileinfos']	= $fileDatas;
+		$return['items'][4]['fileinfos']['module']			= $moduleCodename;
+		$return['items'][4]['fileinfos']['visualisation']	= RESOURCE_DATA_LOCATION_EDITED;
+		
+		if ($params['useThumbnail']) {
+			//Thumbnail
+			unset($return['items'][1]['hideLabel']);
+			$return['items'][1]['xtype']		= 'atmImageUploadField';
+			$return['items'][1]['emptyText']	= $language->getMessage(self::MESSAGE_SELECT_PICTURE);
+			$return['items'][1]['fieldLabel']	= $language->getMessage(self::MESSAGE_OBJECT_FILE_FIELD_THUMBNAIL, false, MOD_POLYMOD_CODENAME);
+			$return['items'][1]['allowBlank']	= true;
+			if ($params['thumbMaxWidth']) {
+				$return['items'][1]['maxWidth'] = $params['thumbMaxWidth'];
+			}
+			if ($params['thumbMaxHeight']) {
+				$return['items'][1]['maxHeight'] = $params['thumbMaxHeight'];
+			}
+			$return['items'][1]['uploadCfg']	= array(
+				'file_size_limit'					=> $maxFileSize,
+				'file_types'						=> '*.jpg;*.png;*.gif',
+				'file_types_description'			=> $language->getMessage(self::MESSAGE_OBJECT_FILE_FIELD_THUMBNAIL, false, MOD_POLYMOD_CODENAME).' ...'
+			);
+			if ($this->_subfieldValues[1]->getValue() && file_exists(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[1]->getValue())) {
+				$file = new CMS_file(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[1]->getValue());
+				$imageDatas = array(
+					'filename'		=> $file->getName(false),
+					'filepath'		=> $file->getFilePath(CMS_file::WEBROOT),
+					'filesize'		=> $file->getFileSize(),
+					'fileicon'		=> $file->getFileIcon(CMS_file::WEBROOT),
+					'extension'		=> $file->getExtension(),
+				);
+			} else {
+				$imageDatas = array(
+					'filename'		=> '',
+					'filepath'		=> '',
+					'filesize'		=> '',
+					'fileicon'		=> '',
+					'extension'		=> '',
+				);
+			}
+			$return['items'][1]['fileinfos']	= $imageDatas;
+			$return['items'][1]['fileinfos']['module']			= $moduleCodename;
+			$return['items'][1]['fileinfos']['visualisation']	= RESOURCE_DATA_LOCATION_EDITED;
+		} else {
+			unset($return['items'][1]);
+		}
+		$return['items'][2]['xtype'] = 'hidden';
+		$return['items'][3]['xtype'] = 'hidden';
+		if($params['allowFtp'] && is_dir(PATH_REALROOT_FS.$params['ftpDir'])){
+			$return['items'][] = array(
+				'xtype'				=> 'textfield',
+				'allowBlank'		=> true,
+				'name'				=> 'polymodFieldsValue['.$prefixName.$this->_field->getID().'_externalfile]',
+				'fieldLabel'		=> '<span ext:qtip="'.$language->getMessage(self::MESSAGE_OBJECT_FILE_FIELD_EXTERNALSOURCEFILE_FTP, array($params['ftpDir']), MOD_POLYMOD_CODENAME).'" class="atm-help">'.$language->getMessage(self::MESSAGE_OBJECT_FILE_FIELD_EXTERNALSOURCEFILE, false, MOD_POLYMOD_CODENAME).'</span>',
+			);
+		}
+		return $return;
 	}
 	
 	/**
@@ -508,10 +647,12 @@ class CMS_object_file extends CMS_object_common
 	  *
 	  * @param array $values : the POST result values
 	  * @param string prefixname : the prefix used for post names
+	  * @param boolean newFormat : new automne v4 format (default false for compatibility)
+	  * @param integer $objectID : the current object id. Must be set, but default is blank for compatibility with other objects
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName, $objectID = '') {
+	function setValues($values, $prefixName, $newFormat = false, $objectID = '') {
 		if (!sensitiveIO::isPositiveInteger($objectID)) {
 			$this->raiseError('ObjectID must be a positive integer : '.$objectID);
 			return false;
@@ -520,150 +661,428 @@ class CMS_object_file extends CMS_object_common
 		$params = $this->getParamsValues();
 		//get module codename
 		$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
-		//delete old files ?
-		if (isset($values[$prefixName.$this->_field->getID().'_delete']) && $values[$prefixName.$this->_field->getID().'_delete'] == 1) {
+		if ($newFormat) {
+			//delete old files ?
 			//thumbnail
-			if ($this->_subfieldValues[1]->getValue()) {
+			if ($this->_subfieldValues[1]->getValue() && (!$values[$prefixName.$this->_field->getID().'_1'] || pathinfo($values[$prefixName.$this->_field->getID().'_1'], PATHINFO_BASENAME) != $this->_subfieldValues[1]->getValue())) {
 				@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[1]->getValue());
-				$this->_subfieldValues[1]->setValue('');
-			} elseif ($values[$prefixName.$this->_field->getID().'_1_hidden']) {
-				@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$values[$prefixName.$this->_field->getID().'_1_hidden']);
 				$this->_subfieldValues[1]->setValue('');
 			}
 			//file
-			if ($this->_subfieldValues[4]->getValue()) {
+			if ($this->_subfieldValues[4]->getValue() && (!$values[$prefixName.$this->_field->getID().'_4'] || pathinfo($values[$prefixName.$this->_field->getID().'_4'], PATHINFO_BASENAME) != $this->_subfieldValues[4]->getValue())) {
 				@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[4]->getValue());
 				$this->_subfieldValues[4]->setValue('');
-			} elseif ($values[$prefixName.$this->_field->getID().'_4_hidden']) {
-				@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$values[$prefixName.$this->_field->getID().'_4_hidden']);
-				$this->_subfieldValues[4]->setValue('');
-			}
-			//reset filesize
-			if (!$this->_subfieldValues[2]->setValue(0)) {
-				return false;
-			}
-		}
-		
-		if (!isset($values[$prefixName.$this->_field->getID().'_0']) && !$this->_subfieldValues[0]->setValue(htmlspecialchars($values[$prefixName.$this->_field->getID().'_0']))) {
-			return false;
-		}
-		
-		//thumbnail
-		if (isset($_FILES[$prefixName.$this->_field->getID().'_1']) && $_FILES[$prefixName.$this->_field->getID().'_1']['name'] && !$_FILES[$prefixName.$this->_field->getID().'_1']['error']) {
-			//check for image type before doing anything
-			if (!in_array(strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_1']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
-				return false;
+				//reset filesize
+				if (!$this->_subfieldValues[2]->setValue(0)) {
+					return false;
+				}
 			}
 			
-			//destroy old image if any
-			if ($this->_subfieldValues[1]->getValue()) {
-				@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[1]->getValue());
-				$this->_subfieldValues[1]->setValue('');
-			} elseif ($values[$prefixName.$this->_field->getID().'_1_hidden']) {
-				@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$values[$prefixName.$this->_field->getID().'_1_hidden']);
-				$this->_subfieldValues[1]->setValue('');
+			if (!(isset($values[$prefixName.$this->_field->getID().'_0']) && $this->_subfieldValues[0]->setValue(htmlspecialchars($values[$prefixName.$this->_field->getID().'_0'])))) {
+			    return false;
 			}
 			
-			//set thumbnail (resize it if needed)
-			
-			//create thumbnail path
-			$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
-			$filename = "r".$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($_FILES[$prefixName.$this->_field->getID().'_1']["name"]));
-			if (strlen($filename) > 255) {
-				$filename = sensitiveIO::ellipsis($filename, 255, '-');
-			}
-			if (!move_uploaded_file($_FILES[$prefixName.$this->_field->getID().'_1']["tmp_name"], $path."/".$filename)) {
-				return false;
-			}
-			//chmod it
-			@chmod($path."/".$filename, octdec(FILES_CHMOD));
-			
-			if ($params['thumbMaxWidth'] > 0 || $params['thumbMaxHeight'] > 0) {
-				//check thumbnail size
-				list($sizeX, $sizeY) = @getimagesize($path."/".$filename);
-				if ($sizeX > $params['thumbMaxWidth'] || $sizeX > $params['thumbMaxHeight']) {
-					$newSizeX = $sizeX;
-					$newSizeY = $sizeY;
-					// Check width
-					if ($params['thumbMaxWidth'] && $newSizeX > $params['thumbMaxWidth']) {
-						$newSizeY = round(($params['thumbMaxWidth']*$newSizeY)/$newSizeX);
-						$newSizeX = $params['thumbMaxWidth'];
+			//thumbnail
+			if ($values[$prefixName.$this->_field->getID().'_1'] && strpos($values[$prefixName.$this->_field->getID().'_1'], PATH_UPLOAD_WR.'/') !== false) {
+				$filename = $values[$prefixName.$this->_field->getID().'_1'];
+				//check for image type before doing anything
+				if (!in_array(strtolower(pathinfo($filename, PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
+					return false;
+				}
+				//destroy old image if any
+				if ($this->_subfieldValues[1]->getValue()) {
+					@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[1]->getValue());
+					$this->_subfieldValues[1]->setValue('');
+				}
+				//move and rename uploaded file 
+				$filename = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $filename);
+				$basename = pathinfo($filename, PATHINFO_BASENAME);
+				
+				//set thumbnail
+				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
+				$newBasename = "r".$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($basename));
+				
+				//rename image
+				$path_parts = pathinfo($newBasename);
+				$extension = strtolower($path_parts['extension']);
+				$newBasename = substr($path_parts['basename'],0,-(strlen($extension)+1)).'_thumbnail.'.$extension;
+				if (strlen($newBasename) > 255) {
+					$newBasename = sensitiveIO::ellipsis($newBasename, 255, '-');
+				}
+				$newFilename = $path.'/'.$newBasename;
+				//move file from upload dir to new dir
+				CMS_file::moveTo($filename, $newFilename);
+				CMS_file::chmodFile(FILES_CHMOD, $newFilename);
+				
+				//resize thumbnail if needed
+				if ($params['thumbMaxWidth'] > 0 || $params['thumbMaxHeight'] > 0) {
+					//check thumbnail size
+					list($sizeX, $sizeY) = @getimagesize($newFilename);
+					if (($params['thumbMaxWidth'] && $sizeX > $params['thumbMaxWidth']) || ($params['thumbMaxHeight'] && $sizeY > $params['thumbMaxHeight'])) {
+						$newSizeX = $sizeX;
+						$newSizeY = $sizeY;
+						// Check width
+						if ($params['thumbMaxWidth'] && $newSizeX > $params['thumbMaxWidth']) {
+							$newSizeY = round(($params['thumbMaxWidth']*$newSizeY)/$newSizeX);
+							$newSizeX = $params['thumbMaxWidth'];
+						}
+						if($params['thumbMaxHeight'] && $newSizeY > $params['thumbMaxHeight']){
+							$newSizeX = round(($params['thumbMaxHeight']*$newSizeX)/$newSizeY);
+							$newSizeY = $params['thumbMaxHeight'];
+						}
+						$dest = imagecreatetruecolor($newSizeX, $newSizeY);
+						switch ($extension) {
+							case "gif":
+								$src = imagecreatefromgif($newFilename);
+							break;
+							case "jpg":
+							case "jpeg":
+							case "jpe":
+								$src = imagecreatefromjpeg($newFilename);
+							break;
+							case "png":
+								$src = imagecreatefrompng($newFilename);
+							break;
+							default:
+								return false;
+							break;
+						}
+						imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
+						imagedestroy($src);
+						//overwrite image
+						@imagejpeg($dest,$newFilename,95);
+						CMS_file::chmodFile(FILES_CHMOD, $newFilename);
+						imagedestroy($dest);
 					}
-					if($params['thumbMaxHeight'] && $newSizeY > $params['thumbMaxHeight']){
-						$newSizeX = round(($params['thumbMaxHeight']*$newSizeX)/$newSizeY);
-						$newSizeY = $params['thumbMaxHeight'];
+				}
+				//set thumbnail
+				if (!$this->_subfieldValues[1]->setValue($newBasename)) {
+					return false;
+				}
+			}
+			//File
+			//1- from external location
+			if (isset($values[$prefixName.$this->_field->getID().'_externalfile']) && $values[$prefixName.$this->_field->getID().'_externalfile']) {
+				
+				//from FTP directory
+				$filename = $values[$prefixName.$this->_field->getID().'_externalfile'];
+				
+				//check file extension
+				if ($params['allowedType'] || $params['disallowedType']) {
+					$extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+					if (!$extension) return false;
+					//extension must be in allowed list
+					if ($params['allowedType'] && !in_array($extension, explode(',',strtolower($params['allowedType'])))) {
+						return false;
 					}
-					//resize image
-					$srcfilepath = $path."/".$filename;
-					$path_parts = pathinfo($srcfilepath);
-					$thumbnailFilename = substr($path_parts['basename'],0,-(strlen($path_parts['extension'])+1)).'.png';
-					$destfilepath = $path."/".$thumbnailFilename;
-					
-					$extension = strtolower($path_parts['extension']);
-					
-					$dest = imagecreatetruecolor($newSizeX, $newSizeY);
-					switch ($extension) {
-						case "gif":
-							$src = imagecreatefromgif($srcfilepath);
-						break;
-						case "jpg":
-						case "jpeg":
-						case "jpe":
-							$src = imagecreatefromjpeg($srcfilepath);
-						break;
-						case "png":
-							$src = imagecreatefrompng($srcfilepath);
-						break;
-						default:
+					//extension must not be in disallowed list
+					if ($params['disallowedType'] && in_array($extension, explode(',',strtolower($params['disallowedType'])))) {
+						return false;
+					}
+				}
+				//destroy old file if any
+				if ($this->_subfieldValues[4]->getValue()) {
+					@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[4]->getValue());
+					$this->_subfieldValues[4]->setValue('');
+				}
+				
+				$new_filename = 'r'.$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($filename));
+				if (strlen($new_filename) > 255) {
+					$new_filename = sensitiveIO::ellipsis($new_filename, 255, '-');
+				}
+				$destination_path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/';
+				$ftp_dir = PATH_REALROOT_FS.$params['ftpDir'];
+				if (@file_exists($ftp_dir.$filename) && is_file($ftp_dir.$filename)) {
+					if (CMS_file::moveTo($ftp_dir.$filename, $destination_path.'/'.$new_filename)) {
+						CMS_file::chmodFile(FILES_CHMOD, $destination_path.'/'.$new_filename);
+						//set label as file name if none set
+						if (!$values[$prefixName.$this->_field->getID().'_0']) {
+							if (!$this->_subfieldValues[0]->setValue(htmlspecialchars($filename))) {
+								return false;
+							}
+						}
+						//set it
+						if (!$this->_subfieldValues[4]->setValue($new_filename)) {
 							return false;
-						break;
-					}
-					imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
-					imagedestroy($src);
-					imagepng($dest, $destfilepath);
-					@chmod($destfilepath, octdec(FILES_CHMOD));
-					imagedestroy($dest);
-					
-					//destroy original image
-					unlink($srcfilepath);
-					
-					//set resized thumbnail
-					if (!$this->_subfieldValues[1]->setValue($thumbnailFilename)) {
+						}
+						//and set filesize
+						$filesize = @filesize($destination_path.'/'.$new_filename);
+						if ($filesize !== false && $filesize > 0) {
+							//convert in MB
+							$filesize = round(($filesize/1048576),2);
+						} else {
+							$filesize = '0';
+						}
+						if (!$this->_subfieldValues[2]->setValue($filesize)) {
+							return false;
+						}
+						//set file type
+						if (!$this->_subfieldValues[3]->setValue(self::OBJECT_FILE_TYPE_INTERNAL)) {
+							return false;
+						}
+					} else {
 						return false;
 					}
 				} else {
-					//no need to resize thumbnail (below the maximum width), so set it
+					return false;
+				}
+			} else
+			//2- from post
+			if ($values[$prefixName.$this->_field->getID().'_4'] && strpos($values[$prefixName.$this->_field->getID().'_4'], PATH_UPLOAD_WR.'/') !== false) {
+				//check file extension
+				if ($params['allowedType'] || $params['disallowedType']) {
+					$extension = strtolower(pathinfo($values[$prefixName.$this->_field->getID().'_4'], PATHINFO_EXTENSION));
+					if (!$extension) return false;
+					//extension must be in allowed list
+					if ($params['allowedType'] && !in_array($extension, explode(',',strtolower($params['allowedType'])))) {
+						return false;
+					}
+					//extension must not be in disallowed list
+					if ($params['disallowedType'] && in_array($extension, explode(',',strtolower($params['disallowedType'])))) {
+						return false;
+					}
+				}
+				//set file type
+				if (!$this->_subfieldValues[3]->setValue(self::OBJECT_FILE_TYPE_INTERNAL)) {
+					return false;
+				}
+				//destroy old file if any
+				if ($this->_subfieldValues[4]->getValue()) {
+					@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[4]->getValue());
+					$this->_subfieldValues[4]->setValue('');
+				}
+				
+				//move and rename uploaded file 
+				$filename = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $values[$prefixName.$this->_field->getID().'_4']);
+				$basename = pathinfo($filename, PATHINFO_BASENAME);
+				
+				//create file path
+				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
+				$newBasename = "r".$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($basename));
+				if (strlen($newBasename) > 255) {
+					$newBasename = sensitiveIO::ellipsis($newBasename, 255, '-');
+				}
+				$newFilename = $path.'/'.$newBasename;
+				if (!CMS_file::moveTo($filename, $newFilename)) {
+					return false;
+				}
+				CMS_file::chmodFile(FILES_CHMOD, $newFilename);
+				//set it
+				if (!$this->_subfieldValues[4]->setValue($newBasename)) {
+					return false;
+				}
+				//and set filesize
+				$filesize = @filesize($newFilename);
+				if ($filesize !== false && $filesize > 0) {
+					//convert in MB
+					$filesize = round(($filesize/1048576),2);
+				} else {
+					$filesize = '0';
+				}
+				if (!$this->_subfieldValues[2]->setValue($filesize)) {
+					return false;
+				}
+			}
+			// If label not set yet, set it
+			if(!$this->_subfieldValues[0]->getValue()){
+				if($this->_subfieldValues[4]->getValue()){
+					$this->_subfieldValues[0]->setValue($this->_subfieldValues[4]->getValue());
+				}
+			}
+			//update files infos if needed
+			if ($this->_subfieldValues[1]->getValue() && file_exists(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[1]->getValue())) {
+				$file = new CMS_file(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[1]->getValue());
+				$imageDatas = array(
+					'filename'		=> $file->getName(false),
+					'filepath'		=> $file->getFilePath(CMS_file::WEBROOT),
+					'filesize'		=> $file->getFileSize(),
+					'fileicon'		=> $file->getFileIcon(CMS_file::WEBROOT),
+					'extension'		=> $file->getExtension(),
+				);
+			} else {
+				$imageDatas = array(
+					'filename'		=> '',
+					'filepath'		=> '',
+					'filesize'		=> '',
+					'fileicon'		=> '',
+					'extension'		=> '',
+				);
+			}
+			//update files infos if needed
+			if ($this->_subfieldValues[4]->getValue() && file_exists(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[4]->getValue())) {
+				$file = new CMS_file(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[4]->getValue());
+				$fileDatas = array(
+					'filename'		=> $file->getName(false),
+					'filepath'		=> $file->getFilePath(CMS_file::WEBROOT),
+					'filesize'		=> $file->getFileSize(),
+					'fileicon'		=> $file->getFileIcon(CMS_file::WEBROOT),
+					'extension'		=> $file->getExtension(),
+				);
+			} else {
+				$fileDatas = array(
+					'filename'		=> '',
+					'filepath'		=> '',
+					'filesize'		=> '',
+					'fileicon'		=> '',
+					'extension'		=> '',
+				);
+			}
+			$imageDatas['module']		= $fileDatas['module']			= $moduleCodename;
+			$imageDatas['visualisation']= $fileDatas['visualisation']	= RESOURCE_DATA_LOCATION_EDITED;
+			$content = array('datas' => array(
+				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_1]' => $imageDatas,
+				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_4]' => $fileDatas,
+				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_externalfile]' => '',
+				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_0]' => $this->_subfieldValues[0]->getValue(),
+			));
+			
+			$view = CMS_view::getInstance();
+			$view->addContent($content);
+			return true;
+		} else { //Old format
+			//delete old files ?
+			if (isset($values[$prefixName.$this->_field->getID().'_delete']) && $values[$prefixName.$this->_field->getID().'_delete'] == 1) {
+				//thumbnail
+				if ($this->_subfieldValues[1]->getValue()) {
+					@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[1]->getValue());
+					$this->_subfieldValues[1]->setValue('');
+				} elseif ($values[$prefixName.$this->_field->getID().'_1_hidden']) {
+					@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$values[$prefixName.$this->_field->getID().'_1_hidden']);
+					$this->_subfieldValues[1]->setValue('');
+				}
+				//file
+				if ($this->_subfieldValues[4]->getValue()) {
+					@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[4]->getValue());
+					$this->_subfieldValues[4]->setValue('');
+				} elseif ($values[$prefixName.$this->_field->getID().'_4_hidden']) {
+					@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$values[$prefixName.$this->_field->getID().'_4_hidden']);
+					$this->_subfieldValues[4]->setValue('');
+				}
+				//reset filesize
+				if (!$this->_subfieldValues[2]->setValue(0)) {
+					return false;
+				}
+			}
+			
+			if (!(isset($values[$prefixName.$this->_field->getID().'_0']) && $this->_subfieldValues[0]->setValue(htmlspecialchars($values[$prefixName.$this->_field->getID().'_0'])))) {
+			    	return false;
+			}
+			
+			//thumbnail
+			if (isset($_FILES[$prefixName.$this->_field->getID().'_1']) && $_FILES[$prefixName.$this->_field->getID().'_1']['name'] && !$_FILES[$prefixName.$this->_field->getID().'_1']['error']) {
+				//check for image type before doing anything
+				if (!in_array(strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_1']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
+					return false;
+				}
+				
+				//destroy old image if any
+				if ($this->_subfieldValues[1]->getValue()) {
+					@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[1]->getValue());
+					$this->_subfieldValues[1]->setValue('');
+				} elseif ($values[$prefixName.$this->_field->getID().'_1_hidden']) {
+					@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$values[$prefixName.$this->_field->getID().'_1_hidden']);
+					$this->_subfieldValues[1]->setValue('');
+				}
+				
+				//set thumbnail (resize it if needed)
+				
+				//create thumbnail path
+				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
+				$filename = "r".$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($_FILES[$prefixName.$this->_field->getID().'_1']["name"]));
+				if (strlen($filename) > 255) {
+					$filename = sensitiveIO::ellipsis($filename, 255, '-');
+				}
+				if (!move_uploaded_file($_FILES[$prefixName.$this->_field->getID().'_1']["tmp_name"], $path."/".$filename)) {
+					return false;
+				}
+				//chmod it
+				@chmod($path."/".$filename, octdec(FILES_CHMOD));
+				
+				if ($params['thumbMaxWidth'] > 0 || $params['thumbMaxHeight'] > 0) {
+					//check thumbnail size
+					list($sizeX, $sizeY) = @getimagesize($path."/".$filename);
+					if ($sizeX > $params['thumbMaxWidth'] || $sizeX > $params['thumbMaxHeight']) {
+						$newSizeX = $sizeX;
+						$newSizeY = $sizeY;
+						// Check width
+						if ($params['thumbMaxWidth'] && $newSizeX > $params['thumbMaxWidth']) {
+							$newSizeY = round(($params['thumbMaxWidth']*$newSizeY)/$newSizeX);
+							$newSizeX = $params['thumbMaxWidth'];
+						}
+						if($params['thumbMaxHeight'] && $newSizeY > $params['thumbMaxHeight']){
+							$newSizeX = round(($params['thumbMaxHeight']*$newSizeX)/$newSizeY);
+							$newSizeY = $params['thumbMaxHeight'];
+						}
+						//resize image
+						$srcfilepath = $path."/".$filename;
+						$path_parts = pathinfo($srcfilepath);
+						$thumbnailFilename = substr($path_parts['basename'],0,-(strlen($path_parts['extension'])+1)).'.png';
+						$destfilepath = $path."/".$thumbnailFilename;
+						
+						$extension = strtolower($path_parts['extension']);
+						
+						$dest = imagecreatetruecolor($newSizeX, $newSizeY);
+						switch ($extension) {
+							case "gif":
+								$src = imagecreatefromgif($srcfilepath);
+							break;
+							case "jpg":
+							case "jpeg":
+							case "jpe":
+								$src = imagecreatefromjpeg($srcfilepath);
+							break;
+							case "png":
+								$src = imagecreatefrompng($srcfilepath);
+							break;
+							default:
+								return false;
+							break;
+						}
+						imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
+						imagedestroy($src);
+						imagepng($dest, $destfilepath);
+						@chmod($destfilepath, octdec(FILES_CHMOD));
+						imagedestroy($dest);
+						
+						//destroy original image
+						unlink($srcfilepath);
+						
+						//set resized thumbnail
+						if (!$this->_subfieldValues[1]->setValue($thumbnailFilename)) {
+							return false;
+						}
+					} else {
+						//no need to resize thumbnail (below the maximum width), so set it
+						if (!$this->_subfieldValues[1]->setValue($filename)) {
+							return false;
+						}
+					}
+				} else {
+					//no need to resize thumbnail (no size limit), so set it
 					if (!$this->_subfieldValues[1]->setValue($filename)) {
 						return false;
 					}
 				}
-			} else {
-				//no need to resize thumbnail (no size limit), so set it
-				if (!$this->_subfieldValues[1]->setValue($filename)) {
+			} elseif (isset($_FILES[$prefixName.$this->_field->getID().'_1']) && $_FILES[$prefixName.$this->_field->getID().'_1']['name'] && $_FILES[$prefixName.$this->_field->getID().'_1']['error'] != 0) {
+				return false;
+			} elseif (isset($values[$prefixName.$this->_field->getID().'_1_hidden']) && $values[$prefixName.$this->_field->getID().'_1_hidden'] && $values[$prefixName.$this->_field->getID().'_delete'] != 1) {
+				if(!$this->_subfieldValues[1]->setValue($values[$prefixName.$this->_field->getID().'_1_hidden'])) {
 					return false;
 				}
 			}
-		} elseif (isset($_FILES[$prefixName.$this->_field->getID().'_1']) && $_FILES[$prefixName.$this->_field->getID().'_1']['name'] && $_FILES[$prefixName.$this->_field->getID().'_1']['error'] != 0) {
-			return false;
-		} elseif (isset($values[$prefixName.$this->_field->getID().'_1_hidden']) && $values[$prefixName.$this->_field->getID().'_1_hidden'] && $values[$prefixName.$this->_field->getID().'_delete'] != 1) {
-			if(!$this->_subfieldValues[1]->setValue($values[$prefixName.$this->_field->getID().'_1_hidden'])) {
-				return false;
-			}
-		}
-		//File
-		//1- from external location
-		if (isset($values[$prefixName.$this->_field->getID().'_externalfile']) && $values[$prefixName.$this->_field->getID().'_externalfile']) {
-			//destroy old file if any
-			if ($this->_subfieldValues[4]->getValue()) {
-				@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[4]->getValue());
-				$this->_subfieldValues[4]->setValue('');
-			} elseif ($values[$prefixName.$this->_field->getID().'_4_hidden']) {
-				@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$values[$prefixName.$this->_field->getID().'_4_hidden']);
-				$this->_subfieldValues[4]->setValue('');
-			}
-			
-			//from FTP directory
-			//if (substr($values[$prefixName.$this->_field->getID().'_externalfile'], 0, 1) == '*') {
+			//File
+			//1- from external location
+			if (isset($values[$prefixName.$this->_field->getID().'_externalfile']) && $values[$prefixName.$this->_field->getID().'_externalfile']) {
+				//destroy old file if any
+				if ($this->_subfieldValues[4]->getValue()) {
+					@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[4]->getValue());
+					$this->_subfieldValues[4]->setValue('');
+				} elseif ($values[$prefixName.$this->_field->getID().'_4_hidden']) {
+					@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$values[$prefixName.$this->_field->getID().'_4_hidden']);
+					$this->_subfieldValues[4]->setValue('');
+				}
+				
+				//from FTP directory
 				$filename = $values[$prefixName.$this->_field->getID().'_externalfile'];//substr($values[$prefixName.$this->_field->getID().'_externalfile'], 1);
 				
 				//check file extension
@@ -720,116 +1139,95 @@ class CMS_object_file extends CMS_object_common
 				} else {
 					return false;
 				}
-			//}
-			//From external link
-			/*else {
-				//set label as image name if none set
-				if (!$values[$prefixName.$this->_field->getID().'_0']) {
-					if (!$this->_subfieldValues[0]->setValue(htmlspecialchars($values[$prefixName.$this->_field->getID().'_externalfile']))) {
+			} else
+			//2- from post
+			if (isset($_FILES[$prefixName.$this->_field->getID().'_4']) && $_FILES[$prefixName.$this->_field->getID().'_4']['name'] && !$_FILES[$prefixName.$this->_field->getID().'_4']['error']) {
+				//check file extension
+				if ($params['allowedType'] || $params['disallowedType']) {
+					$extension = strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_4']['name'], PATHINFO_EXTENSION));
+					if (!$extension) return false;
+					//extension must be in allowed list
+					if ($params['allowedType'] && !in_array($extension, explode(',',strtolower($params['allowedType'])))) {
+						return false;
+					}
+					//extension must not be in disallowed list
+					if ($params['disallowedType'] && in_array($extension, explode(',',strtolower($params['disallowedType'])))) {
 						return false;
 					}
 				}
-				//set it
-				if (!$this->_subfieldValues[4]->setValue($values[$prefixName.$this->_field->getID().'_externalfile'])) {
+				//set label as image name if none set
+				if (!$values[$prefixName.$this->_field->getID().'_0']) {
+					if (!$this->_subfieldValues[0]->setValue(htmlspecialchars($_FILES[$prefixName.$this->_field->getID().'_4']["name"]))) {
+						return false;
+					}
+				}
+				//set file type
+				if (!$this->_subfieldValues[3]->setValue(self::OBJECT_FILE_TYPE_INTERNAL)) {
 					return false;
 				}
-				//reset filesize
-				if (!$this->_subfieldValues[2]->setValue(0)) {
+				//destroy old file if any
+				if ($this->_subfieldValues[4]->getValue()) {
+					@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[4]->getValue());
+					$this->_subfieldValues[4]->setValue('');
+				}
+				
+				//create thumnail path
+				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
+				$filename = "r".$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($_FILES[$prefixName.$this->_field->getID().'_4']["name"]));
+				if (strlen($filename) > 255) {
+					$filename = sensitiveIO::ellipsis($filename, 255, '-');
+				}
+				if (!move_uploaded_file($_FILES[$prefixName.$this->_field->getID().'_4']["tmp_name"], $path."/".$filename)) {
+					return false;
+				}
+				//chmod it
+				@chmod($path."/".$filename, octdec(FILES_CHMOD));
+				//set it
+				if (!$this->_subfieldValues[4]->setValue($filename)) {
+					return false;
+				}
+				//and set filesize
+				$filesize = @filesize($path."/".$filename);
+				if ($filesize !== false && $filesize > 0) {
+					//convert in MB
+					$filesize = round(($filesize/1048576),2);
+				} else {
+					$filesize = '0';
+				}
+				if (!$this->_subfieldValues[2]->setValue($filesize)) {
+					return false;
+				}
+			} elseif (isset($_FILES[$prefixName.$this->_field->getID().'_4']) && $_FILES[$prefixName.$this->_field->getID().'_4']['name'] && $_FILES[$prefixName.$this->_field->getID().'_4']['error'] != 0) {
+				return false;
+			} else
+			//from hidden fields (previously set but not already saved)
+			if (isset($values[$prefixName.$this->_field->getID().'_4_hidden']) && $values[$prefixName.$this->_field->getID().'_4_hidden'] && (isset($values[$prefixName.$this->_field->getID().'_delete']) && $values[$prefixName.$this->_field->getID().'_delete'] != 1)) {
+				//set label as image name if none set
+				if ($values[$prefixName.$this->_field->getID().'_0']) {
+					if (!$this->_subfieldValues[0]->setValue(htmlspecialchars($values[$prefixName.$this->_field->getID().'_0']))) {
+						return false;
+					}
+				}
+				//set filesize
+				if (!$this->_subfieldValues[2]->setValue($values[$prefixName.$this->_field->getID().'_2_hidden'])) {
 					return false;
 				}
 				//set file type
-				if (!$this->_subfieldValues[3]->setValue(self::OBJECT_FILE_TYPE_EXTERNAL)) {
+				if (!$this->_subfieldValues[3]->setValue($values[$prefixName.$this->_field->getID().'_3_hidden'])) {
 					return false;
 				}
-			}*/
-		} else
-		//2- from post
-		if (isset($_FILES[$prefixName.$this->_field->getID().'_4']) && $_FILES[$prefixName.$this->_field->getID().'_4']['name'] && !$_FILES[$prefixName.$this->_field->getID().'_4']['error']) {
-			//check file extension
-			if ($params['allowedType'] || $params['disallowedType']) {
-				$extension = strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_4']['name'], PATHINFO_EXTENSION));
-				if (!$extension) return false;
-				//extension must be in allowed list
-				if ($params['allowedType'] && !in_array($extension, explode(',',strtolower($params['allowedType'])))) {
-					return false;
-				}
-				//extension must not be in disallowed list
-				if ($params['disallowedType'] && in_array($extension, explode(',',strtolower($params['disallowedType'])))) {
+				if(!$this->_subfieldValues[4]->setValue($values[$prefixName.$this->_field->getID().'_4_hidden'])) {
 					return false;
 				}
 			}
-			//set label as image name if none set
-			if (!$values[$prefixName.$this->_field->getID().'_0']) {
-				if (!$this->_subfieldValues[0]->setValue(htmlspecialchars($_FILES[$prefixName.$this->_field->getID().'_4']["name"]))) {
-					return false;
+			// If label not set yet, set it
+			if(!$this->_subfieldValues[0]->getValue()){
+				if($this->_subfieldValues[4]->getValue()){
+					$this->_subfieldValues[0]->setValue($this->_subfieldValues[4]->getValue());
 				}
 			}
-			//set file type
-			if (!$this->_subfieldValues[3]->setValue(self::OBJECT_FILE_TYPE_INTERNAL)) {
-				return false;
-			}
-			//destroy old file if any
-			if ($this->_subfieldValues[4]->getValue()) {
-				@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[4]->getValue());
-				$this->_subfieldValues[4]->setValue('');
-			}
-			
-			//create thumnail path
-			$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
-			$filename = "r".$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($_FILES[$prefixName.$this->_field->getID().'_4']["name"]));
-			if (strlen($filename) > 255) {
-				$filename = sensitiveIO::ellipsis($filename, 255, '-');
-			}
-			if (!move_uploaded_file($_FILES[$prefixName.$this->_field->getID().'_4']["tmp_name"], $path."/".$filename)) {
-				return false;
-			}
-			//chmod it
-			@chmod($path."/".$filename, octdec(FILES_CHMOD));
-			//set it
-			if (!$this->_subfieldValues[4]->setValue($filename)) {
-				return false;
-			}
-			//and set filesize
-			$filesize = @filesize($path."/".$filename);
-			if ($filesize !== false && $filesize > 0) {
-				//convert in MB
-				$filesize = round(($filesize/1048576),2);
-			} else {
-				$filesize = '0';
-			}
-			if (!$this->_subfieldValues[2]->setValue($filesize)) {
-				return false;
-			}
-		} elseif (isset($_FILES[$prefixName.$this->_field->getID().'_4']) && $_FILES[$prefixName.$this->_field->getID().'_4']['name'] && $_FILES[$prefixName.$this->_field->getID().'_4']['error'] != 0) {
-			return false;
-		} else
-		//from hidden fields (previously set but not already saved)
-		if (isset($values[$prefixName.$this->_field->getID().'_4_hidden']) && $values[$prefixName.$this->_field->getID().'_4_hidden'] && (isset($values[$prefixName.$this->_field->getID().'_delete']) && $values[$prefixName.$this->_field->getID().'_delete'] != 1)) {
-			//set label as image name if none set
-			if ($values[$prefixName.$this->_field->getID().'_0']) {
-				if (!$this->_subfieldValues[0]->setValue(htmlspecialchars($values[$prefixName.$this->_field->getID().'_0']))) {
-					return false;
-				}
-			}
-			//set filesize
-			if (!$this->_subfieldValues[2]->setValue($values[$prefixName.$this->_field->getID().'_2_hidden'])) {
-				return false;
-			}
-			//set file type
-			if (!$this->_subfieldValues[3]->setValue($values[$prefixName.$this->_field->getID().'_3_hidden'])) {
-				return false;
-			}
-			if(!$this->_subfieldValues[4]->setValue($values[$prefixName.$this->_field->getID().'_4_hidden'])) {
-				return false;
-			}
+			return true;
 		}
-		// If label not set yet, set it
-		if(!$this->_subfieldValues[0]->getValue()){
-			if($this->_subfieldValues[4]->getValue()){
-				$this->_subfieldValues[0]->setValue($this->_subfieldValues[4]->getValue());
-			}
-		}
-		return true;
 	}
 	
 	/**

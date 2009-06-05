@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: rows.js,v 1.6 2009/04/16 12:35:26 sebastien Exp $
+  * $Id: rows.js,v 1.7 2009/06/05 15:01:06 sebastien Exp $
   */
 Automne.row = function(config){
 	config = config || {};
@@ -193,7 +193,7 @@ Ext.extend(Automne.row, Ext.util.Observable, {
 			this.blocks[blockId].show();
 		}
 		//augment size of top element to add controlers
-		this.mask.top.setHeight(20,{concurrent:true}).move('t',17,{concurrent:true});
+		this.mask.top.setHeight(20).move('t',17);
 		//scroll frame if necessary
 		this.scroll();
 		//append template and rows name to top bar
@@ -506,51 +506,53 @@ Ext.extend(Automne.row, Ext.util.Observable, {
 	replaceContent: function(response, option) {
 		//force mouse out
 		this.mouseOut();
-		//get new row content from server response
-		var content = response.responseXML.getElementsByTagName('content').item(0).firstChild.nodeValue;
-		//get the first old row element
-		var el = this.elements.first();
-		//insert row new HTML before old element
-		el.insertHtml('beforebegin', Ext.util.Format.stripScripts(content));
-		//remove old blocks infos
-		for (var blockId in this.blocks) {
-			this.blocks[blockId].destroy();
-		}
-		this.blocks = {};
-		//then remove all old elements
-		this.elements.remove();
-		//load scripts in response
-		var re = /(?:<script([^>]*)?>)((\n|\r|.)*?)(?:<\/script>)/ig;
-		var atmRowsDatas = {};
-		var atmBlocksDatas = {};
-		while(match = re.exec(content)){
-			if(match[2] && match[2].length > 0){
-				eval(match[2]);
+		if (response.responseXML.getElementsByTagName('content').length) {
+			//get new row content from server response
+			var content = response.responseXML.getElementsByTagName('content').item(0).firstChild.nodeValue;
+			//get the first old row element
+			var el = this.elements.first();
+			//insert row new HTML before old element
+			el.insertHtml('beforebegin', Ext.util.Format.stripScripts(content));
+			//remove old blocks infos
+			for (var blockId in this.blocks) {
+				this.blocks[blockId].destroy();
 			}
-		}
-		//pr(atmRowsDatas);
-		//pr(atmBlocksDatas);
-		//replace row datas
-		for(var rowId in atmRowsDatas) {
-			if(rowId == this.getId()) {
-				//apply new config
-				Ext.apply(this, atmRowsDatas[rowId]);
+			this.blocks = {};
+			//then remove all old elements
+			this.elements.remove();
+			//load scripts in response
+			var re = /(?:<script([^>]*)?>)((\n|\r|.)*?)(?:<\/script>)/ig;
+			var atmRowsDatas = {};
+			var atmBlocksDatas = {};
+			while(match = re.exec(content)){
+				if(match[2] && match[2].length > 0){
+					eval(match[2]);
+				}
 			}
-		}
-		//init component (create elements events)
-		this.initComponent();
-		//instanciate all new blocks objects and add them to row
-		for (var blockId in atmBlocksDatas) {
-			var block = eval('new '+atmBlocksDatas[blockId].jsBlockClass+'(atmBlocksDatas[blockId]);');
-			//pr(blocks[blockId]);
-			this.addBlock(block);
-		}
-		//then, finally, catch all click possibilities
-		for (var blockId in this.blocks) {
-			var elLen = this.blocks[blockId].elements.getCount();
-			this.blocks[blockId].elements.each(function(el){
-				parent.Automne.utils.catchLinks(el, 'edit');
-			});
+			//pr(atmRowsDatas);
+			//pr(atmBlocksDatas);
+			//replace row datas
+			for(var rowId in atmRowsDatas) {
+				if(rowId == this.getId()) {
+					//apply new config
+					Ext.apply(this, atmRowsDatas[rowId]);
+				}
+			}
+			//init component (create elements events)
+			this.initComponent();
+			//instanciate all new blocks objects and add them to row
+			for (var blockId in atmBlocksDatas) {
+				var block = eval('new '+atmBlocksDatas[blockId].jsBlockClass+'(atmBlocksDatas[blockId]);');
+				//pr(blocks[blockId]);
+				this.addBlock(block);
+			}
+			//then, finally, catch all click possibilities
+			for (var blockId in this.blocks) {
+				var elLen = this.blocks[blockId].elements.getCount();
+				this.blocks[blockId].elements.each(function(el){
+					parent.Automne.utils.catchLinks(el, 'edit');
+				});
+			}
 		}
 	},
 	removeListeners: function() {

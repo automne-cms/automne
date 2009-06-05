@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: field.php,v 1.3 2009/04/02 13:57:59 sebastien Exp $
+// $Id: field.php,v 1.4 2009/06/05 15:02:19 sebastien Exp $
 
 /**
   * Class CMS_forms_field
@@ -415,8 +415,10 @@ class CMS_forms_field extends CMS_grandFather {
 				}
 			}
 		}
-		foreach ($formTags as $field) {
-			$field->writeToPersistence();
+		if($formTags){
+		    foreach ($formTags as $field) {
+			    $field->writeToPersistence();
+		    }
 		}
 		//add form object
 		$formTags = array();
