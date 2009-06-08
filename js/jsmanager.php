@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: jsmanager.php,v 1.5 2009/06/05 15:29:51 sebastien Exp $
+// $Id: jsmanager.php,v 1.6 2009/06/08 09:08:05 sebastien Exp $
 
 /**
   * Javascript manager
@@ -119,7 +119,7 @@ if (isset($_GET['files'])) {
 				//Ext.ux.LiveDataPanel
 				$jsfiles [] = PATH_ADMIN_FS.'/js/ext/LiveDataPanel.js';
 				//Ext.ux.ItemSelector
-				$jsfiles [] = PATH_ADMIN_FS.'/js/ext/Multiselect.js';
+				$jsfiles [] = PATH_ADMIN_FS.'/js/ext/MultiSelect.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/ext/Multiselect2.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/ext/DDView.js';
 				
