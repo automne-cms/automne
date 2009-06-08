@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: side-panel.php,v 1.6 2009/06/05 15:01:05 sebastien Exp $
+// $Id: side-panel.php,v 1.7 2009/06/08 10:03:36 sebastien Exp $
 
 /**
   * PHP page : Load side panel infos.
@@ -437,13 +437,28 @@ $jscontent = <<<END
 	var scrollPanel = function(p) {
 		p.getEl().scrollIntoView(center.body);
 	}
-	
+	var doAction = function(e, t){
+		t = Ext.get(t);
+		var action = t.getAttributeNS('atm', 'action' );
+		if (action) {
+			e.stopEvent();
+			if (actions[action]) {
+				actions[action](t);
+			} else {
+				Automne.message.show('action '+action+' not found');
+			}
+		}
+    }
 	var center = new Ext.Panel({
 		region:				'center',
 		border:				false,
 		autoScroll:			true,
 		bodyStyle:			'background:#F3F3F3;',
-		items:[{$userPanels}]
+		items:[{$userPanels}],
+		listeners:{'render':function(){
+			center.body.on('mousedown', doAction, null, {delegate:'a'});
+		},
+		scope:this}
 	});
 	
 	// Panel for the north
@@ -492,18 +507,6 @@ $jscontent = <<<END
 	//redo layout
 	sidePanel.doLayout();
 	
-	var doAction = function(e, t){
-		t = Ext.get(t);
-		var action = t.getAttributeNS('atm', 'action' );
-		if (action) {
-			e.stopEvent();
-			if (actions[action]) {
-				actions[action](t);
-			} else {
-				Automne.message.show('action '+action+' not found');
-			}
-		}
-    }
 	var openWindow = function(t, url, params, width, height) {
 		var action = t.getAttributeNS('atm', 'action' );
 		//create window element
@@ -522,10 +525,7 @@ $jscontent = <<<END
 		win.show(t);
 	}
 	
-	if (center.body) {
-		center.body.on('mousedown', doAction, null, {delegate:'a'});
-	}
-    var actions = {
+	var actions = {
     	'validations' : function(t){
     		openWindow(t, 'validations.php', {
 				module:		t.getAttributeNS('atm', 'module'),
