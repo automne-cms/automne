@@ -1,3 +1,3 @@
 Pour mettre à jour Ext :
 1- conserver le fichier license.js
-2- Replacer tous les chemins relatifs dans /automne/ext/resources/css/xtheme-blue.css par des chemins absolus
+2- Replacer tous les chemins relatifs dans /automne/ext/resources/css/xtheme-blue.css et /automne/ext/resources/css/ext-all.css par des chemins absolus (chercher .gif pour être sur).
