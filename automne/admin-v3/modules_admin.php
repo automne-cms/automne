@@ -1,19 +1,19 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4: */
 // +----------------------------------------------------------------------+
-// | Automne (TM)														  |
+// | Automne (TM)                                                         |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 2000-2009 WS Interactive								  |
+// | Copyright (c) 2000-2007 WS Interactive                               |
 // +----------------------------------------------------------------------+
-// | Automne is subject to version 2.0 or above of the GPL license.		  |
-// | The license text is bundled with this package in the file			  |
-// | LICENSE-GPL, and is available through the world-wide-web at		  |
-// | http://www.gnu.org/copyleft/gpl.html.								  |
+// | This source file is subject to version 2.0 of the GPL license.       |
+// | The license text is bundled with this package in the file            |
+// | LICENSE-GPL, and is available at through the world-wide-web at       |
+// | http://www.gnu.org/copyleft/gpl.html.                                |
 // +----------------------------------------------------------------------+
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modules_admin.php,v 1.2 2009/04/02 13:56:08 sebastien Exp $
+// $Id: modules_admin.php,v 1.3 2009/06/08 09:40:47 sebastien Exp $
 
 /**
   * PHP page : modules admin
@@ -70,6 +70,8 @@ define("MESSAGE_PAGE_YES", 1082);
 define("MESSAGE_PAGE_NO", 1083);
 define("MESSAGE_PAGE_LABEL", 814);
 define("MESSAGE_PAGE_FIELD_NONE", 10);
+define("MESSAGE_PAGE_ACTION_PARAMETERS", 807);
+define("MESSAGE_PAGE_ACTION_MODULE_PARAMETERS", 808);
 
 //checks rights
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
@@ -95,7 +97,7 @@ switch ($_POST["cms_action"]) {
 case "validate_module":
 	$new_parameters = array();
 	foreach ($_POST as $label => $value) {
-		if ($label != "cms_action" && $label != "moduleCodename" && !strpos($label,'_contentType')) {
+		if ($label != "cms_action" && $label != "action" && $label != "moduleCodename" && !strpos($label,'_contentType')) {
 			if ($_POST[$label."_contentType"]) {
 				$new_parameters[$label] = array($value,$_POST[$label."_contentType"]);
 			} else {
@@ -161,6 +163,15 @@ if (!sizeof($modules)) {
 			<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
 			<td><input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_EDIT).'" /></td>
 			</form>';
+			// Polymod module parameters
+			if ($module->isPolymod() && $module->hasParameters()) {
+				$content .= '
+				<form action="'.$_SERVER['SCRIPT_NAME'].'" method="post">
+				<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
+				<input type="hidden" name="action" value="parameters" />
+				<td><input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_PARAMETERS).'" /></td>
+				</form>';
+			}
 		}
 		$content .= '
 		</tr>
@@ -171,20 +182,21 @@ if (is_object($module)) {
 	if ($module->isPolymod()) {
 		//all polymod management is in another file
 		require_once('polymod_admin.php');
-	} else {
+	}
+	if(!$module->isPolymod() || ($module->isPolymod() && $_REQUEST['action'] == 'parameters')){
 		//get module Paramaters
 		if ($module->getCodename()=='standard') {
 			$parameters = $module->getParameters(false,true);
 		} else {
 			$parameters = $module->getParameters();
 		}
-		
 		if (is_array($parameters) && sizeof($parameters)) {
 			$content .= '
-			<dialog-title type="admin_h2">'.$cms_language->getMessage(MESSAGE_PAGE_APPLICATION).' :: '.$module->getLabel($cms_language).' :</dialog-title>
+			<dialog-title type="admin_h2">'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_MODULE_PARAMETERS,array('"'.$module->getLabel($cms_language).'"'),MOD_STANDARD_CODENAME).' :</dialog-title>
 			<br />
 			<table border="0" cellpadding="3" cellspacing="2">
 			<form action="'.$_SERVER["SCRIPT_NAME"].'?module='.$module->getCodename().'" method="post">
+			<input type="hidden" name="action" value="parameters" />
 			<input type="hidden" name="cms_action" value="validate_module" />
 			<input type="hidden" name="moduleCodename" value="'.$module->getCodename().'" />';
 			foreach ($parameters as $label => $value) {
