@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_image.php,v 1.5 2009/06/05 15:02:18 sebastien Exp $
+// $Id: object_image.php,v 1.6 2009/06/08 13:11:21 sebastien Exp $
 
 /**
   * Class CMS_object_image
@@ -243,7 +243,7 @@ class CMS_object_image extends CMS_object_common
 			if ($this->_field->getValue('required')) {
 				//must have image in upload field or in hidden field or image must be already set
 				//if deleted is checked, image must be set in upload field
-				if ((!$this->_subfieldValues[0]->getValue() && !$_FILES[$prefixName.$this->_field->getID().'_0']['name'] && !$values[$prefixName.$this->_field->getID().'_0_hidden']) || ($values[$prefixName.$this->_field->getID().'_delete'] == 1 && !$_FILES[$prefixName.$this->_field->getID().'_0']['name'])) {
+				if ((!$this->_subfieldValues[0]->getValue() && !$_FILES[$prefixName.$this->_field->getID().'_0']['name'] && (!isset($values[$prefixName.$this->_field->getID().'_0_hidden']) || !$values[$prefixName.$this->_field->getID().'_0_hidden'])) || ($values[$prefixName.$this->_field->getID().'_delete'] == 1 && !$_FILES[$prefixName.$this->_field->getID().'_0']['name'])) {
 					return false;
 				}
 			}
@@ -366,9 +366,12 @@ class CMS_object_image extends CMS_object_common
 				'inputValue'		=> 1,
 				'name'				=> 'polymodFieldsValue['.$prefixName.$this->_field->getID().'_makeZoom]',
 				'boxLabel'			=> $boxLabel,
+				'height'			=> 'auto',
 				'labelSeparator'	=> ''
 			);
 		}
+		//reset key numbers
+		$return['items'] = array_values($return['items']);
 		return $return;
 	}
 

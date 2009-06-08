@@ -17,7 +17,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: mod_cms_forms_header.php,v 1.7 2009/06/05 15:24:03 sebastien Exp $
+// $Id: mod_cms_forms_header.php,v 1.8 2009/06/08 13:11:36 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -329,13 +329,13 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 									}
 								}
 								//append header and footer texts if any to body text
-								if ($texts[1]) { // header
+								if (isset($texts[1])) { // header
 									//needed in case of vars in text. Simple and double quotes are not welcome in this case !
 									//$texts[1] = (strpos($texts[1], '$') !== false) ? eval('return "'.str_replace(array('"',"'"),'',$texts[1]).'";') : $texts[1];
 									$texts[1] = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($texts[1])).'";');
 									$body = $texts[1]."\n\n".$body;
 								}
-								if ($texts[2]) { //footer
+								if (isset($texts[2])) { //footer
 									//needed in case of vars in text. Simple and double quotes are not welcome in this case !
 									//$texts[2] = (strpos($texts[2], '$') !== false) ? eval('return "'.str_replace(array('"',"'"),'',$texts[2]).'";') : $texts[2];
 									$texts[2] = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($texts[2])).'";');
@@ -349,7 +349,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 									//$texts[0] = (strpos($texts[0], '$') !== false) ? eval('return "'.str_replace(array('"',"'"),'',$texts[0]).'";') : $texts[0];
 									$subject = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($texts[0])).'";');
 								} else { // or default subject
-									$subject = $form_language->getMessage(MESSAGE_CMS_FORMS_EMAIL_SUBJECT, array($form->getAttribute('name'), APPLICATION_LABEL), MOD_CMS_FORMS_CODENAME);
+									$subject = $form_language->getMessage(CMS_forms_formular::MESSAGE_CMS_FORMS_EMAIL_SUBJECT, array($form->getAttribute('name'), APPLICATION_LABEL), MOD_CMS_FORMS_CODENAME);
 								}
 								$email->setSubject($subject);
 								

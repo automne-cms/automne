@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_forms.php,v 1.4 2009/04/02 13:57:58 sebastien Exp $
+// $Id: cms_forms.php,v 1.5 2009/06/08 13:11:20 sebastien Exp $
 
 /**
   * Codename of the module
@@ -27,15 +27,6 @@ define("MOD_CMS_FORMS_CODENAME", "cms_forms");
 define("MESSAGE_MOD_CMS_FORMS_ROWS_EXPLANATION", 85);
 define("MESSAGE_MOD_CMS_FORMS_TEMPLATE_EXPLANATION", 86);
 define('MESSAGE_MOD_CMS_FORMS_PLUGIN', 87);
-/*
-define ("CMS_FORMS_REMOVE_FORM_SUBMIT", 0);
-define ("CMS_FORMS_ALLOW_FORM_SUBMIT", 1);
-
-define("MESSAGE_CMS_FORMS_REQUIRED_FIELDS", 67);
-define("MESSAGE_CMS_FORMS_MALFORMED_FIELDS", 68);
-define("MESSAGE_CMS_FORMS_EMAIL_SUBJECT", 69);
-define("MESSAGE_CMS_FORMS_SUBMIT_NOT_ALLOWED", 83);
-*/
 
 /**
   * Class CMS_module_cms_forms

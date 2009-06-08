@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_categories.php,v 1.5 2009/06/05 15:02:18 sebastien Exp $
+// $Id: object_categories.php,v 1.6 2009/06/08 13:11:21 sebastien Exp $
 
 /**
   * Class CMS_object_categories
@@ -1312,8 +1312,10 @@ class CMS_object_categories extends CMS_object_common
 				}
 				$lineages = array();
 				foreach ($value as $catID) {
-					//get lineage of category searched
-					$lineages[] = CMS_moduleCategories_catalog::getLineageOfCategoryAsString($catID);
+					if ($catID) {
+						//get lineage of category searched
+						$lineages[] = CMS_moduleCategories_catalog::getLineageOfCategoryAsString($catID);
+					}
 				}
 				$sql = '';
 				if ($operator == 'not in') {
@@ -1340,7 +1342,7 @@ class CMS_object_categories extends CMS_object_common
 					where
 						objectFieldID = '".$fieldID."'
 						and id_mca=value
-						and (".$sql.")
+						".($sql ? " and (".$sql.") " : '')."
 						$where";
 			}
 		}

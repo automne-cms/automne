@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_file.php,v 1.5 2009/06/05 15:02:18 sebastien Exp $
+// $Id: object_file.php,v 1.6 2009/06/08 13:11:21 sebastien Exp $
 
 /**
   * Class CMS_object_file
@@ -351,7 +351,7 @@ class CMS_object_file extends CMS_object_common
 				}
 				//must have file in upload field or in hidden field or file must be already set
 				//if deleted is checked, file must be set in upload field
-				if((!$this->_subfieldValues[4]->getValue() && !$_FILES[$prefixName.$this->_field->getID().'_4']['name'] && !$values[$prefixName.$this->_field->getID().'_4_hidden']) || (isset($values[$prefixName.$this->_field->getID().'_delete']) && $values[$prefixName.$this->_field->getID().'_delete'] == 1 && !$_FILES[$prefixName.$this->_field->getID().'_4']['name'])) {
+				if((!$this->_subfieldValues[4]->getValue() && !$_FILES[$prefixName.$this->_field->getID().'_4']['name'] && (!isset($values[$prefixName.$this->_field->getID().'_4_hidden']) || !$values[$prefixName.$this->_field->getID().'_4_hidden'])) || (isset($values[$prefixName.$this->_field->getID().'_delete']) && $values[$prefixName.$this->_field->getID().'_delete'] == 1 && !$_FILES[$prefixName.$this->_field->getID().'_4']['name'])) {
 					return false;
 				}
 			}
@@ -498,6 +498,8 @@ class CMS_object_file extends CMS_object_common
 				'fieldLabel'		=> '<span ext:qtip="'.$language->getMessage(self::MESSAGE_OBJECT_FILE_FIELD_EXTERNALSOURCEFILE_FTP, array($params['ftpDir']), MOD_POLYMOD_CODENAME).'" class="atm-help">'.$language->getMessage(self::MESSAGE_OBJECT_FILE_FIELD_EXTERNALSOURCEFILE, false, MOD_POLYMOD_CODENAME).'</span>',
 			);
 		}
+		//reset key numbers
+		$return['items'] = array_values($return['items']);
 		return $return;
 	}
 	

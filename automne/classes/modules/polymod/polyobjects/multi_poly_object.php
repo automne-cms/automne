@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: multi_poly_object.php,v 1.3 2009/06/05 15:02:17 sebastien Exp $
+// $Id: multi_poly_object.php,v 1.4 2009/06/08 13:11:21 sebastien Exp $
 
 /**
   * Class CMS_multi_poly_object
@@ -764,6 +764,7 @@ class CMS_multi_poly_object extends CMS_object_common
 		} else {
 			$prefixName = '';
 		}
+		$html = '';
 		//get searched objects conditions
 		$searchedObjects = (is_array($params['searchedObjects'])) ? $params['searchedObjects'] : array();
 		$objectsNames = CMS_poly_object_catalog::getListOfNamesForObject($this->_objectID, false, $searchedObjects);
@@ -803,7 +804,7 @@ class CMS_multi_poly_object extends CMS_object_common
 					$listboxesParameters[$k] = $v;
 				}
 			}
-			$html .= CMS_dialog_listboxes::getListBoxes($listboxesParameters);
+			$html = CMS_dialog_listboxes::getListBoxes($listboxesParameters);
 			if (POLYMOD_DEBUG) {
 				$html .= '<span class="admin_text_alert"> (Field : '.$fieldID.' - Multi of : '.$this->_objectID.' - Values : '.implode(';',$associated_items).')</span>';
 			}

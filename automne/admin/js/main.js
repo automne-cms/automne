@@ -6,7 +6,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: main.js,v 1.12 2009/06/05 15:01:06 sebastien Exp $
+  * $Id: main.js,v 1.13 2009/06/08 13:11:05 sebastien Exp $
   */
 
 //Declare Automne namespace
@@ -292,7 +292,7 @@ Automne.server = {
 			Ext.get('atm-server-call').hide();
 		}
 		//check for return error
-		if (response == undefined || (response.responseXML == undefined && response.getResponseHeader('Content-Type').indexOf('text/xml') !== -1) || response.responseText == '') {
+		if (!(options && options.isUpload) && (response == undefined || (response.responseXML == undefined && response.getResponseHeader('Content-Type').indexOf('text/xml') !== -1) || response.responseText == '')) {
 			Automne.server.failureResponse(response, options, null, 'call');
 		}
 	},

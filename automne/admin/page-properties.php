@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-properties.php,v 1.7 2009/06/05 15:01:04 sebastien Exp $
+// $Id: page-properties.php,v 1.8 2009/06/08 13:11:05 sebastien Exp $
 
 /**
   * PHP page : Load page properties window.
@@ -190,7 +190,7 @@ if ($redirectlink->hasValidHREF()) {
 	}
 	$redirectlink->setTarget('_blank');
 	$redirect .= $redirectlink->getHTML($label, MOD_STANDARD_CODENAME, RESOURCE_DATA_LOCATION_EDITED, 'class="admin"', false);
-	$redirectValue = $redirectlink->getTextDefinition();
+	$redirectValue = sensitiveIO::sanitizeJSString($redirectlink->getTextDefinition());
 } else {
 	$redirect = $cms_language->getMessage(MESSAGE_PAGE_FIELD_NO);
 }

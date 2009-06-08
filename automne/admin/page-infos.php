@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-infos.php,v 1.12 2009/04/20 15:13:03 sebastien Exp $
+// $Id: page-infos.php,v 1.13 2009/06/08 13:11:05 sebastien Exp $
 
 /**
   * PHP page : Load page infos
@@ -235,7 +235,7 @@ if (!isset($cms_page) || !is_object($cms_page) || $cms_page->hasError()) {
 	} else {
 		$jscontent = "
 			//disable all tabs except search and tree
-			tabs.items.each(function(panel) {
+			Automne.tabPanels.items.each(function(panel) {
 				if (panel.id != 'search' && panel.id != 'tree') {
 					panel.disable();
 				} else {
@@ -244,7 +244,7 @@ if (!isset($cms_page) || !is_object($cms_page) || $cms_page->hasError()) {
 			});
 			Automne.message.popup({
 				title: 		'Erreur ...', 
-				msg: 		'La page demandée ({$pageId}) ne peut-être affichée. Il est possible qu\'elle ai été supprimée ou que vous n\'ayez pas le droit de la consulter.<br />Veuillez sélectionner une nouvelle page dans l'arborescence ou par le moteur de recherche.',
+				msg: 		'La page demandée ({$pageId}) ne peut-être affichée. Il est possible qu\'elle ai été supprimée ou que vous n\'ayez pas le droit de la consulter.<br />Veuillez sélectionner une nouvelle page dans l\'arborescence ou par le moteur de recherche.',
 				buttons:	Ext.MessageBox.OK,
 				icon: 		Ext.MessageBox.ERROR
 			});

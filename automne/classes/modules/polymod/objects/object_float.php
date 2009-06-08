@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_float.php,v 1.2 2009/06/05 15:02:18 sebastien Exp $
+// $Id: object_float.php,v 1.3 2009/06/08 13:11:21 sebastien Exp $
 
 /**
   * Class CMS_object_float
@@ -194,7 +194,7 @@ class CMS_object_float extends CMS_object_string {
 			//append field id to html field parameters (if not already exists)
 			$htmlParameters .= (!isset($inputParams['id'])) ? ' id="'.$prefixName.$this->_field->getID().'_0"' : '';
 			//create field value
-			$value = ($this->_subfieldValues[0]->getValue() || $params['canBeNull']) ? $this->_subfieldValues[0]->getValue() : '';
+			$value = ($this->_subfieldValues[0]->getValue() || (isset($params['canBeNull']) && $params['canBeNull'])) ? $this->_subfieldValues[0]->getValue() : '';
 			//then create field HTML
 			$html .= ($html) ? '<br />':'';
 			$html .= '<input type="text"'.$htmlParameters.' name="'.$prefixName.$this->_field->getID().'_0" value="'.$value.'" />'."\n";
