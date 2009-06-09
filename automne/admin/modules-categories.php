@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modules-categories.php,v 1.3 2009/06/09 13:27:49 sebastien Exp $
+// $Id: modules-categories.php,v 1.4 2009/06/09 13:42:57 sebastien Exp $
 
 /**
   * PHP page : Load module categories tree window.
@@ -171,8 +171,8 @@ $jscontent = <<<END
 						id:				'catWindow'+categoryId,
 						modal:			false,
 						father:			fatherWindow,
-						//frameURL:		'/automne/admin-v3/modulecategory.php?module={$codename}&item='+categoryId,
 						allowFrameNav:	true,
+						categoryId:		categoryId,
 						width:			750,
 						height:			580,
 						animateTarget:	button.getEl(),
@@ -259,8 +259,8 @@ $jscontent = <<<END
 					id:				'catWindowCreate',
 					modal:			false,
 					father:			fatherWindow,
-					//frameURL:		'/automne/admin-v3/modulecategory.php?module={$codename}&item=&parentID='+node.attributes.catId,
 					allowFrameNav:	true,
+					categoryId:		'',
 					width:			750,
 					height:			580,
 					animateTarget:	button.getEl(),

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modules-category.php,v 1.1 2009/06/09 13:27:49 sebastien Exp $
+// $Id: modules-category.php,v 1.2 2009/06/09 13:42:57 sebastien Exp $
 
 /**
   * PHP page : Load category item interface
@@ -332,10 +332,23 @@ $jscontent = <<<END
 							action:		'save',
 							module:		'{$codename}',
 							fatherId:	'{$fatherId}',
-							category:	'{$catId}'
+							category:	window.categoryId
 						},
 						success:function(form, action){
-							
+							//extract updated json datas from response
+							var jsonResponse = '{}';
+							if (action.response.responseXML && action.response.responseXML.getElementsByTagName && action.response.responseXML.getElementsByTagName('jsoncontent').length) {
+								try{
+									jsonResponse = Ext.decode(action.response.responseXML.getElementsByTagName('jsoncontent').item(0).firstChild.nodeValue);
+								} catch(e) {
+									jsonResponse = {};
+									pr(e, 'error');
+									Automne.server.failureResponse(response, options, e, 'json');
+								}
+							}
+							if (jsonResponse.id) {
+								window.categoryId = jsonResponse.id;
+							}
 						},
 						scope:this
 					});

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: modules-categories-controler.php,v 1.2 2009/06/09 13:27:49 sebastien Exp $
+// $Id: modules-categories-controler.php,v 1.3 2009/06/09 13:42:57 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on modules categories
@@ -47,7 +47,7 @@ if (!$codename) {
 	CMS_grandFather::raiseError('Unknown module ...');
 	$view->show();
 }
-if (!$categoryId) {
+if (!$categoryId && $action != 'save') {
 	CMS_grandFather::raiseError('Unknown category ...');
 	$view->show();
 }
@@ -64,7 +64,7 @@ if (!$cms_user->hasModuleClearance($codename, CLEARANCE_MODULE_EDIT)) {
 	$view->show();
 }
 //CHECKS if user has module category manage clearance
-if (!$cms_user->hasModuleCategoryClearance($categoryId, CLEARANCE_MODULE_MANAGE)) {
+if ($categoryId && !$cms_user->hasModuleCategoryClearance($categoryId, CLEARANCE_MODULE_MANAGE)) {
 	CMS_grandFather::raiseError('User has no rights on category : '.$categoryId.' for module : '.$codename);
 	$view->setActionMessage('Vous n\'avez pas le droit d\'administrer cette catégorie ...');
 	$view->show();
@@ -75,13 +75,11 @@ $content = array('success' => false);
 
 switch ($action) {
 	case 'save':
-		//instanciate module
-		$cms_module = CMS_modulesCatalog::getByCodename($codename);
 		$all_languages = CMS_languagesCatalog::getAllLanguages($codename);
 		
 		$parentId = sensitiveIO::request('parentId', 'sensitiveIO::isPositiveInteger');
 		$icon = sensitiveIO::request('icon');
-		$defaultLabel = sensitiveIO::request('label_'.$cms_module->getDefaultLanguageCodename());
+		$defaultLabel = sensitiveIO::request('label_'.$module->getDefaultLanguageCodename());
 		
 		// Current category object to manipulate
 		$item = new CMS_moduleCategory($categoryId);
@@ -210,7 +208,7 @@ switch ($action) {
 				$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_SAVE_ERROR);
 			} else {
 				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
-				$content = array('success' => true);
+				$content = array('success' => true, 'id' => $item->getID());
 			}
 		}
 	break;
