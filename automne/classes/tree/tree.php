@@ -15,7 +15,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: tree.php,v 1.3 2009/03/02 11:29:38 sebastien Exp $
+// $Id: tree.php,v 1.4 2009/06/09 13:29:25 sebastien Exp $
 
 /**
   * Class CMS_tree
@@ -1216,8 +1216,7 @@ class CMS_tree extends CMS_grandFather
 		$q = new CMS_query($sql);
 	    while ($id = $q->getValue("id_pag")) {
 		    $regen_pages[] = $id;
-		    //$pg = CMS_tree::getPageByID($id); useless !
-	    }
+		}
 		CMS_tree::submitToRegenerator($regen_pages, $fromScratch);
 	}
 	

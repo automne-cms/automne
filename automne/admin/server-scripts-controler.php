@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: server-scripts-controler.php,v 1.1 2009/04/02 13:55:54 sebastien Exp $
+// $Id: server-scripts-controler.php,v 1.2 2009/06/09 13:27:49 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on server
@@ -58,18 +58,20 @@ switch ($action) {
 			$pages = CMS_tree::getAllSiblings($page, true);
 			if (sizeof($pages) > 3) {
 				//submit pages to regenerator
-				CMS_tree::submitToRegenerator($pages, true);
-				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE).' : '.sizeof($pages).' pages soumises à régénération.';
+				$validPages = CMS_tree::pagesExistsInUserSpace($pages);
+				CMS_tree::submitToRegenerator($validPages, true);
+				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE).' : '.sizeof($validPages).' pages soumises à régénération.';
 			} else {
 				//regenerate pages
 				@set_time_limit(1000);
-				foreach ($pages as $pageID) {
+				$validPages = CMS_tree::pagesExistsInUserSpace($pages);
+				foreach ($validPages as $pageID) {
 					$pg = CMS_tree::getPageByID($pageID);
 					if (is_a($pg, 'CMS_page') && !$pg->hasError()) {
 					    $pg->regenerate(true);
 					}
 				}
-				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE).' : '.sizeof($pages).' pages régénérées.';
+				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE).' : '.sizeof($validPages).' pages régénérées.';
 			}
 		}
 	break;

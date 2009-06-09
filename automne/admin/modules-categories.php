@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modules-categories.php,v 1.2 2009/06/05 15:01:04 sebastien Exp $
+// $Id: modules-categories.php,v 1.3 2009/06/09 13:27:49 sebastien Exp $
 
 /**
   * PHP page : Load module categories tree window.
@@ -158,22 +158,26 @@ $jscontent = <<<END
 			disabled:		true,
 			handler:		function(button) {
 				var node = tree.getSelectionModel().getSelectedNode();
+				if (!node) {
+					button.disable();
+					return;
+				}
 				var categoryId = node.attributes.catId;
 				if (categoryWindows[node.id]) {
 					Ext.WindowMgr.bringToFront(categoryWindows[node.id]);
 				} else {
 					//create window element
-					categoryWindows[node.id] = new Automne.frameWindow({
+					categoryWindows[node.id] = new Automne.Window({
 						id:				'catWindow'+categoryId,
 						modal:			false,
 						father:			fatherWindow,
-						frameURL:		'/automne/admin-v3/modulecategory.php?module={$codename}&item='+categoryId,
+						//frameURL:		'/automne/admin-v3/modulecategory.php?module={$codename}&item='+categoryId,
 						allowFrameNav:	true,
 						width:			750,
 						height:			580,
 						animateTarget:	button.getEl(),
-						/*autoLoad:		{
-							url:			'module-category.php',
+						autoLoad:		{
+							url:			'modules-category.php',
 							params:			{
 								winId:			'catWindow'+categoryId,
 								category:		categoryId,
@@ -181,7 +185,7 @@ $jscontent = <<<END
 							},
 							nocache:		true,
 							scope:			this
-						},*/
+						},
 						listeners:{
 							'close':function(win){
 								delete categoryWindows[node.id];
@@ -205,6 +209,10 @@ $jscontent = <<<END
 			disabled:		true,
 			handler:		function(button) {
 				var node = tree.getSelectionModel().getSelectedNode();
+				if (!node) {
+					button.disable();
+					return;
+				}
 				Automne.message.popup({
 					msg: 				'Confirmer la suppression de la catégorie \''+node.attributes.text+'\' ?',
 					buttons: 			Ext.MessageBox.OKCANCEL,
@@ -242,18 +250,22 @@ $jscontent = <<<END
 			disabled:		true,
 			handler:		function(button) {
 				var node = tree.getSelectionModel().getSelectedNode();
+				if (!node) {
+					button.disable();
+					return;
+				}
 				//create window element
-				categoryWindows['createCat'] = new Automne.frameWindow({
+				categoryWindows['createCat'] = new Automne.Window({
 					id:				'catWindowCreate',
 					modal:			false,
 					father:			fatherWindow,
-					frameURL:		'/automne/admin-v3/modulecategory.php?module={$codename}&item=&parentID='+node.attributes.catId,
+					//frameURL:		'/automne/admin-v3/modulecategory.php?module={$codename}&item=&parentID='+node.attributes.catId,
 					allowFrameNav:	true,
 					width:			750,
 					height:			580,
 					animateTarget:	button.getEl(),
-					/*autoLoad:		{
-						url:			'module-category.php',
+					autoLoad:		{
+						url:			'modules-category.php',
 						params:			{
 							winId:			'catWindowCreate',
 							fatherId:		node.attributes.catId,
@@ -261,7 +273,7 @@ $jscontent = <<<END
 						},
 						nocache:		true,
 						scope:			this
-					},*/
+					},
 					listeners:{
 						'close':function(win){
 							delete categoryWindows['createCat'];
