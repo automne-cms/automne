@@ -1,4 +1,4 @@
-# $Id: automne4-I18NM_messages.sql,v 1.8 2009/06/05 15:30:05 sebastien Exp $
+# $Id: automne4-I18NM_messages.sql,v 1.9 2009/06/10 12:55:17 sebastien Exp $
 #
 # Suppression avant mise à  jour du Contenu de la table `I18NM_messages` pour le module standard
 #
@@ -2446,6 +2446,7 @@ INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (5
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (517, 'polymod', NOW(), 'Enlever l\'élément associé sélectionné', 'Remove selected associated element');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (518, 'polymod', NOW(), 'Choisissez les éléments \'%s\' à associer', 'Choose elements \'%s\' to associate');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (519, 'polymod', NOW(), 'Choisissez l\'aide à afficher : ', 'Choose help to display: ');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (520, 'polymod', NOW(), 'Ordre aléatoire', 'Random order');
 
 #
 # Contenu de la table `I18NM_messages` module News
