@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: index.php,v 1.7 2009/04/20 15:13:03 sebastien Exp $
+// $Id: index.php,v 1.8 2009/06/10 10:11:30 sebastien Exp $
 
 /**
   * PHP page : index
@@ -46,11 +46,11 @@ if (isset($_REQUEST["cms_action"]) && $_REQUEST["cms_action"] == 'logout') {
 $view->addCSSFile('ext');
 $view->addCSSFile('main');
 if (SYSTEM_DEBUG) {
-	$view->addCSSFile('blackbird');
+	$view->addCSSFile('debug');
 }
 //set needed JS files
 if (SYSTEM_DEBUG) {
-	$jsfiles = array('ext','blackbird','codemirror','main','launch');
+	$jsfiles = array('ext','debug','codemirror','main','launch');
 } else {
 	$jsfiles = array('ext','codemirror','main','launch');
 }

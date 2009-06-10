@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: validations.php,v 1.3 2009/06/05 15:01:05 sebastien Exp $
+// $Id: validations.php,v 1.4 2009/06/10 10:11:49 sebastien Exp $
 
 /**
   * PHP page : Load page validations window.
@@ -614,8 +614,6 @@ $jscontent = <<<END
 	
 	//redo windows layout
 	validationsWindow.doLayout();
-	//validationsWindow.setWidth(validationsWindow.width);
-	//validationsWindow.setHeight(validationsWindow.height);
 	
 	//add event on combo box to switch validations type
 	setTimeout(function(){

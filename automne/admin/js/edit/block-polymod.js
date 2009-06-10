@@ -8,29 +8,33 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: block-polymod.js,v 1.3 2009/03/02 11:27:02 sebastien Exp $
+  * $Id: block-polymod.js,v 1.4 2009/06/10 10:11:17 sebastien Exp $
   */
 Automne.blockPolymod = Ext.extend(Automne.block, {
 	blockClass:	'CMS_block_polymod',
 	win:		false,
 	edit: 		function() {
 		//create window with block edition elements
-		this.win = new parent.Automne.frameWindow({
+		this.win = new parent.Automne.Window({
 			id:				'blockPolymodWindow',
-			width:			800,
-			height:			600,
-			frameURL:		'/automne/admin/modules/polymod/content_block.php?' + Ext.urlEncode({
-				winId:			'blockPolymodWindow',
-				cs:				this.row.clientspace.getId(),
-				page:			this.row.clientspace.page,
-				template:		this.row.template,
-				rowType:		this.row.rowType,
-				rowTag:			this.row.rowTagID,
-				block:			this.getId(),
-				blockClass:		this.blockClass,
-				module:			this.value.module
-			}),
-			allowFrameNav:	true
+			width:			750,
+			height:			580,
+			autoLoad:		{
+				url:			'/automne/admin/modules/polymod/content-block.php',
+				params:			{
+					winId:			'blockPolymodWindow',
+					cs:				this.row.clientspace.getId(),
+					page:			this.row.clientspace.page,
+					template:		this.row.template,
+					rowType:		this.row.rowType,
+					rowTag:			this.row.rowTagID,
+					block:			this.getId(),
+					blockClass:		this.blockClass,
+					module:			this.value.module
+				},
+				nocache:		true,
+				scope:			this
+			}
 		});
 		this.win.show();
 		this.win.on('close', this.updateRow, this);

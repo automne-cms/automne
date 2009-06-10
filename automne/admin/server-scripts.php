@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: server-scripts.php,v 1.3 2009/06/05 15:01:05 sebastien Exp $
+// $Id: server-scripts.php,v 1.4 2009/06/10 10:11:58 sebastien Exp $
 
 /**
   * PHP page : Load server detail window.
@@ -357,7 +357,6 @@ $jscontent = <<<END
 			},
 			scope:this}
 	});
-	
 	serverWindow.add(center);
 	//redo windows layout (timeout is for IE)
 	setTimeout(function(){serverWindow.doLayout();}, 100);

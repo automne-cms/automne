@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: login.php,v 1.5 2009/06/05 15:01:04 sebastien Exp $
+// $Id: login.php,v 1.6 2009/06/10 10:11:38 sebastien Exp $
 
 /**
   * PHP page : Login
@@ -203,11 +203,11 @@ END;
 	$view->addCSSFile('ext');
 	$view->addCSSFile('main');
 	if (SYSTEM_DEBUG) {
-		$view->addCSSFile('blackbird');
+		$view->addCSSFile('debug');
 	}
 	$view->addJSFile('ext');
 	if (SYSTEM_DEBUG) {
-		$view->addJSFile('blackbird');
+		$view->addJSFile('debug');
 	}
 	$view->addJSFile('codemirror');
 	$view->addJSFile('main');

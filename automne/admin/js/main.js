@@ -6,7 +6,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: main.js,v 1.13 2009/06/08 13:11:05 sebastien Exp $
+  * $Id: main.js,v 1.14 2009/06/10 10:11:17 sebastien Exp $
   */
 
 //Declare Automne namespace
@@ -1102,9 +1102,28 @@ Automne.console = {
 					}
 				} catch(e){}
 			}
+			//Use prettyPrint to dump objects vars
+			if ((typeof data != 'string') && prettyPrint != undefined) {
+				Automne.varDump = data;
+				var showDump = function() {
+					var win = new Automne.Window({
+						width:			750,
+						height:			580,
+						title:			'Javascript Var Dump',
+						html:			'',
+						bodyStyle:		'padding:5px;',
+						autoScroll:		true,
+						listeners:		{'show':function(win){
+							win.body.dom.appendChild(prettyPrint(Automne.varDump));
+						},'scope':this}
+					});
+					win.show();
+				}
+				data = data.toString()+ ' <a href="#" onclick="('+Ext.util.Format.htmlEncode(showDump.toString())+')();">[Var Dump]</a>';
+			}
 			switch (type) {
 				case 'error': //errors
-					data += (backtrace) ? ' <a href="'+ backtrace +'" target="_blank">Backtrace</a>' : '';
+					data += (backtrace) ? ' <a href="'+ backtrace +'" target="_blank">[Backtrace]</a>' : '';
 					window.blackbird.error(data);
 				break;
 				case 'warning': //?? not used for now

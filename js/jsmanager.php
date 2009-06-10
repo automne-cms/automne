@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: jsmanager.php,v 1.6 2009/06/08 09:08:05 sebastien Exp $
+// $Id: jsmanager.php,v 1.7 2009/06/10 10:15:34 sebastien Exp $
 
 /**
   * Javascript manager
@@ -94,9 +94,11 @@ if (isset($_GET['files'])) {
 			case 'swfobject':
 				$jsfiles [] = PATH_MAIN_FS.'/swfobject/swfobject.js';
 			break;
-			case 'blackbird':
+			case 'debug':
 				//Blackbird JS file
 				$jsfiles [] = PATH_MAIN_FS.'/blackbirdjs/blackbird.js';
+				//prettyPrint JS file
+				$jsfiles [] = PATH_MAIN_FS.'/prettyprint/prettyprint.js';
 			break;
 			case 'codemirror':
 				//CodeMirror JS file

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cssmanager.php,v 1.4 2009/06/05 15:29:33 sebastien Exp $
+// $Id: cssmanager.php,v 1.5 2009/06/10 10:15:27 sebastien Exp $
 
 /**
   * CSS manager
@@ -56,7 +56,7 @@ if (isset($_GET['files'])) {
 				//Automne edition CSS file
 				$cssfiles [] = PATH_ADMIN_FS.'/css/edit.css';
 			break;
-			case 'blackbird':
+			case 'debug':
 				//Blackbird CSS file
 				$cssfiles [] = PATH_MAIN_FS.'/blackbirdjs/blackbird.css';
 			break;
