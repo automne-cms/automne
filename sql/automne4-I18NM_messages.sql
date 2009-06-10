@@ -1,4 +1,4 @@
-# $Id: automne4-I18NM_messages.sql,v 1.9 2009/06/10 12:55:17 sebastien Exp $
+# $Id: automne4-I18NM_messages.sql,v 1.10 2009/06/10 12:58:08 sebastien Exp $
 #
 # Suppression avant mise ра jour du Contenu de la table `I18NM_messages` pour le module standard
 #
