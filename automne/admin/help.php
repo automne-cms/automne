@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: help.php,v 1.1 2009/06/22 14:10:30 sebastien Exp $
+// $Id: help.php,v 1.2 2009/06/22 15:13:36 sebastien Exp $
 
 /**
   * PHP page : Load help detail window.
@@ -34,6 +34,7 @@ define("MESSAGE_PAGE_NEVER",671);
 define("MESSAGE_PAGE_VERSION",542);
 define("MESSAGE_PAGE_ABOUT_MESSAGE",672);
 define("MESSAGE_TOOLBAR_HELP_MESSAGE",673);
+define("MESSAGE_PAGE_TITLE",644);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -64,7 +65,7 @@ $content = sensitiveIO::sanitizeJSString($content);
 $jscontent = <<<END
 	var serverWindow = Ext.getCmp('{$winId}');
 	//set window title
-	serverWindow.setTitle('A propos d\'Automne');
+	serverWindow.setTitle('{$cms_language->getJsMessage(MESSAGE_PAGE_TITLE)}');
 	//set help button on top of page
 	serverWindow.tools['help'].show();
 	//add a tooltip on button
