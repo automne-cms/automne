@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: items.php,v 1.4 2009/06/22 14:10:34 sebastien Exp $
+// $Id: items.php,v 1.5 2009/06/22 15:27:04 sebastien Exp $
 
 /**
   * PDFForms module : index
@@ -263,7 +263,7 @@ if (!sizeof($items)) {
 		</form><br />';
 	}
 }
-CMS_context::resetSessionCookies();
+
 $dialog->setContent($content);
 $dialog->show();
 ?>
