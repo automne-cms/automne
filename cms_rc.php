@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc.php,v 1.10 2009/06/22 14:15:56 sebastien Exp $
+// $Id: cms_rc.php,v 1.11 2009/06/22 15:38:45 sebastien Exp $
 
 /**
   * rc file, contains editable constants
@@ -878,7 +878,7 @@ require_once(PATH_PACKAGES_FS."/common/grandfather.php");
 /**
   * Set PHP error handler
   */
-//set_error_handler (array('CMS_grandFather','PHPErrorHandler'));
+set_error_handler (array('CMS_grandFather','PHPErrorHandler'));
 
 /**
   * Set Automne autoload handler

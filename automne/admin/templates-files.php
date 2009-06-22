@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-files.php,v 1.2 2009/06/22 14:10:33 sebastien Exp $
+// $Id: templates-files.php,v 1.3 2009/06/22 15:36:16 sebastien Exp $
 
 /**
   * PHP page : Load module categories tree window.
@@ -54,7 +54,7 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) {
 	$view->show();
 }
 
-$treeLabel = sensitiveIO::sanitizeJSString($fileType == 'css' ? $cms_message->getJsMessage(MESSAGE_PAGE_WEBSITES_CSS) : $cms_message->getJsMessage(MESSAGE_PAGE_WEBSITES_JS));
+$treeLabel = sensitiveIO::sanitizeJSString($fileType == 'css' ? $cms_language->getJsMessage(MESSAGE_PAGE_WEBSITES_CSS) : $cms_language->getJsMessage(MESSAGE_PAGE_WEBSITES_JS));
 
 $jscontent = <<<END
 	var moduleCSSWindow = Ext.getCmp('{$winId}');
@@ -95,7 +95,7 @@ $jscontent = <<<END
 		},
 		tbar:[{
 			xtype:			'tbtext',
-			text:			'{$cms_message->getJsMessage(MESSAGE_PAGE_DEPTH_DISPLAYED)}'
+			text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_DEPTH_DISPLAYED)}'
 		},{
 			xtype:			'numberfield',
 			value:			2,
@@ -119,7 +119,7 @@ $jscontent = <<<END
 		},'-',{
 			id:				'{$fileType}FileEdit',
 			xtype:			'button',
-			text:			'{$cms_message->getJsMessage(MESSAGE_PAGE_MODIFY)}',
+			text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_MODIFY)}',
 			disabled:		true,
 			handler:		function(button) {
 				var node = tree.getSelectionModel().getSelectedNode();
@@ -165,12 +165,12 @@ $jscontent = <<<END
 		},{
 			id:				'{$fileType}FileDelete',
 			xtype:			'button',
-			text:			'{$cms_message->getJsMessage(MESSAGE_PAGE_DELETE)}',
+			text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_DELETE)}',
 			disabled:		true,
 			handler:		function(button) {
 				var node = tree.getSelectionModel().getSelectedNode();
 				Automne.message.popup({
-					msg: 				'{$cms_message->getJsMessage(MESSAGE_PAGE_DELETE_CONFIRM)} \''+node.attributes.text+'\' ?<br />{$cms_message->getJsMessage(MESSAGE_PAGE_DELETE_WARNING)}',
+					msg: 				'{$cms_language->getJsMessage(MESSAGE_PAGE_DELETE_CONFIRM)} \''+node.attributes.text+'\' ?<br />{$cms_language->getJsMessage(MESSAGE_PAGE_DELETE_WARNING)}',
 					buttons: 			Ext.MessageBox.OKCANCEL,
 					animEl: 			button.getEl(),
 					closable: 			false,
@@ -203,7 +203,7 @@ $jscontent = <<<END
 		},'->',{
 			id:				'{$fileType}FileCreate',
 			xtype:			'button',
-			text:			'{$cms_message->getJsMessage(MESSAGE_PAGE_NEW)}',
+			text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_NEW)}',
 			disabled:		true,
 			handler:		function(button) {
 				var node = tree.getSelectionModel().getSelectedNode();

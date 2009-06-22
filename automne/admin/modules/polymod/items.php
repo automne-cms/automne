@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: items.php,v 1.7 2009/06/22 14:10:35 sebastien Exp $
+// $Id: items.php,v 1.8 2009/06/22 15:36:16 sebastien Exp $
 
 /**
   * PHP page : Load polymod items search window.
@@ -87,7 +87,7 @@ if (!$module || !$module->isPolymod()) {
 //CHECKS user has module clearance
 if (!$cms_user->hasModuleClearance($codename, CLEARANCE_MODULE_EDIT)) {
 	CMS_grandFather::raiseError('User has no rights on module : '.$codename);
-	$view->setActionMessage($cms_message->getmessage(MESSAGE_ERROR_MODULE_RIGHTS, array($module->getLabel($cms_language))));
+	$view->setActionMessage($cms_language->getmessage(MESSAGE_ERROR_MODULE_RIGHTS, array($module->getLabel($cms_language))));
 	$view->show();
 }
 

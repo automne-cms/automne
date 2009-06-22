@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: list-datas.php,v 1.2 2009/06/05 15:01:07 sebastien Exp $
+// $Id: list-datas.php,v 1.3 2009/06/22 15:36:16 sebastien Exp $
 
 /**
   * PHP page : Load polyobjects items datas
@@ -48,7 +48,7 @@ if (!$codename) {
 //CHECKS user has module clearance
 if (!$cms_user->hasModuleClearance($codename, CLEARANCE_MODULE_EDIT)) {
 	CMS_grandFather::raiseError('User has no rights on module : '.$codename);
-	$view->setActionMessage($cms_message->getmessage(MESSAGE_ERROR_MODULE_RIGHTS, array($module->getLabel($cms_language))));
+	$view->setActionMessage($cms_language->getmessage(MESSAGE_ERROR_MODULE_RIGHTS, array($module->getLabel($cms_language))));
 	$view->setContent($objectsDatas);
 	$view->show();
 }

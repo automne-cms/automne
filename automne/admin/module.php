@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: module.php,v 1.4 2009/06/22 14:10:31 sebastien Exp $
+// $Id: module.php,v 1.5 2009/06/22 15:36:16 sebastien Exp $
 
 /**
   * PHP page : Load module backend window
@@ -52,7 +52,7 @@ if (!$module) {
 //CHECKS user has module clearance
 if (!$cms_user->hasModuleClearance($codename, CLEARANCE_MODULE_EDIT)) {
 	CMS_grandFather::raiseError('User has no rights on module : '.$codename);
-	$view->setActionMessage($cms_message->getmessage(MESSAGE_ERROR_MODULE_RIGHTS, array($module->getLabel($cms_language))));
+	$view->setActionMessage($cms_language->getmessage(MESSAGE_ERROR_MODULE_RIGHTS, array($module->getLabel($cms_language))));
 	$view->show();
 }
 if ($options) {

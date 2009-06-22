@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modules-categories-nodes.php,v 1.1 2009/04/02 13:55:54 sebastien Exp $
+// $Id: modules-categories-nodes.php,v 1.2 2009/06/22 15:36:16 sebastien Exp $
 
 /**
   * PHP page : Load module categories tree window.
@@ -54,7 +54,7 @@ if (!$module) {
 //CHECKS user has module clearance
 if (!$cms_user->hasModuleClearance($codename, CLEARANCE_MODULE_EDIT)) {
 	CMS_grandFather::raiseError('User has no rights on module : '.$codename);
-	$view->setActionMessage($cms_message->getmessage(MESSAGE_ERROR_MODULE_RIGHTS, array($module->getLabel($cms_language))));
+	$view->setActionMessage($cms_language->getmessage(MESSAGE_ERROR_MODULE_RIGHTS, array($module->getLabel($cms_language))));
 	$view->show();
 }
 
