@@ -1,7 +1,7 @@
 /*******************************************************************/
 /*                   FCKEDITOR CSS STYLE SHEET                     */
 /*******************************************************************/
-/*$Id: editor.css,v 1.1.1.1 2008/11/26 17:12:35 sebastien Exp $
+/*$Id: editor.css,v 1.2 2009/06/22 14:21:48 sebastien Exp $
 /*Original fckeditor style sheet DO NOT REMOVE OR MODIFY*/
 @import "../automne/fckeditor/editor/css/fck_editorarea.css";
 
@@ -33,4 +33,14 @@
 	color: #000066;
 	font-family: 'Courier New' , Monospace;
 	background-color: #ff9933;
+}
+/*Added for Automne*/
+.polymod {
+	border-bottom:		1px dotted #008000;
+	padding:			1px 10px 1px 1px;
+	background:			url(/automne/fckeditor/automnePlugin/polymod/polymod-mini.gif) no-repeat right top;
+}
+.polymod img {
+	-moz-user-select:	none;
+	-khtml-user-select:	none;
 }

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: jsmanager.php,v 1.7 2009/06/10 10:15:34 sebastien Exp $
+// $Id: jsmanager.php,v 1.8 2009/06/22 14:21:31 sebastien Exp $
 
 /**
   * Javascript manager
@@ -30,15 +30,32 @@
 define('ENABLE_HTML_COMPRESSION', false);
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 
-$jsfiles = array();
+$files = '';
 if (isset($_GET['files'])) {
-	foreach (explode(',',$_GET['files']) as $file) {
+	$files = $_GET['files'];
+} elseif (isset($_SERVER['QUERY_STRING'])) {//On some configuration, files are too long and are not available in $_REQUEST so use $_SERVER['QUERY_STRING'] instead
+	$var = array();
+	parse_str($_SERVER['QUERY_STRING'], $var);
+	if (isset($var['files'])) {
+		$files = $var['files'];
+	}
+}
+
+$jsfiles = array();
+if ($files) {
+	foreach (explode(',',$files) as $file) {
 		switch ($file) {
 			case 'main':
 				//Automne license (protected)
 				$jsfiles [] = PATH_ADMIN_FS.'/js/license.js';
 				//Automne JS files
 				$jsfiles [] = PATH_ADMIN_FS.'/js/main.js';
+				$jsfiles [] = PATH_ADMIN_FS.'/js/server.js';
+				$jsfiles [] = PATH_ADMIN_FS.'/js/message.js';
+				$jsfiles [] = PATH_ADMIN_FS.'/js/utils.js';
+				$jsfiles [] = PATH_ADMIN_FS.'/js/view.js';
+				$jsfiles [] = PATH_ADMIN_FS.'/js/console.js';
+				$jsfiles [] = PATH_ADMIN_FS.'/js/categories.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/panel.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/sidepanel.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/framepanel.js';
@@ -67,6 +84,18 @@ if (isset($_GET['files'])) {
 				//FCKEditor
 				$jsfiles [] = PATH_MAIN_FS.'/fckeditor/fckeditor.js';
 				$jsfiles [] = PATH_ADMIN_FS.'/js/fckeditor.js';
+				
+				//Append others files in folder PATH_ADMIN_FS.'/js/' which is not already listed here
+				try{
+					foreach ( new DirectoryIterator(PATH_ADMIN_FS.'/js/') as $file) {
+						if ($file->isFile() && $file->getFilename() != ".htaccess" && $file->getFilename() != "launch.js") {
+							$fileExtension = pathinfo($file->getFilename(), PATHINFO_EXTENSION);
+							if ($fileExtension == 'js' && !in_array($file->getPathname(), $jsfiles)) {
+								$jsfiles[] = $file->getPathname();
+							}
+						}
+					}
+				} catch(Exception $e) {}
 			break;
 			case 'edit':
 				//Automne license (protected)
@@ -130,7 +159,7 @@ if (isset($_GET['files'])) {
 				//set specific source debug files here
 				//$jsfiles [] = PATH_MAIN_FS.'/ext/source/data/Connection.js';
 				
-				$jsfiles [] = PATH_ADMIN_FS.'/js/blank.js';
+				$jsfiles [] = PATH_ADMIN_FS.'/js/ext/conf.js';
 			break;
 			case 'fr':
 				//Ext french locales
