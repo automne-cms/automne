@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: resource-controler.php,v 1.2 2009/03/06 10:51:52 sebastien Exp $
+// $Id: resource-controler.php,v 1.3 2009/06/22 14:10:32 sebastien Exp $
 
 /**
   * PHP page : Receive resource updates
@@ -27,6 +27,8 @@
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 
 define("MESSAGE_ERROR_MODULE_RIGHTS",570);
+define("MESSAGE_ERROR_ELEMENT_LOCKED",704);
+define("MESSAGE_ERROR_ELEMENT_REALY_LOCKED",705);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -70,7 +72,7 @@ if (!method_exists($resource, 'getStatus')) {
 if ($action != 'unlock' && $resource->getLock() && $resource->getLock() != $cms_user->getUserId()) {
 	CMS_grandFather::raiseError('Object '.$resourceId.' of module '.$codename.' is currently locked by another user and can\'t be updated.');
 	$lockuser = CMS_profile_usersCatalog::getByID($resource->getLock());
-	$view->setActionMessage('L\'élément est actuellement vérouillé par l\'utilisateur '.$lockuser->getFullName().' et ne peut-être mis à jour');
+	$view->setActionMessage($cms_message->getmessage(MESSAGE_ERROR_ELEMENT_LOCKED, array($lockuser->getFullName()));
 	$view->show();
 }
 $initialStatus = $resource->getStatus()->getHTML(false, $cms_user, $codename, $resource->getID());
@@ -79,7 +81,7 @@ switch ($action) {
 		if ($resource->getLock() && $resource->getLock() != $cms_user->getUserId() && !$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 			CMS_grandFather::raiseError('Object '.$resourceId.' of module '.$codename.' is currently locked by another user and can\'t be unlocked.');
 			$lockuser = CMS_profile_usersCatalog::getByID($resource->getLock());
-			$view->setActionMessage('L\'élément est actuellement vérouillé par l\'utilisateur '.$lockuser->getFullName().' et ne peut-être dévérouillé');
+			$view->setActionMessage($cms_message->getmessage(MESSAGE_ERROR_ELEMENT_REALY_LOCKED, array($lockuser->getFullName()));
 			$view->show();
 		}
 		if ($resource->getLock()) {

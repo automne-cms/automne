@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: polymod.php,v 1.1.1.1 2008/11/26 17:12:14 sebastien Exp $
+// $Id: polymod.php,v 1.2 2009/06/22 14:14:44 sebastien Exp $
 
 /**
   * Javascript plugin for FCKeditor
@@ -27,7 +27,6 @@
   */
 
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
-require_once(PATH_ADMIN_SPECIAL_SESSION_CHECK_FS);
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
@@ -37,14 +36,44 @@ require_once(PATH_ADMIN_SPECIAL_SESSION_CHECK_FS);
 		<meta name="robots" content="noindex, nofollow" />
 		<script src="../../editor/dialog/common/fck_dialog_common.js" type="text/javascript"></script>
 		<script src="fckpolymod.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			var displayPolymod = function(id, content) {
+				Ext.QuickTips.init();
+				var pagesTree = new Automne.panel({
+					id:				'FCKPolymod',
+					region:			'center',
+					applyTo:		document.getElementById('atmFCKPolymod'),
+					layout: 		'atm-border',
+					height:			465,
+					width:			718,
+					border: 		false,
+					xtype:			'atmPanel',
+					autoLoad:		{
+						url:		'/automne/admin/modules/polymod/fckplugin.php',
+						params:		{
+							winId:			'FCKPolymod',
+							id:				id,
+							content:		content
+						},
+						nocache:	true,
+						scope:		this
+					}
+				});
+			}
+		</script>
+		<?php
+			echo CMS_view::getCSS(array('ext','main'));
+			echo CMS_view::getJavascript(array('ext','main'));
+		?>
+		<script type="text/javascript">
+			if (parent.parent) {
+				pr = parent.parent.pr;
+			}
+		</script>
 	</head>
 	<body scroll="no" style="OVERFLOW: hidden">
 		<div id="divInfo" style="DISPLAY: none">
-			<?php
-			$href = PATH_ADMIN_MODULES_WR.'/polymod/fckplugin.php';
-			echo '<input type="hidden" id="iframeURL" value="'.$href.'" />';
-			?>
-			<iframe id="plugin" src="" width="100%" height="100%" frameborder="no" scrolling="yes"></iframe>
+			<div id="atmFCKPolymod"></div>
 			<input type="hidden" id="codeToPaste" value="" />
 		</div>
 	</body>

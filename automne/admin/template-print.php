@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: template-print.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: template-print.php,v 1.2 2009/06/22 14:10:33 sebastien Exp $
 
 /**
   * PHP page : Load print template window.
@@ -28,6 +28,11 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 
 define("MESSAGE_TOOLBAR_HELP",1073);
 define("MESSAGE_PAGE_SAVE", 952);
+define("MESSAGE_ERROR_NO_RIGHTS_FOR_TEMPLATES", 799);
+define("MESSAGE_ACTION_HELP", 1073);
+define("MESSAGE_PAGE_TITLE", 1470);
+define("MESSAGE_TOOLBAR_HELP_DESC", 1471);
+define("MESSAGE_PAGE_XML_DEFINITION_USAGE_DESC", 1472);
 
 $winId = sensitiveIO::request('winId', '', 'printTemplateWindow');
 $templateId = sensitiveIO::request('template', '', 'print');
@@ -40,7 +45,7 @@ $view->setDisplayMode(CMS_view::SHOW_RAW);
 //CHECKS user has templates clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //templates
 	CMS_grandFather::raiseError('User has no rights template editions');
-	$view->setActionMessage('Vous n\'avez pas le droit de gérer les modèles de pages ...');
+	$view->setActionMessage($cms_language->getMessage(MESSAGE_ERROR_NO_RIGHTS_FOR_TEMPLATES));
 	$view->show();
 }
 
@@ -53,20 +58,18 @@ $templateDefinition = $templateFile->readContent();
 $content = '<textarea id="tpl-definition-'.$templateId.'" style="display:none;">'.htmlspecialchars($templateDefinition).'</textarea>';
 $view->setContent($content);
 
-$title = 'Edition du modèle d\\\'impression des pages';
-
 $jscontent = <<<END
 	var templateWindow = Ext.getCmp('{$winId}');
 	templateWindow.templateId = '{$templateId}';
 	//set window title
-	templateWindow.setTitle('{$title}');
+	templateWindow.setTitle('{$cms_language->getJsMessage(MESSAGE_PAGE_TITLE)}');
 	//set help button on top of page
 	templateWindow.tools['help'].show();
 	//add a tooltip on button
 	var propertiesTip = new Ext.ToolTip({
 		target:		 templateWindow.tools['help'],
 		title:			 '{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP)}',
-		html:			 'Cette page vous permet de créer et modifier le modèle d\'impression employé pour les pages. Ce modèle sert à créer une version spécifique pour l\'impression des différentes pages des sites.',
+		html:			 '{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP_DESC)}',
 		dismissDelay:	0
 	});
 	//create center panel
@@ -106,7 +109,7 @@ $jscontent = <<<END
 		},
 		items:[{
 			xtype:			'panel',
-			html:			'Vous pouvez modifier ici la structure XML de ce modèle. Vous devez respecter la norme XML sous peine d\'erreur.<br /><strong>Attention</strong>, les tags atm-clientspace ne fonctionnent pas pour ce modèle, utilisez <strong>{{data}}</strong> pour préciser l\'endroit ou vous souhaitez que le contenu de la page apparaisse.',
+			html:			'{$cms_language->getJsMessage(MESSAGE_PAGE_XML_DEFINITION_USAGE_DESC)}',
 			border:			false,
 			bodyStyle: 		'padding-bottom:10px'
 		},{
@@ -145,7 +148,7 @@ $jscontent = <<<END
 			}}
 		}],
 		buttons:[{
-			text:			'Aide',
+			text:			'{$cms_language->getJSMessage(MESSAGE_ACTION_HELP)}',
 			anchor:			'',
 			scope:			this,
 			handler:		function(button) {

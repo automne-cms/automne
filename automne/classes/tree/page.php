@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: page.php,v 1.7 2009/06/05 15:02:17 sebastien Exp $
+// $Id: page.php,v 1.8 2009/06/22 14:08:41 sebastien Exp $
 
 /**
   * Class CMS_page
@@ -1696,7 +1696,7 @@ class CMS_page extends CMS_resource
 				($this->_status->getLocation() == RESOURCE_LOCATION_ARCHIVED ||
 				$this->_status->getLocation() == RESOURCE_LOCATION_DELETED)) {
 				
-				$this->raiseError('Page '.$this->getID().' : Can\'t get edited base data from DELETED or ARCHIVED locations');
+				//$this->raiseError('Page '.$this->getID().' : Can\'t get edited base data from DELETED or ARCHIVED locations');
 				return false;
 			}
 			

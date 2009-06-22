@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: index.php,v 1.8 2009/06/10 10:11:30 sebastien Exp $
+// $Id: index.php,v 1.9 2009/06/22 14:10:30 sebastien Exp $
 
 /**
   * PHP page : index
@@ -64,7 +64,6 @@ $content = '
 	<div class="atm-loading-indicator">'.$language->getMessage(MESSAGE_PAGE_LOADING).'</div>
 	<noscript class="atm-alert">You must have Javascript enabled to access Automne.<hr />Vous devez avoir Javascript actif pour accéder à Automne.</noscript>
 </div>
-<!-- include everything after the loading indicator -->
 '.CMS_view::getJavascript($jsfiles);
 if (isset($_REQUEST["cms_action"]) && $_REQUEST["cms_action"] == 'logout') {
 	//append logout info
@@ -72,7 +71,6 @@ if (isset($_REQUEST["cms_action"]) && $_REQUEST["cms_action"] == 'logout') {
 }
 $content .= '
 <div id="atm-server-call"></div>
-<!-- Fields required for history management -->
 <form id="history-form" class="x-hidden">
     <input type="hidden" id="x-history-field" />
     <iframe id="x-history-frame"></iframe>

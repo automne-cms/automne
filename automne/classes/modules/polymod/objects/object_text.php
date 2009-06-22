@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_text.php,v 1.3 2009/06/05 15:02:18 sebastien Exp $
+// $Id: object_text.php,v 1.4 2009/06/22 14:08:40 sebastien Exp $
 
 /**
   * Class CMS_object_text
@@ -190,6 +190,7 @@ class CMS_object_text extends CMS_object_common
 			);
 		} else {
 			$return['xtype'] = 'textarea';
+			$return['value'] = str_replace('<br />',"\n",str_replace(array("\n","\r"),"",htmlspecialchars_decode($return['value'])));
 		}
 		if (sensitiveIO::isPositiveInteger($params['toolbarHeight'])) {
 			$return['height'] = $params['toolbarHeight'];

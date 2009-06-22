@@ -1,4 +1,4 @@
-/*$Id: xtheme-automne.css,v 1.8 2009/06/05 15:01:06 sebastien Exp $*/
+/*$Id: xtheme-automne.css,v 1.9 2009/06/22 14:10:34 sebastien Exp $*/
 .x-panel {
     border-style: solid;
     border-color: #d0d0d0;
@@ -727,7 +727,7 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 	width:							290px;
 	z-index:						100;
 }
-#sidePanel #headPanel #headPanelSite{
+#headPanelSite{
 	background:						url(/automne/admin/img/panel/top-bullet.gif) no-repeat 21px 14px;
 	color:							#7c8589;
 	font-size:						11px;
@@ -737,7 +737,7 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 	text-transform:					uppercase;
 	width:							165px;
 }
-#sidePanel #headPanel #headPanelClient{
+#headPanelClient{
 	background:						url(/automne/admin/img/panel/client-bullet.gif) no-repeat 27px 8px;
 	color:							#7c8589;
 	font-size:						10px;
@@ -745,7 +745,7 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 	padding:						5px 0px 0px 33px;
 	width:							140px;
 }
-#sidePanel #headPanel #headPanelBar{
+#headPanelBar{
 	background-color:				#8ad113;
 	height:							20px;
 	padding:						100px 0 0 30px;
@@ -759,7 +759,7 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 	width:							280px;
 	position:						absolute;
 }
-#sidePanel #headPanel #headPanelStick{
+#headPanelStick{
 	background:						url(/automne/admin/img/layout/stick.gif) no-repeat top left;
 	bottom:							8px;
 	cursor:							pointer;
@@ -768,34 +768,45 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 	position:						absolute;
 	width:							12px;
 }
-#sidePanel #headPanel #headPanelStick.over,
-#sidePanel #headPanel #headPanelStick.pinned{
+#headPanelStick.over,
+#headPanelStick.pinned{
 	background:						url(/automne/admin/img/layout/stuck.gif) no-repeat top left;
 }
-#sidePanel #headPanel #headPanelLogout{
+#headPanelLogout{
 	background:						url(/automne/admin/img/panel/headPanelLogoutOff.gif) no-repeat bottom right;
 	bottom:							8px;
 	cursor:							pointer;
-	right:							10px;
+	right:							30px;
 	padding:						6px 24px 0px 0px;
 	position:						absolute;
 }
-#sidePanel #headPanel #headPanelLogout.over{
+#headPanelLogout.over{
 	background:						url(/automne/admin/img/panel/headPanelLogoutOn.gif) no-repeat bottom right;
 }
-#sidePanel #headPanel #headPanelSiteLink{
-	height:							75px;
-	right:							0px;
+#headPanelAutomneHelp{
+	bottom:							10px;
+	cursor:							pointer;
+	right:							10px;
 	position:						absolute;
-	top:							0px;
-	width:							90px;
+	height:							20px;
+	width:							20px;
+	background:						url(/automne/admin/img/help-off.png) no-repeat bottom right;
 }
-#sidePanel #headPanel #headPanelAutomneLink{
-	height:							15px;
-	right:							0px;
-	position:						absolute;
-	top:							75px;
-	width:							105px;
+#headPanelAutomneHelp.over{
+	background:						url(/automne/admin/img/help.gif) no-repeat bottom right;
+}
+.help-window {
+	padding:						8px;
+	background:						#FFFFFF url(/automne/admin/img/logo_small.gif) 450px 5px no-repeat;
+}
+.help-window fieldset{
+	padding:						6px;
+	width:							200px;
+	margin:							auto;
+	text-align:						center;
+	background-color:				#837873;
+	color:							#FFFFFF;
+	border:							3px solid #978E8A;
 }
 #sidePanel a{
 	color:							#6aa408;
@@ -809,6 +820,20 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 }
 #sidePanel a:hover{
 	color:							#4b7800;
+}
+#headPanelAutomneLink{
+	height:							15px;
+	right:							0px;
+	position:						absolute;
+	top:							75px;
+	width:							105px !important;
+}
+#headPanelSiteLink{
+	height:							75px;
+	right:							0px;
+	position:						absolute;
+	top:							0px;
+	width:							90px !important;
 }
 #sidePanel li{
 	padding:						2px 0px;
@@ -1437,6 +1462,9 @@ td.x-grid3-hd-over, td.sort-desc, td.sort-asc, td.x-grid3-hd-menu-open{
 .atm-server .atm-pic-question{
 	background-image:				url(/automne/admin/img/pictos/pictos.png);
 	background-position:			0px -77px;
+}
+.atm-server .atm-pic-logo {
+	background:			url(/automne/admin/img/pictos/logo.gif) no-repeat 0px 2px !important;
 }
 .x-menu-item .x-btn-mc .atm-pic-create{
 	background-image:				url(/automne/admin/img/pictos/pictos.png);

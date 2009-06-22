@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: items-controler.php,v 1.2 2009/06/10 10:11:17 sebastien Exp $
+// $Id: items-controler.php,v 1.3 2009/06/22 14:10:35 sebastien Exp $
 
 /**
   * PHP page : Load polymod item interface
@@ -46,9 +46,11 @@ define("MESSAGE_PAGE_FIELD_PUBLISHED_TO", 135);
 define("MESSAGE_PAGE_SEARCH_ORDERTYPE_ERROR", 136);
 define("MESSAGE_PAGE_FIELD_ORDER_PUBLICATION_START", 137);
 define("MESSAGE_PAGE_FIELD_ORDER_PUBLICATION_END", 138);
+define("MESSAGE_PAGE_ELEMENT_LOCKED", 525);
+define("MESSAGE_PAGE_ELEMENT_EDIT_RIGHTS_ERROR", 526);
 
 //Controler vars
-$action = sensitiveIO::request('action', array('save', 'setRowParameters'));
+$action = sensitiveIO::request('action', array('save', 'setRowParameters', 'pluginSelection'));
 $objectId = sensitiveIO::request('type', 'sensitiveIO::isPositiveInteger');
 $itemId = sensitiveIO::request('item', 'sensitiveIO::isPositiveInteger');
 $codename = sensitiveIO::request('module', CMS_modulesCatalog::getAllCodenames());
@@ -87,44 +89,46 @@ if (isset($object)) {
 	//load item if any
 	if ($itemId) {
 		$item = new CMS_poly_object($objectId, $itemId);
-		$itemLabel = sensitiveIO::sanitizeJSString($item->getLabel());
-		if ($object->isPrimaryResource()) {
-			//put a lock on the resource or warn user if item is already locked by another user
-			if ($lock = $item->getLock()) {
-				$lockUser = CMS_profile_usersCatalog::getById($lock);
-				if ($lockUser->getUserId() != $cms_user->getUserId()) {
-					$lockDate = $item->getLockDate();
-					$date = $lockDate ? $lockDate->getLocalizedDate($cms_language->getDateFormat().' à H:i:s') : '';
-					$name = sensitiveIO::sanitizeJSString($lockUser->getFullName());
-					CMS_grandFather::raiseError('Error, item '.$itemId.' is locked by '.$lockUser->getFullName());
-					$jscontent = "
-					Automne.message.popup({
-						msg: 				'L\'élément \'{$itemLabel}\' que vous cherchez à éditer est vérouillé par {$name} le {$date}.',
-						buttons: 			Ext.MessageBox.OK,
-						closable: 			false,
-						icon: 				Ext.MessageBox.ERROR
-					});";
-					$view->addJavascript($jscontent);
-					$view->setContent($content);
-					$view->show();
+		if ($action == 'save') {
+			$itemLabel = sensitiveIO::sanitizeJSString($item->getLabel());
+			if ($object->isPrimaryResource()) {
+				//put a lock on the resource or warn user if item is already locked by another user
+				if ($lock = $item->getLock()) {
+					$lockUser = CMS_profile_usersCatalog::getById($lock);
+					if ($lockUser->getUserId() != $cms_user->getUserId()) {
+						$lockDate = $item->getLockDate();
+						$date = $lockDate ? $lockDate->getLocalizedDate($cms_language->getDateFormat().' à H:i:s') : '';
+						$name = sensitiveIO::sanitizeJSString($lockUser->getFullName());
+						CMS_grandFather::raiseError('Error, item '.$itemId.' is locked by '.$lockUser->getFullName());
+						$jscontent = "
+						Automne.message.popup({
+							msg: 				'{$cms_language->getJSMessage(MESSAGE_PAGE_ELEMENT_LOCKED, array($itemLabel, $name, $date), MOD_POLYMOD_CODENAME)}',
+							buttons: 			Ext.MessageBox.OK,
+							closable: 			false,
+							icon: 				Ext.MessageBox.ERROR
+						});";
+						$view->addJavascript($jscontent);
+						$view->setContent($content);
+						$view->show();
+					}
+				} else {
+					$item->lock($cms_user);
 				}
-			} else {
-				$item->lock($cms_user);
 			}
-		}
-		//check user rights on item
-		if (!$item->userHasClearance($cms_user, CLEARANCE_MODULE_EDIT)) {
-			CMS_grandFather::raiseError('Error, user has no rights item '.$itemId);
-			$jscontent = "
-			Automne.message.popup({
-				msg: 				'Vous n\'avez pas le droit d\'éditer l\'élément \'{$itemLabel}\'.',
-				buttons: 			Ext.MessageBox.OK,
-				closable: 			false,
-				icon: 				Ext.MessageBox.ERROR
-			});";
-			$view->addJavascript($jscontent);
-			$view->setContent($content);
-			$view->show();
+			//check user rights on item
+			if (!$item->userHasClearance($cms_user, CLEARANCE_MODULE_EDIT)) {
+				CMS_grandFather::raiseError('Error, user has no rights item '.$itemId);
+				$jscontent = "
+				Automne.message.popup({
+					msg: 				'{$cms_language->getJSMessage(MESSAGE_PAGE_ELEMENT_EDIT_RIGHTS_ERROR, array($itemLabel), MOD_POLYMOD_CODENAME)}',
+					buttons: 			Ext.MessageBox.OK,
+					closable: 			false,
+					icon: 				Ext.MessageBox.ERROR
+				});";
+				$view->addJavascript($jscontent);
+				$view->setContent($content);
+				$view->show();
+			}
 		}
 	} else { //instanciate clean object (creation)
 		$item = new CMS_poly_object($object->getID(), '');
@@ -190,14 +194,51 @@ switch ($action) {
 			if (!$item->writeToPersistence()) {
 				$cms_message .= $cms_language->getMessage(MESSAGE_ERROR_WRITETOPERSISTENCE);
 			}
-			//then redirect to summary
 			if (!$cms_message) {
 				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 				$content = array('success' => true, 'id' => $item->getID());
 			}
 		}
 	break;
-	case "setRowParameters":
+	case 'pluginSelection':
+		$view->setDisplayMode(CMS_view::SHOW_RAW);
+		
+		$selectedContent = sensitiveIO::request('content');
+		$pluginId = sensitiveIO::request('plugin');
+		$selectedPlugin = new CMS_poly_plugin_definitions($pluginId);
+		//then create the code to paste for the current selected object if any
+		if (sensitiveIO::isPositiveInteger($itemId) && !$selectedPlugin->needSelection()) {
+			//$item = CMS_poly_object_catalog::getObjectByID($selectedItem);
+			$definition = $selectedPlugin->getValue('definition');
+			$parameters = array();
+			$parameters['itemID'] = $itemId;
+			$parameters['module'] = $codename;
+			$cms_page = $cms_context->getPage();
+			if (is_object($cms_page) && !$cms_page->hasError()) {
+				$parameters['pageID'] = $cms_page->getID();
+			}
+			$parameters['selection'] = html_entity_decode($selectedContent);
+			$parameters['public'] = false;
+			$parameters['plugin-view'] = true;
+			$definitionParsing = new CMS_polymod_definition_parsing($definition, true, CMS_polymod_definition_parsing::PARSE_MODE);
+			$codeTopaste = $definitionParsing->getContent(CMS_polymod_definition_parsing::OUTPUT_RESULT, $parameters);
+			//add some attributes to images to prevent resizing into editor
+		    $codeTopaste = str_replace('<img ','<img contenteditable="false" unselectable="on" ', $codeTopaste);
+			
+			if ($codeTopaste) {
+				//add identification span tag arround code to paste
+				$codeTopaste = '<span id="polymod-'.$pluginId.'-'.$itemId.'" class="polymod" title="'.htmlspecialchars($selectedPlugin->getLabel($cms_language).' : '.$item->getLabel($cms_language)).'">'.$codeTopaste.'</span>';
+			}
+			$content = $codeTopaste;
+		} elseif (sensitiveIO::isPositiveInteger($itemId) && $selectedPlugin->needSelection()) {
+			$codeTopaste = '<span id="polymod-'.$pluginId.'-'.$itemId.'" class="polymod">'.$selectedContent.'</span>';
+			$content = $codeTopaste;
+		} else {
+			$selectedContent = ($selectedContent) ? $selectedContent : ' ';
+			$content = $selectedContent;
+		}
+	break;
+	case 'setRowParameters':
 		$tpl = sensitiveIO::request('template', 'sensitiveIO::isPositiveInteger');
 		$rowId = sensitiveIO::request('rowType', 'sensitiveIO::isPositiveInteger');
 		$rowTag = sensitiveIO::request('rowTag');
@@ -315,7 +356,6 @@ switch ($action) {
 		}
 	break;
 }
-//pr($fieldsValues);
 //set user message if any
 if ($cms_message) {
 	$view->setActionMessage($cms_message);

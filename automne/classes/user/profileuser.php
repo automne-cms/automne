@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: profileuser.php,v 1.5 2009/06/05 15:02:17 sebastien Exp $
+// $Id: profileuser.php,v 1.6 2009/06/22 14:08:41 sebastien Exp $
 
 /**
   * Class CMS_profile_user
@@ -238,6 +238,17 @@ class CMS_profile_user extends CMS_profile
 	function isActive()
 	{
 		return $this->_active;
+	}
+	
+	/**
+	  * Is the user deleted ?
+	  *
+	  * @return string
+	  * @access public
+	  */
+	function isDeleted()
+	{
+		return $this->_deleted;
 	}
 	
 	/**

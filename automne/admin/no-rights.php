@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: no-rights.php,v 1.1 2009/04/20 15:13:03 sebastien Exp $
+// $Id: no-rights.php,v 1.2 2009/06/22 14:10:31 sebastien Exp $
 
 /**
   * PHP page : No page info
@@ -26,6 +26,8 @@
 
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 
+define("MESSAGE_PAGE_NO_PAGE_RIGHT", 692);
+
 //load interface instance
 $view = CMS_view::getInstance();
 $view->addCSSFile('main');
@@ -33,7 +35,7 @@ $view->addCSSFile('info');
 
 $content = '
 <div id="atm-center">
-	<div class="atm-alert atm-alert-green">Vos droits ne permettent pas de voir la page demandée.<br /><br />Si vous pensez qu\'il s\'agit d\'une erreur, contactez votre administrateur'.(sensitiveIO::isValidEmail(APPLICATION_MAINTAINER_EMAIL) ? ' (<a href="mailto:'.APPLICATION_MAINTAINER_EMAIL.'">'.APPLICATION_MAINTAINER_EMAIL.'</a>)' : '').'.</div>
+	<div class="atm-alert atm-alert-green">'.$cms_language->getMessage(MESSAGE_PAGE_NO_PAGE_RIGHT).(sensitiveIO::isValidEmail(APPLICATION_MAINTAINER_EMAIL) ? ' (<a href="mailto:'.APPLICATION_MAINTAINER_EMAIL.'">'.APPLICATION_MAINTAINER_EMAIL.'</a>)' : '').'.</div>
 </div>';
 
 $view->setContent($content);

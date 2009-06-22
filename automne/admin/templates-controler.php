@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-controler.php,v 1.4 2009/06/05 15:01:05 sebastien Exp $
+// $Id: templates-controler.php,v 1.5 2009/06/22 14:10:33 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on templates
@@ -27,6 +27,16 @@
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 
 define("MESSAGE_PAGE_MALFORMED_DEFINITION_FILE", 840);
+define("MESSAGE_ERROR_NO_RIGHTS_FOR_TEMPLATES", 799);
+define("MESSAGE_ACTION_XML_UPDATED", 732);
+define("MESSAGE_ACTION_N_PAGES_REGEN", 733);
+
+MESSAGE_ERROR_UNKNOWN_TEMPLATE 1480
+MESSAGE_ACTION_SAVE_DONE
+MESSAGE_ACTION_CREATION_DONE
+MESSAGE_ACTION_SAVE_PRINT_DONE
+MESSAGE_ERROR_NO_PUBLIC_PAGE
+MESSAGE_ACTION_DUPICATION_DONE
 
 //Controler vars
 $action = sensitiveIO::request('action', array('properties', 'definition', 'printcs', 'regenerate', 'copy'));
@@ -53,7 +63,7 @@ $view->setDisplayMode(CMS_view::SHOW_JSON);
 //CHECKS user has templates clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //templates
 	CMS_grandFather::raiseError('User has no rights template editions');
-	$view->setActionMessage('Vous n\'avez pas le droit de gérer les modèles de pages ...');
+	$view->setActionMessage($cms_language->getMessage(MESSAGE_ERROR_NO_RIGHTS_FOR_TEMPLATES));
 	$view->show();
 }
 
@@ -62,7 +72,7 @@ if (sensitiveIO::isPositiveInteger($templateId)) {
 	$template = CMS_pageTemplatesCatalog::getByID($templateId);
 	if (!$template || $template->hasError()) {
 		CMS_grandFather::raiseError('Unknown template for given Id : '.$templateId);
-		$view->setActionMessage('Le modèle à modifier n\'existe pas ou possède une erreur.');
+		$view->setActionMessage($cms_language->getMessage(MESSAGE_ERROR_UNKNOWN_TEMPLATE));
 		$view->show();
 	}
 } elseif ($templateId == 'print') {
@@ -148,11 +158,11 @@ switch ($action) {
 				$log = new CMS_log();
 				$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT, $cms_user, "Template : ".$template->getLabel()." (edit base data)");
 				$content = array('success' => true);
-				$cms_message = 'Modèle enregistré avec succès.';
+				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_SAVE_DONE);
 				$view->setContent($content);
 			}
 		} elseif (is_a($template, "CMS_pageTemplate") && $template->hasError()) {
-			$cms_message = 'Le modèle à modifier n\'existe pas ou possède une erreur.';
+			$cms_message = $cms_language->getMessage(MESSAGE_ERROR_UNKNOWN_TEMPLATE);
 		} else {
 			//CREATION
 			$template = new CMS_pageTemplate();
@@ -217,7 +227,7 @@ switch ($action) {
 					$log = new CMS_log();
 					$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT, $cms_user, "Template : ".$template->getLabel()." (create template)");
 					$content = array('success' => array('templateId' => $template->getID()));
-					$cms_message = 'Modèle créé avec succès.';
+					$cms_message = $cms_language->getMessage(MESSAGE_ACTION_CREATION_DONE);
 					$view->setContent($content);
 				}
 			} else {
@@ -250,7 +260,7 @@ switch ($action) {
 					CMS_tree::submitToRegenerator($pagesIds, true);
 				}
 				$content = array('success' => true);
-				$cms_message = 'Définition XML mise à jour avec succès'.($pagesIds ? ',<br />'.sizeof($pagesIds).' pages en cours de régénération.' : '.');
+				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_XML_UPDATED).($pagesIds ? ',<br />'.$cms_language->getMessage(MESSAGE_ACTION_N_PAGES_REGEN, array(sizeof($pagesIds))) : '.');
 				$view->setContent($content);
 			}
 		} elseif (is_a($templateFile, "CMS_file") && $templateFile->exists()) {
@@ -269,13 +279,13 @@ switch ($action) {
 				$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT, $cms_user, "Template : Print template");
 
 				$content = array('success' => true);
-				$cms_message = 'Modèle d\'impression mis à jour avec succès.';
+				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_SAVE_PRINT_DONE);
 				$view->setContent($content);
 			} else {
 				$cms_message = $cms_language->getMessage(MESSAGE_PAGE_MALFORMED_DEFINITION_FILE)."\n\n".$cms_message;
 			}
 		} else {
-			$cms_message = 'Le modèle à modifier n\'existe pas ou possède une erreur.';
+			$cms_message = $cms_language->getMessage(MESSAGE_ERROR_UNKNOWN_TEMPLATE);
 		}
 	break;
 	case 'printcs':
@@ -299,10 +309,10 @@ switch ($action) {
 			}
 
 			$content = array('success' => true);
-			$cms_message = 'Modèle mis à jour avec succès'.($pagesIds ? ',<br />'.sizeof($pagesIds).' pages en cours de régénération.' : '.');
+			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_SAVE_DONE).($pagesIds ? ',<br />'.$cms_language->getMessage(MESSAGE_ACTION_N_PAGES_REGEN, array(sizeof($pagesIds))) : '.');
 			$view->setContent($content);
 		} else {
-			$cms_message = 'Le modèle à modifier n\'existe pas ou possède une erreur.';
+			$cms_message = $cms_language->getMessage(MESSAGE_ERROR_UNKNOWN_TEMPLATE);
 		}
 	break;
 	case 'regenerate' :
@@ -316,9 +326,9 @@ switch ($action) {
 		}
 		if ($pagesIds) {
 			CMS_tree::submitToRegenerator($pagesIds, true);
-			$cms_message = sizeof($pagesIds).' pages en cours de régénération.';
+			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_N_PAGES_REGEN, array(sizeof($pagesIds)));
 		} else {
-			$cms_message = 'Aucune page publique n\'emploie ce modèle ...';
+			$cms_message = $cms_language->getMessage(MESSAGE_ERROR_NO_PUBLIC_PAGE);
 		}
 	break;
 	case 'copy':
@@ -331,10 +341,10 @@ switch ($action) {
 			$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT, $cms_user, "Template : ".$label." (create template)");
 
 			$content = array('success' => array('templateId' => $template->getID()));
-			$cms_message = 'Modèle dupliqué avec succès.<br />Le nouveau modèle \''.$label.'\' est inactif.';
+			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_DUPICATION_DONE, array($label));
 			$view->setContent($content);
 		} else {
-			$cms_message = 'Le modèle à modifier n\'existe pas ou possède une erreur.';
+			$cms_message = $cms_language->getMessage(MESSAGE_ERROR_UNKNOWN_TEMPLATE);
 		}
 	break;
 }

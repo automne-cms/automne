@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: side-panel.php,v 1.7 2009/06/08 10:03:36 sebastien Exp $
+// $Id: side-panel.php,v 1.8 2009/06/22 14:10:32 sebastien Exp $
 
 /**
   * PHP page : Load side panel infos.
@@ -55,6 +55,16 @@ define("MESSAGE_PAGE_SERVER_SETTINGS", 447);
 define("MESSAGE_PAGE_AUTUMN_SETTINGS", 448);
 define("MESSAGE_PAGE_ADMIN", 449);
 define("MESSAGE_PAGE_MODULE_ADMIN", 569);
+define("MESSAGE_PAGE_VIEW_WEBSITE", 639);
+define("MESSAGE_PAGE_VISIT_WEBSITE", 640);
+define("MESSAGE_PAGE_LOCK_PANEL", 641);
+define("MESSAGE_PAGE_END_SESSION", 642);
+define("MESSAGE_PAGE_DISCONNECT", 643);
+define("MESSAGE_PAGE_ABOUT_AUTOMNE", 644);
+define("MESSAGE_PAGE_NO_BOOKMARK", 645);
+define("MESSAGE_PAGE_SCRIPTS", 646);
+define("MESSAGE_PAGE_MODULES_MANAGEMENT", 647);
+define("MESSAGE_PAGE_DATABASE", 648);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -70,10 +80,11 @@ $content = '
 	<div id="headPanelContent">
 		<div id="headPanelSite" ext:qtip="Automne Version '.AUTOMNE_VERSION.'">'.APPLICATION_LABEL.'</div>
 		<div id="headPanelClient">'.$cms_user->getFullName().'</div>
-		<a href="/" id="headPanelSiteLink" target="_blank" ext:qtip="Voir votre site dans une nouvelle fenêtre"></a>
-		<a href="http://www.automne.ws/" id="headPanelAutomneLink" target="_blank" ext:qtip="Aller sur le site d\'Automne"></a>
-		<div id="headPanelStick" ext:qtip="Bloquer / Débloquer la position du panneau latéral"></div>
-		<div id="headPanelLogout" ext:qtip="Terminer la session en cours et vous déconnecter">Déconnexion</div>
+		<a href="/" id="headPanelSiteLink" target="_blank" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_VIEW_WEBSITE).'"></a>
+		<a href="http://www.automne.ws/" id="headPanelAutomneLink" target="_blank" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_VISIT_WEBSITE).'"></a>
+		<div id="headPanelStick" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_LOCK_PANEL).'"></div>
+		<div id="headPanelLogout" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_END_SESSION).'">'.$cms_language->getMessage(MESSAGE_PAGE_DISCONNECT).'</div>
+		<div id="headPanelAutomneHelp" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_ABOUT_AUTOMNE).'"></div>
 		<div id="headPanelBarInfos"></div>
 	</div>
 </div>';
@@ -182,7 +193,7 @@ if (isset($modules[MOD_STANDARD_CODENAME]) && $cms_user->hasModuleClearance(MOD_
 				}
 				$content .= '</ul>';
 			} else {
-				$content .= 'Aucune page dans vos favoris.';
+				$content .= $cms_language->getMessage(MESSAGE_PAGE_NO_BOOKMARK);
 			}
 			$content .= '</div></li>';
 	if ($cms_user->hasValidationClearance(MOD_STANDARD_CODENAME)) {
@@ -366,7 +377,7 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES) || $cms_use
 	}
 	if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //templates
 		$content .= '<li><div class="atm-styles atm-sidepic"></div><a atm:action="styles" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_STYLESHEETS).'</a></li>
-		<li><div class="atm-wysiwyg-styles atm-sidepic"></div><a atm:action="javascripts" href="#">Scripts Javascript</a></li>
+		<li><div class="atm-wysiwyg-styles atm-sidepic"></div><a atm:action="javascripts" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_SCRIPTS).'</a></li>
 		<li><div class="atm-wysiwyg-toolbar atm-sidepic"></div><a atm:action="wysiwyg-toolbar" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_WYSIWYG_TOOLBAR).'</a></li>';
 	}
 	$content .= '
@@ -399,11 +410,11 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) || $c
 	}
 	if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 		$content .= '
-			<li><div class="atm-modules atm-sidepic"></div><a atm:action="modules" href="#">Gestion des modules</a></li>
+			<li><div class="atm-modules atm-sidepic"></div><a atm:action="modules" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_MODULES_MANAGEMENT).'</a></li>
 			<li><div class="atm-websites atm-sidepic"></div><a atm:action="websites" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_SITE_MANAGEMENT).'</a></li>';
 			//TODOV4
 			/*<li><div class="atm-languages atm-sidepic"></div><a atm:action="languages" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_LANGUAGE_MANAGEMENT).'</a></li>*/
-		$content .= '<li><div class="atm-database atm-sidepic"></div><a href="'.PATH_PHPMYADMIN_WR.'" target="_blank">Base de données</a></li>
+		$content .= '<li><div class="atm-database atm-sidepic"></div><a href="'.PATH_PHPMYADMIN_WR.'" target="_blank">'.$cms_language->getMessage(MESSAGE_PAGE_DATABASE).'</a></li>
 			<li><div class="atm-server atm-sidepic"></div><a atm:action="server" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_SERVER_SETTINGS).'</a></li>
 			<li><div class="atm-parameters atm-sidepic"></div><a atm:action="parameters" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_AUTUMN_SETTINGS).'</a></li>';
 	}
@@ -473,6 +484,26 @@ $jscontent = <<<END
 				Ext.EventManager.removeAll(window);
 				window.location.href = '/automne/admin/?cms_action=logout';
 			}, this);
+			Ext.get('headPanelAutomneHelp').on('mousedown', function(){
+				//create window element
+				var win = new Automne.Window({
+					id:				'atmHelpWindow',
+					width:			515,
+					height:			450,
+					resizable:		false,
+					maximizable:	false,
+					autoLoad:		{
+						url:		'help.php',
+						params:		{winId:'atmHelpWindow'},
+						nocache:	true,
+						scope:		this
+					}
+				});
+				//display window
+				win.show(Ext.get('headPanelAutomneHelp'));
+			}, this);
+			Ext.get('headPanelAutomneHelp').addClassOnOver('over');
+			
 			//side panel collapse stick
 			var panelStick = Ext.get('headPanelStick');
 			panelStick.addClassOnOver('over');
@@ -613,12 +644,6 @@ $jscontent = <<<END
     		openWindow(t, 'templates.php', {
 				type:		'js'
 			}, 800, 600);
-    	},
-		'wysiwyg-styles' : function(t){
-    		/*openWindow(t, 'templates.php', {
-				type:		'wysiwyg-style'
-			}, 800, 600);*/
-			Automne.message.show('TODOV4 : Show wysiwyg-styles panel');
     	},
 		'wysiwyg-toolbar' : function(t){
 			openWindow(t, 'templates.php', {

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: row.php,v 1.5 2009/04/02 13:57:58 sebastien Exp $
+// $Id: row.php,v 1.6 2009/06/22 14:08:40 sebastien Exp $
 
 /**
   * Class CMS_row
@@ -38,6 +38,20 @@ class CMS_row extends CMS_grandFather
 
 	const MESSAGE_BUTTON_CLEAR = 1128;
 	const MESSAGE_CLEAR_ROW_CONFIRM = 1129;
+	const MESSAGE_DESC_TEMPLATES = 1532;
+	const MESSAGE_DESC_USAGE_RESTRICTION = 1533;
+	const MESSAGE_DESC_ROW_TEMPLATE = 1534;
+	const MESSAGE_DESC_GROUPS = 1535;
+	const MESSAGE_DESC_NONE = 1536;
+	const MESSAGE_DESC_ACTIVE = 1537;
+	const MESSAGE_DESC_YES = 1538;
+	const MESSAGE_DESC_NO = 1539;
+	const MESSAGE_DESC_USED = 1540;
+	const MESSAGE_DESC_SEE = 1541;
+	const MESSAGE_DESC_REGENERATE = 1542;
+	const MESSAGE_DESC_PAGES = 1543;
+	const MESSAGE_DESC_FILE = 1544;
+	
 	/**
 	  * DB id
 	  * @var integer
@@ -823,8 +837,8 @@ class CMS_row extends CMS_grandFather
 			}
 		}
 		$filtersInfos = '';
-		$filtersInfos .= ($filteredTemplates) ? 'Aux modèles : '.$filteredTemplates : '';
-		$filtersInfos = ($filtersInfos) ? '<br />Usage restreint : <strong>'.$filtersInfos.'</strong>' : '';
+		$filtersInfos .= ($filteredTemplates) ? $cms_language->getMessage(self::MESSAGE_DESC_TEMPLATES).' '.$filteredTemplates : '';
+		$filtersInfos = ($filtersInfos) ? '<br />'.$cms_language->getMessage(self::MESSAGE_DESC_USAGE_RESTRICTION).' <strong>'.$filtersInfos.'</strong>' : '';
 		if ($user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES)) {
 			$edit = array(
 				'url' 		=> 'row.php',
@@ -838,7 +852,7 @@ class CMS_row extends CMS_grandFather
 		return array(
 			'id'			=> $this->getID(),
 			'label'			=> $this->getLabel(),
-			'type'			=> 'Modèle de Rangée',
+			'type'			=> $cms_language->getMessage(self::MESSAGE_DESC_ROW_TEMPLATE),
 			'image'			=> $this->getImage(),
 			'groups'		=> implode(', ', $this->getGroups()),
 			'desc'			=> $this->getDescription(),
@@ -847,10 +861,11 @@ class CMS_row extends CMS_grandFather
 			'description'	=> 	'<div'.(!$this->isUseable() ? ' class="atm-inactive"' : '').'>'.
 									'<img src="'.$this->getImage().'" style="float:left;margin-right:3px;width:70px;" />'.
 									$description.
-									'Groupes : <strong>'.implode(', ', $this->getGroups()).'</strong><br />'.
-									'Actif : <strong>'.($this->isUseable() ? 'Oui':'Non').'</strong><br />'.
-									'Employé : <strong>'.($hasClientSpaces ? 'Oui':'Non').'</strong>'.($hasClientSpaces ? ' - <a href="#" onclick="Automne.view.search(\'row:'.$this->getID().'\');return false;">Voir</a>'.
-									($user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) ? ' / <a href="#" onclick="Automne.server.call(\'rows-controler.php\', \'\', {rowId:'.$this->getID().', action:\'regenerate\'});return false;">Régénérer</a>' : '').' les pages.' : '').
+									$cms_language->getMessage(self::MESSAGE_DESC_GROUPS).' <strong>'.($this->getGroups() ? implode(', ', $this->getGroups()) : $cms_language->getMessage(self::MESSAGE_DESC_NONE)).'</strong><br />'.
+									$cms_language->getMessage(self::MESSAGE_DESC_ACTIVE).' <strong>'.($this->isUseable() ? $cms_language->getMessage(self::MESSAGE_DESC_YES) : $cms_language->getMessage(self::MESSAGE_DESC_NO)).'</strong><br />'.
+									$cms_language->getMessage(self::MESSAGE_DESC_USED).' <strong>'.($hasClientSpaces ? $cms_language->getMessage(self::MESSAGE_DESC_YES) : $cms_language->getMessage(self::MESSAGE_DESC_NO)).'</strong>'.($hasClientSpaces ? ' - <a href="#" onclick="Automne.view.search(\'row:'.$this->getID().'\');return false;">'.$cms_language->getMessage(self::MESSAGE_DESC_SEE).'</a>'.
+									($user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) ? ' / <a href="#" onclick="Automne.server.call(\'rows-controler.php\', \'\', {rowId:'.$this->getID().', action:\'regenerate\'});return false;">'.$cms_language->getMessage(self::MESSAGE_DESC_REGENERATE).'</a>' : '').' '.$cms_language->getMessage(self::MESSAGE_DESC_PAGES) : '').'<br />'.
+									$cms_language->getMessage(self::MESSAGE_DESC_FILE).' <strong>'.$this->getDefinitionFileName().'</strong>'.
 									$filtersInfos.
 									'<br class="x-form-clear" />'.
 								'</div>',

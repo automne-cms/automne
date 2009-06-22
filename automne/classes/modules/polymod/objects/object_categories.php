@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_categories.php,v 1.6 2009/06/08 13:11:21 sebastien Exp $
+// $Id: object_categories.php,v 1.7 2009/06/22 14:08:40 sebastien Exp $
 
 /**
   * Class CMS_object_categories
@@ -923,13 +923,14 @@ class CMS_object_categories extends CMS_object_common
 			return false;
 		}
 		$params = $this->getParamsValues();
-		if (!sensitiveIO::isPositiveInteger($values['root']) && !sensitiveIO::isPositiveInteger($params['rootCategory'])) {
+		if ((isset($values['root']) && !sensitiveIO::isPositiveInteger($values['root'])) && !sensitiveIO::isPositiveInteger($params['rootCategory'])) {
 			$this->_raiseError(get_class($this)." : categoryLineage : root value parameter must be a valid category ID : ".$values['root'].". Or specify a root category from field properties : ".$params['rootCategory']);
 			return false;
 		}
 		$fullLineage = CMS_moduleCategories_catalog::getLineageOfCategory($values['category']);
 		$lineage = array();
-		$stopAncestor = (sensitiveIO::isPositiveInteger($values['root'])) ? $values['root'] : $params['rootCategory'];
+		$stopAncestor = (isset($values['root']) && sensitiveIO::isPositiveInteger($values['root'])) ? $values['root'] : $params['rootCategory'];
+		$ancestorID = null;
 		while($fullLineage && $ancestorID != $stopAncestor) {
 			if ($ancestorID) {
 				$lineage[] = $ancestorID;

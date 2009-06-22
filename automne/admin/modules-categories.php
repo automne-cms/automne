@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modules-categories.php,v 1.4 2009/06/09 13:42:57 sebastien Exp $
+// $Id: modules-categories.php,v 1.5 2009/06/22 14:10:31 sebastien Exp $
 
 /**
   * PHP page : Load module categories tree window.
@@ -37,6 +37,13 @@ $codename = sensitiveIO::request('module', CMS_modulesCatalog::getAllCodenames()
 
 //Standard messages
 define("MESSAGE_ERROR_MODULE_RIGHTS",570);
+define("MESSAGE_PAGE_MODIFY", 938);
+define("MESSAGE_PAGE_DELETE", 252);
+define("MESSAGE_PAGE_NEW", 262);
+define("MESSAGE_PAGE_DRAG_DROP", 683);
+define("MESSAGE_PAGE_MODULE_CATEGORIES", 684);
+define("MESSAGE_PAGE_DEPTH_DISPLAYED", 685);
+define("MESSAGE_PAGE_CONFIRM_CATEGORY_DELETION", 686);
 
 if (!$codename) {
 	CMS_grandFather::raiseError('Unknown module ...');
@@ -55,7 +62,7 @@ if (!$module) {
 //CHECKS user has module clearance
 if (!$cms_user->hasModuleClearance($codename, CLEARANCE_MODULE_EDIT)) {
 	CMS_grandFather::raiseError('User has no rights on module : '.$codename);
-	$view->setActionMessage($cms_message->getmessage(MESSAGE_ERROR_MODULE_RIGHTS, array($module->getLabel($cms_language))));
+	$view->setActionMessage($cms_language->getmessage(MESSAGE_ERROR_MODULE_RIGHTS, array($module->getLabel($cms_language))));
 	$view->show();
 }
 
@@ -70,7 +77,7 @@ $jscontent = <<<END
 	var categoryWindows = [];
 	
 	var tree = new Ext.tree.TreePanel({
-		title:			'Glissez déposez les catégories pour les réorganiser',
+		title:			'{$cms_language->getJsMessage(MESSAGE_PAGE_DRAG_DROP)}',
 		autoScroll:		true,
         animate:		true,
         region:			'center',
@@ -86,7 +93,7 @@ $jscontent = <<<END
 		}),
         root: {
             nodeType:		'async',
-            text:			'Catégories du module {$moduleLabel}',
+            text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_MODULE_CATEGORIES, array($moduleLabel))}',
             draggable:		false,
             id:				'source',
 			expanded:		true,
@@ -100,9 +107,6 @@ $jscontent = <<<END
 				Ext.getCmp('{$codename}CatsDelete').setDisabled(!node.attributes.deletable);
 			},
 			'beforemovenode':function(tree, node, oldParent, newParent, index) {
-				/*if (oldParent == newParent) {
-					return false;
-				}*/
 				Automne.server.call({
 					url:				'modules-categories-controler.php',
 					params: 			{
@@ -130,7 +134,7 @@ $jscontent = <<<END
 		},
 		tbar:[{
 			xtype:			'tbtext',
-			text:			'Profondeur affichée'
+			text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_DEPTH_DISPLAYED)}'
 		},{
 			xtype:			'numberfield',
 			value:			2,
@@ -154,7 +158,7 @@ $jscontent = <<<END
 		},'-',{
 			id:				'{$codename}CatsEdit',
 			xtype:			'button',
-			text:			'Modifier',
+			text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_MODIFY)}',
 			disabled:		true,
 			handler:		function(button) {
 				var node = tree.getSelectionModel().getSelectedNode();
@@ -205,7 +209,7 @@ $jscontent = <<<END
 		},{
 			id:				'{$codename}CatsDelete',
 			xtype:			'button',
-			text:			'Supprimer',
+			text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_DELETE)}',
 			disabled:		true,
 			handler:		function(button) {
 				var node = tree.getSelectionModel().getSelectedNode();
@@ -214,7 +218,7 @@ $jscontent = <<<END
 					return;
 				}
 				Automne.message.popup({
-					msg: 				'Confirmer la suppression de la catégorie \''+node.attributes.text+'\' ?',
+					msg: 				'{$cms_language->getJsMessage(MESSAGE_PAGE_CONFIRM_CATEGORY_DELETION)} \''+node.attributes.text+'\' ?',
 					buttons: 			Ext.MessageBox.OKCANCEL,
 					animEl: 			button.getEl(),
 					closable: 			false,
@@ -246,7 +250,7 @@ $jscontent = <<<END
 		},'->',{
 			id:				'{$codename}CatsCreate',
 			xtype:			'button',
-			text:			'Nouveau',
+			text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_NEW)}',
 			disabled:		true,
 			handler:		function(button) {
 				var node = tree.getSelectionModel().getSelectedNode();

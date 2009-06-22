@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-files.php,v 1.1 2009/04/02 13:55:54 sebastien Exp $
+// $Id: templates-files.php,v 1.2 2009/06/22 14:10:33 sebastien Exp $
 
 /**
   * PHP page : Load module categories tree window.
@@ -25,6 +25,15 @@
   */
 
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
+
+define("MESSAGE_PAGE_MODIFY", 938);
+define("MESSAGE_PAGE_DELETE", 252);
+define("MESSAGE_PAGE_NEW", 262);
+define("MESSAGE_PAGE_DEPTH_DISPLAYED", 685);
+define("MESSAGE_PAGE_WEBSITES_CSS", 1496);
+define("MESSAGE_PAGE_WEBSITES_JS", 1497);
+define("MESSAGE_PAGE_DELETE_CONFIRM", 1498);
+define("MESSAGE_PAGE_DELETE_WARNING", 1499);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -45,7 +54,7 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) {
 	$view->show();
 }
 
-$treeLabel = sensitiveIO::sanitizeJSString($fileType == 'css' ? 'Feuilles de styles des sites' : 'Scripts Javascript des sites');
+$treeLabel = sensitiveIO::sanitizeJSString($fileType == 'css' ? $cms_message->getJsMessage(MESSAGE_PAGE_WEBSITES_CSS) : $cms_message->getJsMessage(MESSAGE_PAGE_WEBSITES_JS));
 
 $jscontent = <<<END
 	var moduleCSSWindow = Ext.getCmp('{$winId}');
@@ -86,7 +95,7 @@ $jscontent = <<<END
 		},
 		tbar:[{
 			xtype:			'tbtext',
-			text:			'Profondeur affichée'
+			text:			'{$cms_message->getJsMessage(MESSAGE_PAGE_DEPTH_DISPLAYED)}'
 		},{
 			xtype:			'numberfield',
 			value:			2,
@@ -110,7 +119,7 @@ $jscontent = <<<END
 		},'-',{
 			id:				'{$fileType}FileEdit',
 			xtype:			'button',
-			text:			'Modifier',
+			text:			'{$cms_message->getJsMessage(MESSAGE_PAGE_MODIFY)}',
 			disabled:		true,
 			handler:		function(button) {
 				var node = tree.getSelectionModel().getSelectedNode();
@@ -156,12 +165,12 @@ $jscontent = <<<END
 		},{
 			id:				'{$fileType}FileDelete',
 			xtype:			'button',
-			text:			'Supprimer',
+			text:			'{$cms_message->getJsMessage(MESSAGE_PAGE_DELETE)}',
 			disabled:		true,
 			handler:		function(button) {
 				var node = tree.getSelectionModel().getSelectedNode();
 				Automne.message.popup({
-					msg: 				'Confirmer la suppression définitive du fichier \''+node.attributes.text+'\' ?<br />Attention, si ce fichier est employé par un modèle de page, sa mise en page risque d\'être corrompue !',
+					msg: 				'{$cms_message->getJsMessage(MESSAGE_PAGE_DELETE_CONFIRM)} \''+node.attributes.text+'\' ?<br />{$cms_message->getJsMessage(MESSAGE_PAGE_DELETE_WARNING)}',
 					buttons: 			Ext.MessageBox.OKCANCEL,
 					animEl: 			button.getEl(),
 					closable: 			false,
@@ -194,7 +203,7 @@ $jscontent = <<<END
 		},'->',{
 			id:				'{$fileType}FileCreate',
 			xtype:			'button',
-			text:			'Nouveau',
+			text:			'{$cms_message->getJsMessage(MESSAGE_PAGE_NEW)}',
 			disabled:		true,
 			handler:		function(button) {
 				var node = tree.getSelectionModel().getSelectedNode();

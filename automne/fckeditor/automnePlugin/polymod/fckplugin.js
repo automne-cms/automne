@@ -17,7 +17,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: fckplugin.js,v 1.1.1.1 2008/11/26 17:12:14 sebastien Exp $
+// $Id: fckplugin.js,v 1.2 2009/06/22 14:14:44 sebastien Exp $
 
 /**
   * Javascript Polymod plugin for FCKeditor
@@ -67,7 +67,7 @@ oEditPolyContextMenuListener.AddItems = function( contextMenu, tag, tagName ) {
 	if ( tagName == 'SPAN'  || FCKSelection.HasAncestorNode( 'SPAN' )) {
 		// Go up to the span to test its properties
 		var oSpan = FCKSelection.MoveToAncestorNode( 'SPAN' ) ;
-		if (oSpan.className == 'polymod') {
+		if (oSpan && oSpan.className == 'polymod') {
 			contextMenu.AddSeparator() ;
 			contextMenu.AddItem( 'polyEdit', FCKLang['DlgPolymodEditTitle'], FCKConfig.PluginsPath + 'polymod/polymod.gif' ) ;
 		}

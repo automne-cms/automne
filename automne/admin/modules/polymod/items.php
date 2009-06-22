@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: items.php,v 1.6 2009/06/05 15:01:07 sebastien Exp $
+// $Id: items.php,v 1.7 2009/06/22 14:10:35 sebastien Exp $
 
 /**
   * PHP page : Load polymod items search window.
@@ -697,16 +697,10 @@ $jscontent = <<<END
 	//redo windows layout
 	moduleObjectWindow.doLayout();
 	
-	/*setTimeout(function(){
+	setTimeout(function(){
 		//resultsPanel.syncSize();
-		resultsPanel.syncSize();
-		moduleObjectWindow.doLayout();
-		//searchPanel.doLayout();
-	}, 500);*/
-	//set resize event to resize inner panels (needed for IE)
-	/*moduleObjectWindow.on('resize', function() {
-		
-	});*/
+		moduleObjectWindow.syncSize();
+	}, 500);
 	
 	//this flag is needed, because form construction, launch multiple search queries before complete page construct so we check in moduleObjectWindow.search if construction is ok
 	moduleObjectWindow.ok = true;

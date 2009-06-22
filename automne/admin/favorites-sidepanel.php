@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: favorites-sidepanel.php,v 1.3 2009/03/06 10:51:51 sebastien Exp $
+// $Id: favorites-sidepanel.php,v 1.4 2009/06/22 14:10:30 sebastien Exp $
 
 /**
   * PHP page : Load side panel favorites infos.
@@ -31,6 +31,8 @@ $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
 
+define('MESSAGE_PAGE_NO_BOOKMARKS', 645);
+
 $content = '';
 
 $favorites = $cms_user->getFavorites();
@@ -45,7 +47,7 @@ if ($favorites) {
 if ($content) {
 	$content = '<ul>'.$content.'</ul>';
 } else {
-	$content .= 'Aucune page dans vos favoris.';
+	$content .= $cms_language->getMessage(MESSAGE_PAGE_NO_BOOKMARKS);
 }
 
 //send content

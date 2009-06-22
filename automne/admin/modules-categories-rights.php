@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modules-categories-rights.php,v 1.2 2009/04/02 13:55:54 sebastien Exp $
+// $Id: modules-categories-rights.php,v 1.3 2009/06/22 14:10:31 sebastien Exp $
 
 /**
   * PHP page : Load modules categories rights interface
@@ -248,7 +248,7 @@ if (!$item) {
 				CLEARANCE_MODULE_MANAGE => 'right-manage',
 			);
 			while (list($msg, $v) = each($modules_clearances)) {
-				$content .= '<th width="30" align="center"><div class="'.$pictos[$v].'" title="'.htmlspecialchars($cms_language->getMessage($msg)).'"></div><!-- <img src="'.PATH_ADMIN_IMAGES_WR.'/'.$pictos[$v].'" alt="'.htmlspecialchars($cms_language->getMessage($msg)).'" title="'.htmlspecialchars($cms_language->getMessage($msg)).'" /> --></th>';
+				$content .= '<th width="30" align="center"><div class="'.$pictos[$v].'" title="'.htmlspecialchars($cms_language->getMessage($msg)).'"></div></th>';
 			}
 			$content .= '
 						</tr>

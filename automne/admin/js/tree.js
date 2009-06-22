@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: tree.js,v 1.3 2009/03/02 11:26:54 sebastien Exp $
+  * $Id: tree.js,v 1.4 2009/06/22 14:10:34 sebastien Exp $
   */
 Automne.treePanel = Ext.extend(Ext.tree.TreePanel, {
 	filterMenu:		false,
@@ -85,7 +85,23 @@ Automne.treePanel = Ext.extend(Ext.tree.TreePanel, {
 					url:			'tree-lineage.php',
 					scope:			this,
 					fcnCallback:	function(response, options, jsonResponse){
-						this.showLineage(jsonResponse);
+						if (jsonResponse) {
+							this.showLineage(jsonResponse);
+						} else {
+							//send error message
+							Automne.message.popup({
+								msg: 				Automne.locales.noPageFounded,
+								buttons: 			Ext.MessageBox.OK,
+								closable: 			true,
+								icon: 				Ext.MessageBox.INFO,
+								fn:					function(){
+									//to correct focus bug
+									this.searchBox.focus();
+									this.searchBox.hasFocus = true;
+								},
+								scope:				this
+							});
+						}
 					},
 					params:			{
 						root:		this.root.id.substr(4),
@@ -93,6 +109,9 @@ Automne.treePanel = Ext.extend(Ext.tree.TreePanel, {
 					}
 				});
 			}
+			//to correct focus bug
+			this.searchBox.focus();
+			this.searchBox.hasFocus = true;
 			return false;
 		} else if (queryEvent.query.length < 3) {
 			//cancel query

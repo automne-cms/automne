@@ -134,15 +134,15 @@ Ext.ux.Multiselect = Ext.extend(Ext.form.Field,  {
 		return returnArray.join(this.delimiter);
 	},
 	 // private
-    /*initValue : function(){
+    initValue : function(){
         if(this.value !== undefined){
             this.setValue(this.value);
-        }else if(this.el.dom.value.length > 0 && this.el.dom.value != this.emptyText){
+        }else if(this.el.dom.value && this.el.dom.value.length > 0 && this.el.dom.value != this.emptyText){
             this.setValue(this.el.dom.value);
         }
         // reference to original value for reset
         this.originalValue = this.getValue();
-    },*/
+    },
 	setValue: function(values) {
 		var index;
 		var selections = [];

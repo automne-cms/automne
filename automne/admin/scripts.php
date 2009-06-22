@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: scripts.php,v 1.2 2009/04/02 13:55:54 sebastien Exp $
+// $Id: scripts.php,v 1.3 2009/06/22 14:10:32 sebastien Exp $
 
 /**
   * PHP page : Simple empty page, used to refresh scripts count
@@ -34,8 +34,13 @@ if (!USE_BACKGROUND_REGENERATOR) {
 	CMS_scriptsManager::runQueuedScripts();
 }
 
-
 define("MESSAGE_PAGE_ACTION_SCRIPTS_LEFT_NONE", 10);
+define("MESSAGE_PAGE_SCRIPTS_IN_PROGRESS", 735);
+define("MESSAGE_PAGE_SCRIPTS_IN_PROGRESS_PID_OK", 736);
+define("MESSAGE_PAGE_NO_SCRIPTS_PID_OK", 737);
+define("MESSAGE_PAGE_SCRIPTS_END_PID_OK", 738);
+define("MESSAGE_PAGE_NO_SCRIPTS_IN_PROGRESS", 739);
+define("MESSAGE_PAGE_NO_SCRIPTS_QUEUED", 740);
 
 //Controler vars
 $details = sensitiveIO::request('details') ? true : false;
@@ -52,22 +57,22 @@ if ($details) {
 			$date->setFromDBValue($runningScript["Date"]);
 			switch ($runningScript["PIDFile"]) {
 				case '0':
-					$detailsContent .= '<li class="atm-pic-question" ext:qtip="Script en cours, Aucun fichier PID trouvé. Vérifiez la configuration du répertoire temporaire d\'Automne.">'.$runningScript["Title"].' ('.$date->getLocalizedDate($cms_language->getDateFormat()." H:i:s").')</li>';
+					$detailsContent .= '<li class="atm-pic-question" ext:qtip="'.$cms_language->getJsMessage(MESSAGE_PAGE_SCRIPTS_IN_PROGRESS).'">'.$runningScript["Title"].' ('.$date->getLocalizedDate($cms_language->getDateFormat()." H:i:s").')</li>';
 				break;
 				case '1':
-					$detailsContent .= '<li class="atm-pic-ok" ext:qtip="Script en cours, Fichier PID trouvé">'.$runningScript["Title"].' ('.$date->getLocalizedDate($cms_language->getDateFormat()." H:i:s").')</li>';
+					$detailsContent .= '<li class="atm-pic-ok" ext:qtip="'.$cms_language->getJsMessage(MESSAGE_PAGE_SCRIPTS_IN_PROGRESS_PID_OK).'">'.$runningScript["Title"].' ('.$date->getLocalizedDate($cms_language->getDateFormat()." H:i:s").')</li>';
 				break;
 				case '2':
-					$detailsContent .= '<li class="atm-pic-cancel" ext:qtip="Fichier PID trouvé sans référence en Base de données ...">'.$runningScript["Title"].' ('.$date->getLocalizedDate($cms_language->getDateFormat()." H:i:s").')</li>';
+					$detailsContent .= '<li class="atm-pic-cancel" ext:qtip="'.$cms_language->getJsMessage(MESSAGE_PAGE_NO_SCRIPTS_PID_OK).'">'.$runningScript["Title"].' ('.$date->getLocalizedDate($cms_language->getDateFormat()." H:i:s").')</li>';
 				break;
 				case '3':
-					$detailsContent .= '<li class="atm-pic-cancel" ext:qtip="Fichier PID trouvé et script marqué comme terminé ...">'.$runningScript["Title"].' ('.$date->getLocalizedDate($cms_language->getDateFormat()." H:i:s").')</li>';
+					$detailsContent .= '<li class="atm-pic-cancel" ext:qtip="'.$cms_language->getJsMessage(MESSAGE_PAGE_SCRIPTS_END_PID_OK).'">'.$runningScript["Title"].' ('.$date->getLocalizedDate($cms_language->getDateFormat()." H:i:s").')</li>';
 				break;
 			}
 		}
 		$detailsContent .= '</ul>';
 	} else {
-		$detailsContent = 'Aucun script en cours de traitement.';
+		$detailsContent = $cms_language->getJsMessage(MESSAGE_PAGE_NO_SCRIPTS_IN_PROGRESS);
 	}
 }
 if ($queue) {
@@ -79,7 +84,7 @@ if ($queue) {
 		}
 		$queueContent .= '</ol>';
 	} else {
-		$queueContent .= 'Aucun script en file d\'attente';
+		$queueContent .= $cms_language->getJsMessage(MESSAGE_PAGE_NO_SCRIPTS_QUEUED);
 	}
 }
 if ($detailsContent || $queueContent) {

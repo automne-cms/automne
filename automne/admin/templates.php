@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates.php,v 1.2 2009/04/02 13:55:55 sebastien Exp $
+// $Id: templates.php,v 1.3 2009/06/22 14:10:33 sebastien Exp $
 
 /**
   * PHP page : Load templates management window
@@ -27,6 +27,14 @@
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 
 define("MESSAGE_TOOLBAR_HELP",1073);
+define("MESSAGE_ERROR_NO_RIGHTS_FOR_TEMPLATES", 799);
+define("MESSAGE_PAGE_PAGES_TEMPLATES", 1473);
+define("MESSAGE_PAGE_ROWS_TEMPLATES", 1474);
+define("MESSAGE_PAGE_STYLESHEETS", 1475);
+define("MESSAGE_PAGE_JAVASCRIPTS", 1476);
+define("MESSAGE_PAGE_WYSIWYG_TOOLBARS", 1477);
+define("MESSAGE_PAGE_TITLE", 1478);
+define("MESSAGE_TOOLBAR_HELP_DESC", 1479);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -39,13 +47,13 @@ $type = sensitiveIO::request('type', array('template','row','css','js','wysiwyg-
 //CHECKS user has templates or rows clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES) && !$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) {
 	CMS_grandFather::raiseError('User has no rights on pages templates');
-	$view->setActionMessage('Vous n\'avez pas les droits sur l\'édition des modèles ...');
+	$view->setActionMessage($cms_language->getMessage(MESSAGE_ERROR_NO_RIGHTS_FOR_TEMPLATES));
 	$view->show();
 }
 $items = '';
 if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //templates
 	$items .= "{
-		title:	'Modèles de pages',
+		title:	'{$cms_language->getJsMessage(MESSAGE_PAGE_PAGES_TEMPLATES)}',
 		id:		'templatePanel',
 		xtype:	'atmPanel',
 		layout:	'atm-border',
@@ -62,7 +70,7 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //t
 }
 if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES)) { //rows
 	$items .= "{
-		title:	'Modèles de rangées',
+		title:	'{$cms_language->getJsMessage(MESSAGE_PAGE_ROWS_TEMPLATES)}',
 		id:		'rowPanel',
 		xtype:	'atmPanel',
 		layout:	'atm-border',
@@ -79,7 +87,7 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES)) { //rows
 }
 if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //templates
 	$items .= "{
-		title:	'Feuilles de styles',
+		title:	'{$cms_language->getJsMessage(MESSAGE_PAGE_STYLESHEETS)}',
 		id:		'cssPanel',
 		xtype:	'atmPanel',
 		layout:	'atm-border',
@@ -94,7 +102,7 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //t
 			scope:		center
 		}
 	},{
-		title:	'Scripts Javascripts',
+		title:	'{$cms_language->getJsMessage(MESSAGE_PAGE_JAVASCRIPTS)}',
 		id:		'jsPanel',
 		xtype:	'atmPanel',
 		layout:	'atm-border',
@@ -110,7 +118,7 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //t
 		}
 	},{
 		xtype:			'framePanel',
-		title:			'Barres d\'outils Wysiwyg',
+		title:			'{$cms_language->getJsMessage(MESSAGE_PAGE_WYSIWYG_TOOLBARS)}',
 		id:				'toolbarWysiwygPanel',
 		frameURL:		'/automne/admin-v3/wysiwyg.php',
 		allowFrameNav:	true
@@ -141,14 +149,14 @@ switch($type) {
 $jscontent = <<<END
 	var templatesWindow = Ext.getCmp('{$winId}');
 	//set window title
-	templatesWindow.setTitle('Gestion des modèles.');
+	templatesWindow.setTitle('{$cms_language->getJsMessage(MESSAGE_PAGE_TITLE)}');
 	//set help button on top of page
 	templatesWindow.tools['help'].show();
 	//add a tooltip on button
 	var propertiesTip = new Ext.ToolTip({
 		target: 		templatesWindow.tools['help'],
 		title: 			'{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP)}',
-		html: 			'Sur cette page, vous pouvez gérer les modèles servant à la création des pages ainsi que les modèles des rangées de contenu employé dans les pages. Vous pouvez aussi gérer les feuiles de styles et les barres d\'outils employées par l\'éditeur WYSIWYG.',
+		html: 			'{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP_DESC)}',
 		dismissDelay:	0
 	});
 	//create center panel

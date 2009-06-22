@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modulecategoriescatalog.php,v 1.3 2009/04/02 13:57:58 sebastien Exp $
+// $Id: modulecategoriescatalog.php,v 1.4 2009/06/22 14:08:40 sebastien Exp $
 
 /**
   * Class CMS_moduleCategories_catalog
@@ -170,7 +170,11 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 			";
 			$q = new CMS_query($sql);
 			if (!$q->hasError()) {
-				return CMS_moduleCategories_catalog::compactSiblingsOrder($parentCategory->getID());
+				if ($parentCategory->getID()) { //if category has a parent (not a root category)
+					return CMS_moduleCategories_catalog::compactSiblingsOrder($parentCategory->getID());
+				} else {
+					return true;
+				}
 			} else  {
 				CMS_grandFather::raiseError("Detaching category failed");
 			}

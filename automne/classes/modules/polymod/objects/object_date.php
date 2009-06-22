@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_date.php,v 1.4 2009/06/05 15:02:18 sebastien Exp $
+// $Id: object_date.php,v 1.5 2009/06/22 14:08:40 sebastien Exp $
 
 /**
   * Class CMS_object_date
@@ -195,39 +195,6 @@ class CMS_object_date extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	/*function getHTMLAdmin($fieldID, $language, $prefixName) {
-		$params = $this->getParamsValues();
-		//is this field mandatory ?
-		$mandatory = ($this->_field->getValue('required')) ? '<span class="admin_text_alert">*</span> ':'';
-		//create html for each subfields
-		$date_mask = $language->getDateFormatMask();
-		$html = '<tr><td class="admin" align="right" valign="top">'.$mandatory.$this->getFieldLabel($language).'<br />
-		<small>('.$language->getMessage(self::MESSAGE_OBJECT_DATE_DATE_COMMENT, array($date_mask)).')</small></td><td class="admin">'."\n";
-		//add description if any
-		if ($this->getFieldDescription($language)) {
-			$html .= '<dialog-title type="admin_h3">'.$this->getFieldDescription($language).'</dialog-title><br />';
-		}
-		$inputParams = array(
-			'class' 	=> 'admin_input_text',
-			'prefix'	=>	$prefixName,
-			'size'  	=> 15,
-			'form'		=> 'frmitem',
-			'calendar'	=> true,
-		);
-		$html .= $this->getInput($fieldID, $language, $inputParams);
-		$html .= '</td></tr>'."\n";
-		return $html;
-	}*/
-	
-	/**
-	  * get HTML admin (used to enter object values in admin)
-	  *
-	  * @param integer $fieldID, the current field id (only for poly object compatibility)
-	  * @param CMS_language $language, the current admin language
-	  * @param string prefixname : the prefix to use for post names
-	  * @return string : the html admin
-	  * @access public
-	  */
 	function getHTMLAdmin($fieldID, $language, $prefixName) {
 		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
 		$params = $this->getParamsValues();
@@ -278,7 +245,7 @@ class CMS_object_date extends CMS_object_common
 				'border'	=> false,
 				'items'		=> array(
 					array(
-						'width'			=> 210,
+						'width'			=> 230,
 						'layout'		=> 'form',
 						'border'		=> false,
 						'items'			=> array(array(

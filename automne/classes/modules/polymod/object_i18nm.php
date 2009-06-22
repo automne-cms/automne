@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_i18nm.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: object_i18nm.php,v 1.2 2009/06/22 14:08:41 sebastien Exp $
 
 /**
   * Class CMS_object_i18nm
@@ -155,8 +155,6 @@ class CMS_object_i18nm extends CMS_grandFather
 			$this->_languageCodesPriority = $languagesPriority;
 		}
 		return array_keys($availableLanguages);
-		//$tmp = new CMS_object_i18nm();
-		//return array_keys($tmp->_languageLabels);
 	}
 	
 	/**
@@ -187,13 +185,12 @@ class CMS_object_i18nm extends CMS_grandFather
 	  */
 	function getValue($languageCode = '', $usePriority = true)
 	{
-		if ($languageCode && isset($this->_values[$languageCode])) {
+		if ($languageCode && isset($this->_values[$languageCode]) && $this->_values[$languageCode]) {
 			return $this->_values[$languageCode];
 		}
 		if ($usePriority) {
-			$return = "";
 			foreach ($this->_languageCodesPriority as $priorityCode) {
-				if (isset($this->_values[$priorityCode])) {
+				if (isset($this->_values[$priorityCode]) && $this->_values[$priorityCode]) {
 					return $this->_values[$priorityCode];
 				}
 			}

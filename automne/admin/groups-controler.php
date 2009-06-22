@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: groups-controler.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: groups-controler.php,v 1.2 2009/06/22 14:10:30 sebastien Exp $
 
 /**
   * PHP controler : Receive users actions
@@ -88,9 +88,9 @@ switch ($action) {
 			$group->destroy();
 			$log = new CMS_log();
 			$log->logMiscAction(CMS_log::LOG_ACTION_PROFILE_GROUP_DELETE, $cms_user, "Group : ".$group->getLabel());
-			$cms_message = $cms_language->getJsMessage(MESSAGE_PAGE_GROUP_DELETED);
+			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_GROUP_DELETED);
 		} else {
-			$cms_message = $cms_language->getJsMessage(MESSAGE_PAGE_GROUP_UNKNOWN);
+			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_GROUP_UNKNOWN);
 		}
 	break;
 	case 'adduser':
@@ -109,7 +109,7 @@ switch ($action) {
 			$log = new CMS_log();
 			$log->logMiscAction(CMS_log::LOG_ACTION_PROFILE_USER_EDIT, $cms_user, "User : ".$user->getFullName()." (add group to user)");
 		} else {
-			$cms_message = $cms_language->getJsMessage(MESSAGE_PAGE_USER_OR_GROUP_UNKNOWN);
+			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_USER_OR_GROUP_UNKNOWN);
 		}
 	break;
 	case 'deluser':
@@ -145,7 +145,7 @@ switch ($action) {
 			$log = new CMS_log();
 			$log->logMiscAction(CMS_log::LOG_ACTION_PROFILE_USER_EDIT, $cms_user, "User : ".$user->getFullName()." (remove group to user)");
 		} else {
-			$cms_message = $cms_language->getJsMessage(MESSAGE_PAGE_USER_OR_GROUP_UNKNOWN);
+			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_USER_OR_GROUP_UNKNOWN);
 		}
 	break;
 	case 'module-rights':

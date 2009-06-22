@@ -14,7 +14,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_usergroup.php,v 1.3 2009/06/05 15:02:18 sebastien Exp $
+// $Id: object_usergroup.php,v 1.4 2009/06/22 14:08:41 sebastien Exp $
 
 /**
   * Class CMS_object_usergroup
@@ -418,9 +418,10 @@ class CMS_object_usergroup extends CMS_object_common
 	  * @access public
 	  */
 	function checkMandatory($values,$prefixName) {
+		$params = $this->getParamsValues();
 		//if field is required check values
-		if ($this->_field->getValue('required')) {
-			if (!$values['list'.$prefixName.$this->_field->getID().'_0']) {
+		if (!$params['isCurrentUser'] && !$params['creationUser'] && $this->_field->getValue('required')) {
+			if (!isset($values['list'.$prefixName.$this->_field->getID().'_0']) || !$values['list'.$prefixName.$this->_field->getID().'_0']) {
 				return false;
 			}
 		}

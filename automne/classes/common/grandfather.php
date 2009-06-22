@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: grandfather.php,v 1.7 2009/06/05 15:02:19 sebastien Exp $
+// $Id: grandfather.php,v 1.8 2009/06/22 14:08:40 sebastien Exp $
 
 /**
   * Class CMS_grandFather
@@ -101,11 +101,8 @@ class CMS_grandFather
 		
 		//second condition are for static calls (made by static methods)
 		if (!isset($this) || $this->_log) {
-			$fd = @fopen(PATH_MAIN_FS.'/'.self::ERROR_LOG, "a");
-			if (is_resource($fd)) {
-				@fwrite($fd, date("Y-m-d H:i:s", mktime()).'|'.APPLICATION_EXEC_TYPE.'|'.$errorMessage."\n", 4096);
-				@fclose($fd);
-				@chmod (PATH_MAIN_FS.'/'.self::ERROR_LOG, octdec(FILES_CHMOD));
+			if (@file_put_contents(PATH_MAIN_FS.'/'.self::ERROR_LOG , date("Y-m-d H:i:s", mktime()).'|'.APPLICATION_EXEC_TYPE.'|'.$errorMessage."\n", FILE_APPEND) !== false) {
+				CMS_file::chmodFile(FILES_CHMOD, PATH_MAIN_FS.'/'.self::ERROR_LOG);
 			}
 		}
 		//must be at the end because it interferes with the static calls conditions above

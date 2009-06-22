@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: validations.php,v 1.4 2009/06/10 10:11:49 sebastien Exp $
+// $Id: validations.php,v 1.5 2009/06/22 14:10:34 sebastien Exp $
 
 /**
   * PHP page : Load page validations window.
@@ -52,20 +52,11 @@ define("MESSAGE_PAGE_COMMENT", 907);
 define("MESSAGE_PAGE_SAVE", 952);
 define("MESSAGE_PAGE_NO_PENDING_VALIDATION_SELECTED", 435);
 
-
-
-
 //load interface instance
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
 
-/*
-	$winId = (isset($_REQUEST['winId'])) ? $_REQUEST['winId'] : 'validationsWindow';
-	$module = (isset($_REQUEST['module'])) ? $_REQUEST['module'] : false;
-	$editions = (isset($_REQUEST['editions']) && sensitiveIO::isPositiveInteger($_REQUEST['editions'])) ? $_REQUEST['editions'] : false;
-	$resource = (isset($_REQUEST['resource']) && sensitiveIO::isPositiveInteger($_REQUEST['resource'])) ? $_REQUEST['resource'] : false;
-*/
 $winId = sensitiveIO::request('winId', '', 'validationsWindow');
 $module = sensitiveIO::request('module');
 $editions = sensitiveIO::request('editions', 'sensitiveIO::isPositiveInteger');
@@ -288,7 +279,7 @@ $jscontent = <<<END
 			forceFit:		true
 		},
 		// inline toolbars
-		tbar:['Types de validations : '/*,'->'*/, {
+		tbar:['Types de validations : ', {
 			xtype:				'combo',
 			id:					'validationsType',
 			name:				'validationsType',

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: multi_poly_object.php,v 1.4 2009/06/08 13:11:21 sebastien Exp $
+// $Id: multi_poly_object.php,v 1.5 2009/06/22 14:08:40 sebastien Exp $
 
 /**
   * Class CMS_multi_poly_object
@@ -160,7 +160,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @var array(CMS_poly_object)
 	  * @access private
 	  */
-	protected $_objectValues = array();
+	public $_objectValues = array();
 
 	/**
 	  * Constructor.

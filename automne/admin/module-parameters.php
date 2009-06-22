@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: module-parameters.php,v 1.2 2009/06/05 15:01:04 sebastien Exp $
+// $Id: module-parameters.php,v 1.3 2009/06/22 14:10:31 sebastien Exp $
 
 /**
   * PHP page : Load module parameters window.
@@ -31,6 +31,11 @@ $winId = sensitiveIO::request('winId', '', 'moduleParametersWindow');
 
 define("MESSAGE_TOOLBAR_HELP",1073);
 define("MESSAGE_PAGE_SAVE", 952);
+define("MESSAGE_PAGE_MODULE_PARAMS", 678);
+define("MESSAGE_PAGE_AUTOMNE_PARAMS", 679);
+define("MESSAGE_TOOLBAR_HELP_MESSAGE", 680);
+define("MESSAGE_PAGE_UPDATE_PARAMS", 681);
+define("MESSAGE_PAGE_FORM_INCORRECT", 682);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -54,7 +59,7 @@ if (!$module->hasParameters()) {
 
 //get module parameters
 $parameters = $module->getParameters(false, true);
-$pageLabel = sensitiveIO::sanitizeJSString(($codename != MOD_STANDARD_CODENAME) ? 'Paramètres du module '.$module->getLabel() : 'Paramètres Automne');
+$pageLabel = sensitiveIO::sanitizeJSString(($codename != MOD_STANDARD_CODENAME) ? $cms_language->getMessage(MESSAGE_PAGE_MODULE_PARAMS, array($module->getLabel())) : $cms_language->getMessage(MESSAGE_PAGE_AUTOMNE_PARAMS));
 
 $paramFields = '';
 foreach ($parameters as $labelCode => $parameter) {
@@ -130,7 +135,7 @@ $jscontent = <<<END
 	var propertiesTip = new Ext.ToolTip({
 		target: 		moduleParamWindow.tools['help'],
 		title: 			'{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP)}',
-		html: 			'Cette page vous permet de paramétrer diverses fonctionnalités d\'Automne. Référez vous à l\'aide disponible sur chaque paramètre pour en connaitre l\'usage.',
+		html: 			'{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP_MESSAGE)}',
 		dismissDelay:	0
     });
 	
@@ -152,7 +157,7 @@ $jscontent = <<<END
 		items:[{
 			xtype:			'panel',
 			bodyStyle: 		'padding:0 0 10px 0',
-			html:			'<strong>Vous pouvez modifier les {$pageLabel}. Référez vous à l\'aide disponible sur chaque paramètre pour en connaitre l\'utilité.<br /><br />Ces paramètres sont aussi directement accessible dans le fichier : /automne/classes/modules/{$codename}_rc.xml</strong>',
+			html:			'<strong>{$cms_language->getJSMessage(MESSAGE_PAGE_UPDATE_PARAMS, array($pageLabel, $codename))}</strong>',
 			border:			false
 		},{$paramFields}],
 		buttons:[{
@@ -167,7 +172,7 @@ $jscontent = <<<END
 						module:		'{$codename}'
 					}});
 				} else {
-					Automne.message.show('Le formulaire est incomplet ou possède des valeurs incorrectes ...', '', moduleParamWindow);
+					Automne.message.show('{$cms_language->getJSMessage(MESSAGE_PAGE_FORM_INCORRECT)}', '', moduleParamWindow);
 				}
 			}
 		}]

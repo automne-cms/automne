@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: view.php,v 1.6 2009/06/05 15:02:19 sebastien Exp $
+// $Id: view.php,v 1.7 2009/06/22 14:08:41 sebastien Exp $
 
 /**
   * Class CMS_view
@@ -94,7 +94,10 @@ class CMS_view extends CMS_grandFather
 	  * @access public
 	  */
 	function getJavascript($jsarray = array(), $media = 'screen', $onlyFiles = false) {
-		$jsarray = (isset($this) && isset($this->_js)) ? $this->_js : $jsarray;
+		if (isset($this) && isset($this->_js)) {
+			$jsarray = $this->_js;
+			$this->_js = array();
+		}
 		$version = AUTOMNE_VERSION.'-'.AUTOMNE_SUBVERSION.(SYSTEM_DEBUG ? 'd':'');
 		$return = '';
 		if ($onlyFiles) {
@@ -105,6 +108,7 @@ class CMS_view extends CMS_grandFather
 		}
 		if (isset($this) && isset($this->_jscontent) && $this->_jscontent) {
 			$return .= "\n".'<script type="text/javascript">'.$this->_jscontent.'</script>'."\n";
+			$this->_jscontent = '';
 		}
 		return $return;
 	}

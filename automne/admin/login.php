@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: login.php,v 1.6 2009/06/10 10:11:38 sebastien Exp $
+// $Id: login.php,v 1.7 2009/06/22 14:10:30 sebastien Exp $
 
 /**
   * PHP page : Login
@@ -40,6 +40,9 @@ define("MESSAGE_ERROR_REQUIRED_FIELD", 303);
 define("MESSAGE_PAGE_USER_WELCOME", 314);
 define("MESSAGE_PAGE_USER_NOVALIDATION", 1113);
 define("MESSAGE_PAGE_USER_VALIDATIONS", 315);
+define("MESSAGE_PAGE_DEBUG", 674);
+define("MESSAGE_PAGE_PRESS_F2_FOR_LOG", 675);
+define("MESSAGE_ERROR_SESSION_EXPIRED", 676);
 
 //load language object
 $language = CMS_languagesCatalog::getDefaultLanguage(true);
@@ -62,13 +65,16 @@ case "login":
 		CMS_module_standard::processDailyRoutine();
 		$userSessionsInfos = CMS_context::getSessionInfos();
 		
+		$cms_user = $_SESSION["cms_context"]->getUser();
+		$language = $cms_user->getLanguage();
+		
 		//welcome message
 		$welcome = $language->getJsMessage(MESSAGE_PAGE_USER_WELCOME, array($userSessionsInfos['fullname']));
 		if ($userSessionsInfos['hasValidations']) {
 			$welcome .= '<br /><br />'.(($userSessionsInfos['awaitingValidation']) ? $language->getJsMessage(MESSAGE_PAGE_USER_VALIDATIONS, array($userSessionsInfos['awaitingValidation'])) : $language->getJsMessage(MESSAGE_PAGE_USER_NOVALIDATION));
 		}
 		if (SYSTEM_DEBUG && $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
-			$welcome .= '<br /><br /><span class="atm-red">Attention, le debuggage est actif.</span> Pressez F2 pour voir la fenêtre de log.';
+			$welcome .= '<br /><br /><span class="atm-red">'.$language->getJsMessage(MESSAGE_PAGE_DEBUG).'</span> '.$language->getJsMessage(MESSAGE_PAGE_PRESS_F2_FOR_LOG);
 		}
 		
 		//then set context, remove login window and load Automne interface
@@ -109,7 +115,7 @@ case 'reconnect':
 		//display error login window on top of login form
 		$loginError = "
 		Automne.message.popup({
-			msg: 'Votre session est expirée. Veuillez vous reconnecter ...',
+			msg: '{$language->getJsMessage(MESSAGE_ERROR_SESSION_EXPIRED)}',
 			buttons: Ext.MessageBox.OK,
 			icon: Ext.MessageBox.ERROR,
 			fn:function() {
@@ -125,13 +131,15 @@ default:
 			CMS_module_standard::processDailyRoutine();
 			//then set context and load Automne interface
 			$userSessionsInfos = CMS_context::getSessionInfos();
+			$cms_user = $_SESSION["cms_context"]->getUser();
+			$language = $cms_user->getLanguage();
 			//welcome message
 			$welcome = $language->getJsMessage(MESSAGE_PAGE_USER_WELCOME, array($userSessionsInfos['fullname']));
 			if ($userSessionsInfos['hasValidations']) {
 				$welcome .= '<br /><br />'.(($userSessionsInfos['awaitingValidation']) ? $language->getJsMessage(MESSAGE_PAGE_USER_VALIDATIONS, array($userSessionsInfos['awaitingValidation'])) : $language->getJsMessage(MESSAGE_PAGE_USER_NOVALIDATION));
 			}
 			if (SYSTEM_DEBUG && $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
-				$welcome .= '<br /><br /><span class="atm-red">Attention, le debuggage est actif.</span> Pressez F2 pour voir la fenêtre de log.';
+				$welcome .= '<br /><br /><span class="atm-red">'.$language->getJsMessage(MESSAGE_PAGE_DEBUG).'</span> '.$language->getJsMessage(MESSAGE_PAGE_PRESS_F2_FOR_LOG);
 			}
 			$jscontent = '
 			//load interface
@@ -197,8 +205,6 @@ END;
 	
 } else {
 	//Send Login form frame window (in which login form is displayed)
-	//$view->addJSFile('ext');
-	//$view->addCSSFile('ext');
 	//set main and ext CSS
 	$view->addCSSFile('ext');
 	$view->addCSSFile('main');
@@ -261,8 +267,17 @@ END;
 		    fn: 		loginForm.doSubmit,
 			scope:		loginForm
 		});
-		//put focus on the first login field
-		//if (Ext.get('loginField').dom.value){ alert('select');Ext.get('loginField').dom.select(); } else { alert('focus');Ext.get('loginField').focus();}
+		setTimeout(function(){
+			//put focus on the first login field
+			var field = Ext.get('loginField');
+			if (field) {
+				if (field.dom.value){
+					field.dom.select();
+				} else {
+					field.focus()
+				}
+			}
+		}, 100);
 		//display login error window if any
 		{$loginError}
 	});

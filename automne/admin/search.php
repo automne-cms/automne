@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: search.php,v 1.5 2009/06/05 15:01:05 sebastien Exp $
+// $Id: search.php,v 1.6 2009/06/22 14:10:32 sebastien Exp $
 
 /**
   * PHP page : Load page search window.
@@ -33,7 +33,6 @@ define("MESSAGE_PAGE_MODIFY", 938);
 
 define("MESSAGE_PAGE_DELETE", 252);
 define("MESSAGE_PAGE_NEW", 262);
-define("MESSAGE_PAGE_RESULTS_COUNT", 578);
 define("MESSAGE_PAGE_NORESULTS", 579);
 
 define("MESSAGE_PAGE_X_OBJECTS_OF_Y", 576);
@@ -44,6 +43,17 @@ define("MESSAGE_PAGE_USERS_PROFILE", 73);
 define("MESSAGE_PAGE_GROUPS_PROFILE", 75);
 define("MESSAGE_PAGE_PAGE_TEMPLATES", 440);
 define("MESSAGE_PAGE_ROWS_TEMPLATES", 441);
+define("MESSAGE_PAGE_LOADING", 1321);
+define("MESSAGE_PAGE_SEARCH", 1091);
+define("MESSAGE_PAGE_VIEW", 1102);
+
+define("MESSAGE_PAGE_FIELD_NAME", 741);
+define("MESSAGE_PAGE_FIELD_SEARCH_IN", 742);
+define("MESSAGE_PAGE_FIELD_SEARCH_INTO", 743);
+define("MESSAGE_TOOLBAR_HELP_DESC", 744);
+define("MESSAGE_PAGE_RESULTS_COUNT", 745);
+define("MESSAGE_PAGE_X_RESULTS_ON_Y", 746);
+define("MESSAGE_ACTION_VIEW_SELECTED", 747);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -67,7 +77,7 @@ $recordsPerPage = $_SESSION["cms_context"]->getRecordsPerPage();
 $searchPanel = '';
 // Keywords
 $searchPanel .= "{
-	fieldLabel:		'Par nom, description, mots clés',
+	fieldLabel:		'".$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_NAME)."',
 	xtype:			'textfield',
 	name: 			'keyword',
 	value:			'{$search}',
@@ -137,7 +147,7 @@ if ($elements) {
 	}
 	$searchPanel .= "{
 		xtype: 		'checkboxgroup',
-		fieldLabel: 'Rechercher dans',
+		fieldLabel: '".$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_SEARCH_IN)."',
 		columns: 	1,
 		items: [";
 		foreach ($elements as $element => $label) {
@@ -158,14 +168,14 @@ $jscontent = <<<END
 	var searchWindow = Ext.getCmp('{$winId}');
 	
 	//set window title
-	searchWindow.setTitle('Rechercher dans \'{$appTitle}\'');
+	searchWindow.setTitle('{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_SEARCH_INTO, array($appTitle))}');
 	//set help button on top of page
 	searchWindow.tools['help'].show();
 	//add a tooltip on button
 	var propertiesTip = new Ext.ToolTip({
 		target: 		searchWindow.tools['help'],
 		title: 			'{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP)}',
-		html: 			'Sur cette page, vous pouvez rechercher toutes les pages des sites, les éléments des modules, les utilisateurs, groupes et modèles de pages et de rangées. Spécifiez vos mots clés ainsi que les éléments sur lesquels vous souhaitez effectuer votre recherche.',
+		html: 			'{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP_DESC)}',
 		dismissDelay:	0
 	});
 	
@@ -195,7 +205,7 @@ $jscontent = <<<END
 		resultsPanel.currPage = 0;
 		if (resultsPanel.body) {
 			resultsPanel.body.scrollTo('top', 0, false);
-			resultsPanel.body.mask('Chargement ...');
+			resultsPanel.body.mask('{$cms_language->getJsMessage(MESSAGE_PAGE_LOADING)}');
 		}
 		store.baseParams = values;
 		store.load({
@@ -216,7 +226,7 @@ $jscontent = <<<END
 	var searchPanel = new Ext.form.FormPanel({
 		id: 			'{$winId}Search',
 		region:			'west',
-		title:			'Rechercher',
+		title:			'{$cms_language->getJsMessage(MESSAGE_PAGE_SEARCH)}',
 		xtype:			'form',
 		width:			250,
 		minSize:		200,
@@ -257,7 +267,7 @@ $jscontent = <<<END
 					} else {
 						var resultCount = start + {$recordsPerPage};
 					}
-					resultsPanel.setTitle(String.format('Résultats : {0} résultats sur {1}', resultCount, store.getTotalCount()));
+					resultsPanel.setTitle(String.format('{$cms_language->getJSMessage(MESSAGE_PAGE_RESULTS_COUNT)}', resultCount, store.getTotalCount()));
 				} else {
 					resultsPanel.setTitle('{$cms_language->getJSMessage(MESSAGE_PAGE_NORESULTS)}');
 				}
@@ -290,7 +300,7 @@ $jscontent = <<<END
 		collapsible:		false,
 		region:				'center',
 		border:				false,
-		loadingIndicatorTxt:'{0} résultats sur {1}',
+		loadingIndicatorTxt:'{$cms_language->getJSMessage(MESSAGE_PAGE_X_RESULTS_ON_Y)}',
 		limit:				{$recordsPerPage},
 		itemSelector:		'div.atm-result',
 		scripts:			true, //execute JS scripts in response
@@ -388,7 +398,7 @@ $jscontent = <<<END
 		},{
 			id:			'{$winId}viewItem',
 			xtype:		'button',
-			text:		'Voir',
+			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_VIEW)}',
 			handler:	function(button) {
 				var selectLen = selectedObjects.length;
 				for (var i = 0; i < selectLen; i++) {
@@ -473,7 +483,7 @@ $jscontent = <<<END
 	});
 	qtips['view'] = new Ext.ToolTip({
 		target: 		Ext.getCmp('{$winId}viewItem').getEl(),
-		html: 			'Voir le ou les éléments sélectionnés.'
+		html: 			'{$cms_language->getJSMessage(MESSAGE_ACTION_VIEW_SELECTED)}'
 	});
 	
 	resultsPanel.dv.on('selectionchange', function(dv, selections){

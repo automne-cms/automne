@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: content-block.php,v 1.1 2009/06/10 10:11:17 sebastien Exp $
+// $Id: content-block.php,v 1.2 2009/06/22 14:10:34 sebastien Exp $
 
 /**
   * PHP page : Load polymod item interface
@@ -48,6 +48,8 @@ define("MESSAGE_PAGE_FIELD_PUBLISHED_TO", 135);
 define("MESSAGE_PAGE_SEARCH_ORDERTYPE_ERROR", 136);
 define("MESSAGE_PAGE_FIELD_ORDER_PUBLICATION_START", 137);
 define("MESSAGE_PAGE_FIELD_ORDER_PUBLICATION_END", 138);
+define("MESSAGE_TOOLBAR_HELP_DESC", 521);
+define("MESSAGE_PAGE_INCORRECT_FORM_VALUES", 522);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -107,15 +109,18 @@ $row = new CMS_row($rowId);
 
 $winLabel = sensitiveIO::sanitizeJSString($cms_language->getMessage(MESSAGE_PAGE_TITLE, array($row->getLabel(), $cms_module->getLabel($cms_language)), MOD_POLYMOD_CODENAME));
 $items = array();
+$rowParams = array();
 if (sizeof($blockParamsDefinition['search'])) {
 	foreach ($blockParamsDefinition['search'] as $searchName => $searchParams) {
 		//load searched object
 		$object = new CMS_poly_object_definition($searchParams['searchType']);
+		unset($searchParams['searchType']);
 		if (!$object->hasError()) {
 			//load fields objects for object
 			$objectFields = CMS_poly_object_catalog::getFieldsDefinition($object->getID());
 			$searchParamContent = array();
 			foreach ($searchParams as $paramType => $paramValue) {
+				$rowParams[] = $paramType;
 				switch ($paramType) {
 					case 'item':
 						$mandatory = ($paramValue == true) ? '<span class="atm-red">*</span> ':'';
@@ -333,6 +338,90 @@ if (sizeof($blockParamsDefinition['search'])) {
 $items = sensitiveIO::jsonEncode($items);
 
 $itemControler = PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/items-controler.php';
+if (sizeof($rowParams) == 1 && $rowParams[0] == 'item') {
+	$md5 = md5(mt_rand().microtime());
+	$url = PATH_ADMIN_MODULES_WR.'/polymod/item-selector.php';
+	$fieldName = $searchParamContent[0]['name'];
+	$selectedItem = $searchParamContent[0]['value'];
+	$params = sensitiveIO::jsonEncode(array(
+		'winId'			=> 'selector-'.$md5,
+		'objectId'		=> $object->getID(),
+		'selectedItem'	=> $selectedItem,
+		'module'		=> $codename
+	));
+	//this is only an single item selection, so help selection a little
+	$jscontent = <<<END
+		var window = Ext.getCmp('{$winId}');
+		//set window title
+		window.setTitle('{$winLabel}');
+		//set help button on top of page
+		window.tools['help'].show();
+		//add a tooltip on button
+		var propertiesTip = new Ext.ToolTip({
+			target:		 window.tools['help'],
+			title:			 '{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP)}',
+			html:			 'Sur cette page, vous pouvez spécifier des paramètres pour l\'affichage de la rangée de contenu en cours d\'édition.',
+			dismissDelay:	0
+		});
+		var selectedItem = '{$selectedItem}';
+		//create center panel
+		var center = new Ext.Panel({
+			region:				'center',
+			border:				false,
+			layout:				'fit',
+			plain:				true,
+			autoScroll:			true,
+			buttonAlign:		'center',
+			items: [{
+				id:		'selector-{$md5}',
+				height:	(window.getHeight()-70),
+				xtype:	'atmPanel',
+				layout:	'atm-border',
+				autoLoad:		{
+					url:		'{$url}',
+					params:		{$params},
+					nocache:	true,
+					scope:		center
+				},
+				selectItem:		function(id, params) {
+					if (id) {
+						selectedItem = id;
+					} else {
+						selectedItem = '';
+					}
+				}.createDelegate(this, [{$params}], true)
+			}],
+			buttons:[{
+				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+				xtype:			'button',
+				name:			'submitAdmin',
+				handler:		function() {
+					Automne.server.call('{$itemControler}', function(response, option, content){}, {
+						'{$fieldName}':	selectedItem,
+						action:			'setRowParameters',
+						page:			'{$cms_page->getID()}',
+						cs:				'{$cs}',
+						rowTag:			'{$rowTag}',
+						rowType:		'{$rowId}',
+						block:			'{$blockId}',
+						module:			'{$cms_module->getCodename()}'
+					}, this);
+				},
+				scope:			this
+			}]
+		});
+		window.add(center);
+		setTimeout(function(){
+			//redo windows layout
+			window.doLayout();
+			if (Ext.isIE7) {
+				center.syncSize();
+			}
+		}, 100);
+END;
+	$view->addJavascript($jscontent);
+	$view->show();
+}
 
 $jscontent = <<<END
 	var window = Ext.getCmp('{$winId}');
@@ -344,12 +433,13 @@ $jscontent = <<<END
 	var propertiesTip = new Ext.ToolTip({
 		target:		 window.tools['help'],
 		title:			 '{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP)}',
-		html:			 'Sur cette page, vous pouvez spécifier des paramètres pour l\'affichage de la rangée de contenu en cours d\'édition.',
+		html:			 '{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP_DESC, false, MOD_POLYMOD_CODENAME)}',
 		dismissDelay:	0
 	});
 	
 	//create center panel
 	var center = new Ext.Panel({
+		id:					'{$winId}center',
 		region:				'center',
 		border:				false,
 		autoScroll:			true,
@@ -394,7 +484,7 @@ $jscontent = <<<END
 						scope:this
 					});
 				} else {
-					Automne.message.show('Le formulaire est incomplet ou possède des valeurs incorrectes ...', '', window);
+					Automne.message.show('{$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_FORM_VALUES, false, MOD_POLYMOD_CODENAME)}', '', window);
 				}
 			},
 			scope:			this

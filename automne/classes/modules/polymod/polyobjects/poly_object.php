@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object.php,v 1.5 2009/06/05 15:02:17 sebastien Exp $
+// $Id: poly_object.php,v 1.6 2009/06/22 14:08:40 sebastien Exp $
 
 /**
   * Class CMS_poly_object
@@ -205,7 +205,7 @@ class CMS_poly_object extends CMS_resource
 			$this->_loadObject();
 			//set $this->_composedLabel if any (only if object is loaded)
 			$this->_composedLabel = $objectDef->getValue("composedLabel");
-		} elseif ($this->_ID && is_array($datas) && $datas[$this->_ID]) {
+		} elseif ($this->_ID && is_array($datas) && isset($datas[$this->_ID]) && $datas[$this->_ID]) {
 			//set $this->_objectValues from given datas
 			$this->_populateSubObjectsValues($datas);
 			//set $this->_composedLabel if any (only if object is loaded)
@@ -255,7 +255,7 @@ class CMS_poly_object extends CMS_resource
 			$this->raiseError("Datas need to be an array : ".print_r($datas,true));
 			return false;
 		}
-		if ($datas[$this->_ID]) {
+		if (isset($datas[$this->_ID]) && $datas[$this->_ID]) {
 			foreach(array_keys($this->_subObjectsDefinitions) as $fieldID) {
 				$subFieldsValues = isset($datas[$this->_ID][$fieldID]) ? $datas[$this->_ID][$fieldID] : null;
 				if (is_object($this->_objectFieldsDefinition[$fieldID])) {

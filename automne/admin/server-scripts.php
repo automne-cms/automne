@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: server-scripts.php,v 1.4 2009/06/10 10:11:58 sebastien Exp $
+// $Id: server-scripts.php,v 1.5 2009/06/22 14:10:32 sebastien Exp $
 
 /**
   * PHP page : Load server detail window.
@@ -29,6 +29,31 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 $winId = sensitiveIO::request('winId', '', 'scriptsWindow');
 
 define("MESSAGE_TOOLBAR_HELP",1073);
+define("MESSAGE_PAGE_NO_SERVER_RIGHTS",748);
+define("MESSAGE_PAGE_REGENERATION",770);
+define("MESSAGE_PAGE_REGENERATION_DESC",771);
+define("MESSAGE_PAGE_SCRIPTS_IN_PROGRESS",772);
+define("MESSAGE_PAGE_SCRIPTS_IN_PROGRESS_DESC",773);
+define("MESSAGE_PAGE_SCRIPTS_MANAGEMENT",774);
+define("MESSAGE_TOOLBAR_HELP_DESC",775);
+define("MESSAGE_PAGE_REGEN_ALL",776);
+define("MESSAGE_PAGE_REGEN_ALL_DESC",777);
+define("MESSAGE_PAGE_REGEN_TREE",778);
+define("MESSAGE_PAGE_REGEN_TREE_DESC",779);
+define("MESSAGE_PAGE_REGEN_TREE_SELECT",780);
+define("MESSAGE_PAGE_REGEN_SELECTED",781);
+define("MESSAGE_PAGE_REGEN_SELECTED_DESC",782);
+define("MESSAGE_PAGE_REGEN_SELECT_PAGES",783);
+define("MESSAGE_PAGE_REGEN_TREE_SELECT_DEST",784);
+define("MESSAGE_PAGE_REGEN",785);
+define("MESSAGE_PAGE_RESTART_SCRIPTS",786);
+define("MESSAGE_PAGE_RESTART_SCRIPTS_DESC",787);
+define("MESSAGE_PAGE_STOP_SCRIPTS",788);
+define("MESSAGE_PAGE_STOP_SCRIPTS_DESC",789);
+define("MESSAGE_PAGE_CLEAR_QUEUE",790);
+define("MESSAGE_PAGE_CLEAR_QUEUE_DESC",791);
+define("MESSAGE_PAGE_SCRIPTS_DETAIL",792);
+define("MESSAGE_PAGE_QUEUE_DETAIL",793);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -38,14 +63,14 @@ $view->setDisplayMode(CMS_view::SHOW_RAW);
 //CHECKS user has scripts admin clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES)) {
 	CMS_grandFather::raiseError('User has no regeneration rights');
-	$view->setActionMessage('Vous n\'avez pas les droits d\'administrer les scripts ...');
+	$view->setActionMessage($cms_language->getMessage(MESSAGE_PAGE_NO_SERVER_RIGHTS));
 	$view->show();
 }
 //Scripts content
 $content = '
-	<h1>Régénération des pages : </h1>
+	<h1>'.$cms_language->getMessage(MESSAGE_PAGE_REGENERATION).'</h1>
 	<div style="width:100%;">
-		Permet recréer les pages visibles coté client des différents sites.<br /><br />
+		'.$cms_language->getMessage(MESSAGE_PAGE_REGENERATION_DESC).'<br /><br />
 		<div id="regeneratePages"></div>
 		<br />
 		<table cellspacing="5">
@@ -55,8 +80,8 @@ $content = '
 			</tr>
 		</table>
 		<br />
-		<h1>Scripts en cours : </h1>
-		Permet de visualiser les scripts en cours de traitement sur le serveur.<br /><br />
+		<h1>'.$cms_language->getMessage(MESSAGE_PAGE_SCRIPTS_IN_PROGRESS).'</h1>
+		'.$cms_language->getMessage(MESSAGE_PAGE_SCRIPTS_IN_PROGRESS_DESC).'<br /><br />
 		<table cellspacing="5">
 			<tr>
 				<td id="scriptsRestart"></td>
@@ -75,43 +100,25 @@ $content = sensitiveIO::sanitizeJSString($content);
 $jscontent = <<<END
 	var serverWindow = Ext.getCmp('{$winId}');
 	//set window title
-	serverWindow.setTitle('Gestion des scripts');
+	serverWindow.setTitle('{$cms_language->getJsMessage(MESSAGE_PAGE_SCRIPTS_MANAGEMENT)}');
 	//set help button on top of page
 	serverWindow.tools['help'].show();
 	//add a tooltip on button
 	var propertiesTip = new Ext.ToolTip({
 		target:		 serverWindow.tools['help'],
 		title:			 '{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP)}',
-		html:			 'Cette page vous permet de gérer les différents scripts en tâche de fond ainsi que la régénération des pages du site. Régénérer une page permet de recréer le cache de cette page qui sert à sa consultation coté client.',
+		html:			 '{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP_DESC)}',
 		dismissDelay:	0
 	});
 	
 	//create objects
 	var progressScripts = new Ext.ProgressBar({
-		id:				'scriptsProgressBar',
-		updateProgress : function(value, text){
-	        this.value = value || 0;
-	        if(text){
-	            this.updateText(text);
-	        }
-	        if(this.rendered && this.el && this.el.dom && this.el.dom.firstChild && !isNaN(value)){
-				var w = Math.floor(value*this.el.dom.firstChild.offsetWidth);
-		        if (w) {
-					this.progressBar.setWidth(w, true);
-			        if(this.textTopEl){
-			            //textTopEl should be the same width as the bar so overflow will clip as the bar moves
-			            this.textTopEl.removeClass('x-hidden').setWidth(w, true);
-			        }
-				}
-	        }
-	        this.fireEvent('update', this, value, text);
-	        return this;
-	    }
+		id:				'scriptsProgressBar'
     });
 	var regenerateAll = new Ext.Button({
 		id:				'regenerateAll',
-		text:			'Tout Régénérer',
-		tooltip:		'Régénère l\'ensemble des pages de tous les sites.',
+		text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_REGEN_ALL)}',
+		tooltip:		'{$cms_language->getJsMessage(MESSAGE_PAGE_REGEN_ALL_DESC)}',
 		listeners:		{'click':function(){
 			Automne.server.call({
 				url:				'server-scripts-controler.php',
@@ -123,8 +130,8 @@ $jscontent = <<<END
     });
 	var regenerateTree = new Ext.Button({
 		id:				'regenerateTree',
-		text:			'Régénérer une branche',
-		tooltip:		'Régénère l\'ensemble des pages sous la page sélectionnée.',
+		text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_REGEN_TREE)}',
+		tooltip:		'{$cms_language->getJsMessage(MESSAGE_PAGE_REGEN_TREE_DESC)}',
 		listeners:		{'click':function(e){
 			var winid = Ext.id();
 			var onclick = 'Automne.server.call({url:\'server-scripts-controler.php\',params:{action:\'regenerate-tree\',page:\'%s\'}});Ext.getCmp(\''+winid+'\').close();';
@@ -135,8 +142,8 @@ $jscontent = <<<END
 					url:		'tree.php',
 					params:		{
 						winId:			winid,
-						title:			'Régénérer une branche',
-						heading:		'Sélectionnez la page parente de l\'arborescence à régénérer.',
+						title:			'{$cms_language->getJsMessage(MESSAGE_PAGE_REGEN_TREE)}',
+						heading:		'{$cms_language->getJsMessage(MESSAGE_PAGE_REGEN_TREE_SELECT)}',
 						onClick:		onclick,
 						currentPage:	1
 					},
@@ -149,7 +156,7 @@ $jscontent = <<<END
 		},scope:this}
     });
 	var regeneratePages = new Ext.form.FieldSet({
-		title:			'Régénération des pages sélectionnées',
+		title:			'{$cms_language->getJsMessage(MESSAGE_PAGE_REGEN_SELECTED)}',
 		collapsed:		false,
 		width:			'97%',
 		autoScroll:		true,
@@ -176,7 +183,7 @@ $jscontent = <<<END
 			anchor:			'97%',
 			xtype:			'atmPageField',
 			id:				'regeneratePagesField',
-			fieldLabel:		'<span class="atm-help" ext:qtip="Régénère l\'ensemble des pages dont l\'identifiant est précisé. Employez le tiret pour spécifier un groupe de pages. Exemple : 1,3,10-15.">Spécifiez les Pages</span>',
+			fieldLabel:		'<span class="atm-help" ext:qtip="{$cms_language->getJsMessage(MESSAGE_PAGE_REGEN_SELECTED_DESC)}">{$cms_language->getJsMessage(MESSAGE_PAGE_REGEN_SELECT_PAGES)}</span>',
 			name:			'page',
 			value:			'',
 			validateOnBlur:	false,
@@ -207,7 +214,7 @@ $jscontent = <<<END
 						url:		'tree.php',
 						params:		{
 							winId:			'pagesTree',
-							heading:		'Sélectionner la page de destination dans l\'arborescence',
+							heading:		'{$cms_language->getJsMessage(MESSAGE_PAGE_REGEN_TREE_SELECT_DEST)}',
 							onClick:		onclick,
 							currentPage:	this.getValue() || this.root
 						},
@@ -220,7 +227,7 @@ $jscontent = <<<END
 			}
 		}],
 		buttons:[{
-			text:			'Régénérer',
+			text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_REGEN)}',
 			scope:			this,
 			anchor:			'',
 			handler:		function() {
@@ -240,8 +247,8 @@ $jscontent = <<<END
 	
 	var scriptsRestart = new Ext.Button({
 		id:				'scriptsRestart',
-		text:			'Relancer les scripts',
-		tooltip:		'Relance le traitement des scripts dans la file d\'attente si les scripts ne sont pas déjà en cours de traitement.',
+		text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_RESTART_SCRIPTS)}',
+		tooltip:		'{$cms_language->getJsMessage(MESSAGE_PAGE_RESTART_SCRIPTS_DESC)}',
 		listeners:		{'click':function(){
 			Automne.server.call({
 				url:				'server-scripts-controler.php',
@@ -253,8 +260,8 @@ $jscontent = <<<END
     });
 	var scriptsStop = new Ext.Button({
 		id:				'scriptsStop',
-		text:			'Stopper les scripts',
-		tooltip:		'Arrête le traitement de la file d\'attente des scripts.',
+		text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_STOP_SCRIPTS)}',
+		tooltip:		'{$cms_language->getJsMessage(MESSAGE_PAGE_STOP_SCRIPTS_DESC)}',
 		listeners:		{'click':function(){
 			Automne.server.call({
 				url:				'server-scripts-controler.php',
@@ -266,8 +273,8 @@ $jscontent = <<<END
     });
 	var scriptsClear = new Ext.Button({
 		id:				'scriptsClear',
-		text:			'Effacer la file',
-		tooltip:		'Vide la file d\'attente des scripts.',
+		text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_CLEAR_QUEUE)}',
+		tooltip:		'{$cms_language->getJsMessage(MESSAGE_PAGE_CLEAR_QUEUE_DESC)}',
 		listeners:		{'click':function(){
 			Automne.server.call({
 				url:				'server-scripts-controler.php',
@@ -278,7 +285,7 @@ $jscontent = <<<END
 		},scope:this}
     });
 	var scriptsDetail = new Ext.form.FieldSet({
-		title:			'Détails des scripts en cours',
+		title:			'{$cms_language->getJsMessage(MESSAGE_PAGE_SCRIPTS_DETAIL)}',
 		collapsible:	true,
 		collapsed:		true,
 		height:			100,
@@ -295,7 +302,7 @@ $jscontent = <<<END
 		}
 	});
 	var scriptsQueue = new Ext.form.FieldSet({
-		title:			'Détails de la file d\'attente',
+		title:			'{$cms_language->getJsMessage(MESSAGE_PAGE_QUEUE_DETAIL)}',
 		collapsible:	true,
 		collapsed:		true,
 		height:			200,

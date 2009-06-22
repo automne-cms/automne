@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: server.php,v 1.5 2009/03/04 09:55:16 sebastien Exp $
+// $Id: server.php,v 1.6 2009/06/22 14:10:32 sebastien Exp $
 
 /**
   * PHP page : Load server detail window.
@@ -29,6 +29,21 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 $winId = sensitiveIO::request('winId', '', 'serverWindow');
 
 define("MESSAGE_TOOLBAR_HELP",1073);
+define("MESSAGE_PAGE_NO_SERVER_RIGHTS",748);
+define("MESSAGE_PAGE_AUTOMNE_PARAMS_TESTS",749);
+define("MESSAGE_PAGE_CHECK_FILES_ACCESS",750);
+define("MESSAGE_PAGE_FOR_AUTOMNE",751);
+define("MESSAGE_PAGE_FOR_AUTOMNE_DESC",752);
+define("MESSAGE_PAGE_FOR_USERS",753);
+define("MESSAGE_PAGE_FOR_USERS_DESC",754);
+define("MESSAGE_PAGE_SERVER_PARAMS",755);
+define("MESSAGE_TOOLBAR_HELP_DESC",756);
+define("MESSAGE_PAGE_CHECK",757);
+define("MESSAGE_PAGE_IN_PROGRESS",758);
+define("MESSAGE_PAGE_DETAIL",759);
+define("MESSAGE_PAGE_FILE_ACCESS",760);
+define("MESSAGE_PAGE_PHP_INFO",761);
+define("MESSAGE_PAGE_UPDATES",762);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -38,7 +53,7 @@ $view->setDisplayMode(CMS_view::SHOW_RAW);
 //CHECKS user has admin clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) { //templates
 	CMS_grandFather::raiseError('User has no administration rights');
-	$view->setActionMessage('Vous n\'avez pas les droits d\'administrateur ...');
+	$view->setActionMessage($cms_language->getMessage(MESSAGE_PAGE_NO_SERVER_RIGHTS));
 	$view->show();
 }
 
@@ -46,7 +61,7 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) { /
 
 //Test PHP version
 $content = '
-<h1>Test des paramètres du serveur nécessaires au fonctionnement d\'Automne :</h1>
+<h1>'.$cms_language->getMessage(MESSAGE_PAGE_AUTOMNE_PARAMS_TESTS).'</h1>
 <ul class="atm-server">';
 if (version_compare(PHP_VERSION, "5.2.0") === -1) {
 	$content .= '<li class="atm-pic-cancel">Error, PHP version ('.PHP_VERSION.') not match</li>';
@@ -195,15 +210,15 @@ $content = sensitiveIO::sanitizeJSString($content);
 
 //Files tab
 $filescontent = '
-<h1>Vérifier les droits d\'accès aux fichiers :</h1>
-	<h2>Pour Automne : </h2>
-	Permet de valider qu\'Automne possède bien les droits nécessaire sur l\'ensemble des fichiers du site.<br /><br />
+<h1>'.$cms_language->getMessage(MESSAGE_PAGE_CHECK_FILES_ACCESS).'</h1>
+	<h2>'.$cms_language->getMessage(MESSAGE_PAGE_FOR_AUTOMNE).'</h2>
+	'.$cms_language->getMessage(MESSAGE_PAGE_FOR_AUTOMNE_DESC).'<br /><br />
 	<div id="launchFilesCheck"></div><br />
 	<div id="filesCheckProgress"></div><br />
 	<div id="filesCheckDetail"></div>
 	<br />
-	<h2>Pour les utilisateurs : </h2>
-	Permet de valider que les utilisateurs et internautes possèdent bien les droits nécessaire sur l\'ensemble des fichiers du site.<br /><br />
+	<h2>'.$cms_language->getMessage(MESSAGE_PAGE_FOR_USERS).'</h2>
+	'.$cms_language->getMessage(MESSAGE_PAGE_FOR_USERS_DESC).'<br /><br />
 	<div id="launchHtaccessCheck"></div><br />
 	<div id="htaccessCheckProgress"></div><br />
 	<div id="htaccessCheckDetail"></div>
@@ -213,14 +228,14 @@ $filescontent = sensitiveIO::sanitizeJSString($filescontent);
 $jscontent = <<<END
 	var serverWindow = Ext.getCmp('{$winId}');
 	//set window title
-	serverWindow.setTitle('Paramètres du serveur');
+	serverWindow.setTitle('{$cms_language->getJsMessage(MESSAGE_PAGE_SERVER_PARAMS)}');
 	//set help button on top of page
 	serverWindow.tools['help'].show();
 	//add a tooltip on button
 	var propertiesTip = new Ext.ToolTip({
 		target:		 serverWindow.tools['help'],
 		title:			 '{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP)}',
-		html:			 'Cette page vous permet de voir l\'état des différents paramètres du serveur nécessaire à l\'éxécution d\'Automne.',
+		html:			 '{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP_DESC)}',
 		dismissDelay:	0
 	});
 	
@@ -233,13 +248,13 @@ $jscontent = <<<END
     });
 	var launchFilesCheck = new Ext.Button({
 		id:				'launchFilesCheck',
-		text:			'Vérifier',
+		text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_CHECK)}',
 		listeners:		{'click':function(){
 			launchFilesCheck.disable();
 	        progressFiles.wait({
 	            interval:	200,
 	            increment:	15,
-				text:		'En cours ...'
+				text:		'{$cms_language->getJsMessage(MESSAGE_PAGE_IN_PROGRESS)}'
 	        });
 			Automne.server.call({
 				url:				'server-check.php',
@@ -260,13 +275,13 @@ $jscontent = <<<END
     });
 	var launchHtaccessCheck = new Ext.Button({
 		id:				'launchHtaccessCheck',
-		text:			'Vérifier',
+		text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_CHECK)}',
 		listeners:		{'click':function(){
 			launchHtaccessCheck.disable();
 	        progressHtaccess.wait({
 	            interval:	200,
 	            increment:	15,
-				text:		'En cours ...'
+				text:		'{$cms_language->getJsMessage(MESSAGE_PAGE_IN_PROGRESS)}'
 	        });
 			Automne.server.call({
 				url:				'server-check.php',
@@ -286,7 +301,7 @@ $jscontent = <<<END
 		},scope:this}
     });
 	var filesCheckDetail = new Ext.form.FieldSet({
-		title:			'Détails',
+		title:			'{$cms_language->getJsMessage(MESSAGE_PAGE_DETAIL)}',
 		collapsible:	true,
 		collapsed:		false,
 		height:			220,
@@ -324,14 +339,14 @@ $jscontent = <<<END
 		},
 		items:[{
 			id:					'serverDatas',
-			title:				'Paramètres serveur',
+			title:				'{$cms_language->getJsMessage(MESSAGE_PAGE_SERVER_PARAMS)}',
 			autoScroll:			true,
 			border:				false,
 			bodyStyle: 			'padding:5px',
 			html: 				'$content'
 		},{
 			id:					'serverFiles',
-			title:				'Accès aux fichiers',
+			title:				'{$cms_language->getJsMessage(MESSAGE_PAGE_FILE_ACCESS)}',
 			autoScroll:			true,
 			border:				false,
 			bodyStyle: 			'padding:5px',
@@ -352,13 +367,13 @@ $jscontent = <<<END
 			}, scope:this}
 		},{
 			xtype:				'framePanel',
-			title:				'Informations PHP',
+			title:				'{$cms_language->getJsMessage(MESSAGE_PAGE_PHP_INFO)}',
 			id:					'phpDatas',
 			frameURL:			'/automne/admin/phpinfo.php',
 			allowFrameNav:		true
 		},{
 			xtype:				'framePanel',
-			title:				'Mises à jour',
+			title:				'{$cms_language->getJsMessage(MESSAGE_PAGE_UPDATES)}',
 			id:					'updatesPanel',
 			frameURL:			'/automne/admin-v3/patch.php',
 			allowFrameNav:		true

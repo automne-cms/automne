@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: block.php,v 1.4 2009/04/02 13:57:58 sebastien Exp $
+// $Id: block.php,v 1.5 2009/06/22 14:08:39 sebastien Exp $
 
 /**
   * Class CMS_block
@@ -343,7 +343,8 @@ class CMS_block extends CMS_grandFather
 		//check for valid tags nodes inside current block tag
 		$hasNode = false;
 		foreach($blockXML->childNodes as $blockChildNode) {
-			if (is_a($blockChildNode, 'DOMElement') && $blockChildNode->tagName != 'script') {
+			//scripts tags and p tags are not correctly handled by javascript
+			if (is_a($blockChildNode, 'DOMElement') && $blockChildNode->tagName != 'script' && $blockChildNode->tagName != 'p') {
 				$hasNode = true;
 			}
 		}

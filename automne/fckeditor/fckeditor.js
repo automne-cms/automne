@@ -302,12 +302,14 @@ function FCKeditor_IsCompatibleBrowser()
 {
 	var sAgent = navigator.userAgent.toLowerCase() ;
 
+	//<<
 	// Internet Explorer 5.5+
 	if ( /*@cc_on!@*/false && sAgent.indexOf("mac") == -1 )
 	{
 		var sBrowserVersion = navigator.appVersion.match(/MSIE (.\..)/)[1] ;
 		return ( sBrowserVersion >= 5.5 ) ;
 	}
+	//!>>
 
 	// Gecko (Opera 9 tries to behave like Gecko at this point).
 	if ( navigator.product == "Gecko" && navigator.productSub >= 20030210 && !( typeof(opera) == 'object' && opera.postError ) )

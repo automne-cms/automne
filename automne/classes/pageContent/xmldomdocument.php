@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: xmldomdocument.php,v 1.3 2009/04/02 13:57:59 sebastien Exp $
+// $Id: xmldomdocument.php,v 1.4 2009/06/22 14:08:40 sebastien Exp $
 
 /**
   * Class CMS_DOMDocument
@@ -91,6 +91,8 @@ class CMS_DOMDocument extends DOMDocument {
 		}
 		//replace tags like <br></br> by auto closed tags
 		$output = str_replace(array_keys($getAutoClosedTagsList), $getAutoClosedTagsList, $output);
+		//strip cariage return arround entities
+		$output = preg_replace('#\n(&[a-z]+;)\n#U' , '\1', $output);
 		return $output;
 	}
 }

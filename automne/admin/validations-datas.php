@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: validations-datas.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: validations-datas.php,v 1.2 2009/06/22 14:10:33 sebastien Exp $
 
 /**
   * PHP page : Load validations pending for given module and editions
@@ -36,14 +36,6 @@ $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_JSON);
 //get current editions and module
-/*
-	$editions = (isset($_REQUEST['editions']) && sensitiveIO::isPositiveInteger($_REQUEST['editions'])) ? $_REQUEST['editions'] : false;
-	$module = (isset($_REQUEST['module']) && sensitiveIO::sanitizeAsciiString($_REQUEST['module'])) ? $_REQUEST['module'] : false;
-	$resource = (isset($_REQUEST['resource']) && sensitiveIO::sanitizeAsciiString($_REQUEST['resource'])) ? $_REQUEST['resource'] : false;
-	$withValidationsPending = (isset($_REQUEST['withValidationsPending']) && $_REQUEST['withValidationsPending']) ? true : false;
-	$start = (isset($_REQUEST['start']) && sensitiveIO::isPositiveInteger($_REQUEST['start'])) ? $_REQUEST['start'] : 0;
-	$limit = (isset($_REQUEST['limit']) && sensitiveIO::isPositiveInteger($_REQUEST['limit'])) ? $_REQUEST['limit'] : 0;
-*/
 $editions = sensitiveIO::request('editions', 'sensitiveIO::isPositiveInteger');
 $module = sensitiveIO::request('module', 'sensitiveIO::sanitizeAsciiString');
 $resource = sensitiveIO::request('resource', 'sensitiveIO::sanitizeAsciiString');

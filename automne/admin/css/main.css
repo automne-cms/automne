@@ -1,4 +1,4 @@
-/*$Id: main.css,v 1.7 2009/06/05 15:01:05 sebastien Exp $*/
+/*$Id: main.css,v 1.8 2009/06/22 14:10:34 sebastien Exp $*/
 body {
 	font-family:		tahoma,arial,helvetica,sans-serif;
 	font-size:			small;
@@ -209,44 +209,33 @@ span.atm-tab * {
 .x-tab-strip .x-tab-with-icon span.atm-pic-big-edited{
 	background-position:0px -177px;
 }
-
-/*.x-tab-strip .x-tab-strip-over span.atm-pic-big-search, */
 .x-tab-strip .x-tab-strip-active span.atm-pic-big-search{
 	background-position:5px -297px;
 }
-/*.x-tab-strip .x-tab-strip-over span.atm-pic-big-tree, */
 .x-tab-strip .x-tab-strip-active span.atm-pic-big-tree{
 	background-position:5px -327px;
 }
-/*.x-tab-strip .x-tab-strip-over span.atm-pic-big-favorite, */
 .x-tab-strip .x-tab-strip-active span.atm-pic-big-favorite{
 	background-position:5px -357px;
 }
-/*.x-tab-strip .x-tab-strip-over span.atm-pic-big-action, */
 .x-tab-strip .x-tab-strip-active span.atm-pic-big-action{
 	background-position:0px -387px;
 }
-/*.x-tab-strip .x-tab-strip-over span.atm-pic-big-add, */
 .x-tab-strip .x-tab-strip-active span.atm-pic-big-add{
 	background-position:0px -417px;
 }
-/*.x-tab-strip .x-tab-strip-over span.atm-pic-big-properties, */
 .x-tab-strip .x-tab-strip-active span.atm-pic-big-properties{
 	background-position:0px -447px;
 }
-/*.x-tab-strip .x-tab-strip-over span.atm-pic-big-edit, */
 .x-tab-strip .x-tab-strip-active span.atm-pic-big-edit{
 	background-position:0px -507px;
 }
-/*.x-tab-strip .x-tab-strip-over span.atm-pic-big-draft, */
 .x-tab-strip .x-tab-strip-active span.atm-pic-big-draft{
 	background-position:0px -537px;
 }
-/*.x-tab-strip .x-tab-strip-over span.atm-pic-big-edited, */
 .x-tab-strip .x-tab-strip-active span.atm-pic-big-edited{
 	background-position:0px -477px;
 }
-
 .atm-block-control {
 	display:			inline-block;
 	cursor:				pointer;
@@ -268,9 +257,6 @@ span.atm-tab * {
 .atm-block-control-modify-on {
 	background-position: -16px -160px;
 }
-
-
-
 
 /*SMALL PICTOS*/
 .atm-pic-logo {
@@ -463,7 +449,6 @@ tr.atm-even {
 .atm-link-field {
 	border-left:		1px solid #B5B8C8;
 }
-
 /*PAGES AND CATEGORIES RIGHTS TREE*/
 .categoriesList ul {
 	padding:			0px;
@@ -525,12 +510,12 @@ ul.categoriesList {
 	cursor:			pointer;
 }
 .atm-results .atm-title{
-	font-weight:	bold;
-	font-size:		13px;
+	font-weight:	bold !important;
+	font-size:		13px !important;
 	margin:			0;
 	display:		block;
-	letter-spacing: 0;
-	color:			#555;
+	letter-spacing: 0 !important;
+	color:			#555 !important;
 	text-align:		left;
 	background:		#e3e5e6 url(/automne/admin/img/panel/atm-result.gif) repeat-x left bottom;
 	padding:		3px;
@@ -679,6 +664,9 @@ ul.atm-server li {
 	font-size:			13px;
 	padding-bottom:		10px;
 }
+.x-panel-body {
+	font-size:			12px;
+}
 .x-panel-body h2 {
 	color:				#4B7800;
 	font-weight:		bold;
@@ -697,4 +685,10 @@ ul.atm-server li {
 	font-size: 10pt;
 	font-family: monospace;
 	padding-top: .4em;
+}
+#tabPanels ul.x-tab-strip {
+	width:	auto;
+}
+#tabPanels ul.x-tab-strip-top {
+	background:#DBDBDB url(/automne/admin/img/tabs/tab-strip-bg-atm.gif) no-repeat right top;
 }

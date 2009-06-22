@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: users.php,v 1.3 2009/04/02 13:55:55 sebastien Exp $
+// $Id: users.php,v 1.4 2009/06/22 14:10:33 sebastien Exp $
 
 /**
   * PHP page : Load users search window.
@@ -55,8 +55,6 @@ define("MESSAGE_PAGE_NO", 1083);
 define("MESSAGE_PAGE_USER_SYSTEM", 521);
 define("MESSAGE_PAGE_REACTIVATE_USER", 522);
 define("MESSAGE_PAGE_DISABLE_USER", 523);
-
-
 
 $winId = sensitiveIO::request('winId', '', 'usersPanel');
 $fatherId = sensitiveIO::request('fatherId', '', 'usersGroupsWindow');

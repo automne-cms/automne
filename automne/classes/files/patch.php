@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: patch.php,v 1.3 2009/03/04 09:56:31 sebastien Exp $
+// $Id: patch.php,v 1.4 2009/06/22 14:08:41 sebastien Exp $
 
 /**
   * Class CMS_patch
@@ -521,6 +521,10 @@ class CMS_patch extends CMS_grandFather
 		} else {
 			$this->raiseError("Param must be an array");
 			return false;
+		}
+		//at end of any patch process, update Automne subversion to force reload of JS and CSS cache from client
+		if (@file_put_contents(PATH_MAIN_FS."/SUBVERSION" , time()) !== false) {
+			CMS_file::chmodFile(FILES_CHMOD, PATH_MAIN_FS."/SUBVERSION");
 		}
 	}
 	

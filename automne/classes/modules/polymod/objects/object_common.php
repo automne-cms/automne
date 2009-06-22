@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_common.php,v 1.4 2009/06/05 15:02:18 sebastien Exp $
+// $Id: object_common.php,v 1.5 2009/06/22 14:08:40 sebastien Exp $
 
 /**
   * Class CMS_object_common
@@ -310,7 +310,7 @@ abstract class CMS_object_common extends CMS_grandFather
 			foreach ($this->_subfields as $subFieldID => $subFieldDefinition) {
 				if (is_object($this->_subfieldValues[$subFieldID])) {
 					//if no value set for it, return false
-					if (!$values[$prefixName.$this->_field->getID().'_'.$subFieldID]) {
+					if (!isset($values[$prefixName.$this->_field->getID().'_'.$subFieldID]) || !$values[$prefixName.$this->_field->getID().'_'.$subFieldID]) {
 						return false;
 					}
 				}
@@ -671,7 +671,7 @@ abstract class CMS_object_common extends CMS_grandFather
 				return htmlspecialchars($this->getFieldLabel($cms_language));
 			break;
 			case 'value':
-				return htmlspecialchars($this->_subfieldValues[0]->getValue());
+				return (is_object($this->_subfieldValues[0])) ? htmlspecialchars($this->_subfieldValues[0]->getValue()) : '';
 			break;
 			case 'set':
 				return $this->_subfieldValues[0]->setValue($parameters);

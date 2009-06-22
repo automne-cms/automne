@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-content-controler.php,v 1.4 2009/06/05 15:01:04 sebastien Exp $
+// $Id: page-content-controler.php,v 1.5 2009/06/22 14:10:31 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on page content
@@ -32,6 +32,7 @@ define("MESSAGE_PAGE_ERROR_DEL_ROW", 551);
 define("MESSAGE_PAGE_ERROR_MOV_ROW", 552);
 define("MESSAGE_PAGE_ERROR_DEL_BLOCK", 553);
 define("MESSAGE_PAGE_ERROR_UPDATE_BLOCK_CONTENT", 554);
+define("MESSAGE_PAGE_COPY_PASTE_ERROR", 694);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -256,7 +257,7 @@ switch ($action) {
 				//Send an error to user about his content
 				$jscontent = "
 				Automne.message.popup({
-					msg: 				'Le code de votre contenu est mal formatté et il ne peut être enregistré.<br />Evitez tout copier-coller de texte depuis un éditeur de texte externe. Employez les outils \'Coller comme texte\' ou \'Coller de Word\' de la barre d\'outils dans ce cas.<br />Vérifiez le code source de votre contenu : Il doit être composé de XHTML valide.',
+					msg: 				'".$cms_language->getJsMessage(MESSAGE_PAGE_COPY_PASTE_ERROR)."',
 					buttons: 			Ext.MessageBox.OK,
 					closable: 			true,
 					icon: 				Ext.MessageBox.ERROR
@@ -268,7 +269,7 @@ switch ($action) {
 				//Send an error to user about his content
 				$jscontent = "
 				Automne.message.popup({
-					msg: 				'Le code de votre contenu est mal formatté et il ne peut être enregistré.<br />Evitez tout copier-coller de texte depuis un éditeur de texte externe. Employez les outils \'Coller comme texte\' ou \'Coller de Word\' de la barre d\'outils dans ce cas.<br />Vérifiez le code source de votre contenu : Il doit être composé de XHTML valide.',
+					msg: 				'".$cms_language->getJsMessage(MESSAGE_PAGE_COPY_PASTE_ERROR)."',
 					buttons: 			Ext.MessageBox.OK,
 					closable: 			true,
 					icon: 				Ext.MessageBox.ERROR

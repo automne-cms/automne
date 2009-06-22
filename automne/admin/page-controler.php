@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-controler.php,v 1.9 2009/06/05 15:01:04 sebastien Exp $
+// $Id: page-controler.php,v 1.10 2009/06/22 14:10:31 sebastien Exp $
 
 /**
   * PHP page : Receive pages updates
@@ -46,11 +46,16 @@ define("MESSAGE_PAGE_ACTION_EMAIL_DELETE_BODY", 125);
 define("MESSAGE_PAGE_ACTION_EMAIL_ARCHIVE_SUBJECT", 127);
 define("MESSAGE_PAGE_ACTION_EMAIL_ARCHIVE_BODY", 128);
 define("MESSAGE_PAGE_COPY_OF", 524);
-
 define("MESSAGE_PAGE_ERROR_MISSING_DATA", 364);
 define("MESSAGE_PAGE_ERROR_RIGHT", 365);
 define("MESSAGE_PAGE_ERROR_COPY", 366);
 define("MESSAGE_PAGE_ERROR_CREATION", 563);
+define("MESSAGE_PAGE_ACTION_MOVE_ERROR", 695);
+define("MESSAGE_PAGE_ACTION_MOVE_ERROR_NO_RIGHTS", 696);
+define("MESSAGE_PAGE_ACTION_DUPLICATION_ERROR_NO_RIGHTS", 697);
+define("MESSAGE_PAGE_ACTION_DUPLICATION_ERROR", 698);
+define("MESSAGE_PAGE_ACTION_DUPLICATION_DONE", 699);
+
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -343,12 +348,12 @@ switch ($action) {
 						//must reload page
 						$cms_page = CMS_tree::getPageByID($cms_page->getID());
 					} else {
-						$cms_message = 'Erreur lors du déplacement de la page...';
+						$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_MOVE_ERROR);
 						$cms_page->raiseError('Error during move of page '.$cms_page->getID().'.');
 					}
 				}
 			} else {
-				$cms_message = 'Erreur lors du déplacement de la page... Vous n\'avez pas les droits d\'édition sur cette page.';
+				$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_MOVE_ERROR_NO_RIGHTS);
 				$cms_page->raiseError('Error during move of page '.$cms_page->getID().'. User does not have edition rights on current page.');
 			}
 		}
@@ -565,7 +570,7 @@ switch ($action) {
 		//CHECKS user has duplication clearance
 		if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_DUPLICATE_BRANCH)) {
 			CMS_grandFather::raiseError('User has no rights to duplicate branch...');
-			$cms_message = 'Vous n\'avez pas le droit de dupliquer les branches d\'arborescences.';
+			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_DUPLICATION_ERROR_NO_RIGHTS);
 		} else {
 			//augment the execution time, because things here can be quite lengthy
 			@set_time_limit(9000);
@@ -610,9 +615,9 @@ switch ($action) {
 			if (!$pageFrom->hasError() && !$pageTo->hasError()) {
 				//Do recursivly
 				duplicatePage($cms_user, $pageFrom, $pageTo) ;
-				$cms_message = 'Duplication des pages effectuée.';
+				$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_DUPLICATION_DONE);
 			} else {
-				$cms_message = 'Erreur sur la page de départ ou de destination de la duplication.';
+				$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_DUPLICATION_ERROR);
 			}
 		}
 	break;

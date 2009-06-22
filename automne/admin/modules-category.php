@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modules-category.php,v 1.2 2009/06/09 13:42:57 sebastien Exp $
+// $Id: modules-category.php,v 1.3 2009/06/22 14:10:31 sebastien Exp $
 
 /**
   * PHP page : Load category item interface
@@ -35,6 +35,9 @@ define("MESSAGE_IMAGE",803);
 define("MESSAGE_PAGE_FIELD_PARENT_CATEGORY", 1214);
 define("MESSAGE_PAGE_FIELD_THUMBNAIL", 833);
 define("MESSAGE_PAGE_SAVE", 952);
+define("MESSAGE_PAGE_TITLE", 689);
+define("MESSAGE_TOOLBAR_HELP_MESSAGE", 690);
+define("MESSAGE_PAGE_FORM_INCORRECT", 682);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -72,17 +75,16 @@ if ($catId) {
 	$item->setAttribute('language', $cms_language);
 	$item->setAttribute('moduleCodename', $codename);
 	$parentCategory = $item->getParent();
-} elseif ($fatherId) {
+} else {
 	// Parent category
 	$item = new CMS_moduleCategory();
 	$item->setAttribute('language', $cms_language);
 	$item->setAttribute('moduleCodename', $codename);
-	$parentCategory = CMS_moduleCategories_catalog::getById($fatherId);
-} else {
-	CMS_grandFather::raiseError('Error, missing categories informations');
-	$view->show();
+	if ($fatherId) {
+		$parentCategory = CMS_moduleCategories_catalog::getById($fatherId);
+		$parentCategory->setAttribute('language', $cms_language);
+	}
 }
-$parentCategory->setAttribute('language', $cms_language);
 
 if (!function_exists("build_category_tree_options")) {
 	/** 
@@ -156,7 +158,7 @@ if (is_array($root_categories) && sizeof($root_categories) > 0) {
 if ($selectContent) {
 	$items[] = array(
 		'xtype'			=> 'atmCombo',
-		'fieldLabel'	=> '<span class="atm-red">*</span> '.$cms_language->getMessage(MESSAGE_PAGE_FIELD_PARENT_CATEGORY),
+		'fieldLabel'	=> $cms_language->getMessage(MESSAGE_PAGE_FIELD_PARENT_CATEGORY),
 		'name'			=> 'parentId',
 		'hiddenName'	=> 'parentId',
 		'forceSelection'=> true,
@@ -164,10 +166,10 @@ if ($selectContent) {
 		'valueField'	=> 'id',
 		'displayField'	=> 'name',
 		'triggerAction'	=> 'all',
-		'allowBlank'	=> false,
+		'allowBlank'	=> true,
 		'selectOnFocus'	=> true,
 		'editable'		=> false,
-		'value'			=> $parentCategory->getId(),
+		'value'			=> (isset($parentCategory)) ? $parentCategory->getId() : '',
 		'store'			=> array(
 			'xtype'			=> 'arraystore',
 			'fields' 		=> array('id', 'name'),
@@ -217,12 +219,12 @@ foreach ($all_languages as $aLanguage) {
 				'xtype'				=> 'textfield',
 				'allowBlank'		=> !$mandatory,
 				'name'				=> 'label_'.$aLanguage->getCode(),
-				'value'				=> $item->getLabel($aLanguage)
+				'value'				=> $item->getLabel($aLanguage, false)
 			),array(
 				'fieldLabel'		=> $cms_language->getMessage(MESSAGE_PAGE_FIELD_DESC),
 				'xtype'				=> 'fckeditor',
 				'name'				=> 'description_'.$aLanguage->getCode(),
-				'value'				=> (string) $item->getDescription($aLanguage),
+				'value'				=> (string) $item->getDescription($aLanguage, false),
 				'height'			=> 200,
 				'editor'			=> array(
 					'ToolbarSet' 		=> 'BasicLink',
@@ -285,14 +287,14 @@ $items = sensitiveIO::jsonEncode($items);
 $jscontent = <<<END
 	var window = Ext.getCmp('{$winId}');
 	//set window title
-	window.setTitle('Création / Modification d\'une catégorie');
+	window.setTitle('{$cms_language->getJsMessage(MESSAGE_PAGE_TITLE)}');
 	//set help button on top of page
 	window.tools['help'].show();
 	//add a tooltip on button
 	var propertiesTip = new Ext.ToolTip({
 		target:		 window.tools['help'],
 		title:			 '{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP)}',
-		html:			 'Sur cette page, vous pouvez créer ou modifier les données (titre, description, vignettes) d\'une catégorie.',
+		html:			 '{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP_MESSAGE)}',
 		dismissDelay:	0
 	});
 	
@@ -336,14 +338,14 @@ $jscontent = <<<END
 						},
 						success:function(form, action){
 							//extract updated json datas from response
-							var jsonResponse = '{}';
-							if (action.response.responseXML && action.response.responseXML.getElementsByTagName && action.response.responseXML.getElementsByTagName('jsoncontent').length) {
+							var jsonResponse = {};
+							if (action.response.responseXML && action.response.responseXML.getElementsByTagName('jsoncontent').length) {
 								try{
 									jsonResponse = Ext.decode(action.response.responseXML.getElementsByTagName('jsoncontent').item(0).firstChild.nodeValue);
 								} catch(e) {
 									jsonResponse = {};
 									pr(e, 'error');
-									Automne.server.failureResponse(response, options, e, 'json');
+									Automne.server.failureResponse(action.response, action.options, e, 'json');
 								}
 							}
 							if (jsonResponse.id) {
@@ -353,7 +355,7 @@ $jscontent = <<<END
 						scope:this
 					});
 				} else {
-					Automne.message.show('Le formulaire est incomplet ou possède des valeurs incorrectes ...', '', window);
+					Automne.message.show('{$cms_language->getJSMessage(MESSAGE_PAGE_FORM_INCORRECT)}', '', window);
 				}
 			},
 			scope:			this

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: row.php,v 1.6 2009/06/05 15:01:04 sebastien Exp $
+// $Id: row.php,v 1.7 2009/06/22 14:10:32 sebastien Exp $
 
 /**
   * PHP page : Load row detail window.
@@ -31,6 +31,32 @@ define("MESSAGE_PAGE_SAVE", 952);
 define("MESSAGE_SELECT_PICTURE",528);
 define("MESSAGE_IMAGE",803);
 define("MESSAGE_SELECT_FILE",534);
+define("MESSAGE_FIELD_GROUPS",837);
+define("MESSAGE_PAGE_PROPERTIES", 7);
+define("MESSAGE_PAGE_LABEL", 814);
+define("MESSAGE_PAGE_DESCRIPTION", 139);
+define("MESSAGE_ACTION_HELP", 1073);
+define("MESSAGE_ERROR_NO_RIGHTS_FOR_ROWS", 706);
+define("MESSAGE_FIELD_GROUPS_DESC", 707);
+define("MESSAGE_FIELD_ICON_DESC", 708);
+define("MESSAGE_FIELD_ICON", 709);
+define("MESSAGE_PAGE_ROW", 710);
+define("MESSAGE_PAGE_ROW_CREATE", 711);
+define("MESSAGE_TOOLBAR_HELP_DESC", 712);
+define("MESSAGE_PAGE_NEW_GROUPS_DESC", 713);
+define("MESSAGE_PAGE_NEW_GROUPS", 714);
+define("MESSAGE_PAGE_NO_GROUPS_RIGHTS_DESC", 715);
+define("MESSAGE_PAGE_NO_GROUPS_RIGHTS", 716);
+define("MESSAGE_PAGE_PAGE_TEMPLATES_DESC", 717);
+define("MESSAGE_PAGE_PAGE_TEMPLATES", 718);
+define("MESSAGE_PAGE_ALLOWED", 719);
+define("MESSAGE_PAGE_AVAILABLE", 720);
+define("MESSAGE_PAGE_NEW_ICON_DESC", 721);
+define("MESSAGE_PAGE_NEW_ICON", 722);
+define("MESSAGE_PAGE_XML_DEFINITION", 723);
+define("MESSAGE_PAGE_XML_DEFINITION_DESC", 724);
+define("MESSAGE_PAGE_SYNTAX_COLOR", 725);
+define("MESSAGE_PAGE_ACTION_REINDENT", 726);
 
 $winId = sensitiveIO::request('winId', '', 'rowWindow');
 $rowId = sensitiveIO::request('row', 'sensitiveIO::isPositiveInteger', 'createRow');
@@ -43,7 +69,7 @@ $view->setDisplayMode(CMS_view::SHOW_RAW);
 //CHECKS user has row edition clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES)) { //rows
 	CMS_grandFather::raiseError('User has no rights on rows editions');
-	$view->setActionMessage('Vous n\'avez pas le droit de gérer les modèles de rangées ...');
+	$view->setActionMessage($cms_language->getMessage(MESSAGE_ERROR_NO_RIGHTS_FOR_ROWS));
 	$view->show();
 }
 
@@ -85,7 +111,7 @@ if ($allGroups) {
 	$columns = sizeof($allGroups) < 5 ? sizeof($allGroups) : 5;
 	$groupsfield .= "{
 		xtype: 		'checkboxgroup',
-		fieldLabel: '<span class=\"atm-help\" ext:qtip=\"Vous pouvez utiliser des groupes pour catégoriser votre modèle de rangée. Vous pourrez ainsi simplifier sa sélection mais aussi associer des droits aux utilisateurs sur ces groupes. Ceci permettra de limiter l\'usage de certains modèles spécifiques à certains profils d\'utilisateurs.\">Groupes</span>',
+		fieldLabel: '<span class=\"atm-help\" ext:qtip=\"{$cms_language->getJsMessage(MESSAGE_FIELD_GROUPS_DESC)}\">{$cms_language->getJsMessage(MESSAGE_FIELD_GROUPS)}</span>',
 		columns: 	{$columns},
 		items: [";
 		foreach ($allGroups as $aGroup) {
@@ -114,7 +140,7 @@ if ($allIcons) {
 	$columns = sizeof($allIcons) < 5 ? sizeof($allIcons) : 5;
 	$iconsField .= "{
 		xtype: 		'radiogroup',
-		fieldLabel: '<span class=\"atm-help\" ext:qtip=\"Vous pouvez utiliser des icônes pour identifier votre modèle de rangée. Vous pourrez ainsi simplifier sa sélection.\">Icône</span>',
+		fieldLabel: '<span class=\"atm-help\" ext:qtip=\"{$cms_language->getJsMessage(MESSAGE_FIELD_ICON_DESC)}\">{$cms_language->getJsMessage(MESSAGE_FIELD_ICON)}</span>',
 		columns: 	{$columns},
 		items: [";
 		foreach ($allIcons as $icon) {
@@ -143,10 +169,10 @@ $selectedTemplates = sensitiveIO::jsonEncode($selectedTemplates);
 
 //DEFINITION TAB
 $rowDefinition = ($rowDefinition) ? $rowDefinition : '<row></row>';
-$content = '<textarea id="row-definition-'.$rowId.'" style="display:none;">'./*str_replace("\t", '    ', */(htmlspecialchars($rowDefinition)).'</textarea>';
+$content = '<textarea id="row-definition-'.$rowId.'" style="display:none;">'.htmlspecialchars($rowDefinition).'</textarea>';
 $view->setContent($content);
 
-$title = (sensitiveIO::isPositiveInteger($rowId)) ? 'Modèle de rangée : '.$label : 'Création d\\\'un modèle de rangée';
+$title = sensitiveIO::sanitizeJSString((sensitiveIO::isPositiveInteger($rowId)) ? $cms_language->getMessage(MESSAGE_PAGE_ROW).' '.$label : $cms_language->getMessage(MESSAGE_PAGE_ROW_CREATE));
 
 $jscontent = <<<END
 	var rowWindow = Ext.getCmp('{$winId}');
@@ -159,7 +185,7 @@ $jscontent = <<<END
 	var propertiesTip = new Ext.ToolTip({
 		target:			rowWindow.tools['help'],
 		title:			'{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP)}',
-		html:			'Cette page vous permet de créer et modifier un modèle de rangée. Les modèles de rangée servent de base de saisie au contenu des pages des sites.',
+		html:			'{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP_DESC)}',
 		dismissDelay:	0
 	});
 	//editor var
@@ -186,7 +212,7 @@ $jscontent = <<<END
 		},
 		items:[{
 			id:					'rowDatas-{$rowId}',
-			title:				'Propriétés',
+			title:				'{$cms_language->getJsMessage(MESSAGE_PAGE_PROPERTIES)}',
 			autoScroll:			true,
 			url:				'rows-controler.php',
 			layout: 			'form',
@@ -202,30 +228,30 @@ $jscontent = <<<END
 				allowBlank:			true
 			},
 			items:[{
-				fieldLabel:		'* Libellé',
+				fieldLabel:		'<span class="atm-red">*</span> {$cms_language->getJsMessage(MESSAGE_PAGE_LABEL)}',
 				name:			'label',
 				value:			'{$label}',
 				allowBlank:		false
 			},{
-				fieldLabel:		'Description',
+				fieldLabel:		'{$cms_language->getJsMessage(MESSAGE_PAGE_DESCRIPTION)}',
 				xtype:			'textarea',
 				name:			'description',
 				value:			'{$description}'
 			},{$groupsfield}{
-				fieldLabel:		'<span class="atm-help" ext:qtip="Vous pouvez ajouter un ou plusieurs nouveaux groupes au modèle de rangée en cours. Le nom du groupe ne doit contenir que des caractères alphanumériques. Les groupes doivent être séparés par des virgules ou des point-virgules.">Nouveaux groupes</span>',
+				fieldLabel:		'<span class="atm-help" ext:qtip="{$cms_language->getJsMessage(MESSAGE_PAGE_NEW_GROUPS_DESC)}">{$cms_language->getJsMessage(MESSAGE_PAGE_NEW_GROUPS)}</span>',
 				name:			'newgroup',
 				value:			''
 			},{
 				fieldLabel:		'',
 				labelSeparator:	'',
 				xtype:			'checkbox',
-				boxLabel: 		'<span class="atm-help" ext:qtip="En cochant cette case, aucun utilisateur ne pourra voir ou utiliser ce modèle de rangée tant qu\'ils n\'auront pas les droits sur les nouveaux groupes ajoutés ci-dessus.">Ne pas donner les droits de voir ces nouveaux groupes aux utilisateurs.</span>',
+				boxLabel: 		'<span class="atm-help" ext:qtip="{$cms_language->getJsMessage(MESSAGE_PAGE_NO_GROUPS_RIGHTS_DESC)}">{$cms_language->getJsMessage(MESSAGE_PAGE_NO_GROUPS_RIGHTS)}</span>',
 				name: 			'nouserrights',
 				inputValue:		'1'
 			},{
 				xtype:			"itemselector",
 				name:			"templates",
-				fieldLabel:		'<span class="atm-help" ext:qtip="Sélectionnez les modèles de pages pour lesquels l\'utilisation de ce modèle de rangée sera possible. Si aucun modèle n\'est spécifié, tous les modèles de page pourront employer cette rangée.">Modèles de pages</span>',
+				fieldLabel:		'<span class="atm-help" ext:qtip="{$cms_language->getJsMessage(MESSAGE_PAGE_PAGE_TEMPLATES_DESC)}">{$cms_language->getJsMessage(MESSAGE_PAGE_PAGE_TEMPLATES)}</span>',
 				dataFields:		["code", "desc"],
 				toData:			{$selectedTemplates},
 				msWidth:		250,
@@ -233,13 +259,13 @@ $jscontent = <<<END
 				height:			140,
 				valueField:		"code",
 				displayField:	"desc",
-				toLegend:		"Autorisés",
-				fromLegend:		"Disponibles",
+				toLegend:		"{$cms_language->getJsMessage(MESSAGE_PAGE_ALLOWED)}",
+				fromLegend:		"{$cms_language->getJsMessage(MESSAGE_PAGE_AVAILABLE)}",
 				fromData:		{$availableTemplates}
 			},{$iconsField}{
 				xtype: 			'atmImageUploadField',
 				emptyText: 		'{$cms_language->getJsMessage(MESSAGE_SELECT_PICTURE)}',
-				fieldLabel: 	'<span class="atm-help" ext:qtip="Si aucune icône ne convient dans la liste ci-dessus, vous pouvez en ajouter une nouvelle..">Nouvelle icône</span>',
+				fieldLabel: 	'<span class="atm-help" ext:qtip="{$cms_language->getJsMessage(MESSAGE_PAGE_NEW_ICON_DESC)}">{$cms_language->getJsMessage(MESSAGE_PAGE_NEW_ICON)}</span>',
 				name: 			'newimage',
 				maxWidth:		70,
 				uploadCfg:	{
@@ -274,7 +300,7 @@ $jscontent = <<<END
 			}]
 		},{
 			id:					'rowDef-{$rowId}',
-			title:				'Définition XML',
+			title:				'{$cms_language->getJSMessage(MESSAGE_PAGE_XML_DEFINITION)}',
 			autoScroll:			true,
 			url:				'rows-controler.php',
 			layout: 			'form',
@@ -308,12 +334,12 @@ $jscontent = <<<END
 			},
 			items:[{
 				xtype:			'panel',
-				html:			'Vous pouvez modifier ici la structure XML de cette rangée. Vous devez respecter la norme XML sous peine d\'erreur.<br /><strong>Attention</strong>, ne supprimez pas de tag &lt;block&gt; existant sous peine de perdre du contenu sur les pages employant déjà ce modèle de rangée.',
+				html:			'{$cms_language->getJSMessage(MESSAGE_PAGE_XML_DEFINITION_DESC)}',
 				border:			false,
 				bodyStyle: 		'padding-bottom:10px'
 			}, {
 				xtype:			'checkbox',
-				boxLabel:		'Activer la coloration syntaxique',
+				boxLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_SYNTAX_COLOR)}',
 				listeners:		{'check':function(field, checked) {
 					if (checked) {
 						editor = CodeMirror.fromTextArea('defText-{$rowId}', {
@@ -375,7 +401,7 @@ $jscontent = <<<END
 				scope:this}
 			}],
 			buttons:[{
-				text:			'Aide',
+				text:			'{$cms_language->getJSMessage(MESSAGE_ACTION_HELP)}',
 				anchor:			'',
 				scope:			this,
 				handler:		function(button) {
@@ -404,7 +430,7 @@ $jscontent = <<<END
 				}
 			}, {
 				id:				'reindent-{$rowId}',
-				text:			'Réindenter',
+				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_ACTION_REINDENT)}',
 				anchor:			'',
 				hidden:			true,
 				listeners:		{'click':function(button) {

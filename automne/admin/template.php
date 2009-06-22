@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: template.php,v 1.8 2009/06/05 15:01:05 sebastien Exp $
+// $Id: template.php,v 1.9 2009/06/22 14:10:33 sebastien Exp $
 
 /**
   * PHP page : Load template detail window.
@@ -31,6 +31,37 @@ define("MESSAGE_PAGE_SAVE", 952);
 define("MESSAGE_SELECT_PICTURE",528);
 define("MESSAGE_IMAGE",803);
 define("MESSAGE_SELECT_FILE",534);
+define("MESSAGE_FIELD_GROUPS",837);
+define("MESSAGE_PAGE_PROPERTIES", 7);
+define("MESSAGE_PAGE_LABEL", 814);
+define("MESSAGE_PAGE_DESCRIPTION", 139);
+define("MESSAGE_ACTION_HELP", 1073);
+define("MESSAGE_PAGE_NEW_GROUPS", 714);
+define("MESSAGE_PAGE_SYNTAX_COLOR", 725);
+define("MESSAGE_PAGE_ACTION_REINDENT", 726);
+define("MESSAGE_PAGE_ALLOWED", 719);
+define("MESSAGE_PAGE_AVAILABLE", 720);
+define("MESSAGE_PAGE_XML_DEFINITION", 723);
+define("MESSAGE_ERROR_NO_RIGHTS_FOR_TEMPLATES", 799);
+define("MESSAGE_FIELD_GROUPS_DESC", 1449);
+define("MESSAGE_PAGE_TEMPLATE", 1450);
+define("MESSAGE_PAGE_CREATE_TEMPLATE", 1451);
+define("MESSAGE_PAGE_PRINT", 1452);
+define("MESSAGE_PAGE_PRINT_DESC", 1453);
+define("MESSAGE_PAGE_PRINT_ZONES", 1454);
+define("MESSAGE_PAGE_SELECT", 1455);
+define("MESSAGE_TOOLBAR_HELP_DESC", 1456);
+define("MESSAGE_PAGE_NEW_GROUPS_DESC", 1457);
+define("MESSAGE_PAGE_NEW_GROUPS_NO_RIGHTS_DESC", 1458);
+define("MESSAGE_PAGE_NEW_GROUPS_NO_RIGHTS", 1459);
+define("MESSAGE_PAGE_WEBSITES_DESC", 146);
+define("MESSAGE_PAGE_WEBSITES", 1461);
+define("MESSAGE_PAGE_THUMBNAIL_DESC", 1462);
+define("MESSAGE_PAGE_THUMBNAIL", 1463);
+define("MESSAGE_PAGE_XML_DEFINITION_DESC", 1464);
+define("MESSAGE_PAGE_XML_FILE", 1465);
+define("MESSAGE_PAGE_XML_DEFINITION_USAGE_DESC", 1466);
+define("MESSAGE_PAGE_DEFAULT_ROWS", 1467);
 
 $winId = sensitiveIO::request('winId', '', 'templateWindow');
 $templateId = sensitiveIO::request('template', 'sensitiveIO::isPositiveInteger', 'createTemplate');
@@ -43,7 +74,7 @@ $view->setDisplayMode(CMS_view::SHOW_RAW);
 //CHECKS user has templates clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //templates
 	CMS_grandFather::raiseError('User has no rights template editions');
-	$view->setActionMessage('Vous n\'avez pas le droit de gérer les modèles de pages ...');
+	$view->setActionMessage($cms_language->getMessage(MESSAGE_ERROR_NO_RIGHTS_FOR_TEMPLATES));
 	$view->show();
 }
 
@@ -106,7 +137,7 @@ if ($allGroups) {
 	$columns = sizeof($allGroups) < 5 ? sizeof($allGroups) : 5;
 	$groupsfield .= "{
 		xtype: 		'checkboxgroup',
-		fieldLabel: '<span class=\"atm-help\" ext:qtip=\"Vous pouvez utiliser des groupes pour catégoriser votre modèle de page. Vous pourrez ainsi simplifier sa sélection mais aussi associer des droits aux utilisateurs sur ces groupes. Ceci permettra de limiter l\'usage de certains modèles spécifiques à certains profils d\'utilisateurs.\">Groupes</span>',
+		fieldLabel: '<span class=\"atm-help\" ext:qtip=\"{$cms_language->getJsMessage(MESSAGE_FIELD_GROUPS_DESC)}\">{$cms_language->getJsMessage(MESSAGE_FIELD_GROUPS)}</span>',
 		columns: 	{$columns},
 		items: [";
 		foreach ($allGroups as $aGroup) {
@@ -134,10 +165,10 @@ $selectedWebsites = sensitiveIO::jsonEncode($selectedWebsites);
 
 //DEFINITION TAB
 $content = '
-<textarea id="tpl-definition-'.$templateId.'" style="display:none;">'./*str_replace("\t", '    ', */(htmlspecialchars($templateDefinition)).'</textarea>';
+<textarea id="tpl-definition-'.$templateId.'" style="display:none;">'.(htmlspecialchars($templateDefinition)).'</textarea>';
 $view->setContent($content);
 
-$title = (sensitiveIO::isPositiveInteger($templateId)) ? 'Modèle de page : '.$label : 'Création d\\\'un modèle de page';
+$title = sensitiveIO::sanitizeJSString(sensitiveIO::isPositiveInteger($templateId) ? $cms_language->getMessage(MESSAGE_PAGE_TEMPLATE).' '.$label : $cms_language->getMessage(MESSAGE_PAGE_CREATE_TEMPLATE));
 
 $rowsURL = PATH_ADMIN_WR.'/templates-rows.php';
 
@@ -164,7 +195,7 @@ if (USE_PRINT_PAGES) {
 	
 	$printTab = ",{
 		id:				'printcs-{$templateId}',
-		title:			'Impression',
+		title:			'{$cms_language->getJsMessage(MESSAGE_PAGE_PRINT)}',
 		layout: 		'form',
 		xtype:			'atmForm',
 		url:			'templates-controler.php',
@@ -174,12 +205,12 @@ if (USE_PRINT_PAGES) {
 		items:[{
 			xtype:			'panel',
 			border:			false,
-			html:			'Sélectionnez les zones de contenu du modèle que vous souhaitez voir apparaitre dans la page d\'impression. Choisissez aussi l\'ordre d\'affichage de ces zones de contenu.',
+			html:			'{$cms_language->getJsMessage(MESSAGE_PAGE_PRINT_DESC)}',
 			bodyStyle: 		'padding:10px 0 10px 0'
 		},{
 			xtype:			'itemselector',
 			name:			'printableCS',
-			fieldLabel:		'Zones de contenu imprimables',
+			fieldLabel:		'{$cms_language->getJsMessage(MESSAGE_PAGE_PRINT_ZONES)}',
 			dataFields:		['code'],
 			toData:			{$printableCS},
 			msWidth:		250,
@@ -187,8 +218,8 @@ if (USE_PRINT_PAGES) {
 			height:			140,
 			valueField:		'code',
 			displayField:	'code',
-			toLegend:		'Séléctionnés',
-			fromLegend:		'Disponibles',
+			toLegend:		'{$cms_language->getJsMessage(MESSAGE_PAGE_SELECT)}',
+			fromLegend:		'{$cms_language->getJsMessage(MESSAGE_PAGE_AVAILABLE)}',
 			fromData:		{$clientspaces}
 		}],
 		buttons:[{
@@ -220,7 +251,7 @@ $jscontent = <<<END
 	var propertiesTip = new Ext.ToolTip({
 		target:		 templateWindow.tools['help'],
 		title:			 '{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP)}',
-		html:			 'Cette page vous permet de créer et modifier un modèle de page. Les modèles de page servent de base à la création des pages du site.',
+		html:			 '{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP_DESC)}',
 		dismissDelay:	0
 	});
 	//editor var
@@ -247,7 +278,7 @@ $jscontent = <<<END
 		},
 		items:[{
 			id:					'templateDatas-{$templateId}',
-			title:				'Propriétés',
+			title:				'{$cms_language->getJsMessage(MESSAGE_PAGE_PROPERTIES)}',
 			autoScroll:			true,
 			url:				'templates-controler.php',
 			layout: 			'form',
@@ -263,30 +294,30 @@ $jscontent = <<<END
 				allowBlank:			true
 			},
 			items:[{
-				fieldLabel:		'* Libellé',
+				fieldLabel:		'<span class="atm-red">*</span> {$cms_language->getJsMessage(MESSAGE_PAGE_LABEL)}',
 				name:			'label',
 				value:			'{$label}',
 				allowBlank:		false
 			},{
-				fieldLabel:		'Description',
+				fieldLabel:		'{$cms_language->getJsMessage(MESSAGE_PAGE_DESCRIPTION)}',
 				xtype:			'textarea',
 				name:			'description',
 				value:			'{$description}'
 			},{$groupsfield}{
-				fieldLabel:		'<span class="atm-help" ext:qtip="Vous pouvez ajouter un ou plusieurs nouveaux groupes au modèle de page en cours. Le nom du groupe ne doit contenir que des caractères alphanumériques. Les groupes doivent être séparés par des virgules ou des point-virgules.">Nouveaux groupes</span>',
+				fieldLabel:		'<span class="atm-help" ext:qtip="{$cms_language->getJsMessage(MESSAGE_PAGE_NEW_GROUPS_DESC)}">{$cms_language->getJsMessage(MESSAGE_PAGE_NEW_GROUPS)}</span>',
 				name:			'newgroup',
 				value:			''
 			},{
 				fieldLabel:		'',
 				labelSeparator:	'',
 				xtype:			'checkbox',
-				boxLabel: 		'<span class="atm-help" ext:qtip="En cochant cette case, aucun utilisateur ne pourra voir ou utiliser ce modèle tant qu\'ils n\'auront pas les droits sur les nouveaux groupes ajoutés ci-dessus.">Ne pas donner les droits de voir ces nouveaux groupes aux utilisateurs.</span>',
+				boxLabel: 		'<span class="atm-help" ext:qtip="{$cms_language->getJsMessage(MESSAGE_PAGE_NEW_GROUPS_NO_RIGHTS_DESC)}">{$cms_language->getJsMessage(MESSAGE_PAGE_NEW_GROUPS_NO_RIGHTS)}</span>',
 				name: 			'nouserrights',
 				inputValue:		'1'
 			},{
 				xtype:			"itemselector",
 				name:			"websites",
-				fieldLabel:		'<span class="atm-help" ext:qtip="Sélectionnez les sites pour lesquels l\'utilisation de ce modèle de page sera possible.">Sites</span>',
+				fieldLabel:		'<span class="atm-help" ext:qtip="{$cms_language->getJsMessage(MESSAGE_PAGE_WEBSITES_DESC)}">{$cms_language->getJsMessage(MESSAGE_PAGE_WEBSITES)}</span>',
 				dataFields:		["code", "desc"],
 				toData:			{$selectedWebsites},
 				msWidth:		250,
@@ -294,13 +325,13 @@ $jscontent = <<<END
 				height:			140,
 				valueField:		"code",
 				displayField:	"desc",
-				toLegend:		"Autorisés",
-				fromLegend:		"Disponibles",
+				toLegend:		"{$cms_language->getJsMessage(MESSAGE_PAGE_ALLOWED)}",
+				fromLegend:		"{$cms_language->getJsMessage(MESSAGE_PAGE_AVAILABLE)}",
 				fromData:		{$availableWebsites}
 			},{
 				xtype: 			'atmImageUploadField',
 				emptyText: 		'{$cms_language->getJsMessage(MESSAGE_SELECT_PICTURE)}',
-				fieldLabel: 	'<span class="atm-help" ext:qtip="Utilisez une vignette représentant le visuel du modèle de page pour permettre une selection plus aisée.">Vignette</span>',
+				fieldLabel: 	'<span class="atm-help" ext:qtip="{$cms_language->getJsMessage(MESSAGE_PAGE_THUMBNAIL_DESC)}">{$cms_language->getJsMessage(MESSAGE_PAGE_THUMBNAIL)}</span>',
 				name: 			'image',
 				maxWidth:		240,
 	            uploadCfg:	{
@@ -313,12 +344,12 @@ $jscontent = <<<END
 				xtype: 			'atmFileUploadField',
 				id: 			'form-file',
 				emptyText: 		'{$cms_language->getJSMessage(MESSAGE_SELECT_FILE)}',
-				fieldLabel: 	'<span class="atm-help" ext:qtip="Vous pouvez utiliser un fichier XML pour importer la définition XML à employer pour ce modèle de page.">Définition XML</span>',
+				fieldLabel: 	'<span class="atm-help" ext:qtip="{$cms_language->getJsMessage(MESSAGE_PAGE_XML_DEFINITION_DESC)}">{$cms_language->getJSMessage(MESSAGE_PAGE_XML_DEFINITION)}</span>',
 				name: 			'definitionfile',
 				uploadCfg:	{
 					file_size_limit:		'{$maxFileSize}',
 					file_types:				'*.xml',
-					file_types_description:	'Fichier XML ...'
+					file_types_description:	'{$cms_language->getJsMessage(MESSAGE_PAGE_XML_FILE)}'
 				},
 				fileinfos:	{$fileDatas}
 			}],
@@ -354,7 +385,7 @@ $jscontent = <<<END
 			}]
 		},{
 			id:					'templateDef-{$templateId}',
-			title:				'Définition XML',
+			title:				'{$cms_language->getJSMessage(MESSAGE_PAGE_XML_DEFINITION)}',
 			autoScroll:			true,
 			url:				'templates-controler.php',
 			layout: 			'form',
@@ -388,12 +419,12 @@ $jscontent = <<<END
 			},
 			items:[{
 				xtype:			'panel',
-				html:			'Vous pouvez modifier ici la structure XML de ce modèle. Vous devez respecter la norme XML sous peine d\'erreur.<br /><strong>Attention</strong>, ne supprimez ni ne modifiez pas de tag &lt;atm-clientspace&gt; sous peine de perdre du contenu sur les pages employant déjà le modèle en cours.',
+				html:			'{$cms_language->getJsMessage(MESSAGE_PAGE_XML_DEFINITION_USAGE_DESC)}',
 				border:			false,
 				bodyStyle: 		'padding-bottom:10px'
 			}, {
 				xtype:			'checkbox',
-				boxLabel:		'Activer la coloration syntaxique',
+				boxLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_SYNTAX_COLOR)}',
 				listeners:		{'check':function(field, checked) {
 					if (checked) {
 						editor = CodeMirror.fromTextArea('defText-{$templateId}', {
@@ -456,7 +487,7 @@ $jscontent = <<<END
 				scope:this}
 			}],
 			buttons:[{
-				text:			'Aide',
+				text:			'{$cms_language->getJSMessage(MESSAGE_ACTION_HELP)}',
 				anchor:			'',
 				scope:			this,
 				handler:		function(button) {
@@ -485,7 +516,7 @@ $jscontent = <<<END
 				}
 			}, {
 				id:				'reindent-{$templateId}',
-				text:			'Réindenter',
+				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_ACTION_REINDENT)}',
 				anchor:			'',
 				hidden:			true,
 				listeners:		{'click':function(button) {
@@ -511,7 +542,7 @@ $jscontent = <<<END
 			}]
 		},{
 			xtype:			'framePanel',
-			title:			'Rangées par défaut',
+			title:			'{$cms_language->getJsMessage(MESSAGE_PAGE_DEFAULT_ROWS)}',
 			id:				'templateRows-{$templateId}',
 			editable:		true,
 			frameURL:		'{$rowsURL}?template={$templateId}',

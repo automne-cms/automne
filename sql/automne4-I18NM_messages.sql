@@ -1,4 +1,4 @@
-# $Id: automne4-I18NM_messages.sql,v 1.10 2009/06/10 12:58:08 sebastien Exp $
+# $Id: automne4-I18NM_messages.sql,v 1.11 2009/06/22 14:16:13 sebastien Exp $
 #
 # Suppression avant mise à  jour du Contenu de la table `I18NM_messages` pour le module standard
 #
@@ -300,7 +300,6 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (296, 'standar
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (297, 'standard', NOW(), 'Paramètre QUALITY', 'Param QUALITY');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (298, 'standard', NOW(), 'Nom d\'identifiant (ID)', 'Name (ID)');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (300, 'standard', NOW(), 'Paramètre BGCOLOR', 'Param BGCOLOR');
-# Automne 4 specific messages
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (301, 'standard', NOW(), 'Erreur ...', 'Error ...');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (302, 'standard', NOW(), 'Authentification ...', 'Authentification ...');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (303, 'standard', NOW(), 'Veuillez compléter les champs requis !', 'Please complete required fields!');
@@ -338,7 +337,6 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (334, 'standar
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (335, 'standard', NOW(), 'Recevez un email pour toute validation de page en attente dans vos sections.', 'Receive an email for any pages validation pending in your sections.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (336, 'standard', NOW(), 'Recevez un email lorsque votre profil utilisateur est modifié.', 'Receive an email when your user profile is modified.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (337, 'standard', NOW(), 'Recevez un email lorsqu\'une alerte est spécifié au niveau d\'une page que vous pouvez modifier.', 'Receive an email when an alert is set on a page you can change.');
-
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (338, 'standard', NOW(), 'validation(s) en attente', 'validation(s) pending');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (339, 'standard', NOW(), 'Editeurs', 'Editors');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (340, 'standard', NOW(), 'Rafraichir le contenu de cette zone.', 'Refresh zone content.');
@@ -410,7 +408,7 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (405, 'standar
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (406, 'standard', NOW(), 'Par lettre :', 'By letter :');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (407, 'standard', NOW(), 'Créer un nouveau groupe', 'Create a new group');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (408, 'standard', NOW(), 'Profils d\'Utilisateurs et de Groupes', 'Profiles of Users and Groups');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (409, 'standard', NOW(), 'Cette fenêtre vous permet de rechercher les profils d\'utilisateurs et de groupes d\'utilisateurs déclarés dans Automne pour pouvoir modifier leurs droits.', 'This window lets you search user profiles and user groups declared in Autumn to modify their rights.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (409, 'standard', NOW(), 'Cette fenêtre vous permet de rechercher les profils d\'utilisateurs et de groupes d\'utilisateurs déclarés dans Automne pour pouvoir modifier leurs droits.', 'This window lets you search user profiles and user groups declared in Automne to modify their rights.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (410, 'standard', NOW(), 'Actif', 'Active');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (411, 'standard', NOW(), 'Etes-vous sur de vouloir supprimer définitivement l\'utilisateur', 'Are you sure you want to permanently delete the user');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (412, 'standard', NOW(), 'Utilisateurs {0} à {1} sur {2}', 'Users from {0} to {1} on {2}');
@@ -449,7 +447,7 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (444, 'standar
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (445, 'standard', NOW(), 'Gestion des scripts', 'Scripts management');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (446, 'standard', NOW(), 'Gestion des langues', 'Languages management');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (447, 'standard', NOW(), 'Paramètres Serveur', 'Server settings');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (448, 'standard', NOW(), 'Paramètres Automne', 'Autumn settings');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (448, 'standard', NOW(), 'Paramètres Automne', 'Automne settings');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (449, 'standard', NOW(), 'Administration', 'Administration');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (450, 'standard', NOW(), 'Copier la page et son contenu à un autre point de l\'arborescence.', 'Copy the page and its contents to another item on the tree.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (451, 'standard', NOW(), 'Etes-vous sur de vouloir déverrouiller cette page ? Les modifications en cours par %s peuvent être perdues.', 'Are you sure you want to unlock this page? The changes underway by %s may be lost.');
@@ -502,14 +500,14 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (497, 'standar
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (498, 'standard', NOW(), 'niveaux', 'levels');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (499, 'standard', NOW(), 'Copie de la page', 'Page copy');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (500, 'standard', NOW(), 'Ajouter aux favoris', 'Add to your bookmarks');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (501, 'standard', NOW(), 'Vous pouvez ajouter cette page aux favoris Automne pour pouvoir y accéder plus rapidement ! Pour la retrouver ensuite, allez dans la barre latérale puis dans "Gestion des pages".', 'You can add this page to Autumn bookmarks to get there faster! To find then, go to the sidebar then in "Management of pages".');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (501, 'standard', NOW(), 'Vous pouvez ajouter cette page aux favoris Automne pour pouvoir y accéder plus rapidement ! Pour la retrouver ensuite, allez dans la barre latérale puis dans "Gestion des pages".', 'You can add this page to Automne bookmarks to get there faster! To find then, go to the sidebar then in "Management of pages".');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (502, 'standard', NOW(), 'Déverrouiller la page', 'Unlock the page');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (503, 'standard', NOW(), 'Les deux champs de mot de passe doivent être identiques. Le mot de passe doit faire %s caractères minimum et être différent de l\'identifiant.', 'The two fields password must be identical. The password must be at least %s characters and be different from the identifier.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (504, 'standard', NOW(), 'L\'utilisateur est l\'administrateur : Il possède tous les droits sur Automne.', 'The user is the administrator: It has all the rights in Autumn.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (505, 'standard', NOW(), 'Vous ne pouvez pas modifier les droits de cette page pour cet utilisateur car ils dépendent des groupes auquel il appartient. Modifiez les groupes de l\'utilisateur pour modifier ses droits sur Automne.', 'You can not modify the rights of this page for this user because they depend on the groups to which it belongs. Change the groups the user to modify its rights in Autumn.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (506, 'standard', NOW(), 'Vous pouvez gérer ici les différents droits d\'administration d\'Automne.', 'You can manage here the various administration rights of Autumn.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (504, 'standard', NOW(), 'L\'utilisateur est l\'administrateur : Il possède tous les droits sur Automne.', 'The user is the administrator: It has all the rights in Automne.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (505, 'standard', NOW(), 'Vous ne pouvez pas modifier les droits de cette page pour cet utilisateur car ils dépendent des groupes auquel il appartient. Modifiez les groupes de l\'utilisateur pour modifier ses droits sur Automne.', 'You can not modify the rights of this page for this user because they depend on the groups to which it belongs. Change the groups the user to modify its rights in Automne.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (506, 'standard', NOW(), 'Vous pouvez gérer ici les différents droits d\'administration d\'Automne.', 'You can manage here the various administration rights of Automne.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (507, 'standard', NOW(), 'L\'utilisateur est Administrateur : Il possède tous les droits sur le module.', 'The user is the administrator: It has all the rights in the module.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (508, 'standard', NOW(), 'Vous ne pouvez pas modifier les droits de cette page pour cet utilisateur car ils dépendent des groupes auquel il appartient. Modifiez les groupes de l\'utilisateur pour modifier ses droits sur Automne.', 'You can not modify the rights of this page for the user because they depend on the groups to which it belongs. Change the groups the user to modify its rights in Autumn.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (508, 'standard', NOW(), 'Vous ne pouvez pas modifier les droits de cette page pour cet utilisateur car ils dépendent des groupes auquel il appartient. Modifiez les groupes de l\'utilisateur pour modifier ses droits sur Automne.', 'You can not modify the rights of this page for the user because they depend on the groups to which it belongs. Change the groups the user to modify its rights in Automne.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (509, 'standard', NOW(), 'Le groupe possède le droit \"Administrateur\" : Il possède tous les droits sur le module.', 'The group is the administrator: It has all the rights in the module.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (510, 'standard', NOW(), 'Cette case permet d\'autoriser la validation des éléments du module pour lequels l\'utilisateur à le droit d\'administration.', 'This box allows you to authorize the validation elements of the module for which the user to the right of directors.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (511, 'standard', NOW(), 'Droit de validation sur le module', 'Validation rights in the module');
@@ -522,7 +520,7 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (517, 'standar
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (518, 'standard', NOW(), 'Accès général au module', 'General module access');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (519, 'standard', NOW(), 'Accès au contenu', 'Content access');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (520, 'standard', NOW(), 'Utilisateur créé', 'User created');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (521, 'standard', NOW(), 'Vous ne pouvez supprimer cet utilisateur car c\'est un utilisateur système nécessaire au fonctionnement d\'Automne.', 'You cannot delete this user because he is a system user required to operate Autumn.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (521, 'standard', NOW(), 'Vous ne pouvez supprimer cet utilisateur car c\'est un utilisateur système nécessaire au fonctionnement d\'Automne.', 'You cannot delete this user because he is a system user required to operate Automne.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (522, 'standard', NOW(), 'Réactiver l\'utilisateur lui permet de se connecter à nouveau.', 'Reactivate the user permit him to connect again.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (523, 'standard', NOW(), 'Désactiver l\'utilisateur ne lui permet plus de se connecter.', 'Disabling the user prevent his connect.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (524, 'standard', NOW(), 'Copie de :', 'Copy of:');
@@ -572,7 +570,7 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (567, 'standar
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (568, 'standard', NOW(), 'Aucune action trouvée ...', 'No action founded...');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (569, 'standard', NOW(), 'Administrer le module %s', 'Administrate module %s');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (570, 'standard', NOW(), 'Vous n\'avez pas le droit d\'accéder à l\'administration du module %s.', 'You have no privileges to access module %s administration.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (571, 'standard', NOW(), 'Administration du module %s', 'Administratio of module %s');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (571, 'standard', NOW(), 'Administration du module %s', 'Administration of module %s');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (572, 'standard', NOW(), 'Cette fenêtre vous permet de gérer le contenu du module %s. Vous pouvez ajouter / supprimer / modifier les différents éléments gérés par ce module.', 'This window let you administrate the module %s. You can add / delete and modify elements managed by this module.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (573, 'standard', NOW(), 'Envoi d\'email', 'Email sending');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (574, 'standard', NOW(), 'Création d\'un utilisateur.', 'User creation');
@@ -596,8 +594,8 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (591, 'standar
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (592, 'standard', NOW(), 'Déplacement de pages', 'Moving pages');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (593, 'standard', NOW(), 'Déplacement de page', 'Page moving');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (594, 'standard', NOW(), 'Déplacement de la page :', 'Moving page :');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (595, 'standard', NOW( ),'Déplacement de page à valider', 'Move of page pending validation');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (596, 'standard', NOW( ),'Déplacement de page validation refusée', 'Move of page validation refused');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (595, 'standard', NOW(),'Déplacement de page à valider', 'Move of page pending validation');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (596, 'standard', NOW(),'Déplacement de page validation refusée', 'Move of page validation refused');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (597, 'standard', NOW(), 'Déplacement d\'une page', 'Moving a page');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (598, 'standard', NOW(), 'Déplacement de la page \'%s\' par l\'utilisateur %s.', 'Moving of page \'%s\' by user %s');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (599, 'standard', NOW(), 'Nom de l\'application', 'Application name');
@@ -640,12 +638,213 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (635, 'standar
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (636, 'standard', NOW(), 'Catégories', 'Categories');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (637, 'standard', NOW(), 'Gérer les catégories utilisées pour le module  \'%s\'', 'Manage catégories used by the module \'%s\'');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (638, 'standard', NOW(), 'Suppression d\'un fichier de modèle', 'Delete a template file');
-
-
-
-
-
-# End of Automne 4 specific messages
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (639, 'standard', NOW(), 'Voir votre site dans une nouvelle fenêtre', 'View your website in a new window');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (640, 'standard', NOW(), 'Visiter le site d\'Automne', 'View Automne website');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (641, 'standard', NOW(), 'Bloquer / Débloquer la position du panneau latéral', 'Lock / Unlock side panel position');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (642, 'standard', NOW(), 'Terminer la session en cours et vous déconnecter', 'End current session and disconnect');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (643, 'standard', NOW(), 'Déconnexion', 'Disconnect');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (644, 'standard', NOW(), 'A propos d\'Automne', 'About Automne');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (645, 'standard', NOW(), 'Aucune page dans vos favoris.', 'No pages in your bookmarks.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (646, 'standard', NOW(), 'Scripts Javascript', 'Javascripts Scripts');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (647, 'standard', NOW(), 'Gestion des modules', 'Modules management');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (648, 'standard', NOW(), 'Base de données', 'Database');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (649, 'standard', NOW(), 'Le nom de domaine du site est incorrect.', 'Website domain name is incorrect.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (650, 'standard', NOW(), 'Le site actuel n\'est pas correctement configuré. Le nom de domaine actuel est \'%s\' mais votre site est configuré pour le nom de domaine \'%s\'. Avant de continuer, modifiez le nom de domaine dans \'Gestion des sites\' pour correspondre au nom de domaine actuel.', 'The current website is not properly configured. The current domain name is \'%s\' but your website is configured for the domain name \'%s\'. Before continuing, modify the domain name in \'Multi-Site Management\' to match the actual domain name.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (651, 'standard', NOW(), 'Le site actuel n\'est pas correctement configuré. Le nom de domaine actuel est \'%s\' alors que votre site est configuré pour le nom de domaine \'%s\'. Prévenez un administrateur du site en lui précisant ce message d\'erreur.', 'The current website is not properly configured. The current domain name is \'%s\' while your website is configured for the domain name \'%s\'. Notify an administrator of the site by specifying this error message.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (652, 'standard', NOW(), 'Voulez-vous quitter Automne ?', 'Do you want to leave Automne?');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (653, 'standard', NOW(), 'Le lien vers \'%s\' semble être un lien externe à votre site. Le suivre vous fera quitter l\'administration d\'Automne, Etes-vous sur de vouloir continuer ?', 'The link to \'%s\' seems to be an external link to your website. Follow it will leave administration. Are you sure you want to continue?');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (654, 'standard', NOW(), 'Erreur ...', 'Error...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (655, 'standard', NOW(), 'La page demandée (%s) ne peut-être affichée. Il est possible qu\'elle ai été supprimée ou que vous n\'ayez pas le droit de la consulter.<br />Veuillez sélectionner une nouvelle page dans l\'arborescence ou par le moteur de recherche.', 'The requested page (%s) can not be displayed. It is possible that it has been deleted it or you do not have right to consult it.<br />Please select a new page in the tree or by the search engine.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (656, 'standard', NOW(), 'Rechercher ...', 'Search...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (657, 'standard', NOW(), 'Ajouter aux favoris', 'Add to bookmarks');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (658, 'standard', NOW(), 'Vous pouvez ajouter cette page aux favoris Automne pour pouvoir y accéder plus rapidement ! Pour la retrouver ensuite, allez dans la barre latérale puis dans "Gestion des pages".', 'You can add this page to Automne bookmarks to access it faster! To find it, go in the sidebar and then on "Pages management".');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (659, 'standard', NOW(), 'Cette page est déjà marqué comme favorite. Cliquez à nouveau pour l\'enlever de vos favoris.', 'This page is already in your bookmarks. Click again to remove it.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (660, 'standard', NOW(), 'Dévérouiller la page', 'Unlock page');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (661, 'standard', NOW(), 'Déplacez vos pages à l\'aide des icônes flêchées', 'Move pages using arrow icons');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (662, 'standard', NOW(), 'Déplacement de pages', 'Pages move');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (663, 'standard', NOW(), 'Valider les dernières modifications de la page.', 'Validate last page modifications.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (664, 'standard', NOW(), 'Valider la page', 'Page validation');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (665, 'standard', NOW(), 'Permet de recréer entièrement la page visible sur le site.', 'Recreate the entire page visible on the website.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (666, 'standard', NOW(), 'Régénérer la page', 'Regenerate page');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (667, 'standard', NOW(), 'Cette page possède actuellement un contenu modifié qui n\'a pas encore été soumis à validation.', 'This page has a content modified which has not yet been subject to validation.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (668, 'standard', NOW(), 'Vous n\'avez pas le droit de voir les pages du ou des site(s) ...', 'You don\'t have no right to see any pages of the site(s)...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (669, 'standard', NOW(), 'Vous n\'avez pas le droit de voir la page demandée ...', 'You don\'t have no right to see the requested page...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (670, 'standard', NOW(), 'Inconnue', 'Unknown');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (671, 'standard', NOW(), 'Jamais', 'Never');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (672, 'standard', NOW(), '<h1>Version :</h1>
+Automne <strong>%s</strong> - Dernière mise à jour : %s
+<br /><br />
+<h1>Modules installés :</h1>
+Polymod - Version : %s<br />
+%s
+<br />
+<h1>Sites de la communauté Automne :</h1>
+<ul class="atm-server">
+	<li class="atm-pic-logo"><a href="http://www.automne.ws" target="_blank">Visitez le site officel d\'Automne</a> : Vous y trouverez toutes les nouveautés.</li>
+	<li class="atm-pic-logo"><a href="http://doc.automne.ws" target="_blank">Toute la Documentation Automne en ligne</a> : Pour toutes les explication sur l\'utilisation d\'Automne ainsi que des tutoriaux.</li>
+	<li class="atm-pic-logo"><a href="http://www.automne.ws/forum/" target="_blank">Forum des utilisateurs d\'Automne</a> : Pour communiquer avec d\'autres utilisateurs et échanger vos idées ou vos problèmes.</li>
+</ul>
+<br />
+<h1>Vos impressions sur Automne :</h1>
+Vous pouvez nous envoyer vos commentaires sur Automne sur <a href="http://www.automne.ws/contact/" target="_blank">cette page</a>.<br />Toutes vos remarques et critiques seront les bienvenues !
+<br /><br />
+<h1>Besoin de Formation ou de Support ?</h1>
+<a href="http://www.automne.ws/support/" target="_blank">N\'hésitez pas à nous contacter</a>. Nous fournissons des formations de tous niveaux ainsi que des prestations de support professionnel.
+<br /><br />
+<fieldset>
+	Automne est un logiciel sous license open source GNU-GPL créé par<br /><br />
+	<a href="http://www.ws-interactive.fr" target="_blank"><img src="/automne/admin/img/logo-ws.png" alt="WS Interactive" title="WS Interactive" /></a>
+</fieldset>', '<h1>Version:</h1>
+Automne <strong>%s</strong> - Last update: %s
+<br /><br />
+<h1>Installed modules:</h1>
+Polymod - Version: %s<br />
+%s
+<br />
+<h1>Automne community websites:</h1>
+<ul class="atm-server">
+	<li class="atm-pic-logo"><a href="http://www.automne.ws" target="_blank">Visit offical Automne website</a>: You can find all the news.</li>
+	<li class="atm-pic-logo"><a href="http://doc.automne.ws" target="_blank">All Automne inline documentation</a> : For all the explanation on the use of Automne as well as tutorials..</li>
+	<li class="atm-pic-logo"><a href="http://www.automne.ws/forum/" target="_blank">Forum of Automne users</a> : Contacting other users and share your ideas or your problems.</li>
+</ul>
+<br />
+<h1>Your impressions of Automne:</h1>
+You can send us your comments on <a href="http://www.automne.ws/contact/" target="_blank">this page</a>.<br />All your comments and criticisms are welcome!
+<br /><br />
+<h1>Need Training or Support?</h1>
+<a href="http://www.automne.ws/support/" target="_blank">Feel free to contact us</a>. We provide training at all levels as well as professional support services.
+<br /><br />
+<fieldset>
+	Automne is an open source software licensed under GNU-GPL and created by<br /><br />
+	<a href="http://www.ws-interactive.fr" target="_blank"><img src="/automne/admin/img/logo-ws.png" alt="WS Interactive" title="WS Interactive" /></a>
+</fieldset>');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (673, 'standard', NOW(), 'Cette page vous présente les différents informations concernant votre version d\'Automne ainsi que tous les sites d\'aide disponible pour la communauté.', 'This page presents various information about your version of Automne and all websites available to help the community.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (674, 'standard', NOW(), 'Attention, le debuggage est actif.', 'Beware, debugging is active.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (675, 'standard', NOW(), 'Pressez F2 pour voir la fenêtre de log.', 'Press F2 to see the log window.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (676, 'standard', NOW(), 'Votre session a expiré. Veuillez vous reconnecter ...', 'Your session has expired. Please log in again...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (677, 'standard', NOW(), 'Paramètres enregistrés.', 'Parameters saved.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (678, 'standard', NOW(), 'Paramètres du module %s', 'Module parameters %s');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (679, 'standard', NOW(), 'Paramètres Automne', 'Automne parameters');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (680, 'standard', NOW(), 'Cette page vous permet de paramétrer diverses fonctionnalités d\'Automne. Référez vous à l\'aide disponible sur chaque paramètre pour en connaitre l\'usage.', 'This page allows you to set various features of Automne. Refer to the help available on each parameter to know the usage.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (681, 'standard', NOW(), 'Vous pouvez modifier les %s. Référez vous à l\'aide disponible sur chaque paramètre pour en connaitre l\'utilité.<br /><br />Ces paramètres sont aussi directement accessible dans le fichier : /automne/classes/modules/%s_rc.xml', 'You can change the %s. Refer to the help available on each parameter to know the utility.<br /> <br /> These parameters are also directly accessible in the file: /automne/classes/modules/%s_rc.xml');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (682, 'standard', NOW(), 'Le formulaire est incomplet ou possède des valeurs incorrectes ...', 'The form is incomplete or has incorrect values ...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (683, 'standard', NOW(), 'Glissez déposez les catégories pour les réorganiser', 'Drag-drop to reorder categories');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (684, 'standard', NOW(), 'Catégories du module %s', 'Module category %s');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (685, 'standard', NOW(), 'Profondeur affichée', 'Depth displayed');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (686, 'standard', NOW(), 'Confirmer la suppression de la catégorie', 'Confirm the deletion of the category');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (687, 'standard', NOW(), 'Vous n\'avez pas le droit d\'administrer cette catégorie ...', 'You do not have the right to administer this category...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (688, 'standard', NOW(), 'Erreur durant le déplacement de la catégorie ...', 'Error during the movement of the category ...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (689, 'standard', NOW(), 'Création / Modification d\'une catégorie', 'Creating / Editing a category');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (690, 'standard', NOW(), 'Sur cette page, vous pouvez créer ou modifier les données (titre, description, vignettes) d\'une catégorie.', 'On this page, you can create or edit the data (title, description, thumbnails) of a category.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (691, 'standard', NOW(), 'Vos droits ne permettent pas de voir les pages du ou des site(s).<br /><br />Si vous pensez qu\'il s\'agit d\'une erreur, contactez votre administrateur', 'Your rights does not allow you to see the pages of the website(s).<br /><br />If you believe this is an error, contact your administrator');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (692, 'standard', NOW(), 'Vos droits ne permettent pas de voir la page demandée.<br /><br />Si vous pensez qu\'il s\'agit d\'une erreur, contactez votre administrateur', 'Your rights does not allow you to see the requested page.<br /><br />If you believe this is an error, contact your administrator');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (693, 'standard', NOW(), 'Filtrer ...', 'Filter...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (694, 'standard', NOW(), 'Le code de votre contenu est mal formatté et il ne peut être enregistré.<br />Evitez tout copier-coller de texte depuis un éditeur de texte externe. Employez les outils \'Coller comme texte\' ou \'Coller de Word\' de la barre d\'outils dans ce cas.<br />Vérifiez le code source de votre contenu : Il doit être composé de XHTML valide.', 'The code of your content is poorly formatted and can not be saved.<br />Avoid copying and pasting text from an external text editor. Use the tools \'Paste as plain text\' or \'Paste from Word\' on the toolbar in this case.<br />Check the source code of your content: It must consist of valid XHTML.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (695, 'standard', NOW(), 'Erreur lors du déplacement de la page ...', 'Error when moving the page...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (696, 'standard', NOW(), 'Erreur lors du déplacement de la page ... Vous n\'avez pas les droits d\'édition sur cette page.', 'Error when moving the page... You do not have the publishing rights to this page.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (697, 'standard', NOW(), 'Vous n\'avez pas le droit de dupliquer les branches d\'arborescences.', 'You are not allowed to duplicate the branches of trees.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (698, 'standard', NOW(), 'Duplication des pages effectuée.', 'Duplication of pages done.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (699, 'standard', NOW(), 'Erreur sur la page de départ ou de destination de la duplication.', 'Error on the start page or destination of the duplication.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (700, 'standard', NOW(), 'Choisissez un modèle parmi ceux disponible. Un modèle compatible permet de conserver toutes les données de la page d\'origine. Un modèle incompatible ne copiera pas tout le contenu de la page d\'origine.', 'Choose a template among those available. A compatible template allows all data to the original page. An incompatible template will not copy the entire contents of the original page..');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (701, 'standard', NOW(), 'Cochez la case pour mettre à jour l\'adresse de la page.<br />Adresse actuelle :', 'Check the box to update the address of the page.<br />Present address:');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (702, 'standard', NOW(), 'Informations', 'Informations');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (703, 'standard', NOW(), 'Cette page comporte une redirection vers une page qui n\'existe pas ou comporte une erreur. Elle ne présente donc pas de contenu visible.', 'This page contains a redirect to a page that does not exist or has an error. It may not show any visible content.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (704, 'standard', NOW(), 'L\'élément est actuellement vérouillé par l\'utilisateur %s et ne peut-être mis à jour', 'The item is currently locked by user %s and can not be updated');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (705, 'standard', NOW(), 'L\'élément est actuellement vérouillé par l\'utilisateur %s et ne peut-être dévérouillé', 'The item is currently locked by user %s and can not be unlocked');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (706, 'standard', NOW(), 'Vous n\'avez pas le droit de gérer les modèles de rangées ...', 'You do not have the right to manage models of rows...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (707, 'standard', NOW(), 'Vous pouvez utiliser des groupes pour catégoriser votre modèle de rangée. Vous pourrez ainsi simplifier sa sélection mais aussi associer des droits aux utilisateurs sur ces groupes. Ceci permettra de limiter l\'usage de certains modèles spécifiques à certains profils d\'utilisateurs.', 'You can use groups to categorize your template row. You can simplify the selection, but also involve rights to users on these groups. This will limit the use of certain specific user profiles.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (708, 'standard', NOW(), 'Vous pouvez utiliser des icônes pour identifier votre modèle de rangée. Vous pourrez ainsi simplifier sa sélection.', 'You can use icons to identify your model row. You can simplify its selection.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (709, 'standard', NOW(), 'Icône', 'Icon');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (710, 'standard', NOW(), 'Modèle de rangée :', 'Template row:');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (711, 'standard', NOW(), 'Création d\'un modèle de rangée', 'Creating a template row');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (712, 'standard', NOW(), 'Cette page vous permet de créer et modifier un modèle de rangée. Les modèles de rangée servent de base de saisie au contenu des pages des sites.', 'This page allows you to create and edit a row. Row templates provide the basis for entering the pages content of websites.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (713, 'standard', NOW(), 'Vous pouvez ajouter un ou plusieurs nouveaux groupes au modèle de rangée en cours. Le nom du groupe ne doit contenir que des caractères alphanumériques. Les groupes doivent être séparés par des virgules ou des point-virgules.', 'You can add one or more new groups to the model of current row. The name of the group must only contain alphanumeric characters. Groups must be separated by commas or semi-colons.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (714, 'standard', NOW(), 'Nouveaux groupes', 'New groups');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (715, 'standard', NOW(), 'En cochant cette case, aucun utilisateur ne pourra voir ou utiliser ce modèle de rangée tant qu\'ils n\'auront pas les droits sur les nouveaux groupes ajoutés ci-dessus.', 'By checking this box, any user can see or use this model to row until they have the rights to the new groups added above.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (716, 'standard', NOW(), 'Ne pas donner les droits de voir ces nouveaux groupes aux utilisateurs.', 'Do not give the rights to see these new groups to users.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (717, 'standard', NOW(), 'Sélectionnez les modèles de pages pour lesquels l\'utilisation de ce modèle de rangée sera possible. Si aucun modèle n\'est spécifié, tous les modèles de page pourront employer cette rangée.', 'Select pages templates for which the use of this template row will be possible. If no template is specified, all page templates can use this row.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (718, 'standard', NOW(), 'Modèles de pages', 'Pages templates');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (719, 'standard', NOW(), 'Autorisés', 'Authorized');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (720, 'standard', NOW(), 'Disponibles', 'Available');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (721, 'standard', NOW(), 'Si aucune icône ne convient dans la liste ci-dessus, vous pouvez en ajouter une nouvelle.', 'If no icon would be in the list above, you can add a new one.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (722, 'standard', NOW(), 'Nouvelle icône', 'New icon');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (723, 'standard', NOW(), 'Définition XML', 'XML definition');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (724, 'standard', NOW(), 'Vous pouvez modifier ici la structure XML de cette rangée. Vous devez respecter la norme XML sous peine d\'erreur.<br /><strong>Attention</strong>, ne supprimez pas de tag &lt;block&gt; existant sous peine de perdre du contenu sur les pages employant déjà ce modèle de rangée.', 'Here you can change the XML structure of this row. You must follow the XML standard under penalty of error.<br /><strong>Warning</strong>, do not remove existing tag &lt;block&gt; under penalty of losing content on the pages already using this template row.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (725, 'standard', NOW(), 'Activer la coloration syntaxique', 'Enable syntax highlighting');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (726, 'standard', NOW(), 'Réindenter', 'Reindent');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (727, 'standard', NOW(), 'Aide à la syntaxe des rangées de contenu', 'Help with syntax of rows of content');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (728, 'standard', NOW(), 'Cette fenêtre regroupe les différentes aides nécessaire à la création de rangées de contenu pour chacun des modules.', 'This window lists all the various aids necessary for the creation of rows of content for each module.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (729, 'standard', NOW(), 'Le modèle de rangée à modifier n\'existe pas ou possède une erreur.', 'The model row to modify does not exist or has an error.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (730, 'standard', NOW(), 'Rangée enregistrée avec succès.', 'Row successfully saved.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (731, 'standard', NOW(), 'Rangée créée avec succès.', 'Row successfully created.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (732, 'standard', NOW(), 'Définition XML mise à jour avec succès', 'XML definition updated successfully');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (733, 'standard', NOW(), '%s pages en cours de régénération.', '%s pages during regeneration.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (734, 'standard', NOW(), 'Aucune page publique n\'emploie ce modèle ...', 'No public page uses this model...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (735, 'standard', NOW(), 'Script en cours, Aucun fichier PID trouvé. Vérifiez la configuration du répertoire temporaire d\'Automne.', 'Script in progress, No PID file found. Check the configuration of the temporary directory of Automne.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (736, 'standard', NOW(), 'Script en cours, Fichier PID trouvé.', 'Script in progress, PID file founded.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (737, 'standard', NOW(), 'Fichier PID trouvé sans référence en Base de données ...', 'PID file founded without reference in database...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (738, 'standard', NOW(), 'Fichier PID trouvé et script marqué comme terminé ...', 'PID file founded and script marked as completed...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (739, 'standard', NOW(), 'Aucun script en cours de traitement.', 'No script in progress.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (740, 'standard', NOW(), 'Aucun script en cours de traitement.', 'No script in the queue.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (741, 'standard', NOW(), 'Par nom, description, mots clés', 'By name, description, keywords');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (742, 'standard', NOW(), 'Rechercher dans', 'Search in');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (743, 'standard', NOW(), 'Rechercher dans \'%s\'', 'Search in \'%s\'');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (744, 'standard', NOW(), 'Sur cette page, vous pouvez rechercher toutes les pages des sites, les éléments des modules, les utilisateurs, groupes et modèles de pages et de rangées. Spécifiez vos mots clés ainsi que les éléments sur lesquels vous souhaitez effectuer votre recherche.', 'On this page you can search all pages of the sites, elements of the modules, users, groups and models of pages and rows. Specify your keywords and the elements on which you wish to search.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (745, 'standard', NOW(), 'Résultats : {0} résultats sur {1}', 'Results: {0} Results on {1}');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (746, 'standard', NOW(), '{0} résultats sur {1}', '{0} Results on {1}');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (747, 'standard', NOW(), 'Voir le ou les éléments sélectionnés.', 'View your selected items.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (748, 'standard', NOW(), 'Vous n\'avez pas les droits d\'administrateur ...', 'You do not have administrator rights...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (749, 'standard', NOW(), 'Test des paramètres du serveur nécessaires au fonctionnement d\'Automne :', 'Test server settings required for the operation of Automne:');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (750, 'standard', NOW(), 'Vérifier les droits d\'accès aux fichiers :', 'Check access rights to files:');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (751, 'standard', NOW(), 'Pour Automne :', 'For Automne:');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (752, 'standard', NOW(), 'Permet de valider qu\'Automne possède bien les droits nécessaire sur l\'ensemble des fichiers du site.', 'Used to validate that Automne has required rights to all files on the site.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (753, 'standard', NOW(), 'Pour les utilisateurs :', 'For users:');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (754, 'standard', NOW(), 'Permet de valider que les utilisateurs et internautes possèdent bien les droits nécessaire sur l\'ensemble des fichiers du site.', 'Used to validate users and Internet users have the rights necessary to all files on the site.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (755, 'standard', NOW(), 'Paramètres du serveur', 'Server parameters');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (756, 'standard', NOW(), 'Cette page vous permet de voir l\'état des différents paramètres du serveur nécessaire à l\'éxécution d\'Automne.', 'This page lets you view the status of various server settings needed for the execution of Automne.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (757, 'standard', NOW(), 'Vérifier', 'Check');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (758, 'standard', NOW(), 'En cours ...', 'In progress...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (759, 'standard', NOW(), 'Détails', 'Details');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (760, 'standard', NOW(), 'Accès aux fichiers', 'File access');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (761, 'standard', NOW(), 'Informations PHP', 'PHP informations');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (762, 'standard', NOW(), 'Mises à jour', 'Updates');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (763, 'standard', NOW(), '... Il y a plus de 1000 fichiers inaccessible en écriture ...', '... There are more than 1000 files inaccessible for writing ...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (764, 'standard', NOW(), 'Erreur lors de la vérification ...', 'Error checking ...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (765, 'standard', NOW(), 'Erreur : les fichiers et dossiers suivants ne sont pas accessibles en écriture :', 'Error: Files and folders are not accessible for writing:');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (766, 'standard', NOW(), 'Vérification terminée !', 'Verification done!');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (767, 'standard', NOW(), 'Nombre de dossiers :', 'Number of folders:');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (768, 'standard', NOW(), 'Nombre de fichiers :', 'Number of files:');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (769, 'standard', NOW(), 'Espace disque employé :', 'Disk space used:');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (770, 'standard', NOW(), 'Régénération des pages :', 'Regeneration of pages:');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (771, 'standard', NOW(), 'Permet recréer les pages visibles coté client des différents sites.', 'Lets recreate the visible client-side pages of the different websites.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (772, 'standard', NOW(), 'Scripts en cours :', 'Scripts in progress:');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (773, 'standard', NOW(), 'Permet de visualiser les scripts en cours de traitement sur le serveur.', 'View the scripts being processed on the server.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (774, 'standard', NOW(), 'Gestion des scripts', 'Scripts management');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (775, 'standard', NOW(), 'Cette page vous permet de gérer les différents scripts en tâche de fond ainsi que la régénération des pages du site. Régénérer une page permet de recréer le cache de cette page qui sert à sa consultation coté client.', 'This page allows you to manage the various scripts in the background and the regeneration of the site\'s pages. Regenerate a page used to recreate the cache of this page that serves its client side consulting.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (776, 'standard', NOW(), 'Tout Régénérer', 'Regenerate all');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (777, 'standard', NOW(), 'Régénère l\'ensemble des pages de tous les sites.', 'Regenerates all pages of all sites.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (778, 'standard', NOW(), 'Régénérer une branche', 'Regenerate tree branch');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (779, 'standard', NOW(), 'Régénère l\'ensemble des pages sous la page sélectionnée.', 'Regenerates all pages in the selected page branch.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (780, 'standard', NOW(), 'Sélectionnez la page parente de l\'arborescence à régénérer.', 'Select the parent of the tree to regenerate.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (781, 'standard', NOW(), 'Régénération des pages sélectionnées', 'Regeneration of selected pages');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (782, 'standard', NOW(), 'Régénère l\'ensemble des pages dont l\'identifiant est précisé. Employez le tiret pour spécifier un groupe de pages. Exemple : 1,3,10-15.', 'Regenerates all pages whose identifier is specified. Use a hyphen to specify a page group. Example: 1,3,10-15.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (783, 'standard', NOW(), 'Spécifiez les Pages', 'Specify Pages');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (784, 'standard', NOW(), 'Sélectionner la page de destination dans l\'arborescence', 'Select the destination page in the tree');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (785, 'standard', NOW(), 'Régénérer', 'Regenerate');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (786, 'standard', NOW(), 'Relancer les scripts', 'Restart scripts');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (787, 'standard', NOW(), 'Relance le traitement des scripts dans la file d\'attente si les scripts ne sont pas déjà en cours de traitement.', 'Restart processing scripts in the queue if the scripts are not already being processed.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (788, 'standard', NOW(), 'Stopper les scripts', 'Stop scripts');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (789, 'standard', NOW(), 'Arrête le traitement de la file d\'attente des scripts.', 'Stop processing queue scripts.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (790, 'standard', NOW(), 'Effacer la file', 'Delete the queue');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (791, 'standard', NOW(), 'Vide la file d\'attente des scripts en cours de traitement.', 'Empty queue scripts being processed.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (792, 'standard', NOW(), 'Détails des scripts en cours', 'Details of scripts in progress');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (793, 'standard', NOW(), 'Détails de la file d\'attente', 'Details of the queue');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (794, 'standard', NOW(), 'Vous n\'avez pas les droits d\'administrer les scripts ...', 'You do not have the rights to manage scripts...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (795, 'standard', NOW(), 'Toutes les pages ont été soumises à régénération.', 'All pages have been subjected to regeneration.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (796, 'standard', NOW(), '%s pages soumises à régénération.', '%s pages under regeneration.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (797, 'standard', NOW(), '%s pages régénérées.', '%s pages regenerated.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (798, 'standard', NOW(), 'Aucune page publique ne correspond aux identifiants saisis ...', 'None public page match the identifiers before...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (799, 'standard', NOW(), 'Vous n\'avez pas le droit de gérer les modèles de pages ...', 'You do not have the right to manage models of pages ...');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (800, 'standard', NOW(), 'Suppression d\'actualité', 'News item deletion');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (801, 'standard', NOW(), 'Suppression de l\'actualité : \'%s\'', 'Deletion of news article \'%s\'');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (802, 'standard', NOW(), 'Pour un lien interne, saisir une ID page.<br /> Pour un lien externe, saisir une URL.', 'For internal links enter a page reference number.<br />\r\nFor external links enter an URL.');
@@ -940,12 +1139,14 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1093, 'standa
 Pour une expérience optimale d\'Automne,<br />merci d\'employer une version plus récente :<br />
 <ul>
 	<li><a href="http://www.mozilla.com/firefox/" target="_blank">Mozilla - Firefox</a></li>
+	<li><a href="http://www.google.com/chrome/" target="_blank">Google - Chrome</a></li>
 	<li><a href="http://www.apple.com/fr/safari/" target="_blank">Apple - Safari</a></li>
 	<li><a href="http://www.microsoft.com/ie/" target="_blank">Microsoft - Internet Explorer</a></li>
 </ul>', 'Your navigator is obsolete...<br />
 Please use a more recent version:<br />
 <ul>
 	<li><a href="http://www.mozilla.com/firefox/" target="_blank">Mozilla - Firefox</a></li>
+	<li><a href="http://www.google.com/chrome/" target="_blank">Google - Chrome</a></li>
 	<li><a href="http://www.apple.com/safari/" target="_blank">Apple - Safari</a></li>
 	<li><a href="http://www.microsoft.com/ie/" target="_blank">Microsoft - Internet Explorer</a></li>
 </ul>');
@@ -956,127 +1157,127 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1098, 'standa
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (10008, 'standard', NOW(), 'L\'image est trop grande (> %s pixels)','Image is too wide (> %s pixels)');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (10030, 'standard', NOW(), 'La démonstration suivante se limite aux actions de création et de modification de contenu ainsi qu\'à  la phase de validation. Pour tester Automne cà´té administration, vous devez télécharger le code source sur le site <a href="http://www.automne.ws" target="_blank" class="admin"><b>www.automne.ws</b></a>. N\'hésitez pas à  nous <a href="http://www.automne.ws/html/_77_.php" target="_blank" class="admin"><b>contacter</b></a> si vous avez des questions sur cette démonstration ou sur la faà§on dont Automne pourrait optimiser la gestion de vos sites.<br /><br /> Les contenus sont initialisés chaque dimanche. Si vous souhaitez tester les dates de publication, pensez à  ne pas dépasser la date du dimanche suivant à  minuit.\r\n', 'The following demo is limited to content addition and modification, including validation. To use Automne from an administrative perspective you must download the source code from <a href="http://www.automne.ws" target="_blank" class="admin"><b>www.automne.ws</b></a>. If you have further questions on this demo and on how Automne can help you manage your web sites, please <a href="http://www.automne.ws/html/_77_.php" target="_blank" class="admin"><b>contact us</b></a>.\r\n\r\nPlease note that all new content is erased every Sunday to renew the database. If you would like to test publication dates you must do so within the week ending on Sunday at midnight.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (10031, 'standard', NOW(), 'Aide', 'Help');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1099', 'standard', NOW( ), 'Adresse', 'Address');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1100', 'standard', NOW( ), 'Rangées par défaut', 'Default rows');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1101', 'standard', NOW( ), 'Aucun', 'None');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1102', 'standard', NOW( ), 'Voir', 'View');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1103', 'standard', NOW( ), 'Administrer', 'Manage');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1104', 'standard', NOW( ), 'Modifier', 'Modify');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1105', 'standard', NOW( ), 'Propriétés', 'Properties');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1106', 'standard', NOW( ), 'Identification', 'Identification');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1107', 'standard', NOW( ), 'Modèles et rangées authorisés', 'Authorized templates and rows');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1108', 'standard', NOW( ), 'pour afficher un modèle, sélectionner tous les groupes auxquels il appartient', 'a template must belong to all the selected groups to be shown');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1109', 'standard', NOW( ), 'Editer', 'Edit');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1110', 'standard', NOW( ), 'Modification d\'un fichier de modèle', 'Modify a template file');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1111', 'standard', NOW( ), 'Les feuilles de style utilisent du code CSS spécifique à  votre site %s. <br /> Attention, Toute modification peut entrainer des changements visuels sur l\'ensemble de votre site !', 'Style sheets use CSS code specific to your site %s.<br />Attention, Any modification can change the visual of all your site!');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1112', 'standard', NOW( ), 'Base de Données', 'DataBase');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1113', 'standard', NOW( ), 'Aucun élément en attente de validation.', 'No validations pending.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1114', 'standard', NOW( ), 'Supprimer l\'accès au module', 'Delete module access');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1115', 'standard', NOW( ), 'Ordre', 'Order');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1116', 'standard', NOW( ), 'Désarchiver', 'Unarchive');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1117', 'standard', NOW( ), 'Tous les utilisateurs', 'All users');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1118', 'standard', NOW( ), 'Tous les groupes', 'All groups');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1119', 'standard', NOW( ), 'Effacer le journal', 'Delete log');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1120', 'standard', NOW( ), 'Confirmer la suppression du journal ?', 'Confirm deletion request for log?');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1121', 'standard', NOW( ), 'N° de page', 'Page number');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1122', 'standard', NOW( ), 'Actions d\'administration', 'Administration actions');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1123', 'standard', NOW( ), 'Toutes les actions', 'All actions');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1124', 'standard', NOW( ), 'Choisir un profil', 'Choose user');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1125', 'standard', NOW( ), 'Sélection', 'Selection');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1126', 'standard', NOW( ), 'En haut', 'On top');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1127', 'standard', NOW( ), 'En bas', 'On bottom');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1128', 'standard', NOW( ), 'Effacer le contenu', 'Clear content');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1129', 'standard', NOW( ), 'Confirmer l\'effacement du contenu de ce bloc ?', 'Do you confirm content clear?');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1130', 'standard', NOW( ), 'Modifier les rangées', 'Modify rows');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1131', 'standard', NOW( ), 'Supprimer la section', 'Delete section');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1132', 'standard', NOW( ), 'Choisissez...', 'Choose...');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1133', 'standard', NOW( ), 'Modifier modèle d\'impression', 'Modify print template');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1134', 'standard', NOW( ),'Non publié, à  archiver', 'Non published, pending archiving');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1135', 'standard', NOW( ),'Non publié, archivage refusé', 'Non published, archiving refused');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1136', 'standard', NOW( ),'Non publié, archivé', 'Non published, archived');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1137', 'standard', NOW( ),'A archiver', 'Pending archiving');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1138', 'standard', NOW( ),'Validation refusée', 'Archive validation refused');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1139', 'standard', NOW( ),'Archivé', 'Archived');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1140', 'standard', NOW( ),'A supprimer', 'Pending deletion');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1141', 'standard', NOW( ),'Suppression refusée', 'Deletion refused ');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1142', 'standard', NOW( ),'Supprimé', 'Deleted');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1143', 'standard', NOW( ),'Modifié, à valider', 'Modified, pending validation');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1144', 'standard', NOW( ),'Modifié, validation refusée','Modified, validation refused');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1145', 'standard', NOW( ),'Publié', 'Published');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1146', 'standard', NOW( ),'Non publié, à  supprimer', 'Non published, pending deletion');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1147', 'standard', NOW( ),'Non pubié, suppression refusée', 'Non published, deletion refused');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1148', 'standard', NOW( ),'Non publié, supprimé', 'Non published, deleted');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1149', 'standard', NOW( ),'A dépublier', 'Pending un-publication');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1150', 'standard', NOW( ),'Dépublication refusée', 'Un-publication refused');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1151', 'standard', NOW( ),'Non publié','Un-published');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1152', 'standard', NOW( ),'Ordre des pages à valider', 'Order of pages pending validation');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1153', 'standard', NOW( ),'Ordre des pages validation refusée', 'Order of pages validation refused');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1154', 'standard', NOW( ),'Nouveau, à  archiver', 'New, pending archiving');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1155', 'standard', NOW( ),'Nouveau, archivage refusé', 'New, archiving refused');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1156', 'standard', NOW( ),'Nouveau, à  supprimer' , 'New, pending deletion');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1157', 'standard', NOW( ),'Nouveau, suppression refusée', 'New, deletion refused');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1158', 'standard', NOW( ),'Nouveau, à valider', 'New, pending validation');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1159', 'standard', NOW( ),'Nouveau, validation refusée', 'New, validation refused');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1160', 'standard', NOW( ),'Largeur max : %s pixels. Vous pourrez redimensionner l\'image après son chargement.', 'Max width : %s pixels. You will be able to resize your image after his loading.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1161', 'standard', NOW( ),'Largeur mini : %s pixels', 'Min width : %s pixels');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1162', 'standard', NOW( ),'Votre image est trop petite, minimum : %s pixels de large.', 'Your image is too small, minimum width : %s pixels.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1163', 'standard', NOW( ),'Votre image est trop grande, maximum : %s pixels de large, veuillez utiliser la fonction de redimensionnement.', 'Your image is too big, maximum width : %s pixels, please use resize function.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1164', 'standard', NOW(), 'Editeur visuel Javascript (WYSIWYG)', 'Javascript Visual editor (WYSIWYG)');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1165', 'standard', NOW(), 'Mise à  jour d\'Automne', 'Automne update');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1166', 'standard', NOW(), 'Fichier de mise à  jour', 'Update file');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1167', 'standard', NOW(), 'Bavard', 'Verbose');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1168', 'standard', NOW(), 'Exécution forcée<br /><font color="red">(/!\\ Dangereux, ne cochez pas ceci si vous ne connaissez pas le fonctionnement interne d\'Automne /!\\)</font>', 'Force execution<br /><font color="red">(/!\\ Dangerous do not check this if you do not know internal Automne process /!\\)</font>');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1169', 'standard', NOW(), 'Rapport de mise à  jour', 'Update report');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1170', 'standard', NOW(), 'Impossible de nettoyer le dossier temporaire, veuillez effacer le contenu de \'%s\' manuellement', 'Impossible to clean the temporary folder, please erase the contents of \'%s\' manually');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1171', 'standard', NOW(), 'Ligne de commande', 'Command line');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1172', 'standard', NOW(), 'Traitement du fichier', 'Treatment of the file');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1173', 'standard', NOW(), 'Traitement des commandes', 'Treatment of commands');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1174', 'standard', NOW(), 'Mise à  jour', 'Update');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1175', 'standard', NOW(), '<font color="red">Attention, patcher Automne est un processus critique. Suivez scrupuleusement les indications et ne fermez pas votre navigateur avant la fin du processus.</font>', '<font color="red">Beware, Automne patching is a critical process. Follow indications scrupulously and do not close your navigator before the end of the process.</font>');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1176', 'standard', NOW(), 'Cliquez pour finaliser l\'installation', 'Click to finalize installation');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1177', 'standard', NOW(), 'Execution terminée', 'End of process');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1178', 'standard', NOW(), 'Ne finalisez pas l\'installation si des erreurs (en rouge) se sont produites. Si vous avez des erreurs, copiez-collez le rapport complet et envoyez le à  votre administrateur technique ou à  WS Interactive.', 'Do not finalize installation if errors (in red) occurred. If you have errors, copy-paste the full report and send it to your technical administrator or to WS Interactive.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1179', 'standard', NOW(), 'Etes-vous sur de vouloir finaliser l\'installation ?', 'Are you sure to want to finalize installation ?');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1180', 'standard', NOW(), 'Effectué', 'Done');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1181', 'standard', NOW(), 'Merci de ne pas fermer cette fenêtre.', 'Do not close this window.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1182', 'standard', NOW(), '[Une fenêtre pop-up à  tenté de s\'ouvrir sans succès.\nMerci de désactiver le système anti pop-up de votre navigateur pour ce site.]', '[A pop-up window attempted to open without success.\nThank you to deactivate the anti pop-up system of your browser for this site.]');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1183', 'standard', NOW(), 'Sauvegarder le nouvel ordre', 'Save the new order');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1184', 'standard', NOW(), 'Cliquez pour corriger les erreurs', 'Click to correct errors');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1185', 'standard', NOW(), '[Erreur incorrigible. Patch Interrompu]', '[Incorrigible error. Patch Stopped]');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1186', 'standard', NOW(), 'Valider et corriger l\'erreur suivante', 'Validate and correct next error');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1187', 'standard', NOW(), 'Valider la correction', 'Validate the correction');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1188', 'standard', NOW(), 'Fichier original protégé', 'Original protected file');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1189', 'standard', NOW(), 'Fichier du patch', 'Patch file');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1190', 'standard', NOW(), 'Collez ici le contenu du fichier mis à  jour', 'Paste here the contents of the file updated');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1191', 'standard', NOW(), 'Vous tentez de mettre à  jour un fichier qui a été modifié manuellement. Merci de reporter ces modifications dans le fichier contenu dans le patch.', 'You try to update a file which was modified manually. Thank you to defer these modifications in the file contained in the patch.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1192', 'standard', NOW(), 'Reprise du processus de mise à  jour après correction des erreurs', 'Patching process resume after errors correction');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1193', 'standard', NOW(), '[Le fichier que vous souhaitez importer est trop grand]', '[File to upload is too wide]');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1194', 'standard', NOW(), 'Lister', 'List');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1195', 'standard', NOW(), 'Menu général', 'General Menu');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1196', 'standard', NOW(), 'Guide du rédacteur', 'User guide');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1197', 'standard', NOW(), 'Guide du développeur', 'Developer guide');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1198', 'standard', NOW(), 'Guide de l\'administrateur', 'Administrator guide');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1199', 'standard', NOW(), 'Guide d\'installation', 'Installation guide');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1200', 'standard', NOW(), 'Présentation d\'Automne', 'Automne presentation');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1201', 'standard', NOW(), 'Démarrer avec Automne', 'Getting started');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1202', 'standard', NOW(), 'Multiples pages', 'Multiple pages');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1203', 'standard', NOW(), 'Une page', 'One page');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1204', 'standard', NOW(), 'Format PDF', 'PDF Format');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1205', 'standard', NOW(), 'Seulement dans le langage par défaut', 'Only in default language');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1206', 'standard', NOW(), 'Gestion des catégories', 'Categories management');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1207', 'standard', NOW(), 'Confirmez-vous la suppression de la catégorie %s', 'Do you confirm deletion of category %s');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1208', 'standard', NOW(), 'Racine des catégories', 'Categories root');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1209', 'standard', NOW(), 'Accès aux catégories pour le groupe \'%s\'', 'Access to categories for group \'%s\'');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1210', 'standard', NOW(), 'Gestion des accès au contenu des modules', 'Access management to modules content');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1211', 'standard', NOW(), 'Administrer les catégories', 'Manage categories');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1212', 'standard', NOW(), 'Les libellés', 'Labels');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1213', 'standard', NOW(), 'Libellé en %s', 'Label in %s');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1214', 'standard', NOW(), 'Catégorie parente', 'Parent category');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1215', 'standard', NOW( ), 'Nom distinctif (dn)', 'Distinguished Name (dn)');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1216', 'standard', NOW(), '[Le dn (Distinguished Name) "%s" existe dejà ]', '[Sorry, the LDAP dn "%s" is already used]');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1217', 'standard', NOW(), 'Gestion des accès par groupes d\'utilisateurs', 'Users groups categories access management');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1218', 'standard', NOW(), 'Se souvenir de mon compte', 'Remember me');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1219', 'standard', NOW(), '<div class="rowComment">
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1099, 'standard', NOW( ), 'Adresse', 'Address');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1100, 'standard', NOW( ), 'Rangées par défaut', 'Default rows');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1101, 'standard', NOW( ), 'Aucun', 'None');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1102, 'standard', NOW( ), 'Voir', 'View');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1103, 'standard', NOW( ), 'Administrer', 'Manage');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1104, 'standard', NOW( ), 'Modifier', 'Modify');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1105, 'standard', NOW( ), 'Propriétés', 'Properties');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1106, 'standard', NOW( ), 'Identification', 'Identification');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1107, 'standard', NOW( ), 'Modèles et rangées authorisés', 'Authorized templates and rows');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1108, 'standard', NOW( ), 'pour afficher un modèle, sélectionner tous les groupes auxquels il appartient', 'a template must belong to all the selected groups to be shown');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1109, 'standard', NOW( ), 'Editer', 'Edit');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1110, 'standard', NOW( ), 'Modification d\'un fichier de modèle', 'Modify a template file');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1111, 'standard', NOW( ), 'Les feuilles de style utilisent du code CSS spécifique à  votre site %s. <br /> Attention, Toute modification peut entrainer des changements visuels sur l\'ensemble de votre site !', 'Style sheets use CSS code specific to your site %s.<br />Attention, Any modification can change the visual of all your site!');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1112, 'standard', NOW( ), 'Base de Données', 'DataBase');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1113, 'standard', NOW( ), 'Aucun élément en attente de validation.', 'No validations pending.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1114, 'standard', NOW( ), 'Supprimer l\'accès au module', 'Delete module access');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1115, 'standard', NOW( ), 'Ordre', 'Order');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1116, 'standard', NOW( ), 'Désarchiver', 'Unarchive');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1117, 'standard', NOW( ), 'Tous les utilisateurs', 'All users');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1118, 'standard', NOW( ), 'Tous les groupes', 'All groups');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1119, 'standard', NOW( ), 'Effacer le journal', 'Delete log');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1120, 'standard', NOW( ), 'Confirmer la suppression du journal ?', 'Confirm deletion request for log?');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1121, 'standard', NOW( ), 'N° de page', 'Page number');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1122, 'standard', NOW( ), 'Actions d\'administration', 'Administration actions');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1123, 'standard', NOW( ), 'Toutes les actions', 'All actions');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1124, 'standard', NOW( ), 'Choisir un profil', 'Choose user');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1125, 'standard', NOW( ), 'Sélection', 'Selection');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1126, 'standard', NOW( ), 'En haut', 'On top');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1127, 'standard', NOW( ), 'En bas', 'On bottom');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1128, 'standard', NOW( ), 'Effacer le contenu', 'Clear content');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1129, 'standard', NOW( ), 'Confirmer l\'effacement du contenu de ce bloc ?', 'Do you confirm content clear?');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1130, 'standard', NOW( ), 'Modifier les rangées', 'Modify rows');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1131, 'standard', NOW( ), 'Supprimer la section', 'Delete section');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1132, 'standard', NOW( ), 'Choisissez...', 'Choose...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1133, 'standard', NOW( ), 'Modifier modèle d\'impression', 'Modify print template');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1134, 'standard', NOW( ),'Non publié, à  archiver', 'Non published, pending archiving');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1135, 'standard', NOW( ),'Non publié, archivage refusé', 'Non published, archiving refused');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1136, 'standard', NOW( ),'Non publié, archivé', 'Non published, archived');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1137, 'standard', NOW( ),'A archiver', 'Pending archiving');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1138, 'standard', NOW( ),'Validation refusée', 'Archive validation refused');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1139, 'standard', NOW( ),'Archivé', 'Archived');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1140, 'standard', NOW( ),'A supprimer', 'Pending deletion');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1141, 'standard', NOW( ),'Suppression refusée', 'Deletion refused ');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1142, 'standard', NOW( ),'Supprimé', 'Deleted');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1143, 'standard', NOW( ),'Modifié, à valider', 'Modified, pending validation');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1144, 'standard', NOW( ),'Modifié, validation refusée','Modified, validation refused');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1145, 'standard', NOW( ),'Publié', 'Published');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1146, 'standard', NOW( ),'Non publié, à  supprimer', 'Non published, pending deletion');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1147, 'standard', NOW( ),'Non pubié, suppression refusée', 'Non published, deletion refused');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1148, 'standard', NOW( ),'Non publié, supprimé', 'Non published, deleted');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1149, 'standard', NOW( ),'A dépublier', 'Pending un-publication');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1150, 'standard', NOW( ),'Dépublication refusée', 'Un-publication refused');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1151, 'standard', NOW( ),'Non publié','Un-published');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1152, 'standard', NOW( ),'Ordre des pages à valider', 'Order of pages pending validation');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1153, 'standard', NOW( ),'Ordre des pages validation refusée', 'Order of pages validation refused');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1154, 'standard', NOW( ),'Nouveau, à  archiver', 'New, pending archiving');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1155, 'standard', NOW( ),'Nouveau, archivage refusé', 'New, archiving refused');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1156, 'standard', NOW( ),'Nouveau, à  supprimer' , 'New, pending deletion');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1157, 'standard', NOW( ),'Nouveau, suppression refusée', 'New, deletion refused');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1158, 'standard', NOW( ),'Nouveau, à valider', 'New, pending validation');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1159, 'standard', NOW( ),'Nouveau, validation refusée', 'New, validation refused');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1160, 'standard', NOW( ),'Largeur max : %s pixels. Vous pourrez redimensionner l\'image après son chargement.', 'Max width : %s pixels. You will be able to resize your image after his loading.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1161, 'standard', NOW( ),'Largeur mini : %s pixels', 'Min width : %s pixels');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1162, 'standard', NOW( ),'Votre image est trop petite, minimum : %s pixels de large.', 'Your image is too small, minimum width : %s pixels.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1163, 'standard', NOW( ),'Votre image est trop grande, maximum : %s pixels de large, veuillez utiliser la fonction de redimensionnement.', 'Your image is too big, maximum width : %s pixels, please use resize function.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1164, 'standard', NOW(), 'Editeur visuel Javascript (WYSIWYG)', 'Javascript Visual editor (WYSIWYG)');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1165, 'standard', NOW(), 'Mise à  jour d\'Automne', 'Automne update');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1166, 'standard', NOW(), 'Fichier de mise à  jour', 'Update file');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1167, 'standard', NOW(), 'Bavard', 'Verbose');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1168, 'standard', NOW(), 'Exécution forcée<br /><font color="red">(/!\\ Dangereux, ne cochez pas ceci si vous ne connaissez pas le fonctionnement interne d\'Automne /!\\)</font>', 'Force execution<br /><font color="red">(/!\\ Dangerous do not check this if you do not know internal Automne process /!\\)</font>');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1169, 'standard', NOW(), 'Rapport de mise à  jour', 'Update report');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1170, 'standard', NOW(), 'Impossible de nettoyer le dossier temporaire, veuillez effacer le contenu de \'%s\' manuellement', 'Impossible to clean the temporary folder, please erase the contents of \'%s\' manually');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1171, 'standard', NOW(), 'Ligne de commande', 'Command line');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1172, 'standard', NOW(), 'Traitement du fichier', 'Treatment of the file');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1173, 'standard', NOW(), 'Traitement des commandes', 'Treatment of commands');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1174, 'standard', NOW(), 'Mise à  jour', 'Update');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1175, 'standard', NOW(), '<font color="red">Attention, patcher Automne est un processus critique. Suivez scrupuleusement les indications et ne fermez pas votre navigateur avant la fin du processus.</font>', '<font color="red">Beware, Automne patching is a critical process. Follow indications scrupulously and do not close your navigator before the end of the process.</font>');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1176, 'standard', NOW(), 'Cliquez pour finaliser l\'installation', 'Click to finalize installation');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1177, 'standard', NOW(), 'Execution terminée', 'End of process');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1178, 'standard', NOW(), 'Ne finalisez pas l\'installation si des erreurs (en rouge) se sont produites. Si vous avez des erreurs, copiez-collez le rapport complet et envoyez le à  votre administrateur technique ou à  WS Interactive.', 'Do not finalize installation if errors (in red) occurred. If you have errors, copy-paste the full report and send it to your technical administrator or to WS Interactive.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1179, 'standard', NOW(), 'Etes-vous sur de vouloir finaliser l\'installation ?', 'Are you sure to want to finalize installation ?');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1180, 'standard', NOW(), 'Effectué', 'Done');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1181, 'standard', NOW(), 'Merci de ne pas fermer cette fenêtre.', 'Do not close this window.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1182, 'standard', NOW(), '[Une fenêtre pop-up à  tenté de s\'ouvrir sans succès.\nMerci de désactiver le système anti pop-up de votre navigateur pour ce site.]', '[A pop-up window attempted to open without success.\nThank you to deactivate the anti pop-up system of your browser for this site.]');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1183, 'standard', NOW(), 'Sauvegarder le nouvel ordre', 'Save the new order');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1184, 'standard', NOW(), 'Cliquez pour corriger les erreurs', 'Click to correct errors');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1185, 'standard', NOW(), '[Erreur incorrigible. Patch Interrompu]', '[Incorrigible error. Patch Stopped]');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1186, 'standard', NOW(), 'Valider et corriger l\'erreur suivante', 'Validate and correct next error');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1187, 'standard', NOW(), 'Valider la correction', 'Validate the correction');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1188, 'standard', NOW(), 'Fichier original protégé', 'Original protected file');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1189, 'standard', NOW(), 'Fichier du patch', 'Patch file');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1190, 'standard', NOW(), 'Collez ici le contenu du fichier mis à  jour', 'Paste here the contents of the file updated');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1191, 'standard', NOW(), 'Vous tentez de mettre à  jour un fichier qui a été modifié manuellement. Merci de reporter ces modifications dans le fichier contenu dans le patch.', 'You try to update a file which was modified manually. Thank you to defer these modifications in the file contained in the patch.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1192, 'standard', NOW(), 'Reprise du processus de mise à  jour après correction des erreurs', 'Patching process resume after errors correction');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1193, 'standard', NOW(), '[Le fichier que vous souhaitez importer est trop grand]', '[File to upload is too wide]');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1194, 'standard', NOW(), 'Lister', 'List');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1195, 'standard', NOW(), 'Menu général', 'General Menu');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1196, 'standard', NOW(), 'Guide du rédacteur', 'User guide');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1197, 'standard', NOW(), 'Guide du développeur', 'Developer guide');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1198, 'standard', NOW(), 'Guide de l\'administrateur', 'Administrator guide');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1199, 'standard', NOW(), 'Guide d\'installation', 'Installation guide');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1200, 'standard', NOW(), 'Présentation d\'Automne', 'Automne presentation');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1201, 'standard', NOW(), 'Démarrer avec Automne', 'Getting started');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1202, 'standard', NOW(), 'Multiples pages', 'Multiple pages');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1203, 'standard', NOW(), 'Une page', 'One page');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1204, 'standard', NOW(), 'Format PDF', 'PDF Format');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1205, 'standard', NOW(), 'Seulement dans le langage par défaut', 'Only in default language');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1206, 'standard', NOW(), 'Gestion des catégories', 'Categories management');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1207, 'standard', NOW(), 'Confirmez-vous la suppression de la catégorie %s', 'Do you confirm deletion of category %s');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1208, 'standard', NOW(), 'Racine des catégories', 'Categories root');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1209, 'standard', NOW(), 'Accès aux catégories pour le groupe \'%s\'', 'Access to categories for group \'%s\'');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1210, 'standard', NOW(), 'Gestion des accès au contenu des modules', 'Access management to modules content');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1211, 'standard', NOW(), 'Administrer les catégories', 'Manage categories');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1212, 'standard', NOW(), 'Les libellés', 'Labels');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1213, 'standard', NOW(), 'Libellé en %s', 'Label in %s');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1214, 'standard', NOW(), 'Catégorie parente', 'Parent category');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1215, 'standard', NOW( ), 'Nom distinctif (dn)', 'Distinguished Name (dn)');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1216, 'standard', NOW(), '[Le dn (Distinguished Name) "%s" existe dejà ]', '[Sorry, the LDAP dn "%s" is already used]');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1217, 'standard', NOW(), 'Gestion des accès par groupes d\'utilisateurs', 'Users groups categories access management');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1218, 'standard', NOW(), 'Se souvenir de mon compte', 'Remember me');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1219, 'standard', NOW(), '<div class="rowComment">
 	<h1>Titre ou sous-titre (255 charact&egrave;res max) :</h1>
 	<div class="retrait"><span class="code">&lt;block module=&quot;standard&quot; type=&quot;varchar&quot; id=&quot;<span class="keyword">uniqueID</span>&quot;&gt;<span class="vertclair">{{data}}</span>&lt;/block&gt;</span>
 	<ul>
@@ -1168,9 +1369,9 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1219', 'stan
 	<span class="vertclair">{{data}} :</span>&nbsp;Contenu de l\'animation flash.</li></ul>
 	</div>
 </div>', '<ol><li>Title or sub-title<br />&lt;block module="standard" type="varchar" id="uniqueID"&gt;{{data}}&lt;/block&gt;</li><li>Free text<br />&lt;block module="standard" type="text" id="uniqueID"&gt;{{data}}&lt;/block&gt;</li><li>Image<br />&lt;block module="standard" type="image" id="uniqueID"&gt;{{data}} and / or {{linkLabel}}&lt;/block&gt;<br />NB : Attributes maxWidth and minWidth enable you to control the width of the image for each block image.</li><li>File<br />&lt;block module="standard" type="file" id="uniqueID"&gt;{{data}}&lt;/block&gt;</li><li>Flash Animation<br />&lt;block module="standard" type="flash" id="uniqueID"&gt;{{data}}&lt;/block&gt;</li></ol><b>uniqueID :</b> Unique identifier of the block for the row.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1220', 'standard', NOW(), 'Syntaxe des rangées pour le module \'%s\'', 'Rows syntax for the module \'%s\'');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1221', 'standard', NOW(), 'Syntaxe des modèles pour le module \'%s\'', 'Templates syntax for the module \'%s\'');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1222', 'standard', NOW(), '
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1220, 'standard', NOW(), 'Syntaxe des rangées pour le module \'%s\'', 'Rows syntax for the module \'%s\'');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1221, 'standard', NOW(), 'Syntaxe des modèles pour le module \'%s\'', 'Templates syntax for the module \'%s\'');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1222, 'standard', NOW(), '
 <div class="rowComment">
 	<h1>Titre de la page courante :</h1>
 	<div class="retrait"><span class="code">&lt;atm-title /&gt;</span></div>
@@ -1318,204 +1519,299 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1222', 'stan
 	</ul>
 	</div>
 </div>', '<ol>\r\n<li>\r\n	Title of the current page:<br />\r\n	&lt;atm-title /&gt;\r\n</li>\r\n<li>\r\n	Metadata of the current page:<br />\r\n	&lt;atm-meta-tags /&gt;\r\n</li>\r\n<li>\r\n	Value of a constant (see Automne constants files):<br />\r\n	&lt;atm-constant name="constantName" /&gt;<br />\r\n	<b>constantName :</b> Name of the constant to display.\r\n</li>\r\n<li>\r\n	link(s) to one or several pages:<br />\r\n	&lt;atm-linx type="linxType"&gt;linxDefinition&lt;/atm-linx&gt;<br />\r\n	<b>linxType :</b> link type between:\r\n	<ul>\r\n		<li>\'direct\' : Direct link to a given page.</li>\r\n		<li>\'sublinks\' : Links to subpages of the current page.</li>\r\n		<li>\'desclinks\' : Navigation history from a page to another.</li>\r\n		<li>\'recursivelinks\' : Tree structure of sublinks from a given page.</li>\r\n	</ul>\r\n	<b>linxDefinition :</b> See Automne documentation for the detail.\r\n</li>\r\n<li>\r\n	Content zone : Alow use of content rows :<br />\r\n	&lt;atm-clientspace module="standard" id="uniqueID" /&gt;<br />\r\n	<b>uniqueID :</b> Unique identifier of the content zone for the template.\r\n</li>\r\n<li>\r\n	Link to the printable page :<br />\r\n	&lt;atm-print-link&gt;{{href}}&lt;/atm-print-link&gt;<br />\r\n	<b>{{href}} :</b> will be replaced by the link to the printable page.\r\n</li>\r\n</ol>');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1223', 'standard', NOW(), 'Catégorie supprimée', 'Deleted category');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1224', 'standard', NOW(), 'Gestion des Applications', 'Manage Applications');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1225', 'standard', NOW(), 'Application à éditer', 'Edit application');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1226', 'standard', NOW(), 'Objet à éditer', 'Edit object');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1227', 'standard', NOW(), 'Objets', 'Objects');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1228', 'standard', NOW(), 'Application', 'Application');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1229', 'standard', NOW(), 'Edition / création d\'un objet', 'Edit / create object');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1230', 'standard', NOW(), 'Ressource', 'Ressource');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1231', 'standard', NOW(), 'Ressource primaire', 'Primary resource');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1232', 'standard', NOW(), 'Ressource secondaire', 'Secondary resource');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1233', 'standard', NOW(), '<ul><li>Aucune : Cet objet ne sera pas soumis à validation. Son contenu apparaîtra en ligne dès sa saisie. Toute modification sera immédiate.</li><li>Ressource primaire : Ce type d\'objet est soumis à validation. Son contenu n\'apparaîtra en ligne qu\'après validation par une personne autorisée.</li><li>Ressource secondaire : Ce type d\'objet est soumis à la validation de la ressource primaire. Son contenu n\'apparaîtra en ligne qu\'après validation de la ressource primaire à laquelle il est directement attaché. Sans attache à une ressource primaire, il se comportera de la même manière qu\'un objet sans ressource.</li></ul>', '<ul><li>None : This object will not be subjected to validation. Its contents will appear on line as of its seizure.</li><li>Primary resource : This type of object is subjected to validation. Its contents will appear on line only after validation by an authorized person.</li><li>Secondary resource : This type of object is subjected to the validation of the primary resource. Its contents will appear on line only after validation of the primary resource to which it is attached. Without attach to a primary resource, it will have the same behavior of an object without resource.</li></ul>');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1234', 'standard', NOW(), 'Objet', 'Object');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1235', 'standard', NOW(), 'Champs', 'Fields');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1236', 'standard', NOW(), 'Champ', 'Field');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1237', 'standard', NOW(), 'Edition / création d\'un champ de données pour l\'objet \'%s\'', 'Edit / create data field for object \'%s\'');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1238', 'standard', NOW(), 'Type de données', 'Data type');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1239', 'standard', NOW(), 'Champ requis', 'Required field');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1240', 'standard', NOW(), 'Visible coté client', 'Available in frontend');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1241', 'standard', NOW(), 'Visible dans les résultats d\'une recherche', 'Available in search results');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1242', 'standard', NOW(), 'Ajouter au formulaire de recherche<br /><small>(ou effectuer la recherche par mot-clé sur ce champ)</small>', 'Add to search form<br /><small>(or search by keyword on this field)</small>');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1243', 'standard', NOW(), 'Paramètres', 'Parameters');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1244', 'standard', NOW(), 'Multiples', 'Multiples');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1247', 'standard', NOW(), 'Objets simples', 'Standard objects');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1248', 'standard', NOW(), 'Objets composés', 'Made up objects');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1267', 'standard', NOW(), 'Associer', 'Associate');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1268', 'standard', NOW(), 'Désassocier', 'Disassociate ');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1271', 'standard', NOW(), 'Visible sur l\'accueil du module ?', 'Visible on the index of the module?');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1276', 'standard', NOW(), 'Pour les administrateurs seulement', 'Only for administrators');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1277', 'standard', NOW(), 'Confirmez-vous la suppression du champ \'%s\' ? Attention cette suppression est définitive, elle n\'est pas soumise à validation et elle impactera tous les objets ainsi que tous les fichiers correspondant à ce champ !', 'Do you confirm the deletion of the field \'%s\'? Attention this deletion is final, it is not subjected to validation and it will impact all the objects like all the files corresponding to this field!');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1278', 'standard', NOW(), '[Erreur durant la suppression du champ]', '[Error during field deletion]');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1279', 'standard', NOW(), 'Structure', 'Structure');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1280', 'standard', NOW(), 'Structure de l\'objet \'%s\'', '\'%s\' object structure');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1281', 'standard', NOW(), 'Utilisation de l\'objet par d\'autres objets', 'Use of the object by other objects');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1282', 'standard', NOW(), 'Oui par', 'Yes by');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1283', 'standard', NOW(), 'Confirmez-vous la suppression de l\'objet \'%s\' ?', 'Do you confirm deletion of the object \'%s\'?');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1283', 'standard', NOW(), '[Erreur durant la suppression de l\'objet]', '[Error during object deletion]');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1284', 'standard', NOW(), 'Cliquez pour choisir une date', 'Clic to pick a date');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1292', 'standard', NOW(), 'Les informations grisées nécessiteront une recherche récursive.', 'Grayed informations will require a recursive search.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1293', 'standard', NOW(), '[Erreur : vous n\'avez pas les droits suffisant sur le module \'%s\' pour lui ajouter une rangée.]', '[Error: you do not have sufficient rights on the module \'%s\' to add a row to it.]');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1294', 'standard', NOW(), 'Libellé composé', 'Made up label');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1295', 'standard', NOW(), 'Attribut \'module\' manquant sur un tag \'block\'', 'Missing \'module\' attribute on \'block\' tag');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1296', 'standard', NOW(), '[Erreur : syntaxe de rangée incorrecte : %s]', '[Error : malformed row syntax : %s]');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1297', 'standard', NOW(), 'Syntaxe du libellé pour l\'objet \'%s\'', 'Label syntax for object \'%s\'');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1298', 'standard', NOW(), 'Accès des fichiers', 'Files accesses');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1299', 'standard', NOW(), 'Modèles compatibles', 'Matching templates');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1300', 'standard', NOW(), 'Modèles non compatibles', 'Unmatching templates');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1301', 'standard', NOW(), 'Attention, l\'utilisation d\'un modèle incompatible peut entraîner la perte des données de la page.', 'Attention, using an unmatching template can involve the loss of all data of the page.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1302', 'standard', NOW(), 'vers', 'to');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1303', 'standard', NOW(), 'page', 'page');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1304', 'standard', NOW(), 'Gestion de l\'application \'%s\'', '\'%s\' application management');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1305', 'standard', NOW(), 'Création d\'une application', 'Application creation');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1306', 'standard', NOW(), 'Identifiant (Codename)', 'ID (Codename)');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1307', 'standard', NOW(), 'Maximum 20 caractères alphanumériques (a-z0-9) uniquement', 'Maximum 20 alphanumerics caracters (a-z0-9) only');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1308', 'standard', NOW(), '[Erreur : cet identifiant est déjà utilisé]', '[Error : this ID already used]');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1309', 'standard', NOW(), 'Le module est créé mais certaines erreurs se sont produites lors de la création des répertoires du module.\nVérifiez que les répertoires suivants existent et sont accessible en écriture :\n%s,\n%s,\n%s,\n%s', 'Module is created but some errors append for module directories creation.\nPlease check following directories exists and are writable :\n%s,\n%s,\n%s,\n%s');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1310', 'standard', NOW(), 'L\'utilisateur %s fait parti du groupe %s. Modifier directement ses droits enlèvera l\'utilisateur de ce groupe. Etes-vous sur de vouloir continuer ?', '%s user makes party of the group %s. Modify its rights directly will remove the user of this group. Do you want to continue?');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1311', 'standard', NOW(), 'Vous n\'avez aucun droits d\'utilisation sur aucun modèles de pages.', 'You do not have any rights of use on any pages templates.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1312', 'standard', NOW(), 'Vous ne pouvez créer de nouvelle page : Vous n\'avez aucun droits d\'utilisation sur aucun modèles de pages.', 'You cannot create of new page: You do not have any rights of use on any pages templates.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1313', 'standard', NOW(), 'Maximiser la fenêtre d\'administration', 'Maximize administration window');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1314', 'standard', NOW(), 'Minimiser la fenêtre d\'administration', 'Minimize administration window');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1315', 'standard', NOW(), 'Fermer la fenêtre d\'administration', 'Close administration window');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1316', 'standard', NOW(), 'Administrer la page', 'Page administration');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1317', 'standard', NOW(), 'Cochez pour mettre à jour l\'adresse de la page (en fonction du titre donné à la page.)', 'Check to update page URL (Page URL will be updated using page title.)');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1318', 'standard', NOW(), 'Adresse de la page en ligne. Vous pouvez la mettre à jour si vous modifiez le titre de la page mais attention ! Changer l\'adresse de la page peut entraîner des problèmes de référencement sur les moteurs de recherche ainsi que des problèmes si d\'autres sites lient cette page.', 'Address of this page online. You can update it if you change the title of the page but attention! If you Change page URL, this can cause problems of referencing on search engines and problems if other sites links to this page.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1319', 'standard', NOW(), '[La page de destination sélectionnée est déjà la page mère actuelle de la page à déplacer ...]', '[The destination page selected is already the mother page of the page to move...]');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1320', 'standard', NOW(), 'Verrouillé', 'Locked');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1321', 'standard', NOW(), 'Chargement ...', 'Loading...');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1322', 'standard', NOW(), 'Contenu / Rangées', 'Content / Rows');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1323', 'standard', NOW(), 'Confirmez-vous la suppression de l\'objet \'%s\' ?', 'Do you confirm deletion of the object \'%s\'?');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1324', 'standard', NOW(), 'Confirmez-vous la sortie sans sauvegarder ?', 'Do you confirm exit without saving?');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1325', 'standard', NOW(), 'Libellé du lien', 'Link label');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1326', 'standard', NOW(), 'Scripts restants', 'Remaining scripts');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1327', 'standard', NOW(), 'Meta données par défaut pour le site :', 'Default meta datas for website:');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1328', 'standard', NOW(), 'Page', 'Page');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1329', 'standard', NOW(), 'Maximum %so', 'Maximum %sB');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1330', 'standard', NOW(), 'Rafraîchir', 'Refresh');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1331', 'standard', NOW(), 'Stopper scripts', 'Stop scripts');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1332', 'standard', NOW(), 'Consulter l\'aide en ligne', 'View online help');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1333', 'standard', NOW(), 'Modèles', 'Templates');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1334', 'standard', NOW(), 'Rangées', 'Rows');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1335', 'standard', NOW(), 'Les rangées de page appartiennent à un ou plusieurs groupes de rangées. Pour utiliser une rangée, un utilisateur doit avoir des droits sur tous les groupes de cette rangée.', 'Each row belong to one or more groups. For a user to be able to use a row, he or she must have usage rights for ALL the groups to which that row belongs to.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1336', 'standard', NOW(), 'Aucun groupe', 'No group');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1337', 'standard', NOW(), '[Modification des groupes de rangées interdits]', '[Modification of unauthorized rows groups]');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1338', 'standard', NOW(), 'Inverser', 'Invert');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1339', 'standard', NOW(), 'Profondeur affichée', 'Displayed depth');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1340', 'standard', NOW(), 'Visualisation des objets associés', 'Viewing associated objects');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1341', 'standard', NOW(), 'Edition des objets associés', 'Edit associated objects');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1342', 'standard', NOW(), 'Gestion des catégories', 'Categories management');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1343', 'standard', NOW(), 'Favicon', 'Favicon');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1344', 'standard', NOW(), 'Valeur : /favicon.ico ou /img/favicon.png, etc.', 'Value : /favicon.ico or /img/favicon.png, ...');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1345', 'standard', NOW(), 'Module', 'Application');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1346', 'standard', NOW(), 'Accès aux pages pour le groupe \'%s\'', 'Pages access for group \'%s\'');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1347', 'standard', NOW(), 'Accès aux pages pour l\'utilisateur \'%s\'', 'Pages access for user \'%s\'');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1348', 'standard', NOW(), 'Racine des pages', 'Pages root');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1349', 'standard', NOW(), 'Voir les accès au contenu des modules', 'View accesses to modules content');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1350', 'standard', NOW(), 'Accès aux catégories pour l\'utilisateur \'%s\'', 'Access to categories for user \'%s\'');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1351', 'standard', NOW(), 'Cet utilisateur appartient à un ou plusieurs groupes d\'utilisateurs, ses droits dépendent de son appartenance à ces groupes d\'utilisateurs.', 'This user belongs to one or more user groups, his rights depend on his membership of these user groups.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1352', 'standard', NOW(), 'Plusieurs sites peuvent partager le même domaine. Dans ce cas, le premier dans la liste ci-dessous sera prioritaire : Il s\'affichera pour cette adresse de domaine.', 'Several websites can share the same domain. In this case, the first in the list below will have priority: It will be shown for this domain address.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1353', 'standard', NOW(), '[Erreur lors du réordonancement des sites ...]', '[Error during websites reorder...]');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1354', 'standard', NOW(), 'Protéger les fichiers à télécharger.', 'Protect download files.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1355', 'standard', NOW(), 'Avec cette option active pour le module, les fichiers à télécharger (fichiers PDF, images, etc.) seront filtrés avant tout téléchargement. Si des droits sont nécessaires à leur consultation, l\'accès en sera interdit à toute personne n\'ayant pas les autorisations suffisantes. De plus, le nom du fichier sera systématiquement nettoyé des données de contrôles ajoutées par Automne. Activer cette option entraîne une charge plus importante sur le serveur pour tous les téléchargements. Ne l\'activez que si le besoin est réel.', 'With this option active for the module, the files to be downloaded (PDF files, images, etc) will be filtered before any downloading. If rights are necessary to their consultation, the access will be forbidden to any person not having the sufficient clearance. Moreover, the name of the file will be systematically cleaned of controls datas added by Automne. Activating this option involves a more important load on the server for all the downloading. Activate it only if the need is real.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1356', 'standard', NOW(), 'Code Source', 'Source code');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1357', 'standard', NOW(), 'Edition pleine page', 'Edition fit window');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1358', 'standard', NOW(), 'Prévisualisation', 'Preview');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1359', 'standard', NOW(), 'Modèles', 'Template');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1360', 'standard', NOW(), 'Couper', 'Cut');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1361', 'standard', NOW(), 'Copier', 'Copy');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1362', 'standard', NOW(), 'Coller', 'Paste');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1363', 'standard', NOW(), 'Coller comme texte seul', 'Paste as plain text');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1364', 'standard', NOW(), 'Coller depuis Word', 'Paste from Word');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1365', 'standard', NOW(), 'Imprimer', 'Print');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1366', 'standard', NOW(), 'Annuler', 'Undo');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1367', 'standard', NOW(), 'Refaire', 'Redo');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1368', 'standard', NOW(), 'Chercher', 'Search');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1369', 'standard', NOW(), 'Remplacer', 'Replace');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1370', 'standard', NOW(), 'Tout sélectionner', 'Select All');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1371', 'standard', NOW(), 'Supprimer le format', 'Remove format');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1372', 'standard', NOW(), 'Gras', 'Bold');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1373', 'standard', NOW(), 'Italique', 'Italic');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1374', 'standard', NOW(), 'Souligner', 'Underline');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1375', 'standard', NOW(), 'Barrer', 'Strike Through');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1376', 'standard', NOW(), 'Indice', 'Subscript');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1377', 'standard', NOW(), 'Exposant', 'Superscript');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1378', 'standard', NOW(), 'Liste Ordonnée', 'Ordered List');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1379', 'standard', NOW(), 'Liste non-ordonnée', 'Unordered List');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1380', 'standard', NOW(), 'Diminuer le retrait', 'Outdent');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1381', 'standard', NOW(), 'Augmenter le retrait', 'Indent');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1382', 'standard', NOW(), 'Aligner à gauche', 'Justify Left');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1383', 'standard', NOW(), 'Centrer', 'Center');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1384', 'standard', NOW(), 'Aligner à droite', 'Justify Right');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1385', 'standard', NOW(), 'Justifier', 'Justify');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1386', 'standard', NOW(), 'Insérer / modifier un lien', 'Add / Edit link');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1387', 'standard', NOW(), 'Supprimer un lien', 'Remove link');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1388', 'standard', NOW(), 'Insérer / modifier une ancre', 'Add / Edit anchor');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1389', 'standard', NOW(), 'Insérer / modifier une Image', 'Add / Edit image');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1390', 'standard', NOW(), 'Insérer / modifier un tableau', 'Add / Edit table');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1391', 'standard', NOW(), 'Insérer un séparateur', 'Add rule');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1392', 'standard', NOW(), 'Insérer un caractère spécial', 'Add a special char');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1393', 'standard', NOW(), 'Style de mise en forme', 'Format style');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1394', 'standard', NOW(), 'Format du texte', 'Text format');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1395', 'standard', NOW(), 'Taille du texte', 'Text size');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1396', 'standard', NOW(), 'Couleur du texte', 'Text color');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1397', 'standard', NOW(), 'Couleur de fond', 'Background color');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1398', 'standard', NOW(), '---------------------------------', '---------------------------------');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1399', 'standard', NOW(), 'Editeur WYSIWYG', 'WYSIWYG Editor ');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1400', 'standard', NOW(), 'Gestion des barres d\'outils de l\'éditeur visuel (WYSIWYG)', 'Visual editor (WYSIWYG) toolbars management');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1401', 'standard', NOW(), 'Confirmez-vous la suppression de la barre d\'outil sélectionnée ?', 'Do you confirm the deletion of the selected toolbar?');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1402', 'standard', NOW(), 'Eléments', 'Elements');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1403', 'standard', NOW(), 'Liens internes', 'Internal links');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1404', 'standard', NOW(), 'Barre d\'outils', 'Toolbar');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1405', 'standard', NOW(), 'Relations', 'Relations');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1406', 'standard', NOW(), 'Pages relationnelles', 'Relationnal pages');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1407', 'standard', NOW(), 'Pages liées', 'Linked pages');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1408', 'standard', NOW(), 'Aucun résultat.', 'No result.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1409', 'standard', NOW(), 'Liste des pages', 'Pages list');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1410', 'standard', NOW(), 'liant la page %s', 'which target the page %s');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1411', 'standard', NOW(), 'liées par la page %s', 'targets by the page %s');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1412', 'standard', NOW(), 'utilisant les mots clés %s', 'using keywords %s');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1413', 'standard', NOW(), 'et', 'and');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1414', 'standard', NOW(), 'Attention, cette page est liée par %s pages, voulez vous vraiment supprimer la page "%s" ?', 'Warning, this page is linked by %s pages, do you really want to delete the page "%s" ?');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1415', 'standard', NOW(), 'ou', 'or');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1416', 'standard', NOW(), 'utilisant les identifiants %s', 'using identifiers %s');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1417', 'standard', NOW(), '%s page(s) lient cette page.', '%s page(s) targets this page.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1418', 'standard', NOW(), 'Cette page lie %s page(s).', 'This page targets %s page(s).');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1419', 'standard', NOW(), '[Erreur, le code XHTML n\'est pas conforme à la syntaxe attendue. Merci de le corriger (%s)]', '[Error, XHTML code does not conform to the expected syntax. Please correct it (%s)]');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1420', 'standard', NOW(), 'Destination', 'Destination');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1421', 'standard', NOW(), 'Edition du contenu en cours', 'Content edition in progress');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1422', 'standard', NOW(), 'Soumettre à Validation', 'Submit for Validation');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1423', 'standard', NOW(), 'Sauvegarder le contenu', 'Save content');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1424', 'standard', NOW(), 'Effacer le contenu', 'Delete content');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1425', 'standard', NOW(), 'Confirmer la suppression du contenu ?', 'Confirm content deletion?');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1426', 'standard', NOW(), 'Voir le contenu', 'Content preview');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1427', 'standard', NOW(), 'Enregistrer et Quitter', 'Save and Quit');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1428', 'standard', NOW(), 'Edition du contenu', 'Content edition');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1429', 'standard', NOW(), 'Suppression du contenu', 'Content deletion');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1430', 'standard', NOW(), 'Soumission à validation', 'Submission to validation');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1431', 'standard', NOW(), 'Ce libellé servira à constituer l\'adresse URL du site. Seuls les caractères alphanumériques sont acceptés.', 'This label will be used to create the website URL. Only aphanumerics caracters are allowed.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1432', 'standard', NOW(), 'Une branche', 'A branch');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1433', 'standard', NOW(), 'Sélection de la branche à régénérer', 'Select a branch to regenerate');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1434', 'standard', NOW(), 'Sélectionner la page racine de la branche à régénérer', 'Select the root page of the branch to regenerate');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1435', 'standard', NOW(), 'utilisant les modèles %s', 'using templates %s');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1436', 'standard', NOW(), 'utilisant le modèle %s', 'using template %s');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1437', 'standard', NOW(), 'utilisant la rangée %s', 'using row %s');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1438', 'standard', NOW(), 'utilisant les rangées %s', 'using rows %s');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1439', 'standard', NOW(), 'Utilisateurs du groupe "%s"', '"%s" group users');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1440', 'standard', NOW(), 'Voir les pages', 'See pages');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1441', 'standard', NOW(), 'Aucun utilisateur n\'est associé à ce groupe', 'No users associate to this group');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1442', 'standard', NOW(), 'Cocher cette case pour que les utilisateurs n\'aient pas les droits sur ces nouveaux groupes', 'If you check this box, no users have rights to these new groups');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1443', 'standard', NOW(), 'actif', 'active');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1444', 'standard', NOW(), 'inactif', 'inactive');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1445', 'standard', NOW(), 'Création d\'un groupe', 'Create a group');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1446', 'standard', NOW(), 'Cette fenêtre vous permet de consulter et modifier le profil d\'un groupe d\'utilisateurs. En associant un groupe à un ensemble d\'utilisateurs vous pouvez centraliser les droits de cet ensemble d\'utilisateurs.', 'This window allows you to view and change the profile of a user group. By combining a group to a set of users you can centralize the rights of this group of users.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1447', 'standard', NOW(), 'Vous ne pouvez supprimer un groupe qui possède des utilisateurs.', 'You can not delete a group that has users.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES ('1448', 'standard', NOW(), 'Ce droit permet d\'autoriser la duplication d\'une branche de pages.', 'This right give the permission to duplicate a pages branch.');
-
-
-
-
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1223, 'standard', NOW(), 'Catégorie supprimée', 'Deleted category');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1224, 'standard', NOW(), 'Gestion des Applications', 'Manage Applications');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1225, 'standard', NOW(), 'Application à éditer', 'Edit application');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1226, 'standard', NOW(), 'Objet à éditer', 'Edit object');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1227, 'standard', NOW(), 'Objets', 'Objects');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1228, 'standard', NOW(), 'Application', 'Application');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1229, 'standard', NOW(), 'Edition / création d\'un objet', 'Edit / create object');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1230, 'standard', NOW(), 'Ressource', 'Ressource');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1231, 'standard', NOW(), 'Ressource primaire', 'Primary resource');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1232, 'standard', NOW(), 'Ressource secondaire', 'Secondary resource');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1233, 'standard', NOW(), '<ul><li>Aucune : Cet objet ne sera pas soumis à validation. Son contenu apparaîtra en ligne dès sa saisie. Toute modification sera immédiate.</li><li>Ressource primaire : Ce type d\'objet est soumis à validation. Son contenu n\'apparaîtra en ligne qu\'après validation par une personne autorisée.</li><li>Ressource secondaire : Ce type d\'objet est soumis à la validation de la ressource primaire. Son contenu n\'apparaîtra en ligne qu\'après validation de la ressource primaire à laquelle il est directement attaché. Sans attache à une ressource primaire, il se comportera de la même manière qu\'un objet sans ressource.</li></ul>', '<ul><li>None : This object will not be subjected to validation. Its contents will appear on line as of its seizure.</li><li>Primary resource : This type of object is subjected to validation. Its contents will appear on line only after validation by an authorized person.</li><li>Secondary resource : This type of object is subjected to the validation of the primary resource. Its contents will appear on line only after validation of the primary resource to which it is attached. Without attach to a primary resource, it will have the same behavior of an object without resource.</li></ul>');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1234, 'standard', NOW(), 'Objet', 'Object');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1235, 'standard', NOW(), 'Champs', 'Fields');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1236, 'standard', NOW(), 'Champ', 'Field');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1237, 'standard', NOW(), 'Edition / création d\'un champ de données pour l\'objet \'%s\'', 'Edit / create data field for object \'%s\'');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1238, 'standard', NOW(), 'Type de données', 'Data type');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1239, 'standard', NOW(), 'Champ requis', 'Required field');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1240, 'standard', NOW(), 'Visible coté client', 'Available in frontend');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1241, 'standard', NOW(), 'Visible dans les résultats d\'une recherche', 'Available in search results');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1242, 'standard', NOW(), 'Ajouter au formulaire de recherche<br /><small>(ou effectuer la recherche par mot-clé sur ce champ)</small>', 'Add to search form<br /><small>(or search by keyword on this field)</small>');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1243, 'standard', NOW(), 'Paramètres', 'Parameters');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1244, 'standard', NOW(), 'Multiples', 'Multiples');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1247, 'standard', NOW(), 'Objets simples', 'Standard objects');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1248, 'standard', NOW(), 'Objets composés', 'Made up objects');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1267, 'standard', NOW(), 'Associer', 'Associate');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1268, 'standard', NOW(), 'Désassocier', 'Disassociate ');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1271, 'standard', NOW(), 'Visible sur l\'accueil du module ?', 'Visible on the index of the module?');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1276, 'standard', NOW(), 'Pour les administrateurs seulement', 'Only for administrators');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1277, 'standard', NOW(), 'Confirmez-vous la suppression du champ \'%s\' ? Attention cette suppression est définitive, elle n\'est pas soumise à validation et elle impactera tous les objets ainsi que tous les fichiers correspondant à ce champ !', 'Do you confirm the deletion of the field \'%s\'? Attention this deletion is final, it is not subjected to validation and it will impact all the objects like all the files corresponding to this field!');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1278, 'standard', NOW(), '[Erreur durant la suppression du champ]', '[Error during field deletion]');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1279, 'standard', NOW(), 'Structure', 'Structure');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1280, 'standard', NOW(), 'Structure de l\'objet \'%s\'', '\'%s\' object structure');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1281, 'standard', NOW(), 'Utilisation de l\'objet par d\'autres objets', 'Use of the object by other objects');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1282, 'standard', NOW(), 'Oui par', 'Yes by');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1283, 'standard', NOW(), 'Confirmez-vous la suppression de l\'objet \'%s\' ?', 'Do you confirm deletion of the object \'%s\'?');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1283, 'standard', NOW(), '[Erreur durant la suppression de l\'objet]', '[Error during object deletion]');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1284, 'standard', NOW(), 'Cliquez pour choisir une date', 'Clic to pick a date');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1292, 'standard', NOW(), 'Les informations grisées nécessiteront une recherche récursive.', 'Grayed informations will require a recursive search.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1293, 'standard', NOW(), '[Erreur : vous n\'avez pas les droits suffisant sur le module \'%s\' pour lui ajouter une rangée.]', '[Error: you do not have sufficient rights on the module \'%s\' to add a row to it.]');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1294, 'standard', NOW(), 'Libellé composé', 'Made up label');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1295, 'standard', NOW(), 'Attribut \'module\' manquant sur un tag \'block\'', 'Missing \'module\' attribute on \'block\' tag');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1296, 'standard', NOW(), '[Erreur : syntaxe de rangée incorrecte : %s]', '[Error : malformed row syntax : %s]');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1297, 'standard', NOW(), 'Syntaxe du libellé pour l\'objet \'%s\'', 'Label syntax for object \'%s\'');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1298, 'standard', NOW(), 'Accès des fichiers', 'Files accesses');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1299, 'standard', NOW(), 'Modèles compatibles', 'Matching templates');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1300, 'standard', NOW(), 'Modèles non compatibles', 'Unmatching templates');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1301, 'standard', NOW(), 'Attention, l\'utilisation d\'un modèle incompatible peut entraîner la perte des données de la page.', 'Attention, using an unmatching template can involve the loss of all data of the page.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1302, 'standard', NOW(), 'vers', 'to');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1303, 'standard', NOW(), 'page', 'page');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1304, 'standard', NOW(), 'Gestion de l\'application \'%s\'', '\'%s\' application management');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1305, 'standard', NOW(), 'Création d\'une application', 'Application creation');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1306, 'standard', NOW(), 'Identifiant (Codename)', 'ID (Codename)');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1307, 'standard', NOW(), 'Maximum 20 caractères alphanumériques (a-z0-9) uniquement', 'Maximum 20 alphanumerics caracters (a-z0-9) only');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1308, 'standard', NOW(), '[Erreur : cet identifiant est déjà utilisé]', '[Error : this ID already used]');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1309, 'standard', NOW(), 'Le module est créé mais certaines erreurs se sont produites lors de la création des répertoires du module.\nVérifiez que les répertoires suivants existent et sont accessible en écriture :\n%s,\n%s,\n%s,\n%s', 'Module is created but some errors append for module directories creation.\nPlease check following directories exists and are writable :\n%s,\n%s,\n%s,\n%s');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1310, 'standard', NOW(), 'L\'utilisateur %s fait parti du groupe %s. Modifier directement ses droits enlèvera l\'utilisateur de ce groupe. Etes-vous sur de vouloir continuer ?', '%s user makes party of the group %s. Modify its rights directly will remove the user of this group. Do you want to continue?');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1311, 'standard', NOW(), 'Vous n\'avez aucun droits d\'utilisation sur aucun modèles de pages.', 'You do not have any rights of use on any pages templates.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1312, 'standard', NOW(), 'Vous ne pouvez créer de nouvelle page : Vous n\'avez aucun droits d\'utilisation sur aucun modèles de pages.', 'You cannot create of new page: You do not have any rights of use on any pages templates.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1313, 'standard', NOW(), 'Maximiser la fenêtre d\'administration', 'Maximize administration window');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1314, 'standard', NOW(), 'Minimiser la fenêtre d\'administration', 'Minimize administration window');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1315, 'standard', NOW(), 'Fermer la fenêtre d\'administration', 'Close administration window');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1316, 'standard', NOW(), 'Administrer la page', 'Page administration');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1317, 'standard', NOW(), 'Cochez pour mettre à jour l\'adresse de la page (en fonction du titre donné à la page.)', 'Check to update page URL (Page URL will be updated using page title.)');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1318, 'standard', NOW(), 'Adresse de la page en ligne. Vous pouvez la mettre à jour si vous modifiez le titre de la page mais attention ! Changer l\'adresse de la page peut entraîner des problèmes de référencement sur les moteurs de recherche ainsi que des problèmes si d\'autres sites lient cette page.', 'Address of this page online. You can update it if you change the title of the page but attention! If you Change page URL, this can cause problems of referencing on search engines and problems if other sites links to this page.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1319, 'standard', NOW(), '[La page de destination sélectionnée est déjà la page mère actuelle de la page à déplacer ...]', '[The destination page selected is already the mother page of the page to move...]');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1320, 'standard', NOW(), 'Verrouillé', 'Locked');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1321, 'standard', NOW(), 'Chargement ...', 'Loading...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1322, 'standard', NOW(), 'Contenu / Rangées', 'Content / Rows');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1323, 'standard', NOW(), 'Confirmez-vous la suppression de l\'objet \'%s\' ?', 'Do you confirm deletion of the object \'%s\'?');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1324, 'standard', NOW(), 'Confirmez-vous la sortie sans sauvegarder ?', 'Do you confirm exit without saving?');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1325, 'standard', NOW(), 'Libellé du lien', 'Link label');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1326, 'standard', NOW(), 'Scripts restants', 'Remaining scripts');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1327, 'standard', NOW(), 'Meta données par défaut pour le site :', 'Default meta datas for website:');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1328, 'standard', NOW(), 'Page', 'Page');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1329, 'standard', NOW(), 'Maximum %so', 'Maximum %sB');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1330, 'standard', NOW(), 'Rafraîchir', 'Refresh');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1331, 'standard', NOW(), 'Stopper scripts', 'Stop scripts');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1332, 'standard', NOW(), 'Consulter l\'aide en ligne', 'View online help');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1333, 'standard', NOW(), 'Modèles', 'Templates');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1334, 'standard', NOW(), 'Rangées', 'Rows');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1335, 'standard', NOW(), 'Les rangées de page appartiennent à un ou plusieurs groupes de rangées. Pour utiliser une rangée, un utilisateur doit avoir des droits sur tous les groupes de cette rangée.', 'Each row belong to one or more groups. For a user to be able to use a row, he or she must have usage rights for ALL the groups to which that row belongs to.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1336, 'standard', NOW(), 'Aucun groupe', 'No group');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1337, 'standard', NOW(), '[Modification des groupes de rangées interdits]', '[Modification of unauthorized rows groups]');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1338, 'standard', NOW(), 'Inverser', 'Invert');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1339, 'standard', NOW(), 'Profondeur affichée', 'Displayed depth');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1340, 'standard', NOW(), 'Visualisation des objets associés', 'Viewing associated objects');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1341, 'standard', NOW(), 'Edition des objets associés', 'Edit associated objects');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1342, 'standard', NOW(), 'Gestion des catégories', 'Categories management');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1343, 'standard', NOW(), 'Favicon', 'Favicon');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1344, 'standard', NOW(), 'Valeur : /favicon.ico ou /img/favicon.png, etc.', 'Value : /favicon.ico or /img/favicon.png, ...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1345, 'standard', NOW(), 'Module', 'Application');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1346, 'standard', NOW(), 'Accès aux pages pour le groupe \'%s\'', 'Pages access for group \'%s\'');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1347, 'standard', NOW(), 'Accès aux pages pour l\'utilisateur \'%s\'', 'Pages access for user \'%s\'');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1348, 'standard', NOW(), 'Racine des pages', 'Pages root');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1349, 'standard', NOW(), 'Voir les accès au contenu des modules', 'View accesses to modules content');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1350, 'standard', NOW(), 'Accès aux catégories pour l\'utilisateur \'%s\'', 'Access to categories for user \'%s\'');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1351, 'standard', NOW(), 'Cet utilisateur appartient à un ou plusieurs groupes d\'utilisateurs, ses droits dépendent de son appartenance à ces groupes d\'utilisateurs.', 'This user belongs to one or more user groups, his rights depend on his membership of these user groups.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1352, 'standard', NOW(), 'Plusieurs sites peuvent partager le même domaine. Dans ce cas, le premier dans la liste ci-dessous sera prioritaire : Il s\'affichera pour cette adresse de domaine.', 'Several websites can share the same domain. In this case, the first in the list below will have priority: It will be shown for this domain address.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1353, 'standard', NOW(), '[Erreur lors du réordonancement des sites ...]', '[Error during websites reorder...]');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1354, 'standard', NOW(), 'Protéger les fichiers à télécharger.', 'Protect download files.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1355, 'standard', NOW(), 'Avec cette option active pour le module, les fichiers à télécharger (fichiers PDF, images, etc.) seront filtrés avant tout téléchargement. Si des droits sont nécessaires à leur consultation, l\'accès en sera interdit à toute personne n\'ayant pas les autorisations suffisantes. De plus, le nom du fichier sera systématiquement nettoyé des données de contrôles ajoutées par Automne. Activer cette option entraîne une charge plus importante sur le serveur pour tous les téléchargements. Ne l\'activez que si le besoin est réel.', 'With this option active for the module, the files to be downloaded (PDF files, images, etc) will be filtered before any downloading. If rights are necessary to their consultation, the access will be forbidden to any person not having the sufficient clearance. Moreover, the name of the file will be systematically cleaned of controls datas added by Automne. Activating this option involves a more important load on the server for all the downloading. Activate it only if the need is real.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1356, 'standard', NOW(), 'Code Source', 'Source code');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1357, 'standard', NOW(), 'Edition pleine page', 'Edition fit window');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1358, 'standard', NOW(), 'Prévisualisation', 'Preview');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1359, 'standard', NOW(), 'Modèles', 'Template');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1360, 'standard', NOW(), 'Couper', 'Cut');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1361, 'standard', NOW(), 'Copier', 'Copy');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1362, 'standard', NOW(), 'Coller', 'Paste');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1363, 'standard', NOW(), 'Coller comme texte seul', 'Paste as plain text');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1364, 'standard', NOW(), 'Coller depuis Word', 'Paste from Word');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1365, 'standard', NOW(), 'Imprimer', 'Print');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1366, 'standard', NOW(), 'Annuler', 'Undo');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1367, 'standard', NOW(), 'Refaire', 'Redo');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1368, 'standard', NOW(), 'Chercher', 'Search');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1369, 'standard', NOW(), 'Remplacer', 'Replace');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1370, 'standard', NOW(), 'Tout sélectionner', 'Select All');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1371, 'standard', NOW(), 'Supprimer le format', 'Remove format');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1372, 'standard', NOW(), 'Gras', 'Bold');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1373, 'standard', NOW(), 'Italique', 'Italic');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1374, 'standard', NOW(), 'Souligner', 'Underline');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1375, 'standard', NOW(), 'Barrer', 'Strike Through');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1376, 'standard', NOW(), 'Indice', 'Subscript');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1377, 'standard', NOW(), 'Exposant', 'Superscript');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1378, 'standard', NOW(), 'Liste Ordonnée', 'Ordered List');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1379, 'standard', NOW(), 'Liste non-ordonnée', 'Unordered List');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1380, 'standard', NOW(), 'Diminuer le retrait', 'Outdent');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1381, 'standard', NOW(), 'Augmenter le retrait', 'Indent');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1382, 'standard', NOW(), 'Aligner à gauche', 'Justify Left');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1383, 'standard', NOW(), 'Centrer', 'Center');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1384, 'standard', NOW(), 'Aligner à droite', 'Justify Right');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1385, 'standard', NOW(), 'Justifier', 'Justify');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1386, 'standard', NOW(), 'Insérer / modifier un lien', 'Add / Edit link');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1387, 'standard', NOW(), 'Supprimer un lien', 'Remove link');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1388, 'standard', NOW(), 'Insérer / modifier une ancre', 'Add / Edit anchor');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1389, 'standard', NOW(), 'Insérer / modifier une Image', 'Add / Edit image');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1390, 'standard', NOW(), 'Insérer / modifier un tableau', 'Add / Edit table');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1391, 'standard', NOW(), 'Insérer un séparateur', 'Add rule');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1392, 'standard', NOW(), 'Insérer un caractère spécial', 'Add a special char');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1393, 'standard', NOW(), 'Style de mise en forme', 'Format style');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1394, 'standard', NOW(), 'Format du texte', 'Text format');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1395, 'standard', NOW(), 'Taille du texte', 'Text size');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1396, 'standard', NOW(), 'Couleur du texte', 'Text color');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1397, 'standard', NOW(), 'Couleur de fond', 'Background color');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1398, 'standard', NOW(), '---------------------------------', '---------------------------------');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1399, 'standard', NOW(), 'Editeur WYSIWYG', 'WYSIWYG Editor ');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1400, 'standard', NOW(), 'Gestion des barres d\'outils de l\'éditeur visuel (WYSIWYG)', 'Visual editor (WYSIWYG) toolbars management');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1401, 'standard', NOW(), 'Confirmez-vous la suppression de la barre d\'outil sélectionnée ?', 'Do you confirm the deletion of the selected toolbar?');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1402, 'standard', NOW(), 'Eléments', 'Elements');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1403, 'standard', NOW(), 'Liens internes', 'Internal links');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1404, 'standard', NOW(), 'Barre d\'outils', 'Toolbar');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1405, 'standard', NOW(), 'Relations', 'Relations');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1406, 'standard', NOW(), 'Pages relationnelles', 'Relationnal pages');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1407, 'standard', NOW(), 'Pages liées', 'Linked pages');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1408, 'standard', NOW(), 'Aucun résultat.', 'No result.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1409, 'standard', NOW(), 'Liste des pages', 'Pages list');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1410, 'standard', NOW(), 'liant la page %s', 'which target the page %s');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1411, 'standard', NOW(), 'liées par la page %s', 'targets by the page %s');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1412, 'standard', NOW(), 'utilisant les mots clés %s', 'using keywords %s');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1413, 'standard', NOW(), 'et', 'and');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1414, 'standard', NOW(), 'Attention, cette page est liée par %s pages, voulez vous vraiment supprimer la page "%s" ?', 'Warning, this page is linked by %s pages, do you really want to delete the page "%s" ?');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1415, 'standard', NOW(), 'ou', 'or');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1416, 'standard', NOW(), 'utilisant les identifiants %s', 'using identifiers %s');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1417, 'standard', NOW(), '%s page(s) lient cette page.', '%s page(s) targets this page.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1418, 'standard', NOW(), 'Cette page lie %s page(s).', 'This page targets %s page(s).');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1419, 'standard', NOW(), '[Erreur, le code XHTML n\'est pas conforme à la syntaxe attendue. Merci de le corriger (%s)]', '[Error, XHTML code does not conform to the expected syntax. Please correct it (%s)]');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1420, 'standard', NOW(), 'Destination', 'Destination');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1421, 'standard', NOW(), 'Edition du contenu en cours', 'Content edition in progress');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1422, 'standard', NOW(), 'Soumettre à Validation', 'Submit for Validation');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1423, 'standard', NOW(), 'Sauvegarder le contenu', 'Save content');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1424, 'standard', NOW(), 'Effacer le contenu', 'Delete content');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1425, 'standard', NOW(), 'Confirmer la suppression du contenu ?', 'Confirm content deletion?');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1426, 'standard', NOW(), 'Voir le contenu', 'Content preview');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1427, 'standard', NOW(), 'Enregistrer et Quitter', 'Save and Quit');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1428, 'standard', NOW(), 'Edition du contenu', 'Content edition');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1429, 'standard', NOW(), 'Suppression du contenu', 'Content deletion');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1430, 'standard', NOW(), 'Soumission à validation', 'Submission to validation');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1431, 'standard', NOW(), 'Ce libellé servira à constituer l\'adresse URL du site. Seuls les caractères alphanumériques sont acceptés.', 'This label will be used to create the website URL. Only aphanumerics caracters are allowed.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1432, 'standard', NOW(), 'Une branche', 'A branch');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1433, 'standard', NOW(), 'Sélection de la branche à régénérer', 'Select a branch to regenerate');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1434, 'standard', NOW(), 'Sélectionner la page racine de la branche à régénérer', 'Select the root page of the branch to regenerate');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1435, 'standard', NOW(), 'utilisant les modèles %s', 'using templates %s');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1436, 'standard', NOW(), 'utilisant le modèle %s', 'using template %s');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1437, 'standard', NOW(), 'utilisant la rangée %s', 'using row %s');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1438, 'standard', NOW(), 'utilisant les rangées %s', 'using rows %s');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1439, 'standard', NOW(), 'Utilisateurs du groupe "%s"', '"%s" group users');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1440, 'standard', NOW(), 'Voir les pages', 'See pages');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1441, 'standard', NOW(), 'Aucun utilisateur n\'est associé à ce groupe', 'No users associate to this group');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1442, 'standard', NOW(), 'Cocher cette case pour que les utilisateurs n\'aient pas les droits sur ces nouveaux groupes', 'If you check this box, no users have rights to these new groups');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1443, 'standard', NOW(), 'actif', 'active');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1444, 'standard', NOW(), 'inactif', 'inactive');
+#Start v4 messages
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1445, 'standard', NOW(), 'Création d\'un groupe', 'Create a group');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1446, 'standard', NOW(), 'Cette fenêtre vous permet de consulter et modifier le profil d\'un groupe d\'utilisateurs. En associant un groupe à un ensemble d\'utilisateurs vous pouvez centraliser les droits de cet ensemble d\'utilisateurs.', 'This window allows you to view and change the profile of a user group. By combining a group to a set of users you can centralize the rights of this group of users.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1447, 'standard', NOW(), 'Vous ne pouvez supprimer un groupe qui possède des utilisateurs.', 'You can not delete a group that has users.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1448, 'standard', NOW(), 'Ce droit permet d\'autoriser la duplication d\'une branche de pages.', 'This right give the permission to duplicate a pages branch.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1449, 'standard', NOW(), 'Vous pouvez utiliser des groupes pour catégoriser votre modèle de page. Vous pourrez ainsi simplifier sa sélection mais aussi associer des droits aux utilisateurs sur ces groupes. Ceci permettra de limiter l\'usage de certains modèles spécifiques à certains profils d\'utilisateurs.', 'You can use groups to categorize your page template. You can simplify the selection, but also involve rights to users on these groups. This will limit the use of certain model-specific user profiles.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1450, 'standard', NOW(), 'Modèle de page :', 'Page Template:');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1451, 'standard', NOW(), 'Création d\'un modèle de page', 'Creating a page template');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1452, 'standard', NOW(), 'Impression', 'Print');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1453, 'standard', NOW(), 'Sélectionnez les zones de contenu du modèle que vous souhaitez voir apparaitre dans la page d\'impression. Choisissez aussi l\'ordre d\'affichage de ces zones de contenu.', 'Select the content areas of the template you want to appear in the page printed. Also choose the display order of these content areas.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1454, 'standard', NOW(), 'Zones de contenu imprimables', 'Printable Content Areas');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1455, 'standard', NOW(), 'Séléctionnés', 'Selected');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1456, 'standard', NOW(), 'Cette page vous permet de créer et modifier un modèle de page. Les modèles de page servent de base à la création des pages du site.', 'This page allows you to create and edit a page template. Page templates provide the basis for the creation of the site\'s pages.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1457, 'standard', NOW(), 'Vous pouvez ajouter un ou plusieurs nouveaux groupes au modèle de page en cours. Le nom du groupe ne doit contenir que des caractères alphanumériques. Les groupes doivent être séparés par des virgules ou des point-virgules.', 'You can add one or more new groups to the model page. The name of the group must only contain alphanumeric characters. Groups must be separated by commas or semi-colons.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1458, 'standard', NOW(), 'En cochant cette case, aucun utilisateur ne pourra voir ou utiliser ce modèle tant qu\'ils n\'auront pas les droits sur les nouveaux groupes ajoutés ci-dessus.', 'By checking this box, no users can see or use this model until they have the rights to the new groups added above.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1459, 'standard', NOW(), 'Ne pas donner les droits de voir ces nouveaux groupes aux utilisateurs.', 'Do not give the rights to see these new groups to users.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1460, 'standard', NOW(), 'Sélectionnez les sites pour lesquels l\'utilisation de ce modèle de page sera possible.', 'Select sites for which the use of this page template is possible.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1461, 'standard', NOW(), 'Sites', 'Websites');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1462, 'standard', NOW(), 'Utilisez une vignette représentant le visuel du modèle de page pour permettre une selection plus aisée.', 'Use a thumbnail representing the visual page template to allow for easier selection.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1463, 'standard', NOW(), 'Vignette', 'Thumbnail');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1464, 'standard', NOW(), 'Vous pouvez utiliser un fichier XML pour importer la définition XML à employer pour ce modèle de page.', 'You can use an XML file to import the XML to be used for this page template.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1465, 'standard', NOW(), 'Fichier XML ...', 'XML File...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1466, 'standard', NOW(), 'Vous pouvez modifier ici la structure XML de ce modèle. Vous devez respecter la norme XML sous peine d\'erreur.<br /><strong>Attention</strong>, ne supprimez ni ne modifiez pas de tag &lt;atm-clientspace&gt; sous peine de perdre du contenu sur les pages employant déjà le modèle en cours.', 'You can change the structure of the XML model. You must follow the XML standard under penalty of error.<br /><strong>Warning</strong>, nor delete or change tag &lt;atm-clientspace&gt; without losing content on the pages using already the current model.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1467, 'standard', NOW(), 'Rangées par défaut', 'Default rows');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1468, 'standard', NOW(), 'Aide à la syntaxe des modèles', 'Help with syntax models');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1469, 'standard', NOW(), 'Cette fenêtre regroupe les différentes aides nécessaire à la création de modèles pour chacun des modules.', 'This window lists all the various aids necessary to construct models for each module.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1470, 'standard', NOW(), 'Edition du modèle d\'impression des pages', 'Edition of the model for printing pages');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1471, 'standard', NOW(), 'Cette page vous permet de créer et modifier le modèle d\'impression employé pour les pages. Ce modèle sert à créer une version spécifique pour l\'impression des différentes pages des sites.', 'This page allows you to create and edit the template used to print the pages. This model is used to create a specific version for printing on different pages of the sites.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1472, 'standard', NOW(), 'Vous pouvez modifier ici la structure XML de ce modèle. Vous devez respecter la norme XML sous peine d\'erreur.<br /><strong>Attention</strong>, les tags atm-clientspace ne fonctionnent pas pour ce modèle, utilisez <strong>{{data}}</strong> pour préciser l\'endroit ou vous souhaitez que le contenu de la page apparaisse.', 'You can change the structure of the XML model. You must follow the XML standard under penalty of error.<br /><strong>Warning</strong> tags &lt;atm-clientspace&gt; does not work for this model, use <strong>{{data}}</strong> to specify where you want the content of the page.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1473, 'standard', NOW(), 'Modèles de pages', 'Page Templates');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1474, 'standard', NOW(), 'Modèles de rangées', 'Template rows');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1475, 'standard', NOW(), 'Feuilles de styles', 'Stylesheets');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1476, 'standard', NOW(), 'Scripts Javascripts', 'Scripts JavaScripts');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1477, 'standard', NOW(), 'Barres d\'outils Wysiwyg', 'Toolbars Wysiwyg');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1478, 'standard', NOW(), 'Gestion des modèles.', 'Templates management.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1479, 'standard', NOW(), 'Sur cette page, vous pouvez gérer les modèles servant à la création des pages ainsi que les modèles des rangées de contenu employé dans les pages. Vous pouvez aussi gérer les feuilles de styles et les barres d\'outils employées par l\'éditeur WYSIWYG.', 'On this page you can manage templates for the creation of pages and the templates rows used in the content pages. You can also manage the stylesheets and toolbars used by the WYSIWYG editor.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1480, 'standard', NOW(), 'Le modèle a modifier n\'existe pas ou possède une erreur.', 'The template to change does not exists or has an error.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1481, 'standard', NOW(), 'Modèle enregistré avec succès.', 'Template successfully saved.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1482, 'standard', NOW(), 'Modèle créé avec succès.', 'Template successfully created.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1483, 'standard', NOW(), 'Modèle d\'impression mis à jour avec succès.', 'Template Printing updated successfully.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1484, 'standard', NOW(), 'Aucune page publique n\'emploie ce modèle ...', 'No public page use this template ...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1485, 'standard', NOW(), 'Modèle dupliqué avec succès.<br />Le nouveau modèle \'%s\' est inactif.', 'Model successfully duplicated.<br />The new template \'%s\' is inactive.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1486, 'standard', NOW(), 'Feuille de style', 'Cascaded Stylesheet');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1487, 'standard', NOW(), 'Style Wysiwyg', 'Wysiwyg style');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1488, 'standard', NOW(), 'Javascript', 'Javascript');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1489, 'standard', NOW(), 'Création d\'un fichier de feuille de style', 'Creating a stylesheet');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1490, 'standard', NOW(), 'Edition du fichier de feuille de style', 'Editing a stylesheet');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1491, 'standard', NOW(), 'Création d\'un fichier Javascript', 'Creating a javascript file');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1492, 'standard', NOW(), 'Edition du fichier Javascript', 'Editing a javascript file');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1493, 'standard', NOW(), 'Edition du fichier de style de l\'éditeur Wysiwyg', 'File edition style WYSIWYG editor');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1494, 'standard', NOW(), 'Cette page permet l\'édition d\'un fichier Javascript ou d\'une feuille de style (CSS). Ce fichier peut-être ensuite appelé dans le code d\'un modèle de page.', 'This page allows editing of a JavaScript file or a stylesheet (CSS). This file can then be called in the code of a page template.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1495, 'standard', NOW(), 'Définition', 'Definition');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1496, 'standard', NOW(), 'Feuilles de styles des sites', 'Websites stylesheets');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1497, 'standard', NOW(), 'Scripts Javascript des sites', 'Websites javascripts');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1498, 'standard', NOW(), 'Confirmer la suppression définitive du fichier', 'Confirm the permanent removal of the file');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1499, 'standard', NOW(), 'Attention, si ce fichier est employé par un modèle de page, sa mise en page risque d\'être corrompue !', 'Remember, if this file is used by a page template, the layout may be corrupt!');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1500, 'standard', NOW(), 'Fichier %s supprimé.', 'File %s deleted.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1501, 'standard', NOW(), 'Erreur durant la suppression du fichier', 'Error deleting file');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1502, 'standard', NOW(), 'Fichier %s mis à jour.', 'File %s updated.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1503, 'standard', NOW(), 'Erreur durant la mise à jour du fichier', 'Error updating file');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1504, 'standard', NOW(), 'Fichier %s créé.', 'File %s created.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1505, 'standard', NOW(), 'Impossible de créer le fichier %s, son extention est incorrecte.', 'Unable to create file %s, its extension is incorrect.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1506, 'standard', NOW(), 'Impossible de créer le fichier %s, ce fichier existe déjà.', 'Unable to create file %s, file already exists.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1507, 'standard', NOW(), 'Type: Dossier<br />Dernière modification :', 'Type: Folder<br />Updated:');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1508, 'standard', NOW(), 'Type: %s<br />Dernière modification : %s<br />Taille: %s', 'Type: %s<br />Updated: %s<br />Size: %s');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1509, 'standard', NOW(), 'Par nom, description', 'By name, description');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1510, 'standard', NOW(), 'Groupes', 'Groups');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1511, 'standard', NOW(), 'Site', 'Website');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1512, 'standard', NOW(), 'Page', 'Page');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1513, 'standard', NOW(), 'Voir les modèles inactifs', 'See inactive templates');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1514, 'standard', NOW(), 'Chargement ...', 'Loading...');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1515, 'standard', NOW(), 'Filtrer', 'Filter');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1516, 'standard', NOW(), 'Modèle d\'impression', 'Print template');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1517, 'standard', NOW(), 'Activer', 'Activate');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1518, 'standard', NOW(), 'Désactiver', 'Disable');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1519, 'standard', NOW(), 'Confirmez-vous la suppression définitive du ou des modèles de pages sélectionnés ?', 'Do you confirm the deletion of the selected templates pages?');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1520, 'standard', NOW(), 'Dupliquer', 'Duplicate');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1521, 'standard', NOW(), 'Duplique le modèle sélectionné.', 'Duplicates the selected model.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1522, 'standard', NOW(), 'Voir les rangées inactives', 'See inactive rows');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1523, 'standard', NOW(), 'Confirmez-vous la suppression définitive du ou des modèles de rangées sélectionnés ?', 'Do you confirm the deletion of the selected templates rows?');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1524, 'standard', NOW(), 'Vous n\'avez pas le droit de dupliquer les branches d\'arborescences.', 'You are not allowed to duplicate the branches of trees.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1525, 'standard', NOW(), 'Duplication de branche d\'arborescence', 'Duplication of tree branch');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1526, 'standard', NOW(), 'Cette page vous permet de dupliquer une branche complète de l\'arborescence de pages. Toutes les pages de la branche sélectionnée seront recréées avec leurs contenus sous la page que vous désignerez.', 'This page allows you to duplicate a branch of the tree of pages. All pages of the selected branch will be recreated with their content in the page you designate.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1527, 'standard', NOW(), 'Choisissez la branche à dupliquer', 'Select the branch to duplicate');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1528, 'standard', NOW(), 'Choisissez la page de destination', 'Choose the destination page');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1529, 'standard', NOW(), 'Vous allez dupliquer l\'ensemble des pages (ainsi que leur contenu) se trouvant sous la page {0}.<br /><br />La page sous laquelle seront recréées les pages dupliquées sera {1}.<br /><br />Confirmez-vous cette opération ?', 'You will duplicate all of the pages (and contents) which is below the page {0}.<br /><br />The page under which pages will be duplicated will be {1}.<br /><br />Can you confirm this?');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1530, 'standard', NOW(), 'Page ajoutée à vos favoris !', 'Page added to your favorites!');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1531, 'standard', NOW(), 'Page enlevée de vos favoris.', 'Page removed from your favorites.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1532, 'standard', NOW(), 'Aux modèles :', 'To templates:');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1533, 'standard', NOW(), 'Usage restreint :', 'Restricted:');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1534, 'standard', NOW(), 'Modèle de Rangée', 'Template Row');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1535, 'standard', NOW(), 'Groupes :', 'Groups:');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1536, 'standard', NOW(), 'Aucun', 'None');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1537, 'standard', NOW(), 'Actif :', 'Active:');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1538, 'standard', NOW(), 'Oui', 'Yes');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1539, 'standard', NOW(), 'Non', 'No');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1540, 'standard', NOW(), 'Employé :', 'Used:');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1541, 'standard', NOW(), 'Voir', 'View');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1542, 'standard', NOW(), 'Régénérer', 'Regenerate');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1543, 'standard', NOW(), 'les pages.', 'pages.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1544, 'standard', NOW(), 'Fichier :', 'File:');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1545, 'standard', NOW(), 'Modèle de page', 'Page Template');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1546, 'standard', NOW(), 'Sites :', 'Websites:');
 
 
 #
@@ -1652,7 +1948,7 @@ INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (4
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (5, 'polymod', NOW(), 'Suppression de l\'objet \'%s\' :', 'Deletion of \'%s\' object:');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (6, 'polymod', NOW(), 'Lien existant', 'Current link');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (7, 'polymod', NOW(), 'Accueil', 'Entry');
-INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (18, 'polymod', NOW(), 'Mots-clés', 'Kewyords');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (18, 'polymod', NOW(), 'Mots-clés', 'Keywords');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (19, 'polymod', NOW(), 'Publié entre le', 'Published between');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (20, 'polymod', NOW(), 'et le', 'and');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (21, 'polymod', NOW(), '%s objet(s) \'%s\' correspondant à votre recherche', '%s \'%s\' object(s) relative to your search');
@@ -1891,6 +2187,7 @@ INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (1
 			<ul>
 				<li><span class="vertclair">int </span>: nombre entier,&nbsp;</li>
 				<li><span class="vertclair">string </span>: cha&icirc;ne de caract&egrave;re,&nbsp;</li>
+				<li><span class="vertclair">safestring </span>: cha&icirc;ne de caract&egrave;re sans code HTML,&nbsp;</li>
 				<li><span class="vertclair">bool </span>: bool&eacute;en,&nbsp;</li>
 				<li><span class="vertclair">array</span>: tableau de valeurs,&nbsp;</li>
 				<li><span class="vertclair">email </span>: email valide,</li>
@@ -2447,19 +2744,15 @@ INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (5
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (518, 'polymod', NOW(), 'Choisissez les éléments \'%s\' à associer', 'Choose elements \'%s\' to associate');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (519, 'polymod', NOW(), 'Choisissez l\'aide à afficher : ', 'Choose help to display: ');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (520, 'polymod', NOW(), 'Ordre aléatoire', 'Random order');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (521, 'polymod', NOW(), 'Sur cette page, vous pouvez spécifier des paramètres pour l\'affichage de la rangée de contenu en cours d\'édition.', 'On this page you can specify settings for the display of the row of content being edited.');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (522, 'polymod', NOW(), 'Le formulaire est incomplet ou possède des valeurs incorrectes ...', 'The form is incomplete or has incorrect values...');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (523, 'polymod', NOW(), 'Cet onglet est désactivé car vous devez avoir sélectionné du texte pour l\'utiliser.', 'This tab is disabled because you have selected the text to use it.');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (524, 'polymod', NOW(), 'Cet onglet est désactivé car vous ne devez pas avoir de texte sélectionné pour l\'utiliser.', 'This tab is disabled because you do not have text selected for use.');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (525, 'polymod', NOW(), 'L\'élément \'%s\' que vous cherchez à éditer est vérouillé par %s le %s.', 'The \'%s\' item you want to edit is locked by %s on %s.');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (526, 'polymod', NOW(), 'Vous n\'avez pas le droit d\'éditer l\'élément \'%s\'.', 'You do not have the right to edit the item \'%s\'.');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (527, 'polymod', NOW(), 'Sur cette page, vous pouvez créer ou modifier les données de l\'élément %s', 'On this page, you can create or modify the data of element %s');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (528, 'polymod', NOW(), 'Erreur durant l\'enregistrement de l\'élément ...', 'Error during recording of the element ...');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (529, 'polymod', NOW(), 'Aucune catégorie disponible ...', 'No category available ...');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (530, 'polymod', NOW(), 'Aucun élément disponible ...', 'No element available ...');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (531, 'polymod', NOW(), 'Elément inexistant ...', 'Element non-existent ...');
 
-#
-# Contenu de la table `I18NM_messages` module News
-#
-
-DELETE FROM I18NM_messages WHERE module='pnews';
-
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1, 'pnews', NOW(), 'Actualités', 'News');
-
-#
-# Contenu de la table `I18NM_messages` module Docs
-#
-
-DELETE FROM I18NM_messages WHERE module='pdocs';
-
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1, 'pdocs', NOW(), 'Gestion documentaire', 'Documents management');

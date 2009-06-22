@@ -13,7 +13,7 @@
 // | Author: Andre Haynes <andre.haynes@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: emailscatalog.php,v 1.2 2009/03/02 11:28:06 sebastien Exp $
+// $Id: emailscatalog.php,v 1.3 2009/06/22 14:08:40 sebastien Exp $
 
 /**
   * Class CMS_emailsCatalog
@@ -53,8 +53,8 @@ class CMS_emailsCatalog extends CMS_grandFather
 			if (!is_a($user,"CMS_user_profile") && SensitiveIO::isPositiveInteger($user)) {
 			    $user = CMS_profile_usersCatalog::getByID($user);
 			}
-			//if user hasn't alert level for this module, skip it
-			if (!$user->hasAlertLevel($alertLevel, $module)) {
+			//if user hasn't alert level for this module or user is not active anymore, skip it
+			if (!$user->hasAlertLevel($alertLevel, $module) || $user->isDeleted() || !$user->isActive()) {
 				//CMS_grandFather::raiseError('user '.$user->getFullName().' has no alerts for level '.$alertLevel.' for module '.$module);
 				continue;
 			}

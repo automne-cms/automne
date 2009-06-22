@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-rows.php,v 1.2 2009/02/09 10:01:43 sebastien Exp $
+// $Id: templates-rows.php,v 1.3 2009/06/22 14:10:33 sebastien Exp $
 
 /**
   * PHP page : template default rows
@@ -57,8 +57,6 @@ $view->addJSFile('ext');
 $view->addJSFile('edit');
 //get page content
 $dummy_page->setTemplate($template->getID()) ;
-
-//$content = $template->getContent($cms_language, $dummy_page, PAGE_VISUALMODE_CLIENTSPACES_FORM);
 
 //get page content
 $content = $dummy_page->getContent($cms_language, PAGE_VISUALMODE_CLIENTSPACES_FORM);

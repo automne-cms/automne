@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_definition_funtions.php,v 1.2 2009/04/02 13:58:00 sebastien Exp $
+// $Id: poly_definition_funtions.php,v 1.3 2009/06/22 14:08:41 sebastien Exp $
 
 /**
   * static Class CMS_poly_definition_functions
@@ -221,6 +221,9 @@ class CMS_poly_definition_functions
 			case 'string':
 				return (string) $varContent;
 			break;
+			case 'safestring':
+                return SensitiveIO::sanitizeHTMLString( (string) $varContent );
+            break;
 			case 'array':
 				if (is_array($varContent)) {
 					return $varContent;

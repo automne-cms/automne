@@ -9,7 +9,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: panel.js,v 1.2 2009/03/02 11:26:54 sebastien Exp $
+  * $Id: panel.js,v 1.3 2009/06/22 14:10:34 sebastien Exp $
   */
 Automne.panel = Ext.extend(Ext.Panel, {
 	//tab element
@@ -55,7 +55,7 @@ Automne.panel = Ext.extend(Ext.Panel, {
 			target: 		this.tabEl,
 			title: 			title,
 			html: 			body,
-			dismissDelay:	0
+			dismissDelay:	20000
 		});
 		return true;
 	},

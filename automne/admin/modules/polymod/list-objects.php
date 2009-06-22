@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: list-objects.php,v 1.1 2009/06/05 15:01:07 sebastien Exp $
+// $Id: list-objects.php,v 1.2 2009/06/22 14:10:35 sebastien Exp $
 
 /**
   * PHP page : Load polyobjects items datas
@@ -26,6 +26,9 @@
   */
 
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
+
+define("MESSAGE_PAGE_NO_ITEM", 530);
+define("MESSAGE_PAGE_ITEM_NON_EXISTENT", 531);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -84,13 +87,13 @@ if (!$object->hasError()) {
 	} else {
 		$objectsDatas['objects'][] = array(
 			'id'			=> '0',
-			'label'			=> 'Aucun objet disponible ...',
+			'label'			=> $cms_language->getMessage(MESSAGE_PAGE_NO_ITEM, false, MOD_POLYMOD_CODENAME),
 		);
 	}
 } else {
 	$objectsDatas['objects'][] = array(
 			'id'			=> '0',
-			'label'			=> 'Objet inexistant ...',
+			'label'			=> $cms_language->getMessage(MESSAGE_PAGE_ITEM_NON_EXISTENT, false, MOD_POLYMOD_CODENAME),
 		);
 }
 $view->setContent($objectsDatas);

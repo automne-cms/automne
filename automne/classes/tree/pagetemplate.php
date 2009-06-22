@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: pagetemplate.php,v 1.4 2009/03/02 11:29:38 sebastien Exp $
+// $Id: pagetemplate.php,v 1.5 2009/06/22 14:08:41 sebastien Exp $
 
 /**
   * Class CMS_pageTemplate
@@ -31,6 +31,20 @@
 
 class CMS_pageTemplate extends CMS_grandFather
 {
+	
+	const MESSAGE_DESC_TEMPLATE = 1545;
+	const MESSAGE_DESC_WEBSITES = 1546;
+	const MESSAGE_DESC_GROUPS = 1535;
+	const MESSAGE_DESC_NONE = 1536;
+	const MESSAGE_DESC_ACTIVE = 1537;
+	const MESSAGE_DESC_YES = 1538;
+	const MESSAGE_DESC_NO = 1539;
+	const MESSAGE_DESC_USED = 1540;
+	const MESSAGE_DESC_SEE = 1541;
+	const MESSAGE_DESC_REGENERATE = 1542;
+	const MESSAGE_DESC_PAGES = 1543;
+	const MESSAGE_DESC_FILE = 1544;
+	
 	/**
 	  * DB id
 	  * @var integer
@@ -1013,7 +1027,7 @@ class CMS_pageTemplate extends CMS_grandFather
 		return array(
 			'id'			=> $this->getID(),
 			'label'			=> $this->getLabel(),
-			'type'			=> 'Modèle de page',
+			'type'			=> $cms_language->getMessage(self::MESSAGE_DESC_TEMPLATE),
 			'image'			=> PATH_TEMPLATES_IMAGES_WR.'/'. (($this->getImage()) ? $this->getImage() : 'nopicto.gif'),
 			'groups'		=> implode(', ', $this->getGroups()),
 			'websites'		=> $websitesList,
@@ -1022,11 +1036,12 @@ class CMS_pageTemplate extends CMS_grandFather
 			'description'	=> 	'<div'.(!$this->isUseable() ? ' class="atm-inactive"' : '').'>'.
 									'<img src="'.(PATH_TEMPLATES_IMAGES_WR.'/'. (($this->getImage()) ? $this->getImage() : 'nopicto.gif')).'" style="float:left;margin-right:3px;width:80px;" />'.
 									$description.
-									'Sites : <strong>'.$websitesList.'</strong><br />'.
-									'Groupes : <strong>'.implode(', ', $this->getGroups()).'</strong><br />'.
-									'Actif : <strong>'.($this->isUseable() ? 'Oui':'Non').'</strong><br />'.
-									'Employé : <strong>'.($hasPages ? 'Oui':'Non').'</strong>'.($hasPages ? ' - <a href="#" onclick="Automne.view.search(\'template:'.$this->getID().'\');return false;">Voir</a>'.
-									($user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) ? ' / <a href="#" onclick="Automne.server.call(\'templates-controler.php\', \'\', {templateId:'.$this->getID().', action:\'regenerate\'});return false;">Régénérer</a>' : '').' les pages.' : '').
+									$cms_language->getMessage(self::MESSAGE_DESC_WEBSITES).' <strong>'.$websitesList.'</strong><br />'.
+									$cms_language->getMessage(self::MESSAGE_DESC_GROUPS).' <strong>'.($this->getGroups() ? implode(', ', $this->getGroups()) : $cms_language->getMessage(self::MESSAGE_DESC_NONE)).'</strong><br />'.
+									$cms_language->getMessage(self::MESSAGE_DESC_ACTIVE).' <strong>'.($this->isUseable() ? $cms_language->getMessage(self::MESSAGE_DESC_YES) : $cms_language->getMessage(self::MESSAGE_DESC_NO)).'</strong><br />'.
+									$cms_language->getMessage(self::MESSAGE_DESC_USED).' <strong>'.($hasPages ? $cms_language->getMessage(self::MESSAGE_DESC_YES) : $cms_language->getMessage(self::MESSAGE_DESC_NO)).'</strong>'.($hasPages ? ' - <a href="#" onclick="Automne.view.search(\'template:'.$this->getID().'\');return false;">'.$cms_language->getMessage(self::MESSAGE_DESC_SEE).'</a>'.
+									($user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) ? ' / <a href="#" onclick="Automne.server.call(\'templates-controler.php\', \'\', {templateId:'.$this->getID().', action:\'regenerate\'});return false;">'.$cms_language->getMessage(self::MESSAGE_DESC_REGENERATE).'</a>' : '').' '.$cms_language->getMessage(self::MESSAGE_DESC_PAGES) : '').'<br />'.
+									$cms_language->getMessage(self::MESSAGE_DESC_FILE).' <strong>'.$this->getDefinitionFile().'</strong>'.
 									'<br class="x-form-clear" />'.
 								'</div>',
 			'activated'		=> $this->isUseable() ? true : false,

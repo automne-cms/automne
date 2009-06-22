@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-properties.php,v 1.8 2009/06/08 13:11:05 sebastien Exp $
+// $Id: page-properties.php,v 1.9 2009/06/22 14:10:31 sebastien Exp $
 
 /**
   * PHP page : Load page properties window.
@@ -113,6 +113,10 @@ define("MESSAGE_PAGE_DATE_ALERT_LABEL", 1079);
 define("MESSAGE_PAGE_SEARCH_ENGINE_LABEL", 1080);
 define("MESSAGE_PAGE_ALIAS_LABEL", 399);
 define("MESSAGE_PAGE_SAVE", 952);
+define("MESSAGE_PAGE_PROPERTIES", 7);
+define("MESSAGE_PAGE_CONTENT", 8);
+define("MESSAGE_PAGE_FIELD_CURRENT_ADDRESS", 701);
+define("MESSAGE_PAGE_INFORMATIONS", 702);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -201,7 +205,7 @@ if ($cms_page->getURL()) {
 	$pageUrl = '<em>'.$cms_language->getMessage(MESSAGE_PAGE_UNPUBLISHED).'</em>';
 }
 //mandatory 
-$mandatory='<span class="atm-text-alert" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_INFO_REQUIRED_FIELD).'">*</span> ';
+$mandatory='<span class="atm-red">*</span> ';
 
 $websiteLabel = sensitiveIO::sanitizeJSString($cms_page->getWebsite()->getLabel());
 
@@ -403,7 +407,7 @@ $jscontent .= <<<END
 			autoScroll: true
 		},
         items:[{
-				title:				'Propriétés',
+				title:				'{$cms_language->getJsMessage(MESSAGE_PAGE_PROPERTIES)}',
 				id:					'propertiesPanel',
 				autoScroll:			true,
 				layout: 			'accordion',
@@ -420,7 +424,7 @@ $jscontent .= <<<END
 					animate: 			true
 				},
 				items:[{
-					title:			'Contenu',
+					title:			'{$cms_language->getJsMessage(MESSAGE_PAGE_CONTENT)}',
 					id:				'pageContentPanel',
 					layout: 		'form',
 					xtype:			'atmForm',
@@ -483,7 +487,7 @@ $jscontent .= <<<END
 						name:			'updateURL',
 						inputValue:		'1',
 						xtype:			'checkbox',
-						boxLabel:		'Cochez la case pour mettre à jour l\'adresse de la page.<br />Adresse actuelle : {$pageUrl}',
+						boxLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_CURRENT_ADDRESS)} {$pageUrl}',
 						height:			40
 					},{
 						{$disabled}
@@ -505,7 +509,7 @@ $jscontent .= <<<END
 							visualmode:			'{$visualmode}'
 						}
 					},{
-						title:			'Informations',
+						title:			'{$cms_language->getJSMessage(MESSAGE_PAGE_INFORMATIONS)}',
 						xtype:			'fieldset',
 						autoHeight:		true,
 						autoWidth:		true,
@@ -749,7 +753,6 @@ $jscontent .= <<<END
 	var top = new Ext.Panel({
 		region:			'north',
 		border:			false,
-		/*autoHeight: 	true,*/
 		height:			56,
 		html:			'{$pageTopPanel}'
 	});

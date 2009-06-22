@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-files-nodes.php,v 1.1 2009/04/02 13:55:54 sebastien Exp $
+// $Id: templates-files-nodes.php,v 1.2 2009/06/22 14:10:33 sebastien Exp $
 
 /**
   * PHP page : Load module categories tree window.
@@ -25,6 +25,12 @@
   */
 
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
+
+define("MESSAGE_PAGE_STYLESHEET", 1486);
+define("MESSAGE_PAGE_WYSIWYG", 1487);
+define("MESSAGE_PAGE_JAVASCRIPT", 1488);
+define("MESSAGE_PAGE_FOLDER_LAST_UPDATE", 1507);
+define("MESSAGE_PAGE_FILE_LAST_UPDATE_SIZE", 1508);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -69,13 +75,13 @@ switch ($fileType) {
 	case 'css':
 		$dir = $_SERVER['DOCUMENT_ROOT'].'/css/';
 		$allowedFiles = array(
-			'css' => array('name' => 'Feuille de style', 'class' => 'atm-css'),
-			'xml' => array('name' => 'Style Wysiwyg', 'class' => 'atm-xml'),
+			'css' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_STYLESHEET), 'class' => 'atm-css'),
+			'xml' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_WYSIWYG), 'class' => 'atm-xml'),
 		);
 	break;
 	case 'js':
 		$dir = $_SERVER['DOCUMENT_ROOT'].'/js/';
-		$allowedFiles = array('js' => array('name' => 'Javascript', 'class' => 'atm-js'));
+		$allowedFiles = array('js' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_JAVASCRIPT), 'class' => 'atm-js'));
 	break;
 	default:
 		CMS_grandFather::raiseError('Unknown fileType to use ...');
@@ -91,13 +97,13 @@ if ($d) {
 	    if($f == '.' || $f == '..' || substr($f, 0, 1) == '.') continue;
 	    $lastmod = date($cms_language->getDateFormat().' H:i:s',filemtime($dir.$node.'/'.$f));
 	    if(is_dir($dir.$node.'/'.$f)){
-	        $qtip = 'Type: Dossier<br />Dernière modification : '.$lastmod;
+	        $qtip = $cms_language->getMessage(MESSAGE_PAGE_FOLDER_LAST_UPDATE).' '.$lastmod;
 	        $nodes[] = array('text' => $f, 'id' => $node.'/'.$f, 'qtip' => $qtip, 'leaf' => false, 'cls'=> 'folder', 'expanded' => ($currentDepth < $maxDepth), 'deletable' => false);
 	    }else{
 	        $extension = strtolower(pathinfo($dir.$node.'/'.$f, PATHINFO_EXTENSION));
 			if (isset($allowedFiles[$extension])) {
 				$size = formatBytes(filesize($dir.$node.'/'.$f), 2);
-				$qtip = 'Type: '.$allowedFiles[$extension]['name'].'<br />Dernière modification : '.$lastmod.'<br />Taille: '.$size;
+				$qtip = $cms_language->getMessage(MESSAGE_PAGE_FILE_LAST_UPDATE_SIZE, array($allowedFiles[$extension]['name'], $lastmod, $size));
 				$deletable = $extension != 'xml' && is_writable($dir.$node.'/'.$f);
 				$nodes[] = array('text' => $f, 'id' => $node.'/'.$f, 'leaf' => true, 'qtip' => $qtip, 'cls' => $allowedFiles[$extension]['class'], 'deletable' => $deletable);
 			}

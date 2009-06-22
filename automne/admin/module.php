@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: module.php,v 1.3 2009/06/05 15:01:04 sebastien Exp $
+// $Id: module.php,v 1.4 2009/06/22 14:10:31 sebastien Exp $
 
 /**
   * PHP page : Load module backend window
@@ -122,7 +122,7 @@ $jscontent = <<<END
         id:					'module{$codename}Panel',
 		region:				'center',
 		plain:				true,
-        enableTabScroll:	true,
+		enableTabScroll:	true,
 		defaults:			{
 			autoScroll: true
 		},

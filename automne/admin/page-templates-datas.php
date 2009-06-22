@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-templates-datas.php,v 1.2 2008/12/18 10:36:43 sebastien Exp $
+// $Id: page-templates-datas.php,v 1.3 2009/06/22 14:10:32 sebastien Exp $
 
 /**
   * PHP page : Load page templates infos
@@ -29,6 +29,7 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 
 define("MESSAGE_PAGE_MATCHING_TEMPLATE", 353);
 define("MESSAGE_PAGE_UNMATCHING_TEMPLATE", 354);
+define("MESSAGE_PAGE_GROUPS", 837);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -82,7 +83,7 @@ if ($currentTpl) {
 									$description.
 									'<img src="'.(PATH_TEMPLATES_IMAGES_WR.'/'. (($matchTpl->getImage()) ? $matchTpl->getImage() : 'nopicto.gif')).'" style="float:left;margin-right:3px;" />'.
 									$cms_language->getMessage(MESSAGE_PAGE_MATCHING_TEMPLATE).'<br />'.
-									'Groupes : <strong>'.implode(', ', $matchTpl->getGroups()).'</strong><br />'.
+									$cms_language->getMessage(MESSAGE_PAGE_GROUPS).' : <strong>'.implode(', ', $matchTpl->getGroups()).'</strong><br />'.
 									'<br class="x-form-clear" />'.
 								'</div>',
 		);
@@ -109,7 +110,7 @@ if ($currentTpl) {
 									$description.
 									'<img src="'.(PATH_TEMPLATES_IMAGES_WR.'/'. (($noMatchTpl->getImage()) ? $noMatchTpl->getImage() : 'nopicto.gif')).'" style="float:left;margin-right:3px;" />'.
 									'<span class="atm-red">'.$cms_language->getMessage(MESSAGE_PAGE_UNMATCHING_TEMPLATE).'</span><br />'.
-									'Groupes : <strong>'.implode(', ', $noMatchTpl->getGroups()).'</strong><br />'.
+									$cms_language->getMessage(MESSAGE_PAGE_GROUPS).' : <strong>'.implode(', ', $noMatchTpl->getGroups()).'</strong><br />'.
 									'<br class="x-form-clear" />'.
 								'</div>',
 		);
@@ -134,7 +135,7 @@ if ($currentTpl) {
 									$description.
 									'<img src="'.(PATH_TEMPLATES_IMAGES_WR.'/'. (($pageTemplate->getImage()) ? $pageTemplate->getImage() : 'nopicto.gif')).'" style="float:left;margin-right:3px;" />'.
 									$cms_language->getMessage(MESSAGE_PAGE_MATCHING_TEMPLATE).'<br />'.
-									'Groupes : <strong>'.implode(', ', $pageTemplate->getGroups()).'</strong><br />'.
+									$cms_language->getMessage(MESSAGE_PAGE_GROUPS).' : <strong>'.implode(', ', $pageTemplate->getGroups()).'</strong><br />'.
 									'<br class="x-form-clear" />'.
 								'</div>',
 			

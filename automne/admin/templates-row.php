@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-row.php,v 1.6 2009/06/05 15:01:05 sebastien Exp $
+// $Id: templates-row.php,v 1.7 2009/06/22 14:10:33 sebastien Exp $
 
 /**
   * PHP page : Load page rows search window.
@@ -40,6 +40,16 @@ define("MESSAGE_ACTION_ACTIVATE_SELECTED", 587);
 define("MESSAGE_ACTION_DESACTIVATE_SELECTED", 588);
 define("MESSAGE_ACTION_EDIT_SELECTED", 589);
 define("MESSAGE_ACTION_CREATE_SELECTED", 590);
+define("MESSAGE_ERROR_NO_RIGHTS_FOR_ROWS", 706);
+define("MESSAGE_PAGE_BY_NAME_DESCRIPTION", 1509);
+define("MESSAGE_PAGE_GROUPS", 1510);
+define("MESSAGE_PAGE_PAGE", 1512);
+define("MESSAGE_PAGE_LOADING", 1514);
+define("MESSAGE_PAGE_FILTER", 1515);
+define("MESSAGE_PAGE_ACTIVATE", 1517);
+define("MESSAGE_PAGE_DESACTIVATE", 1518);
+define("MESSAGE_PAGE_VIEW_INACTIVE_ROWS", 1522);
+define("MESSAGE_PAGE_DELETE_CONFIRM", 1523);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -57,7 +67,7 @@ if (!$winId) {
 //CHECKS user has row edition clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES)) { //rows
 	CMS_grandFather::raiseError('User has no rights on rows editions');
-	$view->setActionMessage('Vous n\'avez pas le droit de gérer les modèles de rangées ...');
+	$view->setActionMessage($cms_language->getMessage(MESSAGE_ERROR_NO_RIGHTS_FOR_ROWS));
 	$view->show();
 }
 
@@ -70,7 +80,7 @@ $recordsPerPage = $_SESSION["cms_context"]->getRecordsPerPage();
 $searchPanel = '';
 // Keywords
 $searchPanel .= "{
-	fieldLabel:		'Par nom, description',
+	fieldLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_BY_NAME_DESCRIPTION)}',
 	xtype:			'textfield',
 	name: 			'keyword',
 	value:			'',
@@ -87,7 +97,7 @@ if ($allGroups) {
 	$columns = sizeof($allGroups) < 2 ? sizeof($allGroups) : 2;
 	$searchPanel .= "{
 		xtype: 		'checkboxgroup',
-		fieldLabel: 'Groupes',
+		fieldLabel: '{$cms_language->getJSMessage(MESSAGE_PAGE_GROUPS)}',
 		columns: 	{$columns},
 		items: [";
 		foreach ($allGroups as $aGroup) {
@@ -101,7 +111,7 @@ if ($allGroups) {
 }
 $searchPanel .= "{
 	xtype:			'atmPageField',
-	fieldLabel:		'Page',
+	fieldLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_PAGE)}',
 	name:			'page',
 	value:			'',
 	allowBlank:		true,
@@ -115,7 +125,7 @@ $searchPanel .= "{
 	labelSeparator:	'',
 	labelAlign:		'left',
 	xtype:			'checkbox',
-	boxLabel: 		'Voir les rangées inactives',
+	boxLabel: 		'{$cms_language->getJSMessage(MESSAGE_PAGE_VIEW_INACTIVE_ROWS)}',
 	name: 			'viewinactive',
 	inputValue:		'1',
 	listeners: 		{'check':rowWindow.search}
@@ -143,7 +153,7 @@ $jscontent = <<<END
 		resultsPanel.currPage = 0;
 		resultsPanel.body.scrollTo('top', 0, false);
 		store.baseParams = values;
-		resultsPanel.body.mask('Chargement ...');
+		resultsPanel.body.mask('{$cms_language->getJSMessage(MESSAGE_PAGE_LOADING)}');
 		store.load({
 			params:			values,
 			add:			false,
@@ -198,7 +208,7 @@ $jscontent = <<<END
 	var searchPanel = new Ext.form.FormPanel({
 		id: 			'{$winId}Search',
 		region:			'west',
-		title:			'Filtrer',
+		title:			'{$cms_language->getJSMessage(MESSAGE_PAGE_FILTER)}',
 		xtype:			'form',
 		width:			300,
 		minSize:		200,
@@ -317,7 +327,7 @@ $jscontent = <<<END
 		},{
 			id:			'{$winId}activateItem',
 			xtype:		'button',
-			text:		'Activer',
+			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_ACTIVATE)}',
 			handler:	function(button) {
 				refresh(selectedObjects, {activate:true});
 			},
@@ -326,7 +336,7 @@ $jscontent = <<<END
 		},{
 			id:			'{$winId}desactivateItem',
 			xtype:		'button',
-			text:		'Désactiver',
+			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_DESACTIVATE)}',
 			handler:	function(button) {
 				refresh(selectedObjects, {desactivate:true});
 			},
@@ -338,7 +348,7 @@ $jscontent = <<<END
 			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_DELETE)}',
 			handler:	function(button) {
 				Automne.message.popup({
-					msg: 				'Confirmez-vous la suppression définitive du ou des modèles de rangées sélectionnés ?',
+					msg: 				'{$cms_language->getJSMessage(MESSAGE_PAGE_DELETE_CONFIRM)}',
 					buttons: 			Ext.MessageBox.OKCANCEL,
 					animEl: 			button,
 					closable: 			false,
@@ -403,22 +413,6 @@ $jscontent = <<<END
 	rowWindow.ok = true;
 	//launch search
 	rowWindow.search();
-	
-	//syncsize windows layout
-	//rowWindow.syncSize();
-	//set resize event to resize inner panels (needed for IE)
-	/*rowWindow.on('resize', function() {
-		pr('resize');
-		//pr(arguments);
-		//resultsPanel.repaint();
-		//searchPanel.repaint();
-	});*/
-	
-	
-	//fatherWindow.syncSize();
-	//resultsPanel.syncSize();
-	//searchPanel.syncSize();
-	
 
 	//add selection events to selection model
 	var qtips = [];

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-redirect-info.php,v 1.4 2009/06/05 15:01:04 sebastien Exp $
+// $Id: page-redirect-info.php,v 1.5 2009/06/22 14:10:32 sebastien Exp $
 
 /**
   * PHP page : Redirection page info
@@ -28,6 +28,7 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 
 define("MESSAGE_PAGE_REDIRECT", 320);
 define("MESSAGE_PAGE_PAGE", 1303);
+define("MESSAGE_PAGE_PAGE_REDIRECT_ERROR", 703);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -60,7 +61,7 @@ if (isset($page) && !$page->hasError()) {
 } else {
 	$content = '
 	<div id="atm-center">
-		<div class="atm-alert">Cette page comporte une redirection vers une page qui n\'existe pas ou comporte une erreur. Elle ne présente donc pas de contenu visible.</div>
+		<div class="atm-alert">'.$cms_language->getMessage(MESSAGE_PAGE_PAGE_REDIRECT_ERROR).'</div>
 	</div>';
 }
 $view->setContent($content);

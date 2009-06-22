@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: tree-duplicate.php,v 1.1 2009/06/05 15:01:05 sebastien Exp $
+// $Id: tree-duplicate.php,v 1.2 2009/06/22 14:10:33 sebastien Exp $
 
 /**
   * PHP page : Load duplicate branch backend window
@@ -27,6 +27,13 @@
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 
 define("MESSAGE_TOOLBAR_HELP",1073);
+define("MESSAGE_PAGE_DUPLICATE", 1520);
+define("MESSAGE_ERROR_DUPLICATION_RIGHTS", 1524);
+define("MESSAGE_PAGE_TITLE", 1525);
+define("MESSAGE_TOOLBAR_HELP_DESC", 1526);
+define("MESSAGE_PAGE_CHOOSE_BRANCH_FROM", 1527);
+define("MESSAGE_PAGE_CHOOSE_PAGE_TO", 1528);
+define("MESSAGE_PAGE_DUPLICATION_CONFIRM", 1529);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -38,21 +45,21 @@ $winId = sensitiveIO::request('winId');
 //CHECKS user has duplication clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_DUPLICATE_BRANCH)) {
 	CMS_grandFather::raiseError('User has no rights to duplicate branch...');
-	$view->setActionMessage('Vous n\'avez pas le droit de dupliquer les branches d\'arborescences.');
+	$view->setActionMessage($cms_language->getMessage(MESSAGE_ERROR_DUPLICATION_RIGHTS));
 	$view->show();
 }
 
 $jscontent = <<<END
 	var duplicateWindow = Ext.getCmp('{$winId}');
 	//set window title
-	duplicateWindow.setTitle('Duplication de branches d\'arborescence.');
+	duplicateWindow.setTitle('{$cms_language->getJsMessage(MESSAGE_PAGE_TITLE)}');
 	//set help button on top of page
 	duplicateWindow.tools['help'].show();
 	//add a tooltip on button
 	var propertiesTip = new Ext.ToolTip({
 		target: 		duplicateWindow.tools['help'],
 		title: 			'{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP)}',
-		html: 			'Cette page vous permet de dupliquer une branche complète de l\'arborescence de pages. Toutes les pages de la branche sélectionnée seront recréées avec leurs contenus sous la page que vous désignerez.',
+		html: 			'{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP_DESC)}',
 		dismissDelay:	0
 	});
 	
@@ -90,7 +97,7 @@ $jscontent = <<<END
 					window:		false,
 					editable:	true,
 					onClick:	onclickFrom,
-					heading:	'Choisissez la branche à dupliquer'
+					heading:	'{$cms_language->getJsMessage(MESSAGE_PAGE_CHOOSE_BRANCH_FROM)}'
 				},
 				nocache:	true,
 				scope:		this
@@ -109,7 +116,7 @@ $jscontent = <<<END
 					window:		false,
 					editable:	true,
 					onClick:	onclickTo,
-					heading:	'Choisissez la page de destination'
+					heading:	'{$cms_language->getJsMessage(MESSAGE_PAGE_CHOOSE_PAGE_TO)}'
 				},
 				nocache:	true,
 				scope:		this
@@ -117,7 +124,7 @@ $jscontent = <<<END
 		}],
 		buttons:[{
 			id:			'duplicateButton',
-			text:		'Dupliquer',
+			text:		'{$cms_language->getJsMessage(MESSAGE_PAGE_DUPLICATE)}',
 			disabled:	true,
 			handler:	function(button) {
 				//get duplicate infos
@@ -128,7 +135,7 @@ $jscontent = <<<END
 				var pageTo = treeTo.selModel.getSelectedNode().id.substr(4);
 				var pageToLabel = treeTo.selModel.getSelectedNode().text;
 				
-				var message = 'Vous allez dupliquer l\'ensemble des pages (ainsi que leur contenu) se trouvant sous la page '+pageFromLabel+'.<br /><br />La page sous laquelle seront recréées les pages dupliquées sera '+pageToLabel+'.<br /><br />Confirmez-vous cette opération ?';
+				var message = String.format('{$cms_language->getJsMessage(MESSAGE_PAGE_DUPLICATION_CONFIRM)}', pageFromLabel, pageToLabel);
 				
 				Automne.message.popup({
 					msg: 				message,

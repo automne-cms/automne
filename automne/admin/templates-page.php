@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-page.php,v 1.6 2009/06/05 15:01:05 sebastien Exp $
+// $Id: templates-page.php,v 1.7 2009/06/22 14:10:33 sebastien Exp $
 
 /**
   * PHP page : Load page templates search window.
@@ -40,6 +40,20 @@ define("MESSAGE_ACTION_ACTIVATE_SELECTED", 580);
 define("MESSAGE_ACTION_DESACTIVATE_SELECTED", 581);
 define("MESSAGE_ACTION_EDIT_SELECTED", 582);
 define("MESSAGE_ACTION_CREATE_SELECTED", 583);
+define("MESSAGE_ERROR_NO_RIGHTS_FOR_TEMPLATES", 799);
+define("MESSAGE_PAGE_BY_NAME_DESCRIPTION", 1509);
+define("MESSAGE_PAGE_GROUPS", 1510);
+define("MESSAGE_PAGE_WEBSITES", 1511);
+define("MESSAGE_PAGE_PAGE", 1512);
+define("MESSAGE_PAGE_VIEW_INACTIVES", 1513);
+define("MESSAGE_PAGE_LOADING", 1514);
+define("MESSAGE_PAGE_FILTER", 1515);
+define("MESSAGE_PAGE_PRINT_TEMPLATE", 1516);
+define("MESSAGE_PAGE_ACTIVATE", 1517);
+define("MESSAGE_PAGE_DESACTIVATE", 1518);
+define("MESSAGE_PAGE_CONFIRM_DELETE", 1519);
+define("MESSAGE_PAGE_DUPLICATE", 1520);
+define("MESSAGE_ACTION_DUPLICATE_SELECTED", 1521);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -57,7 +71,7 @@ if (!$winId) {
 //CHECKS user has module clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //templates
 	CMS_grandFather::raiseError('User has no rights template editions');
-	$view->setActionMessage('Vous n\'avez pas le droit de gérer les modèles de pages ...');
+	$view->setActionMessage($cms_language->getMessage(MESSAGE_ERROR_NO_RIGHTS_FOR_TEMPLATES));
 	$view->show();
 }
 
@@ -70,7 +84,7 @@ $recordsPerPage = $_SESSION["cms_context"]->getRecordsPerPage();
 $searchPanel = '';
 // Keywords
 $searchPanel .= "{
-	fieldLabel:		'Par nom, description',
+	fieldLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_BY_NAME_DESCRIPTION)}',
 	xtype:			'textfield',
 	name: 			'keyword',
 	value:			'',
@@ -87,7 +101,7 @@ if ($allGroups) {
 	$columns = sizeof($allGroups) < 2 ? sizeof($allGroups) : 2;
 	$searchPanel .= "{
 		xtype: 		'checkboxgroup',
-		fieldLabel: 'Groupes',
+		fieldLabel: '{$cms_language->getJSMessage(MESSAGE_PAGE_GROUPS)}',
 		columns: 	{$columns},
 		items: [";
 		foreach ($allGroups as $aGroup) {
@@ -118,7 +132,7 @@ if (sizeof($websites) > 1) {
 		xtype:				'combo',
 		id:					'websiteField',
 		name:				'website',
-		fieldLabel:			'Site',
+		fieldLabel:			'{$cms_language->getJSMessage(MESSAGE_PAGE_WEBSITES)}',
 		anchor:				'100%',
 		forceSelection:		true,
 		mode:				'local',
@@ -142,7 +156,7 @@ if (sizeof($websites) > 1) {
 }
 $searchPanel .= "{
 	xtype:			'atmPageField',
-	fieldLabel:		'Page',
+	fieldLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_PAGE)}',
 	name:			'page',
 	validateOnBlur:	false,
 	value:			'',
@@ -156,7 +170,7 @@ $searchPanel .= "{
 	labelSeparator:	'',
 	labelAlign:		'left',
 	xtype:			'checkbox',
-	boxLabel: 		'Voir les modèles inactifs',
+	boxLabel: 		'{$cms_language->getJSMessage(MESSAGE_PAGE_VIEW_INACTIVES)}',
 	name: 			'viewinactive',
 	inputValue:		'1',
 	listeners: 		{'check':templateWindow.search}
@@ -184,7 +198,7 @@ $jscontent = <<<END
 		resultsPanel.currPage = 0;
 		if (resultsPanel.body) {
 			resultsPanel.body.scrollTo('top', 0, false);
-			resultsPanel.body.mask('Chargement ...');
+			resultsPanel.body.mask('{$cms_language->getJSMessage(MESSAGE_PAGE_LOADING)}');
 		}
 		store.baseParams = values;
 		store.load({
@@ -240,7 +254,7 @@ $jscontent = <<<END
 	var searchPanel = new Ext.form.FormPanel({
 		id: 			'{$winId}Search',
 		region:			'west',
-		title:			'Filtrer',
+		title:			'{$cms_language->getJSMessage(MESSAGE_PAGE_FILTER)}',
 		xtype:			'form',
 		width:			300,
 		minSize:		200,
@@ -259,7 +273,7 @@ $jscontent = <<<END
 		},
 		items:[{$searchPanel}],
 		buttons:[{
-			text:			'Modèle d\'impression',
+			text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_PRINT_TEMPLATE)}',
 			anchor:			'',
 			scope:			this,
 			handler:		function(button) {
@@ -388,7 +402,7 @@ $jscontent = <<<END
 		},{
 			id:			'{$winId}activateItem',
 			xtype:		'button',
-			text:		'Activer',
+			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_ACTIVATE)}',
 			handler:	function(button) {
 				refresh(selectedObjects, {activate:true});
 			},
@@ -397,7 +411,7 @@ $jscontent = <<<END
 		},{
 			id:			'{$winId}desactivateItem',
 			xtype:		'button',
-			text:		'Désactiver',
+			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_DESACTIVATE)}',
 			handler:	function(button) {
 				refresh(selectedObjects, {desactivate:true});
 			},
@@ -409,7 +423,7 @@ $jscontent = <<<END
 			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_DELETE)}',
 			handler:	function(button) {
 				Automne.message.popup({
-					msg: 				'Confirmez-vous la suppression définitive du ou des modèles de pages sélectionnés ?',
+					msg: 				'{$cms_language->getJSMessage(MESSAGE_PAGE_CONFIRM_DELETE)}',
 					buttons: 			Ext.MessageBox.OKCANCEL,
 					animEl: 			button,
 					closable: 			false,
@@ -427,7 +441,7 @@ $jscontent = <<<END
 		},{
 			id:			'{$winId}copyItem',
 			xtype:		'button',
-			text:		'Dupliquer',
+			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_DUPLICATE)}',
 			handler:	function(button) {
 				//copy selected template and then refresh search results
 				Automne.server.call('templates-controler.php', templateWindow.search, {templateId:selectedObjects, action:'copy'})
@@ -485,17 +499,6 @@ $jscontent = <<<END
 	//launch search
 	templateWindow.search();
 	
-	//templateWindow.syncSize();
-	//resultsPanel.syncSize();
-	//searchPanel.syncSize();
-	//set resize event to resize inner panels (needed for IE)
-	/*templateWindow.on('resize', function() {
-		pr('resize');
-		pr(arguments);
-		resultsPanel.syncSize();
-		searchPanel.syncSize();
-	});*/
-	
 	//add selection events to selection model
 	var qtips = [];
 	qtips['delete'] = new Ext.ToolTip({
@@ -520,7 +523,7 @@ $jscontent = <<<END
 	});
 	qtips['copy'] = new Ext.ToolTip({
 		target: 		Ext.getCmp('{$winId}copyItem').getEl(),
-		html: 			'Duplique le modèle sélectionné.'
+		html: 			'{$cms_language->getJSMessage(MESSAGE_ACTION_DUPLICATE_SELECTED)}'
 	});
 	
 	resultsPanel.dv.on('selectionchange', function(dv, selections){

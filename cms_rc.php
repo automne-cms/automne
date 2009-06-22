@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc.php,v 1.9 2009/06/05 15:30:36 sebastien Exp $
+// $Id: cms_rc.php,v 1.10 2009/06/22 14:15:56 sebastien Exp $
 
 /**
   * rc file, contains editable constants
@@ -807,7 +807,9 @@ if (!defined("AUTOMNE_VERSION") && file_exists(PATH_REALROOT_FS."/VERSION")) {
 /**
   *	Automne subversion number. Used to avoid JS and CSS browser cache
   */
-if (!defined("AUTOMNE_SUBVERSION")) {
+if (!defined("AUTOMNE_SUBVERSION") && file_exists(PATH_MAIN_FS."/SUBVERSION")) {
+	define("AUTOMNE_SUBVERSION", file_get_contents(PATH_MAIN_FS."/SUBVERSION"));
+} else if(!defined("AUTOMNE_SUBVERSION") && !file_exists(PATH_MAIN_FS."/SUBVERSION")) {
 	define("AUTOMNE_SUBVERSION", 0);
 }
 
@@ -876,7 +878,7 @@ require_once(PATH_PACKAGES_FS."/common/grandfather.php");
 /**
   * Set PHP error handler
   */
-set_error_handler (array('CMS_grandFather','PHPErrorHandler'));
+//set_error_handler (array('CMS_grandFather','PHPErrorHandler'));
 
 /**
   * Set Automne autoload handler

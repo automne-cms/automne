@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: block-text.js,v 1.4 2009/06/05 15:01:06 sebastien Exp $
+  * $Id: block-text.js,v 1.5 2009/06/22 14:10:34 sebastien Exp $
   */
 Automne.blockText = Ext.extend(Automne.block, {
 	blockClass:	'CMS_block_text',
@@ -63,7 +63,9 @@ Automne.blockText = Ext.extend(Automne.block, {
 			textCont.setHeight(height - 26);
 			ctrlCont.setWidth(width - 5);
 			validateCtrl.setX(ctrlCont.getX() + ctrlCont.getWidth() - 42);
+			validateCtrl.setY(ctrlCont.getY() + 2);
 			cancelCtrl.setX(ctrlCont.getX() + ctrlCont.getWidth() - 22);
+			cancelCtrl.setY(ctrlCont.getY() + 2);
 		}, this);
 		//if we do not have stylesheet for this block, create it
 		if(!this.stylesheet) {
@@ -141,9 +143,13 @@ Automne.blockText = Ext.extend(Automne.block, {
 					//get all iframes and set them to position fixed
 					var catchFrames = new Ext.util.DelayedTask(function() {
 						var iframes = bd.select('iframe', true);
+						var count = 0;
 						iframes.each(function(iframe){
 							if (iframe.id.indexOf('fck-' + this.row.rowTagID + '-' + this.id) == -1 && iframe.getStyle('position') == 'absolute') {
-								iframe.setStyle('position', 'fixed');
+								if (count) { //skip first frame which is the mouse contextual menu
+									iframe.setStyle('position', 'fixed');
+								}
+								count++;
 							}
 						}, this);
 					}, this);
@@ -164,7 +170,7 @@ Automne.blockText = Ext.extend(Automne.block, {
 		if (this.FCKEditor) {
 			this.value = this.FCKEditor.GetData();
 			//send all datas to server to update block content and get new row HTML code
-			Automne.server.call('page-content-controler.php', this.stopEdition, {
+			Automne.server.call('page-content-controler.php', this.stopEditionAfterValidation, {
 				action:			'update-block-text',
 				cs:				this.row.clientspace.getId(),
 				page:			this.row.clientspace.page,
@@ -179,7 +185,7 @@ Automne.blockText = Ext.extend(Automne.block, {
 		}
 		
 	},
-	stopEdition: function(response, option) {
+	stopEditionAfterValidation: function(response, option) {
 		//if user is disconnected, then with this check, we do not close the editor. 
 		//So it can login and submit his text again without loose everything
 		if (response.responseXML && response.responseXML.getElementsByTagName('content').length) {
@@ -192,5 +198,12 @@ Automne.blockText = Ext.extend(Automne.block, {
 			//replace row content
 			this.row.replaceContent(response, option);
 		}
+	},
+	stopEdition: function(cancelCtrl, validateCtrl, ctrlCont, textCont, cont, tb) {
+		this.endModify();
+		var elements = new Ext.CompositeElement([cancelCtrl, validateCtrl, ctrlCont, textCont, cont, tb]);
+		elements.removeAllListeners();
+		elements.remove();
+		delete elements;
 	}
 });

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: users-controler.php,v 1.2 2009/06/05 15:01:05 sebastien Exp $
+// $Id: users-controler.php,v 1.3 2009/06/22 14:10:33 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on users
@@ -53,6 +53,8 @@ define("MESSAGE_PAGE_USER_DATA_REGISTERED", 479);
 define("MESSAGE_EMAIL_USER_EDIT_ADMINCLEARANCE", 919);
 define("MESSAGE_EMAIL_USER_CREATED", 520);
 define("MESSAGE_EMAIL_USER_MUST_RECONNECT", 591);
+define("MESSAGE_PAGE_ADDED_TO_FAVORITES", 1530);
+define("MESSAGE_PAGE_REMOVED_TO_FAVORITES", 1531);
 
 //Controler vars
 $action = sensitiveIO::request('action', array('delete', 'activate', 'disactivate', 'identity', 'userdetails', 'useralerts', 'addgroup', 'delgroup', 'module-rights', 'templates-rights', 'rows-rights', 'categories-rights', 'admin-rights', 'favorites'));
@@ -578,9 +580,9 @@ switch ($action) {
 			$user->writeToPersistence();
 			$content = array('success' => true);
 			if ($status) {
-				$cms_message = 'Page ajoutée à vos favoris !';
+				$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ADDED_TO_FAVORITES);
 			} else {
-				$cms_message = 'Page enlevée de vos favoris.';
+				$cms_message = $cms_language->getMessage(MESSAGE_PAGE_REMOVED_TO_FAVORITES);
 			}
 		}
 		$view->setContent($content);

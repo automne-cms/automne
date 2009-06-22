@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: server-scripts-controler.php,v 1.2 2009/06/09 13:27:49 sebastien Exp $
+// $Id: server-scripts-controler.php,v 1.3 2009/06/22 14:10:32 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on server
@@ -31,6 +31,12 @@ $action = sensitiveIO::request('action', array('regenerate-all', 'regenerate-tre
 $page = sensitiveIO::request('page', 'sensitiveIO::isPositiveInteger');
 $pages = sensitiveIO::request('pages');
 
+define("MESSAGE_PAGE_NO_SCRIPTS_RIGHTS", 794);
+define("MESSAGE_ACTION_ALL_PAGES_SUBMITED", 795);
+define("MESSAGE_ACTION_N_PAGES_SUBMITED", 796);
+define("MESSAGE_ACTION_N_PAGES_REGENERATED", 797);
+define("MESSAGE_ERROR_NO_PAGES_FOUNDED", 798);
+
 //load interface instance
 $view = CMS_view::getInstance();
 //set default display mode for this page
@@ -39,7 +45,7 @@ $view->setDisplayMode(CMS_view::SHOW_RAW);
 //CHECKS user has scripts admin clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES)) {
 	CMS_grandFather::raiseError('User has no regeneration rights');
-	$view->setActionMessage('Vous n\'avez pas les droits d\'administrer les scripts ...');
+	$view->setActionMessage($cms_language->getMessage(MESSAGE_PAGE_NO_SCRIPTS_RIGHTS));
 	$view->show();
 }
 
@@ -51,7 +57,7 @@ switch ($action) {
 		//give it more time
 		@set_time_limit(1000);
 		CMS_tree::regenerateAllPages(true);
-		$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE).' : Toutes les pages ont été soumises à régénération.';
+		$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE).' : '.$cms_language->getMessage(MESSAGE_ACTION_ALL_PAGES_SUBMITED);
 	break;
 	case 'regenerate-tree':
 		if ($page) {
@@ -60,7 +66,7 @@ switch ($action) {
 				//submit pages to regenerator
 				$validPages = CMS_tree::pagesExistsInUserSpace($pages);
 				CMS_tree::submitToRegenerator($validPages, true);
-				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE).' : '.sizeof($validPages).' pages soumises à régénération.';
+				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE).' : '.$cms_language->getMessage(MESSAGE_ACTION_N_PAGES_SUBMITED, array(sizeof($validPages)));
 			} else {
 				//regenerate pages
 				@set_time_limit(1000);
@@ -71,7 +77,7 @@ switch ($action) {
 					    $pg->regenerate(true);
 					}
 				}
-				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE).' : '.sizeof($validPages).' pages régénérées.';
+				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE).' : '.$cms_language->getMessage(MESSAGE_ACTION_N_PAGES_REGENERATED, array(sizeof($validPages)));
 			}
 		}
 	break;
@@ -99,7 +105,7 @@ switch ($action) {
 					if (sizeof($validPages) > 3) {
 						//submit pages to regenerator
 						CMS_tree::submitToRegenerator($validPages, true);
-						$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE).' : '.sizeof($validPages).' pages soumises à régénération.';
+						$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE).' : '.$cms_language->getMessage(MESSAGE_ACTION_N_PAGES_SUBMITED, array(sizeof($validPages)));
 					} else {
 						//regenerate pages
 						@set_time_limit(1000);
@@ -109,10 +115,10 @@ switch ($action) {
 							    $pg->regenerate(true);
 							}
 						}
-						$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE).' : '.sizeof($validPages).' pages régénérées.';
+						$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE).' : '.$cms_language->getMessage(MESSAGE_ACTION_N_PAGES_REGENERATED, array(sizeof($validPages)));
 					}
 				} else {
-					$cms_message = 'Aucune page publique ne correspond aux identifiants saisis ...';
+					$cms_message = $cms_language->getMessage(MESSAGE_ERROR_NO_PAGES_FOUNDED);
 				}
 			}
 		}

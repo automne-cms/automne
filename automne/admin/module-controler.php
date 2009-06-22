@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: module-controler.php,v 1.1 2009/04/02 13:55:54 sebastien Exp $
+// $Id: module-controler.php,v 1.2 2009/06/22 14:10:31 sebastien Exp $
 
 /**
   * PHP page : Module controler.
@@ -29,6 +29,8 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 $codename = sensitiveIO::request('module', CMS_modulesCatalog::getAllCodenames());
 $action = sensitiveIO::request('action');
 $params = sensitiveIO::request('params', 'is_array');
+
+define("MESSAGE_PAGE_PARAMS_SAVED",677);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -71,7 +73,7 @@ switch ($action) {
 		}
 		$module->setAndWriteParameters($parameters);
 		$content = array('success' => true);
-		$cms_message = 'Paramètres enregistrés.';
+		$cms_message = $cms_language->getMessage(MESSAGE_PAGE_PARAMS_SAVED);
 		$view->setContent($content);
 	break;
 }

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-infos.php,v 1.13 2009/06/08 13:11:05 sebastien Exp $
+// $Id: page-infos.php,v 1.14 2009/06/22 14:10:31 sebastien Exp $
 
 /**
   * PHP page : Load page infos
@@ -30,16 +30,13 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 //define used messages (standard)
 define("MESSAGE_PAGE_TREE_TIP_TITLE",1031);
 define("MESSAGE_PAGE_TREE_TIP_DESC",304);
-
 define("MESSAGE_PAGE_EDIT_CONTENT",330);
 define("MESSAGE_PAGE_EDIT_CONTENT_TIP_TITLE",89);
 define("MESSAGE_PAGE_EDIT_CONTENT_TIP_DESC",309);
 define("MESSAGE_PAGE_EDIT_CONTENT_TIP_DISABLED_DESC",310);
-
 define("MESSAGE_PAGE_EDIT_PROPERTIES", 1105);
 define("MESSAGE_PAGE_EDIT_PROPERTIES_TIP_TITLE",172);
 define("MESSAGE_PAGE_EDIT_PROPERTIES_TIP_DESC",316);
-
 define("MESSAGE_PAGE_PAGE",1328);
 define("MESSAGE_PAGE_PUBLIC_TIP_TITLE",132);
 define("MESSAGE_PAGE_PUBLIC_TIP_DISABLED_DESC",317);
@@ -51,29 +48,22 @@ define("MESSAGE_PAGE_PUBLIC_TIP_STATUS",160);
 define("MESSAGE_PAGE_PUBLIC_TIP_LASTCHANGES",311);
 define("MESSAGE_PAGE_PUBLIC_TIP_LASTMODIFICATION",312);
 define("MESSAGE_PAGE_PUBLIC_TIP_LASTVALIDATION",313);
-
 define("MESSAGE_PAGE_PREVIZ",811);
 define("MESSAGE_PAGE_PREVIZ_TIP_TITLE",79);
 define("MESSAGE_PAGE_PREVIZ_TIP_DESC",305);
 define("MESSAGE_PAGE_PREVIZ_TIP_DISABLED_DESC",306);
-
 define("MESSAGE_PAGE_DRAFT_PREVIZ",1426);
 define("MESSAGE_PAGE_DRAFT_PREVIZ_TIP_DESC",307);
 define("MESSAGE_PAGE_DRAFT_PREVIZ_TIP_DISABLED_DESC",308);
-
 define("MESSAGE_PAGE_SEARCH_TIP_TITLE",1091);
 define("MESSAGE_PAGE_SEARCH_TIP_DESC",326);
-
 define("MESSAGE_PAGE_ADD",90);
 define("MESSAGE_PAGE_ADD_TIP_TITLE",1085);
 define("MESSAGE_PAGE_ADD_TIP_DESC",327);
-
 define("MESSAGE_PAGE_ACTION",162);
 define("MESSAGE_PAGE_ACTION_TIP_TITLE",328);
 define("MESSAGE_PAGE_ACTION_TIP_DESC",329);
-
 define("MESSAGE_PAGE_LOCKEDBY",321);
-
 define("MESSAGE_PAGE_UNLOCK_LOCKED_PAGE",341);
 define("MESSAGE_PAGE_COPY_INFO", 450);
 define("MESSAGE_PAGE_COPY", 1046);
@@ -98,6 +88,27 @@ define("MESSAGE_PAGE_DELETE_DRAFT", 465);
 define("MESSAGE_PAGE_DELETE_DRAFT_CONFIRM", 466);
 define("MESSAGE_PAGE_DRAFT_TO_VALIDATION_INFO", 467);
 define("MESSAGE_PAGE_DRAFT_TO_VALIDATION", 468);
+define("MESSAGE_PAGE_INCORRECT_DOMAIN", 649);
+define("MESSAGE_PAGE_INCORRECT_WEBSITE_CONFIG", 650);
+define("MESSAGE_PAGE_INCORRECT_WEBSITE_CONFIG_ADMIN", 651);
+define("MESSAGE_PAGE_QUIT_AUTOMNE", 652);
+define("MESSAGE_PAGE_FOLLOW_EXTERNAL_LINK", 653);
+define("MESSAGE_PAGE_ERROR", 654);
+define("MESSAGE_PAGE_PAGE_NOT_VIEWVABLE", 655);
+define("MESSAGE_PAGE_SEARCH", 656);
+define("MESSAGE_PAGE_ADD_BOOKMARK", 657);
+define("MESSAGE_PAGE_ADD_BOOKMARK_DESC", 658);
+define("MESSAGE_PAGE_REMOVE_BOOKMARK_DESC", 659);
+define("MESSAGE_PAGE_UNLOCK_PAGE", 660);
+define("MESSAGE_PAGE_MOVE_PAGE_USING_ICONS", 661);
+define("MESSAGE_PAGE_MOVING_PAGE", 662);
+define("MESSAGE_PAGE_VALIDATION_MODIFICATIONS", 663);
+define("MESSAGE_PAGE_VALIDATION", 664);
+define("MESSAGE_PAGE_REGEN_DESC", 665);
+define("MESSAGE_PAGE_REGENERATE", 666); //Evil message
+define("MESSAGE_PAGE_EDIT_NOT_VALIDATED", 667);
+define("MESSAGE_PAGE_NO_PAGES_RIGHTS", 668);
+define("MESSAGE_PAGE_NO_PAGE_RIGHT", 669);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -186,8 +197,8 @@ if (!isset($cms_page) || !is_object($cms_page) || $cms_page->hasError()) {
 			if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 				$jscontent = "
 					Automne.message.popup({
-						title: 		'Le nom de domaine du site est incorrect.', 
-						msg: 		'Le site actuel n\'est pas correctement configuré. Le nom de domaine actuel est \'".$httpHost."\' mais votre site est configuré pour le nom de domaine \'".parse_url(CMS_websitesCatalog::getMainURL(), PHP_URL_HOST)."\'. Avant de continuer, modifiez le nom de domaine dans \'Gestion des sites\' pour correspondre au nom de domaine actuel.',
+						title: 		'".$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_DOMAIN)."', 
+						msg: 		'".$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_WEBSITE_CONFIG, array($httpHost, parse_url(CMS_websitesCatalog::getMainURL(), PHP_URL_HOST)))."',
 						buttons:	Ext.MessageBox.OK,
 						icon: 		Ext.MessageBox.WARNING,
 						fn: 		function (button) {
@@ -205,8 +216,8 @@ if (!isset($cms_page) || !is_object($cms_page) || $cms_page->hasError()) {
 			} else {
 				$jscontent = "
 					Automne.message.popup({
-						title: 		'Le nom de domaine du site est incorrect.', 
-						msg: 		'Le site actuel n\'est pas correctement configuré. Le nom de domaine actuel est \'".$httpHost."\' alors que votre site est configuré pour le nom de domaine \'".parse_url(CMS_websitesCatalog::getMainURL(), PHP_URL_HOST)."\'. Veuillez prévenez un administrateur du site en lui précisant ce message d\'erreur.',
+						title: 		'".$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_DOMAIN)."', 
+						msg: 		'".$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_WEBSITE_CONFIG_ADMIN, array($httpHost, parse_url(CMS_websitesCatalog::getMainURL(), PHP_URL_HOST)))."',
 						buttons:	Ext.MessageBox.OK,
 						icon: 		Ext.MessageBox.ERROR
 					});
@@ -215,8 +226,8 @@ if (!isset($cms_page) || !is_object($cms_page) || $cms_page->hasError()) {
 		} else {
 			$jscontent = "
 				Automne.message.popup({
-					title: 		'Voulez-vous quitter Automne ?', 
-					msg: 		'Le lien vers \'{$pageUrl}\' semble être un lien externe à votre site. Le suivre vous fera quitter l\'administration d\'Automne, Etes-vous sur de vouloir continuer ?',
+					title: 		'".$cms_language->getJSMessage(MESSAGE_PAGE_QUIT_AUTOMNE)."', 
+					msg: 		'".$cms_language->getJSMessage(MESSAGE_PAGE_FOLLOW_EXTERNAL_LINK, array($pageUrl))."',
 					buttons:	Ext.MessageBox.YESNO,
 					icon: 		Ext.MessageBox.QUESTION,
 					fn: 		function (button) {
@@ -243,8 +254,8 @@ if (!isset($cms_page) || !is_object($cms_page) || $cms_page->hasError()) {
 				}
 			});
 			Automne.message.popup({
-				title: 		'Erreur ...', 
-				msg: 		'La page demandée ({$pageId}) ne peut-être affichée. Il est possible qu\'elle ai été supprimée ou que vous n\'ayez pas le droit de la consulter.<br />Veuillez sélectionner une nouvelle page dans l\'arborescence ou par le moteur de recherche.',
+				title: 		'".$cms_language->getJSMessage(MESSAGE_PAGE_ERROR)."', 
+				msg: 		'".$cms_language->getJSMessage(MESSAGE_PAGE_PAGE_NOT_VIEWVABLE, array($pageId))."',
 				buttons:	Ext.MessageBox.OK,
 				icon: 		Ext.MessageBox.ERROR
 			});
@@ -474,7 +485,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 						},
 						items:[{
 							xtype:			'trigger',
-							emptyText:		'Rechercher ...',
+							emptyText:		'".$cms_language->getJSMessage(MESSAGE_PAGE_SEARCH)."',
 							triggerClass:	'x-form-search-trigger',
 							width:			385,
 							onTriggerClick:	function(){
@@ -584,11 +595,11 @@ foreach ($userPanels as $panel => $panelStatus) {
 				$panelTitle = '<img src="'.PATH_ADMIN_IMAGES_WR.'/s.gif" width="1" height="16" />';
 				$panelPicto = 'atm-pic-big-favorite';
 				$panelDisabled = 'false';
-				$panelTipTitle = 'Ajouter aux favoris';
-				$panelTip = 'Vous pouvez ajouter cette page aux favoris Automne pour pouvoir y accéder plus rapidement ! Pour la retrouver ensuite, allez dans la barre latérale puis dans "Gestion des pages".';
-				/*if ($cms_user->isFavorite($pageId)) {
-					$panelTip .= '<br /><br /><strong>Cette page a été marqué comme favorite.</strong>';
-				}*/
+				$panelTipTitle = $cms_language->getJSMessage(MESSAGE_PAGE_ADD_BOOKMARK);
+				$panelTip = $cms_language->getJSMessage(MESSAGE_PAGE_ADD_BOOKMARK_DESC);
+				if ($cms_user->isFavorite($pageId)) {
+					$panelTip .= '<br /><br /><strong>'.$cms_language->getJSMessage(MESSAGE_PAGE_REMOVE_BOOKMARK_DESC).'</strong>';
+				}
 				$panelContent = "
 				if (panel) {
 					panel.setDisabled(".$panelDisabled.");
@@ -781,7 +792,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 							$lockUser = CMS_profile_usersCatalog::getById($lock);
 							$panelContent .= "
 							menu.addItem(new Ext.menu.Item({
-								text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_UNLOCK_LOCKED_PAGE, array(htmlspecialchars($lockUser->getFullName())))."\">Dévérouiller la page</span>',
+								text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_UNLOCK_LOCKED_PAGE, array(htmlspecialchars($lockUser->getFullName())))."\">".$cms_language->getJSMessage(MESSAGE_PAGE_UNLOCK_PAGE)."</span>',
 								iconCls: 'atm-pic-unlock',
 								handler: function(){
 									Automne.message.popup({
@@ -864,8 +875,8 @@ foreach ($userPanels as $panel => $panelStatus) {
 													winId:		'pageMoveWindow',
 													currentPage:".$cms_page->getID().",
 													enableDD:	true,
-													heading:	'Déplacez vos pages à l\'aide des icônes flêchées',
-													title:		'Déplacement de pages'
+													heading:	'".$cms_language->getJSMessage(MESSAGE_PAGE_MOVE_PAGE_USING_ICONS)."',
+													title:		'".$cms_language->getJSMessage(MESSAGE_PAGE_MOVING_PAGE)."'
 												},
 												nocache:	true,
 												scope:		this
@@ -978,7 +989,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 								//validate
 								$panelContent .= "
 								menu.addItem(new Ext.menu.Item({
-									text: '<span ext:qtip=\"Valider les dernières modifications de la page.\">Valider la page</span>',
+									text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_VALIDATION_MODIFICATIONS)."\">".$cms_language->getJSMessage(MESSAGE_PAGE_VALIDATION)."</span>',
 									iconCls: 'atm-pic-validate',
 									handler: function () {
 										Automne.server.call('validations-controler.php', function(response, options, jsonResponse){
@@ -1008,7 +1019,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 								$panelContent .= "
 								menu.addSeparator();
 								menu.addItem(new Ext.menu.Item({
-									text: '<span ext:qtip=\"Permet de recréer entièrement la page visible sur le site.\">Régénérer la page</span>',
+									text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_REGEN_DESC)."\">".$cms_language->getJSMessage(MESSAGE_PAGE_REGENERATE)."</span>',
 									iconCls: 'atm-pic-scripts',
 									handler: function () {
 										Automne.server.call({
@@ -1085,7 +1096,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 				$panelTip = $cms_language->getMessage(MESSAGE_PAGE_EDIT_CONTENT_TIP_DESC);
 				$panelPicto = 'atm-pic-big-edit';
 				if($cms_page->isDraft()) {
-					$panelTip .= '<br /><br /><strong>Cette page possède actuellement un contenu modifié qui n\'a pas encore été soumis à validation.</strong>';
+					$panelTip .= '<br /><br /><strong>'.$cms_language->getJSMessage(MESSAGE_PAGE_EDIT_NOT_VALIDATED).'</strong>';
 				}
 				if ($hasLock && sensitiveIO::isPositiveInteger($hasLock)) {
 					$lockUser = CMS_profile_usersCatalog::getById($hasLock);
@@ -1164,7 +1175,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 				$panelTitle = APPLICATION_LABEL;
 				$panelDisabled = 'false';
 				$panelTipTitle = APPLICATION_LABEL;
-				$panelTip = 'Vous n\'avez pas le droit de voir les pages du ou des site(s) ...';
+				$panelTip = $cms_language->getJSMessage(MESSAGE_PAGE_NO_PAGES_RIGHTS);
 				$panelURL = PATH_ADMIN_WR.'/no-pages.php';
 				$allowFrameNav = 'true';
 			break;
@@ -1172,7 +1183,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 				$panelTitle = APPLICATION_LABEL;
 				$panelDisabled = 'false';
 				$panelTipTitle = APPLICATION_LABEL;
-				$panelTip = 'Vous n\'avez pas le droit de voir la page demandée ...';
+				$panelTip = $cms_language->getJSMessage(MESSAGE_PAGE_NO_PAGE_RIGHT);
 				$panelURL = PATH_ADMIN_WR.'/no-rights.php';
 				$allowFrameNav = 'true';
 			break;

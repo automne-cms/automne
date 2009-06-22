@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: modules-categories-controler.php,v 1.3 2009/06/09 13:42:57 sebastien Exp $
+// $Id: modules-categories-controler.php,v 1.4 2009/06/22 14:10:31 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on modules categories
@@ -28,7 +28,8 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 
 define("MESSAGE_PAGE_ACTION_DELETE_ERROR", 121);
 define("MESSAGE_PAGE_ACTION_SAVE_ERROR", 178);
-define("MESSAGE_PAGE_FILE_ERROR", 196);
+define("MESSAGE_ERROR_CATEGORY_RIGHTS", 687);
+define("MESSAGE_ERROR_CATEGORY_MOVE", 688);
 
 //Controler vars
 $action = sensitiveIO::request('action', array('delete', 'move', 'save'));
@@ -66,7 +67,7 @@ if (!$cms_user->hasModuleClearance($codename, CLEARANCE_MODULE_EDIT)) {
 //CHECKS if user has module category manage clearance
 if ($categoryId && !$cms_user->hasModuleCategoryClearance($categoryId, CLEARANCE_MODULE_MANAGE)) {
 	CMS_grandFather::raiseError('User has no rights on category : '.$categoryId.' for module : '.$codename);
-	$view->setActionMessage('Vous n\'avez pas le droit d\'administrer cette catégorie ...');
+	$view->setActionMessage($cms_message->getmessage(MESSAGE_ERROR_CATEGORY_RIGHTS));
 	$view->show();
 }
 
@@ -232,7 +233,7 @@ switch ($action) {
 		if (CMS_moduleCategories_catalog::moveCategory($category, $newParent, $index)) { 
 			$content = array('success' => true);
 		} else {
-			$cms_message = 'Erreur durant le déplacement de la catégorie ...';
+			$cms_message = $cms_language->getMessage(MESSAGE_ERROR_CATEGORY_MOVE);
 		}
 	break;
 	default:

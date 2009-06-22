@@ -14,7 +14,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: modulecategory.php,v 1.3 2009/06/05 15:02:19 sebastien Exp $
+// $Id: modulecategory.php,v 1.4 2009/06/22 14:08:40 sebastien Exp $
 
 /**
   * Class CMS_moduleCategory
@@ -415,19 +415,26 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * @param CMS_language $language 
 	 * @return string
 	 */
-	function getLabel($language = false) {
+	function getLabel($language = false, $useAlternative = true) {
 		if (!$this->_labels) {
 			$this->_retrieveLabels();
 		}
 		if (!is_a($language, 'CMS_language')) {
 			$language = $this->_language;
 		}
+		pr($this->_labels);
 		if (is_a($language, 'CMS_language')) {
 			//category is deleted so return a specific label
 			if ($this->_parentID == self::LINEAGE_PARK_POSITION) {
 				return $language->getMessage(self::MESSAGE_CATEGORY_DELETED);
 			}
-			return $this->_labels[$language->getCode()];
+			if (isset($this->_labels[$language->getCode()]) && $this->_labels[$language->getCode()]) {
+				return $this->_labels[$language->getCode()];
+			} elseif ($useAlternative && isset($this->_labels[APPLICATION_DEFAULT_LANGUAGE]) && $this->_labels[APPLICATION_DEFAULT_LANGUAGE]) {
+				return $this->_labels[APPLICATION_DEFAULT_LANGUAGE];
+			} else {
+				return '';
+			}
 		} else {
 			return '';
 		}
@@ -462,15 +469,17 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * @param CMS_language $language 
 	 * @return string
 	 */
-	function getDescription($language = false) {
+	function getDescription($language = false, $useAlternative = true) {
 		if(!$this->_descriptions) {
 			$this->_retrieveLabels();
 		}
 		if (!is_a($language, 'CMS_language')) {
 			$language = $this->_language;
 		}
-		if (is_a($language, 'CMS_language')) {
+		if (is_a($language, 'CMS_language') && isset($this->_descriptions[$language->getCode()]) && $this->_descriptions[$language->getCode()]) {
 			return $this->_descriptions[$language->getCode()];
+		} elseif ($useAlternative && isset($this->_descriptions[APPLICATION_DEFAULT_LANGUAGE]) && $this->_descriptions[APPLICATION_DEFAULT_LANGUAGE]) {
+			return $this->_descriptions[APPLICATION_DEFAULT_LANGUAGE];
 		} else {
 			return '';
 		}
@@ -575,8 +584,10 @@ class CMS_moduleCategory extends CMS_grandFather {
 					return $path;
 				}
 				return false;
-			} else {
+			} elseif (isset($this->_files[$language->getCode()])) {
 				return $this->_files[$language->getCode()];
+			} else {
+				return '';
 			}
 		} else {
 			return '';
@@ -724,9 +735,9 @@ class CMS_moduleCategory extends CMS_grandFather {
 					set
 						language_mcl='".SensitiveIO::sanitizeSQLString($lang)."',
 						category_mcl = ".$this->_categoryID.",
-						label_mcl='".SensitiveIO::SanitizeSQLString($this->_labels[$lang])."',
-						description_mcl='".SensitiveIO::SanitizeSQLString($this->_descriptions[$lang])."',
-						file_mcl='".SensitiveIO::SanitizeSQLString($this->_files[$lang])."'
+						label_mcl='".SensitiveIO::SanitizeSQLString(@$this->_labels[$lang])."',
+						description_mcl='".SensitiveIO::SanitizeSQLString(@$this->_descriptions[$lang])."',
+						file_mcl='".SensitiveIO::SanitizeSQLString(@$this->_files[$lang])."'
 				";
 				$q = new CMS_query($sql);
 				if ($q->hasError()) {

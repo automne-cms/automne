@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: item.php,v 1.3 2009/06/05 15:01:07 sebastien Exp $
+// $Id: item.php,v 1.4 2009/06/22 14:10:35 sebastien Exp $
 
 /**
   * PHP page : Load polymod item interface
@@ -36,6 +36,11 @@ define("MESSAGE_PAGE_FIELD_PUBDATE_END", 135);
 //Message of polymod module
 define("MESSAGE_PAGE_TITLE", 2);
 define("MESSAGE_PAGE_SUBTITLE_WEBSITE_PUBS", 57);
+define("MESSAGE_PAGE_INCORRECT_FORM_VALUES", 522);
+define("MESSAGE_PAGE_ELEMENT_LOCKED", 525);
+define("MESSAGE_PAGE_ELEMENT_EDIT_RIGHTS_ERROR", 526);
+define("MESSAGE_TOOLBAR_HELP_DESC", 527);
+define("MESSAGE_PAGE_SAVE_ERROR", 528);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -83,7 +88,7 @@ if ($itemId) {
 				window.close();
 			}
 			Automne.message.popup({
-				msg: 				'L\'élément \'{$itemLabel}\' que vous cherchez à éditer est vérouillé par {$name} le {$date}.',
+				msg: 				'{$cms_language->getJSMessage(MESSAGE_PAGE_ELEMENT_LOCKED, array($itemLabel, $name, $date), MOD_POLYMOD_CODENAME)}',
 				buttons: 			Ext.MessageBox.OK,
 				closable: 			false,
 				icon: 				Ext.MessageBox.ERROR
@@ -103,7 +108,7 @@ if ($itemId) {
 			window.close();
 		}
 		Automne.message.popup({
-			msg: 				'Vous n\'avez pas le droit d\'éditer l\'élément \'{$itemLabel}\'.',
+			msg: 				'{$cms_language->getJSMessage(MESSAGE_PAGE_ELEMENT_EDIT_RIGHTS_ERROR, array($itemLabel), MOD_POLYMOD_CODENAME)}',
 			buttons: 			Ext.MessageBox.OK,
 			closable: 			false,
 			icon: 				Ext.MessageBox.ERROR
@@ -128,9 +133,9 @@ foreach ($fieldsObjects as $fieldID => $aFieldObject) {
 //do some search and replace to allow use of js functions in returned code
 $itemFields = str_replace('"scope":"this"', '"scope":this', $itemFields);
 function replaceCallBack($parts) {
-	return 'function('.str_replace(array('\"','\/'), array('"', '/'), $parts[1]).'},';
+	return 'function('.str_replace(array('\"','\/'), array('"', '/'), $parts[1]).'}';
 }
-$itemFields = preg_replace_callback('#"function\((.*)}",#U', 'replaceCallBack', $itemFields);
+$itemFields = preg_replace_callback('#"function\((.*)}"#U', 'replaceCallBack', $itemFields);
 
 //Append pub dates if object is a primary resource
 if ($object->isPrimaryResource()) {
@@ -184,7 +189,7 @@ $jscontent = <<<END
 	var propertiesTip = new Ext.ToolTip({
 		target:		 window.tools['help'],
 		title:			 '{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP)}',
-		html:			 'Sur cette page, vous pouvez créer ou modifier les données de l\'élément {$objectLabel}',
+		html:			 '{$cms_language->getJSMessage(MESSAGE_TOOLBAR_HELP_DESC, array($objectLabel), MOD_POLYMOD_CODENAME)}',
 		dismissDelay:	0
 	});
 	
@@ -227,18 +232,18 @@ $jscontent = <<<END
 						},
 						success:function(form, action){
 							if (action.result.success == false) {
-								Automne.message.show('Erreur durant l\'enregistrement de l\'élément ...', '', window);
+								Automne.message.show('{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE_ERROR, false, MOD_POLYMOD_CODENAME)}', '', window);
 							}
 							//update fields values if any is returned in response
 							//extract updated json datas from response
-							var jsonResponse = '{}';
-							if (action.response.responseXML && action.response.responseXML.getElementsByTagName && action.response.responseXML.getElementsByTagName('jsoncontent').length) {
+							var jsonResponse = {};
+							if (action.response.responseXML && action.response.responseXML.getElementsByTagName('jsoncontent').length) {
 								try{
 									jsonResponse = Ext.decode(action.response.responseXML.getElementsByTagName('jsoncontent').item(0).firstChild.nodeValue);
 								} catch(e) {
 									jsonResponse = {};
 									pr(e, 'error');
-									Automne.server.failureResponse(response, options, e, 'json');
+									Automne.server.failureResponse(action.response, action.options, e, 'json');
 								}
 							}
 							window.objectId = jsonResponse.id;
@@ -253,7 +258,7 @@ $jscontent = <<<END
 						scope:this
 					});
 				} else {
-					Automne.message.show('Le formulaire est incomplet ou possède des valeurs incorrectes ...', '', window);
+					Automne.message.show('{$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_FORM_VALUES, false, MOD_POLYMOD_CODENAME)}', '', window);
 				}
 			},
 			scope:			this

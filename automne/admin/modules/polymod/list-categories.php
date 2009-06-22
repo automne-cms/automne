@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: list-categories.php,v 1.1 2009/06/05 15:01:07 sebastien Exp $
+// $Id: list-categories.php,v 1.2 2009/06/22 14:10:35 sebastien Exp $
 
 /**
   * PHP page : Load polyobjects items datas
@@ -26,6 +26,8 @@
   */
 
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
+
+define("MESSAGE_PAGE_NO_CATEGORIES", 529);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -85,7 +87,7 @@ if ($objectFields[$fieldId]) {
 		} else {
 			$objectsDatas['objects'][] = array(
 				'id'			=> '',
-				'label'			=> 'Aucune catégorie disponible ...',
+				'label'			=> $cms_language->getMessage(MESSAGE_PAGE_NO_CATEGORIES, false, MOD_POLYMOD_CODENAME),
 			);
 		}
 	}

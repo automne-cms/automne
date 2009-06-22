@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: server-check.php,v 1.1 2008/11/27 17:27:48 sebastien Exp $
+// $Id: server-check.php,v 1.2 2009/06/22 14:10:32 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on server
@@ -29,6 +29,15 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 //Controler vars
 $action = sensitiveIO::request('action', array('check-files', 'check-htaccess'));
 
+define("MESSAGE_PAGE_NO_SERVER_RIGHTS",748);
+define("MESSAGE_PAGE_MORE_THAN_THOUSAND",763);
+define("MESSAGE_CHECK_ERROR",764);
+define("MESSAGE_FILES_ACCESS_ERROR",765);
+define("MESSAGE_CHECK_DONE",766);
+define("MESSAGE_PAGE_FOLDER_NO",767);
+define("MESSAGE_PAGE_FILES_NO",768);
+define("MESSAGE_PAGE_DISK_SPACE",769);
+
 //load interface instance
 $view = CMS_view::getInstance();
 //set default display mode for this page
@@ -37,7 +46,7 @@ $view->setDisplayMode(CMS_view::SHOW_RAW);
 //CHECKS user has admin clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) { //templates
 	CMS_grandFather::raiseError('User has no administration rights');
-	$view->setActionMessage('Vous n\'avez pas les droits d\'administrateur ...');
+	$view->setActionMessage($cms_language->getMessage(MESSAGE_PAGE_NO_SERVER_RIGHTS));
 	$view->show();
 }
 
@@ -60,7 +69,7 @@ switch ($action) {
 				if ($countError < 1000) {
 					$content .= '<li class="atm-pic-cancel">'.$name.'</li>';
 				} elseif ($countError == 1000) {
-					$content .= '<li class="atm-pic-cancel"> ... Il y a plus de 1000 fichiers inaccessible en écriture ...</li>';
+					$content .= '<li class="atm-pic-cancel">'.$cms_language->getMessage(MESSAGE_PAGE_MORE_THAN_THOUSAND).'</li>';
 				}
 			}
 			if ($object->isFile()) {
@@ -71,22 +80,22 @@ switch ($action) {
 			$countSize += $object->getSize();
 		}
 		if ($content) {
-			$cms_message = 'Erreur lors de la vérification ...';
-			$content = '<span class="atm-red">Erreur : les fichiers et dossiers suivants ne sont pas accessibles en écriture :</span><ul class="atm-server">'.$content.'</ul>';
+			$cms_message = $cms_language->getMessage(MESSAGE_CHECK_ERROR);
+			$content = '<span class="atm-red">'.$cms_language->getMessage(MESSAGE_FILES_ACCESS_ERROR).'</span><ul class="atm-server">'.$content.'</ul>';
 		} else {
-			$cms_message = 'Vérification terminée !';
+			$cms_message = $cms_language->getMessage(MESSAGE_CHECK_DONE);
 		}
 		$filesize = ($countSize < 1073741824) ? round(($countSize/1048576),2).' M' : round(($countSize/1073741824),2).' G';
-		$content = 'Nombre de dossiers : <strong>'.$countDir.'</strong><br />
-		Nombre de Fichiers : <strong>'.$countFile.'</strong><br />
-		Espace disque employé : <strong>'.$filesize.'</strong><br /><br />'.$content;
+		$content = $cms_language->getMessage(MESSAGE_PAGE_FOLDER_NO).' <strong>'.$countDir.'</strong><br />
+		'.$cms_language->getMessage(MESSAGE_PAGE_FILES_NO).' <strong>'.$countFile.'</strong><br />
+		'.$cms_language->getMessage(MESSAGE_PAGE_DISK_SPACE).' <strong>'.$filesize.'</strong><br /><br />'.$content;
 	break;
 	case 'check-htaccess':
 		$automnePatch = new CMS_patch($cms_user);
 		if ($automnePatch->automneGeneralScript()) {
-			$cms_message = 'Vérification terminée !';
+			$cms_message = $cms_language->getMessage(MESSAGE_CHECK_DONE);
 		} else {
-			$cms_message = 'Erreur lors de la vérification ...';
+			$cms_message = $cms_language->getMessage(MESSAGE_CHECK_ERROR);
 		}
 		$return = $automnePatch->getReturn();
 		$content = '<ul class="atm-server">';

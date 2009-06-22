@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: rows-controler.php,v 1.2 2009/06/05 15:01:04 sebastien Exp $
+// $Id: rows-controler.php,v 1.3 2009/06/22 14:10:32 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on templates
@@ -27,6 +27,13 @@
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 
 define("MESSAGE_PAGE_MALFORMED_DEFINITION_FILE", 840);
+define("MESSAGE_ERROR_NO_RIGHTS_FOR_ROWS", 706);
+define("MESSAGE_ERROR_UNKNOWN_ROW", 729);
+define("MESSAGE_ACTION_ROW_SAVED", 730);
+define("MESSAGE_ACTION_ROW_CREATED", 731);
+define("MESSAGE_ACTION_XML_UPDATED", 732);
+define("MESSAGE_ACTION_N_PAGES_REGEN", 733);
+define("MESSAGE_ACTION_NO_PAGES", 734);
 
 //Controler vars
 $action = sensitiveIO::request('action', array('properties', 'definition', 'regenerate'));
@@ -51,7 +58,7 @@ $view->setDisplayMode(CMS_view::SHOW_JSON);
 //CHECKS user has row edition clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES)) { //rows
 	CMS_grandFather::raiseError('User has no rights on rows editions');
-	$view->setActionMessage('Vous n\'avez pas le droit de gérer les modèles de rangées ...');
+	$view->setActionMessage($cms_language->getMessage(MESSAGE_ERROR_NO_RIGHTS_FOR_ROWS));
 	$view->show();
 }
 
@@ -60,7 +67,7 @@ if (sensitiveIO::isPositiveInteger($rowId)) {
 	$row = CMS_rowsCatalog::getByID($rowId);
 	if (!$row || $row->hasError()) {
 		CMS_grandFather::raiseError('Unknown template row for given Id : '.$rowId);
-		$view->setActionMessage('Le modèle de rangée à modifier n\'existe pas ou possède une erreur.');
+		$view->setActionMessage($cms_language->getMessage(MESSAGE_ERROR_UNKNOWN_ROW));
 		$view->show();
 	}
 }
@@ -76,7 +83,7 @@ switch ($action) {
 			$row = new CMS_row();
 			$creation = true;
 		} elseif (is_a($row, "CMS_row") && $row->hasError()) {
-			$cms_message = 'Le modèle de rangée à modifier n\'existe pas ou possède une erreur.';
+			$cms_message = $cms_language->getMessage(MESSAGE_ERROR_UNKNOWN_ROW);
 			break;
 		}
 		//rename template and set description
@@ -120,11 +127,11 @@ switch ($action) {
 			if (!$creation) {
 				$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT_ROW, $cms_user, "Row : ".$row->getLabel()." (edit base data)");
 				$content = array('success' => true);
-				$cms_message = 'Rangée enregistrée avec succès.';
+				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_ROW_SAVED);
 			} else {
 				$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT_ROW, $cms_user, "Row  : ".$row->getLabel()." (create row)");
 				$content = array('success' => array('rowId' => $row->getID()));
-				$cms_message = 'Rangée créé avec succès.';
+				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_ROW_CREATED);
 			}
 			$view->setContent($content);
 		}
@@ -147,11 +154,11 @@ switch ($action) {
 					CMS_tree::submitToRegenerator($pagesIds, true);
 				}
 				$content = array('success' => true);
-				$cms_message = 'Définition XML mise à jour avec succès'.($pagesIds ? ',<br />'.sizeof($pagesIds).' pages en cours de régénération.' : '.');
+				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_XML_UPDATED).($pagesIds ? ',<br />'.$cms_language->getMessage(MESSAGE_ACTION_N_PAGES_REGEN, array(sizeof($pagesIds))) : '.');
 				$view->setContent($content);
 			}
 		} else {
-			$cms_message = 'Le modèle de rangée à modifier n\'existe pas ou possède une erreur.';
+			$cms_message = $cms_language->getMessage(MESSAGE_ERROR_UNKNOWN_ROW);
 		}
 	break;
 	case 'regenerate' :
@@ -159,9 +166,9 @@ switch ($action) {
 		$pagesIds = CMS_rowsCatalog::getPagesByRow($rowId, false, true);
 		if ($pagesIds) {
 			CMS_tree::submitToRegenerator($pagesIds, true);
-			$cms_message = sizeof($pagesIds).' pages en cours de régénération.';
+			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_N_PAGES_REGEN, array(sizeof($pagesIds)));
 		} else {
-			$cms_message = 'Aucune page publique n\'emploie ce modèle ...';
+			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_NO_PAGES);
 		}
 	break;
 }

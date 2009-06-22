@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-copy.php,v 1.4 2009/06/05 15:01:04 sebastien Exp $
+// $Id: page-copy.php,v 1.5 2009/06/22 14:10:31 sebastien Exp $
 
 /**
   * PHP page : Load copy-page window.
@@ -42,6 +42,7 @@ define("MESSAGE_PAGE_COPY_NOTKEEP_TEMPLATE",360);
 define("MESSAGE_PAGE_COPY_CONFIRM",361);
 define("MESSAGE_PAGE_CANCEL",180);
 define("MESSAGE_PAGE_COPY",499);
+define("MESSAGE_PAGE_REPLACE_TEMPLATE_DESC",700);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -115,7 +116,7 @@ $jscontent = <<<END
 			inputValue:		'1',
 			checked:		true
 		},{
-			fieldLabel:			'<span class="atm-help" ext:qtip="Choisissez un modèle parmi ceux disponible. Un modèle compatible permet de conserver toutes les données de la page d\'origine. Un modèle incompatible ne copiera pas tout le contenu de la page d\'origine.">{$cms_language->getJsMessage(MESSAGE_PAGE_REPLACE_TEMPLATE)}</span>',
+			fieldLabel:			'<span class="atm-help" ext:qtip="{$cms_language->getJsMessage(MESSAGE_PAGE_REPLACE_TEMPLATE_DESC)}">{$cms_language->getJsMessage(MESSAGE_PAGE_REPLACE_TEMPLATE)}</span>',
 			anchor:				'100%',
 			xtype:				'combo',
 			name:				'template',

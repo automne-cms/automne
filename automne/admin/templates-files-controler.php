@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-files-controler.php,v 1.1 2009/04/02 13:55:54 sebastien Exp $
+// $Id: templates-files-controler.php,v 1.2 2009/06/22 14:10:33 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on modules categories
@@ -29,6 +29,17 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 function checkNode($value) {
 	return $value != 'source' && strpos($value, '..') === false;
 }
+
+define("MESSAGE_PAGE_STYLESHEET", 1486);
+define("MESSAGE_PAGE_WYSIWYG", 1487);
+define("MESSAGE_PAGE_JAVASCRIPT", 1488);
+define("MESSAGE_ACTION_DELETE_FILE", 1500);
+define("MESSAGE_ERROR_DELETE_FILE", 1501);
+define("MESSAGE_ACTION_UPDATE_FILE", 1502);
+define("MESSAGE_ERROR_UPDATE_FILE", 1503);
+define("MESSAGE_ACTION_CREATE_FILE", 1504);
+define("MESSAGE_ERROR_CREATE_FILE_EXTENSION", 1505);
+define("MESSAGE_ERROR_CREATE_FILE_EXISTS", 1506);
 
 //Controler vars
 $action = sensitiveIO::request('action', array('delete', 'update', 'create'));
@@ -56,13 +67,13 @@ switch ($fileType) {
 	case 'css':
 		$dir = $_SERVER['DOCUMENT_ROOT'].'/css/';
 		$allowedFiles = array(
-			'css' => array('name' => 'Feuille de style', 'class' => 'atm-css'),
-			'xml' => array('name' => 'Style Wysiwyg', 'class' => 'atm-xml'),
+			'css' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_STYLESHEET), 'class' => 'atm-css'),
+			'xml' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_WYSIWYG), 'class' => 'atm-xml'),
 		);
 	break;
 	case 'js':
 		$dir = $_SERVER['DOCUMENT_ROOT'].'/js/';
-		$allowedFiles = array('js' => array('name' => 'Javascript', 'class' => 'atm-js'));
+		$allowedFiles = array('js' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_JAVASCRIPT), 'class' => 'atm-js'));
 	break;
 	default:
 		CMS_grandFather::raiseError('Unknown fileType to use ...');
@@ -91,9 +102,9 @@ switch ($action) {
 			$content = array('success' => true);
 			$log = new CMS_log();
 			$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_DELETE_FILE, $cms_user, "File : ".$node);
-			$cms_message = 'Fichier '.$node.' supprimé.';
+			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_DELETE_FILE, array($node));
 		} else {
-			$cms_message = 'Erreur durant la suppression du fichier '.$node;
+			$cms_message = $cms_language->getMessage(MESSAGE_ERROR_DELETE_FILE).' '.$node;
 		}
 	break;
 	case 'update':
@@ -103,9 +114,9 @@ switch ($action) {
 				$log = new CMS_log();
 				$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT_FILE, $cms_user, "File : ".$node);
 				$content = array('success' => true);
-				$cms_message = 'Fichier '.$node.' mis à jour.';
+				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_UPDATE_FILE, array($node));
 			} else {
-				$cms_message = 'Erreur durant la mise à jour  du fichier '.$node;
+				$cms_message = $cms_language->getMessage(MESSAGE_ERROR_UPDATE_FILE).' '.$node;
 			}
 		}
 	break;
@@ -119,15 +130,15 @@ switch ($action) {
 						$log = new CMS_log();
 						$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT_FILE, $cms_user, "File : ".$node.'/'.$filelabel);
 						$content = array('success' => true);
-						$cms_message = 'Fichier '.$filelabel.' créé.';
+						$cms_message = $cms_language->getMessage(MESSAGE_ACTION_CREATE_FILE, array($filelabel));
 					} else {
-						$cms_message = 'Erreur durant la mise à jour  du fichier '.$filelabel;
+						$cms_message = $cms_language->getMessage(MESSAGE_ERROR_UPDATE_FILE).' '.$filelabel;
 					}
 				} else {
-					$cms_message = 'Impossible de créer le fichier '.$filelabel.', son extention est incorrecte. ';
+					$cms_message = $cms_language->getMessage(MESSAGE_ERROR_CREATE_FILE_EXTENSION, array($filelabel));
 				}
 			} else {
-				$cms_message = 'Impossible de créer le fichier '.$filelabel.', ce fichier existe déjà. ';
+				$cms_message = $cms_language->getMessage(MESSAGE_ERROR_CREATE_FILE_EXISTS, array($filelabel));
 			}
 		}
 	break;

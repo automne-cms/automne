@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_search.php,v 1.6 2009/06/05 15:02:18 sebastien Exp $
+// $Id: object_search.php,v 1.7 2009/06/22 14:08:41 sebastien Exp $
 
 /**
   * Class CMS_object_search
@@ -945,7 +945,8 @@ class CMS_object_search extends CMS_grandFather
 							$IDs[$id] = $id;
 						}
 						//if we only have objectID as orderCondition or if order by relevance is queried, use order provided by Xapian
-						if (($this->_orderConditions['objectID'] && sizeof($this->_orderConditions) <= 1) || $this->_orderConditions['relevance']) {
+						if ((isset($this->_orderConditions['objectID']) && $this->_orderConditions['objectID'] && sizeof($this->_orderConditions) <= 1) 
+							|| (isset($this->_orderConditions['relevance']) && $this->_orderConditions['relevance'])) {
 							if ($this->_orderConditions['relevance'] == 'desc') {
 								$this->_orderConditions = array('itemsOrdered' => array('order' => array_reverse($IDs,true)));
 							} else {

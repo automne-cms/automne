@@ -18,7 +18,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |    
 // +----------------------------------------------------------------------+
 //
-// $Id: fckpolymod.js,v 1.1.1.1 2008/11/26 17:12:14 sebastien Exp $
+// $Id: fckpolymod.js,v 1.2 2009/06/22 14:14:44 sebastien Exp $
 
 /**
   * Javascript plugin for FCKeditor
@@ -48,12 +48,14 @@ window.onload = function()
 	oEditor.FCKLanguageManager.TranslatePage(document) ;
 	// Load the selected span informations (if any).
 	LoadSelection() ;
-	//load iframe with span infos
-	GetE('plugin').src = GetE('iframeURL').value + '?id=' + oID + '&content=' + escape(oContent);
+	//load polymod window
+	displayPolymod(oID, oContent);
 	// Show the initial dialog content.
 	GetE('divInfo').style.display = '' ;
-	// Activate the "OK" button.
-	window.parent.SetOkButton( true ) ;
+	if (oID) {
+		// Activate the "OK" button.
+		window.parent.SetOkButton( true ) ;
+	}
 }
 //load current selected span if any and all span infos
 function LoadSelection()
@@ -89,13 +91,6 @@ function Ok()
 		FCK.Selection.Delete();
 		//then paste the new one
 		FCK.InsertHtml(codeToPaste);
-		//try to exec JS if any
-		/*var re = /(?:<script([^>]*)?>)((\n|\r|.)*?)(?:<\/script>)/ig;
-		while(match = re.exec(codeToPaste)){
-			if(match[2] && match[2].length > 0){
-				eval(match[2]);
-			}
-		}*/
 		//then close windows
 		window.parent.Cancel() ;
 	}

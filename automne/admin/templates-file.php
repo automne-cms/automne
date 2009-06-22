@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-file.php,v 1.3 2009/06/05 15:01:05 sebastien Exp $
+// $Id: templates-file.php,v 1.4 2009/06/22 14:10:33 sebastien Exp $
 
 /**
   * PHP page : Load print template window.
@@ -28,6 +28,19 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 
 define("MESSAGE_TOOLBAR_HELP",1073);
 define("MESSAGE_PAGE_SAVE", 952);
+define("MESSAGE_PAGE_SYNTAX_COLOR", 725);
+define("MESSAGE_PAGE_ACTION_REINDENT", 726);
+define("MESSAGE_PAGE_LABEL", 814);
+define("MESSAGE_PAGE_STYLESHEET", 1486);
+define("MESSAGE_PAGE_WYSIWYG", 1487);
+define("MESSAGE_PAGE_JAVASCRIPT", 1488);
+define("MESSAGE_PAGE_CREATE_CSS", 1489);
+define("MESSAGE_PAGE_EDIT_CSS", 1490);
+define("MESSAGE_PAGE_CREATE_JS", 1491);
+define("MESSAGE_PAGE_EDIT_JS", 1492);
+define("MESSAGE_PAGE_EDIT_WYSIWYG", 1493);
+define("MESSAGE_TOOLBAR_HELP_DESC", 1494);
+define("MESSAGE_PAGE_DEFINITION", 1495);
 
 function checkNode($value) {
 	return $value != 'source' && strpos($value, '..') === false;
@@ -53,13 +66,13 @@ switch ($fileType) {
 	case 'css':
 		$dir = $_SERVER['DOCUMENT_ROOT'].'/css/';
 		$allowedFiles = array(
-			'css' => array('name' => 'Feuille de style', 'class' => 'atm-css'),
-			'xml' => array('name' => 'Style Wysiwyg', 'class' => 'atm-xml'),
+			'css' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_STYLESHEET), 'class' => 'atm-css'),
+			'xml' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_WYSIWYG), 'class' => 'atm-xml'),
 		);
 	break;
 	case 'js':
 		$dir = $_SERVER['DOCUMENT_ROOT'].'/js/';
-		$allowedFiles = array('js' => array('name' => 'Javascript', 'class' => 'atm-js'));
+		$allowedFiles = array('js' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_JAVASCRIPT), 'class' => 'atm-js'));
 	break;
 	default:
 		CMS_grandFather::raiseError('Unknown fileType to use ...');
@@ -82,7 +95,7 @@ if (!is_file($file)) {
 		xtype:			'textfield',
 		value:			'',
 		name:			'filelabel',
-		fieldLabel:		'Libellé',
+		fieldLabel:		'{$cms_language->getJsMessage(MESSAGE_PAGE_LABEL)}',
 		border:			false,
 		bodyStyle: 		'padding-bottom:10px'
 	},";
@@ -114,21 +127,21 @@ switch ($extension) {
 			parserfile: 	["parsecss.js"],
 			stylesheet: 	["/automne/codemirror/css/csscolors.css"],
 		';
-		$title = sensitiveIO::sanitizeJSString($fileCreation ? 'Création d\'un fichier de feuille de style' : 'Edition du fichier de feuille de style '.$node);
+		$title = sensitiveIO::sanitizeJSString($fileCreation ? $cms_language->getMessage(MESSAGE_PAGE_CREATE_CSS) : $cms_language->getMessage(MESSAGE_PAGE_EDIT_CSS).' '.$node);
 	break;
 	case 'js':
 		$codemirrorConf = '
 			parserfile: 	["tokenizejavascript.js", "parsejavascript.js"],
 			stylesheet: 	["/automne/codemirror/css/jscolors.css"],
 		';
-		$title = sensitiveIO::sanitizeJSString($fileCreation ? 'Création d\'un fichier Javascript' : 'Edition du fichier Javascript '.$node);
+		$title = sensitiveIO::sanitizeJSString($fileCreation ? $cms_language->getMessage(MESSAGE_PAGE_CREATE_JS) : $cms_language->getMessage(MESSAGE_PAGE_EDIT_JS).' '.$node);
 	break;
 	case 'xml':
 		$codemirrorConf = '
 			parserfile: 	["parsexml.js", "parsecss.js", "tokenizejavascript.js", "parsejavascript.js", "parsehtmlmixed.js"],
 			stylesheet: 	["/automne/codemirror/css/xmlcolors.css", "/automne/codemirror/css/jscolors.css", "/automne/codemirror/css/csscolors.css"],
 		';
-		$title = sensitiveIO::sanitizeJSString('Edition du fichier de style de l\'éditeur Wysiwyg '.$node);
+		$title = sensitiveIO::sanitizeJSString($cms_language->getMessage(MESSAGE_PAGE_EDIT_WYSIWYG).' '.$node);
 	break;
 }
 
@@ -143,7 +156,7 @@ $jscontent = <<<END
 	var propertiesTip = new Ext.ToolTip({
 		target:		 fileWindow.tools['help'],
 		title:			 '{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP)}',
-		html:			 'Cette page permet l\'édition d\'un fichier Javascript ou d\'une feuille de style (CSS). Ce fichier peut-être ensuite appelé dans le code d\'un modèle de page.',
+		html:			 '{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP_DESC)}',
 		dismissDelay:	0
 	});
 	//editor var
@@ -168,7 +181,7 @@ $jscontent = <<<END
 		labelAlign: 		'top',
 		items:[{$labelField}{
 			xtype:			'checkbox',
-			boxLabel:		'Activer la coloration syntaxique',
+			boxLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_SYNTAX_COLOR)}',
 			hideLabel:		true,
 			listeners:		{'check':function(field, checked) {
 				if (checked) {
@@ -193,7 +206,7 @@ $jscontent = <<<END
 			cls:			'atm-code',
 			anchor:			'-35, {$anchor}',
 			enableKeyEvents:true,
-			fieldLabel:		'Définition',
+			fieldLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_DEFINITION)}',
 			/*hideLabel:		true,*/
 			value:			Ext.get('file-content-{$fileId}').dom.value,
 			listeners:{'keypress': function(field, e){
@@ -225,7 +238,7 @@ $jscontent = <<<END
 		}],
 		buttons:[{
 			id:				'reindent-{$fileId}',
-			text:			'Réindenter',
+			text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_ACTION_REINDENT)}',
 			anchor:			'',
 			hidden:			true,
 			listeners:		{'click':function(button) {

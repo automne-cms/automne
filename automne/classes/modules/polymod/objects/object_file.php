@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_file.php,v 1.6 2009/06/08 13:11:21 sebastien Exp $
+// $Id: object_file.php,v 1.7 2009/06/22 14:08:40 sebastien Exp $
 
 /**
   * Class CMS_object_file
@@ -685,7 +685,7 @@ class CMS_object_file extends CMS_object_common
 			}
 			
 			//thumbnail
-			if ($values[$prefixName.$this->_field->getID().'_1'] && strpos($values[$prefixName.$this->_field->getID().'_1'], PATH_UPLOAD_WR.'/') !== false) {
+			if (isset($values[$prefixName.$this->_field->getID().'_1']) && $values[$prefixName.$this->_field->getID().'_1'] && strpos($values[$prefixName.$this->_field->getID().'_1'], PATH_UPLOAD_WR.'/') !== false) {
 				$filename = $values[$prefixName.$this->_field->getID().'_1'];
 				//check for image type before doing anything
 				if (!in_array(strtolower(pathinfo($filename, PATHINFO_EXTENSION)), $this->_allowedExtensions)) {

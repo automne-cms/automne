@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-add.php,v 1.3 2009/06/05 15:01:04 sebastien Exp $
+// $Id: page-add.php,v 1.4 2009/06/22 14:10:31 sebastien Exp $
 
 /**
   * PHP page : Load add-page window infos. Set title and template then redirect to page content edition
@@ -41,6 +41,7 @@ define("MESSAGE_PAGE_CANCEL", 180);
 define("MESSAGE_PAGE_NO_ALL_REQUIRED_FIELDS", 349);
 define("MESSAGE_PAGE_DEFAULT_ROWS_HELP", 564);
 define("MESSAGE_PAGE_DEFAULT_ROWS", 565);
+define("MESSAGE_PAGE_FILTER", 693);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -201,7 +202,7 @@ $jscontent = <<<END
 			border:			false,
 			tbar:[{
 				xtype: 			'textfield',
-				emptyText:		'Filtrer ...',
+				emptyText:		'{$cms_language->getJsMessage(MESSAGE_PAGE_FILTER)}',
 				id: 			'filter',
 				selectOnFocus: 	true,
 				width: 			300,
@@ -264,8 +265,6 @@ $jscontent = <<<END
 	
 	addPageWindow.addButtons(buttons);
 	addPageWindow.doLayout();
-	//addPageWindow.setWidth(addPageWindow.width);
-	//addPageWindow.setHeight(addPageWindow.height);
 END;
 
 $view->addJavascript($jscontent);
