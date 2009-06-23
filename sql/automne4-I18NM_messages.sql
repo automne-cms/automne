@@ -1,4 +1,4 @@
-# $Id: automne4-I18NM_messages.sql,v 1.12 2009/06/22 14:21:00 sebastien Exp $
+# $Id: automne4-I18NM_messages.sql,v 1.13 2009/06/23 14:11:00 sebastien Exp $
 #
 # Suppression avant mise à  jour du Contenu de la table `I18NM_messages` pour le module standard
 #
@@ -1942,26 +1942,26 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (90, 'cms_form
 
 DELETE FROM I18NM_messages WHERE module='polymod';
 
-INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (2, 'polymod', NOW(), 'Création / modification d\'un objet \'%s\'', 'Object \'%s\' creation / modification');
-INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (3, 'polymod', NOW(), 'Création / modification de l\'objet \'%s\' :', 'Creation / modification of \'%s\' object:');
-INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (4, 'polymod', NOW(), 'Suppression d\'un objet \'%s\'', '\'%s\' object deletion');
-INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (5, 'polymod', NOW(), 'Suppression de l\'objet \'%s\' :', 'Deletion of \'%s\' object:');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (2, 'polymod', NOW(), 'Création / modification d\'un élément \'%s\'', 'Item \'%s\' creation / modification');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (3, 'polymod', NOW(), 'Création / modification de l\'élément \'%s\' :', 'Creation / modification of \'%s\' item:');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (4, 'polymod', NOW(), 'Suppression d\'un élément \'%s\'', '\'%s\' item deletion');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (5, 'polymod', NOW(), 'Suppression de l\'élément \'%s\' :', 'Deletion of \'%s\' item:');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (6, 'polymod', NOW(), 'Lien existant', 'Current link');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (7, 'polymod', NOW(), 'Accueil', 'Entry');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (18, 'polymod', NOW(), 'Mots-clés', 'Keywords');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (19, 'polymod', NOW(), 'Publié entre le', 'Published between');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (20, 'polymod', NOW(), 'et le', 'and');
-INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (21, 'polymod', NOW(), '%s objet(s) \'%s\' correspondant à votre recherche', '%s \'%s\' object(s) relative to your search');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (21, 'polymod', NOW(), '%s élément(s) \'%s\' correspondant à votre recherche', '%s \'%s\' item(s) relative to your search');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (30, 'polymod', NOW(), 'Objet', 'Object');
-INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (31, 'polymod', NOW(), 'Changement du contenu d\'un objet \'%s\'', 'Object \'%s\' content change');
-INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (32, 'polymod', NOW(), 'Changement apporté sur l\'objet \'%s\' : %s', 'Content change for object \'%s\' : \'%s\'');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (31, 'polymod', NOW(), 'Changement du contenu d\'un élement %s', 'Item %s content change');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (32, 'polymod', NOW(), 'Changement apporté sur l\'élément %s : <strong>%s</strong>\n\nAuteur(s) de la modification :\n%s', 'Content change for the %s item: <strong>%s</strong>\n\nAuthor(s) of the change:\n%s');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (37, 'polymod', NOW(), 'Libellé', 'Label');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (39, 'polymod', NOW(), 'Description', 'Description');
-INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (52, 'polymod', NOW(), 'Confirmez-vous la suppression de l\'objet \'%s\' : %s', 'Do you confirm deletion of object \'%s\' : %s');
-INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (53, 'polymod', NOW(), 'Proposition de suppression d\'un objet %s', '%s object deletion proposal');
-INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (55, 'polymod', NOW(), 'Suppression de l\'objet \'%s\' : %s', 'Deletion of \'%s\' object : %s');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (52, 'polymod', NOW(), 'Confirmez-vous la suppression de l\'élément \'%s\' : %s', 'Do you confirm deletion of item \'%s\' : %s');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (53, 'polymod', NOW(), 'Proposition de suppression d\'un élément %s', 'Item %s deletion proposal');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (55, 'polymod', NOW(), 'Suppression de l\'élément %s : <strong>%s</strong>\n\nAuteur(s) de la suppression :\n%s', 'Deletion of the %s item: <strong>%s</strong>\n\nAuthor(s) of the deletion:\n%s');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (57, 'polymod', NOW(), 'Publication sur le site', 'Publication on website');
-INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (66, 'polymod', NOW(), 'Trouver un objet \'%s\'', 'Find a \'%s\' object');
+INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (66, 'polymod', NOW(), 'Trouver un élément \'%s\'', 'Find a \'%s\' item');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (77, 'polymod', NOW(), 'Lister', 'List');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (82, 'polymod', NOW(), 'Gestion des éléments \'%s\'', '\'%s\' elements management');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (108, 'polymod', NOW(), 'Gérer les éléments \'%s\'', 'Manage elements \'%s\'');

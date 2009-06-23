@@ -17,7 +17,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: mod_cms_forms_header.php,v 1.8 2009/06/08 13:11:36 sebastien Exp $
+// $Id: mod_cms_forms_header.php,v 1.9 2009/06/23 14:10:44 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -192,7 +192,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 										$cms_forms_required[$form->getID()][] = $aField->getAttribute('name');
 									}
 									//check if field data is correct and clean datas if needed
-									if(($aField->getAttribute('type') != 'file' && $_POST[$aField->getAttribute('name')]) || ($aField->getAttribute('type') == 'file' && $_FILES[$aField->getAttribute('name')]['name'])) {
+									if(($aField->getAttribute('type') != 'file' && isset($_POST[$aField->getAttribute('name')]) && $_POST[$aField->getAttribute('name')]) || ($aField->getAttribute('type') == 'file' && $_FILES[$aField->getAttribute('name')]['name'])) {
 										switch($aField->getAttribute('type')) {
 											case 'email':
 												if (!sensitiveIO::isValidEmail($_POST[$aField->getAttribute('name')])) {
@@ -270,7 +270,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 								if (isset($sender) && $sender->getID()) {
 									foreach ($fields as $aField) {
 										//insert datas of each field
-										if ((($aField->getAttribute('type') != 'file' && $_POST[$aField->getAttribute('name')]) || ($aField->getAttribute('type') == 'file' && $_FILES[$aField->getAttribute('name')]['name']))
+										if ((($aField->getAttribute('type') != 'file' && isset($_POST[$aField->getAttribute('name')]) && $_POST[$aField->getAttribute('name')]) || ($aField->getAttribute('type') == 'file' && $_FILES[$aField->getAttribute('name')]['name']))
 											&& $aField->getAttribute('type') != 'submit' ) {
 											$fieldRecord = new CMS_forms_record();
 											$fieldRecord->setAttribute('fieldID', $aField->getID());
@@ -308,7 +308,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 								//create email body
 								$body = '';
 								foreach ($fields as $aField) {
-									if ((($aField->getAttribute('type') != 'file' && $_POST[$aField->getAttribute('name')]) || ($aField->getAttribute('type') == 'file' && $_FILES[$aField->getAttribute('name')]['name']))
+									if ((($aField->getAttribute('type') != 'file' && isset($_POST[$aField->getAttribute('name')]) && $_POST[$aField->getAttribute('name')]) || ($aField->getAttribute('type') == 'file' && $_FILES[$aField->getAttribute('name')]['name']))
 										&& $aField->getAttribute('type') != 'submit' ) {
 										//insert datas of each field
 										if ($aField->getAttribute('type') == 'file') {

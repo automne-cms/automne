@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: search.php,v 1.6 2009/06/22 14:10:32 sebastien Exp $
+// $Id: search.php,v 1.7 2009/06/23 14:09:57 sebastien Exp $
 
 /**
   * PHP page : Load page search window.
@@ -326,7 +326,7 @@ $jscontent = <<<END
 							Ext.WindowMgr.bringToFront(objectsWindows[windowId]);
 						} else {
 							var url = datas.edit.url;
-							var params = datas.edit.params;
+							var params = Ext.apply(datas.edit.params, {winId:windowId});
 							if (type == 'window') {
 								//create window element
 								objectsWindows[windowId] = new Automne.Window({

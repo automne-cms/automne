@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object.php,v 1.6 2009/06/22 14:08:40 sebastien Exp $
+// $Id: poly_object.php,v 1.7 2009/06/23 14:10:15 sebastien Exp $
 
 /**
   * Class CMS_poly_object
@@ -1403,10 +1403,16 @@ class CMS_poly_object extends CMS_resource
 								$languages = CMS_languagesCatalog::getAllLanguages();
 								$subjects = array();
 								$bodies = array();
+								$editors = $this->getEditors();
+								$editorsInfos = '';
+								foreach($editors as $editor){
+									$editorsInfos .= ($editorsInfos) ? ",\n" : '';
+									$editorsInfos .= $editor->getFullName().($editor->getEmail() ? ' ('.$editor->getEmail().')' : '');
+								}
 								foreach ($languages as $language) {
 									$subjects[$language->getCode()] = $language->getMessage(self::MESSAGE_POLYMOD_ACTION_EMAIL_SUBJECT, array($objectDef->getLabel($language)), MOD_POLYMOD_CODENAME);
 									$bodies[$language->getCode()] = $language->getMessage(MESSAGE_EMAIL_VALIDATION_AWAITS)
-											."\n".$language->getMessage(self::MESSAGE_POLYMOD_ACTION_EMAIL_BODY, array($objectDef->getLabel($language), $this->getLabel()), MOD_POLYMOD_CODENAME);
+											."\n".$language->getMessage(self::MESSAGE_POLYMOD_ACTION_EMAIL_BODY, array($objectDef->getLabel($language), $this->getLabel(), $editorsInfos), MOD_POLYMOD_CODENAME);
 								}
 								$group_email->setUserMessages(array($user), $bodies, $subjects, ALERT_LEVEL_VALIDATION, $codename);
 								$group_email->sendMessages();
@@ -1416,10 +1422,16 @@ class CMS_poly_object extends CMS_resource
 								$languages = CMS_languagesCatalog::getAllLanguages();
 								$subjects = array();
 								$bodies = array();
+								$editors = $this->getEditors();
+								$editorsInfos = '';
+								foreach($editors as $editor){
+									$editorsInfos .= ($editorsInfos) ? ",\n" : '';
+									$editorsInfos .= $editor->getFullName().($editor->getEmail() ? ' ('.$editor->getEmail().')' : '');
+								}
 								foreach ($languages as $language) {
 									$subjects[$language->getCode()] = $language->getMessage(self::MESSAGE_POLYMOD_ACTION_EMAIL_DELETE_SUBJECT, array($objectDef->getLabel($language)), MOD_POLYMOD_CODENAME);
 									$bodies[$language->getCode()] = $language->getMessage(MESSAGE_EMAIL_VALIDATION_AWAITS)
-											."\n".$language->getMessage(self::MESSAGE_POLYMOD_ACTION_EMAIL_DELETE_BODY, array($objectDef->getLabel($language), $this->getLabel()), MOD_POLYMOD_CODENAME);
+											."\n".$language->getMessage(self::MESSAGE_POLYMOD_ACTION_EMAIL_DELETE_BODY, array($objectDef->getLabel($language), $this->getLabel(), $editorsInfos), MOD_POLYMOD_CODENAME);
 								}
 								$group_email->setUserMessages(array($user), $bodies, $subjects, ALERT_LEVEL_VALIDATION, $codename);
 								$group_email->sendMessages();
