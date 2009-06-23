@@ -13,12 +13,12 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc_admin.php,v 1.7 2009/06/05 15:30:36 sebastien Exp $
+// $Id: cms_rc_admin.php,v 1.8 2009/06/23 16:13:35 sebastien Exp $
 
 /**
   * Administration rc file.
   *
-  * Contains declarations and includes for the administration.
+  * Contains declarations and includes for the backend part.
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

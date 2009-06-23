@@ -14,10 +14,10 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc.php,v 1.11 2009/06/22 15:38:45 sebastien Exp $
+// $Id: cms_rc.php,v 1.12 2009/06/23 16:13:35 sebastien Exp $
 
 /**
-  * rc file, contains editable constants
+  * rc file, contains all default constants
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &
   * @author Cédric Soret <cedric.soret@ws-interactive.fr>
@@ -81,10 +81,10 @@ if (!defined("APPLICATION_ERROR_REPORTING")) {
 }
 /**
   *	Application memory limit level
-  *	Default : 32M
+  *	Default : 64M
   */
 if (!defined("APPLICATION_MEMORY_LIMIT")) {
-	define("APPLICATION_MEMORY_LIMIT", "32M");
+	define("APPLICATION_MEMORY_LIMIT", "64M");
 }
 
 /**

@@ -13,12 +13,12 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc_frontend.php,v 1.4 2009/06/05 15:30:36 sebastien Exp $
+// $Id: cms_rc_frontend.php,v 1.5 2009/06/23 16:13:35 sebastien Exp $
 
 /**
   * Frontend rc file.
   *
-  * Contains declarations for the frontend part.
+  * Contains declarations and includes for the frontend part.
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
