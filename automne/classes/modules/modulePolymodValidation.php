@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modulePolymodValidation.php,v 1.2 2009/06/05 15:02:19 sebastien Exp $
+// $Id: modulePolymodValidation.php,v 1.3 2009/06/23 15:34:29 sebastien Exp $
 
 /**
   * Class CMS_modulePolymodValidation
@@ -576,7 +576,11 @@ class CMS_modulePolymodValidation extends CMS_module
 			$all_editions = CMS_resourceStatus::getAllEditions();
 			foreach ($all_editions as $aEdition) {
 				if ($aEdition & $editions) {
-					$resource->addValidationRefused($aEdition);
+					if (RESOURCE_EDITION_LOCATION & $aEdition && $resource->getProposedLocation() == RESOURCE_LOCATION_DELETED) {
+						$resource->removeProposedLocation(); 
+					} else {
+						$resource->addValidationRefused($aEdition);
+					}
 				}
 			}
 			break;
