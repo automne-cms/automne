@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc.php,v 1.12 2009/06/23 16:13:35 sebastien Exp $
+// $Id: cms_rc.php,v 1.13 2009/06/23 16:20:17 sebastien Exp $
 
 /**
   * rc file, contains all default constants
@@ -832,7 +832,7 @@ if (STATS_DEBUG) {
 		if (function_exists('xdebug_get_profiler_filename') && xdebug_get_tracefile_name()) {
 			$content .= 'XDebug Trace : '. xdebug_get_tracefile_name()."\n";
 		}
-		if (VIEW_SQL && isset($_SESSION["cms_context"]) && is_object($_SESSION["cms_context"]) && $_SERVER["SCRIPT_NAME"]!="/automne/admin/stat.php") {
+		if (VIEW_SQL && isset($_SESSION["cms_context"]) && is_object($_SESSION["cms_context"]) && $_SERVER["SCRIPT_NAME"] != PATH_ADMIN_WR.'/stat.php') {
 			$stats = $_SESSION["cms_context"]->getSessionVar('automneStats');
 			if (!$stats) {
 				$stats = array();
@@ -858,12 +858,12 @@ if (STATS_DEBUG) {
 		if (!$return) {
 			$content = '<pre>'.$content.'</pre>';
 			if (isset($statName)) {
-				$content .= '<a href="/automne/admin/stat.php?stat='.$statName.'" target="_blank">View statistics</a>';
+				$content .= '<a href="'.PATH_ADMIN_WR.'/stat.php?stat='.$statName.'" target="_blank">View statistics</a>';
 			}
 			echo $content;
 		} else {
 			if (isset($statName)) {
-				$content .= '<a href="/automne/admin/stat.php?stat='.$statName.'" target="_blank">View statistics</a>';
+				$content .= '<a href="'.PATH_ADMIN_WR.'/stat.php?stat='.$statName.'" target="_blank">View statistics</a>';
 			}
 			return $content;
 		}
@@ -900,22 +900,16 @@ if (SYSTEM_DEBUG) {
 		@ini_set('output_buffering','Off');
 	}
 	//Usefull function to dump a var.
-	function pr($data,$useVarDump = false)
-	{
+	function pr($data,$useVarDump = false) {
 		$view = CMS_view::getInstance();
 		if (!$useVarDump) {
-			//echo "<pre>".print_r($data,true)."</pre>";
 			$view->addRawData(print_r($data,true));
-			//flush();
 		} else {
-			//echo "<pre>";
 			ob_start();
 			var_dump($data);
 			$rawdata = ob_get_contents();
 			ob_end_clean();
 			$view->addRawData($rawdata);
-			//echo "</pre>";
-			//flush();
 		}
 	}
 } else {
@@ -927,7 +921,7 @@ if (SYSTEM_DEBUG) {
 	} elseif(function_exists("error_reporting")) {
 		error_reporting(0);
 	}
-	//Usefull function to dump a var.
+	//Usefull function to dump a var : Do nothing if debug is inactive
 	function pr($data,$useVarDump = false){}
 }
 
