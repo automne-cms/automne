@@ -1,7 +1,7 @@
 <?php header('HTTP/1.x 302 Found',true,302);
 header("Location: http://127.0.0.1/web/fr/2-accueil.php");
 exit;
- ?><?php //Generated on Fri, 06 Mar 2009 12:04:18 +0100 by Automne (TM) 4.0.0b1
+ ?><?php //Generated on Tue, 23 Jun 2009 18:04:53 +0200 by Automne (TM) 4.0.0rc1
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
 	header('Location: http://127.0.0.1/web/1-demo-automne.php');

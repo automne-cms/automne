@@ -1,4 +1,4 @@
-<?php //Generated on Fri, 06 Mar 2009 12:04:36 +0100 by Automne (TM) 4.0.0b1
+<?php //Generated on Tue, 23 Jun 2009 18:05:12 +0200 by Automne (TM) 4.0.0rc1
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
 	header('Location: http://127.0.0.1/web/fr/29-automne-v4.php');
@@ -10,7 +10,7 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 		<title>Automne 4 : Automne</title>
-		<?php echo CMS_view::getCSS(array('/css/common.css','/css/interieur.css'), 'screen');  ?>
+			<?php echo CMS_view::getCSS(array('/css/common.css','/css/interieur.css'), 'screen');  ?>
 
 		<!--[if lte IE 6]> 
 		<link rel="stylesheet" type="text/css" href="/css/ie6.css" media="screen" />

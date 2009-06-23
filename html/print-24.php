@@ -1,4 +1,4 @@
-<?php //Generated on Fri, 06 Mar 2009 12:04:28 +0100 by Automne (TM) 4.0.0b1
+<?php //Generated on Tue, 23 Jun 2009 18:05:03 +0200 by Automne (TM) 4.0.0rc1
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
 	header('Location: http://127.0.0.1/web/fr/print-24-documentation.php');
@@ -16,12 +16,7 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 <h1>Fonctionnalités</h1>
 <h3>
 
-		
-
-&raquo;
-
-
-&nbsp;
+		&raquo;&nbsp;
 
 Fonctionnalités
 		
@@ -35,7 +30,7 @@ Fonctionnalités
 <hr />
 <div align="center">
 	<small>
-		Dernière mise à jour le 04/03/2009<br />
+		
 		
 				Page  "Fonctionnalités" (http://127.0.0.1/web/fr/24-documentation.php)
 				<br />

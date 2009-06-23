@@ -1,4 +1,4 @@
-<?php //Generated on Fri, 06 Mar 2009 12:04:28 +0100 by Automne (TM) 4.0.0b1
+<?php //Generated on Tue, 23 Jun 2009 18:05:02 +0200 by Automne (TM) 4.0.0rc1
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
 	header('Location: http://127.0.0.1/web/fr/9-contact.php');
@@ -33,7 +33,7 @@ $mod_cms_forms["usedforms"] = array (
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 9.php,v 1.6 2009/03/06 11:01:49 sebastien Exp $
+// $Id: 9.php,v 1.7 2009/06/23 16:00:41 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -77,7 +77,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 				if (!isset($_SESSION["cms_context"]) || (isset($_SESSION["cms_context"]) && !is_a($_SESSION["cms_context"], 'CMS_context')) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] == 'true')) {
 					@session_destroy();
 					start_atm_session();
-					if (!isset($_REQUEST["logout"]) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] != 'true') && CMS_context::autoLoginSucceeded()) {
+					if ((!isset($_REQUEST["logout"]) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] != 'true')) && CMS_context::autoLoginSucceeded()) {
 						//declare form ok action
 						$cms_forms_okAction[$form->getID()] = true;
 					} elseif (isset($_REQUEST["logout"]) && $_REQUEST["logout"] == 'true') {
@@ -96,7 +96,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 				$actions = $form->getActionsByType(CMS_forms_action::ACTION_FORMOK);
 				$action = array_shift($actions);
 				//check if form ok send to a page and if user has rights for this page
-				if (is_object($cms_user) && $action->getString("value") == "page") {
+				if (isset($cms_user) && is_object($cms_user) && $action->getString("value") == "page") {
 					//for compatibility with old versions of module
 					if (sensitiveIO::isPositiveInteger($action->getString('text'))) {
 						$redirect = new CMS_href();
@@ -109,11 +109,14 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 						if (($redirect->getLinkType() == RESOURCE_LINK_TYPE_INTERNAL && $cms_user->hasPageClearance($redirect->getInternalLink(), CLEARANCE_PAGE_VIEW)) || $redirect->getLinkType() == RESOURCE_LINK_TYPE_EXTERNAL) {
 							//declare form ok action
 							$cms_forms_okAction[$form->getID()] = true;
+						} else {
+							//declare form not action
+							$cms_forms_okAction[$form->getID()] = false;
 						}
 					}
 				}
 				//then launch form ok action if needed
-				if ($cms_forms_okAction[$form->getID()]) {
+				if (isset($cms_forms_okAction[$form->getID()]) && $cms_forms_okAction[$form->getID()]) {
 					//if we have an encoded referer, use it
 					if (isset($_REQUEST['referer']) && $_REQUEST['referer'] && ($url = base64_decode($_REQUEST['referer']))) {
 						header("Location: ".$url);
@@ -158,7 +161,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 						switch ($action->getInteger('type')) {
 							case CMS_forms_action::ACTION_ALREADY_FOLD:
 								//check if form is already folded by sender
-								if ($form->isAlreadyFolded($sender)) { 
+								if (isset($sender) && $form->isAlreadyFolded($sender)) { 
 									//get form CMS_forms_action::ACTION_ALREADY_FOLD action
 									$alreadyFoldAction = array_shift($form->getActionsByType(CMS_forms_action::ACTION_ALREADY_FOLD));
 									if (is_object($alreadyFoldAction)) {
@@ -205,7 +208,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 										$cms_forms_required[$form->getID()][] = $aField->getAttribute('name');
 									}
 									//check if field data is correct and clean datas if needed
-									if(($aField->getAttribute('type') != 'file' && $_POST[$aField->getAttribute('name')]) || ($aField->getAttribute('type') == 'file' && $_FILES[$aField->getAttribute('name')]['name'])) {
+									if(($aField->getAttribute('type') != 'file' && isset($_POST[$aField->getAttribute('name')]) && $_POST[$aField->getAttribute('name')]) || ($aField->getAttribute('type') == 'file' && $_FILES[$aField->getAttribute('name')]['name'])) {
 										switch($aField->getAttribute('type')) {
 											case 'email':
 												if (!sensitiveIO::isValidEmail($_POST[$aField->getAttribute('name')])) {
@@ -277,13 +280,13 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 							break;
 							case CMS_forms_action::ACTION_DB:
 								//create id for sender if not already have one
-								if (!$sender->getID()) {
+								if (isset($sender) && !$sender->getID()) {
 									$sender->writeToPersistence();
 								}
-								if ($sender->getID()) {
+								if (isset($sender) && $sender->getID()) {
 									foreach ($fields as $aField) {
 										//insert datas of each field
-										if ((($aField->getAttribute('type') != 'file' && $_POST[$aField->getAttribute('name')]) || ($aField->getAttribute('type') == 'file' && $_FILES[$aField->getAttribute('name')]['name']))
+										if ((($aField->getAttribute('type') != 'file' && isset($_POST[$aField->getAttribute('name')]) && $_POST[$aField->getAttribute('name')]) || ($aField->getAttribute('type') == 'file' && $_FILES[$aField->getAttribute('name')]['name']))
 											&& $aField->getAttribute('type') != 'submit' ) {
 											$fieldRecord = new CMS_forms_record();
 											$fieldRecord->setAttribute('fieldID', $aField->getID());
@@ -321,7 +324,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 								//create email body
 								$body = '';
 								foreach ($fields as $aField) {
-									if ((($aField->getAttribute('type') != 'file' && $_POST[$aField->getAttribute('name')]) || ($aField->getAttribute('type') == 'file' && $_FILES[$aField->getAttribute('name')]['name']))
+									if ((($aField->getAttribute('type') != 'file' && isset($_POST[$aField->getAttribute('name')]) && $_POST[$aField->getAttribute('name')]) || ($aField->getAttribute('type') == 'file' && $_FILES[$aField->getAttribute('name')]['name']))
 										&& $aField->getAttribute('type') != 'submit' ) {
 										//insert datas of each field
 										if ($aField->getAttribute('type') == 'file') {
@@ -342,13 +345,13 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 									}
 								}
 								//append header and footer texts if any to body text
-								if ($texts[1]) { // header
+								if (isset($texts[1])) { // header
 									//needed in case of vars in text. Simple and double quotes are not welcome in this case !
 									//$texts[1] = (strpos($texts[1], '$') !== false) ? eval('return "'.str_replace(array('"',"'"),'',$texts[1]).'";') : $texts[1];
 									$texts[1] = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($texts[1])).'";');
 									$body = $texts[1]."\n\n".$body;
 								}
-								if ($texts[2]) { //footer
+								if (isset($texts[2])) { //footer
 									//needed in case of vars in text. Simple and double quotes are not welcome in this case !
 									//$texts[2] = (strpos($texts[2], '$') !== false) ? eval('return "'.str_replace(array('"',"'"),'',$texts[2]).'";') : $texts[2];
 									$texts[2] = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($texts[2])).'";');
@@ -362,7 +365,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 									//$texts[0] = (strpos($texts[0], '$') !== false) ? eval('return "'.str_replace(array('"',"'"),'',$texts[0]).'";') : $texts[0];
 									$subject = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($texts[0])).'";');
 								} else { // or default subject
-									$subject = $form_language->getMessage(MESSAGE_CMS_FORMS_EMAIL_SUBJECT, array($form->getAttribute('name'), APPLICATION_LABEL), MOD_CMS_FORMS_CODENAME);
+									$subject = $form_language->getMessage(CMS_forms_formular::MESSAGE_CMS_FORMS_EMAIL_SUBJECT, array($form->getAttribute('name'), APPLICATION_LABEL), MOD_CMS_FORMS_CODENAME);
 								}
 								$email->setSubject($subject);
 								
@@ -394,13 +397,13 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 							case CMS_forms_action::ACTION_AUTH :
 								$login = $password = $permanent = '';
 								$values = explode(';',$action->getString('value'));
-								if (is_object($fields[$values[0]])) {
+								if (isset($values[0]) && isset($fields[$values[0]]) && is_object($fields[$values[0]])) {
 									$login = $_POST[$fields[$values[0]]->getAttribute('name')];
 								}
-								if (is_object($fields[$values[1]])) {
+								if (isset($values[1]) && isset($fields[$values[1]]) && is_object($fields[$values[1]])) {
 									$password = $_POST[$fields[$values[1]]->getAttribute('name')];
 								}
-								if (is_object($fields[$values[2]])) {
+								if (isset($values[2]) && isset($fields[$values[2]]) && is_object($fields[$values[2]])) {
 									$permanent = $_POST[$fields[$values[2]]->getAttribute('name')];
 								}
 								if ($login && $password) {
@@ -468,7 +471,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 				*                  FORM ALREADY FOLDED                     *
 				***********************************************************/
 				//check if form is already folded by sender and if it need page redirection
-				if ($form->isAlreadyFolded($sender)) { 
+				if (isset($sender) && $form->isAlreadyFolded($sender)) { 
 					//get form CMS_forms_action::ACTION_ALREADY_FOLD action
 					$alreadyFoldAction = array_shift($form->getActionsByType(CMS_forms_action::ACTION_ALREADY_FOLD));
 					if (is_object($alreadyFoldAction)) {
@@ -505,7 +508,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 		<title>Automne 4 : Contact</title>
-		<?php echo CMS_view::getCSS(array('/css/common.css','/css/interieur.css','/css/modules/cms_forms.css'), 'screen');  ?>
+		<?php echo CMS_view::getCSS(array('/css/common.css','/css/interieur.css'), 'screen');  ?>
 
 		<!--[if lte IE 6]> 
 		<link rel="stylesheet" type="text/css" href="/css/ie6.css" media="screen" />
@@ -516,6 +519,9 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 	<meta name="language" content="fr" />
 	<meta name="generator" content="Automne (TM)" />
 	<meta name="identifier-url" content="http://127.0.0.1" />
+
+	<!-- load the style of cms_forms module for media all -->
+	<link rel="stylesheet" type="text/css" href="/css/modules/cms_forms.css" media="all" />
 
 	</head>
 	<body>
@@ -574,7 +580,7 @@ $mod_cms_forms["formID"] = '2';
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 9.php,v 1.6 2009/03/06 11:01:49 sebastien Exp $
+// $Id: 9.php,v 1.7 2009/06/23 16:00:41 sebastien Exp $
 
 /**
   * Template CMS_forms_formular
@@ -627,7 +633,7 @@ if ($form->getID() && $form->isPublic()) {
 	//display form or form message
 	if (!isset($cms_forms_msg[$form->getID()]) || !$cms_forms_msg[$form->getID()]) {
 		//check if form is already folded by sender
-		if (!$form->isAlreadyFolded($sender)) { 
+		if (isset($sender) && !$form->isAlreadyFolded($sender)) { 
 			echo $form->getContent(CMS_forms_formular::ALLOW_FORM_SUBMIT);
 		}
 	}

@@ -1,5 +1,5 @@
 <?php
-//Generated on Tue, 23 Jun 2009 18:02:24 +0200 by Automne (TM) 4.0.0rc1
+//Generated on Tue, 23 Jun 2009 18:05:02 +0200 by Automne (TM) 4.0.0rc1
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
 	header('Location: http://127.0.0.1/web/fr/print-9-contact.php');
@@ -35,7 +35,7 @@ $mod_cms_forms["usedforms"] = array (
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 9.php.linx.print,v 1.4 2009/06/23 15:58:02 sebastien Exp $
+// $Id: 9.php.linx.print,v 1.5 2009/06/23 16:00:30 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -558,7 +558,7 @@ $mod_cms_forms["formID"] = '2';
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 9.php.linx.print,v 1.4 2009/06/23 15:58:02 sebastien Exp $
+// $Id: 9.php.linx.print,v 1.5 2009/06/23 16:00:30 sebastien Exp $
 
 /**
   * Template CMS_forms_formular
