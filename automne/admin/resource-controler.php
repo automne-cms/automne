@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: resource-controler.php,v 1.4 2009/06/22 15:36:16 sebastien Exp $
+// $Id: resource-controler.php,v 1.5 2009/06/23 09:11:15 sebastien Exp $
 
 /**
   * PHP page : Receive resource updates
@@ -72,7 +72,7 @@ if (!method_exists($resource, 'getStatus')) {
 if ($action != 'unlock' && $resource->getLock() && $resource->getLock() != $cms_user->getUserId()) {
 	CMS_grandFather::raiseError('Object '.$resourceId.' of module '.$codename.' is currently locked by another user and can\'t be updated.');
 	$lockuser = CMS_profile_usersCatalog::getByID($resource->getLock());
-	$view->setActionMessage($cms_language->getmessage(MESSAGE_ERROR_ELEMENT_LOCKED, array($lockuser->getFullName()));
+	$view->setActionMessage($cms_language->getmessage(MESSAGE_ERROR_ELEMENT_LOCKED, array($lockuser->getFullName())));
 	$view->show();
 }
 $initialStatus = $resource->getStatus()->getHTML(false, $cms_user, $codename, $resource->getID());
@@ -81,7 +81,7 @@ switch ($action) {
 		if ($resource->getLock() && $resource->getLock() != $cms_user->getUserId() && !$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 			CMS_grandFather::raiseError('Object '.$resourceId.' of module '.$codename.' is currently locked by another user and can\'t be unlocked.');
 			$lockuser = CMS_profile_usersCatalog::getByID($resource->getLock());
-			$view->setActionMessage($cms_language->getmessage(MESSAGE_ERROR_ELEMENT_REALY_LOCKED, array($lockuser->getFullName()));
+			$view->setActionMessage($cms_language->getmessage(MESSAGE_ERROR_ELEMENT_REALY_LOCKED, array($lockuser->getFullName())));
 			$view->show();
 		}
 		if ($resource->getLock()) {

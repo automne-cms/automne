@@ -14,7 +14,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: modulecategory.php,v 1.4 2009/06/22 14:08:40 sebastien Exp $
+// $Id: modulecategory.php,v 1.5 2009/06/23 09:11:28 sebastien Exp $
 
 /**
   * Class CMS_moduleCategory
@@ -422,7 +422,6 @@ class CMS_moduleCategory extends CMS_grandFather {
 		if (!is_a($language, 'CMS_language')) {
 			$language = $this->_language;
 		}
-		pr($this->_labels);
 		if (is_a($language, 'CMS_language')) {
 			//category is deleted so return a specific label
 			if ($this->_parentID == self::LINEAGE_PARK_POSITION) {

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: polymod.php,v 1.6 2009/06/05 15:02:19 sebastien Exp $
+// $Id: polymod.php,v 1.7 2009/06/23 09:11:28 sebastien Exp $
 
 /**
   * Class CMS_polymod
@@ -793,8 +793,13 @@ class CMS_polymod extends CMS_modulePolymodValidation
 				$edit = false;
 				if (!$deleted && (!$lock || $lock == $user->getUserId())) {
 					$edit = array(
-						'url'		=> PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/item.php?polymod='.$this->getCodename().'&object='.$type.'&item='.$item->getID(),
-						'type'		=> 'frame',
+						'url'		=> PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/item.php',
+						'type'		=> 'window',
+						'params'	=> array(
+							'module'	=>	$this->getCodename(),
+							'type'		=>	$type,
+							'item'		=>	$item->getID()
+						)
 					);
 				}
 				//Previz

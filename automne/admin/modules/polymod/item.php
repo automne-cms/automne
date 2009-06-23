@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: item.php,v 1.4 2009/06/22 14:10:35 sebastien Exp $
+// $Id: item.php,v 1.5 2009/06/23 09:11:15 sebastien Exp $
 
 /**
   * PHP page : Load polymod item interface
@@ -192,7 +192,7 @@ $jscontent = <<<END
 		html:			 '{$cms_language->getJSMessage(MESSAGE_TOOLBAR_HELP_DESC, array($objectLabel), MOD_POLYMOD_CODENAME)}',
 		dismissDelay:	0
 	});
-	
+	window.objectId = '{$itemId}';
 	//create center panel
 	var center = new Ext.Panel({
 		region:				'center',
