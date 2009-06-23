@@ -5,16 +5,12 @@
 		/////////////////////////////////////////////////
 		//              Googlemaps settings            //
 		/////////////////////////////////////////////////
-		// To qualify for service Googlemaps you have to got a valid Google key on the following website :
+		// To qualify for service Google Maps you have to got a valid Google key on the following website :
 		// http://code.google.com/apis/maps/signup.html
 		// Then you have to copy this key in the config.php file (located at the root of your website) add the following line :
 		// define("GOOGLE_MAPS_KEY", "INSERT_GOOGLE_KEY_HERE");
 		// And insert your key between the quotes.
 		
-		// Height (value expressed in pixels) :
-		$mapHeight = 400;
-		// Width (value expressed in pixels) :
-		$mapWidth = 400;
 		// Zoom value :
 		$zoom = 12;
 		// View type (SATELLITE/NORMAL/HYBRID) :
@@ -25,10 +21,23 @@
 END;
 		if (defined('GOOGLE_MAPS_KEY') && GOOGLE_MAPS_KEY) {
 			$mapId = 'map-'.md5(rand());
-			echo '
+			if (isset($cms_language)) {
+				switch($cms_language->getCode()){
+					case 'en':
+						$msg = 'Please enter in this block an address to display.';
+					break;
+					default:
+						$msg = 'Saisissez dans ce bloc une adresse à afficher.';
+					break;
+				}
+			} else {
+				$msg = '';
+			}
+			echo '<p id="'.$mapId.'" class="atm-google-map">Google Map : '.($address && strpos($address, 'Lorem') === false ? $address : $msg).'</p>';
+			if ($frontend) {
+			    echo '
 				<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key='.GOOGLE_MAPS_KEY.'" type="text/javascript"></script>
-				<p id="'.$mapId.'" style="width:'.$mapWidth.'px; height:'.$mapHeight.'px">Saisissez une adresse à afficher.</p>
-			    <script type="text/javascript">
+				<script type="text/javascript">
 			    (function(){
 					var div = document.getElementById("'.$mapId.'");
 					if (div && typeof GMap2 != \'undefined\') {
@@ -52,13 +61,14 @@ END;
 					}
 				})();
 				</script>
-			';
-		} elseif(!$frontend) {
+				';
+			}
+		} elseif(!$frontend && isset($cms_language)) {
 			switch($cms_language->getCode()){
 				case 'en':
 					echo "
 					<p>
-						To qualify for service Googlemaps you have to got a valid Google key on
+						To qualify for service Google Maps you have to got a valid Google key on
 						<a href='http://code.google.com/apis/maps/signup.html'>the following website</a>.
 						<br/>Then you have to copy this key in the config.php file (located at the root of your website) add the following line :
 						<pre>define(\"GOOGLE_MAPS_KEY\", \"INSERT_GOOGLE_KEY_HERE\");</pre>
@@ -68,7 +78,7 @@ END;
 				default:
 					echo "
 					<p>
-						Pour utiliser le service Googlemaps vous devez récupérer une clé Google valide sur <a href='http://code.google.com/apis/maps/signup.html'>ce site</a>.
+						Pour utiliser le service Google Maps vous devez récupérer une clé Google valide sur <a href='http://code.google.com/apis/maps/signup.html'>ce site</a>.
 						<br/>Ensuite, écrivez la ligne ci-dessous dans le fichier config.php (situé à la racine de votre site) :
 						<pre>define(\"GOOGLE_MAPS_KEY\", \"INSERT_GOOGLE_KEY_HERE\");</pre>
 						Insérez votre clé entre les apostrophes.
