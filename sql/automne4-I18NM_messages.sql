@@ -1,4 +1,4 @@
-# $Id: automne4-I18NM_messages.sql,v 1.15 2009/06/24 10:05:33 sebastien Exp $
+# $Id: automne4-I18NM_messages.sql,v 1.16 2009/06/24 10:06:55 sebastien Exp $
 #
 # Suppression avant mise à  jour du Contenu de la table `I18NM_messages` pour le module standard
 #
@@ -2980,4 +2980,3 @@ INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (5
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (529, 'polymod', NOW(), 'Aucune catégorie disponible ...', 'No category available ...');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (530, 'polymod', NOW(), 'Aucun élément disponible ...', 'No element available ...');
 INSERT INTO `I18NM_messages` (`id`, `module`, `timestamp`, `fr`, `en`) VALUES (531, 'polymod', NOW(), 'Elément inexistant ...', 'Element non-existent ...');
-
