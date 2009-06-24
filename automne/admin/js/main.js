@@ -6,7 +6,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: main.js,v 1.15 2009/06/22 14:10:34 sebastien Exp $
+  * $Id: main.js,v 1.16 2009/06/24 10:05:00 sebastien Exp $
   */
 
 //Declare Automne namespace
@@ -85,7 +85,7 @@ Automne = {
 				Automne.historyChange();
 				//Test native JSON support
 				try {
-					if (Ext.USE_NATIVE_JSON && JSON && JSON.toString() == '[object JSON]') {
+					if (Ext.USE_NATIVE_JSON && window.JSON && window.JSON.toString() == '[object JSON]') {
 						pr('Native JSON is active.');
 					}
 				} catch(e){}

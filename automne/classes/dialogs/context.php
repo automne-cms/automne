@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: context.php,v 1.4 2009/04/02 13:57:59 sebastien Exp $
+// $Id: context.php,v 1.5 2009/06/24 10:05:16 sebastien Exp $
 
 /**
   * Class CMS_context
@@ -29,6 +29,8 @@
 
 class CMS_context extends CMS_grandFather
 {
+	const MESSAGE_USER_JS_LOCALES = 1547;
+	
 	/**
 	  * User DB ID
 	  *
@@ -653,7 +655,9 @@ class CMS_context extends CMS_grandFather
 		}
 		$user = $_SESSION["cms_context"]->getUser();
 		//add all JS locales
-		$languageCode = $user->getLanguage()->getCode();
+		$language = $user->getLanguage();
+		
+		$languageCode = $language->getCode();
 		
 		//Get Ext locales
 		if ($languageCode != 'en') { //english is defined as default language so we should not add it again
@@ -668,10 +672,7 @@ class CMS_context extends CMS_grandFather
 			}
 		}
 		//add Automne locales
-		$atmLocaleFile = PATH_ADMIN_FS.'/js/locales/'.$languageCode.'.js';
-		if (is_file($atmLocaleFile)) {
-			$locales .= (strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8') ? utf8_encode(file_get_contents($atmLocaleFile)) : file_get_contents($atmLocaleFile);
-		}
+		$locales .= $language->getMessage(self::MESSAGE_USER_JS_LOCALES);
 		return $locales;
 	}
 }
