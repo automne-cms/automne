@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: fileupload.js,v 1.5 2009/06/05 15:01:06 sebastien Exp $
+  * $Id: fileupload.js,v 1.6 2009/06/25 13:25:07 sebastien Exp $
   */
 Automne.FileUploadField = Ext.extend(Ext.form.TextField,  {
 	/**
@@ -306,8 +306,9 @@ Automne.FileUploadField = Ext.extend(Ext.form.TextField,  {
 		if (this.uploadCfg.file_types && this.uploadCfg.file_types != '*.*') {
 			var allowedTypes = this.uploadCfg.file_types.split(/;/);
 			var ok = false;
+			var fileExtension = file.split(/\./)[file.split(/\./).length - 1].toLowerCase();
 			for(var i = 0; i < allowedTypes.length; i++) {
-				if (allowedTypes[i] && file.toLowerCase().indexOf(allowedTypes[i].substring(2).toLowerCase()) !== -1) {
+				if (allowedTypes[i] && fileExtension.indexOf(allowedTypes[i].substring(2).toLowerCase()) !== -1) {
 					ok = true;
 				}
 			}
@@ -320,8 +321,9 @@ Automne.FileUploadField = Ext.extend(Ext.form.TextField,  {
 		if (this.uploadCfg.disallowed_file_types) {
 			var disallowedTypes = this.uploadCfg.disallowed_file_types.split(/;/);
 			var ok = true;
+			var fileExtension = file.split(/\./)[file.split(/\./).length - 1].toLowerCase();
 			for(var i = 0; i < disallowedTypes.length; i++) {
-				if (disallowedTypes[i] && file.toLowerCase().indexOf(disallowedTypes[i].substring(2).toLowerCase()) !== -1) {
+				if (disallowedTypes[i] && fileExtension.indexOf(disallowedTypes[i].substring(2).toLowerCase()) !== -1) {
 					ok = false;
 				}
 			}
