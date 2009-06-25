@@ -7,7 +7,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: console.js,v 1.1 2009/06/22 14:10:34 sebastien Exp $
+  * $Id: console.js,v 1.2 2009/06/25 13:57:23 sebastien Exp $
   */
 Automne.console = {
 	window:false,
@@ -63,7 +63,7 @@ Automne.console = {
 				} catch(e){}
 			}
 			//Use prettyPrint to dump objects vars
-			if ((typeof data != 'string') && prettyPrint != undefined) {
+			if (data && (typeof data != 'string') && prettyPrint != undefined) {
 				Automne.varDump = data;
 				var showDump = function() {
 					var win = new Automne.Window({

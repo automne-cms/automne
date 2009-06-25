@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_file.php,v 1.7 2009/06/22 14:08:40 sebastien Exp $
+// $Id: object_file.php,v 1.8 2009/06/25 13:57:38 sebastien Exp $
 
 /**
   * Class CMS_object_file
@@ -464,6 +464,9 @@ class CMS_object_file extends CMS_object_common
 				'file_types'						=> '*.jpg;*.png;*.gif',
 				'file_types_description'			=> $language->getMessage(self::MESSAGE_OBJECT_FILE_FIELD_THUMBNAIL, false, MOD_POLYMOD_CODENAME).' ...'
 			);
+			if ($params['disallowedType']) {
+				$return['items'][1]['uploadCfg']['disallowed_file_types'] = '*.'.str_replace(',', ';*.', $params['disallowedType']);
+			}
 			if ($this->_subfieldValues[1]->getValue() && file_exists(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[1]->getValue())) {
 				$file = new CMS_file(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[1]->getValue());
 				$imageDatas = array(

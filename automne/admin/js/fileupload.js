@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: fileupload.js,v 1.6 2009/06/25 13:25:07 sebastien Exp $
+  * $Id: fileupload.js,v 1.7 2009/06/25 13:57:23 sebastien Exp $
   */
 Automne.FileUploadField = Ext.extend(Ext.form.TextField,  {
 	/**
@@ -96,6 +96,8 @@ Automne.FileUploadField = Ext.extend(Ext.form.TextField,  {
 			this.fieldLabel += separator +'<br /><small>'+ Automne.locales.max +' '+ (this.uploadCfg.file_size_limit / 1024) +' M'+ Automne.locales.byte +'</small>';
 			this.labelSeparator = '';
 		}
+		//add disallowed files type if not exists
+		this.uploadCfg = Ext.applyIf(this.uploadCfg || {}, {disallowed_file_types: '*.exe;*.php;*.pif;*.vbs;*.bat;*.com;*.scr;*.reg'});
 	},
 	
 	// private
