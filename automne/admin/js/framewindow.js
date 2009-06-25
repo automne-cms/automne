@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: framewindow.js,v 1.8 2009/06/05 15:01:06 sebastien Exp $
+  * $Id: framewindow.js,v 1.9 2009/06/25 11:45:34 sebastien Exp $
   */
 Automne.frameWindow = Ext.extend(Automne.Window, { 
 	//frame url to use at next frame reload
@@ -93,7 +93,11 @@ Automne.frameWindow = Ext.extend(Automne.Window, {
 		if (this.loadFrameDocument()) {
 			if (this.frameDocument) {
 				pr('Reload frame '+ this.id +' => Get : '+this.frameURL);
-				this.frameDocument.location = this.frameURL + ((this.frameURL.indexOf('?') === -1) ? '?' : '&') + '_dc='+ (new Date()).getTime();
+				try {
+					this.frameDocument.location = this.frameURL + ((this.frameURL.indexOf('?') === -1) ? '?' : '&') + '_dc='+ (new Date()).getTime();
+				} catch (e) {
+					pr(e, 'error');
+				}
 				this.forceReload = false;
 			}
 		}
