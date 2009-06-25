@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: items-controler.php,v 1.3 2009/06/22 14:10:35 sebastien Exp $
+// $Id: items-controler.php,v 1.4 2009/06/25 11:57:49 sebastien Exp $
 
 /**
   * PHP page : Load polymod item interface
@@ -144,20 +144,18 @@ switch ($action) {
 		$allOK = true;
 		foreach ($fieldsObjects as $fieldID => $aFieldObject) {
 			$allOK &= $item->checkMandatory($fieldID, $fieldsValues, '', true);
-			//pr($fieldID.' : '.$allOK);
 		}
 		if (!$allOK) {
 			$cms_message .= $cms_language->getMessage(MESSAGE_FORM_ERROR_MANDATORY_FIELDS);
-		}
-		
-		//second, set values for all fields
-		foreach ($fieldsObjects as $fieldID => $aFieldObject) {
-			if (!$item->setValues($fieldID, $fieldsValues, '', true)) {
-				$cms_message .= "\n".$cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD,
-						array($aFieldObject->getFieldLabel($cms_language)));
+		} else {
+			//second, set values for all fields
+			foreach ($fieldsObjects as $fieldID => $aFieldObject) {
+				if (!$item->setValues($fieldID, $fieldsValues, '', true)) {
+					$cms_message .= "\n".$cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD,
+							array($aFieldObject->getFieldLabel($cms_language)));
+				}
 			}
 		}
-		
 		//set publication dates if needed
 		if ($object->isPrimaryResource()) {
 			// Dates management
