@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_common.php,v 1.5 2009/06/22 14:08:40 sebastien Exp $
+// $Id: object_common.php,v 1.6 2009/06/25 14:36:45 sebastien Exp $
 
 /**
   * Class CMS_object_common
@@ -201,7 +201,7 @@ abstract class CMS_object_common extends CMS_grandFather
 				'xtype'			=>	'textfield',
 				'id'			=>	'polymodFieldsValue['.$prefixName.$this->_field->getID().'_0]',
 				'name'			=>	'polymodFieldsValue['.$prefixName.$this->_field->getID().'_0]',
-				'value'			=>	$this->_subfieldValues[0]->getValue()
+				'value'			=>	htmlspecialchars_decode($this->_subfieldValues[0]->getValue())
 			);
 		} else {
 			$fields = array();
@@ -212,7 +212,7 @@ abstract class CMS_object_common extends CMS_grandFather
 						'xtype'			=>	'textfield',
 						'id'			=>	'polymodFieldsValue['.$prefixName.$this->_field->getID().'_'.$subFieldID.']',
 						'name'			=>	'polymodFieldsValue['.$prefixName.$this->_field->getID().'_'.$subFieldID.']',
-						'value'			=>	$this->_subfieldValues[$subFieldID]->getValue()
+						'value'			=>	htmlspecialchars_decode($this->_subfieldValues[0]->getValue())
 					);
 				}
 			}

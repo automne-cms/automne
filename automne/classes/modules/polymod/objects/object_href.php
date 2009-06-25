@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_href.php,v 1.2 2009/06/05 15:02:18 sebastien Exp $
+// $Id: object_href.php,v 1.3 2009/06/25 14:36:45 sebastien Exp $
 
 /**
   * Class CMS_object_href
@@ -263,7 +263,7 @@ class CMS_object_href extends CMS_object_common
 				return false;
 			}
 			$content = array('datas' => array(
-				'polymodFieldsValue['.$subPrefixName.']' => $this->_subfieldValues[0]->getValue(),
+				'polymodFieldsValue['.$subPrefixName.']' => htmlspecialchars_decode($this->_subfieldValues[0]->getValue()),
 			));
 			$view = CMS_view::getInstance();
 			$view->addContent($content);

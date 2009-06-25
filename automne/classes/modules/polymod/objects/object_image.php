@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_image.php,v 1.6 2009/06/08 13:11:21 sebastien Exp $
+// $Id: object_image.php,v 1.7 2009/06/25 14:36:45 sebastien Exp $
 
 /**
   * Class CMS_object_image
@@ -679,7 +679,7 @@ class CMS_object_image extends CMS_object_common
 			$content = array('datas' => array(
 				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_0]' => $imageDatas,
 				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_2]' => $zoomDatas,
-				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_1]' => $this->_subfieldValues[1]->getValue(),
+				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_1]' => htmlspecialchars_decode($this->_subfieldValues[1]->getValue()),
 			));
 			
 			$view = CMS_view::getInstance();

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_file.php,v 1.8 2009/06/25 13:57:38 sebastien Exp $
+// $Id: object_file.php,v 1.9 2009/06/25 14:36:45 sebastien Exp $
 
 /**
   * Class CMS_object_file
@@ -938,7 +938,7 @@ class CMS_object_file extends CMS_object_common
 				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_1]' => $imageDatas,
 				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_4]' => $fileDatas,
 				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_externalfile]' => '',
-				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_0]' => $this->_subfieldValues[0]->getValue(),
+				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_0]' => htmlspecialchars_decode($this->_subfieldValues[0]->getValue()),
 			));
 			
 			$view = CMS_view::getInstance();
