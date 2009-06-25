@@ -1,5 +1,5 @@
-# $Id: automne4-scratch.sql,v 1.3 2009/06/25 08:55:19 sebastien Exp $
-# Database : `automne3`
+# $Id: automne4-scratch.sql,v 1.4 2009/06/25 10:31:40 sebastien Exp $
+# Database : `automne4`
 # --------------------------------------------------------
 
 #
@@ -125,12 +125,13 @@ DELETE FROM profilesUsers where id_pru not in (1,3);
 DELETE FROM profilesUsers_validators;
 
 DELETE FROM resourceStatuses;
-INSERT INTO resourceStatuses VALUES (1, 1, 0, 0, 0, 2, '2009-01-01', '0000-00-00');
+INSERT INTO `resourceStatuses` (`id_rs`, `location_rs`, `proposedFor_rs`, `editions_rs`, `validationsRefused_rs`, `publication_rs`, `publicationDateStart_rs`, `publicationDateEnd_rs`, `publicationDateStartEdited_rs`, `publicationDateEndEdited_rs`) VALUES (1, 1, 0, 0, 0, 2, '2009-01-01', '0000-00-00', '2009-01-01', '0000-00-00');
+
 
 DELETE FROM resourceValidations;
 
 DELETE FROM resources;
-INSERT INTO resources VALUES (1, 1, '');
+INSERT INTO `resources` (`id_res`, `status_res`, `editorsStack_res`) VALUES (1, 1, '');
 
 DELETE FROM sessions;
 
