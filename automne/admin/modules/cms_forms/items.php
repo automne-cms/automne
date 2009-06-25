@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: items.php,v 1.5 2009/06/22 15:27:04 sebastien Exp $
+// $Id: items.php,v 1.6 2009/06/25 12:11:09 sebastien Exp $
 
 /**
   * PDFForms module : index
@@ -194,7 +194,7 @@ $items = $search->search();
 
 if (sizeof($user_categories)) {
 	$content .= '
-		<form action="item.php" method="post" style="position:relative;left:640px;">
+		<form action="item.php" method="post" style="position:relative;float:right;margin:0 20px 10px 0;">
 		<input type="hidden" name="items_language" value="'.$items_language->getCode().'" />
 		<input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_NEW).'" />
 		</form><br />';
@@ -257,7 +257,7 @@ if (!sizeof($items)) {
 		
 	if (sizeof($user_categories)) {
 		$content .= '
-			<form action="item.php" method="post" style="position:relative;left:640px;">
+			<form action="item.php" method="post" style="position:relative;float:right;margin:10px 20px 0 0;">
 		<input type="hidden" name="items_language" value="'.$items_language->getCode().'" />
 		<input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_NEW).'" />
 		</form><br />';

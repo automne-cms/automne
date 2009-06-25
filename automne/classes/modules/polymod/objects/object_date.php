@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_date.php,v 1.5 2009/06/22 14:08:40 sebastien Exp $
+// $Id: object_date.php,v 1.6 2009/06/25 12:13:09 sebastien Exp $
 
 /**
   * Class CMS_object_date
@@ -365,7 +365,7 @@ class CMS_object_date extends CMS_object_common
 			if (!$date->setLocalizedDate($values[$prefixName.$this->_field->getID().'_0'], !$this->_field->getValue('required'))) {
 				return false;
 			}
-			if ($params['withHMS'] && $values[$prefixName.$this->_field->getID().'_1']) {
+			if ($params['withHMS'] && isset($values[$prefixName.$this->_field->getID().'_1']) && $values[$prefixName.$this->_field->getID().'_1']) {
 				$hms = explode(':',$values[$prefixName.$this->_field->getID().'_1']);
 				if (sizeof($hms) != 3) {
 					return false;
