@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc.php,v 1.13 2009/06/23 16:20:17 sebastien Exp $
+// $Id: cms_rc.php,v 1.14 2009/06/25 13:08:01 sebastien Exp $
 
 /**
   * rc file, contains all default constants
@@ -807,10 +807,10 @@ if (!defined("AUTOMNE_VERSION") && file_exists(PATH_REALROOT_FS."/VERSION")) {
 /**
   *	Automne subversion number. Used to avoid JS and CSS browser cache
   */
-if (!defined("AUTOMNE_SUBVERSION") && file_exists(PATH_MAIN_FS."/SUBVERSION")) {
-	define("AUTOMNE_SUBVERSION", file_get_contents(PATH_MAIN_FS."/SUBVERSION"));
-} else if(!defined("AUTOMNE_SUBVERSION") && !file_exists(PATH_MAIN_FS."/SUBVERSION")) {
-	define("AUTOMNE_SUBVERSION", 0);
+if (!defined("AUTOMNE_LASTUPDATE") && file_exists(PATH_MAIN_FS."/SUBVERSION")) {
+	define("AUTOMNE_LASTUPDATE", file_get_contents(PATH_MAIN_FS."/SUBVERSION"));
+} else if(!defined("AUTOMNE_LASTUPDATE") && !file_exists(PATH_MAIN_FS."/SUBVERSION")) {
+	define("AUTOMNE_LASTUPDATE", 0);
 }
 
 if (STATS_DEBUG) {
@@ -1141,4 +1141,14 @@ define("ALERT_LEVEL_PAGE_ALERTS", 4);
 define("VALIDATION_OPTION_ACCEPT", 1);
 define("VALIDATION_OPTION_REFUSE", 2);
 define("VALIDATION_OPTION_TRANSFER", 4);
+/**
+ * Visualization modes for a page : HTML from public or edited or edition tables ; form mode ; clientSpaces edition mode.
+ */
+define("PAGE_VISUALMODE_FORM", 1);
+define("PAGE_VISUALMODE_HTML_PUBLIC", 2);
+define("PAGE_VISUALMODE_HTML_EDITED", 3);
+define("PAGE_VISUALMODE_HTML_EDITION", 4);
+define("PAGE_VISUALMODE_CLIENTSPACES_FORM", 5);
+define("PAGE_VISUALMODE_PRINT", 6);
+define("PAGE_VISUALMODE_HTML_PUBLIC_INDEXABLE", 7);
 ?>

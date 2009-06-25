@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc_admin.php,v 1.8 2009/06/23 16:13:35 sebastien Exp $
+// $Id: cms_rc_admin.php,v 1.9 2009/06/25 13:08:01 sebastien Exp $
 
 /**
   * Administration rc file.
@@ -129,15 +129,4 @@ define("MESSAGE_FORM_ERROR_MALFORMED_FIELD", 145);
 define("MESSAGE_ACTION_OPERATION_DONE", 122);
 
 define("MESSAGE_EMAIL_VALIDATION_AWAITS", 124);
-
-/**
- * Visualization modes for a page : HTML from public or edited or edition tables ; form mode ; clientSpaces edition mode.
- */
-define("PAGE_VISUALMODE_FORM", 1);
-define("PAGE_VISUALMODE_HTML_PUBLIC", 2);
-define("PAGE_VISUALMODE_HTML_EDITED", 3);
-define("PAGE_VISUALMODE_HTML_EDITION", 4);
-define("PAGE_VISUALMODE_CLIENTSPACES_FORM", 5);
-define("PAGE_VISUALMODE_PRINT", 6);
-define("PAGE_VISUALMODE_HTML_PUBLIC_INDEXABLE", 7);
 ?>

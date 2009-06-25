@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: help.php,v 1.2 2009/06/22 15:13:36 sebastien Exp $
+// $Id: help.php,v 1.3 2009/06/25 13:07:21 sebastien Exp $
 
 /**
   * PHP page : Load help detail window.
@@ -43,7 +43,7 @@ $view->setDisplayMode(CMS_view::SHOW_RAW);
 
 //show version number
 $polymodVersion = file_exists(PATH_MODULES_FS.'/'.MOD_POLYMOD_CODENAME.'/VERSION') ? file_get_contents(PATH_MODULES_FS.'/'.MOD_POLYMOD_CODENAME.'/VERSION') : $cms_language->getMessage(MESSAGE_PAGE_UNKNOWN);
-$lastUpdate = AUTOMNE_SUBVERSION ? date($cms_language->getDateFormat().' - H:i:s' , AUTOMNE_SUBVERSION) : $cms_language->getMessage(MESSAGE_PAGE_NEVER);
+$lastUpdate = AUTOMNE_LASTUPDATE ? date($cms_language->getDateFormat().' - H:i:s' , AUTOMNE_LASTUPDATE) : $cms_language->getMessage(MESSAGE_PAGE_NEVER);
 
 $modules = CMS_modulesCatalog::getAll();
 $modulesInfo = '';

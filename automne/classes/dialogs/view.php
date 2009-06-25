@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: view.php,v 1.7 2009/06/22 14:08:41 sebastien Exp $
+// $Id: view.php,v 1.8 2009/06/25 13:07:37 sebastien Exp $
 
 /**
   * Class CMS_view
@@ -98,7 +98,7 @@ class CMS_view extends CMS_grandFather
 			$jsarray = $this->_js;
 			$this->_js = array();
 		}
-		$version = AUTOMNE_VERSION.'-'.AUTOMNE_SUBVERSION.(SYSTEM_DEBUG ? 'd':'');
+		$version = AUTOMNE_VERSION.'-'.AUTOMNE_LASTUPDATE.(SYSTEM_DEBUG ? 'd':'');
 		$return = '';
 		if ($onlyFiles) {
 			return $jsarray;
@@ -142,7 +142,7 @@ class CMS_view extends CMS_grandFather
 	}
 	
 	function getJSManagerURL() {
-		$version = AUTOMNE_VERSION.'-'.AUTOMNE_SUBVERSION.(SYSTEM_DEBUG ? 'd':'');
+		$version = AUTOMNE_VERSION.'-'.AUTOMNE_LASTUPDATE.(SYSTEM_DEBUG ? 'd':'');
 		return PATH_JS_WR.'/jsmanager.php?version='.$version;
 	}
 	
@@ -173,7 +173,7 @@ class CMS_view extends CMS_grandFather
 	}
 	
 	function getCSSManagerURL() {
-		$version = AUTOMNE_VERSION.'-'.AUTOMNE_SUBVERSION.(SYSTEM_DEBUG ? 'd':'');
+		$version = AUTOMNE_VERSION.'-'.AUTOMNE_LASTUPDATE.(SYSTEM_DEBUG ? 'd':'');
 		return PATH_CSS_WR.'/cssmanager.php?version='.$version;
 	}
 	
