@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: standard.php,v 1.11 2009/06/09 13:29:25 sebastien Exp $
+// $Id: standard.php,v 1.12 2009/06/25 15:46:09 sebastien Exp $
 
 /**
   * Class CMS_module_standard
@@ -1322,8 +1322,7 @@ class CMS_module_standard extends CMS_module
 	  * @return void
 	  * @access private
 	  */
-	protected function _changeDataLocation($resource, $locationFrom, $locationTo, $copyOnly = false)
-	{
+	function _changeDataLocation($resource, $locationFrom, $locationTo, $copyOnly = false) {
 		if (!parent::_changeDataLocation($resource, $locationFrom, $locationTo, $copyOnly)) {
 			return false;
 		}
