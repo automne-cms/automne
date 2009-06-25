@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: query.php,v 1.3 2009/06/05 15:02:20 sebastien Exp $
+// $Id: query.php,v 1.4 2009/06/25 08:55:47 sebastien Exp $
 
 /**
   * Class CMS_query
@@ -171,6 +171,10 @@
 				unset(self::$_connection[$connectID]);
 				$this->raiseError($e->getMessage());
 				exit;
+			}
+			if(strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8') {
+				//set connection to utf-8 charset
+				$q = new CMS_query("SET NAMES 'utf8'");
 			}
 		}
 		$this->_db = self::$_connection[$connectID];

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: patch.php,v 1.4 2009/06/22 14:08:41 sebastien Exp $
+// $Id: patch.php,v 1.5 2009/06/25 08:55:47 sebastien Exp $
 
 /**
   * Class CMS_patch
@@ -534,10 +534,11 @@ class CMS_patch extends CMS_grandFather
 	 * @param $script, string : the CMS_file::FILE_SYSTEM SQL script filename
 	 *  This script can be SQL export provided by phpMyadmin or mysqldump, etc.
 	 * @param simulation : boolean, if true, only do a read of the script and if it contain sql data, return true.
+	 * @param utf8 : boolean, if true, SQL Script is imported using utf-8 character set (default : false)
 	 * @return boolean, true on success, false on failure
 	 * @access public
 	 */
-	function executeSqlScript($script,$simulation=false) 
+	function executeSqlScript($script, $simulation=false, $utf8 = false)
 	{
 		//include PMA import functions
 		require_once(PATH_PACKAGES_FS.'/files/sqlDump.php');
@@ -550,11 +551,17 @@ class CMS_patch extends CMS_grandFather
 		PMA_splitSqlFile($queries,$query,(int)sprintf('%d%02d%02d', $match[0], $match[1], intval($match[2])));
 		
 		if (!$simulation) {
+			if ($utf8) {
+				$q = new CMS_query("SET NAMES 'utf8'");
+			}
 			//execute all queries
 			$ok = true;
 			foreach ($queries as $aQuery) {
-				$q = new cms_query($aQuery);
+				$q = new CMS_query($aQuery);
 				$ok = ($q->hasError()) ? false:$ok;
+			}
+			if ($utf8) {
+				$q = new CMS_query("SET NAMES 'latin1'");
 			}
 		} else {
 			$ok = (is_array($queries) && $queries) ? true:false;
