@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_language.php,v 1.2 2009/06/05 15:02:18 sebastien Exp $
+// $Id: object_language.php,v 1.3 2009/06/25 12:43:29 sebastien Exp $
 
 /**
   * Class CMS_object_language
@@ -88,9 +88,8 @@ class CMS_object_language extends CMS_object_common
 		$a_all_languages = CMS_languagesCatalog::getAllLanguages($module);
 		$languagesDatas = array();
 		if (is_array($a_all_languages) && $a_all_languages) {
-			$languages = CMS_languagesCatalog::getAllLanguages();
 			$languagesDatas[] = array('', $language->getMessage(self::MESSAGE_OBJECT_LANGUAGE_CHOOSE_OBJECT));
-			foreach ($languages as $aLanguage) {
+			foreach ($a_all_languages as $aLanguage) {
 				$languagesDatas[] = array($aLanguage->getCode(), $aLanguage->getLabel());
 			}
 		} else {

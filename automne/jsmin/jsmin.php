@@ -71,10 +71,12 @@ class JSMin {
 	if (isset($matches[1]) && $matches[1]) {
 		$return = '';
 		$js = explode('//<<', $js);
-		if (trim($js[0]) == '') {
-			unset($js[0]);
-			$js = array_values($js);
+		if (trim($js[0]) != '') {
+			$jsminStart = new JSMin($js[0]);
+			$return .= $jsminStart->min();
 		}
+		unset($js[0]);
+		$js = array_values($js);
 		foreach ($matches[1] as $key => $match) {
 			$code = explode('//!>>', $js[$key]);
 			$jsmin = new JSMin($code[1]);
