@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc.php,v 1.14 2009/06/25 13:08:01 sebastien Exp $
+// $Id: cms_rc.php,v 1.15 2009/06/26 12:43:50 sebastien Exp $
 
 /**
   * rc file, contains all default constants
@@ -170,10 +170,10 @@ if (!defined("PATH_SPECIAL_PAGE_NOT_FOUND_WR")) {
 
 /**
   *	Path to the PHP CLI executable under windows
-  *	Default : "c:\php\cli\php.exe"
+  *	Default : "c:\php\php-win.exe"
   */
 if (!defined("PATH_PHP_CLI_WINDOWS")) {
-	define("PATH_PHP_CLI_WINDOWS", "c:\php\cli\php.exe");
+	define("PATH_PHP_CLI_WINDOWS", "c:\php\php-win.exe");
 }
 
 /**
