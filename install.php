@@ -18,7 +18,7 @@
 // | Author: Devin Doucette <darksnoopy@shaw.ca> (for archives classes)   |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.19 2009/06/26 14:01:24 sebastien Exp $
+// $Id: install.php,v 1.20 2009/06/26 15:30:45 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -740,10 +740,10 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 				die(sprintf($error_step3_SQL_script,$structureScript));
 			}
 			
-			//2- DB messages
+			//2- DB messages (this file is in utf-8)
 			$messagesScript = $_SERVER['DOCUMENT_ROOT']."/sql/automne4-I18NM_messages.sql";
-			if (file_exists($messagesScript) && CMS_patch::executeSqlScript($messagesScript, true)) {
-				CMS_patch::executeSqlScript($messagesScript);
+			if (file_exists($messagesScript) && CMS_patch::executeSqlScript($messagesScript, true, true)) {
+				CMS_patch::executeSqlScript($messagesScript, false, true);
 			} else {
 				die(sprintf($error_step3_SQL_script,$messagesScript));
 			}
