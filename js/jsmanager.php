@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: jsmanager.php,v 1.8 2009/06/22 14:21:31 sebastien Exp $
+// $Id: jsmanager.php,v 1.9 2009/06/26 13:58:08 sebastien Exp $
 
 /**
   * Javascript manager
@@ -46,56 +46,68 @@ if ($files) {
 	foreach (explode(',',$files) as $file) {
 		switch ($file) {
 			case 'main':
+				$jsMainFiles = array();
 				//Automne license (protected)
-				$jsfiles [] = PATH_ADMIN_FS.'/js/license.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/license.js';
 				//Automne JS files
-				$jsfiles [] = PATH_ADMIN_FS.'/js/main.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/server.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/message.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/utils.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/view.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/console.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/categories.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/panel.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/sidepanel.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/framepanel.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/tabpanel.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/winpanel.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/window.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/tree.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/combobox.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/json.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/menu.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/string.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/layout.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/framewindow.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/form.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/main.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/server.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/message.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/utils.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/view.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/console.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/categories.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/panel.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/sidepanel.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/framepanel.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/tabpanel.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/winpanel.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/window.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/tree.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/combobox.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/json.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/menu.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/string.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/layout.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/framewindow.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/form.js';
 				//swfobject file
-				$jsfiles [] = PATH_MAIN_FS.'/swfobject/swfobject.js';
+				$jsMainFiles [] = PATH_MAIN_FS.'/swfobject/swfobject.js';
 				//SWF Upload
-				//$jsfiles [] = PATH_MAIN_FS.'/swfupload/swfupload.js';
-				//$jsfiles [] = PATH_MAIN_FS.'/swfupload/swfupload.cookies.js';
+				//$jsMainFiles [] = PATH_MAIN_FS.'/swfupload/swfupload.js';
+				//$jsMainFiles [] = PATH_MAIN_FS.'/swfupload/swfupload.cookies.js';
 				
-				$jsfiles [] = PATH_ADMIN_FS.'/js/fileupload.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/imageupload.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/emptyfield.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/linkfield.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/pagefield.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/fileupload.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/imageupload.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/emptyfield.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/linkfield.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/pagefield.js';
 				//FCKEditor
-				$jsfiles [] = PATH_MAIN_FS.'/fckeditor/fckeditor.js';
-				$jsfiles [] = PATH_ADMIN_FS.'/js/fckeditor.js';
+				$jsMainFiles [] = PATH_MAIN_FS.'/fckeditor/fckeditor.js';
+				$jsMainFiles [] = PATH_ADMIN_FS.'/js/fckeditor.js';
 				
 				//Append others files in folder PATH_ADMIN_FS.'/js/' which is not already listed here
 				try{
 					foreach ( new DirectoryIterator(PATH_ADMIN_FS.'/js/') as $file) {
+						$filename = realpath($file->getPathname());
 						if ($file->isFile() && $file->getFilename() != ".htaccess" && $file->getFilename() != "launch.js") {
-							$fileExtension = pathinfo($file->getFilename(), PATHINFO_EXTENSION);
-							if ($fileExtension == 'js' && !in_array($file->getPathname(), $jsfiles)) {
-								$jsfiles[] = $file->getPathname();
+							$fileExtension = pathinfo($filename, PATHINFO_EXTENSION);
+							if ($fileExtension == 'js') {
+								$exists = false;
+								foreach ($jsMainFiles as $aFile) {
+									if ($filename == realpath($aFile)) {
+										$exists = true;
+										break;
+									}
+								}
+								if (!$exists) {
+									$jsMainFiles[] = $filename;
+								}
 							}
 						}
 					}
 				} catch(Exception $e) {}
+				$jsfiles = array_merge($jsfiles, $jsMainFiles);
 			break;
 			case 'edit':
 				//Automne license (protected)
