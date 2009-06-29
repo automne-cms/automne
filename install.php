@@ -18,7 +18,7 @@
 // | Author: Devin Doucette <darksnoopy@shaw.ca> (for archives classes)   |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.20 2009/06/26 15:30:45 sebastien Exp $
+// $Id: install.php,v 1.21 2009/06/29 10:24:19 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -740,10 +740,10 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 				die(sprintf($error_step3_SQL_script,$structureScript));
 			}
 			
-			//2- DB messages (this file is in utf-8)
+			//2- DB messages
 			$messagesScript = $_SERVER['DOCUMENT_ROOT']."/sql/automne4-I18NM_messages.sql";
-			if (file_exists($messagesScript) && CMS_patch::executeSqlScript($messagesScript, true, true)) {
-				CMS_patch::executeSqlScript($messagesScript, false, true);
+			if (file_exists($messagesScript) && CMS_patch::executeSqlScript($messagesScript, true)) {
+				CMS_patch::executeSqlScript($messagesScript);
 			} else {
 				die(sprintf($error_step3_SQL_script,$messagesScript));
 			}
@@ -753,6 +753,10 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 				$scratchScript = $_SERVER['DOCUMENT_ROOT']."/sql/automne4-scratch.sql";
 				if (file_exists($scratchScript) && CMS_patch::executeSqlScript($scratchScript, true)) {
 					CMS_patch::executeSqlScript($scratchScript);
+					//then remove folder /web/fr
+					if (is_dir($_SERVER['DOCUMENT_ROOT'].'/web/fr')) {
+						CMS_file::deltree($_SERVER['DOCUMENT_ROOT'].'/web/fr', true);
+					}
 				} else {
 					die(sprintf($error_step3_SQL_script,$scratchScript));
 				}
