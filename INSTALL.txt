@@ -1,7 +1,7 @@
 -------------------------------------------------------
 AUTOMNE :: INSTALLATION
 -------------------------------------------------------
-$Id: INSTALL.txt,v 1.10 2009/06/26 14:01:24 sebastien Exp $
+$Id: INSTALL.txt,v 1.11 2009/06/29 12:26:04 sebastien Exp $
 
 English version is at the bottom of this document.
 
@@ -33,6 +33,7 @@ Suivez ensuite les instructions données par le script d'installation.
 Notes : 
 - Si vous avez installé le module CLI de PHP, choisissez durant l'installation l'option "Script en tache de fond".
 - Si vous installez Automne sur un serveur Windows, veillez à ne pas avoir d'espace dans le chemin d'installation.
+- Le fichier atm-test-conf.php vous permet de tester la validité de la configuration de votre serveur avant d'installer Automne.
 
 /!\ Important
 -------------------------------------------------------
@@ -71,7 +72,7 @@ Then follow the instructions given by the installation script.
 NB : 
 - If you installed the CLI module of PHP, choose the "Background script" option during the installation.
 - If you install Automne on a Windows server, take care to not have spaces in the installation path (example:  by default, easyphp use the folder program files what will not function with Automne).
-
+- The file atm-test-conf.php allows you to test the validity of the server configuration before installing Automne.
 /!\ Important
 -------------------------------------------------------
 Once you completed the installation, delete the following files : install.php and automne-xxx.tar.gz
