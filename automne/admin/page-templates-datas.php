@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-templates-datas.php,v 1.3 2009/06/22 14:10:32 sebastien Exp $
+// $Id: page-templates-datas.php,v 1.4 2009/06/29 10:21:55 sebastien Exp $
 
 /**
   * PHP page : Load page templates infos
@@ -165,7 +165,6 @@ if ($currentTpl) {
 	//get array of available templates
 	$templates = CMS_pageTemplatesCatalog::getAll($viewinactive, $keyword, $groups, $website, $pageTplIds, $cms_user, $start, $limit);
 	$templatesDatas['total'] = sizeof(CMS_pageTemplatesCatalog::getAll($viewinactive, $keyword, $groups, $website, $pageTplIds, $cms_user, 0, 0, false));
-	
 	foreach ($templates as $template) {
 		if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //templates
 			if ($delete) {

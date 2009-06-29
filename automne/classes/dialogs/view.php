@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: view.php,v 1.8 2009/06/25 13:07:37 sebastien Exp $
+// $Id: view.php,v 1.9 2009/06/29 10:23:26 sebastien Exp $
 
 /**
   * Class CMS_view
@@ -412,6 +412,7 @@ class CMS_view extends CMS_grandFather
 	function show($mode = '')
 	{
 		$this->setDisplayMode($mode);
+		header('X-Automne-Response: OK');
 		switch ($this->_displayMode) {
 			case self::SHOW_JSON :
 			case self::SHOW_RAW :

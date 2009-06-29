@@ -7,7 +7,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: utils.js,v 1.1 2009/06/22 14:10:34 sebastien Exp $
+  * $Id: utils.js,v 1.2 2009/06/29 10:22:07 sebastien Exp $
   */
 Automne.utils = {
 	edit:		false,
@@ -26,11 +26,14 @@ Automne.utils = {
 	getPageById: function (pageId, tab) {
 		pr('getPageById : '+pageId);
 		if (tab) {
-			Automne.tabPanels.setActiveTab(tab);
+			Automne.tabPanels.getPageInfos({
+				pageId:		pageId
+			}, Automne.tabPanels.setActiveTab.createDelegate(Automne.tabPanels, [tab]));
+		} else {
+			Automne.tabPanels.getPageInfos({
+				pageId:		pageId
+			});
 		}
-		Automne.tabPanels.getPageInfos({
-			pageId:		pageId
-		});
 	},
 	//update a resource status anywhere in the view
 	updateStatus: function (statusId, newStatus, newTinyStatus, unlock) {

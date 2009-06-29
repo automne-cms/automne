@@ -7,7 +7,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: server.js,v 1.1 2009/06/22 14:10:34 sebastien Exp $
+  * $Id: server.js,v 1.2 2009/06/29 10:22:07 sebastien Exp $
   */
 Automne.server = {
 	call: function (url, fcn, params, scope) {
@@ -47,7 +47,12 @@ Automne.server = {
 			Ext.get('atm-server-call').hide();
 		}
 		//check for return error
-		if (!(options && options.isUpload) && (response == undefined || (response.responseXML == undefined && response.getResponseHeader('Content-Type').indexOf('text/xml') !== -1) || response.responseText == '')) {
+		if (!(options && options.isUpload) && (
+				response == undefined || 
+				(response.responseXML == undefined && response.getResponseHeader('Content-Type').indexOf('text/xml') !== -1) 
+				|| response.responseText == ''
+				|| !response.getResponseHeader('X-Automne-Response'))
+			) {
 			Automne.server.failureResponse(response, options, null, 'call');
 		}
 	},

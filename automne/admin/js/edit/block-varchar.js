@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: block-varchar.js,v 1.4 2009/04/10 15:26:09 sebastien Exp $
+  * $Id: block-varchar.js,v 1.5 2009/06/29 10:22:39 sebastien Exp $
   */
 Automne.blockVarchar = Ext.extend(Automne.block, {
 	blockClass:	'CMS_block_varchar',
@@ -78,6 +78,10 @@ Automne.blockVarchar = Ext.extend(Automne.block, {
 		}
 		textareaEl.setStyle(blockStyle);
 		Ext.get(textarea.textSizeEl).setStyle(blockStyle);
+		textarea.on("autosize", function(el,  height){
+			validateCtrl.setY(cont.getY() + height);
+			cancelCtrl.setY(cont.getY() + height);
+		}, this);
 		textarea.autoSize();
 		//put click events on controls
 		cancelCtrl.on('mousedown', this.stopEdition.createDelegate(this, [textareaEl, textarea, cancelCtrl, validateCtrl, ctrlCont, textCont, cont]), this);

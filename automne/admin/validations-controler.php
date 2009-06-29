@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: validations-controler.php,v 1.3 2009/04/02 13:55:55 sebastien Exp $
+// $Id: validations-controler.php,v 1.4 2009/06/29 10:21:55 sebastien Exp $
 
 /**
   * PHP controler : Receive validations actions
@@ -121,7 +121,7 @@ switch ($action) {
 	case "validate":
 		foreach ($validationIds as $validationId) {
 			//get validation
-			$validation = CMS_resourceValidationsCatalog::getValidationInstance($validationId,$cms_user);
+			$validation = CMS_resourceValidationsCatalog::getValidationInstance($validationId, $cms_user);
 			if (!is_a($validation, "CMS_resourceValidation")) {
 				CMS_grandFather::raiseError('invalid validation Id '.$validationId.' ...');
 				$view->show();

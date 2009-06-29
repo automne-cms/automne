@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: template.php,v 1.9 2009/06/22 14:10:33 sebastien Exp $
+// $Id: template.php,v 1.10 2009/06/29 10:21:55 sebastien Exp $
 
 /**
   * PHP page : Load template detail window.
@@ -393,21 +393,24 @@ $jscontent = <<<END
 			border:				false,
 			bodyStyle: 			'padding:5px',
 			beforeActivate:		function(tabPanel, newTab, currentTab) {
-				if (Ext.get('defText-{$templateId}')) {
+				if (!Ext.get('defText-{$templateId}')) {
 					//call server for definition update
 					Automne.server.call({
 						url:			'page-templates-datas.php',
 						scope:			this,
 						fcnCallback:	function(response, options, jsonResponse){
-							//update store
-							for(var i = 0; i < jsonResponse.total; i++) {
-								var data = jsonResponse.results[i];
-								Ext.get('defText-{$templateId}').dom.value = data.definition;
+							if (Ext.get('defText-{$templateId}')) {
+								//update store
+								for(var i = 0; i < jsonResponse.total; i++) {
+									var data = jsonResponse.results[i];
+									Ext.get('defText-{$templateId}').dom.value = data.definition;
+								}
 							}
 						},
 						params:			{
-							items:			[{$templateId}],
-							definition:		1
+							items:			[templateWindow.templateId],
+							definition:		1,
+							viewinactive:	1
 						}
 					});
 				}

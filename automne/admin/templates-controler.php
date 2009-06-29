@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-controler.php,v 1.5 2009/06/22 14:10:33 sebastien Exp $
+// $Id: templates-controler.php,v 1.6 2009/06/29 10:21:55 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on templates
@@ -30,14 +30,12 @@ define("MESSAGE_PAGE_MALFORMED_DEFINITION_FILE", 840);
 define("MESSAGE_ERROR_NO_RIGHTS_FOR_TEMPLATES", 799);
 define("MESSAGE_ACTION_XML_UPDATED", 732);
 define("MESSAGE_ACTION_N_PAGES_REGEN", 733);
-
-MESSAGE_ERROR_UNKNOWN_TEMPLATE 1480
-MESSAGE_ACTION_SAVE_DONE
-MESSAGE_ACTION_CREATION_DONE
-MESSAGE_ACTION_SAVE_PRINT_DONE
-MESSAGE_ERROR_NO_PUBLIC_PAGE
-MESSAGE_ACTION_DUPICATION_DONE
-
+define("MESSAGE_ERROR_UNKNOWN_TEMPLATE", 1480);
+define("MESSAGE_ACTION_SAVE_DONE", 1481);
+define("MESSAGE_ACTION_CREATION_DONE", 1482);
+define("MESSAGE_ACTION_SAVE_PRINT_DONE", 1483);
+define("MESSAGE_ERROR_NO_PUBLIC_PAGE", 1484);
+define("MESSAGE_ACTION_DUPICATION_DONE", 1485);
 //Controler vars
 $action = sensitiveIO::request('action', array('properties', 'definition', 'printcs', 'regenerate', 'copy'));
 $templateId = sensitiveIO::request('templateId', '');
@@ -221,6 +219,17 @@ switch ($action) {
 				$template->delAllWebsiteDenied();
 				foreach ($deniedWebsites as $deniedWebsite) {
 					$template->denyWebsite($deniedWebsite);
+				}
+				//XML definition file
+				if ($definitionfile && strpos($definitionfile, PATH_UPLOAD_WR.'/') !== false) {
+					//read uploaded file
+					$definitionfile = new CMS_file($definitionfile, CMS_file::WEBROOT);
+					$template->setDebug(false);
+	                $template->setLog(false);
+					$error = $template->setDefinition($definitionfile->readContent());
+					if ($error !== true) {
+		            	$cms_message = $cms_language->getMessage(MESSAGE_PAGE_MALFORMED_DEFINITION_FILE)."\n\n".$error;
+					}
 				}
 				if (!$cms_message && !$template->hasError()) {
 					$template->writeToPersistence();
