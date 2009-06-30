@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_date.php,v 1.6 2009/06/25 12:13:09 sebastien Exp $
+// $Id: object_date.php,v 1.7 2009/06/30 08:55:57 sebastien Exp $
 
 /**
   * Class CMS_object_date
@@ -178,8 +178,11 @@ class CMS_object_date extends CMS_object_common
 		//if field is required check values
 		if ($this->_field->getValue('required')) {
 			$params = $this->getParamsValues();
-			//can be null if param setNow is true
-			if (!$values[$prefixName.$this->_field->getID().'_0'] && !$params['setNow']) {
+			//can be null if param setNow or creationDate is true
+			if ($params['setNow'] || $params['creationDate']) {
+				return true;
+			}
+			if (!isset($values[$prefixName.$this->_field->getID().'_0']) || !$values[$prefixName.$this->_field->getID().'_0']) {
 				return false;
 			}
 		}
@@ -380,6 +383,9 @@ class CMS_object_date extends CMS_object_common
 					return false;
 				}
 			}
+		}
+		if ($params['creationDate']) {
+			$date->setFromDBValue($this->_subfieldValues[0]->getValue());
 		}
 		if (($date->isNull() && ($params['setNow'] || $params['creationDate'])) || $params['updateDate']) {
 			$date->setNow();

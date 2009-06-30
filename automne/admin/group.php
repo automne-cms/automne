@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: group.php,v 1.3 2009/06/05 15:01:04 sebastien Exp $
+// $Id: group.php,v 1.4 2009/06/30 08:55:27 sebastien Exp $
 
 /**
   * PHP page : Load group detail window.
@@ -286,7 +286,7 @@ $jscontent = <<<END
 		'rowdeselect':{fn:function(sm, index, record) {
 			Automne.server.call('groups-controler.php', Ext.emptyFn, {
 				groupId:		this.groupId,
-				action:			'adduser',
+				action:			'deluser',
 				userId:			record.id
 			});
 		},scope:groupWindow}
@@ -341,7 +341,7 @@ $jscontent = <<<END
 				anchor:			'97%'
 			},
 			items:[{
-				fieldLabel:		'* {$cms_language->getMessage(MESSAGE_PAGE_LABEL)}',
+				fieldLabel:		'<span class=\"atm-red\">*</span> {$cms_language->getMessage(MESSAGE_PAGE_LABEL)}',
 				name:			'label',
 				xtype:			'textfield',
 				{$labelValue}

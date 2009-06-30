@@ -13,7 +13,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_boolean.php,v 1.3 2009/06/05 15:02:18 sebastien Exp $
+// $Id: object_boolean.php,v 1.4 2009/06/30 08:55:57 sebastien Exp $
 
 /**
   * Class CMS_object_integer
@@ -33,6 +33,9 @@ class CMS_object_boolean extends CMS_object_common
 {
 	const MESSAGE_OBJECT_BOOLEAN_LABEL = 384;
 	const MESSAGE_OBJECT_BOOLEAN_DESCRIPTION = 385;
+	//Standard messages
+	const MESSAGE_OBJECT_BOOLEAN_YES = 1538;
+	const MESSAGE_OBJECT_BOOLEAN_NO = 1539;
 	/**
 	  * object label
 	  * @var integer
@@ -173,6 +176,36 @@ class CMS_object_boolean extends CMS_object_common
 			}
 		}
 		return true;
+	}
+	
+	/**
+	  * get object HTML description for admin search detail. Usually, the label.
+	  *
+	  * @return string : object HTML description
+	  * @access public
+	  */
+	function getHTMLDescription() {
+		global $cms_language;
+		if (is_object($this->_subfieldValues[0])) {
+			return $this->_subfieldValues[0]->getValue() ? $cms_language->getMessage(self::MESSAGE_OBJECT_BOOLEAN_YES) : $cms_language->getMessage(self::MESSAGE_OBJECT_BOOLEAN_NO);
+		}
+		return $cms_language->getMessage(self::MESSAGE_OBJECT_BOOLEAN_NO);
+	}
+	
+	/**
+	  * Return a list of all objects names of given type
+	  *
+	  * @param boolean $public are the needed datas public ? /!\ Does not apply for this type of object
+	  * @param array $searchConditions, search conditions to add. /!\ Does not apply for this type of object
+	  * @return array(integer objectID => string objectName)
+	  * @access public
+	  * @static
+	  */
+	function getListOfNamesForObject($public = false, $searchConditions = array(), $restrictToUsedCat = true) {
+		global $cms_language;
+		$a_boolean[0] = $cms_language->getMessage(self::MESSAGE_OBJECT_BOOLEAN_NO);
+		$a_boolean[1] = $cms_language->getMessage(self::MESSAGE_OBJECT_BOOLEAN_YES);
+		return $a_boolean;
 	}
 }
 ?>

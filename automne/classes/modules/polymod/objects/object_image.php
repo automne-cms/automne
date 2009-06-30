@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_image.php,v 1.7 2009/06/25 14:36:45 sebastien Exp $
+// $Id: object_image.php,v 1.8 2009/06/30 08:55:57 sebastien Exp $
 
 /**
   * Class CMS_object_image
@@ -243,7 +243,7 @@ class CMS_object_image extends CMS_object_common
 			if ($this->_field->getValue('required')) {
 				//must have image in upload field or in hidden field or image must be already set
 				//if deleted is checked, image must be set in upload field
-				if ((!$this->_subfieldValues[0]->getValue() && !$_FILES[$prefixName.$this->_field->getID().'_0']['name'] && (!isset($values[$prefixName.$this->_field->getID().'_0_hidden']) || !$values[$prefixName.$this->_field->getID().'_0_hidden'])) || ($values[$prefixName.$this->_field->getID().'_delete'] == 1 && !$_FILES[$prefixName.$this->_field->getID().'_0']['name'])) {
+				if ((!$this->_subfieldValues[0]->getValue() && !$_FILES[$prefixName.$this->_field->getID().'_0']['name'] && (!isset($values[$prefixName.$this->_field->getID().'_0_hidden']) || !$values[$prefixName.$this->_field->getID().'_0_hidden'])) || (isset($values[$prefixName.$this->_field->getID().'_delete']) && $values[$prefixName.$this->_field->getID().'_delete'] == 1 && !$_FILES[$prefixName.$this->_field->getID().'_0']['name'])) {
 					return false;
 				}
 			}
@@ -725,7 +725,7 @@ class CMS_object_image extends CMS_object_common
 				if ($this->_subfieldValues[0]->getValue()) {
 					@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[0]->getValue());
 					$this->_subfieldValues[0]->setValue('');
-				} elseif ($values[$prefixName.$this->_field->getID().'_0_hidden']) {
+				} elseif (isset($values[$prefixName.$this->_field->getID().'_0_hidden']) && $values[$prefixName.$this->_field->getID().'_0_hidden']) {
 					@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$values[$prefixName.$this->_field->getID().'_0_hidden']);
 					$this->_subfieldValues[0]->setValue('');
 				}

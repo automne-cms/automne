@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: subobject_integer.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: subobject_integer.php,v 1.2 2009/06/30 08:55:57 sebastien Exp $
 
 /**
   * Class CMS_subobject_integer
@@ -85,5 +85,4 @@ class CMS_subobject_integer extends CMS_subobject_common
 		return (int) $this->_value;
 	}
 }
-
 ?>

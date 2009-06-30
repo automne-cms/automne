@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: user.php,v 1.3 2009/06/05 15:01:05 sebastien Exp $
+// $Id: user.php,v 1.4 2009/06/30 08:55:27 sebastien Exp $
 
 /**
   * PHP page : Load user detail window.
@@ -319,7 +319,7 @@ if (!APPLICATION_LDAP_AUTH) {
 				layout: 		'form',
 				border:			false,
 				items: [{
-					fieldLabel:		'* {$cms_language->getJsMessage(MESSAGE_PAGE_PASSWORD)}',
+					fieldLabel:		'<span class=\"atm-red\">*</span> {$cms_language->getJsMessage(MESSAGE_PAGE_PASSWORD)}',
 					xtype:			'textfield',
 					name:			'pass1',
 					inputType:		'password',
@@ -506,18 +506,18 @@ $jscontent = <<<END
 					allowBlank:		true
 				},{
 					{$disableUserInfosFields}
-					fieldLabel:		'* {$cms_language->getMessage(MESSAGE_PAGE_LAST_NAME)}',
+					fieldLabel:		'<span class=\"atm-red\">*</span> {$cms_language->getMessage(MESSAGE_PAGE_LAST_NAME)}',
 					{$lastnameValue}
 					name:			'lastname'
 				},{
 					{$disableUserInfosFields}
-					fieldLabel:		'* {$cms_language->getMessage(MESSAGE_PAGE_EMAIL)}',
+					fieldLabel:		'<span class=\"atm-red\">*</span> {$cms_language->getMessage(MESSAGE_PAGE_EMAIL)}',
 					name:			'email',
 					{$emailValue}
 					vtype:			'email'
 				},{
 					{$disableLoginField}
-					fieldLabel:		'* {$cms_language->getMessage(MESSAGE_PAGE_REFERENCE)}',
+					fieldLabel:		'<span class=\"atm-red\">*</span> {$cms_language->getMessage(MESSAGE_PAGE_REFERENCE)}',
 					name:			'login',
 					{$loginValue}
 					vtype:			'alphanum'
@@ -526,7 +526,7 @@ $jscontent = <<<END
 					xtype:				'combo',
 					name:				'language',
 					forceSelection:		true,
-					fieldLabel:			'* {$cms_language->getMessage(MESSAGE_PAGE_LANGUAGE)}',
+					fieldLabel:			'<span class=\"atm-red\">*</span> {$cms_language->getMessage(MESSAGE_PAGE_LANGUAGE)}',
 					mode:				'local',
 					triggerAction:		'all',
 					valueField:			'id',
