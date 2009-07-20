@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc_frontend.php,v 1.5 2009/06/23 16:13:35 sebastien Exp $
+// $Id: cms_rc_frontend.php,v 1.6 2009/07/20 16:29:39 sebastien Exp $
 
 /**
   * Frontend rc file.
@@ -24,7 +24,7 @@
 
 //include general configuration file
 require_once(dirname(__FILE__)."/cms_rc.php");
-//Set session name
+//Start session
 start_atm_session();
 
 // Start output buffering for compression so we don't prevent

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc_admin.php,v 1.9 2009/06/25 13:08:01 sebastien Exp $
+// $Id: cms_rc_admin.php,v 1.10 2009/07/20 16:29:39 sebastien Exp $
 
 /**
   * Administration rc file.
@@ -24,7 +24,7 @@
 
 //include general configuration file
 require_once(dirname(__FILE__)."/cms_rc.php");
-//Set session name
+//Start session
 start_atm_session();
 
 /**
@@ -55,12 +55,6 @@ if (APPLICATION_EXEC_TYPE == 'http') {
 		$cms_context =& $_SESSION["cms_context"];
 		$cms_user = $_SESSION["cms_context"]->getUser();
 		$cms_language = $cms_user->getLanguage();
-		
-		if (isset($_GET["cms_message_id"]) && SensitiveIO::isPositiveInteger($_GET["cms_message_id"]))	{
-			$cms_message = $cms_language->getMessage($_GET["cms_message_id"]);
-		} else {
-			$cms_message = (isset($_GET["cms_message"])) ? SensitiveIO::sanitizeHTMLString($_GET["cms_message"]) : false;
-		}
 	} elseif (isset($_REQUEST["cms_action"]) && $_REQUEST["cms_action"] != 'logout' && CMS_context::autoLoginSucceeded()) {
 		$_SESSION["cms_context"]->checkSession();
 		
@@ -68,12 +62,6 @@ if (APPLICATION_EXEC_TYPE == 'http') {
 		$cms_context =& $_SESSION["cms_context"];
 		$cms_user = $_SESSION["cms_context"]->getUser();
 		$cms_language = $cms_user->getLanguage();
-		
-		if (isset($_GET["cms_message_id"]) && SensitiveIO::isPositiveInteger($_GET["cms_message_id"]))	{
-			$cms_message = $cms_language->getMessage($_GET["cms_message_id"]);
-		} else {
-			$cms_message = (isset($_GET["cms_message"])) ? SensitiveIO::sanitizeHTMLString($_GET["cms_message"]) : false;
-		}
 	} else {
 		//load interface instance
 		$view = CMS_view::getInstance();
@@ -84,6 +72,13 @@ if (APPLICATION_EXEC_TYPE == 'http') {
 			$view->setDisplayMode(4); //4 = CMS_view::SHOW_RAW : this constant cannot be used here because this file can be parsed by PHP4
 		}
 		$view->show();
+	}
+	//if user exists and does not have admin clearance, force disconnection
+	if (isset($cms_user) && is_object($cms_user) && !$cms_user->hasAdminAccess()) {
+		//load interface instance
+		$view = CMS_view::getInstance();
+		//set disconnected status
+		$view->setDisconnected(true);
 	}
 }
 
@@ -110,9 +105,6 @@ define("MESSAGE_HELLO", 34);
 define("MESSAGE_LANGUAGE", 35);
 define("MESSAGE_DATE_FORMAT", 36);
 define("MESSAGE_SESSION_EXPIRED", 37);
-define("MESSAGE_VALIDATION_ACCEPT", 38);
-define("MESSAGE_VALIDATION_REFUSE", 39);
-define("MESSAGE_VALIDATION_TRANSFER", 40);
 define("MESSAGE_DATE_TO", 69);
 define("MESSAGE_ABBREVIATION_DAY", 141);
 define("MESSAGE_ABBREVIATION_MONTH", 142);
@@ -122,11 +114,9 @@ define("MESSAGE_PAGE_LOCKED", 154);
 define("MESSAGE_INCORRECT_FIELD_VALUE", 145); 
 define("MESSAGE_BUTTON_ON_BOTTOM", 1127);
 define("MESSAGE_BUTTON_ON_TOP", 1126);
-
 define("MESSAGE_FORM_MANDATORY_FIELDS", 131);
 define("MESSAGE_FORM_ERROR_MANDATORY_FIELDS", 144);
 define("MESSAGE_FORM_ERROR_MALFORMED_FIELD", 145);
 define("MESSAGE_ACTION_OPERATION_DONE", 122);
-
 define("MESSAGE_EMAIL_VALIDATION_AWAITS", 124);
 ?>

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 404.php,v 1.3 2009/04/02 13:54:46 sebastien Exp $
+// $Id: 404.php,v 1.4 2009/07/20 16:29:38 sebastien Exp $
 
 /**
   * Automne 404 error handler
@@ -86,8 +86,14 @@ if (ERROR404_EMAIL_ALERT && sensitiveIO::isValidEmail(APPLICATION_MAINTAINER_EMA
 	$body .='The requested file : '.CMS_websitesCatalog::getMainURL().$_SERVER['REQUEST_URI'].' was not found.'."\n\n";
 	$body .='From (Referer) : '.(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '')."\n\n";
 	$body .='Date : '.date('r')."\n\n";
-	$body .='User : '.$_SERVER['REMOTE_ADDR'].' ('.$_SERVER['HTTP_ACCEPT_LANGUAGE'].')'."\n\n";
-	$body .='Browser : '.$_SERVER['HTTP_USER_AGENT']."\n\n";
+	if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+		$body .='User : '.$_SERVER['REMOTE_ADDR'].' ('.$_SERVER['HTTP_ACCEPT_LANGUAGE'].')'."\n\n";
+	} else {
+		$body .='User : '.$_SERVER['REMOTE_ADDR']."\n\n";
+	}
+	if (isset($_SERVER['HTTP_USER_AGENT'])) {
+		$body .='Browser : '.$_SERVER['HTTP_USER_AGENT']."\n\n";
+	}
 	$body .='Host : '.$_SERVER['HTTP_HOST'].' ('.$_SERVER['SERVER_ADDR'].")\n\n";
 	$body .='This email is automaticaly sent from your website. You can stop this sending with the parameter ERROR404 EMAIL ALERT.';
 	

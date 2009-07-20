@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc.php,v 1.15 2009/06/26 12:43:50 sebastien Exp $
+// $Id: cms_rc.php,v 1.16 2009/07/20 16:29:38 sebastien Exp $
 
 /**
   * rc file, contains all default constants
@@ -162,6 +162,7 @@ if (!defined("APPLICATION_IS_WINDOWS")) {
 /**
   *	FrontEnd not found page URL (404)
   * wrong users privilège or session time out redirect to this page
+  * this page is declared in root htaccess too
   *	Default : /404.php
   */
 if (!defined("PATH_SPECIAL_PAGE_NOT_FOUND_WR")) {
@@ -321,7 +322,9 @@ if (isset($_SERVER["HTTP_X_FORWARDED_HOST"])) {
 if (isset($_SERVER["HTTP_X_FORWARDED_SERVER"])) {
 	$_SERVER["HTTP_SERVER"] = $_SERVER["HTTP_X_FORWARDED_SERVER"];
 }
-
+if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) {
+	$_SERVER["REMOTE_ADDR"] = $_SERVER["HTTP_X_FORWARDED_FOR"];
+}
 //check we're not in a subdir
 if (!is_dir($_SERVER["DOCUMENT_ROOT"].PATH_MAIN_WR)) {
 	define("PATH_REALROOT_FS", substr($_SERVER["DOCUMENT_ROOT"], 0, strrpos($_SERVER["DOCUMENT_ROOT"], "html") - 1));
@@ -991,6 +994,9 @@ function compress_handler( $p_buffer, $p_mode ) {
 	}
 }
 
+/**
+  * Start Automne session
+  */
 function start_atm_session() {
 	// verify if PHP supports session, die if it does not
 	if (!@function_exists('session_name')) {
@@ -1031,6 +1037,9 @@ function start_atm_session() {
 	@session_start();
 }
 
+/**
+  *	Modules treatment hooks (code)
+  */
 define("MODULE_TREATMENT_PAGECONTENT_HEADER_CODE", 1);
 define("MODULE_TREATMENT_PAGECONTENT_FOOTER_CODE", 2);
 define("MODULE_TREATMENT_EDITOR_CODE", 4);
@@ -1041,14 +1050,15 @@ define("MODULE_TREATMENT_BEFORE_VALIDATION_TREATMENT", 64);
 define("MODULE_TREATMENT_AFTER_VALIDATION_TREATMENT", 128);
 define("MODULE_TREATMENT_EDITOR_PLUGINS", 256);
 define("MODULE_TREATMENT_ALERTS", 512);
-
+/**
+  *	Modules treatment hooks (xml parsing)
+  */
 define("MODULE_TREATMENT_PAGECONTENT_TAGS", 1);
 define("MODULE_TREATMENT_CLIENTSPACE_TAGS", 2);
 define("MODULE_TREATMENT_BLOCK_TAGS", 4);
 define("MODULE_TREATMENT_LINXES_TAGS", 8);
 define("MODULE_TREATMENT_WYSIWYG_INNER_TAGS", 16);
 define("MODULE_TREATMENT_WYSIWYG_OUTER_TAGS", 32);
-
 /**
   *	Paths are either relative to Filesystem root or Webroot
   *	Default : "WR" and "FS"

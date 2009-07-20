@@ -19,7 +19,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: is_alive.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: is_alive.php,v 1.2 2009/07/20 16:29:39 sebastien Exp $
 
 // This page aims to check if website keeps alive
 // A production purpose
@@ -28,7 +28,7 @@
 // 
 // In a cron can use such script :
 // For a quiet version (Outputs only if any problem founded)
-// 0 0 * * * root /usr/bin/lynx http://serveraddr/is_alive.php?quiet=true
+// */5 * * * * root /usr/bin/lynx http://serveraddr/is_alive.php?quiet=true
 // 
 // More visually or to get informed by email set :
 // http://serveraddr/is_alive.php
@@ -36,14 +36,11 @@
 // 1. Test database server connection
 // 2. Test database selection
 // 3. Test HTTP Header response on main page
-// 4. Prints Nothing or OK if anything goes well, KO otherwise
+// 4. Prints Nothing or REPONSE_CORRECTE if anything goes well, KO otherwise
 // also send a mail to an administrator
 // 
 
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
-
-// Email to advertise when problem found on website
-define("EMAIL_SYSTEME_ADMIN", APPLICATION_MAINTAINER_EMAIL);
 
 // Page to test HTTP response of
 define("INDEX_PAGE", '/index.php');
@@ -82,7 +79,7 @@ if (!$errs) {
 } else {
 	$to = APPLICATION_LABEL." administrator <".APPLICATION_MAINTAINER_EMAIL.">";
 	$message = @implode("\n", $errs);
-	$headers = "From: ".APPLICATION_LABEL." <".APPLICATION_LABEL.">\r\n";
+	$headers = "From: ".APPLICATION_LABEL." <".APPLICATION_POSTMASTER_EMAIL.">\n";
 	@mail($to, '[alert] Website '.APPLICATION_LABEL.'('.$_SERVER["SERVER_NAME"].') KO ?', $message, $headers);
 	echo 'KO' ;
 }
