@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: linx.php,v 1.7 2009/06/05 15:02:17 sebastien Exp $
+// $Id: linx.php,v 1.8 2009/07/20 16:35:36 sebastien Exp $
 
 /**
   * Class CMS_linx
@@ -206,7 +206,7 @@ class CMS_linx extends CMS_grandFather
 		$output = '';
 		if ($this->_type == 'recursivelinks') {
 			$root = CMS_tree::getRoot();
-			$lineage = CMS_tree::getLineage($root->getID(), $this->_page->getID(), false);
+			$lineage = CMS_tree::getLineage($root->getID(), $this->_page->getID(), false, $this->_publicTree);
 			if (is_array($this->_displays)) {
 				foreach ($this->_displays as $display) {
 					$html = $display->getRecursiveOutput($this->_page, 0, $this->_recursiveTargets, $this->_targets, $this->_publicTree, $lineage);
@@ -395,7 +395,7 @@ class CMS_linx extends CMS_grandFather
 				return false;
 			}
 			$start = $this->_selectionStartPages[0];
-			$targets_temp = CMS_tree::getLineage($start, $this->_selectionStopPage);//, $this->_publicTree);
+			$targets_temp = CMS_tree::getLineage($start, $this->_selectionStopPage, true, $this->_publicTree);
 			if ($targets_temp && is_array($targets_temp)) {
 				$targets_temp = array_reverse($targets_temp);
 				$root_found = false;

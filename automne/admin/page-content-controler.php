@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-content-controler.php,v 1.5 2009/06/22 14:10:31 sebastien Exp $
+// $Id: page-content-controler.php,v 1.6 2009/07/20 16:33:15 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on page content
@@ -246,36 +246,20 @@ switch ($action) {
 			$cms_block = new $blockClass();
 			$cms_block->initializeFromBasicAttributes($blockId);
 			if ($action == 'update-block-text') {
+				$errors = '';
+				if (!sensitiveIO::checkXHTMLValue($value, $errors)) {
+					//Send an error to user about his content
+					$jscontent = "
+					Automne.message.popup({
+						msg: 				'".$cms_language->getJsMessage(MESSAGE_PAGE_COPY_PASTE_ERROR).($errors ? "<br /><br />".sensitiveIO::sanitizeJSString($errors) : '')."',
+						buttons: 			Ext.MessageBox.OK,
+						closable: 			true,
+						icon: 				Ext.MessageBox.ERROR
+					});";
+					$view->addJavascript($jscontent);
+					$view->show();
+				}
 				$value = FCKeditor::createAutomneLinks($value);
-			}
-			//here, parse content value to avoid future parsing errors
-			$defXML = new CMS_DOMDocument();
-			try {
-				$defXML->loadXML('<dummy>'.$value.'</dummy>');
-			} catch (DOMException $e) {
-				CMS_grandFather::raiseError('Parse error for block content text in page '.$cms_page->getID().' : '.$e->getMessage());
-				//Send an error to user about his content
-				$jscontent = "
-				Automne.message.popup({
-					msg: 				'".$cms_language->getJsMessage(MESSAGE_PAGE_COPY_PASTE_ERROR)."',
-					buttons: 			Ext.MessageBox.OK,
-					closable: 			true,
-					icon: 				Ext.MessageBox.ERROR
-				});";
-				$view->addJavascript($jscontent);
-				$view->show();
-			}
-			if (strpos($value, '<w:') !== false) {
-				//Send an error to user about his content
-				$jscontent = "
-				Automne.message.popup({
-					msg: 				'".$cms_language->getJsMessage(MESSAGE_PAGE_COPY_PASTE_ERROR)."',
-					buttons: 			Ext.MessageBox.OK,
-					closable: 			true,
-					icon: 				Ext.MessageBox.ERROR
-				});";
-				$view->addJavascript($jscontent);
-				$view->show();
 			}
 			$cms_block->writeToPersistence($cms_page->getID(), $cs, $rowTag, RESOURCE_LOCATION_EDITION, false, array("value" => $value));
 			//instanciate the clientspace

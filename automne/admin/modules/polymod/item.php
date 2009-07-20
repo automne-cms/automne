@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: item.php,v 1.5 2009/06/23 09:11:15 sebastien Exp $
+// $Id: item.php,v 1.6 2009/07/20 16:33:16 sebastien Exp $
 
 /**
   * PHP page : Load polymod item interface
@@ -231,7 +231,7 @@ $jscontent = <<<END
 							item:		window.objectId
 						},
 						success:function(form, action){
-							if (action.result.success == false) {
+							if (!action.result || action.result.success == false) {
 								Automne.message.show('{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE_ERROR, false, MOD_POLYMOD_CODENAME)}', '', window);
 							}
 							//update fields values if any is returned in response

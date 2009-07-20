@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-add.php,v 1.4 2009/06/22 14:10:31 sebastien Exp $
+// $Id: page-add.php,v 1.5 2009/07/20 16:33:15 sebastien Exp $
 
 /**
   * PHP page : Load add-page window infos. Set title and template then redirect to page content edition
@@ -81,8 +81,6 @@ $jscontent = <<<END
 		html: 			'{$cms_language->getJsMessage(MESSAGE_PAGE_CREATING_NEW_PAGE_INFO)}',
 		dismissDelay:	0
 	});
-	//add 5px padding to body
-	addPageWindow.body.applyStyles('padding:5px;');
 	
 	var lookup = {};
 	var thumbTemplate = new Ext.XTemplate(
@@ -169,7 +167,7 @@ $jscontent = <<<END
 		labelAlign:		'right',
 		border:			false,
 		items: [{
-			fieldLabel:		'* {$cms_language->getJsMessage(MESSAGE_PAGE_TITLE)}',
+			fieldLabel:		'<span class="atm-red">*</span> {$cms_language->getJsMessage(MESSAGE_PAGE_TITLE)}',
 			name:			'title',
 			anchor:			'100%',
 			allowBlank:		false

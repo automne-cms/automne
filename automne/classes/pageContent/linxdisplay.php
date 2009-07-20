@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: linxdisplay.php,v 1.3 2009/03/02 11:29:21 sebastien Exp $
+// $Id: linxdisplay.php,v 1.4 2009/07/20 16:35:36 sebastien Exp $
 
 /**
   * Class CMS_linxDisplay
@@ -71,6 +71,7 @@ class CMS_linxDisplay extends CMS_grandFather
 		$htmltemplates = $tag->getElementsByTagName('htmltemplate');
 		$modes = $tag->getElementsByTagName('mode');
 		$subleveltemplates = $tag->getElementsByTagName('subleveltemplate');
+		$root = $tag->getElementsByTagName('root');
 		//conditions
 		if ($conditions->length > 0) {
 			foreach ($conditions as $condition) {
@@ -84,6 +85,16 @@ class CMS_linxDisplay extends CMS_grandFather
 		//mode
 		if ($modes->length > 0) {
 			$this->_mode = trim(CMS_DOMDocument::DOMElementToString($modes->item(0), true));
+		} else if ($tag->getAttribute('mode')) {
+			$this->_mode = trim($tag->getAttribute('mode'));
+		}
+		//root
+		if ($root->length > 0) {
+			$this->_root = trim(CMS_DOMDocument::DOMElementToString($root->item(0), true));
+		} else if ($tag->getAttribute('root')) {
+			$this->_root = trim($tag->getAttribute('root'));
+		} else {
+			$this->_root = true;
 		}
 		//subleveltemplate
 		if ($subleveltemplates->length > 0) {
@@ -137,7 +148,7 @@ class CMS_linxDisplay extends CMS_grandFather
 			);
 			if (strpos($this->_htmlTemplate,'{{isParent}}') !== false) {
 				//only if needed because getLineage require a lot of query
-				$lineage = CMS_tree::getLineage($page->getID(), $parsedPage->getID(), false);
+				$lineage = CMS_tree::getLineage($page->getID(), $parsedPage->getID(), false, $public);
 				$replace['class="{{isParent}}"'] 	= (is_array($lineage) && in_array($parsedPage->getID(), $lineage)) ? 'class="CMS_parent"' : "";
 				$replace['{{isParent}}'] 			= (is_array($lineage) && in_array($parsedPage->getID(), $lineage)) ? 'CMS_parent' : "";
 				$replace['id="{{isParent}}"']		= (is_array($lineage) && in_array($parsedPage->getID(), $lineage)) ? 'id="CMS_parent"' : "";
@@ -236,32 +247,36 @@ class CMS_linxDisplay extends CMS_grandFather
                         $replace['id="{{isParent}}"']    = (is_array($pagelineage) && in_array($parsedPage->getID(), $pagelineage)) ? 'id="CMS_parent"' : "";
 					}
 					$pagehtml = str_replace(array_keys($replace), $replace, $this->_htmlTemplate);
-					//check if link is in open or closed mode
-					if ($this->_mode == "open") {
-						//if it is open mode recurse indefinitely (until end of tree)
-						//then mark info of sublevels or not
-						$replace = array(
-							"{{typeClass}}" => ($subPages) ? "CMS_sub" : "CMS_nosub",
-							"{{sublevel}}" 	=> $this->getRecursiveOutput($parsedPage, $level+1, $subPages, $pages, $public),
-						);
-						$pagehtml = str_replace(array_keys($replace), $replace, $pagehtml);
+					if ($level == 0 && ($this->_root === 'false' || !$this->_root)) {
+						$pagehtml = str_replace(array_keys($replace), $replace, $this->getRecursiveOutput($parsedPage, $level+1, $subPages, $pages, $public, $lineage));
 					} else {
-						//if it is 'close' mode recurse only for pages in current lineage
-						$recurse = (in_array($page->getID(),$lineage)) ? true : false;
-						//then mark info of sublevels or not and if level is open or not
-						$sub = ($recurse) ? "CMS_open" : "CMS_sub";
-						$replace = array(
-							"{{typeClass}}" => ($subPages) ? $sub : "CMS_nosub",
-							"{{sublevel}}" 	=> ($recurse) ? $this->getRecursiveOutput($parsedPage, $level+1, $subPages, $pages, $public, $lineage) : "",
-						);
-						if (!$recurse) {
-							//needed to update link targets which is used after to register watched links
-							$it = new RecursiveArrayIterator($subPages);
-							foreach ($it as $pageID => $element) {
-								unset($pages[$pageID]);
+						//check if link is in open or closed mode
+						if ($this->_mode == "open") {
+							//if it is open mode recurse indefinitely (until end of tree)
+							//then mark info of sublevels or not
+							$replace = array(
+								"{{typeClass}}" => ($subPages) ? "CMS_sub" : "CMS_nosub",
+								"{{sublevel}}" 	=> $this->getRecursiveOutput($parsedPage, $level+1, $subPages, $pages, $public),
+							);
+							$pagehtml = str_replace(array_keys($replace), $replace, $pagehtml);
+						} else {
+							//if it is 'close' mode recurse only for pages in current lineage
+							$recurse = (in_array($page->getID(),$lineage)) ? true : false;
+							//then mark info of sublevels or not and if level is open or not
+							$sub = ($recurse) ? "CMS_open" : "CMS_sub";
+							$replace = array(
+								"{{typeClass}}" => ($subPages) ? $sub : "CMS_nosub",
+								"{{sublevel}}" 	=> ($recurse) ? $this->getRecursiveOutput($parsedPage, $level+1, $subPages, $pages, $public, $lineage) : "",
+							);
+							if (!$recurse) {
+								//needed to update link targets which is used after to register watched links
+								$it = new RecursiveArrayIterator($subPages);
+								foreach ($it as $pageID => $element) {
+									unset($pages[$pageID]);
+								}
 							}
+							$pagehtml = str_replace(array_keys($replace), $replace, $pagehtml);
 						}
-						$pagehtml = str_replace(array_keys($replace), $replace, $pagehtml);
 					}
 					//add APPLICATION_ENFORCES_ACCESS_CONTROL php access checking
 					if (APPLICATION_ENFORCES_ACCESS_CONTROL && $public && !(eregi("(page_previsualization.php|page_content.php)", $_SERVER["SCRIPT_NAME"]))) { //TODOV4
@@ -285,14 +300,18 @@ class CMS_linxDisplay extends CMS_grandFather
 				}
 				$levelhtml .= $pagehtml;
 			}
-			if ($levelhtml && strpos($this->_subleveltemplate , "{{sublevel}}") !== false) {
-				$replace = array(
-					"{{sublevel}}" 	=> $levelhtml,
-					"{{lvlClass}}" 	=> "CMS_lvl".($level+1),
-				);
-				$html = str_replace(array_keys($replace), $replace, $this->_subleveltemplate);
-			} else {
+			if ($level == 0 && ($this->_root === 'false' || !$this->_root)) {
 				$html = $levelhtml;
+			} else {
+				if ($levelhtml && strpos($this->_subleveltemplate , "{{sublevel}}") !== false) {
+					$replace = array(
+						"{{sublevel}}" 	=> $levelhtml,
+						"{{lvlClass}}" 	=> "CMS_lvl".($level+1),
+					);
+					$html = str_replace(array_keys($replace), $replace, $this->_subleveltemplate);
+				} else {
+					$html = $levelhtml;
+				}
 			}
 		}
 		return $html;

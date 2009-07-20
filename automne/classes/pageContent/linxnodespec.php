@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: linxnodespec.php,v 1.3 2009/04/15 12:27:02 sebastien Exp $
+// $Id: linxnodespec.php,v 1.4 2009/07/20 16:35:36 sebastien Exp $
 
 /**
   * Class CMS_linxNodespec
@@ -129,7 +129,7 @@ class CMS_linxNodespec extends CMS_grandFather
 			switch ($this->_value) {
 			case "root":
 				$offset = abs($this->_relativeOffset) * -1;
-				$pg = CMS_tree::getAncestor($page, $offset, !$this->_crosswebsite, $publicTree);
+				$pg = CMS_tree::getAncestor($page, $offset, !$this->_crosswebsite, false); //here we do not want to use public tree because, in public tree, some page may be unpublished or in this case, it break the lineage and root page cannot be founded
 				if (is_a($pg, 'CMS_page') && !$pg->hasError()) {
 					return $pg;
 				} else {

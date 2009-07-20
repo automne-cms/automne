@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: tree.php,v 1.4 2009/06/05 15:01:05 sebastien Exp $
+// $Id: tree.php,v 1.5 2009/07/20 16:33:15 sebastien Exp $
 
 /**
   * PHP page : Load tree window infos. Presents a portion of the pages tree. Can be used by any admin page.
@@ -210,6 +210,7 @@ if ($hideMenu) {
 						scope:this
 					},
 					displayField:		'title',
+					autoLoad:			false,
 					typeAhead: 			false,
 					width: 				320,
 					minListWidth:		320,

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_date.php,v 1.7 2009/06/30 08:55:57 sebastien Exp $
+// $Id: object_date.php,v 1.8 2009/07/20 16:35:37 sebastien Exp $
 
 /**
   * Class CMS_object_date
@@ -253,7 +253,7 @@ class CMS_object_date extends CMS_object_common
 						'border'		=> false,
 						'items'			=> array(array(
 							'allowBlank'	=> !$this->_field->getValue('required'),
-							'id'			=> $return['id'],
+							/*'id'			=> $return['id'],*/
 							'name'			=> $return['name'],
 							'xtype'			=> 'datefield',
 							'fieldLabel'	=> $label,
@@ -270,7 +270,7 @@ class CMS_object_date extends CMS_object_common
 							'xtype'			=> 'textfield',
 							'fieldLabel'	=> '<span class="atm-help" ext:qtip="'.htmlspecialchars($language->getMessage(self::MESSAGE_OBJECT_DATE_DATE_COMMENT, array($language->getMessage(self::MESSAGE_OBJECT_DATE_HMS_FORMAT, false, MOD_POLYMOD_CODENAME)))).'">'.$language->getMessage(self::MESSAGE_OBJECT_DATE_HOURS, false, MOD_POLYMOD_CODENAME).'</span>',
 							'value'			=> $hms,
-							'id'			=> 'polymodFieldsValue['.$prefixName.$this->_field->getID().'_1]',
+							/*'id'			=> 'polymodFieldsValue['.$prefixName.$this->_field->getID().'_1]',*/
 							'name'			=> 'polymodFieldsValue['.$prefixName.$this->_field->getID().'_1]',
 							'disabled'		=>	($params['creationDate'] || $params['updateDate'])
 						))

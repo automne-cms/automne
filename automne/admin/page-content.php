@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-content.php,v 1.2 2009/06/05 15:01:04 sebastien Exp $
+// $Id: page-content.php,v 1.3 2009/07/20 16:33:15 sebastien Exp $
 
 /**
   * PHP page : page previsualization
@@ -61,6 +61,13 @@ if (!$cms_page->isDraft()) {
 	$tpl = $cms_page->getTemplate();
 	CMS_moduleClientSpace_standard_catalog::moveClientSpaces($tpl->getID(), RESOURCE_DATA_LOCATION_EDITED, RESOURCE_DATA_LOCATION_EDITION, true);
 	CMS_blocksCatalog::moveBlocks($cms_page, RESOURCE_DATA_LOCATION_EDITED, RESOURCE_DATA_LOCATION_EDITION, true);
+	//log action
+	$log = new CMS_log();
+	$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_START_DRAFT, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getStatus(), "(Start new draft for page)", $cms_page);
+} else {
+	//log action
+	$log = new CMS_log();
+	$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_EDIT_DRAFT, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getStatus(), "(Continue existing page draft)", $cms_page);
 }
 
 //add ext and edit JS files

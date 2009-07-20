@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: side-panel.php,v 1.8 2009/06/22 14:10:32 sebastien Exp $
+// $Id: side-panel.php,v 1.9 2009/07/20 16:33:15 sebastien Exp $
 
 /**
   * PHP page : Load side panel infos.
@@ -606,7 +606,7 @@ $jscontent = <<<END
 						id:			'module'+ t.getAttributeNS('atm', 'module') +'Window',
 						module:		t.getAttributeNS('atm', 'module'),
 						options:	t.getAttributeNS('atm', 'options')
-					}, 800, 600);
+					}, 750, 580);
 				break;
 			}
     	},
@@ -618,37 +618,37 @@ $jscontent = <<<END
 		'users' : function(t){
     		openWindow(t, 'users-groups.php', {
 				type:		'users'
-			}, 800, 600);
+			}, 750, 580);
     	},
 		'groups' : function(t){
     		openWindow(t, 'users-groups.php', {
 				type:		'groups'
-			}, 800, 600);
+			}, 750, 580);
     	},
 		'templates' : function(t){
     		openWindow(t, 'templates.php', {
 				type:		'template'
-			}, 800, 600);
+			}, 750, 580);
 		},
 		'rows' : function(t){
     		openWindow(t, 'templates.php', {
 				type:		'row'
-			}, 800, 600);
+			}, 750, 580);
     	},
 		'styles' : function(t){
     		openWindow(t, 'templates.php', {
 				type:		'css'
-			}, 800, 600);
+			}, 750, 580);
     	},
 		'javascripts' : function(t){
     		openWindow(t, 'templates.php', {
 				type:		'js'
-			}, 800, 600);
+			}, 750, 580);
     	},
 		'wysiwyg-toolbar' : function(t){
 			openWindow(t, 'templates.php', {
 				type:		'wysiwyg-toolbar'
-			}, 800, 600);
+			}, 750, 580);
     	},
 		'modules' : function(t){
     		var window = new Automne.frameWindow({
@@ -662,18 +662,10 @@ $jscontent = <<<END
 			window.show();
     	},
 		'scripts' : function(t){
-    		openWindow(t, 'server-scripts.php', {}, 800, 600);
+    		openWindow(t, 'server-scripts.php', {}, 750, 580);
     	},
 		'logs' : function(t){
-    		var window = new Automne.frameWindow({
-				id:				'logsWindow',
-				frameURL:		'/automne/admin-v3/logs.php',
-				allowFrameNav:	true,
-				width:			750,
-				height:			580,
-				animateTarget:	t
-			});
-			window.show();
+    		openWindow(t, 'logs.php', {}, 750, 580);
     	},
 		'websites' : function(t){
     		var window = new Automne.frameWindow({
@@ -690,12 +682,12 @@ $jscontent = <<<END
     		Automne.message.show('TODOV4 : Show languages panel');
     	},
 		'server' : function(t){
-    		openWindow(t, 'server.php', {}, 800, 600);
+    		openWindow(t, 'server.php', {}, 750, 580);
     	},
 		'parameters' : function(t){
     		openWindow(t, 'module-parameters.php', {
 				module:		'standard'
-			}, 800, 600);
+			}, 750, 580);
     	}
     };
 	

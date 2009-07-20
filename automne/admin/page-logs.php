@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-logs.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: page-logs.php,v 1.2 2009/07/20 16:33:15 sebastien Exp $
 
 /**
   * PHP page : Load tree window infos. Presents a portion of the pages tree. Can be used by any admin page.
@@ -129,7 +129,7 @@ END;
 	case 'search':
 		//set default display mode for this page
 		$view->setDisplayMode(CMS_view::SHOW_JSON);
-		$actionlabels = CMS_log_catalog::getResourceActions();
+		$actionlabels = CMS_log_catalog::getAllActions();
 		$actions = CMS_log_catalog::getByResource(MOD_STANDARD_CODENAME, $cms_page->getID(), $start, $limit, $order, $direction);
 		$feeds = array();
 		$feeds['items'] = array();

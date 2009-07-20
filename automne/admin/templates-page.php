@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-page.php,v 1.7 2009/06/22 14:10:33 sebastien Exp $
+// $Id: templates-page.php,v 1.8 2009/07/20 16:33:15 sebastien Exp $
 
 /**
   * PHP page : Load page templates search window.
@@ -172,6 +172,7 @@ $searchPanel .= "{
 	xtype:			'checkbox',
 	boxLabel: 		'{$cms_language->getJSMessage(MESSAGE_PAGE_VIEW_INACTIVES)}',
 	name: 			'viewinactive',
+	checked:		true,
 	inputValue:		'1',
 	listeners: 		{'check':templateWindow.search}
 }";

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: logs.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: logs.php,v 1.2 2009/07/20 16:34:55 sebastien Exp $
 
 /**
   * PHP page : logs
@@ -72,7 +72,7 @@ switch ($cms_action) {
 			delete from
 				log
 			where
-				left(datetime_log, 7) <= '" . $_POST["startingmonth"] . "'
+				left(datetime_log, 7) <= '" . sensitiveIO::sanitizeSQLString($_POST["startingmonth"]) . "'
 		";
 		$q = new CMS_query($sql);
 		$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: row.php,v 1.7 2009/06/22 14:10:32 sebastien Exp $
+// $Id: row.php,v 1.8 2009/07/20 16:33:15 sebastien Exp $
 
 /**
   * PHP page : Load row detail window.
@@ -57,6 +57,8 @@ define("MESSAGE_PAGE_XML_DEFINITION", 723);
 define("MESSAGE_PAGE_XML_DEFINITION_DESC", 724);
 define("MESSAGE_PAGE_SYNTAX_COLOR", 725);
 define("MESSAGE_PAGE_ACTION_REINDENT", 726);
+define("MESSAGE_PAGE_SAVE_AND_REGEN", 1548);
+define("MESSAGE_PAGE_SAVE_AND_REGEN_DESC", 1549);
 
 $winId = sensitiveIO::request('winId', '', 'rowWindow');
 $rowId = sensitiveIO::request('row', 'sensitiveIO::isPositiveInteger', 'createRow');
@@ -448,6 +450,26 @@ $jscontent = <<<END
 					form.submit({
 						params:{
 							action:		'definition',
+							regenerate:	0,
+							rowId:		rowWindow.rowId
+						},
+						scope:this
+					});
+				}
+			},{
+				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE_AND_REGEN)}',
+				anchor:			'',
+				scope:			this,
+				tooltip:		'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE_AND_REGEN_DESC)}',
+				handler:		function() {
+					var form = Ext.getCmp('rowDef-{$rowId}').getForm();
+					if (editor) {
+						form.setValues({'defText-{$rowId}': editor.getCode().replace(/  /g, "\t")});
+					}
+					form.submit({
+						params:{
+							action:		'definition',
+							regenerate:	1,
 							rowId:		rowWindow.rowId
 						},
 						scope:this

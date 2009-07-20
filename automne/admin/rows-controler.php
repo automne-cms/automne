@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: rows-controler.php,v 1.3 2009/06/22 14:10:32 sebastien Exp $
+// $Id: rows-controler.php,v 1.4 2009/07/20 16:33:15 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on templates
@@ -34,6 +34,7 @@ define("MESSAGE_ACTION_ROW_CREATED", 731);
 define("MESSAGE_ACTION_XML_UPDATED", 732);
 define("MESSAGE_ACTION_N_PAGES_REGEN", 733);
 define("MESSAGE_ACTION_NO_PAGES", 734);
+define("MESSAGE_ERROR_WRITE_ROW", 1551);
 
 //Controler vars
 $action = sensitiveIO::request('action', array('properties', 'definition', 'regenerate'));
@@ -50,6 +51,7 @@ $selectedTemplates = (sensitiveIO::request('templates')) ? explode(',', sensitiv
 $nouserrights = sensitiveIO::request('nouserrights') ? true : false;
 //definition
 $definition = sensitiveIO::request('definition');
+$regenerate = sensitiveIO::request('regenerate') ? true : false;
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -122,18 +124,21 @@ switch ($action) {
 		//selected templates
 		$row->setFilteredTemplates($selectedTemplates);
 		if (!$cms_message && !$row->hasError()) {
-			$row->writeToPersistence();
-			$log = new CMS_log();
-			if (!$creation) {
-				$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT_ROW, $cms_user, "Row : ".$row->getLabel()." (edit base data)");
-				$content = array('success' => true);
-				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_ROW_SAVED);
+			if ($row->writeToPersistence()) {
+				$log = new CMS_log();
+				if (!$creation) {
+					$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT_ROW, $cms_user, "Row : ".$row->getLabel()." (edit base data)");
+					$content = array('success' => true);
+					$cms_message = $cms_language->getMessage(MESSAGE_ACTION_ROW_SAVED);
+				} else {
+					$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT_ROW, $cms_user, "Row  : ".$row->getLabel()." (create row)");
+					$content = array('success' => array('rowId' => $row->getID()));
+					$cms_message = $cms_language->getMessage(MESSAGE_ACTION_ROW_CREATED);
+				}
+				$view->setContent($content);
 			} else {
-				$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT_ROW, $cms_user, "Row  : ".$row->getLabel()." (create row)");
-				$content = array('success' => array('rowId' => $row->getID()));
-				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_ROW_CREATED);
+				$cms_message = $cms_language->getMessage(MESSAGE_ERROR_WRITE_ROW);
 			}
-			$view->setContent($content);
 		}
 	break;
 	case 'definition':
@@ -145,17 +150,24 @@ switch ($action) {
 			if ($error !== true) {
 				$cms_message = $cms_language->getMessage(MESSAGE_PAGE_MALFORMED_DEFINITION_FILE)."\n\n".$error;
 			} else {
-				$row->writeToPersistence();
-				$log = new CMS_log();
-				$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT_ROW, $cms_user, "Row : ".$row->getLabel()." (update row definition)");
-				//submit all public pages using this row to the regenerator
-				$pagesIds = CMS_rowsCatalog::getPagesByRow($rowId, false, true);
-				if ($pagesIds) {
-					CMS_tree::submitToRegenerator($pagesIds, true);
+				if ($row->writeToPersistence()) {
+					$log = new CMS_log();
+					$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT_ROW, $cms_user, "Row : ".$row->getLabel()." (update row definition)");
+					$content = array('success' => true);
+					if ($regenerate) {
+						//submit all public pages using this row to the regenerator
+						$pagesIds = CMS_rowsCatalog::getPagesByRow($rowId, false, true);
+						if ($pagesIds) {
+							CMS_tree::submitToRegenerator($pagesIds, true);
+						}
+						$cms_message = $cms_language->getMessage(MESSAGE_ACTION_XML_UPDATED).($pagesIds ? ',<br />'.$cms_language->getMessage(MESSAGE_ACTION_N_PAGES_REGEN, array(sizeof($pagesIds))) : '.');
+					} else {
+						$cms_message = $cms_language->getMessage(MESSAGE_ACTION_XML_UPDATED);
+					}
+					$view->setContent($content);
+				} else {
+					$cms_message = $cms_language->getMessage(MESSAGE_ERROR_WRITE_ROW);
 				}
-				$content = array('success' => true);
-				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_XML_UPDATED).($pagesIds ? ',<br />'.$cms_language->getMessage(MESSAGE_ACTION_N_PAGES_REGEN, array(sizeof($pagesIds))) : '.');
-				$view->setContent($content);
 			}
 		} else {
 			$cms_message = $cms_language->getMessage(MESSAGE_ERROR_UNKNOWN_ROW);

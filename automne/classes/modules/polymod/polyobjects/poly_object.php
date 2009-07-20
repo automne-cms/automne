@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object.php,v 1.7 2009/06/23 14:10:15 sebastien Exp $
+// $Id: poly_object.php,v 1.8 2009/07/20 16:35:37 sebastien Exp $
 
 /**
   * Class CMS_poly_object
@@ -437,7 +437,7 @@ class CMS_poly_object extends CMS_resource
 	  */
 	function getLanguage() {
 		static $languageFieldIDForObjectType;
-		//found language field for this type of object
+		//find language field for this type of object
 		if (!isset($languageFieldIDForObjectType[$this->_objectID])) {
 			$languageFieldIDForObjectType[$this->_objectID] = false;
 			foreach(array_keys($this->_subObjectsDefinitions) as $fieldID) {
@@ -453,6 +453,39 @@ class CMS_poly_object extends CMS_resource
 		//then get field value
 		$value = $this->_objectValues[$languageFieldIDForObjectType[$this->_objectID]]->getValue('value');
 		return ($value) ? $value : strtolower(APPLICATION_DEFAULT_LANGUAGE);
+	}
+	
+	/**
+	  * Get object publication date
+	  * If object is a primary resource, return resource pub date else, try to find a date field with creation date
+	  *
+	  * @return CMS_date, the publication date object if any (false otherwise)
+	  * @access public
+	  */
+	function getPublicationDate() {
+		static $pubFieldIDForObjectType;
+		if ($this->getObjectResourceStatus() == 1) {
+			return $this->getPublicationDateStart();
+		} else {
+			//find creation date field for this type of object
+			if (!isset($pubFieldIDForObjectType[$this->_objectID])) {
+				$pubFieldIDForObjectType[$this->_objectID] = false;
+				foreach(array_keys($this->_subObjectsDefinitions) as $fieldID) {
+					$type = $this->_objectFieldsDefinition[$fieldID]->getValue('type');
+					if ($type == 'CMS_object_date' && $this->_objectFieldsDefinition[$fieldID]->getParameter('creationDate')) { //date field
+						$pubFieldIDForObjectType[$this->_objectID] = $fieldID;
+					}
+				}
+			}
+			if ($pubFieldIDForObjectType[$this->_objectID] === false) {
+				return false;
+			}
+			//then get field value
+			$value = $this->_objectValues[$pubFieldIDForObjectType[$this->_objectID]]->getValue('value');
+			$date = new CMS_date();
+			$date->setFromDBValue($value);
+			return $date;
+		}
 	}
 	
 	/**
@@ -664,6 +697,17 @@ class CMS_poly_object extends CMS_resource
 			}
 			return '';
 		}
+	}
+	
+	/**
+	  * get object type label
+	  *
+	  * @param mixed $language the language code (string) or the CMS_language (object) to use for label
+	  * @return string : the object name
+	  * @access public
+	  */
+	function getTypeLabel($language) {
+		return $this->getObjectDefinition()->getLabel($language);
 	}
 	
 	/**
@@ -894,6 +938,10 @@ class CMS_poly_object extends CMS_resource
 					$mod = CMS_modulesCatalog::getByCodename($polyModuleCodename);
 					$mod->processValidation($validation, VALIDATION_OPTION_ACCEPT);
 				}
+				//Log action
+				$log = new CMS_log();
+				$language = $cms_user->getLanguage();
+				$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_EDIT_CONTENT, $cms_user, $polyModuleCodename, $this->getStatus(), 'Item \''.$this->getLabel().'\' ('.$objectDef->getLabel($language).')', $this);
 			}
 		}
 		return true;
@@ -949,7 +997,7 @@ class CMS_poly_object extends CMS_resource
 		} else {
 			//change the article proposed location and send emails to all the validators
 			if ($this->setProposedLocation(RESOURCE_LOCATION_DELETED, $cms_user)) {
-				$this->writeToPersistence();
+				parent::writeToPersistence();
 				if (APPLICATION_ENFORCES_WORKFLOW) {
 					if (!NO_APPLICATION_MAIL) {
 						$validators = CMS_profile_usersCatalog::getValidators($polyModuleCodename);
@@ -965,6 +1013,10 @@ class CMS_poly_object extends CMS_resource
 					$mod = CMS_modulesCatalog::getByCodename($polyModuleCodename);
 					$mod->processValidation($validation, VALIDATION_OPTION_ACCEPT);
 				}
+				//Log action
+				$log = new CMS_log();
+				$language = $cms_user->getLanguage();
+				$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_DELETE, $cms_user, $polyModuleCodename, $this->getStatus(), 'Item \''.$this->getLabel().'\' ('.$objectDef->getLabel($language).')', $this);
 				return true;
 			} else {
 				return false;
@@ -993,7 +1045,21 @@ class CMS_poly_object extends CMS_resource
 			return false;
 		}
 		$this->removeProposedLocation();
-		return $this->writeToPersistence();
+		if (parent::writeToPersistence()) {
+			global $cms_user;
+			//get Object definition
+			$objectDef = $this->getObjectDefinition();
+			//get module codename
+			$polyModuleCodename = $objectDef->getValue('module');
+			
+			//Log action
+			$log = new CMS_log();
+			$language = $cms_user->getLanguage();
+			$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_UNDELETE, $cms_user, $polyModuleCodename, $this->getStatus(), 'Item \''.$this->getLabel().'\' ('.$objectDef->getLabel($language).')', $this);
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	/**

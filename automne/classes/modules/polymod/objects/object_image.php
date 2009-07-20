@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_image.php,v 1.8 2009/06/30 08:55:57 sebastien Exp $
+// $Id: object_image.php,v 1.9 2009/07/20 16:35:37 sebastien Exp $
 
 /**
   * Class CMS_object_image
@@ -509,7 +509,36 @@ class CMS_object_image extends CMS_object_common
 			if (!$this->_subfieldValues[1]->setValue(htmlspecialchars($values[$prefixName.$this->_field->getID().'_1']))) {
 				return false;
 			}
-			
+			//image zoom (if needed)
+			if ((!isset($values[$prefixName.$this->_field->getID().'_makeZoom']) || $values[$prefixName.$this->_field->getID().'_makeZoom'] != 1) && $values[$prefixName.$this->_field->getID().'_2'] && strpos($values[$prefixName.$this->_field->getID().'_2'], PATH_UPLOAD_WR.'/') !== false) {
+				$filename = $values[$prefixName.$this->_field->getID().'_2'];
+				//check for image type before doing anything
+				if (!in_array(strtolower(pathinfo($filename, PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
+					return false;
+				}
+				//destroy old image if any
+				if ($this->_subfieldValues[2]->getValue()) {
+					@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[2]->getValue());
+					$this->_subfieldValues[2]->setValue('');
+				}
+				//move and rename uploaded file 
+				$filename = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $filename);
+				$basename = pathinfo($filename, PATHINFO_BASENAME);
+				
+				//set thumbnail
+				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
+				$newBasename = "r".$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($basename));
+				if (strlen($newBasename) > 255) {
+					$newBasename = sensitiveIO::ellipsis($newBasename, 255, '-');
+				}
+				$newFilename = $path.'/'.$newBasename;
+				CMS_file::moveTo($filename, $newFilename);
+				CMS_file::chmodFile(FILES_CHMOD, $newFilename);
+				//set it
+				if (!$this->_subfieldValues[2]->setValue($newBasename)) {
+					return false;
+				}
+			}
 			//thumbnail
 			if ($values[$prefixName.$this->_field->getID().'_0'] && strpos($values[$prefixName.$this->_field->getID().'_0'], PATH_UPLOAD_WR.'/') !== false) {
 				$filename = $values[$prefixName.$this->_field->getID().'_0'];
@@ -599,37 +628,6 @@ class CMS_object_image extends CMS_object_common
 					return false;
 				}
 			}
-			
-			//image zoom (if needed)
-			if ((!isset($values[$prefixName.$this->_field->getID().'_makeZoom']) || $values[$prefixName.$this->_field->getID().'_makeZoom'] != 1) && $values[$prefixName.$this->_field->getID().'_2'] && strpos($values[$prefixName.$this->_field->getID().'_2'], PATH_UPLOAD_WR.'/') !== false) {
-				$filename = $values[$prefixName.$this->_field->getID().'_2'];
-				//check for image type before doing anything
-				if (!in_array(strtolower(pathinfo($filename, PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
-					return false;
-				}
-				//destroy old image if any
-				if ($this->_subfieldValues[2]->getValue()) {
-					@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[2]->getValue());
-					$this->_subfieldValues[2]->setValue('');
-				}
-				//move and rename uploaded file 
-				$filename = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $filename);
-				$basename = pathinfo($filename, PATHINFO_BASENAME);
-				
-				//set thumbnail
-				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
-				$newBasename = "r".$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($basename));
-				if (strlen($newBasename) > 255) {
-					$newBasename = sensitiveIO::ellipsis($newBasename, 255, '-');
-				}
-				$newFilename = $path.'/'.$newBasename;
-				CMS_file::moveTo($filename, $newFilename);
-				CMS_file::chmodFile(FILES_CHMOD, $newFilename);
-				//set it
-				if (!$this->_subfieldValues[2]->setValue($newBasename)) {
-					return false;
-				}
-			}
 			// If label not set yet, set it
 			if(!$this->_subfieldValues[1]->getValue()){
 				if($this->_subfieldValues[0]->getValue()){
@@ -655,27 +653,33 @@ class CMS_object_image extends CMS_object_common
 					'extension'		=> '',
 				);
 			}
-			//update files infos if needed
-			if ($this->_subfieldValues[2]->getValue() && file_exists(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[2]->getValue())) {
-				$file = new CMS_file(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[2]->getValue());
-				$zoomDatas = array(
-					'filename'		=> $file->getName(false),
-					'filepath'		=> $file->getFilePath(CMS_file::WEBROOT),
-					'filesize'		=> $file->getFileSize(),
-					'fileicon'		=> $file->getFileIcon(CMS_file::WEBROOT),
-					'extension'		=> $file->getExtension(),
-				);
+			$imageDatas['module']		= $moduleCodename;
+			$imageDatas['visualisation']= RESOURCE_DATA_LOCATION_EDITED;
+			if ($params['useDistinctZoom'] || $this->_subfieldValues[2]->getValue()) {
+				//update files infos if needed
+				if ($this->_subfieldValues[2]->getValue() && file_exists(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[2]->getValue())) {
+					$file = new CMS_file(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[2]->getValue());
+					$zoomDatas = array(
+						'filename'		=> $file->getName(false),
+						'filepath'		=> $file->getFilePath(CMS_file::WEBROOT),
+						'filesize'		=> $file->getFileSize(),
+						'fileicon'		=> $file->getFileIcon(CMS_file::WEBROOT),
+						'extension'		=> $file->getExtension(),
+					);
+				} else {
+					$zoomDatas = array(
+						'filename'		=> '',
+						'filepath'		=> '',
+						'filesize'		=> '',
+						'fileicon'		=> '',
+						'extension'		=> '',
+					);
+				}
+				$zoomDatas['module']			= $moduleCodename;
+				$zoomDatas['visualisation']		= RESOURCE_DATA_LOCATION_EDITED;
 			} else {
-				$zoomDatas = array(
-					'filename'		=> '',
-					'filepath'		=> '',
-					'filesize'		=> '',
-					'fileicon'		=> '',
-					'extension'		=> '',
-				);
+				$zoomDatas = '';
 			}
-			$imageDatas['module']		= $zoomDatas['module']			= $moduleCodename;
-			$imageDatas['visualisation']= $zoomDatas['visualisation']	= RESOURCE_DATA_LOCATION_EDITED;
 			$content = array('datas' => array(
 				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_0]' => $imageDatas,
 				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_2]' => $zoomDatas,
@@ -838,7 +842,7 @@ class CMS_object_image extends CMS_object_common
 				}
 			} elseif (isset($_FILES[$prefixName.$this->_field->getID().'_0']) && $_FILES[$prefixName.$this->_field->getID().'_0']['name'] && $_FILES[$prefixName.$this->_field->getID().'_0']['error'] != 0) {
 				return false;
-			} elseif (isset($values[$prefixName.$this->_field->getID().'_0_hidden']) && $values[$prefixName.$this->_field->getID().'_0_hidden'] && $values[$prefixName.$this->_field->getID().'_delete'] != 1) {
+			} elseif (isset($values[$prefixName.$this->_field->getID().'_0_hidden']) && $values[$prefixName.$this->_field->getID().'_0_hidden'] && isset($values[$prefixName.$this->_field->getID().'_delete']) && $values[$prefixName.$this->_field->getID().'_delete'] != 1) {
 				//set label as image name if none set
 				if ($values[$prefixName.$this->_field->getID().'_1']) {
 					if (!$this->_subfieldValues[1]->setValue(htmlspecialchars($values[$prefixName.$this->_field->getID().'_1']))) {
@@ -872,7 +876,7 @@ class CMS_object_image extends CMS_object_common
 				}
 			} elseif (isset($_FILES[$prefixName.$this->_field->getID().'_2']) && $_FILES[$prefixName.$this->_field->getID().'_2']['name'] && $_FILES[$prefixName.$this->_field->getID().'_2']['error'] != 0) {
 				return false;
-			} elseif (isset($values[$prefixName.$this->_field->getID().'_2_hidden']) && $values[$prefixName.$this->_field->getID().'_2_hidden'] && $values[$prefixName.$this->_field->getID().'_delete'] != 1) {
+			} elseif (isset($values[$prefixName.$this->_field->getID().'_2_hidden']) && $values[$prefixName.$this->_field->getID().'_2_hidden'] && isset($values[$prefixName.$this->_field->getID().'_delete']) && $values[$prefixName.$this->_field->getID().'_delete'] != 1) {
 				if(!$this->_subfieldValues[2]->setValue($values[$prefixName.$this->_field->getID().'_2_hidden'])) {
 					return false;
 				}

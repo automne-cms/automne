@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: template.php,v 1.10 2009/06/29 10:21:55 sebastien Exp $
+// $Id: template.php,v 1.11 2009/07/20 16:33:15 sebastien Exp $
 
 /**
   * PHP page : Load template detail window.
@@ -62,6 +62,8 @@ define("MESSAGE_PAGE_XML_DEFINITION_DESC", 1464);
 define("MESSAGE_PAGE_XML_FILE", 1465);
 define("MESSAGE_PAGE_XML_DEFINITION_USAGE_DESC", 1466);
 define("MESSAGE_PAGE_DEFAULT_ROWS", 1467);
+define("MESSAGE_PAGE_SAVE_AND_REGEN", 1548);
+define("MESSAGE_PAGE_SAVE_AND_REGEN_DESC", 1550);
 
 $winId = sensitiveIO::request('winId', '', 'templateWindow');
 $templateId = sensitiveIO::request('template', 'sensitiveIO::isPositiveInteger', 'createTemplate');
@@ -403,7 +405,11 @@ $jscontent = <<<END
 								//update store
 								for(var i = 0; i < jsonResponse.total; i++) {
 									var data = jsonResponse.results[i];
-									Ext.get('defText-{$templateId}').dom.value = data.definition;
+									if (data.definition && data.definition != 'false') {
+										Ext.get('defText-{$templateId}').dom.value = data.definition;
+									} else {
+										Ext.get('defText-{$templateId}').dom.value = '';
+									}
 								}
 							}
 						},
@@ -537,6 +543,26 @@ $jscontent = <<<END
 					form.submit({
 						params:{
 							action:		'definition',
+							regenerate:	0,
+							templateId:	templateWindow.templateId
+						},
+						scope:this
+					});
+				}
+			},{
+				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE_AND_REGEN)}',
+				anchor:			'',
+				scope:			this,
+				tooltip:		'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE_AND_REGEN_DESC)}',
+				handler:		function() {
+					var form = Ext.getCmp('templateDef-{$templateId}').getForm();
+					if (editor) {
+						form.setValues({'defText-{$templateId}': editor.getCode().replace(/  /g, "\t")});
+					}
+					form.submit({
+						params:{
+							action:		'definition',
+							regenerate:	1,
 							templateId:	templateWindow.templateId
 						},
 						scope:this

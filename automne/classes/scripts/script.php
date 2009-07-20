@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: script.php,v 1.2 2009/03/02 11:29:31 sebastien Exp $
+// $Id: script.php,v 1.3 2009/07/20 16:35:38 sebastien Exp $
 
 /**
   * background script : regenerator
@@ -124,7 +124,7 @@ class automne_script extends backgroundScript
 			//the sql script which selects one script task at a time
 			$sql_select = "
 				select
-					id_reg
+					*
 				from
 					regenerator
 				limit

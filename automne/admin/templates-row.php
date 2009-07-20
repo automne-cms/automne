@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-row.php,v 1.7 2009/06/22 14:10:33 sebastien Exp $
+// $Id: templates-row.php,v 1.8 2009/07/20 16:33:15 sebastien Exp $
 
 /**
   * PHP page : Load page rows search window.
@@ -128,6 +128,7 @@ $searchPanel .= "{
 	boxLabel: 		'{$cms_language->getJSMessage(MESSAGE_PAGE_VIEW_INACTIVE_ROWS)}',
 	name: 			'viewinactive',
 	inputValue:		'1',
+	checked:		true,
 	listeners: 		{'check':rowWindow.search}
 }";
 //$searchPanel = substr($searchPanel, 0, -1);

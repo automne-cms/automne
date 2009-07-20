@@ -15,7 +15,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: pagetemplatescatalog.php,v 1.3 2009/02/09 10:04:18 sebastien Exp $
+// $Id: pagetemplatescatalog.php,v 1.4 2009/07/20 16:35:38 sebastien Exp $
 
 /**
   * Class CMS_pageTemplatesCatalog
@@ -129,7 +129,7 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 		}
 		//user
 		if (is_object($user) && !$user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
-			$groupsDenied = $user->getTemplateGroupsDenied();
+			$groupsDenied = $user->getTemplateGroupsDenied()->getElements();
 			if ($groupsDenied && is_array($groupsDenied) && sizeof($groupsDenied)) {
 				$where .= ($where) ? ' and (' : '(';
 				foreach ($groupsDenied as $group) {
@@ -155,7 +155,7 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 		if ($start || $limit) {
 			$sql .= " limit ".sensitiveIO::sanitizeSQLString($start).",".sensitiveIO::sanitizeSQLString($limit);
 		}
-		//pr($sql);
+		pr($sql);
 		$q = new CMS_query($sql);
 		$pts = array();
 		while ($r = $q->getArray()) {

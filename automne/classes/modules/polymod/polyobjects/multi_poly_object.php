@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: multi_poly_object.php,v 1.5 2009/06/22 14:08:40 sebastien Exp $
+// $Id: multi_poly_object.php,v 1.6 2009/07/20 16:35:36 sebastien Exp $
 
 /**
   * Class CMS_multi_poly_object
@@ -564,10 +564,11 @@ class CMS_multi_poly_object extends CMS_object_common
 					'bodyStyle'		=> 'margin:5px 0 3px 0',
 					'html'			=> $language->getMessage(self::MESSAGE_MULTI_OBJECT_LIST_ZONE,array($objectDef->getObjectLabel($language)), MOD_POLYMOD_CODENAME)
 				);
+			$listId2 = 'list'.md5(mt_rand().microtime());
 			$items[] = array(
 				'xtype'			=> "multiselect2",
 	            'hideLabel'		=> true,
-	            'id'			=>	'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]',
+	            'id'			=>	$listId2,
 				'name'			=>	'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]',
 				'allowBlank'	=> !$this->_field->getValue('required'),
 	            'valueField'	=> 'id',
@@ -605,7 +606,7 @@ class CMS_multi_poly_object extends CMS_object_common
 						'text'		=> $language->getMessage(self::MESSAGE_PAGE_ACTION_MODIFIY),
 						'tooltip'	=> $language->getMessage(self::MESSAGE_MULTI_OBJECT_EDIT_ELEMENT, false, MOD_POLYMOD_CODENAME),
 						'handler'	=> sensitiveIO::sanitizeJSString('function(button){
-							var cmp = Ext.getCmp(\'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]\');
+							var cmp = Ext.getCmp(\''.$listId2.'\');
 							var selected = cmp.view.getSelectedRecords();
 							if (!selected.length || selected.length > 1) {
 								return;
@@ -632,7 +633,7 @@ class CMS_multi_poly_object extends CMS_object_common
 								height:			580,
 								animateTarget:	button,
 								listeners:{\'close\':function(window){
-									var cmp = Ext.getCmp(\'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]\');
+									var cmp = Ext.getCmp(\''.$listId2.'\');
 									cmp.store.reload();
 								}}
 							});
@@ -644,7 +645,7 @@ class CMS_multi_poly_object extends CMS_object_common
 						'text'		=> $language->getMessage(self::MESSAGE_PAGE_ACTION_DESASSOCIATE),
 						'tooltip'	=> $language->getMessage(self::MESSAGE_MULTI_OBJECT_DISASSOCIATE_ELEMENT, false, MOD_POLYMOD_CODENAME),
 						'handler'	=> sensitiveIO::sanitizeJSString('function(){
-							var cmp = Ext.getCmp(\'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]\');
+							var cmp = Ext.getCmp(\''.$listId2.'\');
 							var selected = cmp.view.getSelectedRecords();
 							if (!selected.length || selected.length > 1) {
 								return;
@@ -685,7 +686,7 @@ class CMS_multi_poly_object extends CMS_object_common
 								height:			580,
 								animateTarget:	button,
 								listeners:{\'close\':function(window){
-									var cmp = Ext.getCmp(\'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]\');
+									var cmp = Ext.getCmp(\''.$listId2.'\');
 									if (window.objectId) {
 										var values = cmp.getRawValue();
 										values.unshift(window.objectId);
@@ -716,7 +717,7 @@ class CMS_multi_poly_object extends CMS_object_common
 			$return = array(
 				'allowBlank'	=>	!$this->_field->getValue('required'),
 				'fieldLabel' 	=>	$label,
-				'id'			=>	'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]',
+				/*'id'			=>	'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]',*/
 				'name'			=>	'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]'
 			);
 			//get searched objects conditions

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_email.php,v 1.2 2009/06/05 15:02:18 sebastien Exp $
+// $Id: object_email.php,v 1.3 2009/07/20 16:35:37 sebastien Exp $
 
 /**
   * Class CMS_object_email
@@ -245,7 +245,7 @@ class CMS_object_email extends CMS_object_common
 			if ($sendingDate->isNull()) {
 				$lastSendingDate = $cms_language->getMessage(self::MESSAGE_OBJECT_EMAIL_NEVER, false, MOD_POLYMOD_CODENAME);
 			} else {
-				$lastSendingDate = $sendingDate->getLocalizedDate($cms_language->getDateFormat()).' '.date('H:i:s',$sendingDate->getTimestamp()).($this->_subfieldValues[2]->getValue() ? ' ('.$this->_subfieldValues[2]->getValue().' '.$cms_language->getMessage(MESSAGE_OBJECT_EMAIL_MESSAGES_SENT, false, MOD_POLYMOD_CODENAME).')' : '');
+				$lastSendingDate = $sendingDate->getLocalizedDate($cms_language->getDateFormat()).' '.date('H:i:s',$sendingDate->getTimestamp()).($this->_subfieldValues[2]->getValue() ? ' ('.$this->_subfieldValues[2]->getValue().' '.$cms_language->getMessage(self::MESSAGE_OBJECT_EMAIL_MESSAGES_SENT, false, MOD_POLYMOD_CODENAME).')' : '');
 			}
 			return $lastSendingDate;
 		}
@@ -565,6 +565,7 @@ class CMS_object_email extends CMS_object_common
 		} else {
 			$lastSendingDate = $sendingDate->getLocalizedDate($language->getDateFormat()).' '.date('H:i:s',$sendingDate->getTimestamp());
 		}
+		
 		$label = $return['title'];
 		$return = array(
 			'layout'	=> 'column',
@@ -595,7 +596,8 @@ class CMS_object_email extends CMS_object_common
 						'padding'		=> '5',
 						'bodyStyle'		=> 'margin:10px 0 15px 0',
 						'html'			=> $label.' : '.$language->getMessage(self::MESSAGE_OBJECT_EMAIL_LAST_SENDING, false, MOD_POLYMOD_CODENAME).' : '.$lastSendingDate
-					))
+					)
+				)
 				,array(
 					'columnWidth'	=> 1,
 					'layout'		=> 'form',
@@ -615,6 +617,14 @@ class CMS_object_email extends CMS_object_common
 				)
 			)
 		);
+		if (!$params['chooseSendEmail']) {
+			$return['items'][1]['items'][] = array(
+				'xtype'			=> 'hidden',
+				'value'			=> 1,
+				'id'			=> 'polymodFieldsValue['.$prefixName.$this->_field->getID().'_0]',
+				'name'			=> 'polymodFieldsValue['.$prefixName.$this->_field->getID().'_0]'
+			);
+		}
 		return $return;
 	}
 	
@@ -780,7 +790,7 @@ class CMS_object_email extends CMS_object_common
 					return false;
 				}
 				//create email subject
-				$parameters['item'] = &$item;
+				$parameters['item'] = $item;
 				$parameters['public'] = true;
 				$polymodParsing = new CMS_polymod_definition_parsing($params['emailSubject'], false);
 				$subject = $polymodParsing->getContent(CMS_polymod_definition_parsing::OUTPUT_RESULT, $parameters);
@@ -788,12 +798,9 @@ class CMS_object_email extends CMS_object_common
 				//create email body
 				if ($params['emailBody']['type'] == 1) {
 					//send body
-					//TODO
-					$polymodParsing = new CMS_polymod_definition_parsing($params['emailBody']['html'], false);
+					$parameters['module'] = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
+					$polymodParsing = new CMS_polymod_definition_parsing($params['emailBody']['html'], true);
 					$body = $polymodParsing->getContent(CMS_polymod_definition_parsing::OUTPUT_RESULT, $parameters);
-					
-					
-					
 				} elseif ($params['emailBody']['type'] == 2) {
 					//send a page
 					$page = CMS_tree::getPageById($params['emailBody']['pageID']);
@@ -833,11 +840,17 @@ class CMS_object_email extends CMS_object_common
 					$this->raiseError('No valid email type to send : '.$params['emailBody']['type']);
 					return false;
 				}
-				
-				$body .= print_r($sendmail,true);
+				if (isset($sendmail)) {
+					//$body .= print_r($sendmail,true);
+				}
+				//drop email sending
+				if (isset($sendmail) && $sendmail === false) {
+					return false;
+				}
 				
 				//if no body for email or if sendmail var is set to false, quit
-				if (!$body || (isset($sendmail) && $sendmail === false)) {
+				if (!$body) {
+					$this->raiseError('No email body to send ... Email parameters : user : '.$parameters['user'].' - object '.$parameters['object']);
 					return false;
 				}
 				

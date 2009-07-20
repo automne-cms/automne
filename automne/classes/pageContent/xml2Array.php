@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: xml2Array.php,v 1.2 2009/04/02 13:57:59 sebastien Exp $
+// $Id: xml2Array.php,v 1.3 2009/07/20 16:35:36 sebastien Exp $
 
 /**
   * Class CMS_xml2Array
@@ -291,7 +291,7 @@ class CMS_xml2Array extends CMS_grandFather
 	function getParsedArray() {
 		if ($this->_params & self::XML_ENCLOSE) {
 			//remove enclose tag
-			return $this->_arrOutput[0]['childrens'];
+			return isset($this->_arrOutput[0]['childrens']) ? $this->_arrOutput[0]['childrens'] : array();
 		} else {
 			return $this->_arrOutput;
 		}

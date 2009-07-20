@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_integer.php,v 1.3 2009/06/05 15:02:18 sebastien Exp $
+// $Id: object_integer.php,v 1.4 2009/07/20 16:35:37 sebastien Exp $
 
 /**
   * Class CMS_object_integer
@@ -37,6 +37,8 @@ class CMS_object_integer extends CMS_object_common
 	const MESSAGE_OBJECT_INTEGER_PARAMETER_UNIT = 417;
   	const MESSAGE_OBJECT_INTEGER_PARAMETER_UNIT_DESC = 418;
   	const MESSAGE_OBJECT_INTEGER_PARAMETER_UNIT_DESCRIPTION = 419;
+	const MESSAGE_OBJECT_INTEGER_OPERATOR_OTHERS_DESCRIPTION = 539;
+	
 	/**
 	  * object label
 	  * @var integer
@@ -274,11 +276,49 @@ class CMS_object_integer extends CMS_object_common
 		$labels = parent::getLabelsStructure($language);
 		$params = $this->getParamsValues();
 		unset($labels['structure']['value']);
+		$labels['operator']['&lt;, &gt;,&lt;=, &gt;= '] = $language->getMessage(self::MESSAGE_OBJECT_INTEGER_OPERATOR_OTHERS_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		if(isset($params['unit']) && $params['unit']){
 			$labels['structure']['unit'] = $language->getMessage(self::MESSAGE_OBJECT_INTEGER_PARAMETER_UNIT_DESCRIPTION,array($params['unit']) ,MOD_POLYMOD_CODENAME);
 		}
 		return $labels;
     }
+	
+	/**
+	  * Get field search SQL request (used by class CMS_object_search)
+	  *
+	  * @param integer $fieldID : this field id in object (aka $this->_field->getID())
+	  * @param mixed $value : the value to search
+	  * @param string $operator : additionnal search operator
+	  * @param string $where : where clauses to add to SQL
+	  * @param boolean $public : values are public or edited ? (default is edited)
+	  * @return string : the SQL request
+	  * @access public
+	  */
+	function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
+		$supportedOperator = array(
+			'<',
+			'<=',
+			'>',
+			'>=',
+		);
+		if ($operator && !in_array($operator, $supportedOperator)) {
+			$this->_raiseError(get_class($this)." : getFieldSearchSQL : unkown search operator : ".$operator.", use default search instead");
+			$operator = false;
+		}
+		if (!$operator) {
+			return parent::getFieldSearchSQL($fieldID, $value, $operator, $where, $public);
+		}
+		$statusSuffix = ($public) ? "_public":"_edited";
+		$sql = "
+			select
+				distinct objectID
+			from
+				mod_subobject_integer".$statusSuffix."
+			where
+				objectFieldID = '".SensitiveIO::sanitizeSQLString($fieldID)."'
+				and value ".$operator." '".SensitiveIO::sanitizeSQLString($value)."'
+				$where";
+		return $sql;
+	}
 }
-
 ?>

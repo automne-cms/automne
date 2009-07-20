@@ -13,7 +13,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_boolean.php,v 1.4 2009/06/30 08:55:57 sebastien Exp $
+// $Id: object_boolean.php,v 1.5 2009/07/20 16:35:37 sebastien Exp $
 
 /**
   * Class CMS_object_integer
@@ -203,9 +203,40 @@ class CMS_object_boolean extends CMS_object_common
 	  */
 	function getListOfNamesForObject($public = false, $searchConditions = array(), $restrictToUsedCat = true) {
 		global $cms_language;
-		$a_boolean[0] = $cms_language->getMessage(self::MESSAGE_OBJECT_BOOLEAN_NO);
+		$a_boolean['-'] = $cms_language->getMessage(self::MESSAGE_OBJECT_BOOLEAN_NO);
 		$a_boolean[1] = $cms_language->getMessage(self::MESSAGE_OBJECT_BOOLEAN_YES);
 		return $a_boolean;
+	}
+	
+	/**
+	  * Get field search SQL request (used by class CMS_object_search)
+	  *
+	  * @param integer $fieldID : this field id in object (aka $this->_field->getID())
+	  * @param mixed $value : the value to search
+	  * @param string $operator : additionnal search operator
+	  * @param string $where : where clauses to add to SQL
+	  * @param boolean $public : values are public or edited ? (default is edited)
+	  * @return string : the SQL request
+	  * @access public
+	  */
+	function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
+		$supportedOperator = array();
+		if ($operator && !in_array($operator, $supportedOperator)) {
+			$this->raiseError("Unknown search operator : ".$operator.", use default search instead");
+			$operator = false;
+		}
+		$statusSuffix = ($public) ? "_public":"_edited";
+		$value = $value == '-' ? '0' : $value;
+		$sql = "
+			select
+				distinct objectID
+			from
+				mod_subobject_integer".$statusSuffix."
+			where
+				objectFieldID = '".SensitiveIO::sanitizeSQLString($fieldID)."'
+				and value = '".$value."'
+				$where";
+		return $sql;
 	}
 }
 ?>

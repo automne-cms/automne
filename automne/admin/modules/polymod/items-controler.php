@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: items-controler.php,v 1.4 2009/06/25 11:57:49 sebastien Exp $
+// $Id: items-controler.php,v 1.5 2009/07/20 16:33:16 sebastien Exp $
 
 /**
   * PHP page : Load polymod item interface
@@ -48,6 +48,7 @@ define("MESSAGE_PAGE_FIELD_ORDER_PUBLICATION_START", 137);
 define("MESSAGE_PAGE_FIELD_ORDER_PUBLICATION_END", 138);
 define("MESSAGE_PAGE_ELEMENT_LOCKED", 525);
 define("MESSAGE_PAGE_ELEMENT_EDIT_RIGHTS_ERROR", 526);
+define("MESSAGE_FORM_ERROR_FOLLOWING_FIELDS_MANDATORY", 535);
 
 //Controler vars
 $action = sensitiveIO::request('action', array('save', 'setRowParameters', 'pluginSelection'));
@@ -143,10 +144,24 @@ switch ($action) {
 		//first, check mandatory values
 		$allOK = true;
 		foreach ($fieldsObjects as $fieldID => $aFieldObject) {
-			$allOK &= $item->checkMandatory($fieldID, $fieldsValues, '', true);
+			$return = $item->checkMandatory($fieldID, $fieldsValues, '', true);
+			if ($return !== true) {
+				$allOK = false;
+				$cms_message .= "<br />- ".$aFieldObject->getFieldLabel($cms_language);
+				if ($return !== false) {
+					$jscontent = "
+					Automne.message.popup({
+						msg: 				'".sensitiveIO::sanitizeJSString($return)."',
+						buttons: 			Ext.MessageBox.OK,
+						closable: 			true,
+						icon: 				Ext.MessageBox.ERROR
+					});";
+					$view->addJavascript($jscontent);
+				}
+			}
 		}
 		if (!$allOK) {
-			$cms_message .= $cms_language->getMessage(MESSAGE_FORM_ERROR_MANDATORY_FIELDS);
+			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_FOLLOWING_FIELDS_MANDATORY, false, MOD_POLYMOD_CODENAME).$cms_message;
 		} else {
 			//second, set values for all fields
 			foreach ($fieldsObjects as $fieldID => $aFieldObject) {
@@ -222,7 +237,8 @@ switch ($action) {
 			$codeTopaste = $definitionParsing->getContent(CMS_polymod_definition_parsing::OUTPUT_RESULT, $parameters);
 			//add some attributes to images to prevent resizing into editor
 		    $codeTopaste = str_replace('<img ','<img contenteditable="false" unselectable="on" ', $codeTopaste);
-			
+			//encode all ampersand without reencode already encoded ampersand
+			$codeTopaste = sensitiveIO::reencodeAmpersand($codeTopaste);
 			if ($codeTopaste) {
 				//add identification span tag arround code to paste
 				$codeTopaste = '<span id="polymod-'.$pluginId.'-'.$itemId.'" class="polymod" title="'.htmlspecialchars($selectedPlugin->getLabel($cms_language).' : '.$item->getLabel($cms_language)).'">'.$codeTopaste.'</span>';

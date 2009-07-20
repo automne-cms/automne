@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: profileusersgroup.php,v 1.2 2008/12/18 10:41:12 sebastien Exp $
+// $Id: profileusersgroup.php,v 1.3 2009/07/20 16:35:38 sebastien Exp $
 
 /**
   * Class CMS_profile_usersGroup
@@ -207,11 +207,8 @@ class CMS_profile_usersGroup extends CMS_profile
 	  */
 	function setDescription($description)
 	{
-		if ($description) {
-			$this->_description = $description;
-		} else {
-			$this->raiseError('Description must be string > 0');
-		}
+		$this->_description = (string) $description;
+		return true;
 	}
 	
 	/**

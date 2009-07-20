@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: scripts.php,v 1.3 2009/06/22 14:10:32 sebastien Exp $
+// $Id: scripts.php,v 1.4 2009/07/20 16:33:15 sebastien Exp $
 
 /**
   * PHP page : Simple empty page, used to refresh scripts count
@@ -43,8 +43,8 @@ define("MESSAGE_PAGE_NO_SCRIPTS_IN_PROGRESS", 739);
 define("MESSAGE_PAGE_NO_SCRIPTS_QUEUED", 740);
 
 //Controler vars
-$details = sensitiveIO::request('details') ? true : false;
-$queue = sensitiveIO::request('queue') ? true : false;
+$details = (sensitiveIO::request('details') == 'true') ? true : false;
+$queue = (sensitiveIO::request('queue') == 'true') ? true : false;
 
 $xmlcontent = $detailsContent = $queueContent = '';
 

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_float.php,v 1.3 2009/06/08 13:11:21 sebastien Exp $
+// $Id: object_float.php,v 1.4 2009/07/20 16:35:37 sebastien Exp $
 
 /**
   * Class CMS_object_float
@@ -39,6 +39,7 @@ class CMS_object_float extends CMS_object_string {
 	const MESSAGE_OBJECT_FLOAT_PARAMETER_UNIT = 417;
 	const MESSAGE_OBJECT_FLOAT_PARAMETER_UNIT_DESC = 418;
 	const MESSAGE_OBJECT_FLOAT_PARAMETER_UNIT_DESCRIPTION = 419;
+	const MESSAGE_OBJECT_FLOAT_FUNCTION_SELECTEDOPTIONS_DESCRIPTION = 538;
 	
 	/**
 	  * object label
@@ -225,6 +226,7 @@ class CMS_object_float extends CMS_object_string {
 		if($params['unit']){
 			$labels['structure']['unit'] = $language->getMessage(self::MESSAGE_OBJECT_FLOAT_PARAMETER_UNIT_DESCRIPTION,array($params['unit']) ,MOD_POLYMOD_CODENAME);
 		}
+		$labels['function']['selectOptions'] = $language->getMessage(self::MESSAGE_OBJECT_FLOAT_FUNCTION_SELECTEDOPTIONS_DESCRIPTION,array('{'.$objectName.'}') ,MOD_POLYMOD_CODENAME);
 		return $labels;
 	}
 	
@@ -329,6 +331,42 @@ class CMS_object_float extends CMS_object_string {
 		order by (value+0) ".$direction;
 		
 		return $sql;
+	}
+	
+	/**
+     * Return options tag list (for a select tag) of all float values for this field
+     *
+     * @param array $values : parameters values array(parameterName => parameterValue) in :
+     *     selected : the float value which is selected (optional)
+     * @param multidimentionnal array $tags : xml2Array content of atm-function tag (nothing for this one)
+     * @return string : options tag list
+     * @access public
+     */
+	function selectOptions($values, $tags) {
+		$return = "";
+		$fieldID = $this->_field->getID();
+		$allValues = array();
+		$status = ($this->_public ? 'public' : 'edited');
+		// Search all values for this field
+		$sql = "select
+                   distinct value
+               from
+                   mod_subobject_string_".$status."
+               where
+                   objectFieldID='".$fieldID."'
+		";
+		$q = new CMS_query($sql);
+		while($value = $q->getValue('value')) {
+			$allValues[$value] = $value;
+		}
+		if (is_array($allValues) && $allValues) {
+			natsort($allValues);
+			foreach ($allValues as $id => $label) {
+				$selected = ($id == $values['selected']) ? ' selected="selected"':'';
+				$return .= '<option value="'.$id.'"'.$selected.'>'.$label.'</option>';
+			}
+		}
+		return $return;
 	}
 }
 ?>

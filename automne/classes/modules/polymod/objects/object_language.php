@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_language.php,v 1.3 2009/06/25 12:43:29 sebastien Exp $
+// $Id: object_language.php,v 1.4 2009/07/20 16:35:37 sebastien Exp $
 
 /**
   * Class CMS_object_language
@@ -97,7 +97,7 @@ class CMS_object_language extends CMS_object_common
 			$return['disabled'] 			= true;
 		}
 		$return['hiddenName'] 		= $return['name'];
-		unset($return['id']);
+		/*unset($return['id']);*/
 		$return['xtype'] 			= 'atmCombo';
 		$return['forceSelection'] 	= true;
 		$return['mode'] 			= 'local';

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: user-modules-rights.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: user-modules-rights.php,v 1.2 2009/07/20 16:33:15 sebastien Exp $
 
 /**
   * PHP page : Load page rights detail for given user.
@@ -312,7 +312,7 @@ $jscontent = <<<END
 	//create center panel
 	var profileModule = new Ext.Panel({
 		id:					'profileModulePanel-{$profileId}',
-		layout: 			'fit',
+		layout: 			'form',
 		region:				'center',
 		border:				false,
 		autoScroll:			true,
@@ -330,6 +330,7 @@ $jscontent = <<<END
 			id:				'{$moduleCodename}-access-panel-{$profileId}',
 			title:			'{$cms_language->getJSMessage(MESSAGE_PAGE_ROWS_GENERAL_MODULE_ACCESS)}',
 			collapsed:		false,
+			bodyStyle: 		'height:70px',
 			defaults: {
 				xtype:			'radio',
 				group:			'access-{$moduleCodename}-{$profileId}',

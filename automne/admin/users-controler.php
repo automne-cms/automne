@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: users-controler.php,v 1.3 2009/06/22 14:10:33 sebastien Exp $
+// $Id: users-controler.php,v 1.4 2009/07/20 16:33:16 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on users
@@ -188,11 +188,10 @@ switch ($action) {
 			if ($groupId) {
 				//Get current user groups ids
 				$userGroupIds = CMS_profile_usersGroupsCatalog::getGroupsOfUser($user, true, true);
-				
 				//first reset profile clearances
 				$user->resetClearances();
 				
-				//then loop through user groups
+				//second, loop through user groups to remove group
 				foreach ($userGroupIds as $userGroupId) {
 					if ($userGroupId == $groupId) {
 						//remove user to group
@@ -200,7 +199,11 @@ switch ($action) {
 						if ($oldGroup->removeUser($user)) {
 							$oldGroup->writeToPersistence();
 						}
-					} else {
+					}
+				}
+				//third, loop through user groups to add old groups
+				foreach ($userGroupIds as $userGroupId) {
+					if ($userGroupId != $groupId) {
 						//add group to user
 						$user->addGroup($userGroupId);
 					}

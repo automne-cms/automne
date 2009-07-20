@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: polymod.php,v 1.7 2009/06/23 09:11:28 sebastien Exp $
+// $Id: polymod.php,v 1.8 2009/07/20 16:35:36 sebastien Exp $
 
 /**
   * Class CMS_polymod
@@ -73,6 +73,26 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  */
 	function getObjects() {
 		return CMS_poly_object_catalog::getObjectsForModule($this->_codename);
+	}
+	
+	/**
+	  * Gets module ressource name method (method to get the name of resource objects of the module)
+	  *
+	  * @return string : the method name to get objects label
+	  * @access public
+	  */
+	function getRessourceNameMethod() {
+		return 'getLabel';
+	}
+	
+	/**
+	  * Gets module ressource type method (method to get the type of resource objects of the module)
+	  *
+	  * @return string : the method type to get objects type label
+	  * @access public
+	  */
+	function getRessourceTypeLabelMethod() {
+		return 'getTypeLabel';
 	}
 
 	/**
@@ -196,6 +216,8 @@ class CMS_polymod extends CMS_modulePolymodValidation
 								$tagContent = '<span id="polymod-'.$selectedPluginID.'-'.$selectedItem.'" class="polymod" title="'.htmlspecialchars($selectedPlugin->getLabel($cms_language).' : '.$item->getLabel($cms_language)).'">'.CMS_poly_definition_functions::pluginCode($selectedPluginID, $selectedItem, '', ($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC) ? true : false, true).'</span>';
 							}
 						}
+						//encode all ampersand without reencode already encoded ampersand
+						$tagContent = sensitiveIO::reencodeAmpersand($tagContent);
 						return $tagContent;
 					break;
 				}
@@ -457,7 +479,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	function convertDefinitionString($definition, $toHumanReadableFormat) {
 		global $cms_language;
 		//get all definition variables (braket enclosed terms)
-		if (preg_match_all("#{[^}]+}}?#", $definition, $matches)) {
+		if (preg_match_all("#{[^{}]+}}?#", $definition, $matches)) {
 			$matches = array_unique($matches[0]);
 			//get module variables conversion table
 			$convertionTable = CMS_poly_module_structure::getModuleTranslationTable($this->getCodename(), $cms_language);

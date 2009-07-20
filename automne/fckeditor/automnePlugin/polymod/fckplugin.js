@@ -17,7 +17,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: fckplugin.js,v 1.2 2009/06/22 14:14:44 sebastien Exp $
+// $Id: fckplugin.js,v 1.3 2009/07/20 16:37:32 sebastien Exp $
 
 /**
   * Javascript Polymod plugin for FCKeditor
@@ -38,29 +38,48 @@ oPolymod.IconPath	= FCKConfig.PluginsPath + 'polymod/polymod.gif' ;
 FCKToolbarItems.RegisterItem( 'polymod', oPolymod ) ;			// 'polymod' is the name used in the Toolbar config.
 
 
-// ##### Define "Edit input" context menu entry.
+// ## 1. ## Define "Edit input" context menu entry.
 
-// ## 1. Define the command to be executed when selecting the context menu item.
+// Define the command to be executed when selecting the context menu item.
 var oEditPolyCommand = new Object() ;
 oEditPolyCommand.Name = 'polyEdit' ;
-
 // This is the standard function used to execute the command (called when clicking in the context menu item).
 oEditPolyCommand.Execute = function() {
 	FCKDialog.OpenDialog( 'FCKDialog_poly_edit', FCKLang['DlgPolymodTitle'], FCKConfig.PluginsPath + 'polymod/polymod.php'	, 750, 550 ) ;
 }
-
 // This is the standard function used to retrieve the command state (it could be disabled for some reason).
 oEditPolyCommand.GetState = function() {
 	// Let's make it always enabled.
 	return FCK_TRISTATE_OFF ;
 }
-
-// ## 2. Register our custom command.
+// Register our custom command.
 FCKCommands.RegisterCommand( 'polyEdit', oEditPolyCommand ) ;
+
+// ## 2. ## Define "Delete input" context menu entry.
+
+// Define the command to be executed when selecting the context menu item.
+var oDeletePolyCommand = new Object() ;
+oDeletePolyCommand.Name = 'polyDelete' ;
+// This is the standard function used to execute the command (called when clicking in the context menu item).
+oDeletePolyCommand.Execute = function() {
+	var oSpan = FCKSelection.MoveToAncestorNode( 'SPAN' ) ;
+	if ( oSpan && oSpan.className == 'polymod'){
+		FCKSelection.SelectNode( oSpan ) ;
+		//remove span node
+		FCKSelection.Delete();
+	}
+}
+// This is the standard function used to retrieve the command state (it could be disabled for some reason).
+oDeletePolyCommand.GetState = function() {
+	// Let's make it always enabled.
+	return FCK_TRISTATE_OFF ;
+}
+//  Register our custom command.
+FCKCommands.RegisterCommand( 'polyDelete', oDeletePolyCommand ) ;
+
 
 // ## 3. Define the context menu "listener".
 var oEditPolyContextMenuListener = new Object() ;
-
 // This is the standard function called right before sowing the context menu.
 oEditPolyContextMenuListener.AddItems = function( contextMenu, tag, tagName ) {
 	// Let's show our custom option only for form fields.
@@ -70,14 +89,14 @@ oEditPolyContextMenuListener.AddItems = function( contextMenu, tag, tagName ) {
 		if (oSpan && oSpan.className == 'polymod') {
 			contextMenu.AddSeparator() ;
 			contextMenu.AddItem( 'polyEdit', FCKLang['DlgPolymodEditTitle'], FCKConfig.PluginsPath + 'polymod/polymod.gif' ) ;
+			contextMenu.AddItem( 'polyDelete', FCKLang['DlgPolymodDeleteTitle'], FCKConfig.PluginsPath + 'polymod/polymod.gif' ) ;
 		}
 	}
 }
-
-// ## 4. Register our context menu listener.
+// Register our context menu listener.
 FCK.ContextMenu.RegisterListener( oEditPolyContextMenuListener ) ;
 
-// Open the Placeholder dialog on double click.
+//  ## 4. Open the Placeholder dialog on double click.
 oEditPolyCommand.OnDoubleClick = function( span ) {
 	// Let's show our custom option only for form fields.
 	if ( span.tagName == 'SPAN'  || FCKSelection.HasAncestorNode( 'SPAN' )) {

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: sender.php,v 1.2 2008/12/18 13:56:57 sebastien Exp $
+// $Id: sender.php,v 1.3 2009/07/20 16:35:38 sebastien Exp $
 
 /**
   * Class CMS_forms_sender
@@ -233,7 +233,9 @@ class CMS_forms_sender extends CMS_grandFather {
 				$obj->setAttribute('userID', $cms_context->getUserID());
 			}
 			$obj->setAttribute('clientIP', $_SERVER["REMOTE_ADDR"]);
-			$obj->setAttribute('languages', $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
+			if (isset($_SERVER["HTTP_ACCEPT_LANGUAGE"])) {
+				$obj->setAttribute('languages', $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
+			}
 			$obj->setAttribute('userAgent', $_SERVER["HTTP_USER_AGENT"]);
 			return $obj;
 		/*} else {

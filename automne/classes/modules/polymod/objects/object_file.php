@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_file.php,v 1.9 2009/06/25 14:36:45 sebastien Exp $
+// $Id: object_file.php,v 1.10 2009/07/20 16:35:37 sebastien Exp $
 
 /**
   * Class CMS_object_file
@@ -500,6 +500,7 @@ class CMS_object_file extends CMS_object_common
 				'name'				=> 'polymodFieldsValue['.$prefixName.$this->_field->getID().'_externalfile]',
 				'fieldLabel'		=> '<span ext:qtip="'.$language->getMessage(self::MESSAGE_OBJECT_FILE_FIELD_EXTERNALSOURCEFILE_FTP, array($params['ftpDir']), MOD_POLYMOD_CODENAME).'" class="atm-help">'.$language->getMessage(self::MESSAGE_OBJECT_FILE_FIELD_EXTERNALSOURCEFILE, false, MOD_POLYMOD_CODENAME).'</span>',
 			);
+			$return['items'][4]['allowBlank'] = true;
 		}
 		//reset key numbers
 		$return['items'] = array_values($return['items']);
@@ -1206,7 +1207,7 @@ class CMS_object_file extends CMS_object_common
 				return false;
 			} else
 			//from hidden fields (previously set but not already saved)
-			if (isset($values[$prefixName.$this->_field->getID().'_4_hidden']) && $values[$prefixName.$this->_field->getID().'_4_hidden'] && (isset($values[$prefixName.$this->_field->getID().'_delete']) && $values[$prefixName.$this->_field->getID().'_delete'] != 1)) {
+			if (isset($values[$prefixName.$this->_field->getID().'_4_hidden']) && $values[$prefixName.$this->_field->getID().'_4_hidden'] && (!isset($values[$prefixName.$this->_field->getID().'_delete']) || $values[$prefixName.$this->_field->getID().'_delete'] != 1)) {
 				//set label as image name if none set
 				if ($values[$prefixName.$this->_field->getID().'_0']) {
 					if (!$this->_subfieldValues[0]->setValue(htmlspecialchars($values[$prefixName.$this->_field->getID().'_0']))) {

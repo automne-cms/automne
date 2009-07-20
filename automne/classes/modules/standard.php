@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: standard.php,v 1.12 2009/06/25 15:46:09 sebastien Exp $
+// $Id: standard.php,v 1.13 2009/07/20 16:35:36 sebastien Exp $
 
 /**
   * Class CMS_module_standard
@@ -81,6 +81,7 @@ class CMS_module_standard extends CMS_module
 	const MESSAGE_PARAM_APPLICATION_ENFORCES_ACCESS_CONTROL = 614;
 	const MESSAGE_PARAM_ALLOW_IMAGES_IN_WYSIWYG = 615;
 	const MESSAGE_PARAM_LOG_SENDING_MAIL = 616;
+	const MESSAGE_PARAM_ALLOW_WYSIWYG_XHTML_VALIDATION = 1566;
 	
 	const MESSAGE_PARAM_APPLICATION_LABEL_DESC = 617;
 	const MESSAGE_PARAM_APPLICATION_MAINTAINER_EMAIL_DESC = 618;
@@ -100,6 +101,7 @@ class CMS_module_standard extends CMS_module
 	const MESSAGE_PARAM_APPLICATION_ENFORCES_ACCESS_CONTROL_DESC = 632;
 	const MESSAGE_PARAM_ALLOW_IMAGES_IN_WYSIWYG_DESC = 633;
 	const MESSAGE_PARAM_LOG_SENDING_MAIL_DESC = 634;
+	const MESSAGE_PARAM_ALLOW_WYSIWYG_XHTML_VALIDATION_DESC = 1567;
 	
 	/**
 	  * Gets the administration frontend path. No centralized admin for the standard module.
@@ -124,6 +126,26 @@ class CMS_module_standard extends CMS_module
 	{
 		parent::getResourceByID($resourceID);
 		return CMS_tree::getPageByID($resourceID);
+	}
+	
+	/**
+	  * Gets module ressource name method (method to get the name of resource objects of the module)
+	  *
+	  * @return string : the method name to get objects label
+	  * @access public
+	  */
+	function getRessourceNameMethod() {
+		return 'getTitle';
+	}
+	
+	/**
+	  * Gets module ressource type method (method to get the type of resource objects of the module)
+	  *
+	  * @return string : the method type to get objects type label
+	  * @access public
+	  */
+	function getRessourceTypeLabelMethod() {
+		return 'getTypeLabel';
 	}
 	
 	/**

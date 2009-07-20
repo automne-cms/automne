@@ -18,7 +18,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |    
 // +----------------------------------------------------------------------+
 //
-// $Id: fckpolymod.js,v 1.2 2009/06/22 14:14:44 sebastien Exp $
+// $Id: fckpolymod.js,v 1.3 2009/07/20 16:37:32 sebastien Exp $
 
 /**
   * Javascript plugin for FCKeditor
@@ -86,7 +86,7 @@ function Ok()
 	if (GetE('codeToPaste').value == '') {
 		alert(FCKLang['DlgPolymodNoPage']);
 	} else {
-		var codeToPaste = htmlDecode(GetE('codeToPaste').value);
+		var codeToPaste = GetE('codeToPaste').value;
 		//remove old selection code
 		FCK.Selection.Delete();
 		//then paste the new one

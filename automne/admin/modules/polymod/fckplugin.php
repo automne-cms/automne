@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: fckplugin.php,v 1.3 2009/06/22 14:10:34 sebastien Exp $
+// $Id: fckplugin.php,v 1.4 2009/07/20 16:33:16 sebastien Exp $
 
 /**
   * PHP page : Load module backend window
@@ -82,10 +82,10 @@ foreach ($availablePlugin as $aPolyModuleCodename => $pluginDefinitions) {
 	foreach ($pluginDefinitions as $id => $pluginDefinition) {
 		$items .= ($items) ? ',':'';
 		$objectWinId = 'module'. $aPolyModuleCodename .'-'. $id .'Plugin';
-		if ($pluginDefinition->needSelection() && !$content) {
+		if ($pluginDefinition->needSelection() && !$content && $selectedPluginID != $id) {
 			$disabled = 'disabled:true,';
 			$label = '<span ext:qtip="'.sensitiveIO::sanitizeJSString($polymodule->getLabel($cms_language).' : '.$pluginDefinition->getDescription($cms_language).'<br /><br />'.$cms_language->getMessage(MESSAGE_PAGE_TAB_DISABLED_SELECT_TEXT, false, MOD_POLYMOD_CODENAME)).'">'.sensitiveIO::sanitizeJSString($pluginDefinition->getLabel($cms_language)).'</span>';
-		} elseif (!$pluginDefinition->needSelection() && $content) {
+		} elseif (!$pluginDefinition->needSelection() && $content && $selectedPluginID != $id) {
 			$disabled = 'disabled:true,';
 			$label = '<span ext:qtip="'.sensitiveIO::sanitizeJSString($polymodule->getLabel($cms_language).' : '.$pluginDefinition->getDescription($cms_language).'<br /><br />'.$cms_language->getMessage(MESSAGE_PAGE_TAB_DISABLED_NO_SELECT_TEXT, false, MOD_POLYMOD_CODENAME)).'">'.sensitiveIO::sanitizeJSString($pluginDefinition->getLabel($cms_language)).'</span>';
 		} else {

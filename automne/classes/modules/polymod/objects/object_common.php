@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_common.php,v 1.6 2009/06/25 14:36:45 sebastien Exp $
+// $Id: object_common.php,v 1.7 2009/07/20 16:35:37 sebastien Exp $
 
 /**
   * Class CMS_object_common
@@ -199,9 +199,8 @@ abstract class CMS_object_common extends CMS_grandFather
 				'allowBlank'	=>	!$this->_field->getValue('required'),
 				'fieldLabel' 	=>	$label,
 				'xtype'			=>	'textfield',
-				'id'			=>	'polymodFieldsValue['.$prefixName.$this->_field->getID().'_0]',
 				'name'			=>	'polymodFieldsValue['.$prefixName.$this->_field->getID().'_0]',
-				'value'			=>	htmlspecialchars_decode($this->_subfieldValues[0]->getValue())
+				'value'			=>	($this->_subfieldValues[0]->getValue() ? htmlspecialchars_decode($this->_subfieldValues[0]->getValue()) : ''),
 			);
 		} else {
 			$fields = array();
@@ -210,9 +209,8 @@ abstract class CMS_object_common extends CMS_grandFather
 					$fields[] = array(
 						'hideLabel' 	=>	true,
 						'xtype'			=>	'textfield',
-						'id'			=>	'polymodFieldsValue['.$prefixName.$this->_field->getID().'_'.$subFieldID.']',
 						'name'			=>	'polymodFieldsValue['.$prefixName.$this->_field->getID().'_'.$subFieldID.']',
-						'value'			=>	htmlspecialchars_decode($this->_subfieldValues[0]->getValue())
+						'value'			=>	($this->_subfieldValues[$subFieldID]->getValue() ? htmlspecialchars_decode($this->_subfieldValues[$subFieldID]->getValue()) : ''),
 					);
 				}
 			}
@@ -286,7 +284,7 @@ abstract class CMS_object_common extends CMS_grandFather
 		foreach ($this->_subfields as $subFieldID => $subFieldDefinition) {
 			if (is_object($this->_subfieldValues[$subFieldID])) {
 				//if no value set for it, return false
-				if (!$this->_subfieldValues[$subFieldID]->setValue($values[$prefixName.$this->_field->getID().'_'.$subFieldID])) {
+				if (!$this->_subfieldValues[$subFieldID]->setValue(@$values[$prefixName.$this->_field->getID().'_'.$subFieldID])) {
 					return false;
 				}
 			}

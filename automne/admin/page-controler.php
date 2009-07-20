@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-controler.php,v 1.10 2009/06/22 14:10:31 sebastien Exp $
+// $Id: page-controler.php,v 1.11 2009/07/20 16:33:15 sebastien Exp $
 
 /**
   * PHP page : Receive pages updates
@@ -250,6 +250,8 @@ switch ($action) {
 			$mod = CMS_modulesCatalog::getByCodename(MOD_STANDARD_CODENAME);
 			$mod->processValidation($validation, VALIDATION_OPTION_ACCEPT);
 		}
+		//reload page to force update status
+		$cms_page = CMS_tree::getPageById($cms_page->getID());
 		//reload current tab
 		$jscontent = '
 		//goto previz tab

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_string.php,v 1.2 2009/02/03 14:27:35 sebastien Exp $
+// $Id: object_string.php,v 1.3 2009/07/20 16:35:37 sebastien Exp $
 
 /**
   * Class CMS_object_string
@@ -37,6 +37,8 @@ class CMS_object_string extends CMS_object_common
 	const MESSAGE_OBJECT_STRING_PARAMETER_MATCH_EXPRESSION = 372;
 	const MESSAGE_OBJECT_STRING_PARAMETER_MATCH_EXPRESSION_DESCRIPTION = 373;
 	const MESSAGE_OBJECT_STRING_OPERATOR_DESCRIPTION = 389;
+	const MESSAGE_OBJECT_STRING_PARAMETER_MAXLENGHT_DESC = 536;
+	
 	/**
 	  * object label
 	  * @var integer
@@ -136,6 +138,28 @@ class CMS_object_string extends CMS_object_common
 			return false;
 		}
 		return $params;
+	}
+	
+	/**
+	  * get HTML admin (used to enter object values in admin)
+	  *
+	  * @param integer $fieldID, the current field id (only for poly object compatibility)
+	  * @param CMS_language $language, the current admin language
+	  * @param string prefixname : the prefix to use for post names
+	  * @return string : the html admin
+	  * @access public
+	  */
+	function getHTMLAdmin($fieldID, $language, $prefixName) {
+		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
+		$params = $this->getParamsValues();
+		if (isset($params['maxLength']) && sensitiveIO::isPositiveInteger($params['maxLength'])) {
+			$return['maxLength'] =	(int) $params['maxLength'];
+			if ($params['maxLength'] < 255) {
+				$return['labelSeparator'] = '';
+				$return['fieldLabel'] .= ' :<br /><small>'.$language->getMessage(self::MESSAGE_OBJECT_STRING_PARAMETER_MAXLENGHT_DESC, array($params['maxLength']), MOD_POLYMOD_CODENAME).'</small>';
+			}
+		}
+		return $return;
 	}
 	
 	/**

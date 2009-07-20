@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: log.php,v 1.3 2009/04/02 13:57:59 sebastien Exp $
+// $Id: log.php,v 1.4 2009/07/20 16:35:36 sebastien Exp $
 
 /**
   * Class CMS_log
@@ -42,6 +42,7 @@ class CMS_log extends CMS_grandFather
 	const LOG_ACTION_RESOURCE_UNARCHIVE = 6;
 	const LOG_ACTION_RESOURCE_CANCEL_EDITIONS = 7;
 	const LOG_ACTION_RESOURCE_VALIDATE_EDITION = 8;
+	const LOG_ACTION_RESOURCE_START_DRAFT = 30;
 	const LOG_ACTION_RESOURCE_EDIT_DRAFT = 25;
 	const LOG_ACTION_RESOURCE_DELETE_DRAFT = 26;
 	const LOG_ACTION_RESOURCE_SUBMIT_DRAFT = 27;
@@ -65,6 +66,9 @@ class CMS_log extends CMS_grandFather
 	
 	const LOG_ACTION_SEND_EMAIL = 28;
 	
+	const LOG_ACTION_AUTO_LOGIN = 31;
+	const LOG_ACTION_LOGIN = 33;
+	
 	/**
 	  * Log actions messages
 	  */
@@ -78,6 +82,7 @@ class CMS_log extends CMS_grandFather
 	const MESSAGE_LOG_ACTION_RESOURCE_UNARCHIVE = 876;
 	const MESSAGE_LOG_ACTION_RESOURCE_CANCEL_EDITIONS = 877;
 	const MESSAGE_LOG_ACTION_RESOURCE_VALIDATE_EDITION = 878;
+	const MESSAGE_LOG_ACTION_RESOURCE_START_DRAFT = 1568;
 	const MESSAGE_LOG_ACTION_RESOURCE_EDIT_DRAFT = 1428;
 	const MESSAGE_LOG_ACTION_RESOURCE_DELETE_DRAFT = 1429;
 	const MESSAGE_LOG_ACTION_RESOURCE_SUBMIT_DRAFT = 1430;
@@ -100,6 +105,9 @@ class CMS_log extends CMS_grandFather
 	const MESSAGE_LOG_ACTION_TEMPLATE_DELETE_FILE = 638;
 	
 	const MESSAGE_LOG_ACTION_SEND_EMAIL = 573;
+	
+	const MESSAGE_LOG_ACTION_AUTO_LOGIN = 1572;
+	const MESSAGE_LOG_ACTION_LOGIN = 1571;
 	
 	/**
 	  * Id

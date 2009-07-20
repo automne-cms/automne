@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: sensitiveio.php,v 1.4 2009/06/05 15:02:20 sebastien Exp $
+// $Id: sensitiveio.php,v 1.5 2009/07/20 16:35:36 sebastien Exp $
 
 /**
   * Class SensitiveIO
@@ -498,6 +498,92 @@ class SensitiveIO extends CMS_grandfather
 			}
 		}
 		return $output;
+	}
+	
+	/**
+	  * Convert textBody to HTMLBody, convert all links and \n tags
+	  *
+	  * @param string $body The body to convert
+	  * @param boolean $withNl2Br : Use nl2br on returned text (default : true)
+	  * @return string, the body converted in html
+	  * @access public
+	  */
+	function convertTextToHTML($body, $withNl2Br = true) {
+		$HTMLBody = preg_replace(
+				array(
+					'/(?(?=<a[^>]*>.+<\/a>)
+					(?:<a[^>]*>.+<\/a>)
+					|
+					([^="\']?)((?:https?|ftp|bf2|):\/\/[^<> \n\r]+)
+					)/iex',
+					'/<a([^>]*)target="?[^"\']+"?/i',
+					'/<a([^>]+)>/i',
+					'/(^|\s)(www.[^<> \n\r]+)/iex',
+					'/(([_A-Za-z0-9-]+)(\\.[_A-Za-z0-9-]+)*@([A-Za-z0-9-]+)
+					(\\.[A-Za-z0-9-]+)*)/iex'
+				),
+				array(
+					"stripslashes((strlen('\\2')>0?'\\1<a href=\"\\2\" target=\"_blank\">\\2</a>\\3':'\\0'))",
+					'<a\\1',
+					'<a\\1 target="_blank">',
+					"stripslashes((strlen('\\2')>0?'\\1<a href=\"http://\\2\" target=\"_blank\">\\2</a>\\3':'\\0'))",
+					"stripslashes((strlen('\\2')>0?'<a href=\"mailto:\\0\">\\0</a>':'\\0'))"
+				),$body);
+		return $withNl2Br ? nl2br($HTMLBody) : $HTMLBody;
+	}
+	
+	/**
+	  * Check a value for XHTML errors
+	  *
+	  * @param string $value The value to check
+	  * @param string &$errors : Errors founded, returned by reference
+	  * @return boolean : true on success, false on failure
+	  * @access public
+	  */
+	function checkXHTMLValue($value, &$errors) {
+		//Check XHTML validity
+		$value = str_replace('&#9;','',$value);
+		if (defined('ALLOW_WYSIWYG_XHTML_VALIDATION') && ALLOW_WYSIWYG_XHTML_VALIDATION) {
+			global $CMS_Xhtml_tagDefinition;
+			include(PATH_MAIN_FS.'/xhtmlValidator/taglist.php');
+			$v = new XhtmlValidator($value, $CMS_Xhtml_tagDefinition);
+			try {
+				$v->load();
+				//$errors = $v->show_tree();
+			} catch (valid_except $e) {
+				$s = new valid_show($value,$e);
+				$errors = $s->show(200);
+				return false;
+			}
+		}
+		//Check XML validity
+		$defXML = new CMS_DOMDocument();
+		try {
+			$defXML->loadXML('<dummy>'.$value.'</dummy>');
+		} catch (DOMException $e) {
+			CMS_grandFather::raiseError('Parse error for xhtml content text in page : '.$e->getMessage());
+			return false;
+		}
+		//Check Some Word or Open Office common copy/paste tags
+		if (strpos($value, '<w:') !== false || strpos($value, '<meta ') !== false) {
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	  * Check a value and force reencode of ampersand without double encode them :
+	  * &			=> &amp;
+	  * &amp;		=> &amp;
+	  * &eacute;	=> &eacute;
+	  *	&#123;		=> &#123;
+	  *
+	  * @param string $text The HTML value to reencode
+	  * @return string : the value reencoded
+	  * @access public
+	  */
+	function reencodeAmpersand($text) {
+		return preg_replace("/&amp;(#[0-9]+|[a-z]+);/i", "&$1;", str_replace('&', '&amp;', $text));
 	}
 }
 ?>

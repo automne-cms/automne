@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: combobox.js,v 1.3 2009/06/05 15:01:06 sebastien Exp $
+  * $Id: combobox.js,v 1.4 2009/07/20 16:33:16 sebastien Exp $
   */
 Automne.ComboBox = Ext.extend(Ext.form.ComboBox, {
 	initComponent : function(){
@@ -30,7 +30,7 @@ Automne.ComboBox = Ext.extend(Ext.form.ComboBox, {
 	 */
 	setValue : function(v){
 		var text = v;
-		if (v && this.mode == 'remote' && !this.store.isLoaded()) {
+		if (this.autoLoad !== false && v && this.mode == 'remote' && !this.store.isLoaded()) {
 			this.lastQuery = '';
 			this.store.load({
 				scope: this,

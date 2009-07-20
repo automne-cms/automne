@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: tree.js,v 1.4 2009/06/22 14:10:34 sebastien Exp $
+  * $Id: tree.js,v 1.5 2009/07/20 16:33:16 sebastien Exp $
   */
 Automne.treePanel = Ext.extend(Ext.tree.TreePanel, {
 	filterMenu:		false,
@@ -82,7 +82,7 @@ Automne.treePanel = Ext.extend(Ext.tree.TreePanel, {
 			} else {
 				//call server for queried node lineage
 				Automne.server.call({
-					url:			'tree-lineage.php',
+					url:			'/automne/admin/tree-lineage.php',
 					scope:			this,
 					fcnCallback:	function(response, options, jsonResponse){
 						if (jsonResponse) {

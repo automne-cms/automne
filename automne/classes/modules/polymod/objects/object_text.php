@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_text.php,v 1.4 2009/06/22 14:08:40 sebastien Exp $
+// $Id: object_text.php,v 1.5 2009/07/20 16:35:38 sebastien Exp $
 
 /**
   * Class CMS_object_text
@@ -29,6 +29,7 @@ class CMS_object_text extends CMS_object_common
 {
 	const MESSAGE_EMPTY_OBJECTS_SET = 265;
 	const MESSAGE_CHOOSE_OBJECT = 1132;
+	
 	/**
 	  * Polymod Messages
 	  */
@@ -40,6 +41,7 @@ class CMS_object_text extends CMS_object_common
 	const MESSAGE_OBJECT_TEXT_PARAMETER_WYSIWYG_WIDTH = 342;
 	const MESSAGE_OBJECT_TEXT_PARAMETER_WYSIWYG_HEIGHT = 341;
 	const MESSAGE_OBJECT_TEXT_HASVALUE_DESCRIPTION = 411;
+	const MESSAGE_OBJECT_TEXT_COPY_PASTE_ERROR = 537;
 	
 	/**
 	  * object label
@@ -125,6 +127,39 @@ class CMS_object_text extends CMS_object_common
 	function __construct($datas=array(), &$field, $public=false)
 	{
 		parent::__construct($datas, $field, $public);
+	}
+	
+	/**
+	  * check object Mandatories Values
+	  *
+	  * @param array $values : the POST result values
+	  * @param string prefixname : the prefix used for post names
+	  * @return boolean true on success, false on failure
+	  * @access public
+	  */
+	function checkMandatory($values,$prefixName, $newFormat = false) {
+		//if field is required check values
+		$params = $this->getParamsValues();
+		if ($this->_field->getValue('required')) {
+			if (!isset($values[$prefixName.$this->_field->getID().'_0']) || !$values[$prefixName.$this->_field->getID().'_0']) {
+				return false;
+			}
+		}
+		//check value for copy/paste and XHTML conformity
+		if ($newFormat && $params['html'] && isset($values[$prefixName.$this->_field->getID().'_0']) && $values[$prefixName.$this->_field->getID().'_0']) {
+			$value = $values[$prefixName.$this->_field->getID().'_0'];
+			$errors = '';
+			if (!sensitiveIO::checkXHTMLValue($value, $errors)) {
+				//Send an error to user about his content
+				global $cms_language;
+				if (is_object($cms_language)) {
+					return $cms_language->getMessage(self::MESSAGE_OBJECT_TEXT_COPY_PASTE_ERROR, array($this->getFieldLabel($cms_language)), MOD_POLYMOD_CODENAME).($errors ? '<br /><br />'.$errors : '');
+				} else {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 	
 	/**
@@ -284,7 +319,7 @@ class CMS_object_text extends CMS_object_common
 		$params = $this->getParamsValues();
 		if (!$params['html']) {
 			//remove html characters if any then convert line breaks to <br /> tags
-			$value = isset($values[$prefixName.$this->_field->getID().'_0']) ? nl2br(htmlspecialchars(strip_tags($values[$prefixName.$this->_field->getID().'_0']))) : '';
+			$value = isset($values[$prefixName.$this->_field->getID().'_0']) ? nl2br(strip_tags(htmlspecialchars($values[$prefixName.$this->_field->getID().'_0']))) : '';
 		} else {
 			$value = FCKeditor::createAutomneLinks($values[$prefixName.$this->_field->getID().'_0'], CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID()));
 		}
@@ -371,7 +406,7 @@ class CMS_object_text extends CMS_object_common
 					}
 					return $content;
 				} else {
-					return ($name == 'value') ? str_replace('<br />',"\n",str_replace(array("\n","\r"),"",$this->_subfieldValues[0]->getValue())) : $this->_subfieldValues[0]->getValue();
+					return ($name == 'value') ? str_replace('<br />',"\n",str_replace(array("\n","\r"),"",$this->_subfieldValues[0]->getValue())) : sensitiveIO::convertTextToHTML($this->_subfieldValues[0]->getValue(), false);
 				}
 			break;
   	        case 'hasvalue':

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: navigator.php,v 1.2 2009/07/20 16:33:14 sebastien Exp $
+// $Id: ie6.php,v 1.1 2009/07/20 16:33:14 sebastien Exp $
 
 /**
   * PHP page : change navigator
@@ -41,8 +41,8 @@ $view->addCSSFile('info');
 $view->settitle($language->getMessage(MESSAGE_PAGE_TITLE, array(APPLICATION_LABEL)));
 
 $content = '
-<div id="atm-center">
-	<div class="atm-alert">'.$language->getMessage(MESSAGE_PAGE_NAV_OLD).'</div>
+<div id="atm-center" class="no-ie6">
+	<div class="atm-alert"><img src="img/no-ie6.jpg" title="NO IE6" />'.$language->getMessage(MESSAGE_PAGE_NAV_OLD).'</div>
 </div>
 ';
 

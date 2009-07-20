@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: email.php,v 1.4 2009/04/07 12:25:00 sebastien Exp $
+// $Id: email.php,v 1.5 2009/07/20 16:35:36 sebastien Exp $
 
 /**
   * Class CMS_email
@@ -463,7 +463,6 @@ class CMS_email extends CMS_grandFather
 			$this->raiseError('Cannot send email, error appened');
 			return false;
 		}
-		global $cms_user;
 		$emailSent = true;
 		if (NO_APPLICATION_MAIL) {
 			return $emailSent;
@@ -543,7 +542,10 @@ class CMS_email extends CMS_grandFather
 				$Msg.="\n\n";
 			}
 		}
-		
+		if (LOG_SENDING_MAIL) {
+			global $cms_user;
+			$user = ($cms_user) ? $cms_user : CMS_profile_usersCatalog::getById(ROOT_PROFILEUSER_ID);
+		}
 		//message ends
 		$Msg.="\n--".$OB."--\n";
 		foreach ($toUsers as $key => $to) {
@@ -578,14 +580,23 @@ class CMS_email extends CMS_grandFather
 					$emailSent = $emailSent && $sent;
 					if (LOG_SENDING_MAIL) {
 						$log = new CMS_log();
-						$user = ($cms_user) ? $cms_user : new CMS_profile_user(ROOT_PROFILEUSER_ID);
-						$log->logMiscAction(CMS_log::LOG_ACTION_SEND_EMAIL, $user, 'Email To '.$to.', From : '.$From.', Subject : '.$Subject.', Sent : '.($sent ? 'Yes' : 'No'));
+						$log->logMiscAction(CMS_log::LOG_ACTION_SEND_EMAIL, $user, 'Email To '.$to.', From : '.$From.', Subject : '.$Subject.', Sent : '.($sent ? 'Yes' : 'Error'));
 					}
 				} else {
-					$this->raiseError('Email to '.$to.', from : '.$From.' (subject : '.$Subject.'), Dropped because sender or receiver address is under Automne drop address list');
+					if (LOG_SENDING_MAIL) {
+						$log = new CMS_log();
+						$log->logMiscAction(CMS_log::LOG_ACTION_SEND_EMAIL, $user, 'Email To '.$to.', From : '.$From.', Subject : '.$Subject.', Sent : No, Dropped because sender or receiver address is under Automne drop address list');
+					} else {
+						$this->raiseError('Email to '.$to.', from : '.$From.' (subject : '.$Subject.'), Dropped because sender or receiver address is under Automne drop address list');
+					}
 				}
 			} else {
-				$this->raiseError('Email to '.$to.', from : '.$From.' (subject : '.$Subject.'), Dropped because sender address does not exists.');
+				if (LOG_SENDING_MAIL) {
+					$log = new CMS_log();
+					$log->logMiscAction(CMS_log::LOG_ACTION_SEND_EMAIL, $user, 'Email To '.$to.', From : '.$From.', Subject : '.$Subject.', Sent : No, Dropped because receiver address is not valid');
+				} else {
+					$this->raiseError('Email to '.$to.', from : '.$From.' (subject : '.$Subject.'), Dropped because receiver address is not valid');
+				}
 			}
 		}
 		if (!$emailSent) {

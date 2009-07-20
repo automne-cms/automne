@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: pagetemplate.php,v 1.5 2009/06/22 14:08:41 sebastien Exp $
+// $Id: pagetemplate.php,v 1.6 2009/07/20 16:35:38 sebastien Exp $
 
 /**
   * Class CMS_pageTemplate
@@ -622,6 +622,7 @@ class CMS_pageTemplate extends CMS_grandFather
 			$this->raiseError("Can't open the definition file for writing");
 			return false;
 		}
+		//$definition = preg_replace("/&amp;(#[0-9]+|[a-z]+);/i", "&$1;", str_replace('&', '&amp;', $definition));
 		
 		fwrite($fp, $definition, strlen($definition));
 		$this->_definitionFile = $filename;

@@ -13,7 +13,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>     		  |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_page.php,v 1.3 2009/06/05 15:02:18 sebastien Exp $
+// $Id: object_page.php,v 1.4 2009/07/20 16:35:37 sebastien Exp $
 
 /**
   * Class CMS_object_page
@@ -33,6 +33,9 @@ class CMS_object_page extends CMS_object_integer
 	const MESSAGE_OBJECT_PAGE_LABEL = 406;
 	const MESSAGE_OBJECT_PAGE_DESCRIPTION = 407;
 	const MESSAGE_PAGE_TREEH1 = 1049;
+	const MESSAGE_OBJECT_PAGE_PAGE_TITLE_DESCRIPTION = 532;
+	const MESSAGE_OBJECT_PAGE_PAGE_URL_DESCRIPTION = 533;
+	const MESSAGE_OBJECT_PAGE_PAGE_ID_DESCRIPTION = 534;
 	
 	/**
 	  * object label
@@ -190,6 +193,74 @@ class CMS_object_page extends CMS_object_integer
 			return false;
 		}
 		return true;
+	}
+	
+	/**
+	  * get object values structure available with getValue method
+	  *
+	  * @return multidimentionnal array : the object values structure
+	  * @access public
+	  */
+	function getStructure() {
+		$structure = parent::getStructure();
+		$structure['pageTitle'] = '';
+		$structure['pageURL'] = '';
+		$structure['pageID'] = '';
+		return $structure;
+	}
+	
+	/**
+	  * get an object value
+	  *
+	  * @param string $name : the name of the value to get
+	  * @param string $parameters (optional) : parameters for the value to get
+	  * @return multidimentionnal array : the object values structure
+	  * @access public
+	  */
+	function getValue($name, $parameters = '') {
+		switch($name) {
+			case 'pageTitle':
+				return CMS_tree::getPageValue($this->_subfieldValues[0]->getValue(), 'title');
+			break;
+			case 'pageID':
+				return $this->_subfieldValues[0]->getValue();
+			break;
+			case 'pageURL':
+				return CMS_tree::getPageValue($this->_subfieldValues[0]->getValue(), 'url');
+			break;
+			default:
+				return parent::getValue($name, $parameters);
+			break;
+		}
+	}
+	
+	/**
+	  * get labels for object structure and functions
+	  *
+	  * @return array : the labels of object structure and functions
+	  * @access public
+	  */
+	function getLabelsStructure(&$language, $objectName) {
+		$params = $this->getParamsValues();
+		$labels = parent::getLabelsStructure($language, $objectName);
+		$labels['structure']['pageTitle'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_PAGE_TITLE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['structure']['pageURL'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_PAGE_URL_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['structure']['pageID'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_PAGE_ID_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		return $labels;
+	}
+	
+	/**
+	  * get object HTML description for admin search detail. Usually, the label.
+	  *
+	  * @return string : object HTML description
+	  * @access public
+	  */
+	function getHTMLDescription() {
+		global $cms_language;
+		if (is_object($this->_subfieldValues[0]) && $this->_subfieldValues[0]->getValue()) {
+			return '<a href="#" href="#" onclick="Automne.utils.getPageById('.$this->_subfieldValues[0]->getValue().');Ext.WindowMgr.getActive().close();">'.CMS_tree::getPageValue($this->_subfieldValues[0]->getValue(), 'title').' ('.$this->_subfieldValues[0]->getValue().')</a>';
+		}
+		return '';
 	}
 }
 

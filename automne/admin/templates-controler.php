@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-controler.php,v 1.6 2009/06/29 10:21:55 sebastien Exp $
+// $Id: templates-controler.php,v 1.7 2009/07/20 16:33:15 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on templates
@@ -36,6 +36,8 @@ define("MESSAGE_ACTION_CREATION_DONE", 1482);
 define("MESSAGE_ACTION_SAVE_PRINT_DONE", 1483);
 define("MESSAGE_ERROR_NO_PUBLIC_PAGE", 1484);
 define("MESSAGE_ACTION_DUPICATION_DONE", 1485);
+define("MESSAGE_ERROR_WRITE_TEMPLATE", 1552);
+
 //Controler vars
 $action = sensitiveIO::request('action', array('properties', 'definition', 'printcs', 'regenerate', 'copy'));
 $templateId = sensitiveIO::request('templateId', '');
@@ -51,6 +53,8 @@ $selectedWebsites = (sensitiveIO::request('websites')) ? explode(',', sensitiveI
 $nouserrights = sensitiveIO::request('nouserrights') ? true : false;
 //definition
 $definition = sensitiveIO::request('definition');
+$regenerate = sensitiveIO::request('regenerate') ? true : false;
+
 //printable CS
 $printableCS = (sensitiveIO::request('printableCS')) ? explode(',', sensitiveIO::request('printableCS')) : array();
 
@@ -152,12 +156,15 @@ switch ($action) {
 				}
 			}
 			if (!$cms_message && !$template->hasError()) {
-				$template->writeToPersistence();
-				$log = new CMS_log();
-				$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT, $cms_user, "Template : ".$template->getLabel()." (edit base data)");
-				$content = array('success' => true);
-				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_SAVE_DONE);
-				$view->setContent($content);
+				if ($template->writeToPersistence()) {
+					$log = new CMS_log();
+					$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT, $cms_user, "Template : ".$template->getLabel()." (edit base data)");
+					$content = array('success' => true);
+					$cms_message = $cms_language->getMessage(MESSAGE_ACTION_SAVE_DONE);
+					$view->setContent($content);
+				} else {
+					$cms_message = $cms_language->getMessage(MESSAGE_ERROR_WRITE_TEMPLATE);
+				}
 			}
 		} elseif (is_a($template, "CMS_pageTemplate") && $template->hasError()) {
 			$cms_message = $cms_language->getMessage(MESSAGE_ERROR_UNKNOWN_TEMPLATE);
@@ -232,12 +239,15 @@ switch ($action) {
 					}
 				}
 				if (!$cms_message && !$template->hasError()) {
-					$template->writeToPersistence();
-					$log = new CMS_log();
-					$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT, $cms_user, "Template : ".$template->getLabel()." (create template)");
-					$content = array('success' => array('templateId' => $template->getID()));
-					$cms_message = $cms_language->getMessage(MESSAGE_ACTION_CREATION_DONE);
-					$view->setContent($content);
+					if ($template->writeToPersistence()) {
+						$log = new CMS_log();
+						$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT, $cms_user, "Template : ".$template->getLabel()." (create template)");
+						$content = array('success' => array('templateId' => $template->getID()));
+						$cms_message = $cms_language->getMessage(MESSAGE_ACTION_CREATION_DONE);
+						$view->setContent($content);
+					} else {
+						$cms_message = $cms_language->getMessage(MESSAGE_ERROR_WRITE_TEMPLATE);
+					}
 				}
 			} else {
 				//clean template
@@ -254,23 +264,30 @@ switch ($action) {
 			if ($error !== true) {
 				$cms_message = $cms_language->getMessage(MESSAGE_PAGE_MALFORMED_DEFINITION_FILE)."\n\n".$error;
 			} else {
-				$template->writeToPersistence();
-				$log = new CMS_log();
-				$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT, $cms_user, "Template : ".$template->getLabel()." (update template definition)");
-				//submit all pages of this template to the regenerator
-				$pages = $template->getPages(true);
-				$pagesIds = array();
-				foreach ($pages as $page) {
-					if ($page->getPublication() == RESOURCE_PUBLICATION_PUBLIC) {
-						$pagesIds[] = $page->getID();
+				if ($template->writeToPersistence()) {
+					$log = new CMS_log();
+					$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT, $cms_user, "Template : ".$template->getLabel()." (update template definition)");
+					$content = array('success' => true);
+					if ($regenerate) {
+						//submit all pages of this template to the regenerator
+						$pages = $template->getPages(true);
+						$pagesIds = array();
+						foreach ($pages as $page) {
+							if ($page->getPublication() == RESOURCE_PUBLICATION_PUBLIC) {
+								$pagesIds[] = $page->getID();
+							}
+						}
+						if ($pagesIds) {
+							CMS_tree::submitToRegenerator($pagesIds, true);
+						}
+						$cms_message = $cms_language->getMessage(MESSAGE_ACTION_XML_UPDATED).($pagesIds ? ',<br />'.$cms_language->getMessage(MESSAGE_ACTION_N_PAGES_REGEN, array(sizeof($pagesIds))) : '.');
+					} else {
+						$cms_message = $cms_language->getMessage(MESSAGE_ACTION_XML_UPDATED);
 					}
+					$view->setContent($content);
+				} else {
+					$cms_message = $cms_language->getMessage(MESSAGE_ERROR_WRITE_TEMPLATE);
 				}
-				if ($pagesIds) {
-					CMS_tree::submitToRegenerator($pagesIds, true);
-				}
-				$content = array('success' => true);
-				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_XML_UPDATED).($pagesIds ? ',<br />'.$cms_language->getMessage(MESSAGE_ACTION_N_PAGES_REGEN, array(sizeof($pagesIds))) : '.');
-				$view->setContent($content);
 			}
 		} elseif (is_a($templateFile, "CMS_file") && $templateFile->exists()) {
 			//definition parsing test

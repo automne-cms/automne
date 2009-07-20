@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: context.php,v 1.5 2009/06/24 10:05:16 sebastien Exp $
+// $Id: context.php,v 1.6 2009/07/20 16:35:36 sebastien Exp $
 
 /**
   * Class CMS_context
@@ -91,7 +91,11 @@ class CMS_context extends CMS_grandFather
 			if ($auth->authenticate($login, $password)) {
 				$user = $auth->getUser();
 				if (is_a($user, 'CMS_profile_user')) {
-			 		$this->_startSession($user, $permanent_cookie);
+			 		if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID) {
+						$log = new CMS_log();
+						$log->logMiscAction(CMS_log::LOG_ACTION_LOGIN, $user, 'Permanent cookie: '.($permanent_cookie ? 'Yes' : 'No').', IP: '.$_SERVER['REMOTE_ADDR'].', UA: '.@$_SERVER['HTTP_USER_AGENT']);
+					}
+					$this->_startSession($user, $permanent_cookie);
 				} else {
 					$this->raiseError("Invalid profile returned by authentification");
 				}
@@ -113,7 +117,11 @@ class CMS_context extends CMS_grandFather
 			if ($q->getNumRows()) {
 				$user = CMS_profile_usersCatalog::getByID($q->getValue("id_pru"));
 				if (!$user->hasError()) {
-			 		$this->_startSession($user, $permanent_cookie);
+			 		if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID) {
+						$log = new CMS_log();
+						$log->logMiscAction(CMS_log::LOG_ACTION_LOGIN, $user, 'Permanent cookie: '.($permanent_cookie ? 'Yes' : 'No').', IP: '.$_SERVER['REMOTE_ADDR'].', UA: '.@$_SERVER['HTTP_USER_AGENT']);
+					}
+					$this->_startSession($user, $permanent_cookie);
 				} else {
 					$this->raiseError("user_id found don't instanciate a valid user object. ID : ".$user->getUserID());
 				}
@@ -173,7 +181,7 @@ class CMS_context extends CMS_grandFather
 					phpid_ses='".sensitiveIO::sanitizeSQLString(session_id())."',
 					user_ses='".sensitiveIO::sanitizeSQLString($this->_userID)."',
 					remote_addr_ses='".sensitiveIO::sanitizeSQLString($_SERVER['REMOTE_ADDR'])."',
-					http_user_agent_ses='".sensitiveIO::sanitizeSQLString($_SERVER['HTTP_USER_AGENT'])."'
+					http_user_agent_ses='".sensitiveIO::sanitizeSQLString(@$_SERVER['HTTP_USER_AGENT'])."'
 			";
 			if ($permanent_cookie) {
 				$sql .= ",
@@ -397,7 +405,7 @@ class CMS_context extends CMS_grandFather
 					sessions
 				where
 					phpid_ses='".session_id()."'
-					and http_user_agent_ses like '".SensitiveIO::sanitizeSQLString($_SERVER['HTTP_USER_AGENT'])."'
+					and http_user_agent_ses like '".SensitiveIO::sanitizeSQLString(@$_SERVER['HTTP_USER_AGENT'])."'
 			";
 			if (CHECK_REMOTE_IP_MASK) {
 				//Check for a range in IPv4 or for the exact address in IPv6
@@ -498,9 +506,9 @@ class CMS_context extends CMS_grandFather
 				from
 					sessions
 				where
-					id_ses='".SensitiveIO::sanitizeSQLString($id_ses)."'
-					and phpid_ses='".SensitiveIO::sanitizeSQLString($session_id)."'
-					and http_user_agent_ses like '".SensitiveIO::sanitizeSQLString($_SERVER['HTTP_USER_AGENT'])."'
+					id_ses = '".SensitiveIO::sanitizeSQLString($id_ses)."'
+					and phpid_ses = '".SensitiveIO::sanitizeSQLString($session_id)."'
+					and http_user_agent_ses = '".SensitiveIO::sanitizeSQLString(@$_SERVER['HTTP_USER_AGENT'])."'
 					and cookie_expire_ses != '0000:00:00 00:00:00'
 			";
 			if (CHECK_REMOTE_IP_MASK) {
@@ -518,7 +526,11 @@ class CMS_context extends CMS_grandFather
 			if ($q->getNumRows() == 1) {
 				$user = CMS_profile_usersCatalog::getByID($q->getValue('user_ses'));
 				if (!$user->hasError()) {
-			 		$this->_startSession($user, true);
+			 		if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID) {
+						$log = new CMS_log();
+						$log->logMiscAction(CMS_log::LOG_ACTION_AUTO_LOGIN, $user, 'IP: '.$_SERVER['REMOTE_ADDR'].', UA: '.@$_SERVER['HTTP_USER_AGENT']);
+					}
+					$this->_startSession($user, true);
 					return true;
 				}
 			}
@@ -554,10 +566,7 @@ class CMS_context extends CMS_grandFather
 	  */
 	static function resetSessionCookies() {
 		//Regenerate session id
-		//session_id(md5(uniqid(mt_rand(), true)));
 		session_regenerate_id(true);
-		//Start session
-		//start_atm_session();
 		//unset session
 		unset($_SESSION) ;
 		//remove cookies

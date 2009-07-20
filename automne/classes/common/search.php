@@ -14,7 +14,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: search.php,v 1.3 2009/03/02 11:28:06 sebastien Exp $
+// $Id: search.php,v 1.4 2009/07/20 16:35:36 sebastien Exp $
 
 /**
   * Class CMS_search
@@ -228,7 +228,7 @@ class CMS_search extends CMS_grandFather {
 					$suffix = ($public) ? '_public' : '_edited';
 					if (!$withPageContent) {
 						//Search in page metadatas
-						$count = 0;
+						//$count = 0;
 						foreach ($allDatas[self::SEARCH_TYPE_DEFAULT] as $block) {
 							$where.= ($count) ? ' or ':'';
 							$count++;
@@ -256,7 +256,7 @@ class CMS_search extends CMS_grandFather {
 						$q = new CMS_query($sql);
 						//pr($sql);
 						$results = array();
-						$count=0;
+						$count = 0;
 						$foundIDs = array();
 						while ($id = $q->getValue('page_pbd')) {
 							$foundIDs[] = $id;

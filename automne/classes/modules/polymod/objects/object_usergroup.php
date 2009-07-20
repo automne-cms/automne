@@ -14,7 +14,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_usergroup.php,v 1.4 2009/06/22 14:08:41 sebastien Exp $
+// $Id: object_usergroup.php,v 1.5 2009/07/20 16:35:38 sebastien Exp $
 
 /**
   * Class CMS_object_usergroup
@@ -222,7 +222,7 @@ class CMS_object_usergroup extends CMS_object_common
 		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
 		global $cms_user;
 		$params = $this->getParamsValues();
-		$return['name'] 			= $return['id'] 			= 'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]';
+		$return['name'] 			/*= $return['id'] */			= 'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]';
 		if ($params['multiUserGroup']) {
 			// Get all users or groups
 			$a_all_users = $this->getListOfNamesForObject();
@@ -279,7 +279,7 @@ class CMS_object_usergroup extends CMS_object_common
 				}
 			}
 			$return['hiddenName'] 		= $return['name'];
-			unset($return['id']);
+			/*unset($return['id']);*/
 			$return['xtype'] 			= 'atmCombo';
 			$return['forceSelection'] 	= true;
 			$return['mode'] 			= 'local';
@@ -650,7 +650,7 @@ class CMS_object_usergroup extends CMS_object_common
 						break;
 					}
 				} else {
-					if (!is_object($this->_subfieldValues[0])) {
+					if (!isset($this->_subfieldValues[0]) || !is_object($this->_subfieldValues[0])) {
 						return '';
 					}
 					switch ($name) {

@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: page.php,v 1.8 2009/06/22 14:08:41 sebastien Exp $
+// $Id: page.php,v 1.9 2009/07/20 16:35:38 sebastien Exp $
 
 /**
   * Class CMS_page
@@ -31,6 +31,8 @@
 
 class CMS_page extends CMS_resource
 {
+	const MESSAGE_PAGE_PAGE = 1328;
+	
 	/**
 	  * page DB id
 	  * @var integer
@@ -786,6 +788,17 @@ class CMS_page extends CMS_resource
 		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
 		
 		return $this->{$var}["title"];
+	}
+	
+	/**
+	  * get object type label
+	  *
+	  * @param mixed $language the language code (string) or the CMS_language (object) to use for label
+	  * @return string : the object name
+	  * @access public
+	  */
+	function getTypeLabel($language) {
+		return $language->getMessage(self::MESSAGE_PAGE_PAGE);
 	}
 	
 	/**
@@ -1655,8 +1668,8 @@ class CMS_page extends CMS_resource
 		$q = new CMS_query($sql);
 		
 		//5- destroy all previous url files for this page
-		$printfiles = glob(PATH_PAGES_FS.'/print-'.$this->getID().'-*.php', GLOB_NOSORT);
-		$files = array_merge(glob(PATH_PAGES_FS.'/'.$this->getID().'-*.php', GLOB_NOSORT),$printfiles);
+		$printfiles = glob($this->_getFilePath(PATH_RELATIVETO_FILESYSTEM).'/print-'.$this->getID().'-*.php', GLOB_NOSORT);
+		$files = array_merge(glob($this->_getFilePath(PATH_RELATIVETO_FILESYSTEM).'/'.$this->getID().'-*.php', GLOB_NOSORT),$printfiles);
 		if (is_array($files) && $files) {
 			foreach ($files as $file) {
 				@unlink($file);

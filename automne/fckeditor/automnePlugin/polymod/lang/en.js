@@ -17,7 +17,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: en.js,v 1.2 2009/06/22 14:14:52 sebastien Exp $
+// $Id: en.js,v 1.3 2009/07/20 16:37:32 sebastien Exp $
 
 FCKLang['DlgPolymodTitle']				= 'Automne Modules' ;
 FCKLang['DlgPolymodChoose']			 	= 'Select a document' ;
@@ -25,3 +25,4 @@ FCKLang['DlgPolymodPageNb']				= 'Document :' ;
 FCKLang['DlgPolymodNoPage']				= 'Please select an element.' ;
 FCKLang['DlgMyFindFindPolymodBtn']		= 'Find' ;
 FCKLang['DlgPolymodEditTitle']			= 'Edit element' ;
+FCKLang['DlgPolymodDeleteTitle']		= 'Delete element' ;

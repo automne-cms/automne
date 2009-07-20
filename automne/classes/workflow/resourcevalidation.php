@@ -30,6 +30,10 @@
 
 class CMS_resourceValidation extends CMS_grandFather
 {
+	const MESSAGE_VALIDATION_ACCEPT = 38;
+	const MESSAGE_VALIDATION_REFUSE = 39;
+	const MESSAGE_VALIDATION_TRANSFER = 40;
+	
 	/**
 	  * Validation persistence timeout, in minutes. All validations stored in persistence older than this amount will be deleted.
 	  * Default : 100 minutes
@@ -485,9 +489,9 @@ class CMS_resourceValidation extends CMS_grandFather
 	  */
 	function getAllValidationOptions()
 	{
-		return array(	MESSAGE_VALIDATION_ACCEPT	=> VALIDATION_OPTION_ACCEPT,
-						MESSAGE_VALIDATION_REFUSE	=> VALIDATION_OPTION_REFUSE,
-						MESSAGE_VALIDATION_TRANSFER	=> VALIDATION_OPTION_TRANSFER);
+		return array(	self::MESSAGE_VALIDATION_ACCEPT	=> VALIDATION_OPTION_ACCEPT,
+						self::MESSAGE_VALIDATION_REFUSE	=> VALIDATION_OPTION_REFUSE,
+						self::MESSAGE_VALIDATION_TRANSFER	=> VALIDATION_OPTION_TRANSFER);
 	}
 }
  

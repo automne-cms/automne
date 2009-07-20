@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_href.php,v 1.3 2009/06/25 14:36:45 sebastien Exp $
+// $Id: object_href.php,v 1.4 2009/07/20 16:35:37 sebastien Exp $
 
 /**
   * Class CMS_object_href
@@ -156,7 +156,7 @@ class CMS_object_href extends CMS_object_common
 		//create field value
 		$maxFileSize = CMS_file::getMaxUploadFileSize('K');
 		$value = $this->_subfieldValues[0]->getValue();
-		$return['name'] = $return['id'] = 'polymodFieldsValue[href'.$prefixName.$this->_field->getID().'_0]';
+		$return['name'] = /*$return['id'] =*/ 'polymodFieldsValue[href'.$prefixName.$this->_field->getID().'_0]';
 		$return['xtype'] =	'atmLinkField';
 		$return['value'] =	(string) $value;
 		$return['uploadCfg'] =	array(

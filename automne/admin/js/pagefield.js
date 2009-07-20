@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: pagefield.js,v 1.3 2009/06/05 15:01:06 sebastien Exp $
+  * $Id: pagefield.js,v 1.4 2009/07/20 16:33:16 sebastien Exp $
   */
 Automne.PageField = Ext.extend(Ext.form.NumberField,  {
 	allowDecimals : false,
@@ -68,6 +68,16 @@ Automne.PageField = Ext.extend(Ext.form.NumberField,  {
 		});
 		//display window
 		win.show(this.el.id);
+	},
+	enable: function(){
+		Automne.PageField.superclass.enable.call(this);
+		this.button.enable();
+		return true;
+	},
+	disable: function(){
+		Automne.PageField.superclass.disable.call(this);
+		this.button.disable();
+		return true;
 	}
 });
 Ext.reg('atmPageField', Automne.PageField);

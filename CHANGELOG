@@ -1,4 +1,14 @@
-V4.0.0rc1
+V4.0.0rc2 (in progress)
+[BUG] : On polymod fields, some fields did not work properly (image label, auto image zoom on thumbnail, disabled fields).
+[BUG] : On polymod objects : concurrent edition did not work
+[REFACTOR] : add some functions to the cleanword method used in FCKEditor (file /automne/fckeditor/automnePlugin/fck_cleanword.js) and change FCKConfig.CleanWordKeepsStructure config to true
+[REFACTOR] : refactor logs admin panel
+[FEATURE] : add a parameter to enable check XHTML compliance in Wysiwyg
+[FEATURE] : add an XHTML parsing for Wysiwyg output. Config can be overwriten in config.php. See /automne/xhtmlValidator/taglist.php for detail.
+[FEATURE] : add IE6 forbidden screen on admin login
+[FEATURE] : add logs on email, identification and polymod objects
+
+V4.0.0rc1 (01/07/09)
 [DEPRECATED] : Remove all class factory files
 [DEPRECATED] : Remove all references to java editor
 [DEPRECATED] : Remove css editor classes

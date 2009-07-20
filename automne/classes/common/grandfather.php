@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: grandfather.php,v 1.8 2009/06/22 14:08:40 sebastien Exp $
+// $Id: grandfather.php,v 1.9 2009/07/20 16:35:36 sebastien Exp $
 
 /**
   * Class CMS_grandFather
@@ -336,6 +336,9 @@ class CMS_grandFather
 
 				//CSSMin
 				'cssmin' 							=> PATH_MAIN_FS.'/cssmin/cssmin.php',
+				
+				//XhtmlValidator
+				'xhtmlvalidator' 					=> PATH_MAIN_FS.'/xhtmlValidator/validator.class.php',
 			);
 		}
 		$file = '';

@@ -6,7 +6,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: main.js,v 1.16 2009/06/24 10:05:00 sebastien Exp $
+  * $Id: main.js,v 1.17 2009/07/20 16:33:16 sebastien Exp $
   */
 
 //Declare Automne namespace
@@ -31,7 +31,10 @@ Automne = {
 	*************************************/
 	init: function() {
 		//check for navigator version
-		if (Ext.isGecko2 || Ext.isIE6 ||  Ext.isSafari2 || !(Ext.isIE || Ext.isGecko || Ext.isSafari || Ext.isOpera || Ext.isChrome)) {
+		if (Ext.isIE6) {
+			window.top.location.replace('./ie6.php');
+		}
+		if (Ext.isGecko2 ||  Ext.isSafari2 || !(Ext.isIE || Ext.isGecko || Ext.isSafari || Ext.isOpera || Ext.isChrome)) {
 			window.top.location.replace('./navigator.php');
 		}
 		//init quicktips

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: validations-controler.php,v 1.4 2009/06/29 10:21:55 sebastien Exp $
+// $Id: validations-controler.php,v 1.5 2009/07/20 16:33:16 sebastien Exp $
 
 /**
   * PHP controler : Receive validations actions
@@ -189,10 +189,11 @@ switch ($action) {
 					$group_email->setUserMessages($users, $bodies, $subjects);
 					$group_email->sendMessages();
 					
-					$log = new CMS_log();
-					$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_VALIDATE_EDITION, $cms_user, $validation->getModuleCodename(), $res->getStatus(), "", $res);
 					//check if resource still exists
 					$res = $validation->getResource();
+					//log action
+					$log = new CMS_log();
+					$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_VALIDATE_EDITION, $cms_user, $validation->getModuleCodename(), $res->getStatus(), "", $res);
 					if ($res->getStatus()) {
 						//Replace all the status icons by the new one across the whole interface
 						$status = $res->getStatus()->getHTML(false, $cms_user, $validation->getModuleCodename(), $res->getID());
