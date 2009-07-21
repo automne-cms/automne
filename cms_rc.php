@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc.php,v 1.16 2009/07/20 16:29:38 sebastien Exp $
+// $Id: cms_rc.php,v 1.17 2009/07/21 13:40:13 sebastien Exp $
 
 /**
   * rc file, contains all default constants
@@ -823,12 +823,14 @@ if (STATS_DEBUG) {
 		$files = sprintf('%.5f', $GLOBALS["files_time"]);
 		$rapportSQL = sprintf('%.2f', ((100*$GLOBALS["total_time"])/$time));
 		$rapportPHP = 100-$rapportSQL;
+		$memoryPeak = round((memory_get_peak_usage()/1048576),3);
 		$content = 
 		'File ' .$_SERVER['SCRIPT_NAME'] ."\n".
 		'Loaded in ' . $time . ' seconds'."\n".
 		'Loaded PHP files : '. $GLOBALS["files_loaded"] ."\n".
 		'SQL requests : ' . sprintf('%.5f',$GLOBALS["total_time"]) . ' seconds ('. $GLOBALS["sql_nb_requests"] .' requests)'."\n".
-		'% SQL/PHP : '. $rapportSQL .' / '. $rapportPHP .' %'."\n";
+		'% SQL/PHP : '. $rapportSQL .' / '. $rapportPHP .' %'."\n".
+		'Memory Peak : '. $memoryPeak .'Mo'."\n";
 		if (function_exists('xdebug_get_profiler_filename') && xdebug_get_profiler_filename()) {
 			$content .= 'XDebug Profile : '. xdebug_get_profiler_filename()."\n";
 		}
@@ -852,21 +854,26 @@ if (STATS_DEBUG) {
 				'stat_sql_table'		=> $GLOBALS["sql_table"],
 				'stat_content_name'		=> basename($_SERVER["SCRIPT_NAME"]),
 				'stat_files_table'		=> $GLOBALS["files_table"],
+				'stat_memory_table'		=> $GLOBALS["memory_table"],
+				'stat_memory_peak'		=> $memoryPeak,
 				'stat_files_loaded'		=> $GLOBALS["files_loaded"],
+				
 			);
 			$statName = 'stat-'.md5(rand());
 			$stats[$statName] = $stat;
 			$_SESSION["cms_context"]->setSessionVar('automneStats', $stats);
 		}
 		if (!$return) {
-			$content = '<pre>'.$content.'</pre>';
+			$content = '<fieldset style="width:200px;"><legend>Debug Statistics</legend><pre>'.$content.'</pre>';
 			if (isset($statName)) {
-				$content .= '<a href="'.PATH_ADMIN_WR.'/stat.php?stat='.$statName.'" target="_blank">View statistics</a>';
+				$content .= '<a href="'.PATH_ADMIN_WR.'/stat.php?stat='.$statName.'" target="_blank">View statistics detail</a>';
 			}
+			$content .= '</fieldset>';
 			echo $content;
 		} else {
+			$content = 'Debug Statistics :'."\n".$content;
 			if (isset($statName)) {
-				$content .= '<a href="'.PATH_ADMIN_WR.'/stat.php?stat='.$statName.'" target="_blank">View statistics</a>';
+				$content .= '<a href="'.PATH_ADMIN_WR.'/stat.php?stat='.$statName.'" target="_blank">View statistics detail</a>';
 			}
 			return $content;
 		}

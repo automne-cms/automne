@@ -1,4 +1,4 @@
-V4.0.0rc2 (in progress)
+V4.0.0rc2 (21/07/09)
 [BUG] : On polymod fields, some fields did not work properly (image label, auto image zoom on thumbnail, disabled fields).
 [BUG] : On polymod objects : concurrent edition did not work
 [BUG] : On users groups management, some rights are not correctly set after removing of one group to one user

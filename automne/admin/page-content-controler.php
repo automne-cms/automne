@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-content-controler.php,v 1.6 2009/07/20 16:33:15 sebastien Exp $
+// $Id: page-content-controler.php,v 1.7 2009/07/21 13:41:12 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on page content
@@ -491,7 +491,7 @@ switch ($action) {
 	break;
 }
 //set user message if any
-if ($cms_message) {
+if (isset($cms_message) && $cms_message) {
 	$view->setActionMessage($cms_message);
 }
 

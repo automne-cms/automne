@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: grandfather.php,v 1.9 2009/07/20 16:35:36 sebastien Exp $
+// $Id: grandfather.php,v 1.10 2009/07/21 13:41:43 sebastien Exp $
 
 /**
   * Class CMS_grandFather
@@ -377,13 +377,19 @@ class CMS_grandFather
 			require_once($file);
 			/*only for stats*/
 			if (STATS_DEBUG) $GLOBALS["files_loaded"]++;
-			if (STATS_DEBUG && VIEW_SQL) $GLOBALS["files_table"][] = $file;
+			if (STATS_DEBUG && VIEW_SQL) { 
+				$GLOBALS["files_table"][] = $file; 
+				$GLOBALS["memory_table"][] = array('file' => $file, 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
+			}
 		} else {
 			//register Zend Framework Autoload
 			require_once(PATH_MAIN_FS.'/Zend/Loader.php');
 			/*only for stats*/
 			if (STATS_DEBUG) $GLOBALS["files_loaded"]++;
-			if (STATS_DEBUG && VIEW_SQL) $GLOBALS["files_table"][] = PATH_MAIN_FS.'/Zend/Loader.php';
+			if (STATS_DEBUG && VIEW_SQL) {
+				$GLOBALS["files_table"][] = PATH_MAIN_FS.'/Zend/Loader.php';
+				$GLOBALS["memory_table"][] = array('file' => $file, 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
+			}
 			chdir(PATH_MAIN_FS);
 			if (!Zend_Loader::autoload($classname)) {
 				CMS_grandFather::raiseError('class '.$classname.' not found');

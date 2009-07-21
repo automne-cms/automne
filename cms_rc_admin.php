@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc_admin.php,v 1.10 2009/07/20 16:29:39 sebastien Exp $
+// $Id: cms_rc_admin.php,v 1.11 2009/07/21 13:40:13 sebastien Exp $
 
 /**
   * Administration rc file.
@@ -80,6 +80,8 @@ if (APPLICATION_EXEC_TYPE == 'http') {
 		//set disconnected status
 		$view->setDisconnected(true);
 	}
+	//init message var
+	$cms_message = '';
 }
 
 //force module standard loading

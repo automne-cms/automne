@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: stat.php,v 1.3 2009/03/04 09:55:16 sebastien Exp $
+// $Id: stat.php,v 1.4 2009/07/21 13:41:12 sebastien Exp $
 
 /**
   * Automne Debug Statistics viewver
@@ -51,6 +51,7 @@ if (!$statName || !isset($stats[$statName])) {
 
 $sql_table = $stats[$statName]['stat_sql_table'];
 $files_loaded = $stats[$statName]['stat_files_table'];
+$memoryUsages = $stats[$statName]['stat_memory_table'];
 
 $dialog->setTitle('Automne :: Debug :: Statistics for file : '.$stats[$statName]['stat_content_name'],'pic_meta.gif');
 
@@ -63,7 +64,8 @@ $content = '
 Loaded in ' . $time . ' seconds<br />
 Loaded PHP files : '. $stats[$statName]['stat_files_loaded'] .'<br />
 SQL requests : ' . sprintf('%.5f', $stats[$statName]['stat_total_time']) . ' seconds (' . $stats[$statName]['stat_sql_nb_requests'] . ' requests)<br />
-% SQL/PHP time : '. $rapport .' %
+% SQL/PHP time : '. $rapport .' %<br />
+Memory Peak : '. $stats[$statName]['stat_memory_peak'] .'Mo
 <br /><br />
 <h3>SQL Resume:</h3>
 <br />
@@ -227,6 +229,13 @@ $content .= '</table><br />
 <br />';
 foreach ($files_loaded as $file) {
 	$content .= str_replace(PATH_REALROOT_FS, '', $file).'<br />';
+}
+$content .= '<br />
+<h3>Memory Usage Evolution (file : current / max):</h3>
+Memory is measured after the inclusion of a file<br />
+<br />';
+foreach ($memoryUsages as $memoryUsage) {
+	$content .= str_replace(PATH_REALROOT_FS, '', $memoryUsage['file']).' : '.round(($memoryUsage['memory']/1048576),3).'Mo / '.round(($memoryUsage['peak']/1048576),3).'Mo<br />';
 }
 $content .= '<br />
 <h3>SQL Detail:</h3>
