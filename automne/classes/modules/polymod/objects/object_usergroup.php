@@ -14,7 +14,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_usergroup.php,v 1.5 2009/07/20 16:35:38 sebastien Exp $
+// $Id: object_usergroup.php,v 1.6 2009/07/22 10:21:06 sebastien Exp $
 
 /**
   * Class CMS_object_usergroup
@@ -437,8 +437,8 @@ class CMS_object_usergroup extends CMS_object_common
 	  * @access public
 	  */
 	function setValues($values,$prefixName) {
-		if (isset($values['list'.$prefixName.$this->_field->getID().'_0'])) {
-			$params = $this->getParamsValues();
+		$params = $this->getParamsValues();
+		if (isset($values['list'.$prefixName.$this->_field->getID().'_0']) || $params['isCurrentUser'] || $params['creationUser']) {
 			// If params : set userID
 			if ($params['isCurrentUser']) {
 				global $cms_user;

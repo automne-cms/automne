@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_categories.php,v 1.8 2009/07/20 16:35:37 sebastien Exp $
+// $Id: object_categories.php,v 1.9 2009/07/22 10:21:06 sebastien Exp $
 
 /**
   * Class CMS_object_categories
@@ -224,10 +224,14 @@ class CMS_object_categories extends CMS_object_common
 			$a_all_categories = $this->getAllCategoriesAsArray($language, false, $moduleCodename, CLEARANCE_MODULE_EDIT, $rootCategory, true);
 			$associated_items = $availableCategories = array();
 			if (is_array($a_all_categories) && $a_all_categories) {
-				foreach (array_keys($this->_subfieldValues) as $subFieldID) {
-					if (is_object($this->_subfieldValues[$subFieldID])) {
-						$associated_items[$this->_subfieldValues[$subFieldID]->getValue()] = $this->_subfieldValues[$subFieldID]->getValue();
+				if (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0]) && !is_null($this->_subfieldValues[0]->getValue()) && $this->_subfieldValues[0]->getID()) {
+					foreach (array_keys($this->_subfieldValues) as $subFieldID) {
+						if (is_object($this->_subfieldValues[$subFieldID])) {
+							$associated_items[$this->_subfieldValues[$subFieldID]->getValue()] = $this->_subfieldValues[$subFieldID]->getValue();
+						}
 					}
+				} elseif (sensitiveIO::isPositiveInteger($params['defaultValue'])) {
+					$associated_items[$params['defaultValue']] = $params['defaultValue'];
 				}
 				foreach ($a_all_categories as $id => $category) {
 					$availableCategories[] = array($id, $category);
@@ -235,6 +239,7 @@ class CMS_object_categories extends CMS_object_common
 			} else {
 				$availableCategories[] = array('', $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET));
 			}
+			
 			$return['xtype'] 			= 'multiselect';
 			$return['name'] 			= 'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]';
 			$return['dataFields'] 		= array('id', 'label');
@@ -247,7 +252,7 @@ class CMS_object_categories extends CMS_object_common
 			}
 			$return['width'] 			= SensitiveIO::isPositiveInteger($params['selectWidth']) ? SensitiveIO::isPositiveInteger($params['selectWidth']) : '100%';
 		} else {
-			if (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0]) && !is_null($this->_subfieldValues[0]->getValue())) {
+			if (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0]) && !is_null($this->_subfieldValues[0]->getValue()) && $this->_subfieldValues[0]->getID()) {
 				$selectedValue = $this->_subfieldValues[0]->getValue() ? $this->_subfieldValues[0]->getValue() : '';
 			} elseif (sensitiveIO::isPositiveInteger($params['defaultValue'])) {
 				$selectedValue = $params['defaultValue'];

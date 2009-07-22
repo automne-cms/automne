@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modules-category.php,v 1.3 2009/06/22 14:10:31 sebastien Exp $
+// $Id: modules-category.php,v 1.4 2009/07/22 10:18:48 sebastien Exp $
 
 /**
   * PHP page : Load category item interface
@@ -152,7 +152,7 @@ $selectContent = array();
 if (is_array($root_categories) && sizeof($root_categories) > 0) {
 	foreach ($root_categories as $aRoot) {
 		// Show all sub categories
-		$selectContent += build_category_tree_options($aRoot, 0);
+		$selectContent = array_merge($selectContent, build_category_tree_options($aRoot, 0));
 	}
 }
 if ($selectContent) {

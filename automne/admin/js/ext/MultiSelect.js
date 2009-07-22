@@ -43,11 +43,10 @@ Ext.ux.Multiselect = Ext.extend(Ext.form.Field,  {
 		Ext.ux.Multiselect.superclass.onRender.call(this, ct, position);
 
 		cls = 'ux-mselect';
-
 		fs = new Ext.form.FieldSet({
 			renderTo:this.el,
 			title:this.legend,
-			height:this.height,
+			height:this.height - 10,
 			width:this.width,
 			style:"padding:1px;",
 			tbar:this.tbar
