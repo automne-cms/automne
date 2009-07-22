@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: email.php,v 1.5 2009/07/20 16:35:36 sebastien Exp $
+// $Id: email.php,v 1.6 2009/07/22 12:23:38 sebastien Exp $
 
 /**
   * Class CMS_email
@@ -476,6 +476,11 @@ class CMS_email extends CMS_grandFather
 		$IB="----=_InnerBoundery_001";
 		
 		if ($this->_emailHTML) { //if HTML content is provided for email, use it
+			//if this mail contain relative link, append default website address
+			if (strpos($this->_emailHTML, 'href="/') !== false || strpos($this->_emailHTML, 'src="/') !== false) {
+				$url = CMS_websitesCatalog::getMainURL();
+				$this->_emailHTML = str_replace(array('href="/', 'src="/'), array('href="'.$url.'/', 'src="'.$url.'/'), $this->_emailHTML);
+			}
 			$Html = $this->_emailHTML;
 		} elseif ($this->_template) { //else if template is provided for email HTML, use it
 			$template = new CMS_file($this->_template);

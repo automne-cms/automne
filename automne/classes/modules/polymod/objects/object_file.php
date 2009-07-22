@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_file.php,v 1.10 2009/07/20 16:35:37 sebastien Exp $
+// $Id: object_file.php,v 1.11 2009/07/22 12:23:39 sebastien Exp $
 
 /**
   * Class CMS_object_file
@@ -1297,7 +1297,13 @@ class CMS_object_file extends CMS_object_common
 				//set location
 				$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
 				$filepath = ($this->_subfieldValues[3]->getValue() == self::OBJECT_FILE_TYPE_INTERNAL) ? PATH_MODULES_FILES_WR.'/'.$moduleCodename.'/'.$location.'/'.$this->_subfieldValues[4]->getValue() : $this->_subfieldValues[4]->getValue();
-				$file = '<a href="'.$filepath.'" target="_blank" title="'.$this->_subfieldValues[0]->getValue().'">'.$this->_subfieldValues[0]->getValue().'</a>';
+				//append website url if missing
+				if (substr($filepath,0,1) == '/') {
+					$filepath = CMS_websitesCatalog::getMainURL() . $filepath;
+				}
+				//link content
+				$linkContent = ($parameters) ? $parameters : $this->_subfieldValues[0]->getValue();
+				$file = '<a href="'.$filepath.'" target="_blank" title="'.$this->_subfieldValues[0]->getValue().'">'.$linkContent.'</a>';
 				return $file;
 			break;
 			case 'fileLabel':

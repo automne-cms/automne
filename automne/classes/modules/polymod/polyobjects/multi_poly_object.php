@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: multi_poly_object.php,v 1.6 2009/07/20 16:35:36 sebastien Exp $
+// $Id: multi_poly_object.php,v 1.7 2009/07/22 12:23:38 sebastien Exp $
 
 /**
   * Class CMS_multi_poly_object
@@ -468,6 +468,7 @@ class CMS_multi_poly_object extends CMS_object_common
 		
 		$label = $desc ? '<span class="atm-help" ext:qtip="'.htmlspecialchars($desc).'">'.$mandatory.$this->getFieldLabel($language).'</span>' : $mandatory.$this->getFieldLabel($language);
 		
+		$listId = 'list'.md5(mt_rand().microtime());
 		if ($params['editable']) {
 			//get object definition
 			$objectDef = $this->getObjectDefinition();
@@ -483,7 +484,6 @@ class CMS_multi_poly_object extends CMS_object_common
 				$objectDef = $this->getObjectDefinition();
 				//get module codename
 				$moduleCodename = $objectDef->getValue('module');
-				$listId = 'list'.md5(mt_rand().microtime());
 				$select = array(
 					'layout'	=> 'column',
 					'xtype'		=> 'panel',
