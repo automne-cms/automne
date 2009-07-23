@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_categories.php,v 1.9 2009/07/22 10:21:06 sebastien Exp $
+// $Id: object_categories.php,v 1.10 2009/07/23 10:53:25 sebastien Exp $
 
 /**
   * Class CMS_object_categories
@@ -736,11 +736,11 @@ class CMS_object_categories extends CMS_object_common
 			$structure['values']['n']['id'] = '';
 			$structure['values']['n']['label'] = '';
 			$structure['values']['n']['file'] = '';
-			$structure['values']['n']['description'] = '';
+			$structure['values']['n']['categorydesc'] = '';
 		} else {
 			$structure['id'] = '';
 			$structure['file'] = '';
-			$structure['description'] = '';
+			$structure['categorydesc'] = '';
 		}
 		return $structure;
 	}
@@ -798,7 +798,7 @@ class CMS_object_categories extends CMS_object_common
 							}
 							return '';
 						break;
-						case 'description':
+						case 'categorydesc':
 							$category = CMS_moduleCategories_catalog::getByID($this->_subfieldValues[$name]->getValue());
 							if (!$category->hasError()) {
 								return $category->getDescription($cms_language);
@@ -837,7 +837,7 @@ class CMS_object_categories extends CMS_object_common
 							}
 							return '';
 						break;
-						case 'description':
+						case 'categorydesc':
 							$category = CMS_moduleCategories_catalog::getByID($this->_subfieldValues[0]->getValue());
 							if (!$category->hasError()) {
 								return $category->getDescription($cms_language);
@@ -871,12 +871,12 @@ class CMS_object_categories extends CMS_object_common
 			$labels['structure']['values:id'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESID_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 			$labels['structure']['values:label'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESLABEL_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 			$labels['structure']['values:file'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESFILE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
-			$labels['structure']['values:description'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESDESCRIPTION_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+			$labels['structure']['values:categorydesc'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESDESCRIPTION_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		} else {
 			$labels['structure']['label'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_LABEL_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 			$labels['structure']['id'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_ID_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 			$labels['structure']['file'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_FILE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
-			$labels['structure']['description'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESDESCRIPTION_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+			$labels['structure']['categorydesc'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESDESCRIPTION_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		}
 		$labels['function']['categoryLineage'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_FUNCTION_CATEGORYLINEAGE_DESCRIPTION,array('{'.$objectName.'}') ,MOD_POLYMOD_CODENAME);
 		$labels['function']['categoriesTree'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_FUNCTION_CATEGORYTREE_DESCRIPTION,array('{'.$objectName.'}') ,MOD_POLYMOD_CODENAME);

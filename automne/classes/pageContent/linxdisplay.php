@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: linxdisplay.php,v 1.4 2009/07/20 16:35:36 sebastien Exp $
+// $Id: linxdisplay.php,v 1.5 2009/07/23 10:53:25 sebastien Exp $
 
 /**
   * Class CMS_linxDisplay
@@ -90,9 +90,11 @@ class CMS_linxDisplay extends CMS_grandFather
 		}
 		//root
 		if ($root->length > 0) {
-			$this->_root = trim(CMS_DOMDocument::DOMElementToString($root->item(0), true));
-		} else if ($tag->getAttribute('root')) {
-			$this->_root = trim($tag->getAttribute('root'));
+			$attribute = trim(CMS_DOMDocument::DOMElementToString($root->item(0), true));
+			$this->_root = $attribute === "0" || $attribute === "false" || !$attribute ? false : true;
+		} else if ($tag->hasAttribute('root')) {
+			$attribute = trim($tag->getAttribute('root'));
+			$this->_root = $attribute === "0" || $attribute === "false" || !$attribute ? false : true;
 		} else {
 			$this->_root = true;
 		}
