@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: block-text.js,v 1.5 2009/06/22 14:10:34 sebastien Exp $
+  * $Id: block-text.js,v 1.6 2009/07/23 15:27:18 sebastien Exp $
   */
 Automne.blockText = Ext.extend(Automne.block, {
 	blockClass:	'CMS_block_text',
@@ -168,7 +168,7 @@ Automne.blockText = Ext.extend(Automne.block, {
 	validateEdition: function(cancelCtrl, validateCtrl, ctrlCont, textCont, cont, tb) {
 		//get new value from textarea
 		if (this.FCKEditor) {
-			this.value = this.FCKEditor.GetData();
+			this.value = this.FCKEditor.GetXHTML(true);
 			//send all datas to server to update block content and get new row HTML code
 			Automne.server.call('page-content-controler.php', this.stopEditionAfterValidation, {
 				action:			'update-block-text',
