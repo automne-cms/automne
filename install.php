@@ -18,7 +18,7 @@
 // | Author: Devin Doucette <darksnoopy@shaw.ca> (for archives classes)   |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.21 2009/06/29 10:24:19 sebastien Exp $
+// $Id: install.php,v 1.22 2009/08/10 07:34:03 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -93,6 +93,7 @@ if (!isset($_GET['file'])) {
 			$error_stepCheck_php_error = 'Erreur, Votre version de PHP ('.phpversion().') n\'est pas compatible avec Automne. Vous devez avoir une version supérieure à la 5.2.0.';
 			$error_stepCheck_dir_not_writable_error = 'Erreur, Apache ne possède pas les droits d\'écriture sur le répertoire racine (%s) de votre site web.';
 			$error_stepCheck_safe_mode_error = 'Attention ! L\'option "safe_mode" est active sur votre configuration de PHP. Cette option est incompatible avec Automne. Vérifiez votre installation de PHP.';
+			$error_stepCheck_pdo_error = 'Attention, l\'extension PDO pour PHP n\'est pas disponible sur votre serveur. Veuillez vérifier la <a href="http://www.php.net/manual/book.pdo.php" target="_blank">configuration de PHP et ajouter le support de PDO</a>.';
 			$error_stepCheck_magic_quotes_error = 'Attention ! L\'option "magic_quotes_gpc" est active sur votre configuration de PHP. Cette option est fortement déconseillée car l\'ensemble des fonctions d\'Automne ne seront pas disponibles et/ou leurs fonctionnement sera dégradé.';
 			$error_stepCheck_magic_quotes_runtime_error = 'Attention ! L\'option "magic_quotes_runtime" est active sur votre configuration de PHP. Cette option est incompatible avec Automne. Vérifiez votre installation de PHP.';
 			$error_stepCheck_magic_quotes_sybase_error = 'Attention ! L\'option "magic_quotes_sybase" est active sur votre configuration de PHP. Cette option est incompatible avec Automne. Vérifiez votre installation de PHP.';
@@ -235,10 +236,11 @@ if (!isset($_GET['file'])) {
 			//STEP check
 			$error_stepCheck_php_error = 'Error, Your PHP version ('.phpversion().') is not compatible with Automne. You must have a version greater than 5.2.0.';
 			$error_stepCheck_dir_not_writable_error = 'Error, Apache does not have write permissions on your website root directory (%s).';
-			$error_stepCheck_safe_mode_error = 'Beware ! The "safe_mode" option is active on your PHP configuration. This option is not compatible with Automne. Please Check your PHP installation.';
-			$error_stepCheck_magic_quotes_error = 'Beware ! The "magic_quotes_gpc" option is active on your PHP configuration. This option is strongly disadvised because some Automne functions will not be available or should be degraded.';
-			$error_stepCheck_magic_quotes_runtime_error = 'Beware ! The "magic_quotes_runtime" option is active on your PHP configuration. This option is not compatible with Automne. Please Check your PHP installation.';
-			$error_stepCheck_magic_quotes_sybase_error = 'Beware ! The "magic_quotes_sybase" option is active on your PHP configuration. This option is not compatible with Automne. Please Check your PHP installation.';
+			$error_stepCheck_safe_mode_error = 'Beware! The "safe_mode" option is active on your PHP configuration. This option is not compatible with Automne. Please Check your PHP installation.';
+			$error_stepCheck_pdo_error = 'Error,  PDO extension is not installed on your server. Please check your <a href="http://www.php.net/manual/book.pdo.php" target="_blank">PHP installation and add it PDO extension</a>.';
+			$error_stepCheck_magic_quotes_error = 'Beware! The "magic_quotes_gpc" option is active on your PHP configuration. This option is strongly disadvised because some Automne functions will not be available or should be degraded.';
+			$error_stepCheck_magic_quotes_runtime_error = 'Beware! The "magic_quotes_runtime" option is active on your PHP configuration. This option is not compatible with Automne. Please Check your PHP installation.';
+			$error_stepCheck_magic_quotes_sybase_error = 'Beware! The "magic_quotes_sybase" option is active on your PHP configuration. This option is not compatible with Automne. Please Check your PHP installation.';
 			$error_stepCheck_register_globals_error = 'Beware ! The "register_globals" option is active on your PHP configuration. This option is not compatible with Automne. Please Check your PHP installation.';
 			$error_stepCheck_gd_error = 'Error, GD extension is not installed on your server. Please Check your PHP installation.';
 			$error_stepCheck_gd_gif_error = 'Error, functionalities of GIF image processing are not installed (GD Extension). Please Check your PHP installation.';
@@ -407,6 +409,11 @@ if (!isset($_GET['file'])) {
 					$error .= sprintf($error_stepCheck_memory_limit_error,ini_get('memory_limit')).'<br /><br />';
 					$stopInstallation = true;
 				}
+			}
+			//check for PDO
+			if (!class_exists('PDO')) {
+				$error .= $error_stepCheck_pdo_error.'<br /><br />';
+				$stopInstallation = true;
 			}
 			//check for safe_mode
 			if (ini_get ( 'safe_mode' )) {
