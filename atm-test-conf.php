@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: atm-test-conf.php,v 1.4 2009/06/26 14:01:24 sebastien Exp $
+// $Id: atm-test-conf.php,v 1.5 2009/09/22 13:22:30 sebastien Exp $
 
 /**
   * PHP page : Test all Automne v4 requirements
@@ -241,22 +241,16 @@ if (!isset($_GET['file'])) {
 	    $content .= '<li class="atm-pic-ok">LDAP extension OK</li>';
 	}
 	//XAPIAN
-	if (class_exists('CMS_module_ase')) {
-		$xapianVersion = '';
-		if (function_exists('xapian_version_string')) {
-			$xapianVersion = xapian_version_string();
-		} elseif (class_exists('Xapian')) {
-			$xapianVersion = Xapian::version_string();
+	$xapianVersion = '';
+	if (function_exists('version_string')) {
+		$xapianVersion = version_string();
+		if (version_compare($xapianVersion, '1.0.2') === -1) {
+			$content .= '<li class="atm-pic-cancel"><strong style="color:orange">Warning</strong>, Xapian version ('.$xapianVersion.') not match (1.0.2 minimum)</li>';
 		} else {
-			$content .= '<li class="atm-pic-cancel"><strong style="color:orange">Warning</strong>, Xapian extension not installed <strong>(only needed if ASE module is installed)</strong></li>';
+			$content .= '<li class="atm-pic-ok">Xapian extension OK ('.$xapianVersion.')</li>';
 		}
-		if ($xapianVersion) {
-			if (version_compare($xapianVersion, '1.0.2') === -1) {
-				$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, Xapian version ('.$xapianVersion.') not match (1.0.2 minimum)</li>';
-			} else {
-				$content .= '<li class="atm-pic-ok">Xapian extension OK ('.$xapianVersion.')</li>';
-			}
-		}
+	} else {
+		$content .= '<li class="atm-pic-cancel"><strong style="color:orange">Warning</strong>, Xapian extension not installed <strong>(only needed if ASE module is installed)</strong></li>';
 	}
 	//Files writing
 	if (!is_writable(realpath($_SERVER['DOCUMENT_ROOT']))) {
