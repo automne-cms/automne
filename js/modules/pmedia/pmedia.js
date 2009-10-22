@@ -51,6 +51,9 @@ $(document).ready(function(){
 		$("#searchresult h2").click(function(e){
 			$(e.target).nextAll('.mediaContent').slideToggle("slow");
 		});
+		$("#content .searchresult h2").click(function(e){
+			$(e.target).nextAll('.mediaContent').slideToggle("slow");
+		});
 		
 	}
 	$("#loadingSearch").ajaxStart(function(){

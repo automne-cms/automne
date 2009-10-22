@@ -82,12 +82,6 @@ h3{
 	font-weight:			bold;
 	padding-left:			6px;
 }
-#content a{
-	color:					#eb2685;
-}
-#content a:hover{
-	color:					#FD78B8;
-}
 #content #top{
 	background:			url(/img/interieur/top.gif) no-repeat left top;
 	color:				#75665e;

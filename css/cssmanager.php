@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cssmanager.php,v 1.5 2009/06/10 10:15:27 sebastien Exp $
+// $Id: cssmanager.php,v 1.6 2009/10/22 16:23:38 sebastien Exp $
 
 /**
   * CSS manager
@@ -69,7 +69,7 @@ if (isset($_GET['files'])) {
 				//check if file exists in current directory
 				if ($file == str_replace(array_keys($replace), $replace, $file) && file_exists(dirname(__FILE__).'/'.$file)) {
 					$cssfiles [] = dirname(__FILE__).'/'.$file;
-				} elseif(substr($file, -4) == '.css' && file_exists(realpath($_SERVER['DOCUMENT_ROOT'].$file)) && strpos(realpath($_SERVER['DOCUMENT_ROOT'].$file), $_SERVER['DOCUMENT_ROOT']) !== false) {
+				} elseif(pathinfo($file, PATHINFO_EXTENSION) == 'css' && file_exists(realpath($_SERVER['DOCUMENT_ROOT'].$file)) && strpos(pathinfo(realpath($_SERVER['DOCUMENT_ROOT'].$file), PATHINFO_DIRNAME), $_SERVER['DOCUMENT_ROOT']) === 0) {
 					$cssfiles[] = $_SERVER['DOCUMENT_ROOT'].$file;
 				}
 			break;

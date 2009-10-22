@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: jsmanager.php,v 1.9 2009/06/26 13:58:08 sebastien Exp $
+// $Id: jsmanager.php,v 1.10 2009/10/22 16:23:25 sebastien Exp $
 
 /**
   * Javascript manager
@@ -132,6 +132,10 @@ if ($files) {
 				//this file launch application and must be the last to include
 				$jsfiles [] = PATH_ADMIN_FS.'/js/launch.js';
 			break;
+			case 'initconfig':
+				//this file launch application and must be the last to include
+				$jsfiles [] = PATH_ADMIN_FS.'/js/initconfig.js';
+			break;
 			case 'swfobject':
 				$jsfiles [] = PATH_MAIN_FS.'/swfobject/swfobject.js';
 			break;
@@ -189,7 +193,7 @@ if ($files) {
 				//check if file exists in current directory
 				if ($file == str_replace(array_keys($replace), $replace, $file) && file_exists(dirname(__FILE__).'/'.$file)) {
 					$jsfiles[] = dirname(__FILE__).'/'.$file;
-				} elseif(substr($file, -3) == '.js' && file_exists(realpath($_SERVER['DOCUMENT_ROOT'].$file)) && strpos(realpath($_SERVER['DOCUMENT_ROOT'].$file), $_SERVER['DOCUMENT_ROOT']) !== false) {
+				} elseif(pathinfo($file, PATHINFO_EXTENSION) == 'js' && file_exists(realpath($_SERVER['DOCUMENT_ROOT'].$file)) && strpos(pathinfo(realpath($_SERVER['DOCUMENT_ROOT'].$file), PATHINFO_DIRNAME), $_SERVER['DOCUMENT_ROOT']) === 0) {
 					$jsfiles[] = $_SERVER['DOCUMENT_ROOT'].$file;
 				}
 			break;
