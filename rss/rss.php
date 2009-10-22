@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: rss.php,v 1.4 2009/06/05 15:29:58 sebastien Exp $
+// $Id: rss.php,v 1.5 2009/10/22 16:23:12 sebastien Exp $
 
 /**
   * PHP page : generate Polymod RSS Feeds
@@ -68,7 +68,7 @@ if (!isset($_REQUEST['id']) || !sensitiveIO::isPositiveInteger($_REQUEST['id']))
 	}
 	$emailTag = '';
 	if ($RSSDefinition->getValue("email")) {
-		$emailTag .= '<managingEditor>'.$RSSDefinition->getValue("email").'</managingEditor>'."\n";
+		$emailTag .= '<managingEditor>'.$RSSDefinition->getValue("email").' ('.APPLICATION_LABEL.')</managingEditor>'."\n";
 	}
 	$ttl = $RSSDefinition->getValue("ttl");
 }
@@ -82,8 +82,9 @@ $encoding = 'UTF-8';
 
 $content = 
 '<?xml version="1.0" encoding="'.$encoding.'" ?>'."\n".
-'<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss" xmlns:atom="http://www.w3.org/2005/Atom">'."\n".
+'<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/" xmlns:atom="http://www.w3.org/2005/Atom">'."\n".
 '    <channel>'."\n".
+'		<atom:link href="'.$link.'" rel="self" type="application/rss+xml" />'."\n".
 '		'.$rssTitle."\n".
 '		<description>'.((is_object($description) && is_object($cms_language)) ? $description->getValue($cms_language->getCode()) : 'This RSS Feed has an error ...').'</description>'."\n".
 '		<link>'.$link.'</link>'."\n".
@@ -92,7 +93,7 @@ $content =
 '		'.$copyrightTag.
 '		<generator>'.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION.'</generator>'."\n".
 '		'.$emailTag.
-'		<webMaster>'.APPLICATION_MAINTAINER_EMAIL.'</webMaster>'."\n".
+'		<webMaster>'.APPLICATION_MAINTAINER_EMAIL.' ('.APPLICATION_LABEL.')</webMaster>'."\n".
 '		<docs>http://blogs.law.harvard.edu/tech/rss</docs>'."\n".
 '		<ttl>'.$ttl.'</ttl>'."\n";
 if (!$error) {
