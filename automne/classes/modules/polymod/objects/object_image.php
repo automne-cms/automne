@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_image.php,v 1.9 2009/07/20 16:35:37 sebastien Exp $
+// $Id: object_image.php,v 1.10 2009/10/22 16:30:04 sebastien Exp $
 
 /**
   * Class CMS_object_image
@@ -211,13 +211,13 @@ class CMS_object_image extends CMS_object_common
 			//check for image extension before doing anything
 			if (isset($values[$prefixName.$this->_field->getID().'_0'])
 				 && $values[$prefixName.$this->_field->getID().'_0']
-				 && !in_array(strtolower(pathinfo($values[$prefixName.$this->_field->getID().'_0'], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
+				 && !in_array(io::strtolower(pathinfo($values[$prefixName.$this->_field->getID().'_0'], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
 				return false;
 			}
 			//check for image extension before doing anything
 			if (isset($values[$prefixName.$this->_field->getID().'_2'])
 				 && $values[$prefixName.$this->_field->getID().'_2']
-				 && !in_array(strtolower(pathinfo($values[$prefixName.$this->_field->getID().'_2'], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
+				 && !in_array(io::strtolower(pathinfo($values[$prefixName.$this->_field->getID().'_2'], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
 				return false;
 			}
 			//if field is required check minimum values
@@ -231,12 +231,12 @@ class CMS_object_image extends CMS_object_common
 		} else {
 			//check for image extension before doing anything
 			if ($_FILES[$prefixName.$this->_field->getID().'_0']["name"]
-				 && !in_array(strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_0']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
+				 && !in_array(io::strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_0']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
 				return false;
 			}
 			//check for image extension before doing anything
 			if (isset($_FILES[$prefixName.$this->_field->getID().'_2']) && $_FILES[$prefixName.$this->_field->getID().'_2']["name"]
-				 && !in_array(strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_2']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
+				 && !in_array(io::strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_2']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
 				return false;
 			}
 			//if field is required check values
@@ -510,10 +510,10 @@ class CMS_object_image extends CMS_object_common
 				return false;
 			}
 			//image zoom (if needed)
-			if ((!isset($values[$prefixName.$this->_field->getID().'_makeZoom']) || $values[$prefixName.$this->_field->getID().'_makeZoom'] != 1) && $values[$prefixName.$this->_field->getID().'_2'] && strpos($values[$prefixName.$this->_field->getID().'_2'], PATH_UPLOAD_WR.'/') !== false) {
+			if ((!isset($values[$prefixName.$this->_field->getID().'_makeZoom']) || $values[$prefixName.$this->_field->getID().'_makeZoom'] != 1) && $values[$prefixName.$this->_field->getID().'_2'] && io::strpos($values[$prefixName.$this->_field->getID().'_2'], PATH_UPLOAD_WR.'/') !== false) {
 				$filename = $values[$prefixName.$this->_field->getID().'_2'];
 				//check for image type before doing anything
-				if (!in_array(strtolower(pathinfo($filename, PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
+				if (!in_array(io::strtolower(pathinfo($filename, PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
 					return false;
 				}
 				//destroy old image if any
@@ -527,8 +527,8 @@ class CMS_object_image extends CMS_object_common
 				
 				//set thumbnail
 				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
-				$newBasename = "r".$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($basename));
-				if (strlen($newBasename) > 255) {
+				$newBasename = "r".$objectID."_".$this->_field->getID()."_".io::strtolower(SensitiveIO::sanitizeAsciiString($basename));
+				if (io::strlen($newBasename) > 255) {
 					$newBasename = sensitiveIO::ellipsis($newBasename, 255, '-');
 				}
 				$newFilename = $path.'/'.$newBasename;
@@ -540,10 +540,10 @@ class CMS_object_image extends CMS_object_common
 				}
 			}
 			//thumbnail
-			if ($values[$prefixName.$this->_field->getID().'_0'] && strpos($values[$prefixName.$this->_field->getID().'_0'], PATH_UPLOAD_WR.'/') !== false) {
+			if ($values[$prefixName.$this->_field->getID().'_0'] && io::strpos($values[$prefixName.$this->_field->getID().'_0'], PATH_UPLOAD_WR.'/') !== false) {
 				$filename = $values[$prefixName.$this->_field->getID().'_0'];
 				//check for image type before doing anything
-				if (!in_array(strtolower(pathinfo($filename, PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
+				if (!in_array(io::strtolower(pathinfo($filename, PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
 					return false;
 				}
 				//destroy old image if any
@@ -557,13 +557,13 @@ class CMS_object_image extends CMS_object_common
 				
 				//set thumbnail
 				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
-				$newBasename = "r".$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($basename));
+				$newBasename = "r".$objectID."_".$this->_field->getID()."_".io::strtolower(SensitiveIO::sanitizeAsciiString($basename));
 				
 				//rename image
 				$path_parts = pathinfo($newBasename);
-				$extension = strtolower($path_parts['extension']);
-				$newBasename = substr($path_parts['basename'],0,-(strlen($extension)+1)).'_thumbnail.'.$extension;
-				if (strlen($newBasename) > 255) {
+				$extension = io::strtolower($path_parts['extension']);
+				$newBasename = io::substr($path_parts['basename'],0,-(io::strlen($extension)+1)).'_thumbnail.'.$extension;
+				if (io::strlen($newBasename) > 255) {
 					$newBasename = sensitiveIO::ellipsis($newBasename, 255, '-');
 				}
 				$newFilename = $path.'/'.$newBasename;
@@ -683,7 +683,7 @@ class CMS_object_image extends CMS_object_common
 			$content = array('datas' => array(
 				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_0]' => $imageDatas,
 				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_2]' => $zoomDatas,
-				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_1]' => htmlspecialchars_decode($this->_subfieldValues[1]->getValue()),
+				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_1]' => sensitiveIO::decodeEntities($this->_subfieldValues[1]->getValue()),
 			));
 			
 			$view = CMS_view::getInstance();
@@ -708,14 +708,14 @@ class CMS_object_image extends CMS_object_common
 				}
 			}
 			//set label from label field
-			if (!$this->_subfieldValues[1]->setValue(htmlspecialchars($values[$prefixName.$this->_field->getID().'_1']))) {
+			if (!$this->_subfieldValues[1]->setValue(htmlspecialchars(@$values[$prefixName.$this->_field->getID().'_1']))) {
 				return false;
 			}
 	
 			//thumbnail
 			if (isset($_FILES[$prefixName.$this->_field->getID().'_0']) && $_FILES[$prefixName.$this->_field->getID().'_0']['name'] && !$_FILES[$prefixName.$this->_field->getID().'_0']['error']) {
 				//check for image type before doing anything
-				if (!in_array(strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_0']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
+				if (!in_array(io::strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_0']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
 					return false;
 				}
 	
@@ -736,7 +736,7 @@ class CMS_object_image extends CMS_object_common
 				if ($this->_subfieldValues[2]->getValue()) {
 					@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[2]->getValue());
 					$this->_subfieldValues[2]->setValue('');
-				} elseif ($values[$prefixName.$this->_field->getID().'_2_hidden']) {
+				} elseif (isset($values[$prefixName.$this->_field->getID().'_2_hidden']) && $values[$prefixName.$this->_field->getID().'_2_hidden']) {
 					@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$values[$prefixName.$this->_field->getID().'_2_hidden']);
 					$this->_subfieldValues[2]->setValue('');
 				}
@@ -745,8 +745,8 @@ class CMS_object_image extends CMS_object_common
 	
 				//create thumbnail path
 				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
-				$filename = "r".$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($_FILES[$prefixName.$this->_field->getID().'_0']["name"]));
-				if (strlen($filename) > 255) {
+				$filename = "r".$objectID."_".$this->_field->getID()."_".io::strtolower(SensitiveIO::sanitizeAsciiString($_FILES[$prefixName.$this->_field->getID().'_0']["name"]));
+				if (io::strlen($filename) > 255) {
 					$filename = sensitiveIO::ellipsis($filename, 255, '-');
 				}
 				if (!move_uploaded_file($_FILES[$prefixName.$this->_field->getID().'_0']["tmp_name"], $path."/".$filename)) {
@@ -774,10 +774,10 @@ class CMS_object_image extends CMS_object_common
 						//resize image
 						$srcfilepath = $path."/".$filename;
 						$path_parts = pathinfo($srcfilepath);
-						$thumbnailFilename = substr($path_parts['basename'],0,-(strlen($path_parts['extension'])+1)).'_thumbnail.png';
+						$thumbnailFilename = io::substr($path_parts['basename'],0,-(io::strlen($path_parts['extension'])+1)).'_thumbnail.png';
 						$destfilepath = $path."/".$thumbnailFilename;
 	
-						$extension = strtolower($path_parts['extension']);
+						$extension = io::strtolower($path_parts['extension']);
 						$dest = imagecreatetruecolor($newSizeX, $newSizeY);
 						switch ($extension) {
 							case "gif":
@@ -854,15 +854,15 @@ class CMS_object_image extends CMS_object_common
 				}
 			}
 			//image zoom (if needed)
-			if ($values[$prefixName.$this->_field->getID().'_makeZoom'] != 1 && $_FILES[$prefixName.$this->_field->getID().'_2']['name'] && !$_FILES[$prefixName.$this->_field->getID().'_2']['error']) {
+			if (@$values[$prefixName.$this->_field->getID().'_makeZoom'] != 1 && @$_FILES[$prefixName.$this->_field->getID().'_2']['name'] && !@$_FILES[$prefixName.$this->_field->getID().'_2']['error']) {
 				//check for image type before doing anything
-				if (!in_array(strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_2']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
+				if (!in_array(io::strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_2']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
 					return false;
 				}
 				//create thumbnail path
 				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
-				$filename = "r".$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($_FILES[$prefixName.$this->_field->getID().'_2']["name"]));
-				if (strlen($filename) > 255) {
+				$filename = "r".$objectID."_".$this->_field->getID()."_".io::strtolower(SensitiveIO::sanitizeAsciiString($_FILES[$prefixName.$this->_field->getID().'_2']["name"]));
+				if (io::strlen($filename) > 255) {
 					$filename = sensitiveIO::ellipsis($filename, 255, '-');
 				}
 				if (!move_uploaded_file($_FILES[$prefixName.$this->_field->getID().'_2']["tmp_name"], $path."/".$filename)) {
@@ -984,7 +984,7 @@ class CMS_object_image extends CMS_object_common
 				$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
 				//set location
 				$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
-				return PATH_MODULES_FILES_WR.'/'.$moduleCodename.'/'.$location;
+				return CMS_websitesCatalog::getMainURL() . PATH_MODULES_FILES_WR.'/'.$moduleCodename.'/'.$location;
 			break;
 			case 'imageMaxWidth':
 				//get field parameters

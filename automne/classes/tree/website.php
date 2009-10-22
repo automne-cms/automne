@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: website.php,v 1.2 2009/03/02 11:29:38 sebastien Exp $
+// $Id: website.php,v 1.3 2009/10/22 16:30:06 sebastien Exp $
 
 /**
   * Class CMS_website
@@ -262,9 +262,9 @@ class CMS_website extends CMS_grandFather
 	function getURL($includeHTTP = true)
 	{
 		if ($includeHTTP) {
-			return (substr($this->_url,0,4) != 'http') ? "http://".$this->_url : $this->_url;
+			return (io::substr($this->_url,0,4) != 'http') ? "http://".$this->_url : $this->_url;
 		} else {
-			return (substr($this->_url,0,4) != 'http') ? $this->_url : substr($this->_url,7);
+			return (io::substr($this->_url,0,4) != 'http') ? $this->_url : io::substr($this->_url,7);
 		}
 	}
 	
@@ -277,12 +277,12 @@ class CMS_website extends CMS_grandFather
 	  */
 	function setURL($url)
 	{
-		if (substr($url, 0, 7) == "http://") {
-			$url = substr($url, 7);
+		if (io::substr($url, 0, 7) == "http://") {
+			$url = io::substr($url, 7);
 		}
 		if ($url) {
-			if (substr($url, strlen($url) - 1) == "/") {
-				$url = substr($url, 0, -1);
+			if (io::substr($url, io::strlen($url) - 1) == "/") {
+				$url = io::substr($url, 0, -1);
 			}
 			$this->_url = $url;
 			return true;

@@ -6,7 +6,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: main.js,v 1.17 2009/07/20 16:33:16 sebastien Exp $
+  * $Id: main.js,v 1.18 2009/10/22 16:27:19 sebastien Exp $
   */
 
 //Declare Automne namespace
@@ -37,6 +37,22 @@ Automne = {
 		if (Ext.isGecko2 ||  Ext.isSafari2 || !(Ext.isIE || Ext.isGecko || Ext.isSafari || Ext.isOpera || Ext.isChrome)) {
 			window.top.location.replace('./navigator.php');
 		}
+		//init config
+		Automne.initConfig();
+		
+		//create viewport
+		Automne.createViewPort();
+		
+		//check for authenticated user
+		Automne.server.call('login.php' + ((Automne.logout) ? '?cms_action=logout' : ''));
+		//remove loading element
+		setTimeout(function(){
+			Ext.get('atm-center').remove();
+			Ext.get('atm-loading-mask').fadeOut({remove:true, callback:Automne.end});
+		}, 250);
+	},
+	//Initialize some basic configurations (cookies, qtips, ajax)
+	initConfig: function() {
 		//init quicktips
 		Ext.QuickTips.init();
 		// Remove autohide on quicktip
@@ -52,20 +68,10 @@ Automne = {
 		
 		//set Global Ajax events
 		Ext.Ajax.on({'beforerequest': Automne.server.showSpinner, 'requestcomplete': Automne.server.hideSpinner, 'requestexception': Automne.server.requestException, scope: this});
-		// Default headers to pass in every request
+		// Header to pass in every Ajax request. Used to prevent CSRF attacks on action requests
 		Ext.Ajax.defaultHeaders = {
-		    'X_Powered_By': 'Automne'
+		    'X-Powered-By': 'Automne'
 		};
-		//create viewport
-		Automne.createViewPort();
-		
-		//check for authenticated user
-		Automne.server.call('login.php' + ((Automne.logout) ? '?cms_action=logout' : ''));
-		//remove loading element
-		setTimeout(function(){
-			Ext.get('atm-center').remove();
-			Ext.get('atm-loading-mask').fadeOut({remove:true, callback:Automne.end});
-		}, 250);
 	},
 	//load Automne admin interface
 	load: function(context) {
@@ -77,7 +83,7 @@ Automne = {
 		//set new context.
 		Automne.context = context;
 		//if it is a new connexion or a new user, load interface
-		if (!oldUser || oldUser != Automne.context.userId) {
+		if (!oldUser || oldUser != Automne.context.userId || !Automne.east.rendered) {
 			//if user is not the same than the old one, recreate viewport.
 			if (oldUser && oldUser != Automne.context.userId && Ext.get('sidePanel')) {
 				Automne.createViewPort();
@@ -178,20 +184,22 @@ Automne = {
 			token = token.substr(1);
 		}
 		var parts = token.split(':');
-		var action = parts[0];
-		var value = parts[1].trim();
-		switch (action) {
-			case 'page':
-				//go to the page only if it is not already displayed
-				if (value != Automne.tabPanels.pageId) {
-					//call server to get page infos using page url
-					Automne.tabPanels.getPageInfos({
-						pageId:		value
-					});
-				} else {
-					pr('History query page : '+ value +', which is already displayed so skip query');
-				}
-			break;
+		if (parts[1]) {
+			var action = parts[0];
+			var value = parts[1].trim();
+			switch (action) {
+				case 'page':
+					//go to the page only if it is not already displayed
+					if (value != Automne.tabPanels.pageId) {
+						//call server to get page infos using page url
+						Automne.tabPanels.getPageInfos({
+							pageId:		value
+						});
+					} else {
+						pr('History query page : '+ value +', which is already displayed so skip query');
+					}
+				break;
+			}
 		}
 	},
 	createViewPort: function() {
@@ -242,22 +250,7 @@ Automne = {
 		Automne.east = Ext.getCmp('sidePanel');
 	},
 	end: function() {
-		//check for input focus in current page
-		/*if (!Automne.utils.focusinput()) {
-			//or check into iframes if any
-			var iframes = document.getElementsByTagName('IFRAME');
-			pr(iframes);
-			var focusok = false;
-			if (iframes.length) {
-				for (var i = 0;!focusok && i < iframes.length; i++) {
-					try {
-						focusok = Automne.utils.focusinput(iframes[i].contentWindow.document);
-					} catch(e) {
-						//pr(e, 'error');
-					}
-				}
-			}
-		}*/
+		//Nothing for now
 	}
 };
 ////////////////

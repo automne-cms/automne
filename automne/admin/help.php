@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: help.php,v 1.3 2009/06/25 13:07:21 sebastien Exp $
+// $Id: help.php,v 1.4 2009/10/22 16:26:24 sebastien Exp $
 
 /**
   * PHP page : Load help detail window.
@@ -40,6 +40,8 @@ define("MESSAGE_PAGE_TITLE",644);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 //show version number
 $polymodVersion = file_exists(PATH_MODULES_FS.'/'.MOD_POLYMOD_CODENAME.'/VERSION') ? file_get_contents(PATH_MODULES_FS.'/'.MOD_POLYMOD_CODENAME.'/VERSION') : $cms_language->getMessage(MESSAGE_PAGE_UNKNOWN);

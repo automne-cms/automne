@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_date.php,v 1.8 2009/07/20 16:35:37 sebastien Exp $
+// $Id: object_date.php,v 1.9 2009/10/22 16:30:04 sebastien Exp $
 
 /**
   * Class CMS_object_date
@@ -424,7 +424,7 @@ class CMS_object_date extends CMS_object_common
 			case 'formatedValue':
 				$date = new CMS_date();
 				$date->setFromDBValue($this->_subfieldValues[0]->getValue());
-				if (strtolower($parameters) == 'rss') {
+				if (io::strtolower($parameters) == 'rss') {
 					$parameters = 'r';
 				}
 				return htmlspecialchars(date($parameters, $date->getTimeStamp()));

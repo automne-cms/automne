@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: resource.php,v 1.2 2009/04/07 12:25:01 sebastien Exp $
+// $Id: resource.php,v 1.3 2009/10/22 16:30:02 sebastien Exp $
 
 /**
   * Class CMS_resource_cms_aliases
@@ -200,7 +200,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  */
 	function setURL($url)
 	{
-		$this->_url = (substr($url,0,7)=='http://') ? $url:'http://'.$url;
+		$this->_url = (io::substr($url,0,7)=='http://') ? $url:'http://'.$url;
 		$this->_pageID ='';
 		return true;
 	}
@@ -436,6 +436,9 @@ class CMS_resource_cms_aliases extends CMS_resource
 	*/
 	function redirect() {
 		$params = isset($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : '';
+		if (isset($_SERVER['HTTP_REFERER'])) {
+			header("Referer: ".$_SERVER['HTTP_REFERER']);
+		}
 		if ($this->getPageID()) {
 			//it's a redirection to an Automne Page
 			$page = new CMS_page($this->getPageID());

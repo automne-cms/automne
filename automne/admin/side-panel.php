@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: side-panel.php,v 1.9 2009/07/20 16:33:15 sebastien Exp $
+// $Id: side-panel.php,v 1.10 2009/10/22 16:26:26 sebastien Exp $
 
 /**
   * PHP page : Load side panel infos.
@@ -70,6 +70,8 @@ define("MESSAGE_PAGE_DATABASE", 648);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 //set default options
 $winId = sensitiveIO::request('winId', '', 'sidePanel');
@@ -440,7 +442,7 @@ $sepPanel = "{
 },";
 
 //remove the last comma on all panels
-$userPanels = substr($validationsPanel.$modulesPanels.$sepPanel.$usersPanel.$templatesPanel.$adminPanel, 0, -1);
+$userPanels = io::substr($validationsPanel.$modulesPanels.$sepPanel.$usersPanel.$templatesPanel.$adminPanel, 0, -1);
 
 $jscontent = <<<END
 	var sidePanel = Ext.getCmp('{$winId}');

@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: framepanel.js,v 1.15 2009/06/25 11:45:34 sebastien Exp $
+  * $Id: framepanel.js,v 1.16 2009/10/22 16:27:19 sebastien Exp $
   */
 Automne.framePanel = Ext.extend(Automne.panel, { 
 	xtype:				'framePanel',
@@ -194,12 +194,19 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 								if (button == 'cancel') {
 									return;
 								}
+								Ext.getCmp('editValidateDraft'+ this.editId).disable();
+								Ext.getCmp('editSaveDraft'+ this.editId).disable();
 								Automne.server.call({
 									url:				'page-controler.php',
 									params: 			{
 										currentPage:		this.pageId,
 										action:				'validate_draft'
-									}
+									},
+									fcnCallback: 		function() {
+										Ext.getCmp('editValidateDraft'+ this.editId).enable();
+										Ext.getCmp('editSaveDraft'+ this.editId).enable();
+									},
+									callBackScope:		this
 								});
 							}
 						});
@@ -224,6 +231,8 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 								if (button == 'cancel') {
 									return;
 								}
+								Ext.getCmp('editValidateDraft'+ this.editId).disable();
+								Ext.getCmp('editSaveDraft'+ this.editId).disable();
 								Automne.server.call({
 									url:				'page-controler.php',
 									params: 			{
@@ -236,6 +245,8 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 											pageId:		this.pageId,
 											noreload:	true
 										});
+										Ext.getCmp('editValidateDraft'+ this.editId).enable();
+										Ext.getCmp('editSaveDraft'+ this.editId).enable();
 									},
 									callBackScope:		this
 								});
@@ -246,8 +257,8 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 					id:				'editPrevizDraft'+ this.editId,
 					xtype:			'tbbutton',
 					iconCls:		'atm-pic-draft-previz',
-					text:			'Aperçu',
-					tooltip:		'Aperçu de votre contenu en cours de modification.',
+					text:			al.previzDraft,
+					tooltip:		al.previzDraftDetail,
 					scope:			this,
 					hidden:			true,
 					iconCls:		'atm-pic-preview',
@@ -266,10 +277,9 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 		});
 		this.on({'afterrender': function(){
 			if (this.id == 'public') {
-				pr('Rendering Workarround !');
+				//pr('Rendering Workarround !');
 				this.afterActivate();
 			}
-			
 		}, scope: this});
 		// call parent initComponent
 		Automne.framePanel.superclass.initComponent.call(this);
@@ -290,7 +300,10 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 			this.setDisabled(false);
 		}
 		//if frame element is known (this is not the first activation of panel), then force reload it
-		if (!this.noReload && this.frameEl && (this.pageId != Automne.tabPanels.pageId || (this.frameDocument && this.frameDocument.location.href.indexOf(this.frameURL) === -1) || newTab.id == 'edit')) {
+		if (!this.noReload && this.frameEl && (
+				this.pageId != Automne.tabPanels.pageId || 
+				(this.frameDocument && (this.frameDocument.location.href.indexOf(this.frameURL) === -1 || this.frameURL.indexOf('?') !== -1 || this.frameURL.indexOf('?') != this.frameDocument.location.href.indexOf('?'))) || 
+				newTab.id == 'edit')) {
 			this.reload();
 		}
 		this.noReload = false;

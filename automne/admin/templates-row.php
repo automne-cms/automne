@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-row.php,v 1.8 2009/07/20 16:33:15 sebastien Exp $
+// $Id: templates-row.php,v 1.9 2009/10/22 16:26:27 sebastien Exp $
 
 /**
   * PHP page : Load page rows search window.
@@ -55,6 +55,8 @@ define("MESSAGE_PAGE_DELETE_CONFIRM", 1523);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 $winId = sensitiveIO::request('winId');
 $fatherId = sensitiveIO::request('fatherId');
@@ -104,7 +106,7 @@ if ($allGroups) {
 			$searchPanel .= "{boxLabel: '{$aGroup}', inputValue:'{$aGroup}', name: 'groups[]', listeners: {'check':rowWindow.search}},";
 		}
 		//remove last comma from groups
-		$searchPanel = substr($searchPanel, 0, -1);
+		$searchPanel = io::substr($searchPanel, 0, -1);
 		$searchPanel .= "
 		]
 	},";
@@ -131,7 +133,7 @@ $searchPanel .= "{
 	checked:		true,
 	listeners: 		{'check':rowWindow.search}
 }";
-//$searchPanel = substr($searchPanel, 0, -1);
+//$searchPanel = io::substr($searchPanel, 0, -1);
 $jscontent = <<<END
 	var rowWindow = Ext.getCmp('{$winId}');
 	var fatherWindow = Ext.getCmp('{$fatherId}');

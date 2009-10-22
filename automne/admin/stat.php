@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: stat.php,v 1.4 2009/07/21 13:41:12 sebastien Exp $
+// $Id: stat.php,v 1.5 2009/10/22 16:26:26 sebastien Exp $
 
 /**
   * Automne Debug Statistics viewver
@@ -95,7 +95,7 @@ foreach ($sql_table as $sql_request) {
 	} elseif (eregi("^insert", trim($sql_request["sql"]))) {
 		$insert++;
 		$split = explode('into',$sql_request["sql"]);
-		if (strpos($sql_request["sql"], 'set') !== false) {
+		if (io::strpos($sql_request["sql"], 'set') !== false) {
 			$split = explode('set',$split[1]);
 		} else {
 			$split = explode('(',$split[1]);

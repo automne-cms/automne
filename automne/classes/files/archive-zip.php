@@ -14,7 +14,7 @@
 // | Author: Devin Doucette <darksnoopy@shaw.ca>                          |
 // +----------------------------------------------------------------------+
 //
-// $Id: archive-zip.php,v 1.2 2009/03/04 09:56:31 sebastien Exp $
+// $Id: archive-zip.php,v 1.3 2009/10/22 16:30:01 sebastien Exp $
 
 /**
   * Class CMS_archive
@@ -64,7 +64,7 @@ class CMS_zip_file extends CMS_archive
 				$temp = fread($fp, filesize($this->options['sfx']));
 				fclose($fp);
 				$this->add_data($temp);
-				$offset += strlen($temp);
+				$offset += io::strlen($temp);
 				unset ($temp);
 			} else {
 				$this->raiseError("Could not open sfx module from {$this->options['sfx']}.");
@@ -126,22 +126,22 @@ class CMS_zip_file extends CMS_archive
 			$block = pack("VvvvV", 0x04034b50, 0x000A, 0x0000, (isset ($current['method']) || $this->options['method'] == 0) ? 0x0000 : 0x0008, $timedate);
 
 			if ($current['stat'][7] == 0 && $current['type'] == 5) {
-				$block .= pack("VVVvv", 0x00000000, 0x00000000, 0x00000000, strlen($current['name2']) + 1, 0x0000);
+				$block .= pack("VVVvv", 0x00000000, 0x00000000, 0x00000000, io::strlen($current['name2']) + 1, 0x0000);
 				$block .= $current['name2']."/";
 				$this->add_data($block);
-				$central .= pack("VvvvvVVVVvvvvvVV", 0x02014b50, 0x0014, $this->options['method'] == 0 ? 0x0000 : 0x000A, 0x0000, (isset ($current['method']) || $this->options['method'] == 0) ? 0x0000 : 0x0008, $timedate, 0x00000000, 0x00000000, 0x00000000, strlen($current['name2']) + 1, 0x0000, 0x0000, 0x0000, 0x0000, $current['type'] == 5 ? 0x00000010 : 0x00000000, $offset);
+				$central .= pack("VvvvvVVVVvvvvvVV", 0x02014b50, 0x0014, $this->options['method'] == 0 ? 0x0000 : 0x000A, 0x0000, (isset ($current['method']) || $this->options['method'] == 0) ? 0x0000 : 0x0008, $timedate, 0x00000000, 0x00000000, 0x00000000, io::strlen($current['name2']) + 1, 0x0000, 0x0000, 0x0000, 0x0000, $current['type'] == 5 ? 0x00000010 : 0x00000000, $offset);
 				$central .= $current['name2']."/";
 				$files ++;
-				$offset += (31 + strlen($current['name2']));
+				$offset += (31 + io::strlen($current['name2']));
 			} else
 				if ($current['stat'][7] == 0) {
-					$block .= pack("VVVvv", 0x00000000, 0x00000000, 0x00000000, strlen($current['name2']), 0x0000);
+					$block .= pack("VVVvv", 0x00000000, 0x00000000, 0x00000000, io::strlen($current['name2']), 0x0000);
 					$block .= $current['name2'];
 					$this->add_data($block);
-					$central .= pack("VvvvvVVVVvvvvvVV", 0x02014b50, 0x0014, $this->options['method'] == 0 ? 0x0000 : 0x000A, 0x0000, (isset ($current['method']) || $this->options['method'] == 0) ? 0x0000 : 0x0008, $timedate, 0x00000000, 0x00000000, 0x00000000, strlen($current['name2']), 0x0000, 0x0000, 0x0000, 0x0000, $current['type'] == 5 ? 0x00000010 : 0x00000000, $offset);
+					$central .= pack("VvvvvVVVVvvvvvVV", 0x02014b50, 0x0014, $this->options['method'] == 0 ? 0x0000 : 0x000A, 0x0000, (isset ($current['method']) || $this->options['method'] == 0) ? 0x0000 : 0x0008, $timedate, 0x00000000, 0x00000000, 0x00000000, io::strlen($current['name2']), 0x0000, 0x0000, 0x0000, 0x0000, $current['type'] == 5 ? 0x00000010 : 0x00000000, $offset);
 					$central .= $current['name2'];
 					$files ++;
-					$offset += (30 + strlen($current['name2']));
+					$offset += (30 + io::strlen($current['name2']));
 				} else
 					if ($fp = @ fopen($current['name'], "rb")) {
 						$temp = fread($fp, $current['stat'][7]);
@@ -149,26 +149,26 @@ class CMS_zip_file extends CMS_archive
 						$crc32 = crc32($temp);
 						if (!isset ($current['method']) && $this->options['method'] == 1) {
 							$temp = gzcompress($temp, $this->options['level']);
-							$size = strlen($temp) - 6;
-							$temp = substr($temp, 2, $size);
+							$size = io::strlen($temp) - 6;
+							$temp = io::substr($temp, 2, $size);
 						} else {
-							$size = strlen($temp);
+							$size = io::strlen($temp);
 						}
-						$block .= pack("VVVvv", $crc32, $size, $current['stat'][7], strlen($current['name2']), 0x0000);
+						$block .= pack("VVVvv", $crc32, $size, $current['stat'][7], io::strlen($current['name2']), 0x0000);
 						$block .= $current['name2'];
 						$this->add_data($block);
 						$this->add_data($temp);
 						unset ($temp);
-						$central .= pack("VvvvvVVVVvvvvvVV", 0x02014b50, 0x0014, $this->options['method'] == 0 ? 0x0000 : 0x000A, 0x0000, (isset ($current['method']) || $this->options['method'] == 0) ? 0x0000 : 0x0008, $timedate, $crc32, $size, $current['stat'][7], strlen($current['name2']), 0x0000, 0x0000, 0x0000, 0x0000, 0x00000000, $offset);
+						$central .= pack("VvvvvVVVVvvvvvVV", 0x02014b50, 0x0014, $this->options['method'] == 0 ? 0x0000 : 0x000A, 0x0000, (isset ($current['method']) || $this->options['method'] == 0) ? 0x0000 : 0x0008, $timedate, $crc32, $size, $current['stat'][7], io::strlen($current['name2']), 0x0000, 0x0000, 0x0000, 0x0000, 0x00000000, $offset);
 						$central .= $current['name2'];
 						$files ++;
-						$offset += (30 + strlen($current['name2']) + $size);
+						$offset += (30 + io::strlen($current['name2']) + $size);
 					} else {
 						$this->raiseError("Could not open file {$current['name']} for reading. It was not added.");
 					}
 		}
 		$this->add_data($central);
-		$this->add_data(pack("VvvvvVVv", 0x06054b50, 0x0000, 0x0000, $files, $files, strlen($central), $offset, !empty ($this->options['comment']) ? strlen($this->options['comment']) : 0x0000));
+		$this->add_data(pack("VvvvvVVv", 0x06054b50, 0x0000, 0x0000, $files, $files, io::strlen($central), $offset, !empty ($this->options['comment']) ? io::strlen($this->options['comment']) : 0x0000));
 		if (!empty ($this->options['comment'])) {
 			$this->add_data($this->options['comment']);
 		}

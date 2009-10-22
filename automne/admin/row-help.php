@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: row-help.php,v 1.3 2009/06/22 14:10:32 sebastien Exp $
+// $Id: row-help.php,v 1.4 2009/10/22 16:26:26 sebastien Exp $
 
 /**
   * PHP page : Load template help window.
@@ -38,6 +38,9 @@ $winId = sensitiveIO::request('winId');
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
+
 //CHECKS user has row edition clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES)) { //rows
 	CMS_grandFather::raiseError('User has no rights on rows editions');
@@ -65,7 +68,7 @@ if (is_array($modulesCodeInclude) && $modulesCodeInclude) {
 	}
 }
 //remove last comma
-if ($modulesTab) $modulesTab = substr($modulesTab, 0, -1);
+if ($modulesTab) $modulesTab = io::substr($modulesTab, 0, -1);
 
 $jscontent = <<<END
 	var helpWindow = Ext.getCmp('{$winId}');

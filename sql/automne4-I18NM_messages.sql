@@ -1,4 +1,4 @@
-# $Id: automne4-I18NM_messages.sql,v 1.20 2009/07/20 16:31:16 sebastien Exp $
+# $Id: automne4-I18NM_messages.sql,v 1.21 2009/10/22 16:22:54 sebastien Exp $
 #
 # Suppression avant mise à  jour du Contenu de la table `I18NM_messages` pour le module standard
 #
@@ -691,7 +691,7 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (688, 'standar
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (689, 'standard', NOW(), 'Création / Modification d''une catégorie', 'Creating / Editing a category');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (690, 'standard', NOW(), 'Sur cette page, vous pouvez créer ou modifier les données (titre, description, vignette) d''une catégorie.', 'On this page, you can create or edit the data (title, description, thumbnails) of a category.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (691, 'standard', NOW(), 'Vos droits ne permettent pas de voir les pages du ou des site(s).<br /><br />Si vous pensez qu''il s''agit d''une erreur, contactez votre administrateur.', 'Your rights does not allow you to see the pages of the website(s).<br /><br />If you believe this is an error, contact your administrator');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (692, 'standard', NOW(), 'Vos droits ne permettent pas de voir la page demandée.<br /><br />Si vous pensez qu''il s''agit d''une erreur, contactez votre administrateur.', 'Your rights does not allow you to see the requested page.<br /><br />If you believe this is an error, contact your administrator');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (692, 'standard', NOW(), 'Vous n\'avez pas les droits nécessaires pour visualiser la page demandée.<br /><br />Vous pouvez afficher les pages que vous souhaitez en passant par l\'onglet "Arborescence des pages" ci-dessus.<br /><br />Si vous pensez qu''il s''agit d''une erreur, contactez votre administrateur.', 'Your rights does not allow you to see the requested page.<br /><br />If you believe this is an error, contact your administrator');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (693, 'standard', NOW(), 'Filtrer ...', 'Filter...');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (694, 'standard', NOW(), 'Le code de votre contenu est mal formatté et il ne peut être enregistré.<br />Evitez tout copier-coller de texte depuis un éditeur de texte externe. Employez les outils ''Coller comme texte'' ou ''Coller de Word'' de la barre d''outils dans ce cas.<br /><br />Vérifiez le code source de votre contenu : il doit être composé de XHTML valide.', 'The code of your content is poorly formatted and can not be saved.<br />Avoid copying and pasting text from an external text editor. Use the tools ''Paste as plain text'' or ''Paste from Word'' on the toolbar in this case.<br /><br />Check the source code of your content: It must consist of valid XHTML.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (695, 'standard', NOW(), 'Erreur lors du déplacement de la page ...', 'Error when moving the page...');
@@ -1506,7 +1506,235 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1543, 'standa
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1544, 'standard', NOW(), 'Fichier :', 'File:');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1545, 'standard', NOW(), 'Modèle de page', 'Page Template');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1546, 'standard', NOW(), 'Sites :', 'Websites:');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1547, 'standard', NOW(), 'Automne.locales = {\n	validateOptions: 		''Voir les options de validation'',\n	validate: 				''Valider'',\n	actionImpossible: 		''Action impossible'',\n	cantSubmitFormPage: 	''Vous ne pouvez pas soumettre un formulaire depuis une page non publique.'',\n	loadingError: 			''Erreur de traitement. Veuillez réessayer ou vous reconnecter ...'',\n	jsError: 				''Erreur de traitement Javascript. Veuillez réessayer ou vous reconnecter ...'',\n	jsonError: 				''Erreur de traitement JSon. Veuillez réessayer ou vous reconnecter ...'',\n	contactAdministrator:	''Si le problème persiste, veuillez contacter votre administrateur avec ces informations : '',\n	cannotCloseModalGroup: 	''Vous ne pouvez pas fermer cette fenêtre tant que des fenêtres dépendantes sont ouvertes. Veuillez les fermer d\\''abord.'',\n	noPageFounded: 			''Aucune page trouvée ...'',\n	noScript: 				''Aucun script en cours de traitement.'',\n	nScripts: 				''{0} scripts en cours de traitement.'',\n	//Page edition \n	rowDel:					''Supprimer cette rangée'',\n	rowDrag:				''Glisser-Déposer cette rangée'',\n	rowTop:					''Monter cette rangée en haut de la zone éditable'',\n	rowBottom:				''Descendre cette rangée en bas de la zone éditable'',\n	rowLeft:				''Passer cette rangée dans la zone éditable de gauche'',\n	rowRight:				''Passer cette rangée dans la zone éditable de droite'',\n	rowUp:					''Monter cette rangée d\\''un cran'',\n	rowDown:				''Descendre cette rangée d\\''un cran'',\n	csName:					''Zone de contenu :'',\n	rowType:				''Rangée de type : '',\n	newRow:					''Nouvelle Rangée'',\n	newRowTip:				''Ajouter une nouvelle rangée de contenu dans la page'',\n	blockDel:				''Supprimer le contenu de ce bloc.'',\n	blockModify:			''Modifier le contenu de ce bloc.'',\n	blockAdmin:				''Gérer les éléments employés par ce bloc de contenu.'',\n	blockValidate:			''Enregistrer le contenu'',\n	rowDeleteConfirm:		''Etes-vous sur de vouloir supprimer définitivement la rangée \\''{0}\\'' et tout son contenu ?'',\n	blockDeleteConfirm:		''Etes-vous sur de vouloir supprimer définitivement tout le contenu de ce bloc ?'',\n	csSelectRowAdd:			''Sélectionnez la rangée à ajouter : '',\n	csSelectRow:			''Sélectionnez la rangée à ajouter ...'',\n	csClickToAdd:			''Cliquez pour ajouter une nouvelle rangée à cette position'',\n	csClickOnRed:			''Cliquez sur la zone rouge où vous souhaitez ajouter votre nouvelle rangée.'',\n	csCancelRowAdd:			''Annuler l\\''ajout d\\''une nouvelle rangée dans la page.'',\n	csAddRowToPosition:		''Ajouter la rangée sélectionnée à la position choisie dans la page.'',\n	options:				''Options'',\n	optionsDetail:			''Vous permet de controler les options d\\''affichage de l\\''édition de la page'',\n	optAnimateDetail:		''Vous permet d\\''activer et désactiver les déplacements animés des rangées. Désactiver cette option peut faire gagner en performance.'',\n	optAnimate:				''Déplacements animés des rangées'',\n	optMoveDetail:			''Vous permet d\\''activer et désactiver le scrolling vertical de la page pour suivre la rangée active. Désactiver cette option peut faire gagner en performance.'',\n	optMove:				''Scroll de la fenêtre'',\n	loading:				''Chargement ...'',\n	add:					''Ajouter'',\n	delDraft:				''Supprimer le contenu'',\n	delDraftDetail:			''Supprimer le contenu actuel. Le contenu reviendra au précédent contenu validé ou en attente de validation. Cette action n\\''est pas soumise à validation et prend effet immédiatement.'',\n	SubmitToValid:			''Soumettre à validation'',\n	SubmitToValidDetail:	''Soumettre l\\''état actuel de la page à la validation. Une fois validée, la page présentera ce contenu en ligne.'',\n	//File upload\n	browse:					''Parcourir ...'',\n	cancel:					''Annuler'',\n	byte:					''o'',\n	max:					''Max'',\n	min:					''Min'',\n	init:					''Initialisation ...'',\n	queueLimit:				''Vous avez dépassé le nombre de fichier possible.'',\n	zeroByte:				''Le fichier que vous tentez d\\''envoyer est vide.'',\n	tooBig:					''Le fichier que vous tentez d\\''envoyer est trop volumineux ({0} Mo). Vous ne devez pas dépasser {1} Mo'',\n	invalidType:			''Le type de fichier que vous tentez d\\''envoyer n\\''est pas authorisé.'',\n	sendingCancelled:		''Envoi sur le serveur annulé.'',\n	sendingStopped:			''Envoi sur le serveur interrompu.'',\n	sizeLimit:				''Limite d\\''envoi sur le serveur atteinte.'',\n	uploadError:			''Erreur durant l\\''envoi du fichier au serveur.'',\n	treatmentError:			''Erreur de traitement du fichier sur le serveur.'',\n	securityError:			''Erreur de sécurité : le type de fichier que vous envoyez n\\''est pas autorisé.'',\n	unknownError:			''Erreur d\\''envoi du fichier ... '',\n	pleaseWait:				''Veuillez patienter, transfert en cours ...'',\n	browserError:			''Votre navigateur ne peut gérer ce script.'',\n	removeFile:				''Supprimer le fichier actuel'',\n	//Image upload\n	clickOriginal:			''Cliquez pour voir en format original.'',\n	maxImageSize:			''L\\''image dépasse les limites de taille autorisées. Veuillez la redimensionner ou la modifier.'',\n	clickToClose:			''Cliquez pour fermer la prévisualisation.'',\n	resize:					''Redimensionner'',\n	help:					''Aide'',\n	resizeHelp:				''Vous pouvez redimensionner l\\''image et la recadrer. Attention à respecter les limites de dimensions si il y en a. Lorsque vous cliquez sur "Appliquer", l\\''image sera transformée sur le serveur et vous ne pourrez pas revenir à l\\''image originale.'',\n	width:					''Largeur'',\n	height:					''Hauteur'',\n	crop:					''Recadrer'',\n	apply:					''Appliquer'',\n	removeImage:			''Supprimer l\\''image actuelle'',\n	updateImage:			''Modifier (redimensionner - retailler) l\\''image actuelle'',\n	//Pages field\n	select:					''Sélectionner ...'',\n	//Link field\n	none:					''Aucun'',\n	title:					''Titre'',\n	internalLink:			''Lien Interne (vers une page du site)'',\n	externalLink:			''Lien Externe (vers un autre site)'',\n	fileLink:				''Lien vers un Fichier'',\n	type:					''Type'',\n	page:					''Page'',\n	externalLinkHelp:		''Saisissez ici l\\''adresse du lien en commençant par http://'',\n	url:					''URL'',\n	file:					''Fichier'',\n	destination:			''Destination'',\n	currentWindow:			''Dans la fenêtre en cours'',\n	newWindow:				''Dans une nouvelle fenêtre'',\n	popupWindow:			''Dans une fenêtre Pop-up'',\n	//framepanel\n	submitDraftConfirm:		''Voulez vous soumettre le contenu actuel de la page à la validation ?'',\n	validateDraft:			''Valider ce contenu'',\n	validateDraftDetail:	''Valider l\\''état actuel du contenu de la page. La page présentera ce contenu en ligne sans étape intermédiaire de validation.'',\n	validateDraftConfirm:	''Voulez vous valider le contenu actuel de la page ? Son contenu sera directement mis en ligne sans étape intermédiaire de validation.'',\n	//edit\n	endEdition:				''Vous quittez l\\''édition de la page. Voulez vous soumettre le contenu actuel de la page à la validation ?'',\n	quitConfirm:			''Vous allez perdre les modifications en cours qui n\\''ont pas été sauvegardées.'',\n	refresh:				''Rafraichissement de la page ...''\n};\n//Change default field label separator\nif(Ext.layout.FormLayout) {\n	Ext.layout.FormLayout.prototype.labelSeparator = '' :'';\n}', 'Automne.locales = {\n	validateOptions: 		''See validations options'',\n	validate: 				''Validate'',\n	actionImpossible: 		''Action impossible'',\n	cantSubmitFormPage: 	''You can not submit a form from a non public page.'',\n	loadingError: 			''Error during loading, please retry or reconnect...'',\n	jsError: 				''Error during Javascript loading, please retry or reconnect...'',\n	jsonError: 				''Error during JSon loading, please retry or reconnect...'',\n	contactAdministrator:	''If the problem persist, please contact your administrator with this informations:'',\n	cannotCloseModalGroup: 	''You can not close this window since dependent windows are open. Please close them first.'',\n	noPageFounded: 			''No page founded...'',\n	noScript: 				''No script in progress.'',\n	nScripts: 				''{0} scripts in progress.'',\n	//Page edition \n	rowDel:					''Delete this row'',\n	rowDrag:				''Drag and drop this row'',\n	rowTop:					''Move this row to the top of this editable zone'',\n	rowBottom:				''Move this row to the bottom of this editable zone'',\n	rowLeft:				''Put this row in the left editable zone'',\n	rowRight:				''Put this row in the right editable zone'',\n	rowUp:					''Move up this row'',\n	rowDown:				''Move down this row'',\n	csName:					''Editable zone:'',\n	rowType:				''Row type:'',\n	newRow:					''New Row'',\n	newRowTip:				''Add a new content row to the page'',\n	blockDel:				''Delete content of this block'',\n	blockModify:			''Modify content of this block'',\n	blockAdmin:				''Manage module datas used by this block'',\n	blockValidate:			''Save content'',\n	rowDeleteConfirm:		''Do you want to delete the row \\''{0}\\'' and all his content?'',\n	blockDeleteConfirm:		''Do you want to definitively delete the content of this block?'',\n	csSelectRowAdd:			''Select the row to add: '',\n	csSelectRow:			''Select the row to add...'',\n	csClickToAdd:			''Click to add a new row at this position'',\n	csClickOnRed:			''Click on the red spot where you want to add the new row.'',\n	csCancelRowAdd:			''Cancel adding a new row in the page.'',\n	csAddRowToPosition:		''Add the selected row to the chosen position in the page.'',\n	options:				''Options'',\n	optionsDetail:			''Allow you to control some display parameters for the page edition'',\n	optAnimateDetail:		''Allow you to activate or disactivate animated movements of the rows in the page. Desactivating this option should improve performances.'',\n	optAnimate:				''Animated rows moving'',\n	optMoveDetail:			''Allow you to activate or disactivate the page scrolling to follow the active row. Desactivating this option should improve performances.'',\n	optMove:				''Window scroll'',\n	loading:				''Loading...'',\n	add:					''Add'',\n	delDraft:				''Delete content'',\n	delDraftDetail:			''Delete actual content. The page content will be back to the previous validated or validation pending state. This action will take effect immediatly.'',\n	SubmitToValid:			''Submit to validation'',\n	SubmitToValidDetail:	''Submit the current page content to validation.'',\n	//File upload\n	browse:					''Browse...'',\n	cancel:					''Cancel'',\n	byte:					''B'',\n	max:					''Max'',\n	min:					''Min'',\n	init:					''Initialisation ...'',\n	queueLimit:				''You have reached the maximum number of files.'',\n	zeroByte:				''The file is empty.'',\n	tooBig:					''This file is too big ({0} MB). Maximum filesize is {1} MB'',\n	invalidType:			''This file type is not allowed.'',\n	sendingCancelled:		''Sending cancelled.'',\n	sendingStopped:			''Sending interrupted.'',\n	sizeLimit:				''Server limit reached.'',\n	uploadError:			''Error during sending to the server.'',\n	treatmentError:			''File treatment error on the server.'',\n	securityError:			''Security error, this file type is not allowed.'',\n	unknownError:			''File sending error... '',\n	pleaseWait:				''Please wait during file sending...'',\n	browserError:			''Your browser can not handle this script.'',\n	removeFile:				''Remove current file'',\n	//Image upload\n	clickOriginal:			''Clic to see original size.'',\n	maxImageSize:			''This image is over autorized size. Please resize it ot modify it.'',\n	clickToClose:			''Clic to close the previsualisation.'',\n	resize:					''Resize'',\n	help:					''Help'',\n	resizeHelp:				''You can resize and crop your image. Attention to respect size limits. When you clic on "Apply", the image will be transformed on the server and you will not be able to go back to the original image.'',\n	width:					''Width'',\n	height:					''Height'',\n	crop:					''Crop'',\n	apply:					''Apply'',\n	removeImage:			''Remove current image'',\n	updateImage:			''Modify (resize - crop) current image'',\n	//Pages field\n	select:					''Select...'',\n	//Link field\n	none:					''None'',\n	title:					''Title'',\n	internalLink:			''Internal link (to a page of this website)'',\n	externalLink:			''External link (to another website)'',\n	fileLink:				''File link'',\n	type:					''Type'',\n	page:					''Page'',\n	externalLinkHelp:		''Type here the address begining by http://'',\n	url:					''URL'',\n	file:					''File'',\n	destination:			''Destination'',\n	currentWindow:			''In the current window'',\n	newWindow:				''In a new window'',\n	popupWindow:			''In a Pop-up window'',\n	//framepanel\n	submitDraftConfirm:		''Do you want to submit the actual page content to validation?'',\n	validateDraft:			''Validate this content'',\n	validateDraftDetail:	''Validate the current page content. The page will present this content online without any further validation step.'',\n	validateDraftConfirm:	''Do you want to validate the current page content? This content will be directly put online without any further validation step.'',\n	//edit\n	endEdition:				''You leave page edition. Do you want to submit actual page content to validation?'',\n	quitConfirm:			''You will lose all modifications which are not saved.'',\n	refresh:				''Refreshing current page...''\n};');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1547, 'standard', NOW(), 'Automne.locales = {
+	validateOptions: 		''Voir les options de validation'',
+	validate: 				''Valider'',
+	actionImpossible: 		''Action impossible'',
+	cantSubmitFormPage: 	''Vous ne pouvez pas soumettre un formulaire depuis une page non publique.'',
+	loadingError: 			''Erreur de traitement. Veuillez réessayer ou vous reconnecter ...'',
+	jsError: 				''Erreur de traitement Javascript. Veuillez réessayer ou vous reconnecter ...'',
+	jsonError: 				''Erreur de traitement JSon. Veuillez réessayer ou vous reconnecter ...'',
+	contactAdministrator:	''Si le problème persiste, veuillez contacter votre administrateur avec ces informations : '',
+	cannotCloseModalGroup: 	''Vous ne pouvez pas fermer cette fenêtre tant que des fenêtres dépendantes sont ouvertes. Veuillez les fermer d\\''abord.'',
+	noPageFounded: 			''Aucune page trouvée ...'',
+	noScript: 				''Aucun script en cours de traitement.'',
+	nScripts: 				''{0} scripts en cours de traitement.'',
+	//Page edition 
+	rowDel:					''Supprimer cette rangée'',
+	rowDrag:				''Glisser-Déposer cette rangée'',
+	rowTop:					''Monter cette rangée en haut de la zone éditable'',
+	rowBottom:				''Descendre cette rangée en bas de la zone éditable'',
+	rowLeft:				''Passer cette rangée dans la zone éditable de gauche'',
+	rowRight:				''Passer cette rangée dans la zone éditable de droite'',
+	rowUp:					''Monter cette rangée d\\''un cran'',
+	rowDown:				''Descendre cette rangée d\\''un cran'',
+	csName:					''Zone de contenu :'',
+	rowType:				''Rangée de type : '',
+	newRow:					''Nouvelle Rangée'',
+	newRowTip:				''Ajouter une nouvelle rangée de contenu dans la page'',
+	blockDel:				''Supprimer le contenu de ce bloc.'',
+	blockModify:			''Modifier le contenu de ce bloc.'',
+	blockAdmin:				''Gérer les éléments employés par ce bloc de contenu.'',
+	blockValidate:			''Enregistrer le contenu'',
+	rowDeleteConfirm:		''Etes-vous sur de vouloir supprimer définitivement la rangée \\''{0}\\'' et tout son contenu ?'',
+	blockDeleteConfirm:		''Etes-vous sur de vouloir supprimer définitivement tout le contenu de ce bloc ?'',
+	csSelectRowAdd:			''Sélectionnez la rangée à ajouter : '',
+	csSelectRow:			''Sélectionnez la rangée à ajouter ...'',
+	csClickToAdd:			''Cliquez pour ajouter une nouvelle rangée à cette position'',
+	csClickOnRed:			''Cliquez sur la zone rouge où vous souhaitez ajouter votre nouvelle rangée.'',
+	csCancelRowAdd:			''Annuler l\\''ajout d\\''une nouvelle rangée dans la page.'',
+	csAddRowToPosition:		''Ajouter la rangée sélectionnée à la position choisie dans la page.'',
+	options:				''Options'',
+	optionsDetail:			''Vous permet de controler les options d\\''affichage de l\\''édition de la page'',
+	optAnimateDetail:		''Vous permet d\\''activer et désactiver les déplacements animés des rangées. Désactiver cette option peut faire gagner en performance.'',
+	optAnimate:				''Déplacements animés des rangées'',
+	optMoveDetail:			''Vous permet d\\''activer et désactiver le scrolling vertical de la page pour suivre la rangée active. Désactiver cette option peut faire gagner en performance.'',
+	optMove:				''Scroll de la fenêtre'',
+	loading:				''Chargement ...'',
+	add:					''Ajouter'',
+	delDraft:				''Supprimer le contenu'',
+	delDraftDetail:			''Supprimer le contenu actuel. Le contenu reviendra au précédent contenu validé ou en attente de validation. Cette action n\\''est pas soumise à validation et prend effet immédiatement.'',
+	SubmitToValid:			''Soumettre à validation'',
+	SubmitToValidDetail:	''Soumettre l\\''état actuel de la page à la validation. Une fois validée, la page présentera ce contenu en ligne.'',
+	//File upload
+	browse:					''Parcourir ...'',
+	cancel:					''Annuler'',
+	byte:					''o'',
+	max:					''Max'',
+	min:					''Min'',
+	init:					''Initialisation ...'',
+	queueLimit:				''Vous avez dépassé le nombre de fichier possible.'',
+	zeroByte:				''Le fichier que vous tentez d\\''envoyer est vide.'',
+	tooBig:					''Le fichier que vous tentez d\\''envoyer est trop volumineux ({0} Mo). Vous ne devez pas dépasser {1} Mo'',
+	invalidType:			''Le type de fichier que vous tentez d\\''envoyer n\\''est pas authorisé.'',
+	sendingCancelled:		''Envoi sur le serveur annulé.'',
+	sendingStopped:			''Envoi sur le serveur interrompu.'',
+	sizeLimit:				''Limite d\\''envoi sur le serveur atteinte.'',
+	uploadError:			''Erreur durant l\\''envoi du fichier au serveur.'',
+	treatmentError:			''Erreur de traitement du fichier sur le serveur.'',
+	securityError:			''Erreur de sécurité : le type de fichier que vous envoyez n\\''est pas autorisé.'',
+	unknownError:			''Erreur d\\''envoi du fichier ... '',
+	pleaseWait:				''Veuillez patienter, transfert en cours ...'',
+	browserError:			''Votre navigateur ne peut gérer ce script.'',
+	removeFile:				''Supprimer le fichier actuel'',
+	//Image upload
+	clickOriginal:			''Cliquez pour voir en format original.'',
+	maxImageSize:			''L\\''image dépasse les limites de taille autorisées. Veuillez la redimensionner ou la modifier.'',
+	clickToClose:			''Cliquez pour fermer la prévisualisation.'',
+	resize:					''Redimensionner'',
+	help:					''Aide'',
+	resizeHelp:				''Vous pouvez redimensionner l\\''image et la recadrer. Attention à respecter les limites de dimensions si il y en a. Lorsque vous cliquez sur "Appliquer", l\\''image sera transformée sur le serveur et vous ne pourrez pas revenir à l\\''image originale.'',
+	width:					''Largeur'',
+	height:					''Hauteur'',
+	crop:					''Recadrer'',
+	apply:					''Appliquer'',
+	removeImage:			''Supprimer l\\''image actuelle'',
+	updateImage:			''Modifier (redimensionner - retailler) l\\''image actuelle'',
+	//Pages field
+	select:					''Sélectionner ...'',
+	//Link field
+	none:					''Aucun'',
+	title:					''Titre'',
+	internalLink:			''Lien Interne (vers une page du site)'',
+	externalLink:			''Lien Externe (vers un autre site)'',
+	fileLink:				''Lien vers un Fichier'',
+	type:					''Type'',
+	page:					''Page'',
+	externalLinkHelp:		''Saisissez ici l\\''adresse du lien en commençant par http://'',
+	url:					''URL'',
+	file:					''Fichier'',
+	destination:			''Destination'',
+	currentWindow:			''Dans la fenêtre en cours'',
+	newWindow:				''Dans une nouvelle fenêtre'',
+	popupWindow:			''Dans une fenêtre Pop-up'',
+	//framepanel
+	submitDraftConfirm:		''Voulez vous soumettre le contenu actuel de la page à la validation ?'',
+	validateDraft:			''Valider ce contenu'',
+	validateDraftDetail:	''Valider l\\''état actuel du contenu de la page. La page présentera ce contenu en ligne sans étape intermédiaire de validation.'',
+	validateDraftConfirm:	''Voulez vous valider le contenu actuel de la page ? Son contenu sera directement mis en ligne sans étape intermédiaire de validation.'',
+	previzDraft:			''Aperçu'',
+	previzDraftDetail:		''Aperçu de votre contenu en cours de modification.'',
+	//edit
+	endEdition:				''Vous quittez l\\''édition de la page. Voulez vous soumettre le contenu actuel de la page à la validation ?'',
+	quitConfirm:			''Vous allez perdre les modifications en cours qui n\\''ont pas été sauvegardées.'',
+	refresh:				''Rafraichissement de la page ...''
+};
+//Change default field label separator
+if(Ext.layout.FormLayout) {
+	Ext.layout.FormLayout.prototype.labelSeparator = '' :'';
+}', 'Automne.locales = {
+	validateOptions: 		''See validations options'',
+	validate: 				''Validate'',
+	actionImpossible: 		''Action impossible'',
+	cantSubmitFormPage: 	''You can not submit a form from a non public page.'',
+	loadingError: 			''Error during loading, please retry or reconnect...'',
+	jsError: 				''Error during Javascript loading, please retry or reconnect...'',
+	jsonError: 				''Error during JSon loading, please retry or reconnect...'',
+	contactAdministrator:	''If the problem persist, please contact your administrator with this informations:'',
+	cannotCloseModalGroup: 	''You can not close this window since dependent windows are open. Please close them first.'',
+	noPageFounded: 			''No page founded...'',
+	noScript: 				''No script in progress.'',
+	nScripts: 				''{0} scripts in progress.'',
+	//Page edition 
+	rowDel:					''Delete this row'',
+	rowDrag:				''Drag and drop this row'',
+	rowTop:					''Move this row to the top of this editable zone'',
+	rowBottom:				''Move this row to the bottom of this editable zone'',
+	rowLeft:				''Put this row in the left editable zone'',
+	rowRight:				''Put this row in the right editable zone'',
+	rowUp:					''Move up this row'',
+	rowDown:				''Move down this row'',
+	csName:					''Editable zone:'',
+	rowType:				''Row type:'',
+	newRow:					''New Row'',
+	newRowTip:				''Add a new content row to the page'',
+	blockDel:				''Delete content of this block'',
+	blockModify:			''Modify content of this block'',
+	blockAdmin:				''Manage module datas used by this block'',
+	blockValidate:			''Save content'',
+	rowDeleteConfirm:		''Do you want to delete the row \\''{0}\\'' and all his content?'',
+	blockDeleteConfirm:		''Do you want to definitively delete the content of this block?'',
+	csSelectRowAdd:			''Select the row to add: '',
+	csSelectRow:			''Select the row to add...'',
+	csClickToAdd:			''Click to add a new row at this position'',
+	csClickOnRed:			''Click on the red spot where you want to add the new row.'',
+	csCancelRowAdd:			''Cancel adding a new row in the page.'',
+	csAddRowToPosition:		''Add the selected row to the chosen position in the page.'',
+	options:				''Options'',
+	optionsDetail:			''Allow you to control some display parameters for the page edition'',
+	optAnimateDetail:		''Allow you to activate or disactivate animated movements of the rows in the page. Desactivating this option should improve performances.'',
+	optAnimate:				''Animated rows moving'',
+	optMoveDetail:			''Allow you to activate or disactivate the page scrolling to follow the active row. Desactivating this option should improve performances.'',
+	optMove:				''Window scroll'',
+	loading:				''Loading...'',
+	add:					''Add'',
+	delDraft:				''Delete content'',
+	delDraftDetail:			''Delete actual content. The page content will be back to the previous validated or validation pending state. This action will take effect immediatly.'',
+	SubmitToValid:			''Submit to validation'',
+	SubmitToValidDetail:	''Submit the current page content to validation.'',
+	//File upload
+	browse:					''Browse...'',
+	cancel:					''Cancel'',
+	byte:					''B'',
+	max:					''Max'',
+	min:					''Min'',
+	init:					''Initialisation ...'',
+	queueLimit:				''You have reached the maximum number of files.'',
+	zeroByte:				''The file is empty.'',
+	tooBig:					''This file is too big ({0} MB). Maximum filesize is {1} MB'',
+	invalidType:			''This file type is not allowed.'',
+	sendingCancelled:		''Sending cancelled.'',
+	sendingStopped:			''Sending interrupted.'',
+	sizeLimit:				''Server limit reached.'',
+	uploadError:			''Error during sending to the server.'',
+	treatmentError:			''File treatment error on the server.'',
+	securityError:			''Security error, this file type is not allowed.'',
+	unknownError:			''File sending error... '',
+	pleaseWait:				''Please wait during file sending...'',
+	browserError:			''Your browser can not handle this script.'',
+	removeFile:				''Remove current file'',
+	//Image upload
+	clickOriginal:			''Clic to see original size.'',
+	maxImageSize:			''This image is over autorized size. Please resize it ot modify it.'',
+	clickToClose:			''Clic to close the previsualisation.'',
+	resize:					''Resize'',
+	help:					''Help'',
+	resizeHelp:				''You can resize and crop your image. Attention to respect size limits. When you clic on "Apply", the image will be transformed on the server and you will not be able to go back to the original image.'',
+	width:					''Width'',
+	height:					''Height'',
+	crop:					''Crop'',
+	apply:					''Apply'',
+	removeImage:			''Remove current image'',
+	updateImage:			''Modify (resize - crop) current image'',
+	//Pages field
+	select:					''Select...'',
+	//Link field
+	none:					''None'',
+	title:					''Title'',
+	internalLink:			''Internal link (to a page of this website)'',
+	externalLink:			''External link (to another website)'',
+	fileLink:				''File link'',
+	type:					''Type'',
+	page:					''Page'',
+	externalLinkHelp:		''Type here the address begining by http://'',
+	url:					''URL'',
+	file:					''File'',
+	destination:			''Destination'',
+	currentWindow:			''In the current window'',
+	newWindow:				''In a new window'',
+	popupWindow:			''In a Pop-up window'',
+	//framepanel
+	submitDraftConfirm:		''Do you want to submit the actual page content to validation?'',
+	validateDraft:			''Validate this content'',
+	validateDraftDetail:	''Validate the current page content. The page will present this content online without any further validation step.'',
+	validateDraftConfirm:	''Do you want to validate the current page content? This content will be directly put online without any further validation step.'',
+	previzDraft:			''Preview'',
+	previzDraftDetail:		''Preview your content being edited.'',
+	//edit
+	endEdition:				''You leave page edition. Do you want to submit actual page content to validation?'',
+	quitConfirm:			''You will lose all modifications which are not saved.'',
+	refresh:				''Refreshing current page...''
+};');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (10008, 'standard', '2009-06-26 17:18:01', 'L''image est trop grande (> %s pixels)', 'Image is too wide (> %s pixels)');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (10030, 'standard', NOW(), 'La démonstration suivante se limite aux actions de création et de modification de contenu ainsi qu''à la phase de validation. Pour tester Automne côté administration, vous devez télécharger le code source sur le site <a href="http://www.automne.ws" target="_blank" class="admin"><b>www.automne.ws</b></a>. N''hésitez pas à nous <a href="http://www.automne.ws/html/_77_.php" target="_blank" class="admin"><b>contacter</b></a> si vous avez des questions sur cette démonstration ou sur la façon dont Automne pourrait optimiser la gestion de vos sites.<br /><br /> Les contenus sont initialisés chaque dimanche. Si vous souhaitez tester les dates de publication, pensez à ne pas dépasser la date du dimanche suivant à minuit.', 'The following demo is limited to content addition and modification, including validation. To use Automne from an administrative perspective you must download the source code from <a href="http://www.automne.ws" target="_blank" class="admin"><b>www.automne.ws</b></a>. If you have further questions on this demo and on how Automne can help you manage your web sites, please <a href="http://www.automne.ws/html/_77_.php" target="_blank" class="admin"><b>contact us</b></a>.\r\n\r\nPlease note that all new content is erased every Sunday to renew the database. If you would like to test publication dates you must do so within the week ending on Sunday at midnight.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (10031, 'standard', NOW(), 'Aide', 'Help');
@@ -1550,8 +1778,8 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1584, 'standa
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1585, 'standard', NOW(), 'Sélectionnez le module \'Pages\' pour rechercher par pages.', 'Select the module \'Pages\' to search through pages.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1586, 'standard', NOW(), 'Par page', 'By page');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1587, 'standard', NOW(), 'Purger', 'Purge');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1588, 'standard', NOW(), 'Supprime tous le journal des actions de plus de deux mois dans la recherche actuelle. Attention, cela ne peut être annulé.', 'Delete all the log of actions of more than two months in current research. Caution, this can not be undone.');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1589, 'standard', NOW(), 'Etes-vous sûr de vouloir supprimer définitivement le journal de toutes les actions de plus de deux mois dans la recherche actuelle ?<br />Attention, cette action ne peut être annulée !', 'Are you sure you want to permanently delete the log of all of the actions of more than two months in current research? <br /> Note that this action can not be undone!');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1588, 'standard', NOW(), 'Supprime tous le journal des actions de plus de deux mois dans la recherche actuelle. Attention, cette action ne peux pas être annulé.', 'Delete all the log of actions of more than two months in current research. Caution, this can not be undone.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (1589, 'standard', NOW(), 'Etes-vous sûr de vouloir supprimer définitivement le journal de toutes les actions de plus de deux mois dans la recherche actuelle ?<br />Attention, cette action ne peux pas être annulée !', 'Are you sure you want to permanently delete the log of all of the actions of more than two months in current research? <br /> Note that this action can not be undone!');
 
 
 DELETE FROM I18NM_messages WHERE module='cms_aliases';
@@ -1809,8 +2037,8 @@ INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (199, 'polymod
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (200, 'polymod', NOW(), 'Image', 'Image');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (201, 'polymod', NOW(), 'Champ contenant une image avec ou sans image zoom', 'Field with an image, with or without zoom image');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (202, 'polymod', NOW(), 'Largeur maximum de la vignette en pixels', 'Maximum width of the thumbnail in pixels');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (203, 'polymod', NOW(), 'Date de début de publication formatée. Remplacez ''format'' par la valeur correspondant au format accepté en PHP pour la <a href="http://www.php.net/date" class="admin" target="_blank">''fonction date''</a>', 'Formatted date. Replace ''format'' by the format value accepted in PHP for the <a href="http://www.php.net/date" class="admin" target="_blank">''date function''</a>');
-INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (204, 'polymod', NOW(), 'Date de fin de publication formatée (si elle existe). Remplacez ''format'' par la valeur correspondant au format accepté en PHP pour la <a href="http://www.php.net/date" class="admin" target="_blank">''fonction date''</a>', 'Formatted date. Replace ''format'' by the format value accepted in PHP for the <a href="http://www.php.net/date" class="admin" target="_blank">''date function''</a>');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (203, 'polymod', NOW(), 'Date de début de publication formatée. Remplacez ''format'' par la valeur correspondant au format accepté en PHP pour la <a href="http://www.php.net/date" class="admin" target="_blank">''fonction date''</a>. Pour une date employ&eacute;e dans un Fil RSS, utilisez la valeur ''<strong>rss</strong>'' pour sp&eacute;cifier le format.', 'Formatted date. Replace ''format'' by the format value accepted in PHP for the <a href="http://www.php.net/date" class="admin" target="_blank">''date function''</a>. For a date used in an RSS feed, use ''<strong>rss</strong>'' to specify the format.');
+INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (204, 'polymod', NOW(), 'Date de fin de publication formatée (si elle existe). Remplacez ''format'' par la valeur correspondant au format accepté en PHP pour la <a href="http://www.php.net/date" class="admin" target="_blank">''fonction date''</a>. Pour une date employ&eacute;e dans un Fil RSS, utilisez la valeur ''<strong>rss</strong>'' pour sp&eacute;cifier le format.', 'Formatted date. Replace ''format'' by the format value accepted in PHP for the <a href="http://www.php.net/date" class="admin" target="_blank">''date function''</a>. For a date used in an RSS feed, use ''<strong>rss</strong>'' to specify the format.');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (205, 'polymod', NOW(), 'Utiliser la vignette originale pour l''image zoom', 'Use original thumbnail as zoom');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (206, 'polymod', NOW(), 'Vignette', 'Thumbnail');
 INSERT INTO I18NM_messages (id, module, timestamp, fr, en) VALUES (207, 'polymod', NOW(), 'Image zoom', 'Zoom image');

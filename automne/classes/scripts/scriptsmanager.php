@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: scriptsmanager.php,v 1.2 2009/04/02 13:58:01 sebastien Exp $
+// $Id: scriptsmanager.php,v 1.3 2009/10/22 16:30:06 sebastien Exp $
 
 /**
   * Class CMS_scriptsManager
@@ -136,7 +136,7 @@ class CMS_scriptsManager
 				}
 				$fh = @fopen( PATH_WINDOWS_BIN_FS."/script.bat", "wb" );
 				if (is_resource($fh)) {
-					if (!@fwrite($fh, $command,strlen($command))) {
+					if (!@fwrite($fh, $command,io::strlen($command))) {
 						CMS_grandFather::raiseError("Save file error : script.bat");
 					}
 					@fclose($fh);
@@ -151,7 +151,7 @@ class CMS_scriptsManager
 					CMS_grandFather::raiseError('Error when finding php CLI with command "which php", please check your configuration : '.$error);
 					return false;
 				}
-				if (substr($return,0,1) != '/') {
+				if (io::substr($return,0,1) != '/') {
 					CMS_grandFather::raiseError('Can\'t find php CLI with command "which php", please check your configuration.');
 					return false;
 				}

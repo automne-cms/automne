@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_common.php,v 1.7 2009/07/20 16:35:37 sebastien Exp $
+// $Id: object_common.php,v 1.8 2009/10/22 16:30:04 sebastien Exp $
 
 /**
   * Class CMS_object_common
@@ -194,13 +194,15 @@ abstract class CMS_object_common extends CMS_grandFather
 		
 		$label = $desc ? '<span class="atm-help" ext:qtip="'.htmlspecialchars($desc).'">'.$mandatory.$this->getFieldLabel($language).'</span>' : $mandatory.$this->getFieldLabel($language);
 		$return = array();
+		
+		
 		if (sizeof($this->_subfields) === 1) {
 			$return = array(
 				'allowBlank'	=>	!$this->_field->getValue('required'),
 				'fieldLabel' 	=>	$label,
 				'xtype'			=>	'textfield',
 				'name'			=>	'polymodFieldsValue['.$prefixName.$this->_field->getID().'_0]',
-				'value'			=>	($this->_subfieldValues[0]->getValue() ? htmlspecialchars_decode($this->_subfieldValues[0]->getValue()) : ''),
+				'value'			=>	($this->_subfieldValues[0]->getValue() ? sensitiveIO::decodeEntities($this->_subfieldValues[0]->getValue()) : ''),
 			);
 		} else {
 			$fields = array();
@@ -210,7 +212,7 @@ abstract class CMS_object_common extends CMS_grandFather
 						'hideLabel' 	=>	true,
 						'xtype'			=>	'textfield',
 						'name'			=>	'polymodFieldsValue['.$prefixName.$this->_field->getID().'_'.$subFieldID.']',
-						'value'			=>	($this->_subfieldValues[$subFieldID]->getValue() ? htmlspecialchars_decode($this->_subfieldValues[$subFieldID]->getValue()) : ''),
+						'value'			=>	($this->_subfieldValues[$subFieldID]->getValue() ? sensitiveIO::decodeEntities($this->_subfieldValues[$subFieldID]->getValue()) : ''),
 					);
 				}
 			}

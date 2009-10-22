@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sébastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: contactdataldap.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: contactdataldap.php,v 1.2 2009/10/22 16:30:00 sebastien Exp $
 
 /**
   * Class CMS_ldap_contactData
@@ -151,7 +151,7 @@ class CMS_ldap_contactData extends CMS_contactData
 				$first_part = $dn_parts[0];
 				$filter = '';
 				foreach ($loginAttributes as $att) {
-					if (!$filter && strtolower(substr($first_part, 0, strlen($att))) == strtolower($att)) {
+					if (!$filter && io::strtolower(io::substr($first_part, 0, io::strlen($att))) == io::strtolower($att)) {
 						$filter = "(".utf8_encode($first_part).")";
 					}
 				}
@@ -168,7 +168,7 @@ class CMS_ldap_contactData extends CMS_contactData
 				if (is_array($e) && $e['count'] == 1) {
 					while (list($k, $v) = each($e[0])) {
 						if (!is_integer($k) && $k != 'count') {
-							$k = strtolower($k);
+							$k = io::strtolower($k);
 							if (is_array($v)) {
 								$this->_ldapData[$k] = utf8_decode($v[0]);
 								$this->_ldapDatas[$k] = array_map("utf8_decode",$v);
@@ -206,7 +206,7 @@ class CMS_ldap_contactData extends CMS_contactData
         if (!$name) {
         	return $this->_ldapData;
         } else {
-        	return $this->_ldapData[strtolower($name)];
+        	return $this->_ldapData[io::strtolower($name)];
         }
     }
 	
@@ -222,7 +222,7 @@ class CMS_ldap_contactData extends CMS_contactData
         if (!$name) {
         	return $this->_ldapDatas;
         } else {
-        	return $this->_ldapDatas[strtolower($name)];
+        	return $this->_ldapDatas[io::strtolower($name)];
         }
     }
 	 

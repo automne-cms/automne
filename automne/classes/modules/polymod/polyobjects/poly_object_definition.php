@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object_definition.php,v 1.2 2009/04/02 13:58:00 sebastien Exp $
+// $Id: poly_object_definition.php,v 1.3 2009/10/22 16:30:04 sebastien Exp $
 
 /**
   * Class CMS_poly_object_definition
@@ -201,10 +201,10 @@ class CMS_poly_object_definition extends CMS_grandFather
 		global $cms_language;
 		$parameters = array();
 		$parameters['module'] = CMS_poly_object_catalog::getModuleCodenameForObjectType($this->getID());
-		$definitionParsing = new CMS_polymod_definition_parsing($this->_objectValues['indexURL'], true, CMS_polymod_definition_parsing::PARSE_MODE);
+		$definitionParsing = new CMS_polymod_definition_parsing($this->_objectValues['indexURL'], true, CMS_polymod_definition_parsing::PARSE_MODE, $parameters['module']);
 		$compiledIndexURL = $definitionParsing->getContent(CMS_polymod_definition_parsing::OUTPUT_PHP, $parameters);
 		$this->_objectValues['compiledIndexURL'] = $compiledIndexURL;
-		$definitionParsing = new CMS_polymod_definition_parsing($this->_objectValues['resultsDefinition'], true, CMS_polymod_definition_parsing::PARSE_MODE);
+		//$definitionParsing = new CMS_polymod_definition_parsing($this->_objectValues['resultsDefinition'], true, CMS_polymod_definition_parsing::PARSE_MODE, $parameters['module']);
 		return true;
 	}
 	

@@ -2,14 +2,16 @@
 /**
   * Update all stored definitions
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * @version $Id: update-definitions.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+  * @version $Id: update-definitions.php,v 1.2 2009/10/22 16:28:08 sebastien Exp $
   */
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 
 //foreach definition, plugin and rss, recompile stored values if exists
 $modules = CMS_modulesCatalog::getAll("id", true);
+$hasPolyModule = false;
 foreach ($modules as $module) {
 	if ($module->isPolymod()) {
+		$hasPolyModule = true;
 		//get objects definition for module
 		$objects = CMS_poly_object_catalog::getObjectsForModule($module->getCodename());
 		foreach ($objects as $object) {
@@ -29,12 +31,14 @@ foreach ($modules as $module) {
 		}
 	}
 }
-//get all RSS definition
-$rssDefinitions = CMS_poly_object_catalog::getAllRSSDefinitionsForObject();
-foreach ($rssDefinitions as $rssDefinition) {
-	if ($rssDefinition->getValue('definition')) {
-		$rssDefinition->compileDefinition();
-		$rssDefinition->writeToPersistence();
+if ($hasPolyModule) {
+	//get all RSS definition
+	$rssDefinitions = CMS_poly_object_catalog::getAllRSSDefinitionsForObject();
+	foreach ($rssDefinitions as $rssDefinition) {
+		if ($rssDefinition->getValue('definition')) {
+			$rssDefinition->compileDefinition();
+			$rssDefinition->writeToPersistence();
+		}
 	}
 }
 echo "Objects definitions recompilations is done.<br />";

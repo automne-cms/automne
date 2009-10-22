@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: row.php,v 1.8 2009/07/20 16:33:15 sebastien Exp $
+// $Id: row.php,v 1.9 2009/10/22 16:26:26 sebastien Exp $
 
 /**
   * PHP page : Load row detail window.
@@ -67,6 +67,8 @@ $rowId = sensitiveIO::request('row', 'sensitiveIO::isPositiveInteger', 'createRo
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 //CHECKS user has row edition clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES)) { //rows
@@ -90,7 +92,7 @@ if (sensitiveIO::isPositiveInteger($rowId)) {
 //MAIN TAB
 
 //Need to sanitize all datas which can contain single quotes
-$label = sensitiveIO::sanitizeJSString($row->getLabel());
+$label = $row->getLabel();
 $description = sensitiveIO::sanitizeJSString($row->getDescription());
 $rowDefinition = $row->getDefinition();
 $rowGroups = $row->getGroups();
@@ -120,7 +122,7 @@ if ($allGroups) {
 			$groupsfield .= "{boxLabel: '{$aGroup}', inputValue:'{$aGroup}', name: 'groups[]', checked:".(isset($rowGroups[$aGroup]) ? 'true' : 'false')."},";
 		}
 		//remove last comma from groups
-		$groupsfield = substr($groupsfield, 0, -1);
+		$groupsfield = io::substr($groupsfield, 0, -1);
 		$groupsfield .= "
 		]
 	},";
@@ -149,7 +151,7 @@ if ($allIcons) {
 			$iconsField .= "{boxLabel: '<img src=\"{$icon}\">', height:".$maxheight.", inputValue:'{$icon}', name: 'image', checked:".($row->getImage() == $icon ? 'true' : 'false')."},";
 		}
 		//remove last comma from groups
-		$iconsField = substr($iconsField, 0, -1);
+		$iconsField = io::substr($iconsField, 0, -1);
 		$iconsField .= "
 		]
 	},";
@@ -157,7 +159,7 @@ if ($allIcons) {
 
 //Templates filters
 $filteredTemplates = $row->getFilteredTemplates();
-$templates = CMS_pageTemplatesCatalog::getAll(false, '', array(), '', array(), $cms_user, 0, 0, true);
+$templates = CMS_pageTemplatesCatalog::getAll(true, '', array(), '', array(), $cms_user, 0, 0, true);
 $availableTemplates = $selectedTemplates = array();
 foreach ($templates as $id => $template) {
 	if (in_array($id, $filteredTemplates)) {
@@ -175,6 +177,8 @@ $content = '<textarea id="row-definition-'.$rowId.'" style="display:none;">'.htm
 $view->setContent($content);
 
 $title = sensitiveIO::sanitizeJSString((sensitiveIO::isPositiveInteger($rowId)) ? $cms_language->getMessage(MESSAGE_PAGE_ROW).' '.$label : $cms_language->getMessage(MESSAGE_PAGE_ROW_CREATE));
+
+$label = sensitiveIO::sanitizeJSString($label);
 
 $jscontent = <<<END
 	var rowWindow = Ext.getCmp('{$winId}');

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: linxdisplay.php,v 1.5 2009/07/23 10:53:25 sebastien Exp $
+// $Id: linxdisplay.php,v 1.6 2009/10/22 16:30:05 sebastien Exp $
 
 /**
   * Class CMS_linxDisplay
@@ -148,7 +148,7 @@ class CMS_linxDisplay extends CMS_grandFather
 				"{{currentClass}}" 	=> ($parsedPage->getID() == $page->getID()) ? "CMS_current" : "",
 				'id="{{currentID}}"'=> ($parsedPage->getID() == $page->getID()) ? 'id="CMS_current"' : "",
 			);
-			if (strpos($this->_htmlTemplate,'{{isParent}}') !== false) {
+			if (io::strpos($this->_htmlTemplate,'{{isParent}}') !== false) {
 				//only if needed because getLineage require a lot of query
 				$lineage = CMS_tree::getLineage($page->getID(), $parsedPage->getID(), false, $public);
 				$replace['class="{{isParent}}"'] 	= (is_array($lineage) && in_array($parsedPage->getID(), $lineage)) ? 'class="CMS_parent"' : "";
@@ -184,7 +184,7 @@ class CMS_linxDisplay extends CMS_grandFather
 	  * @access public
 	  */
 	function getSubLevelOutput($html) {
-		if ($html && strpos($this->_subleveltemplate , "{{sublevel}}") !== false) {
+		if ($html && io::strpos($this->_subleveltemplate , "{{sublevel}}") !== false) {
 			$replace = array(
 				"{{sublevel}}" 	=> $html
 			);
@@ -241,7 +241,7 @@ class CMS_linxDisplay extends CMS_grandFather
 						"{{currentClass}}" 	=> ($parsedPage->getID() == $page->getID()) ? "CMS_current" : "",
 						'id="{{currentID}}"'=> ($parsedPage->getID() == $page->getID()) ? 'id="CMS_current"' : "",
 					);
-					if (strpos($this->_htmlTemplate,'{{isParent}}') !== false) {
+					if (io::strpos($this->_htmlTemplate,'{{isParent}}') !== false) {
 						//only if needed because getLineage require a lot of query
 						$pagelineage = CMS_tree::getLineage($page->getID(), $parsedPage->getID(), false);
                         $replace['class="{{isParent}}"'] = (is_array($pagelineage) && in_array($parsedPage->getID(), $pagelineage)) ? 'class="CMS_parent"' : "";
@@ -305,7 +305,7 @@ class CMS_linxDisplay extends CMS_grandFather
 			if ($level == 0 && ($this->_root === 'false' || !$this->_root)) {
 				$html = $levelhtml;
 			} else {
-				if ($levelhtml && strpos($this->_subleveltemplate , "{{sublevel}}") !== false) {
+				if ($levelhtml && io::strpos($this->_subleveltemplate , "{{sublevel}}") !== false) {
 					$replace = array(
 						"{{sublevel}}" 	=> $levelhtml,
 						"{{lvlClass}}" 	=> "CMS_lvl".($level+1),

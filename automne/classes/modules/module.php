@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: module.php,v 1.6 2009/06/05 15:02:19 sebastien Exp $
+// $Id: module.php,v 1.7 2009/10/22 16:30:02 sebastien Exp $
 
 /**
   * Class CMS_module
@@ -239,7 +239,7 @@ class CMS_module extends CMS_grandFather
 					$paramTags = $file->getElementsByTagName('param');
 					$moduleParameters[$this->_codename] = array();
 					foreach ($paramTags as $paramTag) {
-						$value = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? utf8_decode(trim($paramTag->nodeValue)) : trim($paramTag->nodeValue);
+						$value = (io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? utf8_decode(trim($paramTag->nodeValue)) : trim($paramTag->nodeValue);
 						if ($withType) {
 							$moduleParameters[$this->_codename][$paramTag->getAttribute("name")] = array($value, $paramTag->getAttribute("type"));
 						} else {
@@ -719,7 +719,7 @@ class CMS_module extends CMS_grandFather
 					"block" => array("selfClosed" => false, "parameters" => array("module"	=> $this->_codename)),
 				);
 			break;
-			case MODULE_TREATMENT_PAGECONTENT_TAGS :
+			case MODULE_TREATMENT_PAGEHEADER_TAGS :
 				$return["atm-css-tags"] = array("selfClosed" => true, "parameters" => array());
 				$return["atm-js-tags"] = array("selfClosed" => true, "parameters" => array());
 				$return["atm-meta-tags"] = array("selfClosed" => true, "parameters" => array());
@@ -813,11 +813,7 @@ class CMS_module extends CMS_grandFather
 					return $return;
 				}
 			break;
-			case MODULE_TREATMENT_PAGECONTENT_TAGS :
-				/*if (!is_a($treatedObject,"CMS_page")) {
-					$this->raiseError('$treatedObject must be a CMS_page object');
-					return false;
-				}*/
+			case MODULE_TREATMENT_PAGEHEADER_TAGS :
 				switch ($tag->getName()) {
 					case "atm-js-tags":
 					case "atm-css-tags":
@@ -932,7 +928,7 @@ class CMS_module extends CMS_grandFather
 		if (@is_dir(PATH_JS_FS.'/modules/'.$this->_codename)) {
 			try{
 				foreach ( new DirectoryIterator(PATH_JS_FS.'/modules/'.$this->_codename) as $file) {
-					if ($file->isFile() && substr($file->getFilename(), -3) == ".js") {
+					if ($file->isFile() && io::substr($file->getFilename(), -3) == ".js") {
 						$filename = str_replace($_SERVER['DOCUMENT_ROOT'], '', $file->getPathname());
 						$files[] = $filename;
 					}

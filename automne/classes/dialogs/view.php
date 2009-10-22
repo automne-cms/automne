@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: view.php,v 1.9 2009/06/29 10:23:26 sebastien Exp $
+// $Id: view.php,v 1.10 2009/10/22 16:30:01 sebastien Exp $
 
 /**
   * Class CMS_view
@@ -450,15 +450,30 @@ class CMS_view extends CMS_grandFather
 	  * @return string : the copyright to add
 	  * @access private
 	  */
-	private function _copyright()
-	{
+	private function _copyright() {
 		$copyright = "\n<!-- \n"
 		."+----------------------------------------------------------------------+\n"
-		."| Automne (TM) v".AUTOMNE_VERSION." www.automne.ws ".sprintf("%".(39 - strlen(AUTOMNE_VERSION))."s",  '')."|\n"
+		."| Automne (TM) v".AUTOMNE_VERSION." www.automne.ws ".sprintf("%".(39 - io::strlen(AUTOMNE_VERSION))."s",  '')."|\n"
 		."| Copyright (c) 2000-".date('Y')." WS Interactive www.ws-interactive.fr         |\n"
 		."+----------------------------------------------------------------------+\n"
 		."-->\n";
 		return $copyright;
+	}
+	
+	/**
+	  * Set interface secure. Check request is made from a valid Automne Ajax
+	  * Use http header
+	  *
+	  * @return string : the copyright to add
+	  * @access public
+	  */
+	function setSecure($secure = true) {
+		if ($secure === true) {
+			if (!isset($_SERVER['HTTP_X_POWERED_BY']) || $_SERVER['HTTP_X_POWERED_BY'] != 'Automne') {
+				$this->raiseError('Unautorized query on a secure interface : Query on '.$_SERVER['SCRIPT_NAME'].' - by '.@$_SERVER['HTTP_REFERER ']);
+				$this->show();
+			}
+		}
 	}
 	
 	/**
@@ -537,6 +552,7 @@ class CMS_view extends CMS_grandFather
 						'.CMS_view::getCSS().'
 						'.CMS_view::getJavascript().'
 					</head>';
+					//<meta http-equiv="X-UA-Compatible" content="chrome=1">
 			break;
 		}
 	}

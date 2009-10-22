@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: profileuserscatalog.php,v 1.3 2009/04/16 12:35:49 sebastien Exp $
+// $Id: profileuserscatalog.php,v 1.4 2009/10/22 16:30:28 sebastien Exp $
 
 /**
   * Class CMS_profile_usersCatalog
@@ -67,7 +67,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 				DESCRIBE profilesUsers dn_pru
 			";
 			$q = new CMS_query($sql);
-			if (!$q->getNumRows() || strtolower($q->getValue("Type")) != 'varchar(255)') {
+			if (!$q->getNumRows() || io::strtolower($q->getValue("Type")) != 'varchar(255)') {
 				$sqls[] = "
 					ALTER TABLE 
 						profilesUsers
@@ -216,25 +216,25 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 		$start = (int) $start;
 		$limit = (int) $limit;
 		$group = (int) $group;
-		$direction = (in_array(strtolower($direction), array('asc', 'desc'))) ? strtolower($direction) : 'asc';
+		$direction = (in_array(io::strtolower($direction), array('asc', 'desc'))) ? io::strtolower($direction) : 'asc';
 		$keywordsWhere = $letterWhere = $groupWhere = $orderBy = $orderClause = $idWhere = '';
 		$select = 'id_pru';
-		if (substr($search, 0, 5) == 'user:' && sensitiveIO::isPositiveInteger(substr($search, 5))) {
-			$idWhere = " and id_pru = '".sensitiveIO::sanitizeSQLString(substr($search, 5))."'";
+		if (io::substr($search, 0, 5) == 'user:' && sensitiveIO::isPositiveInteger(io::substr($search, 5))) {
+			$idWhere = " and id_pru = '".sensitiveIO::sanitizeSQLString(io::substr($search, 5))."'";
 			$search = '';
 		}
-		if (substr($search, 0, 6) == 'group:' && sensitiveIO::isPositiveInteger(substr($search, 6))) {
-			$group = substr($search, 6);
+		if (io::substr($search, 0, 6) == 'group:' && sensitiveIO::isPositiveInteger(io::substr($search, 6))) {
+			$group = io::substr($search, 6);
 			$search = '';
 		}
 		if ($search) {
 			//clean user keywords (never trust user input, user is evil)
 			$keyword = strtr($search, ",;", "  ");
 			$words=array();
-			$words=array_map("trim",array_unique(explode(" ", strtolower($keyword))));
+			$words=array_map("trim",array_unique(explode(" ", io::strtolower($keyword))));
 			$cleanedWords = array();
 			foreach ($words as $aWord) {
-				if ($aWord && $aWord!='' && strlen($aWord) >= 3) {
+				if ($aWord && $aWord!='' && io::strlen($aWord) >= 3) {
 					$aWord = str_replace(array('%','_'), array('\%','\_'), $aWord);
 					if (htmlentities($aWord) != $aWord) {
 						$cleanedWords[] = htmlentities($aWord);
@@ -258,7 +258,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 			$select .= " , MATCH (lastName_pru, firstName_pru, login_pru) AGAINST ('".sensitiveIO::sanitizeSQLString($search)."') as m ";
 			$keywordsWhere .= " or MATCH (lastName_pru, firstName_pru, login_pru) AGAINST ('".sensitiveIO::sanitizeSQLString($search)."') )";
 		}
-		if ($letter && strlen($letter) === 1) {
+		if ($letter && io::strlen($letter) === 1) {
 			$letterWhere = " and lastName_pru like '".sensitiveIO::sanitizeSQLString($letter)."%'";
 		}
 		if ($group) {

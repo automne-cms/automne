@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: item.php,v 1.6 2009/07/20 16:33:16 sebastien Exp $
+// $Id: item.php,v 1.7 2009/10/22 16:28:07 sebastien Exp $
 
 /**
   * PHP page : Load polymod item interface
@@ -46,6 +46,8 @@ define("MESSAGE_PAGE_SAVE_ERROR", 528);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 $winId = sensitiveIO::request('winId');
 $objectId = sensitiveIO::request('type', 'sensitiveIO::isPositiveInteger');
@@ -126,6 +128,14 @@ $fieldsObjects = $item->getFieldsObjects();
 $itemFields = '';
 foreach ($fieldsObjects as $fieldID => $aFieldObject) {
 	$fieldAdmin = $item->getHTMLAdmin($fieldID, $cms_language,'');
+	
+	$tmpFile = new CMS_file(PATH_TMP_FS.'/euro_'.md5(mt_rand().microtime()).'.tmp');
+	$tmpFile->setContent(print_r($fieldAdmin, true));
+	$tmpFile->writeTopersistence();
+			
+			
+	
+	
 	if (is_array($fieldAdmin)) {
 		$itemFields .= sensitiveIO::jsonEncode($fieldAdmin).',';
 	}
@@ -175,7 +185,7 @@ if ($object->isPrimaryResource()) {
 }
 
 //remove last comma
-$itemFields = substr($itemFields, 0, -1);
+$itemFields = io::substr($itemFields, 0, -1);
 
 $itemControler = PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/items-controler.php';
 

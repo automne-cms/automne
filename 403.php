@@ -1,10 +1,45 @@
+<?php
+/* vim: set expandtab tabstop=4 shiftwidth=4: */
+// +----------------------------------------------------------------------+
+// | Automne (TM)														  |
+// +----------------------------------------------------------------------+
+// | Copyright (c) 2000-2009 WS Interactive								  |
+// +----------------------------------------------------------------------+
+// | Automne is subject to version 2.0 or above of the GPL license.		  |
+// | The license text is bundled with this package in the file			  |
+// | LICENSE-GPL, and is available through the world-wide-web at		  |
+// | http://www.gnu.org/copyleft/gpl.html.								  |
+// +----------------------------------------------------------------------+
+// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// +----------------------------------------------------------------------+
+//
+// $Id: 403.php,v 1.2 2009/10/22 16:22:35 sebastien Exp $
+
+/**
+  * Automne 403 error handler
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &
+  */
+
+// *************************************************************************
+// ** REDIRECTION HANDLER. KEEP ALL THIS PHP CODE IN 403 ERROR DOCUMENT ! **
+// **     YOU CAN DEFINE YOUR OWN ERROR PAGE WITH THE FILE /403.html      **
+// *************************************************************************
+
+require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+
+//check for alternative 403 file and display it if any
+if (file_exists($_SERVER['DOCUMENT_ROOT'].'/403.html')) {
+	readfile($_SERVER['DOCUMENT_ROOT'].'/403.html');
+	exit;
+}
+//or display default Automne 403 page ...
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>Forbidden</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-	<meta name="author" content="WS Interactive" />
+	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo APPLICATION_DEFAULT_ENCODING; ?>" />
 	<style type="text/css">
 	body {
 		background-color: #FFFFFF;
@@ -33,9 +68,9 @@
 You do not have sufficient privileges to view this page ...<br /><br />
 <a href="/">Back to the Home Page</a><br /><br />
 <hr />
-403 Accès interdit.<br />
-Vous n'avez pas les droits d'accès suffisant pour voir cette page ...<br /><br />
-<a href="/">Retour à l'accueil</a><br /><br />
+403 Acc&egrave;s interdit.<br />
+Vous n'avez pas les droits d'acc&egrave;s suffisant pour voir cette page ...<br /><br />
+<a href="/">Retour &agrave; l'accueil</a><br /><br />
 </div>
 </body>
 </html>

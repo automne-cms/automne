@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: resource-controler.php,v 1.5 2009/06/23 09:11:15 sebastien Exp $
+// $Id: resource-controler.php,v 1.6 2009/10/22 16:26:26 sebastien Exp $
 
 /**
   * PHP page : Receive resource updates
@@ -34,6 +34,8 @@ define("MESSAGE_ERROR_ELEMENT_REALY_LOCKED",705);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_XML);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 $resourceId = sensitiveIO::request('resource', 'sensitiveIO::isPositiveInteger');
 $codename = sensitiveIO::request('module', CMS_modulesCatalog::getAllCodenames());

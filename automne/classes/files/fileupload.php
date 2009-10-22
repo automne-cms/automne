@@ -14,7 +14,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: fileupload.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: fileupload.php,v 1.2 2009/10/22 16:30:01 sebastien Exp $
 
 
 /**
@@ -128,7 +128,8 @@ class CMS_fileUpload extends CMS_grandFather
 	  * @param $value , the value to give
 	  */
 	function setAttribute($name, $value) {
-		eval('$this->_'.$name.' = $value ;');
+		$name = '_'.$name;
+		$this->$name = $value;
 		return true;
 	}
 	

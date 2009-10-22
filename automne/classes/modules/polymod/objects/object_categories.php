@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_categories.php,v 1.10 2009/07/23 10:53:25 sebastien Exp $
+// $Id: object_categories.php,v 1.11 2009/10/22 16:30:03 sebastien Exp $
 
 /**
   * Class CMS_object_categories
@@ -1079,14 +1079,14 @@ class CMS_object_categories extends CMS_object_common
 		//create recursive categories array
 		foreach ($viewvableCategoriesForProfile as $catID => $lineage) {
 			//this must be ^...;rootID;...$ or ^rootID;...$
-			if (strpos($lineage, ';'.$values['root'].';') !== false || strpos($lineage, $values['root'].';') === 0) {
+			if (io::strpos($lineage, ';'.$values['root'].';') !== false || io::strpos($lineage, $values['root'].';') === 0) {
 				$lineage = preg_replace('#^'.$rootLineage.';#','',$lineage);
-				$ln = 'if (!isset($nLevelArray['.str_replace(';','][',$lineage).'])) $nLevelArray['.str_replace(';','][',$lineage).'] =  array();';
+				$ln = sensitiveIO::sanitizeExecCommand('if (!isset($nLevelArray['.str_replace(';','][',$lineage).'])) $nLevelArray['.str_replace(';','][',$lineage).'] =  array();');
 				eval($ln);
 			}
 		}
 		//pr($nLevelArray);
-		if (is_array($nLevelArray) && $nLevelArray) {
+		if (isset($nLevelArray) && is_array($nLevelArray) && $nLevelArray) {
 			$return = $this->_createCategoriesTree($nLevelArray, $itemPattern, $templatePattern, $selectedPattern, $maxlevel, $selectedID);
 		}
 		return $return;

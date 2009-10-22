@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: form.php,v 1.2 2009/04/07 12:25:00 sebastien Exp $
+// $Id: form.php,v 1.3 2009/10/22 16:30:02 sebastien Exp $
 
 /**
   * Class CMS_forms_formular
@@ -166,7 +166,8 @@ class CMS_forms_formular extends CMS_grandFather {
 	 * @param $value , the value to give
 	 */
 	function setAttribute($name, $value) {
-		eval('$this->_'.$name.' = $value ;');
+		$name = '_'.$name;
+		$this->$name = $value;
 		return true;
 	}
 	
@@ -253,22 +254,23 @@ class CMS_forms_formular extends CMS_grandFather {
 			case self::ALLOW_FORM_SUBMIT :
 				//get fields
 				$fields = $this->getFields(true);
-				$referer = isset($_REQUEST['referer']) ? htmlspecialchars($_REQUEST['referer']) : null;
-				//add target and hidden fields
-				$source = preg_replace('#<form([^>]+)>#U', 
-				'<form action="'.$_SERVER["SCRIPT_NAME"].'?'.$_SERVER['QUERY_STRING'].'#formAnchor'.$this->getID().'" method="post" enctype="multipart/form-data"\1>'."\n".
-				'<input type="hidden" name="cms_action" value="validate" />'."\n".
-				'<input type="hidden" name="formID" value="'.$this->getID().'" />'."\n".
-				'<input type="hidden" name="referer" value="'.$referer.'" />'."\n"
-				, $source);
+				$referer = isset($_REQUEST['referer']) ? sensitiveIO::sanitizeHTMLString($_REQUEST['referer']) : null;
 				//and add already selected values (from $_POST global values)
-				$xml2Array = new CMS_xml2Array(str_replace('&', '&amp;',html_entity_decode($source)));
+				//$xml2Array = new CMS_xml2Array(str_replace('&', '&amp;',io::decodeEntities($source)));
+				$xml2Array = new CMS_xml2Array($source, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES | CMS_xml2Array::XML_CORRECT_ENTITIES);
 				//parse XHTML form content
 				$xmlArray = $xml2Array->getParsedArray();
 				//add already selected values
 				$this->_fillSelectedFormValues($xmlArray, $fields);
 				//then convert back into XHTML
 				$source = $xml2Array->toXML($xmlArray);
+				//add target and hidden fields
+				$source = preg_replace('#<form([^>]+)>#U', 
+				'<form action="'.$_SERVER["SCRIPT_NAME"].'?'.sensitiveIO::sanitizeHTMLString($_SERVER['QUERY_STRING']).'#formAnchor'.$this->getID().'" method="post" enctype="multipart/form-data"\1>'."\n".
+				'<input type="hidden" name="cms_action" value="validate" />'."\n".
+				'<input type="hidden" name="formID" value="'.$this->getID().'" />'."\n".
+				'<input type="hidden" name="referer" value="'.$referer.'" />'."\n"
+				, $source);
 				//pr(htmlspecialchars($source));
 			break;
 		}
@@ -299,7 +301,7 @@ class CMS_forms_formular extends CMS_grandFather {
 								//set current page ID as a parameter
 								$parameters['pageID'] = sensitiveIO::isPositiveInteger($mod_cms_forms['pageID']) ? $mod_cms_forms['pageID'] : 1;
 								//evaluate default value if needed
-								$fieldValue = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars($field->getAttribute('value')).'";');
+								$fieldValue = eval(sensitiveIO::sanitizeExecCommand('return "'.CMS_polymod_definition_parsing::preReplaceVars($field->getAttribute('value')).'";'));
 							}
 						}
 					}
@@ -314,11 +316,11 @@ class CMS_forms_formular extends CMS_grandFather {
 							}
 						break;
 						case 'textarea':
-							$definition[$key]['childrens']['0']['textnode'] = $fieldValue;
+							$definition[$key]['childrens']['0']['textnode'] = sensitiveIO::sanitizeHTMLString($fieldValue);
 						break;
 						case 'input':
 							if ($definition[$key]['attributes']['type'] == 'text') {
-								$definition[$key]['attributes']['value'] = $fieldValue;
+								$definition[$key]['attributes']['value'] = sensitiveIO::sanitizeHTMLString($fieldValue);
 							} elseif($definition[$key]['attributes']['type'] == 'checkbox') {
 								$definition[$key]['attributes']['checked'] = 'checked';
 							}
@@ -347,7 +349,8 @@ class CMS_forms_formular extends CMS_grandFather {
 		$replace = array(
 			'&' => '&amp;'
 		);
-		$xml2Array = new CMS_xml2Array(str_replace(array_keys($replace), $replace, html_entity_decode($source)));
+		//$xml2Array = new CMS_xml2Array(str_replace(array_keys($replace), $replace, io::decodeEntities($source)));
+		$xml2Array = new CMS_xml2Array($source, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES | CMS_xml2Array::XML_CORRECT_ENTITIES);
 		//parse XHTML form content
 		$xmlArray = $xml2Array->getParsedArray();
 		//add already selected values
@@ -396,7 +399,8 @@ class CMS_forms_formular extends CMS_grandFather {
 		$replace = array(
 			'&' => '&amp;'
 		);
-		$xml2Array = new CMS_xml2Array(str_replace(array_keys($replace), $replace, html_entity_decode($source)));
+		//$xml2Array = new CMS_xml2Array(str_replace(array_keys($replace), $replace, io::decodeEntities($source)));
+		$xml2Array = new CMS_xml2Array($source, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES | CMS_xml2Array::XML_CORRECT_ENTITIES);
 		//parse XHTML form content
 		$xmlArray = $xml2Array->getParsedArray();
 		//replace field
@@ -428,7 +432,8 @@ class CMS_forms_formular extends CMS_grandFather {
 							'&' => '&amp;'
 						);
 						//transform XHTML code to XML definition
-						$xmlArray = new CMS_xml2Array(str_replace(array_keys($replace), $replace, html_entity_decode($input)));
+						//$xmlArray = new CMS_xml2Array(str_replace(array_keys($replace), $replace, io::decodeEntities($input)));
+						$xmlArray = new CMS_xml2Array($input, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES | CMS_xml2Array::XML_CORRECT_ENTITIES);
 						//then replace field definition into current definition tag
 						$fieldDefinition = $xmlArray->getParsedArray();
 						$definition[$key] = $fieldDefinition[0];
@@ -438,6 +443,8 @@ class CMS_forms_formular extends CMS_grandFather {
 					if (sensitiveIO::isPositiveInteger($fieldId) && $field->getID() == $fieldId) {
 						//recreate encoded id
 						$definition[$key]['attributes']['for'] = $field->generateFieldIdDatas();
+						//remove old text node
+						unset($definition[$key]['childrens']);
 						//set new text node
 						$definition[$key]['childrens'][0]['textnode'] = $field->getAttribute('label');
 					}
@@ -465,7 +472,8 @@ class CMS_forms_formular extends CMS_grandFather {
 		$replace = array(
 			'&' => '&amp;'
 		);
-		$xml2Array = new CMS_xml2Array(str_replace(array_keys($replace), $replace, html_entity_decode($source)));
+		//$xml2Array = new CMS_xml2Array(str_replace(array_keys($replace), $replace, io::decodeEntities($source)));
+		$xml2Array = new CMS_xml2Array($source, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES | CMS_xml2Array::XML_CORRECT_ENTITIES);
 		//parse XHTML form content
 		$xmlArray = $xml2Array->getParsedArray();
 		//replace field
@@ -495,7 +503,8 @@ class CMS_forms_formular extends CMS_grandFather {
 						'&' => '&amp;'
 					);
 					//transform XHTML code to XML definition
-					$xmlArray = new CMS_xml2Array(str_replace(array_keys($replace), $replace, html_entity_decode($input)));
+					//$xmlArray = new CMS_xml2Array(str_replace(array_keys($replace), $replace, io::decodeEntities($input)));
+					$xmlArray = new CMS_xml2Array($input, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES | CMS_xml2Array::XML_CORRECT_ENTITIES);
 					//then replace field definition into current definition tag
 					$fieldDefinition = $xmlArray->getParsedArray();
 					$definition[$key] = $fieldDefinition[0];
@@ -506,7 +515,8 @@ class CMS_forms_formular extends CMS_grandFather {
 						'&' => '&amp;'
 					);
 					//transform XHTML code to XML definition
-					$xmlArray = new CMS_xml2Array(str_replace(array_keys($replace), $replace, html_entity_decode($label)));
+					//$xmlArray = new CMS_xml2Array(str_replace(array_keys($replace), $replace, io::decodeEntities($label)));
+					$xmlArray = new CMS_xml2Array($label, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES | CMS_xml2Array::XML_CORRECT_ENTITIES);
 					//then replace field definition into current definition tag
 					$fieldDefinition = $xmlArray->getParsedArray();
 					$definition[$key] = $fieldDefinition[0];

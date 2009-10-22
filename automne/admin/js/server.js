@@ -7,7 +7,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: server.js,v 1.2 2009/06/29 10:22:07 sebastien Exp $
+  * $Id: server.js,v 1.3 2009/10/22 16:27:19 sebastien Exp $
   */
 Automne.server = {
 	call: function (url, fcn, params, scope) {
@@ -34,7 +34,10 @@ Automne.server = {
 	//show loading spinner on server call
 	showSpinner: function (conn, options) {
 		if (!options.params || options.params.nospinner !== true) {
-			Ext.get('atm-server-call').show();
+			var spinner = Ext.get('atm-server-call');
+			if (spinner) {
+				spinner.show();
+			}
 		}
 		//log ajax call for IE
 		if (Ext.isIE || Ext.isSafari) {
@@ -44,7 +47,10 @@ Automne.server = {
 	//hide loading spinner after server call
 	hideSpinner: function (ajax, response, options) {
 		if (!Ext.Ajax.isLoading()) {
-			Ext.get('atm-server-call').hide();
+			var spinner = Ext.get('atm-server-call');
+			if (spinner) {
+				spinner.hide();
+			}
 		}
 		//check for return error
 		if (!(options && options.isUpload) && (

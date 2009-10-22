@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: filesManagement.php,v 1.3 2009/06/05 15:02:19 sebastien Exp $
+// $Id: filesManagement.php,v 1.4 2009/10/22 16:30:01 sebastien Exp $
 
 /**
   * Class CMS_file
@@ -208,7 +208,7 @@ class CMS_file extends CMS_grandFather
 	  */
 	function getExtension()
 	{
-		return strtolower(pathinfo($this->_name, PATHINFO_EXTENSION));
+		return io::strtolower(pathinfo($this->_name, PATHINFO_EXTENSION));
 	}
 	
 	/**
@@ -430,7 +430,7 @@ class CMS_file extends CMS_grandFather
 	{
 		if ($this->_exists) {
 			//if ($this->_type===self::TYPE_FILE) {
-				$right = (strlen($right) == 3) ? '0'.$right : $right;
+				$right = (io::strlen($right) == 3) ? '0'.$right : $right;
 				return @chmod($this->_name,octdec($right));
 			/*} elseif($this->_type==self::TYPE_DIRECTORY) {
 				return CMS_file::makeExecutable($this->_name);
@@ -458,7 +458,7 @@ class CMS_file extends CMS_grandFather
 	 */
 	function getFilePerms($file, $type="octal") 
 	{
-		return ($type=="octal") ? @fileperms($file) : substr(sprintf('%o',@fileperms($file)), -4);
+		return ($type=="octal") ? @fileperms($file) : io::substr(sprintf('%o',@fileperms($file)), -4);
 	}
 	
 	/**
@@ -646,13 +646,14 @@ class CMS_file extends CMS_grandFather
 	/**
 	 * function makeExecutable
 	 * Try to make a file executable if it's not the case
+	 * On windows platform, this function always return true.
 	 * @param string $f, the full filename of the file or dir
 	 * @return boolean true on success, false on failure
 	 * @static
 	 */
 	function makeExecutable($f)
 	{
-		if (function_exists('is_executable') && @is_executable($f)) {
+		if (APPLICATION_IS_WINDOWS || (function_exists('is_executable') && @is_executable($f))) {
 			return true;
 		} elseif (!function_exists('is_executable')) {
 			//assume we are on windows platform because this function does not exists before PHP5.0.0 (so files are always executable)
@@ -707,7 +708,7 @@ class CMS_file extends CMS_grandFather
 		if (@is_dir($file)) {
 			return CMS_file::makeExecutable($file);
 		} elseif(@is_file($file)) {
-			$right = (strlen($right) == 3) ? '0'.$right : $right;
+			$right = (io::strlen($right) == 3) ? '0'.$right : $right;
 			return @chmod($file,octdec($right));
 		} else {
 			CMS_grandFather::raiseError("Can't chmod file who does not exist : ".$file);
@@ -900,7 +901,7 @@ class CMS_file extends CMS_grandFather
 	function getMaxUploadFileSize($unit = 'M') {
 		$max = (int) (ini_get("upload_max_filesize") < ini_get("post_max_size")) ? ini_get("upload_max_filesize") : ini_get("post_max_size");
 		if ($unit == 'M') {
-			return substr($max, 0, -1);
+			return io::substr($max, 0, -1);
 		} elseif($unit == 'K') {
 			return $max * 1024;
 		}
@@ -965,7 +966,7 @@ class CMS_file extends CMS_grandFather
 		if (!isset($cache) || !($datas = $cache->load($id))) {
 			// datas cache missing so create it
 			foreach ($files as $file) {
-				$datas .= file_get_contents($file);
+				$datas .= file_get_contents($file)."\n";
 			}
 			//minimize JS files if needed
 			if (!SYSTEM_DEBUG && $contentType == 'text/javascript') {
@@ -996,6 +997,38 @@ class CMS_file extends CMS_grandFather
 		//send content
 		echo $datas;
 		exit;
+	}
+	
+	/**
+	  * Gzip a given file into another given file
+	  *
+	  * @param string $source : the file to gzip (FS relative)
+	  * @param string $dest : the destination file gzipped (FS relative)
+	  * @param integer $level : the level of compression to apply (0 to 9, default 6)
+	  * @return boolean true on success, fale on failure
+	  * @access public
+	  * @static
+	  */
+	function gzipfile ($source, $dest, $level = 6) {
+		if (!file_exists($source)) {
+			CMS_grandFather::raiseError('$source file to gzip does not exists : '.$source);
+			return false;
+		}
+		$error = false;
+		if($fp_out = gzopen($dest, 'wb'.((string) $level))){
+			if($fp_in = fopen($source, 'rb')){
+				while(!feof($fp_in)) {
+					gzwrite($fp_out, fread($fp_in,1024*512));
+				}
+				fclose($fp_in);
+			} else {
+				$error = true;
+			}
+			gzclose($fp_out);
+		} else {
+			$error = true;
+		}
+		return !$error;
 	}
 }
 ?>

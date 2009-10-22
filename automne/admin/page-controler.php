@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-controler.php,v 1.11 2009/07/20 16:33:15 sebastien Exp $
+// $Id: page-controler.php,v 1.12 2009/10/22 16:26:25 sebastien Exp $
 
 /**
   * PHP page : Receive pages updates
@@ -61,6 +61,8 @@ define("MESSAGE_PAGE_ACTION_DUPLICATION_DONE", 699);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_XML);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 $currentPage = sensitiveIO::request('currentPage', 'sensitiveIO::isPositiveInteger', $cms_context->getPageID());
 $field = sensitiveIO::request('field', '', '');

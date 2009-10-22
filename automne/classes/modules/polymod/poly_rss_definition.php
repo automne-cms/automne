@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_rss_definition.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: poly_rss_definition.php,v 1.2 2009/10/22 16:30:03 sebastien Exp $
 
 /**
   * Class CMS_poly_rss_definitions
@@ -159,7 +159,7 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 				return false;
 			}
 		} elseif ($valueName == 'link') {
-			if ($value && substr($value, 0, 4) != "http") {
+			if ($value && io::substr($value, 0, 4) != "http") {
 				$value = strip_tags('http://'.$value);
 			}
 		} else {
@@ -183,7 +183,7 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 		$parameters['module'] = CMS_poly_object_catalog::getModuleCodenameForObjectType($this->getValue('objectID'));
 		$parameters['objectID'] = $this->getValue('objectID');
 		$parameters['public'] = true;
-		$definitionParsing = new CMS_polymod_definition_parsing($this->_objectValues['definition'], true, CMS_polymod_definition_parsing::PARSE_MODE);
+		$definitionParsing = new CMS_polymod_definition_parsing($this->_objectValues['definition'], true, CMS_polymod_definition_parsing::PARSE_MODE, $parameters['module']);
 		$compiledDefinition = $definitionParsing->getContent(CMS_polymod_definition_parsing::OUTPUT_PHP, $parameters);
 		$this->_objectValues['compiledDefinition'] = $compiledDefinition;
 		$date = new CMS_date();

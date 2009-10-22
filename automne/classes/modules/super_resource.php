@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: super_resource.php,v 1.2 2009/03/02 11:28:31 sebastien Exp $
+// $Id: super_resource.php,v 1.3 2009/10/22 16:30:02 sebastien Exp $
 
 /**
   * General-purpose Class
@@ -1100,7 +1100,7 @@ class CMS_superResource extends CMS_resource
 	  */
 	function setExternalLink($url)
 	{
-		if (substr($url, 0, 4) == "http") {
+		if (io::substr($url, 0, 4) == "http") {
 			$this->_externalLink = $url;
 		} else {
 			$this->_externalLink = 'http://'.$url;

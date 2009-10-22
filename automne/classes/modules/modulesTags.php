@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modulesTags.php,v 1.2 2009/04/02 13:57:58 sebastien Exp $
+// $Id: modulesTags.php,v 1.3 2009/10/22 16:30:02 sebastien Exp $
 
 /**
   * Class CMS_modulesTags
@@ -86,6 +86,10 @@ class CMS_modulesTags extends CMS_grandFather
 		$this->_modules = CMS_modulesCatalog::getAll("id");
 		foreach ($this->_modules as $codename => $aModule) {
 			$moduleTreatment = $aModule->getWantedTags($this->_treatmentMode, $this->_visualizationMode, $this->_treatedObject);
+			if ($treatmentMode == MODULE_TREATMENT_PAGECONTENT_TAGS && isset($moduleTreatment['atm-meta-tags'])) {
+				$this->raiseError("Tag atm-meta-tags must be treated in MODULE_TREATMENT_PAGEHEADER_TAGS mode. Module ".$codename." try to use atm-meta-tags in MODULE_TREATMENT_PAGECONTENT_TAGS mode which is deprecated since Automne V4.0.0RC3. Edit file ".$codename.".php and change MODULE_TREATMENT_PAGECONTENT_TAGS by MODULE_TREATMENT_PAGEHEADER_TAGS in methods getWantedTags and treatWantedTag for tag atm-meta-tags");
+				unset($moduleTreatment['atm-meta-tags']);
+			}
 			if (is_array($moduleTreatment) && $moduleTreatment) {
 				//if module return tags, save it.
 				$this->_modulesTreatment[$codename] = $moduleTreatment;

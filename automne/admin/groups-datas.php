@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: groups-datas.php,v 1.2 2008/12/18 10:36:42 sebastien Exp $
+// $Id: groups-datas.php,v 1.3 2009/10/22 16:26:24 sebastien Exp $
 
 /**
   * PHP page : Load groups datas
@@ -31,6 +31,8 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_JSON);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 //get search vars
 $search = sensitiveIO::request('search');

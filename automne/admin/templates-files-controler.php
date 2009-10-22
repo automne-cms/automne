@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-files-controler.php,v 1.2 2009/06/22 14:10:33 sebastien Exp $
+// $Id: templates-files-controler.php,v 1.3 2009/10/22 16:26:27 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on modules categories
@@ -27,7 +27,7 @@
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 
 function checkNode($value) {
-	return $value != 'source' && strpos($value, '..') === false;
+	return $value != 'source' && io::strpos($value, '..') === false;
 }
 
 define("MESSAGE_PAGE_STYLESHEET", 1486);
@@ -52,6 +52,8 @@ $filelabel = sensitiveIO::request('filelabel');
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_JSON);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 //CHECKS user has module clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) {
@@ -87,7 +89,7 @@ if (!is_file($file) && $action != 'create') {
 	$view->show();
 }
 if ($action != 'create') {
-	$extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+	$extension = io::strtolower(pathinfo($file, PATHINFO_EXTENSION));
 	if (!isset($allowedFiles[$extension])) {
 		CMS_grandFather::raiseError('Action on this type of file is not allowed.');
 		$view->show();
@@ -123,7 +125,7 @@ switch ($action) {
 	case 'create':
 		if (is_dir($file)) {
 			if (!is_file($dir.$node.'/'.$filelabel)) {
-				$extension = strtolower(pathinfo($dir.$node.'/'.$filelabel, PATHINFO_EXTENSION));
+				$extension = io::strtolower(pathinfo($dir.$node.'/'.$filelabel, PATHINFO_EXTENSION));
 				if (isset($allowedFiles[$extension])) {
 					$file = new CMS_file($dir.$node.'/'.$filelabel);
 					if ($file->setContent($definition) && $file->writeToPersistence()) {

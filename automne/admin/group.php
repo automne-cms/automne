@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: group.php,v 1.4 2009/06/30 08:55:27 sebastien Exp $
+// $Id: group.php,v 1.5 2009/10/22 16:26:24 sebastien Exp $
 
 /**
   * PHP page : Load group detail window.
@@ -57,6 +57,9 @@ $groupId = sensitiveIO::request('groupId', 'sensitiveIO::isPositiveInteger', 'cr
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
+
 //check user rights
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
 	CMS_grandFather::raiseError('User has no users management rights ...');

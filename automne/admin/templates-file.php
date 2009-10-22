@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-file.php,v 1.4 2009/06/22 14:10:33 sebastien Exp $
+// $Id: templates-file.php,v 1.5 2009/10/22 16:26:27 sebastien Exp $
 
 /**
   * PHP page : Load print template window.
@@ -43,7 +43,7 @@ define("MESSAGE_TOOLBAR_HELP_DESC", 1494);
 define("MESSAGE_PAGE_DEFINITION", 1495);
 
 function checkNode($value) {
-	return $value != 'source' && strpos($value, '..') === false;
+	return $value != 'source' && io::strpos($value, '..') === false;
 }
 
 //Controler vars
@@ -55,6 +55,8 @@ $node = sensitiveIO::request('node', 'checkNode', '');
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 //CHECKS user has module clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) {
@@ -104,7 +106,7 @@ if (!is_file($file)) {
 } else {
 	//file edition
 	$fileCreation = false;
-	$extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+	$extension = io::strtolower(pathinfo($file, PATHINFO_EXTENSION));
 	if (!isset($allowedFiles[$extension])) {
 		CMS_grandFather::raiseError('Action on this type of file is not allowed.');
 		$view->show();

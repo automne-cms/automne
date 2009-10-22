@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: validations-controler.php,v 1.5 2009/07/20 16:33:16 sebastien Exp $
+// $Id: validations-controler.php,v 1.6 2009/10/22 16:26:28 sebastien Exp $
 
 /**
   * PHP controler : Receive validations actions
@@ -43,6 +43,8 @@ define("MESSAGE_PAGE_VALIDATION_MADE", 420);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_JSON);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 $action = sensitiveIO::request('action');
 $module = sensitiveIO::request('module');

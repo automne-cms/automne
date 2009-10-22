@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: formcategories.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: formcategories.php,v 1.2 2009/10/22 16:30:03 sebastien Exp $
 
 /**
   * Class CMS_forms_formularCategories
@@ -81,7 +81,8 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 			$this->raiseError("Object is public, read-only !");
 			return false;
 		}
-		eval('$this->_'.$name.' = $value ;');
+		$name = '_'.$name;
+		$this->$name = $value;
 		return true;
 	}
 	

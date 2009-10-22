@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-properties.php,v 1.9 2009/06/22 14:10:31 sebastien Exp $
+// $Id: page-properties.php,v 1.10 2009/10/22 16:26:25 sebastien Exp $
 
 /**
   * PHP page : Load page properties window.
@@ -122,6 +122,8 @@ define("MESSAGE_PAGE_INFORMATIONS", 702);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 $winId = sensitiveIO::request('winId', '', 'propertiesWindow');
 $currentPage = sensitiveIO::request('currentPage', 'sensitiveIO::isPositiveInteger', $cms_context->getPageID());

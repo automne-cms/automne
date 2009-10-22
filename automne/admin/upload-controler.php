@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: upload-controler.php,v 1.5 2009/06/05 15:01:05 sebastien Exp $
+// $Id: upload-controler.php,v 1.6 2009/10/22 16:26:27 sebastien Exp $
 
 /**
   * PHP controler : Receive upload files
@@ -69,7 +69,7 @@ if (!isset($_FILES["Filedata"]) || !is_uploaded_file($_FILES["Filedata"]["tmp_na
 }
 //move uploaded file (and rename it if needed)
 $originalFilename = $_FILES["Filedata"]["name"];
-if (strlen($originalFilename) > 255) {
+if (io::strlen($originalFilename) > 255) {
 	$originalFilename = sensitiveIO::ellipsis($originalFilename, 255, '-');
 }
 $count = 2;

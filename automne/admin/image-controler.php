@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: image-controler.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: image-controler.php,v 1.2 2009/10/22 16:26:24 sebastien Exp $
 
 /**
   * PHP controler : Receive upload files
@@ -37,6 +37,8 @@ define("MESSAGE_PAGE_LIB_GD_VERIF", 560);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_JSON);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 $width = sensitiveIO::request('width', 'sensitiveIO::isPositiveInteger', 0);
 $height = sensitiveIO::request('height', 'sensitiveIO::isPositiveInteger', 0);
@@ -71,7 +73,7 @@ switch($image->getExtension()) {
 			$view->show();
 		}
 		$simg = @imagecreatefromgif($image->getFilename());
-		$dest = substr($image->getFilename(), 0, -4).'.gif';
+		$dest = io::substr($image->getFilename(), 0, -4).'.gif';
 	break;
 	case 'jpg':
 		if (!function_exists('imagecreatefromjpeg')) {
@@ -91,7 +93,7 @@ switch($image->getExtension()) {
 			$view->show();
 		}
 		$simg = @imagecreatefrompng($image->getFilename());
-		$dest = substr($image->getFilename(), 0, -4).'.png';
+		$dest = io::substr($image->getFilename(), 0, -4).'.png';
 	break;
 	default:
 		CMS_grandFather::raiseError('unknown image type : '.$image->getExtension());

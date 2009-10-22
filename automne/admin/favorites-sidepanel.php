@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: favorites-sidepanel.php,v 1.4 2009/06/22 14:10:30 sebastien Exp $
+// $Id: favorites-sidepanel.php,v 1.5 2009/10/22 16:26:24 sebastien Exp $
 
 /**
   * PHP page : Load side panel favorites infos.
@@ -30,6 +30,8 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 define('MESSAGE_PAGE_NO_BOOKMARKS', 645);
 

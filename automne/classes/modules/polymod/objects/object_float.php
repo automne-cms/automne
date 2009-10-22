@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_float.php,v 1.4 2009/07/20 16:35:37 sebastien Exp $
+// $Id: object_float.php,v 1.5 2009/10/22 16:30:04 sebastien Exp $
 
 /**
   * Class CMS_object_float
@@ -134,7 +134,7 @@ class CMS_object_float extends CMS_object_string {
 		$params = $this->getParamsValues();
 		if ($values[$prefixName.$this->_field->getID().'_0']) {
 			//check string length parameter
-			if (strlen($values[$prefixName.$this->_field->getID().'_0']) > $params['maxLength']) {
+			if (io::strlen($values[$prefixName.$this->_field->getID().'_0']) > $params['maxLength']) {
 				return false;
 			}
 			//check if value is a negative number (if needed)
@@ -274,12 +274,13 @@ class CMS_object_float extends CMS_object_string {
 			$operator = false;
 		}
 		if (!$operator) {
-			return parent::getFieldSearchSQL($fieldID, $value, $operator, $where, $public);
+			$operator = '=';
+			$field = "value";
+		}else{
+			//if numeric comparison such as > or <, we have to transtype the string field
+			$field = "CAST(value AS SIGNED)";
 		}
 		$statusSuffix = ($public) ? "_public":"_edited";
-
-		//if numeric comparison such as > or <, we have to transtype the string field
-		$field = "CAST(value AS SIGNED)";
 		
 		$sql = "
 		select

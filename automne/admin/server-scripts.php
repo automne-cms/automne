@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: server-scripts.php,v 1.5 2009/06/22 14:10:32 sebastien Exp $
+// $Id: server-scripts.php,v 1.6 2009/10/22 16:26:26 sebastien Exp $
 
 /**
   * PHP page : Load server detail window.
@@ -59,6 +59,8 @@ define("MESSAGE_PAGE_QUEUE_DETAIL",793);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 //CHECKS user has scripts admin clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES)) {

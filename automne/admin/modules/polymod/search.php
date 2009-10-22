@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: search.php,v 1.4 2009/06/22 15:36:16 sebastien Exp $
+// $Id: search.php,v 1.5 2009/10/22 16:28:08 sebastien Exp $
 
 /**
   * PHP page : Load polyobjects items datas
@@ -31,6 +31,8 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_JSON);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 //get search vars
 $objectId = sensitiveIO::request('objectId', 'sensitiveIO::isPositiveInteger');

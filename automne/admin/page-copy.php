@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-copy.php,v 1.5 2009/06/22 14:10:31 sebastien Exp $
+// $Id: page-copy.php,v 1.6 2009/10/22 16:26:25 sebastien Exp $
 
 /**
   * PHP page : Load copy-page window.
@@ -48,6 +48,8 @@ define("MESSAGE_PAGE_REPLACE_TEMPLATE_DESC",700);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 $winId = sensitiveIO::request('winId', '', 'copyPageWindow');
 $currentPage = sensitiveIO::request('currentPage', 'sensitiveIO::isPositiveInteger');

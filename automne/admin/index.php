@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: index.php,v 1.9 2009/06/22 14:10:30 sebastien Exp $
+// $Id: index.php,v 1.10 2009/10/22 16:26:24 sebastien Exp $
 
 /**
   * PHP page : index
@@ -50,9 +50,9 @@ if (SYSTEM_DEBUG) {
 }
 //set needed JS files
 if (SYSTEM_DEBUG) {
-	$jsfiles = array('ext','debug','codemirror','main','launch');
+	$jsfiles = array('ext','debug','codemirror','main');
 } else {
-	$jsfiles = array('ext','codemirror','main','launch');
+	$jsfiles = array('ext','codemirror','main');
 }
 
 //set title
@@ -64,7 +64,7 @@ $content = '
 	<div class="atm-loading-indicator">'.$language->getMessage(MESSAGE_PAGE_LOADING).'</div>
 	<noscript class="atm-alert">You must have Javascript enabled to access Automne.<hr />Vous devez avoir Javascript actif pour accéder à Automne.</noscript>
 </div>
-'.CMS_view::getJavascript($jsfiles);
+'.CMS_view::getJavascript($jsfiles).CMS_view::getJavascript(array('launch'));
 if (isset($_REQUEST["cms_action"]) && $_REQUEST["cms_action"] == 'logout') {
 	//append logout info
 	$content .= '<script type="text/javascript">Automne.logout = true;</script>';

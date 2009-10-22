@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: block-text.js,v 1.6 2009/07/23 15:27:18 sebastien Exp $
+  * $Id: block-text.js,v 1.7 2009/10/22 16:27:51 sebastien Exp $
   */
 Automne.blockText = Ext.extend(Automne.block, {
 	blockClass:	'CMS_block_text',
@@ -69,7 +69,11 @@ Automne.blockText = Ext.extend(Automne.block, {
 		}, this);
 		//if we do not have stylesheet for this block, create it
 		if(!this.stylesheet) {
-			var styleEl = dh.append(this.elements.first(), {tag:'div'}, true);
+			try {
+				var styleEl = dh.append(this.elements.first(), {tag:'div'}, true);
+			} catch(e) {
+				var styleEl = dh.append(this.elements.first().parent(), {tag:'div'}, true);
+			}
 			styleEl.setVisibilityMode(Ext.Element.DISPLAY);
 			styleEl.hide();
 			var tagList = ['b', 'strong', 'i', 'em', {tag:'a', href:'/', html:'text'}, 'p', {tag:'ul', children:[{tag:'li'}]}, {tag:'ol', children:[{tag:'li'}]}, 'span', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'img', 'small', 'abbr', 'acronym', 'blockquote', 'cite', 'code'];

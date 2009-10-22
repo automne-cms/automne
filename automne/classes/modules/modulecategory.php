@@ -14,7 +14,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: modulecategory.php,v 1.5 2009/06/23 09:11:28 sebastien Exp $
+// $Id: modulecategory.php,v 1.6 2009/10/22 16:30:02 sebastien Exp $
 
 /**
   * Class CMS_moduleCategory
@@ -203,7 +203,8 @@ class CMS_moduleCategory extends CMS_grandFather {
 	  * @param $value , the value to give
 	  */
 	function setAttribute($name, $value) {
-		eval('$this->_'.$name.' = $value ;');
+		$name = '_'.$name;
+		$this->$name = $value;
 		return true;
 	}
 	

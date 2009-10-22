@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: toolbar.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: toolbar.php,v 1.2 2009/10/22 16:30:01 sebastien Exp $
 
 /**
   * Class CMS_wysiwyg_toolbar
@@ -260,7 +260,7 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 	  * @access public
 	  */
 	function setCode($code) {
-		$this->_code = substr(sensitiveIO::sanitizeAsciiString($code),0,20);
+		$this->_code = io::substr(sensitiveIO::sanitizeAsciiString($code),0,20);
 		return true;
 	}
 	
@@ -323,7 +323,7 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 		$count = 0;
 		foreach ($this->_toolbarElements as $toolbarElement) {
 			if (isset($availableElements[$toolbarElement])) {
-				if (substr($toolbarElement, 0, 9) != 'Separator') {
+				if (io::substr($toolbarElement, 0, 9) != 'Separator') {
 					$definition .= ($count) ? ',':'';
 					$definition .= '\''.$toolbarElement.'\'';
 					$count++;

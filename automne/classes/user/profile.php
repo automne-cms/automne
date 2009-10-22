@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: profile.php,v 1.5 2009/06/05 15:02:17 sebastien Exp $
+// $Id: profile.php,v 1.6 2009/10/22 16:30:27 sebastien Exp $
 
 /**
   * Class CMS_Profile
@@ -306,7 +306,7 @@ class CMS_profile extends CMS_grandFather
 	
 	/**
 	  * Has Administration Access
-	  * Need an admin clearance or a validation clearance or a page edition clearance or a module admin clearance
+	  * Need an admin clearance or a page edition clearance or a module admin clearance
 	  *
 	  * @param  integer $clearance clearance to test for
 	  * @return boolean
@@ -314,7 +314,7 @@ class CMS_profile extends CMS_grandFather
 	  */
 	function hasAdminAccess()
 	{
-		return $this->_adminClearance || $this->hasValidationClearance() || $this->hasEditablePages() || $this->hasEditableModules();
+		return $this->_adminClearance || /*$this->hasValidationClearance() ||*/ $this->hasEditablePages() || $this->hasEditableModules();
 	}
 	
 	/**
@@ -1465,7 +1465,7 @@ class CMS_profile extends CMS_grandFather
 				$lineage = CMS_moduleCategories_catalog::getLineageOfCategoryAsString($catID);
 				$lineageArray[$catID] = $lineage;
 				//then create n level table
-				$ln = 'if (!isset($nLevelArray['.str_replace(';','][',$lineage).'])) $nLevelArray['.str_replace(';','][',$lineage).'] =  array();';
+				$ln = sensitiveIO::sanitizeExecCommand('if (!isset($nLevelArray['.str_replace(';','][',$lineage).'])) $nLevelArray['.str_replace(';','][',$lineage).'] =  array();');
 				eval($ln);
 			}
 			$filteredCategories = $this->_filterModuleCategoriesClearanceRecursion($nLevelArray, $matchingCats, $deniedCats, false);

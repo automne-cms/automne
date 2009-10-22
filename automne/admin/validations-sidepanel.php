@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: validations-sidepanel.php,v 1.4 2009/03/02 11:25:15 sebastien Exp $
+// $Id: validations-sidepanel.php,v 1.5 2009/10/22 16:26:28 sebastien Exp $
 
 /**
   * PHP page : Load side panel validations infos.
@@ -34,6 +34,8 @@ define("MESSAGE_PAGE_NO_VALIDATIONS_PENDING", 1113);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 $content = '';
 

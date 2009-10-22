@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: user.php,v 1.4 2009/06/30 08:55:27 sebastien Exp $
+// $Id: user.php,v 1.5 2009/10/22 16:26:28 sebastien Exp $
 
 /**
   * PHP page : Load user detail window.
@@ -75,6 +75,9 @@ $userId = sensitiveIO::request('userId', 'sensitiveIO::isPositiveInteger', 'crea
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
+
 //check user rights
 if ($cms_user->getUserId() != $userId && !$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
 	CMS_grandFather::raiseError('User has no users management rights ...');
@@ -163,11 +166,11 @@ foreach ($alerts as $codename => $modAlerts) {
 		},";
 	}
 	//remove last comma
-	$alertsPanel = substr($alertsPanel,0,-1);
+	$alertsPanel = io::substr($alertsPanel,0,-1);
 	$alertsPanel .= ']},';
 }
 //remove last comma
-$alertsPanel = substr($alertsPanel,0,-1);
+$alertsPanel = io::substr($alertsPanel,0,-1);
 //disable user infos fields if LDAP is active and user has no user edition rights
 $disableUserInfosFields = (APPLICATION_LDAP_AUTH && $user->getDN() && !$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) ? 'disabled:true,':'';
 //disable login field for root and anonymous users

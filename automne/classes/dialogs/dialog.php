@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: dialog.php,v 1.4 2009/04/10 15:22:02 sebastien Exp $
+// $Id: dialog.php,v 1.5 2009/10/22 16:30:01 sebastien Exp $
 
 /**
   * Class CMS_dialog
@@ -890,7 +890,7 @@ class CMS_dialog extends CMS_JSDialog
 									'/' => '_',
 									'.php' => ''
 								);
-								if (strpos($_SERVER["SCRIPT_NAME"], '/polymod/') !== false
+								if (io::strpos($_SERVER["SCRIPT_NAME"], '/polymod/') !== false
 									&& isset($_REQUEST['polymod'])) {
 									$replace['polymod'] = $_REQUEST['polymod'];
 								}
@@ -958,7 +958,7 @@ class CMS_dialog extends CMS_JSDialog
 			<br /><table width="100%" border="0" cellpadding="0" cellspacing="0">
 			<tr>';
 			if ($picto) {
-				$picto = (strpos($picto,'<img')) ? $picto:'<img src="' .PATH_ADMIN_IMAGES_WR ."/../v3/img/". $picto. '" border="0" />';
+				$picto = (io::strpos($picto,'<img')) ? $picto:'<img src="' .PATH_ADMIN_IMAGES_WR ."/../v3/img/". $picto. '" border="0" />';
 				$design .= '<td rowspan="2">'.$picto.'</td><td rowspan="2"><img src="' .PATH_ADMIN_IMAGES_WR .'/pix_trans.gif" width="5" height="1" border="0" /></td>';
 			}
 				$design .= '<td><span class="' .$class. '">' .$title.'</span>';
@@ -975,7 +975,7 @@ class CMS_dialog extends CMS_JSDialog
 			break ;
 		case "admin_h2" :
 			if ($picto) {
-				$picto = (strpos(base64_decode($picto),'<img')) ? base64_decode($picto):'<img src="' .PATH_ADMIN_IMAGES_WR ."/../v3/img/". $picto. '" border="0" />';
+				$picto = (io::strpos(base64_decode($picto),'<img')) ? base64_decode($picto):'<img src="' .PATH_ADMIN_IMAGES_WR ."/../v3/img/". $picto. '" border="0" />';
 			}
 			$img_td= ($picto) ? '<td bgcolor="#FFFFFF" rowspan="2" valign="top" height="22">'.$picto.'</td><td rowspan="2"><img src="' .PATH_ADMIN_IMAGES_WR .'/../v3/img/pix_trans.gif" width="5" height="1" border="0" /></td>':"" ;
 			$title = ($picto) ? $title : '> '.$title;
@@ -1062,7 +1062,11 @@ class CMS_dialog extends CMS_JSDialog
 				}
 				$paramsTags = $domdocument->getElementsByTagName('dialog-title');
 				foreach ($paramsTags as $paramTag) {
-					$param_value = $this->_getTitleDesign(utf8_decode($paramTag->textContent), $paramTag->getAttribute("type"));
+					if (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
+						$param_value = $this->_getTitleDesign(utf8_decode($paramTag->textContent), $paramTag->getAttribute("type"));
+					} else {
+						$param_value = $this->_getTitleDesign($paramTag->textContent, $paramTag->getAttribute("type"));
+					}
 				}
 				$datas = str_replace($regs[0], $param_value, $datas);
 			} else {

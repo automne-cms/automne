@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object_field.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: poly_object_field.php,v 1.2 2009/10/22 16:30:04 sebastien Exp $
 
 /**
   * Class CMS_poly_object_field
@@ -221,8 +221,8 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 				$item->setField($this);
 				return $item;
 			}
-		} elseif(strpos($this->_objectFieldValues['type'],'multi|') !== false) {
-			return new CMS_multi_poly_object(substr($this->_objectFieldValues['type'],6),array(), $this, $public);
+		} elseif(io::strpos($this->_objectFieldValues['type'],'multi|') !== false) {
+			return new CMS_multi_poly_object(io::substr($this->_objectFieldValues['type'],6),array(), $this, $public);
 		} else {
 			return new $this->_objectFieldValues['type'](array(), $this, $public);
 		}

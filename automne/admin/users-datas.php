@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: users-datas.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: users-datas.php,v 1.2 2009/10/22 16:26:28 sebastien Exp $
 
 /**
   * PHP page : Load users datas
@@ -31,6 +31,9 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_JSON);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
+
 //get search vars
 $search = sensitiveIO::request('search');
 $letter = sensitiveIO::request('letter');

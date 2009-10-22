@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: moduleclientspace.php,v 1.2 2009/03/02 11:28:30 sebastien Exp $
+// $Id: moduleclientspace.php,v 1.3 2009/10/22 16:30:02 sebastien Exp $
 
 /**
   * Class CMS_moduleClientspace
@@ -92,14 +92,17 @@ class CMS_moduleClientspace extends CMS_grandFather
 	function getClientspaceData($codename, &$language, &$page, $visualizationMode)
 	{
 		// Prints wanted template
-		$tpl_name = "mod_".$codename."_".strtolower($this->_attributes["type"]).".php";
+		$tpl_name = "mod_".$codename."_".io::strtolower($this->_attributes["type"]).".php";
 		if (!is_file(PATH_TEMPLATES_FS."/".$tpl_name)) {
 			$this->raiseError("Not a valid file founded : ".$tpl_name);
 			return false;
 		} else {
 			$data = $this->_parseTemplateForParameters($tpl_name);
 		}
-		
+		//make sure all template caracters are in UTF-8
+		if (strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8') {
+			$data = mb_convert_encoding($data, 'UTF-8', 'ISO-8859-1');
+		}
 		// Add attributes
 		// Foreach attribute, adds a line to $data, after first php tag
 		if (is_array($this->_attributes) && $this->_attributes) {
@@ -113,8 +116,9 @@ class CMS_moduleClientspace extends CMS_grandFather
 			$data = 
 				'<?php'."\n".
 				'$mod_'.$codename.' = array();'."\n".
-				$attrs."\n".
-				substr(trim($data), 5, strlen($data));
+				$attrs.
+				'?>'."\n".
+				$data;
 		}
 		return $data;
 	}

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: polymod.php,v 1.8 2009/07/20 16:35:36 sebastien Exp $
+// $Id: polymod.php,v 1.9 2009/10/22 16:30:02 sebastien Exp $
 
 /**
   * Class CMS_polymod
@@ -174,24 +174,22 @@ class CMS_polymod extends CMS_modulePolymodValidation
 								$parameters['selection'] = '';
 							} else {
 								$hasSelection = preg_match('#<!--(.*)-->#s', $tag->getInnerContent(), $matches);
-								$parameters['selection'] = html_entity_decode($hasSelection ? $matches[1] : $tag->getInnerContent());
-								//$parameters['selection'] = html_entity_decode($tag->getInnerContent());
+								$parameters['selection'] = io::decodeEntities($hasSelection ? $matches[1] : $tag->getInnerContent());
+								//$parameters['selection'] = io::decodeEntities($tag->getInnerContent());
 							}
 
 							$tagContent =
 							'<?php $parameters = '.var_export($parameters, true).';'."\n".
-							substr($definition,5);
+							io::substr($definition,5);
 							//save in global var the page ID who need this module so we can add the header code later.
-							CMS_module::moduleUsage($treatedObject->getID(), $this->_codename, true);
+							CMS_module::moduleUsage($treatedObject->getID(), $this->_codename, array('block' => true));
 						}
 						return $tagContent;
 					break;
-					case 'atm-meta-tags':
-					case 'atm-js-tags':
-					case 'atm-css-tags':
-						return parent::treatWantedTag($tag, $tagContent, $treatmentMode, $visualizationMode, $treatedObject, $treatmentParameters);
-					break;
 				}
+			break;
+			case MODULE_TREATMENT_PAGEHEADER_TAGS :
+				return parent::treatWantedTag($tag, $tagContent, $treatmentMode, $visualizationMode, $treatedObject, $treatmentParameters);
 			break;
 			case MODULE_TREATMENT_WYSIWYG_INNER_TAGS :
 				switch ($tag->getName()) {
@@ -211,9 +209,9 @@ class CMS_polymod extends CMS_modulePolymodValidation
 							if ($selectedPlugin->needSelection()) {
 								$hasSelection = preg_match('#<!--(.*)-->#s', $tag->getInnerContent(), $matches);
 								$selectedText = $hasSelection ? $matches[1] : $tag->getInnerContent();
-								$tagContent = '<span id="polymod-'.$selectedPluginID.'-'.$selectedItem.'" class="polymod" title="'.htmlspecialchars($selectedPlugin->getLabel($cms_language).' : '.$item->getLabel($cms_language)).'">'.$selectedText.'</span>';
+								$tagContent = '<span id="polymod-'.$selectedPluginID.'-'.$selectedItem.'" class="polymod" title="'.htmlspecialchars($selectedPlugin->getLabel($cms_language).' : '.trim($item->getLabel($cms_language))).'">'.$selectedText.'</span>';
 							} else {
-								$tagContent = '<span id="polymod-'.$selectedPluginID.'-'.$selectedItem.'" class="polymod" title="'.htmlspecialchars($selectedPlugin->getLabel($cms_language).' : '.$item->getLabel($cms_language)).'">'.CMS_poly_definition_functions::pluginCode($selectedPluginID, $selectedItem, '', ($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC) ? true : false, true).'</span>';
+								$tagContent = '<span id="polymod-'.$selectedPluginID.'-'.$selectedItem.'" class="polymod" title="'.htmlspecialchars($selectedPlugin->getLabel($cms_language).' : '.trim($item->getLabel($cms_language))).'">'.CMS_poly_definition_functions::pluginCode($selectedPluginID, $selectedItem, '', ($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC) ? true : false, true).'</span>';
 							}
 						}
 						//encode all ampersand without reencode already encoded ampersand
@@ -491,9 +489,9 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			foreach ($matches as $variable) {
 				$replacedValue1 = preg_replace("#\{([^|}]+)[^}]*\}}?#", '\1', $variable);
 				if (isset($convertionTable[$replacedValue1])) {
-					if (strpos($variable, '|') !== false) {
+					if (io::strpos($variable, '|') !== false) {
 						$replacedValue2 = preg_replace("#[^|]+\|([^|]+)\}#U", '\1', $variable);
-						$replace[$variable] = '{' . $convertionTable[$replacedValue1] . '|'. ((strpos($replacedValue2, '{') !== false && $convertionTable[substr($replacedValue2,1,-1)]) ? '{'.$convertionTable[substr($replacedValue2,1,-1)].'}' : $replacedValue2) . '}';
+						$replace[$variable] = '{' . $convertionTable[$replacedValue1] . '|'. ((io::strpos($replacedValue2, '{') !== false && $convertionTable[io::substr($replacedValue2,1,-1)]) ? '{'.$convertionTable[io::substr($replacedValue2,1,-1)].'}' : $replacedValue2) . '}';
 					} else {
 						$replace[$variable] = '{' . $convertionTable[$replacedValue1] . '}';
 					}
@@ -638,14 +636,14 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			);
 		}
 		$file = '';
-		if (isset($classes[strtolower($classname)])) {
-			$file = $classes[strtolower($classname)];
-		} elseif (strpos($classname, 'CMS_object_') === 0 //polymod objects lazy loading
-					&& file_exists(PATH_MODULES_FS.'/polymod/objects/object_'.substr($classname,11).'.php')) {
-			$file = PATH_MODULES_FS.'/polymod/objects/object_'.substr($classname,11).'.php';
-		} elseif (strpos($classname, 'CMS_subobject_') === 0 //polymod subobjects lazy loading
-					&& file_exists(PATH_MODULES_FS.'/polymod/subobjects/subobject_'.substr($classname,14).'.php')) {
-			$file = PATH_MODULES_FS.'/polymod/subobjects/subobject_'.substr($classname,14).'.php';
+		if (isset($classes[io::strtolower($classname)])) {
+			$file = $classes[io::strtolower($classname)];
+		} elseif (io::strpos($classname, 'CMS_object_') === 0 //polymod objects lazy loading
+					&& file_exists(PATH_MODULES_FS.'/polymod/objects/object_'.io::substr($classname,11).'.php')) {
+			$file = PATH_MODULES_FS.'/polymod/objects/object_'.io::substr($classname,11).'.php';
+		} elseif (io::strpos($classname, 'CMS_subobject_') === 0 //polymod subobjects lazy loading
+					&& file_exists(PATH_MODULES_FS.'/polymod/subobjects/subobject_'.io::substr($classname,14).'.php')) {
+			$file = PATH_MODULES_FS.'/polymod/subobjects/subobject_'.io::substr($classname,14).'.php';
 		}
 		return $file;
 	}

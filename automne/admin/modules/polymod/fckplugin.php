@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: fckplugin.php,v 1.4 2009/07/20 16:33:16 sebastien Exp $
+// $Id: fckplugin.php,v 1.5 2009/10/22 16:28:07 sebastien Exp $
 
 /**
   * PHP page : Load module backend window
@@ -35,6 +35,8 @@ define("MESSAGE_PAGE_TAB_DISABLED_NO_SELECT_TEXT", 524);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 $winId = sensitiveIO::request('winId');
 $id = sensitiveIO::request('id');

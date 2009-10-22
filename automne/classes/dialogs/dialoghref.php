@@ -15,7 +15,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: dialoghref.php,v 1.2 2009/06/05 15:02:19 sebastien Exp $
+// $Id: dialoghref.php,v 1.3 2009/10/22 16:30:01 sebastien Exp $
 
 /**
   * Class CMS_dialog_href
@@ -225,7 +225,7 @@ class CMS_dialog_href extends CMS_grandFather
 					$fileprefix = ($fieldID) ? 'r'.$resourceID."_f".$fieldID."_" : 'r'.$resourceID."_";
 				break;
 			}
-			if ($datas[3] && strpos($datas[3], PATH_UPLOAD_WR.'/') !== false) {
+			if ($datas[3] && io::strpos($datas[3], PATH_UPLOAD_WR.'/') !== false) {
 				//move and rename uploaded file 
 				$datas[3] = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $datas[3]);
 				$basename = pathinfo($datas[3], PATHINFO_BASENAME);

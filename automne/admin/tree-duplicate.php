@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: tree-duplicate.php,v 1.2 2009/06/22 14:10:33 sebastien Exp $
+// $Id: tree-duplicate.php,v 1.3 2009/10/22 16:26:27 sebastien Exp $
 
 /**
   * PHP page : Load duplicate branch backend window
@@ -39,6 +39,8 @@ define("MESSAGE_PAGE_DUPLICATION_CONFIRM", 1529);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 $winId = sensitiveIO::request('winId');
 

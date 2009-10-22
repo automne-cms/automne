@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: validations-datas.php,v 1.2 2009/06/22 14:10:33 sebastien Exp $
+// $Id: validations-datas.php,v 1.3 2009/10/22 16:26:28 sebastien Exp $
 
 /**
   * PHP page : Load validations pending for given module and editions
@@ -35,6 +35,9 @@ define("MESSAGE_PAGE_VALIDATION_PENDING", 338);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_JSON);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
+
 //get current editions and module
 $editions = sensitiveIO::request('editions', 'sensitiveIO::isPositiveInteger');
 $module = sensitiveIO::request('module', 'sensitiveIO::sanitizeAsciiString');

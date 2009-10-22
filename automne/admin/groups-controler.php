@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: groups-controler.php,v 1.2 2009/06/22 14:10:30 sebastien Exp $
+// $Id: groups-controler.php,v 1.3 2009/10/22 16:26:24 sebastien Exp $
 
 /**
   * PHP controler : Receive users actions
@@ -63,6 +63,9 @@ $admin = sensitiveIO::request('admin', '', array());
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_JSON);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
+
 //check user rights
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
 	CMS_grandFather::raiseError('User has no users management rights ...');

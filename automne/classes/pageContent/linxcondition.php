@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: linxcondition.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: linxcondition.php,v 1.2 2009/10/22 16:30:05 sebastien Exp $
 
 /**
   * Class CMS_linxCondition
@@ -87,7 +87,7 @@ class CMS_linxCondition extends CMS_grandFather
 		$operator = $tag->getAttribute('operator');
 		if (SensitiveIO::isInSet($property, $authorized_properties)) {
 			$this->_pageProperty = $property;
-			$this->_operator = html_entity_decode(html_entity_decode(html_entity_decode($operator)));
+			$this->_operator = io::decodeEntities(io::decodeEntities(io::decodeEntities($operator)));
 			$values = $tag->getElementsByTagName('value');
 			if ($values->length > 0) {
 				$value = $values->item(0);

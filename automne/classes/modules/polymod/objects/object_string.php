@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_string.php,v 1.3 2009/07/20 16:35:37 sebastien Exp $
+// $Id: object_string.php,v 1.4 2009/10/22 16:30:04 sebastien Exp $
 
 /**
   * Class CMS_object_string
@@ -214,7 +214,7 @@ class CMS_object_string extends CMS_object_common
 		$params = $this->getParamsValues();
 		if ($values[$prefixName.$this->_field->getID().'_0']) {
 			//check string length parameter
-			if (strlen($values[$prefixName.$this->_field->getID().'_0']) > $params['maxLength']) {
+			if (io::strlen($values[$prefixName.$this->_field->getID().'_0']) > $params['maxLength']) {
 				return false;
 			}
 			//check if value is a valid email (if needed)

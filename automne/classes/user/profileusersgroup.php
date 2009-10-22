@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: profileusersgroup.php,v 1.3 2009/07/20 16:35:38 sebastien Exp $
+// $Id: profileusersgroup.php,v 1.4 2009/10/22 16:30:28 sebastien Exp $
 
 /**
   * Class CMS_profile_usersGroup
@@ -567,7 +567,7 @@ class CMS_profile_usersGroup extends CMS_profile
 				DESCRIBE profilesUsers dn_pru
 			";
 			$q = new CMS_query($sql);
-			if (!$q->getNumRows() || strtolower($q->getValue("Type")) != 'varchar(255)') {
+			if (!$q->getNumRows() || io::strtolower($q->getValue("Type")) != 'varchar(255)') {
 				$sqls = array();
 				$sqls[] = "
 					ALTER TABLE 
@@ -589,7 +589,7 @@ class CMS_profile_usersGroup extends CMS_profile
 				DESCRIBE profilesUsersGroups dn_prg
 			";
 			$q = new CMS_query($sql);
-			if (!$q->getNumRows() || strtolower($q->getValue("Type")) != 'varchar(255)') {
+			if (!$q->getNumRows() || io::strtolower($q->getValue("Type")) != 'varchar(255)') {
 				$sqls = array();
 				$sqls[] = "
 					ALTER TABLE

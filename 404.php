@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 404.php,v 1.4 2009/07/20 16:29:38 sebastien Exp $
+// $Id: 404.php,v 1.5 2009/10/22 16:22:35 sebastien Exp $
 
 /**
   * Automne 404 error handler
@@ -122,7 +122,6 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'].'/404.html')) {
 <head>
 	<title>404 Not Found ...</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo APPLICATION_DEFAULT_ENCODING; ?>" />
-	<meta name="author" content="WS Interactive" />
 	<style type="text/css">
 	body {
 		background-color: #FFFFFF;
@@ -151,9 +150,9 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'].'/404.html')) {
 Sorry, the page you requested was not found.<br /><br />
 <a href="/">Back to the Home Page</a><br /><br />
 <hr />
-404 Non trouvé ...<br />
+404 Non trouv&eacute; ...<br />
 Nous ne trouvons pas la page que vous demandez.<br /><br />
-<a href="/">Retour à l'accueil</a><br /><br />
+<a href="/">Retour &agrave; l'accueil</a><br /><br />
 </div>
 </body>
 </html>

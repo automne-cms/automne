@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: item-selector.php,v 1.2 2009/06/22 15:36:16 sebastien Exp $
+// $Id: item-selector.php,v 1.3 2009/10/22 16:28:07 sebastien Exp $
 
 /**
   * PHP page : Load polymod items search window.
@@ -64,6 +64,8 @@ define("MESSAGE_ACTION_CREATE_SELECTED", 512);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 $winId = sensitiveIO::request('winId');
 $fatherId = sensitiveIO::request('fatherId');
@@ -238,7 +240,7 @@ $possible_sorts = array('cms_object_boolean',
 					);
 // check witch fields are sortable
 foreach ($objectFields as $fieldID => $field) {
-	if(in_array(strtolower(get_class($field->getTypeObject())), $possible_sorts)){
+	if(in_array(io::strtolower(get_class($field->getTypeObject())), $possible_sorts)){
 		$items_possible[$field->getID()] = $field->getLabel($cms_language);
 	}
 }
@@ -350,7 +352,7 @@ if ($description) {
 }
 
 //remove last comma from search panel items
-$searchPanel = substr($searchPanel, 0, -1);
+$searchPanel = io::substr($searchPanel, 0, -1);
 
 $jscontent = <<<END
 	var moduleObjectWindow = Ext.getCmp('{$winId}');

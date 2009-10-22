@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-files.php,v 1.3 2009/06/22 15:36:16 sebastien Exp $
+// $Id: templates-files.php,v 1.4 2009/10/22 16:26:27 sebastien Exp $
 
 /**
   * PHP page : Load module categories tree window.
@@ -39,6 +39,8 @@ define("MESSAGE_PAGE_DELETE_WARNING", 1499);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 $winId = sensitiveIO::request('winId');
 $fatherId = sensitiveIO::request('fatherId');

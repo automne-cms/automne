@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: pagetemplate.php,v 1.6 2009/07/20 16:35:38 sebastien Exp $
+// $Id: pagetemplate.php,v 1.7 2009/10/22 16:30:06 sebastien Exp $
 
 /**
   * Class CMS_pageTemplate
@@ -339,8 +339,8 @@ class CMS_pageTemplate extends CMS_grandFather
 		if (!trim($image)) {
 			$image = 'nopicto.gif';
 		}
-		$extension = substr($image, strrpos($image, ".") + 1);
-		if (SensitiveIO::isInSet(strtolower($extension), array("jpg", "jpeg", "gif", "png"))) {
+		$extension = io::substr($image, strrpos($image, ".") + 1);
+		if (SensitiveIO::isInSet(io::strtolower($extension), array("jpg", "jpeg", "gif", "png"))) {
 			$this->_image = $image;
 			return true;
 		} else {
@@ -685,10 +685,12 @@ class CMS_pageTemplate extends CMS_grandFather
 			if ($visualizationMode == PAGE_VISUALMODE_PRINT) {
 				//now put the data inside the template
 				$template_data = file_get_contents(PATH_PRINT_TEMPLATES_FS);
+				//we need to remove doctype if any
+				$template_data = preg_replace('#<!doctype[^>]*>#siU', '', $template_data);
 				return str_replace("{{data}}", $data, $template_data);
 			} else {
 				//add the cdata that is after the last tag
-				//$data .= substr($definition, $offset);
+				//$data .= io::substr($definition, $offset);
 				
 				//eval() the PHP if needed
 				if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {

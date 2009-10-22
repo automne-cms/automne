@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_definition_funtions.php,v 1.3 2009/06/22 14:08:41 sebastien Exp $
+// $Id: poly_definition_funtions.php,v 1.4 2009/10/22 16:30:03 sebastien Exp $
 
 /**
   * static Class CMS_poly_definition_functions
@@ -126,6 +126,9 @@ class CMS_poly_definition_functions
 	  * @static
 	  */
 	function getRequest($name, $type) {
+		if ($type == 'string') {
+			$type = 'safestring'; //To avoid XSS
+		}
 		return CMS_poly_definition_functions::getVarContent('request', $name, $type);
 	}
 	
@@ -172,6 +175,9 @@ class CMS_poly_definition_functions
 		}
 		switch ($varType) {
 			case 'request':
+				if ($dataType == 'string') {
+					$dataType = 'safestring'; //To avoid XSS
+				}
 				$varContent = isset($_REQUEST[$name]) ? $_REQUEST[$name] : null;
 			break;
 			case 'session':
@@ -219,16 +225,17 @@ class CMS_poly_definition_functions
 				}
 			break;
 			case 'string':
+			case 'unsafestring':
 				return (string) $varContent;
 			break;
-			case 'safestring':
+			case 'safestring': //safestring return string without any XSS vector
                 return SensitiveIO::sanitizeHTMLString( (string) $varContent );
             break;
 			case 'array':
 				if (is_array($varContent)) {
 					return $varContent;
 				} else {
-					return false;
+					return array();//false
 				}
 			break;
 			case 'bool':
@@ -283,7 +290,7 @@ class CMS_poly_definition_functions
 			if (!$plugin->needSelection()) {
 				$parameters['selection'] = '';
 			} else {
-				$parameters['selection'] = html_entity_decode($selection);
+				$parameters['selection'] = io::decodeEntities($selection);
 			}
 			//this line is used to optimise text fields (see CMS_object_text) which use a lot of plugin codes.
 			//in this case, items are searched before then put in this global var so it is not necessary to do one search for each of them
@@ -291,7 +298,7 @@ class CMS_poly_definition_functions
 				$parameters['item'] = $GLOBALS['polymod']['preparedItems'][$plugin->getValue('objectID')][$itemID];
 			}
 			ob_start();
-			eval(sensitiveIO::stripPHPTags($plugin->getValue('compiledDefinition')));
+			eval(sensitiveIO::sanitizeExecCommand(sensitiveIO::stripPHPTags($plugin->getValue('compiledDefinition'))));
 			$data = ob_get_contents();
 			ob_end_clean();
 			return $data;

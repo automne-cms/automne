@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-templates-datas.php,v 1.4 2009/06/29 10:21:55 sebastien Exp $
+// $Id: page-templates-datas.php,v 1.5 2009/10/22 16:26:25 sebastien Exp $
 
 /**
   * PHP page : Load page templates infos
@@ -35,6 +35,9 @@ define("MESSAGE_PAGE_GROUPS", 837);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_JSON);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
+
 //get current template if any (then, return compatible templates)
 $currentTpl = sensitiveIO::request('template', 'sensitiveIO::isPositiveInteger');
 //search filters

@@ -14,7 +14,7 @@
 // | Author: S�bastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: context.php,v 1.6 2009/07/20 16:35:36 sebastien Exp $
+// $Id: context.php,v 1.7 2009/10/22 16:30:01 sebastien Exp $
 
 /**
   * Class CMS_context
@@ -577,7 +577,7 @@ class CMS_context extends CMS_grandFather
 			CMS_context::setCookie(CMS_context::getAutoLoginCookieName());
 		}
 		//remove phpMyAdmin cookie if any
-		@setcookie(session_name(), '', time() - 3600, '/automne/phpMyAdmin/', '', 0);
+		@setcookie(session_name(), false, time() - 3600, '/automne/phpMyAdmin/', '', 0);
 		//then destroy session
 		@session_destroy();
 	}
@@ -594,12 +594,12 @@ class CMS_context extends CMS_grandFather
 	  * @static
 	  */
 	static function setCookie($name, $value=false, $expire=false) {
-		if (!$value) {
+		if ($value === false) {
 			unset($_COOKIE[$name]);
-			@setcookie($name, $value, time()-42000, '/');
+			@setcookie($name, false, time()-42000, '/');
 		} else {
 			$_COOKIE[$name] = $value;
-			@setcookie($name, $value, $expire, "/");
+			@setcookie($name, $value, $expire, "/", '', 0, true);
 		}
 	}
 	
@@ -674,10 +674,10 @@ class CMS_context extends CMS_grandFather
 			if (file_exists($extLocaleFile)) {
 				$fileContent = file_get_contents($extLocaleFile);
 				//remove BOM if any
-				if(substr($fileContent, 0, 3) == '﻿') {
-					$fileContent = substr($fileContent, 3);
+				if(io::substr($fileContent, 0, 3) == '﻿') {
+					$fileContent = io::substr($fileContent, 3);
 				}
-				$locales .= (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? utf8_decode($fileContent) : $fileContent;
+				$locales .= (io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? utf8_decode($fileContent) : $fileContent;
 			}
 		}
 		//add Automne locales

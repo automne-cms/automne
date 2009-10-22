@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: languagescatalog.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: languagescatalog.php,v 1.2 2009/10/22 16:30:00 sebastien Exp $
 
 /**
   * Class CMS_languagesCatalog
@@ -105,8 +105,8 @@ class CMS_languagesCatalog extends CMS_grandFather
 				if ($language) {
 					return $language;
 				}
-			} elseif (isset($_SERVER["HTTP_ACCEPT_LANGUAGE"]) && SensitiveIO::isInSet(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2), array_keys(CMS_languagesCatalog::getAllLanguages()))) {
-				$language = CMS_languagesCatalog::getByCode(substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2));
+			} elseif (isset($_SERVER["HTTP_ACCEPT_LANGUAGE"]) && SensitiveIO::isInSet(io::substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2), array_keys(CMS_languagesCatalog::getAllLanguages()))) {
+				$language = CMS_languagesCatalog::getByCode(io::substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2));
 				if ($language) {
 					return $language;
 				}

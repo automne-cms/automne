@@ -13,7 +13,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: contactdatascatalog.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: contactdatascatalog.php,v 1.2 2009/10/22 16:30:00 sebastien Exp $
 
 /**
   * Class CMS_contactDatas_catalog
@@ -62,6 +62,45 @@ class CMS_contactDatas_catalog extends CMS_grandFather
 			}
 		}
 		return new CMS_ldap_contactData();
+	}
+	
+	/**
+	  * Get array of contacts data by Email
+	  *
+	  * @param string $data
+	  * @return array of CMS_profile_user
+	  * @access public
+	  */
+	function getByEmail($data)
+	{
+		if (!SensitiveIO::isValidEmail($data) ) {
+			 CMS_grandFather::raiseError('$data must be a valid email : '.$data);
+			 return array();
+		}
+		$aUsers = array();
+		
+		//create the request to look for the data
+		$sql = 'select `id_cd` 
+			from `contactDatas`
+			where `email_cd` = "'.sensitiveIO::sanitizeSQLString($data).'"';
+		//launching the request
+		$q = new CMS_query($sql);
+		
+		//checking if ok and looping on results
+		if(!$q->hasError()){
+			while( ($oTmpUserId = $q->getValue("id_cd")) !== false ){
+				//creating the user and filling the data
+				$oTmpUser = CMS_profile_usersCatalog::getByID( $oTmpUserId );
+				if(!$oTmpUser->hasError()){
+					$oTmpUser->getContactData();
+					if(!$oTmpUser->hasError()){
+						$aUsers[] = $oTmpUser;
+					}
+				}
+			}
+			unset($oTmpUser , $oTmpUserId);
+		}
+		return $aUsers;
 	}
 
 	/**

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_module_structure.php,v 1.2 2009/04/02 13:58:01 sebastien Exp $
+// $Id: poly_module_structure.php,v 1.3 2009/10/22 16:30:03 sebastien Exp $
 
 /**
   * static Class CMS_poly_module_structure
@@ -91,19 +91,19 @@ class CMS_poly_module_structure
 		foreach($structure as $key => $value) {
 			if (is_array($value)) {
 				$structure[$key] = CMS_poly_module_structure::_createRecursiveStructure($value, $flatStructure, $infos);
-			} elseif (strpos($value,"multi|") !== false) {
-				$structure[$key] = array('multiobject'.substr($value,6) => CMS_poly_module_structure::_createRecursiveStructure($flatStructure['object'.substr($value,6)], $flatStructure, $infos));
+			} elseif (io::strpos($value,"multi|") !== false) {
+				$structure[$key] = array('multiobject'.io::substr($value,6) => CMS_poly_module_structure::_createRecursiveStructure($flatStructure['object'.io::substr($value,6)], $flatStructure, $infos));
 			} elseif (sensitiveIO::isPositiveInteger($value)) {
 				$structure[$key] = array('object'.$value => CMS_poly_module_structure::_createRecursiveStructure($flatStructure['object'.$value], $flatStructure, $infos));
 			}
 			if (is_array($infos) && !isset($infos[$key])) {
-				if (strpos($key,"field") !== false) {
-					$infos[$key] = new CMS_poly_object_field(substr($key,5));
-					if (!sensitiveIO::isPositiveInteger($value) && strpos($value,"multi|") === false && class_exists($value)) {
+				if (io::strpos($key,"field") !== false) {
+					$infos[$key] = new CMS_poly_object_field(io::substr($key,5));
+					if (!sensitiveIO::isPositiveInteger($value) && io::strpos($value,"multi|") === false && class_exists($value)) {
 						$infos[$value] = new $value(array(), $infos[$key]);
 					}
-				} elseif (strpos($key,"object") !== false) {
-					$infos[$key] = new CMS_poly_object_definition(substr($key,6));
+				} elseif (io::strpos($key,"object") !== false) {
+					$infos[$key] = new CMS_poly_object_definition(io::substr($key,6));
 				}
 			}
 		}
@@ -162,57 +162,57 @@ class CMS_poly_module_structure
 			if (!is_array($field)) { //Field
 				$object = new $field(array(), $objectInfos[$fieldID]);
 				//get object structure infos
-				$structure[substr($fieldID,5)] = $object->getStructure();
+				$structure[io::substr($fieldID,5)] = $object->getStructure();
 				//create path and translated path
-				$structure[substr($fieldID,5)]['path'] = $path.'['.substr($fieldID,5).']';
-				$structure[substr($fieldID,5)]['fieldID'] = substr($fieldID,5);
+				$structure[io::substr($fieldID,5)]['path'] = $path.'['.io::substr($fieldID,5).']';
+				$structure[io::substr($fieldID,5)]['fieldID'] = io::substr($fieldID,5);
 				if ($language && is_a($language, 'CMS_language')) {
-					$structure[substr($fieldID,5)]['translatedpath'] = $translatedpath.':'.sensitiveIO::sanitizeAsciiString($objectInfos[$fieldID]->getLabel($language));
+					$structure[io::substr($fieldID,5)]['translatedpath'] = $translatedpath.':'.sensitiveIO::sanitizeAsciiString($objectInfos[$fieldID]->getLabel($language));
 					$count = 1;
-					while (isset($translationtable[$structure[substr($fieldID,5)]['translatedpath']])) {
+					while (isset($translationtable[$structure[io::substr($fieldID,5)]['translatedpath']])) {
 						$count++;
-						$structure[substr($fieldID,5)]['translatedpath'] = $translatedpath.':'.sensitiveIO::sanitizeAsciiString($objectInfos[$fieldID]->getLabel($language)).$count;
+						$structure[io::substr($fieldID,5)]['translatedpath'] = $translatedpath.':'.sensitiveIO::sanitizeAsciiString($objectInfos[$fieldID]->getLabel($language)).$count;
 					}
-					CMS_poly_module_structure::_updateTranslationTable($translationtable, $structure[substr($fieldID,5)]);
+					CMS_poly_module_structure::_updateTranslationTable($translationtable, $structure[io::substr($fieldID,5)]);
 				}
 			} else {
 				$object = array_shift(array_keys($field));
-				if (strpos($object, 'object') === 0) { //poly_object
+				if (io::strpos($object, 'object') === 0) { //poly_object
 					//get object structure infos
-					$structure[substr($fieldID,5)] = $objectInfos[$object]->getStructure();
+					$structure[io::substr($fieldID,5)] = $objectInfos[$object]->getStructure();
 					//create path and translated path
-					$structure[substr($fieldID,5)]['path'] = $path.'['.substr($fieldID,5).']';
-					$structure[substr($fieldID,5)]['fieldID'] = substr($fieldID,5);
+					$structure[io::substr($fieldID,5)]['path'] = $path.'['.io::substr($fieldID,5).']';
+					$structure[io::substr($fieldID,5)]['fieldID'] = io::substr($fieldID,5);
 					if ($language && is_a($language, 'CMS_language')) {
-						$structure[substr($fieldID,5)]['translatedpath'] = $translatedpath.':'.sensitiveIO::sanitizeAsciiString($objectInfos[$object]->getLabel($language));
+						$structure[io::substr($fieldID,5)]['translatedpath'] = $translatedpath.':'.sensitiveIO::sanitizeAsciiString($objectInfos[$object]->getLabel($language));
 						$count = 1;
-						while (isset($translationtable[$structure[substr($fieldID,5)]['translatedpath']])) {
+						while (isset($translationtable[$structure[io::substr($fieldID,5)]['translatedpath']])) {
 							$count++;
-							$structure[substr($fieldID,5)]['translatedpath'] = $translatedpath.':'.sensitiveIO::sanitizeAsciiString($objectInfos[$object]->getLabel($language)).$count;
+							$structure[io::substr($fieldID,5)]['translatedpath'] = $translatedpath.':'.sensitiveIO::sanitizeAsciiString($objectInfos[$object]->getLabel($language)).$count;
 						}
-						CMS_poly_module_structure::_updateTranslationTable($translationtable, $structure[substr($fieldID,5)]);
+						CMS_poly_module_structure::_updateTranslationTable($translationtable, $structure[io::substr($fieldID,5)]);
 					}
 					//recurse on fields
-					$structure[substr($fieldID,5)]['fields'] = CMS_poly_module_structure::_createRecursiveDetailledStructure($field[$object], $objectInfos, $language, $translationtable, $structure[substr($fieldID,5)]['path']."['fields']", $structure[substr($fieldID,5)]['translatedpath']);
-				} elseif (strpos($object, 'multiobject') === 0) { //multi poly_object
-					$objectDef = new CMS_multi_poly_object(substr($object,11), $datas = array(), $objectInfos[$fieldID]);
+					$structure[io::substr($fieldID,5)]['fields'] = CMS_poly_module_structure::_createRecursiveDetailledStructure($field[$object], $objectInfos, $language, $translationtable, $structure[io::substr($fieldID,5)]['path']."['fields']", $structure[io::substr($fieldID,5)]['translatedpath']);
+				} elseif (io::strpos($object, 'multiobject') === 0) { //multi poly_object
+					$objectDef = new CMS_multi_poly_object(io::substr($object,11), $datas = array(), $objectInfos[$fieldID]);
 					//get object structure infos
-					$structure[substr($fieldID,5)] = $objectDef->getStructure();
+					$structure[io::substr($fieldID,5)] = $objectDef->getStructure();
 					//create path and translated path
-					$structure[substr($fieldID,5)]['path'] = $path.'['.substr($fieldID,5).']';
-					$structure[substr($fieldID,5)]['fieldID'] = substr($fieldID,5);
+					$structure[io::substr($fieldID,5)]['path'] = $path.'['.io::substr($fieldID,5).']';
+					$structure[io::substr($fieldID,5)]['fieldID'] = io::substr($fieldID,5);
 					if ($language && is_a($language, 'CMS_language')) {
-						$structure[substr($fieldID,5)]['translatedpath'] = $translatedpath.':'.sensitiveIO::sanitizeAsciiString($objectDef->getFieldLabel($language));
+						$structure[io::substr($fieldID,5)]['translatedpath'] = $translatedpath.':'.sensitiveIO::sanitizeAsciiString($objectDef->getFieldLabel($language));
 						$count = 1;
-						while (isset($translationtable[$structure[substr($fieldID,5)]['translatedpath']])) {
+						while (isset($translationtable[$structure[io::substr($fieldID,5)]['translatedpath']])) {
 							$count++;
-							$structure[substr($fieldID,5)]['translatedpath'] = $translatedpath.':'.sensitiveIO::sanitizeAsciiString($objectDef->getFieldLabel($language)).$count;
+							$structure[io::substr($fieldID,5)]['translatedpath'] = $translatedpath.':'.sensitiveIO::sanitizeAsciiString($objectDef->getFieldLabel($language)).$count;
 						}
-						CMS_poly_module_structure::_updateTranslationTable($translationtable, $structure[substr($fieldID,5)]);
+						CMS_poly_module_structure::_updateTranslationTable($translationtable, $structure[io::substr($fieldID,5)]);
 					}
 					//recurse on fields
-					$subobjectsDef = array('fieldn' => array('object'.substr($object,11) => $field[$object]));
-					$structure[substr($fieldID,5)]['fields'] = CMS_poly_module_structure::_createRecursiveDetailledStructure($subobjectsDef, $objectInfos, $language, $translationtable, $structure[substr($fieldID,5)]['path']."['fields']", $structure[substr($fieldID,5)]['translatedpath']);
+					$subobjectsDef = array('fieldn' => array('object'.io::substr($object,11) => $field[$object]));
+					$structure[io::substr($fieldID,5)]['fields'] = CMS_poly_module_structure::_createRecursiveDetailledStructure($subobjectsDef, $objectInfos, $language, $translationtable, $structure[io::substr($fieldID,5)]['path']."['fields']", $structure[io::substr($fieldID,5)]['translatedpath']);
 				}
 			}
 		}
@@ -288,7 +288,7 @@ class CMS_poly_module_structure
 					$currentPath = '[\''.$objectID.'\']';
 					$selected = ($currentPath == $selectedValue) ? ' selected="selected"':'';
 					$list .= '<option value="'.$currentPath.'" style="font-weight: bold;"'.$selected.'>'.$objectsStructure['objectInfos'][$objectID]->getObjectLabel($language).'</option>';
-					$list .= CMS_poly_module_structure::_viewObjectInfosList(substr($objectID,6), $language, $objectsStructure, $selectedValue, $currentPath);
+					$list .= CMS_poly_module_structure::_viewObjectInfosList(io::substr($objectID,6), $language, $objectsStructure, $selectedValue, $currentPath);
 				}
 			}
 		}
@@ -313,13 +313,13 @@ class CMS_poly_module_structure
 					//$currentPath = $path.'[\''.$objectFieldID.'\'][\''.$object.'\']';
 					$currentPath = $path.'[\''.$objectFieldID.'\']';
 					$selected = ($currentPath == $selectedValue) ? ' selected="selected"':'';
-					if (strpos($object, 'object') === 0) {
+					if (io::strpos($object, 'object') === 0) {
 						$html .= '<option value="'.$currentPath.'" style="'.$style.'"'.$selected.'>'.$space.$objectsStructure['objectInfos'][$objectFieldID]->getObjectLabel($language).'</option>'."\n";
-						$html .= CMS_poly_module_structure::_viewObjectInfosList(substr($object,6), $language, $objectsStructure, $selectedValue, $currentPath);
-					} elseif (strpos($object, 'multiobject') === 0) {
-						$html .= '<option value="'.$currentPath.'" style="'.$style.'"'.$selected.'>'.$space.$objectsStructure['objectInfos'][$objectFieldID]->getObjectLabel($language).' ('.$objectsStructure['objectInfos']['object'.substr($object,11)]->getObjectLabel($language).')</option>'."\n";
+						$html .= CMS_poly_module_structure::_viewObjectInfosList(io::substr($object,6), $language, $objectsStructure, $selectedValue, $currentPath);
+					} elseif (io::strpos($object, 'multiobject') === 0) {
+						$html .= '<option value="'.$currentPath.'" style="'.$style.'"'.$selected.'>'.$space.$objectsStructure['objectInfos'][$objectFieldID]->getObjectLabel($language).' ('.$objectsStructure['objectInfos']['object'.io::substr($object,11)]->getObjectLabel($language).')</option>'."\n";
 						$currentPath = $path.'[\''.$objectFieldID.'\'][\''.$object.'\']';
-						$html .= CMS_poly_module_structure::_viewObjectInfosList(substr($object,11), $language, $objectsStructure, $selectedValue, $currentPath);
+						$html .= CMS_poly_module_structure::_viewObjectInfosList(io::substr($object,11), $language, $objectsStructure, $selectedValue, $currentPath);
 					}
 				}
 			}
@@ -346,7 +346,7 @@ class CMS_poly_module_structure
 		//then get module detailledStructure
 		$objectsDetailledStructure = CMS_poly_module_structure::getModuleDetailledStructure($codename, $language);
 		//get seleted detailledInfos
-		$detailledInfos = @eval('return $objectsDetailledStructure'.$convertedSelectedValue.';');
+		$detailledInfos = @eval(sensitiveIO::sanitizeExecCommand('return $objectsDetailledStructure'.$convertedSelectedValue.';'));
 		//get object for this detailled structure path
 		$object = CMS_poly_module_structure::getObjectForDetailledStructurePath($convertedSelectedValue);
 		//then create corresponding object Infos
@@ -413,7 +413,7 @@ class CMS_poly_module_structure
 	  * @static
 	  */
 	function getObjectForDetailledStructurePath($detailledPath) {
-		if (strpos($detailledPath, 'fields') !== false) {
+		if (io::strpos($detailledPath, 'fields') !== false) {
 			$replace = array("#\[([0-9]+)\]$#U" => '\1');
 			if (preg_match("#\[([0-9]+)\]$#U", $detailledPath, $match)) {
 				$field = new CMS_poly_object_field($match[1]);
@@ -422,8 +422,8 @@ class CMS_poly_module_structure
 				CMS_grandFather::raiseError("Malformed detailledStructurePath : ".$detailledPath);
 				return false;
 			}
-		} elseif (strpos($detailledPath, '[\'object') === 0) {
-			return new CMS_poly_object(substr($detailledPath,8,-2));
+		} elseif (io::strpos($detailledPath, '[\'object') === 0) {
+			return new CMS_poly_object(io::substr($detailledPath,8,-2));
 		} else {
 			CMS_grandFather::raiseError("Malformed detailledStructurePath : ".$detailledPath);
 			return false;

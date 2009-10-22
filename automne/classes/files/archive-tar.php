@@ -15,7 +15,7 @@
 // | Author: Devin Doucette <darksnoopy@shaw.ca>                          |
 // +----------------------------------------------------------------------+
 //
-// $Id: archive-tar.php,v 1.2 2009/03/04 09:56:31 sebastien Exp $
+// $Id: archive-tar.php,v 1.3 2009/10/22 16:30:01 sebastien Exp $
 
 /**
   * Class CMS_archive
@@ -64,10 +64,10 @@ class CMS_tar_file extends CMS_archive
 			if ($current['name'] == $this->options['name']) {
 				continue;
 			}
-			if (strlen($current['name2']) > 99) {
-				$path = substr($current['name2'], 0, strpos($current['name2'], "/", strlen($current['name2']) - 100) + 1);
-				$current['name2'] = substr($current['name2'], strlen($path));
-				if (strlen($path) > 154 || strlen($current['name2']) > 99) {
+			if (io::strlen($current['name2']) > 99) {
+				$path = io::substr($current['name2'], 0, io::strpos($current['name2'], "/", io::strlen($current['name2']) - 100) + 1);
+				$current['name2'] = io::substr($current['name2'], io::strlen($path));
+				if (io::strlen($path) > 154 || io::strlen($current['name2']) > 99) {
 					$this->raiseError("Could not add {$path}{$current['name2']} to archive because the filename is too long.");
 					continue;
 				}
@@ -76,7 +76,7 @@ class CMS_tar_file extends CMS_archive
 
 			$checksum = 0;
 			for ($i = 0; $i < 512; $i ++) {
-				$checksum += ord(substr($block, $i, 1));
+				$checksum += ord(io::substr($block, $i, 1));
 			}
 			$checksum = pack("a8", sprintf("%6s ", decoct($checksum)));
 			$block = substr_replace($block, $checksum, 148, 8);
@@ -134,7 +134,7 @@ class CMS_tar_file extends CMS_archive
 				$block = substr_replace($block, "        ", 148, 8);
 				$checksum = 0;
 				for ($i = 0; $i < 512; $i ++) {
-					$checksum += ord(substr($block, $i, 1));
+					$checksum += ord(io::substr($block, $i, 1));
 				}
 				if ($file['checksum'] != $checksum) {
 					$this->raiseError("Could not extract from {$this->options['name']}, it is corrupt.");

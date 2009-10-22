@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: users-groups.php,v 1.2 2009/04/02 13:55:55 sebastien Exp $
+// $Id: users-groups.php,v 1.3 2009/10/22 16:26:28 sebastien Exp $
 
 /**
   * PHP page : Load page users-groups search window.
@@ -42,6 +42,9 @@ $type = (sensitiveIO::request('type') && in_array($_REQUEST['type'], array('user
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
+
 //check user rights
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
 	CMS_grandFather::raiseError('User has no users management rights ...');

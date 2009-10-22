@@ -16,7 +16,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>  			  |
 // +----------------------------------------------------------------------+
 //
-// $Id: blockimage.php,v 1.4 2009/04/02 13:57:58 sebastien Exp $
+// $Id: blockimage.php,v 1.5 2009/10/22 16:30:05 sebastien Exp $
 
 /**
   * Class CMS_block_image
@@ -293,7 +293,7 @@ class CMS_block_image extends CMS_block
 			'{{imageZoomHref}}'	=> $html_imageZoomHref,
 			'{{imageZoomName}}'	=> $html_imgZoomName,
 		);
-		if (strpos($this->_definition,'Width}}') !== false || strpos($this->_definition,'Height}}') !== false) {
+		if (io::strpos($this->_definition,'Width}}') !== false || io::strpos($this->_definition,'Height}}') !== false) {
 			list($sizeX, $sizeY) = @getimagesize(PATH_MODULES_FILES_STANDARD_FS.'/'.$folder.'/'.$data["file"]);
 			if (isset($data["enlargedFile"])) {
 				list($sizeZoomX, $sizeZoomY) = @getimagesize(PATH_MODULES_FILES_STANDARD_FS.'/'.$folder.'/'.$data["enlargedFile"]);
@@ -529,7 +529,7 @@ class CMS_block_image extends CMS_block
 		$name = md5(mt_rand().microtime());
 		$name .= SensitiveIO::sanitizeAsciiString($originalName);
 		$name = "p".$page->getID()."_".$name;
-		if (strlen($name) > 255) {
+		if (io::strlen($name) > 255) {
 			$name = sensitiveIO::ellipsis($name, 255, '-');
 		}
 		if ($withPath) {
@@ -554,7 +554,7 @@ class CMS_block_image extends CMS_block
 			
 			//Copy linked file
 			//In new file name, delete reference to old page and add refernce to new one
-			$_newFilename = "p".$destinationPage->getID().substr( $this->_file, strpos($this->_file,"_"), strlen($this->_file));
+			$_newFilename = "p".$destinationPage->getID().io::substr( $this->_file, io::strpos($this->_file,"_"), io::strlen($this->_file));
 			
 			if (@is_file(PATH_MODULES_FILES_STANDARD_FS."/edited/".$this->_file) 
 				&& @copy(PATH_MODULES_FILES_STANDARD_FS."/edited/".$this->_file, PATH_MODULES_FILES_STANDARD_FS."/edited/".$_newFilename)
@@ -570,7 +570,7 @@ class CMS_block_image extends CMS_block
 				//With enlarged file
 				if ($this->_enlargedFile!='') {
 					
-					$_newEnlargedFilename = "p".$destinationPage->getID().substr( $this->_enlargedFile, strpos($this->_enlargedFile,"_"), strlen($this->_enlargedFile));
+					$_newEnlargedFilename = "p".$destinationPage->getID().io::substr( $this->_enlargedFile, io::strpos($this->_enlargedFile,"_"), io::strlen($this->_enlargedFile));
 					
 					//Edited
 					if (!@copy(PATH_MODULES_FILES_STANDARD_FS."/edited/".$this->_enlargedFile, PATH_MODULES_FILES_STANDARD_FS."/edited/".$_newEnlargedFilename)

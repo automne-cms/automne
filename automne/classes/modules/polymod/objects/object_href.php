@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_href.php,v 1.4 2009/07/20 16:35:37 sebastien Exp $
+// $Id: object_href.php,v 1.5 2009/10/22 16:30:04 sebastien Exp $
 
 /**
   * Class CMS_object_href
@@ -263,13 +263,13 @@ class CMS_object_href extends CMS_object_common
 				return false;
 			}
 			$content = array('datas' => array(
-				'polymodFieldsValue['.$subPrefixName.']' => htmlspecialchars_decode($this->_subfieldValues[0]->getValue()),
+				'polymodFieldsValue['.$subPrefixName.']' => sensitiveIO::decodeEntities($this->_subfieldValues[0]->getValue()),
 			));
 			$view = CMS_view::getInstance();
 			$view->addContent($content);
 		} else {
 			//check for http://
-			if ($values[$subPrefixName.'link_external'] && strpos($values[$subPrefixName.'link_external'], 'http://') !== 0) {
+			if ($values[$subPrefixName.'link_external'] && io::strpos($values[$subPrefixName.'link_external'], 'http://') !== 0) {
 				$values[$subPrefixName.'link_external'] = 'http://'.$values[$subPrefixName.'link_external'];
 			}
 			$hrefDialog->doPost($moduleCodename, $objectID, $this->_field->getID());

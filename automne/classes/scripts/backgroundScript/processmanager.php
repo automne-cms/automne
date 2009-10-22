@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: processmanager.php,v 1.2 2009/04/02 13:58:01 sebastien Exp $
+// $Id: processmanager.php,v 1.3 2009/10/22 16:30:06 sebastien Exp $
 
 /**
   * background script process manager.
@@ -224,7 +224,7 @@ class processManager
 			return $this->_tmpPath;
 		} else {
 			$path = CMS_file::getTmpPath();
-			return (substr($path, -1,1) == '/') ? substr($path, 0, -1) : $path;
+			return (io::substr($path, -1,1) == '/') ? io::substr($path, 0, -1) : $path;
 		}
 	}
 	
@@ -261,7 +261,7 @@ class processManager
 		//Displayed in alphabetical order (noted on Windows platforms)
 		$PIDFiles=array();
 		while (false !== ($file = $tempDir->read())) {
-			if (stripos($file, $scriptAppLbl) !== false && strpos($file, ".ok") === false) {
+			if (stripos($file, $scriptAppLbl) !== false && io::strpos($file, ".ok") === false) {
 				$PIDFiles[]= $file;
 			}
 		}

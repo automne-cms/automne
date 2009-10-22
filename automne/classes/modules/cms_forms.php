@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_forms.php,v 1.5 2009/06/08 13:11:20 sebastien Exp $
+// $Id: cms_forms.php,v 1.6 2009/10/22 16:30:01 sebastien Exp $
 
 /**
   * Codename of the module
@@ -194,8 +194,8 @@ class CMS_module_cms_forms extends CMS_moduleValidation
 			);
 		}
 		$file = '';
-		if (isset($classes[strtolower($classname)])) {
-			$file = $classes[strtolower($classname)];
+		if (isset($classes[io::strtolower($classname)])) {
+			$file = $classes[io::strtolower($classname)];
 		}
 		return $file;
 	}

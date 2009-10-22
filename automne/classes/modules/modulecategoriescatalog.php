@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modulecategoriescatalog.php,v 1.4 2009/06/22 14:08:40 sebastien Exp $
+// $Id: modulecategoriescatalog.php,v 1.5 2009/10/22 16:30:02 sebastien Exp $
 
 /**
   * Class CMS_moduleCategories_catalog
@@ -755,7 +755,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 					if ($lineage) {
 						$lineageArray[$catID] = $lineage;
 						//then create n level table
-						$ln = 'if (!isset($nLevelArray['.str_replace(';','][',$lineage).'])) $nLevelArray['.str_replace(';','][',$lineage).'] =  array();';
+						$ln = sensitiveIO::sanitizeExecCommand('if (!isset($nLevelArray['.str_replace(';','][',$lineage).'])) $nLevelArray['.str_replace(';','][',$lineage).'] =  array();');
 						eval($ln);
 					}
 				}
@@ -833,6 +833,12 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 								unset($root_categories[$key]);
 							}
 						}
+					}
+					if ($cms_user->hasModuleCategoryClearance($level, $clearanceLevel, $cms_module)) {
+						if (sensitiveIO::isPositiveInteger($level)) {
+							$lvlCat = CMS_moduleCategories_catalog::getByID($level);
+						}
+						$root_categories[] = $lvlCat;
 					}
 					foreach ($root_categories as $key => $obj) {
 						if ($obj->getID() == $level) {

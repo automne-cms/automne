@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: page.php,v 1.9 2009/07/20 16:35:38 sebastien Exp $
+// $Id: page.php,v 1.10 2009/10/22 16:30:06 sebastien Exp $
 
 /**
   * Class CMS_page
@@ -509,6 +509,12 @@ class CMS_page extends CMS_resource
 			$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_PAGECONTENT_TAGS, $visualizationMode, $this);
 			$modulesTreatment->setTreatmentParameters(array("language" => $language));
 			$modulesTreatment->setDefinition($definition);
+			$content = $modulesTreatment->treatContent(true);
+			
+			//instanciate modules treatments for page header tags
+			$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_PAGEHEADER_TAGS, $visualizationMode, $this);
+			$modulesTreatment->setTreatmentParameters(array("language" => $language));
+			$modulesTreatment->setDefinition($content);
 			$content = $modulesTreatment->treatContent(true);
 			
 			/*if ($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC_INDEXABLE) {

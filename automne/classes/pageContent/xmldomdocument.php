@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: xmldomdocument.php,v 1.4 2009/06/22 14:08:40 sebastien Exp $
+// $Id: xmldomdocument.php,v 1.5 2009/10/22 16:30:05 sebastien Exp $
 
 /**
   * Class CMS_DOMDocument
@@ -47,7 +47,7 @@ class CMS_DOMDocument extends DOMDocument {
 	
 	function XmlError($errno, $errstr, $errfile, $errline) {
 		if ($errno==E_WARNING && (substr_count($errstr,"DOMDocument::loadXML()")>0)) {
-			$error = substr($errstr, strlen('DOMDocument::loadXML() [<a href=\'function.DOMDocument-loadXML\'>function.DOMDocument-loadXML</a>]: '));
+			$error = io::substr($errstr, io::strlen('DOMDocument::loadXML() [<a href=\'function.DOMDocument-loadXML\'>function.DOMDocument-loadXML</a>]: '));
 			throw new DOMException($error);
 		} else {
 			return false;
@@ -82,7 +82,7 @@ class CMS_DOMDocument extends DOMDocument {
 			}
 			$output = @$doc->saveXML(null, LIBXML_NOEMPTYTAG);
 			//remove xml declaration
-			$output = substr($output, strlen('<?xml version="1.0" encoding="'.APPLICATION_DEFAULT_ENCODING.'"?>')+1, -1);
+			$output = io::substr($output, io::strlen('<?xml version="1.0" encoding="'.APPLICATION_DEFAULT_ENCODING.'"?>')+1, -1);
 		} else {
 			// import node20
 			$domNode = $doc->importNode($domelement, true);

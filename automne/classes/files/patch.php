@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: patch.php,v 1.5 2009/06/25 08:55:47 sebastien Exp $
+// $Id: patch.php,v 1.6 2009/10/22 16:30:01 sebastien Exp $
 
 /**
   * Class CMS_patch
@@ -117,7 +117,7 @@ class CMS_patch extends CMS_grandFather
 					return false;
 				}
 				//if we don't have parameter and line not a comment
-				if (!isset($installParams[1]) && substr($installParams[0],0,1) != '#' && $installParams[0] != 'rc') {
+				if (!isset($installParams[1]) && io::substr($installParams[0],0,1) != '#' && $installParams[0] != 'rc') {
 					$error .= "Error at line : ".$line." missing file parameter<br />";
 					$errorsInfo[] = array('no' => 1, 'line' => $line, 'command' => $aInstallCheck);
 					unset($array[$line-1]);
@@ -145,7 +145,7 @@ class CMS_patch extends CMS_grandFather
 						case "ch":
 						case "co":
 						case "cg":
-							if (strpos($originalFile,'*')===false) {
+							if (io::strpos($originalFile,'*')===false) {
 								if (!file_exists($originalFile)) {
 									$error .= "Error at line : ".$line.", file ".$originalFile." does not exist<br />";
 									$errorsInfo[] = array('no' => 3, 'line' => $line, 'command' => $aInstallCheck);
@@ -228,7 +228,7 @@ class CMS_patch extends CMS_grandFather
 							break;
 							case "+": //concatenate module xml file
 								//check extension of source file
-								if (substr($patchFile,-4,4)!='.xml') {
+								if (io::substr($patchFile,-4,4)!='.xml') {
 									$error .= "Error at line : ".$line.", XML file to append ".$patchFile." does not seem to be an XML file<br />";
 									$errorsInfo[] = array('no' => 14, 'line' => $line, 'command' => $aInstallCheck);
 									unset($array[$line-1]);
@@ -267,12 +267,12 @@ class CMS_patch extends CMS_grandFather
 							break;
 							case "x": //execute SQL or PHP file
 								//only check extension for the moment
-								if (substr($patchFile,-4,4)!='.sql' && substr($patchFile,-4,4)!='.php') {
+								if (io::substr($patchFile,-4,4)!='.sql' && io::substr($patchFile,-4,4)!='.php') {
 									$error .= "Error at line : ".$line.", file to execute ".$patchFile." does not seem to be an SQL or PHP file<br />";
 									$errorsInfo[] = array('no' => 19, 'line' => $line, 'command' => $aInstallCheck);
 									unset($array[$line-1]);
 								}
-								if (substr($patchFile,-4,4)=='.sql') {
+								if (io::substr($patchFile,-4,4)=='.sql') {
 									//make a simulation on the sql script
 									if (!$this->executeSqlScript($patchFile,true)) {
 										$error .= "Error at line : ".$line.", on ".$patchFile.", no SQL request found...";
@@ -319,7 +319,7 @@ class CMS_patch extends CMS_grandFather
 								}
 							break;
 							default:
-								if (substr($installParams[0],0,1)!='#') {
+								if (io::substr($installParams[0],0,1)!='#') {
 									$error .= "Error at line : ".$line.", 	unknown parameter : ".$installParams[0]."<br />";
 									$errorsInfo[] = array('no' => 25, 'line' => $line, 'command' => $aInstallCheck);
 									unset($array[$line-1]);
@@ -436,14 +436,14 @@ class CMS_patch extends CMS_grandFather
 						break;
 						case "x": //execute SQL or PHP file
 							//exec sql script with help of some phpMyAdmin classes
-							if (substr($patchFile,-4,4)=='.sql') {
+							if (io::substr($patchFile,-4,4)=='.sql') {
 								if ($this->executeSqlScript($patchFile)) {
 									$this->_verbose(' -> File '.$patchFile.' successfully executed');
 								} else {
 									$this->_report('Error during execution of '.$patchFile,true);
 									if ($stopOnErrors) return;
 								}
-							} elseif (substr($patchFile,-4,4)=='.php') {
+							} elseif (io::substr($patchFile,-4,4)=='.php') {
 								//exec php script
 								$executionReturn = $this->executePhpScript($patchFile);
 								if ($executionReturn===false) {
@@ -490,7 +490,7 @@ class CMS_patch extends CMS_grandFather
 							$this->automneGeneralScript();
 						break;
 						case "htaccess":
-							$installParams[1] = (substr($installParams[1], -1) == '/') ? substr($installParams[1], 0, -1) : $installParams[1];
+							$installParams[1] = (io::substr($installParams[1], -1) == '/') ? io::substr($installParams[1], 0, -1) : $installParams[1];
 							foreach(glob(PATH_REALROOT_FS.$installParams[1]) as $path) {
 								if (is_dir($path) && CMS_file::makeWritable($path)) {
 									if (CMS_file::copyTo(PATH_HTACCESS_FS.'/htaccess_'.$installParams[2], $path.'/.htaccess')) {
@@ -507,7 +507,7 @@ class CMS_patch extends CMS_grandFather
 							}
 						break;
 						default:
-							if (substr($installParams[0],0,1)!='#') {
+							if (io::substr($installParams[0],0,1)!='#') {
 								$this->raiseError("Unknown parameter : ".$installParams[0]);
 								return false;
 							}
@@ -534,11 +534,10 @@ class CMS_patch extends CMS_grandFather
 	 * @param $script, string : the CMS_file::FILE_SYSTEM SQL script filename
 	 *  This script can be SQL export provided by phpMyadmin or mysqldump, etc.
 	 * @param simulation : boolean, if true, only do a read of the script and if it contain sql data, return true.
-	 * @param utf8 : boolean, if true, SQL Script is imported using utf-8 character set (default : false)
 	 * @return boolean, true on success, false on failure
 	 * @access public
 	 */
-	function executeSqlScript($script, $simulation=false, $utf8 = false)
+	function executeSqlScript($script, $simulation=false)
 	{
 		//include PMA import functions
 		require_once(PATH_PACKAGES_FS.'/files/sqlDump.php');
@@ -546,13 +545,27 @@ class CMS_patch extends CMS_grandFather
 		$q = new CMS_query('SELECT VERSION() AS version');
 		$version = $q->getValue('version');
 		$match = explode('.', $version);
-		//read mysql file, clean it and split queries
+		//read mysql file
 		$query = PMA_readFile($script);
+		//first, detect SQL file encoding
+		$isUTF8 = io::isUTF8($query);
+		//then, change charset declaration inside sql queries to match current Automne charset
+		if (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
+			//if Automne is not in utf8, then table charset must be in latin1
+			$query = str_ireplace(' CHARSET=utf8', ' CHARSET=latin1', $query);
+		} else {
+			//if Automne is in utf8, then table charset must be in utf8
+			$query = str_ireplace(' CHARSET=latin1', ' CHARSET=utf8', $query);
+		}
+		//finally, clean it and split queries
 		PMA_splitSqlFile($queries,$query,(int)sprintf('%d%02d%02d', $match[0], $match[1], intval($match[2])));
 		
 		if (!$simulation) {
-			if ($utf8) {
+			//set connection charset accordingly to file charset
+			if ($isUTF8) {
 				$q = new CMS_query("SET NAMES 'utf8'");
+			} else {
+				$q = new CMS_query("SET NAMES 'latin1'");
 			}
 			//execute all queries
 			$ok = true;
@@ -560,11 +573,14 @@ class CMS_patch extends CMS_grandFather
 				$q = new CMS_query($aQuery);
 				$ok = ($q->hasError()) ? false:$ok;
 			}
-			if ($utf8) {
+			//set connection charset accordingly to file charset
+			if ($isUTF8) {
 				$q = new CMS_query("SET NAMES 'latin1'");
+			} else {
+				$q = new CMS_query("SET NAMES 'utf8'");
 			}
 		} else {
-			$ok = (is_array($queries) && $queries) ? true:false;
+			$ok = (is_array($queries) && $queries) ? true : false;
 		}
 		return $ok;
 	}
@@ -648,7 +664,7 @@ class CMS_patch extends CMS_grandFather
 	 */
 	protected function _checkRightFormat($right) {
 		if (is_numeric($right)) {
-			if (strlen($right)!=3) {
+			if (io::strlen($right)!=3) {
 				return false;
 			} else {
 				$rights = preg_split('//', $right, -1, PREG_SPLIT_NO_EMPTY);

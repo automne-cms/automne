@@ -14,7 +14,7 @@
 // | Authors: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>     |
 // +----------------------------------------------------------------------+
 //
-// $Id: href.php,v 1.3 2009/06/09 13:11:02 sebastien Exp $
+// $Id: href.php,v 1.4 2009/10/22 16:30:00 sebastien Exp $
 
 /**
   * Class Href
@@ -185,7 +185,7 @@ class CMS_href extends CMS_grandFather
 				$text .= $k.','.$v.'&&';
 			}
 		}
-		$arr[5] = substr($text, 0, -2);
+		$arr[5] = io::substr($text, 0, -2);
 		// Popup
 		$arr[6] = @implode(',', $this->_popup);
 		// Label
@@ -345,10 +345,10 @@ class CMS_href extends CMS_grandFather
 	  */
 	function setExternalLink($url)
 	{
-		if (substr($url, 0, 4) == "http" 
-				|| substr($url, 0, 3) == "ftp"
-				|| substr($url, 0, 6) == "mailto"
-				|| substr($url, 0, 1) == "/") {
+		if (io::substr($url, 0, 4) == "http" 
+				|| io::substr($url, 0, 3) == "ftp"
+				|| io::substr($url, 0, 6) == "mailto"
+				|| io::substr($url, 0, 1) == "/") {
 			if ($url != 'http://') {
 				$this->_externalLink = $url;
 			} else {
@@ -484,7 +484,7 @@ class CMS_href extends CMS_grandFather
 	  */
 	function getAttribute($k)
 	{
-		return $this->_attributes[strtolower($k)];
+		return $this->_attributes[io::strtolower($k)];
 	}
 	
 	/**
@@ -497,7 +497,7 @@ class CMS_href extends CMS_grandFather
 	  */
 	function setAttribute($k, $v)
 	{
-		$this->_attributes[strtolower($k)] = str_replace('"', "", strtolower($v));
+		$this->_attributes[io::strtolower($k)] = str_replace('"', "", io::strtolower($v));
 		return true;
 	}
 	
@@ -554,7 +554,7 @@ class CMS_href extends CMS_grandFather
 				case RESOURCE_DATA_LOCATION_EDITED:
 				default:
 					if (sensitiveIO::isPositiveInteger($this->_internalLink) && $href = CMS_tree::getPageValue($this->_internalLink, 'url')) {
-						$href = (strpos($href,PATH_PAGES_WR) !== false) ? $href : PATH_PAGES_WR.$href;
+						$href = (io::strpos($href,PATH_PAGES_WR) !== false) ? $href : PATH_PAGES_WR.$href;
 					}
 					break;
 			}

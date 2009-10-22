@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: items-controler.php,v 1.5 2009/07/20 16:33:16 sebastien Exp $
+// $Id: items-controler.php,v 1.6 2009/10/22 16:28:08 sebastien Exp $
 
 /**
   * PHP page : Load polymod item interface
@@ -64,6 +64,9 @@ $pubEnd = sensitiveIO::request('pubEnd');
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_JSON);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
+
 $content = array('success' => false);
 
 //instanciate module
@@ -230,7 +233,7 @@ switch ($action) {
 			if (is_object($cms_page) && !$cms_page->hasError()) {
 				$parameters['pageID'] = $cms_page->getID();
 			}
-			$parameters['selection'] = html_entity_decode($selectedContent);
+			$parameters['selection'] = io::decodeEntities($selectedContent);
 			$parameters['public'] = false;
 			$parameters['plugin-view'] = true;
 			$definitionParsing = new CMS_polymod_definition_parsing($definition, true, CMS_polymod_definition_parsing::PARSE_MODE);
@@ -241,7 +244,7 @@ switch ($action) {
 			$codeTopaste = sensitiveIO::reencodeAmpersand($codeTopaste);
 			if ($codeTopaste) {
 				//add identification span tag arround code to paste
-				$codeTopaste = '<span id="polymod-'.$pluginId.'-'.$itemId.'" class="polymod" title="'.htmlspecialchars($selectedPlugin->getLabel($cms_language).' : '.$item->getLabel($cms_language)).'">'.$codeTopaste.'</span>';
+				$codeTopaste = '<span id="polymod-'.$pluginId.'-'.$itemId.'" class="polymod" title="'.htmlspecialchars($selectedPlugin->getLabel($cms_language).' : '.trim($item->getLabel($cms_language))).'">'.$codeTopaste.'</span>';
 			}
 			$content = $codeTopaste;
 		} elseif (sensitiveIO::isPositiveInteger($itemId) && $selectedPlugin->needSelection()) {

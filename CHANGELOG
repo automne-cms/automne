@@ -1,3 +1,8 @@
+V4.0.0rc3 (in progress)
+[BUG] : Some minor bugs corrected
+[BUG] : Correct some XSS potentials problems. All Automne cookies are now set with httpOnly flag
+[FEATURE] : Add error log rotate. /automne/cms_error_log is now daily gzipped in folder /automne/logs
+
 V4.0.0rc2 (21/07/09)
 [BUG] : On polymod fields, some fields did not work properly (image label, auto image zoom on thumbnail, disabled fields).
 [BUG] : On polymod objects : concurrent edition did not work

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: logs-datas.php,v 1.1 2009/07/20 16:33:14 sebastien Exp $
+// $Id: logs-datas.php,v 1.2 2009/10/22 16:26:24 sebastien Exp $
 
 /**
   * PHP page : Load logs datas
@@ -31,6 +31,9 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_JSON);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
+
 //get search vars
 $codename = sensitiveIO::request('module', CMS_modulesCatalog::getAllCodenames());
 $pageId = sensitiveIO::request('page', 'sensitiveIO::isPositiveInteger', 0);
@@ -40,7 +43,7 @@ $dir = sensitiveIO::request('dir', array('ASC','DESC'), 'DESC');
 $userId = sensitiveIO::request('userId', 'sensitiveIO::isPositiveInteger');
 $start = sensitiveIO::request('start', 'sensitiveIO::isPositiveInteger', 0);
 $limit = sensitiveIO::request('limit', 'sensitiveIO::isPositiveInteger', $_SESSION["cms_context"]->getRecordsPerPage());
-$delete = sensitiveIO::request('delete') ? true : false;
+$delete = sensitiveIO::request('del') ? true : false;
 
 if ($delete && !$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 	$delete = false;
@@ -80,7 +83,7 @@ if ($delete) {
 } else {
 	
 	//search logs
-	$logs = CMS_log_catalog::search($codename, $pageId, $userId, $types, $start, $limit, $sort, strtolower($dir), $returnCount = false);
+	$logs = CMS_log_catalog::search($codename, $pageId, $userId, $types, $start, $limit, $sort, io::strtolower($dir), $returnCount = false);
 	$actions = CMS_log_catalog::getAllActions();
 	//loop over users to get all required infos
 	foreach ($logs as $log) {

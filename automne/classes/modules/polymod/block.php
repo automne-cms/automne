@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: block.php,v 1.2 2009/03/06 10:52:34 sebastien Exp $
+// $Id: block.php,v 1.3 2009/10/22 16:30:03 sebastien Exp $
 
 /**
   * Class CMS_block_polymod
@@ -181,7 +181,7 @@ class CMS_block_polymod extends CMS_block
 							'language' => $parameters['language'],
 							'pageID' => $page->getID(),
 							'public' => $public,);
-		$polymodParsing = new CMS_polymod_definition_parsing($this->_definition, true);
+		$polymodParsing = new CMS_polymod_definition_parsing($this->_definition, true, CMS_polymod_definition_parsing::PARSE_MODE, $this->_attributes['module']);
 		return $polymodParsing->getContent($type, $parameters);
 	}
 	

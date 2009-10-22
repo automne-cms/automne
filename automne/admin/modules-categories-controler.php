@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: modules-categories-controler.php,v 1.5 2009/06/22 15:36:16 sebastien Exp $
+// $Id: modules-categories-controler.php,v 1.6 2009/10/22 16:26:24 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on modules categories
@@ -43,6 +43,8 @@ $codename = sensitiveIO::request('module', CMS_modulesCatalog::getAllCodenames()
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_JSON);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 if (!$codename) {
 	CMS_grandFather::raiseError('Unknown module ...');
@@ -139,7 +141,7 @@ switch ($action) {
 				@unlink($item->getFilePath($aLanguage, true, PATH_RELATIVETO_FILESYSTEM, true));
 				$item->setFile('', $aLanguage);
 			}
-			if ($file && strpos($file, PATH_UPLOAD_WR.'/') !== false) {
+			if ($file && io::strpos($file, PATH_UPLOAD_WR.'/') !== false) {
 				//destroy old file if any
 				if ($item->getFilePath($aLanguage, false, PATH_RELATIVETO_WEBROOT, true)) {
 					@unlink($item->getFilePath($aLanguage, true, PATH_RELATIVETO_FILESYSTEM, true));
@@ -174,7 +176,7 @@ switch ($action) {
 			@unlink($item->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, true));
 			$item->setAttribute('icon', '');
 		}
-		if ($icon && strpos($icon, PATH_UPLOAD_WR.'/') !== false) {
+		if ($icon && io::strpos($icon, PATH_UPLOAD_WR.'/') !== false) {
 			//destroy old file if any
 			if ($item->getIconPath(false, PATH_RELATIVETO_WEBROOT, true)) {
 				@unlink($item->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, true));

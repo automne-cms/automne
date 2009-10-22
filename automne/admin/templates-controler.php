@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-controler.php,v 1.7 2009/07/20 16:33:15 sebastien Exp $
+// $Id: templates-controler.php,v 1.8 2009/10/22 16:26:27 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on templates
@@ -62,6 +62,9 @@ $printableCS = (sensitiveIO::request('printableCS')) ? explode(',', sensitiveIO:
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_JSON);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
+
 //CHECKS user has templates clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //templates
 	CMS_grandFather::raiseError('User has no rights template editions');
@@ -100,7 +103,7 @@ switch ($action) {
 					unlink(PATH_TEMPLATES_IMAGES_FS.'/'.$template->getImage());
 				}
 			}
-			if ($image && strpos($image, PATH_UPLOAD_WR.'/') !== false) {
+			if ($image && io::strpos($image, PATH_UPLOAD_WR.'/') !== false) {
 				//move and rename uploaded file
 				$image = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $image);
 				$basename = pathinfo($image, PATHINFO_BASENAME);
@@ -145,7 +148,7 @@ switch ($action) {
 				$template->denyWebsite($deniedWebsite);
 			}
 			//XML definition file
-			if ($definitionfile && strpos($definitionfile, PATH_UPLOAD_WR.'/') !== false) {
+			if ($definitionfile && io::strpos($definitionfile, PATH_UPLOAD_WR.'/') !== false) {
 				//read uploaded file
 				$definitionfile = new CMS_file($definitionfile, CMS_file::WEBROOT);
 				$template->setDebug(false);
@@ -187,7 +190,7 @@ switch ($action) {
 						unlink(PATH_TEMPLATES_IMAGES_FS.'/'.$template->getImage());
 					}
 				}
-				if ($image && strpos($image, PATH_UPLOAD_WR.'/') !== false) {
+				if ($image && io::strpos($image, PATH_UPLOAD_WR.'/') !== false) {
 					//move and rename uploaded file
 					$image = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $image);
 					$basename = pathinfo($image, PATHINFO_BASENAME);
@@ -228,7 +231,7 @@ switch ($action) {
 					$template->denyWebsite($deniedWebsite);
 				}
 				//XML definition file
-				if ($definitionfile && strpos($definitionfile, PATH_UPLOAD_WR.'/') !== false) {
+				if ($definitionfile && io::strpos($definitionfile, PATH_UPLOAD_WR.'/') !== false) {
 					//read uploaded file
 					$definitionfile = new CMS_file($definitionfile, CMS_file::WEBROOT);
 					$template->setDebug(false);

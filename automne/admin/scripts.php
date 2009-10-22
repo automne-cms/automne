@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: scripts.php,v 1.4 2009/07/20 16:33:15 sebastien Exp $
+// $Id: scripts.php,v 1.5 2009/10/22 16:26:26 sebastien Exp $
 
 /**
   * PHP page : Simple empty page, used to refresh scripts count
@@ -29,6 +29,9 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_XML);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
+
 //if we do not use background regenerator, then it is time to run pending scripts
 if (!USE_BACKGROUND_REGENERATOR) {
 	CMS_scriptsManager::runQueuedScripts();

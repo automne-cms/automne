@@ -7,7 +7,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: utils.js,v 1.2 2009/06/29 10:22:07 sebastien Exp $
+  * $Id: utils.js,v 1.3 2009/10/22 16:27:19 sebastien Exp $
   */
 Automne.utils = {
 	edit:		false,
@@ -40,15 +40,17 @@ Automne.utils = {
 		//check for public tab : if status is for current viewved page, it must be reloaded
 		if (Automne.tabPanels) {
 			var publicPanel = Automne.tabPanels.getItem('public');
-			var publicTab = Automne.tabPanels.getTabEl(publicPanel);
-			if (publicTab) {
-				if (Ext.select('span.' + statusId, false, publicTab).getCount()) {
-					Automne.tabPanels.getPageInfos({
-						pageId:			publicPanel.pageId,
-						regenerate:		(Automne.tabPanels.getActiveTab().id == 'public'),
-						reload:			(unlock == true ? false : true)
-					});
-					pr('switchStatus : page founded and reloaded');
+			if (publicPanel) {
+				var publicTab = Automne.tabPanels.getTabEl(publicPanel);
+				if (publicTab) {
+					if (Ext.select('span.' + statusId, false, publicTab).getCount()) {
+						Automne.tabPanels.getPageInfos({
+							pageId:			publicPanel.pageId,
+							regenerate:		(Automne.tabPanels.getActiveTab().id == 'public'),
+							reload:			(unlock == true ? false : true)
+						});
+						pr('switchStatus : page founded and reloaded');
+					}
 				}
 			}
 		}
@@ -184,16 +186,26 @@ Automne.utils = {
 		for (var i=0; i < links.length; i++) {
 			var link = Ext.get(links[i]);
 			//only links with href, which are not in a new window, not an anchor and not a javascript instruction
-			if (link.dom.target != "_blank" && link.dom.href && link.dom.href.substr(-1) != '#' && link.dom.href.indexOf('javascript') !== 0) {
+			if (link.dom.target != "_blank" && link.dom.href && link.dom.href.substr(-1) != '#' && link.dom.href.indexOf('javascript') === -1) {
 				if (source != 'edit') {
-					link.on('click', function(e) {
-						pr('Click on link '+this.dom.href);
-						e.stopEvent();
-						//call server to get page infos using page url
-						Automne.tabPanels.getPageInfos({
-							pageUrl:		this.dom.href
-						});
-					}, link);
+					//do not catch anchor link to the same page
+					var isAnchor = false;
+					if (link.dom.href.indexOf('#') !== -1) {
+						var partsLink = link.dom.href.split('#');
+						if (root.location.href.indexOf(partsLink[0]) !== -1) {
+							isAnchor = true;
+						}
+					}
+					if (!isAnchor) {
+						link.on('click', function(e) {
+							pr('Click on link '+this.dom.href);
+							e.stopEvent();
+							//call server to get page infos using page url
+							Automne.tabPanels.getPageInfos({
+								pageUrl:		this.dom.href
+							});
+						}, link);
+					}
 				} else {
 					link.on('click', function(e) {
 						pr('Click on link '+this.dom.href);
@@ -222,11 +234,17 @@ Automne.utils = {
 					}, form);
 				}
 			} else {
-				//pr(root.location.href);
-				//pr(form.dom.action);
-				//pr(form.dom.action.indexOf(root.location.href));
+				/*
+				pr(root.location);
+				pr(form);
 				//pr(root.location.href.indexOf(form.dom.action));
-				/*if (form.dom.target != "_blank" && form.dom.action && form.dom.action.indexOf && form.dom.action.indexOf(root.location.href) === -1 && root.location.href.indexOf(form.dom.action) === -1) {
+				if (form.dom.target != "_blank" && form.dom.action.indexOf && form.dom.action.indexOf(root.location.protocol+'//'+root.location.host) === -1) {
+					pr(form.dom.action.indexOf(root.location.protocol+'//'+root.location.host));
+					var parts = form.dom.action.split('/');
+					//find xxx://xxx/ in action and replace it by domain
+					if (parts[0].substr(-1) == ':' && parts[1] == '') {
+						form.dom.action = root.location.protocol+'//'+root.location.host+'/'+parts.slice(3).join('/');
+					}
 					form.on('submit', function(e) {
 						e.stopEvent();
 						//send a message to user

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object.php,v 1.8 2009/07/20 16:35:37 sebastien Exp $
+// $Id: poly_object.php,v 1.9 2009/10/22 16:30:04 sebastien Exp $
 
 /**
   * Class CMS_poly_object
@@ -273,13 +273,13 @@ class CMS_poly_object extends CMS_resource
 						}
 						//load CMS_subobject_integer to store id value of poly object 
 						$this->_polyObjectValues[$fieldID] = new CMS_subobject_integer($subFieldsValues[0]['id'],array(),$subFieldsValues[0], $this->_public);
-					} elseif (strpos($type,"multi|") !== false) { //multi objects
+					} elseif (io::strpos($type,"multi|") !== false) { //multi objects
 						if (!is_array($subFieldsValues)) {
 							$subFieldsValues = array();
 						}
 						if ($this->_loadSubObjectsValues) {
 							//create multi sub object
-							$this->_objectValues[$fieldID] = new CMS_multi_poly_object(substr($type,6),$subFieldsValues, $field, $this->_public);
+							$this->_objectValues[$fieldID] = new CMS_multi_poly_object(io::substr($type,6),$subFieldsValues, $field, $this->_public);
 							//and set subObjectValues
 							$this->_objectValues[$fieldID]->populateSubObjectsValues($datas);
 						} else {
@@ -360,8 +360,8 @@ class CMS_poly_object extends CMS_resource
 				if (sensitiveIO::isPositiveInteger($type)) { //poly object
 					$typeObject = new CMS_poly_object($type);
 					$this->_subObjectsDefinitions[$fieldID] = $typeObject->getSubFieldsDefinition($this->_ID);
-				} elseif (strpos($type,"multi|") !== false) { //multi objects
-					$this->_subObjectsDefinitions[$fieldID] = CMS_multi_poly_object::getSubFieldsDefinition(substr($type,6),$this->_ID,$this->_objectFieldsDefinition[$fieldID]);
+				} elseif (io::strpos($type,"multi|") !== false) { //multi objects
+					$this->_subObjectsDefinitions[$fieldID] = CMS_multi_poly_object::getSubFieldsDefinition(io::substr($type,6),$this->_ID,$this->_objectFieldsDefinition[$fieldID]);
 				} elseif (class_exists($type)) { //object
 					$typeObject = new $type(array(),$this->_objectFieldsDefinition[$fieldID]);
 					$this->_subObjectsDefinitions[$fieldID] = $typeObject->getSubFieldsDefinition($this->_ID);
@@ -448,11 +448,11 @@ class CMS_poly_object extends CMS_resource
 			}
 		}
 		if ($languageFieldIDForObjectType[$this->_objectID] === false) {
-			return strtolower(APPLICATION_DEFAULT_LANGUAGE);
+			return io::strtolower(APPLICATION_DEFAULT_LANGUAGE);
 		}
 		//then get field value
 		$value = $this->_objectValues[$languageFieldIDForObjectType[$this->_objectID]]->getValue('value');
-		return ($value) ? $value : strtolower(APPLICATION_DEFAULT_LANGUAGE);
+		return ($value) ? $value : io::strtolower(APPLICATION_DEFAULT_LANGUAGE);
 	}
 	
 	/**
@@ -519,7 +519,7 @@ class CMS_poly_object extends CMS_resource
 				$subFieldDefinition = $this->_objectValues[$subFieldID]->getSubFieldsDefinition($this->_ID);
 			} else {
 				$type = $this->_objectFieldsDefinition[$subFieldID]->getValue('type');
-				$subFieldDefinition = CMS_multi_poly_object::getSubFieldsDefinition(substr($type,6),$this->_ID,$this->_objectFieldsDefinition[$subFieldID]);
+				$subFieldDefinition = CMS_multi_poly_object::getSubFieldsDefinition(io::substr($type,6),$this->_ID,$this->_objectFieldsDefinition[$subFieldID]);
 			}
 			$subFieldsDefinition = array_merge($subFieldsDefinition,$subFieldDefinition);
 		}
@@ -625,7 +625,7 @@ class CMS_poly_object extends CMS_resource
 							<option value="0">'.$language->getMessage(self::MESSAGE_POLYMOD_CHOOSE_OBJECT).'</option>';
 				foreach ($objectsNames as $objectID => $objectName) {
 					$selected = ((is_object($this->_polyObjectValues[$fieldID]) && $this->_polyObjectValues[$fieldID]->getValue() == $objectID) || ($inputParams['defaultvalue'] == $objectID && (!is_object($this->_polyObjectValues[$fieldID]) || !$this->_polyObjectValues[$fieldID]->getValue()))) ? ' selected="selected"':'';
-					$html .= '<option value="'.$objectID.'"'.$selected.'>'.htmlspecialchars(html_entity_decode($objectName)).'</option>'."\n";
+					$html .= '<option value="'.$objectID.'"'.$selected.'>'.htmlspecialchars(io::decodeEntities($objectName)).'</option>'."\n";
 				}
 				$html .= '</select>';
 				if (POLYMOD_DEBUG) {
@@ -1202,7 +1202,7 @@ class CMS_poly_object extends CMS_resource
 			case 'formatedDateStart':
 				if($this->_objectResourceStatus == 1) {
 					$date = parent::getPublicationDateStart();
-					if (strtolower($parameters) == 'rss') {
+					if (io::strtolower($parameters) == 'rss') {
 						$parameters = 'r';
 					}
 					return htmlspecialchars(date($parameters, $date->getTimeStamp()));
@@ -1212,7 +1212,7 @@ class CMS_poly_object extends CMS_resource
 				if($this->_objectResourceStatus == 1) {
 					$date = parent::getPublicationDateEnd();
 					if (is_a($date, 'CMS_date')) {
-						if (strtolower($parameters) == 'rss') {
+						if (io::strtolower($parameters) == 'rss') {
 							$parameters = 'r';
 						}
 						return htmlspecialchars(date($parameters, $date->getTimeStamp()));

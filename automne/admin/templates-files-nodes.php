@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-files-nodes.php,v 1.2 2009/06/22 14:10:33 sebastien Exp $
+// $Id: templates-files-nodes.php,v 1.3 2009/10/22 16:26:27 sebastien Exp $
 
 /**
   * PHP page : Load module categories tree window.
@@ -36,9 +36,11 @@ define("MESSAGE_PAGE_FILE_LAST_UPDATE_SIZE", 1508);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_JSON);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 function checkNode($value) {
-	return $value != 'source' && strpos($value, '..') === false;
+	return $value != 'source' && io::strpos($value, '..') === false;
 }
 
 $fileType = sensitiveIO::request('type', array('css', 'js'));
@@ -55,7 +57,7 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) {
 function formatBytes($val, $digits = 3, $mode = "SI", $bB = "B"){ //$mode == "SI"|"IEC", $bB == "b"|"B"
    $si = array("", "K", "M", "G", "T", "P", "E", "Z", "Y");
    $iec = array("", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi", "Yi");
-   switch(strtoupper($mode)) {
+   switch(io::strtoupper($mode)) {
        case "SI" : $factor = 1000; $symbols = $si; break;
        case "IEC" : $factor = 1024; $symbols = $iec; break;
        default : $factor = 1000; $symbols = $si; break;
@@ -66,7 +68,7 @@ function formatBytes($val, $digits = 3, $mode = "SI", $bB = "B"){ //$mode == "SI
    }
    for($i=0;$i<count($symbols)-1 && $val>=$factor;$i++)
        $val /= $factor;
-   $p = strpos($val, ".");
+   $p = io::strpos($val, ".");
    if($p !== false && $p > $digits) $val = round($val);
    elseif($p !== false) $val = round($val, $digits-$p);
    return round($val, $digits) . " " . $symbols[$i] . $bB;
@@ -94,13 +96,13 @@ $currentDepth = count(explode('/', $node));
 
 if ($d) {
 	while($f = $d->read()){
-	    if($f == '.' || $f == '..' || substr($f, 0, 1) == '.') continue;
+	    if($f == '.' || $f == '..' || io::substr($f, 0, 1) == '.') continue;
 	    $lastmod = date($cms_language->getDateFormat().' H:i:s',filemtime($dir.$node.'/'.$f));
 	    if(is_dir($dir.$node.'/'.$f)){
 	        $qtip = $cms_language->getMessage(MESSAGE_PAGE_FOLDER_LAST_UPDATE).' '.$lastmod;
 	        $nodes[] = array('text' => $f, 'id' => $node.'/'.$f, 'qtip' => $qtip, 'leaf' => false, 'cls'=> 'folder', 'expanded' => ($currentDepth < $maxDepth), 'deletable' => false);
 	    }else{
-	        $extension = strtolower(pathinfo($dir.$node.'/'.$f, PATHINFO_EXTENSION));
+	        $extension = io::strtolower(pathinfo($dir.$node.'/'.$f, PATHINFO_EXTENSION));
 			if (isset($allowedFiles[$extension])) {
 				$size = formatBytes(filesize($dir.$node.'/'.$f), 2);
 				$qtip = $cms_language->getMessage(MESSAGE_PAGE_FILE_LAST_UPDATE_SIZE, array($allowedFiles[$extension]['name'], $lastmod, $size));

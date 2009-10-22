@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: blockfile.php,v 1.3 2009/04/02 13:57:58 sebastien Exp $
+// $Id: blockfile.php,v 1.4 2009/10/22 16:30:05 sebastien Exp $
 
 /**
   * Class CMS_block_file
@@ -192,7 +192,7 @@ class CMS_block_file extends CMS_block
 		$filesize = ($filesize === false) ? '0 M' : $filesize;
 		$filesdatas = explode('_',$data["file"]);
 		unset($filesdatas[0]);
-		$originalFilename = substr(implode('_',$filesdatas),32);
+		$originalFilename = io::substr(implode('_',$filesdatas),32);
 		
 		$replace = array(
 			'{{data}}' 		=> '<a href="'.$mainurl.PATH_MODULES_FILES_STANDARD_WR.'/'.$folder.'/'.$data["file"].'"'.$html_attributes.' title="'.htmlspecialchars($data["label"]).'" class="atm-file atm-filetype-'.$file->getExtension().'">'.htmlspecialchars($data["label"]).'</a>',
@@ -411,7 +411,7 @@ class CMS_block_file extends CMS_block
 		$name = md5(mt_rand().microtime());
 		$name .= SensitiveIO::sanitizeAsciiString($originalName);
 		$name = "p".$page->getID()."_".$name;
-		if (strlen($name) > 255) {
+		if (io::strlen($name) > 255) {
 			$name = sensitiveIO::ellipsis($name, 255, '-');
 		}
 		if ($withPath) {
@@ -436,7 +436,7 @@ class CMS_block_file extends CMS_block
 			
 			//Copy linked file
 			//In new file name, delete reference to old page and add refernce to new one
-			$_newFilename = "p".$destinationPage->getID().substr( $this->_file, strpos($this->_file,"_"), strlen($this->_file));
+			$_newFilename = "p".$destinationPage->getID().io::substr( $this->_file, io::strpos($this->_file,"_"), io::strlen($this->_file));
 			
 			if (@is_file(PATH_MODULES_FILES_STANDARD_FS."/edited/".$this->_file) 
 				&& @copy(PATH_MODULES_FILES_STANDARD_FS."/edited/".$this->_file, PATH_MODULES_FILES_STANDARD_FS."/edited/".$_newFilename)

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: template.php,v 1.11 2009/07/20 16:33:15 sebastien Exp $
+// $Id: template.php,v 1.12 2009/10/22 16:26:27 sebastien Exp $
 
 /**
   * PHP page : Load template detail window.
@@ -72,6 +72,8 @@ $templateId = sensitiveIO::request('template', 'sensitiveIO::isPositiveInteger',
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 //CHECKS user has templates clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //templates
@@ -146,7 +148,7 @@ if ($allGroups) {
 			$groupsfield .= "{boxLabel: '{$aGroup}', inputValue:'{$aGroup}', name: 'groups[]', checked:".(isset($templateGroups[$aGroup]) ? 'true' : 'false')."},";
 		}
 		//remove last comma from groups
-		$groupsfield = substr($groupsfield, 0, -1);
+		$groupsfield = io::substr($groupsfield, 0, -1);
 		$groupsfield .= "
 		]
 	},";

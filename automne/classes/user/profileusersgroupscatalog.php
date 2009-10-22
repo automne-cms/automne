@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: profileusersgroupscatalog.php,v 1.3 2009/04/16 12:35:49 sebastien Exp $
+// $Id: profileusersgroupscatalog.php,v 1.4 2009/10/22 16:30:28 sebastien Exp $
 
 /**
   * Class CMS_profile_usersGroupsCatalog
@@ -65,7 +65,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	/*function getByDN($dn)
 	{
 		if (trim($dn) != '') {
-			$attribute = substr($dn,0,strpos($dn,'=')+1);
+			$attribute = io::substr($dn,0,io::strpos($dn,'=')+1);
 			$sql = "
 				select
 					id_prg as id
@@ -133,17 +133,17 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	function search($search = '', $letter = '', $userId = false, $groupsIds = array(), $order = '', $direction = 'asc', $start = 0, $limit = 0, $returnObjects = true, &$score = array()) {
 		$start = (int) $start;
 		$limit = (int) $limit;
-		$direction = (in_array(strtolower($direction), array('asc', 'desc'))) ? strtolower($direction) : 'asc';
+		$direction = (in_array(io::strtolower($direction), array('asc', 'desc'))) ? io::strtolower($direction) : 'asc';
 		$keywordsWhere = $letterWhere = $groupWhere = $orderClause = $orderBy = '';
 		$select = 'id_prg';
 		if ($search) {
 			//clean user keywords (never trust user input, user is evil)
 			$keyword = strtr($search, ",;", "  ");
 			$words=array();
-			$words=array_map("trim",array_unique(explode(" ", strtolower($keyword))));
+			$words=array_map("trim",array_unique(explode(" ", io::strtolower($keyword))));
 			$cleanedWords = array();
 			foreach ($words as $aWord) {
-				if ($aWord && $aWord!='' && strlen($aWord) >= 3) {
+				if ($aWord && $aWord!='' && io::strlen($aWord) >= 3) {
 					$aWord = str_replace(array('%','_'), array('\%','\_'), $aWord);
 					$cleanedWords[] = $aWord;
 				}
@@ -161,7 +161,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 			$select .= " , MATCH (label_prg, description_prg) AGAINST ('".sensitiveIO::sanitizeSQLString($search)."') as m ";
 			$keywordsWhere = " (MATCH (label_prg, description_prg) AGAINST ('".sensitiveIO::sanitizeSQLString($search)."') or (".$keywordsWhere."))";
 		}
-		if ($letter && strlen($letter) === 1) {
+		if ($letter && io::strlen($letter) === 1) {
 			$letterWhere .= ($keywordsWhere) ? ' and ' : '';
 			$letterWhere .= " label_prg like '".sensitiveIO::sanitizeSQLString($letter)."%'";
 		}
@@ -361,7 +361,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	function dnExists($dn, &$group)
 	{
 		if($group->getInvertDN()) {
-			$attribute = substr($dn,0,strpos($dn,'=')+1);
+			$attribute = io::substr($dn,0,io::strpos($dn,'=')+1);
 			$sql = "
 				select
 					*

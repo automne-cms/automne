@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: server-check.php,v 1.2 2009/06/22 14:10:32 sebastien Exp $
+// $Id: server-check.php,v 1.3 2009/10/22 16:26:26 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on server
@@ -42,6 +42,8 @@ define("MESSAGE_PAGE_DISK_SPACE",769);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 //CHECKS user has admin clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) { //templates

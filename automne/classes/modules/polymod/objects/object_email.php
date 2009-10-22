@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_email.php,v 1.3 2009/07/20 16:35:37 sebastien Exp $
+// $Id: object_email.php,v 1.4 2009/10/22 16:30:04 sebastien Exp $
 
 /**
   * Class CMS_object_email
@@ -799,7 +799,7 @@ class CMS_object_email extends CMS_object_common
 				if ($params['emailBody']['type'] == 1) {
 					//send body
 					$parameters['module'] = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
-					$polymodParsing = new CMS_polymod_definition_parsing($params['emailBody']['html'], true);
+					$polymodParsing = new CMS_polymod_definition_parsing($params['emailBody']['html'], true, CMS_polymod_definition_parsing::PARSE_MODE, $parameters['module']);
 					$body = $polymodParsing->getContent(CMS_polymod_definition_parsing::OUTPUT_RESULT, $parameters);
 				} elseif ($params['emailBody']['type'] == 2) {
 					//send a page
@@ -909,7 +909,7 @@ class CMS_object_email extends CMS_object_common
 			if (sensitiveIO::isPositiveInteger($fieldType)) {
 				//this field is a poly_object so recurse on his values
 				$this->_getFieldsFiles($itemField, $files);
-			} elseif (strpos($fieldType,"multi|") !== false) {
+			} elseif (io::strpos($fieldType,"multi|") !== false) {
 				//this field is a multi_poly_object so recurse on all poly_objects it contain
 				$params = $itemField->getParamsValues();
 				if ($itemField->getValue('count')) {

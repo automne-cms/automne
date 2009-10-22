@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: sender.php,v 1.3 2009/07/20 16:35:38 sebastien Exp $
+// $Id: sender.php,v 1.4 2009/10/22 16:30:03 sebastien Exp $
 
 /**
   * Class CMS_forms_sender
@@ -154,7 +154,8 @@ class CMS_forms_sender extends CMS_grandFather {
 	 * @param $value , the value to give
 	 */
 	function setAttribute($name, $value) {
-		eval('$this->_'.$name.' = $value ;');
+		$name = '_'.$name;
+		$this->$name = $value;
 		return true;
 	}
 	

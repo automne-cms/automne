@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: record.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: record.php,v 1.2 2009/10/22 16:30:03 sebastien Exp $
 
 /**
   * Class CMS_forms_record
@@ -132,7 +132,8 @@ class CMS_forms_record extends CMS_grandFather {
 	 * @param $value , the value to give
 	 */
 	function setAttribute($name, $value) {
-		eval('$this->_'.$name.' = $value ;');
+		$name = '_'.$name;
+		$this->$name = $value;
 		return true;
 	}
 	

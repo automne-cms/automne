@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: ldapauth.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: ldapauth.php,v 1.2 2009/10/22 16:30:00 sebastien Exp $
 
 /**
   * Class CMS_ldap_auth
@@ -137,7 +137,7 @@ class CMS_ldap_auth extends CMS_grandFather
 				// Prepare filter
 				// Determine if this attribute is present into $login
 				// login may already have syntax such as cn=Login or sn=Login
-				if (false === strpos($login, "=")) {
+				if (false === io::strpos($login, "=")) {
 					$filter = $att."=";
 				} else {
 					$filter = '';
@@ -201,12 +201,12 @@ class CMS_ldap_auth extends CMS_grandFather
 			$groupsDNs = CMS_profile_usersGroupsCatalog::getGroupsDN();
 			foreach ($groupsDNs as $groupId => $dnInfos) {
 				// Check users group association
-				$baseQuery = (strpos(strtolower($dnInfos['dn']), 'ou=group') === false) ? '('.APPLICATION_LDAP_USER_LOGIN.'='.$this->getUserdata("login").')' : '(member='.APPLICATION_LDAP_USER_LOGIN.'='.$this->getUserdata("login").')';
+				$baseQuery = (io::strpos(io::strtolower($dnInfos['dn']), 'ou=group') === false) ? '('.APPLICATION_LDAP_USER_LOGIN.'='.$this->getUserdata("login").')' : '(member='.APPLICATION_LDAP_USER_LOGIN.'='.$this->getUserdata("login").')';
 				if (!$dnInfos['filter']) {
 					$q = new CMS_ldap_query($baseQuery, array(APPLICATION_LDAP_USER_DN), $dnInfos['dn']);
 				} else {
-					if (substr($dnInfos['filter'],0,1) == '(' && substr($dnInfos['filter'],-1,1) == ')') {
-						$dnInfos['filter'] = substr($dnInfos['filter'],1,-1);
+					if (io::substr($dnInfos['filter'],0,1) == '(' && io::substr($dnInfos['filter'],-1,1) == ')') {
+						$dnInfos['filter'] = io::substr($dnInfos['filter'],1,-1);
 					}
 					$q = new CMS_ldap_query('(&'.$baseQuery.'('.$dnInfos['filter'].'))', array(APPLICATION_LDAP_USER_DN), $dnInfos['dn']);
 				}

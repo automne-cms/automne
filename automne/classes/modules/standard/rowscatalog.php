@@ -14,7 +14,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: rowscatalog.php,v 1.3 2009/02/03 14:27:58 sebastien Exp $
+// $Id: rowscatalog.php,v 1.4 2009/10/22 16:30:05 sebastien Exp $
 
 /**
   * Class CMS_rowsCatalog
@@ -65,10 +65,10 @@ class CMS_rowsCatalog extends CMS_grandFather
 			//clean user keywords (never trust user input, user is evil)
 			$keyword = strtr($keyword, ",;", "  ");
 			$words=array();
-			$words=array_map("trim",array_unique(explode(" ", strtolower($keyword))));
+			$words=array_map("trim",array_unique(explode(" ", io::strtolower($keyword))));
 			$cleanedWords = array();
 			foreach ($words as $aWord) {
-				if ($aWord && $aWord!='' && strlen($aWord) >= 3) {
+				if ($aWord && $aWord!='' && io::strlen($aWord) >= 3) {
 					$aWord = str_replace(array('%','_'), array('\%','\_'), $aWord);
 					$cleanedWords[] = $aWord;
 				}
@@ -140,15 +140,15 @@ class CMS_rowsCatalog extends CMS_grandFather
 						and groupsStack_row not like '%;".sensitiveIO::sanitizeSQLString($group[0]).";%'
 						and groupsStack_row not like '".sensitiveIO::sanitizeSQLString($group[0]).";%'
 						and groupsStack_row not like '%;".sensitiveIO::sanitizeSQLString($group[0])."'
-					) or";
+					) and";
 				}
 				//remove last "or" and append )
-				$where = substr($where, 0, -2).')';
+				$where = io::substr($where, 0, -3).')';
 			}
 		}
 		$sql = $sql.($where ? ' where '.$where : '');
 		//order
-		if (strpos($sql, 'MATCH') === false) {
+		if (io::strpos($sql, 'MATCH') === false) {
 			$sql .= " order by label_row ";
 		} else {
 			$sql .= " order by m desc ";
@@ -323,7 +323,7 @@ class CMS_rowsCatalog extends CMS_grandFather
 		$availableExtensions = array('gif', 'png', 'jpg');
 		try{
 			foreach ( new DirectoryIterator(PATH_TEMPLATES_ROWS_FS.'/images/') as $file) {
-				if ($file->isFile() && in_array(strtolower(pathinfo($file->getFilename(), PATHINFO_EXTENSION)), $availableExtensions)) {
+				if ($file->isFile() && in_array(io::strtolower(pathinfo($file->getFilename(), PATHINFO_EXTENSION)), $availableExtensions)) {
 					$images[] = PATH_TEMPLATES_ROWS_WR.'/images/'.$file->getFilename();
 				}
 			}

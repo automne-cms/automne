@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: grandfather.php,v 1.10 2009/07/21 13:41:43 sebastien Exp $
+// $Id: grandfather.php,v 1.11 2009/10/22 16:30:00 sebastien Exp $
 
 /**
   * Class CMS_grandFather
@@ -65,10 +65,11 @@ class CMS_grandFather
 	  * Raises an error. Shows it to the screen
 	  *
 	  * @param string $errorMessage the error message.
+	  * @param boolean $encodeOutput, does the screen output should be encoded (default : false)
 	  * @return void
 	  * @access public (deprecated, use raiseError instead)
 	  */
-	public function _raiseError($errorMessage)
+	public function _raiseError($errorMessage, $encodeOutput = false)
 	{
 		static $errorNumber;
 		$systemDebug = (!defined('SYSTEM_DEBUG')) ? true : SYSTEM_DEBUG;
@@ -96,7 +97,8 @@ class CMS_grandFather
 			}
 			//append error to current view
 			$view = CMS_view::getInstance();
-			$view->addError(array('error' => $errorMessage, 'backtrace' => $backTraceLink));
+			$outputMessage = $encodeOutput ? htmlspecialchars($errorMessage) : $errorMessage;
+			$view->addError(array('error' => $outputMessage, 'backtrace' => $backTraceLink));
 		}
 		
 		//second condition are for static calls (made by static methods)
@@ -115,12 +117,13 @@ class CMS_grandFather
 	  * Raises an error.
 	  *
 	  * @param string $errorMessage the error message.
+	  * @param boolean $encodeOutput, does the screen output should be encoded (default : false)
 	  * @return void
 	  * @access public
 	  */
-	public function raiseError($errorMessage) {
+	public function raiseError($errorMessage, $encodeOutput = false) {
 		$errorMessage = sensitiveIO::getCallInfos().' : '.$errorMessage;
-		self::_raiseError($errorMessage);
+		self::_raiseError($errorMessage, $encodeOutput);
 	}
 
 	/**
@@ -237,7 +240,8 @@ class CMS_grandFather
 				'cms_date' 							=> PATH_PACKAGES_FS.'/common/date.php',
 				'cms_language' 						=> PATH_PACKAGES_FS.'/common/language.php',
 				'sensitiveio' 						=> PATH_PACKAGES_FS.'/common/sensitiveio.php',
-
+				'io' 								=> PATH_PACKAGES_FS.'/common/sensitiveio.php',
+				
 				//dialogs
 				'cms_context' 						=> PATH_PACKAGES_FS.'/dialogs/context.php',
 				'cms_wysiwyg_toolbar' 				=> PATH_PACKAGES_FS.'/dialogs/toolbar.php',
@@ -336,9 +340,6 @@ class CMS_grandFather
 
 				//CSSMin
 				'cssmin' 							=> PATH_MAIN_FS.'/cssmin/cssmin.php',
-				
-				//XhtmlValidator
-				'xhtmlvalidator' 					=> PATH_MAIN_FS.'/xhtmlValidator/validator.class.php',
 			);
 		}
 		$file = '';

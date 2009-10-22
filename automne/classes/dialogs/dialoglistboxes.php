@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: dialoglistboxes.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: dialoglistboxes.php,v 1.2 2009/10/22 16:30:01 sebastien Exp $
 
 /**
   * Class CMS_dialog_listboxes
@@ -59,7 +59,7 @@ class CMS_dialog_listboxes extends CMS_grandFather
 		// Rewritre HTML tag attributes
 		$attributes = '';
 		if (trim($args["attributes"]) != '') {
-			if (strpos($args["attributes"], 'size') === false) {
+			if (io::strpos($args["attributes"], 'size') === false) {
 				$attributes = 'size="1" ';
 			}
 			$attributes .= trim($args["attributes"]);
@@ -143,7 +143,7 @@ class CMS_dialog_listboxes extends CMS_grandFather
 		}
 
 		$s_formName = ($args['form_name'] != '') ? $args['form_name'] : 'forms[0]' ;
-		$s_separator = (isset($args['separator']) && trim(substr($args['separator'], 0, 1)) != '') ? trim(substr($args['separator'], 0, 1)) : ';' ;
+		$s_separator = (isset($args['separator']) && trim(io::substr($args['separator'], 0, 1)) != '') ? trim(io::substr($args['separator'], 0, 1)) : ';' ;
 		$s_width = ($args['select_width'] != '') ? $args['select_width'] : '200px' ;
 		$s_height = ($args['select_height'] != '') ? $args['select_height'] : '140px' ;
 		$s_noadmin = (isset($args['no_admin']) && $args['no_admin'] == true) ? true : false ;
@@ -309,7 +309,7 @@ class CMS_dialog_listboxes extends CMS_grandFather
 			for (var i=0; i < o_toList.length; i++) {
 				s += o_toList.options[i].value + "'.$s_separator.'";
 			}
-			o_hiddenField.value = s.substr(0, (s.length - 1));
+			o_hiddenField.value = s.io::substr(0, (s.length - 1));
 			if (o_keepedField.value) {
 				if (o_hiddenField.value) {
 					o_hiddenField.value += ";" + o_keepedField.value;

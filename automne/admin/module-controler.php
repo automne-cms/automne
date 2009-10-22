@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: module-controler.php,v 1.2 2009/06/22 14:10:31 sebastien Exp $
+// $Id: module-controler.php,v 1.3 2009/10/22 16:26:24 sebastien Exp $
 
 /**
   * PHP page : Module controler.
@@ -36,6 +36,8 @@ define("MESSAGE_PAGE_PARAMS_SAVED",677);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_JSON);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 //CHECKS
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {

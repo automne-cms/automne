@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: clientspace.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: clientspace.php,v 1.2 2009/10/22 16:30:05 sebastien Exp $
 
 /**
   * Class CMS_moduleClientspace_standard
@@ -137,6 +137,7 @@ class CMS_moduleClientspace_standard extends CMS_moduleClientspace
 				where
 					template_cs='".SensitiveIO::sanitizeSQLString($this->_templateID)."'
 					and tagID_cs='".SensitiveIO::sanitizeSQLString($this->_tagID)."'
+					and type_cs != 0
 				order by 
 					order_cs asc
 			";
@@ -411,9 +412,11 @@ class CMS_moduleClientspace_standard extends CMS_moduleClientspace
 						VALUES ";
 				$count = 0;
 				foreach ($this->_rows as $order => $row) {
-					$sql .= ($count) ? ',':'';
-					$sql .= "('".$this->_templateID."', '".SensitiveIO::sanitizeSQLString($this->_tagID)."', '".SensitiveIO::sanitizeSQLString($row->getTagID())."', '".$row->getID()."', '".$order."')";
-					$count++;
+					if (SensitiveIO::isPositiveInteger($row->getID())) {
+						$sql .= ($count) ? ',':'';
+						$sql .= "('".$this->_templateID."', '".SensitiveIO::sanitizeSQLString($this->_tagID)."', '".SensitiveIO::sanitizeSQLString($row->getTagID())."', '".$row->getID()."', '".$order."')";
+						$count++;
+					}
 				}
 				$q = new CMS_query($sql);
 				if ($q->hasError()) {

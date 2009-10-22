@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: row.php,v 1.6 2009/06/22 14:08:40 sebastien Exp $
+// $Id: row.php,v 1.7 2009/10/22 16:30:05 sebastien Exp $
 
 /**
   * Class CMS_row
@@ -265,8 +265,8 @@ class CMS_row extends CMS_grandFather
 		if (!trim($image)) {
 			$image = 'nopicto.gif';
 		}
-		$extension = substr($image, strrpos($image, ".") + 1);
-		if (SensitiveIO::isInSet(strtolower($extension), array("jpg", "jpeg", "gif", "png"))) {
+		$extension = io::substr($image, strrpos($image, ".") + 1);
+		if (SensitiveIO::isInSet(io::strtolower($extension), array("jpg", "jpeg", "gif", "png"))) {
 			$this->_image = $image;
 			return true;
 		} else {

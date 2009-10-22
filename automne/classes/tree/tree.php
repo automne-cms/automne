@@ -15,7 +15,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: tree.php,v 1.4 2009/06/09 13:29:25 sebastien Exp $
+// $Id: tree.php,v 1.5 2009/10/22 16:30:06 sebastien Exp $
 
 /**
   * Class CMS_tree
@@ -1437,7 +1437,7 @@ class CMS_tree extends CMS_grandFather
 				}
 				
 				//test the presence of the separator in the sibling title
-				if (strpos($ancestorTitle, $separator) !== false) {
+				if (io::strpos($ancestorTitle, $separator) !== false) {
 					CMS_grandFather::raiseError("Page has the separator in its title (transformed) : ".$ancestorTitle);
 					$title = str_replace($separator, "[SEPARATOR]", $ancestorTitle);
 				} else {

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: tree.php,v 1.5 2009/07/20 16:33:15 sebastien Exp $
+// $Id: tree.php,v 1.6 2009/10/22 16:26:27 sebastien Exp $
 
 /**
   * PHP page : Load tree window infos. Presents a portion of the pages tree. Can be used by any admin page.
@@ -57,6 +57,8 @@ define("MESSAGE_WINDOW_HELP", 325);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 //simple function used to test a value with the string 'false'
 function checkFalse($value) {

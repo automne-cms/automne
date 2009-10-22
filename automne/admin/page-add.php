@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-add.php,v 1.5 2009/07/20 16:33:15 sebastien Exp $
+// $Id: page-add.php,v 1.6 2009/10/22 16:26:25 sebastien Exp $
 
 /**
   * PHP page : Load add-page window infos. Set title and template then redirect to page content edition
@@ -47,6 +47,8 @@ define("MESSAGE_PAGE_FILTER", 693);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 $winId = sensitiveIO::request('winId', '', 'addPageWindow');
 $currentPage = sensitiveIO::request('currentPage', 'sensitiveIO::isPositiveInteger');

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-infos.php,v 1.14 2009/06/22 14:10:31 sebastien Exp $
+// $Id: page-infos.php,v 1.15 2009/10/22 16:26:25 sebastien Exp $
 
 /**
   * PHP page : Load page infos
@@ -114,6 +114,8 @@ define("MESSAGE_PAGE_NO_PAGE_RIGHT", 669);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 $pageUrl = sensitiveIO::request('pageUrl');
 $pageId = sensitiveIO::request('pageId', 'sensitiveIO::isPositiveInteger');
@@ -146,7 +148,7 @@ $httpHost = parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? parse_url($_SERVER[
 if ($pageUrl && !$pageId) {
 	//extract page id from given url
 	$pathinfo = pathinfo($pageUrl);
-	$basename = (isset($pathinfo['extension'])) ? substr($pathinfo['basename'], 0, -(1+strlen($pathinfo['extension']))) : $pathinfo['basename'];
+	$basename = (isset($pathinfo['extension'])) ? io::substr($pathinfo['basename'], 0, -(1+io::strlen($pathinfo['extension']))) : $pathinfo['basename'];
 	$urlinfo = parse_url($pageUrl);
 	if (isset($urlinfo['query'])) {
 		$querystring = $urlinfo['query'];
@@ -175,7 +177,7 @@ if ($pageUrl && !$pageId) {
 		$websites = CMS_websitesCatalog::getAll('order');
 		$founded = false;
 		foreach ($websites as $website) {
-			if ($founded === false && strtolower($website->getURL(false)) == strtolower($domain)) {
+			if ($founded === false && io::strtolower($website->getURL(false)) == io::strtolower($domain)) {
 				$founded = $website;
 			}
 		}
@@ -1101,7 +1103,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 				if ($hasLock && sensitiveIO::isPositiveInteger($hasLock)) {
 					$lockUser = CMS_profile_usersCatalog::getById($hasLock);
 					$lockDate = $cms_page->getLockDate();
-					$panelTip .= '<br /><br /><strong>'.$cms_language->getMessage(MESSAGE_PAGE_LOCKEDBY).' </strong>'.$lockUser->getFullName().' le '.$lockDate->getLocalizedDate($cms_language->getDateFormat().' à H:i:s');
+					$panelTip .= '<br /><br /><strong>'.$cms_language->getMessage(MESSAGE_PAGE_LOCKEDBY).' </strong>'.$lockUser->getFullName().' le '.$lockDate->getLocalizedDate($cms_language->getDateFormat().' &agrave; H:i:s');
 				} elseif (!$isEditable) {
 					$panelTip .= '<br /><br />'.$cms_language->getMessage(MESSAGE_PAGE_EDIT_CONTENT_TIP_DISABLED_DESC);
 				}
@@ -1165,7 +1167,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 					}
 					//check for website host
 					$pageHost = parse_url($panelURL, PHP_URL_HOST);
-					if ($pageHost && $_SERVER['HTTP_HOST'] && strtolower($httpHost) != strtolower($pageHost)) {
+					if ($pageHost && $_SERVER['HTTP_HOST'] && io::strtolower($httpHost) != io::strtolower($pageHost)) {
 						//page host is not the same of current host so change it to avoid JS restriction
 						$panelURL = str_replace($pageHost, $httpHost, $panelURL);
 					}

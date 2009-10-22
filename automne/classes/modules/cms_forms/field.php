@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: field.php,v 1.4 2009/06/05 15:02:19 sebastien Exp $
+// $Id: field.php,v 1.5 2009/10/22 16:30:02 sebastien Exp $
 
 /**
   * Class CMS_forms_field
@@ -365,7 +365,11 @@ class CMS_forms_field extends CMS_grandFather {
 				//get inputs and set CMS_forms_field object values
 				if ($aTag->tagName == 'input') {
 					$formTags[$aTag->getAttribute('id')]->setAttribute("name",$aTag->getAttribute('name'));
-					$formTags[$aTag->getAttribute('id')]->setAttribute("value",$aTag->getAttribute('value'));
+					if ($aTag->getAttribute('type') != 'checkbox') {
+						$formTags[$aTag->getAttribute('id')]->setAttribute("value",$aTag->getAttribute('value'));
+					} else {
+						//do not update field value for checkbox
+					}
 					if ($aTag->getAttribute('type') == 'text' || !$aTag->getAttribute('type')) {
 						if (in_array('email',$fieldIDDatas)) {
 							$formTags[$aTag->getAttribute('id')]->setAttribute("type",'email');
@@ -495,7 +499,7 @@ class CMS_forms_field extends CMS_grandFather {
 	 * @return array : decoded datas
 	 */
 	function decodeFieldIdDatas($datas) {
-		return explode('_',base64_decode(substr($datas,1)));
+		return explode('_',base64_decode(io::substr($datas,1)));
 	}
 	
 	/**
@@ -574,7 +578,7 @@ class CMS_forms_field extends CMS_grandFather {
 						$input .= ' type="password" value=""';
 					break;
 					case 'checkbox':
-						$input .= ' type="checkbox" value="1" class="checkbox"';
+						$input .= ' type="checkbox" value="1" class="checkbox" '.($this->getAttribute("value") ? ' checked="checked"' : '');
 					break;
 					case 'text':
 					case 'email':

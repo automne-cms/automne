@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: list-categories.php,v 1.3 2009/06/22 15:36:16 sebastien Exp $
+// $Id: list-categories.php,v 1.4 2009/10/22 16:28:08 sebastien Exp $
 
 /**
   * PHP page : Load polyobjects items datas
@@ -33,6 +33,8 @@ define("MESSAGE_PAGE_NO_CATEGORIES", 529);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_JSON);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 //get search vars
 $objectId = sensitiveIO::request('objectId', 'sensitiveIO::isPositiveInteger');
@@ -81,7 +83,7 @@ if ($objectFields[$fieldId]) {
 			foreach($a_all_categories as $id => $label) {
 				$objectsDatas['objects'][] = array(
 					'id'			=> $id,
-					'label'			=> html_entity_decode($label, ENT_COMPAT, strtoupper(APPLICATION_DEFAULT_ENCODING)),
+					'label'			=> io::decodeEntities($label, ENT_COMPAT, io::strtoupper(APPLICATION_DEFAULT_ENCODING)),
 				);
 			}
 		} else {

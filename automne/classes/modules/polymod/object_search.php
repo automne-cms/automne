@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_search.php,v 1.7 2009/06/22 14:08:41 sebastien Exp $
+// $Id: object_search.php,v 1.8 2009/10/22 16:30:03 sebastien Exp $
 
 /**
   * Class CMS_object_search
@@ -197,7 +197,8 @@ class CMS_object_search extends CMS_grandFather
 		if ($name == 'page' && $value < 0) {
 			$value = 0;
 		}
-		eval('$this->_'.$name.' = $value ;');
+		$name = '_'.$name;
+		$this->$name = $value;
 		return true;
 	}
 	
@@ -700,7 +701,7 @@ class CMS_object_search extends CMS_grandFather
 								$languageCode = $cms_language->getCode();
 							}
 							if (!$languageCode) {
-								$languageCode = strtolower(APPLICATION_DEFAULT_LANGUAGE);
+								$languageCode = io::strtolower(APPLICATION_DEFAULT_LANGUAGE);
 							}
 							$module = $this->_object->getValue('module');
 							//create Xapian search object
@@ -791,7 +792,7 @@ class CMS_object_search extends CMS_grandFather
 							$words=array_map("trim",array_unique(explode(" ", $keyword)));
 							$cleanedWords = array();
 							foreach ($words as $aWord) {
-								if ($aWord && $aWord!='' && strlen($aWord) >= 3) {
+								if ($aWord && $aWord!='' && io::strlen($aWord) >= 3) {
 									$aWord = str_replace(array('%','_'), array('\%','\_'), $aWord);
 									if (htmlentities($aWord) != $aWord) {
 										$cleanedWords[] = htmlentities($aWord);
@@ -952,7 +953,7 @@ class CMS_object_search extends CMS_grandFather
 							} else {
 								$this->_orderConditions = array('itemsOrdered' => array('order' => $IDs));
 							}
-							if ($this->_orderConditions['relevance']) {
+							if (isset($this->_orderConditions['relevance']) && $this->_orderConditions['relevance']) {
 								unset($this->_orderConditions['relevance']);
 							}
 						}
@@ -999,7 +1000,7 @@ class CMS_object_search extends CMS_grandFather
 		//Add all subobjects to search if any
 		foreach (array_keys($objectFields) as $fieldID) {
 			//if field is a poly object or a multi poly object, add it to search
-			if (sensitiveIO::isPositiveInteger($objectFields[$fieldID]->getValue('type')) || strpos($objectFields[$fieldID]->getValue('type'),"multi|") !== false) {
+			if (sensitiveIO::isPositiveInteger($objectFields[$fieldID]->getValue('type')) || io::strpos($objectFields[$fieldID]->getValue('type'),"multi|") !== false) {
 				$subObjectsFieldsIds[] = $fieldID;
 			}
 		}
@@ -1105,7 +1106,7 @@ class CMS_object_search extends CMS_grandFather
 						}
 						//get type object for field
 						$objectField = $this->_fieldsDefinitions[$type]->getTypeObject();
-						$operator = '';
+						$operator = isset($operator) ? $operator : '';
 						$sql = $objectField->getFieldOrderSQL($type, $direction, $operator, $where, $this->_public);
 					}
 					break;

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_plugin_definition.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: poly_plugin_definition.php,v 1.2 2009/10/22 16:30:03 sebastien Exp $
 
 /**
   * Class CMS_poly_plugin_definitions
@@ -127,8 +127,9 @@ class CMS_poly_plugin_definitions extends CMS_grandFather
 		if ($valueName == 'definition') {
 			global $cms_language;
 			//check definition parsing
-			$parameters['object'] = new CMS_poly_object($this->getValue('objectID'));
-			$parsing = new CMS_polymod_definition_parsing($value, $parameters, true, false, CMS_polymod_definition_parsing::CHECK_PARSING_MODE);
+			$module = CMS_poly_object_catalog::getModuleCodenameForObjectType($this->getValue('objectID'));
+			$parsing = new CMS_polymod_definition_parsing($value, true, CMS_polymod_definition_parsing::CHECK_PARSING_MODE, $module);
+			//$parsing = new CMS_polymod_definition_parsing($value, $parameters, true, false, CMS_polymod_definition_parsing::CHECK_PARSING_MODE);
 			$errors = $parsing->getParsingError();
 			if ($errors) {
 				return $errors;
@@ -196,7 +197,7 @@ class CMS_poly_plugin_definitions extends CMS_grandFather
 	  * @access public
 	  */
 	function needSelection() {
-		if (strpos($this->getValue('definition'), '{plugin:selection}') !== false) {
+		if (io::strpos($this->getValue('definition'), '{plugin:selection}') !== false) {
 			return true;
 		}
 		return false;

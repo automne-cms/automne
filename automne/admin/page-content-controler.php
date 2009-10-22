@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-content-controler.php,v 1.7 2009/07/21 13:41:12 sebastien Exp $
+// $Id: page-content-controler.php,v 1.8 2009/10/22 16:26:25 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on page content
@@ -38,6 +38,8 @@ define("MESSAGE_PAGE_COPY_PASTE_ERROR", 694);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 $action = sensitiveIO::request('action', array('add-row', 'del-row', 'move-row', 'move-row-cs', 'clear-block', 'update-row', 'update-block-varchar', 'update-block-text', 'update-block-file', 'update-block-flash', 'update-block-image'));
 $tpl = sensitiveIO::request('template', 'sensitiveIO::isPositiveInteger');
@@ -300,7 +302,7 @@ switch ($action) {
 				'file' => '',
 				'label'=> ($filelabel) ? $filelabel : pathinfo($filename, PATHINFO_BASENAME)
 			);
-			if ($filename && strpos($filename, PATH_UPLOAD_WR.'/') !== false) {
+			if ($filename && io::strpos($filename, PATH_UPLOAD_WR.'/') !== false) {
 				//move and rename uploaded file 
 				$filename = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $filename);
 				$basename = pathinfo($filename, PATHINFO_BASENAME);
@@ -361,7 +363,7 @@ switch ($action) {
 				'flashvars' => $flashvars,
 				'attributes'=> $attributes,
 			);
-			if ($filename && strpos($filename, PATH_UPLOAD_WR.'/') !== false) {
+			if ($filename && io::strpos($filename, PATH_UPLOAD_WR.'/') !== false) {
 				//move and rename uploaded file 
 				$filename = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $filename);
 				$basename = pathinfo($filename, PATHINFO_BASENAME);
@@ -424,7 +426,7 @@ switch ($action) {
 				'externalLink' 	=> '',
 			);
 			//Image
-			if ($filename && strpos($filename, PATH_UPLOAD_WR.'/') !== false) {
+			if ($filename && io::strpos($filename, PATH_UPLOAD_WR.'/') !== false) {
 				//move and rename uploaded file 
 				$filename = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $filename);
 				$basename = pathinfo($filename, PATHINFO_BASENAME);
@@ -439,7 +441,7 @@ switch ($action) {
 				$data["file"] = '';
 			}
 			//Image Zoom
-			if ($zoomname && strpos($zoomname, PATH_UPLOAD_WR.'/') !== false) {
+			if ($zoomname && io::strpos($zoomname, PATH_UPLOAD_WR.'/') !== false) {
 				//move and rename uploaded file 
 				$zoomname = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $zoomname);
 				$basename = pathinfo($zoomname, PATHINFO_BASENAME);
@@ -497,7 +499,7 @@ if (isset($cms_message) && $cms_message) {
 
 //Eval PHP content if any
 $content = $view->getContent();
-if (strpos($content, '<?php') !== false) {
+if (io::strpos($content, '<?php') !== false) {
 	ob_start();
 	$content = sensitiveIO::evalPHPCode($content);
 	$return = ob_get_clean();

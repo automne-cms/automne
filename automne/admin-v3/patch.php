@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: patch.php,v 1.2 2009/03/04 09:55:57 sebastien Exp $
+// $Id: patch.php,v 1.3 2009/10/22 16:29:05 sebastien Exp $
 
 /**
   * PHP page : Patch
@@ -112,12 +112,12 @@ switch ($cms_action) {
 // | DEFAULT SCREEN                                                       |
 // +----------------------------------------------------------------------+
 
-if ($cms_message || (!$filename && !$commandLine && !$cms_action)) {
+if (isset($cms_message) && $cms_message || (!$filename && !$commandLine && !$cms_action)) {
 	//file upload form
 	$dialog = new CMS_dialog();
 	$content = '';
 	$dialog->setTitle($cms_language->getMessage(MESSAGE_PAGE_TITLE));
-	if ($cms_message) {
+	if (isset($cms_message) && $cms_message) {
 		$dialog->setActionMessage($cms_message);
 	}
 	$content .= '

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sébastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 // 
-// $Id: ldapquery.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: ldapquery.php,v 1.2 2009/10/22 16:30:00 sebastien Exp $
 
 /**
   * Class CMS_ldap_query
@@ -177,7 +177,7 @@ class CMS_ldap_query extends CMS_ldap_connexion
       */
     function appendWithBaseDN($dn)
     {
-    	if (trim($dn) != '' && strpos($dn, APPLICATION_LDAP_BASE_DN) === false) {
+    	if (trim($dn) != '' && io::strpos($dn, APPLICATION_LDAP_BASE_DN) === false) {
     		return $dn.','.APPLICATION_LDAP_BASE_DN;
     	} else {
     		return $dn;

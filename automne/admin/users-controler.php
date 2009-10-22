@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: users-controler.php,v 1.4 2009/07/20 16:33:16 sebastien Exp $
+// $Id: users-controler.php,v 1.5 2009/10/22 16:26:28 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on users
@@ -105,6 +105,8 @@ $status = sensitiveIO::request('status') == 'true' ? true : false;
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_JSON);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 //load user if any
 if ($userId) {

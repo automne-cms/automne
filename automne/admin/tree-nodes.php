@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: tree-nodes.php,v 1.2 2008/12/18 10:36:44 sebastien Exp $
+// $Id: tree-nodes.php,v 1.3 2009/10/22 16:26:27 sebastien Exp $
 
 /**
   * PHP page : Load tree window infos
@@ -31,6 +31,8 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_JSON);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 //simple function used to test a value with the string 'false'
 function checkFalse($value) {
@@ -39,7 +41,7 @@ function checkFalse($value) {
 function checkNotFalse($value) {
 	return ($value !== 'false');
 }
-$nodeId = (isset($_REQUEST['node']) && strpos($_REQUEST['node'], 'page') === 0 && sensitiveIO::isPositiveInteger(substr($_REQUEST['node'],4))) ? substr($_REQUEST['node'],4) : false;
+$nodeId = (isset($_REQUEST['node']) && io::strpos($_REQUEST['node'], 'page') === 0 && sensitiveIO::isPositiveInteger(io::substr($_REQUEST['node'],4))) ? io::substr($_REQUEST['node'],4) : false;
 $rootId = sensitiveIO::request('root', 'sensitiveIO::isPositiveInteger', 'APPLICATION_ROOT_PAGE_ID');
 $editable = (sensitiveIO::request('editable', 'checkNotFalse')) ? true : false;
 $onClick = sensitiveIO::request('onClick');
@@ -65,7 +67,7 @@ if ($nodeId) {
 		if ($maxlevel && sizeof($lineage) >= $maxlevel) $maxlevelReached = true;
 	}
 	$siblings = CMS_tree::getSiblings($node);
-} elseif (isset($_REQUEST['node']) && strpos($_REQUEST['node'], 'root') === 0) {
+} elseif (isset($_REQUEST['node']) && io::strpos($_REQUEST['node'], 'root') === 0) {
 	//load website root
 	$node = CMS_tree::getPageByID($rootId);
 	//check for users rights

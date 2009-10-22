@@ -15,7 +15,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: pagetemplatescatalog.php,v 1.4 2009/07/20 16:35:38 sebastien Exp $
+// $Id: pagetemplatescatalog.php,v 1.5 2009/10/22 16:30:06 sebastien Exp $
 
 /**
   * Class CMS_pageTemplatesCatalog
@@ -65,10 +65,10 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 			//clean user keywords (never trust user input, user is evil)
 			$keyword = strtr($keyword, ",;", "  ");
 			$words=array();
-			$words=array_map("trim",array_unique(explode(" ", strtolower($keyword))));
+			$words=array_map("trim",array_unique(explode(" ", io::strtolower($keyword))));
 			$cleanedWords = array();
 			foreach ($words as $aWord) {
-				if ($aWord && $aWord!='' && strlen($aWord) >= 3) {
+				if ($aWord && $aWord!='' && io::strlen($aWord) >= 3) {
 					$aWord = str_replace(array('%','_'), array('\%','\_'), $aWord);
 					$cleanedWords[] = $aWord;
 				}
@@ -141,12 +141,12 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 					) or";
 				}
 				//remove last "or" and append )
-				$where = substr($where, 0, -2).')';
+				$where = io::substr($where, 0, -2).')';
 			}
 		}
 		$sql = $sql.($where ? ' where '.$where : '');
 		//order
-		if (strpos($sql, 'MATCH') === false) {
+		if (io::strpos($sql, 'MATCH') === false) {
 			$sql .= " order by label_pt ";
 		} else {
 			$sql .= " order by m desc ";
@@ -155,7 +155,7 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 		if ($start || $limit) {
 			$sql .= " limit ".sensitiveIO::sanitizeSQLString($start).",".sensitiveIO::sanitizeSQLString($limit);
 		}
-		pr($sql);
+		//pr($sql);
 		$q = new CMS_query($sql);
 		$pts = array();
 		while ($r = $q->getArray()) {
@@ -287,7 +287,7 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 					$tpl->setImage($model->getImage());
 				} else {
 					if ($model->getImage()) {
-						$ext = substr($model->getImage(), strrpos($model->getImage(), "."));
+						$ext = io::substr($model->getImage(), strrpos($model->getImage(), "."));
 						$imagefilename = "pt".$tpl->getID()."_".SensitiveIO::sanitizeAsciiString($tpl->getLabel()).$ext ;
 						if (@copy(PATH_TEMPLATES_IMAGES_FS."/".$model->getImage(), PATH_TEMPLATES_IMAGES_FS."/".$imagefilename) ) {
 							$tpl->setImage($imagefilename);

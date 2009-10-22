@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: logs.php,v 1.1 2009/07/20 16:33:14 sebastien Exp $
+// $Id: logs.php,v 1.2 2009/10/22 16:26:24 sebastien Exp $
 
 /**
   * PHP page : Load users search window.
@@ -60,6 +60,9 @@ $winId = sensitiveIO::request('winId', '', 'logsWindow');
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
+
 //check user rights
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_VIEWLOG)) {
 	CMS_grandFather::raiseError('User has no logs management rights ...');
@@ -148,7 +151,7 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 						if (button == 'ok') {
 							var formValues = Ext.getCmp('logsSearchPanel').getForm().getValues();
 							params = Ext.apply(formValues, {
-								delete:			true,
+								del:			true,
 								limit:			0,
 								start:			0
 							});
@@ -281,7 +284,7 @@ $jscontent = <<<END
 		border: 			false,
 		layoutConfig: {
 			align : 'stretch',
-			pack  : 'start',
+			pack  : 'start'
 		},
 		layout: 			'vbox',
 		items: [{

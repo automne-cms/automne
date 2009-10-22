@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object_catalog.php,v 1.5 2009/06/05 15:02:17 sebastien Exp $
+// $Id: poly_object_catalog.php,v 1.6 2009/10/22 16:30:04 sebastien Exp $
 
 /**
   * static Class CMS_poly_object_catalog
@@ -413,8 +413,8 @@ class CMS_poly_object_catalog
 	  */
 	function getAllObjects($objectID, $public = false, $searchConditions = array(), $returnObjects = true, $searchMethod = false) {
 		$return = array();
-		if (strpos($objectID,'multi|') !== false) {
-			$objectID = substr($objectID, 6);
+		if (io::strpos($objectID,'multi|') !== false) {
+			$objectID = io::substr($objectID, 6);
 		}
 		if (!sensitiveIO::isPositiveInteger($objectID)) {
 			CMS_grandFather::raiseError('objectID is not a positive integer : '.$objectID);

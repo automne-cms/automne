@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: email.php,v 1.6 2009/07/22 12:23:38 sebastien Exp $
+// $Id: email.php,v 1.7 2009/10/22 16:30:00 sebastien Exp $
 
 /**
   * Class CMS_email
@@ -198,7 +198,7 @@ class CMS_email extends CMS_grandFather
 	  */
 	function setSubject($subject)
 	{
-		$this->_subject = html_entity_decode($subject);
+		$this->_subject = io::decodeEntities($subject);
 	}
 	
 	/**
@@ -222,7 +222,7 @@ class CMS_email extends CMS_grandFather
 	  */
 	function setBody($body)
 	{
-		$this->_body = html_entity_decode($body);
+		$this->_body = io::decodeEntities($body);
 	}
 	
 	/**
@@ -245,7 +245,7 @@ class CMS_email extends CMS_grandFather
 	  */
 	function setFooter($footer)
 	{
-		$this->_footer = html_entity_decode($footer);
+		$this->_footer = io::decodeEntities($footer);
 	}
 	
 	/**
@@ -443,11 +443,11 @@ class CMS_email extends CMS_grandFather
 					(\\.[A-Za-z0-9-]+)*)/iex'
 				),
 				array(
-					"stripslashes((strlen('\\2')>0?'\\1<a href=\"\\2\">\\2</a>\\3':'\\0'))",
+					"stripslashes((io::strlen('\\2')>0?'\\1<a href=\"\\2\">\\2</a>\\3':'\\0'))",
 					'<a\\1',
 					'<a\\1 target="_blank">',
-					"stripslashes((strlen('\\2')>0?'\\1<a href=\"http://\\2\">\\2</a>\\3':'\\0'))",
-					"stripslashes((strlen('\\2')>0?'<a href=\"mailto:\\0\">\\0</a>':'\\0'))"
+					"stripslashes((io::strlen('\\2')>0?'\\1<a href=\"http://\\2\">\\2</a>\\3':'\\0'))",
+					"stripslashes((io::strlen('\\2')>0?'<a href=\"mailto:\\0\">\\0</a>':'\\0'))"
 				),$body);
 		return nl2br($HTMLBody);
 	}
@@ -477,7 +477,7 @@ class CMS_email extends CMS_grandFather
 		
 		if ($this->_emailHTML) { //if HTML content is provided for email, use it
 			//if this mail contain relative link, append default website address
-			if (strpos($this->_emailHTML, 'href="/') !== false || strpos($this->_emailHTML, 'src="/') !== false) {
+			if (io::strpos($this->_emailHTML, 'href="/') !== false || io::strpos($this->_emailHTML, 'src="/') !== false) {
 				$url = CMS_websitesCatalog::getMainURL();
 				$this->_emailHTML = str_replace(array('href="/', 'src="/'), array('href="'.$url.'/', 'src="'.$url.'/'), $this->_emailHTML);
 			}
@@ -616,7 +616,7 @@ class CMS_email extends CMS_grandFather
 	 */
 	function EncodeHeader ($str, $position = 'text') {
 		$x = 0;
-		switch (strtolower($position)) {
+		switch (io::strtolower($position)) {
 			case 'phrase':
 				if (!preg_match('/[\200-\377]/', $str)) {
 					/* Can't use addslashes as we don't know what value has magic_quotes_sybase. */
@@ -640,9 +640,9 @@ class CMS_email extends CMS_grandFather
 		if ($x == 0) {
 			return ($str);
 		}
-		$maxlen = 75 - 7 - strlen($this->_emailEncoding);
+		$maxlen = 75 - 7 - io::strlen($this->_emailEncoding);
 		/* Try to select the encoding which should produce the shortest output */
-		if (strlen($str)/3 < $x) {
+		if (io::strlen($str)/3 < $x) {
 			$encoding = 'B';
 			$encoded = base64_encode($str);
 			$maxlen -= $maxlen % 4;
@@ -666,7 +666,7 @@ class CMS_email extends CMS_grandFather
 	 */
 	function EncodeQP ($str) {
 		$encoded = $this->FixEOL($str);
-		if (substr($encoded, -(strlen($this->LE))) != $this->LE) {
+		if (io::substr($encoded, -(io::strlen($this->LE))) != $this->LE) {
 			$encoded .= $this->LE;
 		}
 		
@@ -689,7 +689,7 @@ class CMS_email extends CMS_grandFather
 		/* There should not be any EOL in the string */
 		$encoded = preg_replace("[\r\n]", '', $str);
 		
-		switch (strtolower($position)) {
+		switch (io::strtolower($position)) {
 				case 'phrase':
 				$encoded = preg_replace("/([^A-Za-z0-9!*+\/ -])/e", "'='.sprintf('%02X', ord('\\1'))", $encoded);
 			break;

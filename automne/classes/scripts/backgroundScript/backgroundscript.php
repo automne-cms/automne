@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: backgroundscript.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: backgroundscript.php,v 1.2 2009/10/22 16:30:06 sebastien Exp $
 
 /**
   * background script abstract class
@@ -65,7 +65,7 @@ class backgroundScript extends CMS_grandFather
 			if (!APPLICATION_IS_WINDOWS) {
 				$tmpDir = dir($this->_processManager->getTempPath());
 				while (false !== ($file = $tmpDir->read())) {
-					if (strpos($file, SCRIPT_CODENAME) !== false) {
+					if (io::strpos($file, SCRIPT_CODENAME) !== false) {
 						@unlink($this->_processManager->getTempPath().'/'.$file);
 					}
 				}

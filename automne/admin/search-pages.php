@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: search-pages.php,v 1.2 2008/12/18 10:36:43 sebastien Exp $
+// $Id: search-pages.php,v 1.3 2009/10/22 16:26:26 sebastien Exp $
 
 /**
   * PHP page : return search pages results
@@ -30,12 +30,14 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_JSON);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 $query = sensitiveIO::request('query', '', '');
 $start = sensitiveIO::request('start', 'sensitiveIO::isPositiveInteger', 0);
 $limit = sensitiveIO::request('limit', 'sensitiveIO::isPositiveInteger', 10);
 
-if (!$query || strlen($query) < 3) {
+if (!$query || io::strlen($query) < 3) {
 	CMS_grandFather::raiseError('Missing query or query is too short : '.$query);
 	$view->show();
 }

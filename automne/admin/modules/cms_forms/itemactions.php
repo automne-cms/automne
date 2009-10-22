@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: itemactions.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: itemactions.php,v 1.2 2009/10/22 16:28:22 sebastien Exp $
 
 /**
   * PHP page : module admin frontend
@@ -160,7 +160,7 @@ case "validate":
 				$ok = true;
 				foreach($emails as $email) {
 					//value can be a valid email or a $_SESSION value
-					if (!sensitiveIO::isValidEmail($email) && strpos($email, '$_SESSION') === false) {
+					if (!sensitiveIO::isValidEmail($email) && io::strpos($email, '$_SESSION') === false) {
 						$ok = false;
 					}
 				}

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: standard.php,v 1.13 2009/07/20 16:35:36 sebastien Exp $
+// $Id: standard.php,v 1.14 2009/10/22 16:30:02 sebastien Exp $
 
 /**
   * Class CMS_module_standard
@@ -81,7 +81,7 @@ class CMS_module_standard extends CMS_module
 	const MESSAGE_PARAM_APPLICATION_ENFORCES_ACCESS_CONTROL = 614;
 	const MESSAGE_PARAM_ALLOW_IMAGES_IN_WYSIWYG = 615;
 	const MESSAGE_PARAM_LOG_SENDING_MAIL = 616;
-	const MESSAGE_PARAM_ALLOW_WYSIWYG_XHTML_VALIDATION = 1566;
+	//const MESSAGE_PARAM_ALLOW_WYSIWYG_XHTML_VALIDATION = 1566;
 	
 	const MESSAGE_PARAM_APPLICATION_LABEL_DESC = 617;
 	const MESSAGE_PARAM_APPLICATION_MAINTAINER_EMAIL_DESC = 618;
@@ -101,7 +101,7 @@ class CMS_module_standard extends CMS_module
 	const MESSAGE_PARAM_APPLICATION_ENFORCES_ACCESS_CONTROL_DESC = 632;
 	const MESSAGE_PARAM_ALLOW_IMAGES_IN_WYSIWYG_DESC = 633;
 	const MESSAGE_PARAM_LOG_SENDING_MAIL_DESC = 634;
-	const MESSAGE_PARAM_ALLOW_WYSIWYG_XHTML_VALIDATION_DESC = 1567;
+	//const MESSAGE_PARAM_ALLOW_WYSIWYG_XHTML_VALIDATION_DESC = 1567;
 	
 	/**
 	  * Gets the administration frontend path. No centralized admin for the standard module.
@@ -1332,6 +1332,15 @@ class CMS_module_standard extends CMS_module
 				if ($file->isFile()) @unlink($file->getPathname());
 			}
 		} catch(Exception $e) {}
+		//rotate error log file
+		try{
+			$source = PATH_MAIN_FS.'/'.CMS_grandFather::ERROR_LOG;
+			$dest = PATH_LOGS_FS.'/'.CMS_grandFather::ERROR_LOG.'-'.date('Y-m-d').'.gz';
+			if (CMS_file::gzipfile($source, $dest, 3)) {
+				//erase error log file
+				@unlink(PATH_MAIN_FS.'/'.CMS_grandFather::ERROR_LOG);
+			}
+		} catch(Exception $e) {}
 	}
 	
 	/**
@@ -1452,6 +1461,22 @@ class CMS_module_standard extends CMS_module
 					"row" => array("selfClosed" => false, "parameters" => array()),
 				);
 			break;
+			case MODULE_TREATMENT_PAGEHEADER_TAGS :
+				switch ($visualizationMode) {
+					case PAGE_VISUALMODE_PRINT :
+						$return = array ();
+					break;
+					default:
+						$return = array (
+							"atm-keywords" 		=> array("selfClosed" => true, "parameters" => array()),
+							"atm-description" 	=> array("selfClosed" => true, "parameters" => array()),
+							"atm-meta-tags" 	=> array("selfClosed" => true, "parameters" => array()),
+							"atm-css-tags" 		=> array("selfClosed" => true, "parameters" => array()),
+							"atm-js-tags" 		=> array("selfClosed" => true, "parameters" => array()),
+						);
+					break;
+				}
+			break;
 			case MODULE_TREATMENT_PAGECONTENT_TAGS :
 				switch ($visualizationMode) {
 					case PAGE_VISUALMODE_PRINT :
@@ -1468,11 +1493,6 @@ class CMS_module_standard extends CMS_module
 						$return = array (
 							"atm-title" 		=> array("selfClosed" => true, "parameters" => array()),
 							"atm-main-url" 		=> array("selfClosed" => true, "parameters" => array()),
-							"atm-keywords" 		=> array("selfClosed" => true, "parameters" => array()),
-							"atm-description" 	=> array("selfClosed" => true, "parameters" => array()),
-							"atm-meta-tags" 	=> array("selfClosed" => true, "parameters" => array()),
-							"atm-css-tags" 		=> array("selfClosed" => true, "parameters" => array()),
-							"atm-js-tags" 		=> array("selfClosed" => true, "parameters" => array()),
 							"atm-print-link" 	=> array("selfClosed" => false, "parameters" => array()),
 							"atm-constant" 		=> array("selfClosed" => true, "parameters" => array()),
 							"atm-last-update" 	=> array("selfClosed" => false, "parameters" => array()),
@@ -1722,39 +1742,44 @@ class CMS_module_standard extends CMS_module
 						);
 						return str_replace(array_keys($replace), $replace, $tag->getInnerContent());
 					break;
-					/*case "atm-js-tags":
-					case "atm-css-tags":
-						pr($this->_codename);
-						$files = $tag->getAttribute('files');
-						if (!$files) {
+					case "atm-print-link":
+						if ($treatedObject->getPrintStatus()) {
+							$template = $tag->getInnerContent();
+							if ($tag->getAttribute("keeprequest") == 'true') {
+								return '<?php echo \''.str_replace("{{href}}", $treatedObject->getURL(true).'\'.($_SERVER["QUERY_STRING"] ? \'?\'.$_SERVER["QUERY_STRING"] : \'\').\'', str_replace("\\\\'", "\'", str_replace("'", "\'", $template))).'\' ?>';
+							} else{
+								return str_replace("{{href}}", $treatedObject->getURL(true), $template);
+							}
+						} else {
 							return '';
 						}
-						//save in global var the page ID who need this module so we can add the header code later.
-						CMS_module::moduleUsage($treatedObject->getID(), $this->_codename, array($tag->getName() => true));
-						
-						$media = $tag->getAttribute('media');
-						$files = array_map('trim', explode(',', $files));
-						
-						switch ($tag->getName()) {
-							case "atm-js-tags":
-								$method = 'getJavascript';
-								$files[] = '/js/CMS_functions.js';
-								//if this page use a row block of this module then add the header code to the page
-								if ($usage = $this->moduleUsage($treatedObject->getID(), MOD_STANDARD_CODENAME)) {
-									if (is_array($usage) && isset($usage['blockflash']) && $usage['blockflash'] == true) {
-										$files[] = 'swfobject';
-									}
-								}
-							break;
-							case "atm-css-tags":
-								$method = 'getCSS';
-							break;
+					break;
+					case "atm-constant":
+						$const = SensitiveIO::stripPHPTags(io::strtoupper($tag->getAttribute("name")));
+						if (defined($const)) {
+							return constant($const);
+						} else {
+							return '';
 						}
-						//save files
-						pr($files);
-						CMS_module::moduleUsage($treatedObject->getID(), $tag->getName(), $files);
-						return '<?php echo CMS_view::'.$method.'(array(\''.implode('\',\'', $files).'\')'.($media ? ', \''.$media.'\'' : '').'); ? >'."\n";
-					break;*/
+					break;
+					case "body":
+						$statsCode = '<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat();} ?>';
+						//Append stats code
+						return str_replace('</body>', $statsCode."\n".'</body>', $tag->getContent());
+					break;
+					case "html":
+						//Append DTD
+						return '<?php if (defined(\'APPLICATION_XHTML_DTD\')) echo APPLICATION_XHTML_DTD."\n"; ?>'."\n".$tag->getContent();
+					break;
+				}
+				return '';
+			break;
+			case MODULE_TREATMENT_PAGEHEADER_TAGS:
+				if (!is_a($treatedObject,"CMS_page")) {
+					$this->raiseError('$treatedObject must be a CMS_page object');
+					return false;
+				}
+				switch ($tag->getName()) {
 					case "atm-js-tags":
 					case "atm-css-tags":
 						$usage = CMS_module::moduleUsage($treatedObject->getID(), $this->_codename);
@@ -1877,35 +1902,6 @@ class CMS_module_standard extends CMS_module
 							}
 						}
 						return $metaDatas;
-					break;
-					case "atm-print-link":
-						if ($treatedObject->getPrintStatus()) {
-							$template = $tag->getInnerContent();
-							if ($tag->getAttribute("keeprequest") == 'true') {
-								return '<?php echo \''.str_replace("{{href}}", $treatedObject->getURL(true).'\'.($_SERVER["QUERY_STRING"] ? \'?\'.$_SERVER["QUERY_STRING"] : \'\').\'', str_replace("\\\\'", "\'", str_replace("'", "\'", $template))).'\' ?>';
-							} else{
-								return str_replace("{{href}}", $treatedObject->getURL(true), $template);
-							}
-						} else {
-							return '';
-						}
-					break;
-					case "atm-constant":
-						$const = SensitiveIO::stripPHPTags(strtoupper($tag->getAttribute("name")));
-						if (defined($const)) {
-							return constant($const);
-						} else {
-							return '';
-						}
-					break;
-					case "body":
-						$statsCode = '<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat();} ?>';
-						//Append stats code
-						return str_replace('</body>', $statsCode."\n".'</body>', $tag->getContent());
-					break;
-					case "html":
-						//Append DTD
-						return '<?php if (defined(\'APPLICATION_XHTML_DTD\')) echo APPLICATION_XHTML_DTD."\n"; ?>'."\n".$tag->getContent();
 					break;
 				}
 				return '';

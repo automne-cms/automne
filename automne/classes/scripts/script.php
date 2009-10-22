@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: script.php,v 1.3 2009/07/20 16:35:38 sebastien Exp $
+// $Id: script.php,v 1.4 2009/10/22 16:30:05 sebastien Exp $
 
 /**
   * background script : regenerator
@@ -156,7 +156,7 @@ class automne_script extends backgroundScript
 							}
 							$fh = fopen( PATH_WINDOWS_BIN_FS."/sub_script.bat", "wb" );
 							if (is_resource($fh)) {
-								if (!fwrite($fh, $command,strlen($command))) {
+								if (!fwrite($fh, $command,io::strlen($command))) {
 									CMS_grandFather::raiseError(processManager::MASTER_SCRIPT_NAME." : Save file error : sub_script.bat");
 								}
 								fclose($fh);
@@ -187,7 +187,7 @@ class automne_script extends backgroundScript
 					} else {
 						$tmpDir = dir($this->_processManager->getTempPath());
 						while (false !== ($file = $tmpDir->read())) {
-							if (strpos($file, SCRIPT_CODENAME) !== false) {
+							if (io::strpos($file, SCRIPT_CODENAME) !== false) {
 								unlink($this->_processManager->getTempPath().'/'.$file);
 							}
 						}

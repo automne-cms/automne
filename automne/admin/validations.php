@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: validations.php,v 1.5 2009/06/22 14:10:34 sebastien Exp $
+// $Id: validations.php,v 1.6 2009/10/22 16:26:28 sebastien Exp $
 
 /**
   * PHP page : Load page validations window.
@@ -56,6 +56,8 @@ define("MESSAGE_PAGE_NO_PENDING_VALIDATION_SELECTED", 435);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 $winId = sensitiveIO::request('winId', '', 'validationsWindow');
 $module = sensitiveIO::request('module');

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: websitescatalog.php,v 1.2 2009/04/02 13:58:01 sebastien Exp $
+// $Id: websitescatalog.php,v 1.3 2009/10/22 16:30:06 sebastien Exp $
 
 /**
   * Class CMS_websitesCatalog
@@ -96,8 +96,8 @@ class CMS_websitesCatalog extends CMS_grandFather
 			foreach ($websites as $website) {
 				if ($website->isMain()) {
 					$mainURL = $website->getURL();
-					if (substr($mainURL, strlen($mainURL) - 1) == "/") {
-						$mainURL = substr($mainURL, 0, -1);
+					if (io::substr($mainURL, io::strlen($mainURL) - 1) == "/") {
+						$mainURL = io::substr($mainURL, 0, -1);
 					}
 				}
 			}
@@ -243,7 +243,7 @@ class CMS_websitesCatalog extends CMS_grandFather
 					}
 					//and append content to general redirection file
 					$content .= ($count) ? 'else' : '';
-					$content .= 'if (strtolower(parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST)) == \''.strtolower($website->getURL(false)).'\' || strtolower($_SERVER[\'HTTP_HOST\']) == \''.strtolower($website->getURL(false)).'\') {'."\n";
+					$content .= 'if (strtolower(parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST)) == \''.io::strtolower($website->getURL(false)).'\' || strtolower($_SERVER[\'HTTP_HOST\']) == \''.io::strtolower($website->getURL(false)).'\') {'."\n";
 					$content .= '	// '.$website->getURL();
 					$content .= str_replace(array('<?php','?>'), "", $redirectionCode)."\n";
 					$content .= '} ';

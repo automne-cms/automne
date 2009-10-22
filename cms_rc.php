@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc.php,v 1.17 2009/07/21 13:40:13 sebastien Exp $
+// $Id: cms_rc.php,v 1.18 2009/10/22 16:22:35 sebastien Exp $
 
 /**
   * rc file, contains all default constants
@@ -120,11 +120,19 @@ if (!defined("APPLICATION_DB_PASSWORD")) {
 }
 
 /**
+  *	Database port.
+  *	Default : empty string for standard MySQL port (3306)
+  */
+if (!defined("APPLICATION_DB_PORT")) {
+	define("APPLICATION_DB_PORT", "");
+}
+
+/**
   *	Database dsn.
   * Default : "mysql:host=".APPLICATION_DB_HOST.";dbname=".APPLICATION_DB_NAME
   */
 if (!defined("APPLICATION_DB_DSN")) {
-	define("APPLICATION_DB_DSN", "mysql:host=".APPLICATION_DB_HOST.";dbname=".APPLICATION_DB_NAME);
+	define("APPLICATION_DB_DSN", "mysql:host=".APPLICATION_DB_HOST.";dbname=".APPLICATION_DB_NAME . (APPLICATION_DB_PORT ? ';port='.APPLICATION_DB_PORT : ''));
 }
 
 /**
@@ -625,6 +633,13 @@ if (!defined("PATH_CACHE_FS")) {
 	define("PATH_CACHE_FS", PATH_MAIN_FS."/cache");
 }
 /**
+  *	Logs path (where automne logs are stored)
+  *	Default : PATH_LOGS_FS."/logs"
+  */
+if (!defined("PATH_LOGS_FS")) {
+	define("PATH_LOGS_FS", PATH_MAIN_FS."/logs");
+}
+/**
   *	Pages templates rows definition files path
   *	Default : PATH_MAIN_xx."/templates/rows"
   */
@@ -787,6 +802,10 @@ if (ini_get('memory_limit') < (int) APPLICATION_MEMORY_LIMIT) {
 @ini_set('session.gc_probability', 0);
 @ini_set('allow_call_time_pass_reference', 0);
 
+//set PHP default encoding for utf-8
+if (strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8') {
+	@ini_set('mbstring.internal_encoding', 'UTF-8');
+}
 //remove NOTICE to avoid useless notice messages.
 error_reporting(APPLICATION_ERROR_REPORTING);
 
@@ -884,6 +903,9 @@ if (STATS_DEBUG) {
 }
 //include base packages
 require_once(PATH_PACKAGES_FS."/common/grandfather.php");
+//log PHP Errors
+@ini_set('log_errors', 1);
+@ini_set('error_log', PATH_MAIN_FS.'/'.CMS_grandFather::ERROR_LOG);
 
 /**
   * Set PHP error handler
@@ -966,10 +988,8 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])
 	&& $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
 	function utf8_decode_callback (&$input, $index = '') {
 		if (is_string($input)) {
-			//to preserve the euro sign
-			$input = strtr($input, array("\xe2\x82\xac" => "\xc2\x80"));
-			//then decode UTF-8 content
-			$input = utf8_decode($input);
+			//decode UTF8 with support of CP1252
+			$input = sensitiveIO::utf8Decode($input);
 			return $input;
 		} elseif (is_array($input)) {
 			array_walk_recursive($input, 'utf8_decode_callback');
@@ -1018,7 +1038,7 @@ function start_atm_session() {
 		return;
 	}
 	// session cookie settings
-	session_set_cookie_params(0, '/', '', false);
+	session_set_cookie_params(0, '/', '', false, true);
 	
 	// cookies are safer (use @ini_set() in case this function is disabled)
 	@ini_set('session.use_cookies', true);
@@ -1066,6 +1086,8 @@ define("MODULE_TREATMENT_BLOCK_TAGS", 4);
 define("MODULE_TREATMENT_LINXES_TAGS", 8);
 define("MODULE_TREATMENT_WYSIWYG_INNER_TAGS", 16);
 define("MODULE_TREATMENT_WYSIWYG_OUTER_TAGS", 32);
+define("MODULE_TREATMENT_PAGEHEADER_TAGS", 64);
+
 /**
   *	Paths are either relative to Filesystem root or Webroot
   *	Default : "WR" and "FS"

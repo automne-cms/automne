@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: polymodFrontEnd.php,v 1.3 2009/03/02 11:27:57 sebastien Exp $
+// $Id: polymodFrontEnd.php,v 1.4 2009/10/22 16:29:22 sebastien Exp $
 
 /**
   * Main Include File of the Frontend Package : polymod
@@ -27,5 +27,5 @@ if (file_exists(PATH_PACKAGES_FS.'/aseFrontEnd.php')) {
 	require_once(PATH_PACKAGES_FS.'/aseFrontEnd.php');
 }
 //set public search status
-$public_search = (isset($_GET["previz"]) && $_GET["previz"] == 'previz' && isset($_SERVER["HTTP_REFERER"]) && strpos($_SERVER["HTTP_REFERER"], "automne/admin") !== false) ? false : true;
+$public_search = (isset($_GET["previz"]) && $_GET["previz"] == 'previz' && isset($_SERVER["HTTP_REFERER"]) && io::strpos($_SERVER["HTTP_REFERER"], "automne/admin") !== false) ? false : true;
 ?>

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: moduleValidation.php,v 1.2 2009/03/02 11:28:30 sebastien Exp $
+// $Id: moduleValidation.php,v 1.3 2009/10/22 16:30:02 sebastien Exp $
 
 /**
   * Class CMS_moduleValidation
@@ -521,12 +521,12 @@ class CMS_moduleValidation extends CMS_module
 	  */
 	function getDefaultLanguageCodename()
 	{
-		if ($this->hasParameters() && $s = $this->getParameters(strtolower("default_language"))) {
-			define("MOD_".strtoupper($this->getCodename())."_DEFAULT_LANGUAGE", strtolower($s));
+		if ($this->hasParameters() && $s = $this->getParameters(io::strtolower("default_language"))) {
+			define("MOD_".io::strtoupper($this->getCodename())."_DEFAULT_LANGUAGE", io::strtolower($s));
 		} else {
-			define("MOD_".strtoupper($this->getCodename())."_DEFAULT_LANGUAGE", "en");
+			define("MOD_".io::strtoupper($this->getCodename())."_DEFAULT_LANGUAGE", "en");
 		}
-		return constant("MOD_".strtoupper($this->getCodename())."_DEFAULT_LANGUAGE");
+		return constant("MOD_".io::strtoupper($this->getCodename())."_DEFAULT_LANGUAGE");
 	}
 	
 	/** 
@@ -539,11 +539,11 @@ class CMS_moduleValidation extends CMS_module
 	function getModuleValidationLabel($label)
 	{
 		$labels = array(
-			"edition" 					=> constant("MESSAGE_MOD_".strtoupper($this->getCodename())."_VALIDATION_EDITION"),
-			"editionOfResource" 		=> constant("MESSAGE_MOD_".strtoupper($this->getCodename())."_VALIDATION_EDITION_OFRESOURCE"),
-			"URLPreviz" 				=> constant("MESSAGE_MOD_".strtoupper($this->getCodename())."_URL_PREVIZ"),
-			"locationChange"			=> constant("MESSAGE_MOD_".strtoupper($this->getCodename())."_VALIDATION_LOCATIONCHANGE"),
-			"locationChangeOfResource" 	=> constant("MESSAGE_MOD_".strtoupper($this->getCodename())."_VALIDATION_LOCATIONCHANGE_OFRESOURCE")
+			"edition" 					=> constant("MESSAGE_MOD_".io::strtoupper($this->getCodename())."_VALIDATION_EDITION"),
+			"editionOfResource" 		=> constant("MESSAGE_MOD_".io::strtoupper($this->getCodename())."_VALIDATION_EDITION_OFRESOURCE"),
+			"URLPreviz" 				=> constant("MESSAGE_MOD_".io::strtoupper($this->getCodename())."_URL_PREVIZ"),
+			"locationChange"			=> constant("MESSAGE_MOD_".io::strtoupper($this->getCodename())."_VALIDATION_LOCATIONCHANGE"),
+			"locationChangeOfResource" 	=> constant("MESSAGE_MOD_".io::strtoupper($this->getCodename())."_VALIDATION_LOCATIONCHANGE_OFRESOURCE")
 		);
 		
 		if ($labels[$label]) {

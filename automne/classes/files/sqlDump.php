@@ -1,5 +1,5 @@
 <?php
-/* $Id: sqlDump.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $ */
+/* $Id: sqlDump.php,v 1.2 2009/10/22 16:30:01 sebastien Exp $ */
 // vim: expandtab sw=4 ts=4 sts=4:
 
 /**
@@ -19,7 +19,7 @@
 function PMA_splitSqlFile(&$ret, $sql, $release)
 {
     $sql          = trim($sql);
-    $sql_len      = strlen($sql);
+    $sql_len      = io::strlen($sql);
     $char         = '';
     $string_start = '';
     $in_string    = FALSE;
@@ -32,7 +32,7 @@ function PMA_splitSqlFile(&$ret, $sql, $release)
         // backquotes that can't be escaped
         if ($in_string) {
             for (;;) {
-                $i         = strpos($sql, $string_start, $i);
+                $i         = io::strpos($sql, $string_start, $i);
                 // No end of string found -> add the current substring to the
                 // returned array
                 if (!$i) {
@@ -73,9 +73,9 @@ function PMA_splitSqlFile(&$ret, $sql, $release)
         // We are not in a string, first check for delimiter...
         else if ($char == ';') {
             // if delimiter found, add the parsed part to the returned array
-            $ret[]      = substr($sql, 0, $i);
-            $sql        = ltrim(substr($sql, min($i + 1, $sql_len)));
-            $sql_len    = strlen($sql);
+            $ret[]      = io::substr($sql, 0, $i);
+            $sql        = ltrim(io::substr($sql, min($i + 1, $sql_len)));
+            $sql_len    = io::strlen($sql);
             if ($sql_len) {
                 $i      = -1;
             } else {
@@ -97,20 +97,20 @@ function PMA_splitSqlFile(&$ret, $sql, $release)
             $start_of_comment = (($sql[$i] == '#') ? $i : $i-2);
             // if no "\n" exits in the remaining string, checks for "\r"
             // (Mac eol style)
-            $end_of_comment   = (strpos(' ' . $sql, "\012", $i+2))
-                              ? strpos(' ' . $sql, "\012", $i+2)
-                              : strpos(' ' . $sql, "\015", $i+2);
+            $end_of_comment   = (io::strpos(' ' . $sql, "\012", $i+2))
+                              ? io::strpos(' ' . $sql, "\012", $i+2)
+                              : io::strpos(' ' . $sql, "\015", $i+2);
             if (!$end_of_comment) {
                 // no eol found after '#', add the parsed part to the returned
                 // array if required and exit
                 if ($start_of_comment > 0) {
-                    $ret[]    = trim(substr($sql, 0, $start_of_comment));
+                    $ret[]    = trim(io::substr($sql, 0, $start_of_comment));
                 }
                 return TRUE;
             } else {
-                $sql          = substr($sql, 0, $start_of_comment)
-                              . ltrim(substr($sql, $end_of_comment));
-                $sql_len      = strlen($sql);
+                $sql          = io::substr($sql, 0, $start_of_comment)
+                              . ltrim(io::substr($sql, $end_of_comment));
+                $sql_len      = io::strlen($sql);
                 $i--;
             } // end if...else
         } // end else if (is comment)

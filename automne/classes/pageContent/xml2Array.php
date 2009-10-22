@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: xml2Array.php,v 1.3 2009/07/20 16:35:36 sebastien Exp $
+// $Id: xml2Array.php,v 1.4 2009/10/22 16:30:05 sebastien Exp $
 
 /**
   * Class CMS_xml2Array
@@ -34,7 +34,7 @@ class CMS_xml2Array extends CMS_grandFather
 	const ARRAY2XML_START_TAG = 1;
 	const ARRAY2XML_END_TAG = -1;
 	
-	protected $_autoClosedTagsList = array('br', 'hr', 'meta', 'input', 'img', 'link', 'area', 'param', 'col', 'frame');
+	protected $_autoClosedTagsList = array('br', 'hr', 'meta', 'input', 'img', 'link', 'area', 'param', 'col', 'frame', 'nodespec');
 	
 	protected $_params;
 	
@@ -71,7 +71,7 @@ class CMS_xml2Array extends CMS_grandFather
 						xml_error_string(xml_get_error_code($parser)),
 						xml_get_current_line_number($parser));
 				if ($this->_params & ~self::XML_DONT_THROW_ERROR) {
-					$this->raiseError($this->_parsingError." :\n".htmlspecialchars($xml));
+					$this->raiseError($this->_parsingError." :\n".$xml, true);
 				}
 			}
 			xml_parser_free($parser);
@@ -101,8 +101,8 @@ class CMS_xml2Array extends CMS_grandFather
 		$data = str_replace($entities, array_keys($entities), $data);
 		//translate ones that are not HTMLized
 		$entities = array(
-			'&' => '¤',
-			'< ' => '£µ',
+			'&' => '-|amp|-',
+			'< ' => '-|lts|-',
 		);
 		$data = str_replace(array_keys($entities), $entities, $data);
 		return $data;
@@ -118,8 +118,8 @@ class CMS_xml2Array extends CMS_grandFather
 	protected function _correctEntities($data)
 	{
 		$entities = array(
-			'&' => '¤',
-			'< ' => '£µ',
+			'&' => '-|amp|-',
+			'< ' => '-|lts|-',
 		);
 		$data = str_replace(array_keys($entities), $entities, $data);
 		return $data;
@@ -154,8 +154,8 @@ class CMS_xml2Array extends CMS_grandFather
 	protected function _uncorrectEntities($data)
 	{
 		$entities = array(
-			'&' => '¤',
-			'< ' => '£µ',
+			'&' => '-|amp|-',
+			'< ' => '-|lts|-',
 		);
 		$data = str_replace($entities, array_keys($entities), $data);
 		return $data;
@@ -182,8 +182,8 @@ class CMS_xml2Array extends CMS_grandFather
 		if ($this->_params & self::XML_CORRECT_ENTITIES) {
 			$attrs = array_map(array($this,"_uncorrectEntities"),$attrs);
 		}
-		$tag=array("nodename"=>$name,"attributes"=>$attrs);
-		array_push($this->_arrOutput,$tag);
+		$tag = array("nodename" => $name, "attributes" => $attrs);
+		array_push($this->_arrOutput, $tag);
 	}
 	
 	//called on data for xml
@@ -195,7 +195,7 @@ class CMS_xml2Array extends CMS_grandFather
 			if ($this->_params & self::XML_CORRECT_ENTITIES) {
 				$tagData = $this->_uncorrectEntities($tagData);
 			}
-			$last_element=count($this->_arrOutput)-1;
+			$last_element = count($this->_arrOutput) - 1;
 			$this->_arrOutput[$last_element]['childrens'][] = array("textnode" => $tagData);
 		}
 	}
@@ -210,7 +210,7 @@ class CMS_xml2Array extends CMS_grandFather
 			if ($this->_params & self::XML_CORRECT_ENTITIES) {
 				$tagData = $this->_uncorrectEntities($tagData);
 			}
-			$last_element = count($this->_arrOutput)-1;
+			$last_element = count($this->_arrOutput) - 1;
 			$this->_arrOutput[$last_element]['childrens'][] = array("textnode" => $tagData);
 		}
 	}
@@ -239,13 +239,6 @@ class CMS_xml2Array extends CMS_grandFather
 		}
 	}
 	
-	protected function _entityData($parser, $tagData) {
-		if(trim($tagData)) {
-			$last_element = count($this->_arrOutput)-1;
-			$this->_arrOutput[$last_element]['childrens'][] = array("textnode" => $tagData);
-		}
-	}
-	
 	function toXML(&$definition, $part = false)
 	{
 		//return back xml
@@ -265,7 +258,7 @@ class CMS_xml2Array extends CMS_grandFather
 			} elseif (isset($definition[$c]["phpnode"]) ){
 				$result .= '<?php '.$definition[$c]["phpnode"].' ?>';
 			} else {
-				$autoclosed = (in_array($definition[$c]["nodename"], $this->_autoClosedTagsList) || (strpos($definition[$c]["nodename"], 'atm') === 0 && !isset($definition[$c]["childrens"])));
+				$autoclosed = (in_array($definition[$c]["nodename"], $this->_autoClosedTagsList) || (io::strpos($definition[$c]["nodename"], 'atm') === 0 && !isset($definition[$c]["childrens"])));
 				if (!$part || $part == self::ARRAY2XML_START_TAG) {
 					$result .='<' . $definition[$c]["nodename"];
 					if(is_array($definition[$c]["attributes"])) {

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modulePolymodValidation.php,v 1.3 2009/06/23 15:34:29 sebastien Exp $
+// $Id: modulePolymodValidation.php,v 1.4 2009/10/22 16:30:02 sebastien Exp $
 
 /**
   * Class CMS_modulePolymodValidation
@@ -243,7 +243,7 @@ class CMS_modulePolymodValidation extends CMS_module
 					$validation = new CMS_resourceValidation($this->_codename, RESOURCE_EDITION_CONTENT, $item);
 					if (!$validation->hasError()) {
 						$validation->setValidationTypeLabel($language->getMessage(self::MESSAGE_MOD_POLYMOD_VALIDATION_EDITION, array($this->_primaryResourceObjectDefinition->getLabel($language)), MOD_POLYMOD_CODENAME));
-						$validation->setValidationLabel($language->getMessage(self::MESSAGE_MOD_POLYMOD_VALIDATION_EDITION_OFRESOURCE, array($this->_primaryResourceObjectDefinition->getLabel($language)), MOD_POLYMOD_CODENAME)." ".html_entity_decode($item->{$this->_resourceNameMethod}()));
+						$validation->setValidationLabel($language->getMessage(self::MESSAGE_MOD_POLYMOD_VALIDATION_EDITION_OFRESOURCE, array($this->_primaryResourceObjectDefinition->getLabel($language)), MOD_POLYMOD_CODENAME)." ".io::decodeEntities($item->{$this->_resourceNameMethod}()));
 						$previzURL = $item->getPrevizPageURL();
 						if ($previzURL) {
 							$validation->addHelpUrl($language->getMessage(self::MESSAGE_PAGE_ACTION_PREVIZ),$previzURL);
@@ -281,7 +281,7 @@ class CMS_modulePolymodValidation extends CMS_module
 					$validation = new CMS_resourceValidation($this->_codename, RESOURCE_EDITION_LOCATION, $item);
 					if (!$validation->hasError()) {
 						$validation->setValidationTypeLabel($language->getMessage(self::MESSAGE_MOD_POLYMOD_VALIDATION_LOCATIONCHANGE, array($this->_primaryResourceObjectDefinition->getLabel($language)), MOD_POLYMOD_CODENAME));
-						$validation->setValidationLabel($language->getMessage(self::MESSAGE_MOD_POLYMOD_VALIDATION_LOCATIONCHANGE_OFRESOURCE, array($this->_primaryResourceObjectDefinition->getLabel($language)), MOD_POLYMOD_CODENAME)." ".html_entity_decode($item->{$this->_resourceNameMethod}()));
+						$validation->setValidationLabel($language->getMessage(self::MESSAGE_MOD_POLYMOD_VALIDATION_LOCATIONCHANGE_OFRESOURCE, array($this->_primaryResourceObjectDefinition->getLabel($language)), MOD_POLYMOD_CODENAME)." ".io::decodeEntities($item->{$this->_resourceNameMethod}()));
 						$previzURL = $item->getPrevizPageURL();
 						if ($previzURL) {
 							$validation->addHelpUrl($language->getMessage(self::MESSAGE_PAGE_ACTION_PREVIZ),$previzURL);
@@ -489,8 +489,8 @@ class CMS_modulePolymodValidation extends CMS_module
 					$validation = new CMS_resourceValidation($this->_codename, RESOURCE_EDITION_LOCATION, $item);
 					if (!$validation->hasError()) {
 						$validation->setValidationTypeLabel($language->getMessage(self::MESSAGE_MOD_POLYMOD_VALIDATION_LOCATIONCHANGE, array($this->_primaryResourceObjectDefinition->getLabel($language)), MOD_POLYMOD_CODENAME));
-						$validation->setValidationLabel($language->getMessage(self::MESSAGE_MOD_POLYMOD_VALIDATION_LOCATIONCHANGE_OFRESOURCE, array($this->_primaryResourceObjectDefinition->getLabel($language)), MOD_POLYMOD_CODENAME)." ".html_entity_decode($item->{$this->_resourceNameMethod}()));
-						$validation->setValidationShortLabel(html_entity_decode($item->{$this->_resourceNameMethod}()));
+						$validation->setValidationLabel($language->getMessage(self::MESSAGE_MOD_POLYMOD_VALIDATION_LOCATIONCHANGE_OFRESOURCE, array($this->_primaryResourceObjectDefinition->getLabel($language)), MOD_POLYMOD_CODENAME)." ".io::decodeEntities($item->{$this->_resourceNameMethod}()));
+						$validation->setValidationShortLabel(io::decodeEntities($item->{$this->_resourceNameMethod}()));
 						$previzURL = $item->getPrevizPageURL();
 						if ($previzURL) {
 							$validation->addHelpUrl($language->getMessage(self::MESSAGE_PAGE_ACTION_PREVIZ),$previzURL);
@@ -515,8 +515,8 @@ class CMS_modulePolymodValidation extends CMS_module
 					$validation = new CMS_resourceValidation($this->_codename, $editions, $item);
 					if (!$validation->hasError()) {
 						$validation->setValidationTypeLabel($language->getMessage(self::MESSAGE_MOD_POLYMOD_VALIDATION_EDITION, array($this->_primaryResourceObjectDefinition->getLabel($language)), MOD_POLYMOD_CODENAME));
-						$validation->setValidationLabel($language->getMessage(self::MESSAGE_MOD_POLYMOD_VALIDATION_EDITION_OFRESOURCE, array($this->_primaryResourceObjectDefinition->getLabel($language)), MOD_POLYMOD_CODENAME)." ".html_entity_decode($item->{$this->_resourceNameMethod}()));
-						$validation->setValidationShortLabel(html_entity_decode($item->{$this->_resourceNameMethod}()));
+						$validation->setValidationLabel($language->getMessage(self::MESSAGE_MOD_POLYMOD_VALIDATION_EDITION_OFRESOURCE, array($this->_primaryResourceObjectDefinition->getLabel($language)), MOD_POLYMOD_CODENAME)." ".io::decodeEntities($item->{$this->_resourceNameMethod}()));
+						$validation->setValidationShortLabel(io::decodeEntities($item->{$this->_resourceNameMethod}()));
 						$previzURL = $item->getPrevizPageURL();
 						if ($previzURL) {
 							$validation->addHelpUrl($language->getMessage(self::MESSAGE_PAGE_ACTION_PREVIZ),$previzURL);
@@ -817,35 +817,44 @@ class CMS_modulePolymodValidation extends CMS_module
 				return false;
 			}
 			//delete all files of the locationToDir
-			foreach(glob(PATH_MODULES_FILES_FS."/".$module."/".$locationTo.'/r'.$resourceID.'_*', GLOB_NOSORT) as $file) {
-				if (!CMS_file::deleteFile($file)) {
-					$this->raiseError("Can't delete file ".$file);
-					return false;
+			$files = glob(PATH_MODULES_FILES_FS."/".$module."/".$locationTo.'/r'.$resourceID.'_*', GLOB_NOSORT);
+			if (is_array($files)) {
+				foreach($files as $file) {
+					if (!CMS_file::deleteFile($file)) {
+						$this->raiseError("Can't delete file ".$file);
+						return false;
+					}
 				}
 			}
 			//then copy or move them to the locationToDir
-			foreach(glob(PATH_MODULES_FILES_FS."/".$module."/".$locationFrom.'/r'.$resourceID.'_*', GLOB_NOSORT) as $file) {
-				$to = str_replace('/'.$locationFrom.'/','/'.$locationTo.'/',$file);
-				if ($copyOnly) {
-					if (!CMS_file::copyTo($file,$to)) {
-						$this->raiseError("Can't copy file ".$file." to ".$to);
-						return false;
+			$files = glob(PATH_MODULES_FILES_FS."/".$module."/".$locationFrom.'/r'.$resourceID.'_*', GLOB_NOSORT);
+			if (is_array($files)) {
+				foreach($files as $file) {
+					$to = str_replace('/'.$locationFrom.'/','/'.$locationTo.'/',$file);
+					if ($copyOnly) {
+						if (!CMS_file::copyTo($file,$to)) {
+							$this->raiseError("Can't copy file ".$file." to ".$to);
+							return false;
+						}
+					} else {
+						if (!CMS_file::moveTo($file,$to)) {
+							$this->raiseError("Can't move file ".$file." to ".$to);
+							return false;
+						}
 					}
-				} else {
-					if (!CMS_file::moveTo($file,$to)) {
-						$this->raiseError("Can't move file ".$file." to ".$to);
-						return false;
-					}
+					//then chmod new file
+					CMS_file::chmodFile(FILES_CHMOD,$to);
 				}
-				//then chmod new file
-				CMS_file::chmodFile(FILES_CHMOD,$to);
 			}
 		} else {
 			//then get all files of the locationFromDir
-			foreach(glob(PATH_MODULES_FILES_FS."/".$module."/".$locationFrom.'/r'.$resourceID.'_*', GLOB_NOSORT) as $file) {
-				if (!CMS_file::deleteFile($file)) {
-					$this->raiseError("Can't delete file ".$file);
-					return false;
+			$files = glob(PATH_MODULES_FILES_FS."/".$module."/".$locationFrom.'/r'.$resourceID.'_*', GLOB_NOSORT);
+			if (is_array($files)) {
+				foreach($files as $file) {
+					if (!CMS_file::deleteFile($file)) {
+						$this->raiseError("Can't delete file ".$file);
+						return false;
+					}
 				}
 			}
 		}
@@ -862,11 +871,11 @@ class CMS_modulePolymodValidation extends CMS_module
 	  */
 	function getDefaultLanguageCodename()
 	{
-		if (!defined("MOD_".strtoupper($this->getCodename())."_DEFAULT_LANGUAGE")) {
+		if (!defined("MOD_".io::strtoupper($this->getCodename())."_DEFAULT_LANGUAGE")) {
 			$polymodLanguages = CMS_object_i18nm::getAvailableLanguages();
-			define("MOD_".strtoupper($this->getCodename())."_DEFAULT_LANGUAGE", $polymodLanguages[0]);
+			define("MOD_".io::strtoupper($this->getCodename())."_DEFAULT_LANGUAGE", $polymodLanguages[0]);
 		}
-		return constant("MOD_".strtoupper($this->getCodename())."_DEFAULT_LANGUAGE");
+		return constant("MOD_".io::strtoupper($this->getCodename())."_DEFAULT_LANGUAGE");
 	}
 	
 	/** 

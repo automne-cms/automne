@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: sensitiveio.php,v 1.5 2009/07/20 16:35:36 sebastien Exp $
+// $Id: sensitiveio.php,v 1.6 2009/10/22 16:30:00 sebastien Exp $
 
 /**
   * Class SensitiveIO
@@ -53,7 +53,7 @@ class SensitiveIO extends CMS_grandfather
 			if ($filter == '') { //no filter set, just return request value
 				return $_REQUEST[$name];
 			} elseif (is_callable($filter, true)) {//check if function/method name exists
-				if (strpos($filter, '::') !== false) {//static method call
+				if (io::strpos($filter, '::') !== false) {//static method call
 					$method = explode('::', $filter);
 					return (call_user_func(array($method[0], $method[1]), $_REQUEST[$name]) ? $_REQUEST[$name] : $default);
 				} elseif(call_user_func($filter, $_REQUEST[$name])) { //function call
@@ -148,8 +148,7 @@ class SensitiveIO extends CMS_grandfather
 	}
 
 	/**
-	  * Cleans a string that is to be put echoed to the user.
-	  * Actually, only escapes HTML entities.
+	  * Cleans a string that has to be echoed to the user.
 	  * Static method.
 	  *
 	  * @param mixed $input The sensitive input.
@@ -157,7 +156,24 @@ class SensitiveIO extends CMS_grandfather
 	  * @access public
 	  */
 	static function sanitizeHTMLString($input) {
-		return htmlspecialchars($input);
+		if (version_compare(phpversion(), "5.2.3") !== -1) {
+			return htmlspecialchars($input, ENT_QUOTES, 'ISO-8859-1', false);
+		} else {
+			return preg_replace("/&amp;(#[0-9]+|[a-z]+);/i", "&$1;", htmlspecialchars($input, ENT_QUOTES, 'ISO-8859-1'));
+		}
+	}
+	
+	/**
+	  * Cleans a string that has to be used in an exec command
+	  * For now, remove backticks ` in string
+	  * Static method.
+	  *
+	  * @param mixed $input The sensitive input.
+	  * @return string the sanitized string
+	  * @access public
+	  */
+	static function sanitizeExecCommand($input) {
+		return strtr($input, "\x60", '\'');
 	}
 
 	/**
@@ -170,9 +186,17 @@ class SensitiveIO extends CMS_grandfather
 	  * @access public
 	  */
 	static function sanitizeAsciiString($input) {
-		$sanitized = strtr($input, " ÀÁÂÃÄÅÆàáâãäåæÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñÞßÿý",
-								   "_AAAAAAAaaaaaaaOOOOOOOooooooEEEEeeeeeCceIIIIiiiiUUUUuuuuNntsyy");
-		$sanitized = preg_replace("#[^[a-zA-Z0-9_.-]]*#", "", $sanitized);
+		$map = io::sanitizeAsciiMap();
+		$map = array_merge($map, array(" " => "_"));
+		if (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
+			$sanitized = strtr($input, $map);
+			$sanitized = preg_replace("#[^[a-zA-Z0-9_.-]]*#", "", $sanitized);
+		} else {
+			$input = utf8_decode($input);
+			$sanitized = strtr($input, $map);
+			$sanitized = preg_replace("#[^[a-zA-Z0-9_.-]]*#", "", $sanitized);
+			$sanitized = utf8_encode($sanitized);
+		}
 		return $sanitized;
 	}
 
@@ -187,9 +211,13 @@ class SensitiveIO extends CMS_grandfather
 	  * @access public
 	  */
 	static function sanitizeURLString($input) {
-		//convert accentuated characters
-		$sanitized = strtr(trim($input), "’' @ÀÁÂÃÄÅÆàáâãäåæÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñÞßÿý",
-								   		 "---aaaaaaaaaaaaaaaoooooooooooooeeeeeeeeecceiiiiiiiiuuuuuuuunntsyy");
+		$map = io::sanitizeAsciiMap();
+		$map = array_map('strtolower', $map);
+		$map = array_merge($map, array("\x92" => "-", "'" => "-", " " => "-", "@" => "a", ));
+		if (strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8') {
+			$input = utf8_decode($input);
+		}
+		$sanitized = strtr(trim($input), $map);
 		//remove all non alpha characters
 		$sanitized = preg_replace("#[^[a-zA-Z0-9-]]*#", "", $sanitized);
 		//remove multiple indent
@@ -257,7 +285,7 @@ class SensitiveIO extends CMS_grandfather
 	  * @access public
 	  */
 	static function isValidPassword($input) {
-		return strlen($input) >= MINIMUM_PASSWORD_LENGTH;
+		return io::strlen($input) >= MINIMUM_PASSWORD_LENGTH;
 	}
 
 	/**
@@ -388,12 +416,12 @@ class SensitiveIO extends CMS_grandfather
 	  */
 	static function jsonEncode ($datas) {
 		if (!is_array($datas)) {
-			CMS_grandFather::raiseError('Datas must be an array ... (from : '.sensitiveIO::getCallInfos().')');
+			CMS_grandFather::raiseError('Datas must be an array ... (from : '.io::getCallInfos().')');
 			return $datas;
 		}
 		//encode nodes array in utf-8 if needed
 		if (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
-			$func = create_function('&$data,$key', '$data = is_string($data) ? utf8_encode(str_replace(\'€\', \'&euro;\', $data)) : $data;');
+			$func = create_function('&$data,$key', '$data = is_string($data) ? io::utf8Encode($data) : $data;');
 			array_walk_recursive($datas, $func);
 		}
 		return json_encode($datas);
@@ -408,10 +436,10 @@ class SensitiveIO extends CMS_grandfather
 	  * @access public
 	  */
 	static function ellipsis($value, $length, $ellipsis = '...') {
-		if (strlen($value) <= $length) {
+		if (io::strlen($value) <= $length) {
 			return $value;
 		}
-		return substr($value, 0, ceil(($length - strlen($ellipsis))/2)) . $ellipsis . substr($value, - floor(($length - strlen($ellipsis))/2));
+		return io::substr($value, 0, ceil(($length - io::strlen($ellipsis))/2)) . $ellipsis . io::substr($value, - floor(($length - io::strlen($ellipsis))/2));
 	}
 
 	/**
@@ -423,12 +451,12 @@ class SensitiveIO extends CMS_grandfather
 	static function getCallInfos() {
 		$callInfos = '';
 		$bt = debug_backtrace();
-		if (isset($bt[3]) && isset($bt[2]['class']) && $bt[2]['class'] == 'CMS_grandFather' && ($bt[2]['function'] == '__call')) {
+		if (isset($bt[3]) && isset($bt[2]['class']) && $bt[2]['class'] == 'CMS_grandFather' && ($bt[2]['function'] == '__call' && isset($bt[3]['file']))) {
 			//if error is sent by generic __call or autoload method of grandFather class, display point of call
 			$callInfos = str_replace($_SERVER['DOCUMENT_ROOT'], '', $bt[3]['file']).' (line '.$bt[3]['line'].')';
-		} elseif (isset($bt[4]) && isset($bt[2]['class']) && $bt[2]['class'] == 'CMS_grandFather' && ($bt[2]['function'] == 'autoload')) {
+		} elseif (isset($bt[4]) && isset($bt[2]['class']) && $bt[2]['class'] == 'CMS_grandFather' && ($bt[2]['function'] == 'autoload' || $bt[2]['function'] == '__call')) {
 			//if error is sent by generic __call or autoload method of grandFather class, display point of call
-			$callInfos = str_replace($_SERVER['DOCUMENT_ROOT'], '', $bt[4]['file']).' (line '.$bt[4]['line'].')';
+			$callInfos = str_replace($_SERVER['DOCUMENT_ROOT'], '', @$bt[4]['file']).' (line '.@$bt[4]['line'].')';
 		} elseif (isset($bt[2])) {
 			//if error came from object execution
 			if ($bt[2]['function'] != 'PHPErrorHandler') {
@@ -459,7 +487,7 @@ class SensitiveIO extends CMS_grandfather
 							 $args .= $a;
 							 break;
 						 case 'string':
-							 $a = htmlspecialchars(substr($a, 0, 64)).((strlen($a) > 64) ? '...' : '');
+							 $a = htmlspecialchars(io::substr($a, 0, 64)).((io::strlen($a) > 64) ? '...' : '');
 							 $args .= "\"$a\"";
 							 break;
 						 case 'array':
@@ -469,7 +497,7 @@ class SensitiveIO extends CMS_grandfather
 							 $args .= 'Object('.get_class($a).')';
 							 break;
 						 case 'resource':
-							 $args .= 'Resource('.strstr($a, '#').')';
+							 $args .= 'Resource('.io::strstr($a, '#').')';
 							 break;
 						 case 'boolean':
 							 $args .= $a ? 'True' : 'False';
@@ -543,7 +571,7 @@ class SensitiveIO extends CMS_grandfather
 	function checkXHTMLValue($value, &$errors) {
 		//Check XHTML validity
 		$value = str_replace('&#9;','',$value);
-		if (defined('ALLOW_WYSIWYG_XHTML_VALIDATION') && ALLOW_WYSIWYG_XHTML_VALIDATION) {
+		/*if (defined('ALLOW_WYSIWYG_XHTML_VALIDATION') && ALLOW_WYSIWYG_XHTML_VALIDATION) {
 			global $CMS_Xhtml_tagDefinition;
 			include(PATH_MAIN_FS.'/xhtmlValidator/taglist.php');
 			$v = new XhtmlValidator($value, $CMS_Xhtml_tagDefinition);
@@ -555,7 +583,7 @@ class SensitiveIO extends CMS_grandfather
 				$errors = $s->show(200);
 				return false;
 			}
-		}
+		}*/
 		//Check XML validity
 		$defXML = new CMS_DOMDocument();
 		try {
@@ -565,7 +593,7 @@ class SensitiveIO extends CMS_grandfather
 			return false;
 		}
 		//Check Some Word or Open Office common copy/paste tags
-		if (strpos($value, '<w:') !== false || strpos($value, '<meta ') !== false) {
+		if (io::strpos($value, '<w:') !== false || io::strpos($value, '<meta ') !== false) {
 			return false;
 		}
 		return true;
@@ -585,5 +613,155 @@ class SensitiveIO extends CMS_grandfather
 	function reencodeAmpersand($text) {
 		return preg_replace("/&amp;(#[0-9]+|[a-z]+);/i", "&$1;", str_replace('&', '&amp;', $text));
 	}
+	
+	/**
+	  * Decode HTML entities (charset insensitive)
+	  *
+	  * @param string $text The HTML value to decode
+	  * @return string : the value decoded
+	  * @access public
+	  */
+	function decodeEntities($text) {
+		return html_entity_decode($text, ENT_COMPAT, (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8' ? 'ISO-8859-1' : 'UTF-8'));
+	}
+	
+	/**
+	  * Encode String to UTF8 with support of cp1252 charset
+	  *
+	  * @param string $text The to encode
+	  * @return string : the value encoded
+	  * @access public
+	  */
+	function utf8Encode($text) {
+		$cp1252Map = io::cp1252ToUtf8Map();
+		return  strtr(utf8_encode($text), $cp1252Map);
+	}
+	
+	/**
+	  * Decode String from UTF8 to latin1 with support of cp1252 charset
+	  *
+	  * @param string $text The to decode
+	  * @return string : the value decoded
+	  * @access public
+	  */
+	function utf8Decode($text) {
+		$cp1252Map = io::cp1252ToUtf8Map();
+		return  utf8_decode(strtr($text, array_flip($cp1252Map)));
+	}
+	
+	/**
+	  * Map of CP1252 characters not supported into latin to utf8 encoding
+	  *
+	  * @return array : the map
+	  * @access public
+	  */
+	function cp1252ToUtf8Map() {
+		return array(
+		    "\xc2\x80" => "\xe2\x82\xac", /* EURO SIGN */
+		    "\xc2\x82" => "\xe2\x80\x9a", /* SINGLE LOW-9 QUOTATION MARK */
+		    "\xc2\x83" => "\xc6\x92",     /* LATIN SMALL LETTER F WITH HOOK */
+		    "\xc2\x84" => "\xe2\x80\x9e", /* DOUBLE LOW-9 QUOTATION MARK */
+		    "\xc2\x85" => "\xe2\x80\xa6", /* HORIZONTAL ELLIPSIS */
+		    "\xc2\x86" => "\xe2\x80\xa0", /* DAGGER */
+		    "\xc2\x87" => "\xe2\x80\xa1", /* DOUBLE DAGGER */
+		    "\xc2\x88" => "\xcb\x86",     /* MODIFIER LETTER CIRCUMFLEX ACCENT */
+		    "\xc2\x89" => "\xe2\x80\xb0", /* PER MILLE SIGN */
+		    "\xc2\x8a" => "\xc5\xa0",     /* LATIN CAPITAL LETTER S WITH CARON */
+		    "\xc2\x8b" => "\xe2\x80\xb9", /* SINGLE LEFT-POINTING ANGLE QUOTATION */
+		    "\xc2\x8c" => "\xc5\x92",     /* LATIN CAPITAL LIGATURE OE */
+		    "\xc2\x8e" => "\xc5\xbd",     /* LATIN CAPITAL LETTER Z WITH CARON */
+		    "\xc2\x91" => "\xe2\x80\x98", /* LEFT SINGLE QUOTATION MARK */
+		    "\xc2\x92" => "\xe2\x80\x99", /* RIGHT SINGLE QUOTATION MARK */
+		    "\xc2\x93" => "\xe2\x80\x9c", /* LEFT DOUBLE QUOTATION MARK */
+		    "\xc2\x94" => "\xe2\x80\x9d", /* RIGHT DOUBLE QUOTATION MARK */
+		    "\xc2\x95" => "\xe2\x80\xa2", /* BULLET */
+		    "\xc2\x96" => "\xe2\x80\x93", /* EN DASH */
+		    "\xc2\x97" => "\xe2\x80\x94", /* EM DASH */
+		    "\xc2\x98" => "\xcb\x9c",     /* SMALL TILDE */
+		    "\xc2\x99" => "\xe2\x84\xa2", /* TRADE MARK SIGN */
+		    "\xc2\x9a" => "\xc5\xa1",     /* LATIN SMALL LETTER S WITH CARON */
+		    "\xc2\x9b" => "\xe2\x80\xba", /* SINGLE RIGHT-POINTING ANGLE QUOTATION*/
+		    "\xc2\x9c" => "\xc5\x93",     /* LATIN SMALL LIGATURE OE */
+		    "\xc2\x9e" => "\xc5\xbe",     /* LATIN SMALL LETTER Z WITH CARON */
+		    "\xc2\x9f" => "\xc5\xb8"      /* LATIN CAPITAL LETTER Y WITH DIAERESIS*/
+		);
+	}
+	
+	/**
+	  * Map of non-ascii characters to convert in ascii equivalent
+	  *
+	  * @return array : the map
+	  * @access public
+	  */
+	function sanitizeAsciiMap() {
+		return array(
+			"\xc0" => "A", "\xc1" => "A", "\xc2" => "A", "\xc3" => "A", "\xc4" => "A", 
+			"\xc5" => "A", "\xc6" => "A", "\xe0" => "a", "\xe1" => "a", "\xe2" => "a", 
+			"\xe3" => "a", "\xe4" => "a", "\xe5" => "a", "\xe6" => "a", "\xd2" => "O", 
+			"\xd3" => "O", "\xd4" => "O", "\xd5" => "O", "\xd5" => "O", "\xd6" => "O", 
+			"\xd8" => "O", "\xf2" => "o", "\xf3" => "o", "\xf4" => "o", "\xf5" => "o", 
+			"\xf6" => "o", "\xf8" => "o", "\xc8" => "E", "\xc9" => "E", "\xca" => "E", 
+			"\xcb" => "E", "\xe8" => "e", "\xe9" => "e", "\xea" => "e", "\xeb" => "e", 
+			"\xf0" => "e", "\xc7" => "C", "\xe7" => "c", "\xd0" => "e", "\xcc" => "I", 
+			"\xcd" => "I", "\xce" => "I", "\xcf" => "I", "\xec" => "i", "\xed" => "i", 
+			"\xee" => "i", "\xef" => "i", "\xd9" => "U", "\xda" => "U", "\xdb" => "U", 
+			"\xdc" => "U", "\xf9" => "u", "\xfa" => "u", "\xfb" => "u", "\xfc" => "u", 
+			"\xd1" => "N", "\xf1" => "n", "\xde" => "t", "\xdf" => "s", "\xff" => "y", 
+			"\xfd" => "y",
+		);
+	}
+	
+	/**
+	  * Try to detect UTF-8 content
+	  *
+	  * @author chris AT w3style.co DOT uk
+	  * @return boolean true/false
+	  * @access private
+	  */
+	function isUTF8($string) {
+		return preg_match('%(?:
+		[\xC2-\xDF][\x80-\xBF]        		# non-overlong 2-byte
+		|\xE0[\xA0-\xBF][\x80-\xBF]			# excluding overlongs
+		|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}	# straight 3-byte
+		|\xED[\x80-\x9F][\x80-\xBF]			# excluding surrogates
+		|\xF0[\x90-\xBF][\x80-\xBF]{2}		# planes 1-3
+		|[\xF1-\xF3][\x80-\xBF]{3}			# planes 4-15
+		|\xF4[\x80-\x8F][\x80-\xBF]{2}		# plane 16
+		)+%xs', $string);
+	}
+	
+	/**
+	  * Rewrite some PHP functions to be charset insensitive
+	  *
+	  * @return mixed
+	  * @access public
+	  */
+	function substr() {
+		$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? 'substr' : 'mb_substr';
+		$args = func_get_args();
+		return call_user_func_array ( $func, $args);
+	}
+	function strlen() {
+		$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? 'strlen' : 'mb_strlen';
+		$args = func_get_args();
+		return call_user_func_array ( $func, $args);
+	}
+	function strpos() {
+		$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? 'strpos' : 'mb_strpos';
+		$args = func_get_args();
+		return call_user_func_array ( $func, $args);
+	}
+	function strtolower() {
+		$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? 'strtolower' : 'mb_strtolower';
+		$args = func_get_args();
+		return call_user_func_array ( $func, $args);
+	}
+	function strtoupper() {
+		$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? 'strtoupper' : 'mb_strtoupper';
+		$args = func_get_args();
+		return call_user_func_array ( $func, $args);
+	}
 }
+//shortcut to SensitiveIO class
+class io extends SensitiveIO {} 
 ?>

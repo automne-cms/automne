@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_catalog.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: object_catalog.php,v 1.2 2009/10/22 16:30:03 sebastien Exp $
 
 /**
   * static Class CMS_object_catalog
@@ -76,8 +76,8 @@ class CMS_object_catalog
 		);
 		$packages_dir = dir(PATH_MODULES_FS.'/'.MOD_POLYMOD_CODENAME.'/objects/');
 		while (false !== ($file = $packages_dir->read())) {
-			if (substr($file, - 4) == ".php" && !in_array($file, $excludedFiles) && class_exists('CMS_'.substr($file, 0, -4))) {
-				$objectsCatalog[] = 'CMS_'.substr($file, 0, -4);
+			if (io::substr($file, - 4) == ".php" && !in_array($file, $excludedFiles) && class_exists('CMS_'.io::substr($file, 0, -4))) {
+				$objectsCatalog[] = 'CMS_'.io::substr($file, 0, -4);
 			}
 		}
 		return $objectsCatalog;

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_text.php,v 1.5 2009/07/20 16:35:38 sebastien Exp $
+// $Id: object_text.php,v 1.6 2009/10/22 16:30:04 sebastien Exp $
 
 /**
   * Class CMS_object_text
@@ -225,7 +225,7 @@ class CMS_object_text extends CMS_object_common
 			);
 		} else {
 			$return['xtype'] = 'textarea';
-			$return['value'] = str_replace('<br />',"\n",str_replace(array("\n","\r"),"",htmlspecialchars_decode($return['value'])));
+			$return['value'] = str_replace('<br />',"\n",str_replace(array("\n","\r"),"",sensitiveIO::decodeEntities($return['value'])));
 		}
 		if (sensitiveIO::isPositiveInteger($params['toolbarHeight'])) {
 			$return['height'] = $params['toolbarHeight'];
@@ -293,7 +293,7 @@ class CMS_object_text extends CMS_object_common
 			$htmlParameters .= (!isset($inputParams['id'])) ? ' id="'.$prefixName.$this->_field->getID().'_0"' : '';
 			$width = '100%';
 			if ($params['toolbarWidth']) {
-				$width = (substr($params['toolbarWidth'], -1, 1) == '%') ? $params['toolbarWidth'] : $params['toolbarWidth'].'px';
+				$width = (io::substr($params['toolbarWidth'], -1, 1) == '%') ? $params['toolbarWidth'] : $params['toolbarWidth'].'px';
 			}
 			$html .= '<textarea type="text" name="'.$fieldName.'"'.$htmlParameters.' style="width:'.$width.';height:'.((sensitiveIO::isPositiveInteger($params['toolbarHeight'])) ? $params['toolbarHeight'] : 200).'px">'.str_replace('<br />',"\n",str_replace(array("\n","\r"),"",$value)).'</textarea>'."\n";
 		}
@@ -369,12 +369,12 @@ class CMS_object_text extends CMS_object_common
 		$params = $this->getParamsValues();
 		switch($name) {
 			case 'label':
-				return ($params['html']) ? $this->getLabel() : htmlspecialchars($this->getLabel());
+				return (isset($params['html']) && $params['html']) ? $this->getLabel() : htmlspecialchars($this->getLabel());
 			break;
 			case 'htmlvalue':
 			case 'value':
 				//do not put an htmlspecialchars on text only value because line-breaks are auto converted to <br /> tags
-				if ($params['html']) {
+				if (isset($params['html']) && $params['html']) {
 					//eval() the PHP code
 					$content = $this->_subfieldValues[0]->getValue();
 					if ($this->_subfieldValues[0]->getValue() != '' && !function_exists((string) $this->_subfieldValues[0]->getValue())) {
@@ -398,7 +398,7 @@ class CMS_object_text extends CMS_object_common
 							}
 						}
             			//then eval all plugin codes
-						$callbackFunc = create_function('$string', 'ob_start();eval("$string[2];");$ret = ob_get_contents();ob_end_clean();return $ret;');
+						$callbackFunc = create_function('$string', 'ob_start();eval(sensitiveIO::sanitizeExecCommand("$string[2];"));$ret = ob_get_contents();ob_end_clean();return $ret;');
 						$content = preg_replace_callback("/(<\?php|<\?)(.*?)\?>/si", $callbackFunc, $this->_subfieldValues[0]->getValue());
 						if (isset($GLOBALS['polymod']['preparedItems'])) {
 							unset($GLOBALS['polymod']['preparedItems']);

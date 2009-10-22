@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_file.php,v 1.11 2009/07/22 12:23:39 sebastien Exp $
+// $Id: object_file.php,v 1.12 2009/10/22 16:30:04 sebastien Exp $
 
 /**
   * Class CMS_object_file
@@ -286,7 +286,7 @@ class CMS_object_file extends CMS_object_common
 		if ($newFormat) {
 			//check for image extension before doing anything
 			if (isset($values[$prefixName.$this->_field->getID().'_1']) && $values[$prefixName.$this->_field->getID().'_1']
-				 && !in_array(strtolower(pathinfo($values[$prefixName.$this->_field->getID().'_1'], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
+				 && !in_array(io::strtolower(pathinfo($values[$prefixName.$this->_field->getID().'_1'], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
 				return false;
 			}
 			//if field is required check values
@@ -307,27 +307,27 @@ class CMS_object_file extends CMS_object_common
 			if ($params['allowedType'] || $params['disallowedType']) {
 				//for external file if any
 				if (isset($values[$prefixName.$this->_field->getID().'_externalfile']) && $values[$prefixName.$this->_field->getID().'_externalfile']) {
-					$extension = strtolower(pathinfo($values[$prefixName.$this->_field->getID().'_externalfile'], PATHINFO_EXTENSION));
+					$extension = io::strtolower(pathinfo($values[$prefixName.$this->_field->getID().'_externalfile'], PATHINFO_EXTENSION));
 					if (!$extension) return false;
 					//extension must be in allowed list
-					if ($params['allowedType'] && !in_array($extension, explode(',',strtolower($params['allowedType'])))) {
+					if ($params['allowedType'] && !in_array($extension, explode(',',io::strtolower($params['allowedType'])))) {
 						return false;
 					}
 					//extension must not be in disallowed list
-					if ($params['disallowedType'] && in_array($extension, explode(',',strtolower($params['disallowedType'])))) {
+					if ($params['disallowedType'] && in_array($extension, explode(',',io::strtolower($params['disallowedType'])))) {
 						return false;
 					}
 				}
 				//for uploaded file if any
 				if (isset($values[$prefixName.$this->_field->getID().'_4']) && $values[$prefixName.$this->_field->getID().'_4']) {
-					$extension = strtolower(pathinfo($values[$prefixName.$this->_field->getID().'_4'], PATHINFO_EXTENSION));
+					$extension = io::strtolower(pathinfo($values[$prefixName.$this->_field->getID().'_4'], PATHINFO_EXTENSION));
 					if (!$extension) return false;
 					//extension must be in allowed list
-					if ($params['allowedType'] && !in_array($extension, explode(',',strtolower($params['allowedType'])))) {
+					if ($params['allowedType'] && !in_array($extension, explode(',',io::strtolower($params['allowedType'])))) {
 						return false;
 					}
 					//extension must not be in disallowed list
-					if ($params['disallowedType'] && in_array($extension, explode(',',strtolower($params['disallowedType'])))) {
+					if ($params['disallowedType'] && in_array($extension, explode(',',io::strtolower($params['disallowedType'])))) {
 						return false;
 					}
 				}
@@ -336,14 +336,14 @@ class CMS_object_file extends CMS_object_common
 		} else {
 			//check for image extension before doing anything
 			if (isset($_FILES[$prefixName.$this->_field->getID().'_1']) && $_FILES[$prefixName.$this->_field->getID().'_1']["name"]
-				 && !in_array(strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_1']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
+				 && !in_array(io::strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_1']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
 				return false;
 			}
 			//if field is required check values
 			if ($this->_field->getValue('required')) {
 				// FTP file
 				if($params['allowFtp'] && is_dir(PATH_REALROOT_FS.$params['ftpDir'])){
-					$filename = $values[$prefixName.$this->_field->getID().'_externalfile'];//substr($values[$prefixName.$this->_field->getID().'_externalfile'], 1);
+					$filename = $values[$prefixName.$this->_field->getID().'_externalfile'];//io::substr($values[$prefixName.$this->_field->getID().'_externalfile'], 1);
 					$ftp_dir = PATH_REALROOT_FS.$params['ftpDir'];
 					if (@file_exists($ftp_dir.$filename) && is_file($ftp_dir.$filename)) {
 						return true;
@@ -360,27 +360,27 @@ class CMS_object_file extends CMS_object_common
 			if ($params['allowedType'] || $params['disallowedType']) {
 				//for external file if any
 				if (isset($values[$prefixName.$this->_field->getID().'_externalfile']) && $values[$prefixName.$this->_field->getID().'_externalfile']) {
-					$extension = strtolower(pathinfo($values[$prefixName.$this->_field->getID().'_externalfile'], PATHINFO_EXTENSION));
+					$extension = io::strtolower(pathinfo($values[$prefixName.$this->_field->getID().'_externalfile'], PATHINFO_EXTENSION));
 					if (!$extension) return false;
 					//extension must be in allowed list
-					if ($params['allowedType'] && !in_array($extension, explode(',',strtolower($params['allowedType'])))) {
+					if ($params['allowedType'] && !in_array($extension, explode(',',io::strtolower($params['allowedType'])))) {
 						return false;
 					}
 					//extension must not be in disallowed list
-					if ($params['disallowedType'] && in_array($extension, explode(',',strtolower($params['disallowedType'])))) {
+					if ($params['disallowedType'] && in_array($extension, explode(',',io::strtolower($params['disallowedType'])))) {
 						return false;
 					}
 				}
 				//for uploaded file if any
 				if (isset($_FILES[$prefixName.$this->_field->getID().'_4']) && $_FILES[$prefixName.$this->_field->getID().'_4']['name']) {
-					$extension = strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_4']['name'], PATHINFO_EXTENSION));
+					$extension = io::strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_4']['name'], PATHINFO_EXTENSION));
 					if (!$extension) return false;
 					//extension must be in allowed list
-					if ($params['allowedType'] && !in_array($extension, explode(',',strtolower($params['allowedType'])))) {
+					if ($params['allowedType'] && !in_array($extension, explode(',',io::strtolower($params['allowedType'])))) {
 						return false;
 					}
 					//extension must not be in disallowed list
-					if ($params['disallowedType'] && in_array($extension, explode(',',strtolower($params['disallowedType'])))) {
+					if ($params['disallowedType'] && in_array($extension, explode(',',io::strtolower($params['disallowedType'])))) {
 						return false;
 					}
 				}
@@ -616,7 +616,7 @@ class CMS_object_file extends CMS_object_common
 			return '';
 		}
 		$path_parts = pathinfo($this->_subfieldValues[4]->getValue());
-		return strtolower($path_parts['extension']);
+		return io::strtolower($path_parts['extension']);
 	}
 	
 	/**
@@ -689,10 +689,10 @@ class CMS_object_file extends CMS_object_common
 			}
 			
 			//thumbnail
-			if (isset($values[$prefixName.$this->_field->getID().'_1']) && $values[$prefixName.$this->_field->getID().'_1'] && strpos($values[$prefixName.$this->_field->getID().'_1'], PATH_UPLOAD_WR.'/') !== false) {
+			if (isset($values[$prefixName.$this->_field->getID().'_1']) && $values[$prefixName.$this->_field->getID().'_1'] && io::strpos($values[$prefixName.$this->_field->getID().'_1'], PATH_UPLOAD_WR.'/') !== false) {
 				$filename = $values[$prefixName.$this->_field->getID().'_1'];
 				//check for image type before doing anything
-				if (!in_array(strtolower(pathinfo($filename, PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
+				if (!in_array(io::strtolower(pathinfo($filename, PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
 					return false;
 				}
 				//destroy old image if any
@@ -706,13 +706,13 @@ class CMS_object_file extends CMS_object_common
 				
 				//set thumbnail
 				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
-				$newBasename = "r".$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($basename));
+				$newBasename = "r".$objectID."_".$this->_field->getID()."_".io::strtolower(SensitiveIO::sanitizeAsciiString($basename));
 				
 				//rename image
 				$path_parts = pathinfo($newBasename);
-				$extension = strtolower($path_parts['extension']);
-				$newBasename = substr($path_parts['basename'],0,-(strlen($extension)+1)).'_thumbnail.'.$extension;
-				if (strlen($newBasename) > 255) {
+				$extension = io::strtolower($path_parts['extension']);
+				$newBasename = io::substr($path_parts['basename'],0,-(io::strlen($extension)+1)).'_thumbnail.'.$extension;
+				if (io::strlen($newBasename) > 255) {
 					$newBasename = sensitiveIO::ellipsis($newBasename, 255, '-');
 				}
 				$newFilename = $path.'/'.$newBasename;
@@ -775,14 +775,14 @@ class CMS_object_file extends CMS_object_common
 				
 				//check file extension
 				if ($params['allowedType'] || $params['disallowedType']) {
-					$extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+					$extension = io::strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 					if (!$extension) return false;
 					//extension must be in allowed list
-					if ($params['allowedType'] && !in_array($extension, explode(',',strtolower($params['allowedType'])))) {
+					if ($params['allowedType'] && !in_array($extension, explode(',',io::strtolower($params['allowedType'])))) {
 						return false;
 					}
 					//extension must not be in disallowed list
-					if ($params['disallowedType'] && in_array($extension, explode(',',strtolower($params['disallowedType'])))) {
+					if ($params['disallowedType'] && in_array($extension, explode(',',io::strtolower($params['disallowedType'])))) {
 						return false;
 					}
 				}
@@ -792,8 +792,8 @@ class CMS_object_file extends CMS_object_common
 					$this->_subfieldValues[4]->setValue('');
 				}
 				
-				$new_filename = 'r'.$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($filename));
-				if (strlen($new_filename) > 255) {
+				$new_filename = 'r'.$objectID."_".$this->_field->getID()."_".io::strtolower(SensitiveIO::sanitizeAsciiString($filename));
+				if (io::strlen($new_filename) > 255) {
 					$new_filename = sensitiveIO::ellipsis($new_filename, 255, '-');
 				}
 				$destination_path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/';
@@ -834,17 +834,17 @@ class CMS_object_file extends CMS_object_common
 				}
 			} else
 			//2- from post
-			if ($values[$prefixName.$this->_field->getID().'_4'] && strpos($values[$prefixName.$this->_field->getID().'_4'], PATH_UPLOAD_WR.'/') !== false) {
+			if ($values[$prefixName.$this->_field->getID().'_4'] && io::strpos($values[$prefixName.$this->_field->getID().'_4'], PATH_UPLOAD_WR.'/') !== false) {
 				//check file extension
 				if ($params['allowedType'] || $params['disallowedType']) {
-					$extension = strtolower(pathinfo($values[$prefixName.$this->_field->getID().'_4'], PATHINFO_EXTENSION));
+					$extension = io::strtolower(pathinfo($values[$prefixName.$this->_field->getID().'_4'], PATHINFO_EXTENSION));
 					if (!$extension) return false;
 					//extension must be in allowed list
-					if ($params['allowedType'] && !in_array($extension, explode(',',strtolower($params['allowedType'])))) {
+					if ($params['allowedType'] && !in_array($extension, explode(',',io::strtolower($params['allowedType'])))) {
 						return false;
 					}
 					//extension must not be in disallowed list
-					if ($params['disallowedType'] && in_array($extension, explode(',',strtolower($params['disallowedType'])))) {
+					if ($params['disallowedType'] && in_array($extension, explode(',',io::strtolower($params['disallowedType'])))) {
 						return false;
 					}
 				}
@@ -864,8 +864,8 @@ class CMS_object_file extends CMS_object_common
 				
 				//create file path
 				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
-				$newBasename = "r".$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($basename));
-				if (strlen($newBasename) > 255) {
+				$newBasename = "r".$objectID."_".$this->_field->getID()."_".io::strtolower(SensitiveIO::sanitizeAsciiString($basename));
+				if (io::strlen($newBasename) > 255) {
 					$newBasename = sensitiveIO::ellipsis($newBasename, 255, '-');
 				}
 				$newFilename = $path.'/'.$newBasename;
@@ -939,7 +939,7 @@ class CMS_object_file extends CMS_object_common
 				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_1]' => $imageDatas,
 				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_4]' => $fileDatas,
 				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_externalfile]' => '',
-				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_0]' => htmlspecialchars_decode($this->_subfieldValues[0]->getValue()),
+				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_0]' => sensitiveIO::decodeEntities($this->_subfieldValues[0]->getValue()),
 			));
 			
 			$view = CMS_view::getInstance();
@@ -977,7 +977,7 @@ class CMS_object_file extends CMS_object_common
 			//thumbnail
 			if (isset($_FILES[$prefixName.$this->_field->getID().'_1']) && $_FILES[$prefixName.$this->_field->getID().'_1']['name'] && !$_FILES[$prefixName.$this->_field->getID().'_1']['error']) {
 				//check for image type before doing anything
-				if (!in_array(strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_1']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
+				if (!in_array(io::strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_1']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
 					return false;
 				}
 				
@@ -994,8 +994,8 @@ class CMS_object_file extends CMS_object_common
 				
 				//create thumbnail path
 				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
-				$filename = "r".$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($_FILES[$prefixName.$this->_field->getID().'_1']["name"]));
-				if (strlen($filename) > 255) {
+				$filename = "r".$objectID."_".$this->_field->getID()."_".io::strtolower(SensitiveIO::sanitizeAsciiString($_FILES[$prefixName.$this->_field->getID().'_1']["name"]));
+				if (io::strlen($filename) > 255) {
 					$filename = sensitiveIO::ellipsis($filename, 255, '-');
 				}
 				if (!move_uploaded_file($_FILES[$prefixName.$this->_field->getID().'_1']["tmp_name"], $path."/".$filename)) {
@@ -1022,10 +1022,10 @@ class CMS_object_file extends CMS_object_common
 						//resize image
 						$srcfilepath = $path."/".$filename;
 						$path_parts = pathinfo($srcfilepath);
-						$thumbnailFilename = substr($path_parts['basename'],0,-(strlen($path_parts['extension'])+1)).'.png';
+						$thumbnailFilename = io::substr($path_parts['basename'],0,-(io::strlen($path_parts['extension'])+1)).'.png';
 						$destfilepath = $path."/".$thumbnailFilename;
 						
-						$extension = strtolower($path_parts['extension']);
+						$extension = io::strtolower($path_parts['extension']);
 						
 						$dest = imagecreatetruecolor($newSizeX, $newSizeY);
 						switch ($extension) {
@@ -1089,24 +1089,24 @@ class CMS_object_file extends CMS_object_common
 				}
 				
 				//from FTP directory
-				$filename = $values[$prefixName.$this->_field->getID().'_externalfile'];//substr($values[$prefixName.$this->_field->getID().'_externalfile'], 1);
+				$filename = $values[$prefixName.$this->_field->getID().'_externalfile'];//io::substr($values[$prefixName.$this->_field->getID().'_externalfile'], 1);
 				
 				//check file extension
 				if ($params['allowedType'] || $params['disallowedType']) {
-					$extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+					$extension = io::strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 					if (!$extension) return false;
 					//extension must be in allowed list
-					if ($params['allowedType'] && !in_array($extension, explode(',',strtolower($params['allowedType'])))) {
+					if ($params['allowedType'] && !in_array($extension, explode(',',io::strtolower($params['allowedType'])))) {
 						return false;
 					}
 					//extension must not be in disallowed list
-					if ($params['disallowedType'] && in_array($extension, explode(',',strtolower($params['disallowedType'])))) {
+					if ($params['disallowedType'] && in_array($extension, explode(',',io::strtolower($params['disallowedType'])))) {
 						return false;
 					}
 				}
 				
-				$new_filename = 'r'.$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($filename));
-				if (strlen($new_filename) > 255) {
+				$new_filename = 'r'.$objectID."_".$this->_field->getID()."_".io::strtolower(SensitiveIO::sanitizeAsciiString($filename));
+				if (io::strlen($new_filename) > 255) {
 					$new_filename = sensitiveIO::ellipsis($new_filename, 255, '-');
 				}
 				$destination_path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/';
@@ -1150,14 +1150,14 @@ class CMS_object_file extends CMS_object_common
 			if (isset($_FILES[$prefixName.$this->_field->getID().'_4']) && $_FILES[$prefixName.$this->_field->getID().'_4']['name'] && !$_FILES[$prefixName.$this->_field->getID().'_4']['error']) {
 				//check file extension
 				if ($params['allowedType'] || $params['disallowedType']) {
-					$extension = strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_4']['name'], PATHINFO_EXTENSION));
+					$extension = io::strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_4']['name'], PATHINFO_EXTENSION));
 					if (!$extension) return false;
 					//extension must be in allowed list
-					if ($params['allowedType'] && !in_array($extension, explode(',',strtolower($params['allowedType'])))) {
+					if ($params['allowedType'] && !in_array($extension, explode(',',io::strtolower($params['allowedType'])))) {
 						return false;
 					}
 					//extension must not be in disallowed list
-					if ($params['disallowedType'] && in_array($extension, explode(',',strtolower($params['disallowedType'])))) {
+					if ($params['disallowedType'] && in_array($extension, explode(',',io::strtolower($params['disallowedType'])))) {
 						return false;
 					}
 				}
@@ -1179,8 +1179,8 @@ class CMS_object_file extends CMS_object_common
 				
 				//create thumnail path
 				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
-				$filename = "r".$objectID."_".$this->_field->getID()."_".strtolower(SensitiveIO::sanitizeAsciiString($_FILES[$prefixName.$this->_field->getID().'_4']["name"]));
-				if (strlen($filename) > 255) {
+				$filename = "r".$objectID."_".$this->_field->getID()."_".io::strtolower(SensitiveIO::sanitizeAsciiString($_FILES[$prefixName.$this->_field->getID().'_4']["name"]));
+				if (io::strlen($filename) > 255) {
 					$filename = sensitiveIO::ellipsis($filename, 255, '-');
 				}
 				if (!move_uploaded_file($_FILES[$prefixName.$this->_field->getID().'_4']["tmp_name"], $path."/".$filename)) {
@@ -1298,7 +1298,7 @@ class CMS_object_file extends CMS_object_common
 				$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
 				$filepath = ($this->_subfieldValues[3]->getValue() == self::OBJECT_FILE_TYPE_INTERNAL) ? PATH_MODULES_FILES_WR.'/'.$moduleCodename.'/'.$location.'/'.$this->_subfieldValues[4]->getValue() : $this->_subfieldValues[4]->getValue();
 				//append website url if missing
-				if (substr($filepath,0,1) == '/') {
+				if (io::substr($filepath,0,1) == '/') {
 					$filepath = CMS_websitesCatalog::getMainURL() . $filepath;
 				}
 				//link content
@@ -1320,7 +1320,7 @@ class CMS_object_file extends CMS_object_common
 				$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
 				//set location
 				$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
-				return PATH_MODULES_FILES_WR.'/'.$moduleCodename.'/'.$location;
+				return CMS_websitesCatalog::getMainURL() . PATH_MODULES_FILES_WR.'/'.$moduleCodename.'/'.$location;
 			break;
 			case 'thumbMaxWidth':
 				//get field parameters

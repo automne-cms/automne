@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: content-block.php,v 1.2 2009/06/22 14:10:34 sebastien Exp $
+// $Id: content-block.php,v 1.3 2009/10/22 16:28:07 sebastien Exp $
 
 /**
   * PHP page : Load polymod item interface
@@ -55,6 +55,8 @@ define("MESSAGE_PAGE_INCORRECT_FORM_VALUES", 522);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 $winId = sensitiveIO::request('winId');
 $tpl = sensitiveIO::request('template', 'sensitiveIO::isPositiveInteger');
@@ -279,7 +281,7 @@ if (sizeof($blockParamsDefinition['search'])) {
 									$availableItems = array();
 									if (is_array($objectsNames) && $objectsNames) {
 										foreach ($objectsNames as $id => $label) {
-											$availableItems[] = array($id, $label);
+											$availableItems[] = array($id, io::decodeEntities($label));
 										}
 									} else {
 										$availableItems[] = array('', $cms_language(MESSAGE_EMPTY_OBJECTS_SET));

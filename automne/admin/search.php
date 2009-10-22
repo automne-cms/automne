@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: search.php,v 1.7 2009/06/23 14:09:57 sebastien Exp $
+// $Id: search.php,v 1.8 2009/10/22 16:26:26 sebastien Exp $
 
 /**
   * PHP page : Load page search window.
@@ -59,6 +59,8 @@ define("MESSAGE_ACTION_VIEW_SELECTED", 747);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 $winId = sensitiveIO::request('winId');
 $search = sensitiveIO::sanitizeJSString(sensitiveIO::request('search'));
@@ -139,7 +141,7 @@ $searchCodes['users'] = array('user', 'group');
 if ($elements) {
 	foreach ($searchCodes as $searchElement => $searchCode) {
 		foreach ($searchCode as $code) {
-			if (strpos($search, $code.':') !== false) {
+			if (io::strpos($search, $code.':') !== false) {
 				$checkedElements = array();
 				$checkedElements[$searchElement] = true;
 			}
@@ -157,12 +159,12 @@ if ($elements) {
 			$searchPanel .= "{boxLabel: '{$label}', inputValue:'{$element}',  checked: {$checked}, name: 'elements[]', listeners: {'check':searchWindow.search}},";
 		}
 		//remove last comma from groups
-		$searchPanel = substr($searchPanel, 0, -1);
+		$searchPanel = io::substr($searchPanel, 0, -1);
 		$searchPanel .= "]
 	},";
 }
 $searchCodes = sensitiveIO::jsonEncode($searchCodes);
-$searchPanel = substr($searchPanel, 0, -1);
+$searchPanel = io::substr($searchPanel, 0, -1);
 $appTitle = sensitiveIO::sanitizeJSString(APPLICATION_LABEL);
 $jscontent = <<<END
 	var searchWindow = Ext.getCmp('{$winId}');

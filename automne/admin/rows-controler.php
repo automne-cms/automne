@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: rows-controler.php,v 1.4 2009/07/20 16:33:15 sebastien Exp $
+// $Id: rows-controler.php,v 1.5 2009/10/22 16:26:26 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on templates
@@ -57,6 +57,9 @@ $regenerate = sensitiveIO::request('regenerate') ? true : false;
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_JSON);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
+
 //CHECKS user has row edition clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES)) { //rows
 	CMS_grandFather::raiseError('User has no rights on rows editions');
@@ -96,7 +99,7 @@ switch ($action) {
 			$row->setDefinition('<row></row>');
 		}
 		//remove the old file if any and if new one is different
-		if ($newimage && strpos($newimage, PATH_UPLOAD_WR.'/') !== false) {
+		if ($newimage && io::strpos($newimage, PATH_UPLOAD_WR.'/') !== false) {
 			//move and rename uploaded file
 			$newimage = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $newimage);
 			$basename = pathinfo($newimage, PATHINFO_BASENAME);

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: server.php,v 1.6 2009/06/22 14:10:32 sebastien Exp $
+// $Id: server.php,v 1.7 2009/10/22 16:26:26 sebastien Exp $
 
 /**
   * PHP page : Load server detail window.
@@ -49,6 +49,8 @@ define("MESSAGE_PAGE_UPDATES",762);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 //CHECKS user has admin clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) { //templates
@@ -89,6 +91,12 @@ if (!class_exists('PDO')) {
 			$content .= '<li class="atm-pic-ok">MySQL connection and version OK ('.$version.')</li>';
 		}
 	}
+}
+//MBSTRING
+if (!function_exists('mb_substr') || !function_exists('mb_convert_encoding')) {
+	$content .= '<li class="atm-pic-cancel">Error, Multibyte String (mbsring) extension not installed (only needed if UTF-8 encoding is used)</li>';
+} else {
+	$content .= '<li class="atm-pic-ok">Multibyte String (mbsring) extension OK</li>';
 }
 //LDAP
 if (!defined('APPLICATION_LDAP_AUTH') || (defined('APPLICATION_LDAP_AUTH') && APPLICATION_LDAP_AUTH)) {
@@ -137,7 +145,7 @@ if (ini_get('memory_limit') && ini_get('memory_limit') < 32) {
 	$content .= '<li class="atm-pic-ok">Memory limit OK</li>';
 }
 //CLI
-if (strtolower(substr(PHP_OS, 0, 3)) === 'win') {
+if (io::strtolower(io::substr(PHP_OS, 0, 3)) === 'win') {
 	$content .= '<li class="atm-pic-question">Cannot test CLI on Windows Platform ...</li>';
 } else {
 	function executeCommand($command, &$error) {
@@ -168,15 +176,15 @@ if (strtolower(substr(PHP_OS, 0, 3)) === 'win') {
 	}
 	if ($return === false) {
 		$content .= '<li class="atm-pic-cancel">Error, passthru() and exec() commands not available</li>';
-	} elseif (substr($return,0,1) != '/') {
+	} elseif (io::substr($return,0,1) != '/') {
 		$content .= '<li class="atm-pic-cancel">Error when finding php CLI with command "which php"</li>';
 	}
 	//test CLI version
 	$return = executeCommand('php -v',$error);
-	if (strpos(strtolower($return), '(cli)') === false) {
+	if (io::strpos(io::strtolower($return), '(cli)') === false) {
 		$content .= '<li class="atm-pic-cancel">Error, installed php is not the CLI version : '.$return."\n";
 	} else {
-		$cliversion = trim(str_replace('php ', '', substr(strtolower($return), 0, strpos(strtolower($return), '(cli)'))));
+		$cliversion = trim(str_replace('php ', '', io::substr(io::strtolower($return), 0, io::strpos(io::strtolower($return), '(cli)'))));
 		if (version_compare($cliversion, "5.2.0") === -1) {
 			$content .= '<li class="atm-pic-cancel">Error, PHP CLI version ('.$cliversion.') not match</li>';
 		} else {

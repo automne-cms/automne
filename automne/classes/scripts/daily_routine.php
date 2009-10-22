@@ -31,7 +31,7 @@
 //define application type
 define('APPLICATION_EXEC_TYPE', 'cli');
 //must calculate the document root
-$_SERVER["DOCUMENT_ROOT"] = realpath(substr(dirname(__FILE__), 0, strlen(dirname(__FILE__)) - strpos(strrev(dirname(__FILE__)), "enmotua") - strlen("automne") - 1));
+$_SERVER["DOCUMENT_ROOT"] = realpath(io::substr(dirname(__FILE__), 0, io::strlen(dirname(__FILE__)) - io::strpos(strrev(dirname(__FILE__)), "enmotua") - io::strlen("automne") - 1));
 
 require_once($_SERVER["DOCUMENT_ROOT"] . "/cms_rc_admin.php");
 $modules = CMS_modulesCatalog::getAll();

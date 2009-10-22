@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: xmltag.php,v 1.4 2009/04/02 13:58:00 sebastien Exp $
+// $Id: xmltag.php,v 1.5 2009/10/22 16:30:05 sebastien Exp $
 
 /**
   * Class CMS_XMLTag
@@ -141,7 +141,7 @@ class CMS_XMLTag extends CMS_grandFather
 	function setTextContent($content)
 	{
 		$content = trim($content);
-		if ($content && substr($content, 1, strlen($this->_name)) == $this->_name) {
+		if ($content && io::substr($content, 1, io::strlen($this->_name)) == $this->_name) {
 			$this->_textContent = $content;
 			return true;
 		} else {

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: multi_poly_object.php,v 1.7 2009/07/22 12:23:38 sebastien Exp $
+// $Id: multi_poly_object.php,v 1.8 2009/10/22 16:30:04 sebastien Exp $
 
 /**
   * Class CMS_multi_poly_object
@@ -469,6 +469,7 @@ class CMS_multi_poly_object extends CMS_object_common
 		$label = $desc ? '<span class="atm-help" ext:qtip="'.htmlspecialchars($desc).'">'.$mandatory.$this->getFieldLabel($language).'</span>' : $mandatory.$this->getFieldLabel($language);
 		
 		$listId = 'list'.md5(mt_rand().microtime());
+		$listId2 = 'list'.md5(mt_rand().microtime());
 		if ($params['editable']) {
 			//get object definition
 			$objectDef = $this->getObjectDefinition();
@@ -530,7 +531,7 @@ class CMS_multi_poly_object extends CMS_object_common
 									var list = Ext.getCmp(\''.$listId.'\');
 									var id = list.getValue();
 									if (id) {
-										var cmp = Ext.getCmp(\'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]\');
+										var cmp = Ext.getCmp(\''.$listId2.'\');
 										var values = cmp.getRawValue();
 										values.unshift(id);
 										cmp.setValue(values.join(cmp.delimiter));
@@ -564,7 +565,6 @@ class CMS_multi_poly_object extends CMS_object_common
 					'bodyStyle'		=> 'margin:5px 0 3px 0',
 					'html'			=> $language->getMessage(self::MESSAGE_MULTI_OBJECT_LIST_ZONE,array($objectDef->getObjectLabel($language)), MOD_POLYMOD_CODENAME)
 				);
-			$listId2 = 'list'.md5(mt_rand().microtime());
 			$items[] = array(
 				'xtype'			=> "multiselect2",
 	            'hideLabel'		=> true,
@@ -1110,7 +1110,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @static
 	  */
 	function getListOfNamesForObject($public = false, $searchConditions = array()) {
-		return CMS_poly_object_catalog::getListOfNamesForObject(substr($this->_field->getValue('type'),6), $public, $searchConditions);
+		return CMS_poly_object_catalog::getListOfNamesForObject(io::substr($this->_field->getValue('type'),6), $public, $searchConditions);
 	}
 
 	/**

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modules-categories-rights.php,v 1.3 2009/06/22 14:10:31 sebastien Exp $
+// $Id: modules-categories-rights.php,v 1.4 2009/10/22 16:26:25 sebastien Exp $
 
 /**
   * PHP page : Load modules categories rights interface
@@ -35,6 +35,8 @@ define("MESSAGE_PAGE_LEVELS", 498);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 //check user rights
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
@@ -274,7 +276,8 @@ if (!$item) {
 } else {
 	//get siblings
 	if ($moduleCodename != MOD_STANDARD_CODENAME) {
-		$item = CMS_moduleCategories_catalog::getByID($_SESSION["cms_context"]->getSessionVar("current_item"));
+		//$item = CMS_moduleCategories_catalog::getByID($_SESSION["cms_context"]->getSessionVar("current_item"));
+		$item = CMS_moduleCategories_catalog::getByID($item);
 		$attrs = array(
 			"module" => $moduleCodename,
 			"language" => $cms_language,

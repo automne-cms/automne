@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-content-block-flash.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: page-content-block-flash.php,v 1.2 2009/10/22 16:26:25 sebastien Exp $
 
 /**
   * PHP page : Load block flash interface
@@ -30,6 +30,8 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 define("MESSAGE_PAGE_SAVE", 952);
 define("MESSAGE_TOOLBAR_HELP",1073);

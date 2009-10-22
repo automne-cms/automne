@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: date.php,v 1.3 2009/04/02 13:57:59 sebastien Exp $
+// $Id: date.php,v 1.4 2009/10/22 16:30:00 sebastien Exp $
 
 /**
   * Class CMS_date
@@ -107,12 +107,12 @@ class CMS_date extends CMS_grandFather
 	  */
 	function setFromDBValue($value)
 	{
-		$this->_year = $this->_fillWithZeros(substr($value, 0, 4), 4);
-		$this->_month = $this->_fillWithZeros(substr($value, 5, 2), 2);
-		$this->_day = $this->_fillWithZeros(substr($value, 8, 2), 2);
-		$this->_hour = $this->_fillWithZeros(substr($value, 11, 2), 2);
-		$this->_minutes = $this->_fillWithZeros(substr($value, 14, 2), 2);
-		$this->_seconds = $this->_fillWithZeros(substr($value, 17, 2), 2);
+		$this->_year = $this->_fillWithZeros(io::substr($value, 0, 4), 4);
+		$this->_month = $this->_fillWithZeros(io::substr($value, 5, 2), 2);
+		$this->_day = $this->_fillWithZeros(io::substr($value, 8, 2), 2);
+		$this->_hour = $this->_fillWithZeros(io::substr($value, 11, 2), 2);
+		$this->_minutes = $this->_fillWithZeros(io::substr($value, 14, 2), 2);
+		$this->_seconds = $this->_fillWithZeros(io::substr($value, 17, 2), 2);
 	}
 	
 	/**
@@ -163,7 +163,7 @@ class CMS_date extends CMS_grandFather
 		
 		//analyse format
 		$year_found = 0;
-		switch (substr($this->_format, 0, 1)) {
+		switch (io::substr($this->_format, 0, 1)) {
 		case "d":
 			$day_pos = 0;
 			break;
@@ -175,7 +175,7 @@ class CMS_date extends CMS_grandFather
 			$year_found = 1;
 			break;
 		}
-		switch (substr($this->_format, 2, 1)) {
+		switch (io::substr($this->_format, 2, 1)) {
 		case "d":
 			$day_pos = 3 + $year_found * 2;
 			break;
@@ -187,7 +187,7 @@ class CMS_date extends CMS_grandFather
 			$year_found = 1;
 			break;
 		}
-		switch (substr($this->_format, 4, 1)) {
+		switch (io::substr($this->_format, 4, 1)) {
 		case "d":
 			$day_pos = 6 + $year_found * 2;
 			break;
@@ -199,9 +199,9 @@ class CMS_date extends CMS_grandFather
 			break;
 		}
 
-		return 	$this->setDay(substr($date, $day_pos, 2))
-				&& $this->setMonth(substr($date, $month_pos, 2))
-				&& $this->setYear(substr($date, $year_pos, 4));
+		return 	$this->setDay(io::substr($date, $day_pos, 2))
+				&& $this->setMonth(io::substr($date, $month_pos, 2))
+				&& $this->setYear(io::substr($date, $year_pos, 4));
 	}
 	
 	/**
@@ -236,7 +236,7 @@ class CMS_date extends CMS_grandFather
 	  */
 	function setYear($value)
 	{
-		if(!ctype_digit($value)){
+		if(!ctype_digit((string) $value)){
 			$this->_raiseError(__CLASS__.' : '.__FUNCTION__.' : value must be numeric : '.$value);
 			return false;
 		}
@@ -245,7 +245,7 @@ class CMS_date extends CMS_grandFather
 		if ($value < 100) {
 			$value += ($value > 30) ? 1900 : 2000;
 		}
-		if (!$value || strlen((string) $value) != 4) {
+		if (!$value || io::strlen((string) $value) != 4) {
 			$this->_raiseError("Date : incorrect year : ".$value);
 			return false;
 		} else {
@@ -274,7 +274,7 @@ class CMS_date extends CMS_grandFather
 	  */
 	function setMonth($value)
 	{
-		if(!ctype_digit($value)){
+		if(!ctype_digit((string) $value)){
 			$this->raiseError('Value must be numeric : '.$value);
 			return false;
   	    }
@@ -330,7 +330,7 @@ class CMS_date extends CMS_grandFather
 	  */
 	function setDay($value)
 	{
-		if(!ctype_digit($value)){
+		if(!ctype_digit((string) $value)){
 			$this->raiseError('Value must be numeric : '.$value);
 			return false;
 		}

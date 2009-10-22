@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: blockscatalog.php,v 1.2 2009/06/05 15:02:17 sebastien Exp $
+// $Id: blockscatalog.php,v 1.3 2009/10/22 16:30:05 sebastien Exp $
 
 /**
   * Class CMS_blocksCatalog
@@ -54,7 +54,7 @@ class CMS_blocksCatalog extends CMS_grandFather
 		$tables_prefixes = array();
 		while ($data = $q->getArray()) {
 			if (preg_match("#^blocks(.*)_public$#", $data[0])) {
-				$tables_prefixes[] = substr($data[0], 0, strrpos($data[0], "_") + 1);
+				$tables_prefixes[] = io::substr($data[0], 0, strrpos($data[0], "_") + 1);
 			}
 		}
 		
@@ -106,93 +106,49 @@ class CMS_blocksCatalog extends CMS_grandFather
 				return false;
 			}
 			//delete all files of the locationToDir
-			foreach(glob(PATH_MODULES_FILES_STANDARD_FS."/".$locationTo.'/p'.$page->getID().'_*', GLOB_NOSORT) as $file) {
-				if (!CMS_file::deleteFile($file)) {
-					CMS_grandFather::raiseError("Can't delete file ".$file);
-					return false;
+			$files = glob(PATH_MODULES_FILES_STANDARD_FS."/".$locationTo.'/p'.$page->getID().'_*', GLOB_NOSORT);
+			if (is_array($files)) {
+				foreach($files as $file) {
+					if (!CMS_file::deleteFile($file)) {
+						CMS_grandFather::raiseError("Can't delete file ".$file);
+						return false;
+					}
 				}
 			}
 			//then copy or move them to the locationToDir
-			foreach(glob(PATH_MODULES_FILES_STANDARD_FS."/".$locationFrom.'/p'.$page->getID().'_*', GLOB_NOSORT) as $file) {
-				$to = str_replace('/'.$locationFrom.'/','/'.$locationTo.'/',$file);
-				if ($copyOnly) {
-					if (!CMS_file::copyTo($file,$to)) {
-						CMS_grandFather::raiseError("Can't copy file ".$file." to ".$to);
-						return false;
+			$files = glob(PATH_MODULES_FILES_STANDARD_FS."/".$locationFrom.'/p'.$page->getID().'_*', GLOB_NOSORT);
+			if (is_array($files)) {
+				foreach($files as $file) {
+					$to = str_replace('/'.$locationFrom.'/','/'.$locationTo.'/',$file);
+					if ($copyOnly) {
+						if (!CMS_file::copyTo($file,$to)) {
+							CMS_grandFather::raiseError("Can't copy file ".$file." to ".$to);
+							return false;
+						}
+					} else {
+						if (!CMS_file::moveTo($file,$to)) {
+							CMS_grandFather::raiseError("Can't move file ".$file." to ".$to);
+							return false;
+						}
 					}
-				} else {
-					if (!CMS_file::moveTo($file,$to)) {
-						CMS_grandFather::raiseError("Can't move file ".$file." to ".$to);
-						return false;
-					}
+					//then chmod new file
+					CMS_file::chmodFile(FILES_CHMOD,$to);
 				}
-				//then chmod new file
-				CMS_file::chmodFile(FILES_CHMOD,$to);
 			}
 		}
 		//cleans the initial dir if not a copy
 		if (!$copyOnly) {
 			//then get all files of the locationFromDir
-			foreach(glob(PATH_MODULES_FILES_STANDARD_FS."/".$locationFrom.'/p'.$page->getID().'_*', GLOB_NOSORT) as $file) {
-				if (!CMS_file::deleteFile($file)) {
-					CMS_grandFather::raiseError("Can't delete file ".$file);
-					return false;
-				}
-			}
-		}
-		
-		//move the files
-		/*$initial_path = PATH_MODULES_FILES_STANDARD_FS."/".$locationFrom;
-		if (!is_dir($initial_path)) {
-			CMS_grandFather::raiseError("Can't open dir ".$initial_path." : permission denied or dir does not exists ");
-			return false;
-		}
-		$initial_dir = dir($initial_path);
-		$files_prefix = "p".$page->getID()."_";
-		if ($locationTo != RESOURCE_DATA_LOCATION_DEVNULL) {
-			//cleans the destination dir
-			$destination_path = PATH_MODULES_FILES_STANDARD_FS."/".$locationTo;
-			if (!is_dir($destination_path)) {
-				CMS_grandFather::raiseError("Can't open dir ".$destination_path." : permission denied or dir does not exists ");
-				return false;
-			}
-			$destination_dir = dir($destination_path);
-			while (false !== ($file = $destination_dir->read())) {
-				if (is_file($destination_path."/".$file)
-					&& substr($file, 0, strlen($files_prefix)) == $files_prefix) {
-					unlink($destination_path."/".$file);
-				}
-			}
-			//copy or move the files
-			while (false !== ($file = $initial_dir->read())) {
-				if (is_file($initial_path."/".$file)
-					&& substr($file, 0, strlen($files_prefix)) == $files_prefix) {
-					if ($copyOnly) {
-						if (@copy($initial_path."/".$file, $destination_path."/".$file)) {
-							@chmod($destination_path."/".$file, octdec(FILES_CHMOD));
-						} else {
-							CMS_grandFather::raiseError("Can't copy file ".$initial_path."/".$file." to ".$destination_path."/".$file." : permission denied");
-						}
-					} else {
-						if (@rename($initial_path."/".$file, $destination_path."/".$file)) {
-							@chmod($destination_path."/".$file, octdec(FILES_CHMOD));
-						} else {
-							CMS_grandFather::raiseError("Can't move file ".$initial_path."/".$file." to ".$destination_path."/".$file." : permission denied");
-						}
+			$files = glob(PATH_MODULES_FILES_STANDARD_FS."/".$locationFrom.'/p'.$page->getID().'_*', GLOB_NOSORT);
+			if (is_array($files)) {
+				foreach($files as $file) {
+					if (!CMS_file::deleteFile($file)) {
+						CMS_grandFather::raiseError("Can't delete file ".$file);
+						return false;
 					}
 				}
 			}
 		}
-		//cleans the initial dir if not a copy
-		if (!$copyOnly) {
-			$initial_dir->rewind();
-			while (false !== ($file = $initial_dir->read())) {
-				if (is_file($initial_path."/".$file)
-					&& substr($file, 0, strlen($files_prefix)) == $files_prefix) {
-					unlink($initial_path."/".$file);
-				}
-			}
-		}*/
 		return true;
 	}
 	

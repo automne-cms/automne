@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: stack.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: stack.php,v 1.2 2009/10/22 16:30:01 sebastien Exp $
 
 /**
   * Class CMS_stack
@@ -67,7 +67,7 @@
 			}
 			$text .= ";";
 		}
-		$text = substr($text, 0, -1);
+		$text = io::substr($text, 0, -1);
 		return $text;
 	}
 	

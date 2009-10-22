@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: module-parameters.php,v 1.3 2009/06/22 14:10:31 sebastien Exp $
+// $Id: module-parameters.php,v 1.4 2009/10/22 16:26:24 sebastien Exp $
 
 /**
   * PHP page : Load module parameters window.
@@ -41,6 +41,8 @@ define("MESSAGE_PAGE_FORM_INCORRECT", 682);
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 //CHECKS
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
@@ -123,7 +125,7 @@ foreach ($parameters as $labelCode => $parameter) {
 	}
 }
 
-$paramFields = substr($paramFields, 0, -1);
+$paramFields = io::substr($paramFields, 0, -1);
 
 $jscontent = <<<END
 	var moduleParamWindow = Ext.getCmp('{$winId}');

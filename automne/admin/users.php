@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: users.php,v 1.4 2009/06/22 14:10:33 sebastien Exp $
+// $Id: users.php,v 1.5 2009/10/22 16:26:28 sebastien Exp $
 
 /**
   * PHP page : Load users search window.
@@ -63,6 +63,9 @@ $fatherId = sensitiveIO::request('fatherId', '', 'usersGroupsWindow');
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_RAW);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
+
 //check user rights
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
 	CMS_grandFather::raiseError('User has no users management rights ...');
@@ -99,13 +102,13 @@ $letters = CMS_profile_usersCatalog::getLettersForLastName();
 $lettersButtons = '';
 foreach ($letters as $letter) {
 	$lettersButtons .= 'new Ext.Button({
-		text:			\''. strtoupper($letter) .'\',
+		text:			\''. io::strtoupper($letter) .'\',
 		enableToggle:	true,
 		handler:		clickLetter
 	}),';
 }
 //remove last comma
-$lettersButtons = substr($lettersButtons, 0, -1);
+$lettersButtons = io::substr($lettersButtons, 0, -1);
 
 $jscontent = <<<END
 	var usersWindow = Ext.getCmp('{$winId}');

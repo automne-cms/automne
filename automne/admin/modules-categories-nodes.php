@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modules-categories-nodes.php,v 1.2 2009/06/22 15:36:16 sebastien Exp $
+// $Id: modules-categories-nodes.php,v 1.3 2009/10/22 16:26:24 sebastien Exp $
 
 /**
   * PHP page : Load module categories tree window.
@@ -30,15 +30,17 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 $view = CMS_view::getInstance();
 //set default display mode for this page
 $view->setDisplayMode(CMS_view::SHOW_JSON);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
 
 define("MESSAGE_ERROR_MODULE_RIGHTS",570);
 
 function checkCatId($catId) {
-	return (strpos($catId, 'cat') === 0) && sensitiveIO::isPositiveInteger(substr($catId, 3));
+	return (io::strpos($catId, 'cat') === 0) && sensitiveIO::isPositiveInteger(io::substr($catId, 3));
 }
 
 $codename = sensitiveIO::request('module');
-$rootId = substr(sensitiveIO::request('node', 'checkCatId', 'cat0'), 3);
+$rootId = io::substr(sensitiveIO::request('node', 'checkCatId', 'cat0'), 3);
 $maxDepth = sensitiveIO::request('maxDepth', 'sensitiveIO::isPositiveInteger', 2);
 
 if (!$codename) {

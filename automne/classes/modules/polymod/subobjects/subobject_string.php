@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: subobject_string.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: subobject_string.php,v 1.2 2009/10/22 16:30:05 sebastien Exp $
 
 /**
   * Class CMS_subobject_string
@@ -51,9 +51,9 @@ class CMS_subobject_string extends CMS_subobject_common
 		parent::__construct($id, $objectIDs, $dbValues, $public);
 		
 		//add some complementary checks on values
-		if ($this->_constructorValues['value'] && strlen($this->_constructorValues['value']) > 255) {
+		if ($this->_constructorValues['value'] && io::strlen($this->_constructorValues['value']) > 255) {
 			$this->_value='';
-			$this->raiseError("Setting a too long string for string value : max 255 cars, set : ".strlen($this->_constructorValues['value']));
+			$this->raiseError("Setting a too long string for string value : max 255 cars, set : ".io::strlen($this->_constructorValues['value']));
 			return;
 		}
 	}
@@ -68,8 +68,8 @@ class CMS_subobject_string extends CMS_subobject_common
 	function setValue($value)
 	{
 		//add some complementary checks on values
-		if ($value && strlen($value) > 255) {
-			$this->raiseError("Setting a too long string for string value : max 255 cars, set : ".strlen($value));
+		if ($value && io::strlen($value) > 255) {
+			$this->raiseError("Setting a too long string for string value : max 255 cars, set : ".io::strlen($value));
 			return false;
 		}
 		

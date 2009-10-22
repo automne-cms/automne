@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_i18nm.php,v 1.2 2009/06/22 14:08:41 sebastien Exp $
+// $Id: object_i18nm.php,v 1.3 2009/10/22 16:30:03 sebastien Exp $
 
 /**
   * Class CMS_object_i18nm
@@ -167,7 +167,7 @@ class CMS_object_i18nm extends CMS_grandFather
 	  */
 	function setValue($languageCode, $value)
 	{
-		if (strlen($languageCode) > 2) {
+		if (io::strlen($languageCode) > 2) {
 			$this->raiseError("Can't use a language code longuer than 2 caracters : ".$languageCode);
 			return false;
 		}

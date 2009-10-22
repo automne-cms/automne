@@ -14,7 +14,7 @@
 // | Author: Devin Doucette <darksnoopy@shaw.ca>                          |
 // +----------------------------------------------------------------------+
 //
-// $Id: archive.php,v 1.2 2009/03/04 09:56:31 sebastien Exp $
+// $Id: archive.php,v 1.3 2009/10/22 16:30:01 sebastien Exp $
 
 /**
   * Class CMS_archive
@@ -303,7 +303,7 @@ class CMS_archive extends CMS_grandFather
 			if (strstr($current, "*")) {
 				$regex = preg_replace("/([\\\^\$\.\[\]\|\(\)\?\+\{\}\/])/", "\\\\\\1", $current);
 				$regex = str_replace("*", ".*", $regex);
-				$dir = strstr($current, "/") ? substr($current, 0, strrpos($current, "/")) : ".";
+				$dir = strstr($current, "/") ? io::substr($current, 0, strrpos($current, "/")) : ".";
 				$temp = $this->parse_dir($dir);
 				foreach ($temp as $current2) {
 					if (preg_match("/^{$regex}$/i", $current2['name'])) {
@@ -318,7 +318,7 @@ class CMS_archive extends CMS_grandFather
 				}
 				unset ($temp, $file);
 			} elseif (@ file_exists($current)) {
-				$files[] = array ('name' => $current, 'name2' => $this->options['prepend'].preg_replace("/(\.+\/+)+/", "", ($this->options['storepaths'] == 0 && strstr($current, "/")) ? substr($current, strrpos($current, "/") + 1) : $current), 'type' => 0, 'ext' => substr($current, strrpos($current, ".")), 'stat' => stat($current));
+				$files[] = array ('name' => $current, 'name2' => $this->options['prepend'].preg_replace("/(\.+\/+)+/", "", ($this->options['storepaths'] == 0 && strstr($current, "/")) ? io::substr($current, strrpos($current, "/") + 1) : $current), 'type' => 0, 'ext' => io::substr($current, strrpos($current, ".")), 'stat' => stat($current));
 			}
 		}
 		chdir($pwd);
@@ -335,7 +335,7 @@ class CMS_archive extends CMS_grandFather
 	 */
 	function parse_dir($dirname) {
 		if ($this->options['storepaths'] == 1 && !preg_match("/^(\.+\/*)+$/", $dirname)) {
-			$files = array (array ('name' => $dirname, 'name2' => $this->options['prepend'].preg_replace("/(\.+\/+)+/", "", ($this->options['storepaths'] == 0 && strstr($dirname, "/")) ? substr($dirname, strrpos($dirname, "/") + 1) : $dirname), 'type' => 5, 'stat' => stat($dirname)));
+			$files = array (array ('name' => $dirname, 'name2' => $this->options['prepend'].preg_replace("/(\.+\/+)+/", "", ($this->options['storepaths'] == 0 && strstr($dirname, "/")) ? io::substr($dirname, strrpos($dirname, "/") + 1) : $dirname), 'type' => 5, 'stat' => stat($dirname)));
 		} else {
 			$files = array ();
 		}
@@ -353,7 +353,7 @@ class CMS_archive extends CMS_grandFather
 					$files[] = $file2;
 				}
 			} elseif (@file_exists($dirname."/".$file)) {
-				$files[] = array ('name' => $dirname."/".$file, 'name2' => $this->options['prepend'].preg_replace("/(\.+\/+)+/", "", ($this->options['storepaths'] == 0 && strstr($dirname."/".$file, "/")) ? substr($dirname."/".$file, strrpos($dirname."/".$file, "/") + 1) : $dirname."/".$file), 'type' => 0, 'ext' => substr($file, strrpos($file, ".")), 'stat' => stat($dirname."/".$file));
+				$files[] = array ('name' => $dirname."/".$file, 'name2' => $this->options['prepend'].preg_replace("/(\.+\/+)+/", "", ($this->options['storepaths'] == 0 && strstr($dirname."/".$file, "/")) ? io::substr($dirname."/".$file, strrpos($dirname."/".$file, "/") + 1) : $dirname."/".$file), 'type' => 0, 'ext' => io::substr($file, strrpos($file, ".")), 'stat' => stat($dirname."/".$file));
 			}
 		}
 		@closedir($dir);
@@ -371,14 +371,14 @@ class CMS_archive extends CMS_grandFather
 		if ($a['type'] != $b['type']) {
 			return $a['type'] > $b['type'] ? -1 : 1;
 		} elseif ($a['type'] == 5) {
-			return strcmp(strtolower($a['name']), strtolower($b['name']));
+			return strcmp(io::strtolower($a['name']), io::strtolower($b['name']));
 		} else {
 			if ($a['ext'] != $b['ext']) {
 				return strcmp($a['ext'], $b['ext']);
 			} elseif ($a['stat'][7] != $b['stat'][7]) {
 				return $a['stat'][7] > $b['stat'][7] ? -1 : 1;
 			} else {
-				return strcmp(strtolower($a['name']), strtolower($b['name']));
+				return strcmp(io::strtolower($a['name']), io::strtolower($b['name']));
 			}
 		}
 		return 0;
@@ -408,10 +408,10 @@ class CMS_archive extends CMS_grandFather
 				header("Content-type:application/x-tar");
 		}
 		$header = "Content-disposition: attachment; filename=\"";
-		$header .= strstr($this->options['name'], "/") ? substr($this->options['name'], strrpos($this->options['name'], "/") + 1) : $this->options['name'];
+		$header .= strstr($this->options['name'], "/") ? io::substr($this->options['name'], strrpos($this->options['name'], "/") + 1) : $this->options['name'];
 		$header .= "\"";
 		header($header);
-		header("Content-length: ".strlen($this->CMS_archive));
+		header("Content-length: ".io::strlen($this->CMS_archive));
 		header("Content-transfer-encoding: binary");
 		header("Pragma: no-cache");
 		header("Expires: 0");
