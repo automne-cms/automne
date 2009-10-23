@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_date.php,v 1.9 2009/10/22 16:30:04 sebastien Exp $
+// $Id: object_date.php,v 1.10 2009/10/23 10:18:31 sebastien Exp $
 
 /**
   * Class CMS_object_date
@@ -175,6 +175,14 @@ class CMS_object_date extends CMS_object_common
 	  * @access public
 	  */
 	function checkMandatory($values,$prefixName) {
+		global $cms_language;
+		$date = new CMS_date();
+		$date->setFormat($cms_language->getDateFormat());
+		if (isset($values[$prefixName.$this->_field->getID().'_0']) && $values[$prefixName.$this->_field->getID().'_0']) {
+			if (!$date->setLocalizedDate($values[$prefixName.$this->_field->getID().'_0'], !$this->_field->getValue('required'))) {
+				return false;
+			}
+		}
 		//if field is required check values
 		if ($this->_field->getValue('required')) {
 			$params = $this->getParamsValues();

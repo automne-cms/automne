@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: patch.php,v 1.6 2009/10/22 16:30:01 sebastien Exp $
+// $Id: patch.php,v 1.7 2009/10/23 10:18:32 sebastien Exp $
 
 /**
   * Class CMS_patch
@@ -559,7 +559,6 @@ class CMS_patch extends CMS_grandFather
 		}
 		//finally, clean it and split queries
 		PMA_splitSqlFile($queries,$query,(int)sprintf('%d%02d%02d', $match[0], $match[1], intval($match[2])));
-		
 		if (!$simulation) {
 			//set connection charset accordingly to file charset
 			if ($isUTF8) {

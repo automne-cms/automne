@@ -4,7 +4,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title><atm-constant name="APPLICATION_LABEL" /> : <atm-title /></title>
-	<atm-css-tags files="/css/common.css,/css/accueil.css" media="screen" />
+	<atm-css-tags files="/css/common.css,/css/accueil.css" media="all" />
 	<!--[if lte IE 6]> 
 		<link rel="stylesheet" type="text/css" href="/css/ie6.css" media="screen" />
 	<![endif]-->
