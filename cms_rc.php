@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc.php,v 1.18 2009/10/22 16:22:35 sebastien Exp $
+// $Id: cms_rc.php,v 1.19 2009/10/23 07:51:34 sebastien Exp $
 
 /**
   * rc file, contains all default constants
@@ -50,10 +50,10 @@ if (!defined("APPLICATION_DEFAULT_LANGUAGE")) {
 /**
   *	Application default encoding
   * supported values are iso-8859-1 or utf-8
-  *	Default : "iso-8859-1"
+  *	Default : "utf-8"
   */
 if (!defined("APPLICATION_DEFAULT_ENCODING")) {
-	define("APPLICATION_DEFAULT_ENCODING", "iso-8859-1");
+	define("APPLICATION_DEFAULT_ENCODING", "utf-8");
 }
 
 /**

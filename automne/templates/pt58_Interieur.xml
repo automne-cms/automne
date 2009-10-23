@@ -2,14 +2,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<title><atm-constant name="APPLICATION_LABEL" /> : <atm-title /></title>
-		<atm-css-tags files="/css/common.css,/css/interieur.css" media="screen" />
+		<atm-css-tags files="/css/common.css,/css/interieur.css" media="all" />
 		<!--[if lte IE 6]> 
 		<link rel="stylesheet" type="text/css" href="/css/ie6.css" media="screen" />
 		<![endif]-->
 		<atm-js-tags files="/js/sifr.js,/js/common.js" />
 		<atm-meta-tags />
+		
 	</head>
 	<body>
 		<div id="main">
@@ -21,7 +22,7 @@
 						</selection>
 						<display>
 							<htmltemplate>
-								<a id="lienAccueil" href="{{href}}" title="Retour à l'accueil">Retour à l'accueil</a>
+								<a id="lienAccueil" href="{{href}}" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
 							</htmltemplate>
 						</display>
 					</atm-linx>

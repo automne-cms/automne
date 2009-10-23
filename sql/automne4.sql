@@ -24,7 +24,7 @@ CREATE TABLE `I18NM_messages` (
   `fr` mediumtext NOT NULL,
   `en` mediumtext NOT NULL,
   KEY `id` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 -- --------------------------------------------------------
@@ -37,7 +37,7 @@ DROP TABLE IF EXISTS `actionsTimestamps`;
 CREATE TABLE `actionsTimestamps` (
   `type_at` varchar(50) NOT NULL default '',
   `date_at` datetime NOT NULL default '0000-00-00 00:00:00'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `actionsTimestamps`
@@ -61,7 +61,7 @@ CREATE TABLE `blocksFiles_archived` (
   `file` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksFiles_archived`
@@ -85,7 +85,7 @@ CREATE TABLE `blocksFiles_deleted` (
   `file` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksFiles_deleted`
@@ -110,7 +110,7 @@ CREATE TABLE `blocksFiles_edited` (
   PRIMARY KEY  (`id`),
   KEY `page` (`page`),
   FULLTEXT KEY `label` (`label`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksFiles_edited`
@@ -134,7 +134,7 @@ CREATE TABLE `blocksFiles_edition` (
   `file` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksFiles_edition`
@@ -159,7 +159,7 @@ CREATE TABLE `blocksFiles_public` (
   PRIMARY KEY  (`id`),
   KEY `page` (`page`),
   FULLTEXT KEY `label` (`label`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksFiles_public`
@@ -189,7 +189,7 @@ CREATE TABLE `blocksFlashes_archived` (
   `attributes` text NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksFlashes_archived`
@@ -219,7 +219,7 @@ CREATE TABLE `blocksFlashes_deleted` (
   `attributes` text NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksFlashes_deleted`
@@ -249,7 +249,7 @@ CREATE TABLE `blocksFlashes_edited` (
   `attributes` text NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksFlashes_edited`
@@ -279,7 +279,7 @@ CREATE TABLE `blocksFlashes_edition` (
   `attributes` text NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksFlashes_edition`
@@ -309,7 +309,7 @@ CREATE TABLE `blocksFlashes_public` (
   `attributes` text NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksFlashes_public`
@@ -335,7 +335,7 @@ CREATE TABLE `blocksImages_archived` (
   `externalLink` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksImages_archived`
@@ -361,7 +361,7 @@ CREATE TABLE `blocksImages_deleted` (
   `externalLink` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksImages_deleted`
@@ -388,7 +388,7 @@ CREATE TABLE `blocksImages_edited` (
   PRIMARY KEY  (`id`),
   KEY `page` (`page`),
   FULLTEXT KEY `label` (`label`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksImages_edited`
@@ -415,7 +415,7 @@ CREATE TABLE `blocksImages_edition` (
   `externalLink` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksImages_edition`
@@ -442,7 +442,7 @@ CREATE TABLE `blocksImages_public` (
   PRIMARY KEY  (`id`),
   KEY `page` (`page`),
   FULLTEXT KEY `label` (`label`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksImages_public`
@@ -466,7 +466,7 @@ CREATE TABLE `blocksRawDatas_archived` (
   `value` text NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksRawDatas_archived`
@@ -489,7 +489,7 @@ CREATE TABLE `blocksRawDatas_deleted` (
   `value` text NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksRawDatas_deleted`
@@ -512,7 +512,7 @@ CREATE TABLE `blocksRawDatas_edited` (
   `value` text NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksRawDatas_edited`
@@ -547,7 +547,7 @@ CREATE TABLE `blocksRawDatas_edition` (
   `value` text NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksRawDatas_edition`
@@ -570,7 +570,7 @@ CREATE TABLE `blocksRawDatas_public` (
   `value` text NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksRawDatas_public`
@@ -605,7 +605,7 @@ CREATE TABLE `blocksTexts_archived` (
   `value` text NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksTexts_archived`
@@ -628,7 +628,7 @@ CREATE TABLE `blocksTexts_deleted` (
   `value` text NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksTexts_deleted`
@@ -652,7 +652,7 @@ CREATE TABLE `blocksTexts_edited` (
   PRIMARY KEY  (`id`),
   KEY `page` (`page`),
   FULLTEXT KEY `value` (`value`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksTexts_edited`
@@ -709,7 +709,7 @@ CREATE TABLE `blocksTexts_edition` (
   `value` text NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksTexts_edition`
@@ -733,7 +733,7 @@ CREATE TABLE `blocksTexts_public` (
   PRIMARY KEY  (`id`),
   KEY `page` (`page`),
   FULLTEXT KEY `value` (`value`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksTexts_public`
@@ -790,7 +790,7 @@ CREATE TABLE `blocksVarchars_archived` (
   `value` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksVarchars_archived`
@@ -813,7 +813,7 @@ CREATE TABLE `blocksVarchars_deleted` (
   `value` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksVarchars_deleted`
@@ -837,7 +837,7 @@ CREATE TABLE `blocksVarchars_edited` (
   PRIMARY KEY  (`id`),
   KEY `page` (`page`),
   FULLTEXT KEY `value` (`value`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksVarchars_edited`
@@ -868,7 +868,7 @@ CREATE TABLE `blocksVarchars_edition` (
   `value` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksVarchars_edition`
@@ -892,7 +892,7 @@ CREATE TABLE `blocksVarchars_public` (
   PRIMARY KEY  (`id`),
   KEY `page` (`page`),
   FULLTEXT KEY `value` (`value`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `blocksVarchars_public`
@@ -931,7 +931,7 @@ CREATE TABLE `contactDatas` (
   `email_cd` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id_cd`),
   KEY `id_cd` (`id_cd`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `contactDatas`
@@ -955,7 +955,7 @@ CREATE TABLE `languages` (
   `modulesDenied_lng` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`code_lng`),
   KEY `code_lng` (`code_lng`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `languages`
@@ -975,7 +975,7 @@ CREATE TABLE `linx_real_public` (
   `start_lre` int(11) unsigned NOT NULL default '0',
   `stop_lre` int(11) NOT NULL default '0',
   UNIQUE KEY `start_lre` (`start_lre`,`stop_lre`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `linx_real_public`
@@ -1228,7 +1228,7 @@ CREATE TABLE `linx_tree_edited` (
   PRIMARY KEY  (`id_ltr`),
   KEY `father_ltr` (`father_ltr`),
   KEY `sibling_ltr` (`sibling_ltr`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `linx_tree_edited`
@@ -1272,7 +1272,7 @@ CREATE TABLE `linx_tree_public` (
   KEY `id_ltr` (`id_ltr`),
   KEY `father_ltr` (`father_ltr`),
   KEY `sibling_ltr` (`sibling_ltr`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `linx_tree_public`
@@ -1310,7 +1310,7 @@ CREATE TABLE `linx_watch_public` (
   `page_lwa` int(11) unsigned NOT NULL default '0',
   `target_lwa` int(11) unsigned NOT NULL default '0',
   UNIQUE KEY `page_lwa` (`page_lwa`,`target_lwa`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `linx_watch_public`
@@ -1444,7 +1444,7 @@ CREATE TABLE `locks` (
   `date_lok` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`id_lok`),
   KEY `id_lok` (`id_lok`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `locks`
@@ -1476,7 +1476,7 @@ CREATE TABLE `log` (
   KEY `id_ulo` (`id_log`),
   KEY `user_log` (`user_log`),
   KEY `action_log` (`action_log`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `log`
@@ -1498,7 +1498,7 @@ CREATE TABLE `mod_cms_aliases` (
   `alias_ma` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id_ma`),
   KEY `alias_ma` (`alias_ma`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_cms_aliases`
@@ -1519,7 +1519,7 @@ CREATE TABLE `mod_cms_forms_actions` (
   `type_act` tinyint(2) unsigned NOT NULL default '0',
   `text_act` mediumtext NOT NULL,
   PRIMARY KEY  (`id_act`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_cms_forms_actions`
@@ -1542,7 +1542,7 @@ CREATE TABLE `mod_cms_forms_categories` (
   `form_fca` int(11) unsigned NOT NULL default '0',
   `category_fca` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id_fca`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_cms_forms_categories`
@@ -1570,7 +1570,7 @@ CREATE TABLE `mod_cms_forms_fields` (
   `active_fld` int(1) NOT NULL default '0',
   `order_fld` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id_fld`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_cms_forms_fields`
@@ -1601,7 +1601,7 @@ CREATE TABLE `mod_cms_forms_formulars` (
   `DestinationData_frm` mediumtext NOT NULL,
   `responses_frm` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id_frm`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_cms_forms_formulars`
@@ -1622,7 +1622,7 @@ CREATE TABLE `mod_cms_forms_records` (
   `field_rec` int(11) unsigned NOT NULL default '0',
   `value_rec` text NOT NULL,
   PRIMARY KEY  (`id_rec`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_cms_forms_records`
@@ -1647,7 +1647,7 @@ CREATE TABLE `mod_cms_forms_senders` (
   PRIMARY KEY  (`id_snd`),
   KEY `userID_snd` (`userID_snd`),
   KEY `sessionID_snd` (`sessionID_snd`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_cms_forms_senders`
@@ -1676,7 +1676,7 @@ CREATE TABLE `mod_object_definition` (
   `resultsDefinition_mod` mediumtext NOT NULL,
   PRIMARY KEY  (`id_mod`),
   KEY `module_mod` (`module_mod`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_object_definition`
@@ -1707,7 +1707,7 @@ CREATE TABLE `mod_object_field` (
   `params_mof` mediumtext NOT NULL,
   PRIMARY KEY  (`id_mof`),
   KEY `object_id_mof` (`object_id_mof`,`type_mof`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_object_field`
@@ -1737,7 +1737,7 @@ CREATE TABLE `mod_object_i18nm` (
   UNIQUE KEY `id` (`id_i18nm`,`code_i18nm`),
   KEY `code` (`code_i18nm`),
   KEY `id_2` (`id_i18nm`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_object_i18nm`
@@ -1911,14 +1911,14 @@ CREATE TABLE `mod_object_plugin_definition` (
   `compiled_definition_mowd` mediumtext NOT NULL,
   PRIMARY KEY  (`id_mowd`),
   KEY `object_id_mowd` (`object_id_mowd`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_object_plugin_definition`
 -- 
 
-INSERT INTO `mod_object_plugin_definition` (`id_mowd`, `object_id_mowd`, `label_id_mowd`, `description_id_mowd`, `query_mowd`, `definition_mowd`, `compiled_definition_mowd`) VALUES (1, 2, 87, 88, 'a:1:{i:8;s:1:"0";}', '<atm-plugin language="fr">\r\n    <atm-plugin-valid>\r\n        <atm-if what="{[''object2''][''fields''][9][''fileExtension'']} != ''flv'' &amp;&amp; {[''object2''][''fields''][9][''fileExtension'']} != ''mp3'' &amp;&amp; {[''object2''][''fields''][9][''fileExtension'']} != ''jpg'' &amp;&amp; {[''object2''][''fields''][9][''fileExtension'']} != ''gif'' &amp;&amp; {[''object2''][''fields''][9][''fileExtension'']} != ''png''">\r\n			<a href="{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''filename'']}" target="_blank" title="Télécharger le document ''{[''object2''][''fields''][9][''fileLabel'']}'' ({[''object2''][''fields''][9][''fileExtension'']} - {[''object2''][''fields''][9][''fileSize'']}Mo)"><atm-if what="{[''object2''][''fields''][9][''fileIcon'']}"><img src="{[''object2''][''fields''][9][''fileIcon'']}" alt="Fichier {[''object2''][''fields''][9][''fileExtension'']}" title="Fichier {[''object2''][''fields''][9][''fileExtension'']}" /></atm-if> {[''object2''][''label'']}</a>\r\n		</atm-if>\r\n    	<atm-if what="{[''object2''][''fields''][9][''fileExtension'']} == ''flv''">\r\n			<atm-if what="{[''object2''][''fields''][9][''thumbnail'']}">\r\n				<script type="text/javascript" src="/js/modules/pmedia/swfobject.js"></script>\r\n				<script type="text/javascript">\r\n					swfobject.embedSWF(''/automne/playerflv/player_flv.swf'', ''media-{[''object2''][''id'']}'', ''320'', ''200'', ''9.0.0'', ''/automne/swfobject/expressInstall.swf'', {flv:''{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''filename'']}'', configxml:''/automne/playerflv/config_playerflv.xml'', startimage:''{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''thumbnail'']}''}, {allowfullscreen:true, wmode:''transparent''}, false);\r\n				</script>\r\n			</atm-if>\r\n			<atm-if what="!{[''object2''][''fields''][9][''thumbnail'']}">\r\n				<script type="text/javascript" src="/js/modules/pmedia/swfobject.js"></script>\r\n				<script type="text/javascript">\r\n					swfobject.embedSWF(''/automne/playerflv/player_flv.swf'', ''media-{[''object2''][''id'']}'', ''320'', ''200'', ''9.0.0'', ''/automne/swfobject/expressInstall.swf'', {flv:''{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''filename'']}'', configxml:''/automne/playerflv/config_playerflv.xml''}, {allowfullscreen:true, wmode:''transparent''}, false);\r\n				</script>\r\n			</atm-if>\r\n			<div id="media-{[''object2''][''id'']}" class="pmedias-video" style="width:320px;height:200px;">\r\n				<p><a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a></p>\r\n			</div>\r\n		</atm-if>\r\n		<atm-if what="{[''object2''][''fields''][9][''fileExtension'']} == ''mp3''">\r\n			<script type="text/javascript" src="/js/modules/pmedia/swfobject.js"></script>\r\n			<script type="text/javascript">\r\n				swfobject.embedSWF(''/automne/playermp3/player_mp3.swf'', ''media-{[''object2''][''id'']}'', ''200'', ''20'', ''9.0.0'', ''/automne/swfobject/expressInstall.swf'', {mp3:''{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''filename'']}'', configxml:''/automne/playermp3/config_playermp3.xml''}, {wmode:''transparent''}, false);\r\n			</script>\r\n			<div id="media-{[''object2''][''id'']}" class="pmedias-audio" style="width:200px;height:20px;">\r\n				<p><a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a></p>\r\n			</div>\r\n		</atm-if>\r\n		<atm-if what="{[''object2''][''fields''][9][''fileExtension'']} == ''jpg'' || {[''object2''][''fields''][9][''fileExtension'']} == ''gif'' || {[''object2''][''fields''][9][''fileExtension'']} == ''png''">\r\n			<atm-if what="{[''object2''][''fields''][9][''thumbnail'']}">\r\n				<a href="{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''filename'']}" onclick="javascript:CMS_openPopUpImage(''/imagezoom.php?location=public&amp;module=pmedia&amp;file={[''object2''][''fields''][9][''filename'']}&amp;label={[''object2''][''label'']|js}'');return false;" target="_blank" title="Voir l''image ''{[''object2''][''label'']}'' ({[''object2''][''fields''][9][''fileExtension'']} - {[''object2''][''fields''][9][''fileSize'']}Mo)"><img src="{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''thumbnail'']}" alt="{[''object2''][''label'']}" title="{[''object2''][''label'']}" /></a>\r\n			</atm-if>\r\n			<atm-if what="!{[''object2''][''fields''][9][''thumbnail'']}">\r\n				<img src="{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''filename'']}" alt="{[''object2''][''label'']}" title="{[''object2''][''label'']}" style="max-width:200px;" />\r\n			</atm-if>\r\n		</atm-if>\r\n    </atm-plugin-valid>\r\n	<atm-plugin-view>\r\n        <atm-if what="{[''object2''][''fields''][9][''fileExtension'']} != ''jpg'' &amp;&amp; {[''object2''][''fields''][9][''fileExtension'']} != ''gif'' &amp;&amp; {[''object2''][''fields''][9][''fileExtension'']} != ''png''">\r\n			<a href="{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''filename'']}" target="_blank" title="Télécharger le document ''{[''object2''][''fields''][9][''fileLabel'']}'' ({[''object2''][''fields''][9][''fileExtension'']} - {[''object2''][''fields''][9][''fileSize'']}Mo)"><atm-if what="{[''object2''][''fields''][9][''fileIcon'']}"><img src="{[''object2''][''fields''][9][''fileIcon'']}" alt="Fichier {[''object2''][''fields''][9][''fileExtension'']}" title="Fichier {[''object2''][''fields''][9][''fileExtension'']}" /></atm-if> {[''object2''][''label'']}</a>\r\n		</atm-if>\r\n    	<atm-if what="{[''object2''][''fields''][9][''fileExtension'']} == ''jpg'' || {[''object2''][''fields''][9][''fileExtension'']} == ''gif'' || {[''object2''][''fields''][9][''fileExtension'']} == ''png''">\r\n			<atm-if what="{[''object2''][''fields''][9][''thumbnail'']}">\r\n				<a href="{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''filename'']}" onclick="javascript:CMS_openPopUpImage(''/imagezoom.php?location=public&amp;module=pmedia&amp;file={[''object2''][''fields''][9][''filename'']}&amp;label={[''object2''][''label'']|js}'');return false;" target="_blank" title="Voir l''image ''{[''object2''][''label'']}'' ({[''object2''][''fields''][9][''fileExtension'']} - {[''object2''][''fields''][9][''fileSize'']}Mo)"><img src="{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''thumbnail'']}" alt="{[''object2''][''label'']}" title="{[''object2''][''label'']}" /></a>\r\n			</atm-if>\r\n			<atm-if what="!{[''object2''][''fields''][9][''thumbnail'']}">\r\n				<img src="{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''filename'']}" alt="{[''object2''][''label'']}" title="{[''object2''][''label'']}" style="max-width:200px;" />\r\n			</atm-if>\r\n		</atm-if>\r\n    </atm-plugin-view>\r\n</atm-plugin>', '<?php\n//Generated by : $Id: automne4.sql,v 1.13 2009/06/26 15:23:39 sebastien Exp $\n$content = "";\n$replace = "";\nif (!isset($objectDefinitions) || !is_array($objectDefinitions)) $objectDefinitions = array();\n$parameters[''objectID''] = 2;\nif (!isset($cms_language) || (isset($cms_language) && $cms_language->getCode() != ''fr'')) $cms_language = new CMS_language(''fr'');\n$parameters[''public''] = (isset($parameters[''public''])) ? $parameters[''public''] : true;\nif (isset($parameters[''item''])) {$parameters[''objectID''] = $parameters[''item'']->getObjectID();} elseif (isset($parameters[''itemID'']) && sensitiveIO::isPositiveInteger($parameters[''itemID'']) && !isset($parameters[''objectID''])) $parameters[''objectID''] = CMS_poly_object_catalog::getObjectDefinitionByID($parameters[''itemID'']);\nif (!isset($object) || !is_array($object)) $object = array();\nif (!isset($object[2])) $object[2] = new CMS_poly_object(2, 0, array(), $parameters[''public'']);\n$parameters[''module''] = ''pmedia'';\n//PLUGIN TAG START 19_5f9088\nif (!sensitiveIO::isPositiveInteger($parameters[''itemID'']) || !sensitiveIO::isPositiveInteger($parameters[''objectID''])) {\n	CMS_grandFather::raiseError(''Error into atm-plugin tag : can\\''t found object infos to use into : $parameters[\\''itemID\\''] and $parameters[\\''objectID\\'']'');\n} else {\n	//search needed object (need to search it for publications and rights purpose)\n	if (!isset($objectDefinitions[$parameters[''objectID'']])) {\n		$objectDefinitions[$parameters[''objectID'']] = new CMS_poly_object_definition($parameters[''objectID'']);\n	}\n	$search_19_5f9088 = new CMS_object_search($objectDefinitions[$parameters[''objectID'']], $parameters[''public'']);\n	$search_19_5f9088->addWhereCondition(''item'', $parameters[''itemID'']);\n	$results_19_5f9088 = $search_19_5f9088->search();\n	if (isset($results_19_5f9088[$parameters[''itemID'']]) && is_object($results_19_5f9088[$parameters[''itemID'']])) {\n		$object[$parameters[''objectID'']] = $results_19_5f9088[$parameters[''itemID'']];\n	} else {\n		$object[$parameters[''objectID'']] = new CMS_poly_object($parameters[''objectID''], 0, array(), $parameters[''public'']);\n	}\n	$parameters[''has-plugin-view''] = true;\n	//PLUGIN-VALID TAG START 20_453a0b\n	if ($object[$parameters[''objectID'']]->isInUserSpace() && !(@$parameters[''plugin-view''] && @$parameters[''has-plugin-view'']) ) {\n		//IF TAG START 21_c1c80e\n		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." != ''flv'' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." != ''mp3'' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." != ''jpg'' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." != ''gif'' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." != ''png''", $replace);\n		if ($ifcondition) {\n			$func = create_function("","return (".$ifcondition.");");\n			if ($func()) {\n				$content .="\n				<a href=\\"".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''filename'','''')."\\" target=\\"_blank\\" title=\\"Télécharger le document ''".$object[2]->objectValues(9)->getValue(''fileLabel'','''')."'' (".$object[2]->objectValues(9)->getValue(''fileExtension'','''')." - ".$object[2]->objectValues(9)->getValue(''fileSize'','''')."Mo)\\">";\n				//IF TAG START 22_089657\n				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileIcon'','''')), $replace);\n				if ($ifcondition) {\n					$func = create_function("","return (".$ifcondition.");");\n					if ($func()) {\n						$content .="<img src=\\"".$object[2]->objectValues(9)->getValue(''fileIcon'','''')."\\" alt=\\"Fichier ".$object[2]->objectValues(9)->getValue(''fileExtension'','''')."\\" title=\\"Fichier ".$object[2]->objectValues(9)->getValue(''fileExtension'','''')."\\" />";\n					}\n				}//IF TAG END 22_089657\n				$content .=" ".$object[2]->getValue(''label'','''')."</a>\n				";\n			}\n		}//IF TAG END 21_c1c80e\n		//IF TAG START 23_6d4bc8\n		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." == ''flv''", $replace);\n		if ($ifcondition) {\n			$func = create_function("","return (".$ifcondition.");");\n			if ($func()) {\n				//IF TAG START 24_6c8680\n				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''thumbnail'','''')), $replace);\n				if ($ifcondition) {\n					$func = create_function("","return (".$ifcondition.");");\n					if ($func()) {\n						$content .="\n						<script type=\\"text/javascript\\" src=\\"/js/modules/pmedia/swfobject.js\\"></script>\n						<script type=\\"text/javascript\\">\n						swfobject.embedSWF(''/automne/playerflv/player_flv.swf'', ''media-".$object[2]->getValue(''id'','''')."'', ''320'', ''200'', ''9.0.0'', ''/automne/swfobject/expressInstall.swf'', {flv:''".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''filename'','''')."'', configxml:''/automne/playerflv/config_playerflv.xml'', startimage:''".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''thumbnail'','''')."''}, {allowfullscreen:true, wmode:''transparent''}, false);\n						</script>\n						";\n					}\n				}//IF TAG END 24_6c8680\n				//IF TAG START 25_08c9f1\n				$ifcondition = CMS_polymod_definition_parsing::replaceVars("!".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''thumbnail'','''')), $replace);\n				if ($ifcondition) {\n					$func = create_function("","return (".$ifcondition.");");\n					if ($func()) {\n						$content .="\n						<script type=\\"text/javascript\\" src=\\"/js/modules/pmedia/swfobject.js\\"></script>\n						<script type=\\"text/javascript\\">\n						swfobject.embedSWF(''/automne/playerflv/player_flv.swf'', ''media-".$object[2]->getValue(''id'','''')."'', ''320'', ''200'', ''9.0.0'', ''/automne/swfobject/expressInstall.swf'', {flv:''".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''filename'','''')."'', configxml:''/automne/playerflv/config_playerflv.xml''}, {allowfullscreen:true, wmode:''transparent''}, false);\n						</script>\n						";\n					}\n				}//IF TAG END 25_08c9f1\n				$content .="\n				<div id=\\"media-".$object[2]->getValue(''id'','''')."\\" class=\\"pmedias-video\\" style=\\"width:320px;height:200px;\\">\n				<p><a href=\\"http://www.adobe.com/go/getflashplayer\\"><img src=\\"http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif\\" alt=\\"Get Adobe Flash player\\" /></a></p>\n				</div>\n				";\n			}\n		}//IF TAG END 23_6d4bc8\n		//IF TAG START 26_d45ee0\n		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." == ''mp3''", $replace);\n		if ($ifcondition) {\n			$func = create_function("","return (".$ifcondition.");");\n			if ($func()) {\n				$content .="\n				<script type=\\"text/javascript\\" src=\\"/js/modules/pmedia/swfobject.js\\"></script>\n				<script type=\\"text/javascript\\">\n				swfobject.embedSWF(''/automne/playermp3/player_mp3.swf'', ''media-".$object[2]->getValue(''id'','''')."'', ''200'', ''20'', ''9.0.0'', ''/automne/swfobject/expressInstall.swf'', {mp3:''".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''filename'','''')."'', configxml:''/automne/playermp3/config_playermp3.xml''}, {wmode:''transparent''}, false);\n				</script>\n				<div id=\\"media-".$object[2]->getValue(''id'','''')."\\" class=\\"pmedias-audio\\" style=\\"width:200px;height:20px;\\">\n				<p><a href=\\"http://www.adobe.com/go/getflashplayer\\"><img src=\\"http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif\\" alt=\\"Get Adobe Flash player\\" /></a></p>\n				</div>\n				";\n			}\n		}//IF TAG END 26_d45ee0\n		//IF TAG START 27_bb7432\n		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." == ''jpg'' || ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." == ''gif'' || ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." == ''png''", $replace);\n		if ($ifcondition) {\n			$func = create_function("","return (".$ifcondition.");");\n			if ($func()) {\n				//IF TAG START 28_4d8af1\n				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''thumbnail'','''')), $replace);\n				if ($ifcondition) {\n					$func = create_function("","return (".$ifcondition.");");\n					if ($func()) {\n						$content .="\n						<a href=\\"".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''filename'','''')."\\" onclick=\\"javascript:CMS_openPopUpImage(''/imagezoom.php?location=public&module=pmedia&file=".$object[2]->objectValues(9)->getValue(''filename'','''')."&label=".$object[2]->getValue(''label'',''js'')."'');return false;\\" target=\\"_blank\\" title=\\"Voir l''image ''".$object[2]->getValue(''label'','''')."'' (".$object[2]->objectValues(9)->getValue(''fileExtension'','''')." - ".$object[2]->objectValues(9)->getValue(''fileSize'','''')."Mo)\\"><img src=\\"".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''thumbnail'','''')."\\" alt=\\"".$object[2]->getValue(''label'','''')."\\" title=\\"".$object[2]->getValue(''label'','''')."\\" /></a>\n						";\n					}\n				}//IF TAG END 28_4d8af1\n				//IF TAG START 29_3c8c8f\n				$ifcondition = CMS_polymod_definition_parsing::replaceVars("!".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''thumbnail'','''')), $replace);\n				if ($ifcondition) {\n					$func = create_function("","return (".$ifcondition.");");\n					if ($func()) {\n						$content .="\n						<img src=\\"".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''filename'','''')."\\" alt=\\"".$object[2]->getValue(''label'','''')."\\" title=\\"".$object[2]->getValue(''label'','''')."\\" style=\\"max-width:200px;\\" />\n						";\n					}\n				}//IF TAG END 29_3c8c8f\n			}\n		}//IF TAG END 27_bb7432\n	}\n	//PLUGIN-VALID END 20_453a0b\n	//PLUGIN-VIEW TAG START 30_ff5b92\n	if ($object[$parameters[''objectID'']]->isInUserSpace() && isset($parameters[''plugin-view''])) {\n		//IF TAG START 31_cc7c8c\n		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." != ''jpg'' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." != ''gif'' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." != ''png''", $replace);\n		if ($ifcondition) {\n			$func = create_function("","return (".$ifcondition.");");\n			if ($func()) {\n				$content .="\n				<a href=\\"".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''filename'','''')."\\" target=\\"_blank\\" title=\\"Télécharger le document ''".$object[2]->objectValues(9)->getValue(''fileLabel'','''')."'' (".$object[2]->objectValues(9)->getValue(''fileExtension'','''')." - ".$object[2]->objectValues(9)->getValue(''fileSize'','''')."Mo)\\">";\n				//IF TAG START 32_d8dbad\n				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileIcon'','''')), $replace);\n				if ($ifcondition) {\n					$func = create_function("","return (".$ifcondition.");");\n					if ($func()) {\n						$content .="<img src=\\"".$object[2]->objectValues(9)->getValue(''fileIcon'','''')."\\" alt=\\"Fichier ".$object[2]->objectValues(9)->getValue(''fileExtension'','''')."\\" title=\\"Fichier ".$object[2]->objectValues(9)->getValue(''fileExtension'','''')."\\" />";\n					}\n				}//IF TAG END 32_d8dbad\n				$content .=" ".$object[2]->getValue(''label'','''')."</a>\n				";\n			}\n		}//IF TAG END 31_cc7c8c\n		//IF TAG START 33_5df98b\n		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." == ''jpg'' || ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." == ''gif'' || ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." == ''png''", $replace);\n		if ($ifcondition) {\n			$func = create_function("","return (".$ifcondition.");");\n			if ($func()) {\n				//IF TAG START 34_aa72dd\n				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''thumbnail'','''')), $replace);\n				if ($ifcondition) {\n					$func = create_function("","return (".$ifcondition.");");\n					if ($func()) {\n						$content .="\n						<a href=\\"".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''filename'','''')."\\" onclick=\\"javascript:CMS_openPopUpImage(''/imagezoom.php?location=public&module=pmedia&file=".$object[2]->objectValues(9)->getValue(''filename'','''')."&label=".$object[2]->getValue(''label'',''js'')."'');return false;\\" target=\\"_blank\\" title=\\"Voir l''image ''".$object[2]->getValue(''label'','''')."'' (".$object[2]->objectValues(9)->getValue(''fileExtension'','''')." - ".$object[2]->objectValues(9)->getValue(''fileSize'','''')."Mo)\\"><img src=\\"".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''thumbnail'','''')."\\" alt=\\"".$object[2]->getValue(''label'','''')."\\" title=\\"".$object[2]->getValue(''label'','''')."\\" /></a>\n						";\n					}\n				}//IF TAG END 34_aa72dd\n				//IF TAG START 35_5d189c\n				$ifcondition = CMS_polymod_definition_parsing::replaceVars("!".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''thumbnail'','''')), $replace);\n				if ($ifcondition) {\n					$func = create_function("","return (".$ifcondition.");");\n					if ($func()) {\n						$content .="\n						<img src=\\"".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''filename'','''')."\\" alt=\\"".$object[2]->getValue(''label'','''')."\\" title=\\"".$object[2]->getValue(''label'','''')."\\" style=\\"max-width:200px;\\" />\n						";\n					}\n				}//IF TAG END 35_5d189c\n			}\n		}//IF TAG END 33_5df98b\n	}\n	//PLUGIN-VIEW END 30_ff5b92\n	$content .="\n	";\n}\n//PLUGIN TAG END 19_5f9088\necho CMS_polymod_definition_parsing::replaceVars($content, $replace);\n?>');
-INSERT INTO `mod_object_plugin_definition` (`id_mowd`, `object_id_mowd`, `label_id_mowd`, `description_id_mowd`, `query_mowd`, `definition_mowd`, `compiled_definition_mowd`) VALUES (2, 2, 89, 90, 'a:1:{i:8;s:1:"0";}', '<atm-plugin language="fr">\r\n    <atm-plugin-valid>\r\n        <a href="{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''filename'']}" target="_blank" title="Télécharger le document ''{[''object2''][''fields''][9][''fileLabel'']}'' ({[''object2''][''fields''][9][''fileExtension'']} - {[''object2''][''fields''][9][''fileSize'']}Mo)"><atm-if what="{[''object2''][''fields''][9][''fileIcon'']}"><img src="{[''object2''][''fields''][9][''fileIcon'']}" alt="Fichier {[''object2''][''fields''][9][''fileExtension'']}" title="Fichier {[''object2''][''fields''][9][''fileExtension'']}" /> </atm-if>{plugin:selection}</a>\r\n    </atm-plugin-valid>\r\n	<atm-plugin-invalid>\r\n        {plugin:selection}\r\n    </atm-plugin-invalid>\r\n</atm-plugin>', '<?php\n//Generated by : $Id: automne4.sql,v 1.13 2009/06/26 15:23:39 sebastien Exp $\n$content = "";\n$replace = "";\nif (!isset($objectDefinitions) || !is_array($objectDefinitions)) $objectDefinitions = array();\n$parameters[''objectID''] = 2;\nif (!isset($cms_language) || (isset($cms_language) && $cms_language->getCode() != ''fr'')) $cms_language = new CMS_language(''fr'');\n$parameters[''public''] = (isset($parameters[''public''])) ? $parameters[''public''] : true;\nif (isset($parameters[''item''])) {$parameters[''objectID''] = $parameters[''item'']->getObjectID();} elseif (isset($parameters[''itemID'']) && sensitiveIO::isPositiveInteger($parameters[''itemID'']) && !isset($parameters[''objectID''])) $parameters[''objectID''] = CMS_poly_object_catalog::getObjectDefinitionByID($parameters[''itemID'']);\nif (!isset($object) || !is_array($object)) $object = array();\nif (!isset($object[2])) $object[2] = new CMS_poly_object(2, 0, array(), $parameters[''public'']);\n$parameters[''module''] = ''pmedia'';\n//PLUGIN TAG START 6_abe4e4\nif (!sensitiveIO::isPositiveInteger($parameters[''itemID'']) || !sensitiveIO::isPositiveInteger($parameters[''objectID''])) {\n	CMS_grandFather::raiseError(''Error into atm-plugin tag : can\\''t found object infos to use into : $parameters[\\''itemID\\''] and $parameters[\\''objectID\\'']'');\n} else {\n	//search needed object (need to search it for publications and rights purpose)\n	if (!isset($objectDefinitions[$parameters[''objectID'']])) {\n		$objectDefinitions[$parameters[''objectID'']] = new CMS_poly_object_definition($parameters[''objectID'']);\n	}\n	$search_6_abe4e4 = new CMS_object_search($objectDefinitions[$parameters[''objectID'']], $parameters[''public'']);\n	$search_6_abe4e4->addWhereCondition(''item'', $parameters[''itemID'']);\n	$results_6_abe4e4 = $search_6_abe4e4->search();\n	if (isset($results_6_abe4e4[$parameters[''itemID'']]) && is_object($results_6_abe4e4[$parameters[''itemID'']])) {\n		$object[$parameters[''objectID'']] = $results_6_abe4e4[$parameters[''itemID'']];\n	} else {\n		$object[$parameters[''objectID'']] = new CMS_poly_object($parameters[''objectID''], 0, array(), $parameters[''public'']);\n	}\n	$parameters[''has-plugin-view''] = false;\n	//PLUGIN-VALID TAG START 7_d69991\n	if ($object[$parameters[''objectID'']]->isInUserSpace() && !(@$parameters[''plugin-view''] && @$parameters[''has-plugin-view'']) ) {\n		$content .="\n		<a href=\\"".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''filename'','''')."\\" target=\\"_blank\\" title=\\"Télécharger le document ''".$object[2]->objectValues(9)->getValue(''fileLabel'','''')."'' (".$object[2]->objectValues(9)->getValue(''fileExtension'','''')." - ".$object[2]->objectValues(9)->getValue(''fileSize'','''')."Mo)\\">";\n		//IF TAG START 8_0f634e\n		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileIcon'','''')), $replace);\n		if ($ifcondition) {\n			$func = create_function("","return (".$ifcondition.");");\n			if ($func()) {\n				$content .="<img src=\\"".$object[2]->objectValues(9)->getValue(''fileIcon'','''')."\\" alt=\\"Fichier ".$object[2]->objectValues(9)->getValue(''fileExtension'','''')."\\" title=\\"Fichier ".$object[2]->objectValues(9)->getValue(''fileExtension'','''')."\\" /> ";\n			}\n		}//IF TAG END 8_0f634e\n		$content .=$parameters[''selection'']."</a>\n		";\n	}\n	//PLUGIN-VALID END 7_d69991\n	//PLUGIN-INVALID TAG START 9_1af172\n	if (!$object[$parameters[''objectID'']]->isInUserSpace()) {\n		$content .="\n		".$parameters[''selection'']."\n		";\n	}\n	//PLUGIN-INVALID END 9_1af172\n	$content .="\n	";\n}\n//PLUGIN TAG END 6_abe4e4\necho CMS_polymod_definition_parsing::replaceVars($content, $replace);\n?>');
+INSERT INTO `mod_object_plugin_definition` (`id_mowd`, `object_id_mowd`, `label_id_mowd`, `description_id_mowd`, `query_mowd`, `definition_mowd`, `compiled_definition_mowd`) VALUES (1, 2, 87, 88, 'a:1:{i:8;s:1:"0";}', '<atm-plugin language="fr">\r\n    <atm-plugin-valid>\r\n        <atm-if what="{[''object2''][''fields''][9][''fileExtension'']} != ''flv'' &amp;&amp; {[''object2''][''fields''][9][''fileExtension'']} != ''mp3'' &amp;&amp; {[''object2''][''fields''][9][''fileExtension'']} != ''jpg'' &amp;&amp; {[''object2''][''fields''][9][''fileExtension'']} != ''gif'' &amp;&amp; {[''object2''][''fields''][9][''fileExtension'']} != ''png''">\r\n			<a href="{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''filename'']}" target="_blank" title="Télécharger le document ''{[''object2''][''fields''][9][''fileLabel'']}'' ({[''object2''][''fields''][9][''fileExtension'']} - {[''object2''][''fields''][9][''fileSize'']}Mo)"><atm-if what="{[''object2''][''fields''][9][''fileIcon'']}"><img src="{[''object2''][''fields''][9][''fileIcon'']}" alt="Fichier {[''object2''][''fields''][9][''fileExtension'']}" title="Fichier {[''object2''][''fields''][9][''fileExtension'']}" /></atm-if> {[''object2''][''label'']}</a>\r\n		</atm-if>\r\n    	<atm-if what="{[''object2''][''fields''][9][''fileExtension'']} == ''flv''">\r\n			<atm-if what="{[''object2''][''fields''][9][''thumbnail'']}">\r\n				<script type="text/javascript" src="/js/modules/pmedia/swfobject.js"></script>\r\n				<script type="text/javascript">\r\n					swfobject.embedSWF(''/automne/playerflv/player_flv.swf'', ''media-{[''object2''][''id'']}'', ''320'', ''200'', ''9.0.0'', ''/automne/swfobject/expressInstall.swf'', {flv:''{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''filename'']}'', configxml:''/automne/playerflv/config_playerflv.xml'', startimage:''{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''thumbnail'']}''}, {allowfullscreen:true, wmode:''transparent''}, false);\r\n				</script>\r\n			</atm-if>\r\n			<atm-if what="!{[''object2''][''fields''][9][''thumbnail'']}">\r\n				<script type="text/javascript" src="/js/modules/pmedia/swfobject.js"></script>\r\n				<script type="text/javascript">\r\n					swfobject.embedSWF(''/automne/playerflv/player_flv.swf'', ''media-{[''object2''][''id'']}'', ''320'', ''200'', ''9.0.0'', ''/automne/swfobject/expressInstall.swf'', {flv:''{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''filename'']}'', configxml:''/automne/playerflv/config_playerflv.xml''}, {allowfullscreen:true, wmode:''transparent''}, false);\r\n				</script>\r\n			</atm-if>\r\n			<div id="media-{[''object2''][''id'']}" class="pmedias-video" style="width:320px;height:200px;">\r\n				<p><a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a></p>\r\n			</div>\r\n		</atm-if>\r\n		<atm-if what="{[''object2''][''fields''][9][''fileExtension'']} == ''mp3''">\r\n			<script type="text/javascript" src="/js/modules/pmedia/swfobject.js"></script>\r\n			<script type="text/javascript">\r\n				swfobject.embedSWF(''/automne/playermp3/player_mp3.swf'', ''media-{[''object2''][''id'']}'', ''200'', ''20'', ''9.0.0'', ''/automne/swfobject/expressInstall.swf'', {mp3:''{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''filename'']}'', configxml:''/automne/playermp3/config_playermp3.xml''}, {wmode:''transparent''}, false);\r\n			</script>\r\n			<div id="media-{[''object2''][''id'']}" class="pmedias-audio" style="width:200px;height:20px;">\r\n				<p><a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a></p>\r\n			</div>\r\n		</atm-if>\r\n		<atm-if what="{[''object2''][''fields''][9][''fileExtension'']} == ''jpg'' || {[''object2''][''fields''][9][''fileExtension'']} == ''gif'' || {[''object2''][''fields''][9][''fileExtension'']} == ''png''">\r\n			<atm-if what="{[''object2''][''fields''][9][''thumbnail'']}">\r\n				<a href="{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''filename'']}" onclick="javascript:CMS_openPopUpImage(''/imagezoom.php?location=public&amp;module=pmedia&amp;file={[''object2''][''fields''][9][''filename'']}&amp;label={[''object2''][''label'']|js}'');return false;" target="_blank" title="Voir l''image ''{[''object2''][''label'']}'' ({[''object2''][''fields''][9][''fileExtension'']} - {[''object2''][''fields''][9][''fileSize'']}Mo)"><img src="{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''thumbnail'']}" alt="{[''object2''][''label'']}" title="{[''object2''][''label'']}" /></a>\r\n			</atm-if>\r\n			<atm-if what="!{[''object2''][''fields''][9][''thumbnail'']}">\r\n				<img src="{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''filename'']}" alt="{[''object2''][''label'']}" title="{[''object2''][''label'']}" style="max-width:200px;" />\r\n			</atm-if>\r\n		</atm-if>\r\n    </atm-plugin-valid>\r\n	<atm-plugin-view>\r\n        <atm-if what="{[''object2''][''fields''][9][''fileExtension'']} != ''jpg'' &amp;&amp; {[''object2''][''fields''][9][''fileExtension'']} != ''gif'' &amp;&amp; {[''object2''][''fields''][9][''fileExtension'']} != ''png''">\r\n			<a href="{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''filename'']}" target="_blank" title="Télécharger le document ''{[''object2''][''fields''][9][''fileLabel'']}'' ({[''object2''][''fields''][9][''fileExtension'']} - {[''object2''][''fields''][9][''fileSize'']}Mo)"><atm-if what="{[''object2''][''fields''][9][''fileIcon'']}"><img src="{[''object2''][''fields''][9][''fileIcon'']}" alt="Fichier {[''object2''][''fields''][9][''fileExtension'']}" title="Fichier {[''object2''][''fields''][9][''fileExtension'']}" /></atm-if> {[''object2''][''label'']}</a>\r\n		</atm-if>\r\n    	<atm-if what="{[''object2''][''fields''][9][''fileExtension'']} == ''jpg'' || {[''object2''][''fields''][9][''fileExtension'']} == ''gif'' || {[''object2''][''fields''][9][''fileExtension'']} == ''png''">\r\n			<atm-if what="{[''object2''][''fields''][9][''thumbnail'']}">\r\n				<a href="{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''filename'']}" onclick="javascript:CMS_openPopUpImage(''/imagezoom.php?location=public&amp;module=pmedia&amp;file={[''object2''][''fields''][9][''filename'']}&amp;label={[''object2''][''label'']|js}'');return false;" target="_blank" title="Voir l''image ''{[''object2''][''label'']}'' ({[''object2''][''fields''][9][''fileExtension'']} - {[''object2''][''fields''][9][''fileSize'']}Mo)"><img src="{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''thumbnail'']}" alt="{[''object2''][''label'']}" title="{[''object2''][''label'']}" /></a>\r\n			</atm-if>\r\n			<atm-if what="!{[''object2''][''fields''][9][''thumbnail'']}">\r\n				<img src="{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''filename'']}" alt="{[''object2''][''label'']}" title="{[''object2''][''label'']}" style="max-width:200px;" />\r\n			</atm-if>\r\n		</atm-if>\r\n    </atm-plugin-view>\r\n</atm-plugin>', '<?php\n//Generated by : $Id: automne4.sql,v 1.14 2009/10/23 07:51:49 sebastien Exp $\n$content = "";\n$replace = "";\nif (!isset($objectDefinitions) || !is_array($objectDefinitions)) $objectDefinitions = array();\n$parameters[''objectID''] = 2;\nif (!isset($cms_language) || (isset($cms_language) && $cms_language->getCode() != ''fr'')) $cms_language = new CMS_language(''fr'');\n$parameters[''public''] = (isset($parameters[''public''])) ? $parameters[''public''] : true;\nif (isset($parameters[''item''])) {$parameters[''objectID''] = $parameters[''item'']->getObjectID();} elseif (isset($parameters[''itemID'']) && sensitiveIO::isPositiveInteger($parameters[''itemID'']) && !isset($parameters[''objectID''])) $parameters[''objectID''] = CMS_poly_object_catalog::getObjectDefinitionByID($parameters[''itemID'']);\nif (!isset($object) || !is_array($object)) $object = array();\nif (!isset($object[2])) $object[2] = new CMS_poly_object(2, 0, array(), $parameters[''public'']);\n$parameters[''module''] = ''pmedia'';\n//PLUGIN TAG START 19_5f9088\nif (!sensitiveIO::isPositiveInteger($parameters[''itemID'']) || !sensitiveIO::isPositiveInteger($parameters[''objectID''])) {\n	CMS_grandFather::raiseError(''Error into atm-plugin tag : can\\''t found object infos to use into : $parameters[\\''itemID\\''] and $parameters[\\''objectID\\'']'');\n} else {\n	//search needed object (need to search it for publications and rights purpose)\n	if (!isset($objectDefinitions[$parameters[''objectID'']])) {\n		$objectDefinitions[$parameters[''objectID'']] = new CMS_poly_object_definition($parameters[''objectID'']);\n	}\n	$search_19_5f9088 = new CMS_object_search($objectDefinitions[$parameters[''objectID'']], $parameters[''public'']);\n	$search_19_5f9088->addWhereCondition(''item'', $parameters[''itemID'']);\n	$results_19_5f9088 = $search_19_5f9088->search();\n	if (isset($results_19_5f9088[$parameters[''itemID'']]) && is_object($results_19_5f9088[$parameters[''itemID'']])) {\n		$object[$parameters[''objectID'']] = $results_19_5f9088[$parameters[''itemID'']];\n	} else {\n		$object[$parameters[''objectID'']] = new CMS_poly_object($parameters[''objectID''], 0, array(), $parameters[''public'']);\n	}\n	$parameters[''has-plugin-view''] = true;\n	//PLUGIN-VALID TAG START 20_453a0b\n	if ($object[$parameters[''objectID'']]->isInUserSpace() && !(@$parameters[''plugin-view''] && @$parameters[''has-plugin-view'']) ) {\n		//IF TAG START 21_c1c80e\n		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." != ''flv'' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." != ''mp3'' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." != ''jpg'' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." != ''gif'' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." != ''png''", $replace);\n		if ($ifcondition) {\n			$func = create_function("","return (".$ifcondition.");");\n			if ($func()) {\n				$content .="\n				<a href=\\"".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''filename'','''')."\\" target=\\"_blank\\" title=\\"Télécharger le document ''".$object[2]->objectValues(9)->getValue(''fileLabel'','''')."'' (".$object[2]->objectValues(9)->getValue(''fileExtension'','''')." - ".$object[2]->objectValues(9)->getValue(''fileSize'','''')."Mo)\\">";\n				//IF TAG START 22_089657\n				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileIcon'','''')), $replace);\n				if ($ifcondition) {\n					$func = create_function("","return (".$ifcondition.");");\n					if ($func()) {\n						$content .="<img src=\\"".$object[2]->objectValues(9)->getValue(''fileIcon'','''')."\\" alt=\\"Fichier ".$object[2]->objectValues(9)->getValue(''fileExtension'','''')."\\" title=\\"Fichier ".$object[2]->objectValues(9)->getValue(''fileExtension'','''')."\\" />";\n					}\n				}//IF TAG END 22_089657\n				$content .=" ".$object[2]->getValue(''label'','''')."</a>\n				";\n			}\n		}//IF TAG END 21_c1c80e\n		//IF TAG START 23_6d4bc8\n		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." == ''flv''", $replace);\n		if ($ifcondition) {\n			$func = create_function("","return (".$ifcondition.");");\n			if ($func()) {\n				//IF TAG START 24_6c8680\n				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''thumbnail'','''')), $replace);\n				if ($ifcondition) {\n					$func = create_function("","return (".$ifcondition.");");\n					if ($func()) {\n						$content .="\n						<script type=\\"text/javascript\\" src=\\"/js/modules/pmedia/swfobject.js\\"></script>\n						<script type=\\"text/javascript\\">\n						swfobject.embedSWF(''/automne/playerflv/player_flv.swf'', ''media-".$object[2]->getValue(''id'','''')."'', ''320'', ''200'', ''9.0.0'', ''/automne/swfobject/expressInstall.swf'', {flv:''".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''filename'','''')."'', configxml:''/automne/playerflv/config_playerflv.xml'', startimage:''".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''thumbnail'','''')."''}, {allowfullscreen:true, wmode:''transparent''}, false);\n						</script>\n						";\n					}\n				}//IF TAG END 24_6c8680\n				//IF TAG START 25_08c9f1\n				$ifcondition = CMS_polymod_definition_parsing::replaceVars("!".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''thumbnail'','''')), $replace);\n				if ($ifcondition) {\n					$func = create_function("","return (".$ifcondition.");");\n					if ($func()) {\n						$content .="\n						<script type=\\"text/javascript\\" src=\\"/js/modules/pmedia/swfobject.js\\"></script>\n						<script type=\\"text/javascript\\">\n						swfobject.embedSWF(''/automne/playerflv/player_flv.swf'', ''media-".$object[2]->getValue(''id'','''')."'', ''320'', ''200'', ''9.0.0'', ''/automne/swfobject/expressInstall.swf'', {flv:''".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''filename'','''')."'', configxml:''/automne/playerflv/config_playerflv.xml''}, {allowfullscreen:true, wmode:''transparent''}, false);\n						</script>\n						";\n					}\n				}//IF TAG END 25_08c9f1\n				$content .="\n				<div id=\\"media-".$object[2]->getValue(''id'','''')."\\" class=\\"pmedias-video\\" style=\\"width:320px;height:200px;\\">\n				<p><a href=\\"http://www.adobe.com/go/getflashplayer\\"><img src=\\"http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif\\" alt=\\"Get Adobe Flash player\\" /></a></p>\n				</div>\n				";\n			}\n		}//IF TAG END 23_6d4bc8\n		//IF TAG START 26_d45ee0\n		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." == ''mp3''", $replace);\n		if ($ifcondition) {\n			$func = create_function("","return (".$ifcondition.");");\n			if ($func()) {\n				$content .="\n				<script type=\\"text/javascript\\" src=\\"/js/modules/pmedia/swfobject.js\\"></script>\n				<script type=\\"text/javascript\\">\n				swfobject.embedSWF(''/automne/playermp3/player_mp3.swf'', ''media-".$object[2]->getValue(''id'','''')."'', ''200'', ''20'', ''9.0.0'', ''/automne/swfobject/expressInstall.swf'', {mp3:''".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''filename'','''')."'', configxml:''/automne/playermp3/config_playermp3.xml''}, {wmode:''transparent''}, false);\n				</script>\n				<div id=\\"media-".$object[2]->getValue(''id'','''')."\\" class=\\"pmedias-audio\\" style=\\"width:200px;height:20px;\\">\n				<p><a href=\\"http://www.adobe.com/go/getflashplayer\\"><img src=\\"http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif\\" alt=\\"Get Adobe Flash player\\" /></a></p>\n				</div>\n				";\n			}\n		}//IF TAG END 26_d45ee0\n		//IF TAG START 27_bb7432\n		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." == ''jpg'' || ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." == ''gif'' || ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." == ''png''", $replace);\n		if ($ifcondition) {\n			$func = create_function("","return (".$ifcondition.");");\n			if ($func()) {\n				//IF TAG START 28_4d8af1\n				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''thumbnail'','''')), $replace);\n				if ($ifcondition) {\n					$func = create_function("","return (".$ifcondition.");");\n					if ($func()) {\n						$content .="\n						<a href=\\"".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''filename'','''')."\\" onclick=\\"javascript:CMS_openPopUpImage(''/imagezoom.php?location=public&module=pmedia&file=".$object[2]->objectValues(9)->getValue(''filename'','''')."&label=".$object[2]->getValue(''label'',''js'')."'');return false;\\" target=\\"_blank\\" title=\\"Voir l''image ''".$object[2]->getValue(''label'','''')."'' (".$object[2]->objectValues(9)->getValue(''fileExtension'','''')." - ".$object[2]->objectValues(9)->getValue(''fileSize'','''')."Mo)\\"><img src=\\"".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''thumbnail'','''')."\\" alt=\\"".$object[2]->getValue(''label'','''')."\\" title=\\"".$object[2]->getValue(''label'','''')."\\" /></a>\n						";\n					}\n				}//IF TAG END 28_4d8af1\n				//IF TAG START 29_3c8c8f\n				$ifcondition = CMS_polymod_definition_parsing::replaceVars("!".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''thumbnail'','''')), $replace);\n				if ($ifcondition) {\n					$func = create_function("","return (".$ifcondition.");");\n					if ($func()) {\n						$content .="\n						<img src=\\"".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''filename'','''')."\\" alt=\\"".$object[2]->getValue(''label'','''')."\\" title=\\"".$object[2]->getValue(''label'','''')."\\" style=\\"max-width:200px;\\" />\n						";\n					}\n				}//IF TAG END 29_3c8c8f\n			}\n		}//IF TAG END 27_bb7432\n	}\n	//PLUGIN-VALID END 20_453a0b\n	//PLUGIN-VIEW TAG START 30_ff5b92\n	if ($object[$parameters[''objectID'']]->isInUserSpace() && isset($parameters[''plugin-view''])) {\n		//IF TAG START 31_cc7c8c\n		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." != ''jpg'' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." != ''gif'' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." != ''png''", $replace);\n		if ($ifcondition) {\n			$func = create_function("","return (".$ifcondition.");");\n			if ($func()) {\n				$content .="\n				<a href=\\"".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''filename'','''')."\\" target=\\"_blank\\" title=\\"Télécharger le document ''".$object[2]->objectValues(9)->getValue(''fileLabel'','''')."'' (".$object[2]->objectValues(9)->getValue(''fileExtension'','''')." - ".$object[2]->objectValues(9)->getValue(''fileSize'','''')."Mo)\\">";\n				//IF TAG START 32_d8dbad\n				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileIcon'','''')), $replace);\n				if ($ifcondition) {\n					$func = create_function("","return (".$ifcondition.");");\n					if ($func()) {\n						$content .="<img src=\\"".$object[2]->objectValues(9)->getValue(''fileIcon'','''')."\\" alt=\\"Fichier ".$object[2]->objectValues(9)->getValue(''fileExtension'','''')."\\" title=\\"Fichier ".$object[2]->objectValues(9)->getValue(''fileExtension'','''')."\\" />";\n					}\n				}//IF TAG END 32_d8dbad\n				$content .=" ".$object[2]->getValue(''label'','''')."</a>\n				";\n			}\n		}//IF TAG END 31_cc7c8c\n		//IF TAG START 33_5df98b\n		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." == ''jpg'' || ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." == ''gif'' || ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileExtension'',''''))." == ''png''", $replace);\n		if ($ifcondition) {\n			$func = create_function("","return (".$ifcondition.");");\n			if ($func()) {\n				//IF TAG START 34_aa72dd\n				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''thumbnail'','''')), $replace);\n				if ($ifcondition) {\n					$func = create_function("","return (".$ifcondition.");");\n					if ($func()) {\n						$content .="\n						<a href=\\"".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''filename'','''')."\\" onclick=\\"javascript:CMS_openPopUpImage(''/imagezoom.php?location=public&module=pmedia&file=".$object[2]->objectValues(9)->getValue(''filename'','''')."&label=".$object[2]->getValue(''label'',''js'')."'');return false;\\" target=\\"_blank\\" title=\\"Voir l''image ''".$object[2]->getValue(''label'','''')."'' (".$object[2]->objectValues(9)->getValue(''fileExtension'','''')." - ".$object[2]->objectValues(9)->getValue(''fileSize'','''')."Mo)\\"><img src=\\"".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''thumbnail'','''')."\\" alt=\\"".$object[2]->getValue(''label'','''')."\\" title=\\"".$object[2]->getValue(''label'','''')."\\" /></a>\n						";\n					}\n				}//IF TAG END 34_aa72dd\n				//IF TAG START 35_5d189c\n				$ifcondition = CMS_polymod_definition_parsing::replaceVars("!".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''thumbnail'','''')), $replace);\n				if ($ifcondition) {\n					$func = create_function("","return (".$ifcondition.");");\n					if ($func()) {\n						$content .="\n						<img src=\\"".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''filename'','''')."\\" alt=\\"".$object[2]->getValue(''label'','''')."\\" title=\\"".$object[2]->getValue(''label'','''')."\\" style=\\"max-width:200px;\\" />\n						";\n					}\n				}//IF TAG END 35_5d189c\n			}\n		}//IF TAG END 33_5df98b\n	}\n	//PLUGIN-VIEW END 30_ff5b92\n	$content .="\n	";\n}\n//PLUGIN TAG END 19_5f9088\necho CMS_polymod_definition_parsing::replaceVars($content, $replace);\n?>');
+INSERT INTO `mod_object_plugin_definition` (`id_mowd`, `object_id_mowd`, `label_id_mowd`, `description_id_mowd`, `query_mowd`, `definition_mowd`, `compiled_definition_mowd`) VALUES (2, 2, 89, 90, 'a:1:{i:8;s:1:"0";}', '<atm-plugin language="fr">\r\n    <atm-plugin-valid>\r\n        <a href="{[''object2''][''fields''][9][''filePath'']}/{[''object2''][''fields''][9][''filename'']}" target="_blank" title="Télécharger le document ''{[''object2''][''fields''][9][''fileLabel'']}'' ({[''object2''][''fields''][9][''fileExtension'']} - {[''object2''][''fields''][9][''fileSize'']}Mo)"><atm-if what="{[''object2''][''fields''][9][''fileIcon'']}"><img src="{[''object2''][''fields''][9][''fileIcon'']}" alt="Fichier {[''object2''][''fields''][9][''fileExtension'']}" title="Fichier {[''object2''][''fields''][9][''fileExtension'']}" /> </atm-if>{plugin:selection}</a>\r\n    </atm-plugin-valid>\r\n	<atm-plugin-invalid>\r\n        {plugin:selection}\r\n    </atm-plugin-invalid>\r\n</atm-plugin>', '<?php\n//Generated by : $Id: automne4.sql,v 1.14 2009/10/23 07:51:49 sebastien Exp $\n$content = "";\n$replace = "";\nif (!isset($objectDefinitions) || !is_array($objectDefinitions)) $objectDefinitions = array();\n$parameters[''objectID''] = 2;\nif (!isset($cms_language) || (isset($cms_language) && $cms_language->getCode() != ''fr'')) $cms_language = new CMS_language(''fr'');\n$parameters[''public''] = (isset($parameters[''public''])) ? $parameters[''public''] : true;\nif (isset($parameters[''item''])) {$parameters[''objectID''] = $parameters[''item'']->getObjectID();} elseif (isset($parameters[''itemID'']) && sensitiveIO::isPositiveInteger($parameters[''itemID'']) && !isset($parameters[''objectID''])) $parameters[''objectID''] = CMS_poly_object_catalog::getObjectDefinitionByID($parameters[''itemID'']);\nif (!isset($object) || !is_array($object)) $object = array();\nif (!isset($object[2])) $object[2] = new CMS_poly_object(2, 0, array(), $parameters[''public'']);\n$parameters[''module''] = ''pmedia'';\n//PLUGIN TAG START 6_abe4e4\nif (!sensitiveIO::isPositiveInteger($parameters[''itemID'']) || !sensitiveIO::isPositiveInteger($parameters[''objectID''])) {\n	CMS_grandFather::raiseError(''Error into atm-plugin tag : can\\''t found object infos to use into : $parameters[\\''itemID\\''] and $parameters[\\''objectID\\'']'');\n} else {\n	//search needed object (need to search it for publications and rights purpose)\n	if (!isset($objectDefinitions[$parameters[''objectID'']])) {\n		$objectDefinitions[$parameters[''objectID'']] = new CMS_poly_object_definition($parameters[''objectID'']);\n	}\n	$search_6_abe4e4 = new CMS_object_search($objectDefinitions[$parameters[''objectID'']], $parameters[''public'']);\n	$search_6_abe4e4->addWhereCondition(''item'', $parameters[''itemID'']);\n	$results_6_abe4e4 = $search_6_abe4e4->search();\n	if (isset($results_6_abe4e4[$parameters[''itemID'']]) && is_object($results_6_abe4e4[$parameters[''itemID'']])) {\n		$object[$parameters[''objectID'']] = $results_6_abe4e4[$parameters[''itemID'']];\n	} else {\n		$object[$parameters[''objectID'']] = new CMS_poly_object($parameters[''objectID''], 0, array(), $parameters[''public'']);\n	}\n	$parameters[''has-plugin-view''] = false;\n	//PLUGIN-VALID TAG START 7_d69991\n	if ($object[$parameters[''objectID'']]->isInUserSpace() && !(@$parameters[''plugin-view''] && @$parameters[''has-plugin-view'']) ) {\n		$content .="\n		<a href=\\"".$object[2]->objectValues(9)->getValue(''filePath'','''')."/".$object[2]->objectValues(9)->getValue(''filename'','''')."\\" target=\\"_blank\\" title=\\"Télécharger le document ''".$object[2]->objectValues(9)->getValue(''fileLabel'','''')."'' (".$object[2]->objectValues(9)->getValue(''fileExtension'','''')." - ".$object[2]->objectValues(9)->getValue(''fileSize'','''')."Mo)\\">";\n		//IF TAG START 8_0f634e\n		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue(''fileIcon'','''')), $replace);\n		if ($ifcondition) {\n			$func = create_function("","return (".$ifcondition.");");\n			if ($func()) {\n				$content .="<img src=\\"".$object[2]->objectValues(9)->getValue(''fileIcon'','''')."\\" alt=\\"Fichier ".$object[2]->objectValues(9)->getValue(''fileExtension'','''')."\\" title=\\"Fichier ".$object[2]->objectValues(9)->getValue(''fileExtension'','''')."\\" /> ";\n			}\n		}//IF TAG END 8_0f634e\n		$content .=$parameters[''selection'']."</a>\n		";\n	}\n	//PLUGIN-VALID END 7_d69991\n	//PLUGIN-INVALID TAG START 9_1af172\n	if (!$object[$parameters[''objectID'']]->isInUserSpace()) {\n		$content .="\n		".$parameters[''selection'']."\n		";\n	}\n	//PLUGIN-INVALID END 9_1af172\n	$content .="\n	";\n}\n//PLUGIN TAG END 6_abe4e4\necho CMS_polymod_definition_parsing::replaceVars($content, $replace);\n?>');
 
 -- --------------------------------------------------------
 
@@ -1934,7 +1934,7 @@ CREATE TABLE `mod_object_polyobjects` (
   PRIMARY KEY  (`id_moo`),
   KEY `object_id_moo` (`object_type_id_moo`),
   KEY `deleted_moo` (`deleted_moo`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_object_polyobjects`
@@ -1982,13 +1982,13 @@ CREATE TABLE `mod_object_rss_definition` (
   `last_compilation_mord` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`id_mord`),
   KEY `object_id_mord` (`object_id_mord`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_object_rss_definition`
 -- 
 
-INSERT INTO `mod_object_rss_definition` (`id_mord`, `object_id_mord`, `label_id_mord`, `description_id_mord`, `link_mord`, `author_mord`, `copyright_mord`, `categories_mord`, `ttl_mord`, `email_mord`, `definition_mord`, `compiled_definition_mord`, `last_compilation_mord`) VALUES (3, 1, 40, 41, '', '', '', '', 1440, '', '<atm-rss language="fr">\r\n    <atm-rss-title>Actualités du site démo d''Automne</atm-rss-title>\r\n    <atm-search what="{[''object1'']}" name="rss">\r\n        <atm-search-order search="rss" type="publication date after" direction="desc" />\r\n        <atm-result search="rss">\r\n            <atm-rss-item>\r\n                <atm-rss-item-url>{page:5:url}?item={[''object1''][''id'']}</atm-rss-item-url>\r\n                <atm-rss-item-title>{[''object1''][''fields''][1][''value'']}</atm-rss-item-title>\r\n                <atm-rss-item-content>{[''object1''][''fields''][2][''htmlvalue'']}</atm-rss-item-content>\r\n                <atm-rss-item-date>{[''object1''][''formatedDateStart'']|d/m/Y}</atm-rss-item-date>\r\n            </atm-rss-item>\r\n        </atm-result>\r\n    </atm-search>\r\n</atm-rss>', '<?php\n//Generated by : $Id: automne4.sql,v 1.13 2009/06/26 15:23:39 sebastien Exp $\n$content = "";\n$replace = "";\nif (!isset($objectDefinitions) || !is_array($objectDefinitions)) $objectDefinitions = array();\n$parameters[''objectID''] = 1;\nif (!isset($cms_language) || (isset($cms_language) && $cms_language->getCode() != ''fr'')) $cms_language = new CMS_language(''fr'');\n$parameters[''public''] = true;\nif (isset($parameters[''item''])) {$parameters[''objectID''] = $parameters[''item'']->getObjectID();} elseif (isset($parameters[''itemID'']) && sensitiveIO::isPositiveInteger($parameters[''itemID'']) && !isset($parameters[''objectID''])) $parameters[''objectID''] = CMS_poly_object_catalog::getObjectDefinitionByID($parameters[''itemID'']);\nif (!isset($object) || !is_array($object)) $object = array();\nif (!isset($object[1])) $object[1] = new CMS_poly_object(1, 0, array(), $parameters[''public'']);\n$parameters[''module''] = ''pnews'';\n//RSS TAG START 11_a604ae\nif (!sensitiveIO::isPositiveInteger($parameters[''objectID''])) {\n	CMS_grandFather::raiseError(''Error into atm-rss tag : can\\''t found object infos to use into : $parameters[\\''objectID\\'']'');\n} else {\n	//RSS-ITEM-TITLE TAG START 12_0fb363\n	$content .= ''<title>'';\n	//save content\n	$content_12_0fb363 = $content;\n	$content = '''';\n	$content .="Actualités du site démo d''Automne";\n	//then remove tags from content and add it to old content\n	$entities = array(''&'' => ''&amp;'',''>'' => ''&gt;'',''<'' => ''&lt;'',);\n	$content = $content_12_0fb363.str_replace(array_keys($entities),$entities,strip_tags(html_entity_decode($content)));\n	$content .= ''</title>'';\n	//RSS-ITEM-TITLE TAG END 12_0fb363\n	//SEARCH rss TAG START 13_812ed7\n	$objectDefinition_rss = ''1'';\n	if (!isset($objectDefinitions[$objectDefinition_rss])) {\n		$objectDefinitions[$objectDefinition_rss] = new CMS_poly_object_definition($objectDefinition_rss);\n	}\n	//public search ?\n	$public_13_812ed7 = isset($public_search) ? $public_search : false;\n	//get search params\n	$search_rss = new CMS_object_search($objectDefinitions[$objectDefinition_rss], $public_13_812ed7);\n	$launchSearch_rss = true;\n	//add search conditions if any\n	$search_rss->addOrderCondition("publication date after", "desc");\n	//RESULT rss TAG START 14_5fe5c7\n	//launch search rss if not already done\n	if($launchSearch_rss && !isset($results_rss)) {\n		if (isset($search_rss)) {\n			$results_rss = $search_rss->search();\n		} else {\n			CMS_grandFather::raiseError("Malformed atm-result tag : can''t use this tag outside of atm-search \\"rss\\" tag ...");\n			$results_rss = array();\n		}\n	} elseif (!$launchSearch_rss) {\n		$results_rss = array();\n	}\n	if ($results_rss) {\n		$object_14_5fe5c7 = $object[$objectDefinition_rss]; //save previous object search if any\n		$replace_14_5fe5c7 = $replace; //save previous replace vars if any\n		$count_14_5fe5c7 = 0;\n		$content_14_5fe5c7 = $content; //save previous content var if any\n		$maxPages_14_5fe5c7 = $search_rss->getMaxPages();\n		$maxResults_14_5fe5c7 = $search_rss->getNumRows();\n		foreach ($results_rss as $object[$objectDefinition_rss]) {\n			$content = "";\n			$replace["atm-search"] = array (\n				"{resultid}" 	=> (isset($resultID_rss)) ? $resultID_rss : $object[$objectDefinition_rss]->getID(),\n				"{firstresult}" => (!$count_14_5fe5c7) ? 1 : 0,\n				"{lastresult}" 	=> ($count_14_5fe5c7 == sizeof($results_rss)-1) ? 1 : 0,\n				"{resultcount}" => ($count_14_5fe5c7+1),\n				"{maxpages}"    => $maxPages_14_5fe5c7,\n				"{currentpage}" => ($search_rss->getAttribute(''page'')+1),\n				"{maxresults}"  => $maxResults_14_5fe5c7,\n			);\n			//RSS-ITEM TAG START 15_c17464\n			$content .= ''<item>\n			<guid isPermaLink="false">object''.$parameters[''objectID''].''-''.$object[$parameters[''objectID'']]->getID().''</guid>'';\n			//RSS-ITEM-LINK TAG START 16_9d4970\n			$content .= ''<link>'';\n			//save content\n			$content_16_9d4970 = $content;\n			$content = '''';\n			$content .=CMS_tree::getPageValue("5","url")."?item=".$object[1]->getValue(''id'','''');\n			//then remove tags from content and add it to old content\n			$entities = array(''&'' => ''&amp;'',''>'' => ''&gt;'',''<'' => ''&lt;'',);\n			$content = $content_16_9d4970.str_replace(array_keys($entities),$entities,strip_tags(html_entity_decode($content)));\n			$content .= ''</link>'';\n			//RSS-ITEM-LINK TAG END 16_9d4970\n			//RSS-ITEM-TITLE TAG START 17_7c8d63\n			$content .= ''<title>'';\n			//save content\n			$content_17_7c8d63 = $content;\n			$content = '''';\n			$content .=$object[1]->objectValues(1)->getValue(''value'','''');\n			//then remove tags from content and add it to old content\n			$entities = array(''&'' => ''&amp;'',''>'' => ''&gt;'',''<'' => ''&lt;'',);\n			$content = $content_17_7c8d63.str_replace(array_keys($entities),$entities,strip_tags(html_entity_decode($content)));\n			$content .= ''</title>'';\n			//RSS-ITEM-TITLE TAG END 17_7c8d63\n			//RSS-ITEM-DESCRIPTION TAG START 18_e55ab4\n			$content .= ''<description>'';\n			$content .= ''<![CDATA['';\n			$content .=$object[1]->objectValues(2)->getValue(''htmlvalue'','''');\n			$content .= '']]>'';\n			$content .= ''</description>'';\n			//RSS-ITEM-DESCRIPTION TAG END 18_e55ab4\n			//RSS-ITEM-PUBDATE TAG START 19_4a996c\n			$content .= ''<pubDate>'';\n			//save content\n			$content_19_4a996c = $content;\n			$content = '''';\n			$content .=$object[1]->getValue(''formatedDateStart'',''d/m/Y'');\n			//then remove tags from content and add it to old content\n			$entities = array(''&'' => ''&amp;'',''>'' => ''&gt;'',''<'' => ''&lt;'',);\n			$content = $content_19_4a996c.str_replace(array_keys($entities),$entities,strip_tags(html_entity_decode($content)));\n			$content .= ''</pubDate>'';\n			//RSS-ITEM-PUBDATE TAG END 19_4a996c\n			$content .= ''</item>'';\n			//RSS-ITEM TAG END 15_c17464\n			$count_14_5fe5c7++;\n			//do all result vars replacement\n			$content_14_5fe5c7.= CMS_polymod_definition_parsing::replaceVars($content, $replace);\n		}\n		$content = $content_14_5fe5c7; //retrieve previous content var if any\n		$replace = $replace_14_5fe5c7; //retrieve previous replace vars if any\n		$object[$objectDefinition_rss] = $object_14_5fe5c7; //retrieve previous object search if any\n	}\n	//RESULT rss TAG END 14_5fe5c7\n	//destroy search and results rss objects\n	unset($search_rss);\n	unset($results_rss);\n	//SEARCH rss TAG END 13_812ed7\n	$content .="\n	";\n}\n//RSS TAG END 11_a604ae\necho CMS_polymod_definition_parsing::replaceVars($content, $replace);\n?>', '2009-06-23 09:47:09');
+INSERT INTO `mod_object_rss_definition` (`id_mord`, `object_id_mord`, `label_id_mord`, `description_id_mord`, `link_mord`, `author_mord`, `copyright_mord`, `categories_mord`, `ttl_mord`, `email_mord`, `definition_mord`, `compiled_definition_mord`, `last_compilation_mord`) VALUES (3, 1, 40, 41, '', '', '', '', 1440, '', '<atm-rss language="fr">\r\n    <atm-rss-title>Actualités du site démo d''Automne</atm-rss-title>\r\n    <atm-search what="{[''object1'']}" name="rss">\r\n        <atm-search-order search="rss" type="publication date after" direction="desc" />\r\n        <atm-result search="rss">\r\n            <atm-rss-item>\r\n                <atm-rss-item-url>{page:5:url}?item={[''object1''][''id'']}</atm-rss-item-url>\r\n                <atm-rss-item-title>{[''object1''][''fields''][1][''value'']}</atm-rss-item-title>\r\n                <atm-rss-item-content>{[''object1''][''fields''][2][''htmlvalue'']}</atm-rss-item-content>\r\n                <atm-rss-item-date>{[''object1''][''formatedDateStart'']|d/m/Y}</atm-rss-item-date>\r\n            </atm-rss-item>\r\n        </atm-result>\r\n    </atm-search>\r\n</atm-rss>', '<?php\n//Generated by : $Id: automne4.sql,v 1.14 2009/10/23 07:51:49 sebastien Exp $\n$content = "";\n$replace = "";\nif (!isset($objectDefinitions) || !is_array($objectDefinitions)) $objectDefinitions = array();\n$parameters[''objectID''] = 1;\nif (!isset($cms_language) || (isset($cms_language) && $cms_language->getCode() != ''fr'')) $cms_language = new CMS_language(''fr'');\n$parameters[''public''] = true;\nif (isset($parameters[''item''])) {$parameters[''objectID''] = $parameters[''item'']->getObjectID();} elseif (isset($parameters[''itemID'']) && sensitiveIO::isPositiveInteger($parameters[''itemID'']) && !isset($parameters[''objectID''])) $parameters[''objectID''] = CMS_poly_object_catalog::getObjectDefinitionByID($parameters[''itemID'']);\nif (!isset($object) || !is_array($object)) $object = array();\nif (!isset($object[1])) $object[1] = new CMS_poly_object(1, 0, array(), $parameters[''public'']);\n$parameters[''module''] = ''pnews'';\n//RSS TAG START 11_a604ae\nif (!sensitiveIO::isPositiveInteger($parameters[''objectID''])) {\n	CMS_grandFather::raiseError(''Error into atm-rss tag : can\\''t found object infos to use into : $parameters[\\''objectID\\'']'');\n} else {\n	//RSS-ITEM-TITLE TAG START 12_0fb363\n	$content .= ''<title>'';\n	//save content\n	$content_12_0fb363 = $content;\n	$content = '''';\n	$content .="Actualités du site démo d''Automne";\n	//then remove tags from content and add it to old content\n	$entities = array(''&'' => ''&amp;'',''>'' => ''&gt;'',''<'' => ''&lt;'',);\n	$content = $content_12_0fb363.str_replace(array_keys($entities),$entities,strip_tags(html_entity_decode($content)));\n	$content .= ''</title>'';\n	//RSS-ITEM-TITLE TAG END 12_0fb363\n	//SEARCH rss TAG START 13_812ed7\n	$objectDefinition_rss = ''1'';\n	if (!isset($objectDefinitions[$objectDefinition_rss])) {\n		$objectDefinitions[$objectDefinition_rss] = new CMS_poly_object_definition($objectDefinition_rss);\n	}\n	//public search ?\n	$public_13_812ed7 = isset($public_search) ? $public_search : false;\n	//get search params\n	$search_rss = new CMS_object_search($objectDefinitions[$objectDefinition_rss], $public_13_812ed7);\n	$launchSearch_rss = true;\n	//add search conditions if any\n	$search_rss->addOrderCondition("publication date after", "desc");\n	//RESULT rss TAG START 14_5fe5c7\n	//launch search rss if not already done\n	if($launchSearch_rss && !isset($results_rss)) {\n		if (isset($search_rss)) {\n			$results_rss = $search_rss->search();\n		} else {\n			CMS_grandFather::raiseError("Malformed atm-result tag : can''t use this tag outside of atm-search \\"rss\\" tag ...");\n			$results_rss = array();\n		}\n	} elseif (!$launchSearch_rss) {\n		$results_rss = array();\n	}\n	if ($results_rss) {\n		$object_14_5fe5c7 = $object[$objectDefinition_rss]; //save previous object search if any\n		$replace_14_5fe5c7 = $replace; //save previous replace vars if any\n		$count_14_5fe5c7 = 0;\n		$content_14_5fe5c7 = $content; //save previous content var if any\n		$maxPages_14_5fe5c7 = $search_rss->getMaxPages();\n		$maxResults_14_5fe5c7 = $search_rss->getNumRows();\n		foreach ($results_rss as $object[$objectDefinition_rss]) {\n			$content = "";\n			$replace["atm-search"] = array (\n				"{resultid}" 	=> (isset($resultID_rss)) ? $resultID_rss : $object[$objectDefinition_rss]->getID(),\n				"{firstresult}" => (!$count_14_5fe5c7) ? 1 : 0,\n				"{lastresult}" 	=> ($count_14_5fe5c7 == sizeof($results_rss)-1) ? 1 : 0,\n				"{resultcount}" => ($count_14_5fe5c7+1),\n				"{maxpages}"    => $maxPages_14_5fe5c7,\n				"{currentpage}" => ($search_rss->getAttribute(''page'')+1),\n				"{maxresults}"  => $maxResults_14_5fe5c7,\n			);\n			//RSS-ITEM TAG START 15_c17464\n			$content .= ''<item>\n			<guid isPermaLink="false">object''.$parameters[''objectID''].''-''.$object[$parameters[''objectID'']]->getID().''</guid>'';\n			//RSS-ITEM-LINK TAG START 16_9d4970\n			$content .= ''<link>'';\n			//save content\n			$content_16_9d4970 = $content;\n			$content = '''';\n			$content .=CMS_tree::getPageValue("5","url")."?item=".$object[1]->getValue(''id'','''');\n			//then remove tags from content and add it to old content\n			$entities = array(''&'' => ''&amp;'',''>'' => ''&gt;'',''<'' => ''&lt;'',);\n			$content = $content_16_9d4970.str_replace(array_keys($entities),$entities,strip_tags(html_entity_decode($content)));\n			$content .= ''</link>'';\n			//RSS-ITEM-LINK TAG END 16_9d4970\n			//RSS-ITEM-TITLE TAG START 17_7c8d63\n			$content .= ''<title>'';\n			//save content\n			$content_17_7c8d63 = $content;\n			$content = '''';\n			$content .=$object[1]->objectValues(1)->getValue(''value'','''');\n			//then remove tags from content and add it to old content\n			$entities = array(''&'' => ''&amp;'',''>'' => ''&gt;'',''<'' => ''&lt;'',);\n			$content = $content_17_7c8d63.str_replace(array_keys($entities),$entities,strip_tags(html_entity_decode($content)));\n			$content .= ''</title>'';\n			//RSS-ITEM-TITLE TAG END 17_7c8d63\n			//RSS-ITEM-DESCRIPTION TAG START 18_e55ab4\n			$content .= ''<description>'';\n			$content .= ''<![CDATA['';\n			$content .=$object[1]->objectValues(2)->getValue(''htmlvalue'','''');\n			$content .= '']]>'';\n			$content .= ''</description>'';\n			//RSS-ITEM-DESCRIPTION TAG END 18_e55ab4\n			//RSS-ITEM-PUBDATE TAG START 19_4a996c\n			$content .= ''<pubDate>'';\n			//save content\n			$content_19_4a996c = $content;\n			$content = '''';\n			$content .=$object[1]->getValue(''formatedDateStart'',''d/m/Y'');\n			//then remove tags from content and add it to old content\n			$entities = array(''&'' => ''&amp;'',''>'' => ''&gt;'',''<'' => ''&lt;'',);\n			$content = $content_19_4a996c.str_replace(array_keys($entities),$entities,strip_tags(html_entity_decode($content)));\n			$content .= ''</pubDate>'';\n			//RSS-ITEM-PUBDATE TAG END 19_4a996c\n			$content .= ''</item>'';\n			//RSS-ITEM TAG END 15_c17464\n			$count_14_5fe5c7++;\n			//do all result vars replacement\n			$content_14_5fe5c7.= CMS_polymod_definition_parsing::replaceVars($content, $replace);\n		}\n		$content = $content_14_5fe5c7; //retrieve previous content var if any\n		$replace = $replace_14_5fe5c7; //retrieve previous replace vars if any\n		$object[$objectDefinition_rss] = $object_14_5fe5c7; //retrieve previous object search if any\n	}\n	//RESULT rss TAG END 14_5fe5c7\n	//destroy search and results rss objects\n	unset($search_rss);\n	unset($results_rss);\n	//SEARCH rss TAG END 13_812ed7\n	$content .="\n	";\n}\n//RSS TAG END 11_a604ae\necho CMS_polymod_definition_parsing::replaceVars($content, $replace);\n?>', '2009-06-23 09:47:09');
 
 -- --------------------------------------------------------
 
@@ -2006,7 +2006,7 @@ CREATE TABLE `mod_standard_clientSpaces_archived` (
   PRIMARY KEY  (`template_cs`,`tagID_cs`,`order_cs`),
   KEY `template_cs` (`template_cs`),
   KEY `type_cs` (`type_cs`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_standard_clientSpaces_archived`
@@ -2029,7 +2029,7 @@ CREATE TABLE `mod_standard_clientSpaces_deleted` (
   PRIMARY KEY  (`template_cs`,`tagID_cs`,`order_cs`),
   KEY `template_cs` (`template_cs`),
   KEY `type_cs` (`type_cs`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_standard_clientSpaces_deleted`
@@ -2052,7 +2052,7 @@ CREATE TABLE `mod_standard_clientSpaces_edited` (
   PRIMARY KEY  (`template_cs`,`tagID_cs`,`order_cs`),
   KEY `template_cs` (`template_cs`),
   KEY `type_cs` (`type_cs`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_standard_clientSpaces_edited`
@@ -2128,7 +2128,7 @@ CREATE TABLE `mod_standard_clientSpaces_edition` (
   PRIMARY KEY  (`template_cs`,`tagID_cs`,`order_cs`),
   KEY `template_cs` (`template_cs`),
   KEY `type_cs` (`type_cs`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_standard_clientSpaces_edition`
@@ -2151,7 +2151,7 @@ CREATE TABLE `mod_standard_clientSpaces_public` (
   PRIMARY KEY  (`template_cs`,`tagID_cs`,`order_cs`),
   KEY `template_cs` (`template_cs`),
   KEY `type_cs` (`type_cs`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_standard_clientSpaces_public`
@@ -2227,7 +2227,7 @@ CREATE TABLE `mod_standard_rows` (
   PRIMARY KEY  (`id_row`),
   KEY `id_row` (`id_row`),
   FULLTEXT KEY `label_row` (`label_row`,`description_row`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_standard_rows`
@@ -2269,7 +2269,7 @@ CREATE TABLE `mod_subobject_date_deleted` (
   KEY `objectID` (`objectID`),
   KEY `objectFieldID` (`objectFieldID`),
   KEY `objectSubFieldID` (`objectSubFieldID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_subobject_date_deleted`
@@ -2293,7 +2293,7 @@ CREATE TABLE `mod_subobject_date_edited` (
   KEY `objectID` (`objectID`),
   KEY `objectFieldID` (`objectFieldID`),
   KEY `objectSubFieldID` (`objectSubFieldID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_subobject_date_edited`
@@ -2317,7 +2317,7 @@ CREATE TABLE `mod_subobject_date_public` (
   KEY `objectID` (`objectID`),
   KEY `objectFieldID` (`objectFieldID`),
   KEY `objectSubFieldID` (`objectSubFieldID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_subobject_date_public`
@@ -2341,7 +2341,7 @@ CREATE TABLE `mod_subobject_integer_deleted` (
   KEY `objectID` (`objectID`),
   KEY `objectFieldID` (`objectFieldID`),
   KEY `objectSubFieldID` (`objectSubFieldID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_subobject_integer_deleted`
@@ -2365,7 +2365,7 @@ CREATE TABLE `mod_subobject_integer_edited` (
   KEY `objectID` (`objectID`),
   KEY `objectFieldID` (`objectFieldID`),
   KEY `objectSubFieldID` (`objectSubFieldID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_subobject_integer_edited`
@@ -2433,7 +2433,7 @@ CREATE TABLE `mod_subobject_integer_public` (
   KEY `objectID` (`objectID`),
   KEY `objectFieldID` (`objectFieldID`),
   KEY `objectSubFieldID` (`objectSubFieldID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_subobject_integer_public`
@@ -2501,7 +2501,7 @@ CREATE TABLE `mod_subobject_string_deleted` (
   KEY `objectID` (`objectID`),
   KEY `objectFieldID` (`objectFieldID`),
   KEY `objectSubFieldID` (`objectSubFieldID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_subobject_string_deleted`
@@ -2526,7 +2526,7 @@ CREATE TABLE `mod_subobject_string_edited` (
   KEY `objectFieldID` (`objectFieldID`),
   KEY `objectSubFieldID` (`objectSubFieldID`),
   FULLTEXT KEY `value` (`value`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_subobject_string_edited`
@@ -2625,7 +2625,7 @@ CREATE TABLE `mod_subobject_string_public` (
   KEY `objectFieldID` (`objectFieldID`),
   KEY `objectSubFieldID` (`objectSubFieldID`),
   FULLTEXT KEY `value` (`value`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_subobject_string_public`
@@ -2723,7 +2723,7 @@ CREATE TABLE `mod_subobject_text_deleted` (
   KEY `objectID` (`objectID`),
   KEY `objectFieldID` (`objectFieldID`),
   KEY `objectSubFieldID` (`objectSubFieldID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_subobject_text_deleted`
@@ -2748,7 +2748,7 @@ CREATE TABLE `mod_subobject_text_edited` (
   KEY `objectFieldID` (`objectFieldID`),
   KEY `objectSubFieldID` (`objectSubFieldID`),
   FULLTEXT KEY `value` (`value`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_subobject_text_edited`
@@ -2789,7 +2789,7 @@ CREATE TABLE `mod_subobject_text_public` (
   KEY `objectFieldID` (`objectFieldID`),
   KEY `objectSubFieldID` (`objectSubFieldID`),
   FULLTEXT KEY `value` (`value`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `mod_subobject_text_public`
@@ -2830,7 +2830,7 @@ CREATE TABLE `modules` (
   KEY `id_mod` (`id_mod`),
   KEY `codename_mod` (`codename_mod`),
   KEY `isPolymod_mod` (`isPolymod_mod`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `modules`
@@ -2862,7 +2862,7 @@ CREATE TABLE `modulesCategories` (
   KEY `lineage` (`lineage_mca`),
   KEY `parent` (`parent_mca`),
   KEY `root` (`root_mca`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `modulesCategories`
@@ -2893,7 +2893,7 @@ CREATE TABLE `modulesCategories_clearances` (
   UNIQUE KEY `profilecategories` (`profile_mcc`,`category_mcc`),
   KEY `profile` (`profile_mcc`),
   KEY `category` (`category_mcc`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `modulesCategories_clearances`
@@ -2928,7 +2928,7 @@ CREATE TABLE `modulesCategories_i18nm` (
   UNIQUE KEY `categoryperlang` (`category_mcl`,`language_mcl`),
   KEY `category` (`category_mcl`),
   KEY `language` (`language_mcl`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `modulesCategories_i18nm`
@@ -2979,7 +2979,7 @@ CREATE TABLE `pageTemplates` (
   KEY `id_pt` (`id_pt`),
   KEY `definitionFile_pt` (`definitionFile_pt`),
   FULLTEXT KEY `label_pt` (`label_pt`,`description_pt`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `pageTemplates`
@@ -3045,7 +3045,7 @@ CREATE TABLE `pages` (
   PRIMARY KEY  (`id_pag`),
   KEY `id_pag` (`id_pag`),
   KEY `template_pag` (`template_pag`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `pages`
@@ -3108,7 +3108,7 @@ CREATE TABLE `pagesBaseData_archived` (
   PRIMARY KEY  (`id_pbd`),
   KEY `id_pbd` (`id_pbd`),
   KEY `page_pbd` (`page_pbd`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `pagesBaseData_archived`
@@ -3147,7 +3147,7 @@ CREATE TABLE `pagesBaseData_deleted` (
   PRIMARY KEY  (`id_pbd`),
   KEY `id_pbd` (`id_pbd`),
   KEY `page_pbd` (`page_pbd`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `pagesBaseData_deleted`
@@ -3187,7 +3187,7 @@ CREATE TABLE `pagesBaseData_edited` (
   KEY `id_pbd` (`id_pbd`),
   KEY `page_pbd` (`page_pbd`),
   FULLTEXT KEY `title_pbd` (`title_pbd`,`linkTitle_pbd`,`keywords_pbd`,`description_pbd`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `pagesBaseData_edited`
@@ -3249,7 +3249,7 @@ CREATE TABLE `pagesBaseData_public` (
   KEY `id_pbd` (`id_pbd`),
   KEY `page_pbd` (`page_pbd`),
   FULLTEXT KEY `title_pbd` (`title_pbd`,`linkTitle_pbd`,`keywords_pbd`,`description_pbd`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `pagesBaseData_public`
@@ -3292,7 +3292,7 @@ CREATE TABLE `profileUsersByGroup` (
   PRIMARY KEY  (`id_gu`),
   KEY `groupId_gu` (`groupId_gu`),
   KEY `userId_gu` (`userId_gu`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `profileUsersByGroup`
@@ -3316,7 +3316,7 @@ CREATE TABLE `profiles` (
   `administrationClearance_pr` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id_pr`),
   KEY `id_pr` (`id_pr`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `profiles`
@@ -3352,7 +3352,7 @@ CREATE TABLE `profilesUsers` (
   KEY `id_pru` (`id_pru`),
   KEY `ldapDN_pru` (`dn_pru`),
   FULLTEXT KEY `login_pru` (`login_pru`,`firstName_pru`,`lastName_pru`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `profilesUsers`
@@ -3379,7 +3379,7 @@ CREATE TABLE `profilesUsersGroups` (
   KEY `id_prg` (`id_prg`),
   KEY `ldapDN_prg` (`dn_prg`),
   FULLTEXT KEY `description_prg` (`description_prg`,`label_prg`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `profilesUsersGroups`
@@ -3401,7 +3401,7 @@ CREATE TABLE `profilesUsers_validators` (
   `module_puv` varchar(100) default NULL,
   PRIMARY KEY  (`id_puv`),
   KEY `id_puv` (`id_puv`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `profilesUsers_validators`
@@ -3421,7 +3421,7 @@ CREATE TABLE `regenerator` (
   `parameters_reg` text NOT NULL,
   PRIMARY KEY  (`id_reg`),
   KEY `page_reg` (`id_reg`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `regenerator`
@@ -3448,7 +3448,7 @@ CREATE TABLE `resourceStatuses` (
   `publicationDateEndEdited_rs` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`id_rs`),
   KEY `id_rs` (`id_rs`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `resourceStatuses`
@@ -3549,7 +3549,7 @@ CREATE TABLE `resourceValidations` (
   `creationDate_rv` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id_rv`),
   KEY `id_rv` (`id_rv`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `resourceValidations`
@@ -3569,7 +3569,7 @@ CREATE TABLE `resources` (
   `editorsStack_res` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id_res`),
   KEY `id_res` (`id_res`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `resources`
@@ -3667,7 +3667,7 @@ CREATE TABLE `scriptsStatuses` (
   `pidFileName_ss` varchar(255) NOT NULL default '',
   `module_ss` varchar(255) NOT NULL default '',
   `parameters_ss` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `scriptsStatuses`
@@ -3692,7 +3692,7 @@ CREATE TABLE `sessions` (
   PRIMARY KEY  (`id_ses`),
   KEY `id_ses` (`id_ses`),
   KEY `lastTouch_ses` (`lastTouch_ses`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `sessions`
@@ -3713,7 +3713,7 @@ CREATE TABLE `toolbars` (
   `elements_tool` text NOT NULL,
   PRIMARY KEY  (`id_tool`),
   KEY `code_tool` (`code_tool`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `toolbars`
@@ -3748,7 +3748,7 @@ CREATE TABLE `websites` (
   `order_web` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id_web`),
   KEY `id_web` (`id_web`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- Contenu de la table `websites`
