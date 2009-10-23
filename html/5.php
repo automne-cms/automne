@@ -1,4 +1,4 @@
-<?php //Generated on Tue, 23 Jun 2009 18:04:57 +0200 by Automne (TM) 4.0.0rc1
+<?php //Generated on Fri, 23 Oct 2009 12:22:20 +0200 by Automne (TM) 4.0.0rc3
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
 	header('Location: http://127.0.0.1/web/fr/5-actualite.php');
@@ -27,16 +27,16 @@ $xmlCondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definiti
 if ($xmlCondition) {
 	$func = create_function("","return (".$xmlCondition.");");
 	if ($func()) {
-		//AJAX TAG START 3_dfca52
-		//SEARCH newsresult TAG START 4_762e98
+		//AJAX TAG START 3_85915c
+		//SEARCH newsresult TAG START 4_2f3810
 		$objectDefinition_newsresult = '1';
 		if (!isset($objectDefinitions[$objectDefinition_newsresult])) {
 			$objectDefinitions[$objectDefinition_newsresult] = new CMS_poly_object_definition($objectDefinition_newsresult);
 		}
 		//public search ?
-		$public_4_762e98 = isset($public_search) ? $public_search : false;
+		$public_4_2f3810 = isset($public_search) ? $public_search : false;
 		//get search params
-		$search_newsresult = new CMS_object_search($objectDefinitions[$objectDefinition_newsresult], $public_4_762e98);
+		$search_newsresult = new CMS_object_search($objectDefinitions[$objectDefinition_newsresult], $public_4_2f3810);
 		$launchSearch_newsresult = true;
 		//add search conditions if any
 		$launchSearch_newsresult = (CMS_polymod_definition_parsing::addSearchCondition($search_newsresult, array (
@@ -60,7 +60,7 @@ if ($xmlCondition) {
 		$search_newsresult->setAttribute('itemsPerPage', (int) CMS_polymod_definition_parsing::replaceVars("10", $replace));
 		$search_newsresult->setAttribute('page', (int) (CMS_polymod_definition_parsing::replaceVars(CMS_poly_definition_functions::getVarContent("request", "page", "int", @$page), $replace) -1 ));
 		$search_newsresult->addOrderCondition("objectID", "desc");
-		//RESULT newsresult TAG START 5_5d0774
+		//RESULT newsresult TAG START 5_902fb6
 		//launch search newsresult if not already done
 		if($launchSearch_newsresult && !isset($results_newsresult)) {
 			if (isset($search_newsresult)) {
@@ -73,40 +73,40 @@ if ($xmlCondition) {
 			$results_newsresult = array();
 		}
 		if ($results_newsresult) {
-			$object_5_5d0774 = $object[$objectDefinition_newsresult]; //save previous object search if any
-			$replace_5_5d0774 = $replace; //save previous replace vars if any
-			$count_5_5d0774 = 0;
-			$content_5_5d0774 = $content; //save previous content var if any
-			$maxPages_5_5d0774 = $search_newsresult->getMaxPages();
-			$maxResults_5_5d0774 = $search_newsresult->getNumRows();
+			$object_5_902fb6 = (isset($object[$objectDefinition_newsresult])) ? $object[$objectDefinition_newsresult] : ""; //save previous object search if any
+			$replace_5_902fb6 = $replace; //save previous replace vars if any
+			$count_5_902fb6 = 0;
+			$content_5_902fb6 = $content; //save previous content var if any
+			$maxPages_5_902fb6 = $search_newsresult->getMaxPages();
+			$maxResults_5_902fb6 = $search_newsresult->getNumRows();
 			foreach ($results_newsresult as $object[$objectDefinition_newsresult]) {
 				$content = "";
 				$replace["atm-search"] = array (
 					"{resultid}" 	=> (isset($resultID_newsresult)) ? $resultID_newsresult : $object[$objectDefinition_newsresult]->getID(),
-					"{firstresult}" => (!$count_5_5d0774) ? 1 : 0,
-					"{lastresult}" 	=> ($count_5_5d0774 == sizeof($results_newsresult)-1) ? 1 : 0,
-					"{resultcount}" => ($count_5_5d0774+1),
-					"{maxpages}"    => $maxPages_5_5d0774,
+					"{firstresult}" => (!$count_5_902fb6) ? 1 : 0,
+					"{lastresult}" 	=> ($count_5_902fb6 == sizeof($results_newsresult)-1) ? 1 : 0,
+					"{resultcount}" => ($count_5_902fb6+1),
+					"{maxpages}"    => $maxPages_5_902fb6,
 					"{currentpage}" => ($search_newsresult->getAttribute('page')+1),
-					"{maxresults}"  => $maxResults_5_5d0774,
+					"{maxresults}"  => $maxResults_5_902fb6,
 				);
-				//IF TAG START 6_0bab00
+				//IF TAG START 6_83d674
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars("{firstresult} && !".CMS_polymod_definition_parsing::prepareVar(CMS_poly_definition_functions::getVarContent("request", "item", "int", @$item)), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
 					if ($func()) {
 						$content .="
-						<div id=\"maxResults\">{maxresults} résultat(s) pour votre recherche.</div>
+						<div id=\"maxResults\">{maxresults} r&eacute;sultat(s) pour votre recherche.</div>
 						";
 					}
-				}//IF TAG END 6_0bab00
+				}//IF TAG END 6_83d674
 				$content .="
 				<div class=\"newsTitle\">
 				<h2><a href=\"".CMS_tree::getPageValue($parameters['pageID'],"url")."?item=".$object[1]->getValue('id','')."\" title=\"".$object[1]->getValue('label','')."\">".$object[1]->getValue('label','')."</a></h2><span>".$object[1]->getValue('formatedDateStart','d/m/Y')."</span><div class=\"spacer\"></div>
 				</div>
 				<div class=\"newsContent\">
 				";
-				//IF TAG START 7_f64ae9
+				//IF TAG START 7_399e25
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[1]->objectValues(4)->getValue('imageName','')), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
@@ -125,8 +125,8 @@ if ($xmlCondition) {
 						</div>
 						";
 					}
-				}//IF TAG END 7_f64ae9
-				//IF TAG START 8_440810
+				}//IF TAG END 7_399e25
+				//IF TAG START 8_8c6d99
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar(CMS_poly_definition_functions::getVarContent("request", "item", "int", @$item))." == ".CMS_polymod_definition_parsing::prepareVar($object[1]->getValue('id','')), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
@@ -136,8 +136,8 @@ if ($xmlCondition) {
 						<br />".$object[1]->objectValues(3)->getValue('value','')."
 						";
 					}
-				}//IF TAG END 8_440810
-				//IF TAG START 9_2ad0e0
+				}//IF TAG END 8_8c6d99
+				//IF TAG START 9_5971c4
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars("!".CMS_polymod_definition_parsing::prepareVar(CMS_poly_definition_functions::getVarContent("request", "item", "int", @$item)), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
@@ -150,12 +150,12 @@ if ($xmlCondition) {
 						</a>
 						";
 					}
-				}//IF TAG END 9_2ad0e0
+				}//IF TAG END 9_5971c4
 				$content .="
 				<div class=\"spacer\"></div>
 				</div>
 				";
-				//IF TAG START 10_545e1e
+				//IF TAG START 10_428904
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars("{lastresult} && !".CMS_polymod_definition_parsing::prepareVar(CMS_poly_definition_functions::getVarContent("request", "item", "int", @$item)), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
@@ -163,10 +163,10 @@ if ($xmlCondition) {
 						$content .="
 						<div class=\"pages\" id=\"pages\">
 						";
-						//FUNCTION TAG START 11_b790a2
-						$parameters_11_b790a2 = array ('maxpages' => CMS_polymod_definition_parsing::replaceVars("{maxpages}", $replace),'currentpage' => CMS_polymod_definition_parsing::replaceVars("{currentpage}", $replace),'displayedpage' => CMS_polymod_definition_parsing::replaceVars("5", $replace),);
+						//FUNCTION TAG START 11_fe6136
+						$parameters_11_fe6136 = array ('maxpages' => CMS_polymod_definition_parsing::replaceVars("{maxpages}", $replace),'currentpage' => CMS_polymod_definition_parsing::replaceVars("{currentpage}", $replace),'displayedpage' => CMS_polymod_definition_parsing::replaceVars("5", $replace),);
 						if (method_exists(new CMS_poly_definition_functions(), "pages")) {
-							$content .= CMS_polymod_definition_parsing::replaceVars(CMS_poly_definition_functions::pages($parameters_11_b790a2, array (
+							$content .= CMS_polymod_definition_parsing::replaceVars(CMS_poly_definition_functions::pages($parameters_11_fe6136, array (
 								0 =>
 								array (
 									'textnode' => '
@@ -185,7 +185,7 @@ if ($xmlCondition) {
 											'nodename' => 'a',
 											'attributes' =>
 											array (
-												'href' => CMS_tree::getPageValue($parameters['pageID'],"url").'?cat='.CMS_poly_definition_functions::getVarContent("request", "cat", "int", @$cat).'&keyword='.CMS_poly_definition_functions::getVarContent("request", "keyword", "string", @$keyword).'&page={n}',
+												'href' => CMS_tree::getPageValue($parameters['pageID'],"url").'?cat='.CMS_poly_definition_functions::getVarContent("request", "cat", "int", @$cat).'&amp;keyword='.CMS_poly_definition_functions::getVarContent("request", "keyword", "string", @$keyword).'&amp;page={n}',
 											),
 											'childrens' =>
 											array (
@@ -252,7 +252,7 @@ if ($xmlCondition) {
 											'nodename' => 'a',
 											'attributes' =>
 											array (
-												'href' => CMS_tree::getPageValue($parameters['pageID'],"url").'?cat='.CMS_poly_definition_functions::getVarContent("request", "cat", "int", @$cat).'&keyword='.CMS_poly_definition_functions::getVarContent("request", "keyword", "string", @$keyword).'&page={n}',
+												'href' => CMS_tree::getPageValue($parameters['pageID'],"url").'?cat='.CMS_poly_definition_functions::getVarContent("request", "cat", "int", @$cat).'&amp;keyword='.CMS_poly_definition_functions::getVarContent("request", "keyword", "string", @$keyword).'&amp;page={n}',
 											),
 											'childrens' =>
 											array (
@@ -262,8 +262,8 @@ if ($xmlCondition) {
 													'attributes' =>
 													array (
 														'src' => '/img/interieur/newsPrevious.gif',
-														'alt' => 'page précédente',
-														'title' => 'page précédente',
+														'alt' => 'page pr&eacute;c&eacute;dente',
+														'title' => 'page pr&eacute;c&eacute;dente',
 													),
 												),
 											),
@@ -292,7 +292,7 @@ if ($xmlCondition) {
 											'nodename' => 'a',
 											'attributes' =>
 											array (
-												'href' => CMS_tree::getPageValue($parameters['pageID'],"url").'?cat='.CMS_poly_definition_functions::getVarContent("request", "cat", "int", @$cat).'&keyword='.CMS_poly_definition_functions::getVarContent("request", "keyword", "string", @$keyword).'&page={n}',
+												'href' => CMS_tree::getPageValue($parameters['pageID'],"url").'?cat='.CMS_poly_definition_functions::getVarContent("request", "cat", "int", @$cat).'&amp;keyword='.CMS_poly_definition_functions::getVarContent("request", "keyword", "string", @$keyword).'&amp;page={n}',
 											),
 											'childrens' =>
 											array (
@@ -323,22 +323,22 @@ if ($xmlCondition) {
 						} else {
 							CMS_grandFather::raiseError("Malformed atm-function tag : can't found method pagesin CMS_poly_definition_functions");
 						}
-						//FUNCTION TAG END 11_b790a2
+						//FUNCTION TAG END 11_fe6136
 						$content .="
 						</div>
 						";
 					}
-				}//IF TAG END 10_545e1e
-				$count_5_5d0774++;
+				}//IF TAG END 10_428904
+				$count_5_902fb6++;
 				//do all result vars replacement
-				$content_5_5d0774.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
+				$content_5_902fb6.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
 			}
-			$content = $content_5_5d0774; //retrieve previous content var if any
-			$replace = $replace_5_5d0774; //retrieve previous replace vars if any
-			$object[$objectDefinition_newsresult] = $object_5_5d0774; //retrieve previous object search if any
+			$content = $content_5_902fb6; //retrieve previous content var if any
+			$replace = $replace_5_902fb6; //retrieve previous replace vars if any
+			$object[$objectDefinition_newsresult] = $object_5_902fb6; //retrieve previous object search if any
 		}
-		//RESULT newsresult TAG END 5_5d0774
-		//NO-RESULT newsresult TAG START 12_dae09a
+		//RESULT newsresult TAG END 5_902fb6
+		//NO-RESULT newsresult TAG START 12_180ba6
 		//launch search newsresult if not already done
 		if($launchSearch_newsresult && !isset($results_newsresult)) {
 			if (isset($search_newsresult)) {
@@ -351,14 +351,14 @@ if ($xmlCondition) {
 			$results_newsresult = array();
 		}
 		if (!$results_newsresult) {
-			$content .="Aucun résultat trouvé pour votre recherche ...";
+			$content .="Aucun r&eacute;sultat trouv&eacute; pour votre recherche ...";
 		}
-		//NO-RESULT newsresult TAG END 12_dae09a
+		//NO-RESULT newsresult TAG END 12_180ba6
 		//destroy search and results newsresult objects
 		unset($search_newsresult);
 		unset($results_newsresult);
-		//SEARCH newsresult TAG END 4_762e98
-		//AJAX TAG END 3_dfca52
+		//SEARCH newsresult TAG END 4_2f3810
+		//AJAX TAG END 3_85915c
 		//output XML response
 		$view = CMS_view::getInstance();
 		$view->setDisplayMode(CMS_view::SHOW_RAW);
@@ -375,12 +375,12 @@ if ($xmlCondition) {
 						$view->setContentTag('data');
 						$view->setContent('');
 						$view->show();
-}  ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";  ?>
+}  ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";   ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-		<title>Automne 4 : Actualités</title>
-		<?php echo CMS_view::getCSS(array('/css/common.css','/css/interieur.css'), 'screen');  ?>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Automne-DÃ©mo-UTF8 : ActualitÃ©s</title>
+		<?php echo CMS_view::getCSS(array('/css/common.css','/css/interieur.css','/css/modules/pnews.css'), 'all');  ?>
 
 		<!--[if lte IE 6]> 
 		<link rel="stylesheet" type="text/css" href="/css/ie6.css" media="screen" />
@@ -392,9 +392,7 @@ if ($xmlCondition) {
 	<meta name="generator" content="Automne (TM)" />
 	<meta name="identifier-url" content="http://127.0.0.1" />
 
-	<!-- load the style of pnews module for media all -->
-	<link rel="stylesheet" type="text/css" href="/css/modules/pnews.css" media="all" />
-
+		
 	</head>
 	<body>
 		<div id="main">
@@ -403,14 +401,14 @@ if ($xmlCondition) {
 					
 								
 
-<a id="lienAccueil" href="http://127.0.0.1/web/fr/2-accueil.php" title="Retour à l'accueil">Retour à l'accueil</a>
+<a id="lienAccueil" href="http://127.0.0.1/web/fr/2-accueil.php" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
 
 
 							
 				</div>
 				<div id="backgroundBottomContainer">
 					<div id="menuLeft">
-						<ul class="CMS_lvl1"><li class="CMS_lvl1 CMS_open "><a class="CMS_lvl1" href="http://127.0.0.1/web/fr/2-accueil.php">Accueil</a><ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/24-documentation.php">Fonctionnalités</a></li><li class="CMS_lvl2 CMS_open "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/31-exemples-de-modules.php">Exemples de modules</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub CMS_current"><a class="CMS_lvl3" href="http://127.0.0.1/web/fr/5-actualite.php">Actualités</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/fr/6-mediatheque.php">Médiathèque</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/fr/36-formulaire.php">Formulaire</a></li></ul></li></ul></li></ul>
+						<ul class="CMS_lvl1"><li class="CMS_lvl1 CMS_open "><a class="CMS_lvl1" href="http://127.0.0.1/web/fr/2-accueil.php">Accueil</a><ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/3-presentation.php">PrÃ©sentation</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/24-documentation.php">FonctionnalitÃ©s</a></li><li class="CMS_lvl2 CMS_open "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/31-exemples-de-modules.php">Exemples de modules</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub CMS_current"><a class="CMS_lvl3" href="http://127.0.0.1/web/fr/5-actualite.php">ActualitÃ©s</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/fr/6-mediatheque.php">MÃ©diathÃ¨que</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/fr/36-formulaire.php">Formulaire</a></li></ul></li></ul></li></ul>
 					</div>
 					<div id="content" class="page5">
 						<div id="breadcrumbs">
@@ -422,10 +420,10 @@ if ($xmlCondition) {
  &gt; 
 						</div>
 						<div id="title">
-							<h1>Actualités</h1>
+							<h1>ActualitÃ©s</h1>
 						</div>
 						
-	<?php //Generated by : $Id: 5.php,v 1.7 2009/06/23 16:00:41 sebastien Exp $
+	<?php //Generated by : $Id: 5.php,v 1.8 2009/10/23 10:20:25 sebastien Exp $
 $content = "";
 $replace = "";
 if (!isset($objectDefinitions) || !is_array($objectDefinitions)) $objectDefinitions = array();
@@ -446,25 +444,25 @@ $content .="
 var pageURL = '".CMS_tree::getPageValue($parameters['pageID'],"url")."';
 </script>
 <form action=\"".CMS_tree::getPageValue($parameters['pageID'],"url")."\" method=\"get\">
-<h2>Rechercher des actualités : </h2>
+<h2>Rechercher des actualit&eacute;s : </h2>
 <div class=\"newsForm\">
 <div class=\"formKeywords\">
-<label for=\"keyword\">Mots Clés : </label><br /><input type=\"text\" id=\"keyword\" name=\"keyword\" value=\"".CMS_poly_definition_functions::getVarContent("request", "keyword", "string", @$keyword)."\" /><br />
+<label for=\"keyword\">Mots Cl&eacute;s : </label><br /><input type=\"text\" id=\"keyword\" name=\"keyword\" value=\"".CMS_poly_definition_functions::getVarContent("request", "keyword", "string", @$keyword)."\" /><br />
 </div>
 <div class=\"formCat\">
-<label for=\"cat\">Catégorie : </label><br />
+<label for=\"cat\">Cat&eacute;gorie : </label><br />
 <select id=\"cat\" name=\"cat\">
 <option value=\"\"> </option>
 ";
-//FUNCTION TAG START 2_847a82
-$parameters_2_847a82 = array ('selected' => CMS_polymod_definition_parsing::replaceVars(CMS_poly_definition_functions::getVarContent("request", "cat", "int", @$cat), $replace),);
-$object_2_847a82 = &$object[1]->objectValues(5);
-if (method_exists($object_2_847a82, "selectOptions")) {
-	$content .= CMS_polymod_definition_parsing::replaceVars($object_2_847a82->selectOptions($parameters_2_847a82, NULL), $replace);
+//FUNCTION TAG START 2_32b57a
+$parameters_2_32b57a = array ('selected' => CMS_polymod_definition_parsing::replaceVars(CMS_poly_definition_functions::getVarContent("request", "cat", "int", @$cat), $replace),);
+$object_2_32b57a = &$object[1]->objectValues(5);
+if (method_exists($object_2_32b57a, "selectOptions")) {
+	$content .= CMS_polymod_definition_parsing::replaceVars($object_2_32b57a->selectOptions($parameters_2_32b57a, NULL), $replace);
 } else {
-	CMS_grandFather::raiseError("Malformed atm-function tag : can't found method selectOptions on object : ".get_class($object_2_847a82));
+	CMS_grandFather::raiseError("Malformed atm-function tag : can't found method selectOptions on object : ".get_class($object_2_32b57a));
 }
-//FUNCTION TAG END 2_847a82
+//FUNCTION TAG END 2_32b57a
 $content .="
 </select>
 </div>
@@ -476,16 +474,16 @@ $content .="
 </div>
 <div id=\"searchresult\">
 ";
-//AJAX TAG START 3_dfca52
-//SEARCH newsresult TAG START 4_762e98
+//AJAX TAG START 3_85915c
+//SEARCH newsresult TAG START 4_2f3810
 $objectDefinition_newsresult = '1';
 if (!isset($objectDefinitions[$objectDefinition_newsresult])) {
 	$objectDefinitions[$objectDefinition_newsresult] = new CMS_poly_object_definition($objectDefinition_newsresult);
 }
 //public search ?
-$public_4_762e98 = isset($public_search) ? $public_search : false;
+$public_4_2f3810 = isset($public_search) ? $public_search : false;
 //get search params
-$search_newsresult = new CMS_object_search($objectDefinitions[$objectDefinition_newsresult], $public_4_762e98);
+$search_newsresult = new CMS_object_search($objectDefinitions[$objectDefinition_newsresult], $public_4_2f3810);
 $launchSearch_newsresult = true;
 //add search conditions if any
 $launchSearch_newsresult = (CMS_polymod_definition_parsing::addSearchCondition($search_newsresult, array (
@@ -509,7 +507,7 @@ $launchSearch_newsresult = (CMS_polymod_definition_parsing::addSearchCondition($
 $search_newsresult->setAttribute('itemsPerPage', (int) CMS_polymod_definition_parsing::replaceVars("10", $replace));
 $search_newsresult->setAttribute('page', (int) (CMS_polymod_definition_parsing::replaceVars(CMS_poly_definition_functions::getVarContent("request", "page", "int", @$page), $replace) -1 ));
 $search_newsresult->addOrderCondition("objectID", "desc");
-//RESULT newsresult TAG START 5_5d0774
+//RESULT newsresult TAG START 5_902fb6
 //launch search newsresult if not already done
 if($launchSearch_newsresult && !isset($results_newsresult)) {
 	if (isset($search_newsresult)) {
@@ -522,40 +520,40 @@ if($launchSearch_newsresult && !isset($results_newsresult)) {
 	$results_newsresult = array();
 }
 if ($results_newsresult) {
-	$object_5_5d0774 = $object[$objectDefinition_newsresult]; //save previous object search if any
-	$replace_5_5d0774 = $replace; //save previous replace vars if any
-	$count_5_5d0774 = 0;
-	$content_5_5d0774 = $content; //save previous content var if any
-	$maxPages_5_5d0774 = $search_newsresult->getMaxPages();
-	$maxResults_5_5d0774 = $search_newsresult->getNumRows();
+	$object_5_902fb6 = (isset($object[$objectDefinition_newsresult])) ? $object[$objectDefinition_newsresult] : ""; //save previous object search if any
+	$replace_5_902fb6 = $replace; //save previous replace vars if any
+	$count_5_902fb6 = 0;
+	$content_5_902fb6 = $content; //save previous content var if any
+	$maxPages_5_902fb6 = $search_newsresult->getMaxPages();
+	$maxResults_5_902fb6 = $search_newsresult->getNumRows();
 	foreach ($results_newsresult as $object[$objectDefinition_newsresult]) {
 		$content = "";
 		$replace["atm-search"] = array (
 			"{resultid}" 	=> (isset($resultID_newsresult)) ? $resultID_newsresult : $object[$objectDefinition_newsresult]->getID(),
-			"{firstresult}" => (!$count_5_5d0774) ? 1 : 0,
-			"{lastresult}" 	=> ($count_5_5d0774 == sizeof($results_newsresult)-1) ? 1 : 0,
-			"{resultcount}" => ($count_5_5d0774+1),
-			"{maxpages}"    => $maxPages_5_5d0774,
+			"{firstresult}" => (!$count_5_902fb6) ? 1 : 0,
+			"{lastresult}" 	=> ($count_5_902fb6 == sizeof($results_newsresult)-1) ? 1 : 0,
+			"{resultcount}" => ($count_5_902fb6+1),
+			"{maxpages}"    => $maxPages_5_902fb6,
 			"{currentpage}" => ($search_newsresult->getAttribute('page')+1),
-			"{maxresults}"  => $maxResults_5_5d0774,
+			"{maxresults}"  => $maxResults_5_902fb6,
 		);
-		//IF TAG START 6_0bab00
+		//IF TAG START 6_83d674
 		$ifcondition = CMS_polymod_definition_parsing::replaceVars("{firstresult} && !".CMS_polymod_definition_parsing::prepareVar(CMS_poly_definition_functions::getVarContent("request", "item", "int", @$item)), $replace);
 		if ($ifcondition) {
 			$func = create_function("","return (".$ifcondition.");");
 			if ($func()) {
 				$content .="
-				<div id=\"maxResults\">{maxresults} résultat(s) pour votre recherche.</div>
+				<div id=\"maxResults\">{maxresults} r&eacute;sultat(s) pour votre recherche.</div>
 				";
 			}
-		}//IF TAG END 6_0bab00
+		}//IF TAG END 6_83d674
 		$content .="
 		<div class=\"newsTitle\">
 		<h2><a href=\"".CMS_tree::getPageValue($parameters['pageID'],"url")."?item=".$object[1]->getValue('id','')."\" title=\"".$object[1]->getValue('label','')."\">".$object[1]->getValue('label','')."</a></h2><span>".$object[1]->getValue('formatedDateStart','d/m/Y')."</span><div class=\"spacer\"></div>
 		</div>
 		<div class=\"newsContent\">
 		";
-		//IF TAG START 7_f64ae9
+		//IF TAG START 7_399e25
 		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[1]->objectValues(4)->getValue('imageName','')), $replace);
 		if ($ifcondition) {
 			$func = create_function("","return (".$ifcondition.");");
@@ -574,8 +572,8 @@ if ($results_newsresult) {
 				</div>
 				";
 			}
-		}//IF TAG END 7_f64ae9
-		//IF TAG START 8_440810
+		}//IF TAG END 7_399e25
+		//IF TAG START 8_8c6d99
 		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar(CMS_poly_definition_functions::getVarContent("request", "item", "int", @$item))." == ".CMS_polymod_definition_parsing::prepareVar($object[1]->getValue('id','')), $replace);
 		if ($ifcondition) {
 			$func = create_function("","return (".$ifcondition.");");
@@ -585,8 +583,8 @@ if ($results_newsresult) {
 				<br />".$object[1]->objectValues(3)->getValue('value','')."
 				";
 			}
-		}//IF TAG END 8_440810
-		//IF TAG START 9_2ad0e0
+		}//IF TAG END 8_8c6d99
+		//IF TAG START 9_5971c4
 		$ifcondition = CMS_polymod_definition_parsing::replaceVars("!".CMS_polymod_definition_parsing::prepareVar(CMS_poly_definition_functions::getVarContent("request", "item", "int", @$item)), $replace);
 		if ($ifcondition) {
 			$func = create_function("","return (".$ifcondition.");");
@@ -599,12 +597,12 @@ if ($results_newsresult) {
 				</a>
 				";
 			}
-		}//IF TAG END 9_2ad0e0
+		}//IF TAG END 9_5971c4
 		$content .="
 		<div class=\"spacer\"></div>
 		</div>
 		";
-		//IF TAG START 10_545e1e
+		//IF TAG START 10_428904
 		$ifcondition = CMS_polymod_definition_parsing::replaceVars("{lastresult} && !".CMS_polymod_definition_parsing::prepareVar(CMS_poly_definition_functions::getVarContent("request", "item", "int", @$item)), $replace);
 		if ($ifcondition) {
 			$func = create_function("","return (".$ifcondition.");");
@@ -612,10 +610,10 @@ if ($results_newsresult) {
 				$content .="
 				<div class=\"pages\" id=\"pages\">
 				";
-				//FUNCTION TAG START 11_b790a2
-				$parameters_11_b790a2 = array ('maxpages' => CMS_polymod_definition_parsing::replaceVars("{maxpages}", $replace),'currentpage' => CMS_polymod_definition_parsing::replaceVars("{currentpage}", $replace),'displayedpage' => CMS_polymod_definition_parsing::replaceVars("5", $replace),);
+				//FUNCTION TAG START 11_fe6136
+				$parameters_11_fe6136 = array ('maxpages' => CMS_polymod_definition_parsing::replaceVars("{maxpages}", $replace),'currentpage' => CMS_polymod_definition_parsing::replaceVars("{currentpage}", $replace),'displayedpage' => CMS_polymod_definition_parsing::replaceVars("5", $replace),);
 				if (method_exists(new CMS_poly_definition_functions(), "pages")) {
-					$content .= CMS_polymod_definition_parsing::replaceVars(CMS_poly_definition_functions::pages($parameters_11_b790a2, array (
+					$content .= CMS_polymod_definition_parsing::replaceVars(CMS_poly_definition_functions::pages($parameters_11_fe6136, array (
 						0 =>
 						array (
 							'textnode' => '
@@ -634,7 +632,7 @@ if ($results_newsresult) {
 									'nodename' => 'a',
 									'attributes' =>
 									array (
-										'href' => CMS_tree::getPageValue($parameters['pageID'],"url").'?cat='.CMS_poly_definition_functions::getVarContent("request", "cat", "int", @$cat).'&keyword='.CMS_poly_definition_functions::getVarContent("request", "keyword", "string", @$keyword).'&page={n}',
+										'href' => CMS_tree::getPageValue($parameters['pageID'],"url").'?cat='.CMS_poly_definition_functions::getVarContent("request", "cat", "int", @$cat).'&amp;keyword='.CMS_poly_definition_functions::getVarContent("request", "keyword", "string", @$keyword).'&amp;page={n}',
 									),
 									'childrens' =>
 									array (
@@ -701,7 +699,7 @@ if ($results_newsresult) {
 									'nodename' => 'a',
 									'attributes' =>
 									array (
-										'href' => CMS_tree::getPageValue($parameters['pageID'],"url").'?cat='.CMS_poly_definition_functions::getVarContent("request", "cat", "int", @$cat).'&keyword='.CMS_poly_definition_functions::getVarContent("request", "keyword", "string", @$keyword).'&page={n}',
+										'href' => CMS_tree::getPageValue($parameters['pageID'],"url").'?cat='.CMS_poly_definition_functions::getVarContent("request", "cat", "int", @$cat).'&amp;keyword='.CMS_poly_definition_functions::getVarContent("request", "keyword", "string", @$keyword).'&amp;page={n}',
 									),
 									'childrens' =>
 									array (
@@ -711,8 +709,8 @@ if ($results_newsresult) {
 											'attributes' =>
 											array (
 												'src' => '/img/interieur/newsPrevious.gif',
-												'alt' => 'page précédente',
-												'title' => 'page précédente',
+												'alt' => 'page pr&eacute;c&eacute;dente',
+												'title' => 'page pr&eacute;c&eacute;dente',
 											),
 										),
 									),
@@ -741,7 +739,7 @@ if ($results_newsresult) {
 									'nodename' => 'a',
 									'attributes' =>
 									array (
-										'href' => CMS_tree::getPageValue($parameters['pageID'],"url").'?cat='.CMS_poly_definition_functions::getVarContent("request", "cat", "int", @$cat).'&keyword='.CMS_poly_definition_functions::getVarContent("request", "keyword", "string", @$keyword).'&page={n}',
+										'href' => CMS_tree::getPageValue($parameters['pageID'],"url").'?cat='.CMS_poly_definition_functions::getVarContent("request", "cat", "int", @$cat).'&amp;keyword='.CMS_poly_definition_functions::getVarContent("request", "keyword", "string", @$keyword).'&amp;page={n}',
 									),
 									'childrens' =>
 									array (
@@ -772,22 +770,22 @@ if ($results_newsresult) {
 				} else {
 					CMS_grandFather::raiseError("Malformed atm-function tag : can't found method pagesin CMS_poly_definition_functions");
 				}
-				//FUNCTION TAG END 11_b790a2
+				//FUNCTION TAG END 11_fe6136
 				$content .="
 				</div>
 				";
 			}
-		}//IF TAG END 10_545e1e
-		$count_5_5d0774++;
+		}//IF TAG END 10_428904
+		$count_5_902fb6++;
 		//do all result vars replacement
-		$content_5_5d0774.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
+		$content_5_902fb6.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
 	}
-	$content = $content_5_5d0774; //retrieve previous content var if any
-	$replace = $replace_5_5d0774; //retrieve previous replace vars if any
-	$object[$objectDefinition_newsresult] = $object_5_5d0774; //retrieve previous object search if any
+	$content = $content_5_902fb6; //retrieve previous content var if any
+	$replace = $replace_5_902fb6; //retrieve previous replace vars if any
+	$object[$objectDefinition_newsresult] = $object_5_902fb6; //retrieve previous object search if any
 }
-//RESULT newsresult TAG END 5_5d0774
-//NO-RESULT newsresult TAG START 12_dae09a
+//RESULT newsresult TAG END 5_902fb6
+//NO-RESULT newsresult TAG START 12_180ba6
 //launch search newsresult if not already done
 if($launchSearch_newsresult && !isset($results_newsresult)) {
 	if (isset($search_newsresult)) {
@@ -800,19 +798,19 @@ if($launchSearch_newsresult && !isset($results_newsresult)) {
 	$results_newsresult = array();
 }
 if (!$results_newsresult) {
-	$content .="Aucun résultat trouvé pour votre recherche ...";
+	$content .="Aucun r&eacute;sultat trouv&eacute; pour votre recherche ...";
 }
-//NO-RESULT newsresult TAG END 12_dae09a
+//NO-RESULT newsresult TAG END 12_180ba6
 //destroy search and results newsresult objects
 unset($search_newsresult);
 unset($results_newsresult);
-//SEARCH newsresult TAG END 4_762e98
-//AJAX TAG END 3_dfca52
+//SEARCH newsresult TAG END 4_2f3810
+//AJAX TAG END 3_85915c
 $content .="
 </div>
 ";
 echo CMS_polymod_definition_parsing::replaceVars($content, $replace);
-  ?>	
+   ?>	
 
 						<a href="#header" id="top" title="haut de la page">Haut</a>
 					</div>
@@ -829,6 +827,6 @@ echo CMS_polymod_definition_parsing::replaceVars($content, $replace);
 				<div class="spacer"></div>
 			</div>
 		</div>
-	<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat();}  ?>
+	<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat();}   ?>
 </body>
 </html>

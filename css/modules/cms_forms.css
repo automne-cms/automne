@@ -1,4 +1,4 @@
-/* $Id: cms_forms.css,v 1.1.1.1 2008/11/26 17:12:35 sebastien Exp $ */
+/* $Id: cms_forms.css,v 1.2 2009/10/23 10:19:59 sebastien Exp $ */
 
 /*Forms error messages*/
 .cms_forms_error_msg{
@@ -20,12 +20,12 @@
 }
 .cms_forms input, .cms_forms textarea, .cms_forms select{
 	color:				#393939;
-	background:			#ffffff;
+	background:			#FFFFFF;
 	border:				1px solid #a59893;
 	padding:			1px;
 }
 .cms_forms input.button{
-	background:			url(/img/interieur/button.gif) no-repeat left top;
+	background:			#78B704;
 	border:				0px;
 	color:				#FFFFFF;
 	cursor:				pointer;

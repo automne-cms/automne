@@ -13,8 +13,16 @@ img{
 	border:					none;
 	vertical-align:			top;
 }
-a{
+a, a:link{
 	text-decoration:		none;
+	color:					#981A57;
+}
+a:hover {
+	color:					#EB2685;
+}
+a:visited,
+a:active {
+	color:					#FD78B8;
 }
 #main{
 	background:				#a59893 url(/img/common/backgroundMain.gif) repeat-x left top;

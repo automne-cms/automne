@@ -1,4 +1,4 @@
-<?php //Generated on Tue, 23 Jun 2009 18:05:24 +0200 by Automne (TM) 4.0.0rc1
+<?php //Generated on Fri, 23 Oct 2009 12:22:27 +0200 by Automne (TM) 4.0.0rc3
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
 	header('Location: http://127.0.0.1/web/fr/38-aide-aux-utilisateurs.php');
@@ -6,12 +6,12 @@ if (!isset($cms_page_included) && !$_POST && !$_GET) {
 }
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
  ?>
-<?php require_once($_SERVER["DOCUMENT_ROOT"].'/automne/classes/polymodFrontEnd.php');  ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";  ?>
+<?php require_once($_SERVER["DOCUMENT_ROOT"].'/automne/classes/polymodFrontEnd.php');  ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";   ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-		<title>Automne 4 : Aide aux utilisateurs</title>
-		<?php echo CMS_view::getCSS(array('/css/common.css','/css/interieur.css'), 'screen');  ?>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Automne-DÃ©mo-UTF8 : Aide aux utilisateurs</title>
+		<?php echo CMS_view::getCSS(array('/css/common.css','/css/interieur.css','/css/modules/pmedia.css'), 'all');  ?>
 
 		<!--[if lte IE 6]> 
 		<link rel="stylesheet" type="text/css" href="/css/ie6.css" media="screen" />
@@ -23,9 +23,7 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 	<meta name="generator" content="Automne (TM)" />
 	<meta name="identifier-url" content="http://127.0.0.1" />
 
-	<!-- load the style of pmedia module for media all -->
-	<link rel="stylesheet" type="text/css" href="/css/modules/pmedia.css" media="all" />
-
+		
 	</head>
 	<body>
 		<div id="main">
@@ -34,21 +32,21 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 					
 								
 
-<a id="lienAccueil" href="http://127.0.0.1/web/fr/2-accueil.php" title="Retour à l'accueil">Retour à l'accueil</a>
+<a id="lienAccueil" href="http://127.0.0.1/web/fr/2-accueil.php" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
 
 
 							
 				</div>
 				<div id="backgroundBottomContainer">
 					<div id="menuLeft">
-						<ul class="CMS_lvl1"><li class="CMS_lvl1 CMS_open "><a class="CMS_lvl1" href="http://127.0.0.1/web/fr/2-accueil.php">Accueil</a><ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_open "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/24-documentation.php">Fonctionnalités</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/fr/25-modeles.php">Modèles</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/fr/26-rangees.php">Rangées</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/fr/27-modules.php">Modules</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/fr/28-administration.php">Gestion des utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/fr/35-gestion-des-droits.php">Gestion des droits</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/fr/37-droit-de-validation.php">Workflow de publication</a></li><li class="CMS_lvl3 CMS_nosub CMS_current"><a class="CMS_lvl3" href="http://127.0.0.1/web/fr/38-aide-aux-utilisateurs.php">Aide utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/fr/34-fonctions-avancees.php">Fonctions avancées</a></li></ul></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/31-exemples-de-modules.php">Exemples de modules</a></li></ul></li></ul>
+						<ul class="CMS_lvl1"><li class="CMS_lvl1 CMS_open "><a class="CMS_lvl1" href="http://127.0.0.1/web/fr/2-accueil.php">Accueil</a><ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/3-presentation.php">PrÃ©sentation</a></li><li class="CMS_lvl2 CMS_open "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/24-documentation.php">FonctionnalitÃ©s</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/fr/25-modeles.php">ModÃ¨les</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/fr/26-rangees.php">RangÃ©es</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/fr/27-modules.php">Modules</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/fr/28-administration.php">Gestion des utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/fr/35-gestion-des-droits.php">Gestion des droits</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/fr/37-droit-de-validation.php">Workflow de publication</a></li><li class="CMS_lvl3 CMS_nosub CMS_current"><a class="CMS_lvl3" href="http://127.0.0.1/web/fr/38-aide-aux-utilisateurs.php">Aide utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/fr/34-fonctions-avancees.php">Fonctions avancÃ©es</a></li></ul></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/31-exemples-de-modules.php">Exemples de modules</a></li></ul></li></ul>
 					</div>
 					<div id="content" class="page38">
 						<div id="breadcrumbs">
 							<a href="http://127.0.0.1/web/fr/2-accueil.php">Accueil</a>
 
  &gt; 
-<a href="http://127.0.0.1/web/fr/24-documentation.php">Fonctionnalités</a>
+<a href="http://127.0.0.1/web/fr/24-documentation.php">FonctionnalitÃ©s</a>
 
  &gt; 
 						</div>
@@ -66,7 +64,7 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 
 
 	<div class="imgLeft">
-		<?php //Generated by : $Id: 38.php,v 1.2 2009/06/23 16:00:41 sebastien Exp $
+		<?php //Generated by : $Id: 38.php,v 1.3 2009/10/23 10:20:25 sebastien Exp $
 $content = "";
 $replace = "";
 if (!isset($objectDefinitions) || !is_array($objectDefinitions)) $objectDefinitions = array();
@@ -88,37 +86,37 @@ if (isset($parameters['item'])) {$parameters['objectID'] = $parameters['item']->
 if (!isset($object) || !is_array($object)) $object = array();
 if (!isset($object[2])) $object[2] = new CMS_poly_object(2, 0, array(), $parameters['public']);
 $parameters['module'] = 'pmedia';
-//SEARCH mediaresult TAG START 2_b1dba8
+//SEARCH mediaresult TAG START 2_61d774
 $objectDefinition_mediaresult = '2';
 if (!isset($objectDefinitions[$objectDefinition_mediaresult])) {
 	$objectDefinitions[$objectDefinition_mediaresult] = new CMS_poly_object_definition($objectDefinition_mediaresult);
 }
 //public search ?
-$public_2_b1dba8 = isset($public_search) ? $public_search : false;
+$public_2_61d774 = isset($public_search) ? $public_search : false;
 //get search params
-$search_mediaresult = new CMS_object_search($objectDefinitions[$objectDefinition_mediaresult], $public_2_b1dba8);
+$search_mediaresult = new CMS_object_search($objectDefinitions[$objectDefinition_mediaresult], $public_2_61d774);
 $launchSearch_mediaresult = true;
 //add search conditions if any
 if (isset($blockAttributes['search']['mediaresult']['item'])) {
-	$values_3_e7f068 = array (
+	$values_3_925632 = array (
 		'search' => 'mediaresult',
 		'type' => 'item',
 		'value' => 'block',
 		'mandatory' => 'true',
 	);
-	$values_3_e7f068['value'] = $blockAttributes['search']['mediaresult']['item'];
-	if ($values_3_e7f068['type'] == 'publication date after' || $values_3_e7f068['type'] == 'publication date before') {
+	$values_3_925632['value'] = $blockAttributes['search']['mediaresult']['item'];
+	if ($values_3_925632['type'] == 'publication date after' || $values_3_925632['type'] == 'publication date before') {
 		//convert DB format to current language format
 		$dt = new CMS_date();
-		$dt->setFromDBValue($values_3_e7f068['value']);
-		$values_3_e7f068['value'] = $dt->getLocalizedDate($cms_language->getDateFormat());
+		$dt->setFromDBValue($values_3_925632['value']);
+		$values_3_925632['value'] = $dt->getLocalizedDate($cms_language->getDateFormat());
 	}
-	$launchSearch_mediaresult = (CMS_polymod_definition_parsing::addSearchCondition($search_mediaresult, $values_3_e7f068)) ? $launchSearch_mediaresult : false;
+	$launchSearch_mediaresult = (CMS_polymod_definition_parsing::addSearchCondition($search_mediaresult, $values_3_925632)) ? $launchSearch_mediaresult : false;
 } elseif (true == true) {
 	//search parameter is mandatory and no value found
 	$launchSearch_mediaresult = false;
 }
-//RESULT mediaresult TAG START 4_5f0149
+//RESULT mediaresult TAG START 4_56fe4d
 //launch search mediaresult if not already done
 if($launchSearch_mediaresult && !isset($results_mediaresult)) {
 	if (isset($search_mediaresult)) {
@@ -131,41 +129,41 @@ if($launchSearch_mediaresult && !isset($results_mediaresult)) {
 	$results_mediaresult = array();
 }
 if ($results_mediaresult) {
-	$object_4_5f0149 = $object[$objectDefinition_mediaresult]; //save previous object search if any
-	$replace_4_5f0149 = $replace; //save previous replace vars if any
-	$count_4_5f0149 = 0;
-	$content_4_5f0149 = $content; //save previous content var if any
-	$maxPages_4_5f0149 = $search_mediaresult->getMaxPages();
-	$maxResults_4_5f0149 = $search_mediaresult->getNumRows();
+	$object_4_56fe4d = (isset($object[$objectDefinition_mediaresult])) ? $object[$objectDefinition_mediaresult] : ""; //save previous object search if any
+	$replace_4_56fe4d = $replace; //save previous replace vars if any
+	$count_4_56fe4d = 0;
+	$content_4_56fe4d = $content; //save previous content var if any
+	$maxPages_4_56fe4d = $search_mediaresult->getMaxPages();
+	$maxResults_4_56fe4d = $search_mediaresult->getNumRows();
 	foreach ($results_mediaresult as $object[$objectDefinition_mediaresult]) {
 		$content = "";
 		$replace["atm-search"] = array (
 			"{resultid}" 	=> (isset($resultID_mediaresult)) ? $resultID_mediaresult : $object[$objectDefinition_mediaresult]->getID(),
-			"{firstresult}" => (!$count_4_5f0149) ? 1 : 0,
-			"{lastresult}" 	=> ($count_4_5f0149 == sizeof($results_mediaresult)-1) ? 1 : 0,
-			"{resultcount}" => ($count_4_5f0149+1),
-			"{maxpages}"    => $maxPages_4_5f0149,
+			"{firstresult}" => (!$count_4_56fe4d) ? 1 : 0,
+			"{lastresult}" 	=> ($count_4_56fe4d == sizeof($results_mediaresult)-1) ? 1 : 0,
+			"{resultcount}" => ($count_4_56fe4d+1),
+			"{maxpages}"    => $maxPages_4_56fe4d,
 			"{currentpage}" => ($search_mediaresult->getAttribute('page')+1),
-			"{maxresults}"  => $maxResults_4_5f0149,
+			"{maxresults}"  => $maxResults_4_56fe4d,
 		);
-		//IF TAG START 5_b0bda7
+		//IF TAG START 5_25d776
 		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'flv' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'mp3' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'jpg' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'gif' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'png'", $replace);
 		if ($ifcondition) {
 			$func = create_function("","return (".$ifcondition.");");
 			if ($func()) {
 				$content .="
-				<a href=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" target=\"_blank\" title=\"Télécharger le document '".$object[2]->objectValues(9)->getValue('fileLabel','')."' (".$object[2]->objectValues(9)->getValue('fileExtension','')." - ".$object[2]->objectValues(9)->getValue('fileSize','')."Mo)\">";
-				//IF TAG START 6_ad093f
+				<a href=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" target=\"_blank\" title=\"T&eacute;l&eacute;charger le document '".$object[2]->objectValues(9)->getValue('fileLabel','')."' (".$object[2]->objectValues(9)->getValue('fileExtension','')." - ".$object[2]->objectValues(9)->getValue('fileSize','')."Mo)\">";
+				//IF TAG START 6_ea7b72
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileIcon','')), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
 					if ($func()) {
 						$content .="<img src=\"".$object[2]->objectValues(9)->getValue('fileIcon','')."\" alt=\"Fichier ".$object[2]->objectValues(9)->getValue('fileExtension','')."\" title=\"Fichier ".$object[2]->objectValues(9)->getValue('fileExtension','')."\" />";
 					}
-				}//IF TAG END 6_ad093f
+				}//IF TAG END 6_ea7b72
 				$content .=" ".$object[2]->getValue('label','')."</a>
 				";
-				//IF TAG START 7_ceba58
+				//IF TAG START 7_9dfbfb
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
@@ -184,15 +182,15 @@ if ($results_mediaresult) {
 						</div>
 						";
 					}
-				}//IF TAG END 7_ceba58
+				}//IF TAG END 7_9dfbfb
 			}
-		}//IF TAG END 5_b0bda7
-		//IF TAG START 8_f91731
+		}//IF TAG END 5_25d776
+		//IF TAG START 8_052ee6
 		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'flv'", $replace);
 		if ($ifcondition) {
 			$func = create_function("","return (".$ifcondition.");");
 			if ($func()) {
-				//IF TAG START 9_2ecd27
+				//IF TAG START 9_4cfbd3
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
@@ -203,8 +201,8 @@ if ($results_mediaresult) {
 						</script>
 						";
 					}
-				}//IF TAG END 9_2ecd27
-				//IF TAG START 10_6b80e7
+				}//IF TAG END 9_4cfbd3
+				//IF TAG START 10_b115fb
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars("!".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
@@ -215,15 +213,15 @@ if ($results_mediaresult) {
 						</script>
 						";
 					}
-				}//IF TAG END 10_6b80e7
+				}//IF TAG END 10_b115fb
 				$content .="
 				<div id=\"media-".$object[2]->getValue('id','')."\" class=\"pmedias-video\" style=\"width:320px;height:200px;\">
 				<p><a href=\"http://www.adobe.com/go/getflashplayer\"><img src=\"http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif\" alt=\"Get Adobe Flash player\" /></a></p>
 				</div>
 				";
 			}
-		}//IF TAG END 8_f91731
-		//IF TAG START 11_d97951
+		}//IF TAG END 8_052ee6
+		//IF TAG START 11_a2c576
 		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'mp3'", $replace);
 		if ($ifcondition) {
 			$func = create_function("","return (".$ifcondition.");");
@@ -236,7 +234,7 @@ if ($results_mediaresult) {
 				<p><a href=\"http://www.adobe.com/go/getflashplayer\"><img src=\"http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif\" alt=\"Get Adobe Flash player\" /></a></p>
 				</div>
 				";
-				//IF TAG START 12_9cab5b
+				//IF TAG START 12_045ff5
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
@@ -255,10 +253,10 @@ if ($results_mediaresult) {
 						</div>
 						";
 					}
-				}//IF TAG END 12_9cab5b
+				}//IF TAG END 12_045ff5
 			}
-		}//IF TAG END 11_d97951
-		//IF TAG START 13_d613ea
+		}//IF TAG END 11_a2c576
+		//IF TAG START 13_789fca
 		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'jpg' || ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'gif' || ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'png'", $replace);
 		if ($ifcondition) {
 			$func = create_function("","return (".$ifcondition.");");
@@ -270,17 +268,17 @@ if ($results_mediaresult) {
 				<div class=\"shadowBL\">
 				<div class=\"shadowBR\">
 				";
-				//IF TAG START 14_ecd417
+				//IF TAG START 14_d9ba07
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
 					if ($func()) {
 						$content .="
-						<a href=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" onclick=\"javascript:CMS_openPopUpImage('/imagezoom.php?location=public&module=pmedia&file=".$object[2]->objectValues(9)->getValue('filename','')."&label=".$object[2]->getValue('label','js')."');return false;\" target=\"_blank\" title=\"Voir l'image '".$object[2]->getValue('label','')."' (".$object[2]->objectValues(9)->getValue('fileExtension','')." - ".$object[2]->objectValues(9)->getValue('fileSize','')."Mo)\"><img src=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('thumbnail','')."\" alt=\"".$object[2]->getValue('label','')."\" title=\"".$object[2]->getValue('label','')."\" /></a>
+						<a href=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" onclick=\"javascript:CMS_openPopUpImage('/imagezoom.php?location=public&amp;module=pmedia&amp;file=".$object[2]->objectValues(9)->getValue('filename','')."&amp;label=".$object[2]->getValue('label','js')."');return false;\" target=\"_blank\" title=\"Voir l'image '".$object[2]->getValue('label','')."' (".$object[2]->objectValues(9)->getValue('fileExtension','')." - ".$object[2]->objectValues(9)->getValue('fileSize','')."Mo)\"><img src=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('thumbnail','')."\" alt=\"".$object[2]->getValue('label','')."\" title=\"".$object[2]->getValue('label','')."\" /></a>
 						";
 					}
-				}//IF TAG END 14_ecd417
-				//IF TAG START 15_971510
+				}//IF TAG END 14_d9ba07
+				//IF TAG START 15_576dc6
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars("!".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
@@ -289,7 +287,7 @@ if ($results_mediaresult) {
 						<img src=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" alt=\"".$object[2]->getValue('label','')."\" title=\"".$object[2]->getValue('label','')."\" style=\"max-width:200px;\" />
 						";
 					}
-				}//IF TAG END 15_971510
+				}//IF TAG END 15_576dc6
 				$content .="
 				</div>
 				</div>
@@ -298,22 +296,22 @@ if ($results_mediaresult) {
 				</div>
 				";
 			}
-		}//IF TAG END 13_d613ea
-		$count_4_5f0149++;
+		}//IF TAG END 13_789fca
+		$count_4_56fe4d++;
 		//do all result vars replacement
-		$content_4_5f0149.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
+		$content_4_56fe4d.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
 	}
-	$content = $content_4_5f0149; //retrieve previous content var if any
-	$replace = $replace_4_5f0149; //retrieve previous replace vars if any
-	$object[$objectDefinition_mediaresult] = $object_4_5f0149; //retrieve previous object search if any
+	$content = $content_4_56fe4d; //retrieve previous content var if any
+	$replace = $replace_4_56fe4d; //retrieve previous replace vars if any
+	$object[$objectDefinition_mediaresult] = $object_4_56fe4d; //retrieve previous object search if any
 }
-//RESULT mediaresult TAG END 4_5f0149
+//RESULT mediaresult TAG END 4_56fe4d
 //destroy search and results mediaresult objects
 unset($search_mediaresult);
 unset($results_mediaresult);
-//SEARCH mediaresult TAG END 2_b1dba8
+//SEARCH mediaresult TAG END 2_61d774
 echo CMS_polymod_definition_parsing::replaceVars($content, $replace);
-  ?>
+   ?>
 	</div>
 	
 		<div class="text"><p>L'aide contextuelle vous permet d<strong>'obtenir des informations</strong> sur les &eacute;l&eacute;ments que vous pointez avec votre curseur.</p> <h3>PLUS aucun bouton n'aura de secret pour vous !</h3></div>
@@ -321,11 +319,11 @@ echo CMS_polymod_definition_parsing::replaceVars($content, $replace);
 	
 
 
-<h2>L'aide à la syntaxe XML (pour les utilisateurs avancés)</h2>
+<h2>L'aide Ã  la syntaxe XML (pour les utilisateurs avancÃ©s)</h2>
 
 
 	<div class="imgRight">
-		<?php //Generated by : $Id: 38.php,v 1.2 2009/06/23 16:00:41 sebastien Exp $
+		<?php //Generated by : $Id: 38.php,v 1.3 2009/10/23 10:20:25 sebastien Exp $
 $content = "";
 $replace = "";
 if (!isset($objectDefinitions) || !is_array($objectDefinitions)) $objectDefinitions = array();
@@ -347,37 +345,37 @@ if (isset($parameters['item'])) {$parameters['objectID'] = $parameters['item']->
 if (!isset($object) || !is_array($object)) $object = array();
 if (!isset($object[2])) $object[2] = new CMS_poly_object(2, 0, array(), $parameters['public']);
 $parameters['module'] = 'pmedia';
-//SEARCH mediaresult TAG START 16_b2ca52
+//SEARCH mediaresult TAG START 16_9042c3
 $objectDefinition_mediaresult = '2';
 if (!isset($objectDefinitions[$objectDefinition_mediaresult])) {
 	$objectDefinitions[$objectDefinition_mediaresult] = new CMS_poly_object_definition($objectDefinition_mediaresult);
 }
 //public search ?
-$public_16_b2ca52 = isset($public_search) ? $public_search : false;
+$public_16_9042c3 = isset($public_search) ? $public_search : false;
 //get search params
-$search_mediaresult = new CMS_object_search($objectDefinitions[$objectDefinition_mediaresult], $public_16_b2ca52);
+$search_mediaresult = new CMS_object_search($objectDefinitions[$objectDefinition_mediaresult], $public_16_9042c3);
 $launchSearch_mediaresult = true;
 //add search conditions if any
 if (isset($blockAttributes['search']['mediaresult']['item'])) {
-	$values_17_1ad9c2 = array (
+	$values_17_328017 = array (
 		'search' => 'mediaresult',
 		'type' => 'item',
 		'value' => 'block',
 		'mandatory' => 'true',
 	);
-	$values_17_1ad9c2['value'] = $blockAttributes['search']['mediaresult']['item'];
-	if ($values_17_1ad9c2['type'] == 'publication date after' || $values_17_1ad9c2['type'] == 'publication date before') {
+	$values_17_328017['value'] = $blockAttributes['search']['mediaresult']['item'];
+	if ($values_17_328017['type'] == 'publication date after' || $values_17_328017['type'] == 'publication date before') {
 		//convert DB format to current language format
 		$dt = new CMS_date();
-		$dt->setFromDBValue($values_17_1ad9c2['value']);
-		$values_17_1ad9c2['value'] = $dt->getLocalizedDate($cms_language->getDateFormat());
+		$dt->setFromDBValue($values_17_328017['value']);
+		$values_17_328017['value'] = $dt->getLocalizedDate($cms_language->getDateFormat());
 	}
-	$launchSearch_mediaresult = (CMS_polymod_definition_parsing::addSearchCondition($search_mediaresult, $values_17_1ad9c2)) ? $launchSearch_mediaresult : false;
+	$launchSearch_mediaresult = (CMS_polymod_definition_parsing::addSearchCondition($search_mediaresult, $values_17_328017)) ? $launchSearch_mediaresult : false;
 } elseif (true == true) {
 	//search parameter is mandatory and no value found
 	$launchSearch_mediaresult = false;
 }
-//RESULT mediaresult TAG START 18_e367b8
+//RESULT mediaresult TAG START 18_fe592f
 //launch search mediaresult if not already done
 if($launchSearch_mediaresult && !isset($results_mediaresult)) {
 	if (isset($search_mediaresult)) {
@@ -390,41 +388,41 @@ if($launchSearch_mediaresult && !isset($results_mediaresult)) {
 	$results_mediaresult = array();
 }
 if ($results_mediaresult) {
-	$object_18_e367b8 = $object[$objectDefinition_mediaresult]; //save previous object search if any
-	$replace_18_e367b8 = $replace; //save previous replace vars if any
-	$count_18_e367b8 = 0;
-	$content_18_e367b8 = $content; //save previous content var if any
-	$maxPages_18_e367b8 = $search_mediaresult->getMaxPages();
-	$maxResults_18_e367b8 = $search_mediaresult->getNumRows();
+	$object_18_fe592f = (isset($object[$objectDefinition_mediaresult])) ? $object[$objectDefinition_mediaresult] : ""; //save previous object search if any
+	$replace_18_fe592f = $replace; //save previous replace vars if any
+	$count_18_fe592f = 0;
+	$content_18_fe592f = $content; //save previous content var if any
+	$maxPages_18_fe592f = $search_mediaresult->getMaxPages();
+	$maxResults_18_fe592f = $search_mediaresult->getNumRows();
 	foreach ($results_mediaresult as $object[$objectDefinition_mediaresult]) {
 		$content = "";
 		$replace["atm-search"] = array (
 			"{resultid}" 	=> (isset($resultID_mediaresult)) ? $resultID_mediaresult : $object[$objectDefinition_mediaresult]->getID(),
-			"{firstresult}" => (!$count_18_e367b8) ? 1 : 0,
-			"{lastresult}" 	=> ($count_18_e367b8 == sizeof($results_mediaresult)-1) ? 1 : 0,
-			"{resultcount}" => ($count_18_e367b8+1),
-			"{maxpages}"    => $maxPages_18_e367b8,
+			"{firstresult}" => (!$count_18_fe592f) ? 1 : 0,
+			"{lastresult}" 	=> ($count_18_fe592f == sizeof($results_mediaresult)-1) ? 1 : 0,
+			"{resultcount}" => ($count_18_fe592f+1),
+			"{maxpages}"    => $maxPages_18_fe592f,
 			"{currentpage}" => ($search_mediaresult->getAttribute('page')+1),
-			"{maxresults}"  => $maxResults_18_e367b8,
+			"{maxresults}"  => $maxResults_18_fe592f,
 		);
-		//IF TAG START 19_3a8cca
+		//IF TAG START 19_8cb483
 		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'flv' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'mp3' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'jpg' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'gif' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'png'", $replace);
 		if ($ifcondition) {
 			$func = create_function("","return (".$ifcondition.");");
 			if ($func()) {
 				$content .="
-				<a href=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" target=\"_blank\" title=\"Télécharger le document '".$object[2]->objectValues(9)->getValue('fileLabel','')."' (".$object[2]->objectValues(9)->getValue('fileExtension','')." - ".$object[2]->objectValues(9)->getValue('fileSize','')."Mo)\">";
-				//IF TAG START 20_86efb3
+				<a href=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" target=\"_blank\" title=\"T&eacute;l&eacute;charger le document '".$object[2]->objectValues(9)->getValue('fileLabel','')."' (".$object[2]->objectValues(9)->getValue('fileExtension','')." - ".$object[2]->objectValues(9)->getValue('fileSize','')."Mo)\">";
+				//IF TAG START 20_8c1c54
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileIcon','')), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
 					if ($func()) {
 						$content .="<img src=\"".$object[2]->objectValues(9)->getValue('fileIcon','')."\" alt=\"Fichier ".$object[2]->objectValues(9)->getValue('fileExtension','')."\" title=\"Fichier ".$object[2]->objectValues(9)->getValue('fileExtension','')."\" />";
 					}
-				}//IF TAG END 20_86efb3
+				}//IF TAG END 20_8c1c54
 				$content .=" ".$object[2]->getValue('label','')."</a>
 				";
-				//IF TAG START 21_01e222
+				//IF TAG START 21_21b56b
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
@@ -443,15 +441,15 @@ if ($results_mediaresult) {
 						</div>
 						";
 					}
-				}//IF TAG END 21_01e222
+				}//IF TAG END 21_21b56b
 			}
-		}//IF TAG END 19_3a8cca
-		//IF TAG START 22_47c590
+		}//IF TAG END 19_8cb483
+		//IF TAG START 22_6f26db
 		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'flv'", $replace);
 		if ($ifcondition) {
 			$func = create_function("","return (".$ifcondition.");");
 			if ($func()) {
-				//IF TAG START 23_359f4e
+				//IF TAG START 23_20995c
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
@@ -462,8 +460,8 @@ if ($results_mediaresult) {
 						</script>
 						";
 					}
-				}//IF TAG END 23_359f4e
-				//IF TAG START 24_65bcbc
+				}//IF TAG END 23_20995c
+				//IF TAG START 24_fac28f
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars("!".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
@@ -474,15 +472,15 @@ if ($results_mediaresult) {
 						</script>
 						";
 					}
-				}//IF TAG END 24_65bcbc
+				}//IF TAG END 24_fac28f
 				$content .="
 				<div id=\"media-".$object[2]->getValue('id','')."\" class=\"pmedias-video\" style=\"width:320px;height:200px;\">
 				<p><a href=\"http://www.adobe.com/go/getflashplayer\"><img src=\"http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif\" alt=\"Get Adobe Flash player\" /></a></p>
 				</div>
 				";
 			}
-		}//IF TAG END 22_47c590
-		//IF TAG START 25_e268ab
+		}//IF TAG END 22_6f26db
+		//IF TAG START 25_8e7501
 		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'mp3'", $replace);
 		if ($ifcondition) {
 			$func = create_function("","return (".$ifcondition.");");
@@ -495,7 +493,7 @@ if ($results_mediaresult) {
 				<p><a href=\"http://www.adobe.com/go/getflashplayer\"><img src=\"http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif\" alt=\"Get Adobe Flash player\" /></a></p>
 				</div>
 				";
-				//IF TAG START 26_c616ba
+				//IF TAG START 26_bf9d51
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
@@ -514,10 +512,10 @@ if ($results_mediaresult) {
 						</div>
 						";
 					}
-				}//IF TAG END 26_c616ba
+				}//IF TAG END 26_bf9d51
 			}
-		}//IF TAG END 25_e268ab
-		//IF TAG START 27_b938cf
+		}//IF TAG END 25_8e7501
+		//IF TAG START 27_8241c2
 		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'jpg' || ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'gif' || ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'png'", $replace);
 		if ($ifcondition) {
 			$func = create_function("","return (".$ifcondition.");");
@@ -529,17 +527,17 @@ if ($results_mediaresult) {
 				<div class=\"shadowBL\">
 				<div class=\"shadowBR\">
 				";
-				//IF TAG START 28_6234e3
+				//IF TAG START 28_3df2c8
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
 					if ($func()) {
 						$content .="
-						<a href=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" onclick=\"javascript:CMS_openPopUpImage('/imagezoom.php?location=public&module=pmedia&file=".$object[2]->objectValues(9)->getValue('filename','')."&label=".$object[2]->getValue('label','js')."');return false;\" target=\"_blank\" title=\"Voir l'image '".$object[2]->getValue('label','')."' (".$object[2]->objectValues(9)->getValue('fileExtension','')." - ".$object[2]->objectValues(9)->getValue('fileSize','')."Mo)\"><img src=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('thumbnail','')."\" alt=\"".$object[2]->getValue('label','')."\" title=\"".$object[2]->getValue('label','')."\" /></a>
+						<a href=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" onclick=\"javascript:CMS_openPopUpImage('/imagezoom.php?location=public&amp;module=pmedia&amp;file=".$object[2]->objectValues(9)->getValue('filename','')."&amp;label=".$object[2]->getValue('label','js')."');return false;\" target=\"_blank\" title=\"Voir l'image '".$object[2]->getValue('label','')."' (".$object[2]->objectValues(9)->getValue('fileExtension','')." - ".$object[2]->objectValues(9)->getValue('fileSize','')."Mo)\"><img src=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('thumbnail','')."\" alt=\"".$object[2]->getValue('label','')."\" title=\"".$object[2]->getValue('label','')."\" /></a>
 						";
 					}
-				}//IF TAG END 28_6234e3
-				//IF TAG START 29_3ce696
+				}//IF TAG END 28_3df2c8
+				//IF TAG START 29_b0b803
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars("!".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
@@ -548,7 +546,7 @@ if ($results_mediaresult) {
 						<img src=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" alt=\"".$object[2]->getValue('label','')."\" title=\"".$object[2]->getValue('label','')."\" style=\"max-width:200px;\" />
 						";
 					}
-				}//IF TAG END 29_3ce696
+				}//IF TAG END 29_b0b803
 				$content .="
 				</div>
 				</div>
@@ -557,22 +555,22 @@ if ($results_mediaresult) {
 				</div>
 				";
 			}
-		}//IF TAG END 27_b938cf
-		$count_18_e367b8++;
+		}//IF TAG END 27_8241c2
+		$count_18_fe592f++;
 		//do all result vars replacement
-		$content_18_e367b8.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
+		$content_18_fe592f.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
 	}
-	$content = $content_18_e367b8; //retrieve previous content var if any
-	$replace = $replace_18_e367b8; //retrieve previous replace vars if any
-	$object[$objectDefinition_mediaresult] = $object_18_e367b8; //retrieve previous object search if any
+	$content = $content_18_fe592f; //retrieve previous content var if any
+	$replace = $replace_18_fe592f; //retrieve previous replace vars if any
+	$object[$objectDefinition_mediaresult] = $object_18_fe592f; //retrieve previous object search if any
 }
-//RESULT mediaresult TAG END 18_e367b8
+//RESULT mediaresult TAG END 18_fe592f
 //destroy search and results mediaresult objects
 unset($search_mediaresult);
 unset($results_mediaresult);
-//SEARCH mediaresult TAG END 16_b2ca52
+//SEARCH mediaresult TAG END 16_9042c3
 echo CMS_polymod_definition_parsing::replaceVars($content, $replace);
-  ?>
+   ?>
 	</div>
 	
 		<div class="text"><p>Cette aide vous apporte <strong>l'ensemble des points essentiels pour la d&eacute;finition de vos propres rang&eacute;es de contenu.</strong></p> <p>Elle d&eacute;taille les tags XML et les variables pouvant &ecirc;tre utilis&eacute;es ainsi que leurs fonctions.</p> <p>L'insertion des modules dans vos rang&eacute;es est document&eacute;e de la m&ecirc;me mani&egrave;re.</p> <h3>Cr&eacute;er ses propres rang&eacute;es de contenu devient extr&ecirc;mement simple !</h3></div>
@@ -584,7 +582,7 @@ echo CMS_polymod_definition_parsing::replaceVars($content, $replace);
 
 
 	<div class="imgLeft">
-		<?php //Generated by : $Id: 38.php,v 1.2 2009/06/23 16:00:41 sebastien Exp $
+		<?php //Generated by : $Id: 38.php,v 1.3 2009/10/23 10:20:25 sebastien Exp $
 $content = "";
 $replace = "";
 if (!isset($objectDefinitions) || !is_array($objectDefinitions)) $objectDefinitions = array();
@@ -606,37 +604,37 @@ if (isset($parameters['item'])) {$parameters['objectID'] = $parameters['item']->
 if (!isset($object) || !is_array($object)) $object = array();
 if (!isset($object[2])) $object[2] = new CMS_poly_object(2, 0, array(), $parameters['public']);
 $parameters['module'] = 'pmedia';
-//SEARCH mediaresult TAG START 30_d4539f
+//SEARCH mediaresult TAG START 30_c05c94
 $objectDefinition_mediaresult = '2';
 if (!isset($objectDefinitions[$objectDefinition_mediaresult])) {
 	$objectDefinitions[$objectDefinition_mediaresult] = new CMS_poly_object_definition($objectDefinition_mediaresult);
 }
 //public search ?
-$public_30_d4539f = isset($public_search) ? $public_search : false;
+$public_30_c05c94 = isset($public_search) ? $public_search : false;
 //get search params
-$search_mediaresult = new CMS_object_search($objectDefinitions[$objectDefinition_mediaresult], $public_30_d4539f);
+$search_mediaresult = new CMS_object_search($objectDefinitions[$objectDefinition_mediaresult], $public_30_c05c94);
 $launchSearch_mediaresult = true;
 //add search conditions if any
 if (isset($blockAttributes['search']['mediaresult']['item'])) {
-	$values_31_43ea14 = array (
+	$values_31_acf1e3 = array (
 		'search' => 'mediaresult',
 		'type' => 'item',
 		'value' => 'block',
 		'mandatory' => 'true',
 	);
-	$values_31_43ea14['value'] = $blockAttributes['search']['mediaresult']['item'];
-	if ($values_31_43ea14['type'] == 'publication date after' || $values_31_43ea14['type'] == 'publication date before') {
+	$values_31_acf1e3['value'] = $blockAttributes['search']['mediaresult']['item'];
+	if ($values_31_acf1e3['type'] == 'publication date after' || $values_31_acf1e3['type'] == 'publication date before') {
 		//convert DB format to current language format
 		$dt = new CMS_date();
-		$dt->setFromDBValue($values_31_43ea14['value']);
-		$values_31_43ea14['value'] = $dt->getLocalizedDate($cms_language->getDateFormat());
+		$dt->setFromDBValue($values_31_acf1e3['value']);
+		$values_31_acf1e3['value'] = $dt->getLocalizedDate($cms_language->getDateFormat());
 	}
-	$launchSearch_mediaresult = (CMS_polymod_definition_parsing::addSearchCondition($search_mediaresult, $values_31_43ea14)) ? $launchSearch_mediaresult : false;
+	$launchSearch_mediaresult = (CMS_polymod_definition_parsing::addSearchCondition($search_mediaresult, $values_31_acf1e3)) ? $launchSearch_mediaresult : false;
 } elseif (true == true) {
 	//search parameter is mandatory and no value found
 	$launchSearch_mediaresult = false;
 }
-//RESULT mediaresult TAG START 32_1a1470
+//RESULT mediaresult TAG START 32_ec33f8
 //launch search mediaresult if not already done
 if($launchSearch_mediaresult && !isset($results_mediaresult)) {
 	if (isset($search_mediaresult)) {
@@ -649,41 +647,41 @@ if($launchSearch_mediaresult && !isset($results_mediaresult)) {
 	$results_mediaresult = array();
 }
 if ($results_mediaresult) {
-	$object_32_1a1470 = $object[$objectDefinition_mediaresult]; //save previous object search if any
-	$replace_32_1a1470 = $replace; //save previous replace vars if any
-	$count_32_1a1470 = 0;
-	$content_32_1a1470 = $content; //save previous content var if any
-	$maxPages_32_1a1470 = $search_mediaresult->getMaxPages();
-	$maxResults_32_1a1470 = $search_mediaresult->getNumRows();
+	$object_32_ec33f8 = (isset($object[$objectDefinition_mediaresult])) ? $object[$objectDefinition_mediaresult] : ""; //save previous object search if any
+	$replace_32_ec33f8 = $replace; //save previous replace vars if any
+	$count_32_ec33f8 = 0;
+	$content_32_ec33f8 = $content; //save previous content var if any
+	$maxPages_32_ec33f8 = $search_mediaresult->getMaxPages();
+	$maxResults_32_ec33f8 = $search_mediaresult->getNumRows();
 	foreach ($results_mediaresult as $object[$objectDefinition_mediaresult]) {
 		$content = "";
 		$replace["atm-search"] = array (
 			"{resultid}" 	=> (isset($resultID_mediaresult)) ? $resultID_mediaresult : $object[$objectDefinition_mediaresult]->getID(),
-			"{firstresult}" => (!$count_32_1a1470) ? 1 : 0,
-			"{lastresult}" 	=> ($count_32_1a1470 == sizeof($results_mediaresult)-1) ? 1 : 0,
-			"{resultcount}" => ($count_32_1a1470+1),
-			"{maxpages}"    => $maxPages_32_1a1470,
+			"{firstresult}" => (!$count_32_ec33f8) ? 1 : 0,
+			"{lastresult}" 	=> ($count_32_ec33f8 == sizeof($results_mediaresult)-1) ? 1 : 0,
+			"{resultcount}" => ($count_32_ec33f8+1),
+			"{maxpages}"    => $maxPages_32_ec33f8,
 			"{currentpage}" => ($search_mediaresult->getAttribute('page')+1),
-			"{maxresults}"  => $maxResults_32_1a1470,
+			"{maxresults}"  => $maxResults_32_ec33f8,
 		);
-		//IF TAG START 33_1670df
+		//IF TAG START 33_5708af
 		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'flv' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'mp3' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'jpg' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'gif' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'png'", $replace);
 		if ($ifcondition) {
 			$func = create_function("","return (".$ifcondition.");");
 			if ($func()) {
 				$content .="
-				<a href=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" target=\"_blank\" title=\"Télécharger le document '".$object[2]->objectValues(9)->getValue('fileLabel','')."' (".$object[2]->objectValues(9)->getValue('fileExtension','')." - ".$object[2]->objectValues(9)->getValue('fileSize','')."Mo)\">";
-				//IF TAG START 34_a90551
+				<a href=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" target=\"_blank\" title=\"T&eacute;l&eacute;charger le document '".$object[2]->objectValues(9)->getValue('fileLabel','')."' (".$object[2]->objectValues(9)->getValue('fileExtension','')." - ".$object[2]->objectValues(9)->getValue('fileSize','')."Mo)\">";
+				//IF TAG START 34_0d8a76
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileIcon','')), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
 					if ($func()) {
 						$content .="<img src=\"".$object[2]->objectValues(9)->getValue('fileIcon','')."\" alt=\"Fichier ".$object[2]->objectValues(9)->getValue('fileExtension','')."\" title=\"Fichier ".$object[2]->objectValues(9)->getValue('fileExtension','')."\" />";
 					}
-				}//IF TAG END 34_a90551
+				}//IF TAG END 34_0d8a76
 				$content .=" ".$object[2]->getValue('label','')."</a>
 				";
-				//IF TAG START 35_57ae2a
+				//IF TAG START 35_0c8248
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
@@ -702,15 +700,15 @@ if ($results_mediaresult) {
 						</div>
 						";
 					}
-				}//IF TAG END 35_57ae2a
+				}//IF TAG END 35_0c8248
 			}
-		}//IF TAG END 33_1670df
-		//IF TAG START 36_290225
+		}//IF TAG END 33_5708af
+		//IF TAG START 36_2de33c
 		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'flv'", $replace);
 		if ($ifcondition) {
 			$func = create_function("","return (".$ifcondition.");");
 			if ($func()) {
-				//IF TAG START 37_4fb86d
+				//IF TAG START 37_5e6277
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
@@ -721,8 +719,8 @@ if ($results_mediaresult) {
 						</script>
 						";
 					}
-				}//IF TAG END 37_4fb86d
-				//IF TAG START 38_3314f6
+				}//IF TAG END 37_5e6277
+				//IF TAG START 38_4cd2d7
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars("!".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
@@ -733,15 +731,15 @@ if ($results_mediaresult) {
 						</script>
 						";
 					}
-				}//IF TAG END 38_3314f6
+				}//IF TAG END 38_4cd2d7
 				$content .="
 				<div id=\"media-".$object[2]->getValue('id','')."\" class=\"pmedias-video\" style=\"width:320px;height:200px;\">
 				<p><a href=\"http://www.adobe.com/go/getflashplayer\"><img src=\"http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif\" alt=\"Get Adobe Flash player\" /></a></p>
 				</div>
 				";
 			}
-		}//IF TAG END 36_290225
-		//IF TAG START 39_9a0660
+		}//IF TAG END 36_2de33c
+		//IF TAG START 39_4a4a73
 		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'mp3'", $replace);
 		if ($ifcondition) {
 			$func = create_function("","return (".$ifcondition.");");
@@ -754,7 +752,7 @@ if ($results_mediaresult) {
 				<p><a href=\"http://www.adobe.com/go/getflashplayer\"><img src=\"http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif\" alt=\"Get Adobe Flash player\" /></a></p>
 				</div>
 				";
-				//IF TAG START 40_7f62b1
+				//IF TAG START 40_de3594
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
@@ -773,10 +771,10 @@ if ($results_mediaresult) {
 						</div>
 						";
 					}
-				}//IF TAG END 40_7f62b1
+				}//IF TAG END 40_de3594
 			}
-		}//IF TAG END 39_9a0660
-		//IF TAG START 41_73f176
+		}//IF TAG END 39_4a4a73
+		//IF TAG START 41_a59960
 		$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'jpg' || ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'gif' || ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'png'", $replace);
 		if ($ifcondition) {
 			$func = create_function("","return (".$ifcondition.");");
@@ -788,17 +786,17 @@ if ($results_mediaresult) {
 				<div class=\"shadowBL\">
 				<div class=\"shadowBR\">
 				";
-				//IF TAG START 42_d5fd7c
+				//IF TAG START 42_9f27e7
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
 					if ($func()) {
 						$content .="
-						<a href=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" onclick=\"javascript:CMS_openPopUpImage('/imagezoom.php?location=public&module=pmedia&file=".$object[2]->objectValues(9)->getValue('filename','')."&label=".$object[2]->getValue('label','js')."');return false;\" target=\"_blank\" title=\"Voir l'image '".$object[2]->getValue('label','')."' (".$object[2]->objectValues(9)->getValue('fileExtension','')." - ".$object[2]->objectValues(9)->getValue('fileSize','')."Mo)\"><img src=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('thumbnail','')."\" alt=\"".$object[2]->getValue('label','')."\" title=\"".$object[2]->getValue('label','')."\" /></a>
+						<a href=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" onclick=\"javascript:CMS_openPopUpImage('/imagezoom.php?location=public&amp;module=pmedia&amp;file=".$object[2]->objectValues(9)->getValue('filename','')."&amp;label=".$object[2]->getValue('label','js')."');return false;\" target=\"_blank\" title=\"Voir l'image '".$object[2]->getValue('label','')."' (".$object[2]->objectValues(9)->getValue('fileExtension','')." - ".$object[2]->objectValues(9)->getValue('fileSize','')."Mo)\"><img src=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('thumbnail','')."\" alt=\"".$object[2]->getValue('label','')."\" title=\"".$object[2]->getValue('label','')."\" /></a>
 						";
 					}
-				}//IF TAG END 42_d5fd7c
-				//IF TAG START 43_49eae2
+				}//IF TAG END 42_9f27e7
+				//IF TAG START 43_28144a
 				$ifcondition = CMS_polymod_definition_parsing::replaceVars("!".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 				if ($ifcondition) {
 					$func = create_function("","return (".$ifcondition.");");
@@ -807,7 +805,7 @@ if ($results_mediaresult) {
 						<img src=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" alt=\"".$object[2]->getValue('label','')."\" title=\"".$object[2]->getValue('label','')."\" style=\"max-width:200px;\" />
 						";
 					}
-				}//IF TAG END 43_49eae2
+				}//IF TAG END 43_28144a
 				$content .="
 				</div>
 				</div>
@@ -816,22 +814,22 @@ if ($results_mediaresult) {
 				</div>
 				";
 			}
-		}//IF TAG END 41_73f176
-		$count_32_1a1470++;
+		}//IF TAG END 41_a59960
+		$count_32_ec33f8++;
 		//do all result vars replacement
-		$content_32_1a1470.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
+		$content_32_ec33f8.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
 	}
-	$content = $content_32_1a1470; //retrieve previous content var if any
-	$replace = $replace_32_1a1470; //retrieve previous replace vars if any
-	$object[$objectDefinition_mediaresult] = $object_32_1a1470; //retrieve previous object search if any
+	$content = $content_32_ec33f8; //retrieve previous content var if any
+	$replace = $replace_32_ec33f8; //retrieve previous replace vars if any
+	$object[$objectDefinition_mediaresult] = $object_32_ec33f8; //retrieve previous object search if any
 }
-//RESULT mediaresult TAG END 32_1a1470
+//RESULT mediaresult TAG END 32_ec33f8
 //destroy search and results mediaresult objects
 unset($search_mediaresult);
 unset($results_mediaresult);
-//SEARCH mediaresult TAG END 30_d4539f
+//SEARCH mediaresult TAG END 30_c05c94
 echo CMS_polymod_definition_parsing::replaceVars($content, $replace);
-  ?>
+   ?>
 	</div>
 	
 		<div class="text"><p>Enfin, si vous cherchez comment modifier tel contenu ou &eacute;l&eacute;ment g&eacute;r&eacute; par Automne 4et que vous ne savez pas comment l'atteindre dans l'interface d'administration, <strong>un puissant moteur de recherche</strong> <strong>vous permet de rechercher sur l'ensemble des contenus et des &eacute;l&eacute;ments, </strong>quel que soit leurs type : Contenu des pages, contenu des modules, utilisateurs, mod&egrave;les de pages et de rang&eacute;es, etc.</p> <h3>Les r&eacute;sultats fournis par ce moteur s'adapteront m&ecirc;me au niveau de droit de l'utilisateur pour ne lui proposer que les &eacute;l&eacute;ments sur lesquels il peut agir.</h3></div>
@@ -853,6 +851,6 @@ echo CMS_polymod_definition_parsing::replaceVars($content, $replace);
 				<div class="spacer"></div>
 			</div>
 		</div>
-	<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat();}  ?>
+	<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat();}   ?>
 </body>
 </html>

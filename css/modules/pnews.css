@@ -1,4 +1,4 @@
-/* $Id: pnews.css,v 1.3 2009/04/02 14:28:16 sebastien Exp $ */
+/* $Id: pnews.css,v 1.4 2009/10/23 10:19:59 sebastien Exp $ */
 /* Styles used by news module */
 /*
 /* news */
@@ -145,6 +145,6 @@
 	position:			relative;
 	top:				-3px;
 }
-.blocLien, .blocLien:hover{
+a.blocLien, a.blocLien:hover, a.blocLien:visited, a.blocLien:active, a.blocLien:link{
 	color:				#FFFFFF;
 }

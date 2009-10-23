@@ -1,4 +1,4 @@
-<?php //Generated on Tue, 23 Jun 2009 18:05:02 +0200 by Automne (TM) 4.0.0rc1
+<?php //Generated on Fri, 23 Oct 2009 12:22:15 +0200 by Automne (TM) 4.0.0rc3
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
 	header('Location: http://127.0.0.1/web/fr/9-contact.php');
@@ -13,9 +13,8 @@ $mod_cms_forms["type"] = 'header';
 $mod_cms_forms["usedforms"] = array (
   0 => '2',
 );
-
-
-/* vim: set expandtab tabstop=4 shiftwidth=4: */
+ ?>
+<?php /* vim: set expandtab tabstop=4 shiftwidth=4: */
 // +----------------------------------------------------------------------+
 // | Automne (TM)                                                         |
 // +----------------------------------------------------------------------+
@@ -30,10 +29,10 @@ $mod_cms_forms["usedforms"] = array (
 // | is available at through the world-wide-web at                        |
 // | http://www.php.net/license/3_0.txt.                                  |
 // +----------------------------------------------------------------------+
-// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// | Author: SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 9.php,v 1.7 2009/06/23 16:00:41 sebastien Exp $
+// $Id: 9.php,v 1.8 2009/10/23 10:20:26 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -42,7 +41,7 @@ $mod_cms_forms["usedforms"] = array (
   *
   * @package CMS
   * @subpackage module
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 //Requirements
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
@@ -225,7 +224,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 											break;
 											case 'select':
 												//if value is not in possible values then it is maformed
-												if (!in_array(html_entity_decode($_POST[$aField->getAttribute('name')]), array_keys($aField->getAttribute('options')))) {
+												if (!in_array(io::decodeEntities($_POST[$aField->getAttribute('name')]), array_keys($aField->getAttribute('options')))) {
 													$cms_forms_malformed[$form->getID()][] = $aField->getAttribute('name');
 												}
 											break;
@@ -379,7 +378,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 								
 								//and send emails
 								if ($action->getInteger('type') == CMS_forms_action::ACTION_EMAIL) {
-									$emailAddresses = array_map('trim',explode(';',html_entity_decode($action->getString("value"))));
+									$emailAddresses = array_map('trim',explode(';',io::decodeEntities($action->getString("value"))));
 									foreach ($emailAddresses as $emailAddress) {
 										$emailAddress = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($emailAddress)).'";');
 										if (sensitiveIO::isValidEmail($emailAddress)) {
@@ -407,7 +406,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 									$permanent = $_POST[$fields[$values[2]]->getAttribute('name')];
 								}
 								if ($login && $password) {
-									// Vérification données obligatoires
+									// VÃ©rification donnÃ©es obligatoires
 									if (trim($login) != '' && trim($password) != '') {
 										$cms_context = new CMS_context(trim($login), trim($password), $permanent);
 										if (!$cms_context->hasError()) {
@@ -503,12 +502,13 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 		}
 	}
 }
- ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";  ?>
+ ?>
+<?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";   ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-		<title>Automne 4 : Contact</title>
-		<?php echo CMS_view::getCSS(array('/css/common.css','/css/interieur.css'), 'screen');  ?>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Automne-DÃ©mo-UTF8 : Contact</title>
+		<?php echo CMS_view::getCSS(array('/css/common.css','/css/interieur.css','/css/modules/cms_forms.css'), 'all');  ?>
 
 		<!--[if lte IE 6]> 
 		<link rel="stylesheet" type="text/css" href="/css/ie6.css" media="screen" />
@@ -520,9 +520,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 	<meta name="generator" content="Automne (TM)" />
 	<meta name="identifier-url" content="http://127.0.0.1" />
 
-	<!-- load the style of cms_forms module for media all -->
-	<link rel="stylesheet" type="text/css" href="/css/modules/cms_forms.css" media="all" />
-
+		
 	</head>
 	<body>
 		<div id="main">
@@ -531,14 +529,14 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 					
 								
 
-<a id="lienAccueil" href="http://127.0.0.1/web/fr/2-accueil.php" title="Retour à l'accueil">Retour à l'accueil</a>
+<a id="lienAccueil" href="http://127.0.0.1/web/fr/2-accueil.php" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
 
 
 							
 				</div>
 				<div id="backgroundBottomContainer">
 					<div id="menuLeft">
-						<ul class="CMS_lvl1"><li class="CMS_lvl1 CMS_open "><a class="CMS_lvl1" href="http://127.0.0.1/web/fr/2-accueil.php">Accueil</a><ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/24-documentation.php">Fonctionnalités</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/31-exemples-de-modules.php">Exemples de modules</a></li></ul></li></ul>
+						<ul class="CMS_lvl1"><li class="CMS_lvl1 CMS_open "><a class="CMS_lvl1" href="http://127.0.0.1/web/fr/2-accueil.php">Accueil</a><ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/3-presentation.php">PrÃ©sentation</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/24-documentation.php">FonctionnalitÃ©s</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/31-exemples-de-modules.php">Exemples de modules</a></li></ul></li></ul>
 					</div>
 					<div id="content" class="page9">
 						<div id="breadcrumbs">
@@ -560,9 +558,8 @@ $mod_cms_forms["module"] = 'cms_forms';
 $mod_cms_forms["id"] = 'cms_forms';
 $mod_cms_forms["type"] = 'formular';
 $mod_cms_forms["formID"] = '2';
-
-
-/* vim: set expandtab tabstop=4 shiftwidth=4: */
+   ?>
+<?php /* vim: set expandtab tabstop=4 shiftwidth=4: */
 // +----------------------------------------------------------------------+
 // | Automne (TM)                                                         |
 // +----------------------------------------------------------------------+
@@ -577,10 +574,10 @@ $mod_cms_forms["formID"] = '2';
 // | is available at through the world-wide-web at                        |
 // | http://www.php.net/license/3_0.txt.                                  |
 // +----------------------------------------------------------------------+
-// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// | Author: SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 9.php,v 1.7 2009/06/23 16:00:41 sebastien Exp $
+// $Id: 9.php,v 1.8 2009/10/23 10:20:26 sebastien Exp $
 
 /**
   * Template CMS_forms_formular
@@ -589,7 +586,7 @@ $mod_cms_forms["formID"] = '2';
   *
   * @package CMS
   * @subpackage module
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
 //Requirements
@@ -641,7 +638,7 @@ if ($form->getID() && $form->isPublic()) {
 		echo '<div class="cms_forms_msg">'.$cms_forms_msg[$form->getID()].'</div>';
 	}
 }
-  ?>
+   ?>
 </div>
 
 						<a href="#header" id="top" title="haut de la page">Haut</a>
@@ -659,6 +656,6 @@ if ($form->getID() && $form->isPublic()) {
 				<div class="spacer"></div>
 			</div>
 		</div>
-	<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat();}  ?>
+	<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat();}   ?>
 </body>
 </html>
