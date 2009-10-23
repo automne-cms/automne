@@ -17,7 +17,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: mod_cms_forms_header.php,v 1.9 2009/06/23 14:10:44 sebastien Exp $
+// $Id: mod_cms_forms_header.php,v 1.10 2009/10/23 07:11:00 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -209,7 +209,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 											break;
 											case 'select':
 												//if value is not in possible values then it is maformed
-												if (!in_array(html_entity_decode($_POST[$aField->getAttribute('name')]), array_keys($aField->getAttribute('options')))) {
+												if (!in_array(io::decodeEntities($_POST[$aField->getAttribute('name')]), array_keys($aField->getAttribute('options')))) {
 													$cms_forms_malformed[$form->getID()][] = $aField->getAttribute('name');
 												}
 											break;
@@ -363,7 +363,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 								
 								//and send emails
 								if ($action->getInteger('type') == CMS_forms_action::ACTION_EMAIL) {
-									$emailAddresses = array_map('trim',explode(';',html_entity_decode($action->getString("value"))));
+									$emailAddresses = array_map('trim',explode(';',io::decodeEntities($action->getString("value"))));
 									foreach ($emailAddresses as $emailAddress) {
 										$emailAddress = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($emailAddress)).'";');
 										if (sensitiveIO::isValidEmail($emailAddress)) {

@@ -27,6 +27,9 @@ Pour mettre à jour fckeditor :
 		return ( sBrowserVersion >= 5.5 ) ;
 	}
 	//!>>
+12- Dans le fichier editor/fckeditor.html, identifier la ligne comportant la variable JS FCK_InternalCSS.
+	Dans cette variable JS, ajouter à toutes les règles CSS appliquées sur a[name] le flag !important
+	Cela permet de remettre en place l'icône "ancre" sur les ancres dans l'édition des pages.
 -- Optionnel --
 
 1- Supprimer les langues inutiles (dans editor/lang/) pour alléger l'archive

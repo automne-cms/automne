@@ -5,13 +5,13 @@
 				var pageURL = '{page:self:url}';
 			</script>
 			<form action="{page:self:url}" method="get">
-				<h2>Rechercher des documents et médias : </h2>
+				<h2>Rechercher des documents et m&eacute;dias : </h2>
 				<div class="mediaForm">
 					<div class="formKeywords">
-						<label for="keyword">Mots Clés : </label><br /><input type="text" id="keyword" name="keyword" value="{request:string:keyword}" /><br />
+						<label for="keyword">Mots Cl&eacute;s : </label><br /><input type="text" id="keyword" name="keyword" value="{request:string:keyword}" /><br />
 					</div>
 					<div class="formCat">
-						<label for="cat">Catégorie : </label><br />
+						<label for="cat">Cat&eacute;gorie : </label><br />
 						<select id="cat" name="cat">
 							<option value=""> </option>
 							<atm-function function="selectOptions" object="{['object2']['fields'][8]}" selected="{request:int:cat}"></atm-function>
@@ -34,15 +34,15 @@
 					<atm-search-order search="mediaresult" type="objectID" direction="desc" />
 					<atm-result search="mediaresult">
 						<atm-if what="{firstresult} &amp;&amp; !{request:int:item}">
-							<div id="maxResults">{maxresults} résultat(s) pour votre recherche.</div>
+							<div id="maxResults">{maxresults} r&eacute;sultat(s) pour votre recherche.</div>
 						</atm-if>
 						<div class="mediaTop">
 							<div class="mediaBottom">
-								<h2 title="Afficher - Masquer le média">{['object2']['label']}&amp;nbsp;&amp;nbsp;<span class="date">{['object2']['formatedDateStart']|d/m/Y}</span></h2><atm-if what="{['object2']['fields'][9]['fileIcon']}"><span class="picto"><a href="{page:self:url}?cat={['object2']['fields'][8]['id']}" rel="search" alt="Chercher dans la catégorie {['object2']['fields'][8]['label']}" title="Chercher dans la catégorie {['object2']['fields'][8]['label']}"><img src="{['object2']['fields'][9]['fileIcon']}" alt="Fichier {['object2']['fields'][9]['fileExtension']} - Cliquez pour chercher dans la catégorie {['object2']['fields'][8]['label']}" title="Fichier {['object2']['fields'][9]['fileExtension']} - Cliquez pour chercher dans la catégorie {['object2']['fields'][8]['label']}" /></a></span></atm-if><div class="spacer"></div>
+								<h2 title="Afficher - Masquer le m&eacute;dia">{['object2']['label']}&amp;nbsp;&amp;nbsp;<span class="date">{['object2']['formatedDateStart']|d/m/Y}</span></h2><atm-if what="{['object2']['fields'][9]['fileIcon']}"><span class="picto"><a href="{page:self:url}?cat={['object2']['fields'][8]['id']}" rel="search" alt="Chercher dans la cat&eacute;gorie {['object2']['fields'][8]['label']}" title="Chercher dans la cat&eacute;gorie {['object2']['fields'][8]['label']}"><img src="{['object2']['fields'][9]['fileIcon']}" alt="Fichier {['object2']['fields'][9]['fileExtension']} - Cliquez pour chercher dans la cat&eacute;gorie {['object2']['fields'][8]['label']}" title="Fichier {['object2']['fields'][9]['fileExtension']} - Cliquez pour chercher dans la cat&eacute;gorie {['object2']['fields'][8]['label']}" /></a></span></atm-if><div class="spacer"></div>
 								<div class="mediaContent">
 									<div class="mediafile">
 										<atm-if what="{['object2']['fields'][9]['fileExtension']} != 'flv' &amp;&amp; {['object2']['fields'][9]['fileExtension']} != 'mp3' &amp;&amp; {['object2']['fields'][9]['fileExtension']} != 'jpg' &amp;&amp; {['object2']['fields'][9]['fileExtension']} != 'gif' &amp;&amp; {['object2']['fields'][9]['fileExtension']} != 'png'">
-											<a href="{['object2']['fields'][9]['filePath']}/{['object2']['fields'][9]['filename']}" target="_blank" title="Télécharger le document '{['object2']['fields'][9]['fileLabel']}' ({['object2']['fields'][9]['fileExtension']} - {['object2']['fields'][9]['fileSize']}Mo)"><atm-if what="{['object2']['fields'][9]['fileIcon']}"><img src="{['object2']['fields'][9]['fileIcon']}" alt="Fichier {['object2']['fields'][9]['fileExtension']}" title="Fichier {['object2']['fields'][9]['fileExtension']}" /></atm-if> {['object2']['label']}</a>
+											<a href="{['object2']['fields'][9]['filePath']}/{['object2']['fields'][9]['filename']}" target="_blank" title="T&eacute;l&eacute;charger le document '{['object2']['fields'][9]['fileLabel']}' ({['object2']['fields'][9]['fileExtension']} - {['object2']['fields'][9]['fileSize']}Mo)"><atm-if what="{['object2']['fields'][9]['fileIcon']}"><img src="{['object2']['fields'][9]['fileIcon']}" alt="Fichier {['object2']['fields'][9]['fileExtension']}" title="Fichier {['object2']['fields'][9]['fileExtension']}" /></atm-if> {['object2']['label']}</a>
 											<atm-if what="{['object2']['fields'][9]['thumbnail']}">
 												<div class="imgLeft shadowR">
 													<div class="shadowB">
@@ -113,9 +113,10 @@
 										</atm-if>
 									</div>
 									<div class="mediadesc">
-										Catégorie : <a href="{page:self:url}?cat={['object2']['fields'][8]['id']}" rel="search" alt="Chercher dans la catégorie {['object2']['fields'][8]['label']}" title="Chercher dans la catégorie {['object2']['fields'][8]['label']}"><strong>{['object2']['fields'][8]['label']}</strong></a><br />
+										{['object2']['fields'][9]['filePath']}
+										Cat&eacute;gorie : <a href="{page:self:url}?cat={['object2']['fields'][8]['id']}" rel="search" alt="Chercher dans la cat&eacute;gorie {['object2']['fields'][8]['label']}" title="Chercher dans la cat&eacute;gorie {['object2']['fields'][8]['label']}"><strong>{['object2']['fields'][8]['label']}</strong></a><br />
 										Taille : <strong>{['object2']['fields'][9]['fileSize']}Mo</strong><br />
-										Télécharger : <a href="{['object2']['fields'][9]['filePath']}/{['object2']['fields'][9]['filename']}" target="_blank" title="Télécharger le document '{['object2']['fields'][9]['fileLabel']}' ({['object2']['fields'][9]['fileExtension']} - {['object2']['fields'][9]['fileSize']}Mo)"><strong>{['object2']['label']}</strong></a><br />
+										T&eacute;l&eacute;charger : <a href="{['object2']['fields'][9]['filePath']}/{['object2']['fields'][9]['filename']}" target="_blank" title="T&eacute;l&eacute;charger le document '{['object2']['fields'][9]['fileLabel']}' ({['object2']['fields'][9]['fileExtension']} - {['object2']['fields'][9]['fileSize']}Mo)"><strong>{['object2']['label']}</strong></a><br />
 										<atm-if what="{['object2']['fields'][7]['value']}">
 											{['object2']['fields'][7]['value']}
 										</atm-if>
@@ -129,13 +130,13 @@
 								<atm-function function="pages" maxpages="{maxpages}" currentpage="{currentpage}" displayedpage="5">
 									<pages><a href="{page:self:url}?cat={request:int:cat}&amp;keyword={request:string:keyword}&amp;page={n}">{n}</a> </pages>
 									<currentpage><strong>{n}</strong> </currentpage>
-									<previous><a href="{page:self:url}?cat={request:int:cat}&amp;keyword={request:string:keyword}&amp;page={n}"><img src="/img/interieur/newsPrevious.gif" alt="Page précédente" title="Page précédente" /></a> </previous>
+									<previous><a href="{page:self:url}?cat={request:int:cat}&amp;keyword={request:string:keyword}&amp;page={n}"><img src="/img/interieur/newsPrevious.gif" alt="Page pr&eacute;c&eacute;dente" title="Page pr&eacute;c&eacute;dente" /></a> </previous>
 									<next><a href="{page:self:url}?cat={request:int:cat}&amp;keyword={request:string:keyword}&amp;page={n}"><img src="/img/interieur/newsNext.gif" alt="Page suivante" title="Page suivante" /></a> </next>
 								</atm-function> 
 							</div>
 						</atm-if>
 					</atm-result>
-					<atm-noresult search="mediaresult">Aucun résultat trouvé pour votre recherche ...</atm-noresult>
+					<atm-noresult search="mediaresult">Aucun r&eacute;sultat trouv&eacute; pour votre recherche ...</atm-noresult>
 				</atm-search>
 			</atm-xml>
 		</div>

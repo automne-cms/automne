@@ -2,6 +2,7 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 <head>
+	<?php echo '<meta http-equiv="Content-Type" content="text/html; charset='.strtoupper(APPLICATION_DEFAULT_ENCODING).'" />'; ?>
 	<atm-meta-tags />
 	<style type="text/css">
 		body{
@@ -39,7 +40,7 @@
 <body>
 <!-- empty template, only used for pages with redirection -->
 <div id="atm-center">
-	<div class="atm-alert">Cette page utilise le modèle "Splash" qui ne comporte aucun contenu.<hr />This page use template "Splash" which does not have any content.</div>
+	<div class="atm-alert">Cette page utilise le mod&egrave;le "Splash" qui ne comporte aucun contenu.<hr />This page use template "Splash" which does not have any content.</div>
 </div>
 </body>
 </html>

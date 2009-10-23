@@ -1,6 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<?php echo '<meta http-equiv="Content-Type" content="text/html; charset='.strtoupper(APPLICATION_DEFAULT_ENCODING).'" />'; ?>
 	<title><atm-constant name="APPLICATION_LABEL" /> : <atm-title /></title>
 	<link rel="stylesheet" type="text/css" href="/css/print.css" />
 </head>
@@ -23,7 +23,7 @@
 <hr />
 <div align="center">
 	<small>
-		<atm-last-update format="d/m/Y">Dernière mise à jour le {{date}}<br /></atm-last-update>
+		<atm-last-update format="d/m/Y">Derni&egrave;re mise &agrave; jour le {{date}}<br /></atm-last-update>
 		<atm-linx type="direct">
 			<selection>
 				<start><nodespec type="relative" value="self" /></start>
@@ -34,7 +34,7 @@
 				</htmltemplate>
 			</display>
 		</atm-linx><br />
-		Tiré du site http://<?php echo $_SERVER["HTTP_HOST"]; ?>
+		Tir&eacute; du site http://<?php echo $_SERVER["HTTP_HOST"]; ?>
 	</small>
 </div>
 <script language="JavaScript">window.print();</script>

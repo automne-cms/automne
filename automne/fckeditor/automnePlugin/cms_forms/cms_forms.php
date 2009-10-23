@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_forms.php,v 1.2 2009/04/10 15:24:38 sebastien Exp $
+// $Id: cms_forms.php,v 1.3 2009/10/23 07:10:29 sebastien Exp $
 
 /**
   * Javascript plugin for FCKeditor
@@ -281,8 +281,8 @@ switch ($step) {
 			"file" 		=> "<span fckLang=\"DlgCMSFormsFile\">Fichier joint</span>",
 			"textarea" 	=> "<span fckLang=\"DlgCMSFormsTextarea\">Zone de texte</span>",
 			"select" 	=> "<span fckLang=\"DlgCMSFormsSelect\">Selection multiple</span>",
-			"checkbox" 	=> "<span fckLang=\"DlgCMSFormsCheckbox\">Case à cocher</span>",
-			"hidden" 	=> "<span fckLang=\"DlgCMSFormsHidden\">Champ caché</span>",
+			"checkbox" 	=> "<span fckLang=\"DlgCMSFormsCheckbox\">Case &agrave; cocher</span>",
+			"hidden" 	=> "<span fckLang=\"DlgCMSFormsHidden\">Champ cach&eacute;</span>",
 			"submit" 	=> "<span fckLang=\"DlgCMSFormsSubmit\">Bouton valider</span>",
 		);
 		$content = '
@@ -347,7 +347,7 @@ switch ($step) {
 					<table border="0" cellspacing="1" cellpadding="0" width="100%">
 						<tr>
 							<th align="right"><span fckLang="DlgCMSFormsRequire">Requis</span></th>
-							<th width="130"><span fckLang="DlgCMSFormsLabel">Libellé</span></th>
+							<th width="130"><span fckLang="DlgCMSFormsLabel">Libell&eacute;</span></th>
 							<th width="130"><span fckLang="DlgCMSFormsType">Type</span></th>
 							<th width="60"><span fckLang="DlgCMSFormsOptions">Options</span></th>
 							<th width="50"><span fckLang="DlgCMSFormsActions">Actions</span></th>
@@ -362,7 +362,7 @@ switch ($step) {
 				$required = ($aFormField->getAttribute("required")) ? ' checked="checked"':'';
 				$content .= '
 						<td align="right"><input type="checkbox" name="required_'.$aFormField->getID().'" value="1"'.$required.' /></td>
-						<td align="center" width="130"><input type="text" name="label_'.$aFormField->getID().'" value="'.htmlspecialchars(html_entity_decode($aFormField->getAttribute("label"))).'" /><input type="hidden" name="name_'.$aFormField->getID().'" value="'.$aFormField->getAttribute("name").'" /></td>
+						<td align="center" width="130"><input type="text" name="label_'.$aFormField->getID().'" value="'.htmlspecialchars(io::decodeEntities($aFormField->getAttribute("label"))).'" /><input type="hidden" name="name_'.$aFormField->getID().'" value="'.$aFormField->getAttribute("name").'" /></td>
 						<td align="center" width="130">
 							<select name="type_'.$aFormField->getID().'" onchange="viewHideOptionsButton(this,\'options_'.$aFormField->getID().'\');">';
 						foreach ($fieldTypes as $aFieldType => $aFieldTypeLabel) {
@@ -398,7 +398,7 @@ switch ($step) {
 						</td>
 						<td align="center" width="50" align="center">
 							<input type="image" src="'.PATH_ADMIN_IMAGES_WR.'/../v3/img/delete.gif" alt="Effacer" title="Effacer" name="delete_'.$aFormField->getID().'" value="X" onclick="removeField('.$aFormField->getID().');" />
-							<span class="handle"><img src="'.PATH_ADMIN_IMAGES_WR.'/../v3/img/drag.gif" alt="Déplacer" title="Déplacer" border="0" /></span>
+							<span class="handle"><img src="'.PATH_ADMIN_IMAGES_WR.'/../v3/img/drag.gif" alt="D&eacute;placer" title="D&eacute;placer" border="0" /></span>
 						</td>
 					</tr>
 				</table>
@@ -416,7 +416,7 @@ switch ($step) {
 			<table border="0" cellspacing="1" cellpadding="0" width="100%">
 				<tr>
 					<th align="right"><span fckLang="DlgCMSFormsRequire">Requis</span></th>
-					<th width="130"><span fckLang="DlgCMSFormsLabel">Libellé</span></th>
+					<th width="130"><span fckLang="DlgCMSFormsLabel">Libell&eacute;</span></th>
 					<th width="130"><span fckLang="DlgCMSFormsType">Type</span></th>
 					<th width="110"><span fckLang="DlgCMSFormsActions">Actions</span></th>
 				</tr>
@@ -472,7 +472,7 @@ switch ($step) {
 						<input onclick="Delete();" type="button" fckLang="DlgSelectBtnDelete" value="Delete"></TD>
 				</TR>
 				<tr>
-					<td nowrap width="100%" colSpan="4"><span fckLang="DlgCMSFormsDefault">Valeur par défaut :</span>&nbsp;<input id="txtSelValue" type="text"></td>
+					<td nowrap width="100%" colSpan="4"><span fckLang="DlgCMSFormsDefault">Valeur par d&eacute;faut :</span>&nbsp;<input id="txtSelValue" type="text"></td>
 				</tr>
 			</table>
 			<br />
@@ -480,11 +480,11 @@ switch ($step) {
 			'.$cms_language->getMessage(MESSAGE_PAGE_BLOCK_GENRAL_VARS_EXPLANATION,array($cms_language->getDateFormatMask(),$cms_language->getDateFormatMask(),$cms_language->getDateFormatMask()),MOD_POLYMOD_CODENAME).'
 		</div>
 		<div id="divDefault" style="DISPLAY: none">
-			<span fckLang="DlgCMSFormsDefaultAvail">Saisissez la valeur par défaut du champ :</span>
+			<span fckLang="DlgCMSFormsDefaultAvail">Saisissez la valeur par d&eacute;faut du champ :</span>
 			<input id="fieldIDDefaultValue" type="hidden" name="formIDValue" value="" />
 			<table width="100%">
 				<tr>
-					<td nowrap width="100%" colSpan="4"><span fckLang="DlgCMSFormsDefault">Valeur par défaut :</span>&nbsp;<input style="WIDTH: 80%" id="defaultValue" type="text"></td>
+					<td nowrap width="100%" colSpan="4"><span fckLang="DlgCMSFormsDefault">Valeur par d&eacute;faut :</span>&nbsp;<input style="WIDTH: 80%" id="defaultValue" type="text"></td>
 				</tr>
 			</table>
 			<br />

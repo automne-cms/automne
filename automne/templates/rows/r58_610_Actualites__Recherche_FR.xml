@@ -5,13 +5,13 @@
 				var pageURL = '{page:self:url}';
 			</script>
 			<form action="{page:self:url}" method="get">
-				<h2>Rechercher des actualités : </h2>
+				<h2>Rechercher des actualit&eacute;s : </h2>
 				<div class="newsForm">
 					<div class="formKeywords">
-						<label for="keyword">Mots Clés : </label><br /><input type="text" id="keyword" name="keyword" value="{request:string:keyword}" /><br />
+						<label for="keyword">Mots Cl&eacute;s : </label><br /><input type="text" id="keyword" name="keyword" value="{request:string:keyword}" /><br />
 					</div>
 					<div class="formCat">
-						<label for="cat">Catégorie : </label><br />
+						<label for="cat">Cat&eacute;gorie : </label><br />
 						<select id="cat" name="cat">
 							<option value=""> </option>
 							<atm-function function="selectOptions" object="{['object1']['fields'][5]}" selected="{request:int:cat}"></atm-function>
@@ -34,7 +34,7 @@
 					<atm-search-order search="newsresult" type="objectID" direction="desc" />
 					<atm-result search="newsresult">
 						<atm-if what="{firstresult} &amp;&amp; !{request:int:item}">
-							<div id="maxResults">{maxresults} résultat(s) pour votre recherche.</div>
+							<div id="maxResults">{maxresults} r&eacute;sultat(s) pour votre recherche.</div>
 						</atm-if>
 						<div class="newsTitle">
 							<h2><a href="{page:self:url}?item={['object1']['id']}" title="{['object1']['label']}">{['object1']['label']}</a></h2><span>{['object1']['formatedDateStart']|d/m/Y}</span><div class="spacer"></div>
@@ -72,13 +72,13 @@
 								<atm-function function="pages" maxpages="{maxpages}" currentpage="{currentpage}" displayedpage="5">
 									<pages><a href="{page:self:url}?cat={request:int:cat}&amp;keyword={request:string:keyword}&amp;page={n}">{n}</a> </pages>
 									<currentpage><strong>{n}</strong> </currentpage>
-									<previous><a href="{page:self:url}?cat={request:int:cat}&amp;keyword={request:string:keyword}&amp;page={n}"><img src="/img/interieur/newsPrevious.gif" alt="page précédente" title="page précédente" /></a> </previous>
+									<previous><a href="{page:self:url}?cat={request:int:cat}&amp;keyword={request:string:keyword}&amp;page={n}"><img src="/img/interieur/newsPrevious.gif" alt="page pr&eacute;c&eacute;dente" title="page pr&eacute;c&eacute;dente" /></a> </previous>
 									<next><a href="{page:self:url}?cat={request:int:cat}&amp;keyword={request:string:keyword}&amp;page={n}"><img src="/img/interieur/newsNext.gif" alt="page suivante" title="page suivante" /></a> </next>
 								</atm-function> 
 							</div>
 						</atm-if>
 					</atm-result>
-					<atm-noresult search="newsresult">Aucun résultat trouvé pour votre recherche ...</atm-noresult>
+					<atm-noresult search="newsresult">Aucun r&eacute;sultat trouv&eacute; pour votre recherche ...</atm-noresult>
 				</atm-search>
 			</atm-xml>
 		</div>

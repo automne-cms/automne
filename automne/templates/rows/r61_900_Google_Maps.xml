@@ -27,7 +27,7 @@ END;
 						$msg = 'Please enter in this block an address to display.';
 					break;
 					default:
-						$msg = 'Saisissez dans ce bloc une adresse à afficher.';
+						$msg = 'Saisissez dans ce bloc une adresse &agrave; afficher.';
 					break;
 				}
 			} else {
@@ -78,10 +78,10 @@ END;
 				default:
 					echo "
 					<p>
-						Pour utiliser le service Google Maps vous devez récupérer une clé Google valide sur <a href='http://code.google.com/apis/maps/signup.html'>ce site</a>.
-						<br/>Ensuite, écrivez la ligne ci-dessous dans le fichier config.php (situé à la racine de votre site) :
+						Pour utiliser le service Google Maps vous devez r&eacute;cup&eacute;rer une cl&eacute; Google valide sur <a href='http://code.google.com/apis/maps/signup.html'>ce site</a>.
+						<br/>Ensuite, &eacute;crivez la ligne ci-dessous dans le fichier config.php (situ&eacute; &agrave; la racine de votre site) :
 						<pre>define(\"GOOGLE_MAPS_KEY\", \"INSERT_GOOGLE_KEY_HERE\");</pre>
-						Insérez votre clé entre les apostrophes.
+						Ins&eacute;rez votre cl&eacute; entre les apostrophes.
 					</p>";
 				break;
 			}

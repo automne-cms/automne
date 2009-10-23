@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: polymod.php,v 1.2 2009/06/22 14:14:44 sebastien Exp $
+// $Id: polymod.php,v 1.3 2009/10/23 07:10:30 sebastien Exp $
 
 /**
   * Javascript plugin for FCKeditor
@@ -63,7 +63,7 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 		</script>
 		<?php
 			echo CMS_view::getCSS(array('ext','main'));
-			echo CMS_view::getJavascript(array('ext','main'));
+			echo CMS_view::getJavascript(array('ext','main','initconfig'));
 		?>
 		<script type="text/javascript">
 			if (parent.parent) {
