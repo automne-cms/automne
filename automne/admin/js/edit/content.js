@@ -6,7 +6,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: content.js,v 1.2 2009/04/10 15:26:09 sebastien Exp $
+  * $Id: content.js,v 1.3 2009/10/28 16:26:28 sebastien Exp $
   */
 
 //copy some parent vars
@@ -19,13 +19,6 @@ if (parent) {
 	Automne.message = parent.Automne.message;
 	Ext.MessageBox = parent.Ext.MessageBox;
 }
-/*if (parent) {
-	pr = parent.pr;
-	Automne.locales = parent.Automne.locales;
-	Automne.message = parent.Automne.message;
-	Ext.MessageBox = parent.Ext.MessageBox;
-}*/
-
 //////////////////////////
 // PAGE CONTENT METHODS //
 //////////////////////////

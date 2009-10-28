@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: automneLink.php,v 1.3 2009/10/23 07:10:29 sebastien Exp $
+// $Id: automneLink.php,v 1.4 2009/10/28 16:27:52 sebastien Exp $
 
 /**
   * Javascript plugin for FCKeditor
@@ -26,8 +26,6 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-//for this page, HTML output compression is not welcome.
-//define("ENABLE_HTML_COMPRESSION", false);
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 
 define("MESSAGE_PAGE_TITLE", 932);
@@ -43,8 +41,20 @@ define("MESSAGE_PAGE_TREE_TITLE", 935);
 		<script src="fck_link.js" type="text/javascript"></script>
 		<?php
 			echo CMS_view::getCSS(array('ext','main'));
-			echo CMS_view::getJavascript(array('ext','main','initconfig'));
+			echo CMS_view::getJavascript(array('ext','main', 'initConfig'));
 		?>
+		<script type="text/javascript">
+			if (parent.parent) {
+				//Declare Automne namespace
+				Ext.namespace('Automne');
+				pr = parent.parent.pr;
+				Automne.locales = parent.parent.Automne.locales;
+				Automne.message = parent.parent.Automne.message;
+				Ext.MessageBox = parent.parent.Ext.MessageBox;
+				Automne.server = parent.parent.Automne.server;
+				Ext.Ajax = parent.parent.Ext.Ajax;
+			}
+		</script>
 		<script type="text/javascript">
 			var displayTree = function(currentPage) {
 				if (!currentPage) {

@@ -1,10 +1,10 @@
 <?php header('HTTP/1.x 302 Found',true,302);
-header("Location: http://127.0.0.1/web/fr/9-contact.php");
+header("Location: http://127.0.0.1/web/demo/9-contact.php");
 exit;
- ?><?php //Generated on Fri, 23 Oct 2009 12:21:57 +0200 by Automne (TM) 4.0.0rc3
+ ?><?php //Generated on Wed, 28 Oct 2009 17:10:23 +0100 by Automne (TM) 4.0.0rc3
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: http://127.0.0.1/web/fr/print-36-formulaire.php');
+	header('Location: http://127.0.0.1/web/demo/print-36-formulaire.php');
 	exit;
 }
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
@@ -12,7 +12,7 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 <head>
 	<?php echo '<meta http-equiv="Content-Type" content="text/html; charset='.strtoupper(APPLICATION_DEFAULT_ENCODING).'" />';    ?>
-	<title>Automne-Démo-UTF8 : Formulaire</title>
+	<title>Automne 4 : Formulaire</title>
 	<link rel="stylesheet" type="text/css" href="/css/print.css" />
 </head>
 <body>
@@ -44,7 +44,7 @@ Formulaire
 	<small>
 		
 		
-				Page  "Formulaire" (http://127.0.0.1/web/fr/36-formulaire.php)
+				Page  "Formulaire" (http://127.0.0.1/web/demo/36-formulaire.php)
 				<br />
 		Tir&eacute; du site http://<?php echo $_SERVER["HTTP_HOST"];    ?>
 	</small>

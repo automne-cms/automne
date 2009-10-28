@@ -93,8 +93,7 @@
 			<value type="data">3</value>
 		</condition>
 	</selection>
-	<display>
-		<mode>close</mode>
+	<display mode="close">
 		<htmltemplate><li class="{{lvlClass}} {{typeClass}}"><a id="{{currentID}}" href="{{href}}">{{title}}</a>{{sublevel}}</li></htmltemplate>
 		<subleveltemplate><ul class="{{lvlClass}}">{{sublevel}}</ul></subleveltemplate>
 	</display>

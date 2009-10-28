@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_search.php,v 1.8 2009/10/22 16:30:03 sebastien Exp $
+// $Id: object_search.php,v 1.9 2009/10/28 16:26:59 sebastien Exp $
 
 /**
   * Class CMS_object_search
@@ -255,6 +255,7 @@ class CMS_object_search extends CMS_grandFather
 		} elseif(is_array($value)) {
 			$value = array_map(array('sensitiveIO', 'sanitizeSQLString'), $value);
 		}
+		$operator = $operator ? io::decodeEntities($operator) : false;
 		$statusSuffix = ($this->_public) ? "_public":"_edited";
 		switch($type) {
 		case "object":
@@ -489,14 +490,25 @@ class CMS_object_search extends CMS_grandFather
 				case "item":
 					//add previously founded IDs to where clause
 					$where = ($IDs) ? ' and objectID in ('.implode(',',$IDs).')':'';
-					
+					//check operator
+					$supportedOperator = array(
+						'=',
+						'!=',
+					);
+					if ($operator && !in_array($operator, $supportedOperator)) {
+						$this->raiseError("Unknown search operator : ".$operator.", use default search instead");
+						$operator = false;
+					}
+					if (!$operator) {
+						$operator = '=';
+					}
 					$sql = "
 					select
 						distinct objectID
 					from
 						mod_subobject_text".$statusSuffix."
 					where
-						objectID = '".$value."'
+						objectID ".$operator." '".$value."'
 						$where
 					union distinct
 					select
@@ -504,7 +516,7 @@ class CMS_object_search extends CMS_grandFather
 					from
 						mod_subobject_integer".$statusSuffix."
 					where
-						objectID = '".$value."'
+						objectID ".$operator." '".$value."'
 						$where
 					union distinct
 					select
@@ -512,7 +524,7 @@ class CMS_object_search extends CMS_grandFather
 					from
 						mod_subobject_string".$statusSuffix."
 					where
-						objectID = '".$value."'
+						objectID ".$operator." '".$value."'
 						$where
 					union distinct
 					select
@@ -520,7 +532,7 @@ class CMS_object_search extends CMS_grandFather
 					from
 						mod_subobject_date".$statusSuffix."
 					where
-						objectID = '".$value."'
+						objectID ".$operator." '".$value."'
 						$where
 					";
 					break;

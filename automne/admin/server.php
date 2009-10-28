@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: server.php,v 1.7 2009/10/22 16:26:26 sebastien Exp $
+// $Id: server.php,v 1.8 2009/10/28 16:26:00 sebastien Exp $
 
 /**
   * PHP page : Load server detail window.
@@ -170,17 +170,28 @@ if (io::strtolower(io::substr(PHP_OS, 0, 3)) === 'win') {
 		return $return;
 	}
 	$error = '';
-	$return = executeCommand('which php 2>&1',$error);
-	if ($error && $return !== false) {
-		$content .= '<li class="atm-pic-cancel">Error when finding php CLI with command "which php" : '.$error."\n";
+	if (!defined('PATH_PHP_CLI_UNIX') || !PATH_PHP_CLI_UNIX) {
+		$return = executeCommand('which php 2>&1',$error);
+		if ($error && $return !== false) {
+			$content .= '<li class="atm-pic-cancel">Error when finding php CLI with command "which php" : '.$error."\n";
+		}
+		if ($return === false) {
+			$content .= '<li class="atm-pic-cancel">Error, passthru() and exec() commands not available</li>';
+		} elseif (io::substr($return,0,1) != '/') {
+			$content .= '<li class="atm-pic-cancel">Error when finding php CLI with command "which php"</li>';
+		}
+		//test CLI version
+		$return = executeCommand('php -v',$error);
+	} else {
+		//test CLI version
+		$return = executeCommand(PATH_PHP_CLI_UNIX.' -v',$error);
+		if ($error && $return !== false) {
+			$content .= '<li class="atm-pic-cancel">Error when testing php CLI with command "'.PATH_PHP_CLI_UNIX.' -v" : '.$error."\n";
+		}
+		if ($return === false) {
+			$content .= '<li class="atm-pic-cancel">Error, passthru() and exec() commands not available</li>';
+		}
 	}
-	if ($return === false) {
-		$content .= '<li class="atm-pic-cancel">Error, passthru() and exec() commands not available</li>';
-	} elseif (io::substr($return,0,1) != '/') {
-		$content .= '<li class="atm-pic-cancel">Error when finding php CLI with command "which php"</li>';
-	}
-	//test CLI version
-	$return = executeCommand('php -v',$error);
 	if (io::strpos(io::strtolower($return), '(cli)') === false) {
 		$content .= '<li class="atm-pic-cancel">Error, installed php is not the CLI version : '.$return."\n";
 	} else {

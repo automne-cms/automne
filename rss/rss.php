@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: rss.php,v 1.5 2009/10/22 16:23:12 sebastien Exp $
+// $Id: rss.php,v 1.6 2009/10/28 16:40:09 sebastien Exp $
 
 /**
   * PHP page : generate Polymod RSS Feeds
@@ -91,7 +91,7 @@ $content =
 '		<language>'.((isset($cms_language)) ? $cms_language->getCode() : 'en').'</language>'."\n".
 '		'.$categoriesTags.
 '		'.$copyrightTag.
-'		<generator>'.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION.'</generator>'."\n".
+'		<generator>'.CMS_grandFather::SYSTEM_LABEL.'</generator>'."\n".
 '		'.$emailTag.
 '		<webMaster>'.APPLICATION_MAINTAINER_EMAIL.' ('.APPLICATION_LABEL.')</webMaster>'."\n".
 '		<docs>http://blogs.law.harvard.edu/tech/rss</docs>'."\n".

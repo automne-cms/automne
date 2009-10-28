@@ -1,22 +1,22 @@
 <?php
-//Generated on Tue, 23 Jun 2009 18:05:13 +0200 by Automne (TM) 4.0.0rc1
+//Generated on Wed, 28 Oct 2009 17:10:30 +0100 by Automne (TM) 4.0.0rc3
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: http://127.0.0.1/web/fr/30-notions-essentielles.php');
+	header('Location: http://127.0.0.1/web/demo/30-notions-essentielles.php');
 	exit;
 }
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
-?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n"; ?>
+?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";  ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-		<title>Automne 4 : Pré-requis</title>
-			<?php echo CMS_view::getCSS(array('/css/common.css','/css/interieur.css'), 'screen'); ?>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Automne 4 : PrÃ©-requis</title>
+			<?php echo CMS_view::getCSS(array('/css/reset.css','/css/demo/common.css','/css/demo/interieur.css'), 'all'); ?>
 
 		<!--[if lte IE 6]> 
-		<link rel="stylesheet" type="text/css" href="/css/ie6.css" media="screen" />
+		<link rel="stylesheet" type="text/css" href="/css/demo/ie6.css" media="screen" />
 		<![endif]-->
-		<?php echo CMS_view::getJavascript(array('/js/sifr.js','/js/common.js','/js/CMS_functions.js')); ?>
+		<?php echo CMS_view::getJavascript(array('/js/demo/sifr.js','/js/demo/common.js','/js/CMS_functions.js')); ?>
 
 		<link rel="icon" type="image/x-icon" href="http://127.0.0.1/favicon.ico" />
 	<meta name="language" content="fr" />
@@ -30,11 +30,11 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 				<div id="header">
 					<atm-linx type="direct">
 						<selection>
-							<start><nodespec type="node" value="2"></nodespec></start>
+							<start><nodespec type="node" value="2" /></start>
 						</selection>
 						<display>
 							<htmltemplate>
-								<a id="lienAccueil" href="{{href}}" title="Retour à l'accueil">Retour à l'accueil</a>
+								<a id="lienAccueil" href="{{href}}" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
 							</htmltemplate>
 						</display>
 					</atm-linx>
@@ -43,13 +43,12 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 					<div id="menuLeft">
 						<atm-linx type="recursivelinks">
 							<selection>
-								<start><nodespec type="node" value="2"></nodespec></start>
+								<start><nodespec type="node" value="2" /></start>
 								<condition property="lvl" operator="&lt;=">
 									<value type="data">2</value>
 								</condition>
 							</selection>
-							<display>
-								<mode>close</mode>
+							<display mode="close" root="false">
 								<htmltemplate><li class="{{lvlClass}} {{typeClass}} {{currentClass}}"><a class="{{lvlClass}}" href="{{href}}">{{title}}</a>{{sublevel}}</li></htmltemplate>
 								<subleveltemplate><ul class="{{lvlClass}}">{{sublevel}}</ul></subleveltemplate>
 							</display>
@@ -59,8 +58,8 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 						<div id="breadcrumbs">
 							<atm-linx type="desclinks">
 								<selection>
-									<start><nodespec type="node" value="2"></nodespec></start>
-									<stop><nodespec type="relative" value="father" reloffset="1"></nodespec></stop>
+									<start><nodespec type="node" value="2" /></start>
+									<stop><nodespec type="relative" value="father" reloffset="1" /></stop>
 								</selection>
 								<display>
 									<htmltemplate><a href="{{href}}">{{title}}</a> > </htmltemplate>
@@ -68,7 +67,7 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 							</atm-linx>
 						</div>
 						<div id="title">
-							<h1>Pré-requis</h1>
+							<h1>PrÃ©-requis</h1>
 						</div>
 						
 	
@@ -91,7 +90,7 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 				<ul>
 					<atm-linx type="sublinks">
 						<selection>
-							<start><nodespec type="node" value="7"></nodespec></start>
+							<start><nodespec type="node" value="7" /></start>
 						</selection>
 						<display>
 							<htmltemplate><li><a href="{{href}}">{{title}}</a></li></htmltemplate>
@@ -101,6 +100,6 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 				<div class="spacer"></div>
 			</div>
 		</div>
-	<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat();} ?>
+	<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat();}  ?>
 </body>
 </html>

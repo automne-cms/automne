@@ -1,9 +1,9 @@
-/* $Id: pnews.css,v 1.4 2009/10/23 10:19:59 sebastien Exp $ */
+/* $Id: pnews.css,v 1.5 2009/10/28 16:30:49 sebastien Exp $ */
 /* Styles used by news module */
 /*
 /* news */
 .page5 #title{
-	background-image:		url(/img/interieur/h1News.gif);
+	background-image:		url(/img/demo/interieur/h1News.gif);
 }
 .page5 h1{
 	color:					#ec2685;
@@ -12,11 +12,11 @@
 	margin:					0 0 20px 0;
 }
 #newssearch h2{
-	background:				url(/img/interieur/h2News.gif) no-repeat left top;
+	background:				url(/img/demo/interieur/h2News.gif) no-repeat left top;
 	left:					-17px;
 	margin-bottom:			0px;
 	color:					#FFFFFF;
-	font-size:				12px;
+	font-size:				93%;
 	font-weight:			bold;
 	line-height:			23px;
 	padding-left:			23px;
@@ -39,7 +39,7 @@
 	padding:				0 8px 0 12px;
 }
 .formCat{
-	background:				url(/img/interieur/formCat.gif) no-repeat left 4px;
+	background:				url(/img/demo/interieur/formCat.gif) no-repeat left 4px;
 	padding:				0 10px 0 10px;
 }
 #keyword{
@@ -52,7 +52,7 @@
 	width:					200px;
 }
 #newssearch #submitSearch{
-	background:				url(/img/interieur/submitSearch.gif) no-repeat left top;
+	background:				url(/img/demo/interieur/submitSearch.gif) no-repeat left top;
 	border:					0px;
 	color:					#FFFFFF;
 	cursor:					pointer;
@@ -72,13 +72,13 @@
 	margin-bottom:			25px;
 }
 .newsTitle{
-	background:				url(/img/interieur/newsTitle.jpg) repeat-x left bottom;
+	background:				url(/img/demo/interieur/newsTitle.jpg) repeat-x left bottom;
 	height:					1%;
 }
 .newsTitle h2{
-	background:				url(/img/interieur/h2Puce.gif) no-repeat 15px 7px;
+	background:				url(/img/demo/interieur/h2Puce.gif) no-repeat 15px 4px;
 	color:					#60524b;
-	font-size:				12px;
+	font-size:				93%;
 	font-weight:			bold;
 	float:					left;
 	left:					0px;
@@ -90,7 +90,7 @@
 }
 #content .newsTitle h2 a{
 	color:					#60524b;
-	font-size:				12px;
+	font-size:				93%;
 	font-weight:			bold;
 }
 #content .newsTitle h2 a:hover{
@@ -99,7 +99,7 @@
 .newsTitle span{
 	border-left:			1px dotted #e92394;
 	color:					#e92394;
-	font-size:				11px;
+	font-size:				85%;
 	float:					right;
 	padding:				0 10px 0 5px;
 	margin:					5px 0 0 0;
@@ -134,14 +134,14 @@
 	margin:				0 5px 0 5px;
 }
 .blocLienBottom{
-	background:			#63554f url(/img/interieur/blocLienBottom.gif) no-repeat right	2px;
+	background:			#63554f url(/img/demo/interieur/blocLienBottom.gif) no-repeat right;
 	clear:				left;
 	cursor:				pointer;
 	display:			block;
 	float:				left;
 	left:				45px;
 	line-height:		11px;
-	padding:			0 20px 0 3px;
+	padding:			0 20px 2px 3px;
 	position:			relative;
 	top:				-3px;
 }

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-controler.php,v 1.12 2009/10/22 16:26:25 sebastien Exp $
+// $Id: page-controler.php,v 1.13 2009/10/28 16:26:00 sebastien Exp $
 
 /**
   * PHP page : Receive pages updates
@@ -55,7 +55,7 @@ define("MESSAGE_PAGE_ACTION_MOVE_ERROR_NO_RIGHTS", 696);
 define("MESSAGE_PAGE_ACTION_DUPLICATION_ERROR_NO_RIGHTS", 697);
 define("MESSAGE_PAGE_ACTION_DUPLICATION_ERROR", 698);
 define("MESSAGE_PAGE_ACTION_DUPLICATION_DONE", 699);
-
+define("MESSAGE_ACTION_BLANK_PAGE", 1590);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -68,6 +68,7 @@ $currentPage = sensitiveIO::request('currentPage', 'sensitiveIO::isPositiveInteg
 $field = sensitiveIO::request('field', '', '');
 $action = sensitiveIO::request('action', '', '');
 $value = sensitiveIO::request('value', '', '');
+$forceblank = sensitiveIO::request('forceblank') ? true : false;
 
 //load page
 $cms_page = CMS_tree::getPageByID($currentPage);
@@ -218,7 +219,39 @@ switch ($action) {
 		$cms_page->unlock();
 		$tpl = $cms_page->getTemplate();
 		//put draft datas into edited
-		CMS_moduleClientSpace_standard_catalog::moveClientSpaces($tpl->getID(), RESOURCE_DATA_LOCATION_EDITION, RESOURCE_DATA_LOCATION_EDITED, true);
+		if (!CMS_moduleClientSpace_standard_catalog::moveClientSpaces($tpl->getID(), RESOURCE_DATA_LOCATION_EDITION, RESOURCE_DATA_LOCATION_EDITED, true, $forceblank)) {
+			//alert user for blank page
+			$jscontent = '
+			Automne.message.popup({
+				msg: 				\''.$cms_language->getJSMessage(MESSAGE_ACTION_BLANK_PAGE).'\',
+				buttons: 			Ext.MessageBox.YESNO,
+				closable: 			false,
+				icon: 				Ext.MessageBox.ERROR,
+				fn: 				function (button) {
+					if (button == \'cancel\') {
+						return;
+					}
+					Automne.server.call({
+						url:				\'page-controler.php\',
+						params: 			{
+							currentPage:		'.$currentPage.',
+							forceblank:			1,
+							action:				\''.$action.'\'
+						},
+						fcnCallback: 		function() {
+							//then reload page infos
+							Automne.tabPanels.getPageInfos({
+								pageId:		this.pageId,
+								noreload:	true
+							});
+						},
+						callBackScope:		this
+					});
+				}
+			});';
+			$view->addJavascript($jscontent);
+			break;
+		}
 		CMS_blocksCatalog::moveBlocks($cms_page, RESOURCE_DATA_LOCATION_EDITION, RESOURCE_DATA_LOCATION_EDITED, true);
 		//change page editions (add CONTENT), move data from _edition to _edited
 		$cms_page->addEdition(RESOURCE_EDITION_CONTENT, $cms_user);

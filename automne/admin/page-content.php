@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-content.php,v 1.3 2009/07/20 16:33:15 sebastien Exp $
+// $Id: page-content.php,v 1.4 2009/10/28 16:26:00 sebastien Exp $
 
 /**
   * PHP page : page previsualization
@@ -28,7 +28,7 @@
 
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 
-$view = CMS_view::getInstance();
+$cms_view = CMS_view::getInstance();
 
 $currentPage = is_object($cms_context) ? sensitiveIO::request('page', 'sensitiveIO::isPositiveInteger', $cms_context->getPageID()) : '';
 $action = sensitiveIO::request('action');
@@ -71,8 +71,13 @@ if (!$cms_page->isDraft()) {
 }
 
 //add ext and edit JS files
-$view->addJSFile('ext');
-$view->addJSFile('edit');
+$cms_view->addJSFile('ext');
+$cms_view->addJSFile('edit');
+//unset vars to avoid interraction with page
+unset($currentPage);
+unset($action);
+unset($tpl);
+unset($log);
 //get page content
 $content = $cms_page->getContent($cms_language, PAGE_VISUALMODE_FORM);
 

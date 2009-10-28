@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-file.php,v 1.5 2009/10/22 16:26:27 sebastien Exp $
+// $Id: templates-file.php,v 1.6 2009/10/28 16:26:00 sebastien Exp $
 
 /**
   * PHP page : Load print template window.
@@ -252,6 +252,9 @@ $jscontent = <<<END
 			scope:			this,
 			handler:		function() {
 				var form = Ext.getCmp('fileDef-{$fileId}').getForm();
+				if (editor) {
+					form.setValues({'defText-{$fileId}': editor.getCode().replace(/  /g, "\t")});
+				}
 				if (form.isValid()) {
 					form.submit({
 						params:{

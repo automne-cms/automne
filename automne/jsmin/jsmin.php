@@ -60,11 +60,11 @@ class JSMin {
   // -- Public Static Methods --------------------------------------------------
 
   public static function minify($js) {
-    /*/protect all datas inside blocks like :
+    /* Protect all datas inside blocks like :
 	 *	//<<
 	 *	...
 	 *	//!>>
-	 * Used to not remove copyrights texts
+	 * Used to protect copyrights texts
 	 */
 	$matches = array();
 	preg_match_all("#\/{2}<{2}(.*)\/{2}\!>{2}#Us", $js, $matches);

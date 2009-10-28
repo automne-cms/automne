@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: clientspacescatalog.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: clientspacescatalog.php,v 1.2 2009/10/28 16:27:00 sebastien Exp $
 
 /**
   * Class CMS_moduleClientspace_standard_catalog
@@ -48,10 +48,11 @@ class CMS_moduleClientspace_standard_catalog extends CMS_grandFather
 	  * @param string $locationFrom The starting location, among the available RESOURCE_DATA_LOCATION
 	  * @param string $locationTo The ending location, among  the available RESOURCE_DATA_LOCATION
 	  * @param boolean $copyOnly If set to true, the deletion from the originating tables and dirs won't occur
+	  * @param boolean $forceblank If set to false, the page will be checked before removing all content of the clientspace to alert user and get confirmation. In this case, method return false until this parameter is set to true
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function moveClientSpaces($templateID, $locationFrom, $locationTo, $copyOnly = false)
+	function moveClientSpaces($templateID, $locationFrom, $locationTo, $copyOnly = false, $forceblank = false)
 	{
 		if (!SensitiveIO::isInSet($locationFrom, CMS_resource::getAllDataLocations())
 			|| !SensitiveIO::isInSet($locationTo, CMS_resource::getAllDataLocations())) {
@@ -93,6 +94,30 @@ class CMS_moduleClientspace_standard_catalog extends CMS_grandFather
 		case RESOURCE_DATA_LOCATION_EDITION:
 			$table_to = "mod_standard_clientSpaces_edition";
 			break;
+		}
+		//check for blank page
+		if (!$forceblank && $locationFrom == RESOURCE_DATA_LOCATION_EDITION && $locationTo == RESOURCE_DATA_LOCATION_EDITED) {
+			$sql = "
+				select
+					count(*) as c
+				from
+					".$table_from."
+				where
+					template_cs='".$templateID."'";
+			$q = new CMS_query($sql);
+			if ($q->getValue('c') == 0) {
+				$sql = "
+					select
+						count(*) as c
+					from
+						".$table_to."
+					where
+						template_cs='".$templateID."'";
+				$q = new CMS_query($sql);
+				if ($q->getValue('c') != 0) {
+					return false;
+				}
+			}
 		}
 		
 		//delete all in the destination table just incase and insert

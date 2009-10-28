@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: standard.php,v 1.14 2009/10/22 16:30:02 sebastien Exp $
+// $Id: standard.php,v 1.15 2009/10/28 16:26:59 sebastien Exp $
 
 /**
   * Class CMS_module_standard
@@ -1258,13 +1258,12 @@ class CMS_module_standard extends CMS_module
 			foreach ($users_stack_elements as $element) {
 				$usr = CMS_profile_usersCatalog::getByID($element[0]);
 				if (is_a($usr, "CMS_profile_user")) {
-					$users[] = $usr;
+					$users[$element[0]] = $usr;
 				}
 			}
 			if (!$users) {
 				continue;
 			}
-			$users = array_unique($users);
 			//prepare emails and send them
 			$group_email = new CMS_emailsCatalog();
 			$languages = CMS_languagesCatalog::getAllLanguages();

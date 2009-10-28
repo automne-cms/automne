@@ -1,17 +1,17 @@
 #header{
-	background:				url(/img/accueil/header.jpg) no-repeat left top;
+	background:				url(/img/demo/accueil/header.jpg) no-repeat left top;
 	height:					264px;
 }
 #menuLeft{
-	background:				#75655e url(/img/accueil/backgroundMenuLeft.gif) repeat-x left top;
+	background:				#75655e url(/img/demo/accueil/backgroundMenuLeft.gif) repeat-x left top;
 	margin:					0 0 0 107px;
 }
 #menuLeftBottom{
-	background:				url(/img/accueil/backgroundMenuLeftBottom.gif) no-repeat left bottom;
+	background:				url(/img/demo/accueil/backgroundMenuLeftBottom.gif) no-repeat left bottom;
 	padding:				0 0 30px 0;
 }
 #content{
-	background:				url(/img/accueil/backgroundContent.gif) no-repeat left top;
+	background:				url(/img/demo/accueil/backgroundContent.gif) no-repeat left top;
 	min-height:				305px;
 	padding:				0 45px 0 24px;
 	width:					613px;
@@ -31,32 +31,31 @@ h1{
 	width:					1%;
 }
 h2{
-	background:				url(/img/common/backgroundTitle.png) no-repeat right bottom;
+	background:				url(/img/demo/common/backgroundTitle.png) no-repeat right bottom;
 	color:					#6fae03;
-	font-size:				18px;
+	font-size:				138.5%;
 	font-weight:			bold;
 	padding-bottom:			8px;
 }
 .lastNews{
-	background:				url(/img/accueil/newsBottom.gif) no-repeat 9px bottom;
+	background:				url(/img/demo/accueil/newsBottom.gif) no-repeat 9px bottom;
 	padding-bottom:			25px;
 }
 .newsTop{
-	background:				url(/img/accueil/newsTop.gif) no-repeat left top;
+	background:				url(/img/demo/accueil/newsTop.gif) no-repeat left top;
 	line-height:			23px;
 	padding:				0 20px 0 34px;
 	width:					328px;
 }
 .newsTop h3{
 	color:					#FFFFFF;
-	font-size:				12px;
+	font-size:				93%;
 	font-weight:			bold;
 	float:					left;
 	margin:					0px;
 }
 .newsTop h3 a{
 	color:					#FFFFFF;
-	font-size:				12px;
 	font-weight:			bold;
 }
 .newsTop h3 a:hover{
@@ -64,7 +63,7 @@ h2{
 }
 .newsTop span{
 	color:					#f59ac8;
-	font-size:				11px;
+	font-size:				85%;
 	float:					right;
 }
 .lastNews .newsContent{
@@ -77,13 +76,13 @@ h2{
 }
 .newsAll{
 	color:					#f02788;
-	font-size:				10px;
+	font-size:				77%;
 	margin-right:			10px;
 	padding:				0 0 0 6px;
 	text-transform:			uppercase;
 }
 .newsAll:hover{
-	background:				url(/img/accueil/newsAllPuce.gif) no-repeat left 4px;
+	background:				url(/img/demo/accueil/newsAllPuce.gif) no-repeat left 4px;
 	color:					#a81258;
 }
 .newsRSS{

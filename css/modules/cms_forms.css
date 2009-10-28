@@ -1,4 +1,4 @@
-/* $Id: cms_forms.css,v 1.2 2009/10/23 10:19:59 sebastien Exp $ */
+/* $Id: cms_forms.css,v 1.3 2009/10/28 16:30:49 sebastien Exp $ */
 
 /*Forms error messages*/
 .cms_forms_error_msg{
@@ -9,6 +9,9 @@
 .cms_forms_msg {
 	border:				1px solid #D8FA90;
 	padding:			10px;
+}
+.cms_forms td {
+	border:				0;
 }
 .cms_forms textarea {
 	width:				250px;

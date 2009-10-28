@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: context.php,v 1.7 2009/10/22 16:30:01 sebastien Exp $
+// $Id: context.php,v 1.8 2009/10/28 16:26:59 sebastien Exp $
 
 /**
   * Class CMS_context
@@ -62,6 +62,14 @@ class CMS_context extends CMS_grandFather
 	  * @access private
 	  */
 	protected $_pageID;
+	
+	/**
+	  * User tokens
+	  *
+	  * @var array
+	  * @access private
+	  */
+	protected $_token;
 	
 	/**
 	  * Constructor.
@@ -641,7 +649,7 @@ class CMS_context extends CMS_grandFather
 		$sessionInfos['applicationLabel'] = APPLICATION_LABEL;
 		$sessionInfos['applicationVersion'] = AUTOMNE_VERSION;
 		$sessionInfos['systemLabel'] = CMS_grandFather::SYSTEM_LABEL;
-		
+		$sessionInfos['token'] = CMS_context::getToken('admin');
 		$sessionInfos['debug'] = '';
 		$sessionInfos['debug'] += (SYSTEM_DEBUG) ? 1 : 0;
 		$sessionInfos['debug'] += (STATS_DEBUG) ? 2 : 0;
@@ -683,6 +691,90 @@ class CMS_context extends CMS_grandFather
 		//add Automne locales
 		$locales .= $language->getMessage(self::MESSAGE_USER_JS_LOCALES);
 		return $locales;
+	}
+	
+	function getToken ($name) {
+		$tokensDatas = CMS_context::getSessionVar('atm-tokens');
+		$tokens = $tokensDatas['tokens'];
+		$tokensTime = $tokensDatas['time'];
+		$expiredTokens = $tokensDatas['expired'];
+		$time = time();
+		if (isset($tokens[$name])) {
+			//token already exists so check age
+			if (($time - $tokensTime[$name]) <= SESSION_TOKEN_MAXAGE) {
+				//token is still valid, so return it
+				return $tokens[$name];
+			} else {
+				//set old token into expired tokens
+				$expiredTokens[$name] = $tokens[$name];
+				$tokensTime[$name] = $time;
+				unset($tokens[$name]);
+			}
+		}
+		//token not exists or too old, create it
+		$tokens[$name] = sha1(uniqid(rand(), TRUE));
+		$tokensTime[$name] = $time;
+		//save tokens datas
+		$tokensDatas = array(
+			'tokens'	=> $tokens,
+			'time'		=> $tokensTime,
+			'expired'	=> $expiredTokens
+		);
+		CMS_context::setSessionVar('atm-tokens', $tokensDatas);
+		//return token value
+		return $tokens[$name];
+	}
+	
+	function checkToken ($name, $token) {
+		$tokensDatas = CMS_context::getSessionVar('atm-tokens');
+		$tokens = $tokensDatas['tokens'];
+		$tokensTime = $tokensDatas['time'];
+		$expiredTokens = $tokensDatas['expired'];
+		$time = time();
+		//check if token exists, verify value and not too old
+		if (isset($tokens[$name]) && $tokens[$name] == $token && ($time - $tokensTime[$name]) <= SESSION_TOKEN_MAXAGE) {
+			//token exists, is correct and not too old, return true
+			return true;
+		}
+		//check if token exists, verify value and is too old
+		if (isset($tokens[$name]) && $tokens[$name] == $token && ($time - $tokensTime[$name]) > SESSION_TOKEN_MAXAGE) {
+			//token exists, is correct but too old, return true and set token as expired
+			
+			//set old token into expired tokens
+			$expiredTokens[$name] = $tokens[$name];
+			$tokensTime[$name] = $time;
+			unset($tokens[$name]);
+			
+			//save tokens datas
+			$tokensDatas = array(
+				'tokens'	=> $tokens,
+				'time'		=> $tokensTime,
+				'expired'	=> $expiredTokens
+			);
+			CMS_context::setSessionVar('atm-tokens', $tokensDatas);
+			
+			return true;
+		}
+		//check if token expired but into expiration time
+		if (isset($expiredTokens[$name]) && $expiredTokens[$name] == $token && ($time - $tokensTime[$name]) <= SESSION_EXPIRED_TOKEN_MAXAGE) {
+			//token is expired but in exiration validity time, return true
+			return true;
+		}
+		//in all other cases, return false
+		return false;
+	}
+	
+	function tokenIsExpired ($name) {
+		$tokensDatas = CMS_context::getSessionVar('atm-tokens');
+		$tokens = $tokensDatas['tokens'];
+		$tokensTime = $tokensDatas['time'];
+		$expiredTokens = $tokensDatas['expired'];
+		$time = time();
+		if (!isset($tokens[$name])
+			 || (isset($tokens[$name]) && ($time - $tokensTime[$name]) > SESSION_TOKEN_MAXAGE)) {
+			return true;
+		}
+		return false;
 	}
 }
 ?>

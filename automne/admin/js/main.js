@@ -6,7 +6,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: main.js,v 1.18 2009/10/22 16:27:19 sebastien Exp $
+  * $Id: main.js,v 1.19 2009/10/28 16:26:15 sebastien Exp $
   */
 
 //Declare Automne namespace
@@ -68,10 +68,7 @@ Automne = {
 		
 		//set Global Ajax events
 		Ext.Ajax.on({'beforerequest': Automne.server.showSpinner, 'requestcomplete': Automne.server.hideSpinner, 'requestexception': Automne.server.requestException, scope: this});
-		// Header to pass in every Ajax request. Used to prevent CSRF attacks on action requests
-		Ext.Ajax.defaultHeaders = {
-		    'X-Powered-By': 'Automne'
-		};
+		
 	},
 	//load Automne admin interface
 	load: function(context) {
@@ -82,6 +79,11 @@ Automne = {
 		}
 		//set new context.
 		Automne.context = context;
+		// Header to pass in every Ajax request. Used to prevent CSRF attacks on action requests
+		Ext.Ajax.defaultHeaders = {
+		    'X-Powered-By': 'Automne',
+			'X-Atm-Token':	context.token
+		};
 		//if it is a new connexion or a new user, load interface
 		if (!oldUser || oldUser != Automne.context.userId || !Automne.east.rendered) {
 			//if user is not the same than the old one, recreate viewport.

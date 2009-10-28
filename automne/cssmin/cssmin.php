@@ -22,16 +22,41 @@
  * @license 	http://opensource.org/licenses/mit-license.php MIT License
  * @version 	1.0 (2008-01-31)
  */
-class cssmin
-	{
+class cssmin {
 	/**
 	 * Minifies stylesheet definitions
 	 *
 	 * @param 	string	$v	Stylesheet definitions as string
 	 * @return 	string		Minified stylesheet definitions
 	 */
-	public static function minify($v) 
-		{
+	public static function minify($css) {
+		/* Protect all datas inside blocks like :
+		 *	/*<<* /
+		 *	...
+		 *	/*!>>* /
+		 * Used to protect copyrights texts
+		 */
+		$matches = array();
+		preg_match_all("#\/\*<{2}\*\/(.*)\/\*\!>{2}\*\/#Us", $css, $matches);
+		if (isset($matches[1]) && $matches[1]) {
+			$return = '';
+			$css = explode('/*<<*/', $css);
+			if (trim($css[0]) != '') {
+				$return .= cssmin::min($css[0]);
+			}
+			unset($css[0]);
+			$css = array_values($css);
+			foreach ($matches[1] as $key => $match) {
+				$code = explode('/*!>>*/', $css[$key]);
+				$return .= $match."\n".cssmin::min($code[1]);
+			}
+			return $return;
+		} else {
+			return cssmin::min($css);
+		}
+  	}
+	
+	function min($v) {
 		$v = trim($v);
 		$v = str_replace("\r\n", "\n", $v);
         $search = array("/\/\*[\d\D]*?\*\/|\t+/", "/\s+/", "/\}\s+/");
@@ -41,7 +66,7 @@ class cssmin
         $replace = array(";", "{", ":#", ",", ":\'", ":$1");
         $v = preg_replace($search, $replace, $v);
         $v = str_replace("\n", null, $v);
-    	return $v;	
-  		}
+    	return $v;
 	}
+}
 ?>

@@ -11,7 +11,7 @@
 # | Author: Antoine Cezar <antoine.cezar@ws-interactive.fr>              |
 # +----------------------------------------------------------------------+
 #
-# $Id: atm_lib.sh,v 1.2 2009/10/22 16:24:52 sebastien Exp $
+# $Id: atm_lib.sh,v 1.3 2009/10/28 16:29:22 sebastien Exp $
 
 #
 # Automne shell commands
@@ -241,9 +241,14 @@ function atmBackup {
         ATM_BACKUP_FILE="$ATM_BACKUP_FILE_PREFIX$ATM_DATE.$ATM_BACKUP_FILE_EXTENSION"
     fi
 
-    EXCLUDE_OPTIONS="--exclude=./$ATM_BACKUP_FILE_PREFIX*.tar.gz --exclude=./$ATM_BACKUP_FILE_PREFIX*.$ATM_BACKUP_FILE_EXTENSION --exclude=./.htpasswd"
+	EXCLUDE_OPTIONS="--exclude=./.htpasswd"
+    EXCLUDE_OPTIONS="$EXCLUDE_OPTIONS --exclude=./$ATM_BACKUP_FILE_PREFIX*.tar.gz"
+	EXCLUDE_OPTIONS="$EXCLUDE_OPTIONS --exclude=./$ATM_BACKUP_FILE_PREFIX*.$ATM_BACKUP_FILE_EXTENSION"
+	EXCLUDE_OPTIONS="$EXCLUDE_OPTIONS --exclude=./automne_modules_files/ase/databases/*"
 
-    for ITEM in './automne_modules_files/' './automne_linx_files/' './html/' './web/' './automne/cache/' './automne/tmp/' './automne/upload/'; do
+	EXCLUDE_LIST='./automne/cache/ ./automne_linx_files/ ./automne_modules_files/ ./automne/tmp/ ./automne/upload/ ./html/ ./web/'
+
+    for ITEM in $EXCLUDE_LIST; do
         atmAsk "Backup $ITEM [Y|n]?" "y"
         if [ $? -ne 1 ]; then
             if [ -f "$ITEM" ]; then

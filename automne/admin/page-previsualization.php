@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-previsualization.php,v 1.2 2008/12/18 10:36:43 sebastien Exp $
+// $Id: page-previsualization.php,v 1.3 2009/10/28 16:26:00 sebastien Exp $
 
 /**
   * PHP page : page previsualization
@@ -30,6 +30,8 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 
 $currentPage = sensitiveIO::request('currentPage', 'sensitiveIO::isPositiveInteger', $cms_context->getPageID());
 $draft = sensitiveIO::request('draft') ? true : false;
+//unset request to avoid it to have interaction with page code
+sensitiveIO::unsetRequest(array('draft', 'currentPage'));
 
 //CHECKS
 if (!SensitiveIO::isPositiveInteger($currentPage)) {
@@ -37,13 +39,15 @@ if (!SensitiveIO::isPositiveInteger($currentPage)) {
 }
 
 //view edited or edition mode ?
-$visual_mode = ($draft) ? PAGE_VISUALMODE_HTML_EDITION : PAGE_VISUALMODE_HTML_EDITED;
+$cms_visual_mode = ($draft) ? PAGE_VISUALMODE_HTML_EDITION : PAGE_VISUALMODE_HTML_EDITED;
 
 $cms_page = CMS_tree::getPageByID($currentPage);
 if (!$cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)) {
 	Header("Location: ".PATH_ADMIN_SPECIAL_PAGE_SUMMARY_WR."?cms_message_id=".MESSAGE_CLEARANCE_INSUFFICIENT."&".session_name()."=".session_id());
 	exit;
 }
-
-echo $cms_page->getContent($cms_language, $visual_mode);
+//unset vars to avoid interraction with page
+unset($currentPage);
+unset($draft);
+echo $cms_page->getContent($cms_language, $cms_visual_mode);
 ?>

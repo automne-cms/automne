@@ -7,7 +7,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: utils.js,v 1.3 2009/10/22 16:27:19 sebastien Exp $
+  * $Id: utils.js,v 1.4 2009/10/28 16:26:15 sebastien Exp $
   */
 Automne.utils = {
 	edit:		false,
@@ -234,29 +234,27 @@ Automne.utils = {
 					}, form);
 				}
 			} else {
-				/*
-				pr(root.location);
-				pr(form);
-				//pr(root.location.href.indexOf(form.dom.action));
-				if (form.dom.target != "_blank" && form.dom.action.indexOf && form.dom.action.indexOf(root.location.protocol+'//'+root.location.host) === -1) {
-					pr(form.dom.action.indexOf(root.location.protocol+'//'+root.location.host));
-					var parts = form.dom.action.split('/');
-					//find xxx://xxx/ in action and replace it by domain
-					if (parts[0].substr(-1) == ':' && parts[1] == '') {
-						form.dom.action = root.location.protocol+'//'+root.location.host+'/'+parts.slice(3).join('/');
-					}
-					form.on('submit', function(e) {
-						e.stopEvent();
-						//send a message to user
-						Automne.message.popup({
-							title: Automne.locales.actionImpossible, 
-							msg: Automne.locales.cantSubmitFormPage,
-							buttons: Ext.MessageBox.OK,
-							icon: Ext.MessageBox.WARNING,
-							animEl: this
-						});
-					}, form);
-				}*/
+				if (form.getAttribute('target') != "_blank") {
+					form.dom.target = '_blank';
+				}
+				form.on('submit', function(e) {
+					e.stopEvent();
+					//send a message to user
+					Automne.message.popup({
+						title:			Automne.locales.formSubmit, 
+						msg:			Automne.locales.formSubmitDesc,
+						buttons:		Ext.MessageBox.OKCANCEL,
+						icon:			Ext.MessageBox.QUESTION,
+						animEl:			this,
+						scope:			this,
+						fn: 		function (button) {
+							if (button == 'cancel') {
+								return;
+							}
+							this.dom.submit();
+						}
+					});
+				}, form);
 			}
 		}
 	}

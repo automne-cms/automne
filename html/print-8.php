@@ -1,7 +1,7 @@
-<?php //Generated on Fri, 23 Oct 2009 12:22:17 +0200 by Automne (TM) 4.0.0rc3
+<?php //Generated on Wed, 28 Oct 2009 17:10:42 +0100 by Automne (TM) 4.0.0rc3
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: http://127.0.0.1/web/fr/print-8-plan-du-site.php');
+	header('Location: http://127.0.0.1/web/demo/print-8-plan-du-site.php');
 	exit;
 }
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
@@ -9,7 +9,7 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 <head>
 	<?php echo '<meta http-equiv="Content-Type" content="text/html; charset='.strtoupper(APPLICATION_DEFAULT_ENCODING).'" />';    ?>
-	<title>Automne-Démo-UTF8 : Plan du site</title>
+	<title>Automne 4 : Plan du site</title>
 	<link rel="stylesheet" type="text/css" href="/css/print.css" />
 </head>
 <body>
@@ -22,14 +22,14 @@ Plan du site
 		
 </h3>
 
-	<ul class="CMS_lvl1"><li class="CMS_lvl1 CMS_sub"><a href="http://127.0.0.1/web/fr/2-accueil.php">Accueil</a><ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub"><a href="http://127.0.0.1/web/fr/3-presentation.php">Présentation</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/29-automne-v4.php">Automne</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/33-nouveautes.php">Nouveautés</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/30-notions-essentielles.php">Pré-requis</a></li></ul></li><li class="CMS_lvl2 CMS_sub"><a href="http://127.0.0.1/web/fr/24-documentation.php">Fonctionnalités</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/25-modeles.php">Modèles</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/26-rangees.php">Rangées</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/27-modules.php">Modules</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/28-administration.php">Gestion des utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/35-gestion-des-droits.php">Gestion des droits</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/37-droit-de-validation.php">Workflow de publication</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/38-aide-aux-utilisateurs.php">Aide utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/34-fonctions-avancees.php">Fonctions avancées</a></li></ul></li><li class="CMS_lvl2 CMS_sub"><a href="http://127.0.0.1/web/fr/31-exemples-de-modules.php">Exemples de modules</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/5-actualite.php">Actualités</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/6-mediatheque.php">Médiathèque</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/36-formulaire.php">Formulaire</a></li></ul></li></ul></li></ul>
+	<ul class="CMS_lvl1"><li class="CMS_lvl1 CMS_sub"><a href="http://127.0.0.1/web/demo/2-accueil.php">Accueil</a><ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub"><a href="http://127.0.0.1/web/demo/3-presentation.php">Présentation</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/29-automne-v4.php">Automne</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/33-nouveautes.php">Nouveautés</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/30-notions-essentielles.php">Pré-requis</a></li></ul></li><li class="CMS_lvl2 CMS_sub"><a href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/25-modeles.php">Modèles</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/26-rangees.php">Rangées</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/27-modules.php">Modules</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/28-administration.php">Gestion des utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/35-gestion-des-droits.php">Gestion des droits</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/37-droit-de-validation.php">Workflow de publication</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/38-aide-aux-utilisateurs.php">Aide utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/34-fonctions-avancees.php">Fonctions avancées</a></li></ul></li><li class="CMS_lvl2 CMS_sub"><a href="http://127.0.0.1/web/demo/31-exemples-de-modules.php">Exemples de modules</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/5-actualite.php">Actualités</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/6-mediatheque.php">Médiathèque</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/36-formulaire.php">Formulaire</a></li></ul></li></ul></li></ul>
 <br />
 <hr />
 <div align="center">
 	<small>
 		
 		
-				Page  "Plan du site" (http://127.0.0.1/web/fr/8-plan-du-site.php)
+				Page  "Plan du site" (http://127.0.0.1/web/demo/8-plan-du-site.php)
 				<br />
 		Tir&eacute; du site http://<?php echo $_SERVER["HTTP_HOST"];    ?>
 	</small>

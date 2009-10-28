@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: scriptsmanager.php,v 1.3 2009/10/22 16:30:06 sebastien Exp $
+// $Id: scriptsmanager.php,v 1.4 2009/10/28 16:27:00 sebastien Exp $
 
 /**
   * Class CMS_scriptsManager
@@ -146,19 +146,36 @@ class CMS_scriptsManager
 				$log = @system($sys);
 			} else {
 				$error = '';
-				$return = CMS_patch::executeCommand('which php 2>&1',$error);
-				if ($error) {
-					CMS_grandFather::raiseError('Error when finding php CLI with command "which php", please check your configuration : '.$error);
-					return false;
-				}
-				if (io::substr($return,0,1) != '/') {
-					CMS_grandFather::raiseError('Can\'t find php CLI with command "which php", please check your configuration.');
-					return false;
-				}
-				$return = CMS_patch::executeCommand("cd ".PATH_REALROOT_FS."; php ".PATH_PACKAGES_FS."/scripts/script.php -m ".REGENERATION_THREADS.$forceRestart." > /dev/null 2>&1 &",$error);
-				if ($error) {
-					CMS_grandFather::raiseError('Error during execution of script command (cd '.PATH_REALROOT_FS.'; php '.PATH_PACKAGES_FS.'/scripts/script.php -m '.REGENERATION_THREADS.$forceRestart.'), please check your configuration : '.$error);
-					return false;
+				if (!defined('PATH_PHP_CLI_UNIX') || !PATH_PHP_CLI_UNIX) {
+					$return = CMS_patch::executeCommand('which php 2>&1',$error);
+					if ($error) {
+						CMS_grandFather::raiseError('Error when finding php CLI with command "which php", please check your configuration : '.$error);
+						return false;
+					}
+					if (io::substr($return,0,1) != '/') {
+						CMS_grandFather::raiseError('Can\'t find php CLI with command "which php", please check your configuration.');
+						return false;
+					}
+					$return = CMS_patch::executeCommand("cd ".PATH_REALROOT_FS."; php ".PATH_PACKAGES_FS."/scripts/script.php -m ".REGENERATION_THREADS.$forceRestart." > /dev/null 2>&1 &",$error);
+					if ($error) {
+						CMS_grandFather::raiseError('Error during execution of script command (cd '.PATH_REALROOT_FS.'; php '.PATH_PACKAGES_FS.'/scripts/script.php -m '.REGENERATION_THREADS.$forceRestart.'), please check your configuration : '.$error);
+						return false;
+					}
+				} else {
+					$return = CMS_patch::executeCommand(PATH_PHP_CLI_UNIX.' -v 2>&1',$error);
+					if ($error) {
+						CMS_grandFather::raiseError('Error when testing php CLI with command "'.PATH_PHP_CLI_UNIX.' -v", please check your configuration : '.$error);
+						return false;
+					}
+					if (io::strpos(io::strtolower($return), '(cli)') === false) {
+						CMS_grandFather::raiseError(PATH_PHP_CLI_UNIX.' is not the CLI version');
+						return false;
+					}
+					$return = CMS_patch::executeCommand("cd ".PATH_REALROOT_FS."; ".PATH_PHP_CLI_UNIX." ".PATH_PACKAGES_FS."/scripts/script.php -m ".REGENERATION_THREADS.$forceRestart." > /dev/null 2>&1 &",$error);
+					if ($error) {
+						CMS_grandFather::raiseError('Error during execution of script command (cd '.PATH_REALROOT_FS.'; '.PATH_PHP_CLI_UNIX.' '.PATH_PACKAGES_FS.'/scripts/script.php -m '.REGENERATION_THREADS.$forceRestart.'), please check your configuration : '.$error);
+						return false;
+					}
 				}
 				//pr($return,true);
 				//pr("cd ".PATH_REALROOT_FS."; php ".PATH_PACKAGES_FS."/scripts/script.php -m ".REGENERATION_THREADS.$forceRestart." > /dev/null 2>&1 &");

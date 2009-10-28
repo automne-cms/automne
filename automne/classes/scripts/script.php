@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: script.php,v 1.4 2009/10/22 16:30:05 sebastien Exp $
+// $Id: script.php,v 1.5 2009/10/28 16:27:00 sebastien Exp $
 
 /**
   * background script : regenerator
@@ -140,7 +140,19 @@ class automne_script extends backgroundScript
 						if (!APPLICATION_IS_WINDOWS) {
 							// On unix system
 							$sub_system = PATH_PACKAGES_FS."/scripts/script.php -s ".$data["id_reg"]." > /dev/null 2>&1 &";
-							@system("cd ".PATH_REALROOT_FS."; php ".$sub_system);
+							if (!defined('PATH_PHP_CLI_UNIX') || !PATH_PHP_CLI_UNIX) {
+								CMS_patch::executeCommand("cd ".PATH_REALROOT_FS."; php ".$sub_system, $error);
+								if ($error) {
+									CMS_grandFather::raiseError('Error during execution of sub script command (cd '.PATH_REALROOT_FS.'; php '.$sub_system.'), please check your configuration : '.$error);
+									return false;
+								}
+							} else {
+								CMS_patch::executeCommand("cd ".PATH_REALROOT_FS."; ".PATH_PHP_CLI_UNIX." ".$sub_system, $error);
+								if ($error) {
+									CMS_grandFather::raiseError('Error during execution of sub script command (cd '.PATH_REALROOT_FS.'; '.PATH_PHP_CLI_UNIX.' '.$sub_system.'), please check your configuration : '.$error);
+									return false;
+								}
+							}
 							$PIDfile = $this->_processManager->getTempPath()."/" . SCRIPT_CODENAME . "_" . $data["id_reg"];
 							if ($this->_debug) {
 								$this->raiseError(processManager::MASTER_SCRIPT_NAME." : Executes system(".$sub_system.")");

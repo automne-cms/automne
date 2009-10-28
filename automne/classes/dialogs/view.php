@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: view.php,v 1.10 2009/10/22 16:30:01 sebastien Exp $
+// $Id: view.php,v 1.11 2009/10/28 16:26:59 sebastien Exp $
 
 /**
   * Class CMS_view
@@ -62,6 +62,7 @@ class CMS_view extends CMS_grandFather
 	private $_redirect = '';
 	private $_disconnected = false;
 	private $_sent = false;
+	private $_secure = false;
 	private $_contentTags = array(
 		self::SHOW_JSON => 'jsoncontent',
 		self::SHOW_XML => 'content',
@@ -468,11 +469,17 @@ class CMS_view extends CMS_grandFather
 	  * @access public
 	  */
 	function setSecure($secure = true) {
-		if ($secure === true) {
-			if (!isset($_SERVER['HTTP_X_POWERED_BY']) || $_SERVER['HTTP_X_POWERED_BY'] != 'Automne') {
-				$this->raiseError('Unautorized query on a secure interface : Query on '.$_SERVER['SCRIPT_NAME'].' - by '.@$_SERVER['HTTP_REFERER ']);
-				$this->show();
+		$this->_secure = $secure ? true : false;
+		if ($this->_secure) {
+			if (isset($_SERVER['HTTP_X_POWERED_BY']) && $_SERVER['HTTP_X_POWERED_BY'] == 'Automne' && isset($_SERVER['HTTP_X_ATM_TOKEN'])) {
+				if (CMS_context::checkToken('admin', $_SERVER['HTTP_X_ATM_TOKEN'])) {
+					return true;
+				}
 			}
+			$this->raiseError('Unautorized query on a secure interface : Query on '.$_SERVER['SCRIPT_NAME'].' - from '.@$_SERVER['HTTP_REFERER']);
+			$this->raiseError(time());
+			$this->raiseError(print_r(CMS_context::getSessionVar('atm-tokens'), true));
+			$this->show();
 		}
 	}
 	
@@ -495,6 +502,12 @@ class CMS_view extends CMS_grandFather
 				} else {
 					$return .= 
 					'	<error>0</error>'."\n";
+				}
+				if ($this->_secure && CMS_context::tokenIsExpired('admin')) {
+					$token = CMS_context::getToken('admin');
+					pr('new token : '.$token);
+					$return .= 
+					'	<token><![CDATA['.$token.']]></token>'."\n";
 				}
 				if ($this->hasRawDatas()) {
 					$return .= 

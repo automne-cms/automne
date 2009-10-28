@@ -1,7 +1,7 @@
-<?php //Generated on Fri, 23 Oct 2009 12:22:17 +0200 by Automne (TM) 4.0.0rc3
+<?php //Generated on Wed, 28 Oct 2009 17:10:42 +0100 by Automne (TM) 4.0.0rc3
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: http://127.0.0.1/web/fr/8-plan-du-site.php');
+	header('Location: http://127.0.0.1/web/demo/8-plan-du-site.php');
 	exit;
 }
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
@@ -9,20 +9,19 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<title>Automne-Démo-UTF8 : Plan du site</title>
-			<?php echo CMS_view::getCSS(array('/css/common.css','/css/interieur.css'), 'all');  ?>
+		<title>Automne 4 : Plan du site</title>
+			<?php echo CMS_view::getCSS(array('/css/reset.css','/css/demo/common.css','/css/demo/interieur.css'), 'all');  ?>
 
 		<!--[if lte IE 6]> 
-		<link rel="stylesheet" type="text/css" href="/css/ie6.css" media="screen" />
+		<link rel="stylesheet" type="text/css" href="/css/demo/ie6.css" media="screen" />
 		<![endif]-->
-		<?php echo CMS_view::getJavascript(array('/js/sifr.js','/js/common.js','/js/CMS_functions.js'));  ?>
+		<?php echo CMS_view::getJavascript(array('/js/demo/sifr.js','/js/demo/common.js','/js/CMS_functions.js'));  ?>
 
 		<link rel="icon" type="image/x-icon" href="http://127.0.0.1/favicon.ico" />
 	<meta name="language" content="fr" />
 	<meta name="generator" content="Automne (TM)" />
 	<meta name="identifier-url" content="http://127.0.0.1" />
 
-		
 	</head>
 	<body>
 		<div id="main">
@@ -31,18 +30,18 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 					
 								
 
-<a id="lienAccueil" href="http://127.0.0.1/web/fr/2-accueil.php" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
+<a id="lienAccueil" href="http://127.0.0.1/web/demo/2-accueil.php" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
 
 
 							
 				</div>
 				<div id="backgroundBottomContainer">
 					<div id="menuLeft">
-						<ul class="CMS_lvl1"><li class="CMS_lvl1 CMS_open "><a class="CMS_lvl1" href="http://127.0.0.1/web/fr/2-accueil.php">Accueil</a><ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/24-documentation.php">Fonctionnalités</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/31-exemples-de-modules.php">Exemples de modules</a></li></ul></li></ul>
+						<ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/31-exemples-de-modules.php">Exemples de modules</a></li></ul>
 					</div>
 					<div id="content" class="page8">
 						<div id="breadcrumbs">
-							<a href="http://127.0.0.1/web/fr/2-accueil.php">Accueil</a>
+							<a href="http://127.0.0.1/web/demo/2-accueil.php">Accueil</a>
 
  &gt; 
 						</div>
@@ -50,7 +49,7 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 							<h1>Plan du site</h1>
 						</div>
 						
-	<ul class="CMS_lvl1"><li class="CMS_lvl1 CMS_sub"><a href="http://127.0.0.1/web/fr/2-accueil.php">Accueil</a><ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub"><a href="http://127.0.0.1/web/fr/3-presentation.php">Présentation</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/29-automne-v4.php">Automne</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/33-nouveautes.php">Nouveautés</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/30-notions-essentielles.php">Pré-requis</a></li></ul></li><li class="CMS_lvl2 CMS_sub"><a href="http://127.0.0.1/web/fr/24-documentation.php">Fonctionnalités</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/25-modeles.php">Modèles</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/26-rangees.php">Rangées</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/27-modules.php">Modules</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/28-administration.php">Gestion des utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/35-gestion-des-droits.php">Gestion des droits</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/37-droit-de-validation.php">Workflow de publication</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/38-aide-aux-utilisateurs.php">Aide utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/34-fonctions-avancees.php">Fonctions avancées</a></li></ul></li><li class="CMS_lvl2 CMS_sub"><a href="http://127.0.0.1/web/fr/31-exemples-de-modules.php">Exemples de modules</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/5-actualite.php">Actualités</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/6-mediatheque.php">Médiathèque</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/fr/36-formulaire.php">Formulaire</a></li></ul></li></ul></li></ul>
+	<ul class="CMS_lvl1"><li class="CMS_lvl1 CMS_sub"><a href="http://127.0.0.1/web/demo/2-accueil.php">Accueil</a><ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub"><a href="http://127.0.0.1/web/demo/3-presentation.php">Présentation</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/29-automne-v4.php">Automne</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/33-nouveautes.php">Nouveautés</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/30-notions-essentielles.php">Pré-requis</a></li></ul></li><li class="CMS_lvl2 CMS_sub"><a href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/25-modeles.php">Modèles</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/26-rangees.php">Rangées</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/27-modules.php">Modules</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/28-administration.php">Gestion des utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/35-gestion-des-droits.php">Gestion des droits</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/37-droit-de-validation.php">Workflow de publication</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/38-aide-aux-utilisateurs.php">Aide utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/34-fonctions-avancees.php">Fonctions avancées</a></li></ul></li><li class="CMS_lvl2 CMS_sub"><a href="http://127.0.0.1/web/demo/31-exemples-de-modules.php">Exemples de modules</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/5-actualite.php">Actualités</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/6-mediatheque.php">Médiathèque</a></li><li class="CMS_lvl3 CMS_nosub"><a href="http://127.0.0.1/web/demo/36-formulaire.php">Formulaire</a></li></ul></li></ul></li></ul>
 
 						<a href="#header" id="top" title="haut de la page">Haut</a>
 					</div>
@@ -61,8 +60,8 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 		<div id="footer">
 			<div id="menuBottom">
 				<ul>
-					<li><a href="http://127.0.0.1/web/fr/8-plan-du-site.php">Plan du site</a></li>
-<li><a href="http://127.0.0.1/web/fr/9-contact.php">Contact</a></li>
+					<li><a href="http://127.0.0.1/web/demo/8-plan-du-site.php">Plan du site</a></li>
+<li><a href="http://127.0.0.1/web/demo/9-contact.php">Contact</a></li>
 				</ul>
 				<div class="spacer"></div>
 			</div>

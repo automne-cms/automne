@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-infos.php,v 1.15 2009/10/22 16:26:25 sebastien Exp $
+// $Id: page-infos.php,v 1.16 2009/10/28 16:26:00 sebastien Exp $
 
 /**
   * PHP page : Load page infos
@@ -109,6 +109,7 @@ define("MESSAGE_PAGE_REGENERATE", 666); //Evil message
 define("MESSAGE_PAGE_EDIT_NOT_VALIDATED", 667);
 define("MESSAGE_PAGE_NO_PAGES_RIGHTS", 668);
 define("MESSAGE_PAGE_NO_PAGE_RIGHT", 669);
+define("MESSAGE_PAGE_LOCKED_ON_AT", 1591);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -1098,12 +1099,12 @@ foreach ($userPanels as $panel => $panelStatus) {
 				$panelTip = $cms_language->getMessage(MESSAGE_PAGE_EDIT_CONTENT_TIP_DESC);
 				$panelPicto = 'atm-pic-big-edit';
 				if($cms_page->isDraft()) {
-					$panelTip .= '<br /><br /><strong>'.$cms_language->getJSMessage(MESSAGE_PAGE_EDIT_NOT_VALIDATED).'</strong>';
+					$panelTip .= '<br /><br /><strong>'.$cms_language->getMessage(MESSAGE_PAGE_EDIT_NOT_VALIDATED).'</strong>';
 				}
 				if ($hasLock && sensitiveIO::isPositiveInteger($hasLock)) {
 					$lockUser = CMS_profile_usersCatalog::getById($hasLock);
 					$lockDate = $cms_page->getLockDate();
-					$panelTip .= '<br /><br /><strong>'.$cms_language->getMessage(MESSAGE_PAGE_LOCKEDBY).' </strong>'.$lockUser->getFullName().' le '.$lockDate->getLocalizedDate($cms_language->getDateFormat().' &agrave; H:i:s');
+					$panelTip .= '<br /><br /><strong>'.$cms_language->getMessage(MESSAGE_PAGE_LOCKEDBY).' </strong>'.$lockUser->getFullName().' '.$cms_language->getMessage(MESSAGE_PAGE_LOCKED_ON_AT, array($lockDate->getLocalizedDate($cms_language->getDateFormat()), $lockDate->getLocalizedDate('H:i:s')));
 				} elseif (!$isEditable) {
 					$panelTip .= '<br /><br />'.$cms_language->getMessage(MESSAGE_PAGE_EDIT_CONTENT_TIP_DISABLED_DESC);
 				}

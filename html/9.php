@@ -1,7 +1,7 @@
-<?php //Generated on Fri, 23 Oct 2009 12:22:15 +0200 by Automne (TM) 4.0.0rc3
+<?php //Generated on Wed, 28 Oct 2009 17:10:41 +0100 by Automne (TM) 4.0.0rc3
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: http://127.0.0.1/web/fr/9-contact.php');
+	header('Location: http://127.0.0.1/web/demo/9-contact.php');
 	exit;
 }
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
@@ -32,7 +32,7 @@ $mod_cms_forms["usedforms"] = array (
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 9.php,v 1.8 2009/10/23 10:20:26 sebastien Exp $
+// $Id: 9.php,v 1.9 2009/10/28 16:31:35 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -507,20 +507,19 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<title>Automne-Démo-UTF8 : Contact</title>
-		<?php echo CMS_view::getCSS(array('/css/common.css','/css/interieur.css','/css/modules/cms_forms.css'), 'all');  ?>
+		<title>Automne 4 : Contact</title>
+		<?php echo CMS_view::getCSS(array('/css/reset.css','/css/demo/common.css','/css/demo/interieur.css','/css/modules/cms_forms.css'), 'all');  ?>
 
 		<!--[if lte IE 6]> 
-		<link rel="stylesheet" type="text/css" href="/css/ie6.css" media="screen" />
+		<link rel="stylesheet" type="text/css" href="/css/demo/ie6.css" media="screen" />
 		<![endif]-->
-		<?php echo CMS_view::getJavascript(array('/js/sifr.js','/js/common.js','/js/CMS_functions.js'));  ?>
+		<?php echo CMS_view::getJavascript(array('/js/demo/sifr.js','/js/demo/common.js','/js/CMS_functions.js'));  ?>
 
 		<link rel="icon" type="image/x-icon" href="http://127.0.0.1/favicon.ico" />
 	<meta name="language" content="fr" />
 	<meta name="generator" content="Automne (TM)" />
 	<meta name="identifier-url" content="http://127.0.0.1" />
 
-		
 	</head>
 	<body>
 		<div id="main">
@@ -529,18 +528,18 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 					
 								
 
-<a id="lienAccueil" href="http://127.0.0.1/web/fr/2-accueil.php" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
+<a id="lienAccueil" href="http://127.0.0.1/web/demo/2-accueil.php" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
 
 
 							
 				</div>
 				<div id="backgroundBottomContainer">
 					<div id="menuLeft">
-						<ul class="CMS_lvl1"><li class="CMS_lvl1 CMS_open "><a class="CMS_lvl1" href="http://127.0.0.1/web/fr/2-accueil.php">Accueil</a><ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/24-documentation.php">Fonctionnalités</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/fr/31-exemples-de-modules.php">Exemples de modules</a></li></ul></li></ul>
+						<ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/31-exemples-de-modules.php">Exemples de modules</a></li></ul>
 					</div>
 					<div id="content" class="page9">
 						<div id="breadcrumbs">
-							<a href="http://127.0.0.1/web/fr/2-accueil.php">Accueil</a>
+							<a href="http://127.0.0.1/web/demo/2-accueil.php">Accueil</a>
 
  &gt; 
 						</div>
@@ -577,7 +576,7 @@ $mod_cms_forms["formID"] = '2';
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 9.php,v 1.8 2009/10/23 10:20:26 sebastien Exp $
+// $Id: 9.php,v 1.9 2009/10/28 16:31:35 sebastien Exp $
 
 /**
   * Template CMS_forms_formular
@@ -650,8 +649,8 @@ if ($form->getID() && $form->isPublic()) {
 		<div id="footer">
 			<div id="menuBottom">
 				<ul>
-					<li><a href="http://127.0.0.1/web/fr/8-plan-du-site.php">Plan du site</a></li>
-<li><a href="http://127.0.0.1/web/fr/9-contact.php">Contact</a></li>
+					<li><a href="http://127.0.0.1/web/demo/8-plan-du-site.php">Plan du site</a></li>
+<li><a href="http://127.0.0.1/web/demo/9-contact.php">Contact</a></li>
 				</ul>
 				<div class="spacer"></div>
 			</div>

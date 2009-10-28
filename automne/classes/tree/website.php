@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: website.php,v 1.3 2009/10/22 16:30:06 sebastien Exp $
+// $Id: website.php,v 1.4 2009/10/28 16:27:00 sebastien Exp $
 
 /**
   * Class CMS_website
@@ -364,11 +364,7 @@ class CMS_website extends CMS_grandFather
 		if ($this->_label) {
 			if (SensitiveIO::isInSet($relativeTo, array(PATH_RELATIVETO_WEBROOT, PATH_RELATIVETO_FILESYSTEM))) {
 				$relative = ($relativeTo == PATH_RELATIVETO_WEBROOT) ? PATH_PAGES_HTML_WR : PATH_PAGES_HTML_FS;
-				if ($this->_isMain) {
-					return $relative;
-				} else {
-					return $relative."/".SensitiveIO::sanitizeAsciiString($this->_label);
-				}
+				return $relative;
 			} else {
 				$this->raiseError("Can't give pages path relative to anything other than WR or FS");
 				return false;
@@ -498,11 +494,6 @@ class CMS_website extends CMS_grandFather
 		if (!is_dir($this->getPagesPath(PATH_RELATIVETO_FILESYSTEM))) {
 			@mkdir($this->getPagesPath(PATH_RELATIVETO_FILESYSTEM));
 			@chmod($this->getPagesPath(PATH_RELATIVETO_FILESYSTEM), octdec(DIRS_CHMOD));
-		}
-		if (!is_dir($this->getHTMLPagesPath(PATH_RELATIVETO_FILESYSTEM))) {
-			//create the html directory
-			@mkdir($this->getHTMLPagesPath(PATH_RELATIVETO_FILESYSTEM));
-			@chmod($this->getHTMLPagesPath(PATH_RELATIVETO_FILESYSTEM), octdec(DIRS_CHMOD));
 		}
 		return true;
 	}

@@ -7,7 +7,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: server.js,v 1.3 2009/10/22 16:27:19 sebastien Exp $
+  * $Id: server.js,v 1.4 2009/10/28 16:26:15 sebastien Exp $
   */
 Automne.server = {
 	call: function (url, fcn, params, scope) {
@@ -72,6 +72,14 @@ Automne.server = {
 		var content = '';
 		//define shortcut
 		var xml = response.responseXML;
+		//check for token update
+		if (xml.getElementsByTagName('token').length) {
+			// Header to pass in every Ajax request. Used to prevent CSRF attacks on action requests
+			Ext.Ajax.defaultHeaders = {
+			    'X-Powered-By': 'Automne',
+				'X-Atm-Token':	xml.getElementsByTagName('token').item(0).firstChild.nodeValue
+			};
+		}
 		//check for errors returned
 		if (xml.getElementsByTagName('error').length
 			&& xml.getElementsByTagName('error').item(0).firstChild.nodeValue != 0
@@ -175,6 +183,7 @@ Automne.server = {
 			break;
 		}
 		msg += '<br /><br />'+ al.contactAdministrator +'<br /><br />';
+		msg += 'Error type : '+ type +'<br /><br />';
 		if (e || response) {
 			if (e) {
 				msg += 'Message : '+ e.name +' : '+ e.message +'<br /><br />';
@@ -197,7 +206,7 @@ Automne.server = {
 					'Response Headers : <pre class="atm-debug">'+ response.getAllResponseHeaders() +'</pre>';
 				}
 				if (response.responseText) {
-					msg += '<br />Server return : <pre class="atm-debug">' + (!e ? response.responseText :  Ext.util.Format.htmlEncode(response.responseText)) +'</pre><br />';
+					msg += '<br />Server return : <pre class="atm-debug">' + (!e && !response.responseXML ? response.responseText :  Ext.util.Format.htmlEncode(response.responseText)) +'</pre><br />';
 				}
 			}
 		}
