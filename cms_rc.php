@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc.php,v 1.19 2009/10/23 07:51:34 sebastien Exp $
+// $Id: cms_rc.php,v 1.20 2009/10/28 16:45:50 sebastien Exp $
 
 /**
   * rc file, contains all default constants
@@ -183,6 +183,16 @@ if (!defined("PATH_SPECIAL_PAGE_NOT_FOUND_WR")) {
   */
 if (!defined("PATH_PHP_CLI_WINDOWS")) {
 	define("PATH_PHP_CLI_WINDOWS", "c:\php\php-win.exe");
+}
+
+/**
+  *	Path to the PHP CLI executable under unix systems
+  * Use this constant only if you cannot locate php cli with command "which php"
+  * ie : php is not under the declared PATH var or executable name is not php
+  *	Default : ""
+  */
+if (!defined("PATH_PHP_CLI_UNIX")) {
+	define("PATH_PHP_CLI_UNIX", "");
 }
 
 /**
@@ -777,6 +787,21 @@ if (!defined('APPLICATION_LDAP_USER_REGIONSTATE')) {
   */
 if (!defined('FILE_UPLOAD_EXTENSIONS_DENIED')) {
 	define('FILE_UPLOAD_EXTENSIONS_DENIED', 'exe,php,pif,vbs,bat,com,scr,reg');
+}
+
+/**
+  *	Set max session token age. Used to protect form actions from CSRF attacks
+  *	Default : 600 seconds
+  */
+if (!defined('SESSION_TOKEN_MAXAGE')) {
+	define('SESSION_TOKEN_MAXAGE', 120);
+}
+/**
+  *	Set max expired token age. Used to protect form actions from CSRF attacks
+  *	Default : 60 seconds
+  */
+if (!defined('SESSION_EXPIRED_TOKEN_MAXAGE')) {
+	define('SESSION_EXPIRED_TOKEN_MAXAGE', 60);
 }
 
 // ****************************************************************
