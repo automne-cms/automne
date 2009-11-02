@@ -10,5 +10,5 @@ $_SESSION['PMA_single_signon_only_db'] = APPLICATION_DB_NAME;
 /* Close that session */
 session_write_close();
 /* Redirect to phpMyAdmin (should use absolute URL here!) */
-header('Location: /automne/phpMyAdmin/index.php');
+header('Location: /automne/phpMyAdmin/index.php?time='.time());
 ?>
