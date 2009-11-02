@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: csv.php,v 1.2 2009/04/02 13:55:53 sebastien Exp $
+// $Id: csv.php,v 1.3 2009/11/02 10:32:59 sebastien Exp $
 
 /**
   * PHP page : module cms_forms frontend
@@ -42,8 +42,6 @@ if (!$_GET["form"] || !sensitiveIO::isPositiveInteger($_GET["form"])) {
 $replace = array(
 	'"' 	=> '""',
 	'\r\n' 	=> '\n',
-	/*chr(10) => "\r\n"*/
-	/*"#(?=[^\r])\n#"	=> "\r\n",*/
 );
 function cleanvalue($value) {
 	global $replace;

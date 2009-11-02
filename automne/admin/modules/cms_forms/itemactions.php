@@ -1,5 +1,4 @@
 <?php
-
 /* vim: set expandtab tabstop=4 shiftwidth=4: */
 // +----------------------------------------------------------------------+
 // | Automne (TM)														  |
@@ -14,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: itemactions.php,v 1.2 2009/10/22 16:28:22 sebastien Exp $
+// $Id: itemactions.php,v 1.3 2009/11/02 10:32:59 sebastien Exp $
 
 /**
   * PHP page : module admin frontend
@@ -102,6 +101,8 @@ if ($_REQUEST["items_language"] != '') {
 }
 $items_language = new CMS_language($_SESSION["cms_context"]->getSessionVar("items_language"));
 
+$separator = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? "\xa7\xa7" : "\xc2\xa7\xc2\xa7";
+
 // +----------------------------------------------------------------------+
 // | Actions                                                              |
 // +----------------------------------------------------------------------+
@@ -145,9 +146,9 @@ case "validate":
 			}
 		break;
 		case CMS_forms_action::ACTION_FIELDEMAIL :
-			$sender = (isset($_POST["sender"]) && sensitiveIO::isValidEmail($_POST["sender"]) && APPLICATION_POSTMASTER_EMAIL != $_POST["sender"]) ? '§§'.$_POST["sender"] : '';
+			$sender = (isset($_POST["sender"]) && sensitiveIO::isValidEmail($_POST["sender"]) && APPLICATION_POSTMASTER_EMAIL != $_POST["sender"]) ? $separator.$_POST["sender"] : '';
 			//aggregate email text fields
-			$_POST["text"] = strip_tags($_POST["subject"].'§§'.$_POST["header"].'§§'.$_POST["footer"]).$sender;
+			$_POST["text"] = strip_tags($_POST["subject"].$separator.$_POST["header"].$separator.$_POST["footer"]).$sender;
 		break;
 		/*case CMS_forms_action::ACTION_FILE :
 			//link to download file
@@ -170,9 +171,9 @@ case "validate":
 					$_POST["value"] = implode('; ', $emails);
 				}
 			}
-			$sender = (isset($_POST["sender"]) && sensitiveIO::isValidEmail($_POST["sender"]) && APPLICATION_POSTMASTER_EMAIL != $_POST["sender"]) ? '§§'.$_POST["sender"] : '';
+			$sender = (isset($_POST["sender"]) && sensitiveIO::isValidEmail($_POST["sender"]) && APPLICATION_POSTMASTER_EMAIL != $_POST["sender"]) ? $separator.$_POST["sender"] : '';
 			//aggregate email text fields
-			$_POST["text"] = strip_tags($_POST["subject"].'§§'.$_POST["header"].'§§'.$_POST["footer"]).$sender;
+			$_POST["text"] = strip_tags($_POST["subject"].$separator.$_POST["header"].$separator.$_POST["footer"]).$sender;
 		break;
 		case CMS_forms_action::ACTION_AUTH :
 			//login / pass fields
@@ -463,7 +464,7 @@ if (sizeof($formActions)) {
 					break;
 					case CMS_forms_action::ACTION_FIELDEMAIL :
 					case CMS_forms_action::ACTION_EMAIL :
-						$texts = explode('§§', $item->getString('text'));
+						$texts = explode($separator, $item->getString('text'));
 						//display subject field
 						$content .= '<small>'.$cms_language->getMessage(MESSAGE_ACTION_ENTER_SUBJECT_MESSAGE, false, MOD_CMS_FORMS_CODENAME).' :</small><br />
 						<textarea cols="35" rows="2" name="subject" class="admin_input_text">'.$texts[0].'</textarea><br />';

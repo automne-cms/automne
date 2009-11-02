@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-controler.php,v 1.8 2009/10/22 16:26:27 sebastien Exp $
+// $Id: templates-controler.php,v 1.9 2009/11/02 10:33:12 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on templates
@@ -116,7 +116,9 @@ switch ($action) {
 				$image = $template->getImage();
 			} elseif (!$image && $template->getImage()) {
 				//remove old file
-				unlink(PATH_TEMPLATES_IMAGES_FS.'/'.$template->getImage());
+				if ($template->getImage() != 'nopicto.gif') {
+					@unlink(PATH_TEMPLATES_IMAGES_FS.'/'.$template->getImage());
+				}
 				$image = 'nopicto.gif';
 			} else {
 				$image = 'nopicto.gif';
