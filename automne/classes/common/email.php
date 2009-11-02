@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: email.php,v 1.7 2009/10/22 16:30:00 sebastien Exp $
+// $Id: email.php,v 1.8 2009/11/02 09:53:11 sebastien Exp $
 
 /**
   * Class CMS_email
@@ -475,6 +475,7 @@ class CMS_email extends CMS_grandFather
 		$OB="----=_OuterBoundary_000";
 		$IB="----=_InnerBoundery_001";
 		
+		$encoding = ($this->_emailEncoding) ? $this->_emailEncoding : APPLICATION_DEFAULT_ENCODING;
 		if ($this->_emailHTML) { //if HTML content is provided for email, use it
 			//if this mail contain relative link, append default website address
 			if (io::strpos($this->_emailHTML, 'href="/') !== false || io::strpos($this->_emailHTML, 'src="/') !== false) {
@@ -490,6 +491,7 @@ class CMS_email extends CMS_grandFather
 				'{{body}}' 		=> $this->convertTextToHTML($this->_body),
 				'{{footer}}' 	=> $this->convertTextToHTML($this->_footer),
 				'{{href}}'		=> CMS_websitesCatalog::getMainURL(),
+				'{{charset}}'	=> strtoupper($encoding),
 			);
 			$Html = str_replace(array_keys($replace), $replace, $templateContent);
 		} else { //else use text content converted to HTML
@@ -503,7 +505,6 @@ class CMS_email extends CMS_grandFather
 		$Error = ($this->_error) ? $this->_error : '';
 		$Subject = "[".APPLICATION_LABEL."] ".$this->_subject;
 		$AttmFiles = $this->_files;
-		$encoding = ($this->_emailEncoding) ? $this->_emailEncoding : APPLICATION_DEFAULT_ENCODING;
 		
 		//Messages start with text/html alternatives in OB
 		$Msg ="This is a multi-part message in MIME format.\n";

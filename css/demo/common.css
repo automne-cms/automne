@@ -2,6 +2,23 @@ html{
 	background:				url(/img/demo/common/backgroundBody.gif) repeat left top;
 	color:					#362C26;
 }
+@font-face {
+	font-family:			'MicroFLF Regular';
+	src:					url('/font/MicroFLF.eot');
+	src:					local('MicroFLF Regular'), 
+							local('MicroFLF'), 
+							url('/font/MicroFLF.woff') format('woff'), 
+							url('/font/MicroFLF.svg#MicroFLF') format('svg'), 
+							url('/font/MicroFLF.ttf') format('truetype');
+}
+#content h1 {
+	font-family:			'MicroFLF Regular';
+	color:					#6FAE03;
+	font-size:				26px;
+}
+div#content.page5 h1 {
+	color:					#EC2685;
+}
 #main{
 	background:				#a59893 url(/img/demo/common/backgroundMain.gif) repeat-x left top;
 	padding-bottom:			30px;
@@ -21,12 +38,6 @@ html{
 }
 #menuLeft ul li {
 	list-style: 			none;
-}
-#menuLeft a.CMS_lvl1{
-	display:				block;
-	position:				absolute;
-	text-indent:			-5000px;
-	width:					1%;
 }
 #menuLeft ul.CMS_lvl2{
 	background:				url(/img/demo/common/separatorMenuLeft.gif) no-repeat left top;
@@ -49,7 +60,7 @@ html{
 #menuLeft a.CMS_lvl2{
 	background:				url(/img/demo/common/puceMenuLeftLvl2.gif) no-repeat 6px 9px;
 	font-weight:			bold;
-	padding:				7px 0px 5px 28px;
+	padding:				7px 0 5px 28px;
 	text-transform:			uppercase;
 	font-size:				93%;
 }
@@ -60,12 +71,12 @@ html{
 	padding:				0 0 0 26px;
 }
 #menuLeft a.CMS_lvl3{
-	background:				url(/img/demo/common/puceMenuLeftLvl3.gif) no-repeat 0px 4px;
+	background:				url(/img/demo/common/puceMenuLeftLvl3.gif) no-repeat 0 4px;
 	padding:				0 0 0 12px;
 }
 #menuLeft a.CMS_lvl3:hover,
 #menuLeft .CMS_lvl3 .CMS_current a.CMS_lvl3{
-	background:				url(/img/demo/common/puceMenuLeftLvl3Hover.gif) no-repeat 0px 4px;
+	background:				url(/img/demo/common/puceMenuLeftLvl3Hover.gif) no-repeat 0 4px;
 	color:					#b9e740;
 }
 #menuLeft ul.CMS_lvl4{
@@ -80,34 +91,34 @@ html{
 	width:					100%;
 }
 #menuBottom{
-	background:				url(/img/demo/common/menuBottomRight.gif) no-repeat 842px 3px;
 	margin:					0px auto;
-	padding:				0 128px 0 0px;
+	padding:				0 128px 0 0;
 	width:					842px;
 }
 #menuBottom ul{
-	background:				url(/img/demo/common/menuBottomLeft.gif) no-repeat left top;
 	float:					right;
 	list-style:				none;
-	margin:					3px 0 0 0px;
-	padding:				0px 0px 0px 16px;
+	margin:					3px 0 0 0;
+	padding:				0px 16px 0 20px;
+	background:				url(/img/demo/common/menuBottom.gif) repeat-x left top;
+	-moz-border-radius:		0 0 30px 30px;
+	-webkit-border-radius:	0 0 30px 30px;
+	border-radius: 			0 0 30px 30px;
 }
 #menuBottom ul li{
 	list-style:				none;
 }
 #menuBottom li{
-	background:				url(/img/demo/common/menuBottomCenter.gif) repeat-x left top;
 	float:					left;
 }
 #menuBottom a{
-	background:				url(/img/demo/common/puceMenuBottom.gif) no-repeat left 3px;
+	background:				url(/img/demo/common/puceMenuBottom.gif) no-repeat 2px 5px;
 	color:					#FFFFFF;
 	line-height:			19px;
-	margin-left:			10px;
-	padding-left:			10px;
+	padding:				0 6px 0 10px;
 }
 #menuBottom a:hover{
-	background:				url(/img/demo/common/puceMenuBottomHover.gif) no-repeat left 3px;
+	background:				url(/img/demo/common/puceMenuBottomHover.gif) no-repeat 3px 5px;
 	color:					#ffa03e;
 }
 .imgRight{
@@ -118,38 +129,19 @@ html{
 	float:					left;
 	margin:					0 10px 5px 0;
 }
-.shadowR{
-	background:				url(/img/demo/common/shadowR.gif) repeat-y right top;
-}
-.shadowB{
-	background:				url(/img/demo/common/shadowB.gif) repeat-x left bottom;
-}
-.shadowTR{
-	background:				url(/img/demo/common/shadowTR.gif) no-repeat right top;
-}
-.shadowBL{
-	background:				url(/img/demo/common/shadowBL.gif) no-repeat left bottom;
-}
-.shadowBR{
-	background:				url(/img/demo/common/shadowBR.gif) no-repeat right bottom;
-	padding:				0 5px 6px 0;
-}
-.shadowBR img{
+.shadow{
+	-moz-box-shadow:		3px 3px 6px #888;
+	-webkit-box-shadow:		3px 3px 6px #888;
+	box-shadow:				3px 3px 6px #888;
+	margin-bottom:			10px;
 	background-color:		#FFFFFF;
-	/*padding:				8px 6px 17px 6px;*/
 	padding:				2px;
 }
 .spacer{
 	clear:					both;
 }
-.sIFR-alternate{
-	display:				block;
-	position:				absolute;
-	text-indent:			-5000px;
-	width:					1%;
-}
 .center {
-	margin:				0px auto 0px auto;
+	margin:				0px auto 0 auto;
 }
 .atm-google-map{
 	width:				100%;
@@ -176,4 +168,7 @@ a:active {
 ul, ol {
 	margin-left:			0px;
 	padding-left:			40px;
+}
+ul li {
+	list-style-image:		url(/img/demo/common/puce.gif);
 }

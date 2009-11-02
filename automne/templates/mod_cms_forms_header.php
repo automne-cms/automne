@@ -17,7 +17,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: mod_cms_forms_header.php,v 1.10 2009/10/23 07:11:00 sebastien Exp $
+// $Id: mod_cms_forms_header.php,v 1.11 2009/11/02 09:52:24 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -43,6 +43,8 @@ $mod_cms_forms["pageID"] = $parameters['pageID'] = '{{pageID}}';
 function curlyBracesVars($text) {
 	return preg_replace('#(\s)(\$[a-zA-Z0-9_\[\]\'-]*)#','\\1".\\2."',$text);
 }
+
+$separator = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? "\xa7\xa7" : "\xc2\xa7\xc2\xa7";
 
 //if page has forms
 if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
@@ -304,7 +306,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 								//generate email content
 								$email = new CMS_email();
 								//get email texts
-								$texts = explode(chr(167).chr(167), $action->getString("text"));
+								$texts = explode($separator, $action->getString("text"));
 								//create email body
 								$body = '';
 								foreach ($fields as $aField) {

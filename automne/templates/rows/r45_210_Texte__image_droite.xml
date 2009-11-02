@@ -1,15 +1,7 @@
 <row>
 	<block module="standard" type="image" id="image" maxWidth="300">
-		<div class="imgRight shadowR">
-			<div class="shadowB">
-				<div class="shadowTR">
-					<div class="shadowBL">
-						<div class="shadowBR">
-							{{data}}
-						</div>
-					</div>
-				</div>
-			</div>
+		<div class="imgRight shadow">
+			{{data}}
 		</div>
 	</block>
 	<block module="standard" type="text" id="texte">

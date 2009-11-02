@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_search.php,v 1.9 2009/10/28 16:26:59 sebastien Exp $
+// $Id: object_search.php,v 1.10 2009/11/02 09:53:11 sebastien Exp $
 
 /**
   * Class CMS_object_search
@@ -157,8 +157,8 @@ class CMS_object_search extends CMS_grandFather
 		
 		//add search object type condition
 		$this->addWhereCondition("object", $this->_object);
-		///if object has categories and if cms_user exists, check user rights
-		if ($this->_object->hasCategories() && is_object($cms_user)) {
+		//if cms_user exists, check user rights
+		if (is_object($cms_user)) {
 			$this->addWhereCondition("profile", $cms_user);
 		}
 		
@@ -579,59 +579,47 @@ class CMS_object_search extends CMS_grandFather
 					";
 					break;
 				case "profile":
-					//get field of categories for searched object type (assume it uses categories)
-					$categoriesFields = CMS_poly_object_catalog::objectHasCategories($this->_object->getId());
-					//BUG : in websites without APPLICATION_ENFORCES_ACCESS_CONTROL, backend rights on categories are checked on visibility instead of edition
-					if (/*APPLICATION_ENFORCES_ACCESS_CONTROL && */!$this->_public)  {
-						$clearance = CLEARANCE_MODULE_EDIT;
-						$strict = true;
-					} else {
-						$clearance = CLEARANCE_MODULE_VIEW;
-						$strict = false;
+					//if user has no right on module, he cannot search object on it
+					if (!$value->hasModuleClearance($this->_object->getValue('module'), CLEARANCE_MODULE_VIEW)) {
+						break;
 					}
-					//get a list of all viewvable categories for current user
-					$cats = array_keys(CMS_moduleCategories_catalog::getViewvableCategoriesForProfile($value, $this->_object->getValue('module'), true, $clearance, $strict));
-					
-					foreach ($categoriesFields as $categoriesField) {
-						//load category field if not exists
-						if (!is_object($this->_fieldsDefinitions[$categoriesField])) {
-							//get object fields definition
-							$this->_fieldsDefinitions = CMS_poly_object_catalog::getFieldsDefinition($this->_object->getID());
-						}
-						//we can see objects without categories only if is not public or field is not required
-						if (!$this->_fieldsDefinitions[$categoriesField]->getValue('required') || !$this->_public) {
-							//add deleted cats to searchs
-							$viewvableCats = array_merge(CMS_moduleCategories_catalog::getDeletedCategories($this->_object->getValue('module')), $cats);
-							//add zero value for objects without categories
-							$viewvableCats[] = 0;
+					//if object has categories, check rights on it
+					if ($this->_object->hasCategories()) {
+						//get field of categories for searched object type (assume it uses categories)
+						$categoriesFields = CMS_poly_object_catalog::objectHasCategories($this->_object->getId());
+						//BUG : in websites without APPLICATION_ENFORCES_ACCESS_CONTROL, backend rights on categories are checked on visibility instead of edition
+						if (/*APPLICATION_ENFORCES_ACCESS_CONTROL && */!$this->_public)  {
+							$clearance = CLEARANCE_MODULE_EDIT;
+							$strict = true;
 						} else {
-							$viewvableCats = $cats;
+							$clearance = CLEARANCE_MODULE_VIEW;
+							$strict = false;
 						}
-						//if no viewvable categories, user has no rights to view anything
-						if (!$viewvableCats) {
-							break;
-						}
-						$removedIDs = array();
-						//add previously founded IDs to where clause
-						$where = ($IDs) ? ' and objectID in ('.implode(',',$IDs).')':'';
-						$sqlTmp = "
-							select
-								distinct objectID
-							from
-								mod_subobject_integer".$statusSuffix."
-							where
-								objectFieldID = '".$categoriesField."'
-								and value not in (".@implode(',', $viewvableCats).")
-								$where
-						";
-						$qTmp = new CMS_query($sqlTmp);
-						while ($r = $qTmp->getArray()) {
-							if ($r['objectID'] && isset($IDs[$r['objectID']])) {
-								$removedIDs[$r['objectID']] = $r['objectID'];
+						//get a list of all viewvable categories for current user
+						$cats = array_keys(CMS_moduleCategories_catalog::getViewvableCategoriesForProfile($value, $this->_object->getValue('module'), true, $clearance, $strict));
+						
+						foreach ($categoriesFields as $categoriesField) {
+							//load category field if not exists
+							if (!is_object($this->_fieldsDefinitions[$categoriesField])) {
+								//get object fields definition
+								$this->_fieldsDefinitions = CMS_poly_object_catalog::getFieldsDefinition($this->_object->getID());
 							}
-						}
-						//add (again) ids which has a category visible and a category not visible
-						if ($removedIDs) {
+							//we can see objects without categories only if is not public or field is not required and user has admin right on module
+							if (($this->_public && !$this->_fieldsDefinitions[$categoriesField]->getValue('required')) || (!$this->_public && $value->hasModuleClearance($this->_object->getValue('module'), CLEARANCE_MODULE_EDIT))) {
+								//add deleted cats to searchs
+								$viewvableCats = array_merge(CMS_moduleCategories_catalog::getDeletedCategories($this->_object->getValue('module')), $cats);
+								//add zero value for objects without categories
+								$viewvableCats[] = 0;
+							} else {
+								$viewvableCats = $cats;
+							}
+							//if no viewvable categories, user has no rights to view anything
+							if (!$viewvableCats) {
+								break;
+							}
+							$removedIDs = array();
+							//add previously founded IDs to where clause
+							$where = ($IDs) ? ' and objectID in ('.implode(',',$IDs).')':'';
 							$sqlTmp = "
 								select
 									distinct objectID
@@ -639,48 +627,69 @@ class CMS_object_search extends CMS_grandFather
 									mod_subobject_integer".$statusSuffix."
 								where
 									objectFieldID = '".$categoriesField."'
-									and value in (".@implode(',', $viewvableCats).")
+									and value not in (".@implode(',', $viewvableCats).")
 									$where
 							";
 							$qTmp = new CMS_query($sqlTmp);
 							while ($r = $qTmp->getArray()) {
-								if ($r['objectID'] && isset($removedIDs[$r['objectID']])) {
-									unset($removedIDs[$r['objectID']]);
+								if ($r['objectID'] && isset($IDs[$r['objectID']])) {
+									$removedIDs[$r['objectID']] = $r['objectID'];
 								}
 							}
-							//then finally remove ids
-							foreach ($removedIDs as $idToRemove) {
-								unset($IDs[$idToRemove]);
+							//add (again) ids which has a category visible and a category not visible
+							if ($removedIDs) {
+								$sqlTmp = "
+									select
+										distinct objectID
+									from
+										mod_subobject_integer".$statusSuffix."
+									where
+										objectFieldID = '".$categoriesField."'
+										and value in (".@implode(',', $viewvableCats).")
+										$where
+								";
+								$qTmp = new CMS_query($sqlTmp);
+								while ($r = $qTmp->getArray()) {
+									if ($r['objectID'] && isset($removedIDs[$r['objectID']])) {
+										unset($removedIDs[$r['objectID']]);
+									}
+								}
+								//then finally remove ids
+								foreach ($removedIDs as $idToRemove) {
+									unset($IDs[$idToRemove]);
+								}
+							}
+							//if no IDs break
+							if (!$IDs) {
+								break;
+							}
+							//if field is required and if it is a public search, object must have this category in DB
+							if ($this->_fieldsDefinitions[$categoriesField]->getValue('required') && $this->_public) {
+								$sqlTmp = "
+									select
+										distinct objectID
+									from
+										mod_subobject_integer".$statusSuffix."
+									where
+										objectFieldID = '".$categoriesField."'
+										and objectID in (".@implode(',', $IDs).")
+								";
+								$qTmp = new CMS_query($sqlTmp);
+								$IDs = array();
+								while ($r = $qTmp->getArray()) {
+									$IDs[$r['objectID']] = $r['objectID'];
+								}
+							}
+							//if no IDs break
+							if (!$IDs) {
+								break;
 							}
 						}
 						//if no IDs break
 						if (!$IDs) {
 							break;
 						}
-						//if field is required and if it is a public search, object must have this category in DB
-						if ($this->_fieldsDefinitions[$categoriesField]->getValue('required') && $this->_public) {
-							$sqlTmp = "
-								select
-									distinct objectID
-								from
-									mod_subobject_integer".$statusSuffix."
-								where
-									objectFieldID = '".$categoriesField."'
-									and objectID in (".@implode(',', $IDs).")
-							";
-							$qTmp = new CMS_query($sqlTmp);
-							$IDs = array();
-							while ($r = $qTmp->getArray()) {
-								$IDs[$r['objectID']] = $r['objectID'];
-							}
-						}
-						//if no IDs break
-						if (!$IDs) {
-							break;
-						}
-					}
-					//if no IDs break
-					if (!$IDs) {
+					} elseif (!$value->hasModuleClearance($this->_object->getValue('module'), CLEARANCE_MODULE_EDIT)) {
 						break;
 					}
 					//add previously founded IDs to where clause

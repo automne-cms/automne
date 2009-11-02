@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object_catalog.php,v 1.6 2009/10/22 16:30:04 sebastien Exp $
+// $Id: poly_object_catalog.php,v 1.7 2009/11/02 09:53:11 sebastien Exp $
 
 /**
   * static Class CMS_poly_object_catalog
@@ -33,7 +33,7 @@ class CMS_poly_object_catalog
 	  * @param integer $itemID The DB ID of the item in the mod_object_polyobjects table(s)
 	  * @param boolean $returnDefinition, if true, return item CMS_poly_object_definition instead of CMS_poly_object
 	  * @param boolean $public, if true, return public CMS_poly_object
-	  * @return CMS_poly_object
+	  * @return CMS_poly_object or false if not founded
 	  * @access public
 	  */
 	function getObjectByID($itemID, $returnDefinition = false, $public = false)
@@ -44,11 +44,16 @@ class CMS_poly_object_catalog
 		}
 		if ($objectID = CMS_poly_object_catalog::getObjectDefinitionByID($itemID)) {
 			if (!$returnDefinition) {
-				$object = new CMS_poly_object($objectID, $itemID, array(), $public);
+				//$object = new CMS_poly_object($objectID, $itemID, array(), $public);
+				$search = new CMS_object_search(new CMS_poly_object_definition($objectID), $public);
+				$search->addWhereCondition('item', $itemID);
+				$result = $search->search();
+				if ($result) {
+					return array_shift($result);
+				}
 			} else {
-				$object = new CMS_poly_object_definition($objectID);
+				return new CMS_poly_object_definition($objectID);
 			}
-			return $object;
 		}
 		return false;
 	}

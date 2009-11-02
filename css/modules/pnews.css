@@ -1,4 +1,4 @@
-/* $Id: pnews.css,v 1.5 2009/10/28 16:30:49 sebastien Exp $ */
+/* $Id: pnews.css,v 1.6 2009/11/02 09:49:34 sebastien Exp $ */
 /* Styles used by news module */
 /*
 /* news */
@@ -147,4 +147,55 @@
 }
 a.blocLien, a.blocLien:hover, a.blocLien:visited, a.blocLien:active, a.blocLien:link{
 	color:				#FFFFFF;
+}
+.lastNews{
+	background:				url(/img/demo/accueil/newsBottom.gif) no-repeat 9px bottom;
+	padding-bottom:			25px;
+}
+.newsTop{
+	background:				url(/img/demo/accueil/newsTop.gif) no-repeat left top;
+	line-height:			23px;
+	padding:				0 20px 0 34px;
+	width:					328px;
+}
+.newsTop h3{
+	color:					#FFFFFF;
+	font-size:				93%;
+	font-weight:			bold;
+	float:					left;
+	margin:					0px;
+}
+.newsTop h3 a{
+	color:					#FFFFFF;
+	font-weight:			bold;
+}
+.newsTop h3 a:hover{
+	color:					#f0c2d9;
+}
+.newsTop span{
+	color:					#f59ac8;
+	font-size:				85%;
+	float:					right;
+}
+.lastNews .newsContent{
+	background-color:		#f2eeec;
+	margin:					0  13px 0 9px;
+	padding:				20px 10px 0px 22px;
+}
+.newsBottom{
+	text-align:				right;
+}
+.newsAll{
+	color:					#f02788;
+	font-size:				77%;
+	margin-right:			10px;
+	padding:				0 0 0 6px;
+	text-transform:			uppercase;
+}
+.newsAll:hover{
+	background:				url(/img/demo/accueil/newsAllPuce.gif) no-repeat left 4px;
+	color:					#a81258;
+}
+.newsRSS{
+	vertical-align:			middle;
 }

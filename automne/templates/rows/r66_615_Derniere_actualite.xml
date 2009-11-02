@@ -12,16 +12,8 @@
 					</div>
 					<div class="newsContent">
 						<atm-if what="{['object1']['fields'][4]['imageWidth']}">					
-							<div class="imgRight shadowR">			
-								<div class="shadowB">
-									<div class="shadowTR">
-										<div class="shadowBL">
-											<div class="shadowBR">
-												<img src="{['object1']['fields'][4]['imagePath']}/{['object1']['fields'][4]['imageName']}" alt="{['object1']['fields'][4]['imageLabel']}" title="{['object1']['fields'][4]['imageLabel']}" />
-											</div>
-										</div>
-									</div>
-								</div>
+							<div class="imgRight shadow">			
+								<img src="{['object1']['fields'][4]['imagePath']}/{['object1']['fields'][4]['imageName']}" alt="{['object1']['fields'][4]['imageLabel']}" title="{['object1']['fields'][4]['imageLabel']}" />
 							</div>
 						</atm-if>
 						{['object1']['fields'][2]['htmlvalue']}

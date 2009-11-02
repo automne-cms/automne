@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: super_resource.php,v 1.3 2009/10/22 16:30:02 sebastien Exp $
+// $Id: super_resource.php,v 1.4 2009/11/02 09:53:11 sebastien Exp $
 
 /**
   * General-purpose Class
@@ -1376,7 +1376,7 @@ class CMS_superResource extends CMS_resource
 				set
 					".$sql_fields;
 		}
-		
+		//pr($sql);
 		$q = new CMS_query($sql);
 		if ($q->hasError()) {
 			$this->raiseError("Database write error");

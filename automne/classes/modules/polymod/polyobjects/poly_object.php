@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object.php,v 1.9 2009/10/22 16:30:04 sebastien Exp $
+// $Id: poly_object.php,v 1.10 2009/11/02 09:53:11 sebastien Exp $
 
 /**
   * Class CMS_poly_object
@@ -202,9 +202,12 @@ class CMS_poly_object extends CMS_resource
 		//set $this->_objectValues
 		if ($this->_ID && $this->_subObjectsDefinitions && $loadObject && !isset($datas[$this->_ID])) {
 			//set $this->_objectValues from DB
-			$this->_loadObject();
-			//set $this->_composedLabel if any (only if object is loaded)
-			$this->_composedLabel = $objectDef->getValue("composedLabel");
+			if(!$this->_loadObject()){
+			    $this->_ID = '';
+			} else {
+				//set $this->_composedLabel if any (only if object is loaded)
+				$this->_composedLabel = $objectDef->getValue("composedLabel");
+			}
 		} elseif ($this->_ID && is_array($datas) && isset($datas[$this->_ID]) && $datas[$this->_ID]) {
 			//set $this->_objectValues from given datas
 			$this->_populateSubObjectsValues($datas);
@@ -233,8 +236,7 @@ class CMS_poly_object extends CMS_resource
 		$datas = $search->search(CMS_object_search::POLYMOD_SEARCH_RETURN_DATAS);
 		unset($search);
 		if (!$this->_public && (!$datas || !$datas[$this->_ID])) {
-			//remove this error because it could be raised when object is just deleted
-			//$this->raiseError('No datas found for edited item '.$this->_ID.'. Current user should have no rights on this item...');
+			$this->raiseError('No datas found for edited item '.$this->_ID.'. Current user should have no rights on this item...');
 			return false;
 		}
 		//then populate object(s) values

@@ -41,16 +41,8 @@
 						</div>
 						<div class="newsContent">
 							<atm-if what="{['object1']['fields'][4]['imageName']}">
-								<div class="imgRight shadowR">
-									<div class="shadowB">
-										<div class="shadowTR">
-											<div class="shadowBL">
-												<div class="shadowBR">
-													{['object1']['fields'][4]['imageHTML']}
-												</div>
-											</div>
-										</div>
-									</div>
+								<div class="imgRight shadow">
+									{['object1']['fields'][4]['imageHTML']}
 								</div>
 							</atm-if>
 							<atm-if what="{request:int:item} == {['object1']['id']}">

@@ -8,7 +8,7 @@
 	<!--[if lte IE 6]> 
 		<link rel="stylesheet" type="text/css" href="/css/demo/ie6.css" media="screen" />
 	<![endif]-->
-	<atm-js-tags files="/js/demo/sifr.js,/js/demo/common.js" />
+	<atm-js-tags />
 	<atm-meta-tags />
 </head>
 <body>
@@ -17,18 +17,16 @@
 			<div id="header"></div>
 			<h1><atm-title /></h1>
 			<div id="menuLeft">
-				<div id="menuLeftBottom">
-					<ul class="CMS_lvl2">
-						<atm-linx type="sublinks">
-							<selection>
-								<start><nodespec type="node" value="2" /></start>
-							</selection>
-							<display>
-								<htmltemplate><li class="CMS_lvl2"><a class="CMS_lvl2" href="{{href}}">{{title}}</a></li></htmltemplate>
-							</display>
-						</atm-linx>
-					</ul>
-				</div>
+				<ul class="CMS_lvl2">
+					<atm-linx type="sublinks">
+						<selection>
+							<start><nodespec type="node" value="2" /></start>
+						</selection>
+						<display>
+							<htmltemplate><li class="CMS_lvl2"><a class="CMS_lvl2" href="{{href}}">{{title}}</a></li></htmltemplate>
+						</display>
+					</atm-linx>
+				</ul>
 			</div>
 			<div id="content">
 				<div id="firstCol">

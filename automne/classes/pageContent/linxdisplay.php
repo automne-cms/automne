@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: linxdisplay.php,v 1.6 2009/10/22 16:30:05 sebastien Exp $
+// $Id: linxdisplay.php,v 1.7 2009/11/02 09:53:11 sebastien Exp $
 
 /**
   * Class CMS_linxDisplay
@@ -132,15 +132,13 @@ class CMS_linxDisplay extends CMS_grandFather
 		if (!$this->hasCondition() || $this->pagePassesConditions($parsedPage, $page, $public, $rank)) {
 			//get pages infos
 			$linkTitle = $page->getLinkTitle($public);
-			$jsLinkTitle = str_replace("'", "\'", $linkTitle);
 			$title = $page->getTitle($public);
-			$jsTitle = str_replace("'", "\'", $title);
 			$replace = array(
-				"{{title}}"         => htmlspecialchars($linkTitle),
-				"{{jstitle}}"       => htmlspecialchars($jsLinkTitle),
-				"{{pagetitle}}"     => htmlspecialchars($title),
-				"{{jspagetitle}}"   => htmlspecialchars($jsTitle),
-				"{{desc}}"          => $page->getDescription($public),
+				"{{title}}"         => io::sanitizeHTMLString($linkTitle),
+				"{{jstitle}}"       => io::sanitizeHTMLString($linkTitle),
+				"{{pagetitle}}"     => io::sanitizeHTMLString($title),
+				"{{jspagetitle}}"   => io::sanitizeHTMLString($title),
+				"{{desc}}"          => io::sanitizeHTMLString($page->getDescription($public)),
 				"{{href}}"          => $page->getURL(),
 				"{{id}}"            => $page->getID(),
 				"{{number}}" 		=> ($rank-1),
@@ -223,16 +221,14 @@ class CMS_linxDisplay extends CMS_grandFather
 				if (is_object($page) && (!$this->hasCondition() || $this->pagePassesConditions($parsedPage, $page, $public, $rank)) && $page->getPublication() == RESOURCE_PUBLICATION_PUBLIC) {
 					//get pages infos
 					$linkTitle = $page->getLinkTitle($public);
-                    $jsLinkTitle = str_replace("'", "\'", $linkTitle);
                     $title = $page->getTitle($public);
-                    $jsTitle = str_replace("'", "\'", $title);
-					//set pages infos in html template
+                    //set pages infos in html template
 					$replace = array(
-						"{{title}}"         => htmlspecialchars($linkTitle),
-                        "{{jstitle}}"       => htmlspecialchars($jsLinkTitle),
-                        "{{pagetitle}}"     => htmlspecialchars($title),
-                        "{{jspagetitle}}"   => htmlspecialchars($jsTitle),
-  	                    "{{desc}}"          => $page->getDescription($public),
+						"{{title}}"         => io::sanitizeHTMLString($linkTitle),
+						"{{jstitle}}"       => io::sanitizeHTMLString($linkTitle),
+						"{{pagetitle}}"     => io::sanitizeHTMLString($title),
+						"{{jspagetitle}}"   => io::sanitizeHTMLString($title),
+						"{{desc}}"          => io::sanitizeHTMLString($page->getDescription($public)),
   	                    "{{href}}"          => $page->getURL(),
   	                    "{{id}}"            => $page->getID(),
 						"{{number}}" 		=> ($rank-1),

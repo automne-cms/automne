@@ -46,7 +46,7 @@ h1{
 	padding:				0 15px 8px 0;
 }
 h2{
-	background:				url(/img/demo/interieur/h2.gif) no-repeat 0px 4px;
+	background:				url(/img/demo/interieur/h2.gif) no-repeat 0 4px;
 	color:					#6FAE03;
 	font-size:				100%;
 	font-weight:			bold;
@@ -77,7 +77,7 @@ h3{
 }
 #title{
 	background:				url(/img/demo/interieur/h1.gif) no-repeat left 18px;
-	padding:				12px 0px 12px 20px;
+	padding:				6px 0 12px 20px;
 }
 #content #top{
 	background:			url(/img/demo/interieur/top.gif) no-repeat left top;
@@ -139,11 +139,11 @@ a.CMS_current {
 	color:				#EB2685;
 }
 code {
-	background-color:yellow;
+	background-color:	yellow;
 }
 blockquote {
-	background-color:orange;
+	background-color:	orange;
 }
 cite {
-	background-color:red;
+	background-color:	red;
 }

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: action.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: action.php,v 1.2 2009/11/02 09:53:11 sebastien Exp $
 /**
  * Messages relative to types of destinations
  */
@@ -119,7 +119,7 @@ class CMS_forms_action extends CMS_superResource
 	  * @var string
 	  * @access private
 	  */
-	protected $_moduleCodename =	'MOD_CMS_FORMS_CODENAME';
+	protected $_moduleCodename ='cms_forms';
 	
 	/**
 	  * Table(s) fieldname and type
