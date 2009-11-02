@@ -17,7 +17,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: mod_cms_forms_formular.php,v 1.3 2009/04/07 12:25:17 sebastien Exp $
+// $Id: mod_cms_forms_formular.php,v 1.4 2009/11/02 17:27:56 sebastien Exp $
 
 /**
   * Template CMS_forms_formular
@@ -46,7 +46,11 @@ $cms_language = $form->getLanguage();
 if ($form->getID() && $form->isPublic()) {
 	echo '<a name="formAnchor'.$form->getID().'"></a>';
 	//Create or append (from header) form required message
-	if (isset($cms_forms_required[$form->getID()]) && $cms_forms_required[$form->getID()] && is_array($cms_forms_required[$form->getID()]) && $cms_forms_required[$form->getID()]) {
+	if (isset($cms_forms_token[$form->getID()]) && $cms_forms_token[$form->getID()]) {
+		$cms_forms_error_msg[$form->getID()] .= $cms_language->getMessage(CMS_forms_formular::MESSAGE_CMS_FORMS_TOKEN_EXPIRED, false, MOD_CMS_FORMS_CODENAME);
+	}
+	//Create or append (from header) form required message
+	if (isset($cms_forms_required[$form->getID()]) && $cms_forms_required[$form->getID()] && is_array($cms_forms_required[$form->getID()])) {
 		$cms_forms_error_msg[$form->getID()] .= $cms_language->getMessage(CMS_forms_formular::MESSAGE_CMS_FORMS_REQUIRED_FIELDS, false, MOD_CMS_FORMS_CODENAME).'<ul>';
 		foreach ($cms_forms_required[$form->getID()] as $fieldName) {
 			$field = $form->getFieldByName($fieldName, true);
@@ -55,7 +59,7 @@ if ($form->getID() && $form->isPublic()) {
 		$cms_forms_error_msg[$form->getID()] .= '</ul>';
 	}
 	//Create or append (from header) form malformed message
-	if (isset($cms_forms_malformed[$form->getID()]) && $cms_forms_malformed[$form->getID()] && is_array($cms_forms_malformed[$form->getID()]) && $cms_forms_malformed[$form->getID()]) {
+	if (isset($cms_forms_malformed[$form->getID()]) && $cms_forms_malformed[$form->getID()] && is_array($cms_forms_malformed[$form->getID()])) {
 		$cms_forms_error_msg[$form->getID()] .= $cms_language->getMessage(CMS_forms_formular::MESSAGE_CMS_FORMS_MALFORMED_FIELDS, false, MOD_CMS_FORMS_CODENAME).'<ul>';
 		foreach ($cms_forms_malformed[$form->getID()] as $fieldName) {
 			$field = $form->getFieldByName($fieldName, true);
@@ -64,7 +68,7 @@ if ($form->getID() && $form->isPublic()) {
 		$cms_forms_error_msg[$form->getID()] .= '</ul>';
 	}
 	//Create or append (from header) form error message
-	if (isset($cms_forms_error_msg[$form->getID()]) && $cms_forms_error_msg[$form->getID()] && $cms_forms_error_msg[$form->getID()]) {
+	if (isset($cms_forms_error_msg[$form->getID()]) && $cms_forms_error_msg[$form->getID()]) {
 		echo '<div class="cms_forms_error_msg">'.$cms_forms_error_msg[$form->getID()].'</div>';
 	}
 	//display form or form message

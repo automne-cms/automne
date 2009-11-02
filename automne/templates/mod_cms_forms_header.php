@@ -17,7 +17,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: mod_cms_forms_header.php,v 1.11 2009/11/02 09:52:24 sebastien Exp $
+// $Id: mod_cms_forms_header.php,v 1.12 2009/11/02 17:27:56 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -51,7 +51,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 	$sender = CMS_forms_sender::getSenderForContext((isset($_SESSION["cms_context"]) ? $_SESSION["cms_context"] : false));
 	foreach($mod_cms_forms["usedforms"] as $formID) {
 		$form = new CMS_forms_formular($formID);
-		$cms_forms_msg[$form->getID()] = $cms_forms_error_msg[$form->getID()] = '';
+		$cms_forms_msg[$form->getID()] = $cms_forms_error_msg[$form->getID()] = $cms_forms_token[$form->getID()] = '';
 		//if form exists and is public
 		if ($form->getID() && $form->isPublic()) {
 			/***********************************************************
@@ -138,11 +138,15 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 			//if form has been submited
 			if (isset($_POST["formID"]) && $_POST["formID"] == $formID && $_POST["cms_action"] == 'validate') {
 				$form_language = $form->getLanguage();
+				//check form token
+				if (!isset($_POST["atm-token"]) || !CMS_context::checkToken(MOD_CMS_FORMS_CODENAME, $_POST["atm-token"])) {
+					$cms_forms_token[$form->getID()] = true;
+				}
 				//check for required fields
 				$fields = $form->getFields(true);
 				//Proceed actions
 				$actions = $form->getActions();
-				if (is_array($actions) && $actions) {
+				if (!$cms_forms_token[$form->getID()] && is_array($actions) && $actions) {
 					foreach ($actions as $action) {
 						switch ($action->getInteger('type')) {
 							case CMS_forms_action::ACTION_ALREADY_FOLD:

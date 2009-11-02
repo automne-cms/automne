@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: form.php,v 1.3 2009/10/22 16:30:02 sebastien Exp $
+// $Id: form.php,v 1.4 2009/11/02 17:28:12 sebastien Exp $
 
 /**
   * Class CMS_forms_formular
@@ -29,6 +29,8 @@ class CMS_forms_formular extends CMS_grandFather {
 	const MESSAGE_CMS_FORMS_EMAIL_SUBJECT = 69;
 	const MESSAGE_CMS_FORMS_MALFORMED_FIELDS = 68;
 	const MESSAGE_CMS_FORMS_REQUIRED_FIELDS = 67;
+	const MESSAGE_CMS_FORMS_TOKEN_EXPIRED = 91;
+	
 	const ALLOW_FORM_SUBMIT = 1;
 	const REMOVE_FORM_SUBMIT = 0;
 	/**
@@ -268,6 +270,7 @@ class CMS_forms_formular extends CMS_grandFather {
 				$source = preg_replace('#<form([^>]+)>#U', 
 				'<form action="'.$_SERVER["SCRIPT_NAME"].'?'.sensitiveIO::sanitizeHTMLString($_SERVER['QUERY_STRING']).'#formAnchor'.$this->getID().'" method="post" enctype="multipart/form-data"\1>'."\n".
 				'<input type="hidden" name="cms_action" value="validate" />'."\n".
+				'<input type="hidden" name="atm-token" value="'.CMS_context::getToken(MOD_CMS_FORMS_CODENAME).'" />'."\n".
 				'<input type="hidden" name="formID" value="'.$this->getID().'" />'."\n".
 				'<input type="hidden" name="referer" value="'.$referer.'" />'."\n"
 				, $source);
