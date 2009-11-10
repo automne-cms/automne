@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: profileuserscatalog.php,v 1.4 2009/10/22 16:30:28 sebastien Exp $
+// $Id: profileuserscatalog.php,v 1.5 2009/11/10 16:49:02 sebastien Exp $
 
 /**
   * Class CMS_profile_usersCatalog
@@ -219,6 +219,10 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 		$direction = (in_array(io::strtolower($direction), array('asc', 'desc'))) ? io::strtolower($direction) : 'asc';
 		$keywordsWhere = $letterWhere = $groupWhere = $orderBy = $orderClause = $idWhere = '';
 		$select = 'id_pru';
+		if (io::strpos($search, ':noroot:') !== false) {
+			$idWhere = " and id_pru != '".ROOT_PROFILEUSER_ID."'";
+			$search = trim(str_replace(':noroot:', '', $search));
+		}
 		if (io::substr($search, 0, 5) == 'user:' && sensitiveIO::isPositiveInteger(io::substr($search, 5))) {
 			$idWhere = " and id_pru = '".sensitiveIO::sanitizeSQLString(io::substr($search, 5))."'";
 			$search = '';
@@ -313,7 +317,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 				".$start.", ".$limit;
 		}
 		$q = new CMS_query($sql);
-		//pr($sql);
+		pr($sql);
 		//pr($q->getNumRows());
 		$users = array();
 		while ($r = $q->getArray()) {
@@ -344,7 +348,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function getUsersLabels($activeOnly = false) {
+	function getUsersLabels($activeOnly = false, $lastNameFirst = false) {
 		$sql = "
 			select
 				id_pru as id,
@@ -366,7 +370,11 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 		$usersLabel = array();
 		if ($q->getNumRows()) {
 			while ($r = $q->getArray()) {
-				$usersLabel[$r['id']] = ucfirst($r['firstname']).($r['firstname'] && $r['lastname'] ? ' ' : '').ucfirst($r['lastname']);
+				if (!$lastNameFirst) {
+					$usersLabel[$r['id']] = ucfirst($r['firstname']).($r['firstname'] && $r['lastname'] ? ' ' : '').ucfirst($r['lastname']);
+				} else {
+					$usersLabel[$r['id']] = ucfirst($r['lastname']).($r['firstname'] && $r['lastname'] ? ' ' : '').ucfirst($r['firstname']);
+				}
 			}
 		}
 		return $usersLabel;

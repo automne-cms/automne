@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_common.php,v 1.8 2009/10/22 16:30:04 sebastien Exp $
+// $Id: object_common.php,v 1.9 2009/11/10 16:49:01 sebastien Exp $
 
 /**
   * Class CMS_object_common
@@ -192,7 +192,7 @@ abstract class CMS_object_common extends CMS_grandFather
 			$desc .= '</ul></span>';
 		}
 		
-		$label = $desc ? '<span class="atm-help" ext:qtip="'.htmlspecialchars($desc).'">'.$mandatory.$this->getFieldLabel($language).'</span>' : $mandatory.$this->getFieldLabel($language);
+		$label = $desc ? '<span class="atm-help" ext:qtip="'.io::htmlspecialchars($desc).'">'.$mandatory.$this->getFieldLabel($language).'</span>' : $mandatory.$this->getFieldLabel($language);
 		$return = array();
 		
 		
@@ -459,10 +459,10 @@ abstract class CMS_object_common extends CMS_grandFather
 				case 'integer':
 				case 'date':
 				case 'string':
-					$input = '<input type="text" size="30" name="'.$prefixName.$parameter['internalName'].'" class="admin_input_text" value="'.htmlspecialchars($paramValue).'" />';
+					$input = '<input type="text" size="30" name="'.$prefixName.$parameter['internalName'].'" class="admin_input_text" value="'.io::htmlspecialchars($paramValue).'" />';
 				break;
 				case 'text':
-					$input = '<textarea cols="70" rows="4" name="'.$prefixName.$parameter['internalName'].'" class="admin_input_text">'.htmlspecialchars($paramValue).'</textarea>';
+					$input = '<textarea cols="70" rows="4" name="'.$prefixName.$parameter['internalName'].'" class="admin_input_text">'.io::htmlspecialchars($paramValue).'</textarea>';
 				break;
 				default:
 					if ($parameter['type'] && method_exists($this, "getHTMLSubFieldsParameters".$parameter['type'])) {
@@ -665,13 +665,13 @@ abstract class CMS_object_common extends CMS_grandFather
 		global $cms_language;
 		switch($name) {
 			case 'label':
-				return htmlspecialchars($this->getLabel());
+				return io::htmlspecialchars($this->getLabel());
 			break;
 			case 'fieldname':
-				return htmlspecialchars($this->getFieldLabel($cms_language));
+				return io::htmlspecialchars($this->getFieldLabel($cms_language));
 			break;
 			case 'value':
-				return (is_object($this->_subfieldValues[0])) ? htmlspecialchars($this->_subfieldValues[0]->getValue()) : '';
+				return (is_object($this->_subfieldValues[0])) ? io::htmlspecialchars($this->_subfieldValues[0]->getValue()) : '';
 			break;
 			case 'set':
 				return $this->_subfieldValues[0]->setValue($parameters);
@@ -680,7 +680,7 @@ abstract class CMS_object_common extends CMS_grandFather
 				return ($this->_field->getValue("required")) ? true : false;
 			break;
 			case 'description' :
-				return htmlspecialchars($this->getFieldDescription($cms_language));
+				return io::htmlspecialchars($this->getFieldDescription($cms_language));
 			break;
 			case 'fieldID':
 				return $this->_field->getID();
@@ -701,11 +701,11 @@ abstract class CMS_object_common extends CMS_grandFather
 	function getLabelsStructure(&$language, $objectName = '') {
 		$labels = array();
 		$labels['structure']['label'] = $language->getMessage(self::MESSAGE_OBJECT_COMMON_LABEL_DESCRIPTION,false,MOD_POLYMOD_CODENAME);
-		$labels['structure']['fieldname'] = $language->getMessage(self::MESSAGE_OBJECT_COMMON_FIELDNAME_DESCRIPTION,array(htmlspecialchars($this->getFieldLabel($language))),MOD_POLYMOD_CODENAME);
+		$labels['structure']['fieldname'] = $language->getMessage(self::MESSAGE_OBJECT_COMMON_FIELDNAME_DESCRIPTION,array(io::htmlspecialchars($this->getFieldLabel($language))),MOD_POLYMOD_CODENAME);
 		$labels['structure']['fieldID'] = $language->getMessage(self::MESSAGE_OBJECT_COMMON_FIELDID_DESCRIPTION,array($this->_field->getID()),MOD_POLYMOD_CODENAME);
 		$labels['structure']['value'] = $language->getMessage(self::MESSAGE_OBJECT_COMMON_VALUE_DESCRIPTION,false,MOD_POLYMOD_CODENAME);
 		$labels['structure']['required'] = $language->getMessage(self::MESSAGE_OBJECT_COMMON_REQUIRED_DESCRIPTION,false,MOD_POLYMOD_CODENAME);
-		$labels['structure']['description'] = $language->getMessage(self::MESSAGE_OBJECT_COMMON_FIELD_DESC_DESCRIPTION,array(htmlspecialchars($this->getFieldDescription($language))),MOD_POLYMOD_CODENAME);
+		$labels['structure']['description'] = $language->getMessage(self::MESSAGE_OBJECT_COMMON_FIELD_DESC_DESCRIPTION,array(io::htmlspecialchars($this->getFieldDescription($language))),MOD_POLYMOD_CODENAME);
 
 		return $labels;
 	}

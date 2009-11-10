@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: profileusersgroup.php,v 1.4 2009/10/22 16:30:28 sebastien Exp $
+// $Id: profileusersgroup.php,v 1.5 2009/11/10 16:49:02 sebastien Exp $
 
 /**
   * Class CMS_profile_usersGroup
@@ -383,6 +383,13 @@ class CMS_profile_usersGroup extends CMS_profile
 	function addToUserAndWriteToPersistence(&$user, $writeUser = true)
 	{
 		if (is_a($user,"CMS_profile_user") && !$user->hasError()) {
+			//Get current user groups ids
+			$userGroupIds = CMS_profile_usersGroupsCatalog::getGroupsOfUser($user, true, true);
+			//if user has no group, we must clear his profile before
+			if (!$userGroupIds) {
+				//reset profile clearances
+				$user->resetClearances();
+			}
 			// Update user profile
 			$user->addPageClearances(parent::getPageClearances());
 			$user->addModuleClearances(parent::getModuleClearances());

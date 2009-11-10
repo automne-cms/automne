@@ -1,3 +1,6 @@
+v1.04
+[REFACTOR] : This version is now used and bundled in Automne 4
+
 v1.03 (29/01/09)
 [BUG] : Pass by URL the param "pluginDefinition" to keep the plugin selection when navigate by page
 [BUG] : We must do a complete search (from 0 to 1000 results) for xapian + polymod search. So we limit to 1000 results and we start from page 0. Polymod will calculate the page to display after Xapian treatment.

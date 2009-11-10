@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: blockvarchar.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: blockvarchar.php,v 1.2 2009/11/10 16:48:59 sebastien Exp $
 
 /**
   * Class CMS_block_varchar
@@ -113,14 +113,14 @@ class CMS_block_varchar extends CMS_block
 		case PAGE_VISUALMODE_HTML_EDITION:
 		case PAGE_VISUALMODE_PRINT:
 			if ($data && $data["value"]) {
-				$html = htmlspecialchars($data["value"]);
+				$html = io::htmlspecialchars($data["value"]);
 				return str_replace("{{data}}", $html, $this->_definition);
 			}
 			break;
 		//case PAGE_VISUALMODE_CLIENTSPACES_FORM:
 		case PAGE_VISUALMODE_FORM:
 			if ($data && $data["value"]) {
-				$html = htmlspecialchars($data["value"]);
+				$html = io::htmlspecialchars($data["value"]);
 			} else {
 				$html = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diem nonummy.";
 			}
@@ -264,7 +264,7 @@ class CMS_block_varchar extends CMS_block
 		global $cms_user;
 		$rawDatas = $this->getRawData($page->getID(), $clientSpace->getTagID(), $row->getTagID(), RESOURCE_LOCATION_EDITION, false);
 		$this->_jsBlockClass = 'Automne.blockVarchar';
-		$this->_value = htmlspecialchars($rawDatas['value']);
+		$this->_value = io::htmlspecialchars($rawDatas['value']);
 		$this->_administrable = false;
 		$html = parent::_getHTMLForm($language, $page, $clientSpace, $row, $blockID, $data);
 		return $html;

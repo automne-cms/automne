@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: blockfile.php,v 1.4 2009/10/22 16:30:05 sebastien Exp $
+// $Id: blockfile.php,v 1.5 2009/11/10 16:48:58 sebastien Exp $
 
 /**
   * Class CMS_block_file
@@ -139,12 +139,12 @@ class CMS_block_file extends CMS_block
 				$form_data = $this->_replaceBlockVars($data, $html_attributes, RESOURCE_LOCATION_EDITION, false);
 			} else {
 				$replace = array(
-					'{{data}}' 		=> '<a href="#"'.$html_attributes.' title="'.htmlspecialchars($language->getMessage(self::MESSAGE_BLOCK_FILE_LABEL)).'">'.$language->getMessage(self::MESSAGE_BLOCK_FILE_LABEL).'</a>',
+					'{{data}}' 		=> '<a href="#"'.$html_attributes.' title="'.io::htmlspecialchars($language->getMessage(self::MESSAGE_BLOCK_FILE_LABEL)).'">'.$language->getMessage(self::MESSAGE_BLOCK_FILE_LABEL).'</a>',
 					'{{href}}' 		=> '#',
 					'{{filename}}' 		=> '#',
 					'{{originalfilename}}' => '#',
 					'{{label}}' 	=> $language->getMessage(self::MESSAGE_BLOCK_FILE_LABEL),
-					'{{jslabel}}' 	=> addslashes(htmlspecialchars($language->getMessage(self::MESSAGE_BLOCK_FILE_LABEL))),
+					'{{jslabel}}' 	=> io::htmlspecialchars($language->getMessage(self::MESSAGE_BLOCK_FILE_LABEL)),
 					'{{size}}' 		=> '0 M',
 					'{{type}}'		=> 'none'
 				);
@@ -156,12 +156,12 @@ class CMS_block_file extends CMS_block
 			$this->_hasContent = false;
 			$this->_editable = false;
 			$replace = array(
-					'{{data}}' 		=> '<a href="#"'.$html_attributes.' title="'.htmlspecialchars($language->getMessage(self::MESSAGE_BLOCK_FILE_LABEL)).'">'.$language->getMessage(self::MESSAGE_BLOCK_FILE_LABEL).'</a>',
+					'{{data}}' 		=> '<a href="#"'.$html_attributes.' title="'.io::htmlspecialchars($language->getMessage(self::MESSAGE_BLOCK_FILE_LABEL)).'">'.$language->getMessage(self::MESSAGE_BLOCK_FILE_LABEL).'</a>',
 					'{{href}}' 		=> '#',
 					'{{filename}}' 		=> '#',
 					'{{originalfilename}}' => '#',
 					'{{label}}' 	=> $language->getMessage(self::MESSAGE_BLOCK_FILE_LABEL),
-					'{{jslabel}}' 	=> addslashes(htmlspecialchars($language->getMessage(self::MESSAGE_BLOCK_FILE_LABEL))),
+					'{{jslabel}}' 	=> io::htmlspecialchars($language->getMessage(self::MESSAGE_BLOCK_FILE_LABEL)),
 					'{{size}}' 		=> '0 M',
 					'{{type}}'		=> 'none'
 				);
@@ -186,7 +186,7 @@ class CMS_block_file extends CMS_block
 		$folder = $this->_getFolderName($location, $public);
 		//must put the main website URL before
 		$mainurl = CMS_websitesCatalog::getMainURL();
-		$html = '<a href="'.$mainurl.PATH_MODULES_FILES_STANDARD_WR.'/'.$folder.'/'.$data["file"].'"'.$html_attributes.' title="'.htmlspecialchars($data["label"]).'">'.$data["label"].'</a>';
+		$html = '<a href="'.$mainurl.PATH_MODULES_FILES_STANDARD_WR.'/'.$folder.'/'.$data["file"].'"'.$html_attributes.' title="'.io::htmlspecialchars($data["label"]).'">'.$data["label"].'</a>';
 		$file = new CMS_file(PATH_MODULES_FILES_STANDARD_FS.'/'.$folder.'/'.$data["file"]);
 		$filesize = $file->getFileSize();
 		$filesize = ($filesize === false) ? '0 M' : $filesize;
@@ -195,12 +195,12 @@ class CMS_block_file extends CMS_block
 		$originalFilename = io::substr(implode('_',$filesdatas),32);
 		
 		$replace = array(
-			'{{data}}' 		=> '<a href="'.$mainurl.PATH_MODULES_FILES_STANDARD_WR.'/'.$folder.'/'.$data["file"].'"'.$html_attributes.' title="'.htmlspecialchars($data["label"]).'" class="atm-file atm-filetype-'.$file->getExtension().'">'.htmlspecialchars($data["label"]).'</a>',
+			'{{data}}' 		=> '<a href="'.$mainurl.PATH_MODULES_FILES_STANDARD_WR.'/'.$folder.'/'.$data["file"].'"'.$html_attributes.' title="'.io::htmlspecialchars($data["label"]).'" class="atm-file atm-filetype-'.$file->getExtension().'">'.io::htmlspecialchars($data["label"]).'</a>',
 			'{{href}}' 		=> $mainurl.PATH_MODULES_FILES_STANDARD_WR.'/'.$folder.'/'.$data["file"],
 			'{{filename}}' 	=> $data["file"],
 			'{{originalfilename}}' => $originalFilename,
-			'{{label}}' 	=> htmlspecialchars($data["label"]),
-			'{{jslabel}}' 	=> addslashes(htmlspecialchars($data["label"])),
+			'{{label}}' 	=> io::htmlspecialchars($data["label"]),
+			'{{jslabel}}' 	=> io::htmlspecialchars($data["label"]),
 			'{{size}}' 		=> $filesize,
 			'{{type}}'		=> $file->getExtension(),
 			'{{icon}}'		=> ($file->getFileIcon(CMS_file::WEBROOT)) ? '<img src="'.$file->getFileIcon(CMS_file::WEBROOT).'" title="'.$file->getExtension().'" alt="'.$file->getExtension().'" />' : '',

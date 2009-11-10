@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: sensitiveio.php,v 1.6 2009/10/22 16:30:00 sebastien Exp $
+// $Id: sensitiveio.php,v 1.7 2009/11/10 16:48:58 sebastien Exp $
 
 /**
   * Class SensitiveIO
@@ -49,24 +49,42 @@ class SensitiveIO extends CMS_grandfather
 		if (!isset($_REQUEST[$name])) {
 			return $default;
 		}
+		return io::filter($_REQUEST[$name], $filter, $default);
+	}
+	static function get($name, $filter = '', $default = false) {
+		if (!isset($_GET[$name])) {
+			return $default;
+		}
+		return io::filter($_GET[$name], $filter, $default);
+	}
+	static function post($name, $filter = '', $default = false) {
+		if (!isset($_POST[$name])) {
+			return $default;
+		}
+		return io::filter($_POST[$name], $filter, $default);
+	}
+	static function filter($value, $filter = '', $default = false) {
+		if (!isset($value)) {
+			return $default;
+		}
 		if (is_string($filter)) {
 			if ($filter == '') { //no filter set, just return request value
-				return $_REQUEST[$name];
+				return $value;
 			} elseif (is_callable($filter, true)) {//check if function/method name exists
 				if (io::strpos($filter, '::') !== false) {//static method call
 					$method = explode('::', $filter);
-					return (call_user_func(array($method[0], $method[1]), $_REQUEST[$name]) ? $_REQUEST[$name] : $default);
-				} elseif(call_user_func($filter, $_REQUEST[$name])) { //function call
-					return $_REQUEST[$name];
+					return (call_user_func(array($method[0], $method[1]), $value) ? $value : $default);
+				} elseif(call_user_func($filter, $value)) { //function call
+					return $value;
 				} else {
 					return $default;
 				}
-			} elseif (preg_match($filter, $_REQUEST[$name])) { //else assume this is a regexp pattern to check
-				return $_REQUEST[$name];
+			} elseif (preg_match($filter, $value)) { //else assume this is a regexp pattern to check
+				return $value;
 			}
 		} elseif(is_array($filter)) {
-			if (in_array($_REQUEST[$name], $filter)) {
-				return $_REQUEST[$name];
+			if (in_array($value, $filter)) {
+				return $value;
 			}
 		}
 		return $default;
@@ -155,12 +173,15 @@ class SensitiveIO extends CMS_grandfather
 	  * @return string the sanitized string
 	  * @access public
 	  */
-	static function sanitizeHTMLString($input) {
+	static function htmlspecialchars($input) {
 		if (version_compare(phpversion(), "5.2.3") !== -1) {
 			return htmlspecialchars($input, ENT_QUOTES, 'ISO-8859-1', false);
 		} else {
 			return preg_replace("/&amp;(#[0-9]+|[a-z]+);/i", "&$1;", htmlspecialchars($input, ENT_QUOTES, 'ISO-8859-1'));
 		}
+	}
+	static function sanitizeHTMLString($input) {
+		return io::htmlspecialchars($input);
 	}
 	
 	/**
@@ -487,7 +508,7 @@ class SensitiveIO extends CMS_grandfather
 							 $args .= $a;
 							 break;
 						 case 'string':
-							 $a = htmlspecialchars(io::substr($a, 0, 64)).((io::strlen($a) > 64) ? '...' : '');
+							 $a = io::htmlspecialchars(io::substr($a, 0, 64)).((io::strlen($a) > 64) ? '...' : '');
 							 $args .= "\"$a\"";
 							 break;
 						 case 'array':
@@ -739,27 +760,27 @@ class SensitiveIO extends CMS_grandfather
 	function substr() {
 		$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? 'substr' : 'mb_substr';
 		$args = func_get_args();
-		return call_user_func_array ( $func, $args);
+		return call_user_func_array ($func, $args);
 	}
 	function strlen() {
 		$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? 'strlen' : 'mb_strlen';
 		$args = func_get_args();
-		return call_user_func_array ( $func, $args);
+		return call_user_func_array ($func, $args);
 	}
 	function strpos() {
 		$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? 'strpos' : 'mb_strpos';
 		$args = func_get_args();
-		return call_user_func_array ( $func, $args);
+		return call_user_func_array ($func, $args);
 	}
 	function strtolower() {
 		$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? 'strtolower' : 'mb_strtolower';
 		$args = func_get_args();
-		return call_user_func_array ( $func, $args);
+		return call_user_func_array ($func, $args);
 	}
 	function strtoupper() {
 		$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? 'strtoupper' : 'mb_strtoupper';
 		$args = func_get_args();
-		return call_user_func_array ( $func, $args);
+		return call_user_func_array ($func, $args);
 	}
 }
 //shortcut to SensitiveIO class

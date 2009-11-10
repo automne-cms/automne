@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_categories.php,v 1.11 2009/10/22 16:30:03 sebastien Exp $
+// $Id: object_categories.php,v 1.12 2009/11/10 16:49:01 sebastien Exp $
 
 /**
   * Class CMS_object_categories
@@ -66,6 +66,10 @@ class CMS_object_categories extends CMS_object_common
   	const MESSAGE_OBJECT_CATEGORY_OPERATOR_NOT_IN_DESCRIPTION = 429;
   	const MESSAGE_OBJECT_CATEGORY_OPERATOR_NOT_IN_STRICT_DESCRIPTION = 430;
 	const MESSAGE_OBJECT_CATEGORY_VALUESDESCRIPTION_DESCRIPTION = 540;
+	const MESSAGE_OBJECT_CATEGORY_VALUESICONPATH_DESCRIPTION = 545;
+    const MESSAGE_OBJECT_CATEGORY_ICONPATH_DESCRIPTION = 546;
+    const MESSAGE_OBJECT_CATEGORY_VALUESICONHTML_DESCRIPTION = 547;
+    const MESSAGE_OBJECT_CATEGORY_ICONHTML_DESCRIPTION = 548;
 	
 	/**
 	  * object label
@@ -737,10 +741,14 @@ class CMS_object_categories extends CMS_object_common
 			$structure['values']['n']['label'] = '';
 			$structure['values']['n']['file'] = '';
 			$structure['values']['n']['categorydesc'] = '';
+			$structure['values']['n']['iconPath'] = '';
+			$structure['values']['n']['iconHTML'] = '';
 		} else {
 			$structure['id'] = '';
 			$structure['file'] = '';
 			$structure['categorydesc'] = '';
+			$structure['iconPath'] = '';
+			$structure['iconHTML'] = '';
 		}
 		return $structure;
 	}
@@ -808,7 +816,26 @@ class CMS_object_categories extends CMS_object_common
 						case 'label':
 							$category = CMS_moduleCategories_catalog::getByID($this->_subfieldValues[$name]->getValue());
 							if (!$category->hasError()) {
-								return htmlspecialchars($category->getLabel($cms_language));
+								return io::htmlspecialchars($category->getLabel($cms_language));
+							}
+							return '';
+						break;
+						case 'iconPath':
+							$category = CMS_moduleCategories_catalog::getByID($this->_subfieldValues[$name]->getValue());
+							if (!$category->hasError()) {
+								$iconPathFS = $category->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, true);
+								$iconPathWR = CMS_websitesCatalog::getMainURL().$category->getIconPath(true, PATH_RELATIVETO_WEBROOT, true);
+								if ($iconPathFS && file_exists($iconPathFS) && is_file($iconPathFS) && $iconPathWR) {
+									return $iconPathWR;
+								}
+							}
+							return '';
+						break;
+						case 'iconHTML':
+							$iconPath = $this->getValue('iconPath');
+							if($iconPath){
+							    $iconLabel = $this->getValue('label');
+							    return '<img src="'.$iconPath.'" alt="" title="'.SensitiveIO::sanitizeHTMLString($iconLabel).'" />';
 							}
 							return '';
 						break;
@@ -818,7 +845,7 @@ class CMS_object_categories extends CMS_object_common
 						case 'label':
 							$category = isset($this->_subfieldValues[0]) ? CMS_moduleCategories_catalog::getByID($this->_subfieldValues[0]->getValue()) : '';
 							if (is_object($category) && !$category->hasError()) {
-								return htmlspecialchars($category->getLabel($cms_language));
+								return io::htmlspecialchars($category->getLabel($cms_language));
 							}
 							return '';
 						break;
@@ -841,6 +868,25 @@ class CMS_object_categories extends CMS_object_common
 							$category = CMS_moduleCategories_catalog::getByID($this->_subfieldValues[0]->getValue());
 							if (!$category->hasError()) {
 								return $category->getDescription($cms_language);
+							}
+							return '';
+						break;
+						case 'iconPath':
+							$category = CMS_moduleCategories_catalog::getByID($this->_subfieldValues[0]->getValue());
+							if (!$category->hasError()) {
+								$iconPathFS = $category->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, true);
+								$iconPathWR = CMS_websitesCatalog::getMainURL().$category->getIconPath(true, PATH_RELATIVETO_WEBROOT, true);
+								if ($iconPathFS && file_exists($iconPathFS) && is_file($iconPathFS) && $iconPathWR) {
+									return $iconPathWR;
+								}
+							}
+							return '';
+						break;
+						case 'iconHTML':
+							$iconPath = $this->getValue('iconPath');
+							if($iconPath){
+							    $iconLabel = $this->getValue('label');
+							    return '<img src="'.$iconPath.'" alt="" title="'.SensitiveIO::sanitizeHTMLString($iconLabel).'" />';
 							}
 							return '';
 						break;
@@ -872,11 +918,15 @@ class CMS_object_categories extends CMS_object_common
 			$labels['structure']['values:label'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESLABEL_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 			$labels['structure']['values:file'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESFILE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 			$labels['structure']['values:categorydesc'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESDESCRIPTION_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		    $labels['structure']['values:iconPath'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESICONPATH_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		    $labels['structure']['values:iconHTML'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESICONHTML_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		} else {
 			$labels['structure']['label'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_LABEL_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 			$labels['structure']['id'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_ID_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 			$labels['structure']['file'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_FILE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 			$labels['structure']['categorydesc'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESDESCRIPTION_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		    $labels['structure']['iconPath'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESICONPATH_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		    $labels['structure']['iconHTML'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESICONHTML_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		}
 		$labels['function']['categoryLineage'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_FUNCTION_CATEGORYLINEAGE_DESCRIPTION,array('{'.$objectName.'}') ,MOD_POLYMOD_CODENAME);
 		$labels['function']['categoriesTree'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_FUNCTION_CATEGORYTREE_DESCRIPTION,array('{'.$objectName.'}') ,MOD_POLYMOD_CODENAME);

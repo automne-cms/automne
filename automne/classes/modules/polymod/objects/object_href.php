@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_href.php,v 1.5 2009/10/22 16:30:04 sebastien Exp $
+// $Id: object_href.php,v 1.6 2009/11/10 16:49:01 sebastien Exp $
 
 /**
   * Class CMS_object_href
@@ -342,7 +342,7 @@ class CMS_object_href extends CMS_object_common
 				return $href->getHTML(false, $moduleCodename, $location, false, true);
 			break;
 			case 'hreflabel':
-				return htmlspecialchars($href->getLabel());
+				return io::htmlspecialchars($href->getLabel());
 			break;
 			case 'hreftarget':
 				return $href->getTarget();
@@ -368,11 +368,11 @@ class CMS_object_href extends CMS_object_common
 				if ($parameters) {
 					$title = $parameters;
 					//add title attribute to link
-					$href->setAttributes(array('title' => htmlspecialchars($href->getLabel().' ('.$title.')')));
+					$href->setAttributes(array('title' => io::htmlspecialchars($href->getLabel().' ('.$title.')')));
 				} else {
 					$title = false;
 					//add title attribute to link
-					$href->setAttributes(array('title' => htmlspecialchars($href->getLabel())));
+					$href->setAttributes(array('title' => io::htmlspecialchars($href->getLabel())));
 				}
 				
 				return $href->getHTML($title, $moduleCodename, $location);

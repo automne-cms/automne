@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: block.php,v 1.3 2009/10/22 16:30:03 sebastien Exp $
+// $Id: block.php,v 1.4 2009/11/10 16:48:59 sebastien Exp $
 
 /**
   * Class CMS_block_polymod
@@ -138,7 +138,7 @@ class CMS_block_polymod extends CMS_block
 			}
 			break;
 		case PAGE_VISUALMODE_FORM:
-			$this->_lookForBlockParameters();
+			//$this->_lookForBlockParameters();
 			$this->_administrable = true;
 			$this->_editable = $this->_canhasParameters;
 			if (($this->_hasParameters && $this->_musthaveParameters) || !$this->_musthaveParameters) {
@@ -455,7 +455,7 @@ class CMS_block_polymod extends CMS_block
 		try {
 			$domdocument->loadXML('<dummy>'.$this->_definition.'</dummy>');
 		} catch (DOMException $e) {
-			$this->raiseError('Parse error during search for blocks parameters : '.$e->getMessage()." :\n".htmlspecialchars($this->_definition));
+			$this->raiseError('Parse error during search for blocks parameters : '.$e->getMessage()." :\n".io::htmlspecialchars($this->_definition));
 			return true;
 		}
 		$searchTags = $domdocument->getElementsByTagName('atm-search');

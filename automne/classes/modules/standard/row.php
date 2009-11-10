@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: row.php,v 1.7 2009/10/22 16:30:05 sebastien Exp $
+// $Id: row.php,v 1.8 2009/11/10 16:48:59 sebastien Exp $
 
 /**
   * Class CMS_row
@@ -571,7 +571,7 @@ class CMS_row extends CMS_grandFather
 				try {
 					$domdocument->loadXML('<row>'.$data.'</row>');
 				} catch (DOMException $e) {
-					$this->raiseError('Parse error for row : '.$e->getMessage()." :\n".htmlspecialchars($data));
+					$this->raiseError('Parse error for row : '.$e->getMessage()." :\n".io::htmlspecialchars($data));
 					return '';
 				}
 				$rowNodes = $domdocument->getElementsByTagName('row');
@@ -581,7 +581,7 @@ class CMS_row extends CMS_grandFather
 				//search for valid tags
 				$hasValidTag = false;
 				foreach($rowXML->childNodes as $rowChildNode) {
-					if (is_a($rowChildNode, 'DOMElement') && $rowChildNode->tagName != 'script') {
+					if (is_a($rowChildNode, 'DOMElement') && $rowChildNode->tagName != 'script' && $rowChildNode->tagName != 'p' && io::substr($rowChildNode->tagName, 0, 4) != 'atm-') {
 						$hasValidTag = true;
 					}
 				}
@@ -591,7 +591,7 @@ class CMS_row extends CMS_grandFather
 					try {
 						$domdocument->loadXML('<row><div class="atm-dummy-row-tag">'.$data.'</div></row>');
 					} catch (DOMException $e) {
-						$this->raiseError('Parse error for row : '.$e->getMessage()." :\n".htmlspecialchars($data));
+						$this->raiseError('Parse error for row : '.$e->getMessage()." :\n".io::htmlspecialchars($data));
 						return '';
 					}
 					$rowNodes = $domdocument->getElementsByTagName('row');
@@ -602,7 +602,7 @@ class CMS_row extends CMS_grandFather
 				$elements = array();
 				$rowId = 'row-'.$this->_tagID;
 				foreach($rowXML->childNodes as $rowChildNode) {
-					if (is_a($rowChildNode, 'DOMElement') && $rowChildNode->tagName != 'script') {
+					if (is_a($rowChildNode, 'DOMElement') && $rowChildNode->tagName != 'script' && $rowChildNode->tagName != 'p' && io::substr($rowChildNode->tagName, 0, 4) != 'atm-') {
 						if ($rowChildNode->hasAttribute('class')) {
 							$rowChildNode->setAttribute('class', $rowChildNode->getAttribute('class').' '.$rowId);
 						} else {
@@ -619,6 +619,7 @@ class CMS_row extends CMS_grandFather
 				}
 				$data = CMS_DOMDocument::DOMElementToString($rowXML, true);
 				//add row specification
+				//pr(io::htmlspecialchars($data), true);
 				$data = '
 				<script type="text/javascript">
 					atmRowsDatas[\''.$rowId.'\'] = {
@@ -820,7 +821,7 @@ class CMS_row extends CMS_grandFather
 		$hasClientSpaces = $this->hasClientSpaces();
 		$description = sensitiveIO::ellipsis($this->getDescription(), 50);
 		if ($description != $this->getDescription()) {
-			$description = '<span ext:qtip="'.htmlspecialchars($this->getDescription()).'">'.$description.'</span>';
+			$description = '<span ext:qtip="'.io::htmlspecialchars($this->getDescription()).'">'.$description.'</span>';
 		}
 		$description = $description ? $description.'<br />' : '';
 		//append template definition if needed

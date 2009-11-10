@@ -1,3 +1,7 @@
+v1.31
+[BUG] : In fields labels with accentued caracters
+[REFACTOR] : UTF-8 support
+
 v1.30
 [BUG] : In exported CSV file format. Do not work correctly in excel for multi-line values
 [BUG] : If a login attempt is done just before a failed login attempt, user is redirected to 403 page even if his credentials are correctly entered

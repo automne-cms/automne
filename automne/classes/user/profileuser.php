@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: profileuser.php,v 1.7 2009/10/22 16:30:27 sebastien Exp $
+// $Id: profileuser.php,v 1.8 2009/11/10 16:49:02 sebastien Exp $
 
 /**
   * Class CMS_profile_user
@@ -838,7 +838,7 @@ class CMS_profile_user extends CMS_profile
 		if ($groups) {
 			foreach ($groups as $group) {
 				$userGroups .= ($userGroups) ? ', ' : '';
-				$userGroups .= '<a href="#" onclick="Automne.view.search(\'group:'.$group->getGroupId().'\');return false;" ext:qtip="'.htmlspecialchars($group->getDescription()).' (Cliquez pour voir les utilisateurs)" class="atm-help">'.$group->getLabel().'</a>';
+				$userGroups .= '<a href="#" onclick="Automne.view.search(\'group:'.$group->getGroupId().'\');return false;" ext:qtip="'.io::htmlspecialchars($group->getDescription()).' (Cliquez pour voir les utilisateurs)" class="atm-help">'.$group->getLabel().'</a>';
 			}
 		} else {
 			$userGroups = 'Aucun';
@@ -860,7 +860,7 @@ class CMS_profile_user extends CMS_profile
 			'description'	=> '
 				Nom : <strong>'.$this->getLastname().'</strong><br />
 				Prénom : <strong>'.$this->getFirstname().'</strong><br />
-				Email : <a href="mailto:'.$this->getEmail().'" ext:qtip="Ecrire à '.htmlspecialchars($this->getFullName()).'">'.$this->getEmail().'</a><br />
+				Email : <a href="mailto:'.$this->getEmail().'" ext:qtip="Ecrire à '.io::htmlspecialchars($this->getFullName()).'">'.$this->getEmail().'</a><br />
 				Groupes : '.$userGroups,
 			'edit'			=> $edit
 		);

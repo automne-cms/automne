@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_email.php,v 1.4 2009/10/22 16:30:04 sebastien Exp $
+// $Id: object_email.php,v 1.5 2009/11/10 16:49:01 sebastien Exp $
 
 /**
   * Class CMS_object_email
@@ -439,7 +439,7 @@ class CMS_object_email extends CMS_object_common
 		</fieldset>
 		<fieldset>
 			<legend><label for="'.$prefixName.'message_body_page"><input'.$pageSelected.' id="'.$prefixName.'message_body_page" type="radio" name="'.$prefixName.'emailBody" value="2" />'.$cms_language->getMessage(self::MESSAGE_OBJECT_EMAIL_PARAMETER_BODY_PAGE, false, MOD_POLYMOD_CODENAME).'</label></legend>
-			<input type="text" class="admin_input_text" id="'.$prefixName.'emailBody_pageID" name="'.$prefixName.'emailBody_pageID" value="'.htmlspecialchars($pageID).'" size="6" />';
+			<input type="text" class="admin_input_text" id="'.$prefixName.'emailBody_pageID" name="'.$prefixName.'emailBody_pageID" value="'.io::htmlspecialchars($pageID).'" size="6" />';
 			//build tree link
 			$grand_root = CMS_tree::getRoot();
 			$href = PATH_ADMIN_SPECIAL_TREE_WR;
@@ -448,7 +448,7 @@ class CMS_object_email extends CMS_object_common
 			$href .= '&amp;encodedOnClick='.base64_encode("window.opener.document.getElementById('".$prefixName."emailBody_pageID').value = '%s';self.close();");
 			$href .= '&encodedPageLink='.base64_encode('false');
 			$input .= '&nbsp;<a href="'.$href.'" class="admin" target="_blank"><img src="'.PATH_ADMIN_IMAGES_WR. '/picto-arbo.gif" border="0" align="absmiddle" /></a>
-			&nbsp;?<input type="text" size="80" name="'.$prefixName.'emailBody_pageURL" value="'.htmlspecialchars($module->convertDefinitionString($pageURL,true)).'" class="admin_input_text" />
+			&nbsp;?<input type="text" size="80" name="'.$prefixName.'emailBody_pageURL" value="'.io::htmlspecialchars($module->convertDefinitionString($pageURL,true)).'" class="admin_input_text" />
 		</fieldset>';
 		
 		//object Explanation

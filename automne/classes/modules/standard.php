@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: standard.php,v 1.15 2009/10/28 16:26:59 sebastien Exp $
+// $Id: standard.php,v 1.16 2009/11/10 16:49:00 sebastien Exp $
 
 /**
   * Class CMS_module_standard
@@ -1335,9 +1335,9 @@ class CMS_module_standard extends CMS_module
 		try{
 			$source = PATH_MAIN_FS.'/'.CMS_grandFather::ERROR_LOG;
 			$dest = PATH_LOGS_FS.'/'.CMS_grandFather::ERROR_LOG.'-'.date('Y-m-d').'.gz';
-			if (CMS_file::gzipfile($source, $dest, 3)) {
+			if (is_file($source) && CMS_file::gzipfile($source, $dest, 3)) {
 				//erase error log file
-				@unlink(PATH_MAIN_FS.'/'.CMS_grandFather::ERROR_LOG);
+				@unlink($source);
 			}
 		} catch(Exception $e) {}
 	}
@@ -1586,7 +1586,7 @@ class CMS_module_standard extends CMS_module
 				}
 				//load CS datas
 				switch ($tag->getName()) {
-					case 'atm-meta-tags':
+					/*case 'atm-meta-tags':
 						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
 							//add needed javascripts
 							$metaDatas = '<script type="text/javascript">'."\n".
@@ -1604,8 +1604,8 @@ class CMS_module_standard extends CMS_module
 							
 							return $metaDatas;
 						}
-					break;
-					case "atm-js-tags":
+					break;*/
+					/*case "atm-js-tags":
 					case "atm-css-tags":
 						//if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
 							$files = $tag->getAttribute('files');
@@ -1635,23 +1635,23 @@ class CMS_module_standard extends CMS_module
 							}
 							//save files
 							CMS_module::moduleUsage($treatedObject->getID(), $tag->getName(), $files);
-							return '<?php echo CMS_view::'.$method.'(array(\''.implode('\',\'', $files).'\')'.($media ? ', \''.$media.'\'' : '').'); ?>'."\n";
+							return '<?php echo CMS_view::'.$method.'(array(\''.implode('\',\'', $files).'\')'.($media ? ', \''.$media.'\'' : '').'); ?'.'>'."\n";
 						//}
-					break;
-					case 'title':
+					break;*/
+					/*case 'title':
 						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
 							$title = $treatmentParameters['page']->getTitle();
 							return '<title>'.$title.'</title>';
 						}
-					break;
-					case 'atm-linx':
-						/*if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
+					break;*/
+					/*case 'atm-linx':
+						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
 							$linx_args = array("page"=> $treatmentParameters["page"], "publicTree"=>false);
 							$linx = $tag->getRepresentationInstance($linx_args);
 							$linx->setDebug(false);
 							return $linx->getOutput();
-						}*/
-					break;
+						}
+					break;*/
 					case 'atm-clientspace':
 					default:
 						$client_space = $tag->getRepresentationInstance($args);
@@ -1727,7 +1727,7 @@ class CMS_module_standard extends CMS_module
 						return '<meta name="description" content="'.SensitiveIO::sanitizeHTMLString($treatedObject->getDescription($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC)).'" />';
 					break;
 					case "atm-last-update":
-						$lastlog = CMS_log_catalog::getByResourceAction(MOD_STANDARD_CODENAME, $treatedObject->getID(), CMS_log::LOG_ACTION_RESOURCE_SUBMIT_DRAFT, 1);
+						$lastlog = CMS_log_catalog::getByResourceAction(MOD_STANDARD_CODENAME, $treatedObject->getID(), array(CMS_log::LOG_ACTION_RESOURCE_SUBMIT_DRAFT, CMS_log::LOG_ACTION_RESOURCE_DIRECT_VALIDATION), 1);
 						if (!$lastlog || !is_object($lastlog[0])) {
 							return '';
 						}
@@ -1801,6 +1801,10 @@ class CMS_module_standard extends CMS_module
 									//append CMS_function.js file
 									if (!isset($usage['js-files']) && file_exists(PATH_JS_FS.'/CMS_functions.js')) {
 										$files = array_merge($files, array(PATH_JS_WR.'/CMS_functions.js'));
+									}
+									//append swfobject for block flash
+									if (is_array($usage) && isset($usage['blockflash']) && $usage['blockflash'] == true) {
+										$files[] = 'swfobject';
 									}
 									//save files
 									CMS_module::moduleUsage($treatedObject->getID(), $tag->getName(), $files, true);
@@ -1911,7 +1915,7 @@ class CMS_module_standard extends CMS_module
 					try {
 						$domdocument->loadXML('<html>'.$tag->getContent().'</html>');
 					} catch (DOMException $e) {
-						$this->raiseError('Parse error for atm-linx : '.$e->getMessage()." :\n".htmlspecialchars($tag->getContent()));
+						$this->raiseError('Parse error for atm-linx : '.$e->getMessage()." :\n".io::htmlspecialchars($tag->getContent()));
 						return '';
 					}
 					$nodespecs = $domdocument->getElementsByTagName('nodespec');
@@ -2133,7 +2137,7 @@ class CMS_module_standard extends CMS_module
 		
 		if (is_object($page) && !$page->hasError()) {
 			$label = @$page->getTitle();
-			return 'Page : <a class="admin" href="#" onclick="Automne.utils.getPageById('.$page->getID().');Ext.getCmp(\'scriptsWindow\').close();return false;">'.htmlspecialchars($label).' ('.$parameters['pageid'].')</a>';
+			return 'Page : <a class="admin" href="#" onclick="Automne.utils.getPageById('.$page->getID().');Ext.getCmp(\'scriptsWindow\').close();return false;">'.io::htmlspecialchars($label).' ('.$parameters['pageid'].')</a>';
 		}
 		return $cms_language->getMessage(66).' ('.$parameters['pageid'].')';
 	}

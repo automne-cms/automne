@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: module.php,v 1.7 2009/10/22 16:30:02 sebastien Exp $
+// $Id: module.php,v 1.8 2009/11/10 16:49:00 sebastien Exp $
 
 /**
   * Class CMS_module
@@ -798,15 +798,17 @@ class CMS_module extends CMS_grandFather
 				$block = $tag->getRepresentationInstance();
 				//if block exists, use it
 				if ($block) {
-					//save in global var the page ID who need this module so we can add the header code later.
-					CMS_module::moduleUsage($treatmentParameters["page"]->getID(), $this->_codename, array('block' => true));
-					
-					return $block->getData($treatmentParameters["language"], $treatmentParameters["page"], $treatmentParameters["clientSpace"], $treatedObject, $visualizationMode);
+					$return = $block->getData($treatmentParameters["language"], $treatmentParameters["page"], $treatmentParameters["clientSpace"], $treatedObject, $visualizationMode);
+					if ($return) {
+						//save in global var the page ID who need this module so we can add the header code later.
+						CMS_module::moduleUsage($treatmentParameters["page"]->getID(), $this->_codename, array('block' => true));
+					}
+					return $return;
 				} else {
 					//else call module clientspace content
 					$cs = new CMS_moduleClientspace($tag->getAttributes());
 					$return = $cs->getClientspaceData($this->_codename, new CMS_date(), $treatmentParameters["page"], $visualizationMode);
-					if ($visualizationMode != PAGE_VISUALMODE_PRINT) {
+					if ($visualizationMode != PAGE_VISUALMODE_PRINT && $return) {
 						//save in global var the page ID who need this module so we can add the header code later.
 						CMS_module::moduleUsage($treatmentParameters["page"]->getID(), $this->_codename, array('block' => true));
 					}

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_image.php,v 1.10 2009/10/22 16:30:04 sebastien Exp $
+// $Id: object_image.php,v 1.11 2009/11/10 16:49:01 sebastien Exp $
 
 /**
   * Class CMS_object_image
@@ -506,7 +506,7 @@ class CMS_object_image extends CMS_object_common
 				$this->_subfieldValues[2]->setValue('');
 			}
 			//set label from label field
-			if (!$this->_subfieldValues[1]->setValue(htmlspecialchars($values[$prefixName.$this->_field->getID().'_1']))) {
+			if (!$this->_subfieldValues[1]->setValue(io::htmlspecialchars($values[$prefixName.$this->_field->getID().'_1']))) {
 				return false;
 			}
 			//image zoom (if needed)
@@ -708,7 +708,7 @@ class CMS_object_image extends CMS_object_common
 				}
 			}
 			//set label from label field
-			if (!$this->_subfieldValues[1]->setValue(htmlspecialchars(@$values[$prefixName.$this->_field->getID().'_1']))) {
+			if (!$this->_subfieldValues[1]->setValue(io::htmlspecialchars(@$values[$prefixName.$this->_field->getID().'_1']))) {
 				return false;
 			}
 	
@@ -721,7 +721,7 @@ class CMS_object_image extends CMS_object_common
 	
 				//set label as image name if none set
 				if (!$values[$prefixName.$this->_field->getID().'_1']) {
-					if (!$this->_subfieldValues[1]->setValue(htmlspecialchars($_FILES[$prefixName.$this->_field->getID().'_0']["name"]))) {
+					if (!$this->_subfieldValues[1]->setValue(io::htmlspecialchars($_FILES[$prefixName.$this->_field->getID().'_0']["name"]))) {
 						return false;
 					}
 				}
@@ -845,7 +845,7 @@ class CMS_object_image extends CMS_object_common
 			} elseif (isset($values[$prefixName.$this->_field->getID().'_0_hidden']) && $values[$prefixName.$this->_field->getID().'_0_hidden'] && isset($values[$prefixName.$this->_field->getID().'_delete']) && $values[$prefixName.$this->_field->getID().'_delete'] != 1) {
 				//set label as image name if none set
 				if ($values[$prefixName.$this->_field->getID().'_1']) {
-					if (!$this->_subfieldValues[1]->setValue(htmlspecialchars($values[$prefixName.$this->_field->getID().'_1']))) {
+					if (!$this->_subfieldValues[1]->setValue(io::htmlspecialchars($values[$prefixName.$this->_field->getID().'_1']))) {
 						return false;
 					}
 				}

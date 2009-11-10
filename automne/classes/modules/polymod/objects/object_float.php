@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_float.php,v 1.5 2009/10/22 16:30:04 sebastien Exp $
+// $Id: object_float.php,v 1.6 2009/11/10 16:49:01 sebastien Exp $
 
 /**
   * Class CMS_object_float
@@ -150,7 +150,7 @@ class CMS_object_float extends CMS_object_string {
 				return false;
 			}
 		}
-		if (!$this->_subfieldValues[0]->setValue(htmlspecialchars($values[$prefixName.$this->_field->getID().'_0']))) {
+		if (!$this->_subfieldValues[0]->setValue(io::htmlspecialchars($values[$prefixName.$this->_field->getID().'_0']))) {
 			return false;
 		}
 		return true;

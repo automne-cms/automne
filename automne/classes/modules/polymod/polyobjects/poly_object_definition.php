@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object_definition.php,v 1.3 2009/10/22 16:30:04 sebastien Exp $
+// $Id: poly_object_definition.php,v 1.4 2009/11/10 16:49:01 sebastien Exp $
 
 /**
   * Class CMS_poly_object_definition
@@ -340,7 +340,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 				case 'integer':
 				case 'date':
 				case 'string':
-					$input = '<input type="text" size="30" name="'.$prefixName.$parameter['internalName'].'" class="admin_input_text" value="'.htmlspecialchars($paramValue).'" />';
+					$input = '<input type="text" size="30" name="'.$prefixName.$parameter['internalName'].'" class="admin_input_text" value="'.io::htmlspecialchars($paramValue).'" />';
 				break;
 				default:
 					if ($parameter['type'] && method_exists($this, "getHTMLSubFieldsParameters".$parameter['type'])) {

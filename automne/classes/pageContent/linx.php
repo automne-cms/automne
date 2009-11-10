@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: linx.php,v 1.8 2009/07/20 16:35:36 sebastien Exp $
+// $Id: linx.php,v 1.9 2009/11/10 16:49:00 sebastien Exp $
 
 /**
   * Class CMS_linx
@@ -155,7 +155,7 @@ class CMS_linx extends CMS_grandFather
 			try {
 				$domdocument->loadXML($tagContent);
 			} catch (DOMException $e) {
-				$this->raiseError('Malformed atm-linx content in page '.$page->getID().' : '.$e->getMessage()."\n".htmlspecialchars($tagContent));
+				$this->raiseError('Malformed atm-linx content in page '.$page->getID().' : '.$e->getMessage()."\n".io::htmlspecialchars($tagContent));
 				return false;
 			}
 			$selections = $domdocument->getElementsByTagName('selection');
@@ -243,7 +243,7 @@ class CMS_linx extends CMS_grandFather
 			try {
 				$domdocument->loadXML('<linx>'.$output.'</linx>');
 			} catch (DOMException $e) {
-				$this->raiseError('Parse error for linx : '.$e->getMessage()." :\n".htmlspecialchars($output));
+				$this->raiseError('Parse error for linx : '.$e->getMessage()." :\n".io::htmlspecialchars($output));
 				return '';
 			}
 			$rowNodes = $domdocument->getElementsByTagName('linx');

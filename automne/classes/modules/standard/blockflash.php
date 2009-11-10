@@ -14,7 +14,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: blockflash.php,v 1.4 2009/10/22 16:30:05 sebastien Exp $
+// $Id: blockflash.php,v 1.5 2009/11/10 16:48:59 sebastien Exp $
 
 /**
   * Class CMS_block_flash
@@ -179,10 +179,9 @@ class CMS_block_flash extends CMS_block
 		'	<p><a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a></p>'."\n".
 		'</div>';
 		
-		$module = CMS_modulesCatalog::getByCodename(MOD_STANDARD_CODENAME);
 		$blockinfos = array('blockflash' => array());
 		$blockinfos['blockflash'] = true;
-		$module->moduleUsage($page->getID(), MOD_STANDARD_CODENAME, $blockinfos);
+		CMS_module::moduleUsage($page->getID(), MOD_STANDARD_CODENAME, $blockinfos);
 		if ($visualizationMode != PAGE_VISUALMODE_FORM) {
 			return str_replace("{{data}}", $html, $this->_definition);
 		} else {
@@ -233,7 +232,7 @@ class CMS_block_flash extends CMS_block
 							"width" => "200",
 							"height" => "100",
 							"version" => "9.0.0",
-							"params" => "",
+							"params" => "wmode:'transparent'",
 							"flashvars" => "",
 							"attributes" => ""
 							);

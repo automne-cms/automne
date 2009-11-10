@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: resourcestatus.php,v 1.5 2009/04/02 13:58:01 sebastien Exp $
+// $Id: resourcestatus.php,v 1.6 2009/11/10 16:49:02 sebastien Exp $
 
 /**
   * Class CMS_resourceStatus
@@ -616,16 +616,28 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return string The publication range
 	  * @access public
 	  */
-	function getPublicationRange($userLanguage)
+	function getPublicationRange($userLanguage, $public = true)
 	{
-		$this->_publicationDateStart->setFormat($userLanguage->getDateFormat());
-		$this->_publicationDateEnd->setFormat($userLanguage->getDateFormat());
-		$text = $this->_publicationDateStart->getLocalizedDate();
-		$text .= " ".$userLanguage->getMessage(MESSAGE_DATE_TO)." ";
-		if ($ld = $this->_publicationDateEnd->getLocalizedDate()) {
-			$text .= $ld;
+		if ($public) {
+			$this->_publicationDateStart->setFormat($userLanguage->getDateFormat());
+			$this->_publicationDateEnd->setFormat($userLanguage->getDateFormat());
+			$text = $this->_publicationDateStart->getLocalizedDate();
+			$text .= " ".$userLanguage->getMessage(MESSAGE_DATE_TO)." ";
+			if ($ld = $this->_publicationDateEnd->getLocalizedDate()) {
+				$text .= $ld;
+			} else {
+				$text .= "++";
+			}
 		} else {
-			$text .= "++";
+			$this->_publicationDateStartEdited->setFormat($userLanguage->getDateFormat());
+			$this->_publicationDateEndEdited->setFormat($userLanguage->getDateFormat());
+			$text = $this->_publicationDateStartEdited->getLocalizedDate();
+			$text .= " ".$userLanguage->getMessage(MESSAGE_DATE_TO)." ";
+			if ($ld = $this->_publicationDateEndEdited->getLocalizedDate()) {
+				$text .= $ld;
+			} else {
+				$text .= "++";
+			}
 		}
 		return $text;
 	}

@@ -14,7 +14,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_usergroup.php,v 1.6 2009/07/22 10:21:06 sebastien Exp $
+// $Id: object_usergroup.php,v 1.7 2009/11/10 16:49:01 sebastien Exp $
 
 /**
   * Class CMS_object_usergroup
@@ -537,7 +537,7 @@ class CMS_object_usergroup extends CMS_object_common
 				if (is_object($userGroup) && !$userGroup->hasError()) {
 					$label = ($params['isGroup']) ? $userGroup->getLabel() : $userGroup->getFirstName().' '.$userGroup->getLastName();
 					if ($label) {
-						$labels[] = htmlspecialchars($label);
+						$labels[] = io::htmlspecialchars($label);
 					}
 				}
 			}
@@ -636,7 +636,7 @@ class CMS_object_usergroup extends CMS_object_common
 							//load user/group
 							$userGroup = ($params['isGroup']) ? CMS_profile_usersGroupsCatalog::getByID($this->_subfieldValues[$name]->getValue()) : CMS_profile_usersCatalog::getByID($this->_subfieldValues[$name]->getValue());
 							if (is_object($userGroup) && !$userGroup->hasError()) {
-								return ($params['isGroup']) ? htmlspecialchars($userGroup->getLabel()) : htmlspecialchars($userGroup->getFirstName().' '.$userGroup->getLastName());
+								return ($params['isGroup']) ? io::htmlspecialchars($userGroup->getLabel()) : io::htmlspecialchars($userGroup->getFirstName().' '.$userGroup->getLastName());
 							}
 							return '';
 						break;
@@ -644,7 +644,7 @@ class CMS_object_usergroup extends CMS_object_common
 							//load user/group
 							$userGroup = ($params['isGroup']) ? CMS_profile_usersGroupsCatalog::getByID($this->_subfieldValues[$name]->getValue()) : CMS_profile_usersCatalog::getByID($this->_subfieldValues[$name]->getValue());
 							if (is_object($userGroup) && !$userGroup->hasError()) {
-								return ($params['isGroup']) ? '' : htmlspecialchars($userGroup->getEmail());
+								return ($params['isGroup']) ? '' : io::htmlspecialchars($userGroup->getEmail());
 							}
 							return '';
 						break;
@@ -658,7 +658,7 @@ class CMS_object_usergroup extends CMS_object_common
 							//load user/group
 							$userGroup = ($params['isGroup']) ? CMS_profile_usersGroupsCatalog::getByID($this->_subfieldValues[0]->getValue()) : CMS_profile_usersCatalog::getByID($this->_subfieldValues[0]->getValue());
 							if (is_object($userGroup) && !$userGroup->hasError()) {
-								return ($params['isGroup']) ? htmlspecialchars($userGroup->getLabel()) : htmlspecialchars($userGroup->getFirstName().' '.$userGroup->getLastName());
+								return ($params['isGroup']) ? io::htmlspecialchars($userGroup->getLabel()) : io::htmlspecialchars($userGroup->getFirstName().' '.$userGroup->getLastName());
 							}
 							return '';
 						break;
@@ -666,7 +666,7 @@ class CMS_object_usergroup extends CMS_object_common
 							//load user/group
 							$userGroup = ($params['isGroup']) ? CMS_profile_usersGroupsCatalog::getByID($this->_subfieldValues[0]->getValue()) : CMS_profile_usersCatalog::getByID($this->_subfieldValues[0]->getValue());
 							if (is_object($userGroup) && !$userGroup->hasError()) {
-								return ($params['isGroup']) ? '' : htmlspecialchars($userGroup->getEmail());
+								return ($params['isGroup']) ? '' : io::htmlspecialchars($userGroup->getEmail());
 							}
 							return '';
 						break;
@@ -777,15 +777,8 @@ class CMS_object_usergroup extends CMS_object_common
 	function getListOfNamesForObject($public = false, $searchConditions = array()) {
 		$params = $this->getParamsValues();
 		//load user/group
-		$usersGroups = ($params['isGroup']) ? CMS_profile_usersGroupsCatalog::getAll() : CMS_profile_usersCatalog::getAll();
-		//sort and index table
-		$userGroupSorted = array();
-		//use only active users
-		foreach ($usersGroups as $aUserGroup) {
-			if ($params['isGroup'] || $aUserGroup->isActive()) {
-				$userGroupSorted[($params['isGroup']) ? $aUserGroup->getGroupId() : $aUserGroup->getUserId()] = ($params['isGroup']) ? $aUserGroup->getLabel() : $aUserGroup->getLastName().' '.$aUserGroup->getFirstName();
-			}
-		}
+		$userGroupSorted = ($params['isGroup']) ? CMS_profile_usersGroupsCatalog::getGroupsLabels() : CMS_profile_usersCatalog::getUsersLabels(true, true);
+		
 		// Clean users/groups with enable/disable parameters
 		if ($params['isGroup']) {
 			$disableGroups = ($params['disableGroups']) ? explode(';',$params['disableGroups']) : array();

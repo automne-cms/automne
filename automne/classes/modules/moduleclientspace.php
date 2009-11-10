@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: moduleclientspace.php,v 1.3 2009/10/22 16:30:02 sebastien Exp $
+// $Id: moduleclientspace.php,v 1.4 2009/11/10 16:49:00 sebastien Exp $
 
 /**
   * Class CMS_moduleClientspace
@@ -160,7 +160,7 @@ class CMS_moduleClientspace extends CMS_grandFather
 					try {
 						$domdocument->loadXML('<dummy>'.$regs[2].'</dummy>');
 					} catch (DOMException $e) {
-						$this->raiseError('Parse error during search for module-param parameters : '.$e->getMessage()." :\n".htmlspecialchars($regs[2]));
+						$this->raiseError('Parse error during search for module-param parameters : '.$e->getMessage()." :\n".io::htmlspecialchars($regs[2]));
 						return false;
 					}
 					$paramsTags = $domdocument->getElementsByTagName('module-param');

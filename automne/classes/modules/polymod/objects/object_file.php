@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_file.php,v 1.12 2009/10/22 16:30:04 sebastien Exp $
+// $Id: object_file.php,v 1.13 2009/11/10 16:49:01 sebastien Exp $
 
 /**
   * Class CMS_object_file
@@ -684,7 +684,7 @@ class CMS_object_file extends CMS_object_common
 				}
 			}
 			
-			if (!(isset($values[$prefixName.$this->_field->getID().'_0']) && $this->_subfieldValues[0]->setValue(htmlspecialchars($values[$prefixName.$this->_field->getID().'_0'])))) {
+			if (!(isset($values[$prefixName.$this->_field->getID().'_0']) && $this->_subfieldValues[0]->setValue(io::htmlspecialchars($values[$prefixName.$this->_field->getID().'_0'])))) {
 			    return false;
 			}
 			
@@ -803,7 +803,7 @@ class CMS_object_file extends CMS_object_common
 						CMS_file::chmodFile(FILES_CHMOD, $destination_path.'/'.$new_filename);
 						//set label as file name if none set
 						if (!$values[$prefixName.$this->_field->getID().'_0']) {
-							if (!$this->_subfieldValues[0]->setValue(htmlspecialchars($filename))) {
+							if (!$this->_subfieldValues[0]->setValue(io::htmlspecialchars($filename))) {
 								return false;
 							}
 						}
@@ -970,7 +970,7 @@ class CMS_object_file extends CMS_object_common
 				}
 			}
 			
-			if (!(isset($values[$prefixName.$this->_field->getID().'_0']) && $this->_subfieldValues[0]->setValue(htmlspecialchars($values[$prefixName.$this->_field->getID().'_0'])))) {
+			if (!(isset($values[$prefixName.$this->_field->getID().'_0']) && $this->_subfieldValues[0]->setValue(io::htmlspecialchars($values[$prefixName.$this->_field->getID().'_0'])))) {
 			    	return false;
 			}
 			
@@ -1116,7 +1116,7 @@ class CMS_object_file extends CMS_object_common
 						@chmod($destination_path.'/'.$new_filename, octdec(FILES_CHMOD));
 						//set label as file name if none set
 						if (!$values[$prefixName.$this->_field->getID().'_0']) {
-							if (!$this->_subfieldValues[0]->setValue(htmlspecialchars($filename))) {
+							if (!$this->_subfieldValues[0]->setValue(io::htmlspecialchars($filename))) {
 								return false;
 							}
 						}
@@ -1163,7 +1163,7 @@ class CMS_object_file extends CMS_object_common
 				}
 				//set label as image name if none set
 				if (!$values[$prefixName.$this->_field->getID().'_0']) {
-					if (!$this->_subfieldValues[0]->setValue(htmlspecialchars($_FILES[$prefixName.$this->_field->getID().'_4']["name"]))) {
+					if (!$this->_subfieldValues[0]->setValue(io::htmlspecialchars($_FILES[$prefixName.$this->_field->getID().'_4']["name"]))) {
 						return false;
 					}
 				}
@@ -1210,7 +1210,7 @@ class CMS_object_file extends CMS_object_common
 			if (isset($values[$prefixName.$this->_field->getID().'_4_hidden']) && $values[$prefixName.$this->_field->getID().'_4_hidden'] && (!isset($values[$prefixName.$this->_field->getID().'_delete']) || $values[$prefixName.$this->_field->getID().'_delete'] != 1)) {
 				//set label as image name if none set
 				if ($values[$prefixName.$this->_field->getID().'_0']) {
-					if (!$this->_subfieldValues[0]->setValue(htmlspecialchars($values[$prefixName.$this->_field->getID().'_0']))) {
+					if (!$this->_subfieldValues[0]->setValue(io::htmlspecialchars($values[$prefixName.$this->_field->getID().'_0']))) {
 						return false;
 					}
 				}

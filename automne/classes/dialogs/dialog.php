@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: dialog.php,v 1.5 2009/10/22 16:30:01 sebastien Exp $
+// $Id: dialog.php,v 1.6 2009/11/10 16:49:00 sebastien Exp $
 
 /**
   * Class CMS_dialog
@@ -1057,7 +1057,7 @@ class CMS_dialog extends CMS_JSDialog
 				try {
 					$domdocument->loadXML('<dummy>'.$regs[0].'</dummy>');
 				} catch (DOMException $e) {
-					$this->raiseError('Parse error during search for module-param parameters : '.$e->getMessage()." :\n".htmlspecialchars($regs[2]));
+					$this->raiseError('Parse error during search for module-param parameters : '.$e->getMessage()." :\n".io::htmlspecialchars($regs[2]));
 					return $this->_content;
 				}
 				$paramsTags = $domdocument->getElementsByTagName('dialog-title');
@@ -1087,7 +1087,7 @@ class CMS_dialog extends CMS_JSDialog
 				try {
 					$domdocument->loadXML('<dummy>'.$regs[0].'</dummy>');
 				} catch (DOMException $e) {
-					$this->raiseError('Parse error during search for dialog-pages parameters : '.$e->getMessage()." :\n".htmlspecialchars($regs[2]));
+					$this->raiseError('Parse error during search for dialog-pages parameters : '.$e->getMessage()." :\n".io::htmlspecialchars($regs[2]));
 					return $this->_content;
 				}
 				$paramsTags = $domdocument->getElementsByTagName('dialog-pages');

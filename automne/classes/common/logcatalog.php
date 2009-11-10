@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: logcatalog.php,v 1.4 2009/07/20 16:35:36 sebastien Exp $
+// $Id: logcatalog.php,v 1.5 2009/11/10 16:48:58 sebastien Exp $
 
 /**
   * Class CMS_log_catalog
@@ -184,8 +184,13 @@ class CMS_log_catalog extends CMS_grandFather
 				log
 			where
 				module_log='".sensitiveIO::sanitizeSQLString($moduleCodename)."'
-				and resource_log='".sensitiveIO::sanitizeSQLString($resourceId)."'
-				and action_log='".sensitiveIO::sanitizeSQLString($action)."'
+				and resource_log='".sensitiveIO::sanitizeSQLString($resourceId)."'";
+		if (is_array($action)) {
+			$sql .= " and action_log in (".sensitiveIO::sanitizeSQLString(implode(',', $action)).")";
+		} else {
+			$sql .= " and action_log='".sensitiveIO::sanitizeSQLString($action)."'";
+		}
+		$sql .= "
 			order by
 				datetime_log desc
 		";
@@ -230,7 +235,8 @@ class CMS_log_catalog extends CMS_grandFather
 						CMS_log::MESSAGE_LOG_ACTION_RESOURCE_START_DRAFT		=> CMS_log::LOG_ACTION_RESOURCE_START_DRAFT,
 						CMS_log::MESSAGE_LOG_ACTION_RESOURCE_EDIT_DRAFT			=> CMS_log::LOG_ACTION_RESOURCE_EDIT_DRAFT,
 						CMS_log::MESSAGE_LOG_ACTION_RESOURCE_DELETE_DRAFT		=> CMS_log::LOG_ACTION_RESOURCE_DELETE_DRAFT,
-						CMS_log::MESSAGE_LOG_ACTION_RESOURCE_SUBMIT_DRAFT		=> CMS_log::LOG_ACTION_RESOURCE_SUBMIT_DRAFT);
+						CMS_log::MESSAGE_LOG_ACTION_RESOURCE_SUBMIT_DRAFT		=> CMS_log::LOG_ACTION_RESOURCE_SUBMIT_DRAFT,
+						CMS_log::MESSAGE_LOG_ACTION_RESOURCE_DIRECT_VALIDATION	=> CMS_log::LOG_ACTION_RESOURCE_DIRECT_VALIDATION);
 	}
 
 	/**
@@ -300,6 +306,7 @@ class CMS_log_catalog extends CMS_grandFather
 						CMS_log::MESSAGE_LOG_ACTION_RESOURCE_EDIT_DRAFT			=> CMS_log::LOG_ACTION_RESOURCE_EDIT_DRAFT,
 						CMS_log::MESSAGE_LOG_ACTION_RESOURCE_DELETE_DRAFT		=> CMS_log::LOG_ACTION_RESOURCE_DELETE_DRAFT,
 						CMS_log::MESSAGE_LOG_ACTION_RESOURCE_SUBMIT_DRAFT		=> CMS_log::LOG_ACTION_RESOURCE_SUBMIT_DRAFT,
+						CMS_log::MESSAGE_LOG_ACTION_RESOURCE_DIRECT_VALIDATION	=> CMS_log::LOG_ACTION_RESOURCE_DIRECT_VALIDATION,
 						CMS_log::MESSAGE_LOG_ACTION_WEBSITE_ADD					=> CMS_log::LOG_ACTION_WEBSITE_ADD,
 						CMS_log::MESSAGE_LOG_ACTION_WEBSITE_EDIT				=> CMS_log::LOG_ACTION_WEBSITE_EDIT,
 						CMS_log::MESSAGE_LOG_ACTION_WEBSITE_DELETE				=> CMS_log::LOG_ACTION_WEBSITE_DELETE,

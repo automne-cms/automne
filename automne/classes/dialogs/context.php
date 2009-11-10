@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: context.php,v 1.8 2009/10/28 16:26:59 sebastien Exp $
+// $Id: context.php,v 1.9 2009/11/10 16:49:00 sebastien Exp $
 
 /**
   * Class CMS_context
@@ -82,8 +82,11 @@ class CMS_context extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($login, $password, $permanent_cookie=0)
+	function __construct($login, $password, $permanent_cookie=0, $token = null)
 	{
+		if (!is_null($token) && !CMS_context::checkToken('login', $token)) {
+			return false;
+		}
 		if (isset($_COOKIE[CMS_context::getAutoLoginCookieName()]) && !$login || !$password) {
 			if (!$this->autoLogin()) {
 				//remove cookie
@@ -726,6 +729,10 @@ class CMS_context extends CMS_grandFather
 	}
 	
 	function checkToken ($name, $token) {
+		//if session token check is disabled, always return true
+		if (!defined('SESSION_TOKEN_CHECK') || !SESSION_TOKEN_CHECK) {
+			return true;
+		}
 		$tokensDatas = CMS_context::getSessionVar('atm-tokens');
 		$tokens = $tokensDatas['tokens'];
 		$tokensTime = $tokensDatas['time'];

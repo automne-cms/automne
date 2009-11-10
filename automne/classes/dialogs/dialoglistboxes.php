@@ -14,7 +14,7 @@
 // | Author: SÈbastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: dialoglistboxes.php,v 1.2 2009/10/22 16:30:01 sebastien Exp $
+// $Id: dialoglistboxes.php,v 1.3 2009/11/10 16:49:00 sebastien Exp $
 
 /**
   * Class CMS_dialog_listboxes
@@ -183,20 +183,6 @@ class CMS_dialog_listboxes extends CMS_grandFather
 		}
 
 		/**
-		  * Clean a label with given RegEx rule
-		  *
-		  * @param string s, the string to format
-		  * @return string, the string formatted
-		  */
-		function cleanLabel_'.$s_hiddenField.'(s) {
-			if (s != "") {
-				var reg = new RegExp("[^ a-zA-Z0-9\.\s\Áb‡‚‰ÈËÎÍÔÓˆÙ˘¸˚_\&\;\f\n\r\t\v\ -]","g");
-				s = s.replace(reg, "");
-			}
-			return s;
-		}
-
-		/**
 		  * Test presence of given option in destination list
 		  *
 		  * @param Select o_toList, listbox to get an option from
@@ -242,7 +228,15 @@ class CMS_dialog_listboxes extends CMS_grandFather
 							}
 						} else {
 							if (!isInList_'.$s_hiddenField.'(o_toList, current.value)) {
-								o_toList.options[o_toList.length] = new Option(cleanLabel_'.$s_hiddenField.'(current.text), current.value);
+								//o_toList.options[o_toList.length] = new Option(cleanLabel_'.$s_hiddenField.'(current.text), current.value);
+								var oOption = document.createElement("OPTION");
+								oOption.text = current.text;
+								oOption.value= current.value;
+								if (navigator.userAgent.toLowerCase().indexOf(\'msie\') != -1) {
+									o_toList.add(oOption);
+								} else {
+									o_toList.add(oOption,null);
+								}
 								o_fromList.options[i].style.color = "red";
 								i_lastIndexSelected = i;
 							}
@@ -309,7 +303,7 @@ class CMS_dialog_listboxes extends CMS_grandFather
 			for (var i=0; i < o_toList.length; i++) {
 				s += o_toList.options[i].value + "'.$s_separator.'";
 			}
-			o_hiddenField.value = s.io::substr(0, (s.length - 1));
+			o_hiddenField.value = s.substr(0, (s.length - 1));
 			if (o_keepedField.value) {
 				if (o_hiddenField.value) {
 					o_hiddenField.value += ";" + o_keepedField.value;
@@ -324,8 +318,8 @@ class CMS_dialog_listboxes extends CMS_grandFather
 		<input type="hidden" name="'.$s_hiddenField.'" value="'.@implode($s_separator, array_merge($a_selected_categoriesIDs,$a_keeped_categoriesIDs)).'" />
 		<input type="hidden" name="keep_'.$s_hiddenField.'" value="'.@implode($s_separator, $a_keeped_categoriesIDs).'" />
 		<table>';
-		$fromID = (isset($args['selectIDFrom'])) ? ' id="'.htmlspecialchars($args['selectIDFrom']).'"' : '';
-		$toID = (isset($args['selectIDTo'])) ? ' id="'.htmlspecialchars($args['selectIDTo']).'"' : '';
+		$fromID = (isset($args['selectIDFrom'])) ? ' id="'.io::htmlspecialchars($args['selectIDFrom']).'"' : '';
+		$toID = (isset($args['selectIDTo'])) ? ' id="'.io::htmlspecialchars($args['selectIDTo']).'"' : '';
 		if($args['position'] == 'horizontal'){
 			if (isset($args['leftTitle']) || isset($args['rightTitle'])) {
 				$s .= '
@@ -342,7 +336,7 @@ class CMS_dialog_listboxes extends CMS_grandFather
 			@reset($a_all_categoriesIDs);
 			if (is_array($a_all_categoriesIDs) && $a_all_categoriesIDs) {
 				while (list($id, $lbl) = each($a_all_categoriesIDs)) {
-					$description = (isset($args['description'][$id])) ? ' title="'.htmlspecialchars($args['description'][$id]).'"' : '';
+					$description = (isset($args['description'][$id])) ? ' title="'.io::htmlspecialchars($args['description'][$id]).'"' : '';
 					if (isset($args['disableIDs']) && is_array($args['disableIDs']) && in_array($id,$args['disableIDs'])){
 						$s .= '
 						<option id="'.$id.'" value="'.$id.'" style="color:#CCCCCC;" disabled="true"'.$description.'>'.$lbl.'</option>';
@@ -389,7 +383,7 @@ class CMS_dialog_listboxes extends CMS_grandFather
 			@reset($a_all_categoriesIDs);
 			if (is_array($a_all_categoriesIDs) && $a_all_categoriesIDs) {
 				while (list($id, $lbl) = each($a_all_categoriesIDs)) {
-					$description = (isset($args['description'][$id])) ? ' title="'.htmlspecialchars($args['description'][$id]).'"' : '';
+					$description = (isset($args['description'][$id])) ? ' title="'.io::htmlspecialchars($args['description'][$id]).'"' : '';
 					if (is_array($args['disableIDs']) && in_array($id,$args['disableIDs'])){
 						$s .= '
 						<option id="'.$id.'" value="'.$id.'" style="color:#CCCCCC;" disabled="true"'.$description.'>'.$lbl.'</option>';

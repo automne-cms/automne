@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_i18nm.php,v 1.3 2009/10/22 16:30:03 sebastien Exp $
+// $Id: object_i18nm.php,v 1.4 2009/11/10 16:48:59 sebastien Exp $
 
 /**
   * Class CMS_object_i18nm
@@ -209,7 +209,7 @@ class CMS_object_i18nm extends CMS_grandFather
 		$count = 0;
 		foreach ($this->_languageLabels as $languageCode => $languageLabel) {
 			$required = (!$count) ? '<span class="admin_text_alert">*</span> ':'';
-			$input = (!$textareaInput) ? '<input type="text" size="30" name="'.$prefixName.$languageCode.'" class="admin_input_text" value="'.htmlspecialchars($this->getValue($languageCode, false)).'" />':'<textarea name="'.$prefixName.$languageCode.'" class="admin_long_textarea" cols="45" rows="2">'.htmlspecialchars($this->getValue($languageCode, false)).'</textarea>';
+			$input = (!$textareaInput) ? '<input type="text" size="30" name="'.$prefixName.$languageCode.'" class="admin_input_text" value="'.io::htmlspecialchars($this->getValue($languageCode, false)).'" />':'<textarea name="'.$prefixName.$languageCode.'" class="admin_long_textarea" cols="45" rows="2">'.io::htmlspecialchars($this->getValue($languageCode, false)).'</textarea>';
 			$html .= '
 			<tr>
 				<td class="admin" align="right" style="width:80px;">'.$required.$languageLabel.'</td>

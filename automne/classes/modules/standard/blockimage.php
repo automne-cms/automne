@@ -16,7 +16,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>  			  |
 // +----------------------------------------------------------------------+
 //
-// $Id: blockimage.php,v 1.5 2009/10/22 16:30:05 sebastien Exp $
+// $Id: blockimage.php,v 1.6 2009/11/10 16:48:59 sebastien Exp $
 
 /**
   * Class CMS_block_image
@@ -183,9 +183,9 @@ class CMS_block_image extends CMS_block
 			} else {
 				$replace = array(
 					'{{data}}'				=> '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/image.gif" alt="X" title="X" '.$html_attributes.' />',
-					'{{label}}'				=> htmlspecialchars($data["label"]),
-					'{{jslabel}}'			=> addslashes(htmlspecialchars($data["label"])),
-					'{{linkLabel}}'			=> htmlspecialchars($data["label"]),
+					'{{label}}'				=> io::htmlspecialchars($data["label"]),
+					'{{jslabel}}'			=> io::htmlspecialchars($data["label"]),
+					'{{linkLabel}}'			=> io::htmlspecialchars($data["label"]),
 					'{{imageZoomHtml}}'	 	=> '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/image.gif" alt="X" title="X" '.$html_attributes.' />',
 					'{{imagePath}}'			=> PATH_MODULES_FILES_STANDARD_WR,
 					'{{imageName}}'			=> 'image.gif',
@@ -205,9 +205,9 @@ class CMS_block_image extends CMS_block
 			$this->_editable = false;
 			$replace = array(
 				'{{data}}'				=> '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/image.gif" alt="X" title="X" '.$html_attributes.' />',
-				'{{label}}'				=> htmlspecialchars($data["label"]),
-				'{{jslabel}}'			=> addslashes(htmlspecialchars($data["label"])),
-				'{{linkLabel}}'			=> htmlspecialchars($data["label"]),
+				'{{label}}'				=> io::htmlspecialchars($data["label"]),
+				'{{jslabel}}'			=> io::htmlspecialchars($data["label"]),
+				'{{linkLabel}}'			=> io::htmlspecialchars($data["label"]),
 				'{{imageZoomHtml}}'	 	=> '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/image.gif" alt="X" title="X" '.$html_attributes.' />',
 				'{{imagePath}}'			=> PATH_MODULES_FILES_STANDARD_WR,
 				'{{imageName}}'			=> 'image.gif',
@@ -258,20 +258,20 @@ class CMS_block_image extends CMS_block
 		$html_imageZoomHref='';
 		$html_imageZoomPop='';
 		if ($data["file"]) {
-			$html_img = '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/'.$folder.'/'.$data["file"].'" alt="'.htmlspecialchars($data["label"]).'" title="' . htmlspecialchars($data["label"]) . '" '.$html_attributes.' />';
+			$html_img = '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/'.$folder.'/'.$data["file"].'" alt="'.io::htmlspecialchars($data["label"]).'" title="' . io::htmlspecialchars($data["label"]) . '" '.$html_attributes.' />';
 		}
 		if ($data["enlargedFile"]) {
 			$html_imgZoomName = $data["enlargedFile"];
-			$html_imgZoomHtml = '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/'.$folder.'/'.$data["enlargedFile"].'" alt="'.htmlspecialchars($data["label"]).'" title="' . htmlspecialchars($data["label"]) . '" '.$html_attributes.' />';
+			$html_imgZoomHtml = '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/'.$folder.'/'.$data["enlargedFile"].'" alt="'.io::htmlspecialchars($data["label"]).'" title="' . io::htmlspecialchars($data["label"]) . '" '.$html_attributes.' />';
 		}
 		if ($data["enlargedFile"]) {
 			$href = "/" . CMS_block_image::BLOCK_IMAGE_POPUP . '?location='.$folder.'&amp;file=' . $data["enlargedFile"] . '&amp;label=' . urlencode($data["label"]);
 			$popup = (OPEN_ZOOMIMAGE_IN_POPUP) ? ' onclick="javascript:CMS_openPopUpImage(\''.addslashes($href).'\');return false;"':'';
 			if ($html_img) {
-				$html = '<a target="_blank" href="'. $href . '"'.$popup.' title="' . htmlspecialchars($data["label"]) . '">' . $html_img . '</a>';
+				$html = '<a target="_blank" href="'. $href . '"'.$popup.' title="' . io::htmlspecialchars($data["label"]) . '">' . $html_img . '</a>';
 			}
 			$html_imageZoomHref = $href;
-			$linkLabel = '<a class="imagezoomlink" target="_blank" href="'. $href . '"'.$popup.' title="' . htmlspecialchars($data["label"]) . '">' . htmlspecialchars($data["label"]) . '</a>';
+			$linkLabel = '<a class="imagezoomlink" target="_blank" href="'. $href . '"'.$popup.' title="' . io::htmlspecialchars($data["label"]) . '">' . io::htmlspecialchars($data["label"]) . '</a>';
 		} else {
 			if ($currentLink->getHTML(false,MOD_STANDARD_CODENAME,$location)) {
 				$html = $currentLink->getHTML($html_img,MOD_STANDARD_CODENAME, $location);
@@ -279,13 +279,13 @@ class CMS_block_image extends CMS_block
 				$linkLabel = $currentLink->getHTML($data['label'],MOD_STANDARD_CODENAME, $location);
 			} else {
 				$html = $html_img;
-				$linkLabel = htmlspecialchars($data["label"]);
+				$linkLabel = io::htmlspecialchars($data["label"]);
 			}
 		}
 		$replace = array(
 			'{{data}}'			=> $html,
-			'{{label}}'			=> htmlspecialchars($data["label"]),
-			'{{jslabel}}'		=> addslashes(htmlspecialchars($data["label"])),
+			'{{label}}'			=> io::htmlspecialchars($data["label"]),
+			'{{jslabel}}'		=> io::htmlspecialchars($data["label"]),
 			'{{linkLabel}}'		=> $linkLabel,
 			'{{imageZoomHtml}}'	=> $html_imgZoomHtml,
 			'{{imagePath}}'		=> PATH_MODULES_FILES_STANDARD_WR.'/'.$folder,

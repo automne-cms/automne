@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: field.php,v 1.5 2009/10/22 16:30:02 sebastien Exp $
+// $Id: field.php,v 1.6 2009/11/10 16:48:59 sebastien Exp $
 
 /**
   * Class CMS_forms_field
@@ -547,7 +547,7 @@ class CMS_forms_field extends CMS_grandFather {
 		$input = $label = '';
 		switch ($this->getAttribute("type")) {
 			case 'hidden':
-				$input = '<input type="hidden" value="" id="'.$fieldIDDatas.'" name="'.$this->getAttribute("name").'" value="'.htmlspecialchars($this->getAttribute("value")).'" />';
+				$input = '<input type="hidden" value="" id="'.$fieldIDDatas.'" name="'.$this->getAttribute("name").'" value="'.io::htmlspecialchars($this->getAttribute("value")).'" />';
 			break;
 			case 'select':
 				$label = '<label for="'.$fieldIDDatas.'">'.$this->getAttribute("label").'</label>';
@@ -585,7 +585,7 @@ class CMS_forms_field extends CMS_grandFather {
 					case 'url':
 					case 'integer':
 					default:
-						$input .= ' type="text" value="'.htmlspecialchars($this->getAttribute("value")).'"';
+						$input .= ' type="text" value="'.io::htmlspecialchars($this->getAttribute("value")).'"';
 					break;
 				}
 				$input .= ' id="'.$fieldIDDatas.'" name="'.$this->getAttribute("name").'" />';
@@ -595,7 +595,7 @@ class CMS_forms_field extends CMS_grandFather {
 			break;
 			case 'textarea':
 				$label = '<label for="'.$fieldIDDatas.'">'.$this->getAttribute("label").'</label>';
-				$input = '<textarea id="'.$fieldIDDatas.'" name="'.$this->getAttribute("name").'">'.htmlspecialchars($this->getAttribute("value")).'</textarea>';
+				$input = '<textarea id="'.$fieldIDDatas.'" name="'.$this->getAttribute("name").'">'.io::htmlspecialchars($this->getAttribute("value")).'</textarea>';
 			break;
 		}
 		return array($label, $input);

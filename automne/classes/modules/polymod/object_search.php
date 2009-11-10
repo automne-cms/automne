@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_search.php,v 1.10 2009/11/02 09:53:11 sebastien Exp $
+// $Id: object_search.php,v 1.11 2009/11/10 16:48:59 sebastien Exp $
 
 /**
   * Class CMS_object_search
@@ -744,7 +744,7 @@ class CMS_object_search extends CMS_grandFather
 							$maxResults = 1000;
 							//then search
 							if (!$search->query($page, $maxResults)) {
-								$this->raiseError('Error in Xapian query for search : '.htmlspecialchars($value));
+								$this->raiseError('Error in Xapian query for search : '.io::htmlspecialchars($value));
 								return false;
 							}
 							//pr($search->getQueryDesc(true));

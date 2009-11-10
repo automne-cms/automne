@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: form.php,v 1.4 2009/11/02 17:28:12 sebastien Exp $
+// $Id: form.php,v 1.5 2009/11/10 16:49:00 sebastien Exp $
 
 /**
   * Class CMS_forms_formular
@@ -274,7 +274,7 @@ class CMS_forms_formular extends CMS_grandFather {
 				'<input type="hidden" name="formID" value="'.$this->getID().'" />'."\n".
 				'<input type="hidden" name="referer" value="'.$referer.'" />'."\n"
 				, $source);
-				//pr(htmlspecialchars($source));
+				//pr(io::htmlspecialchars($source));
 			break;
 		}
 		return $source;

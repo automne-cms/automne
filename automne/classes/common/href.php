@@ -14,7 +14,7 @@
 // | Authors: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>     |
 // +----------------------------------------------------------------------+
 //
-// $Id: href.php,v 1.4 2009/10/22 16:30:00 sebastien Exp $
+// $Id: href.php,v 1.5 2009/11/10 16:48:58 sebastien Exp $
 
 /**
   * Class Href
@@ -564,7 +564,7 @@ class CMS_href extends CMS_grandFather
 			}
 			break;
 		case RESOURCE_LINK_TYPE_EXTERNAL:
-			$href = htmlspecialchars($this->_externalLink);
+			$href = io::htmlspecialchars($this->_externalLink);
 			// Set a popup link, not a trivial link
 			if (isset($this->_popup['width']) && $this->_popup['width'] > 0 && isset($this->_popup['height']) && $this->_popup['height'] > 0) {
 				$onClick = "javascript:CMS_openPopUpPage('".$href."', 'external', ".$this->_popup['width'].", ".$this->_popup['height'].");return false;";

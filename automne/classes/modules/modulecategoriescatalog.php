@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modulecategoriescatalog.php,v 1.5 2009/10/22 16:30:02 sebastien Exp $
+// $Id: modulecategoriescatalog.php,v 1.6 2009/11/10 16:49:00 sebastien Exp $
 
 /**
   * Class CMS_moduleCategories_catalog
@@ -863,7 +863,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 		if (is_array($root_categories) && $root_categories) {
 			foreach ($root_categories as $obj) {
 				$obj->setAttribute('language', $cms_language);
-				$ctgs[$obj->getID()] = htmlspecialchars($obj->getLabel());
+				$ctgs[$obj->getID()] = io::htmlspecialchars($obj->getLabel());
 				if (false !== ($a_siblings = CMS_moduleCategories_catalog::getSiblingCategoriesAsArray($obj, 0, $cms_user, $cms_module, $cms_language, $clearanceLevel, $strict))) {
 					while(list($id, $lbl) = each($a_siblings)) {
 						if ($id) {
@@ -906,7 +906,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 		if (is_array($siblings) && $siblings) {
 			$ctgs = array();
 			foreach ($siblings as $obj) {
-				$ctgs[$obj->getID()] = str_repeat('-&nbsp;', $count).''.htmlspecialchars($obj->getLabel());
+				$ctgs[$obj->getID()] = str_repeat('-&nbsp;', $count).''.io::htmlspecialchars($obj->getLabel());
 				if (false !== ($a_sibling = CMS_moduleCategories_catalog::getSiblingCategoriesAsArray($obj, $count, $cms_user, $cms_module, $cms_language, $clearanceLevel, $strict))) {
 					while(list($id, $lbl) = each($a_sibling)) {
 						if ($id) {

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: submenu.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: submenu.php,v 1.2 2009/11/10 16:49:00 sebastien Exp $
 
 /**
   * Class CMS_subMenu
@@ -125,17 +125,17 @@ class CMS_subMenu extends CMS_grandFather
 		$content .= '<form name="'.$form_name.'" method="'.$method.'" action="' .$this->_formAction. '" ';
 		foreach ($this->_formAttributes as $name => $value) {
 			if ($name != "method" && $name != "onSubmit" && $name != "onsubmit" && $name != "target") {
-				$content .= $name . '="' . htmlspecialchars($value) . '" ';
+				$content .= $name . '="' . io::htmlspecialchars($value) . '" ';
 			}
 			if ($name == "onSubmit" || $name == "onsubmit") {
-				$content .= $name . '="' . htmlspecialchars($value) . '" ';
+				$content .= $name . '="' . io::htmlspecialchars($value) . '" ';
 				$onSubmit='1';
 			}
 			if ($name == "target") {
 				if ($value=="_blank") {
 					$onSubmit='1';
 				}
-				$content .= $name . '="' . htmlspecialchars($value) . '" ';
+				$content .= $name . '="' . io::htmlspecialchars($value) . '" ';
 			}
 		}
 		if (!$onSubmit && $type != 'popup') {
@@ -145,7 +145,7 @@ class CMS_subMenu extends CMS_grandFather
 		foreach ($this->_formHiddens as $name=>$value) {
 			$value = str_replace("\n", "", $value);
 			$value = str_replace("\r", "", $value);
-			$value = htmlspecialchars($value);
+			$value = io::htmlspecialchars($value);
 			$content .= '<input type="hidden" name="' .$name. '" value="' .$value. '" />';
 		}
 		

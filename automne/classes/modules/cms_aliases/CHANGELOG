@@ -1,3 +1,6 @@
+v1.02
+[REFACTOR] : This version is now used and bundled in Automne 4
+
 v1.01
 [REFACTOR] : change redirection file creation : add user authentification in APPLICATION_ENFORCES_ACCESS_CONTROL mode
 

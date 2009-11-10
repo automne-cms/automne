@@ -15,7 +15,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: dialoghref.php,v 1.3 2009/10/22 16:30:01 sebastien Exp $
+// $Id: dialoghref.php,v 1.4 2009/11/10 16:49:00 sebastien Exp $
 
 /**
   * Class CMS_dialog_href
@@ -351,7 +351,7 @@ class CMS_dialog_href extends CMS_grandFather
 				<!-- link label -->
 				<tr>
 					<th'.$tdClass.'><span class="admin_text_alert">*</span> '.$cms_language->getMessage(self::MESSAGE_PAGE_LINK_LABEL).'</th>
-					<td'.$tdClassLight.' colspan="2"><input style="width:100%;" type="text"'.$inputClass.' name="'.$this->_prefix.'link_label" value="'.htmlspecialchars($this->_href->getLabel()).'" /></td>
+					<td'.$tdClassLight.' colspan="2"><input style="width:100%;" type="text"'.$inputClass.' name="'.$this->_prefix.'link_label" value="'.io::htmlspecialchars($this->_href->getLabel()).'" /></td>
 				</tr>';
 			}
 			$checked = ($this->_href->getLinkType() == RESOURCE_LINK_TYPE_NONE) ? ' checked="checked"' : '';
@@ -414,7 +414,7 @@ class CMS_dialog_href extends CMS_grandFather
 						<td'.$tdClassDark.'><input type="radio" id="'.$this->_prefix.'link_type_2" name="'.$this->_prefix.'link_type" value="'.RESOURCE_LINK_TYPE_EXTERNAL.'"'.$checked.' /></td>
 						<td'.$tdClassDark.'>
 							<label for="'.$this->_prefix.'link_type_2">'.$cms_language->getMessage(self::MESSAGE_PAGE_EXTERNALLINK).'</label>
-							<input type="text"'.$inputClass.' id="'.$this->_prefix.'link_external" name="'.$this->_prefix.'link_external" value="'.htmlspecialchars($this->_href->getExternalLink()).'" size="30" />
+							<input type="text"'.$inputClass.' id="'.$this->_prefix.'link_external" name="'.$this->_prefix.'link_external" value="'.io::htmlspecialchars($this->_href->getExternalLink()).'" size="30" />
 						</td>
 					</tr>
 				';

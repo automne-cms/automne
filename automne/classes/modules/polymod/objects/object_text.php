@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_text.php,v 1.6 2009/10/22 16:30:04 sebastien Exp $
+// $Id: object_text.php,v 1.7 2009/11/10 16:49:01 sebastien Exp $
 
 /**
   * Class CMS_object_text
@@ -319,7 +319,7 @@ class CMS_object_text extends CMS_object_common
 		$params = $this->getParamsValues();
 		if (!$params['html']) {
 			//remove html characters if any then convert line breaks to <br /> tags
-			$value = isset($values[$prefixName.$this->_field->getID().'_0']) ? nl2br(strip_tags(htmlspecialchars($values[$prefixName.$this->_field->getID().'_0']))) : '';
+			$value = isset($values[$prefixName.$this->_field->getID().'_0']) ? nl2br(strip_tags(io::htmlspecialchars($values[$prefixName.$this->_field->getID().'_0']))) : '';
 		} else {
 			$value = FCKeditor::createAutomneLinks($values[$prefixName.$this->_field->getID().'_0'], CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID()));
 		}
@@ -369,7 +369,7 @@ class CMS_object_text extends CMS_object_common
 		$params = $this->getParamsValues();
 		switch($name) {
 			case 'label':
-				return (isset($params['html']) && $params['html']) ? $this->getLabel() : htmlspecialchars($this->getLabel());
+				return (isset($params['html']) && $params['html']) ? $this->getLabel() : io::htmlspecialchars($this->getLabel());
 			break;
 			case 'htmlvalue':
 			case 'value':

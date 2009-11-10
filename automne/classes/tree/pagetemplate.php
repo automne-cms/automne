@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: pagetemplate.php,v 1.7 2009/10/22 16:30:06 sebastien Exp $
+// $Id: pagetemplate.php,v 1.8 2009/11/10 16:49:02 sebastien Exp $
 
 /**
   * Class CMS_pageTemplate
@@ -1012,7 +1012,7 @@ class CMS_pageTemplate extends CMS_grandFather
 		}
 		$description = sensitiveIO::ellipsis($this->getDescription(), 50);
 		if ($description != $this->getDescription()) {
-			$description = '<span ext:qtip="'.htmlspecialchars($this->getDescription()).'">'.$description.'</span>';
+			$description = '<span ext:qtip="'.io::htmlspecialchars($this->getDescription()).'">'.$description.'</span>';
 		}
 		$description = $withDefinition ? $description.'<br />' : '';
 		//append template definition if needed

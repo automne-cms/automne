@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: view.php,v 1.11 2009/10/28 16:26:59 sebastien Exp $
+// $Id: view.php,v 1.12 2009/11/10 16:49:00 sebastien Exp $
 
 /**
   * Class CMS_view
@@ -477,8 +477,9 @@ class CMS_view extends CMS_grandFather
 				}
 			}
 			$this->raiseError('Unautorized query on a secure interface : Query on '.$_SERVER['SCRIPT_NAME'].' - from '.@$_SERVER['HTTP_REFERER']);
-			$this->raiseError(time());
-			$this->raiseError(print_r(CMS_context::getSessionVar('atm-tokens'), true));
+			//$this->raiseError(time());
+			//$this->raiseError(print_r(CMS_context::getSessionVar('atm-tokens'), true));
+			$this->setDisconnected(true);
 			$this->show();
 		}
 	}
@@ -505,7 +506,7 @@ class CMS_view extends CMS_grandFather
 				}
 				if ($this->_secure && CMS_context::tokenIsExpired('admin')) {
 					$token = CMS_context::getToken('admin');
-					pr('new token : '.$token);
+					//pr('new token : '.$token);
 					$return .= 
 					'	<token><![CDATA['.$token.']]></token>'."\n";
 				}

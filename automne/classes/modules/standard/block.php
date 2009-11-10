@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: block.php,v 1.5 2009/06/22 14:08:39 sebastien Exp $
+// $Id: block.php,v 1.6 2009/11/10 16:48:58 sebastien Exp $
 
 /**
   * Class CMS_block
@@ -333,7 +333,7 @@ class CMS_block extends CMS_grandFather
 		try {
 			$domdocument->loadXML('<block>'.$data.'</block>');
 		} catch (DOMException $e) {
-			$this->raiseError('Parse error for block : '.$e->getMessage()." :\n".htmlspecialchars($data));
+			$this->raiseError('Parse error for block : '.$e->getMessage()." :\n".io::htmlspecialchars($data));
 			return '';
 		}
 		$blockNodes = $domdocument->getElementsByTagName('block');
@@ -344,7 +344,7 @@ class CMS_block extends CMS_grandFather
 		$hasNode = false;
 		foreach($blockXML->childNodes as $blockChildNode) {
 			//scripts tags and p tags are not correctly handled by javascript
-			if (is_a($blockChildNode, 'DOMElement') && $blockChildNode->tagName != 'script' && $blockChildNode->tagName != 'p') {
+			if (is_a($blockChildNode, 'DOMElement') && $blockChildNode->tagName != 'script' && $blockChildNode->tagName != 'p' && io::substr($blockChildNode->tagName, 0, 4) != 'atm-') {
 				$hasNode = true;
 			}
 		}
@@ -354,7 +354,7 @@ class CMS_block extends CMS_grandFather
 			try {
 				$domdocument->loadXML('<block><div class="atm-empty-block atm-block-helper">'.$data.'</div></block>');
 			} catch (DOMException $e) {
-				$this->raiseError('Parse error for block : '.$e->getMessage()." :\n".htmlspecialchars($data));
+				$this->raiseError('Parse error for block : '.$e->getMessage()." :\n".io::htmlspecialchars($data));
 				return '';
 			}
 			$blockNodes = $domdocument->getElementsByTagName('block');
@@ -366,7 +366,7 @@ class CMS_block extends CMS_grandFather
 		$elements = array();
 		$uniqueId = 'block-'.md5(mt_rand().microtime());
 		foreach($blockXML->childNodes as $blockChildNode) {
-			if (is_a($blockChildNode, 'DOMElement') && $blockChildNode->tagName != 'script') {
+			if (is_a($blockChildNode, 'DOMElement') && $blockChildNode->tagName != 'script' && $blockChildNode->tagName != 'p' && io::substr($blockChildNode->tagName, 0, 4) != 'atm-') {
 				if ($blockChildNode->hasAttribute('class')) {
 					$blockChildNode->setAttribute('class', $blockChildNode->getAttribute('class').' atm-block '.$uniqueId);
 				} else {

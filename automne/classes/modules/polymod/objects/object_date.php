@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_date.php,v 1.10 2009/10/23 10:18:31 sebastien Exp $
+// $Id: object_date.php,v 1.11 2009/11/10 16:49:01 sebastien Exp $
 
 /**
   * Class CMS_object_date
@@ -246,7 +246,7 @@ class CMS_object_date extends CMS_object_common
 			}
 			$desc .= '</ul></span>';
 		}
-		$label = $desc ? '<span class="atm-help" ext:qtip="'.htmlspecialchars($desc).'">'.$mandatory.$this->getFieldLabel($language).'</span>' : $mandatory.$this->getFieldLabel($language);
+		$label = $desc ? '<span class="atm-help" ext:qtip="'.io::htmlspecialchars($desc).'">'.$mandatory.$this->getFieldLabel($language).'</span>' : $mandatory.$this->getFieldLabel($language);
 		
 		if ($params['withHMS']) {
 			$hms = !$date->isNull() ? $date->getHour().':'.$date->getMinute().':'.$date->getSecond() : '';
@@ -276,7 +276,7 @@ class CMS_object_date extends CMS_object_common
 						'labelWidth'	=> 55,
 						'items'			=> array(array(
 							'xtype'			=> 'textfield',
-							'fieldLabel'	=> '<span class="atm-help" ext:qtip="'.htmlspecialchars($language->getMessage(self::MESSAGE_OBJECT_DATE_DATE_COMMENT, array($language->getMessage(self::MESSAGE_OBJECT_DATE_HMS_FORMAT, false, MOD_POLYMOD_CODENAME)))).'">'.$language->getMessage(self::MESSAGE_OBJECT_DATE_HOURS, false, MOD_POLYMOD_CODENAME).'</span>',
+							'fieldLabel'	=> '<span class="atm-help" ext:qtip="'.io::htmlspecialchars($language->getMessage(self::MESSAGE_OBJECT_DATE_DATE_COMMENT, array($language->getMessage(self::MESSAGE_OBJECT_DATE_HMS_FORMAT, false, MOD_POLYMOD_CODENAME)))).'">'.$language->getMessage(self::MESSAGE_OBJECT_DATE_HOURS, false, MOD_POLYMOD_CODENAME).'</span>',
 							'value'			=> $hms,
 							/*'id'			=> 'polymodFieldsValue['.$prefixName.$this->_field->getID().'_1]',*/
 							'name'			=> 'polymodFieldsValue['.$prefixName.$this->_field->getID().'_1]',
@@ -435,7 +435,7 @@ class CMS_object_date extends CMS_object_common
 				if (io::strtolower($parameters) == 'rss') {
 					$parameters = 'r';
 				}
-				return htmlspecialchars(date($parameters, $date->getTimeStamp()));
+				return io::htmlspecialchars(date($parameters, $date->getTimeStamp()));
 			break;
 			default:
 				return parent::getValue($name, $parameters);

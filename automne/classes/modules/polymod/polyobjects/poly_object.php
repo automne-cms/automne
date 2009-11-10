@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object.php,v 1.10 2009/11/02 09:53:11 sebastien Exp $
+// $Id: poly_object.php,v 1.11 2009/11/10 16:49:01 sebastien Exp $
 
 /**
   * Class CMS_poly_object
@@ -549,7 +549,7 @@ class CMS_poly_object extends CMS_resource
 					$desc .= '<li>'.$fieldID.'&nbsp;:&nbsp;'.$this->_polyObjectValues[$fieldID]->getValue().'</li>';
 					$desc .= '</ul></span>';
 				}
-				$label = $desc ? '<span class="atm-help" ext:qtip="'.htmlspecialchars($desc).'">'.$mandatory.$this->_objectFieldsDefinition[$fieldID]->getLabel($language).'</span>' : $mandatory.$this->_objectFieldsDefinition[$fieldID]->getLabel($language);
+				$label = $desc ? '<span class="atm-help" ext:qtip="'.io::htmlspecialchars($desc).'">'.$mandatory.$this->_objectFieldsDefinition[$fieldID]->getLabel($language).'</span>' : $mandatory.$this->_objectFieldsDefinition[$fieldID]->getLabel($language);
 				$return = array(
 					'allowBlank'	=>	!$this->_objectFieldsDefinition[$fieldID]->getValue('required'),
 					'fieldLabel' 	=>	$label,
@@ -627,7 +627,7 @@ class CMS_poly_object extends CMS_resource
 							<option value="0">'.$language->getMessage(self::MESSAGE_POLYMOD_CHOOSE_OBJECT).'</option>';
 				foreach ($objectsNames as $objectID => $objectName) {
 					$selected = ((is_object($this->_polyObjectValues[$fieldID]) && $this->_polyObjectValues[$fieldID]->getValue() == $objectID) || ($inputParams['defaultvalue'] == $objectID && (!is_object($this->_polyObjectValues[$fieldID]) || !$this->_polyObjectValues[$fieldID]->getValue()))) ? ' selected="selected"':'';
-					$html .= '<option value="'.$objectID.'"'.$selected.'>'.htmlspecialchars(io::decodeEntities($objectName)).'</option>'."\n";
+					$html .= '<option value="'.$objectID.'"'.$selected.'>'.io::htmlspecialchars(io::decodeEntities($objectName)).'</option>'."\n";
 				}
 				$html .= '</select>';
 				if (POLYMOD_DEBUG) {
@@ -835,10 +835,11 @@ class CMS_poly_object extends CMS_resource
 	  * Writes all objects values into persistence (MySQL for now), along with base data.
 	  *
 	  * @param boolean $withResource treat also the resource status (if object is a primary resource) default true
+	  * @param boolean $emailValidators send emails to validators (if object is a primary resource) default true
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence($treatResource = true) {
+	function writeToPersistence($treatResource = true, $emailValidators = true) {
 		global $cms_user;
 		if ($this->_public) {
 			$this->raiseError("Can't write public object");
@@ -926,7 +927,7 @@ class CMS_poly_object extends CMS_resource
 			//if item is a primary resource, send emails to validators
 			if ($this->_objectResourceStatus == 1) {
 				if (APPLICATION_ENFORCES_WORKFLOW) {
-					if (!NO_APPLICATION_MAIL) {
+					if (!NO_APPLICATION_MAIL && $emailValidators) {
 						$validators = CMS_profile_usersCatalog::getValidators($polyModuleCodename);
 						foreach ($validators as $validator) {
 							//add script to send email for validator if needed
@@ -1207,7 +1208,7 @@ class CMS_poly_object extends CMS_resource
 					if (io::strtolower($parameters) == 'rss') {
 						$parameters = 'r';
 					}
-					return htmlspecialchars(date($parameters, $date->getTimeStamp()));
+					return io::htmlspecialchars(date($parameters, $date->getTimeStamp()));
 				}
 			break;
 			case 'formatedDateEnd':
@@ -1217,7 +1218,7 @@ class CMS_poly_object extends CMS_resource
 						if (io::strtolower($parameters) == 'rss') {
 							$parameters = 'r';
 						}
-						return htmlspecialchars(date($parameters, $date->getTimeStamp()));
+						return io::htmlspecialchars(date($parameters, $date->getTimeStamp()));
 					}
 				}
 			break;
@@ -1234,7 +1235,7 @@ class CMS_poly_object extends CMS_resource
 					$this->raiseError("Can't get 'description' value for an object which is not a field of another object ...");
 					return '';
 				}
-				return htmlspecialchars($this->_field->getFieldDescription($cms_language));
+				return io::htmlspecialchars($this->_field->getFieldDescription($cms_language));
 				break;
 			case 'required':
 				if (!is_a($this->_field, 'CMS_poly_object_field')) {
@@ -1324,7 +1325,7 @@ class CMS_poly_object extends CMS_resource
 		if (sizeof($values) > 1) {
 			foreach ($values as $key => $value) {
 				if ($key != 'selected') {
-					$linkParameters .= '&amp;'.$key.'='.htmlspecialchars($value);
+					$linkParameters .= '&amp;'.$key.'='.io::htmlspecialchars($value);
 				}
 			}
 		}

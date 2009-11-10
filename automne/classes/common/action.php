@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: action.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: action.php,v 1.2 2009/11/10 16:48:58 sebastien Exp $
 
 /**
   * Class CMS_action
@@ -113,17 +113,17 @@ class CMS_action extends CMS_grandFather
 		
 		foreach ($this->_formAttributes as $name => $value) {
 			if ($name != "method" && $name != "onSubmit" && $name != "onsubmit" && $name != "target") {
-				$content .= $name . '="' . htmlspecialchars($value) . '" ';
+				$content .= $name . '="' . io::htmlspecialchars($value) . '" ';
 			}
 			if ($name == "onSubmit" || $name == "onsubmit") {
-				$content .= $name . '="' . htmlspecialchars($value) . '" ';
+				$content .= $name . '="' . io::htmlspecialchars($value) . '" ';
 				$onSubmit='1';
 			}
 			if ($name == "target") {
 				if ($value=="_blank") {
 					$onSubmit='1';
 				}
-				$content .= $name . '="' . htmlspecialchars($value) . '" ';
+				$content .= $name . '="' . io::htmlspecialchars($value) . '" ';
 			}
 		}
 		if (!$onSubmit) {
@@ -133,7 +133,7 @@ class CMS_action extends CMS_grandFather
 		foreach ($this->_formHiddens as $name=>$value) {
 			$value = str_replace("\n", "", $value);
 			$value = str_replace("\r", "", $value);
-			$value = htmlspecialchars($value);
+			$value = io::htmlspecialchars($value);
 			$content .= '<input type="hidden" name="' .$name. '" value="' .$value. '" />';
 		}
 		$content .= '<td class="'.$class.'" align="center">';
@@ -143,7 +143,7 @@ class CMS_action extends CMS_grandFather
 			$code= $textArray["code"];
 			$value = str_replace("\n", "", $value);
 			$value = str_replace("\r", "", $value);
-			$value = htmlspecialchars($value);
+			$value = io::htmlspecialchars($value);
 			$content .= SensitiveIO::arraySprintf($code, array('<input type="text" class="admin_input_text" name="' .$name. '" value="' .$value. '" size="' .$size. '" />'));
 		}
 		$content .= '<input type="submit" class="admin_input_'.$class.'" value="' .$this->_label. '" style="width:130px" /></td>

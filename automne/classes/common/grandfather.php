@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: grandfather.php,v 1.11 2009/10/22 16:30:00 sebastien Exp $
+// $Id: grandfather.php,v 1.12 2009/11/10 16:48:58 sebastien Exp $
 
 /**
   * Class CMS_grandFather
@@ -97,7 +97,7 @@ class CMS_grandFather
 			}
 			//append error to current view
 			$view = CMS_view::getInstance();
-			$outputMessage = $encodeOutput ? htmlspecialchars($errorMessage) : $errorMessage;
+			$outputMessage = $encodeOutput ? io::htmlspecialchars($errorMessage) : $errorMessage;
 			$view->addError(array('error' => $outputMessage, 'backtrace' => $backTraceLink));
 		}
 		
@@ -186,7 +186,7 @@ class CMS_grandFather
 							E_RECOVERABLE_ERROR	=> 'Catchable Fatal Error'
 						);
 		$errorLabel = isset($errortype[$errno]) ? $errortype[$errno] : 'Errror '.$errno;
-		CMS_grandFather::raiseError('PHP '.$errorLabel.' : '.$errstr.' line '.$errline.' of file '.$errfile);
+		CMS_grandFather::_raiseError('PHP '.$errorLabel.' : '.$errstr.' line '.$errline.' of file '.$errfile);
 		return true;
 	}
 

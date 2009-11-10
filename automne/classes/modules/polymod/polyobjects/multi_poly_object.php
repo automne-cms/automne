@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: multi_poly_object.php,v 1.8 2009/10/22 16:30:04 sebastien Exp $
+// $Id: multi_poly_object.php,v 1.9 2009/11/10 16:49:01 sebastien Exp $
 
 /**
   * Class CMS_multi_poly_object
@@ -466,7 +466,7 @@ class CMS_multi_poly_object extends CMS_object_common
 			$desc .= '</ul></span>';
 		}
 		
-		$label = $desc ? '<span class="atm-help" ext:qtip="'.htmlspecialchars($desc).'">'.$mandatory.$this->getFieldLabel($language).'</span>' : $mandatory.$this->getFieldLabel($language);
+		$label = $desc ? '<span class="atm-help" ext:qtip="'.io::htmlspecialchars($desc).'">'.$mandatory.$this->getFieldLabel($language).'</span>' : $mandatory.$this->getFieldLabel($language);
 		
 		$listId = 'list'.md5(mt_rand().microtime());
 		$listId2 = 'list'.md5(mt_rand().microtime());
@@ -1045,7 +1045,7 @@ class CMS_multi_poly_object extends CMS_object_common
 				return $this->_field->getID();
 			break;
 			case 'description':
-				return htmlspecialchars($this->getFieldDescription($cms_language));
+				return io::htmlspecialchars($this->getFieldDescription($cms_language));
 			break;
 			default:
 				$this->raiseError("Unknown value to get : ".$name);
@@ -1094,7 +1094,7 @@ class CMS_multi_poly_object extends CMS_object_common
 		$labels['structure']['ids'] = $language->getMessage(self::MESSAGE_MULTI_OBJECT_IDS_DESCRIPTION,array($object->getFieldLabel($language)),MOD_POLYMOD_CODENAME);
 		$labels['structure']['fields'] = $language->getMessage(self::MESSAGE_MULTI_OBJECT_FIELDS_DESCRIPTION,array($object->getFieldLabel($language)),MOD_POLYMOD_CODENAME);
 		$labels['structure']['count'] = $language->getMessage(self::MESSAGE_MULTI_OBJECT_COUNT_DESCRIPTION,array($object->getFieldLabel($language)),MOD_POLYMOD_CODENAME);
-		$labels['structure']['description'] = $language->getMessage(self::MESSAGE_MULTI_OBJECT_FIELD_DESC_DESCRIPTION,array(htmlspecialchars($this->getFieldDescription($language))),MOD_POLYMOD_CODENAME);
+		$labels['structure']['description'] = $language->getMessage(self::MESSAGE_MULTI_OBJECT_FIELD_DESC_DESCRIPTION,array(io::htmlspecialchars($this->getFieldDescription($language))),MOD_POLYMOD_CODENAME);
 		$labels['function']['selectOptions'] = $language->getMessage(self::MESSAGE_MULTI_OBJECT_FUNCTION_SELECTOPTIONS_DESCRIPTION,array('{'.$objectName.'}') ,MOD_POLYMOD_CODENAME);
 
 		return $labels;

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: polymod.php,v 1.9 2009/10/22 16:30:02 sebastien Exp $
+// $Id: polymod.php,v 1.10 2009/11/10 16:49:00 sebastien Exp $
 
 /**
   * Class CMS_polymod
@@ -209,9 +209,9 @@ class CMS_polymod extends CMS_modulePolymodValidation
 							if ($selectedPlugin->needSelection()) {
 								$hasSelection = preg_match('#<!--(.*)-->#s', $tag->getInnerContent(), $matches);
 								$selectedText = $hasSelection ? $matches[1] : $tag->getInnerContent();
-								$tagContent = '<span id="polymod-'.$selectedPluginID.'-'.$selectedItem.'" class="polymod" title="'.htmlspecialchars($selectedPlugin->getLabel($cms_language).' : '.trim($item->getLabel($cms_language))).'">'.$selectedText.'</span>';
+								$tagContent = '<span id="polymod-'.$selectedPluginID.'-'.$selectedItem.'" class="polymod" title="'.io::htmlspecialchars($selectedPlugin->getLabel($cms_language).' : '.trim($item->getLabel($cms_language))).'">'.$selectedText.'</span>';
 							} else {
-								$tagContent = '<span id="polymod-'.$selectedPluginID.'-'.$selectedItem.'" class="polymod" title="'.htmlspecialchars($selectedPlugin->getLabel($cms_language).' : '.trim($item->getLabel($cms_language))).'">'.CMS_poly_definition_functions::pluginCode($selectedPluginID, $selectedItem, '', ($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC) ? true : false, true).'</span>';
+								$tagContent = '<span id="polymod-'.$selectedPluginID.'-'.$selectedItem.'" class="polymod" title="'.io::htmlspecialchars($selectedPlugin->getLabel($cms_language).' : '.trim($item->getLabel($cms_language))).'">'.CMS_poly_definition_functions::pluginCode($selectedPluginID, $selectedItem, '', ($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC) ? true : false, true).'</span>';
 							}
 						}
 						//encode all ampersand without reencode already encoded ampersand
@@ -458,7 +458,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 				$this->raiseError("Unknown block type : CMS_block_polymod");
 				return false;
 			}
-			//pr(htmlspecialchars($tag->getInnerContent()));
+			//pr(io::htmlspecialchars($tag->getInnerContent()));
 			$instance->initializeFromTag($tag->getAttributes(), $tag->getInnerContent());
 			return $instance;
 			break;
@@ -701,7 +701,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 				$objectsInfos[] = array(
 					'label'			=> $cms_language->getMessage(self::MESSAGE_PAGE_CATEGORIES),
 					'adminLabel'	=> $cms_language->getMessage(self::MESSAGE_PAGE_ADMIN_CATEGORIES),
-					'description'	=> $cms_language->getMessage(self::MESSAGE_PAGE_CATEGORIES_USED, false, MOD_POLYMOD_CODENAME).htmlspecialchars(implode(', ', $catFieldsNames)),
+					'description'	=> $cms_language->getMessage(self::MESSAGE_PAGE_CATEGORIES_USED, false, MOD_POLYMOD_CODENAME).io::htmlspecialchars(implode(', ', $catFieldsNames)),
 					'objectId'		=> 'categories',
 					'url'			=> PATH_ADMIN_WR.'/modules-categories.php',
 					'module'		=> $this->getCodename(),
