@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 404.php,v 1.5 2009/10/22 16:22:35 sebastien Exp $
+// $Id: 404.php,v 1.6 2009/11/10 17:01:50 sebastien Exp $
 
 /**
   * Automne 404 error handler
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_URI'] && $_SERVER['REQUEST_URI'] != $_SERVER['SCRIPT_NAME'
 	$pathinfo = pathinfo($_SERVER['REQUEST_URI']);
 	$basename = (isset($pathinfo['extension'])) ? substr($pathinfo['basename'], 0, -(1+strlen($pathinfo['extension']))) : $pathinfo['basename'];
 	//if basename founded
-	if ($basename) {
+	if ($basename && ((isset($pathinfo['extension']) && strtolower($pathinfo['extension']) == 'php') || !isset($pathinfo['extension']))) {
 		//search page id in basename (declare matching patterns by order of research)
 		$patterns[] = "#^([0-9]+)-#U"; // for request like id-page_title.php
 		$patterns[] = "#^print-([0-9]+)-#U"; // for request like print-id-page_title.php

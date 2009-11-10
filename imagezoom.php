@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: imagezoom.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: imagezoom.php,v 1.2 2009/11/10 17:01:50 sebastien Exp $
 
 /**
   * PHP page : visualization of an enlarged image for the imageZoom block type
@@ -29,23 +29,35 @@
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 
 define("POPUP_ADD_X_SIZE", 40);
-define("POPUP_ADD_Y_SIZE", 85);
+define("POPUP_ADD_Y_SIZE", 115);
+
+$replace = array(
+	'..' => '',
+	'\\' => '',
+	'/' => '',
+);
 
 //clean a little the filename
 if (isset($_GET["file"])) {
-	$filename = htmlspecialchars(strtr($_GET["file"], "/\\", "__"));
+	$filename = io::htmlspecialchars(strtr($_GET["file"], "/\\", "__"));
 } else {
 	die('Error, No image to display ...');
 }
-$label = isset($_GET["label"]) ? stripslashes(htmlspecialchars(urldecode($_GET["label"]))) : '';
+$label = isset($_GET["label"]) ? stripslashes(io::htmlspecialchars(urldecode($_GET["label"]))) : '';
 
 //Trick used to view not published images
 $location = (isset($_GET["location"]) && ((isset($_SERVER["HTTP_REFERER"]) && strpos($_SERVER["HTTP_REFERER"], "automne/admin") !== false) || (isset($_GET["popup"]) && $_GET["popup"]==="true"))) ? $_GET["location"] : "public";
 $module = (isset($_GET["module"])) ? $_GET["module"] : 'standard';
+
+$filename = str_replace(array_keys($replace), $replace, $filename);
+$module = str_replace(array_keys($replace), $replace, $module);
+$location = str_replace(array_keys($replace), $replace, $location);
+
 $filepath = "/automne_modules_files/" . $module . "/" . $location . "/" . $filename;
+
 $dimensions = array(0,0);
-if (file_exists($_SERVER["DOCUMENT_ROOT"] . $filepath)) {
-	$html = '<img src="' . $filepath . '" border="0" onclick="window.close();" alt="'.str_replace('"','\"',$label).'" title="'.str_replace('"','\"',$label).'" />';
+if(file_exists(realpath($_SERVER["DOCUMENT_ROOT"] . $filepath)) && strpos(pathinfo(realpath($_SERVER["DOCUMENT_ROOT"] . $filepath), PATHINFO_DIRNAME), $_SERVER['DOCUMENT_ROOT']) === 0) {
+	$html = '<img src="' . $filepath . '" onclick="window.close();" alt="'.$label.'" title="'.$label.'" />';
 	if (isset($_GET["popup"]) && $_GET["popup"]==="true") {
 		$dimensions = getimagesize($_SERVER["DOCUMENT_ROOT"] . $filepath);
 	}
@@ -53,26 +65,29 @@ if (file_exists($_SERVER["DOCUMENT_ROOT"] . $filepath)) {
 	$html = '';
 }
 ?>
-<html>
-<head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+	<?php echo '<meta http-equiv="Content-Type" content="text/html; charset='.strtoupper(APPLICATION_DEFAULT_ENCODING).'" />'; ?>
 	<title><?php echo $label; ?></title>
 	<style type="text/css">
 		body {
-			font-family:Verdana,Arial,sans; 
-			font-size:12px; 
-			color:#000000;
-			background-color:#FFFFFF;
-			margin:	0px;
-			padding: 0px;
+			font:				bold 12px Verdana,Arial,sans; 
+			color:				#000000;
+			background-color:	#FFFFFF;
+			margin:				0px;
+			padding:			0px;
 		}
-		td,th,p {
-			font-family:Verdana,Arial,sans; 
-			font-size:12px; 
+		body div {
+			text-align:			center;
 		}
-		.imagezoom {
-			color:#000000;
-			font-weight:bold;
-			font-size:12px;
+		p {
+			margin:				0px;
+			padding:			0px;
+		}
+		img {
+			border:				0;
+			cursor:				pointer;
 		}
 	</style>
 </head>
@@ -89,13 +104,9 @@ if (file_exists($_SERVER["DOCUMENT_ROOT"] . $filepath)) {
 		';
 	}
 	?>
-	<table border="0" cellpadding="2" cellspacing="0" width="100%" height="100%">
-	<tr>
-		<td align="center" valign="middle" width="100%" height="100%"><?php echo $html; ?></td>
-	</tr>
-	<tr>
-		<td align="center" valign="middle" width="100%" height="100%"><span class="imagezoom"><?php echo $label; ?></span></td>
-	</tr>
-	</table>
+	<div>
+		<?php echo $html; ?>
+		<p><?php echo $label; ?></p>
+	</div>
 </body>
 </html>

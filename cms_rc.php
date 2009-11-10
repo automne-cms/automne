@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc.php,v 1.20 2009/10/28 16:45:50 sebastien Exp $
+// $Id: cms_rc.php,v 1.21 2009/11/10 17:01:50 sebastien Exp $
 
 /**
   * rc file, contains all default constants
@@ -790,11 +790,18 @@ if (!defined('FILE_UPLOAD_EXTENSIONS_DENIED')) {
 }
 
 /**
+  *	Does session token must be checked. Used to protect form actions from CSRF attacks
+  *	Default : true
+  */
+if (!defined('SESSION_TOKEN_CHECK')) {
+	define('SESSION_TOKEN_CHECK', true);
+}
+/**
   *	Set max session token age. Used to protect form actions from CSRF attacks
   *	Default : 600 seconds
   */
 if (!defined('SESSION_TOKEN_MAXAGE')) {
-	define('SESSION_TOKEN_MAXAGE', 120);
+	define('SESSION_TOKEN_MAXAGE', 600);
 }
 /**
   *	Set max expired token age. Used to protect form actions from CSRF attacks
