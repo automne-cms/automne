@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: rows.js,v 1.7 2009/06/05 15:01:06 sebastien Exp $
+  * $Id: rows.js,v 1.8 2009/11/10 16:57:21 sebastien Exp $
   */
 Automne.row = function(config){
 	config = config || {};
@@ -69,6 +69,11 @@ Ext.extend(Automne.row, Ext.util.Observable, {
 				}
 			});
 		}, this);
+		//check box height
+		var box = this.getBox();
+		if (box.height < 3) {
+			this.elements.first().addClass('atm-dummy-row-tag atm-empty-row');
+		}
 	},
 	getId : function(){
 		return this.id;
@@ -321,7 +326,9 @@ Ext.extend(Automne.row, Ext.util.Observable, {
 		}
 	},
 	addControls : function() {
-		var position = this.mask.top.getWidth() - 3;
+		var rightPosition, topPosition, position;
+		rightPosition = position = this.mask.top.getWidth() - 3;
+		topPosition = 0;
 		var hasMoveCtrl = false;
 		for (var controlId in this.controls) {
 			var ctrl = this.controls[controlId];
@@ -362,11 +369,25 @@ Ext.extend(Automne.row, Ext.util.Observable, {
 			ctrl.setVisible(visible);
 			//set controls positions
 			if (visible && controlId != 'del') {
+				if ((position < 32 && topPosition == 0) || (position < 16 && topPosition != 0)) {
+					topPosition += 16;
+					position = rightPosition;
+				}
 				position -= 16;
 				ctrl.dom.style.left = position+'px';
+				if (topPosition != 0) {
+					ctrl.dom.style.top = topPosition+'px';
+				}
 			} else if (visible && controlId == 'del') {
 				ctrl.dom.style.left = '3px';
 			}
+		}
+		if (topPosition != 0) {
+			this.mask.top.setBounds(
+				this.mask.top.getX(),
+				this.mask.top.getY() - topPosition,
+				this.mask.top.getWidth(),
+				this.mask.top.getHeight() + topPosition);
 		}
 		//remove drag if their is no others move controls
 		if (!hasMoveCtrl) {

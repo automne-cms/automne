@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: module-controler.php,v 1.3 2009/10/22 16:26:24 sebastien Exp $
+// $Id: module-controler.php,v 1.4 2009/11/10 16:57:19 sebastien Exp $
 
 /**
   * PHP page : Module controler.
@@ -66,7 +66,7 @@ switch ($action) {
 		foreach ($parameters as $label => $value) {
 			$parameters[$label][0] = $value;
 			if (isset($params[$label])) {
-				$parameters[$label][0] = htmlspecialchars($params[$label]);
+				$parameters[$label][0] = io::htmlspecialchars($params[$label]);
 			} elseif ($parameters[$label][1] == 'boolean') {
 				$parameters[$label][0] = 0;
 			} else {

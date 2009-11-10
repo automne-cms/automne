@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: tabpanel.js,v 1.6 2009/06/29 10:22:07 sebastien Exp $
+  * $Id: tabpanel.js,v 1.7 2009/11/10 16:57:21 sebastien Exp $
   */
 Automne.tabPanel = Ext.extend(Ext.TabPanel, { 
 	pageId:		false,
@@ -65,6 +65,13 @@ Automne.tabPanel = Ext.extend(Ext.TabPanel, {
 	},
 	//function called after each panel change.
 	afterChangePanel: function(tabPanel, newTab, force) {
+		//force remove locked tips
+		var tip;
+		while(tip = Ext.get('publicTip')) {
+			if (tip) {
+				tip.remove();
+			}
+		}
 		return newTab.afterActivate(tabPanel, newTab, force);
 	},
 	setPageId: function(pageId) {

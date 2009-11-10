@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-infos.php,v 1.16 2009/10/28 16:26:00 sebastien Exp $
+// $Id: page-infos.php,v 1.17 2009/11/10 16:57:19 sebastien Exp $
 
 /**
   * PHP page : Load page infos
@@ -795,11 +795,11 @@ foreach ($userPanels as $panel => $panelStatus) {
 							$lockUser = CMS_profile_usersCatalog::getById($lock);
 							$panelContent .= "
 							menu.addItem(new Ext.menu.Item({
-								text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_UNLOCK_LOCKED_PAGE, array(htmlspecialchars($lockUser->getFullName())))."\">".$cms_language->getJSMessage(MESSAGE_PAGE_UNLOCK_PAGE)."</span>',
+								text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_UNLOCK_LOCKED_PAGE, array(io::htmlspecialchars($lockUser->getFullName())))."\">".$cms_language->getJSMessage(MESSAGE_PAGE_UNLOCK_PAGE)."</span>',
 								iconCls: 'atm-pic-unlock',
 								handler: function(){
 									Automne.message.popup({
-										msg: 				'".$cms_language->getJSMessage(MESSAGE_PAGE_UNLOCK_CONFIRM, array(htmlspecialchars($lockUser->getFullName())))."',
+										msg: 				'".$cms_language->getJSMessage(MESSAGE_PAGE_UNLOCK_CONFIRM, array(io::htmlspecialchars($lockUser->getFullName())))."',
 										buttons: 			Ext.MessageBox.OKCANCEL,
 										animEl: 			this.getEl(),
 										closable: 			false,

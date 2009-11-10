@@ -1,4 +1,4 @@
-/*$Id: edit.css,v 1.4 2009/04/20 15:13:04 sebastien Exp $*/
+/*$Id: edit.css,v 1.5 2009/11/10 16:57:22 sebastien Exp $*/
 .atm-row,
 .atm-cs {
 	display:			none;
@@ -29,7 +29,7 @@
 	border-left:		0px;
 }
 .atm-row-top{
-	background:			url(/automne/admin/img/atm-row/atm-row-top.gif) repeat-x top left;
+	background:			#C6E790 url(/automne/admin/img/atm-row/atm-row-top.gif) repeat-x top left;
 	border-bottom:		0px;
 }
 .atm-row-bottom{
@@ -114,12 +114,25 @@
 .atm-row-drag-proxy {
 	overflow:			hidden;
 }
+.atm-dummy-row-tag,
+.atm-block-helper {
+	/*nothing for now*/
+}
+.atm-empty-row {
+	background:			#FEC865 url(/automne/admin/img/pictos/empty.gif) repeat-x;
+	opacity:			0.5;
+	filter:				alpha(opacity=50);
+	min-height:			9px;
+}
+.atm-not-empty-row {
+	/*because some rows (like flash rows) does not have height but are not empty*/
+	background:			none;
+}
 .atm-drop-zone {
 	z-index:			11000;
 	background:			red url(/automne/admin/img/pictos/add.gif) repeat-x;
 	opacity:			0.5;
 	filter:				alpha(opacity=50);
-	
 }
 .atm-drop-zone-hover {
 	background:			green url(/automne/admin/img/pictos/ok.gif) repeat-x;

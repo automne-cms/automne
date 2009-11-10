@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-page.php,v 1.9 2009/10/22 16:26:27 sebastien Exp $
+// $Id: templates-page.php,v 1.10 2009/11/10 16:57:20 sebastien Exp $
 
 /**
   * PHP page : Load page templates search window.
@@ -556,12 +556,14 @@ $jscontent = <<<END
 			Ext.getCmp('{$winId}activateItem').disable();
 			Ext.getCmp('{$winId}desactivateItem').disable();
 			Ext.getCmp('{$winId}copyItem').disable();
+			resultsPanel.syncSize();
 		} else { //enable / disable buttons allowed by selection
 			Ext.getCmp('{$winId}copyItem').setDisabled(selectLen != 1);
 			Ext.getCmp('{$winId}editItem').enable();
 			Ext.getCmp('{$winId}deleteItem').setDisabled(!hasDelete);
 			Ext.getCmp('{$winId}activateItem').setDisabled(!hasActivate);
 			Ext.getCmp('{$winId}desactivateItem').setDisabled(!hasDesactivate);
+			resultsPanel.syncSize();
 		}
 	}, this);
 	//highlight node update after dv update

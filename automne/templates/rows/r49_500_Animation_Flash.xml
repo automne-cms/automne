@@ -1,5 +1,5 @@
 <row>
 <block module="standard" type="flash" id="fla">
-<div class="flash">{{data}}</div>
+<div class="flash atm-not-empty-row">{{data}}</div>
 </block>
 </row>

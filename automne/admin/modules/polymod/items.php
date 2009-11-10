@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: items.php,v 1.10 2009/10/22 16:28:08 sebastien Exp $
+// $Id: items.php,v 1.11 2009/11/10 16:57:21 sebastien Exp $
 
 /**
   * PHP page : Load polymod items search window.
@@ -544,6 +544,7 @@ $jscontent = <<<END
 		},
 		tbar:[{
 			id:			'{$winId}editItem',
+			iconCls:	'atm-pic-modify',
 			xtype:		'button',
 			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_MODIFY)}',
 			handler:	function(button) {
@@ -589,7 +590,28 @@ $jscontent = <<<END
 			scope:		this,
 			disabled:	true
 		},{
+			id:			'{$winId}deleteItem',
+			iconCls:	'atm-pic-deletion',
+			xtype:		'button',
+			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_DELETE)}',
+			handler:	function(button) {
+				refresh(selectedObjects, {del:true});
+			},
+			scope:		resultsPanel,
+			disabled:	true
+		},{
+			id:			'{$winId}undeleteItem',
+			iconCls:	'atm-pic-undelete',
+			xtype:		'button',
+			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_UNDELETE)}',
+			handler:	function(button) {
+				refresh(selectedObjects, {undelete:true});
+			},
+			scope:		resultsPanel,
+			hidden:		true
+		},{
 			id:			'{$winId}unlockItem',
+			iconCls:	'atm-pic-unlock',
 			xtype:		'button',
 			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_UNLOCK)}',
 			handler:	function(button) {
@@ -599,6 +621,7 @@ $jscontent = <<<END
 			hidden:		true
 		},{
 			id:			'{$winId}previzItem',
+			iconCls:	'atm-pic-preview',
 			xtype:		'button',
 			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_PREVIZ)}',
 			handler:	function(button) {
@@ -632,26 +655,9 @@ $jscontent = <<<END
 			},
 			scope:		resultsPanel,
 			hidden:		true
-		},{
-			id:			'{$winId}deleteItem',
-			xtype:		'button',
-			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_DELETE)}',
-			handler:	function(button) {
-				refresh(selectedObjects, {del:true});
-			},
-			scope:		resultsPanel,
-			disabled:	true
-		},{
-			id:			'{$winId}undeleteItem',
-			xtype:		'button',
-			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_UNDELETE)}',
-			handler:	function(button) {
-				refresh(selectedObjects, {undelete:true});
-			},
-			scope:		resultsPanel,
-			hidden:		true
 		}, '->', {
 			id:			'{$winId}createItem',
+			iconCls:	'atm-pic-add',
 			xtype:		'button',
 			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_NEW)}',
 			handler:	function(button) {
@@ -786,6 +792,7 @@ $jscontent = <<<END
 			Ext.getCmp('{$winId}previzItem').hide();
 			Ext.getCmp('{$winId}unlockItem').hide();
 			Ext.getCmp('{$winId}undeleteItem').hide();
+			moduleObjectWindow.syncSize();
 		} else { //enable / disable buttons allowed by selection
 			qtips['edit'].setDisabled(!hasEdit);
 			qtips['delete'].setDisabled(!hasDelete);
@@ -798,6 +805,7 @@ $jscontent = <<<END
 			Ext.getCmp('{$winId}previzItem').setVisible(hasPreviz);
 			Ext.getCmp('{$winId}unlockItem').setVisible(hasUnlock);
 			Ext.getCmp('{$winId}undeleteItem').setVisible(hasUndelete);
+			moduleObjectWindow.syncSize();
 		}
 	}, this);
 	//highlight node update after div update

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-controler.php,v 1.13 2009/10/28 16:26:00 sebastien Exp $
+// $Id: page-controler.php,v 1.14 2009/11/10 16:57:19 sebastien Exp $
 
 /**
   * PHP page : Receive pages updates
@@ -271,8 +271,7 @@ switch ($action) {
 			$view->addJavascript($jscontent);
 			break;
 		}
-		
-		$logAction = CMS_log::LOG_ACTION_RESOURCE_VALIDATE_EDITION;
+		$logAction = CMS_log::LOG_ACTION_RESOURCE_DIRECT_VALIDATION;
 		//then validate this page content
 		$validation = new CMS_resourceValidation(MOD_STANDARD_CODENAME, RESOURCE_EDITION_CONTENT, $cms_page);
 		$mod = CMS_modulesCatalog::getByCodename(MOD_STANDARD_CODENAME);

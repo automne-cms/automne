@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: search.php,v 1.8 2009/10/22 16:26:26 sebastien Exp $
+// $Id: search.php,v 1.9 2009/11/10 16:57:20 sebastien Exp $
 
 /**
   * PHP page : Load page search window.
@@ -315,6 +315,7 @@ $jscontent = <<<END
 		tbar:[{
 			id:			'{$winId}editItem',
 			xtype:		'button',
+			iconCls:	'atm-pic-modify',
 			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_MODIFY)}',
 			handler:	function(button) {
 				var selectLen = selectedObjects.length;
@@ -399,6 +400,7 @@ $jscontent = <<<END
 			disabled:	true
 		},{
 			id:			'{$winId}viewItem',
+			iconCls:	'atm-pic-preview',
 			xtype:		'button',
 			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_VIEW)}',
 			handler:	function(button) {

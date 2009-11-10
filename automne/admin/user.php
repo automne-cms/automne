@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: user.php,v 1.5 2009/10/22 16:26:28 sebastien Exp $
+// $Id: user.php,v 1.6 2009/11/10 16:57:21 sebastien Exp $
 
 /**
   * PHP page : Load user detail window.
@@ -67,6 +67,7 @@ define("MESSAGE_PAGE_PAGE", 282);
 define("MESSAGE_PAGE_ADMINISTRATION", 449);
 define("MESSAGE_PAGE_PASSWORD_INFO", 503);
 define("MESSAGE_PAGE_USER_CREATION", 574);
+define("MESSAGE_PAGE_ADMIN_NO_GROUPS", 1594);
 
 $winId = sensitiveIO::request('winId', '', 'userWindow');
 $userId = sensitiveIO::request('userId', 'sensitiveIO::isPositiveInteger', 'createUser');
@@ -184,12 +185,17 @@ $groupsTab = $modulesTab = $adminTab = '';
 
 //OTHERS TABS
 if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
+	$groupsDisabled = '';
+	if ($user->getUserId() == ROOT_PROFILEUSER_ID) {
+		$groupsDisabled = "disabled:			true,tabTip:'{$cms_language->getJSMessage(MESSAGE_PAGE_ADMIN_NO_GROUPS)}',";
+	}
 	//GROUPS TAB
 	$groupsTab = ",{
 			id:					'userGroups-{$userId}',
 			title:				'{$cms_language->getJSMessage(MESSAGE_PAGE_GROUPS)}',
 			xtype:				'grid',
 			store: 				store,
+			{$groupsDisabled}
 			border:				false,
 			autoExpandColumn:	'description',
 			cm: 				new Ext.grid.ColumnModel([
@@ -549,6 +555,7 @@ $jscontent = <<<END
 				}],
 				buttons:[{
 					text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+					iconCls:		'atm-pic-validate',
 					name:			'submitIdentity',
 					anchor:			'',
 					scope:			this,
@@ -658,6 +665,7 @@ $jscontent = <<<END
 				}],
 				buttons:[{
 					{$disableUserInfosFields}
+					iconCls:		'atm-pic-validate',
 					text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
 					name:			'submitUserDetails',
 					scope:			this,
@@ -688,6 +696,7 @@ $jscontent = <<<END
 				},{$alertsPanel}],
 				buttons:[{
 					text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+					iconCls:		'atm-pic-validate',
 					xtype:			'button',
 					name:			'submitAlerts',
 					scope:			this,

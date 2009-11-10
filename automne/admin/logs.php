@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: logs.php,v 1.2 2009/10/22 16:26:24 sebastien Exp $
+// $Id: logs.php,v 1.3 2009/11/10 16:57:19 sebastien Exp $
 
 /**
   * PHP page : Load users search window.
@@ -138,6 +138,7 @@ $types = sensitiveIO::jsonEncode($types);
 if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 	$purgeLogs = "tbar:['->',{
 			xtype:		'button',
+			iconCls:	'atm-pic-deletion',
 			text:		'{$cms_language->getJsMessage(MESSAGE_ACTION_PURGE)}',
 			tooltip:	'{$cms_language->getJsMessage(MESSAGE_ACTION_PURGE_DESC)}',
 			handler:	function(button) {

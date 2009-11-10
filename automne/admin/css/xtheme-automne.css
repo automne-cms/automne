@@ -1,4 +1,4 @@
-/*$Id: xtheme-automne.css,v 1.9 2009/06/22 14:10:34 sebastien Exp $*/
+/*$Id: xtheme-automne.css,v 1.10 2009/11/10 16:57:22 sebastien Exp $*/
 .x-panel {
     border-style: solid;
     border-color: #d0d0d0;
@@ -1331,6 +1331,26 @@ td.x-grid3-hd-over, td.sort-desc, td.sort-asc, td.x-grid3-hd-menu-open{
 }
 					
 /* pictos actions dans le menu action */
+.x-btn-text-icon .x-btn-mc .atm-pic-question{
+	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-position:			0px -74px;
+}
+.x-btn-text-icon .x-btn-mc .atm-pic-reload{
+	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-position:			0px -338px;
+}
+.x-btn-text-icon .x-btn-mc .atm-pic-option{
+	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-position:			0px -602px;
+}
+.x-btn-text-icon .x-btn-mc .atm-pic-filter{
+	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-position:			0px -577px;
+}
+.x-btn-text-icon .x-btn-mc .atm-pic-reindent{
+	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-position:			0px -290px;
+}
 .x-btn-text-icon .x-btn-mc .atm-pic-copy{
 	background-image:				url(/automne/admin/img/pictos/pictos.png);
 	background-position:			0px -170px;

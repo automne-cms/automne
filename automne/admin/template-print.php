@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: template-print.php,v 1.3 2009/10/22 16:26:27 sebastien Exp $
+// $Id: template-print.php,v 1.4 2009/11/10 16:57:20 sebastien Exp $
 
 /**
   * PHP page : Load print template window.
@@ -151,6 +151,7 @@ $jscontent = <<<END
 		}],
 		buttons:[{
 			text:			'{$cms_language->getJSMessage(MESSAGE_ACTION_HELP)}',
+			iconCls:		'atm-pic-question',
 			anchor:			'',
 			scope:			this,
 			handler:		function(button) {
@@ -179,6 +180,7 @@ $jscontent = <<<END
 			}
 		},{
 			text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+			iconCls:		'atm-pic-validate',
 			anchor:			'',
 			scope:			this,
 			handler:		function() {

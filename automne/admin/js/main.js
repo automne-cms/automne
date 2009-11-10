@@ -6,7 +6,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: main.js,v 1.19 2009/10/28 16:26:15 sebastien Exp $
+  * $Id: main.js,v 1.20 2009/11/10 16:57:21 sebastien Exp $
   */
 
 //Declare Automne namespace
@@ -102,14 +102,16 @@ Automne = {
 				} catch(e){}
 			}
 			//load east panel
-			Automne.east.load({
-				url:		'side-panel.php',
-				params:		{
-					winId:		'sidePanel'
-				},
-				nocache:	true,
-				scope:		this
-			});
+			if (!Automne.east.items.length) {
+				Automne.east.load({
+					url:		'side-panel.php',
+					params:		{
+						winId:		'sidePanel'
+					},
+					nocache:	true,
+					scope:		this
+				});
+			}
 			if (window.location.search.indexOf('pageId') !== -1) {
 				//get page to display from url parameters
 				var config = Ext.urlDecode(window.location.search.substr(1));

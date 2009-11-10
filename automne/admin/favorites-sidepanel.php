@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: favorites-sidepanel.php,v 1.5 2009/10/22 16:26:24 sebastien Exp $
+// $Id: favorites-sidepanel.php,v 1.6 2009/11/10 16:57:18 sebastien Exp $
 
 /**
   * PHP page : Load side panel favorites infos.
@@ -42,7 +42,7 @@ if ($favorites) {
 	foreach($favorites as $pageId) {
 		$page = CMS_tree::getPageById($pageId);
 		if (is_object($page) && $page->getTitle() && !$page->hasError()) {
-			$content .= '<li><a href="#" atm:action="favorite" atm:page="'.$pageId.'" alt="'.htmlspecialchars($page->getTitle()).'" title="'.htmlspecialchars($page->getTitle()).'">'.$page->getStatus()->getHTML(true, $cms_user, MOD_STANDARD_CODENAME, $page->getID()).'&nbsp;'.sensitiveIO::ellipsis($page->getTitle(), 32).'&nbsp;('.$pageId.')</a></li>';
+			$content .= '<li><a href="#" atm:action="favorite" atm:page="'.$pageId.'" alt="'.io::htmlspecialchars($page->getTitle()).'" title="'.io::htmlspecialchars($page->getTitle()).'">'.$page->getStatus()->getHTML(true, $cms_user, MOD_STANDARD_CODENAME, $page->getID()).'&nbsp;'.sensitiveIO::ellipsis($page->getTitle(), 32).'&nbsp;('.$pageId.')</a></li>';
 		}
 	}
 }

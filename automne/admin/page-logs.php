@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-logs.php,v 1.3 2009/10/22 16:26:25 sebastien Exp $
+// $Id: page-logs.php,v 1.4 2009/11/10 16:57:19 sebastien Exp $
 
 /**
   * PHP page : Load tree window infos. Presents a portion of the pages tree. Can be used by any admin page.
@@ -100,7 +100,7 @@ switch ($action) {
 				url:			'{$_SERVER['SCRIPT_NAME']}'
 			});
 			var grid = new Ext.grid.GridPanel({
-				title:			'{$cms_language->getJSMessage(MESSAGE_PAGE_LOGS_ACTION, array(htmlspecialchars("'".$cms_page->getTitle()."'")))}',
+				title:			'{$cms_language->getJSMessage(MESSAGE_PAGE_LOGS_ACTION, array(io::htmlspecialchars("'".$cms_page->getTitle()."'")))}',
 				region:			'center',
 				border:			false,
 				store:			store,

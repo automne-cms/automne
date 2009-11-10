@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: users-datas.php,v 1.2 2009/10/22 16:26:28 sebastien Exp $
+// $Id: users-datas.php,v 1.3 2009/11/10 16:57:21 sebastien Exp $
 
 /**
   * PHP page : Load users datas
@@ -44,6 +44,7 @@ $start = sensitiveIO::request('start', 'sensitiveIO::isPositiveInteger', 0);
 $limit = sensitiveIO::request('limit', 'sensitiveIO::isPositiveInteger', $_SESSION["cms_context"]->getRecordsPerPage());
 $filter = (sensitiveIO::request('filter')) ? true : false;
 $withGroups = (sensitiveIO::request('groups')) ? true : false;
+$withoutRoot = (sensitiveIO::request('withoutroot')) ? true : false;
 
 $usersDatas = array();
 $usersDatas['users'] = array();
@@ -59,7 +60,10 @@ if ($groupId) {
 } else {
 	$groupUsers = array();
 }
-
+//remove root user from search
+if ($withoutRoot) {
+	$search = ':noroot: '.$search;
+}
 if ($groupId && $filter) {
 	//search users
 	$users = CMS_profile_usersCatalog::search($search, $letter, $groupId, $sort, $dir, $start, $limit);

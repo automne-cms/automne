@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: item.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: item.php,v 1.2 2009/11/10 16:57:22 sebastien Exp $
 
 /**
   * PHP page : module admin frontend
@@ -219,7 +219,7 @@ $content = '
 		<td class="admin" align="right">
 			<span class="admin_text_alert">*</span> '.$cms_language->getMessage(MESSAGE_PAGE_FIELD_LABEL, false, MOD_CMS_FORMS_CODENAME).' :</td>
 		<td class="admin">
-			<input type="text" size="30" class="admin_input_text" name="name" value="'.htmlspecialchars($item->getAttribute('name')).'" /></td>
+			<input type="text" size="30" class="admin_input_text" name="name" value="'.io::htmlspecialchars($item->getAttribute('name')).'" /></td>
 	</tr>
 <tr>
 	<td class="admin" align="right">

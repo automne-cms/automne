@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-add.php,v 1.6 2009/10/22 16:26:25 sebastien Exp $
+// $Id: page-add.php,v 1.7 2009/11/10 16:57:19 sebastien Exp $
 
 /**
   * PHP page : Load add-page window infos. Set title and template then redirect to page content edition
@@ -227,6 +227,7 @@ $jscontent = <<<END
 	//add buttons
 	var buttons = [new Ext.Button({
 		text:		'{$cms_language->getJsMessage(MESSAGE_PAGE_CREATE)}',
+		iconCls:	'atm-pic-ok',
 		handler:	function() {
 			var selNode = view.getSelectedNodes()[0];
 			if(selNode && pageTitle.form.isValid()) {
@@ -259,6 +260,7 @@ $jscontent = <<<END
 		scope:		addPageWindow
 	}), new Ext.Button({
 		text:		'{$cms_language->getJsMessage(MESSAGE_PAGE_CANCEL)}',
+		iconCls:	'atm-pic-cancel',
 		handler:	function() {this.close();},
 		scope:		addPageWindow
 	})];

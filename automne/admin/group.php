@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: group.php,v 1.5 2009/10/22 16:26:24 sebastien Exp $
+// $Id: group.php,v 1.6 2009/11/10 16:57:18 sebastien Exp $
 
 /**
   * PHP page : Load group detail window.
@@ -270,6 +270,7 @@ $jscontent = <<<END
 					options.params.search = (search) ? search.getValue() : '';
 					options.params.filter = (filterGroupsUsers) ? 1 : 0;
 					options.params.groupId = groupWindow.groupId;
+					options.params.withoutroot = 1;
 				}
 				return true;
 			}
@@ -305,7 +306,8 @@ $jscontent = <<<END
 				limit:			{$recordsPerPage},
 				search:			(search) ? search.getValue() : '',
 				filter:			(filterGroupsUsers) ? 1 : 0,
-				groupId:		groupWindow.groupId
+				groupId:		groupWindow.groupId,
+				withoutroot:	1
 			}
 		});
 	}
@@ -359,6 +361,7 @@ $jscontent = <<<END
 			}],
 			buttons:[{
 				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+				iconCls:		'atm-pic-validate',
 				name:			'submitIdentity',
 				anchor:			'',
 				scope:			this,

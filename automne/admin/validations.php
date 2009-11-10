@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: validations.php,v 1.6 2009/10/22 16:26:28 sebastien Exp $
+// $Id: validations.php,v 1.7 2009/11/10 16:57:21 sebastien Exp $
 
 /**
   * PHP page : Load page validations window.
@@ -141,6 +141,7 @@ if ($modulesValidations && sizeof($modulesValidations)) {
 		ksort($validationsSorted);
 		
 		foreach ($validationsSorted as $label => $validations) {
+			$label = io::decodeEntities($label);
 			$validation = $validations[0];
 			$validationsType['validationsType'][] = array(
 				'id' 		=> $count,
@@ -435,7 +436,7 @@ $jscontent = <<<END
 						var buttonHandler = function() {
 							var actionWindow = new Automne.frameWindow({
 								id:				'actionWindow',
-								frameURL:		this.url,
+								frameURL:		Ext.util.Format.htmlDecode(this.url),
 								allowFrameNav:	true,
 								width:			750,
 								height:			550,

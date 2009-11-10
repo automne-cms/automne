@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cssmanager.php,v 1.6 2009/10/22 16:23:38 sebastien Exp $
+// $Id: cssmanager.php,v 1.7 2009/11/10 16:59:34 sebastien Exp $
 
 /**
   * CSS manager
@@ -38,23 +38,20 @@ if (isset($_GET['files'])) {
 				//Ext CSS files
 				$cssfiles [] = PATH_MAIN_FS.'/ext/resources/css/ext-all.css';
 				$cssfiles [] = PATH_MAIN_FS.'/ext/resources/css/xtheme-blue.css';
-				$cssfiles [] = PATH_ADMIN_FS.'/css/xtheme-automne.css'; //Automne theme
-				$cssfiles [] = PATH_ADMIN_FS.'/css/ext.css'; //overwrite some ext definitions
-				if (SYSTEM_DEBUG) {
-					$jsfiles [] = PATH_ADMIN_FS.'/css/debug.css'; //debug console
-				}
+				$cssfiles [] = PATH_ADMIN_CSS_FS.'/xtheme-automne.css'; //Automne theme
+				$cssfiles [] = PATH_ADMIN_CSS_FS.'/ext.css'; //overwrite some ext definitions
 			break;
 			case 'main':
 				//Main Automne CSS file
-				$cssfiles [] = PATH_ADMIN_FS.'/css/main.css';
+				$cssfiles [] = PATH_ADMIN_CSS_FS.'/main.css';
 			break;
 			case 'info':
 				//Automne info CSS file
-				$cssfiles [] = PATH_ADMIN_FS.'/css/info.css';
+				$cssfiles [] = PATH_ADMIN_CSS_FS.'/info.css';
 			break;
 			case 'edit':
 				//Automne edition CSS file
-				$cssfiles [] = PATH_ADMIN_FS.'/css/edit.css';
+				$cssfiles [] = PATH_ADMIN_CSS_FS.'/edit.css';
 			break;
 			case 'debug':
 				//Blackbird CSS file
@@ -69,7 +66,10 @@ if (isset($_GET['files'])) {
 				//check if file exists in current directory
 				if ($file == str_replace(array_keys($replace), $replace, $file) && file_exists(dirname(__FILE__).'/'.$file)) {
 					$cssfiles [] = dirname(__FILE__).'/'.$file;
-				} elseif(pathinfo($file, PATHINFO_EXTENSION) == 'css' && file_exists(realpath($_SERVER['DOCUMENT_ROOT'].$file)) && strpos(pathinfo(realpath($_SERVER['DOCUMENT_ROOT'].$file), PATHINFO_DIRNAME), $_SERVER['DOCUMENT_ROOT']) === 0) {
+				} elseif(pathinfo($file, PATHINFO_EXTENSION) == 'css' 
+						&& file_exists(realpath($_SERVER['DOCUMENT_ROOT'].$file)) 
+						&& (strpos(pathinfo(realpath($_SERVER['DOCUMENT_ROOT'].$file), PATHINFO_DIRNAME), PATH_CSS_FS) === 0 
+							|| strpos(pathinfo(realpath($_SERVER['DOCUMENT_ROOT'].$file), PATHINFO_DIRNAME), PATH_ADMIN_CSS_FS) === 0)) {
 					$cssfiles[] = $_SERVER['DOCUMENT_ROOT'].$file;
 				}
 			break;

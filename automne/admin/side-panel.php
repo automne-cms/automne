@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: side-panel.php,v 1.10 2009/10/22 16:26:26 sebastien Exp $
+// $Id: side-panel.php,v 1.11 2009/11/10 16:57:20 sebastien Exp $
 
 /**
   * PHP page : Load side panel infos.
@@ -76,28 +76,13 @@ $view->setSecure();
 //set default options
 $winId = sensitiveIO::request('winId', '', 'sidePanel');
 
-$content = '
-<div id="headPanel">
-	<div id="headPanelBar"></div>
-	<div id="headPanelContent">
-		<div id="headPanelSite" ext:qtip="Automne Version '.AUTOMNE_VERSION.'">'.APPLICATION_LABEL.'</div>
-		<div id="headPanelClient">'.$cms_user->getFullName().'</div>
-		<a href="/" id="headPanelSiteLink" target="_blank" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_VIEW_WEBSITE).'"></a>
-		<a href="http://www.automne.ws/" id="headPanelAutomneLink" target="_blank" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_VISIT_WEBSITE).'"></a>
-		<div id="headPanelStick" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_LOCK_PANEL).'"></div>
-		<div id="headPanelLogout" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_END_SESSION).'">'.$cms_language->getMessage(MESSAGE_PAGE_DISCONNECT).'</div>
-		<div id="headPanelAutomneHelp" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_ABOUT_AUTOMNE).'"></div>
-		<div id="headPanelBarInfos"></div>
-	</div>
-</div>';
-
 //VALIDATIONS PENDING
 $validationsPanel = '';
 if ($cms_user->hasValidationClearance() && APPLICATION_ENFORCES_WORKFLOW) {
 	$modulesValidations = CMS_modulesCatalog::getAllValidations($cms_user,true);
 	$validationsCount = 0;
 	//panel content
-	$content .= '<div id="validationsDivPanel">';
+	$contentEl = '<div id="validationsDivPanel">';
 	if ($modulesValidations && sizeof($modulesValidations)) {
 		foreach ($modulesValidations as $codename => $moduleValidations) {
 			//if module is not standard, echo its name, the number of validations to do and a link to its admin frontend
@@ -107,7 +92,7 @@ if ($cms_user->hasValidationClearance() && APPLICATION_ENFORCES_WORKFLOW) {
 				$mod = CMS_modulesCatalog::getByCodename($codename);
 				$modLabel = $mod->getLabel($cms_language);
 			}
-			$content .= '<h3>'.$modLabel.' :</h3>
+			$contentEl .= '<h3>'.$modLabel.' :</h3>
 			<ul>';
 			//sort the validations by type label
 			$validationsSorted = array();
@@ -130,14 +115,14 @@ if ($cms_user->hasValidationClearance() && APPLICATION_ENFORCES_WORKFLOW) {
 				} elseif ($editions & RESOURCE_EDITION_MOVE) {
 					$class = 'atm-move';
 				}
-				$content .= '<li><div class="'.$class.' atm-sidepic"></div><a atm:action="validations" atm:module="'.$codename.'" atm:editions="'.$editions.'" href="#">'.$label." : ".sizeof($validations).'</a></li>';
+				$contentEl .= '<li><div class="'.$class.' atm-sidepic"></div><a atm:action="validations" atm:module="'.$codename.'" atm:editions="'.$editions.'" href="#">'.$label." : ".sizeof($validations).'</a></li>';
 			}
-			$content .= '</ul>';
+			$contentEl .= '</ul>';
 		}
 	} else {
-		$content .= $cms_language->getMessage(MESSAGE_PAGE_NO_VALIDATIONS_PENDING);
+		$contentEl .= $cms_language->getMessage(MESSAGE_PAGE_NO_VALIDATIONS_PENDING);
 	}
-	$content .= '</div>';
+	$contentEl .= '</div>';
 	//panel
 	$validationsPanel = "{
 		id:					'validationsPanel',
@@ -147,7 +132,7 @@ if ($cms_user->hasValidationClearance() && APPLICATION_ENFORCES_WORKFLOW) {
 		collapsible:		true,
 		titleCollapse: 		true,
 		collapsed:			true,
-		contentEl:			'validationsDivPanel',
+		html:				'".sensitiveIO::sanitizeJSString($contentEl)."',
 		listeners:			{'expand': scrollPanel},
 		hideCollapseTool:	true,
 		refresh:			function() {
@@ -179,32 +164,32 @@ $modulesPanels = '';
 //MODULE STANDARD
 if (isset($modules[MOD_STANDARD_CODENAME]) && $cms_user->hasModuleClearance(MOD_STANDARD_CODENAME, CLEARANCE_MODULE_VIEW)) {
 	$module = $modules[MOD_STANDARD_CODENAME];
-	$content .= '
+	$contentEl = '
 	<div id="module'.$module->getCodename().'DivPanel">
 		<ul>
 			<li><div class="atm-favorite atm-sidepic"></div>'.$cms_language->getMessage(MESSAGE_PAGE_BOOKMARKS).'
 			<div id="atm-favorites-pages">';
 			$favorites = $cms_user->getFavorites();
 			if ($favorites) {
-				$content .= '<ul>';
+				$contentEl .= '<ul>';
 				foreach($favorites as $pageId) {
 					$page = CMS_tree::getPageById($pageId);
 					if (is_object($page) && !$page->hasError()) {
-						$content .= '<li><a href="#" atm:action="favorite" atm:page="'.$pageId.'" alt="'.htmlspecialchars($page->getTitle()).'" title="'.htmlspecialchars($page->getTitle()).'">'.$page->getStatus()->getHTML(true, $cms_user, MOD_STANDARD_CODENAME, $page->getID()).'&nbsp;'.sensitiveIO::ellipsis($page->getTitle(), 32).'&nbsp;('.$pageId.')</a></li>';
+						$contentEl .= '<li><a href="#" atm:action="favorite" atm:page="'.$pageId.'" alt="'.io::htmlspecialchars($page->getTitle()).'" title="'.io::htmlspecialchars($page->getTitle()).'">'.$page->getStatus()->getHTML(true, $cms_user, MOD_STANDARD_CODENAME, $page->getID()).'&nbsp;'.sensitiveIO::ellipsis($page->getTitle(), 32).'&nbsp;('.$pageId.')</a></li>';
 					}
 				}
-				$content .= '</ul>';
+				$contentEl .= '</ul>';
 			} else {
-				$content .= $cms_language->getMessage(MESSAGE_PAGE_NO_BOOKMARK);
+				$contentEl .= $cms_language->getMessage(MESSAGE_PAGE_NO_BOOKMARK);
 			}
-			$content .= '</div></li>';
+			$contentEl .= '</div></li>';
 	if ($cms_user->hasValidationClearance(MOD_STANDARD_CODENAME)) {
-		$content .= '<li><div class="atm-archives atm-sidepic"></div><a atm:action="archives" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_ARCHIVED_PAGES).'</a></li>';
+		$contentEl .= '<li><div class="atm-archives atm-sidepic"></div><a atm:action="archives" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_ARCHIVED_PAGES).'</a></li>';
 	}
 	if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_DUPLICATE_BRANCH)) {
-		$content .= '<li><div class="atm-duplicate-branch atm-sidepic"></div><a atm:action="duplicate-branch" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_BRANCHE_DUPLICATION).'</a></li>';
+		$contentEl .= '<li><div class="atm-duplicate-branch atm-sidepic"></div><a atm:action="duplicate-branch" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_BRANCHE_DUPLICATION).'</a></li>';
 	}
-	$content .= '
+	$contentEl .= '
 		</ul>
 	</div>';
 	//panel
@@ -215,7 +200,7 @@ if (isset($modules[MOD_STANDARD_CODENAME]) && $cms_user->hasModuleClearance(MOD_
 		collapsible:		true,
 		titleCollapse: 		true,
 		collapsed:			true,
-		contentEl:			'module{$module->getCodename()}DivPanel',
+		html:				'".sensitiveIO::sanitizeJSString($contentEl)."',
 		listeners:			{'expand': scrollPanel},
 		hideCollapseTool:	true,
 		refresh:			function() {
@@ -267,33 +252,33 @@ foreach ($modules as $module) {
 	if ($module->hasAdmin()
 		&& $module->getCodename() != MOD_STANDARD_CODENAME
 		&& $cms_user->hasModuleClearance($module->getCodename(), CLEARANCE_MODULE_EDIT)) {
-		$content .= '
+		$contentEl = '
 		<div id="module'.$module->getCodename().'DivPanel">
 			<ul>';
 				if (!method_exists($module,'getObjectsInfos')) {
-					$options = htmlspecialchars(sensitiveIO::jsonEncode(array('admin' => $module->getAdminFrontendPath(PATH_RELATIVETO_WEBROOT))));
-					$content .= '<li><div class="atm-modules atm-sidepic"></div><a atm:action="module" atm:module="'.$module->getCodename().'" atm:version="3" href="#" atm:options="'.$options.'">'.$cms_language->getMessage(MESSAGE_PAGE_MODULE_ADMIN, array(htmlspecialchars($module->getLabel($cms_language)))).'</a></li>';
+					$options = io::htmlspecialchars(sensitiveIO::jsonEncode(array('admin' => $module->getAdminFrontendPath(PATH_RELATIVETO_WEBROOT))));
+					$contentEl .= '<li><div class="atm-modules atm-sidepic"></div><a atm:action="module" atm:module="'.$module->getCodename().'" atm:version="3" href="#" atm:options="'.$options.'">'.$cms_language->getMessage(MESSAGE_PAGE_MODULE_ADMIN, array(io::htmlspecialchars($module->getLabel($cms_language)))).'</a></li>';
 				} else {
 					$objectsInfos = $module->getObjectsInfos($cms_user);
 					foreach ($objectsInfos as $objectsInfo) {
 						$version = isset($objectsInfo['version']) ? $objectsInfo['version'] : 4;
 						if (isset($objectsInfo['description'])) {
-							$description = ' ext:qtip="'.htmlspecialchars($objectsInfo['description']).'"';
+							$description = ' ext:qtip="'.io::htmlspecialchars($objectsInfo['description']).'"';
 							unset($objectsInfo['description']);
 						} else {
 							$description = '';
 						}
 						if (isset($objectsInfo['adminLabel'])) {
-							$label = htmlspecialchars($objectsInfo['adminLabel']);
+							$label = io::htmlspecialchars($objectsInfo['adminLabel']);
 							unset($objectsInfo['adminLabel']);
 						} else {
-							$label = $cms_language->getMessage(MESSAGE_PAGE_MODULE_ADMIN, array(htmlspecialchars($module->getLabel($cms_language))));
+							$label = $cms_language->getMessage(MESSAGE_PAGE_MODULE_ADMIN, array(io::htmlspecialchars($module->getLabel($cms_language))));
 						}
 						$class = isset($objectsInfo['class']) ? $objectsInfo['class'] : 'atm-modules';
-						$content .= '<li><div class="'.$class.' atm-sidepic"></div><a atm:action="module"'.$description.' atm:module="'.$module->getCodename().'" atm:version="'.$version.'" atm:options="'.htmlspecialchars(sensitiveIO::jsonEncode($objectsInfo)).'" href="#">'.$label.'</a></li>';
+						$contentEl .= '<li><div class="'.$class.' atm-sidepic"></div><a atm:action="module"'.$description.' atm:module="'.$module->getCodename().'" atm:version="'.$version.'" atm:options="'.io::htmlspecialchars(sensitiveIO::jsonEncode($objectsInfo)).'" href="#">'.$label.'</a></li>';
 					}
 				}
-		$content .= '
+		$contentEl .= '
 			</ul>
 		</div>';
 		//panel
@@ -305,7 +290,7 @@ foreach ($modules as $module) {
 			collapsible:		true,
 			titleCollapse: 		true,
 			collapsed:			true,
-			contentEl:			'module{$module->getCodename()}DivPanel',
+			html:				'".sensitiveIO::sanitizeJSString($contentEl)."',
 			listeners:			{'expand': scrollPanel}";
 		//add modules parameters
 		if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
@@ -340,16 +325,16 @@ foreach ($modules as $module) {
 //USERS
 $usersPanel = '';
 
-$content .= '
+$contentEl = '
 <div id="usersDivPanel">
 	<ul>
 		<li><div class="atm-profile atm-sidepic"></div><a atm:action="profile" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_YOUR_PROFILE).'</a></li>';
 if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
-	$content .= '
+	$contentEl .= '
 		<li><div class="atm-users atm-sidepic"></div><a atm:action="users" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_USERS_PROFILE).'</a></li>
 		<li><div class="atm-groups atm-sidepic"></div><a atm:action="groups" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_GROUPS_PROFILE).'</a></li>';
 }
-$content .= '
+$contentEl .= '
 	</ul>
 </div>';
 //panel
@@ -360,7 +345,7 @@ $usersPanel = "{
 	collapsible:		true,
 	titleCollapse: 		true,
 	collapsed:			true,
-	contentEl:			'usersDivPanel',
+	html:				'".sensitiveIO::sanitizeJSString($contentEl)."',
 	listeners:			{'expand': scrollPanel}
 },";
 
@@ -368,21 +353,21 @@ $usersPanel = "{
 //TEMPLATES
 $templatesPanel = '';
 if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES) || $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) {
-	$content .= '
+	$contentEl = '
 	<div id="templatesDivPanel">
 		<ul>';
 	if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //templates
-		$content .= '<li><div class="atm-templates atm-sidepic"></div><a atm:action="templates" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_PAGE_TEMPLATES).'</a></li>';
+		$contentEl .= '<li><div class="atm-templates atm-sidepic"></div><a atm:action="templates" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_PAGE_TEMPLATES).'</a></li>';
 	}
 	if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES)) { //rows
-		$content .= '<li><div class="atm-rows atm-sidepic"></div><a atm:action="rows" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_ROWS_TEMPLATES).'</a></li>';
+		$contentEl .= '<li><div class="atm-rows atm-sidepic"></div><a atm:action="rows" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_ROWS_TEMPLATES).'</a></li>';
 	}
 	if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //templates
-		$content .= '<li><div class="atm-styles atm-sidepic"></div><a atm:action="styles" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_STYLESHEETS).'</a></li>
+		$contentEl .= '<li><div class="atm-styles atm-sidepic"></div><a atm:action="styles" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_STYLESHEETS).'</a></li>
 		<li><div class="atm-wysiwyg-styles atm-sidepic"></div><a atm:action="javascripts" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_SCRIPTS).'</a></li>
 		<li><div class="atm-wysiwyg-toolbar atm-sidepic"></div><a atm:action="wysiwyg-toolbar" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_WYSIWYG_TOOLBAR).'</a></li>';
 	}
-	$content .= '
+	$contentEl .= '
 		</ul>
 	</div>';
 	//panel
@@ -393,7 +378,7 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES) || $cms_use
 		collapsible:		true,
 		titleCollapse: 		true,
 		collapsed:			true,
-		contentEl:			'templatesDivPanel',
+		html:				'".sensitiveIO::sanitizeJSString($contentEl)."',
 		listeners:			{'expand': scrollPanel}
 	},";
 }
@@ -401,26 +386,26 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES) || $cms_use
 //ADMINISTRATION
 $adminPanel = '';
 if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) || $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_VIEWLOG)) {
-	$content .= '
+	$contentEl = '
 	<div id="adminDivPanel">
 		<ul>';
 	if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES)) {
-		$content .= '<li><div class="atm-scripts atm-sidepic"></div><a atm:action="scripts" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_SCRIPTS_MANAGEMENT).'</a></li>';
+		$contentEl .= '<li><div class="atm-scripts atm-sidepic"></div><a atm:action="scripts" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_SCRIPTS_MANAGEMENT).'</a></li>';
 	}
 	if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_VIEWLOG)) {
-		$content .= '<li><div class="atm-logs atm-sidepic"></div><a atm:action="logs" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_ACTIONS_LOG).'</a></li>';
+		$contentEl .= '<li><div class="atm-logs atm-sidepic"></div><a atm:action="logs" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_ACTIONS_LOG).'</a></li>';
 	}
 	if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
-		$content .= '
+		$contentEl .= '
 			<li><div class="atm-modules atm-sidepic"></div><a atm:action="modules" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_MODULES_MANAGEMENT).'</a></li>
 			<li><div class="atm-websites atm-sidepic"></div><a atm:action="websites" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_SITE_MANAGEMENT).'</a></li>';
 			//TODOV4
 			/*<li><div class="atm-languages atm-sidepic"></div><a atm:action="languages" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_LANGUAGE_MANAGEMENT).'</a></li>*/
-		$content .= '<li><div class="atm-database atm-sidepic"></div><a href="'.PATH_PHPMYADMIN_WR.'" target="_blank">'.$cms_language->getMessage(MESSAGE_PAGE_DATABASE).'</a></li>
+		$contentEl .= '<li><div class="atm-database atm-sidepic"></div><a href="'.PATH_PHPMYADMIN_WR.'" target="_blank">'.$cms_language->getMessage(MESSAGE_PAGE_DATABASE).'</a></li>
 			<li><div class="atm-server atm-sidepic"></div><a atm:action="server" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_SERVER_SETTINGS).'</a></li>
 			<li><div class="atm-parameters atm-sidepic"></div><a atm:action="parameters" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_AUTUMN_SETTINGS).'</a></li>';
 	}
-	$content .= '
+	$contentEl .= '
 		</ul>
 	</div>';
 	//panel
@@ -431,7 +416,7 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) || $c
 		collapsible:		true,
 		titleCollapse: 		true,
 		collapsed:			true,
-		contentEl:			'adminDivPanel',
+		html:				'".sensitiveIO::sanitizeJSString($contentEl)."',
 		listeners:			{'expand': scrollPanel}
 	},";
 }
@@ -444,9 +429,23 @@ $sepPanel = "{
 //remove the last comma on all panels
 $userPanels = io::substr($validationsPanel.$modulesPanels.$sepPanel.$usersPanel.$templatesPanel.$adminPanel, 0, -1);
 
+$topPanel = sensitiveIO::sanitizeJSString('
+<div id="headPanel">
+	<div id="headPanelBar"></div>
+	<div id="headPanelContent">
+		<div id="headPanelSite" ext:qtip="Automne Version '.AUTOMNE_VERSION.'">'.APPLICATION_LABEL.'</div>
+		<div id="headPanelClient">'.$cms_user->getFullName().'</div>
+		<a href="/" id="headPanelSiteLink" target="_blank" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_VIEW_WEBSITE).'"></a>
+		<a href="http://www.automne.ws/" id="headPanelAutomneLink" target="_blank" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_VISIT_WEBSITE).'"></a>
+		<div id="headPanelStick" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_LOCK_PANEL).'"></div>
+		<div id="headPanelLogout" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_END_SESSION).'">'.$cms_language->getMessage(MESSAGE_PAGE_DISCONNECT).'</div>
+		<div id="headPanelAutomneHelp" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_ABOUT_AUTOMNE).'"></div>
+		<div id="headPanelBarInfos"></div>
+	</div>
+</div>');
+
 $jscontent = <<<END
 	var sidePanel = Ext.getCmp('{$winId}');
-	
 	var scrollPanel = function(p) {
 		p.getEl().scrollIntoView(center.body);
 	}
@@ -463,11 +462,12 @@ $jscontent = <<<END
 		}
     }
 	var center = new Ext.Panel({
+		id:					'sidePanel-center',
 		region:				'center',
 		border:				false,
 		autoScroll:			true,
 		bodyStyle:			'background:#F3F3F3;',
-		items:[{$userPanels}],
+		items:				[{$userPanels}],
 		listeners:{'render':function(){
 			center.body.on('mousedown', doAction, null, {delegate:'a'});
 		},
@@ -475,17 +475,20 @@ $jscontent = <<<END
 	});
 	
 	// Panel for the north
-	var top = new Ext.BoxComponent({
+	var top = new Ext.Panel({
+		id:				'sidePanel-north',
 		region:			'north',
 		height:			148,
 		border:			false,
-		el: 			'headPanel',
-		listeners:{'render':function(){
+		html: 			'{$topPanel}',
+		listeners:{'afterrender':function(){
 			Ext.get('headPanelLogout').on('mousedown', function(){
 				//remove all events on window
 				Ext.EventManager.removeAll(window);
 				window.location.href = '/automne/admin/?cms_action=logout';
 			}, this);
+			//over on disconnect button
+			Ext.get('headPanelLogout').addClassOnOver('over');
 			Ext.get('headPanelAutomneHelp').on('mousedown', function(){
 				//create window element
 				var win = new Automne.Window({
@@ -692,15 +695,8 @@ $jscontent = <<<END
 			}, 750, 580);
     	}
     };
-	
-	//over on disconnect button
-	Ext.get('headPanelLogout').addClassOnOver('over');
-	
 END;
 $view->addJavascript($jscontent);
 
-
-//send content
-$view->setContent($content);
 $view->show();
 ?>

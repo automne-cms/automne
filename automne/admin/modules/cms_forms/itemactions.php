@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: itemactions.php,v 1.3 2009/11/02 10:32:59 sebastien Exp $
+// $Id: itemactions.php,v 1.4 2009/11/10 16:57:22 sebastien Exp $
 
 /**
   * PHP page : module admin frontend
@@ -477,7 +477,7 @@ if (sizeof($formActions)) {
 						//email sender (if none set, use postmaster email)
 						$sender = (!isset($texts[3]) || !sensitiveIO::isValidEmail($texts[3])) ? APPLICATION_POSTMASTER_EMAIL : $texts[3];
 						$content .= '<small>'.$cms_language->getMessage(MESSAGE_ACTION_ENTER_EMAIL_SENDER, false, MOD_CMS_FORMS_CODENAME).' :</small><br />
-						<input type="text" name="sender" class="admin_input_text" style="width:100%;" value="'.htmlspecialchars($sender).'"/>';
+						<input type="text" name="sender" class="admin_input_text" style="width:100%;" value="'.io::htmlspecialchars($sender).'"/>';
 					break;
 					case CMS_forms_action::ACTION_DB :
 					default:

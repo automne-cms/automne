@@ -9,7 +9,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: panel.js,v 1.3 2009/06/22 14:10:34 sebastien Exp $
+  * $Id: panel.js,v 1.4 2009/11/10 16:57:21 sebastien Exp $
   */
 Automne.panel = Ext.extend(Ext.Panel, {
 	//tab element
@@ -50,13 +50,22 @@ Automne.panel = Ext.extend(Ext.Panel, {
 		if (this.tabEl === false) {
 			this.loadTabEl();
 		}
-		this.tabTip = new Ext.ToolTip({
-			id:				this.id + 'Tip',
-			target: 		this.tabEl,
-			title: 			title,
-			html: 			body,
-			dismissDelay:	20000
-		});
+		if (this.id == 'public') {
+			this.tabTip = new Ext.ToolTip({
+				id:				this.id + 'Tip',
+				target: 		this.tabEl,
+				title: 			title,
+				html: 			body,
+				dismissDelay:	20000
+			});
+		} else {
+			this.tabTip = new Ext.ToolTip({
+				target: 		this.tabEl,
+				title: 			title,
+				html: 			body,
+				dismissDelay:	20000
+			});
+		}
 		return true;
 	},
 	// private

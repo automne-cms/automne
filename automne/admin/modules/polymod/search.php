@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: search.php,v 1.5 2009/10/22 16:28:08 sebastien Exp $
+// $Id: search.php,v 1.6 2009/11/10 16:57:21 sebastien Exp $
 
 /**
   * PHP page : Load polyobjects items datas
@@ -232,7 +232,7 @@ foreach ($items as $item) {
 		$status = $item->getStatus();
 		if (is_object($status)) {
 			$htmlStatus = $status->getHTML(false, $cms_user, $codename, $item->getID());
-			$pubRange = $status->getPublicationRange($cms_language);
+			$pubRange = $status->getPublicationRange($cms_language, false);
 			$lock = $item->getLock();
 			$deleted = ($item->getProposedLocation() == RESOURCE_LOCATION_DELETED);
 		}

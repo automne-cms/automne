@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: item.php,v 1.7 2009/10/22 16:28:07 sebastien Exp $
+// $Id: item.php,v 1.8 2009/11/10 16:57:21 sebastien Exp $
 
 /**
   * PHP page : Load polymod item interface
@@ -41,6 +41,11 @@ define("MESSAGE_PAGE_ELEMENT_LOCKED", 525);
 define("MESSAGE_PAGE_ELEMENT_EDIT_RIGHTS_ERROR", 526);
 define("MESSAGE_TOOLBAR_HELP_DESC", 527);
 define("MESSAGE_PAGE_SAVE_ERROR", 528);
+
+define("MESSAGE_PAGE_SAVE_AND_VALID", 541);
+define("MESSAGE_PAGE_SAVE_AND_VALID_DESC", 542);
+define("MESSAGE_PAGE_SAVE_PRIMARY_DESC", 543);
+define("MESSAGE_PAGE_SAVE_DESC", 544);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -129,13 +134,6 @@ $itemFields = '';
 foreach ($fieldsObjects as $fieldID => $aFieldObject) {
 	$fieldAdmin = $item->getHTMLAdmin($fieldID, $cms_language,'');
 	
-	$tmpFile = new CMS_file(PATH_TMP_FS.'/euro_'.md5(mt_rand().microtime()).'.tmp');
-	$tmpFile->setContent(print_r($fieldAdmin, true));
-	$tmpFile->writeTopersistence();
-			
-			
-	
-	
 	if (is_array($fieldAdmin)) {
 		$itemFields .= sensitiveIO::jsonEncode($fieldAdmin).',';
 	}
@@ -148,6 +146,7 @@ function replaceCallBack($parts) {
 $itemFields = preg_replace_callback('#"function\((.*)}"#U', 'replaceCallBack', $itemFields);
 
 //Append pub dates if object is a primary resource
+$saveAndValidate = '';
 if ($object->isPrimaryResource()) {
 	if (!$item->getID()) {
 		$dt = new CMS_date();
@@ -182,6 +181,22 @@ if ($object->isPrimaryResource()) {
 			value:		'{$pubEnd}'
 		}]
 	},";
+	if ($cms_user->hasValidationClearance($codename)) {
+		$saveAndValidate = ",{
+			xtype:			'button',
+			text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE_AND_VALID, false, MOD_POLYMOD_CODENAME)}',
+			tooltip:		'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE_AND_VALID_DESC, false, MOD_POLYMOD_CODENAME)}',
+			iconCls:		'atm-pic-validate',
+			name:			'submitAndValidAdmin',
+			handler:		submitItem.createDelegate(this, ['save-validate']),
+			scope:			this
+		}";
+		$saveIconCls = 'atm-pic-draft-validation';
+		$saveTooltip = $cms_language->getJSMessage(MESSAGE_PAGE_SAVE_PRIMARY_DESC, false, MOD_POLYMOD_CODENAME);
+	}
+} else {
+	$saveIconCls = 'atm-pic-validate';
+	$saveTooltip = $cms_language->getJSMessage(MESSAGE_PAGE_SAVE_DESC, false, MOD_POLYMOD_CODENAME);
 }
 
 //remove last comma
@@ -203,6 +218,49 @@ $jscontent = <<<END
 		dismissDelay:	0
 	});
 	window.objectId = '{$itemId}';
+	
+	var submitItem = function (action) {
+		var form = Ext.getCmp('{$winId}-form').getForm();
+		if (form.isValid()) {
+			form.submit({
+				params:{
+					action:		action,
+					module:		'{$codename}',
+					type:		'{$objectId}',
+					item:		window.objectId
+				},
+				success:function(form, action){
+					if (!action.result || action.result.success == false) {
+						Automne.message.show('{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE_ERROR, false, MOD_POLYMOD_CODENAME)}', '', window);
+					}
+					//update fields values if any is returned in response
+					//extract updated json datas from response
+					var jsonResponse = {};
+					if (action.response.responseXML && action.response.responseXML.getElementsByTagName('jsoncontent').length) {
+						try{
+							jsonResponse = Ext.decode(action.response.responseXML.getElementsByTagName('jsoncontent').item(0).firstChild.nodeValue);
+						} catch(e) {
+							jsonResponse = {};
+							pr(e, 'error');
+							Automne.server.failureResponse(action.response, action.options, e, 'json');
+						}
+					}
+					window.objectId = jsonResponse.id;
+					if (jsonResponse.datas) {
+						for(var i in jsonResponse.datas) {
+							if (i != 'success' && form.findField(i)) {
+								form.findField(i).setValue(jsonResponse.datas[i]);
+							}
+						}
+					}
+				},
+				scope:this
+			});
+		} else {
+			Automne.message.show('{$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_FORM_VALUES, false, MOD_POLYMOD_CODENAME)}', '', window);
+		}
+	}
+	
 	//create center panel
 	var center = new Ext.Panel({
 		region:				'center',
@@ -228,51 +286,13 @@ $jscontent = <<<END
 		}],
 		buttons:[{
 			text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+			tooltip:		'{$saveTooltip}',
+			iconCls:		'{$saveIconCls}',
 			xtype:			'button',
 			name:			'submitAdmin',
-			handler:		function() {
-				var form = Ext.getCmp('{$winId}-form').getForm();
-				if (form.isValid()) {
-					form.submit({
-						params:{
-							action:		'save',
-							module:		'{$codename}',
-							type:		'{$objectId}',
-							item:		window.objectId
-						},
-						success:function(form, action){
-							if (!action.result || action.result.success == false) {
-								Automne.message.show('{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE_ERROR, false, MOD_POLYMOD_CODENAME)}', '', window);
-							}
-							//update fields values if any is returned in response
-							//extract updated json datas from response
-							var jsonResponse = {};
-							if (action.response.responseXML && action.response.responseXML.getElementsByTagName('jsoncontent').length) {
-								try{
-									jsonResponse = Ext.decode(action.response.responseXML.getElementsByTagName('jsoncontent').item(0).firstChild.nodeValue);
-								} catch(e) {
-									jsonResponse = {};
-									pr(e, 'error');
-									Automne.server.failureResponse(action.response, action.options, e, 'json');
-								}
-							}
-							window.objectId = jsonResponse.id;
-							if (jsonResponse.datas) {
-								for(var i in jsonResponse.datas) {
-									if (i != 'success' && form.findField(i)) {
-										form.findField(i).setValue(jsonResponse.datas[i]);
-									}
-								}
-							}
-						},
-						scope:this
-					});
-				} else {
-					Automne.message.show('{$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_FORM_VALUES, false, MOD_POLYMOD_CODENAME)}', '', window);
-				}
-			},
+			handler:		submitItem.createDelegate(this, ['save']),
 			scope:			this
-		}]
+		}{$saveAndValidate}]
 	});
 	window.add(center);
 	setTimeout(function(){

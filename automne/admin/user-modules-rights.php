@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: user-modules-rights.php,v 1.3 2009/10/22 16:26:28 sebastien Exp $
+// $Id: user-modules-rights.php,v 1.4 2009/11/10 16:57:20 sebastien Exp $
 
 /**
   * PHP page : Load page rights detail for given user.
@@ -147,6 +147,7 @@ $moduleAccessSubmit = '';
 if (!$disableFields) {
 	$moduleAccessSubmit = ",buttons:[{
 		text:			'".$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)."',
+		iconCls:		'atm-pic-validate',
 		xtype:			'button',
 		anchor:			'',
 		handler:		function() {
@@ -225,6 +226,7 @@ if ($moduleCodename == MOD_STANDARD_CODENAME) {
 		if (!$disableFields) {
 			$templateGroupsSubmit = ",buttons:[{
 				text:			'".$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)."',
+				iconCls:		'atm-pic-validate',
 				xtype:			'button',
 				anchor:			'',
 				handler:		function() {
@@ -254,6 +256,7 @@ if ($moduleCodename == MOD_STANDARD_CODENAME) {
 		if (!$disableFields) {
 			$rowGroupsSubmit = ",buttons:[{
 				text:			'".$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)."',
+				iconCls:		'atm-pic-validate',
 				xtype:			'button',
 				anchor:			'',
 				handler:		function() {

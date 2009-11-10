@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-files.php,v 1.4 2009/10/22 16:26:27 sebastien Exp $
+// $Id: templates-files.php,v 1.5 2009/11/10 16:57:20 sebastien Exp $
 
 /**
   * PHP page : Load module categories tree window.
@@ -120,6 +120,7 @@ $jscontent = <<<END
 			}
 		},'-',{
 			id:				'{$fileType}FileEdit',
+			iconCls:		'atm-pic-modify',
 			xtype:			'button',
 			text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_MODIFY)}',
 			disabled:		true,
@@ -166,6 +167,7 @@ $jscontent = <<<END
 			scope:this
 		},{
 			id:				'{$fileType}FileDelete',
+			iconCls:		'atm-pic-deletion',
 			xtype:			'button',
 			text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_DELETE)}',
 			disabled:		true,
@@ -204,6 +206,7 @@ $jscontent = <<<END
 			scope:this
 		},'->',{
 			id:				'{$fileType}FileCreate',
+			iconCls:		'atm-pic-add',
 			xtype:			'button',
 			text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_NEW)}',
 			disabled:		true,

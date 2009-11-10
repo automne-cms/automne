@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: backtrace.php,v 1.1 2009/04/10 15:36:05 sebastien Exp $
+// $Id: backtrace.php,v 1.2 2009/11/10 16:57:18 sebastien Exp $
 
 /**
   * PHP page : Backtrace debug page
@@ -34,7 +34,7 @@ if ($backTraceName && isset($_SESSION["automneBacktraces"]) && isset($_SESSION["
 	<h3>Backtrace:</h3>
 	'.$_SESSION["automneBacktraces"][$backTraceName]['summary'].'<br />
 	<h3>Backtrace Detail:</h3>
-	<pre>'.htmlspecialchars($_SESSION["automneBacktraces"][$backTraceName]['backtrace']).'</pre>
+	<pre>'.io::htmlspecialchars($_SESSION["automneBacktraces"][$backTraceName]['backtrace']).'</pre>
 	';
 } else {
 	$content = 'Cannot backtrace, datas missing ...';

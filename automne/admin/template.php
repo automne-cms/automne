@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: template.php,v 1.12 2009/10/22 16:26:27 sebastien Exp $
+// $Id: template.php,v 1.13 2009/11/10 16:57:20 sebastien Exp $
 
 /**
   * PHP page : Load template detail window.
@@ -169,7 +169,7 @@ $selectedWebsites = sensitiveIO::jsonEncode($selectedWebsites);
 
 //DEFINITION TAB
 $content = '
-<textarea id="tpl-definition-'.$templateId.'" style="display:none;">'.(htmlspecialchars($templateDefinition)).'</textarea>';
+<textarea id="tpl-definition-'.$templateId.'" style="display:none;">'.htmlspecialchars($templateDefinition).'</textarea>';
 $view->setContent($content);
 
 $title = sensitiveIO::sanitizeJSString(sensitiveIO::isPositiveInteger($templateId) ? $cms_language->getMessage(MESSAGE_PAGE_TEMPLATE).' '.$label : $cms_language->getMessage(MESSAGE_PAGE_CREATE_TEMPLATE));
@@ -228,6 +228,7 @@ if (USE_PRINT_PAGES) {
 		}],
 		buttons:[{
 			text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+			iconCls:		'atm-pic-validate',
 			xtype:			'button',
 			name:			'submitAdmin',
 			handler:		function() {
@@ -359,6 +360,7 @@ $jscontent = <<<END
 			}],
 			buttons:[{
 				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+				iconCls:		'atm-pic-validate',
 				anchor:			'',
 				scope:			this,
 				handler:		function() {
@@ -499,6 +501,7 @@ $jscontent = <<<END
 			}],
 			buttons:[{
 				text:			'{$cms_language->getJSMessage(MESSAGE_ACTION_HELP)}',
+				iconCls:		'atm-pic-question',
 				anchor:			'',
 				scope:			this,
 				handler:		function(button) {
@@ -527,6 +530,7 @@ $jscontent = <<<END
 				}
 			}, {
 				id:				'reindent-{$templateId}',
+				iconCls:		'atm-pic-reindent',
 				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_ACTION_REINDENT)}',
 				anchor:			'',
 				hidden:			true,
@@ -535,6 +539,7 @@ $jscontent = <<<END
 				}, scope:this}
 			},{
 				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+				iconCls:		'atm-pic-validate',
 				anchor:			'',
 				scope:			this,
 				handler:		function() {
@@ -553,6 +558,7 @@ $jscontent = <<<END
 				}
 			},{
 				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE_AND_REGEN)}',
+				iconCls:		'atm-pic-reload',
 				anchor:			'',
 				scope:			this,
 				tooltip:		'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE_AND_REGEN_DESC)}',

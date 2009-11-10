@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: items-controler.php,v 1.6 2009/10/22 16:28:08 sebastien Exp $
+// $Id: items-controler.php,v 1.7 2009/11/10 16:57:21 sebastien Exp $
 
 /**
   * PHP page : Load polymod item interface
@@ -51,7 +51,7 @@ define("MESSAGE_PAGE_ELEMENT_EDIT_RIGHTS_ERROR", 526);
 define("MESSAGE_FORM_ERROR_FOLLOWING_FIELDS_MANDATORY", 535);
 
 //Controler vars
-$action = sensitiveIO::request('action', array('save', 'setRowParameters', 'pluginSelection'));
+$action = sensitiveIO::request('action', array('save', 'save-validate', 'setRowParameters', 'pluginSelection'));
 $objectId = sensitiveIO::request('type', 'sensitiveIO::isPositiveInteger');
 $itemId = sensitiveIO::request('item', 'sensitiveIO::isPositiveInteger');
 $codename = sensitiveIO::request('module', CMS_modulesCatalog::getAllCodenames());
@@ -93,7 +93,7 @@ if (isset($object)) {
 	//load item if any
 	if ($itemId) {
 		$item = new CMS_poly_object($objectId, $itemId);
-		if ($action == 'save') {
+		if ($action == 'save' || $action == 'save-validate') {
 			$itemLabel = sensitiveIO::sanitizeJSString($item->getLabel());
 			if ($object->isPrimaryResource()) {
 				//put a lock on the resource or warn user if item is already locked by another user
@@ -141,6 +141,7 @@ if (isset($object)) {
 $cms_message = '';
 switch ($action) {
 	case 'save':
+	case 'save-validate':
 		//checks and assignments
 		$item->setDebug(false);
 		$fieldsObjects = $item->getFieldsObjects();
@@ -207,12 +208,29 @@ switch ($action) {
 		}
 		if (!$cms_message) {
 			//save the data
-			if (!$item->writeToPersistence()) {
+			if (!$item->writeToPersistence(true, $action == 'save')) {
 				$cms_message .= $cms_language->getMessage(MESSAGE_ERROR_WRITETOPERSISTENCE);
 			}
 			if (!$cms_message) {
-				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 				$content = array('success' => true, 'id' => $item->getID());
+				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
+				if ($action == 'save') {
+					break;
+				}
+				//validate saving
+				if ($object->isPrimaryResource()) {
+					$codename = CMS_poly_object_catalog::getModuleCodenameForObject($item->getID());
+					if ($cms_user->hasValidationClearance($codename)) {
+						//then validate this item content
+						$validation = new CMS_resourceValidation($codename, RESOURCE_EDITION_CONTENT, $item);
+						$mod = CMS_modulesCatalog::getByCodename($codename);
+						$mod->processValidation($validation, VALIDATION_OPTION_ACCEPT);
+						
+						//Log action
+						$log = new CMS_log();
+						$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_DIRECT_VALIDATION, $cms_user, $codename, $item->getStatus(), 'Item \''.$item->getLabel().'\' ('.$item->getObjectDefinition()->getLabel($cms_language).')', $item);
+					}
+				}
 			}
 		}
 	break;
@@ -244,7 +262,7 @@ switch ($action) {
 			$codeTopaste = sensitiveIO::reencodeAmpersand($codeTopaste);
 			if ($codeTopaste) {
 				//add identification span tag arround code to paste
-				$codeTopaste = '<span id="polymod-'.$pluginId.'-'.$itemId.'" class="polymod" title="'.htmlspecialchars($selectedPlugin->getLabel($cms_language).' : '.trim($item->getLabel($cms_language))).'">'.$codeTopaste.'</span>';
+				$codeTopaste = '<span id="polymod-'.$pluginId.'-'.$itemId.'" class="polymod" title="'.io::htmlspecialchars($selectedPlugin->getLabel($cms_language).' : '.trim($item->getLabel($cms_language))).'">'.$codeTopaste.'</span>';
 			}
 			$content = $codeTopaste;
 		} elseif (sensitiveIO::isPositiveInteger($itemId) && $selectedPlugin->needSelection()) {

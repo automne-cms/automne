@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: users.php,v 1.5 2009/10/22 16:26:28 sebastien Exp $
+// $Id: users.php,v 1.6 2009/11/10 16:57:21 sebastien Exp $
 
 /**
   * PHP page : Load users search window.
@@ -197,6 +197,7 @@ $jscontent = <<<END
 		},
 		tbar:[new Ext.Button({
 			id:			'editUser',
+			iconCls:	'atm-pic-modify',
 			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_MODIFY)}',
 			handler:	function(button) {
 				if (sm.getSelected().id) {
@@ -235,6 +236,7 @@ $jscontent = <<<END
 			disabled:	true
 		}),new Ext.Button({
 			id:			'desactivateUser',
+			iconCls:	'atm-pic-disable',
 			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_DISACTIVATE)}',
 			handler:	function() {
 				if (sm.getSelected().id) {
@@ -248,6 +250,7 @@ $jscontent = <<<END
 			hidden:		true
 		}),new Ext.Button({
 			id:			'activateUser',
+			iconCls:	'atm-pic-enable',
 			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_ACTIVATE)}',
 			handler:	function() {
 				if (sm.getSelected().id) {
@@ -261,6 +264,7 @@ $jscontent = <<<END
 			hidden:		true
 		}),new Ext.Button({
 			id:			'deleteUser',
+			iconCls:	'atm-pic-deletion',
 			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_DELETE)}',
 			handler:	function(button) {
 				var selectedUser = sm.getSelected();
@@ -286,6 +290,7 @@ $jscontent = <<<END
 			disabled:	true
 		}), '->', new Ext.Button({
 			id:			'createUser',
+			iconCls:	'atm-pic-add',
 			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_CREATE_USER)}',
 			handler:	function(button) {
 				//create window element

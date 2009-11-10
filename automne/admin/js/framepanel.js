@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: framepanel.js,v 1.16 2009/10/22 16:27:19 sebastien Exp $
+  * $Id: framepanel.js,v 1.17 2009/11/10 16:57:21 sebastien Exp $
   */
 Automne.framePanel = Ext.extend(Automne.panel, { 
 	xtype:				'framePanel',
@@ -126,16 +126,20 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 					hiddenName: 		'addRow',
 					displayField:		'label',
 					typeAhead: 			false,
-					allowBlank: 		false,
+					allowBlank: 		true,
 					selectOnFocus:		true,
-					editable:			false,
+					editable:			true,
 					width: 				420,
 					minListWidth:		420,
 					resizable: 			true,
 					loadingText:		al.loading,
+					queryParam:			'keyword',
+					queryDelay:			350,
+					minChars:			3,
 					maxHeight:			600,
 					pageSize:			10,
 					triggerAction:		'all',
+					enableKeyEvents:	true,
 					emptyText:			al.csSelectRow,
 					hidden:				true,
 					tpl: new Ext.XTemplate(
@@ -143,7 +147,28 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 							'<table border="0"><tr><td valign="middle" style="width:72px;"><img src="{image}" /></td><td valign="middle" style="padding:4px;"><strong>{label}</strong></td></tr></table>',
 						'</div></tpl>'
 					),
-					itemSelector: 		'div.atm-search-item'
+					itemSelector: 		'div.atm-search-item',
+					listeners:{
+						'specialkey':function(field, e) {
+							if (Ext.EventObject.getKey() == Ext.EventObject.ENTER) {
+								field.doQuery(field.getValue());
+							}
+							Ext.getCmp('addSelectedRow'+ this.editId).disable();
+						},
+						'valid':function(field, e) {
+							pr('valid : '+field.getValue());
+							if (isNaN(parseInt(field.getValue(),10))) {
+								Ext.getCmp('addSelectedRow'+ this.editId).disable();
+							}
+						},
+						'keypress':function(field, e) {
+							Ext.getCmp('addSelectedRow'+ this.editId).disable();
+						},
+						'select':function(field, e) {
+							Ext.getCmp('addSelectedRow'+ this.editId).enable();
+						},
+						scope:this
+					}
 				}),{
 					id:				'addSelectedRow'+ this.editId,
 					xtype:			'tbbutton',
@@ -151,28 +176,33 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 					tooltip:		al.csAddRowToPosition,
 					scope:			this,
 					hidden:			true,
+					disabled:		true,
 					iconCls:		'atm-pic-ok',
 					handler:		function() {
 						//display window to select row to add according to queried CS
 						var combo = Ext.getCmp('addRowCombo'+this.editId);
 						var comboParams = combo.store.baseParams;
-						//get combo value
-						var params = {
-							action:			'add-row',
-							cs:				comboParams.cs,
-							index:			comboParams.index,
-							template:		comboParams.template,
-							/*page:			comboParams.page,*/
-							rowType:		combo.getValue(),
-							visualMode:		comboParams.visualMode
-						};
-						var cs = this.frameEl.dom.contentWindow.atmContent.getCS(comboParams.cs);
-						//send all datas to server to create new row and get row HTML code
-						Automne.server.call('page-content-controler.php', cs.addNewRow, params, cs);
-						//hide all drop zones
-						this.frameEl.dom.contentWindow.atmContent.hideZones();
-						//init toolbar and row mask
-						this.frameEl.dom.contentWindow.atmContent.init();
+						var value = combo.getValue();
+						if (!isNaN(parseInt(value,10))) {
+							//get combo value
+							var params = {
+								action:			'add-row',
+								cs:				comboParams.cs,
+								index:			comboParams.index,
+								template:		comboParams.template,
+								rowType:		value,
+								visualMode:		comboParams.visualMode
+							};
+							var cs = this.frameEl.dom.contentWindow.atmContent.getCS(comboParams.cs);
+							//send all datas to server to create new row and get row HTML code
+							Automne.server.call('page-content-controler.php', cs.addNewRow, params, cs);
+							//hide all drop zones
+							this.frameEl.dom.contentWindow.atmContent.hideZones();
+							//init toolbar and row mask
+							this.frameEl.dom.contentWindow.atmContent.init();
+						} else {
+							Ext.getCmp('addSelectedRow'+ this.editId).disable();
+						}
 					}
 				}, '->',{
 					id:				'editValidateDraft'+ this.editId,

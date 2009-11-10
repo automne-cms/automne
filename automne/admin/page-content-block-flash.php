@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-content-block-flash.php,v 1.2 2009/10/22 16:26:25 sebastien Exp $
+// $Id: page-content-block-flash.php,v 1.3 2009/11/10 16:57:19 sebastien Exp $
 
 /**
   * PHP page : Load block flash interface
@@ -136,6 +136,7 @@ $jscontent = <<<END
 		region:				'center',
 		border:				false,
 		autoScroll:			true,
+		buttonAlign:		'center',
 		items: [{
 			id:				'blockFlashWindow-form',
 			layout: 		'form',
@@ -224,41 +225,42 @@ $jscontent = <<<END
 					value:			'{$attributes}',
 					allowBlank:		true
 				}]
-			}],
-			buttons:[{
-				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
-				xtype:			'button',
-				name:			'submitAdmin',
-				handler:		function() {
-					var form = Ext.getCmp('blockFlashWindow-form').getForm();
-					if (form.isValid()) {
-						var values = form.getValues();
-						//check fields values for correct JS format
-						var checkFields = ['flashparams', 'flashvars', 'flashattributes'];
-						var invalid = {};
-						var hasInvalid = false;
-						for (var i = 0; i < checkFields.length; i++) {
-							if (values[checkFields[i]]) {
-								if (values[checkFields[i]].trim().substr(-1) == ',') {
-									values[checkFields[i]] = values[checkFields[i]].trim().substr(0, values[checkFields[i]].trim().length - 1);
-								}
-								try {
-									eval('var test = {'+ values[checkFields[i]] +'};');
-								} catch(e) {
-									invalid[checkFields[i]] = '{$cms_language->getJSMessage(MESSAGE_ERROR_FORMAT)}';
-									hasInvalid = true;
-								}
+			}]
+		}],
+		buttons:[{
+			text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+			xtype:			'button',
+			iconCls:		'atm-pic-validate',
+			name:			'submitAdmin',
+			handler:		function() {
+				var form = Ext.getCmp('blockFlashWindow-form').getForm();
+				if (form.isValid()) {
+					var values = form.getValues();
+					//check fields values for correct JS format
+					var checkFields = ['flashparams', 'flashvars', 'flashattributes'];
+					var invalid = {};
+					var hasInvalid = false;
+					for (var i = 0; i < checkFields.length; i++) {
+						if (values[checkFields[i]]) {
+							if (values[checkFields[i]].trim().substr(-1) == ',') {
+								values[checkFields[i]] = values[checkFields[i]].trim().substr(0, values[checkFields[i]].trim().length - 1);
+							}
+							try {
+								eval('var test = {'+ values[checkFields[i]] +'};');
+							} catch(e) {
+								invalid[checkFields[i]] = '{$cms_language->getJSMessage(MESSAGE_ERROR_FORMAT)}';
+								hasInvalid = true;
 							}
 						}
-						if (hasInvalid) {
-							form.markInvalid(invalid);
-						} else {
-							this.validateEdition(values);
-						}
 					}
-				},
-				scope:			this
-			}]
+					if (hasInvalid) {
+						form.markInvalid(invalid);
+					} else {
+						this.validateEdition(values);
+					}
+				}
+			},
+			scope:			this
 		}]
 	});
 	blockWindow.add(center);

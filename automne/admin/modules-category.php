@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modules-category.php,v 1.5 2009/10/22 16:26:25 sebastien Exp $
+// $Id: modules-category.php,v 1.6 2009/11/10 16:57:19 sebastien Exp $
 
 /**
   * PHP page : Load category item interface
@@ -102,7 +102,7 @@ if (!function_exists("build_category_tree_options")) {
 		$a = array();
 		if ($category->getID() != $catId) {
 			$category->setAttribute('language', $cms_language);
-			$label = htmlspecialchars($category->getLabel());
+			$label = io::htmlspecialchars($category->getLabel());
 			if ($count >= 1) {
 				$label = str_repeat(' ::', $count).' '.$label;
 			}
@@ -326,6 +326,7 @@ $jscontent = <<<END
 		}],
 		buttons:[{
 			text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+			iconCls:		'atm-pic-validate',
 			xtype:			'button',
 			name:			'submitAdmin',
 			handler:		function() {

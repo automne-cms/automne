@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: stat.php,v 1.5 2009/10/22 16:26:26 sebastien Exp $
+// $Id: stat.php,v 1.6 2009/11/10 16:57:20 sebastien Exp $
 
 /**
   * Automne Debug Statistics viewver
@@ -245,9 +245,9 @@ $count='0';
 foreach ($sql_table as $sql_request) {
 	$count++;
 	if ($sql_request["time"] >= $SQL_TIME_MARK) {
-		$content .=  $count.' : <font color="red">Loaded in <b>' . $sql_request["time"] . '</b> ('.htmlspecialchars($sql_request["sql"]).')</font><br /><br />';
+		$content .=  $count.' : <font color="red">Loaded in <b>' . $sql_request["time"] . '</b> ('.io::htmlspecialchars($sql_request["sql"]).')</font><br /><br />';
 	} else {
-		$content .=  $count.' : Loaded in ' . $sql_request["time"] . ' ('.htmlspecialchars($sql_request["sql"]).')<br /><br />';
+		$content .=  $count.' : Loaded in ' . $sql_request["time"] . ' ('.io::htmlspecialchars($sql_request["sql"]).')<br /><br />';
 	}
 }
 

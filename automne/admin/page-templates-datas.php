@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-templates-datas.php,v 1.5 2009/10/22 16:26:25 sebastien Exp $
+// $Id: page-templates-datas.php,v 1.6 2009/11/10 16:57:20 sebastien Exp $
 
 /**
   * PHP page : Load page templates infos
@@ -72,7 +72,7 @@ if ($currentTpl) {
 		$src = PATH_TEMPLATES_IMAGES_WR.'/'. (($matchTpl->getImage()) ? $matchTpl->getImage() : 'nopicto.gif');
 		$description = sensitiveIO::ellipsis($matchTpl->getDescription(), 50);
 		if ($description != $matchTpl->getDescription()) {
-			$description = '<span ext:qtip="'.htmlspecialchars($matchTpl->getDescription()).'">'.$description.'</span>';
+			$description = '<span ext:qtip="'.io::htmlspecialchars($matchTpl->getDescription()).'">'.$description.'</span>';
 		}
 		$description = $description ? $description.'<br />' : '';
 		
@@ -99,7 +99,7 @@ if ($currentTpl) {
 		$src = PATH_TEMPLATES_IMAGES_WR.'/'. (($noMatchTpl->getImage()) ? $noMatchTpl->getImage() : 'nopicto.gif');
 		$description = sensitiveIO::ellipsis($noMatchTpl->getDescription(), 50);
 		if ($description != $noMatchTpl->getDescription()) {
-			$description = '<span ext:qtip="'.htmlspecialchars($noMatchTpl->getDescription()).'">'.$description.'</span>';
+			$description = '<span ext:qtip="'.io::htmlspecialchars($noMatchTpl->getDescription()).'">'.$description.'</span>';
 		}
 		$description = $description ? $description.'<br />' : '';
 		
@@ -124,7 +124,7 @@ if ($currentTpl) {
 		$src = PATH_TEMPLATES_IMAGES_WR.'/'. (($pageTemplate->getImage()) ? $pageTemplate->getImage() : 'nopicto.gif');
 		$description = sensitiveIO::ellipsis($pageTemplate->getDescription(), 50);
 		if ($description != $pageTemplate->getDescription()) {
-			$description = '<span ext:qtip="'.htmlspecialchars($pageTemplate->getDescription()).'">'.$description.'</span>';
+			$description = '<span ext:qtip="'.io::htmlspecialchars($pageTemplate->getDescription()).'">'.$description.'</span>';
 		}
 		$description = $description ? $description.'<br />' : '';
 		

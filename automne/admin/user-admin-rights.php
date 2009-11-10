@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: user-admin-rights.php,v 1.3 2009/10/22 16:26:27 sebastien Exp $
+// $Id: user-admin-rights.php,v 1.4 2009/11/10 16:57:20 sebastien Exp $
 
 /**
   * PHP page : Load modules categories rights interface
@@ -119,6 +119,7 @@ $adminTabSubmit = '';
 if (!$disableFields) {
 	$adminTabSubmit = ",buttons:[{
 		text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+		iconCls:		'atm-pic-validate',
 		xtype:			'button',
 		name:			'submitAdmin',
 		handler:		function() {

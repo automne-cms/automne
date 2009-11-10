@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: tree.php,v 1.6 2009/10/22 16:26:27 sebastien Exp $
+// $Id: tree.php,v 1.7 2009/11/10 16:57:20 sebastien Exp $
 
 /**
   * PHP page : Load tree window infos. Presents a portion of the pages tree. Can be used by any admin page.
@@ -161,7 +161,9 @@ if ($hideMenu) {
 			if (!$editable) {
 				$tbar .= "
 				{
+					iconCls:	'atm-pic-filter',
 					text:		'{$cms_language->getJsMessage(MESSAGE_TOOLBAR_FILTER)}',
+					tooltip:	'{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP_FILTER)}',
 					menu: new Ext.menu.Menu({
 						id: 	'filterMenu',
 						items: [{
@@ -176,15 +178,7 @@ if ($hideMenu) {
 									value:		1
 								}]
 					})
-				},{
-					icon:  		'{$imgPath}/help.gif',
-					cls: 		'x-btn-icon',
-					tooltip: 	{
-						title:			'{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP)}',
-						text:			'{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP_FILTER)}',
-						dismissDelay:	30000
-					}
-			    },";
+				},";
 			}
 			$tbar .= "
 				new Ext.Toolbar.Fill(),

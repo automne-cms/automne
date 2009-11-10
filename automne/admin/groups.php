@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: groups.php,v 1.4 2009/10/22 16:26:24 sebastien Exp $
+// $Id: groups.php,v 1.5 2009/11/10 16:57:18 sebastien Exp $
 
 /**
   * PHP page : Load groups search window.
@@ -133,6 +133,7 @@ $jscontent = <<<END
 		},
 		tbar:[new Ext.Button({
 			id:			'editGroup',
+			iconCls:	'atm-pic-modify',
 			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_MODIFY)}',
 			handler:	function(button) {
 				if (sm.getSelected().id) {
@@ -171,6 +172,7 @@ $jscontent = <<<END
 			disabled:	true
 		}),new Ext.Button({
 			id:			'deleteGroup',
+			iconCls:	'atm-pic-deletion',
 			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_DELETE)}',
 			handler:	function(button) {
 				var selectedGroup = sm.getSelected();
@@ -196,6 +198,7 @@ $jscontent = <<<END
 			disabled:	true
 		}), '->', new Ext.Button({
 			id:			'createGroup',
+			iconCls:	'atm-pic-add',
 			text:		'{$cms_language->getJsMessage(MESSAGE_PAGE_CREATE_NEW_GROUP)}',
 			handler:	function(button) {
 				//create window element

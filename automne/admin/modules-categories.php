@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modules-categories.php,v 1.6 2009/10/22 16:26:25 sebastien Exp $
+// $Id: modules-categories.php,v 1.7 2009/11/10 16:57:19 sebastien Exp $
 
 /**
   * PHP page : Load module categories tree window.
@@ -159,6 +159,7 @@ $jscontent = <<<END
 			}
 		},'-',{
 			id:				'{$codename}CatsEdit',
+			iconCls:		'atm-pic-modify',
 			xtype:			'button',
 			text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_MODIFY)}',
 			disabled:		true,
@@ -210,6 +211,7 @@ $jscontent = <<<END
 			scope:this
 		},{
 			id:				'{$codename}CatsDelete',
+			iconCls:		'atm-pic-deletion',
 			xtype:			'button',
 			text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_DELETE)}',
 			disabled:		true,
@@ -251,6 +253,7 @@ $jscontent = <<<END
 			scope:this
 		},'->',{
 			id:				'{$codename}CatsCreate',
+			iconCls:		'atm-pic-add',
 			xtype:			'button',
 			text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_NEW)}',
 			disabled:		true,

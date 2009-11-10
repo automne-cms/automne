@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-redirect-info.php,v 1.5 2009/06/22 14:10:32 sebastien Exp $
+// $Id: page-redirect-info.php,v 1.6 2009/11/10 16:57:20 sebastien Exp $
 
 /**
   * PHP page : Redirection page info
@@ -47,7 +47,7 @@ if (isset($page) && !$page->hasError()) {
 			if (!$redirectPage->hasError()) {
 				$label = $cms_language->getMessage(MESSAGE_PAGE_PAGE).' "'.$redirectPage->getTitle().'" ('.$redirectPage->getID().')';
 			}
-			$redirect = '<a href="'.$redirectPage->getURL().'">'.htmlspecialchars($label).'</a>';
+			$redirect = '<a href="'.$redirectPage->getURL().'">'.io::htmlspecialchars($label).'</a>';
 		} else {
 			$label = $redirectlink->getExternalLink();
 			$redirectlink->setTarget('_blank');

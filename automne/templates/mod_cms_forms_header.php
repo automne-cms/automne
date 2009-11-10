@@ -17,7 +17,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: mod_cms_forms_header.php,v 1.12 2009/11/02 17:27:56 sebastien Exp $
+// $Id: mod_cms_forms_header.php,v 1.13 2009/11/10 16:59:09 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -42,6 +42,18 @@ $mod_cms_forms["pageID"] = $parameters['pageID'] = '{{pageID}}';
 //little function to enclose PHP vars with curly braces to avoid errors with array indexes
 function curlyBracesVars($text) {
 	return preg_replace('#(\s)(\$[a-zA-Z0-9_\[\]\'-]*)#','\\1".\\2."',$text);
+}
+//eval polymod vars in all forms actions
+function evalPolymodVars($text, $language){
+	global $mod_cms_forms;
+	$definition = new CMS_polymod_definition_parsing($text, true);
+	$parameters = array(
+		'module'	=> MOD_CMS_FORMS_CODENAME,
+		'public'	=> true,
+		'pageID'	=> $mod_cms_forms["pageID"],
+		'language'	=> $language
+	);
+	return $definition->getContent(CMS_polymod_definition_parsing::OUTPUT_RESULT, $parameters);
 }
 
 $separator = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? "\xa7\xa7" : "\xc2\xa7\xc2\xa7";
@@ -127,8 +139,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 							}
 						}
 					} else { //append message to form message
-						$text = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($action->getString("text"))).'";');
-						$cms_forms_msg[$form->getID()] .= nl2br($text).'<br />';
+						$cms_forms_msg[$form->getID()] .= nl2br($action->getString("text")).'<br />';
 					}
 				}
 			}
@@ -176,8 +187,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 											}
 										} else {
 											if ($alreadyFoldAction->getString("text")) {
-												$text = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($alreadyFoldAction->getString("text"))).'";');
-												$cms_forms_msg[$form->getID()] .= nl2br($text);
+												$cms_forms_msg[$form->getID()] .= nl2br($alreadyFoldAction->getString("text"));
 											}
 										}
 									}
@@ -261,8 +271,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 										}
 									} else { //append message to form error message
 										if ($action->getString("text")) {
-											$text = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($action->getString("text"))).'";');
-											$cms_forms_error_msg[$form->getID()] .= nl2br($text).'<br />';
+											$cms_forms_error_msg[$form->getID()] .= nl2br($action->getString("text")).'<br />';
 										}
 									}
 									break 2; //then quit actions loop
@@ -337,23 +346,18 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 								//append header and footer texts if any to body text
 								if (isset($texts[1])) { // header
 									//needed in case of vars in text. Simple and double quotes are not welcome in this case !
-									//$texts[1] = (strpos($texts[1], '$') !== false) ? eval('return "'.str_replace(array('"',"'"),'',$texts[1]).'";') : $texts[1];
-									$texts[1] = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($texts[1])).'";');
-									$body = $texts[1]."\n\n".$body;
+									$body = evalPolymodVars($texts[1], $form_language->getCode())."\n\n".$body;
 								}
 								if (isset($texts[2])) { //footer
 									//needed in case of vars in text. Simple and double quotes are not welcome in this case !
-									//$texts[2] = (strpos($texts[2], '$') !== false) ? eval('return "'.str_replace(array('"',"'"),'',$texts[2]).'";') : $texts[2];
-									$texts[2] = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($texts[2])).'";');
-									$body = $body."\n\n".$texts[2];
+									$body = $body."\n\n". evalPolymodVars($texts[2], $form_language->getCode());
 								}
 								$email->setBody($body);
 								
 								//create subject
 								if ($texts[0]) { //from DB if any
 									//needed in case of vars in text. Simple and double quotes are not welcome in this case !
-									//$texts[0] = (strpos($texts[0], '$') !== false) ? eval('return "'.str_replace(array('"',"'"),'',$texts[0]).'";') : $texts[0];
-									$subject = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($texts[0])).'";');
+									$subject = evalPolymodVars($texts[0], $form_language->getCode());
 								} else { // or default subject
 									$subject = $form_language->getMessage(CMS_forms_formular::MESSAGE_CMS_FORMS_EMAIL_SUBJECT, array($form->getAttribute('name'), APPLICATION_LABEL), MOD_CMS_FORMS_CODENAME);
 								}
@@ -371,7 +375,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 								if ($action->getInteger('type') == CMS_forms_action::ACTION_EMAIL) {
 									$emailAddresses = array_map('trim',explode(';',io::decodeEntities($action->getString("value"))));
 									foreach ($emailAddresses as $emailAddress) {
-										$emailAddress = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($emailAddress)).'";');
+										$emailAddress = evalPolymodVars($emailAddress, $form_language->getCode());
 										if (sensitiveIO::isValidEmail($emailAddress)) {
 											$email->setEmailTo($emailAddress);
 											$email->sendEmail();
@@ -409,8 +413,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 											unset($_SESSION["cms_context"]);
 											//append message to form error message
 											if ($action->getString("text")) {
-												$text = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($action->getString("text"))).'";');
-												$cms_forms_error_msg[$form->getID()] .= nl2br($text).'<br />';
+												$cms_forms_error_msg[$form->getID()] .= nl2br($action->getString("text")).'<br />';
 											}
 											break 2; //quit actions loop
 										}

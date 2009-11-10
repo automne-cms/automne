@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: row.php,v 1.9 2009/10/22 16:26:26 sebastien Exp $
+// $Id: row.php,v 1.10 2009/11/10 16:57:20 sebastien Exp $
 
 /**
   * PHP page : Load row detail window.
@@ -173,7 +173,7 @@ $selectedTemplates = sensitiveIO::jsonEncode($selectedTemplates);
 
 //DEFINITION TAB
 $rowDefinition = ($rowDefinition) ? $rowDefinition : '<row></row>';
-$content = '<textarea id="row-definition-'.$rowId.'" style="display:none;">'.htmlspecialchars($rowDefinition).'</textarea>';
+$content = '<textarea id="row-definition-'.$rowId.'" style="display:none;">'.io::htmlspecialchars($rowDefinition).'</textarea>';
 $view->setContent($content);
 
 $title = sensitiveIO::sanitizeJSString((sensitiveIO::isPositiveInteger($rowId)) ? $cms_language->getMessage(MESSAGE_PAGE_ROW).' '.$label : $cms_language->getMessage(MESSAGE_PAGE_ROW_CREATE));
@@ -283,6 +283,7 @@ $jscontent = <<<END
 			}],
 			buttons:[{
 				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+				iconCls:		'atm-pic-validate',
 				anchor:			'',
 				scope:			this,
 				handler:		function() {
@@ -408,6 +409,7 @@ $jscontent = <<<END
 			}],
 			buttons:[{
 				text:			'{$cms_language->getJSMessage(MESSAGE_ACTION_HELP)}',
+				iconCls:		'atm-pic-question',
 				anchor:			'',
 				scope:			this,
 				handler:		function(button) {
@@ -436,6 +438,7 @@ $jscontent = <<<END
 				}
 			}, {
 				id:				'reindent-{$rowId}',
+				iconCls:		'atm-pic-reindent',
 				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_ACTION_REINDENT)}',
 				anchor:			'',
 				hidden:			true,
@@ -444,6 +447,7 @@ $jscontent = <<<END
 				}, scope:this}
 			},{
 				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+				iconCls:		'atm-pic-validate',
 				anchor:			'',
 				scope:			this,
 				handler:		function() {
@@ -462,6 +466,7 @@ $jscontent = <<<END
 				}
 			},{
 				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE_AND_REGEN)}',
+				iconCls:		'atm-pic-reload',
 				anchor:			'',
 				scope:			this,
 				tooltip:		'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE_AND_REGEN_DESC)}',

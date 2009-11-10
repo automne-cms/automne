@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-content-block-image.php,v 1.3 2009/10/22 16:26:25 sebastien Exp $
+// $Id: page-content-block-image.php,v 1.4 2009/11/10 16:57:19 sebastien Exp $
 
 /**
   * PHP page : Load block image interface
@@ -145,6 +145,7 @@ $jscontent = <<<END
 		region:				'center',
 		border:				false,
 		autoScroll:			true,
+		buttonAlign:		'center',
 		items: [{
 			id:				'blockImageWindow-form',
 			layout: 		'form',
@@ -225,19 +226,20 @@ $jscontent = <<<END
 					},
 					value:	'{$linkDatas }'
 		        }]
-			}],
-			buttons:[{
-				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
-				xtype:			'button',
-				name:			'submitAdmin',
-				handler:		function() {
-					var form = Ext.getCmp('blockImageWindow-form').getForm();
-					if (form.isValid()) {
-						this.validateEdition(form.getValues());
-					}
-				},
-				scope:			this
 			}]
+		}],
+		buttons:[{
+			text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+			xtype:			'button',
+			iconCls:		'atm-pic-validate',
+			name:			'submitAdmin',
+			handler:		function() {
+				var form = Ext.getCmp('blockImageWindow-form').getForm();
+				if (form.isValid()) {
+					this.validateEdition(form.getValues());
+				}
+			},
+			scope:			this
 		}]
 	});
 	blockWindow.add(center);

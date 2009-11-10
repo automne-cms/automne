@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-properties.php,v 1.10 2009/10/22 16:26:25 sebastien Exp $
+// $Id: page-properties.php,v 1.11 2009/11/10 16:57:20 sebastien Exp $
 
 /**
   * PHP page : Load page properties window.
@@ -117,6 +117,7 @@ define("MESSAGE_PAGE_PROPERTIES", 7);
 define("MESSAGE_PAGE_CONTENT", 8);
 define("MESSAGE_PAGE_FIELD_CURRENT_ADDRESS", 701);
 define("MESSAGE_PAGE_INFORMATIONS", 702);
+define("MESSAGE_PAGE_ALERTS_DISABLED", 1593);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -229,8 +230,15 @@ $pubStart = $pub_start->getLocalizedDate($dateFormat);
 $pubEnd = $pub_end->getLocalizedDate($dateFormat);
 $reminderPeriodicity = $cms_page->getReminderPeriodicity();
 $reminderDate = $reminder_date->getLocalizedDate($dateFormat);
-$reminderMessage = sensitiveIO::sanitizeJSString(htmlspecialchars($cms_page->getReminderOnMessage()));
-
+$reminderMessage = sensitiveIO::sanitizeJSString(io::htmlspecialchars($cms_page->getReminderOnMessage()));
+$alertDisabled = '';
+if (!$cms_user->hasAlertLevel(ALERT_LEVEL_PAGE_ALERTS, MOD_STANDARD_CODENAME)) {
+	$alertDisabled = "{
+		cls:	'atm-text-alert',
+		xtype:	'fieldset',
+		html:	'{$cms_language->getJSMessage(MESSAGE_PAGE_ALERTS_DISABLED)}'
+	},";
+}
 /***************************************\
 *            SEARCH ENGINES             *
 \***************************************/
@@ -382,9 +390,9 @@ $lineageTitle = '';
 if (is_array($lineage) && sizeof($lineage)) {
 	foreach ($lineage as $ancestor) {
 		if ($ancestor->getID() != $cms_page->getID()) {
-			$lineageTitle .= '&nbsp;/&nbsp;<a href="#" onclick="Automne.utils.getPageById('.$ancestor->getID().');Ext.getCmp(\''.$winId.'\').close();">'.htmlspecialchars($ancestor->getTitle()).'</a>';
+			$lineageTitle .= '&nbsp;/&nbsp;<a href="#" onclick="Automne.utils.getPageById('.$ancestor->getID().');Ext.getCmp(\''.$winId.'\').close();">'.io::htmlspecialchars($ancestor->getTitle()).'</a>';
 		} else {
-			$lineageTitle .= '&nbsp;/&nbsp;'.htmlspecialchars($ancestor->getTitle());
+			$lineageTitle .= '&nbsp;/&nbsp;'.io::htmlspecialchars($ancestor->getTitle());
 		}
 	}
 }
@@ -543,6 +551,7 @@ $jscontent .= <<<END
 					}],
 					buttons:[{
 						{$disabled}
+						iconCls:		'atm-pic-validate',
 						text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
 						name:			'submitPageContent',
 						anchor:			false,
@@ -574,7 +583,7 @@ $jscontent .= <<<END
 						anchor:			'97%',
 						allowBlank:		true
 					},
-					items:[{
+					items:[{$alertDisabled}{
 						{$disabled}
 						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_DATE_START_PUBLICATION)} {$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_DATE_COMMENT, array($date_mask))}" class="atm-help">{$mandatory}{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_PUBDATE_BEG)}</span>',
 						name:			'pubdatestart',
@@ -618,6 +627,7 @@ $jscontent .= <<<END
 					}],
 					buttons:[{
 						{$disabled}
+						iconCls:		'atm-pic-validate',
 						text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
 						name:			'submitPageDates',
 						scope:			this,
@@ -670,6 +680,7 @@ $jscontent .= <<<END
 					}],
 					buttons:[{
 						{$disabled}
+						iconCls:		'atm-pic-validate',
 						text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
 						name:			'submitPageSearchEngine',
 						scope:			this,
@@ -734,6 +745,7 @@ $jscontent .= <<<END
 					}],
 					buttons:[{
 						{$disabled}
+						iconCls:		'atm-pic-validate',
 						text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
 						name:			'submitPageMetas',
 						scope:			this,

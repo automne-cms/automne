@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-content-controler.php,v 1.8 2009/10/22 16:26:25 sebastien Exp $
+// $Id: page-content-controler.php,v 1.9 2009/11/10 16:57:19 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on page content
@@ -202,8 +202,18 @@ switch ($action) {
 			//get block's row from CS
 			$row = $clientSpace->getRow($rowId, $rowTag);
 			if ($row) {
-				$datas = $row->getData($cms_language, $cms_page, $clientSpace, PAGE_VISUALMODE_FORM);
+				/*$datas = $row->getData($cms_language, $cms_page, $clientSpace, PAGE_VISUALMODE_FORM);
+				$view->setContent($datas);*/
+				//get row datas
+				$datas = $row->getData($cms_language, $cms_page, $clientSpace, PAGE_VISUALMODE_FORM, true);
+				//instanciate modules treatments for page content tags
+				$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_PAGECONTENT_TAGS, PAGE_VISUALMODE_FORM, $cms_page);
+				$modulesTreatment->setTreatmentParameters(array("language" => $cms_language));
+				$modulesTreatment->setDefinition($datas);
+				$datas = $modulesTreatment->treatContent(true);
+				//set datas as returned content
 				$view->setContent($datas);
+				
 				$edited = true;
 			} else {
 				CMS_grandFather::raiseError('Can\'t get row type '.$rowId.' from clientspace '.$cs.' of page '.$cms_page->getID().' with row id '.$rowTag);

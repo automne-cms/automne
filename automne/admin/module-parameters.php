@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: module-parameters.php,v 1.4 2009/10/22 16:26:24 sebastien Exp $
+// $Id: module-parameters.php,v 1.5 2009/11/10 16:57:19 sebastien Exp $
 
 /**
   * PHP page : Load module parameters window.
@@ -164,6 +164,7 @@ $jscontent = <<<END
 		},{$paramFields}],
 		buttons:[{
 			text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+			iconCls:		'atm-pic-validate',
 			xtype:			'button',
 			name:			'submitParams',
 			handler:		function() {

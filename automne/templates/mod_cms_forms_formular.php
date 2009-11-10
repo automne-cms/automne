@@ -17,7 +17,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: mod_cms_forms_formular.php,v 1.4 2009/11/02 17:27:56 sebastien Exp $
+// $Id: mod_cms_forms_formular.php,v 1.5 2009/11/10 16:59:09 sebastien Exp $
 
 /**
   * Template CMS_forms_formular
@@ -69,7 +69,7 @@ if ($form->getID() && $form->isPublic()) {
 	}
 	//Create or append (from header) form error message
 	if (isset($cms_forms_error_msg[$form->getID()]) && $cms_forms_error_msg[$form->getID()]) {
-		echo '<div class="cms_forms_error_msg">'.$cms_forms_error_msg[$form->getID()].'</div>';
+		echo '<div class="cms_forms_error_msg">'.evalPolymodVars($cms_forms_error_msg[$form->getID()], $cms_language->getCode()).'</div>';
 	}
 	//display form or form message
 	if (!isset($cms_forms_msg[$form->getID()]) || !$cms_forms_msg[$form->getID()]) {
@@ -79,7 +79,7 @@ if ($form->getID() && $form->isPublic()) {
 		}
 	}
 	if (isset($cms_forms_msg[$form->getID()]) && $cms_forms_msg[$form->getID()]) {
-		echo '<div class="cms_forms_msg">'.$cms_forms_msg[$form->getID()].'</div>';
+		echo '<div class="cms_forms_msg">'.evalPolymodVars($cms_forms_msg[$form->getID()], $cms_language->getCode()).'</div>';
 	}
 }
 ?>

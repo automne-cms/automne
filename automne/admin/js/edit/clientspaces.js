@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: clientspaces.js,v 1.5 2009/04/02 13:55:53 sebastien Exp $
+  * $Id: clientspaces.js,v 1.6 2009/11/10 16:57:21 sebastien Exp $
   */
 Automne.cs = function(config){
 	config = config || {};
@@ -437,7 +437,11 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 				parent.Ext.get('selectedRow'+ atmContent.editId).update(Automne.locales.csSelectRowAdd);
 				parent.Automne.message.show(Automne.locales.csSelectRow, '', parent.Automne.tabPanels.getActiveTab().frameEl);
 				parent.Ext.getCmp('addRowCombo'+ atmContent.editId).show();
-				parent.Ext.getCmp('addSelectedRow'+ atmContent.editId).show();
+				var addButton = parent.Ext.getCmp('addSelectedRow'+ atmContent.editId);
+				addButton.show();
+				if (isNaN(parseInt(parent.Ext.getCmp('addRowCombo'+ atmContent.editId).getValue(),10))) {
+					addButton.disable();
+				}
 				//add new row
 				this.cs.getNewRow(this.csIndex);
 				//hide all drop zones

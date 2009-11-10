@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: content-block.php,v 1.3 2009/10/22 16:28:07 sebastien Exp $
+// $Id: content-block.php,v 1.4 2009/11/10 16:57:21 sebastien Exp $
 
 /**
   * PHP page : Load polymod item interface
@@ -395,6 +395,7 @@ if (sizeof($rowParams) == 1 && $rowParams[0] == 'item') {
 			}],
 			buttons:[{
 				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+				iconCls:		'atm-pic-validate',
 				xtype:			'button',
 				name:			'submitAdmin',
 				handler:		function() {
@@ -466,6 +467,7 @@ $jscontent = <<<END
 		buttons:[{
 			text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
 			xtype:			'button',
+			iconCls:		'atm-pic-validate',
 			name:			'submitAdmin',
 			handler:		function() {
 				var form = Ext.getCmp('{$winId}-form').getForm();
