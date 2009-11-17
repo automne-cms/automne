@@ -6,8 +6,9 @@
 	<title><atm-constant name="APPLICATION_LABEL" /> : <atm-title /></title>
 	<atm-css-tags files="/css/reset.css,/css/demo/common.css,/css/demo/accueil.css" media="all" />
 	<!--[if lte IE 6]> 
-		<link rel="stylesheet" type="text/css" href="/css/demo/ie6.css" media="screen" />
+		<link rel="stylesheet" type="text/css" href="/css/demo/ie6.css" media="all" />
 	<![endif]-->
+	<atm-css-tags files="/css/demo/print.css" media="print" />
 	<atm-js-tags />
 	<atm-meta-tags />
 </head>

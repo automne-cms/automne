@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: row.php,v 1.10 2009/11/10 16:57:20 sebastien Exp $
+// $Id: row.php,v 1.11 2009/11/17 15:52:12 sebastien Exp $
 
 /**
   * PHP page : Load row detail window.
@@ -173,7 +173,7 @@ $selectedTemplates = sensitiveIO::jsonEncode($selectedTemplates);
 
 //DEFINITION TAB
 $rowDefinition = ($rowDefinition) ? $rowDefinition : '<row></row>';
-$content = '<textarea id="row-definition-'.$rowId.'" style="display:none;">'.io::htmlspecialchars($rowDefinition).'</textarea>';
+$content = '<textarea id="row-definition-'.$rowId.'" style="display:none;">'.htmlspecialchars($rowDefinition).'</textarea>';
 $view->setContent($content);
 
 $title = sensitiveIO::sanitizeJSString((sensitiveIO::isPositiveInteger($rowId)) ? $cms_language->getMessage(MESSAGE_PAGE_ROW).' '.$label : $cms_language->getMessage(MESSAGE_PAGE_ROW_CREATE));

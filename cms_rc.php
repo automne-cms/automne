@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc.php,v 1.21 2009/11/10 17:01:50 sebastien Exp $
+// $Id: cms_rc.php,v 1.22 2009/11/17 15:55:20 sebastien Exp $
 
 /**
   * rc file, contains all default constants
@@ -915,7 +915,7 @@ if (STATS_DEBUG) {
 			$_SESSION["cms_context"]->setSessionVar('automneStats', $stats);
 		}
 		if (!$return) {
-			$content = '<fieldset style="width:200px;"><legend>Debug Statistics</legend><pre>'.$content.'</pre>';
+			$content = '<fieldset style="width:200px;" class="atm-debug"><legend>Debug Statistics</legend><pre>'.$content.'</pre>';
 			if (isset($statName)) {
 				$content .= '<a href="'.PATH_ADMIN_WR.'/stat.php?stat='.$statName.'" target="_blank">View statistics detail</a>';
 			}

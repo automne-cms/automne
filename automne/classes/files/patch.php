@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: patch.php,v 1.7 2009/10/23 10:18:32 sebastien Exp $
+// $Id: patch.php,v 1.8 2009/11/17 15:53:26 sebastien Exp $
 
 /**
   * Class CMS_patch
@@ -553,9 +553,11 @@ class CMS_patch extends CMS_grandFather
 		if (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
 			//if Automne is not in utf8, then table charset must be in latin1
 			$query = str_ireplace(' CHARSET=utf8', ' CHARSET=latin1', $query);
+			$query = str_ireplace('TYPE=MyISAM;', 'TYPE=MyISAM CHARSET=latin1;', $query);
 		} else {
 			//if Automne is in utf8, then table charset must be in utf8
 			$query = str_ireplace(' CHARSET=latin1', ' CHARSET=utf8', $query);
+			$query = str_ireplace('TYPE=MyISAM;', 'TYPE=MyISAM CHARSET=utf8;', $query);
 		}
 		//finally, clean it and split queries
 		PMA_splitSqlFile($queries,$query,(int)sprintf('%d%02d%02d', $match[0], $match[1], intval($match[2])));

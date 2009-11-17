@@ -1,4 +1,4 @@
-<?php //Generated on Wed, 28 Oct 2009 17:10:41 +0100 by Automne (TM) 4.0.0rc3
+<?php //Generated on Tue, 17 Nov 2009 17:11:45 +0100 by Automne (TM) 4.0.0rc3
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
 	header('Location: http://127.0.0.1/web/demo/print-9-contact.php');
@@ -32,7 +32,7 @@ $mod_cms_forms["usedforms"] = array (
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: print-9.php,v 1.9 2009/10/28 16:31:36 sebastien Exp $
+// $Id: print-9.php,v 1.10 2009/11/17 16:04:30 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -58,13 +58,27 @@ $mod_cms_forms["pageID"] = $parameters['pageID'] = '9';
 function curlyBracesVars($text) {
 	return preg_replace('#(\s)(\$[a-zA-Z0-9_\[\]\'-]*)#','\\1".\\2."',$text);
 }
+//eval polymod vars in all forms actions
+function evalPolymodVars($text, $language){
+	global $mod_cms_forms;
+	$definition = new CMS_polymod_definition_parsing($text, true);
+	$parameters = array(
+		'module'	=> MOD_CMS_FORMS_CODENAME,
+		'public'	=> true,
+		'pageID'	=> $mod_cms_forms["pageID"],
+		'language'	=> $language
+	);
+	return $definition->getContent(CMS_polymod_definition_parsing::OUTPUT_RESULT, $parameters);
+}
+
+$separator = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? "\xa7\xa7" : "\xc2\xa7\xc2\xa7";
 
 //if page has forms
 if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 	$sender = CMS_forms_sender::getSenderForContext((isset($_SESSION["cms_context"]) ? $_SESSION["cms_context"] : false));
 	foreach($mod_cms_forms["usedforms"] as $formID) {
 		$form = new CMS_forms_formular($formID);
-		$cms_forms_msg[$form->getID()] = $cms_forms_error_msg[$form->getID()] = '';
+		$cms_forms_msg[$form->getID()] = $cms_forms_error_msg[$form->getID()] = $cms_forms_token[$form->getID()] = '';
 		//if form exists and is public
 		if ($form->getID() && $form->isPublic()) {
 			/***********************************************************
@@ -140,8 +154,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 							}
 						}
 					} else { //append message to form message
-						$text = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($action->getString("text"))).'";');
-						$cms_forms_msg[$form->getID()] .= nl2br($text).'<br />';
+						$cms_forms_msg[$form->getID()] .= nl2br($action->getString("text")).'<br />';
 					}
 				}
 			}
@@ -151,11 +164,15 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 			//if form has been submited
 			if (isset($_POST["formID"]) && $_POST["formID"] == $formID && $_POST["cms_action"] == 'validate') {
 				$form_language = $form->getLanguage();
+				//check form token
+				if (!isset($_POST["atm-token"]) || !CMS_context::checkToken(MOD_CMS_FORMS_CODENAME, $_POST["atm-token"])) {
+					$cms_forms_token[$form->getID()] = true;
+				}
 				//check for required fields
 				$fields = $form->getFields(true);
 				//Proceed actions
 				$actions = $form->getActions();
-				if (is_array($actions) && $actions) {
+				if (!$cms_forms_token[$form->getID()] && is_array($actions) && $actions) {
 					foreach ($actions as $action) {
 						switch ($action->getInteger('type')) {
 							case CMS_forms_action::ACTION_ALREADY_FOLD:
@@ -185,8 +202,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 											}
 										} else {
 											if ($alreadyFoldAction->getString("text")) {
-												$text = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($alreadyFoldAction->getString("text"))).'";');
-												$cms_forms_msg[$form->getID()] .= nl2br($text);
+												$cms_forms_msg[$form->getID()] .= nl2br($alreadyFoldAction->getString("text"));
 											}
 										}
 									}
@@ -270,8 +286,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 										}
 									} else { //append message to form error message
 										if ($action->getString("text")) {
-											$text = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($action->getString("text"))).'";');
-											$cms_forms_error_msg[$form->getID()] .= nl2br($text).'<br />';
+											$cms_forms_error_msg[$form->getID()] .= nl2br($action->getString("text")).'<br />';
 										}
 									}
 									break 2; //then quit actions loop
@@ -319,7 +334,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 								//generate email content
 								$email = new CMS_email();
 								//get email texts
-								$texts = explode(chr(167).chr(167), $action->getString("text"));
+								$texts = explode($separator, $action->getString("text"));
 								//create email body
 								$body = '';
 								foreach ($fields as $aField) {
@@ -346,23 +361,18 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 								//append header and footer texts if any to body text
 								if (isset($texts[1])) { // header
 									//needed in case of vars in text. Simple and double quotes are not welcome in this case !
-									//$texts[1] = (strpos($texts[1], '$') !== false) ? eval('return "'.str_replace(array('"',"'"),'',$texts[1]).'";') : $texts[1];
-									$texts[1] = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($texts[1])).'";');
-									$body = $texts[1]."\n\n".$body;
+									$body = evalPolymodVars($texts[1], $form_language->getCode())."\n\n".$body;
 								}
 								if (isset($texts[2])) { //footer
 									//needed in case of vars in text. Simple and double quotes are not welcome in this case !
-									//$texts[2] = (strpos($texts[2], '$') !== false) ? eval('return "'.str_replace(array('"',"'"),'',$texts[2]).'";') : $texts[2];
-									$texts[2] = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($texts[2])).'";');
-									$body = $body."\n\n".$texts[2];
+									$body = $body."\n\n". evalPolymodVars($texts[2], $form_language->getCode());
 								}
 								$email->setBody($body);
 								
 								//create subject
 								if ($texts[0]) { //from DB if any
 									//needed in case of vars in text. Simple and double quotes are not welcome in this case !
-									//$texts[0] = (strpos($texts[0], '$') !== false) ? eval('return "'.str_replace(array('"',"'"),'',$texts[0]).'";') : $texts[0];
-									$subject = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($texts[0])).'";');
+									$subject = evalPolymodVars($texts[0], $form_language->getCode());
 								} else { // or default subject
 									$subject = $form_language->getMessage(CMS_forms_formular::MESSAGE_CMS_FORMS_EMAIL_SUBJECT, array($form->getAttribute('name'), APPLICATION_LABEL), MOD_CMS_FORMS_CODENAME);
 								}
@@ -380,7 +390,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 								if ($action->getInteger('type') == CMS_forms_action::ACTION_EMAIL) {
 									$emailAddresses = array_map('trim',explode(';',io::decodeEntities($action->getString("value"))));
 									foreach ($emailAddresses as $emailAddress) {
-										$emailAddress = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($emailAddress)).'";');
+										$emailAddress = evalPolymodVars($emailAddress, $form_language->getCode());
 										if (sensitiveIO::isValidEmail($emailAddress)) {
 											$email->setEmailTo($emailAddress);
 											$email->sendEmail();
@@ -418,8 +428,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 											unset($_SESSION["cms_context"]);
 											//append message to form error message
 											if ($action->getString("text")) {
-												$text = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($action->getString("text"))).'";');
-												$cms_forms_error_msg[$form->getID()] .= nl2br($text).'<br />';
+												$cms_forms_error_msg[$form->getID()] .= nl2br($action->getString("text")).'<br />';
 											}
 											break 2; //quit actions loop
 										}
@@ -549,7 +558,7 @@ $mod_cms_forms["formID"] = '2';
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: print-9.php,v 1.9 2009/10/28 16:31:36 sebastien Exp $
+// $Id: print-9.php,v 1.10 2009/11/17 16:04:30 sebastien Exp $
 
 /**
   * Template CMS_forms_formular
@@ -578,7 +587,11 @@ $cms_language = $form->getLanguage();
 if ($form->getID() && $form->isPublic()) {
 	echo '<a name="formAnchor'.$form->getID().'"></a>';
 	//Create or append (from header) form required message
-	if (isset($cms_forms_required[$form->getID()]) && $cms_forms_required[$form->getID()] && is_array($cms_forms_required[$form->getID()]) && $cms_forms_required[$form->getID()]) {
+	if (isset($cms_forms_token[$form->getID()]) && $cms_forms_token[$form->getID()]) {
+		$cms_forms_error_msg[$form->getID()] .= $cms_language->getMessage(CMS_forms_formular::MESSAGE_CMS_FORMS_TOKEN_EXPIRED, false, MOD_CMS_FORMS_CODENAME);
+	}
+	//Create or append (from header) form required message
+	if (isset($cms_forms_required[$form->getID()]) && $cms_forms_required[$form->getID()] && is_array($cms_forms_required[$form->getID()])) {
 		$cms_forms_error_msg[$form->getID()] .= $cms_language->getMessage(CMS_forms_formular::MESSAGE_CMS_FORMS_REQUIRED_FIELDS, false, MOD_CMS_FORMS_CODENAME).'<ul>';
 		foreach ($cms_forms_required[$form->getID()] as $fieldName) {
 			$field = $form->getFieldByName($fieldName, true);
@@ -587,7 +600,7 @@ if ($form->getID() && $form->isPublic()) {
 		$cms_forms_error_msg[$form->getID()] .= '</ul>';
 	}
 	//Create or append (from header) form malformed message
-	if (isset($cms_forms_malformed[$form->getID()]) && $cms_forms_malformed[$form->getID()] && is_array($cms_forms_malformed[$form->getID()]) && $cms_forms_malformed[$form->getID()]) {
+	if (isset($cms_forms_malformed[$form->getID()]) && $cms_forms_malformed[$form->getID()] && is_array($cms_forms_malformed[$form->getID()])) {
 		$cms_forms_error_msg[$form->getID()] .= $cms_language->getMessage(CMS_forms_formular::MESSAGE_CMS_FORMS_MALFORMED_FIELDS, false, MOD_CMS_FORMS_CODENAME).'<ul>';
 		foreach ($cms_forms_malformed[$form->getID()] as $fieldName) {
 			$field = $form->getFieldByName($fieldName, true);
@@ -596,8 +609,8 @@ if ($form->getID() && $form->isPublic()) {
 		$cms_forms_error_msg[$form->getID()] .= '</ul>';
 	}
 	//Create or append (from header) form error message
-	if (isset($cms_forms_error_msg[$form->getID()]) && $cms_forms_error_msg[$form->getID()] && $cms_forms_error_msg[$form->getID()]) {
-		echo '<div class="cms_forms_error_msg">'.$cms_forms_error_msg[$form->getID()].'</div>';
+	if (isset($cms_forms_error_msg[$form->getID()]) && $cms_forms_error_msg[$form->getID()]) {
+		echo '<div class="cms_forms_error_msg">'.evalPolymodVars($cms_forms_error_msg[$form->getID()], $cms_language->getCode()).'</div>';
 	}
 	//display form or form message
 	if (!isset($cms_forms_msg[$form->getID()]) || !$cms_forms_msg[$form->getID()]) {
@@ -607,7 +620,7 @@ if ($form->getID() && $form->isPublic()) {
 		}
 	}
 	if (isset($cms_forms_msg[$form->getID()]) && $cms_forms_msg[$form->getID()]) {
-		echo '<div class="cms_forms_msg">'.$cms_forms_msg[$form->getID()].'</div>';
+		echo '<div class="cms_forms_msg">'.evalPolymodVars($cms_forms_msg[$form->getID()], $cms_language->getCode()).'</div>';
 	}
 }
    ?>

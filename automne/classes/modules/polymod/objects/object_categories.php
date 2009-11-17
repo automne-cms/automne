@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_categories.php,v 1.12 2009/11/10 16:49:01 sebastien Exp $
+// $Id: object_categories.php,v 1.13 2009/11/17 15:53:26 sebastien Exp $
 
 /**
   * Class CMS_object_categories
@@ -832,9 +832,9 @@ class CMS_object_categories extends CMS_object_common
 							return '';
 						break;
 						case 'iconHTML':
-							$iconPath = $this->getValue('iconPath');
+							$iconPath = $this->getValue($name, 'iconPath');
 							if($iconPath){
-							    $iconLabel = $this->getValue('label');
+							    $iconLabel = $this->getValue($name, 'label');
 							    return '<img src="'.$iconPath.'" alt="" title="'.SensitiveIO::sanitizeHTMLString($iconLabel).'" />';
 							}
 							return '';
@@ -1166,12 +1166,20 @@ class CMS_object_categories extends CMS_object_common
 				//recurse on subcategories
 				$subcats = $this->_createCategoriesTree($subCategories, $itemPattern, $templatePattern, $selectedPattern, $maxlevel, $selectedID);
 			}
+			$iconPathFS = $category->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, true);
+			if ($iconPathFS && file_exists($iconPathFS)) {
+				$iconPathWR = CMS_websitesCatalog::getMainURL().$category->getIconPath(true, PATH_RELATIVETO_WEBROOT, true);
+				$icon = '<img src="'.$iconPathWR.'" alt="" title="'.SensitiveIO::sanitizeHTMLString($category->getLabel($cms_language)).'" />';
+			} else {
+				$icon = '';
+			}
 			$replace = array(
-				'{id}' => $catID,
-				'{label}' => $category->getLabel($cms_language),
+				'{id}' 			=> $catID,
+				'{label}' 		=> $category->getLabel($cms_language),
 				'{description}' => $category->getDescription($cms_language),
-				'{sublevel}' => $subcats,
-				'{lvl}' => $level
+				'{sublevel}' 	=> $subcats,
+				'{lvl}' 		=> $level,
+				'{icon}'		=> $icon
 			);
 			if ($catID == $selectedID) {
 				$return .= str_replace(array_keys($replace), $replace, $selectedPattern);

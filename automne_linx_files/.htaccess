@@ -1,4 +1,4 @@
 # Deny access to directory. 
 # Author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-# $Id: .htaccess,v 1.4 2009/06/23 15:57:59 sebastien Exp $
+# $Id: .htaccess,v 1.5 2009/11/17 16:03:54 sebastien Exp $
 Deny from all

@@ -1,4 +1,4 @@
-<?php //Generated on Wed, 28 Oct 2009 17:10:36 +0100 by Automne (TM) 4.0.0rc3
+<?php //Generated on Tue, 17 Nov 2009 17:11:40 +0100 by Automne (TM) 4.0.0rc3
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
 	header('Location: http://127.0.0.1/web/demo/26-rangees.php');
@@ -8,51 +8,54 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
  ?>
 <?php require_once($_SERVER["DOCUMENT_ROOT"].'/automne/classes/polymodFrontEnd.php');  ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";   ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<title>Automne 4 : Rangées de contenu</title>
-		<?php echo CMS_view::getCSS(array('/css/reset.css','/css/demo/common.css','/css/demo/interieur.css','/css/modules/pmedia.css'), 'all');  ?>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Automne 4 : Rangées de contenu</title>
+	<?php echo CMS_view::getCSS(array('/css/reset.css','/css/demo/common.css','/css/demo/interieur.css','/css/modules/pmedia.css'), 'all');  ?>
 
-		<!--[if lte IE 6]> 
-		<link rel="stylesheet" type="text/css" href="/css/demo/ie6.css" media="screen" />
-		<![endif]-->
-		<?php echo CMS_view::getJavascript(array('/js/demo/sifr.js','/js/demo/common.js','/js/CMS_functions.js','/js/modules/pmedia/jquery-1.2.6.min-demo.js','/js/modules/pmedia/pmedia-demo.js','/js/modules/pmedia/swfobject.js'));  ?>
+	<!--[if lte IE 6]> 
+		<link rel="stylesheet" type="text/css" href="/css/demo/ie6.css" media="all" />
+	<![endif]-->
+	<?php echo CMS_view::getCSS(array('/css/demo/print.css'), 'print');  ?>
 
-		<link rel="icon" type="image/x-icon" href="http://127.0.0.1/favicon.ico" />
+	<?php echo CMS_view::getJavascript(array('','/js/CMS_functions.js','/js/modules/pmedia/jquery-1.2.6.min-demo.js','/js/modules/pmedia/pmedia-demo.js','/js/modules/pmedia/swfobject.js'));  ?>
+
+	<link rel="icon" type="image/x-icon" href="http://127.0.0.1/favicon.ico" />
 	<meta name="language" content="fr" />
 	<meta name="generator" content="Automne (TM)" />
 	<meta name="identifier-url" content="http://127.0.0.1" />
 
-	</head>
-	<body>
-		<div id="main">
-			<div id="container">
-				<div id="header">
-					
-								
+</head>
+<body>
+	<div id="main">
+		<div id="container">
+			<div id="header">
+				
+							
 
 <a id="lienAccueil" href="http://127.0.0.1/web/demo/2-accueil.php" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
 
 
-							
+						
+			</div>
+			<div id="backgroundBottomContainer">
+				<div id="menuLeft">
+					<ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_open "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/25-modeles.php">Modèles</a></li><li class="CMS_lvl3 CMS_nosub CMS_current"><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/26-rangees.php">Rangées</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/27-modules.php">Modules</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/28-administration.php">Gestion des utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/35-gestion-des-droits.php">Gestion des droits</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/37-droit-de-validation.php">Workflow de publication</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/38-aide-aux-utilisateurs.php">Aide utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/34-fonctions-avancees.php">Fonctions avancées</a></li></ul></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/31-exemples-de-modules.php">Exemples de modules</a></li></ul>
 				</div>
-				<div id="backgroundBottomContainer">
-					<div id="menuLeft">
-						<ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_open "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/25-modeles.php">Modèles</a></li><li class="CMS_lvl3 CMS_nosub CMS_current"><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/26-rangees.php">Rangées</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/27-modules.php">Modules</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/28-administration.php">Gestion des utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/35-gestion-des-droits.php">Gestion des droits</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/37-droit-de-validation.php">Workflow de publication</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/38-aide-aux-utilisateurs.php">Aide utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/34-fonctions-avancees.php">Fonctions avancées</a></li></ul></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/31-exemples-de-modules.php">Exemples de modules</a></li></ul>
-					</div>
-					<div id="content" class="page26">
-						<div id="breadcrumbs">
-							<a href="http://127.0.0.1/web/demo/2-accueil.php">Accueil</a>
+				<div id="content" class="page26">
+					<div id="breadcrumbs">
+						<a href="http://127.0.0.1/web/demo/2-accueil.php">Accueil</a>
 
  &gt; 
 <a href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités</a>
 
  &gt; 
-						</div>
-						<div id="title">
-							<h1>Rangées de contenu</h1>
-						</div>
-						
+					</div>
+					<div id="title">
+						<h1>Rangées de contenu</h1>
+					</div>
+					<atm-toc />
+					
 	
 	
 		<div class="text"><h2>Principe de rang&eacute;es de contenu</h2> <p>Les rang&eacute;es de contenu sont les gabarits qui contiennent l&rsquo;information. <strong>Elles peuvent contenir tous types d&rsquo;informations :</strong> texte, image, flash, vid&eacute;o&hellip; Par exemple, des rang&eacute;es titres, sous-titres, textes, textes et image &agrave; droite sont certaines des rang&eacute;es par d&eacute;faut d'Automne.</p> <p>Une rang&eacute;e est pr&eacute;-format&eacute;e. Cela permet de conserver l'homog&eacute;n&eacute;it&eacute; de la pr&eacute;sentation du site Internet.</p> <h3>Il vous est possible de cr&eacute;er vos propres rang&eacute;es avec le type d&rsquo;information que vous souhaitez.</h3> <p style="text-align: center;"><?php $parameters = array (
@@ -62,7 +65,7 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
   'selection' => '',
 );
 
-//Generated by : $Id: 26.php,v 1.4 2009/10/28 16:31:34 sebastien Exp $
+//Generated by : $Id: 26.php,v 1.5 2009/11/17 16:04:27 sebastien Exp $
 $content = "";
 $replace = "";
 if (!isset($objectDefinitions) || !is_array($objectDefinitions)) $objectDefinitions = array();
@@ -256,7 +259,7 @@ echo CMS_polymod_definition_parsing::replaceVars($content, $replace);
   'selection' => '',
 );
 
-//Generated by : $Id: 26.php,v 1.4 2009/10/28 16:31:34 sebastien Exp $
+//Generated by : $Id: 26.php,v 1.5 2009/11/17 16:04:27 sebastien Exp $
 $content = "";
 $replace = "";
 if (!isset($objectDefinitions) || !is_array($objectDefinitions)) $objectDefinitions = array();
@@ -446,21 +449,21 @@ echo CMS_polymod_definition_parsing::replaceVars($content, $replace);
   ?></p> <h3>L'organisation des rang&eacute;es dans une page est particuli&egrave;rement simple. Vous pouvez les glisser-d&eacute;poser &agrave; l'endroit ou vous le souhaitez.</h3> <p>Les zones de saisies sont clairement indiqu&eacute;es et vous pouvez modifier l'ensemble du contenu tr&egrave;s simplement &agrave; l'aide <strong>d'outils de mise en forme tr&egrave;s intuitifs :</strong> mise en forme des textes &agrave; l'aide de <strong>l'&eacute;diteur WYSIWYG,</strong> redimensionner et recadrer des images, cr&eacute;er des liens vers d'autres sites ou vers une page donn&eacute;e de votre site.</p> <p>Vous pouvez m&ecirc;me d&eacute;cider <strong>d'importer le contenu de vos modules &agrave; n'importe quel endroit de vos textes.</strong> Si le contenu du module vient &agrave; disparaitre (suppression, d&eacute;publication, ...), il disparaitra <strong>simplement et sans erreur</strong> de tous les textes ou vous y faite r&eacute;f&eacute;rence.</p></div>
 	
 
-						<a href="#header" id="top" title="haut de la page">Haut</a>
-					</div>
-					<div class="spacer"></div>
+					<a href="#header" id="top" title="haut de la page">Haut</a>
 				</div>
-			</div>
-		</div>
-		<div id="footer">
-			<div id="menuBottom">
-				<ul>
-					<li><a href="http://127.0.0.1/web/demo/8-plan-du-site.php">Plan du site</a></li>
-<li><a href="http://127.0.0.1/web/demo/9-contact.php">Contact</a></li>
-				</ul>
 				<div class="spacer"></div>
 			</div>
 		</div>
-	<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat();}   ?>
+	</div>
+	<div id="footer">
+		<div id="menuBottom">
+			<ul>
+				<li><a href="http://127.0.0.1/web/demo/8-plan-du-site.php">Plan du site</a></li>
+<li><a href="http://127.0.0.1/web/demo/9-contact.php">Contact</a></li>
+			</ul>
+			<div class="spacer"></div>
+		</div>
+	</div>
+<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat();}   ?>
 </body>
 </html>

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-properties.php,v 1.11 2009/11/10 16:57:20 sebastien Exp $
+// $Id: page-properties.php,v 1.12 2009/11/17 15:52:12 sebastien Exp $
 
 /**
   * PHP page : Load page properties window.
@@ -260,7 +260,7 @@ $pageLanguage = sensitiveIO::sanitizeJSString($language->getLabel());
 $languageValue = $language->getCode();
 $pragmaValue = ($cms_page->getPragma() != '') ? 'true' : 'false';
 
-$languages = CMS_languagesCatalog::getAllLanguages();
+$languages = CMS_languagesCatalog::getAllLanguages(MOD_STANDARD_CODENAME);
 $languagesDatas = array();
 foreach ($languages as $aLanguage) {
 	$languagesDatas[] = array($aLanguage->getCode(), $aLanguage->getLabel());

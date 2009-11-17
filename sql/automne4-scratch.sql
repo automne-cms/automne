@@ -1,4 +1,4 @@
-# $Id: automne4-scratch.sql,v 1.4 2009/06/25 10:31:40 sebastien Exp $
+# $Id: automne4-scratch.sql,v 1.5 2009/11/17 15:55:03 sebastien Exp $
 # Database : `automne4`
 # --------------------------------------------------------
 
@@ -104,7 +104,7 @@ CREATE TABLE `pages` (
   PRIMARY KEY  (`id_pag`),
   KEY `id_pag` (`id_pag`),
   KEY `template_pag` (`template_pag`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 INSERT INTO pages (id_pag, resource_pag, remindedEditorsStack_pag, lastReminder_pag, template_pag, lastFileCreation_pag, url_pag) VALUES (1, 1, '1', NOW(), 1, '2009-01-01 16:55:02', '');
 
 DELETE FROM pagesBaseData_archived;
