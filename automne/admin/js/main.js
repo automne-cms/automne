@@ -6,7 +6,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: main.js,v 1.20 2009/11/10 16:57:21 sebastien Exp $
+  * $Id: main.js,v 1.21 2009/11/19 16:09:14 sebastien Exp $
   */
 
 //Declare Automne namespace
@@ -30,6 +30,10 @@ Automne = {
 	*		Automne public methods	  *
 	*************************************/
 	init: function() {
+		//check for iframe embeding
+		if (window.top != window.self) {
+	    	window.top.location.replace('./');
+		}
 		//check for navigator version
 		if (Ext.isIE6) {
 			window.top.location.replace('./ie6.php');

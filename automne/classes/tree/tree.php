@@ -15,7 +15,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: tree.php,v 1.5 2009/10/22 16:30:06 sebastien Exp $
+// $Id: tree.php,v 1.6 2009/11/19 16:10:35 sebastien Exp $
 
 /**
   * Class CMS_tree
@@ -1508,6 +1508,61 @@ class CMS_tree extends CMS_grandFather
 			//then, launch the regenerator script
 			CMS_scriptsManager::startScript();
 		}
+	}
+	
+	/**
+	  * Return a valid page for a given URL
+	  *
+	  * @param string the page URL
+	  * @return CMS_page if page founded, false otherwise
+	  * @access public
+	  */
+	function analyseURL($pageUrl) {
+		$httpHost = parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST'];
+		$requestedPageId = null;
+		$pathinfo = pathinfo($pageUrl);
+		$basename = (isset($pathinfo['filename'])) ? $pathinfo['filename'] : $pathinfo['basename'];
+		$urlinfo = parse_url($pageUrl);
+		if (isset($urlinfo['query'])) {
+			$querystring = $urlinfo['query'];
+		}
+		//if basename founded
+		if (isset($urlinfo['path']) && $urlinfo['path'] != '/' && $basename && ((isset($pathinfo['extension']) && strtolower($pathinfo['extension']) == 'php') || !isset($pathinfo['extension']))) {
+			//search page id in basename (declare matching patterns by order of research)
+			$patterns[] = "#^([0-9]+)-#U"; // for request like id-page_title.php
+			$patterns[] = "#^print-([0-9]+)-#U"; // for request like print-id-page_title.php
+			$patterns[] = "#_([0-9]+)_$#U"; // for request like _id_id_.php : old V3 style url
+			$patterns[] = "#^([0-9]+)$#U"; // for request like id
+			$count = 0;
+			while(!preg_match($patterns[$count] , $basename, $requestedPageId) && $count+1 < sizeof($patterns)) {
+				$count++;
+			}
+			if (isset($requestedPageId[1]) && sensitiveIO::IsPositiveInteger($requestedPageId[1])) {
+				//try to instanciate the requested page
+				$cms_page = CMS_tree::getPageByID($requestedPageId[1]);
+				if (!$cms_page->hasError()) {
+					return $cms_page;
+				}
+			}
+		} else {
+			//search page id by domain address
+			$domain = isset($urlinfo['host']) ? $urlinfo['host'] : $httpHost;
+			//get websites
+			$websites = CMS_websitesCatalog::getAll('order');
+			$founded = false;
+			foreach ($websites as $website) {
+				if ($founded === false && io::strtolower($website->getURL(false)) == io::strtolower($domain)) {
+					$founded = $website;
+				}
+			}
+			if (is_object($founded)) {
+				$cms_page = $founded->getRoot();
+				if (!$cms_page->hasError()) {
+					return $cms_page;
+				}
+			}
+		}
+		return false;
 	}
 }
 ?>

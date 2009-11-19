@@ -7,7 +7,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: utils.js,v 1.4 2009/10/28 16:26:15 sebastien Exp $
+  * $Id: utils.js,v 1.5 2009/11/19 16:09:14 sebastien Exp $
   */
 Automne.utils = {
 	edit:		false,
@@ -47,7 +47,7 @@ Automne.utils = {
 						Automne.tabPanels.getPageInfos({
 							pageId:			publicPanel.pageId,
 							regenerate:		(Automne.tabPanels.getActiveTab().id == 'public'),
-							reload:			(unlock == true ? false : true)
+							unlock:			(unlock == true ? false : true)
 						});
 						pr('switchStatus : page founded and reloaded');
 					}

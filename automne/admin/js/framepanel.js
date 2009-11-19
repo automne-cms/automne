@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: framepanel.js,v 1.17 2009/11/10 16:57:21 sebastien Exp $
+  * $Id: framepanel.js,v 1.18 2009/11/19 16:09:14 sebastien Exp $
   */
 Automne.framePanel = Ext.extend(Automne.panel, { 
 	xtype:				'framePanel',
@@ -406,7 +406,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 		//check if page load came from a valid frame click
 		if (this.id == 'public' && win.location.href && win.location.search.indexOf('_dc') === -1) {
 			//force reload page infos without reloading the frame itself
-			Automne.tabPanels.getPageInfos({
+			/*Automne.tabPanels.getPageInfos({
 				pageUrl:	win.location.href,
 				noreload:	true
 			}, function(response){
@@ -414,7 +414,10 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 					//add page to history
 					Ext.History.add('page:' + response.getResponseHeader['X-Automne-PageId'], true);
 				}
-			});
+			});*/
+			//display redirection message
+			this.setFrameURL('/automne/admin/page-redirect-info.php?url=' + win.location.href);
+			this.reload();
 		} else if(this.id == 'public' && this.pageId && this.pageId != 'false') {
 			//add page to history
 			Ext.History.add('page:' + this.pageId, true);
@@ -480,7 +483,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 	setFrameURL: function(url) { 
 		this.frameURL = url;
 	},
-	getFrameURL: function(withDomain) {
+	getFrameURL: function() {
 		if (!this.loadFrameDocument()) {
 			return false;
 		}

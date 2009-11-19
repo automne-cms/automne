@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-infos.php,v 1.17 2009/11/10 16:57:19 sebastien Exp $
+// $Id: page-infos.php,v 1.18 2009/11/19 16:08:55 sebastien Exp $
 
 /**
   * PHP page : Load page infos
@@ -127,6 +127,7 @@ $followRedirect = sensitiveIO::request('followRedirect') ? true : false;
 $regenerate = sensitiveIO::request('regenerate') ? true : false;
 $reload = sensitiveIO::request('reload') ? true : false;
 $noreload = sensitiveIO::request('noreload') ? true : false;
+$unlock = sensitiveIO::request('unlock') ? true : false;
 
 //Default tab to open
 if ($tab && !$fromtab) {
@@ -147,53 +148,17 @@ $isAutomne = $querystring = false;
 //current http host
 $httpHost = parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST'];
 if ($pageUrl && !$pageId) {
-	//extract page id from given url
-	$pathinfo = pathinfo($pageUrl);
-	$basename = (isset($pathinfo['extension'])) ? io::substr($pathinfo['basename'], 0, -(1+io::strlen($pathinfo['extension']))) : $pathinfo['basename'];
-	$urlinfo = parse_url($pageUrl);
-	if (isset($urlinfo['query'])) {
-		$querystring = $urlinfo['query'];
-	}
-	//if basename founded
-	if (isset($urlinfo['path']) && $urlinfo['path'] != '/' && $basename) {
-		//search page id in basename (declare matching patterns by order of research)
-		$patterns[] = "#^([0-9]+)-#U"; // for request like id-page_title.php
-		$patterns[] = "#^print-([0-9]+)-#U"; // for request like print-id-page_title.php
-		$patterns[] = "#_([0-9]+)_$#U"; // for request like _id_id_.php
-		$patterns[] = "#^([0-9]+)$#U"; // for request like id
-		$count = 0;
-		while(!preg_match($patterns[$count] , $basename, $requestedPageId) && $count+1 < sizeof($patterns)) {
-			$count++;
-		}
-		if (isset($requestedPageId[1]) && sensitiveIO::IsPositiveInteger($requestedPageId[1])) {
-			//try to instanciate the requested page
-			$cms_page = CMS_tree::getPageByID($requestedPageId[1]);
-			$pageId = $requestedPageId[1];
-			$isAutomne = true;
-		}
-	} else {
-		//search page id by domain address
-		$domain = isset($urlinfo['host']) ? $urlinfo['host'] : $httpHost;
-		//get websites
-		$websites = CMS_websitesCatalog::getAll('order');
-		$founded = false;
-		foreach ($websites as $website) {
-			if ($founded === false && io::strtolower($website->getURL(false)) == io::strtolower($domain)) {
-				$founded = $website;
-			}
-		}
-		if (is_object($founded)) {
-			$cms_page = $founded->getRoot();
-			$pageId = $cms_page->getID();
-			$isAutomne = true;
-		}
+	//get page from requested url
+	if ($cms_page = CMS_tree::analyseURL($pageUrl)) {
+		$pageId = $cms_page->getID();
+		$isAutomne = true;
 	}
 } elseif ($pageId) {
 	//try to instanciate the requested page
 	$cms_page = CMS_tree::getPageByID($pageId);
 	$isAutomne = true;
 }
-if (!isset($cms_page) || !is_object($cms_page) || $cms_page->hasError()) {
+if (!isset($cms_page) || !$cms_page || !is_object($cms_page) || $cms_page->hasError()) {
 	if ($pageUrl && !$isAutomne) {
 		if ($pageUrl == '/' && $httpHost != parse_url(CMS_websitesCatalog::getMainURL(), PHP_URL_HOST)) {
 			//Website domain is not properly set
@@ -290,10 +255,8 @@ if (!isset($cms_context) || !is_object($cms_context)) {
 	CMS_grandFather::raiseError('Error, user context not found');
 	$view->show();
 }
-pr('View page : '.$cms_page->getID());
-if ($reload) {
-	pr('Force reload queried by interface');
-}
+pr('View page : '.$cms_page->getID().($reload ? ' (Force reload queried by interface)' : ''));
+
 //set page into user context
 $cms_context->setPage($cms_page);
 
@@ -329,10 +292,15 @@ if ($cms_user->hasViewvablePages()) {
 }
 
 //remove lock on pages which user has locked
-if ($cms_page->getLock() == $cms_user->getUserId() && $fromtab != 'edit') {
+if ($unlock || ($cms_page->getLock() == $cms_user->getUserId() && $fromtab != 'edit')) {
 	$cms_page->unlock();
 }
-
+//check for draft
+if ($cms_page->isDraft()) {
+	$hasDraft = true;
+}
+//get lock status
+$hasLock = $cms_page->getLock();
 //if user has edition rights
 if ($cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)) {
 	$userPanels['properties']['visible']= true;
@@ -348,28 +316,17 @@ if ($cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)) {
 		&& !($cms_page->getLocation() == RESOURCE_LOCATION_USERSPACE && $cms_page->getStatus()->getEditions() == RESOURCE_EDITION_BASEDATA && $cms_page->getStatus()->getPublication() == RESOURCE_PUBLICATION_VALIDATED))
 		|| ($cms_page->getLocation() == RESOURCE_LOCATION_USERSPACE /*&& !$cms_page->getStatus()->getEditions()*/ && $cms_page->getStatus()->getPublication() == RESOURCE_PUBLICATION_VALIDATED)
 		) {
-		
 		$hasPreviz = true;
-	}
-	//check for draft
-	if ($cms_page->isDraft()) {
-		$hasDraft = true;
 	}
 	//is page editable (not proposed to deleted or archived location and with editable CS)
 	if ($cms_page->getProposedLocation() != RESOURCE_LOCATION_DELETED
 		&& $cms_page->getProposedLocation() != RESOURCE_LOCATION_ARCHIVED
-		&& (!$cms_page->getLock() || ($cms_page->getLock() == $cms_user->getUserId() && $fromtab == 'edit'))) {
+		&& (!$hasLock || ($hasLock == $cms_user->getUserId() && $fromtab == 'edit'))) {
 		//module specific actions (only for standard module)
-		$modules = $cms_page->getModules();
-		if ($modules) {
-			foreach ($modules as $module) {
-				if ($module && $module->getCodename() == MOD_STANDARD_CODENAME && $cms_user->hasModuleClearance($module->getCodename(), CLEARANCE_MODULE_EDIT)) {
-					$isEditable = true;
-				}
-			}
+		if ($cms_page->hasModule(MOD_STANDARD_CODENAME) && $cms_user->hasModuleClearance(MOD_STANDARD_CODENAME, CLEARANCE_MODULE_EDIT)) {
+			$isEditable = true;
 		}
 	}
-	$hasLock = $cms_page->getLock();
 } elseif ($cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_VIEW)) {
 	//allow page copy
 	$userPanels['action']['visible'] 	= true;
@@ -422,6 +379,7 @@ switch ($fromtab) {
 //the page file may not exists yet, 
 //so to prevent the display of an error, we must force the page generation here
 if ($regenerate || ($active == 'public' && !file_exists($cms_page->getURL(false, false, PATH_RELATIVETO_FILESYSTEM)))) {
+	pr($regenerate ? 'Page regeneration queried' : 'Page file missing => auto regeneration');
 	$cms_page->regenerate(true);
 	//if anything goes wrong during regeneration, we must desactivate the public tab
 	if (!file_exists($cms_page->getURL(false, false, PATH_RELATIVETO_FILESYSTEM))) {
@@ -719,7 +677,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 					$pageCopy = '';
 				}
 				//draft
-				if ($fromtab == 'edit' && $cms_user->getUserID() == $cms_page->getLock()) {
+				if ($fromtab == 'edit' && $cms_user->getUserID() == $hasLock) {
 					//cancel draft and submit draft to validation
 					$pageDraft = "
 					menu.addSeparator();
@@ -789,10 +747,10 @@ foreach ($userPanels as $panel => $panelStatus) {
 				}
 				
 				if ($cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)) {
-					if ($lock = $cms_page->getLock()) {
+					if ($hasLock) {
 						//unlock
-						if ($fromtab != 'edit' && ($cms_user->getUserID() == $lock || $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL))) {
-							$lockUser = CMS_profile_usersCatalog::getById($lock);
+						if ($fromtab != 'edit' && ($cms_user->getUserID() == $hasLock || $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL))) {
+							$lockUser = CMS_profile_usersCatalog::getById($hasLock);
 							$panelContent .= "
 							menu.addItem(new Ext.menu.Item({
 								text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_UNLOCK_LOCKED_PAGE, array(io::htmlspecialchars($lockUser->getFullName())))."\">".$cms_language->getJSMessage(MESSAGE_PAGE_UNLOCK_PAGE)."</span>',
@@ -820,7 +778,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 									});
 								}
 							}));";
-						} elseif ($fromtab == 'edit' && $cms_user->getUserID() == $lock) {
+						} elseif ($fromtab == 'edit' && $cms_user->getUserID() == $hasLock) {
 							$panelContent .= $pageDraft;
 						}
 					} else {
@@ -1098,7 +1056,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 				$panelTipTitle = $cms_language->getMessage(MESSAGE_PAGE_EDIT_CONTENT_TIP_TITLE);
 				$panelTip = $cms_language->getMessage(MESSAGE_PAGE_EDIT_CONTENT_TIP_DESC);
 				$panelPicto = 'atm-pic-big-edit';
-				if($cms_page->isDraft()) {
+				if($hasDraft) {
 					$panelTip .= '<br /><br /><strong>'.$cms_language->getMessage(MESSAGE_PAGE_EDIT_NOT_VALIDATED).'</strong>';
 				}
 				if ($hasLock && sensitiveIO::isPositiveInteger($hasLock)) {
@@ -1283,7 +1241,7 @@ $jscontent .= '
 	}
 	tabs.setPageId(\''.$pageId.'\');
 	tabs.endUpdate();
-	tabs.setDraft('.$cms_page->isDraft().');
+	tabs.setDraft('.$hasDraft.');
 	tabs.setFavorite('.$cms_user->isFavorite($pageId).');
 	if ('.($reload ? 'true' : 'false').' && panel) {
 		panel.reload();

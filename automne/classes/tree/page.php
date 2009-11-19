@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: page.php,v 1.10 2009/10/22 16:30:06 sebastien Exp $
+// $Id: page.php,v 1.11 2009/11/19 16:10:35 sebastien Exp $
 
 /**
   * Class CMS_page
@@ -269,6 +269,22 @@ class CMS_page extends CMS_resource
 		if ($this->_template) {
 			return $this->_template->getModules();
 		}
+	}
+	
+	/**
+	  * Does the page use module
+	  *
+	  * @param string $codename The module codename
+	  * @return boolean
+	  * @access public
+	  */
+	function hasModule($codename)
+	{
+		$this->_checkTemplate();
+		if ($this->_template) {
+			return $this->_template->hasModule($codename);
+		}
+		return false;
 	}
 	
 	/**

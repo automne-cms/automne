@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: stat.php,v 1.6 2009/11/10 16:57:20 sebastien Exp $
+// $Id: stat.php,v 1.7 2009/11/19 16:08:55 sebastien Exp $
 
 /**
   * Automne Debug Statistics viewver
@@ -44,7 +44,7 @@ function sanitizeString($input)
 $dialog = new CMS_dialog();
 if (!$statName || !isset($stats[$statName])) {
 	$dialog->setTitle('Automne :: Debug :: Statistics','pic_meta.gif');
-	$dialog->setContent('Cannot find stats datas ... only last 10 processes are available.');
+	$dialog->setContent('Cannot find stats datas ... only last 4 processes are available.');
 	$dialog->show();
 	exit;
 }

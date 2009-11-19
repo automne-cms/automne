@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: pagetemplate.php,v 1.8 2009/11/10 16:49:02 sebastien Exp $
+// $Id: pagetemplate.php,v 1.9 2009/11/19 16:10:35 sebastien Exp $
 
 /**
   * Class CMS_pageTemplate
@@ -468,6 +468,24 @@ class CMS_pageTemplate extends CMS_grandFather
 	}
 	
 	/**
+	  * Does the template include module clientspace
+	  *
+	  * @param string $codename The module codename
+	  * @return boolean
+	  * @access public
+	  */
+	function hasModule($codename) {
+		$elements = $this->_modules->getElements();
+		foreach ($elements as $element) {
+			if ($element[0] == $codename) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
+	/**
 	  * Does the template has the specified group in its stack ?.
 	  *
 	  * @param string $group The group we want to test
@@ -717,7 +735,7 @@ class CMS_pageTemplate extends CMS_grandFather
 			return false;
 		}
 		$sql = "select 
-					*
+					1
 				from 
 					mod_standard_clientSpaces_edition 
 				where 
