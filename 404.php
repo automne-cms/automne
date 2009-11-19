@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 404.php,v 1.6 2009/11/10 17:01:50 sebastien Exp $
+// $Id: 404.php,v 1.7 2009/11/19 16:03:11 sebastien Exp $
 
 /**
   * Automne 404 error handler
@@ -29,35 +29,19 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 //parse requested URL to try to find a matching page
 $redirectTo = '';
 if ($_SERVER['REQUEST_URI'] && $_SERVER['REQUEST_URI'] != $_SERVER['SCRIPT_NAME']) {
-	//extract pathinfo to get requested file basename
 	$pathinfo = pathinfo($_SERVER['REQUEST_URI']);
-	$basename = (isset($pathinfo['extension'])) ? substr($pathinfo['basename'], 0, -(1+strlen($pathinfo['extension']))) : $pathinfo['basename'];
-	//if basename founded
-	if ($basename && ((isset($pathinfo['extension']) && strtolower($pathinfo['extension']) == 'php') || !isset($pathinfo['extension']))) {
-		//search page id in basename (declare matching patterns by order of research)
-		$patterns[] = "#^([0-9]+)-#U"; // for request like id-page_title.php
-		$patterns[] = "#^print-([0-9]+)-#U"; // for request like print-id-page_title.php
-		$patterns[] = "#_([0-9]+)_$#U"; // for request like _id_id_.php
-		$patterns[] = "#^([0-9]+)$#U"; // for request like id
-		$count = 0;
-		while(!preg_match($patterns[$count] , $basename, $requestedPageId) && $count+1 < sizeof($patterns)) {
-			$count++;
-		}
-		if (isset($requestedPageId[1]) && sensitiveIO::IsPositiveInteger($requestedPageId[1])) {
-			//try to instanciate the requested page
-			$page = new CMS_page($requestedPageId[1]);
-			if (!$page->hasError()) {
-				//get page file
-				$pageURL = $page->getURL( (substr($basename,0,5) == 'print' ? true : false) , false, PATH_RELATIVETO_FILESYSTEM);
-				if (file_exists($pageURL)) {
-					$redirectTo = $page->getURL( (substr($basename,0,5) == 'print' ? true : false));
-				} else {
-					//try to get direct html file
-					$pageURL = $page->getHTMLURL( (substr($basename,0,5) == 'print' ? true : false) , false, PATH_RELATIVETO_FILESYSTEM);
-					if (file_exists($pageURL)) {
-						$redirectTo = $page->getHTMLURL( (substr($basename,0,5) == 'print' ? true : false));
-					}
-				}
+	$basename = (isset($pathinfo['filename'])) ? $pathinfo['filename'] : $pathinfo['basename'];
+	//get page from requested url
+	if ($page = CMS_tree::analyseURL($_SERVER['REQUEST_URI'])) {
+		//get page file
+		$pageURL = $page->getURL( (substr($basename,0,5) == 'print' ? true : false) , false, PATH_RELATIVETO_FILESYSTEM);
+		if (file_exists($pageURL)) {
+			$redirectTo = $page->getURL( (substr($basename,0,5) == 'print' ? true : false));
+		} else {
+			//try to get direct html file
+			$pageURL = $page->getHTMLURL( (substr($basename,0,5) == 'print' ? true : false) , false, PATH_RELATIVETO_FILESYSTEM);
+			if (file_exists($pageURL)) {
+				$redirectTo = $page->getHTMLURL( (substr($basename,0,5) == 'print' ? true : false));
 			}
 		}
 	}
