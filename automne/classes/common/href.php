@@ -14,7 +14,7 @@
 // | Authors: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>     |
 // +----------------------------------------------------------------------+
 //
-// $Id: href.php,v 1.5 2009/11/10 16:48:58 sebastien Exp $
+// $Id: href.php,v 1.6 2009/11/20 17:02:10 sebastien Exp $
 
 /**
   * Class Href
@@ -127,14 +127,14 @@ class CMS_href extends CMS_grandFather
 			$this->_textDefinition = $textDefinition;
 			$tmp = explode($this->_separator, $this->_textDefinition);
 			if (sizeof($tmp) > 1) {
-				$this->_linkType = $tmp[0];
-				$this->_internalLink = $tmp[1];
-				$this->_externalLink = $tmp[2];
-				$this->_fileLink = $tmp[3];
-				$this->_target = $tmp[4];
+				$this->_linkType = @$tmp[0];
+				$this->_internalLink = @$tmp[1];
+				$this->_externalLink = @$tmp[2];
+				$this->_fileLink = @$tmp[3];
+				$this->_target = @$tmp[4];
 				// Attributes
-				if ($tmp[5] != '') {
-					$attrs = split('&&', $tmp[5]);
+				if (@$tmp[5] != '') {
+					$attrs = split('&&', @$tmp[5]);
 					if (is_array($attrs) && $attrs) {
 						foreach ($attrs as $attr) {
 							$t = split(',', $attr);
@@ -143,15 +143,15 @@ class CMS_href extends CMS_grandFather
 					}
 				}
 				// Popup
-				if ($tmp[6] != '') {
-					$p = split(',', $tmp[6]);
+				if (@$tmp[6] != '') {
+					$p = split(',', @$tmp[6]);
 					if (is_array($p) && $p) {
 						$this->setPopup($p[0], $p[1]);
 					}
 				}
 				// Link label
-				if ($tmp[7] != '') {
-					$this->setLabel($tmp[7]);
+				if (@$tmp[7] != '') {
+					$this->setLabel(@$tmp[7]);
 				}
 				return;
 			} else {

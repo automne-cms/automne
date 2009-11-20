@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-copy.php,v 1.6 2009/10/22 16:26:25 sebastien Exp $
+// $Id: page-copy.php,v 1.7 2009/11/20 17:00:10 sebastien Exp $
 
 /**
   * PHP page : Load copy-page window.
@@ -125,7 +125,7 @@ $jscontent = <<<END
 			forceSelection:		true,
 			mode:				'remote',
 			valueField:			'id',
-			displayField:		'name',
+			displayField:		'label',
 			value:				'{$pageTplLabel}',
 			triggerAction: 		'all',
 			store:				new Automne.JsonStore({

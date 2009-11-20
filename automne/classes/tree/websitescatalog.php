@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: websitescatalog.php,v 1.3 2009/10/22 16:30:06 sebastien Exp $
+// $Id: websitescatalog.php,v 1.4 2009/11/20 16:55:12 sebastien Exp $
 
 /**
   * Class CMS_websitesCatalog
@@ -79,6 +79,35 @@ class CMS_websitesCatalog extends CMS_grandFather
 			}
 		}
 		return $websites[$orderby];
+	}
+	
+	/**
+	  * Check if website currently exists
+	  * Static function.
+	  *
+	  * @param integer $id The DB ID of the CMS_website to check
+	  * @return boolean
+	  * @access public
+	  */
+	function exists($id)
+	{
+		static $websites;
+		if (!isset($websites[$id])) {
+			$websites[$id] = false;
+			$sql = "
+				select
+					id_web
+				from
+					websites
+				where
+					id_web = ".sensitiveIO::sanitizeSQLString($id)."
+			";
+			$q = new CMS_query($sql);
+			if ($q->getNumRows()) {
+				$websites[$id] = true;
+			}
+		}
+		return $websites[$id];
 	}
 	
 	/**
