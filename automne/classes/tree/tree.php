@@ -15,7 +15,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: tree.php,v 1.6 2009/11/19 16:10:35 sebastien Exp $
+// $Id: tree.php,v 1.7 2009/11/20 16:06:36 sebastien Exp $
 
 /**
   * Class CMS_tree
@@ -1520,9 +1520,9 @@ class CMS_tree extends CMS_grandFather
 	function analyseURL($pageUrl) {
 		$httpHost = parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST'];
 		$requestedPageId = null;
-		$pathinfo = pathinfo($pageUrl);
-		$basename = (isset($pathinfo['filename'])) ? $pathinfo['filename'] : $pathinfo['basename'];
 		$urlinfo = parse_url($pageUrl);
+		$pathinfo = pathinfo($urlinfo['path']);
+		$basename = (isset($pathinfo['filename'])) ? $pathinfo['filename'] : $pathinfo['basename'];
 		if (isset($urlinfo['query'])) {
 			$querystring = $urlinfo['query'];
 		}
