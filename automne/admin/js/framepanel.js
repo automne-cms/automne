@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: framepanel.js,v 1.18 2009/11/19 16:09:14 sebastien Exp $
+  * $Id: framepanel.js,v 1.19 2009/11/20 16:04:59 sebastien Exp $
   */
 Automne.framePanel = Ext.extend(Automne.panel, { 
 	xtype:				'framePanel',
@@ -452,7 +452,15 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 					this.getEl().mask(Automne.locales.loading);
 				}
 				try {
-					this.frameDocument.location = this.frameURL + ((this.frameURL.indexOf('?') === -1) ? '?' : '&') + '_dc='+ (new Date()).getTime() + ((this.editable) ? '&editId='+ this.editId : '');
+					var location = '';
+					var parts = this.frameURL.split('#');
+					if (parts[1]) {
+						location = parts[0] + ((parts[0].indexOf('#') === -1) ? '?' : '&') + '_dc='+ (new Date()).getTime() + ((this.editable) ? '&editId='+ this.editId : '');
+						location += '#' + parts[1];
+					} else {
+						location = this.frameURL + ((this.frameURL.indexOf('?') === -1) ? '?' : '&') + '_dc='+ (new Date()).getTime() + ((this.editable) ? '&editId='+ this.editId : '');
+					}
+					this.frameDocument.location = location;
 				} catch (e) {
 					pr(e, 'error');
 				}
