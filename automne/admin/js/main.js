@@ -6,7 +6,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: main.js,v 1.21 2009/11/19 16:09:14 sebastien Exp $
+  * $Id: main.js,v 1.22 2009/11/20 17:46:35 sebastien Exp $
   */
 
 //Declare Automne namespace
@@ -32,7 +32,10 @@ Automne = {
 	init: function() {
 		//check for iframe embeding
 		if (window.top != window.self) {
-	    	window.top.location.replace('./');
+	    	if (Ext) {
+				Ext.EventManager.removeAll(window);
+			}
+			window.top.location.replace('/automne/admin/');
 		}
 		//check for navigator version
 		if (Ext.isIE6) {
