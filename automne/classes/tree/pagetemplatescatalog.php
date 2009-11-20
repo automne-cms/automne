@@ -15,7 +15,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: pagetemplatescatalog.php,v 1.5 2009/10/22 16:30:06 sebastien Exp $
+// $Id: pagetemplatescatalog.php,v 1.6 2009/11/20 16:50:07 sebastien Exp $
 
 /**
   * Class CMS_pageTemplatesCatalog
@@ -307,7 +307,9 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 				//websites denied
 				$websitesDenied = $model->getWebsitesDenied();
 				foreach ($websitesDenied as $websiteId) {
-					$tpl->denyWebsite($websiteId);
+					if (CMS_websitesCatalog::getByID($websiteId)) { //to check if website still exists
+						$tpl->denyWebsite($websiteId);
+					}
 				}
 
 				//Copy printing definition
