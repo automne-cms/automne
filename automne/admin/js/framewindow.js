@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: framewindow.js,v 1.10 2009/11/20 16:04:59 sebastien Exp $
+  * $Id: framewindow.js,v 1.11 2009/11/20 17:35:36 sebastien Exp $
   */
 Automne.frameWindow = Ext.extend(Automne.Window, { 
 	//frame url to use at next frame reload
@@ -102,6 +102,7 @@ Automne.frameWindow = Ext.extend(Automne.Window, {
 					} else {
 						location = this.frameURL + ((this.frameURL.indexOf('?') === -1) ? '?' : '&') + '_dc='+ (new Date()).getTime();
 					}
+					this.frameDocument.location = location;
 				} catch (e) {
 					pr(e, 'error');
 				}

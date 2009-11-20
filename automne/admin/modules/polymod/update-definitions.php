@@ -2,9 +2,9 @@
 /**
   * Update all stored definitions
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * @version $Id: update-definitions.php,v 1.2 2009/10/22 16:28:08 sebastien Exp $
+  * @version $Id: update-definitions.php,v 1.3 2009/11/20 17:39:40 sebastien Exp $
   */
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
+require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 
 //foreach definition, plugin and rss, recompile stored values if exists
 $modules = CMS_modulesCatalog::getAll("id", true);
