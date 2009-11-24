@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: atm-test-conf.php,v 1.5 2009/09/22 13:22:30 sebastien Exp $
+// $Id: atm-test-conf.php,v 1.6 2009/11/24 15:04:24 sebastien Exp $
 
 /**
   * PHP page : Test all Automne v4 requirements
@@ -148,26 +148,25 @@ if (!isset($_GET['file'])) {
 	if (version_compare(PHP_VERSION, "5.2.0") === -1) {
 		$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, PHP version ('.PHP_VERSION.') not match</li>';
 	} else {
-		$content .= '<li class="atm-pic-ok">PHP version OK ('.PHP_VERSION.')</li>';
+		$content .= '<li class="atm-pic-ok">PHP version <strong style="color:green">OK</strong> ('.PHP_VERSION.')</li>';
 	}
 	//GD
 	if (!function_exists('imagecreatefromgif') || !function_exists('imagecreatefromjpeg') || !function_exists('imagecreatefrompng')) {
 		$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, GD extension not installed</li>';
 	} else {
-		$content .= '<li class="atm-pic-ok">GD extension OK</li>';
+		$content .= '<li class="atm-pic-ok">GD extension <strong style="color:green">OK</strong></li>';
 	}
 	//MySQL
 	if (!class_exists('PDO')) {
 		$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, PDO extension not installed</li>';
-	}
-	else{
-		$content .= '<li class="atm-pic-ok">PDO extension OK</li>';
+	} else{
+		$content .= '<li class="atm-pic-ok">PDO extension <strong style="color:green">OK</strong></li>';
 	    $pdo_drivers = PDO::getAvailableDrivers();
 	    if(!in_array('mysql', $pdo_drivers)){
 	        $content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, PDO MySQL driver not installed</li>';
 	    }
 	    else{
-	        $content .= '<li class="atm-pic-ok">PDO MySQL driver OK</li>';
+	        $content .= '<li class="atm-pic-ok">PDO MySQL driver <strong style="color:green">OK</strong></li>';
 	        //Connection Data
 	        $connection = array();
 	        $connection['host']   = (isset($_POST['host']))   ? $_POST['host']   : 'localhost' ;
@@ -192,7 +191,7 @@ if (!isset($_GET['file'])) {
 	                        if (version_compare($version, '5.0.0') === -1) {
 	                            $content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, MySQL version ('.$version.') not match (5.0.0 minimum)</li>';
 	                        } else {
-	                            $content .= '<li class="atm-pic-ok">MySQL connection and version OK ('.$version.')</li>';
+	                            $content .= '<li class="atm-pic-ok">MySQL connection and version <strong style="color:green">OK</strong> ('.$version.')</li>';
 	                            $connection_is_ok = true;
 	                        }
 	                    }
@@ -234,11 +233,17 @@ if (!isset($_GET['file'])) {
 	        }
 	    }
 	}
+	//MBSTRING
+	if (!function_exists('mb_substr') || !function_exists('mb_convert_encoding')) {
+		$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, Multibyte String (mbsring) extension is not installed.</li>';
+	} else {
+		$content .= '<li class="atm-pic-ok">Multibyte String (mbsring) extension <strong style="color:green">OK</strong></li>';
+	}
 	//LDAP
 	if (!function_exists('ldap_bind')) {
 	    $content .= '<li class="atm-pic-cancel"><strong style="color:orange">Warning</strong>, LDAP extension not installed <strong>(only needed if LDAP authentification is used)</strong></li>';
 	} else {
-	    $content .= '<li class="atm-pic-ok">LDAP extension OK</li>';
+	    $content .= '<li class="atm-pic-ok">LDAP extension <strong style="color:green">OK</strong></li>';
 	}
 	//XAPIAN
 	$xapianVersion = '';
@@ -247,7 +252,7 @@ if (!isset($_GET['file'])) {
 		if (version_compare($xapianVersion, '1.0.2') === -1) {
 			$content .= '<li class="atm-pic-cancel"><strong style="color:orange">Warning</strong>, Xapian version ('.$xapianVersion.') not match (1.0.2 minimum)</li>';
 		} else {
-			$content .= '<li class="atm-pic-ok">Xapian extension OK ('.$xapianVersion.')</li>';
+			$content .= '<li class="atm-pic-ok">Xapian extension <strong style="color:green">OK</strong> ('.$xapianVersion.')</li>';
 		}
 	} else {
 		$content .= '<li class="atm-pic-cancel"><strong style="color:orange">Warning</strong>, Xapian extension not installed <strong>(only needed if ASE module is installed)</strong></li>';
@@ -256,20 +261,20 @@ if (!isset($_GET['file'])) {
 	if (!is_writable(realpath($_SERVER['DOCUMENT_ROOT']))) {
 		$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, No permissions to write files on website root directory ('.realpath($_SERVER['DOCUMENT_ROOT']).')</li>';
 	} else {
-		$content .= '<li class="atm-pic-ok">Website root filesystem permissions are OK</li>';
+		$content .= '<li class="atm-pic-ok">Website root filesystem permissions are <strong style="color:green">OK</strong></li>';
 	}
 	//Email
 	if (!@mail("root@localhost", "Automne SMTP Test", "Automne SMTP Test")) {
 		$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, No SMTP server founded</li>';
 	} else {
-		$content .= '<li class="atm-pic-ok">SMTP server OK</li>';
+		$content .= '<li class="atm-pic-ok">SMTP server <strong style="color:green">OK</strong></li>';
 	}
 	//Memory
 	ini_set('memory_limit', "64M");
 	if (ini_get('memory_limit') && ini_get('memory_limit') < 64) {
 		$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, Cannot upgrade memory limit to 64M. Memory detected : '.ini_get('memory_limit')."\n";
 	} else {
-		$content .= '<li class="atm-pic-ok">Memory limit OK</li>';
+		$content .= '<li class="atm-pic-ok">Memory limit <strong style="color:green">OK</strong></li>';
 	}
 	//CLI
 	if (strtolower(substr(PHP_OS, 0, 3)) === 'win') {
@@ -315,7 +320,7 @@ if (!isset($_GET['file'])) {
 			if (version_compare($cliversion, "5.2.0") === -1) {
 				$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, PHP CLI version ('.$cliversion.') not match</li>';
 			} else {
-				$content .= '<li class="atm-pic-ok">PHP CLI version OK ('.$cliversion.')</li>';
+				$content .= '<li class="atm-pic-ok">PHP CLI version <strong style="color:green">OK</strong> ('.$cliversion.')</li>';
 			}
 		}
 	}
