@@ -1,14 +1,15 @@
-V4.0.0rc3 (in progress)
+V4.0.0rc3 (25/11/09)
 [REMOVED] : XHTML validator is no longer available due to too many problems
 [BUG] : Lots of minor bugs corrected
 [BUG] : In page edition, rows with no height can be handled
 [BUG] : In page edition, small width rows no longer have issues with row controls
 [REFACTOR] : Improve security against XSS, CSRF and session fixation on administration, cms_forms and polymod modules.
+[REFACTOR] : XHTML Entities are now correctly handled in polymod blocks
 [REFACTOR] : All demo code is now in UTF8.
 [REFACTOR] : And mode MODULE_TREATMENT_PAGEHEADER_TAGS. Some old modules (like ASE) must be adapted to this modification because atm-meta-tags is now handled by this mode.
 [FEATURE] : Add error log rotate. /automne/cms_error_log is now daily gzipped in folder /automne/logs
 [FEATURE] : In page edition, rows can be searched by name
-[FEATURE] : UTF8 support. Automne is now in UTF8 by default and can always be used in ISO-8859-1 for old migrated versions.
+[FEATURE] : UTF8 support. Automne is now in UTF8 by default and can always be used in ISO-8859-1 for old migrated versions. Use constant APPLICATION_DEFAULT_ENCODING to set Automne encoding
 
 V4.0.0rc2 (21/07/09)
 [BUG] : On polymod fields, some fields did not work properly (image label, auto image zoom on thumbnail, disabled fields).
