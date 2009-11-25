@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: jsmanager.php,v 1.11 2009/11/10 16:59:45 sebastien Exp $
+// $Id: jsmanager.php,v 1.12 2009/11/25 17:17:46 sebastien Exp $
 
 /**
   * Javascript manager
@@ -195,8 +195,8 @@ if ($files) {
 					$jsfiles[] = dirname(__FILE__).'/'.$file;
 				} elseif(pathinfo($file, PATHINFO_EXTENSION) == 'js' 
 						&& file_exists(realpath($_SERVER['DOCUMENT_ROOT'].$file)) 
-						&& (strpos(pathinfo(realpath($_SERVER['DOCUMENT_ROOT'].$file), PATHINFO_DIRNAME), PATH_JS_FS) === 0 
-							|| strpos(pathinfo(realpath($_SERVER['DOCUMENT_ROOT'].$file), PATHINFO_DIRNAME), PATH_ADMIN_JS_FS) === 0)) {
+						&& (strpos(pathinfo(realpath($_SERVER['DOCUMENT_ROOT'].$file), PATHINFO_DIRNAME), realpath(PATH_JS_FS)) === 0 
+							|| strpos(pathinfo(realpath($_SERVER['DOCUMENT_ROOT'].$file), PATHINFO_DIRNAME), realpath(PATH_ADMIN_JS_FS)) === 0)) {
 					$jsfiles[] = $_SERVER['DOCUMENT_ROOT'].$file;
 				}
 			break;

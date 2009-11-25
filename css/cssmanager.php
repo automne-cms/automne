@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cssmanager.php,v 1.7 2009/11/10 16:59:34 sebastien Exp $
+// $Id: cssmanager.php,v 1.8 2009/11/25 17:17:57 sebastien Exp $
 
 /**
   * CSS manager
@@ -68,8 +68,8 @@ if (isset($_GET['files'])) {
 					$cssfiles [] = dirname(__FILE__).'/'.$file;
 				} elseif(pathinfo($file, PATHINFO_EXTENSION) == 'css' 
 						&& file_exists(realpath($_SERVER['DOCUMENT_ROOT'].$file)) 
-						&& (strpos(pathinfo(realpath($_SERVER['DOCUMENT_ROOT'].$file), PATHINFO_DIRNAME), PATH_CSS_FS) === 0 
-							|| strpos(pathinfo(realpath($_SERVER['DOCUMENT_ROOT'].$file), PATHINFO_DIRNAME), PATH_ADMIN_CSS_FS) === 0)) {
+						&& (strpos(pathinfo(realpath($_SERVER['DOCUMENT_ROOT'].$file), PATHINFO_DIRNAME), realpath(PATH_CSS_FS)) === 0 
+							|| strpos(pathinfo(realpath($_SERVER['DOCUMENT_ROOT'].$file), PATHINFO_DIRNAME), realpath(PATH_ADMIN_CSS_FS)) === 0)) {
 					$cssfiles[] = $_SERVER['DOCUMENT_ROOT'].$file;
 				}
 			break;
