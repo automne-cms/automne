@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: profileuser.php,v 1.8 2009/11/10 16:49:02 sebastien Exp $
+// $Id: profileuser.php,v 1.9 2009/11/26 10:37:31 sebastien Exp $
 
 /**
   * Class CMS_profile_user
@@ -625,6 +625,64 @@ class CMS_profile_user extends CMS_profile
 		} else {
 			$this->raiseError("Validation object required");
 		}
+	}
+	
+	/**
+	  * Short hand to get values by property name
+	  *
+	  * @param string $property The name of the property
+	  * @return mixed See functions for more details
+	  * @access public
+	  */
+	function getValue($property){
+		switch($property){
+		    case 'active':
+		        return $this->isActive();
+		    break;
+		    case 'validationChange':
+		        return $this->_validationChange;
+		    break;
+            case 'dn':
+		        return $this->getDN();
+		    break;
+            case 'deleted':
+		        return $this->isDeleted();
+		    break;
+            case 'alerts':
+		        return $this->_alerts;
+		    break;
+            default:
+				$method = 'get'.ucfirst($property);
+				if (method_exists($this, $method)) {
+					return $this->{$method}();
+				} else {
+					$this->raiseError('Unknown property to get : "'.$property.'"');
+				}
+			break;
+		}
+		return false;
+	}
+	
+	/**
+	  * Short hand to set values by property name
+	  *
+	  * @param string $property The name of the property
+	  * @param string $value The value to set
+	  * @return boolean true on success, false on failure
+	  * @access public
+	  */
+	function setValue($property, $value){
+		switch($property){
+		    default:
+				$method = 'set'.ucfirst($property);
+				if (method_exists($this, $method)) {
+					return $this->{$method}($value);
+				} else {
+					$this->raiseError('Unknown property to set : "'.$property.'"');
+				}
+			break;
+		}
+		return false;
 	}
 	
 	/**

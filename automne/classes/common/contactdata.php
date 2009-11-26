@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: contactdata.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: contactdata.php,v 1.2 2009/11/26 10:37:31 sebastien Exp $
 
 /**
   * Class CMS_contactData
@@ -514,6 +514,51 @@ class CMS_contactData extends CMS_grandFather
 		return true;
 	}
 	
+	/**
+	  * Short hand to get values by property name
+	  *
+	  * @param string $property The name of the property
+	  * @return mixed See functions for more details
+	  * @access public
+	  */
+	function getValue($property){
+		switch($property){
+		    case 'id':
+		        return $this->getID();
+		    break;
+		    default:
+				$method = 'get'.ucfirst($property);
+				if (method_exists($this, $method)) {
+					return $this->{$method}();
+				} else {
+					$this->raiseError('Unknown property to get : "'.$property.'"');
+				}
+			break;
+		}
+		return false;
+	}
+	
+	/**
+	  * Short hand to set values by property name
+	  *
+	  * @param string $property The name of the property
+	  * @param string $value The value to set
+	  * @return boolean true on success, false on failure
+	  * @access public
+	  */
+	function setValue($property, $value){
+		switch($property){
+		    default:
+				$method = 'set'.ucfirst($property);
+				if (method_exists($this, $method)) {
+					return $this->{$method}($value);
+				} else {
+					$this->raiseError('Unknown property to set : "'.$property.'"');
+				}
+			break;
+		}
+		return false;
+	}
 
 	/**
 	  * Totally destroys the contactData from database.

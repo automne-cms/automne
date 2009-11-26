@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object_catalog.php,v 1.7 2009/11/02 09:53:11 sebastien Exp $
+// $Id: poly_object_catalog.php,v 1.8 2009/11/26 10:33:25 sebastien Exp $
 
 /**
   * static Class CMS_poly_object_catalog
@@ -809,6 +809,58 @@ class CMS_poly_object_catalog
 			}
 		}
 		return $return;
+	}
+	
+	/**
+	  * Return a list of all primary items which uses a secondary item
+	  *
+	  * @param integer $secondaryItemId : the secondary item used
+	  * @param boolean $returnObject : does the method return array of object ? (default : true)
+	  * @param boolean $public are the needed datas public ? (default false)
+	  * @return array(CMS_poly_object)
+	  * @access public
+	  */
+	function getPrimaryItemsWhichUsesSecondaryItem($secondaryItemId, $returnObject = true, $public=false) {
+		//get secondary item module
+		$codename = CMS_poly_object_catalog::getModuleCodenameForObject($secondaryItemId);
+		if (!$codename) {
+			CMS_grandFather::raiseError("No module codename founded for secondary resource item : ".$secondaryItemId);
+			return false;
+		}
+		$primaryResourceType = CMS_poly_object_catalog::getPrimaryResourceObjectType($codename);
+		if (!$primaryResourceType) {
+			// no primary resource founded for module so return nothing
+			return array();
+		}
+		//get secondary item type
+		$secondaryItemType = CMS_poly_object_catalog::getObjectDefinitionByID($secondaryItemId, false);
+		//get all primary items which use secondary item
+		$statusSuffix = ($public) ? "_public":"_edited";
+		$sql = "
+			select
+				objectID
+			from
+				mod_object_field,
+				mod_subobject_integer".$statusSuffix."
+			where
+				object_id_mof='".sensitiveIO::sanitizeSQLString($primaryResourceType)."'
+				and (type_mof = '".sensitiveIO::sanitizeSQLString($secondaryItemType)."' 
+					or type_mof = 'multi|".sensitiveIO::sanitizeSQLString($secondaryItemType)."')
+				and objectFieldID=id_mof
+				and value='".sensitiveIO::sanitizeSQLString($secondaryItemId)."'
+		";
+		$q = new CMS_query($sql);
+		$results = array();
+		if (!$q->getNumRows()) {
+			return array();
+		}
+		while($r = $q->getArray()) {
+			$results[$r['objectID']] = $r['objectID'];
+		}
+		if (!$returnObject) {
+			return $results;
+		}
+		return CMS_poly_object_catalog::getAllObjects($primaryResourceType, $public, array('items' => $results), true);
 	}
 }
 ?>

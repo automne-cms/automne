@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: super_resource.php,v 1.4 2009/11/02 09:53:11 sebastien Exp $
+// $Id: super_resource.php,v 1.5 2009/11/26 10:37:31 sebastien Exp $
 
 /**
   * General-purpose Class
@@ -1107,6 +1107,85 @@ class CMS_superResource extends CMS_resource
 		}
 		return true;
 	}
+	
+	/**
+      * * Short hand to get value by property name
+      *
+      * @param string $name The name of the attribute to get
+      * @return mixed The attribute or false if it does not exist
+      * @access public
+      */
+    function getValue($name){
+        if(strtolower($name) == 'id'){
+            return $this->getID();
+        }
+        if(isset($this->_tableData[$name][0])){
+            $datatype = $this->_tableData[$name][0];
+            switch($datatype){
+                case 'html':
+                case 'email':
+                    return $this->getString($name);
+                break;
+                case 'positiveInteger':
+                    return $this->getInteger($name);
+                break;
+                case 'date':
+                    return $this->getTheDate($name);
+                break;
+                case 'file':
+                    return $this->getFilePath($name);
+                break;
+                case 'image':
+                    return $this->getImagePath($name);
+                break;
+                default:
+                    $method = 'get'.ucfirst($datatype);
+                    if (method_exists($this, $method)) {
+                        return $this->{$method}($name);
+                    } else {
+                        $this->raiseError('Unknown method to use : "'.$method.'" for property "'.$name.'"');
+                    }
+                break;
+            }
+        } else {
+            $this->raiseError("Unknown property :".$name);
+            return false;
+        }
+    }
+    
+    /**
+      * Short hand to set value by property name
+      *
+      * @param string $name The name of the attribute to get
+      * @param mixed $value The value to set for the attribute
+      * @return mixed The attribute or false if it does not exist
+      * @access public
+      */
+    function setValue($name, $value = null){
+        if(isset($this->_tableData[$name])){
+            $datatype = $this->_tableData[$name][0];
+            switch($datatype){
+                case 'html':
+                case 'email':
+                    return $this->setString($name, $value);
+                break;
+                case 'positiveInteger':
+                    return $this->setInteger($name, $value);
+                break;
+                default:
+                    $method = 'set'.ucfirst($datatype);
+                    if (method_exists($this, $method)) {
+                        return $this->{$method}($name, $value);
+                    } else {
+                        $this->raiseError('Unknown method to use : "'.$method.'" for property "'.$name.'"');
+                    }
+                break;
+            }
+        } else {
+            $this->raiseError("Unknown property :".$name);
+            return false;
+        }
+    }
 	
 	/**
 	  * Gets an list of distinct string values.

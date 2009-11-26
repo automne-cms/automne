@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object.php,v 1.11 2009/11/10 16:49:01 sebastien Exp $
+// $Id: poly_object.php,v 1.12 2009/11/26 10:33:25 sebastien Exp $
 
 /**
   * Class CMS_poly_object
@@ -888,6 +888,12 @@ class CMS_poly_object extends CMS_resource
 			if (!$this->_resource->writeToPersistence()) {
 				return false;
 			}
+		} elseif ($this->_objectResourceStatus == 2) { //if this object is a secondary resource
+			//get all primary resource associated
+			$primaryItems = CMS_poly_object_catalog::getPrimaryItemsWhichUsesSecondaryItem($this->_ID, true, false);
+			foreach ($primaryItems as $primaryItem) {
+				$primaryItem->writeToPersistence();
+			}
 		}
 		//save all subobjects
 		foreach(array_keys($this->_objectValues) as $fieldID) {
@@ -992,6 +998,13 @@ class CMS_poly_object extends CMS_resource
 			if ($this->_objectResourceStatus == 1 && $hardDelete) {
 				//delete associated resource
 				parent::destroy();
+			}
+			if ($this->_objectResourceStatus == 2) { //if this object is a secondary resource, primary items which uses this object must be updated
+				//get all primary resource associated
+				$primaryItems = CMS_poly_object_catalog::getPrimaryItemsWhichUsesSecondaryItem($this->_ID, true, false);
+				foreach ($primaryItems as $primaryItem) {
+					$primaryItem->writeToPersistence();
+				}
 			}
 			if ($hardDelete) {
 				unset($this);

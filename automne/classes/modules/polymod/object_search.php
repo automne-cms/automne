@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_search.php,v 1.11 2009/11/10 16:48:59 sebastien Exp $
+// $Id: object_search.php,v 1.12 2009/11/26 10:34:39 sebastien Exp $
 
 /**
   * Class CMS_object_search
@@ -689,7 +689,9 @@ class CMS_object_search extends CMS_grandFather
 						if (!$IDs) {
 							break;
 						}
-					} elseif (!$value->hasModuleClearance($this->_object->getValue('module'), CLEARANCE_MODULE_EDIT)) {
+					} elseif (!$this->_public && !$value->hasModuleClearance($this->_object->getValue('module'), CLEARANCE_MODULE_EDIT)) {
+						break;
+					} elseif ($this->_public && !$value->hasModuleClearance($this->_object->getValue('module'), CLEARANCE_MODULE_VIEW)) {
 						break;
 					}
 					//add previously founded IDs to where clause
