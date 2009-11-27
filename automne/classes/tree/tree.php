@@ -15,7 +15,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: tree.php,v 1.8 2009/11/27 15:40:23 sebastien Exp $
+// $Id: tree.php,v 1.9 2009/11/27 16:30:08 sebastien Exp $
 
 /**
   * Class CMS_tree
@@ -1513,12 +1513,12 @@ class CMS_tree extends CMS_grandFather
 	/**
 	  * Return a valid page for a given URL
 	  *
-	  * @param string the page URL
+	  * @param string $pageUrl the page URL
+	  * @param boolean $useDomain : use queried domain to found root page associated (default : true)
 	  * @return CMS_page if page founded, false otherwise
 	  * @access public
 	  */
-	function analyseURL($pageUrl) {
-		$httpHost = parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST'];
+	function analyseURL($pageUrl, $useDomain = true) {
 		$requestedPageId = null;
 		$urlinfo = parse_url($pageUrl);
 		$pathinfo = pathinfo($urlinfo['path']);
@@ -1544,7 +1544,8 @@ class CMS_tree extends CMS_grandFather
 					return $cms_page;
 				}
 			}
-		} else {
+		} elseif ($useDomain) {
+			$httpHost = parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST'];
 			//search page id by domain address
 			$domain = isset($urlinfo['host']) ? $urlinfo['host'] : $httpHost;
 			//get websites

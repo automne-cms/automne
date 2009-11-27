@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 404.php,v 1.7 2009/11/19 16:03:11 sebastien Exp $
+// $Id: 404.php,v 1.8 2009/11/27 16:30:21 sebastien Exp $
 
 /**
   * Automne 404 error handler
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_URI'] && $_SERVER['REQUEST_URI'] != $_SERVER['SCRIPT_NAME'
 	$pathinfo = pathinfo($_SERVER['REQUEST_URI']);
 	$basename = (isset($pathinfo['filename'])) ? $pathinfo['filename'] : $pathinfo['basename'];
 	//get page from requested url
-	if ($page = CMS_tree::analyseURL($_SERVER['REQUEST_URI'])) {
+	if ($page = CMS_tree::analyseURL($_SERVER['REQUEST_URI'], false)) {
 		//get page file
 		$pageURL = $page->getURL( (substr($basename,0,5) == 'print' ? true : false) , false, PATH_RELATIVETO_FILESYSTEM);
 		if (file_exists($pageURL)) {
