@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: list-objects.php,v 1.4 2009/10/22 16:28:08 sebastien Exp $
+// $Id: list-objects.php,v 1.5 2009/11/27 16:36:08 sebastien Exp $
 
 /**
   * PHP page : Load polyobjects items datas
@@ -82,7 +82,7 @@ if (!$object->hasError()) {
 			if (!$removeIds || !in_array($id, $removeIds)) {
 				$objectsDatas['objects'][] = array(
 					'id'			=> $id,
-					'label'			=> io::decodeEntities($label, ENT_COMPAT, io::strtoupper(APPLICATION_DEFAULT_ENCODING)),
+					'label'			=> io::decodeEntities($label),
 				);
 			}
 		}
