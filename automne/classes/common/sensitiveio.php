@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: sensitiveio.php,v 1.7 2009/11/10 16:48:58 sebastien Exp $
+// $Id: sensitiveio.php,v 1.8 2009/11/27 15:41:55 sebastien Exp $
 
 /**
   * Class SensitiveIO
@@ -643,7 +643,7 @@ class SensitiveIO extends CMS_grandfather
 	  * @access public
 	  */
 	function decodeEntities($text) {
-		return html_entity_decode($text, ENT_COMPAT, (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8' ? 'ISO-8859-1' : 'UTF-8'));
+		return html_entity_decode($text, ENT_QUOTES, (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8' ? 'ISO-8859-1' : 'UTF-8'));
 	}
 	
 	/**

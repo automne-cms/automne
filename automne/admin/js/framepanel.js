@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: framepanel.js,v 1.19 2009/11/20 16:04:59 sebastien Exp $
+  * $Id: framepanel.js,v 1.20 2009/11/27 15:37:48 sebastien Exp $
   */
 Automne.framePanel = Ext.extend(Automne.panel, { 
 	xtype:				'framePanel',
@@ -446,6 +446,10 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 		this.forceReload = force || this.forceReload;
 		if (this.loadFrameDocument()) {
 			if (this.frameDocument) {
+				if (!this.frameURL) {
+					pr('Reload '+ this.id +' tab queried but no URL founded for frame => skip.');
+					return false;
+				}
 				pr('Reload '+ this.id +' tab => Get : '+this.frameURL);
 				//set mask on frame during reload
 				if (this.id != 'public' && !Ext.isIE) {

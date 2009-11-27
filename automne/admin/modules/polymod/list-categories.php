@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: list-categories.php,v 1.4 2009/10/22 16:28:08 sebastien Exp $
+// $Id: list-categories.php,v 1.5 2009/11/27 15:41:45 sebastien Exp $
 
 /**
   * PHP page : Load polyobjects items datas
@@ -83,7 +83,7 @@ if ($objectFields[$fieldId]) {
 			foreach($a_all_categories as $id => $label) {
 				$objectsDatas['objects'][] = array(
 					'id'			=> $id,
-					'label'			=> io::decodeEntities($label, ENT_COMPAT, io::strtoupper(APPLICATION_DEFAULT_ENCODING)),
+					'label'			=> io::decodeEntities($label),
 				);
 			}
 		} else {

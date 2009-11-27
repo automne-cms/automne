@@ -7,7 +7,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: utils.js,v 1.5 2009/11/19 16:09:14 sebastien Exp $
+  * $Id: utils.js,v 1.6 2009/11/27 15:37:48 sebastien Exp $
   */
 Automne.utils = {
 	edit:		false,
@@ -24,7 +24,7 @@ Automne.utils = {
 		return false;
 	},
 	getPageById: function (pageId, tab) {
-		pr('getPageById : '+pageId);
+		pr('getPageById : '+pageId+(tab ? ' ('+tab+')' : ''));
 		if (tab) {
 			Automne.tabPanels.getPageInfos({
 				pageId:		pageId

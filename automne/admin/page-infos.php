@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-infos.php,v 1.18 2009/11/19 16:08:55 sebastien Exp $
+// $Id: page-infos.php,v 1.19 2009/11/27 15:37:11 sebastien Exp $
 
 /**
   * PHP page : Load page infos
@@ -378,11 +378,11 @@ switch ($fromtab) {
 //when a page is just validated, (first validation), 
 //the page file may not exists yet, 
 //so to prevent the display of an error, we must force the page generation here
-if ($regenerate || ($active == 'public' && !file_exists($cms_page->getURL(false, false, PATH_RELATIVETO_FILESYSTEM)))) {
+if ($cms_page->getPublication() == RESOURCE_PUBLICATION_PUBLIC && ($regenerate || ($active == 'public' && !file_exists($cms_page->getURL(false, false, PATH_RELATIVETO_FILESYSTEM, true))))) {
 	pr($regenerate ? 'Page regeneration queried' : 'Page file missing => auto regeneration');
 	$cms_page->regenerate(true);
 	//if anything goes wrong during regeneration, we must desactivate the public tab
-	if (!file_exists($cms_page->getURL(false, false, PATH_RELATIVETO_FILESYSTEM))) {
+	if (!file_exists($cms_page->getURL(false, false, PATH_RELATIVETO_FILESYSTEM, true))) {
 		$active = 'edited';
 		$hasPreviz = true;
 		$hasPublic = false;
@@ -1232,6 +1232,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 	$index++;
 }
 $jscontent .= '
+	//set active panel
 	var panel = tabs.getItem(\''.$active.'\');
 	if (panel) {
 		if ('.($noreload ? 'true' : 'false').') {

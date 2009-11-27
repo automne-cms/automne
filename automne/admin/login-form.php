@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: login-form.php,v 1.1 2009/11/10 16:57:19 sebastien Exp $
+// $Id: login-form.php,v 1.2 2009/11/27 15:38:06 sebastien Exp $
 
 /**
   * PHP page : Login form
@@ -266,5 +266,4 @@ $view->setContent($content);
 $view->getErrors(true);
 //send datas to display
 $view->show(CMS_view::SHOW_HTML);
-
 ?>

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: profileuserscatalog.php,v 1.5 2009/11/10 16:49:02 sebastien Exp $
+// $Id: profileuserscatalog.php,v 1.6 2009/11/27 15:41:32 sebastien Exp $
 
 /**
   * Class CMS_profile_usersCatalog
@@ -317,7 +317,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 				".$start.", ".$limit;
 		}
 		$q = new CMS_query($sql);
-		pr($sql);
+		//pr($sql);
 		//pr($q->getNumRows());
 		$users = array();
 		while ($r = $q->getArray()) {

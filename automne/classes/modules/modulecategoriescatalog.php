@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modulecategoriescatalog.php,v 1.6 2009/11/10 16:49:00 sebastien Exp $
+// $Id: modulecategoriescatalog.php,v 1.7 2009/11/27 15:41:07 sebastien Exp $
 
 /**
   * Class CMS_moduleCategories_catalog
@@ -821,6 +821,8 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 			}
 			if (is_array($root_categories) && $root_categories) {
 				if (sensitiveIO::isPositiveInteger($level) || sensitiveIO::isPositiveInteger($root)) {
+					//check for missing root cat
+					$missing = true;
 					foreach ($root_categories as $key => $obj) {
 						if (sensitiveIO::isPositiveInteger($root)) {
 							if (!$obj->hasAncestor($level)) {
@@ -833,8 +835,12 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 								unset($root_categories[$key]);
 							}
 						}
+						if ($obj->getID() == $level) {
+							$missing = false;
+						}
 					}
-					if ($cms_user->hasModuleCategoryClearance($level, $clearanceLevel, $cms_module)) {
+					//For bug in ticket 2565 (support WS)
+					if ($missing && $cms_user->hasModuleCategoryClearance($level, $clearanceLevel, $cms_module)) {
 						if (sensitiveIO::isPositiveInteger($level)) {
 							$lvlCat = CMS_moduleCategories_catalog::getByID($level);
 						}

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: login.php,v 1.8 2009/11/10 16:57:19 sebastien Exp $
+// $Id: login.php,v 1.9 2009/11/27 15:38:06 sebastien Exp $
 
 /**
   * PHP page : Login
@@ -55,7 +55,13 @@ $cms_action = io::request('cms_action');
 
 //Action management	
 switch ($cms_action) {
+case 'logout':
+		// Reset cookie (kill current session)
+		CMS_context::resetSessionCookies();
+	break;
 case 'reconnect':
+		// Reset cookie (kill current session)
+		CMS_context::resetSessionCookies();
 		//display error login window on top of login form
 		$loginError = "
 		Automne.message.popup({
@@ -107,9 +113,6 @@ default:
 	}
 	break;
 }
-
-// Reset cookie (kill current session)
-CMS_context::resetSessionCookies();
 
 //Send Login form window
 $applicationLabel = addcslashes(APPLICATION_LABEL, "'");

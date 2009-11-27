@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: block.php,v 1.6 2009/11/10 16:48:58 sebastien Exp $
+// $Id: block.php,v 1.7 2009/11/27 15:41:07 sebastien Exp $
 
 /**
   * Class CMS_block
@@ -344,10 +344,17 @@ class CMS_block extends CMS_grandFather
 		$hasNode = false;
 		foreach($blockXML->childNodes as $blockChildNode) {
 			//scripts tags and p tags are not correctly handled by javascript
-			if (is_a($blockChildNode, 'DOMElement') && $blockChildNode->tagName != 'script' && $blockChildNode->tagName != 'p' && io::substr($blockChildNode->tagName, 0, 4) != 'atm-') {
+			if (is_a($blockChildNode, 'DOMElement') && $blockChildNode->tagName != 'script') {
 				$hasNode = true;
 			}
 		}
+		foreach($blockXML->childNodes as $blockChildNode) {
+			//scripts tags and p tags are not correctly handled by javascript
+			if (is_a($blockChildNode, 'DOMElement') && ($blockChildNode->tagName != 'p' || io::substr($blockChildNode->tagName, 0, 4) != 'atm-')) {
+				$hasNode = false;
+			}
+		}
+		
 		if (!$hasNode) {
 			//append div with atm-empty-block class around datas
 			$domdocument = new CMS_DOMDocument();

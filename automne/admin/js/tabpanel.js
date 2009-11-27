@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: tabpanel.js,v 1.7 2009/11/10 16:57:21 sebastien Exp $
+  * $Id: tabpanel.js,v 1.8 2009/11/27 15:37:48 sebastien Exp $
   */
 Automne.tabPanel = Ext.extend(Ext.TabPanel, { 
 	pageId:		false,
@@ -20,45 +20,46 @@ Automne.tabPanel = Ext.extend(Ext.TabPanel, {
 		this.on({'beforetabchange': this.beforeChangePanel, 'tabchange': this.afterChangePanel, scope: this});
 	},
 	/**
-	 * Sets the specified tab as the active tab. This method fires the {@link #beforetabchange} event which
-	 * can return false to cancel the tab change.
-	 * @param {String/Panel} tab The id or tab Panel to activate
-	 */
-	setActiveTab : function(item, force){
-		pr(arguments);
+     * Sets the specified tab as the active tab. This method fires the {@link #beforetabchange} event which
+     * can return false to cancel the tab change.
+     * @param {String/Panel} tab The id or tab Panel to activate
+     */
+    setActiveTab : function(item, force){
 		item = this.getComponent(item);
-		if(!item || this.fireEvent('beforetabchange', this, item, this.activeTab, force) === false){
+		if(!item || (item.disabled && !force) || this.fireEvent('beforetabchange', this, item, this.activeTab, force) === false){
 			return;
 		}
-		if(!this.rendered){
+        if(!this.rendered){
+            this.activeTab = item;
+            return;
+        }
+        if(this.activeTab != item){
+            if(this.activeTab){
+                var oldEl = this.getTabEl(this.activeTab);
+                if(oldEl){
+                    Ext.fly(oldEl).removeClass('x-tab-strip-active');
+					if(this.activeTab.reloadable) Ext.fly(oldEl).removeClass('x-tab-strip-reloadable');
+                }
+                this.activeTab.fireEvent('deactivate', this.activeTab);
+            }
+            var el = this.getTabEl(item);
+            Ext.fly(el).addClass('x-tab-strip-active');
+            if(item.reloadable) Ext.fly(el).addClass('x-tab-strip-reloadable');
 			this.activeTab = item;
-			return;
-		}
-		if(this.activeTab != item){
-			if(this.activeTab){
-				var oldEl = this.getTabEl(this.activeTab);
-				if(oldEl){
-					Ext.fly(oldEl).removeClass('x-tab-strip-active');
-				}
-				this.activeTab.fireEvent('deactivate', this.activeTab);
-			}
-			var el = this.getTabEl(item);
-			Ext.fly(el).addClass('x-tab-strip-active');
-			this.activeTab = item;
-			this.stack.add(item);
+            this.stack.add(item);
 
-			this.layout.setActiveItem(item);
-			if(this.layoutOnTabChange && item.doLayout){
-				item.doLayout();
-			}
-			if(this.scrolling){
-				this.scrollToTab(item, this.animScroll);
-			}
+            this.layout.setActiveItem(item);
+            if(this.layoutOnTabChange && item.doLayout){
+                item.doLayout();
+            }
+            if(this.scrolling){
+                this.scrollToTab(item, this.animScroll);
+            }
 
-			item.fireEvent('activate', item);
-			this.fireEvent('tabchange', this, item, force);
-		}
-	},
+            item.fireEvent('activate', item);
+            this.fireEvent('tabchange', this, item, force);
+        }
+    },
 	//function called before each panel change.
 	beforeChangePanel: function(tabPanel, newTab, oldTab, force) {
 		return newTab.beforeActivate(tabPanel, newTab, oldTab, force);
@@ -239,46 +240,5 @@ Automne.tabPanel = Ext.extend(Ext.TabPanel, {
 			Automne.message.show(Automne.locales.refresh, '', item);
 			item.reload();
 		}
-	},
-	/**
-     * Sets the specified tab as the active tab. This method fires the {@link #beforetabchange} event which
-     * can return false to cancel the tab change.
-     * @param {String/Panel} tab The id or tab Panel to activate
-     */
-    setActiveTab : function(item){
-        item = this.getComponent(item);
-        if(!item || this.fireEvent('beforetabchange', this, item, this.activeTab) === false){
-            return;
-        }
-        if(!this.rendered){
-            this.activeTab = item;
-            return;
-        }
-        if(this.activeTab != item){
-            if(this.activeTab){
-                var oldEl = this.getTabEl(this.activeTab);
-                if(oldEl){
-                    Ext.fly(oldEl).removeClass('x-tab-strip-active');
-					if(this.activeTab.reloadable) Ext.fly(oldEl).removeClass('x-tab-strip-reloadable');
-                }
-                this.activeTab.fireEvent('deactivate', this.activeTab);
-            }
-            var el = this.getTabEl(item);
-            Ext.fly(el).addClass('x-tab-strip-active');
-            if(item.reloadable) Ext.fly(el).addClass('x-tab-strip-reloadable');
-			this.activeTab = item;
-            this.stack.add(item);
-
-            this.layout.setActiveItem(item);
-            if(this.layoutOnTabChange && item.doLayout){
-                item.doLayout();
-            }
-            if(this.scrolling){
-                this.scrollToTab(item, this.animScroll);
-            }
-
-            item.fireEvent('activate', item);
-            this.fireEvent('tabchange', this, item);
-        }
-    }
+	}
 });
