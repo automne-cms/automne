@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc_frontend.php,v 1.6 2009/07/20 16:29:39 sebastien Exp $
+// $Id: cms_rc_frontend.php,v 1.7 2009/12/03 10:50:14 sebastien Exp $
 
 /**
   * Frontend rc file.
@@ -22,23 +22,14 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-//include general configuration file
-require_once(dirname(__FILE__)."/cms_rc.php");
-//Start session
-start_atm_session();
-
-// Start output buffering for compression so we don't prevent
-// headers from being sent if there's a blank line in an included file
-if (!defined('HTML_COMPRESSION_STARTED')) {
-	ob_start( 'compress_handler' );
-}
-
 /**
-  * Define User Type if APPLICATION_ENFORCES_ACCESS_CONTROL is True
+  * Define User Type
   */
 if (!defined("APPLICATION_USER_TYPE")) {
 	define("APPLICATION_USER_TYPE", "frontend");
 }
+//include general configuration file
+require_once(dirname(__FILE__)."/cms_rc.php");
 
 /**
   * adding classes and constants for checking user access right for each pages of the website

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc_admin.php,v 1.11 2009/07/21 13:40:13 sebastien Exp $
+// $Id: cms_rc_admin.php,v 1.12 2009/12/03 10:50:14 sebastien Exp $
 
 /**
   * Administration rc file.
@@ -22,23 +22,14 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-//include general configuration file
-require_once(dirname(__FILE__)."/cms_rc.php");
-//Start session
-start_atm_session();
-
 /**
-  * Define User Type if APPLICATION_ENFORCES_ACCESS_CONTROL is True
+  * Define User Type
   */
 if (!defined("APPLICATION_USER_TYPE")) {
 	define("APPLICATION_USER_TYPE", "admin");
 }
-
-// Start output buffering for compression so we don't prevent
-// headers from being sent if there's a blank line in an included file
-if (!defined('HTML_COMPRESSION_STARTED')) {
-	ob_start( 'compress_handler' );
-}
+//include general configuration file
+require_once(dirname(__FILE__)."/cms_rc.php");
 
 //If we are into an admin module, load it
 if (strpos($_SERVER['SCRIPT_NAME'], PATH_ADMIN_MODULES_WR) === 0 

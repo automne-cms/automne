@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc.php,v 1.22 2009/11/17 15:55:20 sebastien Exp $
+// $Id: cms_rc.php,v 1.23 2009/12/03 10:50:14 sebastien Exp $
 
 /**
   * rc file, contains all default constants
@@ -22,6 +22,12 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &
   * @author Cédric Soret <cedric.soret@ws-interactive.fr>
   */
+
+//check this file for inclusion
+if (!defined('APPLICATION_USER_TYPE')) {
+	die('Cannot include /cms_rc.php directly. You must include /cms_rc_frontend.php or /cms_rc_admin.php.');
+}
+
 //include general configuration file
 if (@file_exists(dirname(__FILE__)."/config.php")) {
 	@include_once(dirname(__FILE__)."/config.php");
@@ -831,7 +837,9 @@ if (ini_get('memory_limit') < (int) APPLICATION_MEMORY_LIMIT) {
 @ini_set('magic_quotes_runtime', 0);
 @ini_set('magic_quotes_sybase', 0);
 //try to change some misconfigurations
-@ini_set('session.gc_probability', 0);
+@ini_set('session.gc_probability', 1);
+@ini_set('session.gc_divisor', 100);
+@ini_set('session.gc_maxlifetime', APPLICATION_SESSION_TIMEOUT);
 @ini_set('allow_call_time_pass_reference', 0);
 
 //set PHP default encoding for utf-8
@@ -1094,6 +1102,15 @@ function start_atm_session() {
 	
 	@session_name('AutomneSession');
 	@session_start();
+}
+
+//Start session
+start_atm_session();
+
+// Start output buffering for compression so we don't prevent
+// headers from being sent if there's a blank line in an included file
+if (!defined('HTML_COMPRESSION_STARTED')) {
+	ob_start( 'compress_handler' );
 }
 
 /**
