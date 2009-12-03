@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: validations-controler.php,v 1.7 2009/12/03 09:44:05 sebastien Exp $
+// $Id: validations-controler.php,v 1.8 2009/12/03 10:17:18 sebastien Exp $
 
 /**
   * PHP controler : Receive validations actions
@@ -193,13 +193,15 @@ switch ($action) {
 					
 					//check if resource still exists
 					$resUpdated = $validation->getResource();
+					$deleted = true;
 					if ($resUpdated && is_object($resUpdated)) {
 						$res = $resUpdated;
+						$deleted = false;
 					}
 					//log action
 					$log = new CMS_log();
 					$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_VALIDATE_EDITION, $cms_user, $validation->getModuleCodename(), $res->getStatus(), "", $res);
-					if ($res->getStatus()) {
+					if (!$deleted && $res->getStatus()) {
 						//Replace all the status icons by the new one across the whole interface
 						$status = $res->getStatus()->getHTML(false, $cms_user, $validation->getModuleCodename(), $res->getID());
 						$tinyStatus = $res->getStatus()->getHTML(true, $cms_user, $validation->getModuleCodename(), $res->getID());
