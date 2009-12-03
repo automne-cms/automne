@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: validations-datas.php,v 1.3 2009/10/22 16:26:28 sebastien Exp $
+// $Id: validations-datas.php,v 1.4 2009/12/03 09:44:05 sebastien Exp $
 
 /**
   * PHP page : Load validations pending for given module and editions
@@ -204,6 +204,7 @@ if ($withValidationsPending) {
 			
 			foreach ($validationsSorted as $label => $validations) {
 				$validation = $validations[0];
+				$label = io::decodeEntities($label);
 				$validationsDatas['validationsType'][] = array(
 					'id' 		=> $count,
 					'module'	=> $codename,

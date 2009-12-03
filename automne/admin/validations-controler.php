@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: validations-controler.php,v 1.6 2009/10/22 16:26:28 sebastien Exp $
+// $Id: validations-controler.php,v 1.7 2009/12/03 09:44:05 sebastien Exp $
 
 /**
   * PHP controler : Receive validations actions
@@ -192,7 +192,10 @@ switch ($action) {
 					$group_email->sendMessages();
 					
 					//check if resource still exists
-					$res = $validation->getResource();
+					$resUpdated = $validation->getResource();
+					if ($resUpdated && is_object($resUpdated)) {
+						$res = $resUpdated;
+					}
 					//log action
 					$log = new CMS_log();
 					$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_VALIDATE_EDITION, $cms_user, $validation->getModuleCodename(), $res->getStatus(), "", $res);
