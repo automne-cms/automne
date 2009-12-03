@@ -15,7 +15,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: website.php,v 1.2 2009/03/02 11:27:33 sebastien Exp $
+// $Id: website.php,v 1.3 2009/12/03 08:30:47 sebastien Exp $
 
 /**
   * PHP page : page base data
@@ -223,7 +223,7 @@ $content .= '
 		<td class="admin" align="right"><span class="admin_text_alert">*</span> '.$cms_language->getMessage(MESSAGE_PAGE_FIELD_LANGUAGE).'</td>
 		<td class="admin"><select name="language" class="admin_input_text">
 			<option value="">'.$cms_language->getMessage(MESSAGE_PAGE_CHOOSE).'</option>';
-		$languages = CMS_languagesCatalog::getAllLanguages();
+		$languages = CMS_languagesCatalog::getAllLanguages(MOD_STANDARD_CODENAME);
 		foreach ($languages as $aLanguage) {
 			$content .= '<option value="'.$aLanguage->getCode().'"'.($aLanguage->getCode() == $website->getMeta('language') ? ' selected="selected"':'').'>'.$aLanguage->getLabel().'</option>';
 		}

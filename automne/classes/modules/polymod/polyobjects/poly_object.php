@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object.php,v 1.12 2009/11/26 10:33:25 sebastien Exp $
+// $Id: poly_object.php,v 1.13 2009/12/03 08:30:12 sebastien Exp $
 
 /**
   * Class CMS_poly_object
@@ -924,11 +924,11 @@ class CMS_poly_object extends CMS_resource
 			if ($this->_objectResourceStatus != 1 && $this->_objectResourceStatus != 2) {
 				$modulesCodes = new CMS_modulesCodes();
 				//add a call to all modules for before validation specific treatment
-				$modulesCodes->getModulesCodes(MODULE_TREATMENT_BEFORE_VALIDATION_TREATMENT, '', $this, array('result' => VALIDATION_OPTION_ACCEPT, 'lastvalidation' => true, 'module' => $polyModuleCodename));
+				$modulesCodes->getModulesCodes(MODULE_TREATMENT_BEFORE_VALIDATION_TREATMENT, '', $this, array('result' => VALIDATION_OPTION_ACCEPT, 'lastvalidation' => true, 'module' => $polyModuleCodename, 'action' => 'update'));
 				//move resource datas to public location
 				CMS_modulePolymodValidation::moveResourceData($polyModuleCodename, $this->getID(), RESOURCE_DATA_LOCATION_EDITED, RESOURCE_DATA_LOCATION_PUBLIC, true);
 				//add a call to all modules for after validation specific treatment
-				$modulesCodes->getModulesCodes(MODULE_TREATMENT_AFTER_VALIDATION_TREATMENT, '', $this, array('result' => VALIDATION_OPTION_ACCEPT, 'lastvalidation' => true, 'module' => $polyModuleCodename));
+				$modulesCodes->getModulesCodes(MODULE_TREATMENT_AFTER_VALIDATION_TREATMENT, '', $this, array('result' => VALIDATION_OPTION_ACCEPT, 'lastvalidation' => true, 'module' => $polyModuleCodename, 'action' => 'update'));
 			}
 			//if item is a primary resource, send emails to validators
 			if ($this->_objectResourceStatus == 1) {
@@ -988,12 +988,21 @@ class CMS_poly_object extends CMS_resource
 					new CMS_query($sql);
 				}
 			}
+			if ($this->_objectResourceStatus != 1 && $this->_objectResourceStatus != 2) {
+				$modulesCodes = new CMS_modulesCodes();
+				//add a call to all modules for before validation specific treatment
+				$modulesCodes->getModulesCodes(MODULE_TREATMENT_BEFORE_VALIDATION_TREATMENT, '', $this, array('result' => VALIDATION_OPTION_ACCEPT, 'lastvalidation' => true, 'module' => $polyModuleCodename, 'action' => 'delete'));
+			}
 			if (!$hardDelete) {
 				//move resource datas from edited to deleted location
 				CMS_modulePolymodValidation::moveResourceData($polyModuleCodename, $this->getID(), RESOURCE_DATA_LOCATION_EDITED, RESOURCE_DATA_LOCATION_DELETED);
 			} else {
 				//delete datas from edited locations
 				CMS_modulePolymodValidation::moveResourceData($polyModuleCodename, $this->getID(), RESOURCE_DATA_LOCATION_EDITED, RESOURCE_DATA_LOCATION_DEVNULL);
+			}
+			if ($this->_objectResourceStatus != 1 && $this->_objectResourceStatus != 2) {
+				//add a call to all modules for after validation specific treatment
+				$modulesCodes->getModulesCodes(MODULE_TREATMENT_AFTER_VALIDATION_TREATMENT, '', $this, array('result' => VALIDATION_OPTION_ACCEPT, 'lastvalidation' => true, 'module' => $polyModuleCodename, 'action' => 'delete'));
 			}
 			if ($this->_objectResourceStatus == 1 && $hardDelete) {
 				//delete associated resource

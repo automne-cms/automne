@@ -14,7 +14,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: regenerateall.php,v 1.2 2009/10/22 16:30:05 sebastien Exp $
+// $Id: regenerateall.php,v 1.3 2009/12/03 08:29:38 sebastien Exp $
 
 /**
   * background script : regenerateall
@@ -29,7 +29,7 @@
 @ini_set('memory_limit', "32M");
 
 //must calculate the document root
-$_SERVER["DOCUMENT_ROOT"] = realpath(io::substr(dirname(__FILE__), 0, io::strlen(dirname(__FILE__)) - io::strpos(strrev(dirname(__FILE__)), "enmotua") - io::strlen("automne") - 1));
+$_SERVER["DOCUMENT_ROOT"] = realpath(substr(dirname(__FILE__), 0, strlen(dirname(__FILE__)) - strpos(strrev(dirname(__FILE__)), "enmotua") - strlen("automne") - 1));
 require_once($_SERVER["DOCUMENT_ROOT"] . "/cms_rc_admin.php");
 
 CMS_tree::regenerateAllPages(true);
