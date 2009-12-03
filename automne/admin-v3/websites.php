@@ -15,7 +15,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: websites.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: websites.php,v 1.2 2009/12/03 09:03:30 sebastien Exp $
 
 /**
   * PHP page : websites
@@ -149,7 +149,7 @@ foreach ($websites as $website) {
 		<table border="0" cellpadding="2" cellspacing="2">
 		<tr>
 			<td class="'.$td_class.'" width="120">'.htmlspecialchars($website->getLabel()).'</td>
-			<td class="'.$td_class.'" width="230"><a href="'.PATH_ADMIN_SPECIAL_PAGE_SUMMARY_WR.'?page='.$website_root->getID().'" class="admin">'.htmlspecialchars($website_root->getTitle()).' ('.$website_root->getID().')</a></td>
+			<td class="'.$td_class.'" width="230"><a href="#" onclick="Automne.utils.getPageById('.$website_root->getID().');Ext.WindowMgr.getActive().close();" class="admin">'.htmlspecialchars($website_root->getTitle()).' ('.$website_root->getID().')</a></td>
 			<td class="'.$td_class.'" width="150"><a href="'.$website->getURL().'" target="_blank" class="admin">'.htmlspecialchars($website->getURL()).'</a></td>
 			<td class="'.$td_class.'" width="150">
 				<table border="0" cellpadding="2" cellspacing="0" width="146">

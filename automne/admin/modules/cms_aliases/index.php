@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: index.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: index.php,v 1.2 2009/12/03 09:04:19 sebastien Exp $
 
 /**
   * PHP page : module admin frontend : cms_aliases : index
@@ -123,9 +123,9 @@ if (sizeof($aliases)) {
 		if ($article->getPageID()) {
 			$page = new CMS_page($article->getPageID());
 			if ($page->getTitle()) {
-				$target = '<a href="'.PATH_ADMIN_SPECIAL_PAGE_SUMMARY_WR.'?page='.$page->getID().'" class="admin">Page : '.$page->getTitle().' ('.$page->getID().')</a>';
+				$target = '<a href="#" onclick="Automne.utils.getPageById('.$page->getID().');Ext.WindowMgr.getActive().close();" class="admin">Page : '.$page->getTitle().' ('.$page->getID().')</a>';
 			} else {
-				$target = '<a href="'.PATH_ADMIN_SPECIAL_PAGE_SUMMARY_WR.'?page='.$page->getID().'" class="admin">Page : <span class="admin_text_alert">'.$cms_language->getMessage(MESSAGE_PAGE_UNKNOWN_PAGE).' ('.$page->getID().')</span></a>';
+				$target = '<a href="#" onclick="Automne.utils.getPageById('.$page->getID().');Ext.WindowMgr.getActive().close();" class="admin">Page : <span class="admin_text_alert">'.$cms_language->getMessage(MESSAGE_PAGE_UNKNOWN_PAGE).' ('.$page->getID().')</span></a>';
 			}
 		} else {
 			$target = '<a href="'.$article->getURL().'" class="admin" target="_blank">URL : '.$article->getURL().'</a>';
