@@ -24,7 +24,7 @@
  * It defines the FCKeditor class that can be used to create editor
  * instances in PHP pages on server side.
  */
-// $Id: fckeditor.php,v 1.4 2009/12/03 10:00:18 sebastien Exp $
+// $Id: fckeditor.php,v 1.5 2009/12/04 14:39:49 sebastien Exp $
 
 /**
  * Check if browser is compatible with FCKeditor.
@@ -314,7 +314,8 @@ class FCKeditor
 	  */
 	function createAutomneLinks($text, $module = MOD_STANDARD_CODENAME) {
 		//if post only contain a space or empty paragraph then the block is empty.
-		if (!trim(strip_tags(io::decodeEntities(str_replace(array('&#160;', '&nbsp;') , '', $text))))) {
+		$cleanedText = trim(str_replace(array('&#160;', '&nbsp;', ' ') , '', $text));
+		if ($cleanedText == '<p></p>' || $cleanedText == '<div></div>') {
 			$text = '';
 		}
 		if ($text) {

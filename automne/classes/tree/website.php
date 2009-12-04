@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: website.php,v 1.4 2009/10/28 16:27:00 sebastien Exp $
+// $Id: website.php,v 1.5 2009/12/04 14:40:11 sebastien Exp $
 
 /**
   * Class CMS_website
@@ -396,19 +396,6 @@ class CMS_website extends CMS_grandFather
 			//deletes the pages and html directory (with all the pages inside)
 			if (!$this->_isMain) {
 				$dir = $this->getPagesPath(PATH_RELATIVETO_FILESYSTEM);
-				if ($opendir = @opendir($dir)) {
-					while (false !== ($readdir = readdir($opendir))) {
-						if($readdir !== '..' && $readdir !== '.') {
-							$readdir = trim($readdir);
-							if (is_file($dir.'/'.$readdir)) {
-								@unlink($dir.'/'.$readdir);
-							}
-						}
-					}
-					closedir($opendir);
-					@rmdir($dir);
-				}
-				$dir = $this->getHTMLPagesPath(PATH_RELATIVETO_FILESYSTEM);
 				if ($opendir = @opendir($dir)) {
 					while (false !== ($readdir = readdir($opendir))) {
 						if($readdir !== '..' && $readdir !== '.') {
