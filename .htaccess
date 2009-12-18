@@ -1,6 +1,6 @@
 # Automne general .htaccess file. 
 # Author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-# $Id: .htaccess,v 1.11 2009/06/10 12:47:01 sebastien Exp $
+# $Id: .htaccess,v 1.12 2009/12/18 09:18:45 sebastien Exp $
 
 # Declare errors documents. 
 # The 404.php must be the 404 error document, otherwise, change PATH_SPECIAL_PAGE_NOT_FOUND_WR constant value in cms_rc.php file accordingly and keep the PHP header of the file 404.php in your new error document.
@@ -23,9 +23,10 @@ Allow from all
 <IfModule mod_mime.c>
 	<IfModule mod_php5.c>
 		php_flag magic_quotes_gpc		Off
-		php_flag magic_quotes_runtime	Off
-		php_flag magic_quotes_sybase	Off
+		php_flag magic_quotes_runtime		Off
+		php_flag magic_quotes_sybase		Off
 		php_flag allow_call_time_pass_reference Off
 		php_flag register_globals 		Off
+		php_flag allow_url_include		Off
 	</IfModule>
 </IfModule>
