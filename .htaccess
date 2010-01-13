@@ -1,10 +1,11 @@
 # Automne general .htaccess file. 
 # Author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-# $Id: .htaccess,v 1.12 2009/12/18 09:18:45 sebastien Exp $
+# $Id: .htaccess,v 1.13 2010/01/13 09:32:41 sebastien Exp $
 
 # Declare errors documents. 
-# The 404.php must be the 404 error document, otherwise, change PATH_SPECIAL_PAGE_NOT_FOUND_WR constant value in cms_rc.php file accordingly and keep the PHP header of the file 404.php in your new error document.
+# The 404.php must be the 404 error document, but you can create a specific design with a file 404.html which will be displayed by the 404.php file
 ErrorDocument 404 /404.php
+# The 403.php must be the 403 error document, but you can create a specific design with a file 403.html which will be displayed by the 403.php file
 ErrorDocument 403 /403.php
 
 # Remove files listing
@@ -16,7 +17,7 @@ DirectoryIndex index.php
 # Files access
 Allow from all
 
-# Add PHP5 CGI Handler
+# Add PHP5 CGI Handler if needed
 #AddHandler php5-cgi .php
 
 # Some PHP configurations
