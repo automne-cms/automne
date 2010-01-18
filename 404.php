@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 404.php,v 1.8 2009/11/27 16:30:21 sebastien Exp $
+// $Id: 404.php,v 1.9 2010/01/18 15:06:46 sebastien Exp $
 
 /**
   * Automne 404 error handler
@@ -48,9 +48,7 @@ if ($_SERVER['REQUEST_URI'] && $_SERVER['REQUEST_URI'] != $_SERVER['SCRIPT_NAME'
 }
 //do redirection to page if founded
 if ($redirectTo) {
-	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: '.$redirectTo.(isset($_SERVER['REDIRECT_QUERY_STRING']) ? '?'.$_SERVER['REDIRECT_QUERY_STRING'] : ''));
-	exit;
+	CMS_view::redirect($redirectTo.(isset($_SERVER['REDIRECT_QUERY_STRING']) ? '?'.$_SERVER['REDIRECT_QUERY_STRING'] : ''), true, 301);
 }
 //then if no page founded, display 404 error page
 header('HTTP/1.x 404 Not Found', true, 404);

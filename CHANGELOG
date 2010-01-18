@@ -1,3 +1,17 @@
+V4.0.0 (18/01/10)
+[BUG] : Lots of minor bugs corrected
+[BUG] : tags atm-loop can now be nested
+[BUG] : add missing ExtJS locales
+[BUG] : correct problems on sessions persistence
+[BUG] : handle iframe crash (wrong domain)
+[BUG] : block varchar with single quotes can be edited
+[REFACTOR] : Completely refactor I18nm messages system. The message table is now more extensible
+[REFACTOR] : Update polymod documentation
+[REFACTOR] : Review english messages
+[FEATURE] : modules can now add tabs to page properties through method getPageTabsProperties
+[FEATURE] : add {user:id:type} vars type for polymod rows
+[FEATURE] : add cache control on images files (see .htaccess)
+
 V4.0.0rc3 (25/11/09)
 [REMOVED] : XHTML validator is no longer available due to too many problems
 [BUG] : Lots of minor bugs corrected

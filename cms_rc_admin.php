@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc_admin.php,v 1.12 2009/12/03 10:50:14 sebastien Exp $
+// $Id: cms_rc_admin.php,v 1.13 2010/01/18 15:06:46 sebastien Exp $
 
 /**
   * Administration rc file.
@@ -39,21 +39,27 @@ if (strpos($_SERVER['SCRIPT_NAME'], PATH_ADMIN_MODULES_WR) === 0
 //check for authentification
 if (APPLICATION_EXEC_TYPE == 'http') {
 	//check user privileges
+	//CMS_grandFather::log('Admin session exists : '.isset($_SESSION["cms_context"]));
 	if (isset($_SESSION["cms_context"]) && is_a($_SESSION["cms_context"], "CMS_context")) {
+		//CMS_grandFather::log('Admin ok1');
 		$_SESSION["cms_context"]->checkSession();
 		
 		//set some useful vars
 		$cms_context =& $_SESSION["cms_context"];
 		$cms_user = $_SESSION["cms_context"]->getUser();
 		$cms_language = $cms_user->getLanguage();
+		//CMS_grandFather::log('Admin ok2');
 	} elseif (isset($_REQUEST["cms_action"]) && $_REQUEST["cms_action"] != 'logout' && CMS_context::autoLoginSucceeded()) {
+		//CMS_grandFather::log('Admin ok3');
 		$_SESSION["cms_context"]->checkSession();
 		
 		//set some useful vars
 		$cms_context =& $_SESSION["cms_context"];
 		$cms_user = $_SESSION["cms_context"]->getUser();
 		$cms_language = $cms_user->getLanguage();
+		//CMS_grandFather::log('Admin ok4');
 	} else {
+		//CMS_grandFather::log('Admin Nok1');
 		//load interface instance
 		$view = CMS_view::getInstance();
 		//set disconnected status
@@ -62,14 +68,17 @@ if (APPLICATION_EXEC_TYPE == 'http') {
 		if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
 			$view->setDisplayMode(4); //4 = CMS_view::SHOW_RAW : this constant cannot be used here because this file can be parsed by PHP4
 		}
+		//CMS_grandFather::log('Admin Nok2');
 		$view->show();
 	}
 	//if user exists and does not have admin clearance, force disconnection
 	if (isset($cms_user) && is_object($cms_user) && !$cms_user->hasAdminAccess()) {
+		//CMS_grandFather::log('Admin Nok3');
 		//load interface instance
 		$view = CMS_view::getInstance();
 		//set disconnected status
 		$view->setDisconnected(true);
+		//CMS_grandFather::log('Admin Nok4');
 	}
 	//init message var
 	$cms_message = '';

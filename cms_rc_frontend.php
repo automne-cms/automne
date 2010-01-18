@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc_frontend.php,v 1.7 2009/12/03 10:50:14 sebastien Exp $
+// $Id: cms_rc_frontend.php,v 1.8 2010/01/18 15:06:46 sebastien Exp $
 
 /**
   * Frontend rc file.
@@ -30,28 +30,6 @@ if (!defined("APPLICATION_USER_TYPE")) {
 }
 //include general configuration file
 require_once(dirname(__FILE__)."/cms_rc.php");
-
-/**
-  * adding classes and constants for checking user access right for each pages of the website
-  */
-if (APPLICATION_ENFORCES_ACCESS_CONTROL) {
-	/**
-	  *	FrontEnd login page URL
-	  * Frontend login page
-	  *	Default : /403.php
-	  */
-	if (!defined("PATH_FRONTEND_SPECIAL_LOGIN_WR")) {
-		define("PATH_FRONTEND_SPECIAL_LOGIN_WR", '/403.php');
-	}
-	/**
-	  *	FrontEnd forbidden page URL (403)
-	  * wrong users privilège or session time out redirect to this page
-	  *	Default : /403.php
-	  */
-	if (!defined("PATH_FORBIDDEN_WR")) {
-		define("PATH_FORBIDDEN_WR", '/403.php');
-	}
-}
 
 /**
   * User session management :
@@ -82,46 +60,62 @@ if (!APPLICATION_ENFORCES_ACCESS_CONTROL) {
 		$cms_language = $cms_user->getLanguage();
 	}
 } else {
+	//CMS_grandFather::log('Frontend ok1');
 	//check if user session exists
 	if (isset($_SESSION["cms_context"])) {
 		//check session object
+		//CMS_grandFather::log('Frontend ok2');
 		if (is_a($_SESSION["cms_context"], "CMS_context")) {
+			//CMS_grandFather::log('Frontend ok3');
 			$_SESSION["cms_context"]->checkSession();
 			//then if session always exists, set some useful vars
 			if (is_object($_SESSION["cms_context"])) {
+				//CMS_grandFather::log('Frontend ok4 (user : '.$_SESSION["cms_context"]->getUserId().')');
 				$cms_context =& $_SESSION["cms_context"];
 				$cms_user = $_SESSION["cms_context"]->getUser();
 				$cms_language = $cms_user->getLanguage();
 			} else {
+				//CMS_grandFather::log('Frontend ok5');
 				//else initialize public user
 				$cms_context = new CMS_context(DEFAULT_USER_LOGIN, DEFAULT_USER_PASSWORD);
 				if (!$cms_context->hasError()) {
+					//CMS_grandFather::log('Frontend ok6');
 					$_SESSION["cms_context"] = $cms_context;
 					$cms_user = $_SESSION["cms_context"]->getUser();
 					$cms_language = $cms_user->getLanguage();
 				} else {
-					header("Location: ".PATH_FRONTEND_SPECIAL_LOGIN_WR);
-					exit;
+					//CMS_grandFather::log('Frontend ok7');
+					CMS_view::redirect(PATH_FRONTEND_SPECIAL_LOGIN_WR);
 				}
 			}
 		}
 	} else {
 		global $cms_user; //try to get user from global in case it has declared somewhere else
 		if (!is_object($cms_user)) {
+			//CMS_grandFather::log('Frontend ok8');
 			//initialize public user
 			$cms_context = new CMS_context(DEFAULT_USER_LOGIN, DEFAULT_USER_PASSWORD);
 			if (!$cms_context->hasError()) {
+				//CMS_grandFather::log('Frontend ok9');
 				$_SESSION["cms_context"] = $cms_context;
 				$cms_user = $_SESSION["cms_context"]->getUser();
 				$cms_language = $cms_user->getLanguage();
 			} else {
-				header("Location: ".PATH_FRONTEND_SPECIAL_LOGIN_WR);
-				exit;
+				//CMS_grandFather::log('Frontend ok10');
+				CMS_view::redirect(PATH_FRONTEND_SPECIAL_LOGIN_WR);
 			}
 		} elseif (is_a($cms_user, "CMS_profile_user")) {
 			//user already exists, only need to declare language
 			$cms_language = $cms_user->getLanguage();
 		}
+	}
+}
+//try autologin
+if (CMS_context::autoLoginSucceeded()) {
+	if (!$_SESSION["cms_context"]->hasError()) {
+		//CMS_grandFather::log('Frontend ok11');
+		$cms_user = $_SESSION["cms_context"]->getUser();
+		$language = $cms_user->getLanguage();
 	}
 }
 

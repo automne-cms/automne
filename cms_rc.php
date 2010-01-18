@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_rc.php,v 1.23 2009/12/03 10:50:14 sebastien Exp $
+// $Id: cms_rc.php,v 1.24 2010/01/18 15:06:46 sebastien Exp $
 
 /**
   * rc file, contains all default constants
@@ -130,7 +130,7 @@ if (!defined("APPLICATION_DB_PASSWORD")) {
   *	Default : empty string for standard MySQL port (3306)
   */
 if (!defined("APPLICATION_DB_PORT")) {
-	define("APPLICATION_DB_PORT", "");
+	define("APPLICATION_DB_PORT", '');
 }
 
 /**
@@ -184,11 +184,29 @@ if (!defined("PATH_SPECIAL_PAGE_NOT_FOUND_WR")) {
 }
 
 /**
+  *	FrontEnd forbidden page URL (403)
+  * wrong users privilège or session time out redirect to this page
+  *	Default : /403.php
+  */
+if (!defined("PATH_FORBIDDEN_WR")) {
+	define("PATH_FORBIDDEN_WR", '/403.php');
+}
+
+/**
+  *	FrontEnd login page URL
+  * Frontend login page
+  *	Default : /403.php
+  */
+if (!defined("PATH_FRONTEND_SPECIAL_LOGIN_WR")) {
+	define("PATH_FRONTEND_SPECIAL_LOGIN_WR", PATH_FORBIDDEN_WR);
+}
+
+/**
   *	Path to the PHP CLI executable under windows
   *	Default : "c:\php\php-win.exe"
   */
 if (!defined("PATH_PHP_CLI_WINDOWS")) {
-	define("PATH_PHP_CLI_WINDOWS", "c:\php\php-win.exe");
+	define("PATH_PHP_CLI_WINDOWS", 'c:\php\php-win.exe');
 }
 
 /**
@@ -198,7 +216,7 @@ if (!defined("PATH_PHP_CLI_WINDOWS")) {
   *	Default : ""
   */
 if (!defined("PATH_PHP_CLI_UNIX")) {
-	define("PATH_PHP_CLI_UNIX", "");
+	define("PATH_PHP_CLI_UNIX", '');
 }
 
 /**
@@ -329,6 +347,16 @@ if (!defined("MINIMUM_PASSWORD_LENGTH")) {
   */
 if (!defined("PATH_MAIN_WR")) {
 	define("PATH_MAIN_WR", "/automne");
+}
+
+/**
+  *	Application cookie path
+  * Used to share authentification cookie between multiple sub domains
+  * Use value like : ".domain.tld" (do not forget the trailing dot)
+  *	Default : "". 
+  */
+if (!defined("APPLICATION_COOKIE_DOMAIN")) {
+	define("APPLICATION_COOKIE_DOMAIN", '');
 }
 
 /**
@@ -500,6 +528,27 @@ if (!defined("PATH_PAGES_FS")) {
   */
 if (!defined("PATH_HTACCESS_FS")) {
 	define("PATH_HTACCESS_FS",  PATH_TEMPLATES_FS."/htaccess");
+}
+
+/**
+  *	SOAP file paths (where is soap definition files)
+  *	Default : DOCUMENT_ROOT."/soap"
+  */
+if (!defined("PATH_SOAP_WR")) {
+	define("PATH_SOAP_WR", "/soap");
+}
+if (!defined("PATH_SOAP_FS")) {
+	define("PATH_SOAP_FS", PATH_REALROOT_FS."/soap");
+}
+
+/**
+  * SOAP constants
+  */
+if (!defined("ATM_SOAP_VERSION")) {
+	define('ATM_SOAP_VERSION', SOAP_1_2);
+}
+if (!defined("ATM_SOAP_CLASS")) {
+	define('ATM_SOAP_CLASS', 'CMS_soap');
 }
 
 /*
@@ -822,298 +871,6 @@ if (!defined('SESSION_EXPIRED_TOKEN_MAXAGE')) {
 // ****************************************************************
 
 /**
-  * Define execution Type
-  */
-if (!defined("APPLICATION_EXEC_TYPE")) {
-	define("APPLICATION_EXEC_TYPE", "http");
-}
-
-//augment memory_limit
-if (ini_get('memory_limit') < (int) APPLICATION_MEMORY_LIMIT) {
-	@ini_set('memory_limit', APPLICATION_MEMORY_LIMIT);
-}
-//try to remove magic quotes
-@ini_set('magic_quotes_gpc', 0);
-@ini_set('magic_quotes_runtime', 0);
-@ini_set('magic_quotes_sybase', 0);
-//try to change some misconfigurations
-@ini_set('session.gc_probability', 1);
-@ini_set('session.gc_divisor', 100);
-@ini_set('session.gc_maxlifetime', APPLICATION_SESSION_TIMEOUT);
-@ini_set('allow_call_time_pass_reference', 0);
-
-//set PHP default encoding for utf-8
-if (strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8') {
-	@ini_set('mbstring.internal_encoding', 'UTF-8');
-}
-//remove NOTICE to avoid useless notice messages.
-error_reporting(APPLICATION_ERROR_REPORTING);
-
-//set default Apache Content-Type if header is not already sent
-if (!headers_sent()) {
-	header('Content-Type: text/html; charset='.APPLICATION_DEFAULT_ENCODING);
-}
-//load standard config file parameters (PATH_MODULES_FS.'/standard_rc.xml')
-require_once(PATH_PACKAGES_FS."/modules/readStandardParam.php");
-//set default level of output compression (if any)
-@ini_set('zlib.output_compression_level',6);
-
-/**
-  *	Automne version number
-  */
-if (!defined("AUTOMNE_VERSION") && file_exists(PATH_REALROOT_FS."/VERSION")) {
-	define("AUTOMNE_VERSION", file_get_contents(PATH_REALROOT_FS."/VERSION"));
-} else if(!defined("AUTOMNE_VERSION") && !file_exists(PATH_REALROOT_FS."/VERSION")) {
-	define("AUTOMNE_VERSION", 'Unknown');
-}
-/**
-  *	Automne subversion number. Used to avoid JS and CSS browser cache
-  */
-if (!defined("AUTOMNE_LASTUPDATE") && file_exists(PATH_MAIN_FS."/SUBVERSION")) {
-	define("AUTOMNE_LASTUPDATE", file_get_contents(PATH_MAIN_FS."/SUBVERSION"));
-} else if(!defined("AUTOMNE_LASTUPDATE") && !file_exists(PATH_MAIN_FS."/SUBVERSION")) {
-	define("AUTOMNE_LASTUPDATE", 0);
-}
-
-if (STATS_DEBUG) {
-	function view_stat($return = false){ 
-		$time_end = getmicrotime();
-		$time = sprintf('%.5f', $time_end - $GLOBALS["time_start"]);
-		$files = sprintf('%.5f', $GLOBALS["files_time"]);
-		$rapportSQL = sprintf('%.2f', ((100*$GLOBALS["total_time"])/$time));
-		$rapportPHP = 100-$rapportSQL;
-		$memoryPeak = round((memory_get_peak_usage()/1048576),3);
-		$content = 
-		'File ' .$_SERVER['SCRIPT_NAME'] ."\n".
-		'Loaded in ' . $time . ' seconds'."\n".
-		'Loaded PHP files : '. $GLOBALS["files_loaded"] ."\n".
-		'SQL requests : ' . sprintf('%.5f',$GLOBALS["total_time"]) . ' seconds ('. $GLOBALS["sql_nb_requests"] .' requests)'."\n".
-		'% SQL/PHP : '. $rapportSQL .' / '. $rapportPHP .' %'."\n".
-		'Memory Peak : '. $memoryPeak .'Mo'."\n";
-		if (function_exists('xdebug_get_profiler_filename') && xdebug_get_profiler_filename()) {
-			$content .= 'XDebug Profile : '. xdebug_get_profiler_filename()."\n";
-		}
-		if (function_exists('xdebug_get_profiler_filename') && xdebug_get_tracefile_name()) {
-			$content .= 'XDebug Trace : '. xdebug_get_tracefile_name()."\n";
-		}
-		if (VIEW_SQL && isset($_SESSION["cms_context"]) && is_object($_SESSION["cms_context"]) && $_SERVER["SCRIPT_NAME"] != PATH_ADMIN_WR.'/stat.php') {
-			$stats = $_SESSION["cms_context"]->getSessionVar('automneStats');
-			if (!$stats) {
-				$stats = array();
-			}
-			//limit to last 4 stats
-			if (sizeof($stats) >= 4) {
-				$stats = array_slice($stats, sizeof($stats) - 3);
-			}
-			$stat = array(
-				'stat_time_start'		=> $GLOBALS["time_start"],
-				'stat_time_end'			=> getmicrotime(),
-				'stat_total_time'		=> $GLOBALS["total_time"],
-				'stat_sql_nb_requests'	=> $GLOBALS["sql_nb_requests"],
-				'stat_sql_table'		=> $GLOBALS["sql_table"],
-				'stat_content_name'		=> basename($_SERVER["SCRIPT_NAME"]),
-				'stat_files_table'		=> $GLOBALS["files_table"],
-				'stat_memory_table'		=> $GLOBALS["memory_table"],
-				'stat_memory_peak'		=> $memoryPeak,
-				'stat_files_loaded'		=> $GLOBALS["files_loaded"],
-				
-			);
-			$statName = 'stat-'.md5(rand());
-			$stats[$statName] = $stat;
-			$_SESSION["cms_context"]->setSessionVar('automneStats', $stats);
-		}
-		if (!$return) {
-			$content = '<fieldset style="width:200px;" class="atm-debug"><legend>Debug Statistics</legend><pre>'.$content.'</pre>';
-			if (isset($statName)) {
-				$content .= '<a href="'.PATH_ADMIN_WR.'/stat.php?stat='.$statName.'" target="_blank">View statistics detail</a>';
-			}
-			$content .= '</fieldset>';
-			echo $content;
-		} else {
-			$content = 'Debug Statistics :'."\n".$content;
-			if (isset($statName)) {
-				$content .= '<a href="'.PATH_ADMIN_WR.'/stat.php?stat='.$statName.'" target="_blank">View statistics detail</a>';
-			}
-			return $content;
-		}
-	}
-	$GLOBALS["sql_nb_requests"] = $GLOBALS["total_time"] = $GLOBALS["files_time"] = 0;
-	$GLOBALS["files_loaded"] = 4; //Start at 4 : 3 config files and the require at the end of this file
-	$GLOBALS["time_start"] = getmicrotime();
-}
-//include base packages
-require_once(PATH_PACKAGES_FS."/common/grandfather.php");
-//log PHP Errors
-@ini_set('log_errors', 1);
-@ini_set('error_log', PATH_MAIN_FS.'/'.CMS_grandFather::ERROR_LOG);
-
-/**
-  * Set PHP error handler
-  */
-set_error_handler (array('CMS_grandFather','PHPErrorHandler'));
-
-/**
-  * Set Automne autoload handler
-  */
-spl_autoload_register (array('CMS_grandFather','autoload'));
-
-/**
-  * Set shutdown function
-  */
-register_shutdown_function(array('CMS_view','quit'));
-
-/**
-  * Debug mode configuration changes.
-  */
-if (SYSTEM_DEBUG) {
-	//Display errors in Debug Mode
-	if (function_exists("ini_set")) {
-		@ini_set("display_errors", "1");
-		@ini_set('output_buffering','Off');
-	}
-	//Usefull function to dump a var.
-	function pr($data,$useVarDump = false) {
-		$view = CMS_view::getInstance();
-		if (!$useVarDump) {
-			$view->addRawData(print_r($data,true));
-		} else {
-			ob_start();
-			var_dump($data);
-			$rawdata = ob_get_contents();
-			ob_end_clean();
-			$view->addRawData($rawdata);
-		}
-	}
-} else {
-	//Remove all errors in Production.
-	//Errors are logged in cms_error_log file
-	if (function_exists("ini_set")) {
-		@ini_set("display_errors", "0");
-		@ini_set('output_buffering','On');
-	} elseif(function_exists("error_reporting")) {
-		error_reporting(0);
-	}
-	//Usefull function to dump a var : Do nothing if debug is inactive
-	function pr($data,$useVarDump = false){}
-}
-
-/**
-  * Usefull time function for statistics and regenerator
-  */
-function getmicrotime(){ 
-	list($usec, $sec) = explode(" ",microtime()); 
-	return ((float)$usec + (float)$sec); 
-}
-
-/**
-  * If magic quotes is active, rewrite all super globals
-  */
-if (get_magic_quotes_gpc()) {
-	// Strip slashes in content 
-	function CMS_stripslashes($value) {
-		$value = is_array($value) ? array_map('CMS_stripslashes', $value) : stripslashes($value) ;
-		return $value;
-	}
-	$_POST = array_map('CMS_stripslashes', $_POST);
-	$_GET = array_map('CMS_stripslashes', $_GET);
-	$_COOKIE = array_map('CMS_stripslashes', $_COOKIE);
-	$_REQUEST = array_map('CMS_stripslashes', $_REQUEST);
-}
-
-/**
-  * If application APPLICATION_DEFAULT_ENCODING is not UTF-8, we need to decode all ajax requests
-  */
-if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])
-	&& strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8' 
-	&& $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
-	function utf8_decode_callback (&$input, $index = '') {
-		if (is_string($input)) {
-			//decode UTF8 with support of CP1252
-			$input = sensitiveIO::utf8Decode($input);
-			return $input;
-		} elseif (is_array($input)) {
-			array_walk_recursive($input, 'utf8_decode_callback');
-			return $input;
-		}
-		return $input;
-	}
-	$_POST = array_map('utf8_decode_callback', $_POST);
-	$_GET = array_map('utf8_decode_callback', $_GET);
-	$_COOKIE = array_map('utf8_decode_callback', $_COOKIE);
-	$_REQUEST = array_map('utf8_decode_callback', $_REQUEST);
-}
-
-/**
-  * Launch output compression if enabled
-  */
-function compress_handler( $p_buffer, $p_mode ) {
-	if (ENABLE_HTML_COMPRESSION
-			 && !headers_sent()
-			 && 'ob_gzhandler' != ini_get('output_handler')
-			 && extension_loaded( 'zlib' )
-			 && !ini_get('zlib.output_compression')) {
-		if (!defined('HTML_COMPRESSION_STARTED')) {
-			define('HTML_COMPRESSION_STARTED', true);
-		}
-		return ob_gzhandler( $p_buffer, $p_mode );
-	} else {
-		return $p_buffer;
-	}
-}
-
-/**
-  * Start Automne session
-  */
-function start_atm_session() {
-	// verify if PHP supports session, die if it does not
-	if (!@function_exists('session_name')) {
-	    die('Session is not available');
-	} elseif (ini_get('session.auto_start') == true && session_name() != 'AutomneSession') {
-	    // Do not delete the existing session, it might be used by other 
-	    // applications; instead just close it.
-	    session_write_close();
-	}
-	//if session already exists, return
-	if (session_name() == 'AutomneSession') {
-		return;
-	}
-	// session cookie settings
-	session_set_cookie_params(0, '/', '', false, true);
-	
-	// cookies are safer (use @ini_set() in case this function is disabled)
-	@ini_set('session.use_cookies', true);
-	
-	// but not all user allow cookies
-	@ini_set('session.use_only_cookies', false);
-	@ini_set('session.use_trans_sid', true);
-	// delete session/cookies when browser is closed
-	@ini_set('session.cookie_lifetime', 0);
-	
-	// warn but dont work with bug
-	@ini_set('session.bug_compat_42', false);
-	@ini_set('session.bug_compat_warn', true);
-	
-	// use more secure session ids
-	@ini_set('session.hash_function', 1);
-	
-	// some pages (e.g. stylesheet) may be cached on clients, but not in shared
-	// proxy servers
-	//session_cache_limiter('private'); //removed because this option allow cache of session pages which is not what we want.
-	
-	@session_name('AutomneSession');
-	@session_start();
-}
-
-//Start session
-start_atm_session();
-
-// Start output buffering for compression so we don't prevent
-// headers from being sent if there's a blank line in an included file
-if (!defined('HTML_COMPRESSION_STARTED')) {
-	ob_start( 'compress_handler' );
-}
-
-/**
   *	Modules treatment hooks (code)
   */
 define("MODULE_TREATMENT_PAGECONTENT_HEADER_CODE", 1);
@@ -1239,4 +996,310 @@ define("PAGE_VISUALMODE_HTML_EDITION", 4);
 define("PAGE_VISUALMODE_CLIENTSPACES_FORM", 5);
 define("PAGE_VISUALMODE_PRINT", 6);
 define("PAGE_VISUALMODE_HTML_PUBLIC_INDEXABLE", 7);
+
+/**
+  * Define execution Type
+  */
+if (!defined("APPLICATION_EXEC_TYPE")) {
+	define("APPLICATION_EXEC_TYPE", "http");
+}
+
+//augment memory_limit
+if (ini_get('memory_limit') < (int) APPLICATION_MEMORY_LIMIT) {
+	@ini_set('memory_limit', APPLICATION_MEMORY_LIMIT);
+}
+//try to remove magic quotes
+@ini_set('magic_quotes_gpc', 0);
+@ini_set('magic_quotes_runtime', 0);
+@ini_set('magic_quotes_sybase', 0);
+//try to change some misconfigurations
+@ini_set('session.gc_probability', 1);
+@ini_set('session.gc_divisor', 100);
+@ini_set('session.gc_maxlifetime', APPLICATION_SESSION_TIMEOUT);
+@ini_set('allow_call_time_pass_reference', 0);
+
+//set PHP default encoding for utf-8
+if (strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8') {
+	@ini_set('mbstring.internal_encoding', 'UTF-8');
+}
+//set error reporting level
+error_reporting(APPLICATION_ERROR_REPORTING);
+
+//set default Apache Content-Type if header is not already sent
+if (!headers_sent()) {
+	header('Content-Type: text/html; charset='.APPLICATION_DEFAULT_ENCODING);
+}
+//load standard config file parameters (PATH_MODULES_FS.'/standard_rc.xml')
+require_once(PATH_PACKAGES_FS."/modules/readStandardParam.php");
+//set default level of output compression (if any)
+@ini_set('zlib.output_compression_level',6);
+
+/**
+  *	Automne version number
+  */
+if (!defined("AUTOMNE_VERSION") && file_exists(PATH_REALROOT_FS."/VERSION")) {
+	define("AUTOMNE_VERSION", file_get_contents(PATH_REALROOT_FS."/VERSION"));
+} else if(!defined("AUTOMNE_VERSION") && !file_exists(PATH_REALROOT_FS."/VERSION")) {
+	define("AUTOMNE_VERSION", 'Unknown');
+}
+/**
+  *	Automne subversion number. Used to avoid JS and CSS browser cache
+  */
+if (!defined("AUTOMNE_LASTUPDATE") && file_exists(PATH_MAIN_FS."/SUBVERSION")) {
+	define("AUTOMNE_LASTUPDATE", file_get_contents(PATH_MAIN_FS."/SUBVERSION"));
+} else if(!defined("AUTOMNE_LASTUPDATE") && !file_exists(PATH_MAIN_FS."/SUBVERSION")) {
+	define("AUTOMNE_LASTUPDATE", 0);
+}
+
+if (STATS_DEBUG) {
+	function view_stat($return = false){ 
+		$time_end = getmicrotime();
+		$time = sprintf('%.5f', $time_end - $GLOBALS["time_start"]);
+		$files = sprintf('%.5f', $GLOBALS["files_time"]);
+		$rapportSQL = sprintf('%.2f', ((100*$GLOBALS["total_time"])/$time));
+		$rapportPHP = 100-$rapportSQL;
+		$memoryPeak = round((memory_get_peak_usage()/1048576),3);
+		$content = 
+		'File ' .$_SERVER['SCRIPT_NAME'] ."\n".
+		'Loaded in ' . $time . ' seconds'."\n".
+		'Loaded PHP files : '. $GLOBALS["files_loaded"] ."\n".
+		'SQL requests : ' . sprintf('%.5f',$GLOBALS["total_time"]) . ' seconds ('. $GLOBALS["sql_nb_requests"] .' requests)'."\n".
+		'% SQL/PHP : '. $rapportSQL .' / '. $rapportPHP .' %'."\n".
+		'Memory Peak : '. $memoryPeak .'Mo'."\n";
+		if (function_exists('xdebug_get_profiler_filename') && xdebug_get_profiler_filename()) {
+			$content .= 'XDebug Profile : '. xdebug_get_profiler_filename()."\n";
+		}
+		if (function_exists('xdebug_get_profiler_filename') && xdebug_get_tracefile_name()) {
+			$content .= 'XDebug Trace : '. xdebug_get_tracefile_name()."\n";
+		}
+		if (VIEW_SQL && isset($_SESSION["cms_context"]) && is_object($_SESSION["cms_context"]) && $_SERVER["SCRIPT_NAME"] != PATH_ADMIN_WR.'/stat.php') {
+			$stats = $_SESSION["cms_context"]->getSessionVar('automneStats');
+			if (!$stats) {
+				$stats = array();
+			}
+			//limit to last 4 stats
+			if (sizeof($stats) >= 4) {
+				$stats = array_slice($stats, sizeof($stats) - 3);
+			}
+			$stat = array(
+				'stat_time_start'		=> $GLOBALS["time_start"],
+				'stat_time_end'			=> getmicrotime(),
+				'stat_total_time'		=> $GLOBALS["total_time"],
+				'stat_sql_nb_requests'	=> $GLOBALS["sql_nb_requests"],
+				'stat_sql_table'		=> $GLOBALS["sql_table"],
+				'stat_content_name'		=> basename($_SERVER["SCRIPT_NAME"]),
+				'stat_files_table'		=> $GLOBALS["files_table"],
+				'stat_memory_table'		=> $GLOBALS["memory_table"],
+				'stat_memory_peak'		=> $memoryPeak,
+				'stat_files_loaded'		=> $GLOBALS["files_loaded"],
+				
+			);
+			$statName = 'stat-'.md5(rand());
+			$stats[$statName] = $stat;
+			$_SESSION["cms_context"]->setSessionVar('automneStats', $stats);
+		}
+		if (!$return) {
+			$content = '<fieldset style="width:200px;" class="atm-debug"><legend>Debug Statistics</legend><pre>'.$content.'</pre>';
+			if (isset($statName)) {
+				$content .= '<a href="'.PATH_ADMIN_WR.'/stat.php?stat='.$statName.'" target="_blank">View statistics detail</a>';
+			}
+			$content .= '</fieldset>';
+			echo $content;
+		} else {
+			$content = 'Debug Statistics :'."\n".$content;
+			if (isset($statName)) {
+				$content .= '<a href="'.PATH_ADMIN_WR.'/stat.php?stat='.$statName.'" target="_blank">View statistics detail</a>';
+			}
+			return $content;
+		}
+	}
+	$GLOBALS["sql_nb_requests"] = $GLOBALS["total_time"] = $GLOBALS["files_time"] = 0;
+	$GLOBALS["files_loaded"] = 4; //Start at 4 : 3 config files and the require at the end of this file
+	$GLOBALS["time_start"] = getmicrotime();
+}
+//include base packages
+require_once(PATH_PACKAGES_FS."/common/grandfather.php");
+//log PHP Errors
+@ini_set('log_errors', 1);
+@ini_set('error_log', PATH_MAIN_FS.'/'.CMS_grandFather::ERROR_LOG);
+
+/**
+  * Set PHP error handler
+  */
+set_error_handler (array('CMS_grandFather','PHPErrorHandler'));
+
+/**
+  * Set Automne autoload handler
+  */
+spl_autoload_register (array('CMS_grandFather','autoload'));
+
+/**
+  * Set shutdown function
+  */
+register_shutdown_function(array('CMS_view','quit'));
+
+/**
+  * Debug mode configuration changes.
+  */
+if (SYSTEM_DEBUG) {
+	//Display errors in Debug Mode
+	if (function_exists("ini_set")) {
+		@ini_set("display_errors", "1");
+		@ini_set('output_buffering','Off');
+		/**
+		  * SOAP cache
+		  * Disabled if SYSTEM_DEBUG is true
+		  */
+		@ini_set('soap.wsdl_cache_enabled', '0');
+		@ini_set('soap.wsdl_cache_ttl', '1');
+	}
+	//Usefull function to dump a var.
+	function pr($data,$useVarDump = false) {
+		$view = CMS_view::getInstance();
+		if (!$useVarDump) {
+			$view->addRawData(print_r($data,true));
+		} else {
+			ob_start();
+			var_dump($data);
+			$rawdata = ob_get_contents();
+			ob_end_clean();
+			$view->addRawData($rawdata);
+		}
+	}
+} else {
+	//Remove all errors in Production.
+	//Errors are logged in cms_error_log file
+	if (function_exists("ini_set")) {
+		@ini_set("display_errors", "0");
+		@ini_set('output_buffering','On');
+		/**
+		  * SOAP cache
+		  * Enabled if SYSTEM_DEBUG is false
+		  */
+		@ini_set('soap.wsdl_cache_enabled', '1');
+		@ini_set('soap.wsdl_cache_ttl', '86400'); // 1 day
+	} elseif(function_exists("error_reporting")) {
+		error_reporting(0);
+	}
+	//Usefull function to dump a var : Do nothing if debug is inactive
+	function pr($data,$useVarDump = false){}
+}
+
+/**
+  * Usefull time function for statistics and regenerator
+  */
+function getmicrotime(){ 
+	list($usec, $sec) = explode(" ",microtime()); 
+	return ((float)$usec + (float)$sec); 
+}
+
+/**
+  * If magic quotes is active, rewrite all super globals
+  */
+if (get_magic_quotes_gpc()) {
+	// Strip slashes in content 
+	function CMS_stripslashes($value) {
+		$value = is_array($value) ? array_map('CMS_stripslashes', $value) : stripslashes($value) ;
+		return $value;
+	}
+	$_POST = array_map('CMS_stripslashes', $_POST);
+	$_GET = array_map('CMS_stripslashes', $_GET);
+	$_COOKIE = array_map('CMS_stripslashes', $_COOKIE);
+	$_REQUEST = array_map('CMS_stripslashes', $_REQUEST);
+}
+
+/**
+  * If application APPLICATION_DEFAULT_ENCODING is not UTF-8, we need to decode all ajax requests
+  */
+if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])
+	&& strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8' 
+	&& $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
+	function utf8_decode_callback (&$input, $index = '') {
+		if (is_string($input)) {
+			//decode UTF8 with support of CP1252
+			$input = sensitiveIO::utf8Decode($input);
+			return $input;
+		} elseif (is_array($input)) {
+			array_walk_recursive($input, 'utf8_decode_callback');
+			return $input;
+		}
+		return $input;
+	}
+	$_POST = array_map('utf8_decode_callback', $_POST);
+	$_GET = array_map('utf8_decode_callback', $_GET);
+	$_COOKIE = array_map('utf8_decode_callback', $_COOKIE);
+	$_REQUEST = array_map('utf8_decode_callback', $_REQUEST);
+}
+
+/**
+  * Launch output compression if enabled
+  */
+function compress_handler( $p_buffer, $p_mode ) {
+	if (ENABLE_HTML_COMPRESSION
+			 && APPLICATION_EXEC_TYPE == 'http'
+			 && !headers_sent()
+			 && 'ob_gzhandler' != ini_get('output_handler')
+			 && extension_loaded( 'zlib' )
+			 && !ini_get('zlib.output_compression')) {
+		if (!defined('HTML_COMPRESSION_STARTED')) {
+			define('HTML_COMPRESSION_STARTED', true);
+		}
+		return ob_gzhandler( $p_buffer, $p_mode );
+	} else {
+		return $p_buffer;
+	}
+}
+
+/**
+  * Start Automne session
+  */
+function start_atm_session() {
+	// verify if PHP supports session, die if it does not
+	if (!@function_exists('session_name')) {
+	    die('Session is not available');
+	} elseif (ini_get('session.auto_start') == true && session_name() != 'AutomneSession') {
+	    // Do not delete the existing session, it might be used by other 
+	    // applications; instead just close it.
+	    session_write_close();
+	}
+	//if session already exists, return
+	if (session_name() == 'AutomneSession') {
+		return;
+	}
+	// session cookie settings
+	session_set_cookie_params(0, '/', APPLICATION_COOKIE_DOMAIN, false, true);
+	
+	// cookies are safer (use @ini_set() in case this function is disabled)
+	@ini_set('session.use_cookies', true);
+	
+	// but not all user allow cookies
+	@ini_set('session.use_only_cookies', false);
+	//remove session trans sid to prevent session fixation
+	@ini_set('session.use_trans_sid', false);
+	// delete session/cookies when browser is closed
+	@ini_set('session.cookie_lifetime', 0);
+	
+	// warn but dont work with bug
+	@ini_set('session.bug_compat_42', false);
+	@ini_set('session.bug_compat_warn', true);
+	
+	// use more secure session ids
+	@ini_set('session.hash_function', 1);
+	
+	// some pages (e.g. stylesheet) may be cached on clients, but not in shared
+	// proxy servers
+	//session_cache_limiter('private'); //removed because this option allow cache of session pages which is not what we want.
+	
+	@session_name('AutomneSession');
+	@session_start();
+}
+
+//Start session
+start_atm_session();
+
+// Start output buffering for compression so we don't prevent
+// headers from being sent if there's a blank line in an included file
+if (!defined('HTML_COMPRESSION_STARTED')) {
+	ob_start( 'compress_handler' );
+}
 ?>
