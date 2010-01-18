@@ -1,10 +1,7 @@
-<?php //Generated on Mon, 18 Jan 2010 16:11:19 +0100 by Automne (TM) 4.0.0
+<?php //Generated on Mon, 18 Jan 2010 17:55:47 +0100 by Automne (TM) 4.0.0
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	CMS_view::redirect('http://127.0.0.1/web/demo/28-administration.php', true, 301);
-}
- ?><?php if (!is_object($cms_user) || !$cms_user->hasPageClearance(28, CLEARANCE_PAGE_VIEW)) {
-	CMS_view::redirect(PATH_FRONTEND_SPECIAL_LOGIN_WR.'?referer='.base64_encode($_SERVER['REQUEST_URI']));
 }
  ?>
 <?php require_once($_SERVER["DOCUMENT_ROOT"].'/automne/classes/polymodFrontEnd.php');  ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";   ?>
@@ -31,62 +28,17 @@ if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	<div id="main">
 		<div id="container">
 			<div id="header">
-				<?php if ($cms_user->hasPageClearance(2, CLEARANCE_PAGE_VIEW)) {
-echo '
-							<a id="lienAccueil" href="http://127.0.0.1/web/demo/2-accueil.php" title="Retour &agrave; l\'accueil">Retour &agrave; l\'accueil</a>
-						';
-}
-?>
+				
+							<a id="lienAccueil" href="http://127.0.0.1/web/demo/2-accueil.php" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
+						
 			</div>
 			<div id="backgroundBottomContainer">
 				<div id="menuLeft">
-					<?php if ($cms_user->hasPageClearance(2, CLEARANCE_PAGE_VIEW)) {
-echo '<ul class="CMS_lvl2">';  if ($cms_user->hasPageClearance(3, CLEARANCE_PAGE_VIEW)) {
-echo '<li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/3-presentation.php">Présentation</a></li>';
-}
- echo '';  if ($cms_user->hasPageClearance(24, CLEARANCE_PAGE_VIEW)) {
-echo '<li class="CMS_lvl2 CMS_open "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités</a><ul class="CMS_lvl3">';  if ($cms_user->hasPageClearance(25, CLEARANCE_PAGE_VIEW)) {
-echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/25-modeles.php">Modèles</a></li>';
-}
- echo '';  if ($cms_user->hasPageClearance(26, CLEARANCE_PAGE_VIEW)) {
-echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/26-rangees.php">Rangées</a></li>';
-}
- echo '';  if ($cms_user->hasPageClearance(27, CLEARANCE_PAGE_VIEW)) {
-echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/27-modules.php">Modules</a></li>';
-}
- echo '';  if ($cms_user->hasPageClearance(28, CLEARANCE_PAGE_VIEW)) {
-echo '<li class="CMS_lvl3 CMS_nosub CMS_current"><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/28-administration.php">Gestion des utilisateurs</a></li>';
-}
- echo '';  if ($cms_user->hasPageClearance(35, CLEARANCE_PAGE_VIEW)) {
-echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/35-gestion-des-droits.php">Gestion des droits</a></li>';
-}
- echo '';  if ($cms_user->hasPageClearance(37, CLEARANCE_PAGE_VIEW)) {
-echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/37-droit-de-validation.php">Workflow de publication</a></li>';
-}
- echo '';  if ($cms_user->hasPageClearance(38, CLEARANCE_PAGE_VIEW)) {
-echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/38-aide-aux-utilisateurs.php">Aide utilisateurs</a></li>';
-}
- echo '';  if ($cms_user->hasPageClearance(34, CLEARANCE_PAGE_VIEW)) {
-echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/34-fonctions-avancees.php">Fonctions avancées</a></li>';
-}
- echo '</ul></li>';
-}
- echo '';  if ($cms_user->hasPageClearance(31, CLEARANCE_PAGE_VIEW)) {
-echo '<li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/31-exemples-de-modules.php">Exemples de modules</a></li>';
-}
- echo '</ul>';
-}
-?>
+					<ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_open "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/25-modeles.php">Modèles</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/26-rangees.php">Rangées</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/27-modules.php">Modules</a></li><li class="CMS_lvl3 CMS_nosub CMS_current"><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/28-administration.php">Gestion des utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/35-gestion-des-droits.php">Gestion des droits</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/37-droit-de-validation.php">Workflow de publication</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/38-aide-aux-utilisateurs.php">Aide utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/34-fonctions-avancees.php">Fonctions avancées</a></li></ul></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/31-exemples-de-modules.php">Exemples de modules</a></li></ul>
 				</div>
 				<div id="content" class="page28">
 					<div id="breadcrumbs">
-						<?php if ($cms_user->hasPageClearance(2, CLEARANCE_PAGE_VIEW)) {
-echo '<a href="http://127.0.0.1/web/demo/2-accueil.php">Accueil</a> &gt; ';
-}
-?><?php if ($cms_user->hasPageClearance(24, CLEARANCE_PAGE_VIEW)) {
-echo '<a href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités</a> &gt; ';
-}
-?>
+						<a href="http://127.0.0.1/web/demo/2-accueil.php">Accueil</a> &gt; <a href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités</a> &gt; 
 					</div>
 					<div id="title">
 						<h1>Gestion des utilisateurs</h1>
@@ -95,17 +47,11 @@ echo '<a href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités<
 					
 	
 	
-		<h2>Principe de gestion d'utilisateur</h2><p>Lors de la cr&eacute;ation d&rsquo;un site avec Automne 4, un utilisateur privil&eacute;gi&eacute; dit <?php if ($cms_user->hasPageClearance(35, CLEARANCE_PAGE_VIEW)) {
-echo '<a href="http://127.0.0.1/web/demo/35-gestion-des-droits.php">&laquo; Super Administrateur &raquo;</a>';
-}
-?> poss&egrave;de <strong>tous les droits sur l&rsquo;application.</strong></p> <p>Ce super administrateur a alors la possibilit&eacute; de cr&eacute;er des utilisateurs ainsi que des groupes d&rsquo;utilisateurs. Chacun dispose de droits sur certaines fonctionnalit&eacute;s de l&rsquo;application. Les groupes par d&eacute;faut sont : administrateur, validateur et r&eacute;dacteur.&nbsp;</p><p>Les r&eacute;dacteurs n'auront alors &agrave; leurs disposition que les outils qui leurs sont n&eacute;cessaires. Leurs interventions seront ainsi limit&eacute;s &agrave; leurs besoins.</p><p>Il est aussi possible, gr&acirc;ce au <?php if ($cms_user->hasPageClearance(37, CLEARANCE_PAGE_VIEW)) {
-echo '<a href="http://127.0.0.1/web/demo/37-droit-de-validation.php">processus de workflow</a>';
-}
-?> de soumettre les donn&eacute;es saisies &agrave; la validation d'une autorit&eacute; sup&eacute;rieure. Ainsi le contenu pourra &ecirc;tre v&eacute;rifi&eacute; avant sa mise en ligne.</p>
+		<div class="text"><h2>Principe de gestion d'utilisateur</h2><p>Lors de la cr&eacute;ation d&rsquo;un site avec Automne 4, un utilisateur privil&eacute;gi&eacute; dit <a href="http://127.0.0.1/web/demo/35-gestion-des-droits.php">&laquo; Super Administrateur &raquo;</a> poss&egrave;de <strong>tous les droits sur l&rsquo;application.</strong></p> <p>Ce super administrateur a alors la possibilit&eacute; de cr&eacute;er des utilisateurs ainsi que des groupes d&rsquo;utilisateurs. Chacun dispose de droits sur certaines fonctionnalit&eacute;s de l&rsquo;application. Les groupes par d&eacute;faut sont : administrateur, validateur et r&eacute;dacteur.&nbsp;</p><p>Les r&eacute;dacteurs n'auront alors &agrave; leurs disposition que les outils qui leurs sont n&eacute;cessaires. Leurs interventions seront ainsi limit&eacute;s &agrave; leurs besoins.</p><p>Il est aussi possible, gr&acirc;ce au <a href="http://127.0.0.1/web/demo/37-droit-de-validation.php">processus de workflow</a> de soumettre les donn&eacute;es saisies &agrave; la validation d'une autorit&eacute; sup&eacute;rieure. Ainsi le contenu pourra &ecirc;tre v&eacute;rifi&eacute; avant sa mise en ligne.</p></div>
 	
 
 	<div class="imgRight">
-		<?php //Generated by : $Id: 28.php,v 1.6 2010/01/18 15:20:08 sebastien Exp $
+		<?php //Generated by : $Id: 28.php,v 1.7 2010/01/18 16:49:32 sebastien Exp $
 if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 'CMS_profile_user') && $cms_user->hasModuleClearance('pmedia', CLEARANCE_MODULE_VIEW))){
 	$content = "";
 	$replace = "";
@@ -128,37 +74,37 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 	if (!isset($object) || !is_array($object)) $object = array();
 	if (!isset($object[2])) $object[2] = new CMS_poly_object(2, 0, array(), $parameters['public']);
 	$parameters['module'] = 'pmedia';
-	//SEARCH mediaresult TAG START 2_c54460
+	//SEARCH mediaresult TAG START 2_ee2ca1
 	$objectDefinition_mediaresult = '2';
 	if (!isset($objectDefinitions[$objectDefinition_mediaresult])) {
 		$objectDefinitions[$objectDefinition_mediaresult] = new CMS_poly_object_definition($objectDefinition_mediaresult);
 	}
 	//public search ?
-	$public_2_c54460 = isset($public_search) ? $public_search : false;
+	$public_2_ee2ca1 = isset($public_search) ? $public_search : false;
 	//get search params
-	$search_mediaresult = new CMS_object_search($objectDefinitions[$objectDefinition_mediaresult], $public_2_c54460);
+	$search_mediaresult = new CMS_object_search($objectDefinitions[$objectDefinition_mediaresult], $public_2_ee2ca1);
 	$launchSearch_mediaresult = true;
 	//add search conditions if any
 	if (isset($blockAttributes['search']['mediaresult']['item'])) {
-		$values_3_73ca1a = array (
+		$values_3_9075e5 = array (
 			'search' => 'mediaresult',
 			'type' => 'item',
 			'value' => 'block',
 			'mandatory' => 'true',
 		);
-		$values_3_73ca1a['value'] = $blockAttributes['search']['mediaresult']['item'];
-		if ($values_3_73ca1a['type'] == 'publication date after' || $values_3_73ca1a['type'] == 'publication date before') {
+		$values_3_9075e5['value'] = $blockAttributes['search']['mediaresult']['item'];
+		if ($values_3_9075e5['type'] == 'publication date after' || $values_3_9075e5['type'] == 'publication date before') {
 			//convert DB format to current language format
 			$dt = new CMS_date();
-			$dt->setFromDBValue($values_3_73ca1a['value']);
-			$values_3_73ca1a['value'] = $dt->getLocalizedDate($cms_language->getDateFormat());
+			$dt->setFromDBValue($values_3_9075e5['value']);
+			$values_3_9075e5['value'] = $dt->getLocalizedDate($cms_language->getDateFormat());
 		}
-		$launchSearch_mediaresult = (CMS_polymod_definition_parsing::addSearchCondition($search_mediaresult, $values_3_73ca1a)) ? $launchSearch_mediaresult : false;
+		$launchSearch_mediaresult = (CMS_polymod_definition_parsing::addSearchCondition($search_mediaresult, $values_3_9075e5)) ? $launchSearch_mediaresult : false;
 	} elseif (true == true) {
 		//search parameter is mandatory and no value found
 		$launchSearch_mediaresult = false;
 	}
-	//RESULT mediaresult TAG START 4_662c6b
+	//RESULT mediaresult TAG START 4_3c604d
 	//launch search mediaresult if not already done
 	if($launchSearch_mediaresult && !isset($results_mediaresult)) {
 		if (isset($search_mediaresult)) {
@@ -171,41 +117,41 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 		$results_mediaresult = array();
 	}
 	if ($results_mediaresult) {
-		$object_4_662c6b = (isset($object[$objectDefinition_mediaresult])) ? $object[$objectDefinition_mediaresult] : ""; //save previous object search if any
-		$replace_4_662c6b = $replace; //save previous replace vars if any
-		$count_4_662c6b = 0;
-		$content_4_662c6b = $content; //save previous content var if any
-		$maxPages_4_662c6b = $search_mediaresult->getMaxPages();
-		$maxResults_4_662c6b = $search_mediaresult->getNumRows();
+		$object_4_3c604d = (isset($object[$objectDefinition_mediaresult])) ? $object[$objectDefinition_mediaresult] : ""; //save previous object search if any
+		$replace_4_3c604d = $replace; //save previous replace vars if any
+		$count_4_3c604d = 0;
+		$content_4_3c604d = $content; //save previous content var if any
+		$maxPages_4_3c604d = $search_mediaresult->getMaxPages();
+		$maxResults_4_3c604d = $search_mediaresult->getNumRows();
 		foreach ($results_mediaresult as $object[$objectDefinition_mediaresult]) {
 			$content = "";
 			$replace["atm-search"] = array (
 				"{resultid}" 	=> (isset($resultID_mediaresult)) ? $resultID_mediaresult : $object[$objectDefinition_mediaresult]->getID(),
-				"{firstresult}" => (!$count_4_662c6b) ? 1 : 0,
-				"{lastresult}" 	=> ($count_4_662c6b == sizeof($results_mediaresult)-1) ? 1 : 0,
-				"{resultcount}" => ($count_4_662c6b+1),
-				"{maxpages}"    => $maxPages_4_662c6b,
+				"{firstresult}" => (!$count_4_3c604d) ? 1 : 0,
+				"{lastresult}" 	=> ($count_4_3c604d == sizeof($results_mediaresult)-1) ? 1 : 0,
+				"{resultcount}" => ($count_4_3c604d+1),
+				"{maxpages}"    => $maxPages_4_3c604d,
 				"{currentpage}" => ($search_mediaresult->getAttribute('page')+1),
-				"{maxresults}"  => $maxResults_4_662c6b,
+				"{maxresults}"  => $maxResults_4_3c604d,
 			);
-			//IF TAG START 5_d9cc02
+			//IF TAG START 5_03db8b
 			$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'flv' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'mp3' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'jpg' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'gif' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'png'", $replace);
 			if ($ifcondition) {
 				$func = create_function("","return (".$ifcondition.");");
 				if ($func()) {
 					$content .="
 					<a href=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" target=\"_blank\" title=\"T&eacute;l&eacute;charger le document '".$object[2]->objectValues(9)->getValue('fileLabel','')."' (".$object[2]->objectValues(9)->getValue('fileExtension','')." - ".$object[2]->objectValues(9)->getValue('fileSize','')."Mo)\">";
-					//IF TAG START 6_3f091e
+					//IF TAG START 6_3ee920
 					$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileIcon','')), $replace);
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
 						if ($func()) {
 							$content .="<img src=\"".$object[2]->objectValues(9)->getValue('fileIcon','')."\" alt=\"Fichier ".$object[2]->objectValues(9)->getValue('fileExtension','')."\" title=\"Fichier ".$object[2]->objectValues(9)->getValue('fileExtension','')."\" />";
 						}
-					}//IF TAG END 6_3f091e
+					}//IF TAG END 6_3ee920
 					$content .=" ".$object[2]->getValue('label','')."</a>
 					";
-					//IF TAG START 7_dd084f
+					//IF TAG START 7_1beacd
 					$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
@@ -216,15 +162,15 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 							</div>
 							";
 						}
-					}//IF TAG END 7_dd084f
+					}//IF TAG END 7_1beacd
 				}
-			}//IF TAG END 5_d9cc02
-			//IF TAG START 8_840642
+			}//IF TAG END 5_03db8b
+			//IF TAG START 8_e8e043
 			$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'flv'", $replace);
 			if ($ifcondition) {
 				$func = create_function("","return (".$ifcondition.");");
 				if ($func()) {
-					//IF TAG START 9_ec2032
+					//IF TAG START 9_3114a1
 					$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
@@ -235,8 +181,8 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 							</script>
 							";
 						}
-					}//IF TAG END 9_ec2032
-					//IF TAG START 10_68142f
+					}//IF TAG END 9_3114a1
+					//IF TAG START 10_98a6ca
 					$ifcondition = CMS_polymod_definition_parsing::replaceVars("!".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
@@ -247,15 +193,15 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 							</script>
 							";
 						}
-					}//IF TAG END 10_68142f
+					}//IF TAG END 10_98a6ca
 					$content .="
 					<div id=\"media-".$object[2]->getValue('id','')."\" class=\"pmedias-video\" style=\"width:320px;height:200px;\">
 					<p><a href=\"http://www.adobe.com/go/getflashplayer\"><img src=\"http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif\" alt=\"Get Adobe Flash player\" /></a></p>
 					</div>
 					";
 				}
-			}//IF TAG END 8_840642
-			//IF TAG START 11_996958
+			}//IF TAG END 8_e8e043
+			//IF TAG START 11_7c2e7b
 			$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'mp3'", $replace);
 			if ($ifcondition) {
 				$func = create_function("","return (".$ifcondition.");");
@@ -268,7 +214,7 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					<p><a href=\"http://www.adobe.com/go/getflashplayer\"><img src=\"http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif\" alt=\"Get Adobe Flash player\" /></a></p>
 					</div>
 					";
-					//IF TAG START 12_420368
+					//IF TAG START 12_1d1705
 					$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
@@ -279,10 +225,10 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 							</div>
 							";
 						}
-					}//IF TAG END 12_420368
+					}//IF TAG END 12_1d1705
 				}
-			}//IF TAG END 11_996958
-			//IF TAG START 13_a001a0
+			}//IF TAG END 11_7c2e7b
+			//IF TAG START 13_d4747a
 			$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'jpg' || ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'gif' || ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'png'", $replace);
 			if ($ifcondition) {
 				$func = create_function("","return (".$ifcondition.");");
@@ -290,7 +236,7 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					$content .="
 					<div class=\"shadow\">
 					";
-					//IF TAG START 14_60c6a2
+					//IF TAG START 14_64b767
 					$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
@@ -299,8 +245,8 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 							<a href=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" onclick=\"javascript:CMS_openPopUpImage('/imagezoom.php?location=public&amp;module=pmedia&amp;file=".$object[2]->objectValues(9)->getValue('filename','')."&amp;label=".$object[2]->getValue('label','js')."');return false;\" target=\"_blank\" title=\"Voir l'image '".$object[2]->getValue('label','')."' (".$object[2]->objectValues(9)->getValue('fileExtension','')." - ".$object[2]->objectValues(9)->getValue('fileSize','')."Mo)\"><img src=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('thumbnail','')."\" alt=\"".$object[2]->getValue('label','')."\" title=\"".$object[2]->getValue('label','')."\" /></a>
 							";
 						}
-					}//IF TAG END 14_60c6a2
-					//IF TAG START 15_ece1d5
+					}//IF TAG END 14_64b767
+					//IF TAG START 15_e34bd3
 					$ifcondition = CMS_polymod_definition_parsing::replaceVars("!".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
@@ -309,25 +255,25 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 							<img src=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" alt=\"".$object[2]->getValue('label','')."\" title=\"".$object[2]->getValue('label','')."\" style=\"max-width:200px;\" />
 							";
 						}
-					}//IF TAG END 15_ece1d5
+					}//IF TAG END 15_e34bd3
 					$content .="
 					</div>
 					";
 				}
-			}//IF TAG END 13_a001a0
-			$count_4_662c6b++;
+			}//IF TAG END 13_d4747a
+			$count_4_3c604d++;
 			//do all result vars replacement
-			$content_4_662c6b.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
+			$content_4_3c604d.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
 		}
-		$content = $content_4_662c6b; //retrieve previous content var if any
-		$replace = $replace_4_662c6b; //retrieve previous replace vars if any
-		$object[$objectDefinition_mediaresult] = $object_4_662c6b; //retrieve previous object search if any
+		$content = $content_4_3c604d; //retrieve previous content var if any
+		$replace = $replace_4_3c604d; //retrieve previous replace vars if any
+		$object[$objectDefinition_mediaresult] = $object_4_3c604d; //retrieve previous object search if any
 	}
-	//RESULT mediaresult TAG END 4_662c6b
+	//RESULT mediaresult TAG END 4_3c604d
 	//destroy search and results mediaresult objects
 	unset($search_mediaresult);
 	unset($results_mediaresult);
-	//SEARCH mediaresult TAG END 2_c54460
+	//SEARCH mediaresult TAG END 2_ee2ca1
 	echo CMS_polymod_definition_parsing::replaceVars($content, $replace);
 }
    ?>
@@ -346,13 +292,7 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 	<div id="footer">
 		<div id="menuBottom">
 			<ul>
-				<?php if ($cms_user->hasPageClearance(8, CLEARANCE_PAGE_VIEW)) {
-echo '<li><a href="http://127.0.0.1/web/demo/8-plan-du-site.php">Plan du site</a></li>';
-}
-?><?php if ($cms_user->hasPageClearance(9, CLEARANCE_PAGE_VIEW)) {
-echo '<li><a href="http://127.0.0.1/web/demo/9-contact.php">Contact</a></li>';
-}
-?>
+				<li><a href="http://127.0.0.1/web/demo/8-plan-du-site.php">Plan du site</a></li><li><a href="http://127.0.0.1/web/demo/9-contact.php">Contact</a></li>
 			</ul>
 			<div class="spacer"></div>
 		</div>

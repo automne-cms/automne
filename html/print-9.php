@@ -1,10 +1,7 @@
-<?php //Generated on Mon, 18 Jan 2010 16:11:12 +0100 by Automne (TM) 4.0.0
+<?php //Generated on Mon, 18 Jan 2010 17:55:55 +0100 by Automne (TM) 4.0.0
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	CMS_view::redirect('http://127.0.0.1/web/demo/print-9-contact.php', true, 301);
-}
- ?><?php if (!is_object($cms_user) || !$cms_user->hasPageClearance(9, CLEARANCE_PAGE_VIEW)) {
-	CMS_view::redirect(PATH_FRONTEND_SPECIAL_LOGIN_WR.'?referer='.base64_encode($_SERVER['REQUEST_URI']));
 }
  ?>
 <?php $mod_cms_forms = array();
@@ -33,7 +30,7 @@ $mod_cms_forms["usedforms"] = array (
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: print-9.php,v 1.11 2010/01/18 15:20:11 sebastien Exp $
+// $Id: print-9.php,v 1.12 2010/01/18 16:49:35 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -528,15 +525,14 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 <body>
 <h1>Contact</h1>
 <h3>
-<?php if ($cms_user->hasPageClearance(9, CLEARANCE_PAGE_VIEW)) {
-echo '
+
 		&raquo;&nbsp;Contact
-		';
-}
-?>
+		
 </h3>
 
-<p>Ce formulaire vous permet d'envoyer une demande de contact. Pour le transformer (Champs, actions, email de destination), modifiez le dans les propri&eacute;t&eacute;s du module &quot;Formulaire&quot;.</p><p>&nbsp;</p>
+
+<div class="text"><p>Ce formulaire vous permet d'envoyer une demande de contact. Pour le transformer (Champs, actions, email de destination), modifiez le dans les propri&eacute;t&eacute;s du module &quot;Formulaire&quot;.</p><p>&nbsp;</p></div>
+
 
 <div class="cms_forms">
 	<?php $mod_cms_forms = array();
@@ -563,7 +559,7 @@ $mod_cms_forms["formID"] = '2';
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: print-9.php,v 1.11 2010/01/18 15:20:11 sebastien Exp $
+// $Id: print-9.php,v 1.12 2010/01/18 16:49:35 sebastien Exp $
 
 /**
   * Template CMS_forms_formular
@@ -635,12 +631,9 @@ if ($form->getID() && $form->isPublic()) {
 <div align="center">
 	<small>
 		
-		<?php if ($cms_user->hasPageClearance(9, CLEARANCE_PAGE_VIEW)) {
-echo '
+		
 				Page  "Contact" (http://127.0.0.1/web/demo/9-contact.php)
-				';
-}
-?><br />
+				<br />
 		Tir&eacute; du site http://<?php echo $_SERVER["HTTP_HOST"];    ?>
 	</small>
 </div>

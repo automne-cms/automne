@@ -1,11 +1,8 @@
 <?php CMS_view::redirect('http://127.0.0.1/web/demo/2-accueil.php', true, 302);
- ?><?php //Generated on Mon, 18 Jan 2010 16:11:03 +0100 by Automne (TM) 4.0.0
+ ?><?php //Generated on Mon, 18 Jan 2010 17:56:04 +0100 by Automne (TM) 4.0.0
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	CMS_view::redirect('http://127.0.0.1/web/1-demo-automne.php', true, 301);
-}
- ?><?php if (!is_object($cms_user) || !$cms_user->hasPageClearance(1, CLEARANCE_PAGE_VIEW)) {
-	CMS_view::redirect(PATH_FRONTEND_SPECIAL_LOGIN_WR.'?referer='.base64_encode($_SERVER['REQUEST_URI']));
 }
  ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";   ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">

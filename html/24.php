@@ -1,10 +1,7 @@
-<?php //Generated on Mon, 18 Jan 2010 16:11:13 +0100 by Automne (TM) 4.0.0
+<?php //Generated on Mon, 18 Jan 2010 17:55:53 +0100 by Automne (TM) 4.0.0
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	CMS_view::redirect('http://127.0.0.1/web/demo/24-documentation.php', true, 301);
-}
- ?><?php if (!is_object($cms_user) || !$cms_user->hasPageClearance(24, CLEARANCE_PAGE_VIEW)) {
-	CMS_view::redirect(PATH_FRONTEND_SPECIAL_LOGIN_WR.'?referer='.base64_encode($_SERVER['REQUEST_URI']));
 }
  ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";   ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
@@ -30,59 +27,17 @@ if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	<div id="main">
 		<div id="container">
 			<div id="header">
-				<?php if ($cms_user->hasPageClearance(2, CLEARANCE_PAGE_VIEW)) {
-echo '
-							<a id="lienAccueil" href="http://127.0.0.1/web/demo/2-accueil.php" title="Retour &agrave; l\'accueil">Retour &agrave; l\'accueil</a>
-						';
-}
-?>
+				
+							<a id="lienAccueil" href="http://127.0.0.1/web/demo/2-accueil.php" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
+						
 			</div>
 			<div id="backgroundBottomContainer">
 				<div id="menuLeft">
-					<?php if ($cms_user->hasPageClearance(2, CLEARANCE_PAGE_VIEW)) {
-echo '<ul class="CMS_lvl2">';  if ($cms_user->hasPageClearance(3, CLEARANCE_PAGE_VIEW)) {
-echo '<li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/3-presentation.php">Présentation</a></li>';
-}
- echo '';  if ($cms_user->hasPageClearance(24, CLEARANCE_PAGE_VIEW)) {
-echo '<li class="CMS_lvl2 CMS_open CMS_current"><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités</a><ul class="CMS_lvl3">';  if ($cms_user->hasPageClearance(25, CLEARANCE_PAGE_VIEW)) {
-echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/25-modeles.php">Modèles</a></li>';
-}
- echo '';  if ($cms_user->hasPageClearance(26, CLEARANCE_PAGE_VIEW)) {
-echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/26-rangees.php">Rangées</a></li>';
-}
- echo '';  if ($cms_user->hasPageClearance(27, CLEARANCE_PAGE_VIEW)) {
-echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/27-modules.php">Modules</a></li>';
-}
- echo '';  if ($cms_user->hasPageClearance(28, CLEARANCE_PAGE_VIEW)) {
-echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/28-administration.php">Gestion des utilisateurs</a></li>';
-}
- echo '';  if ($cms_user->hasPageClearance(35, CLEARANCE_PAGE_VIEW)) {
-echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/35-gestion-des-droits.php">Gestion des droits</a></li>';
-}
- echo '';  if ($cms_user->hasPageClearance(37, CLEARANCE_PAGE_VIEW)) {
-echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/37-droit-de-validation.php">Workflow de publication</a></li>';
-}
- echo '';  if ($cms_user->hasPageClearance(38, CLEARANCE_PAGE_VIEW)) {
-echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/38-aide-aux-utilisateurs.php">Aide utilisateurs</a></li>';
-}
- echo '';  if ($cms_user->hasPageClearance(34, CLEARANCE_PAGE_VIEW)) {
-echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/34-fonctions-avancees.php">Fonctions avancées</a></li>';
-}
- echo '</ul></li>';
-}
- echo '';  if ($cms_user->hasPageClearance(31, CLEARANCE_PAGE_VIEW)) {
-echo '<li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/31-exemples-de-modules.php">Exemples de modules</a></li>';
-}
- echo '</ul>';
-}
-?>
+					<ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_open CMS_current"><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/25-modeles.php">Modèles</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/26-rangees.php">Rangées</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/27-modules.php">Modules</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/28-administration.php">Gestion des utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/35-gestion-des-droits.php">Gestion des droits</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/37-droit-de-validation.php">Workflow de publication</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/38-aide-aux-utilisateurs.php">Aide utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/34-fonctions-avancees.php">Fonctions avancées</a></li></ul></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/31-exemples-de-modules.php">Exemples de modules</a></li></ul>
 				</div>
 				<div id="content" class="page24">
 					<div id="breadcrumbs">
-						<?php if ($cms_user->hasPageClearance(2, CLEARANCE_PAGE_VIEW)) {
-echo '<a href="http://127.0.0.1/web/demo/2-accueil.php">Accueil</a> &gt; ';
-}
-?>
+						<a href="http://127.0.0.1/web/demo/2-accueil.php">Accueil</a> &gt; 
 					</div>
 					<div id="title">
 						<h1>Fonctionnalités</h1>
@@ -91,49 +46,7 @@ echo '<a href="http://127.0.0.1/web/demo/2-accueil.php">Accueil</a> &gt; ';
 					
 	
 	
-		<h2>Vous trouverez dans cette partie les grands principes d&rsquo;utilisations d'Automne 4.</h2> <p>Syst&egrave;me de gestion de contenu puissant, Automne 4 permet de g&eacute;rer des sites de plusieurs milliers de pages, d'en <strong>modifier simplement l'apparence</strong> gr&acirc;ce aux <?php if ($cms_user->hasPageClearance(25, CLEARANCE_PAGE_VIEW)) {
-echo '<a href="http://127.0.0.1/web/demo/25-modeles.php">mod&egrave;les de pages</a>';
-}
-?> et de modifier intuitivement le contenu gr&acirc;ce au principe des <?php if ($cms_user->hasPageClearance(26, CLEARANCE_PAGE_VIEW)) {
-echo '<a href="http://127.0.0.1/web/demo/26-rangees.php">rang&eacute;es de contenu.</a>';
-}
-?></p> <p>Les nombreuses fonctionnalit&eacute;s pour le site Internet, simples ou complexes, peuvent &ecirc;tre <span style="font-weight: bold;">g&eacute;n&eacute;r&eacute;es</span><strong> automatiquement par le g&eacute;n&eacute;rateur de module appel&eacute; </strong><?php if ($cms_user->hasPageClearance(27, CLEARANCE_PAGE_VIEW)) {
-echo '<a href="http://127.0.0.1/web/demo/27-modules.php"><strong>POLYMOD</strong></a>';
-}
-?> ou bien d&eacute;velopp&eacute;es directement en code PHP.</p> <p>Automne 4 dispose d'un syst&egrave;me de <?php if ($cms_user->hasPageClearance(28, CLEARANCE_PAGE_VIEW)) {
-echo '<a href="http://127.0.0.1/web/demo/28-administration.php">gestion des utilisateurs</a>';
-}
-?> et <?php if ($cms_user->hasPageClearance(28, CLEARANCE_PAGE_VIEW)) {
-echo '<a href="http://127.0.0.1/web/demo/28-administration.php">groupes d\'utilisateurs</a>';
-}
-?> particuli&egrave;rement &eacute;volu&eacute; permettant une <?php if ($cms_user->hasPageClearance(35, CLEARANCE_PAGE_VIEW)) {
-echo '<a href="http://127.0.0.1/web/demo/35-gestion-des-droits.php">gestion tr&egrave;s fine des droits.</a>';
-}
-?> Votre environnement de travail est homog&egrave;ne et ne pr&eacute;sente que les fonctionnalit&eacute;s sur lesquelles vous avez le droit d'agir.</p> <h3>Vous trouverez un descriptif des principales fonctions d'Automne 4 dans les pages ci-dessous :</h3> <ul>     <li><?php if ($cms_user->hasPageClearance(25, CLEARANCE_PAGE_VIEW)) {
-echo '<a href="http://127.0.0.1/web/demo/25-modeles.php">Mod&egrave;les de pages</a>';
-}
-?> (l'habillage graphique du site Internet),</li>     <li><?php if ($cms_user->hasPageClearance(26, CLEARANCE_PAGE_VIEW)) {
-echo '<a href="http://127.0.0.1/web/demo/26-rangees.php">Rang&eacute;es de contenu</a>';
-}
-?> (l'habillage de vos contenus et m&eacute;dias),</li>     <li><?php if ($cms_user->hasPageClearance(27, CLEARANCE_PAGE_VIEW)) {
-echo '<a href="http://127.0.0.1/web/demo/27-modules.php">Modules dynamiques</a>';
-}
-?> (vos outils personnalis&eacute;s et applications d&eacute;di&eacute;es),</li>     <li><?php if ($cms_user->hasPageClearance(28, CLEARANCE_PAGE_VIEW)) {
-echo '<a href="http://127.0.0.1/web/demo/28-administration.php">Gestion des utilisateurs et des groupes d\'utilisateurs</a>';
-}
-?>,</li>     <li><?php if ($cms_user->hasPageClearance(35, CLEARANCE_PAGE_VIEW)) {
-echo '<a href="http://127.0.0.1/web/demo/35-gestion-des-droits.php">Gestion des droits d\'acc&egrave;s</a>';
-}
-?>,</li>     <li><?php if ($cms_user->hasPageClearance(37, CLEARANCE_PAGE_VIEW)) {
-echo '<a href="http://127.0.0.1/web/demo/37-droit-de-validation.php">Workflow de publication des contenus</a>';
-}
-?>,</li>     <li><?php if ($cms_user->hasPageClearance(38, CLEARANCE_PAGE_VIEW)) {
-echo '<a href="http://127.0.0.1/web/demo/38-aide-aux-utilisateurs.php">Aide aux utilisateurs</a>';
-}
-?>,</li>     <li><?php if ($cms_user->hasPageClearance(34, CLEARANCE_PAGE_VIEW)) {
-echo '<a href="http://127.0.0.1/web/demo/34-fonctions-avancees.php">Fonctions avanc&eacute;es</a>';
-}
-?>.</li> </ul>
+		<div class="text"><h2>Vous trouverez dans cette partie les grands principes d&rsquo;utilisations d'Automne 4.</h2> <p>Syst&egrave;me de gestion de contenu puissant, Automne 4 permet de g&eacute;rer des sites de plusieurs milliers de pages, d'en <strong>modifier simplement l'apparence</strong> gr&acirc;ce aux <a href="http://127.0.0.1/web/demo/25-modeles.php">mod&egrave;les de pages</a> et de modifier intuitivement le contenu gr&acirc;ce au principe des <a href="http://127.0.0.1/web/demo/26-rangees.php">rang&eacute;es de contenu.</a></p> <p>Les nombreuses fonctionnalit&eacute;s pour le site Internet, simples ou complexes, peuvent &ecirc;tre <span style="font-weight: bold;">g&eacute;n&eacute;r&eacute;es</span><strong> automatiquement par le g&eacute;n&eacute;rateur de module appel&eacute; </strong><a href="http://127.0.0.1/web/demo/27-modules.php"><strong>POLYMOD</strong></a> ou bien d&eacute;velopp&eacute;es directement en code PHP.</p> <p>Automne 4 dispose d'un syst&egrave;me de <a href="http://127.0.0.1/web/demo/28-administration.php">gestion des utilisateurs</a> et <a href="http://127.0.0.1/web/demo/28-administration.php">groupes d'utilisateurs</a> particuli&egrave;rement &eacute;volu&eacute; permettant une <a href="http://127.0.0.1/web/demo/35-gestion-des-droits.php">gestion tr&egrave;s fine des droits.</a> Votre environnement de travail est homog&egrave;ne et ne pr&eacute;sente que les fonctionnalit&eacute;s sur lesquelles vous avez le droit d'agir.</p> <h3>Vous trouverez un descriptif des principales fonctions d'Automne 4 dans les pages ci-dessous :</h3> <ul>     <li><a href="http://127.0.0.1/web/demo/25-modeles.php">Mod&egrave;les de pages</a> (l'habillage graphique du site Internet),</li>     <li><a href="http://127.0.0.1/web/demo/26-rangees.php">Rang&eacute;es de contenu</a> (l'habillage de vos contenus et m&eacute;dias),</li>     <li><a href="http://127.0.0.1/web/demo/27-modules.php">Modules dynamiques</a> (vos outils personnalis&eacute;s et applications d&eacute;di&eacute;es),</li>     <li><a href="http://127.0.0.1/web/demo/28-administration.php">Gestion des utilisateurs et des groupes d'utilisateurs</a>,</li>     <li><a href="http://127.0.0.1/web/demo/35-gestion-des-droits.php">Gestion des droits d'acc&egrave;s</a>,</li>     <li><a href="http://127.0.0.1/web/demo/37-droit-de-validation.php">Workflow de publication des contenus</a>,</li>     <li><a href="http://127.0.0.1/web/demo/38-aide-aux-utilisateurs.php">Aide aux utilisateurs</a>,</li>     <li><a href="http://127.0.0.1/web/demo/34-fonctions-avancees.php">Fonctions avanc&eacute;es</a>.</li> </ul></div>
 	
 
 					<a href="#header" id="top" title="haut de la page">Haut</a>
@@ -145,13 +58,7 @@ echo '<a href="http://127.0.0.1/web/demo/34-fonctions-avancees.php">Fonctions av
 	<div id="footer">
 		<div id="menuBottom">
 			<ul>
-				<?php if ($cms_user->hasPageClearance(8, CLEARANCE_PAGE_VIEW)) {
-echo '<li><a href="http://127.0.0.1/web/demo/8-plan-du-site.php">Plan du site</a></li>';
-}
-?><?php if ($cms_user->hasPageClearance(9, CLEARANCE_PAGE_VIEW)) {
-echo '<li><a href="http://127.0.0.1/web/demo/9-contact.php">Contact</a></li>';
-}
-?>
+				<li><a href="http://127.0.0.1/web/demo/8-plan-du-site.php">Plan du site</a></li><li><a href="http://127.0.0.1/web/demo/9-contact.php">Contact</a></li>
 			</ul>
 			<div class="spacer"></div>
 		</div>
