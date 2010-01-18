@@ -5,7 +5,7 @@
 		</div>
 	</block>
 	<block module="standard" type="text" id="texte">
-		{{data}}
+		<div class="text">{{data}}</div>
 	</block>
 </row>
 
