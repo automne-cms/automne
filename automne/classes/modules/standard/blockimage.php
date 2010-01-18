@@ -16,7 +16,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>  			  |
 // +----------------------------------------------------------------------+
 //
-// $Id: blockimage.php,v 1.6 2009/11/10 16:48:59 sebastien Exp $
+// $Id: blockimage.php,v 1.7 2010/01/18 08:46:47 sebastien Exp $
 
 /**
   * Class CMS_block_image
@@ -549,7 +549,7 @@ class CMS_block_image extends CMS_block
 	*/
 	function duplicate(&$destinationPage, $public = false)
 	{
-		if (SensitiveIO::isPositiveInteger($this->_dbID)) {
+		if (SensitiveIO::isPositiveInteger($this->_dbID) && $this->_file) {
 			$table = $this->_getDataTableName(RESOURCE_LOCATION_USERSPACE, $public);
 			
 			//Copy linked file
@@ -619,7 +619,7 @@ class CMS_block_image extends CMS_block
 					$this->raiseError("Duplicate, SQL insertion of new filename failed : ".$sql);
 				}
 			} else {
-				$this->raiseError("Duplicate, copy of file failed :".PATH_MODULES_FILES_STANDARD_FS."/edited/".$_newFileName);
+				$this->raiseError("Duplicate, copy of file failed :".PATH_MODULES_FILES_STANDARD_FS."/edited/".$this->_file);
 			}
 		}
 		return false;

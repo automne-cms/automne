@@ -14,7 +14,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: blockflash.php,v 1.5 2009/11/10 16:48:59 sebastien Exp $
+// $Id: blockflash.php,v 1.6 2010/01/18 08:46:47 sebastien Exp $
 
 /**
   * Class CMS_block_flash
@@ -423,7 +423,7 @@ class CMS_block_flash extends CMS_block
 	  */
 	function duplicate(&$destinationPage, $public = false)
 	{
-		if (SensitiveIO::isPositiveInteger($this->_dbID)) {
+		if (SensitiveIO::isPositiveInteger($this->_dbID) && $this->_file) {
 			$table = $this->_getDataTableName(RESOURCE_LOCATION_USERSPACE, $public);
 			
 			//Copy linked file
@@ -477,7 +477,7 @@ class CMS_block_flash extends CMS_block
 					$this->raiseError("Duplicate, SQL insertion of new flash failed: ".$sql);
 				}
 			} else {
-				$this->raiseError("Duplicate, copy of file failed");
+				$this->raiseError("Duplicate, copy of file failed :".PATH_MODULES_FILES_STANDARD_FS."/edited/".$this->_file);
 			}
 		}
 		return false;

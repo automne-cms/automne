@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: blockvarchar.php,v 1.2 2009/11/10 16:48:59 sebastien Exp $
+// $Id: blockvarchar.php,v 1.3 2010/01/18 08:46:47 sebastien Exp $
 
 /**
   * Class CMS_block_varchar
@@ -264,7 +264,7 @@ class CMS_block_varchar extends CMS_block
 		global $cms_user;
 		$rawDatas = $this->getRawData($page->getID(), $clientSpace->getTagID(), $row->getTagID(), RESOURCE_LOCATION_EDITION, false);
 		$this->_jsBlockClass = 'Automne.blockVarchar';
-		$this->_value = io::htmlspecialchars($rawDatas['value']);
+		$this->_value = htmlspecialchars($rawDatas['value']);
 		$this->_administrable = false;
 		$html = parent::_getHTMLForm($language, $page, $clientSpace, $row, $blockID, $data);
 		return $html;

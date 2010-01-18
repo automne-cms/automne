@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: blockfile.php,v 1.5 2009/11/10 16:48:58 sebastien Exp $
+// $Id: blockfile.php,v 1.6 2010/01/18 08:46:47 sebastien Exp $
 
 /**
   * Class CMS_block_file
@@ -431,7 +431,7 @@ class CMS_block_file extends CMS_block
 	  */
 	function duplicate(&$destinationPage, $public = false)
 	{
-		if (SensitiveIO::isPositiveInteger($this->_dbID)) {
+		if (SensitiveIO::isPositiveInteger($this->_dbID) && $this->_file) {
 			$table = $this->_getDataTableName(RESOURCE_LOCATION_USERSPACE, $public);
 			
 			//Copy linked file

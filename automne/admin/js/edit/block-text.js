@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: block-text.js,v 1.8 2009/12/04 14:39:08 sebastien Exp $
+  * $Id: block-text.js,v 1.9 2010/01/18 08:46:36 sebastien Exp $
   */
 Automne.blockText = Ext.extend(Automne.block, {
 	blockClass:	'CMS_block_text',
@@ -70,6 +70,7 @@ Automne.blockText = Ext.extend(Automne.block, {
 		//if we do not have stylesheet for this block, create it
 		if(!this.stylesheet) {
 			var tagName = this.elements.first().dom.tagName.toLowerCase();
+			//if the first block element is a div or a td, use it. Otherwise, use parent tag
 			if (tagName == 'div' || tagName == 'td') {
 				var sourceEl = this.elements.first();
 			} else {

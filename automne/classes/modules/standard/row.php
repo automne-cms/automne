@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: row.php,v 1.9 2009/11/27 15:41:07 sebastien Exp $
+// $Id: row.php,v 1.10 2010/01/18 08:46:47 sebastien Exp $
 
 /**
   * Class CMS_row
@@ -571,7 +571,7 @@ class CMS_row extends CMS_grandFather
 				try {
 					$domdocument->loadXML('<row>'.$data.'</row>');
 				} catch (DOMException $e) {
-					$this->raiseError('Parse error for row : '.$e->getMessage()." :\n".io::htmlspecialchars($data));
+					$this->raiseError('Parse error for row : '.$e->getMessage()." :\n".$data, true);
 					return '';
 				}
 				$rowNodes = $domdocument->getElementsByTagName('row');
@@ -599,7 +599,7 @@ class CMS_row extends CMS_grandFather
 					try {
 						$domdocument->loadXML('<row><div class="atm-dummy-row-tag">'.$data.'</div></row>');
 					} catch (DOMException $e) {
-						$this->raiseError('Parse error for row : '.$e->getMessage()." :\n".io::htmlspecialchars($data));
+						$this->raiseError('Parse error for row : '.$e->getMessage()." :\n".$data, true);
 						return '';
 					}
 					$rowNodes = $domdocument->getElementsByTagName('row');
@@ -827,9 +827,9 @@ class CMS_row extends CMS_grandFather
 	
 	function getJSonDescription($user, $cms_language, $withDefinition = false) {
 		$hasClientSpaces = $this->hasClientSpaces();
-		$description = sensitiveIO::ellipsis($this->getDescription(), 50);
-		if ($description != $this->getDescription()) {
-			$description = '<span ext:qtip="'.io::htmlspecialchars($this->getDescription()).'">'.$description.'</span>';
+		$description = sensitiveIO::ellipsis($this->getDescription(), 60);
+		if ($description != nl2br($this->getDescription())) {
+			$description = '<span ext:qtip="'.nl2br(io::htmlspecialchars($this->getDescription())).'">'.$description.'</span>';
 		}
 		$description = $description ? $description.'<br />' : '';
 		//append template definition if needed
@@ -882,6 +882,7 @@ class CMS_row extends CMS_grandFather
 			'used'			=> $hasClientSpaces,
 			'definition'	=> $definitionDatas,
 			'edit'			=> $edit,
+			'rowdescription'=> $description
 		);
 	}
 }

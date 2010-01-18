@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: block.php,v 1.7 2009/11/27 15:41:07 sebastien Exp $
+// $Id: block.php,v 1.8 2010/01/18 08:46:47 sebastien Exp $
 
 /**
   * Class CMS_block
@@ -32,6 +32,11 @@
 
 class CMS_block extends CMS_grandFather
 {
+	/**
+	  * Messages
+	  */
+	const MESSAGE_BLOCK_CONTENT_ERROR = 1598;
+	
 	/**
 	  * From what the tag was initialized ? One of "basic" (from basic attributes), "definition" (from inner content), false (not initialized)
 	  * @var string
@@ -333,8 +338,10 @@ class CMS_block extends CMS_grandFather
 		try {
 			$domdocument->loadXML('<block>'.$data.'</block>');
 		} catch (DOMException $e) {
-			$this->raiseError('Parse error for block : '.$e->getMessage()." :\n".io::htmlspecialchars($data));
-			return '';
+			$this->raiseError('Parse error for '.get_class($this).' : Page '.$page->getID().' - Row "'.$row->getTagID().'" - Block "'.$blockID.'" : '.$e->getMessage());
+			$data = '<div class="atm-error-block atm-block-helper">'.$language->getMessage(self::MESSAGE_BLOCK_CONTENT_ERROR).'</div>';
+			$domdocument = new CMS_DOMDocument();
+			$domdocument->loadXML('<block>'.$data.'</block>');
 		}
 		$blockNodes = $domdocument->getElementsByTagName('block');
 		if ($blockNodes->length == 1) {
@@ -361,7 +368,7 @@ class CMS_block extends CMS_grandFather
 			try {
 				$domdocument->loadXML('<block><div class="atm-empty-block atm-block-helper">'.$data.'</div></block>');
 			} catch (DOMException $e) {
-				$this->raiseError('Parse error for block : '.$e->getMessage()." :\n".io::htmlspecialchars($data));
+				$this->raiseError('Parse error for block : '.$e->getMessage()." :\n".$data, true);
 				return '';
 			}
 			$blockNodes = $domdocument->getElementsByTagName('block');
