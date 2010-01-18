@@ -1,8 +1,8 @@
 # Automne general .htaccess file. 
 # Author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-# $Id: .htaccess,v 1.13 2010/01/13 09:32:41 sebastien Exp $
+# $Id: .htaccess,v 1.14 2010/01/18 14:33:51 sebastien Exp $
 
-# Declare errors documents. 
+# Errors documents. 
 # The 404.php must be the 404 error document, but you can create a specific design with a file 404.html which will be displayed by the 404.php file
 ErrorDocument 404 /404.php
 # The 403.php must be the 403 error document, but you can create a specific design with a file 403.html which will be displayed by the 403.php file
@@ -30,4 +30,11 @@ Allow from all
 		php_flag register_globals 		Off
 		php_flag allow_url_include		Off
 	</IfModule>
+</IfModule>
+
+# To allow image cache (2 weeks)
+<Ifmodule mod_headers.c>
+	<FilesMatch "\.(ico|jpg|jpeg|png|gif)$">
+		Header set Cache-Control "max-age=1209600, public"
+	</FilesMatch>
 </IfModule>
