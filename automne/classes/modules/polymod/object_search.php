@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_search.php,v 1.13 2010/01/18 15:30:53 sebastien Exp $
+// $Id: object_search.php,v 1.14 2010/01/18 16:04:42 sebastien Exp $
 
 /**
   * Class CMS_object_search
@@ -248,7 +248,7 @@ class CMS_object_search extends CMS_grandFather
 	 * @return void or false if an error occured
 	 */
 	function addWhereCondition($type, $value, $operator = false) {
-		if (!$type || !$value) {
+		if (!$type || (!$value && !$operator)) {
 			return;
 		}
 		//clean value
@@ -556,8 +556,19 @@ class CMS_object_search extends CMS_grandFather
 				case "items":
 					//add previously founded IDs to where clause
 					$where = ($IDs) ? ' and objectID in ('.implode(',',$IDs).')':'';
+					//check operator
+					$supportedOperator = array(
+						'not in'
+					);
+					if ($operator && !in_array($operator, $supportedOperator)) {
+						$this->raiseError("Unknown search operator : ".$operator.", use default search instead");
+						$operator = false;
+					}
+					if (!$operator) {
+						$operator = 'in';
+					}
 					//no values to found so break search
-					if (!is_array($value) || !$value) {
+					if ((!is_array($value) || !$value) && $operator == 'in') {
 						$IDs = array();
 						break;
 					}
@@ -567,7 +578,7 @@ class CMS_object_search extends CMS_grandFather
 					from
 						mod_subobject_text".$statusSuffix."
 					where
-						objectID in (".implode(',',$value).")
+						objectID ".$operator." (".implode(',',$value).")
 						$where
 					union distinct
 					select
@@ -575,7 +586,7 @@ class CMS_object_search extends CMS_grandFather
 					from
 						mod_subobject_integer".$statusSuffix."
 					where
-						objectID in (".implode(',',$value).")
+						objectID ".$operator." (".implode(',',$value).")
 						$where
 					union distinct
 					select
@@ -583,7 +594,7 @@ class CMS_object_search extends CMS_grandFather
 					from
 						mod_subobject_string".$statusSuffix."
 					where
-						objectID in (".implode(',',$value).")
+						objectID ".$operator." (".implode(',',$value).")
 						$where
 					union distinct
 					select
@@ -591,7 +602,7 @@ class CMS_object_search extends CMS_grandFather
 					from
 						mod_subobject_date".$statusSuffix."
 					where
-						objectID in (".implode(',',$value).")
+						objectID ".$operator." (".implode(',',$value).")
 						$where
 					";
 					break;

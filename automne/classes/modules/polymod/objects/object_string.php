@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_string.php,v 1.6 2010/01/18 15:30:54 sebastien Exp $
+// $Id: object_string.php,v 1.7 2010/01/18 16:04:42 sebastien Exp $
 
 /**
   * Class CMS_object_string
@@ -284,6 +284,7 @@ class CMS_object_string extends CMS_object_common
 	function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
 		$supportedOperator = array(
 			'like',
+			'!='
 		);
 		if ($operator && !in_array($operator, $supportedOperator)) {
 			$this->raiseError("Unknown search operator : ".$operator.", use default search instead");
