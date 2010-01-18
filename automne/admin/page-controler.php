@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-controler.php,v 1.14 2009/11/10 16:57:19 sebastien Exp $
+// $Id: page-controler.php,v 1.15 2010/01/18 15:23:54 sebastien Exp $
 
 /**
   * PHP page : Receive pages updates
@@ -241,7 +241,7 @@ switch ($action) {
 						fcnCallback: 		function() {
 							//then reload page infos
 							Automne.tabPanels.getPageInfos({
-								pageId:		this.pageId,
+								pageId:		Automne.tabPanels.pageId,
 								noreload:	true
 							});
 						},

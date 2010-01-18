@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: module.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: module.php,v 1.2 2010/01/18 15:30:12 sebastien Exp $
 
 /**
   * PHP page : module admin
@@ -62,27 +62,20 @@ switch ($_POST["cms_action"]) {
 			}
 			if (!$cms_message) {
 				//update module label
-				//this is a direct sql query cause no writing interface exists now for I18NM_messages table
-				$sql = "
-					update
-						I18NM_messages
-					set
-						timestamp=NOW(),
-				";
-				$count = 0;
+				//this is a direct sql query cause no writing interface exists now for messages table
 				foreach ($languages as $aLanguage) {
-					$sql .= ($count) ? ',':'';
-					$sql .= "
-						".$aLanguage->getCode()." = '".SensitiveIO::sanitizeSQLString($_POST['label'.$aLanguage->getCode()])."'
+					$sql = "
+						update
+							messages
+						set
+							message_mes = '".SensitiveIO::sanitizeSQLString($_POST['label'.$aLanguage->getCode()])."'
+						where
+							id_mes = '".SensitiveIO::sanitizeSQLString($module->getLabelID())."'
+							and module_mes = '".SensitiveIO::sanitizeSQLString($moduleCodename)."'
+							and language_mes = '".SensitiveIO::sanitizeSQLString($aLanguage->getCode())."'
 					";
-					$count++;
+					$q = new CMS_query($sql);
 				}
-				$sql .= "
-					where
-						id='".$module->getLabelID()."'
-						and module='".$moduleCodename."'
-				";
-				$q = new CMS_query($sql);
 				//create/delete all needed .htaccess files
 				if (isset($_POST['hasprotect']) && $_POST['protect'] == 1) {
 					//archived
@@ -163,25 +156,21 @@ switch ($_POST["cms_action"]) {
 				$module->setAdminFrontend('index.php');
 				$module->writeToPersistence();
 				//create module label
-				//this is a direct sql query cause no writing interface exists now for I18NM_messages table
-				$sql = "
-					insert into 
-						I18NM_messages
-					set
-						id='1',
-						module='".$moduleCodename."',
-						timestamp=NOW(),
-				";
+				//this is a direct sql query cause no writing interface exists now for messages table
+				
 				$count = 0;
 				foreach ($languages as $aLanguage) {
-					$sql .= ($count) ? ',':'';
-					$sql .= "
-						".$aLanguage->getCode()." = '".SensitiveIO::sanitizeSQLString($_POST['label'.$aLanguage->getCode()])."'
+					$sql = "
+						insert into 
+							messages
+						set
+							id_mes = '1',
+							module_mes = '".SensitiveIO::sanitizeSQLString($moduleCodename)."',
+							language_mes = '".SensitiveIO::sanitizeSQLString($aLanguage->getCode())."',
+							message_mes = '".SensitiveIO::sanitizeSQLString($_POST['label'.$aLanguage->getCode()])."'
 					";
-					$count++;
+					$q = new CMS_query($sql);
 				}
-				$q = new CMS_query($sql);
-				
 				//create module files directories
 				$moduledir = new CMS_file(PATH_MODULES_FILES_FS.'/'.$moduleCodename, CMS_file::FILE_SYSTEM, CMS_file::TYPE_DIRECTORY);
 				$moduleDeleted = new CMS_file(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/deleted', CMS_file::FILE_SYSTEM, CMS_file::TYPE_DIRECTORY);

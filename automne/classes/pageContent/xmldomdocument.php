@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: xmldomdocument.php,v 1.6 2009/11/17 15:53:26 sebastien Exp $
+// $Id: xmldomdocument.php,v 1.7 2010/01/18 15:30:54 sebastien Exp $
 
 /**
   * Class CMS_DOMDocument
@@ -58,7 +58,7 @@ class CMS_DOMDocument extends DOMDocument {
 	function XmlError($errno, $errstr, $errfile, $errline) {
 		if ($errno==E_WARNING && (substr_count($errstr,"DOMDocument::loadXML()")>0)) {
 			$error = io::substr($errstr, io::strlen('DOMDocument::loadXML() [<a href=\'function.DOMDocument-loadXML\'>function.DOMDocument-loadXML</a>]: '));
-			throw new DOMException($error);
+			throw new DOMException($error, 1);
 		} else {
 			return false;
 		}
@@ -69,40 +69,23 @@ class CMS_DOMDocument extends DOMDocument {
 			CMS_grandFather::raiseError('Domelement is not a DOMElement instance');
 			return false;
 		}
-		static $getAutoClosedTagsList;
-		if (!$getAutoClosedTagsList) {
+		static $autoClosedTagsList;
+		if (!$autoClosedTagsList) {
 			$xml2Array = new CMS_xml2Array();
 			$tagsList = $xml2Array->getAutoClosedTagsList();
-			$getAutoClosedTagsList = array();
-			foreach ($tagsList as $tag) {
-				$getAutoClosedTagsList['<'.$tag.'></'.$tag.'>'] = '<'.$tag.'/>';
-			}
+			$autoClosedTagsList = implode($tagsList, '|');
 		}
 		$output = '';
-		//create DOMDocument
-		$doc = new CMS_DOMDocument();
 		if ($contentOnly) {
-			$i = 0;
-			while ( $node = $domelement->childNodes->item($i) ) {
-				// import node
-				$domNode = $doc->importNode($node, true);
-				// append node
-				$doc->appendChild($domNode);
-				$i++;
+			$output = '';
+			foreach ($domelement->childNodes as $node) {
+				$output .= $node->ownerDocument->saveXML($node, LIBXML_NOEMPTYTAG);
 			}
-			$output = @$doc->saveXML(null, LIBXML_NOEMPTYTAG);
-			//remove xml declaration
-			$output = io::substr($output, io::strlen('<?xml version="1.0" encoding="'.APPLICATION_DEFAULT_ENCODING.'"?>')+1, -1);
 		} else {
-			// import node20
-			$domNode = $doc->importNode($domelement, true);
-			// append node
-			$output = $doc->saveXML($domNode, LIBXML_NOEMPTYTAG);
+			$output = $domNode->ownerDocument->saveXML($domNode, LIBXML_NOEMPTYTAG);
 		}
-		//replace tags like <br></br> by auto closed tags
-		$output = str_replace(array_keys($getAutoClosedTagsList), $getAutoClosedTagsList, $output);
-		//strip cariage return arround entities
-		$output = preg_replace('#\n(&[a-z]+;)\n#U' , '\1', $output);
+		//replace tags like <br></br> by auto closed tags and strip cariage return arround entities
+		$output = preg_replace(array('#\n(&[a-z]+;)\n#U', '#<('.$autoClosedTagsList.')([^>]*)></\1>#U'), array('\1', '<\1\2/>'), $output);
 		return $output;
 	}
 }

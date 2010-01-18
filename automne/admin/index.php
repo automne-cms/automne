@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: index.php,v 1.10 2009/10/22 16:26:24 sebastien Exp $
+// $Id: index.php,v 1.11 2010/01/18 15:23:54 sebastien Exp $
 
 /**
   * PHP page : index
@@ -62,7 +62,7 @@ $content = '
 <div id="atm-loading-mask"></div>
 <div id="atm-center">
 	<div class="atm-loading-indicator">'.$language->getMessage(MESSAGE_PAGE_LOADING).'</div>
-	<noscript class="atm-alert">You must have Javascript enabled to access Automne.<hr />Vous devez avoir Javascript actif pour accéder à Automne.</noscript>
+	<noscript class="atm-alert">You must have Javascript enabled to access Automne.<hr />Vous devez avoir Javascript actif pour acc&eacute;der &agrave; Automne.</noscript>
 </div>
 '.CMS_view::getJavascript($jsfiles).CMS_view::getJavascript(array('launch'));
 if (isset($_REQUEST["cms_action"]) && $_REQUEST["cms_action"] == 'logout') {

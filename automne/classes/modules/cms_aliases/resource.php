@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: resource.php,v 1.3 2009/10/22 16:30:02 sebastien Exp $
+// $Id: resource.php,v 1.4 2010/01/18 15:30:53 sebastien Exp $
 
 /**
   * Class CMS_resource_cms_aliases
@@ -408,11 +408,6 @@ class CMS_resource_cms_aliases extends CMS_resource
 		$fileContent =
 		'<?php'."\n".
 		'require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");'."\n".
-		'require_once(PATH_PACKAGES_FS."/workflow.php");'."\n".
-		'require_once(PATH_PACKAGES_FS."/modules.php");'."\n".
-		'require_once(PATH_PACKAGES_FS."/common.php");'."\n".
-		'require_once(PATH_PACKAGES_FS."/tree.php");'."\n".
-		'require_once(PATH_MODULES_FS."/cms_aliases.php");'."\n".
 		'$alias = new CMS_resource_cms_aliases('.$this->getID().');'."\n".
 		'$alias->redirect();'."\n".
 		'?>';

@@ -6,7 +6,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: main.js,v 1.22 2009/11/20 17:46:35 sebastien Exp $
+  * $Id: main.js,v 1.23 2010/01/18 15:24:30 sebastien Exp $
   */
 
 //Declare Automne namespace
@@ -26,6 +26,7 @@ Automne = {
 	east:			false,
 	viewPort:		false,
 	cookie:			false,
+	session:		false,
 	/*************************************
 	*		Automne public methods	  *
 	*************************************/
@@ -145,6 +146,19 @@ Automne = {
 			}
 			//display east panel
 			Automne.east.expand();
+			//set session "pause" if session is permanent
+			if (Automne.context.permanent) {
+				Automne.sessionPing = new Ext.util.DelayedTask(function(){
+				    //send ping to server to force session persistence
+					Automne.server.call('ping.php', '', {
+						nospinner: 			true
+					});
+					Automne.sessionPing.delay((parseInt(Automne.context.sessionDuration) - 10) * 1000);
+				});
+				Automne.sessionPing.delay((parseInt(Automne.context.sessionDuration) - 10) * 1000);
+			} else if (Automne.sessionPing) {
+				Automne.sessionPing.cancel();
+			}
 		}
 	},
 	catchF5: function(doc, win) {
@@ -156,7 +170,13 @@ Automne = {
 				} else {
 					ev.keyCode=0;
 				}
+				//reload page
 				Automne.tabPanels.getActiveTab().reload();
+				//then reload page infos
+				Automne.tabPanels.getPageInfos({
+					pageId:		Automne.tabPanels.pageId,
+					noreload:	true
+				});
 				Automne.message.show(Automne.locales.refresh, '', Automne.tabPanels.getActiveTab());
 				return false;
 			}
@@ -206,8 +226,6 @@ Automne = {
 						Automne.tabPanels.getPageInfos({
 							pageId:		value
 						});
-					} else {
-						pr('History query page : '+ value +', which is already displayed so skip query');
 					}
 				break;
 			}
@@ -233,7 +251,7 @@ Automne = {
 					items: {
 						title:			'-',
 						xtype:			'framePanel',
-						frameURL:		'/',
+						frameURL:		'/automne/admin/empty.php',
 						hideBorders:	true,
 						allowFrameNav:	false,
 						height:			'100%',

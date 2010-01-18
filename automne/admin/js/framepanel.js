@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: framepanel.js,v 1.20 2009/11/27 15:37:48 sebastien Exp $
+  * $Id: framepanel.js,v 1.21 2010/01/18 15:24:30 sebastien Exp $
   */
 Automne.framePanel = Ext.extend(Automne.panel, { 
 	xtype:				'framePanel',
@@ -118,7 +118,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 						url: 				'page-rows-datas.php',
 						root: 				'results',
 						totalProperty: 		'total',
-						fields:				['id', 'label', 'image'],
+						fields:				['id', 'label', 'image', 'rowdescription'],
 						id: 				'id'
 					}),
 					forceSelection:		true,
@@ -144,7 +144,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 					hidden:				true,
 					tpl: new Ext.XTemplate(
 						'<tpl for=\".\"><div class=\"search-item atm-search-item\">',
-							'<table border="0"><tr><td valign="middle" style="width:72px;"><img src="{image}" /></td><td valign="middle" style="padding:4px;"><strong>{label}</strong></td></tr></table>',
+							'<table border="0"><tr><td valign="middle" style="width:72px;"><img src="{image}" /></td><td valign="middle" style="padding:4px;"><strong>{label}</strong><tpl if="rowdescription"><br />{rowdescription}</tpl></td></tr></table>',
 						'</div></tpl>'
 					),
 					itemSelector: 		'div.atm-search-item',
@@ -156,7 +156,6 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 							Ext.getCmp('addSelectedRow'+ this.editId).disable();
 						},
 						'valid':function(field, e) {
-							pr('valid : '+field.getValue());
 							if (isNaN(parseInt(field.getValue(),10))) {
 								Ext.getCmp('addSelectedRow'+ this.editId).disable();
 							}
@@ -213,6 +212,8 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 					hidden:			true,
 					scope:			this,
 					handler:		function() {
+						Ext.getCmp('editValidateDraft'+ this.editId).disable();
+						Ext.getCmp('editSaveDraft'+ this.editId).disable();
 						Automne.message.popup({
 							msg: 				al.validateDraftConfirm,
 							buttons: 			Ext.MessageBox.OKCANCEL,
@@ -222,10 +223,10 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 							scope:				this,
 							fn: 				function (button) {
 								if (button == 'cancel') {
+									Ext.getCmp('editValidateDraft'+ this.editId).enable();
+									Ext.getCmp('editSaveDraft'+ this.editId).enable();
 									return;
 								}
-								Ext.getCmp('editValidateDraft'+ this.editId).disable();
-								Ext.getCmp('editSaveDraft'+ this.editId).disable();
 								Automne.server.call({
 									url:				'page-controler.php',
 									params: 			{
@@ -250,6 +251,8 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 					hidden:			true,
 					scope:			this,
 					handler:		function() {
+						Ext.getCmp('editValidateDraft'+ this.editId).disable();
+						Ext.getCmp('editSaveDraft'+ this.editId).disable();
 						Automne.message.popup({
 							msg: 				al.submitDraftConfirm,
 							buttons: 			Ext.MessageBox.OKCANCEL,
@@ -259,10 +262,10 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 							scope:				this,
 							fn: 				function (button) {
 								if (button == 'cancel') {
+									Ext.getCmp('editValidateDraft'+ this.editId).enable();
+									Ext.getCmp('editSaveDraft'+ this.editId).enable();
 									return;
 								}
-								Ext.getCmp('editValidateDraft'+ this.editId).disable();
-								Ext.getCmp('editSaveDraft'+ this.editId).disable();
 								Automne.server.call({
 									url:				'page-controler.php',
 									params: 			{
@@ -330,11 +333,16 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 			this.setDisabled(false);
 		}
 		//if frame element is known (this is not the first activation of panel), then force reload it
-		if (!this.noReload && this.frameEl && (
-				this.pageId != Automne.tabPanels.pageId || 
-				(this.frameDocument && (this.frameDocument.location.href.indexOf(this.frameURL) === -1 || this.frameURL.indexOf('?') !== -1 || this.frameURL.indexOf('?') != this.frameDocument.location.href.indexOf('?'))) || 
-				newTab.id == 'edit')) {
-			this.reload();
+		try {
+			if (!this.noReload && this.frameEl && (
+					this.pageId != Automne.tabPanels.pageId || 
+					(this.frameDocument && this.frameDocument.location && (this.frameDocument.location.href.indexOf(this.frameURL) === -1 || this.frameURL.indexOf('?') !== -1 || this.frameURL.indexOf('?') != this.frameDocument.location.href.indexOf('?'))) || 
+					newTab.id == 'edit')) {
+				this.reload();
+			}
+		} catch (e) {
+			//an error occured during frame location analysis. Recreate frame content.
+			this.resetFrame();
 		}
 		this.noReload = false;
 		return true;
@@ -376,10 +384,16 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 		if (this.disabled) {
 			this.setDisabled(false);
 		}
-		//get frame and document from event
-		this.loadFrameDocument();
-		var win = this.getWin();
-		Automne.catchF5(this.getDoc(), win);
+		try {
+			//get frame and document from event
+			this.loadFrameDocument();
+			var win = this.getWin();
+			Automne.catchF5(this.getDoc(), win);
+		} catch (e) {
+			//an error occured during frame location analysis. Recreate frame content.
+			this.resetFrame();
+		}
+		
 		//for all browsers except gecko, set an onclick event to remove search engine if displayed
 		//use onclick because ext event does not work on iframe document
 		try {
@@ -415,10 +429,12 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 					Ext.History.add('page:' + response.getResponseHeader['X-Automne-PageId'], true);
 				}
 			});*/
-			//display redirection message
-			this.setFrameURL('/automne/admin/page-redirect-info.php?url=' + win.location.href);
-			this.reload();
-		} else if(this.id == 'public' && this.pageId && this.pageId != 'false') {
+			if (win.location.href.indexOf('/automne/admin/') === -1) {
+				//display redirection message
+				this.setFrameURL('/automne/admin/page-redirect-info.php?url=' + win.location.href);
+				this.reload();
+			}
+		} else if(/*this.id == 'public' && */this.pageId && this.pageId != 'false') {
 			//add page to history
 			Ext.History.add('page:' + this.pageId, true);
 		}
@@ -434,8 +450,12 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 		if (!this.frameEl || !this.body) {
 			return;
 		}
-		this.frameEl.setWidth(this.body.getBox().width);
-		this.frameEl.setHeight(this.body.getBox().height);
+		var box = this.body.getBox();
+		if (!box.width || !box.height) {
+			return;
+		}
+		this.frameEl.setWidth(box.width);
+		this.frameEl.setHeight(box.height);
 	},
 	//catch all click into frame links and form submission to redirect action
 	catchFrameLinks: function () {
@@ -459,10 +479,10 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 					var location = '';
 					var parts = this.frameURL.split('#');
 					if (parts[1]) {
-						location = parts[0] + ((parts[0].indexOf('#') === -1) ? '?' : '&') + '_dc='+ (new Date()).getTime() + ((this.editable) ? '&editId='+ this.editId : '');
+						location = parts[0] + ((parts[0].indexOf('#') === -1) ? '?' : '&') + '_dc='+ (new Date()).getTime() + ((this.editable) ? '&editId='+ this.editId : '') + '&context=adminframe';
 						location += '#' + parts[1];
 					} else {
-						location = this.frameURL + ((this.frameURL.indexOf('?') === -1) ? '?' : '&') + '_dc='+ (new Date()).getTime() + ((this.editable) ? '&editId='+ this.editId : '');
+						location = this.frameURL + ((this.frameURL.indexOf('?') === -1) ? '?' : '&') + '_dc='+ (new Date()).getTime() + ((this.editable) ? '&editId='+ this.editId : '') + '&context=adminframe';
 					}
 					this.frameDocument.location = location;
 				} catch (e) {
@@ -527,6 +547,24 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 			pr(e, 'error');
 		}
 		return win;
+	},
+	resetFrame: function() {
+		pr('Iframe error : reset it');
+		if (this.frameEl) {
+			//pr(this.frameEl);
+			//pr(this.frameEl.dom.contentDocument.URL);
+			var frameParent = this.frameEl.parent();
+			this.frameEl.remove();
+			this.frameEl = frameParent.createChild({tag:'iframe', id:this.id + 'Frame', width:'100%', height:'100%', frameborder:'no', src:Ext.SSL_SECURE_URL});
+			this.setFrameURL('/automne/admin/frame-error.php');
+			if (this.frameEl) {
+				this.frameEvents = false;
+				//set frame events
+				this.setFrameEvents();
+				this.resize();
+				this.reload();
+			}
+		}
 	}
 });
 Ext.reg('framePanel', Automne.framePanel);

@@ -254,7 +254,10 @@ Ext.ux.Multiselect2 = Ext.extend(Ext.form.Field,  {
         this.view.clearSelections();
         this.hiddenField.dom.value = '';
         
-        if (!values || (values == '')) { return; }
+        if (!values || (values == '')) { 
+			this.store.removeAll()
+			return; 
+		}
         
 		this.store.load({
 			params:{itemsOrdered:values},

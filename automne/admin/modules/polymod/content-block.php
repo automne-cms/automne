@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: content-block.php,v 1.4 2009/11/10 16:57:21 sebastien Exp $
+// $Id: content-block.php,v 1.5 2010/01/18 15:25:24 sebastien Exp $
 
 /**
   * PHP page : Load polymod item interface
@@ -114,9 +114,13 @@ $items = array();
 $rowParams = array();
 if (sizeof($blockParamsDefinition['search'])) {
 	foreach ($blockParamsDefinition['search'] as $searchName => $searchParams) {
-		//load searched object
-		$object = new CMS_poly_object_definition($searchParams['searchType']);
+		$searchType = $searchParams['searchType'];
 		unset($searchParams['searchType']);
+		if (!$searchParams) {
+			continue;
+		}
+		//load searched object
+		$object = new CMS_poly_object_definition($searchType);
 		if (!$object->hasError()) {
 			//load fields objects for object
 			$objectFields = CMS_poly_object_catalog::getFieldsDefinition($object->getID());
@@ -362,7 +366,7 @@ if (sizeof($rowParams) == 1 && $rowParams[0] == 'item') {
 		var propertiesTip = new Ext.ToolTip({
 			target:		 window.tools['help'],
 			title:			 '{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP)}',
-			html:			 'Sur cette page, vous pouvez spécifier des paramètres pour l\'affichage de la rangée de contenu en cours d\'édition.',
+			html:			 '{$cms_language->getJsMessage(MESSAGE_TOOLBAR_HELP_DESC, false, MOD_POLYMOD_CODENAME)}',
 			dismissDelay:	0
 		});
 		var selectedItem = '{$selectedItem}';

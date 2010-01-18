@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: script.php,v 1.5 2009/10/28 16:27:00 sebastien Exp $
+// $Id: script.php,v 1.6 2010/01/18 15:30:54 sebastien Exp $
 
 /**
   * background script : regenerator
@@ -30,7 +30,7 @@
 //must calculate the document root first
 $_SERVER["DOCUMENT_ROOT"] = realpath(substr(dirname(__FILE__), 0, strlen(dirname(__FILE__)) - strpos(strrev(dirname(__FILE__)), "enmotua") - strlen("automne") - 1));
 
-//define appliaction type
+//define application type
 define('APPLICATION_EXEC_TYPE', 'cli');
 //include required file
 require_once($_SERVER["DOCUMENT_ROOT"] . "/cms_rc_admin.php");
@@ -163,7 +163,7 @@ class automne_script extends backgroundScript
 							// On windows system
 							//Create the BAT file
 							$command ="@echo off"."\r\n"."@start /BELOWNORMAL ".str_replace('program files', 'progra~1',str_replace('/', "\\", PATH_PHP_CLI_WINDOWS))." " . str_replace('program files', 'progra~1',str_replace('/', '\\', PATH_PACKAGES_FS)) . '\scripts\script.php -s '.$data["id_reg"];
-							if (!touch (PATH_WINDOWS_BIN_FS."/sub_script.bat")) {
+							if (!@touch(PATH_WINDOWS_BIN_FS."/sub_script.bat")) {
 								$this->raiseError(processManager::MASTER_SCRIPT_NAME." : Create file error : sub_script.bat");
 							}
 							$fh = fopen( PATH_WINDOWS_BIN_FS."/sub_script.bat", "wb" );

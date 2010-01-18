@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: login-form.php,v 1.2 2009/11/27 15:38:06 sebastien Exp $
+// $Id: login-form.php,v 1.3 2010/01/18 15:23:54 sebastien Exp $
 
 /**
   * PHP page : Login form
@@ -57,7 +57,9 @@ switch ($cms_action) {
 case "login":
 	$permanent = isset($_POST["permanent"]) ? $_POST["permanent"] : 0;
 	$cms_context = new CMS_context($_POST["login"], $_POST["pass"], $permanent, $_POST["atm-token"]);
+	//CMS_grandFather::log('Login ok1 (user : '.$cms_context->getUserId().')');
 	if (!$cms_context->hasError() && ($cms_user = $cms_context->getUser()) && $cms_user->hasAdminAccess()) {
+		//CMS_grandFather::log('Login ok2 (user : '.$cms_context->getUserId().')');
 		$_SESSION["cms_context"] = $cms_context;
 		//launch the daily routine in case it's not in the cron
 		CMS_module_standard::processDailyRoutine();
@@ -76,19 +78,18 @@ case "login":
 		}
 		
 		//then set context, remove login window and load Automne interface
-		$jscontent = '
-		//remove event closeAndBack on window
+		$jscontent = '/*remove event closeAndBack on window*/
 		Ext.WindowMgr.get(\'loginWindow\').un(\'beforeclose\', Ext.WindowMgr.get(\'loginWindow\').closeAndBack);
-		//add event to load Automne interface after close
+		/*add event to load Automne interface after close*/
 		Ext.WindowMgr.get(\'loginWindow\').on(\'close\', Automne.load.createDelegate(this, ['.sensitiveIO::jsonEncode($userSessionsInfos).']));
-		//display welcome message
+		/*display welcome message*/
 		Automne.message.show(\''.sensitiveIO::sanitizeJSString($welcome).'\');
 		if (Ext.Element.cache[\'loginField\']) {delete Ext.Element.cache[\'loginField\']};
 		';
 		//add all JS locales
 		$jscontent .= CMS_context::getJSLocales();
 		$jscontent .= '
-		//close login window
+		/*close login window*/
 		Ext.WindowMgr.get(\'loginWindow\').close();';
 		//eval content into parent
 		$jscontent = '
@@ -107,6 +108,8 @@ case "login":
 				Ext.fly('loginField').dom.select();
 			}
 		});";
+		//reset cms_context session (start fresh)
+		unset($_SESSION['cms_context']);
 	}
 	break;
 }
@@ -155,7 +158,7 @@ $jscontent =
 				if (Ext.fly('loginField').dom.value && Ext.fly('passField').dom.value) {
 					this.getEl().dom.submit();
 				} else {
-					Ext.MessageBox.show({
+					parent.Ext.MessageBox.show({
 						msg: '{$language->getJsMessage(MESSAGE_ERROR_REQUIRED_FIELD)}',
 						buttons: Ext.MessageBox.OK,
 						icon: Ext.MessageBox.ERROR,

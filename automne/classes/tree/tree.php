@@ -15,7 +15,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: tree.php,v 1.9 2009/11/27 16:30:08 sebastien Exp $
+// $Id: tree.php,v 1.10 2010/01/18 15:30:55 sebastien Exp $
 
 /**
   * Class CMS_tree
@@ -527,7 +527,7 @@ class CMS_tree extends CMS_grandFather
 			CMS_grandFather::raiseError("Ancestor and page must be instances of CMS_page");
 			return false;
 		}
-		$lineage = CMS_tree::getLineage($ancestor, $page, $publicTree);
+		$lineage = CMS_tree::getLineage($ancestor, $page, true, $publicTree);
 		if ($lineage) {
 			return true;
 		} else {
@@ -1221,6 +1221,33 @@ class CMS_tree extends CMS_grandFather
 	}
 	
 	/**
+	  * Does the page has an ancestor ?
+	  * Static function.
+	  *
+	  * @param integer $pageId The page to check for ancestor
+	  * @param boolean $publicTree Do we want to fetch the public tree or the edited one ?
+	  * @return boolean true or false
+	  * @access public
+	  */
+	function hasAncestor($pageId, $publicTree = false) {
+		$table = ($publicTree) ? "linx_tree_public" : "linx_tree_edited";
+		//check that the page ain't already in the tree
+		$sql = "
+			select
+				1
+			from
+				".$table."
+			where
+				sibling_ltr='".sensitiveIO::sanitizeSQLString($pageId)."'
+		";
+		$q = new CMS_query($sql);
+		if ($q->getNumRows()) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
 	  * Attach a page to the tree (references it in the linx_tree tables)
 	  * Static function.
 	  *
@@ -1246,16 +1273,7 @@ class CMS_tree extends CMS_grandFather
 		$ancestorId = (is_object($ancestor)) ? $ancestor->getID() : $ancestor;
 		$table = ($publicTree) ? "linx_tree_public" : "linx_tree_edited";
 		//check that the page ain't already in the tree
-		$sql = "
-			select
-				1
-			from
-				".$table."
-			where
-				sibling_ltr='".sensitiveIO::sanitizeSQLString($pageId)."'
-		";
-		$q = new CMS_query($sql);
-		if ($q->getNumRows()) {
+		if (CMS_tree::hasAncestor($pageId, $publicTree)) {
 			return true;
 		}
 		if ($publicTree) {
@@ -1519,12 +1537,30 @@ class CMS_tree extends CMS_grandFather
 	  * @access public
 	  */
 	function analyseURL($pageUrl, $useDomain = true) {
+		if (strpos($pageUrl, PATH_FORBIDDEN_WR) === 0 || strpos($pageUrl, PATH_SPECIAL_PAGE_NOT_FOUND_WR) === 0) {
+			return false;
+		}
 		$requestedPageId = null;
-		$urlinfo = parse_url($pageUrl);
-		$pathinfo = pathinfo($urlinfo['path']);
-		$basename = (isset($pathinfo['filename'])) ? $pathinfo['filename'] : $pathinfo['basename'];
+		$urlinfo = @parse_url($pageUrl);
+		if (isset($urlinfo['path'])) {
+			$pathinfo = pathinfo($urlinfo['path']);
+			$basename = (isset($pathinfo['filename'])) ? $pathinfo['filename'] : $pathinfo['basename'];
+		}
 		if (isset($urlinfo['query'])) {
 			$querystring = $urlinfo['query'];
+		}
+		if ($useDomain) {
+			$httpHost = @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST'];
+			//search page id by domain address
+			$domain = isset($urlinfo['host']) ? $urlinfo['host'] : $httpHost;
+			//get websites
+			$websites = CMS_websitesCatalog::getAll('order');
+			$domainFounded = false;
+			foreach ($websites as $website) {
+				if ($domainFounded === false && io::strtolower(@parse_url($website->getURL(), PHP_URL_HOST)) == io::strtolower($domain)) {
+					$domainFounded = $website;
+				}
+			}
 		}
 		//if basename founded
 		if (isset($urlinfo['path']) && $urlinfo['path'] != '/' && $basename && ((isset($pathinfo['extension']) && strtolower($pathinfo['extension']) == 'php') || !isset($pathinfo['extension']))) {
@@ -1540,24 +1576,13 @@ class CMS_tree extends CMS_grandFather
 			if (isset($requestedPageId[1]) && sensitiveIO::IsPositiveInteger($requestedPageId[1])) {
 				//try to instanciate the requested page
 				$cms_page = CMS_tree::getPageByID($requestedPageId[1]);
-				if ($cms_page && !$cms_page->hasError()) {
+				if ($cms_page && !$cms_page->hasError() && $domainFounded) {
 					return $cms_page;
 				}
 			}
 		} elseif ($useDomain) {
-			$httpHost = parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST'];
-			//search page id by domain address
-			$domain = isset($urlinfo['host']) ? $urlinfo['host'] : $httpHost;
-			//get websites
-			$websites = CMS_websitesCatalog::getAll('order');
-			$founded = false;
-			foreach ($websites as $website) {
-				if ($founded === false && io::strtolower($website->getURL(false)) == io::strtolower($domain)) {
-					$founded = $website;
-				}
-			}
-			if (is_object($founded)) {
-				$cms_page = $founded->getRoot();
+			if (is_object($domainFounded)) {
+				$cms_page = $domainFounded->getRoot();
 				if ($cms_page && !$cms_page->hasError()) {
 					return $cms_page;
 				}

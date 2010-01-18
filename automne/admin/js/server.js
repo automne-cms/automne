@@ -7,7 +7,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: server.js,v 1.4 2009/10/28 16:26:15 sebastien Exp $
+  * $Id: server.js,v 1.5 2010/01/18 15:24:30 sebastien Exp $
   */
 Automne.server = {
 	call: function (url, fcn, params, scope) {
@@ -164,8 +164,12 @@ Automne.server = {
 	},
 	//method used for a server call : failure response
 	failureResponse: function (response, options, e, type) {
-		if (response.responseXML && response.responseXML.getElementsByTagName('disconnected').length) {
+		if (response && response.responseXML && response.responseXML.getElementsByTagName && response.responseXML.getElementsByTagName('disconnected').length) {
 			//failure can be the result of a disconnection so return 
+			return;
+		}
+		if (!(Automne && Automne.context && Automne.context.debug & 1)) {
+			//debug is not active so skip message
 			return;
 		}
 		var al = Automne.locales;

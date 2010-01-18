@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: item-selector.php,v 1.3 2009/10/22 16:28:07 sebastien Exp $
+// $Id: item-selector.php,v 1.4 2010/01/18 15:25:24 sebastien Exp $
 
 /**
   * PHP page : Load polymod items search window.
@@ -72,8 +72,6 @@ $fatherId = sensitiveIO::request('fatherId');
 $objectId = sensitiveIO::request('objectId', 'sensitiveIO::isPositiveInteger');
 $codename = sensitiveIO::request('module', CMS_modulesCatalog::getAllCodenames());
 $selectedItem = sensitiveIO::request('selectedItem', 'sensitiveIO::isPositiveInteger', '');
-
-
 
 if (!$codename) {
 	CMS_grandFather::raiseError('Unknown module ...');

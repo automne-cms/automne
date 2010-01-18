@@ -15,7 +15,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: dialoghref.php,v 1.4 2009/11/10 16:49:00 sebastien Exp $
+// $Id: dialoghref.php,v 1.5 2010/01/18 15:30:52 sebastien Exp $
 
 /**
   * Class CMS_dialog_href
@@ -161,6 +161,14 @@ class CMS_dialog_href extends CMS_grandFather
 				} else {
 					@chmod ($path."/".$filename, octdec(FILES_CHMOD));
 				}
+				//check uploaded file
+				$tmp = new CMS_file($path."/".$filename);
+				if (!$tmp->checkUploadedFile()) {
+					$tmp->delete();
+					$this->raiseError("Error while uploading file {$_FILES[$this->_prefix.'link_file']['name']}");
+					$filename = '';
+				}
+				unset($tmp);
 			} else {
 				$filename = '';
 			}

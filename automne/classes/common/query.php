@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: query.php,v 1.5 2009/10/22 16:30:00 sebastien Exp $
+// $Id: query.php,v 1.6 2010/01/18 15:30:52 sebastien Exp $
 
 /**
   * Class CMS_query
@@ -98,7 +98,7 @@
 				$errorInfos = $this->_db->errorInfo();
 				if (isset($errorInfos[2])) {
 					$clean_sql = str_replace("\n", "", $this->_sql);
-					$clean_sql = ereg_replace("\t+", " ", $clean_sql); //TODOV4
+					$clean_sql = preg_replace("#\t+#", " ", $clean_sql);
 					$errorInfo = isset($errorInfos[2]) ? $errorInfos[2] : 'No error returned';
 					$this->raiseError('Database querying failed : '.$errorInfo."\nQuery : ".$clean_sql);
 				}
@@ -108,7 +108,7 @@
 					$this->_numRows = $this->_result->rowCount();
 				} else {
 					$clean_sql = str_replace("\n", "", $this->_sql);
-					$clean_sql = ereg_replace("\t+", " ", $clean_sql); //TODOV4
+					$clean_sql = preg_replace("#\t+#", " ", $clean_sql);
 					$errorInfos = $this->_db->errorInfo();
 					$errorInfo = isset($errorInfos[2]) ? $errorInfos[2] : 'No error returned';
 					$this->raiseError('Database querying failed : '.$errorInfo."\nQuery : ".$clean_sql);
@@ -148,7 +148,7 @@
 			}
 		}
 		$clean_sql = str_replace("\n", "", $this->_sql);
-		$clean_sql = ereg_replace("\t+", " ", $clean_sql); //TODOV4
+		$clean_sql = preg_replace("#\t+#", " ", $clean_sql);
 		$errorInfos = $this->_db->errorInfo();
 		$errorInfo = isset($errorInfos[2]) ? $errorInfos[2] : 'no error returned';
 		$this->raiseError('Prepared query failed : '.$errorInfo."\nQuery : ".$clean_sql."\nParameters : ".print_r($params,true));
@@ -215,7 +215,7 @@
 	  * @access public
 	  */
 	public function getValue($field) {
-		return ($arr = $this->getArray()) ?  $arr[$field] : false;
+		return ($arr = $this->getArray()) ?  (isset($arr[$field]) ? $arr[$field] : false) : false;
 	}
 	
 	/**

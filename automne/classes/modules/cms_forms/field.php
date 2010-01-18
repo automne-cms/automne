@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: field.php,v 1.6 2009/11/10 16:48:59 sebastien Exp $
+// $Id: field.php,v 1.7 2010/01/18 15:30:53 sebastien Exp $
 
 /**
   * Class CMS_forms_field
@@ -487,8 +487,8 @@ class CMS_forms_field extends CMS_grandFather {
 		$identifier .= ($this->getAttribute('type') == 'url') ? '_url':'';
 		$identifier .= ($this->getAttribute('type') == 'pass') ? '_pass':'';
 		$identifier .= ($this->getAttribute('required')) ? '_req':'';
-		
-		return 'z'.base64_encode($identifier);
+		$identifier = rtrim(base64_encode($identifier), '=');
+		return 'z'.$identifier;
 	}
 	
 	/**
@@ -595,7 +595,7 @@ class CMS_forms_field extends CMS_grandFather {
 			break;
 			case 'textarea':
 				$label = '<label for="'.$fieldIDDatas.'">'.$this->getAttribute("label").'</label>';
-				$input = '<textarea id="'.$fieldIDDatas.'" name="'.$this->getAttribute("name").'">'.io::htmlspecialchars($this->getAttribute("value")).'</textarea>';
+				$input = '<textarea cols="40" rows="6" id="'.$fieldIDDatas.'" name="'.$this->getAttribute("name").'">'.io::htmlspecialchars($this->getAttribute("value")).'</textarea>';
 			break;
 		}
 		return array($label, $input);

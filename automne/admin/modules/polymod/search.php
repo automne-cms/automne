@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: search.php,v 1.6 2009/11/10 16:57:21 sebastien Exp $
+// $Id: search.php,v 1.7 2010/01/18 15:25:24 sebastien Exp $
 
 /**
   * PHP page : Load polyobjects items datas
@@ -96,6 +96,7 @@ $keywords = sensitiveIO::request('items_'.$object->getID().'_kwrds', '', $_SESSI
 $dateFrom = sensitiveIO::request('items_dtfrm', '', $_SESSION["cms_context"]->getSessionVar('items_dtfrm'));
 $dateEnd = sensitiveIO::request('items_dtnd', '', $_SESSION["cms_context"]->getSessionVar('items_dtnd'));
 $sort = sensitiveIO::request('sort_'.$object->getID(), '', $_SESSION["cms_context"]->getSessionVar('sort_'.$object->getID()));
+$status = sensitiveIO::request('status_'.$object->getID(), '', $_SESSION["cms_context"]->getSessionVar('status_'.$object->getID()));
 $direction = sensitiveIO::request('direction_'.$object->getID(), '', $_SESSION["cms_context"]->getSessionVar('direction_'.$object->getID()));
 //Add all subobjects to search if any
 $fields = array();
@@ -114,6 +115,7 @@ $_SESSION["cms_context"]->setSessionVar('items_'.$object->getID().'_kwrds', $key
 $_SESSION["cms_context"]->setSessionVar("items_dtfrm", $dateFrom);
 $_SESSION["cms_context"]->setSessionVar("items_dtnd", $dateEnd);
 $_SESSION["cms_context"]->setSessionVar('sort_'.$object->getID(), $sort);
+$_SESSION["cms_context"]->setSessionVar('status_'.$object->getID(), $status);
 $_SESSION["cms_context"]->setSessionVar('direction_'.$object->getID(), $direction);
 //Add all subobjects to search if any
 foreach ($objectFields as $fieldID => $field) {
@@ -158,6 +160,9 @@ if ($object->isPrimaryResource()) {
 		if (!CMS_date::compare($dt_from, $dt_end, ">=")) {
 			$search->addWhereCondition("publication date before", $dt_end);
 		}
+	}
+	if ($status) {
+		$search->addWhereCondition("status", $status);
 	}
 }
 //Add all subobjects to search if any

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_definition_funtions.php,v 1.5 2009/11/10 16:48:59 sebastien Exp $
+// $Id: poly_definition_funtions.php,v 1.6 2010/01/18 15:30:53 sebastien Exp $
 
 /**
   * static Class CMS_poly_definition_functions
@@ -159,6 +159,19 @@ class CMS_poly_definition_functions
 	}
 	
 	/**
+	  * Return a PHP constant value of a given name and check it for a given type
+	  *
+	  * @param string $name : the constant name to get
+	  * @param string $type : the type of value to check
+	  * @return mixed : the constant value
+	  * @access public
+	  * @static
+	  */
+	function getConstant($name, $type) {
+		return CMS_poly_definition_functions::getVarContent('constant', $name, $type);
+	}
+	
+	/**
 	  * Return a variable value of a given name and check it for a given dataType
 	  *
 	  * @param string $varType : the variable type to get between var, request, session
@@ -176,7 +189,7 @@ class CMS_poly_definition_functions
 		switch ($varType) {
 			case 'request':
 				if ($dataType == 'string') {
-					$dataType = 'safestring'; //To avoid XSS
+					$dataType = 'safestring'; //Force safestring to avoid XSS
 				}
 				$varContent = isset($_REQUEST[$name]) ? $_REQUEST[$name] : null;
 			break;
@@ -186,6 +199,9 @@ class CMS_poly_definition_functions
 			case 'var':
 				global ${$name};
 				$varContent = (${$name} !== null) ? ${$name} : $varValue;
+			break;
+			case 'constant':
+				$varContent = defined($name) ? constant($name) : null;
 			break;
 			default:
 				CMS_grandFather::raiseError('Unknown var type to get : '.$varType);

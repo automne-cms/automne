@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: tree-nodes.php,v 1.4 2009/11/10 16:57:20 sebastien Exp $
+// $Id: tree-nodes.php,v 1.5 2010/01/18 15:23:55 sebastien Exp $
 
 /**
   * PHP page : Load tree window infos
@@ -94,19 +94,21 @@ if (isset($node) && $node->getID() == $rootId) {
 			//get lineage for this clearance root
 			$rootLineage = CMS_tree::getLineage(APPLICATION_ROOT_PAGE_ID, $pageRootID, false);
 			//go through lineage to check for a break in pages rights
-			$ancestor = array_pop($rootLineage);
-			$lastAncestor = '';
-			
-			while ($rootLineage && $cms_user->hasPageClearance($ancestor, ($editable ? CLEARANCE_PAGE_EDIT : CLEARANCE_PAGE_VIEW))) {
-				$lastAncestor = $ancestor;
+			if (is_array($rootLineage)) {
 				$ancestor = array_pop($rootLineage);
-			}
-			if ($rootLineage && $lastAncestor && !isset($siblings['ancestor'.$lastAncestor])) { //lineage has a break in pages rights so append page to siblings
-				$pageRoot = CMS_tree::getPageByID($lastAncestor);
-				if ($pageRoot->hasError()) {
-					CMS_grandFather::raiseError('Node page '.$lastAncestor.' has error ...');
-				} else {
-					$siblings['ancestor'.$lastAncestor] = $pageRoot;
+				$lastAncestor = '';
+				
+				while ($rootLineage && $cms_user->hasPageClearance($ancestor, ($editable ? CLEARANCE_PAGE_EDIT : CLEARANCE_PAGE_VIEW))) {
+					$lastAncestor = $ancestor;
+					$ancestor = array_pop($rootLineage);
+				}
+				if ($rootLineage && $lastAncestor && !isset($siblings['ancestor'.$lastAncestor])) { //lineage has a break in pages rights so append page to siblings
+					$pageRoot = CMS_tree::getPageByID($lastAncestor);
+					if ($pageRoot->hasError()) {
+						CMS_grandFather::raiseError('Node page '.$lastAncestor.' has error ...');
+					} else {
+						$siblings['ancestor'.$lastAncestor] = $pageRoot;
+					}
 				}
 			}
 		}

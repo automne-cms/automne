@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: super_resource.php,v 1.5 2009/11/26 10:37:31 sebastien Exp $
+// $Id: super_resource.php,v 1.6 2010/01/18 15:30:53 sebastien Exp $
 
 /**
   * General-purpose Class
@@ -414,7 +414,7 @@ class CMS_superResource extends CMS_resource
 	  */
 	function getInteger($integer)
 	{
-		if ($this->_tableData[$integer][0]=="integer" || $this->_tableData[$integer][0]=="positiveInteger") {
+		if (isset($this->_tableData[$integer]) && ($this->_tableData[$integer][0]=="integer" || $this->_tableData[$integer][0]=="positiveInteger")) {
 			return $this->_tableData[$integer][1];
 		} else {
 			$this->raiseError("Unknown integer :".$integer);
@@ -442,8 +442,8 @@ class CMS_superResource extends CMS_resource
 			//here you can verifiy string data
 			switch ($this->_tableData[$integerName][0]) {
 				case "integer":
-					if (!(SensitiveIO::isPositiveInteger($integerValue) || $integerValue === 0 || $integerValue === '0' || (is_numeric($integerValue) && SensitiveIO::isPositiveInteger(abs($integerValue))))) {
-						$this->raiseError("Try to set an integer with uncorrect format :".$integerValue);
+					if (!(SensitiveIO::isPositiveInteger($integerValue) || $integerValue === 0 || $integerValue === '0' || !$integerValue || (is_numeric($integerValue) && SensitiveIO::isPositiveInteger(abs($integerValue))))) {
+					 	$this->raiseError("Try to set an integer with uncorrect format :".$integerValue);
 						return false;
 					}
 				break;
@@ -1200,8 +1200,9 @@ class CMS_superResource extends CMS_resource
 	  * @return array() The list of string ordered
 	  * @access public
 	  */
-	function getList($stringName,$whereConditions=array(),$orderConditions=array(),$public=false)
+	function getList($stringName,$whereConditions=array(),$orderConditions=array(),$public=false, $withIndex = false)
 	{
+		$where = $order = $from = '';
 		//from clause
 		if ($this->_hasResource()) {
 			$from = ($public) ? $this->_tableName.'_public':$this->_tableName.'_edited';
@@ -1276,7 +1277,7 @@ class CMS_superResource extends CMS_resource
 			// the sql request
 			$sql = "
 				select
-					distinct ".$stringName.$this->_tableSufix."
+					distinct ".$stringName.$this->_tableSufix." ".($withIndex ? ", id".$this->_tableSufix : '')."
 				from
 					".$from."
 					".$where."
@@ -1286,7 +1287,11 @@ class CMS_superResource extends CMS_resource
 			$r=array();
 			if ($q->getNumRows()) {
 				while ($arr = $q->getArray()) {
-					$r[]=$arr[$stringName.$this->_tableSufix];
+					if ($withIndex) {
+						$r[$arr['id'.$this->_tableSufix]]=$arr[$stringName.$this->_tableSufix];
+					} else {
+						$r[]=$arr[$stringName.$this->_tableSufix];
+					}
 				}
 			}
 			return $r;

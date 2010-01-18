@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4: */
 // +----------------------------------------------------------------------+
@@ -11,30 +10,27 @@
 // | LICENSE-GPL, and is available through the world-wide-web at		  |
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
-// | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
+// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: regenerateall.php,v 1.4 2010/01/18 15:30:54 sebastien Exp $
+// $Id: ping.php,v 1.1 2010/01/18 15:23:55 sebastien Exp $
 
 /**
-  * background script : regenerateall
-  *
-  * Regenerates All the pages : call the function in CMS_tree and lauch regenerator
-  *
+  * PHP page : Simple empty page, used to refresh session
+  * 
   * @package CMS
-  * @subpackage backgroundScripts
-  * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
+  * @subpackage admin
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-@ini_set('memory_limit', "32M");
+require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 
-//must calculate the document root
-$_SERVER["DOCUMENT_ROOT"] = realpath(substr(dirname(__FILE__), 0, strlen(dirname(__FILE__)) - strpos(strrev(dirname(__FILE__)), "enmotua") - strlen("automne") - 1));
-
-//define application type
-define('APPLICATION_EXEC_TYPE', 'cli');
-
-require_once($_SERVER["DOCUMENT_ROOT"] . "/cms_rc_admin.php");
-
-CMS_tree::regenerateAllPages(true);
+//load interface instance
+$view = CMS_view::getInstance();
+//set default display mode for this page
+$view->setDisplayMode(CMS_view::SHOW_XML);
+//This file is an admin file. Interface must be secure
+$view->setSecure();
+//send
+$view->show();
 ?>

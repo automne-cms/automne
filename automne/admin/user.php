@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: user.php,v 1.6 2009/11/10 16:57:21 sebastien Exp $
+// $Id: user.php,v 1.7 2010/01/18 15:23:55 sebastien Exp $
 
 /**
   * PHP page : Load user detail window.
@@ -424,7 +424,7 @@ $jscontent = <<<END
 		}
 	});
 	//selection model
-	var sm = new Ext.grid.CheckboxSelectionModel({header:''});
+	var sm = new Ext.grid.CheckboxSelectionModel({header:'', checkOnly:true});
 	//set groups selection change events
 	sm.on({
 		'rowselect':{fn:function(sm, index, record) {

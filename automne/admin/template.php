@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: template.php,v 1.13 2009/11/10 16:57:20 sebastien Exp $
+// $Id: template.php,v 1.14 2010/01/18 15:23:55 sebastien Exp $
 
 /**
   * PHP page : Load template detail window.
@@ -64,6 +64,7 @@ define("MESSAGE_PAGE_XML_DEFINITION_USAGE_DESC", 1466);
 define("MESSAGE_PAGE_DEFAULT_ROWS", 1467);
 define("MESSAGE_PAGE_SAVE_AND_REGEN", 1548);
 define("MESSAGE_PAGE_SAVE_AND_REGEN_DESC", 1550);
+define("MESSAGE_PAGE_INCORRECT_FORM_VALUES", 682);
 
 $winId = sensitiveIO::request('winId', '', 'templateWindow');
 $templateId = sensitiveIO::request('template', 'sensitiveIO::isPositiveInteger', 'createTemplate');
@@ -98,7 +99,7 @@ if (sensitiveIO::isPositiveInteger($templateId)) {
 
 //Need to sanitize all datas which can contain single quotes
 $label = sensitiveIO::sanitizeJSString($template->getLabel());
-$description = sensitiveIO::sanitizeJSString($template->getDescription());
+$description = sensitiveIO::sanitizeJSString($template->getDescription(), false, true, true); //this is a textarea, we must keep cariage return
 $templateDefinition = $template->getDefinition();
 $imageName = $template->getImage();
 $templateGroups = $template->getGroups();
@@ -307,7 +308,7 @@ $jscontent = <<<END
 				fieldLabel:		'{$cms_language->getJsMessage(MESSAGE_PAGE_DESCRIPTION)}',
 				xtype:			'textarea',
 				name:			'description',
-				value:			'{$description}'
+				value:			"{$description}"
 			},{$groupsfield}{
 				fieldLabel:		'<span class="atm-help" ext:qtip="{$cms_language->getJsMessage(MESSAGE_PAGE_NEW_GROUPS_DESC)}">{$cms_language->getJsMessage(MESSAGE_PAGE_NEW_GROUPS)}</span>',
 				name:			'newgroup',
@@ -386,6 +387,8 @@ $jscontent = <<<END
 							},
 							scope:this
 						});
+					} else {
+						Automne.message.show('{$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_FORM_VALUES)}', '', templateWindow);
 					}
 				}
 			}]

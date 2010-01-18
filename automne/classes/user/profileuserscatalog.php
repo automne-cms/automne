@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: profileuserscatalog.php,v 1.6 2009/11/27 15:41:32 sebastien Exp $
+// $Id: profileuserscatalog.php,v 1.7 2010/01/18 15:30:55 sebastien Exp $
 
 /**
   * Class CMS_profile_usersCatalog
@@ -49,6 +49,33 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 			}
 		}
 		return $users[$id];
+	}
+	
+	/**
+	  * Returns a queried CMS_profile_user value
+	  * Static function.
+	  *
+	  * @param integer $id The DB ID of the wanted CMS_profile_user
+	  * @param string $type The value type to get
+	  * @return CMS_profile_user value or false on failure to find it
+	  * @access public
+	  */
+	function getUserValue($id, $type)
+	{
+		static $userInfos;
+		if (!SensitiveIO::isPositiveInteger($id)) {
+			CMS_grandFather::raiseError("User id must be positive integer");
+			return false;
+		}
+		if (!isset($userInfos[$id][$type])) {
+			$user = CMS_profile_usersCatalog::getByID($id);
+			if (!$user) {
+				return false;
+			} else {
+				$userInfos[$id][$type] = $user->getValue($type);
+			}
+		}
+		return $userInfos[$id][$type];
 	}
 	
 	/**
@@ -144,33 +171,44 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	  */
 	function getAll($activeOnly = false, $withDeleted = false, $returnObjects = true, $attrs = array()) {
         $attrWhere = '';
-        if($attrs and is_array($attrs)){
-                $availableAttrs = array('id_pru','login_pru','firstName_pru','lastName_pru','contactData_pru','profile_pru','language_pru','dn_pru','dn_pru');
-                foreach($attrs as $attrName => $attrValue){
-                        // Check $attrName is available
-                        if(in_array($attrName,$availableAttrs)){
-                                $and = ($attrWhere || (!$attrWhere && (!$withDeleted || $activeOnly))) ? " and " : "";
-                                // Sanitize value and set operator
-                                if (!is_array($attrValue)) {
-                                        $attrValue = sensitiveIO::sanitizeSQLString($attrValue);
-                                        $attrWhere.= $and." ".$attrName." = '".$attrValue."'";
-                                } elseif(is_array($attrValue)) {
-                                        $attrValue = array_map(array('sensitiveIO', 'sanitizeSQLString'), $attrValue);
-                                        foreach($attrValue as $key => $value){
-                                                $attrValue[$key] = "'".$value."'";
-                                        }
-                                        $attrWhere.= $and." ".$attrName." in (".implode(',',$attrValue).")";
-                                }
-                        } else {
-                                CMS_grandFather::_raiseError(__CLASS__.' : '.__FUNCTION__.' : attrName must be in availableAttrs array');
-                        }
-                }
-        }
+		$from = '';
+		if($attrs and is_array($attrs)){
+			$availableAttrs = array('id_pru', 'login_pru', 'firstName_pru', 'lastName_pru', 'contactData_pru', 'profile_pru', 'language_pru', 'dn_pru', 'textEditor_pru', 'email_cd');
+			foreach($attrs as $attrName => $attrValue){
+				// Check $attrName is available
+				if(in_array($attrName,$availableAttrs)){
+					$and = ($attrWhere || (!$attrWhere && (!$withDeleted || $activeOnly))) ? " and " : "";
+					// Sanitize value and set operator
+					if (!is_array($attrValue)) {
+						if($attrName == 'email_cd'){
+							// Special case : parameter is contactData email
+							$attrValue = sensitiveIO::sanitizeSQLString($attrValue);
+							if(SensitiveIO::isValidEmail($attrValue)){
+								$attrWhere .= $and." ".$attrName." = '".$attrValue."' and contactData_pru=id_cd";
+								$from .= ',contactDatas';
+							}
+						} else {
+							$attrValue = sensitiveIO::sanitizeSQLString($attrValue);
+							$attrWhere .= $and." ".$attrName." = '".$attrValue."'";
+						}
+					} elseif (is_array($attrValue)) {
+						$attrValue = array_map(array('sensitiveIO', 'sanitizeSQLString'), $attrValue);
+						foreach($attrValue as $key => $value){
+							$attrValue[$key] = "'".$value."'";
+						}
+						$attrWhere .= $and." ".$attrName." in (".implode(',',$attrValue).")";
+					}
+				} else {
+					CMS_grandFather::_raiseError(__CLASS__.' : '.__FUNCTION__.' : attrName must be in availableAttrs array');
+				}
+			}
+		}
 		$sql = "
 			select
 				id_pru
 			from
-				profilesUsers
+				profilesUsers 
+				".$from."
 			".(!$withDeleted || $activeOnly || $attrWhere ? " where " : '')."
 			".(!$withDeleted ? " deleted_pru='0'" : '')."
 			".(!$withDeleted && $activeOnly ? " and " : '')."
@@ -195,6 +233,111 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 			}
 		}
 		return $users;
+	}
+	
+	/**
+	 * Get user by ID
+	 * 
+	 * @access public
+	 * @param integer $userId The user ID
+	 * @return string XML definition object
+	 */
+	function soapGetUser($userId = 0) {
+	    $xml = '';
+	    $user = (SensitiveIO::isPositiveInteger($userId)) ? CMS_profile_usersCatalog::getByID($userId) : new CMS_profile_user();
+        $user = CMS_profile_usersCatalog::getByID($userId);
+        if($user && !$user->hasError() && $user->isActive()){
+            $contactData = $user->getContactData();
+            $language = $user->getLanguage();
+            
+            // Groups
+            $xmlGroups = '<groups>';
+            $userGroupsIds = CMS_profile_usersGroupsCatalog::getGroupsOfUser($user, false, true);
+            if($userGroupsIds){
+                foreach($userGroupsIds as $userGroup){
+                    $xmlGroups .= 
+                    '<group id="'.$userGroup->getGroupId().'">
+                        <label><![CDATA['.$userGroup->getLabel().']]></label>
+                        <description><![CDATA['.$userGroup->getDescription().']]></description>
+                    </group>';
+                }
+            } else {
+                $xmlGroups .= '<group id=""></group>';
+            }
+            $xmlGroups .= '</groups>';
+            
+            // User
+            $xml .= 
+            '<user>
+                <firstName><![CDATA['.$user->getFirstName().']]></firstName>
+                <lastName><![CDATA['.$user->getLastName().']]></lastName>
+                <login><![CDATA['.$user->getLogin().']]></login>
+                <active><![CDATA['.$user->isActive().']]></active>
+                <deleted><![CDATA['.$user->isDeleted().']]></deleted>
+                <language label="'.SensitiveIO::sanitizeHTMLString($language->getLabel()).'"><![CDATA['.$language->getCode().']]></language>
+                <contactData>
+                    <email><![CDATA['.$contactData->getEmail().']]></email>
+                    <service><![CDATA['.$contactData->getService().']]></service>
+                    <jobTitle><![CDATA['.$contactData->getJobTitle().']]></jobTitle>
+                    <addressField1><![CDATA['.$contactData->getAddressField1().']]></addressField1>
+                    <addressField2><![CDATA['.$contactData->getAddressField1().']]></addressField2>
+                    <addressField3><![CDATA['.$contactData->getAddressField1().']]></addressField3>
+                    <zip><![CDATA['.$contactData->getZip().']]></zip>
+                    <city><![CDATA['.$contactData->getCity().']]></city>
+                    <state><![CDATA['.$contactData->getState().']]></state>
+                    <country><![CDATA['.$contactData->getCountry().']]></country>
+                    <phone><![CDATA['.$contactData->getPhone().']]></phone>
+                    <cellphone><![CDATA['.$contactData->getCellPhone().']]></cellphone>
+                    <fax><![CDATA['.$contactData->getFax().']]></fax>
+                </contactData>'
+                .$xmlGroups.
+            '</user>';
+        }
+	    return $xml;
+	}
+	
+	/**
+	 * Search users by xml definition. Return XML
+	 * 
+	 * @access public
+	 * @param string $searchConditions XML definition to search with ('id','login','firstName','lastName','contactData','profile','language','dn')
+	 * @return string XML definition of users IDs
+	 */
+	function soapSearch($searchConditions = '') {
+	    $xml = '';
+	    $attrs = array();
+	    
+	    if($searchConditions){
+            $domdocument = new CMS_DOMDocument();
+		    try {
+			    $domdocument->loadXML($searchConditions, 0, false);
+		    } catch (DOMException $e) {
+			    CMS_profile_usersCatalog::raiseError('Parse error for xml : '.$e->getMessage()." :\n".$xml);
+			    return $xml;
+		    }
+            // Conditions tag must be the root tag
+            $conditionsTags = $domdocument->getElementsByTagName('conditions');
+            if(count($conditionsTags) == 1){
+                $conditionTags = $domdocument->getElementsByTagName('condition');
+                foreach($conditionTags as $conditionTag){
+                    $type = $conditionTag->getAttribute('type');
+                    $value = $conditionTag->nodeValue;
+                    $attrs[$type.'_pru'] = $value;
+                }
+            }
+        }
+        
+        $items = CMS_profile_usersCatalog::getAll(true, false, false, $attrs);
+        
+        if($items){
+            $xml .= '<results count="'.count($items).'">'."\n";
+            foreach($items as $itemID){
+                $xml .= '<result>'.$itemID.'</result>'."\n";
+            }
+            $xml .= '</results>';
+        }
+	    
+	    return $xml;
 	}
 	
 	/**

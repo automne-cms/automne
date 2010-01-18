@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_date.php,v 1.11 2009/11/10 16:49:01 sebastien Exp $
+// $Id: object_date.php,v 1.12 2010/01/18 15:30:53 sebastien Exp $
 
 /**
   * Class CMS_object_date
@@ -156,6 +156,9 @@ class CMS_object_date extends CMS_object_common
 		$date = new CMS_date();
 		$date->setFromDBValue($this->_subfieldValues[0]->getValue());
 		$params = $this->getParamsValues();
+		if (!is_object($cms_language)) {
+			$cms_language = new CMS_language(APPLICATION_DEFAULT_LANGUAGE);
+		}
 		if (!$date->isNull()) {
 			if (!$params['withHMS']) {
 				return $date->getLocalizedDate($cms_language->getDateFormat());
@@ -187,7 +190,7 @@ class CMS_object_date extends CMS_object_common
 		if ($this->_field->getValue('required')) {
 			$params = $this->getParamsValues();
 			//can be null if param setNow or creationDate is true
-			if ($params['setNow'] || $params['creationDate']) {
+			if ($params['setNow'] || $params['creationDate'] || $params['updateDate']) {
 				return true;
 			}
 			if (!isset($values[$prefixName.$this->_field->getID().'_0']) || !$values[$prefixName.$this->_field->getID().'_0']) {

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: grandfather.php,v 1.12 2009/11/10 16:48:58 sebastien Exp $
+// $Id: grandfather.php,v 1.13 2010/01/18 15:30:52 sebastien Exp $
 
 /**
   * Class CMS_grandFather
@@ -69,15 +69,14 @@ class CMS_grandFather
 	  * @return void
 	  * @access public (deprecated, use raiseError instead)
 	  */
-	public function _raiseError($errorMessage, $encodeOutput = false)
-	{
+	public function _raiseError($errorMessage, $encodeOutput = false, $error = true) {
 		static $errorNumber;
 		$systemDebug = (!defined('SYSTEM_DEBUG')) ? true : SYSTEM_DEBUG;
-		if (isset($this) && $this->_debug === NULL) {
+		if (isset($this) && isset($this->_debug) && $this->_debug === NULL) {
 			$this->_debug = $systemDebug;
 		}
 		//second condition are for static calls (made by static methods)
-		if (!defined('APPLICATION_EXEC_TYPE') || (APPLICATION_EXEC_TYPE == 'http' && ((!isset($this) && $systemDebug) || (isset($this) && $this->_debug)))) {
+		if (!defined('APPLICATION_EXEC_TYPE') || (APPLICATION_EXEC_TYPE == 'http' && ((!isset($this) && $systemDebug) || (isset($this) && isset($this->_debug) && $this->_debug)))) {
 			$backTrace = $backTraceLink = '';
 			if (isset($_SESSION) && isset($_SESSION["cms_context"]) && is_a($_SESSION["cms_context"],'CMS_context')) {
 				$backtraces = !isset($_SESSION['automneBacktraces']) ? array() : $_SESSION['automneBacktraces'];
@@ -98,17 +97,17 @@ class CMS_grandFather
 			//append error to current view
 			$view = CMS_view::getInstance();
 			$outputMessage = $encodeOutput ? io::htmlspecialchars($errorMessage) : $errorMessage;
-			$view->addError(array('error' => $outputMessage, 'backtrace' => $backTraceLink));
+			//$view->addError(array('error' => $outputMessage, 'backtrace' => $backTraceLink));
 		}
 		
 		//second condition are for static calls (made by static methods)
-		if (!isset($this) || $this->_log) {
+		if (!isset($this) || !isset($this->_log) || $this->_log) {
 			if (@file_put_contents(PATH_MAIN_FS.'/'.self::ERROR_LOG , date("Y-m-d H:i:s", mktime()).'|'.APPLICATION_EXEC_TYPE.'|'.$errorMessage."\n", FILE_APPEND) !== false) {
 				CMS_file::chmodFile(FILES_CHMOD, PATH_MAIN_FS.'/'.self::ERROR_LOG);
 			}
 		}
 		//must be at the end because it interferes with the static calls conditions above
-		if (isset($this)) {
+		if ($error && isset($this)) {
 			$this->_errRaised = true;
 		}
 	}
@@ -123,7 +122,20 @@ class CMS_grandFather
 	  */
 	public function raiseError($errorMessage, $encodeOutput = false) {
 		$errorMessage = sensitiveIO::getCallInfos().' : '.$errorMessage;
-		self::_raiseError($errorMessage, $encodeOutput);
+		self::_raiseError($errorMessage, $encodeOutput, true);
+	}
+	
+	/**
+	  * Log a message. Same usage of raiseError but does not mark error flag on object
+	  *
+	  * @param string $message the error message.
+	  * @param boolean $encodeOutput, does the screen output should be encoded (default : false)
+	  * @return void
+	  * @access public
+	  */
+	public function log($errorMessage, $encodeOutput = false) {
+		$errorMessage = sensitiveIO::getCallInfos().' : '.$errorMessage;
+		self::_raiseError($errorMessage, $encodeOutput, false);
 	}
 
 	/**

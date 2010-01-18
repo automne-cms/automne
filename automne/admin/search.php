@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: search.php,v 1.9 2009/11/10 16:57:20 sebastien Exp $
+// $Id: search.php,v 1.10 2010/01/18 15:23:55 sebastien Exp $
 
 /**
   * PHP page : Load page search window.
@@ -54,6 +54,7 @@ define("MESSAGE_TOOLBAR_HELP_DESC", 744);
 define("MESSAGE_PAGE_RESULTS_COUNT", 745);
 define("MESSAGE_PAGE_X_RESULTS_ON_Y", 746);
 define("MESSAGE_ACTION_VIEW_SELECTED", 747);
+define("MESSAGE_PAGE_CHECK_ALL", 1595);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -84,7 +85,7 @@ $searchPanel .= "{
 	name: 			'keyword',
 	value:			'{$search}',
 	minLength:		3,
-	anchor:			'100%',
+	anchor:			'-20px',
 	validateOnBlur:	false,
 	listeners:		{'valid':{
 		fn: 			searchWindow.search, 
@@ -149,17 +150,33 @@ if ($elements) {
 	}
 	$searchPanel .= "{
 		xtype: 		'checkboxgroup',
+		id: 		'searchCheckboxgroup',
 		fieldLabel: '".$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_SEARCH_IN)."',
 		columns: 	1,
-		items: [";
+		items: [
+			{boxLabel: '<em style=\"font-style:italic;\">".$cms_language->getJSMessage(MESSAGE_PAGE_CHECK_ALL)."</em>', checked: ".(sizeof($elements) == sizeof($checkedElements) ? 'true' : 'false').", listeners: {'check':function(field, checked) {
+				if (searchWindow.ok) {
+					searchWindow.ok = false;
+					Ext.getCmp('searchCheckboxgroup').items.each(function(el, group, index){
+						if (index == 0) {
+							return;
+						}
+						el.setValue(checked);
+					}, this);
+					searchWindow.ok = true;
+					//launch search
+					searchWindow.search();
+				}
+			}, scope:this}},
+		";
 		foreach ($elements as $element => $label) {
 			$label = sensitiveIO::sanitizeJSString($label);
 			//if search use special search code, only search on standard module
 			$checked = (!$search || (isset($checkedElements[$element]) && $checkedElements[$element])) ? 'true' : 'false';
-			$searchPanel .= "{boxLabel: '{$label}', inputValue:'{$element}',  checked: {$checked}, name: 'elements[]', listeners: {'check':searchWindow.search}},";
+			$searchPanel .= "{boxLabel: '{$label}', height:15, inputValue:'{$element}',  checked: {$checked}, name: 'elements[]', listeners: {'check':searchWindow.search}},";
 		}
 		//remove last comma from groups
-		$searchPanel = io::substr($searchPanel, 0, -1);
+		$searchPanel = substr($searchPanel, 0, -1);
 		$searchPanel .= "]
 	},";
 }
@@ -233,6 +250,7 @@ $jscontent = <<<END
 		width:			250,
 		minSize:		200,
 		maxSize:		300,
+		autoScroll:		true,
 		collapsible:	true,
 		split:			true,
 		border:			false,

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: standard.php,v 1.16 2009/11/10 16:49:00 sebastien Exp $
+// $Id: standard.php,v 1.17 2010/01/18 15:30:52 sebastien Exp $
 
 /**
   * Class CMS_module_standard
@@ -2017,29 +2017,24 @@ class CMS_module_standard extends CMS_module
 						$href = $redirectlink->getHTML(false, MOD_STANDARD_CODENAME, RESOURCE_DATA_LOCATION_PUBLIC, false, true);
 						$modulesCode[MOD_STANDARD_CODENAME] .= 
 								'<?php'."\n".
-								'header(\'HTTP/1.x 302 Found\',true,302);'."\n".
-								'header("Location: '.$href.'");'."\n".
-								'exit;'."\n".
+								'CMS_view::redirect(\''.$href.'\', true, 302);'."\n".
 								'?>';
 					}
 					//include frontend files
 					$modulesCode[MOD_STANDARD_CODENAME] .= 
 					'<?php'."\n".
 					'//Generated on '.date('r').' by '.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION."\n".
-					'if (!isset($cms_page_included) && !$_POST && !$_GET) {'."\n".
-					'	header(\'HTTP/1.x 301 Moved Permanently\', true, 301);'."\n".
-					'	header(\'Location: '.$treatedObject->getURL(($visualizationMode == PAGE_VISUALMODE_PRINT) ? true : false).'\');'."\n".
-					'	exit;'."\n".
-					'}'."\n".
 					'require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");'."\n".
+					'if (!isset($cms_page_included) && !$_POST && !$_GET) {'."\n".
+					'	CMS_view::redirect(\''.$treatedObject->getURL(($visualizationMode == PAGE_VISUALMODE_PRINT) ? true : false).'\', true, 301);'."\n".
+					'}'."\n".
 					'?>';
 					if (APPLICATION_ENFORCES_ACCESS_CONTROL) {
 						//include user access checking on top of output file
 						$modulesCode[MOD_STANDARD_CODENAME] .= 
 							'<?php'."\n".
 							'if (!is_object($cms_user) || !$cms_user->hasPageClearance('.$treatedObject->getID().', CLEARANCE_PAGE_VIEW)) {'."\n".
-							'	header(\'Location: \'.PATH_FRONTEND_SPECIAL_LOGIN_WR.\'?referer=\'.base64_encode($_SERVER[\'REQUEST_URI\']));'."\n".
-							'	exit;'."\n".
+							'	CMS_view::redirect(PATH_FRONTEND_SPECIAL_LOGIN_WR.\'?referer=\'.base64_encode($_SERVER[\'REQUEST_URI\']));'."\n".
 							'}'."\n".
 							'?>';
 					}

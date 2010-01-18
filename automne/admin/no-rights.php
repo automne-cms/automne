@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: no-rights.php,v 1.2 2009/06/22 14:10:31 sebastien Exp $
+// $Id: no-rights.php,v 1.3 2010/01/18 15:23:54 sebastien Exp $
 
 /**
   * PHP page : No page info
@@ -37,8 +37,6 @@ $content = '
 <div id="atm-center">
 	<div class="atm-alert atm-alert-green">'.$cms_language->getMessage(MESSAGE_PAGE_NO_PAGE_RIGHT).(sensitiveIO::isValidEmail(APPLICATION_MAINTAINER_EMAIL) ? ' (<a href="mailto:'.APPLICATION_MAINTAINER_EMAIL.'">'.APPLICATION_MAINTAINER_EMAIL.'</a>)' : '').'.</div>
 </div>';
-
-$view->setContent($content);
 
 $view->setContent($content);
 $view->show(CMS_view::SHOW_HTML);

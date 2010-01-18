@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_common.php,v 1.9 2009/11/10 16:49:01 sebastien Exp $
+// $Id: object_common.php,v 1.10 2010/01/18 15:30:53 sebastien Exp $
 
 /**
   * Class CMS_object_common
@@ -690,6 +690,90 @@ abstract class CMS_object_common extends CMS_grandFather
 				return false;
 			break;
 		}
+	}
+	
+	/**
+	  * Get soap values
+	  *
+	  * @return string $xml XML definition
+	  * @access public
+	  */
+	function getSoapValues($fieldID, $language) {
+		$xml = '<field id="'.$fieldID.'" label="'.sensitiveIO::sanitizeHTMLString($this->getFieldLabel($language)).'" required="'.$this->_field->getValue('required').'">'."\n";
+		
+		foreach ($this->_subfields as $subFieldID => $subFieldDefinition) {
+			if (is_object($this->_subfieldValues[$subFieldID])) {
+				$xml .= 
+				'<subfield id="'.$subFieldID.'" name="'.$subFieldDefinition['internalName'].'" type="'.$subFieldDefinition['type'].'" required="'.$subFieldDefinition['required'].'">'."\n";
+				switch ($subFieldDefinition['type']) {
+					case 'integer':
+					case 'date':
+						$xml .= $this->_subfieldValues[$subFieldID]->getValue();
+					break;
+					case 'text':
+					case 'string':
+					default:
+						$xml .= '<![CDATA['.$this->_subfieldValues[$subFieldID]->getValue().']]>';
+					break;
+				}
+				$xml .= "\n".'</subfield>'."\n";
+			}
+		}
+		$xml .= '</field>'."\n";
+		return $xml;
+	}
+	
+	/**
+	  * Set soap values
+	  *
+	  * @param integer $fieldID The field ID
+	  * @param $domdocument XML values to set
+	  * @param $itemId the ID of the polyobject item, if any (necessary for some fields (image, file, etc...)
+	  * @return boolean true or false
+	  * @access public
+	  */
+	function setSoapValues($fieldID, $domdocument, $itemId = '') {
+	    $view = CMS_view::getInstance();
+		$fieldValues = array();
+		// subfield
+        foreach($domdocument->childNodes as $childNode) {
+			if($childNode->nodeType == XML_ELEMENT_NODE) {
+				switch ($childNode->tagName) {
+					case 'subfield':
+						//<subfield id="{int}" [name="{string}"] type="int|string|date|text|object|binary|category|user|group">
+						$subFieldId = $childNode->getAttribute('id');
+						if (!sensitiveIO::isPositiveInteger($subFieldId) && $subFieldId != 0) {
+							$view->addError('Missing or invalid attribute id for subfield tag');
+							return false;
+						}
+						if (!isset($this->_subfields[$subFieldId])) {
+							$view->addError('Unknown field id '.$fieldId.' for object '.$this->_objectID);
+							return false;
+						}
+						$fieldValues[$fieldID.'_'.$subFieldId] = trim((io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? utf8_decode($childNode->nodeValue) : $childNode->nodeValue);
+					break;
+					case 'object':
+						//TODO
+					break;
+					default:
+						$view->addError('Unknown xml tag '.$childNode->tagName.' to process.');
+						return false;
+					break;
+				}
+			} else {
+				if ($childNode->nodeType == XML_TEXT_NODE && trim($childNode->nodeValue)) {
+					$view->addError('Unknown xml content tag '.$childNode->nodeValue.' to process.');
+					return false;
+				}
+			}
+        }
+		if (!$this->checkMandatory($fieldValues, '')) {
+			$view->addError('Error of mandatory values for field '.$fieldID);
+			return false;
+		} elseif (!$this->setValues($fieldValues, '', false, $itemId)) {
+			return false;
+		}
+		return true;
 	}
 
 	/**

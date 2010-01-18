@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: server.php,v 1.8 2009/10/28 16:26:00 sebastien Exp $
+// $Id: server.php,v 1.9 2010/01/18 15:23:55 sebastien Exp $
 
 /**
   * PHP page : Load server detail window.
@@ -209,7 +209,6 @@ if (io::strtolower(io::substr(PHP_OS, 0, 3)) === 'win') {
 @ini_set('magic_quotes_gpc', 0);
 @ini_set('magic_quotes_runtime', 0);
 @ini_set('magic_quotes_sybase', 0);
-@ini_set('session.use_trans_sid', 0);
 if (ini_get('magic_quotes_gpc') != 0) {
 	$content .= '<li class="atm-pic-cancel">Error, PHP magic_quotes_gpc is active and cannot be changed</li>';
 }
@@ -222,7 +221,13 @@ if (ini_get('magic_quotes_sybase') != 0) {
 if (ini_get('register_globals') != 0) {
 	$content .= '<li class="atm-pic-cancel">Error, PHP register_globals is active and cannot be changed</li>';
 }
-
+if (ini_get('allow_url_include') != 0) {
+	$content .= '<li class="atm-pic-cancel">Error, PHP allow_url_include is active and cannot be changed</li>';
+}
+//check for safe_mode
+if (ini_get('safe_mode') && strtolower(ini_get('safe_mode')) != 'off') {
+	$content .= '<li class="atm-pic-cancel">Error, PHP safe_mode is active</li>';
+}
 $content .='</ul>';
 
 $content = sensitiveIO::sanitizeJSString($content);
@@ -328,7 +333,7 @@ $jscontent = <<<END
 		html:			'<div id="filesCheckDetailText"></div>'
 	});
 	var htaccessCheckDetail = new Ext.form.FieldSet({
-		title:			'Détails',
+		title:			'{$cms_language->getJsMessage(MESSAGE_PAGE_DETAIL)}',
 		collapsible:	true,
 		collapsed:		false,
 		height:			220,

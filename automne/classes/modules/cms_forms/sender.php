@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: sender.php,v 1.4 2009/10/22 16:30:03 sebastien Exp $
+// $Id: sender.php,v 1.5 2010/01/18 15:30:53 sebastien Exp $
 
 /**
   * Class CMS_forms_sender
@@ -233,11 +233,11 @@ class CMS_forms_sender extends CMS_grandFather {
 			if (is_a($cms_context, 'CMS_context')) {
 				$obj->setAttribute('userID', $cms_context->getUserID());
 			}
-			$obj->setAttribute('clientIP', $_SERVER["REMOTE_ADDR"]);
+			$obj->setAttribute('clientIP', @$_SERVER["REMOTE_ADDR"]);
 			if (isset($_SERVER["HTTP_ACCEPT_LANGUAGE"])) {
-				$obj->setAttribute('languages', $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
+				$obj->setAttribute('languages', @$_SERVER["HTTP_ACCEPT_LANGUAGE"]);
 			}
-			$obj->setAttribute('userAgent', $_SERVER["HTTP_USER_AGENT"]);
+			$obj->setAttribute('userAgent', @$_SERVER["HTTP_USER_AGENT"]);
 			return $obj;
 		/*} else {
 			//get already created sender object

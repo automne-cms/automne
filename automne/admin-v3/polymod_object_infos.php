@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: polymod_object_infos.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: polymod_object_infos.php,v 1.2 2010/01/18 15:30:12 sebastien Exp $
 
 /**
   * PHP page : polymod admin
@@ -44,6 +44,7 @@ define("MESSAGE_PAGE_FIELD_OBJECT_USEAGE", 1281);
 define("MESSAGE_PAGE_FIELD_OBJECT_USED", 1282);
 define("MESSAGE_PAGE_FIELD_OBJECT_GRAYED_INFOS", 1292);
 define("MESSAGE_PAGE_FIELD_COMPOSED_LABEL", 1294);
+define("MESSAGE_PAGE_FIELD_ONLY_FOR_ADMIN", 1276);
 //Polymod messages
 define("MESSAGE_PAGE_FIELD_MULTI", 190);
 

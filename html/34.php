@@ -1,10 +1,11 @@
-<?php //Generated on Tue, 17 Nov 2009 17:11:30 +0100 by Automne (TM) 4.0.0rc3
-if (!isset($cms_page_included) && !$_POST && !$_GET) {
-	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: http://127.0.0.1/web/demo/34-fonctions-avancees.php');
-	exit;
-}
+<?php //Generated on Mon, 18 Jan 2010 16:11:27 +0100 by Automne (TM) 4.0.0
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+if (!isset($cms_page_included) && !$_POST && !$_GET) {
+	CMS_view::redirect('http://127.0.0.1/web/demo/34-fonctions-avancees.php', true, 301);
+}
+ ?><?php if (!is_object($cms_user) || !$cms_user->hasPageClearance(34, CLEARANCE_PAGE_VIEW)) {
+	CMS_view::redirect(PATH_FRONTEND_SPECIAL_LOGIN_WR.'?referer='.base64_encode($_SERVER['REQUEST_URI']));
+}
  ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";   ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 <head>
@@ -29,35 +30,69 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 	<div id="main">
 		<div id="container">
 			<div id="header">
-				
-							
-
-<a id="lienAccueil" href="http://127.0.0.1/web/demo/2-accueil.php" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
-
-
-						
+				<?php if ($cms_user->hasPageClearance(2, CLEARANCE_PAGE_VIEW)) {
+echo '
+							<a id="lienAccueil" href="http://127.0.0.1/web/demo/2-accueil.php" title="Retour &agrave; l\'accueil">Retour &agrave; l\'accueil</a>
+						';
+}
+?>
 			</div>
 			<div id="backgroundBottomContainer">
 				<div id="menuLeft">
-					<ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_open "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/25-modeles.php">Modèles</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/26-rangees.php">Rangées</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/27-modules.php">Modules</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/28-administration.php">Gestion des utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/35-gestion-des-droits.php">Gestion des droits</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/37-droit-de-validation.php">Workflow de publication</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/38-aide-aux-utilisateurs.php">Aide utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub CMS_current"><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/34-fonctions-avancees.php">Fonctions avancées</a></li></ul></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/31-exemples-de-modules.php">Exemples de modules</a></li></ul>
+					<?php if ($cms_user->hasPageClearance(2, CLEARANCE_PAGE_VIEW)) {
+echo '<ul class="CMS_lvl2">';  if ($cms_user->hasPageClearance(3, CLEARANCE_PAGE_VIEW)) {
+echo '<li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/3-presentation.php">Présentation</a></li>';
+}
+ echo '';  if ($cms_user->hasPageClearance(24, CLEARANCE_PAGE_VIEW)) {
+echo '<li class="CMS_lvl2 CMS_open "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités</a><ul class="CMS_lvl3">';  if ($cms_user->hasPageClearance(25, CLEARANCE_PAGE_VIEW)) {
+echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/25-modeles.php">Modèles</a></li>';
+}
+ echo '';  if ($cms_user->hasPageClearance(26, CLEARANCE_PAGE_VIEW)) {
+echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/26-rangees.php">Rangées</a></li>';
+}
+ echo '';  if ($cms_user->hasPageClearance(27, CLEARANCE_PAGE_VIEW)) {
+echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/27-modules.php">Modules</a></li>';
+}
+ echo '';  if ($cms_user->hasPageClearance(28, CLEARANCE_PAGE_VIEW)) {
+echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/28-administration.php">Gestion des utilisateurs</a></li>';
+}
+ echo '';  if ($cms_user->hasPageClearance(35, CLEARANCE_PAGE_VIEW)) {
+echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/35-gestion-des-droits.php">Gestion des droits</a></li>';
+}
+ echo '';  if ($cms_user->hasPageClearance(37, CLEARANCE_PAGE_VIEW)) {
+echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/37-droit-de-validation.php">Workflow de publication</a></li>';
+}
+ echo '';  if ($cms_user->hasPageClearance(38, CLEARANCE_PAGE_VIEW)) {
+echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/38-aide-aux-utilisateurs.php">Aide utilisateurs</a></li>';
+}
+ echo '';  if ($cms_user->hasPageClearance(34, CLEARANCE_PAGE_VIEW)) {
+echo '<li class="CMS_lvl3 CMS_nosub CMS_current"><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/34-fonctions-avancees.php">Fonctions avancées</a></li>';
+}
+ echo '</ul></li>';
+}
+ echo '';  if ($cms_user->hasPageClearance(31, CLEARANCE_PAGE_VIEW)) {
+echo '<li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/31-exemples-de-modules.php">Exemples de modules</a></li>';
+}
+ echo '</ul>';
+}
+?>
 				</div>
 				<div id="content" class="page34">
 					<div id="breadcrumbs">
-						<a href="http://127.0.0.1/web/demo/2-accueil.php">Accueil</a>
-
- &gt; 
-<a href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités</a>
-
- &gt; 
+						<?php if ($cms_user->hasPageClearance(2, CLEARANCE_PAGE_VIEW)) {
+echo '<a href="http://127.0.0.1/web/demo/2-accueil.php">Accueil</a> &gt; ';
+}
+?><?php if ($cms_user->hasPageClearance(24, CLEARANCE_PAGE_VIEW)) {
+echo '<a href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités</a> &gt; ';
+}
+?>
 					</div>
 					<div id="title">
 						<h1>Fonctions avancées</h1>
 					</div>
 					<atm-toc />
 					
-
-<div class="text"><h2>Gestion Multi-sites</h2> <p>Une seule et m&ecirc;me interface d'Automne 4 peut g&eacute;rer autant de sites diff&eacute;rents que vous le souhaitez. Chacun peut poss&eacute;der son propre nom de domaine, sa propre langue et ses propres &eacute;l&eacute;ments (mod&egrave;les de pages, rang&eacute;es) permettant de g&eacute;rer les diff&eacute;rentes pages qui les composent.</p> <p>&nbsp;</p> <h2>S&eacute;curiser l'acc&egrave;s au contenu cot&eacute; public des sites (Intranet / Extranet)</h2> <p>Ce syst&egrave;me &eacute;volu&eacute; de gestion des droits permet de r&eacute;aliser des <strong>espaces s&eacute;curis&eacute;s</strong> sur vos sites. Par l&rsquo;interm&eacute;diaire d&rsquo;un Nom d'utilisateur et d'un mot de de passe, votre site Internet se transforme en <strong>site Extranet </strong>appliquant ainsi des <strong>droits et restrictions</strong> sur certaines pages et certains contenus que vous sp&eacute;cifiez. Les restrictions mises en place sont <strong>invisibles </strong>&agrave; ceux qui ne poss&egrave;dent pas les droits de les voir &eacute;vitant ainsi toute frustration de vos utilisateurs.<strong><br /> </strong></p> <h3>Exemple : celui qui n&rsquo;a pas acc&egrave;s &agrave; la page &laquo; ressource &raquo; ne verra pas cet &eacute;l&eacute;ment dans la navigation.</h3> <p>&nbsp;</p> <h2>Connexion LDAP</h2> <p>L'int&eacute;r&ecirc;t principal d'un annuaire LDAP est la <strong>normalisation de l'authentification.</strong> Cet annuaire regroupe toutes les informations de type de l&rsquo;utilisateur (nom, pr&eacute;nom, services, postes &hellip;etc).  Automne 4 permet de r&eacute;cup&eacute;rer automatiquement les informations de l&rsquo;annuaire afin de d&eacute;finir les utilisateurs et leurs droits. &laquo; Le salari&eacute; travaillant au service des ressources humaines, aura automatiquement acc&egrave;s &agrave; la page ressource humaine, l&agrave; o&ugrave; d&rsquo;autres n&rsquo;y auront pas acc&egrave;s &raquo;.</p> <h3>Lors de l&rsquo;ouverture de session, les identifiants et mot de passe sont envoy&eacute;es &agrave; cet annuaire qui transmet alors les informations de l&rsquo;utilisateur.</h3> <p>&nbsp;</p> <h2>SSO (single Sign On)</h2> <p><strong>L'authentification unique</strong> est une m&eacute;thode permettant &agrave; un utilisateur de ne proc&eacute;der qu'&agrave; une seule authentification pour acc&eacute;der &agrave; plusieurs applications informatiques (ou sites web s&eacute;curis&eacute;s). Automne 4 dispose aujourd&rsquo;hui de cette technologie et les utilisateurs pourront directement &ecirc;tre connect&eacute;s &agrave; l&rsquo;interface d'Automne 4 d&eacute;s l&rsquo;ouverture de session sur leur machine.</p> <h3>Plus besoin de s'authentifier &agrave; Automne 4.</h3></div>
-
+<h2>Gestion Multi-sites</h2> <p>Une seule et m&ecirc;me interface d'Automne 4 peut g&eacute;rer autant de sites diff&eacute;rents que vous le souhaitez. Chacun peut poss&eacute;der son propre nom de domaine, sa propre langue et ses propres &eacute;l&eacute;ments (mod&egrave;les de pages, rang&eacute;es) permettant de g&eacute;rer les diff&eacute;rentes pages qui les composent.</p> <p>&nbsp;</p> <h2>S&eacute;curiser l'acc&egrave;s au contenu cot&eacute; public des sites (Intranet / Extranet)</h2> <p>Ce syst&egrave;me &eacute;volu&eacute; de gestion des droits permet de r&eacute;aliser des <strong>espaces s&eacute;curis&eacute;s</strong> sur vos sites. Par l&rsquo;interm&eacute;diaire d&rsquo;un Nom d'utilisateur et d'un mot de de passe, votre site Internet se transforme en <strong>site Extranet </strong>appliquant ainsi des <strong>droits et restrictions</strong> sur certaines pages et certains contenus que vous sp&eacute;cifiez. Les restrictions mises en place sont <strong>invisibles </strong>&agrave; ceux qui ne poss&egrave;dent pas les droits de les voir &eacute;vitant ainsi toute frustration de vos utilisateurs.<strong><br /> </strong></p> <h3>Exemple : celui qui n&rsquo;a pas acc&egrave;s &agrave; la page &laquo; ressource &raquo; ne verra pas cet &eacute;l&eacute;ment dans la navigation.</h3> <p>&nbsp;</p> <h2>Connexion LDAP</h2> <p>L'int&eacute;r&ecirc;t principal d'un annuaire LDAP est la <strong>normalisation de l'authentification.</strong> Cet annuaire regroupe toutes les informations de type de l&rsquo;utilisateur (nom, pr&eacute;nom, services, postes &hellip;etc).  Automne 4 permet de r&eacute;cup&eacute;rer automatiquement les informations de l&rsquo;annuaire afin de d&eacute;finir les utilisateurs et leurs droits. &laquo; Le salari&eacute; travaillant au service des ressources humaines, aura automatiquement acc&egrave;s &agrave; la page ressource humaine, l&agrave; o&ugrave; d&rsquo;autres n&rsquo;y auront pas acc&egrave;s &raquo;.</p> <h3>Lors de l&rsquo;ouverture de session, les identifiants et mot de passe sont envoy&eacute;es &agrave; cet annuaire qui transmet alors les informations de l&rsquo;utilisateur.</h3> <p>&nbsp;</p> <h2>SSO (single Sign On)</h2> <p><strong>L'authentification unique</strong> est une m&eacute;thode permettant &agrave; un utilisateur de ne proc&eacute;der qu'&agrave; une seule authentification pour acc&eacute;der &agrave; plusieurs applications informatiques (ou sites web s&eacute;curis&eacute;s). Automne 4 dispose aujourd&rsquo;hui de cette technologie et les utilisateurs pourront directement &ecirc;tre connect&eacute;s &agrave; l&rsquo;interface d'Automne 4 d&eacute;s l&rsquo;ouverture de session sur leur machine.</p> <h3>Plus besoin de s'authentifier &agrave; Automne 4.</h3>
 
 					<a href="#header" id="top" title="haut de la page">Haut</a>
 				</div>
@@ -68,8 +103,13 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 	<div id="footer">
 		<div id="menuBottom">
 			<ul>
-				<li><a href="http://127.0.0.1/web/demo/8-plan-du-site.php">Plan du site</a></li>
-<li><a href="http://127.0.0.1/web/demo/9-contact.php">Contact</a></li>
+				<?php if ($cms_user->hasPageClearance(8, CLEARANCE_PAGE_VIEW)) {
+echo '<li><a href="http://127.0.0.1/web/demo/8-plan-du-site.php">Plan du site</a></li>';
+}
+?><?php if ($cms_user->hasPageClearance(9, CLEARANCE_PAGE_VIEW)) {
+echo '<li><a href="http://127.0.0.1/web/demo/9-contact.php">Contact</a></li>';
+}
+?>
 			</ul>
 			<div class="spacer"></div>
 		</div>

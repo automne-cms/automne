@@ -1,9 +1,9 @@
 # PHP configurations to redirect files download 
 # Author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-# $Id: htaccess_file,v 1.1.1.1 2008/11/26 17:12:16 sebastien Exp $
+# $Id: htaccess_file,v 1.2 2010/01/18 15:33:03 sebastien Exp $
 
 <IfModule mod_mime.c>
-	<IfModule mod_php4.c>
+	<IfModule mod_php5.c>
 		SetHandler application/x-httpd-php
 		php_value auto_prepend_file	../../../file.php
 	</IfModule>

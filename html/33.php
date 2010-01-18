@@ -1,10 +1,11 @@
-<?php //Generated on Tue, 17 Nov 2009 17:11:31 +0100 by Automne (TM) 4.0.0rc3
-if (!isset($cms_page_included) && !$_POST && !$_GET) {
-	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: http://127.0.0.1/web/demo/33-nouveautes.php');
-	exit;
-}
+<?php //Generated on Mon, 18 Jan 2010 16:11:25 +0100 by Automne (TM) 4.0.0
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+if (!isset($cms_page_included) && !$_POST && !$_GET) {
+	CMS_view::redirect('http://127.0.0.1/web/demo/33-nouveautes.php', true, 301);
+}
+ ?><?php if (!is_object($cms_user) || !$cms_user->hasPageClearance(33, CLEARANCE_PAGE_VIEW)) {
+	CMS_view::redirect(PATH_FRONTEND_SPECIAL_LOGIN_WR.'?referer='.base64_encode($_SERVER['REQUEST_URI']));
+}
  ?>
 <?php require_once($_SERVER["DOCUMENT_ROOT"].'/automne/classes/polymodFrontEnd.php');  ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";   ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
@@ -30,45 +31,63 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 	<div id="main">
 		<div id="container">
 			<div id="header">
-				
-							
-
-<a id="lienAccueil" href="http://127.0.0.1/web/demo/2-accueil.php" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
-
-
-						
+				<?php if ($cms_user->hasPageClearance(2, CLEARANCE_PAGE_VIEW)) {
+echo '
+							<a id="lienAccueil" href="http://127.0.0.1/web/demo/2-accueil.php" title="Retour &agrave; l\'accueil">Retour &agrave; l\'accueil</a>
+						';
+}
+?>
 			</div>
 			<div id="backgroundBottomContainer">
 				<div id="menuLeft">
-					<ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_open "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/3-presentation.php">Présentation</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/29-automne-v4.php">Automne</a></li><li class="CMS_lvl3 CMS_nosub CMS_current"><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/33-nouveautes.php">Nouveautés</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/30-notions-essentielles.php">Pré-requis</a></li></ul></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/31-exemples-de-modules.php">Exemples de modules</a></li></ul>
+					<?php if ($cms_user->hasPageClearance(2, CLEARANCE_PAGE_VIEW)) {
+echo '<ul class="CMS_lvl2">';  if ($cms_user->hasPageClearance(3, CLEARANCE_PAGE_VIEW)) {
+echo '<li class="CMS_lvl2 CMS_open "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/3-presentation.php">Présentation</a><ul class="CMS_lvl3">';  if ($cms_user->hasPageClearance(29, CLEARANCE_PAGE_VIEW)) {
+echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/29-automne-v4.php">Automne</a></li>';
+}
+ echo '';  if ($cms_user->hasPageClearance(33, CLEARANCE_PAGE_VIEW)) {
+echo '<li class="CMS_lvl3 CMS_nosub CMS_current"><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/33-nouveautes.php">Nouveautés</a></li>';
+}
+ echo '';  if ($cms_user->hasPageClearance(30, CLEARANCE_PAGE_VIEW)) {
+echo '<li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/30-notions-essentielles.php">Pré-requis</a></li>';
+}
+ echo '</ul></li>';
+}
+ echo '';  if ($cms_user->hasPageClearance(24, CLEARANCE_PAGE_VIEW)) {
+echo '<li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités</a></li>';
+}
+ echo '';  if ($cms_user->hasPageClearance(31, CLEARANCE_PAGE_VIEW)) {
+echo '<li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/31-exemples-de-modules.php">Exemples de modules</a></li>';
+}
+ echo '</ul>';
+}
+?>
 				</div>
 				<div id="content" class="page33">
 					<div id="breadcrumbs">
-						<a href="http://127.0.0.1/web/demo/2-accueil.php">Accueil</a>
-
- &gt; 
-<a href="http://127.0.0.1/web/demo/3-presentation.php">Présentation</a>
-
- &gt; 
+						<?php if ($cms_user->hasPageClearance(2, CLEARANCE_PAGE_VIEW)) {
+echo '<a href="http://127.0.0.1/web/demo/2-accueil.php">Accueil</a> &gt; ';
+}
+?><?php if ($cms_user->hasPageClearance(3, CLEARANCE_PAGE_VIEW)) {
+echo '<a href="http://127.0.0.1/web/demo/3-presentation.php">Présentation</a> &gt; ';
+}
+?>
 					</div>
 					<div id="title">
 						<h1>Nouveautés</h1>
 					</div>
 					<atm-toc />
 					
+<h2>Voici une liste de quelques unes des nouveaut&eacute;s d'Automne 4 :</h2> <ul>     <li style="text-align: left;">Refonte de l'interface administrateur, <strong>plus ergonomique, plus intuitive, plus r&eacute;active.</strong></li>     <li style="text-align: left;">Votre site n'est plus dissoci&eacute; de l'interface d'administration.</li>     <li style="text-align: left;">Vous saisissez et organisez votre contenu simplement, rapidement, sans aucune connaissance technique.</li>     <li style="text-align: left;"><strong>Aide contextuelle</strong> permettant une prise en main encore plus simple.</li>     <li style="text-align: left;">De <strong>meilleures performances</strong> de l'outil.</li>     <li style="text-align: left;">Bas&eacute; sur les technologies du <strong>web 2.0, PHP5, Ajax.</strong></li>     <li style="text-align: left;">Gestion des <strong>langues internationales</strong> - Gestion des alphabets particuliers.</li>     <li style="text-align: left;">Fonction de recherche<strong> Full Text</strong> dans les contenus.</li>     <li style="text-align: left;">...</li> </ul>
 
-<div class="text"><h2>Voici une liste de quelques unes des nouveaut&eacute;s d'Automne 4 :</h2> <ul>     <li style="text-align: left;">Refonte de l'interface administrateur, <strong>plus ergonomique, plus intuitive, plus r&eacute;active.</strong></li>     <li style="text-align: left;">Votre site n'est plus dissoci&eacute; de l'interface d'administration.</li>     <li style="text-align: left;">Vous saisissez et organisez votre contenu simplement, rapidement, sans aucune connaissance technique.</li>     <li style="text-align: left;"><strong>Aide contextuelle</strong> permettant une prise en main encore plus simple.</li>     <li style="text-align: left;">De <strong>meilleures performances</strong> de l'outil.</li>     <li style="text-align: left;">Bas&eacute; sur les technologies du <strong>web 2.0, PHP5, Ajax.</strong></li>     <li style="text-align: left;">Gestion des <strong>langues internationales</strong> - Gestion des alphabets particuliers.</li>     <li style="text-align: left;">Fonction de recherche<strong> Full Text</strong> dans les contenus.</li>     <li style="text-align: left;">...</li> </ul></div>
-
-
-
-<div class="text"><p style="text-align: left;"><?php $parameters = array (
+<p style="text-align: left;"><?php $parameters = array (
   'itemID' => 35,
   'pageID' => '33',
   'public' => true,
   'selection' => '',
 );
 
-//Generated by : $Id: 33.php,v 1.5 2009/11/17 16:04:28 sebastien Exp $
+//Generated by : $Id: 33.php,v 1.6 2010/01/18 15:20:09 sebastien Exp $
 $content = "";
 $replace = "";
 if (!isset($objectDefinitions) || !is_array($objectDefinitions)) $objectDefinitions = array();
@@ -255,8 +274,7 @@ if (!sensitiveIO::isPositiveInteger($parameters['itemID']) || !sensitiveIO::isPo
 }
 //PLUGIN TAG END 19_5f9088
 echo CMS_polymod_definition_parsing::replaceVars($content, $replace);
-  ?></p></div>
-
+  ?></p>
 
 					<a href="#header" id="top" title="haut de la page">Haut</a>
 				</div>
@@ -267,8 +285,13 @@ echo CMS_polymod_definition_parsing::replaceVars($content, $replace);
 	<div id="footer">
 		<div id="menuBottom">
 			<ul>
-				<li><a href="http://127.0.0.1/web/demo/8-plan-du-site.php">Plan du site</a></li>
-<li><a href="http://127.0.0.1/web/demo/9-contact.php">Contact</a></li>
+				<?php if ($cms_user->hasPageClearance(8, CLEARANCE_PAGE_VIEW)) {
+echo '<li><a href="http://127.0.0.1/web/demo/8-plan-du-site.php">Plan du site</a></li>';
+}
+?><?php if ($cms_user->hasPageClearance(9, CLEARANCE_PAGE_VIEW)) {
+echo '<li><a href="http://127.0.0.1/web/demo/9-contact.php">Contact</a></li>';
+}
+?>
 			</ul>
 			<div class="spacer"></div>
 		</div>

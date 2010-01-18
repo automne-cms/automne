@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-redirect-info.php,v 1.8 2009/11/19 16:08:55 sebastien Exp $
+// $Id: page-redirect-info.php,v 1.9 2010/01/18 15:23:55 sebastien Exp $
 
 /**
   * PHP page : Redirection page info
@@ -36,7 +36,7 @@ $view->addCSSFile('main');
 $view->addCSSFile('info');
 
 if (isset($_GET['pageId']) && sensitiveIO::isPositiveInteger($_GET['pageId'])) {
-	$page = CMS_tree::getpageById($_GET['pageId']);
+	$page = CMS_tree::getPageById($_GET['pageId']);
 }
 if (isset($page) && !$page->hasError()) {
 	$redirect = '';
@@ -47,12 +47,15 @@ if (isset($page) && !$page->hasError()) {
 			if (!$redirectPage->hasError()) {
 				$label = $cms_language->getMessage(MESSAGE_PAGE_PAGE).' "'.$redirectPage->getTitle().'" ('.$redirectPage->getID().')';
 			}
-			$redirect = '<a href="'.$redirectPage->getURL().'">'.io::htmlspecialchars($label).'</a>';
+			$redirect = '<a href="'.$redirectPage->getURL(false, false, PATH_RELATIVETO_WEBROOT, true).'">'.io::htmlspecialchars($label).'</a>';
 		} else {
 			$label = $redirectlink->getExternalLink();
 			$redirectlink->setTarget('_blank');
 			$redirect = $redirectlink->getHTML($label, MOD_STANDARD_CODENAME, RESOURCE_DATA_LOCATION_EDITED);
 		}
+	} else {
+		$label = $cms_language->getMessage(MESSAGE_PAGE_PAGE).' "'.$page->getTitle().'" ('.$page->getID().')';
+		$redirect = '<a href="'.$page->getURL(false, false, PATH_RELATIVETO_WEBROOT, true).'">'.io::htmlspecialchars($label).'</a>';
 	}
 	$content = '
 	<div id="atm-center">
@@ -62,7 +65,7 @@ if (isset($page) && !$page->hasError()) {
 	$url = urldecode($_GET['url']);
 	if ($page = CMS_tree::analyseURL($url)) {
 		$label = $cms_language->getMessage(MESSAGE_PAGE_PAGE).' "'.$page->getTitle().'" ('.$page->getID().')';
-		$redirect = '<a href="'.$page->getURL().'">'.io::htmlspecialchars($label).'</a>';
+		$redirect = '<a href="'.$page->getURL(false, false, PATH_RELATIVETO_WEBROOT, true).'">'.io::htmlspecialchars($label).'</a>';
 	} else {
 		$redirect = '<a href="'.$url.'" target="_blank">'.io::htmlspecialchars($url).'</a>';
 	}

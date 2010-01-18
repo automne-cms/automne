@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-logs.php,v 1.4 2009/11/10 16:57:19 sebastien Exp $
+// $Id: page-logs.php,v 1.5 2010/01/18 15:23:54 sebastien Exp $
 
 /**
   * PHP page : Load tree window infos. Presents a portion of the pages tree. Can be used by any admin page.
@@ -60,7 +60,8 @@ $limit = sensitiveIO::request('limit', '', $_SESSION["cms_context"]->getRecordsP
 $order = sensitiveIO::request('sort', '', 'datetime');
 $direction = io::strtolower(sensitiveIO::request('dir', '', 'desc'));
 
-if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_VIEWLOG)) {
+//user can view logs only if it has rights on logs or on page edition
+if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_VIEWLOG) && $action != 'view' && !$cms_user->hasPageClearance($currentPage, CLEARANCE_PAGE_EDIT)) {
 	CMS_grandFather::raiseError('User has not rights to view logs ...');
 	$view->show();
 }

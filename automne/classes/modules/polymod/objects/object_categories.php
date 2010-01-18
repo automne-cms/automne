@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_categories.php,v 1.13 2009/11/17 15:53:26 sebastien Exp $
+// $Id: object_categories.php,v 1.14 2010/01/18 15:30:53 sebastien Exp $
 
 /**
   * Class CMS_object_categories
@@ -370,6 +370,13 @@ class CMS_object_categories extends CMS_object_common
 				} else {
 					$selectedValue = '';
 				}
+				//natsort objects by name case insensitive
+				if (isset($inputParams['sort']) && (io::strtolower($inputParams['sort']) == 'asc' || io::strtolower($inputParams['sort']) == 'desc')) {
+					uasort($a_all_categories, array('CMS_object_categories','_natecasecomp'));
+					if (io::strtolower($inputParams['sort']) == 'desc') {
+						$a_all_categories = array_reverse($a_all_categories, true);
+					}
+				}
 				foreach($a_all_categories as $catID => $aCategory) {
 					$selected = ($selectedValue == $catID) ? ' selected="selected"':'';
 					$html .= '<option value="'.$catID.'"'.$selected.'>'.$aCategory.'</option>';
@@ -387,6 +394,10 @@ class CMS_object_categories extends CMS_object_common
 			$html .= '<input type="hidden" name="polymodFields['.$this->_field->getID().']" value="'.$this->_field->getID().'" />';
 		}
 		return $html;
+	}
+	//Callback function for natural sorting without care of accentuation
+	function _natecasecomp($str1, $str2) {
+		return strnatcasecmp(sensitiveIO::sanitizeAsciiString($str1), sensitiveIO::sanitizeAsciiString($str2));
 	}
 	
 	/**
@@ -1097,7 +1108,7 @@ class CMS_object_categories extends CMS_object_common
 			//unset unused categories (keep categories parents in lineage)
 			$usedCategoriesTree = array();
 			foreach ($usedCategories as $usedCategory) {
-				if ($viewvableCategoriesForProfile[$usedCategory]) {
+				if (isset($viewvableCategoriesForProfile[$usedCategory]) && $viewvableCategoriesForProfile[$usedCategory]) {
 					$usedCategoriesTree = array_merge($usedCategoriesTree, explode(';', $viewvableCategoriesForProfile[$usedCategory]));
 				}
 			}
@@ -1224,6 +1235,13 @@ class CMS_object_categories extends CMS_object_common
 		$categories = $this->getAllCategoriesAsArray($cms_language, $usedCategories, false, $editableOnly, $rootCategory);
 		$return = "";
 		if (is_array($categories) && $categories) {
+			//natsort objects by name case insensitive
+			if (isset($values['sort']) && (io::strtolower($values['sort']) == 'asc' || io::strtolower($values['sort']) == 'desc')) {
+				uasort($categories, array('CMS_object_categories','_natecasecomp'));
+				if (io::strtolower($values['sort']) == 'desc') {
+					$categories = array_reverse($categories, true);
+				}
+			}
 			foreach ($categories as $catID => $catLabel) {
 				$selected = (isset($values['selected']) && $catID == $values['selected']) ? ' selected="selected"':'';
 				$return .= '<option value="'.$catID.'"'.$selected.'>'.$catLabel.'</option>';

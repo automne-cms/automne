@@ -7,7 +7,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: utils.js,v 1.6 2009/11/27 15:37:48 sebastien Exp $
+  * $Id: utils.js,v 1.7 2010/01/18 15:24:30 sebastien Exp $
   */
 Automne.utils = {
 	edit:		false,
@@ -186,7 +186,7 @@ Automne.utils = {
 		for (var i=0; i < links.length; i++) {
 			var link = Ext.get(links[i]);
 			//only links with href, which are not in a new window, not an anchor and not a javascript instruction
-			if (link.dom.target != "_blank" && link.dom.href && link.dom.href.substr(-1) != '#' && link.dom.href.indexOf('javascript') === -1) {
+			if (link.dom.target != "_blank" && link.dom.href && link.dom.href.substr(-1) != '#' && link.dom.href.indexOf('javascript:') !== 0) {
 				if (source != 'edit') {
 					//do not catch anchor link to the same page
 					var isAnchor = false;

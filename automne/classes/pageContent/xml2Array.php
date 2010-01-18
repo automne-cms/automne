@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: xml2Array.php,v 1.4 2009/10/22 16:30:05 sebastien Exp $
+// $Id: xml2Array.php,v 1.5 2010/01/18 15:30:54 sebastien Exp $
 
 /**
   * Class CMS_xml2Array
@@ -101,8 +101,8 @@ class CMS_xml2Array extends CMS_grandFather
 		$data = str_replace($entities, array_keys($entities), $data);
 		//translate ones that are not HTMLized
 		$entities = array(
-			'&' => '-|amp|-',
-			'< ' => '-|lts|-',
+			'&' => '||amp||',
+			'< ' => '||lts||',
 		);
 		$data = str_replace(array_keys($entities), $entities, $data);
 		return $data;
@@ -118,8 +118,8 @@ class CMS_xml2Array extends CMS_grandFather
 	protected function _correctEntities($data)
 	{
 		$entities = array(
-			'&' => '-|amp|-',
-			'< ' => '-|lts|-',
+			'&' => '||amp||',
+			'< ' => '||lts||',
 		);
 		$data = str_replace(array_keys($entities), $entities, $data);
 		return $data;
@@ -154,8 +154,8 @@ class CMS_xml2Array extends CMS_grandFather
 	protected function _uncorrectEntities($data)
 	{
 		$entities = array(
-			'&' => '-|amp|-',
-			'< ' => '-|lts|-',
+			'&' => '||amp||',
+			'< ' => '||lts||',
 		);
 		$data = str_replace($entities, array_keys($entities), $data);
 		return $data;

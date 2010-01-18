@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: filesManagement.php,v 1.4 2009/10/22 16:30:01 sebastien Exp $
+// $Id: filesManagement.php,v 1.5 2010/01/18 15:30:52 sebastien Exp $
 
 /**
   * Class CMS_file
@@ -429,6 +429,10 @@ class CMS_file extends CMS_grandFather
 	function chmod($right)
 	{
 		if ($this->_exists) {
+			if (APPLICATION_IS_WINDOWS) {
+				//chmod does not mean anything on windows
+				return true;
+			}
 			//if ($this->_type===self::TYPE_FILE) {
 				$right = (io::strlen($right) == 3) ? '0'.$right : $right;
 				return @chmod($this->_name,octdec($right));
@@ -442,6 +446,53 @@ class CMS_file extends CMS_grandFather
 			$this->raiseError("Can't chmod file who does not exist : ".$this->_name);
 			return false;
 		}
+	}
+	
+	/**
+	 * Check a file to avoid upload threat
+	 *
+	 * @return boolean true on success, false on failure
+	 */
+	function checkUploadedFile() {
+		//check file extension
+		if (in_array($this->getExtension(), explode(',', FILE_UPLOAD_EXTENSIONS_DENIED))) {
+			return false;
+		}
+		//Avoid double extension threat (cf. http://www.acunetix.com/websitesecurity/upload-forms-threat.htm)
+		$extensions = explode('.', $this->getFilename(false));
+		if (sizeof($extensions) > 2) {
+			//remove basename
+			array_shift($extensions);
+			//check file extensions
+			foreach ($extensions as $extension) {
+				if (in_array($extension, explode(',', FILE_UPLOAD_EXTENSIONS_DENIED))) {
+					return false;
+				}
+			}
+		}
+		//check valid name
+		if ($this->getFilename(false) == '.htaccess') {
+			return false;
+		}
+		//check for image JPG
+		if (in_array($this->getExtension(), array('jpg', 'jpe', 'jpeg'))) {
+			if (function_exists('imagecreatefromjpeg') && !@imagecreatefromjpeg($this->getFilename())) {
+				return false;
+			}
+		}
+		//check for image GIF
+		if ($this->getExtension() == 'gif') {
+			if (function_exists('imagecreatefromgif') && !@imagecreatefromgif($this->getFilename())) {
+				return false;
+			}
+		}
+		//check for image PNG
+		if ($this->getExtension() == 'png') {
+			if (function_exists('imagecreatefrompng') && !@imagecreatefrompng($this->getFilename())) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	// ****************************************************************
@@ -708,6 +759,10 @@ class CMS_file extends CMS_grandFather
 		if (@is_dir($file)) {
 			return CMS_file::makeExecutable($file);
 		} elseif(@is_file($file)) {
+			if (APPLICATION_IS_WINDOWS) {
+				//chmod does not mean anything on windows
+				return true;
+			}
 			$right = (io::strlen($right) == 3) ? '0'.$right : $right;
 			return @chmod($file,octdec($right));
 		} else {
@@ -885,7 +940,7 @@ class CMS_file extends CMS_grandFather
 			}
 		}
 		if (!$return && function_exists('mime_content_type')) {
-			$return = mime_content_type($file);
+			$return = @mime_content_type($file);
 		}
 		return ($return) ? $return : 'application/octet-stream';
 	}
@@ -921,7 +976,7 @@ class CMS_file extends CMS_grandFather
 		//check for the closest last modification date
 		$lastdate = '';
 		foreach ($files as $key => $file) {
-			if (file_exists($file)) {
+			if (file_exists($file) && is_file($file)) {
 				$lastdate = (filemtime($file) > $lastdate) ? filemtime($file) : $lastdate;
 			} else {
 				CMS_grandFather::raiseError('Can\'t find file : '.$file.', skip it.');

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: polymod.php,v 1.10 2009/11/10 16:49:00 sebastien Exp $
+// $Id: polymod.php,v 1.11 2010/01/18 15:30:52 sebastien Exp $
 
 /**
   * Class CMS_polymod
@@ -204,14 +204,18 @@ class CMS_polymod extends CMS_modulePolymodValidation
 							$selectedPlugin = new CMS_poly_plugin_definitions($selectedPluginID);
 							//get selected item
 							$item = CMS_poly_object_catalog::getObjectByID($selectedItem, false, ($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC) ? true : false);
-							//get originaly selected text if any
-							$selectedText = '';
-							if ($selectedPlugin->needSelection()) {
-								$hasSelection = preg_match('#<!--(.*)-->#s', $tag->getInnerContent(), $matches);
-								$selectedText = $hasSelection ? $matches[1] : $tag->getInnerContent();
-								$tagContent = '<span id="polymod-'.$selectedPluginID.'-'.$selectedItem.'" class="polymod" title="'.io::htmlspecialchars($selectedPlugin->getLabel($cms_language).' : '.trim($item->getLabel($cms_language))).'">'.$selectedText.'</span>';
+							if ($item && !$item->hasError()) {
+								//get originaly selected text if any
+								$selectedText = '';
+								if ($selectedPlugin->needSelection()) {
+									$hasSelection = preg_match('#<!--(.*)-->#s', $tag->getInnerContent(), $matches);
+									$selectedText = $hasSelection ? $matches[1] : $tag->getInnerContent();
+									$tagContent = '<span id="polymod-'.$selectedPluginID.'-'.$selectedItem.'" class="polymod" title="'.io::htmlspecialchars($selectedPlugin->getLabel($cms_language).' : '.trim($item->getLabel($cms_language))).'">'.$selectedText.'</span>';
+								} else {
+									$tagContent = '<span id="polymod-'.$selectedPluginID.'-'.$selectedItem.'" class="polymod" title="'.io::htmlspecialchars($selectedPlugin->getLabel($cms_language).' : '.trim($item->getLabel($cms_language))).'">'.CMS_poly_definition_functions::pluginCode($selectedPluginID, $selectedItem, '', ($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC) ? true : false, true).'</span>';
+								}
 							} else {
-								$tagContent = '<span id="polymod-'.$selectedPluginID.'-'.$selectedItem.'" class="polymod" title="'.io::htmlspecialchars($selectedPlugin->getLabel($cms_language).' : '.trim($item->getLabel($cms_language))).'">'.CMS_poly_definition_functions::pluginCode($selectedPluginID, $selectedItem, '', ($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC) ? true : false, true).'</span>';
+								$tagContent = '';
 							}
 						}
 						//encode all ampersand without reencode already encoded ampersand

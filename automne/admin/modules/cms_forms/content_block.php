@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: content_block.php,v 1.2 2009/02/03 14:25:35 sebastien Exp $
+// $Id: content_block.php,v 1.3 2010/01/18 15:24:53 sebastien Exp $
 
 /**
   * PHP page : page content block edition : cms_forms
@@ -62,7 +62,7 @@ $cms_page = CMS_tree::getPageByID($currentPage);
 
 if (!$cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)
 	|| !$cms_user->hasModuleClearance(MOD_CMS_FORMS_CODENAME, CLEARANCE_MODULE_EDIT)) {
-	Header("Location: ".PATH_ADMIN_SPECIAL_PAGE_SUMMARY_WR."?cms_message_id=".MESSAGE_CLEARANCE_INSUFFICIENT."&".session_name()."=".session_id());
+	die('No rigths on page or module ...');
 	exit;
 }
 

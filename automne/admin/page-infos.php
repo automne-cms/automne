@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-infos.php,v 1.19 2009/11/27 15:37:11 sebastien Exp $
+// $Id: page-infos.php,v 1.20 2010/01/18 15:23:54 sebastien Exp $
 
 /**
   * PHP page : Load page infos
@@ -28,6 +28,7 @@
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 
 //define used messages (standard)
+$cms_language->startPrefetch();
 define("MESSAGE_PAGE_TREE_TIP_TITLE",1031);
 define("MESSAGE_PAGE_TREE_TIP_DESC",304);
 define("MESSAGE_PAGE_EDIT_CONTENT",330);
@@ -110,6 +111,7 @@ define("MESSAGE_PAGE_EDIT_NOT_VALIDATED", 667);
 define("MESSAGE_PAGE_NO_PAGES_RIGHTS", 668);
 define("MESSAGE_PAGE_NO_PAGE_RIGHT", 669);
 define("MESSAGE_PAGE_LOCKED_ON_AT", 1591);
+$cms_language->endPrefetch();
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -158,7 +160,7 @@ if ($pageUrl && !$pageId) {
 	$cms_page = CMS_tree::getPageByID($pageId);
 	$isAutomne = true;
 }
-if (!isset($cms_page) || !$cms_page || !is_object($cms_page) || $cms_page->hasError()) {
+if (!isset($cms_page) || !$cms_page || !is_object($cms_page) || $cms_page->hasError() || ($cms_page->getID() != APPLICATION_ROOT_PAGE_ID && !CMS_tree::hasAncestor($cms_page->getID()))) {
 	if ($pageUrl && !$isAutomne) {
 		if ($pageUrl == '/' && $httpHost != parse_url(CMS_websitesCatalog::getMainURL(), PHP_URL_HOST)) {
 			//Website domain is not properly set
@@ -556,10 +558,10 @@ foreach ($userPanels as $panel => $panelStatus) {
 				$panelTitle = '<img src="'.PATH_ADMIN_IMAGES_WR.'/s.gif" width="1" height="16" />';
 				$panelPicto = 'atm-pic-big-favorite';
 				$panelDisabled = 'false';
-				$panelTipTitle = $cms_language->getJSMessage(MESSAGE_PAGE_ADD_BOOKMARK);
-				$panelTip = $cms_language->getJSMessage(MESSAGE_PAGE_ADD_BOOKMARK_DESC);
+				$panelTipTitle = $cms_language->getMessage(MESSAGE_PAGE_ADD_BOOKMARK);
+				$panelTip = $cms_language->getMessage(MESSAGE_PAGE_ADD_BOOKMARK_DESC);
 				if ($cms_user->isFavorite($pageId)) {
-					$panelTip .= '<br /><br /><strong>'.$cms_language->getJSMessage(MESSAGE_PAGE_REMOVE_BOOKMARK_DESC).'</strong>';
+					$panelTip .= '<br /><br /><strong>'.$cms_language->getMessage(MESSAGE_PAGE_REMOVE_BOOKMARK_DESC).'</strong>';
 				}
 				$panelContent = "
 				if (panel) {

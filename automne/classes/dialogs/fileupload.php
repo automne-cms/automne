@@ -13,7 +13,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: fileupload.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: fileupload.php,v 1.2 2010/01/18 15:30:52 sebastien Exp $
 
 /**
   * Class CMS_fileUpload_dialog
@@ -75,7 +75,7 @@ class CMS_fileUpload_dialog extends CMS_grandFather
 	  */
 	const MESSAGE_ERROR_FILE_UPLOAD = 196;
 	const MESSAGE_ERROR_FILE_TOO_WIDE = 1193;
-	const MESSAGE_ERROR_IMAGE_TOO_WIDE = 10008;
+	const MESSAGE_ERROR_IMAGE_TOO_WIDE = 1596;
 	
 	
 	/**

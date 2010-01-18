@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-row.php,v 1.9 2009/10/22 16:26:27 sebastien Exp $
+// $Id: templates-row.php,v 1.10 2010/01/18 15:23:55 sebastien Exp $
 
 /**
   * PHP page : Load page rows search window.
@@ -95,6 +95,7 @@ $searchPanel .= "{
 	}}
 },";
 $allGroups = CMS_rowsCatalog::getAllGroups();
+natcasesort($allGroups);
 if ($allGroups) {
 	$columns = sizeof($allGroups) < 2 ? sizeof($allGroups) : 2;
 	$searchPanel .= "{

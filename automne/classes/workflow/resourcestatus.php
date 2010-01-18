@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: resourcestatus.php,v 1.6 2009/11/10 16:49:02 sebastien Exp $
+// $Id: resourcestatus.php,v 1.7 2010/01/18 15:30:55 sebastien Exp $
 
 /**
   * Class CMS_resourceStatus
@@ -836,22 +836,19 @@ class CMS_resourceStatus extends CMS_grandFather {
 		}
 		if ($checkLock && $this->getLock()) {
 			global $cms_language;
-			$label .= ' - '.$cms_language->getMessage(self::MESSAGE_STATUS_LOCKED);
+			if ($lockUserId = $this->getLock()) {
+				$lockUser = CMS_profile_usersCatalog::getById($lockUserId);
+				$lockDate = $this->getLockDate();
+				if (is_object($lockUser) && is_object($lockDate)) {
+					$label .= ' - '.$cms_language->getMessage(self::MESSAGE_STATUS_LOCKEDBY).' '.$lockUser->getFullName().' ('.$lockDate->getLocalizedDate($cms_language->getDateFormat().' - H:i:s').')';
+				} else {
+					$label .= ' - '.$cms_language->getMessage(self::MESSAGE_STATUS_LOCKED);
+				}
+			}
 			$lock = '<img src="'.PATH_ADMIN_IMAGES_WR.'/lock.gif" class="atm-status-lock" />';
 		} else {
 			$lock = '';
 		}
-		/*if ($this->getDraft()) {
-			global $cms_language;
-			$label .= ($img_status != 'draft') ? ' - '.$cms_language->getMessage(self::MESSAGE_STATUS_DRAFT) : $cms_language->getMessage(self::MESSAGE_STATUS_DRAFT);
-			if ($img_status != 'draft') {
-				if ($tiny) {
-					$draft = '<img src="'.PATH_ADMIN_IMAGES_WR.'/draft.gif" class="atm-status-draft" />';
-				} else {
-					$draft = '<img src="'.PATH_ADMIN_IMAGES_WR.'/draft.gif" class="atm-status-draft" />';
-				}
-			}
-		}*/
 		$class = ($tiny) ? "atm-status-tiny" : "atm-status";
 		//create a unique class name for this status to allow search for
 		$uniqueClassName = ($modCodeName && $resourceID) ? $this->getStatusId($modCodeName, $resourceID) : '';

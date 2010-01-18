@@ -1,10 +1,11 @@
-<?php //Generated on Tue, 17 Nov 2009 17:11:45 +0100 by Automne (TM) 4.0.0rc3
-if (!isset($cms_page_included) && !$_POST && !$_GET) {
-	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: http://127.0.0.1/web/demo/print-9-contact.php');
-	exit;
-}
+<?php //Generated on Mon, 18 Jan 2010 16:11:12 +0100 by Automne (TM) 4.0.0
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+if (!isset($cms_page_included) && !$_POST && !$_GET) {
+	CMS_view::redirect('http://127.0.0.1/web/demo/print-9-contact.php', true, 301);
+}
+ ?><?php if (!is_object($cms_user) || !$cms_user->hasPageClearance(9, CLEARANCE_PAGE_VIEW)) {
+	CMS_view::redirect(PATH_FRONTEND_SPECIAL_LOGIN_WR.'?referer='.base64_encode($_SERVER['REQUEST_URI']));
+}
  ?>
 <?php $mod_cms_forms = array();
 $mod_cms_forms["module"] = 'cms_forms';
@@ -32,7 +33,7 @@ $mod_cms_forms["usedforms"] = array (
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: print-9.php,v 1.10 2009/11/17 16:04:30 sebastien Exp $
+// $Id: print-9.php,v 1.11 2010/01/18 15:20:11 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -87,21 +88,26 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 			//check for authentification action in form
 			if ($form->getActionsByType(CMS_forms_action::ACTION_AUTH)) {
 				//check for valid session / logout attempt / and autologin
+				//CMS_grandFather::log('Forms ok1');
 				if (!isset($_SESSION["cms_context"]) || (isset($_SESSION["cms_context"]) && !is_a($_SESSION["cms_context"], 'CMS_context')) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] == 'true')) {
 					@session_destroy();
 					start_atm_session();
+					//CMS_grandFather::log('Forms ok2');
 					if ((!isset($_REQUEST["logout"]) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] != 'true')) && CMS_context::autoLoginSucceeded()) {
 						//declare form ok action
 						$cms_forms_okAction[$form->getID()] = true;
+						//CMS_grandFather::log('Forms ok3');
 					} elseif (isset($_REQUEST["logout"]) && $_REQUEST["logout"] == 'true') {
 						// Reset cookie
 						CMS_context::resetSessionCookies();
 						//then reload current page (to load public user)
-						header('Location: '.$_SERVER["SCRIPT_NAME"]);
-						exit;
+						//CMS_grandFather::log('Forms ok4');
+						CMS_view::redirect($_SERVER["SCRIPT_NAME"]);
 					}
 				}
+				//CMS_grandFather::log('Forms ok5');
 				if (isset($_SESSION["cms_context"]) && is_a($_SESSION["cms_context"], 'CMS_context') && (!isset($_REQUEST["logout"]) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] != 'true')) && CMS_context::autoLoginSucceeded()) {
+					//CMS_grandFather::log('Forms ok6');
 					//declare form ok action
 					$cms_forms_okAction[$form->getID()] = true;
 				}
@@ -132,8 +138,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 				if (isset($cms_forms_okAction[$form->getID()]) && $cms_forms_okAction[$form->getID()]) {
 					//if we have an encoded referer, use it
 					if (isset($_REQUEST['referer']) && $_REQUEST['referer'] && ($url = base64_decode($_REQUEST['referer']))) {
-						header("Location: ".$url);
-						exit;
+						CMS_view::redirect($url);
 					}
 					//in case of OK for this form, do action
 					if ($action->getString("value") == "page") { //go to given page
@@ -149,8 +154,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 							$href = $redirect->getHTML(false, MOD_CMS_FORMS_CODENAME, RESOURCE_DATA_LOCATION_PUBLIC, false, true);
 							$href = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($href)).'";');
 							if ($href) {
-								header("Location: ".$href);
-								exit;
+								CMS_view::redirect($href);
 							}
 						}
 					} else { //append message to form message
@@ -196,8 +200,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 												//$href = (strpos($href, '$') !== false) ? eval('return "'.str_replace(array('"',"'"),'',$href).'";') : $href;
 												$href = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($href)).'";');
 												if ($href) {
-													header("Location: ".$href);
-													exit;
+													CMS_view::redirect($href);
 												}
 											}
 										} else {
@@ -280,8 +283,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 											//$href = (strpos($href, '$') !== false) ? eval('return "'.str_replace(array('"',"'"),'',$href).'";') : $href;
 											$href = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($href)).'";');
 											if ($href) {
-												header("Location: ".$href);
-												exit;
+												CMS_view::redirect($href);
 											}
 										}
 									} else { //append message to form error message
@@ -318,9 +320,16 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 													$filename = $count.'_'.sensitiveIO::sanitizeAsciiString($_FILES[$aField->getAttribute('name')]['name']);
 												}
 												if (@move_uploaded_file($_FILES[$aField->getAttribute('name')]['tmp_name'], $filepath.'/'.$filename)) {
+													//check uploaded file
+													$tmp = new CMS_file($filepath.'/'.$filename);
+													if (!$tmp->checkUploadedFile()) {
+														$tmp->delete();
+														$filename = '';
+													}
+													unset($tmp);
 													$_FILES[$aField->getAttribute('name')]['atm_name'] = $filename;
 												}
-												$fieldRecord->setAttribute('value', $_FILES[$aField->getAttribute('name')]['atm_name']);
+												$fieldRecord->setAttribute('value', @$_FILES[$aField->getAttribute('name')]['atm_name']);
 											} else {
 												$fieldRecord->setAttribute('value', $_POST[$aField->getAttribute('name')]);
 											}
@@ -413,7 +422,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 									$password = $_POST[$fields[$values[1]]->getAttribute('name')];
 								}
 								if (isset($values[2]) && isset($fields[$values[2]]) && is_object($fields[$values[2]])) {
-									$permanent = $_POST[$fields[$values[2]]->getAttribute('name')];
+									$permanent = @$_POST[$fields[$values[2]]->getAttribute('name')];
 								}
 								if ($login && $password) {
 									// Vérification données obligatoires
@@ -440,8 +449,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 							case CMS_forms_action::ACTION_FORMOK:
 								//if we have an encoded referer, use it
 								if ($_REQUEST['referer'] && ($url = base64_decode($_REQUEST['referer']))) {
-									header("Location: ".$url);
-									exit;
+									CMS_view::redirect($url);
 								}
 								//in case of OK for this form, do action
 								if ($action->getString("value") == "page") { //go to given page
@@ -459,8 +467,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 										//$href = (strpos($href, '$') !== false) ? eval('return "'.str_replace(array('"',"'"),'',$href).'";') : $href;
 										$href = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($href)).'";');
 										if ($href) {
-											header("Location: ".$href);
-											exit;
+											CMS_view::redirect($href);
 										}
 									}
 								} else { //append message to form message
@@ -498,8 +505,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 								//$href = (strpos($href, '$') !== false) ? eval('return "'.str_replace(array('"',"'"),'',$href).'";') : $href;
 								$href = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($href)).'";');
 								if ($href) {
-									header("Location: ".$href);
-									exit;
+									CMS_view::redirect($href);
 								}
 							}
 						} else {
@@ -522,16 +528,15 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 <body>
 <h1>Contact</h1>
 <h3>
-
-		&raquo;&nbsp;
-
-Contact
-		
+<?php if ($cms_user->hasPageClearance(9, CLEARANCE_PAGE_VIEW)) {
+echo '
+		&raquo;&nbsp;Contact
+		';
+}
+?>
 </h3>
 
-
-<div class="text"><p>Ce formulaire vous permet d'envoyer une demande de contact. Pour le transformer (Champs, actions, email de destination), modifiez le dans les propri&eacute;t&eacute;s du module &quot;Formulaire&quot;.</p><p>&nbsp;</p></div>
-
+<p>Ce formulaire vous permet d'envoyer une demande de contact. Pour le transformer (Champs, actions, email de destination), modifiez le dans les propri&eacute;t&eacute;s du module &quot;Formulaire&quot;.</p><p>&nbsp;</p>
 
 <div class="cms_forms">
 	<?php $mod_cms_forms = array();
@@ -558,7 +563,7 @@ $mod_cms_forms["formID"] = '2';
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: print-9.php,v 1.10 2009/11/17 16:04:30 sebastien Exp $
+// $Id: print-9.php,v 1.11 2010/01/18 15:20:11 sebastien Exp $
 
 /**
   * Template CMS_forms_formular
@@ -630,9 +635,12 @@ if ($form->getID() && $form->isPublic()) {
 <div align="center">
 	<small>
 		
-		
+		<?php if ($cms_user->hasPageClearance(9, CLEARANCE_PAGE_VIEW)) {
+echo '
 				Page  "Contact" (http://127.0.0.1/web/demo/9-contact.php)
-				<br />
+				';
+}
+?><br />
 		Tir&eacute; du site http://<?php echo $_SERVER["HTTP_HOST"];    ?>
 	</small>
 </div>

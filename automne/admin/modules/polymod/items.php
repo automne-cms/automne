@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: items.php,v 1.11 2009/11/10 16:57:21 sebastien Exp $
+// $Id: items.php,v 1.12 2010/01/18 15:25:24 sebastien Exp $
 
 /**
   * PHP page : Load polymod items search window.
@@ -37,6 +37,7 @@ define("MESSAGE_PAGE_UNLOCK", 82);
 define("MESSAGE_PAGE_PREVIZ", 811);
 define("MESSAGE_PAGE_UNDELETE", 874);
 define("MESSAGE_PAGE_NEW", 262);
+define("MESSAGE_PAGE_LOADING", 1321);
 
 //Polymod messages
 define("MESSAGE_PAGE_FIELD_KEYWORDS", 18);
@@ -59,6 +60,10 @@ define("MESSAGE_ACTION_UNLOCK_SELECTED", 509);
 define("MESSAGE_ACTION_PREVIZ_SELECTED", 510);
 define("MESSAGE_ACTION_EDIT_SELECTED", 511);
 define("MESSAGE_ACTION_CREATE_SELECTED", 512);
+define("MESSAGE_PAGE_FIELD_PUBLISHED", 553);
+define("MESSAGE_PAGE_FIELD_UNPUBLISHED", 554);
+define("MESSAGE_PAGE_FIELD_VALIDATED", 555);
+define("MESSAGE_PAGE_FIELD_VALIDATION_PENDING", 556);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -125,7 +130,7 @@ foreach ($objectFields as $fieldID => $field) {
 			$value = $_SESSION["cms_context"]->getSessionVar('items_'.$object->getID().'_'.$fieldID);
 			$searchLists .= "{
 				fieldLabel:			'{$fieldLabel}',
-				anchor:				'100%',
+				anchor:				'-20px',
 				xtype:				'atmCombo',
 				name:				'items_{$object->getID()}_{$fieldID}',
 				hiddenName:			'items_{$object->getID()}_{$fieldID}',
@@ -166,7 +171,7 @@ if ($keywordsSearch) {
 		name: 			'items_{$object->getID()}_kwrds',
 		value:			'{$value}',
 		minLength:		3,
-		anchor:			'100%',
+		anchor:			'-20px',
 		listeners:		{'valid':{
 			fn: 			moduleObjectWindow.search, 
 			options:		{buffer:300}
@@ -182,6 +187,7 @@ if ($object->isPrimaryResource()) {
 		layout:			'column',
 		xtype:			'panel',
 		border:			false,
+		anchor:			'-20px',
 		items:[{
 			columnWidth:	.5,
 			layout: 		'form',
@@ -218,6 +224,41 @@ if ($object->isPrimaryResource()) {
 //add listboxes search
 $searchPanel .= $searchLists;
 
+//add status filter
+if ($object->isPrimaryResource()) {
+	$statusValue = $_SESSION["cms_context"]->getSessionVar('status_'.$object->getID());
+	$statusValue = $statusValue ? $statusValue : '';
+	$statusValues = array(
+		array('id' => '', 			'label' => '-'),
+		array('id' => 'online', 	'label' => $cms_language->getMessage(MESSAGE_PAGE_FIELD_PUBLISHED, false, MOD_POLYMOD_CODENAME)),
+		array('id' => 'offline', 	'label' => $cms_language->getMessage(MESSAGE_PAGE_FIELD_UNPUBLISHED, false, MOD_POLYMOD_CODENAME)),
+		array('id' => 'validated', 	'label' => $cms_language->getMessage(MESSAGE_PAGE_FIELD_VALIDATED, false, MOD_POLYMOD_CODENAME)),
+		array('id' => 'awaiting', 	'label' => $cms_language->getMessage(MESSAGE_PAGE_FIELD_VALIDATION_PENDING, false, MOD_POLYMOD_CODENAME)),
+	);
+	$statusValues = sensitiveIO::jsonEncode($statusValues);
+	$searchPanel .= "{
+		xtype:				'combo',
+		name:				'status_{$object->getID()}',
+		hiddenName:		 	'status_{$object->getID()}',
+		forceSelection:		true,
+		fieldLabel:			'Publication',
+		mode:				'local',
+		triggerAction:		'all',
+		valueField:			'id',
+		displayField:		'label',
+		value:				'{$statusValue}',
+		anchor:				'-20px',
+		store:				new Ext.data.JsonStore({
+			fields:				['id', 'label'],
+			data:				{$statusValues}
+		}),
+		allowBlank:		 	false,
+		selectOnFocus:		true,
+		editable:			false,
+		validateOnBlur:		false,
+		listeners:			{'valid':moduleObjectWindow.search}
+	},";
+}
 // Build sort select
 $items_possible['objectID'] = $cms_language->getMessage(MESSAGE_PAGE_FIELD_CREATION_DATE, false, MOD_POLYMOD_CODENAME); //Ordre de création
 
@@ -304,6 +345,7 @@ $searchPanel .= "{
 	layout:			'column',
 	xtype:			'panel',
 	border:			false,
+	anchor:			'-20px',
 	items:[{
 		columnWidth:	.65,
 		layout: 		'form',
@@ -383,7 +425,7 @@ $jscontent = <<<END
 		resultsPanel.currPage = 0;
 		resultsPanel.body.scrollTo('top', 0, false);
 		store.baseParams = values;
-		resultsPanel.body.mask('Chargement ...');
+		resultsPanel.body.mask('{$cms_language->getJSMessage(MESSAGE_PAGE_LOADING)}');
 		store.load({
 			params:			values,
 			add:			false,

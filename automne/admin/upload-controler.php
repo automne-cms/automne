@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: upload-controler.php,v 1.6 2009/10/22 16:26:27 sebastien Exp $
+// $Id: upload-controler.php,v 1.7 2010/01/18 15:23:55 sebastien Exp $
 
 /**
   * PHP controler : Receive upload files
@@ -44,12 +44,12 @@ $view = CMS_view::getInstance();
 $view->setDisplayMode(CMS_view::SHOW_JSON);
 
 //define upload constant according to SWFupload constants
-define('SFWUPLOAD_SECURITY_ERROR', -230);
-define('SFWUPLOAD_UPLOAD_LIMIT_EXCEEDED', -240);
-define('SFWUPLOAD_UPLOAD_FAILED', -250);
-define('SFWUPLOAD_FILE_VALIDATION_FAILED', -270);
-define('SFWUPLOAD_FILE_CANCELLED', -280);
-define('SFWUPLOAD_UPLOAD_STOPPED', -290);
+define('UPLOAD_SECURITY_ERROR', -230);
+define('UPLOAD_UPLOAD_LIMIT_EXCEEDED', -240);
+define('UPLOAD_UPLOAD_FAILED', -250);
+define('UPLOAD_FILE_VALIDATION_FAILED', -270);
+define('UPLOAD_FILE_CANCELLED', -280);
+define('UPLOAD_UPLOAD_STOPPED', -290);
 
 $fileDatas = array(
 	'error' 		=> 0,
@@ -63,7 +63,7 @@ $fileDatas = array(
 // Check the upload
 if (!isset($_FILES["Filedata"]) || !is_uploaded_file($_FILES["Filedata"]["tmp_name"]) || $_FILES["Filedata"]["error"] != 0) {
 	CMS_grandFather::raiseError('Uploaded file has an error : '.print_r($_FILES, true));
-	$fileDatas['error'] = SFWUPLOAD_UPLOAD_FAILED;
+	$fileDatas['error'] = UPLOAD_UPLOAD_FAILED;
 	$view->setContent($fileDatas);
 	$view->show();
 }
@@ -80,20 +80,21 @@ while (file_exists(PATH_UPLOAD_FS.'/'.$filename)) {
 }
 if (!@move_uploaded_file($_FILES["Filedata"]["tmp_name"], PATH_UPLOAD_FS.'/'.$filename)) {
 	CMS_grandFather::raiseError('Can\'t move uploaded file to : '.PATH_UPLOAD_FS.'/'.$filename);
-	$fileDatas['error'] = SFWUPLOAD_FILE_VALIDATION_FAILED;
+	$fileDatas['error'] = UPLOAD_FILE_VALIDATION_FAILED;
 	$view->setContent($fileDatas);
 	$view->show();
 }
 $file = new CMS_file(PATH_UPLOAD_FS.'/'.$filename);
 $file->chmod(FILES_CHMOD);
 
-//check file extension
-if (in_array($file->getExtension(), explode(',', FILE_UPLOAD_EXTENSIONS_DENIED))) {
+//check uploaded file
+if (!$file->checkUploadedFile()) {
 	$file->delete();
-	$fileDatas['error'] = SFWUPLOAD_SECURITY_ERROR;
+	$fileDatas['error'] = UPLOAD_SECURITY_ERROR;
 	$view->setContent($fileDatas);
 	$view->show();
 }
+
 //return file datas
 $fileDatas = array(
 	'error' 		=> 0,

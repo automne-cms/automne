@@ -13,7 +13,7 @@
 // | Author: Andre Haynes <andre.haynes@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: emailscatalog.php,v 1.3 2009/06/22 14:08:40 sebastien Exp $
+// $Id: emailscatalog.php,v 1.4 2010/01/18 15:30:51 sebastien Exp $
 
 /**
   * Class CMS_emailsCatalog
@@ -62,7 +62,7 @@ class CMS_emailsCatalog extends CMS_grandFather
 			$email = new CMS_email();
 			if ($user->getEmail()) {
 				if ($email->setEmailTo($user->getEmail())) {
-					$email->setSubject($subjects[$userLang->getCode()]);
+					$email->setSubject($subjects[$userLang->getCode()], true);
 					$email->setBody($messages[$userLang->getCode()]);
 					$email->setFooter($userLang->getMessage(self::MESSAGE_EMAIL_BODY_URLS, array(APPLICATION_LABEL, $mainURL."/", $mainURL.PATH_ADMIN_WR."/")));
 					$email->setTemplate($template);
@@ -83,12 +83,12 @@ class CMS_emailsCatalog extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function CMS_setMessages($addresses, $message, $subject) {
+	function CMS_setMessages($addresses, $message, $subject, $withApplicationLabel = true) {
 		// loop through addresses and create email message
 		foreach ($addresses as $address) {
 			$email = new CMS_email();
 			if ($email->setEmailTo($address)) {
-				$email->setSubject($subject);
+				$email->setSubject($subject, $withApplicationLabel);
 				$email->setBody($message);
 				$this->_messages[] = $email;
 			} else {

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: linxdisplay.php,v 1.7 2009/11/02 09:53:11 sebastien Exp $
+// $Id: linxdisplay.php,v 1.8 2010/01/18 15:30:54 sebastien Exp $
 
 /**
   * Class CMS_linxDisplay
@@ -154,7 +154,7 @@ class CMS_linxDisplay extends CMS_grandFather
 				$replace['id="{{isParent}}"']		= (is_array($lineage) && in_array($parsedPage->getID(), $lineage)) ? 'id="CMS_parent"' : "";
 			}
 			$html = str_replace(array_keys($replace), $replace, $this->_htmlTemplate);
-			if (APPLICATION_ENFORCES_ACCESS_CONTROL && $public && !(eregi("(page_previsualization.php|page_content.php)", $_SERVER["SCRIPT_NAME"]))) { //TODOV4
+			if (APPLICATION_ENFORCES_ACCESS_CONTROL && $public && !(preg_match("#(page_previsualization.php|page_content.php)#i", $_SERVER["SCRIPT_NAME"]))) {
 				$html=$this->_addSlashAroundPHPContent($html);
 				//pr($html);
 				$replace = array(
@@ -277,7 +277,7 @@ class CMS_linxDisplay extends CMS_grandFather
 						}
 					}
 					//add APPLICATION_ENFORCES_ACCESS_CONTROL php access checking
-					if (APPLICATION_ENFORCES_ACCESS_CONTROL && $public && !(eregi("(page_previsualization.php|page_content.php)", $_SERVER["SCRIPT_NAME"]))) { //TODOV4
+					if (APPLICATION_ENFORCES_ACCESS_CONTROL && $public && !(preg_match("#(page_previsualization.php|page_content.php)#i", $_SERVER["SCRIPT_NAME"]))) {
 						//cause bug in recursion 
 						$pagehtml = $this->_addSlashAroundPHPContent($pagehtml);
 						$replace = array(

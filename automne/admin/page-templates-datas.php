@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-templates-datas.php,v 1.6 2009/11/10 16:57:20 sebastien Exp $
+// $Id: page-templates-datas.php,v 1.7 2010/01/18 15:23:55 sebastien Exp $
 
 /**
   * PHP page : Load page templates infos
@@ -84,7 +84,7 @@ if ($currentTpl) {
 			'compatible'	=> true,
 			'description'	=> 	'<div'.(!$matchTpl->isUseable() ? ' class="atm-inactive"' : '').'>'.
 									$description.
-									'<img src="'.(PATH_TEMPLATES_IMAGES_WR.'/'. (($matchTpl->getImage()) ? $matchTpl->getImage() : 'nopicto.gif')).'" style="float:left;margin-right:3px;" />'.
+									'<img src="'.(PATH_TEMPLATES_IMAGES_WR.'/'. (($matchTpl->getImage()) ? $matchTpl->getImage() : 'nopicto.gif')).'" style="float:left;margin-right:3px;" /><br />'.
 									$cms_language->getMessage(MESSAGE_PAGE_MATCHING_TEMPLATE).'<br />'.
 									$cms_language->getMessage(MESSAGE_PAGE_GROUPS).' : <strong>'.implode(', ', $matchTpl->getGroups()).'</strong><br />'.
 									'<br class="x-form-clear" />'.
@@ -111,7 +111,7 @@ if ($currentTpl) {
 			'compatible'	=> false,
 			'description'	=> 	'<div'.(!$noMatchTpl->isUseable() ? ' class="atm-inactive"' : '').'>'.
 									$description.
-									'<img src="'.(PATH_TEMPLATES_IMAGES_WR.'/'. (($noMatchTpl->getImage()) ? $noMatchTpl->getImage() : 'nopicto.gif')).'" style="float:left;margin-right:3px;" />'.
+									'<img src="'.(PATH_TEMPLATES_IMAGES_WR.'/'. (($noMatchTpl->getImage()) ? $noMatchTpl->getImage() : 'nopicto.gif')).'" style="float:left;margin-right:3px;" /><br />'.
 									'<span class="atm-red">'.$cms_language->getMessage(MESSAGE_PAGE_UNMATCHING_TEMPLATE).'</span><br />'.
 									$cms_language->getMessage(MESSAGE_PAGE_GROUPS).' : <strong>'.implode(', ', $noMatchTpl->getGroups()).'</strong><br />'.
 									'<br class="x-form-clear" />'.
@@ -136,7 +136,7 @@ if ($currentTpl) {
 			'compatible'	=> true,
 			'description'	=> 	'<div'.(!$pageTemplate->isUseable() ? ' class="atm-inactive"' : '').'>'.
 									$description.
-									'<img src="'.(PATH_TEMPLATES_IMAGES_WR.'/'. (($pageTemplate->getImage()) ? $pageTemplate->getImage() : 'nopicto.gif')).'" style="float:left;margin-right:3px;" />'.
+									'<img src="'.(PATH_TEMPLATES_IMAGES_WR.'/'. (($pageTemplate->getImage()) ? $pageTemplate->getImage() : 'nopicto.gif')).'" style="float:left;margin-right:3px;" /><br />'.
 									$cms_language->getMessage(MESSAGE_PAGE_MATCHING_TEMPLATE).'<br />'.
 									$cms_language->getMessage(MESSAGE_PAGE_GROUPS).' : <strong>'.implode(', ', $pageTemplate->getGroups()).'</strong><br />'.
 									'<br class="x-form-clear" />'.

@@ -1,4 +1,4 @@
-/*$Id: edit.css,v 1.5 2009/11/10 16:57:22 sebastien Exp $*/
+/*$Id: edit.css,v 1.6 2010/01/18 15:24:07 sebastien Exp $*/
 .atm-row,
 .atm-cs {
 	display:			none;
@@ -123,6 +123,12 @@
 	opacity:			0.5;
 	filter:				alpha(opacity=50);
 	min-height:			9px;
+}
+.atm-error-block {
+	border:				2px red dotted;
+	opacity:			0.5;
+	filter:				alpha(opacity=50);
+	padding:			3px;
 }
 .atm-not-empty-row {
 	/*because some rows (like flash rows) does not have height but are not empty*/

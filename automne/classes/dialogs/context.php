@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: context.php,v 1.9 2009/11/10 16:49:00 sebastien Exp $
+// $Id: context.php,v 1.10 2010/01/18 15:30:52 sebastien Exp $
 
 /**
   * Class CMS_context
@@ -72,6 +72,14 @@ class CMS_context extends CMS_grandFather
 	protected $_token;
 	
 	/**
+	  * User use permanent session
+	  *
+	  * @var boolean
+	  * @access private
+	  */
+	protected $_permanent = false;
+	
+	/**
 	  * Constructor.
 	  * Initializes the user with given login/pass. Raises error if not found.
 	  *
@@ -85,6 +93,7 @@ class CMS_context extends CMS_grandFather
 	function __construct($login, $password, $permanent_cookie=0, $token = null)
 	{
 		if (!is_null($token) && !CMS_context::checkToken('login', $token)) {
+			$this->raiseError("Invalid token for authentification");
 			return false;
 		}
 		if (isset($_COOKIE[CMS_context::getAutoLoginCookieName()]) && !$login || !$password) {
@@ -102,11 +111,7 @@ class CMS_context extends CMS_grandFather
 			if ($auth->authenticate($login, $password)) {
 				$user = $auth->getUser();
 				if (is_a($user, 'CMS_profile_user')) {
-			 		if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID) {
-						$log = new CMS_log();
-						$log->logMiscAction(CMS_log::LOG_ACTION_LOGIN, $user, 'Permanent cookie: '.($permanent_cookie ? 'Yes' : 'No').', IP: '.$_SERVER['REMOTE_ADDR'].', UA: '.@$_SERVER['HTTP_USER_AGENT']);
-					}
-					$this->_startSession($user, $permanent_cookie);
+			 		$this->_startSession($user, $permanent_cookie);
 				} else {
 					$this->raiseError("Invalid profile returned by authentification");
 				}
@@ -127,12 +132,8 @@ class CMS_context extends CMS_grandFather
 			$q = new CMS_query($sql);
 			if ($q->getNumRows()) {
 				$user = CMS_profile_usersCatalog::getByID($q->getValue("id_pru"));
-				if (!$user->hasError()) {
-			 		if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID) {
-						$log = new CMS_log();
-						$log->logMiscAction(CMS_log::LOG_ACTION_LOGIN, $user, 'Permanent cookie: '.($permanent_cookie ? 'Yes' : 'No').', IP: '.$_SERVER['REMOTE_ADDR'].', UA: '.@$_SERVER['HTTP_USER_AGENT']);
-					}
-					$this->_startSession($user, $permanent_cookie);
+				if ($user && !$user->hasError()) {
+			 		$this->_startSession($user, $permanent_cookie);
 				} else {
 					$this->raiseError("user_id found don't instanciate a valid user object. ID : ".$user->getUserID());
 				}
@@ -184,6 +185,12 @@ class CMS_context extends CMS_grandFather
 					where id_ses = '".$q->getValue('id_ses')."'";
 				$q = new CMS_query($sql);
 			}
+			//regenerate session ID
+			session_regenerate_id(false);
+			if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID) {
+				$log = new CMS_log();
+				$log->logMiscAction(CMS_log::LOG_ACTION_LOGIN, $user, 'Permanent cookie: '.($permanent_cookie ? 'Yes' : 'No').', IP: '.@$_SERVER['REMOTE_ADDR'].', UA: '.@$_SERVER['HTTP_USER_AGENT']);
+			}
 			$sql = "
 				insert into
 					sessions
@@ -191,7 +198,7 @@ class CMS_context extends CMS_grandFather
 					lastTouch_ses=NOW(),
 					phpid_ses='".sensitiveIO::sanitizeSQLString(session_id())."',
 					user_ses='".sensitiveIO::sanitizeSQLString($this->_userID)."',
-					remote_addr_ses='".sensitiveIO::sanitizeSQLString($_SERVER['REMOTE_ADDR'])."',
+					remote_addr_ses='".sensitiveIO::sanitizeSQLString(@$_SERVER['REMOTE_ADDR'])."',
 					http_user_agent_ses='".sensitiveIO::sanitizeSQLString(@$_SERVER['HTTP_USER_AGENT'])."'
 			";
 			if ($permanent_cookie) {
@@ -204,6 +211,8 @@ class CMS_context extends CMS_grandFather
 				$expires = time() + 60*60*24*APPLICATION_COOKIE_EXPIRATION;
 				CMS_context::setCookie(CMS_context::getAutoLoginCookieName(), base64_encode($q->getLastInsertedID().'|'.session_id()), $expires);
 			}
+			$this->_permanent = $permanent_cookie ? true : false;
+			
 			$this->checkSession();
 		}
 	}
@@ -228,6 +237,16 @@ class CMS_context extends CMS_grandFather
 	function getUserID()
 	{
 		return $this->_userID;
+	}
+	
+	/**
+	  * Get permanent status for the session
+	  *
+	  * @return boolean
+	  * @access public
+	  */
+	function getPermanent() {
+		return $this->_permanent;
 	}
 	
 	/**
@@ -442,6 +461,7 @@ class CMS_context extends CMS_grandFather
 				";
 				$q = new CMS_query($sql);
 			} else {
+				//CMS_grandFather::log('checkSession destroy 1');
 				@session_destroy();
 				unset($this);
 				// if admin page, send user to login page
@@ -454,6 +474,7 @@ class CMS_context extends CMS_grandFather
 				}
 			}
 		} else {
+			//CMS_grandFather::log('checkSession destroy 2');
 			@session_destroy();
 			unset($this);
 			// if admin page, send user to login page
@@ -558,11 +579,22 @@ class CMS_context extends CMS_grandFather
 	  */
 	static function autoLoginSucceeded() {
 		if (isset($_COOKIE[CMS_context::getAutoLoginCookieName()])) {
-			$cms_context = new CMS_context("", "", true);
-			if (!$cms_context->hasError()) {
-				$_SESSION["cms_context"] = $cms_context;
+			//CMS_grandFather::log('autoLoginSucceeded1');
+			if (isset($_SESSION["cms_context"]) && is_a($_SESSION["cms_context"], 'CMS_context') && !$_SESSION["cms_context"]->hasError() && $_SESSION["cms_context"]->getUserID() != ANONYMOUS_PROFILEUSER_ID) {
+				//CMS_grandFather::log('autoLoginSucceeded2');
+				//user is already logged. Do not need to go further (or existant session will be destroyed)
 				return true;
 			}
+			$cms_context = new CMS_context("", "", true);
+			if (!$cms_context->hasError()) {
+				if (!isset($_SESSION["cms_context"]) || (isset($_SESSION["cms_context"]) && !is_a($_SESSION["cms_context"], 'CMS_context')) || ($_SESSION["cms_context"]->getUserID() != $cms_context->getUserID())) {
+					//CMS_grandFather::log('autoLoginSucceeded3');
+					$_SESSION["cms_context"] = $cms_context;
+				}
+				return true;
+			}
+			//CMS_grandFather::log('autoLoginSucceeded4');
+			//session has error so reset cookie
 			CMS_context::setCookie(CMS_context::getAutoLoginCookieName());
 		}
 		return false;
@@ -576,6 +608,7 @@ class CMS_context extends CMS_grandFather
 	  * @static
 	  */
 	static function resetSessionCookies() {
+		//CMS_grandFather::log('resetSessionCookies');
 		//Regenerate session id
 		session_regenerate_id(true);
 		//unset session
@@ -588,7 +621,7 @@ class CMS_context extends CMS_grandFather
 			CMS_context::setCookie(CMS_context::getAutoLoginCookieName());
 		}
 		//remove phpMyAdmin cookie if any
-		@setcookie(session_name(), false, time() - 3600, '/automne/phpMyAdmin/', '', 0);
+		@setcookie(session_name(), false, time() - 3600, '/automne/phpMyAdmin/', APPLICATION_COOKIE_DOMAIN, 0);
 		//then destroy session
 		@session_destroy();
 	}
@@ -607,10 +640,10 @@ class CMS_context extends CMS_grandFather
 	static function setCookie($name, $value=false, $expire=false) {
 		if ($value === false) {
 			unset($_COOKIE[$name]);
-			@setcookie($name, false, time()-42000, '/');
+			@setcookie($name, false, time()-42000, '/', APPLICATION_COOKIE_DOMAIN);
 		} else {
 			$_COOKIE[$name] = $value;
-			@setcookie($name, $value, $expire, "/", '', 0, true);
+			@setcookie($name, $value, $expire, "/", APPLICATION_COOKIE_DOMAIN, 0, true);
 		}
 	}
 	
@@ -624,7 +657,7 @@ class CMS_context extends CMS_grandFather
 	static function getAutoLoginCookieName() {
 		$input = APPLICATION_LABEL."_autologin";
 		$sanitized = strtr($input, " àâäéèëêïîöôùüû", "_aaaeeeeiioouuu");
-		$sanitized = ereg_replace("[^[a-zA-Z0-9_-]]*", "", $sanitized); //TODOV4
+		$sanitized = preg_replace("#[^[a-zA-Z0-9_-]]*#", "", $sanitized);
 		return $sanitized;
 	}
 	
@@ -653,6 +686,8 @@ class CMS_context extends CMS_grandFather
 		$sessionInfos['applicationVersion'] = AUTOMNE_VERSION;
 		$sessionInfos['systemLabel'] = CMS_grandFather::SYSTEM_LABEL;
 		$sessionInfos['token'] = CMS_context::getToken('admin');
+		$sessionInfos['sessionDuration'] = APPLICATION_SESSION_TIMEOUT;
+		$sessionInfos['permanent'] = $_SESSION["cms_context"]->getPermanent();
 		$sessionInfos['debug'] = '';
 		$sessionInfos['debug'] += (SYSTEM_DEBUG) ? 1 : 0;
 		$sessionInfos['debug'] += (STATS_DEBUG) ? 2 : 0;
@@ -696,6 +731,13 @@ class CMS_context extends CMS_grandFather
 		return $locales;
 	}
 	
+	/**
+	  * Get a unique session token value for given token name
+	  *
+	  * @param string $name, token name to get value
+	  * @return string : Token value
+	  * @access public
+	  */
 	function getToken ($name) {
 		$tokensDatas = CMS_context::getSessionVar('atm-tokens');
 		$tokens = $tokensDatas['tokens'];
@@ -728,6 +770,14 @@ class CMS_context extends CMS_grandFather
 		return $tokens[$name];
 	}
 	
+	/**
+	  * Check a session token value for a given token name
+	  *
+	  * @param string $name, token name to check
+	  * @param string $token, token value to check
+	  * @return boolean : true if token is valid or false otherwise
+	  * @access public
+	  */
 	function checkToken ($name, $token) {
 		//if session token check is disabled, always return true
 		if (!defined('SESSION_TOKEN_CHECK') || !SESSION_TOKEN_CHECK) {
@@ -771,7 +821,18 @@ class CMS_context extends CMS_grandFather
 		return false;
 	}
 	
+	/**
+	  * Check if a session token is expired for a given token name
+	  *
+	  * @param string $name, token name to check
+	  * @return boolean : true if token is expired or false otherwise
+	  * @access public
+	  */
 	function tokenIsExpired ($name) {
+		//if session token check is disabled, always return false (token never expire)
+		if (!defined('SESSION_TOKEN_CHECK') || !SESSION_TOKEN_CHECK) {
+			return false;
+		}
 		$tokensDatas = CMS_context::getSessionVar('atm-tokens');
 		$tokens = $tokensDatas['tokens'];
 		$tokensTime = $tokensDatas['time'];

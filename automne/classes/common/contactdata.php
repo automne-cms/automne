@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: contactdata.php,v 1.2 2009/11/26 10:37:31 sebastien Exp $
+// $Id: contactdata.php,v 1.3 2010/01/18 15:30:51 sebastien Exp $
 
 /**
   * Class CMS_contactData
@@ -510,8 +510,11 @@ class CMS_contactData extends CMS_grandFather
 	  */
 	function setEmail($newEmail)
 	{
-		$this->_email = $newEmail;
-		return true;
+		if(SensitiveIO::isValidEmail($newEmail)){
+		    $this->_email = $newEmail;
+		    return true;
+		}
+		return false;
 	}
 	
 	/**

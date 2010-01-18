@@ -1,4 +1,4 @@
-/*$Id: main.css,v 1.10 2009/11/17 15:52:22 sebastien Exp $*/
+/*$Id: main.css,v 1.11 2010/01/18 15:24:07 sebastien Exp $*/
 body {
 	font-family:		tahoma,arial,helvetica,sans-serif;
 	font-size:			small;
@@ -21,6 +21,10 @@ strong {
 	padding:			20px;
 	left:				-150px;
 	margin:				0 auto 0 auto;
+}
+.atm-frame-green {
+	background:			#FFFFFF url(/automne/admin/img/frame-error.gif) top right no-repeat;
+	padding:			20px 80px 20px 20px;
 }
 .atm-alert ul {
 	list-style:			none;

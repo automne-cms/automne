@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: server-scripts-controler.php,v 1.4 2009/10/22 16:26:26 sebastien Exp $
+// $Id: server-scripts-controler.php,v 1.5 2010/01/18 15:23:55 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on server
@@ -91,7 +91,7 @@ switch ($action) {
 				$p=trim($p);
 				if (SensitiveIO::isPositiveInteger($p)) {
 					$pages[] = $p;		
-				} elseif (ereg("[0-9]+\-[0-9]+", $p)) { //TODOV4
+				} elseif (preg_match("#[0-9]+\-[0-9]+#", $p)) {
 					$subPages = split('-', $p);
 					sort($subPages);
 					for ($idp = $subPages[0]; $idp <= $subPages[1]; $idp++) {

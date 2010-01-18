@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modulescatalog.php,v 1.3 2009/10/22 16:30:02 sebastien Exp $
+// $Id: modulescatalog.php,v 1.4 2010/01/18 15:30:52 sebastien Exp $
 
 /**
   * Class CMS_modulesCatalog
@@ -71,14 +71,17 @@ class CMS_modulesCatalog extends CMS_grandFather
 		$where = $from = '';
 		if ($orderBy == "label") {
 			global $cms_language;
-			$from = ", I18NM_messages";
-			$where = " where label_mod = I18NM_messages.id 
-						and  codename_mod = I18NM_messages.module";
+			$from = ", messages";
 			if (is_a($cms_language, 'CMS_language')) {
-				$order = "order by I18NM_messages.".$cms_language->getCode()." asc";
+				$code = $cms_language->getCode();
 			} else {
-				$order = "order by I18NM_messages.".APPLICATION_DEFAULT_LANGUAGE." asc";
+				$code = APPLICATION_DEFAULT_LANGUAGE;
 			}
+			$where = " where 
+				label_mod = id_mes 
+				and  codename_mod = module_mes
+				and  language_mes='".$code."'";
+			$order = " order by message_mes asc";
 		} else {
 			$order = ($orderBy) ? "order by ".$orderBy."_mod ":"";
 		}
@@ -234,7 +237,7 @@ class CMS_modulesCatalog extends CMS_grandFather
 		$q = new CMS_query($sql);
 		$tables_prefixes = array();
 		while ($data = $q->getArray()) {
-			if (ereg($tablesPrefix."(.*)_public", $data[0])) { //TODOV4
+			if (preg_match("#".$tablesPrefix."(.*)_public#", $data[0])) {
 				$tables_prefixes[] = io::substr($data[0], 0, strrpos($data[0], "_") + 1);
 			}
 		}

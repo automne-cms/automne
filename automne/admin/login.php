@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: login.php,v 1.9 2009/11/27 15:38:06 sebastien Exp $
+// $Id: login.php,v 1.10 2010/01/18 15:23:54 sebastien Exp $
 
 /**
   * PHP page : Login
@@ -92,6 +92,9 @@ default:
 				$welcome .= '<br /><br /><span class="atm-red">'.$language->getJsMessage(MESSAGE_PAGE_DEBUG).'</span> '.$language->getJsMessage(MESSAGE_PAGE_PRESS_F2_FOR_LOG);
 			}
 			$jscontent = '
+			//show front page in tab
+			Automne.tabPanels.getActiveTab().setFrameURL(\'/\');
+			Automne.tabPanels.getActiveTab().reload();
 			//load interface
 			Automne.load('.sensitiveIO::jsonEncode($userSessionsInfos).');
 			//display welcome message
@@ -139,6 +142,9 @@ $jscontent =
 	};
 	loginWindow.on('beforeclose', loginWindow.closeAndBack);
 	loginWindow.show();
+	//show front page in tab
+	Automne.tabPanels.getActiveTab().setFrameURL('/');
+	Automne.tabPanels.getActiveTab().reload();
 	//display login error window if any
 	{$loginError}
 END;

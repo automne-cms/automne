@@ -15,7 +15,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: language.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: language.php,v 1.2 2010/01/18 15:30:52 sebastien Exp $
 
 /**
   * Class CMS_language
@@ -67,11 +67,18 @@ class CMS_language extends CMS_grandFather
 	protected $_modulesDenied = array();
 
 	/**
-	  * All messages allready gets for this session
+	  * All messages allready prefetched for this session
 	  * @var array(string)
 	  * @access private
 	  */
-	protected $_alreadyGet = array();
+	protected $_prefetched = array();
+	
+	/**
+	  * All messages constant declaration.
+	  * @var array(string)
+	  * @access private
+	  */
+	protected $_prefetchStatus = array();
 	
 	/**
 	  * Constructor.
@@ -120,32 +127,123 @@ class CMS_language extends CMS_grandFather
 	  * @param integer $messageId The ID of the message to get
 	  * @param array(string) $parameters An array of parameters which will replace %s in the returned string
 	  * @param string $module The codename of the module owner of the message
+	  * @param boolean $usePriority : If message does not exists, use language priority to get it (default : true).
 	  * @return string
 	  * @access public
 	  */
-	function getMessage($messageId, $parameters = false, $module = '') {
-		static $languageGets;
-		if ($module == '' && class_exists('CMS_module_standard')) {
-			$module = MOD_STANDARD_CODENAME;
-		}
+	function getMessage($messageId, $parameters = false, $module = MOD_STANDARD_CODENAME, $usePriority = true) {
 		if (SensitiveIO::isPositiveInteger($messageId)) {
-			$this->_alreadyGet = $languageGets;
-			if (!isset($this->_alreadyGet[$this->_code.'-'.$messageId.'-'.$module])) {
+			if (!($string = $this->_getPrefetchedMessage($messageId, $module))) {
+				$sql = "
+					select
+						*
+					from
+						messages
+					where
+						id_mes = '".io::sanitizeSQLString($messageId)."' 
+						and module_mes = '" .io::sanitizeSQLString($module). "'
+						and language_mes = '" .io::sanitizeSQLString($this->_code). "'
+				";
+				$q = new CMS_query($sql);
+				if ($q->getNumRows()) {
+					$data = $q->getArray();
+					$this->_storeMessage($messageId, $module, $data['message_mes']);
+					if ($parameters) {
+						$replacement = SensitiveIO::arraySprintf($data['message_mes'], $parameters);
+						if (!$replacement) {
+							return $data['message_mes'];
+						} else {
+							return $replacement;
+						}
+					} else {
+						return $data['message_mes'];
+					}
+				} elseif ($usePriority) {
+					$sql = "
+						select
+							*
+						from
+							messages
+						where
+							id_mes = '".io::sanitizeSQLString($messageId)."' 
+							and module_mes = '" .io::sanitizeSQLString($module). "'
+							and language_mes = '" .io::sanitizeSQLString(APPLICATION_DEFAULT_LANGUAGE). "'
+					";
+					$q = new CMS_query($sql);
+					if ($q->getNumRows()) {
+						$data = $q->getArray();
+						$this->_storeMessage($messageId, $module, $data['message_mes']);
+						if ($parameters) {
+							$replacement = SensitiveIO::arraySprintf($data['message_mes'], $parameters);
+							if (!$replacement) {
+								return $data['message_mes'];
+							} else {
+								return $replacement;
+							}
+						} else {
+							return $data['message_mes'];
+						}
+					}
+				}
+				//try to get message from old table
+				$sql = "SHOW TABLES LIKE 'I18NM_messages'";
+				$q = new CMS_query($sql);
+				if ($q->getNumRows()) {
+					$string = $this->_getOldMessage($messageId, $parameters, $module);
+					if (!$string) {
+						$this->raiseError("Unknown message Id : ".$messageId." for module:".$module);
+						return '';
+					}
+				} else {
+					$this->raiseError("Unknown message Id : ".$messageId." for module:".$module);
+					return '';
+				}
+				return $string;
+			} else {
+				if ($parameters) {
+					$replacement = SensitiveIO::arraySprintf($string, $parameters);
+					if (!$replacement) {
+						return $string;
+					} else {
+						return $replacement;
+					}
+				} else {
+					return $string;
+				}
+			}
+		} else {
+			$this->raiseError("messageId is not a positive integer : ".$messageId);
+			return $messageId;
+		}
+	}
+	
+	/**
+      * Get the message translated into the specified language
+	  * old function keeped for compatibility with old modules
+      *
+      * @param integer $messageId The ID of the message to get
+      * @param array(string) $parameters An array of parameters which will replace %s in the returned string
+      * @param string $module The codename of the module owner of the message
+      * @return string
+      * @access private
+      */
+    protected function _getOldMessage($messageId, $parameters = false, $module = '') {
+    	if (SensitiveIO::isPositiveInteger($messageId)) {
+			if (!($string = $this->_getPrefetchedMessage($messageId, $module))) {
 				$sql = "
 					select
 						*
 					from
 						I18NM_messages
 					where
-						id='".$messageId."' 
-						and module='" . $module . "'
+						id='".io::sanitizeSQLString($messageId)."' 
+						and module='" .io::sanitizeSQLString($module). "'
 				";
 				$q = new CMS_query($sql);
 				if ($q->getNumRows()) {
 					$data = $q->getArray();
 					$string = isset($data[$this->_code]) ? $data[$this->_code] : $data[APPLICATION_DEFAULT_LANGUAGE];
-					$this->_alreadyGet[$this->_code.'-'.$messageId.'-'.$module]=$string;
-					$languageGets = $this->_alreadyGet;
+					$this->_storeMessage($messageId, $module, $string);
 					if ($parameters) {
 						$replacement = SensitiveIO::arraySprintf($string, $parameters);
 						if (!$replacement) {
@@ -157,10 +255,9 @@ class CMS_language extends CMS_grandFather
 						return $string;
 					}
 				} else {
-					$this->raiseError("Unknown message Id : ".$messageId." for module:".$module);
+					return '';
 				}
 			} else {
-				$string=$this->_alreadyGet[$this->_code.'-'.$messageId.'-'.$module];
 				if ($parameters) {
 					$replacement = SensitiveIO::arraySprintf($string, $parameters);
 					if (!$replacement) {
@@ -187,7 +284,7 @@ class CMS_language extends CMS_grandFather
 	  * @return string
 	  * @access public
 	  */
-	function getJsMessage($messageId, $parameters = false, $module = false) {
+	function getJsMessage($messageId, $parameters = false, $module = MOD_STANDARD_CODENAME) {
 		return sensitiveIO::sanitizeJSString($this->getMessage($messageId, $parameters, $module));
 	}
 	
@@ -206,7 +303,7 @@ class CMS_language extends CMS_grandFather
 	  *
 	  * @return boolean
 	  * @access public
-	  */
+	  
 	protected function _setCode($code) {
 		static $codeExists;
 		$code = trim($code);
@@ -232,7 +329,7 @@ class CMS_language extends CMS_grandFather
 			$this->_code = $code;
 		}
 		return $return;
-	}
+	}*/
 	
 	/**
 	  * Get the label.
@@ -285,6 +382,91 @@ class CMS_language extends CMS_grandFather
 		$mask = str_replace("m", $this->getMessage(MESSAGE_ABBREVIATION_MONTH), $mask);
 		$mask = str_replace("Y", $this->getMessage(MESSAGE_ABBREVIATION_YEAR), $mask);
 		return $mask;
+	}
+	
+	/**
+	  * Start prefetching for a given module 
+	  * - Start constant declarion comparaison
+	  *
+	  * @param string $module The codename of the module owner of the message
+	  * @return boolean
+	  * @access public
+	  */
+	function startPrefetch($module = MOD_STANDARD_CODENAME) {
+		$constants = get_defined_constants(true);
+		if (isset($constants['user'])) {
+			$this->_prefetchStatus[$module] = $constants['user'];
+		} else {
+			$this->_prefetchStatus[$module] = array();
+		}
+		return true;
+	}
+	
+	/**
+	  * End prefetching for a given module 
+	  * - End constant declarion comparaison
+	  * - Get all messages for all new constants declared
+	  *
+	  * @param string $module The codename of the module owner of the message
+	  * @return boolean
+	  * @access public
+	  */
+	function endPrefetch($module = MOD_STANDARD_CODENAME) {
+		$constants = get_defined_constants(true);
+		if (!isset($this->_prefetchStatus[$module]) || !is_array($this->_prefetchStatus[$module])) {
+			$this->raiseError("Try to end message prefetch which not already started");
+			return false;
+		}
+		$diff = array_diff_assoc((array) @$constants['user'], $this->_prefetchStatus[$module]);
+		if (!$diff) {
+			return true;
+		}
+		$sql = "
+			select
+				*
+			from
+				messages
+			where
+				id_mes in (".implode($diff, ',').")
+				and module_mes = '" . $module . "'
+				and language_mes = '" .io::sanitizeSQLString($this->_code). "'
+		";
+		$q = new CMS_query($sql);
+		if ($q->getNumRows()) {
+			while ($data = $q->getArray()) {
+				$this->_storeMessage($data['id_mes'], $data['module_mes'], $data['message_mes']);
+			}
+		}
+		return true;
+	}
+	
+	/**
+	  * Store a message already loaded from DB for further access
+	  *
+	  * @param integer $messageId The message Id to store
+	  * @param string $module The codename of the module owner of the message
+	  * @param string $message The message to store
+	  * @return boolean
+	  * @access private
+	  */
+	protected function _storeMessage($messageId, $module = MOD_STANDARD_CODENAME, $message) {
+		$this->_prefetched[$module][$this->_code][$messageId] = $message;
+		return true;
+	}
+	
+	/**
+	  * Get a message stored
+	  *
+	  * @param integer $messageId The message Id to store
+	  * @param string $module The codename of the module owner of the message
+	  * @return string if message is already prefetched, false otherwise
+	  * @access private
+	  */
+	protected function _getPrefetchedMessage($messageId, $module = MOD_STANDARD_CODENAME) {
+		if (!isset($this->_prefetched[$module][$this->_code][$messageId])) {
+			return false;
+		}
+		return $this->_prefetched[$module][$this->_code][$messageId];
 	}
 }
 ?>

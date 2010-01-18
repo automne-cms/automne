@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: pagetemplate.php,v 1.9 2009/11/19 16:10:35 sebastien Exp $
+// $Id: pagetemplate.php,v 1.10 2010/01/18 15:30:55 sebastien Exp $
 
 /**
   * Class CMS_pageTemplate
@@ -1028,11 +1028,11 @@ class CMS_pageTemplate extends CMS_grandFather
 				$websitesList .= $website->getLabel();
 			}
 		}
-		$description = sensitiveIO::ellipsis($this->getDescription(), 50);
-		if ($description != $this->getDescription()) {
-			$description = '<span ext:qtip="'.io::htmlspecialchars($this->getDescription()).'">'.$description.'</span>';
+		$description = sensitiveIO::ellipsis($this->getDescription(), 60);
+		if ($description != nl2br($this->getDescription())) {
+			$description = '<span ext:qtip="'.nl2br(io::htmlspecialchars($this->getDescription())).'">'.$description.'</span>';
 		}
-		$description = $withDefinition ? $description.'<br />' : '';
+		$description = $description ? $description.'<br />' : '';
 		//append template definition if needed
 		$definitionDatas = ($withDefinition) ? $this->getDefinition() : '';
 		if ($user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) {
@@ -1068,7 +1068,7 @@ class CMS_pageTemplate extends CMS_grandFather
 			'activated'		=> $this->isUseable() ? true : false,
 			'used'			=> $hasPages,
 			'definition'	=> $definitionDatas,
-			'edit'			=> $edit
+			'edit'			=> $edit,
 		);
 	}
 }

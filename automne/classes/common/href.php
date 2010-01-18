@@ -14,7 +14,7 @@
 // | Authors: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>     |
 // +----------------------------------------------------------------------+
 //
-// $Id: href.php,v 1.6 2009/11/20 17:02:10 sebastien Exp $
+// $Id: href.php,v 1.7 2010/01/18 15:30:52 sebastien Exp $
 
 /**
   * Class Href
@@ -249,7 +249,7 @@ class CMS_href extends CMS_grandFather
 	  */
 	function setLabel($s)
 	{
-		$s = ereg_replace("(\r\n)|(\n)|(\r)", " ", $s); //TODOV4
+		$s = preg_replace("#(\r\n)|(\n)|(\r)#", " ", $s);
 		$this->_label = str_replace($this->_separator, '', $s);
 		return true;
 	}

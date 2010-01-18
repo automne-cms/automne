@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_file.php,v 1.13 2009/11/10 16:49:01 sebastien Exp $
+// $Id: object_file.php,v 1.14 2010/01/18 15:30:53 sebastien Exp $
 
 /**
   * Class CMS_object_file
@@ -971,7 +971,7 @@ class CMS_object_file extends CMS_object_common
 			}
 			
 			if (!(isset($values[$prefixName.$this->_field->getID().'_0']) && $this->_subfieldValues[0]->setValue(io::htmlspecialchars($values[$prefixName.$this->_field->getID().'_0'])))) {
-			    	return false;
+			    return false;
 			}
 			
 			//thumbnail
@@ -1003,7 +1003,13 @@ class CMS_object_file extends CMS_object_common
 				}
 				//chmod it
 				@chmod($path."/".$filename, octdec(FILES_CHMOD));
-				
+				//check uploaded file
+				$tmp = new CMS_file($path."/".$filename);
+				if (!$tmp->checkUploadedFile()) {
+					$tmp->delete();
+					return false;
+				}
+				unset($tmp);
 				if ($params['thumbMaxWidth'] > 0 || $params['thumbMaxHeight'] > 0) {
 					//check thumbnail size
 					list($sizeX, $sizeY) = @getimagesize($path."/".$filename);
@@ -1188,6 +1194,13 @@ class CMS_object_file extends CMS_object_common
 				}
 				//chmod it
 				@chmod($path."/".$filename, octdec(FILES_CHMOD));
+				//check uploaded file
+				$tmp = new CMS_file($path."/".$filename);
+				if (!$tmp->checkUploadedFile()) {
+					$tmp->delete();
+					return false;
+				}
+				unset($tmp);
 				//set it
 				if (!$this->_subfieldValues[4]->setValue($filename)) {
 					return false;

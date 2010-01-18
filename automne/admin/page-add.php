@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-add.php,v 1.7 2009/11/10 16:57:19 sebastien Exp $
+// $Id: page-add.php,v 1.8 2010/01/18 15:23:54 sebastien Exp $
 
 /**
   * PHP page : Load add-page window infos. Set title and template then redirect to page content edition
@@ -42,6 +42,7 @@ define("MESSAGE_PAGE_NO_ALL_REQUIRED_FIELDS", 349);
 define("MESSAGE_PAGE_DEFAULT_ROWS_HELP", 564);
 define("MESSAGE_PAGE_DEFAULT_ROWS", 565);
 define("MESSAGE_PAGE_FILTER", 693);
+define("MESSAGE_PAGE_WEBSITES", 1461);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -98,12 +99,12 @@ $jscontent = <<<END
 		'<div class="details">',
 			'<tpl for=".">',
 				'<img src="{image}"><div class="details-info">',
-				'<b>{$cms_language->getJsMessage(MESSAGE_PAGE_NAME)}:</b>',
-				'<span>{label}</span>',
-				'<span>{desc}</span>',
-				'<b>{$cms_language->getJsMessage(MESSAGE_PAGE_GROUPS)}:</b>',
+				'<b>{$cms_language->getJsMessage(MESSAGE_PAGE_NAME)} :</b>',
+				'<strong>{label}</strong>',
+				'<span>{desc:nl2br}</span>',
+				'<b>{$cms_language->getJsMessage(MESSAGE_PAGE_GROUPS)} :</b>',
 				'<span>{groups}</span>',
-				'<b>Sites:</b>',
+				'<b>{$cms_language->getJsMessage(MESSAGE_PAGE_WEBSITES)} :</b>',
 				'<span>{websites}</span>',
 			'</tpl>',
 		'</div>'

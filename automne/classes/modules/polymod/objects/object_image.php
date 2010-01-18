@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_image.php,v 1.11 2009/11/10 16:49:01 sebastien Exp $
+// $Id: object_image.php,v 1.12 2010/01/18 15:30:54 sebastien Exp $
 
 /**
   * Class CMS_object_image
@@ -37,6 +37,10 @@ class CMS_object_image extends CMS_object_common
   	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXHEIGHT = 423;
   	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXHEIGHT_DESC = 412;
 	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAKEZOOM = 205;
+	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXZOOMWIDTH = 549;
+	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXZOOMWIDTH_DESC = 550;
+  	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXZOOMHEIGHT = 551;
+  	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXZOOMHEIGHT_DESC = 552;
 	const MESSAGE_OBJECT_IMAGE_FIELD_LABEL = 37;
 	const MESSAGE_OBJECT_IMAGE_FIELD_THUMBNAIL = 206;
 	const MESSAGE_OBJECT_IMAGE_FIELD_ZOOM = 207;
@@ -153,6 +157,20 @@ class CMS_object_image extends CMS_object_common
 										'externalName'  => self::MESSAGE_OBJECT_IMAGE_PARAMETER_MAXWIDTHPREVIZ,
 										'description'   => self::MESSAGE_OBJECT_IMAGE_PARAMETER_MAXWIDTHPREVIZ_DESC,
 									),
+							5 => array(
+										'type' 			=> 'integer',
+										'required' 		=> false,
+										'internalName'	=> 'maxZoomWidth',
+										'externalName'	=> self::MESSAGE_OBJECT_IMAGE_PARAMETER_MAXZOOMWIDTH,
+										'description' 	=> self::MESSAGE_OBJECT_IMAGE_PARAMETER_MAXZOOMWIDTH_DESC,
+									),
+							6 => array(
+										'type'			=> 'integer',
+										'required'		=> false,
+										'internalName'  => 'maxZoomHeight',
+										'externalName'  => self::MESSAGE_OBJECT_IMAGE_PARAMETER_MAXZOOMHEIGHT,
+										'description'   => self::MESSAGE_OBJECT_IMAGE_PARAMETER_MAXZOOMHEIGHT_DESC,
+										),
 							);
 
 	/**
@@ -160,7 +178,7 @@ class CMS_object_image extends CMS_object_common
 	  * @var array(integer "subFieldID" => mixed)
 	  * @access private
 	  */
-	protected $_parameterValues = array(0 => '',1 => '',2 => false,3 => true,4 => '16');
+	protected $_parameterValues = array(0 => '',1 => '',2 => false,3 => true,4 => '16',5 => '',6 => '');
 
 	/**
 	  * all images extension allowed
@@ -230,8 +248,8 @@ class CMS_object_image extends CMS_object_common
 			return true;
 		} else {
 			//check for image extension before doing anything
-			if ($_FILES[$prefixName.$this->_field->getID().'_0']["name"]
-				 && !in_array(io::strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_0']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
+			if (isset($_FILES[$prefixName.$this->_field->getID().'_0']["name"]) && $_FILES[$prefixName.$this->_field->getID().'_0']["name"]
+				 && !in_array(strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_0']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
 				return false;
 			}
 			//check for image extension before doing anything
@@ -347,6 +365,12 @@ class CMS_object_image extends CMS_object_common
 			$return['items'][2]['fileinfos']	= $zoomDatas;
 			$return['items'][2]['fileinfos']['module']			= $moduleCodename;
 			$return['items'][2]['fileinfos']['visualisation']	= RESOURCE_DATA_LOCATION_EDITED;
+			if ($params['maxZoomWidth']) {
+				$return['items'][2]['maxWidth'] = $params['maxZoomWidth'];
+			}
+			if ($params['maxZoomHeight']) {
+				$return['items'][2]['maxHeight'] = $params['maxZoomHeight'];
+			}
 		} else {
 			$return['items'][2]['xtype'] = 'hidden';
 		}
@@ -634,6 +658,53 @@ class CMS_object_image extends CMS_object_common
 					$this->_subfieldValues[1]->setValue($this->_subfieldValues[0]->getValue());
 				}
 			}
+			//if we had an imagezoom, check his size
+			if ($this->_subfieldValues[2]->getValue() && ($params['maxZoomWidth'] > 0 || $params['maxZoomHeight'] > 0)) {
+				//resize zoom if needed
+				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
+				$basename = $this->_subfieldValues[2]->getValue();
+				$filename = $path.'/'.$basename;
+				$extension = io::strtolower(pathinfo($basename, PATHINFO_EXTENSION));
+				//check zoom size
+				list($sizeX, $sizeY) = @getimagesize($filename);
+				if (($params['maxZoomWidth'] && $sizeX > $params['maxZoomWidth']) || ($params['maxZoomHeight'] && $sizeY > $params['maxZoomHeight'])) {
+					$newSizeX = $sizeX;
+					$newSizeY = $sizeY;
+					// Check width
+					if ($params['maxZoomWidth'] && $newSizeX > $params['maxZoomWidth']) {
+						$newSizeY = round(($params['maxZoomWidth']*$newSizeY)/$newSizeX);
+						$newSizeX = $params['maxZoomWidth'];
+					}
+					if($params['maxZoomHeight'] && $newSizeY > $params['maxZoomHeight']){
+						$newSizeX = round(($params['maxZoomHeight']*$newSizeX)/$newSizeY);
+						$newSizeY = $params['maxZoomHeight'];
+					}
+					$dest = imagecreatetruecolor($newSizeX, $newSizeY);
+					switch ($extension) {
+						case "gif":
+							$src = imagecreatefromgif($filename);
+						break;
+						case "jpg":
+						case "jpeg":
+						case "jpe":
+							$src = imagecreatefromjpeg($filename);
+						break;
+						case "png":
+							$src = imagecreatefrompng($filename);
+						break;
+						default:
+							return false;
+						break;
+					}
+					imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
+					imagedestroy($src);
+					//overwrite image
+					@imagejpeg($dest,$filename,95);
+					CMS_file::chmodFile(FILES_CHMOD, $filename);
+					imagedestroy($dest);
+				}
+			}
+			
 			//update files infos if needed
 			if ($this->_subfieldValues[0]->getValue() && file_exists(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[0]->getValue())) {
 				$file = new CMS_file(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[0]->getValue());
@@ -754,7 +825,13 @@ class CMS_object_image extends CMS_object_common
 				}
 				//chmod it
 				@chmod($path."/".$filename, octdec(FILES_CHMOD));
-	
+				//check uploaded file
+				$tmp = new CMS_file($path."/".$filename);
+				if (!$tmp->checkUploadedFile()) {
+					$tmp->delete();
+					return false;
+				}
+				unset($tmp);
 				if ($params['maxWidth'] > 0) {
 					//check thumbnail size
 					list($sizeX, $sizeY) = @getimagesize($path."/".$filename);
@@ -854,7 +931,7 @@ class CMS_object_image extends CMS_object_common
 				}
 			}
 			//image zoom (if needed)
-			if (@$values[$prefixName.$this->_field->getID().'_makeZoom'] != 1 && @$_FILES[$prefixName.$this->_field->getID().'_2']['name'] && !@$_FILES[$prefixName.$this->_field->getID().'_2']['error']) {
+			if (isset($values[$prefixName.$this->_field->getID().'_makeZoom']) && $values[$prefixName.$this->_field->getID().'_makeZoom'] != 1 && isset($_FILES[$prefixName.$this->_field->getID().'_2']['name']) && $_FILES[$prefixName.$this->_field->getID().'_2']['name'] && !$_FILES[$prefixName.$this->_field->getID().'_2']['error']) {
 				//check for image type before doing anything
 				if (!in_array(io::strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_2']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
 					return false;
@@ -870,6 +947,13 @@ class CMS_object_image extends CMS_object_common
 				}
 				//chmod it
 				@chmod($path."/".$filename, octdec(FILES_CHMOD));
+				//check uploaded file
+				$tmp = new CMS_file($path."/".$filename);
+				if (!$tmp->checkUploadedFile()) {
+					$tmp->delete();
+					return false;
+				}
+				unset($tmp);
 				//set it
 				if (!$this->_subfieldValues[2]->setValue($filename)) {
 					return false;

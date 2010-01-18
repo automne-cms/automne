@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_search.php,v 1.12 2009/11/26 10:34:39 sebastien Exp $
+// $Id: object_search.php,v 1.13 2010/01/18 15:30:53 sebastien Exp $
 
 /**
   * Class CMS_object_search
@@ -215,11 +215,13 @@ class CMS_object_search extends CMS_grandFather
 			"item",
 			"items",
 			"itemsOrdered",
+			"archives",
 			//"profile",
 			//"category",
 			"keywords",
 			"publication date after", //Date start (from)
 			"publication date before", //Date end (to)
+			"status", //Publication status
 			//"publication date end" //end of publication : system field : hidden
 		);
 	}
@@ -280,6 +282,12 @@ class CMS_object_search extends CMS_grandFather
 			}
 			$this->_whereConditions['items'][] = array('value' => $value, 'operator' => $operator);
 			break;
+		case 'archives':
+			if ($this->_public && $this->_object->isPrimaryResource() && ($value == 1 || $value == 'true' || $value == true)) {
+				unset($this->_whereConditions['publication date before']);
+				unset($this->_whereConditions['publication date end']);
+			}
+		break;
 		case "itemsOrdered":
 			if (!$value) {
 				$this->raiseError('Value must be a populated array.');
@@ -333,6 +341,15 @@ class CMS_object_search extends CMS_grandFather
 					return false;
 				}
 				$this->_whereConditions['publication date end'][] = array('value' => $value, 'operator' => $operator);
+			}
+			break;
+		case "status": // Publication status
+			if ($this->_object->isPrimaryResource()) {
+				if (!in_array($value, array('online', 'offline', 'validated', 'awaiting'))) {
+					$this->raiseError('Status value must be one of them : online, offline, public, awaiting');
+					return false;
+				}
+				$this->_whereConditions['status'][] = array('value' => $value, 'operator' => $operator);
 			}
 			break;
 		default:
@@ -940,6 +957,82 @@ class CMS_object_search extends CMS_grandFather
 								$where
 							";
 					break;
+				case "status": // Publication status
+					//add previously founded IDs to where clause
+					$where = ($IDs) ? ' and objectID in ('.implode(',',$IDs).')':'';
+					switch ($value) {
+						case 'online':
+							$sql = "
+								select
+									distinct objectID
+								from
+									mod_subobject_integer".$statusSuffix.",
+									resources,
+									resourceStatuses
+								where
+									objectFieldID = '0'
+									and value = id_res
+									and status_res=id_rs
+									and location_rs='".RESOURCE_LOCATION_USERSPACE."'
+									and publication_rs='".RESOURCE_PUBLICATION_PUBLIC."'
+									and publicationDateStart_rs <= '".date('Y-m-d')."'
+									and publicationDateStart_rs != '0000-00-00'
+									and (publicationDateEnd_rs >= '".date('Y-m-d')."'
+									or publicationDateEnd_rs = '0000-00-00')
+									$where
+								";
+						break;
+						case 'offline':
+							$sql = "
+								select
+									distinct objectID
+								from
+									mod_subobject_integer".$statusSuffix.",
+									resources,
+									resourceStatuses
+								where
+									objectFieldID = '0'
+									and value = id_res
+									and status_res=id_rs
+									and (publication_rs='".RESOURCE_PUBLICATION_NEVERVALIDATED."' or publication_rs='".RESOURCE_PUBLICATION_VALIDATED."')
+									and (publicationDateStart_rs > '".date('Y-m-d')."' or publicationDateEnd_rs < '".date('Y-m-d')."')
+									$where
+								";
+						break;
+						case 'validated':
+							$sql = "
+								select
+									distinct objectID
+								from
+									mod_subobject_integer".$statusSuffix.",
+									resources,
+									resourceStatuses
+								where
+									objectFieldID = '0'
+									and value = id_res
+									and status_res=id_rs
+									and editions_rs=0
+									$where
+								";
+						break;
+						case 'awaiting':
+							$sql = "
+								select
+									distinct objectID
+								from
+									mod_subobject_integer".$statusSuffix.",
+									resources,
+									resourceStatuses
+								where
+									objectFieldID = '0'
+									and value = id_res
+									and status_res=id_rs
+									and editions_rs!=0
+									$where
+								";
+						break;
+					}
+					break;
 				default:
 					//add previously founded IDs to where clause
 					$where = ($IDs) ? ' and objectID in ('.implode(',',$IDs).')':'';
@@ -1365,6 +1458,46 @@ class CMS_object_search extends CMS_grandFather
 			}
 		}
 		return $items;
+	}
+	
+	/**
+	 * Search items by xml definition. Return XML
+	 * 
+	 * @access public
+	 * @param string $searchConditions XML definition to search with
+	 * @return string XML definition of results IDs
+	 */
+	function soapSearch($searchConditions = '') {
+	    $xml = '';
+	    
+	    if($searchConditions){
+	        $myXML = new CMS_DOMDocument();
+            $myXML->loadXML($searchConditions, 0, false);
+            
+            // Conditions tag must be the root tag
+            $conditionsTags = $myXML->getElementsByTagName('conditions');
+            if(count($conditionsTags) == 1){
+                $conditionTags = $myXML->getElementsByTagName('condition');
+                foreach($conditionTags as $conditionTag){
+                    $type = $conditionTag->getAttribute('type');
+                    $operator = $conditionTag->getAttribute('operator');
+                    $value = $conditionTag->nodeValue;
+                    $this->addWhereCondition($type, $value, $operator);
+                }
+            }
+        }
+        
+        $items = $this->search(CMS_object_search::POLYMOD_SEARCH_RETURN_IDS);
+        
+        if($items){
+            $xml .= '<results count="'.count($items).'">'."\n";
+            foreach($items as $itemID){
+                $xml .= '<result>'.$itemID.'</result>'."\n";
+            }
+            $xml .= '</results>';
+        }
+	    
+	    return $xml;
 	}
 }
 ?>

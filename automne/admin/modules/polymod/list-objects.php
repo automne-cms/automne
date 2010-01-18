@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: list-objects.php,v 1.5 2009/11/27 16:36:08 sebastien Exp $
+// $Id: list-objects.php,v 1.6 2010/01/18 15:25:24 sebastien Exp $
 
 /**
   * PHP page : Load polyobjects items datas
@@ -50,6 +50,12 @@ $objectsDatas['objects'] = array();
 if (!$codename) {
 	CMS_grandFather::raiseError('Unknown module ...');
 	$view->setContent($objectsDatas);
+	$view->show();
+}
+//load module
+$module = CMS_modulesCatalog::getByCodename($codename);
+if (!$module || !$module->isPolymod()) {
+	CMS_grandFather::raiseError('Unknown module or module is not polymod for codename : '.$codename);
 	$view->show();
 }
 //CHECKS user has module clearance

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: patch.php,v 1.3 2009/10/22 16:29:05 sebastien Exp $
+// $Id: patch.php,v 1.4 2010/01/18 15:30:12 sebastien Exp $
 
 /**
   * PHP page : Patch
@@ -92,6 +92,14 @@ switch ($cms_action) {
 					$filename = '';
 				} else {
 					@chmod ($path."/".$filename, octdec(FILES_CHMOD));
+				}
+				
+				$file = new CMS_file($path."/".$filename);
+				//check uploaded file
+				if (!$file->checkUploadedFile()) {
+					$file->delete();
+					$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_FILE_ERROR)."\n";
+					$filename = '';
 				}
 			} else {
 				$filename = '';

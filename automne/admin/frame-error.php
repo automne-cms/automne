@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: no-pages.php,v 1.3 2010/01/18 15:23:54 sebastien Exp $
+// $Id: frame-error.php,v 1.1 2010/01/18 15:23:54 sebastien Exp $
 
 /**
   * PHP page : No page info
@@ -26,7 +26,7 @@
 
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 
-define("MESSAGE_PAGE_NO_PAGES_RIGHTS", 691);
+define("MESSAGE_PAGE_FRAME_ERROR", 1597);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -35,7 +35,7 @@ $view->addCSSFile('info');
 
 $content = '
 <div id="atm-center">
-	<div class="atm-alert atm-alert-green">'.$cms_language->getMessage(MESSAGE_PAGE_NO_PAGES_RIGHTS).(sensitiveIO::isValidEmail(APPLICATION_MAINTAINER_EMAIL) ? ' (<a href="mailto:'.APPLICATION_MAINTAINER_EMAIL.'">'.APPLICATION_MAINTAINER_EMAIL.'</a>)' : '').'</div>
+	<div class="atm-alert atm-alert-green atm-frame-green">'.$cms_language->getMessage(MESSAGE_PAGE_FRAME_ERROR, array($_SERVER['HTTP_HOST'])).(sensitiveIO::isValidEmail(APPLICATION_MAINTAINER_EMAIL) ? ' (<a href="mailto:'.APPLICATION_MAINTAINER_EMAIL.'">'.APPLICATION_MAINTAINER_EMAIL.'</a>)' : '').'</div>
 </div>';
 
 $view->setContent($content);

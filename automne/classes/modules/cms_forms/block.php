@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: block.php,v 1.4 2009/03/06 10:52:34 sebastien Exp $
+// $Id: block.php,v 1.5 2010/01/18 15:30:53 sebastien Exp $
 
 /**
   * Class CMS_block_cms_forms
@@ -125,7 +125,7 @@ class CMS_block_cms_forms extends CMS_block
 			break;
 		case PAGE_VISUALMODE_HTML_EDITED:
 		case PAGE_VISUALMODE_HTML_EDITION:
-			if ($data && sensitiveIO::IsPositiveInteger($data["value"]['formID'])) {
+			if ($data && isset($data["value"]['formID']) && sensitiveIO::IsPositiveInteger($data["value"]['formID'])) {
 				//$form = new CMS_forms_formular($data["value"]['formID']);
 				//$html = $form->getContent(CMS_FORMS_PHP_FORM_CALL);
 				
@@ -147,7 +147,11 @@ class CMS_block_cms_forms extends CMS_block
 			$form_data = str_replace("{{data}}", $html, $this->_definition);
 			$this->_hasContent = ($data && isset($data["value"]['formID'])) ? true:false;
 			$this->_editable = true;
-			$this->_administrable = true;
+			
+			global $cms_user;
+			$module = CMS_modulesCatalog::getByCodename(MOD_CMS_FORMS_CODENAME);
+			$this->_administrable = $module->hasAdmin() && $cms_user->hasModuleClearance(MOD_CMS_FORMS_CODENAME, CLEARANCE_MODULE_EDIT);
+			
 			return $this->_getHTMLForm($language, $page, $clientSpace, $row, $this->_tagID, $form_data);
 			break;
 		case PAGE_VISUALMODE_CLIENTSPACES_FORM:

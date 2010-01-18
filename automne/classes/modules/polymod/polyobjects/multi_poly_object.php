@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: multi_poly_object.php,v 1.9 2009/11/10 16:49:01 sebastien Exp $
+// $Id: multi_poly_object.php,v 1.10 2010/01/18 15:30:54 sebastien Exp $
 
 /**
   * Class CMS_multi_poly_object
@@ -339,7 +339,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  */
 	function getObjectDefinition () {
 		//$_SESSION["polyModule"]["objectDef"][$objectID] unseted by CMS_poly_object_definition writeToPersistence method
-		if (is_object($_SESSION["polyModule"]["objectDef"][$this->_objectID])) {
+		if (isset($_SESSION["polyModule"]["objectDef"][$this->_objectID]) && is_object($_SESSION["polyModule"]["objectDef"][$this->_objectID])) {
 			$objectDef = &$_SESSION["polyModule"]["objectDef"][$this->_objectID];
 		} else {
 			$objectDef = new CMS_poly_object_definition($this->_objectID);
@@ -656,8 +656,10 @@ class CMS_multi_poly_object extends CMS_object_common
 							cmp.setValue(values.join(cmp.delimiter));
 							if (\''.$listId.'\') {
 								var list = Ext.getCmp(\''.$listId.'\');
-								list.store.baseParams.removeIds = values.join(cmp.delimiter);
-								list.store.load();
+								if (list) {
+									list.store.baseParams.removeIds = values.join(cmp.delimiter);
+									list.store.load();
+								}
 							}
 						}', false, false),
 						'scope'		=> 'this'
@@ -829,7 +831,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	function getHTMLDescription($glue = '') {
 		$labels = array();
 		foreach (array_keys($this->_subfieldValues) as $subFieldID) {
-			if (is_object($this->_subfieldValues[$subFieldID]) && is_object($this->_objectValues[$subFieldID])) {
+			if (isset($this->_subfieldValues[$subFieldID]) && is_object($this->_subfieldValues[$subFieldID]) && isset($this->_objectValues[$subFieldID]) && is_object($this->_objectValues[$subFieldID])) {
 				//get poly objects labels
 				$objectHTMLDescription = $this->_objectValues[$subFieldID]->getHTMLDescription();
 				if ($objectHTMLDescription ) {

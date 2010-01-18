@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: window.js,v 1.5 2009/06/05 15:01:06 sebastien Exp $
+  * $Id: window.js,v 1.6 2010/01/18 15:24:31 sebastien Exp $
   */
 Automne.Window = Ext.extend(Ext.Window, {
 	currentPage:	false,
@@ -98,8 +98,10 @@ Automne.Window = Ext.extend(Ext.Window, {
         }
 	},
 	show: function() {
-		//call parent
-		Automne.Window.superclass.show.apply(this, arguments); 
+		try {
+			//call parent
+			Automne.Window.superclass.show.apply(this, arguments);
+		} catch(e) {}
 		//set window specific updater
 		this.getUpdater().renderer = new Automne.windowRenderer(this);
 	},

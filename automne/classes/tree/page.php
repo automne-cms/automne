@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: page.php,v 1.11 2009/11/19 16:10:35 sebastien Exp $
+// $Id: page.php,v 1.12 2010/01/18 15:30:54 sebastien Exp $
 
 /**
   * Class CMS_page
@@ -371,11 +371,12 @@ class CMS_page extends CMS_resource
 	  * @param boolean $printPage Do we want the print page URL ?
 	  * @param boolean $returnFilenameOnly : return only the page filename (default false)
 	  * @param constant $relativeTo : get URL relative to webroot (PATH_RELATIVETO_WEBROOT) or file system (PATH_RELATIVETO_FILESYSTEM)
-	  * @return string The url; complete with PATH and website information. False if page not published.
+	  * @param boolean $force : get URL even if page is not published (default : false)
+	  * @return string The url; complete with PATH and website information. Empty string if page not published.
 	  * @access public
 	  */
-	function getURL($printPage = false, $returnFilenameOnly = false, $relativeTo = PATH_RELATIVETO_WEBROOT) {
-		if ($this->getLocation() == RESOURCE_LOCATION_USERSPACE && $this->getPublication() != RESOURCE_PUBLICATION_NEVERVALIDATED) {
+	function getURL($printPage = false, $returnFilenameOnly = false, $relativeTo = PATH_RELATIVETO_WEBROOT, $force = false) {
+		if ($force || ($this->getLocation() == RESOURCE_LOCATION_USERSPACE && $this->getPublication() == RESOURCE_PUBLICATION_PUBLIC)) {
 			$ws = CMS_tree::getPageWebsite($this);
 			$wsURL = '';
 			if (is_object($ws)) {
@@ -384,7 +385,7 @@ class CMS_page extends CMS_resource
 				}
 				$wsPagesPath = $ws->getPagesPath($relativeTo);
 			} else {
-				return false;
+				return '';
 			}
 			$filename = $this->_getFilename();
 			if ($printPage) {
@@ -401,7 +402,7 @@ class CMS_page extends CMS_resource
 				}
 			}
 		} else {
-			return false;
+			return '';
 		}
 	}
 	
@@ -701,6 +702,7 @@ class CMS_page extends CMS_resource
 		'	$cms_page_included = true;'."\n".
 		'	require($_SERVER[\'DOCUMENT_ROOT\'].\''.$filePath.'\');'."\n".
 		'} else {'."\n".
+		'	header(\'HTTP/1.x 301 Moved Permanently\', true, 301);'."\n".
 		'	header(\'Location: '.PATH_SPECIAL_PAGE_NOT_FOUND_WR.'\');'."\n".
 		'	exit;'."\n".
 		'}'."\n".
@@ -1755,14 +1757,15 @@ class CMS_page extends CMS_resource
 			$this->{$var}["reminderOn"] = new CMS_date();
 			$this->{$var}["redirect"] = new CMS_href();
 			switch ($this->_status->getLocation()) {
-			case RESOURCE_LOCATION_USERSPACE:
-				$table = ($public) ? "pagesBaseData_public" : "pagesBaseData_edited";
-				break;
 			case RESOURCE_LOCATION_ARCHIVED:
 				$table = "pagesBaseData_archived";
 				break;
 			case RESOURCE_LOCATION_DELETED:
 				$table = "pagesBaseData_deleted";
+				break;
+			case RESOURCE_LOCATION_USERSPACE:
+			default:
+				$table = ($public) ? "pagesBaseData_public" : "pagesBaseData_edited";
 				break;
 			}
 			

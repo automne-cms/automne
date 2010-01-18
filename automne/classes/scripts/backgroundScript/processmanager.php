@@ -14,7 +14,7 @@
 // | Author: Sיbastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: processmanager.php,v 1.3 2009/10/22 16:30:06 sebastien Exp $
+// $Id: processmanager.php,v 1.4 2010/01/18 15:30:54 sebastien Exp $
 
 /**
   * background script process manager.
@@ -168,7 +168,7 @@ class processManager
 					scriptName_ss='".$this->_scriptName."'
 				";
 			$q_script=new CMS_query($sql);
-			if (eregi('Master',$this->_scriptName)) { //TODOV4
+			if (preg_match('#Master#i',$this->_scriptName)) {
 				$sql="
 					delete from
 						scriptsStatuses
@@ -345,7 +345,7 @@ class processManager
 	  */
 	function getAppCode() {
 		$sanitized = strtr(APPLICATION_LABEL, " אגהיטכךןמצפשüû", "_aaaeeeeiioouuu");
-		$sanitized = ereg_replace("[^[a-zA-Z0-9_.-]]*", "", $sanitized); //TODOV4
+		$sanitized = preg_replace("#[^[a-zA-Z0-9_.-]]*#", "", $sanitized);
 		return $sanitized;
 	}
 }

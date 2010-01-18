@@ -14,7 +14,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: fileupload.php,v 1.2 2009/10/22 16:30:01 sebastien Exp $
+// $Id: fileupload.php,v 1.3 2010/01/18 15:30:52 sebastien Exp $
 
 
 /**
@@ -340,6 +340,12 @@ class CMS_fileUpload extends CMS_grandFather
 					return false;
 				}
 				$this->file = new CMS_file($this->_pathes["destination"]);
+				//check uploaded file
+				if (!$this->file->checkUploadedFile()) {
+					$tmp->delete();
+					$this->raiseError("Security error on uploaded file");
+					return false;
+				}
 				return $this->file->chmod(FILES_CHMOD);
 			} else {
 				return false;

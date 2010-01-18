@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: block.php,v 1.4 2009/11/10 16:48:59 sebastien Exp $
+// $Id: block.php,v 1.5 2010/01/18 15:30:53 sebastien Exp $
 
 /**
   * Class CMS_block_polymod
@@ -138,8 +138,10 @@ class CMS_block_polymod extends CMS_block
 			}
 			break;
 		case PAGE_VISUALMODE_FORM:
-			//$this->_lookForBlockParameters();
-			$this->_administrable = true;
+			global $cms_user;
+			$module = CMS_modulesCatalog::getByCodename($this->_attributes['module']);
+			$this->_administrable = $module->hasAdmin() && $cms_user->hasModuleClearance($this->_attributes['module'], CLEARANCE_MODULE_EDIT);
+			
 			$this->_editable = $this->_canhasParameters;
 			if (($this->_hasParameters && $this->_musthaveParameters) || !$this->_musthaveParameters) {
 				$this->_hasContent = true;
@@ -151,9 +153,7 @@ class CMS_block_polymod extends CMS_block
 			return $this->_getHTMLForm($language, $page, $clientSpace, $row, $this->_tagID, $form_data);
 			break;
 		case PAGE_VISUALMODE_CLIENTSPACES_FORM:
-			$this->_administrable = false;
-			$this->_editable = false;
-			$this->_hasContent = false;
+			$this->_hasContent = $this->_editable = $this->_administrable = false;
 			$form_data = '<img src="'.PATH_ADMIN_MODULES_WR.'/polymod/block.gif" alt="X" title="X" />';
 			return $this->_getHTMLForm($language, $page, $clientSpace, $row, $this->_tagID, $form_data);
 			break;

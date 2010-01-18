@@ -15,7 +15,7 @@
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: profile.php,v 1.6 2009/10/22 16:30:27 sebastien Exp $
+// $Id: profile.php,v 1.7 2010/01/18 15:30:55 sebastien Exp $
 
 /**
   * Class CMS_Profile
@@ -1396,12 +1396,12 @@ class CMS_profile extends CMS_grandFather
 			$matching_cats = $this->getRootModuleCategoriesReadable($module);
 			break;
 		case CLEARANCE_MODULE_EDIT:
-			$cats_denied = array_merge($cats_denied, $this->getRootModuleCategoriesReadable($module));
+			$cats_denied = array_merge((array)$cats_denied, (array)$this->getRootModuleCategoriesReadable($module));
 			$matching_cats = $this->getRootModuleCategoriesWritable($module);
 			break;
 		case CLEARANCE_MODULE_MANAGE:
-			$cats_denied = array_merge($cats_denied, $this->getRootModuleCategoriesReadable($module));
-			$cats_denied = array_merge($cats_denied, $this->getRootModuleCategoriesWritable($module));
+			$cats_denied = array_merge((array)$cats_denied, (array)$this->getRootModuleCategoriesReadable($module));
+			$cats_denied = array_merge((array)$cats_denied, (array)$this->getRootModuleCategoriesWritable($module));
 			$matching_cats = $this->getRootModuleCategoriesManagable($module);
 			break;
 		}

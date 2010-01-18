@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-previsualization.php,v 1.3 2009/10/28 16:26:00 sebastien Exp $
+// $Id: page-previsualization.php,v 1.4 2010/01/18 15:23:54 sebastien Exp $
 
 /**
   * PHP page : page previsualization
@@ -43,7 +43,7 @@ $cms_visual_mode = ($draft) ? PAGE_VISUALMODE_HTML_EDITION : PAGE_VISUALMODE_HTM
 
 $cms_page = CMS_tree::getPageByID($currentPage);
 if (!$cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)) {
-	Header("Location: ".PATH_ADMIN_SPECIAL_PAGE_SUMMARY_WR."?cms_message_id=".MESSAGE_CLEARANCE_INSUFFICIENT."&".session_name()."=".session_id());
+	die('No rigths on page ...');
 	exit;
 }
 //unset vars to avoid interraction with page

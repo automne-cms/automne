@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: linxcondition.php,v 1.2 2009/10/22 16:30:05 sebastien Exp $
+// $Id: linxcondition.php,v 1.3 2010/01/18 15:30:54 sebastien Exp $
 
 /**
   * Class CMS_linxCondition
@@ -82,7 +82,7 @@ class CMS_linxCondition extends CMS_grandFather
 	  */
 	function __construct($tag)
 	{
-		$authorized_properties =array("rank", "title", "id", "lvl");
+		$authorized_properties =array("rank", "title", "id", "lvl", "father");
 		$property = $tag->getAttribute('property');
 		$operator = $tag->getAttribute('operator');
 		if (SensitiveIO::isInSet($property, $authorized_properties)) {
@@ -189,6 +189,9 @@ class CMS_linxCondition extends CMS_grandFather
 		switch ($property) {
 		case "title":
 			return $page->getTitle($public);
+			break;
+		case "father":
+			return CMS_tree::getFather($page, false, $public);
 			break;
 		case "id":
 			return $page->getID();

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_string.php,v 1.5 2009/11/10 16:49:01 sebastien Exp $
+// $Id: object_string.php,v 1.6 2010/01/18 15:30:54 sebastien Exp $
 
 /**
   * Class CMS_object_string
@@ -212,7 +212,7 @@ class CMS_object_string extends CMS_object_common
 	  */
 	function setValues($values,$prefixName) {
 		$params = $this->getParamsValues();
-		if ($values[$prefixName.$this->_field->getID().'_0']) {
+		if (isset($values[$prefixName.$this->_field->getID().'_0']) && $values[$prefixName.$this->_field->getID().'_0']) {
 			//check string length parameter
 			if (io::strlen($values[$prefixName.$this->_field->getID().'_0']) > $params['maxLength']) {
 				return false;
@@ -230,7 +230,7 @@ class CMS_object_string extends CMS_object_common
 				return false;
 			}
 		}
-		if (!$this->_subfieldValues[0]->setValue(io::htmlspecialchars($values[$prefixName.$this->_field->getID().'_0']))) {
+		if (!$this->_subfieldValues[0]->setValue(io::htmlspecialchars(@$values[$prefixName.$this->_field->getID().'_0']))) {
 			return false;
 		}
 		return true;

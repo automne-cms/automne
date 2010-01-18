@@ -13,7 +13,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: xmltag.php,v 1.5 2009/10/22 16:30:05 sebastien Exp $
+// $Id: xmltag.php,v 1.6 2010/01/18 15:30:54 sebastien Exp $
 
 /**
   * Class CMS_XMLTag
@@ -170,7 +170,6 @@ class CMS_XMLTag extends CMS_grandFather
 	function getInnerContent()
 	{
 		$regexp = "#<".$this->_name."[^>]*>(.*)</".$this->_name.">#is";
-		//eregi($regexp, $this->_textContent, $args); //TODOV4
 		preg_match($regexp, $this->_textContent, $args);
 		return $args[1];
 	}

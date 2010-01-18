@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-page.php,v 1.10 2009/11/10 16:57:20 sebastien Exp $
+// $Id: templates-page.php,v 1.11 2010/01/18 15:23:55 sebastien Exp $
 
 /**
   * PHP page : Load page templates search window.
@@ -99,6 +99,7 @@ $searchPanel .= "{
 	}}
 },";
 $allGroups = CMS_pageTemplatesCatalog::getAllGroups();
+natcasesort($allGroups);
 if ($allGroups) {
 	$columns = sizeof($allGroups) < 2 ? sizeof($allGroups) : 2;
 	$searchPanel .= "{

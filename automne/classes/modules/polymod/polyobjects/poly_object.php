@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object.php,v 1.13 2009/12/03 08:30:12 sebastien Exp $
+// $Id: poly_object.php,v 1.14 2010/01/18 15:30:54 sebastien Exp $
 
 /**
   * Class CMS_poly_object
@@ -529,6 +529,122 @@ class CMS_poly_object extends CMS_resource
 	}
 	
 	/**
+	  * Get soap values
+	  *
+	  * @param integer $fieldID The field ID
+	  * @param object $language The CMS_language to deal with
+	  *
+	  * @return string $xml XML definition
+	  * @access public
+	  */
+	function getSoapValues($fieldID, $language) {
+		$xml = '';
+		$xmlFields = '';
+		
+		//get Object definition
+		$objectDef = $this->getObjectDefinition();
+		//get module codename
+		$moduleCodename = $objectDef->getValue('module');
+		
+		foreach(array_keys($this->_objectValues) as $subFieldID) {
+			$xmlFields .= $this->_objectValues[$subFieldID]->getSoapValues($subFieldID, $language);
+		}
+		
+		$resource = '';
+		switch($this->_objectResourceStatus) {
+			case 2: //secondary
+				$resource = '<resource type="2" name="secondary"/>';
+			break;
+			case 1: //primary
+				$dateStart = $this->getPublicationDateStart();
+		    	$dateEnd = $this->getPublicationDateEnd();
+				$resource = 
+				'<resource type="1" name="primary">
+					<pubdatestart>'.$dateStart->getDBValue().'</pubdatestart>
+					<pubdateend>'.$dateEnd->getDBValue().'</pubdateend>
+				</resource>';
+			break;
+			case 0: //none
+			default:
+				$resource = '<resource type="0" name="none"/>';
+			break;
+		}
+		
+		$xml .= 
+		'<object module="'.SensitiveIO::sanitizeHTMLString($moduleCodename).'" type="'.$objectDef->getID().'" id="'.$this->getID().'" label="'.SensitiveIO::sanitizeHTMLString($this->getLabel()).'">
+			'.$resource.'
+			'.$xmlFields.'
+		</object>';
+		
+		return $xml;
+	}
+	
+	/**
+	  * Get soap values
+	  *
+	  * @param integer $fieldID The field ID
+	  * @param object $language The CMS_language to deal with
+	  * @param string $xml Values to set
+	  *
+	  * @return boolean true on success, false on failure
+	  * @access public
+	  */
+	function setSoapValues($fieldID, $domdocument) {
+	    $view = CMS_view::getInstance();
+		$return = true;
+		$itemId = '';
+        // Fields
+        foreach($domdocument->childNodes as $childNode) {
+			if($childNode->nodeType == XML_ELEMENT_NODE) {
+				switch ($childNode->tagName) {
+					case 'field':
+						//<field id="40" label="Identifiant" required="1">
+						$fieldId = $childNode->getAttribute('id');
+						if (!sensitiveIO::isPositiveInteger($fieldId)) {
+							$view->addError('Missing or invalid attribute id for field tag');
+							return false;
+						}
+						if (!isset($this->_objectValues[$fieldId])) {
+							$view->addError('Unknown field id '.$fieldId.' for object '.$this->_objectID);
+							return false;
+						}
+						// Check if field requires itemID to set values
+						
+						if(method_exists($this->_objectValues[$fieldId], 'needIDToSetValues')){
+						    if (!$this->getID()) {
+						        //if object has not id yet, save it
+						        if(!$this->writeToPersistence()){
+						            $view->addError('Error during saving process (pre-saving need for the field '.$this->_objectID.')');
+							        return false;
+						        }
+					        }
+					        $itemId = $this->getID();
+						}
+						
+						if (!$this->_objectValues[$fieldId]->setSoapValues($fieldId, $childNode, $itemId)) {
+							$view->addError('Unable to set values for field '.$fieldId);
+							$return = false;
+						}
+					break;
+					case 'resource':
+						//TODO
+					break;
+					default:
+						$view->addError('Unknown xml tag '.$childNode->tagName.' to process.');
+						return false;
+					break;
+				}
+			} else {
+				if ($childNode->nodeType == XML_TEXT_NODE && trim($childNode->nodeValue)) {
+					$view->addError('Unknown xml content tag '.$childNode->nodeValue.' to process.');
+					return false;
+				}
+			}
+        }
+		return $return;
+	}
+	
+	/**
 	  * get HTML admin (used to enter object values in admin)
 	  *
 	  * @param integer $fieldID, the current field id (only for poly object compatibility)
@@ -766,7 +882,7 @@ class CMS_poly_object extends CMS_resource
 	  * @access public
 	  */
 	function setValues($fieldID, $values, $prefix, $newFormat = false) {
-		if (is_object($this->_objectValues[$fieldID])) {
+		if (isset($this->_objectValues[$fieldID]) && is_object($this->_objectValues[$fieldID])) {
 			if (is_a($this->_objectValues[$fieldID],'CMS_poly_object')) {
 				//set values for poly object field in $this->_polyObjectValues
 				if (is_a($this->_polyObjectValues[$fieldID],'CMS_subobject_integer')) {

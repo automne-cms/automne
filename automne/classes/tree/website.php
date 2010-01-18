@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: website.php,v 1.5 2009/12/04 14:40:11 sebastien Exp $
+// $Id: website.php,v 1.6 2010/01/18 15:30:55 sebastien Exp $
 
 /**
   * Class CMS_website
@@ -393,7 +393,7 @@ class CMS_website extends CMS_grandFather
 			";
 			$q = new CMS_query($sql);
 			
-			//deletes the pages and html directory (with all the pages inside)
+			//deletes the pages directory (with all the pages inside)
 			if (!$this->_isMain) {
 				$dir = $this->getPagesPath(PATH_RELATIVETO_FILESYSTEM);
 				if ($opendir = @opendir($dir)) {

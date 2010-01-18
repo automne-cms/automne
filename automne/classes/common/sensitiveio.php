@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: sensitiveio.php,v 1.8 2009/11/27 15:41:55 sebastien Exp $
+// $Id: sensitiveio.php,v 1.9 2010/01/18 15:30:52 sebastien Exp $
 
 /**
   * Class SensitiveIO
@@ -258,14 +258,21 @@ class SensitiveIO extends CMS_grandfather
 	  * @return string the sanitized string
 	  * @access public
 	  */
-	static function sanitizeJSString($input, $minimize = false, $addslashes = true) {
+	static function sanitizeJSString($input, $minimize = false, $addslashes = true, $keepCariageReturn = false) {
 		if ($minimize) {
 			$input = JSMin::minify($input);
 		}
-		if ($addslashes) {
-			$input = addcslashes($input, "'\\");
+		if (!$keepCariageReturn) {
+			if ($addslashes) {
+				$input = addcslashes($input, "'\\");
+			}
+			$sanitized = str_replace(array("\r", "\n", "\t"), '', $input);
+		} else {
+			if ($addslashes) {
+				$input = addcslashes($input, '"\\');
+			}
+			$sanitized = str_replace(array("\r", "\n", "\t"), array('', '\n', ''), $input);
 		}
-		$sanitized = str_replace(array("\r", "\n", "\t"), '', $input);
 		return $sanitized;
 	}
 
@@ -281,9 +288,9 @@ class SensitiveIO extends CMS_grandfather
 		if (is_array($email)) {
 			extract($email);
 		}
-		if (ereg('^[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+'.'@'.
+		if (preg_match('§^[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+'.'@'.
 				 	'[-!#$%&\'*+\\/0-9=?A-Z^_`a-z{|}~]+\.'.
-			'[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+$', $email)) { //TODOV4
+			'[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+$§', $email)) {
 
 			if ($checkDomain && function_exists('checkdnsrr')) {
 				list (, $domain)  = explode('@', $email);
@@ -415,6 +422,7 @@ class SensitiveIO extends CMS_grandfather
 	  * @access public
 	  */
 	static function evalPHPCode($input) {
+		global $cms_user, $cms_language;
 		//write all content to evaluate as a tmp file.
 		$tmpFile = new CMS_file(PATH_TMP_FS.'/eval_'.md5(mt_rand().microtime()).'.tmp');
 		$tmpFile->setContent($input);
@@ -518,7 +526,7 @@ class SensitiveIO extends CMS_grandfather
 							 $args .= 'Object('.get_class($a).')';
 							 break;
 						 case 'resource':
-							 $args .= 'Resource('.io::strstr($a, '#').')';
+							 $args .= 'Resource('.strstr($a, '#').')';
 							 break;
 						 case 'boolean':
 							 $args .= $a ? 'True' : 'False';

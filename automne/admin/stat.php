@@ -13,7 +13,7 @@
 // | Author: SÈbastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: stat.php,v 1.7 2009/11/19 16:08:55 sebastien Exp $
+// $Id: stat.php,v 1.8 2010/01/18 15:23:55 sebastien Exp $
 
 /**
   * Automne Debug Statistics viewver
@@ -32,9 +32,9 @@ function sanitizeString($input)
 {
 	$sanitized = trim($input);
 	$sanitized = str_replace("
-", "",str_replace("\n", "",ereg_replace("\t+", "_",$sanitized)));
+", "",str_replace("\n", "",preg_replace("#\t+#", "_",$sanitized)));
 	$sanitized = strtr($sanitized, " ‡‚‰ÈËÎÍÔÓˆÙ˘¸˚", "_aaaeeeeiioouuu");
-	$sanitized = ereg_replace("[^[a-zA-Z0-9_.,=-]]*", "", $sanitized);
+	$sanitized = preg_replace("#[^[a-zA-Z0-9_.,=-]]*#", "", $sanitized);
 	$sanitized = str_replace("___", "_",$sanitized);
 	$sanitized = str_replace("__", "_",$sanitized);
 	$sanitized = str_replace(",_", ",",$sanitized);
@@ -81,7 +81,7 @@ $sqltype_insert=array();
 $sqltype_update=array();
 
 foreach ($sql_table as $sql_request) {
-	if (eregi("^select", trim($sql_request["sql"]))) {
+	if (preg_match("#^select#i", trim($sql_request["sql"]))) {
 		$select++;
 		$split = explode('from',$sql_request["sql"]);
 		$split = explode('where',$split[1]);
@@ -92,7 +92,7 @@ foreach ($sql_table as $sql_request) {
 		}
 		$sqltype_select[$from]++;
 		$sqltype_select_time[$from]=$sqltype_select_time[$from]+$sql_request["time"];
-	} elseif (eregi("^insert", trim($sql_request["sql"]))) {
+	} elseif (preg_match("#^insert#i", trim($sql_request["sql"]))) {
 		$insert++;
 		$split = explode('into',$sql_request["sql"]);
 		if (io::strpos($sql_request["sql"], 'set') !== false) {
@@ -106,7 +106,7 @@ foreach ($sql_table as $sql_request) {
 		}
 		$sqltype_insert[$from]++;
 		$sqltype_insert_time[$from]=$sqltype_insert_time[$from]+$sql_request["time"];
-	} elseif (eregi("^update", trim($sql_request["sql"]))) {
+	} elseif (preg_match("#^update#i", trim($sql_request["sql"]))) {
 		$update++;
 		$split = explode('update',$sql_request["sql"]);
 		$split = explode('set',$split[1]);
@@ -116,7 +116,7 @@ foreach ($sql_table as $sql_request) {
 		}
 		$sqltype_update[$from]++;
 		$sqltype_update_time[$from]=$sqltype_update_time[$from]+$sql_request["time"];
-	} elseif (eregi("^delete", trim($sql_request["sql"]))) {
+	} elseif (preg_match("#^delete#i", trim($sql_request["sql"]))) {
 		$delete++;
 		$split = explode('from',$sql_request["sql"]);
 		$split = explode('where',$split[1]);

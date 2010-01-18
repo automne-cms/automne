@@ -24,7 +24,7 @@
  * It defines the FCKeditor class that can be used to create editor
  * instances in PHP pages on server side.
  */
-// $Id: fckeditor.php,v 1.5 2009/12/04 14:39:49 sebastien Exp $
+// $Id: fckeditor.php,v 1.6 2010/01/18 15:31:58 sebastien Exp $
 
 /**
  * Check if browser is compatible with FCKeditor.
@@ -313,11 +313,12 @@ class FCKeditor
 	  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
 	  */
 	function createAutomneLinks($text, $module = MOD_STANDARD_CODENAME) {
-		//if post only contain a space or empty paragraph then the block is empty.
+		//if post only contain a space or empty div or paragraph then the block is empty.
 		$cleanedText = trim(str_replace(array('&#160;', '&nbsp;', ' ') , '', $text));
 		if ($cleanedText == '<p></p>' || $cleanedText == '<div></div>') {
 			$text = '';
 		}
+	
 		if ($text) {
 			/*
 			 * we need to do some replacements to be completely conform with Automne

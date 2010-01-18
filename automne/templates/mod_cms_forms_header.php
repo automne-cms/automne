@@ -17,7 +17,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: mod_cms_forms_header.php,v 1.13 2009/11/10 16:59:09 sebastien Exp $
+// $Id: mod_cms_forms_header.php,v 1.14 2010/01/18 15:33:14 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -72,21 +72,26 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 			//check for authentification action in form
 			if ($form->getActionsByType(CMS_forms_action::ACTION_AUTH)) {
 				//check for valid session / logout attempt / and autologin
+				//CMS_grandFather::log('Forms ok1');
 				if (!isset($_SESSION["cms_context"]) || (isset($_SESSION["cms_context"]) && !is_a($_SESSION["cms_context"], 'CMS_context')) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] == 'true')) {
 					@session_destroy();
 					start_atm_session();
+					//CMS_grandFather::log('Forms ok2');
 					if ((!isset($_REQUEST["logout"]) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] != 'true')) && CMS_context::autoLoginSucceeded()) {
 						//declare form ok action
 						$cms_forms_okAction[$form->getID()] = true;
+						//CMS_grandFather::log('Forms ok3');
 					} elseif (isset($_REQUEST["logout"]) && $_REQUEST["logout"] == 'true') {
 						// Reset cookie
 						CMS_context::resetSessionCookies();
 						//then reload current page (to load public user)
-						header('Location: '.$_SERVER["SCRIPT_NAME"]);
-						exit;
+						//CMS_grandFather::log('Forms ok4');
+						CMS_view::redirect($_SERVER["SCRIPT_NAME"]);
 					}
 				}
+				//CMS_grandFather::log('Forms ok5');
 				if (isset($_SESSION["cms_context"]) && is_a($_SESSION["cms_context"], 'CMS_context') && (!isset($_REQUEST["logout"]) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] != 'true')) && CMS_context::autoLoginSucceeded()) {
+					//CMS_grandFather::log('Forms ok6');
 					//declare form ok action
 					$cms_forms_okAction[$form->getID()] = true;
 				}
@@ -117,8 +122,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 				if (isset($cms_forms_okAction[$form->getID()]) && $cms_forms_okAction[$form->getID()]) {
 					//if we have an encoded referer, use it
 					if (isset($_REQUEST['referer']) && $_REQUEST['referer'] && ($url = base64_decode($_REQUEST['referer']))) {
-						header("Location: ".$url);
-						exit;
+						CMS_view::redirect($url);
 					}
 					//in case of OK for this form, do action
 					if ($action->getString("value") == "page") { //go to given page
@@ -134,8 +138,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 							$href = $redirect->getHTML(false, MOD_CMS_FORMS_CODENAME, RESOURCE_DATA_LOCATION_PUBLIC, false, true);
 							$href = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($href)).'";');
 							if ($href) {
-								header("Location: ".$href);
-								exit;
+								CMS_view::redirect($href);
 							}
 						}
 					} else { //append message to form message
@@ -181,8 +184,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 												//$href = (strpos($href, '$') !== false) ? eval('return "'.str_replace(array('"',"'"),'',$href).'";') : $href;
 												$href = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($href)).'";');
 												if ($href) {
-													header("Location: ".$href);
-													exit;
+													CMS_view::redirect($href);
 												}
 											}
 										} else {
@@ -265,8 +267,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 											//$href = (strpos($href, '$') !== false) ? eval('return "'.str_replace(array('"',"'"),'',$href).'";') : $href;
 											$href = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($href)).'";');
 											if ($href) {
-												header("Location: ".$href);
-												exit;
+												CMS_view::redirect($href);
 											}
 										}
 									} else { //append message to form error message
@@ -303,9 +304,16 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 													$filename = $count.'_'.sensitiveIO::sanitizeAsciiString($_FILES[$aField->getAttribute('name')]['name']);
 												}
 												if (@move_uploaded_file($_FILES[$aField->getAttribute('name')]['tmp_name'], $filepath.'/'.$filename)) {
+													//check uploaded file
+													$tmp = new CMS_file($filepath.'/'.$filename);
+													if (!$tmp->checkUploadedFile()) {
+														$tmp->delete();
+														$filename = '';
+													}
+													unset($tmp);
 													$_FILES[$aField->getAttribute('name')]['atm_name'] = $filename;
 												}
-												$fieldRecord->setAttribute('value', $_FILES[$aField->getAttribute('name')]['atm_name']);
+												$fieldRecord->setAttribute('value', @$_FILES[$aField->getAttribute('name')]['atm_name']);
 											} else {
 												$fieldRecord->setAttribute('value', $_POST[$aField->getAttribute('name')]);
 											}
@@ -398,7 +406,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 									$password = $_POST[$fields[$values[1]]->getAttribute('name')];
 								}
 								if (isset($values[2]) && isset($fields[$values[2]]) && is_object($fields[$values[2]])) {
-									$permanent = $_POST[$fields[$values[2]]->getAttribute('name')];
+									$permanent = @$_POST[$fields[$values[2]]->getAttribute('name')];
 								}
 								if ($login && $password) {
 									// Vérification données obligatoires
@@ -425,8 +433,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 							case CMS_forms_action::ACTION_FORMOK:
 								//if we have an encoded referer, use it
 								if ($_REQUEST['referer'] && ($url = base64_decode($_REQUEST['referer']))) {
-									header("Location: ".$url);
-									exit;
+									CMS_view::redirect($url);
 								}
 								//in case of OK for this form, do action
 								if ($action->getString("value") == "page") { //go to given page
@@ -444,8 +451,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 										//$href = (strpos($href, '$') !== false) ? eval('return "'.str_replace(array('"',"'"),'',$href).'";') : $href;
 										$href = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($href)).'";');
 										if ($href) {
-											header("Location: ".$href);
-											exit;
+											CMS_view::redirect($href);
 										}
 									}
 								} else { //append message to form message
@@ -483,8 +489,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 								//$href = (strpos($href, '$') !== false) ? eval('return "'.str_replace(array('"',"'"),'',$href).'";') : $href;
 								$href = eval('return "'.CMS_polymod_definition_parsing::preReplaceVars(curlyBracesVars($href)).'";');
 								if ($href) {
-									header("Location: ".$href);
-									exit;
+									CMS_view::redirect($href);
 								}
 							}
 						} else {

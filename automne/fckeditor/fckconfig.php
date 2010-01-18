@@ -24,7 +24,7 @@
  * Follow this link for more information:
  * http://docs.fckeditor.net/FCKeditor_2.x/Developers_Guide/Configuration/Configuration_Options
  */
-// $Id: fckconfig.php,v 1.5 2009/11/17 17:13:17 sebastien Exp $
+// $Id: fckconfig.php,v 1.6 2010/01/18 15:31:58 sebastien Exp $
 
 //for this page, HTML output compression is not welcome.
 define("ENABLE_HTML_COMPRESSION", false);
@@ -117,11 +117,11 @@ FCKConfig.AutoDetectLanguage	= true ;
 FCKConfig.DefaultLanguage		= 'en' ;
 FCKConfig.ContentLangDirection	= 'ltr' ;
 //changed for Automne
-FCKConfig.ProcessHTMLEntities	= false ;
+FCKConfig.ProcessHTMLEntities	= <?php echo (strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8' ? 'false' : 'true'); ?> ;
 FCKConfig.IncludeLatinEntities	= true ;
 FCKConfig.IncludeGreekEntities	= true ;
 //changed for Automne
-FCKConfig.ProcessNumericEntities = false ;
+FCKConfig.ProcessNumericEntities = <?php echo (strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8' ? 'false' : 'true'); ?> ;
 
 FCKConfig.AdditionalNumericEntities = ''  ;		// Single Quote: "'"
 

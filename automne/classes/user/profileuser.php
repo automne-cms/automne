@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: profileuser.php,v 1.9 2009/11/26 10:37:31 sebastien Exp $
+// $Id: profileuser.php,v 1.10 2010/01/18 15:30:55 sebastien Exp $
 
 /**
   * Class CMS_profile_user
@@ -195,7 +195,7 @@ class CMS_profile_user extends CMS_profile
 				// Initialize super class
 				parent::__construct();
 			}
-			if (is_array($data)) {
+			if (isset($data) && is_array($data)) {
 				$this->_userId = $id;
 				$this->_login = $data["login_pru"];
 				$this->_password = $data["password_pru"];
@@ -255,13 +255,14 @@ class CMS_profile_user extends CMS_profile
 	  * Set The active flag
 	  *
 	  * @param boolean $active
-	  * @return void
+	  * @return boolean
 	  * @access public
 	  */
 	function setActive($active)
 	{
 		$this->_active = ($active) ? true : false;
 		$this->_validationChange = true;
+		return true;
 	}
 	
 	/**
@@ -270,12 +271,13 @@ class CMS_profile_user extends CMS_profile
 	  * idem for LDAP dn
 	  *
 	  * @param boolean $active
-	  * @return void
+	  * @return boolean
 	  * @access public
 	  */
 	function setDeleted($deleted)
 	{
 		$this->_deleted = ($deleted) ? true : false;
+		return true;
 	}
 	
 	/**
@@ -345,7 +347,17 @@ class CMS_profile_user extends CMS_profile
 	function setLogin($login)
 	{
 		if (!$login) {
-			$this->raiseError("Must be string > 0");
+			$this->raiseError("Login must be a string > 0");
+			return false;
+		}
+		// Check if login allready exists
+		if (CMS_profile_usersCatalog::loginExists($login, $this)){
+		    $this->raiseError('Login allready exists. Choose another one');
+			return false;
+		}
+		// Search non alphanum characters
+		if (preg_match("#[^[a-zA-Z0-9_.-]]*#", $login)){
+		    $this->raiseError('Login must contains only alphanum characters');
 			return false;
 		}
 		$this->_login = $login;
@@ -356,12 +368,28 @@ class CMS_profile_user extends CMS_profile
 	  * Set Password
 	  *
 	  * @param string $password
-	  * @return  void
+	  * @return boolean
 	  * @access public
 	  */
-	function setPassword($password)
+	function setPassword($password, $encode = true) {
+		// Check password validity
+	    if ($encode && !SensitiveIO::isValidPassword($password)) {
+			$this->raiseError('Invalid password. Length must be > '.MINIMUM_PASSWORD_LENGTH);
+			return false;
+		}
+		$this->_password = $encode ? md5($password) : $password;
+		return true;
+	}
+	
+	/**
+	  * Get Password
+	  *
+	  * @return string The MD5 user password
+	  * @access public
+	  */
+	function getPassword()
 	{
-		$this->_password = md5($password);
+		return $this->_password;
 	}
 	
 	/**
@@ -403,12 +431,13 @@ class CMS_profile_user extends CMS_profile
 	  * Set First Name
 	  *
 	  * @param string $firstName
-	  * @return  void
+	  * @return boolean
 	  * @access public
 	  */
 	function setFirstName($firstName)
 	{
 		$this->_firstName = $firstName;
+		return true;
 	}
 	
 	/**
@@ -426,12 +455,13 @@ class CMS_profile_user extends CMS_profile
 	  * Set Last Name
 	  *
 	  * @param string $lastName
-	  * @return  void
+	  * @return boolean
 	  * @access public
 	  */
 	function setLastName($lastName)
 	{
 		$this->_lastName = $lastName;
+		return true;
 	}
 	
 	/**
@@ -449,17 +479,19 @@ class CMS_profile_user extends CMS_profile
 	  * Set Contact Data
 	  *
 	  * @param CMS_contactData $contactData
-	  * @return  void
+	  * @return boolean
 	  * @access public
 	  */
 	function setContactData($contactData)
 	{
 		// Check if CMS_contactData object
-		if (is_a($contactData, "CMS_contactData")) {
+		if (is_a($contactData, "CMS_contactData") && !$contactData->hasError()) {
 			$this->_contactData = $contactData;
+			return true;
 		} else {
 			$this->raiseError("Contact data object required: ".$contactData);
 		}
+		return false;
 	}
 	
 	/**
@@ -489,17 +521,24 @@ class CMS_profile_user extends CMS_profile
 	  * Set language
 	  *
 	  * @param CMS_language $language
-	  * @return  void
+	  * @return boolean
 	  * @access public
 	  */
 	function setLanguage($language)
 	{
 		// Check if CMS_contactData object
-		if (is_a($language, "CMS_language")) {
+		if (is_a($language, "CMS_language") && !$language->hasError()) {
 			$this->_language = $language;
+			return true;
 		} else {
-			$this->raiseError("Data object required: ".$language);
+		    $language = new CMS_language($language);
+		    if($language && !$language->hasError()){
+		        $this->_language = $language;
+		        return true;
+		    }
 		}
+		$this->raiseError("Object required, or available language code : ".$language);
+		return false;
 	}
 	
 	/**
@@ -539,16 +578,18 @@ class CMS_profile_user extends CMS_profile
 	  * Set DN
 	  *
 	  * @param string $s
-	  * @return void
+	  * @return boolean
 	  * @access public
 	  */
 	function setDN($s)
 	{
 		if ($s) {
 			$this->_dn = $s;
+			return true;
 		} else {
 			$this->raiseError("Must be string > 0");
 		}
+		return false;
 	}
 	
 	/**
@@ -556,7 +597,7 @@ class CMS_profile_user extends CMS_profile
 	  * Overwrite super class function to update validation catalog
 	  *
 	  * @param integer $moduleid 
-	  * @return void
+	  * @return boolean
 	  * @access public
 	  */
 	function addValidationClearance($moduleName)
@@ -567,9 +608,11 @@ class CMS_profile_user extends CMS_profile
 				parent::addValidationClearance($moduleName);
 				$this->_validationChange = true;
 			}
+			return true;
 		} else {
-			$this->raiseError("Invalid module name :".$moduleName);	
+			$this->raiseError("Invalid module name :".$moduleName);
 		}
+		return false;
 	}
 	
 	/**
@@ -614,7 +657,7 @@ class CMS_profile_user extends CMS_profile
 	  * Overwrite super class function to update validation catalog
 	  *
 	  * @param  CMS_stack $validationClearances
-	  * @return void
+	  * @return boolean
 	  * @access public
 	  */
 	function setValidationClearances($validationClearances)
@@ -622,9 +665,11 @@ class CMS_profile_user extends CMS_profile
 		if (is_a($validationClearances, 'CMS_stack')) {
 			parent::setValidationClearances($validationClearances);
 			$this->_validationChange = true;
+			return true;
 		} else {
 			$this->raiseError("Validation object required");
 		}
+		return false;
 	}
 	
 	/**
@@ -683,6 +728,130 @@ class CMS_profile_user extends CMS_profile
 			break;
 		}
 		return false;
+	}
+	
+	/**
+	 * Set user by xml definition. Return XML
+	 * 
+	 * @access public
+	 * @param string $xmlInput XML definition to define user properties
+	 * @return boolean True on success, false on failure
+	 */
+	function setSoapValues($domdocument){
+	    $view = CMS_view::getInstance();
+	    
+	    $contactData = new CMS_contactData();
+        $currentPassword = '';
+        $newGroups = array();
+        
+	    foreach($domdocument->childNodes as $childNode) {
+	        if($childNode->nodeType == XML_ELEMENT_NODE) {
+		        switch($childNode->tagName){
+			        case 'contactData':
+				        foreach($childNode->childNodes as $cdChildNode) {
+					        if($cdChildNode->nodeType == XML_ELEMENT_NODE) {
+					            if(!$contactData->setValue($cdChildNode->tagName, $cdChildNode->nodeValue)){
+					                $view->addError('Invalid value for contactData tag '.$cdChildNode->tagName.' and value '.$cdChildNode->nodeValue);
+	                                return false;
+					            }
+					        } elseif ($cdChildNode->nodeType == XML_TEXT_NODE && trim($cdChildNode->nodeValue)) {
+	                            $view->addError('Unknown xml content contactData tag '.$cdChildNode->nodeValue.' to process.');
+	                            return false;
+	                        }
+				        }
+			        break;
+			        case 'groups':
+				        foreach($childNode->childNodes as $groupChildNode) {
+					        if($groupChildNode->nodeType == XML_ELEMENT_NODE) {
+					            $group = CMS_profile_usersGroupsCatalog::getByID($groupChildNode->nodeValue);
+					            if($group && !$group->hasError()){
+					                $newGroups[$group->getGroupId()] = $group->getGroupId();
+					            } else {
+					                $view->addError('Unknown group ID '.$groupChildNode->nodeValue.'.');
+	                                return false;
+					            }
+					        } elseif ($cdChildNode->nodeType == XML_TEXT_NODE && trim($cdChildNode->nodeValue)) {
+	                            $view->addError('Unknown xml content contactData tag '.$cdChildNode->nodeValue.' to process.');
+	                            return false;
+	                        }
+				        }
+			        break;
+			        default:
+				         if(!$this->setValue($childNode->tagName, $childNode->nodeValue)){
+				            $view->addError('Invalid value for tag '.$childNode->tagName.' and value '.$childNode->nodeValue);
+	                        return false;
+				         }
+				         if($childNode->tagName == 'password'){
+				            $currentPassword = $childNode->nodeValue;
+				         }
+			        break;
+		        }
+	        } elseif ($childNode->nodeType == XML_TEXT_NODE && trim($childNode->nodeValue)) {
+	            $view->addError('Unknown xml content tag '.$childNode->nodeValue.' to process.');
+	            return false;
+	        }
+	    }
+	    // Check user required fields.
+	    if($this->hasError()){
+	        $view->addError('Values to set are invalid.');
+	        return false;
+	    }
+	    if(APPLICATION_LDAP_AUTH && !$this->getValue('dn')){
+	        $view->addError('With LDAP Authentication, dn value is required.');
+	        return false;
+	    }
+	    if(!$this->getValue('dn') && !$this->havePassword()){
+	        $view->addError('Password or dn is required.');
+	        return false;
+	    }
+	    if($currentPassword == $this->getValue('login')){
+	        $view->addError('Login and password must be different.');
+	        return false;
+	    }
+	    if($this->getValue('login') && $contactData->getValue('email')){
+	        // Save contact data object
+	        if($contactData->writeToPersistence() && $this->setValue('contactData', $contactData)){
+	            // Get current user groups ids
+	            $userGroupIds = CMS_profile_usersGroupsCatalog::getGroupsOfUser($this, true, true);
+			    
+		        // First reset profile clearances
+		        $this->resetClearances();
+		        
+		        // Second, loop through user groups to remove group
+		        foreach ($userGroupIds as $oldGroupId) {
+			        if (!in_array($oldGroupId, $newGroups)) {
+				        // Remove user to group
+				        $oldGroup = CMS_profile_usersGroupsCatalog::getByID($oldGroupId);
+				        if (!$oldGroup->removeUser($this) || !$oldGroup->writeToPersistence()) {
+					        $view->addError('Error deleting user\'s group : '.$oldGroupId);
+                            return false;
+				        }
+			        }
+		        }
+		        
+	            // Third, loop through user groups to add groups
+	            foreach ($newGroups as $newGroupId) {
+		            if (!in_array($newGroupId, $userGroupIds)) {
+		                $newGroup = CMS_profile_usersGroupsCatalog::getByID($newGroupId);
+			            if($newGroup && !$newGroup->hasError()){
+			                // Add group to user
+			                $this->addGroup($newGroupId);
+			            } else {
+			                $view->addError('Error adding user\'s group : '.$newGroupId);
+                            return false;
+			            }
+		            }
+	            }
+	            
+	            return true;
+	        } else {
+	            $view->addError('Error saving contactData.');
+	            return false;
+	        }
+	    } else {
+	        $view->addError('Missing values to set user. Check the login, password and email.');
+	    }
+        return false;
 	}
 	
 	/**

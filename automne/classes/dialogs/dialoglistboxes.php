@@ -14,7 +14,7 @@
 // | Author: Sיbastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: dialoglistboxes.php,v 1.3 2009/11/10 16:49:00 sebastien Exp $
+// $Id: dialoglistboxes.php,v 1.4 2010/01/18 15:30:52 sebastien Exp $
 
 /**
   * Class CMS_dialog_listboxes
@@ -362,7 +362,7 @@ class CMS_dialog_listboxes extends CMS_grandFather
 				@reset($a_selected_categoriesIDs);
 				if (is_array($a_selected_categoriesIDs) && $a_selected_categoriesIDs) {
 					foreach ($a_selected_categoriesIDs as $id) {
-						$s .= '<option value="'.$id.'">'.trim(ereg_replace("[^a-zA-Z0-9\.\s\חbאגהיטכךןמצפשüû_\&\;\f\n\r\t\v\ -]", "", $a_all_categoriesIDs[$id])).'</option>'; //TODOV4
+						$s .= '<option value="'.$id.'">'.trim(preg_replace("#[^a-zA-Z0-9\.\s\חbאגהיטכךןמצפשüû_\&\;\f\n\r\t\v\ -]#", "", $a_all_categoriesIDs[$id])).'</option>';
 					}
 				}
 			$s .= '
@@ -420,7 +420,7 @@ class CMS_dialog_listboxes extends CMS_grandFather
 				@reset($a_selected_categoriesIDs);
 				if (is_array($a_selected_categoriesIDs) && $a_selected_categoriesIDs) {
 					foreach ($a_selected_categoriesIDs as $id) {
-						$s .= '<option value="'.$id.'">'.trim(ereg_replace("[^a-zA-Z0-9\.\s\חbאגהיטכךןמצפשüû_\&\;\f\n\r\t\v\ -]", "", $a_all_categoriesIDs[$id])).'</option>'; //TODOV4
+						$s .= '<option value="'.$id.'">'.trim(preg_replace("#[^a-zA-Z0-9\.\s\חbאגהיטכךןמצפשüû_\&\;\f\n\r\t\v\ -]#", "", $a_all_categoriesIDs[$id])).'</option>';
 					}
 				}
 			$s .= '

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: validations.php,v 1.7 2009/11/10 16:57:21 sebastien Exp $
+// $Id: validations.php,v 1.8 2010/01/18 15:23:55 sebastien Exp $
 
 /**
   * PHP page : Load page validations window.
@@ -51,6 +51,8 @@ define("MESSAGE_PAGE_VALIDATION", 434);
 define("MESSAGE_PAGE_COMMENT", 907);
 define("MESSAGE_PAGE_SAVE", 952);
 define("MESSAGE_PAGE_NO_PENDING_VALIDATION_SELECTED", 435);
+define("MESSAGE_PAGE_VALIDATION_CHOICE", 1599);
+
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -557,7 +559,7 @@ $jscontent = <<<END
 					}]
 				}],
 				buttons: [{
-					text: 					'Valider ce choix',
+					text: 					'{$cms_language->getJSMessage(MESSAGE_PAGE_VALIDATION_CHOICE)}',
 					handler:				function() {
 						var form = validateForm.getForm();
 						//set mask events on form validation

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: row.php,v 1.11 2009/11/17 15:52:12 sebastien Exp $
+// $Id: row.php,v 1.12 2010/01/18 15:23:55 sebastien Exp $
 
 /**
   * PHP page : Load row detail window.
@@ -59,6 +59,7 @@ define("MESSAGE_PAGE_SYNTAX_COLOR", 725);
 define("MESSAGE_PAGE_ACTION_REINDENT", 726);
 define("MESSAGE_PAGE_SAVE_AND_REGEN", 1548);
 define("MESSAGE_PAGE_SAVE_AND_REGEN_DESC", 1549);
+define("MESSAGE_PAGE_INCORRECT_FORM_VALUES", 682);
 
 $winId = sensitiveIO::request('winId', '', 'rowWindow');
 $rowId = sensitiveIO::request('row', 'sensitiveIO::isPositiveInteger', 'createRow');
@@ -93,7 +94,7 @@ if (sensitiveIO::isPositiveInteger($rowId)) {
 
 //Need to sanitize all datas which can contain single quotes
 $label = $row->getLabel();
-$description = sensitiveIO::sanitizeJSString($row->getDescription());
+$description = sensitiveIO::sanitizeJSString($row->getDescription(), false, true, true); //this is a textarea, we must keep cariage return
 $rowDefinition = $row->getDefinition();
 $rowGroups = $row->getGroups();
 
@@ -242,7 +243,7 @@ $jscontent = <<<END
 				fieldLabel:		'{$cms_language->getJsMessage(MESSAGE_PAGE_DESCRIPTION)}',
 				xtype:			'textarea',
 				name:			'description',
-				value:			'{$description}'
+				value:			"{$description}"
 			},{$groupsfield}{
 				fieldLabel:		'<span class="atm-help" ext:qtip="{$cms_language->getJsMessage(MESSAGE_PAGE_NEW_GROUPS_DESC)}">{$cms_language->getJsMessage(MESSAGE_PAGE_NEW_GROUPS)}</span>',
 				name:			'newgroup',
@@ -288,21 +289,25 @@ $jscontent = <<<END
 				scope:			this,
 				handler:		function() {
 					var form = Ext.getCmp('rowDatas-{$rowId}').getForm();
-					form.submit({
-						params:{
-							action:		'properties',
-							rowId:		rowWindow.rowId
-						},
-						success:function(form, action){
-							//if it is a successful user creation
-							if (action.result.success != false && isNaN(parseInt(rowWindow.rowId))) {
-								//set rowId
-								rowWindow.rowId = action.result.success.rowId;
-								Ext.getCmp('rowDef-{$rowId}').enable();
-							}
-						},
-						scope:this
-					});
+					if (form.isValid()) {
+						form.submit({
+							params:{
+								action:		'properties',
+								rowId:		rowWindow.rowId
+							},
+							success:function(form, action){
+								//if it is a successful user creation
+								if (action.result.success != false && isNaN(parseInt(rowWindow.rowId))) {
+									//set rowId
+									rowWindow.rowId = action.result.success.rowId;
+									Ext.getCmp('rowDef-{$rowId}').enable();
+								}
+							},
+							scope:this
+						});
+					} else {
+						Automne.message.show('{$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_FORM_VALUES)}', '', rowWindow);
+					}
 				}
 			}]
 		},{

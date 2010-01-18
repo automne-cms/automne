@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: view.php,v 1.12 2009/11/10 16:49:00 sebastien Exp $
+// $Id: view.php,v 1.13 2010/01/18 15:30:52 sebastien Exp $
 
 /**
   * Class CMS_view
@@ -446,6 +446,32 @@ class CMS_view extends CMS_grandFather
 	}
 	
 	/**
+	  * Get all display content for a given display mode page
+	  *
+	  * @param mixed $mode : the display mode to use
+	  * @return void
+	  * @access public
+	  */
+	function get($mode = '') {
+		$this->setDisplayMode($mode);
+		$return = '';
+		switch ($this->_displayMode) {
+			case self::SHOW_JSON :
+			case self::SHOW_RAW :
+			case self::SHOW_XML :
+				$return .= 
+				'<?xml version="1.0" encoding="'.APPLICATION_DEFAULT_ENCODING.'"?>'."\n".
+				'<response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">'."\n";
+				$return .= $this->_showHead(true);
+				$return .= $this->_showBody(true);
+				$return .= '</response>';
+			break;
+		}
+		$this->_sent = true;
+		return $return;
+	}
+	
+	/**
 	  * add Automne copyright on generated HTML in backend
 	  *
 	  * @return string : the copyright to add
@@ -490,7 +516,7 @@ class CMS_view extends CMS_grandFather
 	  * @return void
 	  * @access private
 	  */
-	private function _showHead() {
+	private function _showHead($returnValue = false) {
 		switch ($this->_displayMode) {
 			case self::SHOW_JSON :
 			case self::SHOW_RAW :
@@ -553,7 +579,11 @@ class CMS_view extends CMS_grandFather
 					$return .= 
 					'	<cssfiles><![CDATA['.sensitiveIO::jsonEncode($files).']]></cssfiles>'."\n";
 				}
-				echo $return;
+				if (!$returnValue) {
+					echo $return;
+				} else {
+					return $return;
+				}
 			break;
 			case self::SHOW_HTML :
 			default:
@@ -592,7 +622,7 @@ class CMS_view extends CMS_grandFather
 	  * @return void
 	  * @access private
 	  */
-	private function _showBody() {
+	private function _showBody($returnValue = false) {
 		switch ($this->_displayMode) {
 			case self::SHOW_JSON :
 				$return = '';
@@ -604,7 +634,11 @@ class CMS_view extends CMS_grandFather
 					$return .= 
 					'	<'.$this->_contentTags[$this->_displayMode].'><![CDATA['.sensitiveIO::jsonEncode($this->_content).']]></'.$this->_contentTags[$this->_displayMode].'>'."\n";
 				}
-				echo $return;
+				if (!$returnValue) {
+					echo $return;
+				} else {
+					return $return;
+				}
 			break;
 			case self::SHOW_RAW :
 				$return = '';
@@ -616,7 +650,11 @@ class CMS_view extends CMS_grandFather
 					$return .= 
 					'	<'.$this->_contentTags[$this->_displayMode].'><![CDATA['.$this->_content.']]></'.$this->_contentTags[$this->_displayMode].'>'."\n";
 				}
-				echo $return;
+				if (!$returnValue) {
+					echo $return;
+				} else {
+					return $return;
+				}
 			break;
 			case self::SHOW_XML :
 				$return = '';
@@ -629,7 +667,11 @@ class CMS_view extends CMS_grandFather
 					$return .= 
 					'	<'.$this->_contentTags[$this->_displayMode].'>'.$this->_content.'</'.$this->_contentTags[$this->_displayMode].'>'."\n";
 				}
-				echo $return;
+				if (!$returnValue) {
+					echo $return;
+				} else {
+					return $return;
+				}
 			break;
 			case self::SHOW_HTML :
 			default:
@@ -651,5 +693,42 @@ class CMS_view extends CMS_grandFather
 				echo '</body>';
 			break;
 		}
+	}
+	
+	/**
+	  * Redirect page to another one
+	  * Take care of redirections inside Automne administration
+	  *
+	  * @param string $url : the url to redirect to
+	  * @param boolean $exit : does the script must exit now ? (default : true)
+	  * @param integer $type : the http redirection code to use. Accept 302 and 301 (default : 302)
+	  * @return boolean
+	  * @access private
+	  */
+	function redirect($url, $exit = true, $type = 302) {
+		if ($type == 302) {
+			header('HTTP/1.x 302 Found', true, 302);
+		} elseif($type == 301) {
+			header('HTTP/1.x 301 Moved Permanently', true, 301);
+		}
+		//in case of redirect in an admin frame, send to information page
+		if (isset($_REQUEST['context']) && $_REQUEST['context'] == 'adminframe') {
+			if (strpos($url, PATH_FORBIDDEN_WR) === 0 || strpos($url, PATH_SPECIAL_PAGE_NOT_FOUND_WR) === 0) {
+				header('Location: '.$url);
+			} else {
+				$page = CMS_tree::analyseURL($url);
+				if ($page && is_object($page) && !$page->hasError()) {
+					header('Location: '.PATH_ADMIN_WR.'/page-redirect-info.php?pageId='.$page->getID());
+				} else {
+					header('Location: '.PATH_ADMIN_WR.'/page-redirect-info.php?url='.$url);
+				}
+			}
+		} else {
+			header('Location: '.$url);
+		}
+		if ($exit) {
+			exit;
+		}
+		return true;
 	}
 }

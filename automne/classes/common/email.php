@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: email.php,v 1.8 2009/11/02 09:53:11 sebastien Exp $
+// $Id: email.php,v 1.9 2010/01/18 15:30:51 sebastien Exp $
 
 /**
   * Class CMS_email
@@ -187,19 +187,26 @@ class CMS_email extends CMS_grandFather
 			return false;
 		}
 	}
+	
 	/**
-	  * Sets Email subject
-	  *
-	  * @param (array)String $subjectParameters 
-	  * @param String $subject 
-	  * @return void
-	  * @access public
-	  * 
-	  */
-	function setSubject($subject)
-	{
-		$this->_subject = io::decodeEntities($subject);
-	}
+      * Sets Email subject
+      *
+      * @param (array)String $subjectParameters
+      * @param String $subject
+      * @param Boolean $withApplicationLabel : default false. For subject only.
+      * @param Array $separators : to separate the APPLICATION_LABEL.
+      * @return void
+      * @access public
+      * 
+      */
+    function setSubject($subject, $withApplicationLabel = false, $separators=array('[',']'))
+    {
+        if($withApplicationLabel){
+            $separators = (!is_array($separators) || !$separators || count($separators) < 2) ? array('','') : $separators;
+        }
+        $applicationLabel = ($withApplicationLabel) ? $separators[0].APPLICATION_LABEL.$separators[1].' ' : '';
+        $this->_subject = $applicationLabel.io::decodeEntities($subject);
+    }
 	
 	/**
 	  * Gets Email subject 
@@ -503,7 +510,7 @@ class CMS_email extends CMS_grandFather
 		$toUsers = (is_array($this->_emailTo) && $this->_emailTo) ? $this->_emailTo : array($this->_emailTo);
 		$toNames = (is_array($this->_toName) && $this->_toName) ? $this->_toName : array($this->_toName);
 		$Error = ($this->_error) ? $this->_error : '';
-		$Subject = "[".APPLICATION_LABEL."] ".$this->_subject;
+		$Subject = $this->_subject;
 		$AttmFiles = $this->_files;
 		
 		//Messages start with text/html alternatives in OB

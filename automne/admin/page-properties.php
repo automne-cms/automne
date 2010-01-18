@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-properties.php,v 1.12 2009/11/17 15:52:12 sebastien Exp $
+// $Id: page-properties.php,v 1.13 2010/01/18 15:23:55 sebastien Exp $
 
 /**
   * PHP page : Load page properties window.
@@ -26,6 +26,7 @@
 
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 
+$cms_language->startPrefetch();
 define("MESSAGE_WINDOW_TITLE", 129);
 define("MESSAGE_TOOLBAR_HELP",1073);
 define("MESSAGE_PAGE_FIELD_YES", 1082);
@@ -118,6 +119,7 @@ define("MESSAGE_PAGE_CONTENT", 8);
 define("MESSAGE_PAGE_FIELD_CURRENT_ADDRESS", 701);
 define("MESSAGE_PAGE_INFORMATIONS", 702);
 define("MESSAGE_PAGE_ALERTS_DISABLED", 1593);
+$cms_language->endPrefetch();
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -161,8 +163,9 @@ if (!$editable) {
 $pageId = $cms_page->getID();
 $pageTitle = $cms_page->getTitle();
 $pageLinkTitle = $cms_page->getLinkTitle();
+$website = $cms_page->getWebsite();
 $status = $cms_page->getStatus()->getHTML(false, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getID());
-$lineage = CMS_tree::getLineage($cms_user->getPageClearanceRoot($cms_page->getID()), $cms_page);
+$lineage = CMS_tree::getLineage($website->getRoot(), $cms_page);
 
 //Page templates replacement
 $pageTemplate = $cms_page->getTemplate();
@@ -210,7 +213,7 @@ if ($cms_page->getURL()) {
 //mandatory 
 $mandatory='<span class="atm-red">*</span> ';
 
-$websiteLabel = sensitiveIO::sanitizeJSString($cms_page->getWebsite()->getLabel());
+$websiteLabel = sensitiveIO::sanitizeJSString($website->getLabel());
 
 $pageRelations = sensitiveIO::sanitizeJSString('<ul>
 	<li><a href="#" onclick="Automne.view.search(\''.CMS_search::SEARCH_TYPE_LINKFROM.':'.$cms_page->getID().'\');">'.$cms_language->getMessage(MESSAGE_PAGE_RESULTS_RELATIONS,array(count($linksTo)),MOD_STANDARD_CODENAME).'</a></li>
@@ -230,7 +233,8 @@ $pubStart = $pub_start->getLocalizedDate($dateFormat);
 $pubEnd = $pub_end->getLocalizedDate($dateFormat);
 $reminderPeriodicity = $cms_page->getReminderPeriodicity();
 $reminderDate = $reminder_date->getLocalizedDate($dateFormat);
-$reminderMessage = sensitiveIO::sanitizeJSString(io::htmlspecialchars($cms_page->getReminderOnMessage()));
+$reminderMessage = sensitiveIO::sanitizeJSString(htmlspecialchars($cms_page->getReminderOnMessage()), false, true, true); //this is a textarea, we must keep cariage return
+
 $alertDisabled = '';
 if (!$cms_user->hasAlertLevel(ALERT_LEVEL_PAGE_ALERTS, MOD_STANDARD_CODENAME)) {
 	$alertDisabled = "{
@@ -266,7 +270,7 @@ foreach ($languages as $aLanguage) {
 	$languagesDatas[] = array($aLanguage->getCode(), $aLanguage->getLabel());
 }
 $languagesDatas = sensitiveIO::jsonEncode($languagesDatas);
-$metas = sensitiveIO::sanitizeJSString($cms_page->getMetas());
+$metas = sensitiveIO::sanitizeJSString($cms_page->getMetas(), false, true, true); //this is a textarea, we must keep cariage return
 
 /***************************************\
 *               SUB-PAGES               *
@@ -299,7 +303,7 @@ if (CMS_tree::hasSiblings($cms_page)) {
 *              PAGE LOGS                *
 \***************************************/
 $logs = '';
-if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_VIEWLOG)) {
+//if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_VIEWLOG)) {
 	$logs = ", {
 					title:	'".$cms_language->getMessage(MESSAGE_PAGE_LOG_LABEL)."',
 					xtype:	'atmPanel',
@@ -316,7 +320,51 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_VIEWLOG)) {
 						scope:		this
 					}
 	            }";
+//}
+
+/***************************************\
+*             MODULES TABS              *
+\***************************************/
+$modules = CMS_modulesCatalog::getALL();
+$modulesTabs = '';
+foreach ($modules as $aModule) {
+	if ($aModule->getCodename() != MOD_STANDARD_CODENAME
+		&& $cms_user->hasModuleClearance($aModule->getCodename(), CLEARANCE_MODULE_EDIT)
+		&& method_exists($aModule,'getPageTabsProperties')) {
+		
+		$tabsInfos = $aModule->getPageTabsProperties($cms_page, $cms_user);
+		foreach ($tabsInfos as $tabInfos) {
+			$label = $tabInfos['description'] ? '<span ext:qtip="'.sensitiveIO::sanitizeJSString($tabInfos['description']).'">'.sensitiveIO::sanitizeJSString($tabInfos['label']).'</span>' : sensitiveIO::sanitizeJSString($tabInfos['label']);
+			$url = $tabInfos['url'];
+			$tabInfos['winId'] = $objectWinId = 'module'. $aModule->getCodename() . $tabInfos['tabId'] .'TabPanel';
+			$tabInfos['fatherId'] = $winId;
+			$params = sensitiveIO::jsonEncode($tabInfos);
+			if (!isset($tabInfos['frame']) || $tabInfos['frame'] == false) {
+				$modulesTabs .= ",{
+					title:	'{$label}',
+					id:		'{$objectWinId}',
+					xtype:	'atmPanel',
+					layout:	'atm-border',
+					autoLoad:		{
+						url:		'{$url}',
+						params:		{$params},
+						nocache:	true,
+						scope:		center
+					}
+				}";
+			} else {
+				$modulesTabs .= ",{
+					title:			'{$label}',
+					id:				'{$objectWinId}',
+					xtype:			'framePanel',
+					frameURL:		'{$url}',
+					allowFrameNav:	true
+				}";
+			}
+		}
+	}
 }
+
 //sanitize some js string
 $pageTitle = sensitiveIO::sanitizeJSString($pageTitle);
 $pageLinkTitle = sensitiveIO::sanitizeJSString($pageLinkTitle);
@@ -481,7 +529,8 @@ $jscontent .= <<<END
 							root: 			'results',
 							fields: 		['id', 'label', 'image', 'groups', 'compatible', 'description'],
 							prepareData: 	function(data){
-						    	data.qtip = Ext.util.Format.htmlEncode(data.description);
+						    	//data.qtip = Ext.util.Format.htmlEncode(data.tpldescription);
+								data.qtip = Ext.util.Format.htmlEncode(data.description);
 								data.cls = data.compatible ? '' : 'atm-red';
 								return data;
 							}
@@ -622,7 +671,7 @@ $jscontent .= <<<END
 						{$disabled}
 						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_ALERT_MESSAGE_INFO)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_REMINDERMESSAGE)}</span>',
 						name:			'remindertext',
-						value:			'{$reminderMessage}',
+						value:			"{$reminderMessage}",
 						xtype:			'textarea'
 					}],
 					buttons:[{
@@ -740,7 +789,7 @@ $jscontent .= <<<END
 						{$disabled}
 						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_META_DATA_INFO)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_META_DATA_LABEL)}</span>',
 						name:			'metatext',
-						value:			'{$metas}',
+						value:			"{$metas}",
 						xtype:			'textarea'
 					}],
 					buttons:[{
@@ -760,6 +809,7 @@ $jscontent .= <<<END
 				}]
 			}
 			{$siblings}
+			{$modulesTabs}
 			{$logs}
         ]
     });
