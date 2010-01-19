@@ -1,6 +1,6 @@
 # Automne general .htaccess file. 
 # Author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-# $Id: .htaccess,v 1.14 2010/01/18 14:33:51 sebastien Exp $
+# $Id: .htaccess,v 1.15 2010/01/19 15:51:39 sebastien Exp $
 
 # Errors documents. 
 # The 404.php must be the 404 error document, but you can create a specific design with a file 404.html which will be displayed by the 404.php file
@@ -18,6 +18,7 @@ DirectoryIndex index.php
 Allow from all
 
 # Add PHP5 CGI Handler if needed
+# Uncomment the following line to use PHP as a CGI
 #AddHandler php5-cgi .php
 
 # Some PHP configurations
@@ -32,9 +33,10 @@ Allow from all
 	</IfModule>
 </IfModule>
 
-# To allow image cache (2 weeks)
-<Ifmodule mod_headers.c>
-	<FilesMatch "\.(ico|jpg|jpeg|png|gif)$">
-		Header set Cache-Control "max-age=1209600, public"
-	</FilesMatch>
-</IfModule>
+# To allow image cache (2 weeks). 
+# Uncomment the following lines to activate cache (mod_headers is needed)
+#<Ifmodule mod_headers.c>
+#	<FilesMatch "\.(ico|jpg|jpeg|png|gif)$">
+#		Header set Cache-Control "max-age=1209600, public"
+#	</FilesMatch>
+#</IfModule>
