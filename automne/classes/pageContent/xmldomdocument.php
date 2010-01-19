@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: xmldomdocument.php,v 1.7 2010/01/18 15:30:54 sebastien Exp $
+// $Id: xmldomdocument.php,v 1.8 2010/01/19 15:34:24 sebastien Exp $
 
 /**
   * Class CMS_DOMDocument
@@ -83,6 +83,16 @@ class CMS_DOMDocument extends DOMDocument {
 			}
 		} else {
 			$output = $domNode->ownerDocument->saveXML($domNode, LIBXML_NOEMPTYTAG);
+		}
+		//convert output encoding if needed
+		if (io::isUTF8($output)) {
+			if (io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
+				$output = utf8_decode($output);
+			}
+		} else {
+			if (io::strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8') {
+				$output = utf8_encode($output);
+			}
 		}
 		//replace tags like <br></br> by auto closed tags and strip cariage return arround entities
 		$output = preg_replace(array('#\n(&[a-z]+;)\n#U', '#<('.$autoClosedTagsList.')([^>]*)></\1>#U'), array('\1', '<\1\2/>'), $output);
