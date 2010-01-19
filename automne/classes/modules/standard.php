@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: standard.php,v 1.17 2010/01/18 15:30:52 sebastien Exp $
+// $Id: standard.php,v 1.18 2010/01/19 16:18:40 sebastien Exp $
 
 /**
   * Class CMS_module_standard
@@ -2017,6 +2017,7 @@ class CMS_module_standard extends CMS_module
 						$href = $redirectlink->getHTML(false, MOD_STANDARD_CODENAME, RESOURCE_DATA_LOCATION_PUBLIC, false, true);
 						$modulesCode[MOD_STANDARD_CODENAME] .= 
 								'<?php'."\n".
+								'require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");'."\n".
 								'CMS_view::redirect(\''.$href.'\', true, 302);'."\n".
 								'?>';
 					}

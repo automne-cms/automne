@@ -15,7 +15,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: tree.php,v 1.10 2010/01/18 15:30:55 sebastien Exp $
+// $Id: tree.php,v 1.11 2010/01/19 16:18:48 sebastien Exp $
 
 /**
   * Class CMS_tree
@@ -1576,7 +1576,7 @@ class CMS_tree extends CMS_grandFather
 			if (isset($requestedPageId[1]) && sensitiveIO::IsPositiveInteger($requestedPageId[1])) {
 				//try to instanciate the requested page
 				$cms_page = CMS_tree::getPageByID($requestedPageId[1]);
-				if ($cms_page && !$cms_page->hasError() && $domainFounded) {
+				if ($cms_page && !$cms_page->hasError() && (!$useDomain || $domainFounded)) {
 					return $cms_page;
 				}
 			}
