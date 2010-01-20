@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modulescatalog.php,v 1.4 2010/01/18 15:30:52 sebastien Exp $
+// $Id: modulescatalog.php,v 1.5 2010/01/20 17:03:15 sebastien Exp $
 
 /**
   * Class CMS_modulesCatalog
@@ -103,7 +103,10 @@ class CMS_modulesCatalog extends CMS_grandFather
 		
 		$modules = array();
 		while ($r = $q->getArray()) {
-			$modules[$r["codename_mod"]] = CMS_modulesCatalog::getByCodename($r["codename_mod"]);
+			$module = CMS_modulesCatalog::getByCodename($r["codename_mod"]);
+			if ($module && !$module->hasError()) {
+				$modules[$r["codename_mod"]] = $module;
+			}
 		}
 		return $modules;
 	}
