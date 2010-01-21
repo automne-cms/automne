@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: linx.php,v 1.9 2009/11/10 16:49:00 sebastien Exp $
+// $Id: linx.php,v 1.10 2010/01/21 08:28:19 sebastien Exp $
 
 /**
   * Class CMS_linx
@@ -155,7 +155,7 @@ class CMS_linx extends CMS_grandFather
 			try {
 				$domdocument->loadXML($tagContent);
 			} catch (DOMException $e) {
-				$this->raiseError('Malformed atm-linx content in page '.$page->getID().' : '.$e->getMessage()."\n".io::htmlspecialchars($tagContent));
+				$this->raiseError('Malformed atm-linx content in page '.$page->getID().' : '.$e->getMessage()."\n".$tagContent, true);
 				return false;
 			}
 			$selections = $domdocument->getElementsByTagName('selection');
