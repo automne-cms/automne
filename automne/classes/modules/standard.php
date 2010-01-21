@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: standard.php,v 1.19 2010/01/21 09:00:28 sebastien Exp $
+// $Id: standard.php,v 1.20 2010/01/21 09:18:43 sebastien Exp $
 
 /**
   * Class CMS_module_standard
@@ -1764,7 +1764,7 @@ class CMS_module_standard extends CMS_module
 					case "body":
 						$statsCode = '<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat();} ?>';
 						//Append stats code
-						return preg_replace('#</body>$#', $statsCode."\n".'</body>', $tag->getContent())
+						return preg_replace('#</body>$#', $statsCode."\n".'</body>', $tag->getContent());
 					break;
 					case "html":
 						//Append DTD
