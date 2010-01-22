@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: sidepanel.js,v 1.2 2009/03/02 11:26:54 sebastien Exp $
+  * $Id: sidepanel.js,v 1.3 2010/01/22 16:29:01 sebastien Exp $
   */
 Automne.sidePanel = Ext.extend(Automne.panel, { 
 	hasMouseOver:		false,
@@ -26,8 +26,8 @@ Automne.sidePanel = Ext.extend(Automne.panel, {
 		if (this.hasMouseOut === false) {
 			Ext.get(this.id).on('mouseout', this.onMouseOut, this);
 			Ext.get(this.id).on('mouseover', this.onMouseIn, this);
-			//then collapse panel
-			this.onMouseOut();
+			//then collapse panel when rendered
+			Ext.get(this.id).getUpdater().on('update', this.onMouseOut, this);
 			this.hasMouseOut = true;
 		}
 	},

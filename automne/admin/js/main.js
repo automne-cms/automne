@@ -6,7 +6,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: main.js,v 1.23 2010/01/18 15:24:30 sebastien Exp $
+  * $Id: main.js,v 1.24 2010/01/22 16:29:01 sebastien Exp $
   */
 
 //Declare Automne namespace
@@ -145,7 +145,9 @@ Automne = {
 				});
 			}
 			//display east panel
-			Automne.east.expand();
+			setTimeout(function(){
+				Automne.east.expand();
+			}, 500);
 			//set session "pause" if session is permanent
 			if (Automne.context.permanent) {
 				Automne.sessionPing = new Ext.util.DelayedTask(function(){
