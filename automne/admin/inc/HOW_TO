@@ -1,0 +1,17 @@
+In this file, you can create files which content will be automaticaly 
+included in Automne polymod administration pages (below the search panel).
+Useful to display help messages on websites.
+-------------------------------------------
+Author Sébastien PAUCHET <sebastien.pauchet@ws-interactive.fr>
+$Id: HOW_TO,v 1.1 2010/01/22 15:14:36 sebastien Exp $
+--------------------------------------------------------------------------------
+
+Name your files like this :
+codename_objectId_language.inc.php
+
+Examples :
+pnews_1_en.inc.php
+pnews_1_en.inc.php
+...
+
+HTML and PHP code is allowed in these files.

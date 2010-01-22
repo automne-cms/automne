@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: items.php,v 1.12 2010/01/18 15:25:24 sebastien Exp $
+// $Id: items.php,v 1.13 2010/01/22 15:13:05 sebastien Exp $
 
 /**
   * PHP page : Load polymod items search window.
@@ -387,6 +387,20 @@ if ($description) {
 		xtype:			'panel',
 		border:			false,
 		html:			'<div style=\"color:grey;padding-top:15px;\">{$description}</div>'
+	},";
+}
+
+//check for included file
+$filename = PATH_ADMIN_FS.'/inc/'.$codename."_".$objectId."_".$cms_language->getCode().".inc.php";
+if (file_exists($filename)) {
+	ob_start();
+	include_once $filename;
+	$return = ob_get_clean();
+	$includeDesc = sensitiveIO::sanitizeJSString($return);
+	$searchPanel .= "{
+		xtype:			'panel',
+		border:			false,
+		html:			'<div style=\"color:grey;padding-top:15px;\">{$includeDesc}</div>'
 	},";
 }
 
