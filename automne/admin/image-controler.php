@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: image-controler.php,v 1.2 2009/10/22 16:26:24 sebastien Exp $
+// $Id: image-controler.php,v 1.3 2010/01/22 12:59:46 sebastien Exp $
 
 /**
   * PHP controler : Receive upload files
@@ -76,6 +76,8 @@ switch($image->getExtension()) {
 		$dest = io::substr($image->getFilename(), 0, -4).'.gif';
 	break;
 	case 'jpg':
+	case 'jpeg':
+	case 'jpe':
 		if (!function_exists('imagecreatefromjpeg')) {
 			CMS_grandFather::raiseError('Can\'t find imagecreatefromjpeg, please install GD library.');
 			$return['error'] = $cms_language->getJsMessage(MESSAGE_PAGE_JPG_SUPPORT);
@@ -114,9 +116,33 @@ if ($cWidth != $width || $cHeight != $height) {
 	$cimg = @imagecreatetruecolor($cWidth, $cHeight);
 	@imagecopyresampled($cimg, $dimg, 0, 0, $cropLeft, $cropTop, $cWidth, $cHeight, $cWidth, $cHeight);
 	
-	@imagejpeg($cimg,$dest,95);
+	switch($image->getExtension()) {
+		case 'gif':
+			@imagegif($cimg,$dest);
+		break;
+		case 'jpg':
+		case 'jpeg':
+		case 'jpe':
+			@imagejpeg($cimg,$dest,95);
+		break;
+		case 'png':
+			@imagepng($cimg,$dest);
+		break;
+	}
 } else {
-	@imagejpeg($dimg,$dest,95);
+	switch($image->getExtension()) {
+		case 'gif':
+			@imagegif($dimg,$dest);
+		break;
+		case 'jpg':
+		case 'jpeg':
+		case 'jpe':
+			@imagejpeg($dimg,$dest,95);
+		break;
+		case 'png':
+			@imagepng($dimg,$dest);
+		break;
+	}
 }
 if (!is_file($dest)) {
 	CMS_grandFather::raiseError('Error during treatment of file '.$image->getFilename().', please check GD library.');

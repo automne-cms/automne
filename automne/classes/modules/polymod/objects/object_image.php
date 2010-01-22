@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_image.php,v 1.12 2010/01/18 15:30:54 sebastien Exp $
+// $Id: object_image.php,v 1.13 2010/01/22 12:59:30 sebastien Exp $
 
 /**
   * Class CMS_object_image
@@ -626,23 +626,35 @@ class CMS_object_image extends CMS_object_common
 						switch ($extension) {
 							case "gif":
 								$src = imagecreatefromgif($newFilename);
+								imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
+								imagedestroy($src);
+								//overwrite image
+								@imagegif($dest,$newFilename);
 							break;
 							case "jpg":
 							case "jpeg":
 							case "jpe":
 								$src = imagecreatefromjpeg($newFilename);
+								imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
+								imagedestroy($src);
+								//overwrite image
+								@imagejpeg($dest,$newFilename,95);
 							break;
 							case "png":
 								$src = imagecreatefrompng($newFilename);
+								imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
+								imagedestroy($src);
+								//overwrite image
+								@imagepng($dest,$newFilename);
 							break;
 							default:
 								return false;
 							break;
 						}
-						imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
-						imagedestroy($src);
+						//imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
+						//imagedestroy($src);
 						//overwrite image
-						@imagejpeg($dest,$newFilename,95);
+						//@imagejpeg($dest,$newFilename,95);
 						CMS_file::chmodFile(FILES_CHMOD, $newFilename);
 						imagedestroy($dest);
 					}
@@ -683,23 +695,35 @@ class CMS_object_image extends CMS_object_common
 					switch ($extension) {
 						case "gif":
 							$src = imagecreatefromgif($filename);
+							imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
+							imagedestroy($src);
+							//overwrite image
+							@imagegif($dest,$newFilename);
 						break;
 						case "jpg":
 						case "jpeg":
 						case "jpe":
 							$src = imagecreatefromjpeg($filename);
+							imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
+							imagedestroy($src);
+							//overwrite image
+							@imagejpeg($dest,$newFilename,95);
 						break;
 						case "png":
 							$src = imagecreatefrompng($filename);
+							imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
+							imagedestroy($src);
+							//overwrite image
+							@imagepng($dest,$filename);
 						break;
 						default:
 							return false;
 						break;
 					}
-					imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
-					imagedestroy($src);
+					//imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
+					//imagedestroy($src);
 					//overwrite image
-					@imagejpeg($dest,$filename,95);
+					//@imagejpeg($dest,$filename,95);
 					CMS_file::chmodFile(FILES_CHMOD, $filename);
 					imagedestroy($dest);
 				}
