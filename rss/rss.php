@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: rss.php,v 1.6 2009/10/28 16:40:09 sebastien Exp $
+// $Id: rss.php,v 1.7 2010/01/25 15:02:37 sebastien Exp $
 
 /**
   * PHP page : generate Polymod RSS Feeds
@@ -124,7 +124,7 @@ $content .=
 '</rss>';
 
 if('utf-8' != strtolower(APPLICATION_DEFAULT_ENCODING)){
-	$content = utf8_encode($content);
+	$content = io::utf8Encode($content);
 }
 
 //send RSS content
