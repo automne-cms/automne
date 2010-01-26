@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: validations.php,v 1.8 2010/01/18 15:23:55 sebastien Exp $
+// $Id: validations.php,v 1.9 2010/01/26 13:39:24 sebastien Exp $
 
 /**
   * PHP page : Load page validations window.
@@ -378,8 +378,8 @@ $jscontent = <<<END
 	var validationTplMarkup = [
 		'<div>',
 			'<div id="validation-actions" style="float:right;"></div>',
-			'<h3>{status} {label} (ID : {resource})</h3><br/>',
-			'<strong>{$cms_language->getJSMessage(MESSAGE_PAGE_EDITORS)} :</strong> {editorsHTML}<br/><br/>',
+			'<h3 style="">{status} {label} (ID : {resource})</h3><br/>',
+			'<strong>{$cms_language->getJSMessage(MESSAGE_PAGE_EDITORS)} :</strong> {editorsHTML}<br/>',
 		'</div>',
 		'<div id="validation-form"></div>'
 	];
