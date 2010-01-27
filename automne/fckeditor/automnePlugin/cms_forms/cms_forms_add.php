@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_forms_add.php,v 1.3 2009/10/23 07:10:29 sebastien Exp $
+// $Id: cms_forms_add.php,v 1.4 2010/01/27 13:41:42 sebastien Exp $
 
 /**
   * Javascript plugin for FCKeditor
@@ -165,6 +165,17 @@ switch ($step) {
 				$field->setAttribute("label",$_POST["label_new"]);
 				$field->setAttribute("value",$_POST["defaultValue_new"]);
 				$field->setAttribute("required",$_POST["required_new"]);
+				
+				//Set params
+				$params = array();
+				if(isset($_POST['fileParamsExtensions_new']) && $_POST['fileParamsExtensions_new']){
+				    $params['extensions'] = $_POST['fileParamsExtensions_new'];
+				}
+				if(isset($_POST['fileParamsWeight_new']) && $_POST['fileParamsWeight_new']){
+				    $params['weight'] = $_POST['fileParamsWeight_new'];
+				}
+				$field->setAttribute("params", $params);
+				
 				$options = array();
 				$optionsValues = explode (',',$_POST["selectValues_new"]);
 				$optionsLabels = explode (',',$_POST["selectLabels_new"]);
@@ -176,7 +187,6 @@ switch ($step) {
 				$field->setAttribute("options",$options);
 				//generate unique name
 				$field->setAttribute("name",md5($_POST["label_new"].$_POST["type_new"].$_POST["required_new"].microtime()));
-				
 				$field->writeToPersistence();
 				//then replace field in XHTML source
 				$xhtml = $form->addField($_POST['formCode'], $field);
@@ -265,13 +275,24 @@ switch ($step) {
 		$displaySelect = ($field->getAttribute("type") == 'select') ? 'block':'none';
 		$displayDefault = ($field->getAttribute("type") != 'select' 
 							&& $field->getAttribute("type") != 'submit'
+							&& $field->getAttribute("type") != 'file'
 							&& $field->getAttribute("type") != 'pass') ? 'block':'none';
+	    $displayParams = ($field->getAttribute("type") == 'file') ? 'block' : 'none';
 		$content .= '
 							<input type="hidden" name="selectValues_new" id="selectValues_new" value="'.$selectValues.'" />
 							<input type="hidden" name="selectLabels_new" id="selectLabels_new" value="'.$selectLabels.'" />
 							<input type="hidden" name="defaultValue_new" id="defaultValue_new" value="'.$field->getAttribute("value").'" />
 							<input id="options_new" type="button" style="display:'.$displaySelect.';" fckLang="DlgCMSFormsValues" value="Valeurs" onclick="manageSelectOptions(\'new\');" />
 							<input id="options_new_value" type="button" style="display:'.$displayDefault.';" fckLang="DlgCMSFormsValue" value="Valeur" onclick="manageDefaultOptions(\'new\');" />
+						    ';
+				            $params = $field->getAttribute("params");
+				            $currentFileExtensions = (isset($params['extensions']) && $params['extensions']) ? $params['extensions'] : '';
+				            $currentFileWeight = (isset($params['weight']) && $params['weight']) ? $params['weight'] : '';
+				            $content .= '
+				            <input type="hidden" name="fileParamsExtensions_new" id="fileParamsExtensions_new" value="'.$currentFileExtensions.'" />
+				            <input type="hidden" name="fileParamsWeight_new" id="fileParamsWeight_new" value="'.$currentFileWeight.'" />
+				            <input id="paramsButton" type="button" style="display:'.$displayParams.';" fckLang="DlgCMSFormsParams" value="Parametres" onclick="manageFileParamsOptions(\'new\');" />';
+				    $content .= '
 						</td>
 					</tr>
 				</table>
@@ -332,7 +353,25 @@ switch ($step) {
 			<input onclick="manageFormFromDefault();" type="button" fckLang="DlgCMSFormsReturn" value="Retour au formulaire"><br />
 			'.$cms_language->getMessage(MESSAGE_PAGE_BLOCK_GENRAL_VARS_EXPLANATION,array($cms_language->getDateFormatMask(),$cms_language->getDateFormatMask(),$cms_language->getDateFormatMask()),MOD_POLYMOD_CODENAME).'
 		</div>
-		';
+		<div id="divFileParams" style="display: none">
+		    <strong><span fckLang="DlgCMSFormsFileParamsTitle">Modifiez ici les parametres :</span></strong>
+		    <input id="fieldIDFileParamValue" type="hidden" name="formIDValue" value="" />
+		    <input id="serverMaxFileSize" type="hidden" name="serverMaxFileSize" value="'.CMS_file::getMaxUploadFileSize('K').'" />
+		    <div style="display:none;" id="fileParamsError"><span style="color:red;" fckLang="DlgCMSFormsFileParamsError">Erreur</span></div>
+		    <table width="100%">
+			    <tr>
+				    <td nowrap width="100%" colSpan="4"><span fckLang="DlgCMSFormsAllowedExtensions">Extensions autorisees :</span>&nbsp;<input style="WIDTH: 50%" id="fileParamsExtensions" type="text"> <span fckLang="allowedExtensionsHelp">Separees par des points-virgules</span></td>
+			    </tr>
+			    <tr>
+				    <td nowrap width="100%" colSpan="4"><span fckLang="DlgCMSFormsMaxWeight">Poids maximum :</span>&nbsp;<input style="WIDTH: 10%" id="fileParamsWeight" type="text"> <span fckLang="DlgCMSFormsMaxWeightHelp">ko (1Mo = 1024Ko)</span>
+				        <br/><span fckLang="DlgCMSFormsMaxServerFileSize">Max server file size</span>'.CMS_file::getMaxUploadFileSize('K').'Ko ('.CMS_file::getMaxUploadFileSize('M').'Mo)
+				    </td>
+			    </tr>
+		    </table>
+		    <br />
+		    <input onclick="manageFormFromFileParams();" type="button" fckLang="DlgCMSFormsReturn" value="Retour au formulaire"><br />
+		    '.$cms_language->getMessage(MESSAGE_PAGE_BLOCK_GENRAL_VARS_EXPLANATION,array($cms_language->getDateFormatMask(),$cms_language->getDateFormatMask(),$cms_language->getDateFormatMask()),MOD_POLYMOD_CODENAME).'
+	    </div>';
 	break;
 	case 4:
 		// used to send server form content to wysiwyg after analyse

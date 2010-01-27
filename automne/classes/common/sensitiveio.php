@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: sensitiveio.php,v 1.9 2010/01/18 15:30:52 sebastien Exp $
+// $Id: sensitiveio.php,v 1.10 2010/01/27 13:38:03 sebastien Exp $
 
 /**
   * Class SensitiveIO
@@ -655,7 +655,7 @@ class SensitiveIO extends CMS_grandfather
 	}
 	
 	/**
-	  * Encode String to UTF8 with support of cp1252 charset
+	  * Encode ISO8859-1 string to UTF8 with support of cp1252 charset
 	  *
 	  * @param string $text The to encode
 	  * @return string : the value encoded

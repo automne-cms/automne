@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_float.php,v 1.6 2009/11/10 16:49:01 sebastien Exp $
+// $Id: object_float.php,v 1.7 2010/01/27 13:38:03 sebastien Exp $
 
 /**
   * Class CMS_object_float
@@ -264,6 +264,7 @@ class CMS_object_float extends CMS_object_string {
 	  */
 	function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
 		$supportedOperator = array(
+			'like',
 			'>=',
 			'<=',
 			'>',
@@ -276,7 +277,9 @@ class CMS_object_float extends CMS_object_string {
 		if (!$operator) {
 			$operator = '=';
 			$field = "value";
-		}else{
+		} elseif($operator == 'like') {
+		    $field = "value";
+		} else {
 			//if numeric comparison such as > or <, we have to transtype the string field
 			$field = "CAST(value AS SIGNED)";
 		}

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: field.php,v 1.7 2010/01/18 15:30:53 sebastien Exp $
+// $Id: field.php,v 1.8 2010/01/27 13:38:02 sebastien Exp $
 
 /**
   * Class CMS_forms_field
@@ -29,6 +29,9 @@
 
 class CMS_forms_field extends CMS_grandFather {
 
+    const MESSAGE_CMS_FORMS_FILE_PARAMS_ALLOWED_EXTENSIONS = 92;
+	const MESSAGE_CMS_FORMS_FILE_PARAMS_MAX_FILESIZE = 93;
+	
 	/**
 	 * Unique db ID
 	 * @var integer
@@ -116,6 +119,14 @@ class CMS_forms_field extends CMS_grandFather {
 	 */
 	protected $_order;
 	
+	/**
+	 * Params for the field
+	 * 
+	 * @var text
+	 * @access private
+	 */
+	protected $_params;
+	
 	
 	/**
 	 * Constructor
@@ -160,6 +171,7 @@ class CMS_forms_field extends CMS_grandFather {
 				$this->_value = $data["defaultValue_fld"];
 				$this->_dataValidation = $data["dataValidation_fld"];
 				$this->_order = $data["order_fld"];
+				$this->_params = unserialize($data["params_fld"]);
 			} else {
 				$this->raiseError("Unknown ID :".$id);
 				/*
@@ -206,7 +218,7 @@ class CMS_forms_field extends CMS_grandFather {
 	 * @param $value , the value to give
 	 */
 	function setAttribute($name, $value) {
-		$name = '_'.$name;
+	    $name = '_'.$name;
 		$this->$name = $value;
 		return true;
 	}
@@ -239,7 +251,8 @@ class CMS_forms_field extends CMS_grandFather {
 			required_fld='".SensitiveIO::sanitizeSQLString($this->_required)."',
 			active_fld='".SensitiveIO::sanitizeSQLString($this->_active)."',
 			order_fld='".SensitiveIO::sanitizeSQLString($this->_order)."',
-			options_fld='".SensitiveIO::sanitizeSQLString(serialize($this->_options))."'
+			options_fld='".SensitiveIO::sanitizeSQLString(serialize($this->_options))."',
+			params_fld='".SensitiveIO::sanitizeSQLString(serialize($this->_params))."'
 			";
 		if ($this->_fieldID) {
 			$sql = "
@@ -541,7 +554,18 @@ class CMS_forms_field extends CMS_grandFather {
 		return $return;
 	}
 	
-	function getFieldXHTML() {
+	/**
+	 * Get field XHTML
+	 * 
+	 * @param CMS_language $formLanguage : the language for messages
+	 * @return array array(label, input)
+	 */
+	function getFieldXHTML($formLanguage = '') {
+	    // Language
+	    global $cms_language;
+	    if(!$formLanguage){
+	        $formLanguage = $cms_language;
+	    }
 		//generate field id datas
 		$fieldIDDatas = $this->generateFieldIdDatas();
 		$input = $label = '';
@@ -570,9 +594,30 @@ class CMS_forms_field extends CMS_grandFather {
 			case 'checkbox':
 				$label = '<label for="'.$fieldIDDatas.'">'.$this->getAttribute("label").'</label>';
 				$input = '<input';
+				$fileHelp = '';
 				switch ($this->getAttribute("type")) {
 					case 'file':
 						$input .= ' type="file" value=""';
+						$fileParams = $this->getAttribute("params");
+						$fileHelpTab = array();
+						if($fileParams){
+						    foreach($fileParams as $fileParamName => $fileParamValue){
+						        switch($fileParamName){
+						            case 'extensions':
+						                $fileHelpTab['extensions'] = $formLanguage->getMessage(self::MESSAGE_CMS_FORMS_FILE_PARAMS_ALLOWED_EXTENSIONS, false, MOD_CMS_FORMS_CODENAME).' '.$fileParamValue;
+						            break;
+						            case 'weight':
+						                $fileHelpTab['weight'] = $formLanguage->getMessage(self::MESSAGE_CMS_FORMS_FILE_PARAMS_MAX_FILESIZE, false, MOD_CMS_FORMS_CODENAME).' '.$fileParamValue. 'Ko';
+						            break;
+						        }
+						    }
+						}
+						if(!isset($fileHelpTab['weight'])){
+						    $fileHelpTab['weight'] = $formLanguage->getMessage(self::MESSAGE_CMS_FORMS_FILE_PARAMS_MAX_FILESIZE, false, MOD_CMS_FORMS_CODENAME).' '.CMS_file::getMaxUploadFileSize('K'). 'Ko';
+						}
+						if($fileHelpTab){
+						    $fileHelp = '<br/>('.implode(' ; ', $fileHelpTab).')';
+						}
 					break;
 					case 'pass':
 						$input .= ' type="password" value=""';
@@ -588,7 +633,8 @@ class CMS_forms_field extends CMS_grandFather {
 						$input .= ' type="text" value="'.io::htmlspecialchars($this->getAttribute("value")).'"';
 					break;
 				}
-				$input .= ' id="'.$fieldIDDatas.'" name="'.$this->getAttribute("name").'" />';
+				$fileHelp = ($fileHelp) ? ' <span class="inputHelp">'.$fileHelp.'</span>' : '';
+				$input .= ' id="'.$fieldIDDatas.'" name="'.$this->getAttribute("name").'" />'.$fileHelp;
 			break;
 			case 'submit':
 				$input = '<input id="'.$fieldIDDatas.'" type="submit" class="button" name="'.$this->getAttribute("name").'" value="'.$this->getAttribute("label").'" />';

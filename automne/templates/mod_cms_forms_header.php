@@ -17,7 +17,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: mod_cms_forms_header.php,v 1.14 2010/01/18 15:33:14 sebastien Exp $
+// $Id: mod_cms_forms_header.php,v 1.15 2010/01/27 13:44:52 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -241,6 +241,25 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 												//if error or no tmp file then it is malformed
 												if ($_FILES[$aField->getAttribute('name')]['error'] || !$_FILES[$aField->getAttribute('name')]['tmp_name']) {
 													$cms_forms_malformed[$form->getID()][] = $aField->getAttribute('name');
+												} else {
+												    // Check by params
+												    $fileParams = $aField->getAttribute('params');
+												    $fileInfo = pathinfo($_FILES[$aField->getAttribute('name')]['name']);
+												    $badParam = false;
+												    if(!$badParam && isset($fileParams['extensions']) && $fileParams['extensions']){
+												        $allowedExtensions = explode(',', $fileParams['extensions']);
+												        $allowedExtensions = array_map('trim', $allowedExtensions);
+												        if(!$fileInfo['extension'] || !in_array($fileInfo['extension'], $allowedExtensions)){
+												            $badParam = true;
+												            $cms_forms_malformed[$form->getID()][] = $aField->getAttribute('name');
+												        }
+												    }
+												    if(!$badParam && isset($fileParams['weight']) && $fileParams['weight']){
+												        if($_FILES[$aField->getAttribute('name')]['size'] >= ($fileParams['weight'] * 1024)){
+												            $badParam = true;
+												            $cms_forms_malformed[$form->getID()][] = $aField->getAttribute('name');
+												        }
+												    }
 												}
 											break;
 											case 'submit':

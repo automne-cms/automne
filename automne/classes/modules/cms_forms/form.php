@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: form.php,v 1.5 2009/11/10 16:49:00 sebastien Exp $
+// $Id: form.php,v 1.6 2010/01/27 13:38:02 sebastien Exp $
 
 /**
   * Class CMS_forms_formular
@@ -430,7 +430,7 @@ class CMS_forms_formular extends CMS_grandFather {
 					$fieldId = CMS_forms_field::extractEncodedID($definition[$key]['attributes']['id']);
 					if (sensitiveIO::isPositiveInteger($fieldId) && $field->getID() == $fieldId) {
 						//recreate XHTML code for field
-						list($label, $input) = $field->getFieldXHTML();
+						list($label, $input) = $field->getFieldXHTML($this->_language);
 						$replace = array(
 							'&' => '&amp;'
 						);
@@ -439,7 +439,16 @@ class CMS_forms_formular extends CMS_grandFather {
 						$xmlArray = new CMS_xml2Array($input, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES | CMS_xml2Array::XML_CORRECT_ENTITIES);
 						//then replace field definition into current definition tag
 						$fieldDefinition = $xmlArray->getParsedArray();
-						$definition[$key] = $fieldDefinition[0];
+						// Default : add the first tag
+					    $definition[$key] = $fieldDefinition[0];
+					    // Check other tags
+					    if($fieldDefinition){
+					        foreach($fieldDefinition as $subFieldTagKey => $subFieldTag){
+					            if(isset($subFieldTag['attributes']['class']) && $subFieldTag['attributes']['class'] == 'inputHelp'){
+					                $definition[] = $subFieldTag;
+					            }
+					        }
+					    }
 					}
 				} elseif ($definition[$key]['nodename'] == 'label' && isset($definition[$key]['attributes']['for'])) {
 					$fieldId = CMS_forms_field::extractEncodedID($definition[$key]['attributes']['for']);
@@ -501,7 +510,7 @@ class CMS_forms_formular extends CMS_grandFather {
 			foreach (array_keys($definition) as $key) {
 				if (isset($definition[$key]['textnode']) && $definition[$key]['textnode'] == '{{field}}') {
 					//recreate XHTML code for field
-					list($label, $input) = $field->getFieldXHTML();
+					list($label, $input) = $field->getFieldXHTML($this->_language);
 					$replace = array(
 						'&' => '&amp;'
 					);
@@ -510,10 +519,20 @@ class CMS_forms_formular extends CMS_grandFather {
 					$xmlArray = new CMS_xml2Array($input, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES | CMS_xml2Array::XML_CORRECT_ENTITIES);
 					//then replace field definition into current definition tag
 					$fieldDefinition = $xmlArray->getParsedArray();
+					// Default : add the first tag
+					$definition[$key] = $fieldDefinition[0];
+					// Check other tags
+					if($fieldDefinition){
+					    foreach($fieldDefinition as $subFieldTagKey => $subFieldTag){
+					        if(isset($subFieldTag['attributes']['class']) && $subFieldTag['attributes']['class'] == 'inputHelp'){
+					            $definition[] = $subFieldTag;
+					        }
+					    }
+					}
 					$definition[$key] = $fieldDefinition[0];
 				} elseif (isset($definition[$key]['textnode']) &&  $definition[$key]['textnode'] == '{{label}}') {
 					//recreate XHTML code for field
-					list($label, $input) = $field->getFieldXHTML();
+					list($label, $input) = $field->getFieldXHTML($this->_language);
 					$replace = array(
 						'&' => '&amp;'
 					);

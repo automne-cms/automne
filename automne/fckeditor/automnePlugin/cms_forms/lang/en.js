@@ -12,7 +12,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>     |
 // +----------------------------------------------------------------------+
 //
-// $Id: en.js,v 1.1.1.1 2008/11/26 17:12:14 sebastien Exp $
+// $Id: en.js,v 1.2 2010/01/27 13:41:42 sebastien Exp $
 
 FCKLang['DlgCMSFormsTitle']			= 'Forms wizard' ;
 FCKLang['DlgCMSFormsText']			= 'Text' ;
@@ -45,3 +45,11 @@ FCKLang['DlgCMSFormsOneFormAllowed']= 'Only ne form allowed in the editor';
 FCKLang['DlgCMSFormsCopyError']		= 'Erreur : you must not copy-paste code from one form to another one!';
 FCKLang['DlgCMSFormsFieldError']	= 'Error : selected field is invalid...';
 FCKLang['DlgCMSFormsAddTitle']		= 'Add field';
+FCKLang['DlgCMSFormsParams']	    = 'Parameters';
+FCKLang['DlgCMSFormsFileParamsTitle']	= 'Edit here parameters for the field:';
+FCKLang['DlgCMSFormsAllowedExtensions']	= 'Allowed extensions:';
+FCKLang['allowedExtensionsHelp']	= '(Separator ",")';
+FCKLang['DlgCMSFormsMaxWeight']	    = 'File maximum weight:';
+FCKLang['DlgCMSFormsMaxWeightHelp']	    = 'Ko (1Mo = 1024Ko)';
+FCKLang['DlgCMSFormsMaxServerFileSize']	= 'Must be lower than the server configuration: ';
+FCKLang['DlgCMSFormsFileParamsError']	= 'Incorrect values !';

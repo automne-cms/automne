@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: cms_forms.js,v 1.2 2009/03/13 11:08:35 sebastien Exp $
+// $Id: cms_forms.js,v 1.3 2010/01/27 13:41:42 sebastien Exp $
 
 /**
   * Javascript plugin for FCKeditor
@@ -341,6 +341,12 @@ function viewHideOptionsButton(documentObject, optionsButton)
 		if (GetE(optionsButton + '_value')) {
 			GetE(optionsButton + '_value').style.display = 'none' ;
 		}
+	} else if(documentObject.value == 'file'){
+	    GetE(optionsButton).style.display = 'none' ;
+	    GetE(optionsButton + '_value').style.display = 'none' ;
+	    if (GetE('paramsButton')) {
+			GetE('paramsButton').style.display = '' ;
+		}
 	} else {
 		GetE(optionsButton).style.display = 'none' ;
 		if (GetE(optionsButton + '_value')) {
@@ -349,10 +355,16 @@ function viewHideOptionsButton(documentObject, optionsButton)
 	}
 }
 
+function hideAllBox(){
+    GetE('divInfo').style.display = 'none' ;
+    GetE('divSelect').style.display = 'none' ;
+    GetE('divFileParams').style.display = 'none' ;
+}
+
 function manageSelectOptions(fieldID)
 {
-	// Hide the initial dialog content.
-	GetE('divInfo').style.display = 'none' ;
+	// Hide all box
+	hideAllBox();
 	// Show the select options dialog content.
 	GetE('divSelect').style.display = '' ;
 	
@@ -428,15 +440,15 @@ function manageFormFromSelect()
 	GetE( 'selectLabels_' + fieldID ).value = finalText;
 	GetE( 'defaultValue_' + fieldID ).value = GetE('txtSelValue').value;
 	
-	// Hide the select dialog content.
-	GetE('divSelect').style.display = 'none' ;
+	// Hide all box
+	hideAllBox();
 	// Show the initial options dialog content.
 	GetE('divInfo').style.display = '' ;
 }
 function manageDefaultOptions(fieldID)
 {
-	// Hide the initial dialog content.
-	GetE('divInfo').style.display = 'none' ;
+	// Hide all box
+	hideAllBox();
 	// Show the default value dialog content.
 	GetE('divDefault').style.display = '' ;
 	
@@ -446,15 +458,57 @@ function manageDefaultOptions(fieldID)
 	//set default value
 	GetE( "defaultValue" ).value = GetE( 'defaultValue_' + fieldID ).value;
 }
-
 function manageFormFromDefault()
 {
 	//get the current fieldID
 	var fieldID = GetE('fieldIDDefaultValue').value;
 	GetE( 'defaultValue_' + fieldID ).value = GetE( "defaultValue" ).value;
 	
-	// Hide the select dialog content.
-	GetE('divDefault').style.display = 'none' ;
+	// Hide all box
+	hideAllBox();
+	// Show the initial options dialog content.
+	GetE('divInfo').style.display = '' ;
+}
+
+function manageFileParamsOptions(fieldID)
+{
+	// Hide all box
+	hideAllBox();
+	
+	// Show the parameters dialog content.
+	GetE('divFileParams').style.display = '' ;
+	
+	//set the current fieldID
+	GetE('fieldIDFileParamValue').value = fieldID;
+	
+	//set current values
+	GetE( "fileParamsExtensions" ).value = GetE( 'fileParamsExtensions_' + fieldID ).value;
+	GetE( "fileParamsWeight" ).value = GetE( 'fileParamsWeight_' + fieldID ).value;
+}
+function manageFormFromFileParams()
+{
+	// Get the current fieldID
+	var fieldID = GetE('fieldIDFileParamValue').value;
+	
+	// Get values
+	var extensionsValue = GetE( "fileParamsExtensions" ).value;
+	var weigthValue = GetE( "fileParamsWeight" ).value;
+	var serverMaxFileSize = GetE("serverMaxFileSize").value;
+	
+	// Check values
+	if(weigthValue && (isNaN(weigthValue) || weigthValue > serverMaxFileSize)){
+	    GetE("fileParamsError").style.display = "block";
+	    return false;
+	} else {
+	    GetE("fileParamsError").style.display = "none";
+	}
+	
+	// Set values
+	GetE( 'fileParamsExtensions_' + fieldID ).value = extensionsValue;
+	GetE( 'fileParamsWeight_' + fieldID ).value = weigthValue;
+	
+	// Hide all box
+	hideAllBox();
 	// Show the initial options dialog content.
 	GetE('divInfo').style.display = '' ;
 }

@@ -12,7 +12,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>     |
 // +----------------------------------------------------------------------+
 //
-// $Id: fr.js,v 1.1.1.1 2008/11/26 17:12:14 sebastien Exp $
+// $Id: fr.js,v 1.2 2010/01/27 13:41:42 sebastien Exp $
 
 FCKLang['DlgCMSFormsTitle']			= 'Assistant de création de formulaires' ;
 FCKLang['DlgCMSFormsText']			= 'Texte' ;
@@ -45,3 +45,11 @@ FCKLang['DlgCMSFormsOneFormAllowed']= 'Un seul formulaire est autorisé dans l\'
 FCKLang['DlgCMSFormsCopyError']		= 'Erreur : vous ne devez pas copier-coller le code d\'un formulaire dans un autre formulaire !';
 FCKLang['DlgCMSFormsFieldError']	= 'Error : le champ sélectionné est invalide ...';
 FCKLang['DlgCMSFormsAddTitle']		= 'Ajouter un champ';
+FCKLang['DlgCMSFormsParams']	    = 'Paramètres';
+FCKLang['DlgCMSFormsFileParamsTitle']	= 'Modifiez ici les paramètres du champ :';
+FCKLang['DlgCMSFormsAllowedExtensions']	= 'Extensions autorisées :';
+FCKLang['allowedExtensionsHelp']	= '(Séparateur ",")';
+FCKLang['DlgCMSFormsMaxWeight']	    = 'Poids maximum du fichier :';
+FCKLang['DlgCMSFormsMaxWeightHelp']	    = 'Ko (1Mo = 1024Ko)';
+FCKLang['DlgCMSFormsMaxServerFileSize']	= 'Doit être inférieur à la configuration du serveur, soit ';
+FCKLang['DlgCMSFormsFileParamsError']	= 'Valeurs incorrectes !';

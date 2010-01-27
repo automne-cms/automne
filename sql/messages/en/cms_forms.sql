@@ -4,7 +4,7 @@
 # English Messages
 #
 #----------------------------------------------------------------
-# $Id: cms_forms.sql,v 1.1 2010/01/18 17:29:43 sebastien Exp $
+# $Id: cms_forms.sql,v 1.2 2010/01/27 13:45:05 sebastien Exp $
 
 DELETE FROM messages WHERE module_mes = 'cms_forms' and language_mes = 'en';
 
@@ -97,3 +97,5 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(89, 'cms_forms', 'en', 'With submission date');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(90, 'cms_forms', 'en', '[Error : you must not copy-paste code from one form to another one!]');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(91, 'cms_forms', 'en', 'The form has expired after a long inactivity. Please submit it again.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(92, 'cms_forms', 'en', 'Allowed extensions:');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(93, 'cms_forms', 'en', 'Maximum weight:');
