@@ -14,7 +14,7 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: regenerateall.php,v 1.4 2010/01/18 15:30:54 sebastien Exp $
+// $Id: regenerateall.php,v 1.5 2010/01/28 15:59:13 sebastien Exp $
 
 /**
   * background script : regenerateall
@@ -25,14 +25,10 @@
   * @subpackage backgroundScripts
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   */
-
-@ini_set('memory_limit', "32M");
-
-//must calculate the document root
-$_SERVER["DOCUMENT_ROOT"] = realpath(substr(dirname(__FILE__), 0, strlen(dirname(__FILE__)) - strpos(strrev(dirname(__FILE__)), "enmotua") - strlen("automne") - 1));
-
 //define application type
 define('APPLICATION_EXEC_TYPE', 'cli');
+//must calculate the document root
+$_SERVER["DOCUMENT_ROOT"] = realpath(substr(dirname(__FILE__), 0, strlen(dirname(__FILE__)) - strpos(strrev(dirname(__FILE__)), "enmotua") - strlen("automne") - 1));
 
 require_once($_SERVER["DOCUMENT_ROOT"] . "/cms_rc_admin.php");
 

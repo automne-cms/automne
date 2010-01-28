@@ -27,7 +27,6 @@
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   */
 
-@ini_set('memory_limit', "32M");
 //define application type
 define('APPLICATION_EXEC_TYPE', 'cli');
 //must calculate the document root

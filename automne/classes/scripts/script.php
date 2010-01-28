@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: script.php,v 1.6 2010/01/18 15:30:54 sebastien Exp $
+// $Id: script.php,v 1.7 2010/01/28 15:59:13 sebastien Exp $
 
 /**
   * background script : regenerator
@@ -26,7 +26,7 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   */
-@ini_set('memory_limit', "32M");
+
 //must calculate the document root first
 $_SERVER["DOCUMENT_ROOT"] = realpath(substr(dirname(__FILE__), 0, strlen(dirname(__FILE__)) - strpos(strrev(dirname(__FILE__)), "enmotua") - strlen("automne") - 1));
 
