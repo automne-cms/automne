@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: login.php,v 1.10 2010/01/18 15:23:54 sebastien Exp $
+// $Id: login.php,v 1.11 2010/01/28 14:46:54 sebastien Exp $
 
 /**
   * PHP page : Login
@@ -60,8 +60,6 @@ case 'logout':
 		CMS_context::resetSessionCookies();
 	break;
 case 'reconnect':
-		// Reset cookie (kill current session)
-		CMS_context::resetSessionCookies();
 		//display error login window on top of login form
 		$loginError = "
 		Automne.message.popup({

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: login-form.php,v 1.3 2010/01/18 15:23:54 sebastien Exp $
+// $Id: login-form.php,v 1.4 2010/01/28 14:46:54 sebastien Exp $
 
 /**
   * PHP page : Login form
@@ -110,6 +110,7 @@ case "login":
 		});";
 		//reset cms_context session (start fresh)
 		unset($_SESSION['cms_context']);
+		unset($_SESSION['atm-tokens']);
 	}
 	break;
 }
