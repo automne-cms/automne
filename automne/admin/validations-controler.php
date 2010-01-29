@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: validations-controler.php,v 1.8 2009/12/03 10:17:18 sebastien Exp $
+// $Id: validations-controler.php,v 1.9 2010/01/29 11:28:02 sebastien Exp $
 
 /**
   * PHP controler : Receive validations actions
@@ -188,7 +188,7 @@ switch ($action) {
 						break;
 					}
 					$group_email = new CMS_emailsCatalog();
-					$group_email->setUserMessages($users, $bodies, $subjects);
+					$group_email->setUserMessages($users, $bodies, $subjects, ALERT_LEVEL_VALIDATION, $validation->getModuleCodename());
 					$group_email->sendMessages();
 					
 					//check if resource still exists

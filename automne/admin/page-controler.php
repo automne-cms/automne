@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: page-controler.php,v 1.15 2010/01/18 15:23:54 sebastien Exp $
+// $Id: page-controler.php,v 1.16 2010/01/29 11:28:02 sebastien Exp $
 
 /**
   * PHP page : Receive pages updates
@@ -745,7 +745,7 @@ if ($edited) {
 						$validators[]=$aPotentialValidator;
 					}
 				}
-				$group_email->setUserMessages($validators, $bodies, $subjects);
+				$group_email->setUserMessages($validators, $bodies, $subjects, ALERT_LEVEL_VALIDATION, MOD_STANDARD_CODENAME);
 				$group_email->sendMessages();
 			} else {
 				$validation = new CMS_resourceValidation(MOD_STANDARD_CODENAME, $edited, $cms_page);

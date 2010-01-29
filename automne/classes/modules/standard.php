@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: standard.php,v 1.20 2010/01/21 09:18:43 sebastien Exp $
+// $Id: standard.php,v 1.21 2010/01/29 11:28:59 sebastien Exp $
 
 /**
   * Class CMS_module_standard
@@ -1228,9 +1228,9 @@ class CMS_module_standard extends CMS_module
 				AND (
 					(lastReminder_pag < reminderOn_pbd
 					AND
-					'".$today->getDBValue()."' > reminderOn_pbd)
+					'".$today->getDBValue()."' >= reminderOn_pbd)
 					OR (
-						(to_days('".$today->getDBValue()."') - to_days(lastReminder_pag))  > reminderPeriodicity_pbd
+						(to_days('".$today->getDBValue()."') - to_days(lastReminder_pag))  >= reminderPeriodicity_pbd
 						AND
 						reminderPeriodicity_pbd != '0'
 					)
@@ -1274,7 +1274,7 @@ class CMS_module_standard extends CMS_module
 				$bodies[$language->getCode()] = $language->getMessage(self::MESSAGE_MOD_STANDARD_EMAIL_REMINDER_BODY, array($page->getTitle()." (ID : ".$page->getID().")"))
 						."\n".$language->getMessage(self::MESSAGE_MOD_STANDARD_EMAIL_REMINDER_BODY_MESSAGE, array($reminder["reminderOnMessage_pbd"]));
 			}
-			$group_email->setUserMessages($users, $bodies, $subjects);
+			$group_email->setUserMessages($users, $bodies, $subjects, ALERT_LEVEL_PAGE_ALERTS, MOD_STANDARD_CODENAME);
 			$group_email->sendMessages();
 		}
 	}
