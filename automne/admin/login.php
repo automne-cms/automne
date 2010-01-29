@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: login.php,v 1.11 2010/01/28 14:46:54 sebastien Exp $
+// $Id: login.php,v 1.12 2010/01/29 10:34:14 sebastien Exp $
 
 /**
   * PHP page : Login
@@ -70,6 +70,9 @@ case 'reconnect':
 				//Ext.fly('loginField').dom.select();
 			}
 		});";
+		//reset cms_context session (start fresh)
+		unset($_SESSION['cms_context']);
+		unset($_SESSION['atm-tokens']);
 	break;
 default:
 	// First attempt to obtain $_COOKIE information from domain

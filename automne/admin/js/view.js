@@ -7,7 +7,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: view.js,v 1.2 2009/10/22 16:27:19 sebastien Exp $
+  * $Id: view.js,v 1.3 2010/01/29 10:34:14 sebastien Exp $
   */
 Automne.view = {
 	tree: function(eId, heading, currentPage) {
@@ -167,6 +167,10 @@ Automne.view = {
 			Automne.server.call('login.php?cms_action=reconnect');
 			//clear context
 			Automne.context = false;
+		}
+		//clear ping if any
+		if (Automne.sessionPing) {
+			Automne.sessionPing.cancel();
 		}
 	}
 };

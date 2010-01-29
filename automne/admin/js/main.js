@@ -6,7 +6,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: main.js,v 1.24 2010/01/22 16:29:01 sebastien Exp $
+  * $Id: main.js,v 1.25 2010/01/29 10:34:14 sebastien Exp $
   */
 
 //Declare Automne namespace
@@ -150,14 +150,18 @@ Automne = {
 			}, 500);
 			//set session "pause" if session is permanent
 			if (Automne.context.permanent) {
-				Automne.sessionPing = new Ext.util.DelayedTask(function(){
-				    //send ping to server to force session persistence
-					Automne.server.call('ping.php', '', {
-						nospinner: 			true
+				if (Automne.context && Automne.context.sessionDuration && parseInt(Automne.context.sessionDuration) > 29) {
+					Automne.sessionPing = new Ext.util.DelayedTask(function(){
+					    //send ping to server to force session persistence
+						Automne.server.call('ping.php', '', {
+							nospinner: 			true
+						});
+						if (Automne.context && Automne.context.sessionDuration && parseInt(Automne.context.sessionDuration) > 29) {
+							Automne.sessionPing.delay((parseInt(Automne.context.sessionDuration) - 10) * 1000);
+						}
 					});
 					Automne.sessionPing.delay((parseInt(Automne.context.sessionDuration) - 10) * 1000);
-				});
-				Automne.sessionPing.delay((parseInt(Automne.context.sessionDuration) - 10) * 1000);
+				}
 			} else if (Automne.sessionPing) {
 				Automne.sessionPing.cancel();
 			}
