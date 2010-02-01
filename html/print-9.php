@@ -1,4 +1,4 @@
-<?php //Generated on Mon, 18 Jan 2010 17:55:55 +0100 by Automne (TM) 4.0.0
+<?php //Generated on Mon, 01 Feb 2010 16:34:06 +0100 by Automne (TM) 4.0.0
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	CMS_view::redirect('http://127.0.0.1/web/demo/print-9-contact.php', true, 301);
@@ -30,7 +30,7 @@ $mod_cms_forms["usedforms"] = array (
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: print-9.php,v 1.12 2010/01/18 16:49:35 sebastien Exp $
+// $Id: print-9.php,v 1.13 2010/02/01 16:08:07 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -254,6 +254,25 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 												//if error or no tmp file then it is malformed
 												if ($_FILES[$aField->getAttribute('name')]['error'] || !$_FILES[$aField->getAttribute('name')]['tmp_name']) {
 													$cms_forms_malformed[$form->getID()][] = $aField->getAttribute('name');
+												} else {
+												    // Check by params
+												    $fileParams = $aField->getAttribute('params');
+												    $fileInfo = pathinfo($_FILES[$aField->getAttribute('name')]['name']);
+												    $badParam = false;
+												    if(!$badParam && isset($fileParams['extensions']) && $fileParams['extensions']){
+												        $allowedExtensions = explode(',', $fileParams['extensions']);
+												        $allowedExtensions = array_map('trim', $allowedExtensions);
+												        if(!$fileInfo['extension'] || !in_array($fileInfo['extension'], $allowedExtensions)){
+												            $badParam = true;
+												            $cms_forms_malformed[$form->getID()][] = $aField->getAttribute('name');
+												        }
+												    }
+												    if(!$badParam && isset($fileParams['weight']) && $fileParams['weight']){
+												        if($_FILES[$aField->getAttribute('name')]['size'] >= ($fileParams['weight'] * 1024)){
+												            $badParam = true;
+												            $cms_forms_malformed[$form->getID()][] = $aField->getAttribute('name');
+												        }
+												    }
 												}
 											break;
 											case 'submit':
@@ -559,7 +578,7 @@ $mod_cms_forms["formID"] = '2';
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: print-9.php,v 1.12 2010/01/18 16:49:35 sebastien Exp $
+// $Id: print-9.php,v 1.13 2010/02/01 16:08:07 sebastien Exp $
 
 /**
   * Template CMS_forms_formular
