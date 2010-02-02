@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: users.php,v 1.6 2009/11/10 16:57:21 sebastien Exp $
+// $Id: users.php,v 1.7 2010/02/02 15:52:54 sebastien Exp $
 
 /**
   * PHP page : Load users search window.
@@ -34,7 +34,7 @@ define("MESSAGE_PAGE_USERS_LABEL", 926);
 define("MESSAGE_PAGE_LASTNAME_LABEL", 94);
 define("MESSAGE_PAGE_FIRSTNAME", 93);
 define("MESSAGE_PAGE_GROUPS", 837);
-define("MESSAGE_PAGE_REFERENCE", 863);
+define("MESSAGE_PAGE_LOGIN", 54);
 define("MESSAGE_PAGE_EMAIL", 102);
 define("MESSAGE_PAGE_ACTIVE", 410);
 define("MESSAGE_PAGE_MODIFY", 938);
@@ -186,7 +186,7 @@ $jscontent = <<<END
 			{header: "{$cms_language->getJSMessage(MESSAGE_PAGE_LASTNAME_LABEL)}", 	width: 80, 	dataIndex: 'lastName', 	sortable: true},
 			{header: "{$cms_language->getJSMessage(MESSAGE_PAGE_FIRSTNAME)}", 		width: 80, 	dataIndex: 'firstName', sortable: true},
 			{header: "{$cms_language->getJSMessage(MESSAGE_PAGE_GROUPS)}", 			width: 120,	dataIndex: 'groups', 	sortable: false,					renderer:renderGroups},
-			{header: "{$cms_language->getJSMessage(MESSAGE_PAGE_REFERENCE)}", 		width: 80, 	dataIndex: 'login', 	sortable: true, 	hidden:true},
+			{header: "{$cms_language->getJSMessage(MESSAGE_PAGE_LOGIN)}", 			width: 80, 	dataIndex: 'login', 	sortable: true, 	hidden:true},
 			{header: "{$cms_language->getJSMessage(MESSAGE_PAGE_EMAIL)}", 			width: 120, dataIndex: 'email', 	sortable: false, 	hidden:true, 	renderer:function(value) {return '<a href="mailto:'+value+'">'+value+'</a>';}},
 			{header: "{$cms_language->getJSMessage(MESSAGE_PAGE_ACTIVE)}", 			width: 20, 	dataIndex: 'active', 	sortable: true, 					renderer:function(value) {return value == 1 ? '{$cms_language->getJSMessage(MESSAGE_PAGE_YES)}' : '{$cms_language->getJSMessage(MESSAGE_PAGE_NO)}';}}
 		]),

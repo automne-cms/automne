@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: user.php,v 1.7 2010/01/18 15:23:55 sebastien Exp $
+// $Id: user.php,v 1.8 2010/02/02 15:52:54 sebastien Exp $
 
 /**
   * PHP page : Load user detail window.
@@ -47,7 +47,7 @@ define("MESSAGE_PAGE_IDENTIFICATION", 1106);
 define("MESSAGE_PAGE_FIRST_NAME", 93);
 define("MESSAGE_PAGE_LAST_NAME", 94);
 define("MESSAGE_PAGE_EMAIL", 102);
-define("MESSAGE_PAGE_REFERENCE", 863);
+define("MESSAGE_PAGE_LOGIN", 54);
 define("MESSAGE_PAGE_LANGUAGE", 96);
 define("MESSAGE_PAGE_SAVE", 952);
 define("MESSAGE_PAGE_CONTACT_INFO", 99);
@@ -526,7 +526,7 @@ $jscontent = <<<END
 					vtype:			'email'
 				},{
 					{$disableLoginField}
-					fieldLabel:		'<span class=\"atm-red\">*</span> {$cms_language->getMessage(MESSAGE_PAGE_REFERENCE)}',
+					fieldLabel:		'<span class=\"atm-red\">*</span> {$cms_language->getMessage(MESSAGE_PAGE_LOGIN)}',
 					name:			'login',
 					{$loginValue}
 					vtype:			'alphanum'
