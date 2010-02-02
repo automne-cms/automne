@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: polymod.php,v 1.11 2010/01/18 15:30:52 sebastien Exp $
+// $Id: polymod.php,v 1.12 2010/02/02 16:01:14 sebastien Exp $
 
 /**
   * Class CMS_polymod
@@ -872,6 +872,50 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			}
 		}
 		return $results;
+	}
+	
+	/**
+	  * Force compilation for all stored definitions
+	  *
+	  * @return void
+	  * @access public
+	  */
+	function compileDefinitions() {
+		//foreach definition, plugin and rss, recompile stored values if exists
+		$modules = CMS_modulesCatalog::getAll("id", true);
+		$hasPolyModule = false;
+		foreach ($modules as $module) {
+			if ($module->isPolymod()) {
+				$hasPolyModule = true;
+				//get objects definition for module
+				$objects = CMS_poly_object_catalog::getObjectsForModule($module->getCodename());
+				foreach ($objects as $object) {
+					if ($object->getValue('indexURL')) {
+						$object->compileDefinition();
+						$object->writeToPersistence();
+					}
+				}
+				//get plugins for module
+				$plugins = CMS_poly_object_catalog::getAllPluginDefIDForModule($module->getCodename());
+				foreach ($plugins as $pluginID) {
+					$plugin = new CMS_poly_plugin_definitions($pluginID);
+					if ($plugin->getValue('definition') && method_exists($plugin, 'compileDefinition')) {
+						$plugin->compileDefinition();
+						$plugin->writeToPersistence();
+					}
+				}
+			}
+		}
+		if ($hasPolyModule) {
+			//get all RSS definition
+			$rssDefinitions = CMS_poly_object_catalog::getAllRSSDefinitionsForObject();
+			foreach ($rssDefinitions as $rssDefinition) {
+				if ($rssDefinition->getValue('definition')) {
+					$rssDefinition->compileDefinition();
+					$rssDefinition->writeToPersistence();
+				}
+			}
+		}
 	}
 }
 ?>

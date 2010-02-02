@@ -1,45 +1,26 @@
 <?php
+/* vim: set expandtab tabstop=4 shiftwidth=4: */
+// +----------------------------------------------------------------------+
+// | Automne (TM)														  |
+// +----------------------------------------------------------------------+
+// | Copyright (c) 2000-2009 WS Interactive								  |
+// +----------------------------------------------------------------------+
+// | Automne is subject to version 2.0 or above of the GPL license.		  |
+// | The license text is bundled with this package in the file			  |
+// | LICENSE-GPL, and is available through the world-wide-web at		  |
+// | http://www.gnu.org/copyleft/gpl.html.								  |
+// +----------------------------------------------------------------------+
+// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// +----------------------------------------------------------------------+
+//
+// $Id: update-definitions.php,v 1.4 2010/02/02 16:01:00 sebastien Exp $
+
 /**
-  * Update all stored definitions
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * @version $Id: update-definitions.php,v 1.3 2009/11/20 17:39:40 sebastien Exp $
+  * Update all stored definitions for polymod modules
   */
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 
-//foreach definition, plugin and rss, recompile stored values if exists
-$modules = CMS_modulesCatalog::getAll("id", true);
-$hasPolyModule = false;
-foreach ($modules as $module) {
-	if ($module->isPolymod()) {
-		$hasPolyModule = true;
-		//get objects definition for module
-		$objects = CMS_poly_object_catalog::getObjectsForModule($module->getCodename());
-		foreach ($objects as $object) {
-			if ($object->getValue('indexURL')) {
-				$object->compileDefinition();
-				$object->writeToPersistence();
-			}
-		}
-		//get plugins for module
-		$plugins = CMS_poly_object_catalog::getAllPluginDefIDForModule($module->getCodename());
-		foreach ($plugins as $pluginID) {
-			$plugin = new CMS_poly_plugin_definitions($pluginID);
-			if ($plugin->getValue('definition') && method_exists($plugin, 'compileDefinition')) {
-				$plugin->compileDefinition();
-				$plugin->writeToPersistence();
-			}
-		}
-	}
-}
-if ($hasPolyModule) {
-	//get all RSS definition
-	$rssDefinitions = CMS_poly_object_catalog::getAllRSSDefinitionsForObject();
-	foreach ($rssDefinitions as $rssDefinition) {
-		if ($rssDefinition->getValue('definition')) {
-			$rssDefinition->compileDefinition();
-			$rssDefinition->writeToPersistence();
-		}
-	}
-}
+CMS_polymod::compileDefinitions();
+
 echo "Objects definitions recompilations is done.<br />";
 ?>
