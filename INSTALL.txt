@@ -1,14 +1,14 @@
 -------------------------------------------------------
 AUTOMNE :: INSTALLATION
 -------------------------------------------------------
-$Id: INSTALL.txt,v 1.11 2009/06/29 12:26:04 sebastien Exp $
+$Id: INSTALL.txt,v 1.12 2010/02/02 16:07:06 sebastien Exp $
 
 English version is at the bottom of this document.
 
 1 - Prérequis
 -------------------------------------------------------
 
-Système Linux, Windows (NT, 2000, XP ou 2003) ou Solaris.
+Système Linux, Mac OS X, Windows (NT, 2000, XP ou 2003) ou Solaris.
 PHP 5.2.0 minimum (pour des raisons de sécurité, la dernière version 5.x est conseillée).
 Apache 1.3.x ou 2.x.x (pour des raisons de sécurité, la dernière version 1.3.xx est conseillée).
 MySQL 5.0.x (pour des raisons de sécurité, la dernière version 5.0.x est conseillée).
@@ -49,7 +49,7 @@ ENGLISH VERSION
 1 - System requirements
 -------------------------------------------------------
 
-Linux, Windows (NT, 2000, XP or 2003) or Solaris system.
+Linux, Mac OS X, Windows (NT, 2000, XP or 2003) or Solaris system.
 PHP 5.2.0 (for security matters, we recommend the last version 5.x).
 Apache 1.3.x or 2.0.x (for security matters, we recommend the last version 1.3.xx).
 MySQL 5.0.x (for security matters, we recommend the last version 5.0.x).
@@ -78,5 +78,5 @@ NB :
 Once you completed the installation, delete the following files : install.php and automne-xxx.tar.gz
 Keeping this files on a website on production may represent a security threat!
 
-You will find all necessary assistance for the use of the Software on http://www.automne.ws and http://doc.automne.ws
+You will find all necessary assistance for the use of the Software on http://en.automne.ws and http://man.automne.ws
 
