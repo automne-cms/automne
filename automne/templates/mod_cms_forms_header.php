@@ -17,7 +17,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: mod_cms_forms_header.php,v 1.15 2010/01/27 13:44:52 sebastien Exp $
+// $Id: mod_cms_forms_header.php,v 1.16 2010/02/03 16:51:24 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -74,8 +74,8 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 				//check for valid session / logout attempt / and autologin
 				//CMS_grandFather::log('Forms ok1');
 				if (!isset($_SESSION["cms_context"]) || (isset($_SESSION["cms_context"]) && !is_a($_SESSION["cms_context"], 'CMS_context')) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] == 'true')) {
-					@session_destroy();
-					start_atm_session();
+					/*@session_destroy();
+					start_atm_session();*/
 					//CMS_grandFather::log('Forms ok2');
 					if ((!isset($_REQUEST["logout"]) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] != 'true')) && CMS_context::autoLoginSucceeded()) {
 						//declare form ok action

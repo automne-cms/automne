@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: resource.php,v 1.4 2010/01/18 15:30:53 sebastien Exp $
+// $Id: resource.php,v 1.5 2010/02/03 16:52:00 sebastien Exp $
 
 /**
   * Class CMS_resource_cms_aliases
@@ -468,12 +468,12 @@ class CMS_resource_cms_aliases extends CMS_resource
 	function destroy()
 	{
 		//1- delete index.php file
-		if (!@unlink(PATH_REALROOT_FS.'/'.$this->getAliasLineAge().$this->getAlias() . "/index.php")) {
+		if (is_file(PATH_REALROOT_FS.'/'.$this->getAliasLineAge().$this->getAlias() . "/index.php") && !@unlink(PATH_REALROOT_FS.'/'.$this->getAliasLineAge().$this->getAlias() . "/index.php")) {
 			$this->raiseError("Error during deletion of index.php file, check file right");
 			return false;
 		}
 		//2- delete alias folder
-		if (!@rmdir(PATH_REALROOT_FS.'/'.$this->getAliasLineAge().$this->getAlias() )) {
+		if (is_dir(PATH_REALROOT_FS.'/'.$this->getAliasLineAge().$this->getAlias()) && !@rmdir(PATH_REALROOT_FS.'/'.$this->getAliasLineAge().$this->getAlias() )) {
 			$this->raiseError("Error during deletion of alias folder, check file right");
 			return false;
 		}

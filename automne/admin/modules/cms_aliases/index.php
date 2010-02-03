@@ -1,5 +1,4 @@
 <?php
-
 /* vim: set expandtab tabstop=4 shiftwidth=4: */
 // +----------------------------------------------------------------------+
 // | Automne (TM)														  |
@@ -14,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: index.php,v 1.2 2009/12/03 09:04:19 sebastien Exp $
+// $Id: index.php,v 1.3 2010/02/03 16:52:38 sebastien Exp $
 
 /**
   * PHP page : module admin frontend : cms_aliases : index
@@ -45,6 +44,7 @@ define("MESSAGE_PAGE_FIELD_CMS_ALIAS_TARGET", 3);
 define("MESSAGE_PAGE_FIELD_CMS_ALIAS_SUB_CMS_ALIASES", 4);
 define("MESSAGE_PAGE_ACTION_DELETECONFIRM", 5);
 define("MESSAGE_PAGE_FIELD_CMS_ALIAS_PARENT", 6);
+define("MESSAGE_PAGE_ACTION_DELETE_ERROR", 7);
 
 //CHECKS
 if (!$cms_user->hasModuleClearance(MOD_CMS_ALIAS_CODENAME, CLEARANCE_MODULE_EDIT)) {

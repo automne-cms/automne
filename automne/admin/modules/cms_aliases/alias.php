@@ -1,5 +1,4 @@
 <?php
-
 /* vim: set expandtab tabstop=4 shiftwidth=4: */
 // +----------------------------------------------------------------------+
 // | Automne (TM)														  |
@@ -14,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: alias.php,v 1.1.1.1 2008/11/26 17:12:05 sebastien Exp $
+// $Id: alias.php,v 1.2 2010/02/03 16:52:38 sebastien Exp $
 
 /**
   * PHP page : module admin frontend : aliases : alias
