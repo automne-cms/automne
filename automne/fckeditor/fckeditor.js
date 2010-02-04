@@ -60,8 +60,8 @@ FCKeditor.MinHeight = 200 ;
  */
 FCKeditor.MinWidth = 750 ;
 
-FCKeditor.prototype.Version			= '2.6.4' ;
-FCKeditor.prototype.VersionBuild	= '21629' ;
+FCKeditor.prototype.Version			= '2.6.5' ;
+FCKeditor.prototype.VersionBuild	= '23959' ;
 
 FCKeditor.prototype.Create = function()
 {
@@ -301,7 +301,6 @@ FCKeditor.prototype._HTMLEncode = function( text )
 function FCKeditor_IsCompatibleBrowser()
 {
 	var sAgent = navigator.userAgent.toLowerCase() ;
-
 	//<<
 	// Internet Explorer 5.5+
 	if ( /*@cc_on!@*/false && sAgent.indexOf("mac") == -1 )
@@ -310,7 +309,6 @@ function FCKeditor_IsCompatibleBrowser()
 		return ( sBrowserVersion >= 5.5 ) ;
 	}
 	//!>>
-
 	// Gecko (Opera 9 tries to behave like Gecko at this point).
 	if ( navigator.product == "Gecko" && navigator.productSub >= 20030210 && !( typeof(opera) == 'object' && opera.postError ) )
 		return true ;
