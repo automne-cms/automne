@@ -14,7 +14,7 @@
 // | Author: Jérémie Bryon <jeremie.bryon@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_usergroup.php,v 1.7 2009/11/10 16:49:01 sebastien Exp $
+// $Id: object_usergroup.php,v 1.8 2010/02/04 08:53:12 sebastien Exp $
 
 /**
   * Class CMS_object_usergroup
@@ -730,7 +730,7 @@ class CMS_object_usergroup extends CMS_object_common
 		if (is_array($usersGroups) && $usersGroups) {
 			foreach ($usersGroups as $userGroupID => $userGroupLabel) {
 				$selected = ($userGroupID == $values['selected']) ? ' selected="selected"':'';
-				$return .= '<option value="'.$userGroupID.'"'.$selected.'>'.$userGroupLabel.'</option>';
+				$return .= '<option title="'.io::htmlspecialchars($userGroupLabel).'" value="'.$userGroupID.'"'.$selected.'>'.$userGroupLabel.'</option>';
 			}
 		}
 		return $return;

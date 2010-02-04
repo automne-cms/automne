@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_float.php,v 1.7 2010/01/27 13:38:03 sebastien Exp $
+// $Id: object_float.php,v 1.8 2010/02/04 08:53:12 sebastien Exp $
 
 /**
   * Class CMS_object_float
@@ -367,7 +367,7 @@ class CMS_object_float extends CMS_object_string {
 			natsort($allValues);
 			foreach ($allValues as $id => $label) {
 				$selected = ($id == $values['selected']) ? ' selected="selected"':'';
-				$return .= '<option value="'.$id.'"'.$selected.'>'.$label.'</option>';
+				$return .= '<option title="'.io::htmlspecialchars($label).'" value="'.$id.'"'.$selected.'>'.$label.'</option>';
 			}
 		}
 		return $return;

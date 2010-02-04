@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_categories.php,v 1.14 2010/01/18 15:30:53 sebastien Exp $
+// $Id: object_categories.php,v 1.15 2010/02/04 08:53:12 sebastien Exp $
 
 /**
   * Class CMS_object_categories
@@ -1244,7 +1244,7 @@ class CMS_object_categories extends CMS_object_common
 			}
 			foreach ($categories as $catID => $catLabel) {
 				$selected = (isset($values['selected']) && $catID == $values['selected']) ? ' selected="selected"':'';
-				$return .= '<option value="'.$catID.'"'.$selected.'>'.$catLabel.'</option>';
+				$return .= '<option title="'.io::htmlspecialchars($catLabel).'" value="'.$catID.'"'.$selected.'>'.$catLabel.'</option>';
 			}
 		}
 		return $return;

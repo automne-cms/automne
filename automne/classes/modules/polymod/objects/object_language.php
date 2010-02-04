@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_language.php,v 1.4 2009/07/20 16:35:37 sebastien Exp $
+// $Id: object_language.php,v 1.5 2010/02/04 08:53:12 sebastien Exp $
 
 /**
   * Class CMS_object_language
@@ -256,7 +256,7 @@ class CMS_object_language extends CMS_object_common
 		if (is_array($all_languages) && $all_languages) {
 			foreach ($all_languages as $languageCode => $languageLabel) {
 				$selected = ($languageCode == $values['selected']) ? ' selected="selected"':'';
-				$return .= '<option title="'.$languageLabel.'" value="'.$languageCode.'"'.$selected.'>'.$languageLabel.'</option>';
+				$return .= '<option title="'.io::htmlspecialchars($languageLabel).'" value="'.$languageCode.'"'.$selected.'>'.$languageLabel.'</option>';
 			}
 		}
 		return $return;

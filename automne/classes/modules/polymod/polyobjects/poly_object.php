@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object.php,v 1.14 2010/01/18 15:30:54 sebastien Exp $
+// $Id: poly_object.php,v 1.15 2010/02/04 08:53:12 sebastien Exp $
 
 /**
   * Class CMS_poly_object
@@ -1413,7 +1413,7 @@ class CMS_poly_object extends CMS_resource
 		if (is_array($objectValues) && $objectValues) {
 			foreach ($objectValues as $objectID => $objectLabel) {
 				$selected = ($objectID == $values['selected']) ? ' selected="selected"':'';
-				$return .= '<option value="'.$objectID.'"'.$selected.'>'.$objectLabel.'</option>';
+				$return .= '<option title="'.io::htmlspecialchars($objectLabel).'" value="'.$objectID.'"'.$selected.'>'.$objectLabel.'</option>';
 			}
 		}
 		return $return;
