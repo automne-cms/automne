@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: index.php,v 1.3 2010/02/03 16:52:38 sebastien Exp $
+// $Id: index.php,v 1.4 2010/02/04 15:57:44 sebastien Exp $
 
 /**
   * PHP page : module admin frontend : cms_aliases : index
@@ -44,7 +44,7 @@ define("MESSAGE_PAGE_FIELD_CMS_ALIAS_TARGET", 3);
 define("MESSAGE_PAGE_FIELD_CMS_ALIAS_SUB_CMS_ALIASES", 4);
 define("MESSAGE_PAGE_ACTION_DELETECONFIRM", 5);
 define("MESSAGE_PAGE_FIELD_CMS_ALIAS_PARENT", 6);
-define("MESSAGE_PAGE_ACTION_DELETE_ERROR", 7);
+define("MESSAGE_PAGE_ACTION_DELETE_ERROR", 9);
 
 //CHECKS
 if (!$cms_user->hasModuleClearance(MOD_CMS_ALIAS_CODENAME, CLEARANCE_MODULE_EDIT)) {
@@ -62,7 +62,7 @@ case "delete":
 	if ($article->destroy()) {
 		$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 	} else {
-		$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_DELETE_ERROR);
+		$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_DELETE_ERROR,false,MOD_CMS_ALIAS_CODENAME);
 	}
 	break;
 }
