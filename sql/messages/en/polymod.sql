@@ -4,7 +4,7 @@
 # English Messages
 #
 #----------------------------------------------------------------
-# $Id: polymod.sql,v 1.3 2010/02/03 14:46:12 sebastien Exp $
+# $Id: polymod.sql,v 1.4 2010/02/04 15:51:48 sebastien Exp $
 
 DELETE FROM messages WHERE module_mes = 'polymod' and language_mes = 'en';
 
@@ -409,3 +409,4 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(554, 'polymod', 'en', 'Unpublished (offline)');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(555, 'polymod', 'en', 'Validated (Green status)');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(556, 'polymod', 'en', 'Validation pending (Orange status)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(557, 'polymod', 'en', '<p><strong>List of all languages of a field:<br />\r\n</strong><br />\r\n<span class="code"> &lt;select&gt;<strong>&lt;</strong>atm-function function=&quot;selectOptions&quot; object=&quot;%s&quot; selected=&quot;<span class="keyword">selectedCode</span><strong>&quot;&gt;&lt;/</strong>atm-function<strong>&gt;</strong>&lt;/select&gt;</span><br />\r\nThis function displays a list in alphabetical order of tags &lt;option&gt; containing all the languages of the field given in the parameter.&nbsp;It is usually employed within the tag &lt;select&gt;.</p>\r\n<ul>\r\n    <li><span class="keyword">selectedCode </span><strong>: </strong>Code of the language to select in the list.</li>\r\n</ul>');

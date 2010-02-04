@@ -6,7 +6,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: main.js,v 1.25 2010/01/29 10:34:14 sebastien Exp $
+  * $Id: main.js,v 1.26 2010/02/04 15:49:59 sebastien Exp $
   */
 
 //Declare Automne namespace
@@ -270,7 +270,7 @@ Automne = {
 					layout:			'atm-border',
 					collapsible: 	true,
 					collapseMode:	'mini',
-					collapsed:		!Ext.state.Manager.get('side-panel-collapsible', true),
+					collapsed:		false,
 					split:			true,
 					width: 			290,
 					minWidth:		290,

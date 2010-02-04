@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_language.php,v 1.5 2010/02/04 08:53:12 sebastien Exp $
+// $Id: object_language.php,v 1.6 2010/02/04 15:51:22 sebastien Exp $
 
 /**
   * Class CMS_object_language
@@ -38,6 +38,7 @@ class CMS_object_language extends CMS_object_common
 	  */
 	const MESSAGE_OBJECT_LANGUAGE_LABEL = 323;
 	const MESSAGE_OBJECT_LANGUAGE_DESCRIPTION = 324;
+	const MESSAGE_OBJECT_LANGUAGE_FUNCTION_SELECTEDOPTIONS_DESCRIPTION = 557;
 	/**
 	  * object label
 	  * @var integer
@@ -218,6 +219,18 @@ class CMS_object_language extends CMS_object_common
 				return parent::getValue($name, $parameters);
 			break;
 		}
+	}
+	
+	/**
+	  * get labels for object structure and functions
+	  *
+	  * @return array : the labels of object structure and functions
+	  * @access public
+	  */
+	function getLabelsStructure(&$language, $objectName) {
+		$labels = parent::getLabelsStructure($language);
+		$labels['function']['selectOptions'] = $language->getMessage(self::MESSAGE_OBJECT_LANGUAGE_FUNCTION_SELECTEDOPTIONS_DESCRIPTION,array('{'.$objectName.'}'),MOD_POLYMOD_CODENAME);
+		return $labels;
 	}
 	
 	/**
