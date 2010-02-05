@@ -9,6 +9,7 @@ V4.0.0 (18/01/10)
 [REFACTOR] : Update polymod documentation
 [REFACTOR] : Review english messages
 [REFACTOR] : Improve security against file upload threat
+[REFACTOR] : Update FCKEditor to version 2.6.5 to correct some IE8 bugs
 [FEATURE] : modules can now add tabs to page properties through method getPageTabsProperties
 [FEATURE] : add {user:id:type} vars type for polymod rows
 [FEATURE] : add cache control on images files (see .htaccess)
