@@ -9,7 +9,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: panel.js,v 1.4 2009/11/10 16:57:21 sebastien Exp $
+  * $Id: panel.js,v 1.5 2010/02/05 14:01:25 sebastien Exp $
   */
 Automne.panel = Ext.extend(Ext.Panel, {
 	//tab element
@@ -77,11 +77,13 @@ Automne.panel = Ext.extend(Ext.Panel, {
 		return Automne.panel.superclass.doAutoLoad.apply(this, arguments); 
 	},
 	load : function(){
-		//set Automne renderer
-		this.body.getUpdater().renderer = new Automne.windowRenderer();
-		//set failure event
-		this.body.getUpdater().on('failure', this.failure);
-		return Automne.panel.superclass.load.apply(this, arguments); 
+		if (this.body) {
+			//set Automne renderer
+			this.body.getUpdater().renderer = new Automne.windowRenderer();
+			//set failure event
+			this.body.getUpdater().on('failure', this.failure);
+			return Automne.panel.superclass.load.apply(this, arguments); 
+		}
 	},
 	failure: function(el, response) {
 		if (response.status != '200') {
