@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: blocks.js,v 1.9 2009/04/16 12:34:38 sebastien Exp $
+  * $Id: blocks.js,v 1.10 2010/02/09 10:59:20 sebastien Exp $
   */
 Automne.block = function(config){
 	config = config || {};
@@ -48,6 +48,7 @@ Ext.extend(Automne.block, Ext.util.Observable, {
 		//get all elements with HTML elements
 		var elements = (this.elements.length) ? Ext.select('#'+this.elements.join(',#'), true, this.document) : new Ext.CompositeElement();
 		this.elements = new Ext.CompositeElement();
+		var added = [];
 		elements.each(function(el){
 			if (!el.hasClass('atm-block-helper')) {
 				this.elements.add(el);
@@ -55,7 +56,8 @@ Ext.extend(Automne.block, Ext.util.Observable, {
 				var first = el.first();
 				if (first) {
 					var el = first;
-					while(el) {
+					while(el && added[el.id] !== true) {
+						added[el.id] = true;
 						this.elements.add(el);
 						el = el.next();
 					}
