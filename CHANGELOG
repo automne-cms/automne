@@ -5,6 +5,7 @@ V4.0.0 (18/01/10)
 [BUG] : correct problems on sessions persistence
 [BUG] : handle iframe crash (wrong domain)
 [BUG] : block varchar with single quotes can be edited
+[BUG] : infinite loop when editing some pages
 [REFACTOR] : Completely refactor I18nm messages system. The message table is now more extensible
 [REFACTOR] : Update polymod documentation
 [REFACTOR] : Review english messages
