@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_categories.php,v 1.15 2010/02/04 08:53:12 sebastien Exp $
+// $Id: object_categories.php,v 1.16 2010/02/10 12:52:03 sebastien Exp $
 
 /**
   * Class CMS_object_categories
@@ -1074,10 +1074,10 @@ class CMS_object_categories extends CMS_object_common
 		}
 		$return = "";
 		$params = $this->getParamsValues();
-		if (!sensitiveIO::isPositiveInteger($values['root']) && !sensitiveIO::IsPositiveInteger($params['rootCategory'])) {
-			$this->raiseError("Root value parameter must be a valid category ID : ".$values['root']);
+		if ((!isset($values['root']) || !sensitiveIO::isPositiveInteger($values['root'])) && (!isset($params['rootCategory']) || !sensitiveIO::IsPositiveInteger($params['rootCategory']))) {
+			$this->raiseError("Root value parameter must be a valid category ID");
 			return false;
-		} elseif (!sensitiveIO::isPositiveInteger($values['root']) && sensitiveIO::IsPositiveInteger($params['rootCategory'])) {
+		} elseif ((!isset($values['root']) || !sensitiveIO::isPositiveInteger($values['root'])) && (isset($params['rootCategory']) && sensitiveIO::IsPositiveInteger($params['rootCategory']))) {
 			$values['root'] = $params['rootCategory'];
 		}
 		$usedCategories = $this->getAllUsedCategoriesForField();
