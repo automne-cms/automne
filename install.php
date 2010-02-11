@@ -17,7 +17,7 @@
 // | Author: Sebastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.24 2010/02/02 16:07:06 sebastien Exp $
+// $Id: install.php,v 1.25 2010/02/11 10:12:41 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -55,7 +55,7 @@ if (!isset($_GET['file'])) {
 	
 	//Current installation step
 	$step = (isset($_REQUEST["step"])) ? $_REQUEST["step"]:'check';
-	$accepted_step = array('0','1','2','3','4','5','6','7','8','9','gpl','check');
+	$accepted_step = array('0','1','2','3','4','5','6','7','8','9','gpl','check','help');
 	$step = (in_array($step , $accepted_step) === true) ? $step:'check';
 	
 	$cms_action = isset($_POST["cms_action"]) ? $_POST["cms_action"] : '';
@@ -213,7 +213,15 @@ if (!isset($_GET['file'])) {
 			//General labels
 			$label_next = 'Suivant';
 			$label_docroot = "Erreur, ce fichier doit ce trouver &agrave; la racine du serveur web ! (%s)";
-			$footer = 'Installation d\'Automne version 4. Pour toute information, visitez <a href="http://www.automne.ws" target="_blank">www.automne.ws</a>.';
+			$footer = 'Installation d\'Automne version 4. Pour toute information, visitez <a href="http://www.automne.ws" target="_blank">www.automne.ws</a><br /><a href="'.$_SERVER['SCRIPT_NAME'].'?step=help&install_language='.$install_language.'" target="_blank">Besoin d\'aide ?</a>';
+			
+			//STEP Help
+			$stepHelp_title = 'Aide &agrave; l\'installation d\'Automne';
+			$stepHelp_installation_help = 'Si vous rencontrez des difficult&eacute;s pour installer Automne - que vous ayez simplement besoin d\'explications ou si vous rencontrez des erreurs - n\'h&eacute;sitez pas &agrave; poser vos questions sur <a href="http://www.automne.ws/forum/" target="_blank">le forum d\'Automne</a>.<br /><br />
+			Vous y obtiendrez une aide rapide et adapt&eacute;e &agrave; votre situation.<br /><br />
+			Pour nous aider &agrave; diagnostiquer vos probl&egrave;mes, merci de donner le plus d\'informations possible sur le type d\'h&eacute;bergement dont vous disposez ainsi que les messages d\'erreurs &eacute;ventuels que vous rencontrez. <br /><br />
+			Vous pouvez aussi fournir le fichier de diagnostic suivant &agrave; un administrateur du forum via message priv&eacute;.<br />Ce fichier contient toutes les informations de configuration de votre serveur et il nous aidera &agrave; identifier pr&eacute;cis&eacute;ment la source du probl&egrave;me.<br /><br />
+			&raquo; <a href="'.$_SERVER['SCRIPT_NAME'].'?file=info" target="_blank">T&eacute;l&eacute;charger le fichier de diagnostic</a>.';
 			
 			//STEP check
 			$error_stepCheck_php_error = 'Erreur, Votre version de PHP ('.phpversion().') n\'est pas compatible avec Automne. Vous devez avoir une version sup&eacute;rieure &agrave; la 5.2.0.';
@@ -276,8 +284,8 @@ if (!isset($_GET['file'])) {
 			$error_step3_must_choose_option = 'Erreur, vous devez choisir un option ...';
 			$error_step3_SQL_script = 'Erreur, syntaxe incorrecte dans le fichier : %s ou fichier manquant';
 			$step3_title = 'Choisissez un type d\'installation :';
-			$step3_Demo = 'Automne avec la D&eacute;mo (conseill&eacute; pour d&eacute;buter sur le logiciel)';
-			$step3_Empty = 'Automne vide (pour cr&eacute;er un site &agrave; partir de z&eacute;ro)';
+			$step3_Demo = 'Automne avec la D&eacute;mo (conseill&eacute; pour tester et apprendre le logiciel)';
+			$step3_Empty = 'Automne vide (conseill&eacute; pour cr&eacute;er un site &agrave; partir de z&eacute;ro)';
 			$step3_skip = 'Conserver la Base de Donn&eacute;es actuelle';
 			
 			//STEP 4
@@ -290,26 +298,27 @@ if (!isset($_GET['file'])) {
 			$error_step5_perms_files = 'Erreur, Vous devez entrer une valeur de permission pour les fichiers ...';
 			$error_step5_perms_dirs = 'Erreur, Vous devez entrer une valeur de permission pour les dossiers ...';
 			$step5_title = 'Permissions des fichiers et des dossiers :';
-			$step5_explanation = 'Automne g&eacute;n&egrave;re un grand nombre de fichiers et de dossiers. Les droits suivant ont &eacute;t&eacute; detect&eacute;s comme &eacute;tant utilis&eacute;s par votre serveur.<br /><br />Etes-vous d\'accord pour les utiliser lorsque Automne cr&eacute;&eacute;ra des fichiers et des dossiers ?<br /><br />Attention, modifier ces droits peut entrainer des erreurs sur le serveur si ce dernier ne les acceptes pas. Modifiez ces param&egrave;tres seulement si vous savez ce que vous faites.<br /><br />Plus d\'information sur les h&eacute;bergeurs sur <a href="http://www.automne.ws/faq/">les FAQ en ligne.</a>';
+			$step5_explanation = 'Automne g&eacute;n&egrave;re un grand nombre de fichiers et de dossiers. Les droits suivant ont &eacute;t&eacute; detect&eacute;s comme &eacute;tant utilis&eacute;s par votre serveur.<br /><br />Etes-vous d\'accord pour les utiliser lorsque Automne cr&eacute;&eacute;ra des fichiers et des dossiers ? (Automne doit avoir le droit d\'&eacute;criture sur tous les fichiers du serveur).<br /><br />Attention, modifier ces droits peut entrainer des erreurs sur le serveur si ce dernier ne les acceptes pas. Modifiez ces param&egrave;tres seulement si vous savez ce que vous faites.<br /><br />Plus d\'information sur les h&eacute;bergeurs sur <a href="http://www.automne.ws/faq/">les FAQ en ligne.</a>';
 			$step5_files_perms = 'Permissions sur les fichiers';
 			$step5_dirs_perms = 'Permissions sur les dossiers';
 			
 			//STEP 6
 			$error_step6_choose_option = 'Erreur, vous devez choisir une option ...';
 			$step6_title = 'Fonctionnement des scripts :';
-			$step6_explanation = 'Certaines op&eacute;rations compl&ecirc;xes d\'Automne n&eacute;cessites l\'utilisation de scripts serveurs.<br />
-			Veuillez choisir la m&eacute;thode d\'ex&eacute;cution de ces scripts :<br />
+			$step6_explanation = 'Certaines op&eacute;rations d\'Automne n&eacute;cessitent l\'ex&eacute;cution de t&acirc;ches de fond.<br /><br />
+			Veuillez choisir la m&eacute;thode d\'ex&eacute;cution de ces t&acirc;ches de fond :<br />
 			<ul>
-				<li>Par une fen&ecirc;tre pop-up. Processus assez lent mais qui fonctionne sur tous les serveurs. Vous devez choisir cela sur les serveurs mutualis&eacute;s (ou sur Easyphp et autres solutions n\'utilisant pas une version compl&egrave;te de PHP)</li>
-				<li>Scripts en tache de fond. Processus rapide mais qui ne fonctionne pas sur tous les serveurs. Vous pouvez choisir cela sur les serveurs d&eacute;di&eacute;s qui ont l\'ex&eacute;cutable PHP-CLI install&eacute; (<a href="http://fr.php.net/manual/fr/features.commandline.php" target="_blank">Utiliser PHP en ligne de commande</a>).<br /><br />D&eacute;tection de la pr&eacute;sence de PHP-CLI sur votre serveur : <span style="color:red;">%s</span></li>
-			</ul>';
+				<li>D&eacute;clench&eacute;es par le navigateur : Processus lent et qui n&eacute;cessite que le navigateur d\'un administrateur d\'Automne reste ouvert mais qui fonctionne sur tous les serveurs. Vous devez choisir cela sur les serveurs mutualis&eacute;s et autres solutions ne disposant pas de PHP-CLI.<br /><br /></li>
+				<li>Scripts en t&acirc;che de fond sur le serveur : Processus rapide mais qui ne fonctionne pas sur tous les serveurs. Vous pouvez choisir cela sur les serveurs d&eacute;di&eacute;s qui ont l\'ex&eacute;cutable PHP-CLI install&eacute; (Aide sur PHP-CLI : <a href="http://fr.php.net/manual/fr/features.commandline.php" target="_blank">Utiliser PHP en ligne de commande</a>).</li>
+			</ul>
+			D&eacute;tection de la pr&eacute;sence de PHP-CLI sur votre serveur : <span style="color:red;">%s</span><br /><br />';
 			$step6_CLIDetection_nosystem = 'Indisponible : Fonctions "system", "exec" et "passthru" d&eacute;sactiv&eacute;es.';
 			$step6_CLIDetection_windows = 'D&eacute;tection impossible sur un serveur Windows';
 			$step6_CLIDetection_available = 'Disponible';
 			$step6_CLIDetection_unavailable = 'D&eacute;tection impossible';
 			$step6_CLIDetection_version_not_match = 'Disponible mais version incorrecte';
-			$step6_popup = 'Fen&ecirc;tre pop-up';
-			$step6_bg = 'Script en tache de fond';
+			$step6_popup = 'D&eacute;clench&eacute;es par le navigateur';
+			$step6_bg = 'Scripts en t&acirc;che de fond sur le serveur';
 			
 			//STEP 7
 			$error_step7_CLI_path = 'Erreur, Vous devez saisir un chemin pour l\'&eacute;x&eacute;cutable PHP-CLI ...';
@@ -326,40 +335,58 @@ if (!isset($_GET['file'])) {
 			$error_step8_smtp_error = 'Erreur, Aucun serveur SMTP trouv&eacute;. V&eacute;rifiez votre installation de PHP ou cochez la case ci-dessous si vous souhaitez d&eacute;sactiver l\'envoi d\'email par l\'application.';
 			$error_step8_label = 'Erreur, Merci de saisir un nom pour votre site.';
 			$step8_title = 'Finalisation de l\'installation :';
-			$step8_htaccess_explanation = 'Automne utilise des fichiers .htaccess pour prot&eacute;ger l\'acc&egrave;s de certains repertoires et sp&eacute;cifier certaines configurations.<br />V&eacute;rifiez que le serveur d\'h&eacute;bergement que vous utilisez accepte bien l\'utilisation des fichiers .htaccess';
+			$step8_htaccess_explanation = '<h2>Fichiers .htaccess</h2>Automne utilise des fichiers .htaccess pour renforcer la s&eacute;curit&eacute; du syst&egrave;me, prot&eacute;ger l\'acc&egrave;s de certains repertoires et sp&eacute;cifier certaines configurations.<br /><br /><strong>V&eacute;rifiez que le serveur d\'h&eacute;bergement que vous utilisez accepte bien l\'utilisation des fichiers .htaccess</strong>';
 			$step8_freefr = 'Cochez si vous &ecirc;tes h&eacute;berg&eacute; par Free.fr';
 			$step8_no_application_email = 'Cochez si vous souhaitez d&eacute;sactiver l\'envoi d\'email par l\'application';
-			$step8_application_label = 'Saisissez un nom pour votre site.';
-			$step8_label = 'Nom du site';
+			$step8_application_label = '<h2>Nommez votre installation</h2>Saisissez un nom pour cette installation d\'Automne.';
+			$step8_label = 'Nom de l\'installation';
 			
 			//STEP9
 			$step9_title = 'Installation termin&eacute;e !';
-			$step9_alldone = 'L\'installation d\'Automne est termin&eacute;e.<br />
+			$step9_alldone = '<strong>L\'installation d\'Automne est termin&eacute;e.</strong><br />
 			<br />Vous pouvez acc&eacute;der &agrave; l\'administration du site &agrave; cette adresse :<br />
 			<a href="/automne/admin/" target="_blank">%s/automne/admin/</a><br /><br />
+			<h2>Informations importantes :</h2>
 			L\'identifiant par d&eacute;faut est "<strong>root</strong>" et le mot de passe "<strong>automne</strong>".<br />
 			Pensez &agrave; changer rapidement le mot de passe dans le profil utilisateur !<br />
 			<br />
 			Si vous avez choisi l\'installation de la D&eacute;mo, la partie publique sera visible &agrave; l\'adresse <a href="/" target="_blank">%s</a> une fois que vous vous serez connect&eacute; une premi&egrave;re fois &agrave; l\'administration de votre site.<br />
 			<br />
-			Vous pouvez supprimer l\'archive ayant servie &agrave; cette installation ainsi que le fichier install.php.<br />
+			Vous pouvez maintenant supprimer l\'archive ayant servie &agrave; cette installation ainsi que le fichier install.php.<br />
 			<span style="color:red;">Attention</span> : laisser ces fichiers sur un site en production repr&eacute;sente une faille importante de s&eacute;curit&eacute; pour votre site !<br />
 			<br />
-			Si vous souhaitez modifier certaines options saisies lors de cette installation, relancez le fichier install.php ou &eacute;ditez le fichier config.php se trouvant &agrave; la racine de votre site web ou le fichier de param&egrave;tres /automne/classes/modules/standard_rc.xml.<br />
+			Si vous souhaitez modifier certaines options saisies lors de cette installation, relancez le fichier install.php ou :
+			<ul>
+				<li>Modifiez les param&egrave;tres d\'Automne depuis le panneau d&eacute;di&eacute; depuis l\'administration.</li>
+				<li>Editez le fichier /config.php se trouvant &agrave; la racine de votre installation d\'Automne.</li>
+				<li>Editez le fichier de param&egrave;tres /automne/classes/modules/standard_rc.xml.</li>
+			</ul>
+			<strong>Pour profiter des fonctionnalit&eacute;s de publication et d&eacute;publication automatique</strong>, planifiez l\'ex&eacute;cution du script /automne/classes/scripts/daily_routine.php toutes les nuits dans votre crontab (ou dans les taches planifi&eacute;es de windows).<br /><br />
+			<fieldset>
+			<legend>Exemple pour la crontab sur serveur Unix</legend>
+			0 0 * * * %s php '.$_SERVER['DOCUMENT_ROOT'].'/automne/classes/scripts/daily_routine.php<br /><br />
+			Cette ligne de configuration &agrave; ajouter dans la crontab de votre serveur vous permettra de lancer les t&acirc;ches de publication et de d&eacute;publication automatiques, tous les jours &agrave; minuit.
+			</fieldset>
 			<br />
-			Pour profiter des fonctionnalit&eacute;s de publication et d&eacute;publication automatique, planifiez l\'execution du script /automne/classes/scripts/daily_routine.php toutes les nuits dans votre crontab (ou dans les taches planifi&eacute;es de windows).<br />
-			Exemple : 0 0 * * * www-data php '.$_SERVER['DOCUMENT_ROOT'].'/automne/classes/scripts/daily_routine.php (ici www-data est l\'utilisateur utilis&eacute; pour &eacute;xecuter Apache).
-			<br /><br />
-			Merci d\'utiliser Automne !<br />
-			<br />
-			Vous trouverez toute l\'aide n&eacute;cessaire pour l\'utilisation du logiciel sur <a href="http://www.automne.ws" target="_blank">www.automne.ws</a> et sur <a href="http://doc.automne.ws" target="_blank">doc.automne.ws</a>.';
+			Vous trouverez toute l\'aide n&eacute;cessaire pour l\'utilisation du logiciel sur <a href="http://www.automne.ws" target="_blank">www.automne.ws</a> et sur <a href="http://doc.automne.ws" target="_blank">doc.automne.ws</a>. N\'h&eacute;sitez pas &agrave; poser vos questions sur <a href="http://www.automne.ws/forum/" target="_blank">le forum</a>.<br /><br />
+			Merci d\'utiliser Automne !<br />';
 		break;
 		case "en":
 		default:
 			//General labels
 			$label_next = 'Next';
 			$label_docroot = "Error, this file Must be at the server Document Root ! (%s)";
-			$footer = 'Installing Automne version 4. For more informations, visit <a href="http://www.automne.ws" target="_blank">www.automne.ws</a>.';
+			$footer = 'Installing Automne version 4. For more informations, visit <a href="http://www.automne.ws" target="_blank">www.automne.ws</a>.<br /><a href="'.$_SERVER['SCRIPT_NAME'].'?step=help&install_language='.$install_language.'" target="_blank">Need help?</a>';
+			
+			//STEP Help
+			$stepHelp_title = 'Help to Automne installation';
+			$stepHelp_installation_help = 'If you have problems installing Automne - you just need clarification or if you encounter any errors - please ask your questions on <a href="http://www.automne.ws/forum/" target="_blank">the Automne forum</a>.<br /><br />
+			You\'ll get a quick and appropriate help for your situation.<br /><br />
+			To help us diagnose your problems, thank you to give as much information as possible about the type of hosting you use and the possible error messages you encounter.<br /><br />
+			You can also provide the following diagnostic file to an administrator using private message.<br />
+			This file contains all the configuration information for your server and will help us pinpoint the source of the problem.<br /><br />
+			&raquo; <a href="'.$_SERVER['SCRIPT_NAME'].'?file=info" target="_blank">Download the diagnostic file</a>.';
+			
 			
 			//STEP check
 			$error_stepCheck_php_error = 'Error, Your PHP version ('.phpversion().') is not compatible with Automne. You must have a version greater than 5.2.0.';
@@ -394,7 +421,7 @@ if (!isset($_GET['file'])) {
 			
 			//GPL STEP
 			$stepGPL_title = 'User License:';
-			$stepGPL_explanation = 'The use of Automne is subjected to acceptance of following GNU-GPL license.';
+			$stepGPL_explanation = 'Using Automne is subjected to acceptance of following GNU-GPL license.';
 			$stepGPL_licenseNotFound = 'License file does not exist, You can consult it here : <a href="http://www.gnu.org/copyleft/gpl.html" target="_blank">http://www.gnu.org/copyleft/gpl.html</a>';
 			$stepGPL_accept = 'Do you agree with terms of this license?';
 			$stepGPL_yes = 'I accept the terms of the license.';
@@ -410,7 +437,7 @@ if (!isset($_GET['file'])) {
 			$error_step2_DB_version_not_match = 'Error, MySQL version (%s) not match (5.0.0 minimum)';
 			$error_step2_DB_cannot_get_version = 'Error, Can not retrieve MySQL version';
 			$step2_title = 'Database identification:';
-			$step2_explanation = 'Information of connection to the database is provided to you by your web administrator. Take care that the database that you will use exists.';
+			$step2_explanation = 'Connection informations to the database are provided by your host. Take care that the database that you will use exists.';
 			$step2_DB_host = 'Database Host';
 			$step2_DB_name = 'Database Name';
 			$step2_DB_user = 'Database User';
@@ -428,33 +455,35 @@ if (!isset($_GET['file'])) {
 			//STEP 4
 			$error_step4_enter_url = 'Error, You must enter an URL ...';
 			$step4_title = 'Website URL:';
-			$step4_enter_url = 'Enter the URL of the website (default value should be correct). It is the URL of the server Document Root.<br />If you enter a domain name, this must exist. You will be able to modify this at any time in the administration platform of the site.';
+			$step4_enter_url = 'Enter the URL of the website (the default should be correct). This is the URL of the site root.<br />If you enter a domain name, it must exist. You can change this at any time in the administration of the site.';
 			$step4_url = 'URL * : http://';
 			
 			//STEP 5
 			$error_step5_perms_files = 'Error, You must enter permission values for files ...';
 			$error_step5_perms_dirs = 'Error, You must enter permission values for directories ...';
 			$step5_title = 'Files and directories permissions:';
-			$step5_explanation = 'Automne generates many files and directories. The following rights have been detected to be used by the server for files and directories creation.<br /><br />Do you agree with using these rights when Automne creates files or directories?<br /><br />Warning, modifying these rights can involve errors on the server if it does not accept them. Modify them only if you are sure of the values.<br /><br />More information about hosts on <a href="http://www.automne.ws/faq/">the FAQ pages.</a>';
+			$step5_explanation = 'Automne generates many files and directories. The following rights have been detected to be used by the server for files and directories creation.<br /><br />Do you agree with using these rights when Automne creates files or directories? (Automne must have write permission on all files in the server).<br /><br />Warning, modifying these rights can involve errors on the server if it does not accept them. Modify them only if you are sure of the values.<br /><br />More information about hosts on <a href="http://www.automne.ws/faq/">the FAQ pages.</a>';
 			$step5_files_perms = 'Files permissions';
 			$step5_dirs_perms = 'Directories permissions';
 			
 			//STEP 6
 			$error_step6_choose_option = 'Error, You must choose an option ...';
 			$step6_title = 'Scripts operation:';
-			$step6_explanation = 'Some complex operations in Automne needs usage of server scripts.<br />
-			Please choose those scripts execution method :<br />
+			$step6_explanation = '
+			Some operations require Automne running background tasks.<br /><br />
+			Please choose the method of execution of these background tasks:<br />
 			<ul>
-				<li>Pop-up window. Slow but works fine on all servers. You must choose this method for mutualized servers (or with Easyphp or other solutions that do not use a complete version of PHP).</li>
-				<li>Background script. Fast but does not work on all servers. You can choose this method if you are on a dedicated server who has PHP-CLI installed (<a href="http://www.php.net/manual/en/features.commandline.php" target="_blank">Using PHP from the command line</a>).<br /><br />PHP-CLI detection on your server: <span style="color:red;">%s</span></li>
-			</ul>';
+				<li>Triggered by the browser: Slow process that requires the browser of an Automne administrator remains open, but that works on all servers. You should choose this on shared hosts and other solutions that do not have PHP-CLI.</li>
+				<li>Scripts in the background on the server: Rapid process but that does not work on all servers. You can select it on dedicated servers which have the PHP-CLI executable installed (Help on PHP-CLI: <a href="http://www.php.net/manual/en/features.commandline.php" target="_blank">Using PHP from the command line</a>).</li>
+			</ul>
+			PHP-CLI detection on your server: <span style="color:red;">%s</span><br /><br />';
 			$step6_CLIDetection_nosystem = 'Unavailable : Functions "system", "exec" and "passthru" inactive.';
 			$step6_CLIDetection_windows = 'Detection impossible on Windows server';
 			$step6_CLIDetection_available = 'Available';
 			$step6_CLIDetection_unavailable = 'Detection impossible';
 			$step6_CLIDetection_version_not_match = 'Available but wrong version';
-			$step6_popup = 'Pop-up window';
-			$step6_bg = 'Background script';
+			$step6_popup = 'Triggered by the browser';
+			$step6_bg = 'Scripts in the background on the server';
 			
 			//STEP 7
 			$error_step7_CLI_path = 'Error, You must enter a Path for the PHP-CLI ...';
@@ -471,37 +500,58 @@ if (!isset($_GET['file'])) {
 			$error_step8_smtp_error = 'Error, No SMTP server found. Please Check your PHP installation or check the box below to cancel the application email sending.';
 			$error_step8_label = 'Error, Please to enter a name for your site.';
 			$step8_title = 'Installation finalisation:';
-			$step8_htaccess_explanation = 'Automne uses .htaccess files to protect some directories and specify some configurations.<br />Check that the hosting server that you use accepts the usage of the .htaccess files.';
+			$step8_htaccess_explanation = '<h2>.htaccess files</h2>Automne uses .htaccess files to enhance system security, protect some directories and specify some configurations.<br /><br /><strong>Check that the hosting server that you use accepts the usage of the .htaccess files.</strong>';
 			$step8_freefr = 'Check box if you are on Free.fr hosting service';
 			$step8_no_application_email = 'Check box if you want to cancel application email sending';
-			$step8_application_label = 'Enter a name for your site.';
-			$step8_label = 'Site name';
+			$step8_application_label = '<h2>Name your installation</h2>Enter a name for this installation of Automne.';
+			$step8_label = 'Installation name';
 			
 			//STEP9
 			$step9_title = 'Installation done!';
 			$step9_alldone = '
-			Automne installation is done.<br />
+			<strong>Automne installation is done.</strong><br />
 			<br />
-			You can reach the site administration at this address:<br />
+			You can access the website administration at:<br />
 			<a href="/automne/admin/" target="_blank">%s/automne/admin/</a><br /><br />
+			<h2>Important informations:</h2>
 			Default login is "<strong>root</strong>" and password is "<strong>automne</strong>".<br />
-			Please modify the password in the user profile!<br />
+			Please modify this password in the user profile!<br />
 			<br />
-			If you selected the Demo installation, the public site will be visible at the address <a href="/" target="_blank">%s</a> once you will have connected first to the administration of your Web site.<br />
+			If you chose to install the demo, the public site will be visible at the address <a href="/" target="_blank">%s</a> once you login once to the administration.<br />
 			<br />
-			You can now remove the package file used for this installation as well as the file install.php.<br />
-			<span style="color:red;">Warning</span>, leaving these files on a production website may represent an important security hole for your Web site!<br />
+			You can now delete the package file used for this installation as well as the file install.php.<br />
+			<span style="color:red;">Warning</span>, leaving these files on a production site represents a major breach of security for your site!<br />
 			<br />
-			If you wish to modify options saved during this installation, start again the file install.php or edit the file config.php at the root of your Web site or the parameter file /automne/classes/modules/standard_rc.xml.<br />
+			If you want to change some options you enter during this installation, run again the install.php file or:
+			<ul>
+				<li>Change the settings from the dedicated Automne panel in administration.</li>
+				<li>Edit the file /config.php located in the root of your installation of Automne.</li>
+				<li>Edit the settings file /automne/classes/modules/standard_rc.xml.</li>
+			</ul>
+			<strong>If you want to use automatic publish and unpublish features</strong>, schedule the script /automne/classes/scripts/daily_routine.php every nigths in your crontab (or in the windows scheduled task).<br /><br />
+			<fieldset>
+			<legend>Example on Unix server</legend>
+			0 0 * * * %s php '.$_SERVER['DOCUMENT_ROOT'].'/automne/classes/scripts/daily_routine.php<br /><br />
+			This configuration line to add to the crontab of your server will start the task of automatic publishing and unpublishing daily at midnight.
+			</fieldset>
 			<br />
-			If you want to use automatic publication and depublication fonctionnalities, plan the execution of the script /automne/classes/scripts/daily_routine.php every nigths in your crontab.<br />
-			Example : 0 0 * * * www-data php '.$_SERVER['DOCUMENT_ROOT'].'/automne/classes/scripts/daily_routine.php (here www-data is the Apache user).
-			<br /><br />
-			
+			You will find all necessary assistance for the use of the software on <a href="http://en.automne.ws" target="_blank">en.automne.ws</a> and <a href="http://man.automne.ws" target="_blank">man.automne.ws</a>.
+			Feel free to ask your questions in <a href="http://www.automne.ws/forum/" target="_blank">the forum</a>. <br /><br />
 			Thank you for using Automne!<br />
 			<br />
-			You will find all necessary assistance for the use of the Software on <a href="http://www.automne.ws" target="_blank">www.automne.ws</a> and <a href="http://doc.automne.ws" target="_blank">doc.automne.ws</a>.';
+			';
 		break;
+	}
+	
+	// +----------------------------------------------------------------------+
+	// | STEP Help : Give some advise in case of problem                      |
+	// +----------------------------------------------------------------------+
+	if ($step === 'help') {
+		$title ='<h1>'.$stepHelp_title.'</h1>';
+		if ($error) {
+			$content .= '<span class="error">'.$error.'</span><br />';
+		}
+		$content .= $stepHelp_installation_help;
 	}
 	
 	// +----------------------------------------------------------------------+
@@ -1118,8 +1168,6 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 					$cliAvailable = false;
 				}
 			}
-			$clidetection = $step6_CLIDetection_unavailable;
-			$cliAvailable = false;
 			$content .= '
 			<form action="'.$_SERVER["PHP_SELF"].'" method="post" onsubmit="check();">
 				<input type="hidden" name="step" value="6" />
@@ -1501,7 +1549,13 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 	
 	if ($step == 9) {
 		$title = '<h1>'.$step9_title.'</h1>';
-		$content .= sprintf($step9_alldone,CMS_websitesCatalog::getMainURL(),CMS_websitesCatalog::getMainURL());
+		if (APPLICATION_IS_WINDOWS) {
+			$uname = 'www-data';
+		} else {
+			$uid = posix_getpwuid(posix_getuid());
+			$uname = isset($uid['name']) ? $uid['name'] : posix_getuid();
+		}
+		$content .= sprintf($step9_alldone,CMS_websitesCatalog::getMainURL(),CMS_websitesCatalog::getMainURL(), $uname);
 	}
 	
 	// +----------------------------------------------------------------------+
@@ -1518,7 +1572,7 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 		body{
 			background-color:	#e9f1da;
 			font-family:		arial,verdana,helvetica,sans-serif;
-			font-size:			12px;
+			font-size:			13px;
 			margin:				0;
 			padding:			0;
 		}
@@ -1557,6 +1611,11 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 			color:				#8cbe35;
 			padding-left:		21px;
 			margin-bottom:		20px;
+		}
+		h2{
+			font-size:			13px;
+			color:				#8cbe35;
+			margin-bottom:		15px;
 		}
 		#footer{
 			color:				#5a6266;
@@ -1969,6 +2028,19 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 			echo $file;
 			exit;
 		break;
+		case 'info':
+			$phpinfo = print_r(phpinfo_array(true), true);
+			
+			header("Cache-Control: ");
+			header("Pragma: ");
+			header('Content-Type: application/octet-stream');
+			header('Content-Length: '.(string) strlen($phpinfo));
+			header('Content-Disposition: attachment; filename="infos-'.date('Ymd').'.txt"');
+			
+			echo $phpinfo;
+			exit;
+		break;
+		
 	}
 }
 // +----------------------------------------------------------------------+
@@ -1987,6 +2059,45 @@ function pr_install($data,$useVarDump = false) {
 		flush();
 	}
 }
+
+//Return an array of all phpinfo values
+function phpinfo_array($return=false){
+	ob_start();
+	phpinfo(-1);
+	
+	$pi = preg_replace(
+	array('#^.*<body>(.*)</body>.*$#ms', '#<h2>PHP License</h2>.*$#ms',
+	'#<h1>Configuration</h1>#',  "#\r?\n#", "#</(h1|h2|h3|tr)>#", '# +<#',
+	"#[ \t]+#", '#&nbsp;#', '#  +#', '# class=".*?"#', '%&#039;%',
+	'#<tr>(?:.*?)" src="(?:.*?)=(.*?)" alt="PHP Logo" /></a>'
+	.'<h1>PHP Version (.*?)</h1>(?:\n+?)</td></tr>#',
+	'#<h1><a href="(?:.*?)\?=(.*?)">PHP Credits</a></h1>#',
+	'#<tr>(?:.*?)" src="(?:.*?)=(.*?)"(?:.*?)Zend Engine (.*?),(?:.*?)</tr>#',
+	"# +#", '#<tr>#', '#</tr>#'),
+	array('$1', '', '', '', '</$1>' . "\n", '<', ' ', ' ', ' ', '', ' ',
+	'<h2>PHP Configuration</h2>'."\n".'<tr><td>PHP Version</td><td>$2</td></tr>'.
+	"\n".'<tr><td>PHP Egg</td><td>$1</td></tr>',
+	'<tr><td>PHP Credits Egg</td><td>$1</td></tr>',
+	'<tr><td>Zend Engine</td><td>$2</td></tr>' . "\n" .
+	'<tr><td>Zend Egg</td><td>$1</td></tr>', ' ', '%S%', '%E%'),
+	ob_get_clean());
+	
+	$sections = explode('<h2>', strip_tags($pi, '<h2><th><td>'));
+	unset($sections[0]);
+	
+	$pi = array();
+	foreach($sections as $section){
+		$n = substr($section, 0, strpos($section, '</h2>'));
+		preg_match_all(
+		'#%S%(?:<td>(.*?)</td>)?(?:<td>(.*?)</td>)?(?:<td>(.*?)</td>)?%E%#',
+		$section, $askapache, PREG_SET_ORDER);
+		foreach($askapache as $m)
+			$pi[$n][$m[1]]=(!isset($m[3])||@$m[2]==$m[3]) ? @$m[2] : array_slice($m,2);
+	}
+	
+	return ($return === false) ? print_r($pi) : $pi;
+}
+
 /**
   * Class CMS_archive_install, CMS_tar_file_install, CMS_gzip_file_install
   *
