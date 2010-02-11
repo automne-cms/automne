@@ -15,7 +15,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: pagetemplatescatalog.php,v 1.7 2009/11/20 17:47:28 sebastien Exp $
+// $Id: pagetemplatescatalog.php,v 1.8 2010/02/11 16:40:15 sebastien Exp $
 
 /**
   * Class CMS_pageTemplatesCatalog
@@ -138,10 +138,10 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 						and groupsStack_pt not like '%;".sensitiveIO::sanitizeSQLString($group[0]).";%'
 						and groupsStack_pt not like '".sensitiveIO::sanitizeSQLString($group[0]).";%'
 						and groupsStack_pt not like '%;".sensitiveIO::sanitizeSQLString($group[0])."'
-					) or";
+					) and ";
 				}
-				//remove last "or" and append )
-				$where = io::substr($where, 0, -2).')';
+				//remove last "and " and append )
+				$where = io::substr($where, 0, -4).')';
 			}
 		}
 		$sql = $sql.($where ? ' where '.$where : '');
@@ -155,7 +155,7 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 		if ($start || $limit) {
 			$sql .= " limit ".sensitiveIO::sanitizeSQLString($start).",".sensitiveIO::sanitizeSQLString($limit);
 		}
-		//pr($sql);
+		pr($sql);
 		$q = new CMS_query($sql);
 		$pts = array();
 		while ($r = $q->getArray()) {
