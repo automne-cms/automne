@@ -15,7 +15,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: pagetemplatescatalog.php,v 1.8 2010/02/11 16:40:15 sebastien Exp $
+// $Id: pagetemplatescatalog.php,v 1.9 2010/02/11 16:44:44 sebastien Exp $
 
 /**
   * Class CMS_pageTemplatesCatalog
@@ -155,7 +155,7 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 		if ($start || $limit) {
 			$sql .= " limit ".sensitiveIO::sanitizeSQLString($start).",".sensitiveIO::sanitizeSQLString($limit);
 		}
-		pr($sql);
+		//pr($sql);
 		$q = new CMS_query($sql);
 		$pts = array();
 		while ($r = $q->getArray()) {
