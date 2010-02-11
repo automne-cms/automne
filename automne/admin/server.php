@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: server.php,v 1.9 2010/01/18 15:23:55 sebastien Exp $
+// $Id: server.php,v 1.10 2010/02/11 11:34:32 sebastien Exp $
 
 /**
   * PHP page : Load server detail window.
@@ -146,32 +146,32 @@ if (ini_get('memory_limit') && ini_get('memory_limit') < 32) {
 }
 //CLI
 if (io::strtolower(io::substr(PHP_OS, 0, 3)) === 'win') {
-	$content .= '<li class="atm-pic-question">Cannot test CLI on Windows Platform ...</li>';
-} else {
-	function executeCommand($command, &$error) {
-		//change current dir
-		$pwd = getcwd();
-		if (function_exists("exec")) {
-			//execute command
-			@exec($command, $return , $error );
-			$return = implode("\n",$return);
-		} elseif (function_exists("passthru")) {
-			//execute command
-			@ob_start();
-			@passthru ($command, $error);
-			$return = @ob_get_contents();
-			@ob_end_clean();
-		} else {
-			$error=1;
-			return false;
+	if (defined('PATH_PHP_CLI_WINDOWS') && PATH_PHP_CLI_WINDOWS && is_file(PATH_PHP_CLI_WINDOWS)) {
+		//test CLI version
+		$return = CMS_patch::executeCommand(PATH_PHP_CLI_WINDOWS.' -v',$error);
+		if ($error && $return !== false) {
+			$content .= '<li class="atm-pic-cancel">Error when testing php CLI with command "'.PATH_PHP_CLI_WINDOWS.' -v" : '.$error."\n";
 		}
-		//restore original dir
-		@chdir($pwd);
-		return $return;
+		if ($return === false) {
+			$content .= '<li class="atm-pic-cancel">Error, passthru() and exec() commands not available</li>';
+		}
+		if (io::strpos(io::strtolower($return), '(cli)') === false) {
+			$content .= '<li class="atm-pic-cancel">Error, installed php is not the CLI version : '.$return."\n";
+		} else {
+			$cliversion = trim(str_replace('php ', '', io::substr(io::strtolower($return), 0, io::strpos(io::strtolower($return), '(cli)'))));
+			if (version_compare($cliversion, "5.2.0") === -1) {
+				$content .= '<li class="atm-pic-cancel">Error, PHP CLI version ('.$cliversion.') not match</li>';
+			} else {
+				$content .= '<li class="atm-pic-ok">PHP CLI version OK ('.$cliversion.')</li>';
+			}
+		}
+	} else {
+		$content .= '<li class="atm-pic-question">CLI is not set. Define constant PATH_PHP_CLI_WINDOWS in config.php to set it</li>';
 	}
+} else {
 	$error = '';
 	if (!defined('PATH_PHP_CLI_UNIX') || !PATH_PHP_CLI_UNIX) {
-		$return = executeCommand('which php 2>&1',$error);
+		$return = CMS_patch::executeCommand('which php 2>&1',$error);
 		if ($error && $return !== false) {
 			$content .= '<li class="atm-pic-cancel">Error when finding php CLI with command "which php" : '.$error."\n";
 		}
@@ -181,10 +181,10 @@ if (io::strtolower(io::substr(PHP_OS, 0, 3)) === 'win') {
 			$content .= '<li class="atm-pic-cancel">Error when finding php CLI with command "which php"</li>';
 		}
 		//test CLI version
-		$return = executeCommand('php -v',$error);
+		$return = CMS_patch::executeCommand('php -v',$error);
 	} else {
 		//test CLI version
-		$return = executeCommand(PATH_PHP_CLI_UNIX.' -v',$error);
+		$return = CMS_patch::executeCommand(PATH_PHP_CLI_UNIX.' -v',$error);
 		if ($error && $return !== false) {
 			$content .= '<li class="atm-pic-cancel">Error when testing php CLI with command "'.PATH_PHP_CLI_UNIX.' -v" : '.$error."\n";
 		}
