@@ -17,7 +17,7 @@
 // | Author: Sebastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.25 2010/02/11 10:12:41 sebastien Exp $
+// $Id: install.php,v 1.26 2010/02/11 15:00:40 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -324,7 +324,7 @@ if (!isset($_GET['file'])) {
 			$error_step7_CLI_path = 'Erreur, Vous devez saisir un chemin pour l\'&eacute;x&eacute;cutable PHP-CLI ...';
 			$error_step7_tmp_path = 'Erreur, Vous devez sp&eacute;cifier un r&eacute;pertoire temporaire ...';
 			$error_step7_valid_tmp_path = 'Erreur, Vous devez sp&eacute;cifier un r&eacute;pertoire temporaire valide ...';
-			$step7_title = 'Param&egrave;tres de r&eacute;g&eacute;n&eacute;ration :';
+			$step7_title = 'Scripts en t&acirc;che de fond :';
 			$step7_CLI_explanation = 'Entrez ici le chemin vers l\'&eacute;x&eacute;cutable PHP-CLI.';
 			$step7_CLI = 'Chemin vers l\'&eacute;x&eacute;cutable PHP-CLI';
 			$step7_tmp_path_explanation = 'Aucun r&eacute;pertoire temporaire n\'a put &ecirc;tre identifi&eacute; sur ce serveur. <br />Merci d\'entrer un repertoire temporaire ici (Le chemin complet du repertoire est requis, ex : /tmp ou c:\tmp). Ce repertoire doit &ecirc;tre accessible en &eacute;criture par le serveur web.';
@@ -336,8 +336,8 @@ if (!isset($_GET['file'])) {
 			$error_step8_label = 'Erreur, Merci de saisir un nom pour votre site.';
 			$step8_title = 'Finalisation de l\'installation :';
 			$step8_htaccess_explanation = '<h2>Fichiers .htaccess</h2>Automne utilise des fichiers .htaccess pour renforcer la s&eacute;curit&eacute; du syst&egrave;me, prot&eacute;ger l\'acc&egrave;s de certains repertoires et sp&eacute;cifier certaines configurations.<br /><br /><strong>V&eacute;rifiez que le serveur d\'h&eacute;bergement que vous utilisez accepte bien l\'utilisation des fichiers .htaccess</strong>';
-			$step8_freefr = 'Cochez si vous &ecirc;tes h&eacute;berg&eacute; par Free.fr';
-			$step8_no_application_email = 'Cochez si vous souhaitez d&eacute;sactiver l\'envoi d\'email par l\'application';
+			$step8_no_application_email_title = '<h2>Serveur SMTP introuvable</h2>';
+			$step8_no_application_email = 'Cochez cette case si vous souhaitez d&eacute;sactiver l\'envoi d\'email par l\'application';
 			$step8_application_label = '<h2>Nommez votre installation</h2>Saisissez un nom pour cette installation d\'Automne.';
 			$step8_label = 'Nom de l\'installation';
 			
@@ -489,7 +489,7 @@ if (!isset($_GET['file'])) {
 			$error_step7_CLI_path = 'Error, You must enter a Path for the PHP-CLI ...';
 			$error_step7_tmp_path = 'Error, You must specify a temporary path ...';
 			$error_step7_valid_tmp_path = 'Error, You must specify a valid temporary path ...';
-			$step7_title = 'Regeneration parameters:';
+			$step7_title = 'Background scripts:';
 			$step7_CLI_explanation = 'Enter here the path to the PHP-CLI executable.';
 			$step7_CLI = 'PHP-CLI path';
 			$step7_tmp_path_explanation = 'No Path founded for the temporary directory on this server. <br />Please enter a temporary path here (full path needed ex: /tmp or c:\tmp). This directory must be writable by the server.';
@@ -501,8 +501,8 @@ if (!isset($_GET['file'])) {
 			$error_step8_label = 'Error, Please to enter a name for your site.';
 			$step8_title = 'Installation finalisation:';
 			$step8_htaccess_explanation = '<h2>.htaccess files</h2>Automne uses .htaccess files to enhance system security, protect some directories and specify some configurations.<br /><br /><strong>Check that the hosting server that you use accepts the usage of the .htaccess files.</strong>';
-			$step8_freefr = 'Check box if you are on Free.fr hosting service';
-			$step8_no_application_email = 'Check box if you want to cancel application email sending';
+			$step8_no_application_email_title = '<h2>SMTP Server not found</h2>';
+			$step8_no_application_email = 'Check this box if you want to disable sending email through the application';
 			$step8_application_label = '<h2>Name your installation</h2>Enter a name for this installation of Automne.';
 			$step8_label = 'Installation name';
 			
@@ -1212,7 +1212,11 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 			} else {
 				$cliPath = $_POST["cliPath"];
 				//test for CLI proveded
-				$return = CMS_patch::executeCommand(escapeshellcmd($cliPath).' -v',$error);
+				if (APPLICATION_IS_WINDOWS) {
+					$return = CMS_patch::executeCommand($cliPath.' -v',$error);
+				} else {
+					$return = CMS_patch::executeCommand(escapeshellcmd($cliPath).' -v',$error);
+				}
 				$error = '';
 				if (strpos(strtolower($return), '(cli)') === false) {
 					$error .= $error_step7_CLI_path.'<br />';
@@ -1524,13 +1528,11 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 			<form action="'.$_SERVER["PHP_SELF"].'" method="post" onsubmit="check();">
 				<input type="hidden" name="step" value="8" />
 				<input type="hidden" name="cms_action" value="finalisation" />
-				<input type="hidden" name="install_language" value="'.$install_language.'" />
-				'.$step8_htaccess_explanation.'<br /><br />';
+				<input type="hidden" name="install_language" value="'.$install_language.'" />';
 				if ($no_application_email) {
-					$content .= '<br /><label for="no_application_email"><input type="checkbox" id="no_application_email" name="no_application_email" value="1" /> '.$step8_no_application_email.'</label><br />';
+					$content .= $step8_no_application_email_title.'<label for="no_application_email"><input type="checkbox" id="no_application_email" name="no_application_email" value="1" /> '.$step8_no_application_email.'</label><br /><br />';
 				}
-				$content .= '
-				<br />
+				$content .= $step8_htaccess_explanation.'<br /><br />
 				'.$step8_application_label.'<br /><br />
 				'.$step8_label.' *  : <input type="text" name="label" value="Automne" /><br />
 				<input type="submit" class="submit" value="'.$label_next.'" />
