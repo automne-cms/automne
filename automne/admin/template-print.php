@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: template-print.php,v 1.4 2009/11/10 16:57:20 sebastien Exp $
+// $Id: template-print.php,v 1.5 2010/02/12 09:50:46 sebastien Exp $
 
 /**
   * PHP page : Load print template window.
@@ -84,6 +84,15 @@ $jscontent = <<<END
 		plain:				true,
 		border:				false,
 		bodyStyle: 			'padding:5px',
+		defaults: {
+			anchor:				'97%',
+			allowBlank:			false,
+			hideLabel:			true
+		},
+		layoutConfig: {
+	        labelAlign: 		'top'
+	    },
+		labelAlign: 		'top',
 		beforeActivate:		function(tabPanel, newTab, currentTab) {
 			if (Ext.get('defText-{$templateId}')) {
 				//call server for definition update
@@ -104,11 +113,6 @@ $jscontent = <<<END
 				});
 			}
 		},
-		defaults: {
-			anchor:				'97%',
-			allowBlank:			false,
-			hideLabel:			true
-		},
 		items:[{
 			xtype:			'panel',
 			html:			'{$cms_language->getJsMessage(MESSAGE_PAGE_XML_DEFINITION_USAGE_DESC)}',
@@ -119,7 +123,7 @@ $jscontent = <<<END
 			xtype:			'textarea',
 			name:			'definition',
 			cls:			'atm-code',
-			anchor:			'0, -50',
+			anchor:			'-25, -65',
 			enableKeyEvents:true,
 			value:			Ext.get('tpl-definition-{$templateId}').dom.value,
 			listeners:{'keypress': function(field, e){

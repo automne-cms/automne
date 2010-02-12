@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-page.php,v 1.11 2010/01/18 15:23:55 sebastien Exp $
+// $Id: templates-page.php,v 1.12 2010/02/12 09:50:46 sebastien Exp $
 
 /**
   * PHP page : Load page templates search window.
@@ -91,7 +91,7 @@ $searchPanel .= "{
 	name: 			'keyword',
 	value:			'',
 	minLength:		3,
-	anchor:			'100%',
+	anchor:			'-20px',
 	validateOnBlur:	false,
 	listeners:		{'valid':{
 		fn: 			templateWindow.search, 
@@ -136,7 +136,7 @@ if (sizeof($websites) > 1) {
 		id:					'websiteField',
 		name:				'website',
 		fieldLabel:			'{$cms_language->getJSMessage(MESSAGE_PAGE_WEBSITES)}',
-		anchor:				'100%',
+		anchor:				'-20px',
 		forceSelection:		true,
 		mode:				'local',
 		triggerAction:		'all',
@@ -266,6 +266,7 @@ $jscontent = <<<END
 		collapsible:	true,
 		split:			true,
 		border:			false,
+		autoScroll:		true,
 		labelAlign: 	'top',
 		bodyStyle: {
 			padding: 		'5px'

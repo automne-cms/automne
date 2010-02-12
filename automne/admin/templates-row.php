@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-row.php,v 1.10 2010/01/18 15:23:55 sebastien Exp $
+// $Id: templates-row.php,v 1.11 2010/02/12 09:50:46 sebastien Exp $
 
 /**
   * PHP page : Load page rows search window.
@@ -87,7 +87,7 @@ $searchPanel .= "{
 	name: 			'keyword',
 	value:			'',
 	minLength:		3,
-	anchor:			'100%',
+	anchor:			'-20px',
 	validateOnBlur:	false,
 	listeners:		{'valid':{
 		fn: 			rowWindow.search,
@@ -220,6 +220,7 @@ $jscontent = <<<END
 		collapsible:	true,
 		split:			true,
 		border:			false,
+		autoScroll:		true,
 		labelAlign: 	'top',
 		bodyStyle: {
 			padding: 		'5px'
