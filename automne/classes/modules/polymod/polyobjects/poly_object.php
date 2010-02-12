@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_object.php,v 1.15 2010/02/04 08:53:12 sebastien Exp $
+// $Id: poly_object.php,v 1.16 2010/02/12 13:09:08 sebastien Exp $
 
 /**
   * Class CMS_poly_object
@@ -1051,9 +1051,15 @@ class CMS_poly_object extends CMS_resource
 				if (APPLICATION_ENFORCES_WORKFLOW) {
 					if (!NO_APPLICATION_MAIL && $emailValidators) {
 						$validators = CMS_profile_usersCatalog::getValidators($polyModuleCodename);
+						//get editors
+						$editors = $this->getEditors();
+						$editorsIds = array();
+						foreach($editors as $editor) {
+							$editorsIds[] = $editor->getUserId();
+						}
 						foreach ($validators as $validator) {
 							//add script to send email for validator if needed
-							CMS_scriptsManager::addScript($polyModuleCodename, array('task' => 'emailNotification', 'object' => $this->getID(), 'validator' => $validator->getUserId(), 'type' => 'validate'));
+							CMS_scriptsManager::addScript($polyModuleCodename, array('task' => 'emailNotification', 'object' => $this->getID(), 'validator' => $validator->getUserId(), 'type' => 'validate', 'editors' => $editorsIds));
 						}
 						//then launch scripts execution
 						CMS_scriptsManager::startScript();
@@ -1141,10 +1147,16 @@ class CMS_poly_object extends CMS_resource
 				parent::writeToPersistence();
 				if (APPLICATION_ENFORCES_WORKFLOW) {
 					if (!NO_APPLICATION_MAIL) {
+						//get editors
+						$editors = $this->getEditors();
+						$editorsIds = array();
+						foreach($editors as $editor) {
+							$editorsIds[] = $editor->getUserId();
+						}
 						$validators = CMS_profile_usersCatalog::getValidators($polyModuleCodename);
 						foreach ($validators as $validator) {
 							//add script to send email for validator if needed
-							CMS_scriptsManager::addScript($polyModuleCodename, array('task' => 'emailNotification', 'object' => $this->getID(), 'validator' => $validator->getUserId(), 'type' => 'delete'));
+							CMS_scriptsManager::addScript($polyModuleCodename, array('task' => 'emailNotification', 'object' => $this->getID(), 'validator' => $validator->getUserId(), 'type' => 'delete', 'editors' => $editorsIds));
 						}
 						//then launch scripts execution
 						CMS_scriptsManager::startScript();
@@ -1610,7 +1622,16 @@ class CMS_poly_object extends CMS_resource
 								$languages = CMS_languagesCatalog::getAllLanguages();
 								$subjects = array();
 								$bodies = array();
-								$editors = $this->getEditors();
+								//editors
+								$editorsIds = $parameters['editors'];
+								$editors = array();
+								foreach($editorsIds as $editorId) {
+									$editor = CMS_profile_usersCatalog::getByID($editorId);
+									if (is_a($editor, 'CMS_profile_user') && !$editor->hasError()) {
+										$editors[] = $editor;
+									}
+								}
+								//$editors = $this->getEditors();
 								$editorsInfos = '';
 								foreach($editors as $editor){
 									$editorsInfos .= ($editorsInfos) ? ",\n" : '';
@@ -1629,7 +1650,16 @@ class CMS_poly_object extends CMS_resource
 								$languages = CMS_languagesCatalog::getAllLanguages();
 								$subjects = array();
 								$bodies = array();
-								$editors = $this->getEditors();
+								//editors
+								$editorsIds = $parameters['editors'];
+								$editors = array();
+								foreach($editorsIds as $editorId) {
+									$editor = CMS_profile_usersCatalog::getByID($editorId);
+									if (is_a($editor, 'CMS_profile_user') && !$editor->hasError()) {
+										$editors[] = $editor;
+									}
+								}
+								//$editors = $this->getEditors();
 								$editorsInfos = '';
 								foreach($editors as $editor){
 									$editorsInfos .= ($editorsInfos) ? ",\n" : '';
