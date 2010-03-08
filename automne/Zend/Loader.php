@@ -14,9 +14,9 @@
  *
  * @category   Zend
  * @package    Zend_Loader
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Loader.php,v 1.1 2008/11/26 17:24:55 sebastien Exp $
+ * @version    $Id: Loader.php,v 1.2 2010/03/08 15:48:01 sebastien Exp $
  */
 
 /**
@@ -24,18 +24,11 @@
  *
  * @category   Zend
  * @package    Zend_Loader
- * @copyright  Copyright (c) 2005-2007 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Loader
 {
-    /**
-     * An array of stdClass objects used for tracking PHP errors from including a file
-     *
-     * @var array
-     */
-    protected static $_errors = array();
-
     /**
      * Loads a class from a PHP file.  The filename must be formatted
      * as "$class.php".
@@ -67,8 +60,20 @@ class Zend_Loader
             throw new Zend_Exception('Directory argument must be a string or an array');
         }
 
-        // autodiscover the path from the class name
-        $file = str_replace('_', DIRECTORY_SEPARATOR, $class) . '.php';
+        // Autodiscover the path from the class name
+        // Implementation is PHP namespace-aware, and based on 
+        // Framework Interop Group reference implementation:
+        // http://groups.google.com/group/php-standards/web/psr-0-final-proposal
+        $className = ltrim($class, '\\');
+        $file      = '';
+        $namespace = '';
+        if ($lastNsPos = strripos($className, '\\')) {
+            $namespace = substr($className, 0, $lastNsPos);
+            $className = substr($className, $lastNsPos + 1);
+            $file      = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+        }
+        $file .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
+
         if (!empty($dirs)) {
             // use the autodiscovered path
             $dirPath = dirname($file);
@@ -86,16 +91,12 @@ class Zend_Loader
             $file = basename($file);
             self::loadFile($file, $dirs, true);
         } else {
-            self::_securityCheck($file);
-            set_error_handler(array('Zend_Loader', 'errorHandler'));
-            include_once $file;
-            restore_error_handler();
-            self::_throwIncludeErrors($file);
+            self::loadFile($file, null, true);
         }
 
         if (!class_exists($class, false) && !interface_exists($class, false)) {
             require_once 'Zend/Exception.php';
-            throw new Zend_Exception("File \"$file\" was loaded but class \"$class\" was not found in the file");
+            throw new Zend_Exception("File \"$file\" does not exist or class \"$class\" was not found in the file");
         }
     }
 
@@ -141,13 +142,11 @@ class Zend_Loader
         /**
          * Try finding for the plain filename in the include_path.
          */
-        set_error_handler(array('Zend_Loader', 'errorHandler'));
         if ($once) {
             include_once $filename;
         } else {
             include $filename;
         }
-        restore_error_handler();
 
         /**
          * If searching in directories, reset include_path
@@ -156,38 +155,7 @@ class Zend_Loader
             set_include_path($incPath);
         }
 
-        self::_throwIncludeErrors($filename);
-
-        /**
-         * @todo deprecate this behavior
-         *
-         * if it doesn't work, throw an exception;
-         * if it works, no need to return true
-         */
         return true;
-    }
-
-    /**
-     * Stores the information from an error for later examination
-     *
-     * @param  integer $errno
-     * @param  string  $errstr
-     * @param  string  $errfile
-     * @param  integer $errline
-     * @param  array   $errcontext
-     * @return void
-     */
-    public static function errorHandler($errno, $errstr, $errfile, $errline, $errcontext)
-    {
-        $error = new stdClass();
-
-        $error->errno      = $errno;
-        $error->errstr     = $errstr;
-        $error->errfile    = $errfile;
-        $error->errline    = $errline;
-        $error->errcontext = $errcontext;
-
-        self::$_errors[] = $error;
     }
 
     /**
@@ -195,16 +163,61 @@ class Zend_Loader
      * This function uses the PHP include_path, where PHP's is_readable()
      * does not.
      *
+     * Note from ZF-2900:
+     * If you use custom error handler, please check whether return value
+     *  from error_reporting() is zero or not.
+     * At mark of fopen() can not suppress warning if the handler is used.
+     *
      * @param string   $filename
      * @return boolean
      */
     public static function isReadable($filename)
     {
-        if (!$fh = @fopen($filename, 'r', true)) {
-            return false;
+        if (is_readable($filename)) {
+            // Return early if the filename is readable without needing the 
+            // include_path
+            return true;
         }
 
-        return true;
+        foreach (self::explodeIncludePath() as $path) {
+            if ($path == '.') {
+                if (is_readable($filename)) {
+                    return true;
+                }
+                continue;
+            }
+            $file = $path . '/' . $filename;
+            if (is_readable($file)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Explode an include path into an array
+     *
+     * If no path provided, uses current include_path. Works around issues that
+     * occur when the path includes stream schemas.
+     * 
+     * @param  string|null $path 
+     * @return array
+     */
+    public static function explodeIncludePath($path = null)
+    {
+        if (null === $path) {
+            $path = get_include_path();
+        }
+
+        if (PATH_SEPARATOR == ':') {
+            // On *nix systems, include_paths which include paths with a stream 
+            // schema cannot be safely explode'd, so we have to be a bit more
+            // intelligent in the approach.
+            $paths = preg_split('#:(?!//)#', $path);
+        } else {
+            $paths = explode(PATH_SEPARATOR, $path);
+        }
+        return $paths;
     }
 
     /**
@@ -215,13 +228,15 @@ class Zend_Loader
      * spl_autoload_register(array('Zend_Loader', 'autoload'));
      * </code>
      *
-     * @param string $class
+     * @deprecated Since 1.8.0
+     * @param  string $class
      * @return string|false Class name on success; false on failure
      */
     public static function autoload($class)
     {
+        trigger_error(__CLASS__ . '::' . __METHOD__ . ' is deprecated as of 1.8.0 and will be removed with 2.0.0; use Zend_Loader_Autoloader instead', E_USER_NOTICE);
         try {
-            self::loadClass($class);
+            @self::loadClass($class);
             return $class;
         } catch (Exception $e) {
             return false;
@@ -231,6 +246,7 @@ class Zend_Loader
     /**
      * Register {@link autoload()} with spl_autoload()
      *
+     * @deprecated Since 1.8.0
      * @param string $class (optional)
      * @param boolean $enabled (optional)
      * @return void
@@ -239,22 +255,26 @@ class Zend_Loader
      */
     public static function registerAutoload($class = 'Zend_Loader', $enabled = true)
     {
-        if (!function_exists('spl_autoload_register')) {
-            require_once 'Zend/Exception.php';
-            throw new Zend_Exception('spl_autoload does not exist in this PHP installation');
-        }
+        trigger_error(__CLASS__ . '::' . __METHOD__ . ' is deprecated as of 1.8.0 and will be removed with 2.0.0; use Zend_Loader_Autoloader instead', E_USER_NOTICE);
+        require_once 'Zend/Loader/Autoloader.php';
+        $autoloader = Zend_Loader_Autoloader::getInstance();
+        $autoloader->setFallbackAutoloader(true);
 
-        self::loadClass($class);
-        $methods = get_class_methods($class);
-        if (!in_array('autoload', (array) $methods)) {
-            require_once 'Zend/Exception.php';
-            throw new Zend_Exception("The class \"$class\" does not have an autoload() method");
-        }
+        if ('Zend_Loader' != $class) {
+            self::loadClass($class);
+            $methods = get_class_methods($class);
+            if (!in_array('autoload', (array) $methods)) {
+                require_once 'Zend/Exception.php';
+                throw new Zend_Exception("The class \"$class\" does not have an autoload() method");
+            }
 
-        if ($enabled === true) {
-            spl_autoload_register(array($class, 'autoload'));
-        } else {
-            spl_autoload_unregister(array($class, 'autoload'));
+            $callback = array($class, 'autoload');
+
+            if ($enabled) {
+                $autoloader->pushAutoloader($callback);
+            } else {
+                $autoloader->removeAutoloader($callback);
+            }
         }
     }
 
@@ -270,43 +290,10 @@ class Zend_Loader
         /**
          * Security check
          */
-        if (preg_match('/[^a-z0-9\\/\\\\_.-]/i', $filename)) {
+        if (preg_match('/[^a-z0-9\\/\\\\_.:-]/i', $filename)) {
             require_once 'Zend/Exception.php';
             throw new Zend_Exception('Security check: Illegal character in filename');
         }
-    }
-
-    /**
-     * Throws an exception with any PHP errors from including $fileIncluded.
-     * The static $_errors property is cleared prior to throwing the exception.
-     * If there are no errors to report, then this method does nothing.
-     *
-     * @param  string $fileIncluded
-     * @return void
-     * @throws Zend_Exception
-     */
-    protected static function _throwIncludeErrors($fileIncluded)
-    {
-        if (self::$_errors === array()) {
-            return;
-        }
-
-        $message = "At least one error occurred including \"$fileIncluded\"; see includeErrors property";
-
-        /**
-         * @see Zend_Exception
-         */
-        require_once 'Zend/Exception.php';
-        $exception = new Zend_Exception($message);
-
-        $exception->includeErrors = array();
-        foreach (self::$_errors as $error) {
-            $exception->includeErrors[] = $error;
-        }
-
-        self::$_errors = array();
-
-        throw $exception;
     }
 
     /**

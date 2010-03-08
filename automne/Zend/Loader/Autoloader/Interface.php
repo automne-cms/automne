@@ -13,20 +13,22 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Cache
+ * @package    Zend_Loader
+ * @subpackage Autoloader
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @version    $Id: Interface.php,v 1.1 2010/03/08 15:48:02 sebastien Exp $
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Exception.php,v 1.2 2010/03/08 15:48:02 sebastien Exp $
  */
 
 /**
- * @see Zend_Exception
- */
-require_once 'Zend/Exception.php';
-
-/**
- * @package    Zend_Cache
+ * Autoloader interface
+ *
+ * @package    Zend_Loader
+ * @subpackage Autoloader
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Cache_Exception extends Zend_Exception {}
+interface Zend_Loader_Autoloader_Interface
+{
+    public function autoload($class);
+}
