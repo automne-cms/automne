@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: polymod.php,v 1.12 2010/02/02 16:01:14 sebastien Exp $
+// $Id: polymod.php,v 1.13 2010/03/08 15:21:03 sebastien Exp $
 
 /**
   * Class CMS_polymod
@@ -284,15 +284,27 @@ class CMS_polymod extends CMS_modulePolymodValidation
 					if (isset($usage['formsCallback']) && is_array($usage['formsCallback']) && isset($usage['headcode'])) {
 						foreach ($usage['formsCallback'] as $formName => $formCallback) {
 							foreach ($formCallback as $formFieldID => $callback) {
-								$modulesCode[$this->_codename] .= '<?php'."\n".
-								'//callback function to check field '.$formFieldID.' for atm-form '.$formName."\n".
-								'function form_'.$formName.'_'.$formFieldID.'($formName, $fieldID, &$item) {'."\n".
-								'       $object[$item->getObjectID()] = $item;'."\n".
-								'       '.$usage['headcode']."\n".
-								'       '.$callback."\n".
-								'       return false;'."\n".
-								'}'."\n".
-								'?>';
+								if (io::isPositiveInteger($formFieldID)) {
+									$modulesCode[$this->_codename] .= '<?php'."\n".
+									'//callback function to check field '.$formFieldID.' for atm-form '.$formName."\n".
+									'function form_'.$formName.'_'.$formFieldID.'($formName, $fieldID, &$item) {'."\n".
+									'       $object[$item->getObjectID()] = $item;'."\n".
+									'       '.$usage['headcode']."\n".
+									'       '.$callback."\n".
+									'       return false;'."\n".
+									'}'."\n".
+									'?>';
+								} elseif ($formFieldID == 'form') {
+									$modulesCode[$this->_codename] .= '<?php'."\n".
+									'//callback function for atm-form '.$formName."\n".
+									'function form_'.$formName.'($formName, &$item) {'."\n".
+									'       $object[$item->getObjectID()] = $item;'."\n".
+									'       '.$usage['headcode']."\n".
+									'       '.$callback."\n".
+									'       return true;'."\n".
+									'}'."\n".
+									'?>';
+								}
 							}
 						}
 					}

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
 //
-// $Id: sensitiveio.php,v 1.10 2010/01/27 13:38:03 sebastien Exp $
+// $Id: sensitiveio.php,v 1.11 2010/03/08 15:21:02 sebastien Exp $
 
 /**
   * Class SensitiveIO
@@ -629,6 +629,24 @@ class SensitiveIO extends CMS_grandfather
 	}
 	
 	/**
+	  * Generate a random ascii key of determined length
+	  *
+	  * @param int keyLength the desired length of the key
+	  * @return string the generated key
+	  * @access public
+	  */
+	function generateKey($keyLength) {
+		$string = "abcdefghjkmnopqrstuvwxyzABCDEFGHJKMNOPQRSTUVWXYZ0123456789-";
+		$strLen = strlen($string);
+		$key = '';
+		for($i = 1; $i <= $keyLength; $i++) {
+			$strPos = mt_rand(0, ($strLen - 1));
+			$key .= $string[$strPos];
+		}
+		return $key;
+	}
+	
+	/**
 	  * Check a value and force reencode of ampersand without double encode them :
 	  * &			=> &amp;
 	  * &amp;		=> &amp;
@@ -748,6 +766,9 @@ class SensitiveIO extends CMS_grandfather
 	  * @access private
 	  */
 	function isUTF8($string) {
+		if (function_exists('mb_check_encoding')) {
+			return mb_check_encoding($string,'UTF-8');
+		}
 		return preg_match('%(?:
 		[\xC2-\xDF][\x80-\xBF]        		# non-overlong 2-byte
 		|\xE0[\xA0-\xBF][\x80-\xBF]			# excluding overlongs

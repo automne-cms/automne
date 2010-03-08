@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: row.php,v 1.10 2010/01/18 08:46:47 sebastien Exp $
+// $Id: row.php,v 1.11 2010/03/08 15:21:02 sebastien Exp $
 
 /**
   * Class CMS_row
@@ -35,6 +35,8 @@ class CMS_row extends CMS_grandFather
 	const MESSAGE_DELETE_ROW_CONFIRM = 844;
 	const MESSAGE_PAGE_BLOCK_SYNTAX_ERROR = 1295;
 	const MESSAGE_PAGE_ROW_SYNTAX_ERROR = 1296;
+	const MESSAGE_BLOCK_CONTENT_ERROR = 1598;
+	
 
 	const MESSAGE_BUTTON_CLEAR = 1128;
 	const MESSAGE_CLEAR_ROW_CONFIRM = 1129;
@@ -571,6 +573,11 @@ class CMS_row extends CMS_grandFather
 				try {
 					$domdocument->loadXML('<row>'.$data.'</row>');
 				} catch (DOMException $e) {
+					//$this->raiseError('Parse error for row : Page '.$page->getID().' - Row "'.$this->getTagID().'" : '.$e->getMessage());
+					//$data = '<div class="atm-error-block atm-block-helper">'.$language->getMessage(self::MESSAGE_BLOCK_CONTENT_ERROR).'</div>';
+					//$domdocument = new CMS_DOMDocument();
+					//$domdocument->loadXML('<row>'.$data.'</row>');
+					
 					$this->raiseError('Parse error for row : '.$e->getMessage()." :\n".$data, true);
 					return '';
 				}

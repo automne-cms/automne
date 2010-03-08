@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_image.php,v 1.13 2010/01/22 12:59:30 sebastien Exp $
+// $Id: object_image.php,v 1.14 2010/03/08 15:21:02 sebastien Exp $
 
 /**
   * Class CMS_object_image
@@ -332,6 +332,7 @@ class CMS_object_image extends CMS_object_common
 		$return['items'][1]['fileinfos']	= $imageDatas;
 		$return['items'][1]['fileinfos']['module']			= $moduleCodename;
 		$return['items'][1]['fileinfos']['visualisation']	= RESOURCE_DATA_LOCATION_EDITED;
+		$checkBoxId = 'check'.md5(mt_rand().microtime());
 		//Image datas
 		if ($params['useDistinctZoom'] || $this->_subfieldValues[2]->getValue()) {
 			if ($this->_subfieldValues[2]->getValue() && file_exists(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[2]->getValue())) {
@@ -362,6 +363,12 @@ class CMS_object_image extends CMS_object_common
 				'file_types'						=> '*.jpg;*.png;*.gif',
 				'file_types_description'			=> $language->getMessage(self::MESSAGE_OBJECT_IMAGE_FIELD_THUMBNAIL, false, MOD_POLYMOD_CODENAME).' ...'
 			);
+			$return['items'][2]['listeners']		= array('uploadsuccess' => sensitiveIO::sanitizeJSString('function(){
+				var checkbox = Ext.getCmp(\''.$checkBoxId.'\');
+				if (checkbox) {
+					checkbox.setValue(false);
+				}
+			}', false, false));
 			$return['items'][2]['fileinfos']	= $zoomDatas;
 			$return['items'][2]['fileinfos']['module']			= $moduleCodename;
 			$return['items'][2]['fileinfos']['visualisation']	= RESOURCE_DATA_LOCATION_EDITED;

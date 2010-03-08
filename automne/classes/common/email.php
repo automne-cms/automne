@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: email.php,v 1.9 2010/01/18 15:30:51 sebastien Exp $
+// $Id: email.php,v 1.10 2010/03/08 15:21:02 sebastien Exp $
 
 /**
   * Class CMS_email
@@ -75,6 +75,15 @@ class CMS_email extends CMS_grandFather
 	  * @access private
 	  */
 	protected $_emailTo;
+	
+	/**
+	  * Email destination copy or hidden copy
+	  *
+	  * @var string or array(String)
+	  * @access private
+	  */
+	protected $_cc;
+	protected $_bcc;
 	
 	/**
 	  * Email sender address
@@ -321,6 +330,59 @@ class CMS_email extends CMS_grandFather
 	}
 	
 	/**
+	  * Sets Email copy (Cc) recipient
+	  *
+	  * @param mixed $emailCc string or array of emails
+	  * @return boolean
+	  * @access public
+	  */
+	function setCC($emailCc)
+	{
+		if (!is_array($emailCc)) {
+			if (!sensitiveIO::isValidEmail($emailCc)) {
+				//$this->raiseError('Invalid emailTo : '.$emailTo);
+				return false;
+			}
+		} else {
+			foreach ($emailCc as $email) {
+				if (!sensitiveIO::isValidEmail($email)) {
+					$this->raiseError('Invalid emailTo : '.$email);
+					return false;
+				}
+			}
+		}
+		$this->_cc = $emailCc;
+		return true;
+	}
+	
+	/**
+	  * Sets Email hidden copy (Bcc) recipient
+	  *
+	  * @param mixed $emailBcc string or array of emails
+	  * @return boolean
+	  * @access public
+	  */
+	function setBCC($emailBcc)
+	{
+		if (!is_array($emailBcc)) {
+			if (!sensitiveIO::isValidEmail($emailBcc)) {
+				//$this->raiseError('Invalid emailTo : '.$emailTo);
+				return false;
+			}
+		} else {
+			foreach ($emailBcc as $email) {
+				if (!sensitiveIO::isValidEmail($email)) {
+					$this->raiseError('Invalid emailTo : '.$email);
+					return false;
+				}
+			}
+		}
+		$this->_bcc = $emailBcc;
+		return true;
+	}
+	
+	
+	/**
 	  * Gets Email recipient
 	  * @return String
 	  * @access public
@@ -483,24 +545,24 @@ class CMS_email extends CMS_grandFather
 		$IB="----=_InnerBoundery_001";
 		
 		$encoding = ($this->_emailEncoding) ? $this->_emailEncoding : APPLICATION_DEFAULT_ENCODING;
-		if ($this->_emailHTML) { //if HTML content is provided for email, use it
+		if ($this->_template) { //if template is provided for email HTML, use it
+			$template = new CMS_file($this->_template);
+			$templateContent = $template->getContent();
+			$replace = array(
+				'{{subject}}' 	=> $this->_subject,
+				'{{body}}' 		=> $this->_emailHTML ? $this->_emailHTML : $this->convertTextToHTML($this->_body),
+				'{{footer}}' 	=> $this->convertTextToHTML($this->_footer),
+				'{{href}}'		=> CMS_websitesCatalog::getMainURL(),
+				'{{charset}}'	=> strtoupper($encoding),
+			);
+			$Html = str_replace(array_keys($replace), $replace, $templateContent);
+		} elseif ($this->_emailHTML) { //if HTML content is provided for email, use it
 			//if this mail contain relative link, append default website address
 			if (io::strpos($this->_emailHTML, 'href="/') !== false || io::strpos($this->_emailHTML, 'src="/') !== false) {
 				$url = CMS_websitesCatalog::getMainURL();
 				$this->_emailHTML = str_replace(array('href="/', 'src="/'), array('href="'.$url.'/', 'src="'.$url.'/'), $this->_emailHTML);
 			}
 			$Html = $this->_emailHTML;
-		} elseif ($this->_template) { //else if template is provided for email HTML, use it
-			$template = new CMS_file($this->_template);
-			$templateContent = $template->getContent();
-			$replace = array(
-				'{{subject}}' 	=> $this->_subject,
-				'{{body}}' 		=> $this->convertTextToHTML($this->_body),
-				'{{footer}}' 	=> $this->convertTextToHTML($this->_footer),
-				'{{href}}'		=> CMS_websitesCatalog::getMainURL(),
-				'{{charset}}'	=> strtoupper($encoding),
-			);
-			$Html = str_replace(array_keys($replace), $replace, $templateContent);
 		} else { //else use text content converted to HTML
 			$Html = $this->convertTextToHTML($this->_body.($this->_footer ? "\n\n".$this->_footer : ''));
 		}
@@ -508,11 +570,12 @@ class CMS_email extends CMS_grandFather
 		$From = ($this->_emailFrom) ? $this->_emailFrom : APPLICATION_POSTMASTER_EMAIL;
 		$FromName = ($this->_fromName) ? $this->_fromName : '';
 		$toUsers = (is_array($this->_emailTo) && $this->_emailTo) ? $this->_emailTo : array($this->_emailTo);
+		$cc = (is_array($this->_cc) && $this->_cc) ? $this->_cc : array($this->_cc);
+		$bcc = (is_array($this->_bcc) && $this->_bcc) ? $this->_bcc : array($this->_bcc);
 		$toNames = (is_array($this->_toName) && $this->_toName) ? $this->_toName : array($this->_toName);
 		$Error = ($this->_error) ? $this->_error : '';
 		$Subject = $this->_subject;
 		$AttmFiles = $this->_files;
-		
 		//Messages start with text/html alternatives in OB
 		$Msg ="This is a multi-part message in MIME format.\n";
 		$Msg.="\n--".$OB."\n";
@@ -575,16 +638,21 @@ class CMS_email extends CMS_grandFather
 					$headers.="Return-Path: ".$From."\n";
 					$headers.="X-Sender: ".$From."\n";
 				}
-				if ($toNames[$key]) {
+				if (isset($toNames[$key]) && $toNames[$key]) {
 					$to = $this->EncodeHeader($toNames[$key])." <".$to.">"; 
 				}
 				if ($Error) {
 					$headers.="Errors-To: ".$Error."\n";
 				}
-				
 				$headers.="User-Agent: Automne (TM)\n";
 				$headers.="X-Mailer: Automne (TM)\n";
 				$headers.="X-Priority: 3\n";
+				if ($cc) {
+					$headers.="Cc: ".implode(',',$cc)."\n";
+				}
+				if ($bcc) {
+					$headers.="Bcc: ".implode(',',$bcc)."\n";
+				}
 				$headers.="Content-Type: multipart/mixed;\n\tboundary=\"".$OB."\"\n";
 				//Check drop emails list (Automne default emails)
 				if (!in_array($to, $this->_drop) && !in_array($From, $this->_drop)) {

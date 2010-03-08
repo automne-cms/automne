@@ -4,7 +4,7 @@
 # English Messages
 #
 #----------------------------------------------------------------
-# $Id: standard.sql,v 1.5 2010/02/10 13:29:46 sebastien Exp $
+# $Id: standard.sql,v 1.6 2010/03/08 15:19:54 sebastien Exp $
 
 DELETE FROM messages WHERE module_mes = 'standard' and language_mes = 'en';
 
@@ -817,7 +817,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(816, 'standard', 'en', 'Website edition');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(817, 'standard', 'en', '[Action denied: the page you have selected as the Start Page is already chosen for another website]');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(818, 'standard', 'en', '[Error while attempting to modify the Start Page]');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(819, 'standard', 'en', 'Doamin (URL)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(819, 'standard', 'en', 'Domain (URL)');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(820, 'standard', 'en', 'Change');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(821, 'standard', 'en', 'Multi-site management');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(822, 'standard', 'en', 'Website Start Page selection');

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: linx.php,v 1.10 2010/01/21 08:28:19 sebastien Exp $
+// $Id: linx.php,v 1.11 2010/03/08 15:21:02 sebastien Exp $
 
 /**
   * Class CMS_linx
@@ -224,7 +224,7 @@ class CMS_linx extends CMS_grandFather
 						$sizeofTargets = sizeof($this->_targets);
 						for ($i = 0 ; $i < $sizeofTargets ; $i++) {
 							$target = $this->_targets[$i];
-							$displayOutput .= $display->getOutput($this->_page, $target, $this->_publicTree, $i + 1, $this->_noerror);
+							$displayOutput .= $display->getOutput($this->_page, $target, $this->_publicTree, $i + 1, $this->_noerror, $this->_noselection);
 						}
 						$output .= $display->getSubLevelOutput($displayOutput);
 					} elseif(is_object($this->_noselection)) {

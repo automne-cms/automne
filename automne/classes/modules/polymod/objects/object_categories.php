@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_categories.php,v 1.16 2010/02/10 12:52:03 sebastien Exp $
+// $Id: object_categories.php,v 1.17 2010/03/08 15:21:03 sebastien Exp $
 
 /**
   * Class CMS_object_categories
@@ -752,12 +752,14 @@ class CMS_object_categories extends CMS_object_common
 			$structure['values']['n']['label'] = '';
 			$structure['values']['n']['file'] = '';
 			$structure['values']['n']['categorydesc'] = '';
+			$structure['values']['n']['categorytxtdesc'] = '';
 			$structure['values']['n']['iconPath'] = '';
 			$structure['values']['n']['iconHTML'] = '';
 		} else {
 			$structure['id'] = '';
 			$structure['file'] = '';
 			$structure['categorydesc'] = '';
+			$structure['categorytxtdesc'] = '';
 			$structure['iconPath'] = '';
 			$structure['iconHTML'] = '';
 		}
@@ -824,6 +826,13 @@ class CMS_object_categories extends CMS_object_common
 							}
 							return '';
 						break;
+						case 'categorytxtdesc':
+							$category = CMS_moduleCategories_catalog::getByID($this->_subfieldValues[$name]->getValue());
+							if (!$category->hasError()) {
+								return io::htmlspecialchars(strip_tags($category->getDescription($cms_language)));
+							}
+							return '';
+						break;
 						case 'label':
 							$category = CMS_moduleCategories_catalog::getByID($this->_subfieldValues[$name]->getValue());
 							if (!$category->hasError()) {
@@ -882,6 +891,13 @@ class CMS_object_categories extends CMS_object_common
 							}
 							return '';
 						break;
+						case 'categorytxtdesc':
+							$category = CMS_moduleCategories_catalog::getByID($this->_subfieldValues[0]->getValue());
+							if (!$category->hasError()) {
+								return io::htmlspecialchars(strip_tags($category->getDescription($cms_language)));
+							}
+							return '';
+						break;
 						case 'iconPath':
 							$category = CMS_moduleCategories_catalog::getByID($this->_subfieldValues[0]->getValue());
 							if (!$category->hasError()) {
@@ -929,6 +945,7 @@ class CMS_object_categories extends CMS_object_common
 			$labels['structure']['values:label'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESLABEL_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 			$labels['structure']['values:file'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESFILE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 			$labels['structure']['values:categorydesc'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESDESCRIPTION_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		    $labels['structure']['values:categorytxtdesc'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESDESCRIPTION_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		    $labels['structure']['values:iconPath'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESICONPATH_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		    $labels['structure']['values:iconHTML'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESICONHTML_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		} else {
@@ -936,6 +953,7 @@ class CMS_object_categories extends CMS_object_common
 			$labels['structure']['id'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_ID_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 			$labels['structure']['file'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_FILE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 			$labels['structure']['categorydesc'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESDESCRIPTION_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		    $labels['structure']['categorytxtdesc'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESDESCRIPTION_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		    $labels['structure']['iconPath'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESICONPATH_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		    $labels['structure']['iconHTML'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESICONHTML_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		}

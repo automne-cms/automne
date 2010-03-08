@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: blocktext.php,v 1.1.1.1 2008/11/26 17:12:06 sebastien Exp $
+// $Id: blocktext.php,v 1.2 2010/03/08 15:21:02 sebastien Exp $
 
 /**
   * Class CMS_block_text
@@ -170,6 +170,7 @@ class CMS_block_text extends CMS_block
 			'SourcePopup'			=> '1',
 			'ToolbarLocation'		=> 'Out:fcktoolbar',
 			'EditorAreaCSS'			=> '{0}',
+			'doNotFollowScroll'		=> true //FCKEditor hack : editors panel should not follow iframe page scroll
 		));
 		$this->_value = $editor->getHTML();
 		$this->_administrable = false;

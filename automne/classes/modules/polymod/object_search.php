@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_search.php,v 1.14 2010/01/18 16:04:42 sebastien Exp $
+// $Id: object_search.php,v 1.15 2010/03/08 15:21:02 sebastien Exp $
 
 /**
   * Class CMS_object_search
@@ -640,6 +640,8 @@ class CMS_object_search extends CMS_grandFather
 								$viewvableCats[] = 0;
 							} else {
 								$viewvableCats = $cats;
+								//add zero value for objects without categories
+								$viewvableCats[] = 0;
 							}
 							//if no viewvable categories, user has no rights to view anything
 							if (!$viewvableCats) {

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: linxdisplay.php,v 1.8 2010/01/18 15:30:54 sebastien Exp $
+// $Id: linxdisplay.php,v 1.9 2010/03/08 15:21:02 sebastien Exp $
 
 /**
   * Class CMS_linxDisplay
@@ -115,7 +115,7 @@ class CMS_linxDisplay extends CMS_grandFather
 	  * @return string The html or false if page fails to pass the condition
 	  * @access public
 	  */
-	function getOutput(&$parsedPage, &$page, $public, $rank, $noerror = false)
+	function getOutput(&$parsedPage, &$page, $public, $rank, $noerror = false, $noselection = false)
 	{
 		if (!is_a($page,"CMS_page")) {
 			if (!$noerror) {
@@ -162,11 +162,25 @@ class CMS_linxDisplay extends CMS_grandFather
 					"?>" 	=> "echo '",
 				);
 				$html = str_replace(array_keys($replace), $replace, $html);
-				$html=
-				'<?php if ($cms_user->hasPageClearance('.$page->getID().', CLEARANCE_PAGE_VIEW)) {'."\n".
-					'echo \''.$html.'\';'."\n".
-				'}'."\n".
-				'?>';
+				//if link has noselection flag, use alternative when user has no right on linked page
+				if(is_object($noselection)) {
+					$noSelectionContent = $this->_addSlashAroundPHPContent(CMS_DOMDocument::DOMElementToString($noselection, true));
+					$html=
+					'<?php if ($cms_user->hasPageClearance('.$page->getID().', CLEARANCE_PAGE_VIEW)) {'."\n".
+						'echo \''.$html.'\';'."\n".
+					'} else {'."\n".
+						'echo \''.$noSelectionContent.'\';'."\n".
+					'}'."\n".
+					'?>';
+					
+				} else {
+					$html=
+					'<?php if ($cms_user->hasPageClearance('.$page->getID().', CLEARANCE_PAGE_VIEW)) {'."\n".
+						'echo \''.$html.'\';'."\n".
+					'}'."\n".
+					'?>';
+				}
+				
 			}
 			return $html;
 		} else {

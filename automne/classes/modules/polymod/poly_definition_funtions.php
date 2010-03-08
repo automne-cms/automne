@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: poly_definition_funtions.php,v 1.6 2010/01/18 15:30:53 sebastien Exp $
+// $Id: poly_definition_funtions.php,v 1.7 2010/03/08 15:21:02 sebastien Exp $
 
 /**
   * static Class CMS_poly_definition_functions
@@ -368,83 +368,88 @@ class CMS_poly_definition_functions
 					$item = new CMS_poly_object($object->getID());
 				}
 				if (is_object($item) && !$item->hasError()) {
-				//get item fieldsObjects
-				$fieldsObjects = &$item->getFieldsObjects();
-				//checks and assignments
-				$item->setDebug(false);
-				
-				//first, check mandatory values
-				foreach ($fieldsObjects as $fieldID => $aFieldObject) {
-					//if field is part of formular
-					if (isset($_REQUEST['polymodFields'][$fieldID])) {
-						if (!$item->checkMandatory($fieldID, $_REQUEST,'')) {
-							$polymodFormsError[$formID]['required'][$fieldID] = $fieldID;
-						}
-					}
-				}
-				//second, set values for all fields
-				foreach ($fieldsObjects as $fieldID => $aFieldObject) {
-					//if field is part of formular
-					if (isset($_REQUEST['polymodFields'][$fieldID])) {
-						if (!$item->setValues($fieldID, $_REQUEST,'')) {
-							$polymodFormsError[$formID]['malformed'][] = $fieldID;
-						} elseif (!isset($polymodFormsError[$formID]['required'][$fieldID]) && function_exists('form_'.$formID.'_'.$fieldID)
-									&& !call_user_func('form_'.$formID.'_'.$fieldID, $formID, $fieldID, $item)) {
-							$polymodFormsError[$formID]['malformed'][] = $fieldID;
-						}
-					}
-				}
-				//set publication dates if needed
-				if (isset($_REQUEST['polymodFields']) && $_REQUEST['polymodFields']) {
-					if ($object->isPrimaryResource()) {
-						// Dates management
-						$dt_beg = new CMS_date();
-						$dt_beg->setDebug(false);
-						$dt_beg->setFormat($cms_language->getDateFormat());
-						$dt_end = new CMS_date();
-						$dt_end->setDebug(false);
-						$dt_end->setFormat($cms_language->getDateFormat());
-						if (!$dt_set_1 = $dt_beg->setLocalizedDate($_REQUEST["pub_start"], true)) {
-							$polymodFormsError[$formID]['malformed'][] = 'pub_start';
-						} 
-						if (!$dt_set_2 = $dt_end->setLocalizedDate($_REQUEST["pub_end"], true)) {
-							$polymodFormsError[$formID]['malformed'][] = 'pub_end';
-						}
-						//if $dt_beg && $dt_end, $dt_beg must be lower than $dt_end
-						if (!$dt_beg->isNull() && !$dt_end->isNull()) {
-							if (CMS_date::compare($dt_beg, $dt_end, '>')) {
-								$polymodFormsError[$formID]['malformed'][] = 'pub_start';
-								$polymodFormsError[$formID]['malformed'][] = 'pub_end';
-								$dt_set_1 = $dt_set_2 = false;
+					//get item fieldsObjects
+					$fieldsObjects = &$item->getFieldsObjects();
+					//checks and assignments
+					$item->setDebug(false);
+					
+					//first, check mandatory values
+					foreach ($fieldsObjects as $fieldID => $aFieldObject) {
+						//if field is part of formular
+						if (isset($_REQUEST['polymodFields'][$fieldID])) {
+							if (!$item->checkMandatory($fieldID, $_REQUEST,'')) {
+								$polymodFormsError[$formID]['required'][$fieldID] = $fieldID;
 							}
 						}
-						if ($dt_set_1 && $dt_set_2) {
-							$item->setPublicationDates($dt_beg, $dt_end);
+					}
+					//second, set values for all fields
+					foreach ($fieldsObjects as $fieldID => $aFieldObject) {
+						//if field is part of formular
+						if (isset($_REQUEST['polymodFields'][$fieldID])) {
+							if (!$item->setValues($fieldID, $_REQUEST,'')) {
+								$polymodFormsError[$formID]['malformed'][] = $fieldID;
+							} elseif (!isset($polymodFormsError[$formID]['required'][$fieldID]) && function_exists('form_'.$formID.'_'.$fieldID)
+										&& !call_user_func('form_'.$formID.'_'.$fieldID, $formID, $fieldID, $item)) {
+								$polymodFormsError[$formID]['malformed'][] = $fieldID;
+							}
 						}
 					}
-				}
-				//check form token
-				if (!isset($_POST["atm-token"]) || !CMS_context::checkToken(MOD_POLYMOD_CODENAME.'-'.$formID, $_POST["atm-token"])) {
-					$polymodFormsError[$formID]['error'][] = 'form-token';
-					return false;
-				}
-				if (!$polymodFormsError[$formID]) {
-					//save the data
-					if (!$item->writeToPersistence()) {
-						$polymodFormsError[$formID]['error'][] = 'write';
-						$polymodFormsError[$formID]['filled'] = 0;
+					//set publication dates if needed
+					if (isset($_REQUEST['polymodFields']) && $_REQUEST['polymodFields']) {
+						if ($object->isPrimaryResource()) {
+							// Dates management
+							$dt_beg = new CMS_date();
+							$dt_beg->setDebug(false);
+							$dt_beg->setFormat($cms_language->getDateFormat());
+							$dt_end = new CMS_date();
+							$dt_end->setDebug(false);
+							$dt_end->setFormat($cms_language->getDateFormat());
+							if (!$dt_set_1 = $dt_beg->setLocalizedDate($_REQUEST["pub_start"], true)) {
+								$polymodFormsError[$formID]['malformed'][] = 'pub_start';
+							} 
+							if (!$dt_set_2 = $dt_end->setLocalizedDate($_REQUEST["pub_end"], true)) {
+								$polymodFormsError[$formID]['malformed'][] = 'pub_end';
+							}
+							//if $dt_beg && $dt_end, $dt_beg must be lower than $dt_end
+							if (!$dt_beg->isNull() && !$dt_end->isNull()) {
+								if (CMS_date::compare($dt_beg, $dt_end, '>')) {
+									$polymodFormsError[$formID]['malformed'][] = 'pub_start';
+									$polymodFormsError[$formID]['malformed'][] = 'pub_end';
+									$dt_set_1 = $dt_set_2 = false;
+								}
+							}
+							if ($dt_set_1 && $dt_set_2) {
+								$item->setPublicationDates($dt_beg, $dt_end);
+							}
+						}
+					}
+					//check form token
+					if (!isset($_POST["atm-token"]) || !CMS_context::checkToken(MOD_POLYMOD_CODENAME.'-'.$formID, $_POST["atm-token"])) {
+						$polymodFormsError[$formID]['error'][] = 'form-token';
+						return false;
+					}
+					if (!$polymodFormsError[$formID]) {
+						//save the data
+						if (!$item->writeToPersistence()) {
+							$polymodFormsError[$formID]['error'][] = 'write';
+							$polymodFormsError[$formID]['filled'] = 0;
+						} else {
+							$polymodFormsError[$formID]['filled'] = 1;
+							//if form use a callback, call it
+							if (function_exists('form_'.$formID) && !call_user_func('form_'.$formID, $formID, $item)) {
+								$polymodFormsError[$formID]['filled'] = 0;
+								$polymodFormsError[$formID]['error'][] = 'callback';
+							}
+						}
+						//if item is a primary resource, unlock it
+						if ($object->isPrimaryResource()) {
+							$item->unlock();
+						}
 					} else {
-						$polymodFormsError[$formID]['filled'] = 1;
+						$polymodFormsError[$formID]['filled'] = 0;
 					}
-					//if item is a primary resource, unlock it
-					if ($object->isPrimaryResource()) {
-						$item->unlock();
-					}
-				} else {
-					$polymodFormsError[$formID]['filled'] = 0;
-				}
-				//save item
-				$polymodFormsItems[$formID] = $item;
+					//save item for later use
+					$polymodFormsItems[$formID] = $item;
 				} else {
 					$polymodFormsError[$formID]['filled'] = 0;
 					$polymodFormsError[$formID]['error'][] = 'right';

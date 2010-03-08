@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: grandfather.php,v 1.13 2010/01/18 15:30:52 sebastien Exp $
+// $Id: grandfather.php,v 1.14 2010/03/08 15:21:02 sebastien Exp $
 
 /**
   * Class CMS_grandFather
@@ -374,7 +374,7 @@ class CMS_grandFather
 			foreach($modules as $codename => $module) {
 				if (((!$polymodDone && $module->isPolymod()) || !$module->isPolymod()) && method_exists($module, 'load')) {
 					if (!$polymodDone && $module->isPolymod()) {
-						$polymodDone = false;
+						$polymodDone = true;
 					}
 					$file = $module->load($classname);
 				} elseif ($polymodDone && $module->isPolymod()) {
@@ -383,6 +383,11 @@ class CMS_grandFather
 				if ($file) {
 					break;
 				}
+			}
+			//in case this website do not use any polymod module
+			if (!$polymodDone && !$file) {
+				require_once(PATH_MODULES_FS.'/polymod.php');
+				$file = CMS_polymod::load($classname);
 			}
 		}
 		

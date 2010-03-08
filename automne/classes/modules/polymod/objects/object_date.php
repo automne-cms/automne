@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: object_date.php,v 1.12 2010/01/18 15:30:53 sebastien Exp $
+// $Id: object_date.php,v 1.13 2010/03/08 15:21:02 sebastien Exp $
 
 /**
   * Class CMS_object_date
@@ -43,6 +43,7 @@ class CMS_object_date extends CMS_object_common
 	const MESSAGE_OBJECT_DATE_OPERATOR_DESCRIPTION = 380;
 	const MESSAGE_OBJECT_DATE_OPERATOR_TITLE = 390;
 	const MESSAGE_OBJECT_DATE_HOURS = 515;
+	const MESSAGE_OBJECT_TEXT_HASVALUE_DESCRIPTION = 411;
 	
 	/**
 	  * Standard Messages
@@ -419,6 +420,7 @@ class CMS_object_date extends CMS_object_common
 	function getStructure() {
 		$structure = parent::getStructure();
 		$structure['formatedValue'] = '';
+		$structure['notNull'] = '';
 		return $structure;
 	}
 	
@@ -440,6 +442,11 @@ class CMS_object_date extends CMS_object_common
 				}
 				return io::htmlspecialchars(date($parameters, $date->getTimeStamp()));
 			break;
+			case 'notNull':
+				$date = new CMS_date();
+				$date->setFromDBValue($this->_subfieldValues[0]->getValue());
+				return !$date->isNull();
+			break;
 			default:
 				return parent::getValue($name, $parameters);
 			break;
@@ -455,6 +462,7 @@ class CMS_object_date extends CMS_object_common
 	function getLabelsStructure(&$language, $objectName) {
 		$labels = parent::getLabelsStructure($language, $objectName);
 		$labels['structure']['formatedValue|format'] = $language->getMessage(self::MESSAGE_OBJECT_DATE_FORMATEDVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['structure']['notNull'] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_HASVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['operator'][$language->getMessage(self::MESSAGE_OBJECT_DATE_OPERATOR_TITLE,false ,MOD_POLYMOD_CODENAME)] = $language->getMessage(self::MESSAGE_OBJECT_DATE_OPERATOR_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		return $labels;
 	}

@@ -14,7 +14,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: profileuser.php,v 1.10 2010/01/18 15:30:55 sebastien Exp $
+// $Id: profileuser.php,v 1.11 2010/03/08 15:21:02 sebastien Exp $
 
 /**
   * Class CMS_profile_user
@@ -338,31 +338,44 @@ class CMS_profile_user extends CMS_profile
 	}
 	
 	/**
-	  * Set Login
-	  *
-	  * @param string $login
-	  * @return void
-	  * @access public
-	  */
-	function setLogin($login)
-	{
-		if (!$login) {
-			$this->raiseError("Login must be a string > 0");
-			return false;
-		}
-		// Check if login allready exists
-		if (CMS_profile_usersCatalog::loginExists($login, $this)){
-		    $this->raiseError('Login allready exists. Choose another one');
-			return false;
-		}
-		// Search non alphanum characters
-		if (preg_match("#[^[a-zA-Z0-9_.-]]*#", $login)){
-		    $this->raiseError('Login must contains only alphanum characters');
-			return false;
-		}
-		$this->_login = $login;
-		return true;
-	}
+      * Check if the login is valid
+      *
+      * @param string $login
+      * @return boolean true on success, false on failure
+      * @access public
+      */
+    function checkLogin($login){
+        if (!$login) {
+            return false;
+        }
+        // Search non alphanum characters
+        if (preg_match("#[^[a-zA-Z0-9_.-]]*#", $login)){
+            return false;
+        }
+        return true;
+    }
+	
+	/**
+      * Set Login
+      *
+      * @param string $login
+      * @return void
+      * @access public
+      */
+    function setLogin($login)
+    {
+        if (!CMS_profile_user::checkLogin($login)) {
+            $this->raiseError('Login is invalid. A login must use only alphanumerics caracters');
+            return false;
+        }
+        // Check if login allready exists
+        if (CMS_profile_usersCatalog::loginExists($login, $this)){
+            $this->raiseError('Login allready exists. Choose another one');
+            return false;
+        }
+        $this->_login = $login;
+        return true;
+    } 
 	
 	/**
 	  * Set Password
@@ -681,7 +694,10 @@ class CMS_profile_user extends CMS_profile
 	  */
 	function getValue($property){
 		switch($property){
-		    case 'active':
+		    case 'id':
+		        return $this->getUserId();
+		    break;
+			case 'active':
 		        return $this->isActive();
 		    break;
 		    case 'validationChange':

@@ -13,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 403.php,v 1.2 2009/10/22 16:22:35 sebastien Exp $
+// $Id: 403.php,v 1.3 2010/03/08 15:19:39 sebastien Exp $
 
 /**
   * Automne 403 error handler
@@ -69,7 +69,7 @@ You do not have sufficient privileges to view this page ...<br /><br />
 <a href="/">Back to the Home Page</a><br /><br />
 <hr />
 403 Acc&egrave;s interdit.<br />
-Vous n'avez pas les droits d'acc&egrave;s suffisant pour voir cette page ...<br /><br />
+Vous n'avez pas les droits d'acc&egrave;s suffisants pour voir cette page ...<br /><br />
 <a href="/">Retour &agrave; l'accueil</a><br /><br />
 </div>
 </body>

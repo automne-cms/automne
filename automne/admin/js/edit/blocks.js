@@ -8,7 +8,7 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: blocks.js,v 1.10 2010/02/09 10:59:20 sebastien Exp $
+  * $Id: blocks.js,v 1.11 2010/03/08 15:20:22 sebastien Exp $
   */
 Automne.block = function(config){
 	config = config || {};
@@ -79,25 +79,28 @@ Ext.extend(Automne.block, Ext.util.Observable, {
 		this.position = {x:0, y:0};
 		//then add size of each elements into rows
 		this.elements.each(function(el) {
-			//get el size and position
-			var box = el.getBox();
-			//x
-			if (!this.position.x || box.x < this.position.x) {
-				this.position.x = parseInt(box.x, 10);
-			}
-			//y
-			if (!this.position.y || box.y < this.position.y) {
-				this.position.y = parseInt(box.y, 10);
-			}
-			//width
-			if (!this.size.width || (box.width + (box.x - this.position.x)) > this.size.width) {
-				this.size.width = parseInt(box.width + (box.x - this.position.x), 10);
-			}
-			//height
-			if (!this.size.height || (box.height + (box.y - this.position.y)) > this.size.height) {
-				this.size.height = parseInt(box.height + (box.y - this.position.y), 10);
+			if (el.dom.tagName.toLowerCase() != 'br') {
+				//get el size and position
+				var box = el.getBox();
+				//x
+				if (!this.position.x || (box.x < this.position.x && box.x)) {
+					this.position.x = parseInt(box.x, 10);
+				}
+				//y
+				if (!this.position.y || (box.y < this.position.y && box.y)) {
+					this.position.y = parseInt(box.y, 10);
+				}
+				//width
+				if (!this.size.width || (box.width + (box.x - this.position.x)) > this.size.width) {
+					this.size.width = parseInt(box.width + (box.x - this.position.x), 10);
+				}
+				//height
+				if (!this.size.height || (box.height + (box.y - this.position.y)) > this.size.height) {
+					this.size.height = parseInt(box.height + (box.y - this.position.y), 10);
+				}
 			}
 		}, this);
+		//pr('x : '+this.position.x+' - y : '+this.position.y + ' - width : '+this.size.width + ' - height : '+this.size.height);
 		return {x:this.position.x, y:this.position.y, width:this.size.width, height:this.size.height};
 	},
 	createControls: function() {
