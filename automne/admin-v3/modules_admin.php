@@ -1,19 +1,18 @@
 <?php
-/* vim: set expandtab tabstop=4 shiftwidth=4: */
 // +----------------------------------------------------------------------+
-// | Automne (TM)                                                         |
+// | Automne (TM)														  |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 2000-2007 WS Interactive                               |
+// | Copyright (c) 2000-2010 WS Interactive								  |
 // +----------------------------------------------------------------------+
-// | This source file is subject to version 2.0 of the GPL license.       |
-// | The license text is bundled with this package in the file            |
-// | LICENSE-GPL, and is available at through the world-wide-web at       |
-// | http://www.gnu.org/copyleft/gpl.html.                                |
+// | Automne is subject to version 2.0 or above of the GPL license.		  |
+// | The license text is bundled with this package in the file			  |
+// | LICENSE-GPL, and is available through the world-wide-web at		  |
+// | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: modules_admin.php,v 1.5 2009/06/22 15:27:30 sebastien Exp $
+// $Id: modules_admin.php,v 1.6 2010/03/08 16:41:40 sebastien Exp $
 
 /**
   * PHP page : modules admin

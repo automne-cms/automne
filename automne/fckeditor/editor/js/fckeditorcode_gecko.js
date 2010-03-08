@@ -265,11 +265,13 @@ FCKPanel.prototype.Show = function( x, y, relElement, width, height )
 		}
 		
 		//MODIFIED FOR AUTOMNE : Append scrollpositionned offset if any
-		try {
-			var scroll = 0;
-			scroll = this._Window.Ext.getCmp(FCK.Name).ownerCt.container.dom.scrollTop;
-			y += scroll;
-		} catch (e){}
+		if (!FCK.Config.doNotFollowScroll && relElement.nodeType == 9) {
+			try {
+				var scroll = 0;
+				scroll = this._Window.Ext.getCmp(FCK.Name).ownerCt.container.dom.scrollTop;
+				y += scroll;
+			} catch (e){}
+		}
 		//!MODIFIED FOR AUTOMNE
 		
 		// Set the context menu DIV in the specified location.

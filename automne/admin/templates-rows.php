@@ -1,9 +1,8 @@
 <?php
-/* vim: set expandtab tabstop=4 shiftwidth=4: */
 // +----------------------------------------------------------------------+
 // | Automne (TM)														  |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 2000-2009 WS Interactive								  |
+// | Copyright (c) 2000-2010 WS Interactive								  |
 // +----------------------------------------------------------------------+
 // | Automne is subject to version 2.0 or above of the GPL license.		  |
 // | The license text is bundled with this package in the file			  |
@@ -14,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: templates-rows.php,v 1.3 2009/06/22 14:10:33 sebastien Exp $
+// $Id: templates-rows.php,v 1.4 2010/03/08 16:41:22 sebastien Exp $
 
 /**
   * PHP page : template default rows

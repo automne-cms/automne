@@ -1,9 +1,8 @@
 <?php
-/* vim: set expandtab tabstop=4 shiftwidth=4: */
 // +----------------------------------------------------------------------+
 // | Automne (TM)                                                         |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 2000-2007 WS Interactive                               |
+// | Copyright (c) 2000-2010 WS Interactive								  |
 // +----------------------------------------------------------------------+
 // | This source file is subject to version 2.0 of the GPL license.       |
 // | The license text is bundled with this package in the file            |
@@ -13,7 +12,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: serverCall.php,v 1.1.1.1 2008/11/26 17:12:36 sebastien Exp $
+// $Id: serverCall.php,v 1.2 2010/03/08 16:45:15 sebastien Exp $
 
 /**
   * PHP JS page : usefull server call functions and other misc methods

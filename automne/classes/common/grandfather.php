@@ -1,9 +1,8 @@
 <?php
-/* vim: set expandtab tabstop=4 shiftwidth=4: */
 // +----------------------------------------------------------------------+
 // | Automne (TM)														  |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 2000-2009 WS Interactive								  |
+// | Copyright (c) 2000-2010 WS Interactive								  |
 // +----------------------------------------------------------------------+
 // | Automne is subject to version 2.0 or above of the GPL license.		  |
 // | The license text is bundled with this package in the file			  |
@@ -14,7 +13,7 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: grandfather.php,v 1.14 2010/03/08 15:21:02 sebastien Exp $
+// $Id: grandfather.php,v 1.15 2010/03/08 16:43:27 sebastien Exp $
 
 /**
   * Class CMS_grandFather
@@ -401,15 +400,16 @@ class CMS_grandFather
 			}
 		} else {
 			//register Zend Framework Autoload
+			chdir(PATH_MAIN_FS);
 			require_once(PATH_MAIN_FS.'/Zend/Loader.php');
+			require_once(PATH_MAIN_FS.'/Zend/Loader/Autoloader.php');
 			/*only for stats*/
 			if (STATS_DEBUG) $GLOBALS["files_loaded"]++;
 			if (STATS_DEBUG && VIEW_SQL) {
 				$GLOBALS["files_table"][] = PATH_MAIN_FS.'/Zend/Loader.php';
-				$GLOBALS["memory_table"][] = array('file' => $file, 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
+				$GLOBALS["memory_table"][] = array('file' => PATH_MAIN_FS.'/Zend/Loader.php', 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
 			}
-			chdir(PATH_MAIN_FS);
-			if (!Zend_Loader::autoload($classname)) {
+			if (!Zend_Loader_Autoloader::autoload($classname)) {
 				CMS_grandFather::raiseError('class '.$classname.' not found');
 			}
 		}

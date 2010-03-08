@@ -24,7 +24,7 @@
  * Follow this link for more information:
  * http://docs.fckeditor.net/FCKeditor_2.x/Developers_Guide/Configuration/Configuration_Options
  */
-// $Id: fckconfig.php,v 1.6 2010/01/18 15:31:58 sebastien Exp $
+// $Id: fckconfig.php,v 1.7 2010/03/08 16:44:28 sebastien Exp $
 
 //for this page, HTML output compression is not welcome.
 define("ENABLE_HTML_COMPRESSION", false);
@@ -75,6 +75,8 @@ if (file_exists(PATH_CSS_FS.'/editor.css')) {
 	echo 'FCKConfig.EditorAreaCSS = FCKConfig.BasePath + \'css/fck_editorarea.css\';'."\n";
 }
 ?>
+//Added for Automne : Avoid 404 on spacer image for Firefox
+var FCK_SPACER_PATH= FCKConfig.BasePath + 'images/spacer.gif';
 
 FCKConfig.EditorAreaStyles = '' ;
 FCKConfig.ToolbarComboPreviewCSS = '' ;

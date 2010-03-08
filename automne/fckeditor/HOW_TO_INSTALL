@@ -13,11 +13,13 @@ Pour mettre à jour fckeditor :
 10- dans le fichier editor/js/fckeditorcode_gecko.js, reprendre (depuis les sources de l'éditeur) toute la fonction FCKPanel.prototype.Show (fichier editor/_source/classes/fckpanel.js) pour y ajouter le support du positionnement des iframes par rapport à un élement parent scrollable (overflow:auto).
 	Pour ce faire, ajouter au calcul de position les lignes suivantes :
 	//MODIFIED FOR AUTOMNE : Append scrollpositionned offset if any
-	try {
-		var scroll = 0;
-		scroll = this._Window.Ext.getCmp(FCK.Name).ownerCt.container.dom.scrollTop;
-		y += scroll;
-	} catch (e){}
+	if (!FCK.Config.doNotFollowScroll && relElement.nodeType == 9) {
+		try {
+			var scroll = 0;
+			scroll = this._Window.Ext.getCmp(FCK.Name).ownerCt.container.dom.scrollTop;
+			y += scroll;
+		} catch (e){}
+	}
 	//!MODIFIED FOR AUTOMNE
 
 11- dans le fichier fckeditor.js, protéger le commentaire conditionnel en fin de fichier avec des //<< ... //!>> :
