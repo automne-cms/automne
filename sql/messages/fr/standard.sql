@@ -1555,3 +1555,6 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1597, 'standard', 'fr', 'Une erreur s''est produite lors de l''affichage de la page.<br /><br />Généralement ce problème est du à une redirection inattendue vers un domaine différent de %s.<br /><br />Pour continuer, cliquez sur Rafraîchir ou allez sur une autre page. Vous pouvez aussi contacter votre administrateur pour lui signaler le problème.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1598, 'standard', 'fr', 'Erreur de contenu XHTML ... Editez ce bloc pour corriger le texte saisi.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1599, 'standard', 'fr', 'Valider ce choix');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1600, 'standard', 'fr', 'Attention, vous avez s&eacute;lectionn&eacute; un mod&egrave;le incompatible avec le mod&egrave;le employ&eacute; actuellement : Le mod&egrave;le s&eacute;lectionn&eacute; ne contient pas les m&ecirc;mes zones de contenu que le mod&egrave;le original.<br /><br />Si vous validez ce changement, vous risquez de perdre certains contenus de la page.');
+
+

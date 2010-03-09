@@ -235,7 +235,13 @@ $jscontent = <<<END
 						myField.scrollTop = scrollTop;
 					}
 				}
-			}}
+			}, 'resize': function(field, width, height){
+				if (editor) { //resize editor according to textarea size
+					if (width) editor.frame.style.width = (width - 8) + 'px';
+					if (height) editor.frame.style.height = (height - 6) + 'px';
+				}
+			},
+			scope:this}
 		}],
 		buttons:[{
 			id:				'reindent-{$fileId}',

@@ -118,6 +118,7 @@ define("MESSAGE_PAGE_CONTENT", 8);
 define("MESSAGE_PAGE_FIELD_CURRENT_ADDRESS", 701);
 define("MESSAGE_PAGE_INFORMATIONS", 702);
 define("MESSAGE_PAGE_ALERTS_DISABLED", 1593);
+define("MESSAGE_PAGE_FIELD_TEMPLATE_ALERT", 1600);
 $cms_language->endPrefetch();
 
 //load interface instance
@@ -538,7 +539,21 @@ $jscontent .= <<<END
 						selectOnFocus:		true,
 						editable:			false,
 						tpl: 				'<tpl for="."><div ext:qtip="{qtip}" class="x-combo-list-item {cls}">{label}</div></tpl>',
-						anchor:				false
+						anchor:				false,
+						listeners:{'collapse':function(field){
+							if (field.getStore().getById(field.hiddenField.value)) {
+								if (!field.getStore().getById(field.hiddenField.value).get('compatible')) {
+									Automne.message.popup({
+										msg: 				'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_TEMPLATE_ALERT)}',
+										buttons: 			Ext.MessageBox.OK,
+										animEl: 			field.getEl(),
+										closable: 			false,
+										icon: 				Ext.MessageBox.WARNING
+									});
+								}
+							}
+							return true;
+						}}
 					},{
 						{$disabled}
 						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_FORCEURLREFRESH)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_URL)}</span>',
