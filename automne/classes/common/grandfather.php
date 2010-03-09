@@ -377,7 +377,7 @@ class CMS_grandFather
 					}
 					$file = $module->load($classname);
 				} elseif ($polymodDone && $module->isPolymod()) {
-					unset($module[$codename]);
+					unset($modules[$codename]);
 				}
 				if ($file) {
 					break;
