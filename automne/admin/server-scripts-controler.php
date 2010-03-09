@@ -62,7 +62,8 @@ switch ($action) {
 	break;
 	case 'regenerate-tree':
 		if ($page) {
-			$pages = CMS_tree::getAllSiblings($page, true);
+			$pages = CMS_tree::getAllSiblings($page, false);
+			$pages[$page] = $page;
 			if (sizeof($pages) > 3) {
 				//submit pages to regenerator
 				$validPages = CMS_tree::pagesExistsInUserSpace($pages);
