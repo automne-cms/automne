@@ -1470,18 +1470,18 @@ td.x-grid3-hd-over, td.sort-desc, td.sort-asc, td.x-grid3-hd-menu-open{
 }
 .x-menu-item .x-btn-mc .atm-pic-cancel,
 .atm-server .atm-pic-cancel{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
-	background-position:			0px -124px;
+	background-image:				url(/automne/admin/img/pictos/pictos-v.png);
+	background-position:			0px -181px;
 }
 .x-menu-item .x-btn-mc .atm-pic-ok,
 .atm-server .atm-pic-ok{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
-	background-position:			0px -100px;
+	background-image:				url(/automne/admin/img/pictos/pictos-v.png);
+	background-position:			0px -90px;
 }
 .x-menu-item .x-btn-mc .atm-pic-question,
 .atm-server .atm-pic-question{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
-	background-position:			0px -77px;
+	background-image:				url(/automne/admin/img/pictos/pictos-v.png);
+	background-position:			0px 0px;
 }
 .atm-server .atm-pic-logo {
 	background:			url(/automne/admin/img/pictos/logo.gif) no-repeat 0px 2px !important;
