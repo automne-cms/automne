@@ -172,7 +172,7 @@ if ($elements) {
 			$label = sensitiveIO::sanitizeJSString($label);
 			//if search use special search code, only search on standard module
 			$checked = (!$search || (isset($checkedElements[$element]) && $checkedElements[$element])) ? 'true' : 'false';
-			$searchPanel .= "{boxLabel: '{$label}', height:15, inputValue:'{$element}',  checked: {$checked}, name: 'elements[]', listeners: {'check':searchWindow.search}},";
+			$searchPanel .= "{boxLabel: '{$label}', height:15, ctCls:'x-masked', inputValue:'{$element}',  checked: {$checked}, name: 'elements[]', listeners: {'check':searchWindow.search}},";
 		}
 		//remove last comma from groups
 		$searchPanel = substr($searchPanel, 0, -1);

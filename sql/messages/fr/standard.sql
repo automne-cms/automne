@@ -1556,5 +1556,6 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1598, 'standard', 'fr', 'Erreur de contenu XHTML ... Editez ce bloc pour corriger le texte saisi.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1599, 'standard', 'fr', 'Valider ce choix');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1600, 'standard', 'fr', 'Attention, vous avez s&eacute;lectionn&eacute; un mod&egrave;le incompatible avec le mod&egrave;le employ&eacute; actuellement : Le mod&egrave;le s&eacute;lectionn&eacute; ne contient pas les m&ecirc;mes zones de contenu que le mod&egrave;le original.<br /><br />Si vous validez ce changement, vous risquez de perdre certains contenus de la page.');
-
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1601, 'standard', 'fr', 'Erreur lors de la régénération de la page ...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1602, 'standard', 'fr', 'Erreur sur %s régénération de pages.');
 
