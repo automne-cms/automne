@@ -1,5 +1,5 @@
 <?php
-//Generated on Tue, 09 Mar 2010 12:18:04 +0100 by Automne (TM) 4.0.1
+//Generated on Tue, 09 Mar 2010 15:31:26 +0100 by Automne (TM) 4.0.1
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	CMS_view::redirect('http://automne4.401/web/demo/2-accueil.php', true, 301);
@@ -74,20 +74,20 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 	if (!isset($object) || !is_array($object)) $object = array();
 	if (!isset($object[1])) $object[1] = new CMS_poly_object(1, 0, array(), $parameters['public']);
 	$parameters['module'] = 'pnews';
-	//SEARCH lastNews TAG START 2_eee7bf
+	//SEARCH lastNews TAG START 2_5687f4
 	$objectDefinition_lastNews = '1';
 	if (!isset($objectDefinitions[$objectDefinition_lastNews])) {
 		$objectDefinitions[$objectDefinition_lastNews] = new CMS_poly_object_definition($objectDefinition_lastNews);
 	}
 	//public search ?
-	$public_2_eee7bf = isset($public_search) ? $public_search : false;
+	$public_2_5687f4 = isset($public_search) ? $public_search : false;
 	//get search params
-	$search_lastNews = new CMS_object_search($objectDefinitions[$objectDefinition_lastNews], $public_2_eee7bf);
+	$search_lastNews = new CMS_object_search($objectDefinitions[$objectDefinition_lastNews], $public_2_5687f4);
 	$launchSearch_lastNews = true;
 	//add search conditions if any
 	$search_lastNews->setAttribute('itemsPerPage', (int) CMS_polymod_definition_parsing::replaceVars("1", $replace));
 	$search_lastNews->addOrderCondition("publication date after", "desc");
-	//RESULT lastNews TAG START 3_90f328
+	//RESULT lastNews TAG START 3_6f7e28
 	//launch search lastNews if not already done
 	if($launchSearch_lastNews && !isset($results_lastNews)) {
 		if (isset($search_lastNews)) {
@@ -100,22 +100,22 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 		$results_lastNews = array();
 	}
 	if ($results_lastNews) {
-		$object_3_90f328 = (isset($object[$objectDefinition_lastNews])) ? $object[$objectDefinition_lastNews] : ""; //save previous object search if any
-		$replace_3_90f328 = $replace; //save previous replace vars if any
-		$count_3_90f328 = 0;
-		$content_3_90f328 = $content; //save previous content var if any
-		$maxPages_3_90f328 = $search_lastNews->getMaxPages();
-		$maxResults_3_90f328 = $search_lastNews->getNumRows();
+		$object_3_6f7e28 = (isset($object[$objectDefinition_lastNews])) ? $object[$objectDefinition_lastNews] : ""; //save previous object search if any
+		$replace_3_6f7e28 = $replace; //save previous replace vars if any
+		$count_3_6f7e28 = 0;
+		$content_3_6f7e28 = $content; //save previous content var if any
+		$maxPages_3_6f7e28 = $search_lastNews->getMaxPages();
+		$maxResults_3_6f7e28 = $search_lastNews->getNumRows();
 		foreach ($results_lastNews as $object[$objectDefinition_lastNews]) {
 			$content = "";
 			$replace["atm-search"] = array (
 				"{resultid}" 	=> (isset($resultID_lastNews)) ? $resultID_lastNews : $object[$objectDefinition_lastNews]->getID(),
-				"{firstresult}" => (!$count_3_90f328) ? 1 : 0,
-				"{lastresult}" 	=> ($count_3_90f328 == sizeof($results_lastNews)-1) ? 1 : 0,
-				"{resultcount}" => ($count_3_90f328+1),
-				"{maxpages}"    => $maxPages_3_90f328,
+				"{firstresult}" => (!$count_3_6f7e28) ? 1 : 0,
+				"{lastresult}" 	=> ($count_3_6f7e28 == sizeof($results_lastNews)-1) ? 1 : 0,
+				"{resultcount}" => ($count_3_6f7e28+1),
+				"{maxpages}"    => $maxPages_3_6f7e28,
 				"{currentpage}" => ($search_lastNews->getAttribute('page')+1),
-				"{maxresults}"  => $maxResults_3_90f328,
+				"{maxresults}"  => $maxResults_3_6f7e28,
 			);
 			$content .="
 			<div class=\"lastNews\">
@@ -126,7 +126,7 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 			</div>
 			<div class=\"newsContent\">
 			";
-			//IF TAG START 4_d77c11
+			//IF TAG START 4_c2c2dc
 			$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[1]->objectValues(4)->getValue('imageWidth','')), $replace);
 			if ($ifcondition) {
 				$func = create_function("","return (".$ifcondition.");");
@@ -137,11 +137,11 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					</div>
 					";
 				}
-			}//IF TAG END 4_d77c11
+			}//IF TAG END 4_c2c2dc
 			$content .="
 			".$object[1]->objectValues(2)->getValue('htmlvalue','')."
 			";
-			//IF TAG START 5_711624
+			//IF TAG START 5_e917bf
 			$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[1]->objectValues(3)->getValue('value','')), $replace);
 			if ($ifcondition) {
 				$func = create_function("","return (".$ifcondition.");");
@@ -152,17 +152,17 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					</a>
 					";
 				}
-			}//IF TAG END 5_711624
+			}//IF TAG END 5_e917bf
 			$content .="
 			<div class=\"spacer\"></div>
 			<div class=\"newsBottom\">
 			<a class=\"newsAll\" href=\"".CMS_tree::getPageValue("5","url")."\">Toute l'actualite</a>
 			";
-			//FUNCTION TAG START 6_40f1b5
-			$parameters_6_40f1b5 = array ('selected' => CMS_polymod_definition_parsing::replaceVars("3", $replace),);
-			$object_6_40f1b5 = &$object[1];
-			if (method_exists($object_6_40f1b5, "rss")) {
-				$content .= CMS_polymod_definition_parsing::replaceVars($object_6_40f1b5->rss($parameters_6_40f1b5, array (
+			//FUNCTION TAG START 6_6d0b66
+			$parameters_6_6d0b66 = array ('selected' => CMS_polymod_definition_parsing::replaceVars("3", $replace),);
+			$object_6_6d0b66 = &$object[1];
+			if (method_exists($object_6_6d0b66, "rss")) {
+				$content .= CMS_polymod_definition_parsing::replaceVars($object_6_6d0b66->rss($parameters_6_6d0b66, array (
 					0 =>
 					array (
 						'textnode' => '
@@ -197,27 +197,27 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					),
 				)), $replace);
 			} else {
-				CMS_grandFather::raiseError("Malformed atm-function tag : can't found method rss on object : ".get_class($object_6_40f1b5));
+				CMS_grandFather::raiseError("Malformed atm-function tag : can't found method rss on object : ".get_class($object_6_6d0b66));
 			}
-			//FUNCTION TAG END 6_40f1b5
+			//FUNCTION TAG END 6_6d0b66
 			$content .="
 			</div>
 			</div>
 			</div>
 			";
-			$count_3_90f328++;
+			$count_3_6f7e28++;
 			//do all result vars replacement
-			$content_3_90f328.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
+			$content_3_6f7e28.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
 		}
-		$content = $content_3_90f328; //retrieve previous content var if any
-		$replace = $replace_3_90f328; //retrieve previous replace vars if any
-		$object[$objectDefinition_lastNews] = $object_3_90f328; //retrieve previous object search if any
+		$content = $content_3_6f7e28; //retrieve previous content var if any
+		$replace = $replace_3_6f7e28; //retrieve previous replace vars if any
+		$object[$objectDefinition_lastNews] = $object_3_6f7e28; //retrieve previous object search if any
 	}
-	//RESULT lastNews TAG END 3_90f328
+	//RESULT lastNews TAG END 3_6f7e28
 	//destroy search and results lastNews objects
 	unset($search_lastNews);
 	unset($results_lastNews);
-	//SEARCH lastNews TAG END 2_eee7bf
+	//SEARCH lastNews TAG END 2_5687f4
 	echo CMS_polymod_definition_parsing::replaceVars($content, $replace);
 }
   ?>
