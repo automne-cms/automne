@@ -1,7 +1,7 @@
-<?php //Generated on Tue, 09 Mar 2010 11:58:58 +0100 by Automne (TM) 4.0.1
+<?php //Generated on Tue, 09 Mar 2010 12:18:17 +0100 by Automne (TM) 4.0.1
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
-	CMS_view::redirect('http://automne4.trunk/web/demo/26-rangees.php', true, 301);
+	CMS_view::redirect('http://automne4.401/web/demo/26-rangees.php', true, 301);
 }
  ?>
 <?php require_once($_SERVER["DOCUMENT_ROOT"].'/automne/classes/polymodFrontEnd.php');  ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";   ?>
@@ -18,10 +18,10 @@ if (!isset($cms_page_included) && !$_POST && !$_GET) {
 
 	<?php echo CMS_view::getJavascript(array('','/js/CMS_functions.js','/js/modules/pmedia/jquery-1.2.6.min-demo.js','/js/modules/pmedia/pmedia-demo.js','/js/modules/pmedia/swfobject.js'));  ?>
 
-	<link rel="icon" type="image/x-icon" href="http://automne4.trunk/favicon.ico" />
+	<link rel="icon" type="image/x-icon" href="http://automne4.401/favicon.ico" />
 	<meta name="language" content="fr" />
 	<meta name="generator" content="Automne (TM)" />
-	<meta name="identifier-url" content="http://automne4.trunk" />
+	<meta name="identifier-url" content="http://automne4.401" />
 
 </head>
 <body>
@@ -29,16 +29,16 @@ if (!isset($cms_page_included) && !$_POST && !$_GET) {
 		<div id="container">
 			<div id="header">
 				
-							<a id="lienAccueil" href="http://automne4.trunk/web/demo/2-accueil.php" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
+							<a id="lienAccueil" href="http://automne4.401/web/demo/2-accueil.php" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
 						
 			</div>
 			<div id="backgroundBottomContainer">
 				<div id="menuLeft">
-					<ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://automne4.trunk/web/demo/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_open "><a class="CMS_lvl2" href="http://automne4.trunk/web/demo/24-documentation.php">Fonctionnalités</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://automne4.trunk/web/demo/25-modeles.php">Modèles</a></li><li class="CMS_lvl3 CMS_nosub CMS_current"><a class="CMS_lvl3" href="http://automne4.trunk/web/demo/26-rangees.php">Rangées</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://automne4.trunk/web/demo/27-modules.php">Modules</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://automne4.trunk/web/demo/28-administration.php">Gestion des utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://automne4.trunk/web/demo/35-gestion-des-droits.php">Gestion des droits</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://automne4.trunk/web/demo/37-droit-de-validation.php">Workflow de publication</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://automne4.trunk/web/demo/38-aide-aux-utilisateurs.php">Aide utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://automne4.trunk/web/demo/34-fonctions-avancees.php">Fonctions avancées</a></li></ul></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://automne4.trunk/web/demo/31-exemples-de-modules.php">Exemples de modules</a></li></ul>
+					<ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://automne4.401/web/demo/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_open "><a class="CMS_lvl2" href="http://automne4.401/web/demo/24-documentation.php">Fonctionnalités</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://automne4.401/web/demo/25-modeles.php">Modèles</a></li><li class="CMS_lvl3 CMS_nosub CMS_current"><a class="CMS_lvl3" href="http://automne4.401/web/demo/26-rangees.php">Rangées</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://automne4.401/web/demo/27-modules.php">Modules</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://automne4.401/web/demo/28-administration.php">Gestion des utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://automne4.401/web/demo/35-gestion-des-droits.php">Gestion des droits</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://automne4.401/web/demo/37-droit-de-validation.php">Workflow de publication</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://automne4.401/web/demo/38-aide-aux-utilisateurs.php">Aide utilisateurs</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://automne4.401/web/demo/34-fonctions-avancees.php">Fonctions avancées</a></li></ul></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://automne4.401/web/demo/31-exemples-de-modules.php">Exemples de modules</a></li></ul>
 				</div>
 				<div id="content" class="page26">
 					<div id="breadcrumbs">
-						<a href="http://automne4.trunk/web/demo/2-accueil.php">Accueil</a> &gt; <a href="http://automne4.trunk/web/demo/24-documentation.php">Fonctionnalités</a> &gt; 
+						<a href="http://automne4.401/web/demo/2-accueil.php">Accueil</a> &gt; <a href="http://automne4.401/web/demo/24-documentation.php">Fonctionnalités</a> &gt; 
 					</div>
 					<div id="title">
 						<h1>Rangées de contenu</h1>
@@ -463,7 +463,7 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 	<div id="footer">
 		<div id="menuBottom">
 			<ul>
-				<li><a href="http://automne4.trunk/web/demo/8-plan-du-site.php">Plan du site</a></li><li><a href="http://automne4.trunk/web/demo/9-contact.php">Contact</a></li>
+				<li><a href="http://automne4.401/web/demo/8-plan-du-site.php">Plan du site</a></li><li><a href="http://automne4.401/web/demo/9-contact.php">Contact</a></li>
 			</ul>
 			<div class="spacer"></div>
 		</div>

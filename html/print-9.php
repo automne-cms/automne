@@ -1,7 +1,7 @@
-<?php //Generated on Tue, 09 Mar 2010 11:58:54 +0100 by Automne (TM) 4.0.1
+<?php //Generated on Tue, 09 Mar 2010 12:18:13 +0100 by Automne (TM) 4.0.1
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
-	CMS_view::redirect('http://automne4.trunk/web/demo/print-9-contact.php', true, 301);
+	CMS_view::redirect('http://automne4.401/web/demo/print-9-contact.php', true, 301);
 }
  ?>
 <?php $mod_cms_forms = array();
@@ -641,7 +641,7 @@ if ($form->getID() && $form->isPublic()) {
 	<small>
 		
 		
-				Page  "Contact" (http://automne4.trunk/web/demo/9-contact.php)
+				Page  "Contact" (http://automne4.401/web/demo/9-contact.php)
 				<br />
 		Tir&eacute; du site http://<?php echo $_SERVER["HTTP_HOST"];    ?>
 	</small>

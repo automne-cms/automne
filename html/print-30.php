@@ -1,7 +1,7 @@
-<?php //Generated on Tue, 09 Mar 2010 11:59:04 +0100 by Automne (TM) 4.0.1
+<?php //Generated on Tue, 09 Mar 2010 12:18:25 +0100 by Automne (TM) 4.0.1
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
-	CMS_view::redirect('http://automne4.trunk/web/demo/print-30-notions-essentielles.php', true, 301);
+	CMS_view::redirect('http://automne4.401/web/demo/print-30-notions-essentielles.php', true, 301);
 }
  ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";   ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
@@ -34,7 +34,7 @@ if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	<small>
 		
 		
-				Page  "Pré-requis" (http://automne4.trunk/web/demo/30-notions-essentielles.php)
+				Page  "Pré-requis" (http://automne4.401/web/demo/30-notions-essentielles.php)
 				<br />
 		Tir&eacute; du site http://<?php echo $_SERVER["HTTP_HOST"];    ?>
 	</small>

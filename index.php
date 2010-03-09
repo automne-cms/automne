@@ -6,8 +6,8 @@ if (isset($_SERVER["HTTP_X_FORWARDED_HOST"])) {
 if (isset($_SERVER["HTTP_X_FORWARDED_SERVER"])) {
 	$_SERVER["HTTP_SERVER"] = $_SERVER["HTTP_X_FORWARDED_SERVER"];
 }
-if (strtolower(parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST)) == 'automne4.trunk' || strtolower($_SERVER['HTTP_HOST']) == 'automne4.trunk') {
-	// http://automne4.trunk
+if (strtolower(parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST)) == 'automne4.401' || strtolower($_SERVER['HTTP_HOST']) == 'automne4.401') {
+	// http://automne4.401
 if (file_exists($_SERVER['DOCUMENT_ROOT'].'/html/2.php')) {
 	$cms_page_included = true;
 	require($_SERVER['DOCUMENT_ROOT'].'/html/2.php');
@@ -17,8 +17,8 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'].'/html/2.php')) {
 	exit;
 }
 
-} elseif (strtolower(parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST)) == 'automne4.trunk' || strtolower($_SERVER['HTTP_HOST']) == 'automne4.trunk') {
-	// http://automne4.trunk
+} elseif (strtolower(parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST)) == 'automne4.401' || strtolower($_SERVER['HTTP_HOST']) == 'automne4.401') {
+	// http://automne4.401
 if (file_exists($_SERVER['DOCUMENT_ROOT'].'/html/2.php')) {
 	$cms_page_included = true;
 	require($_SERVER['DOCUMENT_ROOT'].'/html/2.php');
@@ -29,7 +29,7 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'].'/html/2.php')) {
 }
 
 } else {
-	// http://automne4.trunk
+	// http://automne4.401
 if (file_exists($_SERVER['DOCUMENT_ROOT'].'/html/2.php')) {
 	$cms_page_included = true;
 	require($_SERVER['DOCUMENT_ROOT'].'/html/2.php');
