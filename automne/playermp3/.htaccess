@@ -1,4 +1,4 @@
 # Allow access to directory. 
 # Author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-# $Id: .htaccess,v 1.3 2008/12/18 10:43:15 sebastien Exp $
+# $Id: htaccess_yes,v 1.1.1.1 2008/11/26 17:12:16 sebastien Exp $
 Allow from all

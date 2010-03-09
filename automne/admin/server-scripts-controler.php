@@ -35,6 +35,7 @@ define("MESSAGE_ACTION_ALL_PAGES_SUBMITED", 795);
 define("MESSAGE_ACTION_N_PAGES_SUBMITED", 796);
 define("MESSAGE_ACTION_N_PAGES_REGENERATED", 797);
 define("MESSAGE_ERROR_NO_PAGES_FOUNDED", 798);
+define("MESSAGE_ACTION_N_PAGES_REGENERATION_ERROR", 1602);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -72,14 +73,24 @@ switch ($action) {
 			} else {
 				//regenerate pages
 				@set_time_limit(1000);
+				$regenok = $regenerror = 0;
 				$validPages = CMS_tree::pagesExistsInUserSpace($pages);
 				foreach ($validPages as $pageID) {
 					$pg = CMS_tree::getPageByID($pageID);
 					if (is_a($pg, 'CMS_page') && !$pg->hasError()) {
-					    $pg->regenerate(true);
+					    if ($pg->regenerate(true)) {
+							$regenok++;
+						} else {
+							$regenerror++;
+						}
 					}
 				}
-				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE).' : '.$cms_language->getMessage(MESSAGE_ACTION_N_PAGES_REGENERATED, array(sizeof($validPages)));
+				if ($regenok) {
+					$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE).' : '.$cms_language->getMessage(MESSAGE_ACTION_N_PAGES_REGENERATED, array($regenok));
+				}
+				if ($regenerror) {
+					$cms_message .= ($cms_message) ? '<br />'.$cms_language->getMessage(MESSAGE_ACTION_N_PAGES_REGENERATION_ERROR, array($regenerror)) : $cms_language->getMessage(MESSAGE_ACTION_N_PAGES_REGENERATION_ERROR, array($regenerror));
+				}
 			}
 		}
 	break;
@@ -111,13 +122,23 @@ switch ($action) {
 					} else {
 						//regenerate pages
 						@set_time_limit(1000);
+						$regenok = $regenerror = 0;
 						foreach ($validPages as $pageID) {
 							$pg = CMS_tree::getPageByID($pageID);
 							if (is_a($pg, 'CMS_page') && !$pg->hasError()) {
-							    $pg->regenerate(true);
+								if ($pg->regenerate(true)) {
+									$regenok++;
+								} else {
+									$regenerror++;
+								}
 							}
 						}
-						$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE).' : '.$cms_language->getMessage(MESSAGE_ACTION_N_PAGES_REGENERATED, array(sizeof($validPages)));
+						if ($regenok) {
+							$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE).' : '.$cms_language->getMessage(MESSAGE_ACTION_N_PAGES_REGENERATED, array($regenok));
+						}
+						if ($regenerror) {
+							$cms_message .= ($cms_message) ? '<br />'.$cms_language->getMessage(MESSAGE_ACTION_N_PAGES_REGENERATION_ERROR, array($regenerror)) : $cms_language->getMessage(MESSAGE_ACTION_N_PAGES_REGENERATION_ERROR, array($regenerror));
+						}
 					}
 				} else {
 					$cms_message = $cms_language->getMessage(MESSAGE_ERROR_NO_PAGES_FOUNDED);

@@ -1,6 +1,6 @@
 <?php require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 CMS_view::redirect('http://automne4.401/web/demo/2-accueil.php', true, 302);
- ?><?php //Generated on Tue, 09 Mar 2010 15:58:55 +0100 by Automne (TM) 4.0.1
+ ?><?php //Generated on Tue, 09 Mar 2010 18:31:05 +0100 by Automne (TM) 4.0.1
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	CMS_view::redirect('http://automne4.401/web/1-demo-automne.php', true, 301);

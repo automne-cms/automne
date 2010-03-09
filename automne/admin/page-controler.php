@@ -55,6 +55,7 @@ define("MESSAGE_PAGE_ACTION_DUPLICATION_ERROR_NO_RIGHTS", 697);
 define("MESSAGE_PAGE_ACTION_DUPLICATION_ERROR", 698);
 define("MESSAGE_PAGE_ACTION_DUPLICATION_DONE", 699);
 define("MESSAGE_ACTION_BLANK_PAGE", 1590);
+define("MESSAGE_ACTION_REGEN_ERROR", 1601);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -186,14 +187,17 @@ switch ($action) {
 	break;
 	case 'regenerate':
 		if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) && $cms_page->getPublication() == RESOURCE_PUBLICATION_PUBLIC) {
-			$cms_page->regenerate(true);
-			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
-			//reload public tab
-			$jscontent = '
-			if (Automne.tabPanels.getActiveTab().id == \'public\') {
-				Automne.tabPanels.getActiveTab().reload();
-			}';
-			$view->addJavascript($jscontent);
+			if ($cms_page->regenerate(true)) {
+				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
+				//reload public tab
+				$jscontent = '
+				if (Automne.tabPanels.getActiveTab().id == \'public\') {
+					Automne.tabPanels.getActiveTab().reload();
+				}';
+				$view->addJavascript($jscontent);
+			} else {
+				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_REGEN_ERROR);
+			}
 		}
 	break;
 	case "cancel_draft":
