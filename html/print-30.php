@@ -1,4 +1,4 @@
-<?php //Generated on Tue, 09 Mar 2010 12:18:25 +0100 by Automne (TM) 4.0.1
+<?php //Generated on Tue, 09 Mar 2010 15:58:35 +0100 by Automne (TM) 4.0.1
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	CMS_view::redirect('http://automne4.401/web/demo/print-30-notions-essentielles.php', true, 301);

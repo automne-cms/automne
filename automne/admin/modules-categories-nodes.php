@@ -75,7 +75,7 @@ foreach ($categories as $category) {
 	$parentRight = sensitiveIO::isPositiveInteger($category->getAttribute('parentID')) ? $cms_user->hasModuleCategoryClearance($category->getAttribute('parentID'), CLEARANCE_MODULE_MANAGE) : $cms_user->hasModuleClearance($codename, CLEARANCE_MODULE_EDIT);
 	$categoryRight = $cms_user->hasModuleCategoryClearance($category->getID(), CLEARANCE_MODULE_MANAGE);
 	$hasSiblings = $category->hasSiblings();
-	$qtip = $category->getIconPath(false, PATH_RELATIVETO_WEBROOT, true) ? '<img style="max-width:280px;" src="'.$category->getIconPath(true).' /><br />' : '';
+	$qtip = $category->getIconPath(false, PATH_RELATIVETO_WEBROOT, true) ? '<img style="max-width:280px;" src="'.$category->getIconPath(true).'" /><br />' : '';
 	$qtip .= $category->getDescription() ? $category->getDescription().'<br />' : '';
 	$qtip .= 'ID : '.$category->getID();
 	$nodes[] = array(
