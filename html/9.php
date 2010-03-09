@@ -1,7 +1,7 @@
-<?php //Generated on Mon, 01 Feb 2010 16:34:06 +0100 by Automne (TM) 4.0.0
+<?php //Generated on Tue, 09 Mar 2010 11:58:54 +0100 by Automne (TM) 4.0.1
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
-	CMS_view::redirect('http://127.0.0.1/web/demo/9-contact.php', true, 301);
+	CMS_view::redirect('http://automne4.trunk/web/demo/9-contact.php', true, 301);
 }
  ?>
 <?php $mod_cms_forms = array();
@@ -12,25 +12,20 @@ $mod_cms_forms["usedforms"] = array (
   0 => '2',
 );
  ?>
-<?php /* vim: set expandtab tabstop=4 shiftwidth=4: */
+<?php // +----------------------------------------------------------------------+
+// | Automne (TM)														  |
 // +----------------------------------------------------------------------+
-// | Automne (TM)                                                         |
+// | Copyright (c) 2000-2010 WS Interactive								  |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 2000-2006 WS Interactive                               |
-// +----------------------------------------------------------------------+
-// | This source file is subject to version 2.0 of the GPL license,       |
-// | or (at your discretion) to version 3.0 of the PHP license.           |
-// | The first is bundled with this package in the file LICENSE-GPL, and  |
-// | is available at through the world-wide-web at                        |
-// | http://www.gnu.org/copyleft/gpl.html.                                |
-// | The later is bundled with this package in the file LICENSE-PHP, and  |
-// | is available at through the world-wide-web at                        |
-// | http://www.php.net/license/3_0.txt.                                  |
+// | Automne is subject to version 2.0 or above of the GPL license.		  |
+// | The license text is bundled with this package in the file			  |
+// | LICENSE-GPL, and is available through the world-wide-web at		  |
+// | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 9.php,v 1.13 2010/02/01 16:08:06 sebastien Exp $
+// $Id: mod_cms_forms_header.php,v 1.17 2010/03/08 16:44:52 sebastien Exp $
 
 /**
   * Template CMS_forms_header
@@ -87,8 +82,8 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 				//check for valid session / logout attempt / and autologin
 				//CMS_grandFather::log('Forms ok1');
 				if (!isset($_SESSION["cms_context"]) || (isset($_SESSION["cms_context"]) && !is_a($_SESSION["cms_context"], 'CMS_context')) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] == 'true')) {
-					@session_destroy();
-					start_atm_session();
+					/*@session_destroy();
+					start_atm_session();*/
 					//CMS_grandFather::log('Forms ok2');
 					if ((!isset($_REQUEST["logout"]) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] != 'true')) && CMS_context::autoLoginSucceeded()) {
 						//declare form ok action
@@ -548,10 +543,10 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 
 	<?php echo CMS_view::getJavascript(array('','/js/CMS_functions.js'));  ?>
 
-	<link rel="icon" type="image/x-icon" href="http://127.0.0.1/favicon.ico" />
+	<link rel="icon" type="image/x-icon" href="http://automne4.trunk/favicon.ico" />
 	<meta name="language" content="fr" />
 	<meta name="generator" content="Automne (TM)" />
-	<meta name="identifier-url" content="http://127.0.0.1" />
+	<meta name="identifier-url" content="http://automne4.trunk" />
 
 </head>
 <body>
@@ -559,16 +554,16 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 		<div id="container">
 			<div id="header">
 				
-							<a id="lienAccueil" href="http://127.0.0.1/web/demo/2-accueil.php" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
+							<a id="lienAccueil" href="http://automne4.trunk/web/demo/2-accueil.php" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
 						
 			</div>
 			<div id="backgroundBottomContainer">
 				<div id="menuLeft">
-					<ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/31-exemples-de-modules.php">Exemples de modules</a></li></ul>
+					<ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://automne4.trunk/web/demo/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://automne4.trunk/web/demo/24-documentation.php">Fonctionnalités</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://automne4.trunk/web/demo/31-exemples-de-modules.php">Exemples de modules</a></li></ul>
 				</div>
 				<div id="content" class="page9">
 					<div id="breadcrumbs">
-						<a href="http://127.0.0.1/web/demo/2-accueil.php">Accueil</a> &gt; 
+						<a href="http://automne4.trunk/web/demo/2-accueil.php">Accueil</a> &gt; 
 					</div>
 					<div id="title">
 						<h1>Contact</h1>
@@ -586,25 +581,20 @@ $mod_cms_forms["id"] = 'cms_forms';
 $mod_cms_forms["type"] = 'formular';
 $mod_cms_forms["formID"] = '2';
    ?>
-<?php /* vim: set expandtab tabstop=4 shiftwidth=4: */
+<?php // +----------------------------------------------------------------------+
+// | Automne (TM)														  |
 // +----------------------------------------------------------------------+
-// | Automne (TM)                                                         |
+// | Copyright (c) 2000-2010 WS Interactive								  |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 2000-2006 WS Interactive                               |
-// +----------------------------------------------------------------------+
-// | This source file is subject to version 2.0 of the GPL license,       |
-// | or (at your discretion) to version 3.0 of the PHP license.           |
-// | The first is bundled with this package in the file LICENSE-GPL, and  |
-// | is available at through the world-wide-web at                        |
-// | http://www.gnu.org/copyleft/gpl.html.                                |
-// | The later is bundled with this package in the file LICENSE-PHP, and  |
-// | is available at through the world-wide-web at                        |
-// | http://www.php.net/license/3_0.txt.                                  |
+// | Automne is subject to version 2.0 or above of the GPL license.		  |
+// | The license text is bundled with this package in the file			  |
+// | LICENSE-GPL, and is available through the world-wide-web at		  |
+// | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: 9.php,v 1.13 2010/02/01 16:08:06 sebastien Exp $
+// $Id: mod_cms_forms_formular.php,v 1.6 2010/03/08 16:44:52 sebastien Exp $
 
 /**
   * Template CMS_forms_formular
@@ -681,7 +671,7 @@ if ($form->getID() && $form->isPublic()) {
 	<div id="footer">
 		<div id="menuBottom">
 			<ul>
-				<li><a href="http://127.0.0.1/web/demo/8-plan-du-site.php">Plan du site</a></li><li><a href="http://127.0.0.1/web/demo/9-contact.php">Contact</a></li>
+				<li><a href="http://automne4.trunk/web/demo/8-plan-du-site.php">Plan du site</a></li><li><a href="http://automne4.trunk/web/demo/9-contact.php">Contact</a></li>
 			</ul>
 			<div class="spacer"></div>
 		</div>
