@@ -120,17 +120,34 @@ class CMS_websitesCatalog extends CMS_grandFather
 	{
 		static $mainURL;
 		if (!isset($mainURL)) {
-			$websites = CMS_websitesCatalog::getAll();
-			foreach ($websites as $website) {
-				if ($website->isMain()) {
-					$mainURL = $website->getURL();
-					if (io::substr($mainURL, io::strlen($mainURL) - 1) == "/") {
-						$mainURL = io::substr($mainURL, 0, -1);
-					}
-				}
+			$website = CMS_websitesCatalog::getMainWebsite();
+			$mainURL = $website->getURL();
+			if (io::substr($mainURL, io::strlen($mainURL) - 1) == "/") {
+				$mainURL = io::substr($mainURL, 0, -1);
 			}
 		}
 		return $mainURL;
+	}
+	
+	/**
+	  * Returns The main website, the one for the root.
+	  * Static function.
+	  *
+	  * @return CMS_website the main website
+	  * @access public
+	  */
+	function getMainWebsite() {
+		static $mainWebsite;
+		if (!isset($mainWebsite)) {
+			$websites = CMS_websitesCatalog::getAll();
+			foreach ($websites as $website) {
+				if ($website->isMain()) {
+					$mainWebsite = $website;
+					return $mainWebsite;
+				}
+			}
+		}
+		return $mainWebsite;
 	}
 	
 	/**
@@ -274,21 +291,22 @@ class CMS_websitesCatalog extends CMS_grandFather
 		'$httpHost = @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) ? @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) : $_SERVER[\'HTTP_HOST\'];'."\n".
 		'//search page id by domain address'."\n".
 		'$website = CMS_websitesCatalog::getWebsiteFromDomain($httpHost);'."\n".
-		'if ($website) {'."\n".
-		'	$rootPage = $website->getRoot();'."\n".
-		'	//redirect to subpage if any'."\n".
+		'if (!$website) {'."\n".
+		'	$website = CMS_websitesCatalog::getMainWebsite();'."\n".
+		'}'."\n".
+		'$rootPage = $website->getRoot();'."\n".
+		'//redirect to subpage if any'."\n".
+		'$redirectlink = $rootPage->getRedirectLink(true);'."\n".
+		'while ($redirectlink->hasValidHREF() && sensitiveIO::IsPositiveInteger($redirectlink->getInternalLink())) {'."\n".
+		'	$rootPage = new CMS_page($redirectlink->getInternalLink());'."\n".
 		'	$redirectlink = $rootPage->getRedirectLink(true);'."\n".
-		'	while ($redirectlink->hasValidHREF() && sensitiveIO::IsPositiveInteger($redirectlink->getInternalLink())) {'."\n".
-		'		$rootPage = new CMS_page($redirectlink->getInternalLink());'."\n".
-		'		$redirectlink = $rootPage->getRedirectLink(true);'."\n".
-		'	}'."\n".
-		'	$pPath = $rootPage->getHTMLURL(false, false, PATH_RELATIVETO_FILESYSTEM);'."\n".
-		'	if ($pPath) {'."\n".
-		'		if (file_exists($pPath)) {'."\n".
-		'			$cms_page_included = true;'."\n".
-		'			require($pPath);'."\n".
-		'			exit;'."\n".
-		'		}'."\n".
+		'}'."\n".
+		'$pPath = $rootPage->getHTMLURL(false, false, PATH_RELATIVETO_FILESYSTEM);'."\n".
+		'if ($pPath) {'."\n".
+		'	if (file_exists($pPath)) {'."\n".
+		'		$cms_page_included = true;'."\n".
+		'		require($pPath);'."\n".
+		'		exit;'."\n".
 		'	}'."\n".
 		'}'."\n".
 		'header(\'HTTP/1.x 301 Moved Permanently\', true, 301);'."\n".
