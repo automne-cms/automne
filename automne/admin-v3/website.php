@@ -52,6 +52,8 @@ define("MESSAGE_PAGE_FIELD_FAVICON_COMMENT", 1344);
 define("MESSAGE_PAGE_CHOOSE", 1132);
 define("MESSAGE_PAGE_FIELD_LABEL_DESC", 1431);
 define("MESSAGE_PAGE_META_DATA_LABEL", 393);
+define("MESSAGE_PAGE_FIELD_SUB_DOMAINS", 1603);
+define("MESSAGE_PAGE_FIELD_SUB_DOMAINS_DESC", 1604);
 
 //RIGHTS CHECK
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES)) {
@@ -92,6 +94,7 @@ case "validate":
 		exit;
 	} else {
 		$website->setURL($_POST["url"]);
+		$website->setAltDomains($_POST["altdomains"]);
 		if ($website->getID()) {
 			$page = CMS_tree::getPageByID($_POST["root"]);
 			$website_root = $website->getRoot();
@@ -180,6 +183,10 @@ if ($website_root->getID() != $grand_root->getID()) {
 }
 $content .= '
 		</td>
+	</tr>
+	<tr>
+		<td class="admin" align="right">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_SUB_DOMAINS).'</td>
+		<td class="admin"><input type="text" size="30" class="admin_input_text" name="altdomains" value="'.htmlspecialchars(implode(';', $website->getAltDomains())).'" /><br /><small>'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_SUB_DOMAINS_DESC).'</small></td>
 	</tr>
 </table>
 <fieldset class="admin">

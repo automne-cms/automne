@@ -3712,6 +3712,7 @@ CREATE TABLE `websites` (
   `id_web` int(11) unsigned NOT NULL auto_increment,
   `label_web` varchar(255) NOT NULL default '',
   `url_web` varchar(255) NOT NULL default '',
+  `altdomains_web` text NOT NULL,
   `root_web` int(11) unsigned NOT NULL default '0',
   `keywords_web` mediumtext NOT NULL,
   `description_web` mediumtext NOT NULL,

@@ -121,7 +121,7 @@ class CMS_block_varchar extends CMS_block
 			if ($data && $data["value"]) {
 				$html = io::htmlspecialchars($data["value"]);
 			} else {
-				$html = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diem nonummy.";
+				$html = "<span class=\"atm-ipsum\">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diem nonummy.</span>";
 			}
 			$form_data = str_replace("{{data}}", $html, $this->_definition);
 			$this->_hasContent = ($data && $data["value"]) ? true:false;
@@ -129,7 +129,7 @@ class CMS_block_varchar extends CMS_block
 			return $this->_getHTMLForm($language, $page, $clientSpace, $row, $this->_tagID, $form_data);
 			break;
 		case PAGE_VISUALMODE_CLIENTSPACES_FORM:
-			$html = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diem nonummy.";
+			$html = "<span class=\"atm-ipsum\">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diem nonummy.</span>";
 			$form_data = str_replace("{{data}}", $html, $this->_definition);
 			$this->_hasContent = false;
 			$this->_editable = false;

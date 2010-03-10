@@ -344,14 +344,7 @@ class CMS_profile_user extends CMS_profile
       * @access public
       */
     function checkLogin($login){
-        if (!$login) {
-            return false;
-        }
-        // Search non alphanum characters
-        if (preg_match("#[^[a-zA-Z0-9_.-]]*#", $login)){
-            return false;
-        }
-        return true;
+        return io::isValidLogin( $login ); 
     }
 	
 	/**

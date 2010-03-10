@@ -195,7 +195,7 @@ class CMS_object_integer extends CMS_object_common
       */
     function getStructure() {
 		$structure = parent::getStructure();
-		unset($structure['value']);
+		//unset($structure['value']);
 		$structure['unit'] = '';
 		return $structure;
     }
@@ -274,7 +274,7 @@ class CMS_object_integer extends CMS_object_common
     function getLabelsStructure(&$language) {
 		$labels = parent::getLabelsStructure($language);
 		$params = $this->getParamsValues();
-		unset($labels['structure']['value']);
+		//unset($labels['structure']['value']);
 		$labels['operator']['&lt;, &gt;,&lt;=, &gt;= '] = $language->getMessage(self::MESSAGE_OBJECT_INTEGER_OPERATOR_OTHERS_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		if(isset($params['unit']) && $params['unit']){
 			$labels['structure']['unit'] = $language->getMessage(self::MESSAGE_OBJECT_INTEGER_PARAMETER_UNIT_DESCRIPTION,array($params['unit']) ,MOD_POLYMOD_CODENAME);

@@ -88,6 +88,8 @@ case "login":
 		//add all JS locales
 		$jscontent .= CMS_context::getJSLocales();
 		$jscontent .= '
+		/*show front page in tab*/
+		Automne.tabPanels.getActiveTab().reload();
 		/*close login window*/
 		Ext.WindowMgr.get(\'loginWindow\').close();';
 		//eval content into parent

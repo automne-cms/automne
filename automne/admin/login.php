@@ -69,9 +69,8 @@ case 'reconnect':
 				//Ext.fly('loginField').dom.select();
 			}
 		});";
-		//reset cms_context session (start fresh)
-		unset($_SESSION['cms_context']);
-		unset($_SESSION['atm-tokens']);
+		//reset session (start fresh)
+		session_destroy();
 	break;
 default:
 	// First attempt to obtain $_COOKIE information from domain

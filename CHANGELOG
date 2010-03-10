@@ -1,6 +1,10 @@
 V4.0.1 (in progress)
+[BUG] : Corrected bugs : 286, 265, 268, 283, 284, 302, 282, 280, 296, 304 (see http://www.automne.ws/bug/)
 [REFACTOR] : update Automne copyright dates
+[REFACTOR] : add a background image on lorem ipsum text to help non latin natives to identify it
+[REFACTOR] : do some optimisation on administration images
 [FEATURE] : update Zend Framework to version 1.10.2
+[FEATURE] : Add alternative domains management for websites
 
 V4.0.0 (18/01/10)
 [BUG] : Lots of minor bugs corrected

@@ -1,0 +1,1 @@
+ALTER TABLE `websites` ADD `altdomains_web` TEXT NOT NULL AFTER `url_web` ;

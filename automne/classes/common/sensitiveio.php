@@ -302,7 +302,25 @@ class SensitiveIO extends CMS_grandfather
 		}
 		return false;
 	}
-
+	
+	/**
+	* Check if the login is valid
+	*
+	* @param string $login
+	* @return boolean true on success, false on failure
+	* @access public
+	*/
+	function isValidLogin($login){
+		if (!$login) {
+			return false;
+		}
+		// Search non alphanum characters
+		if (preg_match("#[^[a-zA-Z0-9_.-]]*#", $login)){
+			return false;
+		}
+		return true;
+	}
+	
 	/**
 	  * Parses input string as if it is a password, and return the "well-formed" status : must be at least 5 chars long, ...
 	  * Static method.

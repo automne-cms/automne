@@ -1,41 +1,27 @@
 <?php
-//rewrite some server conf if HTTP_X_FORWARDED exists
-if (isset($_SERVER["HTTP_X_FORWARDED_HOST"])) {
-	$_SERVER["HTTP_HOST"] = $_SERVER["HTTP_X_FORWARDED_HOST"];
+//Generated on Wed, 10 Mar 2010 17:29:16 +0100 by Automne (TM) 4.0.1
+require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+$httpHost = @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST'];
+//search page id by domain address
+$website = CMS_websitesCatalog::getWebsiteFromDomain($httpHost);
+if (!$website) {
+	$website = CMS_websitesCatalog::getMainWebsite();
 }
-if (isset($_SERVER["HTTP_X_FORWARDED_SERVER"])) {
-	$_SERVER["HTTP_SERVER"] = $_SERVER["HTTP_X_FORWARDED_SERVER"];
+$rootPage = $website->getRoot();
+//redirect to subpage if any
+$redirectlink = $rootPage->getRedirectLink(true);
+while ($redirectlink->hasValidHREF() && sensitiveIO::IsPositiveInteger($redirectlink->getInternalLink())) {
+	$rootPage = new CMS_page($redirectlink->getInternalLink());
+	$redirectlink = $rootPage->getRedirectLink(true);
 }
-if (strtolower(parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST)) == 'automne4.401' || strtolower($_SERVER['HTTP_HOST']) == 'automne4.401') {
-	// http://automne4.401
-if (file_exists($_SERVER['DOCUMENT_ROOT'].'/html/2.php')) {
-	$cms_page_included = true;
-	require($_SERVER['DOCUMENT_ROOT'].'/html/2.php');
-} else {
-	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: /404.php');
-	exit;
+$pPath = $rootPage->getHTMLURL(false, false, PATH_RELATIVETO_FILESYSTEM);
+if ($pPath) {
+	if (file_exists($pPath)) {
+		$cms_page_included = true;
+		require($pPath);
+		exit;
+	}
 }
-
-} elseif (strtolower(parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST)) == 'automne4.401' || strtolower($_SERVER['HTTP_HOST']) == 'automne4.401') {
-	// http://automne4.401
-if (file_exists($_SERVER['DOCUMENT_ROOT'].'/html/2.php')) {
-	$cms_page_included = true;
-	require($_SERVER['DOCUMENT_ROOT'].'/html/2.php');
-} else {
-	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: /404.php');
-	exit;
-}
-
-} else {
-	// http://automne4.401
-if (file_exists($_SERVER['DOCUMENT_ROOT'].'/html/2.php')) {
-	$cms_page_included = true;
-	require($_SERVER['DOCUMENT_ROOT'].'/html/2.php');
-} else {
-	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: /404.php');
-	exit;
-}
-} ?>
+header('HTTP/1.x 301 Moved Permanently', true, 301);
+header('Location: '.PATH_SPECIAL_PAGE_NOT_FOUND_WR.'');
+?>

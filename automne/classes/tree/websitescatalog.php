@@ -120,17 +120,34 @@ class CMS_websitesCatalog extends CMS_grandFather
 	{
 		static $mainURL;
 		if (!isset($mainURL)) {
-			$websites = CMS_websitesCatalog::getAll();
-			foreach ($websites as $website) {
-				if ($website->isMain()) {
-					$mainURL = $website->getURL();
-					if (io::substr($mainURL, io::strlen($mainURL) - 1) == "/") {
-						$mainURL = io::substr($mainURL, 0, -1);
-					}
-				}
+			$website = CMS_websitesCatalog::getMainWebsite();
+			$mainURL = $website->getURL();
+			if (io::substr($mainURL, io::strlen($mainURL) - 1) == "/") {
+				$mainURL = io::substr($mainURL, 0, -1);
 			}
 		}
 		return $mainURL;
+	}
+	
+	/**
+	  * Returns The main website, the one for the root.
+	  * Static function.
+	  *
+	  * @return CMS_website the main website
+	  * @access public
+	  */
+	function getMainWebsite() {
+		static $mainWebsite;
+		if (!isset($mainWebsite)) {
+			$websites = CMS_websitesCatalog::getAll();
+			foreach ($websites as $website) {
+				if ($website->isMain()) {
+					$mainWebsite = $website;
+					return $mainWebsite;
+				}
+			}
+		}
+		return $mainWebsite;
 	}
 	
 	/**
@@ -235,6 +252,30 @@ class CMS_websitesCatalog extends CMS_grandFather
 	}
 	
 	/**
+	  * get website for a given domain or false if none founded
+	  *
+	  * @param string $domain : the domain to found website of
+	  * @return CMS_website or false
+	  * @access public
+	  */
+	function getWebsiteFromDomain($domain) {
+		//get all websites
+		$websites = CMS_websitesCatalog::getAll('order');
+		foreach ($websites as $website) {
+			if (io::strtolower($domain) == io::strtolower(@parse_url($website->getURL(), PHP_URL_HOST))) {
+				return $website;
+			}
+			$altDomains = $website->getAltDomains();
+			foreach ($altDomains as $altDomain) {
+				if (io::strtolower($domain) == io::strtolower(@parse_url($altDomain, PHP_URL_HOST))) {
+					return $website;
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
 	  * Writes the website root redirection : an index.php page redirecting to the root page
 	  *
 	  * @return boolean true on success, false on failure
@@ -242,85 +283,35 @@ class CMS_websitesCatalog extends CMS_grandFather
 	  */
 	function writeRootRedirection()
 	{
-		//get all websites
-		$websites = CMS_websitesCatalog::getAll('order');
 		//and write general and specific redirection files
 		$filename = 'index.php';
-		$content = '';
-		$count=0;
-		foreach ($websites as $website) {
-			if (!$website->isMain() || sizeof($websites) > 1) {
-				$rootPage = $website->getRoot();
-				//redirect to subpage if any
-				$redirectlink = $rootPage->getRedirectLink(true);
-				while ($redirectlink->hasValidHREF() && sensitiveIO::IsPositiveInteger($redirectlink->getInternalLink())) {
-					$rootPage = new CMS_page($redirectlink->getInternalLink());
-					$redirectlink = $rootPage->getRedirectLink(true);
-				}
-				$pPath = $rootPage->getHTMLURL(false, false, PATH_RELATIVETO_FILESYSTEM);
-				if ($pPath) {
-					$redirectionCode = CMS_page::redirectionCode($pPath);
-					// write specific redirection file
-					$rootPath = PATH_PAGES_WR."/".SensitiveIO::sanitizeURLString($website->getLabel());
-					$indexPath = PATH_REALROOT_FS.'/'.$rootPath;
-					$fp = @fopen($indexPath . "/".$filename, "wb");
-					if (is_resource($fp)) {
-						fwrite($fp, $redirectionCode);
-						fclose($fp);
-						@chmod($indexPath."/".$filename, octdec(FILES_CHMOD));
-					}
-					//and append content to general redirection file
-					$content .= ($count) ? 'else' : '';
-					$content .= 'if (strtolower(parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST)) == \''.io::strtolower($website->getURL(false)).'\' || strtolower($_SERVER[\'HTTP_HOST\']) == \''.io::strtolower($website->getURL(false)).'\') {'."\n";
-					$content .= '	// '.$website->getURL();
-					$content .= str_replace(array('<?php','?>'), "", $redirectionCode)."\n";
-					$content .= '} ';
-					$count++;
-				}
-			}
-			if ($website->isMain()) {
-				$mainWebsite = $website;
-			}
-		}
-		if ($mainWebsite) {
-			$rootPage = $mainWebsite->getRoot();
-			//redirect to subpage if any
-			$redirectlink = $rootPage->getRedirectLink(true);
-			while ($redirectlink->hasValidHREF() && sensitiveIO::IsPositiveInteger($redirectlink->getInternalLink())) {
-				$rootPage = new CMS_page($redirectlink->getInternalLink());
-				$redirectlink = $rootPage->getRedirectLink(true);
-			}
-			$pPath = $rootPage->getHTMLURL(false, false, PATH_RELATIVETO_FILESYSTEM);
-			$redirectionCode = CMS_page::redirectionCode($pPath);
-			// write specific redirection file
-			$indexPath = PATH_REALROOT_FS.'/'.PATH_PAGES_WR;
-			$fp = @fopen($indexPath . "/".$filename, "wb");
-			if (is_resource($fp)) {
-				fwrite($fp, $redirectionCode);
-				fclose($fp);
-				@chmod($indexPath."/".$filename, octdec(FILES_CHMOD));
-			}
-			//and append content to general redirection file
-			if ($content) {
-				$content .= 'else {'."\n";
-				$content .= '	// '.$mainWebsite->getURL();
-				$content .= str_replace(array('<?php','?>'), "", $redirectionCode);
-				$content .= '} ';
-			} else {
-				$content .= '// '.$mainWebsite->getURL();
-				$content .= str_replace(array('<?php','?>'), "", $redirectionCode);
-			}
-		}
-		//append php tags
 		$content = '<?php'."\n".
-		'//rewrite some server conf if HTTP_X_FORWARDED exists'."\n".
-		'if (isset($_SERVER["HTTP_X_FORWARDED_HOST"])) {'."\n".
-		'	$_SERVER["HTTP_HOST"] = $_SERVER["HTTP_X_FORWARDED_HOST"];'."\n".
+		'//Generated on '.date('r').' by '.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION."\n".
+		'require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");'."\n".
+		'$httpHost = @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) ? @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) : $_SERVER[\'HTTP_HOST\'];'."\n".
+		'//search page id by domain address'."\n".
+		'$website = CMS_websitesCatalog::getWebsiteFromDomain($httpHost);'."\n".
+		'if (!$website) {'."\n".
+		'	$website = CMS_websitesCatalog::getMainWebsite();'."\n".
 		'}'."\n".
-		'if (isset($_SERVER["HTTP_X_FORWARDED_SERVER"])) {'."\n".
-		'	$_SERVER["HTTP_SERVER"] = $_SERVER["HTTP_X_FORWARDED_SERVER"];'."\n".
+		'$rootPage = $website->getRoot();'."\n".
+		'//redirect to subpage if any'."\n".
+		'$redirectlink = $rootPage->getRedirectLink(true);'."\n".
+		'while ($redirectlink->hasValidHREF() && sensitiveIO::IsPositiveInteger($redirectlink->getInternalLink())) {'."\n".
+		'	$rootPage = new CMS_page($redirectlink->getInternalLink());'."\n".
+		'	$redirectlink = $rootPage->getRedirectLink(true);'."\n".
 		'}'."\n".
-		$content.'?>';
+		'$pPath = $rootPage->getHTMLURL(false, false, PATH_RELATIVETO_FILESYSTEM);'."\n".
+		'if ($pPath) {'."\n".
+		'	if (file_exists($pPath)) {'."\n".
+		'		$cms_page_included = true;'."\n".
+		'		require($pPath);'."\n".
+		'		exit;'."\n".
+		'	}'."\n".
+		'}'."\n".
+		'header(\'HTTP/1.x 301 Moved Permanently\', true, 301);'."\n".
+		'header(\'Location: \'.PATH_SPECIAL_PAGE_NOT_FOUND_WR.\'\');'."\n".
+		'?>';
 		//and write general redirection file
 		$indexPath = PATH_REALROOT_FS;
 		$fp = @fopen($indexPath . "/".$filename, "wb");

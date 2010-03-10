@@ -1558,4 +1558,8 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1600, 'standard', 'fr', 'Attention, vous avez s&eacute;lectionn&eacute; un mod&egrave;le incompatible avec le mod&egrave;le employ&eacute; actuellement : Le mod&egrave;le s&eacute;lectionn&eacute; ne contient pas les m&ecirc;mes zones de contenu que le mod&egrave;le original.<br /><br />Si vous validez ce changement, vous risquez de perdre certains contenus de la page.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1601, 'standard', 'fr', 'Erreur lors de la régénération de la page ...');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1602, 'standard', 'fr', 'Erreur sur %s régénération de pages.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1603, 'standard', 'fr', 'Domaines alternatifs');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1604, 'standard', 'fr', 'Les domaines alternatifs sont des domaines qu\'Automne pointera aussi vers le site. Séparez les adresses des domaines par un point virgule. Exemple : http://alt-domain.tld;http://www.alt-domain.tld');
+
+
 
