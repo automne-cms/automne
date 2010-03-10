@@ -1,6 +1,8 @@
 V4.0.1 (in progress)
+[BUG] : Corrected bugs : 265, 268, 283, 284, 302, 282, 280, 296, 304
 [REFACTOR] : update Automne copyright dates
 [FEATURE] : update Zend Framework to version 1.10.2
+[FEATURE] : Add alternative domains management for websites.
 
 V4.0.0 (18/01/10)
 [BUG] : Lots of minor bugs corrected
