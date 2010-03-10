@@ -354,3 +354,8 @@ img.atm-block-on {
 	width:				100%;
 	z-index:			15000;
 }
+.atm-ipsum {
+    background:  		url(/automne/admin/img/ipsum.png) repeat;
+	border:				0px !important;
+	display:			inline !important;
+}

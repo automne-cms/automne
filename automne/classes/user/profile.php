@@ -241,16 +241,6 @@ class CMS_profile extends CMS_grandFather
 	{
 		return $this->_id;
 	}
-	/**
-	  * Get Id
-	  *
-	  * @return integer
-	  * @access public
-	  */
-	function getID()
-	{
-		return $this->_id;
-	}
 	
 	/**
 	  * Sets Administration Clearance
