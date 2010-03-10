@@ -1,5 +1,5 @@
 V4.0.1 (in progress)
-[BUG] : Corrected bugs : 265, 268, 283, 284, 302, 282, 280, 296, 304 (see http://www.automne.ws/bug/)
+[BUG] : Corrected bugs : 286, 265, 268, 283, 284, 302, 282, 280, 296, 304 (see http://www.automne.ws/bug/)
 [REFACTOR] : update Automne copyright dates
 [REFACTOR] : add a background image on lorem ipsum text to help non latin natives to identify it
 [REFACTOR] : do some optimisation on administration images
