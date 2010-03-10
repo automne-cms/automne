@@ -52,6 +52,13 @@ class CMS_website extends CMS_grandFather
 	protected $_url;
 
 	/**
+	  * Alternative domains of the website
+	  * @var string
+	  * @access private
+	  */
+	protected $_altdomains;
+
+	/**
 	  * Root page.
 	  * @var CMS_page
 	  * @access private
@@ -121,6 +128,7 @@ class CMS_website extends CMS_grandFather
 					$this->_id = $id;
 					$this->_label = $data["label_web"];
 					$this->_url = $data["url_web"];
+					$this->_altdomains = $data["altdomains_web"];
 					$this->_root = new CMS_page($data["root_web"]);
 					$this->_order = $data["order_web"];
 					//the main website has The main page (ID 1) as root
@@ -147,6 +155,7 @@ class CMS_website extends CMS_grandFather
 				$this->_id = $id;
 				$this->_label = $applicationWebroot->_label;
 				$this->_url = $applicationWebroot->_url;
+				$this->_altdomains = $applicationWebroot->_altdomains;
 				$this->_root = $applicationWebroot->_root;
 				$this->_order = $applicationWebroot->_order;
 				$this->_isMain = $applicationWebroot->_isMain;
@@ -288,6 +297,59 @@ class CMS_website extends CMS_grandFather
 		} else {
 			return false;
 		}
+	}
+	
+	/**
+	  * Gets the alternatives domains (including http://).
+	  *
+	  * @return array the URL of alternatives domains
+	  * @access public
+	  */
+	function getAltDomains($includeHTTP = true)
+	{
+		if (!$this->_altdomains) {
+			return array();
+		}
+		$domains = explode(';', $this->_altdomains);
+		$return = array();
+		foreach ($domains as $domain) {
+			if ($includeHTTP) {
+				$return[] = (io::substr($domain,0,4) != 'http') ? "http://".$domain : $domain;
+			} else {
+				$return[] = (io::substr($domain,0,4) != 'http') ? $domain : io::substr($domain,7);
+			}
+		}
+		return $return;
+	}
+	
+	/**
+	  * Sets the alternatives domains url. Can be empty. Will be riden of http://.
+	  *
+	  * @param string $url The url to set
+	  * @return boolean true on success, false on failure.
+	  * @access public
+	  */
+	function setAltDomains($domains)
+	{
+		if (!$domains) {
+			$this->_altdomains = '';
+			return true;
+		}
+		$this->_altdomains = '';
+		$domains = explode(';', $domains);
+		foreach ($domains as $domain) {
+			if (io::substr($domain, 0, 7) == "http://") {
+				$domain = io::substr($domain, 7);
+			}
+			if ($domain) {
+				$this->_altdomains .= $this->_altdomains ? ';' : '';
+				if (io::substr($domain, io::strlen($domain) - 1) == "/") {
+					$domain = io::substr($domain, 0, -1);
+				}
+				$this->_altdomains .= $domain;
+			}
+		}
+		return true;
 	}
 	
 	/**
@@ -441,6 +503,7 @@ class CMS_website extends CMS_grandFather
 		$sql_fields = "
 			label_web='".SensitiveIO::sanitizeSQLString($this->_label)."',
 			url_web='".SensitiveIO::sanitizeSQLString($this->_url)."',
+			altdomains_web='".SensitiveIO::sanitizeSQLString($this->_altdomains)."',
 			root_web='".$this->_root->getID()."',
 			keywords_web='".SensitiveIO::sanitizeSQLString($this->_meta['keywords'])."',
 			description_web='".SensitiveIO::sanitizeSQLString($this->_meta['description'])."',

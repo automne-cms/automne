@@ -1670,3 +1670,5 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1600, 'standard', 'en', 'Attention you have selected a model incompatible with the model currently used: The model chosen does not contain the same content areas as the original model.<br / ><br />If you commit this change, you may lose some page content.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1601, 'standard', 'en', 'Error during page regeneration...');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1602, 'standard', 'en', 'Error on %s pages regeneration.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1603, 'standard', 'en', 'Alternatives domains');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1604, 'standard', 'en', 'Alternatives domains are domains that Automne also points to the site. Separate domains addresses with a semicolon. Example: http://alt-domain.tld; http://www.alt-domain.tld');

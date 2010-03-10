@@ -1552,14 +1552,7 @@ class CMS_tree extends CMS_grandFather
 			$httpHost = @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST'];
 			//search page id by domain address
 			$domain = isset($urlinfo['host']) ? $urlinfo['host'] : $httpHost;
-			//get websites
-			$websites = CMS_websitesCatalog::getAll('order');
-			$domainFounded = false;
-			foreach ($websites as $website) {
-				if ($domainFounded === false && io::strtolower(@parse_url($website->getURL(), PHP_URL_HOST)) == io::strtolower($domain)) {
-					$domainFounded = $website;
-				}
-			}
+			$domainFounded = CMS_websitesCatalog::getWebsiteFromDomain($domain);
 		}
 		//if basename founded
 		if (isset($urlinfo['path']) && $urlinfo['path'] != '/' && $basename && ((isset($pathinfo['extension']) && strtolower($pathinfo['extension']) == 'php') || !isset($pathinfo['extension']))) {
