@@ -28,7 +28,7 @@ Ext.ux.LiveDataPanel = Ext.extend(Ext.Panel, {
 		this.indicatorEl = this.el.createChild({
 			tag: 'div',
 			cls: 'load-indicator',
-			html: '<img src="/automne/admin/img/loading.gif" /><span></span>'
+			html: '<img src="'+ Automne.context.path +'/automne/admin/img/loading.gif" /><span></span>'
 		});
 		this.dv.store.on('load', function(){
 			this.indicatorEl.anchorTo(this.el, 'br-br?', [-25, -10]);

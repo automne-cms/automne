@@ -6,7 +6,7 @@
 .x-panel-header {
     color:#333;
 	border:1px solid #d0d0d0;
-    background-image:				url(/automne/admin/img/panel/white-top-bottom.gif);
+    background-image:				url(../automne/admin/img/panel/white-top-bottom.gif);
 }
 
 .x-panel-body {
@@ -31,23 +31,23 @@
     color:#333;
 }
 .x-panel-tc {
-	background-image:				url(/automne/admin/img/panel/top-bottom.gif);
+	background-image:				url(../automne/admin/img/panel/top-bottom.gif);
 }
 .x-panel-tl {
-	background-image:				url(/automne/admin/img/panel/corners-sprite.gif);
+	background-image:				url(../automne/admin/img/panel/corners-sprite.gif);
     border-color:#d0d0d0;
 }
 .x-panel-tr {
-	background-image:				url(/automne/admin/img/panel/corners-sprite.gif);
+	background-image:				url(../automne/admin/img/panel/corners-sprite.gif);
 }
 .x-panel-bc {
-	background-image:				url(/automne/admin/img/panel/top-bottom.gif);
+	background-image:				url(../automne/admin/img/panel/top-bottom.gif);
 }
 .x-panel-bl {
-	background-image:				url(/automne/admin/img/panel/corners-sprite.gif);
+	background-image:				url(../automne/admin/img/panel/corners-sprite.gif);
 }
 .x-panel-br {
-	background-image:				url(/automne/admin/img/panel/corners-sprite.gif);
+	background-image:				url(../automne/admin/img/panel/corners-sprite.gif);
 }
 .x-panel-mc {
     background:						#f8f8f8;
@@ -57,10 +57,10 @@
     border: 0 none;
 }
 .x-panel-ml {
-	background-image:				url(/automne/admin/img/panel/left-right.gif);
+	background-image:				url(../automne/admin/img/panel/left-right.gif);
 }
 .x-panel-mr {
-	background-image:				url(/automne/admin/img/panel/left-right.gif);
+	background-image:				url(../automne/admin/img/panel/left-right.gif);
 }
 
 .x-panel a{
@@ -75,7 +75,7 @@
 }
 /* Tools */
 .x-tool {
-    background-image:				url(/automne/admin/img/panel/tool-sprites.gif);
+    background-image:				url(../automne/admin/img/panel/tool-sprites.gif);
 }
 
 /* Ghosting */
@@ -94,13 +94,13 @@
 /* Buttons */
 
 .x-btn-ml{
-	background:						url(/automne/admin/img/button/btn-sprite.gif) no-repeat 0 0;
+	background:						url(../automne/admin/img/button/btn-sprite.gif) no-repeat 0 0;
 }
 .x-btn-mr{
-	background:						url(/automne/admin/img/button/btn-sprite.gif) no-repeat 0 -21px;
+	background:						url(../automne/admin/img/button/btn-sprite.gif) no-repeat 0 -21px;
 }
 .x-btn-mc{
-	background:						url(/automne/admin/img/button/btn-sprite.gif) repeat-x 0 -42px;
+	background:						url(../automne/admin/img/button/btn-sprite.gif) repeat-x 0 -42px;
 }
 .x-btn-noicon .x-btn-small .x-btn-text,
 .x-btn-text-icon .x-btn-icon-small-left .x-btn-text{
@@ -143,7 +143,7 @@
     background:						#f3f3f3;
 }
 .x-accordion-hd {
-	background-image:url(/automne/ext/resources/images/gray/panel/light-hd.gif);
+	background-image:url(../automne/ext/resources/images/gray/panel/light-hd.gif);
 }
 .x-layout-collapsed{
     background-color:#eee;
@@ -158,120 +158,120 @@
 	filter:							none;
 }
 .x-layout-split-west .x-layout-mini {
-    background-image:				url(/automne/admin/img/layout/mini-left.gif);
+    background-image:				url(../automne/admin/img/layout/mini-left.gif);
 }
 .x-layout-split-east .x-layout-mini {
-    background-image:				url(/automne/admin/img/layout/mini-right.gif);
+    background-image:				url(../automne/admin/img/layout/mini-right.gif);
 }
 .x-layout-cmini-east .x-layout-mini {
-	background-image:				url(/automne/admin/img/layout/mini-left.gif);
+	background-image:				url(../automne/admin/img/layout/mini-left.gif);
 }
 
 /* qtips */
 .x-tip .x-tip-tl{
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-tr{
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-tc{
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-ml{
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-mr{
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-mc{
 	padding:						5px;
 }
 .x-tip .x-tip-bl{
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-br{
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-bc{
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-top {
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-top-left {
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-top-right {
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-ft {
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-ft-left {
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-ft-right {
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-bd-left {
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-bd-right {
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 /* x-tip-with-title */
 .x-tip-with-title .x-tip-tl{
-	background-image:				url(/automne/admin/img/qtip/tip-sprite-with-title.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite-with-title.gif);
 }
 .x-tip-with-title .x-tip-tr{
-	background-image:				url(/automne/admin/img/qtip/tip-sprite-with-title.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite-with-title.gif);
 }
 .x-tip-with-title .x-tip-tc{
-	background-image:				url(/automne/admin/img/qtip/tip-sprite-with-title.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite-with-title.gif);
 	padding:						5px 5px 6px;
 }
 .x-tip-with-title .x-tip-ml{
-	background-image:				url(/automne/admin/img/qtip/tip-sprite-with-title.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite-with-title.gif);
 }
 .x-tip-with-title .x-tip-mr{
-	background-image:				url(/automne/admin/img/qtip/tip-sprite-with-title.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite-with-title.gif);
 }
 
 
 
 #publicTip .x-tip-tl{
-	background-image:				url(/automne/admin/img/qtip/tip-sprite-publicTip.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite-publicTip.gif);
 }
 #publicTip .x-tip-tr{
-	background-image:				url(/automne/admin/img/qtip/tip-sprite-publicTip.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite-publicTip.gif);
 }
 #publicTip .x-tip-tc{
-	background-image:				url(/automne/admin/img/qtip/tip-sprite-publicTip.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite-publicTip.gif);
 	background-position:			0px -130px;
 	padding:						5px 0px 6px 0px;
 }
 #publicTip .x-tip-ml{
-	background-image:				url(/automne/admin/img/qtip/tip-sprite-publicTip.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite-publicTip.gif);
 	background-position:			0px -260px;
 }
 #publicTip .x-tip-mr{
-	background-image:				url(/automne/admin/img/qtip/tip-sprite-publicTip.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite-publicTip.gif);
 	background-position:			right -260px;
 }
 #publicTip .x-tip-mc{
-	background-image:				url(/automne/admin/img/qtip/tip-sprite-publicTip.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite-publicTip.gif);
 	background-position:			-6px -260px;
 }
 #publicTip .x-tip-bl{
-	background-image:				url(/automne/admin/img/qtip/tip-sprite-publicTip.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite-publicTip.gif);
 	background-position:			0px -127px;
 }
 #publicTip .x-tip-br{
-	background-image:				url(/automne/admin/img/qtip/tip-sprite-publicTip.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite-publicTip.gif);
 	background-position:			right -127px;
 }
 #publicTip .x-tip-bc{
-	background-image:				url(/automne/admin/img/qtip/tip-sprite-publicTip.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite-publicTip.gif);
 	background-position:			0px -257px;
 }
 #tip-header-img{
@@ -286,73 +286,73 @@
 	float:							left;
 }
 .x-tip .x-tip-top {
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-top-left {
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-top-right {
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-ft {
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-ft-left {
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-ft-right {
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-bd-left {
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 .x-tip .x-tip-bd-right {
-	background-image:				url(/automne/admin/img/qtip/tip-sprite.gif);
+	background-image:				url(../automne/admin/img/qtip/tip-sprite.gif);
 }
 .x-form-invalid-tip .x-tip-body {
-    background-image:				url(/automne/admin/img/form/exclamation.gif);
+    background-image:				url(../automne/admin/img/form/exclamation.gif);
 }
 
 /* Toolbars */
 
 .x-toolbar{
 	border-color:#d0d0d0;
-    background:#f0f4f5 url(/automne/ext/resources/images/gray/toolbar/bg.gif) repeat-x top left;
+    background:#f0f4f5 url(../automne/ext/resources/images/gray/toolbar/bg.gif) repeat-x top left;
 }
 .x-toolbar button {
     color:#444;
 }
 .x-toolbar .x-btn-menu-arrow-wrap .x-btn-mc button {
-    background-image:				url(/automne/admin/img/toolbar/btn-arrow.gif);
+    background-image:				url(../automne/admin/img/toolbar/btn-arrow.gif);
 }
 .x-toolbar .x-btn-text-icon .x-btn-menu-arrow-wrap .x-btn-mc button {
-    background-image:				url(/automne/admin/img/toolbar/btn-arrow.gif);
+    background-image:				url(../automne/admin/img/toolbar/btn-arrow.gif);
 }
 /*
 .x-toolbar .x-btn-ml{
-	background-image:				url(/automne/admin/img/toolbar/tb-btn-sprite.gif);
+	background-image:				url(../automne/admin/img/toolbar/tb-btn-sprite.gif);
 	background-position:			0pt 0px;
 	height:							22px;
 }
 .x-toolbar .x-btn-mr{
-	background-image:				url(/automne/admin/img/toolbar/tb-btn-sprite.gif);
+	background-image:				url(../automne/admin/img/toolbar/tb-btn-sprite.gif);
 	background-position:			0pt -22px;
 	height:							22px;
 }
 .x-toolbar .x-btn-mc{
-	background-image:				url(/automne/admin/img/toolbar/tb-btn-sprite.gif);
+	background-image:				url(../automne/admin/img/toolbar/tb-btn-sprite.gif);
 	background-position:			0pt -44px;
 }
 .x-toolbar .x-btn-over .x-btn-ml{
-	background-image:				url(/automne/admin/img/toolbar/tb-btn-sprite.gif);
+	background-image:				url(../automne/admin/img/toolbar/tb-btn-sprite.gif);
 	background-position:			0pt -66px;
 }
 .x-toolbar .x-btn-over .x-btn-mr{
-	background-image:				url(/automne/admin/img/toolbar/tb-btn-sprite.gif);
+	background-image:				url(../automne/admin/img/toolbar/tb-btn-sprite.gif);
 	background-position:			0pt -88px;
 }
 .x-toolbar .x-btn-over .x-btn-mc{
-	background-image:				url(/automne/admin/img/toolbar/tb-btn-sprite.gif);
+	background-image:				url(../automne/admin/img/toolbar/tb-btn-sprite.gif);
 	background-position:			0pt -110px;
 }
 */
@@ -360,61 +360,61 @@
 	margin:							0px 2px;
 }
 .x-toolbar .x-btn-ml{
-	background-image:				url(/automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
+	background-image:				url(../automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
 	background-position:			0pt 0px;
 	height:							24px;
 }
 .x-toolbar .x-btn-mr{
-	background-image:				url(/automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
+	background-image:				url(../automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
 	background-position:			0pt -24px;
 }
 .x-toolbar .x-btn-mc{
-	background-image:				url(/automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
+	background-image:				url(../automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
 	background-position:			0pt -48px;
 	height:							24px;
 }
 .x-toolbar .x-btn-over .x-btn-ml{
-	background-image:				url(/automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
+	background-image:				url(../automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
 	background-position:			0pt -72px;
 }
 .x-toolbar .x-btn-over .x-btn-mr{
-	background-image:				url(/automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
+	background-image:				url(../automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
 	background-position:			0pt -96px;
 }
 .x-toolbar .x-btn-over .x-btn-mc{
-	background-image:				url(/automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
+	background-image:				url(../automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
 	background-position:			0pt -120px;
 }
 .x-toolbar .x-btn-over button {
     color:#111;
 }
 .x-toolbar .x-btn-click .x-btn-ml{
-	background-image:				url(/automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
+	background-image:				url(../automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
 	background-position:			0pt -144px;
 }
 .x-toolbar .x-btn-click .x-btn-mr{
-	background-image:				url(/automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
+	background-image:				url(../automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
 	background-position:			0pt -168px;
 }
 .x-toolbar .x-btn-click .x-btn-mc{
-	background-image:				url(/automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
+	background-image:				url(../automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
 	background-position:			0pt -192px;
 }
 #validation-actions .x-toolbar .x-btn-click .x-btn-ml, .x-toolbar .x-btn-pressed .x-btn-ml, .x-toolbar .x-btn-menu-active .x-btn-ml{
-	background-image:				url(/automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
+	background-image:				url(../automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
 	background-position:			0pt -144px;
 }
 #validation-actions .x-toolbar .x-btn-click .x-btn-mr, .x-toolbar .x-btn-pressed .x-btn-mr, .x-toolbar .x-btn-menu-active .x-btn-mr{
-	background-image:				url(/automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
+	background-image:				url(../automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
 	background-position:			0pt -168px;
 }
 
 #validation-actions .x-toolbar .x-btn-click .x-btn-mc, .x-toolbar .x-btn-pressed .x-btn-mc, .x-toolbar .x-btn-menu-active .x-btn-mc{
-	background-image:				url(/automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
+	background-image:				url(../automne/admin/img/toolbar/tb-btn-sprite-valid.gif);
 	background-position:			0pt -192px;
 }
 .x-toolbar .ytb-sep, .x-toolbar .xtb-sep {
-	background-image: url(/automne/ext/resources/images/default/grid/grid-split.gif);
+	background-image: url(../automne/ext/resources/images/default/grid/grid-split.gif);
 }
 
 /* Tabs */
@@ -434,15 +434,15 @@
 }
 
 ul.x-tab-strip-top{
-	background:#dbdbdb url(/automne/admin/img/tabs/tab-strip-bg.gif) repeat-x left top;
+	background:#dbdbdb url(../automne/admin/img/tabs/tab-strip-bg.gif) repeat-x left top;
 	border-color:#d0d0d0;
     padding-top: 2px;
 }
 .x-tab-panel-header-plain .x-tab-strip-top{
-	background:#edfad8 url(/automne/admin/img/tabs/tab-strip-bg.gif) repeat-x left top !important;
+	background:#edfad8 url(../automne/admin/img/tabs/tab-strip-bg.gif) repeat-x left top !important;
 }
 ul.x-tab-strip-bottom{
-	background-image:url(/automne/ext/resources/images/gray/tabs/tab-strip-btm-bg.gif);
+	background-image:url(../automne/ext/resources/images/gray/tabs/tab-strip-btm-bg.gif);
 	border-color:#d0d0d0;
 }
 
@@ -473,15 +473,15 @@ ul.x-tab-strip-bottom{
 }
 
 .x-tab-strip-top .x-tab-right {
-	background-image:				url(/automne/admin/img/tabs/tabs-sprite.gif);
+	background-image:				url(../automne/admin/img/tabs/tabs-sprite.gif);
 }
 
 .x-tab-strip-top .x-tab-left {
-	background-image:				url(/automne/admin/img/tabs/tabs-sprite.gif);
+	background-image:				url(../automne/admin/img/tabs/tabs-sprite.gif);
 	padding-right:					6px;
 }
 .x-tab-strip-top .x-tab-strip-inner {
-	background-image:				url(/automne/admin/img/tabs/tabs-sprite.gif);
+	background-image:				url(../automne/admin/img/tabs/tabs-sprite.gif);
 }
 /* a effacer en remettant les valeurs de s x-tab-strip-over */
 .x-tab-strip-top .x-tab-strip-over .x-tab-right{
@@ -495,46 +495,46 @@ ul.x-tab-strip-bottom{
 	background-repeat: repeat-x;
 }
 .x-tab-strip-top .x-tab-strip-hatch .x-tab-strip-inner{
-	background-image:				url(/automne/admin/img/tabs/tabs-sprite-hatch.gif);
+	background-image:				url(../automne/admin/img/tabs/tabs-sprite-hatch.gif);
 	background-position:			left -50px;
 }
 /*
 .x-tab-strip-top .x-tab-strip-hatch.x-tab-strip-over .x-tab-strip-inner{
-	background-image:				url(/automne/admin/img/tabs/tabs-sprite-hatch.gif);
+	background-image:				url(../automne/admin/img/tabs/tabs-sprite-hatch.gif);
 	background-position:			left top;	
 }
 */
 .x-tab-strip-top .x-tab-strip-hatch.x-tab-strip-active .x-tab-strip-inner{
-	background-image:				url(/automne/admin/img/tabs/tabs-sprite-hatch.gif);
+	background-image:				url(../automne/admin/img/tabs/tabs-sprite-hatch.gif);
 	background-position:			left -100px;
 }
 .x-tab-strip-bottom .x-tab-right {
-	background-image:url(/automne/ext/resources/images/gray/tabs/tab-btm-inactive-right-bg.gif);
+	background-image:url(../automne/ext/resources/images/gray/tabs/tab-btm-inactive-right-bg.gif);
 }
 
 .x-tab-strip-bottom .x-tab-left {
-	background-image:url(/automne/ext/resources/images/gray/tabs/tab-btm-inactive-left-bg.gif);
+	background-image:url(../automne/ext/resources/images/gray/tabs/tab-btm-inactive-left-bg.gif);
 }
 
 .x-tab-strip-bottom .x-tab-strip-active .x-tab-right {
-	background-image:url(/automne/ext/resources/images/gray/tabs/tab-btm-right-bg.gif);
+	background-image:url(../automne/ext/resources/images/gray/tabs/tab-btm-right-bg.gif);
 }
 
 .x-tab-strip-bottom .x-tab-strip-active .x-tab-left {
-	background-image:url(/automne/ext/resources/images/gray/tabs/tab-btm-left-bg.gif);
+	background-image:url(../automne/ext/resources/images/gray/tabs/tab-btm-left-bg.gif);
 }
 .x-tab-strip .x-tab-strip-closable a.x-tab-strip-close {
-	background-image:url(/automne/ext/resources/images/gray/tabs/tab-close.gif);
+	background-image:url(../automne/ext/resources/images/gray/tabs/tab-close.gif);
 }
 .x-tab-strip .x-tab-strip-closable a.x-tab-strip-close:hover{
-	background-image:url(/automne/ext/resources/images/gray/tabs/tab-close.gif);
+	background-image:url(../automne/ext/resources/images/gray/tabs/tab-close.gif);
 }
 .x-tab-strip-reloadable{position:relative;}
 .x-tab-strip-reloadable .x-tab-left{padding-right:19px;}
-.x-tab-strip a.x-tab-strip-reload{background-image:url(/automne/admin/img/tabs/tab-reload.gif);opacity:0;-moz-opacity:0;background-repeat:no-repeat;display:none;width:0;height:0;position:absolute;top:3px;right:3px;cursor:pointer;z-index:2;}
+.x-tab-strip a.x-tab-strip-reload{background-image:url(../automne/admin/img/tabs/tab-reload.gif);opacity:0;-moz-opacity:0;background-repeat:no-repeat;display:none;width:0;height:0;position:absolute;top:3px;right:3px;cursor:pointer;z-index:2;}
 .x-tab-strip-reloadable  a.x-tab-strip-reload{display:block;}
 .x-tab-strip .x-tab-strip-active a.x-tab-strip-reload{opacity:.8;-moz-opacity:.8;width:11px;height:11px;}
-.x-tab-strip .x-tab-strip-active a.x-tab-strip-reload:hover{background-image:url(/automne/admin/img/tabs/tab-reload.gif);opacity:1;-moz-opacity:1;}
+.x-tab-strip .x-tab-strip-active a.x-tab-strip-reload:hover{background-image:url(../automne/admin/img/tabs/tab-reload.gif);opacity:1;-moz-opacity:1;}
 
 .x-tab-panel-body {
     border-color:#d0d0d0;
@@ -554,11 +554,11 @@ ul.x-tab-strip-bottom{
 }
 
 .x-tab-scroller-left{
-    background-image: 				url(/automne/admin/img/tabs/scroll-left.gif);
+    background-image: 				url(../automne/admin/img/tabs/scroll-left.gif);
     border-color:#aeaeae;
 }
 .x-tab-scroller-right{
-    background-image: 				url(/automne/admin/img/tabs/scroll-right.gif);
+    background-image: 				url(../automne/admin/img/tabs/scroll-right.gif);
     border-color:#aeaeae;
 }
 
@@ -573,32 +573,32 @@ ul.x-tab-strip-bottom{
     color:#4B7800; /*#555;*/
 }
 .x-window-tc {
-	background-image:				url(/automne/admin/img/window/top-bottom.gif);
+	background-image:				url(../automne/admin/img/window/top-bottom.gif);
 }
 .x-window-tl {
-	background-image:				url(/automne/admin/img/window/left-corners.gif);
+	background-image:				url(../automne/admin/img/window/left-corners.gif);
 }
 .x-window-tr {
-	background-image:				url(/automne/admin/img/window/right-corners.gif);
+	background-image:				url(../automne/admin/img/window/right-corners.gif);
 }
 .x-window-bc {
-	background-image:				url(/automne/admin/img/window/top-bottom.gif);
+	background-image:				url(../automne/admin/img/window/top-bottom.gif);
 }
 .x-window-bl {
-	background-image:				url(/automne/admin/img/window/left-corners.gif);
+	background-image:				url(../automne/admin/img/window/left-corners.gif);
 }
 .x-window-br {
-	background-image:				url(/automne/admin/img/window/right-corners.gif);
+	background-image:				url(../automne/admin/img/window/right-corners.gif);
 }
 .x-window-mc {
     border:							1px solid #ACB5B9;
     background:#e8e8e8;
 }
 .x-window-ml {
-	background-image:				url(/automne/admin/img/window/left-right.gif);
+	background-image:				url(../automne/admin/img/window/left-right.gif);
 }
 .x-window-mr {
-	background-image:				url(/automne/admin/img/window/left-right.gif);
+	background-image:				url(../automne/admin/img/window/left-right.gif);
 }
 .x-panel-ghost .x-window-tl {
     border-color:#d0d0d0;
@@ -721,14 +721,14 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 
 }
 #sidePanel #headPanelContent{
-	background:						url(/automne/admin/img/panel/headPanel.gif) no-repeat top left;
+	background:						url(../automne/admin/img/panel/headPanel.gif) no-repeat top left;
 	height:							148px;
 	position:						absolute;
 	width:							290px;
 	z-index:						100;
 }
 #headPanelSite{
-	background:						url(/automne/admin/img/panel/top-bullet.gif) no-repeat 21px 14px;
+	background:						url(../automne/admin/img/panel/top-bullet.gif) no-repeat 21px 14px;
 	color:							#7c8589;
 	font-size:						11px;
 	font-weight:					bold;
@@ -738,7 +738,7 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 	width:							165px;
 }
 #headPanelClient{
-	background:						url(/automne/admin/img/panel/client-bullet.gif) no-repeat 27px 8px;
+	background:						url(../automne/admin/img/panel/client-bullet.gif) no-repeat 27px 8px;
 	color:							#7c8589;
 	font-size:						10px;
 	font-weight:					bold;
@@ -760,7 +760,7 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 	position:						absolute;
 }
 #headPanelStick{
-	background:						url(/automne/admin/img/layout/stick.gif) no-repeat top left;
+	background:						url(../automne/admin/img/layout/stick.gif) no-repeat top left;
 	bottom:							8px;
 	cursor:							pointer;
 	height:							12px;
@@ -770,10 +770,10 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 }
 #headPanelStick.over,
 #headPanelStick.pinned{
-	background:						url(/automne/admin/img/layout/stuck.gif) no-repeat top left;
+	background:						url(../automne/admin/img/layout/stuck.gif) no-repeat top left;
 }
 #headPanelLogout{
-	background:						url(/automne/admin/img/panel/headPanelLogoutOff.gif) no-repeat bottom right;
+	background:						url(../automne/admin/img/panel/headPanelLogoutOff.gif) no-repeat bottom right;
 	bottom:							8px;
 	cursor:							pointer;
 	right:							30px;
@@ -781,7 +781,7 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 	position:						absolute;
 }
 #headPanelLogout.over{
-	background:						url(/automne/admin/img/panel/headPanelLogoutOn.gif) no-repeat bottom right;
+	background:						url(../automne/admin/img/panel/headPanelLogoutOn.gif) no-repeat bottom right;
 }
 #headPanelAutomneHelp{
 	bottom:							10px;
@@ -790,14 +790,14 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 	position:						absolute;
 	height:							20px;
 	width:							20px;
-	background:						url(/automne/admin/img/help-off.png) no-repeat bottom right;
+	background:						url(../automne/admin/img/help-off.png) no-repeat bottom right;
 }
 #headPanelAutomneHelp.over{
-	background:						url(/automne/admin/img/help.gif) no-repeat bottom right;
+	background:						url(../automne/admin/img/help.gif) no-repeat bottom right;
 }
 .help-window {
 	padding:						8px;
-	background:						#FFFFFF url(/automne/admin/img/logo_small.gif) 450px 5px no-repeat;
+	background:						#FFFFFF url(../automne/admin/img/logo_small.gif) 450px 5px no-repeat;
 }
 .help-window fieldset{
 	padding:						6px;
@@ -853,111 +853,111 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 	clear:							left;
 }
 #sidePanel .atm-validations{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -388px;
 }
 #sidePanel .atm-delete{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -244px;
 }
 #sidePanel .atm-order{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -1132px;
 }
 #sidePanel .atm-move{
-	background-image:				url(/automne/admin/img/status/tiny/mouvalider.gif);
+	background-image:				url(../automne/admin/img/status/tiny/mouvalider.gif);
 }
 #sidePanel .atm-favorite{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -700px;
 }
 #sidePanel .atm-archives{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -724px;
 }
 #sidePanel .atm-duplicate-branch{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -748px;
 }
 #sidePanel .atm-profile{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -772px;
 }
 #sidePanel .atm-users{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -796px;
 }
 #sidePanel .atm-groups{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -820px;
 }
 #sidePanel .atm-templates{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -844px;
 }
 #sidePanel .atm-rows{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -868px;
 }
 #sidePanel .atm-styles{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -892px;
 }
 #sidePanel .atm-wysiwyg-styles{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -916px;
 }
 #sidePanel .atm-wysiwyg-toolbar{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -940px;
 }
 #sidePanel .atm-scripts{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -964px;
 }
 #sidePanel .atm-logs{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -988px;
 }
 #sidePanel .atm-websites{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -1012px;
 }
 #sidePanel .atm-languages{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -1036px;
 }
 #sidePanel .atm-server{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -1060px;
 }
 #sidePanel .atm-parameters{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -1084px;
 }
 #sidePanel .atm-modules{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -1108px;
 }
 #sidePanel .atm-elements{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -1132px;
 }
 #sidePanel .atm-elements{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -1156px;
 }
 #sidePanel .atm-categories{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -1180px;
 }
 #sidePanel .atm-database{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			left -1204px;
 }
 
 #sidePanel .x-panel-header{
-	background:						url(/automne/admin/img/panel/top-bullet.gif) no-repeat 0px 9px;
+	background:						url(../automne/admin/img/panel/top-bullet.gif) no-repeat 0px 9px;
 	padding-left:					13px;
 }
 #sidePanel .x-panel-ml ul{
@@ -979,129 +979,129 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 }
 /* forms */
 .x-form-field-wrap .x-form-trigger{
-    background-image:				url(/automne/admin/img/form/trigger.gif);
+    background-image:				url(../automne/admin/img/form/trigger.gif);
 }
 .x-form-field-wrap .x-form-date-trigger{
-    background-image: 				url(/automne/admin/img/form/date-trigger.gif);
+    background-image: 				url(../automne/admin/img/form/date-trigger.gif);
 }
 .x-form-field-wrap .x-form-clear-trigger{
-    background-image: 				url(/automne/admin/img/form/clear-trigger.gif);
+    background-image: 				url(../automne/admin/img/form/clear-trigger.gif);
 }
 .x-form-field-wrap .x-form-search-trigger{
-    background-image: 				url(/automne/admin/img/form/search-trigger.gif);
+    background-image: 				url(../automne/admin/img/form/search-trigger.gif);
 }
 .x-form-text, textarea.x-form-field{
-    background-image: 				url(/automne/admin/img/form/text-bg.gif);
+    background-image: 				url(../automne/admin/img/form/text-bg.gif);
 }
 .x-form-focus, textarea.x-form-focus{
 	background:						#eefae0;
 	border-color:					#96a0a5;
 }
 .x-form-invalid, textarea.x-form-invalid {
-	background-image:				url(/automne/ext/resources/images/default/grid/invalid_line.gif);
+	background-image:				url(../automne/ext/resources/images/default/grid/invalid_line.gif);
 	background-repeat:				repeat-x;
 	background-position:			center bottom;
 }
 .x-form-invalid-icon {
-    background-image:				url(/automne/admin/img/form/exclamation.gif);
+    background-image:				url(../automne/admin/img/form/exclamation.gif);
 }
 .x-form-invalid-tip .x-tip-tc {
-	background-image: 				url(/automne/admin/img/form/error-tip-corners.gif);
+	background-image: 				url(../automne/admin/img/form/error-tip-corners.gif);
 }
 .x-form-invalid-tip .x-tip-tl {
-	background-image: 				url(/automne/admin/img/form/error-tip-corners.gif);
+	background-image: 				url(../automne/admin/img/form/error-tip-corners.gif);
 }
 .x-form-invalid-tip .x-tip-tr {
-	background-image: 				url(/automne/admin/img/form/error-tip-corners.gif);
+	background-image: 				url(../automne/admin/img/form/error-tip-corners.gif);
 }
 .x-form-invalid-tip .x-tip-bc {
-	background-image: 				url(/automne/admin/img/form/error-tip-corners.gif);
+	background-image: 				url(../automne/admin/img/form/error-tip-corners.gif);
 }
 .x-form-invalid-tip .x-tip-bl {
-	background-image: 				url(/automne/admin/img/form/error-tip-corners.gif);
+	background-image: 				url(../automne/admin/img/form/error-tip-corners.gif);
 }
 .x-form-invalid-tip .x-tip-br {
-	background-image: 				url(/automne/admin/img/form/error-tip-corners.gif);
+	background-image: 				url(../automne/admin/img/form/error-tip-corners.gif);
 }
 .x-form-invalid-tip .x-tip-ml {
-	background-image: 				url(/automne/admin/img/form/error-tip-corners.gif);
+	background-image: 				url(../automne/admin/img/form/error-tip-corners.gif);
 }
 .x-form-invalid-tip .x-tip-mr {
-	background-image: 				url(/automne/admin/img/form/error-tip-corners.gif);
+	background-image: 				url(../automne/admin/img/form/error-tip-corners.gif);
 }
 .x-form-check {
-	background-image: 				url(/automne/admin/img/form/checkbox.gif);
+	background-image: 				url(../automne/admin/img/form/checkbox.gif);
 }
 .x-form-radio {
-	background-image: 				url(/automne/admin/img/form/radio.gif);
+	background-image: 				url(../automne/admin/img/form/radio.gif);
 }
 /* box */
 .x-box-tl{
-	background:						url(/automne/admin/img/box/corners.gif) no-repeat 0px 0px;
+	background:						url(../automne/admin/img/box/corners.gif) no-repeat 0px 0px;
 }
 .x-box-tr{
-	background:						url(/automne/admin/img/box/corners.gif) no-repeat right -8px;
+	background:						url(../automne/admin/img/box/corners.gif) no-repeat right -8px;
 }
 .x-box-bl{
-	background:						url(/automne/admin/img/box/corners.gif) no-repeat 0px -16px;
+	background:						url(../automne/admin/img/box/corners.gif) no-repeat 0px -16px;
 }
 .x-box-br{
-	background:						url(/automne/admin/img/box/corners.gif) no-repeat right -24px;
+	background:						url(../automne/admin/img/box/corners.gif) no-repeat right -24px;
 }
 .x-box-tc{
-	background:						url(/automne/admin/img/box/tb.gif) repeat-x 0px 0px;
+	background:						url(../automne/admin/img/box/tb.gif) repeat-x 0px 0px;
 }
 .x-box-mc{
-	background:						#c5e098 url(/automne/admin/img/box/tb.gif) repeat-x 0px -16px;
+	background:						#c5e098 url(../automne/admin/img/box/tb.gif) repeat-x 0px -16px;
 }
 .x-box-bc{
-	background:						url(/automne/admin/img/box/tb.gif) repeat-x 0px -8px;
+	background:						url(../automne/admin/img/box/tb.gif) repeat-x 0px -8px;
 }
 .x-box-ml{
 	padding-left:					1px;
-	background:						url(/automne/admin/img/box/l.gif) repeat-y left 0px;
+	background:						url(../automne/admin/img/box/l.gif) repeat-y left 0px;
 }
 .x-box-mr{
 	padding-right:					1px;
-	background:						url(/automne/admin/img/box/r.gif) repeat-y right 0px;
+	background:						url(../automne/admin/img/box/r.gif) repeat-y right 0px;
 }
 
 /* toolbar */
 .x-panel-tbar .x-toolbar{
-	/*background:						#f6fbe8 url(/automne/admin/img/toolbar/bg.gif) repeat-x 0px 0px;*/
+	/*background:						#f6fbe8 url(../automne/admin/img/toolbar/bg.gif) repeat-x 0px 0px;*/
 }
 .x-combo-list .x-toolbar{
-	background:						#efefef url(/automne/admin/img/toolbar/bg-combolist.gif) repeat-x 0px 0px;
+	background:						#efefef url(../automne/admin/img/toolbar/bg-combolist.gif) repeat-x 0px 0px;
 }
 .x-tbar-page-first{
-	background-image: 				url(/automne/admin/img/grid/page-first.gif) !important;
+	background-image: 				url(../automne/admin/img/grid/page-first.gif) !important;
 }
 .x-tbar-page-last{
-	background-image: 				url(/automne/admin/img/grid/page-last.gif) !important;
+	background-image: 				url(../automne/admin/img/grid/page-last.gif) !important;
 }
 .x-tbar-page-next{
-	background-image: 				url(/automne/admin/img/grid/page-next.gif) !important;
+	background-image: 				url(../automne/admin/img/grid/page-next.gif) !important;
 }
 .x-tbar-page-prev{
-	background-image: 				url(/automne/admin/img/grid/page-prev.gif) !important;
+	background-image: 				url(../automne/admin/img/grid/page-prev.gif) !important;
 }
 .x-tbar-loading{
-	background-image: 				url(/automne/admin/img/grid/refresh.gif) !important;
+	background-image: 				url(../automne/admin/img/grid/refresh.gif) !important;
 }
 .x-item-disabled .x-tbar-page-first{
-	background-image: 				url(/automne/admin/img/grid/page-first-disabled.gif) !important;
+	background-image: 				url(../automne/admin/img/grid/page-first-disabled.gif) !important;
 }
 .x-item-disabled .x-tbar-page-last{
-	background-image: 				url(/automne/admin/img/grid/page-last-disabled.gif) !important;
+	background-image: 				url(../automne/admin/img/grid/page-last-disabled.gif) !important;
 }
 .x-item-disabled .x-tbar-page-next{
-	background-image: 				url(/automne/admin/img/grid/page-next-disabled.gif) !important;
+	background-image: 				url(../automne/admin/img/grid/page-next-disabled.gif) !important;
 }
 .x-item-disabled .x-tbar-page-prev{
-	background-image: 				url(/automne/admin/img/grid/page-prev-disabled.gif) !important;
+	background-image: 				url(../automne/admin/img/grid/page-prev-disabled.gif) !important;
 }
 .x-btn-with-menu .x-btn-mc em{
-	background-image:				url(/automne/admin/img/toolbar/btn-arrow.gif);
+	background-image:				url(../automne/admin/img/toolbar/btn-arrow.gif);
 }
 /* tree */
 .x-tree-node .x-tree-selected{
@@ -1112,16 +1112,16 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 }
 /* menu */
 .x-menu{
-	background:						url(/automne/admin/img/menu/menu.gif) repeat-y top left;
+	background:						url(../automne/admin/img/menu/menu.gif) repeat-y top left;
 	border-color:					#a0c85a;
 	padding:						0px;
 }
 .x-menu-list{
-	background:						url(/automne/admin/img/menu/menu-list.gif) no-repeat top left;
+	background:						url(../automne/admin/img/menu/menu-list.gif) no-repeat top left;
 	padding:						2px 0px;
 }
 .x-menu-sep-li{
-	background:						url(/automne/admin/img/menu/menu-sep-li.gif) repeat-x top left;
+	background:						url(../automne/admin/img/menu/menu-sep-li.gif) repeat-x top left;
 }
 .x-menu-list-item{
 	margin:							0px 2px;
@@ -1130,7 +1130,7 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 	margin:							1px 0px 0px;
 }
 .x-menu-item-active{
-	background:						#e9f7d2 url(/automne/admin/img/menu/item-over.gif) repeat-x bottom left;
+	background:						#e9f7d2 url(../automne/admin/img/menu/item-over.gif) repeat-x bottom left;
 	border:							1px solid #a0c85a;
 }
 .x-menu-sep{
@@ -1140,19 +1140,19 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 	margin:							0px;
 }
 .x-menu-item-arrow{
-	background-image:				url(/automne/admin/img/menu/menu-parent.gif);
+	background-image:				url(../automne/admin/img/menu/menu-parent.gif);
 }
 .x-menu-item-checked .x-menu-item-icon{
-	background-image:				url(/automne/admin/img/menu/checked.gif);
+	background-image:				url(../automne/admin/img/menu/checked.gif);
 }
 .x-menu-item-checked .x-menu-group-item .x-menu-item-icon{
-	background-image:				url(/automne/admin/img/menu/group-checked.gif);
+	background-image:				url(../automne/admin/img/menu/group-checked.gif);
 }
 .xg-hmenu-sort-asc .x-menu-item-icon{
-	background-image: 				url(/automne/admin/img//grid/hmenu-asc.gif);
+	background-image: 				url(../automne/admin/img//grid/hmenu-asc.gif);
 }
 .xg-hmenu-sort-desc .x-menu-item-icon{
-	background-image: 				url(/automne/admin/img//grid/hmenu-desc.gif);
+	background-image: 				url(../automne/admin/img//grid/hmenu-desc.gif);
 }
 
 /* combo list */
@@ -1169,12 +1169,12 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 
 /* sizer */
 .x-resizable-over .x-resizable-handle-southeast, .x-resizable-pinned .x-resizable-handle-southeast{
-	background-image:				url(/automne/admin/img/sizer/se-handle-gray.gif);
+	background-image:				url(../automne/admin/img/sizer/se-handle-gray.gif);
 }
 
 /* grid3 */
 .x-grid3-header {
-	background:						#F9F9F9 url(/automne/admin/img/grid/grid3-hrow.gif) repeat-x scroll 0pt bottom;
+	background:						#F9F9F9 url(../automne/admin/img/grid/grid3-hrow.gif) repeat-x scroll 0pt bottom;
 }
 .x-grid3 .x-grid3-row-selected{
 	background-color:				#e9f7d2 !important;
@@ -1184,57 +1184,57 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 	background-image:				none;
 }
 .x-grid3-row-checker, .x-grid3-hd-checker {
-	background-image:				url(/automne/admin/img/grid/row-check-sprite.gif);
+	background-image:				url(../automne/admin/img/grid/row-check-sprite.gif);
 }
 td.x-grid3-hd-over .x-grid3-hd-inner, 
 td.sort-desc .x-grid3-hd-inner, 
 td.sort-asc .x-grid3-hd-inner, 
 td.x-grid3-hd-menu-open .x-grid3-hd-inner{
-	background:						#e9f7d2 url(/automne/admin/img/grid/grid3-hrow-over.gif) repeat-x scroll left bottom;
+	background:						#e9f7d2 url(../automne/admin/img/grid/grid3-hrow-over.gif) repeat-x scroll left bottom;
 }
 td.x-grid3-hd-over, td.sort-desc, td.sort-asc, td.x-grid3-hd-menu-open{
 	border-left:					1px solid #a0c85a;
 	border-right:					1px solid #a0c85a;
 }
 .x-grid3-hd-btn{
-	background:						#e9f7d2 url(/automne/admin/img/grid/grid3-hd-btn.gif) no-repeat scroll left center;
+	background:						#e9f7d2 url(../automne/admin/img/grid/grid3-hd-btn.gif) no-repeat scroll left center;
 }
 .sort-asc .x-grid3-sort-icon{
-	background-image:				url(/automne/admin/img/grid/sort_asc.gif);
+	background-image:				url(../automne/admin/img/grid/sort_asc.gif);
 }
 .sort-desc .x-grid3-sort-icon{
-	background-image:				url(/automne/admin/img/grid/sort_desc.gif);
+	background-image:				url(../automne/admin/img/grid/sort_desc.gif);
 }
 
 /* el-mask */
 .ext-el-mask-msg {
     border:							1px solid #878787;
-    background: 					#c3daf9 url(/automne/admin/img/box/tb-gray.gif) repeat-x 0 0;
+    background: 					#c3daf9 url(../automne/admin/img/box/tb-gray.gif) repeat-x 0 0;
 }
 .ext-el-mask-msg div {
     border:							1px solid #bcbcbc;
 }
 /* rights */
 .right-none{
-	background:						url(/automne/admin/img/right-pictos.png) no-repeat 0 0;
+	background:						url(../automne/admin/img/right-pictos.png) no-repeat 0 0;
 	height:							20px;
 	margin:							0px auto;
 	width:							20px;
 }
 .right-view{
-	background:						url(/automne/admin/img/right-pictos.png) no-repeat 0 -20px;
+	background:						url(../automne/admin/img/right-pictos.png) no-repeat 0 -20px;
 	height:							20px;
 	margin:							0px auto;
 	width:							20px;
 }
 .right-edit{
-	background:						url(/automne/admin/img/right-pictos.png) no-repeat 0 -40px;
+	background:						url(../automne/admin/img/right-pictos.png) no-repeat 0 -40px;
 	height:							20px;
 	margin:							0px auto;
 	width:							20px;
 }
 .right-manage{
-	background:						url(/automne/admin/img/right-pictos.png) no-repeat 0 -60px;
+	background:						url(../automne/admin/img/right-pictos.png) no-repeat 0 -60px;
 	height:							20px;
 	margin:							0px auto;
 	width:							20px;
@@ -1242,264 +1242,264 @@ td.x-grid3-hd-over, td.sort-desc, td.sort-asc, td.x-grid3-hd-menu-open{
 
 /* slider */
 .x-slider-horz .x-slider-thumb {
-    background-image:				url(/automne/admin/img/slider/slider-thumb.png);
+    background-image:				url(../automne/admin/img/slider/slider-thumb.png);
 }
 .x-slider-vert .x-slider-thumb {
-    background-image:				url(/automne/admin/img/slider/slider-v-thumb.png);
+    background-image:				url(../automne/admin/img/slider/slider-v-thumb.png);
 }
 
 /* pictos actions pour les boutons */
 .x-toolbar .x-btn-text-icon .x-btn-mc .atm-pic-copy{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -169px; /*-172px;*/
 }
 .x-toolbar .x-btn-text-icon .x-btn-mc .atm-pic-unlock{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -361px; /*-364px;*/
 }
 .x-toolbar .x-btn-text-icon .x-btn-mc .atm-pic-undelete{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -265px; /*-268px;*/
 }
 .x-toolbar .x-btn-text-icon .x-btn-mc .atm-pic-unarchive{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -217px; /*-220px;*/
 }
 .x-toolbar .x-btn-text-icon .x-btn-mc .atm-pic-move{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -145px; /*-148px;*/
 }
 .x-toolbar .x-btn-text-icon .x-btn-mc .atm-pic-archiving{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -193px; /*-196px;*/
 }
 .x-toolbar .x-btn-text-icon .x-btn-mc .atm-pic-deletion{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -241px; /*-244px;*/
 }
 .x-toolbar .x-btn-text-icon .x-btn-mc .atm-pic-editions-cancelling{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -289px; /*-292px;*/
 }
 .x-toolbar .x-btn-text-icon .x-btn-mc .atm-pic-draft-deletion{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -673px; /*-676px*/
 }
 .x-toolbar .x-btn-text-icon .x-btn-mc .atm-pic-draft-validation{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -315px; /*-318px*/
 }
 .x-toolbar .x-btn-text-icon .x-btn-mc .atm-pic-validate{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -385px; /*-388px*/
 }
 .x-toolbar .x-btn-text-icon .x-btn-mc .atm-pic-cancel{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -121px;
 }
 .x-toolbar .x-btn-text-icon .x-btn-mc .atm-pic-ok{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -97px;
 }
 .x-toolbar .x-btn-text-icon .x-btn-mc .atm-pic-create{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -409px;
 }
 .x-toolbar .x-btn-text-icon .x-btn-mc .atm-pic-modify{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -553px;
 }
 .x-toolbar .x-btn-text-icon .x-btn-mc .atm-pic-enable{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -505px;
 }
 .x-toolbar .x-btn-text-icon .x-btn-mc .atm-pic-disable{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -529px;
 }
 .x-toolbar .x-btn-text-icon .x-btn-mc .atm-pic-preview{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -482px;
 }
 .x-toolbar .x-btn-text-icon .x-btn-mc .atm-pic-add{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -410px;
 }
 .x-toolbar .x-btn-text-icon .x-btn-mc .atm-pic-option{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -601px;
 }
 					
 /* pictos actions dans le menu action */
 .x-btn-text-icon .x-btn-mc .atm-pic-question{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -74px;
 }
 .x-btn-text-icon .x-btn-mc .atm-pic-reload{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -338px;
 }
 .x-btn-text-icon .x-btn-mc .atm-pic-option{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -602px;
 }
 .x-btn-text-icon .x-btn-mc .atm-pic-filter{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -577px;
 }
 .x-btn-text-icon .x-btn-mc .atm-pic-reindent{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -290px;
 }
 .x-btn-text-icon .x-btn-mc .atm-pic-copy{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -170px;
 }
 .x-btn-text-icon .x-btn-mc .atm-pic-unlock{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -362px;
 }
 .x-btn-text-icon .x-btn-mc .atm-pic-undelete{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -266px;
 }
 .x-btn-text-icon .atm-pic-unarchive{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -218px;
 }
 .x-btn-text-icon .x-btn-mc .atm-pic-move{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -146px;
 }
 .x-btn-text-icon .x-btn-mc .atm-pic-archiving{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -194px;
 }
 .x-btn-text-icon .x-btn-mc .atm-pic-deletion{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -242px;
 }
 .x-btn-text-icon .x-btn-mc .atm-pic-editions-cancelling{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -290px;
 }
 .x-btn-text-icon .x-btn-mc .atm-pic-draft-deletion{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -674px; 
 }
 .x-btn-text-icon .x-btn-mc .atm-pic-draft-validation{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -316px;
 }
 .x-btn-text-icon .x-btn-mc .atm-pic-validate{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -386px;
 }
 .x-btn-text-icon .x-btn-mc .atm-pic-cancel{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -122px;
 }
 .x-btn-text-icon .x-btn-mc .atm-pic-ok{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -98px;
 }
 .x-btn-text-icon .x-btn-mc .atm-pic-create{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -410px;
 }
 .x-btn-text-icon .x-btn-mc .atm-pic-modify{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -554px;
 }
 .x-btn-text-icon .x-btn-mc .atm-pic-enable{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -506px;
 }
 .x-btn-text-icon .x-btn-mc .atm-pic-disable{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -530px;
 }
 /* pictos actions dans le menu action */
 .x-menu-item .atm-pic-copy{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -172px;
 }
 .x-menu-item .atm-pic-unlock{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -364px;
 }
 .x-menu-item .atm-pic-undelete{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -268px;
 }
 .x-menu-item .atm-pic-unarchive{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -220px;
 }
 .x-menu-item .atm-pic-move{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -148px;
 }
 .x-menu-item .atm-pic-archiving{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -196px;
 }
 .x-menu-item .atm-pic-deletion{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -244px;
 }
 .x-menu-item .atm-pic-editions-cancelling{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -292px;
 }
 .x-menu-item .atm-pic-draft-deletion{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -676px; 
 }
 .x-menu-item .atm-pic-draft-validation{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -318px;
 }
 .x-menu-item .atm-pic-validate{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -388px;
 }
 .x-menu-item .atm-pic-scripts{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -964px;
 }
 .x-menu-item .x-btn-mc .atm-pic-cancel,
 .atm-server .atm-pic-cancel{
-	background-image:				url(/automne/admin/img/pictos/pictos-v.png);
+	background-image:				url(../automne/admin/img/pictos/pictos-v.png);
 	background-position:			0px -181px;
 }
 .x-menu-item .x-btn-mc .atm-pic-ok,
 .atm-server .atm-pic-ok{
-	background-image:				url(/automne/admin/img/pictos/pictos-v.png);
+	background-image:				url(../automne/admin/img/pictos/pictos-v.png);
 	background-position:			0px -90px;
 }
 .x-menu-item .x-btn-mc .atm-pic-question,
 .atm-server .atm-pic-question{
-	background-image:				url(/automne/admin/img/pictos/pictos-v.png);
+	background-image:				url(../automne/admin/img/pictos/pictos-v.png);
 	background-position:			0px 0px;
 }
 .atm-server .atm-pic-logo {
-	background:			url(/automne/admin/img/pictos/logo.gif) no-repeat 0px 2px !important;
+	background:			url(../automne/admin/img/pictos/logo.gif) no-repeat 0px 2px !important;
 }
 .x-menu-item .x-btn-mc .atm-pic-create{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -412px;
 }
 .x-menu-item .x-btn-mc .atm-pic-modify{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -556px;
 }
 .x-menu-item .x-btn-mc .atm-pic-enable{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -508px;
 }
 .x-menu-item .x-btn-mc .atm-pic-disable{
-	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -532px;
 }
 /* fieldset */
@@ -1525,7 +1525,7 @@ td.x-grid3-hd-over, td.sort-desc, td.sort-asc, td.x-grid3-hd-menu-open{
 	background-image:				none;
 }
 .x-progress-bar{
-    background:						#b8e273 url(/automne/admin/img/progress/progress-bg.gif) repeat-x left center;
+    background:						#b8e273 url(../automne/admin/img/progress/progress-bg.gif) repeat-x left center;
     border-top:						1px solid #78b70f;
     border-bottom:					1px solid #78b70f;
     border-right:					1px solid #78b70f;
@@ -1536,38 +1536,38 @@ td.x-grid3-hd-over, td.sort-desc, td.sort-asc, td.x-grid3-hd-menu-open{
 
 /* date */
 .x-date-middle{
-	background:						url(/automne/admin/img/shared/hd-sprite.gif) repeat-x 0 -86px;
+	background:						url(../automne/admin/img/shared/hd-sprite.gif) repeat-x 0 -86px;
 }
 .x-date-left{
-	background:						url(/automne/admin/img/shared/hd-sprite.gif) no-repeat left -43px;
+	background:						url(../automne/admin/img/shared/hd-sprite.gif) no-repeat left -43px;
 }
 .x-date-right {
-	background:						url(/automne/admin/img/shared/hd-sprite.gif) no-repeat right 0px;
+	background:						url(../automne/admin/img/shared/hd-sprite.gif) no-repeat right 0px;
 }
 .x-date-right a {
-    background-image:				url(/automne/admin/img/shared/right-btn.gif);
+    background-image:				url(../automne/admin/img/shared/right-btn.gif);
 }
 .x-date-left a{
-	background-image:				url(/automne/admin/img/shared/left-btn.gif);
+	background-image:				url(../automne/admin/img/shared/left-btn.gif);
 }
 .x-date-inner th {
-    background:						#d6efac url(/automne/admin/img/shared/glass-bg.gif) repeat-x left top;
+    background:						#d6efac url(../automne/admin/img/shared/glass-bg.gif) repeat-x left top;
 	border-color:					#b2da6b;
 	color:							#629902;
 	font-size:						11px;
 }
 .x-date-inner .x-date-selected a{
-    background:						#d6efac url(/automne/admin/img/shared/glass-bg.gif) repeat-x left top;
+    background:						#d6efac url(../automne/admin/img/shared/glass-bg.gif) repeat-x left top;
 }
 .x-date-bottom {
     border-top:						1px solid #b2da6b;
-    background:						#d6efac url(/automne/admin/img/shared/glass-bg.gif) repeat-x left top;
+    background:						#d6efac url(../automne/admin/img/shared/glass-bg.gif) repeat-x left top;
 }
 .x-date-mp-btns {
-    background:						#d6efac url(/automne/admin/img/shared/glass-bg.gif) repeat-x left top;
+    background:						#d6efac url(../automne/admin/img/shared/glass-bg.gif) repeat-x left top;
 }
 td.x-date-mp-sel a {
-    background:						#d6efac url(/automne/admin/img/shared/glass-bg.gif) repeat-x left top;
+    background:						#d6efac url(../automne/admin/img/shared/glass-bg.gif) repeat-x left top;
 	border:							1px solid #6aa503;
 }
 .x-date-inner .x-date-today a{
@@ -1587,7 +1587,7 @@ td.x-date-mp-month a:hover,td.x-date-mp-year a:hover {
 	background:						#e9f7d2;
 }
 .x-date-mp-ybtn a {
-    background:						url(/automne/admin/img/panel/tool-sprites.gif) no-repeat;
+    background:						url(../automne/admin/img/panel/tool-sprites.gif) no-repeat;
 }
 .x-date-mp-btns button{
 	background-color:				#e3e5e6;

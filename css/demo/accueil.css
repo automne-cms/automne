@@ -1,9 +1,9 @@
 #header{
-	background:				url(/img/demo/accueil/header.jpg) no-repeat left top;
+	background:				url(../img/demo/accueil/header.jpg) no-repeat left top;
 	height:					264px;
 }
 #menuLeft{
-	background:				#75655e url(/img/demo/accueil/backgroundMenuLeft.gif) repeat-x left top;
+	background:				#75655e url(../img/demo/accueil/backgroundMenuLeft.gif) repeat-x left top;
 	margin:					0 0 0 107px;
 	padding:				0 0 30px 0;
 	-moz-border-radius:		0 0 30px 0;
@@ -11,7 +11,7 @@
 	border-radius: 			0 0 0 30px;
 }
 #content{
-	background:				url(/img/demo/accueil/backgroundContent.gif) no-repeat left top;
+	background:				url(../img/demo/accueil/backgroundContent.gif) no-repeat left top;
 	min-height:				305px;
 	padding:				0 45px 0 24px;
 	width:					613px;
@@ -31,7 +31,7 @@ h1{
 	width:					1%;
 }
 h2{
-	background:				url(/img/demo/common/backgroundTitle.png) no-repeat right bottom;
+	background:				url(../img/demo/common/backgroundTitle.png) no-repeat right bottom;
 	color:					#6fae03;
 	font-size:				138.5%;
 	font-weight:			bold;

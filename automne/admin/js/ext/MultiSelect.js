@@ -208,7 +208,7 @@ Ext.ux.ItemSelector = Ext.extend(Ext.form.Field,  {
 	msWidth:200,
 	msHeight:300,
 	hideNavIcons:false,
-	imagePath:"/automne/admin/img/multiselect/",
+	imagePath:"../automne/admin/img/multiselect/",
 	iconUp:"up2.gif",
 	iconDown:"down2.gif",
 	iconLeft:"left2.gif",

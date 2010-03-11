@@ -24,8 +24,6 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-//Requirements
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 //force loading module cms_forms
 if (!class_exists('CMS_module_cms_forms')) {
 	die('Cannot find cms_forms module ...');

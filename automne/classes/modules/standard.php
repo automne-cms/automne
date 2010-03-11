@@ -1585,72 +1585,6 @@ class CMS_module_standard extends CMS_module
 				}
 				//load CS datas
 				switch ($tag->getName()) {
-					/*case 'atm-meta-tags':
-						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
-							//add needed javascripts
-							$metaDatas = '<script type="text/javascript">'."\n".
-								'var atmRowsDatas = {};'."\n".
-								'var atmBlocksDatas = {};'."\n".
-								'var atmCSDatas = {};'."\n".
-								'var atmIsValidator = false;'."\n".
-								'var atmIsValidable = false;'."\n".
-								'var atmHasPreview = false;'."\n".
-							'</script>';
-							//append JS from current view instance
-							$view = CMS_view::getInstance();
-							$metaDatas .= $view->getJavascript();
-							$metaDatas .= CMS_view::getCSS(array('edit'));
-							
-							return $metaDatas;
-						}
-					break;*/
-					/*case "atm-js-tags":
-					case "atm-css-tags":
-						//if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
-							$files = $tag->getAttribute('files');
-							if (!$files) {
-								return '';
-							}
-							//save in global var the page ID who need this module so we can add the header code later.
-							CMS_module::moduleUsage($treatedObject->getID(), $this->_codename, array($tag->getName() => true));
-							
-							$media = $tag->getAttribute('media');
-							$files = array_map('trim', explode(',', $files));
-							
-							switch ($tag->getName()) {
-								case "atm-js-tags":
-									$method = 'getJavascript';
-									$files[] = '/js/CMS_functions.js';
-									//if this page use a row block of this module then add the header code to the page
-									if ($usage = $this->moduleUsage($treatedObject->getID(), MOD_STANDARD_CODENAME)) {
-										if (is_array($usage) && isset($usage['blockflash']) && $usage['blockflash'] == true) {
-											$files[] = 'swfobject';
-										}
-									}
-								break;
-								case "atm-css-tags":
-									$method = 'getCSS';
-								break;
-							}
-							//save files
-							CMS_module::moduleUsage($treatedObject->getID(), $tag->getName(), $files);
-							return '<?php echo CMS_view::'.$method.'(array(\''.implode('\',\'', $files).'\')'.($media ? ', \''.$media.'\'' : '').'); ?'.'>'."\n";
-						//}
-					break;*/
-					/*case 'title':
-						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
-							$title = $treatmentParameters['page']->getTitle();
-							return '<title>'.$title.'</title>';
-						}
-					break;*/
-					/*case 'atm-linx':
-						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
-							$linx_args = array("page"=> $treatmentParameters["page"], "publicTree"=>false);
-							$linx = $tag->getRepresentationInstance($linx_args);
-							$linx->setDebug(false);
-							return $linx->getOutput();
-						}
-					break;*/
 					case 'atm-clientspace':
 					default:
 						$client_space = $tag->getRepresentationInstance($args);
@@ -1799,7 +1733,7 @@ class CMS_module_standard extends CMS_module
 									$files = array_merge($files, $tagFiles);
 									//append CMS_function.js file
 									if (!isset($usage['js-files']) && file_exists(PATH_JS_FS.'/CMS_functions.js')) {
-										$files = array_merge($files, array(PATH_JS_WR.'/CMS_functions.js'));
+										$files = array_merge($files, array(str_replace(PATH_REALROOT_WR, '', PATH_JS_WR.'/CMS_functions.js')));
 									}
 									//append swfobject for block flash
 									if (is_array($usage) && isset($usage['blockflash']) && $usage['blockflash'] == true) {
@@ -1846,7 +1780,7 @@ class CMS_module_standard extends CMS_module
 						$usage = CMS_module::moduleUsage($treatedObject->getID(), $this->_codename);
 						//if page template already use atm-js-tags tag, no need to add JS again
 						if (!is_array($usage) || !isset($usage['atm-js-tags'])) {
-							$metaDatas .= '	<script type="text/javascript" src="/js/CMS_functions.js"></script>'."\n";
+							$metaDatas .= '	<script type="text/javascript" src="'.PATH_REALROOT_WR.'/js/CMS_functions.js"></script>'."\n";
 							//save JS handled
 							CMS_module::moduleUsage($treatedObject->getID(), $this->_codename, array('js-files' => true));
 						}
@@ -2016,7 +1950,7 @@ class CMS_module_standard extends CMS_module
 						$href = $redirectlink->getHTML(false, MOD_STANDARD_CODENAME, RESOURCE_DATA_LOCATION_PUBLIC, false, true);
 						$modulesCode[MOD_STANDARD_CODENAME] .= 
 								'<?php'."\n".
-								'require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");'."\n".
+								'require_once(dirname(__FILE__).\'/../cms_rc_frontend.php\');'."\n".
 								'CMS_view::redirect(\''.$href.'\', true, 302);'."\n".
 								'?>';
 					}
@@ -2024,7 +1958,7 @@ class CMS_module_standard extends CMS_module
 					$modulesCode[MOD_STANDARD_CODENAME] .= 
 					'<?php'."\n".
 					'//Generated on '.date('r').' by '.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION."\n".
-					'require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");'."\n".
+					'require_once(dirname(__FILE__).\'/../cms_rc_frontend.php\');'."\n".
 					'if (!isset($cms_page_included) && !$_POST && !$_GET) {'."\n".
 					'	CMS_view::redirect(\''.$treatedObject->getURL(($visualizationMode == PAGE_VISUALMODE_PRINT) ? true : false).'\', true, 301);'."\n".
 					'}'."\n".
@@ -2040,7 +1974,7 @@ class CMS_module_standard extends CMS_module
 					}
 					return $modulesCode;
 				} else {
-					$modulesCode[MOD_STANDARD_CODENAME] .= '<?php if (!in_array($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php", get_included_files())){ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");} else { global $cms_user,$cms_language;} ?>';
+					$modulesCode[MOD_STANDARD_CODENAME] .= '<?php if (!in_array("'.PATH_REALROOT_FS.'/cms_rc_frontend.php", get_included_files())){ require_once("'.PATH_REALROOT_FS.'/cms_rc_frontend.php");} else { global $cms_user,$cms_language;} ?>';
 				}
 			break;
 			case MODULE_TREATMENT_EDITOR_CODE :

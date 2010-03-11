@@ -23,7 +23,7 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
+require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
 
 //Controler vars
 $action = sensitiveIO::request('action', array('check-files', 'check-htaccess'));
@@ -57,7 +57,7 @@ $content = '';
 switch ($action) {
 	case 'check-files':
 		set_time_limit(600);
-		$path = realpath($_SERVER['DOCUMENT_ROOT']);
+		$path = PATH_REALROOT_FS;
 		$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::SELF_FIRST);
 		$countFile = 0;
 		$countDir = 0;

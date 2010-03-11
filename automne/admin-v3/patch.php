@@ -25,7 +25,7 @@
 
 //for this page, HTML output compression is not welcome.
 define("ENABLE_HTML_COMPRESSION", false);
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
+require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
 
 define("MESSAGE_PAGE_TITLE", 1165);
 define("MESSAGE_PAGE_CLEARANCE_ERROR", 65);

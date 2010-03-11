@@ -366,7 +366,7 @@ Automne.FileUploadField = Ext.extend(Ext.form.TextField,  {
 			fcnCallback:	this.uploadSuccess,
 			scope:			this,
 			form:			this.form,
-			url:			"/automne/admin/upload-controler.php",
+			url:			Automne.context.path + "/automne/admin/upload-controler.php",
 			method:			'POST',
 			isUpload:		true,
 			file:			file

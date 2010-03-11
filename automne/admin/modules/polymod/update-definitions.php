@@ -17,7 +17,7 @@
 /**
   * Update all stored definitions for polymod modules
   */
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+require_once(dirname(__FILE__).'/../../cms_rc_frontend.php');
 
 CMS_polymod::compileDefinitions();
 

@@ -465,7 +465,7 @@ class CMS_object_image extends CMS_object_common
 			$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
 			$img = '<img src="'.PATH_MODULES_FILES_WR.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[0]->getValue().'" border="0" alt="'.$this->_subfieldValues[1]->getValue().'" title="'.$this->_subfieldValues[1]->getValue().'" />';
 			if ($this->_subfieldValues[2]->getValue()) {
-				$href = CMS_websitesCatalog::getMainURL() . "/" . self::OBJECT_IMAGE_POPUP_FILE . '?location='.RESOURCE_DATA_LOCATION_EDITED.'&amp;file=' . $this->_subfieldValues[2]->getValue() . '&amp;label=' . urlencode($this->_subfieldValues[1]->getValue()).'&amp;module='.$moduleCodename;
+				$href = CMS_websitesCatalog::getMainURL(). PATH_REALROOT_WR . "/" . self::OBJECT_IMAGE_POPUP_FILE . '?location='.RESOURCE_DATA_LOCATION_EDITED.'&amp;file=' . $this->_subfieldValues[2]->getValue() . '&amp;label=' . urlencode($this->_subfieldValues[1]->getValue()).'&amp;module='.$moduleCodename;
 				$popup = (OPEN_ZOOMIMAGE_IN_POPUP) ? ' onclick="javascript:CMS_openPopUpImage(\''.addslashes($href).'\');return false;"':'';
 				$img = '<a target="_blank" href="'. $href . '"'.$popup.' title="'.$this->_subfieldValues[1]->getValue().'">' . $img . '</a>';
 			}
@@ -1013,11 +1013,11 @@ class CMS_object_image extends CMS_object_common
 			$params = $this->getParamsValues();
 			$img = '<img width="'.$params['maxWidthPreviz'].'" src="'.PATH_MODULES_FILES_WR.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[0]->getValue().'" border="0" alt="'.$this->_subfieldValues[1]->getValue().'" title="'.$this->_subfieldValues[1]->getValue().'" align="center" />';
 			if ($this->_subfieldValues[2]->getValue()) {
-				$href = CMS_websitesCatalog::getMainURL() . "/" . self::OBJECT_IMAGE_POPUP_FILE . '?location='.RESOURCE_DATA_LOCATION_EDITED.'&amp;file=' . $this->_subfieldValues[2]->getValue() . '&amp;label=' . urlencode($this->_subfieldValues[1]->getValue()).'&amp;module='.$moduleCodename;
+				$href = CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR . "/" . self::OBJECT_IMAGE_POPUP_FILE . '?location='.RESOURCE_DATA_LOCATION_EDITED.'&amp;file=' . $this->_subfieldValues[2]->getValue() . '&amp;label=' . urlencode($this->_subfieldValues[1]->getValue()).'&amp;module='.$moduleCodename;
 				$popup = (OPEN_ZOOMIMAGE_IN_POPUP) ? ' onclick="javascript:CMS_openPopUpImage(\''.addslashes($href).'\');return false;"':'';
 				$img = '<a target="_blank" href="'. $href . '"'.$popup.' title="'.$this->_subfieldValues[1]->getValue().'">' . $img . '</a>';
 			} else {
-				$href = CMS_websitesCatalog::getMainURL() . "/" . self::OBJECT_IMAGE_POPUP_FILE . '?location='.RESOURCE_DATA_LOCATION_EDITED.'&amp;file=' . $this->_subfieldValues[0]->getValue() . '&amp;label=' . urlencode($this->_subfieldValues[1]->getValue()).'&amp;module='.$moduleCodename;
+				$href = CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR . "/" . self::OBJECT_IMAGE_POPUP_FILE . '?location='.RESOURCE_DATA_LOCATION_EDITED.'&amp;file=' . $this->_subfieldValues[0]->getValue() . '&amp;label=' . urlencode($this->_subfieldValues[1]->getValue()).'&amp;module='.$moduleCodename;
 				$popup = (OPEN_ZOOMIMAGE_IN_POPUP) ? ' onclick="javascript:CMS_openPopUpImage(\''.addslashes($href).'\');return false;"':'';
 				$img = '<a target="_blank" href="'. $href . '"'.$popup.' title="'.$this->_subfieldValues[1]->getValue().'">' . $img . '</a>';
 			}
@@ -1078,7 +1078,7 @@ class CMS_object_image extends CMS_object_common
 				}
 				//add link to zoom if any
 				if ($this->_subfieldValues[2]->getValue()) {
-					$href = CMS_websitesCatalog::getMainURL() . "/" . self::OBJECT_IMAGE_POPUP_FILE . '?'.(($location != RESOURCE_DATA_LOCATION_PUBLIC) ? 'location='.RESOURCE_DATA_LOCATION_EDITED.'&amp;':'').'file=' . $this->_subfieldValues[2]->getValue() . '&amp;label=' . urlencode($this->_subfieldValues[1]->getValue()).'&amp;module='.$moduleCodename;
+					$href = CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR . "/" . self::OBJECT_IMAGE_POPUP_FILE . '?'.(($location != RESOURCE_DATA_LOCATION_PUBLIC) ? 'location='.RESOURCE_DATA_LOCATION_EDITED.'&amp;':'').'file=' . $this->_subfieldValues[2]->getValue() . '&amp;label=' . urlencode($this->_subfieldValues[1]->getValue()).'&amp;module='.$moduleCodename;
 					$popup = (OPEN_ZOOMIMAGE_IN_POPUP) ? ' onclick="javascript:CMS_openPopUpImage(\''.addslashes($href).'\');return false;"':'';
 					$img = '<a target="_blank" href="'. $href . '"'.$popup.' title="'.$this->_subfieldValues[1]->getValue().'">' . $img . '</a>';
 				}

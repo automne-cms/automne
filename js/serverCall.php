@@ -21,7 +21,7 @@
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+require_once(dirname(__FILE__).'/../cms_rc_frontend.php');
 //set header content-type
 header("Content-Type: text/javascript");
 $debug = 0;
@@ -34,7 +34,7 @@ if (defined('SYSTEM_DEBUG') && SYSTEM_DEBUG) {
 		}
 	}
 }
-
+$rootPath = PATH_REALROOT_WR;
 $content = <<<END
 //main js debug var
 var Debug = {$debug};
@@ -323,7 +323,7 @@ function userMessage(value, messageOK, messageCancel, fcnOK, fcnCancel) {
 		userMessageTextDiv.id='CMS_userMessageText';
 		userMessageTextDiv.style.position='relative';
 		userMessageTextDiv.style.font='normal 12px Verdana,Arial,Helvetica,sans-serif';
-		userMessageTextDiv.style.background='#FFFFFF url(/automne/admin/img/logo_small.gif) top right no-repeat';
+		userMessageTextDiv.style.background='#FFFFFF url({$rootPath}/automne/admin/img/logo_small.gif) top right no-repeat';
 		userMessageTextDiv.style.width='365px';
 		userMessageTextDiv.style.margin='50px auto 0 auto';
 		userMessageTextDiv.style.border='2px solid #FF0000';

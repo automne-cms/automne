@@ -23,7 +23,7 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
+require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
 
 define("MESSAGE_ERROR_MODULE_RIGHTS",570);
 define("MESSAGE_ERROR_ELEMENT_LOCKED",704);

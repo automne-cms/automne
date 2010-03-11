@@ -1479,7 +1479,7 @@ class CMS_poly_object extends CMS_resource
 			}
 		}
 		$replace = array(
-			'{url}' => '/rss/rss.php?id='.$RSSDefinition->getID().$linkParameters,
+			'{url}' => PATH_REALROOT_WR.'/rss/rss.php?id='.$RSSDefinition->getID().$linkParameters,
 			'{label}' => $RSSDefinition->getLabel($cms_language),
 			'{description}' => $RSSDefinition->getDescription($cms_language),
 		);

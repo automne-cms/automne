@@ -27,7 +27,7 @@
 
 //here automatic HTML colmpression is not welcome. It is handled directly by CMS_file::sendFiles method
 define('ENABLE_HTML_COMPRESSION', false);
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+require_once(dirname(__FILE__).'/../cms_rc_frontend.php');
 
 $cssfiles = array();
 if (isset($_GET['files'])) {
@@ -66,11 +66,11 @@ if (isset($_GET['files'])) {
 				if ($file == str_replace(array_keys($replace), $replace, $file) && file_exists(dirname(__FILE__).'/'.$file) && is_file(dirname(__FILE__).'/'.$file)) {
 					$cssfiles [] = dirname(__FILE__).'/'.$file;
 				} elseif(pathinfo($file, PATHINFO_EXTENSION) == 'css' 
-						&& file_exists(realpath($_SERVER['DOCUMENT_ROOT'].$file)) 
-						&& is_file(realpath($_SERVER['DOCUMENT_ROOT'].$file))
-						&& (strpos(pathinfo(realpath($_SERVER['DOCUMENT_ROOT'].$file), PATHINFO_DIRNAME), realpath(PATH_CSS_FS)) === 0 
-							|| strpos(pathinfo(realpath($_SERVER['DOCUMENT_ROOT'].$file), PATHINFO_DIRNAME), realpath(PATH_ADMIN_CSS_FS)) === 0)) {
-					$cssfiles[] = $_SERVER['DOCUMENT_ROOT'].$file;
+						&& file_exists(PATH_REALROOT_FS.$file) 
+						&& is_file(PATH_REALROOT_FS.$file)
+						&& (strpos(pathinfo(PATH_REALROOT_FS.$file, PATHINFO_DIRNAME), realpath(PATH_CSS_FS)) === 0 
+							|| strpos(pathinfo(PATH_REALROOT_FS.$file, PATHINFO_DIRNAME), realpath(PATH_ADMIN_CSS_FS)) === 0)) {
+					$cssfiles[] = PATH_REALROOT_FS.$file;
 				}
 			break;
 		}

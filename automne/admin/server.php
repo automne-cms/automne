@@ -23,7 +23,7 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
+require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
 
 $winId = sensitiveIO::request('winId', '', 'serverWindow');
 
@@ -124,9 +124,9 @@ if (class_exists('CMS_module_ase')) {
 	}
 }
 //Files writing
-$randomFile = realpath($_SERVER['DOCUMENT_ROOT']).'/test_'.md5(mt_rand().microtime()).'.tmp';
-if (!is_writable(realpath($_SERVER['DOCUMENT_ROOT']))) {
-	$content .= '<li class="atm-pic-cancel">Error, No permissions to write files on website root directory ('.realpath($_SERVER['DOCUMENT_ROOT']).')</li>';
+$randomFile = PATH_REALROOT_FS.'/test_'.md5(mt_rand().microtime()).'.tmp';
+if (!is_writable(PATH_REALROOT_FS)) {
+	$content .= '<li class="atm-pic-cancel">Error, No permissions to write files on website root directory ('.PATH_REALROOT_FS.')</li>';
 } else {
 	$content .= '<li class="atm-pic-ok">Website root filesystem permissions are OK</li>';
 }
@@ -247,6 +247,9 @@ $filescontent = '
 	<div id="htaccessCheckDetail"></div>
 ';
 $filescontent = sensitiveIO::sanitizeJSString($filescontent);
+
+$pathAdmin = PATH_ADMIN_WR;
+$pathMain = PATH_MAIN_WR;
 
 $jscontent = <<<END
 	var serverWindow = Ext.getCmp('{$winId}');
@@ -392,13 +395,13 @@ $jscontent = <<<END
 			xtype:				'framePanel',
 			title:				'{$cms_language->getJsMessage(MESSAGE_PAGE_PHP_INFO)}',
 			id:					'phpDatas',
-			frameURL:			'/automne/admin/phpinfo.php',
+			frameURL:			'{$pathAdmin}/phpinfo.php',
 			allowFrameNav:		true
 		},{
 			xtype:				'framePanel',
 			title:				'{$cms_language->getJsMessage(MESSAGE_PAGE_UPDATES)}',
 			id:					'updatesPanel',
-			frameURL:			'/automne/admin-v3/patch.php',
+			frameURL:			'{$pathMain}/admin-v3/patch.php',
 			allowFrameNav:		true
 		}]
 	});

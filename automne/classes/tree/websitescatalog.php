@@ -287,7 +287,7 @@ class CMS_websitesCatalog extends CMS_grandFather
 		$filename = 'index.php';
 		$content = '<?php'."\n".
 		'//Generated on '.date('r').' by '.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION."\n".
-		'require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");'."\n".
+		'require_once(dirname(__FILE__).\'/cms_rc_frontend.php\');'."\n".
 		'$httpHost = @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) ? @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) : $_SERVER[\'HTTP_HOST\'];'."\n".
 		'//search page id by domain address'."\n".
 		'$website = CMS_websitesCatalog::getWebsiteFromDomain($httpHost);'."\n".

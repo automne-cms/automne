@@ -1,6 +1,6 @@
 <row>
 <block module="standard" type="file" id="fichier">
-<div class="file"><img src="/automne_modules_files/standard/icons/{{type}}.gif" alt="Document {{type}}" title="Document {{type}}" /> {{data}} ({{size}})
+<div class="file"><img src="automne_modules_files/standard/icons/{{type}}.gif" alt="Document {{type}}" title="Document {{type}}" /> {{data}} ({{size}})
 <!--
 	Here : all possibles variables for this block type
 	<ul>

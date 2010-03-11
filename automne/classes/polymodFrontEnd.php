@@ -20,7 +20,7 @@
   */
 
 //Add strict frontend requirements for polymod
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+require_once(dirname(__FILE__).'/../../cms_rc_frontend.php');
 //add ASE module if exists
 if (file_exists(PATH_PACKAGES_FS.'/aseFrontEnd.php')) {
 	require_once(PATH_PACKAGES_FS.'/aseFrontEnd.php');

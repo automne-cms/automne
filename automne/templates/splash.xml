@@ -27,7 +27,7 @@
 			width:				400px;
 			border:				1px solid #dde6cb;
 			text-align:			center;
-			background:			#FFFFFF url(/automne/admin/img/logo_small.gif) top right no-repeat;
+			background:			#FFFFFF url(<?php echo PATH_REALROOT_WR; ?>/automne/admin/img/logo_small.gif) top right no-repeat;
 			padding:			20px;
 			left:				-150px;
 			margin:				0 auto 0 auto;

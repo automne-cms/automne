@@ -17,13 +17,13 @@ strong {
 	width:				365px;
 	border:				2px solid red;
 	text-align:			center;
-	background:			#FFFFFF url(/automne/admin/img/logo_small.gif) top right no-repeat;
+	background:			#FFFFFF url(../automne/admin/img/logo_small.gif) top right no-repeat;
 	padding:			20px;
 	left:				-150px;
 	margin:				0 auto 0 auto;
 }
 .atm-frame-green {
-	background:			#FFFFFF url(/automne/admin/img/frame-error.png) 5px 8px no-repeat;
+	background:			#FFFFFF url(../automne/admin/img/frame-error.png) 5px 8px no-repeat;
 	padding:			20px 20px 20px 80px;
 }
 .atm-alert ul {
@@ -66,7 +66,7 @@ a.atm-link:hover{
 }
 .x-form-item .atm-help,
 .x-fieldset-header-text .atm-help {
-	background:			#FFFFFF url(/automne/admin/img/atm-help.png) top left no-repeat;
+	background:			#FFFFFF url(../automne/admin/img/atm-help.png) top left no-repeat;
 	padding-left:		6px;
 }
 .x-form-item img.atm-help {
@@ -108,7 +108,7 @@ a.atm-link:hover{
 	font:				bold 13px tahoma,arial,helvetica;
 	color:				#555;
 	margin:				0;
-	background-image:	url(/automne/admin/img/logo_small.gif);
+	background-image:	url(../automne/admin/img/logo_small.gif);
     background-repeat:	no-repeat;
     background-position:top left;
     padding:			10px 10px 10px 35px;
@@ -121,7 +121,7 @@ a.atm-link:hover{
 	right:				14px;
 	height:				35px;
 	width:				35px;
-	background:			#F3F3F3 url(/automne/admin/img/loading.gif) no-repeat;
+	background:			#F3F3F3 url(../automne/admin/img/loading.gif) no-repeat;
 	z-index:			20002;
 	display:			none;
 	border:				1px solid grey;
@@ -209,7 +209,7 @@ span.atm-tab * {
 /*BIG PICTOS*/
 .atm-pic-big-search, .atm-pic-big-tree, .atm-pic-big-favorite, .atm-pic-big-action, .atm-pic-big-add,
 .atm-pic-big-properties, .atm-pic-big-edit, .atm-pic-big-draft, .atm-pic-big-edited{
-	background-image:	url(/automne/admin/img/pictos/big/bigPictos.png);
+	background-image:	url(../automne/admin/img/pictos/big/bigPictos.png);
 }
 
 .x-tab-strip .x-tab-with-icon span.atm-pic-big-search{
@@ -269,7 +269,7 @@ span.atm-tab * {
 .atm-block-control {
 	display:			inline-block;
 	cursor:				pointer;
-	background-image:	url(/automne/admin/img/row-control.png);
+	background-image:	url(../automne/admin/img/row-control.png);
 	background-repeat:	no-repeat;
 	width:				16px;
 	height:				16px;
@@ -290,19 +290,19 @@ span.atm-tab * {
 
 /*SMALL PICTOS*/
 .atm-pic-logo {
-	background:			url(/automne/admin/img/pictos/logo.gif) no-repeat 0px 4px !important;
+	background:			url(../automne/admin/img/pictos/logo.gif) no-repeat 0px 4px !important;
 }
 .atm-pic-edit {
-	background:			url(/automne/admin/img/pictos/edit.png) no-repeat 0px 4px !important;
+	background:			url(../automne/admin/img/pictos/edit.png) no-repeat 0px 4px !important;
 }
 .atm-pic-tree {
-	background:			url(/automne/admin/img/pictos/tree.png) no-repeat 0px 4px !important;
+	background:			url(../automne/admin/img/pictos/tree.png) no-repeat 0px 4px !important;
 }
 .atm-pic-help {
-	background:			url(/automne/admin/img/help.gif) no-repeat 0px 0px !important;
+	background:			url(../automne/admin/img/help.gif) no-repeat 0px 0px !important;
 }
 .atm-upload-file {
-	background: 		url(/automne/admin/img/help.gif) no-repeat 0 0 !important;
+	background: 		url(../automne/admin/img/help.gif) no-repeat 0 0 !important;
 }
 /*TREE*/
 .x-tree-node {
@@ -325,7 +325,7 @@ span.atm-tab * {
 	cursor:				default !important;
 }
 .atm-drag {
-	background:			url(/automne/admin/img/drag.gif) no-repeat right 2px !important;
+	background:			url(../automne/admin/img/drag.gif) no-repeat right 2px !important;
 	cursor:				move !important;
 	padding-right:		15px;
 }
@@ -371,7 +371,7 @@ tr.atm-even {
 }
 .atm-editable {
 	cursor:				pointer;
-	background-image:	url(/automne/admin/img/pictos/edit.png);
+	background-image:	url(../automne/admin/img/pictos/edit.png);
 	background-repeat:	no-repeat;
 	background-position:top right;
 }
@@ -382,7 +382,7 @@ tr.atm-even {
 	height:				20px;
 	bottom:				0px;
 	right:				2px;
-	background-image:	url(/automne/admin/img/valider.gif);
+	background-image:	url(../automne/admin/img/valider.gif);
 	background-repeat:	no-repeat;
 	background-position:top left;
 }
@@ -437,7 +437,7 @@ tr.atm-even {
 }
 #atm-chooser-view .x-view-over{
     border:				1px solid #dddddd;
-    background: 		#efefef url(/automne/ext/resources/images/default/grid/row-over.gif) repeat-x left top;
+    background: 		#efefef url(../automne/ext/resources/images/default/grid/row-over.gif) repeat-x left top;
     padding: 			4px;
 }
 #atm-chooser-view .x-view-selected{
@@ -547,7 +547,7 @@ ul.categoriesList {
 	letter-spacing: 0 !important;
 	color:			#555 !important;
 	text-align:		left;
-	background:		#e3e5e6 url(/automne/admin/img/panel/atm-result.gif) repeat-x left bottom;
+	background:		#e3e5e6 url(../automne/admin/img/panel/atm-result.gif) repeat-x left bottom;
 	padding:		3px;
 	border-bottom:	1px solid #e5e8ea;
 }
@@ -564,7 +564,7 @@ ul.categoriesList {
 	vertical-align:	middle;
 }
 .atm-result {
-	background:		#f1f1f1 url(/automne/admin/img/livedata/bg.gif) repeat-x;
+	background:		#f1f1f1 url(../automne/admin/img/livedata/bg.gif) repeat-x;
 }
 .atm-result .atm-type{
 	border-bottom:	1px solid #e5e8ea;
@@ -594,10 +594,10 @@ ul.categoriesList {
 	float:			right;
 }
 .atm-results .x-view-over .atm-title{
-	background:		#dce2e5 url(/automne/admin/img/panel/atm-result-over.gif) repeat-x left bottom;
+	background:		#dce2e5 url(../automne/admin/img/panel/atm-result-over.gif) repeat-x left bottom;
 }
 .atm-results .x-view-selected .atm-title{
-	background:		#c6e57a url(/automne/admin/img/panel/atm-result-selected.gif) repeat-x left bottom;
+	background:		#c6e57a url(../automne/admin/img/panel/atm-result-selected.gif) repeat-x left bottom;
 }
 .atm-results .atm-inactive {
 	color:			#555;
@@ -736,5 +736,5 @@ ul.atm-server li {
 	width:	auto;
 }
 #tabPanels ul.x-tab-strip-top {
-	background:#DBDBDB url(/automne/admin/img/tabs/tab-strip-bg-atm.gif) no-repeat right top;
+	background:#DBDBDB url(../automne/admin/img/tabs/tab-strip-bg-atm.gif) no-repeat right top;
 }

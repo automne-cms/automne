@@ -23,7 +23,7 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+require_once(dirname(__FILE__).'/../../cms_rc_frontend.php');
 
 define("MESSAGE_PAGE_LOGIN", 54);
 define("MESSAGE_PAGE_PASSWORD", 55);
@@ -109,9 +109,8 @@ case "login":
 				Ext.fly('loginField').dom.select();
 			}
 		});";
-		//reset cms_context session (start fresh)
-		unset($_SESSION['cms_context']);
-		unset($_SESSION['atm-tokens']);
+		//reset session (start fresh)
+		session_destroy();
 	}
 	break;
 }

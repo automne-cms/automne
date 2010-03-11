@@ -243,7 +243,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 							}
 							$tagContent =
 							'<span id="polymod-'.$selectedPluginID.'-'.$selectedItem.'" class="polymod">'."\n".
-							'<?php require_once($_SERVER["DOCUMENT_ROOT"].\'/automne/classes/polymodFrontEnd.php\');'."\n".
+							'<?php require_once(PATH_REALROOT_FS.\'/automne/classes/polymodFrontEnd.php\');'."\n".
 							'echo CMS_poly_definition_functions::pluginCode(\''.$selectedPluginID.'\', \''.$selectedItem.'\', '.var_export($selectedText,true).', true); ?>'."\n".
 							$commentSelectedText.'</span>';
 						}
@@ -274,7 +274,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			case MODULE_TREATMENT_PAGECONTENT_HEADER_CODE :
 				//if this page use a row of this module then add the header code to the page
 				if ($usage = CMS_module::moduleUsage($treatedObject->getID(), $this->_codename)) {
-					$modulesCode[$this->_codename] = '<?php require_once($_SERVER["DOCUMENT_ROOT"].\'/automne/classes/polymodFrontEnd.php\'); ?>';
+					$modulesCode[$this->_codename] = '<?php require_once(PATH_REALROOT_FS.\'/automne/classes/polymodFrontEnd.php\'); ?>';
 					//add forms header if needed
 					if (isset($usage['form']) && $usage['form']) {
 						$modulesCode[$this->_codename] .= '<?php CMS_poly_definition_functions::formActions('.var_export($usage['form'],true).', \''.$treatedObject->getID().'\', \''.$usage['language'].'\', '.(($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC || $visualizationMode == PAGE_VISUALMODE_PRINT) ? 'true' : 'false').', $polymodFormsError, $polymodFormsItems); ?>';

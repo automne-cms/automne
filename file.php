@@ -42,7 +42,7 @@ if (!isset($auto_prepend_file['auto_prepend_file']['local_value']) || realpath($
 //disactive HTML compression
 define("ENABLE_HTML_COMPRESSION", false);
 //add Automne configuration files
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+require_once(dirname(__FILE__).'/cms_rc_frontend.php');
 //check for requested file existence
 if (!file_exists($scriptFilename) || !is_file($scriptFilename)) {
 	header('Location: '.PATH_SPECIAL_PAGE_NOT_FOUND_WR);

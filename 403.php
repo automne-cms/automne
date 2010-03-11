@@ -24,11 +24,11 @@
 // **     YOU CAN DEFINE YOUR OWN ERROR PAGE WITH THE FILE /403.html      **
 // *************************************************************************
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+require_once(dirname(__FILE__).'/cms_rc_frontend.php');
 
 //check for alternative 403 file and display it if any
-if (file_exists($_SERVER['DOCUMENT_ROOT'].'/403.html')) {
-	readfile($_SERVER['DOCUMENT_ROOT'].'/403.html');
+if (file_exists(PATH_REALROOT_FS.'/403.html')) {
+	readfile(PATH_REALROOT_FS.'/403.html');
 	exit;
 }
 //or display default Automne 403 page ...
@@ -52,7 +52,7 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'].'/403.html')) {
 		padding:		20px;
 		border:			1px solid red;
 		text-align:		center;
-		background:		url(/automne/admin/img/logo_small.gif) top right no-repeat;
+		background:		url(<?php echo PATH_REALROOT_WR; ?>/automne/admin/img/logo_small.gif) top right no-repeat;
 	}
 	hr {
 		border:			0px solid white;

@@ -25,7 +25,7 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+require_once(dirname(__FILE__).'/../../cms_rc_frontend.php');
 
 define("MESSAGE_PAGE_LOGIN_INCORRECT", 50);
 define("MESSAGE_PAGE_TITLE", 51);
@@ -90,7 +90,7 @@ echo '
 <html>
 <head>
 	<title>'.$language->getMessage(MESSAGE_PAGE_TITLE, array(APPLICATION_LABEL)).'</title>
-	<link rel="STYLESHEET" type="text/css" href="/automne/admin/css/main.css" />
+	<link rel="STYLESHEET" type="text/css" href="'.PATH_REALROOT_WR.'/automne/admin/css/main.css" />
 	<script type="text/javascript" language="javascript">
 		if (window.top != window.self) {
 	    	window.top.location.replace(\'./index.php?cms_message_id='.$_GET["cms_message_id"].'&'.session_name().'='.session_id().'\');

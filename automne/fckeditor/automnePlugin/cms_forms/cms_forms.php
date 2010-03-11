@@ -27,7 +27,7 @@
 
 //for this page, HTML output compression is not welcome.
 define("ENABLE_HTML_COMPRESSION", false);
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
+require_once(dirname(__FILE__).'/../../../../cms_rc_admin.php');
 require_once(PATH_ADMIN_SPECIAL_SESSION_CHECK_FS);
 require_once(PATH_MODULES_FS."/cms_forms.php");
 //add polymod requirement

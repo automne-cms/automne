@@ -23,7 +23,7 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+require_once(dirname(__FILE__).'/../../cms_rc_frontend.php');
 
 define("MESSAGE_PAGE_LOGIN", 54);
 define("MESSAGE_PAGE_PASSWORD", 55);
@@ -92,7 +92,7 @@ default:
 			}
 			$jscontent = '
 			//show front page in tab
-			Automne.tabPanels.getActiveTab().setFrameURL(\'/\');
+			Automne.tabPanels.getActiveTab().setFrameURL(\''.PATH_REALROOT_WR.'/\');
 			Automne.tabPanels.getActiveTab().reload();
 			//load interface
 			Automne.load('.sensitiveIO::jsonEncode($userSessionsInfos).');
@@ -119,6 +119,7 @@ default:
 //Send Login form window
 $applicationLabel = addcslashes(APPLICATION_LABEL, "'");
 $loginURL = PATH_ADMIN_WR.'/login-form.php?_ts='.time();
+$rootPath = PATH_REALROOT_WR;
 $jscontent = 
 <<<END
 	var loginWindow = new Automne.frameWindow({
@@ -137,12 +138,12 @@ $jscontent =
 		if (Ext.EventManager) {
 			Ext.EventManager.removeAll(window);
 		}
-		document.location.replace('/');
+		document.location.replace('{$rootPath}/');
 	};
 	loginWindow.on('beforeclose', loginWindow.closeAndBack);
 	loginWindow.show();
 	//show front page in tab
-	Automne.tabPanels.getActiveTab().setFrameURL('/');
+	Automne.tabPanels.getActiveTab().setFrameURL('{$rootPath}/');
 	Automne.tabPanels.getActiveTab().reload();
 	//display login error window if any
 	{$loginError}

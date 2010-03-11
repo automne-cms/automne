@@ -91,7 +91,7 @@ class CMS_grandFather
 				$backtraceName = 'bt-'.md5(rand());
 				$backtraces[$backtraceName] = $backtrace;
 				$_SESSION['automneBacktraces'] = $backtraces;
-				$backTraceLink = '/automne/admin/backtrace.php?bt='.$backtraceName;
+				$backTraceLink = PATH_REALROOT_WR.'/automne/admin/backtrace.php?bt='.$backtraceName;
 			}
 			//append error to current view
 			$view = CMS_view::getInstance();

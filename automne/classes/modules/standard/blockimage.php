@@ -264,7 +264,7 @@ class CMS_block_image extends CMS_block
 			$html_imgZoomHtml = '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/'.$folder.'/'.$data["enlargedFile"].'" alt="'.io::htmlspecialchars($data["label"]).'" title="' . io::htmlspecialchars($data["label"]) . '" '.$html_attributes.' />';
 		}
 		if ($data["enlargedFile"]) {
-			$href = "/" . CMS_block_image::BLOCK_IMAGE_POPUP . '?location='.$folder.'&amp;file=' . $data["enlargedFile"] . '&amp;label=' . urlencode($data["label"]);
+			$href = PATH_REALROOT_WR . "/" . CMS_block_image::BLOCK_IMAGE_POPUP . '?location='.$folder.'&amp;file=' . $data["enlargedFile"] . '&amp;label=' . urlencode($data["label"]);
 			$popup = (OPEN_ZOOMIMAGE_IN_POPUP) ? ' onclick="javascript:CMS_openPopUpImage(\''.addslashes($href).'\');return false;"':'';
 			if ($html_img) {
 				$html = '<a target="_blank" href="'. $href . '"'.$popup.' title="' . io::htmlspecialchars($data["label"]) . '">' . $html_img . '</a>';

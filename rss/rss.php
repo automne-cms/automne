@@ -27,7 +27,7 @@ if (!isset($_REQUEST['previz'])) {
 }
 
 //Include all needed classes for polymod useage
-require_once($_SERVER["DOCUMENT_ROOT"]."/automne/classes/polymodFrontEnd.php");
+require_once(dirname(__FILE__)."/../automne/classes/polymodFrontEnd.php");
 
 //Get RSS object
 $error = 0;

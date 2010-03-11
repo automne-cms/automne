@@ -23,7 +23,7 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
+require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
 
 function checkNode($value) {
 	return $value != 'source' && io::strpos($value, '..') === false;
@@ -66,14 +66,14 @@ if (!$node && $action != 'create') {
 
 switch ($fileType) {
 	case 'css':
-		$dir = $_SERVER['DOCUMENT_ROOT'].'/css/';
+		$dir = PATH_REALROOT_FS.'/css/';
 		$allowedFiles = array(
 			'css' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_STYLESHEET), 'class' => 'atm-css'),
 			'xml' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_WYSIWYG), 'class' => 'atm-xml'),
 		);
 	break;
 	case 'js':
-		$dir = $_SERVER['DOCUMENT_ROOT'].'/js/';
+		$dir = PATH_REALROOT_FS.'/js/';
 		$allowedFiles = array('js' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_JAVASCRIPT), 'class' => 'atm-js'));
 	break;
 	default:

@@ -404,9 +404,11 @@ class CMS_resource_cms_aliases extends CMS_resource
 			$this->raiseError("Must have an destination");
 			return false;
 		}
+		//get alias position
+		$pos = substr_count('/'.$this->getAliasLineAge().$this->getAlias()  , '/');
 		$fileContent =
 		'<?php'."\n".
-		'require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");'."\n".
+		'require_once(dirname(__FILE__).\'/'.str_repeat  ('../', $pos).'cms_rc_frontend.php\');'."\n".
 		'$alias = new CMS_resource_cms_aliases('.$this->getID().');'."\n".
 		'$alias->redirect();'."\n".
 		'?>';

@@ -26,7 +26,7 @@
 						<div class="newsBottom">
 							<a class="newsAll" href="{page:5:url}">Toute l'actualite</a>
 							<atm-function function="rss" object="{['object1']}" selected="3">
-								<a class="newsRSS" title="{description}" href="{url}"><img src="/img/demo/common/rss.gif" alt="{label}" /></a>
+								<a class="newsRSS" title="{description}" href="{url}"><img src="img/demo/common/rss.gif" alt="{label}" /></a>
 							</atm-function>
 						</div>
 					</div>

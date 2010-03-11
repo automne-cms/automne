@@ -103,7 +103,7 @@ Automne.tabPanel = Ext.extend(Ext.TabPanel, {
 		pr('Load '+params.fromTab+' frame infos');
 		//uncomment this line to see source call
 		//pr(this.getPageInfos.caller.toString());
-		Automne.server.call('/automne/admin/page-infos.php?' + Ext.urlEncode(params), fcn, fcnparams, scope);
+		Automne.server.call(Automne.context.path + '/automne/admin/page-infos.php?' + Ext.urlEncode(params), fcn, fcnparams, scope);
 	},
 	disableTabs:function(exceptions) {
 		exceptions = exceptions || [];

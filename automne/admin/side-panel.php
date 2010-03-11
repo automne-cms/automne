@@ -24,7 +24,7 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
+require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
 
 define("MESSAGE_PAGE_VALIDATIONS_PENDING", 60);
 define("MESSAGE_PAGE_STANDARD_MODULE_LABEL", 213);
@@ -226,7 +226,7 @@ if (isset($modules[MOD_STANDARD_CODENAME]) && $cms_user->hasModuleClearance(MOD_
 			handler:		function(e, toolEl, panel){
 				var window = new Automne.frameWindow({
 					id:				'modulesWindow',
-					frameURL:		'/automne/admin-v3/modules_admin.php?moduleCodename={$module->getCodename()}',
+					frameURL:		'".PATH_MAIN_WR."/admin-v3/modules_admin.php?moduleCodename={$module->getCodename()}',
 					allowFrameNav:	true,
 					width:			750,
 					height:			580,
@@ -300,7 +300,7 @@ foreach ($modules as $module) {
 				handler:		function(e, toolEl, panel){
 					var window = new Automne.frameWindow({
 						id:				'modulesWindow',
-						frameURL:		'/automne/admin-v3/modules_admin.php?moduleCodename={$module->getCodename()}',
+						frameURL:		'".PATH_MAIN_WR."/admin-v3/modules_admin.php?moduleCodename={$module->getCodename()}',
 						allowFrameNav:	true,
 						width:			750,
 						height:			580,
@@ -434,7 +434,7 @@ $topPanel = sensitiveIO::sanitizeJSString('
 	<div id="headPanelContent">
 		<div id="headPanelSite" ext:qtip="Automne Version '.AUTOMNE_VERSION.'">'.APPLICATION_LABEL.'</div>
 		<div id="headPanelClient">'.$cms_user->getFullName().'</div>
-		<a href="/" id="headPanelSiteLink" target="_blank" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_VIEW_WEBSITE).'"></a>
+		<a href="'.PATH_REALROOT_WR.'/" id="headPanelSiteLink" target="_blank" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_VIEW_WEBSITE).'"></a>
 		<a href="http://www.automne.ws/" id="headPanelAutomneLink" target="_blank" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_VISIT_WEBSITE).'"></a>
 		<div id="headPanelStick" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_LOCK_PANEL).'"></div>
 		<div id="headPanelLogout" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_END_SESSION).'">'.$cms_language->getMessage(MESSAGE_PAGE_DISCONNECT).'</div>
@@ -442,6 +442,8 @@ $topPanel = sensitiveIO::sanitizeJSString('
 		<div id="headPanelBarInfos"></div>
 	</div>
 </div>');
+
+$automnePath = PATH_MAIN_WR;
 
 $jscontent = <<<END
 	var sidePanel = Ext.getCmp('{$winId}');
@@ -484,7 +486,7 @@ $jscontent = <<<END
 			Ext.get('headPanelLogout').on('mousedown', function(){
 				//remove all events on window
 				Ext.EventManager.removeAll(window);
-				window.location.href = '/automne/admin/?cms_action=logout';
+				window.location.href = '{$automnePath}/admin/?cms_action=logout';
 			}, this);
 			//over on disconnect button
 			Ext.get('headPanelLogout').addClassOnOver('over');
@@ -573,7 +575,7 @@ $jscontent = <<<END
 		'archives' : function(t){
     		var window = new Automne.frameWindow({
 				id:				'archiveWindow',
-				frameURL:		'/automne/admin-v3/archives.php',
+				frameURL:		'{$automnePath}/admin-v3/archives.php',
 				allowFrameNav:	true,
 				width:			750,
 				height:			580,
@@ -657,7 +659,7 @@ $jscontent = <<<END
 		'modules' : function(t){
     		var window = new Automne.frameWindow({
 				id:				'modulesWindow',
-				frameURL:		'/automne/admin-v3/modules_admin.php',
+				frameURL:		'{$automnePath}/admin-v3/modules_admin.php',
 				allowFrameNav:	true,
 				width:			750,
 				height:			580,
@@ -674,7 +676,7 @@ $jscontent = <<<END
 		'websites' : function(t){
     		var window = new Automne.frameWindow({
 				id:				'websitesWindow',
-				frameURL:		'/automne/admin-v3/websites.php',
+				frameURL:		'{$automnePath}/admin-v3/websites.php',
 				allowFrameNav:	true,
 				width:			750,
 				height:			580,
@@ -686,7 +688,7 @@ $jscontent = <<<END
     		Automne.message.show('TODOV4 : Show languages panel');
     	},
 		'server' : function(t){
-    		openWindow(t, 'server.php', {}, 750, 580);
+    		openWindow(t, '{$automnePath}/admin/server.php', {}, 750, 580);
     	},
 		'parameters' : function(t){
     		openWindow(t, 'module-parameters.php', {

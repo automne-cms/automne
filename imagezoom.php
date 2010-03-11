@@ -25,7 +25,7 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+require_once(dirname(__FILE__).'/cms_rc_frontend.php');
 
 define("POPUP_ADD_X_SIZE", 40);
 define("POPUP_ADD_Y_SIZE", 115);
@@ -55,10 +55,10 @@ $location = str_replace(array_keys($replace), $replace, $location);
 $filepath = "/automne_modules_files/" . $module . "/" . $location . "/" . $filename;
 
 $dimensions = array(0,0);
-if(file_exists(realpath($_SERVER["DOCUMENT_ROOT"] . $filepath)) && strpos(pathinfo(realpath($_SERVER["DOCUMENT_ROOT"] . $filepath), PATHINFO_DIRNAME), $_SERVER['DOCUMENT_ROOT']) === 0) {
-	$html = '<img src="' . $filepath . '" onclick="window.close();" alt="'.$label.'" title="'.$label.'" />';
+if(file_exists(PATH_REALROOT_FS . $filepath) && strpos(pathinfo(PATH_REALROOT_FS . $filepath, PATHINFO_DIRNAME), PATH_REALROOT_FS) === 0) {
+	$html = '<img src="' . PATH_REALROOT_WR . $filepath . '" onclick="window.close();" alt="'.$label.'" title="'.$label.'" />';
 	if (isset($_GET["popup"]) && $_GET["popup"]==="true") {
-		$dimensions = getimagesize($_SERVER["DOCUMENT_ROOT"] . $filepath);
+		$dimensions = getimagesize(PATH_REALROOT_FS . $filepath);
 	}
 } else {
 	$html = '';

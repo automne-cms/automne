@@ -22,7 +22,7 @@
  * Configuration file for the File Manager Connector for PHP.
  */
 define("ENABLE_HTML_COMPRESSION", false);
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
+require_once(dirname(__FILE__).'/../../../../../../cms_rc_admin.php');
 
 global $Config ;
 

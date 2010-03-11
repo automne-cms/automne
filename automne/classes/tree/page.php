@@ -667,7 +667,7 @@ class CMS_page extends CMS_resource
 		$linxFile = new CMS_file($this->getLinxFilePath());
 		$linxFile->setContent($pageContent);
 		if (!$linxFile->writeToPersistence()) {
-			$this->raiseError("Can't write linx file : ".$fpath);
+			$this->raiseError("Can't write linx file : ".$this->getLinxFilePath());
 			return false;
 		}
 		//writes the "print" linx file if any
@@ -678,7 +678,7 @@ class CMS_page extends CMS_resource
 			$linxFile = new CMS_file($this->getLinxFilePath().".print");
 			$linxFile->setContent($printPageContent);
 			if (!$linxFile->writeToPersistence()) {
-				$this->raiseError("Can't write print linx file : ".$fpath);
+				$this->raiseError("Can't write print linx file : ".$this->getLinxFilePath().".print");
 				return false;
 			}
 		}
@@ -694,12 +694,15 @@ class CMS_page extends CMS_resource
 	  */
 	function redirectionCode($filePath) {
 		//replace absolute filePath to DOCUMENT_ROOT one
-		$filePath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $filePath);		
+		$filePath = str_replace(PATH_REALROOT_FS.'/', '', $filePath);
+		$pagePath = '/'.str_replace(PATH_REALROOT_FS.'/', '', $this->_getFilePath(PATH_RELATIVETO_FILESYSTEM));
+		//get alias position
+		$pos = substr_count($pagePath  , '/');
 		$content = 
 		'<?php'."\n".
-		'if (file_exists($_SERVER[\'DOCUMENT_ROOT\'].\''.$filePath.'\')) {'."\n".
+		'if (file_exists(dirname(__FILE__).\'/'.str_repeat  ('../', $pos).$filePath.'\')) {'."\n".
 		'	$cms_page_included = true;'."\n".
-		'	require($_SERVER[\'DOCUMENT_ROOT\'].\''.$filePath.'\');'."\n".
+		'	require(dirname(__FILE__).\'/'.str_repeat  ('../', $pos).$filePath.'\');'."\n".
 		'} else {'."\n".
 		'	header(\'HTTP/1.x 301 Moved Permanently\', true, 301);'."\n".
 		'	header(\'Location: '.PATH_SPECIAL_PAGE_NOT_FOUND_WR.'\');'."\n".
@@ -746,41 +749,41 @@ class CMS_page extends CMS_resource
 			} else {
 				$type = 'application/octet-stream';
 			}
-			$metaDatas .= '<link rel="icon" type="'.$type.'" href="'.$website->getURL().$website->getMeta('favicon').'" />'."\n";
+			$metaDatas .= '<link rel="icon" type="'.$type.'" href="'.$website->getURL().PATH_REALROOT_WR.$website->getMeta('favicon').'" />'."\n";
 		} elseif (file_exists(PATH_REALROOT_FS.'/favicon.ico')) {
-			$metaDatas .= '<link rel="icon" type="image/x-icon" href="'.$website->getURL().'/favicon.ico" />'."\n";
+			$metaDatas .= '<link rel="icon" type="image/x-icon" href="'.$website->getURL().PATH_REALROOT_WR.'/favicon.ico" />'."\n";
 		} elseif (file_exists(PATH_REALROOT_FS.'/img/favicon.png')) {
-			$metaDatas .= '<link rel="icon" type="image/png" href="'.$website->getURL().'/img/favicon.png" />'."\n";
+			$metaDatas .= '<link rel="icon" type="image/png" href="'.$website->getURL().PATH_REALROOT_WR.'/img/favicon.png" />'."\n";
 		}
 		if ($this->getDescription($public)) {
-			$metaDatas .= '	<meta name="description" content="'.SensitiveIO::sanitizeHTMLString($this->getDescription($public)).'" />'."\n";
+			$metaDatas .= '	<meta name="description" content="'.io::htmlspecialchars($this->getDescription($public), ENT_COMPAT).'" />'."\n";
 		}
 		if ($this->getKeywords($public)) {
-			$metaDatas .= '	<meta name="keywords" content="'.SensitiveIO::sanitizeHTMLString($this->getKeywords($public)).'" />'."\n";
+			$metaDatas .= '	<meta name="keywords" content="'.io::htmlspecialchars($this->getKeywords($public), ENT_COMPAT).'" />'."\n";
 		}
 		if ($this->getCategory($public)) {
-			$metaDatas .= '	<meta name="category" content="'.SensitiveIO::sanitizeHTMLString($this->getCategory($public)).'" />'."\n";
+			$metaDatas .= '	<meta name="category" content="'.io::htmlspecialchars($this->getCategory($public), ENT_COMPAT).'" />'."\n";
 		}
 		if ($this->getRobots($public)) {
-			$metaDatas .= '	<meta name="robots" content="'.SensitiveIO::sanitizeHTMLString($this->getRobots($public)).'" />'."\n";
+			$metaDatas .= '	<meta name="robots" content="'.io::htmlspecialchars($this->getRobots($public), ENT_COMPAT).'" />'."\n";
 		}
 		if ($this->getLanguage($public)) {
-			$metaDatas .= '	<meta name="language" content="'.SensitiveIO::sanitizeHTMLString($this->getLanguage($public)).'" />'."\n";
+			$metaDatas .= '	<meta name="language" content="'.io::htmlspecialchars($this->getLanguage($public), ENT_COMPAT).'" />'."\n";
 		}
 		if (!NO_PAGES_EXTENDED_META_TAGS) {
 			if ($this->getAuthor($public)) {
-				$metaDatas .= '	<meta name="author" content="'.SensitiveIO::sanitizeHTMLString($this->getAuthor($public)).'" />'."\n";
+				$metaDatas .= '	<meta name="author" content="'.io::htmlspecialchars($this->getAuthor($public), ENT_COMPAT).'" />'."\n";
 			}
 			if ($this->getReplyto($public)) {
-				$metaDatas .= '	<meta name="reply-to" content="'.SensitiveIO::sanitizeHTMLString($this->getReplyto($public)).'" />'."\n";
+				$metaDatas .= '	<meta name="reply-to" content="'.io::htmlspecialchars($this->getReplyto($public), ENT_COMPAT).'" />'."\n";
 			}
 			if ($this->getCopyright($public)) {
-				$metaDatas .= '	<meta name="copyright" content="'.SensitiveIO::sanitizeHTMLString($this->getCopyright($public)).'" />'."\n";
+				$metaDatas .= '	<meta name="copyright" content="'.io::htmlspecialchars($this->getCopyright($public), ENT_COMPAT).'" />'."\n";
 			}
 		}
 		$metaDatas .= 
 			'	<meta name="generator" content="'.CMS_grandFather::SYSTEM_LABEL.'" />'."\n".
-			'	<meta name="identifier-url" content="'.$website->getURL().'" />'."\n";
+			'	<meta name="identifier-url" content="'.$website->getURL().PATH_REALROOT_WR.'" />'."\n";
 		if ($this->getReminderPeriodicity($public) && $this->getReminderPeriodicity($public) > 0) {
 			$metaDatas .= '	<meta name="revisit-after" content="'.$this->getReminderPeriodicity($public).' days" />'."\n";
 		}
@@ -788,11 +791,14 @@ class CMS_page extends CMS_resource
 			$metaDatas .= '	<meta http-equiv="pragma" content="no-cache" />'."\n";
 		}
 		if ($this->getRefresh($public)) {
-			$metaDatas .= '	<meta http-equiv="refresh" content="'.SensitiveIO::sanitizeHTMLString($this->getRefresh($public)).'" />'."\n";
+			$metaDatas .= '	<meta http-equiv="refresh" content="'.io::htmlspecialchars($this->getRefresh($public), ENT_COMPAT).'" />'."\n";
 		}
 		if ($this->getMetas($public)) {
 			$metaDatas .= $this->getMetas($public)."\n";
 		}
+		
+		$metaDatas .= '	<base href="'.$website->getURL().PATH_REALROOT_WR.'/" />';
+		
 		return $metaDatas;
 	}
 	

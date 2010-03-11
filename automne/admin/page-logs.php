@@ -35,7 +35,7 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
+require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
 
 define("MESSAGE_PAGE_LOGS_ACTION", 910);
 define("MESSAGE_PAGE_LOADING", 1321);

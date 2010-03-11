@@ -8,7 +8,7 @@
   * $Id: conf.js,v 1.3 2010/03/08 15:20:22 sebastien Exp $
   */
 // reference to local blank image
-Ext.BLANK_IMAGE_URL = '/automne/admin/img/s.gif';
+Ext.BLANK_IMAGE_URL = 'img/s.gif';
 //activate native JSON if browser support it
 Ext.USE_NATIVE_JSON = true;
 //vtype alphanum

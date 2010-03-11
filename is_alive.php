@@ -34,7 +34,7 @@
 // also send a mail to an administrator
 // 
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+require_once(dirname(__FILE__).'/cms_rc_frontend.php');
 
 // Page to test HTTP response of
 define("INDEX_PAGE", '/index.php');

@@ -67,7 +67,7 @@ Automne.view = {
 						width:			800,
 						height:			600,
 						autoLoad:		{
-							url:		'/automne/admin/search.php',
+							url:		Automne.context.path + '/automne/admin/search.php',
 							params:		{
 								winId:	'searchWindow',
 								search:	search

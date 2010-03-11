@@ -27,6 +27,6 @@
 //set error reporting level to default V3 value
 error_reporting(E_ALL & ~E_NOTICE);
 if (!defined('PATH_ADMIN_SPECIAL_TREE_WR')) {
-	define('PATH_ADMIN_SPECIAL_TREE_WR', '/automne/admin-v3/tree.php');
+	define('PATH_ADMIN_SPECIAL_TREE_WR', PATH_REALROOT_WR.'/admin-v3/tree.php');
 }
 ?>

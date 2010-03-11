@@ -298,7 +298,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 					handler:		function(button) {
 						var window = new Automne.frameWindow({
 							id:				'editPrevizDraftWindow',
-							frameURL:		'/automne/admin/page-previsualization.php?currentPage='+this.pageId+'&draft=true',
+							frameURL:		Automne.context.path + '/automne/admin/page-previsualization.php?currentPage='+this.pageId+'&draft=true',
 							allowFrameNav:	false,
 							width:			750,
 							height:			580
@@ -429,9 +429,9 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 					Ext.History.add('page:' + response.getResponseHeader['X-Automne-PageId'], true);
 				}
 			});*/
-			if (win.location.href.indexOf('/automne/admin/') === -1) {
+			if (win.location.href.indexOf(Automne.context.path + '/automne/admin/') === -1) {
 				//display redirection message
-				this.setFrameURL('/automne/admin/page-redirect-info.php?url=' + win.location.href);
+				this.setFrameURL(Automne.context.path + '/automne/admin/page-redirect-info.php?url=' + win.location.href);
 				this.reload();
 			}
 		} else if(/*this.id == 'public' && */this.pageId && this.pageId != 'false') {
@@ -556,7 +556,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 			var frameParent = this.frameEl.parent();
 			this.frameEl.remove();
 			this.frameEl = frameParent.createChild({tag:'iframe', id:this.id + 'Frame', width:'100%', height:'100%', frameborder:'no', src:Ext.SSL_SECURE_URL});
-			this.setFrameURL('/automne/admin/frame-error.php');
+			this.setFrameURL(Automne.context.path + '/automne/admin/frame-error.php');
 			if (this.frameEl) {
 				this.frameEvents = false;
 				//set frame events

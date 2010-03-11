@@ -25,7 +25,7 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
+require_once(dirname(__FILE__).'/../../../../cms_rc_admin.php');
 
 define("MESSAGE_PAGE_TITLE", 932);
 define("MESSAGE_PAGE_TREE_TITLE", 935);
@@ -52,6 +52,7 @@ define("MESSAGE_PAGE_TREE_TITLE", 935);
 				Ext.MessageBox = parent.parent.Ext.MessageBox;
 				Automne.server = parent.parent.Automne.server;
 				Ext.Ajax = parent.parent.Ext.Ajax;
+				Ext.BLANK_IMAGE_URL = '<?php echo PATH_ADMIN_IMAGES_WR; ?>/s.gif';
 			}
 		</script>
 		<script type="text/javascript">
@@ -71,7 +72,7 @@ define("MESSAGE_PAGE_TREE_TITLE", 935);
 					border: 		false,
 					xtype:			'atmPanel',
 					autoLoad:		{
-						url:		'/automne/admin/tree.php',
+						url:		'<?php echo PATH_REALROOT_WR; ?>/automne/admin/tree.php',
 						params:		{
 							winId:			'FCKPagesTree',
 							editable:		false,

@@ -173,13 +173,45 @@ if (!defined("APPLICATION_IS_WINDOWS")) {
 }
 
 /**
+  *	Path of the REAL document root
+  *	Default : $_SERVER["DOCUMENT_ROOT"]
+  */
+if (defined('APPLICATION_EXEC_TYPE') && APPLICATION_EXEC_TYPE == 'cli') {
+	//We are in CLI mode, we must calculate the document root first
+	$_SERVER["DOCUMENT_ROOT"] = dirname(__FILE__);
+	if (defined('PATH_REALROOT_WR')) {
+		$_SERVER["DOCUMENT_ROOT"] = substr($_SERVER["DOCUMENT_ROOT"], 0, - strlen(PATH_REALROOT_WR));
+	}
+} else {
+	if ($_SERVER["DOCUMENT_ROOT"] != realpath($_SERVER["DOCUMENT_ROOT"])) {
+		//rewrite server document root if needed
+		$_SERVER["DOCUMENT_ROOT"] = realpath($_SERVER["DOCUMENT_ROOT"]);
+	}
+}
+
+/**
+  *	Path of Automne document root
+  *	Default : ''
+  */
+if (!defined('PATH_REALROOT_WR')) {
+	if (!is_dir($_SERVER["DOCUMENT_ROOT"].'/automne/admin')) {
+		define('PATH_REALROOT_WR', str_replace(realpath($_SERVER["DOCUMENT_ROOT"]), '', realpath(dirname(__FILE__))));
+	} else {
+		define("PATH_REALROOT_WR", '');
+	}
+}
+if (!defined('PATH_REALROOT_FS')) {
+	define("PATH_REALROOT_FS", $_SERVER["DOCUMENT_ROOT"].PATH_REALROOT_WR);
+}
+
+/**
   *	FrontEnd not found page URL (404)
   * wrong users privilège or session time out redirect to this page
   * this page is declared in root htaccess too
   *	Default : /404.php
   */
 if (!defined("PATH_SPECIAL_PAGE_NOT_FOUND_WR")) {
-	define("PATH_SPECIAL_PAGE_NOT_FOUND_WR", '/404.php');
+	define("PATH_SPECIAL_PAGE_NOT_FOUND_WR", PATH_REALROOT_WR.'/404.php');
 }
 
 /**
@@ -188,7 +220,7 @@ if (!defined("PATH_SPECIAL_PAGE_NOT_FOUND_WR")) {
   *	Default : /403.php
   */
 if (!defined("PATH_FORBIDDEN_WR")) {
-	define("PATH_FORBIDDEN_WR", '/403.php');
+	define("PATH_FORBIDDEN_WR", PATH_REALROOT_WR.'/403.php');
 }
 
 /**
@@ -341,14 +373,6 @@ if (!defined("MINIMUM_PASSWORD_LENGTH")) {
 }
 
 /**
-  *	Main path where the CMS lies
-  *	Default : "/cms"
-  */
-if (!defined("PATH_MAIN_WR")) {
-	define("PATH_MAIN_WR", "/automne");
-}
-
-/**
   *	Application cookie path
   * Used to share authentification cookie between multiple sub domains
   * Use value like : ".domain.tld" (do not forget the trailing dot)
@@ -358,14 +382,6 @@ if (!defined("APPLICATION_COOKIE_DOMAIN")) {
 	define("APPLICATION_COOKIE_DOMAIN", '');
 }
 
-/**
-  *	Path of the REAL document root
-  *	Default : $_SERVER["DOCUMENT_ROOT"]
-  */
-if ($_SERVER["DOCUMENT_ROOT"] != dirname(__FILE__)) {
-	//rewrite server document root if needed
-	$_SERVER["DOCUMENT_ROOT"] = dirname(__FILE__);
-}
 //rewrite some server conf if HTTP_X_FORWARDED exists
 if (isset($_SERVER["HTTP_X_FORWARDED_HOST"])) {
 	$_SERVER["HTTP_HOST"] = $_SERVER["HTTP_X_FORWARDED_HOST"];
@@ -376,14 +392,16 @@ if (isset($_SERVER["HTTP_X_FORWARDED_SERVER"])) {
 if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) {
 	$_SERVER["REMOTE_ADDR"] = $_SERVER["HTTP_X_FORWARDED_FOR"];
 }
-//check we're not in a subdir
-if (!is_dir($_SERVER["DOCUMENT_ROOT"].PATH_MAIN_WR)) {
-	define("PATH_REALROOT_FS", substr($_SERVER["DOCUMENT_ROOT"], 0, strrpos($_SERVER["DOCUMENT_ROOT"], "html") - 1));
-} else {
-	define("PATH_REALROOT_FS", $_SERVER["DOCUMENT_ROOT"]);
+
+/**
+  *	Main path where the CMS lies
+  *	Default : "/automne"
+  */
+if (!defined("PATH_MAIN_WR")) {
+	define("PATH_MAIN_WR", PATH_REALROOT_WR."/automne");
 }
 if (!defined("PATH_MAIN_FS")) {
-	define("PATH_MAIN_FS", PATH_REALROOT_FS.PATH_MAIN_WR);
+	define("PATH_MAIN_FS", PATH_REALROOT_FS."/automne");
 }
 
 /**
@@ -391,7 +409,7 @@ if (!defined("PATH_MAIN_FS")) {
   *	Default : DOCUMENT_ROOT."/cms_blocks_files"
   */
 if (!defined("PATH_MODULES_FILES_WR")) {
-	define("PATH_MODULES_FILES_WR", "/automne_modules_files");
+	define("PATH_MODULES_FILES_WR", PATH_REALROOT_WR."/automne_modules_files");
 }
 if (!defined("PATH_MODULES_FILES_FS")) {
 	define("PATH_MODULES_FILES_FS", PATH_REALROOT_FS."/automne_modules_files");
@@ -411,7 +429,7 @@ if (!defined("PATH_MODULES_FILES_STANDARD_FS")) {
   *	Default : PATH_MAIN_xx."/web"
   */
 if (!defined("PATH_PAGES_WR")) {
-	define("PATH_PAGES_WR", "/web");
+	define("PATH_PAGES_WR", PATH_REALROOT_WR."/web");
 }
 if (!defined("PATH_PAGES_FS")) {
 	define("PATH_PAGES_FS", PATH_REALROOT_FS."/web");
@@ -423,7 +441,7 @@ if (!defined("PATH_PAGES_FS")) {
   *	Default : PATH_MAIN_xx."/html"
   */
 if (!defined("PATH_PAGES_HTML_WR")) {
-	define("PATH_PAGES_HTML_WR", "/html");
+	define("PATH_PAGES_HTML_WR", PATH_REALROOT_WR."/html");
 }
 if (!defined("PATH_PAGES_HTML_FS")) {
 	define("PATH_PAGES_HTML_FS", PATH_REALROOT_FS."/html");
@@ -496,7 +514,7 @@ if (!defined("PATH_PRINT_TEMPLATES_FS")) {
   *	Default : DOCUMENT_ROOT."/css"
   */
 if (!defined("PATH_CSS_WR")) {
-	define("PATH_CSS_WR", "/css");
+	define("PATH_CSS_WR", PATH_REALROOT_WR."/css");
 }
 if (!defined("PATH_CSS_FS")) {
 	define("PATH_CSS_FS", PATH_REALROOT_FS."/css");
@@ -506,7 +524,7 @@ if (!defined("PATH_CSS_FS")) {
   *	Default : DOCUMENT_ROOT."/js"
   */
 if (!defined("PATH_JS_WR")) {
-	define("PATH_JS_WR", "/js");
+	define("PATH_JS_WR", PATH_REALROOT_WR."/js");
 }
 if (!defined("PATH_JS_FS")) {
 	define("PATH_JS_FS", PATH_REALROOT_FS."/js");
@@ -516,7 +534,7 @@ if (!defined("PATH_JS_FS")) {
   *	Default : "/html"
   */
 if (!defined("PATH_PAGES_WR")) {
-	define("PATH_PAGES_WR",  "/html");
+	define("PATH_PAGES_WR",  PATH_REALROOT_WR."/html");
 }
 if (!defined("PATH_PAGES_FS")) {
 	define("PATH_PAGES_FS",  PATH_REALROOT_FS."/html");
@@ -534,7 +552,7 @@ if (!defined("PATH_HTACCESS_FS")) {
   *	Default : DOCUMENT_ROOT."/soap"
   */
 if (!defined("PATH_SOAP_WR")) {
-	define("PATH_SOAP_WR", "/soap");
+	define("PATH_SOAP_WR", PATH_REALROOT_WR."/soap");
 }
 if (!defined("PATH_SOAP_FS")) {
 	define("PATH_SOAP_FS", PATH_REALROOT_FS."/soap");
@@ -731,7 +749,7 @@ if (!defined("PATH_TEMPLATES_IMAGES_FS")) {
   *	Default : PATH_MAIN_xx."/automne_linx_files"
   */
 if (!defined("PATH_PAGES_LINXFILES_WR")) {
-	define("PATH_PAGES_LINXFILES_WR", "/automne_linx_files");
+	define("PATH_PAGES_LINXFILES_WR", PATH_REALROOT_WR."/automne_linx_files");
 }
 if (!defined("PATH_PAGES_LINXFILES_FS")) {
 	define("PATH_PAGES_LINXFILES_FS", PATH_REALROOT_FS."/automne_linx_files");
@@ -742,7 +760,7 @@ if (!defined("PATH_PAGES_LINXFILES_FS")) {
   *	Default : PATH_REALROOT_xx."/automne_bin"
   */
 if (!defined("PATH_WINDOWS_BIN_WR")) {
-	define("PATH_WINDOWS_BIN_WR", "/automne_bin");
+	define("PATH_WINDOWS_BIN_WR", PATH_REALROOT_WR."/automne_bin");
 }
 if (!defined("PATH_WINDOWS_BIN_FS")) {
 	define("PATH_WINDOWS_BIN_FS", PATH_REALROOT_FS."/automne_bin");

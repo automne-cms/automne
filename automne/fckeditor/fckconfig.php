@@ -29,7 +29,7 @@
 //for this page, HTML output compression is not welcome.
 define("ENABLE_HTML_COMPRESSION", false);
 //load requirements (FE only because it can be used in FE and BO)
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+require_once(dirname(__FILE__).'/../../cms_rc_frontend.php');
 
 if (!is_object($cms_user)) {
 	//initialize public user
@@ -249,8 +249,8 @@ FCKConfig.FontFormats	= 'p;h1;h2;h3;h4;h5;h6;div';
 //FCKConfig.FontFormats	= 'p;h1;h2;h3;h4;h5;h6;pre;address;div' ;
 
 //changed for Automne
-FCKConfig.StylesXmlPath	= '/css/editorstyles.xml' ;
-FCKConfig.TemplatesXmlPath	= '/css/editortemplates.xml' ;
+FCKConfig.StylesXmlPath	= '<?php echo PATH_REALROOT_WR; ?>/css/editorstyles.xml' ;
+FCKConfig.TemplatesXmlPath	= '<?php echo PATH_REALROOT_WR; ?>/css/editortemplates.xml' ;
 
 FCKConfig.SpellChecker			= 'ieSpell' ;	// 'ieSpell' | 'SpellerPages'
 FCKConfig.IeSpellDownloadUrl	= 'http://www.iespell.com/download.php' ;

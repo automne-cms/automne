@@ -20,7 +20,7 @@ Automne.blockPolymod = Ext.extend(Automne.block, {
 			width:			750,
 			height:			580,
 			autoLoad:		{
-				url:			'/automne/admin/modules/polymod/content-block.php',
+				url:			Automne.context.path + '/automne/admin/modules/polymod/content-block.php',
 				params:			{
 					winId:			'blockPolymodWindow',
 					cs:				this.row.clientspace.getId(),
@@ -46,7 +46,7 @@ Automne.blockPolymod = Ext.extend(Automne.block, {
 			width:			800,
 			height:			600,
 			autoLoad:		{
-				url:		'/automne/admin/module.php',
+				url:		Automne.context.path + '/automne/admin/module.php',
 				params:		{
 					winId:		'module'+ this.value.module +'Window',
 					module:		this.value.module

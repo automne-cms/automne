@@ -36,7 +36,7 @@ if (isset($_POST['userAgent'])) {
 	$_SERVER['HTTP_USER_AGENT'] = urldecode($_POST['userAgent']);
 }*/
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+require_once(dirname(__FILE__).'/../../cms_rc_frontend.php');
 //load interface instance
 $view = CMS_view::getInstance();
 //set default display mode for this page

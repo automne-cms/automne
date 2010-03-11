@@ -82,7 +82,7 @@ Automne.treePanel = Ext.extend(Ext.tree.TreePanel, {
 			} else {
 				//call server for queried node lineage
 				Automne.server.call({
-					url:			'/automne/admin/tree-lineage.php',
+					url:			Automne.context.path + '/automne/admin/tree-lineage.php',
 					scope:			this,
 					fcnCallback:	function(response, options, jsonResponse){
 						if (jsonResponse) {

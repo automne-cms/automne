@@ -20,7 +20,7 @@ Automne.blockFile = Ext.extend(Automne.block, {
 			width:			700,
 			height:			190,
 			autoLoad:		{
-				url:		'/automne/admin/page-content-block-file.php',
+				url:		Automne.context.path + '/automne/admin/page-content-block-file.php',
 				params:		{
 					winId:			'blockFileWindow',
 					cs:				this.row.clientspace.getId(),

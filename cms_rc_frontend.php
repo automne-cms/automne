@@ -128,7 +128,7 @@ if (!class_exists('CMS_module_standard')) {
   * because this file no longer exists since V3.2.1
   */
 if (!defined("PATH_FRONTEND_SPECIAL_SESSION_CHECK_FS")) {
-	define("PATH_FRONTEND_SPECIAL_SESSION_CHECK_FS", $_SERVER["DOCUMENT_ROOT"]."/application_enforces_access_control.php");
+	define("PATH_FRONTEND_SPECIAL_SESSION_CHECK_FS", PATH_REALROOT_FS."/application_enforces_access_control.php");
 }
 
 /*******************************\

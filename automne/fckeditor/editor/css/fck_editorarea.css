@@ -53,7 +53,7 @@ a[href]
 .polymod {
 	border-bottom:		1px dotted #008000;
 	padding:			1px 10px 1px 1px;
-	background:			url(/automne/fckeditor/automnePlugin/polymod/polymod-mini.gif) no-repeat right top;
+	background:			url(../../../../automne/fckeditor/automnePlugin/polymod/polymod-mini.gif) no-repeat right top;
 }
 .polymod img {
 	-moz-user-select:	none;

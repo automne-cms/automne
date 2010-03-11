@@ -22,7 +22,8 @@
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+
+require_once(dirname(__FILE__).'/../../cms_rc_frontend.php');
 
 define("MESSAGE_PAGE_TITLE", 51);
 define("MESSAGE_PAGE_LOADING", 1321);

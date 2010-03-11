@@ -24,7 +24,7 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
+require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
 
 //define used messages (standard)
 $cms_language->startPrefetch();
@@ -161,7 +161,7 @@ if ($pageUrl && !$pageId) {
 }
 if (!isset($cms_page) || !$cms_page || !is_object($cms_page) || $cms_page->hasError() || ($cms_page->getID() != APPLICATION_ROOT_PAGE_ID && !CMS_tree::hasAncestor($cms_page->getID()))) {
 	if ($pageUrl && !$isAutomne) {
-		if ($pageUrl == '/' && $httpHost != parse_url(CMS_websitesCatalog::getMainURL(), PHP_URL_HOST)) {
+		if ($pageUrl == PATH_REALROOT_WR.'/' && $httpHost != parse_url(CMS_websitesCatalog::getMainURL(), PHP_URL_HOST)) {
 			//Website domain is not properly set
 			if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 				$jscontent = "
@@ -173,7 +173,7 @@ if (!isset($cms_page) || !$cms_page || !is_object($cms_page) || $cms_page->hasEr
 						fn: 		function (button) {
 										var window = new Automne.frameWindow({
 											id:				'websitesWindow',
-											frameURL:		'/automne/admin-v3/websites.php',
+											frameURL:		'".PATH_MAIN_WR."/admin-v3/websites.php',
 											allowFrameNav:	true,
 											width:			750,
 											height:			580

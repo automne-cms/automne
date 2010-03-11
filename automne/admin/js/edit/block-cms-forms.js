@@ -19,7 +19,7 @@ Automne.blockCMS_Forms = Ext.extend(Automne.block, {
 			id:				'blockCMSFormsWindow',
 			width:			800,
 			height:			600,
-			frameURL:		'/automne/admin/modules/cms_forms/content_block.php?' + Ext.urlEncode({
+			frameURL:		Automne.context.path + '/automne/admin/modules/cms_forms/content_block.php?' + Ext.urlEncode({
 				winId:			'blockCMSFormsWindow',
 				cs:				this.row.clientspace.getId(),
 				page:			this.row.clientspace.page,
@@ -40,7 +40,7 @@ Automne.blockCMS_Forms = Ext.extend(Automne.block, {
 			id:				'moduleCMSFormsWindow',
 			width:			800,
 			height:			600,
-			frameURL:		'/automne/admin/modules/cms_forms/index.php',
+			frameURL:		Automne.context.path + '/automne/admin/modules/cms_forms/index.php',
 			allowFrameNav:	true
 		});
 		this.win.show();

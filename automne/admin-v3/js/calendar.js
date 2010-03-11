@@ -29,7 +29,7 @@ var languageCode;	// Possible values: 	en,fr
 // [monthString] = Name of current month
 // [year] = Current year							
 var todayStringFormat = '[todayString] [dayString]. [day]. [monthString] [year]';						
-var pathToImages = '/automne/admin/img/calendar/';	// Relative to your HTML file
+var pathToImages = '../../../automne/admin/img/calendar/';	// Relative to your HTML file
 var format;
 var calendar_offsetTop = 0;		// Offset - calendar placement - You probably have to modify this value if you're not using a strict doctype
 var calendar_offsetLeft = 0;	// Offset - calendar placement - You probably have to modify this value if you're not using a strict doctype

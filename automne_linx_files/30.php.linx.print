@@ -1,8 +1,8 @@
 <?php
-//Generated on Wed, 10 Mar 2010 17:28:56 +0100 by Automne (TM) 4.0.1
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+//Generated on Thu, 11 Mar 2010 16:28:34 +0100 by Automne (TM) 4.0.1
+require_once(dirname(__FILE__).'/../cms_rc_frontend.php');
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
-	CMS_view::redirect('http://automne4.401/web/demo/print-30-notions-essentielles.php', true, 301);
+	CMS_view::redirect('http://test-folder/trunk/web/demo/print-30-notions-essentielles.php', true, 301);
 }
 ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";  ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">

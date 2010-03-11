@@ -23,7 +23,7 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
+require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
 
 define("MESSAGE_TOOLBAR_HELP",1073);
 define("MESSAGE_PAGE_SAVE", 952);
@@ -137,7 +137,7 @@ if ($allIcons) {
 	//get max icons height
 	$maxheight = 0;
 	foreach ($allIcons as $icon) {
-		list($sizeX, $sizeY) = @getimagesize($_SERVER['DOCUMENT_ROOT']."/".$icon);
+		list($sizeX, $sizeY) = @getimagesize(PATH_REALROOT_FS."/".$icon);
 		$maxheight = $sizeY > $maxheight ? $sizeY : $maxheight;
 	}
 	$maxheight += 10;
@@ -179,6 +179,8 @@ $view->setContent($content);
 $title = sensitiveIO::sanitizeJSString((sensitiveIO::isPositiveInteger($rowId)) ? $cms_language->getMessage(MESSAGE_PAGE_ROW).' '.$label : $cms_language->getMessage(MESSAGE_PAGE_ROW_CREATE));
 
 $label = sensitiveIO::sanitizeJSString($label);
+
+$automnePath = PATH_MAIN_WR;
 
 $jscontent = <<<END
 	var rowWindow = Ext.getCmp('{$winId}');
@@ -359,8 +361,8 @@ $jscontent = <<<END
 							parserfile:		["parsexml.js", "parsecss.js", "tokenizejavascript.js", "parsejavascript.js",
 											"../contrib/php/js/tokenizephp.js", "../contrib/php/js/parsephp.js",
 											"../contrib/php/js/parsephphtmlmixed.js"],
-					        stylesheet: 	["/automne/codemirror/css/xmlcolors.css", "/automne/codemirror/css/jscolors.css", "/automne/codemirror/css/csscolors.css", "/automne/codemirror/contrib/php/css/phpcolors.css"],
-							path: 			"/automne/codemirror/js/",
+					        stylesheet: 	["{$automnePath}/codemirror/css/xmlcolors.css", "{$automnePath}/codemirror/css/jscolors.css", "{$automnePath}/codemirror/css/csscolors.css", "{$automnePath}/codemirror/contrib/php/css/phpcolors.css"],
+							path: 			"{$automnePath}/codemirror/js/",
 							textWrapping:	false,
 							initCallback:	function(){
 								editor.reindent();

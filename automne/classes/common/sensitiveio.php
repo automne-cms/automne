@@ -172,11 +172,11 @@ class SensitiveIO extends CMS_grandfather
 	  * @return string the sanitized string
 	  * @access public
 	  */
-	static function htmlspecialchars($input) {
+	static function htmlspecialchars($input, $quote_style = ENT_QUOTES) {
 		if (version_compare(phpversion(), "5.2.3") !== -1) {
-			return htmlspecialchars($input, ENT_QUOTES, 'ISO-8859-1', false);
+			return htmlspecialchars($input, $quote_style, 'ISO-8859-1', false);
 		} else {
-			return preg_replace("/&amp;(#[0-9]+|[a-z]+);/i", "&$1;", htmlspecialchars($input, ENT_QUOTES, 'ISO-8859-1'));
+			return preg_replace("/&amp;(#[0-9]+|[a-z]+);/i", "&$1;", htmlspecialchars($input, $quote_style, 'ISO-8859-1'));
 		}
 	}
 	static function sanitizeHTMLString($input) {

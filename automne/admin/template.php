@@ -23,7 +23,7 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
+require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
 
 define("MESSAGE_TOOLBAR_HELP",1073);
 define("MESSAGE_PAGE_SAVE", 952);
@@ -245,6 +245,7 @@ if (USE_PRINT_PAGES) {
 	}";
 }
 
+$automnePath = PATH_MAIN_WR;
 $jscontent = <<<END
 	var templateWindow = Ext.getCmp('{$winId}');
 	templateWindow.templateId = '{$templateId}';
@@ -449,8 +450,8 @@ $jscontent = <<<END
 					                     	"../contrib/php/js/tokenizephp.js", "../contrib/php/js/parsephp.js",
 					                     	"../contrib/php/js/parsephphtmlmixed.js"],
 					        /*continuousScanning: 500,*/
-							stylesheet: 	["/automne/codemirror/css/xmlcolors.css", "/automne/codemirror/css/jscolors.css", "/automne/codemirror/css/csscolors.css", "/automne/codemirror/contrib/php/css/phpcolors.css"],
-							path: 			"/automne/codemirror/js/",
+							stylesheet: 	["{$automnePath}/codemirror/css/xmlcolors.css", "{$automnePath}/codemirror/css/jscolors.css", "{$automnePath}/codemirror/css/csscolors.css", "{$automnePath}/codemirror/contrib/php/css/phpcolors.css"],
+							path: 			"{$automnePath}/codemirror/js/",
 							textWrapping:	false,
 							initCallback:	function(){
 								editor.reindent();

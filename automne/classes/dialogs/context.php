@@ -620,7 +620,7 @@ class CMS_context extends CMS_grandFather
 			CMS_context::setCookie(CMS_context::getAutoLoginCookieName());
 		}
 		//remove phpMyAdmin cookie if any
-		@setcookie(session_name(), false, time() - 3600, '/automne/phpMyAdmin/', APPLICATION_COOKIE_DOMAIN, 0);
+		@setcookie(session_name(), false, time() - 3600, PATH_REALROOT_WR.'/automne/phpMyAdmin/', APPLICATION_COOKIE_DOMAIN, 0);
 		//then destroy session
 		@session_destroy();
 	}
@@ -687,6 +687,7 @@ class CMS_context extends CMS_grandFather
 		$sessionInfos['token'] = CMS_context::getToken('admin');
 		$sessionInfos['sessionDuration'] = APPLICATION_SESSION_TIMEOUT;
 		$sessionInfos['permanent'] = $_SESSION["cms_context"]->getPermanent();
+		$sessionInfos['path'] = PATH_REALROOT_WR;
 		$sessionInfos['debug'] = '';
 		$sessionInfos['debug'] += (SYSTEM_DEBUG) ? 1 : 0;
 		$sessionInfos['debug'] += (STATS_DEBUG) ? 2 : 0;

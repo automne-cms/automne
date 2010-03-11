@@ -33,7 +33,7 @@ class CMS_xml2Array extends CMS_grandFather
 	const ARRAY2XML_START_TAG = 1;
 	const ARRAY2XML_END_TAG = -1;
 	
-	protected $_autoClosedTagsList = array('br', 'hr', 'meta', 'input', 'img', 'link', 'area', 'param', 'col', 'frame', 'nodespec');
+	protected $_autoClosedTagsList = array('br', 'base', 'hr', 'meta', 'input', 'img', 'link', 'area', 'param', 'col', 'frame', 'nodespec', 'command', 'embed', 'keygen', 'source');
 	
 	protected $_params;
 	

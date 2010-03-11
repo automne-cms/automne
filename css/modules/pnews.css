@@ -3,7 +3,7 @@
 /*
 /* news */
 .page5 #title{
-	background-image:		url(/img/demo/interieur/h1News.gif);
+	background-image:		url(../img/demo/interieur/h1News.gif);
 }
 .page5 h1{
 	color:					#ec2685;
@@ -12,7 +12,7 @@
 	margin:					0 0 20px 0;
 }
 #newssearch h2{
-	background:				url(/img/demo/interieur/h2News.gif) no-repeat left top;
+	background:				url(../img/demo/interieur/h2News.gif) no-repeat left top;
 	left:					-17px;
 	margin-bottom:			0px;
 	color:					#FFFFFF;
@@ -39,7 +39,7 @@
 	padding:				0 8px 0 12px;
 }
 .formCat{
-	background:				url(/img/demo/interieur/formCat.gif) no-repeat left 4px;
+	background:				url(../img/demo/interieur/formCat.gif) no-repeat left 4px;
 	padding:				0 10px 0 10px;
 }
 #keyword{
@@ -52,7 +52,7 @@
 	width:					200px;
 }
 #newssearch #submitSearch{
-	background:				url(/img/demo/interieur/submitSearch.gif) no-repeat left top;
+	background:				url(../img/demo/interieur/submitSearch.gif) no-repeat left top;
 	border:					0px;
 	color:					#FFFFFF;
 	cursor:					pointer;
@@ -72,11 +72,11 @@
 	margin-bottom:			25px;
 }
 .newsTitle{
-	background:				url(/img/demo/interieur/newsTitle.jpg) repeat-x left bottom;
+	background:				url(../img/demo/interieur/newsTitle.jpg) repeat-x left bottom;
 	height:					1%;
 }
 .newsTitle h2{
-	background:				url(/img/demo/interieur/h2Puce.gif) no-repeat 15px 4px;
+	background:				url(../img/demo/interieur/h2Puce.gif) no-repeat 15px 4px;
 	color:					#60524b;
 	font-size:				93%;
 	font-weight:			bold;
@@ -134,7 +134,7 @@
 	margin:				0 5px 0 5px;
 }
 .blocLienBottom{
-	background:			#63554f url(/img/demo/interieur/blocLienBottom.gif) no-repeat right;
+	background:			#63554f url(../img/demo/interieur/blocLienBottom.gif) no-repeat right;
 	clear:				left;
 	cursor:				pointer;
 	display:			block;
@@ -149,11 +149,11 @@ a.blocLien, a.blocLien:hover, a.blocLien:visited, a.blocLien:active, a.blocLien:
 	color:				#FFFFFF;
 }
 .lastNews{
-	background:				url(/img/demo/accueil/newsBottom.gif) no-repeat 9px bottom;
+	background:				url(../img/demo/accueil/newsBottom.gif) no-repeat 9px bottom;
 	padding-bottom:			25px;
 }
 .newsTop{
-	background:				url(/img/demo/accueil/newsTop.gif) no-repeat left top;
+	background:				url(../img/demo/accueil/newsTop.gif) no-repeat left top;
 	line-height:			23px;
 	padding:				0 20px 0 34px;
 	width:					328px;
@@ -193,7 +193,7 @@ a.blocLien, a.blocLien:hover, a.blocLien:visited, a.blocLien:active, a.blocLien:
 	text-transform:			uppercase;
 }
 .newsAll:hover{
-	background:				url(/img/demo/accueil/newsAllPuce.gif) no-repeat left 4px;
+	background:				url(../img/demo/accueil/newsAllPuce.gif) no-repeat left 4px;
 	color:					#a81258;
 }
 .newsRSS{

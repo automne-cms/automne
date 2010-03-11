@@ -20,7 +20,7 @@ Automne.blockImage = Ext.extend(Automne.block, {
 			width:			700,
 			height:			435,
 			autoLoad:		{
-				url:		'/automne/admin/page-content-block-image.php',
+				url:		Automne.context.path + '/automne/admin/page-content-block-image.php',
 				params:		{
 					winId:			'blockImageWindow',
 					cs:				this.row.clientspace.getId(),

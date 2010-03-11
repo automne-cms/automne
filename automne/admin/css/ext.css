@@ -89,7 +89,7 @@
 #imagecrop-rzwrap .x-resizable-handle{
     width:			11px;
     height:			11px;
-    background:		transparent url(/automne/admin/img/sizer/square.gif) no-repeat;
+    background:		transparent url(../automne/admin/img/sizer/square.gif) no-repeat;
     margin:			0px;
 	line-height:	11px;
 }
@@ -108,7 +108,7 @@
 	position:		absolute;
 	visibility:		hidden;
 	text-align:		center;
-	background:		#fff url(/automne/admin/img/livedata/bg.gif) repeat-x;
+	background:		#fff url(../automne/admin/img/livedata/bg.gif) repeat-x;
 	border:			1px solid #99BBE8;
 }
 .load-indicator span {

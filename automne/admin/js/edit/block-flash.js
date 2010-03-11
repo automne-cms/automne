@@ -20,7 +20,7 @@ Automne.blockFlash = Ext.extend(Automne.block, {
 			width:			700,
 			height:			400,
 			autoLoad:		{
-				url:		'/automne/admin/page-content-block-flash.php',
+				url:		Automne.context.path + '/automne/admin/page-content-block-flash.php',
 				params:		{
 					winId:			'blockFlashWindow',
 					cs:				this.row.clientspace.getId(),

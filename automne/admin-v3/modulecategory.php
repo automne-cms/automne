@@ -23,7 +23,7 @@
   * @author Cédric Soret <cedric.soret@ws-interactive.fr>
   */
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
+require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
 require_once(PATH_ADMIN_SPECIAL_SESSION_CHECK_FS);
 
 /**

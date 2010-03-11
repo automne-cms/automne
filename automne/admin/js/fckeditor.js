@@ -14,7 +14,7 @@
 Ext.form.FCKeditor = function(config){
 	this.config	 = config;
 	var defaultEditorConfig = {
-		BasePath :		'/automne/fckeditor/',
+		BasePath :		Automne.context.path + '/automne/fckeditor/',
 		Config : {
 			BaseHref: 		window.location.href
 		},

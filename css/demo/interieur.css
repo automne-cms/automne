@@ -1,8 +1,8 @@
 #container{
-	background:				url(/img/demo/interieur/backgroundContainer.gif) repeat-y 107px top;
+	background:				url(../img/demo/interieur/backgroundContainer.gif) repeat-y 107px top;
 }
 #header{
-	background:				url(/img/demo/interieur/header.jpg) no-repeat left top;
+	background:				url(../img/demo/interieur/header.jpg) no-repeat left top;
 	height:					185px;
 }
 #lienAccueil{
@@ -15,12 +15,12 @@
 	width:					260px;
 }
 #backgroundBottomContainer{
-	background:				url(/img/demo/interieur/backgroundBottomContainer.gif) no-repeat left bottom;
+	background:				url(../img/demo/interieur/backgroundBottomContainer.gif) no-repeat left bottom;
 	margin:					0 42px 0 107px;
 	height:					1%;
 }
 #menuLeft{
-	background:				url(/img/demo/interieur/backgroundMenuLeft.gif) repeat-x left top;
+	background:				url(../img/demo/interieur/backgroundMenuLeft.gif) repeat-x left top;
 }
 #menuLeftBottom{
 	bottom:					0px;
@@ -30,14 +30,14 @@
 	width:					171px;
 }
 #content{
-	background:				url(/img/demo/interieur/backgroundContent.jpg) no-repeat left top;
+	background:				url(../img/demo/interieur/backgroundContent.jpg) no-repeat left top;
 	min-height:				101px;
 	padding:				0 61px 50px 50px;
 	text-align:				justify;
 	width:					539px;
 }
 h1{
-	background:				url(/img/demo/common/backgroundTitle.png) no-repeat right bottom;
+	background:				url(../img/demo/common/backgroundTitle.png) no-repeat right bottom;
 	color:					#6fae03;
 	display:				inline;
 	font-size:				138.5%;
@@ -46,7 +46,7 @@ h1{
 	padding:				0 15px 8px 0;
 }
 h2{
-	background:				url(/img/demo/interieur/h2.gif) no-repeat 0 4px;
+	background:				url(../img/demo/interieur/h2.gif) no-repeat 0 4px;
 	color:					#6FAE03;
 	font-size:				100%;
 	font-weight:			bold;
@@ -57,7 +57,7 @@ h2{
 	width:					536px;
 }
 h3{
-	background:				url(/img/demo/interieur/h3.gif) no-repeat left 3px;
+	background:				url(../img/demo/interieur/h3.gif) no-repeat left 3px;
 	color:					#473933;
 	font-size:				93%;
 	font-weight:			bold;
@@ -67,7 +67,7 @@ h3{
 	color:					#6fae03;
 }
 #breadcrumbs{
-	background:				url(/img/demo/interieur/breadcrumbs.gif) no-repeat left top;
+	background:				url(../img/demo/interieur/breadcrumbs.gif) no-repeat left top;
 	left:					-28px;
 	padding:				0 0 0 15px;
 	position:				relative;
@@ -76,11 +76,11 @@ h3{
 	font-weight:			bold;
 }
 #title{
-	background:				url(/img/demo/interieur/h1.gif) no-repeat left 18px;
+	background:				url(../img/demo/interieur/h1.gif) no-repeat left 18px;
 	padding:				6px 0 12px 20px;
 }
 #content #top{
-	background:			url(/img/demo/interieur/top.gif) no-repeat left top;
+	background:			url(../img/demo/interieur/top.gif) no-repeat left top;
 	color:				#75665e;
 	float:				right;
 	padding:			3px 0 0 15px;
@@ -105,7 +105,7 @@ h3{
 	padding:			0 3px;
 }
 .blocLienBottom{
-	background:			#63554f url(/img/demo/interieur/blocLienBottom.gif) no-repeat right;
+	background:			#63554f url(../img/demo/interieur/blocLienBottom.gif) no-repeat right;
 	clear:				left;
 	cursor:				pointer;
 	display:			block;

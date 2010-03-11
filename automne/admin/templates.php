@@ -23,7 +23,7 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
+require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
 
 define("MESSAGE_TOOLBAR_HELP",1073);
 define("MESSAGE_ERROR_NO_RIGHTS_FOR_TEMPLATES", 799);
@@ -121,7 +121,7 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //t
 		xtype:			'framePanel',
 		title:			'{$cms_language->getJsMessage(MESSAGE_PAGE_WYSIWYG_TOOLBARS)}',
 		id:				'toolbarWysiwygPanel',
-		frameURL:		'/automne/admin-v3/wysiwyg.php',
+		frameURL:		'".PATH_REALROOT_WR."/admin-v3/wysiwyg.php',
 		allowFrameNav:	true
 	},";
 }

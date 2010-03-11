@@ -70,7 +70,7 @@ ul.admin {
 }
 li.admin {
 	font-size:11px;
-	list-style-image: url(/automne/admin/img/puce_li.gif);
+	list-style-image: url(../../../automne/admin/img/puce_li.gif);
 }
 
 .admin_text_alert{
@@ -94,7 +94,7 @@ li.admin {
 	font-family:verdana,arial,helvetica;
 	font-size:10px; 
 	height: 20px;
-	background:url(/automne/admin/img/boutonOn.gif) top left no-repeat;
+	background:url(../../../automne/admin/img/boutonOn.gif) top left no-repeat;
 }
 
 .admin_input_admin_darkgreybg {
@@ -129,7 +129,7 @@ li.admin {
 	font-family:verdana,arial,helvetica;
 	font-size:10px; 
 	height: 20px;
-	background:url(/automne/admin/img/boutonOff.gif) top left no-repeat;
+	background:url(../../../automne/admin/img/boutonOff.gif) top left no-repeat;
 }
 
 .admin_input_submit_content {
@@ -568,7 +568,7 @@ ul.sortable li {
 	white-space:nowrap;
 }
 .png {
-	behavior: url(/automne/admin/css/pngbehavior.htc);
+	behavior: url(../../../automne/admin/css/pngbehavior.htc);
 }
 input.CMS_input_image {
 	border: 			none;

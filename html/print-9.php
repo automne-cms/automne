@@ -1,7 +1,7 @@
-<?php //Generated on Wed, 10 Mar 2010 17:29:07 +0100 by Automne (TM) 4.0.1
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+<?php //Generated on Thu, 11 Mar 2010 16:28:45 +0100 by Automne (TM) 4.0.1
+require_once(dirname(__FILE__).'/../cms_rc_frontend.php');
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
-	CMS_view::redirect('http://automne4.401/web/demo/print-9-contact.php', true, 301);
+	CMS_view::redirect('http://test-folder/trunk/web/demo/print-9-contact.php', true, 301);
 }
  ?>
 <?php $mod_cms_forms = array();
@@ -36,9 +36,6 @@ $mod_cms_forms["usedforms"] = array (
   * @subpackage module
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
-//Requirements
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
-
 //force loading module cms_forms
 if (!class_exists('CMS_module_cms_forms')) {
 	die('Cannot find cms_forms module ...');
@@ -580,8 +577,6 @@ $mod_cms_forms["formID"] = '2';
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-//Requirements
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 //force loading module cms_forms
 if (!class_exists('CMS_module_cms_forms')) {
 	die('Cannot find cms_forms module ...');
@@ -641,7 +636,7 @@ if ($form->getID() && $form->isPublic()) {
 	<small>
 		
 		
-				Page  "Contact" (http://automne4.401/web/demo/9-contact.php)
+				Page  "Contact" (http://test-folder/trunk/web/demo/9-contact.php)
 				<br />
 		Tir&eacute; du site http://<?php echo $_SERVER["HTTP_HOST"];    ?>
 	</small>

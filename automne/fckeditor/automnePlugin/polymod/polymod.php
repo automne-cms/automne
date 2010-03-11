@@ -25,7 +25,7 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
+require_once(dirname(__FILE__).'/../../../../cms_rc_admin.php');
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
@@ -48,7 +48,7 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 					border: 		false,
 					xtype:			'atmPanel',
 					autoLoad:		{
-						url:		'/automne/admin/modules/polymod/fckplugin.php',
+						url:		'<?php echo PATH_REALROOT_WR; ?>/automne/admin/modules/polymod/fckplugin.php',
 						params:		{
 							winId:			'FCKPolymod',
 							id:				id,
@@ -74,6 +74,7 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 				Ext.MessageBox = parent.parent.Ext.MessageBox;
 				Automne.server = parent.parent.Automne.server;
 				Ext.Ajax = parent.parent.Ext.Ajax;
+				Ext.BLANK_IMAGE_URL = '<?php echo PATH_ADMIN_IMAGES_WR; ?>/s.gif';
 			}
 		</script>
 	</head>

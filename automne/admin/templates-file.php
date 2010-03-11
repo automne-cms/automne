@@ -23,7 +23,7 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
+require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
 
 define("MESSAGE_TOOLBAR_HELP",1073);
 define("MESSAGE_PAGE_SAVE", 952);
@@ -65,14 +65,14 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) {
 
 switch ($fileType) {
 	case 'css':
-		$dir = $_SERVER['DOCUMENT_ROOT'].'/css/';
+		$dir = PATH_REALROOT_FS.'/css/';
 		$allowedFiles = array(
 			'css' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_STYLESHEET), 'class' => 'atm-css'),
 			'xml' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_WYSIWYG), 'class' => 'atm-xml'),
 		);
 	break;
 	case 'js':
-		$dir = $_SERVER['DOCUMENT_ROOT'].'/js/';
+		$dir = PATH_REALROOT_FS.'/js/';
 		$allowedFiles = array('js' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_JAVASCRIPT), 'class' => 'atm-js'));
 	break;
 	default:
@@ -126,26 +126,26 @@ switch ($extension) {
 	case 'css':
 		$codemirrorConf = '
 			parserfile: 	["parsecss.js"],
-			stylesheet: 	["/automne/codemirror/css/csscolors.css"],
+			stylesheet: 	["'.PATH_MAIN_WR.'/codemirror/css/csscolors.css"],
 		';
 		$title = sensitiveIO::sanitizeJSString($fileCreation ? $cms_language->getMessage(MESSAGE_PAGE_CREATE_CSS) : $cms_language->getMessage(MESSAGE_PAGE_EDIT_CSS).' '.$node);
 	break;
 	case 'js':
 		$codemirrorConf = '
 			parserfile: 	["tokenizejavascript.js", "parsejavascript.js"],
-			stylesheet: 	["/automne/codemirror/css/jscolors.css"],
+			stylesheet: 	["'.PATH_MAIN_WR.'/codemirror/css/jscolors.css"],
 		';
 		$title = sensitiveIO::sanitizeJSString($fileCreation ? $cms_language->getMessage(MESSAGE_PAGE_CREATE_JS) : $cms_language->getMessage(MESSAGE_PAGE_EDIT_JS).' '.$node);
 	break;
 	case 'xml':
 		$codemirrorConf = '
 			parserfile: 	["parsexml.js", "parsecss.js", "tokenizejavascript.js", "parsejavascript.js", "parsehtmlmixed.js"],
-			stylesheet: 	["/automne/codemirror/css/xmlcolors.css", "/automne/codemirror/css/jscolors.css", "/automne/codemirror/css/csscolors.css"],
+			stylesheet: 	["'.PATH_MAIN_WR.'/codemirror/css/xmlcolors.css", "'.PATH_MAIN_WR.'/codemirror/css/jscolors.css", "'.PATH_MAIN_WR.'/codemirror/css/csscolors.css"],
 		';
 		$title = sensitiveIO::sanitizeJSString($cms_language->getMessage(MESSAGE_PAGE_EDIT_WYSIWYG).' '.$node);
 	break;
 }
-
+$automnePath = PATH_MAIN_WR;
 $jscontent = <<<END
 	var fileWindow = Ext.getCmp('{$winId}');
 	fileWindow.fileId = '{$fileId}';
@@ -188,7 +188,7 @@ $jscontent = <<<END
 				if (checked) {
 					editor = CodeMirror.fromTextArea('defText-{$fileId}', {
 						{$codemirrorConf}
-						path: 			"/automne/codemirror/js/",
+						path: 			"{$automnePath}/codemirror/js/",
 						iframeClass:	'x-form-text',
 						lineNumbers:	true,
 						textWrapping:	false,

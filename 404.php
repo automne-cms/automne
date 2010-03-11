@@ -24,7 +24,7 @@
 // **     YOU CAN DEFINE YOUR OWN ERROR PAGE WITH THE FILE /404.html      **
 // *************************************************************************
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+require_once(dirname(__FILE__).'/cms_rc_frontend.php');
 //parse requested URL to try to find a matching page
 $redirectTo = '';
 if ($_SERVER['REQUEST_URI'] && $_SERVER['REQUEST_URI'] != $_SERVER['SCRIPT_NAME']) {
@@ -54,9 +54,9 @@ header('HTTP/1.x 404 Not Found', true, 404);
 //Check if requested file is an image
 $imagesExtensions = array('jpg', 'jepg', 'gif', 'png', 'ico');
 if (isset($pathinfo['extension']) && in_array(strtolower($pathinfo['extension']), $imagesExtensions)) {
-	if (file_exists($_SERVER['DOCUMENT_ROOT'].'/img/404.png')) {
+	if (file_exists(PATH_REALROOT_FS.'/img/404.png')) {
 		header('Content-Type: image/png');
-		readfile($_SERVER['DOCUMENT_ROOT'].'/img/404.png');
+		readfile(PATH_REALROOT_FS.'/img/404.png');
 		exit;
 	}
 }
@@ -92,8 +92,8 @@ if (ERROR404_EMAIL_ALERT && sensitiveIO::isValidEmail(APPLICATION_MAINTAINER_EMA
 	$mail->sendEmail();
 }
 //check for alternative 404 file and display it if any
-if (file_exists($_SERVER['DOCUMENT_ROOT'].'/404.html')) {
-	readfile($_SERVER['DOCUMENT_ROOT'].'/404.html');
+if (file_exists(PATH_REALROOT_FS.'/404.html')) {
+	readfile(PATH_REALROOT_FS.'/404.html');
 	exit;
 }
 //or display default Automne 404 page ...
@@ -116,7 +116,7 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'].'/404.html')) {
 		padding:		20px;
 		border:			1px solid red;
 		text-align:		center;
-		background:		url(/automne/admin/img/logo_small.gif) top right no-repeat;
+		background:		url(<?php echo PATH_REALROOT_WR; ?>/automne/admin/img/logo_small.gif) top right no-repeat;
 	}
 	hr {
 		border:			0px solid white;

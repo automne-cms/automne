@@ -1,10 +1,10 @@
 <?php
-if (file_exists($_SERVER['DOCUMENT_ROOT'].'/html/print-37.php')) {
+if (file_exists(dirname(__FILE__).'/../../html/print-37.php')) {
 	$cms_page_included = true;
-	require($_SERVER['DOCUMENT_ROOT'].'/html/print-37.php');
+	require(dirname(__FILE__).'/../../html/print-37.php');
 } else {
 	header('HTTP/1.x 301 Moved Permanently', true, 301);
-	header('Location: /404.php');
+	header('Location: /trunk/404.php');
 	exit;
 }
 ?>

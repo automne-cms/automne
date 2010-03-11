@@ -36,7 +36,7 @@ Automne = {
 	    	if (Ext) {
 				Ext.EventManager.removeAll(window);
 			}
-			window.top.location.replace('/automne/admin/');
+			window.top.location.replace(window.self.location);
 		}
 		//check for navigator version
 		if (Ext.isIE6) {
@@ -87,6 +87,8 @@ Automne = {
 		}
 		//set new context.
 		Automne.context = context;
+		//set blank image path
+		Ext.BLANK_IMAGE_URL = Automne.context.path +'/automne/admin/img/s.gif';
 		// Header to pass in every Ajax request. Used to prevent CSRF attacks on action requests
 		Ext.Ajax.defaultHeaders = {
 		    'X-Powered-By': 'Automne',
@@ -257,7 +259,7 @@ Automne = {
 					items: {
 						title:			'-',
 						xtype:			'framePanel',
-						frameURL:		'/automne/admin/empty.php',
+						frameURL:		'empty.php',
 						hideBorders:	true,
 						allowFrameNav:	false,
 						height:			'100%',
