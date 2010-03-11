@@ -1702,6 +1702,7 @@ CREATE TABLE `mod_cms_forms_fields` (
   `required_fld` int(1) NOT NULL default '0',
   `active_fld` int(1) NOT NULL default '0',
   `order_fld` int(11) unsigned NOT NULL default '0',
+  `params_fld` mediumtext NOT NULL,
   PRIMARY KEY  (`id_fld`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
