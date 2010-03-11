@@ -1,4 +1,4 @@
-// +----------------------------------------------------------------------+
+ï»¿// +----------------------------------------------------------------------+
 // | Automne (TM)														  |
 // +----------------------------------------------------------------------+
 // | Copyright (c) 2000-2010 WS Interactive								  |
@@ -8,7 +8,7 @@
 // | LICENSE-GPL, and is available through the world-wide-web at		  |
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
-// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// | Author: Sebastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
 // $Id: fr.js,v 1.2 2010/03/08 16:44:19 sebastien Exp $
