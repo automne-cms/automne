@@ -113,6 +113,7 @@ $usersTab = ",{
 		},
 		tbar:[{
 			text:		'{$cms_language->getJsMessage(MESSAGE_TOOLBAR_FILTER)}',
+			iconCls:	'atm-pic-filter',
 			menu: new Ext.menu.Menu({
 				id: 	'groupFilterMenu-{$groupId}',
 				items: [{

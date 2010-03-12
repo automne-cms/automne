@@ -14,13 +14,18 @@ strong {
 	position:			absolute;
 	top:				0px;
 	left:				0px;
-	width:				365px;
-	border:				2px solid red;
+	width:				465px;
 	text-align:			center;
 	background:			#FFFFFF url(/automne/admin/img/logo_small.gif) top right no-repeat;
-	padding:			20px;
+	padding:			30px;
 	left:				-150px;
 	margin:				0 auto 0 auto;
+	border-radius: 			10px;
+	-moz-border-radius:		10px;
+	-webkit-border-radius:	10px;
+	box-shadow:				3px 3px 5px #888;
+	-moz-box-shadow:		3px 3px 5px #888;
+	-webkit-box-shadow:		3px 3px 5px #888;
 }
 .atm-frame-green {
 	background:			#FFFFFF url(/automne/admin/img/frame-error.png) 5px 8px no-repeat;
@@ -36,7 +41,7 @@ strong {
 }
 .no-ie6 img {
 	float:				left;
-	margin:				-20px;
+	margin:				-30px;
 }
 .atm-text-alert {
 	color:				red !important;
@@ -63,6 +68,11 @@ a.atm-link:link {
 }
 a.atm-link:hover{
 	color:				#4b7800;
+}
+.search-item .atm-help,
+.atm-result .atm-help {
+	background:			url(/automne/admin/img/atm-help.png) top left no-repeat;
+	padding-left:		6px;
 }
 .x-form-item .atm-help,
 .x-fieldset-header-text .atm-help {

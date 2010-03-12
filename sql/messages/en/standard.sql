@@ -27,7 +27,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(17, 'standard', 'en', 'Advanced Administration');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(18, 'standard', 'en', 'Style-rows Administration');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(19, 'standard', 'en', 'Template Administration');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(20, 'standard', 'en', 'Action Log Administration');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(20, 'standard', 'en', 'Activity logs');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(21, 'standard', 'en', 'Validations');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(22, 'standard', 'en', 'Profile modification');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(23, 'standard', 'en', 'Pages alerts');
@@ -442,7 +442,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(441, 'standard', 'en', 'Templates of rows');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(442, 'standard', 'en', 'Stylesheets');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(443, 'standard', 'en', 'Wysiwyg Styles');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(444, 'standard', 'en', 'Wysiwyg toolbar');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(444, 'standard', 'en', 'WYSIWYG toolbars');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(445, 'standard', 'en', 'Scripts management');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(446, 'standard', 'en', 'Languages management');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(447, 'standard', 'en', 'Server settings');
@@ -644,7 +644,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(643, 'standard', 'en', 'Disconnect');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(644, 'standard', 'en', 'About Automne');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(645, 'standard', 'en', 'No pages in your bookmarks.');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(646, 'standard', 'en', 'Javascripts Scripts');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(646, 'standard', 'en', 'Javascript files');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(647, 'standard', 'en', 'Modules management');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(648, 'standard', 'en', 'Database');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(649, 'standard', 'en', 'Website domain name is incorrect.');
@@ -888,7 +888,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(891, 'standard', 'en', 'Modify style-row of a template');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(892, 'standard', 'en', 'Delete template');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(893, 'standard', 'en', 'Delete template style-row');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(894, 'standard', 'en', 'Action log');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(894, 'standard', 'en', 'Activity logs');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(895, 'standard', 'en', 'By user');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(896, 'standard', 'en', 'By page');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(897, 'standard', 'en', 'Select a page');
@@ -1604,7 +1604,7 @@ newWindow: ''In a new window'',
 popupWindow: ''In a Pop-up window'',
 //framepanel 
 submitDraftConfirm: ''Do you want to submit the actual page content to validation?'',
-validateDraft: ''Validate this content'',
+validateDraft: ''Publish this content'',
 validateDraftDetail: ''Validate the current page content. The page will present this content online without any further validation steps.'',
 validateDraftConfirm: ''Do you want to validate the current page content? This content will be immediately published online without any further validation steps.'',
 previzDraft: ''Preview'',
@@ -1672,3 +1672,5 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1602, 'standard', 'en', 'Error on %s pages regeneration.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1603, 'standard', 'en', 'Alternatives domains');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1604, 'standard', 'en', 'Alternatives domains are domains that Automne also points to the site. Separate domains addresses with a semicolon. Example: http://alt-domain.tld; http://www.alt-domain.tld');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1605, 'standard', 'en', 'Publish');
+

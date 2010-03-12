@@ -712,7 +712,7 @@ class CMS_object_file extends CMS_object_common
 				$extension = io::strtolower($path_parts['extension']);
 				$newBasename = io::substr($path_parts['basename'],0,-(io::strlen($extension)+1)).'_thumbnail.'.$extension;
 				if (io::strlen($newBasename) > 255) {
-					$newBasename = sensitiveIO::ellipsis($newBasename, 255, '-');
+					$newBasename = sensitiveIO::ellipsis($newBasename, 255, '-', true);
 				}
 				$newFilename = $path.'/'.$newBasename;
 				//move file from upload dir to new dir
@@ -805,7 +805,7 @@ class CMS_object_file extends CMS_object_common
 				
 				$new_filename = 'r'.$objectID."_".$this->_field->getID()."_".io::strtolower(SensitiveIO::sanitizeAsciiString($filename));
 				if (io::strlen($new_filename) > 255) {
-					$new_filename = sensitiveIO::ellipsis($new_filename, 255, '-');
+					$new_filename = sensitiveIO::ellipsis($new_filename, 255, '-', true);
 				}
 				$destination_path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/';
 				$ftp_dir = PATH_REALROOT_FS.$params['ftpDir'];
@@ -877,7 +877,7 @@ class CMS_object_file extends CMS_object_common
 				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
 				$newBasename = "r".$objectID."_".$this->_field->getID()."_".io::strtolower(SensitiveIO::sanitizeAsciiString($basename));
 				if (io::strlen($newBasename) > 255) {
-					$newBasename = sensitiveIO::ellipsis($newBasename, 255, '-');
+					$newBasename = sensitiveIO::ellipsis($newBasename, 255, '-', true);
 				}
 				$newFilename = $path.'/'.$newBasename;
 				if (!CMS_file::moveTo($filename, $newFilename)) {
@@ -1007,7 +1007,7 @@ class CMS_object_file extends CMS_object_common
 				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
 				$filename = "r".$objectID."_".$this->_field->getID()."_".io::strtolower(SensitiveIO::sanitizeAsciiString($_FILES[$prefixName.$this->_field->getID().'_1']["name"]));
 				if (io::strlen($filename) > 255) {
-					$filename = sensitiveIO::ellipsis($filename, 255, '-');
+					$filename = sensitiveIO::ellipsis($filename, 255, '-', true);
 				}
 				if (!move_uploaded_file($_FILES[$prefixName.$this->_field->getID().'_1']["tmp_name"], $path."/".$filename)) {
 					return false;
@@ -1124,7 +1124,7 @@ class CMS_object_file extends CMS_object_common
 				
 				$new_filename = 'r'.$objectID."_".$this->_field->getID()."_".io::strtolower(SensitiveIO::sanitizeAsciiString($filename));
 				if (io::strlen($new_filename) > 255) {
-					$new_filename = sensitiveIO::ellipsis($new_filename, 255, '-');
+					$new_filename = sensitiveIO::ellipsis($new_filename, 255, '-', true);
 				}
 				$destination_path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/';
 				$ftp_dir = PATH_REALROOT_FS.$params['ftpDir'];
@@ -1198,7 +1198,7 @@ class CMS_object_file extends CMS_object_common
 				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
 				$filename = "r".$objectID."_".$this->_field->getID()."_".io::strtolower(SensitiveIO::sanitizeAsciiString($_FILES[$prefixName.$this->_field->getID().'_4']["name"]));
 				if (io::strlen($filename) > 255) {
-					$filename = sensitiveIO::ellipsis($filename, 255, '-');
+					$filename = sensitiveIO::ellipsis($filename, 255, '-', true);
 				}
 				if (!move_uploaded_file($_FILES[$prefixName.$this->_field->getID().'_4']["tmp_name"], $path."/".$filename)) {
 					return false;

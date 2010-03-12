@@ -210,6 +210,7 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
 			},
 			tbar:[{
 				text:		'{$cms_language->getJsMessage(MESSAGE_TOOLBAR_FILTER)}',
+				iconCls:	'atm-pic-filter',
 				menu: new Ext.menu.Menu({
 					id: 	'filterMenu-{$userId}',
 					items: [{

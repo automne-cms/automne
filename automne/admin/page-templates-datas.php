@@ -69,7 +69,7 @@ if ($currentTpl) {
 	//match templates
 	foreach ($tplReplacements['match'] as $matchTpl) {
 		$src = PATH_TEMPLATES_IMAGES_WR.'/'. (($matchTpl->getImage()) ? $matchTpl->getImage() : 'nopicto.gif');
-		$description = sensitiveIO::ellipsis($matchTpl->getDescription(), 50);
+		$description = sensitiveIO::ellipsis($matchTpl->getDescription(), 100);
 		if ($description != $matchTpl->getDescription()) {
 			$description = '<span ext:qtip="'.io::htmlspecialchars($matchTpl->getDescription()).'">'.$description.'</span>';
 		}
@@ -82,9 +82,9 @@ if ($currentTpl) {
 			'groups'		=> implode(', ', $matchTpl->getGroups()),
 			'compatible'	=> true,
 			'description'	=> 	'<div'.(!$matchTpl->isUseable() ? ' class="atm-inactive"' : '').'>'.
+									'<img src="'.(PATH_TEMPLATES_IMAGES_WR.'/'. (($matchTpl->getImage()) ? $matchTpl->getImage() : 'nopicto.gif')).'" style="float:left;margin-right:3px;max-width:80px;" />'.
+									'<strong>'.$cms_language->getMessage(MESSAGE_PAGE_MATCHING_TEMPLATE).'</strong><br />'.
 									$description.
-									'<img src="'.(PATH_TEMPLATES_IMAGES_WR.'/'. (($matchTpl->getImage()) ? $matchTpl->getImage() : 'nopicto.gif')).'" style="float:left;margin-right:3px;" /><br />'.
-									$cms_language->getMessage(MESSAGE_PAGE_MATCHING_TEMPLATE).'<br />'.
 									$cms_language->getMessage(MESSAGE_PAGE_GROUPS).' : <strong>'.implode(', ', $matchTpl->getGroups()).'</strong><br />'.
 									'<br class="x-form-clear" />'.
 								'</div>',
@@ -96,7 +96,7 @@ if ($currentTpl) {
 	//not match templates
 	foreach ($tplReplacements['nomatch'] as $noMatchTpl) {
 		$src = PATH_TEMPLATES_IMAGES_WR.'/'. (($noMatchTpl->getImage()) ? $noMatchTpl->getImage() : 'nopicto.gif');
-		$description = sensitiveIO::ellipsis($noMatchTpl->getDescription(), 50);
+		$description = sensitiveIO::ellipsis($noMatchTpl->getDescription(), 100);
 		if ($description != $noMatchTpl->getDescription()) {
 			$description = '<span ext:qtip="'.io::htmlspecialchars($noMatchTpl->getDescription()).'">'.$description.'</span>';
 		}
@@ -109,9 +109,9 @@ if ($currentTpl) {
 			'groups'		=> implode(', ', $noMatchTpl->getGroups()),
 			'compatible'	=> false,
 			'description'	=> 	'<div'.(!$noMatchTpl->isUseable() ? ' class="atm-inactive"' : '').'>'.
+									'<img src="'.(PATH_TEMPLATES_IMAGES_WR.'/'. (($noMatchTpl->getImage()) ? $noMatchTpl->getImage() : 'nopicto.gif')).'" style="float:left;margin-right:3px;max-width:80px;" />'.
+									'<strong><span class="atm-red">'.$cms_language->getMessage(MESSAGE_PAGE_UNMATCHING_TEMPLATE).'</span></strong><br />'.
 									$description.
-									'<img src="'.(PATH_TEMPLATES_IMAGES_WR.'/'. (($noMatchTpl->getImage()) ? $noMatchTpl->getImage() : 'nopicto.gif')).'" style="float:left;margin-right:3px;" /><br />'.
-									'<span class="atm-red">'.$cms_language->getMessage(MESSAGE_PAGE_UNMATCHING_TEMPLATE).'</span><br />'.
 									$cms_language->getMessage(MESSAGE_PAGE_GROUPS).' : <strong>'.implode(', ', $noMatchTpl->getGroups()).'</strong><br />'.
 									'<br class="x-form-clear" />'.
 								'</div>',
@@ -121,7 +121,7 @@ if ($currentTpl) {
 	if ($pageTplId === 0) {
 		$pageTplId = CMS_pageTemplatesCatalog::getTemplateIDForCloneID($pageTemplate->getID());
 		$src = PATH_TEMPLATES_IMAGES_WR.'/'. (($pageTemplate->getImage()) ? $pageTemplate->getImage() : 'nopicto.gif');
-		$description = sensitiveIO::ellipsis($pageTemplate->getDescription(), 50);
+		$description = sensitiveIO::ellipsis($pageTemplate->getDescription(), 100);
 		if ($description != $pageTemplate->getDescription()) {
 			$description = '<span ext:qtip="'.io::htmlspecialchars($pageTemplate->getDescription()).'">'.$description.'</span>';
 		}
@@ -134,9 +134,9 @@ if ($currentTpl) {
 			'groups'		=> implode(', ', $pageTemplate->getGroups()),
 			'compatible'	=> true,
 			'description'	=> 	'<div'.(!$pageTemplate->isUseable() ? ' class="atm-inactive"' : '').'>'.
+									'<img src="'.(PATH_TEMPLATES_IMAGES_WR.'/'. (($pageTemplate->getImage()) ? $pageTemplate->getImage() : 'nopicto.gif')).'" style="float:left;margin-right:3px;max-width:80px;" />'.
+									'<strong>'.$cms_language->getMessage(MESSAGE_PAGE_MATCHING_TEMPLATE).'</strong><br />'.
 									$description.
-									'<img src="'.(PATH_TEMPLATES_IMAGES_WR.'/'. (($pageTemplate->getImage()) ? $pageTemplate->getImage() : 'nopicto.gif')).'" style="float:left;margin-right:3px;" /><br />'.
-									$cms_language->getMessage(MESSAGE_PAGE_MATCHING_TEMPLATE).'<br />'.
 									$cms_language->getMessage(MESSAGE_PAGE_GROUPS).' : <strong>'.implode(', ', $pageTemplate->getGroups()).'</strong><br />'.
 									'<br class="x-form-clear" />'.
 								'</div>',

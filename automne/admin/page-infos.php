@@ -1083,7 +1083,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 			break;
 			case 'public':
 				$icon = $cms_page->getStatus()->getHTML(true, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getID(), true, false);
-				$panelTitle = '<span class="atm-tab">'.$icon.'&nbsp;&nbsp;'.sensitiveIO::ellipsis($cms_page->getTitle().' ('.$cms_page->getID().')', 52).'</span>';
+				$panelTitle = '<span class="atm-tab">'.$icon.'&nbsp;&nbsp;'.sensitiveIO::ellipsis($cms_page->getTitle().' ('.$cms_page->getID().')', 52, '...', true).'</span>';
 				$panelDisabled = ($hasPublic) ? 'false' : 'true';
 				$pageTemplateLabel = ($cms_page->getTemplate()) ? $cms_page->getTemplate()->getLabel() : '';
 				//page panel tip content

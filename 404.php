@@ -105,33 +105,45 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'].'/404.html')) {
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo APPLICATION_DEFAULT_ENCODING; ?>" />
 	<style type="text/css">
 	body {
-		background-color: #FFFFFF;
-		margin:			0;
-		font:			normal 12px Verdana,Arial,Helvetica,sans-serif;
+		background-color: 		#E9F1DA;
+		margin:					0;
+		font:					13px/1.231 arial,helvetica,clean,sans-serif;
 	}
 	#message {
-		width:			300px;
-		margin:			0 auto 0 auto;
-		display: 		block;
-		padding:		20px;
-		border:			1px solid red;
-		text-align:		center;
-		background:		url(/automne/admin/img/logo_small.gif) top right no-repeat;
+		font-size:				123.1%;
+		width:					500px;
+		margin:					20px auto 0 auto;
+		display: 				block;
+		padding:				10px;
+		text-align:				center;
+		background:				#FFF url(/img/atm-logo.gif) 480px 7px no-repeat;
+		border-radius: 			10px;
+		-moz-border-radius:		10px;
+		-webkit-border-radius:	10px;
+		box-shadow:				3px 3px 5px #888;
+		-moz-box-shadow:		3px 3px 5px #888;
+		-webkit-box-shadow:		3px 3px 5px #888;
 	}
 	hr {
-		border:			0px solid white;
-		border-bottom:	1px solid red;
+		border:					0px solid white;
+		border-bottom:			1px solid #DDE6CB;
+	}
+	h1 {
+		font-size:				123.1%;
+		margin:					4px 0;
+	}
+	a, a:link {
+		color:					#5F900B;
 	}
 	</style>
 </head>
 <body>
-<br /><br />
 <div id="message">
-404 Not Found...<br />
-Sorry, the page you requested was not found.<br /><br />
+<h1>Error 404...</h1>
+Sorry, the requested page was not found.<br /><br />
 <a href="/">Back to the Home Page</a><br /><br />
 <hr />
-404 Non trouv&eacute; ...<br />
+<h1>Erreur 404 ...</h1>
 Nous ne trouvons pas la page que vous demandez.<br /><br />
 <a href="/">Retour &agrave; l'accueil</a><br /><br />
 </div>

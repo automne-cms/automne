@@ -232,6 +232,7 @@ class CMS_moduleClientspace_standard extends CMS_moduleClientspace
 		} else {
 			$data = $content;
 		}
+		$data = '<?php /* Start clientspace ['.$this->getTagID().'] */?>'.$data.'<?php /* End clientspace ['.$this->getTagID().'] */?>';
 		return $data;
 	}
 	

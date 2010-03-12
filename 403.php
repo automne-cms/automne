@@ -41,34 +41,46 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'].'/403.html')) {
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo APPLICATION_DEFAULT_ENCODING; ?>" />
 	<style type="text/css">
 	body {
-		background-color: #FFFFFF;
-		margin:			0;
-		font:			normal 12px Verdana,Arial,Helvetica,sans-serif;
+		background-color: 		#E9F1DA;
+		margin:					0;
+		font:					13px/1.231 arial,helvetica,clean,sans-serif;
 	}
 	#message {
-		width:			300px;
-		margin:			0 auto 0 auto;
-		display: 		block;
-		padding:		20px;
-		border:			1px solid red;
-		text-align:		center;
-		background:		url(/automne/admin/img/logo_small.gif) top right no-repeat;
+		font-size:				123.1%;
+		width:					500px;
+		margin:					20px auto 0 auto;
+		display: 				block;
+		padding:				10px;
+		text-align:				center;
+		background:				#FFF url(/img/atm-logo.gif) 480px 7px no-repeat;
+		border-radius: 			10px;
+		-moz-border-radius:		10px;
+		-webkit-border-radius:	10px;
+		box-shadow:				3px 3px 5px #888;
+		-moz-box-shadow:		3px 3px 5px #888;
+		-webkit-box-shadow:		3px 3px 5px #888;
 	}
 	hr {
-		border:			0px solid white;
-		border-bottom:	1px solid red;
+		border:					0px solid white;
+		border-bottom:			1px solid #DDE6CB;
+	}
+	h1 {
+		font-size:				123.1%;
+		margin:					4px 0;
+	}
+	a, a:link {
+		color:					#5F900B;
 	}
 	</style>
 </head>
 <body>
-<br /><br />
 <div id="message">
-403 Forbidden<br />
+<h1>403 Forbidden</h1>
 You do not have sufficient privileges to view this page ...<br /><br />
 <a href="/">Back to the Home Page</a><br /><br />
 <hr />
-403 Acc&egrave;s interdit.<br />
-Vous n'avez pas les droits d'acc&egrave;s suffisants pour voir cette page ...<br /><br />
+<h1>403 Acc&egrave;s interdit.</h1>
+Vous n'avez pas le droit de voir cette page ...<br /><br />
 <a href="/">Retour &agrave; l'accueil</a><br /><br />
 </div>
 </body>

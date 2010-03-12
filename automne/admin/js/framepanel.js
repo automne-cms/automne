@@ -118,7 +118,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 						url: 				'page-rows-datas.php',
 						root: 				'results',
 						totalProperty: 		'total',
-						fields:				['id', 'label', 'image', 'rowdescription'],
+						fields:				['id', 'label', 'image', 'shortdesc'],
 						id: 				'id'
 					}),
 					forceSelection:		true,
@@ -144,7 +144,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 					hidden:				true,
 					tpl: new Ext.XTemplate(
 						'<tpl for=\".\"><div class=\"search-item atm-search-item\">',
-							'<table border="0"><tr><td valign="middle" style="width:72px;"><img src="{image}" /></td><td valign="middle" style="padding:4px;"><strong>{label}</strong><tpl if="rowdescription"><br />{rowdescription}</tpl></td></tr></table>',
+							'<table border="0"><tr><td valign="middle" style="width:72px;"><img src="{image}" /></td><td valign="middle" style="padding:4px;"><strong>{label}</strong><tpl if="shortdesc"><br />{shortdesc}</tpl></td></tr></table>',
 						'</div></tpl>'
 					),
 					itemSelector: 		'div.atm-search-item',
