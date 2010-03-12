@@ -46,29 +46,19 @@ if (file_exists(PATH_REALROOT_FS.'/403.html')) {
 		font:					13px/1.231 arial,helvetica,clean,sans-serif;
 	}
 	#message {
-<<<<<<< TREE
-		width:			300px;
-		margin:			0 auto 0 auto;
-		display: 		block;
-		padding:		20px;
-		border:			1px solid red;
-		text-align:		center;
-		background:		url(<?php echo PATH_REALROOT_WR; ?>/automne/admin/img/logo_small.gif) top right no-repeat;
-=======
 		font-size:				123.1%;
 		width:					500px;
 		margin:					20px auto 0 auto;
 		display: 				block;
 		padding:				10px;
 		text-align:				center;
-		background:				#FFF url(/img/atm-logo.gif) 480px 7px no-repeat;
+		background:				#FFF url(<?php echo PATH_REALROOT_WR; ?>/img/atm-logo.gif) 480px 7px no-repeat;
 		border-radius: 			10px;
 		-moz-border-radius:		10px;
 		-webkit-border-radius:	10px;
 		box-shadow:				3px 3px 5px #888;
 		-moz-box-shadow:		3px 3px 5px #888;
 		-webkit-box-shadow:		3px 3px 5px #888;
->>>>>>> MERGE-SOURCE
 	}
 	hr {
 		border:					0px solid white;
