@@ -44,7 +44,7 @@ define("MESSAGE_ALL_FILES",530);
 define("MESSAGE_LINK", 133);
 define("MESSAGE_LINK_IMAGE_ZOOM", 561);
 define("MESSAGE_LINK_OTHER", 562);
-
+define("MESSAGE_PAGE_INCORRECT_FORM_VALUES", 682);
 
 $winId = sensitiveIO::request('winId', '', 'blockImageWindow');
 $currentPage = is_object($cms_context) ? sensitiveIO::request('page', 'sensitiveIO::isPositiveInteger', $cms_context->getPageID()) : '';
@@ -236,6 +236,8 @@ $jscontent = <<<END
 				var form = Ext.getCmp('blockImageWindow-form').getForm();
 				if (form.isValid()) {
 					this.validateEdition(form.getValues());
+				} else {
+					Automne.message.show('{$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_FORM_VALUES)}', '', blockWindow);
 				}
 			},
 			scope:			this

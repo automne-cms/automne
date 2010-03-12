@@ -559,7 +559,7 @@ class CMS_object_image extends CMS_object_common
 				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
 				$newBasename = "r".$objectID."_".$this->_field->getID()."_".io::strtolower(SensitiveIO::sanitizeAsciiString($basename));
 				if (io::strlen($newBasename) > 255) {
-					$newBasename = sensitiveIO::ellipsis($newBasename, 255, '-');
+					$newBasename = sensitiveIO::ellipsis($newBasename, 255, '-', true);
 				}
 				$newFilename = $path.'/'.$newBasename;
 				CMS_file::moveTo($filename, $newFilename);
@@ -594,7 +594,7 @@ class CMS_object_image extends CMS_object_common
 				$extension = io::strtolower($path_parts['extension']);
 				$newBasename = io::substr($path_parts['basename'],0,-(io::strlen($extension)+1)).'_thumbnail.'.$extension;
 				if (io::strlen($newBasename) > 255) {
-					$newBasename = sensitiveIO::ellipsis($newBasename, 255, '-');
+					$newBasename = sensitiveIO::ellipsis($newBasename, 255, '-', true);
 				}
 				$newFilename = $path.'/'.$newBasename;
 				//move file from upload dir to new dir
@@ -848,7 +848,7 @@ class CMS_object_image extends CMS_object_common
 				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
 				$filename = "r".$objectID."_".$this->_field->getID()."_".io::strtolower(SensitiveIO::sanitizeAsciiString($_FILES[$prefixName.$this->_field->getID().'_0']["name"]));
 				if (io::strlen($filename) > 255) {
-					$filename = sensitiveIO::ellipsis($filename, 255, '-');
+					$filename = sensitiveIO::ellipsis($filename, 255, '-', true);
 				}
 				if (!move_uploaded_file($_FILES[$prefixName.$this->_field->getID().'_0']["tmp_name"], $path."/".$filename)) {
 					return false;
@@ -970,7 +970,7 @@ class CMS_object_image extends CMS_object_common
 				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
 				$filename = "r".$objectID."_".$this->_field->getID()."_".io::strtolower(SensitiveIO::sanitizeAsciiString($_FILES[$prefixName.$this->_field->getID().'_2']["name"]));
 				if (io::strlen($filename) > 255) {
-					$filename = sensitiveIO::ellipsis($filename, 255, '-');
+					$filename = sensitiveIO::ellipsis($filename, 255, '-', true);
 				}
 				if (!move_uploaded_file($_FILES[$prefixName.$this->_field->getID().'_2']["tmp_name"], $path."/".$filename)) {
 					return false;

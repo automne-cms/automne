@@ -323,7 +323,7 @@ function userMessage(value, messageOK, messageCancel, fcnOK, fcnCancel) {
 		userMessageTextDiv.id='CMS_userMessageText';
 		userMessageTextDiv.style.position='relative';
 		userMessageTextDiv.style.font='normal 12px Verdana,Arial,Helvetica,sans-serif';
-		userMessageTextDiv.style.background='#FFFFFF url({$rootPath}/automne/admin/img/logo_small.gif) top right no-repeat';
+		userMessageTextDiv.style.background='#FFFFFF url({$rootPath}/img/atm-logo.gif) top right no-repeat';
 		userMessageTextDiv.style.width='365px';
 		userMessageTextDiv.style.margin='50px auto 0 auto';
 		userMessageTextDiv.style.border='2px solid #FF0000';

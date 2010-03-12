@@ -55,6 +55,7 @@ define("MESSAGE_ATTRIBUT_INFO",546);
 define("MESSAGE_ATTRIBUT",547);
 define("MESSAGE_ERROR_FORMAT",549);
 define("MESSAGE_ADVANCED_PARAMETERS",566);
+define("MESSAGE_PAGE_INCORRECT_FORM_VALUES", 682);
 
 $winId = sensitiveIO::request('winId', '', 'blockFlashWindow');
 $currentPage = is_object($cms_context) ? sensitiveIO::request('page', 'sensitiveIO::isPositiveInteger', $cms_context->getPageID()) : '';
@@ -257,6 +258,8 @@ $jscontent = <<<END
 					} else {
 						this.validateEdition(values);
 					}
+				} else {
+					Automne.message.show('{$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_FORM_VALUES)}', '', blockWindow);
 				}
 			},
 			scope:			this

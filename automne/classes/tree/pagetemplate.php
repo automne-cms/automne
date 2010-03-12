@@ -704,7 +704,7 @@ class CMS_pageTemplate extends CMS_grandFather
 				$template_data = file_get_contents(PATH_PRINT_TEMPLATES_FS);
 				//we need to remove doctype if any
 				$template_data = preg_replace('#<!doctype[^>]*>#siU', '', $template_data);
-				return str_replace("{{data}}", $data, $template_data);
+				return '<?php /* Template ['.str_replace(PATH_TEMPLATES_FS.'/', '', PATH_PRINT_TEMPLATES_FS).'] */?>'.str_replace("{{data}}", $data, $template_data);
 			} else {
 				//add the cdata that is after the last tag
 				//$data .= io::substr($definition, $offset);
@@ -715,7 +715,7 @@ class CMS_pageTemplate extends CMS_grandFather
 					//replace {{pageID}} tag in all page content.
 					$data = str_replace('{{pageID}}', $page->getID(), $data);
 				}
-				return $data;
+				return '<?php /* Template ['.$this->getLabel().' - '.$this->getDefinitionFile().'] */?>'.$data;
 			}
 			return false;
 		} else {
@@ -1027,11 +1027,16 @@ class CMS_pageTemplate extends CMS_grandFather
 				$websitesList .= $website->getLabel();
 			}
 		}
-		$description = sensitiveIO::ellipsis($this->getDescription(), 60);
-		if ($description != nl2br($this->getDescription())) {
-			$description = '<span ext:qtip="'.nl2br(io::htmlspecialchars($this->getDescription())).'">'.$description.'</span>';
+		/*$shortdesc = sensitiveIO::ellipsis($this->getDescription(), 60);
+		if ($shortdesc != nl2br($this->getDescription())) {
+			$shortdesc = '<span class="atm-help" ext:qtip="'.nl2br(io::htmlspecialchars($this->getDescription())).'">'.$shortdesc.'</span>';
 		}
-		$description = $description ? $description.'<br />' : '';
+		$shortdesc = $shortdesc ? $shortdesc.'<br />' : '';*/
+		$mediumdesc = sensitiveIO::ellipsis($this->getDescription(), 200);
+		if ($mediumdesc != $this->getDescription()) {
+			$mediumdesc = '<span class="atm-help" ext:qtip="'.nl2br(io::htmlspecialchars($this->getDescription())).'">'.nl2br($mediumdesc).'</span>';
+		}
+		$mediumdesc = $mediumdesc ? $mediumdesc.'<br />' : '';
 		//append template definition if needed
 		$definitionDatas = ($withDefinition) ? $this->getDefinition() : '';
 		if ($user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) {
@@ -1055,7 +1060,7 @@ class CMS_pageTemplate extends CMS_grandFather
 			'filter'		=> $this->getLabel().' '.implode(', ', $this->getGroups()),
 			'description'	=> 	'<div'.(!$this->isUseable() ? ' class="atm-inactive"' : '').'>'.
 									'<img src="'.(PATH_TEMPLATES_IMAGES_WR.'/'. (($this->getImage()) ? $this->getImage() : 'nopicto.gif')).'" style="float:left;margin-right:3px;width:80px;" />'.
-									$description.
+									$mediumdesc.
 									$cms_language->getMessage(self::MESSAGE_DESC_WEBSITES).' <strong>'.$websitesList.'</strong><br />'.
 									$cms_language->getMessage(self::MESSAGE_DESC_GROUPS).' <strong>'.($this->getGroups() ? implode(', ', $this->getGroups()) : $cms_language->getMessage(self::MESSAGE_DESC_NONE)).'</strong><br />'.
 									$cms_language->getMessage(self::MESSAGE_DESC_ACTIVE).' <strong>'.($this->isUseable() ? $cms_language->getMessage(self::MESSAGE_DESC_YES) : $cms_language->getMessage(self::MESSAGE_DESC_NO)).'</strong><br />'.

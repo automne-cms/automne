@@ -481,11 +481,15 @@ class SensitiveIO extends CMS_grandfather
 	  * @return string the value troncated
 	  * @access public
 	  */
-	static function ellipsis($value, $length, $ellipsis = '...') {
+	static function ellipsis($value, $length, $ellipsis = '...', $center = false) {
 		if (io::strlen($value) <= $length) {
 			return $value;
 		}
-		return io::substr($value, 0, ceil(($length - io::strlen($ellipsis))/2)) . $ellipsis . io::substr($value, - floor(($length - io::strlen($ellipsis))/2));
+		if ($center) {
+			return io::substr($value, 0, ceil(($length - io::strlen($ellipsis))/2)) . $ellipsis . io::substr($value, - floor(($length - io::strlen($ellipsis))/2));
+		} else {
+			return io::substr($value, 0, ($length - io::strlen($ellipsis))) . $ellipsis;
+		}
 	}
 
 	/**

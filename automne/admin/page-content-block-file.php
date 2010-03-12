@@ -40,7 +40,7 @@ define("MESSAGE_FILE_LABEL",533);
 define("MESSAGE_SELECT_FILE",534);
 define("MESSAGE_FILE",191);
 define("MESSAGE_ALL_FILE",530);
-
+define("MESSAGE_PAGE_INCORRECT_FORM_VALUES", 682);
 
 $winId = sensitiveIO::request('winId', '', 'blockFileWindow');
 $currentPage = is_object($cms_context) ? sensitiveIO::request('page', 'sensitiveIO::isPositiveInteger', $cms_context->getPageID()) : '';
@@ -170,6 +170,8 @@ $jscontent = <<<END
 				var form = Ext.getCmp('blockFileWindow-form').getForm();
 				if (form.isValid()) {
 					this.validateEdition(form.getValues());
+				} else {
+					Automne.message.show('{$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_FORM_VALUES)}', '', blockWindow);
 				}
 			},
 			scope:			this

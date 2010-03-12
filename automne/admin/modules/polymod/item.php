@@ -31,6 +31,8 @@ define("MESSAGE_PAGE_SAVE", 952);
 define("MESSAGE_PAGE_FIELD_DATE_COMMENT", 148);
 define("MESSAGE_PAGE_FIELD_PUBDATE_BEG", 134);
 define("MESSAGE_PAGE_FIELD_PUBDATE_END", 135);
+define("MESSAGE_PAGE_PUBLISH", 1605);
+define("MESSAGE_PAGE_SUBMIT_TO_VALID", 1422);
 
 //Message of polymod module
 define("MESSAGE_PAGE_TITLE", 2);
@@ -40,8 +42,6 @@ define("MESSAGE_PAGE_ELEMENT_LOCKED", 525);
 define("MESSAGE_PAGE_ELEMENT_EDIT_RIGHTS_ERROR", 526);
 define("MESSAGE_TOOLBAR_HELP_DESC", 527);
 define("MESSAGE_PAGE_SAVE_ERROR", 528);
-
-define("MESSAGE_PAGE_SAVE_AND_VALID", 541);
 define("MESSAGE_PAGE_SAVE_AND_VALID_DESC", 542);
 define("MESSAGE_PAGE_SAVE_PRIMARY_DESC", 543);
 define("MESSAGE_PAGE_SAVE_DESC", 544);
@@ -183,7 +183,7 @@ if ($object->isPrimaryResource()) {
 	if ($cms_user->hasValidationClearance($codename)) {
 		$saveAndValidate = ",{
 			xtype:			'button',
-			text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE_AND_VALID, false, MOD_POLYMOD_CODENAME)}',
+			text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_PUBLISH)}',
 			tooltip:		'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE_AND_VALID_DESC, false, MOD_POLYMOD_CODENAME)}',
 			iconCls:		'atm-pic-validate',
 			name:			'submitAndValidAdmin',
@@ -193,7 +193,9 @@ if ($object->isPrimaryResource()) {
 		$saveIconCls = 'atm-pic-draft-validation';
 		$saveTooltip = $cms_language->getJSMessage(MESSAGE_PAGE_SAVE_PRIMARY_DESC, false, MOD_POLYMOD_CODENAME);
 	}
+	$saveLabel = $cms_language->getJSMessage(MESSAGE_PAGE_SUBMIT_TO_VALID);
 } else {
+	$saveLabel = $cms_language->getJSMessage(MESSAGE_PAGE_PUBLISH);
 	$saveIconCls = 'atm-pic-validate';
 	$saveTooltip = $cms_language->getJSMessage(MESSAGE_PAGE_SAVE_DESC, false, MOD_POLYMOD_CODENAME);
 }
@@ -284,7 +286,7 @@ $jscontent = <<<END
 			items:[{$itemFields}]
 		}],
 		buttons:[{
-			text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+			text:			'{$saveLabel}',
 			tooltip:		'{$saveTooltip}',
 			iconCls:		'{$saveIconCls}',
 			xtype:			'button',

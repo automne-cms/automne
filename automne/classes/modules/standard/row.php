@@ -651,6 +651,7 @@ class CMS_row extends CMS_grandFather
 				</script>
 				'.$data;
 			}
+			$data = '<?php /* Start row ['.$this->getLabel().' - '.$this->getDefinitionFileName().'] */?>'.$data.'<?php /* End row ['.$this->getLabel().' - '.$this->getDefinitionFileName().'] */?>';
 			return $data;
 		} else {
 			$this->raiseError('Can not use row template file '.$this->_definitionFile);
@@ -833,11 +834,16 @@ class CMS_row extends CMS_grandFather
 	
 	function getJSonDescription($user, $cms_language, $withDefinition = false) {
 		$hasClientSpaces = $this->hasClientSpaces();
-		$description = sensitiveIO::ellipsis($this->getDescription(), 60);
-		if ($description != nl2br($this->getDescription())) {
-			$description = '<span ext:qtip="'.nl2br(io::htmlspecialchars($this->getDescription())).'">'.$description.'</span>';
+		$shortdesc = sensitiveIO::ellipsis($this->getDescription(), 60);
+		if ($shortdesc != nl2br($this->getDescription())) {
+			$shortdesc = '<span class="atm-help" ext:qtip="'.nl2br(io::htmlspecialchars($this->getDescription())).'">'.$shortdesc.'</span>';
 		}
-		$description = $description ? $description.'<br />' : '';
+		$shortdesc = $shortdesc ? $shortdesc.'<br />' : '';
+		$mediumdesc = sensitiveIO::ellipsis($this->getDescription(), 200);
+		if ($mediumdesc != $this->getDescription()) {
+			$mediumdesc = '<span class="atm-help" ext:qtip="'.nl2br(io::htmlspecialchars($this->getDescription())).'">'.nl2br($mediumdesc).'</span>';
+		}
+		$mediumdesc = $mediumdesc ? $mediumdesc.'<br />' : '';
 		//append template definition if needed
 		$definitionDatas = $withDefinition ? $this->getDefinition() : '';
 		//templates filters
@@ -870,12 +876,12 @@ class CMS_row extends CMS_grandFather
 			'type'			=> $cms_language->getMessage(self::MESSAGE_DESC_ROW_TEMPLATE),
 			'image'			=> $this->getImage(),
 			'groups'		=> implode(', ', $this->getGroups()),
-			'desc'			=> $this->getDescription(),
+			/*'description'	=> $this->getDescription(),*/
 			'filter'		=> $this->getLabel().' '.implode(', ', $this->getGroups()),
 			'tplfilter'		=> implode(',', $this->getFilteredTemplates()),
 			'description'	=> 	'<div'.(!$this->isUseable() ? ' class="atm-inactive"' : '').'>'.
 									'<img src="'.$this->getImage().'" style="float:left;margin-right:3px;width:70px;" />'.
-									$description.
+									$mediumdesc.
 									$cms_language->getMessage(self::MESSAGE_DESC_GROUPS).' <strong>'.($this->getGroups() ? implode(', ', $this->getGroups()) : $cms_language->getMessage(self::MESSAGE_DESC_NONE)).'</strong><br />'.
 									$cms_language->getMessage(self::MESSAGE_DESC_ACTIVE).' <strong>'.($this->isUseable() ? $cms_language->getMessage(self::MESSAGE_DESC_YES) : $cms_language->getMessage(self::MESSAGE_DESC_NO)).'</strong><br />'.
 									$cms_language->getMessage(self::MESSAGE_DESC_USED).' <strong>'.($hasClientSpaces ? $cms_language->getMessage(self::MESSAGE_DESC_YES) : $cms_language->getMessage(self::MESSAGE_DESC_NO)).'</strong>'.($hasClientSpaces ? ' - <a href="#" onclick="Automne.view.search(\'row:'.$this->getID().'\');return false;">'.$cms_language->getMessage(self::MESSAGE_DESC_SEE).'</a>'.
@@ -888,7 +894,7 @@ class CMS_row extends CMS_grandFather
 			'used'			=> $hasClientSpaces,
 			'definition'	=> $definitionDatas,
 			'edit'			=> $edit,
-			'rowdescription'=> $description
+			'shortdesc'		=> $shortdesc
 		);
 	}
 }

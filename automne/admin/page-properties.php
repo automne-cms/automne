@@ -529,8 +529,7 @@ $jscontent .= <<<END
 							root: 			'results',
 							fields: 		['id', 'label', 'image', 'groups', 'compatible', 'description'],
 							prepareData: 	function(data){
-						    	//data.qtip = Ext.util.Format.htmlEncode(data.tpldescription);
-								data.qtip = Ext.util.Format.htmlEncode(data.description);
+						    	data.qtip = Ext.util.Format.htmlEncode(data.description);
 								data.cls = data.compatible ? '' : 'atm-red';
 								return data;
 							}

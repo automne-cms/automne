@@ -403,7 +403,7 @@ class CMS_block_flash extends CMS_block
 		$name .= SensitiveIO::sanitizeAsciiString($originalName);
 		$name = "p".$page->getID()."_".$name;
 		if (io::strlen($name) > 255) {
-			$name = sensitiveIO::ellipsis($name, 255, '-');
+			$name = sensitiveIO::ellipsis($name, 255, '-', true);
 		}
 		if ($withPath) {
 			return PATH_MODULES_FILES_STANDARD_FS."/edition/".$name;
