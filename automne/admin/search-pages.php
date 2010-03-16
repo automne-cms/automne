@@ -60,6 +60,7 @@ if (isset($results['results']) && is_array($results['results'])) {
 				$results['nbresult']--;
 			}
 		}
+		$count++;
 	}
 }
 $return = array(
