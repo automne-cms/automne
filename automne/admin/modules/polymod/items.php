@@ -171,10 +171,22 @@ if ($keywordsSearch) {
 		value:			'{$value}',
 		minLength:		3,
 		anchor:			'-20px',
-		listeners:		{'valid':{
-			fn: 			moduleObjectWindow.search, 
-			options:		{buffer:300}
-		}}
+		enableKeyEvents:true,
+		listeners:		{
+			'valid':{
+				fn: 			moduleObjectWindow.search, 
+				options:		{buffer:300}
+			},
+			'invalid':{
+				fn: function(field, event) {
+					if (!isNaN(parseInt(field.getValue()))) {
+						field.clearInvalid();
+						field.fireEvent('valid', field);
+					}
+				}, 
+				options:		{buffer:300}
+			}
+		}
 	},";
 }
 //add publication date search
@@ -563,7 +575,7 @@ $jscontent = <<<END
 	'		<div class="atm-title">',
 	'			<table>',
 	'				<tr>',
-	'					<td class="atm-label">{status}&nbsp;{label}</td>',
+	'					<td class="atm-label" ext:qtip="ID: {id}">{status}&nbsp;{label}</td>',
 	'					<td class="atm-pubrange">{pubrange}</td>',
 	'				</tr>',
 	'			</table>',

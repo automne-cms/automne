@@ -1,9 +1,14 @@
 V4.0.1 (in progress)
-[BUG] : Corrected bugs : 286, 265, 268, 283, 284, 302, 282, 280, 296, 304 (see http://www.automne.ws/bug/)
+[BUG] : Corrected bugs : 399, 401, 286, 265, 268, 283, 284, 302, 282, 280, 296, 304 (see http://www.automne.ws/bug/)
 [REFACTOR] : update Automne copyright dates
 [REFACTOR] : add a background image on lorem ipsum text to help non latin natives to identify it
 [REFACTOR] : do some optimisation on administration images
+[REFACTOR] : rows and templates descriptions
+[REFACTOR] : Enhance 403 and 404 files and favicon
+[REFACTOR] : Change some admin messages
+[REFACTOR] : Add polymod items ids, templates ids and rows ids on administration results. On mouse over of results titles.
 [FEATURE] : update Zend Framework to version 1.10.2
+[FEATURE] : in polymod, templates and rows administration, items can now be searched by ids
 [FEATURE] : Add alternative domains management for websites
 
 V4.0.0 (18/01/10)
