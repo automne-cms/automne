@@ -17,7 +17,7 @@
 // | Author: Sebastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.26 2010/02/11 15:00:40 sebastien Exp $
+// $Id: install.php,v 1.27 2010/03/17 17:07:23 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -30,7 +30,7 @@
 //Remove notices
 error_reporting(E_ALL);
 @set_time_limit(0);
-ini_set("memory_limit" , "64M");
+@ini_set("memory_limit" , "64M");
 //try to remove magic quotes
 @ini_set('magic_quotes_gpc', 0);
 @ini_set('magic_quotes_runtime', 0);
@@ -1539,7 +1539,6 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 			</form>
 			';
 		} else {
-			
 			//go to next step
 			$step = 9;
 		}
@@ -1554,8 +1553,11 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 		if (APPLICATION_IS_WINDOWS) {
 			$uname = 'www-data';
 		} else {
-			$uid = posix_getpwuid(posix_getuid());
-			$uname = isset($uid['name']) ? $uid['name'] : posix_getuid();
+			$uid = @posix_getpwuid(@posix_getuid());
+			$uname = isset($uid['name']) ? $uid['name'] : @posix_getuid();
+			if (!$uname) {
+				$uname = 'www-data';
+			}
 		}
 		$content .= sprintf($step9_alldone,CMS_websitesCatalog::getMainURL(),CMS_websitesCatalog::getMainURL(), $uname);
 	}
