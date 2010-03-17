@@ -404,7 +404,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 										}
 									}
 								} elseif ($action->getInteger('type') == CMS_forms_action::ACTION_FIELDEMAIL) {
-									if (is_object($fields[$action->getString("value")]) && sensitiveIO::isValidEmail($_POST[$fields[$action->getString("value")]->getAttribute('name')])) {
+									if ($action->getString("value") && is_object($fields[$action->getString("value")]) && sensitiveIO::isValidEmail($_POST[$fields[$action->getString("value")]->getAttribute('name')])) {
 										$email->setEmailTo($_POST[$fields[$action->getString("value")]->getAttribute('name')]);
 										$email->sendEmail();
 									}

@@ -144,7 +144,7 @@ if (connection_status() == 0) {
 	session_write_close();
     ob_end_clean();
 	//to prevent long file from getting cut off from max_execution_time
-    set_time_limit(0);
+    @set_time_limit(0);
 	//get mime filetype
 	$filetype = CMS_file::mimeContentType($scriptFilename);
 	$filetype = ($filetype) ? $filetype : 'application/octet-stream';

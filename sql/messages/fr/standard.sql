@@ -1561,6 +1561,8 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1603, 'standard', 'fr', 'Domaines alternatifs');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1604, 'standard', 'fr', 'Les domaines alternatifs sont des domaines qu\'Automne pointera aussi vers le site. Séparez les adresses des domaines par un point virgule. Exemple : http://alt-domain.tld;http://www.alt-domain.tld');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1605, 'standard', 'fr', 'Publier');
-
-
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1606, 'standard', 'fr', 'Choisissez une date');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1607, 'standard', 'fr', 'Consultez les logs d\'erreur d\'Automne :');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1608, 'standard', 'fr', 'Pas de logs pour cette date');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1609, 'standard', 'fr', 'Logs d\'erreurs');
 

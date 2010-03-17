@@ -10,6 +10,7 @@ V4.0.1 (in progress)
 [FEATURE] : update Zend Framework to version 1.10.2
 [FEATURE] : in polymod, templates and rows administration, items can now be searched by ids
 [FEATURE] : Add alternative domains management for websites
+[FEATURE] : Add a server panel to consult errors logs
 
 V4.0.0 (18/01/10)
 [BUG] : Lots of minor bugs corrected
