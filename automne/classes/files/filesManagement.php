@@ -927,7 +927,7 @@ class CMS_file extends CMS_grandFather
 		}
 		$return = '';
 		if (function_exists('exec') && !APPLICATION_IS_WINDOWS) {
-			$return = trim(exec('file -bi ' . escapeshellarg($file)));
+			$return = trim(@exec('file -bi ' . escapeshellarg($file)));
 		}
 		if (!$return && file_exists(PATH_AUTOMNE_MIMETYPE_FS)) {
 			$ext=array_pop(explode('.',$file));

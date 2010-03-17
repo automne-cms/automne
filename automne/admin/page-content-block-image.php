@@ -163,7 +163,7 @@ $jscontent = <<<END
 			items:[{
 	            xtype: 			'atmImageUploadField',
 	            emptyText: 		'{$cms_language->getJsMessage(MESSAGE_SELECT_PICTURE)}',
-	            fieldLabel: 	'* {$cms_language->getJsMessage(MESSAGE_IMAGE)}',
+	            fieldLabel: 	'<span class=\"atm-red\">*</span> {$cms_language->getJsMessage(MESSAGE_IMAGE)}',
 	            name: 			'filename',
 				minWidth:		{$minWidth},
 	            maxWidth:		{$maxWidth},

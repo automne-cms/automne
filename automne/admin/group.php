@@ -47,7 +47,7 @@ define("MESSAGE_PAGE_CREATE_GROUP", 1445);
 define("MESSAGE_PAGE_TOOLBAR_INFO", 1446);
 define("MESSAGE_PAGE_YES", 1082);
 define("MESSAGE_PAGE_NO", 1083);
-
+define("MESSAGE_PAGE_INCORRECT_FORM_VALUES", 682);
 
 $winId = sensitiveIO::request('winId', '', 'groupWindow');
 $groupId = sensitiveIO::request('groupId', 'sensitiveIO::isPositiveInteger', 'createGroup');
@@ -367,29 +367,33 @@ $jscontent = <<<END
 				scope:			this,
 				handler:		function() {
 					var form = Ext.getCmp('groupIdentityPanel-{$groupId}').getForm();
-					form.submit({
-						params:{
-							action:		'identity',
-							groupId:	groupWindow.groupId
-						},
-						success:function(form, action){
-							//if it is a successful group creation
-							if (action.result.success != false && isNaN(parseInt(groupWindow.groupId))) {
-								//set groupId
-								groupWindow.groupId = action.result.success.groupId;
-								//display hidden elements
-								Ext.getCmp('groupPanels-{$groupId}').items.each(function(panel) {
-									if (panel.disabled) {
-										panel.enable();
-										if (panel.autoLoad) {
-											panel.autoLoad.params.groupId = groupWindow.groupId;
+					if (form.isValid()) {
+						form.submit({
+							params:{
+								action:		'identity',
+								groupId:	groupWindow.groupId
+							},
+							success:function(form, action){
+								//if it is a successful group creation
+								if (action.result.success != false && isNaN(parseInt(groupWindow.groupId))) {
+									//set groupId
+									groupWindow.groupId = action.result.success.groupId;
+									//display hidden elements
+									Ext.getCmp('groupPanels-{$groupId}').items.each(function(panel) {
+										if (panel.disabled) {
+											panel.enable();
+											if (panel.autoLoad) {
+												panel.autoLoad.params.groupId = groupWindow.groupId;
+											}
 										}
-									}
-								});
-							}
-						},
-						scope:this
-					});
+									});
+								}
+							},
+							scope:this
+						});
+					} else {
+						Automne.message.show('{$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_FORM_VALUES)}', '', groupWindow);
+					}
 				}
 			}]
 		}{$usersTab}{$modulesTab}{$adminTab}]

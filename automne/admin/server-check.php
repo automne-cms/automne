@@ -56,7 +56,7 @@ $content = '';
 
 switch ($action) {
 	case 'check-files':
-		set_time_limit(600);
+		@set_time_limit(600);
 		$path = realpath($_SERVER['DOCUMENT_ROOT']);
 		$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::SELF_FIRST);
 		$countFile = 0;

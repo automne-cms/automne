@@ -99,6 +99,12 @@ case "login":
 		$view->addJavascript($jscontent);
 		$view->show(CMS_view::SHOW_HTML);
 	} else {
+		//reset session (start fresh)
+		session_destroy();
+		CMS_view::redirect($_SERVER['SCRIPT_NAME'].'?cms_action=wrongcredentials', true, 301);
+	}
+	break;
+	case 'wrongcredentials':
 		//display error login window on top of login form
 		$loginError = "
 		parent.Automne.message.popup({
@@ -109,9 +115,6 @@ case "login":
 				Ext.fly('loginField').dom.select();
 			}
 		});";
-		//reset session (start fresh)
-		session_destroy();
-	}
 	break;
 }
 //Send Login form frame window (in which login form is displayed)

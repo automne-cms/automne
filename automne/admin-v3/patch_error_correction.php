@@ -34,15 +34,12 @@ define("MESSAGE_PAGE_ORIGINAL_PROTECTED_FILE", 1188);
 define("MESSAGE_PAGE_PATCH_FILE", 1189);
 define("MESSAGE_PAGE_PASTE_NEW_PATCH_FILE", 1190);
 define("MESSAGE_PAGE_ERROR_5_LABEL", 1191);
+define("MESSAGE_PAGE_CORRECTION_DONE", 1610);
 
 if (!$_SESSION["cms_context"]->getSessionVar('patchErrors')) {
 	die('Missing parameter...');
 	exit;
 }
-
-$verbose = ($_GET["verbose"]) ? $_GET["verbose"]:$_POST["verbose"];
-$force = ($_GET["force"]) ? $_GET["force"]:$_POST["force"];
-$report = ($_GET["report"]) ? $_GET["report"]:$_POST["report"];
 
 switch ($_POST["cms_action"]) {
 	case "validate":
@@ -76,7 +73,11 @@ switch ($_POST["cms_action"]) {
 			
 		}
 		if (!sizeof($errors)) {
-			header("Location: patch.php?cms_action=errorsCorrected&verbose=".$verbose."&force=".$force."&report=".$report."&".session_name()."=".session_id());
+			$dialog = new CMS_dialog();
+			$content = $cms_language->getMessage(MESSAGE_PAGE_CORRECTION_DONE);
+			$dialog->setTitle($cms_language->getMessage(MESSAGE_PAGE_TITLE));
+			$dialog->setContent($content);
+			$dialog->show();
 			exit;
 		} else {
 			$updateErrors = array();
@@ -108,16 +109,13 @@ switch ($error['no']) {
 		$content .= '
 		'.$cms_language->getMessage(MESSAGE_PAGE_ORIGINAL_PROTECTED_FILE).' :
 		<div class="cms_code">
-			'.highlight_file(PATH_REALROOT_FS.$file,true).'
+			'.(file_exists(PATH_REALROOT_FS.$file) ? highlight_file(PATH_REALROOT_FS.$file,true) : '').'
 		</div>
 		'.$cms_language->getMessage(MESSAGE_PAGE_PATCH_FILE).' :
 		<div class="cms_code">
-			'.highlight_file(PATH_TMP_FS.$file,true).'
+			'.(file_exists(PATH_TMP_FS.$file) ? highlight_file(PATH_TMP_FS.$file,true) : '').'
 		</div>
 		<form action="'.$_SERVER["SCRIPT_NAME"].'" method="post">
-		<input type="hidden" name="verbose" value="'.$verbose.'" />
-		<input type="hidden" name="force" value="'.$force.'" />
-		<input type="hidden" name="report" value="'.$report.'" />
 		<span class="admin_text_alert">*</span> '.$cms_language->getMessage(MESSAGE_PAGE_PASTE_NEW_PATCH_FILE).' :<br />
 		<input type="hidden" name="cms_action" value="validate" />
 		<textarea class="admin_textarea" name="updated_file" rows="30" style="width:95%"></textarea><br />
