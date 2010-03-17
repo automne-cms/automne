@@ -43,6 +43,9 @@ define("MESSAGE_PAGE_DETAIL",759);
 define("MESSAGE_PAGE_FILE_ACCESS",760);
 define("MESSAGE_PAGE_PHP_INFO",761);
 define("MESSAGE_PAGE_UPDATES",762);
+define("MESSAGE_PAGE_ERRORS_LOGS",1609);
+define("MESSAGE_PAGE_CHECK_ERRORS_LOGS",1607);
+define("MESSAGE_PAGE_PICK_A_DATE",1606);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -251,6 +254,13 @@ $filescontent = sensitiveIO::sanitizeJSString($filescontent);
 $pathAdmin = PATH_ADMIN_WR;
 $pathMain = PATH_MAIN_WR;
 
+$dateFormat = $cms_language->getDateFormat();
+$errorcontent = '
+<h1>'.$cms_language->getMessage(MESSAGE_PAGE_CHECK_ERRORS_LOGS).'</h1>
+<div id="errorsDate"></div><br />
+<div id="serverErrorsDetails"></div>';
+$errorcontent = sensitiveIO::sanitizeJSString($errorcontent);
+
 $jscontent = <<<END
 	var serverWindow = Ext.getCmp('{$winId}');
 	//set window title
@@ -343,6 +353,55 @@ $jscontent = <<<END
 		html:			'<div id="htaccessCheckDetailText"></div>'
 	});
 	
+	//Server errors panel
+	var errorsDate = new Ext.form.FormPanel({
+		layout: 		'form',
+		labelWidth:		135,
+		border:			false,
+		defaults: {
+			anchor:			'97%',
+			allowBlank:		true
+		},
+		items:[{
+			id:				'errorsDatePicker',
+			name:			'errorsDatePicker',
+			fieldLabel:		'{$cms_language->getJsMessage(MESSAGE_PAGE_PICK_A_DATE)}',
+			value:			'',
+			xtype:			'datefield',
+			format:			'{$dateFormat}',
+			width:			100,
+			anchor:			false,
+			listeners:		{'select':function(field){
+				if (field.isValid()) {
+					Automne.server.call({
+						url:				'server-errors.php',
+						isUpload:			true,
+						params: 			{
+							date:				field.getRawValue()
+						},
+						success: 		function(response, options) {
+							if (!serverErrorsDetails.rendered) {
+								serverErrorsDetails.render('serverErrorsDetails');
+							}
+							serverErrorsDetails.setWidth(Ext.getCmp('serverErrors').getWidth() - 20);
+							serverErrorsDetails.setHeight(Ext.getCmp('serverErrors').getHeight() - 85);
+							Ext.get('serverErrorsDetailsText').dom.innerHTML = response.responseText;
+						},
+						callBackScope:		this
+					});
+				}
+			}}
+		}]
+	});
+	var serverErrorsDetails = new Ext.form.FieldSet({
+		title:			'{$cms_language->getJsMessage(MESSAGE_PAGE_ERRORS_LOGS)}',
+		collapsible:	false,
+		collapsed:		false,
+		width:			300,
+		height:			300,
+		autoScroll:		true,
+		html:			'<pre id="serverErrorsDetailsText"></pre>'
+	});
 	//create center panel
 	var center = new Ext.TabPanel({
 		activeTab:			 0,
@@ -360,6 +419,12 @@ $jscontent = <<<END
 			'tabchange': function(tabPanel, newTab) {
 				if (newTab.afterActivate) {
 					newTab.afterActivate(tabPanel, newTab);
+				}
+			},
+			'resize': function() {
+				if (serverErrorsDetails.rendered) {
+					serverErrorsDetails.setWidth(Ext.getCmp('serverErrors').getWidth() - 20);
+					serverErrorsDetails.setHeight(Ext.getCmp('serverErrors').getHeight() - 85);
 				}
 			}
 		},
@@ -397,6 +462,18 @@ $jscontent = <<<END
 			id:					'phpDatas',
 			frameURL:			'{$pathAdmin}/phpinfo.php',
 			allowFrameNav:		true
+		},{
+			id:					'serverErrors',
+			title:				'{$cms_language->getJsMessage(MESSAGE_PAGE_ERRORS_LOGS)}',
+			autoScroll:			true,
+			border:				false,
+			bodyStyle: 			'padding:5px',
+			html: 				'$errorcontent',
+			listeners:			{'activate':function(){
+				if (!errorsDate.rendered) {
+					errorsDate.render('errorsDate');
+				}
+			}, scope:this}
 		},{
 			xtype:				'framePanel',
 			title:				'{$cms_language->getJsMessage(MESSAGE_PAGE_UPDATES)}',

@@ -382,6 +382,14 @@ if (!defined("APPLICATION_COOKIE_DOMAIN")) {
 	define("APPLICATION_COOKIE_DOMAIN", '');
 }
 
+/**
+  *	Allow redirection from a page to an external web site
+  *	Default : true
+  */
+if (!defined("ALLOW_EXTERNAL_PAGE_REDIRECTION")) {
+	define("ALLOW_EXTERNAL_PAGE_REDIRECTION", true);
+}
+
 //rewrite some server conf if HTTP_X_FORWARDED exists
 if (isset($_SERVER["HTTP_X_FORWARDED_HOST"])) {
 	$_SERVER["HTTP_HOST"] = $_SERVER["HTTP_X_FORWARDED_HOST"];
@@ -546,7 +554,6 @@ if (!defined("PATH_PAGES_FS")) {
 if (!defined("PATH_HTACCESS_FS")) {
 	define("PATH_HTACCESS_FS",  PATH_TEMPLATES_FS."/htaccess");
 }
-
 /**
   *	SOAP file paths (where is soap definition files)
   *	Default : DOCUMENT_ROOT."/soap"
@@ -557,17 +564,17 @@ if (!defined("PATH_SOAP_WR")) {
 if (!defined("PATH_SOAP_FS")) {
 	define("PATH_SOAP_FS", PATH_REALROOT_FS."/soap");
 }
-
-/**
-  * SOAP constants
-  */
-if (!defined("ATM_SOAP_VERSION")) {
-	define('ATM_SOAP_VERSION', SOAP_1_2);
+if (extension_loaded('soap')) {
+	/**
+	  * SOAP constants
+	  */
+	if (!defined("ATM_SOAP_VERSION")) {
+		define('ATM_SOAP_VERSION', SOAP_1_2);
+	}
+	if (!defined("ATM_SOAP_CLASS")) {
+		define('ATM_SOAP_CLASS', 'CMS_soap');
+	}
 }
-if (!defined("ATM_SOAP_CLASS")) {
-	define('ATM_SOAP_CLASS', 'CMS_soap');
-}
-
 /*
   *	Administration default language
   *	Default : fr (French)
@@ -1163,12 +1170,14 @@ if (SYSTEM_DEBUG) {
 	if (function_exists("ini_set")) {
 		@ini_set("display_errors", "1");
 		@ini_set('output_buffering','Off');
-		/**
-		  * SOAP cache
-		  * Disabled if SYSTEM_DEBUG is true
-		  */
-		@ini_set('soap.wsdl_cache_enabled', '0');
-		@ini_set('soap.wsdl_cache_ttl', '1');
+		if (extension_loaded('soap')) {
+			/**
+			  * SOAP cache
+			  * Disabled if SYSTEM_DEBUG is true
+			  */
+			@ini_set('soap.wsdl_cache_enabled', '0');
+			@ini_set('soap.wsdl_cache_ttl', '1');
+		}
 	}
 	//Usefull function to dump a var.
 	function pr($data,$useVarDump = false) {
@@ -1189,12 +1198,14 @@ if (SYSTEM_DEBUG) {
 	if (function_exists("ini_set")) {
 		@ini_set("display_errors", "0");
 		@ini_set('output_buffering','On');
-		/**
-		  * SOAP cache
-		  * Enabled if SYSTEM_DEBUG is false
-		  */
-		@ini_set('soap.wsdl_cache_enabled', '1');
-		@ini_set('soap.wsdl_cache_ttl', '86400'); // 1 day
+		if (extension_loaded('soap')) {
+			/**
+			  * SOAP cache
+			  * Enabled if SYSTEM_DEBUG is false
+			  */
+			@ini_set('soap.wsdl_cache_enabled', '1');
+			@ini_set('soap.wsdl_cache_ttl', '86400'); // 1 day
+		}
 	} elseif(function_exists("error_reporting")) {
 		error_reporting(0);
 	}

@@ -1554,13 +1554,15 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1596, 'standard', 'fr', 'L''image est trop grande (> %s pixels)');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1597, 'standard', 'fr', 'Une erreur s''est produite lors de l''affichage de la page.<br /><br />Généralement ce problème est du à une redirection inattendue vers un domaine différent de %s.<br /><br />Pour continuer, cliquez sur Rafraîchir ou allez sur une autre page. Vous pouvez aussi contacter votre administrateur pour lui signaler le problème.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1598, 'standard', 'fr', 'Erreur de contenu XHTML ... Editez ce bloc pour corriger le texte saisi.');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1599, 'standard', 'fr', 'Valider ce choix');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1599, 'standard', 'fr', 'Confirmer ce choix');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1600, 'standard', 'fr', 'Attention, vous avez s&eacute;lectionn&eacute; un mod&egrave;le incompatible avec le mod&egrave;le employ&eacute; actuellement : Le mod&egrave;le s&eacute;lectionn&eacute; ne contient pas les m&ecirc;mes zones de contenu que le mod&egrave;le original.<br /><br />Si vous validez ce changement, vous risquez de perdre certains contenus de la page.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1601, 'standard', 'fr', 'Erreur lors de la régénération de la page ...');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1602, 'standard', 'fr', 'Erreur sur %s régénération de pages.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1603, 'standard', 'fr', 'Domaines alternatifs');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1604, 'standard', 'fr', 'Les domaines alternatifs sont des domaines qu\'Automne pointera aussi vers le site. Séparez les adresses des domaines par un point virgule. Exemple : http://alt-domain.tld;http://www.alt-domain.tld');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1605, 'standard', 'fr', 'Publier');
-
-
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1606, 'standard', 'fr', 'Choisissez une date');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1607, 'standard', 'fr', 'Consultez les logs d\'erreur d\'Automne :');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1608, 'standard', 'fr', 'Pas de logs pour cette date');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1609, 'standard', 'fr', 'Logs d\'erreurs');
 

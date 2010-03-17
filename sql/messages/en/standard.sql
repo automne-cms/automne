@@ -1666,11 +1666,14 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1596, 'standard', 'en', 'Image is too wide (> %s pixels)');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1597, 'standard', 'en', 'An error occurred while displaying the page.<br /><br />Usually this problem is due to an unexpected redirect to a different domain than %s.<br /><br />To continue, click on Refresh or go to another page. You can also contact your administrator to report the problem.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1598, 'standard', 'en', 'XHTML content error ... Edit this block to correct the entered text.');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1599, 'standard', 'en', 'Validate this choice');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1599, 'standard', 'en', 'Confirm this choice');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1600, 'standard', 'en', 'Attention you have selected a model incompatible with the model currently used: The model chosen does not contain the same content areas as the original model.<br / ><br />If you commit this change, you may lose some page content.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1601, 'standard', 'en', 'Error during page regeneration...');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1602, 'standard', 'en', 'Error on %s pages regeneration.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1603, 'standard', 'en', 'Alternatives domains');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1604, 'standard', 'en', 'Alternatives domains are domains that Automne also points to the site. Separate domains addresses with a semicolon. Example: http://alt-domain.tld; http://www.alt-domain.tld');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1605, 'standard', 'en', 'Publish');
-
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1606, 'standard', 'en', 'Choose a date');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1607, 'standard', 'en', 'Consult Automne errors logs:');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1608, 'standard', 'en', 'No logs founded for this date');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1609, 'standard', 'en', 'Errors logs');

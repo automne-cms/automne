@@ -173,7 +173,12 @@ foreach ($objectFields as $fieldID => $field) {
 }
 // Param : With keywords (this is best if it is done at last)
 if ($_SESSION["cms_context"]->getSessionVar('items_'.$object->getID().'_kwrds') != '') {
-	$search->addWhereCondition("keywords", $_SESSION["cms_context"]->getSessionVar('items_'.$object->getID().'_kwrds'));
+	$kwrd = $_SESSION["cms_context"]->getSessionVar('items_'.$object->getID().'_kwrds');
+	if (!io::isPositiveInteger($kwrd)) {
+		$search->addWhereCondition("keywords", $kwrd);
+	} else {
+		$search->addWhereCondition("item", $kwrd);
+	}
 }
 
 //If we must limit to some specific items (usually used during refresh of some listing elements)

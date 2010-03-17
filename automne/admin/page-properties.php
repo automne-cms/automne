@@ -453,6 +453,8 @@ $pageTopPanel = sensitiveIO::sanitizeJSString('<div id="pagePropTopPanel">
 	<div id="breadcrumbs">'.$lineageTitle.'</div>
 </div>');
 
+$allowExternalRedirection = ALLOW_EXTERNAL_PAGE_REDIRECTION ? 'true' : 'false';
+
 $jscontent .= <<<END
 	//create center panel
 	var center = new Ext.TabPanel({
@@ -570,13 +572,13 @@ $jscontent .= <<<END
 						value:			'{$redirectValue}',
 						allowBlur:		true,
 						linkConfig: {
-							admin: 				true,				// Link has label ?
-							label: 				false,				// Link has label ?
-							internal: 			true,				// Link can target an Automne page ?
-							external: 			true,				// Link can target an external resource ?
-							file: 				false,				// Link can target a file ?
-							destination:		false,				// Can select a destination for the link ?
-							currentPage:		'{$pageId}',		// Current page to open tree
+							admin: 				true,						// Link has label ?
+							label: 				false,						// Link has label ?
+							internal: 			true,						// Link can target an Automne page ?
+							external: 			{$allowExternalRedirection},// Link can target an external resource ?
+							file: 				false,						// Link can target a file ?
+							destination:		false,						// Can select a destination for the link ?
+							currentPage:		'{$pageId}',				// Current page to open tree
 							module:				'{$module}', 
 							visualmode:			'{$visualmode}'
 						}

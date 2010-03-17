@@ -241,7 +241,7 @@ if ($hideMenu) {
 $jscontent = <<<END
 	var treeWindow = Ext.getCmp('{$winId}');
 	//if we are in a window context
-	if ({$window}) {
+	if ({$window} && treeWindow) {
 		//set window title
 		treeWindow.setTitle('{$title}');
 		//set window icon

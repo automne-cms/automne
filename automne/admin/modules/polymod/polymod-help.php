@@ -28,10 +28,12 @@ $view = CMS_view::getInstance();
 
 $module = sensitiveIO::request('module');
 $object = sensitiveIO::request('object');
-
-$modulesCodes = new CMS_modulesCodes();
-$modulesCodeInclude = $modulesCodes->getModulesCodes(MODULE_TREATMENT_ROWS_EDITION_LABELS, PAGE_VISUALMODE_CLIENTSPACES_FORM, '', array("language" => $cms_language, "user" => $cms_user, 'request' => array($module => true, $module.'object' => $object)));
-
-$view->setContent($modulesCodeInclude[$module]);
+if ($object) {
+	$modulesCodes = new CMS_modulesCodes();
+	$modulesCodeInclude = $modulesCodes->getModulesCodes(MODULE_TREATMENT_ROWS_EDITION_LABELS, PAGE_VISUALMODE_CLIENTSPACES_FORM, '', array("language" => $cms_language, "user" => $cms_user, 'request' => array($module => true, $module.'object' => $object)));
+	$view->setContent($modulesCodeInclude[$module]);
+} else {
+	$view->setContent('');
+}
 $view->show(CMS_view::SHOW_HTML);
 ?>

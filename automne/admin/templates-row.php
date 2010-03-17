@@ -88,10 +88,21 @@ $searchPanel .= "{
 	minLength:		3,
 	anchor:			'-20px',
 	validateOnBlur:	false,
-	listeners:		{'valid':{
-		fn: 			rowWindow.search,
-		options:		{buffer:300}
-	}}
+	listeners:		{
+		'valid':{
+			fn: 			rowWindow.search, 
+			options:		{buffer:300}
+		},
+		'invalid':{
+			fn: function(field, event) {
+				if (!isNaN(parseInt(field.getValue()))) {
+					field.clearInvalid();
+					field.fireEvent('valid', field);
+				}
+			}, 
+			options:		{buffer:300}
+		}
+	}
 },";
 $allGroups = CMS_rowsCatalog::getAllGroups();
 natcasesort($allGroups);
@@ -266,7 +277,7 @@ $jscontent = <<<END
 	var resultTpl = new Ext.XTemplate(
 	'<tpl for=".">',
 	'	<div class="atm-result x-unselectable" id="object-{id}">',
-	'		<div class="atm-title">{label}</div>',
+	'		<div class="atm-title" ext:qtip="ID: {id}">{label}</div>',
 	'		<div class="atm-description">{description}</div>',
 	'	</div>',
 	'</tpl>');

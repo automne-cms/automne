@@ -66,6 +66,10 @@ if (!$items) {
 	if ($pageId) {
 		$rowIds = CMS_rowsCatalog::getRowsByPage($pageId);
 	}
+	if (io::isPositiveInteger($keyword)) {
+		$rowIds[] = $keyword;
+		$keyword = '';
+	}
 } else {
 	$rowIds = $items;
 }

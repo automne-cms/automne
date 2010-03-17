@@ -158,6 +158,10 @@ if ($currentTpl) {
 				}
 			}
 		}
+		if (io::isPositiveInteger($keyword)) {
+			$pageTplIds[] = $keyword;
+			$keyword = '';
+		}
 	} else {
 		$pageTplIds = $items;
 	}

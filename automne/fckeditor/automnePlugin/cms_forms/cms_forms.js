@@ -494,8 +494,15 @@ function manageFormFromFileParams()
 	var weigthValue = GetE( "fileParamsWeight" ).value;
 	var serverMaxFileSize = GetE("serverMaxFileSize").value;
 	
+	if(weigthValue){
+	    weigthValue = parseInt(weigthValue, 10);
+	}
+	if(serverMaxFileSize){
+	    serverMaxFileSize = parseInt(serverMaxFileSize, 10);
+	}
+	
 	// Check values
-	if(weigthValue && (isNaN(weigthValue) || weigthValue > serverMaxFileSize)){
+	if(isNaN(weigthValue) || weigthValue > serverMaxFileSize){
 	    GetE("fileParamsError").style.display = "block";
 	    return false;
 	} else {
