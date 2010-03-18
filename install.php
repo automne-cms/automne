@@ -9,10 +9,10 @@
 // | LICENSE-GPL, and is available through the world-wide-web at		  |
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
-// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// | Author: Sebastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.29 2010/03/18 16:10:35 sebastien Exp $
+// $Id: install.php,v 1.30 2010/03/18 16:11:12 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
