@@ -17,7 +17,7 @@
 // | Author: Sebastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.27 2010/03/17 17:07:23 sebastien Exp $
+// $Id: install.php,v 1.28 2010/03/18 16:08:14 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -65,7 +65,7 @@ if (!isset($_GET['file'])) {
 	// +----------------------------------------------------------------------+
 	// | STEP 0 : Installation language                                       |
 	// +----------------------------------------------------------------------+
-	if ($install_language == '') {
+	if ($install_language == '' && $step != 'help') {
 		$title = '<h1>Langue d\'installation / Installation language:</h1>';
 		$footer = '';
 		$content .= '
@@ -118,7 +118,7 @@ if (!isset($_GET['file'])) {
 			}
 			//Email
 			if (!@mail("root@localhost", "Automne SMTP Test", "Automne SMTP Test")) {
-				$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, No SMTP server founded</li>';
+				$content .= '<li class="atm-pic-cancel"><strong style="color:orange">Warning</strong>, No SMTP server founded</li>';
 			} else {
 				$content .= '<li class="atm-pic-ok">SMTP server <strong style="color:green">OK</strong></li>';
 			}
@@ -157,23 +157,26 @@ if (!isset($_GET['file'])) {
 				$error = '';
 				$return = executeCommand('which php 2>&1',$error);
 				if ($error && $return !== false) {
-					$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong> when finding php CLI with command "which php" : '.$error."\n";
+					$content .= '<li class="atm-pic-cancel"><strong style="color:orange">Warning</strong>, unable to find php CLI with command "which php" : '.$error."\n";
 				}
 				if ($return === false) {
-					$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, passthru() and exec() commands not available</li>';
+					$content .= '<li class="atm-pic-cancel"><strong style="color:orange">Warning</strong>, commands passthru() and exec() are not available. PHP CLI is not usable.</li>';
 				} elseif (substr($return,0,1) != '/') {
-					$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong> when finding php CLI with command "which php"</li>';
-				}
-				//test CLI version
-				$return = executeCommand('php -v',$error);
-				if (strpos(strtolower($return), '(cli)') === false) {
-					$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, installed php is not the CLI version : '.$return."\n";
+					$content .= '<li class="atm-pic-cancel"><strong style="color:orange">Warning</strong>, unable to find php CLI with command "which php"</li>';
 				} else {
-					$cliversion = trim(str_replace('php ', '', substr(strtolower($return), 0, strpos(strtolower($return), '(cli)'))));
-					if (version_compare($cliversion, "5.2.0") === -1) {
-						$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, PHP CLI version ('.$cliversion.') not match</li>';
+					//test CLI version
+					$return = executeCommand('php -v',$error);
+					if ($return === false) {
+						$content .= '<li class="atm-pic-cancel"><strong style="color:orange">Warning</strong>, PHP CLI not found'."\n";
+					} elseif (strpos(strtolower($return), '(cli)') === false) {
+						$content .= '<li class="atm-pic-cancel"><strong style="color:orange">Warning</strong>, installed php is not the CLI version : '.$return."\n";
 					} else {
-						$content .= '<li class="atm-pic-ok">PHP CLI version <strong style="color:green">OK</strong> ('.$cliversion.')</li>';
+						$cliversion = trim(str_replace('php ', '', substr(strtolower($return), 0, strpos(strtolower($return), '(cli)'))));
+						if (version_compare($cliversion, "5.2.0") === -1) {
+							$content .= '<li class="atm-pic-cancel"><strong style="color:orange">Warning</strong>, PHP CLI version ('.$cliversion.') not match</li>';
+						} else {
+							$content .= '<li class="atm-pic-ok">PHP CLI version <strong style="color:green">OK</strong> ('.$cliversion.')</li>';
+						}
 					}
 				}
 			}
@@ -184,7 +187,7 @@ if (!isset($_GET['file'])) {
 			@ini_set('magic_quotes_runtime', 0);
 			@ini_set('magic_quotes_sybase', 0);
 			if (ini_get('magic_quotes_gpc') != 0) {
-				$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, PHP magic_quotes_gpc is active and cannot be changed</li>';
+				$content .= '<li class="atm-pic-cancel"><strong style="color:orange">Warning</strong>, PHP magic_quotes_gpc is active and cannot be changed</li>';
 			}
 			if (ini_get('magic_quotes_runtime') != 0) {
 				$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, PHP magic_quotes_runtime is active and cannot be changed</li>';
@@ -213,14 +216,15 @@ if (!isset($_GET['file'])) {
 			//General labels
 			$label_next = 'Suivant';
 			$label_docroot = "Erreur, ce fichier doit ce trouver &agrave; la racine du serveur web ! (%s)";
-			$footer = 'Installation d\'Automne version 4. Pour toute information, visitez <a href="http://www.automne.ws" target="_blank">www.automne.ws</a><br /><a href="'.$_SERVER['SCRIPT_NAME'].'?step=help&install_language='.$install_language.'" target="_blank">Besoin d\'aide ?</a>';
+			$footer = 'Installation d\'Automne version 4. Pour toute information, visitez <a href="http://www.automne.ws" target="_blank">www.automne.ws</a>';
+			$needhelp = '<div id="needhelp"><a href="'.$_SERVER['SCRIPT_NAME'].'?step=help&install_language='.$install_language.'" target="_blank">Besoin d\'aide ?</a></div>';
 			
 			//STEP Help
 			$stepHelp_title = 'Aide &agrave; l\'installation d\'Automne';
 			$stepHelp_installation_help = 'Si vous rencontrez des difficult&eacute;s pour installer Automne - que vous ayez simplement besoin d\'explications ou si vous rencontrez des erreurs - n\'h&eacute;sitez pas &agrave; poser vos questions sur <a href="http://www.automne.ws/forum/" target="_blank">le forum d\'Automne</a>.<br /><br />
 			Vous y obtiendrez une aide rapide et adapt&eacute;e &agrave; votre situation.<br /><br />
 			Pour nous aider &agrave; diagnostiquer vos probl&egrave;mes, merci de donner le plus d\'informations possible sur le type d\'h&eacute;bergement dont vous disposez ainsi que les messages d\'erreurs &eacute;ventuels que vous rencontrez. <br /><br />
-			Vous pouvez aussi fournir le fichier de diagnostic suivant &agrave; un administrateur du forum via message priv&eacute;.<br />Ce fichier contient toutes les informations de configuration de votre serveur et il nous aidera &agrave; identifier pr&eacute;cis&eacute;ment la source du probl&egrave;me.<br /><br />
+			Vous pouvez aussi fournir le fichier de diagnostic suivant &agrave; un administrateur du forum via message priv&eacute; ou par email sur <a href="mailto:contact@automne.ws">contact@automne.ws</a>.<br />Ce fichier contient toutes les informations de configuration de votre serveur et il nous aidera &agrave; identifier pr&eacute;cis&eacute;ment la source du probl&egrave;me.<br /><br />
 			&raquo; <a href="'.$_SERVER['SCRIPT_NAME'].'?file=info" target="_blank">T&eacute;l&eacute;charger le fichier de diagnostic</a>.';
 			
 			//STEP check
@@ -376,14 +380,14 @@ if (!isset($_GET['file'])) {
 			//General labels
 			$label_next = 'Next';
 			$label_docroot = "Error, this file Must be at the server Document Root ! (%s)";
-			$footer = 'Installing Automne version 4. For more informations, visit <a href="http://www.automne.ws" target="_blank">www.automne.ws</a>.<br /><a href="'.$_SERVER['SCRIPT_NAME'].'?step=help&install_language='.$install_language.'" target="_blank">Need help?</a>';
-			
+			$footer = 'Installing Automne version 4. For more informations, visit <a href="http://www.automne.ws" target="_blank">www.automne.ws</a>.';
+			$needhelp = '<div id="needhelp"><a href="'.$_SERVER['SCRIPT_NAME'].'?step=help&install_language='.$install_language.'" target="_blank">Need help?</a></div>';
 			//STEP Help
 			$stepHelp_title = 'Help to Automne installation';
 			$stepHelp_installation_help = 'If you have problems installing Automne - you just need clarification or if you encounter any errors - please ask your questions on <a href="http://www.automne.ws/forum/" target="_blank">the Automne forum</a>.<br /><br />
 			You\'ll get a quick and appropriate help for your situation.<br /><br />
 			To help us diagnose your problems, thank you to give as much information as possible about the type of hosting you use and the possible error messages you encounter.<br /><br />
-			You can also provide the following diagnostic file to an administrator using private message.<br />
+			You can also provide the following diagnostic file to an administrator using private message or by email on <a href="mailto:contact@automne.ws">contact@automne.ws</a>.<br />
 			This file contains all the configuration information for your server and will help us pinpoint the source of the problem.<br /><br />
 			&raquo; <a href="'.$_SERVER['SCRIPT_NAME'].'?file=info" target="_blank">Download the diagnostic file</a>.';
 			
@@ -1630,6 +1634,19 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 			text-align:			center;
 			font-size:			11px;
 		}
+		#needhelp a {
+			float:				right;
+			border:				1px solid #E9F1DA;
+			font-weight:		bold;
+			margin:				3px 10px;
+			padding:			5px;
+			border-radius: 			7px;
+			-moz-border-radius:		7px;
+			-webkit-border-radius:	7px;
+			box-shadow:				2px 2px 3px #888;
+			-moz-box-shadow:		2px 2px 3px #888;
+			-webkit-box-shadow:		2px 2px 3px #888;
+		}
 		.license,
 		.htaccess,
 		.extraction {
@@ -1743,6 +1760,7 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 <body onLoad="initJavascript();">
 	<div id="main">
 		<div id="content">
+			'.($step != 'help' ? $needhelp : '').'
 			<div id="text">
 				'.$title.'
 				'.$content;
