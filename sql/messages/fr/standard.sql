@@ -1180,7 +1180,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1189, 'standard', 'fr', 'Fichier du patch');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1190, 'standard', 'fr', 'Collez ici le contenu du fichier mis à  jour');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1191, 'standard', 'fr', 'Vous tentez de mettre à jour un fichier qui a été modifié manuellement. Merci de reporter ces modifications dans le fichier contenu dans le patch.');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1192, 'standard', 'fr', 'Reprise du processus de mise à  jour après correction des erreurs');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1192, 'standard', 'fr', 'Reprise du processus de mise à jour après correction des erreurs');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1193, 'standard', 'fr', '[Le fichier que vous souhaitez importer est trop grand]');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1194, 'standard', 'fr', 'Lister');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1195, 'standard', 'fr', 'Menu général');
@@ -1574,3 +1574,8 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1616, 'standard', 'fr', 'Mise &agrave; jour forc&eacute;e');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1617, 'standard', 'fr', 'Mettre &agrave; jour');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1618, 'standard', 'fr', 'Rapport de mise &agrave; jour');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1619, 'standard', 'fr', 'Remise à zéro du cache navigateur');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1620, 'standard', 'fr', 'Cette fonction vous permet de forcer la mise &agrave; jour du cache du navigateur des internautes pour les fichiers Javascript et CSS servis &agrave; l\'aide des tags atm-js-tags et atm-css-tags.');
+
+
+

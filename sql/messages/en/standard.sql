@@ -1686,3 +1686,5 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1616, 'standard', 'en', 'Forced update');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1617, 'standard', 'en', 'Update');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1618, 'standard', 'en', 'Update report');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1619, 'standard', 'en', 'Reset the browser cache');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1620, 'standard', 'en', 'This feature allows you to force the update of the cache of Internet browser for Javascript and CSS files served using tags atm-js-tags and atm-css-tags.');

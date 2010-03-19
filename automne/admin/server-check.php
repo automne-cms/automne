@@ -26,7 +26,7 @@
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 
 //Controler vars
-$action = sensitiveIO::request('action', array('check-files', 'check-htaccess'));
+$action = sensitiveIO::request('action', array('check-files', 'check-htaccess', 'cache-reset'));
 
 define("MESSAGE_PAGE_NO_SERVER_RIGHTS",748);
 define("MESSAGE_PAGE_MORE_THAN_THOUSAND",763);
@@ -36,6 +36,9 @@ define("MESSAGE_CHECK_DONE",766);
 define("MESSAGE_PAGE_FOLDER_NO",767);
 define("MESSAGE_PAGE_FILES_NO",768);
 define("MESSAGE_PAGE_DISK_SPACE",769);
+define("MESSAGE_OPERATION_DONE",122);
+define("MESSAGE_UPDATE_ERROR",178);
+define("MESSAGE_CREATION_ERROR",1503);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -118,6 +121,29 @@ switch ($action) {
 			}
 		}
 		$content .= '</ul>';
+	break;
+	case 'cache-reset':
+		$file = new CMS_file(PATH_MAIN_FS."/SUBVERSION");
+		if ($file->exists()) {
+			$date = (int) $file->getContent();
+			pr($date);
+			$date++;
+			pr($date);
+			$file->setContent((string) $date);
+			if ($file->writeToPersistence()) {
+				$cms_message = $cms_language->getMessage(MESSAGE_OPERATION_DONE);
+			} else {
+				$cms_message = $cms_language->getMessage(MESSAGE_UPDATE_ERROR);
+			}
+		} else {
+			//at end of any patch process, update Automne subversion to force reload of JS and CSS cache from client
+			if (@file_put_contents(PATH_MAIN_FS."/SUBVERSION" , time()) !== false) {
+				CMS_file::chmodFile(FILES_CHMOD, PATH_MAIN_FS."/SUBVERSION");
+				$cms_message = $cms_language->getMessage(MESSAGE_OPERATION_DONE);
+			} else {
+				$cms_message = $cms_language->getMessage(MESSAGE_CREATION_ERROR);
+			}
+		}
 	break;
 }
 

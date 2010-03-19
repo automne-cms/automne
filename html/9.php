@@ -1,7 +1,7 @@
-<?php //Generated on Wed, 10 Mar 2010 17:29:07 +0100 by Automne (TM) 4.0.1
+<?php //Generated on Fri, 19 Mar 2010 15:24:34 +0100 by Automne (TM) 4.0.1
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
-	CMS_view::redirect('http://automne4.401/web/demo/9-contact.php', true, 301);
+	CMS_view::redirect('http://127.0.0.1/web/demo/9-contact.php', true, 301);
 }
  ?>
 <?php $mod_cms_forms = array();
@@ -417,7 +417,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 										}
 									}
 								} elseif ($action->getInteger('type') == CMS_forms_action::ACTION_FIELDEMAIL) {
-									if (sensitiveIO::isValidEmail($_POST[$fields[$action->getString("value")]->getAttribute('name')])) {
+									if ($action->getString("value") && is_object($fields[$action->getString("value")]) && sensitiveIO::isValidEmail($_POST[$fields[$action->getString("value")]->getAttribute('name')])) {
 										$email->setEmailTo($_POST[$fields[$action->getString("value")]->getAttribute('name')]);
 										$email->sendEmail();
 									}
@@ -529,7 +529,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 	}
 }
  ?>
-<?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";   ?>
+<?php /* Template [Intérieur Démo - pt58_Interieur.xml] */   ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";   ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -543,10 +543,10 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 
 	<?php echo CMS_view::getJavascript(array('','/js/CMS_functions.js'));  ?>
 
-	<link rel="icon" type="image/x-icon" href="http://automne4.401/favicon.ico" />
+	<link rel="icon" type="image/x-icon" href="http://127.0.0.1/favicon.ico" />
 	<meta name="language" content="fr" />
 	<meta name="generator" content="Automne (TM)" />
-	<meta name="identifier-url" content="http://automne4.401" />
+	<meta name="identifier-url" content="http://127.0.0.1" />
 
 </head>
 <body>
@@ -554,26 +554,26 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 		<div id="container">
 			<div id="header">
 				
-							<a id="lienAccueil" href="http://automne4.401/web/demo/2-accueil.php" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
+							<a id="lienAccueil" href="http://127.0.0.1/web/demo/2-accueil.php" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
 						
 			</div>
 			<div id="backgroundBottomContainer">
 				<div id="menuLeft">
-					<ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://automne4.401/web/demo/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://automne4.401/web/demo/24-documentation.php">Fonctionnalités</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://automne4.401/web/demo/31-exemples-de-modules.php">Exemples de modules</a></li></ul>
+					<ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/31-exemples-de-modules.php">Exemples de modules</a></li></ul>
 				</div>
 				<div id="content" class="page9">
 					<div id="breadcrumbs">
-						<a href="http://automne4.401/web/demo/2-accueil.php">Accueil</a> &gt; 
+						<a href="http://127.0.0.1/web/demo/2-accueil.php">Accueil</a> &gt; 
 					</div>
 					<div id="title">
 						<h1>Contact</h1>
 					</div>
 					<atm-toc />
-					
+					<?php /* Start clientspace [first] */   ?><?php /* Start row [200 Texte - r44_200_Texte.xml] */   ?>
 
 <div class="text"><p>Ce formulaire vous permet d'envoyer une demande de contact. Pour le transformer (Champs, actions, email de destination), modifiez le dans les propri&eacute;t&eacute;s du module &quot;Formulaire&quot;.</p><p>&nbsp;</p></div>
 
-
+<?php /* End row [200 Texte - r44_200_Texte.xml] */   ?><?php /* Start row [800 [Formulaire] - r55_800_Formulaire.xml] */   ?>
 <div class="cms_forms">
 	<?php $mod_cms_forms = array();
 $mod_cms_forms["module"] = 'cms_forms';
@@ -661,7 +661,7 @@ if ($form->getID() && $form->isPublic()) {
 }
    ?>
 </div>
-
+<?php /* End row [800 [Formulaire] - r55_800_Formulaire.xml] */   ?><?php /* End clientspace [first] */   ?>
 					<a href="#header" id="top" title="haut de la page">Haut</a>
 				</div>
 				<div class="spacer"></div>
@@ -671,7 +671,7 @@ if ($form->getID() && $form->isPublic()) {
 	<div id="footer">
 		<div id="menuBottom">
 			<ul>
-				<li><a href="http://automne4.401/web/demo/8-plan-du-site.php">Plan du site</a></li><li><a href="http://automne4.401/web/demo/9-contact.php">Contact</a></li>
+				<li><a href="http://127.0.0.1/web/demo/8-plan-du-site.php">Plan du site</a></li><li><a href="http://127.0.0.1/web/demo/9-contact.php">Contact</a></li>
 			</ul>
 			<div class="spacer"></div>
 		</div>

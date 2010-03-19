@@ -1,10 +1,10 @@
-<?php //Generated on Wed, 10 Mar 2010 17:29:02 +0100 by Automne (TM) 4.0.1
+<?php //Generated on Fri, 19 Mar 2010 15:24:38 +0100 by Automne (TM) 4.0.1
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
-	CMS_view::redirect('http://automne4.401/web/demo/print-26-rangees.php', true, 301);
+	CMS_view::redirect('http://127.0.0.1/web/demo/print-26-rangees.php', true, 301);
 }
  ?>
-<?php require_once($_SERVER["DOCUMENT_ROOT"].'/automne/classes/polymodFrontEnd.php');  ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";   ?>
+<?php require_once($_SERVER["DOCUMENT_ROOT"].'/automne/classes/polymodFrontEnd.php');  ?><?php /* Template [print.xml] */   ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";   ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 <head>
 	<?php echo '<meta http-equiv="Content-Type" content="text/html; charset='.strtoupper(APPLICATION_DEFAULT_ENCODING).'" />';    ?>
@@ -20,7 +20,7 @@ if (!isset($cms_page_included) && !$_POST && !$_GET) {
 		&raquo;&nbsp;Rangées
 		
 </h3>
-
+<?php /* Start clientspace [first] */   ?><?php /* Start row [210 Texte et Image Droite - r45_210_Texte__image_droite.xml] */   ?>
 	
 	
 		<div class="text"><h2>Principe de rang&eacute;es de contenu</h2> <p>Les rang&eacute;es de contenu sont les gabarits qui contiennent l&rsquo;information. <strong>Elles peuvent contenir tous types d&rsquo;informations :</strong> texte, image, flash, vid&eacute;o&hellip; Par exemple, des rang&eacute;es titres, sous-titres, textes, textes et image &agrave; droite sont certaines des rang&eacute;es par d&eacute;faut d'Automne.</p> <p>Une rang&eacute;e est pr&eacute;-format&eacute;e. Cela permet de conserver l'homog&eacute;n&eacute;it&eacute; de la pr&eacute;sentation du site Internet.</p> <h3>Il vous est possible de cr&eacute;er vos propres rang&eacute;es avec le type d&rsquo;information que vous souhaitez.</h3> <p style="text-align: center;"><?php $parameters = array (
@@ -429,13 +429,13 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 }
   ?></p> <h3>L'organisation des rang&eacute;es dans une page est particuli&egrave;rement simple. Vous pouvez les glisser-d&eacute;poser &agrave; l'endroit ou vous le souhaitez.</h3> <p>Les zones de saisies sont clairement indiqu&eacute;es et vous pouvez modifier l'ensemble du contenu tr&egrave;s simplement &agrave; l'aide <strong>d'outils de mise en forme tr&egrave;s intuitifs :</strong> mise en forme des textes &agrave; l'aide de <strong>l'&eacute;diteur WYSIWYG,</strong> redimensionner et recadrer des images, cr&eacute;er des liens vers d'autres sites ou vers une page donn&eacute;e de votre site.</p> <p>Vous pouvez m&ecirc;me d&eacute;cider <strong>d'importer le contenu de vos modules &agrave; n'importe quel endroit de vos textes.</strong> Si le contenu du module vient &agrave; disparaitre (suppression, d&eacute;publication, ...), il disparaitra <strong>simplement et sans erreur</strong> de tous les textes ou vous y faite r&eacute;f&eacute;rence.</p></div>
 	
-<br />
+<?php /* End row [210 Texte et Image Droite - r45_210_Texte__image_droite.xml] */   ?><?php /* End clientspace [first] */   ?><br />
 <hr />
 <div align="center">
 	<small>
 		
 		
-				Page  "Rangées" (http://automne4.401/web/demo/26-rangees.php)
+				Page  "Rangées" (http://127.0.0.1/web/demo/26-rangees.php)
 				<br />
 		Tir&eacute; du site http://<?php echo $_SERVER["HTTP_HOST"];    ?>
 	</small>

@@ -58,6 +58,8 @@ define("MESSAGE_PAGE_FORCED_UPDATE",1616);
 define("MESSAGE_PAGE_LAUNCH_UPDATE",1617);
 define("MESSAGE_PAGE_UPDATE_REPORT",1618);
 define("MESSAGE_PAGE_ABOUT_AUTOMNE", 644);
+define("MESSAGE_PAGE_RESET_CACHE", 1619);
+define("MESSAGE_PAGE_RESET_CACHE_DESC", 1620);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -260,6 +262,10 @@ $filescontent = '
 	<div id="launchHtaccessCheck"></div><br />
 	<div id="htaccessCheckProgress"></div><br />
 	<div id="htaccessCheckDetail"></div>
+	<h2>'.$cms_language->getMessage(MESSAGE_PAGE_RESET_CACHE).'</h2>
+	'.$cms_language->getMessage(MESSAGE_PAGE_RESET_CACHE_DESC).'
+	<br /><br />
+	<div id="cacheReset"></div>
 ';
 $filescontent = sensitiveIO::sanitizeJSString($filescontent);
 
@@ -361,6 +367,23 @@ $jscontent = <<<END
 					Ext.get('htaccessCheckDetailText').dom.innerHTML = content;
 					progressHtaccess.updateText('').reset();
 					launchHtaccessCheck.enable();
+				},
+				callBackScope:		this
+			});
+		},scope:this}
+    });
+	var cacheReset = new Ext.Button({
+		id:				'cacheReset',
+		text:			'Reset du cache',
+		listeners:		{'click':function(){
+			cacheReset.disable();
+	        Automne.server.call({
+				url:				'server-check.php',
+				params: 			{
+					action:				'cache-reset'
+				},
+				fcnCallback: 		function(response, options, content) {
+					cacheReset.enable();
 				},
 				callBackScope:		this
 			});
@@ -621,6 +644,9 @@ $jscontent = <<<END
 				}
 				if (!launchHtaccessCheck.rendered) {
 					launchHtaccessCheck.render('launchHtaccessCheck');
+				}
+				if (!cacheReset.rendered) {
+					cacheReset.render('cacheReset');
 				}
 			}, scope:this}
 		},{

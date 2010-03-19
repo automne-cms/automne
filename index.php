@@ -1,5 +1,5 @@
 <?php
-//Generated on Tue, 16 Mar 2010 11:23:33 +0100 by Automne (TM) 4.0.1
+//Generated on Fri, 19 Mar 2010 15:24:26 +0100 by Automne (TM) 4.0.1
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 $httpHost = @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST'];
 //search page id by domain address
