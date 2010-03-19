@@ -1,5 +1,7 @@
-V4.0.1 (in progress)
+V4.0.1 (19/03/10)
 [BUG] : Corrected bugs : 399, 401, 286, 265, 268, 283, 284, 302, 282, 280, 296, 304 (see http://www.automne.ws/bug/)
+[BUG] : In the cms_forms module with IE (form duplication)
+[BUG] : Multiples validations launches multiple concurrent ajax requests
 [REFACTOR] : update Automne copyright dates
 [REFACTOR] : add a background image on lorem ipsum text to help non latin natives to identify it
 [REFACTOR] : do some optimisation on administration images
@@ -7,10 +9,12 @@ V4.0.1 (in progress)
 [REFACTOR] : Enhance 403 and 404 files and favicon
 [REFACTOR] : Change some admin messages
 [REFACTOR] : Add polymod items ids, templates ids and rows ids on administration results. On mouse over of results titles.
+[REFACTOR] : Automne update panel is now done with ExtJS
 [FEATURE] : update Zend Framework to version 1.10.2
 [FEATURE] : in polymod, templates and rows administration, items can now be searched by ids
 [FEATURE] : Add alternative domains management for websites
-[FEATURE] : Add a server panel to consult errors logs
+[FEATURE] : Add a panel into Server parameters to consult errors logs
+[FEATURE] : Add an action into Server parameters to force browsers cache update
 
 V4.0.0 (18/01/10)
 [BUG] : Lots of minor bugs corrected

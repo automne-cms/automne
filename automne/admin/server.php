@@ -46,6 +46,20 @@ define("MESSAGE_PAGE_UPDATES",762);
 define("MESSAGE_PAGE_ERRORS_LOGS",1609);
 define("MESSAGE_PAGE_CHECK_ERRORS_LOGS",1607);
 define("MESSAGE_PAGE_PICK_A_DATE",1606);
+define("MESSAGE_SELECT_FILE",534);
+define("MESSAGE_PAGE_INCORRECT_FORM_VALUES", 682);
+define("MESSAGE_PAGE_FIELD_CLICK_TO_CORRECT", 1184);
+define("MESSAGE_PAGE_AUTOMNE_UPDATES",1611);
+define("MESSAGE_PAGE_AUTOMNE_UPDATES_DESC",1612);
+define("MESSAGE_PAGE_UPDATE_FILE",1613);
+define("MESSAGE_PAGE_UPDATE_FILE_DESC",1614);
+define("MESSAGE_PAGE_FORCED_UPDATE_DESC",1615);
+define("MESSAGE_PAGE_FORCED_UPDATE",1616);
+define("MESSAGE_PAGE_LAUNCH_UPDATE",1617);
+define("MESSAGE_PAGE_UPDATE_REPORT",1618);
+define("MESSAGE_PAGE_ABOUT_AUTOMNE", 644);
+define("MESSAGE_PAGE_RESET_CACHE", 1619);
+define("MESSAGE_PAGE_RESET_CACHE_DESC", 1620);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -140,7 +154,7 @@ if (!@mail("root@localhost", "Automne SMTP Test", "Automne SMTP Test")) {
 	$content .= '<li class="atm-pic-ok">SMTP server OK</li>';
 }
 //Memory
-ini_set('memory_limit', "32M");
+@ini_set('memory_limit', "32M");
 if (ini_get('memory_limit') && ini_get('memory_limit') < 32) {
 	$content .= '<li class="atm-pic-cancel">Error, Cannot upgrade memory limit to 32M. Memory detected : '.ini_get('memory_limit')."\n";
 } else {
@@ -248,18 +262,43 @@ $filescontent = '
 	<div id="launchHtaccessCheck"></div><br />
 	<div id="htaccessCheckProgress"></div><br />
 	<div id="htaccessCheckDetail"></div>
+	<h2>'.$cms_language->getMessage(MESSAGE_PAGE_RESET_CACHE).'</h2>
+	'.$cms_language->getMessage(MESSAGE_PAGE_RESET_CACHE_DESC).'
+	<br /><br />
+	<div id="cacheReset"></div>
 ';
 $filescontent = sensitiveIO::sanitizeJSString($filescontent);
 
 $pathAdmin = PATH_ADMIN_WR;
 $pathMain = PATH_MAIN_WR;
 
+//Errors Tab
 $dateFormat = $cms_language->getDateFormat();
 $errorcontent = '
 <h1>'.$cms_language->getMessage(MESSAGE_PAGE_CHECK_ERRORS_LOGS).'</h1>
 <div id="errorsDate"></div><br />
 <div id="serverErrorsDetails"></div>';
 $errorcontent = sensitiveIO::sanitizeJSString($errorcontent);
+
+//Update Tab
+$fileDatas = array(
+	'filename'		=> '',
+	'filepath'		=> '',
+	'filesize'		=> '',
+	'fileicon'		=> '',
+	'extension'		=> '',
+);
+$maxFileSize = CMS_file::getMaxUploadFileSize('K');
+$filePath = $fileDatas['filepath'];
+$fileDatas = sensitiveIO::jsonEncode($fileDatas);
+
+$updatecontent = '
+<div id="updatePanelAutomneHelp" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_ABOUT_AUTOMNE).'"></div>
+<h1>'.$cms_language->getMessage(MESSAGE_PAGE_AUTOMNE_UPDATES).'</h1>
+<p>'.$cms_language->getMessage(MESSAGE_PAGE_AUTOMNE_UPDATES_DESC).'</p><br />
+<div id="updateForm"></div><br />
+<div id="updateDetails"></div>';
+$updatecontent = sensitiveIO::sanitizeJSString($updatecontent);
 
 $jscontent = <<<END
 	var serverWindow = Ext.getCmp('{$winId}');
@@ -336,6 +375,23 @@ $jscontent = <<<END
 			});
 		},scope:this}
     });
+	var cacheReset = new Ext.Button({
+		id:				'cacheReset',
+		text:			'Reset du cache',
+		listeners:		{'click':function(){
+			cacheReset.disable();
+	        Automne.server.call({
+				url:				'server-check.php',
+				params: 			{
+					action:				'cache-reset'
+				},
+				fcnCallback: 		function(response, options, content) {
+					cacheReset.enable();
+				},
+				callBackScope:		this
+			});
+		},scope:this}
+    });
 	var filesCheckDetail = new Ext.form.FieldSet({
 		title:			'{$cms_language->getJsMessage(MESSAGE_PAGE_DETAIL)}',
 		collapsible:	true,
@@ -353,7 +409,7 @@ $jscontent = <<<END
 		html:			'<div id="htaccessCheckDetailText"></div>'
 	});
 	
-	//Server errors panel
+	//Server errors tab
 	var errorsDate = new Ext.form.FormPanel({
 		layout: 		'form',
 		labelWidth:		135,
@@ -370,6 +426,7 @@ $jscontent = <<<END
 			xtype:			'datefield',
 			format:			'{$dateFormat}',
 			width:			100,
+			maxValue:		new Date(),
 			anchor:			false,
 			listeners:		{'select':function(field){
 				if (field.isValid()) {
@@ -384,8 +441,13 @@ $jscontent = <<<END
 								serverErrorsDetails.render('serverErrorsDetails');
 							}
 							serverErrorsDetails.setWidth(Ext.getCmp('serverErrors').getWidth() - 20);
-							serverErrorsDetails.setHeight(Ext.getCmp('serverErrors').getHeight() - 85);
-							Ext.get('serverErrorsDetailsText').dom.innerHTML = response.responseText;
+							if (Ext.isIE) {
+								serverErrorsDetails.setHeight(Ext.getCmp('serverErrors').getHeight() - 95);
+								Ext.get('serverErrorsDetailsText').dom.innerText = response.responseText;
+							} else {
+								serverErrorsDetails.setHeight(Ext.getCmp('serverErrors').getHeight() - 85);
+								Ext.get('serverErrorsDetailsText').update(response.responseText);
+							}
 						},
 						callBackScope:		this
 					});
@@ -402,6 +464,125 @@ $jscontent = <<<END
 		autoScroll:		true,
 		html:			'<pre id="serverErrorsDetailsText"></pre>'
 	});
+	
+	//Update tab
+	var updateForm = new Automne.FormPanel({
+		id:				'form-update',
+		layout: 		'form',
+		border:			false,
+		autoWidth:		true,
+		autoHeight:		true,
+		labelWidth:		135,
+		labelAlign:		'right',
+		defaults: {
+			anchor:			'97%'
+		},
+		items:[{
+            xtype: 			'atmFileUploadField',
+            id: 			'form-update-file',
+            emptyText: 		'{$cms_language->getJSMessage(MESSAGE_SELECT_FILE)}',
+            fieldLabel: 	'<span class=\"atm-red\">*</span> {$cms_language->getJsMessage(MESSAGE_PAGE_UPDATE_FILE)}',
+            name: 			'filename',
+			allowBlank:		false,
+            uploadCfg:	{
+				file_size_limit:		'{$maxFileSize}',
+				file_types:				'*.gz;*.tgz',
+				file_types_description:	'{$cms_language->getJsMessage(MESSAGE_PAGE_UPDATE_FILE_DESC)}'
+			},
+			fileinfos:	{$fileDatas}
+        },{
+			fieldLabel:		'',
+			name:			'force',
+			inputValue:		'1',
+			xtype:			'checkbox',
+			boxLabel:		'<span ext:qtip="{$cms_language->getJsMessage(MESSAGE_PAGE_FORCED_UPDATE_DESC)}" class="atm-help"><span class=\"atm-red\">/!\\\</span> {$cms_language->getJsMessage(MESSAGE_PAGE_FORCED_UPDATE)}</span>'
+		}],
+		buttons:[{
+			text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_LAUNCH_UPDATE)}',
+			xtype:			'button',
+			iconCls:		'atm-pic-validate',
+			name:			'submitAdmin',
+			handler:		function() {
+				var form = Ext.getCmp('form-update').getForm();
+				if (form.isValid()) {
+					Automne.server.call({
+						url:				'server-update.php',
+						isUpload:			true,
+						params: 			form.getValues(),
+						success: 		function(response, options) {
+							Ext.getCmp('form-update-file').deleteFile();
+							if (!updateDetails.rendered) {
+								updateDetails.render('updateDetails');
+							}
+							updateDetails.setWidth(Ext.getCmp('updatesPanel').getWidth() - 22);
+							if (Ext.isIE) {
+								updateDetails.setHeight(Ext.getCmp('updatesPanel').getHeight() - 235);
+							} else {
+								updateDetails.setHeight(Ext.getCmp('updatesPanel').getHeight() - 225);
+							}
+							Ext.get('updateDetailsText').update(response.responseText, true);
+						},
+						callBackScope:		this
+					});
+				} else {
+					Automne.message.show('{$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_FORM_VALUES)}', '', serverWindow);
+				}
+			},
+			scope:			this
+		}]
+	});
+	var updateDetails = new Ext.form.FieldSet({
+		title:			'{$cms_language->getJsMessage(MESSAGE_PAGE_UPDATE_REPORT)}',
+		collapsible:	false,
+		collapsed:		false,
+		width:			300,
+		height:			300,
+		autoScroll:		true,
+		html:			'<pre id="updateDetailsText"></pre>'
+	});
+	
+	serverWindow.correctUpdateErrors = function() {
+		var correctErrorsButton = new Ext.Button({
+			id:				'correctErrorsButton',
+			text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_CLICK_TO_CORRECT)}',
+			listeners:		{'click':function(t){
+				//create window element
+				var window = new Automne.frameWindow({
+					id:				'server-update-correct-errors',
+					frameURL:		'/automne/admin-v3/patch_error_correction.php',
+					allowFrameNav:	true,
+					width:			750,
+					height:			580,
+					animateTarget:	t,
+					listeners:{'close':function(){
+						Automne.server.call({
+							url:				'server-update.php',
+							isUpload:			true,
+							params: 			{cms_action:'errorsCorrected'},
+							success: 			function(response, options) {
+								if (!updateDetails.rendered) {
+									updateDetails.render('updateDetails');
+								}
+								updateDetails.setWidth(Ext.getCmp('updatesPanel').getWidth() - 22);
+								if (Ext.isIE) {
+									updateDetails.setHeight(Ext.getCmp('updatesPanel').getHeight() - 235);
+								} else {
+									updateDetails.setHeight(Ext.getCmp('updatesPanel').getHeight() - 225);
+								}
+								Ext.get('updateDetailsText').update(response.responseText, true);
+							},
+							callBackScope:		this
+						});
+					}}
+				});
+				window.show();
+			},scope:this}
+	    });
+		if (!correctErrorsButton.rendered) {
+			correctErrorsButton.render('correctUpdateErrors');
+		}
+	}
+	
 	//create center panel
 	var center = new Ext.TabPanel({
 		activeTab:			 0,
@@ -424,7 +605,19 @@ $jscontent = <<<END
 			'resize': function() {
 				if (serverErrorsDetails.rendered) {
 					serverErrorsDetails.setWidth(Ext.getCmp('serverErrors').getWidth() - 20);
-					serverErrorsDetails.setHeight(Ext.getCmp('serverErrors').getHeight() - 85);
+					if (Ext.isIE) {
+						serverErrorsDetails.setHeight(Ext.getCmp('serverErrors').getHeight() - 95);
+					} else {
+						serverErrorsDetails.setHeight(Ext.getCmp('serverErrors').getHeight() - 85);
+					}
+				}
+				if (updateDetails.rendered) {
+					updateDetails.setWidth(Ext.getCmp('updatesPanel').getWidth() - 22);
+					if (Ext.isIE) {
+						updateDetails.setHeight(Ext.getCmp('updatesPanel').getHeight() - 235);
+					} else {
+						updateDetails.setHeight(Ext.getCmp('updatesPanel').getHeight() - 225);
+					}
 				}
 			}
 		},
@@ -455,6 +648,9 @@ $jscontent = <<<END
 				if (!launchHtaccessCheck.rendered) {
 					launchHtaccessCheck.render('launchHtaccessCheck');
 				}
+				if (!cacheReset.rendered) {
+					cacheReset.render('cacheReset');
+				}
 			}, scope:this}
 		},{
 			xtype:				'framePanel',
@@ -475,11 +671,42 @@ $jscontent = <<<END
 				}
 			}, scope:this}
 		},{
-			xtype:				'framePanel',
+			id:					'updatesPanel',
 			title:				'{$cms_language->getJsMessage(MESSAGE_PAGE_UPDATES)}',
+<<<<<<< TREE
 			id:					'updatesPanel',
 			frameURL:			'{$pathMain}/admin-v3/patch.php',
 			allowFrameNav:		true
+=======
+			autoScroll:			true,
+			border:				false,
+			bodyStyle: 			'padding:5px',
+			html: 				'$updatecontent',
+			listeners:			{'activate':function(){
+				if (!updateForm.rendered) {
+					updateForm.render('updateForm');
+					Ext.get('updatePanelAutomneHelp').addClassOnOver('over');
+					Ext.get('updatePanelAutomneHelp').on('mousedown', function(){
+						//create window element
+						var win = new Automne.Window({
+							id:				'atmHelpWindow',
+							width:			515,
+							height:			450,
+							resizable:		false,
+							maximizable:	false,
+							autoLoad:		{
+								url:		'help.php',
+								params:		{winId:'atmHelpWindow'},
+								nocache:	true,
+								scope:		this
+							}
+						});
+						//display window
+						win.show(Ext.get('updatePanelAutomneHelp'));
+					}, this);
+				}
+			}, scope:this}
+>>>>>>> MERGE-SOURCE
 		}]
 	});
 	

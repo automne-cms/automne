@@ -579,7 +579,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @access public
 	  */
 	function scriptTask($parameters) {
-		if (!sensitiveIO::isPositiveInteger($parameters['object'])) {
+		if (!isset($parameters['object']) || !sensitiveIO::isPositiveInteger($parameters['object'])) {
 			return false;
 		}
 		//instanciate root user to avoid rights problems during item loading
@@ -607,7 +607,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @access public
 	  */
 	function scriptInfo($parameters) {
-		if (!sensitiveIO::isPositiveInteger($parameters['object'])) {
+		if (!isset($parameters['object']) || !sensitiveIO::isPositiveInteger($parameters['object'])) {
 			return parent::scriptInfo($parameters);
 		}
 		//instanciate script related object (use edited object because the script can launch writing of values into object)

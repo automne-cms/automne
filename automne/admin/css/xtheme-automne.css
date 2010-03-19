@@ -783,6 +783,7 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 #headPanelLogout.over{
 	background:						url(../automne/admin/img/panel/headPanelLogoutOn.gif) no-repeat bottom right;
 }
+#updatePanelAutomneHelp,
 #headPanelAutomneHelp{
 	bottom:							10px;
 	cursor:							pointer;
@@ -792,6 +793,11 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 	width:							20px;
 	background:						url(../automne/admin/img/help-off.png) no-repeat bottom right;
 }
+#updatePanelAutomneHelp {
+	top:							3px;
+	right:							5px;
+}
+#updatePanelAutomneHelp.over,
 #headPanelAutomneHelp.over{
 	background:						url(../automne/admin/img/help.gif) no-repeat bottom right;
 }

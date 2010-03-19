@@ -1,10 +1,19 @@
 <?php
+<<<<<<< TREE
 //Generated on Thu, 11 Mar 2010 16:28:43 +0100 by Automne (TM) 4.0.1
 require_once(dirname(__FILE__).'/../cms_rc_frontend.php');
+=======
+//Generated on Fri, 19 Mar 2010 15:24:35 +0100 by Automne (TM) 4.0.1
+require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+>>>>>>> MERGE-SOURCE
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
+<<<<<<< TREE
 	CMS_view::redirect('http://test-folder/trunk/web/demo/print-24-documentation.php', true, 301);
+=======
+	CMS_view::redirect('http://127.0.0.1/web/demo/print-24-documentation.php', true, 301);
+>>>>>>> MERGE-SOURCE
 }
-?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";  ?>
+?><?php /* Template [print.xml] */  ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";  ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 <head>
 	<?php echo '<meta http-equiv="Content-Type" content="text/html; charset='.strtoupper(APPLICATION_DEFAULT_ENCODING).'" />';   ?>
@@ -26,12 +35,12 @@ if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	</display>
 </atm-linx>
 </h3>
-
+<?php /* Start clientspace [first] */  ?><?php /* Start row [210 Texte et Image Droite - r45_210_Texte__image_droite.xml] */  ?>
 	
 	
 		<div class="text"><h2>Vous trouverez dans cette partie les grands principes d&rsquo;utilisations d'Automne 4.</h2> <p>Syst&egrave;me de gestion de contenu puissant, Automne 4 permet de g&eacute;rer des sites de plusieurs milliers de pages, d'en <strong>modifier simplement l'apparence</strong> gr&acirc;ce aux <atm-linx type="direct"><selection><start><nodespec type="node" value="25" /></start></selection><noselection>mod&egrave;les de pages</noselection><display><htmltemplate><a href="{{href}}">mod&egrave;les de pages</a></htmltemplate></display></atm-linx> et de modifier intuitivement le contenu gr&acirc;ce au principe des <atm-linx type="direct"><selection><start><nodespec type="node" value="26" /></start></selection><noselection>rang&eacute;es de contenu.</noselection><display><htmltemplate><a href="{{href}}">rang&eacute;es de contenu.</a></htmltemplate></display></atm-linx></p> <p>Les nombreuses fonctionnalit&eacute;s pour le site Internet, simples ou complexes, peuvent &ecirc;tre <span style="font-weight: bold;">g&eacute;n&eacute;r&eacute;es</span><strong> automatiquement par le g&eacute;n&eacute;rateur de module appel&eacute; </strong><atm-linx type="direct"><selection><start><nodespec type="node" value="27" /></start></selection><noselection><strong>POLYMOD</strong></noselection><display><htmltemplate><a href="{{href}}"><strong>POLYMOD</strong></a></htmltemplate></display></atm-linx> ou bien d&eacute;velopp&eacute;es directement en code PHP.</p> <p>Automne 4 dispose d'un syst&egrave;me de <atm-linx type="direct"><selection><start><nodespec type="node" value="28" /></start></selection><noselection>gestion des utilisateurs</noselection><display><htmltemplate><a href="{{href}}">gestion des utilisateurs</a></htmltemplate></display></atm-linx> et <atm-linx type="direct"><selection><start><nodespec type="node" value="28" /></start></selection><noselection>groupes d'utilisateurs</noselection><display><htmltemplate><a href="{{href}}">groupes d'utilisateurs</a></htmltemplate></display></atm-linx> particuli&egrave;rement &eacute;volu&eacute; permettant une <atm-linx type="direct"><selection><start><nodespec type="node" value="35" /></start></selection><noselection>gestion tr&egrave;s fine des droits.</noselection><display><htmltemplate><a href="{{href}}">gestion tr&egrave;s fine des droits.</a></htmltemplate></display></atm-linx> Votre environnement de travail est homog&egrave;ne et ne pr&eacute;sente que les fonctionnalit&eacute;s sur lesquelles vous avez le droit d'agir.</p> <h3>Vous trouverez un descriptif des principales fonctions d'Automne 4 dans les pages ci-dessous :</h3> <ul>     <li><atm-linx type="direct"><selection><start><nodespec type="node" value="25" /></start></selection><noselection>Mod&egrave;les de pages</noselection><display><htmltemplate><a href="{{href}}">Mod&egrave;les de pages</a></htmltemplate></display></atm-linx> (l'habillage graphique du site Internet),</li>     <li><atm-linx type="direct"><selection><start><nodespec type="node" value="26" /></start></selection><noselection>Rang&eacute;es de contenu</noselection><display><htmltemplate><a href="{{href}}">Rang&eacute;es de contenu</a></htmltemplate></display></atm-linx> (l'habillage de vos contenus et m&eacute;dias),</li>     <li><atm-linx type="direct"><selection><start><nodespec type="node" value="27" /></start></selection><noselection>Modules dynamiques</noselection><display><htmltemplate><a href="{{href}}">Modules dynamiques</a></htmltemplate></display></atm-linx> (vos outils personnalis&eacute;s et applications d&eacute;di&eacute;es),</li>     <li><atm-linx type="direct"><selection><start><nodespec type="node" value="28" /></start></selection><noselection>Gestion des utilisateurs et des groupes d'utilisateurs</noselection><display><htmltemplate><a href="{{href}}">Gestion des utilisateurs et des groupes d'utilisateurs</a></htmltemplate></display></atm-linx>,</li>     <li><atm-linx type="direct"><selection><start><nodespec type="node" value="35" /></start></selection><noselection>Gestion des droits d'acc&egrave;s</noselection><display><htmltemplate><a href="{{href}}">Gestion des droits d'acc&egrave;s</a></htmltemplate></display></atm-linx>,</li>     <li><atm-linx type="direct"><selection><start><nodespec type="node" value="37" /></start></selection><noselection>Workflow de publication des contenus</noselection><display><htmltemplate><a href="{{href}}">Workflow de publication des contenus</a></htmltemplate></display></atm-linx>,</li>     <li><atm-linx type="direct"><selection><start><nodespec type="node" value="38" /></start></selection><noselection>Aide aux utilisateurs</noselection><display><htmltemplate><a href="{{href}}">Aide aux utilisateurs</a></htmltemplate></display></atm-linx>,</li>     <li><atm-linx type="direct"><selection><start><nodespec type="node" value="34" /></start></selection><noselection>Fonctions avanc&eacute;es</noselection><display><htmltemplate><a href="{{href}}">Fonctions avanc&eacute;es</a></htmltemplate></display></atm-linx>.</li> </ul></div>
 	
-<br />
+<?php /* End row [210 Texte et Image Droite - r45_210_Texte__image_droite.xml] */  ?><?php /* End clientspace [first] */  ?><br />
 <hr />
 <div align="center">
 	<small>

@@ -1,7 +1,12 @@
 <?php
+<<<<<<< TREE
 //Generated on Thu, 11 Mar 2010 17:06:41 +0100 by Automne (TM) 4.0.1
 require_once(dirname(__FILE__).'/cms_rc_frontend.php');
 
+=======
+//Generated on Fri, 19 Mar 2010 15:24:26 +0100 by Automne (TM) 4.0.1
+require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+>>>>>>> MERGE-SOURCE
 $httpHost = @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST'];
 //search page id by domain address
 $website = CMS_websitesCatalog::getWebsiteFromDomain($httpHost);

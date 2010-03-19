@@ -1180,7 +1180,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1189, 'standard', 'fr', 'Fichier du patch');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1190, 'standard', 'fr', 'Collez ici le contenu du fichier mis à  jour');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1191, 'standard', 'fr', 'Vous tentez de mettre à jour un fichier qui a été modifié manuellement. Merci de reporter ces modifications dans le fichier contenu dans le patch.');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1192, 'standard', 'fr', 'Reprise du processus de mise à  jour après correction des erreurs');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1192, 'standard', 'fr', 'Reprise du processus de mise à jour après correction des erreurs');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1193, 'standard', 'fr', '[Le fichier que vous souhaitez importer est trop grand]');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1194, 'standard', 'fr', 'Lister');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1195, 'standard', 'fr', 'Menu général');
@@ -1565,4 +1565,17 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1607, 'standard', 'fr', 'Consultez les logs d\'erreur d\'Automne :');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1608, 'standard', 'fr', 'Pas de logs pour cette date');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1609, 'standard', 'fr', 'Logs d\'erreurs');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1610, 'standard', 'fr', 'Toutes les erreurs sont corrig&eacute;es. Vous pouvez clore cette fen&ecirc;tre pour reprendre l\'installation de la mise &agrave; jour.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1611, 'standard', 'fr', 'Mises &agrave; jour d\'Automne');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1612, 'standard', 'fr', 'Cette fen&ecirc;tre permet d\'installer les patch de mises &agrave; jour d\'Automne ou de ses modules. Fournissez le fichier de mise &agrave; jour dans le champ ci-dessous puis validez.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1613, 'standard', 'fr', 'Fichier de mise &agrave; jour');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1614, 'standard', 'fr', 'Fichiers de mise &agrave; jour (*.gz, *.tgz) ...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1615, 'standard', 'fr', 'Attention, cocher cette case forcera la mise &agrave; jour m&ecirc;me si des erreurs surviennent. Ne cochez cette case que si vous savez ce que vous faites.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1616, 'standard', 'fr', 'Mise &agrave; jour forc&eacute;e');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1617, 'standard', 'fr', 'Mettre &agrave; jour');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1618, 'standard', 'fr', 'Rapport de mise &agrave; jour');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1619, 'standard', 'fr', 'Remise à zéro du cache navigateur');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1620, 'standard', 'fr', 'Cette fonction vous permet de forcer la mise &agrave; jour du cache du navigateur des internautes pour les fichiers Javascript et CSS servis &agrave; l\'aide des tags atm-js-tags et atm-css-tags.');
+
+
 

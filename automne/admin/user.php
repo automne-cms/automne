@@ -67,6 +67,7 @@ define("MESSAGE_PAGE_ADMINISTRATION", 449);
 define("MESSAGE_PAGE_PASSWORD_INFO", 503);
 define("MESSAGE_PAGE_USER_CREATION", 574);
 define("MESSAGE_PAGE_ADMIN_NO_GROUPS", 1594);
+define("MESSAGE_PAGE_INCORRECT_FORM_VALUES", 682);
 
 $winId = sensitiveIO::request('winId', '', 'userWindow');
 $userId = sensitiveIO::request('userId', 'sensitiveIO::isPositiveInteger', 'createUser');
@@ -561,31 +562,35 @@ $jscontent = <<<END
 					scope:			this,
 					handler:		function() {
 						var form = Ext.getCmp('identityPanel-{$userId}').getForm();
-						form.submit({
-							params:{
-								action:		'identity',
-								userId:		userWindow.userId
-							},
-							success:function(form, action){
-								//if it is a successful user creation
-								if (action.result.success != false && isNaN(parseInt(userWindow.userId))) {
-									//set userId
-									userWindow.userId = action.result.success.userId;
-									//display hidden elements
-									Ext.getCmp('alertsPanel-{$userId}').enable();
-									Ext.getCmp('userDetailsPanel-{$userId}').enable();
-									Ext.getCmp('userPanels-{$userId}').items.each(function(panel) {
-										if (panel.disabled) {
-											panel.enable();
-											if (panel.autoLoad) {
-												panel.autoLoad.params.userId = userWindow.userId;
+						if (form.isValid()) {
+							form.submit({
+								params:{
+									action:		'identity',
+									userId:		userWindow.userId
+								},
+								success:function(form, action){
+									//if it is a successful user creation
+									if (action.result.success != false && isNaN(parseInt(userWindow.userId))) {
+										//set userId
+										userWindow.userId = action.result.success.userId;
+										//display hidden elements
+										Ext.getCmp('alertsPanel-{$userId}').enable();
+										Ext.getCmp('userDetailsPanel-{$userId}').enable();
+										Ext.getCmp('userPanels-{$userId}').items.each(function(panel) {
+											if (panel.disabled) {
+												panel.enable();
+												if (panel.autoLoad) {
+													panel.autoLoad.params.userId = userWindow.userId;
+												}
 											}
-										}
-									});
-								}
-							},
-							scope:this
-						});
+										});
+									}
+								},
+								scope:this
+							});
+						} else {
+							Automne.message.show('{$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_FORM_VALUES)}', '', userWindow);
+						}
 					}
 				}]
 			},{

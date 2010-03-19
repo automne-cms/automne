@@ -1677,3 +1677,14 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1607, 'standard', 'en', 'Consult Automne errors logs:');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1608, 'standard', 'en', 'No logs founded for this date');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1609, 'standard', 'en', 'Errors logs');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1610, 'standard', 'en', 'All errors are corrected. You can close this window to return to the update installation.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1611, 'standard', 'en', 'Automne updates');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1612, 'standard', 'en', 'This window allows you to install patch updates for Automne or its modules. Provide the file update in the field below and validate.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1613, 'standard', 'en', 'Update file');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1614, 'standard', 'en', 'Update file (*.gz, *.tgz)...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1615, 'standard', 'en', 'Caution, check this box will force the update even if errors occur. Check this box only if you know what you do.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1616, 'standard', 'en', 'Forced update');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1617, 'standard', 'en', 'Update');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1618, 'standard', 'en', 'Update report');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1619, 'standard', 'en', 'Reset the browser cache');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1620, 'standard', 'en', 'This feature allows you to force the update of the cache of Internet browser for Javascript and CSS files served using tags atm-js-tags and atm-css-tags.');

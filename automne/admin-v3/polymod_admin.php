@@ -149,10 +149,8 @@ if (!sizeof($objects)) {
 			$objectUseageLabel .='</ul>';
 		}
 		$fields = CMS_poly_object_catalog::getFieldsDefinition($object->getID());
-		if (POLYMOD_DEBUG) {
-			$content .= ' <span class="admin_text_alert">(ObjectID : '.$object->getID().')</span><br />';
-		}
 		$content .= '
+		<strong>ID :</strong> '.$object->getID().'<br />
 		<strong>'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_DESCRIPTION).' :</strong> '.$object->getDescription($cms_language).'<br />
 		<strong>'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_RESOURCE).' :</strong> '.$cms_language->getMessage($resourceStatus[$object->getValue("resourceUsage")]).'<br />
 		<strong>'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_EDITABLE).' :</strong> '.$cms_language->getMessage($adminEditableStatus[$object->getValue("admineditable")]).'<br />
@@ -262,7 +260,7 @@ if (is_object($object)) {
 			$label = new CMS_object_i18nm($field->getValue("labelID"));
 			$typeObject = $field->getTypeObject(true);
 			$content .= '
-			<li id="f'.$field->getID().'">
+			<li id="f'.$field->getID().'" alt="ID : '.$field->getID().'" title="ID : '.$field->getID().'">
 				<table border="0" cellpadding="2" cellspacing="2">
 				<tr>
 					<td width="150" class="'.$td_class.'">'.$label->getValue($cms_language->getCode());
@@ -344,7 +342,7 @@ if (is_object($object)) {
 			foreach ($RRSDefinitions as $RRSDefinition) {
 				$count++;
 				$td_class = ($count % 2 == 0) ? "admin_lightgreybg" : "admin_darkgreybg";
-				$content .= '<tr>
+				$content .= '<tr alt="ID : '.$RRSDefinition->getID().'" title="ID : '.$RRSDefinition->getID().'">
 					<td class="'.$td_class.'">'.$RRSDefinition->getLabel($cms_language).'</td>
 					<td class="'.$td_class.'">'.$RRSDefinition->getDescription($cms_language).'</td>
 					<td class="'.$td_class.'">
@@ -403,7 +401,7 @@ if (is_object($object)) {
 			foreach ($pluginDefinitions as $pluginDefinition) {
 				$count++;
 				$td_class = ($count % 2 == 0) ? "admin_lightgreybg" : "admin_darkgreybg";
-				$content .= '<tr>
+				$content .= '<tr alt="ID : '.$pluginDefinition->getID().'" title="ID : '.$pluginDefinition->getID().'">
 					<td class="'.$td_class.'">'.$pluginDefinition->getLabel($cms_language).'</td>
 					<td class="'.$td_class.'">'.$pluginDefinition->getDescription($cms_language).'</td>
 					<td class="'.$td_class.'">

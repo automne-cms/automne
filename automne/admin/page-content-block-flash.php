@@ -155,7 +155,7 @@ $jscontent = <<<END
 			items:[{
 	            xtype: 			'atmFileUploadField',
 	            emptyText: 		'{$cms_language->getJsMessage(MESSAGE_SELECT_FILE)}',
-	            fieldLabel: 	'* {$cms_language->getJsMessage(MESSAGE_FILE)}',
+	            fieldLabel: 	'<span class=\"atm-red\">*</span> {$cms_language->getJsMessage(MESSAGE_FILE)}',
 	            name: 			'filename',
 	            uploadCfg:	{
 					file_size_limit:		'{$maxFileSize}',

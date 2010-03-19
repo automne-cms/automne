@@ -560,14 +560,20 @@ $jscontent = <<<END
 		});
 		//display window
 		win.show(t);
+		return win;
 	}
 	
 	var actions = {
     	'validations' : function(t){
-    		openWindow(t, 'validations.php', {
+    		var win = openWindow(t, 'validations.php', {
 				module:		t.getAttributeNS('atm', 'module'),
 				editions:	t.getAttributeNS('atm', 'editions')
 			}, 800, 600);
+			win.on('close', function() {
+				//try to refresh validation panel
+				var validationPanel = Ext.getCmp('validationsPanel');
+				if (validationPanel) validationPanel.refresh();
+			});
     	},
 		'favorite' : function(t){
     		Automne.utils.getPageById(t.getAttributeNS('atm', 'page'));

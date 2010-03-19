@@ -617,11 +617,11 @@ class CMS_row extends CMS_grandFather
 				$rowId = 'row-'.$this->_tagID;
 				foreach($rowXML->childNodes as $rowChildNode) {
 					if (is_a($rowChildNode, 'DOMElement') && $rowChildNode->tagName != 'script' && $rowChildNode->tagName != 'p' && io::substr($rowChildNode->tagName, 0, 4) != 'atm-') {
-						if ($rowChildNode->hasAttribute('class')) {
+						/*if ($rowChildNode->hasAttribute('class')) {
 							$rowChildNode->setAttribute('class', $rowChildNode->getAttribute('class').' '.$rowId);
 						} else {
 							$rowChildNode->setAttribute('class',$rowId);
-						}
+						}*/
 						if ($rowChildNode->hasAttribute('id')) {
 							$elementId = $rowChildNode->getAttribute('id');
 						} else {

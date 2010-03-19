@@ -1,10 +1,23 @@
+<<<<<<< TREE
 <?php //Generated on Thu, 11 Mar 2010 16:28:31 +0100 by Automne (TM) 4.0.1
 require_once(dirname(__FILE__).'/../cms_rc_frontend.php');
+=======
+<?php //Generated on Fri, 19 Mar 2010 15:24:47 +0100 by Automne (TM) 4.0.1
+require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+>>>>>>> MERGE-SOURCE
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
+<<<<<<< TREE
 	CMS_view::redirect('http://test-folder/trunk/web/demo/33-nouveautes.php', true, 301);
+=======
+	CMS_view::redirect('http://127.0.0.1/web/demo/33-nouveautes.php', true, 301);
+>>>>>>> MERGE-SOURCE
 }
  ?>
+<<<<<<< TREE
 <?php require_once(PATH_REALROOT_FS.'/automne/classes/polymodFrontEnd.php');  ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";   ?>
+=======
+<?php require_once($_SERVER["DOCUMENT_ROOT"].'/automne/classes/polymodFrontEnd.php');  ?><?php /* Template [Intérieur Démo - pt58_Interieur.xml] */   ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";   ?>
+>>>>>>> MERGE-SOURCE
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -18,37 +31,58 @@ if (!isset($cms_page_included) && !$_POST && !$_GET) {
 
 	<?php echo CMS_view::getJavascript(array('','/js/CMS_functions.js','/js/modules/pmedia/jquery-1.2.6.min-demo.js','/js/modules/pmedia/pmedia-demo.js','/js/modules/pmedia/swfobject.js'));  ?>
 
+<<<<<<< TREE
 	<link rel="icon" type="image/x-icon" href="http://test-folder/trunk/favicon.ico" />
+=======
+	<link rel="icon" type="image/x-icon" href="http://127.0.0.1/favicon.ico" />
+>>>>>>> MERGE-SOURCE
 	<meta name="language" content="fr" />
 	<meta name="generator" content="Automne (TM)" />
+<<<<<<< TREE
 	<meta name="identifier-url" content="http://test-folder/trunk" />
 	<base href="http://test-folder/trunk/" />
+=======
+	<meta name="identifier-url" content="http://127.0.0.1" />
+
+>>>>>>> MERGE-SOURCE
 </head>
 <body>
 	<div id="main">
 		<div id="container">
 			<div id="header">
 				
+<<<<<<< TREE
 							<a id="lienAccueil" href="http://test-folder/trunk/web/demo/2-accueil.php" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
+=======
+							<a id="lienAccueil" href="http://127.0.0.1/web/demo/2-accueil.php" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
+>>>>>>> MERGE-SOURCE
 						
 			</div>
 			<div id="backgroundBottomContainer">
 				<div id="menuLeft">
+<<<<<<< TREE
 					<ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_open "><a class="CMS_lvl2" href="http://test-folder/trunk/web/demo/3-presentation.php">Présentation</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://test-folder/trunk/web/demo/29-automne-v4.php">Automne</a></li><li class="CMS_lvl3 CMS_nosub CMS_current"><a class="CMS_lvl3" href="http://test-folder/trunk/web/demo/33-nouveautes.php">Nouveautés</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://test-folder/trunk/web/demo/30-notions-essentielles.php">Pré-requis</a></li></ul></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://test-folder/trunk/web/demo/24-documentation.php">Fonctionnalités</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://test-folder/trunk/web/demo/31-exemples-de-modules.php">Exemples de modules</a></li></ul>
+=======
+					<ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_open "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/3-presentation.php">Présentation</a><ul class="CMS_lvl3"><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/29-automne-v4.php">Automne</a></li><li class="CMS_lvl3 CMS_nosub CMS_current"><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/33-nouveautes.php">Nouveautés</a></li><li class="CMS_lvl3 CMS_nosub "><a class="CMS_lvl3" href="http://127.0.0.1/web/demo/30-notions-essentielles.php">Pré-requis</a></li></ul></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/31-exemples-de-modules.php">Exemples de modules</a></li></ul>
+>>>>>>> MERGE-SOURCE
 				</div>
 				<div id="content" class="page33">
 					<div id="breadcrumbs">
+<<<<<<< TREE
 						<a href="http://test-folder/trunk/web/demo/2-accueil.php">Accueil</a> &gt; <a href="http://test-folder/trunk/web/demo/3-presentation.php">Présentation</a> &gt; 
+=======
+						<a href="http://127.0.0.1/web/demo/2-accueil.php">Accueil</a> &gt; <a href="http://127.0.0.1/web/demo/3-presentation.php">Présentation</a> &gt; 
+>>>>>>> MERGE-SOURCE
 					</div>
 					<div id="title">
 						<h1>Nouveautés</h1>
 					</div>
 					<atm-toc />
-					
+					<?php /* Start clientspace [first] */   ?><?php /* Start row [200 Texte - r44_200_Texte.xml] */   ?>
 
 <div class="text"><h2>Voici une liste de quelques unes des nouveaut&eacute;s d'Automne 4 :</h2> <ul>     <li style="text-align: left;">Refonte de l'interface administrateur, <strong>plus ergonomique, plus intuitive, plus r&eacute;active.</strong></li>     <li style="text-align: left;">Votre site n'est plus dissoci&eacute; de l'interface d'administration.</li>     <li style="text-align: left;">Vous saisissez et organisez votre contenu simplement, rapidement, sans aucune connaissance technique.</li>     <li style="text-align: left;"><strong>Aide contextuelle</strong> permettant une prise en main encore plus simple.</li>     <li style="text-align: left;">De <strong>meilleures performances</strong> de l'outil.</li>     <li style="text-align: left;">Bas&eacute; sur les technologies du <strong>web 2.0, PHP5, Ajax.</strong></li>     <li style="text-align: left;">Gestion des <strong>langues internationales</strong> - Gestion des alphabets particuliers.</li>     <li style="text-align: left;">Fonction de recherche<strong> Full Text</strong> dans les contenus.</li>     <li style="text-align: left;">...</li> </ul></div>
 
-
+<?php /* End row [200 Texte - r44_200_Texte.xml] */   ?><?php /* Start row [200 Texte - r44_200_Texte.xml] */   ?>
 
 <div class="text"><p style="text-align: left;"><?php $parameters = array (
   'itemID' => 35,
@@ -254,7 +288,7 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 }
   ?></p></div>
 
-
+<?php /* End row [200 Texte - r44_200_Texte.xml] */   ?><?php /* End clientspace [first] */   ?>
 					<a href="#header" id="top" title="haut de la page">Haut</a>
 				</div>
 				<div class="spacer"></div>
@@ -264,7 +298,11 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 	<div id="footer">
 		<div id="menuBottom">
 			<ul>
+<<<<<<< TREE
 				<li><a href="http://test-folder/trunk/web/demo/8-plan-du-site.php">Plan du site</a></li><li><a href="http://test-folder/trunk/web/demo/9-contact.php">Contact</a></li>
+=======
+				<li><a href="http://127.0.0.1/web/demo/8-plan-du-site.php">Plan du site</a></li><li><a href="http://127.0.0.1/web/demo/9-contact.php">Contact</a></li>
+>>>>>>> MERGE-SOURCE
 			</ul>
 			<div class="spacer"></div>
 		</div>

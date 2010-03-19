@@ -26,6 +26,14 @@ define("ENABLE_HTML_COMPRESSION", false);
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 
 define('MESSAGE_PAGE_NO_LOGS', 1608);
+define("MESSAGE_PAGE_NO_SERVER_RIGHTS",748);
+
+//CHECKS user has admin clearance
+if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
+	CMS_grandFather::raiseError('User has no administration rights');
+	echo $cms_language->getMessage(MESSAGE_PAGE_NO_SERVER_RIGHTS);
+	exit;
+}
 
 $date = sensitiveIO::request('date');
 
