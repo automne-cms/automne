@@ -57,6 +57,7 @@ define("MESSAGE_PAGE_FORCED_UPDATE_DESC",1615);
 define("MESSAGE_PAGE_FORCED_UPDATE",1616);
 define("MESSAGE_PAGE_LAUNCH_UPDATE",1617);
 define("MESSAGE_PAGE_UPDATE_REPORT",1618);
+define("MESSAGE_PAGE_ABOUT_AUTOMNE", 644);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -283,6 +284,7 @@ $filePath = $fileDatas['filepath'];
 $fileDatas = sensitiveIO::jsonEncode($fileDatas);
 
 $updatecontent = '
+<div id="updatePanelAutomneHelp" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_ABOUT_AUTOMNE).'"></div>
 <h1>'.$cms_language->getMessage(MESSAGE_PAGE_AUTOMNE_UPDATES).'</h1>
 <p>'.$cms_language->getMessage(MESSAGE_PAGE_AUTOMNE_UPDATES_DESC).'</p><br />
 <div id="updateForm"></div><br />
@@ -398,6 +400,7 @@ $jscontent = <<<END
 			xtype:			'datefield',
 			format:			'{$dateFormat}',
 			width:			100,
+			maxValue:		new Date(),
 			anchor:			false,
 			listeners:		{'select':function(field){
 				if (field.isValid()) {
@@ -412,8 +415,13 @@ $jscontent = <<<END
 								serverErrorsDetails.render('serverErrorsDetails');
 							}
 							serverErrorsDetails.setWidth(Ext.getCmp('serverErrors').getWidth() - 20);
-							serverErrorsDetails.setHeight(Ext.getCmp('serverErrors').getHeight() - 85);
-							Ext.get('serverErrorsDetailsText').dom.innerHTML = response.responseText;
+							if (Ext.isIE) {
+								serverErrorsDetails.setHeight(Ext.getCmp('serverErrors').getHeight() - 95);
+								Ext.get('serverErrorsDetailsText').dom.innerText = response.responseText;
+							} else {
+								serverErrorsDetails.setHeight(Ext.getCmp('serverErrors').getHeight() - 85);
+								Ext.get('serverErrorsDetailsText').update(response.responseText);
+							}
 						},
 						callBackScope:		this
 					});
@@ -480,8 +488,12 @@ $jscontent = <<<END
 							if (!updateDetails.rendered) {
 								updateDetails.render('updateDetails');
 							}
-							updateDetails.setWidth(Ext.getCmp('updatesPanel').getWidth() - 18);
-							updateDetails.setHeight(Ext.getCmp('updatesPanel').getHeight() - 225);
+							updateDetails.setWidth(Ext.getCmp('updatesPanel').getWidth() - 22);
+							if (Ext.isIE) {
+								updateDetails.setHeight(Ext.getCmp('updatesPanel').getHeight() - 235);
+							} else {
+								updateDetails.setHeight(Ext.getCmp('updatesPanel').getHeight() - 225);
+							}
 							Ext.get('updateDetailsText').update(response.responseText, true);
 						},
 						callBackScope:		this
@@ -525,8 +537,12 @@ $jscontent = <<<END
 								if (!updateDetails.rendered) {
 									updateDetails.render('updateDetails');
 								}
-								updateDetails.setWidth(Ext.getCmp('updatesPanel').getWidth() - 20);
-								updateDetails.setHeight(Ext.getCmp('updatesPanel').getHeight() - 225);
+								updateDetails.setWidth(Ext.getCmp('updatesPanel').getWidth() - 22);
+								if (Ext.isIE) {
+									updateDetails.setHeight(Ext.getCmp('updatesPanel').getHeight() - 235);
+								} else {
+									updateDetails.setHeight(Ext.getCmp('updatesPanel').getHeight() - 225);
+								}
 								Ext.get('updateDetailsText').update(response.responseText, true);
 							},
 							callBackScope:		this
@@ -563,11 +579,19 @@ $jscontent = <<<END
 			'resize': function() {
 				if (serverErrorsDetails.rendered) {
 					serverErrorsDetails.setWidth(Ext.getCmp('serverErrors').getWidth() - 20);
-					serverErrorsDetails.setHeight(Ext.getCmp('serverErrors').getHeight() - 85);
+					if (Ext.isIE) {
+						serverErrorsDetails.setHeight(Ext.getCmp('serverErrors').getHeight() - 95);
+					} else {
+						serverErrorsDetails.setHeight(Ext.getCmp('serverErrors').getHeight() - 85);
+					}
 				}
 				if (updateDetails.rendered) {
-					updateDetails.setWidth(Ext.getCmp('updatesPanel').getWidth() - 20);
-					updateDetails.setHeight(Ext.getCmp('updatesPanel').getHeight() - 225);
+					updateDetails.setWidth(Ext.getCmp('updatesPanel').getWidth() - 22);
+					if (Ext.isIE) {
+						updateDetails.setHeight(Ext.getCmp('updatesPanel').getHeight() - 235);
+					} else {
+						updateDetails.setHeight(Ext.getCmp('updatesPanel').getHeight() - 225);
+					}
 				}
 			}
 		},
@@ -627,6 +651,25 @@ $jscontent = <<<END
 			listeners:			{'activate':function(){
 				if (!updateForm.rendered) {
 					updateForm.render('updateForm');
+					Ext.get('updatePanelAutomneHelp').addClassOnOver('over');
+					Ext.get('updatePanelAutomneHelp').on('mousedown', function(){
+						//create window element
+						var win = new Automne.Window({
+							id:				'atmHelpWindow',
+							width:			515,
+							height:			450,
+							resizable:		false,
+							maximizable:	false,
+							autoLoad:		{
+								url:		'help.php',
+								params:		{winId:'atmHelpWindow'},
+								nocache:	true,
+								scope:		this
+							}
+						});
+						//display window
+						win.show(Ext.get('updatePanelAutomneHelp'));
+					}, this);
 				}
 			}, scope:this}
 		}]

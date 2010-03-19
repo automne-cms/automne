@@ -68,8 +68,10 @@ Automne.utils = {
 			}
 		});
 		//try to refresh validation panel
-		var validationPanel = Ext.getCmp('validationsPanel');
-		if (validationPanel) validationPanel.refresh();
+		if (!Ext.getCmp('validationsWindow')) {
+			var validationPanel = Ext.getCmp('validationsPanel');
+			if (validationPanel) validationPanel.refresh();
+		}
 		pr('switchStatus : '+ statusId +' : '+ count +' statuses switched');
 	},
 	//remove a resource anywhere in the view.
@@ -103,6 +105,11 @@ Automne.utils = {
 			});
 			//display window
 			win.show(el);
+			win.on('close', function() {
+				//try to refresh validation panel
+				var validationPanel = Ext.getCmp('validationsPanel');
+				if (validationPanel) validationPanel.refresh();
+			});
 			return true;
 		}
 		//check if menu exists, else create it

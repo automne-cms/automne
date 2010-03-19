@@ -153,8 +153,22 @@ function Ok()
 	//check if we are in step 4
 	if (GetE('codeSent')) {
 		var formCode = GetE('codeSent').value;
-		//remove old form code
-		FCK.Selection.Delete();
+		//select form
+		var forms = FCK.EditorDocument.getElementsByTagName('FORM');
+		if (forms.length && forms.length == 1) {
+			//select form
+			FCK.Selection.SelectNode(forms[0]);
+		}
+		
+		//remove old selection code
+		if (FCK.EditorWindow.getSelection) { //GECKO
+			oContent = FCK.EditorWindow.getSelection();
+		} else { //IE
+			var oRange = FCK.EditorDocument.selection.createRange() ;
+			oContent = oRange.text;
+		}
+		delete(oContent);
+		
 		//then paste the new one
 		FCK.InsertHtml(formCode);
 		//then close windows

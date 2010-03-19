@@ -1,3 +1,7 @@
+v1.32
+[BUG] : Correct some bugs with IE and with form edition
+[REFACTOR] : Add max size on file upload
+
 v1.31
 [BUG] : In fields labels with accentued caracters
 [REFACTOR] : UTF-8 support
