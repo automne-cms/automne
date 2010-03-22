@@ -490,18 +490,21 @@ class CMS_patch extends CMS_grandFather
 						break;
 						case "htaccess":
 							$installParams[1] = (io::substr($installParams[1], -1) == '/') ? io::substr($installParams[1], 0, -1) : $installParams[1];
-							foreach(glob(PATH_REALROOT_FS.$installParams[1]) as $path) {
-								if (is_dir($path) && CMS_file::makeWritable($path)) {
-									if (CMS_file::copyTo(PATH_HTACCESS_FS.'/htaccess_'.$installParams[2], $path.'/.htaccess')) {
-										CMS_file::chmodFile(FILES_CHMOD, $path.'/.htaccess');
-										$this->_report('File '.$path.'/.htaccess ('.$installParams[2].') successfully writen');
+							$pathes = glob(PATH_REALROOT_FS.$installParams[1]);
+							if ($pathes) {
+								foreach($pathes as $path) {
+									if (is_dir($path) && CMS_file::makeWritable($path)) {
+										if (CMS_file::copyTo(PATH_HTACCESS_FS.'/htaccess_'.$installParams[2], $path.'/.htaccess')) {
+											CMS_file::chmodFile(FILES_CHMOD, $path.'/.htaccess');
+											$this->_report('File '.$path.'/.htaccess ('.$installParams[2].') successfully writen');
+										} else {
+											$this->_report('Error during operation on '.$path.'/.htaccess. Can\'t write file.<br />', true);
+											if ($stopOnErrors) return;
+										}
 									} else {
-										$this->_report('Error during operation on '.$path.'/.htaccess. Can\'t write file.<br />', true);
+										$this->_report('Error during operation. '.$path.' must be a writable directory.<br />',true);
 										if ($stopOnErrors) return;
 									}
-								} else {
-									$this->_report('Error during operation. '.$path.' must be a writable directory.<br />',true);
-									if ($stopOnErrors) return;
 								}
 							}
 						break;
