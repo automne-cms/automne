@@ -647,7 +647,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 				'cms_poly_module_structure' 		=> PATH_MODULES_FS.'/polymod/poly_module_structure.php',
 				'cms_poly_rss_definitions' 			=> PATH_MODULES_FS.'/polymod/poly_rss_definition.php',
 				'cms_block_polymod' 				=> PATH_MODULES_FS.'/polymod/block.php',
-				'cms_poly_definition_functions' 	=> PATH_MODULES_FS.'/polymod/poly_definition_funtions.php',
+				'cms_poly_definition_functions' 	=> PATH_MODULES_FS.'/polymod/poly_definition_functions.php',
 			);
 		}
 		$file = '';
