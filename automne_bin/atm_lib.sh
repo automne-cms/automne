@@ -11,7 +11,7 @@
 # | Author: Antoine Cezar <antoine.cezar@ws-interactive.fr>              |
 # +----------------------------------------------------------------------+
 #
-# $Id: atm_lib.sh,v 1.3 2009/10/28 16:29:22 sebastien Exp $
+# $Id: $
 
 #
 # Automne shell commands
@@ -60,7 +60,8 @@ unset ATM_SETUP_CALLS
 function atmCheckings {
     echo -n 'Checkings: '
     if [ ! -d automne ] || [ ! -f config.php ]; then
-        echo "You must be at the root of an Automne website to launch this command"
+        echo "Missing automne directory or config.php file."
+        echo "You must be at the root of an Automne website to launch this command."
         return 1
     fi
 
@@ -68,8 +69,10 @@ function atmCheckings {
 }
 
 function atmSetConstants {
-    has_errors=0
-    ATM_DEBUG=1
+    HAS_ERRORS=0
+
+    atmAsk "Verbose [y|N]?" "n"
+    ATM_DEBUG=$?
 
     echo "Setting up constants:"
 
@@ -77,10 +80,10 @@ function atmSetConstants {
     ATM_BACKUP_FILE_EXTENSION="tgz"
     ATM_SQL_DUMP_FILE_PREFIX="dump_"
 
-    ATM_DB_HOST=`grep 'APPLICATION_DB_HOST' config.php      |sed 's/.*APPLICATION_DB_HOST".*"\(.*\)".*/\1/g'`
-    ATM_DB_NAME=`grep 'APPLICATION_DB_NAME' config.php      |sed 's/.*APPLICATION_DB_NAME".*"\(.*\)".*/\1/g'`
-    ATM_DB_USER=`grep 'APPLICATION_DB_USER' config.php      |sed 's/.*APPLICATION_DB_USER".*"\(.*\)".*/\1/g'`
-    ATM_DB_PASS=`grep 'APPLICATION_DB_PASSWORD' config.php  |sed 's/.*APPLICATION_DB_PASSWORD".*"\(.*\)".*/\1/g'`
+    ATM_DB_HOST=`grep 'APPLICATION_DB_HOST' config.php     | sed 's/.*APPLICATION_DB_HOST".*"\(.*\)".*/\1/g'`
+    ATM_DB_NAME=`grep 'APPLICATION_DB_NAME' config.php     | sed 's/.*APPLICATION_DB_NAME".*"\(.*\)".*/\1/g'`
+    ATM_DB_USER=`grep 'APPLICATION_DB_USER' config.php     | sed 's/.*APPLICATION_DB_USER".*"\(.*\)".*/\1/g'`
+    ATM_DB_PASS=`grep 'APPLICATION_DB_PASSWORD' config.php | sed 's/.*APPLICATION_DB_PASSWORD".*"\(.*\)".*/\1/g'`
 
     if [ "$ATM_DB_HOST" != "" ]; then
         echo "  ATM_DB_HOST: Ok"
@@ -93,24 +96,24 @@ function atmSetConstants {
         echo "  ATM_DB_NAME: Ok"
     else
         echo "  ATM_DB_HOST: NOT FOUND"
-        has_errors=1
+        HAS_ERRORS=1
     fi
 
     if [ "$ATM_DB_USER" != "" ]; then
         echo "  ATM_DB_USER: Ok"
     else
         echo "  ATM_DB_USER: NOT FOUND"
-        has_errors=1
+        HAS_ERRORS=1
     fi
 
     if [ "$ATM_DB_PASS" != "" ]; then
         echo "  ATM_DB_PASS: Ok"
     else
         echo "  ATM_DB_PASS: NOT FOUND"
-        has_errors=1
+        HAS_ERRORS=1
     fi
 
-    return $has_errors
+    return $HAS_ERRORS
 }
 
 function atmSetup {
@@ -160,6 +163,9 @@ function atmSqlBackup {
 
     ATM_SQL_DUMP_FILE="sql/$ATM_SQL_DUMP_FILE_PREFIX$ATM_DATE.sql"
     OPTIONS="--add-drop-table --complete-insert $*"
+    if [ $ATM_DEBUG -eq 1 ]; then
+        OPTIONS="$OPTIONS -v"
+    fi
 
     echo "SQL dump:"
     if [ ! -f "$ATM_SQL_DUMP_FILE" ]; then
@@ -206,6 +212,9 @@ function atmSqlRestore {
     atmSetup || return 1
 
     OPTIONS="$*"
+    if [ $ATM_DEBUG -eq 1 ]; then
+        OPTIONS="$OPTIONS -v"
+    fi
 
     echo "SQL load: "
     echo "Loading database"
@@ -241,37 +250,53 @@ function atmBackup {
         ATM_BACKUP_FILE="$ATM_BACKUP_FILE_PREFIX$ATM_DATE.$ATM_BACKUP_FILE_EXTENSION"
     fi
 
-	EXCLUDE_OPTIONS="--exclude=./.htpasswd"
-    EXCLUDE_OPTIONS="$EXCLUDE_OPTIONS --exclude=./$ATM_BACKUP_FILE_PREFIX*.tar.gz"
-	EXCLUDE_OPTIONS="$EXCLUDE_OPTIONS --exclude=./$ATM_BACKUP_FILE_PREFIX*.$ATM_BACKUP_FILE_EXTENSION"
-	EXCLUDE_OPTIONS="$EXCLUDE_OPTIONS --exclude=./automne_modules_files/ase/databases/*"
+    ATM_BACKUP_EXCLUDE_FILE="ATM_BACKUP_EXCLUDE_FILE_$ATM_DATE.tmp"
+    echo "./$ATM_BACKUP_EXCLUDE_FILE" > "$ATM_BACKUP_EXCLUDE_FILE"
+    if [ $? -ne 0 ]; then
+        echo "ATM_BACKUP_EXCLUDE_FILE can not be created."
+        atmTearDown
+        return 1
+    fi
+    echo "./.htpasswd" >> "$ATM_BACKUP_EXCLUDE_FILE"
+    echo "./$ATM_BACKUP_FILE_PREFIX*.tar.gz" >> "$ATM_BACKUP_EXCLUDE_FILE"
+    echo "./$ATM_BACKUP_FILE_PREFIX*.$ATM_BACKUP_FILE_EXTENSION" >> "$ATM_BACKUP_EXCLUDE_FILE"
+    echo "./automne_modules_files/ase/databases/*" >> "$ATM_BACKUP_EXCLUDE_FILE"
 
-	EXCLUDE_LIST='./automne/cache/ ./automne_linx_files/ ./automne_modules_files/ ./automne/tmp/ ./automne/upload/ ./html/ ./web/'
+    #excludes?
+    ATM_BACKUP_EXCLUDE_LIST='./automne/cache/ ./automne_linx_files/ ./automne_modules_files/ ./automne/tmp/ ./automne/upload/ ./html/ ./web/'
 
-    for ITEM in $EXCLUDE_LIST; do
+    for ITEM in $ATM_BACKUP_EXCLUDE_LIST; do
         atmAsk "Backup $ITEM [Y|n]?" "y"
         if [ $? -ne 1 ]; then
             if [ -f "$ITEM" ]; then
-                EXCLUDE_OPTIONS="$EXCLUDE_OPTIONS --exclude=$ITEM"
-            elif [ -d "$ITEM" ] && [ ]; then
-                if [ $ATM_DEBUG ]; then
+                echo "$ITEM" >> "$ATM_BACKUP_EXCLUDE_FILE"
+            elif [ -d "$ITEM" ]; then
+                if [ $ATM_DEBUG -eq 1 ]; then
                     echo "Excluding files for $ITEM"
                 fi
                 for FILE in `find $ITEM -type f -print`; do
-                    if [ $ATM_DEBUG ]; then
+                    if [ $ATM_DEBUG -eq 1 ]; then
                         echo "    Excluding $FILE"
                     fi
-                    EXCLUDE_OPTIONS="$EXCLUDE_OPTIONS --exclude=$FILE"
+                    echo "$FILE" >> "$ATM_BACKUP_EXCLUDE_FILE"
                 done
             fi
         fi
     done
 
-    OPTIONS="-cz $EXCLUDE_OPTIONS $*"
+    OPTIONS="-cz --exclude-from=$ATM_BACKUP_EXCLUDE_FILE $*"
+    if [ $ATM_DEBUG -eq 1 ]; then
+        OPTIONS="$OPTIONS -v"
+    fi
 
     if [ ! -f "$ATM_BACKUP_FILE" ]; then
         echo "Creating archive"
         tar $* $OPTIONS -f "$ATM_BACKUP_FILE" .
+
+        if [ -f "$ATM_BACKUP_EXCLUDE_FILE" ]; then
+            rm $ATM_BACKUP_EXCLUDE_FILE
+        fi
+        unset ATM_BACKUP_EXCLUDE_FILE
 
         if [ $? -eq 0 ]; then
             echo "SUCCESS: File $ATM_BACKUP_FILE"
@@ -352,14 +377,14 @@ function atmRestore {
     for ITEM in `echo "$ATM_RESTORE_EXCLUDE_LIST"`; do
         if [ `expr match "$ITEM" '.*/$'` -ne 0 ]; then
             ITEM_LIST=`echo "$ATM_RESTORE_FILE_LIST" | grep "^$ITEM.*" | grep -v ".*/$"`
-            if [ $ATM_DEBUG ]; then
+            if [ $ATM_DEBUG -eq 1 ]; then
                 echo "Excluding files for $ITEM"
                 echo "$ITEM_LIST"
                 echo ""
             fi
             echo "$ITEM_LIST" >> "$ATM_RESTORE_EXCLUDE_FILE"
         else
-            if [ $ATM_DEBUG ]; then
+            if [ $ATM_DEBUG -eq 1 ]; then
                 echo "Excluding $ITEM"
             fi
             echo "$ITEM" >> "$ATM_RESTORE_EXCLUDE_FILE"
@@ -368,16 +393,20 @@ function atmRestore {
     unset ATM_RESTORE_FILE_LIST
 
     OPTIONS="-x -z --exclude-from=$ATM_RESTORE_EXCLUDE_FILE $*"
+    if [ $ATM_DEBUG -eq 1 ]; then
+        OPTIONS="$OPTIONS -v"
+    fi
 
     echo "Extracting archive"
     tar $OPTIONS -f "$ATM_RESTORE_FILE" .
+    SUCCESS=$?
 
     if [ -f "$ATM_RESTORE_EXCLUDE_FILE" ]; then
         rm $ATM_RESTORE_EXCLUDE_FILE
     fi
     unset ATM_RESTORE_EXCLUDE_FILE
 
-    if [ $? -ne 0 ]; then
+    if [ $SUCCESS -ne 0 ]; then
         atmTearDown
         return 1
     fi
@@ -419,7 +448,7 @@ function atmAsk {
 }
 
 if [ -f "./atm_mkpatch.sh" ]; then
-	. "./atm_mkpatch.sh"
+    . "./atm_mkpatch.sh"
 fi
 
 function atmHelp {
@@ -456,5 +485,3 @@ atmRestore file [options]
     options    Any tar option. See the tar command help for more informations.
 "
 }
-
-atmHelp

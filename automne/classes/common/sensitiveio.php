@@ -787,10 +787,10 @@ class SensitiveIO extends CMS_grandfather
 	  * @access private
 	  */
 	function isUTF8($string) {
-		if (function_exists('mb_check_encoding')) {
-			return mb_check_encoding($string,'UTF-8');
+		if (function_exists('mb_check_encoding') && version_compare(PHP_VERSION, "5.2.6") >= 0) {
+			return mb_check_encoding($string, 'UTF-8');
 		}
-		return preg_match('%(?:
+		return (bool) preg_match('%(?:
 		[\xC2-\xDF][\x80-\xBF]        		# non-overlong 2-byte
 		|\xE0[\xA0-\xBF][\x80-\xBF]			# excluding overlongs
 		|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}	# straight 3-byte
