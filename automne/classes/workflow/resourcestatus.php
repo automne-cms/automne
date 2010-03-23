@@ -848,11 +848,23 @@ class CMS_resourceStatus extends CMS_grandFather {
 		} else {
 			$lock = '';
 		}
+		$draft = '';
+		if ($this->getDraft()) {
+            global $cms_language;
+            $label .= ($img_status != 'draft') ? ' - '.$cms_language->getMessage(self::MESSAGE_STATUS_DRAFT) : $cms_language->getMessage(self::MESSAGE_STATUS_DRAFT);
+            if ($img_status != 'draft') {
+                if ($tiny) {
+                    $draft = '<img src="'.PATH_ADMIN_IMAGES_WR.'/draft.gif" class="atm-status-draft" />';
+                } else {
+                    $draft = '<img src="'.PATH_ADMIN_IMAGES_WR.'/draft.gif" class="atm-status-draft" />';
+                }
+            }
+        }
 		$class = ($tiny) ? "atm-status-tiny" : "atm-status";
 		//create a unique class name for this status to allow search for
 		$uniqueClassName = ($modCodeName && $resourceID) ? $this->getStatusId($modCodeName, $resourceID) : '';
 		$qtip = ($withQTip) ? ' ext:qtip="'.$label.'"' : '';
-		$html = '<span class="'.$class.' '.$uniqueClassName.'"'.$onclick.'>'.$lock.'<img'.$qtip.' src="'.PATH_ADMIN_IMAGES_WR.$img_dir."/".$img_status.'.gif" />';
+		$html = '<span class="'.$class.' '.$uniqueClassName.'"'.$onclick.'>'.$lock.$draft.'<img'.$qtip.' src="'.PATH_ADMIN_IMAGES_WR.$img_dir."/".$img_status.'.gif" />';
 		if (isset($img_siblings)) {
 			$html .= '<img src="'.PATH_ADMIN_IMAGES_WR.$img_dir."/".$img_siblings.'.gif" class="atm-status-siblings" />';
 		}
@@ -924,9 +936,12 @@ class CMS_resourceStatus extends CMS_grandFather {
 				$label .= ' - '.$language->getMessage(self::MESSAGE_STATUS_LOCKED);
 			}
 		}
-		if ($this->getDraft() && $img_status == 'rond-o') {
+		if ($this->getDraft()) {
+            $label .= ($img_status != 'draft') ? ' - '.$language->getMessage(self::MESSAGE_STATUS_DRAFT) : $language->getMessage(self::MESSAGE_STATUS_DRAFT);
+        }
+		/*if ($this->getDraft() && $img_status == 'rond-o') {
 			$label .= $language->getMessage(self::MESSAGE_STATUS_DRAFT);
-		}
+		}*/
 		return $label;
 	}
 	
