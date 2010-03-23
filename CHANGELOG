@@ -1,3 +1,5 @@
+V4.0.2 (in progress)
+
 V4.0.1 (19/03/10)
 [BUG] : Corrected bugs : 399, 401, 286, 265, 268, 283, 284, 302, 282, 280, 296, 304 (see http://www.automne.ws/bug/)
 [BUG] : In the cms_forms module with IE (form duplication)
