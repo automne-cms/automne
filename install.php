@@ -1,18 +1,18 @@
 <?php
 // +----------------------------------------------------------------------+
-// | Automne (TM)														  |
+// | Automne (TM)													 |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 2000-2010 WS Interactive								  |
+// | Copyright (c) 2000-2010 WS Interactive							 |
 // +----------------------------------------------------------------------+
-// | Automne is subject to version 2.0 or above of the GPL license.		  |
-// | The license text is bundled with this package in the file			  |
-// | LICENSE-GPL, and is available through the world-wide-web at		  |
-// | http://www.gnu.org/copyleft/gpl.html.								  |
+// | Automne is subject to version 2.0 or above of the GPL license.		 |
+// | The license text is bundled with this package in the file			 |
+// | LICENSE-GPL, and is available through the world-wide-web at		 |
+// | http://www.gnu.org/copyleft/gpl.html.							 |
 // +----------------------------------------------------------------------+
-// | Author: Sebastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// | Author: Sebastien Pauchet <sebastien.pauchet@ws-interactive.fr>     |
 // +----------------------------------------------------------------------+
 //
-// $Id: install.php,v 1.30 2010/03/18 16:11:12 sebastien Exp $
+// $Id: install.php,v 1.31 2010/03/24 08:52:45 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -844,4 +844,1665 @@ if (!isset($_GET['file'])) {
 					<label for="dbhost">'.$step2_DB_host.' * : <input id="dbhost" type="text" name="dbhost" value="'.$dbhostValue.'" /></label><br />
 					<label for="dbname">'.$step2_DB_name.' * : <input id="dbname" type="text" name="dbname" value="'.htmlspecialchars(@$_POST["dbname"]).'" /></label><br />
 					<label for="dbuser">'.$step2_DB_user.' * : <input id="dbuser" type="text" name="dbuser" value="'.htmlspecialchars(@$_POST["dbuser"]).'" /></label><br />
-					<label for="db
+					<label for="dbpass">'.$step2_DB_password.' : <input id="dbpass" type="password" name="dbpass" value="'.htmlspecialchars(@$_POST["dbpass"]).'" /></label><br />
+					<label for="dbpass2">'.$step2_DB_password_confirm.' : <input id="dbpass2" type="password" name="dbpass2" value="'.htmlspecialchars(@$_POST["dbpass2"]).'" /></label><br />
+					<input type="submit" class="submit" value="'.$label_next.'" />
+				</div>
+			</form>
+			';
+		} else {
+			//create config file with valid DB infos
+			$configFile = new CMS_file($_SERVER['DOCUMENT_ROOT']."/config.php");
+			$configFile->setContent('<?php
+/*
+ * AUTOMNE CONFIGURATION FILE
+ * All default configurations are in file /cms_rc.php
+ * If you need to modify any configuration constants of the the cms_rc.php
+ * simply define the constant and it\'s new value in this file
+ */
+
+define("APPLICATION_DB_HOST", "'.$_POST["dbhost"].'");
+define("APPLICATION_DB_NAME", "'.$_POST["dbname"].'");
+define("APPLICATION_DB_USER", "'.$_POST["dbuser"].'");
+define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
+
+//To use Google Map, uncomment and add your Google map Key
+//define("GOOGLE_MAPS_KEY", \'YOUR_GGOGLE_MAP_KEY_HERE\');
+?>');
+			$configFile->writeToPersistence();
+			
+			//reload page (to include config.php file) and go to next step
+			header("Location: ".$_SERVER["PHP_SELF"]."?step=3&install_language=".$install_language);
+			exit;
+		}
+	}
+	
+	// +----------------------------------------------------------------------+
+	// | STEP 3 : Database Creation                                           |
+	// +----------------------------------------------------------------------+
+	
+	if ($step == 3) {
+		$error ='';
+		
+		//check for errors
+		if ($cms_action == "dbscripts") {
+			//Params
+			if (!isset($_POST["script"]) || !$_POST["script"]) {
+				$error .= $error_step3_must_choose_option.'<br />';
+			}
+			if (isset($_POST["script"]) && $_POST["script"] == 3) {
+				//keep current DB so go to next step
+				$step = 4;
+			}
+		}
+		
+		//check if tables allready exists
+		$exists = false;
+		$sql = "
+			show tables
+			";
+		$q = new CMS_query($sql);
+		if ($q->getNumRows()) {
+			//tables exists then scripts are allready executed so skip to next step
+			$exists = true;
+		}
+		
+		if ($error || $cms_action != "dbscripts") {
+			$title = '<h1>'.$step3_title.'</h1>';
+			if ($error) {
+				$content .= '<span class="error">'.$error.'</span><br />';
+			}
+			$content .= '
+			<form action="'.$_SERVER["PHP_SELF"].'" method="post" onsubmit="check();">
+				<input type="hidden" name="step" value="3" />
+				<input type="hidden" name="cms_action" value="dbscripts" />
+				<input type="hidden" name="install_language" value="'.$install_language.'" />
+				<label for="demo"><input id="demo" type="radio" name="script" value="1" /> '.$step3_Demo.'</label><br />
+				<label for="empty"><input id="empty" type="radio" name="script" value="2" /> '.$step3_Empty.'</label><br />';
+				if ($exists === true) {
+					$content .= '<label for="skip"><input id="skip" type="radio" name="script" value="3" /> '.$step3_skip.'</label><br />';
+				}
+			$content .= '
+				<input type="submit" class="submit" value="'.$label_next.'" />
+			</form>
+			';
+		} elseif ($step == 3) {
+			//load DB scripts
+			
+			//1- DB structure
+			$structureScript = $_SERVER['DOCUMENT_ROOT']."/sql/automne4.sql";
+			if (file_exists($structureScript) && CMS_patch::executeSqlScript($structureScript, true)) {
+				CMS_patch::executeSqlScript($structureScript);
+			} else {
+				die(sprintf($error_step3_SQL_script,$structureScript));
+			}
+			
+			//2- DB messages
+			//get all SQL files of the message dir
+			$files = glob($_SERVER['DOCUMENT_ROOT']."/sql/messages/*/*.sql", GLOB_NOSORT);
+			if (is_array($files)) {
+				foreach($files as $file) {
+					if (file_exists($file) && CMS_patch::executeSqlScript($file, true)) {
+						CMS_patch::executeSqlScript($file);
+					} else {
+						die(sprintf($error_step3_SQL_script,$file));
+					}
+				}
+			} else {
+				die(sprintf($error_step3_SQL_script, $_SERVER['DOCUMENT_ROOT']."/sql/messages/*/*.sql"));
+			}
+			if (isset($_POST["script"]) && $_POST["script"] == 2) {
+				//3- Clean Automne DB
+				$scratchScript = $_SERVER['DOCUMENT_ROOT']."/sql/automne4-scratch.sql";
+				if (file_exists($scratchScript) && CMS_patch::executeSqlScript($scratchScript, true)) {
+					CMS_patch::executeSqlScript($scratchScript);
+					//then remove folder /web/fr
+					if (is_dir($_SERVER['DOCUMENT_ROOT'].'/web/fr')) {
+						CMS_file::deltree($_SERVER['DOCUMENT_ROOT'].'/web/fr', true);
+					}
+				} else {
+					die(sprintf($error_step3_SQL_script,$scratchScript));
+				}
+			}
+			
+			//go to next step
+			$step = 4;
+		}
+	}
+	
+	// +----------------------------------------------------------------------+
+	// | STEP 4 : Website URL                                                 |
+	// +----------------------------------------------------------------------+
+	
+	if ($step == 4) {
+		$error ='';
+		
+		//check for errors
+		if ($cms_action == "website") {
+			//Params
+			if (!isset($_POST["website"]) || !$_POST["website"]) {
+				$error .= $error_step4_enter_url.'<br />';
+			}
+		}
+		
+		if ($error || $cms_action != "website") {
+			$websiteUrl = isset($_POST["website"]) ? $_POST["website"]: $_SERVER["HTTP_HOST"];
+			$title = '<h1>'.$step4_title.'</h1>';
+			if ($error) {
+				$content .= '<span class="error">'.$error.'</span><br />';
+			}
+			$content .= '
+			<form action="'.$_SERVER["PHP_SELF"].'" method="post" onsubmit="check();">
+				<input type="hidden" name="step" value="4" />
+				<input type="hidden" name="cms_action" value="website" />
+				<input type="hidden" name="install_language" value="'.$install_language.'" />
+				'.$step4_enter_url.'<br /><br />
+				'.$step4_url.'<input type="text" name="website" value="'.$websiteUrl.'" /><br />
+				<input type="submit" class="submit" value="'.$label_next.'" />
+			</form>
+			';
+		} else {
+			$tmp = new CMS_websitesCatalog();
+			if (method_exists($tmp, 'writeRootRedirection')) {
+				$websites = CMS_websitesCatalog::getAll();
+				foreach($websites as $aWebsite) {
+					$aWebsite->setURL($_POST["website"]);
+					$aWebsite->writeToPersistence();
+				}
+				CMS_websitesCatalog::writeRootRedirection();
+			} else {
+				$websites = CMS_websitesCatalog::getAll();
+				foreach($websites as $aWebsite) {
+					$aWebsite->setURL($_POST["website"]);
+					$aWebsite->writeToPersistence();
+					$aWebsite->writeRootRedirection();
+				}
+			}
+			//go to next step
+			if (APPLICATION_IS_WINDOWS) {
+				//skip chmod step on windows platform
+				$step = 6;
+			}  else {
+				$step = 5;
+			}
+		}
+	}
+	
+	// +----------------------------------------------------------------------+
+	// | STEP 5 : CHMOD Constants                                             |
+	// +----------------------------------------------------------------------+
+	
+	if ($step == 5) {
+		$error ='';
+		//check for errors
+		if ($cms_action == "chmodConstants") {
+			//Params
+			if (!isset($_POST["fileChmod"]) || !$_POST["fileChmod"]) {
+				$error .= $error_step5_perms_files.'<br />';
+			} else {
+				if ($_POST["fileChmod"] != FILES_CHMOD) {
+					//add file chmod value to config.php file
+					$configFile = new CMS_file($_SERVER['DOCUMENT_ROOT']."/config.php");
+					$configFileContent = $configFile->readContent("array","rtrim");
+					$skip = false;
+					foreach ($configFileContent as $lineNb => $aLineOfConfigFile) {
+						if (strpos($aLineOfConfigFile, "FILES_CHMOD") !== false) {
+							$configFileContent[$lineNb] = 'define("FILES_CHMOD", "'.$_POST["fileChmod"].'");';
+							$skip = true;
+						}
+					}
+					if (!$skip) {
+						$configFileContent[sizeof($configFileContent)-1] = 'define("FILES_CHMOD", "'.$_POST["fileChmod"].'");';
+						$configFileContent[sizeof($configFileContent)] = '?>';
+					}
+					$configFile->setContent($configFileContent);
+					$configFile->writeToPersistence();
+				}
+			}
+			if (!$_POST["dirChmod"]) {
+				$error .= $error_step5_perms_dirs.'<br />';
+			} else {
+				if ($_POST["dirChmod"] != DIRS_CHMOD) {
+					//add directory chmod value to config.php file
+					$configFile = new CMS_file($_SERVER['DOCUMENT_ROOT']."/config.php");
+					$configFileContent = $configFile->readContent("array","rtrim");
+					$skip = false;
+					foreach ($configFileContent as $lineNb => $aLineOfConfigFile) {
+						if (strpos($aLineOfConfigFile, "DIRS_CHMOD") !== false) {
+							$configFileContent[$lineNb] = 'define("DIRS_CHMOD", "'.$_POST["dirChmod"].'");';
+							$skip = true;
+						}
+					}
+					if (!$skip) {
+						$configFileContent[sizeof($configFileContent)-1] = 'define("DIRS_CHMOD", "'.$_POST["dirChmod"].'");';
+						$configFileContent[sizeof($configFileContent)] = '?>';
+					}
+					$configFile->setContent($configFileContent);
+					$configFile->writeToPersistence();
+				}
+			}
+		}
+		
+		if (($error || $cms_action != "chmodConstants") && function_exists("chmod")) {
+			//Check file creation with default permissions
+			@touch($_SERVER['DOCUMENT_ROOT'].'/testfile.php');
+			$stat = @stat($_SERVER['DOCUMENT_ROOT'].'/testfile.php');
+			$fileChmod = substr(decoct($stat['mode']),-4,4);
+			@unlink($_SERVER['DOCUMENT_ROOT'].'/testfile.php');
+			
+			//Check directory creation with default permissions
+			@mkdir($_SERVER['DOCUMENT_ROOT'].'/testdir');
+			$stat = @stat($_SERVER['DOCUMENT_ROOT'].'/testdir');
+			$dirChmod = substr(decoct($stat['mode']),-4,4);
+			@rmdir($_SERVER['DOCUMENT_ROOT'].'/testdir');
+			
+			$title = '<h1>'.$step5_title.'</h1>';
+			if ($error) {
+				$content .= '<span class="error">'.$error.'</span><br />';
+			}
+			$content .= '
+			<form action="'.$_SERVER["PHP_SELF"].'" method="post" onsubmit="check();">
+				<input type="hidden" name="step" value="5" />
+				<input type="hidden" name="cms_action" value="chmodConstants" />
+				<input type="hidden" name="install_language" value="'.$install_language.'" />
+				'.$step5_explanation.'<br /><br />
+				'.$step5_files_perms.' * : <input type="text" name="fileChmod" value="'.$fileChmod.'" /><br />
+				'.$step5_dirs_perms.' * : <input type="text" name="dirChmod" value="'.$dirChmod.'" /><br />
+				<input type="submit" class="submit" value="'.$label_next.'" />
+			</form>';
+		} else {
+			//reload page (to include new config.php file) and go to next step
+			header("Location: ".$_SERVER["PHP_SELF"]."?step=6&install_language=".$install_language);
+			exit;
+		}
+	}
+	
+	// +----------------------------------------------------------------------+
+	// | STEP 6 : Choose Regeneration method                                  |
+	// +----------------------------------------------------------------------+
+	
+	if ($step == 6) {
+		$error ='';
+		
+		//check for errors
+		if ($cms_action == "regenerator") {
+			//Params
+			if (!isset($_POST["regenerator"]) || !$_POST["regenerator"]) {
+				$error .= $error_step6_choose_option.'<br />';
+			}
+		}
+		
+		if ($error || $cms_action != "regenerator") {
+			$title = '<h1>'.$step6_title.'</h1>';
+			if ($error) {
+				$content .= '<span class="error">'.$error.'</span><br />';
+			}
+			
+			//detect CLI
+			$windows = false;
+			if (!(function_exists('exec') || !function_exists('passthru')) && !function_exists('system')) {
+				$clidetection = $step6_CLIDetection_nosystem;
+				$cliAvailable = false;
+			} elseif (APPLICATION_IS_WINDOWS) {
+				$clidetection = $step6_CLIDetection_windows;
+				$cliAvailable = true;
+				$windows = true;
+			} else {
+				if (substr(CMS_patch::executeCommand('which php 2>&1',$error),0,1) == '/' && !$error) {
+					//test CLI version
+					$return = CMS_patch::executeCommand('php -v',$error);
+					if (strpos(strtolower($return), '(cli)') !== false) {
+						$cliversion = trim(str_replace('php ', '', substr(strtolower($return), 0, strpos(strtolower($return), '(cli)'))));
+						if (version_compare($cliversion, "5.2.0") === -1) {
+							$clidetection = $step6_CLIDetection_version_not_match.' ('.$cliversion.')';
+							$cliAvailable = false;
+						} else {
+							$clidetection = $step6_CLIDetection_available.' ('.$cliversion.')';
+							$cliAvailable = true;
+						}
+					} else {
+						$clidetection = $step6_CLIDetection_unavailable;
+						$cliAvailable = false;
+					}
+				} else {
+					$clidetection = $step6_CLIDetection_unavailable;
+					$cliAvailable = false;
+				}
+			}
+			$content .= '
+			<form action="'.$_SERVER["PHP_SELF"].'" method="post" onsubmit="check();">
+				<input type="hidden" name="step" value="6" />
+				<input type="hidden" name="cms_action" value="regenerator" />
+				<input type="hidden" name="install_language" value="'.$install_language.'" />
+				'.sprintf($step6_explanation,$clidetection).'
+				<label for="popup"><input id="popup" type="radio" name="regenerator" value="1"'.((!$cliAvailable || $windows) ? ' checked="true"' : '').' /> '.$step6_popup.'</label><br />
+				<label for="cli"><input id="cli" type="radio" name="regenerator" value="2"'.(!$cliAvailable ? ' disabled="true"' : (!$windows) ? ' checked="true"' : '').' /> '.$step6_bg.'</label><br />
+				<input type="submit" class="submit" value="'.$label_next.'" />
+			</form>
+			';
+		} else {
+			//set values in standard_rc.xml file
+			$module = CMS_modulesCatalog::getByCodename('standard');
+			$moduleParameters = $module->getParameters(false,true);
+			if (isset($_POST["regenerator"]) && $_POST["regenerator"] == 1) {
+				$moduleParameters['USE_BACKGROUND_REGENERATOR'][0] = 0;
+			} else {
+				$moduleParameters['USE_BACKGROUND_REGENERATOR'][0] = 1;
+			}
+			$module->setAndWriteParameters($moduleParameters);
+			
+			//go to next step
+			$step = 7;
+		}
+	}
+	
+	// +----------------------------------------------------------------------+
+	// | STEP 7 : Regenerator parameters                                      |
+	// +----------------------------------------------------------------------+
+	
+	if ($step == 7) {
+		$error ='';
+		//check for errors
+		if ($cms_action == "regeneratorParams") {
+			//get values in standard_rc.xml file
+			$module = CMS_modulesCatalog::getByCodename('standard');
+			$moduleParameters = $module->getParameters(false,true);
+			// CLI path
+			if ($moduleParameters['USE_BACKGROUND_REGENERATOR'][0] == 1 && (!isset($_POST["cliPath"]) || !$_POST["cliPath"])) {
+				$error .= $error_step7_CLI_path.'<br />';
+			} else {
+				$cliPath = $_POST["cliPath"];
+				//test for CLI proveded
+				if (APPLICATION_IS_WINDOWS) {
+					$return = CMS_patch::executeCommand($cliPath.' -v',$error);
+				} else {
+					$return = CMS_patch::executeCommand(escapeshellcmd($cliPath).' -v',$error);
+				}
+				$error = '';
+				if (strpos(strtolower($return), '(cli)') === false) {
+					$error .= $error_step7_CLI_path.'<br />';
+				} else {
+					$cliversion = trim(str_replace('php ', '', substr(strtolower($return), 0, strpos(strtolower($return), '(cli)'))));
+					if (version_compare($cliversion, "5.2.0") === -1) {
+						$error .= $step6_CLIDetection_version_not_match.' ('.$cliversion.')<br />';
+					} else {
+						if (APPLICATION_IS_WINDOWS) {
+							//add CLI path to config.php file
+							$configFile = new CMS_file($_SERVER['DOCUMENT_ROOT']."/config.php");
+							$configFileContent = $configFile->readContent("array","rtrim");
+							$skip = false;
+							foreach ($configFileContent as $lineNb => $aLineOfConfigFile) {
+								if (strpos($aLineOfConfigFile, "PATH_PHP_CLI_WINDOWS") !== false) {
+									$configFileContent[$lineNb] = 'define("PATH_PHP_CLI_WINDOWS", \''.$cliPath.'\');';
+									$skip = true;
+								}
+							}
+							if (!$skip) {
+								$configFileContent[sizeof($configFileContent)-1] = 'define("PATH_PHP_CLI_WINDOWS", \''.$cliPath.'\');';
+								$configFileContent[sizeof($configFileContent)] = '?>';
+							}
+							$configFile->setContent($configFileContent);
+							$configFile->writeToPersistence();
+						} else {
+							//add CLI path to config.php file
+							$configFile = new CMS_file($_SERVER['DOCUMENT_ROOT']."/config.php");
+							$configFileContent = $configFile->readContent("array","rtrim");
+							$skip = false;
+							foreach ($configFileContent as $lineNb => $aLineOfConfigFile) {
+								if (strpos($aLineOfConfigFile, "PATH_PHP_CLI_UNIX") !== false) {
+									$configFileContent[$lineNb] = 'define("PATH_PHP_CLI_UNIX", \''.$cliPath.'\');';
+									$skip = true;
+								}
+							}
+							if (!$skip) {
+								$configFileContent[sizeof($configFileContent)-1] = 'define("PATH_PHP_CLI_UNIX", \''.$cliPath.'\');';
+								$configFileContent[sizeof($configFileContent)] = '?>';
+							}
+							$configFile->setContent($configFileContent);
+							$configFile->writeToPersistence();
+						}
+					}
+				}
+			}
+			
+			//Temporary path (if needed)
+			if (isset($_POST["needTmpPath"]) && $_POST["needTmpPath"] && (!isset($_POST["tmpPath"]) || !$_POST["tmpPath"])) {
+				$error .= $error_step7_tmp_path.'<br />';
+			} elseif (isset($_POST["needTmpPath"]) && $_POST["needTmpPath"]) {
+				//check tmpPath
+				$tmpPathOK = false;
+				if (@is_dir($_POST["tmpPath"]) && is_writable($_POST["tmpPath"])) {
+					$tmpPath = $_POST["tmpPath"];
+					$tmpPathOK = true;
+				} elseif (!is_file($_POST["tmpPath"]) && @mkdir($_POST["tmpPath"])) {
+					if (@is_dir($_POST["tmpPath"]) && is_writable($_POST["tmpPath"])) {
+						$tmpPath = $_POST["tmpPath"];
+						$tmpPathOK = true;
+					}
+				}
+				$tmpPathOK = realpath($tmpPathOK);
+				if ($tmpPathOK) {
+					//add tmp path to config.php file
+					$configFile = new CMS_file($_SERVER['DOCUMENT_ROOT']."/config.php");
+					$configFileContent = $configFile->readContent("array","rtrim");
+					$skip = false;
+					foreach ($configFileContent as $lineNb => $aLineOfConfigFile) {
+						if (strpos($aLineOfConfigFile, "PATH_PHP_TMP") !== false) {
+							$configFileContent[$lineNb] = 'define("PATH_PHP_TMP", \''.$tmpPath.'\');';
+							$skip = true;
+						}
+					}
+					if (!$skip) {
+						$configFileContent[sizeof($configFileContent)-1] = 'define("PATH_PHP_TMP", \''.$tmpPath.'\');';
+						$configFileContent[sizeof($configFileContent)] = '?>';
+					}
+					$configFile->setContent($configFileContent);
+					$configFile->writeToPersistence();
+				} else {
+					$error .= $error_step7_valid_tmp_path.'<br />';
+				}
+			}
+		}
+		if ($error || $cms_action != "regeneratorParams") {
+			//get values in standard_rc.xml file
+			$module = CMS_modulesCatalog::getByCodename('standard');
+			$moduleParameters = $module->getParameters(false,true, true);
+			//found CLI path
+			$needCliPath = false;
+			if ($moduleParameters['USE_BACKGROUND_REGENERATOR'][0] == 1) {
+				if (APPLICATION_IS_WINDOWS) {
+					$needCliPath = true;
+					$cliPath = isset($_POST["cliPath"]) ? $_POST["cliPath"] : PATH_PHP_CLI_WINDOWS;
+				} elseif(substr(CMS_patch::executeCommand('which php 2>&1'),0,1) !== '/') {
+					$return = CMS_patch::executeCommand('php -v');
+					if (strpos(strtolower($return), '(cli)') === false) {
+						$needCliPath = true;
+						$cliPath = isset($_POST["cliPath"]) ? $_POST["cliPath"] : PATH_PHP_CLI_UNIX;
+					}
+				}
+			}
+			//CHMOD scripts with good values
+			$scriptsFiles = CMS_file::getFileList(PATH_PACKAGES_FS.'/scripts/*.php');
+			foreach ($scriptsFiles as $aScriptFile) {
+				//then set it executable
+				CMS_file::makeExecutable($aScriptFile["name"]);
+			}
+			
+			//test temporary directory and create it if none founded
+			$tmpPath ='';
+			if (@is_dir(ini_get("session.save_path")) && is_writable(PATH_TMP_FS)) {
+				$tmpPath = ini_get("session.save_path");
+			} elseif (@is_dir(PATH_PHP_TMP) && is_writable(PATH_PHP_TMP)) {
+				$tmpPath = PATH_PHP_TMP;
+			} else {
+				if (@is_dir(PATH_TMP_FS) && is_writable(PATH_TMP_FS)) {
+					$tmpPath = realpath(PATH_TMP_FS);
+					//add tmp path to config.php file
+					$configFile = new CMS_file($_SERVER['DOCUMENT_ROOT']."/config.php");
+					$configFileContent = $configFile->readContent("array","rtrim");
+					$skip = false;
+					foreach ($configFileContent as $lineNb => $aLineOfConfigFile) {
+						if (strpos($aLineOfConfigFile, "PATH_PHP_TMP") !== false) {
+							$configFileContent[$lineNb] = 'define("PATH_PHP_TMP", \''.$tmpPath.'\');';
+							$skip = true;
+						}
+					}
+					if (!$skip) {
+						$configFileContent[sizeof($configFileContent)-1] = 'define("PATH_PHP_TMP", \''.$tmpPath.'\');';
+						$configFileContent[sizeof($configFileContent)] = '?>';
+					}
+					$configFile->setContent($configFileContent);
+					$configFile->writeToPersistence();
+				} else {
+					$tmpPath ='';
+				}
+			}
+			if (($moduleParameters['USE_BACKGROUND_REGENERATOR'][0] == 1 && $needCliPath) || !$tmpPath) {
+				$title = '<h1>'.$step7_title.'</h1>';
+				if ($error) {
+					$content .= '<span class="error">'.$error.'</span><br />';
+				}
+				$content .= '
+				<form action="'.$_SERVER["PHP_SELF"].'" method="post" onsubmit="check();">
+					<input type="hidden" name="step" value="7" />
+					<input type="hidden" name="cms_action" value="regeneratorParams" />
+					<input type="hidden" name="install_language" value="'.$install_language.'" />
+					<input type="hidden" name="regenerationMethod" value="'.$moduleParameters['USE_BACKGROUND_REGENERATOR'][0].'" />';
+					if ($moduleParameters['USE_BACKGROUND_REGENERATOR'][0] == 1) {
+						$content .= '
+						'.$step7_CLI_explanation.'<br /><br />
+						'.$step7_CLI.'  : <input type="text" name="cliPath" value="'.htmlspecialchars($cliPath).'" /><br />';
+					}
+					if (!$tmpPath) {
+						$content .= '
+						<hr />
+						'.$step7_tmp_path_explanation.'<br /><br />
+						'.$step7_tmp_path.'  : <input type="text" name="tmpPath" value="" /><input type="hidden" name="needTmpPath" value="1" /><br /><br />
+						';
+					}
+				$content .= '
+					<input type="submit" class="submit" value="'.$label_next.'" />
+				</form>
+				';
+			} else {
+				//go to next step
+				$step = 8;
+			}
+		} else {
+			//go to next step
+			$step = 8;
+		}
+	}
+	
+	// +----------------------------------------------------------------------+
+	// | STEP 8 : Sessions & htaccess files                                   |
+	// +----------------------------------------------------------------------+
+	
+	if ($step == 8) {
+		$error ='';
+		
+		//check for errors
+		if ($cms_action == "finalisation") {
+			
+			//Application Label
+			if (!isset($_POST["label"]) || !$_POST["label"]) {
+				$error .= $error_step8_label.'<br />';
+			} else {
+				//set values in standard_rc.xml file
+				$module = CMS_modulesCatalog::getByCodename('standard');
+				$moduleParameters = $module->getParameters(false,true);
+				$moduleParameters['APPLICATION_LABEL'][0] = $_POST["label"];
+				$module->setAndWriteParameters($moduleParameters);
+				
+				//change root page Name
+				//in edited table
+				$sql = "
+					update
+						pagesBaseData_edited 
+					set
+						title_pbd = '".sensitiveIO::sanitizeSQLString($_POST["label"])."',
+						linkTitle_pbd = '".sensitiveIO::sanitizeSQLString($_POST["label"])."'
+					where
+						page_pbd = '1'
+				";
+				$q = new CMS_query($sql);
+				//in public table
+				$sql = "
+					update
+						pagesBaseData_public
+					set
+						title_pbd = '".sensitiveIO::sanitizeSQLString($_POST["label"])."',
+						linkTitle_pbd = '".sensitiveIO::sanitizeSQLString($_POST["label"])."'
+					where
+						page_pbd = '1'
+				";
+				$q = new CMS_query($sql);
+			}
+			
+			//No application email
+			if (isset($_POST["no_application_email"]) && $_POST["no_application_email"] == 1)  {
+				//set values in standard_rc.xml file
+				$module = CMS_modulesCatalog::getByCodename('standard');
+				$moduleParameters = $module->getParameters(false,true);
+				$moduleParameters['NO_APPLICATION_MAIL'][0] = 1;
+				$module->setAndWriteParameters($moduleParameters);
+			}
+			
+			//Change resources creation date to force all regenerations at first launch
+			$sql = "
+				update
+					resourceStatuses
+				set
+					publicationDateStart_rs = NOW(),
+					publication_rs = '1'
+				where
+					publication_rs = '2'
+			";
+			$q = new CMS_query($sql);
+			
+			//change default user language
+			if ($install_language == 'en') {
+				$sql = "
+					update
+						profilesUsers
+					set
+						language_pru = 'en'
+					where
+						login_pru = 'root'
+				";
+			} else {
+				$sql = "
+					update
+						profilesUsers
+					set
+						language_pru = 'fr'
+					where
+						login_pru = 'root'
+				";
+			}
+			$q = new CMS_query($sql);
+			
+			//CHMOD index.php and config.php with new values
+			@chmod($_SERVER['DOCUMENT_ROOT'].'/index.php', octdec(FILES_CHMOD));
+			@chmod($_SERVER['DOCUMENT_ROOT'].'/config.php', octdec(FILES_CHMOD));
+			
+			//force regeneration of first page to avoid any error
+			$rootPage = CMS_tree::getPageByID(1);
+			$rootPage->regenerate(true);
+		}
+		
+		//Check sessions creation
+		$session = true;
+		if (function_exists("session_start")) {
+			@error_reporting(0);
+			if (ini_get("session.save_path") && !@is_dir(ini_get("session.save_path"))) {
+				@mkdir(ini_get("session.save_path"));
+			}
+			if (!@session_start()) {
+				$session = false;
+			}
+			@error_reporting(E_ALL ^ E_NOTICE);
+		} else {
+			$session = false;
+		}
+		if ($session == false) {
+			$error .= $error_step8_sessions.'<br />';
+		}
+		
+		//Recompile Polymod Definitions
+		CMS_polymod::compileDefinitions();
+		
+		//SMTP Test
+		if (!isset($_POST["no_application_email"]) || !$_POST["no_application_email"]) {
+			$no_email = false;
+			if (!@mail("root@localhost", "Automne SMTP Test", "Automne SMTP Test")) {
+				$error .= $error_step8_smtp_error.'<br />';
+				$no_application_email = true;
+			}
+		}
+		if ($error || $cms_action != "finalisation") {
+			$title = '<h1>'.$step8_title.'</h1>';
+			if ($error) {
+				$content .= '<span class="error">'.$error.'</span><br />';
+			}
+			$content .= '
+			<form action="'.$_SERVER["PHP_SELF"].'" method="post" onsubmit="check();">
+				<input type="hidden" name="step" value="8" />
+				<input type="hidden" name="cms_action" value="finalisation" />
+				<input type="hidden" name="install_language" value="'.$install_language.'" />';
+				if ($no_application_email) {
+					$content .= $step8_no_application_email_title.'<label for="no_application_email"><input type="checkbox" id="no_application_email" name="no_application_email" value="1" /> '.$step8_no_application_email.'</label><br /><br />';
+				}
+				$content .= $step8_htaccess_explanation.'<br /><br />
+				'.$step8_application_label.'<br /><br />
+				'.$step8_label.' *  : <input type="text" name="label" value="Automne" /><br />
+				<input type="submit" class="submit" value="'.$label_next.'" />
+			</form>
+			';
+		} else {
+			//go to next step
+			$step = 9;
+		}
+	}
+	
+	// +----------------------------------------------------------------------+
+	// | STEP 9 : Installation Done                                           |
+	// +----------------------------------------------------------------------+
+	
+	if ($step == 9) {
+		$title = '<h1>'.$step9_title.'</h1>';
+		if (APPLICATION_IS_WINDOWS) {
+			$uname = 'www-data';
+		} else {
+			$uid = @posix_getpwuid(@posix_getuid());
+			$uname = isset($uid['name']) ? $uid['name'] : @posix_getuid();
+			if (!$uname) {
+				$uname = 'www-data';
+			}
+		}
+		$content .= sprintf($step9_alldone,CMS_websitesCatalog::getMainURL(),CMS_websitesCatalog::getMainURL(), $uname);
+	}
+	
+	// +----------------------------------------------------------------------+
+	// | RENDERING                                                            |
+	// +----------------------------------------------------------------------+
+	
+	echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Automne :: Installation</title>
+	<style type="text/css">
+		body{
+			background-color:	#e9f1da;
+			font-family:		arial,verdana,helvetica,sans-serif;
+			font-size:			13px;
+			margin:				0;
+			padding:			0;
+		}
+		.error {
+			color:				red;
+			font-weight:		bold;
+		}
+		a{
+			text-decoration:	none;
+			color:				#5f900b;
+		}
+		#main{
+			width:				639px;
+			margin:				auto;
+		}
+		#content{
+			background:			url('.$_SERVER['SCRIPT_NAME'].'?file=logo) no-repeat 75px 0;
+			margin:				auto;
+			background-color:	#ffffff;
+			width:				639px;
+			border-left:		1px solid #dde6cb;
+			border-right:		1px solid #dde6cb;
+			border-bottom:		1px solid #dde6cb;
+			color:				#5d5856;
+			padding-top:		118px;
+			padding-bottom:		30px;
+			min-height:			300px;
+		}
+		#text {
+			padding-left:		35px;
+			padding-right:		15px;
+		}
+		h1{
+			background:			url('.$_SERVER['SCRIPT_NAME'].'?file=picto) no-repeat 0 5px;
+			font-size:			16px;
+			color:				#8cbe35;
+			padding-left:		21px;
+			margin-bottom:		20px;
+		}
+		h2{
+			font-size:			13px;
+			color:				#8cbe35;
+			margin-bottom:		15px;
+		}
+		#footer{
+			color:				#5a6266;
+			height:				60px;
+			width:				639px;
+			margin:				auto;
+			padding-top:		8px;
+			text-align:			center;
+			font-size:			11px;
+		}
+		#needhelp a {
+			float:				right;
+			border:				1px solid #E9F1DA;
+			font-weight:		bold;
+			margin:				3px 10px;
+			padding:			5px;
+			border-radius: 			7px;
+			-moz-border-radius:		7px;
+			-webkit-border-radius:	7px;
+			box-shadow:				2px 2px 3px #888;
+			-moz-box-shadow:		2px 2px 3px #888;
+			-webkit-box-shadow:		2px 2px 3px #888;
+		}
+		.license,
+		.htaccess,
+		.extraction {
+			width:				100%;
+			height:				250px;
+			overflow:			auto;
+			padding:			5px 5px 5px 0;
+			margin:				10px 10px 10px 0;
+			background-color:	#EFF8CF;
+		}
+		.dbinfos{
+			text-align:			right;
+		}
+		.dbinfos label {
+			width:				400px;
+			display:			block;
+		}
+		input.submit {
+			cursor: 			pointer;
+			border: 			0px;
+			padding: 			2px;
+			color:				#FFFFFF;
+			height: 			20px;
+			background-color:	#ABD64A;
+			background-position:top-left;
+			background-repeat: 	no-repeat;
+			float:				right;
+		}
+		ul.atm-server {
+			padding:			10px 0 0 0;
+			margin:				0;
+			list-style-image:	none;
+			list-style-position:outside;
+			list-style-type:	none;
+		}
+		ul.atm-server li {
+			background-repeat:	no-repeat;
+		    padding:			2px 0 6px 20px;
+		}
+		.atm-pic-ok {
+				background-image:	url('.$_SERVER['SCRIPT_NAME'].'?file=pictos);
+				background-position:0px -91px;
+			}
+			.atm-pic-cancel{
+				background-image:	url('.$_SERVER['SCRIPT_NAME'].'?file=pictos);
+				background-position:0px -182px;
+			}
+			.atm-pic-question{
+				background-image:	url('.$_SERVER['SCRIPT_NAME'].'?file=pictos);
+				background-position:0px 0px;
+			}
+	</style>
+	<!-- javascriptCheck usefull initialisation javascript functions -->
+	<script language="JavaScript" type="text/javascript">
+		function initJavascript() {
+			makeFocus();
+		}
+		function makeFocus() {
+			for (var j=\'0\'; j < document.forms.length; j++) {
+				if (document.forms[j]!=null) {
+					for (var i=\'0\'; i < document.forms[j].length; i++) {
+						if (document.forms[j].elements[i].type == "text" || document.forms[j].elements[i].type == "textarea") {
+							if (document.forms[j].elements[i].value==\'\') {
+								document.forms[j].elements[i].focus();
+								return true;
+							} else {
+								document.forms[j].elements[i].select();
+								return true;
+							}
+						}
+					}
+				} else {
+					return false;
+				}
+			}
+		}
+		function check() {
+			buttonDisable();
+			window.setTimeout("buttonEnable()",15000);
+		}
+		function buttonDisable() {
+			for (var j=\'0\'; j < document.forms.length; j++) {
+				if (document.forms[j]!=null) {
+					for (var i=\'0\'; i < document.forms[j].length; i++) {
+						if (document.forms[j].elements[i].type == "submit" || document.forms[j].elements[i].type == "button") {
+							document.forms[j].elements[i].style.backgroundColor = "D9D5D4";
+							document.forms[j].elements[i].style.color = "6E5E59";
+							document.forms[j].elements[i].disabled = true;
+						}
+					}
+				}
+			}
+			return true;
+		}
+		function buttonEnable() {
+			for (var j=\'0\'; j < document.forms.length; j++) {
+				if (document.forms[j]!=null) {
+					for (var i=\'0\'; i < document.forms[j].length; i++) {
+						if (document.forms[j].elements[i].type == "submit" || document.forms[j].elements[i].type == "button") {
+							document.forms[j].elements[i].disabled = false;
+							document.forms[j].elements[i].style.backgroundColor = "ABD64A";
+							document.forms[j].elements[i].style.color = "FFFFFF";
+						}
+					}
+				}
+			}
+			return true;
+		}
+	</script>
+</head>
+<body onLoad="initJavascript();">
+	<div id="main">
+		<div id="content">
+			'.($step != 'help' ? $needhelp : '').'
+			<div id="text">
+				'.$title.'
+				'.$content;
+	if (!isset($extractArchive) || !$extractArchive) {
+		echo '
+			</div>
+		</div>
+		<div id="footer">'.$footer.'</div>
+	</div>
+</body>
+</html>
+		';
+	} else {
+		echo '<pre class="extraction">';
+		$archive->extract_files();
+		$content = '</pre><br />';
+		if (!$archive->hasError()) {
+			$content .= $step1_extraction_ok.'<br />';
+			//remove file config.php if exists in archive : install process will create a new one
+			if (file_exists($_SERVER['DOCUMENT_ROOT'].'/config.php')) {
+				@unlink($_SERVER['DOCUMENT_ROOT'].'/config.php');
+			}
+			//append .htaccess content if any
+			if (isset($_POST['htaccess']) && file_exists($_SERVER['DOCUMENT_ROOT'].'/.htaccess')) {
+				file_put_contents($_SERVER['DOCUMENT_ROOT'].'/.htaccess', "\n\n".$_POST['htaccess'], FILE_APPEND);
+			}
+		} else {
+			$error .= sprintf($step1_extraction_error,$archiveFile).'<br />';
+		}
+		unset($archive);
+		if ($error) {
+			$content .= '<span class="error">'.$error.'</span><br />';
+		}
+		$content .= '
+		<form action="'.$_SERVER["PHP_SELF"].'" method="post" onsubmit="check();">
+			<input type="hidden" name="step" value="gpl" />
+			<input type="hidden" name="install_language" value="'.$install_language.'" />';
+		if (!$error) {
+			$content .= '<input type="submit" class="submit" value="'.$label_next.'" />';
+		}
+		$content .= '
+		</form>
+		';
+		
+		echo $content.'
+			</div>
+		</div>
+		<div id="footer">'.$footer.'</div>
+	</div>
+</body>
+</html>
+		';
+	}
+} else {
+	// +----------------------------------------------------------------------+
+	// | Installation Binary files           		                          |
+	// +----------------------------------------------------------------------+
+	switch($_GET['file']) {
+		case 'logo':
+			$file = base64_decode('
+				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');
+			header('Content-Type: image/jpg');
+			header('Content-Length: '.(string) strlen($file));
+			echo $file;
+			exit;
+		break;
+		case 'picto':
+			$file = base64_decode('
+				R0lGODlhDQAJAIAAAP///2aZACH5BAAAAAAALAAAAAANAAkAAAIRDIwHy+2bonpUSVnbtfltwxQA
+				Ow==');
+			header('Content-Type: image/gif');
+			header('Content-Length: '.(string) strlen($file));
+			echo $file;
+			exit;
+		break;
+		case 'pictos':
+			$file = base64_decode('
+				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');
+			header('Content-Type: image/png');
+			header('Content-Length: '.(string) strlen($file));
+			echo $file;
+			exit;
+		break;
+		case 'info':
+			$phpinfo = print_r(phpinfo_array(true), true);
+			
+			header("Cache-Control: ");
+			header("Pragma: ");
+			header('Content-Type: application/octet-stream');
+			header('Content-Length: '.(string) strlen($phpinfo));
+			header('Content-Disposition: attachment; filename="infos-'.date('Ymd').'.txt"');
+			
+			echo $phpinfo;
+			exit;
+		break;
+		
+	}
+}
+// +----------------------------------------------------------------------+
+// | Installation Classes & Functions                                     |
+// +----------------------------------------------------------------------+
+
+//Usefull function to dump a var.
+function pr_install($data,$useVarDump = false) {
+	if (!$useVarDump) {
+		echo "<pre>".print_r($data,true)."</pre>";
+		flush();
+	} else {
+		echo "<pre>";
+		var_dump($data);
+		echo "</pre>";
+		flush();
+	}
+}
+
+//Return an array of all phpinfo values
+function phpinfo_array($return=false){
+	ob_start();
+	phpinfo(-1);
+	
+	$pi = preg_replace(
+	array('#^.*<body>(.*)</body>.*$#ms', '#<h2>PHP License</h2>.*$#ms',
+	'#<h1>Configuration</h1>#',  "#\r?\n#", "#</(h1|h2|h3|tr)>#", '# +<#',
+	"#[ \t]+#", '#&nbsp;#', '#  +#', '# class=".*?"#', '%&#039;%',
+	'#<tr>(?:.*?)" src="(?:.*?)=(.*?)" alt="PHP Logo" /></a>'
+	.'<h1>PHP Version (.*?)</h1>(?:\n+?)</td></tr>#',
+	'#<h1><a href="(?:.*?)\?=(.*?)">PHP Credits</a></h1>#',
+	'#<tr>(?:.*?)" src="(?:.*?)=(.*?)"(?:.*?)Zend Engine (.*?),(?:.*?)</tr>#',
+	"# +#", '#<tr>#', '#</tr>#'),
+	array('$1', '', '', '', '</$1>' . "\n", '<', ' ', ' ', ' ', '', ' ',
+	'<h2>PHP Configuration</h2>'."\n".'<tr><td>PHP Version</td><td>$2</td></tr>'.
+	"\n".'<tr><td>PHP Egg</td><td>$1</td></tr>',
+	'<tr><td>PHP Credits Egg</td><td>$1</td></tr>',
+	'<tr><td>Zend Engine</td><td>$2</td></tr>' . "\n" .
+	'<tr><td>Zend Egg</td><td>$1</td></tr>', ' ', '%S%', '%E%'),
+	ob_get_clean());
+	
+	$sections = explode('<h2>', strip_tags($pi, '<h2><th><td>'));
+	unset($sections[0]);
+	
+	$pi = array();
+	foreach($sections as $section){
+		$n = substr($section, 0, strpos($section, '</h2>'));
+		preg_match_all(
+		'#%S%(?:<td>(.*?)</td>)?(?:<td>(.*?)</td>)?(?:<td>(.*?)</td>)?%E%#',
+		$section, $askapache, PREG_SET_ORDER);
+		foreach($askapache as $m)
+			$pi[$n][$m[1]]=(!isset($m[3])||@$m[2]==$m[3]) ? @$m[2] : array_slice($m,2);
+	}
+	
+	return ($return === false) ? print_r($pi) : $pi;
+}
+
+/**
+  * Class CMS_archive_install, CMS_tar_file_install, CMS_gzip_file_install
+  *
+  * This script manages TAR/GZIP/BZIP2/ZIP archives
+  *
+  * Based on an original script "TAR/GZIP/BZIP2/ZIP ARCHIVE CLASSES 2.0"
+  * from Devin Doucette
+  *
+  * @package CMS
+  * @subpackage files
+  * @author C&eacute;dric Soret <cedric.soret@ws-interactive.fr> &
+  * @author S&eacute;bastien Pauchet <sebastien.pauchet@ws-interactive.fr> &
+  * @author Devin Doucette <darksnoopy@shaw.ca>
+  */
+class CMS_archive_install
+{
+	/**
+	 * Stores raw data in this var
+	 * @var string
+	 */
+	var $CMS_archive;
+	/**
+	 * All options about this archive:
+	 * @var mixed array
+	 * @access public
+	 */
+	var $options = array ();
+	/**
+	 * All files managed when processing the archive
+	 * @var array
+	 * @access public
+	 */
+	var $files = array ();
+	/**
+	 * Contains files not to be stored into archive
+	 * @var array
+	 * @access public
+	 */
+	var $exclude = array ();
+	/**
+	 * Contains files to be stored into archive
+	 * @var array
+	 * @access public
+	 */
+	var $storeonly = array ();
+	/**
+	  * True if this object has raised an error.
+	  * @var boolean
+	  * @access private
+	  */
+	var $_errRaised = false;
+	/**
+	 * Constructor
+	 * 
+	 * @param string $name, the full filename of the archive
+	 * @return void
+	 */
+	function CMS_archive_install($name) {
+		if (trim($name) == '') {
+			$this->_raiseError(get_class($this)." : Not a valid name given to archive ".$name);
+			return;
+		}
+		$this->options = array (
+			'basedir' => ".",
+			'name' => $name,
+			'prepend' => "", 
+			'inmemory' => 0, 
+			'overwrite' => 0,
+			'recurse' => 1,
+			'storepaths' => 1,
+			'level' => 3,
+			'method' => 1,
+			'sfx' => "",
+			'type' => "",
+			'comment' => ""
+		);
+	}
+	/**
+	  * Raises an error. Shows it to the screen
+	  *
+	  * @param string $errorMessage the error message.
+	  * @return void
+	  * @access private
+	  */
+	function _raiseError($errorMessage)
+	{
+		echo "<br /><pre><b>AUTOMNE INSTALLATION PROCESS error : ".$errorMessage."</b></pre><br />\n";
+		flush();
+		$this->_errRaised = true;
+	}
+	/**
+	  * Returns true if this instance has already raised an error.
+	  *
+	  * @return boolean true if an error was raised by this instance, false otherwise.
+	  * @access public
+	  */
+	function hasError()
+	{
+		return $this->_errRaised;
+	}
+	/**
+	 * Sets options array to this archive
+	 * 
+	 * @var mixed array, @see $options attributes for details
+	 * @return void
+	 */
+	function set_options($options) {
+		if (is_array($options)) {
+			foreach ($options as $key => $value) {
+				$this->options[$key] = $value;
+			}
+			if (!empty ($this->options['basedir'])) {
+				$this->options['basedir'] = str_replace("\\", "/", $this->options['basedir']);
+				$this->options['basedir'] = preg_replace("/\/+/", "/", $this->options['basedir']);
+				$this->options['basedir'] = preg_replace("/\/$/", "", $this->options['basedir']);
+			}
+			if (!empty ($this->options['name'])) {
+				$this->options['name'] = str_replace("\\", "/", $this->options['name']);
+				$this->options['name'] = preg_replace("/\/+/", "/", $this->options['name']);
+			}
+			if (!empty ($this->options['prepend'])) {
+				$this->options['prepend'] = str_replace("\\", "/", $this->options['prepend']);
+				$this->options['prepend'] = preg_replace("/^(\.*\/+)+/", "", $this->options['prepend']);
+				$this->options['prepend'] = preg_replace("/\/+/", "/", $this->options['prepend']);
+				$this->options['prepend'] = preg_replace("/\/$/", "", $this->options['prepend'])."/";
+			}
+		} else {
+			$this->_raiseError("CMS_archive : set_option : Not a valid optins array given");
+		}
+	}
+	/**
+	 * Build list of all files to manage respecting stored files and
+	 * those to exlude
+	 * 
+	 * @return void
+	 */
+	function make_list() {
+		if (!empty ($this->exclude)) {
+			foreach ($this->files as $key => $value) {
+				foreach ($this->exclude as $current) {
+					if ($value['name'] == $current['name']) {
+						unset ($this->files[$key]);
+					}
+				}
+			}
+		}
+		if (!empty ($this->storeonly)) {
+			foreach ($this->files as $key => $value) {
+				foreach ($this->storeonly as $current) {
+					if ($value['name'] == $current['name']) {
+						$this->files[$key]['method'] = 0;
+					}
+				}
+			}
+		}
+		unset($this->exclude, $this->storeonly);
+	}
+	/**
+	 * List files of archive and sort them with sort_files method
+	 * 
+	 * @param array $list, all files to list in an array 
+	 * @return array, files to list
+	 */
+	function list_files($list) {
+		if (!is_array($list)) {
+			$temp = $list;
+			$list = array ($temp);
+			unset ($temp);
+		}
+		$files = array ();
+		$pwd = getcwd();
+		chdir($this->options['basedir']);
+		foreach ($list as $current) {
+			$current = str_replace("\\", "/", $current);
+			$current = preg_replace("/\/+/", "/", $current);
+			$current = preg_replace("/\/$/", "", $current);
+			if (strstr($current, "*")) {
+				$regex = preg_replace("/([\\\^\$\.\[\]\|\(\)\?\+\{\}\/])/", "\\\\\\1", $current);
+				$regex = str_replace("*", ".*", $regex);
+				$dir = strstr($current, "/") ? substr($current, 0, strrpos($current, "/")) : ".";
+				$temp = $this->parse_dir($dir);
+				foreach ($temp as $current2) {
+					if (preg_match("/^{$regex}$/i", $current2['name'])) {
+						$files[] = $current2;
+					}
+				}
+				unset ($regex, $dir, $temp, $current);
+			} elseif (@ is_dir($current)) {
+				$temp = $this->parse_dir($current);
+				foreach ($temp as $file) {
+					$files[] = $file;
+				}
+				unset ($temp, $file);
+			} elseif (@ file_exists($current)) {
+				$files[] = array ('name' => $current, 'name2' => $this->options['prepend'].preg_replace("/(\.+\/+)+/", "", ($this->options['storepaths'] == 0 && strstr($current, "/")) ? substr($current, strrpos($current, "/") + 1) : $current), 'type' => 0, 'ext' => substr($current, strrpos($current, ".")), 'stat' => stat($current));
+			}
+		}
+		chdir($pwd);
+		unset ($current, $pwd);
+		usort($files, array ("CMS_archive", "sort_files"));
+		return $files;
+	}
+	/**
+	 * Parse a directory to get its content
+	 *  
+	 * @param string $dirname, name of the directory to parse
+	 * @return array $files founded in the directory
+	 */
+	function parse_dir($dirname) {
+		if ($this->options['storepaths'] == 1 && !preg_match("/^(\.+\/*)+$/", $dirname)) {
+			$files = array (array ('name' => $dirname, 'name2' => $this->options['prepend'].preg_replace("/(\.+\/+)+/", "", ($this->options['storepaths'] == 0 && strstr($dirname, "/")) ? substr($dirname, strrpos($dirname, "/") + 1) : $dirname), 'type' => 5, 'stat' => stat($dirname)));
+		} else {
+			$files = array ();
+		}
+		$dir = @opendir($dirname);
+		while ($file = @readdir($dir)) {
+			if ($file == "." || $file == "..") {
+				continue;
+			} elseif (@is_dir($dirname."/".$file)) {
+				if (empty ($this->options['recurse'])) {
+					continue;
+				}
+				$temp = $this->parse_dir($dirname."/".$file);
+				foreach ($temp as $file2) {
+					$files[] = $file2;
+				}
+			} elseif (@file_exists($dirname."/".$file)) {
+				$files[] = array ('name' => $dirname."/".$file, 'name2' => $this->options['prepend'].preg_replace("/(\.+\/+)+/", "", ($this->options['storepaths'] == 0 && strstr($dirname."/".$file, "/")) ? substr($dirname."/".$file, strrpos($dirname."/".$file, "/") + 1) : $dirname."/".$file), 'type' => 0, 'ext' => substr($file, strrpos($file, ".")), 'stat' => stat($dirname."/".$file));
+			}
+		}
+		@closedir($dir);
+		return $files;
+	}
+	/**
+	 * Sorts files
+	 * 
+	 * @param string $a
+	 * @param  string $b
+	 * @return integer, 0 if nothing sorted
+	 */
+	function sort_files($a, $b) {
+		if ($a['type'] != $b['type']) {
+			return $a['type'] > $b['type'] ? -1 : 1;
+		} elseif ($a['type'] == 5) {
+			return strcmp(strtolower($a['name']), strtolower($b['name']));
+		} else {
+			if ($a['ext'] != $b['ext']) {
+				return strcmp($a['ext'], $b['ext']);
+			} elseif ($a['stat'][7] != $b['stat'][7]) {
+				return $a['stat'][7] > $b['stat'][7] ? -1 : 1;
+			} else {
+				return strcmp(strtolower($a['name']), strtolower($b['name']));
+			}
+		}
+		return 0;
+	}
+}
+
+class CMS_tar_file_install extends CMS_archive_install
+{
+	/**
+	 * Constructor
+	 * 
+	 * @param string $name, the full filename of the archive
+	 * @return void
+	 */
+	function CMS_tar_file_install($name)
+	{
+		if (trim($name) == '') {
+			$this->_raiseError(get_class($this)." : Not a valid name given to archive ".$name);
+			return;
+		}
+		$this->CMS_archive_install($name);
+		$this->options['type'] = "tar";
+	}
+	/**
+	 * Extract files from the archive
+	 * 
+	 * @return true on success
+	 */
+	function extract_files() 
+	{
+		$pwd = getcwd();
+		chdir($this->options['basedir']);
+		
+		if ($fp = $this->open_archive()) {
+			if ($this->options['inmemory'] == 1) {
+				$this->files = array ();
+			}
+			while ($block = fread($fp, 512)) {
+				$temp = unpack("a100name/a8mode/a8uid/a8gid/a12size/a12mtime/a8checksum/a1type/a100temp/a6magic/a2temp/a32temp/a32temp/a8temp/a8temp/a155prefix/a12temp", $block);
+				$file = array ('name' => $temp['prefix'].$temp['name'], 'stat' => array (2 => $temp['mode'], 4 => octdec($temp['uid']), 5 => octdec($temp['gid']), 7 => octdec($temp['size']), 9 => octdec($temp['mtime']),), 'checksum' => octdec($temp['checksum']), 'type' => $temp['type'], 'magic' => $temp['magic'],);
+				if ($file['checksum'] == 0x00000000) {
+					break;
+				} else
+					/*if ($file['magic'] != "ustar") {
+						$this->_raiseError(get_class($this)." : extract_files : This script does not support extracting this type of tar file.");
+						break;
+					}*/
+				$block = substr_replace($block, "        ", 148, 8);
+				$checksum = 0;
+				for ($i = 0; $i < 512; $i ++) {
+					$checksum += ord(substr($block, $i, 1));
+				}
+				if ($file['checksum'] != $checksum) {
+					$this->_raiseError(get_class($this)." : extract_files : Could not extract from {$this->options['name']}, it is corrupt.");
+				}
+				if ($this->options['inmemory'] == 1) {
+					$file['data'] = @fread($fp, $file['stat'][7]);
+					@fread($fp, (512 - $file['stat'][7] % 512) == 512 ? 0 : (512 - $file['stat'][7] % 512));
+					unset ($file['checksum'], $file['magic']);
+					$this->files[] = $file;
+				} else {
+					if ($file['type'] == 5) {
+						if (!is_dir($file['name'])) {
+							
+							if (!$this->options['dontUseFilePerms']) {
+								@mkdir($file['name'], $file['stat'][2]);
+								@chown($file['name'], $file['stat'][4]);
+								@chgrp($file['name'], $file['stat'][5]);
+							} else {
+								@mkdir($file['name']);
+							}
+						}
+					} else
+						if ($this->options['overwrite'] == 0 && file_exists($file['name'])) {
+							$this->_raiseError(get_class($this)." : extract_files : {$file['name']} already exists.");
+						} else
+							if ($new = @fopen($file['name'], "wb")) {
+								@fwrite($new, @fread($fp, $file['stat'][7]));
+								@fread($fp, (512 - $file['stat'][7] % 512) == 512 ? 0 : (512 - $file['stat'][7] % 512));
+								@fclose($new);
+								if (!$this->options['dontUseFilePerms']) {
+									@chmod($file['name'], $file['stat'][2]);
+									@chown($file['name'], $file['stat'][4]);
+									@chgrp($file['name'], $file['stat'][5]);
+								}
+								//need to send datas to browser else we can loose connection ...
+								echo $file['name']." done ...<br />";
+							} else {
+								$this->_raiseError(get_class($this)." : extract_files : Could not open {$file['name']} for writing.");
+							}
+				}
+				unset ($file);
+			}
+		} else {
+			$this->_raiseError(get_class($this)." : extract_files : Could not open file {$this->options['name']}");
+		}
+		chdir($pwd);
+		return true;
+	}
+	/**
+	 * Opens archive by opening/decompressing file
+	 * 
+	 * @return true on success, false on failure
+	 */
+	function open_archive()
+	{
+		return @fopen($this->options['name'], "rb");
+	}
+}
+
+class CMS_gzip_file_install extends CMS_tar_file_install
+{
+	/**
+	 * Constructor
+	 * 
+	 * @param string $name, the full filename of the archive
+	 * @return void
+	 */
+	function CMS_gzip_file($name)
+	{
+		if (trim($name) == '') {
+			$this->_raiseError(get_class($this)." : Not a valid name given to archive ".$name);
+			return;
+		}
+		$this->CMS_tar_file_install($name);
+		$this->options['type'] = "gzip";
+	}
+	/**
+	 * Opens archive by opening/decompressing file
+	 * 
+	 * @return true on success, false on failure
+	 */
+	function open_archive() {
+		return @gzopen($this->options['name'], "rb");
+	}
+}
+?>
