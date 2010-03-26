@@ -192,7 +192,7 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 		static $getCategoriesClearances;
 		// Limit output to one module
 		if ($moduleCodename) {
-			if (!isset($getCategoriesClearances[$moduleCodename]) || !is_a($getCategoriesClearances[$moduleCodename][$this->_profileID],'CMS_stack')) {
+			if (!isset($getCategoriesClearances[$moduleCodename]) || !isset($getCategoriesClearances[$moduleCodename][$this->_profileID]) || !is_a($getCategoriesClearances[$moduleCodename][$this->_profileID],'CMS_stack')) {
 				$stack = new CMS_stack();
 				if (!$this->_isAdmin) {
 					$sql = "
