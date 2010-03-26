@@ -1028,6 +1028,7 @@ if (ini_get('memory_limit') < (int) APPLICATION_MEMORY_LIMIT) {
 if (strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8') {
 	@ini_set('mbstring.internal_encoding', 'UTF-8');
 }
+
 //set error reporting level
 error_reporting(APPLICATION_ERROR_REPORTING);
 
