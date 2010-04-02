@@ -3,7 +3,8 @@
 /**
  * display selection for relational field values
  *
- * @version $Id: browse_foreigners.php,v 1.1 2009/03/02 11:47:35 sebastien Exp $
+ * @version $Id$
+ * @package phpMyAdmin
  */
 
 /**

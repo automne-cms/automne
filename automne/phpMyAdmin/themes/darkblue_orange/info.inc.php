@@ -3,7 +3,7 @@
 /**
  * Theme information
  *
- * @version $Id: info.inc.php,v 1.1 2009/03/02 12:33:16 sebastien Exp $
+ * @version $Id$
  * @package phpMyAdmin-theme
  * @subpackage Darkblue_orange
  */

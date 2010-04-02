@@ -22,7 +22,8 @@
  * warnings about the lack of privileges for CREATE TABLE. Tested
  * on MySQL 5.0.18.
  *
- * @version $Id: display_create_table.lib.php,v 1.1 2009/03/02 12:33:10 sebastien Exp $
+ * @version $Id$
+ * @package phpMyAdmin
  */
 if (! defined('PHPMYADMIN')) {
     exit;

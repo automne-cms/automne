@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: upgrade.pl,v 1.1 2009/03/02 12:33:16 sebastien Exp $
+# $Id$
 #
 # upgrade.pl - automatic phpmyadmin upgrader
 #

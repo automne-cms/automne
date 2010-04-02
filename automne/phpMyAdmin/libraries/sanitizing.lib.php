@@ -1,9 +1,10 @@
 <?php
 /* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
- *
- * @version $Id: sanitizing.lib.php,v 1.1 2009/03/02 12:33:10 sebastien Exp $
  * This is in a separate script because it's called from a number of scripts
+ *
+ * @version $Id$
+ * @package phpMyAdmin
  */
 
 /**

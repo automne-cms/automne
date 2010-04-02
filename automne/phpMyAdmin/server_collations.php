@@ -2,15 +2,20 @@
 /* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  *
- * @version $Id: server_collations.php,v 1.1 2009/03/02 11:47:35 sebastien Exp $
+ * @version $Id$
+ * @package phpMyAdmin
  */
 
 /**
- * requirements
+ * no need for variables importing
+ * @ignore
  */
 if (! defined('PMA_NO_VARIABLES_IMPORT')) {
     define('PMA_NO_VARIABLES_IMPORT', true);
 }
+/**
+ * requirements
+ */
 require_once './libraries/common.inc.php';
 
 /**

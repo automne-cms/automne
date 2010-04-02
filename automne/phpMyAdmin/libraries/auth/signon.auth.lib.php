@@ -3,7 +3,8 @@
 /**
  * Set of functions used to run single signon authentication.
  *
- * @version $Id: signon.auth.lib.php,v 1.1 2009/03/02 12:33:10 sebastien Exp $
+ * @package phpMyAdmin-Auth-Signon
+ * @version $Id$
  */
 
 
@@ -60,6 +61,9 @@ function PMA_auth_check()
     /* Current host */
     $single_signon_host = $GLOBALS['cfg']['Server']['host'];
 
+    /* Current port */
+    $single_signon_port = $GLOBALS['cfg']['Server']['port'];
+
     /* Are we requested to do logout? */
     $do_logout = !empty($_REQUEST['old_usr']);
 
@@ -93,6 +97,12 @@ function PMA_auth_check()
         if (isset($_SESSION['PMA_single_signon_host'])) {
 	        $single_signon_host = $_SESSION['PMA_single_signon_host'];
         }
+
+        if (isset($_SESSION['PMA_single_signon_port'])) {
+            $single_signon_port = $_SESSION['PMA_single_signon_port'];
+        }
+
+
         /* Also get token as it is needed to access subpages */
         if (isset($_SESSION['PMA_single_signon_token'])) {
             /* No need to care about token on logout */
@@ -109,17 +119,19 @@ function PMA_auth_check()
         }
         session_start();
 
-        /* Set the single signon host */
-        $GLOBALS['cfg']['Server']['host']=$single_signon_host;
-		
-		//Added for Automne : Do not remove
+       /* Set the single signon host */
+       $GLOBALS['cfg']['Server']['host']=$single_signon_host;
+
+       /* Set the single signon port */
+       $GLOBALS['cfg']['Server']['port'] = $single_signon_port;
+	   
+	   //Added for Automne : Do not remove
 		//set the database name to connect
 		if (isset($_SESSION['PMA_single_signon_only_db'])) {
 			$GLOBALS['cfg']['Server']['only_db']=$_SESSION['PMA_single_signon_only_db'];
 		}
 		//End Added for Automne : Do not remove
-		
-		
+	   
         /* Restore our token */
         if (!empty($pma_token)) {
             $_SESSION[' PMA_token '] = $pma_token;

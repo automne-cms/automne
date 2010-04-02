@@ -1,4 +1,6 @@
 V4.0.2 (in progress)
+[REFACTOR] : Add draft thumbnail on page status icons
+[REFACTOR] : Update phpMyAdmin to version 3.3.1
 
 V4.0.1 (19/03/10)
 [BUG] : Corrected bugs : 399, 401, 286, 265, 268, 283, 284, 302, 282, 280, 296, 304 (see http://www.automne.ws/bug/)

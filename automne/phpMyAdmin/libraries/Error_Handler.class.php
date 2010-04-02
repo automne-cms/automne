@@ -3,7 +3,8 @@
 /**
  * Holds class PMA_Error_Handler
  *
- * @version $Id: Error_Handler.class.php,v 1.1 2009/03/02 12:33:10 sebastien Exp $
+ * @version $Id$
+ * @package phpMyAdmin
  */
 
 /**
@@ -14,6 +15,7 @@ require_once './libraries/Error.class.php';
 /**
  * handling errors
  *
+ * @package phpMyAdmin
  */
 class PMA_Error_Handler
 {
@@ -57,7 +59,7 @@ class PMA_Error_Handler
             } else {
                 // remember only not displayed errors
                 foreach ($this->_errors as $key => $error) {
-                    if (! $error->isDisplayed()) {
+                    if (($error instanceof PMA_Error) && ! $error->isDisplayed()) {
                         $_SESSION['errors'][$key] = $error;
                     }
                 }
@@ -86,6 +88,9 @@ class PMA_Error_Handler
      * E_COMPILE_WARNING,
      * and most of E_STRICT raised in the file where set_error_handler() is called.
      *
+     * Do not use the context parameter as we want to avoid storing the
+     * complete $GLOBALS inside $_SESSION['errors']
+     *
      * @uses    E_USER_NOTICE
      * @uses    E_USER_WARNING
      * @uses    E_STRICT
@@ -108,12 +113,11 @@ class PMA_Error_Handler
      * @param   string  $errstr
      * @param   string  $errfile
      * @param   integer $errline
-     * @param   array   $errcontext
      */
-    public function handleError($errno, $errstr, $errfile, $errline, $errcontext)
+    public function handleError($errno, $errstr, $errfile, $errline)
     {
         // create error object
-        $error = new PMA_Error($errno, $errstr, $errfile, $errline, $errcontext);
+        $error = new PMA_Error($errno, $errstr, $errfile, $errline);
 
         // do not repeat errors
         $this->_errors[$error->getHash()] = $error;
@@ -122,6 +126,7 @@ class PMA_Error_Handler
             case E_USER_NOTICE:
             case E_USER_WARNING:
             case E_STRICT:
+            case E_DEPRECATED:
             case E_NOTICE:
             case E_WARNING:
             case E_CORE_WARNING:

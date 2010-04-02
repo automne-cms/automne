@@ -25,11 +25,13 @@
  * @uses    PMA_blowfish_encrypt()
  * @uses    PMA_showMessage()
  * @uses    define()
- * @version $Id: user_password.php,v 1.1 2009/03/02 11:47:35 sebastien Exp $
+ * @version $Id$
+ * @package phpMyAdmin
  */
 
 /**
  * no need for variables importing
+ * @ignore
  */
 if (! defined('PMA_NO_VARIABLES_IMPORT')) {
     define('PMA_NO_VARIABLES_IMPORT', true);

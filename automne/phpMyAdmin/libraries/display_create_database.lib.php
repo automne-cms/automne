@@ -3,7 +3,8 @@
 /**
  * Displays form for creating database (if user has privileges for that)
  *
- * @version $Id: display_create_database.lib.php,v 1.1 2009/03/02 12:33:10 sebastien Exp $
+ * @version $Id$
+ * @package phpMyAdmin
  */
 if (! defined('PHPMYADMIN')) {
     exit;
@@ -35,7 +36,7 @@ if ($is_create_db_priv) {
         <strong><?php echo $strCreateNewDatabase . ':&nbsp;' . PMA_showMySQLDocu('SQL-Syntax', 'CREATE_DATABASE'); ?></strong><br />
         <?php
               echo '<span class="noPrivileges">'
-                 . ($cfg['ErrorIconic'] ? '<img src="' . $pmaThemeImage . 's_error2.png" width="11" height="11" hspace="2" border="0" align="middle" />' : '')
+                 . ($cfg['ErrorIconic'] ? '<img src="' . $pmaThemeImage . 's_error2.png" alt="" width="11" height="11" hspace="2" border="0" align="middle" />' : '')
                  . '' . $strNoPrivileges .'</span>';
 } // end create db form or message
 ?>

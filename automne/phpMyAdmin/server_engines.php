@@ -3,12 +3,14 @@
 /**
  * display list of server enignes and additonal information about them
  *
- * @version $Id: server_engines.php,v 1.1 2009/03/02 11:47:35 sebastien Exp $
+ * @version $Id$
  * @todo falcon storage enginge is not listed under dev.mysql.com/doc/refman but dev.mysql.com/doc/falcon/
+ * @package phpMyAdmin
  */
 
 /**
- *
+ * no need for variables importing
+ * @ignore
  */
 if (! defined('PMA_NO_VARIABLES_IMPORT')) {
     define('PMA_NO_VARIABLES_IMPORT', true);

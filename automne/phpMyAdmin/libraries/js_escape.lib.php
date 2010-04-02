@@ -6,7 +6,7 @@
  * @author Michal Čihař <michal@cihar.com>
  * @package phpMyAdmin
  *
- * @version $Id: js_escape.lib.php,v 1.1 2009/03/02 12:33:10 sebastien Exp $
+ * @version $Id$
  */
 
 /**

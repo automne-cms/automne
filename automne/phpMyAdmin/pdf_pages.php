@@ -2,7 +2,8 @@
 /* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  *
- * @version $Id: pdf_pages.php,v 1.1 2009/03/02 11:47:35 sebastien Exp $
+ * @version $Id$
+ * @package phpMyAdmin
  */
 
 /**
@@ -62,19 +63,19 @@ if ($cfgRelation['pdfwork']) {
                 if ($action_choose=="1") {
                     $ch_query = 'DELETE FROM ' . PMA_backquote($GLOBALS['cfgRelation']['db']) . '.' . PMA_backquote($cfgRelation['table_coords'])
                               .   ' WHERE db_name = \'' . PMA_sqlAddslashes($db) . '\''
-                              .   ' AND   pdf_page_number = ' . $chpage;
-                    PMA_query_as_cu($ch_query, FALSE, $query_default_option);
+                              .   ' AND   pdf_page_number = \'' . PMA_sqlAddslashes($chpage) . '\'';
+                    PMA_query_as_controluser($ch_query, FALSE, $query_default_option);
 
                     $ch_query = 'DELETE FROM ' . PMA_backquote($GLOBALS['cfgRelation']['db']) . '.' . PMA_backquote($cfgRelation['pdf_pages'])
                               .   ' WHERE db_name = \'' . PMA_sqlAddslashes($db) . '\''
-                              .   ' AND   page_nr = ' . $chpage;
-                    PMA_query_as_cu($ch_query, FALSE, $query_default_option);
+                              .   ' AND   page_nr = \'' . PMA_sqlAddslashes($chpage) . '\'';
+                    PMA_query_as_controluser($ch_query, FALSE, $query_default_option);
 
                     unset($chpage);
                 }
                 break;
             case 'createpage':
-                $pdf_page_number = PMA_REL_create_page($newpage, $cfgRelation, $db, $query_default_option); 
+                $pdf_page_number = PMA_REL_create_page($newpage, $cfgRelation, $db, $query_default_option);
 
                 // A u t o m a t i c    l a y o u t
                 // ================================
@@ -85,10 +86,10 @@ if ($cfgRelation['pdfwork']) {
                 if (isset($auto_layout_foreign)) {
                     // get the tables list
                     $tables = PMA_DBI_get_tables_full($db);
-                    // find the ones who support FOREIGN KEY; it's not 
+                    // find the ones who support FOREIGN KEY; it's not
                     // important that we group together InnoDB tables
                     // and PBXT tables, as this logic is just to put
-                    // the tables on the layout, not to determine relations 
+                    // the tables on the layout, not to determine relations
                     $foreignkey_tables = array();
                     foreach($tables as $table_name => $table_properties) {
                         if (PMA_foreignkey_supported($table_properties['ENGINE'])) {
@@ -110,7 +111,7 @@ if ($cfgRelation['pdfwork']) {
                                 . ' WHERE master_db = \'' . $db . '\''
                                 . ' GROUP BY master_table'
                                 . ' ORDER BY ' . PMA_backquote('COUNT(master_table)') . ' DESC ';
-                    $master_tables_rs = PMA_query_as_cu($master_tables, FALSE, $query_default_option);
+                    $master_tables_rs = PMA_query_as_controluser($master_tables, FALSE, $query_default_option);
                     if ($master_tables_rs && PMA_DBI_num_rows($master_tables_rs) > 0) {
                         // first put all the master tables at beginning
                         // of the list, so they are near the center of
@@ -158,7 +159,7 @@ if ($cfgRelation['pdfwork']) {
                         $insert_query = 'INSERT INTO ' . PMA_backquote($GLOBALS['cfgRelation']['db']) . '.' . PMA_backquote($cfgRelation['table_coords']) . ' '
                                       . '(db_name, table_name, pdf_page_number, x, y) '
                                       . 'VALUES (\'' . PMA_sqlAddslashes($db) . '\', \'' . PMA_sqlAddslashes($current_table) . '\',' . $pdf_page_number . ',' . $pos_x . ',' . $pos_y . ')';
-                        PMA_query_as_cu($insert_query, FALSE, $query_default_option);
+                        PMA_query_as_controluser($insert_query, FALSE, $query_default_option);
 
                         // compute for the next table
                         switch ($direction) {
@@ -204,27 +205,27 @@ if ($cfgRelation['pdfwork']) {
                         $test_query = 'SELECT * FROM ' . PMA_backquote($GLOBALS['cfgRelation']['db']) . '.' . PMA_backquote($cfgRelation['table_coords'])
                                     .   ' WHERE db_name = \'' .  PMA_sqlAddslashes($db) . '\''
                                     .   ' AND   table_name = \'' . PMA_sqlAddslashes($arrvalue['name']) . '\''
-                                    .   ' AND   pdf_page_number = ' . $chpage;
-                        $test_rs    = PMA_query_as_cu($test_query, FALSE, $query_default_option);
+                                    .   ' AND   pdf_page_number = \'' . PMA_sqlAddslashes($chpage) . '\'';
+                        $test_rs    = PMA_query_as_controluser($test_query, FALSE, $query_default_option);
                         if ($test_rs && PMA_DBI_num_rows($test_rs) > 0) {
                             if (isset($arrvalue['delete']) && $arrvalue['delete'] == 'y') {
                                 $ch_query = 'DELETE FROM ' . PMA_backquote($GLOBALS['cfgRelation']['db']) . '.' . PMA_backquote($cfgRelation['table_coords'])
                                           .   ' WHERE db_name = \'' . PMA_sqlAddslashes($db) . '\''
                                           .   ' AND   table_name = \'' . PMA_sqlAddslashes($arrvalue['name']) . '\''
-                                          .   ' AND   pdf_page_number = ' . $chpage;
+                                          .   ' AND   pdf_page_number = \'' . PMA_sqlAddslashes($chpage) . '\'';
                             } else {
                                 $ch_query = 'UPDATE ' . PMA_backquote($GLOBALS['cfgRelation']['db']) . '.' . PMA_backquote($cfgRelation['table_coords']) . ' '
                                           . 'SET x = ' . $arrvalue['x'] . ', y= ' . $arrvalue['y']
                                           .   ' WHERE db_name = \'' . PMA_sqlAddslashes($db) . '\''
                                           .   ' AND   table_name = \'' . PMA_sqlAddslashes($arrvalue['name']) . '\''
-                                          .   ' AND   pdf_page_number = ' . $chpage;
+                                          .   ' AND   pdf_page_number = \'' . PMA_sqlAddslashes($chpage) . '\'';
                             }
                         } else {
                             $ch_query     = 'INSERT INTO ' . PMA_backquote($GLOBALS['cfgRelation']['db']) . '.' . PMA_backquote($cfgRelation['table_coords']) . ' '
                                           . '(db_name, table_name, pdf_page_number, x, y) '
-                                          . 'VALUES (\'' . PMA_sqlAddslashes($db) . '\', \'' . PMA_sqlAddslashes($arrvalue['name']) . '\',' . $chpage . ',' . $arrvalue['x'] . ',' . $arrvalue['y'] . ')';
+                                          . 'VALUES (\'' . PMA_sqlAddslashes($db) . '\', \'' . PMA_sqlAddslashes($arrvalue['name']) . '\', \'' . PMA_sqlAddslashes($chpage) . '\',' . $arrvalue['x'] . ',' . $arrvalue['y'] . ')';
                         }
-                        PMA_query_as_cu($ch_query, FALSE, $query_default_option);
+                        PMA_query_as_controluser($ch_query, FALSE, $query_default_option);
                     } // end if
                 } // end for
                 break;
@@ -233,8 +234,8 @@ if ($cfgRelation['pdfwork']) {
                     $d_query = 'DELETE FROM ' . PMA_backquote($GLOBALS['cfgRelation']['db']) . '.' . PMA_backquote($cfgRelation['table_coords']) . ' ' . "\n"
                              .   ' WHERE db_name = \'' . PMA_sqlAddslashes($db) . '\'' . "\n"
                              .   ' AND   table_name = \'' . PMA_sqlAddslashes($current_row) . '\'' . "\n"
-                             .   ' AND   pdf_page_number = ' . $chpage;
-                    PMA_query_as_cu($d_query, FALSE, $query_default_option);
+                             .   ' AND   pdf_page_number = \'' . PMA_sqlAddslashes($chpage) . '\'';
+                    PMA_query_as_controluser($d_query, FALSE, $query_default_option);
                 }
                 break;
         } // end switch
@@ -250,7 +251,7 @@ if ($cfgRelation['pdfwork']) {
     // Now first show some possibility to choose a page for the pdf
     $page_query = 'SELECT * FROM ' . PMA_backquote($GLOBALS['cfgRelation']['db']) . '.' . PMA_backquote($cfgRelation['pdf_pages'])
                 . ' WHERE db_name = \'' . PMA_sqlAddslashes($db) . '\'';
-    $page_rs    = PMA_query_as_cu($page_query, FALSE, $query_default_option);
+    $page_rs    = PMA_query_as_controluser($page_query, FALSE, $query_default_option);
 
     if ($page_rs && PMA_DBI_num_rows($page_rs) > 0) {
         ?>
@@ -269,7 +270,7 @@ if ($cfgRelation['pdfwork']) {
             if (isset($chpage) && $chpage == $curr_page['page_nr']) {
                 echo ' selected="selected"';
             }
-            echo '>' . $curr_page['page_nr'] . ': ' . $curr_page['page_descr'] . '</option>';
+            echo '>' . $curr_page['page_nr'] . ': ' . htmlspecialchars($curr_page['page_descr']) . '</option>';
         } // end while
         echo "\n";
         ?>
@@ -278,7 +279,7 @@ if ($cfgRelation['pdfwork']) {
     $choices = array(
         '0' => $strEdit,
         '1' => $strDelete);
-        PMA_generate_html_radio('action_choose', $choices, '0', false);
+        PMA_display_html_radio('action_choose', $choices, '0', false);
     unset($choices);
 ?>
        <input type="submit" value="<?php echo $strGo; ?>" /><br />
@@ -321,8 +322,8 @@ if ($cfgRelation['pdfwork']) {
 <?php
 $page_query = 'SELECT * FROM ' . PMA_backquote($GLOBALS['cfgRelation']['db']) . '.' . PMA_backquote($cfgRelation['table_coords'])
             . ' WHERE db_name = \'' . PMA_sqlAddslashes($db) . '\''
-            . ' AND pdf_page_number = ' . $chpage;
-$page_rs    = PMA_query_as_cu($page_query, FALSE, $query_default_option);
+            . ' AND pdf_page_number = \'' . PMA_sqlAddslashes($chpage) . '\'';
+$page_rs    = PMA_query_as_controluser($page_query, FALSE, $query_default_option);
 $array_sh_page = array();
 $draginit = '';
 $reset_draginit = '';
@@ -397,7 +398,7 @@ function resetDrag() {
 
 <form method="post" action="pdf_pages.php" name="edcoord">
     <?php echo PMA_generate_common_hidden_inputs($db, $table); ?>
-    <input type="hidden" name="chpage" value="<?php echo $chpage; ?>" />
+    <input type="hidden" name="chpage" value="<?php echo htmlspecialchars($chpage); ?>" />
     <input type="hidden" name="do" value="edcoord" />
     <table border="0">
     <tr>
@@ -428,12 +429,12 @@ function resetDrag() {
             echo "\n" . '        <td>'
                  . "\n" . '            <select name="c_table_' . $i . '[name]">';
             foreach ($selectboxall AS $key => $value) {
-                echo "\n" . '                <option value="' . $value . '"';
+                echo "\n" . '                <option value="' . htmlspecialchars($value) . '"';
                 if ($value == $sh_page['table_name']) {
                     echo ' selected="selected"';
                     $tabExist[$_mtab] = TRUE;
                 }
-                echo '>' . $value . '</option>';
+                echo '>' . htmlspecialchars($value) . '</option>';
             } // end while
             echo "\n" . '            </select>'
                  . "\n" . '        </td>';
@@ -461,7 +462,7 @@ function resetDrag() {
         echo "\n" . '        <td>'
              . "\n" . '            <select name="c_table_' . $i . '[name]">';
         foreach ($selectboxall AS $key => $value) {
-            echo "\n" . '                <option value="' . $value . '">' . $value . '</option>';
+            echo "\n" . '                <option value="' . htmlspecialchars($value) . '">' . htmlspecialchars($value) . '</option>';
         }
         echo "\n" . '            </select>'
              . "\n" . '        </td>';
@@ -492,8 +493,8 @@ function resetDrag() {
     if (!empty($tabExist) && is_array($tabExist)) {
         foreach ($tabExist AS $key => $value) {
             if (!$value) {
-                $_strtrans  .= '<input type="hidden" name="delrow[]" value="' . $key . '" />' . "\n";
-                $_strname   .= '<li>' . $key . '</li>' . "\n";
+                $_strtrans  .= '<input type="hidden" name="delrow[]" value="' . htmlspecialchars($key) . '" />' . "\n";
+                $_strname   .= '<li>' . htmlspecialchars($key) . '</li>' . "\n";
                 $shoot       = TRUE;
             }
         }
@@ -501,7 +502,7 @@ function resetDrag() {
             echo '<form action="pdf_pages.php" method="post">' . "\n"
                . PMA_generate_common_hidden_inputs($db, $table)
                . '<input type="hidden" name="do" value="deleteCrap" />' . "\n"
-               . '<input type="hidden" name="chpage" value="' . $chpage . '" />' . "\n"
+               . '<input type="hidden" name="chpage" value="' . htmlspecialchars($chpage) . '" />' . "\n"
                . $strDelOld
                . '<ul>' . "\n"
                . $_strname
@@ -522,15 +523,15 @@ function resetDrag() {
         ?>
 <form method="post" action="pdf_schema.php" name="pdfoptions">
     <?php echo PMA_generate_common_hidden_inputs($db); ?>
-    <input type="hidden" name="pdf_page_number" value="<?php echo $chpage; ?>" />
+    <input type="hidden" name="pdf_page_number" value="<?php echo htmlspecialchars($chpage); ?>" />
 
     <?php echo '<br /><strong>' . $strDisplayPDF . '</strong>'; ?>:&nbsp;<br />
     <input type="checkbox" name="show_grid" id="show_grid_opt" /><label for="show_grid_opt"><?php echo $strShowGrid; ?></label><br />
     <input type="checkbox" name="show_color" id="show_color_opt" checked="checked" /><label for="show_color_opt"><?php echo $strShowColor; ?></label><br />
     <input type="checkbox" name="show_table_dimension" id="show_table_dim_opt" /><label for="show_table_dim_opt"><?php echo $strShowTableDimension; ?></label><br />
     <input type="checkbox" name="all_tab_same_wide" id="all_tab_same_wide" /><label for="all_tab_same_wide"><?php echo $strAllTableSameWidth; ?></label><br />
-    <input type="checkbox" name="with_doc" id="with_doc" checked="checked" /><label for="with_doc"><?php echo $strDataDict; ?></label>
-    <br />
+    <input type="checkbox" name="with_doc" id="with_doc" checked="checked" /><label for="with_doc"><?php echo $strDataDict; ?></label><br />
+    <input type="checkbox" name="show_keys" id="show_keys" /><label for="show_keys"><?php echo $strShowKeys; ?></label><br />
     <label for="orientation_opt"><?php echo $strShowDatadictAs; ?></label>
     <select id="orientation_opt" name="orientation" <?php echo ($cfg['WYSIWYG-PDF'] ? 'onchange="refreshDragOption(\'pdflayout\');"' : ''); ?>>
         <option value="L"><?php echo $strLandscape;?></option>

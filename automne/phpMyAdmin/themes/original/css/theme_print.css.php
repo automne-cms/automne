@@ -3,7 +3,7 @@
 /**
  * print css file from theme Original
  *
- * @version $Id: theme_print.css.php,v 1.1 2009/03/02 12:33:16 sebastien Exp $
+ * @version $Id$
  * @package phpMyAdmin-theme
  * @subpackage Original
  */
