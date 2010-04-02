@@ -569,8 +569,8 @@ class CMS_email extends CMS_grandFather
 		$From = ($this->_emailFrom) ? $this->_emailFrom : APPLICATION_POSTMASTER_EMAIL;
 		$FromName = ($this->_fromName) ? $this->_fromName : '';
 		$toUsers = (is_array($this->_emailTo) && $this->_emailTo) ? $this->_emailTo : array($this->_emailTo);
-		$cc = (is_array($this->_cc) && $this->_cc) ? $this->_cc : array($this->_cc);
-		$bcc = (is_array($this->_bcc) && $this->_bcc) ? $this->_bcc : array($this->_bcc);
+		$cc = (is_array($this->_cc) && $this->_cc) ? $this->_cc : ($this->_cc ? array($this->_cc) : '');
+		$bcc = (is_array($this->_bcc) && $this->_bcc) ? $this->_bcc : ($this->_bcc ? array($this->_bcc) : '');
 		$toNames = (is_array($this->_toName) && $this->_toName) ? $this->_toName : array($this->_toName);
 		$Error = ($this->_error) ? $this->_error : '';
 		$Subject = $this->_subject;
@@ -643,15 +643,15 @@ class CMS_email extends CMS_grandFather
 				if ($Error) {
 					$headers.="Errors-To: ".$Error."\n";
 				}
-				$headers.="User-Agent: Automne (TM)\n";
-				$headers.="X-Mailer: Automne (TM)\n";
-				$headers.="X-Priority: 3\n";
 				if ($cc) {
 					$headers.="Cc: ".implode(',',$cc)."\n";
 				}
 				if ($bcc) {
 					$headers.="Bcc: ".implode(',',$bcc)."\n";
 				}
+				/*$headers.="User-Agent: Automne (TM)\n";*/ //Cause email to be reported as spam
+				$headers.="X-Mailer: Automne (TM)\n";
+				$headers.="X-Priority: 3\n";
 				$headers.="Content-Type: multipart/mixed;\n\tboundary=\"".$OB."\"\n";
 				//Check drop emails list (Automne default emails)
 				if (!in_array($to, $this->_drop) && !in_array($From, $this->_drop)) {

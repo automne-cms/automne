@@ -953,7 +953,7 @@ class CMS_file extends CMS_grandFather
 	  * @static
 	  */
 	function getMaxUploadFileSize($unit = 'M') {
-		$max = (int) (ini_get("upload_max_filesize") < ini_get("post_max_size")) ? ini_get("upload_max_filesize") : ini_get("post_max_size");
+		$max = (int) ((int) ini_get("upload_max_filesize") < (int) ini_get("post_max_size")) ? ini_get("upload_max_filesize") : ini_get("post_max_size");
 		if ($unit == 'M') {
 			return io::substr($max, 0, -1);
 		} elseif($unit == 'K') {

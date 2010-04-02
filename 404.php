@@ -103,6 +103,7 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'].'/404.html')) {
 <head>
 	<title>404 Not Found ...</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo APPLICATION_DEFAULT_ENCODING; ?>" />
+	<meta name="robots" content="noindex, noarchive" /> 
 	<style type="text/css">
 	body {
 		background-color: 		#E9F1DA;

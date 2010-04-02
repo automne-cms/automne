@@ -37,6 +37,7 @@ if (isset($_POST['userAgent'])) {
 }*/
 
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+
 //load interface instance
 $view = CMS_view::getInstance();
 //set default display mode for this page

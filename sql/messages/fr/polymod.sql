@@ -652,8 +652,8 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(520, 'polymod', 'fr', 'Ordre aléatoire');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(521, 'polymod', 'fr', 'Sur cette page, vous pouvez spécifier des paramètres pour l''affichage de la rangée de contenu en cours d''édition.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(522, 'polymod', 'fr', 'Le formulaire est incomplet ou possède des valeurs incorrectes ...');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(523, 'polymod', 'fr', 'Cet onglet est désactivé car vous devez avoir sélectionné du texte pour l''utiliser.');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(524, 'polymod', 'fr', 'Cet onglet est désactivé car vous ne devez pas avoir de texte sélectionné pour l''utiliser.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(523, 'polymod', 'fr', 'Cet onglet est désactivé car vous devez avoir sélectionné du texte dans l''éditeur pour l''utiliser.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(524, 'polymod', 'fr', 'Cet onglet est désactivé car vous ne devez pas avoir sélectionné de texte dans l''éditeur pour l''utiliser.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(525, 'polymod', 'fr', 'L''élément ''%s'' que vous cherchez à éditer est vérouillé par %s le %s.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(526, 'polymod', 'fr', 'Vous n''avez pas le droit d''éditer l''élément ''%s''.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(527, 'polymod', 'fr', 'Sur cette page, vous pouvez créer ou modifier les données de l''élément %s');

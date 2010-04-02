@@ -354,7 +354,7 @@ class CMS_object_categories extends CMS_object_common
 			//serialize all htmlparameters 
 			$htmlParameters = $this->serializeHTMLParameters($inputParams);
 			// Get categories
-			$a_all_categories = $this->getAllCategoriesAsArray($language, false, $moduleCodename, CLEARANCE_MODULE_EDIT, false, true);
+			$a_all_categories = $this->getAllCategoriesAsArray($language, false, $moduleCodename, CLEARANCE_MODULE_EDIT, $rootCategory, true);
 			if (is_array($a_all_categories) && $a_all_categories) {
 				$html = '
 				<select name="list'.$prefixName.$this->_field->getID().'_0"'.$htmlParameters.'>';

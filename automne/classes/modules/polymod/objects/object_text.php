@@ -338,6 +338,7 @@ class CMS_object_text extends CMS_object_common
 		$structure = parent::getStructure();
 		$structure['htmlvalue'] = '';
 		$structure['hasvalue'] = '';
+		$structure['rawvalue'] = '';
 		return $structure;
 	}
 	
@@ -410,6 +411,9 @@ class CMS_object_text extends CMS_object_common
 			break;
   	        case 'hasvalue':
 				return ($this->_subfieldValues[0]->getValue()) ? true : false;
+			break;
+			case 'rawvalue':
+				return $this->_subfieldValues[0]->getValue();
 			break;
 			default:
 				return parent::getValue($name, $parameters);

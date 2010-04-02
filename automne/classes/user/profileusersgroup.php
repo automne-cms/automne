@@ -28,6 +28,12 @@
 
 class CMS_profile_usersGroup extends CMS_profile
 {
+	const MESSAGE_PAGE_USERS_GROUP = 1621;
+	const MESSAGE_PAGE_USERS = 926;
+	const MESSAGE_PAGE_CLICK_TO_VIEW_USER = 1622;
+	const MESSAGE_PAGE_USERS_NUMBER = 1623;
+	const MESSAGE_PAGE_NONE = 10;
+	
 	/**
 	  * Id of user group in database
 	  *
@@ -642,7 +648,7 @@ class CMS_profile_usersGroup extends CMS_profile
 	
 	function getJSonDescription($user, $cms_language) {
 		$users = $this->getUsersRef();
-		$groupUsers = ($users) ? '<a href="#" onclick="Automne.view.search(\'group:'.$this->getGroupId().'\');return false;" ext:qtip="Cliquez pour voir les utilisateurs de ce groupe" class="atm-help">'.sizeof($users).' Utilisateur(s)</a>' : 'Aucun';
+		$groupUsers = ($users) ? '<a href="#" onclick="Automne.view.search(\'group:'.$this->getGroupId().'\');return false;" ext:qtip="'.$cms_language->getMessage(self::MESSAGE_PAGE_CLICK_TO_VIEW_USER).'" class="atm-help">'.$cms_language->getMessage(self::MESSAGE_PAGE_CLICK_TO_VIEW_USER, array(sizeof($users))).'</a>' : $cms_language->getMessage(self::MESSAGE_PAGE_NONE);
 		if ($user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
 			$edit = array(
 				'url' 		=> 'group.php',
@@ -656,9 +662,9 @@ class CMS_profile_usersGroup extends CMS_profile
 		return array(
 			'id'			=> $this->getGroupId(),
 			'label'			=> $this->getLabel(),
-			'type'			=> 'Groupe d\'utilisateurs',
-			'description'	=> $this->getDescription().'<br />
-								Utilisateurs : '.$groupUsers,
+			'type'			=> $cms_language->getMessage(self::MESSAGE_PAGE_USERS_GROUP),
+			'description'	=> $this->getDescription().'<br />'."\n".
+								$cms_language->getMessage(self::MESSAGE_PAGE_USERS).' : '.$groupUsers,
 			'edit'			=> $edit
 		);
 	}

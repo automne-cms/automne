@@ -167,7 +167,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 							$parameters = array();
 							$parameters['itemID'] = $selectedItem;
 							$parameters['pageID'] = $treatedObject->getID();
-							$parameters['public'] = ($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC) ? true : false;
+							$parameters['public'] = ($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC || $visualizationMode == PAGE_VISUALMODE_PRINT || $visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC_INDEXABLE) ? true : false;
 							//get originaly selected text
 							if (!$selectedPlugin->needSelection()) {
 								$parameters['selection'] = '';
@@ -202,7 +202,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 							//get plugin
 							$selectedPlugin = new CMS_poly_plugin_definitions($selectedPluginID);
 							//get selected item
-							$item = CMS_poly_object_catalog::getObjectByID($selectedItem, false, ($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC) ? true : false);
+							$item = CMS_poly_object_catalog::getObjectByID($selectedItem, false, ($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC || $visualizationMode == PAGE_VISUALMODE_PRINT || $visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC_INDEXABLE) ? true : false);
 							if ($item && !$item->hasError()) {
 								//get originaly selected text if any
 								$selectedText = '';
@@ -211,7 +211,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 									$selectedText = $hasSelection ? $matches[1] : $tag->getInnerContent();
 									$tagContent = '<span id="polymod-'.$selectedPluginID.'-'.$selectedItem.'" class="polymod" title="'.io::htmlspecialchars($selectedPlugin->getLabel($cms_language).' : '.trim($item->getLabel($cms_language))).'">'.$selectedText.'</span>';
 								} else {
-									$tagContent = '<span id="polymod-'.$selectedPluginID.'-'.$selectedItem.'" class="polymod" title="'.io::htmlspecialchars($selectedPlugin->getLabel($cms_language).' : '.trim($item->getLabel($cms_language))).'">'.CMS_poly_definition_functions::pluginCode($selectedPluginID, $selectedItem, '', ($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC) ? true : false, true).'</span>';
+									$tagContent = '<span id="polymod-'.$selectedPluginID.'-'.$selectedItem.'" class="polymod" title="'.io::htmlspecialchars($selectedPlugin->getLabel($cms_language).' : '.trim($item->getLabel($cms_language))).'">'.CMS_poly_definition_functions::pluginCode($selectedPluginID, $selectedItem, '', ($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC || $visualizationMode == PAGE_VISUALMODE_PRINT || $visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC_INDEXABLE) ? true : false, true).'</span>';
 								}
 							} else {
 								$tagContent = '';
@@ -277,7 +277,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 					$modulesCode[$this->_codename] = '<?php require_once($_SERVER["DOCUMENT_ROOT"].\'/automne/classes/polymodFrontEnd.php\'); ?>';
 					//add forms header if needed
 					if (isset($usage['form']) && $usage['form']) {
-						$modulesCode[$this->_codename] .= '<?php CMS_poly_definition_functions::formActions('.var_export($usage['form'],true).', \''.$treatedObject->getID().'\', \''.$usage['language'].'\', '.(($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC || $visualizationMode == PAGE_VISUALMODE_PRINT) ? 'true' : 'false').', $polymodFormsError, $polymodFormsItems); ?>';
+						$modulesCode[$this->_codename] .= '<?php CMS_poly_definition_functions::formActions('.var_export($usage['form'],true).', \''.$treatedObject->getID().'\', \''.$usage['language'].'\', '.(($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC || $visualizationMode == PAGE_VISUALMODE_PRINT || $visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC_INDEXABLE) ? 'true' : 'false').', $polymodFormsError, $polymodFormsItems); ?>';
 					}
 					//add forms callback if needed
 					if (isset($usage['formsCallback']) && is_array($usage['formsCallback']) && isset($usage['headcode'])) {

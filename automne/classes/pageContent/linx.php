@@ -486,7 +486,8 @@ class CMS_linx extends CMS_grandFather
 		$public_targets = array();
 		if (is_array($targets)) {
 			foreach ($targets as $target) {
-				if ($target->isUseable() && $target->getPublication() == RESOURCE_PUBLICATION_PUBLIC) {
+				
+				if ((!$this->_publicTree /*&& $target->getPublication() != RESOURCE_PUBLICATION_VALIDATED*/) || ($this->_publicTree && $target->isUseable() && $target->getPublication() == RESOURCE_PUBLICATION_PUBLIC)) {
 					$public_targets[] = $target;
 				}
 			}

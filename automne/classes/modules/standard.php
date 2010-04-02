@@ -1585,72 +1585,6 @@ class CMS_module_standard extends CMS_module
 				}
 				//load CS datas
 				switch ($tag->getName()) {
-					/*case 'atm-meta-tags':
-						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
-							//add needed javascripts
-							$metaDatas = '<script type="text/javascript">'."\n".
-								'var atmRowsDatas = {};'."\n".
-								'var atmBlocksDatas = {};'."\n".
-								'var atmCSDatas = {};'."\n".
-								'var atmIsValidator = false;'."\n".
-								'var atmIsValidable = false;'."\n".
-								'var atmHasPreview = false;'."\n".
-							'</script>';
-							//append JS from current view instance
-							$view = CMS_view::getInstance();
-							$metaDatas .= $view->getJavascript();
-							$metaDatas .= CMS_view::getCSS(array('edit'));
-							
-							return $metaDatas;
-						}
-					break;*/
-					/*case "atm-js-tags":
-					case "atm-css-tags":
-						//if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
-							$files = $tag->getAttribute('files');
-							if (!$files) {
-								return '';
-							}
-							//save in global var the page ID who need this module so we can add the header code later.
-							CMS_module::moduleUsage($treatedObject->getID(), $this->_codename, array($tag->getName() => true));
-							
-							$media = $tag->getAttribute('media');
-							$files = array_map('trim', explode(',', $files));
-							
-							switch ($tag->getName()) {
-								case "atm-js-tags":
-									$method = 'getJavascript';
-									$files[] = '/js/CMS_functions.js';
-									//if this page use a row block of this module then add the header code to the page
-									if ($usage = $this->moduleUsage($treatedObject->getID(), MOD_STANDARD_CODENAME)) {
-										if (is_array($usage) && isset($usage['blockflash']) && $usage['blockflash'] == true) {
-											$files[] = 'swfobject';
-										}
-									}
-								break;
-								case "atm-css-tags":
-									$method = 'getCSS';
-								break;
-							}
-							//save files
-							CMS_module::moduleUsage($treatedObject->getID(), $tag->getName(), $files);
-							return '<?php echo CMS_view::'.$method.'(array(\''.implode('\',\'', $files).'\')'.($media ? ', \''.$media.'\'' : '').'); ?'.'>'."\n";
-						//}
-					break;*/
-					/*case 'title':
-						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
-							$title = $treatmentParameters['page']->getTitle();
-							return '<title>'.$title.'</title>';
-						}
-					break;*/
-					/*case 'atm-linx':
-						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
-							$linx_args = array("page"=> $treatmentParameters["page"], "publicTree"=>false);
-							$linx = $tag->getRepresentationInstance($linx_args);
-							$linx->setDebug(false);
-							return $linx->getOutput();
-						}
-					break;*/
 					case 'atm-clientspace':
 					default:
 						$client_space = $tag->getRepresentationInstance($args);
@@ -1684,6 +1618,7 @@ class CMS_module_standard extends CMS_module
 			case MODULE_TREATMENT_LINXES_TAGS:
 				switch ($tag->getName()) {
 					case "atm-linx":
+						//linx are visible only if target pages are published (public tree)
 						$linx_args = array("page"=> $treatedObject, "publicTree"=> true);
 						$linx = $tag->getRepresentationInstance($linx_args);
 						return $linx->getOutput(true);
@@ -1698,7 +1633,8 @@ class CMS_module_standard extends CMS_module
 				}
 				switch ($tag->getName()) {
 					case "atm-linx":
-						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
+						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM || $visualizationMode == PAGE_VISUALMODE_FORM) {
+							//linx are visible even if target pages are not published (edited tree)
 							$linx_args = array("page"=> $treatedObject, "publicTree"=> false);
 							$linx = $tag->getRepresentationInstance($linx_args);
 							$linx->setDebug(false);
@@ -1708,7 +1644,8 @@ class CMS_module_standard extends CMS_module
 						//for public and print visualmode, this treatment is done by MODULE_TREATMENT_LINXES_TAGS mode during page file linx treatment
 						if ($visualizationMode != PAGE_VISUALMODE_HTML_PUBLIC 
 							&& $visualizationMode != PAGE_VISUALMODE_PRINT) {
-							$linx_args = array("page"=> $treatedObject, "publicTree"=> false);
+							//linx are visible only if target pages are published (public tree)
+							$linx_args = array("page"=> $treatedObject, "publicTree"=> true);
 							$linx = $tag->getRepresentationInstance($linx_args);
 							return $linx->getOutput();
 						}
