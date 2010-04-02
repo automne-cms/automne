@@ -3,15 +3,16 @@
 /**
  * Simple wrapper just to enable error reporting and include config
  *
- * @version $Id: show_config_errors.php,v 1.1 2009/03/02 11:47:35 sebastien Exp $
+ * @version $Id$
+ * @package phpMyAdmin
  */
 
-/**
- *
- */
 echo "Starting to parse config file...\n";
 
 error_reporting(E_ALL);
+/**
+ * Read config file.
+ */
 require './config.inc.php';
 
 ?>

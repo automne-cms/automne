@@ -2,7 +2,8 @@
 /* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  *
- * @version $Id: Theme_Manager.class.php,v 1.1 2009/03/02 12:33:10 sebastien Exp $
+ * @version $Id$
+ * @package phpMyAdmin
  */
 
 /**
@@ -12,12 +13,13 @@ require_once './libraries/Theme.class.php';
 
 /**
  *
+ * @package phpMyAdmin
  */
 class PMA_Theme_Manager
 {
     /**
      * @var string path to theme folder
-     * @protected
+     * @access protected
      */
     var $_themes_path;
 

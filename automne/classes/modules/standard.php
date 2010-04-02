@@ -1618,6 +1618,7 @@ class CMS_module_standard extends CMS_module
 			case MODULE_TREATMENT_LINXES_TAGS:
 				switch ($tag->getName()) {
 					case "atm-linx":
+						//linx are visible only if target pages are published (public tree)
 						$linx_args = array("page"=> $treatedObject, "publicTree"=> true);
 						$linx = $tag->getRepresentationInstance($linx_args);
 						return $linx->getOutput(true);
@@ -1632,7 +1633,8 @@ class CMS_module_standard extends CMS_module
 				}
 				switch ($tag->getName()) {
 					case "atm-linx":
-						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
+						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM || $visualizationMode == PAGE_VISUALMODE_FORM) {
+							//linx are visible even if target pages are not published (edited tree)
 							$linx_args = array("page"=> $treatedObject, "publicTree"=> false);
 							$linx = $tag->getRepresentationInstance($linx_args);
 							$linx->setDebug(false);
@@ -1642,7 +1644,8 @@ class CMS_module_standard extends CMS_module
 						//for public and print visualmode, this treatment is done by MODULE_TREATMENT_LINXES_TAGS mode during page file linx treatment
 						if ($visualizationMode != PAGE_VISUALMODE_HTML_PUBLIC 
 							&& $visualizationMode != PAGE_VISUALMODE_PRINT) {
-							$linx_args = array("page"=> $treatedObject, "publicTree"=> false);
+							//linx are visible only if target pages are published (public tree)
+							$linx_args = array("page"=> $treatedObject, "publicTree"=> true);
 							$linx = $tag->getRepresentationInstance($linx_args);
 							return $linx->getOutput();
 						}

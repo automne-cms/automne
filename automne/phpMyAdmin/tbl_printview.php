@@ -2,7 +2,8 @@
 /* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  *
- * @version $Id: tbl_printview.php,v 1.1 2009/03/02 11:47:35 sebastien Exp $
+ * @version $Id$
+ * @package phpMyAdmin
  */
 
 /**
@@ -91,12 +92,9 @@ foreach ($the_tables as $key => $table) {
     /**
      * Gets table informations
      */
-    $result       = PMA_DBI_query(
-        'SHOW TABLE STATUS LIKE \'' . PMA_sqlAddslashes($table, true) . '\';');
-    $showtable    = PMA_DBI_fetch_assoc($result);
+    $showtable    = PMA_Table::sGetStatusInfo($db, $table);
     $num_rows     = (isset($showtable['Rows']) ? $showtable['Rows'] : 0);
     $show_comment = (isset($showtable['Comment']) ? $showtable['Comment'] : '');
-    PMA_DBI_free_result($result);
 
     $tbl_is_view = PMA_Table::isView($db, $table);
 
@@ -381,7 +379,7 @@ foreach ($the_tables as $key => $table) {
                 <td align="<?php echo $cell_align_left; ?>">
                     <?php
                     if ($showtable['Row_format'] == 'Fixed') {
-                        echo $strFixed;
+                        echo $strStatic;
                     } elseif ($showtable['Row_format'] == 'Dynamic') {
                         echo $strDynamic;
                     } else {

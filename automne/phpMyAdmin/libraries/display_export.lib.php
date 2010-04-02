@@ -2,7 +2,8 @@
 /* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  *
- * @version $Id: display_export.lib.php,v 1.1 2009/03/02 12:33:10 sebastien Exp $
+ * @version $Id$
+ * @package phpMyAdmin
  */
 if (! defined('PHPMYADMIN')) {
     exit;
@@ -103,15 +104,23 @@ echo PMA_pluginGetJavascript($export_list);
 //]]>
 </script>
 
-<?php if (strlen($table) && ! isset($num_tables)) { ?>
+<?php 
+    $is_merge = ! PMA_Table::isView($db, $table) && (strcasecmp(PMA_Table::sGetStatusInfo($db, $table, 'Engine'),'MRG_MYISAM') == 0);
+    if (strlen($table) && ! isset($num_tables) && ! $is_merge) { 
+?>
     <div class="formelementrow">
         <?php
+        echo '<input type="radio" name="allrows" value="0" id="radio_allrows_0" checked="checked" />';
+
         echo sprintf($strDumpXRows,
             '<input type="text" name="limit_to" size="5" value="'
-            . (isset($unlim_num_rows) ? $unlim_num_rows : PMA_Table::countRecords($db, $table, TRUE))
+            . (isset($unlim_num_rows) ? $unlim_num_rows : PMA_Table::countRecords($db, $table))
             . '" onfocus="this.select()" />',
             '<input type="text" name="limit_from" value="0" size="5"'
             .' onfocus="this.select()" /> ');
+
+        echo '<input type="radio" name="allrows" value="1" id="radio_allrows_1" />';
+        echo '<label for="radio_allrows_1">' . $strDumpAllRows . '</label>';
         ?>
     </div>
 <?php } ?>
@@ -172,25 +181,26 @@ echo PMA_pluginGetJavascript($export_list);
         echo ' value="';
         if ($export_type == 'database') {
             if (isset($_COOKIE) && !empty($_COOKIE['pma_db_filename_template'])) {
-                echo $_COOKIE['pma_db_filename_template'];
+                echo htmlspecialchars($_COOKIE['pma_db_filename_template']);
             } else {
                 echo $GLOBALS['cfg']['Export']['file_template_database'];
             }
         } elseif ($export_type == 'table') {
             if (isset($_COOKIE) && !empty($_COOKIE['pma_table_filename_template'])) {
-                echo $_COOKIE['pma_table_filename_template'];
+                echo htmlspecialchars($_COOKIE['pma_table_filename_template']);
             } else {
                 echo $GLOBALS['cfg']['Export']['file_template_table'];
             }
         } else {
             if (isset($_COOKIE) && !empty($_COOKIE['pma_server_filename_template'])) {
-                echo $_COOKIE['pma_server_filename_template'];
+                echo htmlspecialchars($_COOKIE['pma_server_filename_template']);
             } else {
                 echo $GLOBALS['cfg']['Export']['file_template_server'];
             }
         }
-        echo '" />';
+        echo '"';
     ?>
+    />
 
     (
     <input type="checkbox" name="remember_template"

@@ -50,6 +50,13 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @access private
 	  */
 	protected $_field;
+	
+	/**
+	  * from which module, fields messages should be get ?
+	  * @var constant
+	  * @access private
+	  */
+	protected $_messagesModule = MOD_POLYMOD_CODENAME;
 
 	/**
 	  * object label
@@ -341,10 +348,10 @@ abstract class CMS_object_common extends CMS_grandFather
 	  */
 	function getObjectLabel($language) {
 		if (is_a($language, "CMS_language")) {
-			return $language->getMessage($this->_objectLabel, false, MOD_POLYMOD_CODENAME);
+			return $language->getMessage($this->_objectLabel, false, $this->_messagesModule);
 		} else {
 			$tmplanguage = new CMS_language($language);
-			return $tmplanguage->getMessage($this->_objectLabel, false, MOD_POLYMOD_CODENAME);
+			return $tmplanguage->getMessage($this->_objectLabel, false, $this->_messagesModule);
 		}
 	}
 
@@ -404,10 +411,10 @@ abstract class CMS_object_common extends CMS_grandFather
 	  */
 	function getDescription($language) {
 		if (is_a($language, "CMS_language")) {
-			return $language->getMessage($this->_objectDescription, false, MOD_POLYMOD_CODENAME);
+			return $language->getMessage($this->_objectDescription, false, $this->_messagesModule);
 		} else {
 			$tmplanguage = new CMS_language($language);
-			return $tmplanguage->getMessage($this->_objectDescription, false, MOD_POLYMOD_CODENAME);
+			return $tmplanguage->getMessage($this->_objectDescription, false, $this->_messagesModule);
 		}
 	}
 
@@ -474,8 +481,8 @@ abstract class CMS_object_common extends CMS_grandFather
 				break;
 			}
 			if ($input) {
-				$paramLabel = (sensitiveIO::isPositiveInteger($parameter['externalName'])) ? $language->getMessage($parameter['externalName'], false, MOD_POLYMOD_CODENAME):'Undefined';
-				$paramDescription = (isset($parameter['description']) && sensitiveIO::isPositiveInteger($parameter['description'])) ? '<br /><small>'.$language->getMessage($parameter['description'], false, MOD_POLYMOD_CODENAME).'</small>':'';
+				$paramLabel = (sensitiveIO::isPositiveInteger($parameter['externalName'])) ? $language->getMessage($parameter['externalName'], false, $this->_messagesModule):'Undefined';
+				$paramDescription = (isset($parameter['description']) && sensitiveIO::isPositiveInteger($parameter['description'])) ? '<br /><small>'.$language->getMessage($parameter['description'], false, $this->_messagesModule).'</small>':'';
 				$required = ($parameter['required']) ? '<span class="admin_text_alert">*</span>':'';
 				$html .= '
 				<tr>

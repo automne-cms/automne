@@ -284,7 +284,7 @@ class CMS_websitesCatalog extends CMS_grandFather
 	function writeRootRedirection()
 	{
 		//and write general and specific redirection files
-		$filename = 'index.php';
+		/*$filename = 'index.php';
 		$content = '<?php'."\n".
 		'//Generated on '.date('r').' by '.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION."\n".
 		'require_once(dirname(__FILE__).\'/cms_rc_frontend.php\');'."\n".
@@ -311,7 +311,7 @@ class CMS_websitesCatalog extends CMS_grandFather
 		'}'."\n".
 		'header(\'HTTP/1.x 301 Moved Permanently\', true, 301);'."\n".
 		'header(\'Location: \'.PATH_SPECIAL_PAGE_NOT_FOUND_WR.\'\');'."\n".
-		'?>';
+		'? >';
 		//and write general redirection file
 		$indexPath = PATH_REALROOT_FS;
 		$fp = @fopen($indexPath . "/".$filename, "wb");
@@ -321,7 +321,8 @@ class CMS_websitesCatalog extends CMS_grandFather
 			@chmod($indexPath."/".$filename, octdec(FILES_CHMOD));
 			return true;
 		}
-		return false;
+		return false;*/
+		return true;
 	}
 }
 ?>

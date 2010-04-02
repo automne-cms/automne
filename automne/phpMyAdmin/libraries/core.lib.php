@@ -5,7 +5,8 @@
  * This script is distinct from libraries/common.inc.php because this
  * script is called from /test.
  *
- * @version $Id: core.lib.php,v 1.1 2009/03/02 12:33:10 sebastien Exp $
+ * @version $Id$
+ * @package phpMyAdmin
  */
 
 /**
@@ -29,7 +30,6 @@
  * echo PMA_ifSetOr($cfg['ForceSSL'], false, 'boolean'); // true
  * </code>
  *
- * @todo create some testsuites
  * @uses    PMA_isValid()
  * @see     PMA_isValid()
  * @param   mixed   $var        param to check
@@ -310,7 +310,7 @@ function PMA_getTableCount($db)
             // load BS tables
             $session_bs_tables = $_SESSION['PMA_Config']->get('BLOBSTREAMING_TABLES');
 
-            // if BS tables exist 
+            // if BS tables exist
             if (isset ($session_bs_tables))
                 while ($data = PMA_DBI_fetch_assoc($tables))
                     foreach ($session_bs_tables as $table_key=>$table_val)

@@ -2,7 +2,8 @@
 /* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  *
- * @version $Id: main.php,v 1.1 2009/03/02 11:47:35 sebastien Exp $
+ * @version $Id$
+ * @package phpMyAdmin
  */
 
 /**
@@ -182,18 +183,16 @@ echo '</div>';
 echo '<div id="main_pane_right">';
 
 
-if ($server > 0) {
+if ($server > 0 && $GLOBALS['cfg']['ShowServerInfo']) {
     echo '<div class="group">';
     echo '<h2>MySQL</h2>';
     echo '<ul>' . "\n";
     PMA_printListItem($strServer . ': ' . $server_info, 'li_server_info');
     PMA_printListItem($strServerVersion . ': ' . PMA_MYSQL_STR_VERSION, 'li_server_version');
-    if ($GLOBALS['cfg']['ShowServerInfo']) {
-        PMA_printListItem($strProtocolVersion . ': ' . PMA_DBI_get_proto_info(),
-            'li_mysql_proto');
-        PMA_printListItem($strUser . ': ' . htmlspecialchars($mysql_cur_user_and_host),
-            'li_user_info');
-    }
+    PMA_printListItem($strProtocolVersion . ': ' . PMA_DBI_get_proto_info(),
+        'li_mysql_proto');
+    PMA_printListItem($strUser . ': ' . htmlspecialchars($mysql_cur_user_and_host),
+        'li_user_info');
 
     echo '    <li id="li_select_mysql_charset">';
     echo '        ' . $strMySQLCharset . ': '
@@ -206,31 +205,34 @@ if ($server > 0) {
     echo ' </div>';
 }
 
+if ($GLOBALS['cfg']['ShowServerInfo'] || $GLOBALS['cfg']['ShowPhpInfo']) {
+    echo '<div class="group">';
+    echo '<h2>' . $strWebServer . '</h2>';
+    echo '<ul>';
+    if ($GLOBALS['cfg']['ShowServerInfo']) {
+        PMA_printListItem($_SERVER['SERVER_SOFTWARE'], 'li_web_server_software');
 
-echo '<div class="group">';
-echo '<h2>' . $strWebServer . '</h2>';
-echo '<ul>';
-PMA_printListItem($_SERVER['SERVER_SOFTWARE'], 'li_web_server_software');
+        if ($server > 0) {
+            PMA_printListItem($strMysqlClientVersion . ': ' . PMA_DBI_get_client_info(),
+                'li_mysql_client_version');
+            PMA_printListItem($strPHPExtension . ': ' . $GLOBALS['cfg']['Server']['extension'],
+                'li_used_php_extension');
+        }
+    }
 
-if ($server > 0) {
-    PMA_printListItem($strMysqlClientVersion . ': ' . PMA_DBI_get_client_info(),
-        'li_mysql_client_version');
-    PMA_printListItem($strPHPExtension . ': ' . $GLOBALS['cfg']['Server']['extension'],
-        'li_used_php_extension');
+    if ($cfg['ShowPhpInfo']) {
+        PMA_printListItem($strShowPHPInfo, 'li_phpinfo', './phpinfo.php?' . $common_url_query);
+    }
+    echo '  </ul>';
+    echo ' </div>';
 }
-
-if ($cfg['ShowPhpInfo']) {
-    PMA_printListItem($strShowPHPInfo, 'li_phpinfo', './phpinfo.php?' . $common_url_query);
-}
-echo '  </ul>';
-echo ' </div>';
 
 echo '<div class="group">';
 echo '<h2>phpMyAdmin</h2>';
 echo '<ul>';
 PMA_printListItem($strVersionInformation . ': ' . PMA_VERSION, 'li_pma_version');
 PMA_printListItem($strDocu, 'li_pma_docs', 'Documentation.html', null, '_blank');
-PMA_printListItem($strWiki, 'li_pma_wiki', 'http://wiki.cihar.com', null, '_blank');
+PMA_printListItem($strWiki, 'li_pma_wiki', 'http://wiki.phpmyadmin.net', null, '_blank');
 
 // does not work if no target specified, don't know why
 PMA_printListItem($strHomepageOfficial, 'li_pma_homepage', 'http://www.phpMyAdmin.net/', null, '_blank');
@@ -286,11 +288,45 @@ if (! @extension_loaded('mbstring')) {
 }
 
 /**
+ * Check whether session.gc_maxlifetime limits session validity.
+ */
+$gc_time = (int)@ini_get('session.gc_maxlifetime');
+if ($gc_time < $GLOBALS['cfg']['LoginCookieValidity'] ) {
+    trigger_error(PMA_Message::decodeBB($strSessionGCWarning), E_USER_WARNING);
+}
+
+/**
  * Check if user does not have defined blowfish secret and it is being used.
  */
 if (!empty($_SESSION['auto_blowfish_secret']) &&
         empty($GLOBALS['cfg']['blowfish_secret'])) {
     trigger_error($strSecretRequired, E_USER_WARNING);
+}
+
+/**
+ * Check for existence of config directory which should not exist in
+ * production environment.
+ */
+if (file_exists('./config')) {
+    trigger_error($strConfigDirectoryWarning, E_USER_WARNING);
+}
+
+/**
+ * Check whether relations are supported.
+ */
+if ($server > 0) {
+    require_once './libraries/relation.lib.php';
+    $cfgRelation = PMA_getRelationsParam();
+    if(!$cfgRelation['allworks'] && $cfg['PmaNoRelation_DisableWarning'] == false) {
+        $message = PMA_Message::notice('strRelationNotWorking');
+        $message->addParam('<a href="' . $cfg['PmaAbsoluteUri'] . 'chk_rel.php?' . $common_url_query . '">', false);
+        $message->addParam('</a>', false);
+        /* Show error if user has configured something, notice elsewhere */
+        if (!empty($cfg['Servers'][$server]['pmadb'])) {
+            $message->isError(true);
+        }
+        $message->display();
+    } // end if
 }
 
 /**

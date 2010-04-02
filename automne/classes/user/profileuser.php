@@ -28,6 +28,15 @@
 
 class CMS_profile_user extends CMS_profile
 {
+	const MESSAGE_PAGE_CLICK_TO_VIEW_USER = 1622;
+	const MESSAGE_PAGE_NONE = 10;
+	const MESSAGE_PAGE_USER = 908;
+	const MESSAGE_PAGE_NAME = 94;
+	const MESSAGE_PAGE_FIRSTNAME = 93;
+	const MESSAGE_PAGE_EMAIL = 102;
+	const MESSAGE_PAGE_WRITE_TO = 1624;
+	const MESSAGE_PAGE_GROUPS = 837;
+	
 	/**
 	  * Id of user profile in database
 	  *
@@ -1073,10 +1082,10 @@ class CMS_profile_user extends CMS_profile
 		if ($groups) {
 			foreach ($groups as $group) {
 				$userGroups .= ($userGroups) ? ', ' : '';
-				$userGroups .= '<a href="#" onclick="Automne.view.search(\'group:'.$group->getGroupId().'\');return false;" ext:qtip="'.io::htmlspecialchars($group->getDescription()).' (Cliquez pour voir les utilisateurs)" class="atm-help">'.$group->getLabel().'</a>';
+				$userGroups .= '<a href="#" onclick="Automne.view.search(\'group:'.$group->getGroupId().'\');return false;" ext:qtip="'.io::htmlspecialchars($group->getDescription()).' ('.$cms_language->getMessage(self::MESSAGE_PAGE_CLICK_TO_VIEW_USER).')" class="atm-help">'.$group->getLabel().'</a>';
 			}
 		} else {
-			$userGroups = 'Aucun';
+			$userGroups = $cms_language->getMessage(self::MESSAGE_PAGE_NONE);
 		}
 		if ($user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
 			$edit = array(
@@ -1091,12 +1100,12 @@ class CMS_profile_user extends CMS_profile
 		return array(
 			'id'			=> $this->getUserId(),
 			'label'			=> $this->getFullName(),
-			'type'			=> 'Utilisateur',
+			'type'			=> $cms_language->getMessage(self::MESSAGE_PAGE_USER),
 			'description'	=> '
-				Nom : <strong>'.$this->getLastname().'</strong><br />
-				Prénom : <strong>'.$this->getFirstname().'</strong><br />
-				Email : <a href="mailto:'.$this->getEmail().'" ext:qtip="Ecrire à '.io::htmlspecialchars($this->getFullName()).'">'.$this->getEmail().'</a><br />
-				Groupes : '.$userGroups,
+				'.$cms_language->getMessage(self::MESSAGE_PAGE_NAME).' : <strong>'.$this->getLastname().'</strong><br />
+				'.$cms_language->getMessage(self::MESSAGE_PAGE_FIRSTNAME).' : <strong>'.$this->getFirstname().'</strong><br />
+				'.$cms_language->getMessage(self::MESSAGE_PAGE_EMAIL).' : <a href="mailto:'.$this->getEmail().'" ext:qtip="'.$cms_language->getMessage(self::MESSAGE_PAGE_WRITE_TO, array(io::htmlspecialchars($this->getFullName()))).'">'.$this->getEmail().'</a><br />
+				'.$cms_language->getMessage(self::MESSAGE_PAGE_GROUPS).' : '.$userGroups,
 			'edit'			=> $edit
 		);
 	}

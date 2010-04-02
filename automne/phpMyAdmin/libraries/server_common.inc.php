@@ -7,7 +7,8 @@
  * @uses    PMA_DBI_fetch_result()
  * @uses    PMA_DBI_QUERY_STORE
  * @uses    $userlink
- * @version $Id: server_common.inc.php,v 1.1 2009/03/02 12:33:10 sebastien Exp $
+ * @version $Id$
+ * @package phpMyAdmin
  */
 if (! defined('PHPMYADMIN')) {
     exit;

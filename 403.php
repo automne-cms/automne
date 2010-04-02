@@ -39,6 +39,8 @@ if (file_exists(PATH_REALROOT_FS.'/403.html')) {
 <head>
 	<title>Forbidden</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo APPLICATION_DEFAULT_ENCODING; ?>" />
+	<meta name="robots" content="noindex" />
+	<meta name="robots" content="noindex, noarchive" />
 	<style type="text/css">
 	body {
 		background-color: 		#E9F1DA;

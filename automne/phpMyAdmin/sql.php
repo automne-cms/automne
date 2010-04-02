@@ -2,8 +2,9 @@
 /* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * @todo    we must handle the case if sql.php is called directly with a query
- *          what returns 0 rows - to prevent cyclic redirects or includes
- * @version $Id: sql.php,v 1.1 2009/03/02 11:47:35 sebastien Exp $
+ *          that returns 0 rows - to prevent cyclic redirects or includes
+ * @version $Id$
+ * @package phpMyAdmin
  */
 
 /**
@@ -95,8 +96,8 @@ PMA_displayTable_checkConfigParams();
  * Need to find the real end of rows?
  */
 if (isset($find_real_end) && $find_real_end) {
-    $unlim_num_rows = PMA_Table::countRecords($db, $table, true, true);
-    $_SESSION['userconf']['pos'] = @((ceil($unlim_num_rows / $_SESSION['userconf']['max_rows']) - 1) * $_SESSION['userconf']['max_rows']);
+    $unlim_num_rows = PMA_Table::countRecords($db, $table, $force_exact = true);
+    $_SESSION['tmp_user_values']['pos'] = @((ceil($unlim_num_rows / $_SESSION['tmp_user_values']['max_rows']) - 1) * $_SESSION['tmp_user_values']['max_rows']);
 }
 
 
@@ -105,7 +106,8 @@ if (isset($find_real_end) && $find_real_end) {
  */
 if (isset($store_bkm)) {
     PMA_Bookmark_save($fields, (isset($bkm_all_users) && $bkm_all_users == 'true' ? true : false));
-    PMA_sendHeaderLocation($cfg['PmaAbsoluteUri'] . $goto);
+    // go back to sql.php to redisplay query; do not use &amp; in this case:
+    PMA_sendHeaderLocation($cfg['PmaAbsoluteUri'] . $goto . '&label=' . $fields['label']);
 } // end if
 
 /**
@@ -250,13 +252,13 @@ if ($is_select) { // see line 141
 }
 
 // Do append a "LIMIT" clause?
-if ((! $cfg['ShowAll'] || $_SESSION['userconf']['max_rows'] != 'all')
+if ((! $cfg['ShowAll'] || $_SESSION['tmp_user_values']['max_rows'] != 'all')
  && ! ($is_count || $is_export || $is_func || $is_analyse)
  && isset($analyzed_sql[0]['queryflags']['select_from'])
  && ! isset($analyzed_sql[0]['queryflags']['offset'])
  && empty($analyzed_sql[0]['limit_clause'])
  ) {
-    $sql_limit_to_append = ' LIMIT ' . $_SESSION['userconf']['pos'] . ', ' . $_SESSION['userconf']['max_rows'] . " ";
+    $sql_limit_to_append = ' LIMIT ' . $_SESSION['tmp_user_values']['pos'] . ', ' . $_SESSION['tmp_user_values']['max_rows'] . " ";
 
     $full_sql_query  = $analyzed_sql[0]['section_before_limit'] . "\n" . $sql_limit_to_append . $analyzed_sql[0]['section_after_limit'];
     /**
@@ -292,6 +294,13 @@ if (isset($GLOBALS['show_as_php']) || !empty($GLOBALS['validatequery'])) {
         PMA_DBI_query('SET PROFILING=1;');
     }
 
+    // fisharebest: release the session lock, otherwise we won't be able to run other
+    // scripts until the query has finished (which could take a very long time). 
+    // Note: footer.inc.php writes debug info to $_SESSION, so debuggers will have to wait.
+    if (empty($_SESSION['debug'])) {
+        session_write_close();
+    }
+
     // garvin: Measure query time.
     // TODO-Item http://sourceforge.net/tracker/index.php?func=detail&aid=571934&group_id=23067&atid=377411
     $querytime_before = array_sum(explode(' ', microtime()));
@@ -309,9 +318,15 @@ if (isset($GLOBALS['show_as_php']) || !empty($GLOBALS['validatequery'])) {
                 $table = '';
             }
             $active_page = $goto;
-            $message = PMA_Message::rawError($error);
+            $message = htmlspecialchars(PMA_Message::rawError($error));
+            /**
+             * Go to target path.
+             */
             require './' . PMA_securePath($goto);
         } else {
+            /**
+             * HTML header.
+             */
             require_once './libraries/header.inc.php';
             $full_err_url = (preg_match('@^(db|tbl)_@', $err_url))
                           ? $err_url . '&amp;show_query=1&amp;sql_query=' . urlencode($sql_query)
@@ -365,18 +380,17 @@ if (isset($GLOBALS['show_as_php']) || !empty($GLOBALS['validatequery'])) {
         $unlim_num_rows         = $num_rows;
         // if we did not append a limit, set this to get a correct
         // "Showing rows..." message
-        //$_SESSION['userconf']['max_rows'] = 'all';
+        //$_SESSION['tmp_user_values']['max_rows'] = 'all';
     } elseif ($is_select) {
 
         //    c o u n t    q u e r y
 
         // If we are "just browsing", there is only one table,
-        // and no where clause (or just 'WHERE 1 '),
-        // so we do a quick count (which uses MaxExactCount)
-        // because SQL_CALC_FOUND_ROWS
-        // is not quick on large InnoDB tables
+        // and no WHERE clause (or just 'WHERE 1 '),
+        // we do a quick count (which uses MaxExactCount) because 
+        // SQL_CALC_FOUND_ROWS is not quick on large InnoDB tables
 
-        // but do not count again if we did it previously
+        // However, do not count again if we did it previously
         // due to $find_real_end == true
 
         if (!$is_group
@@ -388,7 +402,7 @@ if (isset($GLOBALS['show_as_php']) || !empty($GLOBALS['validatequery'])) {
         ) {
 
             // "j u s t   b r o w s i n g"
-            $unlim_num_rows = PMA_Table::countRecords($db, $table, true);
+            $unlim_num_rows = PMA_Table::countRecords($db, $table);
 
         } else { // n o t   " j u s t   b r o w s i n g "
 
@@ -445,6 +459,9 @@ if (isset($GLOBALS['show_as_php']) || !empty($GLOBALS['validatequery'])) {
 
     // garvin: if a table or database gets dropped, check column comments.
     if (isset($purge) && $purge == '1') {
+        /**
+         * Cleanup relations.
+         */
         require_once './libraries/relation_cleanup.lib.php';
 
         if (strlen($table) && strlen($db)) {
@@ -503,7 +520,7 @@ if (0 == $num_rows || $is_affected) {
         // the form should not have priority over
         // errors like $strEmptyResultSet
     } elseif (!empty($zero_rows) && !$is_select) {
-        $message = PMA_Message::rawSuccess($zero_rows);
+        $message = PMA_Message::rawSuccess(htmlspecialchars($zero_rows));
     } elseif (!empty($GLOBALS['show_as_php'])) {
         $message = PMA_Message::success('strShowingPhp');
     } elseif (isset($GLOBALS['show_as_php'])) {
@@ -615,6 +632,12 @@ else {
     // hide edit and delete links for information_schema
     if ($db == 'information_schema') {
         $disp_mode = 'nnnn110111';
+    }
+
+    if (isset($label)) {
+        $message = PMA_message::success('strBookmarkCreated');
+        $message->addParam($label);
+        $message->display();
     }
 
     PMA_displayTable($result, $disp_mode, $analyzed_sql);

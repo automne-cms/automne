@@ -1,14 +1,18 @@
 <?php
 /* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
- *
- * @version $Id: phpinfo.php,v 1.1 2009/03/02 11:47:35 sebastien Exp $
+ * phpinfo() wrapper to allow displaying only when configured to do so.
+ * @version $Id$
+ * @package phpMyAdmin
  */
 
 /**
- * Gets core libraries and defines some variables
+ * @ignore
  */
 define('PMA_MINIMUM_COMMON', true);
+/**
+ * Gets core libraries and defines some variables
+ */
 require_once './libraries/common.inc.php';
 
 

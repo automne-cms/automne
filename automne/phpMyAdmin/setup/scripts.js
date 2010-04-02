@@ -1,7 +1,7 @@
 /**
  * functions used in setup script
  * 
- * @version $Id: scripts.js,v 1.1 2009/03/02 12:33:16 sebastien Exp $
+ * @version $Id$
  */
 
 // show this window in top frame

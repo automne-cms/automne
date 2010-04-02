@@ -2,7 +2,8 @@
 /* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  *
- * @version $Id: server_export.php,v 1.1 2009/03/02 11:47:35 sebastien Exp $
+ * @version $Id$
+ * @package phpMyAdmin
  */
 
 /**
@@ -27,7 +28,7 @@ $multi_values .= '<a href="' . $checkall_url . '&amp;selectall=1" onclick="setSe
         /
         <a href="' . $checkall_url . '" onclick="setSelectOptions(\'dump\', \'db_select[]\', false); return false;">' . $strUnselectAll . '</a><br />';
 
-$multi_values .= '<select name="db_select[]" size="6" multiple="multiple">';
+$multi_values .= '<select name="db_select[]" size="10" multiple="multiple">';
 $multi_values .= "\n";
 
 foreach ($GLOBALS['pma']->databases as $current_db) {

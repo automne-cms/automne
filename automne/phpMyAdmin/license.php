@@ -6,12 +6,18 @@
  * Note: please do not fold this script into a general script
  * that would read any file using a GET parameter, it would open a hole
  *
- * @version $Id: license.php,v 1.1 2009/03/02 11:47:35 sebastien Exp $
+ * @version $Id$
+ * @package phpMyAdmin
  */
+
+/**
+ * Load paths.
+ */
+require('./libraries/vendor_config.php');
 
 /**
  *
  */
 header('Content-type: text/plain; charset=iso-8859-1');
-readfile('LICENSE');
+readfile(LICENSE_FILE);
 ?>

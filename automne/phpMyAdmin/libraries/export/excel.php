@@ -3,7 +3,8 @@
 /**
  * Set of functions used to build CSV dumps of tables
  *
- * @version $Id: excel.php,v 1.1 2009/03/02 12:33:13 sebastien Exp $
+ * @package phpMyAdmin-Export-CSV
+ * @version $Id$
  */
 if (! defined('PHPMYADMIN')) {
     exit;
@@ -19,6 +20,7 @@ if (isset($plugin_list)) {
         'mime_type' => 'text/comma-separated-values',
         'options' => array(
             array('type' => 'text', 'name' => 'null', 'text' => 'strReplaceNULLBy'),
+            array('type' => 'bool', 'name' => 'removeCRLF', 'text' => 'strRemoveCRLF'),
             array('type' => 'bool', 'name' => 'columns', 'text' => 'strPutColNames'),
             array(
                 'type' => 'select', 

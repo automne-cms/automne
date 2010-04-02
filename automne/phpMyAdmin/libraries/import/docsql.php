@@ -3,12 +3,16 @@
 /**
  * DocSQL import plugin for phpMyAdmin
  *
- * @version $Id: docsql.php,v 1.1 2009/03/02 12:33:13 sebastien Exp $
+ * @version $Id$
+ * @package phpMyAdmin-Import
  */
 if (! defined('PHPMYADMIN')) {
     exit;
 }
 
+/**
+ * Load relations.
+ */
 require_once './libraries/relation.lib.php';
 $cfgRelation = PMA_getRelationsParam();
 

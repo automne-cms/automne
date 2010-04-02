@@ -12,7 +12,8 @@
  *
  * The SQL Parser code relies heavily on these functions.
  *
- * @version $Id: string_type_ctype.lib.php,v 1.1 2009/03/02 12:33:10 sebastien Exp $
+ * @version $Id$
+ * @package phpMyAdmin-StringType-CType
  */
 
 /**

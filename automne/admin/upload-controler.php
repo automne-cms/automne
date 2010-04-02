@@ -37,6 +37,7 @@ if (isset($_POST['userAgent'])) {
 }*/
 
 require_once(dirname(__FILE__).'/../../cms_rc_frontend.php');
+
 //load interface instance
 $view = CMS_view::getInstance();
 //set default display mode for this page

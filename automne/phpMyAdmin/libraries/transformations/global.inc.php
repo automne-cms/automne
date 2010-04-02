@@ -19,7 +19,8 @@
  *
  * Please provide a comment for your function, what it does and what parameters are available.
  *
- * @version $Id: global.inc.php,v 1.1 2009/03/02 12:33:13 sebastien Exp $
+ * @version $Id$
+ * @package phpMyAdmin-Transformation
  */
 
 /**

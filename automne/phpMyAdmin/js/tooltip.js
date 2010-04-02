@@ -3,7 +3,7 @@
  * Displays the Tooltips (hints), if we have some
  * 2005-01-20 added by Michael Keck (mkkeck)
  *
- * @version $Id: tooltip.js,v 1.1 2009/03/02 12:33:09 sebastien Exp $
+ * @version $Id$
  */
 
 /**

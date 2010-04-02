@@ -225,6 +225,11 @@ class CMS_profile extends CMS_grandFather
 				$this->raiseError("Id is not a positive integer nor array");
 				return;
 			}
+		} else {
+			//set default templates groups
+			$this->_templateGroupsDenied = CMS_pageTemplatesCatalog::getAllGroups(true);
+			//set default rows groups
+			$this->_rowGroupsDenied = CMS_rowsCatalog::getAllGroups(true);
 		}
 		if ($this->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 			$this->_moduleCategoriesClearances->setAdminLevel(true);

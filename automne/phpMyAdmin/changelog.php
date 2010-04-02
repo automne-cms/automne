@@ -3,13 +3,34 @@
 /**
  * Simple script to set correct charset for changelog
  *
- * @version $Id: changelog.php,v 1.1 2009/03/02 11:47:35 sebastien Exp $
+ * @version $Id$
+ * @package phpMyAdmin
  */
 
-$changelog = htmlspecialchars(file_get_contents('ChangeLog'));
+/**
+ * Load paths.
+ */
+require('./libraries/vendor_config.php');
+
+/**
+ * Read changelog.
+ */
+if (substr(CHANGELOG_FILE, -3) == '.gz') {
+    ob_start();
+    readgzfile(CHANGELOG_FILE);
+    $changelog = ob_get_contents();
+    ob_end_clean();
+} else {
+    $changelog = file_get_contents(CHANGELOG_FILE);
+}
+
+/**
+ * Whole changelog in variable.
+ */
+$changelog = htmlspecialchars($changelog);
 
 $replaces = array(
-    '@(http://[./a-zA-Z0-9.-_]*[/a-zA-Z0-9_])@'
+    '@(http://[./a-zA-Z0-9.-_-]*[/a-zA-Z0-9_])@'
     => '<a href="\\1">\\1</a>',
 
     // sourceforge users

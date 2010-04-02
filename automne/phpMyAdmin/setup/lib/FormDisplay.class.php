@@ -11,15 +11,19 @@
  * @package    phpMyAdmin-setup
  * @author     Piotr Przybylski <piotrprz@gmail.com>
  * @license    http://www.gnu.org/licenses/gpl.html GNU GPL 2.0
- * @version    $Id: FormDisplay.class.php,v 1.1 2009/03/02 12:33:16 sebastien Exp $
+ * @version    $Id$
  */
 
+/**
+ * Core libraries.
+ */
 require_once './setup/lib/FormDisplay.tpl.php';
 require_once './setup/lib/validate.lib.php';
 require_once './libraries/js_escape.lib.php';
 
 /**
  * Form management class, displays and processes forms
+ * @package    phpMyAdmin-setup
  */
 class FormDisplay
 {
@@ -565,7 +569,7 @@ class FormDisplay
         if ($test == 'Export') {
             $opt_name = substr($opt_name, 7);
         }
-        return 'http://wiki.cihar.com/pma/Config#' . $opt_name;
+        return 'http://wiki.phpmyadmin.net/pma/Config#' . $opt_name;
     }
 
     /**

@@ -1,0 +1,17 @@
+./test.php
+./config.php
+./automne/cms_error_log
+./automne/SUBVERSION
+./automne/UPDATE.DENY
+./automne/cache/*
+./automne/logs/*
+./automne/upload/*
+./automne/tmp/*
+./automne_modules_files/*/*/*.*
+./automne_modules_files/*/*.*
+./web/*
+./html/*
+./automne_linx_files/*
+.DS_Store
+._*
+/utils

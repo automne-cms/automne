@@ -9,13 +9,22 @@
  * @package    phpMyAdmin-setup
  * @author     Piotr Przybylski <piotrprz@gmail.com>
  * @license    http://www.gnu.org/licenses/gpl.html GNU GPL 2.0
- * @version    $Id: config_info.inc.php,v 1.1 2009/03/02 12:33:16 sebastien Exp $
+ * @version    $Id$
  */
+
+if (!defined('PHPMYADMIN')) {
+    exit;
+}
+
+/**
+ * Load paths.
+ */
+require_once('./libraries/vendor_config.php');
 
 $cfg_db = array();
 
 // path to config file, relative to phpMyAdmin's root path
-$cfg_db['_config_file_path'] = './config/config.inc.php';
+$cfg_db['_config_file_path'] = SETUP_CONFIG_FILE;
 
 /**
  * Value meaning:

@@ -375,8 +375,8 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(520, 'polymod', 'en', 'Random order');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(521, 'polymod', 'en', 'On this page you can specify settings for the display of the row of content being edited.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(522, 'polymod', 'en', 'The form is incomplete or has incorrect values...');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(523, 'polymod', 'en', 'This tab is disabled because you have selected the text to use it.');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(524, 'polymod', 'en', 'This tab is disabled because you do not have text selected for use.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(523, 'polymod', 'en', 'This tab is disabled because you have to select some text in the editor to use it.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(524, 'polymod', 'en', 'This tab is disabled because you do not have text selected in the editor to use it.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(525, 'polymod', 'en', 'The ''%s'' item you want to edit is locked by %s on %s.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(526, 'polymod', 'en', 'You do not have the right to edit the item ''%s''.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(527, 'polymod', 'en', 'On this page, you can create or modify the data of element %s');

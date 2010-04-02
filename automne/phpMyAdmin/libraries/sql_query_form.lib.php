@@ -3,12 +3,14 @@
 /**
  * functions for displaying the sql query form
  *
- * @version $Id: sql_query_form.lib.php,v 1.1 2009/03/02 12:33:10 sebastien Exp $
+ * @version $Id$
  * @usedby  server_sql.php
  * @usedby  db_sql.php
  * @usedby  tbl_sql.php
  * @usedby  tbl_structure.php
+ * @usedby  tbl_tracking.php
  * @usedby  querywindow.php
+ * @package phpMyAdmin
  */
 if (! defined('PHPMYADMIN')) {
     exit;
@@ -27,6 +29,7 @@ require_once './libraries/bookmark.lib.php'; // used for file listing
  * @usedby  db_sql.php
  * @usedby  tbl_sql.php
  * @usedby  tbl_structure.php
+ * @usedby  tbl_tracking.php
  * @usedby  querywindow.php
  * @uses    $GLOBALS['table']
  * @uses    $GLOBALS['db']
@@ -110,13 +113,10 @@ function PMA_sqlQueryForm($query = true, $display_tab = false, $delimiter = ';')
         ?>
         <form method="post" id="sqlqueryform" target="frame_content"
               action="import.php"<?php echo $enctype; ?> name="sqlform"
-              onsubmit="
-              // <![CDATA[
-              var save_name = window.opener.parent.frame_content.name;
+              onsubmit="var save_name = window.opener.parent.frame_content.name;
               window.opener.parent.frame_content.name = save_name + '<?php echo time(); ?>';
               this.target = window.opener.parent.frame_content.name;
-              return checkSqlQuery(this);
-              // ]]" >
+              return checkSqlQuery(this)">
         <?php
     } else {
         echo '<form method="post" action="import.php" ' . $enctype . ' id="sqlqueryform"'

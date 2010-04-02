@@ -376,7 +376,7 @@ Automne.FileUploadField = Ext.extend(Ext.form.TextField,  {
 		//reset field
 		this.resetField();
 		if (typeof jsonResponse.error == "undefined") {
-			this.fileError(options.file, SWFUpload.UPLOAD_ERROR.UPLOAD_FAILED, '');
+			this.fileError(options.file, this.UPLOAD_ERROR.UPLOAD_FAILED, '');
 		} else if (jsonResponse.error !== 0) {
 			this.fileError(options.file, jsonResponse.error, '');
 		} else {

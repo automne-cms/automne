@@ -3,13 +3,15 @@
 /**
  * hold the PMA_List base class
  *
- * @version $Id: List.class.php,v 1.1 2009/03/02 12:33:10 sebastien Exp $
+ * @version $Id$
+ * @package phpMyAdmin
  */
 
 /**
  * @todo add caching
  * @since phpMyAdmin 2.9.10
  * @abstract
+ * @package phpMyAdmin
  */
 abstract class PMA_List extends ArrayObject
 {

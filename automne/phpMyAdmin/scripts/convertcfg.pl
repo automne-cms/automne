@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: convertcfg.pl,v 1.1 2009/03/02 12:33:16 sebastien Exp $
+# $Id$
 #
 # Configuration converter
 # Converts from old-style (Pre-2.3) configuration files to new format found in PMA-2.3

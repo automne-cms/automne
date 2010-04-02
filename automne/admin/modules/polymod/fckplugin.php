@@ -59,7 +59,7 @@ if (sizeof($pluginDefinitions)) {
 	foreach ($pluginDefinitions as $id => $pluginDefinition) {
 		$objectID = $pluginDefinition->getValue('objectID');
 		$polyModuleCodename = CMS_poly_object_catalog::getModuleCodenameForObjectType($objectID);
-		if ($cms_user->hasModuleClearance($polyModuleCodename, CLEARANCE_MODULE_VIEW)) {
+		if ($cms_user->hasModuleClearance($polyModuleCodename, CLEARANCE_MODULE_EDIT)) {
 			$availablePlugin[$polyModuleCodename][$id] = $pluginDefinition;
 			$availablePluginCount++;
 		}
@@ -85,10 +85,10 @@ foreach ($availablePlugin as $aPolyModuleCodename => $pluginDefinitions) {
 		$objectWinId = 'module'. $aPolyModuleCodename .'-'. $id .'Plugin';
 		if ($pluginDefinition->needSelection() && !$content && $selectedPluginID != $id) {
 			$disabled = 'disabled:true,';
-			$label = '<span ext:qtip="'.sensitiveIO::sanitizeJSString($polymodule->getLabel($cms_language).' : '.$pluginDefinition->getDescription($cms_language).'<br /><br />'.$cms_language->getMessage(MESSAGE_PAGE_TAB_DISABLED_SELECT_TEXT, false, MOD_POLYMOD_CODENAME)).'">'.sensitiveIO::sanitizeJSString($pluginDefinition->getLabel($cms_language)).'</span>';
+			$label = '<span ext:qtip="'.sensitiveIO::sanitizeJSString($polymodule->getLabel($cms_language).' : '.$pluginDefinition->getDescription($cms_language).'<br /><br /><strong>'.$cms_language->getMessage(MESSAGE_PAGE_TAB_DISABLED_SELECT_TEXT, false, MOD_POLYMOD_CODENAME)).'</strong>">'.sensitiveIO::sanitizeJSString($pluginDefinition->getLabel($cms_language)).'</span>';
 		} elseif (!$pluginDefinition->needSelection() && $content && $selectedPluginID != $id) {
 			$disabled = 'disabled:true,';
-			$label = '<span ext:qtip="'.sensitiveIO::sanitizeJSString($polymodule->getLabel($cms_language).' : '.$pluginDefinition->getDescription($cms_language).'<br /><br />'.$cms_language->getMessage(MESSAGE_PAGE_TAB_DISABLED_NO_SELECT_TEXT, false, MOD_POLYMOD_CODENAME)).'">'.sensitiveIO::sanitizeJSString($pluginDefinition->getLabel($cms_language)).'</span>';
+			$label = '<span ext:qtip="'.sensitiveIO::sanitizeJSString($polymodule->getLabel($cms_language).' : '.$pluginDefinition->getDescription($cms_language).'<br /><br /><strong>'.$cms_language->getMessage(MESSAGE_PAGE_TAB_DISABLED_NO_SELECT_TEXT, false, MOD_POLYMOD_CODENAME)).'</strong>">'.sensitiveIO::sanitizeJSString($pluginDefinition->getLabel($cms_language)).'</span>';
 		} else {
 			if ($selectedPluginID == $id || $activeTab === 0) {
 				$activeTab = $objectWinId;

@@ -3,7 +3,8 @@
 /**
  * Contributed by Maxime Delorme and merged by lem9
  *
- * @version $Id: pdf_schema.php,v 1.1 2009/03/02 11:47:35 sebastien Exp $
+ * @version $Id$
+ * @package phpMyAdmin
  */
 
 /**
@@ -47,6 +48,7 @@ require_once './libraries/tcpdf/tcpdf.php';
  *
  * @access public
  * @see FPDF
+ * @package phpMyAdmin
  */
 class PMA_PDF extends TCPDF {
     /**
@@ -265,7 +267,7 @@ class PMA_PDF extends TCPDF {
             $test_query = 'SELECT * FROM ' . PMA_backquote($GLOBALS['cfgRelation']['db']) . '.' . PMA_backquote($cfgRelation['pdf_pages'])
              . ' WHERE db_name = \'' . PMA_sqlAddslashes($db) . '\''
              . ' AND page_nr = \'' . $pdf_page_number . '\'';
-            $test_rs = PMA_query_as_cu($test_query);
+            $test_rs = PMA_query_as_controluser($test_query);
             $pages = @PMA_DBI_fetch_assoc($test_rs);
             $this->SetFont('', 'B', 14);
             $this->Cell(0, 6, ucfirst($pages['page_descr']), 'B', 1, 'C');
@@ -495,6 +497,7 @@ class PMA_PDF extends TCPDF {
  *
  * @access private
  * @see PMA_RT
+ * @package phpMyAdmin
  */
 class PMA_RT_Table {
     /**
@@ -629,18 +632,18 @@ class PMA_RT_Table {
         }
         // load fields
         //check to see if it will load all fields or only the foreign keys
-		if ($show_keys) {
-			$indexes = PMA_Index::getFromTable($this->table_name, $db);
-			$all_columns = array();
-			foreach ($indexes as $index) {
-			   $all_columns = array_merge($all_columns, array_flip(array_keys($index->getColumns())));
-			}
-			$this->fields = array_keys($all_columns);
-		} else {
-	        while ($row = PMA_DBI_fetch_row($result)) {
-	            $this->fields[] = $row[0];
-	        }
-		}
+        if ($show_keys) {
+            $indexes = PMA_Index::getFromTable($this->table_name, $db);
+            $all_columns = array();
+            foreach ($indexes as $index) {
+            $all_columns = array_merge($all_columns, array_flip(array_keys($index->getColumns())));
+            }
+            $this->fields = array_keys($all_columns);
+        } else {
+            while ($row = PMA_DBI_fetch_row($result)) {
+                $this->fields[] = $row[0];
+            }
+        }
         // height and width
         $this->PMA_RT_Table_setWidth($ff);
         $this->PMA_RT_Table_setHeight();
@@ -653,7 +656,7 @@ class PMA_RT_Table {
          . ' WHERE db_name = \'' . PMA_sqlAddslashes($db) . '\''
          . ' AND   table_name = \'' . PMA_sqlAddslashes($table_name) . '\''
          . ' AND   pdf_page_number = ' . $pdf_page_number;
-        $result = PMA_query_as_cu($sql, false, PMA_DBI_QUERY_STORE);
+        $result = PMA_query_as_controluser($sql, false, PMA_DBI_QUERY_STORE);
 
         if (!$result || !PMA_DBI_num_rows($result)) {
             $pdf->PMA_PDF_die(sprintf($GLOBALS['strConfigureTableCoord'], $table_name));
@@ -679,6 +682,7 @@ class PMA_RT_Table {
  *
  * @access private
  * @see PMA_RT
+ * @package phpMyAdmin
  */
 class PMA_RT_Relation {
     /**
@@ -805,6 +809,7 @@ class PMA_RT_Relation {
  *
  * @access public
  * @see PMA_PDF
+ * @package phpMyAdmin
  */
 class PMA_RT {
     /**
@@ -939,7 +944,7 @@ class PMA_RT {
         // Get the name of this pdfpage to use as filename (Mike Beck)
         $_name_sql = 'SELECT page_descr FROM ' . PMA_backquote($GLOBALS['cfgRelation']['db']) . '.' . PMA_backquote($cfgRelation['pdf_pages'])
          . ' WHERE page_nr = ' . $pdf_page_number;
-        $_name_rs = PMA_query_as_cu($_name_sql);
+        $_name_rs = PMA_query_as_controluser($_name_sql);
         if ($_name_rs) {
             $_name_row = PMA_DBI_fetch_row($_name_rs);
             $filename = $_name_row[0] . '.pdf';
@@ -993,7 +998,7 @@ class PMA_RT {
         $tab_sql = 'SELECT table_name FROM ' . PMA_backquote($GLOBALS['cfgRelation']['db']) . '.' . PMA_backquote($cfgRelation['table_coords'])
          . ' WHERE db_name = \'' . PMA_sqlAddslashes($db) . '\''
          . ' AND pdf_page_number = ' . $which_rel;
-        $tab_rs = PMA_query_as_cu($tab_sql, null, PMA_DBI_QUERY_STORE);
+        $tab_rs = PMA_query_as_controluser($tab_sql, null, PMA_DBI_QUERY_STORE);
         if (!$tab_rs || !PMA_DBI_num_rows($tab_rs) > 0) {
             $pdf->PMA_PDF_die($GLOBALS['strPdfNoTables']);
             // die('No tables');
@@ -1053,7 +1058,7 @@ class PMA_RT {
         // .   ' AND foreign_db    = \'' . PMA_sqlAddslashes($db) . '\' '
         // .   ' AND master_table  IN (' . $intable . ')'
         // .   ' AND foreign_table IN (' . $intable . ')';
-        // $result =  PMA_query_as_cu($sql);
+        // $result =  PMA_query_as_controluser($sql);
 
         // lem9:
         // previous logic was checking master tables and foreign tables
@@ -1147,16 +1152,12 @@ function PMA_RT_DOC($alltables)
         /**
          * Gets table informations
          */
-        $result = PMA_DBI_query('SHOW TABLE STATUS LIKE \'' . PMA_sqlAddslashes($table, true) . '\';', null, PMA_DBI_QUERY_STORE);
-        $showtable = PMA_DBI_fetch_assoc($result);
-        $num_rows = (isset($showtable['Rows']) ? $showtable['Rows'] : 0);
+        $showtable    = PMA_Table::sGetStatusInfo($db, $table);
+        $num_rows     = (isset($showtable['Rows']) ? $showtable['Rows'] : 0);
         $show_comment = (isset($showtable['Comment']) ? $showtable['Comment'] : '');
-        $create_time = (isset($showtable['Create_time']) ? PMA_localisedDate(strtotime($showtable['Create_time'])) : '');
-        $update_time = (isset($showtable['Update_time']) ? PMA_localisedDate(strtotime($showtable['Update_time'])) : '');
-        $check_time = (isset($showtable['Check_time']) ? PMA_localisedDate(strtotime($showtable['Check_time'])) : '');
-
-        PMA_DBI_free_result($result);
-        unset($result);
+        $create_time  = (isset($showtable['Create_time']) ? PMA_localisedDate(strtotime($showtable['Create_time'])) : '');
+        $update_time  = (isset($showtable['Update_time']) ? PMA_localisedDate(strtotime($showtable['Update_time'])) : '');
+        $check_time   = (isset($showtable['Check_time']) ? PMA_localisedDate(strtotime($showtable['Check_time'])) : '');
 
         /**
          * Gets table keys and retains them
