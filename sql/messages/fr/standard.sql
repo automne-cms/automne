@@ -1576,9 +1576,8 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1618, 'standard', 'fr', 'Rapport de mise &agrave; jour');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1619, 'standard', 'fr', 'Remise à zéro du cache navigateur');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1620, 'standard', 'fr', 'Cette fonction vous permet de forcer la mise &agrave; jour du cache du navigateur des internautes pour les fichiers Javascript et CSS servis &agrave; l\'aide des tags atm-js-tags et atm-css-tags.');
-
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1621, 'standard', 'fr', 'Groupes d''utilisateurs');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1622, 'standard', 'fr', 'Cliquez pour voir les utilisateurs de ce groupe');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1623, 'standard', 'fr', '%s Utilisateur(s)');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1624, 'standard', 'fr', 'Ecrire à %s');
-
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1625, 'standard', 'fr', 'Cette page comporte une redirection vers : %s');

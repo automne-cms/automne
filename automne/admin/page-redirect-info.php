@@ -50,7 +50,7 @@ if (isset($page) && !$page->hasError()) {
 		} else {
 			$label = $redirectlink->getExternalLink();
 			$redirectlink->setTarget('_blank');
-			$redirect = $redirectlink->getHTML($label, MOD_STANDARD_CODENAME, RESOURCE_DATA_LOCATION_EDITED);
+			$redirect = $redirectlink->getHTML(io::ellipsis($label, '80'), MOD_STANDARD_CODENAME, RESOURCE_DATA_LOCATION_EDITED);
 		}
 	} else {
 		$label = $cms_language->getMessage(MESSAGE_PAGE_PAGE).' "'.$page->getTitle().'" ('.$page->getID().')';

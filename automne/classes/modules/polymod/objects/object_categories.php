@@ -780,7 +780,7 @@ class CMS_object_categories extends CMS_object_common
 			case 'ids':
 				$ids = array();
 				foreach (array_keys($this->_subfieldValues) as $subFieldID) {
-					if (is_object($this->_subfieldValues[$subFieldID])) {
+					if (is_object($this->_subfieldValues[$subFieldID]) && io::isPositiveInteger($this->_subfieldValues[$subFieldID]->getValue())) {
 						$ids[] = $this->_subfieldValues[$subFieldID]->getValue();
 					}
 				}
@@ -790,7 +790,7 @@ class CMS_object_categories extends CMS_object_common
 				return $this->_subfieldValues;
 			break;
 			case 'count' :
-				return sizeof($this->_subfieldValues);
+				return sizeof($this->getValue('ids'));
 			break;
 			case 'start':
 				$params = $this->getParamsValues();

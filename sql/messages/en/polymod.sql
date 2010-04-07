@@ -127,7 +127,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(202, 'polymod', 'en', 'Maximum width of the thumbnail in pixels');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(203, 'polymod', 'en', 'Formatted date. Replace ''format'' by the format value accepted in PHP for the <a href="http://www.php.net/date" class="admin" target="_blank">''date function''</a>. For a date used in an RSS feed, use ''<strong>rss</strong>'' to specify the format.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(204, 'polymod', 'en', 'Formatted date. Replace ''format'' by the format value accepted in PHP for the <a href="http://www.php.net/date" class="admin" target="_blank">''date function''</a>. For a date used in an RSS feed, use ''<strong>rss</strong>'' to specify the format.');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(205, 'polymod', 'en', 'Use original thumbnail as zoom');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(205, 'polymod', 'en', 'Use original image as zoom');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(206, 'polymod', 'en', 'Thumbnail');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(207, 'polymod', 'en', 'Zoom image');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(208, 'polymod', 'en', '(Thumbnail will be resized to %s pixels width)');
