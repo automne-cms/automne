@@ -1182,6 +1182,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		'.$this->_computeTags($tag['childrens']).'
 		//AJAX TAG END '.$uniqueID.'
 		';
+		$strict = isset($tag['attributes']["strict"]) && ($tag['attributes']["what"] == 'true' || $tag['attributes']["what"] == true || $tag['attributes']["what"] == 1) ? true : false;
 		//Ajax code
 		$ajaxCode = '
 		$xmlCondition = CMS_polymod_definition_parsing::replaceVars("'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']["what"], false, false, array('CMS_polymod_definition_parsing', 'encloseWithPrepareVar')).'", $replace);
@@ -1191,7 +1192,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				'.$return.'
 				//output XML response
 				$view = CMS_view::getInstance();
-				$view->setDisplayMode(CMS_view::SHOW_RAW);
+				$view->setDisplayMode('.($strict ? 'CMS_view::SHOW_XML' : 'CMS_view::SHOW_RAW').');
 				$view->setContentTag(\'data\');
 				$view->setContent(CMS_polymod_definition_parsing::replaceVars($content, $replace));
 				$view->show();

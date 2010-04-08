@@ -158,6 +158,26 @@ function atmTearDown {
     return 0
 }
 
+function atmDropTables {
+    atmSetup || return 1
+
+    atmAsk "Are you sure? [y|N]" "n"
+    if [ $? -eq 1 ]; then
+        mysqldump -u$ATM_DB_USER -p$ATM_DB_PASS --add-drop-table --no-data $ATM_DB_NAME | grep "^DROP" | mysql -u$ATM_DB_USER -p$ATM_DB_PASS $ATM_DB_NAME
+
+        if [ $? -eq 0 ]; then
+            echo "SUCCESS"
+            atmTearDown
+            return 0
+        else
+            echo "ERROR";
+            atmTearDown
+            return 1
+        fi
+    fi
+    return 0
+}
+
 function atmSqlBackup {
     atmSetup || return 1
 
@@ -458,6 +478,8 @@ All the commands must be lauched at the root of an Automne website.
 atmHelp
     Display this message.
 
+atmDropTables
+    Drop all the database tables
 
 atmSqlBackup [options]
     Dump the database of an Automne website.
