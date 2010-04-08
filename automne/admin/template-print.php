@@ -83,6 +83,7 @@ $jscontent = <<<END
 		plain:				true,
 		border:				false,
 		bodyStyle: 			'padding:5px',
+		buttonAlign:	'center',
 		defaults: {
 			anchor:				'97%',
 			allowBlank:			false,

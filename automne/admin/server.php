@@ -471,6 +471,7 @@ $jscontent = <<<END
 		autoHeight:		true,
 		labelWidth:		135,
 		labelAlign:		'right',
+		buttonAlign:	'center',
 		defaults: {
 			anchor:			'97%'
 		},

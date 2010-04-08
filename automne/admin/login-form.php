@@ -83,7 +83,7 @@ case "login":
 		Ext.WindowMgr.get(\'loginWindow\').on(\'close\', Automne.load.createDelegate(this, ['.sensitiveIO::jsonEncode($userSessionsInfos).']));
 		/*display welcome message*/
 		Automne.message.show(\''.sensitiveIO::sanitizeJSString($welcome).'\');
-		if (Ext.Element.cache[\'loginField\']) {delete Ext.Element.cache[\'loginField\']};
+		try {delete Ext.Element.cache[\'loginField\'];} catch (e) {}
 		';
 		//add all JS locales
 		$jscontent .= CMS_context::getJSLocales();
@@ -94,7 +94,7 @@ case "login":
 		Ext.WindowMgr.get(\'loginWindow\').close();';
 		//eval content into parent
 		$jscontent = '
-		if (parent.Ext.Element.cache[\'loginField\']) {delete parent.Ext.Element.cache[\'loginField\']};
+		try {delete parent.Ext.Element.cache[\'loginField\'];} catch (e) {}
 		parent.eval(\''.sensitiveIO::sanitizeJSString($jscontent, true).'\');';
 		$view->addJavascript($jscontent);
 		$view->show(CMS_view::SHOW_HTML);
@@ -243,8 +243,8 @@ $content = '<div class="x-panel x-form-label-left" style="width: 374px;">
 				<div class="x-panel-bc">
 					<div class="x-panel-footer">
 						<div class="x-panel-btns-ct">
-							<div class="x-panel-btns x-panel-btns-center" id="formsButton">
-								<div class="x-panel-fbar x-small-editor x-toolbar-layout-ct" style="width:auto;">
+							<div class="x-panel-btns" id="formsButton">
+								<div class="x-panel-fbar x-small-editor x-toolbar-layout-ct" style="width:110px;margin:auto;">
 									<table cellspacing="0" class="x-toolbar-ct">
 										<tbody>
 											<tr>

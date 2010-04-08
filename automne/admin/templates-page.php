@@ -278,6 +278,7 @@ $jscontent = <<<END
 		border:			false,
 		autoScroll:		true,
 		labelAlign: 	'top',
+		buttonAlign:	'center',
 		bodyStyle: {
 			padding: 		'5px'
 		},

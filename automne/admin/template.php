@@ -206,6 +206,7 @@ if (USE_PRINT_PAGES) {
 		bodyStyle: 		'padding:5px',
 		labelAlign:		'right',
 		border:			false,
+		buttonAlign:	'center',
 		items:[{
 			xtype:			'panel',
 			border:			false,
@@ -293,6 +294,7 @@ $jscontent = <<<END
 			labelAlign:			'right',
 			defaultType:		'textfield',
 			bodyStyle: 			'padding:5px',
+			buttonAlign:	'center',
 			defaults: {
 				xtype:				'textfield',
 				anchor:				'97%',
@@ -400,6 +402,7 @@ $jscontent = <<<END
 			xtype:				'atmForm',
 			border:				false,
 			bodyStyle: 			'padding:5px',
+			buttonAlign:		'center',
 			beforeActivate:		function(tabPanel, newTab, currentTab) {
 				if (!Ext.get('defText-{$templateId}')) {
 					//call server for definition update

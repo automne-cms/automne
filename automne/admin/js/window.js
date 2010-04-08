@@ -72,11 +72,11 @@ Automne.Window = Ext.extend(Ext.Window, {
 		return true;
 	},
 	addButtons: function (buttons) {
-		this.buttons = buttons;
-		if(this.buttons && this.buttons.length > 0){
+		if(buttons && buttons.length > 0){
             this.fbar = new Ext.Toolbar({
-                items: this.buttons,
-                toolbarCls: 'x-panel-fbar'
+                items: buttons,
+                buttonAlign:'center',
+				toolbarCls: 'x-panel-fbar'
             });
         }
         this.toolbars = [];

@@ -275,7 +275,8 @@ Automne = {
 					width: 			290,
 					minWidth:		290,
 					maxWidth:		290,
-					border:			false
+					border:			false,
+					hideCollapseTool:true
 				}) 
 			]
 		});

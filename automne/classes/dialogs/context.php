@@ -715,7 +715,7 @@ class CMS_context extends CMS_grandFather
 		
 		//Get Ext locales
 		if ($languageCode != 'en') { //english is defined as default language so we should not add it again
-			$extLocaleFile = PATH_MAIN_FS.'/ext/source/locale/ext-lang-'.$languageCode.'.js';
+			$extLocaleFile = PATH_MAIN_FS.'/ext/src/locale/ext-lang-'.$languageCode.'.js';
 			if (file_exists($extLocaleFile)) {
 				$fileContent = file_get_contents($extLocaleFile);
 				//remove BOM if any

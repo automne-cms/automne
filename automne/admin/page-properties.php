@@ -493,6 +493,7 @@ $jscontent .= <<<END
 					labelAlign:		'right',
 					defaultType:	'textfield',
 					labelWidth:		120,
+					buttonAlign:	'center',
 					defaults: {
 						xtype:			'textfield',
 						anchor:			'97%',
@@ -642,6 +643,7 @@ $jscontent .= <<<END
 					collapsed:		true,
 					labelAlign:		'right',
 					labelWidth:		145,
+					buttonAlign:	'center',
 					defaults: {
 						xtype:			'textfield',
 						anchor:			'97%',
@@ -713,6 +715,7 @@ $jscontent .= <<<END
 					defaultType:	'textfield',
 					collapsed:		true,
 					labelAlign:		'right',
+					buttonAlign:	'center',
 					defaults: {
 						xtype:			'textfield',
 						anchor:			'97%',
@@ -767,6 +770,7 @@ $jscontent .= <<<END
 					collapsed:		true,
 					labelAlign:		'right',
 					labelWidth:		120,
+					buttonAlign:	'center',
 					defaults: {
 						xtype:			'textfield',
 						anchor:			'97%',

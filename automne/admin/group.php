@@ -342,6 +342,7 @@ $jscontent = <<<END
 			defaultType:	'textfield',
 			bodyStyle: 		'padding:5px',
 			border:			false,
+			buttonAlign:	'center',
 			defaults: {
 				anchor:			'97%'
 			},

@@ -10,7 +10,7 @@
 	opacity:		0.8;
 }
 /* toolbar specific*/
-.x-toolbar {
+/*.x-toolbar {
 	overflow:		hidden;
 	zoom:			1;
 }
@@ -19,7 +19,7 @@
 }
 .x-toolbar-right {
 	float:			right;
-}
+}*/
 .x-toolbar .ytb-text {
 	line-height:	1.5em;
 }

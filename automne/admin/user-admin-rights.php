@@ -144,6 +144,7 @@ $jscontent = <<<END
 		defaultType:	'checkbox',
 		bodyStyle: 		'padding:10px',
 		border:			false,
+		buttonAlign:	'center',
 		defaults: {
 			xtype:			'checkbox',
 			anchor:			'97%',

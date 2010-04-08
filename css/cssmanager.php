@@ -35,7 +35,7 @@ if (isset($_GET['files'])) {
 		switch ($file) {
 			case 'ext':
 				//Ext CSS files
-				$cssfiles [] = PATH_MAIN_FS.'/ext/resources/css/ext-all.css';
+				$cssfiles [] = PATH_MAIN_FS.'/ext/resources/css/ext-all-notheme.css';
 				$cssfiles [] = PATH_MAIN_FS.'/ext/resources/css/xtheme-blue.css';
 				$cssfiles [] = PATH_ADMIN_CSS_FS.'/xtheme-automne.css'; //Automne theme
 				$cssfiles [] = PATH_ADMIN_CSS_FS.'/ext.css'; //overwrite some ext definitions

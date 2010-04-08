@@ -503,6 +503,7 @@ $jscontent = <<<END
 				collapsible:	true,
 				labelAlign:		'right',
 				defaultType:	'textfield',
+				buttonAlign:	'center',
 				defaults: {
 					xtype:			'textfield',
 					anchor:			'97%',
@@ -603,6 +604,7 @@ $jscontent = <<<END
 				defaultType:	'textfield',
 				collapsed:		true,
 				labelAlign:		'right',
+				buttonAlign:	'center',
 				defaults: {
 					xtype:			'textfield',
 					anchor:			'97%'
@@ -693,6 +695,7 @@ $jscontent = <<<END
 				collapsed:		true,
 				autoWidth:		true,
 				autoScroll:		true,
+				buttonAlign:	'center',
 				items:[{
 					xtype:			'panel',
 					bodyStyle: 		'padding:5px',

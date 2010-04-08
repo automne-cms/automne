@@ -152,7 +152,7 @@ if ($files) {
 				//Ext license (protected)
 				$jsfiles [] = PATH_MAIN_FS.'/ext/license.js';
 				//Ext and base adapter
-				$jsfiles [] = PATH_MAIN_FS.'/ext/adapter/ext/ext-base.js';
+				$jsfiles [] = (SYSTEM_DEBUG) ? PATH_MAIN_FS.'/ext/adapter/ext/ext-base-debug.js' : PATH_MAIN_FS.'/ext/adapter/ext/ext-base.js';
 				$jsfiles [] = (SYSTEM_DEBUG) ? PATH_MAIN_FS.'/ext/ext-all-debug.js' : PATH_MAIN_FS.'/ext/ext-all.js';
 				//Need to override some Ext methods
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/ext/garbage.js';
@@ -178,7 +178,7 @@ if ($files) {
 			break;
 			case 'fr':
 				//Ext french locales
-				$jsfiles [] = PATH_MAIN_FS.'/ext/source/locale/ext-lang-fr.js';
+				$jsfiles [] = PATH_MAIN_FS.'/ext/src/locale/ext-lang-fr.js';
 			break;
 			case 'en':
 				//Ext english locales (nothing for now)

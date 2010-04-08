@@ -1,6 +1,7 @@
 V4.0.2 (in progress)
 [REFACTOR] : Add draft thumbnail on page status icons
 [REFACTOR] : Update phpMyAdmin to version 3.3.1
+[REFACTOR] : Update ExtJS to version 3.2.0
 [REFACTOR] : Add pages redirection infos in pages tree
 
 V4.0.1 (19/03/10)

@@ -117,6 +117,15 @@ if (!is_file($file)) {
 	$anchor = '-60';
 	$action = 'update';
 }
+if (strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8') {
+	if (!io::isUTF8($fileDefinition)) {
+		$fileDefinition = utf8_encode($fileDefinition);
+	}
+} else {
+	if (io::isUTF8($fileDefinition)) {
+		$fileDefinition = utf8_decode($fileDefinition);
+	}
+}
 
 //DEFINITION TAB
 $content = '<textarea id="file-content-'.$fileId.'" style="display:none;">'.htmlspecialchars($fileDefinition).'</textarea>';
@@ -172,6 +181,7 @@ $jscontent = <<<END
 		plain:				true,
 		border:				false,
 		bodyStyle: 			'padding:5px',
+		buttonAlign:		'center',
 		defaults: {
 			anchor:				'97%',
 			allowBlank:			false
