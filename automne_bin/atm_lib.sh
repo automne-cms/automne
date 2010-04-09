@@ -412,7 +412,7 @@ function atmRestore {
     done
     unset ATM_RESTORE_FILE_LIST
 
-    OPTIONS="-x -z --exclude-from=$ATM_RESTORE_EXCLUDE_FILE $*"
+    OPTIONS="-x -m -z --exclude-from=$ATM_RESTORE_EXCLUDE_FILE $*"
     if [ $ATM_DEBUG -eq 1 ]; then
         OPTIONS="$OPTIONS -v"
     fi
