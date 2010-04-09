@@ -786,9 +786,11 @@ class CMS_pageTemplate extends CMS_grandFather
 				count(id_pag) as c
 			from
 				pages,
-				pageTemplates
+				pageTemplates,
+				pagesBaseData_edited
 			where
 				template_pag=id_pt
+				and page_pbd = id_pag
 				and definitionFile_pt = '".$this->_definitionFile."'
 		";
 		$q = new CMS_query($sql);
