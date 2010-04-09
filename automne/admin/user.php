@@ -395,6 +395,7 @@ $jscontent = <<<END
 		}
 		return true;
 	}
+	
 	//groups store
 	var store = new Automne.JsonStore({
 		url: 			'groups-datas.php',
@@ -466,6 +467,7 @@ $jscontent = <<<END
 		region:				'center',
 		border:				false,
 		enableTabScroll:	true,
+		plugins:			[ new Ext.ux.TabScrollerMenu() ],
 		listeners: {'beforetabchange' : function(tabPanel, newTab, currentTab ) {
 			if (newTab.id == 'userGroups-{$userId}') {
 				//(re)load of groups store

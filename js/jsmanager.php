@@ -168,6 +168,8 @@ if ($files) {
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/ext/MultiSelect.js';
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/ext/Multiselect2.js';
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/ext/DDView.js';
+				//Ext.ux.TabScrollerMenu
+				$jsfiles [] = PATH_ADMIN_JS_FS.'/ext/TabScrollerMenu.js';
 				
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/ext/Connection.js';
 				

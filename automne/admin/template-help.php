@@ -88,6 +88,7 @@ $jscontent = <<<END
         region:				'center',
 		plain:				true,
         enableTabScroll:	true,
+		plugins:			[ new Ext.ux.TabScrollerMenu() ],
 		defaults:			{
 			border:				false,
 			autoScroll:			true,

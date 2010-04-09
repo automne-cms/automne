@@ -588,6 +588,7 @@ $jscontent = <<<END
 		region:				'center',
 		border:				false,
 		enableTabScroll:	true,
+		plugins:			[ new Ext.ux.TabScrollerMenu() ],
 		listeners: {
 			'beforetabchange' : function(tabPanel, newTab, currentTab ) {
 				if (newTab.beforeActivate) {

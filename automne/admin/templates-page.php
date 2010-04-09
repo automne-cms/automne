@@ -102,6 +102,8 @@ $searchPanel .= "{
 				if (!isNaN(parseInt(field.getValue()))) {
 					field.clearInvalid();
 					field.fireEvent('valid', field);
+				} else if (!field.getValue()) {
+					field.clearInvalid();
 				}
 			}, 
 			options:		{buffer:300}

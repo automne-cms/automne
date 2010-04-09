@@ -73,6 +73,8 @@ Automne.tabPanel = Ext.extend(Ext.TabPanel, {
 				tip.remove();
 			}
 		}
+		//force hidding search panel
+		Automne.view.removeSearch();
 		return newTab.afterActivate(tabPanel, newTab, force);
 	},
 	setPageId: function(pageId) {
