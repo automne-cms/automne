@@ -1,15 +1,15 @@
 <?php
 // +----------------------------------------------------------------------+
-// | Automne (TM)													 |
+// | Automne (TM)														  |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 2000-2010 WS Interactive							 |
+// | Copyright (c) 2000-2010 WS Interactive								  |
 // +----------------------------------------------------------------------+
-// | Automne is subject to version 2.0 or above of the GPL license.		 |
-// | The license text is bundled with this package in the file			 |
-// | LICENSE-GPL, and is available through the world-wide-web at		 |
-// | http://www.gnu.org/copyleft/gpl.html.							 |
+// | Automne is subject to version 2.0 or above of the GPL license.		  |
+// | The license text is bundled with this package in the file			  |
+// | LICENSE-GPL, and is available through the world-wide-web at		  |
+// | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
-// | Author: Sebastien Pauchet <sebastien.pauchet@ws-interactive.fr>     |
+// | Author: Sebastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
 // $Id: install.php,v 1.31 2010/03/24 08:52:45 sebastien Exp $
@@ -1313,8 +1313,8 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 				if (APPLICATION_IS_WINDOWS) {
 					$needCliPath = true;
 					$cliPath = isset($_POST["cliPath"]) ? $_POST["cliPath"] : PATH_PHP_CLI_WINDOWS;
-				} elseif(substr(CMS_patch::executeCommand('which php 2>&1'),0,1) !== '/') {
-					$return = CMS_patch::executeCommand('php -v');
+				} elseif(substr(CMS_patch::executeCommand('which php 2>&1',$error),0,1) !== '/') {
+					$return = CMS_patch::executeCommand('php -v',$error);
 					if (strpos(strtolower($return), '(cli)') === false) {
 						$needCliPath = true;
 						$cliPath = isset($_POST["cliPath"]) ? $_POST["cliPath"] : PATH_PHP_CLI_UNIX;
