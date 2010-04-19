@@ -37,9 +37,9 @@ error_reporting(E_ALL);
   *	Path of the REAL document root
   *	Default : $_SERVER["DOCUMENT_ROOT"]
   */
-if ($_SERVER["DOCUMENT_ROOT"] != dirname(__FILE__)) {
+if ($_SERVER["DOCUMENT_ROOT"] != realpath($_SERVER["DOCUMENT_ROOT"])) {
 	//rewrite server document root if needed
-	$_SERVER["DOCUMENT_ROOT"] = dirname(__FILE__);
+	$_SERVER["DOCUMENT_ROOT"] = realpath($_SERVER["DOCUMENT_ROOT"]);
 }
 
 if (!isset($_GET['file'])) {
@@ -104,6 +104,12 @@ if (!isset($_GET['file'])) {
 				$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, Multibyte String (mbsring) extension is not installed.</li>';
 			} else {
 				$content .= '<li class="atm-pic-ok">Multibyte String (mbsring) extension <strong style="color:green">OK</strong></li>';
+			}
+			//Doc Root
+			if (realpath($_SERVER["DOCUMENT_ROOT"]) != realpath(dirname(__FILE__))) {
+				$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, Automne must be installed in the server document root ('.realpath($_SERVER['DOCUMENT_ROOT']).')</li>';
+			} else {
+				$content .= '<li class="atm-pic-ok">Automne installed in the document root <strong style="color:green">OK</strong></li>';
 			}
 			//Files writing
 			if (!is_writable(realpath($_SERVER['DOCUMENT_ROOT']))) {
@@ -210,7 +216,6 @@ if (!isset($_GET['file'])) {
 		case "fr":
 			//General labels
 			$label_next = 'Suivant';
-			$label_docroot = "Erreur, ce fichier doit ce trouver &agrave; la racine du serveur web ! (%s)";
 			$footer = 'Installation d\'Automne version 4. Pour toute information, visitez <a href="http://www.automne.ws" target="_blank">www.automne.ws</a>';
 			$needhelp = '<div id="needhelp"><a href="'.$_SERVER['SCRIPT_NAME'].'?step=help&install_language='.$install_language.'" target="_blank">Besoin d\'aide ?</a></div>';
 			
@@ -223,6 +228,7 @@ if (!isset($_GET['file'])) {
 			&raquo; <a href="'.$_SERVER['SCRIPT_NAME'].'?file=info" target="_blank">T&eacute;l&eacute;charger le fichier de diagnostic</a>.';
 			
 			//STEP check
+			$error_docroot = "Erreur, Automne doit &ecirc;tre install&eacute; &agrave; la racine de votre serveur web : %s.<br />Vous devriez cr&eacute;er un h&ocirc;te virtuel sp&eacute;cifique pour Automne dans votre configuration d'Apache.";
 			$error_stepCheck_php_error = 'Erreur, Votre version de PHP ('.phpversion().') n\'est pas compatible avec Automne. Vous devez avoir une version sup&eacute;rieure &agrave; la 5.2.0.';
 			$error_stepCheck_dir_not_writable_error = 'Erreur, Apache ne poss&egrave;de pas les droits d\'&eacute;criture sur le r&eacute;pertoire racine (%s) de votre site web.';
 			$error_stepCheck_safe_mode_error = 'Attention ! L\'option "safe_mode" est active sur votre configuration de PHP. Cette option est incompatible avec Automne. V&eacute;rifiez votre installation de PHP.';
@@ -374,7 +380,6 @@ if (!isset($_GET['file'])) {
 		default:
 			//General labels
 			$label_next = 'Next';
-			$label_docroot = "Error, this file Must be at the server Document Root ! (%s)";
 			$footer = 'Installing Automne version 4. For more informations, visit <a href="http://www.automne.ws" target="_blank">www.automne.ws</a>.';
 			$needhelp = '<div id="needhelp"><a href="'.$_SERVER['SCRIPT_NAME'].'?step=help&install_language='.$install_language.'" target="_blank">Need help?</a></div>';
 			//STEP Help
@@ -388,6 +393,7 @@ if (!isset($_GET['file'])) {
 			
 			
 			//STEP check
+			$error_docroot = "Error, Automne must be installed at the server Document Root: %s.<br />You should create a specific Virtual Host for Automne in your Apache configuration.";
 			$error_stepCheck_php_error = 'Error, Your PHP version ('.phpversion().') is not compatible with Automne. You must have a version greater than 5.2.0.';
 			$error_stepCheck_dir_not_writable_error = 'Error, Apache does not have write permissions on your website root directory (%s).';
 			$error_stepCheck_safe_mode_error = 'Beware! The "safe_mode" option is active on your PHP configuration. This option is not compatible with Automne. Please Check your PHP installation.';
@@ -562,6 +568,11 @@ if (!isset($_GET['file'])) {
 			//check for document root writing
 			if (!is_writable(realpath($_SERVER['DOCUMENT_ROOT']))) {
 				$error .= sprintf($error_stepCheck_dir_not_writable_error, realpath($_SERVER['DOCUMENT_ROOT'])).'<br /><br />';
+				$stopInstallation = true;
+			}
+			//check for docroot
+			if (realpath($_SERVER["DOCUMENT_ROOT"]) != realpath(dirname(__FILE__))) {
+				$error .= sprintf($error_docroot, realpath($_SERVER['DOCUMENT_ROOT'])).'<br /><br />';
 				$stopInstallation = true;
 			}
 			//check for GD
