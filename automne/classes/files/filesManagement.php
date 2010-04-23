@@ -555,7 +555,7 @@ class CMS_file extends CMS_grandFather
 	 * @return boolean true on success, false on failure
 	 * @static
 	 */
-	function deltree($dir, $withDir=false)
+	function deltree($dir, $withDir = false)
 	{
 		$current_dir = @opendir($dir);
 		while($entryname = @readdir($current_dir)) {
@@ -986,38 +986,30 @@ class CMS_file extends CMS_grandFather
 			$lastdate = (filemtime($_SERVER['SCRIPT_FILENAME']) > $lastdate) ? filemtime($_SERVER['SCRIPT_FILENAME']) : $lastdate;
 		}
 		//check If-Modified-Since header if exists then return a 304 if needed
-		if (isset($_SERVER['IF-MODIFIED-SINCE']) && ($ifModifiedSince = strtotime($_SERVER['IF-MODIFIED-SINCE']))) {
-			if ($lastdate <= $ifModifiedSince) {
-				header('HTTP/1.1 304 Not Modified');
-				header('Content-Type: '.$contentType);
-				header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $lastdate) . ' GMT');
-				header('Expires: ' . gmdate('D, d M Y H:i:s', time()+2592000) . ' GMT'); //30 days
-				header('Cache-Control: private, max-age=2592000');
-				header('Pragma: private');
-				exit;
-			}
+		if (isset($_SERVER['IF-MODIFIED-SINCE'])) {
+			$ifModifiedSince = strtotime($_SERVER['IF-MODIFIED-SINCE']);
+		} elseif (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+			$ifModifiedSince = strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']);
 		}
-		//Cache options
-		$frontendOptions = array(
-			'lifetime' => null, // cache never expire
-			'caching' => true
-		);
-		$backendOptions = array(
-			'cache_dir' => PATH_CACHE_FS.'/', // Directory where to put the cache files
-			'cache_file_umask' => octdec(FILES_CHMOD),
-			'hashed_directory_umask' => octdec(DIRS_CHMOD),
-		);
-		// getting a Zend_Cache_Core object
-		try {
-			$cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
-		} catch (Zend_Cache_Exception $e) {
-			CMS_query::raiseError($e->getMessage());
+		if (isset($ifModifiedSince) && $lastdate <= $ifModifiedSince) {
+			header('HTTP/1.1 304 Not Modified');
+			header('Content-Type: '.$contentType);
+			header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $lastdate) . ' GMT');
+			header('Expires: ' . gmdate('D, d M Y H:i:s', time()+2592000) . ' GMT'); //30 days
+			header('Cache-Control: private, max-age=2592000');
+			//header("Cache-Control: must-revalidate");
+			header('Pragma: private');
+			//header("Pragma: no-cache"); 
+			exit;
 		}
-		$compress = 'ob_gzhandler' != ini_get('output_handler') && extension_loaded( 'zlib' ) && !ini_get('zlib.output_compression');
+		
+		$compress = 'ob_gzhandler' != ini_get('output_handler') && extension_loaded( 'zlib' ) && !ini_get('zlib.output_compression') && strpos( strtolower($_SERVER['HTTP_ACCEPT_ENCODING']), 'gzip') !== false;
 		//create cache id from files, compression status and last time files access
 		$id = md5(implode(',',$files).'-'.$compress.'-'.$lastdate);
+		//create cache object
+		$cache = new CMS_cache($id, $contentType, 2592000, false);
 		$datas = '';
-		if (!isset($cache) || !($datas = $cache->load($id))) {
+		if (!$cache->exist() || !($datas = $cache->load())) {
 			// datas cache missing so create it
 			foreach ($files as $file) {
 				$datas .= file_get_contents($file)."\n";
@@ -1032,20 +1024,23 @@ class CMS_file extends CMS_grandFather
 			}
 			//compres data if needed
 			if ($compress) {
-				$datas = gzencode($datas, 9);
+				$datas = gzencode($datas, 3);
 			}
-			if (isset($cache)) {
-				$cache->save($datas, $id);
+			if ($cache) {
+				$cache->save($datas, array('type' => $contentType));
 			}
 		}
 		//send headers
 		header('Content-Type: '.$contentType);
 		header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $lastdate) . ' GMT');
 		header('Expires: ' . gmdate('D, d M Y H:i:s', time()+2592000) . ' GMT'); //30 days
-		header('Cache-Control: private, max-age=2592000');
-		header('Pragma: private');
+		//header('Cache-Control: private, max-age=2592000');
+		header("Cache-Control: must-revalidate");
+		//header('Pragma: private');
+		header("Pragma: no-cache"); 
 		//send gzip header if needed
 		if ($compress) {
+			header('Vary: Accept-Encoding'); // Handle proxies
 			header("Content-Encoding: gzip");
 		}
 		//send content

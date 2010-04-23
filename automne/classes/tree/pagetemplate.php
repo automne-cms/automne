@@ -870,15 +870,15 @@ class CMS_pageTemplate extends CMS_grandFather
 			$modules = array();
 			$ids = array();
 			foreach ($this->_clientSpacesTags as $cs_tag) {
-				if ($cs_tag->getAttribute("id") && in_array($cs_tag->getAttribute("id"), $ids)) {
+				/*if ($cs_tag->getAttribute("id") && in_array($cs_tag->getAttribute("id"), $ids)) {
 					$this->raiseError('Malformed template file to set : contains redundant clientSpaces ids');
 					$this->_clientSpacesTags = array();
 					return "pageTemplate : malformed template file to set : contains redundant clientSpaces ids";
-				} else {
+				} else {*/
 					if ($cs_tag->getAttribute("module")=='standard') {
 						$ids[] = $cs_tag->getAttribute("id");
 					}
-				}
+				//}
 				if ($cs_tag->getAttribute("module")) {
 					$modules[] = $cs_tag->getAttribute("module");
 				}

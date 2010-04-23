@@ -117,7 +117,7 @@
 			if (STATS_DEBUG) {
 				$currenttime = getmicrotime();
   	            $time = $currenttime - $time_start;
-				if (VIEW_SQL) $GLOBALS["sql_table"][]=array("sql"=>$this->_sql,"time" => $time, 'current' => $currenttime - $GLOBALS["time_start"]);
+				if (VIEW_SQL) $GLOBALS["sql_table"][]=array('sql' => $this->_sql, 'time' => $time, 'current' => $currenttime - $GLOBALS["time_start"], 'from' => io::getCallInfos(3));
 				$GLOBALS["sql_nb_requests"]++;
 				$GLOBALS["total_time"] += $time;
 			}

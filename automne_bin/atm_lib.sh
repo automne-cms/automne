@@ -181,31 +181,49 @@ function atmDropTables {
 function atmSqlBackup {
     atmSetup || return 1
 
-    ATM_SQL_DUMP_FILE="sql/$ATM_SQL_DUMP_FILE_PREFIX$ATM_DATE.sql"
+    # mysqldump default options
     OPTIONS="--add-drop-table --complete-insert $*"
     if [ $ATM_DEBUG -eq 1 ]; then
         OPTIONS="$OPTIONS -v"
     fi
 
-    echo "SQL dump:"
-    if [ ! -f "$ATM_SQL_DUMP_FILE" ]; then
-        mysqldump $OPTIONS -h$ATM_DB_HOST -u$ATM_DB_USER -p$ATM_DB_PASS $ATM_DB_NAME > "$ATM_SQL_DUMP_FILE"
+    # detect --result-file option
+    for ARG in $*; do
+        if [[ "${ARG:0:14}" == "--result-file=" ]]; then
+            ATM_SQL_DUMP_FILE="${ARG:14}"
+        fi
+    done
 
-        if [ $? -eq 0 ]; then
-            echo "SUCCESS: file $ATM_SQL_DUMP_FILE"
-            atmTearDown
-            return 0
-        else
-            echo "ERROR: SQL dump failure";
-            if [ -f "$ATM_SQL_DUMP_FILE" ]; then
-                rm "$ATM_SQL_DUMP_FILE"
-            fi
+    # if no ATM_SQL_DUMP_FILE name generate one
+    # add it to the options
+    if [ -z "$ATM_SQL_DUMP_FILE" ]; then
+        ATM_SQL_DUMP_FILE="sql/$ATM_SQL_DUMP_FILE_PREFIX$ATM_DATE.sql"
+        OPTIONS="$OPTIONS --result-file=$ATM_SQL_DUMP_FILE"
+    fi
+
+    # check if file must be overided
+    if [ -f "$ATM_SQL_DUMP_FILE" ]; then
+        echo "$ATM_SQL_DUMP_FILE already exists"
+        atmAsk "Overide $ATM_SQL_DUMP_FILE [Y|n]?" "n"
+        if [ $? -ne 1 ]; then
             atmTearDown
             return 1
         fi
+    fi
 
+    # do the dump
+    echo "SQL dump:"
+    mysqldump $OPTIONS -h$ATM_DB_HOST -u$ATM_DB_USER -p$ATM_DB_PASS $ATM_DB_NAME
+    if [ $? -eq 0 ]; then
+        echo "SUCCESS: file $ATM_SQL_DUMP_FILE"
+        atmTearDown
+        return 0
     else
-        echo "ERROR: $ATM_SQL_DUMP_FILE already exists"
+        # clean files in case of failure
+        echo "ERROR: SQL dump failure";
+        if [ -f "$ATM_SQL_DUMP_FILE" ]; then
+            rm "$ATM_SQL_DUMP_FILE"
+        fi
         atmTearDown
         return 1
     fi
@@ -225,12 +243,14 @@ function atmSqlRestore {
         atmTearDown
         return 1
     else
+        # pop the first argument
         ATM_SQL_LOAD_FILE="$1"
         shift
     fi
 
     atmSetup || return 1
 
+    # mysql options
     OPTIONS="$*"
     if [ $ATM_DEBUG -eq 1 ]; then
         OPTIONS="$OPTIONS -v"
@@ -304,39 +324,15 @@ function atmBackup {
         fi
     done
 
+    # tar default options
     OPTIONS="-cz --exclude-from=$ATM_BACKUP_EXCLUDE_FILE $*"
+    # tar debug options
     if [ $ATM_DEBUG -eq 1 ]; then
         OPTIONS="$OPTIONS -v"
     fi
 
-    if [ ! -f "$ATM_BACKUP_FILE" ]; then
-        echo "Creating archive"
-        tar $* $OPTIONS -f "$ATM_BACKUP_FILE" .
-
-        if [ -f "$ATM_BACKUP_EXCLUDE_FILE" ]; then
-            rm $ATM_BACKUP_EXCLUDE_FILE
-        fi
-        unset ATM_BACKUP_EXCLUDE_FILE
-
-        if [ $? -eq 0 ]; then
-            echo "SUCCESS: File $ATM_BACKUP_FILE"
-            if [ -f "$ATM_SQL_DUMP_FILE" ]; then
-                rm "$ATM_SQL_DUMP_FILE"
-            fi
-            atmTearDown
-            return 0
-        else
-            echo "ERROR: Backup failure";
-            if [ -f "$ATM_BACKUP_FILE" ]; then
-                rm "$ATM_BACKUP_FILE"
-            fi
-            if [ -f "$ATM_SQL_DUMP_FILE" ]; then
-                rm "$ATM_SQL_DUMP_FILE"
-            fi
-            atmTearDown
-            return 1
-        fi
-    else
+    # check if backup exists
+    if [ -f "$ATM_BACKUP_FILE" ]; then
         echo "ERROR: $ATM_BACKUP_FILE already exists."
         if [ -f "$ATM_SQL_DUMP_FILE" ]; then
             rm "$ATM_SQL_DUMP_FILE"
@@ -345,6 +341,34 @@ function atmBackup {
         return 1
     fi
 
+    echo "Creating archive"
+    tar $* $OPTIONS -f "$ATM_BACKUP_FILE" .
+    SUCCESS=$?
+
+    # remove the excluded filelist
+    if [ -f "$ATM_BACKUP_EXCLUDE_FILE" ]; then
+        rm $ATM_BACKUP_EXCLUDE_FILE
+    fi
+    unset ATM_BACKUP_EXCLUDE_FILE
+
+    # end if unsuccessfull tar
+    if [ $SUCCESS -ne 0 ]; then
+        echo "ERROR: Backup failure";
+        # clean files
+        if [ -f "$ATM_BACKUP_FILE" ]; then
+            rm "$ATM_BACKUP_FILE"
+        fi
+        if [ -f "$ATM_SQL_DUMP_FILE" ]; then
+            rm "$ATM_SQL_DUMP_FILE"
+        fi
+        atmTearDown
+        return 1
+    fi
+
+    echo "SUCCESS: File $ATM_BACKUP_FILE"
+    if [ -f "$ATM_SQL_DUMP_FILE" ]; then
+        rm "$ATM_SQL_DUMP_FILE"
+    fi
     atmTearDown
     return 0
 }
@@ -362,8 +386,11 @@ function atmRestore {
         atmTearDown
         return 1
     else
+        # pop the first argument
         ATM_RESTORE_FILE="$1"
         shift
+
+        # find the corresponding sql file
         ATM_SQL_LOAD_FILE=`echo "$ATM_RESTORE_FILE" | sed "s/.*$ATM_BACKUP_FILE_PREFIX\(.*\)\.$ATM_BACKUP_FILE_EXTENSION$/.\/sql\/$ATM_SQL_DUMP_FILE_PREFIX\1.sql/"`
     fi
 
@@ -393,7 +420,10 @@ function atmRestore {
     #build exclude options
     ATM_RESTORE_EXCLUDE_FILE="ATM_RESTORE_EXCLUDE_FILE_$ATM_DATE.tmp"
 
+    # list the archive files
     ATM_RESTORE_FILE_LIST=`tar -tf "$ATM_RESTORE_FILE"`
+
+    # create the restored filelist
     for ITEM in `echo "$ATM_RESTORE_EXCLUDE_LIST"`; do
         if [ `expr match "$ITEM" '.*/$'` -ne 0 ]; then
             ITEM_LIST=`echo "$ATM_RESTORE_FILE_LIST" | grep "^$ITEM.*" | grep -v ".*/$"`
@@ -412,26 +442,31 @@ function atmRestore {
     done
     unset ATM_RESTORE_FILE_LIST
 
+    # tar default options
     OPTIONS="-x -m -z --exclude-from=$ATM_RESTORE_EXCLUDE_FILE $*"
+    # tar debug options
     if [ $ATM_DEBUG -eq 1 ]; then
         OPTIONS="$OPTIONS -v"
     fi
 
+    # unpack
     echo "Extracting archive"
     tar $OPTIONS -f "$ATM_RESTORE_FILE" .
     SUCCESS=$?
 
+    # remove the restored filelist
     if [ -f "$ATM_RESTORE_EXCLUDE_FILE" ]; then
         rm $ATM_RESTORE_EXCLUDE_FILE
     fi
     unset ATM_RESTORE_EXCLUDE_FILE
 
+    # end if unsuccessfull untar
     if [ $SUCCESS -ne 0 ]; then
         atmTearDown
         return 1
     fi
 
-    #overide database?
+    # update the database
     if [ -f $ATM_SQL_LOAD_FILE ]; then
         atmAsk "Overide Database [y|n]?"
         if [ $? -eq 1 ]; then

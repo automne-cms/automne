@@ -250,6 +250,12 @@ if (!is_object($module)) {
 		<td class="admin" align="right"><span class="admin_text_alert">*</span> '.$cms_language->getMessage(MESSAGE_PAGE_FIELD_CODENAME).'</td>
 		<td class="admin"><input type="text" maxlength="20" size="30" class="admin_input_text" value="'.htmlspecialchars($_POST["codename"]).'" name="codename" /> <small>('.$cms_language->getMessage(MESSAGE_PAGE_FIELD_CODENAME_ALPHANUM).')</small></td>
 	</tr>';
+} else {
+	$content .= '
+	<tr>
+		<td class="admin" align="right">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_CODENAME).'</td>
+		<td class="admin">'.$module->getCodename().'</td>
+	</tr>';
 }
 if (!is_object($module) || is_dir(PATH_MODULES_FILES_FS.'/'.$module->getCodename().'/edited') || is_dir(PATH_MODULES_FILES_FS.'/'.$module->getCodename().'/public')) {
 	if (is_object($module) && (file_exists(PATH_MODULES_FILES_FS.'/'.$module->getCodename().'/edited/.htaccess')

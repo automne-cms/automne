@@ -35,26 +35,64 @@ class CMS_modulesCatalog extends CMS_grandFather
 	  * @return CMS_module The module wanted
 	  * @access public
 	  */
-	function getByCodename($codename)
+	function getByCodename($datas)
 	{
-		if (!$codename) {
-			parent::raiseError("Codename is null");
-			return false;
-		}
-		//test the codename to see if it is valid
-		if ($codename != SensitiveIO::sanitizeAsciiString($codename)) {
-			parent::raiseError("Codename is not valid");
-			return false;
-		}
-		
-		//Try to instanciate a module named CMS_module_CODENAME
-		$class_name = "CMS_module_".$codename;
-		if (class_exists($class_name)) {
-			return new $class_name($codename);
-		} elseif (CMS_modulesCatalog::isPolymod($codename)) {
-			return new CMS_polymod($codename);
+		static $modules;
+		if (is_string($datas)) {
+			$codename = $datas;
+			if (!$codename) {
+				parent::raiseError("Codename is null");
+				return false;
+			}
+			if (isset($modules[$codename])) {
+				return $modules[$codename];
+			}
+			//test the codename to see if it is valid
+			if ($codename != SensitiveIO::sanitizeAsciiString($codename)) {
+				parent::raiseError("Codename is not valid");
+				return false;
+			}
+			
+			//Try to instanciate a module named CMS_module_CODENAME
+			$class_name = "CMS_module_".$codename;
+			if (class_exists($class_name)) {
+				$modules[$codename] = new $class_name($codename);
+				return $modules[$codename];
+			} elseif (CMS_modulesCatalog::isPolymod($codename)) {
+				$modules[$codename] = new CMS_polymod($codename);
+				return $modules[$codename];
+			} else {
+				parent::raiseError("Unknown codename : ".$codename);
+				return false;
+			}
+		} elseif (is_array($datas)) {
+			$codename = isset($datas['codename_mod']) ? $datas['codename_mod'] : '';
+			if (!$codename) {
+				parent::raiseError("Codename is null");
+				return false;
+			}
+			if (isset($modules[$codename])) {
+				return $modules[$codename];
+			}
+			//test the codename to see if it is valid
+			if ($codename != SensitiveIO::sanitizeAsciiString($codename)) {
+				parent::raiseError("Codename is not valid");
+				return false;
+			}
+			//Try to instanciate a module named CMS_module_CODENAME
+			$class_name = "CMS_module_".$codename;
+			if (class_exists($class_name)) {
+				$modules[$codename] = new $class_name($datas);
+				return $modules[$codename];
+			} elseif ($datas['isPolymod_mod']) {
+				$modules[$codename] = new CMS_polymod($datas);
+				return $modules[$codename];
+			} else {
+				parent::raiseError("Unknown codename : ".$codename);
+				return false;
+			}
 		} else {
-			parent::raiseError("Unknown codename : ".$codename);
+			parent::raiseError("Unknown datas type : ".gettype($datas));
 			return false;
 		}
 	}
@@ -67,6 +105,12 @@ class CMS_modulesCatalog extends CMS_grandFather
 	  */
 	function getAll($orderBy="label", $polymodOnly = false)
 	{
+		static $modules;
+		$hash = md5(serialize(func_get_args()));
+		if (isset($modules[$hash])) {
+			return $modules[$hash];
+		}
+		
 		$where = $from = '';
 		if ($orderBy == "label") {
 			global $cms_language;
@@ -90,8 +134,7 @@ class CMS_modulesCatalog extends CMS_grandFather
 		
 		$sql = "
 			select
-				codename_mod,
-				isPolymod_mod
+				*
 			from
 				modules
 			".$from."
@@ -100,14 +143,14 @@ class CMS_modulesCatalog extends CMS_grandFather
 		";
 		$q = new CMS_query($sql);
 		
-		$modules = array();
+		$modules[$hash] = array();
 		while ($r = $q->getArray()) {
-			$module = CMS_modulesCatalog::getByCodename($r["codename_mod"]);
+			$module = CMS_modulesCatalog::getByCodename($r);
 			if ($module && !$module->hasError()) {
-				$modules[$r["codename_mod"]] = $module;
+				$modules[$hash][$r["codename_mod"]] = $module;
 			}
 		}
-		return $modules;
+		return $modules[$hash];
 	}
 	
 	/**
@@ -117,6 +160,10 @@ class CMS_modulesCatalog extends CMS_grandFather
 	  * @access public
 	  */
 	function getAllCodenames() {
+		static $codenames;
+		if ($codenames) {
+			return $codenames;
+		}
 		$sql = "
 			select
 				codename_mod as codename

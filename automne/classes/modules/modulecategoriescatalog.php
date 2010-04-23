@@ -172,6 +172,8 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 				if ($parentCategory->getID()) { //if category has a parent (not a root category)
 					return CMS_moduleCategories_catalog::compactSiblingsOrder($parentCategory->getID());
 				} else {
+					//Clear polymod cache
+					CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $category->getAttribute('moduleCodename')));
 					return true;
 				}
 			} else  {
@@ -297,6 +299,11 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 				}
 			}
 		}
+		if ($codename) {
+			//Clear polymod cache
+			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $codename));
+		}
+		
 		return $proceed;
 	}
 	
@@ -370,6 +377,9 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 				id_mca='".$category->getID()."'
 		";
 		$q = new CMS_query($sql);
+		
+		//Clear polymod cache
+		CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $category->getAttribute('moduleCodename')));
 		return true;
 	}
 	
@@ -440,6 +450,9 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 					id_mca='".$sibling_to_move_right->getID()."'
 			";
 			$q = new CMS_query($sql);
+			
+			//Clear polymod cache
+			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $sibling_to_move_right->getAttribute('moduleCodename')));
 			return true;
 		} else {
 			CMS_grandFather::raiseError("Move impossible (first or last sibling to move, or parent and sibling not related");

@@ -36,86 +36,9 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(111, 'polymod', 'fr', 'Syntaxe des tags');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(112, 'polymod', 'fr', 'Variables et fonctions des objets');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(113, 'polymod', 'fr', 'Tags de travail');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(114, 'polymod', 'fr', '
-<div class="rowComment">
-	<h1>Tags de travail :</h1>
-	<div class="retrait">
-		<h3>Afficher le contenu du tag si la condition est remplie :</h3>
-		<div class="retrait">
-			<span class="code"> &lt;atm-if what=&quot;<span class="keyword">condition</span>&quot;&gt; ... &lt;/atm-if&gt; </span>
-			<ul>
-				<li><span class="keyword">condition</span> : Condition &agrave; remplir pour afficher le contenu du tag. L''usage courant est de valider la pr&eacute;sence d''une valeur non nulle. Cette condition peut aussi prendre toutes les formes valides d''une condition PHP (voir : <a target="_blank" href="http://www.php.net/if" class="admin">Les structures de contr&ocirc;le en PHP</a>). La condition sera remplie si la valeur existe ou bien n''est pas nulle ou bien n''est pas &eacute;gale &agrave; faux (false).</li>
-			</ul>
-		</div>
-		<h3>Boucler sur un ensemble d''objets :</h3>
-		<div class="retrait">
-			<span class="code">&lt;atm-loop on=&quot;<span class="keyword">objets</span>&quot;&gt; ... &lt;/atm-loop&gt;</span>
-			<ul>
-				<li><span class="keyword">objets</span> : Collection d''objets. Employ&eacute; pour traiter tous les objets d''un ensemble d''objets multiple (dit multi-objet).</li>
-				<li>Un attribut <span class="keyword">reverse</span> (facultatif) peut être ajouté pour inverser l''ordre des résultats (valeur : booléen <span class="vertclair">true</span>, <span class="vertclair">false</span>)</li>
-			</ul>
-			<br />
-			Les valeurs suivantes seront remplac&eacute;es dans le tag :
-			<ul>
-				<li><span class="vertclair">{firstloop}</span> : Vrai si l''objet en cours est le premier de la liste d''objets.</li>
-				<li><span class="vertclair">{lastloop}</span> : Vrai si l''objet en cours est le dernier de la liste d''objets.</li>
-				<li><span class="vertclair">{loopcount}</span> : Num&eacute;ro de l''objet en cours dans la liste d''objets.</li>
-				<li><span class="vertclair">{lastloop}</span> : Vrai si l''objet en cours est le dernier de la liste d''objets.</li>
-				<li><span class="vertclair">{maxloops}</span> : Nombre d''objets sur lesquels boucler.</li>
-			</ul>
-		</div>
-		<h3>Ajouter un attribut au tag XHTML p&egrave;re (contenant ce tag) :</h3>
-		<div class="retrait">
-			<span class="code"> &lt;atm-parameter attribute=&quot;<span class="keyword">attributeName</span>&quot; value=&quot;<span class="keyword">attributeValue</span>&quot; /&gt; </span>
-			<ul>
-				<li><span class="keyword">attributeName</span> : Nom de l''attribut &agrave; ajouter.</li>
-				<li><span class="keyword">attributeValue</span> : Valeur de l''attribut &agrave; ajouter.</li>
-			</ul>
-		</div>
-		<h3>Assigner une valeur &agrave; une variable :</h3>
-		<div class="retrait">
-			<span class="code">&lt;atm-setvar vartype=&quot;<span class="keyword">type</span>&quot; varname=&quot;<span class="keyword">name</span>&quot; value=&quot;<span class="keyword">varValue</span>&quot; /&gt; </span>
-			<ul>
-				<li><span class="keyword">type </span>: Type de la variable &agrave; assigner : <span class="vertclair">request</span>, <span class="vertclair">session</span> ou <span class="vertclair">var</span>.</li>
-				<li><span class="keyword">name </span>: Nom de la variable &agrave; assigner. Attention, r&eacute;assigner une variable existante supprimera l''ancienne valeur.</li>
-				<li><span class="keyword">varValue</span> : valeur &agrave; assigner &agrave; la variable.</li>
-			</ul>
-		</div>
-		<h3>Recharger une zone en AJAX :</h3>
-		<div class="retrait">
-			<span class="code">&lt;atm-xml what=&quot;<span class="keyword">condition</span>&quot;&gt; ... &lt;/atm-xml&gt; </span><br />
-			Permet de recharger une zone sp&eacute;cifique de la page via une requête de type AJAX.<br />Si la requête HTTP appelant la page en cours contient les param&egrave;tres v&eacute;rifiant l''attribut <span class="keyword">condition</span>, alors seul le contenu du tag atm-xml sera renvoyé en réponse à la requête HTTP. Le reste du contenu de la page en cours sera ignoré.<br /><br />Pour plus d''informations, consultez la <a href="http://doc.automne.ws" target="_blank">documentation d''Automne en ligne</a> ou étudiez les modules Polymod fournis avec la démonstration d''Automne, ils font appel à cette fonctionnalité.
-			<ul>
-				<li><span class="keyword">condition</span> : Condition &agrave; remplir pour obtenir le contenu du tag atm-xml.</li>
-			</ul><br />
-			<strong>Exemple à l''aide de JQuery :</strong><br /><br />
-			Votre rangée comporte le code suivant :<br />
-			<span class="code">&lt;atm-xml what=&quot;<span class="keyword">{request:string:out} == ''xml''</span>&quot;&gt;<br />
-			&nbsp;&nbsp;&nbsp; ... recherche d''actualit&eacute;s ...<br />
-			&lt;/atm-xml&gt;</span><br />
-			Si on effectue la requête ajax suivante vers la page comportant cette rangée :<br />
-			<span class="code">
-			$.ajax({<br />
-			&nbsp;&nbsp;&nbsp;type:&nbsp;"POST",<br />
-			&nbsp;&nbsp;&nbsp;url:&nbsp;pageURL,<br />
-			&nbsp;&nbsp;&nbsp;data:&nbsp;''<span class="keyword">out=xml</span>&cat='' + $(''#cat'').val(),<br />
-			&nbsp;&nbsp;&nbsp;success:&nbsp;displaySearch<br />
-			});
-			</span><br />
-			Alors la recherche d''actualit&eacute;s sera relanc&eacute;e avec le param&egrave;tre de la cat&eacute;gorie selectionn&eacute; et seul le contenu de cette zone sera retourné :<br />
-			<span class="code">
-			&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;<br />
-			&lt;response xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;<br />
-			&nbsp;&nbsp;&nbsp;&nbsp;&lt;error&gt;0&lt;/error&gt;<br />
-			&nbsp;&nbsp;&nbsp;&nbsp;&lt;data&gt;&lt;![CDATA[<span class="keyword"> ... le contenu du tag atm-xml correspondant à la nouvelle recherche d''actualités ... </span>]]&gt;&lt;/data&gt;<br />
-			&lt;/response&gt;
-			</span>
-		</div>
-	</div>
-</div>
-');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(114, 'polymod', 'fr', '<div class="rowComment">\r\n<h1>Tags de travail :</h1>\r\n<div class="retrait">\r\n<h3>Afficher le contenu du tag si la condition est remplie :</h3>\r\n<div class="retrait"><span class="code"> &lt;atm-if what="<span class="keyword">condition</span>"&gt; ... &lt;/atm-if&gt; </span>\r\n<ul>\r\n    <li><span class="keyword">condition</span> : Condition à remplir pour afficher le contenu du tag. L''usage courant est de valider la présence d''une valeur non nulle. Cette condition peut aussi prendre toutes les formes valides d''une condition PHP (voir : <a class="admin" href="http://www.php.net/if" target="_blank">Les structures de contrôle en PHP</a>). La condition sera remplie si la valeur existe ou bien n''est pas nulle ou bien n''est pas égale à faux (false).</li>\r\n</ul>\r\n</div>\r\n<h3>Boucler sur un ensemble d''objets :</h3>\r\n<div class="retrait"><span class="code">&lt;atm-loop on="<span class="keyword">objets</span>"&gt; ... &lt;/atm-loop&gt;</span>\r\n<ul>\r\n    <li><span class="keyword">objets</span> : Collection d''objets. Employé pour traiter tous les objets d''un ensemble d''objets multiple (dit multi-objet).</li>\r\n    <li>Un attribut <span class="keyword">reverse</span> (facultatif) peut être ajouté pour inverser l''ordre des résultats (valeur : booléen <span class="vertclair">true</span>, <span class="vertclair">false</span>)</li>\r\n</ul>\r\n<br />\r\nLes valeurs suivantes seront remplacées dans le tag :\r\n<ul>\r\n    <li><span class="vertclair">{firstloop}</span> : Vrai si l''objet en cours est le premier de la liste d''objets.</li>\r\n    <li><span class="vertclair">{lastloop}</span> : Vrai si l''objet en cours est le dernier de la liste d''objets.</li>\r\n    <li><span class="vertclair">{loopcount}</span> : Numéro de l''objet en cours dans la liste d''objets.</li>\r\n    <li><span class="vertclair">{lastloop}</span> : Vrai si l''objet en cours est le dernier de la liste d''objets.</li>\r\n    <li><span class="vertclair">{maxloops}</span> : Nombre d''objets sur lesquels boucler.</li>\r\n</ul>\r\n</div>\r\n<h3>Ajouter un attribut au tag XHTML père (contenant ce tag) :</h3>\r\n<div class="retrait"><span class="code"> &lt;atm-parameter attribute="<span class="keyword">attributeName</span>" value="<span class="keyword">attributeValue</span>" /&gt; </span>\r\n<ul>\r\n    <li><span class="keyword">attributeName</span> : Nom de l''attribut à ajouter.</li>\r\n    <li><span class="keyword">attributeValue</span> : Valeur de l''attribut à ajouter.</li>\r\n</ul>\r\n</div>\r\n<h3>Assigner une valeur à une variable :</h3>\r\n<div class="retrait"><span class="code">&lt;atm-setvar vartype="<span class="keyword">type</span>" varname="<span class="keyword">name</span>" value="<span class="keyword">varValue</span>" /&gt; </span>\r\n<ul>\r\n    <li><span class="keyword">type </span>: Type de la variable à assigner : <span class="vertclair">request</span>, <span class="vertclair">session</span> ou <span class="vertclair">var</span>.</li>\r\n    <li><span class="keyword">name </span>: Nom de la variable à assigner. Attention, réassigner une variable existante supprimera l''ancienne valeur.</li>\r\n    <li><span class="keyword">varValue</span> : valeur à assigner à la variable.</li>\r\n</ul>\r\n</div>\r\n<h3>Recharger une zone en AJAX :</h3>\r\n<div class="retrait"><span class="code">&lt;atm-xml what="<span class="keyword">condition</span>"&gt; ... &lt;/atm-xml&gt; </span><br />\r\nPermet de recharger une zone spécifique de la page via une requête de type AJAX.<br />\r\nSi la requête HTTP appelant la page en cours contient les paramètres vérifiant l''attribut <span class="keyword">condition</span>, alors seul le contenu du tag atm-xml sera renvoyé en réponse à la requête HTTP. Le reste du contenu de la page en cours sera ignoré.<br />\r\n<br />\r\nPour plus d''informations, consultez la <a target="_blank" href="http://doc.automne.ws">documentation d''Automne en ligne</a> ou étudiez les modules Polymod fournis avec la démonstration d''Automne, ils font appel à cette fonctionnalité.\r\n<ul>\r\n    <li><span class="keyword">condition</span> : Condition à remplir pour obtenir le contenu du tag atm-xml.</li>\r\n</ul>\r\n<br />\r\n<strong>Exemple à l''aide de JQuery :</strong><br />\r\n<br />\r\nVotre rangée comporte le code suivant :<br />\r\n<span class="code">&lt;atm-xml what="<span class="keyword">{request:string:out} == ''xml''</span>"&gt;<br />\r\n&#160;&#160;&#160; ... recherche d''actualités ...<br />\r\n&lt;/atm-xml&gt;</span><br />\r\nSi on effectue la requête ajax suivante vers la page comportant cette rangée :<br />\r\n<span class="code"> 			$.ajax({<br />\r\n&#160;&#160;&#160;type:&#160;"POST",<br />\r\n&#160;&#160;&#160;url:&#160;pageURL,<br />\r\n&#160;&#160;&#160;data:&#160;''<span class="keyword">out=xml</span>&amp;cat='' + $(''#cat'').val(),<br />\r\n&#160;&#160;&#160;success:&#160;displaySearch<br />\r\n}); 			</span><br />\r\nAlors la recherche d''actualités sera relancée avec le paramètre de la catégorie selectionné et seul le contenu de cette zone sera retourné :<br />\r\n<span class="code"> 			&lt;?xml version="1.0" encoding="utf-8"?&gt;<br />\r\n&lt;response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;<br />\r\n&#160;&#160;&#160;&#160;&lt;error&gt;0&lt;/error&gt;<br />\r\n&#160;&#160;&#160;&#160;&lt;data&gt;&lt;![CDATA[<span class="keyword"> ... le contenu du tag atm-xml correspondant à la nouvelle recherche d''actualités ... </span>]]&gt;&lt;/data&gt;<br />\r\n&lt;/response&gt; 			</span></div>\r\n<h3>Référencer un élément pour le gestionnaire de cache :</h3>\r\n<div class="retrait"><span class="code">&lt;atm-cache-reference element="<span class="keyword">element</span>" /&gt;<span class="keyword"><br />\r\n</span></span>\r\n<ul>\r\n    <li><span class="keyword">element </span>: Référencer un module à l''aide de son codename : <span class="vertclair">%s</span> ou les utilisateurs ou groupes d''Automne à l''aide de la valeur : <span class="vertclair">users</span>.</li>\r\n</ul>\r\n<p><span class="xml-punctuation">Ce tag vous permet d''informer le gestionnaire de cache que vous employez dans du code PHP inséré dans le bloc en cours, un élément donné (module ou utilisateurs / groupes d''Automne). Ainsi, le gestionnaire de cache pourra monitorer les modifications faites sur cet élément pour rafraichir le cache si l''élément référencé vient à être modifié.</span></p>\r\n</div>\r\n</div>\r\n</div>\r\n<p>&#160;</p>');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(115, 'polymod', 'fr', 'Bloc de données');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(116, 'polymod', 'fr', '<div class="rowComment">\n	<h1>Bloc de donn&eacute;es du module :</h1>\n	<div class="retrait">\n	<span class="code">\n		&lt;block module=&quot;%s&quot; id=&quot;<span class="keyword">blockID</span>&quot; language=&quot;<span class="keyword">languageCode</span>&quot;&gt; ... &lt;/block&gt;\n	</span>\n	<br/><br/>\n	Ce tag permet l''affichage de donn&eacute;es sp&eacute;cifiques &agrave; ce module. Il doit entourer tout ensemble de tags relatif &agrave; un traitement de donn&eacute;es du module.<br />\n	<ul>\n		<li><span class="keyword">blockID </span>: Identifiant unique du bloc de contenu dans la rang&eacute;e. Deux blocs de contenus d''une m&ecirc;me rang&eacute;e ne doivent pas avoir d''identifiants identiques.</li>\n		<li><span class="keyword">languageCode </span>: (facultatif) Code du langage relatif &agrave; ce bloc de contenu parmi les codes suivants : <span class="vertclair">%s</span>. <br/>Si non présent, la langue de la page sera utilisée. Si non présente, la langue par défaut d''Automne sera utilisée.</li>\n	</ul>\n	</div>\n</div>');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(116, 'polymod', 'fr', '<div class="rowComment">\r\n<h1>Bloc de données du module :</h1>\r\n<div class="retrait"><span class="code"> 		&lt;block module="%s" id="<span class="keyword">blockID</span>" language="<span class="keyword">languageCode</span>" cache="<span class="keyword">lifetime</span>"&gt; ... &lt;/block&gt; 	</span> 	<br />\r\n<br />\r\nCe tag permet l''affichage de données spécifiques à ce module. Il doit entourer tout ensemble de tags relatif à un traitement de données du module.<br />\r\n<ul>\r\n    <li><span class="keyword">blockID </span>: Identifiant unique du bloc de contenu dans la rangée. Deux blocs de contenus d''une même rangée ne doivent pas avoir d''identifiants identiques.</li>\r\n    <li><span class="keyword">languageCode </span>(attribut facultatif) : Code du langage relatif à ce bloc de contenu parmi les codes suivants : <span class="vertclair">%s</span>. <br />\r\n    Si non présent, la langue de la page sera utilisée. Si non présente, la langue par défaut d''Automne sera utilisée.</li>\r\n    <li><span class="keyword">lifetime<span> </span></span>(attribut facultatif) : Cet attribut permet de spécifier la durée du cache appliqué sur ce bloc de données. Il accepte les valeurs suivantes :\r\n    <ul>\r\n        <li><span class="vertclair">0</span>, <span class="vertclair">false</span> : Désactive le cache coté client pour ce bloc.</li>\r\n        <li><span class="vertclair">nombre entier supérieur à 1</span> : Active le cache pour la durée spécifiée (en secondes).</li>\r\n        <li><span class="vertclair">1</span>, <span class="vertclair">true</span>, <span class="vertclair">auto</span> : Active le cache automatique (valeur par défaut si l''attribut n''existe pas).<br />\r\n        Le cache automatique à une durée maximum de 24h. Il sera activé uniquement si ce bloc de données ne contient pas de code PHP. Pour plus d''informations consultez le fonctionnement du cache des données Polymod dans <a href="http://doc.automne.ws" target="_blank">la documentation d''Automne</a>.</li>\r\n    </ul>\r\n    </li>\r\n</ul>\r\n</div>\r\n</div>');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(117, 'polymod', 'fr', 'Libellé de l''objet, correspond à sa valeur');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(118, 'polymod', 'fr', 'Libellé du champ : ''%s''');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(119, 'polymod', 'fr', 'Identifiant du champ : ''%s''');

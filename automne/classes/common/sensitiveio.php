@@ -498,23 +498,31 @@ class SensitiveIO extends CMS_grandfather
 	  * @return string the caller call info
 	  * @access public
 	  */
-	static function getCallInfos() {
+	static function getCallInfos($deep = 1) {
 		$callInfos = '';
 		$bt = debug_backtrace();
-		if (isset($bt[3]) && isset($bt[2]['class']) && $bt[2]['class'] == 'CMS_grandFather' && ($bt[2]['function'] == '__call' && isset($bt[3]['file']))) {
-			//if error is sent by generic __call or autoload method of grandFather class, display point of call
-			$callInfos = str_replace($_SERVER['DOCUMENT_ROOT'], '', $bt[3]['file']).' (line '.$bt[3]['line'].')';
-		} elseif (isset($bt[4]) && isset($bt[2]['class']) && $bt[2]['class'] == 'CMS_grandFather' && ($bt[2]['function'] == 'autoload' || $bt[2]['function'] == '__call')) {
-			//if error is sent by generic __call or autoload method of grandFather class, display point of call
-			$callInfos = str_replace($_SERVER['DOCUMENT_ROOT'], '', @$bt[4]['file']).' (line '.@$bt[4]['line'].')';
-		} elseif (isset($bt[2])) {
-			//if error came from object execution
-			if ($bt[2]['function'] != 'PHPErrorHandler') {
-				$callInfos = (isset($bt[2]['class']) ? $bt[2]['class'].$bt[2]['type'] : '').$bt[2]['function'].' (line '.$bt[1]['line'].')';
+		for ($level = 1; $level <= $deep; $level++) {
+			if ($level != 1) {
+				$callInfos .= ' &laquo; ';
 			}
-		} elseif (isset($bt[1])) {
-			//if error came from file execution
-			$callInfos = str_replace($_SERVER['DOCUMENT_ROOT'], '', $bt[1]['file']).' (line '.$bt[1]['line'].')';
+			if (isset($bt[$level + 2]) && isset($bt[$level + 1]['class']) && $bt[$level + 1]['class'] == 'CMS_grandFather' && ($bt[$level + 1]['function'] == '__call' && isset($bt[$level + 2]['file']))) {
+				//if error is sent by generic __call or autoload method of grandFather class, display point of call
+				$callInfos .= str_replace($_SERVER['DOCUMENT_ROOT'], '', $bt[$level + 2]['file']).' (line '.$bt[$level + 2]['line'].')';
+			} elseif (isset($bt[$level + 3]) && isset($bt[$level + 1]['class']) && $bt[$level + 1]['class'] == 'CMS_grandFather' && ($bt[$level + 1]['function'] == 'autoload' || $bt[$level + 1]['function'] == '__call')) {
+				//if error is sent by generic __call or autoload method of grandFather class, display point of call
+				$callInfos .= str_replace($_SERVER['DOCUMENT_ROOT'], '', @$bt[$level + 3]['file']).' (line '.@$bt[$level + 3]['line'].')';
+			} elseif (isset($bt[$level + 1]) && $bt[$level + 1]['function'] == 'require') {
+				//if error came from direct require, display point of call
+				$callInfos .= str_replace($_SERVER['DOCUMENT_ROOT'], '', @$bt[$level]['file']).' (line '.@$bt[$level]['line'].')';
+			} elseif (isset($bt[$level + 1])) {
+				//if error came from object execution
+				if ($bt[$level + 1]['function'] != 'PHPErrorHandler') {
+					$callInfos .= (isset($bt[$level + 1]['class']) ? $bt[$level + 1]['class'].$bt[$level + 1]['type'] : '').$bt[$level + 1]['function'].' (line '.$bt[$level]['line'].')';
+				}
+			} elseif (isset($bt[$level])) {
+				//if error came from file execution
+				$callInfos .= str_replace($_SERVER['DOCUMENT_ROOT'], '', $bt[$level]['file']).' (line '.$bt[$level]['line'].')';
+			}
 		}
 		return $callInfos;
 	}

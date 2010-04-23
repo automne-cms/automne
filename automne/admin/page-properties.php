@@ -455,6 +455,11 @@ $pageTopPanel = sensitiveIO::sanitizeJSString('<div id="pagePropTopPanel">
 
 $allowExternalRedirection = ALLOW_EXTERNAL_PAGE_REDIRECTION ? 'true' : 'false';
 
+//Hack to allow template selection if page does not have a valid template
+if (!$pageTplId) {
+	$pageTplId = '-';
+}
+
 $jscontent .= <<<END
 	//create center panel
 	var center = new Ext.TabPanel({
@@ -527,7 +532,7 @@ $jscontent .= <<<END
 						store:			new Automne.JsonStore({
 							url: 			'page-templates-datas.php',
 							baseParams:		{
-								template: 		{$pageTplId},
+								template: 		'{$pageTplId}',
 								page:			$pageId
 							},
 							root: 			'results',

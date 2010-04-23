@@ -186,6 +186,18 @@ class CMS_context extends CMS_grandFather
 			}
 			//regenerate session ID
 			session_regenerate_id(false);
+			
+			
+			//  hang on to the new session id
+			/*$sid = session_id();
+			
+			//  close the old and new sessions
+			session_write_close();
+			
+			//  re-open the new session
+			session_id($sid);
+			session_start();*/
+
 			if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID) {
 				$log = new CMS_log();
 				$log->logMiscAction(CMS_log::LOG_ACTION_LOGIN, $user, 'Permanent cookie: '.($permanent_cookie ? 'Yes' : 'No').', IP: '.@$_SERVER['REMOTE_ADDR'].', UA: '.@$_SERVER['HTTP_USER_AGENT']);
@@ -487,7 +499,7 @@ class CMS_context extends CMS_grandFather
 		}
 		
 		//clean locks not corresponding to a session, unless they are labeled "PERMANENT" except if its a frontend user (APPLICATION_ENFORCES_ACCESS_CONTROL)
-		if (!(APPLICATION_ENFORCES_ACCESS_CONTROL && APPLICATION_USER_TYPE=='frontend')) {
+		if (APPLICATION_USER_TYPE == 'admin') {
 			$sql = "
 				select 
 					id_lok
@@ -842,6 +854,39 @@ class CMS_context extends CMS_grandFather
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	  * Get current context hash (usually used for cache)
+	  *
+	  * @param array $datas, additionnal datas to use for cache
+	  * @return string : the current context cache
+	  * @access public
+	  * @static
+	  */
+	function getContextHash($datas = array()) {
+		global $cms_user;
+		$aContextRef = array();
+		//external datas
+		$aContextRef['datas'] = $datas;
+		//user if any
+		if (is_object($cms_user)) {
+			$aContextRef['user'] = $cms_user;
+		}
+		//get vars
+		$aContextRef['get'] = $_GET;
+		//remove specific Automne vars
+		if (isset($aContextRef['get']['_dc'])) {
+			unset($aContextRef['get']['_dc']);
+		}
+		if (isset($aContextRef['get']['context'])) {
+			unset($aContextRef['get']['context']);
+		}
+		//post vars
+		$aContextRef['post'] = $_POST;
+		$return = md5(serialize($aContextRef));
+		
+		return $return;
 	}
 }
 ?>

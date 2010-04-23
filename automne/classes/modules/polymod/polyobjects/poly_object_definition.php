@@ -199,7 +199,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	function compileDefinition() {
 		global $cms_language;
 		$parameters = array();
-		$parameters['module'] = CMS_poly_object_catalog::getModuleCodenameForObjectType($this->getID());
+		$parameters['module'] = $this->_objectValues["module"]; //CMS_poly_object_catalog::getModuleCodenameForObjectType($this->getID());
 		$definitionParsing = new CMS_polymod_definition_parsing($this->_objectValues['indexURL'], true, CMS_polymod_definition_parsing::PARSE_MODE, $parameters['module']);
 		$compiledIndexURL = $definitionParsing->getContent(CMS_polymod_definition_parsing::OUTPUT_PHP, $parameters);
 		$this->_objectValues['compiledIndexURL'] = $compiledIndexURL;
@@ -577,6 +577,9 @@ class CMS_poly_object_definition extends CMS_grandFather
 		} elseif (!$this->_ID) {
 			$this->_ID = $q->getLastInsertedID();
 		}
+		
+		//Clear polymod cache
+		CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_objectValues["module"]));
 		//unset all SESSIONS values
 		unset($_SESSION["polyModule"]);
 		return true;
@@ -627,6 +630,9 @@ class CMS_poly_object_definition extends CMS_grandFather
 			}
 			//unset SESSION value of poly_object_catalog
 			unset($_SESSION["polyModule"]["objectDef"][$this->_ID]);
+			
+			//Clear polymod cache
+			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_objectValues["module"]));
 		}
 		unset($this);
 		return true;

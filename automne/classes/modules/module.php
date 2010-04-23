@@ -90,40 +90,54 @@ class CMS_module extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function CMS_module($codename='')
-	{
+	function __construct($datas = '') {
 		static $modules;
-		if ($codename) {
-			if (isset($modules[$codename])) {
-				$this->_id = $modules[$codename]->_id;
-				$this->_labelMessageID = $modules[$codename]->_labelMessageID;
-				$this->_codename = $modules[$codename]->_codename;
-				$this->_administrationFrontend = $modules[$codename]->_administrationFrontend;
-				$this->_hasParameters = $modules[$codename]->_hasParameters;
-				$this->_isPolymod = $modules[$codename]->_isPolymod;
-			} else {
-				$sql = "
-					select
-						*
-					from
-						modules
-					where
-						codename_mod='".SensitiveIO::sanitizeSQLString($codename)."'
-				";
-				$q = new CMS_query($sql);
-				if ($q->getNumRows()) {
-					$data = $q->getArray();
-					$this->_id = $data["id_mod"];
-					$this->_labelMessageID = $data["label_mod"];
-					$this->_codename = $data["codename_mod"];
-					$this->_administrationFrontend = $data["administrationFrontend_mod"];
-					$this->_hasParameters = $data["hasParameters_mod"];
-					$this->_isPolymod = $data["isPolymod_mod"];
-					$modules[$codename] = $this;
+		if (is_string($datas)) {
+			$codename = $datas;
+			if ($codename) {
+				if (isset($modules[$codename])) {
+					$this->_id = $modules[$codename]->_id;
+					$this->_labelMessageID = $modules[$codename]->_labelMessageID;
+					$this->_codename = $modules[$codename]->_codename;
+					$this->_administrationFrontend = $modules[$codename]->_administrationFrontend;
+					$this->_hasParameters = $modules[$codename]->_hasParameters;
+					$this->_isPolymod = $modules[$codename]->_isPolymod;
 				} else {
-					$this->raiseError("Unknown codename : ".SensitiveIO::sanitizeAsciiString($codename));
+					$sql = "
+						select
+							*
+						from
+							modules
+						where
+							codename_mod='".SensitiveIO::sanitizeSQLString($codename)."'
+					";
+					$q = new CMS_query($sql);
+					if ($q->getNumRows()) {
+						$data = $q->getArray();
+						$this->_id = $data["id_mod"];
+						$this->_labelMessageID = $data["label_mod"];
+						$this->_codename = $data["codename_mod"];
+						$this->_administrationFrontend = $data["administrationFrontend_mod"];
+						$this->_hasParameters = $data["hasParameters_mod"];
+						$this->_isPolymod = $data["isPolymod_mod"];
+						$modules[$codename] = $this;
+					} else {
+						$this->raiseError("Unknown codename : ".SensitiveIO::sanitizeAsciiString($codename));
+					}
 				}
 			}
+		} else if (is_array($datas)) {
+			$codename = $datas["codename_mod"];
+			$this->_id = $datas["id_mod"];
+			$this->_labelMessageID = $datas["label_mod"];
+			$this->_codename = $datas["codename_mod"];
+			$this->_administrationFrontend = $datas["administrationFrontend_mod"];
+			$this->_hasParameters = $datas["hasParameters_mod"];
+			$this->_isPolymod = $datas["isPolymod_mod"];
+			$modules[$codename] = $this;
+		} else {
+			parent::raiseError("Unknown datas type : ".gettype($datas));
+			return false;
 		}
 	}
 	

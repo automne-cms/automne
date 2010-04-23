@@ -312,6 +312,7 @@ class CMS_poly_definition_functions
 			if (isset($GLOBALS['polymod']['preparedItems'][$plugin->getValue('objectID')][$itemID])) {
 				$parameters['item'] = $GLOBALS['polymod']['preparedItems'][$plugin->getValue('objectID')][$itemID];
 			}
+			//eval item content
 			ob_start();
 			eval(sensitiveIO::sanitizeExecCommand(sensitiveIO::stripPHPTags($plugin->getValue('compiledDefinition'))));
 			$data = ob_get_contents();

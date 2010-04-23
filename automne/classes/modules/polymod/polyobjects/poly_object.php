@@ -611,8 +611,8 @@ class CMS_poly_object extends CMS_resource
 						
 						if(method_exists($this->_objectValues[$fieldId], 'needIDToSetValues')){
 						    if (!$this->getID()) {
-						        //if object has not id yet, save it
-						        if(!$this->writeToPersistence()){
+						        //if object has no id yet, save it
+						        if(!$this->writeToPersistence(false, false, true)){
 						            $view->addError('Error during saving process (pre-saving need for the field '.$this->_objectID.')');
 							        return false;
 						        }
@@ -901,8 +901,8 @@ class CMS_poly_object extends CMS_resource
 				} else {
 					//for object who need object id
 					if (!$this->getID()) {
-						//if object has not id yet, save it
-						$this->writeToPersistence();
+						//if object has no id yet, create it
+						$this->writeToPersistence(false, false, true);
 					}
 					return $this->_objectValues[$fieldID]->setValues($values, $prefix, $newFormat, $this->getID());
 				}
@@ -951,10 +951,11 @@ class CMS_poly_object extends CMS_resource
 	  *
 	  * @param boolean $withResource treat also the resource status (if object is a primary resource) default true
 	  * @param boolean $emailValidators send emails to validators (if object is a primary resource) default true
+	  * @param boolean $onlyCreateID create only the object ID (used to save fiels fields). Default false
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence($treatResource = true, $emailValidators = true) {
+	function writeToPersistence($treatResource = true, $emailValidators = true, $onlyCreateID = false) {
 		global $cms_user;
 		if ($this->_public) {
 			$this->raiseError("Can't write public object");
@@ -982,6 +983,9 @@ class CMS_poly_object extends CMS_resource
 				$this->_ID = $q->getLastInsertedID();
 				//reload all sub objects definition to add ID
 				$this->_populateSubObjectsDefinitions();
+			}
+			if ($onlyCreateID) {
+				return true;
 			}
 		}
 		//if this object is a primary resource
@@ -1073,6 +1077,9 @@ class CMS_poly_object extends CMS_resource
 				$language = $cms_user->getLanguage();
 				$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_EDIT_CONTENT, $cms_user, $polyModuleCodename, $this->getStatus(), 'Item \''.$this->getLabel().'\' ('.$objectDef->getLabel($language).')', $this);
 			}
+			
+			//Clear polymod cache
+			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $polyModuleCodename));
 		}
 		return true;
 	}
@@ -1139,6 +1146,9 @@ class CMS_poly_object extends CMS_resource
 			if ($hardDelete) {
 				unset($this);
 			}
+			
+			//Clear polymod cache
+			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $polyModuleCodename));
 			return true;
 		} else {
 			//change the article proposed location and send emails to all the validators
@@ -1169,6 +1179,9 @@ class CMS_poly_object extends CMS_resource
 				$log = new CMS_log();
 				$language = $cms_user->getLanguage();
 				$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_DELETE, $cms_user, $polyModuleCodename, $this->getStatus(), 'Item \''.$this->getLabel().'\' ('.$objectDef->getLabel($language).')', $this);
+				
+				//Clear polymod cache
+				CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $polyModuleCodename));
 				return true;
 			} else {
 				return false;

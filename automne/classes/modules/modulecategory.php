@@ -743,8 +743,13 @@ class CMS_moduleCategory extends CMS_grandFather {
 					$this->raiseError("Error inserting label in language : `$lang`");
 				}
 			}
+			
+			//Clear polymod cache
+			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_moduleCodename));
 			return ($err <= 0);
 		}
+		//Clear polymod cache
+		CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_moduleCodename));
 		return true;
 	}
 
@@ -795,6 +800,9 @@ class CMS_moduleCategory extends CMS_grandFather {
 				$err++;
 				$this->raiseError("Error deleting category clearances.");
 			}
+			
+			//Clear polymod cache
+			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_moduleCodename));
 			unset($this);
 			return ($err <= 0);
 		}

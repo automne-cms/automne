@@ -65,19 +65,6 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 	protected $_resourcePrevizFile 	= "";
 	
 	/**
-	  * Constructor.
-	  * initializes the module object
-	  *
-	  * @return void
-	  * @access public
-	  */
-	function __construct()
-	{
-		//Initialize object.
-		parent::__construct(MOD_CMS_ALIAS_CODENAME);
-	}
-	
-	/**
 	  * Gets resource by its internal ID (not the resource table DB ID)
 	  * This function need to stay here because sometimes it is directly queried
 	  *

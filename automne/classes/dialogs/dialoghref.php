@@ -396,7 +396,7 @@ class CMS_dialog_href extends CMS_grandFather
 				}
 				if (!isset($options['admin']) || $options['admin'] == false) {
 					//build tree link
-					$href = PATH_ADMIN_SPECIAL_TREE_WR;
+					$href = '/automne/admin-v3/tree.php';
 					$href .= '?root='.$grand_rootID;
 					$href .= '&amp;heading='.$cms_language->getMessage(self::MESSAGE_PAGE_TREEH1);
 					$href .= '&amp;encodedOnClick='.base64_encode("window.opener.document.getElementById('".$this->_prefix."link_internal').value = '%s';self.close();");

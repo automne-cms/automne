@@ -1574,10 +1574,15 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1616, 'standard', 'fr', 'Mise &agrave; jour forc&eacute;e');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1617, 'standard', 'fr', 'Mettre &agrave; jour');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1618, 'standard', 'fr', 'Rapport de mise &agrave; jour');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1619, 'standard', 'fr', 'Remise à zéro du cache navigateur');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1619, 'standard', 'fr', 'Remise à zéro du cache navigateur :');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1620, 'standard', 'fr', 'Cette fonction vous permet de forcer la mise &agrave; jour du cache du navigateur des internautes pour les fichiers Javascript et CSS servis &agrave; l\'aide des tags atm-js-tags et atm-css-tags.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1621, 'standard', 'fr', 'Groupes d''utilisateurs');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1622, 'standard', 'fr', 'Cliquez pour voir les utilisateurs de ce groupe');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1623, 'standard', 'fr', '%s Utilisateur(s)');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1624, 'standard', 'fr', 'Ecrire à %s');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1625, 'standard', 'fr', 'Cette page comporte une redirection vers : %s');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1626, 'standard', 'fr', 'Reset du cache navigateur');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1627, 'standard', 'fr', 'Reset du cache Polymod');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1628, 'standard', 'fr', 'Remise à zéro du cache Polymod :');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1629, 'standard', 'fr', 'Cette fonction vous permet de remettre à zéro le cache employé sur les rangées de contenus ainsi que sur les plugins WYSIWYG et les flux RSS des modules polymod.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1630, 'standard', 'fr', 'Gestion du cache :');

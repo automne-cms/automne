@@ -109,11 +109,9 @@ FCKConfig.PluginsPath = FCKConfig.BasePath.substr(0, FCKConfig.BasePath.length -
 // FCKConfig.Plugins.Add( 'dragresizetable' );
 FCKConfig.AutoGrowMax = 400 ;
 
-//changed for Automne
-// FCKConfig.ProtectedSource.Add( /<%[\s\S]*?%>/g ) ;	// ASP style server side code <%...%>
+//changed for Automne (and remove asp lines to avoid some problem if "asp_tags" config is active in PHP conf).
 FCKConfig.ProtectedSource.Add( /<\?[\s\S]*?\?>/g ) ;	// PHP style server side code
 FCKConfig.ProtectedSource.Add( /<script[\s\S]*?\/script>/gi ) ;	// <SCRIPT> tags.
-// FCKConfig.ProtectedSource.Add( /(<asp:[^\>]+>[\s|\S]*?<\/asp:[^\>]+>)|(<asp:[^\>]+\/>)/gi ) ;	// ASP.Net style tags <asp:control>
 
 FCKConfig.AutoDetectLanguage	= true ;
 FCKConfig.DefaultLanguage		= 'en' ;

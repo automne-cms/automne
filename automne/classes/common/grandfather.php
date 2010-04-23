@@ -276,6 +276,7 @@ class CMS_grandFather
 				'cms_tar_file'						=> PATH_PACKAGES_FS.'/files/archive-tar.php',
 				'cms_zip_file'						=> PATH_PACKAGES_FS.'/files/archive-zip.php',
 				'cms_fileupload'					=> PATH_PACKAGES_FS.'/files/fileupload.php',
+				'cms_cache'							=> PATH_PACKAGES_FS.'/files/cache.php',
 
 				//modules
 				'cms_module'						=> PATH_MODULES_FS.'/module.php',
@@ -399,18 +400,18 @@ class CMS_grandFather
 				$GLOBALS["memory_table"][] = array('file' => $file, 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
 			}
 		} else {
-			//register Zend Framework Autoload
 			chdir(PATH_MAIN_FS);
+			//Zend Framework
 			require_once(PATH_MAIN_FS.'/Zend/Loader.php');
 			require_once(PATH_MAIN_FS.'/Zend/Loader/Autoloader.php');
+			if (!Zend_Loader_Autoloader::autoload($classname)) {
+				return false;
+			}
 			/*only for stats*/
 			if (STATS_DEBUG) $GLOBALS["files_loaded"]++;
 			if (STATS_DEBUG && VIEW_SQL) {
-				$GLOBALS["files_table"][] = PATH_MAIN_FS.'/Zend/Loader.php';
-				$GLOBALS["memory_table"][] = array('file' => PATH_MAIN_FS.'/Zend/Loader.php', 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
-			}
-			if (!Zend_Loader_Autoloader::autoload($classname)) {
-				CMS_grandFather::raiseError('class '.$classname.' not found');
+				$GLOBALS["files_table"][] = 'Zend framework file';
+				$GLOBALS["memory_table"][] = array('file' => 'Zend framework file', 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
 			}
 		}
 	}

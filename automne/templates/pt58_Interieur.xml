@@ -57,7 +57,6 @@
 					<div id="title">
 						<h1><atm-title /></h1>
 					</div>
-					<atm-toc />
 					<atm-clientspace module="standard" id="first" />
 					<a href="#header" id="top" title="haut de la page">Haut</a>
 				</div>

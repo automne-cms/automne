@@ -181,7 +181,21 @@ class CMS_block_polymod extends CMS_block
 							'pageID' => $page->getID(),
 							'public' => $public,);
 		$polymodParsing = new CMS_polymod_definition_parsing($this->_definition, true, CMS_polymod_definition_parsing::PARSE_MODE, $this->_attributes['module']);
-		return $polymodParsing->getContent($type, $parameters);
+		$content = $polymodParsing->getContent($type, $parameters);
+		
+		if (!$public) {
+			return $content;
+		}
+		
+		//Cache management
+		$cacheHash = md5(serialize(array(
+			'definition' => $content, 
+			'parameters' => $parameters,
+		)));
+		$lifetime = isset($this->_attributes['cache']) ? $this->_attributes['cache'] : 'auto';
+		$content = CMS_cache::wrapCode($cacheHash, $content, $lifetime);
+		
+		return $content;
 	}
 	
 	/**
