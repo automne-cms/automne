@@ -69,6 +69,8 @@ class CMS_object_categories extends CMS_object_common
     const MESSAGE_OBJECT_CATEGORY_ICONPATH_DESCRIPTION = 546;
     const MESSAGE_OBJECT_CATEGORY_VALUESICONHTML_DESCRIPTION = 547;
     const MESSAGE_OBJECT_CATEGORY_ICONHTML_DESCRIPTION = 548;
+	const MESSAGE_OBJECT_CATEGORY_IDS_DESCRIPTION = 558;
+	const MESSAGE_OBJECT_CATEGORY_LABELS_DESCRIPTION = 559;
 	
 	/**
 	  * object label
@@ -745,6 +747,8 @@ class CMS_object_categories extends CMS_object_common
 		if ($params['multiCategories']) {
 			unset($structure['label']);
 			unset($structure['value']);
+			$structure['labels'] = '';
+			$structure['ids'] = '';
 			$structure['count'] = '';
 			$structure['values'] = '';
 			$structure['values']['n']['id'] = '';
@@ -786,6 +790,19 @@ class CMS_object_categories extends CMS_object_common
 				}
 				return $ids;
 			break;
+			case 'labels':
+				$labels = array();
+				if (!$parameters) {
+					$parameters = ', ';
+				}
+				foreach (array_keys($this->_subfieldValues) as $subFieldID) {
+					$category = CMS_moduleCategories_catalog::getByID($this->_subfieldValues[$subFieldID]->getValue());
+					if (!$category->hasError()) {
+						$labels[] = io::htmlspecialchars($category->getLabel($cms_language));
+					}
+				}
+				return implode($labels, $parameters);
+			break;
 			case 'values':
 				return $this->_subfieldValues;
 			break;
@@ -796,10 +813,6 @@ class CMS_object_categories extends CMS_object_common
 				$params = $this->getParamsValues();
 				return $params['rootCategory'];
 			break;
-			/*case 'bypassRights':
-				$params = $this->getParamsValues();
-				return ($params['bypassRights']) ? true : false;
-			break;*/
 			default:
 				if (sensitiveIO::isPositiveInteger($name) || $name === "0") {
 					switch ($parameters) {
@@ -939,6 +952,8 @@ class CMS_object_categories extends CMS_object_common
 		if ($params['multiCategories']) {
 			unset($labels['structure']['label']);
 			$labels['structure']['count'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_COUNT_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+			$labels['structure']['ids'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_IDS_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+			$labels['structure']['labels'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_LABELS_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 			$labels['structure']['values'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUES_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 			$labels['structure']['values:id'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESID_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 			$labels['structure']['values:label'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_VALUESLABEL_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
