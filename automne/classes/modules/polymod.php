@@ -335,7 +335,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 							)));
 							
 							$code = 
-							'$cache_'.$hash.' = new CMS_cache(\''.$hash.'\', \'polymod\', \''.$lifetime.'\', true);'."\n".
+							'$cache_'.$hash.' = new CMS_cache(\''.$hash.'\', \'polymod\', \'auto\', true);'."\n".
 							'if ($cache_'.$hash.'->exist()):'."\n".
 							'	//Get content from cache'."\n".
 							'	$cache_'.$hash.'_content = $cache_'.$hash.'->load();'."\n".

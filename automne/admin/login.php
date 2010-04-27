@@ -42,6 +42,7 @@ define("MESSAGE_PAGE_USER_VALIDATIONS", 315);
 define("MESSAGE_PAGE_DEBUG", 674);
 define("MESSAGE_PAGE_PRESS_F2_FOR_LOG", 675);
 define("MESSAGE_ERROR_SESSION_EXPIRED", 676);
+define("MESSAGE_PAGE_PLEASE_WAIT", 1631);
 
 //load language object
 $language = CMS_languagesCatalog::getDefaultLanguage(true);
@@ -66,11 +67,12 @@ case 'reconnect':
 			buttons: Ext.MessageBox.OK,
 			icon: Ext.MessageBox.ERROR,
 			fn:function() {
-				//Ext.fly('loginField').dom.select();
+				loginWindow.body.mask('{$language->getJsMessage(MESSAGE_PAGE_PLEASE_WAIT)}');
+				loginWindow.reload();
 			}
 		});";
 		//reset session (start fresh)
-		session_destroy();
+		CMS_context::resetSessionCookies();
 	break;
 default:
 	// First attempt to obtain $_COOKIE information from domain

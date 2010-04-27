@@ -151,6 +151,7 @@ $jscontent = <<<END
 		bodyStyle: 		'padding:10px',
 		border:			false,
 		labelWidth:		160,
+		buttonAlign:	'center',
 		defaults: {
 			xtype:			'textfield',
 			anchor:			'97%'

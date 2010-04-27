@@ -511,15 +511,22 @@ class CMS_profile extends CMS_grandFather
 	  */
 	function hasPageClearance($pageId, $clearance)
 	{
+		static $clearances;
+		$hash = md5($this->getId().'-'.serialize(func_get_args()));
+		if (isset($clearances[$hash])) {
+			return $clearances[$hash];
+		}
 		if ($this->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
-			return true;
+			$clearances[$hash] = true;
+			return $clearances[$hash];
 		}
-		$rootID = $this->getPageClearanceRoot($pageId,false);
+		$rootID = $this->getPageClearanceRoot($pageId, false);
 		if ($rootID) {
-			return $this->_hasClearance($this->_pageClearances, $rootID, $clearance);
+			$clearances[$hash] = $this->_hasClearance($this->_pageClearances, $rootID, $clearance);
 		} else {
-			return false;
+			$clearances[$hash] = false;
 		}
+		return $clearances[$hash];
 	}
 	
 	/**
@@ -531,8 +538,12 @@ class CMS_profile extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function getPageClearanceRoot($pageId,$outputCMS_page=true)
-	{
+	function getPageClearanceRoot($pageId, $outputCMS_page = true) {
+		static $clearances;
+		$hash = md5($this->getId().'-'.serialize(func_get_args()));
+		if (isset($clearances[$hash])) {
+			return $clearances[$hash];
+		}
 		if (!$this->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 			$clearances = $this->_pageClearances->getElements();
 			$nearestRoot = false;
@@ -540,7 +551,8 @@ class CMS_profile extends CMS_grandFather
 			$lineage = CMS_tree::getLineage(APPLICATION_ROOT_PAGE_ID, $pageId, false);
 			if (!$lineage) {
 				CMS_grandFather::raiseError('Lineage error for page : '.$pageId);
-				return false;
+				$clearances[$hash] = false;
+				return $clearances[$hash];
 			} else {
 				$lineage = array_reverse($lineage);
 				foreach ($lineage as $ancestor) {
@@ -556,10 +568,11 @@ class CMS_profile extends CMS_grandFather
 			$nearestRoot = APPLICATION_ROOT_PAGE_ID;
 		}
 		if ($outputCMS_page) {
-			return CMS_tree::getPageByID($nearestRoot);
+			$clearances[$hash] = CMS_tree::getPageByID($nearestRoot);
 		} else {
-			return $nearestRoot;
+			$clearances[$hash] = $nearestRoot;
 		}
+		return $clearances[$hash];
 	}
 	
 	
@@ -816,8 +829,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return boolean
 	  * @access private
 	  */
-	protected function _hasClearance($clearances, $id, $clearance)
-	{
+	protected function _hasClearance($clearances, $id, $clearance) {
 		if (!SensitiveIO::isPositiveInteger($clearance) && $clearance != 0) {
 			return false;
 		}

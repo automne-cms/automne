@@ -857,7 +857,7 @@ class CMS_poly_object extends CMS_resource
 		$polymodParsing = new CMS_polymod_definition_parsing($previzInfos[1], false);
 		$previewPageParams = $polymodParsing->getContent(CMS_polymod_definition_parsing::OUTPUT_RESULT, $parameters);
 		
-		return $previewPageURL.'?'.$previewPageParams.($addPrevizParameter ? '&previz=previz':'');
+		return $previewPageURL.'?'.$previewPageParams.($addPrevizParameter ? '&atm-previz=previz':'');
 	}
 	
 	/**

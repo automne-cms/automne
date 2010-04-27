@@ -176,7 +176,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 			$this->raiseError("Unknown valueName to set :".$valueName);
 			return false;
 		}
-		if ($valueName == 'indexURL' || $valueName == 'resultsDefinition') {
+		if ($valueName == 'indexURL') {
 			$parsing = new CMS_polymod_definition_parsing($value, true, CMS_polymod_definition_parsing::CHECK_PARSING_MODE);
 			$errors = $parsing->getParsingError();
 			if ($errors) {
@@ -184,7 +184,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 			}
 		}
 		$this->_objectValues[$valueName] = $value;
-		if ($valueName == 'indexURL' || $valueName == 'resultsDefinition') {
+		if ($valueName == 'indexURL') {
 			$this->compileDefinition();
 		}
 		return true;

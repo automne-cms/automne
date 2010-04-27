@@ -711,7 +711,7 @@ class CMS_view extends CMS_grandFather
 			header('HTTP/1.x 301 Moved Permanently', true, 301);
 		}
 		//in case of redirect in an admin frame, send to information page
-		if (isset($_REQUEST['context']) && $_REQUEST['context'] == 'adminframe') {
+		if (isset($_REQUEST['atm-context']) && $_REQUEST['atm-context'] == 'adminframe') {
 			if (strpos($url, PATH_FORBIDDEN_WR) === 0 || strpos($url, PATH_SPECIAL_PAGE_NOT_FOUND_WR) === 0) {
 				header('Location: '.$url);
 			} else {

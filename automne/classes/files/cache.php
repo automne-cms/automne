@@ -110,7 +110,7 @@ class CMS_cache {
 	  */
 	function exist() {
 		try {
-			return !$_POST && $this->_cache->test($this->_parameters['hash']);
+			return !$_POST && !isset($_REQUEST['atm-skip-cache']) && $this->_cache->test($this->_parameters['hash']);
 		} catch (Zend_Cache_Exception $e) {
 			CMS_grandFather::raiseError($e->getMessage());
 			return false;
@@ -246,7 +246,7 @@ class CMS_cache {
 	function endSave() {
 		$content = ob_get_contents();
 		ob_end_clean();
-		if (!$_POST) {
+		if (!$_POST && !isset($_REQUEST['atm-skip-cache'])) {
 			//Save content to cache
 			$cachedElements = array();
 			if (preg_match_all('#<!--{elements:(.*)}-->#Us', $content, $matches)) {

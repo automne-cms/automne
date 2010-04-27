@@ -120,6 +120,37 @@ class CMS_object_integer extends CMS_object_common
 	}
 	
 	/**
+	  * check object Mandatories Values
+	  *
+	  * @param array $values : the POST result values
+	  * @param string prefixname : the prefix used for post names
+	  * @param boolean newFormat : new automne v4 format (default false for compatibility)
+	  * @return boolean true on success, false on failure
+	  * @access public
+	  */
+	function checkMandatory($values, $prefixName, $newFormat = false) {
+		$params = $this->getParamsValues();
+		//if field is required check values
+		foreach ($this->_subfields as $subFieldID => $subFieldDefinition) {
+			if (isset($values[$prefixName.$this->_field->getID().'_'.$subFieldID]) || $this->_field->getValue('required')) {
+				//must be numeric
+				if (!is_numeric($values[$prefixName.$this->_field->getID().'_'.$subFieldID])) {
+					return false;
+				}
+				//check canBeNull parameter
+				if (!$params['canBeNull'] && $values[$prefixName.$this->_field->getID().'_'.$subFieldID] === '0') {
+					return false;
+				}
+				//check canBeNegative parameter
+				if (!$params['canBeNegative'] && $values[$prefixName.$this->_field->getID().'_'.$subFieldID] < 0) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
 	  * set object Values
 	  *
 	  * @param array $values : the POST result values
@@ -177,6 +208,7 @@ class CMS_object_integer extends CMS_object_common
 		if (isset($params['canBeNull'])) {
 			$return['minValue'] = ($params['canBeNull']) ? 0 : 1;
 			$return['value'] = (!$params['canBeNull'] && !$return['value']) ? false : $return['value'];
+			$return['value'] = ($params['canBeNull'] && !$return['value']) ? '0' : $return['value'];
 		}
 		$return['anchor'] = false;
 		$return['width'] = 200;

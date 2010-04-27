@@ -521,5 +521,31 @@ class CMS_object_date extends CMS_object_common
 				$where";
 		return $sql;
 	}
+	
+	/**
+	  * set object Values
+	  *
+	  * @param array $values : the POST result values
+	  * @param string $prefixname : the prefix used for post names
+	  * @return boolean true on success, false on failure
+	  * @access public
+	  */
+	function writeToPersistence() {
+		$params = $this->getParamsValues();
+		$date = new CMS_date();
+		if ($this->_subfieldValues[0]->getValue()) {
+			$date->setFromDBValue($this->_subfieldValues[0]->getValue());
+		}
+		if ($params['updateDate'] || ($date->isNull() && ($params['setNow'] || $params['creationDate']))) {
+			$date->setNow();
+			if ($params['moveDate']) {
+				$date->moveDate($params['moveDate']);
+			}
+			if (!$this->_subfieldValues[0]->setValue($date->getDBValue())) {
+				return false;
+			}
+		}
+		return parent::writeToPersistence();
+	}
 }
 ?>

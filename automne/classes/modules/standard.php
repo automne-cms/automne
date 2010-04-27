@@ -1681,10 +1681,10 @@ class CMS_module_standard extends CMS_module
 						}
 					break;
 					case 'atm-admin':
-						return '<?php if (strpos($_SERVER["REQUEST_URI"], \'automne/admin\') !== false  || (isset($_REQUEST[\'context\']) && $_REQUEST[\'context\'] == \'adminframe\')): ?>'.$tag->getInnerContent().'<?php endif; ?>';
+						return '<?php if (strpos($_SERVER["REQUEST_URI"], \'automne/admin\') !== false  || (isset($_REQUEST[\'atm-context\']) && $_REQUEST[\'atm-context\'] == \'adminframe\')): ?>'.$tag->getInnerContent().'<?php endif; ?>';
 					break;
 					case 'atm-noadmin':
-						return '<?php if (!(strpos($_SERVER["REQUEST_URI"], \'automne/admin\') !== false  || (isset($_REQUEST[\'context\']) && $_REQUEST[\'context\'] == \'adminframe\'))): ?>'.$tag->getInnerContent().'<?php endif; ?>';
+						return '<?php if (!(strpos($_SERVER["REQUEST_URI"], \'automne/admin\') !== false  || (isset($_REQUEST[\'atm-context\']) && $_REQUEST[\'atm-context\'] == \'adminframe\'))): ?>'.$tag->getInnerContent().'<?php endif; ?>';
 					break;
 					case "atm-title":
 						return SensitiveIO::sanitizeHTMLString($treatedObject->getTitle($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC));

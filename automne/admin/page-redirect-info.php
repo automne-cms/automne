@@ -23,7 +23,8 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
+//This page must be accessible by all users to avoid infinite loop if a website home page is redirected to an external website
+require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 
 define("MESSAGE_PAGE_REDIRECT", 320);
 define("MESSAGE_PAGE_PAGE", 1303);

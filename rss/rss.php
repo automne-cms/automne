@@ -22,7 +22,7 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-if (!isset($_REQUEST['previz'])) {
+if (!isset($_REQUEST['atm-previz'])) {
 	define('SYSTEM_DEBUG', false);
 }
 
@@ -142,7 +142,7 @@ if ($cache->exist()) {
 unset($cache);
 
 //send RSS content
-if (!isset($_REQUEST['previz'])) {
+if (!isset($_REQUEST['atm-previz'])) {
 	header('Content-type: text/xml; charset=UTF-8');
 	echo $content;
 } else {

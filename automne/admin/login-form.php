@@ -173,6 +173,11 @@ $jscontent =
 				}
 			}
 	    });
+		if (parent.Ext && parent.Ext.getCmp('loginWindow')) {
+			var loginWindow = parent.Ext.getCmp('loginWindow');
+			loginWindow.body.unmask();
+		}
+		
 		//set enter keymap
 		var map = new Ext.KeyMap("loginForm", {
 		    key: 		Ext.EventObject.ENTER,
