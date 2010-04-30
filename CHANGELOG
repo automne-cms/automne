@@ -2,10 +2,13 @@ V4.0.2 (in progress)
 [BUG] : Corrected bugs : 269, 270, 486, 497 (see http://www.automne.ws/bug/)
 [BUG] : Remove ghost groups on templates
 [BUG] : Templates do a better check on usage
+[BUG] : Handle link on documents or images which open directly in the current page
 [REFACTOR] : Add draft thumbnail on page status icons
 [REFACTOR] : Update phpMyAdmin to version 3.3.1
 [REFACTOR] : Update ExtJS to version 3.2.0
 [REFACTOR] : Add pages redirection infos in pages tree
+[REFACTOR] : Multi poly objects association is completely refactored
+[REFACTOR] : Change parameters labels and position on image field
 [FEATURE] : Add tabs menu on all tabs panels
 [FEATURE] : Add labels and ids varaibles to object categories when using multi categories
 [FEATURE] : Add cache management to all polymod blocks, plugins and rss. Add parameter cache on block tag and tag atm-cache-reference to handle this.

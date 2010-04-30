@@ -91,7 +91,6 @@ define("MESSAGE_PAGE_DRAFT_TO_VALIDATION", 468);
 define("MESSAGE_PAGE_INCORRECT_DOMAIN", 649);
 define("MESSAGE_PAGE_INCORRECT_WEBSITE_CONFIG", 650);
 define("MESSAGE_PAGE_INCORRECT_WEBSITE_CONFIG_ADMIN", 651);
-define("MESSAGE_PAGE_QUIT_AUTOMNE", 652);
 define("MESSAGE_PAGE_FOLLOW_EXTERNAL_LINK", 653);
 define("MESSAGE_PAGE_ERROR", 654);
 define("MESSAGE_PAGE_PAGE_NOT_VIEWVABLE", 655);
@@ -195,13 +194,12 @@ if (!isset($cms_page) || !$cms_page || !is_object($cms_page) || $cms_page->hasEr
 		} else {
 			$jscontent = "
 				Automne.message.popup({
-					title: 		'".$cms_language->getJSMessage(MESSAGE_PAGE_QUIT_AUTOMNE)."', 
-					msg: 		'".$cms_language->getJSMessage(MESSAGE_PAGE_FOLLOW_EXTERNAL_LINK, array($pageUrl))."',
-					buttons:	Ext.MessageBox.YESNO,
-					icon: 		Ext.MessageBox.QUESTION,
+					msg: 		'".$cms_language->getJSMessage(MESSAGE_PAGE_FOLLOW_EXTERNAL_LINK)."',
+					buttons:	Ext.MessageBox.OKCANCEL,
+					icon: 		Ext.MessageBox.INFO,
 					fn: 		function (button) {
-									if (button == 'yes') {
-										window.location = '{$pageUrl}';
+									if (button == 'ok') {
+										window.open('{$pageUrl}');
 									}
 								}
 				});

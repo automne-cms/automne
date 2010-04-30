@@ -1609,5 +1609,5 @@ td.x-date-mp-month a:hover,td.x-date-mp-year a:hover {
 	border:							1px dotted #6AA503 !important;
 }
 .x-list-selected {
-	background-color:				#EEFAE0;
+	background-color:				transparent;
 }

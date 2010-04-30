@@ -47,9 +47,9 @@ class CMS_object_image extends CMS_object_common
 	const MESSAGE_OBJECT_IMAGE_FIELD_DESC_HEIGHT = 415;
   	const MESSAGE_OBJECT_IMAGE_FIELD_DESC_HEIGHT_AND_WIDTH = 416;
 	const MESSAGE_OBJECT_IMAGE_PARAMETER_USEDISTINCTZOOM = 209;
-	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAKEZOOM_DESC = 210;
+	/*const MESSAGE_OBJECT_IMAGE_PARAMETER_MAKEZOOM_DESC = 210;*/
 	const MESSAGE_OBJECT_IMAGE_FIELD_USE_ORIGINAL_AS_ZOOM = 211;
-	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXWIDTHPREVIZ_DESC = 410;
+	/*const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXWIDTHPREVIZ_DESC = 410;*/
   	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXWIDTHPREVIZ = 409;
 	const MESSAGE_OBJECT_IMAGE_FIELD_DELETE = 213;
 	const MESSAGE_OBJECT_IMAGE_FIELD_ACTUAL_IMAGE = 214;
@@ -122,7 +122,8 @@ class CMS_object_image extends CMS_object_common
 	  * @var array(integer "subFieldID" => array("type" => string "(string|boolean|integer|date)", "required" => boolean, 'internalName' => string [, 'externalName' => i18nm ID]))
 	  * @access private
 	  */
-	protected $_parameters = array(0 => array(
+	protected $_parameters = array(
+							0 => array(
 										'type' 			=> 'integer',
 										'required' 		=> false,
 										'internalName'	=> 'maxWidth',
@@ -135,41 +136,39 @@ class CMS_object_image extends CMS_object_common
 										'internalName'  => 'maxHeight',
 										'externalName'  => self::MESSAGE_OBJECT_IMAGE_PARAMETER_MAXHEIGHT,
 										'description'   => self::MESSAGE_OBJECT_IMAGE_PARAMETER_MAXHEIGHT_DESC,
-										),
-							2 => array(
-										'type' 			=> 'boolean',
-										'required' 		=> false,
-										'internalName'	=> 'useDistinctZoom',
-										'externalName'	=> self::MESSAGE_OBJECT_IMAGE_PARAMETER_USEDISTINCTZOOM,
 									),
-							3 => array(
+							2 => array(
 										'type' 			=> 'boolean',
 										'required' 		=> false,
 										'internalName'	=> 'makeZoom',
 										'externalName'	=> self::MESSAGE_OBJECT_IMAGE_PARAMETER_MAKEZOOM,
-										'description'	=> self::MESSAGE_OBJECT_IMAGE_PARAMETER_MAKEZOOM_DESC,
 									),
-							4 => array(
-										'type'			=> 'integer',
-										'required'		=> false,
-										'internalName'  => 'maxWidthPreviz',
-										'externalName'  => self::MESSAGE_OBJECT_IMAGE_PARAMETER_MAXWIDTHPREVIZ,
-										'description'   => self::MESSAGE_OBJECT_IMAGE_PARAMETER_MAXWIDTHPREVIZ_DESC,
-									),
-							5 => array(
+							3 => array(
 										'type' 			=> 'integer',
 										'required' 		=> false,
 										'internalName'	=> 'maxZoomWidth',
 										'externalName'	=> self::MESSAGE_OBJECT_IMAGE_PARAMETER_MAXZOOMWIDTH,
 										'description' 	=> self::MESSAGE_OBJECT_IMAGE_PARAMETER_MAXZOOMWIDTH_DESC,
 									),
-							6 => array(
+							4 => array(
 										'type'			=> 'integer',
 										'required'		=> false,
 										'internalName'  => 'maxZoomHeight',
 										'externalName'  => self::MESSAGE_OBJECT_IMAGE_PARAMETER_MAXZOOMHEIGHT,
 										'description'   => self::MESSAGE_OBJECT_IMAGE_PARAMETER_MAXZOOMHEIGHT_DESC,
-										),
+									),
+							5 => array(
+										'type' 			=> 'boolean',
+										'required' 		=> false,
+										'internalName'	=> 'useDistinctZoom',
+										'externalName'	=> self::MESSAGE_OBJECT_IMAGE_PARAMETER_USEDISTINCTZOOM,
+									),
+							6 => array(
+										'type'			=> 'integer',
+										'required'		=> false,
+										'internalName'  => 'maxWidthPreviz',
+										'externalName'  => self::MESSAGE_OBJECT_IMAGE_PARAMETER_MAXWIDTHPREVIZ,
+									),
 							);
 
 	/**
@@ -177,7 +176,7 @@ class CMS_object_image extends CMS_object_common
 	  * @var array(integer "subFieldID" => mixed)
 	  * @access private
 	  */
-	protected $_parameterValues = array(0 => '',1 => '',2 => false,3 => true,4 => '16',5 => '',6 => '');
+	protected $_parameterValues = array(0 => '',1 => '',2 => true,3 => '',4 => '',5 => false,6 => '16');
 
 	/**
 	  * all images extension allowed
@@ -557,15 +556,15 @@ class CMS_object_image extends CMS_object_common
 				
 				//set thumbnail
 				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
-				$newBasename = "r".$objectID."_".$this->_field->getID()."_".io::strtolower(SensitiveIO::sanitizeAsciiString($basename));
-				if (io::strlen($newBasename) > 255) {
-					$newBasename = sensitiveIO::ellipsis($newBasename, 255, '-', true);
+				$zoomBasename = "r".$objectID."_".$this->_field->getID()."_".io::strtolower(SensitiveIO::sanitizeAsciiString($basename));
+				if (io::strlen($zoomBasename) > 255) {
+					$zoomBasename = sensitiveIO::ellipsis($zoomBasename, 255, '-', true);
 				}
-				$newFilename = $path.'/'.$newBasename;
-				CMS_file::moveTo($filename, $newFilename);
-				CMS_file::chmodFile(FILES_CHMOD, $newFilename);
+				$zoomFilename = $path.'/'.$zoomBasename;
+				CMS_file::moveTo($filename, $zoomFilename);
+				CMS_file::chmodFile(FILES_CHMOD, $zoomFilename);
 				//set it
-				if (!$this->_subfieldValues[2]->setValue($newBasename)) {
+				if (!$this->_subfieldValues[2]->setValue($zoomBasename)) {
 					return false;
 				}
 			}
@@ -704,7 +703,7 @@ class CMS_object_image extends CMS_object_common
 							imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
 							imagedestroy($src);
 							//overwrite image
-							@imagegif($dest,$newFilename);
+							@imagegif($dest,$filename);
 						break;
 						case "jpg":
 						case "jpeg":
@@ -713,7 +712,7 @@ class CMS_object_image extends CMS_object_common
 							imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
 							imagedestroy($src);
 							//overwrite image
-							@imagejpeg($dest,$newFilename,95);
+							@imagejpeg($dest,$filename,95);
 						break;
 						case "png":
 							$src = imagecreatefrompng($filename);

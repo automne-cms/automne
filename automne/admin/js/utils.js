@@ -251,7 +251,7 @@ Automne.utils = {
 						title:			Automne.locales.formSubmit, 
 						msg:			Automne.locales.formSubmitDesc,
 						buttons:		Ext.MessageBox.OKCANCEL,
-						icon:			Ext.MessageBox.QUESTION,
+						icon:			Ext.MessageBox.INFO,
 						animEl:			this,
 						scope:			this,
 						fn: 		function (button) {

@@ -58,6 +58,7 @@ define("MESSAGE_ACTION_UNLOCK_SELECTED", 509);
 define("MESSAGE_ACTION_PREVIZ_SELECTED", 510);
 define("MESSAGE_ACTION_EDIT_SELECTED", 511);
 define("MESSAGE_ACTION_CREATE_SELECTED", 512);
+define("MESSAGE_PAGE_HELP_MULTIPLE", 560);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -71,6 +72,7 @@ $fatherId = sensitiveIO::request('fatherId');
 $objectId = sensitiveIO::request('objectId', 'sensitiveIO::isPositiveInteger');
 $codename = sensitiveIO::request('module', CMS_modulesCatalog::getAllCodenames());
 $selectedItem = sensitiveIO::request('selectedItem', 'sensitiveIO::isPositiveInteger', '');
+$multiple = sensitiveIO::request('multiple') ? true : false;
 
 if (!$codename) {
 	CMS_grandFather::raiseError('Unknown module ...');
@@ -348,6 +350,20 @@ if ($description) {
 	},";
 }
 
+if ($multiple) {
+	$selectType = 'multiSelect:			true';
+	$multiple = 'true';
+	//help for multiple selection
+	$searchPanel .= "{
+		xtype:			'panel',
+		border:			false,
+		html:			'<div style=\"color:grey;padding-top:15px;font-size:x-small;\">{$cms_language->getJSMessage(MESSAGE_PAGE_HELP_MULTIPLE, false, MOD_POLYMOD_CODENAME)}</div>'
+	},";
+} else {
+	$selectType = 'singleSelect:		true';
+	$multiple = 'false';
+}
+
 //remove last comma from search panel items
 $searchPanel = io::substr($searchPanel, 0, -1);
 
@@ -478,7 +494,6 @@ $jscontent = <<<END
 		fields:			['id', 'status', 'pubrange', 'label', 'description', 'locked', 'deleted', 'previz', 'edit'],
 		listeners:		{
 			'load': 		{fn:function(store, records, options){
-				
 				//Update results title
 				if (store.getTotalCount()) {
 					var start = (options.params && options.params.start) ? options.params.start : 0;
@@ -539,7 +554,7 @@ $jscontent = <<<END
 		scripts:			true, //execute JS scripts in response
 		dataView:			{
 			overClass:			'x-view-over',
-			singleSelect:		true,
+			{$selectType},
 			listeners:			{'beforeclick':function(dv, index, node, e){
 				//prevent click catch if click occur on a link
 				if (e.getTarget('a', 4)) {
@@ -560,13 +575,29 @@ $jscontent = <<<END
 	moduleObjectWindow.search();
 	
 	resultsPanel.dv.on('selectionchange', function(dv, selections){
-		if (selections.length) {
-			moduleObjectWindow.selectedItem = selections[0].id.substr(7);
+		if ($multiple) {
+			moduleObjectWindow.selectedItems = '';
+			if (selections.length) {
+				for (var i = 0, selLen = selections.length; i < selLen; i++) {
+					if (moduleObjectWindow.selectedItems) {
+						moduleObjectWindow.selectedItems +=',';
+					}
+					moduleObjectWindow.selectedItems += selections[i].id.substr(7);
+				}
+			}
+			pr(moduleObjectWindow.selectedItems);
+			if (moduleObjectWindow.selectItems) {
+				moduleObjectWindow.selectItems(moduleObjectWindow.selectedItems);
+			}
 		} else {
-			moduleObjectWindow.selectedItem = '';
-		}
-		if (moduleObjectWindow.selectItem) {
-			moduleObjectWindow.selectItem(moduleObjectWindow.selectedItem);
+			if (selections.length) {
+				moduleObjectWindow.selectedItem = selections[0].id.substr(7);
+			} else {
+				moduleObjectWindow.selectedItem = '';
+			}
+			if (moduleObjectWindow.selectItem) {
+				moduleObjectWindow.selectItem(moduleObjectWindow.selectedItem);
+			}
 		}
 		return true;
 	}, this);

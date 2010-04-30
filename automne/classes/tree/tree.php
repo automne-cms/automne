@@ -1572,6 +1572,8 @@ class CMS_tree extends CMS_grandFather
 					return $cms_page;
 				}
 			}
+		} elseif (isset($pathinfo['extension']) && $pathinfo['extension'] && $pathinfo['extension'] != 'php') {
+			return false;
 		} elseif ($useDomain) {
 			if (is_object($domainFounded)) {
 				$cms_page = $domainFounded->getRoot();

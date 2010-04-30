@@ -63,6 +63,7 @@ define("MESSAGE_PAGE_FIELD_PUBLISHED", 553);
 define("MESSAGE_PAGE_FIELD_UNPUBLISHED", 554);
 define("MESSAGE_PAGE_FIELD_VALIDATED", 555);
 define("MESSAGE_PAGE_FIELD_VALIDATION_PENDING", 556);
+define("MESSAGE_PAGE_HELP_MULTIPLE", 560);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -416,6 +417,13 @@ if (file_exists($filename)) {
 		html:			'<div style=\"color:grey;padding-top:15px;\">{$includeDesc}</div>'
 	},";
 }
+
+//help for multiple selection
+$searchPanel .= "{
+	xtype:			'panel',
+	border:			false,
+	html:			'<div style=\"color:grey;padding-top:15px;font-size:x-small;\">{$cms_language->getJSMessage(MESSAGE_PAGE_HELP_MULTIPLE, false, MOD_POLYMOD_CODENAME)}</div>'
+},";
 
 //remove last comma from search panel items
 $searchPanel = io::substr($searchPanel, 0, -1);

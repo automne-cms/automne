@@ -213,13 +213,12 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(202, 'polymod', 'fr', 'Largeur maximum de la vignette en pixels');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(203, 'polymod', 'fr', 'Date de début de publication formatée. Remplacez ''format'' par la valeur correspondant au format accepté en PHP pour la <a href="http://www.php.net/date" class="admin" target="_blank">''fonction date''</a>. Pour une date employ&eacute;e dans un Fil RSS, utilisez la valeur ''<strong>rss</strong>'' pour sp&eacute;cifier le format.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(204, 'polymod', 'fr', 'Date de fin de publication formatée (si elle existe). Remplacez ''format'' par la valeur correspondant au format accepté en PHP pour la <a href="http://www.php.net/date" class="admin" target="_blank">''fonction date''</a>. Pour une date employ&eacute;e dans un Fil RSS, utilisez la valeur ''<strong>rss</strong>'' pour sp&eacute;cifier le format.');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(205, 'polymod', 'fr', 'Utiliser l''image originale comme image zoom');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(205, 'polymod', 'fr', 'Par défaut, proposer d''utiliser l''image originale comme image zoom');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(206, 'polymod', 'fr', 'Vignette');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(207, 'polymod', 'fr', 'Image zoom');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(208, 'polymod', 'fr', '(La vignette sera redimensionnée à %s pixels de large)');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(209, 'polymod', 'fr', 'Utiliser une image zoom distincte');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(210, 'polymod', 'fr', '(Si vous n''utilisez pas d''image zoom distincte)');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(211, 'polymod', 'fr', 'Conserver l''image originale de la vignette comme image zoom');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(209, 'polymod', 'fr', 'Par défaut, proposer d''utiliser une image zoom distincte');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(211, 'polymod', 'fr', 'Conserver l''image originale comme image zoom');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(212, 'polymod', 'fr', '(Si la vignette dépasse cette largeur elle sera redimensionnée)');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(213, 'polymod', 'fr', 'Cochez la case pour effacer l''image');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(214, 'polymod', 'fr', 'Image actuelle');
@@ -530,8 +529,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(405, 'polymod', 'fr', 'Trier par');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(406, 'polymod', 'fr', 'Page');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(407, 'polymod', 'fr', 'Permet de choisir une page Automne');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(409, 'polymod', 'fr', 'Largeur de la vignette dans les résultats de la recherche');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(410, 'polymod', 'fr', '(largeur de l''image dans la liste des résultats, si elle est visible dans les résultats de la recherche) ');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(409, 'polymod', 'fr', 'Largeur de l''aperçu dans les résultats de la recherche');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(411, 'polymod', 'fr', 'Retourne vrai (true) si ce champ possède une valeur');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(412, 'polymod', 'fr', '(Si la vignette dépasse cette hauteur elle sera redimensionnée)');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(413, 'polymod', 'fr', 'Hauteur maximum de l''image en pixels');
@@ -612,3 +610,4 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(557, 'polymod', 'fr', '<strong>Liste de toutes les langues du champ :<br />\n</strong><br />\n<span class="code"> &lt;select&gt;<strong>&lt;</strong>atm-function function=&quot;selectOptions&quot; object=&quot;%s&quot; selected=&quot;<span class="keyword">selectedCode</span><strong>&quot;&gt;&lt;/</strong>atm-function<strong>&gt;</strong>&lt;/select&gt;</span><br />\nCette fonction permet d''afficher une liste class&eacute;e par ordre alphab&eacute;tique de tags &lt;option&gt; contenant toutes les langues du champ donn&eacute; en param&egrave;tre. Elle est usuellement employ&eacute;e &agrave; l''int&eacute;rieur d''un tag &lt;select&gt;.<br />\n<ul>\n	<li><span class="keyword">selectedCode </span><strong>: </strong>Code de la langue &agrave; selectionner dans la liste</li>\n</ul>');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(558, 'polymod', 'fr', 'Tableau des identifiants des catégories');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(559, 'polymod', 'fr', 'Libellés des catégories. Vous pouvez modifier le séparateur (par défaut : virgule) en ajoutant un paramètre à l\'aide d\'un séparateur pipe (|).');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(560, 'polymod', 'fr', 'Utilisez la touche control [Ctrl] sur PC ou Pomme [cmd] sur Mac pour faire des sélections multiples.');

@@ -127,13 +127,12 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(202, 'polymod', 'en', 'Maximum width of the thumbnail in pixels');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(203, 'polymod', 'en', 'Formatted date. Replace ''format'' by the format value accepted in PHP for the <a href="http://www.php.net/date" class="admin" target="_blank">''date function''</a>. For a date used in an RSS feed, use ''<strong>rss</strong>'' to specify the format.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(204, 'polymod', 'en', 'Formatted date. Replace ''format'' by the format value accepted in PHP for the <a href="http://www.php.net/date" class="admin" target="_blank">''date function''</a>. For a date used in an RSS feed, use ''<strong>rss</strong>'' to specify the format.');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(205, 'polymod', 'en', 'Use original image as zoom');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(205, 'polymod', 'en', 'As default, propose to use original image as zoom');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(206, 'polymod', 'en', 'Thumbnail');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(207, 'polymod', 'en', 'Zoom image');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(208, 'polymod', 'en', '(Thumbnail will be resized to %s pixels width)');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(209, 'polymod', 'en', 'Use distinct zoom image');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(210, 'polymod', 'en', '(If you do no uses a distinct image zoom)');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(211, 'polymod', 'en', 'Keep the original image of the thumbnail as an image zoom');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(209, 'polymod', 'en', 'As default, propose to use distinct image zoom');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(211, 'polymod', 'en', 'Keep the original image as an image zoom');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(212, 'polymod', 'en', '(If the thumbnail exceeds this width it will be resized)');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(213, 'polymod', 'en', 'Check the box to delete image');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(214, 'polymod', 'en', 'Current image');
@@ -330,8 +329,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(405, 'polymod', 'en', 'Sort by');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(406, 'polymod', 'en', 'Page');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(407, 'polymod', 'en', 'Permit to choose an Automne page');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(409, 'polymod', 'en', 'Thumbnail width in search results list');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(410, 'polymod', 'en', '(only if image is visible in search results)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(409, 'polymod', 'en', 'Image preview width in search results list');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(411, 'polymod', 'en', 'Retrun true if this field has a value set');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(412, 'polymod', 'en', '(If the thumbnail exceeds this width it will be resized)');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(413, 'polymod', 'en', 'Image maximum height in pixels');
@@ -412,3 +410,4 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(557, 'polymod', 'en', '<p><strong>List of all languages of a field:<br />\r\n</strong><br />\r\n<span class="code"> &lt;select&gt;<strong>&lt;</strong>atm-function function=&quot;selectOptions&quot; object=&quot;%s&quot; selected=&quot;<span class="keyword">selectedCode</span><strong>&quot;&gt;&lt;/</strong>atm-function<strong>&gt;</strong>&lt;/select&gt;</span><br />\r\nThis function displays a list in alphabetical order of tags &lt;option&gt; containing all the languages of the field given in the parameter.&nbsp;It is usually employed within the tag &lt;select&gt;.</p>\r\n<ul>\r\n    <li><span class="keyword">selectedCode </span><strong>: </strong>Code of the language to select in the list.</li>\r\n</ul>');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(558, 'polymod', 'en', 'Array of categories ids');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(559, 'polymod', 'en', 'Categories labels. You can change the separator (default comma) by adding a parameter using a pipe separator (|).');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(560, 'polymod', 'en', 'Use the control key [Ctrl] on PC or Apple [cmd] on Mac to make multiple selections.');
