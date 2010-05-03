@@ -656,6 +656,53 @@ class CMS_poly_object_definition extends CMS_grandFather
 		}
 		return $structure;
 	}
+
+	public function asArray()
+	{
+		$oPolymod = new CMS_polymod($this->_objectValues['module']);
+
+		$aClass = array(
+			'id'			=> $this->getID(),
+			'labels'		=> CMS_object_i18nm::getValues($this->_objectValues['labelID']),
+			'descriptions'	=> CMS_object_i18nm::getValues($this->_objectValues['descriptionID']),
+			'params'		=> array(
+				'resource_usage'	=> $this->_objectValues['resourceUsage'],
+				'admineditable'		=> $this->_objectValues['admineditable'],
+				'composedLabel'		=> $this->_objectValues['composedLabel'],
+				'previewURL'		=> $this->_objectValues['previewURL'],
+				'indexable'			=> $this->_objectValues['indexable'],
+				'indexURL'			=> $this->_objectValues['indexURL'],
+				'resultsDefinition'	=> $this->_objectValues['resultsDefinition'],
+			),
+			'fields'	=> array()
+		);
+		if ($aClass['params']['composedLabel']) {
+			$aClass['params']['composedLabel'] = $oPolymod->convertDefinitionString($aClass['params']['composedLabel'], true);
+		}
+		if ($aClass['params']['indexURL']) {
+			$aClass['params']['indexURL'] = $oPolymod->convertDefinitionString($aClass['params']['indexURL'], true);
+		}
+		if ($aClass['params']['previewURL']) {
+			$aClass['params']['previewURL'] = $oPolymod->convertDefinitionString($aClass['params']['previewURL'], true);
+		}
+		if ($aClass['params']['resultsDefinition']) {
+			$aClass['params']['resultsDefinition'] = $oPolymod->convertDefinitionString($aClass['params']['resultsDefinition'], true);
+		}
+
+		$oQuery = new CMS_query('
+			SELECT `id_mof`
+			FROM `mod_object_field`
+			WHERE `object_id_mof` = '.$this->_ID.'
+		');
+		if ($oQuery->getNumRows() > 1) {
+			foreach ($oQuery->getAll(PDO::FETCH_ASSOC) as $aRow) {
+				$oFieldDefiniton = new CMS_poly_object_field($aRow['id_mof']);
+				$aClass['fields'][] = $oFieldDefiniton->asArray();
+			}
+		}
+
+		return $aClass;
+	}
 }
 
 ?>

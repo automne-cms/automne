@@ -1,7 +1,9 @@
-<?php //Generated on Fri, 19 Mar 2010 15:24:26 +0100 by Automne (TM) 4.0.1
+<?php require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+CMS_view::redirect('http://www.google.com', true, 302);
+ ?><?php //Generated on Mon, 03 May 2010 09:40:00 +0200 by Automne (TM) 4.0.1
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
-	CMS_view::redirect('http://127.0.0.1/web/demo/print-2-accueil.php', true, 301);
+	CMS_view::redirect('http://acezar.401/web/demo/print-2-automne-version-4-gouter-a-la-simplicite.php', true, 301);
 }
  ?>
 <?php require_once($_SERVER["DOCUMENT_ROOT"].'/automne/classes/polymodFrontEnd.php');  ?><?php /* Template [print.xml] */   ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";   ?>
@@ -17,7 +19,7 @@ if (!isset($cms_page_included) && !$_POST && !$_GET) {
 
 </h3>
 <?php /* Start clientspace [second] */   ?><?php /* Start row [615 [Actualités] Dernière actualité - r66_615_Derniere_actualite.xml] */   ?>
-	<?php /*Generated on Fri, 19 Mar 2010 15:24:26 +0100 by Automne (TM) 4.0.1 */
+	<?php /*Generated on Mon, 03 May 2010 09:40:00 +0200 by Automne (TM) 4.0.1 */
 if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 'CMS_profile_user') && $cms_user->hasModuleClearance('pnews', CLEARANCE_MODULE_VIEW))){
 	$content = "";
 	$replace = "";
@@ -32,21 +34,22 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 	if (isset($parameters['item'])) {$parameters['objectID'] = $parameters['item']->getObjectID();} elseif (isset($parameters['itemID']) && sensitiveIO::isPositiveInteger($parameters['itemID']) && !isset($parameters['objectID'])) $parameters['objectID'] = CMS_poly_object_catalog::getObjectDefinitionByID($parameters['itemID']);
 	if (!isset($object) || !is_array($object)) $object = array();
 	if (!isset($object[1])) $object[1] = new CMS_poly_object(1, 0, array(), $parameters['public']);
+	if (!isset($object[3])) $object[3] = new CMS_poly_object(3, 0, array(), $parameters['public']);
 	$parameters['module'] = 'pnews';
-	//SEARCH lastNews TAG START 7_da47ad
+	//SEARCH lastNews TAG START 7_97792c
 	$objectDefinition_lastNews = '1';
 	if (!isset($objectDefinitions[$objectDefinition_lastNews])) {
 		$objectDefinitions[$objectDefinition_lastNews] = new CMS_poly_object_definition($objectDefinition_lastNews);
 	}
 	//public search ?
-	$public_7_da47ad = isset($public_search) ? $public_search : false;
+	$public_7_97792c = isset($public_search) ? $public_search : false;
 	//get search params
-	$search_lastNews = new CMS_object_search($objectDefinitions[$objectDefinition_lastNews], $public_7_da47ad);
+	$search_lastNews = new CMS_object_search($objectDefinitions[$objectDefinition_lastNews], $public_7_97792c);
 	$launchSearch_lastNews = true;
 	//add search conditions if any
 	$search_lastNews->setAttribute('itemsPerPage', (int) CMS_polymod_definition_parsing::replaceVars("1", $replace));
 	$search_lastNews->addOrderCondition("publication date after", "desc");
-	//RESULT lastNews TAG START 8_461d22
+	//RESULT lastNews TAG START 8_d5b615
 	//launch search lastNews if not already done
 	if($launchSearch_lastNews && !isset($results_lastNews)) {
 		if (isset($search_lastNews)) {
@@ -59,22 +62,22 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 		$results_lastNews = array();
 	}
 	if ($results_lastNews) {
-		$object_8_461d22 = (isset($object[$objectDefinition_lastNews])) ? $object[$objectDefinition_lastNews] : ""; //save previous object search if any
-		$replace_8_461d22 = $replace; //save previous replace vars if any
-		$count_8_461d22 = 0;
-		$content_8_461d22 = $content; //save previous content var if any
-		$maxPages_8_461d22 = $search_lastNews->getMaxPages();
-		$maxResults_8_461d22 = $search_lastNews->getNumRows();
+		$object_8_d5b615 = (isset($object[$objectDefinition_lastNews])) ? $object[$objectDefinition_lastNews] : ""; //save previous object search if any
+		$replace_8_d5b615 = $replace; //save previous replace vars if any
+		$count_8_d5b615 = 0;
+		$content_8_d5b615 = $content; //save previous content var if any
+		$maxPages_8_d5b615 = $search_lastNews->getMaxPages();
+		$maxResults_8_d5b615 = $search_lastNews->getNumRows();
 		foreach ($results_lastNews as $object[$objectDefinition_lastNews]) {
 			$content = "";
 			$replace["atm-search"] = array (
 				"{resultid}" 	=> (isset($resultID_lastNews)) ? $resultID_lastNews : $object[$objectDefinition_lastNews]->getID(),
-				"{firstresult}" => (!$count_8_461d22) ? 1 : 0,
-				"{lastresult}" 	=> ($count_8_461d22 == sizeof($results_lastNews)-1) ? 1 : 0,
-				"{resultcount}" => ($count_8_461d22+1),
-				"{maxpages}"    => $maxPages_8_461d22,
+				"{firstresult}" => (!$count_8_d5b615) ? 1 : 0,
+				"{lastresult}" 	=> ($count_8_d5b615 == sizeof($results_lastNews)-1) ? 1 : 0,
+				"{resultcount}" => ($count_8_d5b615+1),
+				"{maxpages}"    => $maxPages_8_d5b615,
 				"{currentpage}" => ($search_lastNews->getAttribute('page')+1),
-				"{maxresults}"  => $maxResults_8_461d22,
+				"{maxresults}"  => $maxResults_8_d5b615,
 			);
 			$content .="
 			<div class=\"lastNews\">
@@ -85,7 +88,7 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 			</div>
 			<div class=\"newsContent\">
 			";
-			//IF TAG START 9_f1a7ab
+			//IF TAG START 9_70ad4e
 			$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[1]->objectValues(4)->getValue('imageWidth','')), $replace);
 			if ($ifcondition) {
 				$func = create_function("","return (".$ifcondition.");");
@@ -96,11 +99,11 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					</div>
 					";
 				}
-			}//IF TAG END 9_f1a7ab
+			}//IF TAG END 9_70ad4e
 			$content .="
 			".$object[1]->objectValues(2)->getValue('htmlvalue','')."
 			";
-			//IF TAG START 10_acbb33
+			//IF TAG START 10_8d4eb5
 			$ifcondition = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[1]->objectValues(3)->getValue('value','')), $replace);
 			if ($ifcondition) {
 				$func = create_function("","return (".$ifcondition.");");
@@ -111,17 +114,17 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					</a>
 					";
 				}
-			}//IF TAG END 10_acbb33
+			}//IF TAG END 10_8d4eb5
 			$content .="
 			<div class=\"spacer\"></div>
 			<div class=\"newsBottom\">
 			<a class=\"newsAll\" href=\"".CMS_tree::getPageValue("5","url")."\">Toute l'actualite</a>
 			";
-			//FUNCTION TAG START 11_2a2665
-			$parameters_11_2a2665 = array ('selected' => CMS_polymod_definition_parsing::replaceVars("3", $replace),);
-			$object_11_2a2665 = &$object[1];
-			if (method_exists($object_11_2a2665, "rss")) {
-				$content .= CMS_polymod_definition_parsing::replaceVars($object_11_2a2665->rss($parameters_11_2a2665, array (
+			//FUNCTION TAG START 11_5096e1
+			$parameters_11_5096e1 = array ('selected' => CMS_polymod_definition_parsing::replaceVars("3", $replace),);
+			$object_11_5096e1 = &$object[1];
+			if (method_exists($object_11_5096e1, "rss")) {
+				$content .= CMS_polymod_definition_parsing::replaceVars($object_11_5096e1->rss($parameters_11_5096e1, array (
 					0 =>
 					array (
 						'textnode' => '
@@ -156,27 +159,27 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					),
 				)), $replace);
 			} else {
-				CMS_grandFather::raiseError("Malformed atm-function tag : can't found method rss on object : ".get_class($object_11_2a2665));
+				CMS_grandFather::raiseError("Malformed atm-function tag : can't found method rss on object : ".get_class($object_11_5096e1));
 			}
-			//FUNCTION TAG END 11_2a2665
+			//FUNCTION TAG END 11_5096e1
 			$content .="
 			</div>
 			</div>
 			</div>
 			";
-			$count_8_461d22++;
+			$count_8_d5b615++;
 			//do all result vars replacement
-			$content_8_461d22.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
+			$content_8_d5b615.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
 		}
-		$content = $content_8_461d22; //retrieve previous content var if any
-		$replace = $replace_8_461d22; //retrieve previous replace vars if any
-		$object[$objectDefinition_lastNews] = $object_8_461d22; //retrieve previous object search if any
+		$content = $content_8_d5b615; //retrieve previous content var if any
+		$replace = $replace_8_d5b615; //retrieve previous replace vars if any
+		$object[$objectDefinition_lastNews] = $object_8_d5b615; //retrieve previous object search if any
 	}
-	//RESULT lastNews TAG END 8_461d22
+	//RESULT lastNews TAG END 8_d5b615
 	//destroy search and results lastNews objects
 	unset($search_lastNews);
 	unset($results_lastNews);
-	//SEARCH lastNews TAG END 7_da47ad
+	//SEARCH lastNews TAG END 7_97792c
 	echo CMS_polymod_definition_parsing::replaceVars($content, $replace);
 }
    ?>
@@ -186,15 +189,20 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 
 <?php /* End row [110 Sous Titre (niveau 2) - r43_100_Sous_Titre.xml] */   ?><?php /* Start row [200 Texte - r44_200_Texte.xml] */   ?>
 
-<div class="text"><p><strong>Automne est votre solution</strong> si vous recherchez un outil de gestion de contenu performant et &eacute;volutif. </p><p>Un outil permettant autonomie et contr&ocirc;le &eacute;ditorial.</p><p>Que votre contenu soit statique ou dynamique avec une gestion en bases de donn&eacute;es, Automne facilite la communication et les &eacute;changes <strong>sans contraintes techniques.<br /></strong></p></div>
+<div class="text"><p><strong>Automne est votre solution</strong> si vous recherchez un outil de gestion de contenu performant et évolutif.</p>
+<p>Un outil permettant autonomie et contrôle éditorial.</p>
+<p>Que votre contenu soit statique ou dynamique avec une gestion en bases de données, Automne facilite la communication et les échanges <strong>sans contraintes techniques.<br />
+</strong></p>
+<p>lien vers brouillon</p>
+<p>lien vers non validée</p></div>
 
 <?php /* End row [200 Texte - r44_200_Texte.xml] */   ?><?php /* End clientspace [first] */   ?><br />
 <hr />
 <div align="center">
 	<small>
+		Derni&egrave;re mise &agrave; jour le 09/04/2010<br />
 		
-		
-				Page  "Accueil" (http://127.0.0.1/web/demo/2-accueil.php)
+				Page  "Accueil" (http://acezar.401/web/demo/2-automne-version-4-gouter-a-la-simplicite.php)
 				<br />
 		Tir&eacute; du site http://<?php echo $_SERVER["HTTP_HOST"];    ?>
 	</small>

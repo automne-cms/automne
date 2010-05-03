@@ -1,7 +1,7 @@
-<?php //Generated on Fri, 19 Mar 2010 15:24:34 +0100 by Automne (TM) 4.0.1
+<?php //Generated on Mon, 03 May 2010 09:40:08 +0200 by Automne (TM) 4.0.1
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
-	CMS_view::redirect('http://127.0.0.1/web/demo/print-9-contact.php', true, 301);
+	CMS_view::redirect('http://acezar.401/web/demo/print-9-contact.php', true, 301);
 }
  ?>
 <?php $mod_cms_forms = array();
@@ -641,7 +641,7 @@ if ($form->getID() && $form->isPublic()) {
 	<small>
 		
 		
-				Page  "Contact" (http://127.0.0.1/web/demo/9-contact.php)
+				Page  "Contact" (http://acezar.401/web/demo/9-contact.php)
 				<br />
 		Tir&eacute; du site http://<?php echo $_SERVER["HTTP_HOST"];    ?>
 	</small>

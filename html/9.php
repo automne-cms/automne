@@ -1,7 +1,7 @@
-<?php //Generated on Fri, 19 Mar 2010 15:24:34 +0100 by Automne (TM) 4.0.1
+<?php //Generated on Mon, 03 May 2010 09:40:08 +0200 by Automne (TM) 4.0.1
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
-	CMS_view::redirect('http://127.0.0.1/web/demo/9-contact.php', true, 301);
+	CMS_view::redirect('http://acezar.401/web/demo/9-contact.php', true, 301);
 }
  ?>
 <?php $mod_cms_forms = array();
@@ -543,10 +543,10 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 
 	<?php echo CMS_view::getJavascript(array('','/js/CMS_functions.js'));  ?>
 
-	<link rel="icon" type="image/x-icon" href="http://127.0.0.1/favicon.ico" />
+	<link rel="icon" type="image/x-icon" href="http://acezar.401/favicon.ico" />
 	<meta name="language" content="fr" />
 	<meta name="generator" content="Automne (TM)" />
-	<meta name="identifier-url" content="http://127.0.0.1" />
+	<meta name="identifier-url" content="http://acezar.401" />
 
 </head>
 <body>
@@ -554,16 +554,16 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 		<div id="container">
 			<div id="header">
 				
-							<a id="lienAccueil" href="http://127.0.0.1/web/demo/2-accueil.php" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
+							<a id="lienAccueil" href="http://acezar.401/web/demo/2-automne-version-4-gouter-a-la-simplicite.php" title="Retour &agrave; l'accueil">Retour &agrave; l'accueil</a>
 						
 			</div>
 			<div id="backgroundBottomContainer">
 				<div id="menuLeft">
-					<ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/24-documentation.php">Fonctionnalités</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://127.0.0.1/web/demo/31-exemples-de-modules.php">Exemples de modules</a></li></ul>
+					<ul class="CMS_lvl2"><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://acezar.401/web/demo/3-presentation.php">Présentation</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://acezar.401/web/demo/24-documentation.php">Fonctionnalités</a></li><li class="CMS_lvl2 CMS_sub "><a class="CMS_lvl2" href="http://acezar.401/web/demo/31-exemples-de-modules.php">Exemples de modules</a></li></ul>
 				</div>
 				<div id="content" class="page9">
 					<div id="breadcrumbs">
-						<a href="http://127.0.0.1/web/demo/2-accueil.php">Accueil</a> &gt; 
+						<a href="http://acezar.401/web/demo/2-automne-version-4-gouter-a-la-simplicite.php">Accueil</a> &gt; 
 					</div>
 					<div id="title">
 						<h1>Contact</h1>
@@ -671,7 +671,7 @@ if ($form->getID() && $form->isPublic()) {
 	<div id="footer">
 		<div id="menuBottom">
 			<ul>
-				<li><a href="http://127.0.0.1/web/demo/8-plan-du-site.php">Plan du site</a></li><li><a href="http://127.0.0.1/web/demo/9-contact.php">Contact</a></li>
+				<li><a href="http://acezar.401/web/demo/8-plan-du-site.php">Plan du site</a></li><li><a href="http://acezar.401/web/demo/9-contact.php">Contact</a></li>
 			</ul>
 			<div class="spacer"></div>
 		</div>

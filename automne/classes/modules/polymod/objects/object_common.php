@@ -918,5 +918,14 @@ abstract class CMS_object_common extends CMS_grandFather
 
 		return $sql;
 	}
+
+	public function asArray()
+	{
+		$aParameters = array();
+		foreach ($this->_parameters as $key=>$aParameter) {
+			$aParameters[$aParameter['internalName']] = $this->_parameterValues[$key];
+		}
+		return $aParameters;
+	}
 }
 ?>
