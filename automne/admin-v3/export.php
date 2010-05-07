@@ -82,6 +82,7 @@ switch (io::get('action')) {
 					//fields
 					foreach ($aClass['fields'] as $aField) {
 						$oField = $oDom->createElement('field');
+						$oField->setAttribute('type', $aField['type']);
 						//fields labels
 						foreach ($aField['labels'] as $sLanguage=>$sLabel) {
 							$oLabel = $oDom->createElement('label', $sLabel);
