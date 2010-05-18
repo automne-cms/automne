@@ -26,6 +26,8 @@
 
 require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
 
+define("MESSAGE_PAGE_REDIRECT", 1625);
+
 //load interface instance
 $view = CMS_view::getInstance();
 //set default display mode for this page
@@ -131,16 +133,28 @@ foreach ($siblings as $sibling) {
 				$date = $sibling->getLastFileCreationDate();
 				if (is_a($date, "CMS_date")) {
 					$date->setFormat($cms_language->getDateFormat());
-					$property = $date->getLocalizedDate();
+					$property = '('.$date->getLocalizedDate().')';
 				}
 				break;
 			case "template":
 				$tmp = $sibling->getTemplate();
-				$property = (is_a($tmp, "CMS_pageTemplate")) ?  $tmp->getLabel() : '???';
+				$property = '('.((is_a($tmp, "CMS_pageTemplate")) ?  $tmp->getLabel() : '???').')';
 				break;
 			}
 		} else {
-			$property = $sibling->getID();
+			$property = '('.$sibling->getID().')';
+			$redirectlink = $sibling->getRedirectLink(true);
+			if ($redirectlink->hasValidHREF()) {
+				if ($redirectlink->getLinkType() == RESOURCE_LINK_TYPE_INTERNAL) {
+					$redirectPage = new CMS_page($redirectlink->getInternalLink());
+					if (!$redirectPage->hasError()) {
+						$property .= '<small class="atm-help" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_REDIRECT, array('\''.$redirectPage->getTitle(true).'\' ('.$redirectPage->getID().')')).'"> &rArr; '.$redirectPage->getID().'</small>';
+					}
+				} else {
+					$label = $redirectlink->getExternalLink();
+					$property .= '<small class="atm-help" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_REDIRECT, array(io::ellipsis($label, '80'))).'"> &rArr; '.io::ellipsis($label, '50').'</small>';
+				}
+			}
 		}
 		
 		$pageTitle = (PAGE_LINK_NAME_IN_TREE) ? $sibling->getLinkTitle() : $sibling->getTitle();
@@ -161,7 +175,7 @@ foreach ($siblings as $sibling) {
 			'id'		=>	'page'.$sibling->getID(), 
 			'onClick'	=>	sprintf($onClick, $sibling->getID()),
 			'onSelect'	=>	sprintf($onSelect, $sibling->getID()),
-			'text'		=>	io::htmlspecialchars($pageTitle).' (' .$property. ')'.$ddtext,
+			'text'		=>	io::htmlspecialchars($pageTitle).' '.$property.$ddtext,
 			'status'	=>	$sibling->getStatus()->getHTML(true, $cms_user, MOD_STANDARD_CODENAME, $sibling->getID()),
 			'leaf'		=>	($maxlevelReached || !$hasSiblings), 
 			/*'qtip'		=>	'tip for page '.$sibling->getTitle(),

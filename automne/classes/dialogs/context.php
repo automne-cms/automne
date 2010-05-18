@@ -186,6 +186,18 @@ class CMS_context extends CMS_grandFather
 			}
 			//regenerate session ID
 			session_regenerate_id(false);
+			
+			
+			//  hang on to the new session id
+			/*$sid = session_id();
+			
+			//  close the old and new sessions
+			session_write_close();
+			
+			//  re-open the new session
+			session_id($sid);
+			session_start();*/
+
 			if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID) {
 				$log = new CMS_log();
 				$log->logMiscAction(CMS_log::LOG_ACTION_LOGIN, $user, 'Permanent cookie: '.($permanent_cookie ? 'Yes' : 'No').', IP: '.@$_SERVER['REMOTE_ADDR'].', UA: '.@$_SERVER['HTTP_USER_AGENT']);
@@ -438,12 +450,12 @@ class CMS_context extends CMS_grandFather
 			";
 			if (CHECK_REMOTE_IP_MASK) {
 				//Check for a range in IPv4 or for the exact address in IPv6
-				if (filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-					$a_ip_seq = @explode(".", $_SERVER['REMOTE_ADDR']);
+				if (filter_var(@$_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+					$a_ip_seq = @explode(".", @$_SERVER['REMOTE_ADDR']);
 					$sql .= " and remote_addr_ses like '".SensitiveIO::sanitizeSQLString($a_ip_seq[0].".".$a_ip_seq[1].".")."%'
 					";
 				} else {
-					$sql .= " and remote_addr_ses = '".SensitiveIO::sanitizeSQLString($_SERVER['REMOTE_ADDR'])."'
+					$sql .= " and remote_addr_ses = '".SensitiveIO::sanitizeSQLString(@$_SERVER['REMOTE_ADDR'])."'
 					";
 				}
 			}
@@ -487,7 +499,7 @@ class CMS_context extends CMS_grandFather
 		}
 		
 		//clean locks not corresponding to a session, unless they are labeled "PERMANENT" except if its a frontend user (APPLICATION_ENFORCES_ACCESS_CONTROL)
-		if (!(APPLICATION_ENFORCES_ACCESS_CONTROL && APPLICATION_USER_TYPE=='frontend')) {
+		if (APPLICATION_USER_TYPE == 'admin') {
 			$sql = "
 				select 
 					id_lok
@@ -544,12 +556,12 @@ class CMS_context extends CMS_grandFather
 			";
 			if (CHECK_REMOTE_IP_MASK) {
 				//Check for a range in IPv4 or for the exact address in IPv6
-				if (filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-					$a_ip_seq = @explode(".", $_SERVER['REMOTE_ADDR']);
+				if (filter_var(@$_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+					$a_ip_seq = @explode(".", @$_SERVER['REMOTE_ADDR']);
 					$sql .= "and remote_addr_ses like '".SensitiveIO::sanitizeSQLString($a_ip_seq[0].".".$a_ip_seq[1].".")."%'
 					";
 				} else {
-					$sql .= "and remote_addr_ses = '".SensitiveIO::sanitizeSQLString($_SERVER['REMOTE_ADDR'])."'
+					$sql .= "and remote_addr_ses = '".SensitiveIO::sanitizeSQLString(@$_SERVER['REMOTE_ADDR'])."'
 					";
 				}
 			}
@@ -559,7 +571,7 @@ class CMS_context extends CMS_grandFather
 				if (!$user->hasError()) {
 			 		if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID) {
 						$log = new CMS_log();
-						$log->logMiscAction(CMS_log::LOG_ACTION_AUTO_LOGIN, $user, 'IP: '.$_SERVER['REMOTE_ADDR'].', UA: '.@$_SERVER['HTTP_USER_AGENT']);
+						$log->logMiscAction(CMS_log::LOG_ACTION_AUTO_LOGIN, $user, 'IP: '.@$_SERVER['REMOTE_ADDR'].', UA: '.@$_SERVER['HTTP_USER_AGENT']);
 					}
 					$this->_startSession($user, true);
 					return true;
@@ -716,7 +728,7 @@ class CMS_context extends CMS_grandFather
 		
 		//Get Ext locales
 		if ($languageCode != 'en') { //english is defined as default language so we should not add it again
-			$extLocaleFile = PATH_MAIN_FS.'/ext/source/locale/ext-lang-'.$languageCode.'.js';
+			$extLocaleFile = PATH_MAIN_FS.'/ext/src/locale/ext-lang-'.$languageCode.'.js';
 			if (file_exists($extLocaleFile)) {
 				$fileContent = file_get_contents($extLocaleFile);
 				//remove BOM if any
@@ -843,6 +855,39 @@ class CMS_context extends CMS_grandFather
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	  * Get current context hash (usually used for cache)
+	  *
+	  * @param array $datas, additionnal datas to use for cache
+	  * @return string : the current context cache
+	  * @access public
+	  * @static
+	  */
+	function getContextHash($datas = array()) {
+		global $cms_user;
+		$aContextRef = array();
+		//external datas
+		$aContextRef['datas'] = $datas;
+		//user if any
+		if (is_object($cms_user)) {
+			$aContextRef['user'] = $cms_user;
+		}
+		//get vars
+		$aContextRef['get'] = $_GET;
+		//remove specific Automne vars
+		if (isset($aContextRef['get']['_dc'])) {
+			unset($aContextRef['get']['_dc']);
+		}
+		if (isset($aContextRef['get']['context'])) {
+			unset($aContextRef['get']['context']);
+		}
+		//post vars
+		$aContextRef['post'] = $_POST;
+		$return = md5(serialize($aContextRef));
+		
+		return $return;
 	}
 }
 ?>

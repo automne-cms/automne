@@ -684,6 +684,9 @@ class CMS_poly_object_catalog
 				}
 			}
 		}
+		
+		//Clear polymod cache
+		CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $objectDef->getValue('module')));
 		return true;
 	}
 	
@@ -860,6 +863,47 @@ class CMS_poly_object_catalog
 			return $results;
 		}
 		return CMS_poly_object_catalog::getAllObjects($primaryResourceType, $public, array('items' => $results), true);
+	}
+	
+	/**
+	  * Return a list of all fields for a given module which uses external references such as users or pages
+	  * Used to track cache reference usage
+	  *
+	  * @param string $codename the module codename to get plugins
+	  * @return array(int refID => string ref type)
+	  * @access public
+	  */
+	function getFieldsReferencesUsage($codename = false) {
+		static $moduleReferences;
+		if (!$codename) {
+			$codename = 'all';
+		}
+		if (!isset($moduleReferences[$codename])) {
+			$sql = "select
+						id_mof, type_mof
+					from
+						mod_object_definition,
+						mod_object_field
+					where ";
+			if ($codename != 'all') {
+				$sql .= " module_mod='".sensitiveIO::sanitizeSQLString($codename)."' and ";
+			}
+			$sql .= "
+						object_id_mof = id_mod
+						and type_mof = 'CMS_object_usergroup' or type_mof = 'CMS_object_page' 
+			";
+			$q = new CMS_query($sql);
+			if ($q->getNumRows()) {
+				while($r = $q->getArray()) {
+					if ($r['type_mof'] == 'CMS_object_page') {
+						$moduleReferences[$codename][$r['id_mof']]['module'][] = MOD_STANDARD_CODENAME;
+					} elseif ($r['type_mof'] == 'CMS_object_usergroup') {
+						$moduleReferences[$codename][$r['id_mof']]['resource'][] = 'users';
+					}
+				}
+			}
+		}
+		return $moduleReferences[$codename];
 	}
 }
 ?>

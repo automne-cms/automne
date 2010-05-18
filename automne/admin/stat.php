@@ -58,6 +58,15 @@ $time = sprintf('%.5f', $stats[$statName]['stat_time_end'] - $stats[$statName]['
 $rapport = sprintf('%.2f', ((100 * $stats[$statName]['stat_total_time'])/$time));
 
 $content = '
+<a name="top"></a>
+<strong>
+<a href="#sql-resume" class="admin">[SQL Resume]</a> | 
+<a href="#files" class="admin">[PHP Files]</a> | 
+<a href="#memory" class="admin">[Memory Usage]</a> | 
+<a href="#sql" class="admin">[SQL Detail]</a>
+</strong>
+<br />
+<a name="resume"></a>
 <h3>Stat Resume:</h3>
 <br />
 Loaded in ' . $time . ' seconds<br />
@@ -66,9 +75,11 @@ SQL requests : ' . sprintf('%.5f', $stats[$statName]['stat_total_time']) . ' sec
 % SQL/PHP time : '. $rapport .' %<br />
 Memory Peak : '. $stats[$statName]['stat_memory_peak'] .'Mo
 <br /><br />
+<a name="sql-resume"></a>
 <h3>SQL Resume:</h3>
+<a href="#top" class="admin" style="float:right;padding:10px;">[TOP]</a>
 <br />
-<form action="'.$_SERVER["SCRIPT_NAME"].'" method="post">
+<form action="'.$_SERVER["SCRIPT_NAME"].'?stat='.$statName.'" method="post">
 <strong>HighLight times upper than :</strong><br />
 <input class="admin_input_text" type="text" size="10" name="SQL_TIME_MARK" value="'.$SQL_TIME_MARK.'" />&nbsp;<input class="admin_input_submit" type="submit" name="Change" value="Change" />
 </form>';
@@ -224,32 +235,38 @@ if ($unknown) {
 	}
 }
 $content .= '</table><br />
+<a name="files"></a>
 <h3>PHP Files Detail:</h3>
+<a href="#top" class="admin" style="float:right;padding:10px;">[TOP]</a>
 <br />';
 foreach ($files_loaded as $file) {
 	$content .= str_replace(PATH_REALROOT_FS, '', $file).'<br />';
 }
 $content .= '<br />
+<a name="memory"></a>
 <h3>Memory Usage Evolution (file : current / max):</h3>
+<a href="#top" class="admin" style="float:right;padding:10px;">[TOP]</a>
 Memory is measured after the inclusion of a file<br />
 <br />';
 foreach ($memoryUsages as $memoryUsage) {
 	$content .= str_replace(PATH_REALROOT_FS, '', $memoryUsage['file']).' : '.round(($memoryUsage['memory']/1048576),3).'Mo / '.round(($memoryUsage['peak']/1048576),3).'Mo<br />';
 }
 $content .= '<br />
+<a name="sql"></a>
 <h3>SQL Detail:</h3>
+<a href="#top" class="admin" style="float:right;padding:10px;">[TOP]</a>
 <br />
 ';
 $count='0';
 foreach ($sql_table as $sql_request) {
 	$count++;
 	if ($sql_request["time"] >= $SQL_TIME_MARK) {
-		$content .=  $count.' : <font color="red">Loaded in <b>' . $sql_request["time"] . '</b> ('.io::htmlspecialchars($sql_request["sql"]).')</font><br /><br />';
+		$content .=  $count.' : <strong style="color:red;">'.io::htmlspecialchars($sql_request["sql"]).'</strong><br />Loaded in ' . $sql_request["time"] . ' From '.$sql_request["from"].'<br /><br />';
 	} else {
-		$content .=  $count.' : Loaded in ' . $sql_request["time"] . ' ('.io::htmlspecialchars($sql_request["sql"]).')<br /><br />';
+		$content .=  $count.' : <strong>'.io::htmlspecialchars($sql_request["sql"]).'</strong><br />Loaded in ' . $sql_request["time"] . ' From '.$sql_request["from"].'<br /><br />';
 	}
 }
-
+$content .=  '<a href="#top" class="admin" style="float:right;padding:10px;">[TOP]</a>';
 $dialog->setContent($content);
 $dialog->show();
 ?>

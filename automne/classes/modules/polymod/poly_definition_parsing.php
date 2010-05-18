@@ -9,7 +9,7 @@
 // | LICENSE-GPL, and is available through the world-wide-web at		  |
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
-// | Author: S?stien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// | Author: Sebastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
 // $Id: poly_definition_parsing.php,v 1.18 2010/03/08 16:43:30 sebastien Exp $
@@ -86,6 +86,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			'atm-object-link'		=> '_linkObject',
 			'atm-object-unlink'		=> '_unlinkObject',
 			'atm-form-callback'		=> '_formCallback',
+			'atm-cache-reference'	=> '_cacheReference',
 		);
 	
 	/**
@@ -136,6 +137,13 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access private
 	  */
 	protected $_headCallBack;
+	
+	/**
+	  * All used elements in rows. Used to reference cached elements
+	  * @var array
+	  * @access private
+	  */
+	protected $_elements;
 	
 	/**
 	  * Constructor.
@@ -202,7 +210,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		//
 		//Create all pre-execution variables with parameters values
 		//
-		$return = '';
+		$headers = $return = '';
 		if (is_object($this->_parser)) {
 			//init exported vars
 			$languageObject = $blockAttributes = $pageID = $pluginSelection = $polyobjectsDefinitions = '';
@@ -210,6 +218,9 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			if (!$this->_parameters['module']) {
 				$this->raiseError("Missing valid module codename in parameters.");
 			} else {
+				//set module as cached element
+				$this->_elements['module'][] = $this->_parameters['module'];
+				//prefetch module objects
 				$polyObjects = CMS_poly_object_catalog::getObjectsForModule($this->_parameters['module']);
 				if (is_array($polyObjects) && $polyObjects) {
 					foreach ($polyObjects as $polyObject) {
@@ -251,7 +262,12 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				//else if it exists during execution, use it or force public status
 				$public = '$parameters[\'public\'] = (isset($parameters[\'public\'])) ? $parameters[\'public\'] : true;'."\n";
 			}
-			$return = 
+			
+			$headers = $footers = '';
+			
+			$footers .= '$content .= \'<!--{elements:\'.base64_encode(serialize('.var_export($this->_elements, true).')).\'}-->\';'."\n";
+			
+			$headers = 
 			'$content = "";'."\n".
 			'$replace = "";'."\n".
 			'if (!isset($objectDefinitions) || !is_array($objectDefinitions)) $objectDefinitions = array();'."\n".
@@ -272,24 +288,31 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 					if (sensitiveIO::isPositiveInteger($this->_parameters['pageID']) && $this->_parameters['module'] && $this->_parameters['language']) {
 						//add language to callBack infos
 						$this->_headCallBack['language'] = $this->_parameters['language'];
-						$this->_headCallBack['headcode'] = $return;
+						$this->_headCallBack['headcode'] = $headers;
+						$this->_headCallBack['footcode'] = $footers;
 						CMS_module::moduleUsage($this->_parameters['pageID'], $this->_parameters['module'], $this->_headCallBack);
 					} else {
 						$this->raiseError('Missing valid pageID or module codename or language code in parameters to use header callback.');
 						return false;
 					}
 				}
+				
 				$return = 
 				'<?php'."\n".
 				'/*Generated on '.date('r').' by '.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION." */\n".
-				'if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, \'CMS_profile_user\') && $cms_user->hasModuleClearance(\''.$this->_parameters['module'].'\', CLEARANCE_MODULE_VIEW))){'."\n".
-				    $return."\n".
-				    $this->_definition."\n".
-				    'echo CMS_polymod_definition_parsing::replaceVars($content, $replace);'."\n".
+				'if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, \'CMS_profile_user\') && $cms_user->hasModuleClearance(\''.$this->_parameters['module'].'\', CLEARANCE_MODULE_VIEW))){'."\n";
+					
+					$return .= $headers."\n".
+								$this->_definition."\n".
+				   				'$content = CMS_polymod_definition_parsing::replaceVars($content, $replace);'."\n".
+								$footers."\n".
+								'echo $content;'."\n".
+								'unset($content);';
+					
+				$return .= 
 				'}'."\n".
 				'?>';
-				$return = $this->indentPHP($return);
-				return $return;
+				return $this->indentPHP($return);
 			break;
 			case self::OUTPUT_RESULT:
 				global $cms_user, $cms_language;
@@ -299,8 +322,13 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 						//make object available
 						$object[$this->_parameters['item']->getObjectID()] = &$this->_parameters['item'];
 					}
-					$this->_definition = $return.$this->_definition."\n".
-					'return CMS_polymod_definition_parsing::replaceVars($content, $replace);';
+					
+					$this->_definition = $headers."\n".
+										$this->_definition."\n".
+						   				'$content = CMS_polymod_definition_parsing::replaceVars($content, $replace);'."\n".
+										$footers."\n".
+										'return $content;'."\n";
+					
 					$return = eval(sensitiveIO::sanitizeExecCommand($this->_definition));
 				} else {
 					if (!is_object($this->_parameters['item'])) {
@@ -374,6 +402,9 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 						return false;
 					}
 				} elseif (isset($definition[$key]['phpnode'])) {
+					//store usage of phpnode in definition
+					$this->_elements['phpnode'] = true;
+					//append php code
 					$code .= '";'."\n";
 					$code = CMS_polymod_definition_parsing::preReplaceVars($code);
 					$code .= 'eval(sensitiveIO::sanitizeExecCommand(CMS_polymod_definition_parsing::replaceVars(\''.str_replace("'","\'",str_replace("\'","\\\'",CMS_polymod_definition_parsing::preReplaceVars($definition[$key]['phpnode'], false, false, false))).'\', $replace)));'."\n";
@@ -524,6 +555,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 					"{maxpages}"    => $maxPages_'.$uniqueID.',
 					"{currentpage}" => ($search_'.$tag['attributes']['search'].'->getAttribute(\'page\')+1),
 					"{maxresults}"  => $maxResults_'.$uniqueID.',
+					"{altclass}"    => (($count_'.$uniqueID.'+1) % 2) ? "CMS_odd" : "CMS_even",
 				);
 				'.$this->_computeTags($tag['childrens']).'
 				$count_'.$uniqueID.'++;
@@ -894,7 +926,8 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 					"{firstloop}" 	=> (!$count_'.$uniqueID.') ? 1 : 0,
 					"{lastloop}" 	=> ($count_'.$uniqueID.' == $maxloops_'.$uniqueID.' - 1) ? 1 : 0,
 					"{loopcount}" 	=> ($count_'.$uniqueID.'+1),
-					"{maxloops}" 	=> $maxloops_'.$uniqueID.'
+					"{maxloops}" 	=> $maxloops_'.$uniqueID.',
+					"{altloopclass}"=> (($count_'.$uniqueID.'+1) % 2) ? "CMS_odd" : "CMS_even",
 				);
 				'.$this->_computeTags($tag['childrens']).'
 				$count_'.$uniqueID.'++;
@@ -1182,6 +1215,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		'.$this->_computeTags($tag['childrens']).'
 		//AJAX TAG END '.$uniqueID.'
 		';
+		$strict = isset($tag['attributes']["strict"]) && ($tag['attributes']["what"] == 'true' || $tag['attributes']["what"] == true || $tag['attributes']["what"] == 1) ? true : false;
 		//Ajax code
 		$ajaxCode = '
 		$xmlCondition = CMS_polymod_definition_parsing::replaceVars("'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']["what"], false, false, array('CMS_polymod_definition_parsing', 'encloseWithPrepareVar')).'", $replace);
@@ -1189,12 +1223,9 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			$func = create_function("","return (".$xmlCondition.");");
 			if ($func()) {
 				'.$return.'
-				//output XML response
-				$view = CMS_view::getInstance();
-				$view->setDisplayMode(CMS_view::SHOW_RAW);
-				$view->setContentTag(\'data\');
-				$view->setContent(CMS_polymod_definition_parsing::replaceVars($content, $replace));
-				$view->show();
+				//set view format
+				$cms_view->setDisplayMode('.($strict ? 'CMS_view::SHOW_XML' : 'CMS_view::SHOW_RAW').');
+				$content = CMS_polymod_definition_parsing::replaceVars($content, $replace);
 			}
 		}';
 		//do some cleaning on code and add reference to it into header callback
@@ -1382,7 +1413,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * Compute an atm-form-callback tag
 	  *
 	  * @param array $tag : the reference atm-form-callback tag to compute
-	  * @return string the PHP / HTML content computed
+	  * @return void
 	  * @access private
 	  */
 	protected function _formCallback(&$tag) {
@@ -1399,6 +1430,29 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			//add reference to this form to header callback
 			$this->_headCallBack['formsCallback'][$tag['attributes']['form']]['form'] = $this->indentPHP($this->_cleanComputedDefinition($formCallback));
 		}
+	}
+	
+	/**
+	  * Compute an atm-cache-reference tag
+	  *
+	  * @param array $tag : the reference atm-cache-reference tag to compute
+	  * @return void
+	  * @access private
+	  */
+	protected function _cacheReference($tag) {
+		$codenames = CMS_modulesCatalog::getAllCodenames();
+		//check tags requirements
+		if (!$this->checkTagRequirements($tag, array(
+				'element' => '('.implode($codenames, '|').'|users)',
+			))) {
+			return;
+		}
+		if (in_array($tag['attributes']['element'], $codenames)) {
+			$this->_elements['module'][] = $tag['attributes']['element'];
+		} else {
+			$this->_elements['resource'][] = $tag['attributes']['element'];
+		}
+		return '';
 	}
 	
 	/**
@@ -1550,10 +1604,32 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			$replace["#^\{plugin:selection\}$#U"]= '$parameters[\'selection\']';
 			
 			$matchesValues = preg_replace(array_keys($replace), $replace, $matches);
-			
+			if (isset($this->_parameters['module'])) {
+				$externalReferences = CMS_poly_object_catalog::getFieldsReferencesUsage($this->_parameters['module']);
+			} else {
+				$externalReferences = CMS_poly_object_catalog::getFieldsReferencesUsage();
+			}
 			//create vars conversion table
 			$replace = array();
 			foreach ($matches as $key => $match) {
+				//record external references for cache reference
+				if ($externalReferences) {
+					foreach ($externalReferences as $id => $type) {
+						if (strpos($match , '[\'fields\']['.$id.']') !== false || strpos($match , '[\\\'fields\\\']['.$id.']') !== false) {
+							//CMS_grandFather::log(print_r($this->_elements, true));
+							$this->_elements = array_merge_recursive($type, (array) $this->_elements);
+							//CMS_grandFather::log(print_r($this->_elements, true));
+						}
+					}
+				}
+				//record used pages for cache reference
+				if (strpos($match, '{page:') !== false) {
+					$this->_elements['module'][] = MOD_STANDARD_CODENAME;
+				}
+				//record used users for cache reference
+				if (strpos($match, '{user:') !== false) {
+					$this->_elements['resource'][] = 'users';
+				}
 				if ($match != $matchesValues[$key]) {
 					$matchValue = $matchesValues[$key];
 				} else {
@@ -1579,6 +1655,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 					$replace[$match] = '';
 				}
 			}
+			
 			//return matched vars if needed
 			if ($returnMatchedVarsArray) {
 				return $replace;

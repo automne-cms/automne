@@ -455,6 +455,11 @@ $pageTopPanel = sensitiveIO::sanitizeJSString('<div id="pagePropTopPanel">
 
 $allowExternalRedirection = ALLOW_EXTERNAL_PAGE_REDIRECTION ? 'true' : 'false';
 
+//Hack to allow template selection if page does not have a valid template
+if (!$pageTplId) {
+	$pageTplId = '-';
+}
+
 $jscontent .= <<<END
 	//create center panel
 	var center = new Ext.TabPanel({
@@ -463,6 +468,7 @@ $jscontent .= <<<END
 		region:				'center',
 		plain:				true,
         enableTabScroll:	true,
+		plugins:			[ new Ext.ux.TabScrollerMenu() ],
 		defaults:			{
 			autoScroll: true
 		},
@@ -493,6 +499,7 @@ $jscontent .= <<<END
 					labelAlign:		'right',
 					defaultType:	'textfield',
 					labelWidth:		120,
+					buttonAlign:	'center',
 					defaults: {
 						xtype:			'textfield',
 						anchor:			'97%',
@@ -525,7 +532,7 @@ $jscontent .= <<<END
 						store:			new Automne.JsonStore({
 							url: 			'page-templates-datas.php',
 							baseParams:		{
-								template: 		{$pageTplId},
+								template: 		'{$pageTplId}',
 								page:			$pageId
 							},
 							root: 			'results',
@@ -642,6 +649,7 @@ $jscontent .= <<<END
 					collapsed:		true,
 					labelAlign:		'right',
 					labelWidth:		145,
+					buttonAlign:	'center',
 					defaults: {
 						xtype:			'textfield',
 						anchor:			'97%',
@@ -713,6 +721,7 @@ $jscontent .= <<<END
 					defaultType:	'textfield',
 					collapsed:		true,
 					labelAlign:		'right',
+					buttonAlign:	'center',
 					defaults: {
 						xtype:			'textfield',
 						anchor:			'97%',
@@ -767,6 +776,7 @@ $jscontent .= <<<END
 					collapsed:		true,
 					labelAlign:		'right',
 					labelWidth:		120,
+					buttonAlign:	'center',
 					defaults: {
 						xtype:			'textfield',
 						anchor:			'97%',

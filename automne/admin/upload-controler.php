@@ -68,7 +68,7 @@ if (!isset($_FILES["Filedata"]) || !is_uploaded_file($_FILES["Filedata"]["tmp_na
 	$view->show();
 }
 //move uploaded file (and rename it if needed)
-$originalFilename = $_FILES["Filedata"]["name"];
+$originalFilename = io::sanitizeAsciiString($_FILES["Filedata"]["name"]);
 if (io::strlen($originalFilename) > 255) {
 	$originalFilename = sensitiveIO::ellipsis($originalFilename, 255, '-');
 }

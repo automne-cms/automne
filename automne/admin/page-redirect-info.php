@@ -23,7 +23,8 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
+//This page must be accessible by all users to avoid infinite loop if a website home page is redirected to an external website
+require_once(dirname(__FILE__).'/../../cms_rc_frontend.php');
 
 define("MESSAGE_PAGE_REDIRECT", 320);
 define("MESSAGE_PAGE_PAGE", 1303);
@@ -50,7 +51,7 @@ if (isset($page) && !$page->hasError()) {
 		} else {
 			$label = $redirectlink->getExternalLink();
 			$redirectlink->setTarget('_blank');
-			$redirect = $redirectlink->getHTML($label, MOD_STANDARD_CODENAME, RESOURCE_DATA_LOCATION_EDITED);
+			$redirect = $redirectlink->getHTML(io::ellipsis($label, '80'), MOD_STANDARD_CODENAME, RESOURCE_DATA_LOCATION_EDITED);
 		}
 	} else {
 		$label = $cms_language->getMessage(MESSAGE_PAGE_PAGE).' "'.$page->getTitle().'" ('.$page->getID().')';

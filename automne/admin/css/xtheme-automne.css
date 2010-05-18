@@ -328,6 +328,9 @@
 .x-toolbar .x-btn-text-icon .x-btn-menu-arrow-wrap .x-btn-mc button {
     background-image:				url(../automne/admin/img/toolbar/btn-arrow.gif);
 }
+.x-toolbar-more-icon {
+    background-image: url(/automne/admin/img/toolbar/more.gif) !important;
+}
 /*
 .x-toolbar .x-btn-ml{
 	background-image:				url(../automne/admin/img/toolbar/tb-btn-sprite.gif);
@@ -1606,5 +1609,5 @@ td.x-date-mp-month a:hover,td.x-date-mp-year a:hover {
 	border:							1px dotted #6AA503 !important;
 }
 .x-list-selected {
-	background-color:				#EEFAE0;
+	background-color:				transparent;
 }

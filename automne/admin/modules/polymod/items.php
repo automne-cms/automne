@@ -63,6 +63,7 @@ define("MESSAGE_PAGE_FIELD_PUBLISHED", 553);
 define("MESSAGE_PAGE_FIELD_UNPUBLISHED", 554);
 define("MESSAGE_PAGE_FIELD_VALIDATED", 555);
 define("MESSAGE_PAGE_FIELD_VALIDATION_PENDING", 556);
+define("MESSAGE_PAGE_HELP_MULTIPLE", 560);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -182,6 +183,8 @@ if ($keywordsSearch) {
 					if (!isNaN(parseInt(field.getValue()))) {
 						field.clearInvalid();
 						field.fireEvent('valid', field);
+					} else if (!field.getValue()) {
+						field.clearInvalid();
 					}
 				}, 
 				options:		{buffer:300}
@@ -415,6 +418,13 @@ if (file_exists($filename)) {
 	},";
 }
 
+//help for multiple selection
+$searchPanel .= "{
+	xtype:			'panel',
+	border:			false,
+	html:			'<div style=\"color:grey;padding-top:15px;font-size:x-small;\">{$cms_language->getJSMessage(MESSAGE_PAGE_HELP_MULTIPLE, false, MOD_POLYMOD_CODENAME)}</div>'
+},";
+
 //remove last comma from search panel items
 $searchPanel = io::substr($searchPanel, 0, -1);
 
@@ -609,30 +619,141 @@ $jscontent = <<<END
 				}
 			}}
 		},
-		tbar:[{
-			id:			'{$winId}editItem',
-			iconCls:	'atm-pic-modify',
-			xtype:		'button',
-			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_MODIFY)}',
-			handler:	function(button) {
-				var selectLen = selectedObjects.length;
-				for (var i = 0; i < selectLen; i++) {
-					var objectId = selectedObjects[i];
-					var windowId = 'module{$codename}EditWindow'+objectId;
+		tbar: new Ext.Toolbar({
+            id: 			'{$winId}toolbar',
+            enableOverflow: true,
+            items: [{
+				id:			'{$winId}editItem',
+				iconCls:	'atm-pic-modify',
+				xtype:		'button',
+				text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_MODIFY)}',
+				handler:	function(button) {
+					var selectLen = selectedObjects.length;
+					for (var i = 0; i < selectLen; i++) {
+						var objectId = selectedObjects[i];
+						var windowId = 'module{$codename}EditWindow'+objectId;
+						if (objectsWindows[windowId]) {
+							Ext.WindowMgr.bringToFront(objectsWindows[windowId]);
+						} else {
+							//create window element
+							objectsWindows[windowId] = new Automne.Window({
+								id:				windowId,
+								objectId:		objectId,
+								autoLoad:		{
+									url:			'{$editURL}',
+									params:			{
+										winId:			windowId,
+										module:			'{$codename}',
+										type:			'{$objectId}',
+										item:			objectId
+									},
+									nocache:		true,
+									scope:			this
+								},
+								modal:			false,
+								father:			fatherWindow,
+								width:			750,
+								height:			580,
+								animateTarget:	button,
+								listeners:{'close':function(window){
+									//unlock and refresh object panel in list
+									refresh([window.objectId], {unlock:true});
+									//delete window from list
+									delete objectsWindows[window.id];
+								}}
+							});
+							//display window
+							objectsWindows[windowId].show(button.getEl());
+						}
+					}
+				},
+				scope:		this,
+				disabled:	true
+			},{
+				id:			'{$winId}deleteItem',
+				iconCls:	'atm-pic-deletion',
+				xtype:		'button',
+				text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_DELETE)}',
+				handler:	function(button) {
+					refresh(selectedObjects, {del:true});
+				},
+				scope:		resultsPanel,
+				disabled:	true
+			},{
+				id:			'{$winId}undeleteItem',
+				iconCls:	'atm-pic-undelete',
+				xtype:		'button',
+				text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_UNDELETE)}',
+				handler:	function(button) {
+					refresh(selectedObjects, {undelete:true});
+				},
+				scope:		resultsPanel,
+				hidden:		true
+			},{
+				id:			'{$winId}unlockItem',
+				iconCls:	'atm-pic-unlock',
+				xtype:		'button',
+				text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_UNLOCK)}',
+				handler:	function(button) {
+					refresh(selectedObjects, {unlock:true});
+				},
+				scope:		resultsPanel,
+				hidden:		true
+			},{
+				id:			'{$winId}previzItem',
+				iconCls:	'atm-pic-preview',
+				xtype:		'button',
+				text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_PREVIZ)}',
+				handler:	function(button) {
+					var selectLen = selectedObjects.length;
+					for (var i = 0; i < selectLen; i++) {
+						var objectId = selectedObjects[i];
+						var windowId = 'module{$codename}PrevizWindow'+objectId;
+						if (objectsWindows[windowId]) {
+							Ext.WindowMgr.bringToFront(objectsWindows[windowId]);
+						} else {
+							//create window element
+							objectsWindows[windowId] = new Automne.frameWindow({
+								id:				windowId,
+								objectId:		objectId,
+								frameURL:		store.getById(objectId).data.previz,
+								modal:			false,
+								father:			fatherWindow,
+								allowFrameNav:	true,
+								width:			750,
+								height:			580,
+								animateTarget:	button,
+								listeners:{'close':function(window){
+									//delete window from list
+									delete objectsWindows[window.id];
+								}}
+							});
+							//display window
+							objectsWindows[windowId].show(button.getEl());
+						}
+					}
+				},
+				scope:		resultsPanel,
+				hidden:		true
+			}, '->', {
+				id:			'{$winId}createItem',
+				iconCls:	'atm-pic-add',
+				xtype:		'button',
+				text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_NEW)}',
+				handler:	function(button) {
+					var windowId = 'module{$codename}EditWindow';
 					if (objectsWindows[windowId]) {
 						Ext.WindowMgr.bringToFront(objectsWindows[windowId]);
 					} else {
 						//create window element
 						objectsWindows[windowId] = new Automne.Window({
 							id:				windowId,
-							objectId:		objectId,
 							autoLoad:		{
 								url:			'{$editURL}',
 								params:			{
 									winId:			windowId,
 									module:			'{$codename}',
-									type:			'{$objectId}',
-									item:			objectId
+									type:			'{$objectId}'
 								},
 								nocache:		true,
 								scope:			this
@@ -643,129 +764,22 @@ $jscontent = <<<END
 							height:			580,
 							animateTarget:	button,
 							listeners:{'close':function(window){
-								//unlock and refresh object panel in list
-								refresh([window.objectId], {unlock:true});
-								//delete window from list
 								delete objectsWindows[window.id];
+								//refresh search list
+								moduleObjectWindow.search();
+								//enable button to allow creation of a other items
+								Ext.getCmp('{$winId}createItem').enable();
 							}}
 						});
 						//display window
 						objectsWindows[windowId].show(button.getEl());
+						//disable button to avoid creation of a second item
+						button.disable();
 					}
-				}
-			},
-			scope:		this,
-			disabled:	true
-		},{
-			id:			'{$winId}deleteItem',
-			iconCls:	'atm-pic-deletion',
-			xtype:		'button',
-			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_DELETE)}',
-			handler:	function(button) {
-				refresh(selectedObjects, {del:true});
-			},
-			scope:		resultsPanel,
-			disabled:	true
-		},{
-			id:			'{$winId}undeleteItem',
-			iconCls:	'atm-pic-undelete',
-			xtype:		'button',
-			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_UNDELETE)}',
-			handler:	function(button) {
-				refresh(selectedObjects, {undelete:true});
-			},
-			scope:		resultsPanel,
-			hidden:		true
-		},{
-			id:			'{$winId}unlockItem',
-			iconCls:	'atm-pic-unlock',
-			xtype:		'button',
-			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_UNLOCK)}',
-			handler:	function(button) {
-				refresh(selectedObjects, {unlock:true});
-			},
-			scope:		resultsPanel,
-			hidden:		true
-		},{
-			id:			'{$winId}previzItem',
-			iconCls:	'atm-pic-preview',
-			xtype:		'button',
-			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_PREVIZ)}',
-			handler:	function(button) {
-				var selectLen = selectedObjects.length;
-				for (var i = 0; i < selectLen; i++) {
-					var objectId = selectedObjects[i];
-					var windowId = 'module{$codename}PrevizWindow'+objectId;
-					if (objectsWindows[windowId]) {
-						Ext.WindowMgr.bringToFront(objectsWindows[windowId]);
-					} else {
-						//create window element
-						objectsWindows[windowId] = new Automne.frameWindow({
-							id:				windowId,
-							objectId:		objectId,
-							frameURL:		store.getById(objectId).data.previz,
-							modal:			false,
-							father:			fatherWindow,
-							allowFrameNav:	true,
-							width:			750,
-							height:			580,
-							animateTarget:	button,
-							listeners:{'close':function(window){
-								//delete window from list
-								delete objectsWindows[window.id];
-							}}
-						});
-						//display window
-						objectsWindows[windowId].show(button.getEl());
-					}
-				}
-			},
-			scope:		resultsPanel,
-			hidden:		true
-		}, '->', {
-			id:			'{$winId}createItem',
-			iconCls:	'atm-pic-add',
-			xtype:		'button',
-			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_NEW)}',
-			handler:	function(button) {
-				var windowId = 'module{$codename}EditWindow';
-				if (objectsWindows[windowId]) {
-					Ext.WindowMgr.bringToFront(objectsWindows[windowId]);
-				} else {
-					//create window element
-					objectsWindows[windowId] = new Automne.Window({
-						id:				windowId,
-						autoLoad:		{
-							url:			'{$editURL}',
-							params:			{
-								winId:			windowId,
-								module:			'{$codename}',
-								type:			'{$objectId}'
-							},
-							nocache:		true,
-							scope:			this
-						},
-						modal:			false,
-						father:			fatherWindow,
-						width:			750,
-						height:			580,
-						animateTarget:	button,
-						listeners:{'close':function(window){
-							delete objectsWindows[window.id];
-							//refresh search list
-							moduleObjectWindow.search();
-							//enable button to allow creation of a other items
-							Ext.getCmp('{$winId}createItem').enable();
-						}}
-					});
-					//display window
-					objectsWindows[windowId].show(button.getEl());
-					//disable button to avoid creation of a second item
-					button.disable();
-				}
-			},
-			scope:		resultsPanel
-		}]
+				},
+				scope:		resultsPanel
+			}]
+		})
 	});
 	moduleObjectWindow.add(searchPanel);
 	moduleObjectWindow.add(resultsPanel);
@@ -859,7 +873,6 @@ $jscontent = <<<END
 			Ext.getCmp('{$winId}previzItem').hide();
 			Ext.getCmp('{$winId}unlockItem').hide();
 			Ext.getCmp('{$winId}undeleteItem').hide();
-			moduleObjectWindow.syncSize();
 		} else { //enable / disable buttons allowed by selection
 			qtips['edit'].setDisabled(!hasEdit);
 			qtips['delete'].setDisabled(!hasDelete);
@@ -872,8 +885,11 @@ $jscontent = <<<END
 			Ext.getCmp('{$winId}previzItem').setVisible(hasPreviz);
 			Ext.getCmp('{$winId}unlockItem').setVisible(hasUnlock);
 			Ext.getCmp('{$winId}undeleteItem').setVisible(hasUndelete);
-			moduleObjectWindow.syncSize();
 		}
+		if (Ext.getCmp('{$winId}toolbar')) {
+			Ext.getCmp('{$winId}toolbar').syncSize();
+		}
+		moduleObjectWindow.syncSize();
 	}, this);
 	//highlight node update after div update
 	store.on('update', function(store, record, operation, node){

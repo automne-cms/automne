@@ -58,7 +58,7 @@ class CMS_moduleValidation extends CMS_module
 	  * @return void
 	  * @access public
 	  */
-	function CMS_moduleValidation($codename)
+	function __construct($codename)
 	{
 		//Initialize object.
 		parent::__construct($codename);

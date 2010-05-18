@@ -153,7 +153,7 @@ class CMS_linxDisplay extends CMS_grandFather
 				$replace['id="{{isParent}}"']		= (is_array($lineage) && in_array($parsedPage->getID(), $lineage)) ? 'id="CMS_parent"' : "";
 			}
 			$html = str_replace(array_keys($replace), $replace, $this->_htmlTemplate);
-			if (APPLICATION_ENFORCES_ACCESS_CONTROL && $public && !(preg_match("#(page_previsualization.php|page_content.php)#i", $_SERVER["SCRIPT_NAME"]))) {
+			if (APPLICATION_ENFORCES_ACCESS_CONTROL && $public) {
 				$html=$this->_addSlashAroundPHPContent($html);
 				//pr($html);
 				$replace = array(
@@ -292,8 +292,7 @@ class CMS_linxDisplay extends CMS_grandFather
 						}
 					}
 					//add APPLICATION_ENFORCES_ACCESS_CONTROL php access checking
-					if (APPLICATION_ENFORCES_ACCESS_CONTROL && $public && !(preg_match("#(page_previsualization.php|page_content.php)#i", $_SERVER["SCRIPT_NAME"]))) {
-						//cause bug in recursion 
+					if (APPLICATION_ENFORCES_ACCESS_CONTROL && $public) {
 						$pagehtml = $this->_addSlashAroundPHPContent($pagehtml);
 						$replace = array(
 							"<?php" => "';",

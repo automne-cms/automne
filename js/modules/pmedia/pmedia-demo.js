@@ -4,7 +4,7 @@ $(document).ready(function(){
 			return false;
 		}
 		$.ajax({
-			type: 		"POST",
+			type: 		"GET",
 			url: 		pageURL,
 			data: 		'out=xml&cat=' + $('#cat').val() + '&keyword=' + $('#keyword').val(),
 			success: 	displaySearch
@@ -16,7 +16,7 @@ $(document).ready(function(){
 		if (href) {
 			e.preventDefault();
 			$.ajax({
-				type: 		"POST",
+				type: 		"GET",
 				url: 		href,
 				data: 		'out=xml',
 				success: 	displaySearch

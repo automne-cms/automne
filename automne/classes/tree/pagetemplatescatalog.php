@@ -214,6 +214,8 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 					groupsStack_pt
 				from
 					pageTemplates
+				where 
+					private_pt=0
 			';
 			$q = new CMS_query($sql);
 			while ($data = $q->getArray()) {

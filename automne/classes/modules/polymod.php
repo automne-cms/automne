@@ -176,12 +176,20 @@ class CMS_polymod extends CMS_modulePolymodValidation
 								$parameters['selection'] = io::decodeEntities($hasSelection ? $matches[1] : $tag->getInnerContent());
 								//$parameters['selection'] = io::decodeEntities($tag->getInnerContent());
 							}
-
 							$tagContent =
 							'<?php $parameters = '.var_export($parameters, true).';'."\n".
 							io::substr($definition,5);
 							//save in global var the page ID who need this module so we can add the header code later.
 							CMS_module::moduleUsage($treatedObject->getID(), $this->_codename, array('block' => true));
+							//Cache management
+							if ($parameters['public']) {
+								//create definition hash
+								$cacheHash = md5(serialize(array(
+									'definition' => $tagContent, 
+									'parameters' => $parameters,
+								)));
+								$tagContent = CMS_cache::wrapCode($cacheHash, $tagContent);
+							}
 						}
 						return $tagContent;
 					break;
@@ -217,6 +225,8 @@ class CMS_polymod extends CMS_modulePolymodValidation
 								$tagContent = '';
 							}
 						}
+						//strip cache comment
+						$tagContent = preg_replace('#<!--{cache:(.*)}-->#Us', '', $tagContent);
 						//encode all ampersand without reencode already encoded ampersand
 						$tagContent = sensitiveIO::reencodeAmpersand($tagContent);
 						return $tagContent;
@@ -309,19 +319,43 @@ class CMS_polymod extends CMS_modulePolymodValidation
 					}
 					//add ajax header if needed
 					if (isset($usage['ajax']) && is_array($usage['ajax']) && isset($usage['headcode'])) {
-						$modulesCode[$this->_codename] .= '<?php if(isset($_REQUEST[\'out\']) && $_REQUEST[\'out\'] == \'xml\') {'."\n";
+						$modulesCode[$this->_codename] .= '<?php if(isset($_REQUEST[\'out\']) && $_REQUEST[\'out\'] == \'xml\') {'."\n".
+						'$cms_view = CMS_view::getInstance();'."\n".
+						'//set default display mode for this page'."\n".
+						'$cms_view->setDisplayMode(CMS_view::SHOW_RAW);'."\n".
+						'$cms_view->setContentTag(\'data\');'."\n";
 						foreach ($usage['ajax'] as $key => $ajaxCode) {
 							$head = (is_array($usage['headcode'])) ? $usage['headcode'][$key] : $usage['headcode'];
-							$modulesCode[$this->_codename] .= "\n".$head."\n".$ajaxCode."\n";
+							$foot = (is_array($usage['footcode'])) ? $usage['footcode'][$key] : $usage['footcode'];
+							$code = "\n".$head."\n".$ajaxCode."\n".$foot."\n";
+							
+							//Cache management
+							$hash = md5(serialize(array(
+								'definition' => $code,
+							)));
+							
+							$code = 
+							'$cache_'.$hash.' = new CMS_cache(\''.$hash.'\', \'polymod\', \'auto\', true);'."\n".
+							'if ($cache_'.$hash.'->exist()):'."\n".
+							'	//Get content from cache'."\n".
+							'	$cache_'.$hash.'_content = $cache_'.$hash.'->load();'."\n".
+							'else:'."\n".
+							'	$cache_'.$hash.'->start();'."\n".
+								$code."\n".
+							'	echo $content;'."\n".
+							'	$cache_'.$hash.'_content = $cache_'.$hash.'->endSave();'."\n".
+							'endif;'."\n".
+							'unset($cache_'.$hash.');'."\n".
+							'$content = $cache_'.$hash.'_content;'."\n".
+							'unset($cache_'.$hash.'_content);'."\n";
+							
+							$modulesCode[$this->_codename] .= $code;
 						}
-						$modulesCode[$this->_codename] .= '
-						//output empty XML response
-						$view = CMS_view::getInstance();
-						//set default display mode for this page
-						$view->setDisplayMode(CMS_view::SHOW_RAW);
-						$view->setContentTag(\'data\');
-						$view->setContent(\'\');
-						$view->show();'."\n".'} ?>';
+						$modulesCode[$this->_codename] .= 
+						'$cms_view->setContent($content);'."\n".
+						'//output empty XML response'."\n".
+						'unset($content);'."\n".
+						'$cms_view->show();'."\n".'} ?>';
 					}
 				}
 				return $modulesCode;
@@ -365,7 +399,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 								$modulesCode[$this->_codename] .= $treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_SEARCH_TAGS_EXPLANATION,array(implode(', ',CMS_object_search::getStaticSearchConditionTypes()), implode(', ',CMS_object_search::getStaticOrderConditionTypes())),MOD_POLYMOD_CODENAME);
 							break;
 							case 'working':
-								$modulesCode[$this->_codename] .= $treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_WORKING_TAGS_EXPLANATION,false,MOD_POLYMOD_CODENAME);
+								$modulesCode[$this->_codename] .= $treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_WORKING_TAGS_EXPLANATION,array(implode(', ', CMS_modulesCatalog::getAllCodenames())),MOD_POLYMOD_CODENAME);
 							break;
 							case 'vars':
 								$modulesCode[$this->_codename] .= $treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_BLOCK_GENRAL_VARS_EXPLANATION,array($treatmentParameters["language"]->getDateFormatMask(),$treatmentParameters["language"]->getDateFormatMask(),$treatmentParameters["language"]->getDateFormatMask()),MOD_POLYMOD_CODENAME);

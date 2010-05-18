@@ -262,35 +262,6 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 			compiled_definition_mord='".SensitiveIO::sanitizeSQLString($this->_objectValues["compiledDefinition"])."',
 			last_compilation_mord='".SensitiveIO::sanitizeSQLString($this->_objectValues["lastCompilation"]->getDBValue())."'
 		";
-		/*
-		$sql_fields = "
-			object_id_mord = :object,
-			label_id_mord = :label,
-			description_id_mord = :description,
-			link_mord = :link,
-			author_mord = :author,
-			copyright_mord = :copyright,
-			categories_mord = :categories,
-			ttl_mord = :ttl,
-			email_mord = :email,
-			definition_mord = :definition,
-			compiled_definition_mord = :compiled,
-			last_compilation_mord = :last_compilation
-		";
-		$parameters = array(
-			':object' 		=> $this->_objectValues["objectID"],
-			':label' 		=> $this->_objectValues["labelID"],
-			':description' 	=> $this->_objectValues["descriptionID"],
-			':link' 		=> $this->_objectValues["link"],
-			':author' 		=> $this->_objectValues["author"],
-			':copyright' 	=> $this->_objectValues["copyright"],
-			':categories' 	=> $this->_objectValues["categories"],
-			':ttl' 			=> $this->_objectValues["ttl"],
-			':email' 		=> $this->_objectValues["email"],
-			':definition' 	=> $this->_objectValues["definition"],
-			':compiled' 	=> $this->_objectValues["compiledDefinition"],
-			':last_compilation' => $this->_objectValues["lastCompilation"]->getDBValue(),
-		);*/
 		if ($this->_ID) {
 			$sql = "
 				update
@@ -308,13 +279,16 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 					".$sql_fields;
 		}
 		$q = new CMS_query($sql);
-		//$q->executePreparedQuery($sql, $parameters);
 		if ($q->hasError()) {
 			$this->raiseError("Can't save object");
 			return false;
 		} elseif (!$this->_ID) {
 			$this->_ID = $q->getLastInsertedID();
 		}
+		
+		//Clear polymod cache
+		CMS_cache::clearTypeCacheByMetas('polymod', array('module' => CMS_poly_object_catalog::getModuleCodenameForObjectType($this->getValue('objectID'))));
+		
 		//unset all SESSIONS values
 		unset($_SESSION["polyModule"]);
 		return true;
@@ -350,6 +324,11 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 				$description = new CMS_object_i18nm($this->getValue("labelID"));
 				$description->destroy();
 			}
+			//Clear polymod cache
+			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => CMS_poly_object_catalog::getModuleCodenameForObjectType($this->getValue('objectID'))));
+			
+			//unset all SESSIONS values
+			unset($_SESSION["polyModule"]);
 		}
 		unset($this);
 		return true;

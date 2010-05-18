@@ -12,7 +12,6 @@ Ext.ux.LiveDataPanel = Ext.extend(Ext.Panel, {
 		var dvConfig = Ext.applyIf({
 			itemId: 'dv',
 			xtype: 'dataview',
-			autoScroll: true,
 			width: this.width - offset,
 			tpl: this.tpl,
 			scripts: this.scripts,

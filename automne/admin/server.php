@@ -60,6 +60,11 @@ define("MESSAGE_PAGE_UPDATE_REPORT",1618);
 define("MESSAGE_PAGE_ABOUT_AUTOMNE", 644);
 define("MESSAGE_PAGE_RESET_CACHE", 1619);
 define("MESSAGE_PAGE_RESET_CACHE_DESC", 1620);
+define("MESSAGE_PAGE_RESET_CACHE_BUTTON", 1626);
+define("MESSAGE_PAGE_RESET_POLYMOD_CACHE_BUTTON", 1627);
+define("MESSAGE_PAGE_RESET_POLYMOD_CACHE", 1628);
+define("MESSAGE_PAGE_RESET_POLYMOD_CACHE_DESC", 1629);
+define("MESSAGE_PAGE_CACHE", 1630);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -256,16 +261,20 @@ $filescontent = '
 	<div id="launchFilesCheck"></div><br />
 	<div id="filesCheckProgress"></div><br />
 	<div id="filesCheckDetail"></div>
-	<br />
 	<h2>'.$cms_language->getMessage(MESSAGE_PAGE_FOR_USERS).'</h2>
 	'.$cms_language->getMessage(MESSAGE_PAGE_FOR_USERS_DESC).'<br /><br />
 	<div id="launchHtaccessCheck"></div><br />
 	<div id="htaccessCheckProgress"></div><br />
 	<div id="htaccessCheckDetail"></div>
+<h1>'.$cms_language->getMessage(MESSAGE_PAGE_CACHE).'</h1>
 	<h2>'.$cms_language->getMessage(MESSAGE_PAGE_RESET_CACHE).'</h2>
 	'.$cms_language->getMessage(MESSAGE_PAGE_RESET_CACHE_DESC).'
 	<br /><br />
-	<div id="cacheReset"></div>
+	<div id="cacheReset"></div><br />
+	<h2>'.$cms_language->getMessage(MESSAGE_PAGE_RESET_POLYMOD_CACHE).'</h2>
+	'.$cms_language->getMessage(MESSAGE_PAGE_RESET_POLYMOD_CACHE_DESC).'
+	<br /><br />
+	<div id="cachePolymodReset"></div>
 ';
 $filescontent = sensitiveIO::sanitizeJSString($filescontent);
 
@@ -377,13 +386,30 @@ $jscontent = <<<END
     });
 	var cacheReset = new Ext.Button({
 		id:				'cacheReset',
-		text:			'Reset du cache',
+		text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_RESET_CACHE_BUTTON)}',
 		listeners:		{'click':function(){
 			cacheReset.disable();
 	        Automne.server.call({
 				url:				'server-check.php',
 				params: 			{
-					action:				'cache-reset'
+					action:				'browser-cache-reset'
+				},
+				fcnCallback: 		function(response, options, content) {
+					cacheReset.enable();
+				},
+				callBackScope:		this
+			});
+		},scope:this}
+    });
+	var cachePolymodReset = new Ext.Button({
+		id:				'cachePolymodReset',
+		text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_RESET_POLYMOD_CACHE_BUTTON)}',
+		listeners:		{'click':function(){
+			cacheReset.disable();
+	        Automne.server.call({
+				url:				'server-check.php',
+				params: 			{
+					action:				'polymod-cache-reset'
 				},
 				fcnCallback: 		function(response, options, content) {
 					cacheReset.enable();
@@ -474,6 +500,7 @@ $jscontent = <<<END
 		autoHeight:		true,
 		labelWidth:		135,
 		labelAlign:		'right',
+		buttonAlign:	'center',
 		defaults: {
 			anchor:			'97%'
 		},
@@ -590,6 +617,7 @@ $jscontent = <<<END
 		region:				'center',
 		border:				false,
 		enableTabScroll:	true,
+		plugins:			[ new Ext.ux.TabScrollerMenu() ],
 		listeners: {
 			'beforetabchange' : function(tabPanel, newTab, currentTab ) {
 				if (newTab.beforeActivate) {
@@ -650,6 +678,9 @@ $jscontent = <<<END
 				}
 				if (!cacheReset.rendered) {
 					cacheReset.render('cacheReset');
+				}
+				if (!cachePolymodReset.rendered) {
+					cachePolymodReset.render('cachePolymodReset');
 				}
 			}, scope:this}
 		},{

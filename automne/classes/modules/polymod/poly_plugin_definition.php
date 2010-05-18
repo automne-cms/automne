@@ -235,23 +235,6 @@ class CMS_poly_plugin_definitions extends CMS_grandFather
 			definition_mowd='".SensitiveIO::sanitizeSQLString($this->_objectValues["definition"])."',
 			compiled_definition_mowd='".SensitiveIO::sanitizeSQLString($this->_objectValues["compiledDefinition"])."'
 		";
-		/*
-		$sql_fields = "
-			object_id_mowd = :object,
-			label_id_mowd = :label,
-			description_id_mowd = :desc,
-			query_mowd = :query,
-			definition_mowd = :definition,
-			compiled_definition_mowd = :compiled
-		";
-		$parameters = array(
-			':object' 				=> $this->_objectValues["objectID"],
-			':label' 				=> $this->_objectValues["labelID"],
-			':desc' 				=> $this->_objectValues["descriptionID"],
-			':query' 				=> serialize($this->_objectValues["query"]),
-			':definition' 			=> $this->_objectValues["definition"],
-			':compiled' 			=> $this->_objectValues["compiledDefinition"],
-		);*/
 		if ($this->_ID) {
 			$sql = "
 				update
@@ -269,13 +252,16 @@ class CMS_poly_plugin_definitions extends CMS_grandFather
 					".$sql_fields;
 		}
 		$q = new CMS_query($sql);
-		//$q->executePreparedQuery($sql, $parameters);
 		if ($q->hasError()) {
 			$this->raiseError("Can't save object");
 			return false;
 		} elseif (!$this->_ID) {
 			$this->_ID = $q->getLastInsertedID();
 		}
+		
+		//Clear polymod cache
+		CMS_cache::clearTypeCacheByMetas('polymod', array('module' => CMS_poly_object_catalog::getModuleCodenameForObjectType($this->getValue('objectID'))));
+		
 		//unset all SESSIONS values
 		unset($_SESSION["polyModule"]);
 		return true;
@@ -311,10 +297,13 @@ class CMS_poly_plugin_definitions extends CMS_grandFather
 				$description = new CMS_object_i18nm($this->getValue("labelID"));
 				$description->destroy();
 			}
+			//Clear polymod cache
+			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => CMS_poly_object_catalog::getModuleCodenameForObjectType($this->getValue('objectID'))));
+			//unset all SESSIONS values
+			unset($_SESSION["polyModule"]);
 		}
 		unset($this);
 		return true;
 	}
-	
 }
 ?>

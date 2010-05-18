@@ -26,7 +26,7 @@
 require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
 
 //Controler vars
-$action = sensitiveIO::request('action', array('check-files', 'check-htaccess', 'cache-reset'));
+$action = sensitiveIO::request('action', array('check-files', 'check-htaccess', 'browser-cache-reset', 'polymod-cache-reset'));
 
 define("MESSAGE_PAGE_NO_SERVER_RIGHTS",748);
 define("MESSAGE_PAGE_MORE_THAN_THOUSAND",763);
@@ -122,13 +122,12 @@ switch ($action) {
 		}
 		$content .= '</ul>';
 	break;
-	case 'cache-reset':
+	case 'browser-cache-reset':
+		//update SUBVERSION file
 		$file = new CMS_file(PATH_MAIN_FS."/SUBVERSION");
 		if ($file->exists()) {
 			$date = (int) $file->getContent();
-			pr($date);
 			$date++;
-			pr($date);
 			$file->setContent((string) $date);
 			if ($file->writeToPersistence()) {
 				$cms_message = $cms_language->getMessage(MESSAGE_OPERATION_DONE);
@@ -136,13 +135,24 @@ switch ($action) {
 				$cms_message = $cms_language->getMessage(MESSAGE_UPDATE_ERROR);
 			}
 		} else {
-			//at end of any patch process, update Automne subversion to force reload of JS and CSS cache from client
 			if (@file_put_contents(PATH_MAIN_FS."/SUBVERSION" , time()) !== false) {
 				CMS_file::chmodFile(FILES_CHMOD, PATH_MAIN_FS."/SUBVERSION");
 				$cms_message = $cms_language->getMessage(MESSAGE_OPERATION_DONE);
 			} else {
 				$cms_message = $cms_language->getMessage(MESSAGE_CREATION_ERROR);
 			}
+		}
+		//remove JS and CSS cache
+		if (!CMS_cache::clearTypeCache('text/javascript') || !CMS_cache::clearTypeCache('text/css')) {
+			$cms_message = $cms_language->getMessage(MESSAGE_CREATION_ERROR);
+		}
+	break;
+	case 'polymod-cache-reset':
+		//remove polymod cache
+		if (CMS_cache::clearTypeCache('polymod')) {
+			$cms_message = $cms_language->getMessage(MESSAGE_OPERATION_DONE);
+		} else {
+			$cms_message = $cms_language->getMessage(MESSAGE_CREATION_ERROR);
 		}
 	break;
 }

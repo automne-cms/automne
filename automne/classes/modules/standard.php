@@ -893,6 +893,9 @@ class CMS_module_standard extends CMS_module
 		$publication_before = $page->getPublication();
 		$location_before = $page->getLocation();
 		
+		//Clear polymod cache
+		CMS_cache::clearTypeCacheByMetas('polymod', array('module' => MOD_STANDARD_CODENAME));
+		
 		//Get the linked pages (it will be too late after parent processing if pages move outside USERSPACE
 		
 		//first add the page to regen
@@ -1318,7 +1321,7 @@ class CMS_module_standard extends CMS_module
 		//clean all files older than 30 days in cache directory
 		$month = time() - 2592000; //30 days
 		try{
-			foreach ( new DirectoryIterator(PATH_CACHE_FS) as $file) {
+			foreach ( new RecursiveIteratorIterator(new RecursiveDirectoryIterator(PATH_CACHE_FS), RecursiveIteratorIterator::SELF_FIRST) as $file) {
 				if ($file->isFile() && $file->getFilename() != ".htaccess" && $file->getMTime() < $month) {
 					@unlink($file->getPathname());
 				}
@@ -1326,15 +1329,20 @@ class CMS_module_standard extends CMS_module
 		} catch(Exception $e) {}
 		//clean tmp dir
 		try{
-			foreach ( new DirectoryIterator(PATH_TMP_FS) as $file) {
+			//files first
+			foreach ( new RecursiveIteratorIterator(new RecursiveDirectoryIterator(PATH_TMP_FS), RecursiveIteratorIterator::SELF_FIRST) as $file) {
 				if ($file->isFile()) @unlink($file->getPathname());
+			}
+			//then directories
+			foreach ( new RecursiveIteratorIterator(new RecursiveDirectoryIterator(PATH_TMP_FS), RecursiveIteratorIterator::SELF_FIRST) as $file) {
+				if ($file->isDir()) @rmdir($file->getPathname());
 			}
 		} catch(Exception $e) {}
 		//rotate error log file
 		try{
 			$source = PATH_MAIN_FS.'/'.CMS_grandFather::ERROR_LOG;
 			$dest = PATH_LOGS_FS.'/'.CMS_grandFather::ERROR_LOG.'-'.date('Y-m-d').'.gz';
-			if (is_file($source) && CMS_file::gzipfile($source, $dest, 3)) {
+			if (is_file($source) && !is_file($dest) && CMS_file::gzipfile($source, $dest, 3)) {
 				//erase error log file
 				@unlink($source);
 			}
@@ -1479,6 +1487,10 @@ class CMS_module_standard extends CMS_module
 				switch ($visualizationMode) {
 					case PAGE_VISUALMODE_PRINT :
 						$return = array (
+							"atm-admin" 		=> array("selfClosed" => false, "parameters" => array()),
+							"atm-noadmin" 		=> array("selfClosed" => false, "parameters" => array()),
+							"atm-edit" 			=> array("selfClosed" => false, "parameters" => array()),
+							"atm-noedit" 		=> array("selfClosed" => false, "parameters" => array()),
 							"atm-title" 		=> array("selfClosed" => true, "parameters" => array()),
 							"atm-main-url" 		=> array("selfClosed" => true, "parameters" => array()),
 							"atm-constant" 		=> array("selfClosed" => true, "parameters" => array()),
@@ -1489,6 +1501,10 @@ class CMS_module_standard extends CMS_module
 					break;
 					default:
 						$return = array (
+							"atm-admin" 		=> array("selfClosed" => false, "parameters" => array()),
+							"atm-noadmin" 		=> array("selfClosed" => false, "parameters" => array()),
+							"atm-edit" 			=> array("selfClosed" => false, "parameters" => array()),
+							"atm-noedit" 		=> array("selfClosed" => false, "parameters" => array()),
 							"atm-title" 		=> array("selfClosed" => true, "parameters" => array()),
 							"atm-main-url" 		=> array("selfClosed" => true, "parameters" => array()),
 							"atm-print-link" 	=> array("selfClosed" => false, "parameters" => array()),
@@ -1649,6 +1665,26 @@ class CMS_module_standard extends CMS_module
 							$linx = $tag->getRepresentationInstance($linx_args);
 							return $linx->getOutput();
 						}
+					break;
+					case 'atm-edit':
+						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM || $visualizationMode == PAGE_VISUALMODE_FORM) {
+							return $tag->getInnerContent();
+						} else {
+							return '';
+						}
+					break;
+					case 'atm-noedit':
+						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM || $visualizationMode == PAGE_VISUALMODE_FORM) {
+							return '';
+						} else {
+							return $tag->getInnerContent();
+						}
+					break;
+					case 'atm-admin':
+						return '<?php if (strpos($_SERVER["REQUEST_URI"], \'automne/admin\') !== false  || (isset($_REQUEST[\'atm-context\']) && $_REQUEST[\'atm-context\'] == \'adminframe\')): ?>'.$tag->getInnerContent().'<?php endif; ?>';
+					break;
+					case 'atm-noadmin':
+						return '<?php if (!(strpos($_SERVER["REQUEST_URI"], \'automne/admin\') !== false  || (isset($_REQUEST[\'atm-context\']) && $_REQUEST[\'atm-context\'] == \'adminframe\'))): ?>'.$tag->getInnerContent().'<?php endif; ?>';
 					break;
 					case "atm-title":
 						return SensitiveIO::sanitizeHTMLString($treatedObject->getTitle($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC));
@@ -1914,10 +1950,10 @@ class CMS_module_standard extends CMS_module
 					}
 				} elseif ($tag->getName() == 'a' && $treatmentParameters['module'] != MOD_STANDARD_CODENAME) {
 					if ($tag->getAttribute('noselection') == 'true') {
-						$replacement = '<span id="'.MOD_STANDARD_CODENAME.'-\\2-true"><?php if (CMS_tree::pageExistsForUser(\\2)) { echo \'<a\\1\'.CMS_tree::getPageValue(\\2, \'url\').\'\\3</a>\';} else { echo '.var_export($tag->getInnerContent(),true).';} ?></span>';
+						$replacement = '<span id="'.MOD_STANDARD_CODENAME.'-\\2-true"><?php if (CMS_tree::pageExistsForUser(\\2)) { echo \'<a\\1\'.CMS_tree::getPageValue(\\2, \'url\').\'\\3</a>\';} else { echo '.var_export($tag->getInnerContent(),true).';} ?><!--{elements:'.base64_encode(serialize(array('module' => array(0 => MOD_STANDARD_CODENAME)))).'}--></span>';
 						$treatedLink = preg_replace($pattern,$replacement,str_replace(array('noselection="true"',"'"),array('',"\'"),$tag->getContent()));
 					} else {
-						$replacement = '<span id="'.MOD_STANDARD_CODENAME.'-\\2-false"><?php if (CMS_tree::pageExistsForUser(\\2)) { echo \'<a\\1\'.CMS_tree::getPageValue(\\2, \'url\').\'\\3</a>\';} ?></span>';
+						$replacement = '<span id="'.MOD_STANDARD_CODENAME.'-\\2-false"><?php if (CMS_tree::pageExistsForUser(\\2)) { echo \'<a\\1\'.CMS_tree::getPageValue(\\2, \'url\').\'\\3</a>\';} ?><!--{elements:'.base64_encode(serialize(array('module' => array(0 => MOD_STANDARD_CODENAME)))).'}--></span>';
 						$treatedLink = preg_replace($pattern,$replacement,str_replace("'","\'",$tag->getContent()));
 					}
 				}

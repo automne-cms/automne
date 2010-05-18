@@ -59,16 +59,16 @@ if ($details) {
 			$date->setFromDBValue($runningScript["Date"]);
 			switch ($runningScript["PIDFile"]) {
 				case '0':
-					$detailsContent .= '<li class="atm-pic-question" ext:qtip="'.$cms_language->getJsMessage(MESSAGE_PAGE_SCRIPTS_IN_PROGRESS).'">'.$runningScript["Title"].' ('.$date->getLocalizedDate($cms_language->getDateFormat()." H:i:s").')</li>';
+					$detailsContent .= '<li class="atm-pic-question" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_SCRIPTS_IN_PROGRESS).'">'.$runningScript["Title"].' ('.$date->getLocalizedDate($cms_language->getDateFormat()." H:i:s").')</li>';
 				break;
 				case '1':
-					$detailsContent .= '<li class="atm-pic-ok" ext:qtip="'.$cms_language->getJsMessage(MESSAGE_PAGE_SCRIPTS_IN_PROGRESS_PID_OK).'">'.$runningScript["Title"].' ('.$date->getLocalizedDate($cms_language->getDateFormat()." H:i:s").')</li>';
+					$detailsContent .= '<li class="atm-pic-ok" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_SCRIPTS_IN_PROGRESS_PID_OK).'">'.$runningScript["Title"].' ('.$date->getLocalizedDate($cms_language->getDateFormat()." H:i:s").')</li>';
 				break;
 				case '2':
-					$detailsContent .= '<li class="atm-pic-cancel" ext:qtip="'.$cms_language->getJsMessage(MESSAGE_PAGE_NO_SCRIPTS_PID_OK).'">'.$runningScript["Title"].' ('.$date->getLocalizedDate($cms_language->getDateFormat()." H:i:s").')</li>';
+					$detailsContent .= '<li class="atm-pic-cancel" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_NO_SCRIPTS_PID_OK).'">'.$runningScript["Title"].' ('.$date->getLocalizedDate($cms_language->getDateFormat()." H:i:s").')</li>';
 				break;
 				case '3':
-					$detailsContent .= '<li class="atm-pic-cancel" ext:qtip="'.$cms_language->getJsMessage(MESSAGE_PAGE_SCRIPTS_END_PID_OK).'">'.$runningScript["Title"].' ('.$date->getLocalizedDate($cms_language->getDateFormat()." H:i:s").')</li>';
+					$detailsContent .= '<li class="atm-pic-cancel" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_SCRIPTS_END_PID_OK).'">'.$runningScript["Title"].' ('.$date->getLocalizedDate($cms_language->getDateFormat()." H:i:s").')</li>';
 				break;
 			}
 		}

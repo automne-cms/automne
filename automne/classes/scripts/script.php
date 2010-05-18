@@ -225,7 +225,7 @@ class automne_script extends backgroundScript
 							if ($this->_debug) {
 								$this->raiseError(processManager::MASTER_SCRIPT_NAME." : Script : ".$aScript["PID"]." NOT OK !");
 							}
-							$this->raiseError(processManager::MASTER_SCRIPT_NAME.' : Error on task : '.$aScript["scriptID"].' ... skip it. '.print_r($aScript['scriptDatas'], true));
+							$this->raiseError(processManager::MASTER_SCRIPT_NAME.' : Error on task : '.$aScript["scriptID"].' ... skip it. Task parameters : '.print_r($aScript['scriptDatas'], true));
 							//$break = true;
 							unset($scriptsArray[$nb]);
 							

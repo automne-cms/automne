@@ -148,6 +148,26 @@ class CMS_linx extends CMS_grandFather
 		} else {
 			$this->_args = $args;
 			$this->_type = $type;
+			
+			//Hack for shorthand writing of atm-linx
+			//<atm-linx type="direct" node="pageID"> ... </atm-linx>
+			if (isset($this->_args['node']) && $this->_type == 'direct') {
+				$tag = new CMS_XMLTag('atm-linx', $this->_args);
+				$tag->setTextContent($tagContent);
+				
+				$tagContent = 
+				'<atm-linx type="direct">'.
+					'<selection>'.
+						'<start><nodespec type="node" value="'.$this->_args['node'].'" /></start>'.
+					'</selection>'.
+					'<display>'.
+						'<htmltemplate>'.$tag->getInnerContent().'</htmltemplate>'.
+					'</display>'.
+				'</atm-linx>';
+				//remove useless node argument
+				unset($this->_args['node']);
+			}
+			
 			$this->_page = $page;
 			$this->_publicTree = $publicTree;
 			$domdocument = new CMS_DOMDocument();

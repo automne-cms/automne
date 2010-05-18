@@ -374,6 +374,8 @@ class CMS_profile_usersGroup extends CMS_profile
 			$this->raiseError('Incorrect user type');
 			return false;
 		}
+		//Clear polymod cache
+		CMS_cache::clearTypeCacheByMetas('polymod', array('resource' => 'users'));
 		return true;
 	}
 	
@@ -502,6 +504,8 @@ class CMS_profile_usersGroup extends CMS_profile
 				}
 			}
 		}
+		//Clear polymod cache
+		CMS_cache::clearTypeCacheByMetas('polymod', array('resource' => 'users'));
 		return true;
 	}
 	
@@ -537,6 +541,9 @@ class CMS_profile_usersGroup extends CMS_profile
 		
 		$this->applyToUsers();
 		unset($this);
+		
+		//Clear polymod cache
+		CMS_cache::clearTypeCacheByMetas('polymod', array('resource' => 'users'));
 	}
 	
 	/**
@@ -574,50 +581,7 @@ class CMS_profile_usersGroup extends CMS_profile
 		}
 		$q = new CMS_query($sql);
 		if ($q->hasError()) {
-			// Check that LDAP dn fields exist in profileUsers tables
-			$sql = "
-				DESCRIBE profilesUsers dn_pru
-			";
-			$q = new CMS_query($sql);
-			if (!$q->getNumRows() || io::strtolower($q->getValue("Type")) != 'varchar(255)') {
-				$sqls = array();
-				$sqls[] = "
-					ALTER TABLE 
-						profilesUsers
-					ADD
-						dn_pru VARCHAR( 255 ) NOT NULL
-					AFTER
-						textEditor_pru
-				";
-				$sqls[] = "
-					ALTER TABLE
-						profilesUsers ADD INDEX ( `dn_pru` )
-				";
-				foreach ($sqls as $sql) {
-					$qa = new CMS_query($sql);
-				}
-			}
-			$sql = "
-				DESCRIBE profilesUsersGroups dn_prg
-			";
-			$q = new CMS_query($sql);
-			if (!$q->getNumRows() || io::strtolower($q->getValue("Type")) != 'varchar(255)') {
-				$sqls = array();
-				$sqls[] = "
-					ALTER TABLE
-						profilesUsersGroups
-					ADD 
-						dn_prg VARCHAR( 255 ) NOT NULL
-				";
-				$sqls[] = "
-					ALTER TABLE
-						profilesUsersGroups ADD INDEX ( `dn_prg` )
-				";
-				foreach ($sqls as $sql) {
-					$qa = new CMS_query($sql);
-				}
-			}
-			return $this->writeToPersistence();
+			return false;
 		} elseif (!$this->_groupId) {
 			$this->_groupId = $q->getLastInsertedID();
 		}
@@ -643,6 +607,9 @@ class CMS_profile_usersGroup extends CMS_profile
 					".$sql;
 			$q = new CMS_query($sql);
 		}
+		
+		//Clear polymod cache
+		CMS_cache::clearTypeCacheByMetas('polymod', array('resource' => 'users'));
 		return true;
 	}
 	

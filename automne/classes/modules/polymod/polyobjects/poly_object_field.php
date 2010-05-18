@@ -303,6 +303,9 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 		}
 		//unset field catalog in session
 		unset($_SESSION["polyModule"]["objectFields"][$this->_objectFieldValues["objectID"]]);
+		
+		//Clear polymod cache
+		CMS_cache::clearTypeCacheByMetas('polymod', array('module' => CMS_poly_object_catalog::getModuleCodenameForField($this->_fieldID)));
 		return true;
 	}
 	
@@ -376,6 +379,9 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 				$this->raiseError("Can't delete datas of table mod_object_field for field : ".$this->_fieldID);
 				return false;
 			}
+			
+			//Clear polymod cache
+			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $module));
 		}
 		//unset field catalog in session
 		unset($_SESSION["polyModule"]["objectFields"][$this->_objectFieldValues["objectID"]]);

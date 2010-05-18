@@ -432,14 +432,65 @@ class CMS_object_date extends CMS_object_common
 	  * @access public
 	  */
 	function getValue($name, $parameters = '') {
+        // @TODOV4 : Manage language into database !
+        $languages = array();
+        $languages['fr'] = array(
+            // French months
+            'January'   => 'Janvier',
+            'February'  => 'F&eacute;vrier',
+            'March'     => 'Mars',
+            'April'     => 'Avril',
+            'May'       => 'Mai',
+            'June'      => 'Juin',
+            'July'      => 'Juillet',
+            'August'    => 'Ao&ucirc;t',
+            'September' => 'Septembre',
+            'October'   => 'Octobre',
+            'November'  => 'Novembre',
+            'December'  => 'D&eacute;cembre',
+            // French days
+            'Monday'    => 'Lundi',
+            'Tuesday'   => 'Mardi',
+            'Wednesday' => 'Mercredi',
+            'Thursday'  => 'Jeudi',
+            'Friday'    => 'Vendredi',
+            'Saturday'  => 'Samedi',
+            'Sunday'    => 'Dimanche',
+            // French shorts months
+            'Jan'       => 'Jan',
+            'Feb'       => 'F&eacute;v',
+            'Mar'       => 'Mar',
+            'Apr'       => 'Avr',
+            'May'       => 'Mai',
+            'Jun'       => 'Jui',
+            'Jul'       => 'Jui',
+            'Aug'       => 'Ao&ucirc;',
+            'Sep'       => 'Sep',
+            'Oct'       => 'Oct',
+            'Nov'       => 'Nov',
+            'Dec'       => 'D&eacute;c',
+            // French shorts days
+            'Mon'       => 'Lun',
+            'Tue'       => 'Mar',
+            'Wed'       => 'Mer',
+            'Thu'       => 'Jeu',
+            'Fri'       => 'Ven',
+            'Sat'       => 'Sam',
+            'Sun'       => 'Dim',
+        );
 		switch($name) {
 			case 'formatedValue':
-				$date = new CMS_date();
+				global $cms_language;
+        		$date = new CMS_date();
 				$date->setFromDBValue($this->_subfieldValues[0]->getValue());
 				if (io::strtolower($parameters) == 'rss') {
 					$parameters = 'r';
 				}
-				return io::htmlspecialchars(date($parameters, $date->getTimeStamp()));
+                $date = date($parameters, $date->getTimeStamp());
+                if (is_object($cms_language) && isset($languages[$cms_language->getCode()])) {
+                    $date = str_replace(array_keys($languages[$cms_language->getCode()]), $languages[$cms_language->getCode()], $date);
+                }
+				return io::htmlspecialchars($date);
 			break;
 			case 'notNull':
 				$date = new CMS_date();
@@ -520,6 +571,32 @@ class CMS_object_date extends CMS_object_common
 				and (value ".$operator." '".SensitiveIO::sanitizeSQLString($value)."'".$canBeNull.$cantBeNull.")
 				$where";
 		return $sql;
+	}
+	
+	/**
+	  * set object Values
+	  *
+	  * @param array $values : the POST result values
+	  * @param string $prefixname : the prefix used for post names
+	  * @return boolean true on success, false on failure
+	  * @access public
+	  */
+	function writeToPersistence() {
+		$params = $this->getParamsValues();
+		$date = new CMS_date();
+		if ($this->_subfieldValues[0]->getValue()) {
+			$date->setFromDBValue($this->_subfieldValues[0]->getValue());
+		}
+		if ($params['updateDate'] || ($date->isNull() && ($params['setNow'] || $params['creationDate']))) {
+			$date->setNow();
+			if ($params['moveDate']) {
+				$date->moveDate($params['moveDate']);
+			}
+			if (!$this->_subfieldValues[0]->setValue($date->getDBValue())) {
+				return false;
+			}
+		}
+		return parent::writeToPersistence();
 	}
 }
 ?>

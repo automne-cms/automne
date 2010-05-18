@@ -38,7 +38,11 @@ $view->setDisplayMode(CMS_view::SHOW_JSON);
 $view->setSecure();
 
 //get current template if any (then, return compatible templates)
-$currentTpl = sensitiveIO::request('template', 'sensitiveIO::isPositiveInteger');
+//get current template if any (then, return compatible templates)
+$currentTpl = sensitiveIO::request('template');
+if (!io::isPositiveInteger($currentTpl) && $currentTpl != '-') {
+	$currentTpl = '';
+}
 //search filters
 $pageId = sensitiveIO::request('page', 'sensitiveIO::isPositiveInteger'); //used either to filter or to get templates replacement according to page website
 $keyword = sensitiveIO::request('keyword');

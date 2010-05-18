@@ -80,6 +80,7 @@ $jscontent = <<<END
         region:				'center',
 		border:				false,
 		layout:				'hbox',
+		buttonAlign:		'center',
 		layoutConfig: {
 			align : 'stretch',
 			pack  : 'start'

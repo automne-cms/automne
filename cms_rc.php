@@ -157,6 +157,14 @@ if (!defined("ENABLE_HTML_COMPRESSION")) {
 }
 
 /**
+ * Activate JS and CSS compression for Automne pages
+ * Default : true
+ */
+if (!defined('APPLICATION_JS_AND_CSS_COMPRESSION')) {
+	define('APPLICATION_JS_AND_CSS_COMPRESSION', true);
+}
+
+/**
   *	XHTML DTD used in page generation.
   *	Default : XHTML 1.0 transitionnal : "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n\t\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">"
   */
@@ -787,7 +795,6 @@ if (!defined("PATH_AUTOMNE_CHMOD_SCRIPT_FS")) {
 if (!defined("PATH_AUTOMNE_MIMETYPE_FS")) {
 	define("PATH_AUTOMNE_MIMETYPE_FS", PATH_PACKAGES_FS."/files/mime.types");
 }
-
 /**
   * Special profile users ID
   */
@@ -797,11 +804,6 @@ if (!defined("ROOT_PROFILEUSER_ID")) {
 if (!defined("ANONYMOUS_PROFILEUSER_ID")) {
 	define("ANONYMOUS_PROFILEUSER_ID", 3);
 }
-
-if (!defined("CHECK_REMOTE_IP_MASK")) {
-    define("CHECK_REMOTE_IP_MASK", true);
-}
-
 /**
   * LDAP constants
   */
@@ -867,7 +869,27 @@ if (!defined('APPLICATION_LDAP_USER_REGIONSTATE')) {
 if (!defined('FILE_UPLOAD_EXTENSIONS_DENIED')) {
 	define('FILE_UPLOAD_EXTENSIONS_DENIED', 'exe,php,pif,vbs,bat,com,scr,reg');
 }
-
+/**
+  * Check remote IP mask format ?
+  *	Default : true
+  */
+if (!defined("CHECK_REMOTE_IP_MASK")) {
+    define("CHECK_REMOTE_IP_MASK", true);
+}
+/**
+  * Does modules datas can be cached ?
+  *	Default : true
+  */
+if (!defined("CACHE_MODULES_DATAS")) {
+    define("CACHE_MODULES_DATAS", true);
+}
+/**
+  * Does modules datas can be cached ?
+  *	Default : true
+  */
+if (!defined("CACHE_MODULES_DEFAULT_LIFETIME")) {
+    define("CACHE_MODULES_DEFAULT_LIFETIME", 86400);
+}
 /**
   *	Does session token must be checked. Used to protect form actions from CSRF attacks
   *	Default : true
@@ -1117,7 +1139,6 @@ if (STATS_DEBUG) {
 				'stat_memory_table'		=> $GLOBALS["memory_table"],
 				'stat_memory_peak'		=> $memoryPeak,
 				'stat_files_loaded'		=> $GLOBALS["files_loaded"],
-				
 			);
 			$statName = 'stat-'.md5(rand());
 			$stats[$statName] = $stat;
@@ -1264,12 +1285,13 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])
   * Launch output compression if enabled
   */
 function compress_handler( $p_buffer, $p_mode ) {
-	if (ENABLE_HTML_COMPRESSION
-			 && APPLICATION_EXEC_TYPE == 'http'
-			 && !headers_sent()
-			 && 'ob_gzhandler' != ini_get('output_handler')
-			 && extension_loaded( 'zlib' )
-			 && !ini_get('zlib.output_compression')) {
+	if (ENABLE_HTML_COMPRESSION															//conf must accept HTML compression
+			 && strpos( strtolower($_SERVER['HTTP_ACCEPT_ENCODING']), 'gzip') !== false //client must handle gzip
+			 && APPLICATION_EXEC_TYPE == 'http'											//current mode must be HTTP (not CLI)
+			 && !headers_sent()															//headers must not already sent
+			 && 'ob_gzhandler' != ini_get('output_handler')								//gzip should not already defined as output handler
+			 && extension_loaded( 'zlib' )												//gzip extension must exists
+			 && !ini_get('zlib.output_compression')) {									//no output compression should already defined at PHP level
 		if (!defined('HTML_COMPRESSION_STARTED')) {
 			define('HTML_COMPRESSION_STARTED', true);
 		}
@@ -1314,10 +1336,6 @@ function start_atm_session() {
 	
 	// use more secure session ids
 	@ini_set('session.hash_function', 1);
-	
-	// some pages (e.g. stylesheet) may be cached on clients, but not in shared
-	// proxy servers
-	//session_cache_limiter('private'); //removed because this option allow cache of session pages which is not what we want.
 	
 	@session_name('AutomneSession');
 	@session_start();

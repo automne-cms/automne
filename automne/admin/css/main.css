@@ -543,13 +543,13 @@ ul.categoriesList {
 	color:				black;
 }
 /*Modules Search Results Panel*/
-.atm-results .atm-result{
+.atm-result{
 	margin:			7px 5px 10px 7px;
 	clear:			both;
 	border:			1px solid #c0c7cb;
 	cursor:			pointer;
 }
-.atm-results .atm-title{
+.atm-result .atm-title{
 	font-weight:	bold !important;
 	font-size:		13px !important;
 	margin:			0;
@@ -561,16 +561,13 @@ ul.categoriesList {
 	padding:		3px;
 	border-bottom:	1px solid #e5e8ea;
 }
-/*.atm-results .atm-title *{
-	background-color:transparent !important;
-}*/
-.atm-results .atm-title table{
+.atm-result .atm-title table{
 	width:			100%;
 }
-.atm-results .atm-title .atm-label{
+.atm-result .atm-title .atm-label{
 	width:			100%;
 }
-.atm-results .atm-label .atm-status{
+.atm-result .atm-label .atm-status{
 	vertical-align:	middle;
 }
 .atm-result {
@@ -584,29 +581,27 @@ ul.categoriesList {
 	color:			#F28300;
 	padding:		1px 8px 1px 3px;
 }
-.atm-results .atm-pubrange {
+.atm-result .atm-pubrange {
 	font-size:		11px;
 	font-weight:	normal;
 }
-.atm-results .atm-description {
+.atm-result .atm-description {
 	margin-top:		0;
 	font-size:		11px;
 	line-height:	18px;
 	zoom:			1;
 	padding:		3px 8px 3px 3px;
 	border-top:		1px solid #fff;
-	/*background-color:transparent !important;*/
-}/*
-.atm-results .atm-description * {
-	background-color:transparent !important;
-}*/
-.atm-results .atm-description .atm-text-alert {
+}
+.atm-result .atm-description .atm-text-alert {
 	float:			right;
 }
-.atm-results .x-view-over .atm-title{
+.atm-results .x-view-over .atm-title,
+.x-list-over .atm-result .atm-title{
 	background:		#dce2e5 url(../automne/admin/img/panel/atm-result-over.gif) repeat-x left bottom;
 }
-.atm-results .x-view-selected .atm-title{
+.atm-results .x-view-selected .atm-title,
+.x-list-selected .atm-result .atm-title{
 	background:		#c6e57a url(../automne/admin/img/panel/atm-result-selected.gif) repeat-x left bottom;
 }
 .atm-results .atm-inactive {
@@ -616,6 +611,16 @@ ul.categoriesList {
 }
 .atm-code {
 	font-family:	monospace,courier,sans-serif;
+}
+.MultiselectDD .atm-result{
+	margin:			2px 3px 2px 3px;
+}
+.MultiselectDD .atm-result .atm-title{
+	font-size:		11px !important;
+	padding:		2px;
+}
+.MultiselectDD .atm-drag {
+	background-position:	right top !important;
 }
 /*HELP panels*/
 .atm-help-panel .rowComment{

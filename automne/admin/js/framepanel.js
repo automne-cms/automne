@@ -479,10 +479,10 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 					var location = '';
 					var parts = this.frameURL.split('#');
 					if (parts[1]) {
-						location = parts[0] + ((parts[0].indexOf('#') === -1) ? '?' : '&') + '_dc='+ (new Date()).getTime() + ((this.editable) ? '&editId='+ this.editId : '') + '&context=adminframe';
+						location = parts[0] + ((parts[0].indexOf('#') === -1) ? '?' : '&') + '_dc='+ (new Date()).getTime() + ((this.editable) ? '&editId='+ this.editId : '') + '&atm-context=adminframe';
 						location += '#' + parts[1];
 					} else {
-						location = this.frameURL + ((this.frameURL.indexOf('?') === -1) ? '?' : '&') + '_dc='+ (new Date()).getTime() + ((this.editable) ? '&editId='+ this.editId : '') + '&context=adminframe';
+						location = this.frameURL + ((this.frameURL.indexOf('?') === -1) ? '?' : '&') + '_dc='+ (new Date()).getTime() + ((this.editable) ? '&editId='+ this.editId : '') + '&atm-context=adminframe';
 					}
 					this.frameDocument.location = location;
 				} catch (e) {

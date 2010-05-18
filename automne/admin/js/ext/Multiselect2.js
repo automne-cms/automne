@@ -163,7 +163,7 @@ Ext.ux.Multiselect2 = Ext.extend(Ext.form.Field,  {
                 '<tpl for="rows">',
                     '<dl>',
                         '<tpl for="parent.columns">',
-                        '<dt style="width:{width}%;text-align:{align};"><em unselectable="on">',
+                        '<dt style="width:{width}%;text-align:{align};" class="MultiselectDD"><em unselectable="on">',
                             '{[values.tpl.apply(parent)]}',
                         '</em></dt>',
                         '</tpl>',
@@ -450,9 +450,9 @@ Ext.extend(Ext.ux.Multiselect2.DropZone, Ext.dd.DropZone, {
     },
     
     // private
-    getDropPoint : function(e, n, dd){
-        if (n == this.ms.fs.body.dom) { return "below"; }
-        var t = Ext.lib.Dom.getY(n), b = t + n.offsetHeight;
+   getDropPoint : function(e, n, dd){
+        if (n == this.ms.fs.body.dom || !n.getHeight) { return "below"; }
+		var t = Ext.lib.Dom.getY(n), b = t + n.getHeight();
         var c = t + (b - t) / 2;
         var y = Ext.lib.Event.getPageY(e);
         if(y <= c) {
@@ -487,13 +487,16 @@ Ext.extend(Ext.ux.Multiselect2.DropZone, Ext.dd.DropZone, {
     
     // override
     onNodeOver : function(n, dd, e, data){
-        var dragElClass = this.dropNotAllowed;
+        var parent = Ext.fly(n).parent('.MultiselectDD');
+		if (parent) {
+			n = parent;
+		}
+		var dragElClass = this.dropNotAllowed;
         var pt = this.getDropPoint(e, n, dd);
         if (this.isValidDropPoint(pt, n, data)) {
             if (this.ms.appendOnly) {
                 return "x-tree-drop-ok-below";
             }
-
             // set the insert point style on the target node
             if (pt) {
                 var targetElClass;
@@ -505,8 +508,8 @@ Ext.extend(Ext.ux.Multiselect2.DropZone, Ext.dd.DropZone, {
                     targetElClass = "x-view-drag-insert-below";
                 }
                 if (this.lastInsertClass != targetElClass){
-                    Ext.fly(n).replaceClass(this.lastInsertClass, targetElClass);
-                    this.lastInsertClass = targetElClass;
+					Ext.fly(n).replaceClass(this.lastInsertClass, targetElClass);
+					this.lastInsertClass = targetElClass;
                 }
             }
         }
@@ -520,7 +523,11 @@ Ext.extend(Ext.ux.Multiselect2.DropZone, Ext.dd.DropZone, {
     
     // private
     onNodeDrop : function(n, dd, e, data){
-        if (this.ms.fireEvent("drop", this, n, dd, e, data) === false) {
+		var parent = Ext.fly(n).parent('.MultiselectDD');
+		if (parent) {
+			n = parent;
+		}
+		if (this.ms.fireEvent("drop", this, n, dd, e, data) === false) {
             return false;
         }
         var pt = this.getDropPoint(e, n, dd);
@@ -580,11 +587,20 @@ Ext.extend(Ext.ux.Multiselect2.DropZone, Ext.dd.DropZone, {
     // private
     removeDropIndicators : function(n){
         if(n){
-            Ext.fly(n).removeClass([
-                "x-view-drag-insert-above",
-                "x-view-drag-insert-left",
-                "x-view-drag-insert-right",
-                "x-view-drag-insert-below"]);
+			var parent = Ext.fly(n).parent('.MultiselectDD');
+			if (parent) {
+				parent.removeClass([
+	                "x-view-drag-insert-above",
+	                "x-view-drag-insert-left",
+	                "x-view-drag-insert-right",
+	                "x-view-drag-insert-below"]);
+			} else {
+				Ext.fly(n).removeClass([
+	                "x-view-drag-insert-above",
+	                "x-view-drag-insert-left",
+	                "x-view-drag-insert-right",
+	                "x-view-drag-insert-below"]);
+			}
             this.lastInsertClass = "_noclass";
         }
     },
