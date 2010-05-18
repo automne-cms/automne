@@ -133,6 +133,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 			<li><span class="keyword">id </span>: Identifiant de l''utilisateur auquel faire r&eacute;f&eacute;rence, peut &ecirc;tre un identifiant num&eacute;rique d''un utilisateur ou bien ''<span class="vertclair">self</span>'' pour faire r&eacute;f&eacute;rence &agrave; l''utilisateur courant (uniquement si la vérification des droits côté client est activé dans les paramètres Automne).</li>
 			<li><span class="keyword">type</span> : Correspond au type de variable attendu, parmi les suivants : <br />
 			<ul>
+				<li><span class="vertclair">id </span>: identifiant numérique de l''utilisateur,</li>
 				<li><span class="vertclair">login </span>: identifiant de l''utilisateur,</li>
 				<li><span class="vertclair">fistName </span>: prénom,</li>
 				<li><span class="vertclair">lastName </span>: nom,</li>

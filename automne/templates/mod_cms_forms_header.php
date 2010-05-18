@@ -117,6 +117,17 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 				if (isset($cms_forms_okAction[$form->getID()]) && $cms_forms_okAction[$form->getID()]) {
 					//if we have an encoded referer, use it
 					if (isset($_REQUEST['referer']) && $_REQUEST['referer'] && ($url = base64_decode($_REQUEST['referer']))) {
+						//analyse url to get page if any
+						$redirectPage = CMS_tree::analyseURL($url);
+						if ($redirectPage) {
+							//if page founded, check existence and rights
+							$pageID = $redirectPage->getID();
+							if ($redirectPage->hasError() || !CMS_tree::pagesExistsInUserSpace($pageID) || 
+									(APPLICATION_ENFORCES_ACCESS_CONTROL && (!isset($cms_user) || !$cms_user->hasPageClearance($pageID, CLEARANCE_PAGE_VIEW)))
+								) {
+								$url = PATH_FORBIDDEN_WR;
+							}
+						}
 						CMS_view::redirect($url);
 					}
 					//in case of OK for this form, do action

@@ -157,6 +157,14 @@ if (!defined("ENABLE_HTML_COMPRESSION")) {
 }
 
 /**
+ * Activate JS and CSS compression for Automne pages
+ * Default : true
+ */
+if (!defined('APPLICATION_JS_AND_CSS_COMPRESSION')) {
+	define('APPLICATION_JS_AND_CSS_COMPRESSION', true);
+}
+
+/**
   *	XHTML DTD used in page generation.
   *	Default : XHTML 1.0 transitionnal : "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n\t\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">"
   */

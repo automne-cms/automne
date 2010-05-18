@@ -103,9 +103,20 @@ class CMS_view extends CMS_grandFather
 		if ($onlyFiles) {
 			return $jsarray;
 		}
-		if ($jsarray) {
+		$inAdmin = (bool)strpos($_SERVER['SCRIPT_NAME'], substr(PATH_ADMIN_WR, 1));
+		if ($jsarray && (APPLICATION_JS_AND_CSS_COMPRESSION || $inAdmin)) {
 			$return .= '<script src="'.CMS_view::getJSManagerURL().'&amp;files='.implode(',',$jsarray).'" type="text/javascript"></script>'."\n";
 		}
+        if ($jsarray && !APPLICATION_JS_AND_CSS_COMPRESSION && !$inAdmin) {
+            if (is_array($jsarray) && count($jsarray)) {
+                foreach ($jsarray as $file) {
+                    if (trim($file) != '') {
+                        $file  = str_replace('\\', '/', $file);
+                        $return .= '<script src="' . $file . '" type="text/javascript"></script>' . "\n";
+                    }
+                }
+            }
+        }
 		if (isset($this) && isset($this->_jscontent) && $this->_jscontent) {
 			$return .= "\n".'<script type="text/javascript">'.$this->_jscontent.'</script>'."\n";
 			$this->_jscontent = '';
@@ -160,9 +171,22 @@ class CMS_view extends CMS_grandFather
 		if ($onlyFiles) {
 			return $cssarray;
 		}
-		if ($cssarray) {
+		$inAdmin = (bool)strpos($_SERVER['SCRIPT_NAME'], substr(PATH_ADMIN_WR, 1));
+		if ($cssarray && (APPLICATION_JS_AND_CSS_COMPRESSION || $inAdmin)) {
 			return '<link rel="stylesheet" type="text/css" href="'.CMS_view::getCSSManagerURL().'&amp;files='.implode(',',$cssarray).'" media="'.$media.'" />'."\n";
 		}
+        if ($cssarray && !APPLICATION_JS_AND_CSS_COMPRESSION && !$inAdmin) {
+            $ouput = '';
+            if (is_array($cssarray) && count($cssarray)) {
+                foreach ($cssarray as $file) {
+                    if (trim($file) != '') {
+                        $file  = str_replace('\\', '/', $file);
+                        $ouput .= '<link rel="stylesheet" type="text/css" href="' . $file . '" media="' . $media . '" />' . "\n";
+                    }
+                }
+            }
+            return $ouput;
+        }
 		return '';
 	}
 	

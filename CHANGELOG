@@ -13,6 +13,7 @@ V4.0.2 (in progress)
 [FEATURE] : Add labels and ids varaibles to object categories when using multi categories
 [FEATURE] : Add cache management to all polymod blocks, plugins and rss. Add parameter cache on block tag and tag atm-cache-reference to handle this.
 [FEATURE] : Add tags atm-admin, atm-noadmin, atm-edit, atm-noedit
+[FEATURE] : Add shorthand for atm-linx type direct with this syntax : <atm-linx type="direct" node="pageID"> ... html code ... </atm-linx>
 
 V4.0.1 (19/03/10)
 [BUG] : Corrected bugs : 399, 401, 286, 265, 268, 283, 284, 302, 282, 280, 296, 304 (see http://www.automne.ws/bug/)

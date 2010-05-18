@@ -357,7 +357,7 @@ class CMS_poly_definition_functions
 				$object = new CMS_poly_object_definition(($_REQUEST["object"]) ? $_REQUEST["object"]:'');
 				//instanciate item
 				$item = '';
-				if ($_REQUEST["item"] && sensitiveIO::isPositiveInteger($_REQUEST["item"])) {
+				if (isset($_REQUEST["item"]) && $_REQUEST["item"] && sensitiveIO::isPositiveInteger($_REQUEST["item"])) {
 					$search = new CMS_object_search($object,false);
 					$search->addWhereCondition('item', $_REQUEST["item"]);
 					$items = $search->search();
@@ -404,10 +404,10 @@ class CMS_poly_definition_functions
 							$dt_end = new CMS_date();
 							$dt_end->setDebug(false);
 							$dt_end->setFormat($cms_language->getDateFormat());
-							if (!$dt_set_1 = $dt_beg->setLocalizedDate($_REQUEST["pub_start"], true)) {
+							if (!$dt_set_1 = $dt_beg->setLocalizedDate(@$_REQUEST["pub_start"], true)) {
 								$polymodFormsError[$formID]['malformed'][] = 'pub_start';
 							} 
-							if (!$dt_set_2 = $dt_end->setLocalizedDate($_REQUEST["pub_end"], true)) {
+							if (!$dt_set_2 = $dt_end->setLocalizedDate(@$_REQUEST["pub_end"], true)) {
 								$polymodFormsError[$formID]['malformed'][] = 'pub_end';
 							}
 							//if $dt_beg && $dt_end, $dt_beg must be lower than $dt_end

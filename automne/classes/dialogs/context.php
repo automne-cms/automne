@@ -450,12 +450,12 @@ class CMS_context extends CMS_grandFather
 			";
 			if (CHECK_REMOTE_IP_MASK) {
 				//Check for a range in IPv4 or for the exact address in IPv6
-				if (filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-					$a_ip_seq = @explode(".", $_SERVER['REMOTE_ADDR']);
+				if (filter_var(@$_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+					$a_ip_seq = @explode(".", @$_SERVER['REMOTE_ADDR']);
 					$sql .= " and remote_addr_ses like '".SensitiveIO::sanitizeSQLString($a_ip_seq[0].".".$a_ip_seq[1].".")."%'
 					";
 				} else {
-					$sql .= " and remote_addr_ses = '".SensitiveIO::sanitizeSQLString($_SERVER['REMOTE_ADDR'])."'
+					$sql .= " and remote_addr_ses = '".SensitiveIO::sanitizeSQLString(@$_SERVER['REMOTE_ADDR'])."'
 					";
 				}
 			}
@@ -556,12 +556,12 @@ class CMS_context extends CMS_grandFather
 			";
 			if (CHECK_REMOTE_IP_MASK) {
 				//Check for a range in IPv4 or for the exact address in IPv6
-				if (filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-					$a_ip_seq = @explode(".", $_SERVER['REMOTE_ADDR']);
+				if (filter_var(@$_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+					$a_ip_seq = @explode(".", @$_SERVER['REMOTE_ADDR']);
 					$sql .= "and remote_addr_ses like '".SensitiveIO::sanitizeSQLString($a_ip_seq[0].".".$a_ip_seq[1].".")."%'
 					";
 				} else {
-					$sql .= "and remote_addr_ses = '".SensitiveIO::sanitizeSQLString($_SERVER['REMOTE_ADDR'])."'
+					$sql .= "and remote_addr_ses = '".SensitiveIO::sanitizeSQLString(@$_SERVER['REMOTE_ADDR'])."'
 					";
 				}
 			}
@@ -571,7 +571,7 @@ class CMS_context extends CMS_grandFather
 				if (!$user->hasError()) {
 			 		if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID) {
 						$log = new CMS_log();
-						$log->logMiscAction(CMS_log::LOG_ACTION_AUTO_LOGIN, $user, 'IP: '.$_SERVER['REMOTE_ADDR'].', UA: '.@$_SERVER['HTTP_USER_AGENT']);
+						$log->logMiscAction(CMS_log::LOG_ACTION_AUTO_LOGIN, $user, 'IP: '.@$_SERVER['REMOTE_ADDR'].', UA: '.@$_SERVER['HTTP_USER_AGENT']);
 					}
 					$this->_startSession($user, true);
 					return true;
