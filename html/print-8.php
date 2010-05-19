@@ -1,4 +1,4 @@
-<?php //Generated on Fri, 19 Mar 2010 15:24:32 +0100 by Automne (TM) 4.0.1
+<?php //Generated on Wed, 19 May 2010 18:19:55 +0200 by Automne (TM) 4.0.2
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	CMS_view::redirect('http://127.0.0.1/web/demo/print-8-plan-du-site.php', true, 301);

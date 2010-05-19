@@ -1,4 +1,4 @@
-<?php //Generated on Fri, 19 Mar 2010 15:24:47 +0100 by Automne (TM) 4.0.1
+<?php //Generated on Wed, 19 May 2010 18:20:10 +0200 by Automne (TM) 4.0.2
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	CMS_view::redirect('http://127.0.0.1/web/demo/print-33-nouveautes.php', true, 301);
@@ -26,10 +26,17 @@ if (!isset($cms_page_included) && !$_POST && !$_GET) {
 
 <?php /* End row [200 Texte - r44_200_Texte.xml] */   ?><?php /* Start row [200 Texte - r44_200_Texte.xml] */   ?>
 
-<div class="text"><p style="text-align: left;"><?php $parameters = array (
+<div class="text"><p style="text-align: left;"><?php $cache_ff77b5e228a7e6c35b777c7f3ec5b4b9 = new CMS_cache('ff77b5e228a7e6c35b777c7f3ec5b4b9', 'polymod', 'auto', true);
+if ($cache_ff77b5e228a7e6c35b777c7f3ec5b4b9->exist()):
+	//Get content from cache
+	$cache_ff77b5e228a7e6c35b777c7f3ec5b4b9_content = $cache_ff77b5e228a7e6c35b777c7f3ec5b4b9->load();
+else:
+	$cache_ff77b5e228a7e6c35b777c7f3ec5b4b9->start();
+	  ?>
+<?php $parameters = array (
   'itemID' => 35,
   'pageID' => '33',
-  'public' => false,
+  'public' => true,
   'selection' => '',
 );
 
@@ -228,7 +235,14 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 	//PLUGIN TAG END 2_b782ed
 	echo CMS_polymod_definition_parsing::replaceVars($content, $replace);
 }
-  ?></p></div>
+  ?>
+	<?php $cache_ff77b5e228a7e6c35b777c7f3ec5b4b9_content = $cache_ff77b5e228a7e6c35b777c7f3ec5b4b9->endSave();
+endif;
+unset($cache_ff77b5e228a7e6c35b777c7f3ec5b4b9);
+echo $cache_ff77b5e228a7e6c35b777c7f3ec5b4b9_content;
+unset($cache_ff77b5e228a7e6c35b777c7f3ec5b4b9_content);
+  ?>
+</p></div>
 
 <?php /* End row [200 Texte - r44_200_Texte.xml] */   ?><?php /* End clientspace [first] */   ?><br />
 <hr />

@@ -1,5 +1,5 @@
 <?php
-//Generated on Fri, 19 Mar 2010 15:24:38 +0100 by Automne (TM) 4.0.1
+//Generated on Wed, 19 May 2010 18:20:01 +0200 by Automne (TM) 4.0.2
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
 	CMS_view::redirect('http://127.0.0.1/web/demo/26-rangees.php', true, 301);
@@ -70,11 +70,17 @@ if (!isset($cms_page_included) && !$_POST && !$_GET) {
 					<div id="title">
 						<h1>Rangées de contenu</h1>
 					</div>
-					<atm-toc />
 					<?php /* Start clientspace [first] */  ?><?php /* Start row [210 Texte et Image Droite - r45_210_Texte__image_droite.xml] */  ?>
 	
 	
-		<div class="text"><h2>Principe de rang&eacute;es de contenu</h2> <p>Les rang&eacute;es de contenu sont les gabarits qui contiennent l&rsquo;information. <strong>Elles peuvent contenir tous types d&rsquo;informations :</strong> texte, image, flash, vid&eacute;o&hellip; Par exemple, des rang&eacute;es titres, sous-titres, textes, textes et image &agrave; droite sont certaines des rang&eacute;es par d&eacute;faut d'Automne.</p> <p>Une rang&eacute;e est pr&eacute;-format&eacute;e. Cela permet de conserver l'homog&eacute;n&eacute;it&eacute; de la pr&eacute;sentation du site Internet.</p> <h3>Il vous est possible de cr&eacute;er vos propres rang&eacute;es avec le type d&rsquo;information que vous souhaitez.</h3> <p style="text-align: center;"><?php $parameters = array (
+		<div class="text"><h2>Principe de rang&eacute;es de contenu</h2> <p>Les rang&eacute;es de contenu sont les gabarits qui contiennent l&rsquo;information. <strong>Elles peuvent contenir tous types d&rsquo;informations :</strong> texte, image, flash, vid&eacute;o&hellip; Par exemple, des rang&eacute;es titres, sous-titres, textes, textes et image &agrave; droite sont certaines des rang&eacute;es par d&eacute;faut d'Automne.</p> <p>Une rang&eacute;e est pr&eacute;-format&eacute;e. Cela permet de conserver l'homog&eacute;n&eacute;it&eacute; de la pr&eacute;sentation du site Internet.</p> <h3>Il vous est possible de cr&eacute;er vos propres rang&eacute;es avec le type d&rsquo;information que vous souhaitez.</h3> <p style="text-align: center;"><?php $cache_dbf3087b3c01268a59ade0b2acd5fd24 = new CMS_cache('dbf3087b3c01268a59ade0b2acd5fd24', 'polymod', 'auto', true);
+if ($cache_dbf3087b3c01268a59ade0b2acd5fd24->exist()):
+	//Get content from cache
+	$cache_dbf3087b3c01268a59ade0b2acd5fd24_content = $cache_dbf3087b3c01268a59ade0b2acd5fd24->load();
+else:
+	$cache_dbf3087b3c01268a59ade0b2acd5fd24->start();
+	 ?>
+<?php $parameters = array (
   'itemID' => 24,
   'pageID' => '26',
   'public' => true,
@@ -276,7 +282,21 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 	//PLUGIN TAG END 2_b782ed
 	echo CMS_polymod_definition_parsing::replaceVars($content, $replace);
 }
- ?>  <?php $parameters = array (
+ ?>
+	<?php $cache_dbf3087b3c01268a59ade0b2acd5fd24_content = $cache_dbf3087b3c01268a59ade0b2acd5fd24->endSave();
+endif;
+unset($cache_dbf3087b3c01268a59ade0b2acd5fd24);
+echo $cache_dbf3087b3c01268a59ade0b2acd5fd24_content;
+unset($cache_dbf3087b3c01268a59ade0b2acd5fd24_content);
+ ?>
+  <?php $cache_313f011994dcfcafe9dcece567843f1f = new CMS_cache('313f011994dcfcafe9dcece567843f1f', 'polymod', 'auto', true);
+if ($cache_313f011994dcfcafe9dcece567843f1f->exist()):
+	//Get content from cache
+	$cache_313f011994dcfcafe9dcece567843f1f_content = $cache_313f011994dcfcafe9dcece567843f1f->load();
+else:
+	$cache_313f011994dcfcafe9dcece567843f1f->start();
+	 ?>
+<?php $parameters = array (
   'itemID' => 34,
   'pageID' => '26',
   'public' => true,
@@ -478,7 +498,14 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 	//PLUGIN TAG END 2_b782ed
 	echo CMS_polymod_definition_parsing::replaceVars($content, $replace);
 }
- ?></p> <h3>L'organisation des rang&eacute;es dans une page est particuli&egrave;rement simple. Vous pouvez les glisser-d&eacute;poser &agrave; l'endroit ou vous le souhaitez.</h3> <p>Les zones de saisies sont clairement indiqu&eacute;es et vous pouvez modifier l'ensemble du contenu tr&egrave;s simplement &agrave; l'aide <strong>d'outils de mise en forme tr&egrave;s intuitifs :</strong> mise en forme des textes &agrave; l'aide de <strong>l'&eacute;diteur WYSIWYG,</strong> redimensionner et recadrer des images, cr&eacute;er des liens vers d'autres sites ou vers une page donn&eacute;e de votre site.</p> <p>Vous pouvez m&ecirc;me d&eacute;cider <strong>d'importer le contenu de vos modules &agrave; n'importe quel endroit de vos textes.</strong> Si le contenu du module vient &agrave; disparaitre (suppression, d&eacute;publication, ...), il disparaitra <strong>simplement et sans erreur</strong> de tous les textes ou vous y faite r&eacute;f&eacute;rence.</p></div>
+ ?>
+	<?php $cache_313f011994dcfcafe9dcece567843f1f_content = $cache_313f011994dcfcafe9dcece567843f1f->endSave();
+endif;
+unset($cache_313f011994dcfcafe9dcece567843f1f);
+echo $cache_313f011994dcfcafe9dcece567843f1f_content;
+unset($cache_313f011994dcfcafe9dcece567843f1f_content);
+ ?>
+</p> <h3>L'organisation des rang&eacute;es dans une page est particuli&egrave;rement simple. Vous pouvez les glisser-d&eacute;poser &agrave; l'endroit ou vous le souhaitez.</h3> <p>Les zones de saisies sont clairement indiqu&eacute;es et vous pouvez modifier l'ensemble du contenu tr&egrave;s simplement &agrave; l'aide <strong>d'outils de mise en forme tr&egrave;s intuitifs :</strong> mise en forme des textes &agrave; l'aide de <strong>l'&eacute;diteur WYSIWYG,</strong> redimensionner et recadrer des images, cr&eacute;er des liens vers d'autres sites ou vers une page donn&eacute;e de votre site.</p> <p>Vous pouvez m&ecirc;me d&eacute;cider <strong>d'importer le contenu de vos modules &agrave; n'importe quel endroit de vos textes.</strong> Si le contenu du module vient &agrave; disparaitre (suppression, d&eacute;publication, ...), il disparaitra <strong>simplement et sans erreur</strong> de tous les textes ou vous y faite r&eacute;f&eacute;rence.</p></div>
 	
 <?php /* End row [210 Texte et Image Droite - r45_210_Texte__image_droite.xml] */  ?><?php /* End clientspace [first] */  ?>
 					<a href="#header" id="top" title="haut de la page">Haut</a>
