@@ -283,16 +283,36 @@ class CMS_object_string extends CMS_object_common
 	function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
 		$supportedOperator = array(
 			'like',
-			'!='
+			'!=',
+			'=',
 		);
-		if ($operator && !in_array($operator, $supportedOperator)) {
-			$this->raiseError("Unknown search operator : ".$operator.", use default search instead");
-			$operator = false;
-		}
+		$supportedOperatorForArray = array(
+			'in',
+			'not in',
+		);
+		// No operator : use default search
 		if (!$operator) {
 			return parent::getFieldSearchSQL($fieldID, $value, $operator, $where, $public);
 		}
+		// Check supported operators
+		if ($operator && !in_array($operator, array_merge($supportedOperator, $supportedOperatorForArray))) {
+			$this->raiseError("Unknown search operator : ".$operator.", use default search instead");
+			$operator = false;
+		}
+		// Check operators for array value
+		if (is_array($value) && $operator && !in_array($operator, $supportedOperatorForArray)) {
+			$this->raiseError("Can't use this operator : ".$operator." with an array value, return empty sql");
+			return '';
+		}
 		$statusSuffix = ($public) ? "_public":"_edited";
+		if(is_array($value)){
+			foreach($value as $i => $val){
+				$value[$i] = "'".SensitiveIO::sanitizeSQLString($val)."'";
+			}
+			$value = '('.implode(',', $value).')';
+		} else {
+			$value = "'".SensitiveIO::sanitizeSQLString($value)."'";
+		}
 		$sql = "
 			select
 				distinct objectID
@@ -300,7 +320,7 @@ class CMS_object_string extends CMS_object_common
 				mod_subobject_string".$statusSuffix."
 			where
 				objectFieldID = '".SensitiveIO::sanitizeSQLString($fieldID)."'
-				and value ".$operator." '".SensitiveIO::sanitizeSQLString($value)."'
+				and value ".$operator." ".$value."
 				$where";
 		return $sql;
 	}

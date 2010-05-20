@@ -433,6 +433,62 @@ class CMS_object_text extends CMS_object_common
 		$labels['structure']['hasvalue'] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_HASVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		return $labels;
 	}
+	
+	/**
+	  * Get field search SQL request (used by class CMS_object_search)
+	  *
+	  * @param integer $fieldID : this field id in object (aka $this->_field->getID())
+	  * @param mixed $value : the value to search
+	  * @param string $operator : additionnal search operator
+	  * @param string $where : where clauses to add to SQL
+	  * @param boolean $public : values are public or edited ? (default is edited)
+	  * @return string : the SQL request
+	  * @access public
+	  */
+	function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
+		$supportedOperator = array(
+			'like',
+			'!=',
+			'=',
+		);
+		$supportedOperatorForArray = array(
+			'in',
+			'not in',
+		);
+		// No operator : use default search
+		if (!$operator) {
+			return parent::getFieldSearchSQL($fieldID, $value, $operator, $where, $public);
+		}
+		// Check supported operators
+		if ($operator && !in_array($operator, array_merge($supportedOperator, $supportedOperatorForArray))) {
+			$this->raiseError("Unknown search operator : ".$operator.", use default search instead");
+			$operator = false;
+		}
+		// Check operators for array value
+		if (is_array($value) && $operator && !in_array($operator, $supportedOperatorForArray)) {
+			$this->raiseError("Can't use this operator : ".$operator." with an array value, return empty sql");
+			return '';
+		}
+		$statusSuffix = ($public) ? "_public":"_edited";
+		if(is_array($value)){
+			foreach($value as $i => $val){
+				$value[$i] = "'".SensitiveIO::sanitizeSQLString($val)."'";
+			}
+			$value = '('.implode(',', $value).')';
+		} else {
+			$value = "'".SensitiveIO::sanitizeSQLString($value)."'";
+		}
+		$sql = "
+			select
+				distinct objectID
+			from
+				mod_subobject_text".$statusSuffix."
+			where
+				objectFieldID = '".SensitiveIO::sanitizeSQLString($fieldID)."'
+				and value ".$operator." ".$value."
+				$where";
+		return $sql;
+	}
 }
 
 ?>
