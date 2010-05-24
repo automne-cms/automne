@@ -14,3 +14,15 @@ if (isset($_SESSION['PMA_single_signon_only_db'])) {
 //End Added for Automne : Do not remove
 
 3- A la racine de phpMyAdmin, ajouter les fichiers .htaccess et atmAuth.php
+
+4- rename file (path too long) :
+phpMyAdmin/libraries/PHPExcel/PHPExcel/Shared/Escher/DggContainer/BstoreContainer/BSE/Blip.php
+into :
+phpMyAdmin/libraries/PHPExcel/PHPExcel/Shared/Escher/DggContainer/BstoreContainer/BSE/B.php
+and rename required files in php code also (search : BSE/Blip.php)
+
+5- rename file (path too long) :
+phpMyAdmin/libraries/PHPExcel/PHPExcel/Shared/Escher/DgContainer/SpgrContainer/SpContainer.php
+into :
+phpMyAdmin/libraries/PHPExcel/PHPExcel/Shared/Escher/DgContainer/SpgrContainer/SpCont.php
+and rename required files in php code also (search : SpgrContainer/SpContainer.php)

@@ -46,7 +46,7 @@ require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DggContainer/BstoreContaine
 require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DggContainer/BstoreContainer/BSE.php';
 
 /** PHPExcel_Shared_Escher_DggContainer_BstoreContainer_BSE_Blip */
-require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DggContainer/BstoreContainer/BSE/Blip.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DggContainer/BstoreContainer/BSE/B.php';
 
 /** PHPExcel_Shared_Escher_DgContainer */
 require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DgContainer.php';
@@ -55,7 +55,7 @@ require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DgContainer.php';
 require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DgContainer/SpgrContainer.php';
 
 /** PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer */
-require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DgContainer/SpgrContainer/SpContainer.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DgContainer/SpgrContainer/SpCont.php';
 
 /**
  * PHPExcel_Reader_Excel5_Escher
