@@ -140,7 +140,6 @@ class CMS_patch extends CMS_grandFather
 							}
 						break;
 						//check only original file existence
-						case "<":
 						case "ch":
 						case "co":
 						case "cg":
@@ -218,10 +217,6 @@ class CMS_patch extends CMS_grandFather
 											$errorsInfo[] = array('no' => 12, 'line' => $line, 'command' => $aInstallCheck);
 											unset($array[$line-1]);
 										}
-									} else {
-										$error .= "Error at line : ".$line.", file to delete ".$originalFile." does not exist<br />";
-										$errorsInfo[] = array('no' => 13, 'line' => $line, 'command' => $aInstallCheck);
-										unset($array[$line-1]);
 									}
 								}
 							break;
@@ -401,8 +396,7 @@ class CMS_patch extends CMS_grandFather
 							if (CMS_FILE::deleteFile($originalFile)) {
 								$this->_verbose(' -> File '.$originalFile.' successfully deleted');
 							} else {
-								$this->_report('Error during deletion of '.$originalFile,true);
-								if ($stopOnErrors) return;
+								$this->_verbose(' -> Cannot delete '.$originalFile.'. It does not exists.');
 							}
 						break;
 						case "+": //concatenate module xml file
