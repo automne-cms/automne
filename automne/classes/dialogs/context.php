@@ -833,6 +833,23 @@ class CMS_context extends CMS_grandFather
 	}
 	
 	/**
+	  * Force a token expiration
+	  *
+	  * @param string $name, token name to expire
+	  * @return boolean
+	  * @access public
+	  */
+	function expireToken($name) {
+		$tokensDatas = CMS_context::getSessionVar('atm-tokens');
+		$tokens = $tokensDatas['tokens'];
+		if (isset($tokens[$name])) {
+			unset($tokens[$name]);
+		}
+		CMS_context::setSessionVar('atm-tokens', $tokensDatas);
+		return true;
+	}
+	
+	/**
 	  * Check if a session token is expired for a given token name
 	  *
 	  * @param string $name, token name to check
