@@ -731,8 +731,8 @@ class CMS_context extends CMS_grandFather
 			if (file_exists($extLocaleFile)) {
 				$fileContent = file_get_contents($extLocaleFile);
 				//remove BOM if any
-				if(io::substr($fileContent, 0, 3) == '﻿') {
-					$fileContent = io::substr($fileContent, 3);
+				if(substr($fileContent, 0, 3) == '﻿') {
+					$fileContent = substr($fileContent, 3);
 				}
 				$locales .= (io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? utf8_decode($fileContent) : $fileContent;
 			}

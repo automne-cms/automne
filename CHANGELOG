@@ -1,4 +1,4 @@
-V4.0.2 (in progress)
+V4.0.2 (25/05/2010)
 [BUG] : Corrected bugs : 269, 270, 486, 497 (see http://www.automne.ws/bug/)
 [BUG] : Remove ghost groups on templates
 [BUG] : Templates do a better check on usage

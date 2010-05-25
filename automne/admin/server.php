@@ -402,14 +402,14 @@ $jscontent = <<<END
 		id:				'cachePolymodReset',
 		text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_RESET_POLYMOD_CACHE_BUTTON)}',
 		listeners:		{'click':function(){
-			cacheReset.disable();
+			cachePolymodReset.disable();
 	        Automne.server.call({
 				url:				'server-check.php',
 				params: 			{
 					action:				'polymod-cache-reset'
 				},
 				fcnCallback: 		function(response, options, content) {
-					cacheReset.enable();
+					cachePolymodReset.enable();
 				},
 				callBackScope:		this
 			});

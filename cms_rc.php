@@ -866,8 +866,8 @@ if (!defined("CACHE_MODULES_DATAS")) {
     define("CACHE_MODULES_DATAS", true);
 }
 /**
-  * Does modules datas can be cached ?
-  *	Default : true
+  * Default lifetime for modules cache
+  *	Default : 86400 (24h)
   */
 if (!defined("CACHE_MODULES_DEFAULT_LIFETIME")) {
     define("CACHE_MODULES_DEFAULT_LIFETIME", 86400);

@@ -188,6 +188,9 @@ Ext.ux.Multiselect2 = Ext.extend(Ext.form.Field,  {
         var hiddenTag = { tag: "input", type: "hidden", value: "", name: this.hiddenName };
         this.hiddenField = this.el.createChild(hiddenTag);
         this.hiddenField.dom.disabled = this.hiddenName != this.name;
+		fs.on('afterlayout', function() {
+			this.setWidth(this.fs.getWidth());
+		}, this, {buffer:1000});
         fs.doLayout();
 	},
 	
