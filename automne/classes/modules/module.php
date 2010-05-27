@@ -90,7 +90,7 @@ class CMS_module extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($datas = '') {
+	function CMS_module($datas = '') {
 		static $modules;
 		if (is_string($datas)) {
 			$codename = $datas;
