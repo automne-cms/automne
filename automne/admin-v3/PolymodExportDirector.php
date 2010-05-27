@@ -75,6 +75,7 @@ class PolymodExportDirector
 			$this->_aErrors[] = '!'.$sModuleCodename.' class';
 			$errors = true;
 		}
+		$aDeferedFields = array();
 		foreach ($oClasses as $oClass) {
 			$iClassId = $this->constructClass($sModuleCodename, $oClass);
 			if (!$iClassId) {
@@ -82,6 +83,8 @@ class PolymodExportDirector
 				$errors = true;
 				break;
 			}
+			//keep track of new classes ids for defered fields creations
+			$aNewClassIds[$oClass->getAttribute('id')] = $iClassId;
 
 			//build fields
 			$oFields = $this->oXpath->query('field', $oClass);
@@ -91,12 +94,36 @@ class PolymodExportDirector
 				break;
 			}
 			foreach ($oFields as $oField) {
-				$iFieldId = $this->constructField($iClassId, $oField);
-				if (!$iFieldId) {
-					$this->_aErrors[] = '!'.$sModuleCodename.' field build';
+				if ($oField->hasAttribute('type')) {
+					if (io::isPositiveInteger($oField->getAttribute('type'))) {
+						//these fields will be construct at the end off all classes builds
+						$aDeferedFields[] = array(
+							'iClassId'	=> $iClassId,
+							'oField'	=> $oField
+						);
+					} else {
+						$iFieldId = $this->constructField($iClassId, $oField);
+						if (!$iFieldId) {
+							$this->_aErrors[] = '!'.$sModuleCodename.' field build';
+							$errors = true;
+							break 2;
+						}
+					}
+				} else {
+					$this->_aErrors[] = '!'.$sModuleCodename.' field build missing type';
 					$errors = true;
 					break 2;
 				}
+			}
+		}
+		foreach ($aDeferedFields as $aRow) {
+			//replace old class id
+			$aRow['oField']->setAttribute('type', $aNewClassIds[$aRow['oField']->getAttribute('type')]);
+			//construct field
+			$iFieldId = $this->constructField($aRow['iClassId'], $aRow['oField']);
+			if (!$iFieldId) {
+				$this->_aErrors[] = '!'.$sModuleCodename.' defered field build';
+				$errors = true;
 			}
 		}
 
@@ -155,10 +182,6 @@ class PolymodExportDirector
 	 */
 	protected function constructField($iClassId, $oField)
 	{
-		if (!$oField->hasAttribute('type')) {
-			$this->_aErrors[] = '!field type';
-			return false;
-		}
 		$aField = array(
 			'type' => $oField->getAttribute('type')
 		);
