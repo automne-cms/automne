@@ -28,7 +28,7 @@ switch (io::post('action')) {
 				if ($_FILES['file']['type'] == 'text/xml') {
 					include './PolymodExportDirector.php';
 					include './PolymodModuleBuilder.php';
-					$oXml = new DOMDocument();
+					$oXml = new CMS_DOMDocument();
 					$oXml->load($_FILES['file']['tmp_name']);
 					$oModuleBuilder = new PolymodModuleBuilder();
 					$oModuleDirector = new PolymodExportDirector($oXml);
