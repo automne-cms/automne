@@ -30,7 +30,7 @@ switch (io::get('action')) {
 				$sOutput = var_export($aModule, true);
 				break;
 			case 'xml':
-				$oDom = new DOMDocument();
+				$oDom = new CMS_DOMDocument();
 				$oModule = $oDom->createElement('module');
 				$oModule->setAttribute('codename', $aModule['codename']);
 				$oDom->appendChild($oModule);
@@ -83,6 +83,7 @@ switch (io::get('action')) {
 					foreach ($aClass['fields'] as $aField) {
 						$oField = $oDom->createElement('field');
 						$oField->setAttribute('type', $aField['type']);
+						$oField->setAttribute('multi', $aField['multi']);
 						//fields labels
 						foreach ($aField['labels'] as $sLanguage=>$sLabel) {
 							$oLabel = $oDom->createElement('label', $sLabel);
