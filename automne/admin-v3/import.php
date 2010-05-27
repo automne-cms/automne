@@ -9,7 +9,7 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 }
 //Create page object
 $dialog = new CMS_dialog();
-$dialog->setTitle('Import <strong>!!! NE PAS UTILISER !!!</strong>');
+$dialog->setTitle('Import');
 
 switch (io::post('action')) {
 	case 'import':
