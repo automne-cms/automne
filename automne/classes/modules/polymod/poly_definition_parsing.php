@@ -19,7 +19,7 @@
   *
   * represent a polymod parsing : from a given string definition and some parameters, create HTML / PHP datas
   *
-  * @package CMS
+  * @package Automne
   * @subpackage polymod
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
@@ -1054,7 +1054,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				$attributes .= ' '.$attribute.'="'.$value.'"';
 			}
 		}
-		$return = '<'.$tag['attributes']["tag"].$attributes.'>';
+		$return = '$content .= "<'.$tag['attributes']["tag"].$attributes.'>";';
 		return $return;
 	}
 	
@@ -1066,7 +1066,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access private
 	  */
 	protected function _tagEnd(&$tag) {
-		return '</'.$tag['attributes']["tag"].'>';
+		return '$content .= "</'.$tag['attributes']["tag"].'>"';
 	}
 	
 	/**

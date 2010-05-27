@@ -19,7 +19,7 @@
   *
   * Interface generation : send texts in real-time to user navigator.
   *
-  * @package CMS
+  * @package Automne
   * @subpackage dialogs
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

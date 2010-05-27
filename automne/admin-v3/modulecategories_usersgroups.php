@@ -18,8 +18,8 @@
   * PHP page : module admin frontend
   * Presents list of categories
   *
-  * @package CMS
-  * @subpackage admin
+  * @package Automne
+  * @subpackage admin-v3
   * @author Cédric Soret <cedric.soret@ws-interactive.fr>
   */
 

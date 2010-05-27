@@ -21,7 +21,7 @@
   *
   *  Manages the tree structure and the collection of pages.
   *
-  * @package CMS
+  * @package Automne
   * @subpackage tree
   * @author Cédric Soret <cedric.soret@ws-interactive.fr> &
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &

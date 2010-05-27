@@ -19,8 +19,8 @@
   * This file is a useage example for the superResource.
   * It is not used by Automne.
   *
-  * @package CMS
-  * @subpackage CMS_resource
+  * @package Automne
+  * @subpackage modules
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
   

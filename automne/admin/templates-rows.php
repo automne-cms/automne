@@ -19,7 +19,7 @@
   * PHP page : template default rows
   * Used to view and set the default template rows
   *
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>

@@ -20,7 +20,7 @@
   *
   * PHP-CLI script which runs in the background
   *
-  * @package CMS
+  * @package Automne
   * @subpackage backgroundScripts
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>

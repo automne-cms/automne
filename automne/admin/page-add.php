@@ -18,7 +18,7 @@
   * PHP page : Load add-page window infos. Set title and template then redirect to page content edition
   * Used accross an Ajax request
   * 
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

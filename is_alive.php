@@ -15,10 +15,33 @@
 //
 // $Id: is_alive.php,v 1.3 2010/03/08 16:45:48 sebastien Exp $
 
+/**
+  * PHP page : This page aims to check if website keeps alive
+  * For a production purpose
+  * 
+  * In a cron can use such script :
+  * For a quiet version (Outputs only if any problem founded)
+  *	5 * * * * root /usr/bin/lynx http://serveraddr/is_alive.php?quiet=true
+  * 
+  * More visually or to get informed by email set :
+  * http://serveraddr/is_alive.php
+  * 
+  * 1. Test database server connection
+  * 2. Test database selection
+  * 3. Test HTTP Header response on main page
+  * 4. Prints Nothing or REPONSE_CORRECTE if anything goes well, KO otherwise
+  * also send a mail to an administrator (constant APPLICATION_MAINTAINER_EMAIL)
+  
+  * @param boolean $_GET["quiet"] : won't produce output
+  * @package Automne
+  * @subpackage tools
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  */
+
 // This page aims to check if website keeps alive
 // A production purpose
 //
-// @param boolean $_GET["quiet"] : won't produce output
+// 
 // 
 // In a cron can use such script :
 // For a quiet version (Outputs only if any problem founded)
@@ -33,6 +56,8 @@
 // 4. Prints Nothing or REPONSE_CORRECTE if anything goes well, KO otherwise
 // also send a mail to an administrator
 // 
+
+@package
 
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 

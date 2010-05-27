@@ -18,7 +18,7 @@
 /**
   * Class CMS_grandFather
   * This class is the ancestor of all CMS classes
-  * @package CMS
+  * @package Automne
   * @subpackage common
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
@@ -62,11 +62,11 @@ class CMS_grandFather
 
 	/**
 	  * Raises an error. Shows it to the screen
-	  *
+	  * Deprecated, use raiseError instead
 	  * @param string $errorMessage the error message.
 	  * @param boolean $encodeOutput, does the screen output should be encoded (default : false)
 	  * @return void
-	  * @access public (deprecated, use raiseError instead)
+	  * @access public
 	  */
 	public function _raiseError($errorMessage, $encodeOutput = false, $error = true) {
 		static $errorNumber;
@@ -418,7 +418,10 @@ class CMS_grandFather
 }
 
 /**
+  * Class CMS_Exception
   * Set basic exception catch
+  * @package Automne
+  * @subpackage common
   */
 class CMS_Exception extends Exception  {
 	public function __construct($message, $code = 0) {

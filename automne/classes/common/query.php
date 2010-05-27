@@ -22,7 +22,7 @@
   * or is taken from global constants.
   * For now, only manages MySQL database.
   *
-  * @package CMS
+  * @package Automne
   * @subpackage common
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>

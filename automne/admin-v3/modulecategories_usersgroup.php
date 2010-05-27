@@ -19,8 +19,8 @@
   * PHP page : module admin frontend
   * Manage rights for categories and pages
   *
-  * @package CMS
-  * @subpackage admin
+  * @package Automne
+  * @subpackage admin-v3
   * @author Cédric Soret <cedric.soret@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
@@ -44,7 +44,6 @@ define("MESSAGE_PAGE_CATEGORIES_ROOT", 1208);
 define("MESSAGE_PAGE_TITLE_CATEGORIES_GROUP_ACCESS", 1209);
 define("MESSAGE_PAGE_DISPLAYED_DEPTH", 1339);
 define("MESSAGE_PAGE_FIELD_MODULE", 1345);
-define("MESSAGE_PAGE_FIELD_GROUP", 931);
 define("MESSAGE_PAGE_TITLE_PAGES_GROUP_ACCESS", 1346);
 define("MESSAGE_PAGE_TITLE_PAGES_USER_ACCESS", 1347);
 define("MESSAGE_PAGE_PAGES_ROOT", 1348);

@@ -20,8 +20,7 @@
   * Represents a record (value) associated to a field
   * Each form is made of some fields an their values posted by users
   * 
-  * @package CMS
-  * @subpackage module
+  * @package Automne
   * @subpackage cms_forms
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

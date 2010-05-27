@@ -18,8 +18,8 @@
   * static Class CMS_poly_definition_functions
   * Represent a collection of poly_definition functions
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage polymod
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

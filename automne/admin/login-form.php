@@ -18,7 +18,7 @@
   * PHP page : Login form
   * Manages the login of users. Creates login form.
   *
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

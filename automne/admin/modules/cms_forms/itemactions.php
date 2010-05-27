@@ -18,8 +18,8 @@
   * PHP page : module admin frontend
   * Presents one module formular destinations to edit
   *
-  * @package CMS
-  * @subpackage admin
+  * @package Automne
+  * @subpackage cms_forms
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

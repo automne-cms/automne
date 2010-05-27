@@ -20,8 +20,8 @@
   *
   * represent an email object
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage polymod
   * @author Jérémie Bryon <jeremie.bryon@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

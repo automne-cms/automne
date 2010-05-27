@@ -17,8 +17,8 @@
 /**
   * Class CMS_forms_formularCategories
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage cms_forms
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

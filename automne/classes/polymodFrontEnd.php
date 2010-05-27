@@ -16,7 +16,10 @@
 
 /**
   * Main Include File of the Frontend Package : polymod
-  * Includes all of the package files.
+  *
+  * @package Automne
+  * @subpackage frontend
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
 //Add strict frontend requirements for polymod

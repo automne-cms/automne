@@ -24,7 +24,7 @@
   *   "m/d/Y" for english dates
   *   "d/m/Y" for french dates
   *
-  * @package CMS
+  * @package Automne
   * @subpackage common
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   */

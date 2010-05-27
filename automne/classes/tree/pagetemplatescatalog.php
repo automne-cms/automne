@@ -21,7 +21,7 @@
   *
   *  Manages the collection of page templates.
   *
-  * @package CMS
+  * @package Automne
   * @subpackage tree
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
   * @author Cédric Soret <cedric.soret@ws-interactive.fr> &

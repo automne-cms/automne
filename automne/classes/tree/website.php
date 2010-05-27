@@ -23,7 +23,7 @@
   * Beware ! Because of the label-to-directory relationship, label should'nt be changeable after the website creation.
   * This condition is enforced here.
   *
-  * @package CMS
+  * @package Automne
   * @subpackage tree
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   */

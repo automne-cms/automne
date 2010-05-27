@@ -62,7 +62,7 @@
   * 		$item->writeToPersistence();
   * 	}
   *
-  * @package CMS
+  * @package Automne
   * @subpackage files
   * @author Cédric Soret <cedric.soret@ws-interactive.fr>
   */

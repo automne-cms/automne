@@ -18,8 +18,8 @@
   * PHP page : module cms_forms frontend
   * Export form datas to CSV file
   *
-  * @package CMS
-  * @subpackage admin
+  * @package Automne
+  * @subpackage cms_forms
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

@@ -19,15 +19,10 @@
   *
   * represent a simple integer object
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage polymod
   * @author Jérémie Bryon <jeremie.bryon@ws-interactive.fr>
   */
-
-/**
-  * Polymod Messages
-  */
-
 class CMS_object_boolean extends CMS_object_common
 {
 	const MESSAGE_OBJECT_BOOLEAN_LABEL = 384;

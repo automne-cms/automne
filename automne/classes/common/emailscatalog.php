@@ -19,7 +19,7 @@
   *
   * Class to send group emails
   *
-  * @package CMS
+  * @package Automne
   * @subpackage common
   * @author Andre Haynes <andre.haynes@ws-interactive.fr>
   */
@@ -29,8 +29,7 @@ class CMS_emailsCatalog extends CMS_grandFather
 	const MESSAGE_EMAIL_BODY_URLS = 912;
 	
 	/**
-	  *
-	  * @vare array(CMS_email)
+	  * @var array(CMS_email)
 	  * @access private
 	  */
 	protected $_messages = array();

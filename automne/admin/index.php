@@ -18,7 +18,7 @@
   * PHP page : index
   * Manages the login and logout of users. Creates the context and put it into $_SESSION.
   *
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

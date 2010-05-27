@@ -20,7 +20,7 @@
   *
   *  Keeps track of dialog context
   *
-  * @package CMS
+  * @package Automne
   * @subpackage dialogs
   * @author Antoine Pouch <andre.haynes@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
@@ -363,7 +363,7 @@ class CMS_context extends CMS_grandFather
 	  * @param string $name
 	  * @param mixed $value
 	  * @return void
-	  * @access public|private}
+	  * @access public
 	  */
 	function setSessionVar($name, $value)
 	{

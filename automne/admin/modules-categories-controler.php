@@ -18,7 +18,7 @@
   * PHP controler : Receive actions on modules categories
   * Used accross an Ajax request to process one module categories action
   * 
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

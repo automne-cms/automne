@@ -16,15 +16,18 @@
 
 /**
   * Automne 403 error handler
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &
+  * This file is used as 403 error document from .htaccess
+  * @package Automne
+  * @subpackage apache
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
+
+require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 
 // *************************************************************************
 // ** REDIRECTION HANDLER. KEEP ALL THIS PHP CODE IN 403 ERROR DOCUMENT ! **
 // **     YOU CAN DEFINE YOUR OWN ERROR PAGE WITH THE FILE /403.html      **
 // *************************************************************************
-
-require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 
 //check for alternative 403 file and display it if any
 if (file_exists($_SERVER['DOCUMENT_ROOT'].'/403.html')) {

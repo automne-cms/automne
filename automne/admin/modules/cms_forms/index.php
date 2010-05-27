@@ -18,8 +18,8 @@
   * PHP page : module admin frontend
   * Presents list of all actions in module
   *
-  * @package CMS
-  * @subpackage admin
+  * @package Automne
+  * @subpackage cms_forms
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

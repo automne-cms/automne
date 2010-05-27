@@ -20,8 +20,8 @@
   * Interface generation of all CSS codes, 
   * Provide coherent user caching infos and allow gzip when possible
   *
-  * @package CMS
-  * @subpackage CSS
+  * @package Automne
+  * @subpackage frontend
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

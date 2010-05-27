@@ -20,8 +20,8 @@
   * This class performs searches and returns resultsets, number of 
   * records founded, paginate, etc.
   * 
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage cms_forms
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

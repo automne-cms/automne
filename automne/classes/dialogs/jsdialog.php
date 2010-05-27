@@ -20,7 +20,7 @@
   * Interface generation : all javascript codes
   * This class is deprecated since Automne V4, only here for compatibility with old modules.
   *
-  * @package CMS
+  * @package Automne
   * @subpackage dialogs
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

@@ -19,8 +19,8 @@
   *
   * Represent a header template for module cms_forms
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage cms_forms
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 //Requirements

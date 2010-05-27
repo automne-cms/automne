@@ -18,8 +18,8 @@
   * PHP page : Load polymod items search window.
   * Used accross an Ajax request.
   * 
-  * @package CMS
-  * @subpackage admin
+  * @package Automne
+  * @subpackage polymod
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

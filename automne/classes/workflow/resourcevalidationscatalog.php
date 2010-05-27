@@ -20,7 +20,7 @@
   *
   * Manages the catalog of resourceValidations
   *
-  * @package CMS
+  * @package Automne
   * @subpackage workflow
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>

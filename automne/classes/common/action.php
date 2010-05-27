@@ -20,7 +20,7 @@
   *
   * Utility class : used to show an action inside a pack,  which are post forms
   *
-  * @package CMS
+  * @package Automne
   * @subpackage common
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>

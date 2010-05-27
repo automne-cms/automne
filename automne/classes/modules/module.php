@@ -22,8 +22,8 @@
   * represent a module.
   * Abstract class.
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage modules
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &
   * @author Cédric Soret <cedric.soret@ws-interactive.fr>

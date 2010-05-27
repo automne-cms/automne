@@ -30,7 +30,7 @@
   * Using native array functions of PHP is much more simple and fast.
   * Seb
   *
-  * @package CMS
+  * @package Automne
   * @subpackage common
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   */

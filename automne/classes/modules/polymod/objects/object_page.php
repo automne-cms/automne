@@ -19,8 +19,8 @@
   *
   * represent a simple page object
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage polymod
   * @author Jérémie Bryon <jeremie.bryon@ws-interactive.fr>
   */
 

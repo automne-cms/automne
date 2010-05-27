@@ -19,7 +19,7 @@
   * Used accross an Ajax request to get some infos for current page
   * Then update panels accordingly
   *
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

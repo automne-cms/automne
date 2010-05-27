@@ -20,8 +20,8 @@
   *
   * Initializes the script, creates the PID file, and deletes it
   *
-  * @package CMS
-  * @subpackage backgrounScripts
+  * @package Automne
+  * @subpackage backgroundScripts
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

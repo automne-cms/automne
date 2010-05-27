@@ -21,7 +21,7 @@
   *
   * represent a page template.
   *
-  * @package CMS
+  * @package Automne
   * @subpackage tree
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &

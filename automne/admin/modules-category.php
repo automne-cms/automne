@@ -18,7 +18,7 @@
   * PHP page : Load category item interface
   * Used accross an Ajax request. Render a category item for edition
   *
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

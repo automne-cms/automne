@@ -21,7 +21,7 @@
   * Represent a contact data when APPLICATION_LDAP_AUTH is on
   * So all user data must come from LDAP external directory
   *
-  * @package CMS
+  * @package Automne
   * @subpackage common
   * @author Cédric Soret <cedric.soret@ws-interactive.fr>
   * @author Sébastien Pauchet <sébastien.pauchet@ws-interactive.fr>

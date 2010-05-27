@@ -18,7 +18,7 @@
   * PHP page : Load module categories tree window.
   * Used accross an Ajax request. Render categories tree for a given module.
   * 
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

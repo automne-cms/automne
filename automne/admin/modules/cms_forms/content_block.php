@@ -18,8 +18,8 @@
   * PHP page : page content block edition : cms_forms
   * Used to edit a block of form datas inside a page.
   *
-  * @package CMS
-  * @subpackage admin
+  * @package Automne
+  * @subpackage cms_forms
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

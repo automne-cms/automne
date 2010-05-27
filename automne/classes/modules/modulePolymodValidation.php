@@ -19,8 +19,8 @@
   *
   * All validations code for a polymod modules
   *
-  * @package CMS
-  * @subpackage modules
+  * @package Automne
+  * @subpackage polymod
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

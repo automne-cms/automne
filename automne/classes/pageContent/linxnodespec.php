@@ -21,7 +21,7 @@
   * Herited from Automne v1, it's a specification of a node (a page) XML encoded.
   * It can be a direct specification or a relative one (ex. the father of the page with ID 12, ...)
   *
-  * @package CMS
+  * @package Automne
   * @subpackage pageContent
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   */

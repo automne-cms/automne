@@ -18,8 +18,8 @@
   * Class CMS_poly_plugin_definitions
   * Represent a plugin definition for a poly_object
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage polymod
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

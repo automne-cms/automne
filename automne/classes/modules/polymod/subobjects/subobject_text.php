@@ -19,8 +19,8 @@
   *
   * represent a text
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage polymod
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
@@ -41,7 +41,6 @@ class CMS_subobject_text extends CMS_subobject_common
 	  * @param array $objectIDs DB object values : array('objectID' => integer, 'objectFieldID' => integer, 'objectSubFieldID' => integer)
 	  * @param array $dbValues DB values array('string dbFieldName' => 'value')
 	  * @param boolean $public values are public or edited ? (default is edited)
-	  * @param 
 	  * @return void
 	  * @access public
 	  */

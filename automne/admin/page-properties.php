@@ -18,7 +18,7 @@
   * PHP page : Load page properties window.
   * Used accross an Ajax request render page page properties window.
   * 
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

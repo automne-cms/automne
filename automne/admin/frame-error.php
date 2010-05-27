@@ -18,7 +18,7 @@
   * PHP page : No page info
   * Return info when no visible page is available
   *
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

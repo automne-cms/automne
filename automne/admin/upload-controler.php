@@ -18,7 +18,7 @@
   * PHP controler : Receive upload files
   * Used accross a SWFUpload request to process one uploaded file
   * 
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

@@ -20,7 +20,7 @@
   *
   * represent a contact data : job title and service, address, tel and fax numbers, email.
   *
-  * @package CMS
+  * @package Automne
   * @subpackage common
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>

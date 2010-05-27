@@ -19,7 +19,7 @@
   *
   * This script aimed to manage patch files
   *
-  * @package CMS
+  * @package Automne
   * @subpackage files
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

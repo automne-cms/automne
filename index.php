@@ -14,7 +14,10 @@
 
 /**
   * Automne index handler. Redirect to correct website accordingly to queried domain
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &
+  *
+  * @package Automne
+  * @subpackage frontend
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");

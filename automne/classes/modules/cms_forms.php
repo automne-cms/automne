@@ -19,7 +19,6 @@
   */
 define("MOD_CMS_FORMS_CODENAME", "cms_forms");
 
-
 /**
   * Messages
   */
@@ -32,8 +31,8 @@ define('MESSAGE_MOD_CMS_FORMS_PLUGIN', 87);
   *
   * represent the PDF Forms module.
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage cms_forms
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 class CMS_module_cms_forms extends CMS_moduleValidation

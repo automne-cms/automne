@@ -17,8 +17,8 @@
 /**
   * Class CMS_moduleCategory
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage modules
   * @author Cédric Soret <cedric.soret@ws-interactive.fr>
   */
 

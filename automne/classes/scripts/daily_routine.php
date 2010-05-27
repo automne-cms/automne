@@ -20,7 +20,7 @@
   *
   * Checks all unpublished pages to delete them, etc.
   *
-  * @package CMS
+  * @package Automne
   * @subpackage backgroundScripts
   * @author Cédric Soret <cedric.soret@ws-interactive.fr> &
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>

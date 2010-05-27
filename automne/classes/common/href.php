@@ -21,7 +21,7 @@
   * Manage and serialize/unserialize an Hypertext reference
   * Give a fully formated XHTML A tag when asked.
   *
-  * @package CMS
+  * @package Automne
   * @subpackage common
   * @author Cédric Soret <cedric.soret@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>

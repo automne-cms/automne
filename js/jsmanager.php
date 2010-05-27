@@ -20,8 +20,8 @@
   * Interface generation of all javascript codes, 
   * Provide coherent user caching infos and allow gzip when possible
   *
-  * @package CMS
-  * @subpackage JS
+  * @package Automne
+  * @subpackage frontend
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

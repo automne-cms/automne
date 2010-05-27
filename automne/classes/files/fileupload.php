@@ -44,7 +44,7 @@
   * @see function move_uploaded_file()
   * @see CMS_file
   *
-  * @package CMS
+  * @package Automne
   * @subpackage files
   * @author Cédric Soret <cedric.soret@ws-interactive.fr>
   */

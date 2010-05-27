@@ -19,7 +19,7 @@
   *
   * represent all modules codes processing.
   *
-  * @package CMS
+  * @package Automne
   * @subpackage modules
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

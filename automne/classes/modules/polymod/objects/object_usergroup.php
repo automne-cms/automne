@@ -20,8 +20,8 @@
   *
   * represent a usergroup object
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage polymod
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   * @author Jérémie Bryon <jeremie.bryon@ws-interactive.fr>
   */

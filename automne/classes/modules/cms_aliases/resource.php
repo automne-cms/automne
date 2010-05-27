@@ -20,8 +20,8 @@
   *
   * represent a resource of the aliases module
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage cms_aliases
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

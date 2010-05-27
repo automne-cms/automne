@@ -20,7 +20,7 @@
   *
   *  Manages the collection of users groups profiles.
   *
-  * @package CMS
+  * @package Automne
   * @subpackage user
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>

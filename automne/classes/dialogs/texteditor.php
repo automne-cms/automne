@@ -20,7 +20,7 @@
   *
   * Interface generation
   *
-  * @package CMS
+  * @package Automne
   * @subpackage dialogs
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>

@@ -21,7 +21,7 @@
   * represent a resource status : its life cycle, and edition and validation states
   * Tested OK.
   *
-  * @package CMS
+  * @package Automne
   * @subpackage workflow
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>

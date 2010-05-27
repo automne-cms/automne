@@ -24,8 +24,8 @@
   * 	- delFromLocation()
   * 	- writeToPersistence()
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage standard
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   */
 

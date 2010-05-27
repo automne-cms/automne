@@ -18,7 +18,7 @@
   * PHP controler : Receive validations actions
   * Used accross an Ajax request to process one or more validations pending
   * 
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

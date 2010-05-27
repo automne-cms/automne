@@ -14,19 +14,18 @@
 //
 // $Id: polymod.php,v 1.14 2010/03/08 16:43:31 sebastien Exp $
 
+//Polymod Codename
+define("MOD_POLYMOD_CODENAME", "polymod");
+
 /**
   * Class CMS_polymod
   *
   * Represent a poly module.
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage polymod
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
-
-//Polymod Codename
-define("MOD_POLYMOD_CODENAME", "polymod");
-
 class CMS_polymod extends CMS_modulePolymodValidation
 {
 	/**

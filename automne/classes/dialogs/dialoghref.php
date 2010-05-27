@@ -21,7 +21,7 @@
   *
   * Class to manage XHTML formulars relative to an CMS_href object
   *
-  * @package CMS
+  * @package Automne
   * @subpackage dialogs
   * @author Cédric Soret <cedric.soret@ws-interactive.fr> 
   * @author David Guillot <david.guillot@ws-interactive.fr> 

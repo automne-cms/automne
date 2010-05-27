@@ -20,7 +20,7 @@
   *
   * Collection of static methods used to validate user input and output
   *
-  * @package CMS
+  * @package Automne
   * @subpackage common
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   * @author Tomas V.V.Cox <cox@idecnet.com> (For isValidEmail())
@@ -28,7 +28,7 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-class SensitiveIO extends CMS_grandfather
+class SensitiveIO extends CMS_grandFather
 {
 	/**
 	  * Filter request input
@@ -841,6 +841,11 @@ class SensitiveIO extends CMS_grandfather
 		return call_user_func_array ($func, $args);
 	}
 }
-//shortcut to SensitiveIO class
+/**
+  * Class io
+  * Shortcut to SensitiveIO class
+  * @package Automne
+  * @subpackage common
+  */
 class io extends SensitiveIO {} 
 ?>

@@ -20,7 +20,7 @@
   *
   * Regenerates All the pages : call the function in CMS_tree and lauch regenerator
   *
-  * @package CMS
+  * @package Automne
   * @subpackage backgroundScripts
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   */

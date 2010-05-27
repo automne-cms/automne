@@ -18,7 +18,7 @@
   * PHP page : Load template help window.
   * Used accross an Ajax request.
   *
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

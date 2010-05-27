@@ -20,7 +20,7 @@
   *
   *  Manages the collection of websites.
   *
-  * @package CMS
+  * @package Automne
   * @subpackage tree
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   */

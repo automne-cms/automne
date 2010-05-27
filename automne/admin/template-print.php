@@ -18,7 +18,7 @@
   * PHP page : Load print template window.
   * Used accross an Ajax request. Render print template definition.
   * 
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

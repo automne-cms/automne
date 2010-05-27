@@ -18,7 +18,7 @@
   * PHP page : Load modules categories rights interface
   * Used accross an Ajax request. Render categories list
   *
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

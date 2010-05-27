@@ -20,8 +20,8 @@
   * Recursive structure of polymorphic modules
   * /!\ All these methods are really hard to explain and are very important. Be careful if modifying them!
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage polymod
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
@@ -83,7 +83,7 @@ class CMS_poly_module_structure
 	  * @param array $structure the flat structure reference of all objects
 	  * @param mixed $infos if array : reference of objects infos else nothing
 	  * @return multidimensionnal array : the recursive structure of all objects of the given module
-	  * @access private function of getModuleStructure
+	  * @access private
 	  * @static
 	  */
 	protected function _createRecursiveStructure($structure, $flatStructure, &$infos) {

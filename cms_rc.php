@@ -16,12 +16,15 @@
 // $Id: cms_rc.php,v 1.25 2010/03/08 16:45:48 sebastien Exp $
 
 /**
-  * rc file, contains all default constants
+  * AUTOMNE rc file : contains all default constants
+  * 
+  * @package Automne
+  * @subpackage config
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &
   * @author Cédric Soret <cedric.soret@ws-interactive.fr>
   */
-
+  
 //check this file for inclusion
 if (!defined('APPLICATION_USER_TYPE')) {
 	die('Cannot include /cms_rc.php directly. You must include /cms_rc_frontend.php or /cms_rc_admin.php.');
@@ -528,16 +531,6 @@ if (!defined("PATH_JS_FS")) {
 	define("PATH_JS_FS", PATH_REALROOT_FS."/js");
 }
 /**
-  *	Path where the pages originally lies
-  *	Default : "/html"
-  */
-if (!defined("PATH_PAGES_WR")) {
-	define("PATH_PAGES_WR",  "/html");
-}
-if (!defined("PATH_PAGES_FS")) {
-	define("PATH_PAGES_FS",  PATH_REALROOT_FS."/html");
-}
-/**
   *	Path where the htaccess templates originally lies
   *	Default : PATH_TEMPLATES_FS."/htaccess"
   */
@@ -668,17 +661,6 @@ if (!defined("PATH_ADMIN_SPECIAL_SESSION_CHECK_FS")) {
   */
 if (!defined("PATH_ADMIN_SPECIAL_SERVER_RESPONSE_WR")) {
 	define("PATH_ADMIN_SPECIAL_SERVER_RESPONSE_WR", PATH_ADMIN_WR."/serverResponse.php");
-}
-
-/**
-  *	Pages templates path
-  *	Default : PATH_MAIN_xx."/templates"
-  */
-if (!defined("PATH_TEMPLATES_WR")) {
-	define("PATH_TEMPLATES_WR", PATH_MAIN_WR."/templates");
-}
-if (!defined("PATH_TEMPLATES_FS")) {
-	define("PATH_TEMPLATES_FS", PATH_MAIN_FS."/templates");
 }
 
 /**

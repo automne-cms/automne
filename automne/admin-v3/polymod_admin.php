@@ -18,8 +18,8 @@
   * PHP page : poly modules admin
   * Used to manage poly modules. This file is included by modules_admin.php
   *
-  * @package CMS
-  * @subpackage admin
+  * @package Automne
+  * @subpackage admin-v3
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

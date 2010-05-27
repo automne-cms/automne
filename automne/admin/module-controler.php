@@ -18,7 +18,7 @@
   * PHP page : Module controler.
   * Used accross an Ajax requestto set module action.
   * 
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

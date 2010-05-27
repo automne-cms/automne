@@ -20,7 +20,7 @@
   * XHTML / JS / XML Interface generation
   * This class is a singleton : it can't be instancied directly. You must use getInstance method
   *
-  * @package CMS
+  * @package Automne
   * @subpackage dialogs
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

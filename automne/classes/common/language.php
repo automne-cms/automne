@@ -21,7 +21,7 @@
   *
   * Manages a language representation
   *
-  * @package CMS
+  * @package Automne
   * @subpackage common
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
   * @author Andre Haynes <andre.haynes@ws-interactive.fr> &

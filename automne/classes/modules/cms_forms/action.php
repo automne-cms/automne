@@ -13,9 +13,7 @@
 // +----------------------------------------------------------------------+
 //
 // $Id: action.php,v 1.3 2010/03/08 16:43:26 sebastien Exp $
-/**
- * Messages relative to types of destinations
- */
+
 /**
   * Class CMS_forms_action
   * 
@@ -32,8 +30,7 @@
   *   - emailfield 				(Many of them accepted)
   *   - auth 					(Only one expected)
   * 
-  * @package CMS
-  * @subpackage module
+  * @package Automne
   * @subpackage cms_forms
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

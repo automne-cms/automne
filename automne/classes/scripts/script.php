@@ -20,7 +20,7 @@
   *
   * Regenerates pages stored in the 'regenerator' table
   *
-  * @package CMS
+  * @package Automne
   * @subpackage backgroundScripts
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>

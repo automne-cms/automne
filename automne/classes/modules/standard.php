@@ -16,21 +16,20 @@
 // $Id: standard.php,v 1.22 2010/03/08 16:43:31 sebastien Exp $
 
 /**
-  * Class CMS_module_standard
-  *
-  * represent the standard module.
-  *
-  * @package CMS
-  * @subpackage module
-  * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  */
-
-/**
   * Codename of the standard module
   */
 define("MOD_STANDARD_CODENAME", "standard");
 
+/**
+  * Class CMS_module_standard
+  *
+  * represent the standard module.
+  *
+  * @package Automne
+  * @subpackage standard
+  * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  */
 class CMS_module_standard extends CMS_module
 {
 	/**

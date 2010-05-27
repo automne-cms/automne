@@ -15,18 +15,6 @@
 //
 // $Id: entry.php,v 1.2 2010/03/08 16:41:39 sebastien Exp $
 
-/**
-  * PHP page : entry
-  * Entry page. Presents all the user "sections" (page clearances sections) and all the user available validations.
-  * 
-  * Possibility to obtain a cms_message from GET : $_GET["cms_message"]
-  * 
-  * @package CMS
-  * @subpackage admin
-  * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  */
-
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 require_once(PATH_ADMIN_SPECIAL_SESSION_CHECK_FS);
 
@@ -44,6 +32,18 @@ define("MESSAGE_PAGE_ERROR_FATHER_SIBLINGS_NEVER_VALIDATED", 870);
 define("MESSAGE_PAGE_TASK_PENDING", 1090);
 define("MESSAGE_PAGE_NO_VALIDATIONS_PENDING", 1113);
 define("MESSAGE_PAGE_ERROR_FATHER_IS_IDENTICAL", 1319);
+
+/**
+  * PHP page : entry
+  * Entry page. Presents all the user "sections" (page clearances sections) and all the user available validations.
+  * 
+  * Possibility to obtain a cms_message from GET : $_GET["cms_message"]
+  * 
+  * @package Automne
+  * @subpackage admin-v3
+  * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  */
 
 //Action management	
 if (isset($_GET["cms_action"]) && $_GET["cms_action"] == "displace") {

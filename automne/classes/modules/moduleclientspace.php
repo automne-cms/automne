@@ -20,8 +20,8 @@
   * represent a module client space
   * Abstract class
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage modules
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   */
 

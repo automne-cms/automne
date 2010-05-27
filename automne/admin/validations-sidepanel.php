@@ -18,7 +18,7 @@
   * PHP page : Load side panel validations infos.
   * Used accross an Ajax request to refresh the validation side panel
   * 
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

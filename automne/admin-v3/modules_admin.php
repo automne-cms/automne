@@ -18,8 +18,8 @@
   * PHP page : modules admin
   * Used to manage modules
   *
-  * @package CMS
-  * @subpackage admin
+  * @package Automne
+  * @subpackage admin-v3
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

@@ -19,7 +19,7 @@
   * Presents north panel with connection infos and logo and center panel with all administration panels according to user rights
   * Used accross an Ajax request render Automne side panel
   * 
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

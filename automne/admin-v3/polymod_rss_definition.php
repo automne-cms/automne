@@ -18,8 +18,8 @@
   * PHP page : polymod admin
   * Used to manage poly modules
   *
-  * @package CMS
-  * @subpackage admin
+  * @package Automne
+  * @subpackage admin-v3
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

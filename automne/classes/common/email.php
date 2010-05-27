@@ -22,15 +22,15 @@
   *  Also has the ability to send an email
   *  Correct input assumed
   * 
-  * @package CMS
+  * @package Automne
   * @subpackage common
   * @author Andre Haynes <andre.haynes@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   *
   * Methods EncodeHeader, EncodeQP, EncodeQ, FixEOL are based on phpmailer version 2.0.0RC1
   * See phpmailer.sourceforge.net for license (LGPL) informations and authors.
-  * @author: Andy Prevost (project admininistrator)
-  * @author: Brent R. Matzelle (original founder)
+  * @author Andy Prevost (project admininistrator)
+  * @author Brent R. Matzelle (original founder)
   */
 
 class CMS_email extends CMS_grandFather

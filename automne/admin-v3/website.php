@@ -19,8 +19,8 @@
   * PHP page : page base data
   * Used to edit the pages base data. Also used when creating a page, it's the first step.
   *
-  * @package CMS
-  * @subpackage admin
+  * @package Automne
+  * @subpackage admin-v3
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

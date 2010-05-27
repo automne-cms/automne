@@ -18,7 +18,7 @@
   * PHP controler : Receive actions on page content
   * Used accross an Ajax request to process one page content action
   * 
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
