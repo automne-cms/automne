@@ -57,8 +57,6 @@
 // also send a mail to an administrator
 // 
 
-@package
-
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 
 // Page to test HTTP response of
