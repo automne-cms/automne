@@ -17,7 +17,7 @@
 /**
   * PHP page : Backtrace debug page
   *
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

@@ -18,7 +18,7 @@
   * PHP page : return search pages results
   * 
   *
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

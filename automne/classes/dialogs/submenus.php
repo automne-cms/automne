@@ -19,8 +19,8 @@
   *
   * Utility class : used to show a pack of menus,  which are post forms
   *
-  * @package CMS
-  * @subpackage common
+  * @package Automne
+  * @subpackage dialogs
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

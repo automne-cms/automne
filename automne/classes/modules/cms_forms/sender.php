@@ -22,8 +22,7 @@
   * Foreach formular, a new sender is created, even if user's datas
   * where recorder once (Session changes)
   * 
-  * @package CMS
-  * @subpackage module
+  * @package Automne
   * @subpackage cms_forms
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

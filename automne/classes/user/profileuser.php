@@ -20,7 +20,7 @@
   *
   * Login data and functions of user
   *
-  * @package CMS
+  * @package Automne
   * @subpackage user
   * @author Andre Haynes <andre.haynes@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>

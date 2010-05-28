@@ -22,8 +22,8 @@
   * represent a module.
   * Abstract class.
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage modules
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &
   * @author Cédric Soret <cedric.soret@ws-interactive.fr>
@@ -90,7 +90,7 @@ class CMS_module extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($datas = '') {
+	function CMS_module($datas = '') {
 		static $modules;
 		if (is_string($datas)) {
 			$codename = $datas;

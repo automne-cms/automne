@@ -17,6 +17,9 @@
 /**
   * Automne files download handler
   * This file is used by protected modules to handle documents downloading.
+  * 
+  * @package Automne
+  * @subpackage apache
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

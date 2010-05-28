@@ -18,7 +18,7 @@
   * PHP page : Load tree window infos
   * Used accross an Ajax request render page tree in the tree window
   *
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

@@ -9,22 +9,10 @@
 // | LICENSE-GPL, and is available through the world-wide-web at		  |
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
-
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
 // $Id: cms_aliases.php,v 1.3 2010/03/08 16:43:30 sebastien Exp $
-
-/**
-  * Class CMS_module_cms_aliases
-  *
-  * represent the standard module.
-  *
-  * @package CMS
-  * @subpackage module
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  */
-
 
 /**
   * Codename of the agenram module
@@ -35,6 +23,15 @@ define("MOD_CMS_ALIAS_CODENAME", "cms_aliases");
 //clientspace, rows and blocks
 require_once(PATH_MODULES_FS."/".MOD_CMS_ALIAS_CODENAME."/resource.php");
 
+/**
+  * Class CMS_module_cms_aliases
+  *
+  * represent the cms_alias module.
+  *
+  * @package Automne
+  * @subpackage cms_aliases
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  */
 class CMS_module_cms_aliases extends CMS_moduleValidation
 {
 	const MESSAGE_CMS_ALIAS_ALIASES = 1;

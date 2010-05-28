@@ -15,10 +15,12 @@
 // $Id: cms_rc_admin.php,v 1.14 2010/03/08 16:45:48 sebastien Exp $
 
 /**
-  * Administration rc file.
-  *
+  * AUTOMNE Administration rc file.
   * Contains declarations and includes for the backend part.
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * 
+  * @package Automne
+  * @subpackage config
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &
   */
 
 /**

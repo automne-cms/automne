@@ -18,8 +18,8 @@
   * static Class CMS_poly_definition_functions
   * Represent a collection of poly_definition functions
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage polymod
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
@@ -423,10 +423,13 @@ class CMS_poly_definition_functions
 							}
 						}
 					}
-					//check form token
+					//Check form token
 					if (!isset($_POST["atm-token"]) || !CMS_context::checkToken(MOD_POLYMOD_CODENAME.'-'.$formID, $_POST["atm-token"])) {
 						$polymodFormsError[$formID]['error'][] = 'form-token';
 						return false;
+					} else {
+						//Token is used so expire it
+						CMS_context::expireToken(MOD_POLYMOD_CODENAME.'-'.$formID);
 					}
 					if (!$polymodFormsError[$formID]) {
 						//save the data

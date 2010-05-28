@@ -19,7 +19,7 @@
   *
   * implement PHP class DOMDOcument. Allow usage of exceptions by load and loadXML method
   *
-  * @package CMS
+  * @package Automne
   * @subpackage page content
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

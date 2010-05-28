@@ -18,7 +18,7 @@
 /**
   * Class CMS_search
   *
-  * @package CMS
+  * @package Automne
   * @subpackage common
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &
   * @author Jérémie Bryon <jeremie.bryon@ws-interactive.fr>
@@ -65,9 +65,9 @@ class CMS_search extends CMS_grandFather {
 	/**
 	  * Get the search.
 	  *
+	  * @param integer $searchType : the type of the search (see constants)
 	  * @return array of CMS_page the result pages
 	  * @access public
-	  * param integer $searchType : the type of the search (see constants)
 	  */
 	function getSearch($keywords, $user, $public = false, $withPageContent = false){
 		if(is_a($user,'CMS_profile_user')){

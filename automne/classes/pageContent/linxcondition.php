@@ -19,7 +19,7 @@
   *
   * Manages a linx "condition" tag representation
   *
-  * @package CMS
+  * @package Automne
   * @subpackage pageContent
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   */

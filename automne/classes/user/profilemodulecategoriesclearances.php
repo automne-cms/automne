@@ -19,9 +19,9 @@
   *
   *  editing/viewing permissions for a user profile on moduleCategories
   *
-  * @package CMS
+  * @package Automne
   * @subpackage user
-  * @author: Cédric Soret <cedric.soret@ws-interactive.fr>
+  * @author Cédric Soret <cedric.soret@ws-interactive.fr>
   */
 
 class CMS_moduleCategoriesClearances extends CMS_grandFather

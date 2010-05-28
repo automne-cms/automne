@@ -20,8 +20,8 @@
   *
   * Utility class : used to show a subMenu inside a pack,  which are post forms
   *
-  * @package CMS
-  * @subpackage common
+  * @package Automne
+  * @subpackage dialogs
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

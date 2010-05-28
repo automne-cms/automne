@@ -88,7 +88,7 @@ require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DggContainer/BstoreContaine
 require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DggContainer/BstoreContainer/BSE.php';
 
 /** PHPExcel_Shared_Escher_DggContainer_BstoreContainer_BSE_Blip */
-require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DggContainer/BstoreContainer/BSE/Blip.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DggContainer/BstoreContainer/BSE/B.php';
 
 /** PHPExcel_Writer_Excel5_Xf */
 require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/Excel5/Xf.php';

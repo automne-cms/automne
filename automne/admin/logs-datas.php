@@ -19,7 +19,7 @@
   * Used accross an Ajax request.
   * Return formated logs infos in JSON format
   *
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

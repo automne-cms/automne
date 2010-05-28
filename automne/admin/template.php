@@ -18,7 +18,7 @@
   * PHP page : Load template detail window.
   * Used accross an Ajax request. Render template informations.
   * 
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

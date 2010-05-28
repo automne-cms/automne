@@ -18,7 +18,7 @@
   * PHP page : Load block image interface
   * Used accross an Ajax request. Render an image block form
   *
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

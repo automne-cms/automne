@@ -20,8 +20,8 @@
   *
   * represent a block of text data inside a row.
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage standard
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   */
 

@@ -20,7 +20,7 @@
   * This script aimed to manage files, directory and rights on server
   * Needs inherited classes to become more efficient
   *
-  * @package CMS
+  * @package Automne
   * @subpackage files
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

@@ -17,8 +17,8 @@
 /**
   * PHP serverResponse page : send response from serverCall JS methods
   *
-  * @package CMS
-  * @subpackage admin
+  * @package Automne
+  * @subpackage admin-v3
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

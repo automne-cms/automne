@@ -16,7 +16,10 @@
 
 /**
   * Automne 403 error handler
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &
+  * This file is used as 403 error document from .htaccess
+  * @package Automne
+  * @subpackage apache
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
 // *************************************************************************

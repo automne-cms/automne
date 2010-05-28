@@ -20,8 +20,8 @@
   *
   * represent a block of Flash Animation inside a row.
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage standard
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   * @author Cédric Soret <cedric.soret@ws-interactive.fr>
   */

@@ -19,7 +19,7 @@
   *
   * Manages the langauges collection
   *
-  * @package CMS
+  * @package Automne
   * @subpackage common
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   */

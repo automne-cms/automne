@@ -19,8 +19,8 @@
   *
   * represent a wwysiwyg (fckeditor) toolbar with a set of elements
   *
-  * @package CMS
-  * @subpackage tree
+  * @package Automne
+  * @subpackage dialogs
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

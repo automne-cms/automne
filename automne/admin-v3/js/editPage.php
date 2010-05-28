@@ -17,8 +17,8 @@
 /**
   * PHP JS page : allow frontend page edition
   *
-  * @package CMS
-  * @subpackage admin
+  * @package Automne
+  * @subpackage admin-v3
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 //for this page, HTML output compression is not welcome.

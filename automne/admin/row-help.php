@@ -18,7 +18,7 @@
   * PHP page : Load template help window.
   * Used accross an Ajax request.
   *
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
@@ -57,12 +57,14 @@ if (is_array($modulesCodeInclude) && $modulesCodeInclude) {
 		//if user has rights on module
 		if ($cms_user->hasModuleClearance($codename, CLEARANCE_MODULE_EDIT)) {
 			$module = CMS_modulesCatalog::getByCodename($codename);
-			$label = sensitiveIO::sanitizeJSString($module->getLabel($cms_language));
-			$description = sensitiveIO::sanitizeJSString($description);
-			$modulesTab .= "{
-				title:				'{$label}',
-				html:				'{$description}'
-			},";
+			if (is_object($module) && !$module->hasError()) {
+				$label = sensitiveIO::sanitizeJSString($module->getLabel($cms_language));
+				$description = sensitiveIO::sanitizeJSString($description);
+				$modulesTab .= "{
+					title:				'{$label}',
+					html:				'{$description}'
+				},";
+			}
 		}
 	}
 }

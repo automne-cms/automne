@@ -20,8 +20,8 @@
   *
   * represent a standard client space which are data containers.
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage standard
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &
   * @author Cédric Soret <cedric.soret@ws-interactive.fr>

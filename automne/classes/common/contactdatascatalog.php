@@ -19,7 +19,7 @@
   *
   * Keeps track of logging action
   *
-  * @package CMS
+  * @package Automne
   * @subpackage common
   * @author Cédric Soret <cedric.soret@ws-interactive.fr>
   */

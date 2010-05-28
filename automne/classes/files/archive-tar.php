@@ -24,7 +24,7 @@
   * Based on an original script "TAR/GZIP/BZIP2/ZIP ARCHIVE CLASSES 2.0"
   * from Devin Doucette mentionned in copyright
   *
-  * @package CMS
+  * @package Automne
   * @subpackage files
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &
   * @author Cédric Soret <cedric.soret@ws-interactive.fr> &

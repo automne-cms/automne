@@ -18,8 +18,8 @@
   * PHP page : validations
   * Handle validation by its ID and module codename
   *
-  * @package CMS
-  * @subpackage admin
+  * @package Automne
+  * @subpackage admin-v3
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

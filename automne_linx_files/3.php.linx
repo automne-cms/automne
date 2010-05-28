@@ -1,9 +1,13 @@
 <?php
 <<<<<<< TREE
+<<<<<<< TREE
 //Generated on Thu, 11 Mar 2010 17:37:50 +0100 by Automne (TM) 4.0.1
 require_once(dirname(__FILE__).'/../cms_rc_frontend.php');
 =======
 //Generated on Fri, 19 Mar 2010 15:24:28 +0100 by Automne (TM) 4.0.1
+=======
+//Generated on Mon, 24 May 2010 16:59:48 +0200 by Automne (TM) 4.0.2
+>>>>>>> MERGE-SOURCE
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 >>>>>>> MERGE-SOURCE
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
@@ -92,17 +96,24 @@ if (!isset($cms_page_included) && !$_POST && !$_GET) {
 					<div id="title">
 						<h1>Présentation</h1>
 					</div>
-					<atm-toc />
 					<?php /* Start clientspace [first] */  ?><?php /* Start row [110 Sous Titre (niveau 2) - r43_100_Sous_Titre.xml] */  ?>
 
 <h2>Bienvenue sur AUTOMNE 4 </h2>
 
 <?php /* End row [110 Sous Titre (niveau 2) - r43_100_Sous_Titre.xml] */  ?><?php /* Start row [230 Texte et Média à Droite - r69_Texte_-_Media_a_droite.xml] */  ?>
 	<div class="imgRight">
-		<?php /*Generated on Fri, 19 Mar 2010 15:24:28 +0100 by Automne (TM) 4.0.1 */
+		<?php $cache_78bdfccbed02c43d004345dfb16c25f2 = new CMS_cache('78bdfccbed02c43d004345dfb16c25f2', 'polymod', 'auto', true);
+if ($cache_78bdfccbed02c43d004345dfb16c25f2->exist()):
+	//Get content from cache
+	$cache_78bdfccbed02c43d004345dfb16c25f2_content = $cache_78bdfccbed02c43d004345dfb16c25f2->load();
+else:
+	$cache_78bdfccbed02c43d004345dfb16c25f2->start();
+	  ?>
+<?php /*Generated on Mon, 24 May 2010 16:59:48 +0200 by Automne (TM) 4.0.2 */
 if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 'CMS_profile_user') && $cms_user->hasModuleClearance('pmedia', CLEARANCE_MODULE_VIEW))){
 	$content = "";
 	$replace = "";
+	$atmIfResults = array();
 	if (!isset($objectDefinitions) || !is_array($objectDefinitions)) $objectDefinitions = array();
 	$blockAttributes = array (
 		'search' =>
@@ -123,9 +134,13 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 	if (!isset($object[2])) $object[2] = new CMS_poly_object(2, 0, array(), $parameters['public']);
 	$parameters['module'] = 'pmedia';
 <<<<<<< TREE
+<<<<<<< TREE
 	//SEARCH mediaresult TAG START 2_51bb57
 =======
 	//SEARCH mediaresult TAG START 2_221787
+>>>>>>> MERGE-SOURCE
+=======
+	//SEARCH mediaresult TAG START 2_39bbe9
 >>>>>>> MERGE-SOURCE
 	$objectDefinition_mediaresult = '2';
 	if (!isset($objectDefinitions[$objectDefinition_mediaresult])) {
@@ -133,23 +148,35 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 	}
 	//public search ?
 <<<<<<< TREE
+<<<<<<< TREE
 	$public_2_51bb57 = isset($public_search) ? $public_search : false;
 =======
 	$public_2_221787 = isset($public_search) ? $public_search : false;
 >>>>>>> MERGE-SOURCE
+=======
+	$public_2_39bbe9 = isset($public_search) ? $public_search : false;
+>>>>>>> MERGE-SOURCE
 	//get search params
+<<<<<<< TREE
 <<<<<<< TREE
 	$search_mediaresult = new CMS_object_search($objectDefinitions[$objectDefinition_mediaresult], $public_2_51bb57);
 =======
 	$search_mediaresult = new CMS_object_search($objectDefinitions[$objectDefinition_mediaresult], $public_2_221787);
 >>>>>>> MERGE-SOURCE
+=======
+	$search_mediaresult = new CMS_object_search($objectDefinitions[$objectDefinition_mediaresult], $public_2_39bbe9);
+>>>>>>> MERGE-SOURCE
 	$launchSearch_mediaresult = true;
 	//add search conditions if any
 	if (isset($blockAttributes['search']['mediaresult']['item'])) {
 <<<<<<< TREE
+<<<<<<< TREE
 		$values_3_908aaa = array (
 =======
 		$values_3_a08c78 = array (
+>>>>>>> MERGE-SOURCE
+=======
+		$values_3_ebab1e = array (
 >>>>>>> MERGE-SOURCE
 			'search' => 'mediaresult',
 			'type' => 'item',
@@ -157,14 +184,20 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 			'mandatory' => 'true',
 		);
 <<<<<<< TREE
+<<<<<<< TREE
 		$values_3_908aaa['value'] = $blockAttributes['search']['mediaresult']['item'];
 		if ($values_3_908aaa['type'] == 'publication date after' || $values_3_908aaa['type'] == 'publication date before') {
 =======
 		$values_3_a08c78['value'] = $blockAttributes['search']['mediaresult']['item'];
 		if ($values_3_a08c78['type'] == 'publication date after' || $values_3_a08c78['type'] == 'publication date before') {
 >>>>>>> MERGE-SOURCE
+=======
+		$values_3_ebab1e['value'] = $blockAttributes['search']['mediaresult']['item'];
+		if ($values_3_ebab1e['type'] == 'publication date after' || $values_3_ebab1e['type'] == 'publication date before') {
+>>>>>>> MERGE-SOURCE
 			//convert DB format to current language format
 			$dt = new CMS_date();
+<<<<<<< TREE
 <<<<<<< TREE
 			$dt->setFromDBValue($values_3_908aaa['value']);
 			$values_3_908aaa['value'] = $dt->getLocalizedDate($cms_language->getDateFormat());
@@ -172,20 +205,32 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 			$dt->setFromDBValue($values_3_a08c78['value']);
 			$values_3_a08c78['value'] = $dt->getLocalizedDate($cms_language->getDateFormat());
 >>>>>>> MERGE-SOURCE
+=======
+			$dt->setFromDBValue($values_3_ebab1e['value']);
+			$values_3_ebab1e['value'] = $dt->getLocalizedDate($cms_language->getDateFormat());
+>>>>>>> MERGE-SOURCE
 		}
+<<<<<<< TREE
 <<<<<<< TREE
 		$launchSearch_mediaresult = (CMS_polymod_definition_parsing::addSearchCondition($search_mediaresult, $values_3_908aaa)) ? $launchSearch_mediaresult : false;
 =======
 		$launchSearch_mediaresult = (CMS_polymod_definition_parsing::addSearchCondition($search_mediaresult, $values_3_a08c78)) ? $launchSearch_mediaresult : false;
+>>>>>>> MERGE-SOURCE
+=======
+		$launchSearch_mediaresult = (CMS_polymod_definition_parsing::addSearchCondition($search_mediaresult, $values_3_ebab1e)) ? $launchSearch_mediaresult : false;
 >>>>>>> MERGE-SOURCE
 	} elseif (true == true) {
 		//search parameter is mandatory and no value found
 		$launchSearch_mediaresult = false;
 	}
 <<<<<<< TREE
+<<<<<<< TREE
 	//RESULT mediaresult TAG START 4_42dd63
 =======
 	//RESULT mediaresult TAG START 4_d51f22
+>>>>>>> MERGE-SOURCE
+=======
+	//RESULT mediaresult TAG START 4_60fa55
 >>>>>>> MERGE-SOURCE
 	//launch search mediaresult if not already done
 	if($launchSearch_mediaresult && !isset($results_mediaresult)) {
@@ -199,6 +244,7 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 		$results_mediaresult = array();
 	}
 	if ($results_mediaresult) {
+<<<<<<< TREE
 <<<<<<< TREE
 		$object_4_42dd63 = (isset($object[$objectDefinition_mediaresult])) ? $object[$objectDefinition_mediaresult] : ""; //save previous object search if any
 		$replace_4_42dd63 = $replace; //save previous replace vars if any
@@ -214,10 +260,19 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 		$maxPages_4_d51f22 = $search_mediaresult->getMaxPages();
 		$maxResults_4_d51f22 = $search_mediaresult->getNumRows();
 >>>>>>> MERGE-SOURCE
+=======
+		$object_4_60fa55 = (isset($object[$objectDefinition_mediaresult])) ? $object[$objectDefinition_mediaresult] : ""; //save previous object search if any
+		$replace_4_60fa55 = $replace; //save previous replace vars if any
+		$count_4_60fa55 = 0;
+		$content_4_60fa55 = $content; //save previous content var if any
+		$maxPages_4_60fa55 = $search_mediaresult->getMaxPages();
+		$maxResults_4_60fa55 = $search_mediaresult->getNumRows();
+>>>>>>> MERGE-SOURCE
 		foreach ($results_mediaresult as $object[$objectDefinition_mediaresult]) {
 			$content = "";
 			$replace["atm-search"] = array (
 				"{resultid}" 	=> (isset($resultID_mediaresult)) ? $resultID_mediaresult : $object[$objectDefinition_mediaresult]->getID(),
+<<<<<<< TREE
 <<<<<<< TREE
 				"{firstresult}" => (!$count_4_42dd63) ? 1 : 0,
 				"{lastresult}" 	=> ($count_4_42dd63 == sizeof($results_mediaresult)-1) ? 1 : 0,
@@ -229,13 +284,25 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 				"{resultcount}" => ($count_4_d51f22+1),
 				"{maxpages}"    => $maxPages_4_d51f22,
 >>>>>>> MERGE-SOURCE
+=======
+				"{firstresult}" => (!$count_4_60fa55) ? 1 : 0,
+				"{lastresult}" 	=> ($count_4_60fa55 == sizeof($results_mediaresult)-1) ? 1 : 0,
+				"{resultcount}" => ($count_4_60fa55+1),
+				"{maxpages}"    => $maxPages_4_60fa55,
+>>>>>>> MERGE-SOURCE
 				"{currentpage}" => ($search_mediaresult->getAttribute('page')+1),
+<<<<<<< TREE
 <<<<<<< TREE
 				"{maxresults}"  => $maxResults_4_42dd63,
 =======
 				"{maxresults}"  => $maxResults_4_d51f22,
 >>>>>>> MERGE-SOURCE
+=======
+				"{maxresults}"  => $maxResults_4_60fa55,
+				"{altclass}"    => (($count_4_60fa55+1) % 2) ? "CMS_odd" : "CMS_even",
+>>>>>>> MERGE-SOURCE
 			);
+<<<<<<< TREE
 <<<<<<< TREE
 			//IF TAG START 5_c8752f
 =======
@@ -245,8 +312,16 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 			if ($ifcondition) {
 				$func = create_function("","return (".$ifcondition.");");
 				if ($func()) {
+=======
+			//IF TAG START 5_bd0fa3
+			$ifcondition_5_bd0fa3 = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'flv' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'mp3' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'jpg' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'gif' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'png'", $replace);
+			if ($ifcondition_5_bd0fa3) {
+				$func_5_bd0fa3 = create_function("","return (".$ifcondition_5_bd0fa3.");");
+				if ($func_5_bd0fa3()) {
+>>>>>>> MERGE-SOURCE
 					$content .="
 					<a href=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" target=\"_blank\" title=\"T&eacute;l&eacute;charger le document '".$object[2]->objectValues(9)->getValue('fileLabel','')."' (".$object[2]->objectValues(9)->getValue('fileExtension','')." - ".$object[2]->objectValues(9)->getValue('fileSize','')."Mo)\">";
+<<<<<<< TREE
 <<<<<<< TREE
 					//IF TAG START 6_1d2975
 =======
@@ -256,15 +331,30 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
 						if ($func()) {
+=======
+					//IF TAG START 6_f74197
+					$ifcondition_6_f74197 = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileIcon','')), $replace);
+					if ($ifcondition_6_f74197) {
+						$func_6_f74197 = create_function("","return (".$ifcondition_6_f74197.");");
+						if ($func_6_f74197()) {
+>>>>>>> MERGE-SOURCE
 							$content .="<img src=\"".$object[2]->objectValues(9)->getValue('fileIcon','')."\" alt=\"Fichier ".$object[2]->objectValues(9)->getValue('fileExtension','')."\" title=\"Fichier ".$object[2]->objectValues(9)->getValue('fileExtension','')."\" />";
 						}
+<<<<<<< TREE
 <<<<<<< TREE
 					}//IF TAG END 6_1d2975
 =======
 					}//IF TAG END 6_2b386f
 >>>>>>> MERGE-SOURCE
+=======
+						unset($func_6_f74197);
+					}
+					unset($ifcondition_6_f74197);
+					//IF TAG END 6_f74197
+>>>>>>> MERGE-SOURCE
 					$content .=" ".$object[2]->getValue('label','')."</a>
 					";
+<<<<<<< TREE
 <<<<<<< TREE
 					//IF TAG START 7_a066a6
 =======
@@ -274,6 +364,13 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
 						if ($func()) {
+=======
+					//IF TAG START 7_b6c337
+					$ifcondition_7_b6c337 = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
+					if ($ifcondition_7_b6c337) {
+						$func_7_b6c337 = create_function("","return (".$ifcondition_7_b6c337.");");
+						if ($func_7_b6c337()) {
+>>>>>>> MERGE-SOURCE
 							$content .="
 							<div class=\"shadow\">
 							<img src=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('thumbnail','')."\" alt=\"".$object[2]->getValue('label','')."\" title=\"".$object[2]->getValue('label','')."\" />
@@ -281,11 +378,19 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 							";
 						}
 <<<<<<< TREE
+<<<<<<< TREE
 					}//IF TAG END 7_a066a6
 =======
 					}//IF TAG END 7_9f80a0
 >>>>>>> MERGE-SOURCE
+=======
+						unset($func_7_b6c337);
+					}
+					unset($ifcondition_7_b6c337);
+					//IF TAG END 7_b6c337
+>>>>>>> MERGE-SOURCE
 				}
+<<<<<<< TREE
 <<<<<<< TREE
 			}//IF TAG END 5_c8752f
 			//IF TAG START 8_825234
@@ -306,12 +411,29 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
 						if ($func()) {
+=======
+				unset($func_5_bd0fa3);
+			}
+			unset($ifcondition_5_bd0fa3);
+			//IF TAG END 5_bd0fa3
+			//IF TAG START 8_33a9ee
+			$ifcondition_8_33a9ee = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'flv'", $replace);
+			if ($ifcondition_8_33a9ee) {
+				$func_8_33a9ee = create_function("","return (".$ifcondition_8_33a9ee.");");
+				if ($func_8_33a9ee()) {
+					//IF TAG START 9_af05be
+					$ifcondition_9_af05be = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
+					if ($ifcondition_9_af05be) {
+						$func_9_af05be = create_function("","return (".$ifcondition_9_af05be.");");
+						if ($func_9_af05be()) {
+>>>>>>> MERGE-SOURCE
 							$content .="
 							<script type=\"text/javascript\">
 							swfobject.embedSWF('/automne/playerflv/player_flv.swf', 'media-".$object[2]->getValue('id','')."', '320', '200', '9.0.0', '/automne/swfobject/expressInstall.swf', {flv:'".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."', configxml:'/automne/playerflv/config_playerflv.xml', startimage:'".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('thumbnail','')."'}, {allowfullscreen:true, wmode:'transparent'}, false);
 							</script>
 							";
 						}
+<<<<<<< TREE
 <<<<<<< TREE
 					}//IF TAG END 9_e30186
 					//IF TAG START 10_e9c2d1
@@ -323,6 +445,17 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
 						if ($func()) {
+=======
+						unset($func_9_af05be);
+					}
+					unset($ifcondition_9_af05be);
+					//IF TAG END 9_af05be
+					//IF TAG START 10_b5a50e
+					$ifcondition_10_b5a50e = CMS_polymod_definition_parsing::replaceVars("!".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
+					if ($ifcondition_10_b5a50e) {
+						$func_10_b5a50e = create_function("","return (".$ifcondition_10_b5a50e.");");
+						if ($func_10_b5a50e()) {
+>>>>>>> MERGE-SOURCE
 							$content .="
 							<script type=\"text/javascript\">
 							swfobject.embedSWF('/automne/playerflv/player_flv.swf', 'media-".$object[2]->getValue('id','')."', '320', '200', '9.0.0', '/automne/swfobject/expressInstall.swf', {flv:'".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."', configxml:'/automne/playerflv/config_playerflv.xml'}, {allowfullscreen:true, wmode:'transparent'}, false);
@@ -330,9 +463,16 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 							";
 						}
 <<<<<<< TREE
+<<<<<<< TREE
 					}//IF TAG END 10_e9c2d1
 =======
 					}//IF TAG END 10_3db0b9
+>>>>>>> MERGE-SOURCE
+=======
+						unset($func_10_b5a50e);
+					}
+					unset($ifcondition_10_b5a50e);
+					//IF TAG END 10_b5a50e
 >>>>>>> MERGE-SOURCE
 					$content .="
 					<div id=\"media-".$object[2]->getValue('id','')."\" class=\"pmedias-video\" style=\"width:320px;height:200px;\">
@@ -340,6 +480,7 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					</div>
 					";
 				}
+<<<<<<< TREE
 <<<<<<< TREE
 			}//IF TAG END 8_825234
 			//IF TAG START 11_b98143
@@ -351,6 +492,17 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 			if ($ifcondition) {
 				$func = create_function("","return (".$ifcondition.");");
 				if ($func()) {
+=======
+				unset($func_8_33a9ee);
+			}
+			unset($ifcondition_8_33a9ee);
+			//IF TAG END 8_33a9ee
+			//IF TAG START 11_223ee6
+			$ifcondition_11_223ee6 = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'mp3'", $replace);
+			if ($ifcondition_11_223ee6) {
+				$func_11_223ee6 = create_function("","return (".$ifcondition_11_223ee6.");");
+				if ($func_11_223ee6()) {
+>>>>>>> MERGE-SOURCE
 					$content .="
 					<script type=\"text/javascript\">
 					swfobject.embedSWF('/automne/playermp3/player_mp3.swf', 'media-".$object[2]->getValue('id','')."', '200', '20', '9.0.0', '/automne/swfobject/expressInstall.swf', {mp3:'".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."', configxml:'/automne/playermp3/config_playermp3.xml'}, {wmode:'transparent'}, false);
@@ -360,6 +512,7 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					</div>
 					";
 <<<<<<< TREE
+<<<<<<< TREE
 					//IF TAG START 12_e87d3f
 =======
 					//IF TAG START 12_a3652c
@@ -368,6 +521,13 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
 						if ($func()) {
+=======
+					//IF TAG START 12_5e6a8d
+					$ifcondition_12_5e6a8d = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
+					if ($ifcondition_12_5e6a8d) {
+						$func_12_5e6a8d = create_function("","return (".$ifcondition_12_5e6a8d.");");
+						if ($func_12_5e6a8d()) {
+>>>>>>> MERGE-SOURCE
 							$content .="
 							<div class=\"shadow\">
 							<img src=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('thumbnail','')."\" alt=\"".$object[2]->getValue('label','')."\" title=\"".$object[2]->getValue('label','')."\" />
@@ -375,11 +535,19 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 							";
 						}
 <<<<<<< TREE
+<<<<<<< TREE
 					}//IF TAG END 12_e87d3f
 =======
 					}//IF TAG END 12_a3652c
 >>>>>>> MERGE-SOURCE
+=======
+						unset($func_12_5e6a8d);
+					}
+					unset($ifcondition_12_5e6a8d);
+					//IF TAG END 12_5e6a8d
+>>>>>>> MERGE-SOURCE
 				}
+<<<<<<< TREE
 <<<<<<< TREE
 			}//IF TAG END 11_b98143
 			//IF TAG START 13_ed1f83
@@ -391,9 +559,21 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 			if ($ifcondition) {
 				$func = create_function("","return (".$ifcondition.");");
 				if ($func()) {
+=======
+				unset($func_11_223ee6);
+			}
+			unset($ifcondition_11_223ee6);
+			//IF TAG END 11_223ee6
+			//IF TAG START 13_3b65ba
+			$ifcondition_13_3b65ba = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'jpg' || ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'gif' || ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'png'", $replace);
+			if ($ifcondition_13_3b65ba) {
+				$func_13_3b65ba = create_function("","return (".$ifcondition_13_3b65ba.");");
+				if ($func_13_3b65ba()) {
+>>>>>>> MERGE-SOURCE
 					$content .="
 					<div class=\"shadow\">
 					";
+<<<<<<< TREE
 <<<<<<< TREE
 					//IF TAG START 14_e7c819
 =======
@@ -403,10 +583,18 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
 						if ($func()) {
+=======
+					//IF TAG START 14_c1da7e
+					$ifcondition_14_c1da7e = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
+					if ($ifcondition_14_c1da7e) {
+						$func_14_c1da7e = create_function("","return (".$ifcondition_14_c1da7e.");");
+						if ($func_14_c1da7e()) {
+>>>>>>> MERGE-SOURCE
 							$content .="
 							<a href=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" onclick=\"javascript:CMS_openPopUpImage('imagezoom.php?location=public&amp;module=pmedia&amp;file=".$object[2]->objectValues(9)->getValue('filename','')."&amp;label=".$object[2]->getValue('label','js')."');return false;\" target=\"_blank\" title=\"Voir l'image '".$object[2]->getValue('label','')."' (".$object[2]->objectValues(9)->getValue('fileExtension','')." - ".$object[2]->objectValues(9)->getValue('fileSize','')."Mo)\"><img src=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('thumbnail','')."\" alt=\"".$object[2]->getValue('label','')."\" title=\"".$object[2]->getValue('label','')."\" /></a>
 							";
 						}
+<<<<<<< TREE
 <<<<<<< TREE
 					}//IF TAG END 14_e7c819
 					//IF TAG START 15_7d9388
@@ -418,19 +606,38 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
 						if ($func()) {
+=======
+						unset($func_14_c1da7e);
+					}
+					unset($ifcondition_14_c1da7e);
+					//IF TAG END 14_c1da7e
+					//IF TAG START 15_b01603
+					$ifcondition_15_b01603 = CMS_polymod_definition_parsing::replaceVars("!".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
+					if ($ifcondition_15_b01603) {
+						$func_15_b01603 = create_function("","return (".$ifcondition_15_b01603.");");
+						if ($func_15_b01603()) {
+>>>>>>> MERGE-SOURCE
 							$content .="
 							<img src=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" alt=\"".$object[2]->getValue('label','')."\" title=\"".$object[2]->getValue('label','')."\" style=\"max-width:200px;\" />
 							";
 						}
 <<<<<<< TREE
+<<<<<<< TREE
 					}//IF TAG END 15_7d9388
 =======
 					}//IF TAG END 15_140576
+>>>>>>> MERGE-SOURCE
+=======
+						unset($func_15_b01603);
+					}
+					unset($ifcondition_15_b01603);
+					//IF TAG END 15_b01603
 >>>>>>> MERGE-SOURCE
 					$content .="
 					</div>
 					";
 				}
+<<<<<<< TREE
 <<<<<<< TREE
 			}//IF TAG END 13_ed1f83
 			$count_4_42dd63++;
@@ -438,13 +645,25 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 			}//IF TAG END 13_7ce26a
 			$count_4_d51f22++;
 >>>>>>> MERGE-SOURCE
+=======
+				unset($func_13_3b65ba);
+			}
+			unset($ifcondition_13_3b65ba);
+			//IF TAG END 13_3b65ba
+			$count_4_60fa55++;
+>>>>>>> MERGE-SOURCE
 			//do all result vars replacement
+<<<<<<< TREE
 <<<<<<< TREE
 			$content_4_42dd63.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
 =======
 			$content_4_d51f22.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
 >>>>>>> MERGE-SOURCE
+=======
+			$content_4_60fa55.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
+>>>>>>> MERGE-SOURCE
 		}
+<<<<<<< TREE
 <<<<<<< TREE
 		$content = $content_4_42dd63; //retrieve previous content var if any
 		$replace = $replace_4_42dd63; //retrieve previous replace vars if any
@@ -454,15 +673,28 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 		$replace = $replace_4_d51f22; //retrieve previous replace vars if any
 		$object[$objectDefinition_mediaresult] = $object_4_d51f22; //retrieve previous object search if any
 >>>>>>> MERGE-SOURCE
+=======
+		$content = $content_4_60fa55; //retrieve previous content var if any
+		unset($content_4_60fa55);
+		$replace = $replace_4_60fa55; //retrieve previous replace vars if any
+		unset($replace_4_60fa55);
+		$object[$objectDefinition_mediaresult] = $object_4_60fa55; //retrieve previous object search if any
+		unset($object_4_60fa55);
+>>>>>>> MERGE-SOURCE
 	}
+<<<<<<< TREE
 <<<<<<< TREE
 	//RESULT mediaresult TAG END 4_42dd63
 =======
 	//RESULT mediaresult TAG END 4_d51f22
 >>>>>>> MERGE-SOURCE
+=======
+	//RESULT mediaresult TAG END 4_60fa55
+>>>>>>> MERGE-SOURCE
 	//destroy search and results mediaresult objects
 	unset($search_mediaresult);
 	unset($results_mediaresult);
+<<<<<<< TREE
 <<<<<<< TREE
 	//SEARCH mediaresult TAG END 2_51bb57
 =======
@@ -470,7 +702,26 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 >>>>>>> MERGE-SOURCE
 	echo CMS_polymod_definition_parsing::replaceVars($content, $replace);
 }
+=======
+	//SEARCH mediaresult TAG END 2_39bbe9
+	$content = CMS_polymod_definition_parsing::replaceVars($content, $replace);
+	$content .= '<!--{elements:'.base64_encode(serialize(array (
+		'module' =>
+		array (
+			0 => 'pmedia',
+		),
+	))).'}-->';
+	echo $content;
+	unset($content);}
+	  ?>
+	<?php $cache_78bdfccbed02c43d004345dfb16c25f2_content = $cache_78bdfccbed02c43d004345dfb16c25f2->endSave();
+endif;
+unset($cache_78bdfccbed02c43d004345dfb16c25f2);
+echo $cache_78bdfccbed02c43d004345dfb16c25f2_content;
+unset($cache_78bdfccbed02c43d004345dfb16c25f2_content);
+>>>>>>> MERGE-SOURCE
   ?>
+
 	</div>
 	
 		<div class="text"><h3><?php $parameters = array (
@@ -690,10 +941,18 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 
 <?php /* End row [200 Texte - r44_200_Texte.xml] */  ?><?php /* Start row [230 Texte et Média à Droite - r69_Texte_-_Media_a_droite.xml] */  ?>
 	<div class="imgRight">
-		<?php /*Generated on Fri, 19 Mar 2010 15:24:28 +0100 by Automne (TM) 4.0.1 */
+		<?php $cache_310b8e03478cb3c45f207c7248ba7f1e = new CMS_cache('310b8e03478cb3c45f207c7248ba7f1e', 'polymod', 'auto', true);
+if ($cache_310b8e03478cb3c45f207c7248ba7f1e->exist()):
+	//Get content from cache
+	$cache_310b8e03478cb3c45f207c7248ba7f1e_content = $cache_310b8e03478cb3c45f207c7248ba7f1e->load();
+else:
+	$cache_310b8e03478cb3c45f207c7248ba7f1e->start();
+	  ?>
+<?php /*Generated on Mon, 24 May 2010 16:59:48 +0200 by Automne (TM) 4.0.2 */
 if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 'CMS_profile_user') && $cms_user->hasModuleClearance('pmedia', CLEARANCE_MODULE_VIEW))){
 	$content = "";
 	$replace = "";
+	$atmIfResults = array();
 	if (!isset($objectDefinitions) || !is_array($objectDefinitions)) $objectDefinitions = array();
 	$blockAttributes = array (
 		'search' =>
@@ -714,9 +973,13 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 	if (!isset($object[2])) $object[2] = new CMS_poly_object(2, 0, array(), $parameters['public']);
 	$parameters['module'] = 'pmedia';
 <<<<<<< TREE
+<<<<<<< TREE
 	//SEARCH mediaresult TAG START 16_70dfa0
 =======
 	//SEARCH mediaresult TAG START 16_3e10da
+>>>>>>> MERGE-SOURCE
+=======
+	//SEARCH mediaresult TAG START 16_41eb2a
 >>>>>>> MERGE-SOURCE
 	$objectDefinition_mediaresult = '2';
 	if (!isset($objectDefinitions[$objectDefinition_mediaresult])) {
@@ -724,23 +987,35 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 	}
 	//public search ?
 <<<<<<< TREE
+<<<<<<< TREE
 	$public_16_70dfa0 = isset($public_search) ? $public_search : false;
 =======
 	$public_16_3e10da = isset($public_search) ? $public_search : false;
 >>>>>>> MERGE-SOURCE
+=======
+	$public_16_41eb2a = isset($public_search) ? $public_search : false;
+>>>>>>> MERGE-SOURCE
 	//get search params
+<<<<<<< TREE
 <<<<<<< TREE
 	$search_mediaresult = new CMS_object_search($objectDefinitions[$objectDefinition_mediaresult], $public_16_70dfa0);
 =======
 	$search_mediaresult = new CMS_object_search($objectDefinitions[$objectDefinition_mediaresult], $public_16_3e10da);
 >>>>>>> MERGE-SOURCE
+=======
+	$search_mediaresult = new CMS_object_search($objectDefinitions[$objectDefinition_mediaresult], $public_16_41eb2a);
+>>>>>>> MERGE-SOURCE
 	$launchSearch_mediaresult = true;
 	//add search conditions if any
 	if (isset($blockAttributes['search']['mediaresult']['item'])) {
 <<<<<<< TREE
+<<<<<<< TREE
 		$values_17_37f182 = array (
 =======
 		$values_17_3b3df9 = array (
+>>>>>>> MERGE-SOURCE
+=======
+		$values_17_9bb5a1 = array (
 >>>>>>> MERGE-SOURCE
 			'search' => 'mediaresult',
 			'type' => 'item',
@@ -748,14 +1023,20 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 			'mandatory' => 'true',
 		);
 <<<<<<< TREE
+<<<<<<< TREE
 		$values_17_37f182['value'] = $blockAttributes['search']['mediaresult']['item'];
 		if ($values_17_37f182['type'] == 'publication date after' || $values_17_37f182['type'] == 'publication date before') {
 =======
 		$values_17_3b3df9['value'] = $blockAttributes['search']['mediaresult']['item'];
 		if ($values_17_3b3df9['type'] == 'publication date after' || $values_17_3b3df9['type'] == 'publication date before') {
 >>>>>>> MERGE-SOURCE
+=======
+		$values_17_9bb5a1['value'] = $blockAttributes['search']['mediaresult']['item'];
+		if ($values_17_9bb5a1['type'] == 'publication date after' || $values_17_9bb5a1['type'] == 'publication date before') {
+>>>>>>> MERGE-SOURCE
 			//convert DB format to current language format
 			$dt = new CMS_date();
+<<<<<<< TREE
 <<<<<<< TREE
 			$dt->setFromDBValue($values_17_37f182['value']);
 			$values_17_37f182['value'] = $dt->getLocalizedDate($cms_language->getDateFormat());
@@ -763,20 +1044,32 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 			$dt->setFromDBValue($values_17_3b3df9['value']);
 			$values_17_3b3df9['value'] = $dt->getLocalizedDate($cms_language->getDateFormat());
 >>>>>>> MERGE-SOURCE
+=======
+			$dt->setFromDBValue($values_17_9bb5a1['value']);
+			$values_17_9bb5a1['value'] = $dt->getLocalizedDate($cms_language->getDateFormat());
+>>>>>>> MERGE-SOURCE
 		}
+<<<<<<< TREE
 <<<<<<< TREE
 		$launchSearch_mediaresult = (CMS_polymod_definition_parsing::addSearchCondition($search_mediaresult, $values_17_37f182)) ? $launchSearch_mediaresult : false;
 =======
 		$launchSearch_mediaresult = (CMS_polymod_definition_parsing::addSearchCondition($search_mediaresult, $values_17_3b3df9)) ? $launchSearch_mediaresult : false;
+>>>>>>> MERGE-SOURCE
+=======
+		$launchSearch_mediaresult = (CMS_polymod_definition_parsing::addSearchCondition($search_mediaresult, $values_17_9bb5a1)) ? $launchSearch_mediaresult : false;
 >>>>>>> MERGE-SOURCE
 	} elseif (true == true) {
 		//search parameter is mandatory and no value found
 		$launchSearch_mediaresult = false;
 	}
 <<<<<<< TREE
+<<<<<<< TREE
 	//RESULT mediaresult TAG START 18_26a36c
 =======
 	//RESULT mediaresult TAG START 18_091e55
+>>>>>>> MERGE-SOURCE
+=======
+	//RESULT mediaresult TAG START 18_49e70c
 >>>>>>> MERGE-SOURCE
 	//launch search mediaresult if not already done
 	if($launchSearch_mediaresult && !isset($results_mediaresult)) {
@@ -790,6 +1083,7 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 		$results_mediaresult = array();
 	}
 	if ($results_mediaresult) {
+<<<<<<< TREE
 <<<<<<< TREE
 		$object_18_26a36c = (isset($object[$objectDefinition_mediaresult])) ? $object[$objectDefinition_mediaresult] : ""; //save previous object search if any
 		$replace_18_26a36c = $replace; //save previous replace vars if any
@@ -805,10 +1099,19 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 		$maxPages_18_091e55 = $search_mediaresult->getMaxPages();
 		$maxResults_18_091e55 = $search_mediaresult->getNumRows();
 >>>>>>> MERGE-SOURCE
+=======
+		$object_18_49e70c = (isset($object[$objectDefinition_mediaresult])) ? $object[$objectDefinition_mediaresult] : ""; //save previous object search if any
+		$replace_18_49e70c = $replace; //save previous replace vars if any
+		$count_18_49e70c = 0;
+		$content_18_49e70c = $content; //save previous content var if any
+		$maxPages_18_49e70c = $search_mediaresult->getMaxPages();
+		$maxResults_18_49e70c = $search_mediaresult->getNumRows();
+>>>>>>> MERGE-SOURCE
 		foreach ($results_mediaresult as $object[$objectDefinition_mediaresult]) {
 			$content = "";
 			$replace["atm-search"] = array (
 				"{resultid}" 	=> (isset($resultID_mediaresult)) ? $resultID_mediaresult : $object[$objectDefinition_mediaresult]->getID(),
+<<<<<<< TREE
 <<<<<<< TREE
 				"{firstresult}" => (!$count_18_26a36c) ? 1 : 0,
 				"{lastresult}" 	=> ($count_18_26a36c == sizeof($results_mediaresult)-1) ? 1 : 0,
@@ -820,13 +1123,25 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 				"{resultcount}" => ($count_18_091e55+1),
 				"{maxpages}"    => $maxPages_18_091e55,
 >>>>>>> MERGE-SOURCE
+=======
+				"{firstresult}" => (!$count_18_49e70c) ? 1 : 0,
+				"{lastresult}" 	=> ($count_18_49e70c == sizeof($results_mediaresult)-1) ? 1 : 0,
+				"{resultcount}" => ($count_18_49e70c+1),
+				"{maxpages}"    => $maxPages_18_49e70c,
+>>>>>>> MERGE-SOURCE
 				"{currentpage}" => ($search_mediaresult->getAttribute('page')+1),
+<<<<<<< TREE
 <<<<<<< TREE
 				"{maxresults}"  => $maxResults_18_26a36c,
 =======
 				"{maxresults}"  => $maxResults_18_091e55,
 >>>>>>> MERGE-SOURCE
+=======
+				"{maxresults}"  => $maxResults_18_49e70c,
+				"{altclass}"    => (($count_18_49e70c+1) % 2) ? "CMS_odd" : "CMS_even",
+>>>>>>> MERGE-SOURCE
 			);
+<<<<<<< TREE
 <<<<<<< TREE
 			//IF TAG START 19_c72fae
 =======
@@ -836,8 +1151,16 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 			if ($ifcondition) {
 				$func = create_function("","return (".$ifcondition.");");
 				if ($func()) {
+=======
+			//IF TAG START 19_588d55
+			$ifcondition_19_588d55 = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'flv' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'mp3' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'jpg' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'gif' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'png'", $replace);
+			if ($ifcondition_19_588d55) {
+				$func_19_588d55 = create_function("","return (".$ifcondition_19_588d55.");");
+				if ($func_19_588d55()) {
+>>>>>>> MERGE-SOURCE
 					$content .="
 					<a href=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" target=\"_blank\" title=\"T&eacute;l&eacute;charger le document '".$object[2]->objectValues(9)->getValue('fileLabel','')."' (".$object[2]->objectValues(9)->getValue('fileExtension','')." - ".$object[2]->objectValues(9)->getValue('fileSize','')."Mo)\">";
+<<<<<<< TREE
 <<<<<<< TREE
 					//IF TAG START 20_40aa40
 =======
@@ -847,15 +1170,30 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
 						if ($func()) {
+=======
+					//IF TAG START 20_78bccd
+					$ifcondition_20_78bccd = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileIcon','')), $replace);
+					if ($ifcondition_20_78bccd) {
+						$func_20_78bccd = create_function("","return (".$ifcondition_20_78bccd.");");
+						if ($func_20_78bccd()) {
+>>>>>>> MERGE-SOURCE
 							$content .="<img src=\"".$object[2]->objectValues(9)->getValue('fileIcon','')."\" alt=\"Fichier ".$object[2]->objectValues(9)->getValue('fileExtension','')."\" title=\"Fichier ".$object[2]->objectValues(9)->getValue('fileExtension','')."\" />";
 						}
+<<<<<<< TREE
 <<<<<<< TREE
 					}//IF TAG END 20_40aa40
 =======
 					}//IF TAG END 20_916186
 >>>>>>> MERGE-SOURCE
+=======
+						unset($func_20_78bccd);
+					}
+					unset($ifcondition_20_78bccd);
+					//IF TAG END 20_78bccd
+>>>>>>> MERGE-SOURCE
 					$content .=" ".$object[2]->getValue('label','')."</a>
 					";
+<<<<<<< TREE
 <<<<<<< TREE
 					//IF TAG START 21_39b4fd
 =======
@@ -865,6 +1203,13 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
 						if ($func()) {
+=======
+					//IF TAG START 21_1681fd
+					$ifcondition_21_1681fd = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
+					if ($ifcondition_21_1681fd) {
+						$func_21_1681fd = create_function("","return (".$ifcondition_21_1681fd.");");
+						if ($func_21_1681fd()) {
+>>>>>>> MERGE-SOURCE
 							$content .="
 							<div class=\"shadow\">
 							<img src=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('thumbnail','')."\" alt=\"".$object[2]->getValue('label','')."\" title=\"".$object[2]->getValue('label','')."\" />
@@ -872,11 +1217,19 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 							";
 						}
 <<<<<<< TREE
+<<<<<<< TREE
 					}//IF TAG END 21_39b4fd
 =======
 					}//IF TAG END 21_c3a8b9
 >>>>>>> MERGE-SOURCE
+=======
+						unset($func_21_1681fd);
+					}
+					unset($ifcondition_21_1681fd);
+					//IF TAG END 21_1681fd
+>>>>>>> MERGE-SOURCE
 				}
+<<<<<<< TREE
 <<<<<<< TREE
 			}//IF TAG END 19_c72fae
 			//IF TAG START 22_54b1e3
@@ -897,12 +1250,29 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
 						if ($func()) {
+=======
+				unset($func_19_588d55);
+			}
+			unset($ifcondition_19_588d55);
+			//IF TAG END 19_588d55
+			//IF TAG START 22_f6140f
+			$ifcondition_22_f6140f = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'flv'", $replace);
+			if ($ifcondition_22_f6140f) {
+				$func_22_f6140f = create_function("","return (".$ifcondition_22_f6140f.");");
+				if ($func_22_f6140f()) {
+					//IF TAG START 23_a44cc7
+					$ifcondition_23_a44cc7 = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
+					if ($ifcondition_23_a44cc7) {
+						$func_23_a44cc7 = create_function("","return (".$ifcondition_23_a44cc7.");");
+						if ($func_23_a44cc7()) {
+>>>>>>> MERGE-SOURCE
 							$content .="
 							<script type=\"text/javascript\">
 							swfobject.embedSWF('/automne/playerflv/player_flv.swf', 'media-".$object[2]->getValue('id','')."', '320', '200', '9.0.0', '/automne/swfobject/expressInstall.swf', {flv:'".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."', configxml:'/automne/playerflv/config_playerflv.xml', startimage:'".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('thumbnail','')."'}, {allowfullscreen:true, wmode:'transparent'}, false);
 							</script>
 							";
 						}
+<<<<<<< TREE
 <<<<<<< TREE
 					}//IF TAG END 23_f94fb2
 					//IF TAG START 24_d8d829
@@ -914,6 +1284,17 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
 						if ($func()) {
+=======
+						unset($func_23_a44cc7);
+					}
+					unset($ifcondition_23_a44cc7);
+					//IF TAG END 23_a44cc7
+					//IF TAG START 24_a4fb57
+					$ifcondition_24_a4fb57 = CMS_polymod_definition_parsing::replaceVars("!".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
+					if ($ifcondition_24_a4fb57) {
+						$func_24_a4fb57 = create_function("","return (".$ifcondition_24_a4fb57.");");
+						if ($func_24_a4fb57()) {
+>>>>>>> MERGE-SOURCE
 							$content .="
 							<script type=\"text/javascript\">
 							swfobject.embedSWF('/automne/playerflv/player_flv.swf', 'media-".$object[2]->getValue('id','')."', '320', '200', '9.0.0', '/automne/swfobject/expressInstall.swf', {flv:'".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."', configxml:'/automne/playerflv/config_playerflv.xml'}, {allowfullscreen:true, wmode:'transparent'}, false);
@@ -921,9 +1302,16 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 							";
 						}
 <<<<<<< TREE
+<<<<<<< TREE
 					}//IF TAG END 24_d8d829
 =======
 					}//IF TAG END 24_8166ff
+>>>>>>> MERGE-SOURCE
+=======
+						unset($func_24_a4fb57);
+					}
+					unset($ifcondition_24_a4fb57);
+					//IF TAG END 24_a4fb57
 >>>>>>> MERGE-SOURCE
 					$content .="
 					<div id=\"media-".$object[2]->getValue('id','')."\" class=\"pmedias-video\" style=\"width:320px;height:200px;\">
@@ -931,6 +1319,7 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					</div>
 					";
 				}
+<<<<<<< TREE
 <<<<<<< TREE
 			}//IF TAG END 22_54b1e3
 			//IF TAG START 25_48cc3e
@@ -942,6 +1331,17 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 			if ($ifcondition) {
 				$func = create_function("","return (".$ifcondition.");");
 				if ($func()) {
+=======
+				unset($func_22_f6140f);
+			}
+			unset($ifcondition_22_f6140f);
+			//IF TAG END 22_f6140f
+			//IF TAG START 25_34cd51
+			$ifcondition_25_34cd51 = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'mp3'", $replace);
+			if ($ifcondition_25_34cd51) {
+				$func_25_34cd51 = create_function("","return (".$ifcondition_25_34cd51.");");
+				if ($func_25_34cd51()) {
+>>>>>>> MERGE-SOURCE
 					$content .="
 					<script type=\"text/javascript\">
 					swfobject.embedSWF('/automne/playermp3/player_mp3.swf', 'media-".$object[2]->getValue('id','')."', '200', '20', '9.0.0', '/automne/swfobject/expressInstall.swf', {mp3:'".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."', configxml:'/automne/playermp3/config_playermp3.xml'}, {wmode:'transparent'}, false);
@@ -951,6 +1351,7 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					</div>
 					";
 <<<<<<< TREE
+<<<<<<< TREE
 					//IF TAG START 26_38775f
 =======
 					//IF TAG START 26_d30c1a
@@ -959,6 +1360,13 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
 						if ($func()) {
+=======
+					//IF TAG START 26_669957
+					$ifcondition_26_669957 = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
+					if ($ifcondition_26_669957) {
+						$func_26_669957 = create_function("","return (".$ifcondition_26_669957.");");
+						if ($func_26_669957()) {
+>>>>>>> MERGE-SOURCE
 							$content .="
 							<div class=\"shadow\">
 							<img src=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('thumbnail','')."\" alt=\"".$object[2]->getValue('label','')."\" title=\"".$object[2]->getValue('label','')."\" />
@@ -966,11 +1374,19 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 							";
 						}
 <<<<<<< TREE
+<<<<<<< TREE
 					}//IF TAG END 26_38775f
 =======
 					}//IF TAG END 26_d30c1a
 >>>>>>> MERGE-SOURCE
+=======
+						unset($func_26_669957);
+					}
+					unset($ifcondition_26_669957);
+					//IF TAG END 26_669957
+>>>>>>> MERGE-SOURCE
 				}
+<<<<<<< TREE
 <<<<<<< TREE
 			}//IF TAG END 25_48cc3e
 			//IF TAG START 27_9d9f29
@@ -982,9 +1398,21 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 			if ($ifcondition) {
 				$func = create_function("","return (".$ifcondition.");");
 				if ($func()) {
+=======
+				unset($func_25_34cd51);
+			}
+			unset($ifcondition_25_34cd51);
+			//IF TAG END 25_34cd51
+			//IF TAG START 27_926616
+			$ifcondition_27_926616 = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'jpg' || ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'gif' || ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'png'", $replace);
+			if ($ifcondition_27_926616) {
+				$func_27_926616 = create_function("","return (".$ifcondition_27_926616.");");
+				if ($func_27_926616()) {
+>>>>>>> MERGE-SOURCE
 					$content .="
 					<div class=\"shadow\">
 					";
+<<<<<<< TREE
 <<<<<<< TREE
 					//IF TAG START 28_ed5a89
 =======
@@ -994,10 +1422,18 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
 						if ($func()) {
+=======
+					//IF TAG START 28_41ca18
+					$ifcondition_28_41ca18 = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
+					if ($ifcondition_28_41ca18) {
+						$func_28_41ca18 = create_function("","return (".$ifcondition_28_41ca18.");");
+						if ($func_28_41ca18()) {
+>>>>>>> MERGE-SOURCE
 							$content .="
 							<a href=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" onclick=\"javascript:CMS_openPopUpImage('imagezoom.php?location=public&amp;module=pmedia&amp;file=".$object[2]->objectValues(9)->getValue('filename','')."&amp;label=".$object[2]->getValue('label','js')."');return false;\" target=\"_blank\" title=\"Voir l'image '".$object[2]->getValue('label','')."' (".$object[2]->objectValues(9)->getValue('fileExtension','')." - ".$object[2]->objectValues(9)->getValue('fileSize','')."Mo)\"><img src=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('thumbnail','')."\" alt=\"".$object[2]->getValue('label','')."\" title=\"".$object[2]->getValue('label','')."\" /></a>
 							";
 						}
+<<<<<<< TREE
 <<<<<<< TREE
 					}//IF TAG END 28_ed5a89
 					//IF TAG START 29_29e92b
@@ -1009,19 +1445,38 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
 						if ($func()) {
+=======
+						unset($func_28_41ca18);
+					}
+					unset($ifcondition_28_41ca18);
+					//IF TAG END 28_41ca18
+					//IF TAG START 29_bd9741
+					$ifcondition_29_bd9741 = CMS_polymod_definition_parsing::replaceVars("!".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
+					if ($ifcondition_29_bd9741) {
+						$func_29_bd9741 = create_function("","return (".$ifcondition_29_bd9741.");");
+						if ($func_29_bd9741()) {
+>>>>>>> MERGE-SOURCE
 							$content .="
 							<img src=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" alt=\"".$object[2]->getValue('label','')."\" title=\"".$object[2]->getValue('label','')."\" style=\"max-width:200px;\" />
 							";
 						}
 <<<<<<< TREE
+<<<<<<< TREE
 					}//IF TAG END 29_29e92b
 =======
 					}//IF TAG END 29_a923da
+>>>>>>> MERGE-SOURCE
+=======
+						unset($func_29_bd9741);
+					}
+					unset($ifcondition_29_bd9741);
+					//IF TAG END 29_bd9741
 >>>>>>> MERGE-SOURCE
 					$content .="
 					</div>
 					";
 				}
+<<<<<<< TREE
 <<<<<<< TREE
 			}//IF TAG END 27_9d9f29
 			$count_18_26a36c++;
@@ -1029,13 +1484,25 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 			}//IF TAG END 27_33c969
 			$count_18_091e55++;
 >>>>>>> MERGE-SOURCE
+=======
+				unset($func_27_926616);
+			}
+			unset($ifcondition_27_926616);
+			//IF TAG END 27_926616
+			$count_18_49e70c++;
+>>>>>>> MERGE-SOURCE
 			//do all result vars replacement
+<<<<<<< TREE
 <<<<<<< TREE
 			$content_18_26a36c.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
 =======
 			$content_18_091e55.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
 >>>>>>> MERGE-SOURCE
+=======
+			$content_18_49e70c.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
+>>>>>>> MERGE-SOURCE
 		}
+<<<<<<< TREE
 <<<<<<< TREE
 		$content = $content_18_26a36c; //retrieve previous content var if any
 		$replace = $replace_18_26a36c; //retrieve previous replace vars if any
@@ -1045,15 +1512,28 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 		$replace = $replace_18_091e55; //retrieve previous replace vars if any
 		$object[$objectDefinition_mediaresult] = $object_18_091e55; //retrieve previous object search if any
 >>>>>>> MERGE-SOURCE
+=======
+		$content = $content_18_49e70c; //retrieve previous content var if any
+		unset($content_18_49e70c);
+		$replace = $replace_18_49e70c; //retrieve previous replace vars if any
+		unset($replace_18_49e70c);
+		$object[$objectDefinition_mediaresult] = $object_18_49e70c; //retrieve previous object search if any
+		unset($object_18_49e70c);
+>>>>>>> MERGE-SOURCE
 	}
+<<<<<<< TREE
 <<<<<<< TREE
 	//RESULT mediaresult TAG END 18_26a36c
 =======
 	//RESULT mediaresult TAG END 18_091e55
 >>>>>>> MERGE-SOURCE
+=======
+	//RESULT mediaresult TAG END 18_49e70c
+>>>>>>> MERGE-SOURCE
 	//destroy search and results mediaresult objects
 	unset($search_mediaresult);
 	unset($results_mediaresult);
+<<<<<<< TREE
 <<<<<<< TREE
 	//SEARCH mediaresult TAG END 16_70dfa0
 =======
@@ -1061,7 +1541,26 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 >>>>>>> MERGE-SOURCE
 	echo CMS_polymod_definition_parsing::replaceVars($content, $replace);
 }
+=======
+	//SEARCH mediaresult TAG END 16_41eb2a
+	$content = CMS_polymod_definition_parsing::replaceVars($content, $replace);
+	$content .= '<!--{elements:'.base64_encode(serialize(array (
+		'module' =>
+		array (
+			0 => 'pmedia',
+		),
+	))).'}-->';
+	echo $content;
+	unset($content);}
+	  ?>
+	<?php $cache_310b8e03478cb3c45f207c7248ba7f1e_content = $cache_310b8e03478cb3c45f207c7248ba7f1e->endSave();
+endif;
+unset($cache_310b8e03478cb3c45f207c7248ba7f1e);
+echo $cache_310b8e03478cb3c45f207c7248ba7f1e_content;
+unset($cache_310b8e03478cb3c45f207c7248ba7f1e_content);
+>>>>>>> MERGE-SOURCE
   ?>
+
 	</div>
 	
 		<div class="text"><ul><li>modifier, cr&eacute;er et copier des pages.</li><li>g&eacute;rer votre compte utilisateur.</li><li>g&eacute;rer des &eacute;l&eacute;ments des modules.</li><li>&hellip;</li></ul></div>
@@ -1069,10 +1568,18 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 	
 <?php /* End row [230 Texte et Média à Droite - r69_Texte_-_Media_a_droite.xml] */  ?><?php /* Start row [230 Texte et Média à Droite - r69_Texte_-_Media_a_droite.xml] */  ?>
 	<div class="imgRight">
-		<?php /*Generated on Fri, 19 Mar 2010 15:24:28 +0100 by Automne (TM) 4.0.1 */
+		<?php $cache_c44ca687be883570b4e24e7b3d67aa0b = new CMS_cache('c44ca687be883570b4e24e7b3d67aa0b', 'polymod', 'auto', true);
+if ($cache_c44ca687be883570b4e24e7b3d67aa0b->exist()):
+	//Get content from cache
+	$cache_c44ca687be883570b4e24e7b3d67aa0b_content = $cache_c44ca687be883570b4e24e7b3d67aa0b->load();
+else:
+	$cache_c44ca687be883570b4e24e7b3d67aa0b->start();
+	  ?>
+<?php /*Generated on Mon, 24 May 2010 16:59:48 +0200 by Automne (TM) 4.0.2 */
 if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 'CMS_profile_user') && $cms_user->hasModuleClearance('pmedia', CLEARANCE_MODULE_VIEW))){
 	$content = "";
 	$replace = "";
+	$atmIfResults = array();
 	if (!isset($objectDefinitions) || !is_array($objectDefinitions)) $objectDefinitions = array();
 	$blockAttributes = array (
 		'search' =>
@@ -1093,9 +1600,13 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 	if (!isset($object[2])) $object[2] = new CMS_poly_object(2, 0, array(), $parameters['public']);
 	$parameters['module'] = 'pmedia';
 <<<<<<< TREE
+<<<<<<< TREE
 	//SEARCH mediaresult TAG START 30_543f7a
 =======
 	//SEARCH mediaresult TAG START 30_478ed1
+>>>>>>> MERGE-SOURCE
+=======
+	//SEARCH mediaresult TAG START 30_be9367
 >>>>>>> MERGE-SOURCE
 	$objectDefinition_mediaresult = '2';
 	if (!isset($objectDefinitions[$objectDefinition_mediaresult])) {
@@ -1103,23 +1614,35 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 	}
 	//public search ?
 <<<<<<< TREE
+<<<<<<< TREE
 	$public_30_543f7a = isset($public_search) ? $public_search : false;
 =======
 	$public_30_478ed1 = isset($public_search) ? $public_search : false;
 >>>>>>> MERGE-SOURCE
+=======
+	$public_30_be9367 = isset($public_search) ? $public_search : false;
+>>>>>>> MERGE-SOURCE
 	//get search params
+<<<<<<< TREE
 <<<<<<< TREE
 	$search_mediaresult = new CMS_object_search($objectDefinitions[$objectDefinition_mediaresult], $public_30_543f7a);
 =======
 	$search_mediaresult = new CMS_object_search($objectDefinitions[$objectDefinition_mediaresult], $public_30_478ed1);
 >>>>>>> MERGE-SOURCE
+=======
+	$search_mediaresult = new CMS_object_search($objectDefinitions[$objectDefinition_mediaresult], $public_30_be9367);
+>>>>>>> MERGE-SOURCE
 	$launchSearch_mediaresult = true;
 	//add search conditions if any
 	if (isset($blockAttributes['search']['mediaresult']['item'])) {
 <<<<<<< TREE
+<<<<<<< TREE
 		$values_31_b764c3 = array (
 =======
 		$values_31_afd847 = array (
+>>>>>>> MERGE-SOURCE
+=======
+		$values_31_7abd23 = array (
 >>>>>>> MERGE-SOURCE
 			'search' => 'mediaresult',
 			'type' => 'item',
@@ -1127,14 +1650,20 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 			'mandatory' => 'true',
 		);
 <<<<<<< TREE
+<<<<<<< TREE
 		$values_31_b764c3['value'] = $blockAttributes['search']['mediaresult']['item'];
 		if ($values_31_b764c3['type'] == 'publication date after' || $values_31_b764c3['type'] == 'publication date before') {
 =======
 		$values_31_afd847['value'] = $blockAttributes['search']['mediaresult']['item'];
 		if ($values_31_afd847['type'] == 'publication date after' || $values_31_afd847['type'] == 'publication date before') {
 >>>>>>> MERGE-SOURCE
+=======
+		$values_31_7abd23['value'] = $blockAttributes['search']['mediaresult']['item'];
+		if ($values_31_7abd23['type'] == 'publication date after' || $values_31_7abd23['type'] == 'publication date before') {
+>>>>>>> MERGE-SOURCE
 			//convert DB format to current language format
 			$dt = new CMS_date();
+<<<<<<< TREE
 <<<<<<< TREE
 			$dt->setFromDBValue($values_31_b764c3['value']);
 			$values_31_b764c3['value'] = $dt->getLocalizedDate($cms_language->getDateFormat());
@@ -1142,20 +1671,32 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 			$dt->setFromDBValue($values_31_afd847['value']);
 			$values_31_afd847['value'] = $dt->getLocalizedDate($cms_language->getDateFormat());
 >>>>>>> MERGE-SOURCE
+=======
+			$dt->setFromDBValue($values_31_7abd23['value']);
+			$values_31_7abd23['value'] = $dt->getLocalizedDate($cms_language->getDateFormat());
+>>>>>>> MERGE-SOURCE
 		}
+<<<<<<< TREE
 <<<<<<< TREE
 		$launchSearch_mediaresult = (CMS_polymod_definition_parsing::addSearchCondition($search_mediaresult, $values_31_b764c3)) ? $launchSearch_mediaresult : false;
 =======
 		$launchSearch_mediaresult = (CMS_polymod_definition_parsing::addSearchCondition($search_mediaresult, $values_31_afd847)) ? $launchSearch_mediaresult : false;
+>>>>>>> MERGE-SOURCE
+=======
+		$launchSearch_mediaresult = (CMS_polymod_definition_parsing::addSearchCondition($search_mediaresult, $values_31_7abd23)) ? $launchSearch_mediaresult : false;
 >>>>>>> MERGE-SOURCE
 	} elseif (true == true) {
 		//search parameter is mandatory and no value found
 		$launchSearch_mediaresult = false;
 	}
 <<<<<<< TREE
+<<<<<<< TREE
 	//RESULT mediaresult TAG START 32_0df255
 =======
 	//RESULT mediaresult TAG START 32_2e9183
+>>>>>>> MERGE-SOURCE
+=======
+	//RESULT mediaresult TAG START 32_c4a46e
 >>>>>>> MERGE-SOURCE
 	//launch search mediaresult if not already done
 	if($launchSearch_mediaresult && !isset($results_mediaresult)) {
@@ -1169,6 +1710,7 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 		$results_mediaresult = array();
 	}
 	if ($results_mediaresult) {
+<<<<<<< TREE
 <<<<<<< TREE
 		$object_32_0df255 = (isset($object[$objectDefinition_mediaresult])) ? $object[$objectDefinition_mediaresult] : ""; //save previous object search if any
 		$replace_32_0df255 = $replace; //save previous replace vars if any
@@ -1184,10 +1726,19 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 		$maxPages_32_2e9183 = $search_mediaresult->getMaxPages();
 		$maxResults_32_2e9183 = $search_mediaresult->getNumRows();
 >>>>>>> MERGE-SOURCE
+=======
+		$object_32_c4a46e = (isset($object[$objectDefinition_mediaresult])) ? $object[$objectDefinition_mediaresult] : ""; //save previous object search if any
+		$replace_32_c4a46e = $replace; //save previous replace vars if any
+		$count_32_c4a46e = 0;
+		$content_32_c4a46e = $content; //save previous content var if any
+		$maxPages_32_c4a46e = $search_mediaresult->getMaxPages();
+		$maxResults_32_c4a46e = $search_mediaresult->getNumRows();
+>>>>>>> MERGE-SOURCE
 		foreach ($results_mediaresult as $object[$objectDefinition_mediaresult]) {
 			$content = "";
 			$replace["atm-search"] = array (
 				"{resultid}" 	=> (isset($resultID_mediaresult)) ? $resultID_mediaresult : $object[$objectDefinition_mediaresult]->getID(),
+<<<<<<< TREE
 <<<<<<< TREE
 				"{firstresult}" => (!$count_32_0df255) ? 1 : 0,
 				"{lastresult}" 	=> ($count_32_0df255 == sizeof($results_mediaresult)-1) ? 1 : 0,
@@ -1199,13 +1750,25 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 				"{resultcount}" => ($count_32_2e9183+1),
 				"{maxpages}"    => $maxPages_32_2e9183,
 >>>>>>> MERGE-SOURCE
+=======
+				"{firstresult}" => (!$count_32_c4a46e) ? 1 : 0,
+				"{lastresult}" 	=> ($count_32_c4a46e == sizeof($results_mediaresult)-1) ? 1 : 0,
+				"{resultcount}" => ($count_32_c4a46e+1),
+				"{maxpages}"    => $maxPages_32_c4a46e,
+>>>>>>> MERGE-SOURCE
 				"{currentpage}" => ($search_mediaresult->getAttribute('page')+1),
+<<<<<<< TREE
 <<<<<<< TREE
 				"{maxresults}"  => $maxResults_32_0df255,
 =======
 				"{maxresults}"  => $maxResults_32_2e9183,
 >>>>>>> MERGE-SOURCE
+=======
+				"{maxresults}"  => $maxResults_32_c4a46e,
+				"{altclass}"    => (($count_32_c4a46e+1) % 2) ? "CMS_odd" : "CMS_even",
+>>>>>>> MERGE-SOURCE
 			);
+<<<<<<< TREE
 <<<<<<< TREE
 			//IF TAG START 33_2bb647
 =======
@@ -1215,8 +1778,16 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 			if ($ifcondition) {
 				$func = create_function("","return (".$ifcondition.");");
 				if ($func()) {
+=======
+			//IF TAG START 33_6fa1a5
+			$ifcondition_33_6fa1a5 = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'flv' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'mp3' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'jpg' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'gif' && ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." != 'png'", $replace);
+			if ($ifcondition_33_6fa1a5) {
+				$func_33_6fa1a5 = create_function("","return (".$ifcondition_33_6fa1a5.");");
+				if ($func_33_6fa1a5()) {
+>>>>>>> MERGE-SOURCE
 					$content .="
 					<a href=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" target=\"_blank\" title=\"T&eacute;l&eacute;charger le document '".$object[2]->objectValues(9)->getValue('fileLabel','')."' (".$object[2]->objectValues(9)->getValue('fileExtension','')." - ".$object[2]->objectValues(9)->getValue('fileSize','')."Mo)\">";
+<<<<<<< TREE
 <<<<<<< TREE
 					//IF TAG START 34_49d103
 =======
@@ -1226,15 +1797,30 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
 						if ($func()) {
+=======
+					//IF TAG START 34_6fd013
+					$ifcondition_34_6fd013 = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileIcon','')), $replace);
+					if ($ifcondition_34_6fd013) {
+						$func_34_6fd013 = create_function("","return (".$ifcondition_34_6fd013.");");
+						if ($func_34_6fd013()) {
+>>>>>>> MERGE-SOURCE
 							$content .="<img src=\"".$object[2]->objectValues(9)->getValue('fileIcon','')."\" alt=\"Fichier ".$object[2]->objectValues(9)->getValue('fileExtension','')."\" title=\"Fichier ".$object[2]->objectValues(9)->getValue('fileExtension','')."\" />";
 						}
+<<<<<<< TREE
 <<<<<<< TREE
 					}//IF TAG END 34_49d103
 =======
 					}//IF TAG END 34_d69fb9
 >>>>>>> MERGE-SOURCE
+=======
+						unset($func_34_6fd013);
+					}
+					unset($ifcondition_34_6fd013);
+					//IF TAG END 34_6fd013
+>>>>>>> MERGE-SOURCE
 					$content .=" ".$object[2]->getValue('label','')."</a>
 					";
+<<<<<<< TREE
 <<<<<<< TREE
 					//IF TAG START 35_272ed2
 =======
@@ -1244,6 +1830,13 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
 						if ($func()) {
+=======
+					//IF TAG START 35_576400
+					$ifcondition_35_576400 = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
+					if ($ifcondition_35_576400) {
+						$func_35_576400 = create_function("","return (".$ifcondition_35_576400.");");
+						if ($func_35_576400()) {
+>>>>>>> MERGE-SOURCE
 							$content .="
 							<div class=\"shadow\">
 							<img src=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('thumbnail','')."\" alt=\"".$object[2]->getValue('label','')."\" title=\"".$object[2]->getValue('label','')."\" />
@@ -1251,11 +1844,19 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 							";
 						}
 <<<<<<< TREE
+<<<<<<< TREE
 					}//IF TAG END 35_272ed2
 =======
 					}//IF TAG END 35_12c151
 >>>>>>> MERGE-SOURCE
+=======
+						unset($func_35_576400);
+					}
+					unset($ifcondition_35_576400);
+					//IF TAG END 35_576400
+>>>>>>> MERGE-SOURCE
 				}
+<<<<<<< TREE
 <<<<<<< TREE
 			}//IF TAG END 33_2bb647
 			//IF TAG START 36_78566f
@@ -1276,12 +1877,29 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
 						if ($func()) {
+=======
+				unset($func_33_6fa1a5);
+			}
+			unset($ifcondition_33_6fa1a5);
+			//IF TAG END 33_6fa1a5
+			//IF TAG START 36_cb443b
+			$ifcondition_36_cb443b = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'flv'", $replace);
+			if ($ifcondition_36_cb443b) {
+				$func_36_cb443b = create_function("","return (".$ifcondition_36_cb443b.");");
+				if ($func_36_cb443b()) {
+					//IF TAG START 37_20d626
+					$ifcondition_37_20d626 = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
+					if ($ifcondition_37_20d626) {
+						$func_37_20d626 = create_function("","return (".$ifcondition_37_20d626.");");
+						if ($func_37_20d626()) {
+>>>>>>> MERGE-SOURCE
 							$content .="
 							<script type=\"text/javascript\">
 							swfobject.embedSWF('/automne/playerflv/player_flv.swf', 'media-".$object[2]->getValue('id','')."', '320', '200', '9.0.0', '/automne/swfobject/expressInstall.swf', {flv:'".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."', configxml:'/automne/playerflv/config_playerflv.xml', startimage:'".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('thumbnail','')."'}, {allowfullscreen:true, wmode:'transparent'}, false);
 							</script>
 							";
 						}
+<<<<<<< TREE
 <<<<<<< TREE
 					}//IF TAG END 37_2432fa
 					//IF TAG START 38_42270b
@@ -1293,6 +1911,17 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
 						if ($func()) {
+=======
+						unset($func_37_20d626);
+					}
+					unset($ifcondition_37_20d626);
+					//IF TAG END 37_20d626
+					//IF TAG START 38_0f0331
+					$ifcondition_38_0f0331 = CMS_polymod_definition_parsing::replaceVars("!".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
+					if ($ifcondition_38_0f0331) {
+						$func_38_0f0331 = create_function("","return (".$ifcondition_38_0f0331.");");
+						if ($func_38_0f0331()) {
+>>>>>>> MERGE-SOURCE
 							$content .="
 							<script type=\"text/javascript\">
 							swfobject.embedSWF('/automne/playerflv/player_flv.swf', 'media-".$object[2]->getValue('id','')."', '320', '200', '9.0.0', '/automne/swfobject/expressInstall.swf', {flv:'".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."', configxml:'/automne/playerflv/config_playerflv.xml'}, {allowfullscreen:true, wmode:'transparent'}, false);
@@ -1300,9 +1929,16 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 							";
 						}
 <<<<<<< TREE
+<<<<<<< TREE
 					}//IF TAG END 38_42270b
 =======
 					}//IF TAG END 38_c01126
+>>>>>>> MERGE-SOURCE
+=======
+						unset($func_38_0f0331);
+					}
+					unset($ifcondition_38_0f0331);
+					//IF TAG END 38_0f0331
 >>>>>>> MERGE-SOURCE
 					$content .="
 					<div id=\"media-".$object[2]->getValue('id','')."\" class=\"pmedias-video\" style=\"width:320px;height:200px;\">
@@ -1310,6 +1946,7 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					</div>
 					";
 				}
+<<<<<<< TREE
 <<<<<<< TREE
 			}//IF TAG END 36_78566f
 			//IF TAG START 39_56f1c5
@@ -1321,6 +1958,17 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 			if ($ifcondition) {
 				$func = create_function("","return (".$ifcondition.");");
 				if ($func()) {
+=======
+				unset($func_36_cb443b);
+			}
+			unset($ifcondition_36_cb443b);
+			//IF TAG END 36_cb443b
+			//IF TAG START 39_b4bddd
+			$ifcondition_39_b4bddd = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'mp3'", $replace);
+			if ($ifcondition_39_b4bddd) {
+				$func_39_b4bddd = create_function("","return (".$ifcondition_39_b4bddd.");");
+				if ($func_39_b4bddd()) {
+>>>>>>> MERGE-SOURCE
 					$content .="
 					<script type=\"text/javascript\">
 					swfobject.embedSWF('/automne/playermp3/player_mp3.swf', 'media-".$object[2]->getValue('id','')."', '200', '20', '9.0.0', '/automne/swfobject/expressInstall.swf', {mp3:'".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."', configxml:'/automne/playermp3/config_playermp3.xml'}, {wmode:'transparent'}, false);
@@ -1330,6 +1978,7 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					</div>
 					";
 <<<<<<< TREE
+<<<<<<< TREE
 					//IF TAG START 40_0fdd2c
 =======
 					//IF TAG START 40_15cb4f
@@ -1338,6 +1987,13 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
 						if ($func()) {
+=======
+					//IF TAG START 40_fc5e2c
+					$ifcondition_40_fc5e2c = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
+					if ($ifcondition_40_fc5e2c) {
+						$func_40_fc5e2c = create_function("","return (".$ifcondition_40_fc5e2c.");");
+						if ($func_40_fc5e2c()) {
+>>>>>>> MERGE-SOURCE
 							$content .="
 							<div class=\"shadow\">
 							<img src=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('thumbnail','')."\" alt=\"".$object[2]->getValue('label','')."\" title=\"".$object[2]->getValue('label','')."\" />
@@ -1345,11 +2001,19 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 							";
 						}
 <<<<<<< TREE
+<<<<<<< TREE
 					}//IF TAG END 40_0fdd2c
 =======
 					}//IF TAG END 40_15cb4f
 >>>>>>> MERGE-SOURCE
+=======
+						unset($func_40_fc5e2c);
+					}
+					unset($ifcondition_40_fc5e2c);
+					//IF TAG END 40_fc5e2c
+>>>>>>> MERGE-SOURCE
 				}
+<<<<<<< TREE
 <<<<<<< TREE
 			}//IF TAG END 39_56f1c5
 			//IF TAG START 41_5d132d
@@ -1361,9 +2025,21 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 			if ($ifcondition) {
 				$func = create_function("","return (".$ifcondition.");");
 				if ($func()) {
+=======
+				unset($func_39_b4bddd);
+			}
+			unset($ifcondition_39_b4bddd);
+			//IF TAG END 39_b4bddd
+			//IF TAG START 41_1f6f56
+			$ifcondition_41_1f6f56 = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'jpg' || ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'gif' || ".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('fileExtension',''))." == 'png'", $replace);
+			if ($ifcondition_41_1f6f56) {
+				$func_41_1f6f56 = create_function("","return (".$ifcondition_41_1f6f56.");");
+				if ($func_41_1f6f56()) {
+>>>>>>> MERGE-SOURCE
 					$content .="
 					<div class=\"shadow\">
 					";
+<<<<<<< TREE
 <<<<<<< TREE
 					//IF TAG START 42_cc879a
 =======
@@ -1373,10 +2049,18 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
 						if ($func()) {
+=======
+					//IF TAG START 42_7ff760
+					$ifcondition_42_7ff760 = CMS_polymod_definition_parsing::replaceVars(CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
+					if ($ifcondition_42_7ff760) {
+						$func_42_7ff760 = create_function("","return (".$ifcondition_42_7ff760.");");
+						if ($func_42_7ff760()) {
+>>>>>>> MERGE-SOURCE
 							$content .="
 							<a href=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" onclick=\"javascript:CMS_openPopUpImage('imagezoom.php?location=public&amp;module=pmedia&amp;file=".$object[2]->objectValues(9)->getValue('filename','')."&amp;label=".$object[2]->getValue('label','js')."');return false;\" target=\"_blank\" title=\"Voir l'image '".$object[2]->getValue('label','')."' (".$object[2]->objectValues(9)->getValue('fileExtension','')." - ".$object[2]->objectValues(9)->getValue('fileSize','')."Mo)\"><img src=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('thumbnail','')."\" alt=\"".$object[2]->getValue('label','')."\" title=\"".$object[2]->getValue('label','')."\" /></a>
 							";
 						}
+<<<<<<< TREE
 <<<<<<< TREE
 					}//IF TAG END 42_cc879a
 					//IF TAG START 43_039102
@@ -1388,19 +2072,38 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 					if ($ifcondition) {
 						$func = create_function("","return (".$ifcondition.");");
 						if ($func()) {
+=======
+						unset($func_42_7ff760);
+					}
+					unset($ifcondition_42_7ff760);
+					//IF TAG END 42_7ff760
+					//IF TAG START 43_20ab11
+					$ifcondition_43_20ab11 = CMS_polymod_definition_parsing::replaceVars("!".CMS_polymod_definition_parsing::prepareVar($object[2]->objectValues(9)->getValue('thumbnail','')), $replace);
+					if ($ifcondition_43_20ab11) {
+						$func_43_20ab11 = create_function("","return (".$ifcondition_43_20ab11.");");
+						if ($func_43_20ab11()) {
+>>>>>>> MERGE-SOURCE
 							$content .="
 							<img src=\"".$object[2]->objectValues(9)->getValue('filePath','')."/".$object[2]->objectValues(9)->getValue('filename','')."\" alt=\"".$object[2]->getValue('label','')."\" title=\"".$object[2]->getValue('label','')."\" style=\"max-width:200px;\" />
 							";
 						}
 <<<<<<< TREE
+<<<<<<< TREE
 					}//IF TAG END 43_039102
 =======
 					}//IF TAG END 43_205204
+>>>>>>> MERGE-SOURCE
+=======
+						unset($func_43_20ab11);
+					}
+					unset($ifcondition_43_20ab11);
+					//IF TAG END 43_20ab11
 >>>>>>> MERGE-SOURCE
 					$content .="
 					</div>
 					";
 				}
+<<<<<<< TREE
 <<<<<<< TREE
 			}//IF TAG END 41_5d132d
 			$count_32_0df255++;
@@ -1408,13 +2111,25 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 			}//IF TAG END 41_332ec7
 			$count_32_2e9183++;
 >>>>>>> MERGE-SOURCE
+=======
+				unset($func_41_1f6f56);
+			}
+			unset($ifcondition_41_1f6f56);
+			//IF TAG END 41_1f6f56
+			$count_32_c4a46e++;
+>>>>>>> MERGE-SOURCE
 			//do all result vars replacement
+<<<<<<< TREE
 <<<<<<< TREE
 			$content_32_0df255.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
 =======
 			$content_32_2e9183.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
 >>>>>>> MERGE-SOURCE
+=======
+			$content_32_c4a46e.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
+>>>>>>> MERGE-SOURCE
 		}
+<<<<<<< TREE
 <<<<<<< TREE
 		$content = $content_32_0df255; //retrieve previous content var if any
 		$replace = $replace_32_0df255; //retrieve previous replace vars if any
@@ -1424,15 +2139,28 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 		$replace = $replace_32_2e9183; //retrieve previous replace vars if any
 		$object[$objectDefinition_mediaresult] = $object_32_2e9183; //retrieve previous object search if any
 >>>>>>> MERGE-SOURCE
+=======
+		$content = $content_32_c4a46e; //retrieve previous content var if any
+		unset($content_32_c4a46e);
+		$replace = $replace_32_c4a46e; //retrieve previous replace vars if any
+		unset($replace_32_c4a46e);
+		$object[$objectDefinition_mediaresult] = $object_32_c4a46e; //retrieve previous object search if any
+		unset($object_32_c4a46e);
+>>>>>>> MERGE-SOURCE
 	}
+<<<<<<< TREE
 <<<<<<< TREE
 	//RESULT mediaresult TAG END 32_0df255
 =======
 	//RESULT mediaresult TAG END 32_2e9183
 >>>>>>> MERGE-SOURCE
+=======
+	//RESULT mediaresult TAG END 32_c4a46e
+>>>>>>> MERGE-SOURCE
 	//destroy search and results mediaresult objects
 	unset($search_mediaresult);
 	unset($results_mediaresult);
+<<<<<<< TREE
 <<<<<<< TREE
 	//SEARCH mediaresult TAG END 30_543f7a
 =======
@@ -1440,7 +2168,26 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 >>>>>>> MERGE-SOURCE
 	echo CMS_polymod_definition_parsing::replaceVars($content, $replace);
 }
+=======
+	//SEARCH mediaresult TAG END 30_be9367
+	$content = CMS_polymod_definition_parsing::replaceVars($content, $replace);
+	$content .= '<!--{elements:'.base64_encode(serialize(array (
+		'module' =>
+		array (
+			0 => 'pmedia',
+		),
+	))).'}-->';
+	echo $content;
+	unset($content);}
+	  ?>
+	<?php $cache_c44ca687be883570b4e24e7b3d67aa0b_content = $cache_c44ca687be883570b4e24e7b3d67aa0b->endSave();
+endif;
+unset($cache_c44ca687be883570b4e24e7b3d67aa0b);
+echo $cache_c44ca687be883570b4e24e7b3d67aa0b_content;
+unset($cache_c44ca687be883570b4e24e7b3d67aa0b_content);
+>>>>>>> MERGE-SOURCE
   ?>
+
 	</div>
 	
 		<div class="text"><h3>Vous ne pouvez pas:</h3> <ul>     <li>administrer les modules.</li>     <li>valider la modification des pages.</li>     <li>ou encore cr&eacute;er de nouveaux comptes utilisateurs.</li>     <li>...</li> </ul> <p>Ces fonctionnalit&eacute;s sont r&eacute;serv&eacute;es &agrave; un compte utilisateur de type&nbsp;  <strong>&laquo; Administrateur &raquo;.</strong></p></div>

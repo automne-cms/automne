@@ -19,7 +19,7 @@
   *
   * Represents a collection of linxes
   *
-  * @package CMS
+  * @package Automne
   * @subpackage pageContent
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   */

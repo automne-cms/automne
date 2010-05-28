@@ -20,7 +20,7 @@
   *
   *  Manages the collection of users profiles.
   *
-  * @package CMS
+  * @package Automne
   * @subpackage user
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
@@ -580,8 +580,8 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	  * Checks all the profile users, except $user
 	  * to see if LDAP dn doesnt exist. Static function.
 	  *
-	  * @var CMS_profile_user $user
-	  * @var string $dn
+	  * @param CMS_profile_user $user
+	  * @param string $dn
 	  * @return boolean
 	  * @access public
 	  */
@@ -606,9 +606,9 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	  * to see if login doesnt exist.
 	  * Static function.
 	  *
-	  * @var CMS_profile_user $user
-	  * @var string $login
-	  * @var boolean $returnProfileUserId : if true, return the user ID
+	  * @param CMS_profile_user $user
+	  * @param string $login
+	  * @param boolean $returnProfileUserId : if true, return the user ID
 	  * @return boolean
 	  * @access public
 	  */

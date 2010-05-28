@@ -24,8 +24,8 @@
   * This block actually can contain 2 images, one for standard viewing and a
   * second which is the same, enlarged. The second one is optional.
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage standard
   * @author Cédric Soret <cedric.soret@ws-interactive.fr> &
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &

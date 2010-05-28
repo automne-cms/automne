@@ -19,8 +19,8 @@
   *
   * Shadow class, only for backward compatibility with Automne below V4
   *
-  * @package CMS
-  * @subpackage pageContent
+  * @package Automne
+  * @subpackage deprecated
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

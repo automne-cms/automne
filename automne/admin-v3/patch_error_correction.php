@@ -18,8 +18,8 @@
   * PHP page : Patch error correction
   * Correct errors found in patch
   *
-  * @package CMS
-  * @subpackage admin
+  * @package Automne
+  * @subpackage admin-v3
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

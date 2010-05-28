@@ -19,8 +19,8 @@
   * PHP page : Presents list of module categories for given module
   * Add/Delete/Update categories
   *
-  * @package CMS
-  * @subpackage admin
+  * @package Automne
+  * @subpackage admin-v3
   * @author Cédric Soret <cedric.soret@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

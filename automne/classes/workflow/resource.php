@@ -20,7 +20,7 @@
   *
   * represent a resource. Can be either a page or a module resource.
   *
-  * @package CMS
+  * @package Automne
   * @subpackage workflow
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>

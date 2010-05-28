@@ -19,7 +19,7 @@
   *
   * return an array from an XML string
   *
-  * @package CMS
+  * @package Automne
   * @subpackage polymod
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

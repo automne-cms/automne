@@ -17,7 +17,7 @@
 /**
   * PHP page : Simple empty page, used to refresh scripts count
   * 
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

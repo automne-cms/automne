@@ -1,8 +1,12 @@
 <<<<<<< TREE
+<<<<<<< TREE
 <?php //Generated on Thu, 11 Mar 2010 16:28:45 +0100 by Automne (TM) 4.0.1
 require_once(dirname(__FILE__).'/../cms_rc_frontend.php');
 =======
 <?php //Generated on Fri, 19 Mar 2010 15:24:34 +0100 by Automne (TM) 4.0.1
+=======
+<?php //Generated on Mon, 24 May 2010 16:59:54 +0200 by Automne (TM) 4.0.2
+>>>>>>> MERGE-SOURCE
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 >>>>>>> MERGE-SOURCE
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
@@ -136,6 +140,17 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 				if (isset($cms_forms_okAction[$form->getID()]) && $cms_forms_okAction[$form->getID()]) {
 					//if we have an encoded referer, use it
 					if (isset($_REQUEST['referer']) && $_REQUEST['referer'] && ($url = base64_decode($_REQUEST['referer']))) {
+						//analyse url to get page if any
+						$redirectPage = CMS_tree::analyseURL($url);
+						if ($redirectPage) {
+							//if page founded, check existence and rights
+							$pageID = $redirectPage->getID();
+							if ($redirectPage->hasError() || !CMS_tree::pagesExistsInUserSpace($pageID) || 
+									(APPLICATION_ENFORCES_ACCESS_CONTROL && (!isset($cms_user) || !$cms_user->hasPageClearance($pageID, CLEARANCE_PAGE_VIEW)))
+								) {
+								$url = PATH_FORBIDDEN_WR;
+							}
+						}
 						CMS_view::redirect($url);
 					}
 					//in case of OK for this form, do action
@@ -595,7 +610,6 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 					<div id="title">
 						<h1>Contact</h1>
 					</div>
-					<atm-toc />
 					<?php /* Start clientspace [first] */   ?><?php /* Start row [200 Texte - r44_200_Texte.xml] */   ?>
 
 <div class="text"><p>Ce formulaire vous permet d'envoyer une demande de contact. Pour le transformer (Champs, actions, email de destination), modifiez le dans les propri&eacute;t&eacute;s du module &quot;Formulaire&quot;.</p><p>&nbsp;</p></div>

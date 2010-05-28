@@ -20,7 +20,7 @@
   * represent a resource validation. Contains a reference to the resource moduleID and the resource itself.
   * It is passed from the kernel to the moduleIDs for workflow purposes
   *
-  * @package CMS
+  * @package Automne
   * @subpackage workflow
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

@@ -16,8 +16,8 @@
   * static Class CMS_cache
   * Represent a cache object
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage files
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

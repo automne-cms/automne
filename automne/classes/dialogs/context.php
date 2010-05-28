@@ -20,7 +20,7 @@
   *
   *  Keeps track of dialog context
   *
-  * @package CMS
+  * @package Automne
   * @subpackage dialogs
   * @author Antoine Pouch <andre.haynes@ws-interactive.fr> &
   * @author S�bastien Pauchet <sebastien.pauchet@ws-interactive.fr>
@@ -363,7 +363,7 @@ class CMS_context extends CMS_grandFather
 	  * @param string $name
 	  * @param mixed $value
 	  * @return void
-	  * @access public|private}
+	  * @access public
 	  */
 	function setSessionVar($name, $value)
 	{
@@ -732,8 +732,8 @@ class CMS_context extends CMS_grandFather
 			if (file_exists($extLocaleFile)) {
 				$fileContent = file_get_contents($extLocaleFile);
 				//remove BOM if any
-				if(io::substr($fileContent, 0, 3) == '﻿') {
-					$fileContent = io::substr($fileContent, 3);
+				if(substr($fileContent, 0, 3) == '﻿') {
+					$fileContent = substr($fileContent, 3);
 				}
 				$locales .= (io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? utf8_decode($fileContent) : $fileContent;
 			}
@@ -831,6 +831,23 @@ class CMS_context extends CMS_grandFather
 		}
 		//in all other cases, return false
 		return false;
+	}
+	
+	/**
+	  * Force a token expiration
+	  *
+	  * @param string $name, token name to expire
+	  * @return boolean
+	  * @access public
+	  */
+	function expireToken($name) {
+		$tokensDatas = CMS_context::getSessionVar('atm-tokens');
+		$tokens = $tokensDatas['tokens'];
+		if (isset($tokens[$name])) {
+			unset($tokens[$name]);
+		}
+		CMS_context::setSessionVar('atm-tokens', $tokensDatas);
+		return true;
 	}
 	
 	/**

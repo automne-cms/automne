@@ -19,8 +19,8 @@
   *
   * represent a date object
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage polymod
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
@@ -484,12 +484,13 @@ class CMS_object_date extends CMS_object_common
         		$date = new CMS_date();
 				$date->setFromDBValue($this->_subfieldValues[0]->getValue());
 				if (io::strtolower($parameters) == 'rss') {
-					$parameters = 'r';
+					$date = date('r', $date->getTimeStamp());
+				} else {
+					$date = date($parameters, $date->getTimeStamp());
+					if (is_object($cms_language) && isset($languages[$cms_language->getCode()])) {
+	                    $date = str_replace(array_keys($languages[$cms_language->getCode()]), $languages[$cms_language->getCode()], $date);
+	                }
 				}
-                $date = date($parameters, $date->getTimeStamp());
-                if (is_object($cms_language) && isset($languages[$cms_language->getCode()])) {
-                    $date = str_replace(array_keys($languages[$cms_language->getCode()]), $languages[$cms_language->getCode()], $date);
-                }
 				return io::htmlspecialchars($date);
 			break;
 			case 'notNull':

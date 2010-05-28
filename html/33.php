@@ -1,8 +1,12 @@
 <<<<<<< TREE
+<<<<<<< TREE
 <?php //Generated on Thu, 11 Mar 2010 16:28:31 +0100 by Automne (TM) 4.0.1
 require_once(dirname(__FILE__).'/../cms_rc_frontend.php');
 =======
 <?php //Generated on Fri, 19 Mar 2010 15:24:47 +0100 by Automne (TM) 4.0.1
+=======
+<?php //Generated on Mon, 24 May 2010 17:00:07 +0200 by Automne (TM) 4.0.2
+>>>>>>> MERGE-SOURCE
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 >>>>>>> MERGE-SOURCE
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
@@ -77,14 +81,20 @@ if (!isset($cms_page_included) && !$_POST && !$_GET) {
 					<div id="title">
 						<h1>Nouveautés</h1>
 					</div>
-					<atm-toc />
 					<?php /* Start clientspace [first] */   ?><?php /* Start row [200 Texte - r44_200_Texte.xml] */   ?>
 
 <div class="text"><h2>Voici une liste de quelques unes des nouveaut&eacute;s d'Automne 4 :</h2> <ul>     <li style="text-align: left;">Refonte de l'interface administrateur, <strong>plus ergonomique, plus intuitive, plus r&eacute;active.</strong></li>     <li style="text-align: left;">Votre site n'est plus dissoci&eacute; de l'interface d'administration.</li>     <li style="text-align: left;">Vous saisissez et organisez votre contenu simplement, rapidement, sans aucune connaissance technique.</li>     <li style="text-align: left;"><strong>Aide contextuelle</strong> permettant une prise en main encore plus simple.</li>     <li style="text-align: left;">De <strong>meilleures performances</strong> de l'outil.</li>     <li style="text-align: left;">Bas&eacute; sur les technologies du <strong>web 2.0, PHP5, Ajax.</strong></li>     <li style="text-align: left;">Gestion des <strong>langues internationales</strong> - Gestion des alphabets particuliers.</li>     <li style="text-align: left;">Fonction de recherche<strong> Full Text</strong> dans les contenus.</li>     <li style="text-align: left;">...</li> </ul></div>
 
 <?php /* End row [200 Texte - r44_200_Texte.xml] */   ?><?php /* Start row [200 Texte - r44_200_Texte.xml] */   ?>
 
-<div class="text"><p style="text-align: left;"><?php $parameters = array (
+<div class="text"><p style="text-align: left;"><?php $cache_ff77b5e228a7e6c35b777c7f3ec5b4b9 = new CMS_cache('ff77b5e228a7e6c35b777c7f3ec5b4b9', 'polymod', 'auto', true);
+if ($cache_ff77b5e228a7e6c35b777c7f3ec5b4b9->exist()):
+	//Get content from cache
+	$cache_ff77b5e228a7e6c35b777c7f3ec5b4b9_content = $cache_ff77b5e228a7e6c35b777c7f3ec5b4b9->load();
+else:
+	$cache_ff77b5e228a7e6c35b777c7f3ec5b4b9->start();
+	  ?>
+<?php $parameters = array (
   'itemID' => 35,
   'pageID' => '33',
   'public' => true,
@@ -286,7 +296,14 @@ if(!APPLICATION_ENFORCES_ACCESS_CONTROL || (isset($cms_user) && is_a($cms_user, 
 	//PLUGIN TAG END 2_b782ed
 	echo CMS_polymod_definition_parsing::replaceVars($content, $replace);
 }
-  ?></p></div>
+  ?>
+	<?php $cache_ff77b5e228a7e6c35b777c7f3ec5b4b9_content = $cache_ff77b5e228a7e6c35b777c7f3ec5b4b9->endSave();
+endif;
+unset($cache_ff77b5e228a7e6c35b777c7f3ec5b4b9);
+echo $cache_ff77b5e228a7e6c35b777c7f3ec5b4b9_content;
+unset($cache_ff77b5e228a7e6c35b777c7f3ec5b4b9_content);
+  ?>
+</p></div>
 
 <?php /* End row [200 Texte - r44_200_Texte.xml] */   ?><?php /* End clientspace [first] */   ?>
 					<a href="#header" id="top" title="haut de la page">Haut</a>

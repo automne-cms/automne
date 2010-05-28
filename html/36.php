@@ -6,7 +6,7 @@ require_once(dirname(__FILE__).'/../cms_rc_frontend.php');
 =======
 <?php require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 CMS_view::redirect('http://127.0.0.1/web/demo/9-contact.php', true, 302);
- ?><?php //Generated on Fri, 19 Mar 2010 15:24:52 +0100 by Automne (TM) 4.0.1
+ ?><?php //Generated on Mon, 24 May 2010 17:00:12 +0200 by Automne (TM) 4.0.2
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 >>>>>>> MERGE-SOURCE
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
@@ -76,7 +76,6 @@ if (!isset($cms_page_included) && !$_POST && !$_GET) {
 					<div id="title">
 						<h1>Formulaire</h1>
 					</div>
-					<atm-toc />
 					<?php /* Start clientspace [first] */   ?><?php /* Start row [110 Sous Titre (niveau 2) - r43_100_Sous_Titre.xml] */   ?>
 
 <?php /* End row [110 Sous Titre (niveau 2) - r43_100_Sous_Titre.xml] */   ?><?php /* Start row [210 Texte et Image Droite - r45_210_Texte__image_droite.xml] */   ?>

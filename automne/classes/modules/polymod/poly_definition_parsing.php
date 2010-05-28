@@ -19,7 +19,7 @@
   *
   * represent a polymod parsing : from a given string definition and some parameters, create HTML / PHP datas
   *
-  * @package CMS
+  * @package Automne
   * @subpackage polymod
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
@@ -61,7 +61,11 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			'atm-search-order'		=> '_searchOrderTag',
 			'atm-loop' 				=> '_loopTag',
 			'atm-if' 				=> '_ifTag',
+			'atm-else' 				=> '_elseTag',
+			'atm-elseif'			=> '_elseifTag',
 			'atm-parameter'			=> '_parameterTag',
+			'atm-start-tag'			=> '_tagStart',
+			'atm-end-tag'			=> '_tagEnd',
 			'atm-function'			=> '_functionTag',
 			'atm-setvar'			=> '_setvarTag',
 			'atm-plugin'			=> '_pluginTag',
@@ -270,6 +274,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			$headers = 
 			'$content = "";'."\n".
 			'$replace = "";'."\n".
+			'$atmIfResults = array();'."\n".
 			'if (!isset($objectDefinitions) || !is_array($objectDefinitions)) $objectDefinitions = array();'."\n".
 			$blockAttributes.
 			$objectID.
@@ -563,8 +568,11 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				$content_'.$uniqueID.'.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
 			}
 			$content = $content_'.$uniqueID.'; //retrieve previous content var if any
+			unset($content_'.$uniqueID.');
 			$replace = $replace_'.$uniqueID.'; //retrieve previous replace vars if any
+			unset($replace_'.$uniqueID.');
 			$object[$objectDefinition_'.$tag['attributes']['search'].'] = $object_'.$uniqueID.'; //retrieve previous object search if any
+			unset($object_'.$uniqueID.');
 		}
 		//RESULT '.$tag['attributes']['search'].' TAG END '.$uniqueID.'
 		';
@@ -789,53 +797,99 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			))) {
 			return;
 		}
+		if (isset($tag['attributes']['name']) && $tag['attributes']['name']) {
+			if (!$this->checkTagRequirements($tag, array(
+					'name' => 'alphanum', 
+				))) {
+				return;
+			}
+		}
+		
 		//decode ampersand
-		$tag['attributes']["what"] = io::decodeEntities($tag['attributes']["what"]);
+		$tag['attributes']['what'] = io::decodeEntities($tag['attributes']['what']);
+		
 		$uniqueID = $this->getUniqueID();
 		$return = '
 		//IF TAG START '.$uniqueID.'
-		$ifcondition = CMS_polymod_definition_parsing::replaceVars("'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']["what"], false, false, array('CMS_polymod_definition_parsing', 'encloseWithPrepareVar')).'", $replace);
-		if ($ifcondition) {
-			$func = create_function("","return (".$ifcondition.");");
-			if ($func()) {
+		$ifcondition_'.$uniqueID.' = CMS_polymod_definition_parsing::replaceVars("'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['what'], false, false, array('CMS_polymod_definition_parsing', 'encloseWithPrepareVar')).'", $replace);
+		if ($ifcondition_'.$uniqueID.') {
+			$func_'.$uniqueID.' = create_function("","return (".$ifcondition_'.$uniqueID.'.");");';
+			//if attribute name is set, store if result
+			if (isset($tag['attributes']['name']) && $tag['attributes']['name']) {
+				$return .= '$atmIfResults[\''.$tag['attributes']['name'].'\'][\'if\'] = false;';
+			}
+		$return .= '
+			if ($func_'.$uniqueID.'()) {';
+				//if attribute name is set, store if result
+				if (isset($tag['attributes']['name']) && $tag['attributes']['name']) {
+					$return .= '$atmIfResults[\''.$tag['attributes']['name'].'\'][\'if\'] = true;';
+				}
+			$return .= '
 				'.$this->_computeTags($tag['childrens']).'
 			}
-		}//IF TAG END '.$uniqueID.'
+			unset($func_'.$uniqueID.');
+		}
+		unset($ifcondition_'.$uniqueID.');
+		//IF TAG END '.$uniqueID.'
 		';
 		return $return;
 	}
 	
 	/**
-	  * Compute an atm-parameter tag
+	  * Compute an atm-else tag
+	  *
+	  * @param array $tag : the reference atm-else tag to compute
+	  * @return string the PHP / HTML content computed
+	  * @access private
+	  */
+	protected function _elseTag(&$tag) {
+		//check tags requirements
+		if (!$this->checkTagRequirements($tag, array(
+				'for' => 'alphanum', 
+			))) {
+			return;
+		}
+		$uniqueID = $this->getUniqueID();
+		
+		//decode ampersand
+		if (isset($tag['attributes']['what']) && $tag['attributes']['what']) {
+			$tag['attributes']['what'] = io::decodeEntities($tag['attributes']['what']);
+			
+			$return = '
+			//ELSE TAG START '.$uniqueID.'
+			if (isset($atmIfResults[\''.$tag['attributes']['for'].'\'][\'if\']) && $atmIfResults[\''.$tag['attributes']['for'].'\'][\'if\'] === false) {
+				$ifcondition_'.$uniqueID.' = CMS_polymod_definition_parsing::replaceVars("'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['what'], false, false, array('CMS_polymod_definition_parsing', 'encloseWithPrepareVar')).'", $replace);
+				if ($ifcondition_'.$uniqueID.') {
+					$func_'.$uniqueID.' = create_function("","return (".$ifcondition_'.$uniqueID.'.");");
+					if ($func_'.$uniqueID.'()) {
+						'.$this->_computeTags($tag['childrens']).'
+					}
+					unset($func_'.$uniqueID.');
+				}
+				unset($ifcondition_'.$uniqueID.');
+			}
+			//ELSE TAG END '.$uniqueID.'
+			';
+		} else {
+			$return = '
+			//ELSE TAG START '.$uniqueID.'
+			if (isset($atmIfResults[\''.$tag['attributes']['for'].'\'][\'if\']) && $atmIfResults[\''.$tag['attributes']['for'].'\'][\'if\'] === false) {
+				'.$this->_computeTags($tag['childrens']).'
+			}
+			//ELSE TAG END '.$uniqueID.'
+			';
+		}
+		return $return;
+	}
+	
+	/**
+	  * DEPRECATED : Compute an atm-parameter tag
 	  *
 	  * @param array $tag : the reference atm-parameter tag to compute
 	  * @return string the PHP / HTML content computed
 	  * @access private
 	  */
-	protected function _parameterTag(&$tag) {
-		//check tags requirements
-		if (!$this->checkTagRequirements($tag, array(
-				'attribute' => true, 
-			))) {
-			return;
-		}
-		if (!$tag['attributes']["value"]) {
-			if($this->_mode == self::CHECK_PARSING_MODE) {
-				$this->_parsingError .= "\n"."Malformed atm-parameter tag : missing 'value' attribute";
-				return;
-			} else {
-				$this->raiseError("Malformed atm-parameter tag : missing 'value' attribute");
-				return;
-			}
-		}
-		$uniqueID = $this->getUniqueID();
-		$return = '
-		//PARAMETER TAG START '.$uniqueID.'
-		$content = preg_replace("#(<[^/][^>]*)>(.*)$#U",\'\1 '.$tag['attributes']["attribute"].'="'.$tag['attributes']["value"].'">\2\', $content);
-		//PARAMETER TAG END '.$uniqueID.'
-		';
-		return $return;
-	}
+	protected function _parameterTag(&$tag) {}
 	
 	/**
 	  * Compute an atm-function tag
@@ -981,6 +1035,41 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	}
 	
 	/**
+	  * Compute an atm-start-tag tag
+	  *
+	  * @param array $tag : the reference atm-start-tag tag to compute
+	  * @return string the PHP / HTML content computed
+	  * @access private
+	  */
+	protected function _tagStart(&$tag) {
+		//check tags requirements
+		if (!$this->checkTagRequirements($tag, array(
+				'tag' => 'alphanum', 
+			))) {
+			return;
+		}
+		$attributes = '';
+		foreach ($tag['attributes'] as $attribute => $value) {
+			if ($attribute != 'tag') {
+				$attributes .= ' '.$attribute.'="'.$value.'"';
+			}
+		}
+		$return = '$content .= "<'.$tag['attributes']["tag"].$attributes.'>";';
+		return $return;
+	}
+	
+	/**
+	  * Compute an atm-end-tag tag
+	  *
+	  * @param array $tag : the reference atm-end-tag tag to compute
+	  * @return string the PHP / HTML content computed
+	  * @access private
+	  */
+	protected function _tagEnd(&$tag) {
+		return '$content .= "</'.$tag['attributes']["tag"].'>"';
+	}
+	
+	/**
 	  * Compute an atm-plugin tag
 	  *
 	  * @param array $tag : the reference atm-plugin tag to compute
@@ -1021,6 +1110,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			} else {
 				$object[$parameters[\'objectID\']] = new CMS_poly_object($parameters[\'objectID\'], 0, array(), $parameters[\'public\']);
 			}
+			unset($search_'.$uniqueID.');
 			$parameters[\'has-plugin-view\'] = '.($pluginView ? 'true' : 'false').';
 			'.$this->_computeTags($tag['childrens']).'
 		}
@@ -1185,7 +1275,9 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			'.$this->_computeTags($tag['childrens']).'
 			//then remove tags from content and add it to old content
 			$entities = array(\'&\' => \'&amp;\',\'>\' => \'&gt;\',\'<\' => \'&lt;\',);
-			$content = $content_'.$uniqueID.'.str_replace(array_keys($entities),$entities,strip_tags(io::decodeEntities($content)));';
+			$content = $content_'.$uniqueID.'.str_replace(array_keys($entities),$entities,strip_tags(io::decodeEntities($content)));
+			unset($content_'.$uniqueID.');
+			';
 		}
 		$return .= '
 		$content .= \'</'.$rssTagName.'>\';
@@ -1215,10 +1307,10 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		'.$this->_computeTags($tag['childrens']).'
 		//AJAX TAG END '.$uniqueID.'
 		';
-		$strict = isset($tag['attributes']["strict"]) && ($tag['attributes']["what"] == 'true' || $tag['attributes']["what"] == true || $tag['attributes']["what"] == 1) ? true : false;
+		$strict = isset($tag['attributes']["strict"]) && ($tag['attributes']['what'] == 'true' || $tag['attributes']['what'] == true || $tag['attributes']['what'] == 1) ? true : false;
 		//Ajax code
 		$ajaxCode = '
-		$xmlCondition = CMS_polymod_definition_parsing::replaceVars("'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']["what"], false, false, array('CMS_polymod_definition_parsing', 'encloseWithPrepareVar')).'", $replace);
+		$xmlCondition = CMS_polymod_definition_parsing::replaceVars("'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['what'], false, false, array('CMS_polymod_definition_parsing', 'encloseWithPrepareVar')).'", $replace);
 		if ($xmlCondition) {
 			$func = create_function("","return (".$xmlCondition.");");
 			if ($func()) {
@@ -1325,7 +1417,9 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				$content_'.$uniqueID.'.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
 			}
 			$content = $content_'.$uniqueID.'; //retrieve previous content var if any
+			unset($content_'.$uniqueID.');
 			$replace = $replace_'.$uniqueID.'; //retrieve previous replace vars if any
+			unset($replace_'.$uniqueID.');
 		}
 		//FORM '.io::strtoupper($tagType).' TAG END '.$uniqueID.'
 		';

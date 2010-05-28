@@ -19,7 +19,7 @@
   * PHP page : page previsualization
   * Used to view the page edited data.
   *
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>

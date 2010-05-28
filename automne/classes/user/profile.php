@@ -21,7 +21,7 @@
   *
   *  editing/viewing permissions for a user profile
   *
-  * @package CMS
+  * @package Automne
   * @subpackage user
   * @author Andre Haynes <andre.haynes@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &
@@ -507,7 +507,6 @@ class CMS_profile extends CMS_grandFather
 	  * @param integer $clearance The clearance to test
 	  * @return boolean
 	  * @access public
-	  * @calls _hasClearance
 	  */
 	function hasPageClearance($pageId, $clearance)
 	{
@@ -1526,7 +1525,8 @@ class CMS_profile extends CMS_grandFather
 	  * Returns array with translation key values for all admin clearance constants
 	  *
 	  * @return array(integer=>integer)
-	  * @access public static getAllClearances
+	  * @access public
+	  * @static
 	  */
 	function getAllAdminClearances()
 	{
@@ -1544,7 +1544,8 @@ class CMS_profile extends CMS_grandFather
 	  * Returns array with translation key values for all module level constants
 	  *
 	  * @return array(integer clearance => array('label' => integer, 'description' => integer))
-	  * @access public static getAllModuleClearances
+	  * @access public
+	  * @static
 	  */
 	function getAllModuleClearances() {
 		return array(CLEARANCE_MODULE_NONE => array('label' => self::MESSAGE_CLEARANCE_MODULE_NONE,	'description' => self::MESSAGE_CLEARANCE_MODULE_NONE_DESCRIPTION),
@@ -1557,7 +1558,8 @@ class CMS_profile extends CMS_grandFather
 	  * Returns array with translation key values for all module level constants
 	  *
 	  * @return array(integer=>integer)
-	  * @access public static getAllModuleClearances
+	  * @access public
+	  * @static
 	  */
 	function getAllModuleCategoriesClearances()
 	{
@@ -1572,7 +1574,8 @@ class CMS_profile extends CMS_grandFather
 	  * level constants
 	  *
 	  * @return array(integer=>integer)
-	  * @access public static getAllPageClearances
+	  * @access public
+	  * @static
 	  */
 	function getAllPageClearances()
 	{

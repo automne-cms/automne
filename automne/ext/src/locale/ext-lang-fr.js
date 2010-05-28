@@ -4,7 +4,7 @@
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
-﻿/*
+/*
  * France (France) translation
  * By Thylia
  * 09-11-2007, 02:22 PM

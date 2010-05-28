@@ -18,7 +18,7 @@
   * PHP page : Load group detail window.
   * Used accross an Ajax request. Render group informations.
   * 
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

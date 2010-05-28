@@ -20,8 +20,7 @@
   * Represents a field belonging to a formular
   * Stores some field attributes, label and validation process
   * 
-  * @package CMS
-  * @subpackage module
+  * @package Automne
   * @subpackage cms_forms
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

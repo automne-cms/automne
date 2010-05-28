@@ -18,7 +18,7 @@
   * PHP page : change navigator
   * Manage the navigator version if Netscape 4
   *
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

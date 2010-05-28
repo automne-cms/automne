@@ -1,8 +1,12 @@
 <<<<<<< TREE
+<<<<<<< TREE
 <?php //Generated on Thu, 11 Mar 2010 16:28:46 +0100 by Automne (TM) 4.0.1
 require_once(dirname(__FILE__).'/../cms_rc_frontend.php');
 =======
 <?php //Generated on Fri, 19 Mar 2010 15:24:32 +0100 by Automne (TM) 4.0.1
+=======
+<?php //Generated on Mon, 24 May 2010 16:59:52 +0200 by Automne (TM) 4.0.2
+>>>>>>> MERGE-SOURCE
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
 >>>>>>> MERGE-SOURCE
 if (!isset($cms_page_included) && !$_POST && !$_GET) {

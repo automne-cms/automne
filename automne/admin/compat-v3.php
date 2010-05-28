@@ -19,7 +19,7 @@
   * This file (called by constant PATH_ADMIN_SPECIAL_SESSION_CHECK_FS)
   * was used before Automne V4 for admin session management purposes.
   * Now it is used to set some PHP vars for old V3 modules compatibility
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

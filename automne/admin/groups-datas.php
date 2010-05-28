@@ -19,7 +19,7 @@
   * Used accross an Ajax request.
   * Return formated groups infos in JSON format
   *
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

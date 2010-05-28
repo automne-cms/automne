@@ -18,7 +18,7 @@
   * PHP page : Load side panel favorites infos.
   * Used accross an Ajax request to refresh the favorites side panel
   * 
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

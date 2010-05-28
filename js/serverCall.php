@@ -17,11 +17,16 @@
 /**
   * PHP JS page : usefull server call functions and other misc methods
   *
-  * @package CMS
-  * @subpackage admin
+  * @package Automne
+  * @subpackage frontend
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
+<<<<<<< TREE
 require_once(dirname(__FILE__).'/../cms_rc_frontend.php');
+=======
+
+require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_frontend.php");
+>>>>>>> MERGE-SOURCE
 //set header content-type
 header("Content-Type: text/javascript");
 $debug = 0;

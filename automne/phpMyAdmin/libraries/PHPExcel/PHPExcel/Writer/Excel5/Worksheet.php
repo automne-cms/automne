@@ -97,7 +97,7 @@ require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DgContainer.php';
 require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DgContainer/SpgrContainer.php';
 
 /** PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer */
-require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DgContainer/SpgrContainer/SpContainer.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DgContainer/SpgrContainer/SpCont.php';
 
 
 /**

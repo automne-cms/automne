@@ -30,7 +30,7 @@
   * - heading : the heading text of this page
   * - hideMenu : if true, the menu will not be shown
   *
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

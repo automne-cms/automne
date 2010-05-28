@@ -19,7 +19,7 @@
   *
   * Manages Automne scriptsp
   *
-  * @package CMS
+  * @package Automne
   * @subpackage scripts
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

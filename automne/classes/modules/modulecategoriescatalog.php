@@ -20,8 +20,8 @@
   * 
   * Factory and any useful methods to manage CMS_moduleCategory instances
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage modules
   * @author Cédric Soret <cedric.soret@ws-interactive.fr>
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

@@ -19,8 +19,8 @@
   * PHP page : visualization of an enlarged image for the imageZoom block type
   * Waits for a GET var : "file" which must contain the filename (without path)
   *
-  * @package CMS
-  * @subpackage admin
+  * @package Automne
+  * @subpackage frontend
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

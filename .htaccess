@@ -33,10 +33,10 @@ Allow from all
 	</IfModule>
 </IfModule>
 
-# To allow image cache (2 weeks). 
-# Uncomment the following lines to activate cache (mod_headers is needed)
+# To allow static files cache (2 weeks). 
+# Uncomment the following lines (mod_headers is needed)
 #<Ifmodule mod_headers.c>
-#	<FilesMatch "\.(ico|jpg|jpeg|png|gif)$">
+#	<FilesMatch "\.(ico|jpg|jpeg|png|gif|swf|js|css)$">
 #		Header set Cache-Control "max-age=1209600, public"
 #	</FilesMatch>
 #</IfModule>

@@ -16,8 +16,8 @@
   * PHP page : Load polymod items selection
   * Used accross an Ajax request. Render polymod items for association with multi object fields
   *
-  * @package CMS
-  * @subpackage admin
+  * @package Automne
+  * @subpackage polymod
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

@@ -16,7 +16,12 @@
 
 /**
   * Update all stored definitions for polymod modules
+  *
+  * @package Automne
+  * @subpackage polymod
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
+
 require_once(dirname(__FILE__).'/../../cms_rc_frontend.php');
 
 CMS_polymod::compileDefinitions();

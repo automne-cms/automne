@@ -1,6 +1,23 @@
 <?php
-/* $Id: sqlDump.php,v 1.3 2009/10/23 10:18:32 sebastien Exp $ */
-// vim: expandtab sw=4 ts=4 sts=4:
+// +----------------------------------------------------------------------+
+// | Automne (TM)														  |
+// +----------------------------------------------------------------------+
+// | Copyright (c) 2000-2010 WS Interactive								  |
+// +----------------------------------------------------------------------+
+// | Automne is subject to version 2.0 or above of the GPL license.		  |
+// | The license text is bundled with this package in the file			  |
+// | LICENSE-GPL, and is available through the world-wide-web at		  |
+// | http://www.gnu.org/copyleft/gpl.html.								  |
+// +----------------------------------------------------------------------+
+
+/**
+  * Function PMA_splitSqlFile
+  *
+  * Extracted from phpMyAdmin version 2 to parse simple SQL files
+  *
+  * @package Automne
+  * @subpackage files
+  */
 
 /**
  * Removes comment lines and splits up large sql files into individual queries

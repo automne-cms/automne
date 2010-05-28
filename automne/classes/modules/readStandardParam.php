@@ -15,10 +15,10 @@
 // $Id: readStandardParam.php,v 1.3 2010/03/08 16:43:31 sebastien Exp $
 
 /**
-  *function needed to easylly read the standard_rc.xml file
+  * function needed to easylly read the standard_rc.xml file
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage modules
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

@@ -19,8 +19,8 @@
   *
   * represent a collection of polymorphic objects
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage polymod
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
@@ -502,7 +502,7 @@ class CMS_multi_poly_object extends CMS_object_common
 				'tpl'			=> sensitiveIO::sanitizeJSString('<tpl for="rows">
 					<dl>
 						<tpl for="parent.columns">
-							<dt style="width:{width}%;text-align:{align};" class="MultiselectDD">
+							<dt style="width:100%;text-align:{align};" class="MultiselectDD">
 								<div unselectable="on" class="atm-result x-unselectable" id="object-{parent.id}">
 									<div class="atm-title">
 										<table>
@@ -563,7 +563,7 @@ class CMS_multi_poly_object extends CMS_object_common
 								animateTarget:	button,
 								listeners:{\'close\':function(window){
 									var cmp = Ext.getCmp(\''.$listId2.'\');
-									if (window.selectedItems) {
+									if (window.selectedItems && window.selectedItems.split) {
 										var values = cmp.getRawValue();
 										var items = window.selectedItems.split(\',\');
 										for (var i = 0, itemsLen = items.length; i < itemsLen; i++) {

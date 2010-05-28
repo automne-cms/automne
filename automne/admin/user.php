@@ -18,7 +18,7 @@
   * PHP page : Load user detail window.
   * Used accross an Ajax request. Render user informations.
   * 
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

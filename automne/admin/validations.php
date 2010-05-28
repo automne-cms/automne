@@ -18,7 +18,7 @@
   * PHP page : Load page validations window.
   * Used accross an Ajax request. Render validations window.
   * 
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

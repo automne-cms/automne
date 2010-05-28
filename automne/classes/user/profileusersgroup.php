@@ -20,7 +20,7 @@
   *
   * Login data and functions of user group
   *
-  * @package CMS
+  * @package Automne
   * @subpackage user
   * @author Andre Haynes <andre.haynes@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
@@ -270,7 +270,7 @@ class CMS_profile_usersGroup extends CMS_profile
 	/**
 	  * Get Users
 	  *
-	  * @retrun array(CMS_profileuser)
+	  * @return array(CMS_profileuser)
 	  * @access public
 	  */
 	function getUsers($returnIDs = false)

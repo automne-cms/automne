@@ -18,7 +18,7 @@
   * PHP page : Load groups search window.
   * Used accross an Ajax request. Render groups search.
   * 
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

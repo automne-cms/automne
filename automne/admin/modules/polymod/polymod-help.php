@@ -18,8 +18,8 @@
   * PHP page : Load polymod help for object.
   * Used accross an Ajax request.
   *
-  * @package CMS
-  * @subpackage admin
+  * @package Automne
+  * @subpackage polymod
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 require_once(dirname(__FILE__).'/../../../../cms_rc_admin.php');

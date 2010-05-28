@@ -17,8 +17,8 @@
 /**
   * PHP page : Wysiwyg toolbars management
   *
-  * @package CMS
-  * @subpackage admin
+  * @package Automne
+  * @subpackage admin-v3
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
@@ -34,7 +34,6 @@ define("MESSAGE_PAGE_ACTION_DELETECONFIRM", 1401);
 define("MESSAGE_PAGE_FIELD_LABEL", 814);
 define("MESSAGE_PAGE_FIELD_CODENAME", 1306);
 define("MESSAGE_PAGE_FIELD_CODENAME_ALPHANUM", 1307);
-define("MESSAGE_FORM_ERROR_CODENAME_USED", 1308);
 define("MESSAGE_PAGE_SAVE_NEWORDER", 1183);
 define("MESSAGE_PAGE_ACTION_ORDERING_ERROR", 1353);
 define("MESSAGE_PAGE_FIELD_ELEMENTS", 1402);

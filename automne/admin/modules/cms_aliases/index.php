@@ -18,8 +18,8 @@
   * PHP page : module admin frontend : cms_aliases : index
   * Presents the module cms_aliases
   *
-  * @package CMS
-  * @subpackage admin
+  * @package Automne
+  * @subpackage cms_aliases
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

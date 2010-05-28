@@ -19,7 +19,7 @@
   *
   * Represents a XML Tag. Instanciated by the XMLParser.
   *
-  * @package CMS
+  * @package Automne
   * @subpackage pageContent
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   */

@@ -20,7 +20,7 @@
   *
   * Keeps track of logs
   *
-  * @package CMS
+  * @package Automne
   * @subpackage common
   * @author Andre Haynes <andre.haynes@ws-interactive.fr>
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>

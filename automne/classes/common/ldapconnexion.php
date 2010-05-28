@@ -21,7 +21,7 @@
   * Launches LDAP query against a given server.
   * Performs basic searches through static methods.
   *
-  * @package CMS
+  * @package Automne
   * @subpackage common
   * @author Cédric Soret <cedric.soret@ws-interactive.fr>
   * @author Sébastien Pauchet <sébastien.pauchet@ws-interactive.fr>

@@ -15,10 +15,12 @@
 // $Id: cms_rc_frontend.php,v 1.9 2010/03/08 16:45:48 sebastien Exp $
 
 /**
-  * Frontend rc file.
-  *
+  * AUTOMNE Frontend rc file.
   * Contains declarations and includes for the frontend part.
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * 
+  * @package Automne
+  * @subpackage config
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &
   */
 
 /**

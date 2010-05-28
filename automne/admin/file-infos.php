@@ -18,7 +18,7 @@
   * PHP controler : Return file infos for a given filename
   * Used accross a fileupload request to process one uploaded file
   * 
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

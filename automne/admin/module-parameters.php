@@ -18,7 +18,7 @@
   * PHP page : Load module parameters window.
   * Used accross an Ajax request render module properties window.
   * 
-  * @package CMS
+  * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

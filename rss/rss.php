@@ -17,8 +17,8 @@
 /**
   * PHP page : generate Polymod RSS Feeds
   *
-  * @package CMS
-  * @subpackage admin
+  * @package Automne
+  * @subpackage frontend
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
