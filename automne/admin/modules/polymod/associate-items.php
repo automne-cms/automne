@@ -17,7 +17,7 @@
   * Used accross an Ajax request. Render polymod items for association with multi object fields
   *
   * @package Automne
-  * @subpackage module-admin
+  * @subpackage polymod
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

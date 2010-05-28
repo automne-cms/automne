@@ -17,7 +17,7 @@
   * Represent a cache object
   *
   * @package Automne
-  * @subpackage module
+  * @subpackage files
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

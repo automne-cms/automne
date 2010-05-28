@@ -21,7 +21,7 @@
   * Regenerates All the pages : call the function in CMS_tree and lauch regenerator
   *
   * @package Automne
-  * @subpackage backgroundScripts
+  * @subpackage scripts
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   */
 //define application type

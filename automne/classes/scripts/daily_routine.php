@@ -21,7 +21,7 @@
   * Checks all unpublished pages to delete them, etc.
   *
   * @package Automne
-  * @subpackage backgroundScripts
+  * @subpackage scripts
   * @author Cédric Soret <cedric.soret@ws-interactive.fr> &
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   */

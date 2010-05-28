@@ -20,7 +20,7 @@
   * represent a wwysiwyg (fckeditor) toolbar with a set of elements
   *
   * @package Automne
-  * @subpackage tree
+  * @subpackage dialogs
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

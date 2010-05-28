@@ -15,6 +15,16 @@
 //
 // $Id: archives.php,v 1.2 2010/03/08 16:41:39 sebastien Exp $
 
+/**
+  * PHP page : page summary
+  * Presents the summary of a page, with all possible actions.
+  *
+  * @package Automne
+  * @subpackage admin-v3
+  * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  */
+
 require_once($_SERVER["DOCUMENT_ROOT"]."/cms_rc_admin.php");
 require_once(PATH_ADMIN_SPECIAL_SESSION_CHECK_FS);
 
@@ -30,16 +40,6 @@ define("MESSAGE_PAGE_FIELD_LASTCREATION", 865);
 define("MESSAGE_PAGE_ACTION_DELETECONFIRM", 866);
 define("MESSAGE_PAGE_NONE_ACTION", 265);
 define("MESSAGE_PAGE_TREE_ACTION", 1049);
-
-/**
-  * PHP page : page summary
-  * Presents the summary of a page, with all possible actions.
-  *
-  * @package Automne
-  * @subpackage admin-v3
-  * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  */
 
 //checks
 if (!$cms_user->hasValidationClearance(MOD_STANDARD_CODENAME)) {

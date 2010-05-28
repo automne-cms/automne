@@ -20,7 +20,7 @@
   * Shadow class, only for backward compatibility with Automne below V4
   *
   * @package Automne
-  * @subpackage pageContent
+  * @subpackage deprecated
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

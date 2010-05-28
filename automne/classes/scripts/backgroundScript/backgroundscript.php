@@ -21,7 +21,7 @@
   * PHP-CLI script which runs in the background
   *
   * @package Automne
-  * @subpackage backgroundScripts
+  * @subpackage scripts
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   */

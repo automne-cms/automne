@@ -17,6 +17,8 @@
 /**
   * Automne Debug Statistics viewver
   *
+  * @package Automne
+  * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

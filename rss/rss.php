@@ -14,13 +14,6 @@
 //
 // $Id: rss.php,v 1.8 2010/03/08 16:45:23 sebastien Exp $
 
-if (!isset($_REQUEST['atm-previz'])) {
-	define('SYSTEM_DEBUG', false);
-}
-
-//Include all needed classes
-require_once($_SERVER["DOCUMENT_ROOT"]."/automne/classes/polymodFrontEnd.php");
-
 /**
   * PHP page : generate Polymod RSS Feeds
   *
@@ -28,6 +21,13 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/automne/classes/polymodFrontEnd.php");
   * @subpackage frontend
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
+
+if (!isset($_REQUEST['atm-previz'])) {
+	define('SYSTEM_DEBUG', false);
+}
+
+//Include all needed classes
+require_once($_SERVER["DOCUMENT_ROOT"]."/automne/classes/polymodFrontEnd.php");
 
 //Get RSS object
 $error = 0;

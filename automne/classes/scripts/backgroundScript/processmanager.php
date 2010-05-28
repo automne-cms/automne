@@ -21,7 +21,7 @@
   * Initializes the script, creates the PID file, and deletes it
   *
   * @package Automne
-  * @subpackage backgroundScripts
+  * @subpackage scripts
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
