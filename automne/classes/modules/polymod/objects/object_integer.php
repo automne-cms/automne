@@ -132,7 +132,7 @@ class CMS_object_integer extends CMS_object_common
 		$params = $this->getParamsValues();
 		//if field is required check values
 		foreach ($this->_subfields as $subFieldID => $subFieldDefinition) {
-			if (isset($values[$prefixName.$this->_field->getID().'_'.$subFieldID]) || $this->_field->getValue('required')) {
+			if ((isset($values[$prefixName.$this->_field->getID().'_'.$subFieldID]) && $values[$prefixName.$this->_field->getID().'_'.$subFieldID]) || $this->_field->getValue('required')) {
 				//must be numeric
 				if (!is_numeric($values[$prefixName.$this->_field->getID().'_'.$subFieldID])) {
 					return false;
