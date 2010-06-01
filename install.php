@@ -1499,7 +1499,9 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 			
 			//force regeneration of first page to avoid any error
 			$rootPage = CMS_tree::getPageByID(1);
-			$rootPage->regenerate(true);
+			if ($rootPage && is_object($rootPage) && !$rootPage->hasError()) {
+				$rootPage->regenerate(true);
+			}
 		}
 		
 		//Check sessions creation
