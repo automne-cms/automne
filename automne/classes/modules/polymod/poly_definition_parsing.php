@@ -1051,7 +1051,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		$attributes = '';
 		foreach ($tag['attributes'] as $attribute => $value) {
 			if ($attribute != 'tag') {
-				$attributes .= ' '.$attribute.'="'.$value.'"';
+				$attributes .= ' '.$attribute.'=\"'.$value.'\"';
 			}
 		}
 		$return = '$content .= "<'.$tag['attributes']["tag"].$attributes.'>";';
