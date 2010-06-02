@@ -287,6 +287,7 @@ if (!isset($_GET['file'])) {
 			
 			//STEP 3
 			$error_step3_must_choose_option = 'Erreur, vous devez choisir un option ...';
+			$error_step3_SQL_conf = 'Attention : MySQL est configur&eacute; pour &ecirc;tre insensible &agrave; la casse.<br /><br />Si vous poursuivez l\'installation avec cette configuration de MySQL, vous ne pourrez pas transf&eacute;rer cette installation d\'Automne sur un serveur o&ugrave; MySQL est sensible &agrave; la casse (ce qui est g&eacute;n&eacute;ralement le cas des serveurs Unix/Linux).<br /><br />Pour changer cette configuration, vous devez &eacute;diter le fichier de configuration de MySQL (my.ini ou my.cnf) et y ajouter la ligne suivante dans la section [mysqld] du fichier :<pre>lower_case_table_names = 0</pre>';
 			$error_step3_SQL_script = 'Erreur, syntaxe incorrecte dans le fichier : %s ou fichier manquant';
 			$step3_title = 'Choisissez un type d\'installation :';
 			$step3_Demo = 'Automne avec la D&eacute;mo (conseill&eacute; pour tester et apprendre le logiciel)';
@@ -313,10 +314,10 @@ if (!isset($_GET['file'])) {
 			$step6_explanation = 'Certaines op&eacute;rations d\'Automne n&eacute;cessitent l\'ex&eacute;cution de t&acirc;ches de fond.<br /><br />
 			Veuillez choisir la m&eacute;thode d\'ex&eacute;cution de ces t&acirc;ches de fond :<br />
 			<ul>
-				<li>D&eacute;clench&eacute;es par le navigateur : Processus lent et qui n&eacute;cessite que le navigateur d\'un administrateur d\'Automne reste ouvert mais qui fonctionne sur tous les serveurs. Vous devez choisir cela sur les serveurs mutualis&eacute;s et autres solutions ne disposant pas de PHP-CLI.<br /><br /></li>
-				<li>Scripts en t&acirc;che de fond sur le serveur : Processus rapide mais qui ne fonctionne pas sur tous les serveurs. Vous pouvez choisir cela sur les serveurs d&eacute;di&eacute;s qui ont l\'ex&eacute;cutable PHP-CLI install&eacute; (Aide sur PHP-CLI : <a href="http://fr.php.net/manual/fr/features.commandline.php" target="_blank">Utiliser PHP en ligne de commande</a>).</li>
+				<li><strong>D&eacute;clench&eacute;es par le navigateur</strong> : Processus lent et qui n&eacute;cessite que le navigateur d\'un administrateur d\'Automne reste ouvert mais qui fonctionne sur tous les serveurs. Vous devez choisir cela sur les serveurs mutualis&eacute;s et autres solutions ne disposant pas de PHP-CLI.<br /><br /></li>
+				<li><strong>Scripts en t&acirc;che de fond sur le serveur</strong> : Processus rapide mais qui ne fonctionne pas sur tous les serveurs. Vous pouvez choisir cela sur les serveurs d&eacute;di&eacute;s qui ont l\'ex&eacute;cutable PHP-CLI install&eacute; (Aide sur PHP-CLI : <a href="http://fr.php.net/manual/fr/features.commandline.php" target="_blank">Utiliser PHP en ligne de commande</a>).</li>
 			</ul>
-			D&eacute;tection de la pr&eacute;sence de PHP-CLI sur votre serveur : <span style="color:red;">%s</span><br /><br />';
+			<fieldset>D&eacute;tection de la pr&eacute;sence de PHP-CLI sur votre serveur : <span style="color:red;">%s</span></fieldset><br /><br />';
 			$step6_CLIDetection_nosystem = 'Indisponible : Fonctions "system", "exec" et "passthru" d&eacute;sactiv&eacute;es.';
 			$step6_CLIDetection_windows = 'D&eacute;tection impossible sur un serveur Windows';
 			$step6_CLIDetection_available = 'Disponible';
@@ -451,6 +452,7 @@ if (!isset($_GET['file'])) {
 			
 			//STEP 3
 			$error_step3_must_choose_option = 'Error, You must choose an option ...';
+			$error_step3_SQL_conf = 'Warning: MySQL is configured to be case insensitive.<br /><br />If you continue the install with this configuration of MySQL, you will not be able to transfer this installation of Automne on a server where MySQL is case sensitive (which is usually the case with Unix / Linux).<br /><br />To change this setting, you must edit the MySQL configuration file (my.cnf or my.ini) and add the following line in the [mysqld] part of the file: <pre> lower_case_table_names = 0 </pre>';
 			$error_step3_SQL_script = 'Error, syntax error in sql script file: %s or file missing';
 			$step3_title = 'Choose installation type:';
 			$step3_Demo = 'Automne with Demo (advised to begin on the software)';
@@ -478,10 +480,10 @@ if (!isset($_GET['file'])) {
 			Some operations require Automne running background tasks.<br /><br />
 			Please choose the method of execution of these background tasks:<br />
 			<ul>
-				<li>Triggered by the browser: Slow process that requires the browser of an Automne administrator remains open, but that works on all servers. You should choose this on shared hosts and other solutions that do not have PHP-CLI.</li>
-				<li>Scripts in the background on the server: Rapid process but that does not work on all servers. You can select it on dedicated servers which have the PHP-CLI executable installed (Help on PHP-CLI: <a href="http://www.php.net/manual/en/features.commandline.php" target="_blank">Using PHP from the command line</a>).</li>
+				<li><strong>Triggered by the browser</strong>: Slow process that requires the browser of an Automne administrator remains open, but that works on all servers. You should choose this on shared hosts and other solutions that do not have PHP-CLI.</li>
+				<li><strong>Scripts in the background on the server</strong>: Rapid process but that does not work on all servers. You can select it on dedicated servers which have the PHP-CLI executable installed (Help on PHP-CLI: <a href="http://www.php.net/manual/en/features.commandline.php" target="_blank">Using PHP from the command line</a>).</li>
 			</ul>
-			PHP-CLI detection on your server: <span style="color:red;">%s</span><br /><br />';
+			<fieldset>PHP-CLI detection on your server: <span style="color:red;">%s</span></fieldset><br /><br />';
 			$step6_CLIDetection_nosystem = 'Unavailable : Functions "system", "exec" and "passthru" inactive.';
 			$step6_CLIDetection_windows = 'Detection impossible on Windows server';
 			$step6_CLIDetection_available = 'Available';
@@ -865,12 +867,17 @@ if (!isset($_GET['file'])) {
 			//create config file with valid DB infos
 			$configFile = new CMS_file($_SERVER['DOCUMENT_ROOT']."/config.php");
 			$configFile->setContent('<?php
-/*
- * AUTOMNE CONFIGURATION FILE
- * All default configurations are in file /cms_rc.php
- * If you need to modify any configuration constants of the the cms_rc.php
- * simply define the constant and it\'s new value in this file
- */
+/**
+  * AUTOMNE CONFIGURATION FILE
+  * This file is generated by Automne installation process (install.php file).
+  * If you need to modify any configuration constants of files
+  * cms_rc.php, cms_rc_admin.php or cms_rc_frontend.php
+  * simply define the constant and it\'s new value in this file
+  * 
+  * @package Automne
+  * @subpackage config
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  */
 
 define("APPLICATION_DB_HOST", "'.$_POST["dbhost"].'");
 define("APPLICATION_DB_NAME", "'.$_POST["dbname"].'");
@@ -918,10 +925,27 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 			$exists = true;
 		}
 		
+		//check mysql case sensitive configuration
+		$caseSensitiveDB = true;
+		$sql = "
+			SHOW VARIABLES where Variable_name = 'lower_case_table_names';
+			";
+		$q = new CMS_query($sql);
+		if ($q->getNumRows()) {
+			$r = $q->getArray();
+			if ($r['Value'] != 0) {
+				$caseSensitiveDB = false;
+			}
+		}
+		
+		
 		if ($error || $cms_action != "dbscripts") {
 			$title = '<h1>'.$step3_title.'</h1>';
 			if ($error) {
 				$content .= '<span class="error">'.$error.'</span><br />';
+			}
+			if (!$caseSensitiveDB) {
+				$content .= '<span class="error">'.$error_step3_SQL_conf.'</span><br />';
 			}
 			$content .= '
 			<form action="'.$_SERVER["PHP_SELF"].'" method="post" onsubmit="check();">
@@ -1595,8 +1619,12 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 			padding:			0;
 		}
 		.error {
-			color:				red;
+			color:				orange;
+			border:				2px solid red;
 			font-weight:		bold;
+			display:			block;
+			padding:			5px;
+			margin-bottom:		10px;
 		}
 		a{
 			text-decoration:	none;
