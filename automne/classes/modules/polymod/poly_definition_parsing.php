@@ -269,7 +269,10 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			
 			$headers = $footers = '';
 			
-			$footers .= '$content .= \'<!--{elements:\'.base64_encode(serialize('.var_export($this->_elements, true).')).\'}-->\';'."\n";
+			//do not add cache reference if no cache is queried
+			if (!isset($this->_parameters['cache']) || $this->_parameters['cache'] != false) {
+				$footers .= '$content .= \'<!--{elements:\'.base64_encode(serialize('.var_export($this->_elements, true).')).\'}-->\';'."\n";
+			}
 			
 			$headers = 
 			'$content = "";'."\n".

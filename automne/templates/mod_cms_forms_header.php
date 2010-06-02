@@ -44,6 +44,7 @@ function evalPolymodVars($text, $language){
 	$definition = new CMS_polymod_definition_parsing($text, true);
 	$parameters = array(
 		'module'	=> MOD_CMS_FORMS_CODENAME,
+		'cache'		=> false,
 		'public'	=> true,
 		'pageID'	=> $mod_cms_forms["pageID"],
 		'language'	=> $language
