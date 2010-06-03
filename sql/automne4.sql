@@ -2321,7 +2321,7 @@ CREATE TABLE `profilesUsers` (
 -- Contenu de la table `profilesUsers`
 --
 
-INSERT INTO `profilesUsers` (`id_pru`, `login_pru`, `password_pru`, `firstName_pru`, `lastName_pru`, `contactData_pru`, `profile_pru`, `language_pru`, `dn_pru`, `active_pru`, `deleted_pru`, `alerts_pru`, `favorites_pru`) VALUES(1, 'root', '3b0d99b9bb927794036aa828050f364d', '', 'Super User', 1, 1, 'en', '', 1, 0, 'standard,7;pnews,1;pmedia,1', '');
+INSERT INTO `profilesUsers` (`id_pru`, `login_pru`, `password_pru`, `firstName_pru`, `lastName_pru`, `contactData_pru`, `profile_pru`, `language_pru`, `dn_pru`, `active_pru`, `deleted_pru`, `alerts_pru`, `favorites_pru`) VALUES(1, 'root', '3b0d99b9bb927794036aa828050f364d', '', 'Super Administrator', 1, 1, 'en', '', 1, 0, 'standard,7;pnews,1;pmedia,1', '');
 INSERT INTO `profilesUsers` (`id_pru`, `login_pru`, `password_pru`, `firstName_pru`, `lastName_pru`, `contactData_pru`, `profile_pru`, `language_pru`, `dn_pru`, `active_pru`, `deleted_pru`, `alerts_pru`, `favorites_pru`) VALUES(3, 'anonymous', '294de3557d9d00b3d2d8a1e6aab028cf', '', 'Anonymous User', 3, 3, 'en', '', 1, 0, '', '');
 
 -- --------------------------------------------------------

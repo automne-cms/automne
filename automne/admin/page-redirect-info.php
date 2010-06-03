@@ -34,7 +34,11 @@ define("MESSAGE_PAGE_PAGE_REDIRECT_ERROR", 703);
 $view = CMS_view::getInstance();
 $view->addCSSFile('main');
 $view->addCSSFile('info');
-
+//force language if none exists
+if (!isset($cms_language) || !is_object($cms_language)) {
+	$cms_language = new CMS_language(ADMINISTRATION_DEFAULT_LANGUAGE);
+}
+//get page
 if (isset($_GET['pageId']) && sensitiveIO::isPositiveInteger($_GET['pageId'])) {
 	$page = CMS_tree::getPageById($_GET['pageId']);
 }

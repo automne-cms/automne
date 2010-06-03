@@ -601,7 +601,7 @@ class CMS_page extends CMS_resource
 		
 		if ($content = $modulesTreatment->treatContent(true)) {
 			$pageHTMLPath = $this->_getHTMLFilePath(PATH_RELATIVETO_FILESYSTEM)."/".$this->_getHTMLFilename();
-			$pageFile = new CMS_file($pageHTMLPath);
+			$pageFile = new CMS_file($pageHTMLPath, CMS_file::FILE_SYSTEM, CMS_file::TYPE_FILE);
 			$pageFile->setContent($content);
 			$pageFile->writeToPersistence();
 			$this->_lastFileCreation->setNow();
@@ -617,14 +617,14 @@ class CMS_page extends CMS_resource
 		
 		//write significant url page
 		$pagePath = $this->_getFilePath(PATH_RELATIVETO_FILESYSTEM)."/".$this->_getFilename();
-		$redirectionFile = new CMS_file($pagePath);
+		$redirectionFile = new CMS_file($pagePath, CMS_file::FILE_SYSTEM, CMS_file::TYPE_FILE);
 		$redirectionFile->setContent($this->redirectionCode($pageHTMLPath));
 		$redirectionFile->writeToPersistence(true, true);
 		
 		//write print page if any
 		if (USE_PRINT_PAGES && $this->_template->getPrintingClientSpaces()) {
 			//reload linx file
-			$printLinxFile = new CMS_file($this->getLinxFilePath().'.print');
+			$printLinxFile = new CMS_file($this->getLinxFilePath().'.print', CMS_file::FILE_SYSTEM, CMS_file::TYPE_FILE);
 			if ($printLinxFile->exists()) {
 				$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_LINXES_TAGS,PAGE_VISUALMODE_PRINT,$this);
 				$modulesTreatment->setDefinition($printLinxFile->getContent());
@@ -675,7 +675,7 @@ class CMS_page extends CMS_resource
 			//get print page content (without linxes process)
 			$printPageContent = $this->getContent($defaultLanguage, PAGE_VISUALMODE_PRINT);
 			//then write the print page linx file
-			$linxFile = new CMS_file($this->getLinxFilePath().".print");
+			$linxFile = new CMS_file($this->getLinxFilePath().".print", CMS_file::FILE_SYSTEM, CMS_file::TYPE_FILE);
 			$linxFile->setContent($printPageContent);
 			if (!$linxFile->writeToPersistence()) {
 				$this->raiseError("Can't write print linx file : ".$fpath);
