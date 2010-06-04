@@ -10,12 +10,12 @@ Installation : pas à pas
 ------------------------
 
    1. Copier et décompresser l'archive automne-xxx.tar.gz téléchargée depuis http://www.automne.ws/download/ à la racine de votre serveur web ou de votre hôte virtuel. L'installation dans un sous-répertoire n'est pas supportée.
-   2. Créer une base de données pour Automne (cela se fait en un clic sous PhyMyAdmin) ou vérifiez que vous avez les identifiants d'une base de données existante.
+   2. Créer une base de données pour Automne (cela se fait en un clic sous phpMyAdmin) ou vérifiez que vous avez les identifiants d'une base de données existante.
    3. Lancer le fichier install.php dans votre navigateur. Le processus d'installation va vérifier votre configuration (cf. http://www.automne.ws/requirements/ pour plus de détails), créer les tables dans la base de données et vous permettre de personnaliser votre instance d'Automne. 
 	Si vous rencontrez un problème ou si vous avez besoin d'aide, vous pouvez à tout moment nous poser vos questions sur le forum ou nous envoyer un mail à contact[at]automne.ws avec le fichier de diagnostic généré par Automne.
    4. Si vous avez installé le module CLI de PHP, choisissez durant l'installation l'option "Script en tache de fond".
    5. Une fois l'installation complétée vous pouvez vous connecter avec l'identifiant 'root' et le mot de passe 'automne', cliquez ensuite sur profil utilisateur pour changer le mot de passe du compte root.
-   6. Supprimez les fichiers install.php ainsi que automne-xxx.tar.gz. Laisser ces fichiers sur un site en production représente une faille de sécurité très importante.
+   6. Supprimez les fichiers install.php ainsi que automne-xxx.tar.gz et demo-xx.tgz. Laisser ces fichiers sur un site en production représente une faille de sécurité très importante.
 
 Mettre à jour Automne
 ---------------------

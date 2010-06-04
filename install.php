@@ -41,6 +41,10 @@ if ($_SERVER["DOCUMENT_ROOT"] != realpath($_SERVER["DOCUMENT_ROOT"])) {
 	//rewrite server document root if needed
 	$_SERVER["DOCUMENT_ROOT"] = realpath($_SERVER["DOCUMENT_ROOT"]);
 }
+//Demo FR file
+$demoFr = 'demo-fr.tgz';
+//Demo EN file
+$demoEn = 'demo-en.tgz';
 
 if (!isset($_GET['file'])) {
 	//Installation languages
@@ -286,12 +290,14 @@ if (!isset($_GET['file'])) {
 			$step2_DB_password_confirm = 'Confirmation';
 			
 			//STEP 3
-			$error_step3_must_choose_option = 'Erreur, vous devez choisir un option ...';
+			$error_step3_must_choose_option = 'Erreur, vous devez choisir une option ...';
 			$error_step3_SQL_conf = 'Attention : MySQL est configur&eacute; pour &ecirc;tre insensible &agrave; la casse.<br /><br />Si vous poursuivez l\'installation avec cette configuration de MySQL, vous ne pourrez pas transf&eacute;rer cette installation d\'Automne sur un serveur o&ugrave; MySQL est sensible &agrave; la casse (ce qui est g&eacute;n&eacute;ralement le cas des serveurs Unix/Linux).<br /><br />Pour changer cette configuration, vous devez &eacute;diter le fichier de configuration de MySQL (my.ini ou my.cnf) et y ajouter la ligne suivante dans la section [mysqld] du fichier :<pre>lower_case_table_names = 0</pre>';
 			$error_step3_SQL_script = 'Erreur, syntaxe incorrecte dans le fichier : %s ou fichier manquant';
+			$error_step3_Demo_script = 'Erreur durant l\'installation de la D&eacute;mo :'."\n\n".' %s';
 			$step3_title = 'Choisissez un type d\'installation :';
-			$step3_Demo = 'Automne avec la D&eacute;mo (conseill&eacute; pour tester et apprendre le logiciel)';
-			$step3_Empty = 'Automne vide (conseill&eacute; pour cr&eacute;er un site &agrave; partir de z&eacute;ro)';
+			$step3_demo_FR = 'Automne avec la D&eacute;mo Fran&ccedil;aise (conseill&eacute; pour tester et apprendre le logiciel)';
+			$step3_demo_EN = 'Automne avec la D&eacute;mo Anglaise';
+			$step3_empty = 'Automne vide (conseill&eacute; pour cr&eacute;er un site &agrave; partir de z&eacute;ro)';
 			$step3_skip = 'Conserver la Base de Donn&eacute;es actuelle';
 			
 			//STEP 4
@@ -358,7 +364,7 @@ if (!isset($_GET['file'])) {
 			<br />
 			Si vous avez choisi l\'installation de la D&eacute;mo, la partie publique sera visible &agrave; l\'adresse <a href="/" target="_blank">%s</a> une fois que vous vous serez connect&eacute; une premi&egrave;re fois &agrave; l\'administration de votre site.<br />
 			<br />
-			Vous pouvez maintenant supprimer l\'archive ayant servie &agrave; cette installation ainsi que le fichier install.php.<br />
+			Vous pouvez maintenant supprimer les fichiers ayant servi &agrave; cette installation :<br />%s
 			<span style="color:red;">Attention</span> : laisser ces fichiers sur un site en production repr&eacute;sente une faille importante de s&eacute;curit&eacute; pour votre site !<br />
 			<br />
 			Si vous souhaitez modifier certaines options saisies lors de cette installation, relancez le fichier install.php ou :
@@ -454,9 +460,11 @@ if (!isset($_GET['file'])) {
 			$error_step3_must_choose_option = 'Error, You must choose an option ...';
 			$error_step3_SQL_conf = 'Warning: MySQL is configured to be case insensitive.<br /><br />If you continue the install with this configuration of MySQL, you will not be able to transfer this installation of Automne on a server where MySQL is case sensitive (which is usually the case with Unix / Linux).<br /><br />To change this setting, you must edit the MySQL configuration file (my.cnf or my.ini) and add the following line in the [mysqld] part of the file: <pre> lower_case_table_names = 0 </pre>';
 			$error_step3_SQL_script = 'Error, syntax error in sql script file: %s or file missing';
+			$error_step3_Demo_script = 'Error during Demo installation :'."\n\n".'%s';
 			$step3_title = 'Choose installation type:';
-			$step3_Demo = 'Automne with Demo (advised to begin on the software)';
-			$step3_Empty = 'Automne empty (to create a site from scratch)';
+			$step3_demo_FR = 'Automne with French Demo';
+			$step3_demo_EN = 'Automne with English Demo (advised to begin on the software)';
+			$step3_empty = 'Automne empty (to create a site from scratch)';
 			$step3_skip = 'Preserve the current database';
 			
 			//STEP 4
@@ -526,7 +534,7 @@ if (!isset($_GET['file'])) {
 			<br />
 			If you chose to install the demo, the public site will be visible at the address <a href="/" target="_blank">%s</a> once you login once to the administration.<br />
 			<br />
-			You can now delete the package file used for this installation as well as the file install.php.<br />
+			You can now delete the files used for this installation :<br />%s
 			<span style="color:red;">Warning</span>, leaving these files on a production site represents a major breach of security for your site!<br />
 			<br />
 			If you want to change some options you enter during this installation, run again the install.php file or:
@@ -876,7 +884,7 @@ if (!isset($_GET['file'])) {
   * 
   * @package Automne
   * @subpackage config
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author Sebastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
 define("APPLICATION_DB_HOST", "'.$_POST["dbhost"].'");
@@ -905,10 +913,10 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 		//check for errors
 		if ($cms_action == "dbscripts") {
 			//Params
-			if (!isset($_POST["script"]) || !$_POST["script"]) {
+			if (!isset($_POST["installationType"]) || !$_POST["installationType"]) {
 				$error .= $error_step3_must_choose_option.'<br />';
 			}
-			if (isset($_POST["script"]) && $_POST["script"] == 3) {
+			if (isset($_POST["installationType"]) && $_POST["installationType"] == 'keep') {
 				//keep current DB so go to next step
 				$step = 4;
 			}
@@ -938,7 +946,6 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 			}
 		}
 		
-		
 		if ($error || $cms_action != "dbscripts") {
 			$title = '<h1>'.$step3_title.'</h1>';
 			if ($error) {
@@ -951,11 +958,17 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 			<form action="'.$_SERVER["PHP_SELF"].'" method="post" onsubmit="check();">
 				<input type="hidden" name="step" value="3" />
 				<input type="hidden" name="cms_action" value="dbscripts" />
-				<input type="hidden" name="install_language" value="'.$install_language.'" />
-				<label for="demo"><input id="demo" type="radio" name="script" value="1" /> '.$step3_Demo.'</label><br />
-				<label for="empty"><input id="empty" type="radio" name="script" value="2" /> '.$step3_Empty.'</label><br />';
+				<input type="hidden" name="install_language" value="'.$install_language.'" />';
+				if (file_exists($_SERVER['DOCUMENT_ROOT'].'/'.$demoEn)) {
+					$content .= '<label for="demoen"><input id="demoen" type="radio" name="installationType" value="demoen" /> '.$step3_demo_EN.'</label><br />';
+				}
+				if (file_exists($_SERVER['DOCUMENT_ROOT'].'/'.$demoFr)) {
+					$content .= '<label for="demofr"><input id="demofr" type="radio" name="installationType" value="demofr" /> '.$step3_demo_FR.'</label><br />';
+				}
+				$content .= '
+				<label for="empty"><input id="empty" type="radio" name="installationType" value="clean" /> '.$step3_empty.'</label><br />';
 				if ($exists === true) {
-					$content .= '<label for="skip"><input id="skip" type="radio" name="script" value="3" /> '.$step3_skip.'</label><br />';
+					$content .= '<label for="skip"><input id="skip" type="radio" name="installationType" value="keep" /> '.$step3_skip.'</label><br />';
 				}
 			$content .= '
 				<input type="submit" class="submit" value="'.$label_next.'" />
@@ -964,15 +977,36 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 		} elseif ($step == 3) {
 			//load DB scripts
 			
-			//1- DB structure
-			$structureScript = $_SERVER['DOCUMENT_ROOT']."/sql/automne4.sql";
-			if (file_exists($structureScript) && CMS_patch::executeSqlScript($structureScript, true)) {
-				CMS_patch::executeSqlScript($structureScript);
-			} else {
-				die(sprintf($error_step3_SQL_script,$structureScript));
+			switch ($_POST['installationType']) {
+				case 'demoen':
+					$error = '';
+					if (patch($_SERVER['DOCUMENT_ROOT'].'/'.$demoEn, $error)) {
+						die(sprintf($error_step3_Demo_script, $error));
+					}
+				break;
+				case 'demofr':
+					$error = '';
+					if (!patch($_SERVER['DOCUMENT_ROOT'].'/'.$demoFr, $error)) {
+						die(sprintf($error_step3_Demo_script, $error));
+					}
+				break;
+				case 'clean':
+					//Import DB structure
+					$structureScript = $_SERVER['DOCUMENT_ROOT']."/sql/automne4.sql";
+					if (file_exists($structureScript) && CMS_patch::executeSqlScript($structureScript, true)) {
+						CMS_patch::executeSqlScript($structureScript);
+					} else {
+						die(sprintf($error_step3_SQL_script,$structureScript));
+					}
+					
+					//Set users language like the current installation language
+					$q = new CMS_query("update profilesUsers set language_pru='".io::sanitizeSQLString($install_language)."'");
+					//Set websites language like the current installation language
+					$q = new CMS_query("update websites set language_web='".io::sanitizeSQLString($install_language)."'");
+				break;
 			}
 			
-			//2- DB messages
+			//Import DB messages
 			//get all SQL files of the message dir
 			$files = glob($_SERVER['DOCUMENT_ROOT']."/sql/messages/*/*.sql", GLOB_NOSORT);
 			if (is_array($files)) {
@@ -986,20 +1020,6 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 			} else {
 				die(sprintf($error_step3_SQL_script, $_SERVER['DOCUMENT_ROOT']."/sql/messages/*/*.sql"));
 			}
-			if (isset($_POST["script"]) && $_POST["script"] == 2) {
-				//3- Clean Automne DB
-				$scratchScript = $_SERVER['DOCUMENT_ROOT']."/sql/automne4-scratch.sql";
-				if (file_exists($scratchScript) && CMS_patch::executeSqlScript($scratchScript, true)) {
-					CMS_patch::executeSqlScript($scratchScript);
-					//then remove folder /web/fr
-					if (is_dir($_SERVER['DOCUMENT_ROOT'].'/web/fr')) {
-						CMS_file::deltree($_SERVER['DOCUMENT_ROOT'].'/web/fr', true);
-					}
-				} else {
-					die(sprintf($error_step3_SQL_script,$scratchScript));
-				}
-			}
-			
 			//go to next step
 			$step = 4;
 		}
@@ -1597,7 +1617,34 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 				$uname = 'www-data';
 			}
 		}
-		$content .= sprintf($step9_alldone,CMS_websitesCatalog::getMainURL(),CMS_websitesCatalog::getMainURL(), $uname);
+		//create archives listing to inform user which file to delete
+		$archives = array();
+		$archiveFound = false;
+		$directory = dir($_SERVER['DOCUMENT_ROOT']);
+		while (false !== ($file = $directory->read())) {
+			if ($file!='.' && $file!='..') {
+				if ((strpos($file, '.tar.gz')!==false || strpos($file, '.tgz')!==false) && strpos($file, 'automne')!==false) {
+					$archiveFound = true;
+					$archiveFile = $file;
+				}
+			}
+		}
+		$archives[] = 'install.php';
+		if ($archiveFound) {
+			$archives[] = $archiveFile;
+		}
+		if (file_exists($_SERVER['DOCUMENT_ROOT'].'/'.$demoFr)) {
+			$archives[] = $demoFr;
+		}
+		if (file_exists($_SERVER['DOCUMENT_ROOT'].'/'.$demoEn)) {
+			$archives[] = $demoEn;
+		}
+		$archivesNames = '<ul>';
+		foreach ($archives as $archive) {
+			$archivesNames .= '<li>'.$archive.'</li>';
+		}
+		$archivesNames .= '</ul>';
+		$content .= sprintf($step9_alldone,CMS_websitesCatalog::getMainURL(),CMS_websitesCatalog::getMainURL(), $archivesNames, $uname);
 	}
 	
 	// +----------------------------------------------------------------------+
@@ -2156,6 +2203,87 @@ function phpinfo_array($return=false){
 	}
 	
 	return ($return === false) ? print_r($pi) : $pi;
+}
+
+//Pass a patch on Automne
+//Give the path file (FS relative) in parameter
+//Return true on success or false on failure
+function patch($patchFile, &$error) {
+	$archive = new CMS_gzip_file($patchFile);
+	if (!$archive->hasError()) {
+		$archive->set_options(array('basedir'=>PATH_TMP_FS."/", 'overwrite'=>1, 'level'=>1, 'dontUseFilePerms'=>1, 'forceWriting'=>1));
+		if (is_dir(PATH_TMP_FS))  {
+			if (!method_exists($archive, 'extract_files') || !$archive->extract_files()) {
+				$error = 'Error : Extraction error...';
+				return false;
+			}
+		} else {
+			$error = 'Error : Extraction directory does not exist';
+			return false;
+		}
+	} else {
+		$error = 'Error : Unable to extract archive wanted '.$filename.'. It is not a valid format...';
+		return false;
+	}
+	
+	if (!$archive->hasError()) {
+		unset($archive);
+	} else {
+		$error = 'Extraction error...';
+		return false;
+	}
+	
+	//Check files content
+	$automnePatch = new CMS_patch();
+	
+	//read patch param file and check versions
+	$patchFile = new CMS_file(PATH_TMP_FS."/patch");
+	
+	if ($patchFile->exists()) {
+		$patch = $patchFile->readContent("array");
+	} else {
+		$error = 'Error : File '.PATH_TMP_FS.'/patch does not exists ...';
+		return false;
+	}
+	if (!$automnePatch->checkPatch($patch)) {
+		$error = 'Error : Patch does not match current version ...';
+		return false;
+	}
+	
+	//read install param file and do maximum check on it before starting the installation process
+	$installFile = new CMS_file(PATH_TMP_FS."/install");
+	if ($installFile->exists()) {
+		$install = $installFile->readContent("array");
+	} else {
+		$error = 'Error : File '.PATH_TMP_FS.'/install does not exists ...';
+		return false;
+	}
+	$installError = $automnePatch->checkInstall($install, $errorsInfos);
+	if ($installError) {
+		$error = 'Error : Invalid install file :';
+		$error .= $installError;
+		return false;
+	}
+	
+	//start Installation process
+	$automnePatch->doInstall($install);
+	$installError = false;
+	$return = $automnePatch->getReturn();
+	foreach ($return as $line) {
+		if ($line['type'] == 'report') {
+			$error .= $line['text'];
+		}
+	}
+	
+	if ($installError) {
+		$error = 'Error during installation process : '.$error;
+		return false;
+	}
+	
+	//remove temporary files
+	!CMS_file::deltree(PATH_TMP_FS);
+	
+	return true;
 }
 
 /**
