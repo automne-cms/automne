@@ -1,0 +1,55 @@
+Automne 4
+
+Gestionnaire de contenu open-source : goutez à la simplicité avec Automne et gérez vos sites web en toute tranquillité.
+
+http://www.automne.ws
+
+Automne est distribué sous GNU Public License 2 ou supérieur http://www.gnu.org/copyleft/gpl.html
+
+Installation : pas à pas
+------------------------
+
+Cette version fourni tout ce dont vous avez besoin pour faire fonctionner Automne 4 sur Windows. 
+Attention, cette version n'est pas sécurisée. Elle ne convient qu'à un travail local et ne doit pas être employée sur un serveur de production. Pour plus d'informations à ce sujet, une fois l'installation terminée, allez à l'adresse http://127.0.0.1/xampp/
+
+- Décompressez l'archive sur l'un de vos disque (directement dans C: par exemple). Cela créera un répertoire xampplite.
+- Lancez le fichier xampplite\setup_xampp.bat pour configurer automatiquement les chemins de l'application
+- Lancez le fichier xampplite\xampp-control.exe pour démarrer les serveurs Apache et MySQL
+- Sur l'écran qui s'affiche, démarrez à l'aide des boutons "Start" Apache puis MySQL
+- Vous accédez à l'administration d'Automne à l'adresse : http://127.0.0.1/automne/admin/ (login : root / automne)
+- Par défaut, le site est installé avec la Démo anglaise d'Automne. Pour Installer la Démo française d'Automne ou une version vide, relancez l'installeur à l'adresse http://127.0.0.1/install.php et lors de la sélection du type d'installation, choisissez le type d'installation que vous souhaitez.
+
+Vous trouverez les utilitaires de configuration de XAMPP à l'adresse http://127.0.0.1/xampp/
+Vous trouverez les fichiers d'Automne dans le répertoire xampplite\htdocs
+
+Si vous rencontrez un problème ou si vous avez besoin d'aide, vous pouvez à tout moment nous poser vos questions sur le forum ou nous envoyer un mail à contact[at]automne.ws avec le fichier de diagnostic généré par Automne.
+
+Mettre à jour Automne
+---------------------
+
+Pour mettre à jour votre Automne, il faut passer successivement les patchs de mises à jour téléchargeables sur http://www.automne.ws/download/
+
+Configuration serveur
+---------------------
+
+ 	- PHP version 5.2 ou supérieur
+ 	- MySQL version 5.0.x ou supérieur
+ 	- Apache 1.3.x ou supérieur
+
+Pour de meilleures performances, installez PHP avec le module CLI (Command Line Interface) voir http://php.net/manual/features.commandline.php pour plus d'informations.
+
+Ressources en lignes
+--------------------
+
+ 	- http://doc.automne.ws/ : Regroupe toute la documentation disponible sur Automne.
+	- http://www.automne.ws/faq/ : Pour consulter les questions les plus fréquentes sur Automne.
+	- http://www.automne.ws/forum/ : Si vous ne trouvez pas de réponse à vos questions, n"hésitez pas à venir demander l'aide de la communauté sur nos forums.
+	- http://www.automne.ws/blog/ : Pour rester au courant des dernières versions et des nouvelles autour d'Automne.
+	- http://www.automne.ws/bug/ : Aucun logiciel n'est parfait, le Bug Tracker vous permet de nous remonter les dysfonctionnements que vous pourriez rencontrer.
+
+Participer
+----------
+
+Vous êtes libres de contribuer au projet Automne comme vous le voulez. Vous trouverez plus d'information sur la page http://www.automne.ws/contribution
+
+Merci d'utiliser Automne !

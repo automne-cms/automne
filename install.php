@@ -980,7 +980,7 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 			switch ($_POST['installationType']) {
 				case 'demoen':
 					$error = '';
-					if (patch($_SERVER['DOCUMENT_ROOT'].'/'.$demoEn, $error)) {
+					if (!patch($_SERVER['DOCUMENT_ROOT'].'/'.$demoEn, $error)) {
 						die(sprintf($error_step3_Demo_script, $error));
 					}
 				break;
