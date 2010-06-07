@@ -999,8 +999,6 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 						die(sprintf($error_step3_SQL_script,$structureScript));
 					}
 					
-					//Set users language like the current installation language
-					$q = new CMS_query("update profilesUsers set language_pru='".io::sanitizeSQLString($install_language)."'");
 					//Set websites language like the current installation language
 					$q = new CMS_query("update websites set language_web='".io::sanitizeSQLString($install_language)."'");
 				break;
