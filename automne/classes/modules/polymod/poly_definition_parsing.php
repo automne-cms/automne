@@ -269,7 +269,10 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			
 			$headers = $footers = '';
 			
-			$footers .= '$content .= \'<!--{elements:\'.base64_encode(serialize('.var_export($this->_elements, true).')).\'}-->\';'."\n";
+			//do not add cache reference if no cache is queried
+			if (!isset($this->_parameters['cache']) || $this->_parameters['cache'] != false) {
+				$footers .= '$content .= \'<!--{elements:\'.base64_encode(serialize('.var_export($this->_elements, true).')).\'}-->\';'."\n";
+			}
 			
 			$headers = 
 			'$content = "";'."\n".
@@ -1051,7 +1054,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		$attributes = '';
 		foreach ($tag['attributes'] as $attribute => $value) {
 			if ($attribute != 'tag') {
-				$attributes .= ' '.$attribute.'="'.$value.'"';
+				$attributes .= ' '.$attribute.'=\"'.$value.'\"';
 			}
 		}
 		$return = '$content .= "<'.$tag['attributes']["tag"].$attributes.'>";';
@@ -1066,7 +1069,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access private
 	  */
 	protected function _tagEnd(&$tag) {
-		return '$content .= "</'.$tag['attributes']["tag"].'>"';
+		return '$content .= "</'.$tag['attributes']["tag"].'>";';
 	}
 	
 	/**
@@ -1315,13 +1318,15 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			$func = create_function("","return (".$xmlCondition.");");
 			if ($func()) {
 				'.$return.'
-				//set view format
-				$cms_view->setDisplayMode('.($strict ? 'CMS_view::SHOW_XML' : 'CMS_view::SHOW_RAW').');
 				$content = CMS_polymod_definition_parsing::replaceVars($content, $replace);
 			}
 		}';
 		//do some cleaning on code and add reference to it into header callback
-		$this->_headCallBack['ajax'][] = $this->indentPHP($this->_cleanComputedDefinition($ajaxCode));
+		$ajax = array(
+			'code' 		=> $this->indentPHP($this->_cleanComputedDefinition($ajaxCode)),
+			'output' 	=> $strict ? 'CMS_view::SHOW_XML' : 'CMS_view::SHOW_RAW',
+		);
+		$this->_headCallBack['ajax'][] = $ajax;
 		return $return;
 	}
 	

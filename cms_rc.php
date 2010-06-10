@@ -410,6 +410,8 @@ if (isset($_SERVER["HTTP_X_FORWARDED_SERVER"])) {
 }
 if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) {
 	$_SERVER["REMOTE_ADDR"] = $_SERVER["HTTP_X_FORWARDED_FOR"];
+} elseif (isset($_SERVER["HTTP_CLIENT_IP"])) {
+	$_SERVER["REMOTE_ADDR"] = $_SERVER["HTTP_CLIENT_IP"];
 }
 
 /**
@@ -1268,11 +1270,11 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])
   */
 function compress_handler( $p_buffer, $p_mode ) {
 	if (ENABLE_HTML_COMPRESSION															//conf must accept HTML compression
-			 && strpos( strtolower($_SERVER['HTTP_ACCEPT_ENCODING']), 'gzip') !== false //client must handle gzip
 			 && APPLICATION_EXEC_TYPE == 'http'											//current mode must be HTTP (not CLI)
 			 && !headers_sent()															//headers must not already sent
 			 && 'ob_gzhandler' != ini_get('output_handler')								//gzip should not already defined as output handler
 			 && extension_loaded( 'zlib' )												//gzip extension must exists
+			 && strpos( strtolower(@$_SERVER['HTTP_ACCEPT_ENCODING']), 'gzip') !== false//client must handle gzip
 			 && !ini_get('zlib.output_compression')) {									//no output compression should already defined at PHP level
 		if (!defined('HTML_COMPRESSION_STARTED')) {
 			define('HTML_COMPRESSION_STARTED', true);

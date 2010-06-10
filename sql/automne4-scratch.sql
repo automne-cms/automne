@@ -40,6 +40,13 @@ DELETE FROM blocksVarchars_edited;
 DELETE FROM blocksVarchars_edition;
 DELETE FROM blocksVarchars_public;
 
+DELETE FROM blocksRawDatas_archived;
+DELETE FROM blocksRawDatas_deleted;
+DELETE FROM blocksRawDatas_edited;
+DELETE FROM blocksRawDatas_edition;
+DELETE FROM blocksRawDatas_public;
+
+
 DELETE FROM contactDatas where id_cd not in (1, 3);
 
 DELETE FROM linx_real_public;
@@ -80,8 +87,10 @@ DELETE FROM mod_subobject_text_deleted;
 DELETE FROM mod_subobject_text_edited;
 DELETE FROM mod_subobject_text_public;
 
-#last news use a link to page 5
+#Remove news and media rows
 DELETE FROM mod_standard_rows WHERE id_row = '66'; 
+DELETE FROM mod_standard_rows WHERE id_row = '58'; 
+DELETE FROM mod_standard_rows WHERE id_row = '68'; 
 
 DELETE FROM modulesCategories where id_mca not in (1,2,18);
 DELETE FROM modulesCategories_clearances where category_mcc not in (1,2,18);

@@ -46,6 +46,10 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 	exit;
 }
 
+//ignore user abort to avoid interuption of process
+@ignore_user_abort(true);
+@set_time_limit(9000);
+
 //Controler vars
 $filename = sensitiveIO::request('filename');
 $force = sensitiveIO::request('force');

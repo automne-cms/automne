@@ -196,7 +196,7 @@ class automne_script extends backgroundScript
 						$tmpDir = dir($this->_processManager->getTempPath());
 						while (false !== ($file = $tmpDir->read())) {
 							if (io::strpos($file, SCRIPT_CODENAME) !== false) {
-								unlink($this->_processManager->getTempPath().'/'.$file);
+								@unlink($this->_processManager->getTempPath().'/'.$file);
 							}
 						}
 					}

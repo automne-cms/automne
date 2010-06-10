@@ -308,6 +308,9 @@ $jscontent = <<<END
 	//add tree to window
 	moduleCategoriesWindow.add(tree);
 	
+	//add fake update method
+	moduleCategoriesWindow.update = function() {}
+	
 	// render the tree
     tree.getRootNode().expand();
 	//allow change max depth after layout only

@@ -433,7 +433,7 @@ $jscontent = <<<END
 	var fatherWindow = Ext.getCmp('{$fatherId}');
 	
 	//define update function into window (to be accessible by parent window)
-	moduleObjectWindow.update = function() {
+	moduleObjectWindow.updateTab = function() {
 		//reload all already loaded combos in search form
 		var combos = searchPanel.findByType('atmCombo');
 		var combosLen = combos.length;

@@ -200,6 +200,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 		global $cms_language;
 		$parameters = array();
 		$parameters['module'] = $this->_objectValues["module"]; //CMS_poly_object_catalog::getModuleCodenameForObjectType($this->getID());
+		$parameters['cache'] = false; //Do not cache this content
 		$definitionParsing = new CMS_polymod_definition_parsing($this->_objectValues['indexURL'], true, CMS_polymod_definition_parsing::PARSE_MODE, $parameters['module']);
 		$compiledIndexURL = $definitionParsing->getContent(CMS_polymod_definition_parsing::OUTPUT_PHP, $parameters);
 		$this->_objectValues['compiledIndexURL'] = $compiledIndexURL;

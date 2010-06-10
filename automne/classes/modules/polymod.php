@@ -14,18 +14,19 @@
 //
 // $Id: polymod.php,v 1.14 2010/03/08 16:43:31 sebastien Exp $
 
-//Polymod Codename
-define("MOD_POLYMOD_CODENAME", "polymod");
-
 /**
   * Class CMS_polymod
   *
   * Represent a poly module.
   *
-  * @package Automne
-  * @subpackage polymod
+  * @package CMS
+  * @subpackage module
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
+
+//Polymod Codename
+define("MOD_POLYMOD_CODENAME", "polymod");
+
 class CMS_polymod extends CMS_modulePolymodValidation
 {
 	/**
@@ -321,12 +322,11 @@ class CMS_polymod extends CMS_modulePolymodValidation
 						$modulesCode[$this->_codename] .= '<?php if(isset($_REQUEST[\'out\']) && $_REQUEST[\'out\'] == \'xml\') {'."\n".
 						'$cms_view = CMS_view::getInstance();'."\n".
 						'//set default display mode for this page'."\n".
-						'$cms_view->setDisplayMode(CMS_view::SHOW_RAW);'."\n".
-						'$cms_view->setContentTag(\'data\');'."\n";
+						'$cms_view->setDisplayMode(CMS_view::SHOW_RAW);'."\n";
 						foreach ($usage['ajax'] as $key => $ajaxCode) {
 							$head = (is_array($usage['headcode'])) ? $usage['headcode'][$key] : $usage['headcode'];
 							$foot = (is_array($usage['footcode'])) ? $usage['footcode'][$key] : $usage['footcode'];
-							$code = "\n".$head."\n".$ajaxCode."\n".$foot."\n";
+							$code = "\n".$head."\n".$ajaxCode['code']."\n".$foot."\n";
 							
 							//Cache management
 							$hash = md5(serialize(array(
@@ -346,14 +346,16 @@ class CMS_polymod extends CMS_modulePolymodValidation
 							'endif;'."\n".
 							'unset($cache_'.$hash.');'."\n".
 							'$content = $cache_'.$hash.'_content;'."\n".
-							'unset($cache_'.$hash.'_content);'."\n";
-							
+							'unset($cache_'.$hash.'_content);'."\n".
+							'//set view format'."\n".
+							'$cms_view->setDisplayMode('.$ajaxCode['output'].');'."\n";
 							$modulesCode[$this->_codename] .= $code;
 						}
 						$modulesCode[$this->_codename] .= 
 						'$cms_view->setContent($content);'."\n".
 						'//output empty XML response'."\n".
 						'unset($content);'."\n".
+						'$cms_view->setContentTag(\'data\');'."\n".
 						'$cms_view->show();'."\n".'} ?>';
 					}
 				}

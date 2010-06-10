@@ -21,18 +21,6 @@ $month = array('Stu', 'Lut', 'Sak', 'Kra', 'Tra', 'Čer', 'Lip', 'Žni', 'Vier',
 $datefmt = '%d %B %Y, %H:%M';
 $timespanfmt = '%s dzion, %s hadzinaŭ, %s chvilinaŭ i %s sekundaŭ';
 
-kali łaska, praviercie kanfihuracyju PHP';
-Heta moža adbycca ŭ vypadku, kali PHP znojdzie syntaksyčnuju pamyłku ŭ im abo kali PHP nia moža znajści fajł.
-Kali łaska, zahruzicie kanfihuracyjny fajł niepasredna, vykarystoŭvajučy spasyłku, pryviedzienuju nižej, i pračytajcie paviedamleńni PHP pra pamyłki. U bolšaści vypadkaŭ, niedzie prapuščany apostraf abo kropka z koskaj.
-Kali vy atrymajecie čystuju staronku, značyć, usio dobra.';
-
-Kali łaska, spytajcie aŭtara, što robić %s.';
-Kali vam treba ŭžyć zvarotny słeš ("\") abo apostraf ("\'") u hetych značeńniach, ustaŭcie zvarotny słeš pierad imi (naprykład, \'\\\\xyz\' abo \'a\\\'b\').';
-
-Kali vam patrebna ŭžyć zvarotny słeš ("\") abo apostraf ("\'") siarod hetych značeńniaŭ, pastaŭcie pierad imi zvarotny słeš (naprykład, \'\\\\xyz\' abo \'a\\\'b\').';
-
-hetaje pole nia moža być adredagavanaje ';
-
 $strAbortedClients = 'Spyniena';
 $strAccessDeniedCreateConfig = 'Imavierna, pryčyna hetaha ŭ tym, što nia stvorany kanfihuracyjny fajł. Kab jaho stvaryć, možna vykarystać %1$snaładačny skrypt%2$s.';
 $strAccessDeniedExplanation = 'phpMyAdmin pasprabavaŭ padłučycca da servera MySQL, ale server adchiliŭ złučeńnie. Praviercie imia chostu, karystalnika i parol u config.inc.php i ŭpeŭniciesia, što jany adpaviadajuć infarmacyi, jakuju daŭ administratar MySQL-servera.';
@@ -124,7 +112,7 @@ $strCancel = 'Skasavać';
 $strCanNotLoadExportPlugins = 'Niemahčyma zahruzić płahiny ekspartavańnia, kali łaska, praviercie ŭstalavanyja fajły!';
 $strCanNotLoadImportPlugins = 'Niemahčyma zahruzić płahiny impartavańnia, kali łaska, praviercie ŭstaloŭku!';
 $strCannotLogin = 'Niemahčyma załahavacca na server MySQL';
-$strCantLoad = 'niemahčyma zahruzić pašyreńnie %s;
+$strCantLoad = 'niemahčyma zahruzić pašyreńnie %s;';
 $strCantLoadRecodeIconv = 'Niemahčyma zahruzić pašyreńnie iconv abo pašyreńnie recode, nieabchodnyja dla pierakadavańnia symbalaŭ. Naładźcie PHP na vykarystańnie hetych pašyreńniaŭ abo ŭvohule adklučycie pierakadavańnie symbalaŭ u phpMyAdmin.';
 $strCantRenameIdxToPrimary = 'Niemahčyma pierajmienavać indeks u PRIMARY!';
 $strCantUseRecodeIconv = 'Niemahčyma vykarystać ni funkcyju iconv, ni libiconvr, ni recode_string u toj čas, jak pašyreńnie paviedamlaje, što jano zahružanaje. Praviercie vašuju kanfihuracyju PHP.';
@@ -164,7 +152,7 @@ $strCompleteInserts = 'Poŭnaja ŭstaŭka';
 $strCompression = 'Ścisk';
 $strCompressionWillBeDetected = 'Metad ścisku impartavanaha fajła budzie vyznačanaja aŭtamatyčna z: %s';
 $strConfigDefaultFileError = 'Niemahčyma zahruzić kanfihuracyju pa zmoŭčańni z: "%1$s"';
-$strConfigFileError = 'phpMyAdmin nia moža pračytać kanfihuracyjny fajł!
+$strConfigFileError = 'phpMyAdmin nia moža pračytać kanfihuracyjny fajł!';
 $strConfigureTableCoord = 'Kali łaska, skanfihurujcie kaardynaty dla tablicy %s';
 $strConnectionError = 'Niemahčyma padłučycca: niapravilnyja nałady.';
 $strConnections = 'Padłučeńni';
@@ -468,9 +456,9 @@ $strMIME_available_mime = 'Dastupnyja MIME-typy';
 $strMIME_available_transform = 'Dastupnyja pieraŭtvareńni';
 $strMIME_description = 'Apisańnie';
 $strMIME_MIMEtype = 'MIME-typ';
-$strMIME_nodescription = 'Niama dastupnych apisańniaŭ dla hetaha pieraŭtvareńnia.
+$strMIME_nodescription = 'Niama dastupnych apisańniaŭ dla hetaha pieraŭtvareńnia.';
 $strMIME_transformation_note = 'Dla atrymańnia śpisu dastupnych opcyjaŭ transfarmacyi i pieraŭtvareńniaŭ ichnych MIME-typaŭ, naciśnicie na %sapisańni pieraŭtvareńniaŭ%s';
-$strMIME_transformation_options_note = 'Kali łaska, uvodźcie značeńni opcyjaŭ pieraŭtvareńnia vykarystoŭvajučy hety farmat: \'a\', 100, b,\'c\'...
+$strMIME_transformation_options_note = 'Kali łaska, uvodźcie značeńni opcyjaŭ pieraŭtvareńnia vykarystoŭvajučy hety farmat: \'a\', 100, b,\'c\'...';
 $strMIME_transformation_options = 'Opcyi pieraŭtvareńnia';
 $strMIME_transformation = 'Pieraŭtvareńnie MIME-typu braŭzeram';
 $strMIMETypesForTable = 'MIME-typy tablicy';
@@ -776,7 +764,7 @@ $strServerVars = 'Nałady i źmiennyja servera';
 $strServerVersion = 'Versija servera';
 $strSessionStartupErrorGeneral = 'Niemahčyma biez pamyłak raspačać sesiju. Kali łaska, praviercie pamyłki ŭ vašym łogu PHP i, mahčyma, taksama ŭ łogu web-servera i skanfihurujcie PHP pravilna.';
 $strSessionValue = 'Značeńnie sesii';
-$strSetEnumVal = 'Kali typ pola "enum" abo "set", kali łaska, uvodźcie značeńni vykarystoŭvajučy hety farmat: \'a\',\'b\',\'c\'...
+$strSetEnumVal = 'Kali typ pola "enum" abo "set", kali łaska, uvodźcie značeńni vykarystoŭvajučy hety farmat: \'a\',\'b\',\'c\'...';
 $strShowAll = 'Pakazać usie';
 $strShowColor = 'Pakazać koler';
 $strShowDatadictAs = 'Farmat słoŭnika dadzienych';
@@ -975,7 +963,7 @@ $strTable = 'Tablica';
 $strTakeIt = 'hetaja';
 $strTblPrivileges = 'Pryvilei, specyfičnyja dla tablicy';
 $strTempData = 'Časovyja dadzienyja';
-$strTextAreaLength = ' Z-za vialikaj daŭžyni,
+$strTextAreaLength = ' Z-za vialikaj daŭžyni,';
 $strTexyText = 'Tekst Texy!';
 $strThai = 'Tajlandzkaja';
 $strThemeDefaultNotFound = 'Tema pa zmoŭčańni %s nia znojdzienaja!';

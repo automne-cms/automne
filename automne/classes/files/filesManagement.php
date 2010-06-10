@@ -376,7 +376,7 @@ class CMS_file extends CMS_grandFather
 			}
 			
 			if (!$f = @fopen($this->_name,'wb')) {
-				if ($createFolder && CMS_file::makeDir($this->_name)) {
+				if ($createFolder && CMS_file::makeDir($this->_basedir)) {
 					if (!$f = @fopen($this->_name,'wb')) {
 						$this->raiseError("Can't open file for writing and can't create directory for: ".$this->_name);
 						return false;
@@ -396,7 +396,7 @@ class CMS_file extends CMS_grandFather
 			$this->chmod(FILES_CHMOD);
 			return true;
 		} else {
-			if (!@mkdir($this->_name)) {
+			if (!CMS_file::makeDir($this->_name)) {
 				$this->raiseError("Can't write directory ".$this->_name);
 				return false;
 			} else {

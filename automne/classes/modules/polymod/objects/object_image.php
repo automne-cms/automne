@@ -530,7 +530,14 @@ class CMS_object_image extends CMS_object_common
 				$this->_subfieldValues[0]->setValue('');
 			}
 			//image zoom
-			if ($this->_subfieldValues[2]->getValue() && (!$values[$prefixName.$this->_field->getID().'_2'] || pathinfo($values[$prefixName.$this->_field->getID().'_2'], PATHINFO_BASENAME) != $this->_subfieldValues[2]->getValue())) {
+			if (
+				$this->_subfieldValues[2]->getValue()
+				&& (
+					!isset($values[$prefixName.$this->_field->getID().'_2'])
+					|| !$values[$prefixName.$this->_field->getID().'_2']
+					|| pathinfo($values[$prefixName.$this->_field->getID().'_2'], PATHINFO_BASENAME) != $this->_subfieldValues[2]->getValue()
+				)
+			) {
 				@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[2]->getValue());
 				$this->_subfieldValues[2]->setValue('');
 			}
@@ -539,7 +546,14 @@ class CMS_object_image extends CMS_object_common
 				return false;
 			}
 			//image zoom (if needed)
-			if ((!isset($values[$prefixName.$this->_field->getID().'_makeZoom']) || $values[$prefixName.$this->_field->getID().'_makeZoom'] != 1) && $values[$prefixName.$this->_field->getID().'_2'] && io::strpos($values[$prefixName.$this->_field->getID().'_2'], PATH_UPLOAD_WR.'/') !== false) {
+			if ((
+					!isset($values[$prefixName.$this->_field->getID().'_makeZoom'])
+					|| $values[$prefixName.$this->_field->getID().'_makeZoom'] != 1
+				)
+				&& isset($values[$prefixName.$this->_field->getID().'_2'])
+				&& $values[$prefixName.$this->_field->getID().'_2']
+				&& io::strpos($values[$prefixName.$this->_field->getID().'_2'], PATH_UPLOAD_WR.'/') !== false
+			) {
 				$filename = $values[$prefixName.$this->_field->getID().'_2'];
 				//check for image type before doing anything
 				if (!in_array(io::strtolower(pathinfo($filename, PATHINFO_EXTENSION)), $this->_allowedExtensions)) {

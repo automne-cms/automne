@@ -1649,8 +1649,9 @@ class CMS_module_standard extends CMS_module
 				switch ($tag->getName()) {
 					case "atm-linx":
 						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM || $visualizationMode == PAGE_VISUALMODE_FORM) {
-							//linx are visible even if target pages are not published (edited tree)
-							$linx_args = array("page"=> $treatedObject, "publicTree"=> false);
+							//direct linx are visible even if target pages are not published (edited tree)
+							//all other linx are only visible if they are published (public tree)
+							$linx_args = array("page"=> $treatedObject, "publicTree"=> !($tag->getAttribute('type') == 'direct' || !$tag->getAttribute('type')));
 							$linx = $tag->getRepresentationInstance($linx_args);
 							$linx->setDebug(false);
 							$linx->setLog(false);

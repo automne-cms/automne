@@ -373,7 +373,7 @@ $jscontent = <<<END
 	moduleObjectWindow.selectedItem = '{$selectedItem}';
 	
 	//define update function into window (to be accessible by parent window)
-	moduleObjectWindow.update = function() {
+	moduleObjectWindow.updateTab = function() {
 		//reload all already loaded combos in search form
 		var combos = searchPanel.findByType('atmCombo');
 		var combosLen = combos.length;
@@ -585,7 +585,7 @@ $jscontent = <<<END
 					moduleObjectWindow.selectedItems += selections[i].id.substr(7);
 				}
 			}
-			pr(moduleObjectWindow.selectedItems);
+			//pr(moduleObjectWindow.selectedItems);
 			if (moduleObjectWindow.selectItems) {
 				moduleObjectWindow.selectItems(moduleObjectWindow.selectedItems);
 			}

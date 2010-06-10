@@ -155,9 +155,9 @@ $jscontent = <<<END
 				if (newTab.beforeActivate) {
 					newTab.beforeActivate(tabPanel, newTab, currentTab);
 				}
-				if (newTab.rendered && newTab.update) {
+				if (newTab.rendered && newTab.updateTab) {
 					//update new tab on tab change
-					newTab.update();
+					newTab.updateTab();
 				}
 				return true;
 			},
