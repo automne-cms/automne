@@ -449,7 +449,7 @@ Automne.FileUploadField = Ext.extend(Ext.form.TextField,  {
 					errorName = al.sizeLimit;
 				break;
 				case this.UPLOAD_ERROR.UPLOAD_FAILED:
-					errorName = al.uploadError;
+					errorName = String.format(al.uploadError, (this.uploadCfg.file_size_limit / 1024));
 				break;
 				case this.UPLOAD_ERROR.FILE_VALIDATION_FAILED:
 					errorName = al.treatmentError;

@@ -394,6 +394,8 @@ if (isset($_SERVER["HTTP_X_FORWARDED_SERVER"])) {
 }
 if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) {
 	$_SERVER["REMOTE_ADDR"] = $_SERVER["HTTP_X_FORWARDED_FOR"];
+} elseif (isset($_SERVER["HTTP_CLIENT_IP"])) {
+	$_SERVER["REMOTE_ADDR"] = $_SERVER["HTTP_CLIENT_IP"];
 }
 //check we're not in a subdir
 if (!is_dir($_SERVER["DOCUMENT_ROOT"].PATH_MAIN_WR)) {

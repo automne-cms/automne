@@ -618,6 +618,7 @@ class CMS_view extends CMS_grandFather
 						<meta name="generator" content="'.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION.'" />
 						'.CMS_view::getCSS().'
 						'.CMS_view::getJavascript().'
+						
 					</head>';
 					//<meta http-equiv="X-UA-Compatible" content="chrome=1">
 			break;

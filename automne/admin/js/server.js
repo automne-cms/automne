@@ -16,6 +16,7 @@ Automne.server = {
 			disableCaching:		true,
 			success: 			Automne.server.evalResponse,
 			failure: 			Automne.server.failureResponse,
+			timeout:			60000,
 			scope:				this
 		};
 		if (typeof url == 'object') {

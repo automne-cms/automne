@@ -233,7 +233,7 @@ class CMS_linxDisplay extends CMS_grandFather
 				//check if page pass the condition
 				if (is_object($page) 
 					&& (!$this->hasCondition() || $this->pagePassesConditions($parsedPage, $page, $public, $rank)) 
-					&& (!$public /*&& $page->getPublication() != RESOURCE_PUBLICATION_VALIDATED*/) || ($public && $page->isUseable() && $page->getPublication() == RESOURCE_PUBLICATION_PUBLIC)) {
+					&& ((!$public /*&& $page->getPublication() != RESOURCE_PUBLICATION_VALIDATED*/) || ($public && $page->isUseable() && $page->getPublication() == RESOURCE_PUBLICATION_PUBLIC))) {
 					//get pages infos
 					$linkTitle = $page->getLinkTitle($public);
                     $title = $page->getTitle($public);

@@ -240,6 +240,13 @@ if (is_object($object)) {
 			}
 			//-->
 		</script>
+		
+		<form action="polymod_field.php" method="post">
+			<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
+			<input type="hidden" name="object" value="'.$object->getID().'" />
+			<input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_NEW).'" />
+		</form><br/>
+		
 		<table border="0" cellpadding="2" cellspacing="2">
 		<tr>
 			<th width="150" class="admin">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_TITLE).'</th>
