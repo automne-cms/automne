@@ -470,6 +470,25 @@ abstract class CMS_object_common extends CMS_grandFather
 				case 'text':
 					$input = '<textarea cols="70" rows="4" name="'.$prefixName.$parameter['internalName'].'" class="admin_input_text">'.io::htmlspecialchars($paramValue).'</textarea>';
 				break;
+				case 'fields':
+					//get all fields for current object
+					$fields = CMS_poly_object_catalog::getFieldsDefinition($this->_field->getValue('objectID'));
+					$selectValues = array();
+					foreach ($fields as $field) {
+						$label = new CMS_object_i18nm($field->getValue("labelID"));
+						$selectValues[$field->getID()] = $label->getValue($language->getCode());
+					}
+					$selectedValues = explode(';', $paramValue);
+					$listboxesParameters = array (
+						'field_name' 		=> $prefixName.$parameter['internalName'],	// Hidden field name to get value in
+						'items_possible' 	=> $selectValues,			// array of all categories availables: array(ID => label)
+						'items_selected' 	=> $selectedValues,		// array of selected ids
+						'select_width' 		=> '300px',					// Width of selects, default 200px
+						'select_height' 	=> '200px',					// Height of selects, default 140px
+						'form_name' 		=> 'frm'				// Javascript form name
+					);
+					$input = CMS_dialog_listboxes::getListBoxes($listboxesParameters);
+				break;
 				default:
 					if ($parameter['type'] && method_exists($this, "getHTMLSubFieldsParameters".$parameter['type'])) {
 						$method = "getHTMLSubFieldsParameters".$parameter['type'];

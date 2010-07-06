@@ -1003,7 +1003,7 @@ class CMS_file extends CMS_grandFather
 			exit;
 		}
 		
-		$compress = 'ob_gzhandler' != ini_get('output_handler') && extension_loaded( 'zlib' ) && !ini_get('zlib.output_compression') && strpos( strtolower($_SERVER['HTTP_ACCEPT_ENCODING']), 'gzip') !== false;
+		$compress = 'ob_gzhandler' != ini_get('output_handler') && extension_loaded( 'zlib' ) && !ini_get('zlib.output_compression') && strpos( strtolower(@$_SERVER['HTTP_ACCEPT_ENCODING']), 'gzip') !== false;
 		//create cache id from files, compression status and last time files access
 		$id = md5(implode(',',$files).'-'.$compress.'-'.$lastdate);
 		//create cache object

@@ -1555,7 +1555,6 @@ class CMS_tree extends CMS_grandFather
 			$domainFounded = CMS_websitesCatalog::getWebsiteFromDomain($domain);
 		}
 		//if basename founded
-		pr($urlinfo);
 		if (isset($urlinfo['path']) && $urlinfo['path'] != PATH_REALROOT_WR.'/' && $basename && ((isset($pathinfo['extension']) && strtolower($pathinfo['extension']) == 'php') || !isset($pathinfo['extension']))) {
 			//search page id in basename (declare matching patterns by order of research)
 			$patterns[] = "#^([0-9]+)-#U"; // for request like id-page_title.php

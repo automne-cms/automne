@@ -170,6 +170,8 @@ if ($files) {
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/ext/DDView.js';
 				//Ext.ux.TabScrollerMenu
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/ext/TabScrollerMenu.js';
+				//Ext.ux.GMapPanel
+				$jsfiles [] = PATH_ADMIN_JS_FS.'/ext/GMapPanel.js';
 				
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/ext/Connection.js';
 				

@@ -1286,6 +1286,19 @@ function compress_handler( $p_buffer, $p_mode ) {
 }
 
 /**
+  * Force page regeneration for given URL (need to be logged and to have regen rights)
+  */
+function atm_regen() {
+	global $cms_user;
+	if (isset($_SERVER['REQUEST_URI']) && isset($_REQUEST['atm-regen']) && isset($cms_user) && is_object($cms_user) && $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES)) {
+	    $p = CMS_tree::analyseURL($_SERVER['REQUEST_URI']);
+	    if ($p && is_object($p) && !$p->hasError()) {
+	        $p->regenerate(true);
+	    }
+	}
+}
+
+/**
   * Start Automne session
   */
 function start_atm_session() {

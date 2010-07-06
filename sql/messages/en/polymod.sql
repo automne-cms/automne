@@ -411,3 +411,16 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(558, 'polymod', 'en', 'Array of categories ids');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(559, 'polymod', 'en', 'Categories labels. You can change the separator (default comma) by adding a parameter using a pipe separator (|).');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(560, 'polymod', 'en', 'Use the control key [Ctrl] on PC or Apple [cmd] on Mac to make multiple selections.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(561, 'polymod', 'en', 'Coordinates (Google)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(562, 'polymod', 'en', 'Coordinates on a map');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(563, 'polymod', 'en', 'Longitude (X)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(564, 'polymod', 'en', 'Latitude (Y)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(565, 'polymod', 'en', 'Use some fields of the element as source address?');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(566, 'polymod', 'en', 'Select the fields of the element to use as source address');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(567, 'polymod', 'en', 'Address');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(568, 'polymod', 'en', 'Fields');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(569, 'polymod', 'en', 'Update from the address');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(570, 'polymod', 'en', 'Google can not determine the position of this address "{0}" ...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(571, 'polymod', 'en', 'Position on the Map');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(572, 'polymod', 'en', 'Map window');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(573, 'polymod', 'en', 'Enter an address to start ...');

@@ -125,6 +125,9 @@ if (!class_exists('CMS_module_standard')) {
 	die('Cannot find standard module ...');
 }
 
+//regenerate current page if needed
+atm_regen();
+
 /**
   * This constant is only for compatibility with old modules
   * because this file no longer exists since V3.2.1

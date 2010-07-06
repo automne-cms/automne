@@ -87,6 +87,7 @@ class CMS_cache {
 			'lifetime' 					=> $this->_parameters['lifetime'],	// cache duration
 			'caching' 					=> CACHE_MODULES_DATAS,				// activate cache
 			'automatic_cleaning_factor'	=> 50,								// clean cache each 50 writing
+			'automatic_serialization'	=> true,							// automatic cache serialization
 		);
 		$backendOptions = array(
 			'cache_dir'					=> PATH_CACHE_FS.'/'.$this->_parameters['type'],		// Directory where the cache files are stored

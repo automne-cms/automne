@@ -706,15 +706,6 @@ class CMS_pageTemplate extends CMS_grandFather
 				$template_data = preg_replace('#<!doctype[^>]*>#siU', '', $template_data);
 				return '<?php /* Template ['.str_replace(PATH_TEMPLATES_FS.'/', '', PATH_PRINT_TEMPLATES_FS).'] */?>'.str_replace("{{data}}", $data, $template_data);
 			} else {
-				//add the cdata that is after the last tag
-				//$data .= io::substr($definition, $offset);
-				
-				//eval() the PHP if needed
-				if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
-					$data = sensitiveIO::evalPHPCode($data);
-					//replace {{pageID}} tag in all page content.
-					$data = str_replace('{{pageID}}', $page->getID(), $data);
-				}
 				return '<?php /* Template ['.$this->getLabel().' - '.$this->getDefinitionFile().'] */?>'.$data;
 			}
 			return false;

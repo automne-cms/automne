@@ -733,7 +733,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 						if ($thisFieldsCategories) {
 							$fields = CMS_poly_object_catalog::getFieldsDefinition($anObjectType->getID());
 							foreach ($thisFieldsCategories as $catField) {
-								if (is_object($fields[$catField])) {
+								if (isset($fields[$catField]) && is_object($fields[$catField])) {
 									$label = new CMS_object_i18nm($fields[$catField]->getValue("labelID"));
 									$catFieldsNames[] = $label->getValue($cms_language->getCode()). ' ('.$anObjectType->getLabel($cms_language).')';
 								}

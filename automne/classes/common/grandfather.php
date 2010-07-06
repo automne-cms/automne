@@ -394,10 +394,12 @@ class CMS_grandFather
 		if ($file) {
 			require_once($file);
 			/*only for stats*/
-			if (STATS_DEBUG) $GLOBALS["files_loaded"]++;
-			if (STATS_DEBUG && VIEW_SQL) { 
-				$GLOBALS["files_table"][] = $file; 
-				$GLOBALS["memory_table"][] = array('file' => $file, 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
+			if (defined('STATS_DEBUG') && defined('VIEW_SQL')) {
+				if (STATS_DEBUG) $GLOBALS["files_loaded"]++;
+				if (STATS_DEBUG && VIEW_SQL) { 
+					$GLOBALS["files_table"][] = $file; 
+					$GLOBALS["memory_table"][] = array('file' => $file, 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
+				}
 			}
 		} else {
 			chdir(PATH_MAIN_FS);

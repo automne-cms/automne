@@ -90,6 +90,9 @@ if (!class_exists('CMS_module_standard')) {
 	die('Cannot find standard module ...');
 }
 
+//regenerate current page if needed
+atm_regen();
+
 //some commonly used messages
 define("MESSAGE_BUTTON_EDIT", 24);
 define("MESSAGE_BUTTON_DELETE", 854);

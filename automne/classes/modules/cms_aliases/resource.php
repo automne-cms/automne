@@ -441,19 +441,17 @@ class CMS_resource_cms_aliases extends CMS_resource
 			if (!$page->hasError()) {
 				$pageURL = CMS_tree::getPageValue($this->getPageID(), 'url');
 				if ($pageURL) {
-					header("Location: ".$pageURL.$params);
+					CMS_view::redirect($pageURL.$params, true, 302);
 				} else {
-					header("Location: ".CMS_websitesCatalog::getMainURL().$params);
+					CMS_view::redirect(CMS_websitesCatalog::getMainURL().$params, true, 302);
 				}
-				exit;
 			}  else {
 				$this->raiseError("Can't create redirection to invalid page");
 				return false;
 			}
 		} elseif ($this->getURL()) {
 			//it's a redirection to an URL
-			header("Location: ".$this->getURL());
-			exit;
+			CMS_view::redirect($this->getURL(), true, 302);
 		} else {
 			$this->raiseError("Must have an destination");
 			return false;

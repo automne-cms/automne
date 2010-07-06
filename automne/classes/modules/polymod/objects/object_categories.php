@@ -1134,7 +1134,12 @@ class CMS_object_categories extends CMS_object_common
 		}
 		
 		$module = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
-		$viewvableCategoriesForProfile = CMS_moduleCategories_catalog::getViewvableCategoriesForProfile ($cms_user, $module, true);
+		
+		if (isset($values['editableonly']) && ($values['editableonly'] == 'true' || $values['editableonly'] == '1')) {
+			$viewvableCategoriesForProfile = CMS_moduleCategories_catalog::getViewvableCategoriesForProfile ($cms_user, $module, true, CLEARANCE_MODULE_EDIT, true);
+		} else {
+			$viewvableCategoriesForProfile = CMS_moduleCategories_catalog::getViewvableCategoriesForProfile ($cms_user, $module, true);
+		}
 		
 		if ($restrictToUsedCategories || (is_array($disableCategories) && $disableCategories)) {
 			//unset unused categories (keep categories parents in lineage)

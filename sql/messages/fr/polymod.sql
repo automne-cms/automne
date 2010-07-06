@@ -612,3 +612,21 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(558, 'polymod', 'fr', 'Tableau des identifiants des catégories');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(559, 'polymod', 'fr', 'Libellés des catégories. Vous pouvez modifier le séparateur (par défaut : virgule) en ajoutant un paramètre à l\'aide d\'un séparateur pipe (|).');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(560, 'polymod', 'fr', 'Utilisez la touche control [Ctrl] sur PC ou Pomme [cmd] sur Mac pour faire des sélections multiples.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(561, 'polymod', 'fr', 'Coordonnées (Google)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(562, 'polymod', 'fr', 'Point de coordonnées sur une carte');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(563, 'polymod', 'fr', 'Longitude (X)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(564, 'polymod', 'fr', 'Latitude (Y)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(565, 'polymod', 'fr', 'Employer certains champs de l\'élément comme adresse source ?');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(566, 'polymod', 'fr', 'Sélectionnez les champs de l\'élément à employer comme adresse source');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(567, 'polymod', 'fr', 'Adresse');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(568, 'polymod', 'fr', 'Champs');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(569, 'polymod', 'fr', 'Mettre &agrave; jour depuis l\'adresse');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(570, 'polymod', 'fr', 'Google ne peut déterminer la position de cette adresse "{0}" ...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(571, 'polymod', 'fr', 'Positionner sur la Carte');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(572, 'polymod', 'fr', 'Fen&ecirc;tre Cartographique');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(573, 'polymod', 'fr', 'Saisissez une adresse de d&eacute;part ...');
+
+
+
+
+

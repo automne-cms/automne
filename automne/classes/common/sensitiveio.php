@@ -443,7 +443,7 @@ class SensitiveIO extends CMS_grandFather
 		//write all content to evaluate as a tmp file.
 		$tmpFile = new CMS_file(PATH_TMP_FS.'/eval_'.md5(mt_rand().microtime()).'.tmp');
 		$tmpFile->setContent($input);
-		$tmpFile->writeTopersistence();
+		$tmpFile->writeTopersistence(true);
 		//then execute it as a require file (this is most like a real PHP execution)
 		ob_start();
 		require $tmpFile->getFilename();

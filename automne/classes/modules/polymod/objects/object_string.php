@@ -280,8 +280,7 @@ class CMS_object_string extends CMS_object_common
 	  * @return string : the SQL request
 	  * @access public
 	  */
-	function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
-		$supportedOperator = array(
+	$supportedOperator = array(
 			'like',
 			'!=',
 			'=',
@@ -310,6 +309,8 @@ class CMS_object_string extends CMS_object_common
 				$value[$i] = "'".SensitiveIO::sanitizeSQLString($val)."'";
 			}
 			$value = '('.implode(',', $value).')';
+		} elseif (strtolower($value) == 'null') {
+			$value = "''";
 		} else {
 			$value = "'".SensitiveIO::sanitizeSQLString($value)."'";
 		}
