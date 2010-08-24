@@ -33,6 +33,7 @@ class CMS_object_search extends CMS_grandFather
 	const POLYMOD_SEARCH_RETURN_DATAS = 2;
 	const POLYMOD_SEARCH_RETURN_OBJECTSLIGHT = 3;
 	const POLYMOD_SEARCH_RETURN_OBJECTSLIGHT_EDITED = 4;
+	const POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS = 5;
 	
 	/**
 	  * Number of items founded
@@ -138,14 +139,41 @@ class CMS_object_search extends CMS_grandFather
 	protected $_score = array();
 	
 	/**
+	  * Current search return mode
+	  * 
+	  * @var integer
+	  * @access private
+	  */
+	protected $_searchMode = false;
+	
+	/**
+	  * Current search results objects values
+	  * 
+	  * @var mixed (false if not populated, array otherwise)
+	  * @access private
+	  */
+	protected $_objectsValues = false;
+	
+	/**
+	  * Count objects returned by method getNextResult
+	  * 
+	  * @var integer
+	  * @access private
+	  */
+	protected $_objectsCount = 0;
+	
+	/**
 	  * Constructor
 	  * 
 	  * @access public
-	  * @param $objectDefinition CMS_poly_object_definition the current search object definition
+	  * @param $objectDefinition CMS_poly_object_definition the current search object definition or the ID of the CMS_poly_object_definition
 	  * @param boolean $public
 	  */
 	function __construct($objectDefinition, $public = false) {
 		global $cms_user;
+		if (io::isPositiveInteger($objectDefinition)) {
+            $objectDefinition = new CMS_poly_object_definition($objectDefinition);
+        }
 		if (!is_a($objectDefinition,'CMS_poly_object_definition')) {
 			$this->raiseError('ObjectDefinition must be a valid CMS_poly_object_definition.');
 			return false;
@@ -627,9 +655,12 @@ class CMS_object_search extends CMS_grandFather
 						
 						foreach ($categoriesFields as $categoriesField) {
 							//load category field if not exists
-							if (!is_object($this->_fieldsDefinitions[$categoriesField])) {
+							if (!isset($this->_fieldsDefinitions[$categoriesField]) || !is_object($this->_fieldsDefinitions[$categoriesField])) {
 								//get object fields definition
 								$this->_fieldsDefinitions = CMS_poly_object_catalog::getFieldsDefinition($this->_object->getID());
+							}
+							if (!isset($this->_fieldsDefinitions[$categoriesField])) {
+								break;
 							}
 							//we can see objects without categories only if is not public or field is not required and user has admin right on module
 							if (($this->_public && !$this->_fieldsDefinitions[$categoriesField]->getValue('required')) || (!$this->_public && $value->hasModuleClearance($this->_object->getValue('module'), CLEARANCE_MODULE_EDIT))) {
@@ -1048,13 +1079,17 @@ class CMS_object_search extends CMS_grandFather
 				default:
 					//add previously founded IDs to where clause
 					$where = ($IDs) ? ' and objectID in ('.implode(',',$IDs).')':'';
-					if (!is_object($this->_fieldsDefinitions[$type])) {
+					if (!isset($this->_fieldsDefinitions[$type]) || !is_object($this->_fieldsDefinitions[$type])) {
 						//get object fields definition
 						$this->_fieldsDefinitions = CMS_poly_object_catalog::getFieldsDefinition($this->_object->getID());
 					}
 					//get type object for field
-					$objectField = $this->_fieldsDefinitions[$type]->getTypeObject();
-					$sql = $objectField->getFieldSearchSQL($type, $value, $operator, $where, $this->_public);
+					if (isset($this->_fieldsDefinitions[$type])) {
+						$objectField = $this->_fieldsDefinitions[$type]->getTypeObject();
+						$sql = $objectField->getFieldSearchSQL($type, $value, $operator, $where, $this->_public);
+					} else {
+						$this->raiseError('Unknown field '.$type.' to filter with value '.print_r($value, true));
+					}
 					break;
 				}
 				if ($sql || isset($xapianResults) || isset($fullTextResults)) {
@@ -1398,9 +1433,10 @@ class CMS_object_search extends CMS_grandFather
 	 *	self::POLYMOD_SEARCH_RETURN_OBJECTS for objetcs (default)
 	 *	self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT for light objects (without subobjects datas)
 	 *  self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT_EDITED for edited light objects. /!\ This method must not be used for objects which should be saved (used by getListOfNamesForObject only) /!\
+	 *	self::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS use this method to get individual results with method getNextResult
 	 * @param boolean $loadSubObjects : all the founded objects can load theirs own sub objects (default false)
 	 * 	/!\ CAUTION : Pass this option to true can generate a lot of subqueries /!\
-	 * @return array(CMS_poly_object)
+	 * @return mixed array(CMS_poly_object) or boolean (for POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS)
 	 */
 	function search($return = self::POLYMOD_SEARCH_RETURN_OBJECTS, $loadSubObjects = false) {
 		global $cms_user;
@@ -1413,12 +1449,17 @@ class CMS_object_search extends CMS_grandFather
 			$return = self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT;
 		}
 		$items = array();
+		if ($return == self::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS) {
+			//reset result stack if needed
+			reset($this->_sortedResultsIds);
+		}
+		$this->_searchMode = $return;
 		// Check module rights : to get any results, user should has at least CLEARANCE_MODULE_VIEW
 		if((!$this->_public || ($this->_public && APPLICATION_ENFORCES_ACCESS_CONTROL)) && (!is_object($cms_user) || !$cms_user->hasModuleClearance($this->_object->getValue('module'),CLEARANCE_MODULE_VIEW))){
 			if (!is_object($cms_user)) {
 				$this->_raiseError(__CLASS__.' : '.__FUNCTION__.' : cms_user not loaded when trying to get objects subject to rights ...');
 			}
-			return $items;
+			return ($return == self::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS) ? false : $items;
 		}
 		//get all ids and numrows
 		$this->_resultsIds = $this->_getIds();
@@ -1436,15 +1477,19 @@ class CMS_object_search extends CMS_grandFather
 				$this->_values = $this->_getObjectValues();
 			}
 		} else {
-			return array();
-		}
-		//return ids
-		if ($return == self::POLYMOD_SEARCH_RETURN_IDS) {
-			return $this->_sortedResultsIds;
+			return ($return == self::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS) ? true : array();
 		}
 		//return datas
 		if ($return == self::POLYMOD_SEARCH_RETURN_DATAS) {
 			return $this->_values;
+		}
+		//return individuals objects with method getNextResult
+		if ($return == self::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS) {
+			return true;
+		}
+		//return ids
+		if ($return == self::POLYMOD_SEARCH_RETURN_IDS) {
+			return $this->_sortedResultsIds;
 		}
 		//return objects
 		$count = 0;
@@ -1470,6 +1515,84 @@ class CMS_object_search extends CMS_grandFather
 			}
 		}
 		return $items;
+	}
+	
+	/**
+	 * Returns the next result in the current search results stack, false if no results left
+	 * Search must be already done using search method and mode self::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS.
+	 * 
+	 * @access public
+	 * @param $return, the returned values in : 
+	 *	self::POLYMOD_SEARCH_RETURN_OBJECTS for objetcs (default)
+	 *	self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT for light objects (without subobjects datas)
+	 *  self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT_EDITED for edited light objects. /!\ This method must not be used for objects which should be saved (used by getListOfNamesForObject only) /!\
+	 * @param boolean $loadSubObjects : all the founded objects can load theirs own sub objects (default false)
+	 * 	/!\ CAUTION : Pass this option to true can generate a lot of subqueries /!\
+	 * @return array(CMS_poly_object)
+	 */
+	function getNextResult($return = self::POLYMOD_SEARCH_RETURN_OBJECTS, $loadSubObjects = false) {
+		if ($return == self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT && !$this->_public) {
+			$this->raiseError('Return type can\'t be self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT in a non-public search.');
+			$return = self::POLYMOD_SEARCH_RETURN_OBJECTS;
+		}
+		//this is a hack to allow light search in edited userspace. /!\ Objects must not be saved after /!\
+		if ($return == self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT_EDITED) {
+			$return = self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT;
+		}
+		if ($this->_searchMode !== self::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS) {
+			$this->raiseError('You cannot use this method if search was not launched with mode self::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS');
+			return false;
+		}
+		if ($return == self::POLYMOD_SEARCH_RETURN_IDS) {
+			$currentResult = each($this->_sortedResultsIds);
+			if ($currentResult !== false) {
+				$this->_objectsCount++;
+				return $currentResult['value'];
+			}
+			return false;
+		}
+		//return objects
+		if ($this->_values && $this->_sortedResultsIds) {
+			//1- create objects values : all subObjects founded for searched objects
+			if ($this->_objectsValues === false) {
+				$this->_objectsValues = array();
+				foreach ($this->_resultsSubObjectsIds as $subObjectId) {
+					$this->_objectsValues[$subObjectId] = &$this->_values[$subObjectId];
+				}
+			}
+			//load sub objects values
+			$loadSubObjectsValues = ($return != self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT);
+			//create object
+			$currentResult = each($this->_sortedResultsIds);
+			if ($currentResult !== false) {
+				//2- add object values to objects values
+				if (!isset($this->_objectsValues[$currentResult['value']])) {
+					$this->_objectsValues[$currentResult['value']] = &$this->_values[$currentResult['value']];
+				}
+				//instanciate and return object
+				$this->_objectsCount++;
+				return new CMS_poly_object($this->_object->getID(), $currentResult['value'], $this->_objectsValues, $this->_public, $loadSubObjects, $loadSubObjectsValues);
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Does last result returned by method getNextResult is the last of the stack
+	 * @return boolean
+	 * @access public
+	 */
+	function isLastResult() {
+		return $this->_objectsCount == sizeof($this->_sortedResultsIds);
+	}
+	
+	/**
+	 * Reset the results stack returned by the method getNextResult
+	 * @return void
+	 * @access public
+	 */
+	function resetResultStack() {
+		reset($this->_sortedResultsIds);
 	}
 	
 	/**

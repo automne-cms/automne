@@ -478,6 +478,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		$return .= '//get search params
 		$search_'.$tag['attributes']['name'].' = new CMS_object_search($objectDefinitions[$objectDefinition_'.$tag['attributes']['name'].'], $public_'.$uniqueID.');
 		$launchSearch_'.$tag['attributes']['name'].' = true;
+		$searchLaunched_'.$tag['attributes']['name'].' = false;
 		//add search conditions if any
 		';
 		if ($this->_mode == self::BLOCK_PARAM_MODE) {
@@ -498,7 +499,8 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		}
 		$return .='//destroy search and results '.$tag['attributes']['name'].' objects
 		unset($search_'.$tag['attributes']['name'].');
-		unset($results_'.$tag['attributes']['name'].');
+		unset($launchSearch_'.$tag['attributes']['name'].');
+		unset($searchLaunched_'.$tag['attributes']['name'].');
 		//SEARCH '.$tag['attributes']['name'].' TAG END '.$uniqueID.'
 		';
 		return $return;
@@ -528,37 +530,37 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		$uniqueID = $this->getUniqueID();
 		$return = '
 		//RESULT '.$tag['attributes']['search'].' TAG START '.$uniqueID.'
-		//launch search '.$tag['attributes']['search'].' if not already done
-		if($launchSearch_'.$tag['attributes']['search'].' && !isset($results_'.$tag['attributes']['search'].')) {
-			if (isset($search_'.$tag['attributes']['search'].')) {
-				$results_'.$tag['attributes']['search'].' = $search_'.$tag['attributes']['search'].'->search('.$returnType.');
-			} else {
-				CMS_grandFather::raiseError("Malformed atm-result tag : can\'t use this tag outside of atm-search \"'.$tag['attributes']['search'].'\" tag ...");
-				$results_'.$tag['attributes']['search'].' = array();
+		if(isset($search_'.$tag['attributes']['search'].') && $launchSearch_'.$tag['attributes']['search'].' && $searchLaunched_'.$tag['attributes']['search'].' === false) {
+			//launch search
+			if ($search_'.$tag['attributes']['search'].'->search(CMS_object_search::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS)) {
+				$searchLaunched_'.$tag['attributes']['search'].' = true;
 			}
-		} elseif (!$launchSearch_'.$tag['attributes']['search'].') {
-			$results_'.$tag['attributes']['search'].' = array();
+		} elseif (isset($search_'.$tag['attributes']['search'].') && $launchSearch_'.$tag['attributes']['search'].' && $searchLaunched_'.$tag['attributes']['search'].' === true) {
+			//reset search stack (search already done before)
+			$search_'.$tag['attributes']['search'].'->resetResultStack();
+		} else {
+			CMS_grandFather::raiseError("Malformed atm-result tag : can\'t use this tag outside of atm-search \"'.$tag['attributes']['search'].'\" tag ...");
 		}
-		if ($results_'.$tag['attributes']['search'].') {
+		if (isset($search_'.$tag['attributes']['search'].') && $launchSearch_'.$tag['attributes']['search'].' && $searchLaunched_'.$tag['attributes']['search'].' === true) {
 			$object_'.$uniqueID.' = (isset($object[$objectDefinition_'.$tag['attributes']['search'].'])) ? $object[$objectDefinition_'.$tag['attributes']['search'].'] : ""; //save previous object search if any
 			$replace_'.$uniqueID.' = $replace; //save previous replace vars if any
 			$count_'.$uniqueID.' = 0;
 			$content_'.$uniqueID.' = $content; //save previous content var if any
 			$maxPages_'.$uniqueID.' = $search_'.$tag['attributes']['search'].'->getMaxPages();
             $maxResults_'.$uniqueID.' = $search_'.$tag['attributes']['search'].'->getNumRows();';
-			if ($returnType == CMS_object_search::POLYMOD_SEARCH_RETURN_IDS || $returnType == 'POLYMOD_SEARCH_RETURN_IDS') {
+			if ($returnType == CMS_object_search::POLYMOD_SEARCH_RETURN_IDS) {
 				$return .= '
-				foreach ($results_'.$tag['attributes']['search'].' as $resultID_'.$tag['attributes']['search'].') {';
+				while ($resultID_'.$tag['attributes']['search'].' = $search_'.$tag['attributes']['search'].'->getNextResult('.$returnType.')) {';
 			} else {
 				$return .= '
-				foreach ($results_'.$tag['attributes']['search'].' as $object[$objectDefinition_'.$tag['attributes']['search'].']) {';
+				while ($object[$objectDefinition_'.$tag['attributes']['search'].'] = $search_'.$tag['attributes']['search'].'->getNextResult('.$returnType.')) {';
 			}
 				$return .= '
 				$content = "";
 				$replace["atm-search"] = array (
 					"{resultid}" 	=> (isset($resultID_'.$tag['attributes']['search'].')) ? $resultID_'.$tag['attributes']['search'].' : $object[$objectDefinition_'.$tag['attributes']['search'].']->getID(),
 					"{firstresult}" => (!$count_'.$uniqueID.') ? 1 : 0,
-					"{lastresult}" 	=> ($count_'.$uniqueID.' == sizeof($results_'.$tag['attributes']['search'].')-1) ? 1 : 0,
+					"{lastresult}" 	=> $search_'.$tag['attributes']['search'].'->isLastResult() ? 1 : 0,
 					"{resultcount}" => ($count_'.$uniqueID.'+1),
 					"{maxpages}"    => $maxPages_'.$uniqueID.',
 					"{currentpage}" => ($search_'.$tag['attributes']['search'].'->getAttribute(\'page\')+1),
@@ -599,19 +601,21 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		$uniqueID = $this->getUniqueID();
 		$return = '
 		//NO-RESULT '.$tag['attributes']['search'].' TAG START '.$uniqueID.'
-		//launch search '.$tag['attributes']['search'].' if not already done
-		if($launchSearch_'.$tag['attributes']['search'].' && !isset($results_'.$tag['attributes']['search'].')) {
-			if (isset($search_'.$tag['attributes']['search'].')) {
-				$results_'.$tag['attributes']['search'].' = $search_'.$tag['attributes']['search'].'->search();
-			} else {
-				CMS_grandFather::raiseError("Malformed atm-noresult tag : can\'t use this tag outside of atm-search \"'.$tag['attributes']['search'].'\" tag ...");
-				$results_'.$tag['attributes']['search'].' = array();
+		if(isset($search_'.$tag['attributes']['search'].') && $launchSearch_'.$tag['attributes']['search'].' && $searchLaunched_'.$tag['attributes']['search'].' === false) {
+			//launch search
+			if ($search_'.$tag['attributes']['search'].'->search(CMS_object_search::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS)) {
+				$searchLaunched_'.$tag['attributes']['search'].' = true;
 			}
-		} elseif (!$launchSearch_'.$tag['attributes']['search'].') {
-			$results_'.$tag['attributes']['search'].' = array();
+		} elseif (isset($search_'.$tag['attributes']['search'].') && $launchSearch_'.$tag['attributes']['search'].' && $searchLaunched_'.$tag['attributes']['search'].' === true) {
+			//reset search stack (search already done before)
+			$search_'.$tag['attributes']['search'].'->resetResultStack();
+		} else {
+			CMS_grandFather::raiseError("Malformed atm-noresult tag : can\'t use this tag outside of atm-search \"'.$tag['attributes']['search'].'\" tag ...");
 		}
-		if (!$results_'.$tag['attributes']['search'].') {
-			'.$this->_computeTags($tag['childrens']).'
+		if (isset($search_'.$tag['attributes']['search'].') && $launchSearch_'.$tag['attributes']['search'].' && $searchLaunched_'.$tag['attributes']['search'].' === true) {
+			if (!$search_'.$tag['attributes']['search'].'->getNumRows()) {
+				'.$this->_computeTags($tag['childrens']).'
+			}
 		}
 		//NO-RESULT '.$tag['attributes']['search'].' TAG END '.$uniqueID.'
 		';
