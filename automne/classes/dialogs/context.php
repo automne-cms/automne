@@ -185,8 +185,9 @@ class CMS_context extends CMS_grandFather
 				$q = new CMS_query($sql);
 			}
 			//regenerate session ID
-			session_regenerate_id(false);
-			
+			if (!headers_sent()) {
+				@session_regenerate_id(false);
+			}
 			
 			//  hang on to the new session id
 			/*$sid = session_id();
@@ -621,7 +622,9 @@ class CMS_context extends CMS_grandFather
 	static function resetSessionCookies() {
 		//CMS_grandFather::log('resetSessionCookies');
 		//Regenerate session id
-		session_regenerate_id(true);
+		if (!headers_sent()) {
+			@session_regenerate_id(true);
+		}
 		//unset session
 		unset($_SESSION) ;
 		//remove cookies

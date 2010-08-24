@@ -18,8 +18,8 @@
   * PHP page : poly modules admin
   * Used to manage poly modules. This file is included by modules_admin.php
   *
-  * @package Automne
-  * @subpackage admin-v3
+  * @package CMS
+  * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
@@ -31,6 +31,8 @@ define("MESSAGE_PAGE_ACTION_DELETEPLUGINCONFIRM", 279);
 define("MESSAGE_PAGE_RSS_DEFINITIONS", 290);
 define("MESSAGE_PAGE_ACTION_DELETERSSCONFIRM", 291);
 define("MESSAGE_PAGE_FIELD_OBJECT_INDEXABLE", 322);
+//Polymod message
+define("MESSAGE_PAGE_FIELD_INDEXABLE", 322);
 
 if(sensitiveIO::IsPositiveInteger($objectID)) {
 	$object = new CMS_poly_object_definition($objectID);
@@ -40,6 +42,19 @@ if(sensitiveIO::IsPositiveInteger($objectID)) {
 // ** ACTIONS MANAGEMENT                                         **
 // ****************************************************************
 switch ($_POST["cms_action"]) {
+case 'index':
+	$field = new CMS_poly_object_field($_POST["field"]);
+	if (!$field->hasError()) {
+		if (!$field->setValue("indexable",$_POST["indexable"])) {
+			$cms_message .= "\n".$cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD, 
+				array($cms_language->getMessage(MESSAGE_PAGE_FIELD_FRONTEND)));
+		} else {
+			//save the data
+			$field->writeToPersistence();
+			$cms_message .= $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
+		}
+	}
+break;
 case 'deleteObject' :
 	if ($object->destroy()) {
 		unset($object);
@@ -240,18 +255,22 @@ if (is_object($object)) {
 			}
 			//-->
 		</script>
-		
 		<form action="polymod_field.php" method="post">
-			<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
-			<input type="hidden" name="object" value="'.$object->getID().'" />
-			<input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_NEW).'" />
+		<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
+		<input type="hidden" name="object" value="'.$object->getID().'" />
+		<input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_NEW).'" />
 		</form><br/>
-		
 		<table border="0" cellpadding="2" cellspacing="2">
 		<tr>
 			<th width="150" class="admin">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_TITLE).'</th>
 			<th width="150" class="admin">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_TYPE).'</th>
-			<th width="200" class="admin">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_DESCRIPTION).'</th>
+			<th width="200" class="admin">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_DESCRIPTION).'</th>';
+		//if ASE module exists, add field indexation options
+		if (class_exists('CMS_module_ase')) {
+			$content .= '
+					<th width="70" class="admin">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_INDEXABLE,false, MOD_POLYMOD_CODENAME).'</th>';
+		}
+		$content .= '
 			<th width="150" class="admin">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_ACTIONS).'</th>
 			<th width="36" class="admin">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_ORDER).'</th>
 		</tr>
@@ -277,7 +296,25 @@ if (is_object($object)) {
 					$content .= '
 					</td>
 					<td width="150" class="'.$td_class.'">'.$typeObject->getObjectLabel($cms_language).'</td>
-					<td width="200" class="'.$td_class.'">'.$typeObject->getDescription($cms_language).'</td>
+					<td width="200" class="'.$td_class.'">'.$typeObject->getDescription($cms_language).'</td>';
+		//if ASE module exists, add field indexation options
+		if (class_exists('CMS_module_ase')) {
+			$content .= '
+					<td width="70" class="'.$td_class.'">
+						<table border="0" cellpadding="2" cellspacing="0">
+							<tr>
+								<form action="'.$_SERVER["SCRIPT_NAME"].'" method="post">
+								<input type="hidden" name="cms_action" value="index" />
+								<input type="hidden" name="field" value="'.$field->getID().'" />
+								<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
+								<input type="hidden" name="object" value="'.$object->getID().'" />
+									<td class="admin"><input name="indexable" onchange="this.form.submit();" type="checkbox" value="1" '.($field->getValue("indexable") ? ' checked="checked"' : '').' /></td>
+								</form>
+								</tr>
+							</table>
+					</td>';
+		}
+		$content .= '
 					<td width="150" class="'.$td_class.'">
 						<table border="0" cellpadding="2" cellspacing="0">
 							<tr>';

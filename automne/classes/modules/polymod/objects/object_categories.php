@@ -560,10 +560,12 @@ class CMS_object_categories extends CMS_object_common
 	  * - true : CLEARANCE_MODULE_EDIT
 	  * - constant value : clearanceLevel value
 	  * @param mixed $categoriesRoot, root category ID to use (default : false : the field root category)
+	  * @param boolean $strict, return strict categories available for user for this field (without the parent tree). default false
+	  * @param mixed (boolean or array) $usedByItemsIds, This parameters is used only if $restrictToUsedCat is used. False to restrict to only used categories (default)
 	  * @return array(string) the statements or false if profile hasn't any access to any categories
 	  * @access public
 	  */
-	function getAllCategoriesAsArray($language = false, $restrictToUsedCat = false, $module = false, $clearanceLevel = false, $categoriesRoot = false, $strict = false) {
+	function getAllCategoriesAsArray($language = false, $restrictToUsedCat = false, $module = false, $clearanceLevel = false, $categoriesRoot = false, $strict = false, $usedByItemsIds = false) {
 		global $cms_user;
 		$params = $this->getParamsValues();
 		$categoriesRoot = ($categoriesRoot) ? $categoriesRoot : $params['rootCategory'];
@@ -583,13 +585,18 @@ class CMS_object_categories extends CMS_object_common
 			$user = $cms_user;
 			$categories = CMS_moduleCategories_catalog::getAllCategoriesAsArray($user, $module, $language, $categoriesRoot, -1, $clearanceLevel, $strict);
 		}
-		//pr($categories,true);
-		if (!$restrictToUsedCat) {
-			return $categories;
-		} else {
-			//Get all used categories IDS for this object field
-			$usedCategories = $this->getAllUsedCategoriesForField();
+		if ($restrictToUsedCat) {
+			
 			//pr($usedCategories);
+			
+			//filter categories by items ids
+			if (is_array($usedByItemsIds)) {
+				//Get all used categories IDS for this object field and givens items ids
+				$usedCategories = $this->getAllUsedCategoriesForField($usedByItemsIds);
+			} else {
+				//Get all used categories IDS for this object field
+				$usedCategories = $this->getAllUsedCategoriesForField();
+			}
 			
 			if (is_array($usedCategories) && $usedCategories) {
 				//get all categories lineage
@@ -614,22 +621,31 @@ class CMS_object_categories extends CMS_object_common
 					}
 				}
 				//pr($categories);
-				return $categories;
 			} else {
 				//no categories used
+				$categories = array();
+			}
+			if (!$categories) {
 				return array();
 			}
 		}
+		
+		return $categories;
 	}
 	
 	/**
 	  * Returns all categories IDs who has used by this type of object (ie : this field)
 	  *
+	  * @param mixed (boolean or array) $restrictToItemsIds, restrict results to given items ids. False to restrict to only used categories (default)
 	  * @access public
 	  * @return array(interger id => integer id) the object ids
 	  * @static
 	  */
-	function getAllUsedCategoriesForField() {
+	function getAllUsedCategoriesForField($restrictToItemsIds = false) {
+		if (is_array($restrictToItemsIds) && (!$restrictToItemsIds || !implode($restrictToItemsIds, ', '))) {
+			//restrict to no ids so return nothing
+			return array();
+		}
 		//get field of categories for searched object type (assume it uses categories)
 		$categoriesFields = CMS_poly_object_catalog::objectHasCategories(CMS_poly_object_catalog::getObjectIDForField($this->_field->getID()));
 		$fieldsDefinitions = array();
@@ -657,6 +673,9 @@ class CMS_object_categories extends CMS_object_common
 				where
 					objectFieldID = '".$this->_field->getID()."'
 			";
+			if ($restrictToItemsIds) {
+				$sql .= " and objectID in (".implode($restrictToItemsIds, ', ').")";
+			}
 			$q = new CMS_query($sql);
 			$r = array();
 			if ($q->getNumRows()) {
@@ -697,6 +716,9 @@ class CMS_object_categories extends CMS_object_common
 					objectFieldID in (".@implode(',', $categoriesFields).")
 					and value in (".@implode(',', $viewvableCats).")
 					";
+			if ($restrictToItemsIds) {
+				$sql .= " and objectID in (".implode($restrictToItemsIds, ', ').")";
+			}
 			$q = new CMS_query($sql);
 			$r = array();
 			if ($q->getNumRows()) {
@@ -1246,6 +1268,7 @@ class CMS_object_categories extends CMS_object_common
 	  * @param array $values : parameters values array(parameterName => parameterValue) in :
 	  * 	selected : the category id which is selected (optional)
 	  * 	usedcategories : display only used categories (optional, default : true)
+	  *		usedbyitemsids : display only categories used by items list. Accept array of items ids or list of ids (comma separated). Used only if 'usedcategories' is active (optional, default : false)
 	  * 	editableonly : display only editable categories (optional, default : false)
 	  * 	root : the category id to use as root (optional)
 	  * @param multidimentionnal array $tags : xml2Array content of atm-function tag (nothing for this one)
@@ -1256,20 +1279,29 @@ class CMS_object_categories extends CMS_object_common
 		global $cms_language;
 		if (!isset($values['usedcategories']) || $values['usedcategories'] == 'true' || $values['usedcategories'] == '1') {
 			$usedCategories = true;
+			if (isset($values['usedbyitemsids']) && is_array($values['usedbyitemsids'])) {
+				$usedByItemsIds = $values['usedbyitemsids'];
+			} elseif (isset($values['usedbyitemsids']) && is_string($values['usedbyitemsids'])) {
+				$usedByItemsIds = explode(',', $values['usedbyitemsids']);
+			} else {
+				$usedByItemsIds = false;
+			}
 		} else {
 			$usedCategories = false;
+			$usedByItemsIds = false;
 		}
 		if (!isset($values['editableonly']) || $values['editableonly'] == 'false' || $values['editableonly'] == '0') {
 			$editableOnly = false;
 		} else {
 			$editableOnly = true;
 		}
+		
 		if (isset($values['root']) && sensitiveIO::isPositiveInteger($values['root'])) {
 			$rootCategory = $values['root'];
 		} else {
 			$rootCategory = false;
 		}
-		$categories = $this->getAllCategoriesAsArray($cms_language, $usedCategories, false, $editableOnly, $rootCategory);
+		$categories = $this->getAllCategoriesAsArray($cms_language, $usedCategories, false, $editableOnly, $rootCategory, false, $usedByItemsIds);
 		$return = "";
 		if (is_array($categories) && $categories) {
 			//natsort objects by name case insensitive

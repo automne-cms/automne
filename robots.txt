@@ -4,3 +4,9 @@ Disallow: /automne_bin/
 Disallow: /automne_linx_files/
 Disallow: /sql/
 Disallow: /imagezoom.php
+
+Disallow: /harming/humans
+Disallow: /ignoring/human/orders
+Disallow: /harm/to/self
+
+Allow: /

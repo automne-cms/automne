@@ -197,24 +197,25 @@ class SensitiveIO extends CMS_grandFather
 	}
 
 	/**
-	  * Cleans a string containing other thing than [a..zA..Z0..9_-]
+	  * Cleans a string containing other thing than [a..zA..Z0..9_.-]
 	  * but translates spaces to _ and accentuated chars to their non-accentuated counterpart before.
 	  * Static method.
 	  *
-	  * @param mixed $input The sensitive input.
+	  * @param string $input The sensitive input.
+	  * @param string $keep The meta caracters to keep with _.- (default : none).
 	  * @return string the sanitized string
 	  * @access public
 	  */
-	static function sanitizeAsciiString($input) {
+	static function sanitizeAsciiString($input, $keep = '') {
 		$map = io::sanitizeAsciiMap();
 		$map = array_merge($map, array(" " => "_"));
 		if (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
 			$sanitized = strtr($input, $map);
-			$sanitized = preg_replace("#[^[a-zA-Z0-9_.-]]*#", "", $sanitized);
+			$sanitized = preg_replace("#[^[a-zA-Z0-9".$keep."_.-]]*#", "", $sanitized);
 		} else {
 			$input = utf8_decode($input);
 			$sanitized = strtr($input, $map);
-			$sanitized = preg_replace("#[^[a-zA-Z0-9_.-]]*#", "", $sanitized);
+			$sanitized = preg_replace("#[^[a-zA-Z0-9".$keep."_.-]]*#", "", $sanitized);
 			$sanitized = utf8_encode($sanitized);
 		}
 		return $sanitized;

@@ -16,7 +16,7 @@ Automne.server = {
 			disableCaching:		true,
 			success: 			Automne.server.evalResponse,
 			failure: 			Automne.server.failureResponse,
-			timeout:			60000,
+			timeout:			120000,
 			scope:				this
 		};
 		if (typeof url == 'object') {
@@ -60,7 +60,7 @@ Automne.server = {
 				|| response.responseText == ''
 				|| !response.getResponseHeader('X-Automne-Response'))
 			) {
-			Automne.server.failureResponse(response, options, null, 'call');
+			Automne.server.failureResponse(response, options, null, 'call timeout');
 		}
 	},
 	//method used for a server call : eval response

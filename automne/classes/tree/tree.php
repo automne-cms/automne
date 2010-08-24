@@ -87,7 +87,7 @@ class CMS_tree extends CMS_grandFather
 	{
 		static $pagesInfos;
 		if (!SensitiveIO::isPositiveInteger($id)) {
-			CMS_grandFather::raiseError("Page id must be positive integer");
+			CMS_grandFather::raiseError("Page id must be positive integer : ".$id);
 			return false;
 		}
 		if (!isset($pagesInfos[$id][$type])) {
@@ -348,14 +348,17 @@ class CMS_tree extends CMS_grandFather
 	  * Returns true if the page is in the public tree
 	  * Static function.
 	  *
-	  * @param CMS_page $page The page to check
+	  * @param mixed $page The CMS_page to check or the page Id
 	  * @return boolean true on success, false if the page is not in the public tree
 	  * @access public
 	  */
-	function isInPublicTree(&$page)
-	{
-		if (!is_a($page, "CMS_page")) {
-			CMS_grandFather::raiseError("Page must be instance of CMS_page");
+	function isInPublicTree($page) {
+		if (io::isPositiveInteger($page)) {
+			$pageId = $page;
+		} elseif (is_a($page, "CMS_page")) {
+			$pageId = $page->getID();
+		} else {
+			CMS_grandFather::raiseError("Page must be instance of CMS_page or a positive integer");
 			return false;
 		}
 		$sql = "
@@ -364,14 +367,10 @@ class CMS_tree extends CMS_grandFather
 			from
 				linx_tree_public
 			where
-				sibling_ltr='".$page->getID()."'
+				sibling_ltr='".io::sanitizeSQLString($pageId)."'
 		";
 		$q = new CMS_query($sql);
-		if ($q->getNumRows()) {
-			return true;
-		} else {
-			return false;
-		}
+		return ($q->getNumRows());
 	}
 	
 	/**

@@ -425,7 +425,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(424, 'standard', 'fr', 'Aucune validation à afficher');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(425, 'standard', 'fr', 'Valider par lot');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(426, 'standard', 'fr', 'Fermer');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(427, 'standard', 'fr', 'Eléments en attente de validation sélectionnés. Cliquez sur "Valider par lot" pour valider ces éléments.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(427, 'standard', 'fr', 'Eléments en attente de validation sélectionnés. Cliquez sur "Valider par lot" pour valider les modifications en attente sur ces éléments.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(428, 'standard', 'fr', 'Cette action fermera la fenêtre des validations.<br />Etes-vous sûr ?');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(429, 'standard', 'fr', 'Erreur : fonction non prise en charge...');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(430, 'standard', 'fr', 'Accepter la validation');

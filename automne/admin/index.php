@@ -71,10 +71,13 @@ if (isset($_REQUEST["cms_action"]) && $_REQUEST["cms_action"] == 'logout') {
 }
 $content .= '
 <div id="atm-server-call"></div>
+<div style="display:none;">
 <form id="history-form" class="x-hidden">
     <input type="hidden" id="x-history-field" />
     <iframe id="x-history-frame"></iframe>
 </form>
+</div>
+<div class="x-hidden"><hr />If this message does not disappear in a few seconds, please contact your system administrator or consult the Automne error log file.<hr />Si ce message ne dispara&icirc;t pas dans quelques secondes, veuillez contacter votre administrateur syst&egrave;me ou consulter le fichier de log d\'erreur d\'Automne.</div>
 ';
 
 $view->setContent($content);

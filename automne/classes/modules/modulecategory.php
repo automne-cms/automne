@@ -431,6 +431,13 @@ class CMS_moduleCategory extends CMS_grandFather {
 			} elseif ($useAlternative && isset($this->_labels[APPLICATION_DEFAULT_LANGUAGE]) && $this->_labels[APPLICATION_DEFAULT_LANGUAGE]) {
 				return $this->_labels[APPLICATION_DEFAULT_LANGUAGE];
 			} else {
+				if ($useAlternative) {
+					foreach ($this->_labels as $label) {
+						if (trim($label)) {
+							return $label;
+						}
+					}
+				}
 				return '';
 			}
 		} else {

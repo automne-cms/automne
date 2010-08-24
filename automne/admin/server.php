@@ -169,7 +169,7 @@ if (ini_get('memory_limit') && ini_get('memory_limit') < 32) {
 if (io::strtolower(io::substr(PHP_OS, 0, 3)) === 'win') {
 	if (defined('PATH_PHP_CLI_WINDOWS') && PATH_PHP_CLI_WINDOWS && is_file(PATH_PHP_CLI_WINDOWS)) {
 		//test CLI version
-		$return = CMS_patch::executeCommand(PATH_PHP_CLI_WINDOWS.' -v',$error);
+		$return = CMS_patch::executeCommand('"'.PATH_PHP_CLI_WINDOWS.'" -v',$error);
 		if ($error && $return !== false) {
 			$content .= '<li class="atm-pic-cancel">Error when testing php CLI with command "'.PATH_PHP_CLI_WINDOWS.' -v" : '.$error."\n";
 		}

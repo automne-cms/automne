@@ -203,7 +203,8 @@ if ($limitToItems) {
 		$search->addOrderCondition('objectID', $_SESSION["cms_context"]->getSessionVar('direction_'.$object->getID()));
 	}
 }
-$items = $search->search();
+//launch search
+$search->search(CMS_object_search::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS);
 
 // Vars for lists output purpose and pages display, see further
 $itemsDatas['total'] = $search->getNumRows();
@@ -213,7 +214,7 @@ if ($resultsDefinition) {
 	$definitionParsing = new CMS_polymod_definition_parsing($resultsDefinition, true, CMS_polymod_definition_parsing::PARSE_MODE);
 }
 //loop on results items
-foreach ($items as $item) {
+while($item = $search->getNextResult()) {
 	//Process actions on item if any
 	
 	//Unlock item

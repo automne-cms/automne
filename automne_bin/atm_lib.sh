@@ -410,7 +410,8 @@ function atmRestore {
     echo "Exclude options"
 
     ATM_RESTORE_EXCLUDE_LIST="./automne_linx_files/ ./html/ ./web/ ./automne/cache/ ./automne/tmp/ ./automne/upload/"
-    for ITEM in './index.php' './config.php' './automne/templates/' './automne_modules_files/' './js/' './img/'; do
+    ATM_RESTORE_EXCLUDE_OPTIONS=".htaccess ./index.php ./config.php ./automne/templates/ ./automne_modules_files/ ./js/ ./img/"
+    for ITEM in `echo "$ATM_RESTORE_EXCLUDE_OPTIONS"`; do
         atmAsk "Overide $ITEM [y|N]?" "n"
         if [ $? -ne 1 ]; then
             ATM_RESTORE_EXCLUDE_LIST="$ATM_RESTORE_EXCLUDE_LIST $ITEM"

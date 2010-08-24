@@ -128,7 +128,7 @@ class CMS_scriptsManager
 					'program files' => 'progra~1',
 					'documents and settings' => 'docume~1',
 				);
-				$command = str_replace(array_keys($replace), $replace, $command);
+				$command = str_ireplace(array_keys($replace), $replace, $command);
 				if (!@touch (PATH_WINDOWS_BIN_FS."/script.bat")) {
 					CMS_grandFather::_raiseError("CMS_scriptsManager : startScript : Create file error : ".PATH_WINDOWS_BIN_FS."/script.bat");
 					return false;
@@ -141,7 +141,7 @@ class CMS_scriptsManager
 					@fclose($fh);
 				}
 				$sys = realpath(PATH_WINDOWS_BIN_FS) . "\bgrun.exe ".realpath(PATH_WINDOWS_BIN_FS) . '\script.bat';
-				$sys = str_replace(array_keys($replace), $replace, $sys);
+				$sys = str_ireplace(array_keys($replace), $replace, $sys);
 				$log = @system($sys);
 			} else {
 				$error = '';

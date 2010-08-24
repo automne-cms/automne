@@ -425,7 +425,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(424, 'standard', 'en', 'No validation display');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(425, 'standard', 'en', 'Validate batch');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(426, 'standard', 'en', 'Close');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(427, 'standard', 'en', 'elements pending validation selected. Click "Submit batch" to validate these elements.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(427, 'standard', 'en', 'elements pending validation selected. Click "Submit batch" to validate pending modifications on these elements.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(428, 'standard', 'en', 'This action will close the window of validations. <br /> Are you sure?');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(429, 'standard', 'en', 'Error: function not care ...');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(430, 'standard', 'en', 'Accept validation');

@@ -446,8 +446,10 @@ class CMS_forms_field extends CMS_grandFather {
 				unset($dbFields[$formTag->getID()]);
 			}
 		}
-		foreach($dbFields as $field) {
-			$formTags[$field->generateFieldIdDatas()] = $field;
+		if ($dbFields) {
+			foreach($dbFields as $field) {
+				$formTags[$field->generateFieldIdDatas()] = $field;
+			}
 		}
 		return $formTags;
 	}

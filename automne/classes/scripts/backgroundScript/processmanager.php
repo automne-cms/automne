@@ -177,7 +177,7 @@ class processManager
 				$q_script=new CMS_query($sql);
 			}
 		} else {
-			echo "processManager::deletePIDFile: Can't delete PID file: ".$unlink."\n";
+			echo "processManager::deletePIDFile: Can't delete PID file: ".$this->getPIDFilePath()."\n";
 		}
 		
 		return $return;

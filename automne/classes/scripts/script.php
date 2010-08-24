@@ -38,9 +38,9 @@ require_once(dirname(__FILE__).'/../../../cms_rc_admin.php');
 $appCode = processManager::getAppCode();
 define("SCRIPT_CODENAME", "bgscript_" . $appCode . "_regenerator");
 
-//time out in second for regenerate one page
-$timeout = (@ini_get("max_execution_time") && SensitiveIO::isPositiveInteger(@ini_get("max_execution_time"))) ? @ini_get("max_execution_time"):'30';
-define("SUB_SCRIPT_TIME_OUT", $timeout);
+//time out in second for scripts
+define("SUB_SCRIPT_TIME_OUT", 600); //10 minutes
+define("MASTER_SCRIPT_TIME_OUT", 43200); //12 hours
 
 //duration in seconds between each cycles of checking of sub-scripts
 define("SLEEP_TIME", 1);
@@ -62,6 +62,9 @@ class automne_script extends backgroundScript
 		
 		if ($_SERVER['argv']['1']=='-s' && SensitiveIO::isPositiveInteger($_SERVER['argv']['2'])) {
 			// SUB-SCRIPT : Processes one script task
+			@ini_set('max_execution_time', SUB_SCRIPT_TIME_OUT); //set max execution time for sub script
+			@set_time_limit(SUB_SCRIPT_TIME_OUT); //set the PHP timeout for sub script
+			
 			$sql = "
 				select
 					*
@@ -106,9 +109,8 @@ class automne_script extends backgroundScript
 			}
 		} else {
 			// MASTER SCRIPT : Processes all sub-scripts
-			
-			//set the PHP timeout to infinite time
-			@set_time_limit(0);
+			@ini_set('max_execution_time', MASTER_SCRIPT_TIME_OUT); //set max execution time for master script
+			@set_time_limit(MASTER_SCRIPT_TIME_OUT); //set the PHP timeout  for master script
 			
 			//max simultaneous scripts
 			$maxScripts = $_SERVER['argv']['2'];

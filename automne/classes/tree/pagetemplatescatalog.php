@@ -275,7 +275,7 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 			} else {
 				$filename = "pt".$tpl->getID()."_".SensitiveIO::sanitizeAsciiString($tpl->getLabel()).".xml";
 			}
-			if ($setPrivate || @copy(PATH_TEMPLATES_FS."/".$model->getDefinitionFile(), PATH_TEMPLATES_FS."/".$filename) ) {
+			if ($setPrivate || CMS_file::copyTo(PATH_TEMPLATES_FS."/".$model->getDefinitionFile(), PATH_TEMPLATES_FS."/".$filename) ) {
 				$tpl->setDefinitionFile($filename);
 
 				//Copying groupsStack from database
@@ -290,7 +290,7 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 					if ($model->getImage()) {
 						$ext = io::substr($model->getImage(), strrpos($model->getImage(), "."));
 						$imagefilename = "pt".$tpl->getID()."_".SensitiveIO::sanitizeAsciiString($tpl->getLabel()).$ext ;
-						if (@copy(PATH_TEMPLATES_IMAGES_FS."/".$model->getImage(), PATH_TEMPLATES_IMAGES_FS."/".$imagefilename) ) {
+						if (CMS_file::copyTo(PATH_TEMPLATES_IMAGES_FS."/".$model->getImage(), PATH_TEMPLATES_IMAGES_FS."/".$imagefilename) ) {
 							$tpl->setImage($imagefilename);
 						}
 					} else {

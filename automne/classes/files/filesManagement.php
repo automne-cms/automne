@@ -288,18 +288,18 @@ class CMS_file extends CMS_grandFather
 	{
 		if ($this->_exists) {
 			if ($this->_type===self::TYPE_FILE) {
-				if ($returnAs=="string") {
+				if ($returnAs == "string") {
 					$this->_content=file_get_contents($this->_name);
 					return $this->_content;
-				} elseif($returnAs=="array") {
+				} elseif($returnAs == "array") {
 					$this->_content = file_get_contents($this->_name);
-					if ($array_map_function && function_exists($array_map_function)) {
+					if ($array_map_function && is_callable($array_map_function)) {
 						$array = array_map($array_map_function,file($this->_name));
 					} else {
 						$array = file($this->_name);
 					}
 					return $array;
-				} elseif($returnAs=="csv") {
+				} elseif($returnAs == "csv") {
 					if (!isset($csvargs['delimiter'])) {
 						$csvargs['delimiter'] = ';';
 					}
@@ -311,10 +311,13 @@ class CMS_file extends CMS_grandFather
 					}
 					$this->_content = file_get_contents($this->_name);
 					$count = 0;
+					if ($array_map_function && !is_callable($array_map_function)) {
+						$array_map_function = '';
+					}
 					$handle = @fopen($this->_name, 'rb');
 					while (($data = fgetcsv($handle, 4096, $csvargs['delimiter'], $csvargs['enclosure'])) !== false) {
-						if ($array_map_function && function_exists($array_map_function)) {
-							$data = array_map($array_map_function,$data);
+						if ($array_map_function) {
+							$data = array_map($array_map_function, $data);
 						}
 						//at first line, get number of values/lines of CSV array
 						if ($csvargs['strict']) {
@@ -808,7 +811,11 @@ class CMS_file extends CMS_grandFather
 				CMS_file::makeDir(dirname($to));
 			}
 			//copy the file
-			return @copy($from, $to);
+			$return = @copy($from, $to);
+			if ($return) {
+				CMS_file::chmodFile(FILES_CHMOD, $to);
+			}
+			return $return;
 		} else {
 			//create directory
 			return CMS_file::makeDir($to);

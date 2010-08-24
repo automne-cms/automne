@@ -463,12 +463,22 @@ class CMS_poly_object_catalog
 			return $listNames[$paramsHash];
 		}
 		$listNames[$paramsHash] = array();
-		if ($loadSubObjects) {
-			$items = CMS_poly_object_catalog::getAllObjects($objectID, $public, $searchConditions, true);
-		} else {
-			$items = CMS_poly_object_catalog::getAllObjects($objectID, $public, $searchConditions, true, CMS_object_search::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT_EDITED);
+		//load current object definition
+		$object = new CMS_poly_object_definition($objectID);
+		//create search
+		$search = new CMS_object_search($object, $public);
+		//add conditions
+		if (is_array($searchConditions) && $searchConditions) {
+			foreach($searchConditions as $conditionType => $conditionValue) {
+				$search->addWhereCondition($conditionType, $conditionValue);
+			}
 		}
-		foreach ($items as $item) {
+		//launch search
+		$search->search(CMS_object_search::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS); 
+		//set result mode
+		$mode = ($loadSubObjects) ? CMS_object_search::POLYMOD_SEARCH_RETURN_OBJECTS : CMS_object_search::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT_EDITED;
+		//fetch results
+		while($item = $search->getNextResult($mode)) {
 			$listNames[$paramsHash][$item->getID()] = $item->getLabel();
 		}
 		//natsort objects by name case insensitive

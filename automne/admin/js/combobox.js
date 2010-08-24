@@ -54,7 +54,12 @@ Automne.ComboBox = Ext.extend(Ext.form.ComboBox, {
 		}
 		Ext.form.ComboBox.superclass.setValue.call(this, text);
 		this.value = v;
-	}
+	},
+	// private
+	assertValue  : function(){
+        //this function is removed from original source because it cause a bug if two values has the same label but different values on the same dataset.
+		//If the second value is selected, it will be switched by the first one on field blur
+    }
 });
 
 Ext.reg('atmCombo', Automne.ComboBox);

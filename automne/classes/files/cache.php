@@ -99,7 +99,12 @@ class CMS_cache {
 		try {
 			$this->_cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
 		} catch (Zend_Cache_Exception $e) {
-			CMS_grandFather::raiseError($e->getMessage());
+			$this->raiseError($e->getMessage());
+			return false;
+		}
+		if (!isset($this->_cache) || !is_object($this->_cache)) {
+			$this->raiseError('Error : Zend cache object does not exists');
+			return false;
 		}
 	}
 	
@@ -110,10 +115,14 @@ class CMS_cache {
 	  * @access public
 	  */
 	function exist() {
+		if (!isset($this->_cache) || !is_object($this->_cache)) {
+			$this->raiseError('Error : Zend cache object does not exists');
+			return false;
+		}
 		try {
 			return !$_POST && !isset($_REQUEST['atm-skip-cache']) && $this->_cache->test($this->_parameters['hash']);
 		} catch (Zend_Cache_Exception $e) {
-			CMS_grandFather::raiseError($e->getMessage());
+			$this->raiseError($e->getMessage());
 			return false;
 		}
 	}
@@ -125,10 +134,14 @@ class CMS_cache {
 	  * @access public
 	  */
 	function load() {
+		if (!isset($this->_cache) || !is_object($this->_cache)) {
+			$this->raiseError('Error : Zend cache object does not exists');
+			return false;
+		}
 		try {
 			return $this->_cache->load($this->_parameters['hash']);
 		} catch (Zend_Cache_Exception $e) {
-			CMS_grandFather::raiseError($e->getMessage());
+			$this->raiseError($e->getMessage());
 			return false;
 		}
 	}
@@ -142,11 +155,15 @@ class CMS_cache {
 	  * @access public
 	  */
 	function save($content, $metas = array()) {
+		if (!isset($this->_cache) || !is_object($this->_cache)) {
+			$this->raiseError('Error : Zend cache object does not exists');
+			return false;
+		}
 		$tags = $this->_createTags($metas);
 		try {
 			return $this->_cache->save($content, $this->_parameters['hash'], $tags);
 		} catch (Zend_Cache_Exception $e) {
-			CMS_grandFather::raiseError($e->getMessage());
+			$this->raiseError($e->getMessage());
 			return false;
 		}
 	}
@@ -163,13 +180,17 @@ class CMS_cache {
 	  * @access public
 	  */
 	function clear($metas = array(), $mode = Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG) {
+		if (!isset($this->_cache) || !is_object($this->_cache)) {
+			$this->raiseError('Error : Zend cache object does not exists');
+			return false;
+		}
 		if ($metas) {
 			//delete some module cache which match all given metas
 			$tags = $this->_createTags($metas);
 			try {
 				return $this->_cache->clean($mode, $tags);
 			} catch (Zend_Cache_Exception $e) {
-				CMS_grandFather::raiseError($e->getMessage());
+				$this->raiseError($e->getMessage());
 				return false;
 			}
 		} else {
@@ -190,11 +211,15 @@ class CMS_cache {
 	  * @access public
 	  */
 	function getByMetas($metas, $mode = Zend_Cache::CLEANING_MODE_MATCHING_TAG) {
+		if (!isset($this->_cache) || !is_object($this->_cache)) {
+			$this->raiseError('Error : Zend cache object does not exists');
+			return false;
+		}
 		$tags = $this->_createTags($metas);
 		try {
 			return $this->_cache->getIdsMatchingTags($mode, $tags);
 		} catch (Zend_Cache_Exception $e) {
-			CMS_grandFather::raiseError($e->getMessage());
+			$this->raiseError($e->getMessage());
 			return false;
 		}
 	}

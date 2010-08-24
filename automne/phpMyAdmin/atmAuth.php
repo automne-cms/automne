@@ -1,5 +1,9 @@
 <?php
 require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
+//Check user rights
+if (!isset($cms_user) || !$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
+	die('Access denied ... ');
+}
 
 /* Store there credentials */
 $_SESSION['PMA_single_signon_user'] = APPLICATION_DB_USER;

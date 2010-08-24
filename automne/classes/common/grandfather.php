@@ -71,7 +71,7 @@ class CMS_grandFather
 	public function _raiseError($errorMessage, $encodeOutput = false, $error = true) {
 		static $errorNumber;
 		$systemDebug = (!defined('SYSTEM_DEBUG')) ? true : SYSTEM_DEBUG;
-		if (isset($this) && isset($this->_debug) && $this->_debug === NULL) {
+		if (isset($this) && $this->_debug === NULL) {
 			$this->_debug = $systemDebug;
 		}
 		//second condition are for static calls (made by static methods)
@@ -83,7 +83,7 @@ class CMS_grandFather
 				if (sizeof($backtraces) >= 3) {
 					$backtraces = array_slice($backtraces, sizeof($backtraces) - 2);
 				}
-				$bt = array_reverse(debug_backtrace());
+				$bt = array_reverse(debug_backtrace(false));
 				$backtrace = array(
 					'summary'		=> sensitiveIO::printBackTrace($bt),
 					'backtrace'		=> @print_r($bt,true),
@@ -96,13 +96,15 @@ class CMS_grandFather
 			//append error to current view
 			$view = CMS_view::getInstance();
 			$outputMessage = $encodeOutput ? io::htmlspecialchars($errorMessage) : $errorMessage;
-			//$view->addError(array('error' => $outputMessage, 'backtrace' => $backTraceLink));
+			$view->addError(array('error' => $outputMessage, 'backtrace' => $backTraceLink));
 		}
 		
 		//second condition are for static calls (made by static methods)
 		if (!isset($this) || !isset($this->_log) || $this->_log) {
 			if (@file_put_contents(PATH_MAIN_FS.'/'.self::ERROR_LOG , date("Y-m-d H:i:s", mktime()).'|'.APPLICATION_EXEC_TYPE.'|'.$errorMessage."\n", FILE_APPEND) !== false) {
 				CMS_file::chmodFile(FILES_CHMOD, PATH_MAIN_FS.'/'.self::ERROR_LOG);
+			} else {
+				die('<pre><b>'.CMS_view::SYSTEM_LABEL.' '.AUTOMNE_VERSION.' error : /automne dir is not writable'."</b></pre>\n");
 			}
 		}
 		//must be at the end because it interferes with the static calls conditions above

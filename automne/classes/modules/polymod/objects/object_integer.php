@@ -138,11 +138,11 @@ class CMS_object_integer extends CMS_object_common
 					return false;
 				}
 				//check canBeNull parameter
-				if (!$params['canBeNull'] && $values[$prefixName.$this->_field->getID().'_'.$subFieldID] === '0') {
+				if ((!isset($params['canBeNull']) || !$params['canBeNull']) && $values[$prefixName.$this->_field->getID().'_'.$subFieldID] === '0') {
 					return false;
 				}
 				//check canBeNegative parameter
-				if (!$params['canBeNegative'] && $values[$prefixName.$this->_field->getID().'_'.$subFieldID] < 0) {
+				if ((!isset($params['canBeNegative']) || !$params['canBeNegative']) && $values[$prefixName.$this->_field->getID().'_'.$subFieldID] < 0) {
 					return false;
 				}
 			}
@@ -170,11 +170,11 @@ class CMS_object_integer extends CMS_object_common
 						return false;
 					}
 					//check canBeNull parameter
-					if (!$params['canBeNull'] && $values[$prefixName.$this->_field->getID().'_'.$subFieldID] === '0') {
+					if ((!isset($params['canBeNull']) || !$params['canBeNull']) && $values[$prefixName.$this->_field->getID().'_'.$subFieldID] === '0') {
 						return false;
 					}
 					//check canBeNegative parameter
-					if (!$params['canBeNegative'] && $values[$prefixName.$this->_field->getID().'_'.$subFieldID] < 0) {
+					if ((!isset($params['canBeNegative']) || !$params['canBeNegative']) && $values[$prefixName.$this->_field->getID().'_'.$subFieldID] < 0) {
 						return false;
 					}
 					if (!$this->_subfieldValues[$subFieldID]->setValue($values[$prefixName.$this->_field->getID().'_'.$subFieldID])) {
@@ -279,11 +279,11 @@ class CMS_object_integer extends CMS_object_common
 			//append field id to html field parameters (if not already exists)
 			$htmlParameters .= (!isset($inputParams['id'])) ? ' id="'.$prefixName.$this->_field->getID().'_0"' : '';
 			//create field value
-			$value = ($this->_subfieldValues[0]->getValue() || $params['canBeNull']) ? $this->_subfieldValues[0]->getValue() : '';
+			$value = ($this->_subfieldValues[0]->getValue() || (isset($params['canBeNull']) && $params['canBeNull'])) ? $this->_subfieldValues[0]->getValue() : '';
 			//then create field HTML
 			$html .= ($html) ? '<br />':'';
 			$html .= '<input type="text"'.$htmlParameters.' name="'.$prefixName.$this->_field->getID().'_0" value="'.$value.'" />'."\n";
-			if ($params['unit']) {
+			if (isset($params['unit']) && $params['unit']) {
 				$html .= '&nbsp;<small>'.$params['unit'].'</small>';
 			}
 			if (POLYMOD_DEBUG) {

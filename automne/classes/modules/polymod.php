@@ -729,14 +729,20 @@ class CMS_polymod extends CMS_modulePolymodValidation
 							'class'			=> 'atm-elements',
 						);
 						//get categories fields for object
-						$thisFieldsCategories = CMS_poly_object_catalog::objectHasCategories($anObjectType->getID());
-						if ($thisFieldsCategories) {
-							$fields = CMS_poly_object_catalog::getFieldsDefinition($anObjectType->getID());
-							foreach ($thisFieldsCategories as $catField) {
-								if (isset($fields[$catField]) && is_object($fields[$catField])) {
-									$label = new CMS_object_i18nm($fields[$catField]->getValue("labelID"));
-									$catFieldsNames[] = $label->getValue($cms_language->getCode()). ' ('.$anObjectType->getLabel($cms_language).')';
+						if (count($catFieldsNames) < 3) {
+							$thisFieldsCategories = CMS_poly_object_catalog::objectHasCategories($anObjectType->getID());
+							if ($thisFieldsCategories) {
+								$fields = CMS_poly_object_catalog::getFieldsDefinition($anObjectType->getID());
+								foreach ($thisFieldsCategories as $catField) {
+									if (isset($fields[$catField]) && is_object($fields[$catField])) {
+										$label = new CMS_object_i18nm($fields[$catField]->getValue("labelID"));
+										$catFieldsNames[] = $label->getValue($cms_language->getCode()). ' ('.$anObjectType->getLabel($cms_language).')';
+									}
 								}
+							}
+						} else {
+							if (!in_array('...', $catFieldsNames)) {
+								$catFieldsNames[] = '...';
 							}
 						}
 					}
@@ -822,7 +828,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			//create search object for current object
 			$search = new CMS_object_search($object);
 			$search->addWhereCondition("items", $ids);
-			$items = $search->search();
+			$search->search(CMS_object_search::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS); //launch search
 			$objectLabel = $object->getLabel($cms_language);
 			// Check if need to use a specific display for search results
 			$resultsDefinition = $object->getValue('resultsDefinition');
@@ -845,7 +851,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 				$objectFields = CMS_poly_object_catalog::getFieldsDefinition($object->getID());
 			}
 			//loop on results items
-			foreach ($items as $item) {
+			while($item = $search->getNextResult()) {
 				//Resource related informations
 				$htmlStatus = $pubRange = '';
 				$lock = $deleted = $primaryResource = false;
