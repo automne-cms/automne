@@ -704,11 +704,6 @@ $jscontent = <<<END
 		},{
 			id:					'updatesPanel',
 			title:				'{$cms_language->getJsMessage(MESSAGE_PAGE_UPDATES)}',
-<<<<<<< TREE
-			id:					'updatesPanel',
-			frameURL:			'{$pathMain}/admin-v3/patch.php',
-			allowFrameNav:		true
-=======
 			autoScroll:			true,
 			border:				false,
 			bodyStyle: 			'padding:5px',
@@ -737,7 +732,6 @@ $jscontent = <<<END
 					}, this);
 				}
 			}, scope:this}
->>>>>>> MERGE-SOURCE
 		}]
 	});
 	

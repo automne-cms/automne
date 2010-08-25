@@ -1,3 +1,4 @@
+# Dev files
 ./test.php
 ./config.php
 ./automne/cms_error_log
@@ -14,5 +15,21 @@
 ./automne_linx_files/*
 .DS_Store
 ._*
-/utils
+./utils
 Thumbs.db
+# FR Demo files
+./font
+./automne/templates/pt56_Accueil.xml
+./automne/templates/pt58_Interieur.xml
+./automne/templates/rows/r58_610_Actualites__Recherche_FR.xml
+./automne/templates/rows/r66_615_Derniere_actualite.xml
+./automne/templates/rows/r68_650_Mediatheque.xml
+./css/demo
+./css/modules/cms_forms.css
+./css/modules/pmedia.css
+./css/modules/pnews.css
+./img/demo
+./js/modules/pnews
+./js/modules/pmedia/jquery-1.2.6.min-demo.js
+./js/modules/pmedia/pmedia-demo.js
+./sql/demo-fr.sql

@@ -280,7 +280,8 @@ class CMS_object_string extends CMS_object_common
 	  * @return string : the SQL request
 	  * @access public
 	  */
-	$supportedOperator = array(
+	function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
+		$supportedOperator = array(
 			'like',
 			'!=',
 			'=',

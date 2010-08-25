@@ -249,9 +249,9 @@ class automne_script extends backgroundScript
 		}
 	}
 }
-if ($_SERVER['argv']['1']=='-s' && SensitiveIO::isPositiveInteger($_SERVER['argv']['2'])) {
+if (isset($_SERVER['argv']['1']) && $_SERVER['argv']['1']=='-s' && isset($_SERVER['argv']['2']) && SensitiveIO::isPositiveInteger($_SERVER['argv']['2'])) {
 	$script = new automne_script(SCRIPT_DEBUG,$_SERVER['argv']['2']);
-} elseif ($_SERVER['argv']['1']=='-m' && SensitiveIO::isPositiveInteger($_SERVER['argv']['2']) && $_SERVER['argv']['2']<=10) {
+} elseif (isset($_SERVER['argv']['1']) && $_SERVER['argv']['1']=='-m' && isset($_SERVER['argv']['2']) && SensitiveIO::isPositiveInteger($_SERVER['argv']['2']) && $_SERVER['argv']['2'] <= 10) {
 	$script = new automne_script(SCRIPT_DEBUG);
 } else {
 	echo 
