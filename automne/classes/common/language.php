@@ -215,7 +215,37 @@ class CMS_language extends CMS_grandFather
 			return $messageId;
 		}
 	}
-	
+
+	/**
+	  * Get all the messages
+	  *
+	  * @param integer $messageId The ID of the message to get
+	  * @param string $module The codename of the module owner of the message
+	  * @return string
+	  *
+	  * @access public
+	  */
+	public static function getMessages($messageId, $module=MOD_STANDARD_CODENAME) {
+		if (!SensitiveIO::isPositiveInteger($messageId)) {
+			$this->raiseError("messageId is not a positive integer : ".$messageId);
+			return false;
+		}
+		$oQuery = new CMS_query('
+			SELECT `language_mes`, `message_mes`
+			FROM `messages`
+			WHERE `module_mes` = \''.io::sanitizeSQLString($module).'\'
+			AND `id_mes` = 1
+		');
+		if ($oQuery->getNumRows() < 1) {
+			return false;
+		}
+		$aLabels = array();
+		foreach ($oQuery->getAll(PDO::FETCH_ASSOC) as $aRow) {
+			$aLabels[$aRow['language_mes']] = $aRow['message_mes'];
+		}
+		return $aLabels;
+	}
+
 	/**
       * Get the message translated into the specified language
 	  * old function keeped for compatibility with old modules

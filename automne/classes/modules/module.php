@@ -1066,5 +1066,31 @@ class CMS_module extends CMS_grandFather
 	function scriptInfo($parameters) {
 		return 'Unknown script for module '.$this->_codename;
 	}
+
+	public function asArray()
+	{
+		if (!$this->_isPolymod) {
+			return false;
+		}
+		$aModule = array(
+			'codename'	=> $this->_codename,
+			'labels'	=> CMS_language::getMessages(1, $this->_codename),
+			'classes'	=> array(),
+		);
+
+		$oQuery = new CMS_query('
+			SELECT `id_mod`
+			FROM `mod_object_definition`
+			WHERE `module_mod` = \''.$this->_codename.'\'
+		');
+		if ($oQuery->getNumRows() > 0) {
+			foreach ($oQuery->getAll(PDO::FETCH_ASSOC) as $aRow) {
+				$oObjectDefinition = new CMS_poly_object_definition($aRow['id_mod']);
+				$aModule['classes'][] = $oObjectDefinition->asArray();
+			}
+		}
+
+		return $aModule;
+	}
 }
 ?>

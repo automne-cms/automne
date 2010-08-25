@@ -155,6 +155,12 @@ if (!sizeof($modules)) {
 			<form action="module.php" method="post">
 			<td><input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_NEW).'" /></td>
 			</form>';
+			$content .= '
+			<form action="import.php" method="get">
+				<td>
+					<input type="submit" class="admin_input_submit" value="Importer" />
+				</td>
+			</form>';
 		}
 		if (is_object($module)) {
 			$content .= '
@@ -163,12 +169,21 @@ if (!sizeof($modules)) {
 			<td><input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_EDIT).'" /></td>
 			</form>';
 			// Polymod module parameters
-			if ($module->isPolymod() && $module->hasParameters()) {
+			if ($module->isPolymod()) {
+				if ($module->hasParameters()) {
+					$content .= '
+					<form action="'.$_SERVER['SCRIPT_NAME'].'" method="post">
+					<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
+					<input type="hidden" name="action" value="parameters" />
+					<td><input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_PARAMETERS).'" /></td>
+					</form>';
+				}
 				$content .= '
-				<form action="'.$_SERVER['SCRIPT_NAME'].'" method="post">
-				<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
-				<input type="hidden" name="action" value="parameters" />
-				<td><input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_PARAMETERS).'" /></td>
+				<form action="export.php" method="get">
+					<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
+					<td>
+						<input type="submit" class="admin_input_submit" value="Exporter" />
+					</td>
 				</form>';
 			}
 		}

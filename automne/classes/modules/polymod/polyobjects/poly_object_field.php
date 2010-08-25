@@ -389,5 +389,38 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 		unset($this);
 		return true;
 	}
+
+	public function asArray()
+	{
+		$aField = array(
+			'labels'		=> CMS_object_i18nm::getValues($this->_objectFieldValues['labelID']),
+			'descriptions'	=> CMS_object_i18nm::getValues($this->_objectFieldValues['descriptionID']),
+			'type'			=> null,
+			'multi'			=> null,
+			'params'		=> array(
+				'order'			=> $this->_objectFieldValues['order'],
+				'required'		=> $this->_objectFieldValues['required'],
+				'indexable'		=> $this->_objectFieldValues['indexable'],
+				'searchlist'	=> $this->_objectFieldValues['searchlist'],
+				'searchable'	=> $this->_objectFieldValues['searchable'],
+			)
+		);
+
+		if (io::strpos($this->_objectFieldValues['type'], 'multi|') !== false) {
+			$aField['multi'] = 1;
+			$type = explode('|', $this->_objectFieldValues['type']);
+			$aField['type'] = $type[1];
+		} else {
+			$aField['multi'] = 0;
+			$aField['type'] = $this->_objectFieldValues['type'];
+		}
+
+		if (!io::isPositiveInteger($aField['type'])) {
+			$oType = new $aField['type'](array(), $this, false);
+			$aField['params']['params'] = $oType->asArray();
+		}
+
+		return $aField;
+	}
 }
 ?>
