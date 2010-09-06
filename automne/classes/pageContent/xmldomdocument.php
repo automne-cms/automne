@@ -20,7 +20,7 @@
   * implement PHP class DOMDOcument. Allow usage of exceptions by load and loadXML method
   *
   * @package Automne
-  * @subpackage page content
+  * @subpackage pageContent
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
@@ -29,7 +29,7 @@ class CMS_DOMDocument extends DOMDocument {
 		parent::__construct($version, $encoding);
 	}
 	
-	public function loadXML($source, $options = 0, $appendEncoding = true) {
+	public function loadXML($source, $options = 0, $appendEncoding = true, $appendDTD = true) {
 		//convert source encoding if needed
 		if (io::isUTF8($source)) {
 			if (io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
@@ -42,11 +42,13 @@ class CMS_DOMDocument extends DOMDocument {
 		}
 		//append xml encoding and DTD if needed
 		if ($appendEncoding) {
-			$doctype = !APPLICATION_IS_WINDOWS ? '<!DOCTYPE automne SYSTEM "'.PATH_PACKAGES_FS.'/files/xhtml.ent">' : '<!DOCTYPE automne ['.file_get_contents(PATH_PACKAGES_FS.'/files/xhtml.ent').']>';
+			if ($appendDTD) {
+				$options = ($options) ? $options | LIBXML_DTDLOAD : LIBXML_DTDLOAD;
+				$doctype = !APPLICATION_IS_WINDOWS ? '<!DOCTYPE automne SYSTEM "'.PATH_PACKAGES_FS.'/files/xhtml.ent">' : '<!DOCTYPE automne ['.file_get_contents(PATH_PACKAGES_FS.'/files/xhtml.ent').']>';
+			}
 			$source = '<?xml version="1.0" encoding="'.APPLICATION_DEFAULT_ENCODING.'"?>
-			'.$doctype.'
+			'.($appendDTD ? $doctype : '').'
 			'.$source;
-			$options = ($options) ? $options | LIBXML_DTDLOAD : LIBXML_DTDLOAD;
 		}
 		set_error_handler (array('CMS_DOMDocument','XmlError'));
 		$return = parent::loadXml($source, $options);
@@ -57,7 +59,7 @@ class CMS_DOMDocument extends DOMDocument {
 	function XmlError($errno, $errstr, $errfile, $errline) {
 		if ($errno==E_WARNING && (substr_count($errstr,"DOMDocument::loadXML()")>0)) {
 			$error = io::substr($errstr, io::strlen('DOMDocument::loadXML() [<a href=\'function.DOMDocument-loadXML\'>function.DOMDocument-loadXML</a>]: '));
-			throw new DOMException($error, 1);
+			CMS_grandFather::raiseError($error);
 		} else {
 			return false;
 		}

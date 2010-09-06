@@ -250,7 +250,7 @@ class CMS_object_file extends CMS_object_common
 	  */
 	function treatParams($post, $prefix) {
 		$params = parent::treatParams($post, $prefix);
-		if (isset($params['fileIcons'])) {
+		if (isset($params['fileIcons']) && is_string($params['fileIcons'])) {
 			$params['fileIcons'] = unserialize(base64_decode($params['fileIcons']));
 		}
 		return $params;

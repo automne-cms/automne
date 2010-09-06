@@ -601,13 +601,13 @@ class CMS_module extends CMS_grandFather
 	  * 
 	  * @access public
 	  * @param array $attrs, array of attributes to determine which level of categoryies wanted, etc.
-	  *        format : array(language => CMS_language, lebvel => integer, root => integer, attrs => array())
+	  *        format : array(language => CMS_language, level => integer, root => integer, attrs => array())
 	  * @return array(CMS_moduleCategory)
 	  * @static
 	  */
 	function getModuleCategories($attrs)
 	{
-		if (!$attrs["module"] && $this->_codename) {
+		if ((!isset($attrs["module"]) || !$attrs["module"]) && $this->_codename) {
 			$attrs["module"] = $this->_codename;
 		}
 		if (!$attrs["module"]) {
@@ -619,7 +619,7 @@ class CMS_module extends CMS_grandFather
 			CMS_grandFather::raiseError("Not valid CMS_profile given as enforced access control is active");
 			return false;
 		}
-		if (is_a($attrs["cms_user"], "CMS_profile")
+		if (isset($attrs["cms_user"]) && is_a($attrs["cms_user"], "CMS_profile")
 				&& $attrs["cms_user"]->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 			// If current user is an adminsitrator, let's show all categories anytime
 			unset($attrs["cms_user"]);
@@ -686,7 +686,7 @@ class CMS_module extends CMS_grandFather
 			hasParameters_mod='".SensitiveIO::sanitizeSQLString($this->_hasParameters)."',
 			isPolymod_mod='".SensitiveIO::sanitizeSQLString($this->_isPolymod)."'
 		";
-		if ($this->id) {
+		if ($this->_id) {
 			$sql = "
 				update
 					modules
@@ -708,6 +708,8 @@ class CMS_module extends CMS_grandFather
 		} elseif (!$this->_id) {
 			$this->_id = $q->getLastInsertedID();
 		}
+		//create module files for module
+		$this->createModuleFiles();
 		return true;
 	}
 	
@@ -1065,6 +1067,188 @@ class CMS_module extends CMS_grandFather
 	  */
 	function scriptInfo($parameters) {
 		return 'Unknown script for module '.$this->_codename;
+	}
+	
+	/**
+	  * Get object as an array structure used for export
+	  *
+	  * @param array $params The export parameters.
+	  *		array(
+	  *				categories	=> false|true : export module categories (default : true)
+	  *				rows		=> false|true : export module rows (default : true)
+	  *				css			=> false|true : export module JS (default : true)
+	  *				js			=> false|true : export module CSS (default : true)
+	  *			)
+	  * @param array $files The reference to the founded files used by object
+	  * @return array : the object array structure
+	  * @access public
+	  */
+	public function asArray($params = array(), &$files) {
+		if (!is_array($files)) {
+			$files = array();
+		}
+		$aModule = array(
+			'codename'	=> $this->_codename,
+			'polymod'	=> false,
+			'labels'	=> CMS_language::getMessages(1, $this->_codename),
+		);
+		$defaultLanguage = CMS_languagesCatalog::getDefaultLanguage();
+		if (!isset($params['categories']) || $params['categories'] == true) {
+			$categories = $this->getModuleCategories(array('language' => $defaultLanguage, 'root' => 0));
+			foreach ($categories as $category) {
+				$aModule['categories'][] = $category->asArray($params, $files);
+			}
+		}
+		if (!isset($params['rows']) || $params['rows'] == true) {
+			$modulesRows = CMS_rowsCatalog::getByModules(array($this->_codename));
+			if ($this->_codename != MOD_STANDARD_CODENAME) {
+				$modulesStandardRows = CMS_rowsCatalog::getByModules(array($this->_codename, MOD_STANDARD_CODENAME));
+				foreach ($modulesStandardRows as $id => $row) {
+					$modulesRows[$id] = $row;
+				}
+			}
+			foreach ($modulesRows as $row) {
+				$aModule['rows'][] = $row->asArray($params, $files);
+			}
+		}
+		if (!isset($params['js']) || $params['js'] == true) {
+			$jsFiles = $this->getJSFiles();
+			$aModule['js'] = array();
+			if ($jsFiles) {
+				$aModule['js'] = $jsFiles;
+				$files = array_merge($files, $jsFiles);
+			}
+		}
+		if (!isset($params['css']) || $params['css'] == true) {
+			$cssFiles = $this->getCSSFiles();
+			$aModule['css'] = array();
+			if ($cssFiles) {
+				foreach ($cssFiles as $media => $cssMediaFiles) {
+					if ($cssMediaFiles) {
+						$files = array_merge($files, $cssMediaFiles);
+						$aModule['css'] = array_merge($aModule['css'], $cssMediaFiles);
+					}
+				}
+			}
+		}
+		return $aModule;
+	}
+	
+	/**
+	  * Import module from given array datas
+	  *
+	  * @param array $data The module datas to import
+	  * @param array $params The import parameters.
+	  *		array(
+	  *				create	=> false|true : create missing objects (default : true)
+	  *				update	=> false|true : update existing objects (default : true)
+	  *				files	=> false|true : use files from PATH_TMP_FS (default : true)
+	  *			)
+	  * @param CMS_language $cms_language The CMS_langage to use
+	  * @param array $idsRelation : Reference : The relations between import datas ids and real imported ids
+	  * @param string $infos : Reference : The import infos returned
+	  * @return boolean : true on success, false on failure
+	  * @access public
+	  */
+	function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
+		if (!$this->getID()) {
+			if (!isset($params['create']) || $params['create'] == true) {
+				//if module does not exists yet, add codename and default admin frontend
+				$this->setCodename($data['codename']);
+				$this->setAdminFrontend('index.php');
+			} else {
+				$infos .= 'Module does not exists and parameter does not allow to create it ...'."\n";
+				return false;
+			}
+		}
+		if ((!$this->getID() && (!isset($params['create']) || $params['create'] == true)) || ($this->getID() && (!isset($params['update']) || $params['update'] == true))) {
+			if (isset($data['labels'])) {
+				//create labels
+				$this->setLabel($cms_language->createMessage($this->_codename, $data['labels']));
+			}
+			if (!$this->writeToPersistence()) {
+				$infos .= 'Error writing module ...'."\n";
+				return false;
+			}
+		}
+		//append codename to parameters
+		$params['module'] = $this->_codename;
+		//add categories
+		if (isset($data['categories']) && $data['categories']) {
+			if (!CMS_moduleCategories_catalog::fromArray($data['categories'], $params, $cms_language, $idsRelation, $infos)) {
+				$infos .= 'Error during categories import ...'."\n";
+				return false;
+			}
+		}
+		if (!isset($params['files']) || $params['files'] == true) {
+			//add JS
+			if (isset($data['js']) && $data['js']) {
+				foreach ($data['js'] as $jsFile) {
+					if ($jsFile && file_exists(PATH_TMP_FS.$jsFile)) {
+						if ((file_exists(PATH_REALROOT_FS.$jsFile) && (!isset($params['updateJs']) || $params['updateJs'] == true))
+								|| (!isset($params['create']) || $params['create'] == true)) {
+							if (CMS_file::moveTo(PATH_TMP_FS.$jsFile, PATH_REALROOT_FS.$jsFile)) {
+								CMS_file::chmodFile(FILES_CHMOD, PATH_REALROOT_FS.$jsFile);
+							} else {
+								$infos .= 'Error during copy of file '.$jsFile.' ...'."\n";
+							}
+						}
+					}
+				}
+			}
+		}
+		if (!isset($params['files']) || $params['files'] == true) {
+			//add CSS
+			if (isset($data['css']) && $data['css']) {
+				foreach ($data['css'] as $cssFile) {
+					if ($cssFile && file_exists(PATH_TMP_FS.$cssFile)) {
+						if ((file_exists(PATH_REALROOT_FS.$cssFile) && (!isset($params['updateCss']) || $params['updateCss'] == true))
+								|| (!isset($params['create']) || $params['create'] == true)) {
+							if (CMS_file::moveTo(PATH_TMP_FS.$cssFile, PATH_REALROOT_FS.$cssFile)) {
+								CMS_file::chmodFile(FILES_CHMOD, PATH_REALROOT_FS.$cssFile);
+							} else {
+								$infos .= 'Error during copy of file '.$cssFile.' ...'."\n";
+							}
+						}
+					}
+				}
+			}
+		}
+		if (!isset($params['files']) || $params['files'] == true) {
+			//add rows
+			if (isset($data['rows']) && $data['rows']) {
+				if (!CMS_rowsCatalog::fromArray($data['rows'], $params, $cms_language, $idsRelation, $infos)) {
+					$infos .= 'Error during rows import ...'."\n";
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	  * Create modules files directories for current module
+	  *
+	  * @return boolean
+	  * @access public
+	  */
+	function createModuleFiles() {
+		$moduledir = new CMS_file(PATH_MODULES_FILES_FS.'/'.$this->_codename, CMS_file::FILE_SYSTEM, CMS_file::TYPE_DIRECTORY);
+		$moduleDeleted = new CMS_file(PATH_MODULES_FILES_FS.'/'.$this->_codename.'/deleted', CMS_file::FILE_SYSTEM, CMS_file::TYPE_DIRECTORY);
+		$moduleEdited = new CMS_file(PATH_MODULES_FILES_FS.'/'.$this->_codename.'/edited', CMS_file::FILE_SYSTEM, CMS_file::TYPE_DIRECTORY);
+		$modulePublic = new CMS_file(PATH_MODULES_FILES_FS.'/'.$this->_codename.'/public', CMS_file::FILE_SYSTEM, CMS_file::TYPE_DIRECTORY);
+		if ($moduledir->writeToPersistence()
+			&& $moduleDeleted->writeToPersistence()
+			&& $moduleEdited->writeToPersistence()
+			&& $modulePublic->writeToPersistence()) {
+			
+			CMS_file::copyTo(PATH_HTACCESS_FS.'/htaccess_no', PATH_MODULES_FILES_FS.'/'.$this->_codename.'/deleted/.htaccess');
+			CMS_file::chmodFile(FILES_CHMOD, PATH_MODULES_FILES_FS.'/'.$this->_codename.'/deleted/.htaccess');
+			
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
 ?>

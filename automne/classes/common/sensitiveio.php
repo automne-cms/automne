@@ -811,6 +811,20 @@ class SensitiveIO extends CMS_grandFather
 	}
 	
 	/**
+	  * Generated a Universal Unique Identifier (UUID) generated according to “DCE 1.1: 
+	  * Remote Procedure Call” (Appendix A) CAE (Common Applications Environment) 
+	  * Specifications published by The Open Group in October 1997 
+	  * (Document Number C706, http://www.opengroup.org/public/pubs/catalog/c706.htm).
+	  *
+	  * @return string
+	  * @access public
+	  */
+	function uuid() {
+		$q = new CMS_query('select UUID() as uuid');
+		return $q->getValue('uuid');
+	}
+	
+	/**
 	  * Rewrite some PHP functions to be charset insensitive
 	  *
 	  * @return mixed

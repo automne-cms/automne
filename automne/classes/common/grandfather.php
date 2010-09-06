@@ -71,7 +71,7 @@ class CMS_grandFather
 	public function _raiseError($errorMessage, $encodeOutput = false, $error = true) {
 		static $errorNumber;
 		$systemDebug = (!defined('SYSTEM_DEBUG')) ? true : SYSTEM_DEBUG;
-		if (isset($this) && $this->_debug === NULL) {
+		if (isset($this) && isset($this->_debug) && $this->_debug === NULL) {
 			$this->_debug = $systemDebug;
 		}
 		//second condition are for static calls (made by static methods)
@@ -293,6 +293,8 @@ class CMS_grandFather
 				'cms_superresource'					=> PATH_MODULES_FS.'/super_resource.php',
 				'cms_polymod'						=> PATH_MODULES_FS.'/polymod.php',
 				'cms_modulepolymodvalidation' 		=> PATH_MODULES_FS.'/modulePolymodValidation.php',
+				'CMS_module_export'					=> PATH_MODULES_FS.'/export.php',
+				'CMS_module_import'					=> PATH_MODULES_FS.'/import.php',
 				
 				//standard
 				'cms_rowscatalog' 					=> PATH_MODULES_FS.'/standard/rowscatalog.php',
@@ -317,6 +319,7 @@ class CMS_grandFather
 				'cms_xmltag' 						=> PATH_PACKAGES_FS.'/pageContent/xmltag.php',
 				'cms_xmlparser' 					=> PATH_PACKAGES_FS.'/pageContent/xmlparser.php', //Deprecated : shadow class, for compatibility
 				'cms_domdocument'					=> PATH_PACKAGES_FS.'/pageContent/xmldomdocument.php',
+				'cms_array2xml'						=> PATH_PACKAGES_FS.'/pageContent/array2Xml.php',
 
 				//scripts
 				'processmanager' 					=> PATH_PACKAGES_FS.'/scripts/backgroundScript/processmanager.php',

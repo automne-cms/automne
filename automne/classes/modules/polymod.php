@@ -750,20 +750,18 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			}
 		}
 		//Categories
-		if (CMS_poly_object_catalog::moduleHasCategories($this->getCodename())) {
-			//if user has some categories to manage
-			$userManageCategories = $user->getRootModuleCategoriesManagable($this->getCodename());
-			if ((is_array($userManageCategories) && $userManageCategories) || $user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
-				$objectsInfos[] = array(
-					'label'			=> $cms_language->getMessage(self::MESSAGE_PAGE_CATEGORIES),
-					'adminLabel'	=> $cms_language->getMessage(self::MESSAGE_PAGE_ADMIN_CATEGORIES),
-					'description'	=> $cms_language->getMessage(self::MESSAGE_PAGE_CATEGORIES_USED, false, MOD_POLYMOD_CODENAME).io::htmlspecialchars(implode(', ', $catFieldsNames)),
-					'objectId'		=> 'categories',
-					'url'			=> PATH_ADMIN_WR.'/modules-categories.php',
-					'module'		=> $this->getCodename(),
-					'class'			=> 'atm-categories',
-				);
-			}
+		//if user has some categories to manage
+		$userManageCategories = $user->getRootModuleCategoriesManagable($this->getCodename());
+		if ((is_array($userManageCategories) && $userManageCategories) || $user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
+			$objectsInfos[] = array(
+				'label'			=> $cms_language->getMessage(self::MESSAGE_PAGE_CATEGORIES),
+				'adminLabel'	=> $cms_language->getMessage(self::MESSAGE_PAGE_ADMIN_CATEGORIES),
+				'description'	=> $cms_language->getMessage(self::MESSAGE_PAGE_CATEGORIES_USED, false, MOD_POLYMOD_CODENAME).io::htmlspecialchars(implode(', ', $catFieldsNames)),
+				'objectId'		=> 'categories',
+				'url'			=> PATH_ADMIN_WR.'/modules-categories.php',
+				'module'		=> $this->getCodename(),
+				'class'			=> 'atm-categories',
+			);
 		}
 		return $objectsInfos;
 	}
@@ -968,6 +966,84 @@ class CMS_polymod extends CMS_modulePolymodValidation
 				}
 			}
 		}
+	}
+	
+	/**
+	  * Get object as an array structure used for export
+	  *
+	  * @param array $params The export parameters.
+	  *		array(
+	  *				objects	=> false|true : export module objects structures (default : true)
+	  *			)
+	  * @param array $files The reference to the founded files used by object
+	  * @return array : the object array structure
+	  * @access public
+	  */
+	public function asArray($params = array(), &$files) {
+		$aModule = parent::asArray($params, $files);
+		if (!isset($params['objects']) || $params['objects'] == true) {
+			//get all objects definitions
+			$objectsDefinitions = CMS_poly_object_catalog::getObjectsForModule($this->_codename);
+			if ($objectsDefinitions) {
+				$aModule['objects'] = array();
+				foreach ($objectsDefinitions as $object) {
+					//objects structures
+					$objectDatas = $object->asArray($params, $files);
+					//rss structures
+					$rssFeeds = CMS_poly_object_catalog::getAllRSSDefinitionsForObject($object->getID());
+					if ($rssFeeds) {
+						$objectDatas['rss'] = array();
+						foreach ($rssFeeds as $rssFeed) {
+							$objectDatas['rss'][] = $rssFeed->asArray($params, $files);
+						}
+					}
+					//plugins structure
+					$plugins = CMS_poly_object_catalog::getAllPluginDefinitionsForObject($object->getID());
+					if ($plugins) {
+						$objectDatas['plugins'] = array();
+						foreach ($plugins as $plugin) {
+							$objectDatas['plugins'][] = $plugin->asArray($params, $files);
+						}
+					}
+					
+					$aModule['objects'][] = $objectDatas;
+				}
+			}
+		}
+		$aModule['polymod'] = true;
+		return $aModule;
+	}
+	
+	/**
+	  * Import module from given array datas
+	  *
+	  * @param array $data The module datas to import
+	  * @param array $params The import parameters.
+	  *		array(
+	  *				create	=> false|true : create missing objects (default : true)
+	  *				update	=> false|true : update existing objects (default : true)
+	  *				files	=> false|true : use files from PATH_TMP_FS (default : true)
+	  *			)
+	  * @param CMS_language $cms_language The CMS_langage to use
+	  * @param array $idsRelation : Reference : The relations between import datas ids and real imported ids
+	  * @param string $infos : Reference : The import infos returned
+	  * @return boolean : true on success, false on failure
+	  * @access public
+	  */
+	function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
+		$this->setPolymod(true);
+		$return = true;
+		$return &= parent::fromArray($data, $params, $cms_language, $idsRelation, $infos);
+		//append codename to parameters
+		$params['module'] = $this->_codename;
+		//add objects
+		if (isset($data['objects']) && $data['objects']) {
+			if (!CMS_poly_object_catalog::fromArray($data['objects'], $params, $cms_language, $idsRelation, $infos)) {
+				$infos .= 'Error during objects import ...'."\n";
+				$return = false;
+			}
+		}
+		return $return;
 	}
 }
 ?>

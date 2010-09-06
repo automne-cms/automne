@@ -49,7 +49,8 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 								 "definition"			=> '',
 					 			 "compiledDefinition"	=> '',
 					 			 "lastCompilation"		=> '',
-								 );
+								 "uuid"					=> '',
+								);
 	
 	/**
 	  * Constructor.
@@ -101,6 +102,7 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 			$this->_objectValues["compiledDefinition"] = $datas['compiled_definition_mord'];
 			$this->_objectValues["lastCompilation"] = new CMS_date();
 			$this->_objectValues["lastCompilation"]->setFromDBValue($datas['last_compilation_mord']);
+			$this->_objectValues["uuid"] = isset($datas['uuid_mord']) ? $datas['uuid_mord'] : '';
 		} else {
 			$this->_objectValues["lastCompilation"] = new CMS_date();
 		}
@@ -141,6 +143,10 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 	{
 		if (!in_array($valueName,array_keys($this->_objectValues))) {
 			$this->raiseError("Unknown valueName to set :".$valueName);
+			return false;
+		}
+		if ($valueName == 'uuid') {
+			$this->raiseError("Cannot change UUID");
 			return false;
 		}
 		if ($valueName == 'definition') {
@@ -260,7 +266,8 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 			email_mord='".SensitiveIO::sanitizeSQLString($this->_objectValues["email"])."',
 			definition_mord='".SensitiveIO::sanitizeSQLString($this->_objectValues["definition"])."',
 			compiled_definition_mord='".SensitiveIO::sanitizeSQLString($this->_objectValues["compiledDefinition"])."',
-			last_compilation_mord='".SensitiveIO::sanitizeSQLString($this->_objectValues["lastCompilation"]->getDBValue())."'
+			last_compilation_mord='".SensitiveIO::sanitizeSQLString($this->_objectValues["lastCompilation"]->getDBValue())."',
+			uuid_mord='".SensitiveIO::sanitizeSQLString($this->_objectValues["uuid"] ? $this->_objectValues["uuid"] : io::uuid())."'
 		";
 		if ($this->_ID) {
 			$sql = "
@@ -334,5 +341,127 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 		return true;
 	}
 	
+	/**
+	  * Get rss object as an array structure used for export
+	  *
+	  * @param array $params The export parameters. Not used here
+	  * @param array $files The reference to the founded files used by object
+	  * @return array : the object array structure
+	  * @access public
+	  */
+	public function asArray($params = array(), &$files) {
+		$module = CMS_modulesCatalog::getByCodename(CMS_poly_object_catalog::getModuleCodenameForObjectType($this->getValue('objectID')));
+		$aClass = array(
+			'id'			=> $this->getID(),
+			'uuid'			=> $this->getValue('uuid'),
+			'labels'		=> CMS_object_i18nm::getValues($this->getValue('labelID')),
+			'descriptions'	=> CMS_object_i18nm::getValues($this->getValue('descriptionID')),
+			'objectID'		=> $this->getValue('objectID'),
+			'params'		=> array(
+				'link'				=> $this->getValue('link'),
+				'author'			=> $this->getValue('author'),
+				'copyright'			=> $this->getValue('copyright'),
+				'categories'		=> $this->getValue('categories'),
+				'ttl'				=> $this->getValue('ttl'),
+				'email'				=> $this->getValue('email'),
+				'definition'		=> $this->getValue('definition')
+			)
+		);
+		if ($aClass['params']['definition']) {
+			$aClass['params']['definition'] = $module->convertDefinitionString($aClass['params']['definition'], true);
+		}
+		return $aClass;
+	}
+	
+	/**
+	  * Import rss feed from given array datas
+	  *
+	  * @param array $data The rss feed datas to import
+	  * @param array $params The import parameters.
+	  *		array(
+	  *				module	=> false|true : the module to create rss feed (required)
+	  *				create	=> false|true : create missing objects (default : true)
+	  *				update	=> false|true : update existing objects (default : true)
+	  *				files	=> false|true : use files from PATH_TMP_FS (default : true)
+	  *			)
+	  * @param CMS_language $cms_language The CMS_langage to use
+	  * @param array $idsRelation : Reference : The relations between import datas ids and real imported ids
+	  * @param string $infos : Reference : The import infos returned
+	  * @return boolean : true on success, false on failure
+	  * @access public
+	  */
+	function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
+		if (!isset($params['module'])) {
+			$infos .= 'Error : missing module codename for rss feed importation ...'."\n";
+			return false;
+		}
+		$module = CMS_modulesCatalog::getByCodename($params['module']);
+		if ($module->hasError()) {
+			$infos .= 'Error : invalid module for rss feed importation : '.$params['module']."\n";
+			return false;
+		}
+		if (!$this->getID() && CMS_poly_object_catalog::rssUuidExists($data['uuid'])) {
+			//check imported uuid. If rss does not have an Id, the uuid must be unique or must be regenerated
+			$uuid = io::uuid();
+			//store old uuid relation
+			$idsRelation['rss-uuid'][$data['uuid']] = $uuid;
+			$data['uuid'] = $uuid;
+		}
+		//set object uuid if not exists
+		if (!$this->_objectValues["uuid"]) {
+			$this->_objectValues["uuid"] = $data['uuid'];
+		}
+		if (isset($data['labels'])) {
+			$label = new CMS_object_i18nm($this->getValue("labelID"));
+			$label->setValues($data['labels']);
+			$label->writeToPersistence();
+			$this->setValue("labelID", $label->getID());
+		}
+		if (isset($data['descriptions'])) {
+			$description = new CMS_object_i18nm($this->getValue("descriptionID"));
+			$description->setValues($data['descriptions']);
+			$description->writeToPersistence();
+			$this->setValue("descriptionID", $description->getID());
+		}
+		//if current object id has changed from imported id, set relation
+		if (isset($idsRelation['objects'][$data['objectID']]) && $idsRelation['objects'][$data['objectID']]) {
+			$this->setValue("objectID", $idsRelation['objects'][$data['objectID']]);
+		} else {
+			$this->setValue("objectID", $data['objectID']);
+		}
+		//values
+		if (isset($data['params']['link'])) {
+			$this->setValue("link", $data['params']['link']);
+		}
+		if (isset($data['params']['author'])) {
+			$this->setValue("author", $data['params']['author']);
+		}
+		if (isset($data['params']['copyright'])) {
+			$this->setValue("copyright", $data['params']['copyright']);
+		}
+		if (isset($data['params']['categories'])) {
+			$this->setValue("categories", $data['params']['categories']);
+		}
+		if (isset($data['params']['ttl'])) {
+			$this->setValue("ttl", $data['params']['ttl']);
+		}
+		if (isset($data['params']['email'])) {
+			$this->setValue("email", $data['params']['email']);
+		}
+		if (isset($data['params']['definition'])) {
+			$this->setValue("definition", $module->convertDefinitionString($data['params']['definition'], false));
+		}
+		
+		//write object
+		if (!$this->writeToPersistence()) {
+			$infos .= 'Error : can not write object ...'."\n";
+			return false;
+		}
+		//if current object id has changed from imported id, set relation
+		if (isset($data['id']) && $data['id'] && $this->getID() != $data['id']) {
+			$idsRelation['rss'][$data['id']] = $this->getID();
+		}
+		return true;
+	}
 }
 ?>

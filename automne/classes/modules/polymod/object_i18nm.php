@@ -198,6 +198,43 @@ class CMS_object_i18nm extends CMS_grandFather
 	}
 	
 	/**
+	  * get all the values
+	  *
+	  * @return	array	 the values
+	  * @access	public
+	  */
+	public function getValues($id)
+	{
+		$aLabels = array();
+		$oQuery = new CMS_query('
+			SELECT `code_i18nm`, `value_i18nm`
+			FROM `mod_object_i18nm`
+			WHERE `id_i18nm` = '.io::sanitizeSQLString($id).'
+		');
+		if ($oQuery->getNumRows() > 0) {
+			foreach ($oQuery->getAll(PDO::FETCH_ASSOC) as $aRow) {
+				$aLabels[$aRow['code_i18nm']] = $aRow['value_i18nm'];
+			}
+		}
+		return $aLabels;
+	}
+	
+	/**
+	  * set all the values
+	  *
+	  * @param array $values the values to set : array(language code => value)
+	  * @return	boolean
+	  * @access	public
+	  */
+	public function setValues($values) {
+		$return = true;
+		foreach ($values as $sLanguageCode => $sLabel) {
+			$return &= $this->setValue($sLanguageCode, $sLabel);
+		}
+		return $return;
+	}
+
+	/**
 	  * get HTML admin (used to enter object values in admin)
 	  *
 	  * @return string : the html admin

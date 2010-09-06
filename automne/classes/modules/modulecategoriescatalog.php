@@ -231,7 +231,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	}
 	
 	/**
-	 * Check and/or repaire positions in siblings of a given category
+	 * Check and/or repair positions in siblings of a given category
 	 * if ever needed
 	 * 
 	 * @param integer $category_id, category ID to compact
@@ -664,11 +664,11 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 		}
 		
 		// Limit to parent and/or root categories given
-		if ($attrs["level"] !== false && (int) $attrs["level"] >- 1) {
+		if (isset($attrs["level"]) && $attrs["level"] !== false && (int) $attrs["level"] >- 1) {
 			$s_where .= "
 				and parent_mca='".SensitiveIO::sanitizeSQLString($attrs["level"])."'";
 		}
-		if ($attrs["root"] !== false && (int) $attrs["root"] >- 1) {
+		if (isset($attrs["root"]) && $attrs["root"] !== false && (int) $attrs["root"] >- 1) {
 			$s_where .= "
 				and root_mca='".SensitiveIO::sanitizeSQLString($attrs["root"])."'";
 		}
@@ -958,6 +958,145 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	  */
 	function getListBoxes($args) {
 		return CMS_dialog_listboxes::getListBoxes($args);
+	}
+	
+	/**
+	  * Import module from given array datas
+	  *
+	  * @param array $data The module datas to import
+	  * @param array $params The import parameters.
+	  *		array(
+	  *				module	=> false|true : the module to create categories (required)
+	  *				create	=> false|true : create missing objects (default : true)
+	  *				update	=> false|true : update existing objects (default : true)
+	  *				files	=> false|true : use files from PATH_TMP_FS (default : true)
+	  *			)
+	  * @param CMS_language $cms_language The CMS_langage to use
+	  * @param array $idsRelation : Reference : The relations between import datas ids and real imported ids
+	  * @param string $infos : Reference : The import infos returned
+	  * @return boolean : true on success, false on failure
+	  * @access public
+	  */
+	function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
+		if (!isset($params['module'])) {
+			$infos .= 'Error : missing module codename for categories importation ...'."\n";
+			return false;
+		}
+		$module = CMS_modulesCatalog::getByCodename($params['module']);
+		if ($module->hasError()) {
+			$infos .= 'Error : invalid module for categories importation : '.$params['module']."\n";
+			return false;
+		}
+		$return = true;
+		foreach ($data as $categoryDatas) {
+			$importType = '';
+			if (isset($categoryDatas['uuid'])
+				 && ($id = CMS_moduleCategories_catalog::categoryExists($params['module'], $categoryDatas['uuid']))) {
+				//category already exist : load it if we can update it
+				if (!isset($params['update']) || $params['update'] == true) {
+					$category = CMS_moduleCategories_catalog::getByID($id);
+					$importType = ' (Update)';
+				}
+			} else {
+				//create new category if we can
+				if (!isset($params['create']) || $params['create'] == true) {
+					//if category to create has parent, try to get it
+					if (isset($categoryDatas['parent']) && $categoryDatas['parent']) {
+						//check for uuid translation
+						if (isset($idsRelation['categories-uuid'][$categoryDatas['parent']])) {
+							$categoryDatas['parent'] = $idsRelation['categories-uuid'][$categoryDatas['parent']];
+						}
+						//parent already exist : load it
+						$parentId = CMS_moduleCategories_catalog::categoryExists($params['module'], $categoryDatas['parent']);
+					}
+					if (isset($categoryDatas['root']) && $categoryDatas['root']) {
+						//check for uuid translation
+						if (isset($idsRelation['categories-uuid'][$categoryDatas['root']])) {
+							$categoryDatas['root'] = $idsRelation['categories-uuid'][$categoryDatas['root']];
+						}
+						//root already exist : load it
+						$rootId = CMS_moduleCategories_catalog::categoryExists($params['module'], $categoryDatas['root']);
+					}
+					//create category
+					$category = new CMS_moduleCategory(0, $cms_language);
+					$importType = ' (Creation)';
+					//set module
+					$category->setAttribute('moduleCodename', $params['module']);
+					if (isset($rootId)) {
+						$category->setAttribute('rootID', $rootId);
+					}
+					if (isset($parentId)) {
+						$category->setAttribute('parentID', $parentId);
+					}
+				}
+			}
+			if (isset($category)) {
+				if ($category->fromArray($categoryDatas, $params, $cms_language, $idsRelation, $infos)) {
+					$return &= true;
+					$infos .= 'Category "'.$category->getLabel($cms_language).'" successfully imported'.$importType."\n";
+				} else {
+					$return = false;
+					$infos .= 'Error during import of category '.$categoryDatas['id'].$importType."\n";
+				}
+			}
+		}
+		return $return;
+	}
+	
+	/**
+	  * Does a category exists with given parameters
+	  * this method is use by fromArray import method to know if an imported category already exist or not
+	  *
+	  * @param string $module The module codename to check
+	  * @param string $uuid The category uuid to check
+	  * @return mixed : integer id if exists, false otherwise
+	  * @access public
+	  */
+	function categoryExists($module, $uuid) {
+		if (!$module) {
+			CMS_grandFather::raiseError("module must be set");
+			return false;
+		}
+		if (!$uuid) {
+			CMS_grandFather::raiseError("uuid must be set");
+			return false;
+		}
+		$q = new CMS_query("
+			select 
+				id_mca
+			from 
+				modulesCategories 
+			where
+				uuid_mca='".io::sanitizeSQLString($uuid)."'
+				and module_mca='".io::sanitizeSQLString($module)."'
+		");
+		if ($q->getNumRows()) {
+			return $q->getValue('id_mca');
+		}
+		return false;
+	}
+	
+	/**
+	  * Does given uuid already exists for categories
+	  *
+	  * @param string $uuid The category uuid to check
+	  * @return boolean
+	  * @access public
+	  */
+	function uuidExists($uuid) {
+		if (!$uuid) {
+			CMS_grandFather::raiseError("uuid must be set");
+			return false;
+		}
+		$q = new CMS_query("
+			select 
+				id_mca
+			from 
+				modulesCategories 
+			where
+				uuid_mca='".io::sanitizeSQLString($uuid)."'
+		");
+		return $q->getNumRows() ? true : false;
 	}
 }
 ?>

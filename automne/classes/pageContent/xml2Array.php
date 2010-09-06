@@ -20,18 +20,20 @@
   * return an array from an XML string
   *
   * @package Automne
-  * @subpackage polymod
+  * @subpackage pageContent
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
 class CMS_xml2Array extends CMS_grandFather
 {
-	const XML_ENCLOSE = 1;
-	const XML_PROTECT_ENTITIES = 2;
-	const XML_CORRECT_ENTITIES = 4;
-	const XML_DONT_THROW_ERROR = 8;
-	const ARRAY2XML_START_TAG = 1;
-	const ARRAY2XML_END_TAG = -1;
+	const XML_ENCLOSE			= 1;
+	const XML_PROTECT_ENTITIES	= 2;
+	const XML_CORRECT_ENTITIES	= 4;
+	const XML_DONT_THROW_ERROR	= 8;
+	const XML_DONT_ADD_XMLDECL	= 16;
+	const XML_ARRAY2XML_FORMAT	= 32;
+	const ARRAY2XML_START_TAG	= 1;
+	const ARRAY2XML_END_TAG		= -1;
 	
 	protected $_autoClosedTagsList = array('br', 'base', 'hr', 'meta', 'input', 'img', 'link', 'area', 'param', 'col', 'frame', 'nodespec', 'command', 'embed', 'keygen', 'source');
 	
@@ -45,39 +47,84 @@ class CMS_xml2Array extends CMS_grandFather
 	{
 		$this->_params = $params;
 		if ($xml) {
-			$parser = xml_parser_create(APPLICATION_DEFAULT_ENCODING);
-			xml_set_object($parser,$this);
-			xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
-			xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
-			xml_set_element_handler($parser, "_tagOpen", "_tagClosed");
-			xml_set_character_data_handler($parser, "_charData");
-			xml_set_processing_instruction_handler ($parser, "_piData" );
-			xml_set_default_handler($parser, "_tagData" );
-			//enclose with html tag
-			if ($this->_params & self::XML_ENCLOSE) {
-				$xml = '<html>'.$xml.'</html>';
-			}
-			//add encoding declaration
-			$xml = '<?xml version="1.0" encoding="'.APPLICATION_DEFAULT_ENCODING.'"?>'."\n".$xml;
-			if ($this->_params & self::XML_PROTECT_ENTITIES) {
-				$xml = $this->_codeEntities($xml);
-			}
-			if ($this->_params & self::XML_CORRECT_ENTITIES) {
-				$xml = $this->_correctEntities($xml);
-			}
-			if(!xml_parse($parser, $xml )) {
-				$this->_parsingError = sprintf("Parse error %s at line %d",
-						xml_error_string(xml_get_error_code($parser)),
-						xml_get_current_line_number($parser));
-				if ($this->_params & ~self::XML_DONT_THROW_ERROR) {
-					$this->raiseError($this->_parsingError." :\n".$xml, true);
+			if ($this->_params & self::XML_ARRAY2XML_FORMAT) {
+				$domDocument = new CMS_DOMDocument();
+		        $domDocument->loadXML($xml, 0, false, false);
+				$this->_arrOutput = $this->_xml2Array($domDocument->documentElement);
+			} else {
+				$parser = xml_parser_create(APPLICATION_DEFAULT_ENCODING);
+				xml_set_object($parser,$this);
+				xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
+				xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
+				xml_set_element_handler($parser, "_tagOpen", "_tagClosed");
+				xml_set_character_data_handler($parser, "_charData");
+				xml_set_processing_instruction_handler ($parser, "_piData" );
+				xml_set_default_handler($parser, "_tagData" );
+				//enclose with html tag
+				if ($this->_params & self::XML_ENCLOSE) {
+					$xml = '<html>'.$xml.'</html>';
 				}
+				//add encoding declaration
+				if ($this->_params ^ self::XML_DONT_ADD_XMLDECL) {
+					$xml = '<?xml version="1.0" encoding="'.APPLICATION_DEFAULT_ENCODING.'"?>'."\n".$xml;
+				}
+				if ($this->_params & self::XML_PROTECT_ENTITIES) {
+					$xml = $this->_codeEntities($xml);
+				}
+				if ($this->_params & self::XML_CORRECT_ENTITIES) {
+					$xml = $this->_correctEntities($xml);
+				}
+				if(!xml_parse($parser, $xml )) {
+					$this->_parsingError = sprintf("Parse error %s at line %d",
+							xml_error_string(xml_get_error_code($parser)),
+							xml_get_current_line_number($parser));
+					if ($this->_params & ~self::XML_DONT_THROW_ERROR) {
+						$this->raiseError($this->_parsingError." :\n".$xml, true);
+					}
+				}
+				xml_parser_free($parser);
+				unset($parser);
 			}
-			xml_parser_free($parser);
-			unset($parser);
 		}
 	}
 	
+	/**
+	  * Recursive method to convert given DOMNode (from CMS_array2Xml) to an array
+	  * Used by XML_ARRAY2XML_FORMAT mode
+	  *
+	  * @param DOMNode $domElement The dom element to convert
+	  * @return array
+	  * @access public
+	  */
+	private function _xml2Array($domElement) {
+		$array = array();
+		if (is_object($domElement)) {
+			foreach ($domElement->childNodes as $node) {
+				if ($node->nodeType == XML_ELEMENT_NODE && $node->hasChildNodes()) {
+					if ($node->childNodes->length > 1) {
+						$value = $this->_xml2Array($node);
+					} else {
+						$value = $node->textContent;
+					}
+				} else {
+					$value = $node->textContent;
+				}
+				if ($node->nodeType == XML_ELEMENT_NODE && $node->hasAttribute('key')) {
+					$array[$node->getAttribute('key')] = $value;
+				} elseif ($value && (is_array($value) || trim($value))) {
+					$array[$node->nodeName] = $value;
+				}
+			}
+		}
+		return $array;
+	}
+	
+	/**
+	  * Get the list of all auto closed tags supported
+	  *
+	  * @return array
+	  * @access public
+	  */
 	function getAutoClosedTagsList() {
 		return $this->_autoClosedTagsList;
 	}

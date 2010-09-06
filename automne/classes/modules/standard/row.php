@@ -131,6 +131,13 @@ class CMS_row extends CMS_grandFather
 	protected $_useable;
 
 	/**
+	 * Category uuid.
+	 * @var string
+	 * @access private
+	 */
+	protected $_uuid = '';
+	
+	/**
 	  * Constructor.
 	  *
 	  * @param integer $id the DB ID of the row
@@ -169,7 +176,7 @@ class CMS_row extends CMS_grandFather
 				$this->_useable = ($data["useable_row"]) ? true : false;
 				$this->_description = $data["description_row"];
 				$this->_tplfilter = trim($data["tplfilter_row"]) ? explode(';', $data["tplfilter_row"]) : array();
-
+				$this->_uuid = $data["uuid_row"];
 			} else {
 				$this->raiseError("Unknown id :".$id);
 			}
@@ -747,8 +754,9 @@ class CMS_row extends CMS_grandFather
 	  * @access public
 	  */
 	function addGroup($group){
-		if ($group && $group == SensitiveIO::sanitizeSQLString($group)) {
+		if (trim($group) && $group == SensitiveIO::sanitizeSQLString($group)) {
 			$groups = $this->getGroups();
+			$group = trim($group);
 			if (!in_array($group, $groups)) {
 				$this->_groups->add($group);
 			}
@@ -802,7 +810,8 @@ class CMS_row extends CMS_grandFather
 			useable_row='".SensitiveIO::sanitizeSQLString($this->_useable)."',
 			description_row='".SensitiveIO::sanitizeSQLString($this->_description)."',
 			tplfilter_row='".SensitiveIO::sanitizeSQLString(implode(';',$this->_tplfilter))."',
-			image_row='".SensitiveIO::sanitizeSQLString($this->_image)."'
+			image_row='".SensitiveIO::sanitizeSQLString($this->_image)."',
+			uuid_row='".SensitiveIO::sanitizeSQLString($this->_uuid ? $this->_uuid : io::uuid())."'
 		";
 
 		if ($this->_id) {
@@ -896,6 +905,139 @@ class CMS_row extends CMS_grandFather
 			'edit'			=> $edit,
 			'shortdesc'		=> $shortdesc
 		);
+	}
+	
+	/**
+	  * Get object as an array structure used for export
+	  *
+	  * @param array $params The export parameters. Not used here
+	  * @param array $files The reference to the founded files used by object
+	  * @return array : the object array structure
+	  * @access public
+	  */
+	public function asArray($params = array(), &$files) {
+		$image = $this->getImage();
+		$aRow = array(
+			'id'			=> $this->getID(),
+			'uuid'			=> $this->_uuid,
+			'label'			=> $this->_label,
+			'definition'	=> PATH_TEMPLATES_ROWS_WR.'/'.$this->getDefinitionFileName(),
+			'module'		=> $this->_modules->getTextDefinition(),
+			'groups'		=> $this->_groups->getTextDefinition(),
+			'useable'		=> $this->_useable,
+			'description'	=> $this->_description,
+			'image'			=> $image,
+		);
+		if ($image) {
+			if (!in_array($image, $files)) {
+				$files[] = $image;
+			}
+		}
+		if ($this->getDefinitionFileName()) {
+			$files[] = PATH_TEMPLATES_ROWS_WR.'/'.$this->getDefinitionFileName();
+		}
+		return $aRow;
+	}
+	
+	/**
+	  * Import row from given array datas
+	  *
+	  * @param array $data The module datas to import
+	  * @param array $params The import parameters.
+	  *		array(
+	  *				create	=> false|true : create missing objects (default : true)
+	  *				update	=> false|true : update existing objects (default : true)
+	  *				files	=> false|true : use files from PATH_TMP_FS (default : true)
+	  *			)
+	  * @param CMS_language $cms_language The CMS_langage to use
+	  * @param array $idsRelation : Reference : The relations between import datas ids and real imported ids
+	  * @param string $infos : Reference : The import infos returned
+	  * @return boolean : true on success, false on failure
+	  * @access public
+	  */
+	function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
+		
+		if (!$this->getID() && CMS_rowsCatalog::uuidExists($data['uuid'])) {
+			//check imported uuid. If rows does not have an Id, the uuid must be unique or must be regenerated
+			$uuid = io::uuid();
+			//store old uuid relation
+			$idsRelation['rows-uuid'][$data['uuid']] = $uuid;
+			$data['uuid'] = $uuid;
+		}
+		//set uuid if not exists
+		if (!$this->_uuid) {
+			$this->_uuid = $data['uuid'];
+		}
+		
+		//icon
+		if (!isset($params['files']) || $params['files'] == true) {
+			if (isset($data['image'])) {
+				$icon = $data['image'];
+				//create icon (do not update existing icon)
+				if ($icon && file_exists(PATH_TMP_FS.$icon) && !file_exists(PATH_REALROOT_FS.$icon)) {
+					//move and rename icon file 
+					$filename = PATH_TMP_FS.$icon;
+					$basename = pathinfo($filename, PATHINFO_BASENAME);
+					if ($basename != 'nopicto.gif') {
+						if (CMS_file::copyTo($filename, PATH_REALROOT_FS.$icon)) {
+							//set it
+							$this->setImage($basename);
+						}
+					}
+				}
+			}
+		}
+		//label
+		if (isset($data['label'])) {
+			$this->setLabel($data['label']);
+		}
+		//description
+		if (isset($data['description'])) {
+			$this->setDescription($data['description']);
+		}
+		//groups
+		if (isset($data['groups'])) {
+			$this->delAllGroups();
+			$groups = explode(';', $data['groups']);
+			foreach ($groups as $group) {
+				if ($group) {
+					$this->addGroup($group);
+				}
+			}
+		}
+		//usability
+		if (isset($data['useable'])) {
+			$this->setUsability($data['useable']);
+		}
+		//definition & module
+		if (!isset($params['files']) || $params['files'] == true) {
+			if (isset($data['definition'])) {
+				$definitionFile = $data['definition'];
+				if ($definitionFile && file_exists(PATH_TMP_FS.$definitionFile)) {
+					if (!$this->getDefinitionFileName() || !isset($params['updateRows']) || $params['updateRows'] == true) {
+						$definition = new CMS_file(PATH_TMP_FS.$definitionFile);
+						//set definition from imported file
+						if (!$this->setDefinition($definition->getContent())) {
+							$infos .= 'Error : cannot set row definition ...'."\n";
+							return false;
+						} else {
+							//remove used file
+							$definition->delete();
+						}
+					}
+				}
+			}
+		}
+		//write object
+		if (!$this->writeToPersistence()) {
+			$infos .= 'Error : cannot write row ...'."\n";
+			return false;
+		}
+		//if current row id has changed from imported id, set relation
+		if (isset($data['id']) && $data['id'] && $this->getID() != $data['id']) {
+			$idsRelation['rows'][$data['id']] = $this->getID();
+		}
+		return true;
 	}
 }
 ?>

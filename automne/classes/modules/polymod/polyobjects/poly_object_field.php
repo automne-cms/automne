@@ -58,7 +58,9 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 									 "indexable" 	=> false,
 									 "searchlist" 	=> false,
 									 "searchable" 	=> false,
-									 "params" 		=> array());
+									 "params" 		=> array(),
+									 "uuid"			=> '',
+								);
 	
 	/**
 	  * Constructor.
@@ -112,6 +114,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 			$this->_objectFieldValues["searchlist"] 	= ($datas['searchlist_mof']) ? true:false;
 			$this->_objectFieldValues["searchable"] 	= ($datas['searchable_mof']) ? true:false;
 			$this->_objectFieldValues["params"] 		= ($datas['params_mof']) ? unserialize($datas['params_mof']):array();
+			$this->_objectFieldValues["uuid"]			= isset($datas['uuid_mof']) ? $datas['uuid_mof'] : '';
 		} else {
 			parent::__construct(0,array());
 		}
@@ -148,6 +151,10 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	function setValue($valueName, $value) {
 		if (!in_array($valueName,array_keys($this->_objectFieldValues))) {
 			$this->raiseError("Unknown valueName to set :".$valueName);
+			return false;
+		}
+		if ($valueName == 'uuid') {
+			$this->raiseError("Cannot change UUID");
 			return false;
 		}
 		$this->_objectFieldValues[$valueName] = $value;
@@ -273,7 +280,8 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 			indexable_mof='".SensitiveIO::sanitizeSQLString($this->_objectFieldValues["indexable"])."',
 			searchlist_mof='".SensitiveIO::sanitizeSQLString($this->_objectFieldValues["searchlist"])."',
 			searchable_mof='".SensitiveIO::sanitizeSQLString($this->_objectFieldValues["searchable"])."',
-			params_mof='".SensitiveIO::sanitizeSQLString(serialize($this->_objectFieldValues["params"]))."'
+			params_mof='".SensitiveIO::sanitizeSQLString(serialize($this->_objectFieldValues["params"]))."',
+			uuid_mof='".SensitiveIO::sanitizeSQLString($this->_objectFieldValues["uuid"] ? $this->_objectFieldValues["uuid"] : io::uuid())."'
 		";
 		
 		//save data
@@ -387,6 +395,135 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 		unset($_SESSION["polyModule"]["objectFields"][$this->_objectFieldValues["objectID"]]);
 		//finally destroy object instance
 		unset($this);
+		return true;
+	}
+	
+	/**
+	  * Get object as an array structure used for export
+	  *
+	  * @param array $params The export parameters. Not used here
+	  * @param array $files The reference to the founded files used by object
+	  * @return array : the object array structure
+	  * @access public
+	  */
+	public function asArray($params = array(), &$files) {
+		$aField = array(
+			'id'			=> $this->_fieldID,
+			'uuid'			=> $this->_objectFieldValues['uuid'],
+			'labels'		=> CMS_object_i18nm::getValues($this->_objectFieldValues['labelID']),
+			'descriptions'	=> CMS_object_i18nm::getValues($this->_objectFieldValues['descriptionID']),
+			'objectID'		=> $this->_objectFieldValues['objectID'],
+			'type'			=> null,
+			'multi'			=> null,
+			'params'		=> array(
+				'order'			=> $this->_objectFieldValues['order'],
+				'required'		=> $this->_objectFieldValues['required'],
+				'indexable'		=> $this->_objectFieldValues['indexable'],
+				'searchlist'	=> $this->_objectFieldValues['searchlist'],
+				'searchable'	=> $this->_objectFieldValues['searchable'],
+			)
+		);
+
+		if (io::strpos($this->_objectFieldValues['type'], 'multi|') !== false) {
+			$aField['multi'] = 1;
+			$type = explode('|', $this->_objectFieldValues['type']);
+			$aField['type'] = $type[1];
+		} else {
+			$aField['multi'] = 0;
+			$aField['type'] = $this->_objectFieldValues['type'];
+		}
+
+		if (!io::isPositiveInteger($aField['type'])) {
+			$oType = new $aField['type'](array(), $this, false);
+			$aField['params']['params'] = $oType->asArray();
+		}
+		return $aField;
+	}
+	
+	/**
+	  * Import field from given array datas
+	  *
+	  * @param array $data The module datas to import
+	  * @param array $params The import parameters.
+	  *		array(
+	  *				create	=> false|true : create missing objects (default : true)
+	  *				update	=> false|true : update existing objects (default : true)
+	  *				files	=> false|true : use files from PATH_TMP_FS (default : true)
+	  *			)
+	  * @param CMS_language $cms_language The CMS_langage to use
+	  * @param array $idsRelation : Reference : The relations between import datas ids and real imported ids
+	  * @param string $infos : Reference : The import infos returned
+	  * @return boolean : true on success, false on failure
+	  * @access public
+	  */
+	function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
+		if (isset($data['labels'])) {
+			$label = new CMS_object_i18nm($this->getValue("labelID"));
+			$label->setValues($data['labels']);
+			$label->writeToPersistence();
+			$this->setValue("labelID", $label->getID());
+		}
+		if (isset($data['descriptions'])) {
+			$description = new CMS_object_i18nm($this->getValue("descriptionID"));
+			$description->setValues($data['descriptions']);
+			$description->writeToPersistence();
+			$this->setValue("descriptionID", $description->getID());
+		}
+		if (isset($data['type']) && $data['type']) {
+			$type = !io::isPositiveInteger($data['type']) ? $data['type'] : ((isset($data['multi']) && $data['multi']) ? 'multi|'.$data['type'] : $data['type']);
+			$this->setValue("type", $type);
+		} else {
+			$infos .= 'Error : missing or invalid type for field importation ...'."\n";
+			return false;
+		}
+		if (!$this->getID() && CMS_poly_object_catalog::fieldUuidExists($data['uuid'])) {
+			//check imported uuid. If objects does not have an Id, the uuid must be unique or must be regenerated
+			$uuid = io::uuid();
+			//store old uuid relation
+			$idsRelation['fields-uuid'][$data['uuid']] = $uuid;
+			$data['uuid'] = $uuid;
+		}
+		//set object uuid if not exists
+		if (!$this->_objectFieldValues["uuid"]) {
+			$this->_objectFieldValues["uuid"] = $data['uuid'];
+		}
+		//if current object id has changed from imported id, set relation
+		if (isset($idsRelation['objects'][$data['objectID']]) && $idsRelation['objects'][$data['objectID']]) {
+			$this->setValue("objectID", $idsRelation['objects'][$data['objectID']]);
+		} else {
+			$this->setValue("objectID", $data['objectID']);
+		}
+		if (isset($data['params']['order'])) {
+			$this->setValue("order", $data['params']['order']);
+		}
+		if (isset($data['params']['required'])) {
+			$this->setValue("required", $data['params']['required']);
+		}
+		if (isset($data['params']['indexable'])) {
+			$this->setValue("indexable", $data['params']['indexable']);
+		}
+		if (isset($data['params']['searchlist'])) {
+			$this->setValue("searchlist", $data['params']['searchlist']);
+		}
+		if (isset($data['params']['searchable'])) {
+			$this->setValue("searchable", $data['params']['searchable']);
+		}
+		//parameters
+		if (!io::isPositiveInteger($data['type'])) {
+			$fieldObject = $this->getTypeObject();
+			$params = $fieldObject->treatParams($data['params']['params'], '');
+			if ($params) {
+				$this->setValue("params", $params);
+			} else {
+				$infos .= 'Error : missing or invalid parameters for field importation ...'."\n";
+				return false;
+			}
+		}
+		//write field
+		if (!$this->writeToPersistence()) {
+			$infos .= 'Error : can not write object field ...'."\n";
+			return false;
+		}
 		return true;
 	}
 }

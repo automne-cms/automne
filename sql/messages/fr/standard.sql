@@ -1586,3 +1586,46 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1629, 'standard', 'fr', 'Cette fonction vous permet de remettre à zéro le cache employé sur les rangées de contenus ainsi que sur les plugins WYSIWYG et les flux RSS des modules polymod.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1630, 'standard', 'fr', 'Gestion du cache :');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1631, 'standard', 'fr', 'Veuillez Patienter ...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1632, 'standard', 'fr', 'Export du module %s');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1633, 'standard', 'fr', 'Aucun export disponible sur ce module');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1634, 'standard', 'fr', 'Format');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1635, 'standard', 'fr', 'Patch');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1636, 'standard', 'fr', 'XML');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1637, 'standard', 'fr', 'PHP');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1638, 'standard', 'fr', 'Options');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1639, 'standard', 'fr', 'Exporter');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1640, 'standard', 'fr', 'Donn&eacute;es export&eacute;es');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1641, 'standard', 'fr', 'Erreur durant l\'envoi du fichier ...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1642, 'standard', 'fr', 'Archive introuvable ...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1643, 'standard', 'fr', 'Format inconnu ...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1644, 'standard', 'fr', 'Import de modules');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1645, 'standard', 'fr', 'Fichier Patch :');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1646, 'standard', 'fr', 'ou Donn&eacute;es &agrave; importer :');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1647, 'standard', 'fr', 'Notes techniques');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1648, 'standard', 'fr', 'Les &eacute;l&eacute;ments sont r&eacute;f&eacute;renc&eacute;s par leur UUID. Un &eacute;l&eacute;ment est consid&eacute;r&eacute; comme d&eacute;j&agrave; existant si le couple UUID / module codename est identique.<br /><br />
+						Si l\'UUID d\'un &eacute;l&eacute;ment import&eacute; existe d&eacute;j&agrave; dans un autre module (codename diff&eacute;rent), l\'UUID de l\'&eacute;l&eacute;ment import&eacute; sera recr&eacute;&eacute;.<br /><br />
+						Les fichiers r&eacute;f&eacute;renc&eacute;s seront import&eacute;s depuis %s .<br /><br />
+						Exemple : le fichier /css/style.css sera import&eacute; depuis %s/css/style.css');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1649, 'standard', 'fr', 'Importer');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1650, 'standard', 'fr', 'Erreur durant le transfert du fichier ...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1651, 'standard', 'fr', 'Erreur : Impossible d\'extraire l\'archive %s : format invalide ...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1652, 'standard', 'fr', 'Erreur : Le répertoire %s n\'existe pas ou ne peut pas être écrit.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1653, 'standard', 'fr', 'Extraction réalisée avec succès');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1654, 'standard', 'fr', 'Erreur durant l\'extraction ...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1655, 'standard', 'fr', 'Erreur : Impossible de trouver le fichier export.xml.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1656, 'standard', 'fr', 'Erreur : Aucun contenu &agrave; importer ou contenu incorrect ...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1657, 'standard', 'fr', 'Erreur durant l\'import des donn&eacute;es ...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1658, 'standard', 'fr', 'Import réalisé avec succès.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1659, 'standard', 'fr', 'Erreur durant le nettoyage du répertoire temporaire ...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1660, 'standard', 'fr', 'Log d\'import');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1661, 'standard', 'fr', 'Cr&eacute;er les &eacute;l&eacute;ments inexistants');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1662, 'standard', 'fr', 'Mettre &agrave; jour les &eacute;l&eacute;ments existants');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1663, 'standard', 'fr', 'Importer les fichiers (Rang&eacute;es / Fichiers des cat&eacute;gories / Javascript / CSS)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1664, 'standard', 'fr', 'Mettre &agrave; jour la d&eacute;finition XML des rang&eacute;es existantes');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1665, 'standard', 'fr', 'Mettre &agrave; jour les fichiers Javascript existants');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1666, 'standard', 'fr', 'Mettre &agrave; jour les fichiers CSS existants');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1667, 'standard', 'fr', 'Inclure la d&eacute;finition des objets');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1668, 'standard', 'fr', 'Inclure les cat&eacute;gories');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1669, 'standard', 'fr', 'Inclure les rang&eacute;es');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1670, 'standard', 'fr', 'Inclure les feuilles de styles');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1671, 'standard', 'fr', 'Inclure les fichiers Javascripts');

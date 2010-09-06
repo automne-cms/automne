@@ -53,7 +53,7 @@ class CMS_modulePolymodValidation extends CMS_module
 	  * @return void
 	  * @access public
 	  */
-	function __construct($codename)
+	function __construct($codename = '')
 	{
 		//Initialize object.
 		parent::__construct($codename);

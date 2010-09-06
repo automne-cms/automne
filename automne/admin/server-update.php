@@ -121,83 +121,98 @@ if ($filename || $cms_action=='errorsCorrected') {
 	report('Start patching process...');
 	$automnePatch = new CMS_patch($cms_user);
 	
-	//read patch param file and check versions
-	verbose('Read patch file...');
+	//read patch or export param file and check versions
+	verbose('Read working file...');
 	$patchFile = new CMS_file(PATH_TMP_FS."/patch");
+	$exportFile = new CMS_file(PATH_TMP_FS."/export.xml");
 	
 	if ($patchFile->exists()) {
 		$patch = $patchFile->readContent("array");
+	
+		if (!$automnePatch->checkPatch($patch)) {
+			report('Error : Patch does not match current version ...',true);
+		} else {
+			verbose('-> Patch version match.');
+		}
+		
+		//read install param file and do maximum check on it before starting the installation process
+		verbose('Read install file...');
+		$installFile = new CMS_file(PATH_TMP_FS."/install");
+		if ($installFile->exists()) {
+			$install = $installFile->readContent("array");
+		} else {
+			report('Error : File '.PATH_TMP_FS.'/install does not exists ...',true);
+		}
+		$installError = $automnePatch->checkInstall($install,$errorsInfos);
+		if ($installError) {
+			report('Error : Invalid install file :');
+			$stopProcess = ($automnePatch->canCorrectErrors($errorsInfos)) ? false:true;
+			report($installError,$stopProcess);
+			if (!$force) {
+				//if process continue, then we can correct patch errors.
+				//save errors infos
+				$_SESSION["cms_context"]->setSessionVar('patchErrors',$errorsInfos);
+				//go to errors correction page
+				$send = '
+				<div id="correctUpdateErrors"></div>
+				<script type="text/javascript">
+					Ext.getCmp(\'serverWindow\').correctUpdateErrors();
+				</script>';
+				$content .= $send;
+				echo $content;
+				exit;
+			}
+		} else {
+			verbose('-> Install file is correct.');
+		}
+		
+		//start Installation process
+		report('Start applying patch file...');
+		$automnePatch->doInstall($install);
+		$installError = false;
+		$return = $automnePatch->getReturn();
+		foreach ($return as $line) {
+			switch($line['type']) {
+				case 'verbose':
+					verbose($line['text']);
+				break;
+				case 'report':
+					switch ($line['error']) {
+						case 0:
+							report($line['text'],false);
+						break;
+						case 1:
+							report($line['text'],true);
+							$installError = true;
+						break;
+					}
+				break;
+			}
+		}
+		
+		if ($installError) {
+			report('Error during installation process :');
+			report($installError,true);
+		} else {
+			report('-> Patch installation done without error.');
+		}
+	} elseif ($exportFile->exists()) {
+		//Module datas to import
+		$importDatas = $exportFile->getContent();
+		if (!$importDatas) {
+			report('Error: no content to import or invalid content...',true);
+		}
+		$import = new CMS_module_import();
+		if (!$import->import($importDatas, 'xml', $cms_language, $importLog)) {
+			report('Error during datas importation...');
+		}
+		if (isset($importLog) && $importLog) {
+			verbose('Import log: ');
+			verbose($importLog);
+		}
 	} else {
 		report('Error : File '.PATH_TMP_FS.'/patch does not exists ...',true);
 	}
-	if (!$automnePatch->checkPatch($patch)) {
-		report('Error : Patch does not match current version ...',true);
-	} else {
-		verbose('-> Patch version match.');
-	}
-	
-	//read install param file and do maximum check on it before starting the installation process
-	verbose('Read install file...');
-	$installFile = new CMS_file(PATH_TMP_FS."/install");
-	if ($installFile->exists()) {
-		$install = $installFile->readContent("array");
-	} else {
-		report('Error : File '.PATH_TMP_FS.'/install does not exists ...',true);
-	}
-	$installError = $automnePatch->checkInstall($install,$errorsInfos);
-	if ($installError) {
-		report('Error : Invalid install file :');
-		$stopProcess = ($automnePatch->canCorrectErrors($errorsInfos)) ? false:true;
-		report($installError,$stopProcess);
-		if (!$force) {
-			//if process continue, then we can correct patch errors.
-			//save errors infos
-			$_SESSION["cms_context"]->setSessionVar('patchErrors',$errorsInfos);
-			//go to errors correction page
-			$send = '
-			<div id="correctUpdateErrors"></div>
-			<script type="text/javascript">
-				Ext.getCmp(\'serverWindow\').correctUpdateErrors();
-			</script>';
-			$content .= $send;
-			echo $content;
-			exit;
-		}
-	} else {
-		verbose('-> Install file is correct.');
-	}
-	
-	//start Installation process
-	report('Start applying patch file...');
-	$automnePatch->doInstall($install);
-	$installError = false;
-	$return = $automnePatch->getReturn();
-	foreach ($return as $line) {
-		switch($line['type']) {
-			case 'verbose':
-				verbose($line['text']);
-			break;
-			case 'report':
-				switch ($line['error']) {
-					case 0:
-						report($line['text'],false);
-					break;
-					case 1:
-						report($line['text'],true);
-						$installError = true;
-					break;
-				}
-			break;
-		}
-	}
-	
-	if ($installError) {
-		report('Error during installation process :');
-		report($installError,true);
-	} else {
-		report('-> Patch installation done without error.');
-	}
-	
 	//remove temporary files
 	report('Start cleaning temporary files...');
 	if (!CMS_file::deltree(PATH_TMP_FS)) {
@@ -205,7 +220,6 @@ if ($filename || $cms_action=='errorsCorrected') {
 	} else {
 		verbose('-> Cleaning done without error.');
 	}
-	
 	$content .= $send;
 	echo $content;
 	exit;

@@ -53,17 +53,18 @@ class CMS_poly_object_definition extends CMS_grandFather
 					 "resultsDefinition"	=> string)
 	  * @access private
 	  */
-	protected $_objectValues = array	("resourceUsage"=> 0,
-	  							 "labelID" 		=> 0,
-								 "descriptionID"=> 0,
-								 "admineditable"=> 0,
-					 			 "module" 		=> "",
-								 "composedLabel"=> "",
-								 "previewURL"	=> "",
-								 "indexable" 	=> 0,
-								 "indexURL" 	=> "",
-								 "compiledIndexURL"=> "",
-								 "resultsDefinition"=> ""
+	protected $_objectValues = array("resourceUsage"=> 0,
+		  							 "labelID" 		=> 0,
+									 "descriptionID"=> 0,
+									 "admineditable"=> 0,
+						 			 "module" 		=> "",
+									 "composedLabel"=> "",
+									 "previewURL"	=> "",
+									 "indexable" 	=> 0,
+									 "indexURL" 	=> "",
+									 "compiledIndexURL"=> "",
+									 "resultsDefinition"=> "",
+									 "uuid"			=> ""
 								 );
 	
 	/**
@@ -148,6 +149,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 			$this->_objectValues["indexURL"] = isset($datas['indexURL_mod']) ? $datas['indexURL_mod'] : '';
 			$this->_objectValues["compiledIndexURL"] = isset($datas['compiledIndexURL_mod']) ? $datas['compiledIndexURL_mod'] : '';
 			$this->_objectValues["resultsDefinition"] = isset($datas['resultsDefinition_mod']) ? $datas['resultsDefinition_mod'] : '';
+			$this->_objectValues["uuid"] = isset($datas['uuid_mod']) ? $datas['uuid_mod'] : '';
 		}
 	}
 	
@@ -176,6 +178,10 @@ class CMS_poly_object_definition extends CMS_grandFather
 			$this->raiseError("Unknown valueName to set :".$valueName);
 			return false;
 		}
+		if ($valueName == 'uuid') {
+			$this->raiseError("Cannot change UUID");
+			return false;
+		}
 		if ($valueName == 'indexURL') {
 			$parsing = new CMS_polymod_definition_parsing($value, true, CMS_polymod_definition_parsing::CHECK_PARSING_MODE);
 			$errors = $parsing->getParsingError();
@@ -199,12 +205,11 @@ class CMS_poly_object_definition extends CMS_grandFather
 	function compileDefinition() {
 		global $cms_language;
 		$parameters = array();
-		$parameters['module'] = $this->_objectValues["module"]; //CMS_poly_object_catalog::getModuleCodenameForObjectType($this->getID());
+		$parameters['module'] = $this->_objectValues["module"];
 		$parameters['cache'] = false; //Do not cache this content
 		$definitionParsing = new CMS_polymod_definition_parsing($this->_objectValues['indexURL'], true, CMS_polymod_definition_parsing::PARSE_MODE, $parameters['module']);
 		$compiledIndexURL = $definitionParsing->getContent(CMS_polymod_definition_parsing::OUTPUT_PHP, $parameters);
 		$this->_objectValues['compiledIndexURL'] = $compiledIndexURL;
-		//$definitionParsing = new CMS_polymod_definition_parsing($this->_objectValues['resultsDefinition'], true, CMS_polymod_definition_parsing::PARSE_MODE, $parameters['module']);
 		return true;
 	}
 	
@@ -553,7 +558,8 @@ class CMS_poly_object_definition extends CMS_grandFather
 			indexable_mod='".SensitiveIO::sanitizeSQLString($this->_objectValues["indexable"])."',
 			indexURL_mod='".SensitiveIO::sanitizeSQLString($this->_objectValues["indexURL"])."',
 			compiledIndexURL_mod='".SensitiveIO::sanitizeSQLString($this->_objectValues["compiledIndexURL"])."',
-			resultsDefinition_mod='".SensitiveIO::sanitizeSQLString($this->_objectValues["resultsDefinition"])."'
+			resultsDefinition_mod='".SensitiveIO::sanitizeSQLString($this->_objectValues["resultsDefinition"])."',
+			uuid_mod='".SensitiveIO::sanitizeSQLString($this->_objectValues["uuid"] ? $this->_objectValues["uuid"] : io::uuid())."'
 		";
 		if ($this->_ID) {
 			$sql = "
@@ -663,6 +669,235 @@ class CMS_poly_object_definition extends CMS_grandFather
 		}
 		return $structure;
 	}
-}
+	
+	/**
+	  * Get object as an array structure used for export
+	  *
+	  * @param array $params The export parameters. Not used here
+	  * @param array $files The reference to the founded files used by object
+	  * @return array : the object array structure
+	  * @access public
+	  */
+	public function asArray($params = array(), &$files) {
+		$oPolymod = new CMS_polymod($this->_objectValues['module']);
+		$aClass = array(
+			'id'			=> $this->getID(),
+			'uuid'			=> $this->getValue('uuid'),
+			'labels'		=> CMS_object_i18nm::getValues($this->_objectValues['labelID']),
+			'descriptions'	=> CMS_object_i18nm::getValues($this->_objectValues['descriptionID']),
+			'params'		=> array(
+				'resourceUsage'		=> $this->_objectValues['resourceUsage'],
+				'admineditable'		=> $this->_objectValues['admineditable'],
+				'composedLabel'		=> $this->_objectValues['composedLabel'],
+				'previewURL'		=> $this->_objectValues['previewURL'],
+				'indexable'			=> $this->_objectValues['indexable'],
+				'indexURL'			=> $this->_objectValues['indexURL'],
+				'resultsDefinition'	=> $this->_objectValues['resultsDefinition'],
+			),
+			'fields'	=> array()
+		);
+		if ($aClass['params']['composedLabel']) {
+			$aClass['params']['composedLabel'] = $oPolymod->convertDefinitionString($aClass['params']['composedLabel'], true);
+		}
+		if ($aClass['params']['indexURL']) {
+			$aClass['params']['indexURL'] = $oPolymod->convertDefinitionString($aClass['params']['indexURL'], true);
+		}
+		if ($aClass['params']['previewURL']) {
+			$aClass['params']['previewURL'] = $oPolymod->convertDefinitionString($aClass['params']['previewURL'], true);
+		}
+		if ($aClass['params']['resultsDefinition']) {
+			$aClass['params']['resultsDefinition'] = $oPolymod->convertDefinitionString($aClass['params']['resultsDefinition'], true);
+		}
 
+		$oQuery = new CMS_query('
+			SELECT `id_mof`
+			FROM `mod_object_field`
+			WHERE `object_id_mof` = '.$this->_ID.'
+		');
+		if ($oQuery->getNumRows() > 1) {
+			foreach ($oQuery->getAll(PDO::FETCH_ASSOC) as $aRow) {
+				$oFieldDefiniton = new CMS_poly_object_field($aRow['id_mof']);
+				$aClass['fields'][] = $oFieldDefiniton->asArray($params, $files);
+			}
+		}
+
+		return $aClass;
+	}
+	
+	/**
+	  * Import object from given array datas
+	  *
+	  * @param array $data The object datas to import
+	  * @param array $params The import parameters.
+	  *		array(
+	  *				module	=> false|true : the module to create object (required)
+	  *				create	=> false|true : create missing objects (default : true)
+	  *				update	=> false|true : update existing objects (default : true)
+	  *				files	=> false|true : use files from PATH_TMP_FS (default : true)
+	  *			)
+	  * @param CMS_language $cms_language The CMS_langage to use
+	  * @param array $idsRelation : Reference : The relations between import datas ids and real imported ids
+	  * @param string $infos : Reference : The import infos returned
+	  * @return boolean : true on success, false on failure
+	  * @access public
+	  */
+	function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
+		if (!isset($params['module'])) {
+			$infos .= 'Error : missing module codename for object importation ...'."\n";
+			return false;
+		}
+		$module = CMS_modulesCatalog::getByCodename($params['module']);
+		if ($module->hasError()) {
+			$infos .= 'Error : invalid module for object importation : '.$params['module']."\n";
+			return false;
+		}
+		if (!$this->getID() && CMS_poly_object_catalog::objectUuidExists($data['uuid'])) {
+			//check imported uuid. If objects does not have an Id, the uuid must be unique or must be regenerated
+			$uuid = io::uuid();
+			//store old uuid relation
+			$idsRelation['objects-uuid'][$data['uuid']] = $uuid;
+			$data['uuid'] = $uuid;
+		}
+		//set object uuid if not exists
+		if (!$this->_objectValues["uuid"]) {
+			$this->_objectValues["uuid"] = $data['uuid'];
+		}
+		if (isset($data['labels'])) {
+			$label = new CMS_object_i18nm($this->getValue("labelID"));
+			$label->setValues($data['labels']);
+			$label->writeToPersistence();
+			$this->setValue("labelID", $label->getID());
+		}
+		if (isset($data['descriptions'])) {
+			$description = new CMS_object_i18nm($this->getValue("descriptionID"));
+			$description->setValues($data['descriptions']);
+			$description->writeToPersistence();
+			$this->setValue("descriptionID", $description->getID());
+		}
+		if (isset($data['params']['resourceUsage'])) {
+			$this->setValue("resourceUsage", $data['params']['resourceUsage']);
+		}
+		if (isset($data['params']['admineditable'])) {
+			$this->setValue("admineditable", $data['params']['admineditable']);
+		}
+		if (isset($data['params']['indexable'])) {
+			$this->setValue("indexable", $data['params']['indexable']);
+		}
+		if (isset($data['params']['composedLabel'])) {
+			$this->setValue("composedLabel", $module->convertDefinitionString($data['params']['composedLabel'], false));
+		}
+		if (isset($data['params']['previewURL'])) {
+			$this->setValue("previewURL", $module->convertDefinitionString($data['params']['previewURL'], false));
+		}
+		if (isset($data['params']['indexURL'])) {
+			$this->setValue("indexURL", $module->convertDefinitionString($data['params']['indexURL'], false));
+		}
+		if (isset($data['params']['resultsDefinition'])) {
+			$this->setValue("resultsDefinition", $module->convertDefinitionString($data['params']['resultsDefinition'], false));
+		}
+		//write object
+		if (!$this->writeToPersistence()) {
+			$infos .= 'Error : can not write object ...'."\n";
+			return false;
+		}
+		//if current object id has changed from imported id, set relation
+		if (isset($data['id']) && $data['id'] && $this->getID() != $data['id']) {
+			$idsRelation['objects'][$data['id']] = $this->getID();
+		}
+		$return = true;
+		//object fields
+		if (isset($data['fields'])) {
+			foreach ($data['fields'] as $fieldDatas) {
+				$importType = '';
+				if (isset($fieldDatas['type'])) {
+					if (isset($fieldDatas['uuid'])
+						 && ($id = CMS_poly_object_catalog::fieldExists($params['module'], $fieldDatas['uuid']))) {
+						//field already exist : load it if we can update it
+						if (!isset($params['update']) || $params['update'] == true) {
+							$field = new CMS_poly_object_field($id);
+							$importType = ' (Update)';
+						}
+					} else {
+						//create new field if we can
+						if (!isset($params['create']) || $params['create'] == true) {
+							$field = new CMS_poly_object_field();
+							$importType = ' (Creation)';
+						}
+					}
+					if (isset($field)) {
+						if ($field->fromArray($fieldDatas, $params, $cms_language, $idsRelation, $infos)) {
+							$return &= true;
+							$infos .= 'Field "'.$field->getLabel($cms_language).'" successfully imported'.$importType."\n";
+						} else {
+							$return = false;
+							$infos .= 'Error during import of field ...'.$importType."\n";
+						}
+					}
+				} else {
+					$return = false;
+					$infos .= 'Error during import of field : missing type'."\n";
+				}
+			}
+		}
+		//object rss feeds
+		if (isset($data['rss'])) {
+			foreach ($data['rss'] as $rssDatas) {
+				$importType = '';
+				if (isset($rssDatas['uuid'])
+					 && ($id = CMS_poly_object_catalog::rssExists($params['module'], $rssDatas['uuid']))) {
+					//rss already exist : load it if we can update it
+					if (!isset($params['update']) || $params['update'] == true) {
+						$rss = new CMS_poly_rss_definitions($id);
+						$importType = ' (Update)';
+					}
+				} else {
+					//create new rss if we can
+					if (!isset($params['create']) || $params['create'] == true) {
+						$rss = new CMS_poly_rss_definitions();
+						$importType = ' (Creation)';
+					}
+				}
+				if (isset($rss)) {
+					if ($rss->fromArray($rssDatas, $params, $cms_language, $idsRelation, $infos)) {
+						$return &= true;
+						$infos .= 'RSS feed "'.$rss->getLabel($cms_language).'" successfully imported'.$importType."\n";
+					} else {
+						$return = false;
+						$infos .= 'Error during import of rss feed ...'.$importType."\n";
+					}
+				}
+			}
+		}
+		//plugins wysiwyg
+		if (isset($data['plugins'])) {
+			foreach ($data['plugins'] as $pluginDatas) {
+				$importType = '';
+				if (isset($pluginDatas['uuid'])
+					 && ($id = CMS_poly_object_catalog::pluginExists($params['module'], $pluginDatas['uuid']))) {
+					//plugin already exist : load it if we can update it
+					if (!isset($params['update']) || $params['update'] == true) {
+						$plugin = new CMS_poly_plugin_definitions($id);
+						$importType = ' (Update)';
+					}
+				} else {
+					//create new plugin if we can
+					if (!isset($params['create']) || $params['create'] == true) {
+						$plugin = new CMS_poly_plugin_definitions();
+						$importType = ' (Creation)';
+					}
+				}
+				if (isset($plugin)) {
+					if ($plugin->fromArray($pluginDatas, $params, $cms_language, $idsRelation, $infos)) {
+						$return &= true;
+						$infos .= 'Plugin Wysiwyg "'.$plugin->getLabel($cms_language).'" successfully imported'.$importType."\n";
+					} else {
+						$return = false;
+						$infos .= 'Error during import of plugin wysiwyg ...'.$importType."\n";
+					}
+				}
+			}
+		}
+		return $return;
+	}
+}
 ?>
