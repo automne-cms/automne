@@ -1,9 +1,10 @@
-V4.X.X (in progress)
+V4.1.0 (in progress)
 [BUG] : Lots of minor bugs corrected
 [REFACTOR] : Change max execution time for scripts. Set to 10 minutes by default
 [REFACTOR] : Change polymod search to add result by result return. Use POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS search method with getNextResult method. This greatly improves the memory management.
 [FEATURE] : Add Google coordinates field for Polymod
 [FEATURE] : Add vhost subfolder support for Automne installation
+[FEATURE] : Add import/export of polymod modules structures
 
 V4.0.2 (25/05/2010)
 [BUG] : Corrected bugs : 269, 270, 486, 497 (see http://www.automne.ws/bug/)

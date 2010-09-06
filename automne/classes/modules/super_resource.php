@@ -19,8 +19,8 @@
   *
   * Gathers the most usual functions of an object class for Automne
   *
-  * @package Automne
-  * @subpackage modules
+  * @package CMS
+  * @subpackage CMS_resource
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   * 
   * HOW TO USE THIS CLASS
@@ -54,6 +54,13 @@ class CMS_superResource extends CMS_resource
 	  * @access private
 	  */
 	protected $_tableName;
+	
+	/**
+	  * Table id name for sql queries 
+	  * @var string
+	  * @access private
+	  */
+	protected $_idName = 'id';
 	
 	/**
 	  * Columns name suffix
@@ -138,7 +145,7 @@ class CMS_superResource extends CMS_resource
 				from
 					".$from."
 				where
-					id".$this->_tableSufix."='$id'
+					".$this->_idName.$this->_tableSufix."='$id'
 			";
 			$q = new CMS_query($sql);
 			if ($q->getNumRows()) {
@@ -735,7 +742,7 @@ class CMS_superResource extends CMS_resource
 				set
 					".$orderFieldName."='".($currentOrder-1)."'
 				where
-					id".$this->_tableSufix."='".$this->getID()."'
+					".$this->_idName.$this->_tableSufix."='".$this->getID()."'
 			";
 		$q = new CMS_query($sql);
 		
@@ -805,7 +812,7 @@ class CMS_superResource extends CMS_resource
 				set
 					".$orderFieldName."='".($currentOrder+1)."'
 				where
-					id".$this->_tableSufix."='".$this->getID()."'
+					".$this->_idName.$this->_tableSufix."='".$this->getID()."'
 			";
 		$q = new CMS_query($sql);
 		
@@ -876,7 +883,7 @@ class CMS_superResource extends CMS_resource
 				set
 					".$orderFieldName."='".$moveTo."'
 				where
-					id".$this->_tableSufix."='".$this->getID()."'
+					".$this->_idName.$this->_tableSufix."='".$this->getID()."'
 			";
 		$q = new CMS_query($sql);
 		
@@ -1115,7 +1122,7 @@ class CMS_superResource extends CMS_resource
       * @access public
       */
     function getValue($name){
-        if(strtolower($name) == 'id'){
+        if(strtolower($name) == 'id' || strtolower($name) == $this->_idName){
             return $this->getID();
         }
         if(isset($this->_tableData[$name][0])){
@@ -1234,7 +1241,7 @@ class CMS_superResource extends CMS_resource
 		
 		if (is_array($stringName)) {
 			foreach ($stringName as $aStringName) {
-				if (!in_array($this->_tableData[$aStringName][0],$this->_classString) && $aStringName != 'id') {
+				if (!in_array($this->_tableData[$aStringName][0],$this->_classString) && $aStringName != $this->_idName) {
 					$this->raiseError("Unknown string or not a string dataType :".$aStringName);
 					return false;
 				}
@@ -1276,7 +1283,7 @@ class CMS_superResource extends CMS_resource
 			// the sql request
 			$sql = "
 				select
-					distinct ".$stringName.$this->_tableSufix." ".($withIndex ? ", id".$this->_tableSufix : '')."
+					distinct ".$stringName.$this->_tableSufix." ".($withIndex ? ", ".$this->_idName.$this->_tableSufix : '')."
 				from
 					".$from."
 					".$where."
@@ -1287,7 +1294,7 @@ class CMS_superResource extends CMS_resource
 			if ($q->getNumRows()) {
 				while ($arr = $q->getArray()) {
 					if ($withIndex) {
-						$r[$arr['id'.$this->_tableSufix]]=$arr[$stringName.$this->_tableSufix];
+						$r[$arr[$this->_idName.$this->_tableSufix]]=$arr[$stringName.$this->_tableSufix];
 					} else {
 						$r[]=$arr[$stringName.$this->_tableSufix];
 					}
@@ -1349,7 +1356,7 @@ class CMS_superResource extends CMS_resource
 		//sql request
 		$sql = "
 			select
-				id".$this->_tableSufix."
+				".$this->_idName.$this->_tableSufix."
 			from
 				".$from."
 				".$where."
@@ -1361,9 +1368,9 @@ class CMS_superResource extends CMS_resource
 		if ($q->getNumRows()) {
 			while ($arr = $q->getArray()) {
 				if ($outputObjects) {
-					$r[]=new $this->_className($arr["id".$this->_tableSufix]);
+					$r[]=new $this->_className($arr[$this->_idName.$this->_tableSufix]);
 				} else {
-					$r[]=$arr["id".$this->_tableSufix];
+					$r[]=$arr[$this->_idName.$this->_tableSufix];
 				}
 			}
 		}
@@ -1450,7 +1457,7 @@ class CMS_superResource extends CMS_resource
 				set
 					".$sql_fields."
 				where
-					id".$this->_tableSufix."='".$this->_ID."'
+					".$this->_idName.$this->_tableSufix."='".$this->_ID."'
 			";
 		} else {
 			$sql = "
@@ -1499,7 +1506,7 @@ class CMS_superResource extends CMS_resource
 				delete
 					".$from."
 				where
-					id".$this->_tableSufix."='".$this->_ID."'
+					".$this->_idName.$this->_tableSufix."='".$this->_ID."'
 				";
 			$q = new CMS_query($sql);
 			unset($this);

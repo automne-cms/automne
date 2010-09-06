@@ -400,7 +400,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 								} else {
 									$email->setEmailFrom($texts[3]);
 								}
-								$email->setFromName(APPLICATION_LABEL);
+								//$email->setFromName(APPLICATION_LABEL);
 								
 								//and send emails
 								if ($action->getInteger('type') == CMS_forms_action::ACTION_EMAIL) {
