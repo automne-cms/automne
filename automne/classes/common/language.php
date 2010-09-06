@@ -497,5 +497,44 @@ class CMS_language extends CMS_grandFather
 		}
 		return $this->_prefetched[$module][$this->_code][$messageId];
 	}
+	
+	/**
+	 * Return the next module message id
+	 * @return	the highest module message id + 1
+	 */
+	public function getNextMessageId($sCodename) {
+		$oQuery = new CMS_query("
+			SELECT max(id_mes) as max
+			FROM messages
+			WHERE module_mes = '".SensitiveIO::sanitizeSQLString($sCodename)."'
+		");
+		if ($oQuery->getNumRows() > 0) {
+			return 1 + (int) $oQuery->getValue('max');
+		} else {
+			return 1;
+		}
+	}
+
+	/**
+	 * Create messages.
+	 * @var	string	$sCodename	Module's codename.
+	 * @var	array	$aMessages	Localised message. $sLanguageCode => $sMessage
+	 * @return					Id of the inserted message.
+	 */
+	public function createMessage($sCodename, $aMessages) {
+		$iId = $this->getNextMessageId($sCodename);
+		foreach ($aMessages as $sLanguageCode => $sMessage) {
+			$oQuery = new CMS_query("
+				INSERT INTO
+					messages
+				SET
+					id_mes = ".SensitiveIO::sanitizeSQLString($iId).",
+					module_mes = '".SensitiveIO::sanitizeSQLString($sCodename)."',
+					language_mes = '".SensitiveIO::sanitizeSQLString($sLanguageCode)."',
+					message_mes = '".SensitiveIO::sanitizeSQLString($sMessage)."'
+			");
+		}
+		return $iId;
+	}
 }
 ?>

@@ -385,63 +385,68 @@ class CMS_modulesCatalog extends CMS_grandFather
 			}
 		}
 		
-		
-		/*
-		//move the files
-		$initial_path = PATH_MODULES_FILES_FS."/".$module->getCodename()."/".$locationFrom;
-		$initial_dir = @dir($initial_path);
-		
-		//cut here if the initial dir doesn't exists. That means the module doesn't have files
-		if (!$initial_dir) {
-			return true;
-		}
-
-		$files_prefix = "r".$resourceID."_";
-
-		if ($locationTo != RESOURCE_DATA_LOCATION_DEVNULL) {		
-			//cleans the destination dir
-			$destination_path = PATH_MODULES_FILES_FS."/".$module->getCodename()."/".$locationTo;
-			$destination_dir = dir($destination_path);
-			while (false !== ($file = $destination_dir->read())) {
-				if (is_file($destination_path."/".$file)
-					&& io::substr($file, 0, io::strlen($files_prefix)) == $files_prefix) {
-					unlink($destination_path."/".$file);
-				}
-			}
-			
-			//copy or move the files
-			while (false !== ($file = $initial_dir->read())) {
-				if (is_file($initial_path."/".$file)
-					&& io::substr($file, 0, io::strlen($files_prefix)) == $files_prefix) {
-					if ($copyOnly) {
-						if (@copy($initial_path."/".$file, $destination_path."/".$file)) {
-							@chmod($destination_path."/".$file, octdec(FILES_CHMOD));
-						} else {
-							CMS_grandFather::raiseError("Can't copy file ".$initial_path."/".$file." to ".$destination_path."/".$file." : permission denied");
-						}
-					} else {
-						if (@rename($initial_path."/".$file, $destination_path."/".$file)) {
-							@chmod($destination_path."/".$file, octdec(FILES_CHMOD));
-						} else {
-							CMS_grandFather::raiseError("Can't move file ".$initial_path."/".$file." to ".$destination_path."/".$file." : permission denied");
-						}
-					}
-				}
-			}
-		}
-
-		//cleans the initial dir if not a copy
-		if (!$copyOnly) {
-			$initial_dir->rewind();
-			while (false !== ($file = $initial_dir->read())) {
-				if (is_file($initial_path."/".$file)
-					&& io::substr($file, 0, io::strlen($files_prefix)) == $files_prefix) {
-					unlink($initial_path."/".$file);
-				}
-			}
-		}
-		*/
 		return true;
+	}
+	
+	/**
+	  * Import module from given array datas
+	  *
+	  * @param array $data The module datas to import
+	  * @param array $params The import parameters.
+	  *		array(
+	  *				create	=> false|true : create missing objects (default : true)
+	  *				update	=> false|true : update existing objects (default : true)
+	  *				files	=> false|true : use files from PATH_TMP_FS (default : true)
+	  *			)
+	  * @param CMS_language $cms_language The CMS_langage to use
+	  * @param array $idsRelation : Reference : The relations between import datas ids and real imported ids
+	  * @param string $infos : Reference : The import infos returned
+	  * @return boolean : true on success, false on failure
+	  * @access public
+	  */
+	function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
+		$return = true;
+		foreach ($data as $moduleDatas) {
+			if (!isset($moduleDatas['codename'])) {
+				$infos .= 'Missing codename ...'."\n";
+				return false;
+			}
+			//check if module exists
+			$codenames = CMS_modulesCatalog::getAllCodenames();
+			//instanciate module
+			$importType = '';
+			if (isset($codenames[$moduleDatas['codename']])) {
+				if (!isset($params['update']) || $params['update'] == true) {
+					$module = CMS_modulesCatalog::getByCodename($moduleDatas['codename']);
+					$infos .= 'Get Module '.$module->getLabel($cms_language).' for update...'."\n";
+					$importType = ' (Update)';
+				} else {
+					$infos .= 'Module already exists and parameter does not allow to update it ...'."\n";
+					return false;
+				}
+			} else {
+				if (!isset($params['create']) || $params['create'] == true) {
+					$infos .= 'Create new module for imported datas...'."\n";
+					$importType = ' (Creation)';
+					if(isset($moduleDatas['polymod']) && $moduleDatas['polymod']) {
+						$module = new CMS_polymod();
+					} else {
+						$module = new CMS_module();
+					}
+				} else {
+					$infos .= 'Module does not exists and parameter does not allow to create it ...'."\n";
+					return false;
+				}
+			}
+			if ($module->fromArray($moduleDatas, $params, $cms_language, $idsRelation, $infos)) {
+				$return &= true;
+				$infos .= 'Module "'.$module->getLabel($cms_language).'" successfully imported'.$importType."\n";
+			} else {
+				$return = false;
+				$infos .= 'Error during import of module '.$moduleDatas['codename'].$importType."\n";
+			}
+		}
+		return $return;
 	}
 }
 

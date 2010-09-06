@@ -122,6 +122,13 @@ class CMS_moduleCategory extends CMS_grandFather {
 	protected $_lineageFromDB = '';
 	
 	/**
+	 * Category uuid.
+	 * @var string
+	 * @access private
+	 */
+	protected $_uuid = '';
+	
+	/**
 	 * Constructor
 	 *
 	 * @access public
@@ -155,6 +162,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 				$this->_lineageFromDB = $data["lineage_mca"];
 				$this->_icon = $data["icon_mca"];
 				$this->_order = $data["order_mca"];
+				$this->_uuid = $data["uuid_mca"];
 			} else {
 				$this->raiseError("unknown ID :".$id);
 			}
@@ -201,6 +209,10 @@ class CMS_moduleCategory extends CMS_grandFather {
 	  * @param $value , the value to give
 	  */
 	function setAttribute($name, $value) {
+		if ($name == 'uuid') {
+			$this->raiseError("Cannot change UUID");
+			return false;
+		}
 		$name = '_'.$name;
 		$this->$name = $value;
 		return true;
@@ -450,13 +462,16 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * 
 	 * @access public
 	 * @param string $value
-	 * @param CMS_language $language 
+	 * @param mixed $language : CMS_language or language code
 	 */
 	function setLabel($value, $language = false) {
 		if (!$this->_labels) {
 			$this->_retrieveLabels();
 		}
-		if (is_a($language, 'CMS_language')) {
+		if ($language && is_string($language)) {
+			$this->_labels[$language] = $value;
+			return true;
+		} elseif (is_a($language, 'CMS_language')) {
 			$this->_labels[$language->getCode()] = $value;
 			return true;
 		} elseif (is_a($this->_language, 'CMS_language')) {
@@ -495,13 +510,16 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * 
 	 * @access public
 	 * @param string $value
-	 * @param CMS_language $language 
+	 * @param mixed $language : CMS_language or language code
 	 */
 	function setDescription($value, $language = false) {
 		if(!$this->_descriptions) {
 			$this->_retrieveLabels();
 		}
-		if (is_a($language, 'CMS_language')) {
+		if ($language && is_string($language)) {
+			$this->_descriptions[$language] = $value;
+			return true;
+		} elseif (is_a($language, 'CMS_language')) {
 			$this->_descriptions[$language->getCode()] = $value;
 			return true;
 		} elseif (is_a($this->_language, 'CMS_language')) {
@@ -538,13 +556,16 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * 
 	 * @access public
 	 * @param string $value
-	 * @param CMS_language $language 
+	 * @param mixed $language : CMS_language or language code
 	 */
 	function setFile($value, $language = false) {
 		if(!$this->_files) {
 			$this->_retrieveLabels();
 		}
-		if (is_a($language, 'CMS_language')) {
+		if ($language && is_string($language)) {
+			$this->_files[$language] = $value;
+			return true;
+		} elseif (is_a($language, 'CMS_language')) {
 			$this->_files[$language->getCode()] = $value;
 			return true;
 		} elseif (is_a($this->_language, 'CMS_language')) {
@@ -559,7 +580,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * Access to a filename path
 	 *
 	 * @access public
-	 * @param CMS_language $language
+	 * @param mixed $language : CMS_language or language code
 	 * @param boolean $withPath If false, only returns the filename
 	 * @param string $dataLocation Where does the data lies ? See CMS_resource constants
 	 * @param integer $relativeTo Can be web root or filesystem relative, see base constants
@@ -570,30 +591,31 @@ class CMS_moduleCategory extends CMS_grandFather {
 		if(!$this->_files) {
 			$this->_retrieveLabels();
 		}
-		if (!is_a($language, 'CMS_language')) {
-			$language = $this->_language;
+		if (!$language && is_object($this->_language)) {
+			$language = $this->_language->getCode();
+		} elseif (is_a($language, 'CMS_language')) {
+			$language = $language->getCode();
 		}
-		if (is_a($language, 'CMS_language')) {
-			if ($withPath) {
-				switch ($relativeTo) {
+		if (!$language) {
+			return '';
+		}
+		if ($withPath) {
+			switch ($relativeTo) {
 				case PATH_RELATIVETO_WEBROOT:
 					$path = PATH_MODULES_FILES_WR."/".$this->_moduleCodename."/".RESOURCE_DATA_LOCATION_PUBLIC;
-					break;
+				break;
 				case PATH_RELATIVETO_FILESYSTEM:
 					$path = PATH_MODULES_FILES_FS."/".$this->_moduleCodename."/".RESOURCE_DATA_LOCATION_PUBLIC;
-					break;
-				}
-				if ($withFilename) {
-					return $path."/".$this->_files[$language->getCode()];
-				} else {
-					return $path;
-				}
-				return false;
-			} elseif (isset($this->_files[$language->getCode()])) {
-				return $this->_files[$language->getCode()];
-			} else {
-				return '';
+				break;
 			}
+			if ($withFilename) {
+				return $path."/".$this->_files[$language];
+			} else {
+				return $path;
+			}
+			return false;
+		} elseif (isset($this->_files[$language])) {
+			return $this->_files[$language];
 		} else {
 			return '';
 		}
@@ -664,7 +686,8 @@ class CMS_moduleCategory extends CMS_grandFather {
 			root_mca='".SensitiveIO::sanitizeSQLString($this->_rootID)."',
 			parent_mca='".SensitiveIO::sanitizeSQLString($this->_parentID)."',
 			order_mca='".SensitiveIO::sanitizeSQLString($this->_order)."',
-			icon_mca='".SensitiveIO::sanitizeSQLString($this->_icon)."'";
+			icon_mca='".SensitiveIO::sanitizeSQLString($this->_icon)."',
+			uuid_mca='".SensitiveIO::sanitizeSQLString($this->_uuid ? $this->_uuid : io::uuid())."'";
 		// Finish SQL
 		if ($this->_categoryID) {
 			$sql = "
@@ -712,7 +735,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 		}
 		// Save translations
 		// Number of languages availables depends on module
-		// instead of languages initially tored into object
+		// instead of languages initially stored into object
 		// A way to support easily any new language
 		if (is_array($this->_labels) && $this->_labels && $this->_categoryID) {
 			$err = 0;
@@ -814,6 +837,205 @@ class CMS_moduleCategory extends CMS_grandFather {
 			return ($err <= 0);
 		}
 		return false;
+	}
+	
+	/**
+	  * Get object as an array structure used for export
+	  *
+	  * @param array $params The export parameters.
+	  *		array(
+	  *				categoriesChildren	=> false|true : export children categories also (default : true)
+	  *			)
+	  * @param array $files The reference to the founded files used by object
+	  * @return array : the object array structure
+	  * @access public
+	  */
+	public function asArray($params = array(), &$files) {
+		if (!is_array($files)) {
+			$files = array();
+		}
+		$this->_retrieveLabels();
+		$icon = $this->_icon ? $this->getIconPath(true, PATH_RELATIVETO_WEBROOT, true) : '';
+		$aCategory = array(
+			'id'			=> $this->getID(),
+			'uuid'			=> $this->_uuid,
+			'parent'		=> '',
+			'root'			=> '',
+			'icon'			=> $icon,
+			'order'			=> $this->_order,
+			'labels'		=> $this->_labels,
+			'descriptions'	=> $this->_descriptions,
+			'module'		=> $this->_moduleCodename,
+		);
+		if ($this->_parentID) {
+			$aCategory['parent'] = $this->getParent()->getAttribute('uuid');
+		}
+		if ($this->_rootID) {
+			$aCategory['root'] = $this->getRoot()->getAttribute('uuid');
+		}
+		if (!isset($params['categoriesChildren']) || $params['categoriesChildren'] == true) {
+			$aCategory['childs'] = array();
+			$childs = $this->getSiblings();
+			foreach ($childs as $child) {
+				$aCategory['childs'][] = $child->asArray($params, $files);
+			}
+		}
+		if ($this->_files) {
+			foreach ($this->_files as $language => $file) {
+				if ($file) {
+					$file = $this->getFilePath($language, true, PATH_RELATIVETO_WEBROOT, true);
+					$files[] = $file;
+					$aCategory['files'][$language] = $file;
+				}
+			}
+		}
+		if ($icon) {
+			$files[] = $icon;
+		}
+		return $aCategory;
+	}
+	
+	/**
+	  * Import row from given array datas
+	  *
+	  * @param array $data The module datas to import
+	  * @param array $params The import parameters.
+	  *		array(
+	  *				module	=> false|true : the module to create categories (required)
+	  *				create	=> false|true : create missing objects (default : true)
+	  *				update	=> false|true : update existing objects (default : true)
+	  *				files	=> false|true : use files from PATH_TMP_FS (default : true)
+	  *			)
+	  * @param CMS_language $cms_language The CMS_langage to use
+	  * @param array $idsRelation : Reference : The relations between import datas ids and real imported ids
+	  * @param string $infos : Reference : The import infos returned
+	  * @return boolean : true on success, false on failure
+	  * @access public
+	  */
+	function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
+		if (!isset($params['module'])) {
+			$infos .= 'Error : missing module codename for categories importation ...'."\n";
+			return false;
+		}
+		$module = CMS_modulesCatalog::getByCodename($params['module']);
+		if ($module->hasError()) {
+			$infos .= 'Error : invalid module for categories importation : '.$params['module']."\n";
+			return false;
+		}
+		
+		if (!$this->getID() && CMS_moduleCategories_catalog::uuidExists($data['uuid'])) {
+			//check imported uuid. If categories does not have an Id, the uuid must be unique or must be regenerated
+			$uuid = io::uuid();
+			//store old uuid relation
+			$idsRelation['categories-uuid'][$data['uuid']] = $uuid;
+			$data['uuid'] = $uuid;
+		}
+		//set category uuid if not exists
+		if (!$this->_uuid) {
+			$this->_uuid = $data['uuid'];
+		}
+		
+		if (!isset($params['files']) || $params['files'] == true) {
+			if (isset($data['icon'])) {
+				$icon = $data['icon'];
+				if ($icon && file_exists(PATH_TMP_FS.$icon)) {
+					//destroy old file if any
+					if ($this->getIconPath(false, PATH_RELATIVETO_WEBROOT, true)) {
+						@unlink($this->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, true));
+						$this->setAttribute('icon', '');
+					}
+					//move and rename uploaded file 
+					$filename = PATH_TMP_FS.$icon;
+					$basename = pathinfo($filename, PATHINFO_BASENAME);
+					if (!$this->getID()) { //need item ID
+						$this->writeToPersistence();
+					}
+					//create file path
+					$path = $this->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, false).'/';
+					$extension = pathinfo($icon, PATHINFO_EXTENSION);
+					$newBasename = "cat-".$this->getID()."-icon.".$extension;
+					$newFilename = $path.'/'.$newBasename;
+					if (CMS_file::moveTo($filename, $newFilename)) {
+						CMS_file::chmodFile(FILES_CHMOD, $newFilename);
+						//set it
+						$this->setAttribute('icon', $newBasename);
+					}
+				} elseif(!$icon) {
+					//destroy old file if any
+					if ($this->getIconPath(false, PATH_RELATIVETO_WEBROOT, true)) {
+						@unlink($this->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, true));
+						$this->setAttribute('icon', '');
+					}
+				}
+			}
+		}
+		if (isset($data['labels'])) {
+			foreach ($data['labels'] as $language => $label) {
+				$this->setLabel($label, $language);
+			}
+		}
+		if (isset($data['descriptions'])) {
+			foreach ($data['descriptions'] as $language => $desc) {
+				$this->setDescription($label, $desc);
+			}
+		}
+		if (!isset($params['files']) || $params['files'] == true) {
+			if (isset($data['files']) && is_array($data['files'])) {
+				foreach ($data['files'] as $language => $file) {
+					if ($file && file_exists(PATH_TMP_FS.$file)) {
+						//destroy old file if any
+						if ($this->getFilePath($language, false, PATH_RELATIVETO_WEBROOT, true)) {
+							@unlink($this->getFilePath($language, true, PATH_RELATIVETO_FILESYSTEM, true));
+							$this->setFile('', $language);
+						}
+						
+						//move and rename uploaded file 
+						$filename = PATH_TMP_FS.$file;
+						$basename = pathinfo($filename, PATHINFO_BASENAME);
+						if (!$this->getID()) { //need item ID
+							$this->writeToPersistence();
+						}
+						//create file path
+						$path = $this->getFilePath($language, true, PATH_RELATIVETO_FILESYSTEM, false).'/';
+						$extension = pathinfo($file, PATHINFO_EXTENSION);
+						$newBasename = "cat-".$this->getID()."-file-".$language.".".$extension;
+						$newFilename = $path.'/'.$newBasename;
+						if (CMS_file::moveTo($filename, $newFilename)) {
+							CMS_file::chmodFile(FILES_CHMOD, $newFilename);
+							//set it
+							$this->setFile($newBasename, $language);
+						}
+					} elseif(!$file) {
+						//destroy old file if any
+						if ($this->getFilePath($language, false, PATH_RELATIVETO_WEBROOT, true)) {
+							@unlink($this->getFilePath($language, true, PATH_RELATIVETO_FILESYSTEM, true));
+							$this->setFile('', $language);
+						}
+					}
+				}
+			}
+		}
+		//write object
+		if (!$this->writeToPersistence()) {
+			$infos .= 'Error : can not write category ...'."\n";
+			return false;
+		}
+		//if current category id has changed from imported id, set relation
+		if (isset($data['id']) && $data['id'] && $this->getID() != $data['id']) {
+			$idsRelation['categories'][$data['id']] = $this->getID();
+			if (isset($data['uuid']) && $data['uuid']) {
+				$idsRelation['categories'][$data['uuid']] = $this->getID();
+			}
+		}
+		//set category order
+		if (isset($data['order']) && $data['order']) {
+			CMS_moduleCategories_catalog::moveCategoryIndex($this, $data['order']);
+		}
+		//set categories childs
+		if (isset($data['childs']) && $data['childs']) {
+			return CMS_moduleCategories_catalog::fromArray($data['childs'], $params, $cms_language, $idsRelation, $infos);
+		}
+		return true;
 	}
 }
 ?>

@@ -104,9 +104,9 @@ class CMS_poly_object_catalog
 			$object = new CMS_poly_object_definition($r["id_mod"],$r);
 			if ($r["resource_usage_mod"] == 1) {
 				//if it is a primary resource, add an underscore to put it on top of objects list
-				$results['_'.$object->getLabel()] = $object;
+				$results['_'.$object->getLabel().$r["id_mod"]] = $object;
 			} else {
-				$results[$object->getLabel()] = $object;
+				$results[$object->getLabel().$r["id_mod"]] = $object;
 			}
 		}
 		//sort case insentive
@@ -914,6 +914,330 @@ class CMS_poly_object_catalog
 			}
 		}
 		return $moduleReferences[$codename];
+	}
+	
+	/**
+	  * Import module objects from given array datas
+	  *
+	  * @param array $data The module datas to import
+	  * @param array $params The import parameters.
+	  *		array(
+	  *				module	=> false|true : the module to create categories (required)
+	  *				create	=> false|true : create missing objects (default : true)
+	  *				update	=> false|true : update existing objects (default : true)
+	  *				files	=> false|true : use files from PATH_TMP_FS (default : true)
+	  *			)
+	  * @param CMS_language $cms_language The CMS_langage to use
+	  * @param array $idsRelation : Reference : The relations between import datas ids and real imported ids
+	  * @param string $infos : Reference : The import infos returned
+	  * @return boolean : true on success, false on failure
+	  * @access public
+	  */
+	function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
+		if (!isset($params['module'])) {
+			$infos .= 'Error : missing module codename for objects importation ...'."\n";
+			return false;
+		}
+		$module = CMS_modulesCatalog::getByCodename($params['module']);
+		if ($module->hasError()) {
+			$infos .= 'Error : invalid module for objects importation : '.$params['module']."\n";
+			return false;
+		}
+		$return = true;
+		//first create missing objects to get relation ids
+		foreach ($data as $objectDatas) {
+			if (!isset($objectDatas['uuid']) || !CMS_poly_object_catalog::objectExists($params['module'], $objectDatas['uuid'])) {
+				//create new object if we can
+				if (!isset($params['create']) || $params['create'] == true) {
+					//create object
+					$object = new CMS_poly_object_definition();
+					//set module
+					$object->setValue('module', $params['module']);
+					//write object to persistence to get relations ids
+					$object->writeToPersistence();
+					//set id translation
+					if (isset($objectDatas['id']) && $objectDatas['id'] && $object->getID() != $objectDatas['id']) {
+						$idsRelation['objects'][$objectDatas['id']] = $object->getID();
+					}
+					//set uuid translation
+					if (isset($objectDatas['uuid']) && $objectDatas['uuid'] && $object->getValue('uuid') != $objectDatas['uuid']) {
+						$idsRelation['objects-uuid'][$objectDatas['uuid']] = $object->getValue('uuid');
+					}
+				}
+			}
+		}
+		//then import objects datas
+		foreach ($data as $objectDatas) {
+			$importType = '';
+			if (isset($objectDatas['uuid'])
+				 && ($id = CMS_poly_object_catalog::objectExists($params['module'], $objectDatas['uuid']))) {
+				//object already exist : load it if we can update it
+				if (!isset($params['update']) || $params['update'] == true) {
+					$object = new CMS_poly_object_definition($id);
+					$importType = ' (Update)';
+				}
+			} else {
+				//check for translated id
+				if (isset($objectDatas['id']) && isset($idsRelation['objects'][$objectDatas['id']])) {
+					//object exists with a translated id
+					$objectDatas['id'] = $idsRelation['objects'][$objectDatas['id']];
+					//load translated object
+					$object = new CMS_poly_object_definition($objectDatas['id']);
+					$importType = ' (Creation)';
+				}
+				//check for translated uuid
+				if (isset($objectDatas['uuid']) && isset($idsRelation['objects-uuid'][$objectDatas['uuid']])) {
+					//object exists with a translated uuid
+					$objectDatas['uuid'] = $idsRelation['objects-uuid'][$objectDatas['uuid']];
+					//load translated object
+					if ($id = CMS_poly_object_catalog::objectExists($params['module'], $objectDatas['uuid'])) {
+						$object = new CMS_poly_object_definition($id);
+						$importType = ' (Creation)';
+					}
+				}
+			}
+			if (isset($object)) {
+				if ($object->fromArray($objectDatas, $params, $cms_language, $idsRelation, $infos)) {
+					$return &= true;
+					$infos .= 'Object "'.$object->getLabel($cms_language).'" successfully imported'.$importType."\n";
+				} else {
+					$return = false;
+					$infos .= 'Error during import of object '.$objectDatas['id'].$importType."\n";
+				}
+			}
+		}
+		return $return;
+	}
+	
+	/**
+	  * Does an object exists with given parameters
+	  * this method is use by fromArray import method to know if an imported object already exist or not
+	  *
+	  * @param string $module The module codename to check
+	  * @param string $uuid The object uuid to check
+	  * @return mixed : integer id if exists, false otherwise
+	  * @access public
+	  */
+	function objectExists($module, $uuid) {
+		if (!$module) {
+			CMS_grandFather::raiseError("module must be set");
+			return false;
+		}
+		if (!$uuid) {
+			CMS_grandFather::raiseError("uuid must be set");
+			return false;
+		}
+		
+		$q = new CMS_query("
+			select 
+				id_mod
+			from 
+				mod_object_definition 
+			where
+				uuid_mod='".io::sanitizeSQLString($uuid)."'
+				and module_mod='".io::sanitizeSQLString($module)."'
+		");
+		if ($q->getNumRows()) {
+			return $q->getValue('id_mod');
+		}
+		return false;
+	}
+	
+	/**
+	  * Does given uuid already exists for objects
+	  *
+	  * @param string $uuid The object uuid to check
+	  * @return boolean
+	  * @access public
+	  */
+	function objectUuidExists($uuid) {
+		if (!$uuid) {
+			CMS_grandFather::raiseError("uuid must be set");
+			return false;
+		}
+		$q = new CMS_query("
+			select 
+				id_mod
+			from 
+				mod_object_definition 
+			where
+				uuid_mod='".io::sanitizeSQLString($uuid)."'
+		");
+		return $q->getNumRows() ? true : false;
+	}
+	
+	/**
+	  * Does an object field exists with given parameters
+	  * this method is use by fromArray import method to know if an imported object field already exist or not
+	  *
+	  * @param string $module The module codename to check
+	  * @param string $uuid The object field uuid to check
+	  * @return mixed : integer id if exists, false otherwise
+	  * @access public
+	  */
+	function fieldExists($module, $uuid) {
+		if (!$module) {
+			CMS_grandFather::raiseError("module must be set");
+			return false;
+		}
+		if (!$uuid) {
+			CMS_grandFather::raiseError("type must be set");
+			return false;
+		}
+		$q = new CMS_query("
+			select 
+				id_mof
+			from 
+				mod_object_field,
+				mod_object_definition
+			where
+				uuid_mof='".io::sanitizeSQLString($uuid)."'
+				and object_id_mof=id_mod
+				and module_mod='".io::sanitizeSQLString($module)."'
+		");
+		if ($q->getNumRows()) {
+			return $q->getValue('id_mof');
+		}
+		return false;
+	}
+	
+	/**
+	  * Does given uuid already exists for objects field
+	  *
+	  * @param string $uuid The field uuid to check
+	  * @return boolean
+	  * @access public
+	  */
+	function fieldUuidExists($uuid) {
+		if (!$uuid) {
+			CMS_grandFather::raiseError("uuid must be set");
+			return false;
+		}
+		$q = new CMS_query("
+			select 
+				id_mof
+			from 
+				mod_object_field
+			where
+				uuid_mof='".io::sanitizeSQLString($uuid)."'
+		");
+		return $q->getNumRows() ? true : false;
+	}
+	
+	/**
+	  * Does an object rss feed exists with given parameters
+	  * this method is use by fromArray import method to know if an imported object rss feed already exist or not
+	  *
+	  * @param string $module The module codename to check
+	  * @param string $uuid The rss feed uuid to check
+	  * @return mixed : integer id if exists, false otherwise
+	  * @access public
+	  */
+	function rssExists($module, $uuid) {
+		if (!$uuid) {
+			CMS_grandFather::raiseError("uuid must be set");
+			return false;
+		}
+		if (!$module) {
+			CMS_grandFather::raiseError("module must be set");
+			return false;
+		}
+		$q = new CMS_query("
+			select 
+				id_mord
+			from 
+				mod_object_rss_definition,
+				mod_object_definition
+			where
+				uuid_mord='".io::sanitizeSQLString($uuid)."'
+				and object_id_mord=id_mod
+				and module_mod='".io::sanitizeSQLString($module)."'
+		");
+		if ($q->getNumRows()) {
+			return $q->getValue('id_mord');
+		}
+		return false;
+	}
+	
+	/**
+	  * Does given uuid already exists for rss objects
+	  *
+	  * @param string $uuid The rss uuid to check
+	  * @return boolean
+	  * @access public
+	  */
+	function rssUuidExists($uuid) {
+		if (!$uuid) {
+			CMS_grandFather::raiseError("uuid must be set");
+			return false;
+		}
+		$q = new CMS_query("
+			select 
+				id_mord
+			from 
+				mod_object_rss_definition
+			where
+				uuid_mord='".io::sanitizeSQLString($uuid)."'
+		");
+		return $q->getNumRows() ? true : false;
+	}
+	
+	/**
+	  * Does a wysiwyg plugin exists with given parameters
+	  * this method is use by fromArray import method to know if an imported plugin already exist or not
+	  *
+	  * @param string $module The module codename to check
+	  * @param string $uuid The plugin uuid to check
+	  * @return mixed : integer id if exists, false otherwise
+	  * @access public
+	  */
+	function pluginExists($module, $uuid) {
+		if (!$uuid) {
+			CMS_grandFather::raiseError("uuid must be set");
+			return false;
+		}
+		if (!$module) {
+			CMS_grandFather::raiseError("module must be set");
+			return false;
+		}
+		$q = new CMS_query("
+			select 
+				id_mowd
+			from 
+				mod_object_plugin_definition,
+				mod_object_definition
+			where
+				uuid_mowd='".io::sanitizeSQLString($uuid)."'
+				and object_id_mowd=id_mod
+				and module_mod='".io::sanitizeSQLString($module)."'
+		");
+		if ($q->getNumRows()) {
+			return $q->getValue('id_mowd');
+		}
+		return false;
+	}
+	
+	/**
+	  * Does given uuid already exists for plugin objects
+	  *
+	  * @param string $uuid The plugin uuid to check
+	  * @return boolean
+	  * @access public
+	  */
+	function pluginUuidExists($uuid) {
+		if (!$uuid) {
+			CMS_grandFather::raiseError("uuid must be set");
+			return false;
+		}
+		$q = new CMS_query("
+			select 
+				id_mowd
+			from 
+				mod_object_plugin_definition
+			where
+				uuid_mowd='".io::sanitizeSQLString($uuid)."'
+		");
+		return $q->getNumRows() ? true : false;
 	}
 }
 ?>

@@ -153,32 +153,22 @@ switch ($_POST["cms_action"]) {
 				$module->setLabel(1);
 				$module->setPolymod(true);
 				$module->setAdminFrontend('index.php');
-				$module->writeToPersistence();
-				//create module label
-				//this is a direct sql query cause no writing interface exists now for messages table
-				
-				$count = 0;
-				foreach ($languages as $aLanguage) {
-					$sql = "
-						insert into 
-							messages
-						set
-							id_mes = '1',
-							module_mes = '".SensitiveIO::sanitizeSQLString($moduleCodename)."',
-							language_mes = '".SensitiveIO::sanitizeSQLString($aLanguage->getCode())."',
-							message_mes = '".SensitiveIO::sanitizeSQLString($_POST['label'.$aLanguage->getCode()])."'
-					";
-					$q = new CMS_query($sql);
-				}
-				//create module files directories
-				$moduledir = new CMS_file(PATH_MODULES_FILES_FS.'/'.$moduleCodename, CMS_file::FILE_SYSTEM, CMS_file::TYPE_DIRECTORY);
-				$moduleDeleted = new CMS_file(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/deleted', CMS_file::FILE_SYSTEM, CMS_file::TYPE_DIRECTORY);
-				$moduleEdited = new CMS_file(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/edited', CMS_file::FILE_SYSTEM, CMS_file::TYPE_DIRECTORY);
-				$modulePublic = new CMS_file(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/public', CMS_file::FILE_SYSTEM, CMS_file::TYPE_DIRECTORY);
-				if ($moduledir->writeToPersistence()
-					&& $moduleDeleted->writeToPersistence()
-					&& $moduleEdited->writeToPersistence()
-					&& $modulePublic->writeToPersistence()) {
+				if ($module->writeToPersistence()) {
+					//create module label
+					//this is a direct sql query cause no writing interface exists now for messages table
+					$count = 0;
+					foreach ($languages as $aLanguage) {
+						$sql = "
+							insert into 
+								messages
+							set
+								id_mes = '1',
+								module_mes = '".SensitiveIO::sanitizeSQLString($moduleCodename)."',
+								language_mes = '".SensitiveIO::sanitizeSQLString($aLanguage->getCode())."',
+								message_mes = '".SensitiveIO::sanitizeSQLString($_POST['label'.$aLanguage->getCode()])."'
+						";
+						$q = new CMS_query($sql);
+					}
 					//create all needed .htaccess files
 					if (isset($_POST['hasprotect']) && $_POST['protect'] == 1) {
 						CMS_file::copyTo(PATH_HTACCESS_FS.'/htaccess_file', PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/edited/.htaccess');
@@ -186,9 +176,6 @@ switch ($_POST["cms_action"]) {
 						CMS_file::copyTo(PATH_HTACCESS_FS.'/htaccess_file', PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/public/.htaccess');
 						CMS_file::chmodFile(FILES_CHMOD, PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/public/.htaccess');
 					}
-					CMS_file::copyTo(PATH_HTACCESS_FS.'/htaccess_no', PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/deleted/.htaccess');
-					CMS_file::chmodFile(FILES_CHMOD, PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/deleted/.htaccess');
-					
 					header("Location: modules_admin.php?moduleCodename=".$moduleCodename."&cms_message_id=".MESSAGE_ACTION_OPERATION_DONE."&".session_name()."=".session_id());
 					exit;
 				} else {

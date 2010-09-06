@@ -218,6 +218,21 @@ class CMS_object_i18nm extends CMS_grandFather
 		}
 		return $aLabels;
 	}
+	
+	/**
+	  * set all the values
+	  *
+	  * @param array $values the values to set : array(language code => value)
+	  * @return	boolean
+	  * @access	public
+	  */
+	public function setValues($values) {
+		$return = true;
+		foreach ($values as $sLanguageCode => $sLabel) {
+			$return &= $this->setValue($sLanguageCode, $sLabel);
+		}
+		return $return;
+	}
 
 	/**
 	  * get HTML admin (used to enter object values in admin)

@@ -330,5 +330,177 @@ class CMS_rowsCatalog extends CMS_grandFather
 
 		return $images;
 	}
+	
+	/**
+	  * Return all rows which uses given modules
+	  *
+	  * @param array modules : the modules codename to search rows for
+	  * @param boolean returnObjects : does the function return array of ids or array of objects (default)
+	  * @return array : rows
+	  * @access public
+	  */
+	function getByModules($modules= array(), $returnObjects = true) {
+		if (!is_array($modules) && is_string($modules) && $modules) {
+			$modules = array($modules);
+		}
+		if (!is_array($modules) || !$modules) {
+			CMS_grandFather::raiseError('No modules set');
+			return array();
+		}
+		
+		$sql ='
+			select 
+				id_row, modulesStack_row
+			from
+				mod_standard_rows
+		';
+		$q = new CMS_query($sql);
+		$rows = array();
+		while ($r = $q->getArray()) {
+			$modulesList = explode(';', $r["modulesStack_row"]);
+			$hasModules = true;
+			//check if all requested modules exists for row
+			foreach ($modules as $module) {
+				if (!in_array($module, $modulesList)) {
+					$hasModules = false;
+				}
+			}
+			//check if row does not use another module than requested ones
+			foreach ($modulesList as $module) {
+				if (!in_array($module, $modules)) {
+					$hasModules = false;
+				}
+			}
+			if ($hasModules) {
+				if ($returnObjects) {
+					$row = new CMS_row($r["id_row"]);
+					if (!$row->hasError()) {
+						$rows[$row->getID()] = $row;
+					}
+				} else {
+					$rows[$r["id_row"]] = $r["id_row"];
+				}
+			}
+		}
+		return $rows;
+	}
+	
+	/**
+	  * Import module from given array datas
+	  *
+	  * @param array $data The module datas to import
+	  * @param array $params The import parameters.
+	  *		array(
+	  *				module	=> false|true : the module to create rows (required)
+	  *				create	=> false|true : create missing objects (default : true)
+	  *				update	=> false|true : update existing objects (default : true)
+	  *				files	=> false|true : use files from PATH_TMP_FS (default : true)
+	  *			)
+	  * @param CMS_language $cms_language The CMS_langage to use
+	  * @param array $idsRelation : Reference : The relations between import datas ids and real imported ids
+	  * @param string $infos : Reference : The import infos returned
+	  * @return boolean : true on success, false on failure
+	  * @access public
+	  */
+	function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
+		if (!isset($params['module'])) {
+			$infos .= 'Error : missing module codename for rows importation ...'."\n";
+			return false;
+		}
+		$module = CMS_modulesCatalog::getByCodename($params['module']);
+		if ($module->hasError()) {
+			$infos .= 'Error : invalid module for rows importation : '.$params['module']."\n";
+			return false;
+		}
+		$return = true;
+		foreach ($data as $rowDatas) {
+			$importType = '';
+			if (isset($rowDatas['uuid'])
+				 && ($id = CMS_rowsCatalog::rowExists($params['module'], $rowDatas['uuid']))) {
+				//row already exist : load it if we can update it
+				if (!isset($params['update']) || $params['update'] == true) {
+					$row = CMS_rowsCatalog::getByID($id);
+					$importType = ' (Update)';
+				}
+			} else {
+				//create new row if we can
+				if (!isset($params['create']) || $params['create'] == true) {
+					//create row
+					$row = new CMS_row();
+					$importType = ' (Creation)';
+				}
+			}
+			if (isset($row)) {
+				if ($row->fromArray($rowDatas, $params, $cms_language, $idsRelation, $infos)) {
+					$return &= true;
+					$infos .= 'Row '.$row->getLabel().' successfully imported'.$importType."\n";
+				} else {
+					$return = false;
+					$infos .= 'Error during import of row '.$rowDatas['id'].$importType."\n";
+				}
+			}
+		}
+		return $return;
+	}
+	
+	/**
+	  * Does a row exists with given parameters
+	  * this method is use by fromArray import method to know if an imported row already exist or not
+	  *
+	  * @param string $module The module codename to check
+	  * @param string $uuid The row uuid to check
+	  * @return mixed : integer id if exists, false otherwise
+	  * @access public
+	  */
+	function rowExists($module, $uuid) {
+		if (!$module) {
+			CMS_grandFather::raiseError("module must be set");
+			return false;
+		}
+		if (!$uuid) {
+			CMS_grandFather::raiseError("uuid must be set");
+			return false;
+		}
+		$q = new CMS_query("
+			select 
+				id_row
+			from 
+				mod_standard_rows 
+			where
+				uuid_row='".io::sanitizeSQLString($uuid)."'
+				and (modulesStack_row like '".io::sanitizeSQLString($module).";%'
+					or modulesStack_row = '".io::sanitizeSQLString($module)."'
+					or modulesStack_row like '%;".io::sanitizeSQLString($module)."'
+					or modulesStack_row like '%;".io::sanitizeSQLString($module).";%'
+				)
+		");
+		if ($q->getNumRows()) {
+			return $q->getValue('id_row');
+		}
+		return false;
+	}
+	
+	/**
+	  * Does given uuid already exists for rows
+	  *
+	  * @param string $uuid The uuid to check
+	  * @return boolean
+	  * @access public
+	  */
+	function uuidExists($uuid) {
+		if (!$uuid) {
+			CMS_grandFather::raiseError("uuid must be set");
+			return false;
+		}
+		$q = new CMS_query("
+			select 
+				id_row
+			from 
+				mod_standard_rows 
+			where
+				uuid_row='".io::sanitizeSQLString($uuid)."'
+		");
+		return $q->getNumRows() ? true : false;
+	}
 }
 ?>

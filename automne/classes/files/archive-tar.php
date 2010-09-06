@@ -165,6 +165,11 @@ class CMS_tar_file extends CMS_archive
 						if ($this->options['overwrite'] == 0 && file_exists($file['name'])) {
 							$this->raiseError("{$file['name']} already exists.");
 						} else
+							//check if destination dir exists
+							$dirname = dirname($file['name']);
+							if (!is_dir($dirname)) {
+								CMS_file::makeDir($dirname);
+							}
 							if ($new = @fopen($file['name'], "wb")) {
 								@fwrite($new, @fread($fp, $file['stat'][7]));
 								@fread($fp, (512 - $file['stat'][7] % 512) == 512 ? 0 : (512 - $file['stat'][7] % 512));

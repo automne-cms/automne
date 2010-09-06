@@ -141,31 +141,6 @@ if (APPLICATION_ENFORCES_ACCESS_CONTROL) {
 	}
 }
 
-//If all is good here and connection still ok, send file to client
-if (connection_status() == 0) {
-	//close session then clean buffer
-	session_write_close();
-    ob_end_clean();
-	//to prevent long file from getting cut off from max_execution_time
-    @set_time_limit(0);
-	//get mime filetype
-	$filetype = CMS_file::mimeContentType($scriptFilename);
-	$filetype = ($filetype) ? $filetype : 'application/octet-stream';
-	//send http headers
-	header("Cache-Control: ");// leave blank to avoid IE errors
-	header("Pragma: ");// leave blank to avoid IE errors
-	header('Content-Type: '.$filetype);
-	header('Content-Length: '.(string) filesize($scriptFilename));
-	header('Content-Disposition: inline; filename="'.$filename.'"');
-	//header('Content-Disposition: attachment; filename="'.$filename.'"');
-	//send file (fread seems to be faster here than fpassthru nor readfile)
-	if($file = fopen($scriptFilename, 'rb')){
-		while( (!feof($file)) && (connection_status()==0) ){
-			print(fread($file, 1024*8));
-			flush();
-		}
-		fclose($file);
-    }
-}
-exit;
+//send file to browser
+CMS_file::downloadFile($scriptFilename);
 ?>
