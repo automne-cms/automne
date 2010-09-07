@@ -161,10 +161,10 @@ class CMS_tar_file extends CMS_archive
 								@mkdir($file['name']);
 							}
 						}
-					} else
+					} else {
 						if ($this->options['overwrite'] == 0 && file_exists($file['name'])) {
 							$this->raiseError("{$file['name']} already exists.");
-						} else
+						} else {
 							//check if destination dir exists
 							$dirname = dirname($file['name']);
 							if (!is_dir($dirname)) {
@@ -186,6 +186,8 @@ class CMS_tar_file extends CMS_archive
 							} else {
 								$this->raiseError("Could not open {$file['name']} for writing.");
 							}
+						}
+					}
 				}
 				unset ($file);
 			}
