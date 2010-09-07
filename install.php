@@ -110,14 +110,14 @@ if (!isset($_GET['file'])) {
 				$content .= '<li class="atm-pic-ok">Multibyte String (mbsring) extension <strong style="color:green">OK</strong></li>';
 			}
 			//Doc Root
-			if (realpath($_SERVER["DOCUMENT_ROOT"]) != realpath(dirname(__FILE__))) {
-				$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, Automne must be installed in the server document root ('.realpath($_SERVER['DOCUMENT_ROOT']).')</li>';
+			/*if (realpath($_SERVER["DOCUMENT_ROOT"]) != realpath(dirname(__FILE__))) {
+				$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, Automne must be installed in the server document root ('.realpath(dirname(__FILE__)).')</li>';
 			} else {
 				$content .= '<li class="atm-pic-ok">Automne installed in the document root <strong style="color:green">OK</strong></li>';
-			}
+			}*/
 			//Files writing
-			if (!is_writable(realpath($_SERVER['DOCUMENT_ROOT']))) {
-				$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, No permissions to write files on website root directory ('.realpath($_SERVER['DOCUMENT_ROOT']).')</li>';
+			if (!is_writable(realpath(dirname(__FILE__)))) {
+				$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, No permissions to write files on website directory ('.realpath(dirname(__FILE__)).')</li>';
 			} else {
 				$content .= '<li class="atm-pic-ok">Website root filesystem permissions are <strong style="color:green">OK</strong></li>';
 			}
@@ -301,10 +301,10 @@ if (!isset($_GET['file'])) {
 			$step3_skip = 'Conserver la Base de Donn&eacute;es actuelle';
 			
 			//STEP 4
-			$error_step4_enter_url = 'Erreur, Vous devez saisir une URL ...';
-			$step4_title = 'URL du site web :';
-			$step4_enter_url = 'Entrez l\'URL du site web (la valeur par d&eacute;faut doit-&ecirc;tre correcte). Il s\'agit de l\'URL de la racine du site.<br />Si vous saisissez un nom de domaine, ce dernier doit exister. Vous pourrez modifier cela &agrave; tout moment dans l\'administration du site.';
-			$step4_url = 'URL * : http://';
+			$error_step4_enter_url = 'Erreur, Vous devez saisir une adresse ...';
+			$step4_title = 'Adresse du site web :';
+			$step4_enter_url = 'Entrez l\'adresse du site web (la valeur par d&eacute;faut doit-&ecirc;tre correcte).<br /><br />Il s\'agit de l\'adresse de la racine du site (sans sous r&eacute;pertoire).<br />Si vous saisissez un nom de domaine, ce dernier doit exister. Vous pourrez modifier cela &agrave; tout moment dans l\'administration du site.';
+			$step4_url = 'Adresse * : http://';
 			
 			//STEP 5
 			$error_step5_perms_files = 'Erreur, Vous devez entrer une valeur de permission pour les fichiers ...';
@@ -355,14 +355,15 @@ if (!isset($_GET['file'])) {
 			
 			//STEP9
 			$step9_title = 'Installation termin&eacute;e !';
-			$step9_alldone = '<strong>L\'installation d\'Automne est termin&eacute;e.</strong><br />
-			<br />Vous pouvez acc&eacute;der &agrave; l\'administration du site &agrave; cette adresse :<br />
-			<a href="/automne/admin/" target="_blank">%s/automne/admin/</a><br /><br />
+			$step9_alldone = '<h2>L\'installation d\'Automne est termin&eacute;e :</h2>
+			<fieldset>
+				<legend><strong>Vous pouvez acc&eacute;der &agrave; l\'administration du site &agrave; cette adresse</strong></legend>
+				<a href="%s/automne/admin/" target="_blank">%s/automne/admin/</a><br /><br />
+				L\'identifiant par d&eacute;faut est "<strong>root</strong>" et le mot de passe "<strong>automne</strong>".<br />
+				Pensez &agrave; changer rapidement le mot de passe dans le profil utilisateur !<br />
+			</fieldset>
 			<h2>Informations importantes :</h2>
-			L\'identifiant par d&eacute;faut est "<strong>root</strong>" et le mot de passe "<strong>automne</strong>".<br />
-			Pensez &agrave; changer rapidement le mot de passe dans le profil utilisateur !<br />
-			<br />
-			Si vous avez choisi l\'installation de la D&eacute;mo, la partie publique sera visible &agrave; l\'adresse <a href="/" target="_blank">%s</a> une fois que vous vous serez connect&eacute; une premi&egrave;re fois &agrave; l\'administration de votre site.<br />
+			Si vous avez choisi l\'installation de la D&eacute;mo, la partie publique sera visible &agrave; l\'adresse <a href="%s/" target="_blank">%s/</a> une fois que vous vous serez connect&eacute; une premi&egrave;re fois &agrave; l\'administration de votre site.<br />
 			<br />
 			Vous pouvez maintenant supprimer les fichiers ayant servi &agrave; cette installation :<br />%s
 			<span style="color:red;">Attention</span> : laisser ces fichiers sur un site en production repr&eacute;sente une faille importante de s&eacute;curit&eacute; pour votre site !<br />
@@ -376,7 +377,7 @@ if (!isset($_GET['file'])) {
 			<strong>Pour profiter des fonctionnalit&eacute;s de publication et d&eacute;publication automatique</strong>, planifiez l\'ex&eacute;cution du script /automne/classes/scripts/daily_routine.php toutes les nuits dans votre crontab (ou dans les taches planifi&eacute;es de windows).<br /><br />
 			<fieldset>
 			<legend>Exemple pour la crontab sur serveur Unix</legend>
-			0 0 * * * %s php '.$_SERVER['DOCUMENT_ROOT'].'/automne/classes/scripts/daily_routine.php<br /><br />
+			0 0 * * * %s php '.realpath(dirname(__FILE__).'/automne/classes/scripts/daily_routine.php').'<br /><br />
 			Cette ligne de configuration &agrave; ajouter dans la crontab de votre serveur vous permettra de lancer les t&acirc;ches de publication et de d&eacute;publication automatiques, tous les jours &agrave; minuit.
 			</fieldset>
 			<br />
@@ -524,15 +525,15 @@ if (!isset($_GET['file'])) {
 			//STEP9
 			$step9_title = 'Installation done!';
 			$step9_alldone = '
-			<strong>Automne installation is done.</strong><br />
-			<br />
-			You can access the website administration at:<br />
-			<a href="/automne/admin/" target="_blank">%s/automne/admin/</a><br /><br />
+			<h2>Automne installation is done.</h2>
+			<fieldset>
+				<legend><strong>You can access the website administration at:</strong></legend>
+				<a href="%s/automne/admin/" target="_blank">%s/automne/admin/</a><br /><br />
+				Default login is "<strong>root</strong>" and password is "<strong>automne</strong>".<br />
+				Please modify this password in the user profile!<br />
+			</fieldset>
 			<h2>Important informations:</h2>
-			Default login is "<strong>root</strong>" and password is "<strong>automne</strong>".<br />
-			Please modify this password in the user profile!<br />
-			<br />
-			If you chose to install the demo, the public site will be visible at the address <a href="/" target="_blank">%s</a> once you login once to the administration.<br />
+			If you chose to install the demo, the public site will be visible at the address <a href="%s/" target="_blank">%s/</a> once you login once to the administration.<br />
 			<br />
 			You can now delete the files used for this installation :<br />%s
 			<span style="color:red;">Warning</span>, leaving these files on a production site represents a major breach of security for your site!<br />
@@ -546,15 +547,14 @@ if (!isset($_GET['file'])) {
 			<strong>If you want to use automatic publish and unpublish features</strong>, schedule the script /automne/classes/scripts/daily_routine.php every nigths in your crontab (or in the windows scheduled task).<br /><br />
 			<fieldset>
 			<legend>Example on Unix server</legend>
-			0 0 * * * %s php '.$_SERVER['DOCUMENT_ROOT'].'/automne/classes/scripts/daily_routine.php<br /><br />
+			0 0 * * * %s php '.realpath(dirname(__FILE__).'/automne/classes/scripts/daily_routine.php').'<br /><br />
 			This configuration line to add to the crontab of your server will start the task of automatic publishing and unpublishing daily at midnight.
 			</fieldset>
 			<br />
 			You will find all necessary assistance for the use of the software on <a href="http://en.automne.ws" target="_blank">en.automne.ws</a> and <a href="http://man.automne.ws" target="_blank">man.automne.ws</a>.
 			Feel free to ask your questions in <a href="http://www.automne.ws/forum/" target="_blank">the forum</a>. <br /><br />
 			Thank you for using Automne!<br />
-			<br />
-			';
+			<br />';
 		break;
 	}
 	
@@ -576,15 +576,15 @@ if (!isset($_GET['file'])) {
 		//check for php compatibility
 		if (version_compare(phpversion(), "5.2.0") !== -1) {
 			//check for document root writing
-			if (!is_writable(realpath($_SERVER['DOCUMENT_ROOT']))) {
-				$error .= sprintf($error_stepCheck_dir_not_writable_error, realpath($_SERVER['DOCUMENT_ROOT'])).'<br /><br />';
+			if (!is_writable(realpath(dirname(__FILE__)))) {
+				$error .= sprintf($error_stepCheck_dir_not_writable_error, realpath(dirname(__FILE__))).'<br /><br />';
 				$stopInstallation = true;
 			}
 			//check for docroot
-			if (realpath($_SERVER["DOCUMENT_ROOT"]) != realpath(dirname(__FILE__))) {
-				$error .= sprintf($error_docroot, realpath($_SERVER['DOCUMENT_ROOT'])).'<br /><br />';
+			/*if (realpath($_SERVER["DOCUMENT_ROOT"]) != realpath(dirname(__FILE__))) {
+				$error .= sprintf($error_docroot, realpath(dirname(__FILE__))).'<br /><br />';
 				$stopInstallation = true;
-			}
+			}*/
 			//check for GD
 			if (!function_exists("imagecopyresampled")) {
 				$error .= $error_stepCheck_gd_error.'<br /><br />';
@@ -679,7 +679,8 @@ if (!isset($_GET['file'])) {
 	
 	if ($step == 1) {
 		//read current dir and search archive (.tar.gz or .tgz file)
-		$directory = dir($_SERVER['DOCUMENT_ROOT']);
+		$directory = dir(realpath(dirname(__FILE__)));
+		
 		$archiveFound=false;
 		while (false !== ($file = $directory->read())) {
 			if ($file!='.' && $file!='..') {
@@ -699,15 +700,15 @@ if (!isset($_GET['file'])) {
 		if ($cms_action == 'extract') {
 			//to avoid error on server with lots of PHP extensions, extend memory limit during this step
 			@ini_set('memory_limit', '32M');
-			$archive = new CMS_gzip_file_install($_SERVER['DOCUMENT_ROOT']."/".$archiveFile);
+			$archive = new CMS_gzip_file_install(dirname(__FILE__)."/".$archiveFile);
 			$error='';
 			
 			if (!$archive->hasError()) {
-				$archive->set_options(array('basedir'=>$_SERVER['DOCUMENT_ROOT']."/", 'overwrite'=>1, 'level'=>1, 'dontUseFilePerms'=>1, 'forceWriting'=>1));
-				if (is_dir($_SERVER['DOCUMENT_ROOT']))  {
+				$archive->set_options(array('basedir'=>dirname(__FILE__)."/", 'overwrite'=>1, 'level'=>1, 'dontUseFilePerms'=>1, 'forceWriting'=>1));
+				if (is_dir(dirname(__FILE__)))  {
 					if (method_exists($archive, 'extract_files')) {
 						$extractArchive = true;
-						$content .= sprintf($step1_extraction_to,$archiveFile,$_SERVER['DOCUMENT_ROOT']).' ...<br /><br />';
+						$content .= sprintf($step1_extraction_to,$archiveFile,dirname(__FILE__)).' ...<br /><br />';
 					}
 				} else {
 					$error .= $error_step1_directory_not_exists.'<br />';
@@ -722,8 +723,8 @@ if (!isset($_GET['file'])) {
 				$content .= '<span class="error">'.$error.'</span><br />';
 			}
 			$htaccess = '';
-			if (file_exists($_SERVER['DOCUMENT_ROOT'].'/.htaccess')) {
-				$htaccess = file_get_contents($_SERVER['DOCUMENT_ROOT'].'/.htaccess');
+			if (file_exists(dirname(__FILE__).'/.htaccess')) {
+				$htaccess = file_get_contents(dirname(__FILE__).'/.htaccess');
 				$content .= $step1_htaccess_exists;
 			} else {
 				$content .= $step1_htaccess_not_exists;
@@ -767,8 +768,8 @@ if (!isset($_GET['file'])) {
 			$title ='<h1>'.$stepGPL_title.'</h1>';
 			$content .= '
 			'.$stepGPL_explanation.'<br /><br />';
-			if (@file_exists($_SERVER['DOCUMENT_ROOT'].'/automne/LICENSE-GPL')) {
-				$content .= '<div class="license"><pre>'.file_get_contents($_SERVER['DOCUMENT_ROOT'].'/automne/LICENSE-GPL').'</pre></div><br /><br />';
+			if (@file_exists(dirname(__FILE__).'/automne/LICENSE-GPL')) {
+				$content .= '<div class="license"><pre>'.file_get_contents(dirname(__FILE__).'/automne/LICENSE-GPL').'</pre></div><br /><br />';
 			} else {
 				$content .= $stepGPL_licenseNotFound.'<br /><br />';
 			}
@@ -791,18 +792,18 @@ if (!isset($_GET['file'])) {
 	// +----------------------------------------------------------------------+
 	
 	//Load all Automne classes
-	if (file_exists($_SERVER['DOCUMENT_ROOT'].'/cms_rc_frontend.php')) {
+	if (file_exists(dirname(__FILE__).'/cms_rc_frontend.php')) {
 		//Remove session if exists
 		@session_name('AutomneSession');
 		@session_start();
 		@session_destroy();
-		require_once($_SERVER['DOCUMENT_ROOT'].'/cms_rc_frontend.php');
+		require_once(dirname(__FILE__).'/cms_rc_frontend.php');
 		//if file config.php exists then go to next step
-		if ($step == 2 && file_exists($_SERVER['DOCUMENT_ROOT'].'/config.php')) {
+		if ($step == 2 && file_exists(dirname(__FILE__).'/config.php')) {
 			$step = 3;
 		}
 	} elseif ($step != 'check' && $step != 'gpl' && $step > 1) {
-		die(sprintf($error_step2_no_cms_rc_admin,$_SERVER['DOCUMENT_ROOT']));
+		die(sprintf($error_step2_no_cms_rc_admin,dirname(__FILE__)));
 	}
 	
 	//create config.php
@@ -873,8 +874,9 @@ if (!isset($_GET['file'])) {
 			';
 		} else {
 			//create config file with valid DB infos
-			$configFile = new CMS_file($_SERVER['DOCUMENT_ROOT']."/config.php");
-			$configFile->setContent('<?php
+			$configFile = new CMS_file(dirname(__FILE__)."/config.php");
+			
+			$configContent = '<?php
 /**
   * AUTOMNE CONFIGURATION FILE
   * This file is generated by Automne installation process (install.php file).
@@ -891,10 +893,15 @@ define("APPLICATION_DB_HOST", "'.$_POST["dbhost"].'");
 define("APPLICATION_DB_NAME", "'.$_POST["dbname"].'");
 define("APPLICATION_DB_USER", "'.$_POST["dbuser"].'");
 define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
-
-//To use Google Map, uncomment and add your Google map Key
-//define("GOOGLE_MAPS_KEY", \'YOUR_GGOGLE_MAP_KEY_HERE\');
-?>');
+';
+if (realpath($_SERVER["DOCUMENT_ROOT"]) != realpath(dirname(__FILE__))) {
+	//append path info if needed
+	$configContent .= 'define("PATH_REALROOT_WR", \''.pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME).'\');';
+}
+$configContent .= '
+?>';
+			
+			$configFile->setContent($configContent);
 			$configFile->writeToPersistence();
 			
 			//reload page (to include config.php file) and go to next step
@@ -959,10 +966,10 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 				<input type="hidden" name="step" value="3" />
 				<input type="hidden" name="cms_action" value="dbscripts" />
 				<input type="hidden" name="install_language" value="'.$install_language.'" />';
-				if (file_exists($_SERVER['DOCUMENT_ROOT'].'/'.$demoEn)) {
+				if (file_exists(dirname(__FILE__).'/'.$demoEn)) {
 					$content .= '<label for="demoen"><input id="demoen" type="radio" name="installationType" value="demoen" /> '.$step3_demo_EN.'</label><br />';
 				}
-				if (file_exists($_SERVER['DOCUMENT_ROOT'].'/'.$demoFr)) {
+				if (file_exists(dirname(__FILE__).'/'.$demoFr)) {
 					$content .= '<label for="demofr"><input id="demofr" type="radio" name="installationType" value="demofr" /> '.$step3_demo_FR.'</label><br />';
 				}
 				$content .= '
@@ -980,19 +987,19 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 			switch ($_POST['installationType']) {
 				case 'demoen':
 					$error = '';
-					if (!patch($_SERVER['DOCUMENT_ROOT'].'/'.$demoEn, $error)) {
+					if (!patch(dirname(__FILE__).'/'.$demoEn, $error)) {
 						die(sprintf($error_step3_Demo_script, $error));
 					}
 				break;
 				case 'demofr':
 					$error = '';
-					if (!patch($_SERVER['DOCUMENT_ROOT'].'/'.$demoFr, $error)) {
+					if (!patch(dirname(__FILE__).'/'.$demoFr, $error)) {
 						die(sprintf($error_step3_Demo_script, $error));
 					}
 				break;
 				case 'clean':
 					//Import DB structure
-					$structureScript = $_SERVER['DOCUMENT_ROOT']."/sql/automne4.sql";
+					$structureScript = dirname(__FILE__)."/sql/automne4.sql";
 					if (file_exists($structureScript) && CMS_patch::executeSqlScript($structureScript, true)) {
 						CMS_patch::executeSqlScript($structureScript);
 					} else {
@@ -1006,7 +1013,7 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 			
 			//Import DB messages
 			//get all SQL files of the message dir
-			$files = glob($_SERVER['DOCUMENT_ROOT']."/sql/messages/*/*.sql", GLOB_NOSORT);
+			$files = glob(dirname(__FILE__)."/sql/messages/*/*.sql", GLOB_NOSORT);
 			if (is_array($files)) {
 				foreach($files as $file) {
 					if (file_exists($file) && CMS_patch::executeSqlScript($file, true)) {
@@ -1016,7 +1023,7 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 					}
 				}
 			} else {
-				die(sprintf($error_step3_SQL_script, $_SERVER['DOCUMENT_ROOT']."/sql/messages/*/*.sql"));
+				die(sprintf($error_step3_SQL_script, dirname(__FILE__)."/sql/messages/*/*.sql"));
 			}
 			//go to next step
 			$step = 4;
@@ -1095,7 +1102,7 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 			} else {
 				if ($_POST["fileChmod"] != FILES_CHMOD) {
 					//add file chmod value to config.php file
-					$configFile = new CMS_file($_SERVER['DOCUMENT_ROOT']."/config.php");
+					$configFile = new CMS_file(dirname(__FILE__)."/config.php");
 					$configFileContent = $configFile->readContent("array","rtrim");
 					$skip = false;
 					foreach ($configFileContent as $lineNb => $aLineOfConfigFile) {
@@ -1117,7 +1124,7 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 			} else {
 				if ($_POST["dirChmod"] != DIRS_CHMOD) {
 					//add directory chmod value to config.php file
-					$configFile = new CMS_file($_SERVER['DOCUMENT_ROOT']."/config.php");
+					$configFile = new CMS_file(dirname(__FILE__)."/config.php");
 					$configFileContent = $configFile->readContent("array","rtrim");
 					$skip = false;
 					foreach ($configFileContent as $lineNb => $aLineOfConfigFile) {
@@ -1138,16 +1145,16 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 		
 		if (($error || $cms_action != "chmodConstants") && function_exists("chmod")) {
 			//Check file creation with default permissions
-			@touch($_SERVER['DOCUMENT_ROOT'].'/testfile.php');
-			$stat = @stat($_SERVER['DOCUMENT_ROOT'].'/testfile.php');
+			@touch(dirname(__FILE__).'/testfile.php');
+			$stat = @stat(dirname(__FILE__).'/testfile.php');
 			$fileChmod = substr(decoct($stat['mode']),-4,4);
-			@unlink($_SERVER['DOCUMENT_ROOT'].'/testfile.php');
+			@unlink(dirname(__FILE__).'/testfile.php');
 			
 			//Check directory creation with default permissions
-			@mkdir($_SERVER['DOCUMENT_ROOT'].'/testdir');
-			$stat = @stat($_SERVER['DOCUMENT_ROOT'].'/testdir');
+			@mkdir(dirname(__FILE__).'/testdir');
+			$stat = @stat(dirname(__FILE__).'/testdir');
 			$dirChmod = substr(decoct($stat['mode']),-4,4);
-			@rmdir($_SERVER['DOCUMENT_ROOT'].'/testdir');
+			@rmdir(dirname(__FILE__).'/testdir');
 			
 			$title = '<h1>'.$step5_title.'</h1>';
 			if ($error) {
@@ -1267,7 +1274,7 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 				$cliPath = $_POST["cliPath"];
 				//test for CLI proveded
 				if (APPLICATION_IS_WINDOWS) {
-					$return = CMS_patch::executeCommand($cliPath.' -v',$error);
+					$return = CMS_patch::executeCommand('"'.$cliPath.'" -v',$error);
 				} else {
 					$return = CMS_patch::executeCommand(escapeshellcmd($cliPath).' -v',$error);
 				}
@@ -1281,7 +1288,7 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 					} else {
 						if (APPLICATION_IS_WINDOWS) {
 							//add CLI path to config.php file
-							$configFile = new CMS_file($_SERVER['DOCUMENT_ROOT']."/config.php");
+							$configFile = new CMS_file(dirname(__FILE__)."/config.php");
 							$configFileContent = $configFile->readContent("array","rtrim");
 							$skip = false;
 							foreach ($configFileContent as $lineNb => $aLineOfConfigFile) {
@@ -1298,7 +1305,7 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 							$configFile->writeToPersistence();
 						} else {
 							//add CLI path to config.php file
-							$configFile = new CMS_file($_SERVER['DOCUMENT_ROOT']."/config.php");
+							$configFile = new CMS_file(dirname(__FILE__)."/config.php");
 							$configFileContent = $configFile->readContent("array","rtrim");
 							$skip = false;
 							foreach ($configFileContent as $lineNb => $aLineOfConfigFile) {
@@ -1336,7 +1343,7 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 				$tmpPathOK = realpath($tmpPathOK);
 				if ($tmpPathOK) {
 					//add tmp path to config.php file
-					$configFile = new CMS_file($_SERVER['DOCUMENT_ROOT']."/config.php");
+					$configFile = new CMS_file(dirname(__FILE__)."/config.php");
 					$configFileContent = $configFile->readContent("array","rtrim");
 					$skip = false;
 					foreach ($configFileContent as $lineNb => $aLineOfConfigFile) {
@@ -1391,7 +1398,7 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 				if (@is_dir(PATH_TMP_FS) && is_writable(PATH_TMP_FS)) {
 					$tmpPath = realpath(PATH_TMP_FS);
 					//add tmp path to config.php file
-					$configFile = new CMS_file($_SERVER['DOCUMENT_ROOT']."/config.php");
+					$configFile = new CMS_file(dirname(__FILE__)."/config.php");
 					$configFileContent = $configFile->readContent("array","rtrim");
 					$skip = false;
 					foreach ($configFileContent as $lineNb => $aLineOfConfigFile) {
@@ -1536,8 +1543,8 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 			$q = new CMS_query($sql);
 			
 			//CHMOD index.php and config.php with new values
-			@chmod($_SERVER['DOCUMENT_ROOT'].'/index.php', octdec(FILES_CHMOD));
-			@chmod($_SERVER['DOCUMENT_ROOT'].'/config.php', octdec(FILES_CHMOD));
+			@chmod(dirname(__FILE__).'/index.php', octdec(FILES_CHMOD));
+			@chmod(dirname(__FILE__).'/config.php', octdec(FILES_CHMOD));
 			
 			//force regeneration of first page to avoid any error
 			$rootPage = CMS_tree::getPageByID(1);
@@ -1618,7 +1625,7 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 		//create archives listing to inform user which file to delete
 		$archives = array();
 		$archiveFound = false;
-		$directory = dir($_SERVER['DOCUMENT_ROOT']);
+		$directory = dir(dirname(__FILE__));
 		while (false !== ($file = $directory->read())) {
 			if ($file!='.' && $file!='..') {
 				if ((strpos($file, '.tar.gz')!==false || strpos($file, '.tgz')!==false) && strpos($file, 'automne')!==false) {
@@ -1631,10 +1638,10 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 		if ($archiveFound) {
 			$archives[] = $archiveFile;
 		}
-		if (file_exists($_SERVER['DOCUMENT_ROOT'].'/'.$demoFr)) {
+		if (file_exists(dirname(__FILE__).'/'.$demoFr)) {
 			$archives[] = $demoFr;
 		}
-		if (file_exists($_SERVER['DOCUMENT_ROOT'].'/'.$demoEn)) {
+		if (file_exists(dirname(__FILE__).'/'.$demoEn)) {
 			$archives[] = $demoEn;
 		}
 		$archivesNames = '<ul>';
@@ -1642,7 +1649,8 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 			$archivesNames .= '<li>'.$archive.'</li>';
 		}
 		$archivesNames .= '</ul>';
-		$content .= sprintf($step9_alldone,CMS_websitesCatalog::getMainURL(),CMS_websitesCatalog::getMainURL(), $archivesNames, $uname);
+		$mainURL = CMS_websitesCatalog::getMainURL().PATH_REALROOT_WR;
+		$content .= sprintf($step9_alldone, $mainURL, $mainURL, $mainURL, $mainURL, $archivesNames, $uname);
 	}
 	
 	// +----------------------------------------------------------------------+
@@ -1863,12 +1871,12 @@ define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
 		if (!$archive->hasError()) {
 			$content .= $step1_extraction_ok.'<br />';
 			//remove file config.php if exists in archive : install process will create a new one
-			if (file_exists($_SERVER['DOCUMENT_ROOT'].'/config.php')) {
-				@unlink($_SERVER['DOCUMENT_ROOT'].'/config.php');
+			if (file_exists(dirname(__FILE__).'/config.php')) {
+				@unlink(dirname(__FILE__).'/config.php');
 			}
 			//append .htaccess content if any
-			if (isset($_POST['htaccess']) && file_exists($_SERVER['DOCUMENT_ROOT'].'/.htaccess')) {
-				file_put_contents($_SERVER['DOCUMENT_ROOT'].'/.htaccess', "\n\n".$_POST['htaccess'], FILE_APPEND);
+			if (isset($_POST['htaccess']) && file_exists(dirname(__FILE__).'/.htaccess')) {
+				file_put_contents(dirname(__FILE__).'/.htaccess', "\n\n".$_POST['htaccess'], FILE_APPEND);
 			}
 		} else {
 			$error .= sprintf($step1_extraction_error,$archiveFile).'<br />';
