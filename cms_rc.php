@@ -33,7 +33,7 @@ if (!defined('APPLICATION_USER_TYPE')) {
 //include general configuration file
 if (@file_exists(dirname(__FILE__)."/config.php")) {
 	@include_once(dirname(__FILE__)."/config.php");
-} elseif(!isset($_SERVER['SCRIPT_NAME']) || $_SERVER['SCRIPT_NAME'] != '/install.php') {
+} elseif(!isset($_SERVER['SCRIPT_NAME']) || pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME) != 'install.php') {
 	die('Cannot find config.php file, please run Automne installation again ...');
 }
 
@@ -1339,7 +1339,9 @@ function start_atm_session() {
 }
 
 //Start session
-start_atm_session();
+if (APPLICATION_CONFIG_LOADED) {
+	start_atm_session();
+}
 
 // Start output buffering for compression so we don't prevent
 // headers from being sent if there's a blank line in an included file
