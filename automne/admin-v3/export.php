@@ -77,7 +77,7 @@ if (!$export->hasExport()) {
 $format = io::post('format', array('xml', 'php', 'patch'), 'patch');
 $options = io::post('options', 'is_array', (!io::post('action') ? $export->getDefaultParameters() : array()));
 
-$content = '<form action="'.$_SERVER['SCRIPT_NAME'].'" method="post">
+$content = '<form action="'.$_SERVER['SCRIPT_NAME'].'#exportDatas" method="post">
 				<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
 				<input type="hidden" name="action" value="export" />
 				<fieldset>
@@ -104,12 +104,19 @@ $content = '<form action="'.$_SERVER['SCRIPT_NAME'].'" method="post">
 							'.$label.'
 						</label><br />';
 					}
-$content .= '	</fieldset><br /><br />
+$content .= '	</fieldset>
+				<fieldset>
+					<legend>Inclure une description</legend>
+					<textarea style="width:100%;height:150px;" name="desc">'.io::htmlspecialchars(io::post('desc')).'</textarea>
+				</fieldset><br /><br />
 				<input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_EXPORT_MODULE).'" />
 			</form>';
 
 switch (io::post('action')) {
 	case 'export':
+		if (io::post('desc')) {
+			$options['description'] = io::post('desc');
+		}
 		//set export parameters
 		$export->setParameters($options);
 		//export datas
@@ -118,7 +125,7 @@ switch (io::post('action')) {
 		switch ($format) {
 			case 'php':
 				$content .= '
-				<br />
+				<br /><a name="exportDatas"></a>
 				<fieldset>
 					<legend>'.$cms_language->getMessage(MESSAGE_PAGE_EXPORTED_DATAS).'</legend>
 					<textarea style="width:100%;height:300px;">'.var_export($exportDatas, true).'</textarea>
@@ -126,7 +133,7 @@ switch (io::post('action')) {
 			break;
 			case 'xml':
 				$content .= '
-				<br />
+				<br /><a name="exportDatas"></a>
 				<fieldset>
 					<legend>'.$cms_language->getMessage(MESSAGE_PAGE_EXPORTED_DATAS).'</legend>
 					<textarea style="width:100%;height:300px;">'.$exportDatas.'</textarea>

@@ -185,7 +185,14 @@ class CMS_module_import extends CMS_grandFather
 			$infos .= 'Error: Automne version below the version of imported datas'."\n";
 			return false;
 		}
-		
+		//return import description if exists
+		if (isset($importedArray['description']) && $importedArray['description']) {
+			$infos .= '--------------------------------------------------------------------------------------------------------'."\n";
+			$infos .= 'Import description: '."\n";
+			$infos .= io::htmlspecialchars($importedArray['description'])."\n";
+			$infos .= '--------------------------------------------------------------------------------------------------------'."\n";
+			unset($importedArray['description']);
+		}
 		foreach ($importedArray as $type => $data) {
 			switch ($type) {
 				case 'modules':
@@ -200,6 +207,7 @@ class CMS_module_import extends CMS_grandFather
 				break;
 				default:
 					$infos .= 'Error: Unknown data type to import : '.$type."\n";
+					$return &= false;
 				break;
 			}
 		}
