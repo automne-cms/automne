@@ -94,11 +94,11 @@ $content .= '	</fieldset><br />
 						<input type="radio" name="format" value="php"'.($format == 'php' ? ' checked="checked"' : '').' />
 						'.$cms_language->getMessage(MESSAGE_PAGE_EXPORT_PHP_FORMAT).'
 					</label><br /><br />
-					<textarea style="width:100%;height:300px;" name="import">'.io::htmlspecialchars(io::post('import')).'</textarea><br /><br />
 					<fieldset>
-					<legend>'.$cms_language->getMessage(MESSAGE_PAGE_MODULE_TECH_NOTES).'</legend>
+						<legend>'.$cms_language->getMessage(MESSAGE_PAGE_MODULE_TECH_NOTES).'</legend>
 						'.$cms_language->getMessage(MESSAGE_PAGE_MODULE_TECH_NOTES_DESC, array(PATH_TMP_WR, PATH_TMP_WR)).'
 					</fieldset><br />
+					<textarea style="width:100%;height:300px;" name="import">'.io::htmlspecialchars(io::post('import')).'</textarea><br /><br />
 				</fieldset>
 				<br />
 				<br />

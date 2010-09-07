@@ -190,8 +190,9 @@ class CMS_module_export extends CMS_grandFather
 				}
 				//create export datas
 				$aExport = array(
-					'version'=> AUTOMNE_VERSION,
-					'modules' => array($aModule),
+					'version'		=> AUTOMNE_VERSION,
+					'description'	=> isset($this->_parameters['description']) ? $this->_parameters['description'] : '',
+					'modules'		=> array($aModule),
 				);
 			}
 			$return = '';
