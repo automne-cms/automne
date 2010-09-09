@@ -197,6 +197,17 @@ class CMS_poly_object_definition extends CMS_grandFather
 	}
 	
 	/**
+	  * Sets a object uuid.
+	  *
+	  * @param string $uuid the object UUID
+	  * @return void
+	  * @access public
+	  */
+	function setUuid($uuid) {
+		$this->_objectValues['uuid'] = $uuid;
+	}
+	
+	/**
 	  * Compile the indexURL definition
 	  *
 	  * @return boolean true on success, false on failure

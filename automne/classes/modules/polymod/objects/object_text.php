@@ -489,6 +489,25 @@ class CMS_object_text extends CMS_object_common
 				$where";
 		return $sql;
 	}
+	
+	/**
+	  * treat all params then return array of values treated or false if error
+	  *
+	  * @param array $post the posted datas
+	  * @param string $prefix the prefix for datas name
+	  * @return array, the treated datas
+	  * @access public
+	  */
+	function treatParams($post, $prefix) {
+		$parameters = $this->getSubFieldParameters();
+		$treatedParams = array();
+		foreach($parameters as $aParameter) {
+			//string|boolean|integer|date|text
+			$postedParamValue = isset($post[$prefix.$aParameter['internalName']]) ? $post[$prefix.$aParameter['internalName']] : null;
+			$params[$aParameter['internalName']] = $postedParamValue;
+		}
+		return $params;
+	}
 }
 
 ?>

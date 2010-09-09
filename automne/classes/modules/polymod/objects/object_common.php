@@ -944,7 +944,13 @@ abstract class CMS_object_common extends CMS_grandFather
 
 		return $sql;
 	}
-
+	
+	/**
+	  * Get field parameters as an array structure used for export
+	  *
+	  * @return array : the object array structure
+	  * @access public
+	  */
 	public function asArray()
 	{
 		$aParameters = array();

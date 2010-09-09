@@ -401,7 +401,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	}
 	
 	/**
-	  * Get object as an array structure used for export
+	  * Get object field as an array structure used for export
 	  *
 	  * @param array $params The export parameters. Not used here
 	  * @param array $files The reference to the founded files used by object
@@ -513,13 +513,17 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 		//parameters
 		if (!io::isPositiveInteger($data['type'])) {
 			$fieldObject = $this->getTypeObject();
-			$params = $fieldObject->treatParams($data['params']['params'], '');
-			if ($params) {
-				$this->setValue("params", $params);
-			} else {
-				$infos .= 'Error : missing or invalid parameters for field importation ...'."\n";
-				return false;
+			$GLOBALS['moduleCodename'] = $params['module'];
+			if (isset($data['params']['params']) && $data['params']['params']) {
+				$params = $fieldObject->treatParams($data['params']['params'], '');
+				if ($params) {
+					$this->setValue("params", $params);
+				} else {
+					$infos .= 'Error : missing or invalid parameters for field importation ...'."\n";
+					return false;
+				}
 			}
+			
 		}
 		//write field
 		if (!$this->writeToPersistence()) {
