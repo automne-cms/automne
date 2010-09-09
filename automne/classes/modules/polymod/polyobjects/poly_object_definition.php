@@ -546,6 +546,9 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  */
 	function writeToPersistence()
 	{
+		if (!$this->_objectValues["uuid"]) {
+			$this->_objectValues["uuid"] = io::uuid();
+		}
 		//save data
 		$sql_fields = "
 			resource_usage_mod='".SensitiveIO::sanitizeSQLString($this->_objectValues["resourceUsage"])."',
@@ -559,7 +562,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 			indexURL_mod='".SensitiveIO::sanitizeSQLString($this->_objectValues["indexURL"])."',
 			compiledIndexURL_mod='".SensitiveIO::sanitizeSQLString($this->_objectValues["compiledIndexURL"])."',
 			resultsDefinition_mod='".SensitiveIO::sanitizeSQLString($this->_objectValues["resultsDefinition"])."',
-			uuid_mod='".SensitiveIO::sanitizeSQLString($this->_objectValues["uuid"] ? $this->_objectValues["uuid"] : io::uuid())."'
+			uuid_mod='".SensitiveIO::sanitizeSQLString($this->_objectValues["uuid"])."'
 		";
 		if ($this->_ID) {
 			$sql = "

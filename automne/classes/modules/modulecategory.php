@@ -680,6 +680,9 @@ class CMS_moduleCategory extends CMS_grandFather {
 	  * @access public
 	  */
 	function writeToPersistence() {
+		if (!$this->_uuid) {
+			$this->_uuid = io::uuid();
+		}
 		// Prepare SQL
 		$sql_fields = "
 			module_mca='".SensitiveIO::sanitizeSQLString($this->_moduleCodename)."',
@@ -687,7 +690,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 			parent_mca='".SensitiveIO::sanitizeSQLString($this->_parentID)."',
 			order_mca='".SensitiveIO::sanitizeSQLString($this->_order)."',
 			icon_mca='".SensitiveIO::sanitizeSQLString($this->_icon)."',
-			uuid_mca='".SensitiveIO::sanitizeSQLString($this->_uuid ? $this->_uuid : io::uuid())."'";
+			uuid_mca='".SensitiveIO::sanitizeSQLString($this->_uuid)."'";
 		// Finish SQL
 		if ($this->_categoryID) {
 			$sql = "

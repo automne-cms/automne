@@ -802,6 +802,9 @@ class CMS_row extends CMS_grandFather
 	  */
 	function writeToPersistence()
 	{
+		if (!$this->_uuid) {
+			$this->_uuid = io::uuid();
+		}
 		$sql_fields = "
 			label_row='".SensitiveIO::sanitizeSQLString($this->_label)."',
 			definitionFile_row='".SensitiveIO::sanitizeSQLString($this->_definitionFile)."',
@@ -811,7 +814,7 @@ class CMS_row extends CMS_grandFather
 			description_row='".SensitiveIO::sanitizeSQLString($this->_description)."',
 			tplfilter_row='".SensitiveIO::sanitizeSQLString(implode(';',$this->_tplfilter))."',
 			image_row='".SensitiveIO::sanitizeSQLString($this->_image)."',
-			uuid_row='".SensitiveIO::sanitizeSQLString($this->_uuid ? $this->_uuid : io::uuid())."'
+			uuid_row='".SensitiveIO::sanitizeSQLString($this->_uuid)."'
 		";
 
 		if ($this->_id) {
@@ -885,7 +888,6 @@ class CMS_row extends CMS_grandFather
 			'type'			=> $cms_language->getMessage(self::MESSAGE_DESC_ROW_TEMPLATE),
 			'image'			=> $this->getImage(),
 			'groups'		=> implode(', ', $this->getGroups()),
-			/*'description'	=> $this->getDescription(),*/
 			'filter'		=> $this->getLabel().' '.implode(', ', $this->getGroups()),
 			'tplfilter'		=> implode(',', $this->getFilteredTemplates()),
 			'description'	=> 	'<div'.(!$this->isUseable() ? ' class="atm-inactive"' : '').'>'.
@@ -921,7 +923,7 @@ class CMS_row extends CMS_grandFather
 			'id'			=> $this->getID(),
 			'uuid'			=> $this->_uuid,
 			'label'			=> $this->_label,
-			'definition'	=> PATH_TEMPLATES_ROWS_WR.'/'.$this->getDefinitionFileName(),
+			'definition'	=> $this->getDefinition(),
 			'module'		=> $this->_modules->getTextDefinition(),
 			'groups'		=> $this->_groups->getTextDefinition(),
 			'useable'		=> $this->_useable,
@@ -932,9 +934,6 @@ class CMS_row extends CMS_grandFather
 			if (!in_array($image, $files)) {
 				$files[] = $image;
 			}
-		}
-		if ($this->getDefinitionFileName()) {
-			$files[] = PATH_TEMPLATES_ROWS_WR.'/'.$this->getDefinitionFileName();
 		}
 		return $aRow;
 	}
@@ -1011,19 +1010,12 @@ class CMS_row extends CMS_grandFather
 		}
 		//definition & module
 		if (!isset($params['files']) || $params['files'] == true) {
-			if (isset($data['definition'])) {
-				$definitionFile = $data['definition'];
-				if ($definitionFile && file_exists(PATH_TMP_FS.$definitionFile)) {
-					if (!$this->getDefinitionFileName() || !isset($params['updateRows']) || $params['updateRows'] == true) {
-						$definition = new CMS_file(PATH_TMP_FS.$definitionFile);
-						//set definition from imported file
-						if (!$this->setDefinition($definition->getContent())) {
-							$infos .= 'Error : cannot set row definition ...'."\n";
-							return false;
-						} else {
-							//remove used file
-							$definition->delete();
-						}
+			if (isset($data['definition']) && $data['definition']) {
+				if (!isset($params['updateRows']) || $params['updateRows'] == true) {
+					//set definition
+					if (!$this->setDefinition($data['definition'])) {
+						$infos .= 'Error : cannot set row definition ...'."\n";
+						return false;
 					}
 				}
 			}

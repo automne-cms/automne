@@ -253,6 +253,9 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 	  */
 	function writeToPersistence()
 	{
+		if (!$this->_objectValues["uuid"]) {
+			$this->_objectValues["uuid"] = io::uuid();
+		}
 		//save data
 		$sql_fields = "
 			object_id_mord='".SensitiveIO::sanitizeSQLString($this->_objectValues["objectID"])."',
