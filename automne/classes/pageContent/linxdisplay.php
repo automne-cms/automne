@@ -274,7 +274,10 @@ class CMS_linxDisplay extends CMS_grandFather
 							$pagehtml = str_replace(array_keys($replace), $replace, $pagehtml);
 						} else {
 							//if it is 'close' mode recurse only for pages in current lineage
-							$recurse = (in_array($page->getID(),$lineage)) ? true : false;
+							$recurse = false;
+							if (is_array($lineage)) {
+								$recurse = (in_array($page->getID(),$lineage)) ? true : false;
+							}
 							//then mark info of sublevels or not and if level is open or not
 							$sub = ($recurse) ? "CMS_open" : "CMS_sub";
 							$replace = array(

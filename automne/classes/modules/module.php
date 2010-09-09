@@ -1094,7 +1094,13 @@ class CMS_module extends CMS_grandFather
 		);
 		$defaultLanguage = CMS_languagesCatalog::getDefaultLanguage();
 		if (!isset($params['categories']) || $params['categories'] == true) {
-			$categories = $this->getModuleCategories(array('language' => $defaultLanguage, 'root' => 0));
+			global $cms_user;
+			if (APPLICATION_ENFORCES_ACCESS_CONTROL != false
+				&& isset($cms_user)) {
+				$categories = $this->getModuleCategories(array('language' => $defaultLanguage, 'root' => 0, 'cms_user' => $cms_user));
+			} else {
+				$categories = $this->getModuleCategories(array('language' => $defaultLanguage, 'root' => 0));
+			}
 			foreach ($categories as $category) {
 				$aModule['categories'][] = $category->asArray($params, $files);
 			}
