@@ -33,8 +33,11 @@ if (!defined('APPLICATION_USER_TYPE')) {
 //include general configuration file
 if (@file_exists(dirname(__FILE__)."/config.php")) {
 	@include_once(dirname(__FILE__)."/config.php");
+	define('APPLICATION_CONFIG_LOADED', true);
 } elseif(!isset($_SERVER['SCRIPT_NAME']) || pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME) != 'install.php') {
 	die('Cannot find config.php file, please run Automne installation again ...');
+} else {
+	define('APPLICATION_CONFIG_LOADED', false);
 }
 
 //check PHP version requirement

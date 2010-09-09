@@ -575,6 +575,37 @@ class CMS_object_date extends CMS_object_common
 	}
 	
 	/**
+	  * Get field order SQL request (used by class CMS_object_search)
+	  *
+	  * @param integer $fieldID : this field id in object (aka $this->_field->getID())
+	  * @param mixed $direction : the direction to search (asc/desc)
+	  * @param string $operator : additionnal search operator
+	  * @param string $where : where clauses to add to SQL
+	  * @param boolean $public : values are public or edited ? (default is edited)
+	  * @return string : the SQL request
+	  * @access public
+	  */
+	function getFieldOrderSQL($fieldID, $direction, $operator, $where, $public = false) {
+		$statusSuffix = ($public) ? "_public":"_edited";
+		$supportedOperator = array();
+		if ($operator && !in_array($operator, $supportedOperator)) {
+			$this->raiseError("Unknown search operator : ".$operator.", use default search instead");
+			$operator = false;
+		}
+		// create sql
+		$sql = "
+		select
+			distinct objectID
+		from
+			mod_subobject_date".$statusSuffix."
+		where
+			objectFieldID = '".SensitiveIO::sanitizeSQLString($fieldID)."'
+			$where
+		order by value ".$direction.",objectID ".$direction; //objectID needed to correct bug 883
+		return $sql;
+	}
+	
+	/**
 	  * set object Values
 	  *
 	  * @param array $values : the POST result values

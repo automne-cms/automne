@@ -721,7 +721,8 @@ class CMS_polymod extends CMS_modulePolymodValidation
 					if(sizeof($objectFields)) {
 						$objectsInfos[] = array(
 							'label'			=> $anObjectType->getLabel($cms_language),
-							'adminLabel'	=> $cms_language->getMessage(self::MESSAGE_PAGE_MANAGE_OBJECTS, array($anObjectType->getLabel($cms_language))),
+							'adminLabel'	=> $anObjectType->getLabel($cms_language),
+							//'adminLabel'	=> $cms_language->getMessage(self::MESSAGE_PAGE_MANAGE_OBJECTS, array($anObjectType->getLabel($cms_language))),
 							'description'	=> $anObjectType->getDescription($cms_language),
 							'objectId'		=> $anObjectType->getID(),
 							'url'			=> PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/items.php',

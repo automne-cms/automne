@@ -124,9 +124,10 @@ Ext.DataView.override({
 			n = this.all.item(index).insertSibling(nodes, 'before', true);
 			a.splice.apply(a, [index, 0].concat(nodes));
 		}else{
-			nodes.reverse();
+			//this double reverse cause a bug in polymod results orders : it reverse next pages results... Bug 883
+			//nodes.reverse();
 			n = this.all.last().insertSibling(nodes, 'after', true);
-			nodes.reverse();
+			//nodes.reverse();
 			a.push.apply(a, nodes);
 		}
 		this.updateIndexes(index);
