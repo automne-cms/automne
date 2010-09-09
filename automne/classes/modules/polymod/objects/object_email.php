@@ -276,10 +276,19 @@ class CMS_object_email extends CMS_object_common
 					$params[$aParameter['internalName']] = $module->convertDefinitionString($params[$aParameter['internalName']], false);
 				break;
 				case 'emailbody':
-					$bodyType = $post[$prefix.'emailBody'];
-					$bodyPageId = (int) $post[$prefix.'emailBody_pageID'];
-					$bodyHTML = $post[$prefix.'emailBody_html'];
-					$bodyPageURL = $post[$prefix.'emailBody_pageURL'];
+					$bodyType = $bodyPageId = $bodyHTML = $bodyPageURL = '';
+					if (isset($post[$prefix.'emailBody'])) {
+						$bodyType = $post[$prefix.'emailBody'];
+					}
+					if (isset($post[$prefix.'emailBody_pageID'])) {
+						$bodyPageId = (int) $post[$prefix.'emailBody_pageID'];
+					}
+					if (isset($post[$prefix.'emailBody_html'])) {
+						$bodyHTML = $post[$prefix.'emailBody_html'];
+					}
+					if (isset($post[$prefix.'emailBody_pageURL'])) {
+						$bodyPageURL = $post[$prefix.'emailBody_pageURL'];
+					}
 					if (!$bodyType || ($bodyType == 1 && !$bodyHTML) || ($bodyType == 2 && !$bodyPageId)) {
 						return false;
 					}
@@ -948,6 +957,24 @@ class CMS_object_email extends CMS_object_common
 		} else {
 			return parent::scriptInfo($parameters);
 		}
+	}
+	
+	/**
+	  * Get field parameters as an array structure used for export
+	  *
+	  * @return array : the object array structure
+	  * @access public
+	  */
+	public function asArray()
+	{
+		$aParameters = parent::asArray();
+		$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
+		$module = CMS_modulesCatalog::getByCodename($moduleCodename);
+		//convert definitions
+		$aParameters['emailSubject'] = $module->convertDefinitionString($aParameters['emailSubject'], true);
+		$aParameters['emailBody']['html'] = $module->convertDefinitionString($aParameters['emailBody']['html'], true);
+		$aParameters['emailBody']['pageURL'] = $module->convertDefinitionString($aParameters['emailBody']['pageURL'], true);
+		return $aParameters;
 	}
 }
 ?>

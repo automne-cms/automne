@@ -953,6 +953,8 @@ class CMS_poly_object_catalog
 					$object = new CMS_poly_object_definition();
 					//set module
 					$object->setValue('module', $params['module']);
+					//set uuid
+					$object->setUuid($objectDatas['uuid']);
 					//write object to persistence to get relations ids
 					$object->writeToPersistence();
 					//set id translation
