@@ -1024,7 +1024,7 @@ class CMS_poly_object_catalog
 			return false;
 		}
 		if (!$uuid) {
-			CMS_grandFather::raiseError("uuid must be set");
+			CMS_grandFather::raiseError("uuid must be set ".io::getCallInfos(3));
 			return false;
 		}
 		

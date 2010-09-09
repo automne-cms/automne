@@ -268,7 +268,9 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 		if (!$this->_objectFieldValues["order"] && sensitiveIO::isPositiveInteger($this->_objectFieldValues["objectID"])) {
 			$this->_objectFieldValues["order"] = $this->getFieldsNextOrder();
 		}
-		
+		if (!$this->_objectFieldValues["uuid"]) {
+			$this->_objectFieldValues["uuid"] = io::uuid();
+		}
 		$sql_fields = "
 			object_id_mof='".SensitiveIO::sanitizeSQLString($this->_objectFieldValues["objectID"])."',
 			label_id_mof='".SensitiveIO::sanitizeSQLString($this->_objectFieldValues["labelID"])."',
@@ -281,7 +283,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 			searchlist_mof='".SensitiveIO::sanitizeSQLString($this->_objectFieldValues["searchlist"])."',
 			searchable_mof='".SensitiveIO::sanitizeSQLString($this->_objectFieldValues["searchable"])."',
 			params_mof='".SensitiveIO::sanitizeSQLString(serialize($this->_objectFieldValues["params"]))."',
-			uuid_mof='".SensitiveIO::sanitizeSQLString($this->_objectFieldValues["uuid"] ? $this->_objectFieldValues["uuid"] : io::uuid())."'
+			uuid_mof='".SensitiveIO::sanitizeSQLString($this->_objectFieldValues["uuid"])."'
 		";
 		
 		//save data
