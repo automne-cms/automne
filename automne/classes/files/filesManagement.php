@@ -90,7 +90,7 @@ class CMS_file extends CMS_grandFather
 	 * @return void
 	 */
 	function __construct($name, $from=self::FILE_SYSTEM, $type=self::TYPE_FILE) {
-		$this->_name = ($from==self::FILE_SYSTEM) ? $name : $_SERVER['DOCUMENT_ROOT'].PATH_REALROOT_WR.$name;
+		$this->_name = ($from==self::FILE_SYSTEM) ? $name : $_SERVER['DOCUMENT_ROOT'].$name;
 		if ($this->_name) {
 			if (@is_file($this->_name) && $type == self::TYPE_FILE) {
 				$this->_type = self::TYPE_FILE;
