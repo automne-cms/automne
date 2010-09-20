@@ -121,7 +121,7 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //t
 		xtype:			'framePanel',
 		title:			'{$cms_language->getJsMessage(MESSAGE_PAGE_WYSIWYG_TOOLBARS)}',
 		id:				'toolbarWysiwygPanel',
-		frameURL:		'".PATH_REALROOT_WR."/admin-v3/wysiwyg.php',
+		frameURL:		'".PATH_REALROOT_WR."/automne/admin-v3/wysiwyg.php',
 		allowFrameNav:	true
 	},";
 }

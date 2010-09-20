@@ -354,7 +354,7 @@ class CMS_block_cms_forms extends CMS_block
 		//load interface instance
 		$view = CMS_view::getInstance();
 		//append JS block class file
-		$view->addJSFile(str_replace(PATH_REALROOT_WR, '', PATH_ADMIN_WR.'/js/edit/block-cms-forms.js'));
+		$view->addJSFile(str_replace(PATH_REALROOT_WR.'/', '', PATH_ADMIN_WR.'/js/edit/block-cms-forms.js'));
 		
 		return $html;
 	}

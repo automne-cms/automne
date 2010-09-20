@@ -84,18 +84,18 @@ if ($cms_message) {
 if ($cms_parent) {
 	$dialog->setBacklink($cms_module->getAdminFrontendPath(PATH_RELATIVETO_WEBROOT)."?parent=".$cms_parent->getParent());
 	$parents = $cms_parent->getAliasLineAge(true);
-	$parentLineAge='';
+	$parentLineAge = PATH_REALROOT_WR.'/';
 	if (sizeof($parents)) {
 		foreach ($parents as $aParent) {
 			$parentLineAge .='<a href="'.$_SERVER["SCRIPT_NAME"].'?parent='.$aParent->getID().'" class="admin">'.$aParent->getAlias().'</a>/';
 		}
 	}
-	$parentLineAge .=$cms_parent->getAlias().'/';
-	$lineAge = $cms_parent->getAliasLineAge().$cms_parent->getAlias().'/';
+	$parentLineAge .= $cms_parent->getAlias().'/';
+	$lineAge = PATH_REALROOT_WR.'/'.$cms_parent->getAliasLineAge().$cms_parent->getAlias();
 } else {
-	$parentLineAge = $lineAge = '';
+	$parentLineAge = $lineAge = PATH_REALROOT_WR;
 }
-$content .=$cms_language->getMessage(MESSAGE_PAGE_FIELD_CMS_ALIAS_PARENT,false,MOD_CMS_ALIAS_CODENAME).' : /'.$parentLineAge.'<br />';
+$content .=$cms_language->getMessage(MESSAGE_PAGE_FIELD_CMS_ALIAS_PARENT,false,MOD_CMS_ALIAS_CODENAME).' : '.$parentLineAge.'<br />';
 
 $content .= '
 	<form action="alias.php" method="post">
@@ -132,7 +132,7 @@ if (sizeof($aliases)) {
 		
 		$content .= '
 			<tr>
-				<td class="'.$td_class.'"><a href="/'.$lineAge.$article->getAlias().'/" class="admin" target="_blank">'.$lineAge.$article->getAlias().'/</a></td>
+				<td class="'.$td_class.'"><a href="'.$lineAge.'/'.$article->getAlias().'/" class="admin" target="_blank">'.$lineAge.'/'.$article->getAlias().'/</a></td>
 				<td class="'.$td_class.'">'.$target.'</td>
 				<td class="'.$td_class.'">
 					<table border="0" cellpadding="2" cellspacing="0">

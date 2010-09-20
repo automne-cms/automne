@@ -196,12 +196,18 @@ if ($files) {
 				//check if file exists in current directory
 				if ($file == str_replace(array_keys($replace), $replace, $file) && file_exists(dirname(__FILE__).'/'.$file) && is_file(dirname(__FILE__).'/'.$file)) {
 					$jsfiles[] = dirname(__FILE__).'/'.$file;
-				} elseif(pathinfo($file, PATHINFO_EXTENSION) == 'js' 
-						&& file_exists(PATH_REALROOT_FS.$file) 
-						&& is_file(PATH_REALROOT_FS.$file)
-						&& (strpos(pathinfo(PATH_REALROOT_FS.$file, PATHINFO_DIRNAME), realpath(PATH_JS_FS)) === 0 
-							|| strpos(pathinfo(PATH_REALROOT_FS.$file, PATHINFO_DIRNAME), realpath(PATH_ADMIN_JS_FS)) === 0)) {
-					$jsfiles[] = PATH_REALROOT_FS.$file;
+				} elseif(pathinfo($file, PATHINFO_EXTENSION) == 'js' && substr($file, 0, 1) == '/'
+						&& file_exists($_SERVER["DOCUMENT_ROOT"].$file) 
+						&& is_file($_SERVER["DOCUMENT_ROOT"].$file)
+						&& (strpos(pathinfo($_SERVER["DOCUMENT_ROOT"].$file, PATHINFO_DIRNAME), realpath(PATH_JS_FS)) === 0 
+							|| strpos(pathinfo($_SERVER["DOCUMENT_ROOT"].$file, PATHINFO_DIRNAME), realpath(PATH_ADMIN_JS_FS)) === 0)) {
+					$jsfiles[] = $_SERVER["DOCUMENT_ROOT"].$file;
+				} elseif(pathinfo($file, PATHINFO_EXTENSION) == 'js' && substr($file, 0, 1) != '/'
+						&& file_exists(PATH_REALROOT_FS.'/'.$file) 
+						&& is_file(PATH_REALROOT_FS.'/'.$file)
+						&& (strpos(pathinfo(PATH_REALROOT_FS.'/'.$file, PATHINFO_DIRNAME), realpath(PATH_JS_FS)) === 0 
+							|| strpos(pathinfo(PATH_REALROOT_FS.'/'.$file, PATHINFO_DIRNAME), realpath(PATH_ADMIN_JS_FS)) === 0)) {
+					$jsfiles[] = PATH_REALROOT_FS.'/'.$file;
 				}
 			break;
 		}
