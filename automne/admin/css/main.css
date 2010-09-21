@@ -71,7 +71,7 @@ a.atm-link:hover{
 }
 .search-item .atm-help,
 .atm-result .atm-help {
-	background:			url(/automne/admin/img/atm-help.png) top left no-repeat;
+	background:			url(../automne/admin/img/atm-help.png) top left no-repeat;
 	padding-left:		6px;
 }
 .x-form-item .atm-help,

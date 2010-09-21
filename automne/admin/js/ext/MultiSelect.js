@@ -208,7 +208,7 @@ Ext.ux.ItemSelector = Ext.extend(Ext.form.Field,  {
 	msWidth:200,
 	msHeight:300,
 	hideNavIcons:false,
-	imagePath:"../automne/admin/img/multiselect/",
+	imagePath:"img/multiselect/",
 	iconUp:"up2.gif",
 	iconDown:"down2.gif",
 	iconLeft:"left2.gif",
@@ -319,10 +319,9 @@ Ext.ux.ItemSelector = Ext.extend(Ext.form.Field,  {
 		p.add(this.switchToFrom ? this.fromMultiselect : this.toMultiselect);
 		p.render(this.el);
 		icons.el.down('.'+icons.bwrapCls).remove();
-
 		if (this.imagePath!="" && this.imagePath.charAt(this.imagePath.length-1)!="/")
 			this.imagePath+="/";
-		this.iconUp = this.imagePath + (this.iconUp || 'up2.gif');
+
 		this.iconDown = this.imagePath + (this.iconDown || 'down2.gif');
 		this.iconLeft = this.imagePath + (this.iconLeft || 'left2.gif');
 		this.iconRight = this.imagePath + (this.iconRight || 'right2.gif');
