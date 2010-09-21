@@ -946,7 +946,7 @@ class CMS_module extends CMS_grandFather
 			try{
 				foreach ( new DirectoryIterator(PATH_JS_FS.'/modules/'.$this->_codename) as $file) {
 					if ($file->isFile() && io::substr($file->getFilename(), -3) == ".js") {
-						$filename = str_replace(PATH_REALROOT_FS, '', $file->getPathname());
+						$filename = str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname());
 						$files[] = $filename;
 					}
 				}
@@ -968,11 +968,11 @@ class CMS_module extends CMS_grandFather
 		foreach ($medias as $media) {
 			if ($media == 'all') {
 				if (file_exists(PATH_CSS_FS.'/modules/'.$this->_codename.'.css')) {
-					$files['all'][] = str_replace(PATH_REALROOT_FS, '', PATH_CSS_FS.'/modules/'.$this->_codename.'.css');
+					$files['all'][] = str_replace(PATH_REALROOT_FS.'/', '', PATH_CSS_FS.'/modules/'.$this->_codename.'.css');
 				}
 			}
 			if (file_exists(PATH_CSS_FS.'/modules/'.$this->_codename.'-'.$media.'.css')) {
-				$files[$media][] = str_replace(PATH_REALROOT_FS, '', PATH_CSS_FS.'/modules/'.$this->_codename.'-'.$media.'.css');
+				$files[$media][] = str_replace(PATH_REALROOT_FS.'/', '', PATH_CSS_FS.'/modules/'.$this->_codename.'-'.$media.'.css');
 			}
 		}
 		return $files;

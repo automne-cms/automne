@@ -1772,7 +1772,7 @@ class CMS_module_standard extends CMS_module
 									$files = array_merge($files, $tagFiles);
 									//append CMS_function.js file
 									if (!isset($usage['js-files']) && file_exists(PATH_JS_FS.'/CMS_functions.js')) {
-										$files = array_merge($files, array(str_replace(PATH_REALROOT_WR, '', PATH_JS_WR.'/CMS_functions.js')));
+										$files = array_merge($files, array(str_replace(PATH_REALROOT_WR.'/', '', PATH_JS_WR.'/CMS_functions.js')));
 									}
 									//append swfobject for block flash
 									if (is_array($usage) && isset($usage['blockflash']) && $usage['blockflash'] == true) {
