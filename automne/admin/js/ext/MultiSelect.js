@@ -148,9 +148,9 @@ Ext.ux.Multiselect = Ext.extend(Ext.form.Field,  {
 		this.view.clearSelections();
 		this.hiddenField.dom.value = '';
 		
-		if (!values || (values == '')) { return; }
+		if (!values || (values == '')) {return;}
 		
-		if (!(values instanceof Array)) { values = values.split(this.delimiter); }
+		if (!(values instanceof Array)) {values = values.split(this.delimiter);}
 		for (var i=0; i<values.length; i++) {
 			index = this.view.store.indexOf(this.view.store.query(this.valueField, 
 				new RegExp('^' + values[i] + '$', "i")).itemAt(0));
@@ -208,7 +208,7 @@ Ext.ux.ItemSelector = Ext.extend(Ext.form.Field,  {
 	msWidth:200,
 	msHeight:300,
 	hideNavIcons:false,
-	imagePath:"../automne/admin/img/multiselect/",
+	imagePath:"/automne/admin/img/multiselect/",
 	iconUp:"up2.gif",
 	iconDown:"down2.gif",
 	iconLeft:"left2.gif",
@@ -322,6 +322,7 @@ Ext.ux.ItemSelector = Ext.extend(Ext.form.Field,  {
 
 		if (this.imagePath!="" && this.imagePath.charAt(this.imagePath.length-1)!="/")
 			this.imagePath+="/";
+		this.imagePath = Automne.context.path+this.imagePath;
 		this.iconUp = this.imagePath + (this.iconUp || 'up2.gif');
 		this.iconDown = this.imagePath + (this.iconDown || 'down2.gif');
 		this.iconLeft = this.imagePath + (this.iconLeft || 'left2.gif');
@@ -354,12 +355,12 @@ Ext.ux.ItemSelector = Ext.extend(Ext.form.Field,  {
 			this.addIcon.on('click', this.fromTo, this);
 			this.removeIcon.on('click', this.toFrom, this);
 		}
-		if (!this.drawUpIcon || this.hideNavIcons) { this.upIcon.dom.style.display='none'; }
-		if (!this.drawDownIcon || this.hideNavIcons) { this.downIcon.dom.style.display='none'; }
-		if (!this.drawLeftIcon || this.hideNavIcons) { this.addIcon.dom.style.display='none'; }
-		if (!this.drawRightIcon || this.hideNavIcons) { this.removeIcon.dom.style.display='none'; }
-		if (!this.drawTopIcon || this.hideNavIcons) { this.toTopIcon.dom.style.display='none'; }
-		if (!this.drawBotIcon || this.hideNavIcons) { this.toBottomIcon.dom.style.display='none'; }
+		if (!this.drawUpIcon || this.hideNavIcons) {this.upIcon.dom.style.display='none';}
+		if (!this.drawDownIcon || this.hideNavIcons) {this.downIcon.dom.style.display='none';}
+		if (!this.drawLeftIcon || this.hideNavIcons) {this.addIcon.dom.style.display='none';}
+		if (!this.drawRightIcon || this.hideNavIcons) {this.removeIcon.dom.style.display='none';}
+		if (!this.drawTopIcon || this.hideNavIcons) {this.toTopIcon.dom.style.display='none';}
+		if (!this.drawBotIcon || this.hideNavIcons) {this.toBottomIcon.dom.style.display='none';}
 
 		var tb = p.body.first();
 		this.el.setWidth(p.body.first().getWidth());
