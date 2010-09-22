@@ -322,9 +322,8 @@ Ext.ux.ItemSelector = Ext.extend(Ext.form.Field,  {
 
 		if (this.imagePath!="" && this.imagePath.charAt(this.imagePath.length-1)!="/")
 			this.imagePath+="/";
-
 		this.imagePath = Automne.context.path+this.imagePath;
-
+		this.iconUp = this.imagePath + (this.iconUp || 'up2.gif');
 		this.iconDown = this.imagePath + (this.iconDown || 'down2.gif');
 		this.iconLeft = this.imagePath + (this.iconLeft || 'left2.gif');
 		this.iconRight = this.imagePath + (this.iconRight || 'right2.gif');

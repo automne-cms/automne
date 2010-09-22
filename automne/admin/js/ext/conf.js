@@ -4,8 +4,7 @@
   * Provide some configuration for ExtJS
   * @package CMS
   * @subpackage JS
-  * @author S�bastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: conf.js,v 1.3 2010/03/08 15:20:22 sebastien Exp $
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 // reference to local blank image
 Ext.BLANK_IMAGE_URL = 'img/s.gif';
