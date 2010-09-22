@@ -28,3 +28,4 @@ Thumbs.db
 ./js/modules/*/*-demo.js
 ./js/modules/*
 ./sql/demo-*.sql
+config.php
