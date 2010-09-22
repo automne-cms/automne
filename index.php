@@ -35,12 +35,10 @@ while ($redirectlink->hasValidHREF() && sensitiveIO::IsPositiveInteger($redirect
 	$redirectlink = $rootPage->getRedirectLink(true);
 }
 $pPath = $rootPage->getHTMLURL(false, false, PATH_RELATIVETO_FILESYSTEM);
-if ($pPath) {
-	if (file_exists($pPath)) {
-		$cms_page_included = true;
-		require($pPath);
-		exit;
-	}
+if ($pPath && file_exists($pPath)) {
+	$cms_page_included = true;
+	require($pPath);
+	exit;
 }
 header('HTTP/1.x 301 Moved Permanently', true, 301);
 header('Location: '.PATH_SPECIAL_PAGE_NOT_FOUND_WR.'');

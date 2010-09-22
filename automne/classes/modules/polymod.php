@@ -297,6 +297,9 @@ class CMS_polymod extends CMS_modulePolymodValidation
 									$modulesCode[$this->_codename] .= '<?php'."\n".
 									'//callback function to check field '.$formFieldID.' for atm-form '.$formName."\n".
 									'function form_'.$formName.'_'.$formFieldID.'($formName, $fieldID, &$item) {'."\n".
+									'		global $cms_user;'."\n".
+									'		global $public_search;'."\n".
+									'		global $cms_language;'."\n".
 									'       $object[$item->getObjectID()] = $item;'."\n".
 									'       '.$usage['headcode']."\n".
 									'       '.$callback."\n".
@@ -307,6 +310,9 @@ class CMS_polymod extends CMS_modulePolymodValidation
 									$modulesCode[$this->_codename] .= '<?php'."\n".
 									'//callback function for atm-form '.$formName."\n".
 									'function form_'.$formName.'($formName, &$item) {'."\n".
+									'		global $cms_user;'."\n".
+									'		global $public_search;'."\n".
+									'		global $cms_language;'."\n".
 									'       $object[$item->getObjectID()] = $item;'."\n".
 									'       '.$usage['headcode']."\n".
 									'       '.$callback."\n".
