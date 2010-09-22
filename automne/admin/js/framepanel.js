@@ -430,6 +430,11 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 				}
 			});*/
 			if (win.location.href.indexOf(Automne.context.path + '/automne/admin/') === -1) {
+				//try to guess automne installation path if not already set
+				if (Automne.context.path == undefined && window.location.pathname.indexOf('/automne/admin/') >= 1) {
+					Automne.context = [];
+					Automne.context.path = window.location.pathname.substr(0, window.location.pathname.indexOf('/automne/admin/'));
+				}
 				//display redirection message
 				this.setFrameURL(Automne.context.path + '/automne/admin/page-redirect-info.php?url=' + win.location.href);
 				this.reload();
