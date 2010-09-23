@@ -52,6 +52,8 @@ define("MESSAGE_PAGE_FIELD_BY_PAGE", 1586);
 define("MESSAGE_ACTION_PURGE", 1587);
 define("MESSAGE_ACTION_PURGE_DESC", 1588);
 define("MESSAGE_ACTION_PURGE_CONFIRM", 1589);
+define("MESSAGE_ACTION_EXPORT", 1672);
+define("MESSAGE_ACTION_EXPORT_DESC", 1673);
 
 $winId = sensitiveIO::request('winId', '', 'logsWindow');
 
@@ -135,7 +137,7 @@ $types['types'][] = array(
 $types = sensitiveIO::jsonEncode($types);
 
 if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
-	$purgeLogs = "tbar:['->',{
+	$purgeLogs = ",'->',{
 			xtype:		'button',
 			iconCls:	'atm-pic-deletion',
 			text:		'{$cms_language->getJsMessage(MESSAGE_ACTION_PURGE)}',
@@ -162,7 +164,7 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 					}
 				});
 			}
-		}],";
+		}";
 } else {
 	$purgeLogs = '';
 }
@@ -221,10 +223,10 @@ $jscontent = <<<END
 		flex:				1,
 		autoExpandColumn:	'comment',
 		cm: 				new Ext.grid.ColumnModel([
-			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_DATE)}", 			width: 90, 	dataIndex: 'datetime',	sortable: true},
-			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_ELEMENT)}", 		width: 90,	dataIndex: 'element',	sortable: false},
-			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_ACTION)}", 			width: 120, dataIndex: 'action',	sortable: true},
-			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_USER)}", 	width: 110,	dataIndex: 'user',		sortable: true,		renderer:renderUser},
+			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_DATE)}", 		width: 90, 	dataIndex: 'datetime',	sortable: true},
+			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_ELEMENT)}", 	width: 90,	dataIndex: 'element',	sortable: false},
+			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_ACTION)}", 	width: 120, dataIndex: 'action',	sortable: true},
+			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_USER)}", 		width: 110,	dataIndex: 'user',		sortable: true,		renderer:renderUser},
 			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_STATUS)}", 	width: 35, 	dataIndex: 'status',	sortable: false},
 			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_COMMENTS)}", 	width: 120, dataIndex: 'comment',	sortable: false,	renderer:renderComment},
 		]),
@@ -232,7 +234,21 @@ $jscontent = <<<END
 		viewConfig: 		{
 			forceFit:			true
 		},
-		{$purgeLogs}
+		tbar:[{
+			xtype:		'button',
+			iconCls:	'atm-pic-export',
+			text:		'{$cms_language->getJsMessage(MESSAGE_ACTION_EXPORT)}',
+			tooltip:	'{$cms_language->getJsMessage(MESSAGE_ACTION_EXPORT_DESC)}',
+			handler:	function(button) {
+				var formValues = Ext.getCmp('logsSearchPanel').getForm().getValues();
+				params = Ext.apply(formValues, {
+					export:			1,
+					limit:			0,
+					start:			0
+				});
+				window.open('logs-datas.php?'+Ext.urlEncode(params));
+			}
+		}{$purgeLogs}],
 		bbar:				new Ext.PagingToolbar({
 			pageSize: 			{$recordsPerPage},
 			store: 				store,

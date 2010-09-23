@@ -501,6 +501,24 @@ class CMS_file extends CMS_grandFather
 		return true;
 	}
 	
+	/**
+	  * Send the current file for download (inline or attachment)
+	  *
+	  * @param boolean $inline : the file is sent inline (default) or as attachment
+	  * @param boolean $deleteFile : delete the sended file at end of download (default : false)
+	  * @param mixed $forceContentType : false to auto get the mime type to send, or string to force a mime type
+	  * @return void or false if error
+	  * @access public
+	  * @static
+	  */
+	function download($inline = true, $deleteFile = false, $forceContentType = false) {
+		if (!$this->exists()) {
+			$this->raiseError("Can't donwload file which does not exist");
+			return false;
+		}
+		return CMS_file::downloadFile($this->_name, $inline, $deleteFile, $forceContentType);
+	}
+	
 	// ****************************************************************
 	// ** BELOW THIS POINT, ALL METHOD ARE STATIC                    **
 	// ****************************************************************
@@ -1135,6 +1153,7 @@ class CMS_file extends CMS_grandFather
 		header("Content-transfer-encoding: binary");
 		header('Content-Length: '.(string) filesize($source));
 		header('Content-Disposition: '.($inline ? 'inline' : 'attachment').'; filename="'.basename($source).'"');
+		
 		//send file
 		if($file = fopen($source, 'rb')){
 			while( (!feof($file)) && (connection_status()==0) ){
