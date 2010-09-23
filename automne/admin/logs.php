@@ -243,7 +243,7 @@ $jscontent = <<<END
 				var formValues = Ext.getCmp('logsSearchPanel').getForm().getValues();
 				params = Ext.apply(formValues, {
 					export:			1,
-					limit:			0,
+					limit:			2000,
 					start:			0
 				});
 				window.open('logs-datas.php?'+Ext.urlEncode(params));
