@@ -336,18 +336,19 @@ class CMS_log extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function logMiscAction($action, &$user, $textData)
-	{
+	function logMiscAction($action, &$user, $textData, $module = '') {
 		$this->setLogAction($action);
 		$this->_setUser($user);
 		$this->setTextData($textData);
 		$this->_datetime = new CMS_Date;
 		$this->_datetime->setNow();
+		$this->_setModule($module);
 		if (!$this->hasError()) {
 			$sql_fields = "
 				user_log='".SensitiveIO::sanitizeSQLString($this->_user->getUserId())."',
 				action_log='".SensitiveIO::sanitizeSQLString($this->_action)."',
 				datetime_log='".SensitiveIO::sanitizeSQLString($this->_datetime->getDBValue())."',
+				module_log='".SensitiveIO::sanitizeSQLString($this->_module)."',
 				textData_log='".SensitiveIO::sanitizeSQLString($this->_textData)."'
 			";
 			if ($this->_id) {

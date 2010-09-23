@@ -314,7 +314,6 @@ class CMS_modulesCatalog extends CMS_grandFather
 				";
 				$q = new CMS_query($sql);
 			}
-
 			if (!$copyOnly) {
 				//delete from the starting table
 				$sql = "
@@ -384,7 +383,6 @@ class CMS_modulesCatalog extends CMS_grandFather
 				}
 			}
 		}
-		
 		return true;
 	}
 	

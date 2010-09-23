@@ -134,7 +134,7 @@ END;
 		//This file is an admin file. Interface must be secure
 		$view->setSecure();
 		
-		$actionlabels = CMS_log_catalog::getAllActions();
+		$actionlabels = CMS_log_catalog::getAllActions($cms_language);
 		$actions = CMS_log_catalog::getByResource(MOD_STANDARD_CODENAME, $cms_page->getID(), $start, $limit, $order, $direction);
 		$feeds = array();
 		$feeds['items'] = array();

@@ -54,6 +54,7 @@ define("MESSAGE_ACTION_PURGE_DESC", 1588);
 define("MESSAGE_ACTION_PURGE_CONFIRM", 1589);
 define("MESSAGE_ACTION_EXPORT", 1672);
 define("MESSAGE_ACTION_EXPORT_DESC", 1673);
+define("MESSAGE_PAGE_TYPE_MODULES", 1674);
 
 $winId = sensitiveIO::request('winId', '', 'logsWindow');
 
@@ -133,6 +134,13 @@ $types['types'][] = array(
 	'id'			=> 'email',
 	'label'			=> $cms_language->getMessage(MESSAGE_PAGE_TYPE_EMAILS)
 );
+$modulesActions = CMS_log_catalog::getModulesActions();
+if ($modulesActions) {
+	$types['types'][] = array(
+		'id'			=> 'modules',
+		'label'			=> $cms_language->getMessage(MESSAGE_PAGE_TYPE_MODULES)
+	);
+}
 //json encode groups datas
 $types = sensitiveIO::jsonEncode($types);
 

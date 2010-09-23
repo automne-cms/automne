@@ -1631,3 +1631,5 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1671, 'standard', 'fr', 'Inclure les fichiers Javascripts');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1672, 'standard', 'fr', 'Exporter');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1673, 'standard', 'fr', 'Exporter la recherche en cours');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1674, 'standard', 'fr', 'Actions spécifiques aux modules');
+>>>>>>> MERGE-SOURCE
