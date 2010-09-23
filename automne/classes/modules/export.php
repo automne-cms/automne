@@ -96,10 +96,7 @@ class CMS_module_export extends CMS_grandFather
 	/**
 	 * Does current element has datas to export
 	 * 
-	 * @param string $name, the full filename of the file or dir
-	 * @param integer $from, the file path is : self::FILE_SYSTEM or self::WEBROOT
-	 * @param integer $type, the type of the current object : self::TYPE_FILE for a file, self::TYPE_DIRECTORY for a dir, false for undefined
-	 * @return void
+	 * @return boolean
 	 */
 	function hasExport() {
 		return $this->_hasExport;

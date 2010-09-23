@@ -11,8 +11,6 @@
 // +----------------------------------------------------------------------+
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: xml2Array.php,v 1.6 2010/03/08 16:43:33 sebastien Exp $
 
 /**
   * Class CMS_array2Xml
