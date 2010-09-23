@@ -135,7 +135,7 @@ $types['types'][] = array(
 $types = sensitiveIO::jsonEncode($types);
 
 if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
-	$purgeLogs = "tbar:['->',{
+	$purgeLogs = ",'->',{
 			xtype:		'button',
 			iconCls:	'atm-pic-deletion',
 			text:		'{$cms_language->getJsMessage(MESSAGE_ACTION_PURGE)}',
@@ -162,7 +162,7 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 					}
 				});
 			}
-		}],";
+		}";
 } else {
 	$purgeLogs = '';
 }
@@ -221,10 +221,10 @@ $jscontent = <<<END
 		flex:				1,
 		autoExpandColumn:	'comment',
 		cm: 				new Ext.grid.ColumnModel([
-			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_DATE)}", 			width: 90, 	dataIndex: 'datetime',	sortable: true},
-			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_ELEMENT)}", 		width: 90,	dataIndex: 'element',	sortable: false},
-			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_ACTION)}", 			width: 120, dataIndex: 'action',	sortable: true},
-			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_USER)}", 	width: 110,	dataIndex: 'user',		sortable: true,		renderer:renderUser},
+			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_DATE)}", 		width: 90, 	dataIndex: 'datetime',	sortable: true},
+			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_ELEMENT)}", 	width: 90,	dataIndex: 'element',	sortable: false},
+			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_ACTION)}", 	width: 120, dataIndex: 'action',	sortable: true},
+			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_USER)}", 		width: 110,	dataIndex: 'user',		sortable: true,		renderer:renderUser},
 			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_STATUS)}", 	width: 35, 	dataIndex: 'status',	sortable: false},
 			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_COMMENTS)}", 	width: 120, dataIndex: 'comment',	sortable: false,	renderer:renderComment},
 		]),
@@ -232,7 +232,21 @@ $jscontent = <<<END
 		viewConfig: 		{
 			forceFit:			true
 		},
-		{$purgeLogs}
+		tbar:[{
+			xtype:		'button',
+			iconCls:	'atm-pic-export',
+			text:		'Exporter',
+			tooltip:	'Exporter la recherche en cours',
+			handler:	function(button) {
+				var formValues = Ext.getCmp('logsSearchPanel').getForm().getValues();
+				params = Ext.apply(formValues, {
+					export:			1,
+					limit:			0,
+					start:			0
+				});
+				window.open('logs-datas.php?'+Ext.urlEncode(params));
+			}
+		}{$purgeLogs}],
 		bbar:				new Ext.PagingToolbar({
 			pageSize: 			{$recordsPerPage},
 			store: 				store,

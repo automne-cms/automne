@@ -494,6 +494,24 @@ class CMS_file extends CMS_grandFather
 		return true;
 	}
 	
+	/**
+	  * Send the current file for download (inline or attachment)
+	  *
+	  * @param boolean $inline : the file is sent inline (default) or as attachment
+	  * @param boolean $deleteFile : delete the sended file at end of download (default : false)
+	  * @param mixed $forceContentType : false to auto get the mime type to send, or string to force a mime type
+	  * @return void or false if error
+	  * @access public
+	  * @static
+	  */
+	function download($inline = true, $deleteFile = false, $forceContentType = false) {
+		if (!$this->exists()) {
+			$this->raiseError("Can't donwload file which does not exist");
+			return false;
+		}
+		return CMS_file::downloadFile($this->_name, $inline, $deleteFile, $forceContentType);
+	}
+	
 	// ****************************************************************
 	// ** BELOW THIS POINT, ALL METHOD ARE STATIC                    **
 	// ****************************************************************
@@ -1078,6 +1096,62 @@ class CMS_file extends CMS_grandFather
 			$error = true;
 		}
 		return !$error;
+	}
+	
+	/**
+	  * Send a given file for download (inline or attachment)
+	  *
+	  * @param string $source : the file to download (FS relative)
+	  * @param boolean $inline : the file is sent inline (default) or as attachment
+	  * @param boolean $deleteFile : delete the sended file at end of download (default : false)
+	  * @param mixed $forceContentType : false to auto get the mime type to send, or string to force a mime type
+	  * @return void or false if error
+	  * @access public
+	  * @static
+	  */
+	function downloadFile($source, $inline = true, $deleteFile = false, $forceContentType = false) {
+		if (!file_exists($source)) {
+			CMS_grandFather::raiseError('Source file to send does not exists : '.$source);
+			return false;
+		}
+		if (connection_status() != 0) {
+			CMS_grandFather::raiseError('Error connexion status is not "normal" : '.connection_status());
+			return false;
+		}
+		//get mime filetype
+		if (!$forceContentType) {
+			$filetype = CMS_file::mimeContentType($source);
+			$filetype = ($filetype) ? $filetype : 'application/octet-stream';
+		} else {
+			$filetype = $forceContentType;
+		}
+		//close session then clean buffer
+		@session_write_close();
+	    @ob_end_clean();
+		//to prevent long file from getting cut off from max_execution_time
+	    @set_time_limit(0);
+		
+		//send http headers
+		header("Cache-Control: ");// leave blank to avoid IE errors
+		header("Pragma: ");// leave blank to avoid IE errors
+		header('Content-Type: '.$filetype);
+		header("Content-transfer-encoding: binary");
+		header('Content-Length: '.(string) filesize($source));
+		header('Content-Disposition: '.($inline ? 'inline' : 'attachment').'; filename="'.basename($source).'"');
+		
+		//send file
+		if($file = fopen($source, 'rb')){
+			while( (!feof($file)) && (connection_status()==0) ){
+				print(fread($file, 1024*8));
+				flush();
+			}
+			fclose($file);
+	    }
+		if ($deleteFile) {
+			//delete source file
+			@unlink($source);
+		}
+		exit;
 	}
 }
 ?>

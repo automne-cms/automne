@@ -291,7 +291,7 @@ class CMS_grandFather
 				'cms_superresource'					=> PATH_MODULES_FS.'/super_resource.php',
 				'cms_polymod'						=> PATH_MODULES_FS.'/polymod.php',
 				'cms_modulepolymodvalidation' 		=> PATH_MODULES_FS.'/modulePolymodValidation.php',
-				
+
 				//standard
 				'cms_rowscatalog' 					=> PATH_MODULES_FS.'/standard/rowscatalog.php',
 				'cms_row' 							=> PATH_MODULES_FS.'/standard/row.php',
@@ -315,6 +315,7 @@ class CMS_grandFather
 				'cms_xmltag' 						=> PATH_PACKAGES_FS.'/pageContent/xmltag.php',
 				'cms_xmlparser' 					=> PATH_PACKAGES_FS.'/pageContent/xmlparser.php', //Deprecated : shadow class, for compatibility
 				'cms_domdocument'					=> PATH_PACKAGES_FS.'/pageContent/xmldomdocument.php',
+				'cms_array2csv'						=> PATH_PACKAGES_FS.'/pageContent/array2csv.php',
 
 				//scripts
 				'processmanager' 					=> PATH_PACKAGES_FS.'/scripts/backgroundScript/processmanager.php',
