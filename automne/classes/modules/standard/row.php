@@ -10,10 +10,8 @@
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr> &            |
-// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// | Author: SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: row.php,v 1.12 2010/03/08 16:43:29 sebastien Exp $
 
 /**
   * Class CMS_row
@@ -23,7 +21,8 @@
   * @package Automne
   * @subpackage standard
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author Julien Breux <julien.breux@gmail.com>
   */
 
 class CMS_row extends CMS_grandFather
@@ -251,12 +250,17 @@ class CMS_row extends CMS_grandFather
 	/**
 	  * Gets the row image.
 	  *
+	  * @param string $form location of image
+	  * @param boolean $fileOnly for return just filename
 	  * @return string the row image filename
 	  * @access public
 	  */
-	function getImage($from = CMS_file::WEBROOT) {
+	function getImage($from = CMS_file::WEBROOT, $fileOnly = false) {
 		if (!file_exists(PATH_TEMPLATES_ROWS_FS.'/images/'.$this->_image)) {
 			$this->_image = 'nopicto.gif';
+		}
+		if ($fileOnly) {
+			return $this->_image;
 		}
 		return ($from == CMS_file::FILE_SYSTEM) ? PATH_TEMPLATES_ROWS_FS.'/images/'.$this->_image : PATH_TEMPLATES_ROWS_WR.'/images/'.$this->_image;
 	}
@@ -549,6 +553,15 @@ class CMS_row extends CMS_grandFather
 		$rowFile->writeToPersistence();
 		$this->_definitionFile = $filename;
 		return true;
+	}
+
+	/**
+	 * Set filename of row
+	 * 
+	 * @param string $filename Filename
+	 */
+	public function setDefinitionFile($filename) {
+		$this->_definitionFile = $filename;
 	}
 
 	/**

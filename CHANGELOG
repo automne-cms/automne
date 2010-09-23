@@ -5,6 +5,7 @@ V4.1.0 (in progress)
 [FEATURE] : Add Google coordinates field for Polymod
 [FEATURE] : Add vhost subfolder support for Automne installation
 [FEATURE] : Add import/export of polymod modules structures
+[FEATURE] : Add duplicating rows
 
 V4.0.2 (25/05/2010)
 [BUG] : Corrected bugs : 269, 270, 486, 497 (see http://www.automne.ws/bug/)

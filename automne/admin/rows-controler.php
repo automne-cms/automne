@@ -9,10 +9,8 @@
 // | LICENSE-GPL, and is available through the world-wide-web at		  |
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
-// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
+// | Author: SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
-//
-// $Id: rows-controler.php,v 1.6 2010/03/08 16:41:20 sebastien Exp $
 
 /**
   * PHP controler : Receive actions on templates
@@ -20,7 +18,8 @@
   *
   * @package Automne
   * @subpackage admin
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author Julien Breux <julien.breux@gmail.com>
   */
 
 require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
@@ -33,10 +32,11 @@ define("MESSAGE_ACTION_ROW_CREATED", 731);
 define("MESSAGE_ACTION_XML_UPDATED", 732);
 define("MESSAGE_ACTION_N_PAGES_REGEN", 733);
 define("MESSAGE_ACTION_NO_PAGES", 734);
+define("MESSAGE_ACTION_DUPICATION_DONE", 1485);
 define("MESSAGE_ERROR_WRITE_ROW", 1551);
 
 //Controler vars
-$action = sensitiveIO::request('action', array('properties', 'definition', 'regenerate'));
+$action = sensitiveIO::request('action', array('properties', 'definition', 'regenerate', 'copy'));
 $rowId = sensitiveIO::request('rowId', '');
 
 //Properties vars vars
@@ -183,6 +183,22 @@ switch ($action) {
 			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_N_PAGES_REGEN, array(sizeof($pagesIds)));
 		} else {
 			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_NO_PAGES);
+		}
+	break;
+	case 'copy':
+		if (is_a($row, "CMS_row") && !$row->hasError()) {
+			//Dupplicate selected row with given label
+			$label = 'Copie de '.$row->getLabel();
+			$row = CMS_rowsCatalog::getCloneFromID($rowId, $label);
+
+			$log = new CMS_log();
+			$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT, $cms_user, "Row : ".$label." (create row)");
+
+			$content = array('success' => array('rowId' => $row->getID()));
+			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_DUPICATION_DONE, array($label));
+			$view->setContent($content);
+		} else {
+			$cms_message = $cms_language->getMessage(MESSAGE_ERROR_UNKNOWN_ROW);
 		}
 	break;
 }
