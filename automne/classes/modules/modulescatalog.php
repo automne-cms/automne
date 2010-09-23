@@ -384,63 +384,6 @@ class CMS_modulesCatalog extends CMS_grandFather
 				}
 			}
 		}
-		
-		
-		/*
-		//move the files
-		$initial_path = PATH_MODULES_FILES_FS."/".$module->getCodename()."/".$locationFrom;
-		$initial_dir = @dir($initial_path);
-		
-		//cut here if the initial dir doesn't exists. That means the module doesn't have files
-		if (!$initial_dir) {
-			return true;
-		}
-
-		$files_prefix = "r".$resourceID."_";
-
-		if ($locationTo != RESOURCE_DATA_LOCATION_DEVNULL) {		
-			//cleans the destination dir
-			$destination_path = PATH_MODULES_FILES_FS."/".$module->getCodename()."/".$locationTo;
-			$destination_dir = dir($destination_path);
-			while (false !== ($file = $destination_dir->read())) {
-				if (is_file($destination_path."/".$file)
-					&& io::substr($file, 0, io::strlen($files_prefix)) == $files_prefix) {
-					unlink($destination_path."/".$file);
-				}
-			}
-			
-			//copy or move the files
-			while (false !== ($file = $initial_dir->read())) {
-				if (is_file($initial_path."/".$file)
-					&& io::substr($file, 0, io::strlen($files_prefix)) == $files_prefix) {
-					if ($copyOnly) {
-						if (@copy($initial_path."/".$file, $destination_path."/".$file)) {
-							@chmod($destination_path."/".$file, octdec(FILES_CHMOD));
-						} else {
-							CMS_grandFather::raiseError("Can't copy file ".$initial_path."/".$file." to ".$destination_path."/".$file." : permission denied");
-						}
-					} else {
-						if (@rename($initial_path."/".$file, $destination_path."/".$file)) {
-							@chmod($destination_path."/".$file, octdec(FILES_CHMOD));
-						} else {
-							CMS_grandFather::raiseError("Can't move file ".$initial_path."/".$file." to ".$destination_path."/".$file." : permission denied");
-						}
-					}
-				}
-			}
-		}
-
-		//cleans the initial dir if not a copy
-		if (!$copyOnly) {
-			$initial_dir->rewind();
-			while (false !== ($file = $initial_dir->read())) {
-				if (is_file($initial_path."/".$file)
-					&& io::substr($file, 0, io::strlen($files_prefix)) == $files_prefix) {
-					unlink($initial_path."/".$file);
-				}
-			}
-		}
-		*/
 		return true;
 	}
 }

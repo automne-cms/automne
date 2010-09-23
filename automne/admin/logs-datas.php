@@ -56,7 +56,7 @@ define("MESSAGE_PAGE_FIELD_ELEMENT", 1579);
 //get search vars
 $codename = sensitiveIO::request('module', CMS_modulesCatalog::getAllCodenames());
 $pageId = sensitiveIO::request('page', 'sensitiveIO::isPositiveInteger', 0);
-$type = sensitiveIO::request('type', array('all','login','resource','admin','email'), 'all');
+$type = sensitiveIO::request('type', array('all','login','resource','admin','email','modules'), 'all');
 $sort = sensitiveIO::request('sort', array('datetime', 'user', 'action'), 'datetime');
 $dir = sensitiveIO::request('dir', array('ASC','DESC'), 'DESC');
 $userId = sensitiveIO::request('userId', 'sensitiveIO::isPositiveInteger');
@@ -92,9 +92,12 @@ switch($type) {
 	case 'resource':
 		$types = CMS_log_catalog::getResourceActions();
 	break;
+	case 'modules':
+		$types = CMS_log_catalog::getModulesActions($cms_language);
+	break;
 	case 'all':
 	default:
-		$types = CMS_log_catalog::getAllActions();
+		$types = CMS_log_catalog::getAllActions($cms_language);
 	break;
 }
 if ($delete) {
@@ -102,7 +105,7 @@ if ($delete) {
 } else {
 	//search logs
 	$logs = CMS_log_catalog::search($codename, $pageId, $userId, $types, $start, $limit, $sort, io::strtolower($dir), $returnCount = false);
-	$actions = CMS_log_catalog::getAllActions();
+	$actions = CMS_log_catalog::getAllActions($cms_language);
 	//loop over users to get all required infos
 	foreach ($logs as $log) {
 		$dt = $log->getDatetime();
@@ -143,11 +146,13 @@ if ($delete) {
 		} else {
 			$element = $status = '';
 		}
+		$actionKey = array_search($log->getLogAction(), $actions);
+		$actionLabel = io::isPositiveInteger($actionKey) ? $cms_language->getMessage($actionKey) : $actionKey;
 		$datas = array(
 			'id'			=> $log->getID(),
 			'datetime'		=> $dt->getLocalizedDate($cms_language->getDateFormat().' H:i:s'),
 			'element'		=> $element,
-			'action'		=> $cms_language->getMessage(array_search($log->getLogAction(), $actions)),
+			'action'		=> $actionLabel,
 			'user'			=> $user->getFullname(),
 			'userId'		=> $user->getUserId(),
 			'status'		=> $status,
