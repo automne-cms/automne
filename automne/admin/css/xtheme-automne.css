@@ -1392,6 +1392,10 @@ td.x-grid3-hd-over, td.sort-desc, td.sort-asc, td.x-grid3-hd-menu-open{
 	background-image:				url(/automne/admin/img/pictos/pictos.png);
 	background-position:			0px -290px;
 }
+.x-btn-text-icon .x-btn-mc .atm-pic-export{
+	background-image:				url(/automne/admin/img/pictos/pictos.png);
+	background-position:			0px -649px;
+}
 .x-btn-text-icon .x-btn-mc .atm-pic-draft-deletion{
 	background-image:				url(/automne/admin/img/pictos/pictos.png);
 	background-position:			0px -674px; 

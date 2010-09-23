@@ -52,6 +52,8 @@ define("MESSAGE_PAGE_FIELD_BY_PAGE", 1586);
 define("MESSAGE_ACTION_PURGE", 1587);
 define("MESSAGE_ACTION_PURGE_DESC", 1588);
 define("MESSAGE_ACTION_PURGE_CONFIRM", 1589);
+define("MESSAGE_ACTION_EXPORT", 1672);
+define("MESSAGE_ACTION_EXPORT_DESC", 1673);
 
 $winId = sensitiveIO::request('winId', '', 'logsWindow');
 
@@ -235,8 +237,8 @@ $jscontent = <<<END
 		tbar:[{
 			xtype:		'button',
 			iconCls:	'atm-pic-export',
-			text:		'Exporter',
-			tooltip:	'Exporter la recherche en cours',
+			text:		'{$cms_language->getJsMessage(MESSAGE_ACTION_EXPORT)}',
+			tooltip:	'{$cms_language->getJsMessage(MESSAGE_ACTION_EXPORT_DESC)}',
 			handler:	function(button) {
 				var formValues = Ext.getCmp('logsSearchPanel').getForm().getValues();
 				params = Ext.apply(formValues, {

@@ -1586,3 +1586,5 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1629, 'standard', 'fr', 'Cette fonction vous permet de remettre à zéro le cache employé sur les rangées de contenus ainsi que sur les plugins WYSIWYG et les flux RSS des modules polymod.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1630, 'standard', 'fr', 'Gestion du cache :');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1631, 'standard', 'fr', 'Veuillez Patienter ...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1672, 'standard', 'fr', 'Exporter');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1673, 'standard', 'fr', 'Exporter la recherche en cours');
