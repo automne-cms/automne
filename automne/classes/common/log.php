@@ -569,7 +569,7 @@ class CMS_log extends CMS_grandFather
 	function getResource()
 	{
 		$mod = $this->getModule();
-		if (is_a($mod, "CMS_module")) {
+		if (is_a($mod, "CMS_module") && io::isPositiveInteger($this->_resource)) {
 			return $mod->getResourceByID($this->_resource);
 		} else {
 			return false;

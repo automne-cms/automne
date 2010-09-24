@@ -171,6 +171,14 @@ if (!defined('APPLICATION_JS_AND_CSS_COMPRESSION')) {
 }
 
 /**
+ * Activate Google Chrome Frame support
+ * Default : false
+ */
+if (!defined('APPLICATION_GCF_SUPPORT')) {
+	define('APPLICATION_GCF_SUPPORT', false);
+}
+
+/**
   *	XHTML DTD used in page generation.
   *	Default : XHTML 1.0 transitionnal : "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n\t\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">"
   */

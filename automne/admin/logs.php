@@ -134,7 +134,7 @@ $types['types'][] = array(
 	'id'			=> 'email',
 	'label'			=> $cms_language->getMessage(MESSAGE_PAGE_TYPE_EMAILS)
 );
-$modulesActions = CMS_log_catalog::getModulesActions();
+$modulesActions = CMS_log_catalog::getModulesActions($cms_language);
 if ($modulesActions) {
 	$types['types'][] = array(
 		'id'			=> 'modules',

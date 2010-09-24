@@ -69,6 +69,21 @@ if (isset($_REQUEST["cms_action"]) && $_REQUEST["cms_action"] == 'logout') {
 	//append logout info
 	$content .= '<script type="text/javascript">Automne.logout = true;</script>';
 }
+if (APPLICATION_GCF_SUPPORT) {
+	//GCF prompt for IE
+	$content .= '
+	<script type="text/javascript" 
+		src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+	<style type="text/css">
+	.chromeFrameOverlayContent {
+		z-index:200001;
+	}
+	</style> 
+	<script type="text/javascript">
+		CFInstall.check({mode: "overlay"});
+	</script>';
+}
+//Page content
 $content .= '
 <div id="atm-server-call"></div>
 <div style="display:none;">

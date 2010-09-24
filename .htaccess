@@ -40,3 +40,13 @@ Allow from all
 #		Header set Cache-Control "max-age=1209600, public"
 #	</FilesMatch>
 #</IfModule>
+
+# To force usage of Google Chrome Frame for IE6,7,8
+# Uncomment the following lines (mod_setenvif and mod_headers are needed)
+# GCF must be installed
+#<IfModule mod_setenvif.c>
+#  <IfModule mod_headers.c>
+#    BrowserMatch chromeframe gcf
+#    Header append X-UA-Compatible "chrome=1" env=gcf
+#  </IfModule>
+#</IfModule>

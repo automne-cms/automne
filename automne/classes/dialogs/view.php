@@ -617,10 +617,11 @@ class CMS_view extends CMS_grandFather
 						'.$this->_copyright().'
 						<meta name="generator" content="'.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION.'" />
 						'.CMS_view::getCSS().'
-						'.CMS_view::getJavascript().'
-						
-					</head>';
-					//<meta http-equiv="X-UA-Compatible" content="chrome=1">
+						'.CMS_view::getJavascript();
+						if (APPLICATION_GCF_SUPPORT) {
+							echo '<meta http-equiv="X-UA-Compatible" content="chrome=1">';
+						}
+				echo '</head>';
 			break;
 		}
 	}
