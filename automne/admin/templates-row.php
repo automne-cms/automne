@@ -9,10 +9,8 @@
 // | LICENSE-GPL, and is available through the world-wide-web at		  |
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
-// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
+// | Author: SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
-//
-// $Id: templates-row.php,v 1.12 2010/03/08 16:41:21 sebastien Exp $
 
 /**
   * PHP page : Load page rows search window.
@@ -20,7 +18,8 @@
   *
   * @package Automne
   * @subpackage admin
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author Julien Breux <julien.breux@gmail.com>
   */
 
 require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
@@ -49,6 +48,8 @@ define("MESSAGE_PAGE_ACTIVATE", 1517);
 define("MESSAGE_PAGE_DESACTIVATE", 1518);
 define("MESSAGE_PAGE_VIEW_INACTIVE_ROWS", 1522);
 define("MESSAGE_PAGE_DELETE_CONFIRM", 1523);
+define("MESSAGE_PAGE_DUPLICATE", 1520);
+define("MESSAGE_ACTION_DUPLICATE_SELECTED", 1521);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -380,7 +381,17 @@ $jscontent = <<<END
 			},
 			scope:		resultsPanel,
 			disabled:	true
-		}, '->', {
+		},{
+			id:			'{$winId}copyItem',
+			xtype:		'button',
+			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_DUPLICATE)}',
+			handler:	function(button) {
+				//copy selected template and then refresh search results
+				Automne.server.call('rows-controler.php', rowWindow.search, {rowId:selectedObjects, action:'copy'})
+			},
+			scope:		resultsPanel,
+			disabled:	true
+		},'->', {
 			id:			'{$winId}createItem',
 			xtype:		'button',
 			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_NEW)}',
@@ -453,6 +464,10 @@ $jscontent = <<<END
 		target: 		Ext.getCmp('{$winId}createItem').getEl(),
 		html: 			'{$cms_language->getJSMessage(MESSAGE_ACTION_CREATE_SELECTED)}'
 	});
+	qtips['copy'] = new Ext.ToolTip({
+		target: 		Ext.getCmp('{$winId}copyItem').getEl(),
+		html: 			'{$cms_language->getJSMessage(MESSAGE_ACTION_DUPLICATE_SELECTED)}'
+	});
 
 	resultsPanel.dv.on('selectionchange', function(dv, selections){
 		selectedObjects = [];
@@ -480,7 +495,9 @@ $jscontent = <<<END
 			Ext.getCmp('{$winId}deleteItem').disable();
 			Ext.getCmp('{$winId}activateItem').disable();
 			Ext.getCmp('{$winId}desactivateItem').disable();
+			Ext.getCmp('{$winId}copyItem').disable();
 		} else { //enable / disable buttons allowed by selection
+			Ext.getCmp('{$winId}copyItem').setDisabled(selectLen != 1);
 			Ext.getCmp('{$winId}editItem').enable();
 			Ext.getCmp('{$winId}deleteItem').setDisabled(!hasDelete);
 			Ext.getCmp('{$winId}activateItem').setDisabled(!hasActivate);

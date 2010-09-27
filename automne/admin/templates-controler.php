@@ -36,6 +36,7 @@ define("MESSAGE_ACTION_SAVE_PRINT_DONE", 1483);
 define("MESSAGE_ERROR_NO_PUBLIC_PAGE", 1484);
 define("MESSAGE_ACTION_DUPICATION_DONE", 1485);
 define("MESSAGE_ERROR_WRITE_TEMPLATE", 1552);
+define("MESSAGE_PAGE_COPY_OF", 524);
 
 //Controler vars
 $action = sensitiveIO::request('action', array('properties', 'definition', 'printcs', 'regenerate', 'copy'));
@@ -364,7 +365,7 @@ switch ($action) {
 	case 'copy':
 		if (is_a($template, "CMS_pageTemplate") && !$template->hasError()) {
 			//Dupplicate selected template with given label
-			$label = 'Copie de '.$template->getLabel();
+			$label = $cms_language->getMessage(MESSAGE_PAGE_COPY_OF).' '.$template->getLabel();
 			$template = CMS_pageTemplatesCatalog::getCloneFromID($templateId, $label);
 
 			$log = new CMS_log();
