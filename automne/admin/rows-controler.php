@@ -34,6 +34,7 @@ define("MESSAGE_ACTION_N_PAGES_REGEN", 733);
 define("MESSAGE_ACTION_NO_PAGES", 734);
 define("MESSAGE_ACTION_DUPICATION_DONE", 1485);
 define("MESSAGE_ERROR_WRITE_ROW", 1551);
+define("MESSAGE_PAGE_COPY_OF", 524);
 
 //Controler vars
 $action = sensitiveIO::request('action', array('properties', 'definition', 'regenerate', 'copy'));
@@ -188,7 +189,7 @@ switch ($action) {
 	case 'copy':
 		if (is_a($row, "CMS_row") && !$row->hasError()) {
 			//Dupplicate selected row with given label
-			$label = 'Copie de '.$row->getLabel();
+			$label = $cms_language->getMessage(MESSAGE_PAGE_COPY_OF).' '.$row->getLabel();
 			$row = CMS_rowsCatalog::getCloneFromID($rowId, $label);
 
 			$log = new CMS_log();
