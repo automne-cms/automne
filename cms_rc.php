@@ -171,7 +171,7 @@ if (!defined('APPLICATION_JS_AND_CSS_COMPRESSION')) {
 }
 
 /**
- * Activate Google Chrome Frame support
+ * Activate Google Chrome Frame support for Automne administration
  * Default : false
  */
 if (!defined('APPLICATION_GCF_SUPPORT')) {
