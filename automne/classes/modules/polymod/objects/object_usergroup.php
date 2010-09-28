@@ -268,7 +268,7 @@ class CMS_object_usergroup extends CMS_object_common
 				if (is_array($a_all_users) && $a_all_users) {
 					$usersDatas[] = array('', $language->getMessage(self::MESSAGE_CHOOSE_OBJECT));
 					foreach($a_all_users as $userGroupID => $aUserGroupLabel) {
-						$usersDatas[] = array($userGroupID, $aUserGroupLabel);
+						$usersDatas[] = array($userGroupID, io::decodeEntities($aUserGroupLabel));
 					}
 					$return['value']	= $this->_subfieldValues[0]->getValue();
 				} else {
@@ -292,7 +292,6 @@ class CMS_object_usergroup extends CMS_object_common
 			);
 			$return['selectOnFocus'] 	= true;
 			$return['editable'] 		= false;
-			$return['anchor'] 			= false;
 		}
 		return $return;
 	}
