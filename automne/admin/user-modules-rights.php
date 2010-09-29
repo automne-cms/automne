@@ -220,7 +220,7 @@ if ($moduleCodename == MOD_STANDARD_CODENAME) {
 			// Check if in template groups denied
 			$checked = (!$profile->hasTemplateGroupsDenied($templategroup)) ? 'checked="true"' : '';
 			$disabled = ($disableFields || $profile->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) ? ' disabled="disabled"':'';
-			$templatesCheckboxes .= '<label for="template-'.$templategroup.'-'.$moduleCodename.'-'.$profileId.'"><input type="checkbox" name="templates['.$templategroup.']" id="template-'.$templategroup.'-'.$moduleCodename.'-'.$profileId.'" '.$checked.$disabled.' /> '.$templategroup.'</label> ';
+			$templatesCheckboxes .= '<label for="template-'.base64_encode($templategroup).'-'.$moduleCodename.'-'.$profileId.'"><input type="checkbox" name="templates['.base64_encode($templategroup).']" id="template-'.base64_encode($templategroup).'-'.$moduleCodename.'-'.$profileId.'" '.$checked.$disabled.' /> '.$templategroup.'</label> ';
 		}
 		if (!$disableFields) {
 			$templateGroupsSubmit = ",buttons:[{
@@ -250,7 +250,7 @@ if ($moduleCodename == MOD_STANDARD_CODENAME) {
 			// Check if in row groups denied
 			$checked = (!$profile->hasRowGroupsDenied($rowgroup)) ? 'checked="true"' : '';
 			$disabled = ($disableFields || $profile->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) ? ' disabled="disabled"':'';
-			$rowsCheckboxes .= '<label for="row-'.$rowgroup.'-'.$moduleCodename.'-'.$profileId.'"><input type="checkbox" name="rows['.$rowgroup.']" id="row-'.$rowgroup.'-'.$moduleCodename.'-'.$profileId.'" '.$checked.$disabled.' /> '.$rowgroup.'</label> ';
+			$rowsCheckboxes .= '<label for="row-'.base64_encode($rowgroup).'-'.$moduleCodename.'-'.$profileId.'"><input type="checkbox" name="rows['.base64_encode($rowgroup).']" id="row-'.base64_encode($rowgroup).'-'.$moduleCodename.'-'.$profileId.'" '.$checked.$disabled.' /> '.$rowgroup.'</label> ';
 		}
 		if (!$disableFields) {
 			$rowGroupsSubmit = ",buttons:[{
