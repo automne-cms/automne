@@ -210,7 +210,7 @@ class CMS_search extends CMS_grandFather {
 				}
 			}
 			$foundIDs = array_unique(array_merge($foundLinkToIDs, $foundLinkFromIDs, $foundPagesFromTemplate, $foundPagesFromRow));
-			// Main sql requests (for pageId and keywords)
+			// Main sql requests (for pageId, pages codenames and keywords)
 			if($allDatas[self::SEARCH_TYPE_DEFAULT]){
 				$count = 0;
 				$where='';
@@ -237,6 +237,7 @@ class CMS_search extends CMS_grandFather {
 								or keywords_pbd like '%".$block."%'
 								or description_pbd like '%".$block."%'
 								or category_pbd like '%".$block."%'
+								or codename_pbd = '".$block."'
 							)";
 							
 						}
@@ -268,7 +269,7 @@ class CMS_search extends CMS_grandFather {
 						//Search in page content (fulltext search)
 						$keywords = implode(' ', $allDatas[self::SEARCH_TYPE_DEFAULT]);
 						$selects = array(
-							'pagesBaseData'.$suffix 	=> array('page' => 'page_pbd', 	'match' => 'title_pbd,linkTitle_pbd,keywords_pbd,description_pbd'),
+							'pagesBaseData'.$suffix 	=> array('page' => 'page_pbd', 	'match' => 'title_pbd,linkTitle_pbd,keywords_pbd,description_pbd,codename_pbd'),
 							'blocksVarchars'.$suffix	=> array('page' => 'page', 		'match' => 'value'),
 							'blocksTexts'.$suffix		=> array('page' => 'page', 		'match' => 'value', 'entities' => true),
 							'blocksImages'.$suffix		=> array('page' => 'page', 		'match' => 'label'),

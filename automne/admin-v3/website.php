@@ -54,6 +54,7 @@ define("MESSAGE_PAGE_FIELD_LABEL_DESC", 1431);
 define("MESSAGE_PAGE_META_DATA_LABEL", 393);
 define("MESSAGE_PAGE_FIELD_SUB_DOMAINS", 1603);
 define("MESSAGE_PAGE_FIELD_SUB_DOMAINS_DESC", 1604);
+define("MESSAGE_PAGE_CODENAMES", 1683);
 
 //RIGHTS CHECK
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES)) {
@@ -248,8 +249,20 @@ $content .= '
 </form>
 <br />
 '.$cms_language->getMessage(MESSAGE_FORM_MANDATORY_FIELDS).'
-<br /><br />
-';
+<br /><br />';
+$codenames = $website->getAllCodenames();
+if ($codenames) {
+	$content .= '
+	<fieldset class="admin">
+	<legend class="admin"><strong>'.$cms_language->getMessage(MESSAGE_PAGE_CODENAMES).'</strong></legend><ul>';
+	foreach ($codenames as $codename => $pageId) {
+		$page = CMS_tree::getPageById($pageId);
+		$content .= '<li>'.$codename.' : <a href="#" onclick="Automne.utils.getPageById('.$page->getID().');Ext.WindowMgr.getActive().close();" class="admin">'.$page->getTitle().' ('.$page->getID().')</a></li>';
+	}
+	$content .= '
+	</ul></fieldset>
+	';
+}
 $dialog->setContent($content);
 $dialog->show();
 ?>

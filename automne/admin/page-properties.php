@@ -48,6 +48,9 @@ define("MESSAGE_PAGE_FIELD_REDIRECT", 1039);
 define("MESSAGE_PAGE_INFO_REQUIRED_FIELD", 1239);
 define("MESSAGE_PAGE_FIELD_FORCEURLREFRESH_COMMENT", 1317);
 define("MESSAGE_PAGE_INFO_FORCEURLREFRESH", 1318);
+define("MESSAGE_PAGE_FIELD_CODENAME", 1675);
+define("MESSAGE_PAGE_INFO_FIELD_CODENAME", 1676);
+define("MESSAGE_PAGE_INFO_FIELD_CODENAME_VTYPE", 1677);
 
 define("MESSAGE_PAGE_FIELD_PUBDATE_BEG", 134);
 define("MESSAGE_PAGE_FIELD_DATE_COMMENT", 148);
@@ -460,6 +463,30 @@ if (!$pageTplId) {
 	$pageTplId = '-';
 }
 
+$codename = $cms_page->getCodename();
+$codenameField = '';
+if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES) || $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) {
+	$codenameField = ",{
+				{$disabled}
+				fieldLabel:		'<span ext:qtip=\"{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_FIELD_CODENAME)}\" class=\"atm-help\">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_CODENAME)}</span>',
+				xtype:			'textfield',
+				name:			'codename',
+				maxLength:		20,
+				vtype:			'codename',
+				allowBlank:		true,
+				vtypeText:		'{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_FIELD_CODENAME_VTYPE)}',
+				value:			'{$codename}'
+			}";
+} else {
+	if ($codename) {
+		$codenameField = ",{
+				fieldLabel:		'<span ext:qtip=\"{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_FIELD_CODENAME)}\" class=\"atm-help\">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_CODENAME)}</span>',
+				name:			'pageCodename',
+				xtype:			'atmEmptyfield',
+				value:			'{$codename}'
+			}";
+	}
+}
 $jscontent .= <<<END
 	//create center panel
 	var center = new Ext.TabPanel({
@@ -603,7 +630,7 @@ $jscontent .= <<<END
 							name:			'pageId',
 							xtype:			'atmEmptyfield',
 							value:			'{$pageId}'
-						},{
+						}{$codenameField},{
 							fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_BELONG_SITE)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_WEBSITE)}</span>',
 							name:			'pageWebsite',
 							xtype:			'atmEmptyfield',

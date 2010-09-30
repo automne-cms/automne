@@ -29,14 +29,14 @@
 class CMS_linxNodespec extends CMS_grandFather
 {
 	/**
-	  * The nodespec type, one of "node", "relative"
+	  * The nodespec type, one of "node", "relative", "codename"
 	  * @var string
 	  * @access private
 	  */
 	protected $_type;
 	
 	/**
-	  * The value, either a page reference (ID) or one of "self", "brother", "father", "root"
+	  * The value, either a page reference (ID) or one of "self", "brother", "father", "root" or a page codename
 	  * @var mixed
 	  * @access private
 	  */
@@ -67,7 +67,7 @@ class CMS_linxNodespec extends CMS_grandFather
 	  */
 	function __construct($type, $value, $relativeOffset, $crosswebsite = false)
 	{
-		$authorized_types = array("node", "relative");
+		$authorized_types = array("node", "relative", "codename");
 		$authorized_string_values = array("self", "brother", "father", "root");
 		$this->_crosswebsite = $crosswebsite;
 		if (!SensitiveIO::isInSet($type, $authorized_types)) {
@@ -82,10 +82,14 @@ class CMS_linxNodespec extends CMS_grandFather
 			$this->raiseError("Bad value for 'relative' type : ".$value);
 			return;
 		}
+		if ($type == "codename" && strtolower(io::sanitizeAsciiString($value)) != $value) {
+			$this->raiseError("Bad value for 'codename' type : ".$value);
+			return;
+		}
 		
 		$this->_type = $type;
 		$this->_value = $value;
-		if (!SensitiveIO::isPositiveInteger($value)) {
+		if ($this->_type == 'relative') {
 			$this->_relativeOffset = $relativeOffset;
 		}
 	}
@@ -122,6 +126,18 @@ class CMS_linxNodespec extends CMS_grandFather
 				return $pg;
 			} else {
 				return false;
+			}
+			break;
+		case "codename":
+			if ($this->_crosswebsite) {
+				return CMS_tree::getPagesByCodename($this->_value, $publicTree, true);
+			} else {
+				$pg = CMS_tree::getPageByCodename($this->_value, $page->getWebsite(), $publicTree, true);
+				if ($pg && !$pg->hasError()) {
+					return $pg;
+				} else {
+					return false;
+				}
 			}
 			break;
 		case "relative" :

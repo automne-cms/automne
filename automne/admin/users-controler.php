@@ -150,7 +150,7 @@ switch ($action) {
 			$user->setActive(true);
 			$user->writeToPersistence();
 			$log = new CMS_log();
-			$log->logMiscAction(CMS_log::LOG_ACTION_PROFILE_USER_EDIT, $cms_user, "Activate user : ".$user->getFullName());
+			$log->logMiscAction(CMS_log::LOG_ACTION_PROFILE_USER_EDIT, $cms_user, "Enable user account: ".$user->getFullName());
 			$cms_message = $cms_language->getJSMessage(MESSAGE_PAGE_USER_X_ACTIVATED, array($user->getFullName()));
 		} else {
 			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_UNKNOWN_USER);
@@ -161,7 +161,7 @@ switch ($action) {
 			$user->setActive(false);
 			$user->writeToPersistence();
 			$log = new CMS_log();
-			$log->logMiscAction(CMS_log::LOG_ACTION_PROFILE_USER_EDIT, $cms_user, "Disactivate user : ".$user->getFullName());
+			$log->logMiscAction(CMS_log::LOG_ACTION_PROFILE_USER_EDIT, $cms_user, "Disable user account: ".$user->getFullName());
 			$cms_message = $cms_language->getJSMessage(MESSAGE_PAGE_USER_X_DISABLED, array($user->getFullName()));
 		} else {
 			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_UNKNOWN_USER);

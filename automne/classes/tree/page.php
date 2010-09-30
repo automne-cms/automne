@@ -983,6 +983,55 @@ class CMS_page extends CMS_resource
 	}
 	
 	/**
+	  * Gets the codename base data.
+	  *
+	  * @param boolean $public Do we want the edited or public value ?
+	  * @return string The page codename
+	  * @access public
+	  */
+	function getCodename($public = false) {
+		if (!$this->_checkBaseData($public)) {
+			return false;
+		}
+		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
+		return $this->{$var}["codename"];
+	}
+	
+	/**
+	  * Sets the codename base data.
+	  *
+	  * @param string $data The new base data to set
+	  * @param CMS_profile_user &$user the user who did the edition
+	  * @param boolean $checkForDuplicate : check the codename for website duplication
+	  * @return boolean true on success, false on failure
+	  * @access public
+	  */
+	function setCodename($data, &$user, $checkForDuplicate = true) {
+		if (!is_a($user, "CMS_profile_user")) {
+			$this->raiseError("Didn't received a valid user");
+			return false;
+		}
+		if (strtolower(io::sanitizeAsciiString($data)) != $data) {
+			$this->raiseError("Page codename must be alphanumeric only");
+			return false;
+		}
+		//check if codename already exists
+		if ($checkForDuplicate && $data) {
+			$pageId = CMS_tree::getPageByCodename($data, $this->getWebsite(), false, false);
+			if ($pageId && ((!$this->getID() && $pageId) || ($this->getID() != $pageId))) {
+				$this->raiseError("Page codename already exists in current website");
+				return false;
+			}
+		}
+		if (!$this->_checkBaseData(false)) {
+			return false;
+		}
+		$this->_editedBaseData["codename"] = $data;
+		$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
+		return true;
+	}
+	
+	/**
 	  * Gets the keywords base data.
 	  *
 	  * @param boolean $public Do we want the edited or public value ?
@@ -1759,6 +1808,7 @@ class CMS_page extends CMS_resource
 			$this->{$var}["refresh"] = '';
 			$this->{$var}["refreshUrl"] = '';
 			$this->{$var}["metas"] = '';
+			$this->{$var}["codename"] = '';
 			$this->{$var}["reminderOn"] = new CMS_date();
 			$this->{$var}["redirect"] = new CMS_href();
 			switch ($this->_status->getLocation()) {
@@ -1805,6 +1855,7 @@ class CMS_page extends CMS_resource
 				$this->{$var}["refreshUrl"] = $data["refreshUrl_pbd"];
 				$this->{$var}["metas"] = $data["metas_pbd"];
 				$this->{$var}["redirect"] = new CMS_href($data["redirect_pbd"]);
+				$this->{$var}["codename"] = $data["codename_pbd"];
 			}
 		}
 		
@@ -1927,7 +1978,8 @@ class CMS_page extends CMS_resource
 				refresh_pbd='".SensitiveIO::sanitizeSQLString($this->_editedBaseData["refresh"])."',
 				redirect_pbd='".SensitiveIO::sanitizeSQLString($this->_editedBaseData["redirect"]->getTextDefinition())."',
 				refreshUrl_pbd='".SensitiveIO::sanitizeSQLString($this->_editedBaseData["refreshUrl"])."',
-				metas_pbd='".SensitiveIO::sanitizeSQLString($this->_editedBaseData["metas"])."'
+				metas_pbd='".SensitiveIO::sanitizeSQLString($this->_editedBaseData["metas"])."',
+				codename_pbd='".SensitiveIO::sanitizeSQLString($this->_editedBaseData["codename"])."'
 			";
 			if ($this->_baseDataID) {
 				$sql = "
@@ -1999,6 +2051,7 @@ class CMS_page extends CMS_resource
 			$pg->setRefresh($this->getRefresh(), $user);
 			$pg->setRedirectLink($this->getRedirectLink(), $user);
 			$pg->setMetas($this->getMetas(), $user);
+			$pg->setCodename($this->getCodename(), $user, false);
 			if (SensitiveIO::isPositiveInteger($this->getReminderPeriodicity())) {
 				$pg->setReminderPeriodicity($this->getReminderPeriodicity(), $user);
 			}

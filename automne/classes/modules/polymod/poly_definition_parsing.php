@@ -1671,6 +1671,8 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				$replace["#^\{(var|request|session|constant)\:([^:]+):(.+)\}$#U"] 		= 'CMS_poly_definition_functions::getVarContent("\1", "\3", "\2", @$\3)';
 				//replace '{page:id:type}' value by corresponding CMS_tree::getPageValue(id, type) call
 				$replace["#^\{page\:([0-9]+)\:(.*?)\}$#U"]= 'CMS_tree::getPageValue("\1","\2")';
+				//replace '{page:codename:type}' value by corresponding CMS_tree::getPageCodenameValue(codename, current, type) call
+				$replace["#^\{page\:([a-z0-9-]+)\:(.*?)\}$#U"]= 'CMS_tree::getPageCodenameValue("\1",$parameters[\'pageID\'],"\2")';
 				//replace '{user:id:type}' value by corresponding CMS_profile_usersCatalog::getUserValue(id, type) call
 				$replace["#^\{user\:([0-9]+)\:(.*?)\}$#U"]= 'CMS_profile_usersCatalog::getUserValue("\1","\2")';
 				//create the real object path to vars
@@ -1687,6 +1689,8 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				$replace["#^\{(var|request|session|constant)\:([^:]+):(.+)\}$#U"] 	= 'CMS_poly_definition_functions::getVarContent("\1", "\3", "\2", @$\3)';
 				//replace '{page:id:type}' value by corresponding CMS_tree::getPageValue(id, type) call
 				$replace["#^\{page\:([0-9]+)\:(.*?)\}$#U"]= 'CMS_tree::getPageValue("\1","\2")';
+				//replace '{page:codename:type}' value by corresponding CMS_tree::getPageCodenameValue(codename, current, type) call
+				$replace["#^\{page\:([a-z0-9-]+)\:(.*?)\}$#U"]= 'CMS_tree::getPageCodenameValue("\1",$parameters[\'pageID\'],"\2")';
 				//replace '{user:id:type}' value by corresponding CMS_profile_usersCatalog::getUserValue(id, type) call
 				$replace["#^\{user\:([0-9]+)\:(.*?)\}$#U"]= 'CMS_profile_usersCatalog::getUserValue("\1","\2")';
 				//create the real object path to vars

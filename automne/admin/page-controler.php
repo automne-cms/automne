@@ -52,10 +52,15 @@ define("MESSAGE_PAGE_ERROR_CREATION", 563);
 define("MESSAGE_PAGE_ACTION_MOVE_ERROR", 695);
 define("MESSAGE_PAGE_ACTION_MOVE_ERROR_NO_RIGHTS", 696);
 define("MESSAGE_PAGE_ACTION_DUPLICATION_ERROR_NO_RIGHTS", 697);
-define("MESSAGE_PAGE_ACTION_DUPLICATION_ERROR", 698);
-define("MESSAGE_PAGE_ACTION_DUPLICATION_DONE", 699);
+define("MESSAGE_PAGE_ACTION_DUPLICATION_ERROR", 699);
+define("MESSAGE_PAGE_ACTION_DUPLICATION_DONE", 698);
 define("MESSAGE_ACTION_BLANK_PAGE", 1590);
 define("MESSAGE_ACTION_REGEN_ERROR", 1601);
+define("MESSAGE_FORM_ERROR_CODENAME", 1678);
+define("MESSAGE_FORM_ERROR_CODENAME_EXISTS", 1679);
+define("MESSAGE_PAGE_ACTION_COPY_CODENAME_DUPLICATION", 1680);
+define("MESSAGE_PAGE_ACTION_MOVE_CODENAME_DUPLICATION", 1681);
+define("MESSAGE_PAGE_ACTION_TREE_DUPLICATE_CODENAME_DUPLICATION", 1682);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -69,6 +74,7 @@ $field = sensitiveIO::request('field', '', '');
 $action = sensitiveIO::request('action', '', '');
 $value = sensitiveIO::request('value', '', '');
 $forceblank = sensitiveIO::request('forceblank') ? true : false;
+$force = sensitiveIO::request('force') ? true : false;
 
 //load page
 $cms_page = CMS_tree::getPageByID($currentPage);
@@ -93,6 +99,7 @@ if ($action != 'unlock' || ($action == 'unlock' && !$cms_user->hasAdminClearance
 $initialStatus = $cms_page->getStatus()->getHTML(false, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getID());
 //page edited status
 $edited = $logAction = false;
+
 switch ($action) {
 	case 'creation':
 		$father = sensitiveIO::request('father', 'sensitiveIO::isPositiveInteger', false);
@@ -154,6 +161,15 @@ switch ($action) {
 			$pageToDuplicate = CMS_tree::getPageByID($copiedPage);
 			//page template
 			$originalTemplate = $pageToDuplicate->getTemplate();
+			//check for codename duplication
+			$removeCodename = false;
+			if ($pageToDuplicate->getCodename()) {
+				//if codename already exists in website destination, then we must remove it
+				$sameCodenamePage = CMS_tree::getPageByCodename($pageToDuplicate->getCodename(), $cms_page->getWebsite());
+				if ($sameCodenamePage) {
+					$removeCodename = true;
+				}
+			}
 			//original source template
 			$pageTplId = CMS_pageTemplatesCatalog::getTemplateIDForCloneID($originalTemplate->getID());
 			if ($pageTplId == $template)  { //same template
@@ -162,6 +178,19 @@ switch ($action) {
 				$duplicatedPage = $pageToDuplicate->duplicate($cms_user, $template, !$copyContent);
 			}
 			if (is_a($duplicatedPage, 'CMS_page') && !$duplicatedPage->hasError()) {
+				//remove codename if needed
+				if ($removeCodename) {
+					$duplicatedPage->setCodename('', $cms_user);
+					//send message to inform user
+					$jscontent = '
+						Automne.message.popup({
+							msg: 				\''.$cms_language->getJSMessage(MESSAGE_PAGE_ACTION_COPY_CODENAME_DUPLICATION, array($pageToDuplicate->getCodename())).'\',
+							buttons: 			Ext.MessageBox.OK,
+							closable: 			false,
+							icon: 				Ext.MessageBox.INFO
+						});';
+					$view->addJavascript($jscontent);
+				}
 				//attach duplicated page to tree
 				if (CMS_tree::attachPageToTree($duplicatedPage, $cms_page)) {
 					$edited = RESOURCE_EDITION_CONTENT;
@@ -351,6 +380,31 @@ switch ($action) {
 			$cms_page->raiseError('Error during move of page '.$cms_page->getID().'. Value set : '.$value);
 		} else {
 			if ($cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)) {
+				//check for codename duplication
+				if ($cms_page->getCodename()) {
+					//if codename already exists in website destination, then we must remove it
+					$newParentPage = CMS_tree::getPageByID($newParent);
+					//check if website destination is different from current website
+					$newWebsite = $newParentPage->getWebsite();
+					$currentWebsite = $cms_page->getWebsite();
+					if ($newWebsite->getID() != $currentWebsite->getID()) {
+						//check if current codename exists in new website
+						$sameCodenamePage = CMS_tree::getPageByCodename($cms_page->getCodename(), $newWebsite);
+						if ($sameCodenamePage) {
+							//send message to inform user
+							$jscontent = '
+								Automne.message.popup({
+									msg: 				\''.$cms_language->getJSMessage(MESSAGE_PAGE_ACTION_MOVE_CODENAME_DUPLICATION, array($cms_page->getCodename())).'\',
+									buttons: 			Ext.MessageBox.OK,
+									closable: 			false,
+									icon: 				Ext.MessageBox.INFO
+								});';
+							$view->addJavascript($jscontent);
+							$cms_page->setCodename('', $cms_user);
+							$cms_page->writeToPersistence();
+						}
+					}
+				}
 				if ($newParent == $oldParent) {
 					//this is a reordering
 					//the page used is the father of the current page
@@ -403,30 +457,48 @@ switch ($action) {
 		$linktitle = strip_tags(sensitiveIO::request('linkTitle'));
 		$redirection = sensitiveIO::request('redirection');
 		$updateURL = sensitiveIO::request('updateURL') ? true : false;
+		$codename = sensitiveIO::request('codename');
 		//base datas has changed so write the new ones
-		if ($cms_page->getTitle() != $title || $cms_page->getLinkTitle() != $linktitle || $updateURL || $cms_page->getRedirectLink()->getTextDefinition() != $redirection) {
+		if ($cms_page->getTitle() != $title
+			 || $cms_page->getLinkTitle() != $linktitle
+			 || $updateURL
+			 || $cms_page->getRedirectLink()->getTextDefinition() != $redirection
+			 || $cms_page->getCodename($codename) != $codename) {
 			if (!$cms_page->setTitle($title, $cms_user)) {
-				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
+				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT)."<br />";
 				$cms_page->raiseError('Error during set title for page '.$cms_page->getID().'. Value set : '.$title);
 			}
 			if (!$cms_page->setLinkTitle($linktitle, $cms_user)) {
-				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
+				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT)."<br />";
 				$cms_page->raiseError('Error during set link title for page '.$cms_page->getID().'. Value set : '.$linktitle);
 			}
 			if (!$cms_page->setRefreshUrl($updateURL, $cms_user)) {
-				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
+				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT)."<br />";
 				$cms_page->raiseError('Error during set refresh url for page '.$cms_page->getID().'. Value set : '.$updateURL);
 			}
 			$redirection = new CMS_href($redirection);
 			if ($redirection->getLinkType() != RESOURCE_LINK_TYPE_INTERNAL || $redirection->getInternalLink() != $cms_page->getID()) {
 				$cms_page->setRedirectLink($redirection,$cms_user);
 			}
+			if ($codename) {
+				$page = CMS_tree::getPageByCodename($codename, $cms_page->getWebsite(), false, true);
+				if ($page && ((!$cms_page->getID() && $page->getID()) || ($cms_page->getID() != $page->getID()))) {
+					$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CODENAME_EXISTS, array('"'.$page->getTitle(true).'" ('.$page->getID().')'))."<br />";
+					$cms_page->raiseError('Error during set codename for page '.$cms_page->getID().'. Value set : '.$codename);
+				} elseif (!$cms_page->setCodename($codename, $cms_user)) {
+					$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CODENAME)."<br />";
+					$cms_page->raiseError('Error during set codename for page '.$cms_page->getID().'. Value set : '.$codename);
+				}
+			} elseif (!$cms_page->setCodename($codename, $cms_user)) {
+				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CODENAME)."<br />";
+				$cms_page->raiseError('Error during set codename for page '.$cms_page->getID().'. Value set : '.$codename);
+			}
 			if (!$cms_page->hasError() && $cms_page->writeToPersistence()) {
 				$edited = RESOURCE_EDITION_BASEDATA;
 				$logAction = CMS_log::LOG_ACTION_RESOURCE_EDIT_BASEDATA;
 				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 			} else {
-				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
+				$cms_message .= $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
 				$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : update pageContent');
 			}
 		}
@@ -624,14 +696,27 @@ switch ($action) {
 			$pageDuplicated = array();
 			
 			function duplicatePage($user, $page, $pageToAttachTo) {
-				global $pageDuplicated;
+				global $pageDuplicated, $duplicatedCodenames, $cms_user;
 				if (is_a($page, "CMS_page") && is_a($pageToAttachTo, "CMS_page") && $page->getTemplate()) {
+					//check codename duplication
+					$removeCodename = false;
+					if ($page->getCodename()) {
+						//if codename already exists in website destination, then we must remove it
+						if (CMS_tree::getPageByCodename($page->getCodename(), $pageToAttachTo->getWebsite(), false, false)) {
+							$removeCodename = true;
+						}
+					}
 					//Duplicate page template
 					$tpl = $page->getTemplate();
 					$tpl_copy = CMS_pageTemplatesCatalog::getCloneFromID($tpl->getID(), false, true, false, $tpl->getID());
 					$_tplID = $tpl_copy->getID();
 					//Create copy of given page
 					$newPage = $page->duplicate($user, $_tplID) ;
+					if ($removeCodename) {
+						$newPage->setCodename('', $cms_user);
+						$newPage->writeToPersistence();
+						$duplicatedCodenames[] = $page->getCodename();
+					}
 					//Move to destination in tree
 					if (is_null($newPage) || !CMS_tree::attachPageToTree($newPage, $pageToAttachTo) ) {
 						return null;
@@ -651,9 +736,21 @@ switch ($action) {
 					}
 				}
 			}
+			$duplicatedCodenames = array();
 			if (!$pageFrom->hasError() && !$pageTo->hasError()) {
-				//Do recursivly
+				//Do recursively
 				duplicatePage($cms_user, $pageFrom, $pageTo) ;
+				if ($duplicatedCodenames) {
+					//send message to inform user
+					$jscontent = '
+						Automne.message.popup({
+							msg: 				\''.$cms_language->getJSMessage(MESSAGE_PAGE_ACTION_TREE_DUPLICATE_CODENAME_DUPLICATION, array(implode(', ', $duplicatedCodenames))).'\',
+							buttons: 			Ext.MessageBox.OK,
+							closable: 			false,
+							icon: 				Ext.MessageBox.INFO
+						});';
+					$view->addJavascript($jscontent);
+				}
 				$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_DUPLICATION_DONE);
 			} else {
 				$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_DUPLICATION_ERROR);

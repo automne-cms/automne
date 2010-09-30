@@ -57,7 +57,34 @@ case "delete":
 	if (is_a($website, "CMS_website") && !$website->isMain()) {
 		$log = new CMS_log();
 		$log->logMiscAction(CMS_log::LOG_ACTION_WEBSITE_DELETE, $cms_user, "Website : ".$website->getLabel());
-
+		//check for codenames duplications
+		//get website codenames
+		$websiteCodenames = $website->getAllCodenames();
+		//get codenames of parent website
+		$websiteRoot = $website->getRoot();
+		$father = CMS_tree::getFather($websiteRoot, true);
+		$fatherWebsite = $father->getWebsite();
+		$fatherCodenames = $fatherWebsite->getAllCodenames();
+		$codenamesToRemove = array();
+		//get duplicated codenames
+		foreach ($websiteCodenames as $codename => $pageId) {
+			if (isset($fatherCodenames[$codename])) {
+				$codenamesToRemove[$codename] = $pageId;
+			}
+		}
+		//remove duplicated codenames
+		if ($codenamesToRemove) {
+			foreach ($codenamesToRemove as $codename => $pageId) {
+				$page = CMS_tree::getPageById($pageId);
+				$page->setCodename('', $cms_user);
+				$page->writeToPersistence();
+				//validate the modification
+				$validation = new CMS_resourceValidation(MOD_STANDARD_CODENAME, RESOURCE_EDITION_BASEDATA, $page);
+				$mod = CMS_modulesCatalog::getByCodename(MOD_STANDARD_CODENAME);
+				$mod->processValidation($validation, VALIDATION_OPTION_ACCEPT);
+			}
+		}
+		//then destroy website
 		$website->destroy();
 		$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 	} else {

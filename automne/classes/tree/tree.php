@@ -83,8 +83,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return CMS_page or false on failure to find it
 	  * @access public
 	  */
-	function getPageValue($id, $type)
-	{
+	function getPageValue($id, $type) {
 		static $pagesInfos;
 		if (!SensitiveIO::isPositiveInteger($id)) {
 			CMS_grandFather::raiseError("Page id must be positive integer : ".$id);
@@ -118,6 +117,139 @@ class CMS_tree extends CMS_grandFather
 		}
 		return $pagesInfos[$id][$type];
 	}
+	
+	/**
+	  * Returns a queried CMS_page value identified by it's codename and a reference page to identify the requested website
+	  * Static function.
+	  *
+	  * @param string $codename The codename of the wanted CMS_page
+	  * @param integer $id The DB ID of the reference CMS_page. This id is used to get the website of reference
+	  * @param string $type The value type to get
+	  * @return CMS_page or false on failure to find it
+	  * @access public
+	  */
+	function getPageCodenameValue($codename, $referencePageId, $type) {
+		static $pagesInfos;
+		if (!SensitiveIO::isPositiveInteger($referencePageId)) {
+			CMS_grandFather::raiseError("Reference Page id must be positive integer : ".$referencePageId);
+			return false;
+		}
+		if (strtolower(io::sanitizeAsciiString($codename)) != $codename) {
+			$this->raiseError("Page codename must be alphanumeric only");
+			return false;
+		}
+		if (!isset($pagesInfos[$codename][$referencePageId])) {
+			//get website of reference page Id
+			$website = CMS_tree::getPageWebsite($referencePageId);
+			if (!$website) {
+				$pagesInfos[$codename][$referencePageId] = false;
+			} else {
+				//get page by codename
+				$pagesInfos[$codename][$referencePageId] = CMS_tree::getPageByCodename($codename, $website, true, false);
+			}
+		}
+		if ($pagesInfos[$codename][$referencePageId]) {
+			return CMS_tree::getPageValue($pagesInfos[$codename][$referencePageId], $type);
+		}
+		return false;
+	}
+	
+	/**
+	  * Get a page by it's codename relative to a given website
+	  * Static function.
+	  *
+	  * @param $page string : the page codename to get
+	  * @param $website mixed integer / CMS_website : the website which codename is relative to
+	  * @param boolean $public Do we want to fetch the public tree or the edited one (default) ?
+	  * @param $returnObject boolean : does the method return a CMS_page (default) or the page Id
+	  * @return mixed integer / CMS_page : the page using the given codename
+	  * @access public
+	  */
+	function getPageByCodename($codename, $website, $public = false, $returnObject = true) {
+		if (is_object($website)) {
+			$websiteID = $website->getID();
+		} elseif (io::isPositiveInteger($website)) {
+			$websiteID = $website;
+		} else {
+			CMS_grandFather::raiseError('Website must be instance of CMS_website or valid website ID');
+			return false;
+		}
+		static $codenames;
+		if (isset($codenames[$websiteID][$codename])) {
+			return ($returnObject) ? CMS_tree::getPageByID($codenames[$websiteID][$codename]) : $codenames[$websiteID][$codename];
+		}
+		$table = ($public) ? 'pagesBaseData_public' : 'pagesBaseData_edited';
+		$q = new CMS_query("
+			select
+				page_pbd
+			from
+				".$table."
+			where
+				codename_pbd='".io::sanitizeSQLString($codename)."'
+		");
+		if (!$q->getNumRows()) {
+			return false;
+		}
+		while ($id = $q->getValue('page_pbd')) {
+			$pageWebsite = CMS_tree::getPageWebsite($id);
+			if ($pageWebsite && $websiteID == $pageWebsite->getID()) {
+				$codenames[$websiteID][$codename] = $id;
+				return ($returnObject) ? CMS_tree::getPageByID($codenames[$websiteID][$codename]) : $codenames[$websiteID][$codename];
+			}
+		}
+		return false;
+	}
+	
+	/**
+	  * Get all pages for a given codename
+	  * Static function.
+	  *
+	  * @param $page string : the page codename to get
+	  * @param boolean $public Do we want to fetch the public tree or the edited one (default) ?
+	  * @param $returnObject boolean : does the method return a CMS_page (default) or the page Id
+	  * @return mixed integer / CMS_page : the page using the given codename
+	  * @access public
+	  */
+	function getPagesByCodename($codename, $public = false, $returnObject = true) {
+		static $codenames;
+		if (isset($codenames[$codename])) {
+			if ($returnObject) {
+				$pages = array();
+				foreach ($codenames[$codename] as $pageId) {
+					$pages[] = CMS_tree::getPageByID($pageId);
+				}
+				return $pages;
+			} else {
+				return $codenames[$codename];
+			}
+		}
+		$table = ($public) ? 'pagesBaseData_public' : 'pagesBaseData_edited';
+		$q = new CMS_query("
+			select
+				page_pbd
+			from
+				".$table."
+			where
+				codename_pbd='".io::sanitizeSQLString($codename)."'
+		");
+		if (!$q->getNumRows()) {
+			return false;
+		}
+		$codenames[$codename] = array();
+		while ($id = $q->getValue('page_pbd')) {
+			$codenames[$codename][] = $id;
+		}
+		if ($returnObject) {
+			$pages = array();
+			foreach ($codenames[$codename] as $pageId) {
+				$pages[] = CMS_tree::getPageByID($pageId);
+			}
+			return $pages;
+		} else {
+			return $codenames[$codename];
+		}
+	}
+	
 	
 	/**
 	  * Check if page(s) exists and is(are) in userspace.
@@ -201,12 +333,14 @@ class CMS_tree extends CMS_grandFather
 	  */
 	function getSiblings(&$page, $publicTree = false, $getPages=true)
 	{
-		if (!is_a($page, "CMS_page") && sensitiveIO::isPositiveInteger($page)) {
+		if (sensitiveIO::isPositiveInteger($page)) {
 			$pageID = $page;
-		} else {
+		} elseif(is_object($page)) {
 			$pageID = $page->getID();
+		} else {
+			CMS_grandFather::raiseError('page must be a valid CMS_page or a page Id : '.$page);
+			return array();
 		}
-		
 		$table = ($publicTree) ? "linx_tree_public" : "linx_tree_edited";
 		$sql = "
 			select
@@ -269,16 +403,26 @@ class CMS_tree extends CMS_grandFather
 	  *
 	  * @param integer $pageID The page we want he siblings of
 	  * @param boolean $publicTree Do we want to fetch the public tree or the edited one ?
+	  * @param boolean $stopAtWebsites Do we want to fetch the tree of all websites or only the current one (default : false)
 	  * @return array(id) All siblings page id
 	  * @access public
 	  */
-	function getAllSiblings($pageID, $publicTree = false)
-	{
+	function getAllSiblings($pageID, $publicTree = false, $stopAtWebsites = false) {
 		$pages = array();
+		if (!io::isPositiveInteger($pageID)) {
+			return $pages;
+		}
 		$siblings = CMS_tree::getSiblings($pageID, $publicTree, false);
+		if ($stopAtWebsites) {
+			foreach ($siblings as $key => $siblingID) {
+				if (CMS_websitesCatalog::isWebsiteRoot($siblingID)) {
+					unset($siblings[$key]);
+				}
+			}
+		}
 		$pages = array_merge($pages, $siblings);
 		foreach ($siblings as $siblingID) {
-			$pages = array_merge($pages, CMS_tree::getAllSiblings($siblingID, $publicTree));
+			$pages = array_merge($pages, CMS_tree::getAllSiblings($siblingID, $publicTree, $stopAtWebsites));
 		}
 		return $pages;
 	}
@@ -1074,8 +1218,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return CMS_website or false on failure
 	  * @access public
 	  */
-	function getPageWebsite(&$page)
-	{
+	function getPageWebsite($page) {
 		//check argument is a page
 		if (is_object($page)) {
 			$pageID = $page->getID();
@@ -1185,7 +1328,7 @@ class CMS_tree extends CMS_grandFather
 			$dir = PATH_PAGES_LINXFILES_FS;
 			if ($opendir = @opendir($dir)) {
 				while (false !== ($readdir = readdir($opendir))) {
-					if ($readdir !== '..' && $readdir !== '.' && $readdir !== '.htaccess' && $readdir !== '.cvsignore') {
+					if ($readdir !== '..' && $readdir !== '.' && $readdir !== '.htaccess') {
 						$readdir = trim($readdir);
 						if (is_file($dir.'/'.$readdir)) {
 							@unlink($dir.'/'.$readdir);
