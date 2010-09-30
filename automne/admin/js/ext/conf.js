@@ -15,3 +15,11 @@ Ext.form.VTypes.alphanumMask = /^[a-zA-Z0-9_.]+$/;
 Ext.form.VTypes.alphanum = function(v){
 	return Ext.form.VTypes.alphanumMask.test(v);
 };
+//vtype codename
+Ext.apply(Ext.form.VTypes, {
+    codename:  function(v) {
+        return /^[a-z0-9-]*$/.test(v);
+    },
+    codenameText: 'Codename must be alphanumeric and lowercase',
+    codenameMask: /[a-z0-9-]/i
+});

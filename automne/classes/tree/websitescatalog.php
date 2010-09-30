@@ -211,7 +211,7 @@ class CMS_websitesCatalog extends CMS_grandFather
 			";
 			$q = new CMS_query($sql);
 			if ($q->getNumRows()) {
-				$roots[$rootID] = new CMS_website($q->getValue("id_web"));
+				$roots[$rootID] = CMS_websitesCatalog::getByID($q->getValue("id_web"));
 			} else {
 				$roots[$rootID] = false;
 			}
@@ -283,45 +283,6 @@ class CMS_websitesCatalog extends CMS_grandFather
 	  */
 	function writeRootRedirection()
 	{
-		//and write general and specific redirection files
-		/*$filename = 'index.php';
-		$content = '<?php'."\n".
-		'//Generated on '.date('r').' by '.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION."\n".
-		'require_once(dirname(__FILE__).\'/cms_rc_frontend.php\');'."\n".
-		'$httpHost = @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) ? @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) : $_SERVER[\'HTTP_HOST\'];'."\n".
-		'//search page id by domain address'."\n".
-		'$website = CMS_websitesCatalog::getWebsiteFromDomain($httpHost);'."\n".
-		'if (!$website) {'."\n".
-		'	$website = CMS_websitesCatalog::getMainWebsite();'."\n".
-		'}'."\n".
-		'$rootPage = $website->getRoot();'."\n".
-		'//redirect to subpage if any'."\n".
-		'$redirectlink = $rootPage->getRedirectLink(true);'."\n".
-		'while ($redirectlink->hasValidHREF() && sensitiveIO::IsPositiveInteger($redirectlink->getInternalLink())) {'."\n".
-		'	$rootPage = new CMS_page($redirectlink->getInternalLink());'."\n".
-		'	$redirectlink = $rootPage->getRedirectLink(true);'."\n".
-		'}'."\n".
-		'$pPath = $rootPage->getHTMLURL(false, false, PATH_RELATIVETO_FILESYSTEM);'."\n".
-		'if ($pPath) {'."\n".
-		'	if (file_exists($pPath)) {'."\n".
-		'		$cms_page_included = true;'."\n".
-		'		require($pPath);'."\n".
-		'		exit;'."\n".
-		'	}'."\n".
-		'}'."\n".
-		'header(\'HTTP/1.x 301 Moved Permanently\', true, 301);'."\n".
-		'header(\'Location: \'.PATH_SPECIAL_PAGE_NOT_FOUND_WR.\'\');'."\n".
-		'? >';
-		//and write general redirection file
-		$indexPath = PATH_REALROOT_FS;
-		$fp = @fopen($indexPath . "/".$filename, "wb");
-		if (is_resource($fp)) {
-			fwrite($fp, $content);
-			fclose($fp);
-			@chmod($indexPath."/".$filename, octdec(FILES_CHMOD));
-			return true;
-		}
-		return false;*/
 		return true;
 	}
 }

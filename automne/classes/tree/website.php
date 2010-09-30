@@ -546,5 +546,35 @@ class CMS_website extends CMS_grandFather
 		}
 		return true;
 	}
+	
+	/**
+	  * Get all pages codenames for website
+	  *
+	  * @return array(codename => pageId)
+	  * @access public
+	  */
+	function getAllCodenames() {
+		$pageIds = CMS_tree::getAllSiblings($this->_root->getID(), false, true);
+		if (!is_array($pageIds)) {
+			$pageIds = array();
+		}
+		$pageIds[] = $this->_root->getID();
+		//pr($pagesIds);
+		$q = new CMS_query("
+			select
+				page_pbd, codename_pbd
+			from
+				pagesBaseData_edited
+			where
+				page_pbd in (".implode(',', $pageIds).")
+				and codename_pbd != ''
+		");
+		$pagesCodenames = $q->getAll();
+		$codenames = array();
+		foreach ($pagesCodenames as $pageCodename) {
+			$codenames[$pageCodename['codename_pbd']] = $pageCodename['page_pbd'];
+		}
+		return $codenames;
+	}
 }
 ?>

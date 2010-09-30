@@ -109,6 +109,7 @@ define("MESSAGE_PAGE_EDIT_NOT_VALIDATED", 667);
 define("MESSAGE_PAGE_NO_PAGES_RIGHTS", 668);
 define("MESSAGE_PAGE_NO_PAGE_RIGHT", 669);
 define("MESSAGE_PAGE_LOCKED_ON_AT", 1591);
+define("MESSAGE_PAGE_CODENAME", 1675);
 $cms_language->endPrefetch();
 
 //load interface instance
@@ -1089,7 +1090,11 @@ foreach ($userPanels as $panel => $panelStatus) {
 				<div id="tip-header-text">
 				<strong>'.$cms_language->getMessage(MESSAGE_PAGE_PUBLIC_TIP_TITLE).' : </strong>'.$cms_page->getTitle().'<br />
 				<strong>'.$cms_language->getMessage(MESSAGE_PAGE_PUBLIC_TIP_LINKTITLE).' : </strong>'.$cms_page->getLinkTitle().'</div>';
-				$panelTip = '<strong>'.$cms_language->getMessage(MESSAGE_PAGE_PUBLIC_TIP_ID).' : </strong>'.$cms_page->getID().'<br />
+				$panelTip = '<strong>'.$cms_language->getMessage(MESSAGE_PAGE_PUBLIC_TIP_ID).' : </strong>'.$cms_page->getID().'<br />';
+				if ($cms_page->getCodename()) {
+					$panelTip .= '<strong>'.$cms_language->getMessage(MESSAGE_PAGE_CODENAME).' : </strong>'.$cms_page->getCodename().'<br />';
+				}
+				$panelTip .= '
 				<strong>'.$cms_language->getMessage(MESSAGE_PAGE_PUBLIC_TIP_STATUS).' : </strong>'.$cms_page->getStatus()->getStatusLabel($cms_language).'<br />
 				<strong>'.$cms_language->getMessage(MESSAGE_PAGE_PUBLIC_TIP_TEMPLATE).' : </strong>'.$pageTemplateLabel.'<br />
 				<strong>'.$cms_language->getMessage(MESSAGE_PAGE_PUBLIC_TIP_PUBLICATION).' : </strong>'.$cms_page->getStatus()->getPublicationRange($cms_language).'<br />';

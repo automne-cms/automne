@@ -56,6 +56,7 @@ class CMS_module_standard extends CMS_module
 	const MESSAGE_MOD_STANDARD_PLUGIN = 1403;
 	
 	const MESSAGE_MOD_STANDARD_LINKTITLE = 133;
+	const MESSAGE_MOD_STANDARD_CODENAME = 1675;
 	const MESSAGE_MOD_STANDARD_ID = 863;
 	const MESSAGE_MOD_STANDARD_TEMPLATE = 72;
 	const MESSAGE_MOD_STANDARD_STATUS = 160;
@@ -2152,6 +2153,7 @@ class CMS_module_standard extends CMS_module
 			$panelTip = '
 			'.$cms_language->getMessage(self::MESSAGE_MOD_STANDARD_LINKTITLE).' : <strong>'.$page->getLinkTitle().'</strong><br />
 			'.$cms_language->getMessage(self::MESSAGE_MOD_STANDARD_ID).' : <strong>'.$page->getID().'</strong><br />
+			'.($page->getCodename() ? ($cms_language->getMessage(self::MESSAGE_MOD_STANDARD_CODENAME).' : <strong>'.$page->getCodename().'</strong><br />') : '').'
 			'.$cms_language->getMessage(self::MESSAGE_MOD_STANDARD_STATUS).' : <strong>'.$page->getStatus()->getStatusLabel($cms_language).'</strong><br />
 			'.$cms_language->getMessage(self::MESSAGE_MOD_STANDARD_TEMPLATE).' : <strong>'.$pageTemplateLabel.'</strong>';
 			

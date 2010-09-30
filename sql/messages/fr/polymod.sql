@@ -66,9 +66,9 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 	<h1>Variables g&eacute;n&eacute;rales :</h1>
 	<div class="retrait">
 		<h3>Variables relatives aux pages :</h3>
-		<div class="retrait"> Les variables relatives aux pages sont de la forme <span class="vertclair">{page:<span class="keyword">id</span>:<span class="keyword">type</span>}</span>:
+		<div class="retrait"> Les variables relatives aux pages sont de la forme <span class="vertclair">{page:<span class="keyword">ref</span>:<span class="keyword">type</span>}</span>:
 		<ul>
-			<li><span class="keyword">id </span>: Identifiant de la page &agrave; laquelle faire r&eacute;f&eacute;rence, peut &ecirc;tre un identifiant num&eacute;rique d''une page ou bien ''<span class="vertclair">self</span>'' pour faire r&eacute;f&eacute;rence &agrave; la page courante.</li>
+			<li><span class="keyword">ref </span>: Identifiant ou nom de code de la page &agrave; laquelle faire r&eacute;f&eacute;rence, peut &ecirc;tre un identifiant num&eacute;rique d''une page, un nom de code alphanumérique ou bien ''<span class="vertclair">self</span>'' pour faire r&eacute;f&eacute;rence &agrave; la page courante.</li>
 			<li><span class="keyword">type</span> : type de donn&eacute;e souhait&eacute; pour la page parmi les suivants : <span class="vertclair">url </span>(adresse de la page), <span class="vertclair">printurl </span>(adresse de la page d''impression), <span class="vertclair">id </span>(identifiant de la page), <span class="vertclair">title </span>(nom de la page).</li>
 		</ul>
 		</div>

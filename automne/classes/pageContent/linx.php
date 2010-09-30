@@ -359,13 +359,18 @@ class CMS_linx extends CMS_grandFather
 					$nodespec = $nodespecs->item(0);
 					$nodespec = CMS_linxNodespec::createNodespec($nodespec, $this->_crosswebsite);
 				}
-				$pg = $nodespec->getTarget($this->_page, $this->_publicTree);
-				if ($pg) {
-					$this->_selectionStartPages[] = $pg;
-					//if nodespec type is relative and relative type is father OR the linx type is sublinks,
-					//store the representation ID in the _fatherWatch array
-					if ($nodespec->getRelativeType() == "brother" || $this->_type == "sublinks" || $this->_type == "recursivelinks") {
-						$this->_fatherWatches[] = $pg->getID();
+				$pages = $nodespec->getTarget($this->_page, $this->_publicTree);
+				if ($pages) {
+					if (!is_array($pages)) {
+						$pages = array($pages);
+					}
+					foreach ($pages as $pg) {
+						$this->_selectionStartPages[] = $pg;
+						//if nodespec type is relative and relative type is father OR the linx type is sublinks,
+						//store the representation ID in the _fatherWatch array
+						if ($nodespec->getRelativeType() == "brother" || $this->_type == "sublinks" || $this->_type == "recursivelinks") {
+							$this->_fatherWatches[] = $pg->getID();
+						}
 					}
 				}
 			}
@@ -410,36 +415,38 @@ class CMS_linx extends CMS_grandFather
 			break;
 		case "desclinks":
 			if (!$this->_selectionStopPage) {
-				$this->raiseError("No stop page found for desclinks");
+				//$this->raiseError("No stop page found for desclinks");
 				return false;
 			}
-			$start = $this->_selectionStartPages[0];
-			$targets_temp = CMS_tree::getLineage($start, $this->_selectionStopPage, true, $this->_publicTree);
-			if ($targets_temp && is_array($targets_temp)) {
-				$targets_temp = array_reverse($targets_temp);
-				$root_found = false;
-				foreach ($targets_temp as $aTarget) {
-					if (CMS_websitesCatalog::isWebsiteRoot($aTarget->getID())) {
-						if ($root_found) {
-							break;
-						} else {
-							$root_found = true;
+			foreach ($this->_selectionStartPages as $start) {
+				$targets_temp = CMS_tree::getLineage($start, $this->_selectionStopPage, true, $this->_publicTree);
+				if ($targets_temp && is_array($targets_temp)) {
+					$targets_temp = array_reverse($targets_temp);
+					$root_found = false;
+					foreach ($targets_temp as $aTarget) {
+						if (CMS_websitesCatalog::isWebsiteRoot($aTarget->getID())) {
+							if ($root_found) {
+								break;
+							} else {
+								$root_found = true;
+							}
 						}
+						$targets[] = $aTarget;
 					}
-					$targets[] = $aTarget;
+					$targets = array_reverse($targets);
 				}
-				$targets = array_reverse($targets);
 			}
 			//apply the selection to the builded targets
 			$targets = $this->_selectTargets($targets);
 			break;
 		case "sublinks":
-			$start = $this->_selectionStartPages[0];
-			$targets_temp = CMS_tree::getSiblings($start, $this->_publicTree);
-			if ($targets_temp && is_array($targets_temp)) {
-				foreach ($targets_temp as $aTarget) {
-					if ($this->_crosswebsite || !CMS_websitesCatalog::isWebsiteRoot($aTarget->getID())) {
-						$targets[] = $aTarget;
+			foreach ($this->_selectionStartPages as $start) {
+				$targets_temp = CMS_tree::getSiblings($start, $this->_publicTree);
+				if ($targets_temp && is_array($targets_temp)) {
+					foreach ($targets_temp as $aTarget) {
+						if ($this->_crosswebsite || !CMS_websitesCatalog::isWebsiteRoot($aTarget->getID())) {
+							$targets[] = $aTarget;
+						}
 					}
 				}
 			}
