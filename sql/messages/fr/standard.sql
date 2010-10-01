@@ -308,7 +308,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(307, 'standard', 'fr', 'Vous permet de voir l''état du contenu en cours de modification pour la page.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(308, 'standard', 'fr', 'L''onglet est inaccessible car aucun contenu n''est en cours de modification pour la page.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(309, 'standard', 'fr', 'Vous permet de modifier le contenu de cette page ou de continuer les modifications en cours.');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(310, 'standard', 'fr', 'L''onglet est inaccessible car cette page ne peut être modifiée directement.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(310, 'standard', 'fr', 'Cette page ne peut être modifiée car elle ne possède pas de zone de contenu éditable.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(311, 'standard', 'fr', 'Derniers changements');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(312, 'standard', 'fr', 'Modifié par %s le %s.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(313, 'standard', 'fr', 'Validé par %s le %s.');

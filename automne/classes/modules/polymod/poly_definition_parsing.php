@@ -1662,53 +1662,39 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		if (preg_match_all("#{[^{}\n]+}#", $text, $matches)) {
 			$matches = array_unique($matches[0]);
 			//create replacement array
-			if ($reverse) {
-				//create replacement array
-				$replace = array();
-				//replace 'fieldID' value by corresponding fieldID
-				$replace["#^\{.*\[([n0-9]+)\]\[\\\'fieldID\\\'\]\}$#U"] 				= '\1';
-				//replace '{vartype:type:name}' value by corresponding var call
-				$replace["#^\{(var|request|session|constant)\:([^:]+):(.+)\}$#U"] 		= 'CMS_poly_definition_functions::getVarContent("\1", "\3", "\2", @$\3)';
-				//replace '{page:id:type}' value by corresponding CMS_tree::getPageValue(id, type) call
-				$replace["#^\{page\:([0-9]+)\:(.*?)\}$#U"]= 'CMS_tree::getPageValue("\1","\2")';
-				//replace '{page:codename:type}' value by corresponding CMS_tree::getPageCodenameValue(codename, current, type) call
-				$replace["#^\{page\:([a-z0-9-]+)\:(.*?)\}$#U"]= 'CMS_tree::getPageCodenameValue("\1",$parameters[\'pageID\'],"\2")';
-				//replace '{user:id:type}' value by corresponding CMS_profile_usersCatalog::getUserValue(id, type) call
-				$replace["#^\{user\:([0-9]+)\:(.*?)\}$#U"]= 'CMS_profile_usersCatalog::getUserValue("\1","\2")';
-				//create the real object path to vars
-				$replace["#\[\\\'fields\\\'\]\[([n0-9]+)\]\}?#"] 						= '->objectValues(\1)';
-				$replace["#\[\\\'values\\\'\]\[([n0-9]+)\]\[\\\'([a-zA-Z]+)\\\'\]\}$#U"]= '->getValue(\'\1\',\'\2\')';
-				$replace["#\[\\\'([a-zA-Z]+)\\\'\]\|?([^|}]*)\}$#U"] 					= '->getValue(\'\1\',\'\2\')';
-				$replace["#^\{\[\\\'object([0-9]+)\\\'\]#U"] 							= '$object[\1]';
-				$replace["#\[([n0-9]+)]}$#U"] 											= '[\1]';
-			} else {
-				$replace = array();
-				//replace 'fieldID' value by corresponding fieldID
-				$replace["#^\{.*\[([n0-9]+)\]\['fieldID'\]\}$#U"] 					= '\1';
-				//replace '{vartype:type:name}' value by corresponding var call
-				$replace["#^\{(var|request|session|constant)\:([^:]+):(.+)\}$#U"] 	= 'CMS_poly_definition_functions::getVarContent("\1", "\3", "\2", @$\3)';
-				//replace '{page:id:type}' value by corresponding CMS_tree::getPageValue(id, type) call
-				$replace["#^\{page\:([0-9]+)\:(.*?)\}$#U"]= 'CMS_tree::getPageValue("\1","\2")';
-				//replace '{page:codename:type}' value by corresponding CMS_tree::getPageCodenameValue(codename, current, type) call
-				$replace["#^\{page\:([a-z0-9-]+)\:(.*?)\}$#U"]= 'CMS_tree::getPageCodenameValue("\1",$parameters[\'pageID\'],"\2")';
-				//replace '{user:id:type}' value by corresponding CMS_profile_usersCatalog::getUserValue(id, type) call
-				$replace["#^\{user\:([0-9]+)\:(.*?)\}$#U"]= 'CMS_profile_usersCatalog::getUserValue("\1","\2")';
-				//create the real object path to vars
-				$replace["#\['fields'\]\[([n0-9]+)\]\}?#"] 							= '->objectValues(\1)';
-				$replace["#\['values'\]\[([n0-9]+)\]\['([a-zA-Z]+)'\]\}$#U"]		= '->getValue(\'\1\',\'\2\')';
-				$replace["#\['([a-zA-Z]+)'\]\|?\"\.([^|}]*)\.\"\}$#U"] 				= '->getValue(\'\1\',\2)';
-				$replace["#\['([a-zA-Z]+)'\]\|?([^|}]*)\}$#U"] 						= '->getValue(\'\1\',\'\2\')';
-				$replace["#^\{\['object([0-9]+)'\]#U"] 								= '$object[\1]';
-				$replace["#\[([n0-9]+)]}$#U"] 										= '[\1]';
-			}
+			$replace = array();
+			//replace {page:self:type}, {user:self:type}, {plugin:selection} values
+			$replace["#^\{page:self:(.*?)\}$#U"]								= 'CMS_tree::getPageValue($parameters[\'pageID\'],"\1")';
+			$replace["#^\{user:self:(.*?)\}$#U"]								= 'CMS_profile_usersCatalog::getUserValue(($cms_user ? $cms_user->getUserId() : null),"\1")';
+			$replace["#^\{plugin:selection\}$#U"]								= '$parameters[\'selection\']';
+			//replace '{vartype:type:name}' value by corresponding var call
+			$replace["#^\{(var|request|session|constant)\:([^:]+):(.+)\}$#U"] 	= 'CMS_poly_definition_functions::getVarContent("\1", "\3", "\2", @$\3)';
+			//replace '{page:id:type}' value by corresponding CMS_tree::getPageValue(id, type) call
+			$replace["#^\{page\:([0-9]+)\:(.*?)\}$#U"]							= 'CMS_tree::getPageValue("\1","\2")';
+			//replace '{page:codename:type}' value by corresponding CMS_tree::getPageCodenameValue(codename, current, type) call
+			$replace["#^\{page\:([a-z0-9-]+)\:(.*?)\}$#U"]						= 'CMS_tree::getPageCodenameValue("\1",$parameters[\'pageID\'],"\2")';
+			//replace '{user:id:type}' value by corresponding CMS_profile_usersCatalog::getUserValue(id, type) call
+			$replace["#^\{user\:([0-9]+)\:(.*?)\}$#U"]							= 'CMS_profile_usersCatalog::getUserValue("\1","\2")';
+			//replace 'fieldID' value by corresponding fieldID
+			$replace["#^\{.*\[([n0-9]+)\]\['fieldID'\]\}$#U"] 					= '\1';
+			//create the real object path to vars
+			$replace["#\['fields'\]\[([n0-9]+)\]\}?#"] 							= '->objectValues(\1)';
+			$replace["#\['values'\]\[([n0-9]+)\]\['([a-zA-Z]+)'\]\}$#U"]		= '->getValue(\'\1\',\'\2\')';
+			$replace["#\['([a-zA-Z]+)'\]\|?\"\.([^|}]*)\.\"\}$#U"] 				= '->getValue(\'\1\',\2)';
+			$replace["#\['([a-zA-Z]+)'\]\|?([^|}]*)\}$#U"] 						= '->getValue(\'\1\',\'\2\')';
+			$replace["#^\{\['object([0-9]+)'\]#U"] 								= '$object[\1]';
+			$replace["#\[([n0-9]+)]}$#U"] 										= '[\1]';
 			//replace the loop 'n' value by $key
 			$replace["#\(([n0-9]+)\)->objectValues(\(n\))#U"] 					= '(\1)->objectValues($key_\1)';
 			$replace["#\(([n0-9]+)\)->getValue\(('n')#U"] 						= '(\1)->getValue($key_\1';
 			
-			//replace {page:self:type}, {user:self:type}, {plugin:selection} values
-			$replace["#^\{page:self:(.*?)\}$#U"]= 'CMS_tree::getPageValue($parameters[\'pageID\'],"\1")';
-			$replace["#^\{user:self:(.*?)\}$#U"]= 'CMS_profile_usersCatalog::getUserValue(($cms_user ? $cms_user->getUserId() : null),"\1")';
-			$replace["#^\{plugin:selection\}$#U"]= '$parameters[\'selection\']';
+			if ($reverse) {
+				$reversedReplace = array();
+				foreach ($replace as $key => $value) {
+					$reversedReplace[str_replace("'", "\\\'", $key)] = $value;
+				}
+				$replace = $reversedReplace;
+			}
 			
 			$matchesValues = preg_replace(array_keys($replace), $replace, $matches);
 			if (isset($this->_parameters['module'])) {

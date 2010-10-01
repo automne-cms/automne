@@ -308,7 +308,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(307, 'standard', 'en', 'Lets you see the state of the content modification for the page.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(308, 'standard', 'en', 'The tab is disabled because currently, there is no content modification for the page.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(309, 'standard', 'en', 'Modify the page content and layout');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(310, 'standard', 'en', 'The tab is disabled because the content of this page cannot be directly changed.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(310, 'standard', 'en', 'This page can not be changed because it does not have editable content area.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(311, 'standard', 'en', 'Last changes');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(312, 'standard', 'en', 'Modified by %s on %s.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(313, 'standard', 'en', 'Validated by %s on %s.');
