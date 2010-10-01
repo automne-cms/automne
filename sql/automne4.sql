@@ -2114,9 +2114,10 @@ CREATE TABLE `pagesBaseData_archived` (
   `refreshUrl_pbd` int(1) NOT NULL default '0',
   `url_pbd` varchar(255) NOT NULL default '',
   `metas_pbd` text NOT NULL,
+  `codename_pbd` varchar(20) NOT NULL,
   PRIMARY KEY  (`id_pbd`),
   KEY `page_pbd` (`page_pbd`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `pagesBaseData_archived`
@@ -2152,9 +2153,10 @@ CREATE TABLE `pagesBaseData_deleted` (
   `refreshUrl_pbd` int(1) NOT NULL default '0',
   `url_pbd` varchar(255) NOT NULL default '',
   `metas_pbd` text NOT NULL,
+  `codename_pbd` varchar(20) NOT NULL,
   PRIMARY KEY  (`id_pbd`),
   KEY `page_pbd` (`page_pbd`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `pagesBaseData_deleted`
@@ -2190,16 +2192,17 @@ CREATE TABLE `pagesBaseData_edited` (
   `refreshUrl_pbd` int(1) NOT NULL default '0',
   `url_pbd` varchar(255) NOT NULL default '',
   `metas_pbd` text NOT NULL,
+  `codename_pbd` varchar(20) NOT NULL,
   PRIMARY KEY  (`id_pbd`),
   KEY `page_pbd` (`page_pbd`),
-  FULLTEXT KEY `title_pbd` (`title_pbd`,`linkTitle_pbd`,`keywords_pbd`,`description_pbd`)
+  FULLTEXT KEY `title_pbd` (`title_pbd`,`linkTitle_pbd`,`keywords_pbd`,`description_pbd`,`codename_pbd`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `pagesBaseData_edited`
 --
 
-INSERT INTO `pagesBaseData_edited` (`id_pbd`, `page_pbd`, `title_pbd`, `linkTitle_pbd`, `keywords_pbd`, `description_pbd`, `reminderPeriodicity_pbd`, `reminderOn_pbd`, `reminderOnMessage_pbd`, `category_pbd`, `author_pbd`, `replyto_pbd`, `copyright_pbd`, `language_pbd`, `robots_pbd`, `pragma_pbd`, `refresh_pbd`, `redirect_pbd`, `refreshUrl_pbd`, `url_pbd`, `metas_pbd`) VALUES(1, 1, 'Accueil', 'Accueil', '', '', 0, '0000-00-00', '', '', '', '', '', '', '', '', '', '', 0, '', '');
+INSERT INTO `pagesBaseData_edited` (`id_pbd`, `page_pbd`, `title_pbd`, `linkTitle_pbd`, `keywords_pbd`, `description_pbd`, `reminderPeriodicity_pbd`, `reminderOn_pbd`, `reminderOnMessage_pbd`, `category_pbd`, `author_pbd`, `replyto_pbd`, `copyright_pbd`, `language_pbd`, `robots_pbd`, `pragma_pbd`, `refresh_pbd`, `redirect_pbd`, `refreshUrl_pbd`, `url_pbd`, `metas_pbd`, `codename_pbd`) VALUES(1, 1, 'Automne', 'Automne', '', '', 0, '0000-00-00', '', '', '', '', '', '', '', '', '', '', 0, '', '', 'root');
 
 -- --------------------------------------------------------
 
@@ -2230,16 +2233,17 @@ CREATE TABLE `pagesBaseData_public` (
   `refreshUrl_pbd` int(1) NOT NULL default '0',
   `url_pbd` varchar(255) NOT NULL default '',
   `metas_pbd` text NOT NULL,
+  `codename_pbd` varchar(20) NOT NULL,
   PRIMARY KEY  (`id_pbd`),
   KEY `page_pbd` (`page_pbd`),
-  FULLTEXT KEY `title_pbd` (`title_pbd`,`linkTitle_pbd`,`keywords_pbd`,`description_pbd`)
+  FULLTEXT KEY `title_pbd` (`title_pbd`,`linkTitle_pbd`,`keywords_pbd`,`description_pbd`,`codename_pbd`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `pagesBaseData_public`
 --
 
-INSERT INTO `pagesBaseData_public` (`id_pbd`, `page_pbd`, `title_pbd`, `linkTitle_pbd`, `keywords_pbd`, `description_pbd`, `reminderPeriodicity_pbd`, `reminderOn_pbd`, `reminderOnMessage_pbd`, `category_pbd`, `author_pbd`, `replyto_pbd`, `copyright_pbd`, `language_pbd`, `robots_pbd`, `pragma_pbd`, `refresh_pbd`, `redirect_pbd`, `refreshUrl_pbd`, `url_pbd`, `metas_pbd`) VALUES(1, 1, 'Accueil', 'Accueil', '', '', 0, '0000-00-00', '', '', '', '', '', '', '', '', '', '', 0, '', '');
+INSERT INTO `pagesBaseData_public` (`id_pbd`, `page_pbd`, `title_pbd`, `linkTitle_pbd`, `keywords_pbd`, `description_pbd`, `reminderPeriodicity_pbd`, `reminderOn_pbd`, `reminderOnMessage_pbd`, `category_pbd`, `author_pbd`, `replyto_pbd`, `copyright_pbd`, `language_pbd`, `robots_pbd`, `pragma_pbd`, `refresh_pbd`, `redirect_pbd`, `refreshUrl_pbd`, `url_pbd`, `metas_pbd`, `codename_pbd`) VALUES(1, 1, 'Automne', 'Automne', '', '', 0, '0000-00-00', '', '', '', '', '', '', '', '', '', '', 0, '', '', 'root');
 
 -- --------------------------------------------------------
 

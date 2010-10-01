@@ -74,7 +74,6 @@ $field = sensitiveIO::request('field', '', '');
 $action = sensitiveIO::request('action', '', '');
 $value = sensitiveIO::request('value', '', '');
 $forceblank = sensitiveIO::request('forceblank') ? true : false;
-$force = sensitiveIO::request('force') ? true : false;
 
 //load page
 $cms_page = CMS_tree::getPageByID($currentPage);

@@ -1,9 +1,8 @@
-# $Id: automne4-scratch.sql,v 1.5 2009/11/17 15:55:03 sebastien Exp $
 # Database : `automne4`
 # --------------------------------------------------------
 
 #
-# This script can help you to make a fresh and clean install of Automne 3
+# This script can help you to make a fresh and clean install of Automne
 # It remove all pages, rows, users and data of Automne and all datas of the pre-installed Automne demo
 # /!\ Use it carefully /!\
 #
@@ -119,10 +118,10 @@ INSERT INTO pages (id_pag, resource_pag, remindedEditorsStack_pag, lastReminder_
 DELETE FROM pagesBaseData_archived;
 DELETE FROM pagesBaseData_deleted;
 DELETE FROM pagesBaseData_edited;
-INSERT INTO pagesBaseData_edited (id_pbd, page_pbd, title_pbd, linkTitle_pbd, keywords_pbd, description_pbd, reminderPeriodicity_pbd, reminderOn_pbd, reminderOnMessage_pbd, category_pbd, author_pbd, replyto_pbd, copyright_pbd, language_pbd, robots_pbd, pragma_pbd, refresh_pbd, redirect_pbd, refreshUrl_pbd, url_pbd) VALUES (1, 1, 'Accueil', 'Accueil', '', '', 0, '0000-00-00', '', '', '', '', '', '', '', '', '', '', '', '');
+INSERT INTO `pagesBaseData_edited` (`id_pbd`, `page_pbd`, `title_pbd`, `linkTitle_pbd`, `keywords_pbd`, `description_pbd`, `reminderPeriodicity_pbd`, `reminderOn_pbd`, `reminderOnMessage_pbd`, `category_pbd`, `author_pbd`, `replyto_pbd`, `copyright_pbd`, `language_pbd`, `robots_pbd`, `pragma_pbd`, `refresh_pbd`, `redirect_pbd`, `refreshUrl_pbd`, `url_pbd`, `metas_pbd`, `codename_pbd`) VALUES(1, 1, 'Automne', 'Automne', '', '', 0, '0000-00-00', '', '', '', '', '', '', '', '', '', '', 0, '', '', 'root');
 
 DELETE FROM pagesBaseData_public;
-INSERT INTO pagesBaseData_public (id_pbd, page_pbd, title_pbd, linkTitle_pbd, keywords_pbd, description_pbd, reminderPeriodicity_pbd, reminderOn_pbd, reminderOnMessage_pbd, category_pbd, author_pbd, replyto_pbd, copyright_pbd, language_pbd, robots_pbd, pragma_pbd, refresh_pbd, redirect_pbd, refreshUrl_pbd, url_pbd) VALUES (1, 1, 'Accueil', 'Accueil', '', '', 0, '0000-00-00', '', '', '', '', '', '', '', '', '', '', '', '');
+INSERT INTO `pagesBaseData_public` (`id_pbd`, `page_pbd`, `title_pbd`, `linkTitle_pbd`, `keywords_pbd`, `description_pbd`, `reminderPeriodicity_pbd`, `reminderOn_pbd`, `reminderOnMessage_pbd`, `category_pbd`, `author_pbd`, `replyto_pbd`, `copyright_pbd`, `language_pbd`, `robots_pbd`, `pragma_pbd`, `refresh_pbd`, `redirect_pbd`, `refreshUrl_pbd`, `url_pbd`, `metas_pbd`, `codename_pbd`) VALUES(1, 1, 'Automne', 'Automne', '', '', 0, '0000-00-00', '', '', '', '', '', '', '', '', '', '', 0, '', '', 'root');
 
 DELETE FROM profileUsersByGroup;
 
