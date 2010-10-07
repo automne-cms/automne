@@ -859,13 +859,11 @@ class CMS_object_usergroup extends CMS_object_common
 			$paramValue = $values[$parameterID];
 			if ($parameter["type"] == "disableUsers") {
 				// Search all users/groups
-				$usersGroups = CMS_profile_usersCatalog::getAll();
+				$usersGroups = CMS_profile_usersCatalog::getUsersLabels(true, true);
 				//sort and index table
 				$userGroupSorted = array();
-				foreach ($usersGroups as $aUserGroup) {
-					if ($aUserGroup->isActive()) {
-						$userGroupSorted[$aUserGroup->getUserId()] = $aUserGroup->getLastName().' '.$aUserGroup->getFirstName();
-					}
+				foreach ($usersGroups as $userId => $aUserLabel) {
+					$userGroupSorted[$userId] = $aUserLabel;
 				}
 				//sort objects by name case insensitive
 				natcasesort($userGroupSorted);
@@ -909,11 +907,11 @@ class CMS_object_usergroup extends CMS_object_common
 			$paramValue = $values[$parameterID];
 			if ($parameter["type"] == "disableGroups") {
 				// Search all users/groups
-				$usersGroups = CMS_profile_usersGroupsCatalog::getAll();
+				$usersGroups = CMS_profile_usersGroupsCatalog::getGroupsLabels();
 				//sort and index table
 				$userGroupSorted = array();
-				foreach ($usersGroups as $aUserGroup) {
-					$userGroupSorted[$aUserGroup->getGroupId()] = $aUserGroup->getLabel();
+				foreach ($usersGroups as $groupId => $aGroupLabel) {
+					$userGroupSorted[$groupId] = $aGroupLabel;
 				}
 				//sort objects by name case insensitive
 				natcasesort($userGroupSorted);
