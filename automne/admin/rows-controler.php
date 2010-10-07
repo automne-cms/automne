@@ -151,7 +151,16 @@ switch ($action) {
 			$definition = str_replace('    ', "\t", $definition);
 			$error = $row->setDefinition($definition);
 			if ($error !== true) {
-				$cms_message = $cms_language->getMessage(MESSAGE_PAGE_MALFORMED_DEFINITION_FILE)."\n\n".$error;
+				$cms_message = $cms_language->getMessage(MESSAGE_PAGE_MALFORMED_DEFINITION_FILE);
+				//send message to inform user
+				$jscontent = '
+					Automne.message.popup({
+						msg: 				\''.$cms_language->getJSMessage(MESSAGE_PAGE_MALFORMED_DEFINITION_FILE).'<br />'.io::sanitizeJSString($error).'\',
+						buttons: 			Ext.MessageBox.OK,
+						closable: 			false,
+						icon: 				Ext.MessageBox.ERROR
+					});';
+				$view->addJavascript($jscontent);
 			} else {
 				if ($row->writeToPersistence()) {
 					$log = new CMS_log();

@@ -1910,12 +1910,12 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			} elseif ($requirementType !== true) {//if any, check value requirement
 				switch ($requirementType) {
 					case 'alphanum' :
-						if ($tag['attributes'][$name] != sensitiveIO::sanitizeAsciiString($tag['attributes'][$name])) {
+						if ($tag['attributes'][$name] != sensitiveIO::sanitizeAsciiString($tag['attributes'][$name], '', '_')) {
 							if ($this->_mode == self::CHECK_PARSING_MODE) {
-								$this->_parsingError .= "\n".'Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute must only be composed with alphanumeric caracters (0-9a-z) : '.$tag['attributes'][$name];
+								$this->_parsingError .= "\n".'Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute must only be composed with alphanumeric caracters (0-9a-z_) : '.$tag['attributes'][$name];
 								return false;
 							} else {
-								$this->raiseError('Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute must only be composed with alphanumeric caracters (0-9a-z) : '.$tag['attributes'][$name]);
+								$this->raiseError('Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute must only be composed with alphanumeric caracters (0-9a-z_) : '.$tag['attributes'][$name]);
 								return false;
 							}
 						}
