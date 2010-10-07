@@ -278,7 +278,7 @@ $jscontent = <<<END
 			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_SHORT_LABEL)}", dataIndex: 'shortLabel'}
 		]),
 		sm: sm,
-		anchor:				'0 -232',
+		anchor:				'0 -242',
 		viewConfig: 	{
 			forceFit:		true
 		},
@@ -314,11 +314,10 @@ $jscontent = <<<END
 		layout: 			'anchor',
 		items: [grid, {
 				id: 			'validationDetailPanel',
-				height:			232,
-				anchor:			'0, 0',
+				border:			false,
 				bodyStyle: {
 					background: 	'#ffffff',
-					padding: 		'5px'
+					padding: 		'0px'
 				}
 			}
 		]
@@ -376,9 +375,11 @@ $jscontent = <<<END
 	//validations detail template
 	var validationTplMarkup = [
 		'<div>',
-			'<div id="validation-actions" style="float:right;"></div>',
-			'<h3 style="">{status} {label} (ID : {resource})</h3><br/>',
-			'<strong>{$cms_language->getJSMessage(MESSAGE_PAGE_EDITORS)} :</strong> {editorsHTML}<br/>',
+			'<div id="validation-actions"></div>',
+			'<div style="padding:5px;">',
+				'<h3 style="">{status} {label} (ID : {resource})</h3><br/>',
+				'<strong>{$cms_language->getJSMessage(MESSAGE_PAGE_EDITORS)} :</strong> {editorsHTML}<br/>',
+			'</div>',
 		'</div>',
 		'<div id="validation-form"></div>'
 	];
@@ -387,7 +388,7 @@ $jscontent = <<<END
 	//what append if no selection is made on grid
 	var noSelection = function () {
 		var detailPanel = Ext.getCmp('validationDetailPanel');
-		detailPanel.body.update('{$cms_language->getJSMessage(MESSAGE_PAGE_NO_PENDING_VALIDATION_SELECTED)}');
+		detailPanel.body.update('<div style="padding:5px;">{$cms_language->getJSMessage(MESSAGE_PAGE_NO_PENDING_VALIDATION_SELECTED)}</div>');
 		Ext.getCmp('batchValidation').disable();
 	}
 	var selectionChange = function (sm, rowIdx, r) {
@@ -395,7 +396,7 @@ $jscontent = <<<END
 		if (sm.getCount() == 0) {
 			noSelection();
 		} else if (sm.getCount() > 1) {
-			detailPanel.body.update(sm.getCount() + ' {$cms_language->getJsMessage(MESSAGE_PAGE_VALIDATION_PENDING_DETAIL)}');
+			detailPanel.body.update('<div style="padding:5px;">' + sm.getCount() + ' {$cms_language->getJsMessage(MESSAGE_PAGE_VALIDATION_PENDING_DETAIL)}</div>');
 			Ext.getCmp('batchValidation').enable();
 		} else if (sm.getCount() == 1) {
 			//create editors names
@@ -411,7 +412,7 @@ $jscontent = <<<END
 			//create actions buttons
 			var actionsLength = r.data.actions.length;
 			if (actionsLength) {
-				var buttons = [];
+				var buttons = ['->'];
 				for(var i = 0; i < actionsLength; i++) {
 					//set button handlers
 					if (r.data.actions[i][3]) {
