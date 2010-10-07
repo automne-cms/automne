@@ -361,6 +361,7 @@ class CMS_pageTemplate extends CMS_grandFather
 		foreach ($groups_arrayed as $group_arrayed) {
 			$groups[$group_arrayed[0]] = $group_arrayed[0];
 		}
+		natcasesort($groups);
 		return $groups;
 	}
 	
