@@ -36,29 +36,29 @@ $replace = array(
 	'/' => '',
 );
 
-//clean a little the filename
-if (isset($_GET["file"])) {
-	$filename = io::htmlspecialchars(strtr($_GET["file"], "/\\", "__"));
+//Get vars
+if (io::get('file')) {
+	$filename = io::get('file');
 } else {
 	die('Error, No image to display ...');
 }
-$label = isset($_GET["label"]) ? stripslashes(io::htmlspecialchars(urldecode($_GET["label"]))) : '';
+$label = isset(io::get('label')) ? stripslashes(io::htmlspecialchars(urldecode(io::get('label')))) : '';
+$location = (io::get('location') && ((isset($_SERVER["HTTP_REFERER"]) && strpos($_SERVER["HTTP_REFERER"], "automne/admin") !== false) || io::get('popup') === "true")) ? io::get('location') : RESOURCE_DATA_LOCATION_PUBLIC;
+$location = in_array($location, array(RESOURCE_DATA_LOCATION_EDITED, RESOURCE_DATA_LOCATION_EDITION, RESOURCE_DATA_LOCATION_PUBLIC)) ? $location : '';
+$module = io::get('module') ? io::get('module') : MOD_STANDARD_CODENAME;
+$module = in_array($module, CMS_modulesCatalog::getAllCodenames()) ? $module : '';
+if ($filename != io::htmlspecialchars(str_replace(array_keys($replace), $replace, $filename))) {
+	$filename = '';
+}
 
-//Trick used to view not published images
-$location = (isset($_GET["location"]) && ((isset($_SERVER["HTTP_REFERER"]) && strpos($_SERVER["HTTP_REFERER"], "automne/admin") !== false) || (isset($_GET["popup"]) && $_GET["popup"]==="true"))) ? $_GET["location"] : "public";
-$module = (isset($_GET["module"])) ? $_GET["module"] : 'standard';
-
-$filename = str_replace(array_keys($replace), $replace, $filename);
-$module = str_replace(array_keys($replace), $replace, $module);
-$location = str_replace(array_keys($replace), $replace, $location);
-
-$filepath = "/automne_modules_files/" . $module . "/" . $location . "/" . $filename;
+$filepathFS = PATH_MODULES_FILES_FS . '/' . $module . '/' . $location . '/' . $filename;
+$filepathWR = PATH_MODULES_FILES_WR . '/' . $module . '/' . $location . '/' . $filename;
 
 $dimensions = array(0,0);
-if(file_exists(PATH_REALROOT_FS . $filepath) && strpos(pathinfo(PATH_REALROOT_FS . $filepath, PATHINFO_DIRNAME), PATH_REALROOT_FS) === 0) {
-	$html = '<img src="' . PATH_REALROOT_WR . $filepath . '" onclick="window.close();" alt="'.$label.'" title="'.$label.'" />';
-	if (isset($_GET["popup"]) && $_GET["popup"]==="true") {
-		$dimensions = getimagesize(PATH_REALROOT_FS . $filepath);
+if(file_exists($filepathFS)) {
+	$html = '<img src="' . $filepathWR . '" onclick="window.close();" alt="'.$label.'" title="'.$label.'" />';
+	if (io::get('popup') === "true") {
+		$dimensions = getimagesize($filepathFS);
 	}
 } else {
 	$html = '';
@@ -92,7 +92,7 @@ if(file_exists(PATH_REALROOT_FS . $filepath) && strpos(pathinfo(PATH_REALROOT_FS
 </head>
 <body>
 	<?php
-	if (isset($_GET["popup"]) && $_GET["popup"]==="true" && $dimensions[0]>20) {
+	if (io::get('popup') === "true" && $dimensions[0] > 20) {
 		echo '
 		<!-- resize popup to image size -->
 		<script language="Javascript">

@@ -140,7 +140,7 @@ Automne.ImageUploadField = Ext.extend(Automne.FileUploadField,  {
 									this.resizeEl.on('mousedown', this.autoResizeFile, this);
 									this.resizeEl.addClassOnOver('atm-block-control-autoupdate-on');
 								} else {
-									this.resizeEl.appendChild(this.autoResizeFile);
+									this.infoEl.appendChild(this.resizeEl);
 								}
 							}
 						} else {
@@ -247,13 +247,6 @@ Automne.ImageUploadField = Ext.extend(Automne.FileUploadField,  {
 	autoResizeFile: function () {
 		this.setNaturalSize(this.preview);
 		var img = this.preview;
-		pr(this.minWidth);
-		pr(this.maxWidth);
-		pr(img.dom.naturalWidth);
-		pr(this.minHeight);
-		pr(this.maxHeight);
-		pr(img.dom.naturalHeight);
-		
 		var width, height = 0;
 		if (this.maxWidth && img.dom.naturalWidth > this.maxWidth) {
 			width = this.maxWidth;
@@ -266,9 +259,6 @@ Automne.ImageUploadField = Ext.extend(Automne.FileUploadField,  {
 			width = this.maxWidth;
 			height = parseInt((width * this.maxHeight) / height);
 		}
-		pr('----');
-		pr(width);
-		pr(height);
 		//send datas to server to resize image
 		Automne.server.call('image-controler.php', this.endEdition, {
 			image:			this.getValue(),

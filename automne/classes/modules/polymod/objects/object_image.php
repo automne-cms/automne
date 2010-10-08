@@ -627,8 +627,12 @@ class CMS_object_image extends CMS_object_common
 				}
 				//resize thumbnail if needed
 				if ($params['maxWidth'] > 0 || $params['maxHeight'] > 0) {
+					$oImage = new CMS_image($newFilename);
+					//get current file size
+					$sizeX = $oImage->getWidth();
+					$sizeY = $oImage->getHeight();
+					
 					//check thumbnail size
-					list($sizeX, $sizeY) = @getimagesize($newFilename);
 					if (($params['maxWidth'] && $sizeX > $params['maxWidth']) || ($params['maxHeight'] && $sizeY > $params['maxHeight'])) {
 						$newSizeX = $sizeX;
 						$newSizeY = $sizeY;
@@ -641,41 +645,9 @@ class CMS_object_image extends CMS_object_common
 							$newSizeX = round(($params['maxHeight']*$newSizeX)/$newSizeY);
 							$newSizeY = $params['maxHeight'];
 						}
-						$dest = imagecreatetruecolor($newSizeX, $newSizeY);
-						switch ($extension) {
-							case "gif":
-								$src = imagecreatefromgif($newFilename);
-								imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
-								imagedestroy($src);
-								//overwrite image
-								@imagegif($dest,$newFilename);
-							break;
-							case "jpg":
-							case "jpeg":
-							case "jpe":
-								$src = imagecreatefromjpeg($newFilename);
-								imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
-								imagedestroy($src);
-								//overwrite image
-								@imagejpeg($dest,$newFilename,95);
-							break;
-							case "png":
-								$src = imagecreatefrompng($newFilename);
-								imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
-								imagedestroy($src);
-								//overwrite image
-								@imagepng($dest,$newFilename);
-							break;
-							default:
-								return false;
-							break;
+						if (!$oImage->resize($newFilename, $newSizeX, $newSizeY)) {
+							return false;
 						}
-						//imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
-						//imagedestroy($src);
-						//overwrite image
-						//@imagejpeg($dest,$newFilename,95);
-						CMS_file::chmodFile(FILES_CHMOD, $newFilename);
-						imagedestroy($dest);
 					}
 				}
 				//set thumbnail
@@ -696,8 +668,13 @@ class CMS_object_image extends CMS_object_common
 				$basename = $this->_subfieldValues[2]->getValue();
 				$filename = $path.'/'.$basename;
 				$extension = io::strtolower(pathinfo($basename, PATHINFO_EXTENSION));
+				
+				$oImage = new CMS_image($filename);
+				//get current file size
+				$sizeX = $oImage->getWidth();
+				$sizeY = $oImage->getHeight();
+				
 				//check zoom size
-				list($sizeX, $sizeY) = @getimagesize($filename);
 				if (($params['maxZoomWidth'] && $sizeX > $params['maxZoomWidth']) || ($params['maxZoomHeight'] && $sizeY > $params['maxZoomHeight'])) {
 					$newSizeX = $sizeX;
 					$newSizeY = $sizeY;
@@ -710,41 +687,9 @@ class CMS_object_image extends CMS_object_common
 						$newSizeX = round(($params['maxZoomHeight']*$newSizeX)/$newSizeY);
 						$newSizeY = $params['maxZoomHeight'];
 					}
-					$dest = imagecreatetruecolor($newSizeX, $newSizeY);
-					switch ($extension) {
-						case "gif":
-							$src = imagecreatefromgif($filename);
-							imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
-							imagedestroy($src);
-							//overwrite image
-							@imagegif($dest,$filename);
-						break;
-						case "jpg":
-						case "jpeg":
-						case "jpe":
-							$src = imagecreatefromjpeg($filename);
-							imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
-							imagedestroy($src);
-							//overwrite image
-							@imagejpeg($dest,$filename,95);
-						break;
-						case "png":
-							$src = imagecreatefrompng($filename);
-							imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
-							imagedestroy($src);
-							//overwrite image
-							@imagepng($dest,$filename);
-						break;
-						default:
-							return false;
-						break;
+					if (!$oImage->resize($filename, $newSizeX, $newSizeY)) {
+						return false;
 					}
-					//imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
-					//imagedestroy($src);
-					//overwrite image
-					//@imagejpeg($dest,$filename,95);
-					CMS_file::chmodFile(FILES_CHMOD, $filename);
-					imagedestroy($dest);
 				}
 			}
 			
@@ -876,8 +821,12 @@ class CMS_object_image extends CMS_object_common
 				}
 				unset($tmp);
 				if ($params['maxWidth'] > 0) {
+					$oImage = new CMS_image($path."/".$filename);
+					//get current file size
+					$sizeX = $oImage->getWidth();
+					$sizeY = $oImage->getHeight();
+					
 					//check thumbnail size
-					list($sizeX, $sizeY) = @getimagesize($path."/".$filename);
 					if ($sizeX > $params['maxWidth'] ||  $sizeY > $params['maxHeight']) {
 						$newSizeX = $sizeX;
 						$newSizeY = $sizeY;
@@ -896,30 +845,12 @@ class CMS_object_image extends CMS_object_common
 						$path_parts = pathinfo($srcfilepath);
 						$thumbnailFilename = io::substr($path_parts['basename'],0,-(io::strlen($path_parts['extension'])+1)).'_thumbnail.png';
 						$destfilepath = $path."/".$thumbnailFilename;
-	
 						$extension = io::strtolower($path_parts['extension']);
-						$dest = imagecreatetruecolor($newSizeX, $newSizeY);
-						switch ($extension) {
-							case "gif":
-								$src = imagecreatefromgif($srcfilepath);
-							break;
-							case "jpg":
-							case "jpeg":
-							case "jpe":
-								$src = imagecreatefromjpeg($srcfilepath);
-							break;
-							case "png":
-								$src = imagecreatefrompng($srcfilepath);
-							break;
-							default:
-								return false;
-							break;
+						
+						if (!$oImage->resize($destfilepath, $newSizeX, $newSizeY)) {
+							return false;
 						}
-						imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
-						imagedestroy($src);
-						imagepng($dest, $destfilepath);
-						@chmod($destfilepath, octdec(FILES_CHMOD));
-						imagedestroy($dest);
+						
 						//if we use original image as image zoom, set it
 						if ($values[$prefixName.$this->_field->getID().'_makeZoom'] == 1) {
 							//set image zoom
@@ -1048,6 +979,8 @@ class CMS_object_image extends CMS_object_common
 	function getStructure() {
 		$structure = parent::getStructure();
 		unset($structure['value']);
+		$structure['image'] = '';
+		$structure['imageZoom'] = '';
 		$structure['imageHTML'] = '';
 		$structure['imageLabel'] = '';
 		$structure['imageName'] = '';
@@ -1076,6 +1009,28 @@ class CMS_object_image extends CMS_object_common
 		switch($name) {
 			case 'label':
 				return $this->getLabel();
+			break;
+			case 'image':
+				if ($this->_subfieldValues[0]->getValue() && $parameters) {
+					@list($x, $y) = explode(',',str_replace(';', ',', $parameters));
+					if ((io::isPositiveInteger($x) && $x < $this->getValue('imageWidth')) || (io::isPositiveInteger($y) && $y < $this->getValue('imageHeight'))) {
+						//get module codename
+						$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
+						return CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[0]->getValue() .'&module='. $moduleCodename .'&x='. $x .'&y='. $y;
+					}
+				}
+				return $this->getValue('imagePath'). '/' .$this->_subfieldValues[0]->getValue();
+			break;
+			case 'imageZoom':
+				if ($this->_subfieldValues[2]->getValue() && $parameters) {
+					@list($x, $y) = explode(',',str_replace(';', ',', $parameters));
+					if ((io::isPositiveInteger($x) && $x < $this->getValue('imageZoomWidth')) || (io::isPositiveInteger($y) && $y < $this->getValue('imageZoomHeight'))) {
+						//get module codename
+						$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
+						return CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[2]->getValue() .'&module='. $moduleCodename .'&x='. $x .'&y='. $y;
+					}
+				}
+				return $this->getValue('imagePath'). '/' .$this->_subfieldValues[2]->getValue();
 			break;
 			case 'imageHTML':
 				//get module codename

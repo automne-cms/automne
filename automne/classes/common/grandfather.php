@@ -279,6 +279,7 @@ class CMS_grandFather
 				'cms_zip_file'						=> PATH_PACKAGES_FS.'/files/archive-zip.php',
 				'cms_fileupload'					=> PATH_PACKAGES_FS.'/files/fileupload.php',
 				'cms_cache'							=> PATH_PACKAGES_FS.'/files/cache.php',
+				'cms_image'							=> PATH_PACKAGES_FS.'/files/image.php',
 
 				//modules
 				'cms_module'						=> PATH_MODULES_FS.'/module.php',
