@@ -699,7 +699,6 @@ if (!isset($_GET['file'])) {
 	if (isset($archiveFound) && $archiveFound && $step==1) {
 		if ($cms_action == 'extract') {
 			//to avoid error on server with lots of PHP extensions, extend memory limit during this step
-			@ini_set('memory_limit', '32M');
 			$archive = new CMS_gzip_file_install(dirname(__FILE__)."/".$archiveFile);
 			$error='';
 			
@@ -1545,6 +1544,10 @@ $configContent .= '
 			//CHMOD index.php and config.php with new values
 			@chmod(dirname(__FILE__).'/index.php', octdec(FILES_CHMOD));
 			@chmod(dirname(__FILE__).'/config.php', octdec(FILES_CHMOD));
+			
+			//deploy htaccess files
+			$automnePatch = new CMS_patch();
+			$automnePatch->automneGeneralScript()
 			
 			//force regeneration of first page to avoid any error
 			$rootPage = CMS_tree::getPageByID(1);
