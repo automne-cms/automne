@@ -1,18 +1,16 @@
 <?php
 // +----------------------------------------------------------------------+
-// | Automne (TM)														  |
+// | Automne (TM)													 |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 2000-2010 WS Interactive								  |
+// | Copyright (c) 2000-2010 WS Interactive							 |
 // +----------------------------------------------------------------------+
-// | Automne is subject to version 2.0 or above of the GPL license.		  |
-// | The license text is bundled with this package in the file			  |
-// | LICENSE-GPL, and is available through the world-wide-web at		  |
-// | http://www.gnu.org/copyleft/gpl.html.								  |
+// | Automne is subject to version 2.0 or above of the GPL license.		 |
+// | The license text is bundled with this package in the file			 |
+// | LICENSE-GPL, and is available through the world-wide-web at		 |
+// | http://www.gnu.org/copyleft/gpl.html.							 |
 // +----------------------------------------------------------------------+
 // | Author: Sebastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: install.php,v 1.31 2010/03/24 08:52:45 sebastien Exp $
 
 /**
   * PHP page : Automne Installation Manager
@@ -22,17 +20,16 @@
   * @author Sebastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-//Remove notices
+//Set some PHP configurations
 error_reporting(E_ALL);
 @set_time_limit(0);
 @ini_set("memory_limit" , "64M");
-//try to remove magic quotes
 @ini_set('magic_quotes_gpc', 0);
 @ini_set('magic_quotes_runtime', 0);
 @ini_set('magic_quotes_sybase', 0);
-//try to change some misconfigurations
 @ini_set('session.gc_probability', 0);
 @ini_set('allow_call_time_pass_reference', 0);
+
 /**
   *	Path of the REAL document root
   *	Default : $_SERVER["DOCUMENT_ROOT"]
