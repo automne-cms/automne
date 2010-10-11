@@ -2567,6 +2567,7 @@ INSERT INTO `toolbars` (`id_tool`, `code_tool`, `label_tool`, `elements_tool`) V
 DROP TABLE IF EXISTS `websites`;
 CREATE TABLE `websites` (
   `id_web` int(11) unsigned NOT NULL auto_increment,
+  `codename_web` varchar(255) NOT NULL,
   `label_web` varchar(255) NOT NULL default '',
   `url_web` varchar(255) NOT NULL default '',
   `altdomains_web` text NOT NULL,
@@ -2589,4 +2590,4 @@ CREATE TABLE `websites` (
 -- Contenu de la table `websites`
 --
 
-INSERT INTO `websites` (`id_web`, `label_web`, `url_web`, `altdomains_web`, `root_web`, `keywords_web`, `description_web`, `category_web`, `author_web`, `replyto_web`, `copyright_web`, `language_web`, `robots_web`, `favicon_web`, `metas_web`, `order_web`) VALUES(1, 'Site principal', '127.0.0.1', '', 1, '', '', '', '', '', '', 'en', '', '/favicon.ico', '', 1);
+INSERT INTO `websites` (`id_web`, `codename_web`, `label_web`, `url_web`, `altdomains_web`, `root_web`, `keywords_web`, `description_web`, `category_web`, `author_web`, `replyto_web`, `copyright_web`, `language_web`, `robots_web`, `favicon_web`, `metas_web`, `order_web`) VALUES(1, 'root', 'Site principal', '127.0.0.1', '', 1, '', '', '', '', '', '', 'en', '', '/favicon.ico', '', 1);
