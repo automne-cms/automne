@@ -8,12 +8,12 @@
 ./automne/logs/*
 ./automne/upload/*
 ./automne/tmp/*
+./automne/linx/*
 ./automne_modules_files/*/*/*.*
 ./automne_modules_files/*/*.*
 ./automne_modules_files/*
 ./web/*
 ./html/*
-./automne_linx_files/*
 .DS_Store
 ._*
 ./utils

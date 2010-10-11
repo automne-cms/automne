@@ -756,13 +756,13 @@ if (!defined("PATH_TEMPLATES_IMAGES_FS")) {
 /**
   * Pages linx files path, where the linx files are located. 
   * Other websites are set to use subdirectories of this one.
-  *	Default : PATH_MAIN_xx."/automne_linx_files"
+  *	Default : PATH_MAIN_xx."/linx"
   */
 if (!defined("PATH_PAGES_LINXFILES_WR")) {
-	define("PATH_PAGES_LINXFILES_WR", PATH_REALROOT_WR."/automne_linx_files");
+	define("PATH_PAGES_LINXFILES_WR", PATH_MAIN_WR."/linx");
 }
 if (!defined("PATH_PAGES_LINXFILES_FS")) {
-	define("PATH_PAGES_LINXFILES_FS", PATH_REALROOT_FS."/automne_linx_files");
+	define("PATH_PAGES_LINXFILES_FS", PATH_MAIN_FS."/linx");
 }
 
 /**
