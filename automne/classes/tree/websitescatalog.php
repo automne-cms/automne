@@ -25,9 +25,7 @@
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   */
 
-class CMS_websitesCatalog extends CMS_grandFather
-{
-	
+class CMS_websitesCatalog extends CMS_grandFather {
 	/**
 	  * Returns a CMS_website when given an ID
 	  * Static function.
@@ -36,8 +34,7 @@ class CMS_websitesCatalog extends CMS_grandFather
 	  * @return CMS_website or false on failure to find it
 	  * @access public
 	  */
-	function getByID($id)
-	{
+	function getByID($id) {
 		static $websites;
 		if (!isset($websites[$id])) {
 			$websites[$id] = new CMS_website($id);
@@ -49,6 +46,35 @@ class CMS_websitesCatalog extends CMS_grandFather
 	}
 	
 	/**
+	  * Returns a CMS_website by a given codename
+	  * Static function.
+	  *
+	  * @param string $codename The codename of the wanted CMS_website
+	  * @return CMS_website or false on failure to find it
+	  * @access public
+	  */
+	function getByCodename($codename) {
+		static $websites;
+		if (!isset($websites[$codename])) {
+			$sql = "
+				select
+					id_web
+				from
+					websites
+				where
+					codename_web='".io::sanitizeSQLString($codename)."'
+			";
+			$q = new CMS_query($sql);
+			if ($q->getNumRows()) {
+				$websites[$codename] = CMS_websitesCatalog::getByID($q->getValue('id_web'));
+			} else {
+				$websites[$codename] = false;
+			}
+		}
+		return $websites[$codename];
+	}
+	
+	/**
 	  * Returns all the websites, sorted by label.
 	  * Static function.
 	  *
@@ -56,8 +82,7 @@ class CMS_websitesCatalog extends CMS_grandFather
 	  * @return array(CMS_website)
 	  * @access public
 	  */
-	function getAll($orderby = 'label')
-	{
+	function getAll($orderby = 'label') {
 		static $websites;
 		if (!isset($websites[$orderby])) {
 			$sql = "
@@ -88,8 +113,7 @@ class CMS_websitesCatalog extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function exists($id)
-	{
+	function exists($id) {
 		static $websites;
 		if (!isset($websites[$id])) {
 			$websites[$id] = false;
@@ -116,8 +140,7 @@ class CMS_websitesCatalog extends CMS_grandFather
 	  * @return string The main URL
 	  * @access public
 	  */
-	function getMainURL()
-	{
+	function getMainURL() {
 		static $mainURL;
 		if (!isset($mainURL)) {
 			$website = CMS_websitesCatalog::getMainWebsite();
@@ -158,8 +181,7 @@ class CMS_websitesCatalog extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function isWebsiteRoot($pageID)
-	{
+	function isWebsiteRoot($pageID) {
 		static $webroots;
 		if (!sensitiveIO::isPositiveInteger($pageID)) {
 			CMS_grandFather::raiseError('Page id must be a positive integer : '.$pageID);
@@ -189,8 +211,7 @@ class CMS_websitesCatalog extends CMS_grandFather
 	  * @return CMS_website the website whose page is a root, or false
 	  * @access public
 	  */
-	function getWebsiteFromRoot($root)
-	{
+	function getWebsiteFromRoot($root) {
 		static $roots;
 		if (is_object($root)) {
 			$rootID = $root->getID();
@@ -281,8 +302,7 @@ class CMS_websitesCatalog extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeRootRedirection()
-	{
+	function writeRootRedirection() {
 		return true;
 	}
 }

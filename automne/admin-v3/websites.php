@@ -43,6 +43,7 @@ define("MESSAGE_PAGE_FIELD_URL", 819);
 define("MESSAGE_PAGE_SAVE_NEWORDER", 1183);
 define("MESSAGE_PAGE_SAME_DOMAIN_EXPLANATION", 1352);
 define("MESSAGE_PAGE_ACTION_ORDERING_ERROR", 1353);
+define("MESSAGE_PAGE_FIELD_CODENAME", 1675);
 
 //checks
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES)) {
@@ -59,12 +60,12 @@ case "delete":
 		$log->logMiscAction(CMS_log::LOG_ACTION_WEBSITE_DELETE, $cms_user, "Website : ".$website->getLabel());
 		//check for codenames duplications
 		//get website codenames
-		$websiteCodenames = $website->getAllCodenames();
+		$websiteCodenames = $website->getAllPagesCodenames();
 		//get codenames of parent website
 		$websiteRoot = $website->getRoot();
 		$father = CMS_tree::getFather($websiteRoot, true);
 		$fatherWebsite = $father->getWebsite();
-		$fatherCodenames = $fatherWebsite->getAllCodenames();
+		$fatherCodenames = $fatherWebsite->getAllPagesCodenames();
 		$codenamesToRemove = array();
 		//get duplicated codenames
 		foreach ($websiteCodenames as $codename => $pageId) {
@@ -156,8 +157,9 @@ $content .= '
 <br /><br />
 <table border="0" cellpadding="2" cellspacing="2">
 	<tr>
-		<th class="admin" width="120">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_LABEL).'</th>
-		<th class="admin" width="230">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_ROOT).'</th>
+		<th class="admin" width="80">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_LABEL).'</th>
+		<th class="admin" width="80">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_CODENAME).'</th>
+		<th class="admin" width="200">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_ROOT).'</th>
 		<th class="admin" width="150">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_URL).'</th>
 		<th class="admin" width="192">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_ACTIONS).'</th>
 	</tr>
@@ -173,8 +175,9 @@ foreach ($websites as $website) {
 	<li id="w'.$website->getID().'">
 		<table border="0" cellpadding="2" cellspacing="2">
 		<tr>
-			<td class="'.$td_class.'" width="120">'.htmlspecialchars($website->getLabel()).'</td>
-			<td class="'.$td_class.'" width="230"><a href="#" onclick="Automne.utils.getPageById('.$website_root->getID().');Ext.WindowMgr.getActive().close();" class="admin">'.htmlspecialchars($website_root->getTitle()).' ('.$website_root->getID().')</a></td>
+			<td class="'.$td_class.'" width="80">'.htmlspecialchars($website->getLabel()).'</td>
+			<td class="'.$td_class.'" width="80">'.htmlspecialchars($website->getCodename()).'</td>
+			<td class="'.$td_class.'" width="200"><a href="#" onclick="Automne.utils.getPageById('.$website_root->getID().');Ext.WindowMgr.getActive().close();" class="admin">'.htmlspecialchars($website_root->getTitle()).' ('.$website_root->getID().')</a></td>
 			<td class="'.$td_class.'" width="150"><a href="'.$website->getURL().'" target="_blank" class="admin">'.htmlspecialchars($website->getURL()).'</a></td>
 			<td class="'.$td_class.'" width="150">
 				<table border="0" cellpadding="2" cellspacing="0" width="146">

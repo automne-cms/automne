@@ -151,21 +151,30 @@ class CMS_linx extends CMS_grandFather
 			
 			//Hack for shorthand writing of atm-linx
 			//<atm-linx type="direct" node="pageID"> ... </atm-linx>
-			if (isset($this->_args['node']) && $this->_type == 'direct') {
+			//<atm-linx type="direct" codename="pageCodename"> ... </atm-linx>
+			if ((isset($this->_args['node']) || isset($this->_args['codename'])) && $this->_type == 'direct') {
 				$tag = new CMS_XMLTag('atm-linx', $this->_args);
 				$tag->setTextContent($tagContent);
 				
 				$tagContent = 
 				'<atm-linx type="direct">'.
-					'<selection>'.
-						'<start><nodespec type="node" value="'.$this->_args['node'].'" /></start>'.
+					'<selection>';
+				if (isset($this->_args['node'])) {
+					$tagContent .= '<start><nodespec type="node" value="'.$this->_args['node'].'" /></start>';
+					//remove useless node argument
+					unset($this->_args['node']);
+				} else {
+					$tagContent .= '<start><nodespec type="codename" value="'.$this->_args['codename'].'" /></start>';
+					//remove useless node argument
+					unset($this->_args['codename']);
+				}
+				$tagContent .= 
 					'</selection>'.
 					'<display>'.
 						'<htmltemplate>'.$tag->getInnerContent().'</htmltemplate>'.
 					'</display>'.
 				'</atm-linx>';
-				//remove useless node argument
-				unset($this->_args['node']);
+				
 			}
 			
 			$this->_page = $page;

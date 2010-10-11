@@ -56,6 +56,13 @@ class CMS_linxNodespec extends CMS_grandFather
 	  */
 	protected $_crosswebsite = false;
 	
+	/**
+	  * Does this links display pages from a specific website ?
+	  * @var string : the website name
+	  * @access private
+	  */
+	protected $_website;
+	
 
 	/**
 	  * Constructor.
@@ -65,7 +72,7 @@ class CMS_linxNodespec extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($type, $value, $relativeOffset, $crosswebsite = false)
+	function __construct($type, $value, $relativeOffset, $crosswebsite = false, $website = '')
 	{
 		$authorized_types = array("node", "relative", "codename");
 		$authorized_string_values = array("self", "brother", "father", "root");
@@ -74,21 +81,25 @@ class CMS_linxNodespec extends CMS_grandFather
 			$this->raiseError("Type unknown : ".$type);
 			return;
 		}
-		if ($type == "node" && !SensitiveIO::isPositiveInteger($value)) {
+		if ($type == 'node' && !SensitiveIO::isPositiveInteger($value)) {
 			$this->raiseError("Bad value for 'node' type : ".$value);
 			return;
 		}
-		if ($type == "relative" && !SensitiveIO::isInSet($value, $authorized_string_values)) {
+		if ($type == 'relative' && !SensitiveIO::isInSet($value, $authorized_string_values)) {
 			$this->raiseError("Bad value for 'relative' type : ".$value);
 			return;
 		}
-		if ($type == "codename" && strtolower(io::sanitizeAsciiString($value)) != $value) {
+		if ($type == 'codename' && strtolower(io::sanitizeAsciiString($value)) != $value) {
 			$this->raiseError("Bad value for 'codename' type : ".$value);
 			return;
 		}
-		
+		if ($type == 'codename' && strtolower(io::sanitizeAsciiString($website)) != $website) {
+			$this->raiseError("Bad value for 'website' : ".$website);
+			return;
+		}
 		$this->_type = $type;
 		$this->_value = $value;
+		$this->_website = $website;
 		if ($this->_type == 'relative') {
 			$this->_relativeOffset = $relativeOffset;
 		}
@@ -132,7 +143,14 @@ class CMS_linxNodespec extends CMS_grandFather
 			if ($this->_crosswebsite) {
 				return CMS_tree::getPagesByCodename($this->_value, $publicTree, true);
 			} else {
-				$pg = CMS_tree::getPageByCodename($this->_value, $page->getWebsite(), $publicTree, true);
+				if ($this->_website) {
+					$website = CMS_websitesCatalog::getByCodename($this->_website);
+					if ($website) {
+						$pg = CMS_tree::getPageByCodename($this->_value, $website, $publicTree, true);
+					}
+				} else {
+					$pg = CMS_tree::getPageByCodename($this->_value, $page->getWebsite(), $publicTree, true);
+				}
 				if ($pg && !$pg->hasError()) {
 					return $pg;
 				} else {
@@ -142,35 +160,33 @@ class CMS_linxNodespec extends CMS_grandFather
 			break;
 		case "relative" :
 			switch ($this->_value) {
-			case "root":
-				$offset = abs($this->_relativeOffset) * -1;
-				$pg = CMS_tree::getAncestor($page, $offset, !$this->_crosswebsite, false); //here we do not want to use public tree because, in public tree, some page may be unpublished or in this case, it break the lineage and root page cannot be founded
-				if (is_a($pg, 'CMS_page') && !$pg->hasError()) {
-					return $pg;
+				case "root":
+					$offset = abs($this->_relativeOffset) * -1;
+					$pg = CMS_tree::getAncestor($page, $offset, !$this->_crosswebsite, false); //here we do not want to use public tree because, in public tree, some page may be unpublished or in this case, it break the lineage and root page cannot be founded
+				break;
+				case "father":
+					$offset = abs($this->_relativeOffset);
+					$pg = CMS_tree::getAncestor($page, $offset, !$this->_crosswebsite, $publicTree);
+				break;
+				case "self":
+					return $page;
+				break;
+				case "brother":
+					$pg = CMS_tree::getBrother($page, $this->_relativeOffset, $publicTree);
+				break;
+			}
+			if ($this->_website && is_a($pg, 'CMS_page') && !$pg->hasError()) {
+				if ($pg->getCodename()) {
+					$website = CMS_websitesCatalog::getByCodename($this->_website);
+					$pg = $website ? CMS_tree::getPageByCodename($pg->getCodename(), $website, $publicTree, true) : false;
 				} else {
-					return false;
+					$pg = false;
 				}
-				break;
-			case "father":
-				$offset = abs($this->_relativeOffset);
-				$pg = CMS_tree::getAncestor($page, $offset, !$this->_crosswebsite, $publicTree);
-				if (is_a($pg, 'CMS_page') && !$pg->hasError()) {
-					return $pg;
-				} else {
-					return false;
-				}
-				break;
-			case "self":
-				return $page;
-				break;
-			case "brother":
-				$pg = CMS_tree::getBrother($page, $this->_relativeOffset, $publicTree);
-				if ($pg && !$pg->hasError()) {
-					return $pg;
-				} else {
-					return false;
-				}
-				break;
+			}
+			if (is_a($pg, 'CMS_page') && !$pg->hasError()) {
+				return $pg;
+			} else {
+				return false;
 			}
 			break;
 		}
@@ -193,7 +209,7 @@ class CMS_linxNodespec extends CMS_grandFather
 			CMS_grandFather::raiseError('Nodespec property is not well formed');
 			return false;
 		}
-		return new CMS_linxNodespec($tag->getAttribute("type"), $tag->getAttribute("value"), $tag->getAttribute("reloffset"), $crosswebsite);
+		return new CMS_linxNodespec($tag->getAttribute("type"), $tag->getAttribute("value"), $tag->getAttribute("reloffset"), $crosswebsite, $tag->getAttribute("website"));
 	}
 }
 

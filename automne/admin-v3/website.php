@@ -50,11 +50,12 @@ define("MESSAGE_PAGE_META_DESCRIPTION", 1327);
 define("MESSAGE_PAGE_FIELD_FAVICON", 1343);
 define("MESSAGE_PAGE_FIELD_FAVICON_COMMENT", 1344);
 define("MESSAGE_PAGE_CHOOSE", 1132);
-define("MESSAGE_PAGE_FIELD_LABEL_DESC", 1431);
+define("MESSAGE_PAGE_FIELD_CODENAME_DESC", 1431);
 define("MESSAGE_PAGE_META_DATA_LABEL", 393);
 define("MESSAGE_PAGE_FIELD_SUB_DOMAINS", 1603);
 define("MESSAGE_PAGE_FIELD_SUB_DOMAINS_DESC", 1604);
 define("MESSAGE_PAGE_CODENAMES", 1683);
+define("MESSAGE_PAGE_FIELD_CODENAME", 1675);
 
 //RIGHTS CHECK
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES)) {
@@ -104,6 +105,7 @@ case "validate":
 			}
 		} else {
 			$website->setLabel($_POST["label"]);
+			$website->setCodename(io::sanitizeAsciiString($_POST["codename"]));
 			$page = CMS_tree::getPageByID($_POST["root"]);
 			$website->setRoot($page);
 		}
@@ -155,15 +157,15 @@ $content = '
 	<input type="hidden" name="cms_action" value="validate" />
 	<tr>
 		<td class="admin" align="right"><span class="admin_text_alert">*</span> '.$cms_language->getMessage(MESSAGE_PAGE_FIELD_LABEL).'</td>
+		<td class="admin"><input type="text" size="30" class="admin_input_text" name="label" value="'.htmlspecialchars($website->getLabel()).'" /></td>
+	</tr>
+	<tr>
+		<td class="admin" align="right"><span class="admin_text_alert">*</span> '.$cms_language->getMessage(MESSAGE_PAGE_FIELD_CODENAME).'</td>
 	';
 	if ($website->getID()) {
-		$content .= '
-			<td class="admin">'.htmlspecialchars($website->getLabel()).'</td>
-		';
+		$content .= '<td class="admin">'.htmlspecialchars($website->getCodename()).'</td>';
 	} else {
-		$content .= '
-			<td class="admin"><input type="text" size="30" class="admin_input_text" name="label" value="'.htmlspecialchars($website->getLabel()).'" /> <small>'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_LABEL_DESC).'</small></td>
-		';
+		$content .= '<td class="admin"><input type="text" size="30" class="admin_input_text" name="codename" value="'.htmlspecialchars($website->getCodename()).'" /> <small>'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_CODENAME_DESC).'</small></td>';
 	}
 	$content .= '
 	</tr>
@@ -250,7 +252,7 @@ $content .= '
 <br />
 '.$cms_language->getMessage(MESSAGE_FORM_MANDATORY_FIELDS).'
 <br /><br />';
-$codenames = $website->getAllCodenames();
+$codenames = $website->getAllPagesCodenames();
 if ($codenames) {
 	$content .= '
 	<fieldset class="admin">
