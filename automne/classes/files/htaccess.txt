@@ -15,7 +15,6 @@ htaccess	/automne/upload	yes
 htaccess	/automne/templates/images	yes
 htaccess	/automne/templates/rows/images	yes
 htaccess	/automne_bin	no
-htaccess	/automne_linx_files	no
 htaccess	/automne_modules_files/*/deleted	no
 htaccess	/sql	no
 htaccess	/	root
