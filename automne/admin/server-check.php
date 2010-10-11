@@ -26,7 +26,7 @@
 require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
 
 //Controler vars
-$action = sensitiveIO::request('action', array('check-files', 'check-htaccess', 'browser-cache-reset', 'polymod-cache-reset'));
+$action = sensitiveIO::request('action', array('check-files', 'check-htaccess', 'browser-cache-reset', 'polymod-cache-reset', 'update-db'));
 
 define("MESSAGE_PAGE_NO_SERVER_RIGHTS",748);
 define("MESSAGE_PAGE_MORE_THAN_THOUSAND",763);
@@ -154,6 +154,11 @@ switch ($action) {
 		} else {
 			$cms_message = $cms_language->getMessage(MESSAGE_CREATION_ERROR);
 		}
+	break;
+	case 'update-db':
+		ob_start();
+		require PATH_ADMIN_FS.'/update.php';
+		$content = ob_get_clean();
 	break;
 }
 

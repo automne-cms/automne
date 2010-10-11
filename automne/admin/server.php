@@ -65,6 +65,8 @@ define("MESSAGE_PAGE_RESET_POLYMOD_CACHE_BUTTON", 1627);
 define("MESSAGE_PAGE_RESET_POLYMOD_CACHE", 1628);
 define("MESSAGE_PAGE_RESET_POLYMOD_CACHE_DESC", 1629);
 define("MESSAGE_PAGE_CACHE", 1630);
+define("MESSAGE_PAGE_AUTOMNE_UPDATES_DB", 1684);
+define("MESSAGE_PAGE_AUTOMNE_UPDATES_DB_DESC", 1685);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -306,7 +308,9 @@ $updatecontent = '
 <h1>'.$cms_language->getMessage(MESSAGE_PAGE_AUTOMNE_UPDATES).'</h1>
 <p>'.$cms_language->getMessage(MESSAGE_PAGE_AUTOMNE_UPDATES_DESC).'</p><br />
 <div id="updateForm"></div><br />
-<div id="updateDetails"></div>';
+<div id="updateDBFields"></div><br />
+<div id="updateDetails"></div>
+';
 $updatecontent = sensitiveIO::sanitizeJSString($updatecontent);
 
 $jscontent = <<<END
@@ -466,12 +470,12 @@ $jscontent = <<<END
 							if (!serverErrorsDetails.rendered) {
 								serverErrorsDetails.render('serverErrorsDetails');
 							}
-							serverErrorsDetails.setWidth(Ext.getCmp('serverErrors').getWidth() - 20);
+							serverErrorsDetails.setWidth(Ext.getCmp('serverErrors').getWidth() - 25);
 							if (Ext.isIE) {
 								serverErrorsDetails.setHeight(Ext.getCmp('serverErrors').getHeight() - 95);
 								Ext.get('serverErrorsDetailsText').dom.innerText = response.responseText;
 							} else {
-								serverErrorsDetails.setHeight(Ext.getCmp('serverErrors').getHeight() - 85);
+								serverErrorsDetails.setHeight(Ext.getCmp('serverErrors').getHeight() - 90);
 								Ext.get('serverErrorsDetailsText').update(response.responseText);
 							}
 						},
@@ -567,6 +571,46 @@ $jscontent = <<<END
 		autoScroll:		true,
 		html:			'<pre id="updateDetailsText"></pre>'
 	});
+	var updateDBFields = new Ext.form.FieldSet({
+		title:			'{$cms_language->getJsMessage(MESSAGE_PAGE_AUTOMNE_UPDATES_DB)}',
+		collapsible:	true,
+		collapsed:		true,
+		autoScroll:		true,
+		html:			'<p>{$cms_language->getJsMessage(MESSAGE_PAGE_AUTOMNE_UPDATES_DB_DESC)}</p><br /><div id="updateDB"></div><br />',
+		listeners:{'afterrender':function(){
+			if (!updateDB.rendered) {
+				updateDB.render('updateDB');
+			}
+		}}
+	});
+	var updateDB = new Ext.Button({
+		id:				'updateDB',
+		text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_LAUNCH_UPDATE)}',
+		listeners:		{'click':function(){
+			updateDB.disable();
+			Automne.server.call({
+				url:				'server-check.php',
+				params: 			{
+					action:				'update-db'
+				},
+				fcnCallback: 		function(response, options, content) {
+					if (!updateDetails.rendered) {
+						updateDetails.render('updateDetails');
+					}
+					updateDetails.setWidth(Ext.getCmp('updatesPanel').getWidth() - 22);
+					if (Ext.isIE) {
+						updateDetails.setHeight(Ext.getCmp('updatesPanel').getHeight() - 235);
+					} else {
+						updateDetails.setHeight(Ext.getCmp('updatesPanel').getHeight() - 225);
+					}
+					Ext.get('updateDetailsText').dom.innerHTML = content;
+					progressHtaccess.updateText('').reset();
+					updateDB.enable();
+				},
+				callBackScope:		this
+			});
+		},scope:this}
+    });
 	
 	serverWindow.correctUpdateErrors = function() {
 		var correctErrorsButton = new Ext.Button({
@@ -632,11 +676,11 @@ $jscontent = <<<END
 			},
 			'resize': function() {
 				if (serverErrorsDetails.rendered) {
-					serverErrorsDetails.setWidth(Ext.getCmp('serverErrors').getWidth() - 20);
+					serverErrorsDetails.setWidth(Ext.getCmp('serverErrors').getWidth() - 25);
 					if (Ext.isIE) {
 						serverErrorsDetails.setHeight(Ext.getCmp('serverErrors').getHeight() - 95);
 					} else {
-						serverErrorsDetails.setHeight(Ext.getCmp('serverErrors').getHeight() - 85);
+						serverErrorsDetails.setHeight(Ext.getCmp('serverErrors').getHeight() - 90);
 					}
 				}
 				if (updateDetails.rendered) {
@@ -711,6 +755,7 @@ $jscontent = <<<END
 			listeners:			{'activate':function(){
 				if (!updateForm.rendered) {
 					updateForm.render('updateForm');
+					updateDBFields.render('updateDBFields');
 					Ext.get('updatePanelAutomneHelp').addClassOnOver('over');
 					Ext.get('updatePanelAutomneHelp').on('mousedown', function(){
 						//create window element
