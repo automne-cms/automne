@@ -789,7 +789,7 @@ class CMS_patch extends CMS_grandFather
 		}
 		//read command lines and do maximum check on it before starting the installation process
 		$this->_verbose('Read script...');
-		$installError = $this->checkInstall($commandLine,$errorsInfos, false);
+		$installError = $this->checkInstall($commandLine, $errorsInfos, false);
 		
 		//start command process
 		$this->_verbose('Execute script...');

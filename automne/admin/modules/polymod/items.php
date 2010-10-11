@@ -37,6 +37,7 @@ define("MESSAGE_PAGE_PREVIZ", 811);
 define("MESSAGE_PAGE_UNDELETE", 874);
 define("MESSAGE_PAGE_NEW", 262);
 define("MESSAGE_PAGE_LOADING", 1321);
+define("MESSAGE_PAGE_REFRESH_ZONE_CONTENT", 340);
 
 //Polymod messages
 define("MESSAGE_PAGE_FIELD_KEYWORDS", 18);
@@ -619,6 +620,13 @@ $jscontent = <<<END
 				}
 			}}
 		},
+		tools: [{
+			id:				'refresh',
+			handler:		function(e, toolEl, panel){
+				moduleObjectWindow.search();
+			},
+			qtip:			'{$cms_language->getMessage(MESSAGE_PAGE_REFRESH_ZONE_CONTENT)}'
+		}],
 		tbar: new Ext.Toolbar({
             id: 			'{$winId}toolbar',
             enableOverflow: true,
