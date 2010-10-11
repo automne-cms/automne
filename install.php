@@ -1547,7 +1547,7 @@ $configContent .= '
 			
 			//deploy htaccess files
 			$automnePatch = new CMS_patch();
-			$automnePatch->automneGeneralScript()
+			$automnePatch->automneGeneralScript();
 			
 			//force regeneration of first page to avoid any error
 			$rootPage = CMS_tree::getPageByID(1);
