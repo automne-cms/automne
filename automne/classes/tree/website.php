@@ -45,6 +45,13 @@ class CMS_website extends CMS_grandFather
 	protected $_label;
 
 	/**
+	  * Codename of the website
+	  * @var string
+	  * @access private
+	  */
+	protected $_codename;
+
+	/**
 	  * URL of the website (does NOT start with http://)
 	  * @var string
 	  * @access private
@@ -127,6 +134,7 @@ class CMS_website extends CMS_grandFather
 					$data = $q->getArray();
 					$this->_id = $id;
 					$this->_label = $data["label_web"];
+					$this->_codename = $data["codename_web"];
 					$this->_url = $data["url_web"];
 					$this->_altdomains = $data["altdomains_web"];
 					$this->_root = new CMS_page($data["root_web"]);
@@ -154,6 +162,7 @@ class CMS_website extends CMS_grandFather
 			} else {
 				$this->_id = $id;
 				$this->_label = $applicationWebroot->_label;
+				$this->_codename = $applicationWebroot->_codename;
 				$this->_url = $applicationWebroot->_url;
 				$this->_altdomains = $applicationWebroot->_altdomains;
 				$this->_root = $applicationWebroot->_root;
@@ -238,25 +247,49 @@ class CMS_website extends CMS_grandFather
 	  */
 	function setLabel($label)
 	{
-		//label should'nt be changed once set
+		$this->_label = $label;
+		return true;
+	}
+	
+	/**
+	  * Gets the Codename
+	  *
+	  * @return string The Codename
+	  * @access public
+	  */
+	function getCodename()
+	{
+		return $this->_codename;
+	}
+	
+	/**
+	  * Sets the Codename.
+	  *
+	  * @param string $codename The Codename to set
+	  * @return boolean true on success, false on failure.
+	  * @access public
+	  */
+	function setCodename($codename)
+	{
+		//codename should'nt be changed once set
 		if ($this->_id) {
-			$this->raiseError("Trying to change the label of a website already existing");
+			$this->raiseError("Trying to change the codename of a website already existing");
 			return false;
 		}
-		if ($label) {
-			$old_label = $this->_label;
-			$this->_label = $label;
+		if ($codename) {
+			$old_codename = $this->_codename;
+			$this->_codename = $codename;
 			
 			//now test to see if a directory already exists with that name (Because label must _not_ be moveable once set)
 			if (!$this->_isMain && is_dir($this->getPagesPath(PATH_RELATIVETO_FILESYSTEM))) {
-				$this->_label = $old_label;
-				$this->raiseError("Label to set has same directory for pages than a previously set one.");
+				$this->_codename = $old_codename;
+				$this->raiseError("Codename to set has same directory for pages than a previously set one.");
 				return false;
 			} else {
 				return true;
 			}
 		} else {
-			$this->raiseError("Label can't be empty");
+			$this->raiseError("Codename can't be empty");
 			return false;
 		}
 	}
@@ -396,13 +429,13 @@ class CMS_website extends CMS_grandFather
 	  */
 	function getPagesPath($relativeTo)
 	{
-		if ($this->_label) {
+		if ($this->_codename) {
 			if (SensitiveIO::isInSet($relativeTo, array(PATH_RELATIVETO_WEBROOT, PATH_RELATIVETO_FILESYSTEM))) {
 				$relative = ($relativeTo == PATH_RELATIVETO_WEBROOT) ? PATH_PAGES_WR : PATH_PAGES_FS;
 				if ($this->_isMain) {
 					return $relative;
 				} else {
-					return $relative."/".SensitiveIO::sanitizeAsciiString($this->_label);
+					return $relative."/".io::sanitizeAsciiString($this->_codename);
 				}
 			} else {
 				$this->raiseError("Can't give pages path relative to anything other than WR or FS");
@@ -422,15 +455,11 @@ class CMS_website extends CMS_grandFather
 	  */
 	function getHTMLPagesPath($relativeTo)
 	{
-		if ($this->_label) {
-			if (SensitiveIO::isInSet($relativeTo, array(PATH_RELATIVETO_WEBROOT, PATH_RELATIVETO_FILESYSTEM))) {
-				$relative = ($relativeTo == PATH_RELATIVETO_WEBROOT) ? PATH_PAGES_HTML_WR : PATH_PAGES_HTML_FS;
-				return $relative;
-			} else {
-				$this->raiseError("Can't give pages path relative to anything other than WR or FS");
-				return false;
-			}
+		if (io::isInSet($relativeTo, array(PATH_RELATIVETO_WEBROOT, PATH_RELATIVETO_FILESYSTEM))) {
+			$relative = ($relativeTo == PATH_RELATIVETO_WEBROOT) ? PATH_PAGES_HTML_WR : PATH_PAGES_HTML_FS;
+			return $relative;
 		} else {
+			$this->raiseError("Can't give pages path relative to anything other than WR or FS");
 			return false;
 		}
 	}
@@ -502,6 +531,7 @@ class CMS_website extends CMS_grandFather
 		}
 		$sql_fields = "
 			label_web='".SensitiveIO::sanitizeSQLString($this->_label)."',
+			codename_web='".SensitiveIO::sanitizeSQLString($this->_codename)."',
 			url_web='".SensitiveIO::sanitizeSQLString($this->_url)."',
 			altdomains_web='".SensitiveIO::sanitizeSQLString($this->_altdomains)."',
 			root_web='".$this->_root->getID()."',
@@ -553,7 +583,7 @@ class CMS_website extends CMS_grandFather
 	  * @return array(codename => pageId)
 	  * @access public
 	  */
-	function getAllCodenames() {
+	function getAllPagesCodenames() {
 		$pageIds = CMS_tree::getAllSiblings($this->_root->getID(), false, true);
 		if (!is_array($pageIds)) {
 			$pageIds = array();

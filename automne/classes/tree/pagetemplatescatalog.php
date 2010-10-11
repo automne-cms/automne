@@ -229,6 +229,8 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 				}
 			}
 		}
+		//sort groups
+		natcasesort($templateGroups);
 		if ($returnStack) {
 			$stack = new CMS_stack();
 			$stack->setValuesByAtom(1);

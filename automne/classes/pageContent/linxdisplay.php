@@ -133,17 +133,18 @@ class CMS_linxDisplay extends CMS_grandFather
 			$linkTitle = $page->getLinkTitle($public);
 			$title = $page->getTitle($public);
 			$replace = array(
-				"{{title}}"         => io::sanitizeHTMLString($linkTitle),
-				"{{jstitle}}"       => io::sanitizeHTMLString($linkTitle),
-				"{{pagetitle}}"     => io::sanitizeHTMLString($title),
-				"{{jspagetitle}}"   => io::sanitizeHTMLString($title),
-				"{{desc}}"          => io::sanitizeHTMLString($page->getDescription($public)),
-				"{{href}}"          => $page->getURL(),
-				"{{id}}"            => $page->getID(),
-				"{{number}}" 		=> ($rank-1),
-				"{{modulo}}" 		=> ($rank-1) % 2,
-				"{{currentClass}}" 	=> ($parsedPage->getID() == $page->getID()) ? "CMS_current" : "",
-				'id="{{currentID}}"'=> ($parsedPage->getID() == $page->getID()) ? 'id="CMS_current"' : "",
+				"{{title}}"				=> io::sanitizeHTMLString($linkTitle),
+				"{{jstitle}}"			=> io::sanitizeHTMLString($linkTitle),
+				"{{pagetitle}}"			=> io::sanitizeHTMLString($title),
+				"{{jspagetitle}}"		=> io::sanitizeHTMLString($title),
+				"{{desc}}"				=> io::sanitizeHTMLString($page->getDescription($public)),
+				"{{href}}"				=> $page->getURL(),
+				"{{id}}"				=> $page->getID(),
+				"{{codename}}"			=> $page->getCodename($public),
+				"{{number}}"			=> ($rank-1),
+				"{{modulo}}"			=> ($rank-1) % 2,
+				"{{currentClass}}"		=> ($parsedPage->getID() == $page->getID()) ? "CMS_current" : "",
+				'id="{{currentID}}"'	=> ($parsedPage->getID() == $page->getID()) ? 'id="CMS_current"' : "",
 			);
 			if (io::strpos($this->_htmlTemplate,'{{isParent}}') !== false) {
 				//only if needed because getLineage require a lot of query
@@ -151,6 +152,12 @@ class CMS_linxDisplay extends CMS_grandFather
 				$replace['class="{{isParent}}"'] 	= (is_array($lineage) && in_array($parsedPage->getID(), $lineage)) ? 'class="CMS_parent"' : "";
 				$replace['{{isParent}}'] 			= (is_array($lineage) && in_array($parsedPage->getID(), $lineage)) ? 'CMS_parent' : "";
 				$replace['id="{{isParent}}"']		= (is_array($lineage) && in_array($parsedPage->getID(), $lineage)) ? 'id="CMS_parent"' : "";
+			}
+			if (io::strpos($this->_htmlTemplate,'{{website') !== false) {
+				//only if needed because getWebsite require a lot of query
+				$website = $page->getWebsite();
+				$replace['{{websitetitle}}']	= $website->getLabel();
+						$replace['{{websitecodename}}'] = $website->getCodename($public);
 			}
 			$html = str_replace(array_keys($replace), $replace, $this->_htmlTemplate);
 			if (APPLICATION_ENFORCES_ACCESS_CONTROL && $public) {
@@ -246,6 +253,7 @@ class CMS_linxDisplay extends CMS_grandFather
 						"{{desc}}"          => io::sanitizeHTMLString($page->getDescription($public)),
   	                    "{{href}}"          => $page->getURL(),
   	                    "{{id}}"            => $page->getID(),
+						"{{codename}}"		=> $page->getCodename($public),
 						"{{number}}" 		=> ($rank-1),
 						"{{modulo}}" 		=> ($rank-1) % 2,
 						"{{lvlClass}}" 		=> "CMS_lvl".($level+1),
@@ -258,6 +266,12 @@ class CMS_linxDisplay extends CMS_grandFather
                         $replace['class="{{isParent}}"'] = (is_array($pagelineage) && in_array($parsedPage->getID(), $pagelineage)) ? 'class="CMS_parent"' : "";
                         $replace['{{isParent}}']         = (is_array($pagelineage) && in_array($parsedPage->getID(), $pagelineage)) ? 'CMS_parent' : "";
                         $replace['id="{{isParent}}"']    = (is_array($pagelineage) && in_array($parsedPage->getID(), $pagelineage)) ? 'id="CMS_parent"' : "";
+					}
+					if (io::strpos($this->_htmlTemplate,'{{website') !== false) {
+						//only if needed because getWebsite require a lot of query
+						$website = $page->getWebsite();
+						$replace['{{websitetitle}}']	= $website->getLabel();
+						$replace['{{websitecodename}}'] = $website->getCodename($public);
 					}
 					$pagehtml = str_replace(array_keys($replace), $replace, $this->_htmlTemplate);
 					if ($level == 0 && ($this->_root === 'false' || !$this->_root)) {

@@ -203,6 +203,8 @@ class CMS_rowsCatalog extends CMS_grandFather {
 				}
 			}
 		}
+		//sort groups
+		natcasesort($rowGroups);
 		if ($returnStack) {
 			$stack = new CMS_stack();
 			$stack->setValuesByAtom(1);

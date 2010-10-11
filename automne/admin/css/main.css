@@ -297,7 +297,12 @@ span.atm-tab * {
 .atm-block-control-modify-on {
 	background-position: -16px -160px;
 }
-
+.atm-block-control-autoupdate {
+	background-position: 0px -208px;
+}
+.atm-block-control-autoupdate-on {
+	background-position: -16px -208px;
+}
 /*SMALL PICTOS*/
 .atm-pic-logo {
 	background:			url(../automne/admin/img/pictos/logo.gif) no-repeat 0px 4px !important;

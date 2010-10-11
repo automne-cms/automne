@@ -56,12 +56,10 @@ if ($redirectTo) {
 //then if no page founded, display 404 error page
 header('HTTP/1.x 404 Not Found', true, 404);
 //Check if requested file is an image
-$imagesExtensions = array('jpg', 'jepg', 'gif', 'png', 'ico');
+$imagesExtensions = array('jpg', 'jpeg', 'gif', 'png', 'ico');
 if (isset($pathinfo['extension']) && in_array(strtolower($pathinfo['extension']), $imagesExtensions)) {
 	if (file_exists(PATH_REALROOT_FS.'/img/404.png')) {
-		header('Content-Type: image/png');
-		readfile(PATH_REALROOT_FS.'/img/404.png');
-		exit;
+		CMS_file::downloadFile(PATH_REALROOT_FS.'/img/404.png');
 	}
 }
 //send an email if needed

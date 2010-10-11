@@ -66,6 +66,11 @@ class CMS_object_file extends CMS_object_common
 	const MESSAGE_OBJECT_FILE_PARAMETER_ALLOWED_TYPE_DESC = 375;
 	const MESSAGE_OBJECT_FILE_PARAMETER_DISALLOWED_TYPE = 376;
 	const MESSAGE_OBJECT_FILE_PARAMETER_DISALLOWED_TYPE_DESC = 375;
+	const MESSAGE_OBJECT_FILE_FILE_DESCRIPTION = 574;
+	const MESSAGE_OBJECT_FILE_THUMB_DESCRIPTION = 575;
+	const MESSAGE_OBJECT_FILE_IMAGEWIDTH_DESCRIPTION = 576;
+	const MESSAGE_OBJECT_FILE_IMAGEHEIGHT_DESCRIPTION = 577;
+	const MESSAGE_OBJECT_FILE_THUMBEXTENTION_DESCRIPTION = 578;
 	
 	//Standard Message
 	const MESSAGE_ALL_FILE = 530;
@@ -619,6 +624,20 @@ class CMS_object_file extends CMS_object_common
 	}
 	
 	/**
+	  * return the extension of the current thumbnail.
+	  *
+	  * @return string : the extension of the current document
+	  * @access public
+	  */
+	protected function _getThumbExtension() {
+		if (!$this->_subfieldValues[1]->getValue()) {
+			return '';
+		}
+		$path_parts = pathinfo($this->_subfieldValues[1]->getValue());
+		return io::strtolower($path_parts['extension']);
+	}
+	
+	/**
 	  * return the fileicon path if any for the current document.
 	  *
 	  * @return void
@@ -721,6 +740,10 @@ class CMS_object_file extends CMS_object_common
 				
 				//resize thumbnail if needed
 				if ($params['thumbMaxWidth'] > 0 || $params['thumbMaxHeight'] > 0) {
+					$oImage = new CMS_image($newFilename);
+					//get current file size
+					$sizeX = $oImage->getWidth();
+					$sizeY = $oImage->getHeight();
 					//check thumbnail size
 					list($sizeX, $sizeY) = @getimagesize($newFilename);
 					if (($params['thumbMaxWidth'] && $sizeX > $params['thumbMaxWidth']) || ($params['thumbMaxHeight'] && $sizeY > $params['thumbMaxHeight'])) {
@@ -735,41 +758,9 @@ class CMS_object_file extends CMS_object_common
 							$newSizeX = round(($params['thumbMaxHeight']*$newSizeX)/$newSizeY);
 							$newSizeY = $params['thumbMaxHeight'];
 						}
-						$dest = imagecreatetruecolor($newSizeX, $newSizeY);
-						switch ($extension) {
-							case "gif":
-								$src = imagecreatefromgif($newFilename);
-								imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
-								imagedestroy($src);
-								//overwrite image
-								@imagegif($dest,$newFilename);
-							break;
-							case "jpg":
-							case "jpeg":
-							case "jpe":
-								$src = imagecreatefromjpeg($newFilename);
-								imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
-								imagedestroy($src);
-								//overwrite image
-								@imagejpeg($dest,$newFilename,95);
-							break;
-							case "png":
-								$src = imagecreatefrompng($newFilename);
-								imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
-								imagedestroy($src);
-								//overwrite image
-								@imagepng($dest,$newFilename);
-							break;
-							default:
-								return false;
-							break;
+						if (!$oImage->resize($newFilename, $newSizeX, $newSizeY)) {
+							return false;
 						}
-						//imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
-						//imagedestroy($src);
-						//overwrite image
-						//@imagejpeg($dest,$newFilename,95);
-						CMS_file::chmodFile(FILES_CHMOD, $newFilename);
-						imagedestroy($dest);
 					}
 				}
 				//set thumbnail
@@ -1022,8 +1013,11 @@ class CMS_object_file extends CMS_object_common
 				}
 				unset($tmp);
 				if ($params['thumbMaxWidth'] > 0 || $params['thumbMaxHeight'] > 0) {
+					$oImage = new CMS_image($path."/".$filename);
+					//get current file size
+					$sizeX = $oImage->getWidth();
+					$sizeY = $oImage->getHeight();
 					//check thumbnail size
-					list($sizeX, $sizeY) = @getimagesize($path."/".$filename);
 					if ($sizeX > $params['thumbMaxWidth'] || $sizeX > $params['thumbMaxHeight']) {
 						$newSizeX = $sizeX;
 						$newSizeY = $sizeY;
@@ -1042,34 +1036,11 @@ class CMS_object_file extends CMS_object_common
 						$thumbnailFilename = io::substr($path_parts['basename'],0,-(io::strlen($path_parts['extension'])+1)).'.png';
 						$destfilepath = $path."/".$thumbnailFilename;
 						
-						$extension = io::strtolower($path_parts['extension']);
-						
-						$dest = imagecreatetruecolor($newSizeX, $newSizeY);
-						switch ($extension) {
-							case "gif":
-								$src = imagecreatefromgif($srcfilepath);
-							break;
-							case "jpg":
-							case "jpeg":
-							case "jpe":
-								$src = imagecreatefromjpeg($srcfilepath);
-							break;
-							case "png":
-								$src = imagecreatefrompng($srcfilepath);
-							break;
-							default:
-								return false;
-							break;
+						if (!$oImage->resize($destfilepath, $newSizeX, $newSizeY)) {
+							return false;
 						}
-						imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
-						imagedestroy($src);
-						imagepng($dest, $destfilepath);
-						@chmod($destfilepath, octdec(FILES_CHMOD));
-						imagedestroy($dest);
-						
 						//destroy original image
-						unlink($srcfilepath);
-						
+						@unlink($srcfilepath);
 						//set resized thumbnail
 						if (!$this->_subfieldValues[1]->setValue($thumbnailFilename)) {
 							return false;
@@ -1290,10 +1261,12 @@ class CMS_object_file extends CMS_object_common
 	function getStructure() {
 		$structure = parent::getStructure();
 		unset($structure['value']);
+		$structure['file'] = '';
+		$structure['thumb'] = '';
 		$structure['fileHTML'] = '';
 		$structure['fileLabel'] = '';
 		$structure['filename'] = '';
-		$structure['thumbnail'] = '';
+		$structure['thumbname'] = $structure['thumbnail'] = '';
 		$structure['filePath'] = '';
 		$structure['thumbWidth'] = '';
 		$structure['thumbHeight'] = '';
@@ -1302,6 +1275,7 @@ class CMS_object_file extends CMS_object_common
 		$structure['fileSize'] = '';
 		$structure['fileIcon'] = '';
 		$structure['fileExtension'] = '';
+		$structure['thumbExtension'] = '';
 		return $structure;
 	}
 	
@@ -1315,6 +1289,38 @@ class CMS_object_file extends CMS_object_common
 	  */
 	function getValue($name, $parameters = '') {
 		switch($name) {
+			case 'file':
+				if ($this->_subfieldValues[4]->getValue() && $parameters) {
+					if (in_array($this->getValue('fileExtension'), array('jpg', 'jpeg', 'png', 'gif'))) {
+						@list($x, $y) = explode(',',str_replace(';', ',', $parameters));
+						if ((io::isPositiveInteger($x) && $x < $this->getValue('imageWidth')) || (io::isPositiveInteger($y) && $y < $this->getValue('imageHeight'))) {
+							//get module codename
+							$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
+							return CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[4]->getValue() .'&module='. $moduleCodename .'&x='. $x .'&y='. $y;
+						}
+					}
+				}
+				if ($this->_subfieldValues[4]->getValue()) {
+					return $this->getValue('filePath'). '/' .$this->_subfieldValues[4]->getValue();
+				}
+				return '';
+			break;
+			case 'thumb':
+				if ($this->_subfieldValues[1]->getValue() && $parameters) {
+					if (in_array($this->getValue('thumbExtension'), array('jpg', 'jpeg', 'png', 'gif'))) {
+						@list($x, $y) = explode(',',str_replace(';', ',', $parameters));
+						if ((io::isPositiveInteger($x) && $x < $this->getValue('thumbWidth')) || (io::isPositiveInteger($y) && $y < $this->getValue('thumbHeight'))) {
+							//get module codename
+							$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
+							return CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[1]->getValue() .'&module='. $moduleCodename .'&x='. $x .'&y='. $y;
+						}
+					}
+				}
+				if ($this->_subfieldValues[1]->getValue()) {
+					return $this->getValue('filePath'). '/' .$this->_subfieldValues[1]->getValue();
+				}
+				return '';
+			break;
 			case 'fileHTML':
 				//get module codename
 				$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
@@ -1337,6 +1343,7 @@ class CMS_object_file extends CMS_object_common
 				return $this->_subfieldValues[4]->getValue();
 			break;
 			case 'thumbnail':
+			case 'thumbname':
 				return $this->_subfieldValues[1]->getValue();
 			break;
 			case 'filePath':
@@ -1370,6 +1377,23 @@ class CMS_object_file extends CMS_object_common
 					return $sizeY;
 				}
 			break;
+			case 'imageWidth':
+			case 'imageHeight':
+				if ($this->_subfieldValues[4]->getValue() && in_array($this->getValue('fileExtension'), array('jpg', 'jpeg', 'png', 'gif'))) {
+					//get module codename
+					$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
+					//set location
+					$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
+					$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.$location;
+					list($sizeX, $sizeY) = @getimagesize($path."/".$this->_subfieldValues[4]->getValue());
+					if ($name == 'imageWidth') {
+						return $sizeX;
+					} else {
+						return $sizeY;
+					}
+				}
+				return 0;
+			break;
 			case 'fileSize':
 				return $this->_subfieldValues[2]->getValue();
 			break;
@@ -1378,6 +1402,9 @@ class CMS_object_file extends CMS_object_common
 			break;
 			case 'fileExtension':
 				return $this->_getFileExtension();
+			break;
+			case 'thumbExtension':
+				return $this->_getThumbExtension();
 			break;
 			default:
 				return parent::getValue($name, $parameters);
@@ -1394,18 +1421,24 @@ class CMS_object_file extends CMS_object_common
 	function getLabelsStructure(&$language) {
 		$labels = parent::getLabelsStructure($language);
 		unset($labels['structure']['value']);
+		
+		$labels['structure']['file|width,height'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_FILE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['structure']['thumb|width,height'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_THUMB_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['fileHTML'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_FILEHTML_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['fileLabel'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_FILELABEL_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['filename'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_FILENAME_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
-		$labels['structure']['thumbnail'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_FILETHUMBNAME_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['structure']['thumbname'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_FILETHUMBNAME_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['filePath'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_FILEPATH_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['thumbWidth'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_THUMBWIDTH_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['thumbHeight'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_THUMBHEIGHT_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['structure']['imageWidth'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_IMAGEWIDTH_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['structure']['imageHeight'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_IMAGEHEIGHT_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['thumbMaxWidth'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_IMAGEMAXWIDTH_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['thumbMaxheight'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_IMAGEMAXHEIGHT_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['fileSize'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_FILESIZE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['fileIcon'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_FILEICON_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['fileExtension'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_FILEEXTENTION_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['structure']['thumbExtension'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_THUMBEXTENTION_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		
 		return $labels;
 	}

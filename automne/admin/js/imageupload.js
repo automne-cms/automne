@@ -133,6 +133,16 @@ Automne.ImageUploadField = Ext.extend(Automne.FileUploadField,  {
 						}
 						if ((this.maxWidth && img.dom.naturalWidth > this.maxWidth) || img.dom.naturalWidth < this.minWidth || (this.maxHeight && img.dom.naturalHeight > this.maxHeight) || img.dom.naturalHeight < this.minHeight) {
 							this.markInvalid(al.maxImageSize);
+							if ((this.maxWidth && img.dom.naturalWidth > this.maxWidth) || (this.maxHeight && img.dom.naturalHeight > this.maxHeight)) {
+								//add auto update tool
+								if (!this.resizeEl) {
+									this.resizeEl = this.infoEl.insertHtml('beforeEnd','<span class="atm-block-control atm-block-control-autoupdate" ext:qtip="'+al.autoUpdateImage+'">&nbsp;</span>', true);
+									this.resizeEl.on('mousedown', this.autoResizeFile, this);
+									this.resizeEl.addClassOnOver('atm-block-control-autoupdate-on');
+								} else {
+									this.infoEl.appendChild(this.resizeEl);
+								}
+							}
 						} else {
 							this.clearInvalid();
 						}
@@ -151,6 +161,7 @@ Automne.ImageUploadField = Ext.extend(Automne.FileUploadField,  {
 					scope:this
 				}
 			});
+			//add image tools
 			if (!this.editEl) {
 				this.editEl = this.infoEl.insertHtml('beforeEnd','<span class="atm-block-control atm-block-control-modify" ext:qtip="'+al.updateImage+'">&nbsp;</span>', true);
 				this.editEl.on('mousedown', this.editFile, this);
@@ -232,6 +243,32 @@ Automne.ImageUploadField = Ext.extend(Automne.FileUploadField,  {
 		if (!this.previewProxy) {
 			this.createPreview(false, this.launchEdit);
 		}
+	},
+	autoResizeFile: function () {
+		this.setNaturalSize(this.preview);
+		var img = this.preview;
+		var width, height = 0;
+		if (this.maxWidth && img.dom.naturalWidth > this.maxWidth) {
+			width = this.maxWidth;
+			height = parseInt((img.dom.naturalHeight * this.maxWidth) / img.dom.naturalWidth);
+		} else {
+			width = img.dom.naturalWidth;
+			height = img.dom.naturalHeight;
+		}
+		if (this.maxHeight && height > this.maxHeight) {
+			width = this.maxWidth;
+			height = parseInt((width * this.maxHeight) / height);
+		}
+		//send datas to server to resize image
+		Automne.server.call('image-controler.php', this.endEdition, {
+			image:			this.getValue(),
+			width:			width,
+			height:			height,
+			cropTop:		0,
+			cropBottom:		0,
+			cropLeft:		0,
+			cropRight:		0
+		}, this);
 	},
 	launchEdit: function() {
 		if (this.previewProxy) {
@@ -426,6 +463,10 @@ Automne.ImageUploadField = Ext.extend(Automne.FileUploadField,  {
 			this.stopCrop();
 			return;
 		}
+		Ext.getCmp('widthField').disable();
+		Ext.getCmp('heightField').disable();
+		Ext.getCmp('sizeSlider').disable();
+		Ext.getCmp('toggleCrop').setText(Ext.MessageBox.buttonText.cancel);
 		crop = this.previewProxy.createProxy({tag:'div', id:'imagecrop'}, Ext.getBody(), true);
 		crop.setStyle({'z-index': parseInt(this.editPanel.mask.getStyle('z-index')) + 2});
 		this.cropHandle = new Ext.Resizable(crop, {
@@ -450,6 +491,10 @@ Automne.ImageUploadField = Ext.extend(Automne.FileUploadField,  {
 		if (Ext.getCmp('toggleCrop').pressed) {
 			Ext.getCmp('toggleCrop').toggle(false);
 		}
+		Ext.getCmp('widthField').enable();
+		Ext.getCmp('heightField').enable();
+		Ext.getCmp('sizeSlider').enable();
+		Ext.getCmp('toggleCrop').setText(Automne.locales.crop);
 		if (this.cropHandle) {
 			this.cropHandle.destroy(true);
 			this.cropHandle = null;
@@ -504,28 +549,30 @@ Automne.ImageUploadField = Ext.extend(Automne.FileUploadField,  {
 				icon: 				Ext.MessageBox.ERROR
 			});
 		} else if (jsonResponse['filepath'] && jsonResponse['filename']) {
-			//reload preview
-			this.previewProxy.on({
-				'load':{
-					fn:function(e, el) {
-						var img = Ext.get(el);
-						this.setNaturalSize(img, Ext.isIE);
-						try {
-							//these properties are only getters for FF
-							this.previewProxy.dom.naturalWidth = img.dom.naturalWidth;
-							this.previewProxy.dom.naturalHeight = img.dom.naturalHeight;
-						} catch(e){}
-						this.maintainRatio = false;
-						Ext.getCmp('widthField').setValue(this.previewProxy.dom.naturalWidth);
-						Ext.getCmp('heightField').setValue(this.previewProxy.dom.naturalHeight);
-						Ext.getCmp('sizeSlider').setValue(100);
-						this.maintainRatio = true;
-						this.adaptPreviewSize();
-					},
-					scope:this
-				}
-			});
-			this.previewProxy.dom.src = jsonResponse['filepath']+'/'+ jsonResponse['filename'] +'?time='+(new Date()).getTime();
+			if (this.previewProxy) {
+				//reload preview
+				this.previewProxy.on({
+					'load':{
+						fn:function(e, el) {
+							var img = Ext.get(el);
+							this.setNaturalSize(img, Ext.isIE);
+							try {
+								//these properties are only getters for FF
+								this.previewProxy.dom.naturalWidth = img.dom.naturalWidth;
+								this.previewProxy.dom.naturalHeight = img.dom.naturalHeight;
+							} catch(e){}
+							this.maintainRatio = false;
+							Ext.getCmp('widthField').setValue(this.previewProxy.dom.naturalWidth);
+							Ext.getCmp('heightField').setValue(this.previewProxy.dom.naturalHeight);
+							Ext.getCmp('sizeSlider').setValue(100);
+							this.maintainRatio = true;
+							this.adaptPreviewSize();
+						},
+						scope:this
+					}
+				});
+				this.previewProxy.dom.src = jsonResponse['filepath']+'/'+ jsonResponse['filename'] +'?time='+(new Date()).getTime();
+			}
 			this.fileinfos['filesize'] = jsonResponse['filesize'];
 			this.fileinfos['filepath'] = jsonResponse['filepath'];
 			this.fileinfos['filename'] = jsonResponse['filename'];

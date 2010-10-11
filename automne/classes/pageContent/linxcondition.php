@@ -81,7 +81,7 @@ class CMS_linxCondition extends CMS_grandFather
 	  */
 	function __construct($tag)
 	{
-		$authorized_properties =array("rank", "title", "id", "lvl", "father");
+		$authorized_properties =array("rank", "title", "id", "lvl", "father", "website", "codename");
 		$property = $tag->getAttribute('property');
 		$operator = $tag->getAttribute('operator');
 		if (SensitiveIO::isInSet($property, $authorized_properties)) {
@@ -186,14 +186,20 @@ class CMS_linxCondition extends CMS_grandFather
 			return;
 		}
 		switch ($property) {
-		case "title":
-			return $page->getTitle($public);
+			case "title":
+				return $page->getTitle($public);
 			break;
-		case "father":
-			return CMS_tree::getFather($page, false, $public);
+			case "father":
+				return CMS_tree::getFather($page, false, $public);
 			break;
-		case "id":
-			return $page->getID();
+			case "id":
+				return $page->getID();
+			break;
+			case "website":
+				return $page->getWebsite()->getCodename();
+			break;
+			case "codename":
+				return $page->getCodename($public);
 			break;
 		}
 	}

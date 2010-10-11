@@ -203,19 +203,20 @@ class SensitiveIO extends CMS_grandFather
 	  *
 	  * @param string $input The sensitive input.
 	  * @param string $keep The meta caracters to keep with _.- (default : none).
+	  * @param string $special The special caracters allowed (default : "_.-").
 	  * @return string the sanitized string
 	  * @access public
 	  */
-	static function sanitizeAsciiString($input, $keep = '') {
+	static function sanitizeAsciiString($input, $keep = '', $special='_.-') {
 		$map = io::sanitizeAsciiMap();
 		$map = array_merge($map, array(" " => "_"));
 		if (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
 			$sanitized = strtr($input, $map);
-			$sanitized = preg_replace("#[^[a-zA-Z0-9".$keep."_.-]]*#", "", $sanitized);
+			$sanitized = preg_replace("#[^[a-zA-Z0-9".$keep.$special."]]*#", "", $sanitized);
 		} else {
 			$input = utf8_decode($input);
 			$sanitized = strtr($input, $map);
-			$sanitized = preg_replace("#[^[a-zA-Z0-9".$keep."_.-]]*#", "", $sanitized);
+			$sanitized = preg_replace("#[^[a-zA-Z0-9".$keep.$special."]]*#", "", $sanitized);
 			$sanitized = utf8_encode($sanitized);
 		}
 		return $sanitized;
