@@ -466,19 +466,6 @@ class CMS_patch extends CMS_grandFather
 								if ($stopOnErrors) return;
 							}
 						break;
-						/* removed : too dangerous
-						case "ex": //execute command in exec
-							//exec command script
-							$executionReturn = $this->executeCommand($installParams[1],$errorReturn);
-							$executionReturn = ($executionReturn) ? ' -> Command return is :<br /><div style="border:1px;background-color:#000080;color:#C0C0C0;padding:5px;"><pre>'.sensitiveIO::decodeWindowsChars($executionReturn).'</pre></div><br />':'';
-							if ($errorReturn!=0) {
-								$this->_report('Error during execution of command \''.$installParams[1].'\'<br />Error return code is :<br />'.$errorReturn.'<br />'.$executionReturn,true);
-								if ($stopOnErrors) return;
-							} else {
-								$this->_report(' -> Command \''.$installParams[1].'\' executed<br />'.$executionReturn);
-							}
-						break;
-						*/
 						case "rc":
 							$this->automneGeneralScript();
 						break;
@@ -487,17 +474,39 @@ class CMS_patch extends CMS_grandFather
 							$pathes = glob(PATH_REALROOT_FS.$installParams[1]);
 							if ($pathes) {
 								foreach($pathes as $path) {
-									if (is_dir($path) && CMS_file::makeWritable($path)) {
-										if (CMS_file::copyTo(PATH_HTACCESS_FS.'/htaccess_'.$installParams[2], $path.'/.htaccess')) {
-											CMS_file::chmodFile(FILES_CHMOD, $path.'/.htaccess');
-											$this->_report('File '.$path.'/.htaccess ('.$installParams[2].') successfully writen');
+									if ($installParams[2] == 'root' && file_exists($path.'/.htaccess')) {
+										//for root file, if already exists, only replace ErrorDocument instructions to set correct path
+										$htaccessFile = new CMS_file($path.'/.htaccess');
+										$lines = $htaccessFile->readContent('array', '');
+										foreach ($lines as $key => $line) {
+											if (substr($line, 0, 13) == 'ErrorDocument') {
+												list($errorDoc, $code, $file) = preg_split("/[\s]+/", $line);
+												if ($code == '404') {
+													$lines[$key] = 'ErrorDocument 404 '.PATH_REALROOT_WR.'/404.php'."\n";
+												} elseif ($code == '403') {
+													$lines[$key] = 'ErrorDocument 403 '.PATH_REALROOT_WR.'/403.php'."\n";
+												}
+											}
+										}
+										$htaccessFile->setContent(implode('', $lines), false);
+										if ($htaccessFile->writeToPersistence()) {
+											$this->_report('File '.$path.'/.htaccess ('.$installParams[2].') successfully updated');
 										} else {
 											$this->_report('Error during operation on '.$path.'/.htaccess. Can\'t write file.<br />', true);
-											if ($stopOnErrors) return;
 										}
 									} else {
-										$this->_report('Error during operation. '.$path.' must be a writable directory.<br />',true);
-										if ($stopOnErrors) return;
+										if (is_dir($path) && CMS_file::makeWritable($path)) {
+											if (CMS_file::copyTo(PATH_HTACCESS_FS.'/htaccess_'.$installParams[2], $path.'/.htaccess')) {
+												CMS_file::chmodFile(FILES_CHMOD, $path.'/.htaccess');
+												$this->_report('File '.$path.'/.htaccess ('.$installParams[2].') successfully writen');
+											} else {
+												$this->_report('Error during operation on '.$path.'/.htaccess. Can\'t write file.<br />', true);
+												if ($stopOnErrors) return;
+											}
+										} else {
+											$this->_report('Error during operation. '.$path.' must be a writable directory.<br />',true);
+											if ($stopOnErrors) return;
+										}
 									}
 								}
 							}

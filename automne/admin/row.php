@@ -137,7 +137,7 @@ if ($allIcons) {
 	//get max icons height
 	$maxheight = 0;
 	foreach ($allIcons as $icon) {
-		list($sizeX, $sizeY) = @getimagesize(PATH_REALROOT_FS."/".$icon);
+		list($sizeX, $sizeY) = @getimagesize($_SERVER["DOCUMENT_ROOT"]."/".$icon);
 		$maxheight = $sizeY > $maxheight ? $sizeY : $maxheight;
 	}
 	$maxheight += 10;
