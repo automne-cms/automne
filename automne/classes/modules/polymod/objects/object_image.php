@@ -65,6 +65,8 @@ class CMS_object_image extends CMS_object_common
 	const MESSAGE_OBJECT_IMAGE_IMAGESIZE_DESCRIPTION = 224;
 	const MESSAGE_OBJECT_IMAGE_IMAGEZOOMSIZE_DESCRIPTION = 225;
 	const MESSAGE_OBJECT_IMAGE_FIELD_MAX_FILESIZE = 236;
+	const MESSAGE_OBJECT_IMAGE_IMAGE_DESCRIPTION = 579;
+	const MESSAGE_OBJECT_IMAGE_IMAGEZOOM_DESCRIPTION = 580;
 	
 	//standard messages
 	const MESSAGE_SELECT_PICTURE = 528;
@@ -1019,7 +1021,10 @@ class CMS_object_image extends CMS_object_common
 						return CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[0]->getValue() .'&module='. $moduleCodename .'&x='. $x .'&y='. $y;
 					}
 				}
-				return $this->getValue('imagePath'). '/' .$this->_subfieldValues[0]->getValue();
+				if ($this->_subfieldValues[0]->getValue()) {
+					return $this->getValue('imagePath'). '/' .$this->_subfieldValues[0]->getValue();
+				}
+				return '';
 			break;
 			case 'imageZoom':
 				if ($this->_subfieldValues[2]->getValue() && $parameters) {
@@ -1030,7 +1035,10 @@ class CMS_object_image extends CMS_object_common
 						return CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[2]->getValue() .'&module='. $moduleCodename .'&x='. $x .'&y='. $y;
 					}
 				}
-				return $this->getValue('imagePath'). '/' .$this->_subfieldValues[2]->getValue();
+				if ($this->_subfieldValues[2]->getValue()) {
+					return $this->getValue('imagePath'). '/' .$this->_subfieldValues[2]->getValue();
+				}
+				return '';
 			break;
 			case 'imageHTML':
 				//get module codename
@@ -1151,6 +1159,9 @@ class CMS_object_image extends CMS_object_common
 	function getLabelsStructure(&$language) {
 		$labels = parent::getLabelsStructure($language);
 		unset($labels['structure']['value']);
+		
+		$labels['structure']['image|width,height'] = $language->getMessage(self::MESSAGE_OBJECT_IMAGE_IMAGE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['structure']['imageZoom|width,height'] = $language->getMessage(self::MESSAGE_OBJECT_IMAGE_IMAGEZOOM_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['imageHTML'] = $language->getMessage(self::MESSAGE_OBJECT_IMAGE_IMAGEHTML_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['imageLabel'] = $language->getMessage(self::MESSAGE_OBJECT_IMAGE_IMAGELABEL_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['imageName'] = $language->getMessage(self::MESSAGE_OBJECT_IMAGE_IMAGENAME_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);

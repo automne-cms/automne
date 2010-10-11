@@ -66,6 +66,11 @@ class CMS_object_file extends CMS_object_common
 	const MESSAGE_OBJECT_FILE_PARAMETER_ALLOWED_TYPE_DESC = 375;
 	const MESSAGE_OBJECT_FILE_PARAMETER_DISALLOWED_TYPE = 376;
 	const MESSAGE_OBJECT_FILE_PARAMETER_DISALLOWED_TYPE_DESC = 375;
+	const MESSAGE_OBJECT_FILE_FILE_DESCRIPTION = 574;
+	const MESSAGE_OBJECT_FILE_THUMB_DESCRIPTION = 575;
+	const MESSAGE_OBJECT_FILE_IMAGEWIDTH_DESCRIPTION = 576;
+	const MESSAGE_OBJECT_FILE_IMAGEHEIGHT_DESCRIPTION = 577;
+	const MESSAGE_OBJECT_FILE_THUMBEXTENTION_DESCRIPTION = 578;
 	
 	//Standard Message
 	const MESSAGE_ALL_FILE = 530;
@@ -1295,7 +1300,10 @@ class CMS_object_file extends CMS_object_common
 						}
 					}
 				}
-				return $this->getValue('filePath'). '/' .$this->_subfieldValues[4]->getValue();
+				if ($this->_subfieldValues[4]->getValue()) {
+					return $this->getValue('filePath'). '/' .$this->_subfieldValues[4]->getValue();
+				}
+				return '';
 			break;
 			case 'thumb':
 				if ($this->_subfieldValues[1]->getValue() && $parameters) {
@@ -1308,7 +1316,10 @@ class CMS_object_file extends CMS_object_common
 						}
 					}
 				}
-				return $this->getValue('filePath'). '/' .$this->_subfieldValues[1]->getValue();
+				if ($this->_subfieldValues[1]->getValue()) {
+					return $this->getValue('filePath'). '/' .$this->_subfieldValues[1]->getValue();
+				}
+				return '';
 			break;
 			case 'fileHTML':
 				//get module codename
@@ -1410,6 +1421,9 @@ class CMS_object_file extends CMS_object_common
 	function getLabelsStructure(&$language) {
 		$labels = parent::getLabelsStructure($language);
 		unset($labels['structure']['value']);
+		
+		$labels['structure']['file|width,height'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_FILE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['structure']['thumb|width,height'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_THUMB_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['fileHTML'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_FILEHTML_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['fileLabel'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_FILELABEL_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['filename'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_FILENAME_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
@@ -1417,11 +1431,14 @@ class CMS_object_file extends CMS_object_common
 		$labels['structure']['filePath'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_FILEPATH_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['thumbWidth'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_THUMBWIDTH_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['thumbHeight'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_THUMBHEIGHT_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['structure']['imageWidth'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_IMAGEWIDTH_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['structure']['imageHeight'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_IMAGEHEIGHT_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['thumbMaxWidth'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_IMAGEMAXWIDTH_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['thumbMaxheight'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_IMAGEMAXHEIGHT_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['fileSize'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_FILESIZE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['fileIcon'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_FILEICON_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['fileExtension'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_FILEEXTENTION_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['structure']['thumbExtension'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_THUMBEXTENTION_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		
 		return $labels;
 	}
