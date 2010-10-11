@@ -625,8 +625,13 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(571, 'polymod', 'fr', 'Positionner sur la Carte');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(572, 'polymod', 'fr', 'Fen&ecirc;tre Cartographique');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(573, 'polymod', 'fr', 'Saisissez une adresse de d&eacute;part ...');
-
-
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(574, 'polymod', 'fr', 'Chemin complet vers le fichier (répertoire et nom). Cette variable accepte deux paramètres optionnels largeur (width) et hauteur (height) permettant de redimensionner dynamiquement le fichier lorsqu\'il s\'agit d\'une image. Spécifiez pour ces valeurs les dimensions attendues en pixels.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(575, 'polymod', 'fr', 'Chemin complet vers la vignette (répertoire et nom). Cette variable accepte deux paramètres optionnels largeur (width) et hauteur (height) permettant de redimensionner dynamiquement la vignette. Spécifiez pour ces valeurs les dimensions attendues en pixels.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(576, 'polymod', 'fr', 'Si le fichier est une image : largeur de l\'image en pixels');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(577, 'polymod', 'fr', 'Si le fichier est une image : hauteur de l\'image en pixels');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(578, 'polymod', 'fr', 'Type de la vignette (extension)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(579, 'polymod', 'fr', 'Chemin complet vers l\'image (répertoire et nom). Cette variable accepte deux paramètres optionnels largeur (width) et hauteur (height) permettant de redimensionner dynamiquement l\'image. Spécifiez pour ces valeurs les dimensions attendues en pixels.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(580, 'polymod', 'fr', 'Chemin complet vers l\'image zoom (répertoire et nom). Cette variable accepte deux paramètres optionnels largeur (width) et hauteur (height) permettant de redimensionner dynamiquement l\'image zoom. Spécifiez pour ces valeurs les dimensions attendues en pixels.');
 
 
 

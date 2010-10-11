@@ -837,7 +837,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(837, 'standard', 'en', 'Groups');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(838, 'standard', 'en', 'New groups (separated by semi-colons)');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(839, 'standard', 'en', '[Error while uploading file]');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(840, 'standard', 'en', '[Error, the uploaded XML file contains conformity anomalies]');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(840, 'standard', 'en', 'The XML model imported is malformed');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(841, 'standard', 'en', 'Template management');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(842, 'standard', 'en', 'Templates');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(843, 'standard', 'en', 'Library of Style-rows');
@@ -1584,6 +1584,7 @@ crop: ''Crop'',
 apply: ''Apply'',
 removeImage: ''Remove current image'',
 updateImage: ''Modify (resize - crop) current image'',
+autoUpdateImage: ''Automatically resize current image'',
 //Pages field 
 select: ''Select...'',
 //Link field 

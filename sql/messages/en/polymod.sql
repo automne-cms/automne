@@ -424,3 +424,10 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(571, 'polymod', 'en', 'Position on the Map');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(572, 'polymod', 'en', 'Map window');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(573, 'polymod', 'en', 'Enter an address to start ...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(574, 'polymod', 'en', 'Full path and file name of the file. This variable accepts two optional parameters width and height to dynamically resize the file when it is an image. Specify values for the expected size in pixels.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(575, 'polymod', 'en', 'Full path and file name of the thumbnail. This variable accepts two optional parameters width and height to dynamically resize the thumbnail. Specify values for the expected size in pixels.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(576, 'polymod', 'en', 'If the file is an image: the image width in pixels');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(577, 'polymod', 'en', 'If the file is an image: the image height in pixels');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(578, 'polymod', 'en', 'Thumbnail file type (extension)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(579, 'polymod', 'en', 'Full path and file name of the image. This variable accepts two optional parameters width and height to dynamically resize the image. Specify values for the expected size in pixels.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(580, 'polymod', 'en', 'Full path and file name of the image zoom. This variable accepts two optional parameters width and height to dynamically resize the image zoom. Specify values for the expected size in pixels.');
