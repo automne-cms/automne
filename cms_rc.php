@@ -1087,7 +1087,15 @@ if (!defined("AUTOMNE_VERSION") && file_exists(PATH_REALROOT_FS."/VERSION")) {
 /**
   *	Automne subversion number. Used to avoid JS and CSS browser cache
   */
+if (!defined("AUTOMNE_LASTUPDATE") && file_exists(PATH_MAIN_FS.'/.bzr/branch/last-revision')) {
+	//Extract last update from bazaar last-revision
+	preg_match('/-([0-9]{14})-/', file_get_contents(PATH_MAIN_FS.'/.bzr/branch/last-revision'), $match);
+	if (isset($match[1])) {
+		define("AUTOMNE_LASTUPDATE", strtotime ($match[1]));
+	}
+}
 if (!defined("AUTOMNE_LASTUPDATE") && file_exists(PATH_MAIN_FS."/SUBVERSION")) {
+	//Extract last update from Automne last update file
 	define("AUTOMNE_LASTUPDATE", file_get_contents(PATH_MAIN_FS."/SUBVERSION"));
 } else if(!defined("AUTOMNE_LASTUPDATE") && !file_exists(PATH_MAIN_FS."/SUBVERSION")) {
 	define("AUTOMNE_LASTUPDATE", 0);
