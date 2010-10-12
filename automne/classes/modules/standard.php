@@ -1666,7 +1666,7 @@ class CMS_module_standard extends CMS_module
 					break;
 					case "atm-page":
 						if ($treatedObject && !$treatedObject->hasError()) {
-							switch ($tag->getAttribute('data')) {
+							switch ($tag->getAttribute('name')) {
 								case 'id':
 									return SensitiveIO::sanitizeHTMLString($treatedObject->getID());
 								break;
@@ -1687,9 +1687,11 @@ class CMS_module_standard extends CMS_module
 								case 'robots':
 								case 'pragma':
 								case 'refresh':
-								case 'metas':
-									$method = 'get'.ucfirst($tag->getAttribute('data'));
+									$method = 'get'.ucfirst($tag->getAttribute('name'));
 									return SensitiveIO::sanitizeHTMLString($treatedObject->{$method}($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC));
+								break;
+								case 'metas':
+									return $treatedObject->getMetas($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC);
 								break;
 								case 'title':
 								default:
@@ -1702,7 +1704,7 @@ class CMS_module_standard extends CMS_module
 					case "atm-website":
 						$website = $treatedObject->getWebsite();
 						if ($website && !$website->hasError()) {
-							switch ($tag->getAttribute('data')) {
+							switch ($tag->getAttribute('name')) {
 								case 'codename':
 									return SensitiveIO::sanitizeHTMLString($website->getCodename());
 								break;
@@ -1721,8 +1723,10 @@ class CMS_module_standard extends CMS_module
 								case 'language':
 								case 'robots':
 								case 'favicon':
+									return SensitiveIO::sanitizeHTMLString($website->getMeta($tag->getAttribute('name')));
+								break;
 								case 'metas':
-									return SensitiveIO::sanitizeHTMLString($website->getMeta($tag->getAttribute('data')));
+									return $website->getMeta('metas');
 								break;
 								case 'title':
 								default:
