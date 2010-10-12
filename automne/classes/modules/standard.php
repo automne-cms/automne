@@ -1444,21 +1444,9 @@ class CMS_module_standard extends CMS_module
 		$return = array();
 		switch ($treatmentMode) {
 			case MODULE_TREATMENT_CLIENTSPACE_TAGS :
-				/*if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
-					$return = array (
-						"atm-clientspace" 	=> array("selfClosed" => true, "parameters" => array()),
-						"title" 			=> array("selfClosed" => false, "parameters" => array()),
-						"atm-meta-tags" 	=> array("selfClosed" => true, "parameters" => array()),
-						"atm-css-tags" 		=> array("selfClosed" => true, "parameters" => array()),
-						"atm-js-tags" 		=> array("selfClosed" => true, "parameters" => array()),
-						//"atm-linx" 			=> array("selfClosed" => false, "parameters" => array()),
-						
-					);
-				} else {*/
-					$return = array (
-						"atm-clientspace" => array("selfClosed" => true, "parameters" => array()),
-					);
-				//}
+				$return = array (
+					"atm-clientspace" => array("selfClosed" => true, "parameters" => array()),
+				);
 			break;
 			case MODULE_TREATMENT_BLOCK_TAGS :
 				$return = array (
@@ -1484,40 +1472,27 @@ class CMS_module_standard extends CMS_module
 				}
 			break;
 			case MODULE_TREATMENT_PAGECONTENT_TAGS :
-				switch ($visualizationMode) {
-					case PAGE_VISUALMODE_PRINT :
-						$return = array (
-							"atm-admin" 		=> array("selfClosed" => false, "parameters" => array()),
-							"atm-noadmin" 		=> array("selfClosed" => false, "parameters" => array()),
-							"atm-edit" 			=> array("selfClosed" => false, "parameters" => array()),
-							"atm-noedit" 		=> array("selfClosed" => false, "parameters" => array()),
-							"atm-title" 		=> array("selfClosed" => true, "parameters" => array()),
-							"atm-main-url" 		=> array("selfClosed" => true, "parameters" => array()),
-							"atm-constant" 		=> array("selfClosed" => true, "parameters" => array()),
-							"atm-last-update" 	=> array("selfClosed" => false, "parameters" => array()),
-							"body" 				=> array("selfClosed" => false, "parameters" => array()),
-							"html" 				=> array("selfClosed" => false, "parameters" => array()),
-						);
-					break;
-					default:
-						$return = array (
-							"atm-admin" 		=> array("selfClosed" => false, "parameters" => array()),
-							"atm-noadmin" 		=> array("selfClosed" => false, "parameters" => array()),
-							"atm-edit" 			=> array("selfClosed" => false, "parameters" => array()),
-							"atm-noedit" 		=> array("selfClosed" => false, "parameters" => array()),
-							"atm-title" 		=> array("selfClosed" => true, "parameters" => array()),
-							"atm-main-url" 		=> array("selfClosed" => true, "parameters" => array()),
-							"atm-print-link" 	=> array("selfClosed" => false, "parameters" => array()),
-							"atm-constant" 		=> array("selfClosed" => true, "parameters" => array()),
-							"atm-last-update" 	=> array("selfClosed" => false, "parameters" => array()),
-							"body" 				=> array("selfClosed" => false, "parameters" => array()),
-							"html" 				=> array("selfClosed" => false, "parameters" => array()),
-						);
-						//for public (and print) visualmode, this is done by MODULE_TREATMENT_LINXES_TAGS mode during page file linx treatment
-						if ($visualizationMode != PAGE_VISUALMODE_HTML_PUBLIC) {
-							$return['atm-linx'] = array("selfClosed" => false, "parameters" => array());
-						}
-					break;
+				$return = array (
+					"atm-admin" 		=> array("selfClosed" => false, "parameters" => array()),
+					"atm-noadmin" 		=> array("selfClosed" => false, "parameters" => array()),
+					"atm-edit" 			=> array("selfClosed" => false, "parameters" => array()),
+					"atm-noedit" 		=> array("selfClosed" => false, "parameters" => array()),
+					"atm-title" 		=> array("selfClosed" => true, "parameters" => array()),
+					"atm-website" 		=> array("selfClosed" => true, "parameters" => array()),
+					"atm-page" 			=> array("selfClosed" => true, "parameters" => array()),
+					"atm-main-url" 		=> array("selfClosed" => true, "parameters" => array()),
+					"atm-constant" 		=> array("selfClosed" => true, "parameters" => array()),
+					"atm-last-update" 	=> array("selfClosed" => false, "parameters" => array()),
+					"body" 				=> array("selfClosed" => false, "parameters" => array()),
+					"html" 				=> array("selfClosed" => false, "parameters" => array()),
+				);
+				//for public (and print) visualmode, this is done by MODULE_TREATMENT_LINXES_TAGS mode during page file linx treatment
+				if ($visualizationMode != PAGE_VISUALMODE_HTML_PUBLIC) {
+					$return['atm-linx'] = array("selfClosed" => false, "parameters" => array());
+				}
+				//for print visualmode, this tag is useless
+				if ($visualizationMode != PAGE_VISUALMODE_PRINT) {
+					$return['atm-print-link'] = array("selfClosed" => false, "parameters" => array());
 				}
 			break;
 			case MODULE_TREATMENT_LINXES_TAGS:
@@ -1670,9 +1645,8 @@ class CMS_module_standard extends CMS_module
 					case 'atm-edit':
 						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM || $visualizationMode == PAGE_VISUALMODE_FORM) {
 							return $tag->getInnerContent();
-						} else {
-							return '';
 						}
+						return '';
 					break;
 					case 'atm-noedit':
 						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM || $visualizationMode == PAGE_VISUALMODE_FORM) {
@@ -1689,6 +1663,78 @@ class CMS_module_standard extends CMS_module
 					break;
 					case "atm-title":
 						return SensitiveIO::sanitizeHTMLString($treatedObject->getTitle($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC));
+					break;
+					case "atm-page":
+						if ($treatedObject && !$treatedObject->hasError()) {
+							switch ($tag->getAttribute('name')) {
+								case 'id':
+									return SensitiveIO::sanitizeHTMLString($treatedObject->getID());
+								break;
+								case 'url':
+									return SensitiveIO::sanitizeHTMLString($treatedObject->getURL());
+								break;
+								case 'linktitle':
+									return SensitiveIO::sanitizeHTMLString($treatedObject->getLinkTitle($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC));
+								break;
+								case 'codename':
+								case 'keywords':
+								case 'description':
+								case 'category':
+								case 'author':
+								case 'replyto':
+								case 'copyright':
+								case 'language':
+								case 'robots':
+								case 'pragma':
+								case 'refresh':
+									$method = 'get'.ucfirst($tag->getAttribute('name'));
+									return SensitiveIO::sanitizeHTMLString($treatedObject->{$method}($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC));
+								break;
+								case 'metas':
+									return $treatedObject->getMetas($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC);
+								break;
+								case 'title':
+								default:
+									return SensitiveIO::sanitizeHTMLString($treatedObject->getTitle($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC));
+								break;
+							}
+						}
+						return '';
+					break;
+					case "atm-website":
+						$website = $treatedObject->getWebsite();
+						if ($website && !$website->hasError()) {
+							switch ($tag->getAttribute('name')) {
+								case 'codename':
+									return SensitiveIO::sanitizeHTMLString($website->getCodename());
+								break;
+								case 'root':
+									return SensitiveIO::sanitizeHTMLString($website->getRoot()->getID());
+								break;
+								case 'domain':
+									return SensitiveIO::sanitizeHTMLString($website->getURL());
+								break;
+								case 'keywords':
+								case 'description':
+								case 'category':
+								case 'author':
+								case 'replyto':
+								case 'copyright':
+								case 'language':
+								case 'robots':
+								case 'favicon':
+									return SensitiveIO::sanitizeHTMLString($website->getMeta($tag->getAttribute('name')));
+								break;
+								case 'metas':
+									return $website->getMeta('metas');
+								break;
+								case 'title':
+								default:
+									return SensitiveIO::sanitizeHTMLString($website->getLabel());
+								break;
+							}
+						}
+						return '';
 					break;
 					case "atm-main-url":
 						return CMS_websitesCatalog::getMainURL();
@@ -1722,17 +1768,15 @@ class CMS_module_standard extends CMS_module
 							} else{
 								return str_replace("{{href}}", $treatedObject->getURL(true), $template);
 							}
-						} else {
-							return '';
 						}
+						return '';
 					break;
 					case "atm-constant":
 						$const = SensitiveIO::stripPHPTags(io::strtoupper($tag->getAttribute("name")));
 						if (defined($const)) {
 							return constant($const);
-						} else {
-							return '';
 						}
+						return '';
 					break;
 					case "body":
 						$statsCode = '<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat();} ?>';
