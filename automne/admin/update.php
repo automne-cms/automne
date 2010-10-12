@@ -91,7 +91,7 @@ echo "Automne database updated.<br /><br />";
 //Update Automne messages
 $files = glob(PATH_REALROOT_FS."/sql/messages/*/*.sql", GLOB_NOSORT);
 if (is_array($files)) {
-	echo "Start update Automne messages ...<br />";
+	echo "Start update of Automne messages ...<br />";
 	foreach($files as $file) {
 		if (file_exists($file) && CMS_patch::executeSqlScript($file, true)) {
 			CMS_patch::executeSqlScript($file);
