@@ -84,10 +84,10 @@ class CMS_cache {
 		
 		//Cache options
 		$frontendOptions = array(
-			'lifetime' 					=> $this->_parameters['lifetime'],	// cache duration
-			'caching' 					=> CACHE_MODULES_DATAS,				// activate cache
-			'automatic_cleaning_factor'	=> 50,								// clean cache each 50 writing
-			'automatic_serialization'	=> true,							// automatic cache serialization
+			'lifetime' 					=> $this->_parameters['lifetime'],											// cache duration
+			'caching' 					=> $this->_parameters['lifetime'] === null ? false : CACHE_MODULES_DATAS,	// activate cache
+			'automatic_cleaning_factor'	=> 50,																		// clean cache each 50 writing
+			'automatic_serialization'	=> true,																	// automatic cache serialization
 		);
 		$backendOptions = array(
 			'cache_dir'					=> PATH_CACHE_FS.'/'.$this->_parameters['type'],		// Directory where the cache files are stored
@@ -287,8 +287,10 @@ class CMS_cache {
 				}
 				unset($matches);
 			}
-			//do not save content if cache has auto lifetime and content has phpnode
-			if ($this->_auto && isset($cachedElements['phpnode']) && $cachedElements['phpnode']) {
+			//do not save content if cache has auto lifetime and content has phpnode or random element
+			if ($this->_auto && 
+				(isset($cachedElements['phpnode']) && $cachedElements['phpnode'])
+				|| (isset($cachedElements['random']) && $cachedElements['random'])) {
 				return $content;
 			}
 			$this->save($content, $cachedElements);
