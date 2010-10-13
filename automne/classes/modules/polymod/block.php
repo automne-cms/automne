@@ -401,7 +401,12 @@ class CMS_block_polymod extends CMS_block
 		//load interface instance
 		$view = CMS_view::getInstance();
 		//append JS block class file
-		$view->addJSFile(str_replace(PATH_REALROOT_WR.'/', '', PATH_ADMIN_WR.'/js/edit/block-polymod.js'));
+		if (PATH_REALROOT_WR) {
+			$file = str_replace(PATH_REALROOT_WR.'/', '', PATH_ADMIN_WR.'/js/edit/block-polymod.js');
+		} else {
+			$file = PATH_ADMIN_WR.'/js/edit/block-polymod.js';
+		}
+		$view->addJSFile($file);
 		return $html;
 	}
 	

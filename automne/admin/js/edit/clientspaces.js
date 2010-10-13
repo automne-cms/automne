@@ -457,12 +457,18 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 		//set combo params for row queries
 		combo.store.baseParams = Ext.apply(combo.store.baseParams, {
 			cs:				this.getId(),
-			/*page:			this.page,*/
 			index:			index,
 			template:		this.template,
 			visualMode:		this.visualMode
 		});
 		combo.show();
+		//needed to correct bug 1209
+		combo.store.load({
+			cs:				this.getId(),
+			index:			index,
+			template:		this.template,
+			visualMode:		this.visualMode
+		});
 	},
 	addNewRow: function(response, options, content, jsFiles, cssFiles) {
 		var newIndex = options.params.index

@@ -709,6 +709,8 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		if ($tag['attributes']['type'] == 'random') {
 			//force direction value.
 			$tag['attributes']['direction'] = 'asc';
+			//store usage of random to avoid auto cache of content
+			$this->_elements['random'] = true;
 		}
 		//check tags requirements
 		if (!$this->checkTagRequirements($tag, array(

@@ -1028,7 +1028,9 @@ class CMS_pageTemplate extends CMS_grandFather
 		$shortdesc = $shortdesc ? $shortdesc.'<br />' : '';*/
 		$mediumdesc = sensitiveIO::ellipsis($this->getDescription(), 200);
 		if ($mediumdesc != $this->getDescription()) {
-			$mediumdesc = '<span class="atm-help" ext:qtip="'.nl2br(io::htmlspecialchars($this->getDescription())).'">'.nl2br($mediumdesc).'</span>';
+			$mediumdesc = '<span class="atm-help" ext:qtip="'.nl2br(io::htmlspecialchars(strip_tags($this->getDescription()))).'">'.nl2br(io::htmlspecialchars($mediumdesc)).'</span>';
+		} else {
+			$mediumdesc = io::htmlspecialchars($mediumdesc);
 		}
 		$mediumdesc = $mediumdesc ? $mediumdesc.'<br />' : '';
 		//append template definition if needed
@@ -1050,7 +1052,7 @@ class CMS_pageTemplate extends CMS_grandFather
 			'image'			=> PATH_TEMPLATES_IMAGES_WR.'/'. (($this->getImage()) ? $this->getImage() : 'nopicto.gif'),
 			'groups'		=> implode(', ', $this->getGroups()),
 			'websites'		=> $websitesList,
-			'desc'			=> $this->getDescription(),
+			'desc'			=> io::htmlspecialchars($this->getDescription()),
 			'filter'		=> $this->getLabel().' '.implode(', ', $this->getGroups()),
 			'description'	=> 	'<div'.(!$this->isUseable() ? ' class="atm-inactive"' : '').'>'.
 									'<img src="'.(PATH_TEMPLATES_IMAGES_WR.'/'. (($this->getImage()) ? $this->getImage() : 'nopicto.gif')).'" style="float:left;margin-right:3px;width:80px;" />'.

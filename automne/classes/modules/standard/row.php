@@ -862,12 +862,14 @@ class CMS_row extends CMS_grandFather
 		$hasClientSpaces = $this->hasClientSpaces();
 		$shortdesc = sensitiveIO::ellipsis($this->getDescription(), 60);
 		if ($shortdesc != nl2br($this->getDescription())) {
-			$shortdesc = '<span class="atm-help" ext:qtip="'.nl2br(io::htmlspecialchars($this->getDescription())).'">'.$shortdesc.'</span>';
+			$shortdesc = '<span class="atm-help" ext:qtip="'.nl2br(io::htmlspecialchars(strip_tags($this->getDescription()))).'">'.io::htmlspecialchars($shortdesc).'</span>';
 		}
 		$shortdesc = $shortdesc ? $shortdesc.'<br />' : '';
 		$mediumdesc = sensitiveIO::ellipsis($this->getDescription(), 200);
 		if ($mediumdesc != $this->getDescription()) {
-			$mediumdesc = '<span class="atm-help" ext:qtip="'.nl2br(io::htmlspecialchars($this->getDescription())).'">'.nl2br($mediumdesc).'</span>';
+			$mediumdesc = '<span class="atm-help" ext:qtip="'.nl2br(io::htmlspecialchars(strip_tags($this->getDescription()))).'">'.nl2br(io::htmlspecialchars($mediumdesc)).'</span>';
+		} else {
+			$mediumdesc = io::htmlspecialchars($mediumdesc);
 		}
 		$mediumdesc = $mediumdesc ? $mediumdesc.'<br />' : '';
 		//append template definition if needed

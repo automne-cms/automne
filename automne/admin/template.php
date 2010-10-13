@@ -172,7 +172,7 @@ $content = '
 <textarea id="tpl-definition-'.$templateId.'" style="display:none;">'.htmlspecialchars($templateDefinition).'</textarea>';
 $view->setContent($content);
 
-$title = sensitiveIO::sanitizeJSString(sensitiveIO::isPositiveInteger($templateId) ? $cms_language->getMessage(MESSAGE_PAGE_TEMPLATE).' '.$label : $cms_language->getMessage(MESSAGE_PAGE_CREATE_TEMPLATE));
+$title = sensitiveIO::isPositiveInteger($templateId) ? $cms_language->getJSMessage(MESSAGE_PAGE_TEMPLATE).' '.$label : $cms_language->getJSMessage(MESSAGE_PAGE_CREATE_TEMPLATE);
 
 $rowsURL = PATH_ADMIN_WR.'/templates-rows.php';
 
