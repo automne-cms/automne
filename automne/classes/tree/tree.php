@@ -104,6 +104,9 @@ class CMS_tree extends CMS_grandFather
 					case 'title':
 						$return = $page->getTitle(true);
 					break;
+					case 'link':
+					    $return = $page->getLinkTitle(true);
+					break;
 					case 'id':
 						$return = $page->getID();
 					break;
