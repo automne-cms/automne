@@ -303,14 +303,14 @@ $content .='
 					<legend>'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_OBJECT_EXPLANATION, array($object->getLabel($cms_language))).'</legend>
 					<br />';
 					$content.='
-					<select name="objectexplanation" class="admin_input_text" onchange="document.getElementById(\'cms_action\').value=\'switchexplanation\';document.frm.submit();">
+					<select name="objectexplanation1" class="admin_input_text" onchange="document.getElementById(\'cms_action\').value=\'switchexplanation\';document.frm.submit();">
 						<option value="">'.$cms_language->getMessage(MESSAGE_PAGE_CHOOSE).'</option>';
-						$content.= CMS_poly_module_structure::viewObjectInfosList($moduleCodename, $cms_language, $_POST['objectexplanation'], $object->getID());
+						$content.= CMS_poly_module_structure::viewObjectInfosList($moduleCodename, $cms_language, $_POST['objectexplanation1'], $object->getID());
 					$content.='
 					</select><br />';
-					if ($_POST['objectexplanation']) {
+					if ($_POST['objectexplanation1']) {
 						//object info
-						$content.= CMS_poly_module_structure::viewObjectRowInfos($moduleCodename, $cms_language, $_POST['objectexplanation']);
+						$content.= CMS_poly_module_structure::viewObjectRowInfos($moduleCodename, $cms_language, $_POST['objectexplanation1']);
 					}
 				$content.='
 				</fieldset>
@@ -422,14 +422,14 @@ $content .='
 				<legend>'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_OBJECT_SYNTAX, array($object->getLabel($cms_language)),MOD_POLYMOD_CODENAME).'</legend>
 				<br />';
 				$content.='
-				<select name="objectexplanation" class="admin_input_text" onchange="document.getElementById(\'cms_action\').value=\'switchexplanation\';document.frm.submit();">
+				<select name="objectexplanation2" class="admin_input_text" onchange="document.getElementById(\'cms_action\').value=\'switchexplanation\';document.frm.submit();">
 					<option value="">'.$cms_language->getMessage(MESSAGE_PAGE_CHOOSE).'</option>';
-					$content.= CMS_poly_module_structure::viewObjectInfosList($moduleCodename, $cms_language, $_POST['objectexplanation'], $object->getID());
+					$content.= CMS_poly_module_structure::viewObjectInfosList($moduleCodename, $cms_language, $_POST['objectexplanation2'], $object->getID());
 				$content.='
 				</select><br />';
-				if ($_POST['objectexplanation']) {
+				if ($_POST['objectexplanation2']) {
 					//object info
-					$content.= CMS_poly_module_structure::viewObjectRowInfos($moduleCodename, $cms_language, $_POST['objectexplanation']);
+					$content.= CMS_poly_module_structure::viewObjectRowInfos($moduleCodename, $cms_language, $_POST['objectexplanation2']);
 				}
 			$content.='
 			</fieldset>

@@ -1,5 +1,5 @@
 V4.1.0 (in progress)
-[BUG] : Lots of minor bugs corrected (included bugs 1209, 1062, 522, 883, 539, 930, 535, see http://www.automne.ws/bug/)
+[BUG] : Lots of minor bugs corrected (included bugs 1209, 1062, 522, 883, 539, 930, 535, 519, see http://www.automne.ws/bug/)
 [REFACTOR] : Change max execution time for scripts. Set to 10 minutes by default
 [REFACTOR] : Change polymod search to add one by one result return. Use POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS search method with getNextResult method. This greatly improves the memory management.
 [REFACTOR] : Manage alpha transparency on PNG and GIF images during image resizing
