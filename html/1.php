@@ -1,17 +1,19 @@
-<?php //Generated on Tue, 21 Sep 2010 22:56:24 +0200 by Automne (TM) 4.1.0a1
+<?php require_once(dirname(__FILE__).'/../cms_rc_frontend.php');
+CMS_view::redirect('http://automne4.codename/web/demo/2-accueil.php', true, 302);
+ ?><?php //Generated on Tue, 12 Oct 2010 14:54:50 +0200 by Automne (TM) 4.1.0a2
 require_once(dirname(__FILE__).'/../cms_rc_frontend.php');
 if (!isset($cms_page_included) && !$_POST && !$_GET) {
-	CMS_view::redirect('http://localhost/automne/web/1-accueil.php', true, 301);
+	CMS_view::redirect('http://automne4.codename/web/1-demo-automne.php', true, 301);
 }
  ?><?php /* Template [Splash - splash.xml] */   ?><?php if (defined('APPLICATION_XHTML_DTD')) echo APPLICATION_XHTML_DTD."\n";   ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 <head>
 	<?php echo '<meta http-equiv="Content-Type" content="text/html; charset='.strtoupper(APPLICATION_DEFAULT_ENCODING).'" />';     ?>
-	<link rel="icon" type="image/x-icon" href="http://localhost/automne/favicon.ico" />
+	<link rel="icon" type="image/x-icon" href="http://automne4.codename/favicon.ico" />
 	<meta name="language" content="fr" />
 	<meta name="generator" content="Automne (TM)" />
-	<meta name="identifier-url" content="http://localhost/automne" />
-	<base href="http://localhost/automne/" />	<script type="text/javascript" src="/automne/js/CMS_functions.js"></script>
+	<meta name="identifier-url" content="http://automne4.codename" />
+	<base href="http://automne4.codename/" />	<script type="text/javascript" src="/js/CMS_functions.js"></script>
 
 	<style type="text/css">
 		body{
