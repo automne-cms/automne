@@ -438,13 +438,13 @@ if (!defined("PATH_MAIN_FS")) {
 
 /**
   *	Block files (files uploaded that represents blocks content)
-  *	Default : DOCUMENT_ROOT."/cms_blocks_files"
+  *	Default : PATH_REALROOT_WR."/files"
   */
 if (!defined("PATH_MODULES_FILES_WR")) {
-	define("PATH_MODULES_FILES_WR", PATH_REALROOT_WR."/automne_modules_files");
+	define("PATH_MODULES_FILES_WR", PATH_REALROOT_WR."/files");
 }
 if (!defined("PATH_MODULES_FILES_FS")) {
-	define("PATH_MODULES_FILES_FS", PATH_REALROOT_FS."/automne_modules_files");
+	define("PATH_MODULES_FILES_FS", PATH_REALROOT_FS."/files");
 }
 /**
   * PATH to the module files of the standard module
@@ -473,10 +473,10 @@ if (!defined("PATH_PAGES_FS")) {
   *	Default : PATH_MAIN_xx."/html"
   */
 if (!defined("PATH_PAGES_HTML_WR")) {
-	define("PATH_PAGES_HTML_WR", PATH_REALROOT_WR."/html");
+	define("PATH_PAGES_HTML_WR", PATH_MAIN_WR."/html");
 }
 if (!defined("PATH_PAGES_HTML_FS")) {
-	define("PATH_PAGES_HTML_FS", PATH_REALROOT_FS."/html");
+	define("PATH_PAGES_HTML_FS", PATH_MAIN_FS."/html");
 }
 
 /**
@@ -767,13 +767,13 @@ if (!defined("PATH_PAGES_LINXFILES_FS")) {
 
 /**
   * Windows Binary and bat files path, where usefull windows files are located. 
-  *	Default : PATH_REALROOT_xx."/automne_bin"
+  *	Default : PATH_MAIN_xx."/bin"
   */
 if (!defined("PATH_WINDOWS_BIN_WR")) {
-	define("PATH_WINDOWS_BIN_WR", PATH_REALROOT_WR."/automne_bin");
+	define("PATH_WINDOWS_BIN_WR", PATH_MAIN_WR."/bin");
 }
 if (!defined("PATH_WINDOWS_BIN_FS")) {
-	define("PATH_WINDOWS_BIN_FS", PATH_REALROOT_FS."/automne_bin");
+	define("PATH_WINDOWS_BIN_FS", PATH_MAIN_FS."/bin");
 }
 
 /**

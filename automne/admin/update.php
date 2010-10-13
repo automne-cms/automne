@@ -43,11 +43,11 @@ while($r = $q->getArray()) {
 	}
 }
 if (!$installed) {
-	if (CMS_patch::executeSqlScript(PATH_REALROOT_FS.'/sql/updates/v402-to-v410.sql',true)) {
-		CMS_patch::executeSqlScript(PATH_REALROOT_FS.'/sql/updates/v402-to-v410.sql',false);
+	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v402-to-v410.sql',true)) {
+		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v402-to-v410.sql',false);
 		echo 'Database successfuly updated (uuid)<br/>';
 	} else {
-		echo 'Error during database update ! Script '.PATH_REALROOT_FS.'/sql/updates/v402-to-v410.sql must be executed manualy<br/>';
+		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v402-to-v410.sql must be executed manualy<br/>';
 	}
 }
 # Change structure of base datas tables to add codename data
@@ -60,11 +60,11 @@ while($r = $q->getArray()) {
 	}
 }
 if (!$installed) {
-	if (CMS_patch::executeSqlScript(PATH_REALROOT_FS.'/sql/updates/v402-to-v410-2.sql',true)) {
-		CMS_patch::executeSqlScript(PATH_REALROOT_FS.'/sql/updates/v402-to-v410-2.sql',false);
+	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v402-to-v410-2.sql',true)) {
+		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v402-to-v410-2.sql',false);
 		echo 'Database successfuly updated (pages codename)<br/>';
 	} else {
-		echo 'Error during database update ! Script '.PATH_REALROOT_FS.'/sql/updates/v402-to-v410-2.sql must be executed manualy<br/>';
+		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v402-to-v410-2.sql must be executed manualy<br/>';
 	}
 }
 # Change structure of website table to add codename data
@@ -77,11 +77,11 @@ while($r = $q->getArray()) {
 	}
 }
 if (!$installed) {
-	if (CMS_patch::executeSqlScript(PATH_REALROOT_FS.'/sql/updates/v402-to-v410-3.sql',true)) {
-		CMS_patch::executeSqlScript(PATH_REALROOT_FS.'/sql/updates/v402-to-v410-3.sql',false);
+	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v402-to-v410-3.sql',true)) {
+		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v402-to-v410-3.sql',false);
 		echo 'Database successfuly updated (website codename)<br/>';
 	} else {
-		echo 'Error during database update ! Script '.PATH_REALROOT_FS.'/sql/updates/v402-to-v410-3.sql must be executed manualy<br/>';
+		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v402-to-v410-3.sql must be executed manualy<br/>';
 	}
 }
 //END UPDATE FROM 4.0.2 TO 4.1.0
@@ -89,7 +89,7 @@ if (!$installed) {
 echo "Automne database updated.<br /><br />";
 
 //Update Automne messages
-$files = glob(PATH_REALROOT_FS."/sql/messages/*/*.sql", GLOB_NOSORT);
+$files = glob(PATH_MAIN_FS."/sql/messages/*/*.sql", GLOB_NOSORT);
 if (is_array($files)) {
 	echo "Start update of Automne messages ...<br />";
 	foreach($files as $file) {
