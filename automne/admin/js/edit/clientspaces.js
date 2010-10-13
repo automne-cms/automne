@@ -462,6 +462,7 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 			visualMode:		this.visualMode
 		});
 		combo.show();
+		//needed to correct bug 1209
 		combo.store.load({
 			cs:				this.getId(),
 			index:			index,
