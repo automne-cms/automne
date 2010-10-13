@@ -75,7 +75,9 @@ if ($currentTpl) {
 		$src = PATH_TEMPLATES_IMAGES_WR.'/'. (($matchTpl->getImage()) ? $matchTpl->getImage() : 'nopicto.gif');
 		$description = sensitiveIO::ellipsis($matchTpl->getDescription(), 100);
 		if ($description != $matchTpl->getDescription()) {
-			$description = '<span ext:qtip="'.io::htmlspecialchars($matchTpl->getDescription()).'">'.$description.'</span>';
+			$description = '<span ext:qtip="'.io::htmlspecialchars(strip_tags($matchTpl->getDescription())).'">'.io::htmlspecialchars($description).'</span>';
+		} else {
+			$description = io::htmlspecialchars($description);
 		}
 		$description = $description ? $description.'<br />' : '';
 		
@@ -102,7 +104,9 @@ if ($currentTpl) {
 		$src = PATH_TEMPLATES_IMAGES_WR.'/'. (($noMatchTpl->getImage()) ? $noMatchTpl->getImage() : 'nopicto.gif');
 		$description = sensitiveIO::ellipsis($noMatchTpl->getDescription(), 100);
 		if ($description != $noMatchTpl->getDescription()) {
-			$description = '<span ext:qtip="'.io::htmlspecialchars($noMatchTpl->getDescription()).'">'.$description.'</span>';
+			$description = '<span ext:qtip="'.io::htmlspecialchars(strip_tags($noMatchTpl->getDescription())).'">'.io::htmlspecialchars($description).'</span>';
+		} else {
+			$description = io::htmlspecialchars($description);
 		}
 		$description = $description ? $description.'<br />' : '';
 		
@@ -127,7 +131,9 @@ if ($currentTpl) {
 		$src = PATH_TEMPLATES_IMAGES_WR.'/'. (($pageTemplate->getImage()) ? $pageTemplate->getImage() : 'nopicto.gif');
 		$description = sensitiveIO::ellipsis($pageTemplate->getDescription(), 100);
 		if ($description != $pageTemplate->getDescription()) {
-			$description = '<span ext:qtip="'.io::htmlspecialchars($pageTemplate->getDescription()).'">'.$description.'</span>';
+			$description = '<span ext:qtip="'.io::htmlspecialchars(strip_tags($pageTemplate->getDescription())).'">'.io::htmlspecialchars($description).'</span>';
+		} else {
+			$description = io::htmlspecialchars($description);
 		}
 		$description = $description ? $description.'<br />' : '';
 		
