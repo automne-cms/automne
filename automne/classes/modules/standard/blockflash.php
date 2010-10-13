@@ -115,7 +115,6 @@ class CMS_block_flash extends CMS_block
 			$data = $this->getRawData($page->getID(), $clientSpace->getTagID(), $row->getTagID(), RESOURCE_LOCATION_EDITION, false);
 			break;
 		}
-		
 		//build the HTML
 		$html_attributes = "";
 		foreach ($this->_attributes as $name => $value) {
@@ -169,7 +168,7 @@ class CMS_block_flash extends CMS_block
 			return '';
 		}
 		
-		$id = ($data["name"]) ? 'flash-'.sensitiveIO::sanitizeHTMLString($name) : 'flash-'.md5(mt_rand().microtime());
+		$id = ($data["name"]) ? 'flash-'.sensitiveIO::sanitizeHTMLString($data["name"]) : 'flash-'.md5(mt_rand().microtime());
 		$html = '<script type="text/javascript">'."\n".
 		'	swfobject.embedSWF(\''.$src.'\', \''.$id.'\', \''.$data['width'].'\', \''.$data['height'].'\', \''.$data['version'].'\', "'.PATH_MAIN_WR.'/swfobject/expressInstall.swf", {'.sensitiveIO::sanitizeJSString($data['flashvars'], false, false).'}, {'.sensitiveIO::sanitizeJSString($data['params'], false, false).'}, {'.sensitiveIO::sanitizeJSString($data['attributes'], false, false).'});'."\n".
 		'</script>'."\n".
