@@ -100,11 +100,11 @@ $letters = CMS_profile_usersCatalog::getLettersForLastName();
 //$letters = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z');
 $lettersButtons = '';
 foreach ($letters as $letter) {
-	$lettersButtons .= 'new Ext.Button({
+	$lettersButtons .= '{
 		text:			\''. io::strtoupper($letter) .'\',
 		enableToggle:	true,
 		handler:		clickLetter
-	}),';
+	},';
 }
 //remove last comma
 $lettersButtons = io::substr($lettersButtons, 0, -1);
@@ -340,11 +340,11 @@ $jscontent = <<<END
 		}
 		usersWindow.launchSearch();
 	}
-	var lettersToolbar = new Ext.Toolbar({
-		id:		'lettersToolbar',
+	var lettersToolbar = {
+		xtype:	'toolbar',
 		style:	'background:#FFFFFF;border-color:#FFFFFF;',
 		items:	[{$lettersButtons}]
-	});
+	};
 	//define search function into window (to be accessible by parent window)
 	usersWindow.launchSearch = function() {
 		var formValues = Ext.getCmp('usersSearchPanel').getForm().getValues();
