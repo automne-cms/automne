@@ -995,7 +995,7 @@ $configContent .= '
 				break;
 				case 'clean':
 					//Import DB structure
-					$structureScript = dirname(__FILE__)."/sql/automne4.sql";
+					$structureScript = PATH_MAIN_FS."/sql/automne4.sql";
 					if (file_exists($structureScript) && CMS_patch::executeSqlScript($structureScript, true)) {
 						CMS_patch::executeSqlScript($structureScript);
 					} else {
@@ -1009,7 +1009,7 @@ $configContent .= '
 			
 			//Import DB messages
 			//get all SQL files of the message dir
-			$files = glob(dirname(__FILE__)."/sql/messages/*/*.sql", GLOB_NOSORT);
+			$files = glob(PATH_MAIN_FS."/sql/messages/*/*.sql", GLOB_NOSORT);
 			if (is_array($files)) {
 				foreach($files as $file) {
 					if (file_exists($file) && CMS_patch::executeSqlScript($file, true)) {
@@ -1019,7 +1019,7 @@ $configContent .= '
 					}
 				}
 			} else {
-				die(sprintf($error_step3_SQL_script, dirname(__FILE__)."/sql/messages/*/*.sql"));
+				die(sprintf($error_step3_SQL_script, PATH_MAIN_FS."/sql/messages/*/*.sql"));
 			}
 			//go to next step
 			$step = 4;
