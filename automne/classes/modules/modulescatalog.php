@@ -150,6 +150,18 @@ class CMS_modulesCatalog extends CMS_grandFather
 				$modules[$hash][$r["codename_mod"]] = $module;
 			}
 		}
+		//in case of label ordering, check for missing modules (no labels founded for modules for current language)
+		if ($orderBy == 'label') {
+			$allCodenames = CMS_modulesCatalog::getAllCodenames();
+			foreach ($allCodenames as $codename) {
+				if (!isset($modules[$hash][$codename])) {
+					$module = CMS_modulesCatalog::getByCodename($codename);
+					if ($module && !$module->hasError()) {
+						$modules[$hash][$codename] = $module;
+					}
+				}
+			}
+		}
 		return $modules[$hash];
 	}
 	
