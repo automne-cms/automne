@@ -732,17 +732,6 @@ if (!defined("PATH_LOGS_FS")) {
 	define("PATH_LOGS_FS", PATH_MAIN_FS."/logs");
 }
 /**
-  *	Pages templates rows definition files path
-  *	Default : PATH_MAIN_xx."/templates/rows"
-  */
-if (!defined("PATH_ROWS_WR")) {
-	define("PATH_ROWS_WR", PATH_MAIN_WR."/templates/rows");
-}
-if (!defined("PATH_ROWS_FS")) {
-	define("PATH_ROWS_FS", PATH_MAIN_FS."/templates/rows");
-}
-
-/**
   *	Pages templates description images path
   *	Default : PATH_TEMPLATES_xx."/images"
   */

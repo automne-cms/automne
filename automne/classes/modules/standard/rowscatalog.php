@@ -248,7 +248,7 @@ class CMS_rowsCatalog extends CMS_grandFather {
 			} else {
 				$filename = "r" . $row->getID() . "_" . SensitiveIO::sanitizeAsciiString($row->getLabel()) . ".xml";
 			}
-			if ($setPrivate || CMS_file::copyTo(PATH_ROWS_FS . "/" . $model->getDefinitionFileName(), PATH_ROWS_FS . "/" . $filename)) {
+			if ($setPrivate || CMS_file::copyTo(PATH_TEMPLATES_ROWS_FS . "/" . $model->getDefinitionFileName(), PATH_TEMPLATES_ROWS_FS . "/" . $filename)) {
 				$row->setDefinitionFile($filename);
 
 				//Copying groupsStack from database
