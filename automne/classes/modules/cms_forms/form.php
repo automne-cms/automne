@@ -288,7 +288,7 @@ class CMS_forms_formular extends CMS_grandFather {
 	 * @return void
 	 */
 	protected function _fillSelectedFormValues(&$definition, &$fields) {
-		global $mod_cms_forms;
+		global $mod_cms_forms, $cms_user;
 		if (is_array($definition) && is_array($definition[0])) {
 			//loop on subtags
 			foreach (array_keys($definition) as $key) {
@@ -320,7 +320,7 @@ class CMS_forms_formular extends CMS_grandFather {
 							$definition[$key]['childrens']['0']['textnode'] = sensitiveIO::sanitizeHTMLString($fieldValue);
 						break;
 						case 'input':
-							if ($definition[$key]['attributes']['type'] == 'text') {
+							if ($definition[$key]['attributes']['type'] == 'text' || $definition[$key]['attributes']['type'] == 'hidden') {
 								$definition[$key]['attributes']['value'] = sensitiveIO::sanitizeHTMLString($fieldValue);
 							} elseif($definition[$key]['attributes']['type'] == 'checkbox') {
 								$definition[$key]['attributes']['checked'] = 'checked';

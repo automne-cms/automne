@@ -571,7 +571,7 @@ class CMS_forms_field extends CMS_grandFather {
 		$input = $label = '';
 		switch ($this->getAttribute("type")) {
 			case 'hidden':
-				$input = '<input type="hidden" value="" id="'.$fieldIDDatas.'" name="'.$this->getAttribute("name").'" value="'.io::htmlspecialchars($this->getAttribute("value")).'" />';
+				$input = '<input type="hidden" value="'.io::htmlspecialchars($this->getAttribute("value")).'" id="'.$fieldIDDatas.'" name="'.$this->getAttribute("name").'" value="'.io::htmlspecialchars($this->getAttribute("value")).'" />';
 			break;
 			case 'select':
 				$label = '<label for="'.$fieldIDDatas.'">'.$this->getAttribute("label").'</label>';
