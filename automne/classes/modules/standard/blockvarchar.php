@@ -120,6 +120,8 @@ class CMS_block_varchar extends CMS_block
 		case PAGE_VISUALMODE_FORM:
 			if ($data && $data["value"]) {
 				$html = io::htmlspecialchars($data["value"]);
+			} elseif (isset($this->_attributes['default'])) {
+				$html = $this->_attributes['default'];
 			} else {
 				$html = "<span class=\"atm-ipsum\">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diem nonummy.</span>";
 			}
@@ -129,7 +131,11 @@ class CMS_block_varchar extends CMS_block
 			return $this->_getHTMLForm($language, $page, $clientSpace, $row, $this->_tagID, $form_data);
 			break;
 		case PAGE_VISUALMODE_CLIENTSPACES_FORM:
-			$html = "<span class=\"atm-ipsum\">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diem nonummy.</span>";
+			if (isset($this->_attributes['default'])) {
+				$html = $this->_attributes['default'];
+			} else {
+				$html = "<span class=\"atm-ipsum\">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diem nonummy.</span>";
+			}
 			$form_data = str_replace("{{data}}", $html, $this->_definition);
 			$this->_hasContent = false;
 			$this->_editable = false;
