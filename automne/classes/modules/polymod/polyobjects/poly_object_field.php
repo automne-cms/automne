@@ -311,8 +311,8 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 		} elseif (!$this->_fieldID) {
 			$this->_fieldID = $q->getLastInsertedID();
 		}
-		//unset field catalog in session
-		unset($_SESSION["polyModule"]["objectFields"][$this->_objectFieldValues["objectID"]]);
+		//unset fields catalog in cache
+		CMS_cache::clearTypeCacheByMetas('atm-polymod-structure', array('type' => 'fields'));
 		
 		//Clear polymod cache
 		CMS_cache::clearTypeCacheByMetas('polymod', array('module' => CMS_poly_object_catalog::getModuleCodenameForField($this->_fieldID)));
@@ -393,8 +393,8 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 			//Clear polymod cache
 			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $module));
 		}
-		//unset field catalog in session
-		unset($_SESSION["polyModule"]["objectFields"][$this->_objectFieldValues["objectID"]]);
+		//unset fields catalog in cache
+		CMS_cache::clearTypeCacheByMetas('atm-polymod-structure', array('type' => 'fields'));
 		//finally destroy object instance
 		unset($this);
 		return true;

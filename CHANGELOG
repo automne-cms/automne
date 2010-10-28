@@ -4,6 +4,7 @@ V4.1.0 (in progress)
 [REFACTOR] : Change polymod search to add one by one result return. Use POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS search method with getNextResult method. This greatly improves the memory management.
 [REFACTOR] : Manage alpha transparency on PNG and GIF images during image resizing
 [REFACTOR] : Move /automne_linx_files directory to /automne/linx
+[REFACTOR] : Use CMS_cache to store Backtraces, Stats and Polymod structures instead of user session
 [FEATURE] : Add Google coordinates field for Polymod
 [FEATURE] : Add vhost subfolder support for Automne installation
 [FEATURE] : Add import/export of polymod modules structures

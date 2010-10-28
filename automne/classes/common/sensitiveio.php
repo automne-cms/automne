@@ -519,7 +519,7 @@ class SensitiveIO extends CMS_grandFather
 			} elseif (isset($bt[$level + 1])) {
 				//if error came from object execution
 				if ($bt[$level + 1]['function'] != 'PHPErrorHandler') {
-					$callInfos .= (isset($bt[$level + 1]['class']) ? $bt[$level + 1]['class'].$bt[$level + 1]['type'] : '').$bt[$level + 1]['function'].' (line '.$bt[$level]['line'].')';
+					$callInfos .= (isset($bt[$level + 1]['class']) ? $bt[$level + 1]['class'].$bt[$level + 1]['type'] : '').$bt[$level + 1]['function'].(isset($bt[$level]['line']) ? ' (line '.@$bt[$level]['line'].')' : '');
 				}
 			} elseif (isset($bt[$level])) {
 				//if error came from file execution

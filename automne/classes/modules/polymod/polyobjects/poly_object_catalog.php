@@ -374,12 +374,12 @@ class CMS_poly_object_catalog
 	  * @static
 	  */
 	function getFieldsDefinition($objectID) {
-		//$_SESSION["polyModule"]["objectFields"][$objectID] unseted by CMS_poly_object_field writeToPersistence;
-		$objectFields = array();
 		if (sensitiveIO::isPositiveInteger($objectID)) {
-			if (isset($_SESSION["polyModule"]) && isset($_SESSION["polyModule"]["objectFields"][$objectID]) && is_array($_SESSION["polyModule"]["objectFields"][$objectID])) {
-				$objectFields = $_SESSION["polyModule"]["objectFields"][$objectID];
-			} else {
+			//create cache object
+			$cache = new CMS_cache('fields'.$objectID, 'atm-polymod-structure', 2592000, false);
+			$datas = array();
+			if (!$cache->exist() || !($datas = $cache->load())) {
+				//datas does not exists : load them
 				$sql = "
 					select
 						*
@@ -394,12 +394,14 @@ class CMS_poly_object_catalog
 				";
 				$q = new CMS_query($sql);
 				while ($r = $q->getArray()) {
-					$objectFields[$r["id_mof"]] = new CMS_poly_object_field($r["id_mof"],$r);
+					$datas[$r["id_mof"]] = new CMS_poly_object_field($r["id_mof"],$r);
 				}
-				$_SESSION["polyModule"]["objectFields"][$objectID] = $objectFields;
+				if ($cache) {
+					$cache->save($datas, array('type' => 'fields'));
+				}
 			}
 		}
-		return $objectFields;
+		return $datas;
 	}
 	
 	/**

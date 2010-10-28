@@ -601,8 +601,8 @@ class CMS_poly_object_definition extends CMS_grandFather
 		
 		//Clear polymod cache
 		CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_objectValues["module"]));
-		//unset all SESSIONS values
-		unset($_SESSION["polyModule"]);
+		//unset polymod structure in cache
+		CMS_cache::clearTypeCache('atm-polymod-structure');
 		return true;
 	}
 	
@@ -649,8 +649,8 @@ class CMS_poly_object_definition extends CMS_grandFather
 				$this->raiseError("Can't delete datas of table mod_object_definition for object : ".$this->_ID);
 				return false;
 			}
-			//unset SESSION value of poly_object_catalog
-			unset($_SESSION["polyModule"]["objectDef"][$this->_ID]);
+			//unset objects catalog in cache
+			CMS_cache::clearTypeCacheByMetas('atm-polymod-structure', array('type' => 'object'));
 			
 			//Clear polymod cache
 			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_objectValues["module"]));

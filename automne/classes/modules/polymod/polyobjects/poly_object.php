@@ -496,14 +496,17 @@ class CMS_poly_object extends CMS_resource
 	  * @access public
 	  */
 	function getObjectDefinition () {
-		//unseted by CMS_poly_object_definition writeToPersistence method
-		if (isset($_SESSION["polyModule"]["objectDef"][$this->_objectID]) && is_object($_SESSION["polyModule"]["objectDef"][$this->_objectID])) {
-			$objectDef = $_SESSION["polyModule"]["objectDef"][$this->_objectID];
-		} else {
-			$objectDef = new CMS_poly_object_definition($this->_objectID);
-			$_SESSION["polyModule"]["objectDef"][$this->_objectID] = $objectDef;
+		//create cache object
+		$cache = new CMS_cache('object'.$this->_objectID, 'atm-polymod-structure', 2592000, false);
+		$datas = '';
+		if (!$cache->exist() || !($datas = $cache->load())) {
+			//datas does not exists : load it
+			$datas = new CMS_poly_object_definition($this->_objectID);
+			if ($cache) {
+				$cache->save($datas, array('type' => 'object'));
+			}
 		}
-		return $objectDef;
+		return $datas;
 	}
 	
 	/**
