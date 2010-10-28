@@ -1548,7 +1548,8 @@ class CMS_module_standard extends CMS_module
 					return false;
 				}
 				if ($tag->getName() == 'row') {
-					return $tag->getInnerContent();
+					//replace {{pageID}} tag in all page content.
+					return str_replace('{{pageID}}', $treatmentParameters["page"]->getID(), $tag->getInnerContent());
 				} else {
 					//create the block data
 					$block = $tag->getRepresentationInstance();
@@ -1784,8 +1785,10 @@ class CMS_module_standard extends CMS_module
 						return preg_replace('#</body>$#', $statsCode."\n".'</body>', $tag->getContent());
 					break;
 					case "html":
+						//replace {{pageID}} tag in all page content.
+						$content = str_replace('{{pageID}}', $treatedObject->getID(), $tag->getContent());
 						//Append DTD
-						return '<?php if (defined(\'APPLICATION_XHTML_DTD\')) echo APPLICATION_XHTML_DTD."\n"; ?>'."\n".$tag->getContent();
+						return '<?php if (defined(\'APPLICATION_XHTML_DTD\')) echo APPLICATION_XHTML_DTD."\n"; ?>'."\n".$content;
 					break;
 				}
 				return '';
