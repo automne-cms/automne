@@ -441,6 +441,7 @@ class CMS_object_image extends CMS_object_common
 							fieldCt.hide(true);
 						} else {
 							fieldCt.show(true);
+							Ext.getCmp(\''.$zoomId.'\').syncSize();
 						}
 					}
 				}', false, false));
