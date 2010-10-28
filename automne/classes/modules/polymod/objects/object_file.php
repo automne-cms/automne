@@ -758,7 +758,7 @@ class CMS_object_file extends CMS_object_common
 							$newSizeX = round(($params['thumbMaxHeight']*$newSizeX)/$newSizeY);
 							$newSizeY = $params['thumbMaxHeight'];
 						}
-						if (!$oImage->resize($newFilename, $newSizeX, $newSizeY)) {
+						if (!$oImage->resize($newSizeX, $newSizeY, $newFilename)) {
 							return false;
 						}
 					}
@@ -1036,7 +1036,7 @@ class CMS_object_file extends CMS_object_common
 						$thumbnailFilename = io::substr($path_parts['basename'],0,-(io::strlen($path_parts['extension'])+1)).'.png';
 						$destfilepath = $path."/".$thumbnailFilename;
 						
-						if (!$oImage->resize($destfilepath, $newSizeX, $newSizeY)) {
+						if (!$oImage->resize($newSizeX, $newSizeY, $destfilepath)) {
 							return false;
 						}
 						//destroy original image
@@ -1295,8 +1295,22 @@ class CMS_object_file extends CMS_object_common
 						@list($x, $y) = explode(',',str_replace(';', ',', $parameters));
 						if ((io::isPositiveInteger($x) && $x < $this->getValue('imageWidth')) || (io::isPositiveInteger($y) && $y < $this->getValue('imageHeight'))) {
 							//get module codename
+							$crop = ($x && $y) ? 1 : 0;
+							//get module codename
 							$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
-							return CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[4]->getValue() .'&module='. $moduleCodename .'&x='. $x .'&y='. $y;
+							//set location
+							$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
+							//resized image path
+							$pathInfo = pathinfo($this->_subfieldValues[4]->getValue());
+							$resizedImage = $pathInfo['filename'] .'-'. $x .'-'. $y .($crop ? '-c' : '').'.'. $pathInfo['extension'];
+							//resized image path
+							$resizedImagepathFS = PATH_MODULES_FILES_FS . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
+							//if file already exists, no need to resize file send it
+							if(file_exists($resizedImagepathFS)) {
+								return CMS_websitesCatalog::getMainURL() . PATH_MODULES_FILES_WR . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
+							} else {
+								return CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[4]->getValue() .'&module='. $moduleCodename .'&x='. $x .'&y='. $y.'&crop='.$crop.($location != RESOURCE_DATA_LOCATION_PUBLIC ? '&location='.$location : '');
+							}
 						}
 					}
 				}
@@ -1310,9 +1324,22 @@ class CMS_object_file extends CMS_object_common
 					if (in_array($this->getValue('thumbExtension'), array('jpg', 'jpeg', 'png', 'gif'))) {
 						@list($x, $y) = explode(',',str_replace(';', ',', $parameters));
 						if ((io::isPositiveInteger($x) && $x < $this->getValue('thumbWidth')) || (io::isPositiveInteger($y) && $y < $this->getValue('thumbHeight'))) {
+							$crop = ($x && $y) ? 1 : 0;
 							//get module codename
 							$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
-							return CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[1]->getValue() .'&module='. $moduleCodename .'&x='. $x .'&y='. $y;
+							//set location
+							$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
+							//resized image path
+							$pathInfo = pathinfo($this->_subfieldValues[1]->getValue());
+							$resizedImage = $pathInfo['filename'] .'-'. $x .'-'. $y .($crop ? '-c' : '').'.'. $pathInfo['extension'];
+							//resized image path
+							$resizedImagepathFS = PATH_MODULES_FILES_FS . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
+							//if file already exists, no need to resize file send it
+							if(file_exists($resizedImagepathFS)) {
+								return CMS_websitesCatalog::getMainURL() . PATH_MODULES_FILES_WR . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
+							} else {
+								return CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[1]->getValue() .'&module='. $moduleCodename .'&x='. $x .'&y='. $y.'&crop='.$crop.($location != RESOURCE_DATA_LOCATION_PUBLIC ? '&location='.$location : '');
+							}
 						}
 					}
 				}

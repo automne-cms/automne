@@ -247,28 +247,35 @@ Automne.ImageUploadField = Ext.extend(Automne.FileUploadField,  {
 	autoResizeFile: function () {
 		this.setNaturalSize(this.preview);
 		var img = this.preview;
-		var width, height = 0;
-		if (this.maxWidth && img.dom.naturalWidth > this.maxWidth) {
-			width = this.maxWidth;
-			height = parseInt((img.dom.naturalHeight * this.maxWidth) / img.dom.naturalWidth);
+		if (this.maxWidth && this.maxHeight) {
+			//send datas to server to resize image
+			Automne.server.call('image-controler.php', this.endEdition, {
+				image:			this.getValue(),
+				width:			this.maxWidth,
+				height:			this.maxHeight,
+				autocrop:		1
+			}, this);
 		} else {
-			width = img.dom.naturalWidth;
-			height = img.dom.naturalHeight;
+			var width, height = 0;
+			if (this.maxWidth && img.dom.naturalWidth > this.maxWidth) {
+				width = this.maxWidth;
+				height = parseInt((img.dom.naturalHeight * this.maxWidth) / img.dom.naturalWidth);
+			} else {
+				width = img.dom.naturalWidth;
+				height = img.dom.naturalHeight;
+			}
+			if (this.maxHeight && height > this.maxHeight) {
+				height = this.maxHeight;
+				width = parseInt((width * this.maxHeight) / height);
+			}
+			//send datas to server to resize image
+			Automne.server.call('image-controler.php', this.endEdition, {
+				image:			this.getValue(),
+				width:			width,
+				height:			height,
+				autocrop:		0
+			}, this);
 		}
-		if (this.maxHeight && height > this.maxHeight) {
-			width = this.maxWidth;
-			height = parseInt((width * this.maxHeight) / height);
-		}
-		//send datas to server to resize image
-		Automne.server.call('image-controler.php', this.endEdition, {
-			image:			this.getValue(),
-			width:			width,
-			height:			height,
-			cropTop:		0,
-			cropBottom:		0,
-			cropLeft:		0,
-			cropRight:		0
-		}, this);
 	},
 	launchEdit: function() {
 		if (this.previewProxy) {

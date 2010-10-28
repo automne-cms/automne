@@ -12,7 +12,7 @@ V4.1.0 (in progress)
 [FEATURE] : Add row duplication
 [FEATURE] : Add codename to pages and websites
 [FEATURE] : Add database auto update (useful for direct update from Launchpad)
-[FEATURE] : Add auto resize on images for image and file objects
+[FEATURE] : Add auto resize and auto crop on images for image and file objects
 [FEATURE] : Add atm-page and atm-website tags
 
 V4.0.2 (25/05/2010)

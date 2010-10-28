@@ -40,17 +40,15 @@ class CMS_object_image extends CMS_object_common
 	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXZOOMWIDTH_DESC = 550;
   	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXZOOMHEIGHT = 551;
   	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXZOOMHEIGHT_DESC = 552;
-	const MESSAGE_OBJECT_IMAGE_FIELD_LABEL = 37;
+	const MESSAGE_OBJECT_IMAGE_FIELD_LABEL = 581;
 	const MESSAGE_OBJECT_IMAGE_FIELD_THUMBNAIL = 206;
 	const MESSAGE_OBJECT_IMAGE_FIELD_ZOOM = 207;
 	const MESSAGE_OBJECT_IMAGE_FIELD_DESC = 208;
 	const MESSAGE_OBJECT_IMAGE_FIELD_DESC_HEIGHT = 415;
   	const MESSAGE_OBJECT_IMAGE_FIELD_DESC_HEIGHT_AND_WIDTH = 416;
 	const MESSAGE_OBJECT_IMAGE_PARAMETER_USEDISTINCTZOOM = 209;
-	/*const MESSAGE_OBJECT_IMAGE_PARAMETER_MAKEZOOM_DESC = 210;*/
 	const MESSAGE_OBJECT_IMAGE_FIELD_USE_ORIGINAL_AS_ZOOM = 211;
-	/*const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXWIDTHPREVIZ_DESC = 410;*/
-  	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXWIDTHPREVIZ = 409;
+	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXWIDTHPREVIZ = 409;
 	const MESSAGE_OBJECT_IMAGE_FIELD_DELETE = 213;
 	const MESSAGE_OBJECT_IMAGE_FIELD_ACTUAL_IMAGE = 214;
 	const MESSAGE_OBJECT_IMAGE_IMAGEHTML_DESCRIPTION = 215;
@@ -67,6 +65,7 @@ class CMS_object_image extends CMS_object_common
 	const MESSAGE_OBJECT_IMAGE_FIELD_MAX_FILESIZE = 236;
 	const MESSAGE_OBJECT_IMAGE_IMAGE_DESCRIPTION = 579;
 	const MESSAGE_OBJECT_IMAGE_IMAGEZOOM_DESCRIPTION = 580;
+	const MESSAGE_OBJECT_IMAGE_PARAMETER_LEGENDMANDATORY = 582;
 	
 	//standard messages
 	const MESSAGE_SELECT_PICTURE = 528;
@@ -171,6 +170,12 @@ class CMS_object_image extends CMS_object_common
 										'internalName'  => 'maxWidthPreviz',
 										'externalName'  => self::MESSAGE_OBJECT_IMAGE_PARAMETER_MAXWIDTHPREVIZ,
 									),
+							7 => array(
+										'type'			=> 'boolean',
+										'required'		=> false,
+										'internalName'  => 'legendMandatory',
+										'externalName'  => self::MESSAGE_OBJECT_IMAGE_PARAMETER_LEGENDMANDATORY,
+									),
 							);
 
 	/**
@@ -178,7 +183,7 @@ class CMS_object_image extends CMS_object_common
 	  * @var array(integer "subFieldID" => mixed)
 	  * @access private
 	  */
-	protected $_parameterValues = array(0 => '',1 => '',2 => true,3 => '',4 => '',5 => false,6 => '16');
+	protected $_parameterValues = array(0 => '',1 => '',2 => true,3 => '',4 => '',5 => false,6 => '16',7 => false);
 
 	/**
 	  * all images extension allowed
@@ -245,6 +250,14 @@ class CMS_object_image extends CMS_object_common
 					return false;
 				}
 			}
+			$params = $this->getParamsValues();
+			//check if legend if set if it is mandatory
+			if (isset($params['legendMandatory']) && $params['legendMandatory']) {
+				//must have image in image field
+				if($values[$prefixName.$this->_field->getID().'_0'] && !$values[$prefixName.$this->_field->getID().'_1']) {
+					return false;
+				}
+			}
 			return true;
 		} else {
 			//check for image extension before doing anything
@@ -262,6 +275,14 @@ class CMS_object_image extends CMS_object_common
 				//must have image in upload field or in hidden field or image must be already set
 				//if deleted is checked, image must be set in upload field
 				if ((!$this->_subfieldValues[0]->getValue() && !$_FILES[$prefixName.$this->_field->getID().'_0']['name'] && (!isset($values[$prefixName.$this->_field->getID().'_0_hidden']) || !$values[$prefixName.$this->_field->getID().'_0_hidden'])) || (isset($values[$prefixName.$this->_field->getID().'_delete']) && $values[$prefixName.$this->_field->getID().'_delete'] == 1 && !$_FILES[$prefixName.$this->_field->getID().'_0']['name'])) {
+					return false;
+				}
+			}
+			$params = $this->getParamsValues();
+			//check if legend if set if it is mandatory
+			if (isset($params['legendMandatory']) && $params['legendMandatory']) {
+				//must have image in image field
+				if (($_FILES[$prefixName.$this->_field->getID().'_0']['name'] || $this->_subfieldValues[0]->getValue()) && !$values[$prefixName.$this->_field->getID().'_1']) {
 					return false;
 				}
 			}
@@ -309,8 +330,13 @@ class CMS_object_image extends CMS_object_common
 		$return['items'][0] = $titleField;
 		//Title
 		unset($return['items'][0]['hideLabel']);
-		$return['items'][0]['fieldLabel']	= $language->getMessage(self::MESSAGE_OBJECT_IMAGE_FIELD_LABEL, false, MOD_POLYMOD_CODENAME);
-		$return['items'][0]['allowBlank']	= true;
+		if (isset($params['legendMandatory']) && $params['legendMandatory']) {
+			$return['items'][0]['fieldLabel']	= '<span class="atm-red">*</span> '.$language->getMessage(self::MESSAGE_OBJECT_IMAGE_FIELD_LABEL, false, MOD_POLYMOD_CODENAME);
+		} else {
+			$return['items'][0]['fieldLabel']	= $language->getMessage(self::MESSAGE_OBJECT_IMAGE_FIELD_LABEL, false, MOD_POLYMOD_CODENAME);
+		}
+		$return['items'][0]['allowBlank']	= ($this->_field->getValue('required') && isset($params['legendMandatory']) && $params['legendMandatory']) ? false : true;
+		
 		//Thumbnail
 		unset($return['items'][1]['hideLabel']);
 		$return['items'][1]['xtype']		= 'atmImageUploadField';
@@ -334,7 +360,8 @@ class CMS_object_image extends CMS_object_common
 		$return['items'][1]['fileinfos']['visualisation']	= RESOURCE_DATA_LOCATION_EDITED;
 		$checkBoxId = 'check'.md5(mt_rand().microtime());
 		//Image datas
-		if ($params['useDistinctZoom'] || $this->_subfieldValues[2]->getValue()) {
+		if ($params['useDistinctZoom'] || $params['makeZoom']) {
+			$zoomId = 'zoom'.md5(mt_rand().microtime());
 			if ($this->_subfieldValues[2]->getValue() && file_exists(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[2]->getValue())) {
 				$file = new CMS_file(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[2]->getValue());
 				$zoomDatas = array(
@@ -354,6 +381,7 @@ class CMS_object_image extends CMS_object_common
 				);
 			}
 			unset($return['items'][2]['hideLabel']);
+			$return['items'][2]['id']			= $zoomId;
 			$return['items'][2]['allowBlank']	= true;
 			$return['items'][2]['xtype']		= 'atmImageUploadField';
 			$return['items'][2]['emptyText']	= $language->getMessage(self::MESSAGE_SELECT_PICTURE);
@@ -363,12 +391,6 @@ class CMS_object_image extends CMS_object_common
 				'file_types'						=> '*.jpg;*.png;*.gif',
 				'file_types_description'			=> $language->getMessage(self::MESSAGE_OBJECT_IMAGE_FIELD_THUMBNAIL, false, MOD_POLYMOD_CODENAME).' ...'
 			);
-			$return['items'][2]['listeners']		= array('uploadsuccess' => sensitiveIO::sanitizeJSString('function(){
-				var checkbox = Ext.getCmp(\''.$checkBoxId.'\');
-				if (checkbox) {
-					checkbox.setValue(false);
-				}
-			}', false, false));
 			$return['items'][2]['fileinfos']	= $zoomDatas;
 			$return['items'][2]['fileinfos']['module']			= $moduleCodename;
 			$return['items'][2]['fileinfos']['visualisation']	= RESOURCE_DATA_LOCATION_EDITED;
@@ -377,6 +399,15 @@ class CMS_object_image extends CMS_object_common
 			}
 			if ($params['maxZoomHeight']) {
 				$return['items'][2]['maxHeight'] = $params['maxZoomHeight'];
+			}
+			if (!$this->_subfieldValues[2]->getValue() && $params['makeZoom']) {
+				$return['items'][2]['listeners'] = array('render' => sensitiveIO::sanitizeJSString('function(el){
+					var fieldCt = el.label.parent();
+					if (fieldCt) {
+						fieldCt.setVisibilityMode(Ext.Element.DISPLAY);
+						fieldCt.hide();
+					}
+				}', false, false));
 			}
 		} else {
 			$return['items'][2]['xtype'] = 'hidden';
@@ -390,16 +421,33 @@ class CMS_object_image extends CMS_object_common
 			} elseif($params['maxWidth'] && $params['maxHeight']){
 				$boxLabel .= '&nbsp;<small>'.$language->getMessage(self::MESSAGE_OBJECT_IMAGE_FIELD_DESC_HEIGHT_AND_WIDTH, array($params['maxWidth'],$params['maxHeight']), MOD_POLYMOD_CODENAME).'</small>';
 			}
-			$return['items'][] = array(
+			$checkField = array(
 				'allowBlank'		=> true,
 				'xtype'				=> 'checkbox',
-				'checked'			=> !$params['useDistinctZoom'],
+				'id'				=> $checkBoxId,
+				'checked'			=> !$params['useDistinctZoom'] && !$this->_subfieldValues[2]->getValue(),
 				'inputValue'		=> 1,
 				'name'				=> 'polymodFieldsValue['.$prefixName.$this->_field->getID().'_makeZoom]',
 				'boxLabel'			=> $boxLabel,
 				'height'			=> 'auto',
 				'labelSeparator'	=> ''
 			);
+			if (isset($zoomId)) {
+				$checkField['listeners'] = array('check' => sensitiveIO::sanitizeJSString('function(el, checked){
+					var fieldCt = Ext.getCmp(\''.$zoomId.'\').label.parent();
+					if (fieldCt) {
+						fieldCt.setVisibilityMode(Ext.Element.DISPLAY);
+						if (checked) {
+							fieldCt.hide(true);
+						} else {
+							fieldCt.show(true);
+						}
+					}
+				}', false, false));
+			}
+			//set checkbox to offset 2
+			$return['items'][3] = $return['items'][2];
+			$return['items'][2] = $checkField;
 		}
 		//reset key numbers
 		$return['items'] = array_values($return['items']);
@@ -427,10 +475,13 @@ class CMS_object_image extends CMS_object_common
 		$tdclass = (isset($inputParams['tdclass'])) ? ' class="'.$inputParams['tdclass'].'"' : '';
 		$thclass = (isset($inputParams['thclass'])) ? ' class="'.$inputParams['thclass'].'"' : '';
 		$rowspan = ($params['makeZoom']) ? 2 : 1;
+		$mandatoryTtitle = (isset($params['legendMandatory']) && $params['legendMandatory']) ? '<span class="atm-red">*</span> ' : '';
+		
+		
 		$html = '
 		<table>
 		<tr>
-			<th'.$thclass.'>'.$language->getMessage(self::MESSAGE_OBJECT_IMAGE_FIELD_LABEL, false, MOD_POLYMOD_CODENAME).'</th>
+			<th'.$thclass.'>'.$mandatoryTtitle.$language->getMessage(self::MESSAGE_OBJECT_IMAGE_FIELD_LABEL, false, MOD_POLYMOD_CODENAME).'</th>
 			<td'.$tdclass.'><input'.$htmlParameters.' name="'.$prefixName.$this->_field->getID().'_1" value="'.$this->_subfieldValues[1]->getValue().'" type="text" /></td>
 		</tr>
 		<tr>
@@ -647,7 +698,7 @@ class CMS_object_image extends CMS_object_common
 							$newSizeX = round(($params['maxHeight']*$newSizeX)/$newSizeY);
 							$newSizeY = $params['maxHeight'];
 						}
-						if (!$oImage->resize($newFilename, $newSizeX, $newSizeY)) {
+						if (!$oImage->resize($newSizeX, $newSizeY, $newFilename)) {
 							return false;
 						}
 					}
@@ -658,11 +709,11 @@ class CMS_object_image extends CMS_object_common
 				}
 			}
 			// If label not set yet, set it
-			if(!$this->_subfieldValues[1]->getValue()){
+			/*if(!$this->_subfieldValues[1]->getValue()){
 				if($this->_subfieldValues[0]->getValue()){
 					$this->_subfieldValues[1]->setValue($this->_subfieldValues[0]->getValue());
 				}
-			}
+			}*/
 			//if we had an imagezoom, check his size
 			if ($this->_subfieldValues[2]->getValue() && ($params['maxZoomWidth'] > 0 || $params['maxZoomHeight'] > 0)) {
 				//resize zoom if needed
@@ -689,7 +740,7 @@ class CMS_object_image extends CMS_object_common
 						$newSizeX = round(($params['maxZoomHeight']*$newSizeX)/$newSizeY);
 						$newSizeY = $params['maxZoomHeight'];
 					}
-					if (!$oImage->resize($filename, $newSizeX, $newSizeY)) {
+					if (!$oImage->resize($newSizeX, $newSizeY, $filename)) {
 						return false;
 					}
 				}
@@ -772,20 +823,18 @@ class CMS_object_image extends CMS_object_common
 			if (!$this->_subfieldValues[1]->setValue(io::htmlspecialchars(@$values[$prefixName.$this->_field->getID().'_1']))) {
 				return false;
 			}
-	
 			//thumbnail
 			if (isset($_FILES[$prefixName.$this->_field->getID().'_0']) && $_FILES[$prefixName.$this->_field->getID().'_0']['name'] && !$_FILES[$prefixName.$this->_field->getID().'_0']['error']) {
 				//check for image type before doing anything
 				if (!in_array(io::strtolower(pathinfo($_FILES[$prefixName.$this->_field->getID().'_0']["name"], PATHINFO_EXTENSION)), $this->_allowedExtensions)) {
 					return false;
 				}
-	
 				//set label as image name if none set
-				if (!$values[$prefixName.$this->_field->getID().'_1']) {
+				/*if (!$values[$prefixName.$this->_field->getID().'_1']) {
 					if (!$this->_subfieldValues[1]->setValue(io::htmlspecialchars($_FILES[$prefixName.$this->_field->getID().'_0']["name"]))) {
 						return false;
 					}
-				}
+				}*/
 				//destroy all old images if any
 				if ($this->_subfieldValues[0]->getValue()) {
 					@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[0]->getValue());
@@ -849,7 +898,7 @@ class CMS_object_image extends CMS_object_common
 						$destfilepath = $path."/".$thumbnailFilename;
 						$extension = io::strtolower($path_parts['extension']);
 						
-						if (!$oImage->resize($destfilepath, $newSizeX, $newSizeY)) {
+						if (!$oImage->resize($newSizeX, $newSizeY, $destfilepath)) {
 							return false;
 						}
 						
@@ -897,11 +946,11 @@ class CMS_object_image extends CMS_object_common
 				return false;
 			} elseif (isset($values[$prefixName.$this->_field->getID().'_0_hidden']) && $values[$prefixName.$this->_field->getID().'_0_hidden'] && isset($values[$prefixName.$this->_field->getID().'_delete']) && $values[$prefixName.$this->_field->getID().'_delete'] != 1) {
 				//set label as image name if none set
-				if ($values[$prefixName.$this->_field->getID().'_1']) {
+				/*if ($values[$prefixName.$this->_field->getID().'_1']) {
 					if (!$this->_subfieldValues[1]->setValue(io::htmlspecialchars($values[$prefixName.$this->_field->getID().'_1']))) {
 						return false;
 					}
-				}
+				}*/
 				if(!$this->_subfieldValues[0]->setValue($values[$prefixName.$this->_field->getID().'_0_hidden'])) {
 					return false;
 				}
@@ -1017,8 +1066,22 @@ class CMS_object_image extends CMS_object_common
 					@list($x, $y) = explode(',',str_replace(';', ',', $parameters));
 					if ((io::isPositiveInteger($x) && $x < $this->getValue('imageWidth')) || (io::isPositiveInteger($y) && $y < $this->getValue('imageHeight'))) {
 						//get module codename
+						$crop = ($x && $y) ? 1 : 0;
+						//get module codename
 						$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
-						return CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[0]->getValue() .'&module='. $moduleCodename .'&x='. $x .'&y='. $y;
+						//set location
+						$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
+						//resized image path
+						$pathInfo = pathinfo($this->_subfieldValues[0]->getValue());
+						$resizedImage = $pathInfo['filename'] .'-'. $x .'-'. $y .($crop ? '-c' : '').'.'. $pathInfo['extension'];
+						//resized image path
+						$resizedImagepathFS = PATH_MODULES_FILES_FS . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
+						//if file already exists, no need to resize file send it
+						if(file_exists($resizedImagepathFS)) {
+							return CMS_websitesCatalog::getMainURL() . PATH_MODULES_FILES_WR . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
+						} else {
+							return CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[0]->getValue() .'&module='. $moduleCodename .'&x='. $x .'&y='. $y.'&crop='.$crop.($location != RESOURCE_DATA_LOCATION_PUBLIC ? '&location='.$location : '');
+						}
 					}
 				}
 				if ($this->_subfieldValues[0]->getValue()) {
@@ -1031,8 +1094,22 @@ class CMS_object_image extends CMS_object_common
 					@list($x, $y) = explode(',',str_replace(';', ',', $parameters));
 					if ((io::isPositiveInteger($x) && $x < $this->getValue('imageZoomWidth')) || (io::isPositiveInteger($y) && $y < $this->getValue('imageZoomHeight'))) {
 						//get module codename
+						$crop = ($x && $y) ? 1 : 0;
+						//get module codename
 						$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
-						return CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[2]->getValue() .'&module='. $moduleCodename .'&x='. $x .'&y='. $y;
+						//set location
+						$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
+						//resized image path
+						$pathInfo = pathinfo($this->_subfieldValues[2]->getValue());
+						$resizedImage = $pathInfo['filename'] .'-'. $x .'-'. $y .($crop ? '-c' : '').'.'. $pathInfo['extension'];
+						//resized image path
+						$resizedImagepathFS = PATH_MODULES_FILES_FS . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
+						//if file already exists, no need to resize file send it
+						if(file_exists($resizedImagepathFS)) {
+							return CMS_websitesCatalog::getMainURL() . PATH_MODULES_FILES_WR . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
+						} else {
+							return CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[2]->getValue() .'&module='. $moduleCodename .'&x='. $x .'&y='. $y.'&crop='.$crop.($location != RESOURCE_DATA_LOCATION_PUBLIC ? '&location='.$location : '');
+						}
 					}
 				}
 				if ($this->_subfieldValues[2]->getValue()) {

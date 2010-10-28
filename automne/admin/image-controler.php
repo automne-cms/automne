@@ -15,8 +15,8 @@
 // $Id: image-controler.php,v 1.4 2010/03/08 16:41:18 sebastien Exp $
 
 /**
-  * PHP controler : Receive upload files
-  * Used accross a SWFUpload request to process one uploaded file
+  * PHP controler : Receive uploaded images
+  * Used accross a SWFUpload request to process one uploaded image
   * 
   * @package Automne
   * @subpackage admin
@@ -45,6 +45,7 @@ $cropTop = sensitiveIO::request('cropTop', 'sensitiveIO::isPositiveInteger', 0);
 $cropBottom = sensitiveIO::request('cropBottom', 'sensitiveIO::isPositiveInteger', 0);
 $cropLeft = sensitiveIO::request('cropLeft', 'sensitiveIO::isPositiveInteger', 0);
 $cropRight = sensitiveIO::request('cropRight', 'sensitiveIO::isPositiveInteger', 0);
+$autocrop = sensitiveIO::request('autocrop') ? true : false;
 $image = sensitiveIO::request('image');
 
 $return = array(
@@ -53,107 +54,49 @@ $return = array(
 	'filename'	=> '',
 );
 
-$image = new CMS_file($image, CMS_file::WEBROOT);
+$image = new CMS_image($image, CMS_file::WEBROOT);
+//Check image
 if (!$image->exists()) {
 	CMS_grandFather::raiseError('Can\'t find queried image : '.$image->getFilename());
 	$return['error'] = $cms_language->getJsMessage(MESSAGE_PAGE_NO_IMG);
 	$view->setContent($return);
 	$view->show();
 }
-
-list($oWidth, $oHeight) = getimagesize($image->getFilename());
-
-switch($image->getExtension()) {
-	case 'gif':
-		if (!function_exists('imagecreatefromgif')) {
-			CMS_grandFather::raiseError('Can\'t find imagecreatefromgif, please install GD library.');
-			$return['error'] = $cms_language->getJsMessage(MESSAGE_PAGE_GIF_SUPPORT);
-			$view->setContent($return);
-			$view->show();
-		}
-		$simg = @imagecreatefromgif($image->getFilename());
-		$dest = io::substr($image->getFilename(), 0, -4).'.gif';
-	break;
-	case 'jpg':
-	case 'jpeg':
-	case 'jpe':
-		if (!function_exists('imagecreatefromjpeg')) {
-			CMS_grandFather::raiseError('Can\'t find imagecreatefromjpeg, please install GD library.');
-			$return['error'] = $cms_language->getJsMessage(MESSAGE_PAGE_JPG_SUPPORT);
-			$view->setContent($return);
-			$view->show();
-		}
-		$simg = @imagecreatefromjpeg($image->getFilename());
-		$dest = $image->getFilename();
-	break;
-	case 'png':
-		if (!function_exists('imagecreatefrompng')) {
-			CMS_grandFather::raiseError('Can\'t find imagecreatefrompng, please install GD library.');
-			$return['error'] = $cms_language->getJsMessage(MESSAGE_PAGE_PNG_SUPPORT);
-			$view->setContent($return);
-			$view->show();
-		}
-		$simg = @imagecreatefrompng($image->getFilename());
-		$dest = io::substr($image->getFilename(), 0, -4).'.png';
-	break;
-	default:
-		CMS_grandFather::raiseError('unknown image type : '.$image->getExtension());
-		$return['error'] = $cms_language->getJsMessage(MESSAGE_PAGE_ALL_FILES_SUPPORT).' '.$image->getExtension().'.';
-		$view->setContent($return);
-		$view->show();
-	break;
+if (!function_exists('imagecreatefromgif')) {
+	CMS_grandFather::raiseError('Can\'t find imagecreatefromgif, please install GD library.');
+	$return['error'] = $cms_language->getJsMessage(MESSAGE_PAGE_GIF_SUPPORT);
+	$view->setContent($return);
+	$view->show();
 }
-if ($oWidth != $width || $oHeight != $height) {
-	$dimg = @imagecreatetruecolor($width, $height);
-	@imagecopyresampled($dimg, $simg, 0, 0, 0, 0, $width, $height, $oWidth, $oHeight);
-} else {
-	$dimg = $simg;
+if (!function_exists('imagecreatefromjpeg')) {
+	CMS_grandFather::raiseError('Can\'t find imagecreatefromjpeg, please install GD library.');
+	$return['error'] = $cms_language->getJsMessage(MESSAGE_PAGE_JPG_SUPPORT);
+	$view->setContent($return);
+	$view->show();
 }
-$cWidth = ($width - $cropLeft) - $cropRight;
-$cHeight = ($height - $cropTop) - $cropBottom;
-if ($cWidth != $width || $cHeight != $height) {
-	$cimg = @imagecreatetruecolor($cWidth, $cHeight);
-	@imagecopyresampled($cimg, $dimg, 0, 0, $cropLeft, $cropTop, $cWidth, $cHeight, $cWidth, $cHeight);
-	
-	switch($image->getExtension()) {
-		case 'gif':
-			@imagegif($cimg,$dest);
-		break;
-		case 'jpg':
-		case 'jpeg':
-		case 'jpe':
-			@imagejpeg($cimg,$dest,95);
-		break;
-		case 'png':
-			@imagepng($cimg,$dest);
-		break;
-	}
-} else {
-	switch($image->getExtension()) {
-		case 'gif':
-			@imagegif($dimg,$dest);
-		break;
-		case 'jpg':
-		case 'jpeg':
-		case 'jpe':
-			@imagejpeg($dimg,$dest,95);
-		break;
-		case 'png':
-			@imagepng($dimg,$dest);
-		break;
-	}
+if (!function_exists('imagecreatefrompng')) {
+	CMS_grandFather::raiseError('Can\'t find imagecreatefrompng, please install GD library.');
+	$return['error'] = $cms_language->getJsMessage(MESSAGE_PAGE_PNG_SUPPORT);
+	$view->setContent($return);
+	$view->show();
 }
-if (!is_file($dest)) {
+//Resize image
+if (!$image->resize($width, $height, '', true, $autocrop)) {
 	CMS_grandFather::raiseError('Error during treatment of file '.$image->getFilename().', please check GD library.');
 	$return['error'] = $cms_language->getJsMessage(MESSAGE_PAGE_LIB_GD_VERIF);
 	$view->setContent($return);
 	$view->show();
 }
-//delete old file
-if ($dest != $image->getFilename()) {
-	$image->delete();
+//Crop image if needed
+if ($cropTop || $cropBottom || $cropLeft || $cropRight) {
+	if (!$image->crop($cropTop, $cropBottom, $cropLeft, $cropRight)) {
+		CMS_grandFather::raiseError('Error during treatment of file '.$image->getFilename().', please check GD library.');
+		$return['error'] = $cms_language->getJsMessage(MESSAGE_PAGE_LIB_GD_VERIF);
+		$view->setContent($return);
+		$view->show();
+	}
 }
-$newimage = new CMS_file($dest);
+$newimage = new CMS_file($image->getFilename());
 //set new image infos and return
 clearstatcache();
 $return['filesize'] = $newimage->getFileSize();
