@@ -10,7 +10,7 @@ ADD FULLTEXT  `title_pbd` (
 `keywords_pbd` ,
 `description_pbd` ,
 `codename_pbd`
-)
+);
 ALTER TABLE  `pagesBaseData_edited` DROP INDEX  `title_pbd` ,
 ADD FULLTEXT  `title_pbd` (
 `title_pbd` ,
@@ -18,4 +18,4 @@ ADD FULLTEXT  `title_pbd` (
 `keywords_pbd` ,
 `description_pbd` ,
 `codename_pbd`
-)
+);
