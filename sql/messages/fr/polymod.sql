@@ -632,6 +632,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(578, 'polymod', 'fr', 'Type de la vignette (extension)');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(579, 'polymod', 'fr', 'Chemin complet vers l\'image (répertoire et nom). Cette variable accepte deux paramètres optionnels largeur (width) et hauteur (height) permettant de redimensionner dynamiquement l\'image. Spécifiez pour ces valeurs les dimensions attendues en pixels.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(580, 'polymod', 'fr', 'Chemin complet vers l\'image zoom (répertoire et nom). Cette variable accepte deux paramètres optionnels largeur (width) et hauteur (height) permettant de redimensionner dynamiquement l\'image zoom. Spécifiez pour ces valeurs les dimensions attendues en pixels.');
-
-
-
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(581, 'polymod', 'fr', 'Légende');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(582, 'polymod', 'fr', 'Rendre la légende obligatoire');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(583, 'polymod', 'fr', 'Champ de l\'objet');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(584, 'polymod', 'fr', 'Ce paramètre vous permet de sélectionner un champ "Utilisateur / Groupe" de l\'objet actuel.<br />Si ce paramètre est employé, le ou les destinataires de la notification seront ceux disponibles dans le champ sélectionné.<br />L\'utilisation de ce paramètre annule les trois paramètres précédents.');

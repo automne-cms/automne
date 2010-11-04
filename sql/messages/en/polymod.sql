@@ -431,3 +431,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(578, 'polymod', 'en', 'Thumbnail file type (extension)');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(579, 'polymod', 'en', 'Full path and file name of the image. This variable accepts two optional parameters width and height to dynamically resize the image. Specify values for the expected size in pixels.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(580, 'polymod', 'en', 'Full path and file name of the image zoom. This variable accepts two optional parameters width and height to dynamically resize the image zoom. Specify values for the expected size in pixels.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(581, 'polymod', 'en', 'Legend');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(582, 'polymod', 'en', 'Make the legend mandatory');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(583, 'polymod', 'en', 'Object field');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(584, 'polymod', 'en', 'This setting lets you select a field "User / Group" from the current object. If this parameter is used, the recipients of the notification will be those available in the selected field. Using this setting overrides the three previous parameters.');
