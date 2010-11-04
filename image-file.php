@@ -59,6 +59,9 @@ if(!$image || !$module || !$location) {
 //resized image
 $pathInfo = pathinfo($image);
 $resizedImage = $pathInfo['filename'] .'-'. $x .'-'. $y .($crop ? '-c' : '').'.'. $pathInfo['extension'];
+if (!$x && !$y) {
+	$resizedImage = $image;
+}
 //resized image path
 $resizedImagepathFS = PATH_MODULES_FILES_FS . '/' . $module . '/' . $location . '/' . $resizedImage;
 //if file already exists, no need to resize file send it
@@ -111,17 +114,15 @@ $image = new CMS_image($imagepathFS);
 $sizeX = $image->getWidth();
 $sizeY = $image->getHeight();
 
-//check if file already exists
-if (($x && $sizeX > $x) || ($y && $sizeY > $y)) {
-	$pathInfo = pathinfo($imagepathFS);
-	$newSizeX = $x;
-	$newSizeY = $y;
-	$resizedImage = $pathInfo['filename'] .'-'. $newSizeX .'-'. $newSizeY .($crop ? '-c' : '').'.'. $pathInfo['extension'];
-} else {
-	$resizedImage = $image;
-}
+//set new file infos
+$pathInfo = pathinfo($imagepathFS);
+$newSizeX = $x ? $x : round(($y * $sizeX) / $sizeY);
+$newSizeY = $y ? $y : round(($x * $sizeY) / $sizeX);
+$resizedImage = $pathInfo['filename'] .'-'. $newSizeX .'-'. $newSizeY .($crop ? '-c' : '').'.'. $pathInfo['extension'];
 
-//resize image
+//resized image path
+$resizedImagepathFS = PATH_MODULES_FILES_FS . '/' . $module . '/' . $location . '/' . $resizedImage;
+
 if ($image->resize($newSizeX, $newSizeY, $resizedImagepathFS, true, $crop)) {
 	//Send cache headers
 	header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($resizedImagepathFS)) . ' GMT');

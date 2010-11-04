@@ -152,68 +152,78 @@ class CMS_image extends CMS_file
 				}
 			} else {
 				// set new image dimensions with crop
-				if ($sizeX > $sizeY) {
-					$ratio = $sizeY / $sizeX;
+				if ($sizeX == $x || $sizeY == $y) {
+					$newSizeX = $sizeX;
+					$newSizeY = $sizeY;
 				} else {
-					$ratio = $sizeX / $sizeY;
-				}
-				if (round(($newSizeX * $sizeY) / $sizeX) <= $newSizeY) {
-					$newSizeX = round(($newSizeY * $sizeX) / $sizeY);
-					$newSizeY = round($newSizeX * $ratio);
-				} else {
-					$newSizeY = round(($newSizeX * $sizeY) / $sizeX);
-					$newSizeX = round($newSizeY * $ratio);
+					if ($sizeX > $sizeY) {
+						$ratio = $sizeY / $sizeX;
+					} else {
+						$ratio = $sizeX / $sizeY;
+					}
+					if (round(($newSizeX * $sizeY) / $sizeX) <= $newSizeY) {
+						$newSizeX = round(($newSizeY * $sizeX) / $sizeY);
+						$newSizeY = round($newSizeX * $ratio);
+					} else {
+						$newSizeY = round(($newSizeX * $sizeY) / $sizeX);
+						$newSizeX = round($newSizeY * $ratio);
+					}
 				}
 			}
 		}
-		//resize image and keep transparency if any
-		switch ($this->getExtension()) {
-			case "gif":
-				$src = imagecreatefromgif($imagepathFS);
-				$dest = imagecreate($newSizeX,$newSizeY);
-				$transparent = imagecolortransparent($src);
-				// If we have a specific transparent color
-				if ($transparent >= 0) {
-					$transColor    = imagecolorsforindex($src, $transparent);
-					$transparent    = imagecolorallocate($dest, $transColor['red'], $transColor['green'], $transColor['blue']);
-					imagefill($dest, 0, 0, $transparent);
-					imagecolortransparent($dest, $transparent);
-				}
-				//create new image
-				imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
-				imagegif($dest, $saveToPathFS);
-				//destroy resources
-				imagedestroy($src);
-				imagedestroy($dest);
-			break;
-			case "jpg":
-			case "jpeg":
-			case "jpe":
-				$src = imagecreatefromjpeg($imagepathFS);
-				$dest = imagecreatetruecolor($newSizeX, $newSizeY);
-				//create new image
-				imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
-				imagejpeg($dest, $saveToPathFS, self::JPEG_QUALITY);
-				//destroy resources
-				imagedestroy($src);
-				imagedestroy($dest);
-			break;
-			case "png":
-				$src = imagecreatefrompng($imagepathFS);
-				$dest = imagecreatetruecolor($newSizeX, $newSizeY);
-				//save alpha channel
-				imagealphablending($dest, false);
-				imagesavealpha($dest,true);
-				$transparent = imagecolorallocatealpha($dest, 255, 255, 255, 127);
-				imagefilledrectangle($dest, 0, 0, $newSizeX, $newSizeY, $transparent);
-				//create new image
-				imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
-				imagepng($dest, $saveToPathFS, self::PNG_COMPRESSION);
-				//destroy resources
-				imagedestroy($src);
-				imagedestroy($dest);
-			break;
+		
+		//resize image
+		if ($newSizeX < $sizeX || $newSizeY < $sizeY) {
+			//resize image and keep transparency if any
+			switch ($this->getExtension()) {
+				case "gif":
+					$src = imagecreatefromgif($imagepathFS);
+					$dest = imagecreate($newSizeX,$newSizeY);
+					$transparent = imagecolortransparent($src);
+					// If we have a specific transparent color
+					if ($transparent >= 0) {
+						$transColor    = imagecolorsforindex($src, $transparent);
+						$transparent    = imagecolorallocate($dest, $transColor['red'], $transColor['green'], $transColor['blue']);
+						imagefill($dest, 0, 0, $transparent);
+						imagecolortransparent($dest, $transparent);
+					}
+					//create new image
+					imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
+					imagegif($dest, $saveToPathFS);
+					//destroy resources
+					imagedestroy($src);
+					imagedestroy($dest);
+				break;
+				case "jpg":
+				case "jpeg":
+				case "jpe":
+					$src = imagecreatefromjpeg($imagepathFS);
+					$dest = imagecreatetruecolor($newSizeX, $newSizeY);
+					//create new image
+					imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
+					imagejpeg($dest, $saveToPathFS, self::JPEG_QUALITY);
+					//destroy resources
+					imagedestroy($src);
+					imagedestroy($dest);
+				break;
+				case "png":
+					$src = imagecreatefrompng($imagepathFS);
+					$dest = imagecreatetruecolor($newSizeX, $newSizeY);
+					//save alpha channel
+					imagealphablending($dest, false);
+					imagesavealpha($dest,true);
+					$transparent = imagecolorallocatealpha($dest, 255, 255, 255, 127);
+					imagefilledrectangle($dest, 0, 0, $newSizeX, $newSizeY, $transparent);
+					//create new image
+					imagecopyresampled($dest, $src, 0, 0, 0, 0, $newSizeX, $newSizeY, $sizeX, $sizeY);
+					imagepng($dest, $saveToPathFS, self::PNG_COMPRESSION);
+					//destroy resources
+					imagedestroy($src);
+					imagedestroy($dest);
+				break;
+			}
 		}
+		
 		//chmod new file
 		CMS_file::chmodFile(FILES_CHMOD, $saveToPathFS);
 		//check for crop if needed
@@ -227,6 +237,9 @@ class CMS_image extends CMS_file
 			if ($newSizeY > $y) {
 				$cropTop = ceil(($newSizeY - $y) / 2);
 				$cropBottom = floor(($newSizeY - $y) / 2);
+			}
+			if (!file_exists($saveToPathFS)) {
+				CMS_file::copyTo($imagepathFS, $saveToPathFS);
 			}
 			$tmpImage = new CMS_image($saveToPathFS);
 			return $tmpImage->crop($cropTop, $cropBottom, $cropLeft, $cropRight);
