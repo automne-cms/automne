@@ -510,7 +510,7 @@ Automne.ImageUploadField = Ext.extend(Automne.FileUploadField,  {
 	applyEdition: function() {
 		if (!Ext.getCmp('widthField').isValid() || !Ext.getCmp('heightField').isValid()) {
 			Automne.message.popup({
-				msg: 				'L\'image dépasse les dimensions autorisées.',
+				msg: 				Automne.locales.maxImageHW,
 				buttons: 			Ext.MessageBox.OK,
 				closable: 			false,
 				icon: 				Ext.MessageBox.ERROR

@@ -138,7 +138,7 @@ function atmSetup {
 # cleanup environement
 function atmTearDown {
     if [ -z "$ATM_SETUP_CALLS" ] || [ $ATM_SETUP_CALLS -eq 1 ]; then
-        echo 'Evironement cleanup:'
+        echo 'Environement cleanup:'
         unset ATM_DB_HOST
         unset ATM_DB_NAME
         unset ATM_DB_USER
@@ -197,7 +197,7 @@ function atmSqlBackup {
     # if no ATM_SQL_DUMP_FILE name generate one
     # add it to the options
     if [ -z "$ATM_SQL_DUMP_FILE" ]; then
-        ATM_SQL_DUMP_FILE="sql/$ATM_SQL_DUMP_FILE_PREFIX$ATM_DATE.sql"
+        ATM_SQL_DUMP_FILE="automne/sql/$ATM_SQL_DUMP_FILE_PREFIX$ATM_DATE.sql"
         OPTIONS="$OPTIONS --result-file=$ATM_SQL_DUMP_FILE"
     fi
 
@@ -391,7 +391,7 @@ function atmRestore {
         shift
 
         # find the corresponding sql file
-        ATM_SQL_LOAD_FILE=`echo "$ATM_RESTORE_FILE" | sed "s/.*$ATM_BACKUP_FILE_PREFIX\(.*\)\.$ATM_BACKUP_FILE_EXTENSION$/.\/sql\/$ATM_SQL_DUMP_FILE_PREFIX\1.sql/"`
+        ATM_SQL_LOAD_FILE=`echo "$ATM_RESTORE_FILE" | sed "s/.*$ATM_BACKUP_FILE_PREFIX\(.*\)\.$ATM_BACKUP_FILE_EXTENSION$/.\/sql\/$ATM_SQL_DUMP_FILE_PREFIX\1.automne/sql/"`
     fi
 
     echo "Restore:"

@@ -439,6 +439,40 @@ class CMS_profile_usersGroup extends CMS_profile
 	}
 	
 	/**
+	  * Remove group to user and write to persistence immediately
+	  * The method has to update user's profile and group relationship
+	  *
+	  * @var CMS_profile_user $user
+	  * @return true on success, false on failure
+	  * @access public
+	  */
+	function removeToUserAndWriteToPersistence(&$user) {
+		//Get current user groups ids
+		$userGroupIds = CMS_profile_usersGroupsCatalog::getGroupsOfUser($user, true, true);
+		//first reset profile clearances
+		$user->resetClearances();
+		
+		//second, loop through user groups to remove group
+		foreach ($userGroupIds as $userGroupId) {
+			if ($userGroupId == $this->_groupId) {
+				//remove user to group
+				if ($this->removeUser($user)) {
+					$this->writeToPersistence();
+				}
+			}
+		}
+		//third, loop through user groups to add old groups
+		foreach ($userGroupIds as $userGroupId) {
+			if ($userGroupId != $this->_groupId) {
+				//add group to user
+				$user->addGroup($userGroupId);
+			}
+		}
+		//then write user profile into persistence
+		return $user->writeToPersistence();
+	}
+	
+	/**
 	  * Apply group profile to all users belonging in this group
 	  * This method must be as fast as possible
 	  *
