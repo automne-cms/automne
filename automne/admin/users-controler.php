@@ -187,33 +187,14 @@ switch ($action) {
 	case 'delgroup':
 		if (is_a($user, "CMS_profile_user")) {
 			if ($groupId) {
-				//Get current user groups ids
-				$userGroupIds = CMS_profile_usersGroupsCatalog::getGroupsOfUser($user, true, true);
-				//first reset profile clearances
-				$user->resetClearances();
-				
-				//second, loop through user groups to remove group
-				foreach ($userGroupIds as $userGroupId) {
-					if ($userGroupId == $groupId) {
-						//remove user to group
-						$oldGroup = CMS_profile_usersGroupsCatalog::getByID($groupId);
-						if ($oldGroup->removeUser($user)) {
-							$oldGroup->writeToPersistence();
-						}
-					}
+				$group = CMS_profile_usersGroupsCatalog::getByID($groupId);
+				if ($group && !$group->hasError()) {
+					$group->removeToUserAndWriteToPersistence($user);
+					$log = new CMS_log();
+					$log->logMiscAction(CMS_log::LOG_ACTION_PROFILE_USER_EDIT, $cms_user, "User : ".$user->getFullName()." (remove group to user)");
+				} else {
+					$cms_message = $cms_language->getMessage(MESSAGE_PAGE_UNKNOWN_GROUP);
 				}
-				//third, loop through user groups to add old groups
-				foreach ($userGroupIds as $userGroupId) {
-					if ($userGroupId != $groupId) {
-						//add group to user
-						$user->addGroup($userGroupId);
-					}
-				}
-				//then write user profile into persistence
-				$user->writeToPersistence();
-				
-				$log = new CMS_log();
-				$log->logMiscAction(CMS_log::LOG_ACTION_PROFILE_USER_EDIT, $cms_user, "User : ".$user->getFullName()." (remove group to user)");
 			} else {
 				$cms_message = $cms_language->getMessage(MESSAGE_PAGE_UNKNOWN_GROUP);
 			}

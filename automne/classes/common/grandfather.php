@@ -77,22 +77,20 @@ class CMS_grandFather
 		//second condition are for static calls (made by static methods)
 		if (!defined('APPLICATION_EXEC_TYPE') || (APPLICATION_EXEC_TYPE == 'http' && ((!isset($this) && $systemDebug) || (isset($this) && isset($this->_debug) && $this->_debug)))) {
 			$backTrace = $backTraceLink = '';
-			if (isset($_SESSION) && isset($_SESSION["cms_context"]) && is_a($_SESSION["cms_context"],'CMS_context')) {
-				$backtraces = !isset($_SESSION['automneBacktraces']) ? array() : $_SESSION['automneBacktraces'];
-				//limit to last 3 backtraces
-				if (sizeof($backtraces) >= 3) {
-					$backtraces = array_slice($backtraces, sizeof($backtraces) - 2);
-				}
-				$bt = array_reverse(debug_backtrace(false));
-				$backtrace = array(
-					'summary'		=> sensitiveIO::printBackTrace($bt),
-					'backtrace'		=> @print_r($bt,true),
-				);
-				$backtraceName = 'bt-'.md5(rand());
-				$backtraces[$backtraceName] = $backtrace;
-				$_SESSION['automneBacktraces'] = $backtraces;
-				$backTraceLink = PATH_REALROOT_WR.'/automne/admin/backtrace.php?bt='.$backtraceName;
+			$bt = array_reverse(debug_backtrace(false));
+			$backtrace = array(
+				'summary'		=> sensitiveIO::printBackTrace($bt),
+				'backtrace'		=> @print_r($bt,true),
+			);
+			unset($bt);
+			$backtraceName = 'bt_'.md5(rand());
+			$backTraceLink = PATH_REALROOT_WR.'/automne/admin/backtrace.php?bt='.$backtraceName;
+			//save backtrace to cache (for 10 min)
+			$cache = new CMS_cache($backtraceName, 'atm-backtrace', 600, false);
+			if ($cache) {
+				$cache->save($backtrace);
 			}
+			unset($backtrace);
 			//append error to current view
 			$view = CMS_view::getInstance();
 			$outputMessage = $encodeOutput ? io::htmlspecialchars($errorMessage) : $errorMessage;
@@ -373,6 +371,22 @@ class CMS_grandFather
 			}
 		}
 		if (!$file) {
+			//Zend Framework
+			if (substr(strtolower($classname), 0, 5) == 'zend_') {
+				chdir(PATH_MAIN_FS);
+				require_once(PATH_MAIN_FS.'/Zend/Loader/Autoloader.php');
+				if (!Zend_Loader_Autoloader::autoload($classname)) {
+					return false;
+				}
+				/*only for stats*/
+				if (STATS_DEBUG) $GLOBALS["files_loaded"]++;
+				if (STATS_DEBUG && VIEW_SQL) {
+					$GLOBALS["files_table"][] = 'Zend framework file';
+					$GLOBALS["memory_table"][] = array('file' => 'Zend framework file', 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
+				}
+				return true;
+			}
+			
 			//try modules Autoload
 			if (!isset($modules)) {
 				$modules = CMS_modulesCatalog::getAll("id");
@@ -397,7 +411,6 @@ class CMS_grandFather
 				$file = CMS_polymod::load($classname);
 			}
 		}
-		
 		if ($file) {
 			require_once($file);
 			/*only for stats*/
@@ -407,20 +420,6 @@ class CMS_grandFather
 					$GLOBALS["files_table"][] = $file; 
 					$GLOBALS["memory_table"][] = array('file' => $file, 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
 				}
-			}
-		} else {
-			chdir(PATH_MAIN_FS);
-			//Zend Framework
-			require_once(PATH_MAIN_FS.'/Zend/Loader.php');
-			require_once(PATH_MAIN_FS.'/Zend/Loader/Autoloader.php');
-			if (!Zend_Loader_Autoloader::autoload($classname)) {
-				return false;
-			}
-			/*only for stats*/
-			if (STATS_DEBUG) $GLOBALS["files_loaded"]++;
-			if (STATS_DEBUG && VIEW_SQL) {
-				$GLOBALS["files_table"][] = 'Zend framework file';
-				$GLOBALS["memory_table"][] = array('file' => 'Zend framework file', 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
 			}
 		}
 	}

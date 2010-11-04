@@ -26,7 +26,8 @@
 // ** REDIRECTION HANDLER. KEEP ALL THIS PHP CODE IN 403 ERROR DOCUMENT ! **
 // **     YOU CAN DEFINE YOUR OWN ERROR PAGE WITH THE FILE /403.html      **
 // *************************************************************************
-
+//disactive HTML compression
+define("ENABLE_HTML_COMPRESSION", false);
 require_once(dirname(__FILE__).'/cms_rc_frontend.php');
 
 //check for alternative 403 file and display it if any

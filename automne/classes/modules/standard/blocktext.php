@@ -119,6 +119,8 @@ class CMS_block_text extends CMS_block
 		case PAGE_VISUALMODE_FORM:
 			if ($data && $data["value"]) {
 				$html = $data["value"];
+			} elseif (isset($this->_attributes['default'])) {
+				$html = $this->_attributes['default'];
 			} else {
 				$html = "<span class=\"atm-ipsum\">Duis autem dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla";
 				$html .= "facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit au gue duis";
@@ -130,10 +132,13 @@ class CMS_block_text extends CMS_block
 			return $this->_getHTMLForm($language, $page, $clientSpace, $row, $this->_tagID, $form_data);
 			break;
 		case PAGE_VISUALMODE_CLIENTSPACES_FORM:
-			$html = "<span class=\"atm-ipsum\">Duis autem dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla";
-			$html .= "facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit au gue duis";
-			$html .= "dolore te feugat nulla facilisi.</span>";
-			
+			if (isset($this->_attributes['default'])) {
+				$html = $this->_attributes['default'];
+			} else {
+				$html = "<span class=\"atm-ipsum\">Duis autem dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla";
+				$html .= "facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit au gue duis";
+				$html .= "dolore te feugat nulla facilisi.</span>";
+			}
 			$form_data = str_replace("{{data}}", $html, $this->_definition);
 			$this->_hasContent = false;
 			$this->_editable = false;

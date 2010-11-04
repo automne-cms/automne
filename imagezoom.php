@@ -42,7 +42,7 @@ if (io::get('file')) {
 } else {
 	die('Error, No image to display ...');
 }
-$label = isset(io::get('label')) ? stripslashes(io::htmlspecialchars(urldecode(io::get('label')))) : '';
+$label = io::get('label') ? stripslashes(io::htmlspecialchars(urldecode(io::get('label')))) : '';
 $location = (io::get('location') && ((isset($_SERVER["HTTP_REFERER"]) && strpos($_SERVER["HTTP_REFERER"], "automne/admin") !== false) || io::get('popup') === "true")) ? io::get('location') : RESOURCE_DATA_LOCATION_PUBLIC;
 $location = in_array($location, array(RESOURCE_DATA_LOCATION_EDITED, RESOURCE_DATA_LOCATION_EDITION, RESOURCE_DATA_LOCATION_PUBLIC)) ? $location : '';
 $module = io::get('module') ? io::get('module') : MOD_STANDARD_CODENAME;

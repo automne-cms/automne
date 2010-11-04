@@ -27,16 +27,22 @@ $dialog = new CMS_dialog();
 $dialog->setTitle('Automne :: Debug :: BackTrace','pic_meta.gif');
 
 $backTraceName = $_GET['bt'];
-
-if ($backTraceName && isset($_SESSION["automneBacktraces"]) && isset($_SESSION["automneBacktraces"][$backTraceName])) {
-	$content = '
-	<h3>Backtrace:</h3>
-	'.$_SESSION["automneBacktraces"][$backTraceName]['summary'].'<br />
-	<h3>Backtrace Detail:</h3>
-	<pre>'.io::htmlspecialchars($_SESSION["automneBacktraces"][$backTraceName]['backtrace']).'</pre>
-	';
-} else {
+if (!$backTraceName) {
 	$content = 'Cannot backtrace, datas missing ...';
+} else {
+	//get backtrace from cache object
+	$cache = new CMS_cache($backTraceName, 'atm-backtrace', 600, false);
+	//load cache content
+	if (!$cache->exist() || !($datas = $cache->load())) {
+		$content = 'Cannot backtrace, datas missing ...';
+	} else {
+		$content = '
+		<h3>Backtrace:</h3>
+		'.$datas['summary'].'<br />
+		<h3>Backtrace Detail:</h3>
+		<pre>'.io::htmlspecialchars($datas['backtrace']).'</pre>
+		';
+	}
 }
 $dialog->setContent($content);
 $dialog->show();

@@ -59,8 +59,9 @@ case 'deleteObject' :
 	if ($object->destroy()) {
 		unset($object);
 		unset($objectID);
-		//unset field catalog in session
-		unset($_SESSION["polyModule"]["objectFields"][$objectID]);
+		//unset fields catalog in cache
+		CMS_cache::clearTypeCacheByMetas('atm-polymod-structure', array('type' => 'fields'));
+		
 		$cms_message .= $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 	} else {
 		$cms_message .= $cms_language->getMessage(MESSAGE_ACTION_DELETE_OBJECT_ERROR);

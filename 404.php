@@ -27,7 +27,8 @@
 // ** REDIRECTION HANDLER. KEEP ALL THIS PHP CODE IN 404 ERROR DOCUMENT ! **
 // **     YOU CAN DEFINE YOUR OWN ERROR PAGE WITH THE FILE /404.html      **
 // *************************************************************************
-
+//disactive HTML compression
+define("ENABLE_HTML_COMPRESSION", false);
 require_once(dirname(__FILE__).'/cms_rc_frontend.php');
 //parse requested URL to try to find a matching page
 $redirectTo = '';

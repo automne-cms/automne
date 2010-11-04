@@ -4,6 +4,12 @@ V4.1.0 (in progress)
 [REFACTOR] : Change polymod search to add one by one result return. Use POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS search method with getNextResult method. This greatly improves the memory management.
 [REFACTOR] : Manage alpha transparency on PNG and GIF images during image resizing
 [REFACTOR] : Move /automne_linx_files directory to /automne/linx
+[REFACTOR] : Move /automne_modules_files to /files
+[REFACTOR] : Move /automne_bin to /automne/bin
+[REFACTOR] : Move /sql to /automne/sql
+[REFACTOR] : Move /html to /automne/html
+[REFACTOR] : Use CMS_cache to store Backtraces, Stats and Polymod structures instead of user session
+[REFACTOR] : Add default attribute to text and varchar blocks (standard module) to specifie a specific text instead of the default "Lorem Ipsum" text
 [FEATURE] : Add Google coordinates field for Polymod
 [FEATURE] : Add vhost subfolder support for Automne installation
 [FEATURE] : Add import/export of polymod modules structures
@@ -12,7 +18,8 @@ V4.1.0 (in progress)
 [FEATURE] : Add row duplication
 [FEATURE] : Add codename to pages and websites
 [FEATURE] : Add database auto update (useful for direct update from Launchpad)
-[FEATURE] : Add auto resize on images for image and file objects
+[FEATURE] : Add auto resize and auto crop on images for image and file objects
+[FEATURE] : Add email notification to user/group field of objects (like author for example)
 [FEATURE] : Add atm-page and atm-website tags
 
 V4.0.2 (25/05/2010)

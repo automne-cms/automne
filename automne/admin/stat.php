@@ -27,10 +27,35 @@ error_reporting(E_ALL & ~E_NOTICE);
 
 $SQL_TIME_MARK = ($_REQUEST["SQL_TIME_MARK"]) ? $_REQUEST["SQL_TIME_MARK"] : '0.001';
 $statName = ($_REQUEST['stat']) ? $_REQUEST['stat'] : '';
-$stats = $_SESSION["cms_context"]->getSessionVar('automneStats');
 
-function sanitizeString($input)
-{
+$dialog = new CMS_dialog();
+if (!$statName) {
+	$dialog->setTitle('Automne :: Debug :: Statistics','pic_meta.gif');
+	$dialog->setContent('Cannot find stats datas ...');
+	$dialog->show();
+	exit;
+}
+
+//get stats from cache object
+$cache = new CMS_cache($statName, 'atm-stats', 600, false);
+//load cache content
+if (!$cache->exist() || !($datas = $cache->load())) {
+	$dialog->setTitle('Automne :: Debug :: Statistics','pic_meta.gif');
+	$dialog->setContent('Cannot find stats datas ...');
+	$dialog->show();
+	exit;
+}
+
+$sql_table = $datas['stat_sql_table'];
+$files_loaded = $datas['stat_files_table'];
+$memoryUsages = $datas['stat_memory_table'];
+
+$dialog->setTitle('Automne :: Debug :: Statistics for file : '.$datas['stat_content_name'],'pic_meta.gif');
+
+$time = sprintf('%.5f', $datas['stat_time_end'] - $datas['stat_time_start']);
+$rapport = sprintf('%.2f', ((100 * $datas['stat_total_time'])/$time));
+
+function sanitizeString($input) {
 	$sanitized = trim($input);
 	$sanitized = str_replace("
 ", "",str_replace("\n", "",preg_replace("#\t+#", "_",$sanitized)));
@@ -41,23 +66,6 @@ function sanitizeString($input)
 	$sanitized = str_replace(",_", ",",$sanitized);
 	return $sanitized;
 }
-
-$dialog = new CMS_dialog();
-if (!$statName || !isset($stats[$statName])) {
-	$dialog->setTitle('Automne :: Debug :: Statistics','pic_meta.gif');
-	$dialog->setContent('Cannot find stats datas ... only last 4 processes are available.');
-	$dialog->show();
-	exit;
-}
-
-$sql_table = $stats[$statName]['stat_sql_table'];
-$files_loaded = $stats[$statName]['stat_files_table'];
-$memoryUsages = $stats[$statName]['stat_memory_table'];
-
-$dialog->setTitle('Automne :: Debug :: Statistics for file : '.$stats[$statName]['stat_content_name'],'pic_meta.gif');
-
-$time = sprintf('%.5f', $stats[$statName]['stat_time_end'] - $stats[$statName]['stat_time_start']);
-$rapport = sprintf('%.2f', ((100 * $stats[$statName]['stat_total_time'])/$time));
 
 $content = '
 <a name="top"></a>
@@ -72,10 +80,10 @@ $content = '
 <h3>Stat Resume:</h3>
 <br />
 Loaded in ' . $time . ' seconds<br />
-Loaded PHP files : '. $stats[$statName]['stat_files_loaded'] .'<br />
-SQL requests : ' . sprintf('%.5f', $stats[$statName]['stat_total_time']) . ' seconds (' . $stats[$statName]['stat_sql_nb_requests'] . ' requests)<br />
+Loaded PHP files : '. $datas['stat_files_loaded'] .'<br />
+SQL requests : ' . sprintf('%.5f', $datas['stat_total_time']) . ' seconds (' . $datas['stat_sql_nb_requests'] . ' requests)<br />
 % SQL/PHP time : '. $rapport .' %<br />
-Memory Peak : '. $stats[$statName]['stat_memory_peak'] .'Mo
+Memory Peak : '. $datas['stat_memory_peak'] .'Mo
 <br /><br />
 <a name="sql-resume"></a>
 <h3>SQL Resume:</h3>

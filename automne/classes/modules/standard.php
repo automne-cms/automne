@@ -1548,7 +1548,8 @@ class CMS_module_standard extends CMS_module
 					return false;
 				}
 				if ($tag->getName() == 'row') {
-					return $tag->getInnerContent();
+					//replace {{pageID}} tag in all page content.
+					return str_replace('{{pageID}}', $treatmentParameters["page"]->getID(), $tag->getInnerContent());
 				} else {
 					//create the block data
 					$block = $tag->getRepresentationInstance();
@@ -1784,8 +1785,10 @@ class CMS_module_standard extends CMS_module
 						return preg_replace('#</body>$#', $statsCode."\n".'</body>', $tag->getContent());
 					break;
 					case "html":
+						//replace {{pageID}} tag in all page content.
+						$content = str_replace('{{pageID}}', $treatedObject->getID(), $tag->getContent());
 						//Append DTD
-						return '<?php if (defined(\'APPLICATION_XHTML_DTD\')) echo APPLICATION_XHTML_DTD."\n"; ?>'."\n".$tag->getContent();
+						return '<?php if (defined(\'APPLICATION_XHTML_DTD\')) echo APPLICATION_XHTML_DTD."\n"; ?>'."\n".$content;
 					break;
 				}
 				return '';
@@ -2034,13 +2037,15 @@ class CMS_module_standard extends CMS_module
 				$modulesCode[MOD_STANDARD_CODENAME] = '';
 				if ($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC 
 					|| $visualizationMode == PAGE_VISUALMODE_PRINT) {
+					//path to cms_rc_frontend
+					$path = PATH_PAGES_HTML_WR == PATH_MAIN_WR."/html" ? '/../../cms_rc_frontend.php' : '/../cms_rc_frontend.php';
 					//redirection code if any
 					$redirectlink = $treatedObject->getRedirectLink(true);
 					if ($redirectlink->hasValidHREF()) {
 						$href = $redirectlink->getHTML(false, MOD_STANDARD_CODENAME, RESOURCE_DATA_LOCATION_PUBLIC, false, true);
 						$modulesCode[MOD_STANDARD_CODENAME] .= 
 								'<?php'."\n".
-								'require_once(dirname(__FILE__).\'/../cms_rc_frontend.php\');'."\n".
+								'require_once(dirname(__FILE__).\''.$path.'\');'."\n".
 								'CMS_view::redirect(\''.$href.'\', true, 302);'."\n".
 								'?>';
 					}
@@ -2048,7 +2053,7 @@ class CMS_module_standard extends CMS_module
 					$modulesCode[MOD_STANDARD_CODENAME] .= 
 					'<?php'."\n".
 					'//Generated on '.date('r').' by '.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION."\n".
-					'require_once(dirname(__FILE__).\'/../cms_rc_frontend.php\');'."\n".
+					'require_once(dirname(__FILE__).\''.$path.'\');'."\n".
 					'if (!isset($cms_page_included) && !$_POST && !$_GET) {'."\n".
 					'	CMS_view::redirect(\''.$treatedObject->getURL(($visualizationMode == PAGE_VISUALMODE_PRINT) ? true : false).'\', true, 301);'."\n".
 					'}'."\n".

@@ -1029,10 +1029,8 @@ class CMS_file extends CMS_grandFather
 			header('Content-Type: '.$contentType);
 			header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $lastdate) . ' GMT');
 			header('Expires: ' . gmdate('D, d M Y H:i:s', time()+2592000) . ' GMT'); //30 days
-			header('Cache-Control: private, max-age=2592000');
-			//header("Cache-Control: must-revalidate");
-			header('Pragma: private');
-			//header("Pragma: no-cache"); 
+			header("Cache-Control: must-revalidate");
+			header("Pragma: public"); 
 			exit;
 		}
 		
@@ -1067,10 +1065,8 @@ class CMS_file extends CMS_grandFather
 		header('Content-Type: '.$contentType);
 		header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $lastdate) . ' GMT');
 		header('Expires: ' . gmdate('D, d M Y H:i:s', time()+2592000) . ' GMT'); //30 days
-		//header('Cache-Control: private, max-age=2592000');
 		header("Cache-Control: must-revalidate");
-		//header('Pragma: private');
-		header("Pragma: no-cache"); 
+		header("Pragma: public"); 
 		//send gzip header if needed
 		if ($compress) {
 			header('Vary: Accept-Encoding'); // Handle proxies
@@ -1147,10 +1143,11 @@ class CMS_file extends CMS_grandFather
 	    @set_time_limit(0);
 		
 		//send http headers
-		header("Cache-Control: ");// leave blank to avoid IE errors
-		header("Pragma: ");// leave blank to avoid IE errors
+		header("Cache-Control: ", false);// leave blank to avoid IE errors
+		header("Pragma: ", false);// leave blank to avoid IE errors
 		header('Content-Type: '.$filetype);
 		header("Content-transfer-encoding: binary");
+		clearstatcache(); //to avoid bug on filesize
 		header('Content-Length: '.(string) filesize($source));
 		header('Content-Disposition: '.($inline ? 'inline' : 'attachment').'; filename="'.basename($source).'"');
 		

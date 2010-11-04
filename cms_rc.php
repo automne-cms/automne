@@ -438,13 +438,13 @@ if (!defined("PATH_MAIN_FS")) {
 
 /**
   *	Block files (files uploaded that represents blocks content)
-  *	Default : DOCUMENT_ROOT."/cms_blocks_files"
+  *	Default : PATH_REALROOT_WR."/files"
   */
 if (!defined("PATH_MODULES_FILES_WR")) {
-	define("PATH_MODULES_FILES_WR", PATH_REALROOT_WR."/automne_modules_files");
+	define("PATH_MODULES_FILES_WR", PATH_REALROOT_WR."/files");
 }
 if (!defined("PATH_MODULES_FILES_FS")) {
-	define("PATH_MODULES_FILES_FS", PATH_REALROOT_FS."/automne_modules_files");
+	define("PATH_MODULES_FILES_FS", PATH_REALROOT_FS."/files");
 }
 /**
   * PATH to the module files of the standard module
@@ -473,10 +473,10 @@ if (!defined("PATH_PAGES_FS")) {
   *	Default : PATH_MAIN_xx."/html"
   */
 if (!defined("PATH_PAGES_HTML_WR")) {
-	define("PATH_PAGES_HTML_WR", PATH_REALROOT_WR."/html");
+	define("PATH_PAGES_HTML_WR", PATH_MAIN_WR."/html");
 }
 if (!defined("PATH_PAGES_HTML_FS")) {
-	define("PATH_PAGES_HTML_FS", PATH_REALROOT_FS."/html");
+	define("PATH_PAGES_HTML_FS", PATH_MAIN_FS."/html");
 }
 
 /**
@@ -755,14 +755,14 @@ if (!defined("PATH_PAGES_LINXFILES_FS")) {
 }
 
 /**
-  * Windows Binary and bat files path, where usefull windows files are located. 
-  *	Default : PATH_REALROOT_xx."/automne_bin"
+  * Windows Binary and bat files path, where usefull binary files are located. 
+  *	Default : PATH_MAIN_xx."/bin"
   */
 if (!defined("PATH_WINDOWS_BIN_WR")) {
-	define("PATH_WINDOWS_BIN_WR", PATH_REALROOT_WR."/automne_bin");
+	define("PATH_WINDOWS_BIN_WR", PATH_MAIN_WR."/bin");
 }
 if (!defined("PATH_WINDOWS_BIN_FS")) {
-	define("PATH_WINDOWS_BIN_FS", PATH_REALROOT_FS."/automne_bin");
+	define("PATH_WINDOWS_BIN_FS", PATH_MAIN_FS."/bin");
 }
 
 /**
@@ -1111,15 +1111,7 @@ if (STATS_DEBUG) {
 		if (function_exists('xdebug_get_profiler_filename') && xdebug_get_tracefile_name()) {
 			$content .= 'XDebug Trace : '. xdebug_get_tracefile_name()."\n";
 		}
-		if (VIEW_SQL && isset($_SESSION["cms_context"]) && is_object($_SESSION["cms_context"]) && $_SERVER["SCRIPT_NAME"] != PATH_ADMIN_WR.'/stat.php') {
-			$stats = $_SESSION["cms_context"]->getSessionVar('automneStats');
-			if (!$stats) {
-				$stats = array();
-			}
-			//limit to last 4 stats
-			if (sizeof($stats) >= 4) {
-				$stats = array_slice($stats, sizeof($stats) - 3);
-			}
+		if (VIEW_SQL && $_SERVER["SCRIPT_NAME"] != PATH_ADMIN_WR.'/stat.php') {
 			$stat = array(
 				'stat_time_start'		=> $GLOBALS["time_start"],
 				'stat_time_end'			=> getmicrotime(),
@@ -1132,9 +1124,12 @@ if (STATS_DEBUG) {
 				'stat_memory_peak'		=> $memoryPeak,
 				'stat_files_loaded'		=> $GLOBALS["files_loaded"],
 			);
-			$statName = 'stat-'.md5(rand());
-			$stats[$statName] = $stat;
-			$_SESSION["cms_context"]->setSessionVar('automneStats', $stats);
+			$statName = 'stat_'.md5(rand());
+			//save stats to cache (for 10 min)
+			$cache = new CMS_cache($statName, 'atm-stats', 600, false);
+			if ($cache) {
+				$cache->save($stat);
+			}
 		}
 		if (!$return) {
 			$content = '<fieldset style="width:200px;" class="atm-debug"><legend>Debug Statistics</legend><pre>'.$content.'</pre>';

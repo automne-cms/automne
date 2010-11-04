@@ -29,8 +29,8 @@
 class CMS_object_email extends CMS_object_common
 {
 	/**
-  * Polymod Messages
-  */
+ 	 * Polymod Messages
+ 	 */
 	const MESSAGE_OBJECT_EMAIL_LABEL = 336;
 	const MESSAGE_OBJECT_EMAIL_DESCRIPTION = 337;
 	const MESSAGE_OBJECT_EMAIL_PARAMETER_SUBJECT = 338;
@@ -63,6 +63,8 @@ class CMS_object_email extends CMS_object_common
 	const MESSAGE_OBJECT_EMAIL_PARAMETER_GROUPS_LEFT_TITLE = 318;
 	const MESSAGE_OBJECT_EMAIL_PARAMETER_GROUPS_RIGHT_TITLE = 319;
 	const MESSAGE_OBJECT_EMAIL_MESSAGES_SENT = 427;
+	const MESSAGE_OBJECT_EMAIL_PARAMETER_USERGROUPFIELD = 583;
+	const MESSAGE_OBJECT_EMAIL_PARAMETER_USERGROUPFIELD_DESC = 584;
 	
 	const OBJECT_EMAIL_PARAMETER_SEND_ON_VALIDATION = 1;
 	const OBJECT_EMAIL_PARAMETER_SEND_ON_SYSTEM_EVENT = 2;
@@ -173,6 +175,13 @@ class CMS_object_email extends CMS_object_common
 										'internalName'	=> 'disableGroups',
 										'externalName'	=> self::MESSAGE_OBJECT_EMAIL_PARAMETER_DISABLEGROUPS,
 									),
+							 9 => array(
+										'type' 			=> 'usersGroupsField',
+										'required' 		=> false,
+										'internalName'	=> 'usersGroupsField',
+										'externalName'	=> self::MESSAGE_OBJECT_EMAIL_PARAMETER_USERGROUPFIELD,
+										'description'	=> self::MESSAGE_OBJECT_EMAIL_PARAMETER_USERGROUPFIELD_DESC,
+									),
 							);
 	
 	/**
@@ -188,7 +197,8 @@ class CMS_object_email extends CMS_object_common
 									5 => '',
 									6 => false, 
 									7 => '', 
-									8 => '',);
+									8 => '',
+									9 => '',);
 	
 	/**
 	  * Constructor.
@@ -318,15 +328,8 @@ class CMS_object_email extends CMS_object_common
 		foreach($parameters as $parameterID => $parameter) {
 			$paramValue = $values[$parameterID];
 			if ($parameter["type"] == "disableUsers") {
-				// Search all users/groups
-				$usersGroups = CMS_profile_usersCatalog::getAll();
-				//sort and index table
-				$userGroupSorted = array();
-				foreach ($usersGroups as $aUserGroup) {
-					if ($aUserGroup->isActive()) {
-						$userGroupSorted[$aUserGroup->getUserId()] = $aUserGroup->getLastName().' '.$aUserGroup->getFirstName();
-					}
-				}
+				// Search all users
+				$userGroupSorted = CMS_profile_usersCatalog::getUsersLabels(true, true);
 				//sort objects by name case insensitive
 				natcasesort($userGroupSorted);
 				$allIDs = $userGroupSorted;
@@ -368,13 +371,7 @@ class CMS_object_email extends CMS_object_common
 		foreach($parameters as $parameterID => $parameter) {
 			$paramValue = $values[$parameterID];
 			if ($parameter["type"] == "disableGroups") {
-				// Search all users/groups
-				$usersGroups = CMS_profile_usersGroupsCatalog::getAll();
-				//sort and index table
-				$userGroupSorted = array();
-				foreach ($usersGroups as $aUserGroup) {
-					$userGroupSorted[$aUserGroup->getGroupId()] = $aUserGroup->getLabel();
-				}
+				$userGroupSorted = CMS_profile_usersGroupsCatalog::getGroupsLabels();
 				//sort objects by name case insensitive
 				natcasesort($userGroupSorted);
 				$allIDs = $userGroupSorted;
@@ -397,6 +394,47 @@ class CMS_object_email extends CMS_object_common
 					)
 				);
 				$input .= $s_items_listboxes;
+			}
+		}
+		return $input;
+	}
+	
+	/**
+	  * get HTML admin subfields parameters
+	  *
+	  * @return string : the html admin
+	  * @access public
+	  */
+	function getHTMLSubFieldsParametersUsersGroupsField($language, $prefixName) {
+		$params = $this->getParamsValues();
+		$values = $this->_parameterValues;
+		$input = '';
+		$parameters = $this->getSubFieldParameters();
+		foreach($parameters as $parameterID => $parameter) {
+			$paramValue = $values[$parameterID];
+			if ($parameter["type"] == "usersGroupsField") {
+				//get usersGroups fields for current object
+				$fields = CMS_poly_object_catalog::getFieldsDefinition($this->_field->getValue('objectID'));
+				$usersGroupsfields = array();
+				foreach ($fields as $field) {
+					if ($field->getValue('type') == 'CMS_object_usergroup') {
+						//get label of current field
+						$label = new CMS_object_i18nm($field->getValue('labelID'));
+						if (is_a($language, "CMS_language")) {
+							$label = $label->getValue($language->getCode());
+						} else {
+							$label = $label->getValue($language);
+						}
+						$usersGroupsfields[$field->getID()] = $label;
+					}
+				}
+				$s_items_listbox = CMS_dialog_listboxes::getListBox(array (
+					'field_name' 		=> $prefixName.$parameter['internalName'],	// Select field name to get value in
+					'items_possible' 	=> $usersGroupsfields,						// array of all fields availables: array(ID => label)
+					'default_value' 	=> $params[$parameter["internalName"]],		// Same format
+					'attributes' 		=> 'class="admin_input_text" style="width:250px;"'
+				));
+				$input .= $s_items_listbox;
 			}
 		}
 		return $input;
@@ -711,6 +749,82 @@ class CMS_object_email extends CMS_object_common
 	}
 	
 	/**
+	  * Get all selected recipients for the field
+	  * @return array of usersIds which are recipients of the notification
+	  * @access public
+	  */
+	private function _getRecipients($objectID) {
+		$params = $this->getParamsValues();
+		$recipients = array();
+		if (isset($params['usersGroupsField']) && $params['usersGroupsField']) {
+			//instanciate related item
+			$item = CMS_poly_object_catalog::getObjectByID($objectID,false,true);
+			if (!is_object($item) || $item->hasError()) {
+				return $recipients;
+			}
+			//does selected field represent users or groups ?
+			$field = new CMS_poly_object_field($params['usersGroupsField']);
+			$isGroup = $field->getParameter('isGroup');
+			//get item field value
+			$ids = $item->objectValues($params['usersGroupsField'])->getValue('ids');
+			if (!$ids) {
+				return array();
+			}
+			//get users ids
+			if ($isGroup) {
+				foreach ($ids as $groupId) {
+					$usersIds = CMS_profile_usersGroupsCatalog::getGroupUsers($groupId, false);
+					foreach ($usersIds as $userId) {
+						$recipients[$userId] = $userId;
+					}
+				}
+			} else {
+				$recipients = $ids;
+			}
+		} else {
+			//get all active users ids
+			$allUsers = CMS_profile_usersCatalog::getAll(true, false, false);
+			//check if user is in included or excluded parameters lists
+			$selectedGroups = ($params['disableGroups']) ? explode(';',$params['disableGroups']) : array();
+			$selectedUsers = ($params['disableUsers']) ? explode(';',$params['disableUsers']) : array();
+			//check all users to see if it match selection parameters
+			foreach ($allUsers as $userId) {
+				if($params['includeExclude']){
+					//user must be in selected groups or users to get email
+					$userSelected = false;
+					if (is_array($selectedGroups) && $selectedGroups) {
+						foreach($selectedGroups as $groupId){
+							if(CMS_profile_usersGroupsCatalog::userBelongsToGroup($userId, $groupId)){
+								$userSelected = true;
+							}
+						}
+					}
+					if (is_array($selectedUsers) && $selectedUsers && in_array($userId,$selectedUsers)) {
+						$userSelected = true;
+					}
+				} else {
+					//user must NOT be in selected groups or users to get email
+					$userSelected = true;
+					if (is_array($selectedGroups) && $selectedGroups) {
+						foreach($selectedGroups as $groupId){
+							if(CMS_profile_usersGroupsCatalog::userBelongsToGroup($userId, $groupId)){
+								$userSelected = false;
+							}
+						}
+					}
+					if (is_array($selectedUsers) && $selectedUsers && in_array($userId,$selectedUsers)) {
+						$userSelected = false;
+					}
+				}
+				if ($userSelected) {
+					$recipients[] = $userId;
+				}
+			}
+		}
+		return $recipients;
+	}
+	
+	/**
 	  * Module script task
 	  * @param array $parameters the task parameters
 	  *		task : string task to execute
@@ -725,8 +839,8 @@ class CMS_object_email extends CMS_object_common
 			case 'emailNotification':
 				@set_time_limit(300);
 				$module = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
-				//create a new script for all users
-				$allUsers = CMS_profile_usersCatalog::getAll(true, false, false);
+				//create a new script for all recipients
+				$allUsers = $this->_getRecipients($parameters['object']);
 				foreach ($allUsers as $userId) {
 					//add script to send email for user if needed
 					CMS_scriptsManager::addScript($module, array('task' => 'emailSend', 'user' => $userId, 'field' => $parameters['field'], 'object' => $parameters['object']));
@@ -750,45 +864,10 @@ class CMS_object_email extends CMS_object_common
 				}
 				//instanciate user
 				$cms_user = new CMS_profile_user($parameters['user']);
-				if (!$cms_user || $cms_user->hasError() || !sensitiveIO::isValidEmail($cms_user->getEmail())) {
+				//check user
+				if (!$cms_user || $cms_user->hasError() || !$cms_user->isActive()  || $cms_user->isDeleted() || !sensitiveIO::isValidEmail($cms_user->getEmail())) {
 					return false;
 				}
-				//check if user is in included or excluded parameters lists
-				$selectedGroups = ($params['disableGroups']) ? explode(';',$params['disableGroups']) : array();
-				$selectedUsers = ($params['disableUsers']) ? explode(';',$params['disableUsers']) : array();
-				if($params['includeExclude']){
-					//user must be in selected groups or users to get email
-					$userId = $cms_user->getUserId();
-					$userSelected = false;
-					if (is_array($selectedGroups) && $selectedGroups) {
-						foreach($selectedGroups as $groupId){
-							if(CMS_profile_usersGroupsCatalog::userBelongsToGroup($userId, $groupId)){
-								$userSelected = true;
-							}
-						}
-					}
-					if (is_array($selectedUsers) && $selectedUsers && in_array($userId,$selectedUsers)) {
-						$userSelected = true;
-					}
-				} else {
-					//user must NOT be in selected groups or users to get email
-					$userId = $cms_user->getUserId();
-					$userSelected = true;
-					if (is_array($selectedGroups) && $selectedGroups) {
-						foreach($selectedGroups as $groupId){
-							if(CMS_profile_usersGroupsCatalog::userBelongsToGroup($userId, $groupId)){
-								$userSelected = false;
-							}
-						}
-					}
-					if (is_array($selectedUsers) && $selectedUsers && in_array($userId,$selectedUsers)) {
-						$userSelected = false;
-					}
-				}
-				if (!$userSelected) {
-					return false;
-				}
-				
 				$cms_language = $cms_user->getLanguage();
 				//globalise cms_user and cms_language
 				$GLOBALS['cms_language'] = $cms_user->getLanguage();

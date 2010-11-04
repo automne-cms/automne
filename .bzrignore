@@ -12,8 +12,11 @@
 ./automne_modules_files/*/*/*.*
 ./automne_modules_files/*/*.*
 ./automne_modules_files/*
+./files/*/*/p*_*.*
+./files/*/*/r*_*.*
 ./web/*
 ./html/*
+./automne/html/*
 .DS_Store
 ._*
 ./utils

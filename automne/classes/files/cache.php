@@ -21,7 +21,7 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-class CMS_cache {
+class CMS_cache extends CMS_grandFather {
 	/**
 	  * The cache parameters
 	  * @var array
@@ -96,6 +96,9 @@ class CMS_cache {
 			'hashed_directory_level'	=> 1,
 		);
 		// getting a Zend_Cache_Core object
+		if (!class_exists('Zend_Cache')) {
+			die('not found ....');
+		}
 		try {
 			$this->_cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
 		} catch (Zend_Cache_Exception $e) {
