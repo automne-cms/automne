@@ -222,10 +222,10 @@ class CMS_image extends CMS_file
 					imagedestroy($dest);
 				break;
 			}
+			//chmod new file
+			CMS_file::chmodFile(FILES_CHMOD, $saveToPathFS);
 		}
 		
-		//chmod new file
-		CMS_file::chmodFile(FILES_CHMOD, $saveToPathFS);
 		//check for crop if needed
 		if ($keepRatio && $crop && ($newSizeX > $x || $newSizeY > $y)) {
 			$cropTop = $cropBottom = $cropLeft = $cropRight = 0;

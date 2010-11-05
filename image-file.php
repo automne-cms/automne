@@ -116,8 +116,13 @@ $sizeY = $image->getHeight();
 
 //set new file infos
 $pathInfo = pathinfo($imagepathFS);
-$newSizeX = $x ? $x : round(($y * $sizeX) / $sizeY);
-$newSizeY = $y ? $y : round(($x * $sizeY) / $sizeX);
+if ($x > $sizeX || $y > $sizeY) {
+	$newSizeX = $sizeX;
+	$newSizeY = $sizeY;
+} else {
+	$newSizeX = $x ? $x : round(($y * $sizeX) / $sizeY);
+	$newSizeY = $y ? $y : round(($x * $sizeY) / $sizeX);
+}
 $resizedImage = $pathInfo['filename'] .'-'. $newSizeX .'-'. $newSizeY .($crop ? '-c' : '').'.'. $pathInfo['extension'];
 
 //resized image path
