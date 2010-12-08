@@ -67,6 +67,10 @@ define("MESSAGE_PAGE_RESET_POLYMOD_CACHE_DESC", 1629);
 define("MESSAGE_PAGE_CACHE", 1630);
 define("MESSAGE_PAGE_AUTOMNE_UPDATES_DB", 1684);
 define("MESSAGE_PAGE_AUTOMNE_UPDATES_DB_DESC", 1685);
+define("MESSAGE_PAGE_RESET_ALL_CACHE_BUTTON", 1686);
+define("MESSAGE_PAGE_RESET_ALL_CACHE", 1687);
+define("MESSAGE_PAGE_RESET_ALL_CACHE_DESC", 1688);
+define("MESSAGE_PAGE_CACHE_MANAGEMENT", 1689);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -268,6 +272,10 @@ $filescontent = '
 	<div id="launchHtaccessCheck"></div><br />
 	<div id="htaccessCheckProgress"></div><br />
 	<div id="htaccessCheckDetail"></div>
+';
+$filescontent = sensitiveIO::sanitizeJSString($filescontent);
+//Cache tab
+$cachecontent = '
 <h1>'.$cms_language->getMessage(MESSAGE_PAGE_CACHE).'</h1>
 	<h2>'.$cms_language->getMessage(MESSAGE_PAGE_RESET_CACHE).'</h2>
 	'.$cms_language->getMessage(MESSAGE_PAGE_RESET_CACHE_DESC).'
@@ -276,9 +284,13 @@ $filescontent = '
 	<h2>'.$cms_language->getMessage(MESSAGE_PAGE_RESET_POLYMOD_CACHE).'</h2>
 	'.$cms_language->getMessage(MESSAGE_PAGE_RESET_POLYMOD_CACHE_DESC).'
 	<br /><br />
-	<div id="cachePolymodReset"></div>
+	<div id="cachePolymodReset"></div><br />
+	<h2>'.$cms_language->getMessage(MESSAGE_PAGE_RESET_ALL_CACHE).'</h2>
+	'.$cms_language->getMessage(MESSAGE_PAGE_RESET_ALL_CACHE_DESC).'
+	<br /><br />
+	<div id="cacheResetAll"></div>
 ';
-$filescontent = sensitiveIO::sanitizeJSString($filescontent);
+$cachecontent = sensitiveIO::sanitizeJSString($cachecontent);
 
 $pathAdmin = PATH_ADMIN_WR;
 $pathMain = PATH_MAIN_WR;
@@ -422,6 +434,24 @@ $jscontent = <<<END
 			});
 		},scope:this}
     });
+	var cacheResetAll = new Ext.Button({
+		id:				'cacheResetAll',
+		text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_RESET_ALL_CACHE_BUTTON)}',
+		listeners:		{'click':function(){
+			cacheResetAll.disable();
+	        Automne.server.call({
+				url:				'server-check.php',
+				params: 			{
+					action:				'cache-reset'
+				},
+				fcnCallback: 		function(response, options, content) {
+					cacheResetAll.enable();
+				},
+				callBackScope:		this
+			});
+		},scope:this}
+    });
+	
 	var filesCheckDetail = new Ext.form.FieldSet({
 		title:			'{$cms_language->getJsMessage(MESSAGE_PAGE_DETAIL)}',
 		collapsible:	true,
@@ -720,11 +750,23 @@ $jscontent = <<<END
 				if (!launchHtaccessCheck.rendered) {
 					launchHtaccessCheck.render('launchHtaccessCheck');
 				}
+			}, scope:this}
+		},{
+			id:					'serverCache',
+			title:				'{$cms_language->getJsMessage(MESSAGE_PAGE_CACHE_MANAGEMENT)}',
+			autoScroll:			true,
+			border:				false,
+			bodyStyle: 			'padding:5px',
+			html:				'$cachecontent',
+			listeners:			{'activate':function(){
 				if (!cacheReset.rendered) {
 					cacheReset.render('cacheReset');
 				}
 				if (!cachePolymodReset.rendered) {
 					cachePolymodReset.render('cachePolymodReset');
+				}
+				if (!cacheResetAll.rendered) {
+					cacheResetAll.render('cacheResetAll');
 				}
 			}, scope:this}
 		},{

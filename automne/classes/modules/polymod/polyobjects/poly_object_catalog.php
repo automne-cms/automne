@@ -891,6 +891,7 @@ class CMS_poly_object_catalog
 			$codename = 'all';
 		}
 		if (!isset($moduleReferences[$codename])) {
+			$moduleReferences[$codename] = array();
 			$sql = "select
 						id_mof, type_mof
 					from
