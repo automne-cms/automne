@@ -69,7 +69,7 @@ class SensitiveIO extends CMS_grandFather
 		if (is_string($filter)) {
 			if ($filter == '') { //no filter set, just return request value
 				return $value;
-			} elseif (is_callable($filter, true)) {//check if function/method name exists
+			} elseif (is_callable($filter, false)) {//check if function/method name exists. false to adress bug 1389
 				if (io::strpos($filter, '::') !== false) {//static method call
 					$method = explode('::', $filter);
 					return (call_user_func(array($method[0], $method[1]), $value) ? $value : $default);

@@ -50,7 +50,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 		Ext.apply(this, {
 			html:  			'<iframe id="' + this.id + 'Frame" width="100%" height="100%" frameborder="no"' + (!Ext.isIE ? ' class="x-hide-visibility"' : '') + ' src="' + Ext.SSL_SECURE_URL + '">&nbsp;</iframe>',
 			hideBorders:	true,
-			height:			'100%',
+			/*height:			'100%', removed : bug 1432*/
 			autoScroll:		true,
 			//only for edit frame panel
 			tbar:			!this.editable ? false : new Ext.Toolbar({

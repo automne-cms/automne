@@ -106,12 +106,11 @@
 	<!-- Replaced by all content for this page from standard module. -->
 	<atm-clientspace module="standard" id="center" />
 </div>
-<br /><br />
 <!--
 	Automne tag atm-print-link.
 	Replaced by a link to the printable page (which use the print.xml template).
 -->
-<atm-print-link keeprequest="true">&nbsp;<a href="{{href}}" target="_blank">Print</a></atm-print-link><br />
+<atm-print-link keeprequest="true">&nbsp;<a href="{{href}}" target="_blank">Print</a></atm-print-link>
 <!--
 	Automne tag atm-last-update.
 	Replaced by a the date of page last modification.

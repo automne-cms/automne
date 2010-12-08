@@ -1,14 +1,15 @@
 /*!
- * Ext JS Library 3.2.0
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
+ * Ext JS Library 3.3.1
+ * Copyright(c) 2006-2010 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
-/*
+﻿/*
  * France (France) translation
  * By Thylia
  * 09-11-2007, 02:22 PM
- * updated to 2.2 by disizben (22 Sep 2008)
+ * updated by disizben (22 Sep 2008)
+ * updated by Thylia (20 Apr 2010)
  */
 
 Ext.UpdateManager.defaults.indicatorText = '<div class="loading-indicator">En cours de chargement...</div>';
@@ -95,60 +96,67 @@ Date.getShortDayName = function(day) {
 Date.parseCodes.S.s = "(?:er)";
 
 Ext.override(Date, {
-	getSuffix : function() {
-		return (this.getDate() == 1) ? "er" : "";
-	}
+    getSuffix : function() {
+        return (this.getDate() == 1) ? "er" : "";
+    }
 });
 
 if(Ext.MessageBox){
-   Ext.MessageBox.buttonText = {
-      ok     : "OK",
-      cancel : "Annuler",
-      yes    : "Oui",
-      no     : "Non"
-   };
+    Ext.MessageBox.buttonText = {
+        ok     : "OK",
+        cancel : "Annuler",
+        yes    : "Oui",
+        no     : "Non"
+    };
 }
 
 if(Ext.util.Format){
-   Ext.util.Format.date = function(v, format){
-      if(!v) return "";
-      if(!(v instanceof Date)) v = new Date(Date.parse(v));
-      return v.dateFormat(format || "d/m/Y");
-   };
+    Ext.util.Format.date = function(v, format){
+        if(!v) return "";
+        if(!Ext.isDate(v)) v = new Date(Date.parse(v));
+        return v.dateFormat(format || "d/m/Y");
+    };
+    Ext.util.Format.plural = function(v, s, p) {
+        return v + ' ' + (v <= 1 ? s : (p ? p : s + 's'));
+    };
 }
 
 if(Ext.DatePicker){
-   Ext.apply(Ext.DatePicker.prototype, {
-      todayText         : "Aujourd'hui",
-      minText           : "Cette date est antérieure à la date minimum",
-      maxText           : "Cette date est postérieure à la date maximum",
-      disabledDaysText  : "",
-      disabledDatesText : "",
-      monthNames		: Date.monthNames,
-      dayNames			: Date.dayNames,
-      nextText          : 'Mois suivant (CTRL+Flèche droite)',
-      prevText          : "Mois précédent (CTRL+Flèche gauche)",
-      monthYearText     : "Choisissez un mois (CTRL+Flèche haut ou bas pour changer d'année.)",
-      todayTip          : "{0} (Barre d'espace)",
-      okText            : "&#160;OK&#160;",
-      cancelText        : "Annuler",
-      format            : "d/m/y",
-      startDay          : 1
-   });
+    Ext.apply(Ext.DatePicker.prototype, {
+        todayText         : "Aujourd'hui",
+        minText           : "Cette date est antérieure à la date minimum",
+        maxText           : "Cette date est postérieure à la date maximum",
+        disabledDaysText  : "",
+        disabledDatesText : "",
+        monthNames        : Date.monthNames,
+        dayNames          : Date.dayNames,
+        nextText          : 'Mois suivant (CTRL+Flèche droite)',
+        prevText          : "Mois précédent (CTRL+Flèche gauche)",
+        monthYearText     : "Choisissez un mois (CTRL+Flèche haut ou bas pour changer d'année.)",
+        todayTip          : "{0} (Barre d'espace)",
+        okText            : "&#160;OK&#160;",
+        cancelText        : "Annuler",
+        format            : "d/m/y",
+        startDay          : 1
+    });
 }
 
 if(Ext.PagingToolbar){
-   Ext.apply(Ext.PagingToolbar.prototype, {
-      beforePageText : "Page",
-      afterPageText  : "sur {0}",
-      firstText      : "Première page",
-      prevText       : "Page précédente",
-      nextText       : "Page suivante",
-      lastText       : "Dernière page",
-      refreshText    : "Actualiser la page",
-      displayMsg     : "Page courante {0} - {1} sur {2}",
-      emptyMsg       : 'Aucune donnée à afficher'
-   });
+    Ext.apply(Ext.PagingToolbar.prototype, {
+        beforePageText : "Page",
+        afterPageText  : "sur {0}",
+        firstText      : "Première page",
+        prevText       : "Page précédente",
+        nextText       : "Page suivante",
+        lastText       : "Dernière page",
+        refreshText    : "Actualiser la page",
+        displayMsg     : "Page courante {0} - {1} sur {2}",
+        emptyMsg       : 'Aucune donnée à afficher'
+    });
+}
+
+if(Ext.form.BasicForm){
+    Ext.form.BasicForm.prototype.waitTitle = "Veuillez patienter...";
 }
 
 if(Ext.form.Field){
@@ -156,13 +164,13 @@ if(Ext.form.Field){
 }
 
 if(Ext.form.TextField){
-   Ext.apply(Ext.form.TextField.prototype, {
-      minLengthText : "La longueur minimum de ce champ est de {0} caractères",
-      maxLengthText : "La longueur maximum de ce champ est de {0} caractères",
-      blankText     : "Ce champ est obligatoire",
-      regexText     : "",
-      emptyText     : null
-   });
+    Ext.apply(Ext.form.TextField.prototype, {
+        minLengthText : "La longueur minimum de ce champ est de {0} caractère(s)",
+        maxLengthText : "La longueur maximum de ce champ est de {0} caractère(s)",
+        blankText     : "Ce champ est obligatoire",
+        regexText     : "",
+        emptyText     : null
+    });
 }
 
 if(Ext.form.NumberField){
@@ -183,7 +191,8 @@ if(Ext.form.DateField){
       maxText           : "La date de ce champ ne peut être postérieure au {0}",
       invalidText       : "{0} n'est pas une date valide - elle doit être au format suivant: {1}",
       format            : "d/m/y",
-      altFormats        : "d/m/Y|d-m-y|d-m-Y|d/m|d-m|dm|dmy|dmY|d|Y-m-d"
+      altFormats        : "d/m/Y|d-m-y|d-m-Y|d/m|d-m|dm|dmy|dmY|d|Y-m-d",
+      startDay          : 1
    });
 }
 
@@ -298,11 +307,13 @@ if(Ext.grid.GroupingView){
 }
 
 if(Ext.grid.PropertyColumnModel){
-   Ext.apply(Ext.grid.PropertyColumnModel.prototype, {
-      nameText   : "Propriété",
-      valueText  : "Valeur",
-      dateFormat : "d/m/Y"
-   });
+    Ext.apply(Ext.grid.PropertyColumnModel.prototype, {
+        nameText   : "Propriété",
+        valueText  : "Valeur",
+        dateFormat : "d/m/Y",
+        trueText   : "vrai",
+        falseText  : "faux"
+    });
 }
 
 if(Ext.layout.BorderLayout && Ext.layout.BorderLayout.SplitRegion){
