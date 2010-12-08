@@ -15,8 +15,10 @@ Ext.override(Ext.Button, {
             }
             this.fireEvent("click", this, e);
             if(this.handler){
-                //this.el.removeClass("x-btn-over");
-                if (this.handler.call) {
+                if (this.el && this.el.removeClass) {
+					this.el.removeClass("x-btn-over");
+                }
+				if (this.handler.call) {
 					this.handler.call(this.scope || this, this, e);
 				} else {
 					eval(this.handler).call(this.scope || this, this, e);

@@ -573,8 +573,17 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 				}
 			}
 			if (jsFilesToAppend.length) {
-				var scriptEl = el.insertHtml('beforebegin','<script type="text/javascript" src="'+ jsFiles.manager +'&amp;files='+ jsFilesToAppend.toString() +'"></script>', true);
-				scriptEl.on('load', createRow, this);
+				if (Ext.isChrome) {
+					var body = document.getElementsByTagName('body')[0];
+					var script = document.createElement('script');
+					script.type = 'text/javascript';
+					script.onload = createRow.createDelegate(this);
+					script.src = jsFiles.manager +'&files='+ jsFilesToAppend.toString();
+					body.appendChild(script);
+				} else {
+					var scriptEl = el.insertHtml('beforebegin','<script type="text/javascript" src="'+ jsFiles.manager +'&amp;files='+ jsFilesToAppend.toString() +'"></script>', true);
+					scriptEl.on('load', createRow, this);
+				}
 			} else {
 				createRow.call(this);
 			}

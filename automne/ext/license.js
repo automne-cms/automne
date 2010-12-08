@@ -1,8 +1,9 @@
 //<<
 /*
- * Ext JS Library 3.2.0
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
+ * Ext JS - JavaScript Library
+ * Copyright (c) 2006-2010, Sencha Inc.
+ * All rights reserved.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
 //!>>

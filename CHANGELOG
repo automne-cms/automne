@@ -1,5 +1,5 @@
 V4.1.0 (in progress)
-[BUG] : Lots of minor bugs corrected (included bugs 1209, 1062, 522, 883, 539, 930, 535, 519, see http://www.automne.ws/bug/)
+[BUG] : Lots of minor bugs corrected (included bugs 1410, 1432, 1389, 1380, 1362, 1315, 1243, 1209, 1062, 522, 883, 539, 930, 535, 519, see http://www.automne.ws/bug/)
 [REFACTOR] : Change max execution time for scripts. Set to 10 minutes by default
 [REFACTOR] : Change polymod search to add one by one result return. Use POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS search method with getNextResult method. This greatly improves the memory management.
 [REFACTOR] : Manage alpha transparency on PNG and GIF images during image resizing
@@ -10,6 +10,7 @@ V4.1.0 (in progress)
 [REFACTOR] : Move /html to /automne/html
 [REFACTOR] : Use CMS_cache to store Backtraces, Stats and Polymod structures instead of user session
 [REFACTOR] : Add default attribute to text and varchar blocks (standard module) to specifie a specific text instead of the default "Lorem Ipsum" text
+[REFACTOR] : Update ExtJS to version 3.3.1
 [FEATURE] : Add Google coordinates field for Polymod
 [FEATURE] : Add vhost subfolder support for Automne installation
 [FEATURE] : Add import/export of polymod modules structures

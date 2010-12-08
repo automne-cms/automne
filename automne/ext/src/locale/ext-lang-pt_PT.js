@@ -1,8 +1,8 @@
 /*!
- * Ext JS Library 3.2.0
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
+ * Ext JS Library 3.3.1
+ * Copyright(c) 2006-2010 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
 ﻿/**
  * Portuguese/Portugal (pt_PT) Translation
@@ -161,7 +161,8 @@ if(Ext.form.DateField){
     maxText           : "A data deste campo deve ser anterior a {0}",
     invalidText       : "{0} n&atilde;o &eacute; uma data v&aacute;lida - deve estar no seguinte formato{1}",
     format            : "y/m/d",
-    altFormats        : "m/d/Y|m-d-y|m-d-Y|m/d|m-d|md|mdy|mdY|d|Y-m-d"
+    altFormats        : "m/d/Y|m-d-y|m-d-Y|m/d|m-d|md|mdy|mdY|d|Y-m-d",
+    startDay          : 0
   });
 }
 
@@ -191,12 +192,12 @@ if(Ext.form.HtmlEditor){
         cls: 'x-html-editor-tip'
       },
       italic : {
-        title: 'Italico (Ctrl+I)',
-        text: 'Transforma o texto em italico.',
+        title: 'It&aacute;lico (Ctrl+I)',
+        text: 'Transforma o texto em it&aacute;lico.',
         cls: 'x-html-editor-tip'
       },
       underline : {
-        title: 'SUblinhar (Ctrl+U)',
+        title: 'Sublinhar (Ctrl+U)',
         text: 'Sublinha o texto.',
         cls: 'x-html-editor-tip'
       },

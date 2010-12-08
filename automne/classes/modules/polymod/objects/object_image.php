@@ -190,7 +190,7 @@ class CMS_object_image extends CMS_object_common
 	  * @var array()
 	  * @access private
 	  */
-	protected $_allowedExtensions = array("gif","jpg","png");
+	protected $_allowedExtensions = array("gif","jpg","jpeg","png");
 
 	/**
 	  * Constructor.
@@ -352,7 +352,7 @@ class CMS_object_image extends CMS_object_common
 		}
 		$return['items'][1]['uploadCfg']	= array(
 			'file_size_limit'					=> $maxFileSize,
-			'file_types'						=> '*.jpg;*.png;*.gif',
+			'file_types'						=> '*.jpg;*.jpeg;*.png;*.gif',
 			'file_types_description'			=> $language->getMessage(self::MESSAGE_OBJECT_IMAGE_FIELD_THUMBNAIL, false, MOD_POLYMOD_CODENAME).' ...'
 		);
 		$return['items'][1]['fileinfos']	= $imageDatas;
@@ -388,7 +388,7 @@ class CMS_object_image extends CMS_object_common
 			$return['items'][2]['fieldLabel']	= $language->getMessage(self::MESSAGE_OBJECT_IMAGE_FIELD_ZOOM, false, MOD_POLYMOD_CODENAME);
 			$return['items'][2]['uploadCfg']	= array(
 				'file_size_limit'					=> $maxFileSize,
-				'file_types'						=> '*.jpg;*.png;*.gif',
+				'file_types'						=> '*.jpg;*.jpeg;*.png;*.gif',
 				'file_types_description'			=> $language->getMessage(self::MESSAGE_OBJECT_IMAGE_FIELD_THUMBNAIL, false, MOD_POLYMOD_CODENAME).' ...'
 			);
 			$return['items'][2]['fileinfos']	= $zoomDatas;
@@ -1125,13 +1125,14 @@ class CMS_object_image extends CMS_object_common
 				$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
 
 				//link content
+				$img = '';
 				if ($parameters) {
 					$img = $parameters;
-				} else {
+				} elseif($this->_subfieldValues[0]->getValue()) { //bug 1380
 					$img = '<img src="'.PATH_MODULES_FILES_WR.'/'.$moduleCodename.'/'.$location.'/'.$this->_subfieldValues[0]->getValue().'" alt="'.$this->_subfieldValues[1]->getValue().'" title="'.$this->_subfieldValues[1]->getValue().'" />';
 				}
 				//add link to zoom if any
-				if ($this->_subfieldValues[2]->getValue()) {
+				if ($img && $this->_subfieldValues[2]->getValue()) {
 					$href = CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR . "/" . self::OBJECT_IMAGE_POPUP_FILE . '?'.(($location != RESOURCE_DATA_LOCATION_PUBLIC) ? 'location='.RESOURCE_DATA_LOCATION_EDITED.'&amp;':'').'file=' . $this->_subfieldValues[2]->getValue() . '&amp;label=' . urlencode($this->_subfieldValues[1]->getValue()).'&amp;module='.$moduleCodename;
 					$popup = (OPEN_ZOOMIMAGE_IN_POPUP) ? ' onclick="javascript:CMS_openPopUpImage(\''.addslashes($href).'\');return false;"':'';
 					$img = '<a target="_blank" href="'. $href . '"'.$popup.' title="'.$this->_subfieldValues[1]->getValue().'">' . $img . '</a>';
