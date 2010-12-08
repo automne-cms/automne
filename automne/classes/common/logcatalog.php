@@ -310,8 +310,7 @@ class CMS_log_catalog extends CMS_grandFather
 	  */
 	function getAllActions($cms_language) {
 		$modulesActions = CMS_log_catalog::getModulesActions($cms_language);
-		return array_merge($modulesActions, 
-				array(	CMS_log::MESSAGE_LOG_ACTION_RESOURCE_EDIT_BASEDATA		=> CMS_log::LOG_ACTION_RESOURCE_EDIT_BASEDATA,
+		$defaultActions = array(	CMS_log::MESSAGE_LOG_ACTION_RESOURCE_EDIT_BASEDATA		=> CMS_log::LOG_ACTION_RESOURCE_EDIT_BASEDATA,
 						CMS_log::MESSAGE_LOG_ACTION_RESOURCE_EDIT_CONTENT		=> CMS_log::LOG_ACTION_RESOURCE_EDIT_CONTENT,
 						CMS_log::MESSAGE_LOG_ACTION_RESOURCE_EDIT_SIBLINGSORDER	=> CMS_log::LOG_ACTION_RESOURCE_EDIT_SIBLINGSORDER,
 						CMS_log::MESSAGE_LOG_ACTION_RESOURCE_EDIT_MOVE			=> CMS_log::LOG_ACTION_RESOURCE_EDIT_MOVE,
@@ -342,7 +341,8 @@ class CMS_log_catalog extends CMS_grandFather
 						CMS_log::MESSAGE_LOG_ACTION_SEND_EMAIL					=> CMS_log::LOG_ACTION_SEND_EMAIL,
 						CMS_log::MESSAGE_LOG_ACTION_LOGIN						=> CMS_log::LOG_ACTION_LOGIN,
 						CMS_log::MESSAGE_LOG_ACTION_AUTO_LOGIN					=> CMS_log::LOG_ACTION_AUTO_LOGIN
-		));
+		);
+		return $modulesActions ? array_merge($modulesActions, $defaultActions) : $defaultActions;
 	}
 }
 ?>

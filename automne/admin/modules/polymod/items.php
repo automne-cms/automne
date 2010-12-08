@@ -555,17 +555,20 @@ $jscontent = <<<END
 		fields:			['id', 'status', 'pubrange', 'label', 'description', 'locked', 'deleted', 'previz', 'edit'],
 		listeners:		{
 			'load': 		{fn:function(store, records, options){
+				var resultsPanel = Ext.getCmp('{$winId}resultsPanel');
 				//Update results title
-				if (store.getTotalCount()) {
-					var start = (options.params && options.params.start) ? options.params.start : 0;
-					if (store.getTotalCount() < (start + {$recordsPerPage})) {
-						var resultCount = store.getTotalCount();
+				if (resultsPanel) {
+					if (store.getTotalCount()) {
+						var start = (options.params && options.params.start) ? options.params.start : 0;
+						if (store.getTotalCount() < (start + {$recordsPerPage})) {
+							var resultCount = store.getTotalCount();
+						} else {
+							var resultCount = start + {$recordsPerPage};
+						}
+						resultsPanel.setTitle(String.format('{$cms_language->getJSMessage(MESSAGE_PAGE_RESULTS_COUNT, array($object->getLabel($cms_language)), MOD_POLYMOD_CODENAME)}', resultCount, store.getTotalCount()));
 					} else {
-						var resultCount = start + {$recordsPerPage};
+						resultsPanel.setTitle('{$cms_language->getJSMessage(MESSAGE_PAGE_NORESULTS, false, MOD_POLYMOD_CODENAME)}');
 					}
-					resultsPanel.setTitle(String.format('{$cms_language->getJSMessage(MESSAGE_PAGE_RESULTS_COUNT, array($object->getLabel($cms_language)), MOD_POLYMOD_CODENAME)}', resultCount, store.getTotalCount()));
-				} else {
-					resultsPanel.setTitle('{$cms_language->getJSMessage(MESSAGE_PAGE_NORESULTS, false, MOD_POLYMOD_CODENAME)}');
 				}
 				if ({$isPrimary}) {
 					moduleObjectWindow.resetResources();
@@ -599,6 +602,7 @@ $jscontent = <<<END
 	resultTpl.compile();
 	
 	var resultsPanel = new Ext.ux.LiveDataPanel({
+		id:					'{$winId}resultsPanel',
 		title: 				'{$cms_language->getJSMessage(MESSAGE_PAGE_RESULTS, false, MOD_POLYMOD_CODENAME)}',
 		cls:				'atm-results',
 		collapsible:		false,

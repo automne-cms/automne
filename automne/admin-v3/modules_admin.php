@@ -71,6 +71,8 @@ define("MESSAGE_PAGE_LABEL", 814);
 define("MESSAGE_PAGE_FIELD_NONE", 10);
 define("MESSAGE_PAGE_ACTION_PARAMETERS", 807);
 define("MESSAGE_PAGE_ACTION_MODULE_PARAMETERS", 808);
+define("MESSAGE_PAGE_ACTION_IMPORT", 1649);
+define("MESSAGE_PAGE_ACTION_EXPORT", 1672);
 
 //checks rights
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
@@ -158,7 +160,7 @@ if (!sizeof($modules)) {
 			$content .= '
 			<form action="import.php" method="get">
 				<td>
-					<input type="submit" class="admin_input_submit" value="Importer" />
+					<input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_IMPORT).'" />
 				</td>
 			</form>';
 		}
@@ -182,7 +184,7 @@ if (!sizeof($modules)) {
 				<form action="export.php" method="get">
 					<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
 					<td>
-						<input type="submit" class="admin_input_submit" value="Exporter" />
+						<input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_EXPORT).'" />
 					</td>
 				</form>';
 			}
