@@ -1,91 +1,65 @@
 <row>
 	<block module="standard" type="varchar" id="titre">
 		<?php 
-		$frontend = (strpos($_SERVER["SCRIPT_NAME"], 'automne/admin') === false) ? true : false;
-		/////////////////////////////////////////////////
-		//              Googlemaps settings            //
-		/////////////////////////////////////////////////
-		// To qualify for service Google Maps you have to got a valid Google key on the following website :
-		// http://code.google.com/apis/maps/signup.html
-		// Then you have to copy this key in the config.php file (located at the root of your website) add the following line :
-		// define("GOOGLE_MAPS_KEY", "INSERT_GOOGLE_KEY_HERE");
-		// And insert your key between the quotes.
-		
-		// Zoom value :
-		$zoom = 12;
-		// View type (SATELLITE/NORMAL/HYBRID) :
-		$vue = "HYBRID";
-
-		$address = <<<END
-		{{data}}
+			/////////////////////////////////////////////////
+			//				Googlemaps settings			   //
+			/////////////////////////////////////////////////
+			// Zoom value (0~23) :
+			$zoom = 12;
+			// View type (HYBRID/ROADMAP/SATELLITE/TERRAIN/) :
+			$vue = "ROADMAP";
+			
+			$address = <<<END
+				{{data}}
 END;
-		if (defined('GOOGLE_MAPS_KEY') && GOOGLE_MAPS_KEY) {
 			$mapId = 'map-'.md5(rand());
 			if (isset($cms_language)) {
 				switch($cms_language->getCode()){
 					case 'en':
 						$msg = 'Please enter in this block an address to display.';
-					break;
+						break;
 					default:
 						$msg = 'Saisissez dans ce bloc une adresse &agrave; afficher.';
-					break;
+						break;
 				}
 			} else {
 				$msg = '';
 			}
 			echo '<p id="'.$mapId.'" class="atm-google-map">Google Map : '.($address && strpos($address, 'Lorem') === false ? $address : $msg).'</p>';
+			$frontend = (strpos($_SERVER["SCRIPT_NAME"], 'automne/admin') === false) ? true : false;
 			if ($frontend) {
-			    echo '
-				<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key='.GOOGLE_MAPS_KEY.'" type="text/javascript"></script>
-				<script type="text/javascript">
-			    (function(){
-					var div = document.getElementById("'.$mapId.'");
-					if (div && typeof GMap2 != \'undefined\') {
-						var map = new GMap2(div);
-						map.addControl(new GSmallMapControl());
-					    var geocoder = new GClientGeocoder();
-						geocoder.getLatLng(
-							\''.sensitiveIO::sanitizeJSString($address,"'").'\',
-							function(point) {
-								if (point) {
-									map.setCenter(point, '.$zoom.');
-									map.setMapType(G_'.$vue.'_MAP);
-									var marker = new GMarker(point);
-									map.addOverlay(marker);
-									GEvent.addListener(marker, "click", function() {
-										marker.openInfoWindowHtml(\'<div style="width: 210px; padding-right: 10px">'.sensitiveIO::sanitizeJSString($address,"'").'<\/div>\');
+				echo '
+					<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+					<script type="text/javascript">
+					<!--
+					(function(){
+						var div = document.getElementById("'.$mapId.'");
+						if (div) {
+							var mapOptions = {
+								zoom: ' . $zoom . ',
+								mapTypeId: google.maps.MapTypeId.' . $vue . '
+							};
+							var map = new google.maps.Map(div, mapOptions);
+							var geocoder = new google.maps.Geocoder();
+							var infowindow = new google.maps.InfoWindow();
+							geocoder.geocode({"address":"'.sensitiveIO::sanitizeJSString($address,"'").'"}, function(results, status) {
+								if (status == google.maps.GeocoderStatus.OK) {
+									map.setCenter(results[0].geometry.location);
+									var marker = new google.maps.Marker({
+										map: map, 
+										position: results[0].geometry.location
+									});
+									google.maps.event.addListener(marker, "click", function() {
+										infowindow.setContent(\'<div style="width: 210px; padding-right: 10px">'.sensitiveIO::sanitizeJSString($address,"'").'<\/div>\');
+										infowindow.open(map, marker);
 									});
 								}
-							}
-						);
-					}
-				})();
-				</script>
+							});
+						}
+					})();
+					</script>
 				';
 			}
-		} elseif(!$frontend && isset($cms_language)) {
-			switch($cms_language->getCode()){
-				case 'en':
-					echo "
-					<p>
-						To qualify for service Google Maps you have to got a valid Google key on
-						<a href='http://code.google.com/apis/maps/signup.html'>the following website</a>.
-						<br/>Then you have to copy this key in the config.php file (located at the root of your website) add the following line :
-						<pre>define(\"GOOGLE_MAPS_KEY\", \"INSERT_GOOGLE_KEY_HERE\");</pre>
-						And insert your key between the quotes.
-					</p>";
-				break;
-				default:
-					echo "
-					<p>
-						Pour utiliser le service Google Maps vous devez r&eacute;cup&eacute;rer une cl&eacute; Google valide sur <a href='http://code.google.com/apis/maps/signup.html'>ce site</a>.
-						<br/>Ensuite, &eacute;crivez la ligne ci-dessous dans le fichier config.php (situ&eacute; &agrave; la racine de votre site) :
-						<pre>define(\"GOOGLE_MAPS_KEY\", \"INSERT_GOOGLE_KEY_HERE\");</pre>
-						Ins&eacute;rez votre cl&eacute; entre les apostrophes.
-					</p>";
-				break;
-			}
-		}
-		?>
+			?>
 	</block>
 </row>
