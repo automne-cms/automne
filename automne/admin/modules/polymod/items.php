@@ -125,8 +125,6 @@ foreach ($objectFields as $fieldID => $field) {
 		//check if field has a method to provide a list of names
 		$objectType = $field->getTypeObject();
 		if (method_exists($objectType, 'getListOfNamesForObject')) {
-			$objectsNames = $objectType->getListOfNamesForObject();
-			
 			$fieldLabel = sensitiveIO::sanitizeJSString($field->getLabel($cms_language));
 			$value = $_SESSION["cms_context"]->getSessionVar('items_'.$object->getID().'_'.$fieldID);
 			$searchLists .= "{

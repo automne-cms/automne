@@ -111,6 +111,12 @@ class CMS_polymod extends CMS_modulePolymodValidation
 				if (is_array($pluginsIDs) && $pluginsIDs) {
 					$return["span"] = array("selfClosed" => false, "parameters" => array('id' => 'polymod-('.implode('|',$pluginsIDs).')-(.*)'));
 				}
+				$return["atm-if"] 			= array("selfClosed" => false,	"parameters" => array(), 'class' => 'CMS_XMLTag_if');
+				$return["atm-else"] 		= array("selfClosed" => false,	"parameters" => array(), 'class' => 'CMS_XMLTag_else');
+				$return["atm-start-tag"] 	= array("selfClosed" => true,	"parameters" => array(), 'class' => 'CMS_XMLTag_start');
+				$return["atm-end-tag"] 		= array("selfClosed" => true,	"parameters" => array(), 'class' => 'CMS_XMLTag_end');
+				$return["atm-setvar"] 		= array("selfClosed" => true,	"parameters" => array(), 'class' => 'CMS_XMLTag_setvar');
+				
 			break;
 			case MODULE_TREATMENT_WYSIWYG_OUTER_TAGS :
 			case MODULE_TREATMENT_WYSIWYG_INNER_TAGS :
@@ -689,6 +695,11 @@ class CMS_polymod extends CMS_modulePolymodValidation
 				'cms_poly_rss_definitions' 			=> PATH_MODULES_FS.'/polymod/poly_rss_definition.php',
 				'cms_block_polymod' 				=> PATH_MODULES_FS.'/polymod/block.php',
 				'cms_poly_definition_functions' 	=> PATH_MODULES_FS.'/polymod/poly_definition_functions.php',
+				'cms_xmltag_if' 					=> PATH_MODULES_FS.'/polymod/tags/if.php',
+				'cms_xmltag_else' 					=> PATH_MODULES_FS.'/polymod/tags/else.php',
+				'cms_xmltag_start' 					=> PATH_MODULES_FS.'/polymod/tags/start.php',
+				'cms_xmltag_end' 					=> PATH_MODULES_FS.'/polymod/tags/end.php',
+				'cms_xmltag_setvar' 				=> PATH_MODULES_FS.'/polymod/tags/setvar.php',
 			);
 		}
 		$file = '';
