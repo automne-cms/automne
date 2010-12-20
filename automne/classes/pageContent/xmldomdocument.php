@@ -56,7 +56,7 @@ class CMS_DOMDocument extends DOMDocument {
 		return $return;
 	}
 	
-	function XmlError($errno, $errstr, $errfile, $errline) {
+	static function XmlError($errno, $errstr, $errfile, $errline) {
 		if ($errno==E_WARNING && (substr_count($errstr,"DOMDocument::loadXML()")>0)) {
 			$error = str_replace('[<a href=\'domdocument.loadxml\'>domdocument.loadxml</a>]', '', $errstr);
 			CMS_grandFather::raiseError($error);
@@ -65,7 +65,7 @@ class CMS_DOMDocument extends DOMDocument {
 		}
 	}
 	
-	public function DOMElementToString($domelement, $contentOnly = false) {
+	public static function DOMElementToString($domelement, $contentOnly = false) {
 		if (!is_a($domelement, "DOMElement")) {
 			CMS_grandFather::raiseError('Domelement is not a DOMElement instance');
 			return false;

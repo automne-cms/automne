@@ -212,7 +212,7 @@ class CMS_linxCondition extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function createCondition($tag) {
+	static function createCondition($tag) {
 		if (!is_a($tag, "DOMElement")) {
 			CMS_grandFather::raiseError('Tag is not a DOMElement instance');
 			return false;

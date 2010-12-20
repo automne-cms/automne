@@ -38,7 +38,7 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 	  * @return CMS_pageTemplate or false on failure to find it
 	  * @access public
 	  */
-	function getByID($id)
+	static function getByID($id)
 	{
 		$pageTemplate = new CMS_pageTemplate($id);
 		if ($pageTemplate->hasError()) {
@@ -56,7 +56,7 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 	  * @return array(CMS_pageTemplate)
 	  * @access public
 	  */
-	function getAll($includeInactive = false, $keyword = '', $groups = array(), $website = '', $tplIds = array(), $user = false, $start = 0, $limit = 0, $returnObjects = true, &$score = array()) {
+	static function getAll($includeInactive = false, $keyword = '', $groups = array(), $website = '', $tplIds = array(), $user = false, $start = 0, $limit = 0, $returnObjects = true, &$score = array()) {
 		$where = 'private_pt=0';
 		$select = 'id_pt';
 		//keywords
@@ -183,7 +183,7 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 	  * @return array(CMS_profile_user)
 	  * @access public
 	  */
-	function getByGroup($group)
+	static function getByGroup($group)
 	{
 		//Hard to shape SQL for that, must instanciate all templates
 		$all_templates = CMS_pageTemplatesCatalog::getAll();
@@ -204,7 +204,7 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 	  * @return array(string)
 	  * @access public
 	  */
-	function getAllGroups($returnStack = false)
+	static function getAllGroups($returnStack = false)
 	{
 		static $templateGroups;
 		if (!isset($templateGroups)) {
@@ -256,7 +256,7 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 	  * @param integer $tplFrom the original template ID to get good rows
 	  * @return a valid new CMS_pageTemplate
 	  */
-	function getCloneFromID($templateID = 0, $label = false, $setPrivate = false, $dontCopyClientSpaces = false, $tplFrom = false)
+	static function getCloneFromID($templateID = 0, $label = false, $setPrivate = false, $dontCopyClientSpaces = false, $tplFrom = false)
 	{
 		$ret = false ;
 		$model = new CMS_pageTemplate($templateID);
@@ -384,7 +384,7 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 	  * @return integer : the template ID or false if none founded
 	  * @access public
 	  */
-	function getTemplateIDForCloneID($cloneID) {
+	static function getTemplateIDForCloneID($cloneID) {
 		$sql = "
 			select
 				definitionFile_pt
@@ -424,7 +424,7 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 	  * @return array : pages IDs or pages objects
 	  * @access public
 	  */
-	function getPagesByTemplate($template, $returnObjects = false) {
+	static function getPagesByTemplate($template, $returnObjects = false) {
 		$return = array();
 		$error = false;
 		if(SensitiveIO::isPositiveInteger($template)){
@@ -476,7 +476,7 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 	  * @return array : templates replacements array('match' => array(CMS_pageTemplate), 'nomatch' => array(CMS_pageTemplate));
 	  * @access public
 	  */
-	function getTemplatesReplacement($tplFrom, $user, $pageId = false) {
+	static function getTemplatesReplacement($tplFrom, $user, $pageId = false) {
 		if (!is_a($tplFrom, "CMS_pageTemplate")) {
 			CMS_grandFather::raiseError('Template must be a valid CMS_pageTemplate object');
 			return array('match' => array(), 'nomatch' => array());

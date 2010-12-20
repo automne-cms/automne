@@ -82,7 +82,6 @@ class CMS_grandFather
 				'summary'		=> sensitiveIO::printBackTrace($bt),
 				'backtrace'		=> @print_r($bt,true),
 			);
-			unset($bt);
 			$backtraceName = 'bt_'.md5(rand());
 			$backTraceLink = PATH_REALROOT_WR.'/automne/admin/backtrace.php?bt='.$backtraceName;
 			//save backtrace to cache (for 10 min)
@@ -90,7 +89,7 @@ class CMS_grandFather
 			if ($cache) {
 				$cache->save($backtrace);
 			}
-			unset($backtrace);
+			unset($backtrace, $cache, $bt);
 			//append error to current view
 			$view = CMS_view::getInstance();
 			$outputMessage = $encodeOutput ? io::htmlspecialchars($errorMessage) : $errorMessage;
@@ -99,7 +98,7 @@ class CMS_grandFather
 		
 		//second condition are for static calls (made by static methods)
 		if (!isset($this) || !isset($this->_log) || $this->_log) {
-			if (@file_put_contents(PATH_MAIN_FS.'/'.self::ERROR_LOG , date("Y-m-d H:i:s", mktime()).'|'.APPLICATION_EXEC_TYPE.'|'.$errorMessage."\n", FILE_APPEND) !== false) {
+			if (@file_put_contents(PATH_MAIN_FS.'/'.self::ERROR_LOG , date("Y-m-d H:i:s", time()).'|'.APPLICATION_EXEC_TYPE.'|'.$errorMessage."\n", FILE_APPEND) !== false) {
 				CMS_file::chmodFile(FILES_CHMOD, PATH_MAIN_FS.'/'.self::ERROR_LOG);
 			} else {
 				die('<pre><b>'.CMS_view::SYSTEM_LABEL.' '.AUTOMNE_VERSION.' error : /automne dir is not writable'."</b></pre>\n");
@@ -196,7 +195,7 @@ class CMS_grandFather
 							E_STRICT			=> 'Runtime Notice',
 							E_RECOVERABLE_ERROR	=> 'Catchable Fatal Error'
 						);
-		$errorLabel = isset($errortype[$errno]) ? $errortype[$errno] : 'Errror '.$errno;
+		$errorLabel = isset($errortype[$errno]) ? $errortype[$errno] : 'Error '.$errno;
 		CMS_grandFather::_raiseError('PHP '.$errorLabel.' : '.$errstr.' line '.$errline.' of file '.$errfile);
 		return true;
 	}
@@ -307,7 +306,14 @@ class CMS_grandFather
 				'cms_block_varchar' 				=> PATH_MODULES_FS.'/standard/blockvarchar.php',
 				'cms_moduleclientspace_standard' 	=> PATH_MODULES_FS.'/standard/clientspace.php',
 				'cms_moduleclientspace_standard_catalog' => PATH_MODULES_FS.'/standard/clientspacescatalog.php',
-
+				'cms_xmltag_admin' 					=> PATH_MODULES_FS.'/standard/tags/admin.php',
+				'cms_xmltag_noadmin' 				=> PATH_MODULES_FS.'/standard/tags/noadmin.php',
+				'cms_xmltag_edit' 					=> PATH_MODULES_FS.'/standard/tags/edit.php',
+				'cms_xmltag_noedit' 				=> PATH_MODULES_FS.'/standard/tags/noedit.php',
+				'cms_xmltag_title' 					=> PATH_MODULES_FS.'/standard/tags/title.php',
+				'cms_xmltag_page' 					=> PATH_MODULES_FS.'/standard/tags/page.php',
+				'cms_xmltag_website' 				=> PATH_MODULES_FS.'/standard/tags/website.php',
+				
 				//pageContent
 				'cms_linxescatalog' 				=> PATH_PACKAGES_FS.'/pageContent/linxescatalog.php',
 				'cms_xml2array' 					=> PATH_PACKAGES_FS.'/pageContent/xml2Array.php',

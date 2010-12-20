@@ -42,7 +42,7 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 }
 
 $module = CMS_modulesCatalog::getByCodename($_GET["module"]);
-if (!is_a($module, "CMS_module")) {
+if (!($module instanceof CMS_module)) {
 	header("Location :".PATH_ADMIN_SPECIAL_ENTRY_WR."?cms_message_id=".MESSAGE_PAGE_MODULE_UNKNOWN."&".session_name()."=".session_id());
 	exit;
 }

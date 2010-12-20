@@ -38,8 +38,8 @@ class CMS_XMLTag_start extends CMS_XMLTag
 	  * @return void
 	  * @access public
 	  */
-	function __construct($name, $attributes, $parameters) {
-		parent::__construct($name, $attributes, $parameters);
+	function __construct($name, $attributes, $children, $parameters) {
+		parent::__construct($name, $attributes, $children, $parameters);
 		//check tags requirements
 		if (!$this->checkTagRequirements(array(
 				'tag' => 'alphanum', 
@@ -58,10 +58,10 @@ class CMS_XMLTag_start extends CMS_XMLTag
 		$attributes = '';
 		foreach ($this->_attributes as $attribute => $value) {
 			if ($attribute != 'tag') {
-				$attributes .= ' '.$attribute.'=\"'.$value.'\"';
+				$attributes .= ' '.$attribute.'=\"'.$this->replaceVars($value).'\"';
 			}
 		}
-		return '$content .= "<'.$this->_attributes["tag"].$attributes.'>";';
+		return '$content .= "<'.$this->replaceVars($this->_attributes['tag']).$attributes.'>";';
 	}
 }
 ?>

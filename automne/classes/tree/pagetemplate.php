@@ -673,7 +673,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  */
 	function getContent(&$language, &$page, $visualizationMode)
 	{
-		if (!is_a($page, "CMS_page") || !SensitiveIO::isInSet($visualizationMode, CMS_page::getAllvisualizationModes())) {
+		if (!($page instanceof CMS_page) || !SensitiveIO::isInSet($visualizationMode, CMS_page::getAllvisualizationModes())) {
 			$this->raiseError("Page must be a CMS_page and visualization mode in the possibles");
 			return false;
 		}

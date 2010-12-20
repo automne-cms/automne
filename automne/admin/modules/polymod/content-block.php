@@ -276,7 +276,8 @@ if (sizeof($blockParamsDefinition['search'])) {
 								$objectType = $field->getTypeObject();
 								if (method_exists($objectType, 'getListOfNamesForObject')) {
 									//check if we can associate unused objects
-									if (method_exists($objectType, 'getParamsValues') && $params = $objectType->getParamsValues() && isset($params['associateUnused'])) {
+									$params = $objectType->getParamsValues();
+									if (method_exists($objectType, 'getParamsValues') && isset($params['associateUnused']) && $params['associateUnused']) {
 										$objectsNames = $objectType->getListOfNamesForObject(true, array(), false);
 									} else {
 										$objectsNames = $objectType->getListOfNamesForObject(true);

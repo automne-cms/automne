@@ -109,7 +109,7 @@ class CMS_context extends CMS_grandFather
 			$auth = new CMS_ldap_auth(APPLICATION_LDAP_DEFAULT_GROUP);
 			if ($auth->authenticate($login, $password)) {
 				$user = $auth->getUser();
-				if (is_a($user, 'CMS_profile_user')) {
+				if ($user instanceof CMS_profile_user) {
 			 		$this->_startSession($user, $permanent_cookie);
 				} else {
 					$this->raiseError("Invalid profile returned by authentification");
@@ -165,7 +165,7 @@ class CMS_context extends CMS_grandFather
 	  */
 	protected function _startSession($user, $permanent_cookie)
 	{
-		if (is_a($user, "CMS_profile_user")) {
+		if ($user instanceof CMS_profile_user) {
 			$this->_userID = $user->getUserId();
 			$sql = "
 			select 
@@ -325,7 +325,7 @@ class CMS_context extends CMS_grandFather
 	  */
 	function setPage(&$page)
 	{
-		if (is_a($page,"CMS_page")) {
+		if ($page instanceof CMS_page) {
 			$this->_pageID = $page->getID();
 		} else {	
 			$this->raiseError("Incorrect Page type");
@@ -366,7 +366,7 @@ class CMS_context extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setSessionVar($name, $value)
+	static function setSessionVar($name, $value)
 	{
 		$_SESSION[$name] = $value ;
 		return $value;
@@ -379,7 +379,7 @@ class CMS_context extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function getSessionVar($name)
+	static function getSessionVar($name)
 	{
 		return isset($_SESSION[$name]) ? $_SESSION[$name] : null;
 	}
@@ -526,7 +526,7 @@ class CMS_context extends CMS_grandFather
 			//check the page in session. If invalid (or outside userspace), remove
 			if ($this->_pageID && class_exists('CMS_tree') && class_exists('CMS_page')) {
 				$pg = CMS_tree::getPageByID($this->_pageID);
-				if (!is_a($pg, "CMS_page") || $pg->getLocation() != RESOURCE_LOCATION_USERSPACE) {
+				if (!($pg instanceof CMS_page) || $pg->getLocation() != RESOURCE_LOCATION_USERSPACE) {
 					$this->_pageID = false;
 				}
 			}
@@ -592,14 +592,14 @@ class CMS_context extends CMS_grandFather
 	static function autoLoginSucceeded() {
 		if (isset($_COOKIE[CMS_context::getAutoLoginCookieName()])) {
 			//CMS_grandFather::log('autoLoginSucceeded1');
-			if (isset($_SESSION["cms_context"]) && is_a($_SESSION["cms_context"], 'CMS_context') && !$_SESSION["cms_context"]->hasError() && $_SESSION["cms_context"]->getUserID() != ANONYMOUS_PROFILEUSER_ID) {
+			if (isset($_SESSION["cms_context"]) && ($_SESSION["cms_context"] instanceof CMS_context) && !$_SESSION["cms_context"]->hasError() && $_SESSION["cms_context"]->getUserID() != ANONYMOUS_PROFILEUSER_ID) {
 				//CMS_grandFather::log('autoLoginSucceeded2');
 				//user is already logged. Do not need to go further (or existant session will be destroyed)
 				return true;
 			}
 			$cms_context = new CMS_context("", "", true);
 			if (!$cms_context->hasError()) {
-				if (!isset($_SESSION["cms_context"]) || (isset($_SESSION["cms_context"]) && !is_a($_SESSION["cms_context"], 'CMS_context')) || ($_SESSION["cms_context"]->getUserID() != $cms_context->getUserID())) {
+				if (!isset($_SESSION["cms_context"]) || (isset($_SESSION["cms_context"]) && !($_SESSION["cms_context"] instanceof CMS_context)) || ($_SESSION["cms_context"]->getUserID() != $cms_context->getUserID())) {
 					//CMS_grandFather::log('autoLoginSucceeded3');
 					$_SESSION["cms_context"] = $cms_context;
 				}
@@ -718,7 +718,7 @@ class CMS_context extends CMS_grandFather
 	  * @return string : JS locales
 	  * @access public
 	  */
-	function getJSLocales() {
+	static function getJSLocales() {
 		$locales = '';
 		if (!isset($_SESSION["cms_context"])) {
 			return $locales;
@@ -753,7 +753,7 @@ class CMS_context extends CMS_grandFather
 	  * @return string : Token value
 	  * @access public
 	  */
-	function getToken ($name) {
+	static function getToken ($name) {
 		$tokensDatas = CMS_context::getSessionVar('atm-tokens');
 		$tokens = $tokensDatas['tokens'];
 		$tokensTime = $tokensDatas['time'];
@@ -793,7 +793,7 @@ class CMS_context extends CMS_grandFather
 	  * @return boolean : true if token is valid or false otherwise
 	  * @access public
 	  */
-	function checkToken ($name, $token) {
+	static function checkToken ($name, $token) {
 		//if session token check is disabled, always return true
 		if (!defined('SESSION_TOKEN_CHECK') || !SESSION_TOKEN_CHECK) {
 			return true;
@@ -843,7 +843,7 @@ class CMS_context extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function expireToken($name) {
+	static function expireToken($name) {
 		$tokensDatas = CMS_context::getSessionVar('atm-tokens');
 		$tokens = $tokensDatas['tokens'];
 		if (isset($tokens[$name])) {
@@ -860,7 +860,7 @@ class CMS_context extends CMS_grandFather
 	  * @return boolean : true if token is expired or false otherwise
 	  * @access public
 	  */
-	function tokenIsExpired ($name) {
+	static function tokenIsExpired ($name) {
 		//if session token check is disabled, always return false (token never expire)
 		if (!defined('SESSION_TOKEN_CHECK') || !SESSION_TOKEN_CHECK) {
 			return false;
@@ -885,7 +885,7 @@ class CMS_context extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function getContextHash($datas = array()) {
+	static function getContextHash($datas = array()) {
 		global $cms_user;
 		$aContextRef = array();
 		//external datas
@@ -903,8 +903,12 @@ class CMS_context extends CMS_grandFather
 		if (isset($aContextRef['get']['context'])) {
 			unset($aContextRef['get']['context']);
 		}
+		//sort get datas
+		ksort($aContextRef['get']);
 		//post vars
 		$aContextRef['post'] = $_POST;
+		//sort post datas
+		ksort($aContextRef['post']);
 		$return = md5(serialize($aContextRef));
 		
 		return $return;

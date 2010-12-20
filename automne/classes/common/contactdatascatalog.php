@@ -33,7 +33,7 @@ class CMS_contactDatas_catalog extends CMS_grandFather
 	  * @return CMS_contactData or null
 	  * @access public
 	  */
-	function getById($data)
+	static function getById($data)
 	{
 		if (SensitiveIO::isPositiveInteger($data) || is_array($data)) {
 			$obj = new CMS_contactData($data);
@@ -52,7 +52,7 @@ class CMS_contactDatas_catalog extends CMS_grandFather
 	  * @return CMS_ldap_contactData or null
 	  * @access public
 	  */
-	function getByDN($dn, $id = false)
+	static function getByDN($dn, $id = false)
 	{
 		if (trim($dn) != '') {
 			$obj = new CMS_ldap_contactData(trim($dn), $id);
@@ -70,7 +70,7 @@ class CMS_contactDatas_catalog extends CMS_grandFather
 	  * @return array of CMS_profile_user
 	  * @access public
 	  */
-	function getByEmail($data)
+	static function getByEmail($data)
 	{
 		if (!SensitiveIO::isValidEmail($data) ) {
 			 CMS_grandFather::raiseError('$data must be a valid email : '.$data);
@@ -110,7 +110,7 @@ class CMS_contactDatas_catalog extends CMS_grandFather
 	  * @return CMS_contactData or CMS_ldap_contactData
 	  * @access public
 	  */
-	function getByUser($data, $getLDAPDatas = false)
+	static function getByUser($data, $getLDAPDatas = false)
 	{
 		if (is_array($data)) {
 			if (defined("APPLICATION_LDAP_AUTH") && APPLICATION_LDAP_AUTH != false && $getLDAPDatas) {

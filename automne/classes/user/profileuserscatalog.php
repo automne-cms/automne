@@ -38,7 +38,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	  * @return CMS_profile_user or false on failure to find it
 	  * @access public
 	  */
-	function &getByID($id, $reset = false)
+	static function getByID($id, $reset = false)
 	{
 		static $users;
 		if (!isset($users[$id]) || $reset) {
@@ -54,16 +54,18 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	  * Returns a queried CMS_profile_user value
 	  * Static function.
 	  *
-	  * @param integer $id The DB ID of the wanted CMS_profile_user
+	  * @param mixed $id The DB ID of the wanted CMS_profile_user or "self" to get info from the user passed in third parameter
 	  * @param string $type The value type to get
+	  * @param integer $currentUserId The user Id to get the value if first parameter is "self"
 	  * @return CMS_profile_user value or false on failure to find it
 	  * @access public
 	  */
-	function getUserValue($id, $type)
-	{
+	static function getUserValue($id, $type, $currentUserId = null) {
 		static $userInfos;
-		if (!SensitiveIO::isPositiveInteger($id)) {
-			CMS_grandFather::raiseError("User id must be positive integer");
+		if ($id == 'self' && SensitiveIO::isPositiveInteger($currentUserId)) {
+			$id = $currentUserId;
+		} elseif (!SensitiveIO::isPositiveInteger($id)) {
+			CMS_grandFather::raiseError("User id must be positive integer : ".$id);
 			return false;
 		}
 		if (!isset($userInfos[$id][$type])) {
@@ -85,7 +87,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function getByDN($dn)
+	static function getByDN($dn)
 	{
 		if (trim($dn) != '') {
 			// Check that dn fields exist
@@ -148,7 +150,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	  * @return CMS_profile_user or false on failure to find it
 	  * @access public
 	  */
-	function hasPageViewClearance(&$cms_user, $pageID)
+	static function hasPageViewClearance(&$cms_user, $pageID)
 	{
 		if (is_a($cms_user, 'CMS_profile_user')) {
 			return $cms_user->hasPageClearance($pageID, CLEARANCE_PAGE_VIEW);
@@ -168,7 +170,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	  * @return array(CMS_profile_user)
 	  * @access public
 	  */
-	function getAll($activeOnly = false, $withDeleted = false, $returnObjects = true, $attrs = array()) {
+	static function getAll($activeOnly = false, $withDeleted = false, $returnObjects = true, $attrs = array()) {
         $attrWhere = '';
 		$from = '';
 		if($attrs and is_array($attrs)){
@@ -241,7 +243,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	 * @param integer $userId The user ID
 	 * @return string XML definition object
 	 */
-	function soapGetUser($userId = 0) {
+	static function soapGetUser($userId = 0) {
 	    $xml = '';
 	    $user = (SensitiveIO::isPositiveInteger($userId)) ? CMS_profile_usersCatalog::getByID($userId) : new CMS_profile_user();
         $user = CMS_profile_usersCatalog::getByID($userId);
@@ -302,7 +304,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	 * @param string $searchConditions XML definition to search with ('id','login','firstName','lastName','contactData','profile','language','dn')
 	 * @return string XML definition of users IDs
 	 */
-	function soapSearch($searchConditions = '') {
+	static function soapSearch($searchConditions = '') {
 	    $xml = '';
 	    $attrs = array();
 	    
@@ -354,7 +356,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	  * @return array(CMS_profile_user)
 	  * @access public
 	  */
-	function search($search = '', $letter = '', $group = '', $order = '', $direction = 'asc', $start = 0, $limit = 0, $activeOnly = false, $returnObjects = true, &$score = array()) {
+	static function search($search = '', $letter = '', $group = '', $order = '', $direction = 'asc', $start = 0, $limit = 0, $activeOnly = false, $returnObjects = true, &$score = array()) {
 		$start = (int) $start;
 		$limit = (int) $limit;
 		$group = (int) $group;
@@ -490,7 +492,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function getUsersLabels($activeOnly = false, $lastNameFirst = false) {
+	static function getUsersLabels($activeOnly = false, $lastNameFirst = false) {
 		$sql = "
 			select
 				id_pru as id,
@@ -530,7 +532,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	  * @return array(CMS_profile_user)
 	  * @access public
 	  */
-	function getValidators($moduleCodename)
+	static function getValidators($moduleCodename)
 	{
 		$sql = "
 			select
@@ -585,7 +587,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function dnExists($dn, &$user)
+	static function dnExists($dn, &$user)
 	{
 		$sql = "
 			select
@@ -612,7 +614,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function loginExists($login, &$user, $returnProfileUserId = false)
+	static function loginExists($login, &$user, $returnProfileUserId = false)
 	{
 		$sql = "
 			select
@@ -639,7 +641,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	  * @return array(string)
 	  * @access public
 	  */
-	function getLettersForLastName()
+	static function getLettersForLastName()
 	{
 		$sql = "
 			select
@@ -671,7 +673,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function denyRowGroupsToUsers($groups) {
+	static function denyRowGroupsToUsers($groups) {
 		$sql = "select 
 					distinct rowGroupsDeniedStack_pr
 				from 
@@ -704,7 +706,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function denyTemplateGroupsToUsers($groups) {
+	static function denyTemplateGroupsToUsers($groups) {
 		$sql = "select 
 					distinct templateGroupsDeniedStack_pr
 				from 

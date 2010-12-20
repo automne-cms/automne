@@ -154,7 +154,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 				return parent::treatWantedTag($tag, $tagContent, $treatmentMode, $visualizationMode, $treatedObject, $treatmentParameters);
 			break;
 			case MODULE_TREATMENT_PAGECONTENT_TAGS :
-				if (!is_a($treatedObject,"CMS_page")) {
+				if (!($treatedObject instanceof CMS_page)) {
 					$this->raiseError('$treatedObject must be a CMS_page object');
 					return false;
 				}
@@ -482,7 +482,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			break;
 			case MODULE_TREATMENT_AFTER_VALIDATION_TREATMENT :
 				//if object is a polyobject and module is the current object's module
-				if (is_a($treatedObject,'CMS_poly_object') && $this->_codename == CMS_poly_object_catalog::getModuleCodenameForObject($treatedObject->getID())) {
+				if (($treatedObject instanceof CMS_poly_object) && $this->_codename == CMS_poly_object_catalog::getModuleCodenameForObject($treatedObject->getID())) {
 					//send notification of the validation result to polyobject
 					$treatedObject->afterValidation($treatmentParameters['result']);
 				}
@@ -782,6 +782,33 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			);
 		}
 		return $objectsInfos;
+	}
+	
+	/**
+	  * Module replacements vars
+	  *
+	  * @return array of replacements values (pattern to replace => replacement)
+	  * @access public
+	  */
+	function getModuleReplacements($parameterVarName) {
+		$replace = array();
+		//replace {plugin:selection} values
+		$replace["#^\{plugin:selection\}$#U"]								= '$'.$parameterVarName.'[\'selection\']';
+		//replace 'fieldID' value by corresponding fieldID
+		$replace["#^\{.*\[([n0-9]+)\]\['fieldID'\]\}$#U"] 					= '\1';
+		//create the real object path to vars
+		$replace["#\['fields'\]\[([n0-9]+)\]\}?#"] 							= '->objectValues(\1)';
+		$replace["#\['values'\]\[([n0-9]+)\]\['([a-zA-Z]+)'\]\}$#U"]		= '->getValue(\'\1\',\'\2\')';
+		$replace["#\['([a-zA-Z]+)'\]\|?\"\.([^|}]*)\.\"\}$#U"] 				= '->getValue(\'\1\',\2)';
+		
+		$replace["#\['([a-zA-Z]+)'\]\|?([^|}]*)\}$#U"] 						= '->getValue(\'\1\',\'\2\')';
+		
+		$replace["#^\{\['object([0-9]+)'\]#U"] 								= '$object[\1]';
+		$replace["#\[([n0-9]+)]}$#U"] 										= '[\1]';
+		//replace the loop 'n' value by $key
+		$replace["#\(([n0-9]+)\)->objectValues(\(n\))#U"] 					= '(\1)->objectValues($key_\1)';
+		$replace["#\(([n0-9]+)\)->getValue\(('n')#U"] 						= '(\1)->getValue($key_\1';
+		return $replace;
 	}
 	
 	/**

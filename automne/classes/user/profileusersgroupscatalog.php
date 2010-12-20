@@ -38,7 +38,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function &getByID($id, $reset = false)
+	static function &getByID($id, $reset = false)
 	{
 		static $groups;
 		if($reset){
@@ -94,7 +94,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	  * @return array(CMS_profile_usersGroup)
 	  * @access public
 	  */
-	function getAll()
+	static function getAll()
 	{
 		$sql = "
 			select
@@ -129,7 +129,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	  * @return array(CMS_profile_usersGroup)
 	  * @access public
 	  */
-	function search($search = '', $letter = '', $userId = false, $groupsIds = array(), $order = '', $direction = 'asc', $start = 0, $limit = 0, $returnObjects = true, &$score = array()) {
+	static function search($search = '', $letter = '', $userId = false, $groupsIds = array(), $order = '', $direction = 'asc', $start = 0, $limit = 0, $returnObjects = true, &$score = array()) {
 		$start = (int) $start;
 		$limit = (int) $limit;
 		$direction = (in_array(io::strtolower($direction), array('asc', 'desc'))) ? io::strtolower($direction) : 'asc';
@@ -249,7 +249,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	  * @return array(groupID => CMS_profile_usersGroup)
 	  * @access public
 	  */
-	function getGroupsOfUser($user, $returnIds = false, $reset = false) {
+	static function getGroupsOfUser($user, $returnIds = false, $reset = false) {
 		static $userGroups;
 		if ($reset) {
 			unset($userGroups);
@@ -304,7 +304,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	  * @return CMS_profile_usersGroup
 	  * @access public
 	  */
-	function getGroupOfUser($user) {
+	static function getGroupOfUser($user) {
 		CMS_grandFather::raiseError('This function is deprecated since Automne 3.3.0, You must use getGroupsOfUser instead !');
 		$groups = CMS_profile_usersGroupsCatalog::getGroupsOfUser($user);
 		if (is_array($groups) && $groups) {
@@ -322,7 +322,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	  * @param integer $groupId
 	  * @access public
 	  */
-	function labelExists($label, $groupId=0)
+	static function labelExists($label, $groupId=0)
 	{
 		if ((SensitiveIO::isPositiveInteger($groupId) 
 								|| $groupId==0) && $label) {
@@ -357,7 +357,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function dnExists($dn, &$group)
+	static function dnExists($dn, &$group)
 	{
 		if($group->getInvertDN()) {
 			$attribute = io::substr($dn,0,io::strpos($dn,'=')+1);
@@ -396,7 +396,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	  * @param boolean returnObjects : return CMS_profile_user objects (default) or array of userId
 	  * @access public
 	  */
-	function getGroupUsers($groupID, $returnObjects = true)
+	static function getGroupUsers($groupID, $returnObjects = true)
 	{
 		$sql = "
 			select
@@ -435,7 +435,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	  * @return array(string)
 	  * @access public
 	  */
-	function getLettersForTitle()
+	static function getLettersForTitle()
 	{
 		$sql = "
 			select
@@ -464,7 +464,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function userBelongsToGroup($userID, $groupID) {
+	static function userBelongsToGroup($userID, $groupID) {
 		if (!sensitiveIO::isPositiveInteger($userID) || !sensitiveIO::isPositiveInteger($groupID)) {
 			CMS_grandFather::raiseError('User id and group id must be positive integers');
 			return false;
@@ -489,7 +489,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function getGroupsLabels() {
+	static function getGroupsLabels() {
 		$sql = "
 			select
 				id_prg as id,
@@ -516,7 +516,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
       * @access public
       * @static
       */
-    function getGroupsDN() {
+    static function getGroupsDN() {
             $sql = "
                     select
                             id_prg as id,

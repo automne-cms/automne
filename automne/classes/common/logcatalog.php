@@ -34,7 +34,7 @@ class CMS_log_catalog extends CMS_grandFather
 	  * @return array(CMS_log)
 	  * @access public
 	  */
-	function search($moduleCodename = '', $resourceId = 0, $userId = 0, $types = array(), $start = 0, $limit = false, $order = 'datetime', $direction = 'desc', $returnCount = false) {
+	static function search($moduleCodename = '', $resourceId = 0, $userId = 0, $types = array(), $start = 0, $limit = false, $order = 'datetime', $direction = 'desc', $returnCount = false) {
 		$start = (int) $start;
 		$limit = ($limit) ? (int) $limit : false;
 		$order = (in_array($order, array('datetime', 'user', 'action'))) ? $order.'_log' : 'datetime_log';
@@ -97,7 +97,7 @@ class CMS_log_catalog extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function purge($moduleCodename = '', $resourceId = 0, $userId = 0, $types = array()) {
+	static function purge($moduleCodename = '', $resourceId = 0, $userId = 0, $types = array()) {
 		$where = ' UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(datetime_log) > 5184000';
 		if ($moduleCodename) {
 			$where .= " and module_log='".sensitiveIO::sanitizeSQLString($moduleCodename)."'";
@@ -128,7 +128,7 @@ class CMS_log_catalog extends CMS_grandFather
 	  * @return array(CMS_log)
 	  * @access public
 	  */
-	function getByResource($moduleCodename, $resourceId, $start = 0, $limit = false, $order = 'datetime', $direction = 'desc', $returnCount = false) {
+	static function getByResource($moduleCodename, $resourceId, $start = 0, $limit = false, $order = 'datetime', $direction = 'desc', $returnCount = false) {
 		$start = (int) $start;
 		$limit = ($limit) ? (int) $limit : false;
 		$order = (in_array($order, array('datetime', 'user', 'action'))) ? $order.'_log' : 'datetime_log';
@@ -175,7 +175,7 @@ class CMS_log_catalog extends CMS_grandFather
 	  * @return array(CMS_log)
 	  * @access public
 	  */
-	function getByResourceAction($moduleCodename, $resourceId, $action, $limit=false) {
+	static function getByResourceAction($moduleCodename, $resourceId, $action, $limit=false) {
 		$sql = "
 			select
 				*
@@ -219,7 +219,7 @@ class CMS_log_catalog extends CMS_grandFather
 	  * @return array(integer=>integer) The actions indexed by their messages
 	  * @access public
 	  */
-	function getResourceActions()
+	static function getResourceActions()
 	{
 		return array(	CMS_log::MESSAGE_LOG_ACTION_RESOURCE_EDIT_BASEDATA		=> CMS_log::LOG_ACTION_RESOURCE_EDIT_BASEDATA,
 						CMS_log::MESSAGE_LOG_ACTION_RESOURCE_EDIT_CONTENT		=> CMS_log::LOG_ACTION_RESOURCE_EDIT_CONTENT,
@@ -244,7 +244,7 @@ class CMS_log_catalog extends CMS_grandFather
 	  * @return array(integer=>integer) The actions indexed by their messages
 	  * @access public
 	  */
-	function getMiscActions()
+	static function getMiscActions()
 	{
 		return array(	CMS_log::MESSAGE_LOG_ACTION_WEBSITE_ADD					=> CMS_log::LOG_ACTION_WEBSITE_ADD,
 						CMS_log::MESSAGE_LOG_ACTION_WEBSITE_EDIT				=> CMS_log::LOG_ACTION_WEBSITE_EDIT,
@@ -267,7 +267,7 @@ class CMS_log_catalog extends CMS_grandFather
 	  * @return array(integer=>integer) The actions indexed by their messages
 	  * @access public
 	  */
-	function getLoginActions()
+	static function getLoginActions()
 	{
 		return array(	CMS_log::MESSAGE_LOG_ACTION_LOGIN						=> CMS_log::LOG_ACTION_LOGIN,
 						CMS_log::MESSAGE_LOG_ACTION_AUTO_LOGIN					=> CMS_log::LOG_ACTION_AUTO_LOGIN);
@@ -279,7 +279,7 @@ class CMS_log_catalog extends CMS_grandFather
 	  * @return array(integer=>integer) The actions indexed by their messages
 	  * @access public
 	  */
-	function getEmailActions() {
+	static function getEmailActions() {
 		return array(	CMS_log::MESSAGE_LOG_ACTION_SEND_EMAIL					=> CMS_log::LOG_ACTION_SEND_EMAIL);
 	}
 	
@@ -289,7 +289,7 @@ class CMS_log_catalog extends CMS_grandFather
 	  * @return array(integer=>integer) The actions indexed by their messages
 	  * @access public
 	  */
-	function getModulesActions($cms_language) {
+	static function getModulesActions($cms_language) {
 		$modules = CMS_modulesCatalog::getAll();
 		$actions = array();
 		foreach ($modules as $module) {
@@ -308,7 +308,7 @@ class CMS_log_catalog extends CMS_grandFather
 	  * @return array(integer=>integer) The actions indexed by their messages
 	  * @access public
 	  */
-	function getAllActions($cms_language) {
+	static function getAllActions($cms_language) {
 		$modulesActions = CMS_log_catalog::getModulesActions($cms_language);
 		$defaultActions = array(	CMS_log::MESSAGE_LOG_ACTION_RESOURCE_EDIT_BASEDATA		=> CMS_log::LOG_ACTION_RESOURCE_EDIT_BASEDATA,
 						CMS_log::MESSAGE_LOG_ACTION_RESOURCE_EDIT_CONTENT		=> CMS_log::LOG_ACTION_RESOURCE_EDIT_CONTENT,

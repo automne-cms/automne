@@ -13,22 +13,37 @@
 // +----------------------------------------------------------------------+
 
 /**
-  * Class CMS_XMLTag_end
+  * Class CMS_XMLTag_title
   *
-  * This script aimed to manage atm-end-tag tags. it extends CMS_XMLTag
+  * This script aimed to manage atm-title tags. it extends CMS_XMLTag
   *
   * @package Automne
   * @subpackage polymod
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
-class CMS_XMLTag_end extends CMS_XMLTag
+class CMS_XMLTag_title extends CMS_XMLTag
 {
 	/**
 	 * Default tag context
 	 * @var string the default tag context
 	 * @access public
 	 */
-	protected $_context = CMS_XMLTag::PHP_CONTEXT;
+	protected $_context = CMS_XMLTag::HTML_CONTEXT;
+	
+	/**
+	  * Constructor.
+	  *
+	  * @param string $name The name of the tag
+	  * @param array(string) $attributes The tag attributes.
+	  * @return void
+	  * @access public
+	  */
+	function __construct($name, $attributes, $children, $parameters) {
+		if (isset($parameters['context']) && $parameters['context']) {
+			$this->_context = $parameters['context'];
+		}
+		parent::__construct($name, $attributes, $children, $parameters);
+	}
 	
 	/**
 	  * Compute the tag
@@ -37,7 +52,14 @@ class CMS_XMLTag_end extends CMS_XMLTag
 	  * @access private
 	  */
 	protected function _compute() {
-		return '$content .= "</'.$this->replaceVars($this->_attributes['tag']).'>";';
+		if ($this->_parameters['context'] == CMS_XMLTag::HTML_CONTEXT) {
+			if (!isset($this->_computeParams['visualization']) || !isset($this->_computeParams['object']) || !($this->_computeParams['object'] instanceof CMS_page)) {
+				return '';
+			}
+			return SensitiveIO::sanitizeHTMLString($this->_computeParams['object']->getTitle($this->_computeParams['visualization'] == PAGE_VISUALMODE_HTML_PUBLIC));
+		} else {
+			return '$content .= CMS_tree::getPageValue($parameters[\'pageID\'], \'title\', (isset($public_search) ? $public_search : false));';
+		}
 	}
 }
 ?>

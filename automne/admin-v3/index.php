@@ -112,7 +112,7 @@ echo '
 			<table width="562" height="30" border="0" cellpadding="0" cellspacing="0">
 				<tr>
 					<td width="472" height="30" class="admin_date">
-						&nbsp;&nbsp;<b>'. date($language->getDateFormat(), mktime()) . '</b></td>
+						&nbsp;&nbsp;<b>'. date($language->getDateFormat(), time()) . '</b></td>
 					<td width="90" height="30" class="admin"><a href="http://www.automne.ws" target="_blank"><img src="'.PATH_ADMIN_IMAGES_WR.'/powered.gif" border="0" /></a></td>
 				</tr>
 			</table>

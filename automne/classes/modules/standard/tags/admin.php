@@ -13,15 +13,15 @@
 // +----------------------------------------------------------------------+
 
 /**
-  * Class CMS_XMLTag_end
+  * Class CMS_XMLTag_admin
   *
-  * This script aimed to manage atm-end-tag tags. it extends CMS_XMLTag
+  * This script aimed to manage atm-admin tags. it extends CMS_XMLTag
   *
   * @package Automne
   * @subpackage polymod
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
-class CMS_XMLTag_end extends CMS_XMLTag
+class CMS_XMLTag_admin extends CMS_XMLTag
 {
 	/**
 	 * Default tag context
@@ -37,7 +37,9 @@ class CMS_XMLTag_end extends CMS_XMLTag
 	  * @access private
 	  */
 	protected function _compute() {
-		return '$content .= "</'.$this->replaceVars($this->_attributes['tag']).'>";';
+		return 'if (strpos($_SERVER["REQUEST_URI"], \'automne/admin\') !== false  || (isset($_REQUEST[\'atm-context\']) && $_REQUEST[\'atm-context\'] == \'adminframe\')): '."\n".
+		$this->_computeChilds()."\n".
+		'endif; ';
 	}
 }
 ?>

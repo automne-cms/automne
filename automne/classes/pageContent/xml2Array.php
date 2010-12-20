@@ -35,7 +35,7 @@ class CMS_xml2Array extends CMS_grandFather
 	const ARRAY2XML_START_TAG	= 1;
 	const ARRAY2XML_END_TAG		= -1;
 	
-	protected $_autoClosedTagsList = array('br', 'base', 'hr', 'meta', 'input', 'img', 'link', 'area', 'param', 'col', 'frame', 'nodespec', 'command', 'embed', 'keygen', 'source');
+	static $autoClosedTagsList = array('br', 'base', 'hr', 'meta', 'input', 'img', 'link', 'area', 'param', 'col', 'frame', 'nodespec', 'command', 'embed', 'keygen', 'source');
 	
 	protected $_params;
 	
@@ -126,7 +126,7 @@ class CMS_xml2Array extends CMS_grandFather
 	  * @access public
 	  */
 	function getAutoClosedTagsList() {
-		return $this->_autoClosedTagsList;
+		return CMS_xml2Array::$autoClosedTagsList;
 	}
 	
 	/**
@@ -285,8 +285,7 @@ class CMS_xml2Array extends CMS_grandFather
 		}
 	}
 	
-	function toXML(&$definition, $part = false)
-	{
+	function toXML(&$definition, $part = false, $replaceVars = false) {
 		//return back xml
 		$result = "";
 		if(!$definition && is_object($this)){
@@ -300,27 +299,52 @@ class CMS_xml2Array extends CMS_grandFather
 		for ($c = 0; $c < $defLen; $c++){
 			//assign node value
           	if( isset($definition[$c]["textnode"]) ){
-				$result .= $definition[$c]["textnode"];
+				
+				//replacements on text nodes
+				if ($replaceVars) {
+					$dummyTag = new CMS_XMLTag('html', array(), array(), array('context' => CMS_XMLTag::HTML_CONTEXT));
+					$result .= $dummyTag->replaceVars($definition[$c]["textnode"]);
+				} else {
+					$result .= $definition[$c]["textnode"];
+				}
+				
 			} elseif (isset($definition[$c]["phpnode"]) ){
 				$result .= '<?php '.$definition[$c]["phpnode"].' ?>';
 			} else {
-				$autoclosed = (in_array($definition[$c]["nodename"], $this->_autoClosedTagsList) || (io::strpos($definition[$c]["nodename"], 'atm') === 0 && !isset($definition[$c]["childrens"])));
+				$autoclosed = (in_array($definition[$c]["nodename"], CMS_xml2Array::$autoClosedTagsList) || (io::strpos($definition[$c]["nodename"], 'atm') === 0 && !isset($definition[$c]["childrens"])));
 				if (!$part || $part == self::ARRAY2XML_START_TAG) {
-					$result .='<' . $definition[$c]["nodename"];
+					$tagOpening = '<' . $definition[$c]["nodename"];
 					if(is_array($definition[$c]["attributes"])) {
 						while (list($key, $value) = each($definition[$c]["attributes"])){
-							$result .=' ' . $key.'="' . $value . '"';
+							$tagOpening .=' ' . $key.'="' . $value . '"';
 						}
 					}
-					$result .= $autoclosed ? ' />' : '>';
+					$tagOpening .= $autoclosed ? ' />' : '>';
+					
+					$tagOpenReplaced = false;
+					if ($replaceVars) {
+						$dummyTag = new CMS_XMLTag('html', array(), array(), array('context' => CMS_XMLTag::HTML_TAG_CONTEXT));
+						$prepared = addcslashes($tagOpening, '"');
+						$replaced = $dummyTag->replaceVars($prepared);
+						if ($replaced != $prepared) {
+							$tagOpening = '<?php echo "'.$replaced.'"; ?>';
+							$tagOpenReplaced = true;
+						}
+					}
+					
+					$result .= $tagOpening;
 				}
 				if (!$part) {
 					if( isset($definition[$c]["childrens"]) ){
-						$result .= $this->toXML($definition[$c]["childrens"], $part);
+						$result .= $this->toXML($definition[$c]["childrens"], $part/*, $replaceVars*/);
 					}
 				}
 				if ((!$part || $part == self::ARRAY2XML_END_TAG) && !$autoclosed) {
-					$result .= '</' . $definition[$c]["nodename"] . '>';
+					$tagClose = '</' . $definition[$c]["nodename"] . '>';
+					if (isset($tagOpenReplaced) && $tagOpenReplaced) {
+						$tagClose = '<?php echo "'.$tagClose.'"; ?>';
+					}
+					$result .= $tagClose;
 				}
 			}
 		}

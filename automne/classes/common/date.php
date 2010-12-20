@@ -442,7 +442,7 @@ class CMS_date extends CMS_grandFather
 	  */
 	function setNow($dateOnly = false)
 	{
-		$now = mktime();
+		$now = time();
 		if (!$dateOnly) {
 			$this->_hour = date("H", $now);
 			$this->_minutes = date("i", $now);
@@ -498,9 +498,9 @@ class CMS_date extends CMS_grandFather
 	  * @param CMS_date $date2 The rightmost date of the comparison
 	  * @param string $operator the comparison operator. Can be one of ==,>=,>,<=,<
 	  * @return boolean true if the comparison is true, false otherwise
-	  * @access private
+	  * @access public
 	  */
-	function compare($date1, $date2, $operator)
+	static function compare($date1, $date2, $operator)
 	{
 		$allowed_operators = array("==", ">=", ">", "<", "<=");
 		if (SensitiveIO::isInSet($operator, $allowed_operators)) {

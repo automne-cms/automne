@@ -134,7 +134,7 @@ class CMS_moduleClientspace extends CMS_grandFather
 	protected function _parseTemplateForParameters($filename)
 	{
 		$module = CMS_modulesCatalog::getByCodename($this->_attributes["module"]);
-		if (!is_a($module, "CMS_module")) {
+		if (!($module instanceof CMS_module)) {
 			$this->raiseError("No module defined for the clientspace");
 			return false;
 		}

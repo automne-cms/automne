@@ -44,7 +44,7 @@ CMS_resourceValidation::cleanOldValidations();
 
 if (method_exists($module, "getValidationByID")) {
 	$validation = $module->getValidationByID($resource->getID(),$cms_user);
-	if (is_a($validation,"CMS_resourceValidation") && !$validation->hasError()) {
+	if (($validation instanceof CMS_resourceValidation) && !$validation->hasError()) {
 		$validationID = $validation->getID();
 	}
 } else {

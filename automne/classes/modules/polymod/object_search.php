@@ -236,7 +236,7 @@ class CMS_object_search extends CMS_grandFather
 	 * @access public
 	 * @static
 	 */
-	function getStaticSearchConditionTypes() {
+	static function getStaticSearchConditionTypes() {
 		return array(
 			"object",
 			"item",
@@ -397,7 +397,7 @@ class CMS_object_search extends CMS_grandFather
 	 * @access public
 	 * @static
 	 */
-	function getStaticOrderConditionTypes() {
+	static function getStaticOrderConditionTypes() {
 		$orderConditions = array(
 			"objectID",
 			"random",

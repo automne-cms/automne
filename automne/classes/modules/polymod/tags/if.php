@@ -38,8 +38,8 @@ class CMS_XMLTag_if extends CMS_XMLTag
 	  * @return void
 	  * @access public
 	  */
-	function __construct($name, $attributes, $parameters) {
-		parent::__construct($name, $attributes, $parameters);
+	function __construct($name, $attributes, $children, $parameters) {
+		parent::__construct($name, $attributes, $children, $parameters);
 		//check tags requirements
 		if (!$this->checkTagRequirements(array(
 				'what' => true, 
@@ -65,27 +65,25 @@ class CMS_XMLTag_if extends CMS_XMLTag
 		//decode ampersand
 		$this->_attributes['what'] = io::decodeEntities($this->_attributes['what']);
 		$return = '
-		//IF TAG START '.$this->_uniqueID.'
-		$ifcondition_'.$this->_uniqueID.' = CMS_polymod_definition_parsing::replaceVars("'.$this->replaceVars($this->_attributes['what'], false, false, array('CMS_polymod_definition_parsing', 'encloseWithPrepareVar')).'", @$replace);
-		if ($ifcondition_'.$this->_uniqueID.') {
+		$ifcondition_'.$this->_uniqueID.' = CMS_polymod_definition_parsing::replaceVars("'.$this->replaceVars($this->_attributes['what'], false, false, array($this, 'encloseWithPrepareVar')).'", @$replace);
+		if ($ifcondition_'.$this->_uniqueID.'):
 			$func_'.$this->_uniqueID.' = create_function("","return (".$ifcondition_'.$this->_uniqueID.'.");");';
 			//if attribute name is set, store if result
 			if (isset($this->_attributes['name']) && $this->_attributes['name']) {
 				$return .= '$atmIfResults[\''.$this->_attributes['name'].'\'][\'if\'] = false;';
 			}
 		$return .= '
-			if ($func_'.$this->_uniqueID.'()) {';
+			if ($func_'.$this->_uniqueID.'()):';
 				//if attribute name is set, store if result
 				if (isset($this->_attributes['name']) && $this->_attributes['name']) {
 					$return .= '$atmIfResults[\''.$this->_attributes ['name'].'\'][\'if\'] = true;';
 				}
 			$return .= '
 				'.$this->_computeChilds().'
-			}
+			endif;
 			unset($func_'.$this->_uniqueID.');
-		}
+		endif;
 		unset($ifcondition_'.$this->_uniqueID.');
-		//IF TAG END '.$this->_uniqueID.'
 		';
 		return $return;
 	}

@@ -55,7 +55,7 @@ switch ($_POST["cms_action"]) {
 case "delete":
 	//delete the website and move all of its pages
 	$website = CMS_websitesCatalog::getByID($_POST["website"]);
-	if (is_a($website, "CMS_website") && !$website->isMain()) {
+	if (($website instanceof CMS_website) && !$website->isMain()) {
 		$log = new CMS_log();
 		$log->logMiscAction(CMS_log::LOG_ACTION_WEBSITE_DELETE, $cms_user, "Website : ".$website->getLabel());
 		//check for codenames duplications

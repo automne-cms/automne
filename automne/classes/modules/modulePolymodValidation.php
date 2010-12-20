@@ -91,7 +91,7 @@ class CMS_modulePolymodValidation extends CMS_module
 	  */
 	function getValidations($user)
 	{
-		if (!is_a($user, "CMS_profile_user")) {
+		if (!($user instanceof CMS_profile_user)) {
 			$this->raiseError("User is not a valid CMS_profile_user object");
 			return false;
 		}
@@ -129,7 +129,7 @@ class CMS_modulePolymodValidation extends CMS_module
 	  */
 	function getValidationsInfo($user)
 	{
-		if (!is_a($user, "CMS_profile_user")) {
+		if (!($user instanceof CMS_profile_user)) {
 			$this->raiseError("User is not a valid CMS_profile_user object");
 			return false;
 		}
@@ -167,7 +167,7 @@ class CMS_modulePolymodValidation extends CMS_module
 	  */
 	function getValidationsCount($user)
 	{
-		if (!is_a($user, "CMS_profile_user")) {
+		if (!($user instanceof CMS_profile_user)) {
 			$this->raiseError("User is not a valid CMS_profile_user object");
 			return false;
 		}
@@ -412,7 +412,7 @@ class CMS_modulePolymodValidation extends CMS_module
 	  */
 	function getValidationByID($itemID, &$user, $getEditionType=false)
 	{
-		if (!is_a($user, "CMS_profile_user")) {
+		if (!($user instanceof CMS_profile_user)) {
 			$this->raiseError("User is not a valid CMS_profile_user object");
 			return false;
 		}
@@ -551,7 +551,7 @@ class CMS_modulePolymodValidation extends CMS_module
 			$this->raiseError("Module have not any primary resource !");
 			return false;
 		}
-		if (!is_a($resourceValidation, "CMS_resourceValidation")) {
+		if (!($resourceValidation instanceof CMS_resourceValidation)) {
 			$this->raiseError("ResourceValidation is not a valid CMS_resourceValidation object");
 			return false;
 		}
@@ -646,7 +646,7 @@ class CMS_modulePolymodValidation extends CMS_module
 			break;
 		}
 		//if resource is a polyobject, we need to save only it resource (parent) status
-		if (!is_a($resource, 'CMS_poly_object')) {
+		if (!($resource instanceof CMS_poly_object)) {
 			$resource->writeToPersistence();
 		} else {
 			$resource->writeToPersistence(false);
@@ -887,7 +887,7 @@ class CMS_modulePolymodValidation extends CMS_module
 	  */
 	function getPrimaryResourceDefinition()
 	{
-		if (!is_a($this->_primaryResourceObjectDefinition,'CMS_poly_object_definition')) {
+		if (!($this->_primaryResourceObjectDefinition instanceof CMS_poly_object_definition)) {
 			$this->_primaryResourceObjectDefinition = new CMS_poly_object_definition(CMS_poly_object_catalog::getPrimaryResourceObjectType($this->getCodename()));
 		}
 		return true;

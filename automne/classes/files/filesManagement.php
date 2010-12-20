@@ -778,7 +778,7 @@ class CMS_file extends CMS_grandFather
 	 * @return boolean true on success, false on failure
 	 * @static
 	 */
-	function chmodFile($right,$file)
+	static function chmodFile($right,$file)
 	{
 		if (@is_dir($file)) {
 			return CMS_file::makeExecutable($file);

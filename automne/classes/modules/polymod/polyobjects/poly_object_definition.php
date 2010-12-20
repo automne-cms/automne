@@ -249,7 +249,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  */
 	function getLabel($language = '') {
 		$label = new CMS_object_i18nm($this->getValue("labelID"));
-		if (is_a($language, "CMS_language")) {
+		if ($language instanceof CMS_language) {
 			return $label->getValue($language->getCode());
 		} else {
 			return $label->getValue($language);

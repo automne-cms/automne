@@ -38,8 +38,8 @@ class CMS_XMLTag_else extends CMS_XMLTag
 	  * @return void
 	  * @access public
 	  */
-	function __construct($name, $attributes, $parameters) {
-		parent::__construct($name, $attributes, $parameters);
+	function __construct($name, $attributes, $children, $parameters) {
+		parent::__construct($name, $attributes, $children, $parameters);
 		//check tags requirements
 		if (!$this->checkTagRequirements(array(
 				'for' => 'alphanum', 
@@ -55,31 +55,27 @@ class CMS_XMLTag_else extends CMS_XMLTag
 	  * @access private
 	  */
 	protected function _compute() {
-		//decode ampersand
 		if (isset($this->_attributes['what']) && $this->_attributes['what']) {
+			//decode ampersand
 			$this->_attributes['what'] = io::decodeEntities($this->_attributes['what']);
 			$return = '
-			//ELSE TAG START '.$this->_uniqueID.'
-			if (isset($atmIfResults[\''.$this->_attributes['for'].'\'][\'if\']) && $atmIfResults[\''.$this->_attributes['for'].'\'][\'if\'] === false) {
-				$ifcondition_'.$this->_uniqueID.' = CMS_polymod_definition_parsing::replaceVars("'.$this->replaceVars($this->_attributes['what'], false, false, array('CMS_polymod_definition_parsing', 'encloseWithPrepareVar')).'", @$replace);
-				if ($ifcondition_'.$this->_uniqueID.') {
+			if (isset($atmIfResults[\''.$this->_attributes['for'].'\'][\'if\']) && $atmIfResults[\''.$this->_attributes['for'].'\'][\'if\'] === false):
+				$ifcondition_'.$this->_uniqueID.' = CMS_polymod_definition_parsing::replaceVars("'.$this->replaceVars($this->_attributes['what'], false, false, array($this, 'encloseWithPrepareVar')).'", @$replace);
+				if ($ifcondition_'.$this->_uniqueID.'):
 					$func_'.$this->_uniqueID.' = create_function("","return (".$ifcondition_'.$this->_uniqueID.'.");");
-					if ($func_'.$this->_uniqueID.'()) {
+					if ($func_'.$this->_uniqueID.'()):
 						'.$this->_computeChilds().'
-					}
+					endif;
 					unset($func_'.$this->_uniqueID.');
-				}
+				endif;
 				unset($ifcondition_'.$this->_uniqueID.');
-			}
-			//ELSE TAG END '.$this->_uniqueID.'
+			endif;
 			';
 		} else {
 			$return = '
-			//ELSE TAG START '.$this->_uniqueID.'
-			if (isset($atmIfResults[\''.$this->_attributes['for'].'\'][\'if\']) && $atmIfResults[\''.$this->_attributes['for'].'\'][\'if\'] === false) {
+			if (isset($atmIfResults[\''.$this->_attributes['for'].'\'][\'if\']) && $atmIfResults[\''.$this->_attributes['for'].'\'][\'if\'] === false):
 				'.$this->_computeChilds().'
-			}
-			//ELSE TAG END '.$this->_uniqueID.'
+			endif;
 			';
 		}
 		return $return;
