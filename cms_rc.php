@@ -195,6 +195,13 @@ if (!defined("APPLICATION_IS_WINDOWS")) {
 }
 
 /**
+  *	Default timezone used by the application
+  */
+if (!defined("APPLICATION_DEFAULT_TIMEZONE")) {
+	define("APPLICATION_DEFAULT_TIMEZONE", 'Europe/Paris');
+}
+
+/**
   *	Path of the REAL document root
   *	Default : $_SERVER["DOCUMENT_ROOT"]
   */
@@ -1047,7 +1054,8 @@ if (ini_get('memory_limit') < (int) APPLICATION_MEMORY_LIMIT) {
 @ini_set('session.gc_divisor', 100);
 @ini_set('session.gc_maxlifetime', APPLICATION_SESSION_TIMEOUT);
 @ini_set('allow_call_time_pass_reference', 0);
-
+//set default timezone
+date_default_timezone_set(APPLICATION_DEFAULT_TIMEZONE);
 //set PHP default encoding for utf-8
 if (strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8') {
 	@ini_set('mbstring.internal_encoding', 'UTF-8');

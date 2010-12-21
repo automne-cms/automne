@@ -43,7 +43,7 @@ class CMS_emailsCatalog extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	static function setUserMessages($users, $messages, $subjects, $alertLevel = ALERT_LEVEL_VALIDATION, $module = MOD_STANDARD_CODENAME) {
+	function setUserMessages($users, $messages, $subjects, $alertLevel = ALERT_LEVEL_VALIDATION, $module = MOD_STANDARD_CODENAME) {
 		$mainURL = CMS_websitesCatalog::getMainURL();
 		$template = (is_file(PATH_MAIL_TEMPLATES_FS)) ? PATH_MAIL_TEMPLATES_FS : '';
 		foreach ($users as $user) {
@@ -81,7 +81,7 @@ class CMS_emailsCatalog extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	static function CMS_setMessages($addresses, $message, $subject, $withApplicationLabel = true) {
+	function CMS_setMessages($addresses, $message, $subject, $withApplicationLabel = true) {
 		// loop through addresses and create email message
 		foreach ($addresses as $address) {
 			$email = new CMS_email();
@@ -100,7 +100,7 @@ class CMS_emailsCatalog extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	static function sendMessages() {
+	function sendMessages() {
 		foreach($this->_messages as $message) {
 			$message->sendEmail();
 		}
