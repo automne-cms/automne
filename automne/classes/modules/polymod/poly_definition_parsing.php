@@ -451,7 +451,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 					//append php code
 					$code .= '";'."\n";
 					$code = CMS_polymod_definition_parsing::preReplaceVars($code);
-					$code .= 'eval(sensitiveIO::sanitizeExecCommand(CMS_polymod_definition_parsing::replaceVars(\''.str_replace("'","\'",str_replace("\'","\\\'",CMS_polymod_definition_parsing::preReplaceVars($definition[$key]['phpnode'], false, false, false))).'\', $replace)));'."\n";
+					$code .= 'eval(sensitiveIO::sanitizeExecCommand(CMS_polymod_definition_parsing::replaceVars(\''.addcslashes(CMS_polymod_definition_parsing::preReplaceVars($definition[$key]['phpnode'], false, false, false),"'").'\', $replace)));'."\n";
 					$code .= '$content .="';
 				} elseif (isset($definition[$key]['childrens'])) {
 					//compute subtags
@@ -1703,7 +1703,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			$phparray[$linenb] = $indent.$phpline;
 			//check for indent level up
 			$lastChar = substr($phpline, -1);
-			if ($lastChar == '{' || $lastChar == ':' || substr($phpline, -5) == 'array') {
+			if ($lastChar == '{' || $lastChar == ':' || substr($phpline, -7) == 'array (') {
 				$level++;
 			}
 		}

@@ -727,6 +727,7 @@ class CMS_module extends CMS_grandFather
 			case MODULE_TREATMENT_CLIENTSPACE_TAGS :
 				$return = array (
 					"atm-clientspace" => array("selfClosed" => true, "parameters" => array("module" => $this->_codename)),
+					"block" => array("selfClosed" => false, "parameters" => array("module"	=> $this->_codename)),
 				);
 			break;
 			case MODULE_TREATMENT_BLOCK_TAGS :
@@ -771,23 +772,54 @@ class CMS_module extends CMS_grandFather
 					$this->raiseError('$treatmentParameters["language"] must be a CMS_language object');
 					return false;
 				}
-				$args = array("template" => $treatedObject->getID());
-				if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM
-					|| $visualizationMode == PAGE_VISUALMODE_HTML_EDITION
-					|| $visualizationMode == PAGE_VISUALMODE_FORM) {
-					$args["editedMode"] = true;
-				}
-				$cs = $tag->getRepresentationInstance($args);
-				if (is_object($cs)) {
-					$html = $cs->getData($treatmentParameters["language"], $treatmentParameters["page"], $visualizationMode, false);
-				} else {
-					//call generic module clientspace content
-					$cs = new CMS_moduleClientspace($tag->getAttributes());
-					$html = $cs->getClientspaceData($this->_codename, $treatmentParameters["language"], $treatmentParameters["page"], $visualizationMode);
-				}
-				if ($visualizationMode != PAGE_VISUALMODE_PRINT) {
-					//save in global var the page ID who need this module so we can add the header code later.
-					CMS_module::moduleUsage($treatmentParameters["page"]->getID(), $this->_codename, array('block' => true));
+				switch ($tag->getName()) {
+					case "atm-clientspace":
+						$args = array("template" => $treatedObject->getID());
+						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM
+							|| $visualizationMode == PAGE_VISUALMODE_HTML_EDITION
+							|| $visualizationMode == PAGE_VISUALMODE_FORM) {
+							$args["editedMode"] = true;
+						}
+						$cs = $tag->getRepresentationInstance($args);
+						if (is_object($cs)) {
+							$html = $cs->getData($treatmentParameters["language"], $treatmentParameters["page"], $visualizationMode, false);
+						} else {
+							//call generic module clientspace content
+							$cs = new CMS_moduleClientspace($tag->getAttributes());
+							$html = $cs->getClientspaceData($this->_codename, $treatmentParameters["language"], $treatmentParameters["page"], $visualizationMode);
+						}
+						if ($visualizationMode != PAGE_VISUALMODE_PRINT) {
+							//save in global var the page ID who need this module so we can add the header code later.
+							CMS_module::moduleUsage($treatmentParameters["page"]->getID(), $this->_codename, array('block' => true));
+						}
+					break;
+					case 'block':
+						$attributes = $tag->getAttributes();
+						//create the block data
+						$block = $tag->getRepresentationInstance();
+						//instanciate fake row
+						$row = new CMS_row(0, $attributes['id']);
+						//instanciate fake clientspace
+						$cs = new CMS_moduleClientspace($tag->getAttributes());
+						//if block exists, use it
+						if ($block) {
+							$return = $block->getData($treatmentParameters["language"], $treatmentParameters["page"], $cs, $row, $visualizationMode);
+							if ($return) {
+								//save in global var the page ID who need this module so we can add the header code later.
+								CMS_module::moduleUsage($treatmentParameters["page"]->getID(), $this->_codename, array('block' => true));
+							}
+							return $return;
+						} else {
+							//else call module clientspace content
+							$cs = new CMS_moduleClientspace($tag->getAttributes());
+							$return = $cs->getClientspaceData($this->_codename, new CMS_date(), $treatmentParameters["page"], $visualizationMode);
+							if ($visualizationMode != PAGE_VISUALMODE_PRINT && $return) {
+								//save in global var the page ID who need this module so we can add the header code later.
+								CMS_module::moduleUsage($treatmentParameters["page"]->getID(), $this->_codename, array('block' => true));
+							}
+							return $return;
+						}
+					break;
 				}
 				return $html;
 			break;

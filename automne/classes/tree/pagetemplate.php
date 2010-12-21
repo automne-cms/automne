@@ -43,6 +43,14 @@ class CMS_pageTemplate extends CMS_grandFather
 	const MESSAGE_DESC_REGENERATE = 1542;
 	const MESSAGE_DESC_PAGES = 1543;
 	const MESSAGE_DESC_FILE = 1544;
+	const MESSAGE_TPL_SYNTAX_ERROR = 1296;
+	const MESSAGE_BLOCK_SYNTAX_ERROR = 1295;
+	
+	/*
+	Conversion constants
+	*/
+	const CONVERT_TO_HUMAN = 1;
+	const CONVERT_TO_AUTOMNE = 2;
 	
 	/**
 	  * DB id
@@ -457,11 +465,15 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return array(codename => CMS_module) The modules present in the template via module client spaces
 	  * @access public
 	  */
-	function getModules() {
+	function getModules($returnObject = true) {
 		$elements = $this->_modules->getElements();
 		$modules = array();
 		foreach ($elements as $element) {
-			$modules[$element[0]] = CMS_modulesCatalog::getByCodename($element[0]);
+			if ($returnObject) {
+				$modules[$element[0]] = CMS_modulesCatalog::getByCodename($element[0]);
+			} else {
+				$modules[$element[0]] = $element[0];
+			}
 		}
 		ksort($modules);
 		return $modules;
@@ -577,7 +589,7 @@ class CMS_pageTemplate extends CMS_grandFather
 				$old_filename = $this->_definitionFile;
 				$this->_definitionFile = $filename;
 				$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_CLIENTSPACE_TAGS,PAGE_VISUALMODE_HTML_EDITED,$this);
-				$error = $this->_parseDefinitionFile($modulesTreatment);
+				$error = $this->_parseDefinitionFile($modulesTreatment, self::CONVERT_TO_AUTOMNE);
 				if ($error !== true) {
 					$this->_definitionFile = $old_filename;
 					return $error;
@@ -601,13 +613,17 @@ class CMS_pageTemplate extends CMS_grandFather
 	  */
 	function getDefinition()
 	{
-		if ($file = $this->getDefinitionFile()) {
-			$fp = fopen(PATH_TEMPLATES_FS."/".$file, 'rb');
-			if (is_resource($fp)) {
-				$data = fread($fp, filesize(PATH_TEMPLATES_FS."/".$file));
-				fclose($fp);
-				return $data;
+		if ($filename = $this->getDefinitionFile()) {
+			$file = new CMS_file(PATH_TEMPLATES_FS."/".$filename);
+			$definition = $file->getContent();
+			//check if rows use a polymod block, if so pass to module for variables conversion
+			foreach ($this->getModules(false) as $moduleCodename) {
+				if (CMS_modulesCatalog::isPolymod($moduleCodename)) {
+					$module = CMS_modulesCatalog::getByCodename($moduleCodename);
+					$definition = $module->convertDefinitionString($definition, true);
+				}
 			}
+			return $definition;
 		}
 		return false;
 	}
@@ -635,26 +651,19 @@ class CMS_pageTemplate extends CMS_grandFather
 		//save old definition (before replacement)
 		$old_definition = @file_get_contents(PATH_TEMPLATES_FS."/".$filename);
 		
-		$fp = @fopen(PATH_TEMPLATES_FS."/".$filename, 'wb');
-		if (!is_resource($fp)) {
-			$this->raiseError("Can't open the definition file for writing");
+		$file = new CMS_file(PATH_TEMPLATES_FS."/".$filename);
+		$file->setContent($definition);
+		if (!$file->writeToPersistence()) {
+			$this->raiseError("Can't write definition file : ".PATH_TEMPLATES_FS."/".$filename);
 			return false;
 		}
-		//$definition = preg_replace("/&amp;(#[0-9]+|[a-z]+);/i", "&$1;", str_replace('&', '&amp;', $definition));
-		
-		fwrite($fp, $definition, strlen($definition));
-		$this->_definitionFile = $filename;
-		fclose($fp);
-		@chmod (PATH_TEMPLATES_FS."/".$filename, octdec(FILES_CHMOD));
-		
 		//then parse file to get modules and CS datas
 		$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_CLIENTSPACE_TAGS,PAGE_VISUALMODE_HTML_EDITED,$this);
-		$error = $this->_parseDefinitionFile($modulesTreatment);
+		$error = $this->_parseDefinitionFile($modulesTreatment, self::CONVERT_TO_AUTOMNE);
 		if ($error !== true) {
-			$fp = @fopen(PATH_TEMPLATES_FS."/".$filename, 'wb');
-			fwrite($fp, $old_definition, strlen($definition));
-			fclose($fp);
-			@chmod (PATH_TEMPLATES_FS."/".$filename, octdec(FILES_CHMOD));
+			$file = new CMS_file(PATH_TEMPLATES_FS."/".$filename);
+			$file->setContent($old_definition);
+			$file->writeToPersistence();
 			return $error;
 		}
 		
@@ -843,8 +852,10 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return string The error string from the parser, false if no error
 	  * @access private
 	  */
-	protected function _parseDefinitionFile(&$modulesTreatment)
+	protected function _parseDefinitionFile(&$modulesTreatment, $convert = null)
 	{
+		global $cms_language;
+		
 		$filename = PATH_TEMPLATES_FS."/".$this->_definitionFile;
 		$tpl = new CMS_file(PATH_TEMPLATES_FS."/".$this->_definitionFile);
 		if (!$tpl->exists()) {
@@ -853,32 +864,53 @@ class CMS_pageTemplate extends CMS_grandFather
 		}
 		$definition = $tpl->readContent();
 		//we need to remove doctype if any
-		$definition = preg_replace('#<!doctype[^>]*>#siU', '', $definition);
+		$definition = trim(preg_replace('#<!doctype[^>]*>#siU', '', $definition));
 		$modulesTreatment->setDefinition($definition);
 		
-		//test to see if there are they duplicates in client spaces IDs, and also get client spaces modules codename
+		//get client spaces modules codename
 		$this->_clientSpacesTags = $modulesTreatment->getTags(array('atm-clientspace'), true);
 		if (is_array($this->_clientSpacesTags)) {
 			$modules = array();
-			$ids = array();
 			foreach ($this->_clientSpacesTags as $cs_tag) {
-				/*if ($cs_tag->getAttribute("id") && in_array($cs_tag->getAttribute("id"), $ids)) {
-					$this->raiseError('Malformed template file to set : contains redundant clientSpaces ids');
-					$this->_clientSpacesTags = array();
-					return "pageTemplate : malformed template file to set : contains redundant clientSpaces ids";
-				} else {*/
-					if ($cs_tag->getAttribute("module")=='standard') {
-						$ids[] = $cs_tag->getAttribute("id");
-					}
-				//}
 				if ($cs_tag->getAttribute("module")) {
 					$modules[] = $cs_tag->getAttribute("module");
+				}
+			}
+			$blocks = $modulesTreatment->getTags(array('block'), true);
+			foreach ($blocks as $block) {
+				if ($block->getAttribute("module")) {
+					$modules[] = $block->getAttribute("module");
+				} else {
+					return $cms_language->getMessage(self::MESSAGE_TPL_SYNTAX_ERROR, array($cms_language->getMessage(self::MESSAGE_BLOCK_SYNTAX_ERROR)));
 				}
 			}
 			$modules = array_unique($modules);
 			$this->_modules->emptyStack();
 			foreach ($modules as $module) {
 				$this->_modules->add($module);
+			}
+			
+			if ($convert !== null) {
+				$tplConverted = false;
+				foreach ($modules as $moduleCodename) {
+					if (CMS_modulesCatalog::isPolymod($moduleCodename)) {
+						$tplConverted = true;
+						$module = CMS_modulesCatalog::getByCodename($moduleCodename);
+						$definition = $module->convertDefinitionString($definition, ($convert == self::CONVERT_TO_HUMAN));
+					}
+				}
+				if ($tplConverted) {
+					//check definition parsing
+					$parsing = new CMS_polymod_definition_parsing($definition, true, CMS_polymod_definition_parsing::CHECK_PARSING_MODE);
+					$errors = $parsing->getParsingError();
+					if ($errors) {
+						return $cms_language->getMessage(self::MESSAGE_TPL_SYNTAX_ERROR, array($errors));
+					}
+					$filename = $this->getDefinitionFile();
+					$file = new CMS_file(PATH_TEMPLATES_FS."/".$filename);
+					$file->setContent($definition);
+					$file->writeToPersistence();
+				}
 			}
 			return true;
 		} else {

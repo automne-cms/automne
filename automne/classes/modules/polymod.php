@@ -538,25 +538,24 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  */
 	function convertDefinitionString($definition, $toHumanReadableFormat) {
 		global $cms_language;
-		//get all definition variables (braket enclosed terms)
-		if (preg_match_all("#{[^{}]+}}?#", $definition, $matches)) {
+		global $modulesConversionTable;
+		$count = 1;
+		//loop on text for vars to replace if any
+		while (preg_match_all("#\{[^{}]+[|}]{1}#U", $definition, $matches) && $count) {
 			$matches = array_unique($matches[0]);
 			//get module variables conversion table
-			$convertionTable = CMS_poly_module_structure::getModuleTranslationTable($this->getCodename(), $cms_language);
-			if ($toHumanReadableFormat) {
-				$convertionTable = array_flip($convertionTable);
+			if (!isset($modulesConversionTable[$this->getCodename()])) {
+				$modulesConversionTable[$this->getCodename()] = CMS_poly_module_structure::getModuleTranslationTable($this->getCodename(), $cms_language);
 			}
+			$convertionTable = $toHumanReadableFormat ? array_flip($modulesConversionTable[$this->getCodename()]) : $modulesConversionTable[$this->getCodename()];
 			//create definition conversion table
 			$replace = array();
+			$count = 0;
 			foreach ($matches as $variable) {
-				$replacedValue1 = preg_replace("#\{([^|}]+)[^}]*\}}?#", '\1', $variable);
-				if (isset($convertionTable[$replacedValue1])) {
-					if (io::strpos($variable, '|') !== false) {
-						$replacedValue2 = preg_replace("#[^|]+\|([^|]+)\}#U", '\1', $variable);
-						$replace[$variable] = '{' . $convertionTable[$replacedValue1] . '|'. ((io::strpos($replacedValue2, '{') !== false && $convertionTable[io::substr($replacedValue2,1,-1)]) ? '{'.$convertionTable[io::substr($replacedValue2,1,-1)].'}' : $replacedValue2) . '}';
-					} else {
-						$replace[$variable] = '{' . $convertionTable[$replacedValue1] . '}';
-					}
+				$strippedVar = io::substr($variable, 1, io::strlen($variable)-2);
+				if (isset($convertionTable[$strippedVar])) {
+					$replace[$variable] = '{' . $convertionTable[$strippedVar] . io::substr($variable, -1);
+					$count++;
 				}
 			}
 			//then replace variables in definition

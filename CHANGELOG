@@ -11,6 +11,11 @@ V4.1.0 (in progress)
 [REFACTOR] : Use CMS_cache to store Backtraces, Stats and Polymod structures instead of user session
 [REFACTOR] : Add default attribute to text and varchar blocks (standard module) to specifie a specific text instead of the default "Lorem Ipsum" text
 [REFACTOR] : Update ExtJS to version 3.3.1
+[REFACTOR] : Rewrite standard and polymod parsings to be both compatibles with tags and vars replacements
+[REFACTOR] : Rewrite polymod replacement vars to handle nested vars replacements
+[REFACTOR] : Rewrite tags atm-if, atm-else, atm-setvar, atm-start-tag, atm-end-tag, atm-title, atm-page, atm-website, atm-admin, atm-edit to be compatible with both standard and polymod parsers
+[FEATURE] : Add vars replacements to standard rows and templates XML codes.
+[FEATURE] : Allow handling of vars replacement by all modules
 [FEATURE] : Add Google coordinates field for Polymod
 [FEATURE] : Add vhost subfolder support for Automne installation
 [FEATURE] : Add import/export of polymod modules structures
