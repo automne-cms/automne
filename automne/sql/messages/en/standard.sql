@@ -1250,7 +1250,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1293, 'standard', 'en', '[Error: you do not have sufficient rights on the module ''%s'' to add a row to it.]');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1294, 'standard', 'en', 'Made up label');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1295, 'standard', 'en', 'Missing ''module'' attribute on ''block'' tag');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1296, 'standard', 'en', '[Error : malformed row syntax : %s]');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1296, 'standard', 'en', '[Error : malformed XML syntax : %s]');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1297, 'standard', 'en', 'Label syntax for object ''%s''');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1298, 'standard', 'en', 'Files accesses');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1299, 'standard', 'en', 'Matching templates');
@@ -1757,3 +1757,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1683, 'standard', 'en', 'Pages using a codename on this site');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1684, 'standard', 'en', 'Update database');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1685, 'standard', 'en', 'Updating the database verify and update the structure and the content of the database after a manual files update or following an update produced from <a href="https://launchpad.net/automne" target="_blank">Launchpad</a>.<br /><br />Apart from these cases, you do not need to update the Automne database.<br /><br />This update will clear the various cache and launch a complete regeneration of sites.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1686, 'standard', 'en', 'Reset cache');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1687, 'standard', 'en', 'Reset all caches:');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1688, 'standard', 'en', 'This feature allows you to reset all the cache used by Automne and all its modules.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1689, 'standard', 'en', 'Cache management');

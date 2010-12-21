@@ -1250,7 +1250,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1293, 'standard', 'fr', '[Erreur : vous n''avez pas les droits suffisants sur le module ''%s'' pour lui ajouter une rangée.]');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1294, 'standard', 'fr', 'Libellé composé');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1295, 'standard', 'fr', 'Attribut ''module'' manquant sur un tag ''block''');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1296, 'standard', 'fr', '[Erreur : syntaxe de rangée incorrecte : %s]');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1296, 'standard', 'fr', '[Erreur : syntaxe XML incorrecte : %s]');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1297, 'standard', 'fr', 'Syntaxe du libellé pour l''objet ''%s''');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1298, 'standard', 'fr', 'Accès des fichiers');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1299, 'standard', 'fr', 'Modèles compatibles');
@@ -1643,3 +1643,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1683, 'standard', 'fr', 'Pages employant un Nom de code sur ce site');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1684, 'standard', 'fr', 'Mise à jour de la base de données');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1685, 'standard', 'fr', 'La fonction de mise à jour de la base de données permet de vérifier et de mettre à jour la structure et le contenu de la base de données suite à une mise à jour manuelle des fichiers d\'Automne ou bien suite à une mise à jour des fichiers réalisée à partir de <a href="https://launchpad.net/automne" target="_blank">Launchpad</a>.<br />En dehors de ces cas de figure, vous n\'avez pas besoin de mettre à jour la base de données d\'Automne.<br /><br />Cette mise à jour videra les différents cache d\'Automne et lancera une régénération complète des sites.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1686, 'standard', 'fr', 'Reset du cache');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1687, 'standard', 'fr', 'Remise à zéro du l\'ensemble du cache :');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1688, 'standard', 'fr', 'Cette fonction vous permet de remettre à zéro l\'ensemble du cache employé par Automne et tous ses modules.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1689, 'standard', 'fr', 'Gestion du cache');
