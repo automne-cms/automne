@@ -104,8 +104,11 @@ if (is_array($files)) {
 //clear caches
 echo "Clean Automne cache.<br /><br />";
 CMS_cache::clearTypeCache('polymod');
+CMS_cache::clearTypeCache('atm-polymod-structure');
 CMS_cache::clearTypeCache('text/javascript');
 CMS_cache::clearTypeCache('text/css');
+CMS_cache::clearTypeCache('atm-backtrace');
+
 //launch definitions updates
 if ($return = @file_get_contents(CMS_websitesCatalog::getMainURL().PATH_ADMIN_MODULES_WR.'/polymod/update-definitions.php')) {
 	echo $return;

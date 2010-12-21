@@ -312,7 +312,7 @@ class SensitiveIO extends CMS_grandFather
 	* @return boolean true on success, false on failure
 	* @access public
 	*/
-	function isValidLogin($login){
+	static function isValidLogin($login){
 		if (!$login) {
 			return false;
 		}
@@ -596,7 +596,7 @@ class SensitiveIO extends CMS_grandFather
 	  * @return string, the body converted in html
 	  * @access public
 	  */
-	function convertTextToHTML($body, $withNl2Br = true) {
+	static function convertTextToHTML($body, $withNl2Br = true) {
 		$HTMLBody = preg_replace(
 				array(
 					'/(?(?=<a[^>]*>.+<\/a>)
@@ -628,7 +628,7 @@ class SensitiveIO extends CMS_grandFather
 	  * @return boolean : true on success, false on failure
 	  * @access public
 	  */
-	function checkXHTMLValue($value, &$errors) {
+	static function checkXHTMLValue($value, &$errors) {
 		//Check XHTML validity
 		$value = str_replace('&#9;','',$value);
 		/*if (defined('ALLOW_WYSIWYG_XHTML_VALIDATION') && ALLOW_WYSIWYG_XHTML_VALIDATION) {
@@ -666,7 +666,7 @@ class SensitiveIO extends CMS_grandFather
 	  * @return string the generated key
 	  * @access public
 	  */
-	function generateKey($keyLength) {
+	static function generateKey($keyLength) {
 		$string = "abcdefghjkmnopqrstuvwxyzABCDEFGHJKMNOPQRSTUVWXYZ0123456789-";
 		$strLen = strlen($string);
 		$key = '';
@@ -688,7 +688,7 @@ class SensitiveIO extends CMS_grandFather
 	  * @return string : the value reencoded
 	  * @access public
 	  */
-	function reencodeAmpersand($text) {
+	static function reencodeAmpersand($text) {
 		return preg_replace("/&amp;(#[0-9]+|[a-z]+);/i", "&$1;", str_replace('&', '&amp;', $text));
 	}
 	
@@ -699,7 +699,7 @@ class SensitiveIO extends CMS_grandFather
 	  * @return string : the value decoded
 	  * @access public
 	  */
-	function decodeEntities($text) {
+	static function decodeEntities($text) {
 		return html_entity_decode($text, ENT_QUOTES, (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8' ? 'ISO-8859-1' : 'UTF-8'));
 	}
 	
@@ -710,7 +710,7 @@ class SensitiveIO extends CMS_grandFather
 	  * @return string : the value encoded
 	  * @access public
 	  */
-	function utf8Encode($text) {
+	static function utf8Encode($text) {
 		$cp1252Map = io::cp1252ToUtf8Map();
 		return  strtr(utf8_encode($text), $cp1252Map);
 	}
@@ -722,7 +722,7 @@ class SensitiveIO extends CMS_grandFather
 	  * @return string : the value decoded
 	  * @access public
 	  */
-	function utf8Decode($text) {
+	static function utf8Decode($text) {
 		$cp1252Map = io::cp1252ToUtf8Map();
 		return  utf8_decode(strtr($text, array_flip($cp1252Map)));
 	}
@@ -733,7 +733,7 @@ class SensitiveIO extends CMS_grandFather
 	  * @return array : the map
 	  * @access public
 	  */
-	function cp1252ToUtf8Map() {
+	static function cp1252ToUtf8Map() {
 		return array(
 		    "\xc2\x80" => "\xe2\x82\xac", /* EURO SIGN */
 		    "\xc2\x82" => "\xe2\x80\x9a", /* SINGLE LOW-9 QUOTATION MARK */
@@ -771,7 +771,7 @@ class SensitiveIO extends CMS_grandFather
 	  * @return array : the map
 	  * @access public
 	  */
-	function sanitizeAsciiMap() {
+	static function sanitizeAsciiMap() {
 		return array(
 			"\xc0" => "A", "\xc1" => "A", "\xc2" => "A", "\xc3" => "A", "\xc4" => "A", 
 			"\xc5" => "A", "\xc6" => "A", "\xe0" => "a", "\xe1" => "a", "\xe2" => "a", 
@@ -796,7 +796,7 @@ class SensitiveIO extends CMS_grandFather
 	  * @return boolean true/false
 	  * @access private
 	  */
-	function isUTF8($string) {
+	static function isUTF8($string) {
 		if (function_exists('mb_check_encoding') && version_compare(PHP_VERSION, "5.2.6") >= 0) {
 			return mb_check_encoding($string, 'UTF-8');
 		}
@@ -820,7 +820,7 @@ class SensitiveIO extends CMS_grandFather
 	  * @return string
 	  * @access public
 	  */
-	function uuid() {
+	static function uuid() {
 		$q = new CMS_query('select UUID() as uuid');
 		return $q->getValue('uuid');
 	}
@@ -831,27 +831,27 @@ class SensitiveIO extends CMS_grandFather
 	  * @return mixed
 	  * @access public
 	  */
-	function substr() {
+	static function substr() {
 		$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? 'substr' : 'mb_substr';
 		$args = func_get_args();
 		return call_user_func_array ($func, $args);
 	}
-	function strlen() {
+	static function strlen() {
 		$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? 'strlen' : 'mb_strlen';
 		$args = func_get_args();
 		return call_user_func_array ($func, $args);
 	}
-	function strpos() {
+	static function strpos() {
 		$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? 'strpos' : 'mb_strpos';
 		$args = func_get_args();
 		return call_user_func_array ($func, $args);
 	}
-	function strtolower() {
+	static function strtolower() {
 		$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? 'strtolower' : 'mb_strtolower';
 		$args = func_get_args();
 		return call_user_func_array ($func, $args);
 	}
-	function strtoupper() {
+	static function strtoupper() {
 		$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? 'strtoupper' : 'mb_strtoupper';
 		$args = func_get_args();
 		return call_user_func_array ($func, $args);

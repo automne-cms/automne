@@ -393,7 +393,7 @@ class CMS_cache extends CMS_grandFather {
 	  * @access public
 	  * @static
 	  */
-	function wrapCode($hash, $content, $lifetime = 'auto') {
+	static function wrapCode($hash, $content, $lifetime = 'auto') {
 		return '<?php'."\n".
 		'$cache_'.$hash.' = new CMS_cache(\''.$hash.'\', \'polymod\', \''.$lifetime.'\', true);'."\n".
 		'if ($cache_'.$hash.'->exist()):'."\n".

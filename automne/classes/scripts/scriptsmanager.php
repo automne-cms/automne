@@ -36,20 +36,11 @@ class CMS_scriptsManager
 	  * @access public
 	  * @static
 	  */
-	function addScript($module, $parameters, $id=false) {
+	static function addScript($module, $parameters, $id=false) {
 		if ($module && is_array($parameters) && $parameters) {
 			$sqlFields = "
 				module_reg='".sensitiveIO::sanitizeSQLString($module)."',
 				parameters_reg='".sensitiveIO::sanitizeSQLString(serialize($parameters))."'";
-			
-			/*$sqlFields = "
-				module_reg = :module,
-				parameters_reg = :parameters
-			";
-			$sqlParameters = array(
-				':module' 		=> $module,
-				':parameters' 	=> serialize($parameters),
-			);*/
 			if (sensitiveIO::isPositiveInteger($id)) {
 				$sql = "
 					update
@@ -80,7 +71,7 @@ class CMS_scriptsManager
 	  * @access public
 	  * @static
 	  */
-	function getScripts($module=false) {
+	static function getScripts($module=false) {
 		$sql = "
 			select
 				*
@@ -107,7 +98,7 @@ class CMS_scriptsManager
 	  * @access public
 	  * @static
 	  */
-	function startScript($force = false)
+	static function startScript($force = false)
 	{
 		if (USE_BACKGROUND_REGENERATOR) {
 			$forceRestart = '';
@@ -192,7 +183,7 @@ class CMS_scriptsManager
 	  * @access public
 	  * @static
 	  */
-	function clearScripts()
+	static function clearScripts()
 	{
 		$sql = "
 			delete
@@ -210,7 +201,7 @@ class CMS_scriptsManager
 	  * @access public
 	  * @static
 	  */
-	function getScriptsNumberLeft()
+	static function getScriptsNumberLeft()
 	{
 		$sql = "
 			select
@@ -229,7 +220,7 @@ class CMS_scriptsManager
 	  * @access public
 	  * @static
 	  */
-	function getScriptsLeft()
+	static function getScriptsLeft()
 	{
 		$sql = "
 			select
@@ -260,7 +251,7 @@ class CMS_scriptsManager
 	  * @access public
 	  * @static
 	  */
-	function runQueuedScripts() {
+	static function runQueuedScripts() {
 		//the sql which selects scripts to regenerate at a time
 		$sql_select = "
 			select

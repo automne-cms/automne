@@ -200,7 +200,7 @@ class CMS_linxNodespec extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function createNodespec($tag, $crosswebsite = false) {
+	static function createNodespec($tag, $crosswebsite = false) {
 		if (!is_a($tag, "DOMElement")) {
 			CMS_grandFather::raiseError('Tag is not a DOMElement instance');
 			return false;

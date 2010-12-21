@@ -152,7 +152,7 @@ class CMS_view extends CMS_grandFather
 		$this->_jscontent = $js;
 	}
 	
-	function getJSManagerURL() {
+	static function getJSManagerURL() {
 		$version = AUTOMNE_VERSION.'-'.AUTOMNE_LASTUPDATE.(SYSTEM_DEBUG ? 'd':'');
 		return PATH_JS_WR.'/jsmanager.php?version='.$version;
 	}
@@ -196,7 +196,7 @@ class CMS_view extends CMS_grandFather
 		}
 	}
 	
-	function getCSSManagerURL() {
+	static function getCSSManagerURL() {
 		$version = AUTOMNE_VERSION.'-'.AUTOMNE_LASTUPDATE.(SYSTEM_DEBUG ? 'd':'');
 		return PATH_CSS_WR.'/cssmanager.php?version='.$version;
 	}

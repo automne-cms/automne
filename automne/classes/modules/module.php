@@ -458,7 +458,7 @@ class CMS_module extends CMS_grandFather
 	  */
 	function processValidation($resourceValidation, $result, $lastValidation = true)
 	{
-		if (!is_a($resourceValidation, "CMS_resourceValidation")) {
+		if (!($resourceValidation instanceof CMS_resourceValidation)) {
 			$this->raiseError("ResourceValidation is not a valid CMS_resourceValidation object");
 			return false;
 		}
@@ -583,7 +583,7 @@ class CMS_module extends CMS_grandFather
 	  */
 	protected function _changeDataLocation($resource, $locationFrom, $locationTo, $copyOnly = false)
 	{
-		if (!is_a($resource, "CMS_resource")) {
+		if (!($resource instanceof CMS_resource)) {
 			$this->raiseError("Resource is not a CMS_resource");
 			return false;
 		}
@@ -615,11 +615,11 @@ class CMS_module extends CMS_grandFather
 			return false;
 		}
 		if (APPLICATION_ENFORCES_ACCESS_CONTROL != false
-				&& !is_a($attrs["cms_user"], "CMS_profile")) {
+				&& !($attrs["cms_user"] instanceof CMS_profile)) {
 			CMS_grandFather::raiseError("Not valid CMS_profile given as enforced access control is active");
 			return false;
 		}
-		if (isset($attrs["cms_user"]) && is_a($attrs["cms_user"], "CMS_profile")
+		if (isset($attrs["cms_user"]) && ($attrs["cms_user"] instanceof CMS_profile)
 				&& $attrs["cms_user"]->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 			// If current user is an adminsitrator, let's show all categories anytime
 			unset($attrs["cms_user"]);
@@ -727,6 +727,7 @@ class CMS_module extends CMS_grandFather
 			case MODULE_TREATMENT_CLIENTSPACE_TAGS :
 				$return = array (
 					"atm-clientspace" => array("selfClosed" => true, "parameters" => array("module" => $this->_codename)),
+					"block" => array("selfClosed" => false, "parameters" => array("module"	=> $this->_codename)),
 				);
 			break;
 			case MODULE_TREATMENT_BLOCK_TAGS :
@@ -759,52 +760,83 @@ class CMS_module extends CMS_grandFather
 	{
 		switch ($treatmentMode) {
 			case MODULE_TREATMENT_CLIENTSPACE_TAGS:
-				if (!is_a($treatedObject,"CMS_pageTemplate")) {
+				if (!($treatedObject instanceof CMS_pageTemplate)) {
 					$this->raiseError('$treatedObject must be a CMS_pageTemplate object');
 					return false;
 				}
-				if (!is_a($treatmentParameters["page"],"CMS_page")) {
+				if (!($treatmentParameters["page"] instanceof CMS_page)) {
 					$this->raiseError('$treatmentParameters["page"] must be a CMS_page object');
 					return false;
 				}
-				if (!is_a($treatmentParameters["language"],"CMS_language")) {
+				if (!($treatmentParameters["language"] instanceof CMS_language)) {
 					$this->raiseError('$treatmentParameters["language"] must be a CMS_language object');
 					return false;
 				}
-				$args = array("template" => $treatedObject->getID());
-				if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM
-					|| $visualizationMode == PAGE_VISUALMODE_HTML_EDITION
-					|| $visualizationMode == PAGE_VISUALMODE_FORM) {
-					$args["editedMode"] = true;
-				}
-				$cs = $tag->getRepresentationInstance($args);
-				if (is_object($cs)) {
-					$html = $cs->getData($treatmentParameters["language"], $treatmentParameters["page"], $visualizationMode, false);
-				} else {
-					//call generic module clientspace content
-					$cs = new CMS_moduleClientspace($tag->getAttributes());
-					$html = $cs->getClientspaceData($this->_codename, $treatmentParameters["language"], $treatmentParameters["page"], $visualizationMode);
-				}
-				if ($visualizationMode != PAGE_VISUALMODE_PRINT) {
-					//save in global var the page ID who need this module so we can add the header code later.
-					CMS_module::moduleUsage($treatmentParameters["page"]->getID(), $this->_codename, array('block' => true));
+				switch ($tag->getName()) {
+					case "atm-clientspace":
+						$args = array("template" => $treatedObject->getID());
+						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM
+							|| $visualizationMode == PAGE_VISUALMODE_HTML_EDITION
+							|| $visualizationMode == PAGE_VISUALMODE_FORM) {
+							$args["editedMode"] = true;
+						}
+						$cs = $tag->getRepresentationInstance($args);
+						if (is_object($cs)) {
+							$html = $cs->getData($treatmentParameters["language"], $treatmentParameters["page"], $visualizationMode, false);
+						} else {
+							//call generic module clientspace content
+							$cs = new CMS_moduleClientspace($tag->getAttributes());
+							$html = $cs->getClientspaceData($this->_codename, $treatmentParameters["language"], $treatmentParameters["page"], $visualizationMode);
+						}
+						if ($visualizationMode != PAGE_VISUALMODE_PRINT) {
+							//save in global var the page ID who need this module so we can add the header code later.
+							CMS_module::moduleUsage($treatmentParameters["page"]->getID(), $this->_codename, array('block' => true));
+						}
+					break;
+					case 'block':
+						$attributes = $tag->getAttributes();
+						//create the block data
+						$block = $tag->getRepresentationInstance();
+						//instanciate fake row
+						$row = new CMS_row(0, $attributes['id']);
+						//instanciate fake clientspace
+						$cs = new CMS_moduleClientspace($tag->getAttributes());
+						//if block exists, use it
+						if ($block) {
+							$return = $block->getData($treatmentParameters["language"], $treatmentParameters["page"], $cs, $row, $visualizationMode);
+							if ($return) {
+								//save in global var the page ID who need this module so we can add the header code later.
+								CMS_module::moduleUsage($treatmentParameters["page"]->getID(), $this->_codename, array('block' => true));
+							}
+							return $return;
+						} else {
+							//else call module clientspace content
+							$cs = new CMS_moduleClientspace($tag->getAttributes());
+							$return = $cs->getClientspaceData($this->_codename, new CMS_date(), $treatmentParameters["page"], $visualizationMode);
+							if ($visualizationMode != PAGE_VISUALMODE_PRINT && $return) {
+								//save in global var the page ID who need this module so we can add the header code later.
+								CMS_module::moduleUsage($treatmentParameters["page"]->getID(), $this->_codename, array('block' => true));
+							}
+							return $return;
+						}
+					break;
 				}
 				return $html;
 			break;
 			case MODULE_TREATMENT_BLOCK_TAGS:
-				if (!is_a($treatedObject,"CMS_row")) {
+				if (!($treatedObject instanceof CMS_row)) {
 					$this->raiseError('$treatedObject must be a CMS_row object');
 					return false;
 				}
-				if (!is_a($treatmentParameters["page"],"CMS_page")) {
+				if (!($treatmentParameters["page"] instanceof CMS_page)) {
 					$this->raiseError('$treatmentParameters["page"] must be a CMS_page object');
 					return false;
 				}
-				if (!is_a($treatmentParameters["language"],"CMS_language")) {
+				if (!($treatmentParameters["language"] instanceof CMS_language)) {
 					$this->raiseError('$treatmentParameters["language"] must be a CMS_language object');
 					return false;
 				}
-				if (!is_a($treatmentParameters["clientSpace"],"CMS_moduleClientspace")) {
+				if (!($treatmentParameters["clientSpace"] instanceof CMS_moduleClientspace)) {
 					$this->raiseError('$treatmentParameters["clientSpace"] must be a CMS_moduleClientspace object');
 					return false;
 				}
@@ -932,6 +964,16 @@ class CMS_module extends CMS_grandFather
 			break;
 		}
 		return $tagContent;
+	}
+	
+	/**
+	  * Module replacements vars
+	  *
+	  * @return array of replacements values (pattern to replace => replacement)
+	  * @access public
+	  */
+	function getModuleReplacements() {
+		return array();
 	}
 	
 	/**

@@ -37,7 +37,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return CMS_page The root page instance
 	  * @access public
 	  */
-	function getRoot()
+	static function getRoot()
 	{
 		static $applicationRoot;
 		if (!is_object($applicationRoot)) {
@@ -60,39 +60,49 @@ class CMS_tree extends CMS_grandFather
 	  * @return CMS_page or false on failure to find it
 	  * @access public
 	  */
-	function getPageByID($id)
-	{
+	static function getPageByID($id) {
 		if (!SensitiveIO::isPositiveInteger($id)) {
 			CMS_grandFather::raiseError("Id must be positive integer : ".$id);
 			return false;
 		}
-		$page = new CMS_page($id);
-		if ($page->hasError()) {
-			return false;
-		} else {
-			return $page;
+		static $pages;
+		if (isset($pages[$id])) {
+			return $pages[$id];
 		}
+		$pages[$id] = new CMS_page($id);
+		if ($pages[$id]->hasError()) {
+			$pages[$id] = false;
+		}
+		return $pages[$id];
 	}
 	
 	/**
 	  * Returns a queried CMS_page value
 	  * Static function.
 	  *
-	  * @param integer $id The DB ID of the wanted CMS_page
+	  * @param mixed $id The DB ID of the wanted CMS_page or or "self" or the page codename ($currentPageId is mandatory in this case)
 	  * @param string $type The value type to get
-	  * @return CMS_page or false on failure to find it
+	  * @param boolean $public : public value or edited value (default : public)
+	  * @param integer $currentPageId : the page reference (required if first parameter is not a page Id)
+	  * @return CMS_page value or false on failure to find it
 	  * @access public
 	  */
-	function getPageValue($id, $type) {
+	static function getPageValue($id, $type, $public = true, $currentPageId = null) {
 		static $pagesInfos;
 		if (!SensitiveIO::isPositiveInteger($id)) {
-			CMS_grandFather::raiseError("Page id must be positive integer : ".$id);
-			return false;
-		}
-		if (!isset($pagesInfos[$id][$type])) {
-			$page = new CMS_page($id);
-			if ($page->hasError()) {
+			if ($id == 'self' && SensitiveIO::isPositiveInteger($currentPageId)) {
+				$id = $currentPageId;
+			} elseif (SensitiveIO::isPositiveInteger($currentPageId) && strtolower(io::sanitizeAsciiString($id)) == $id) {
+				return CMS_tree::getPageCodenameValue($id, $currentPageId, $type);
+			} else {
+				CMS_grandFather::raiseError("Page id must be positive integer : ".print_r(func_get_args(), true));
 				return false;
+			}
+		}
+		if (!isset($pagesInfos[$id][$type][$public])) {
+			$page = CMS_tree::getPageByID($id);
+			if (!$page) {
+				$return = false;
 			} else {
 				switch ($type) {
 					case 'url':
@@ -102,23 +112,44 @@ class CMS_tree extends CMS_grandFather
 						$return = $page->getURL(true);
 					break;
 					case 'title':
-						$return = $page->getTitle(true);
+						$return = $page->getTitle($public);
 					break;
 					case 'link':
-					    $return = $page->getLinkTitle(true);
+					case 'linktitle':
+					    $return = $page->getLinkTitle($public);
 					break;
 					case 'id':
 						$return = $page->getID();
 					break;
+					case 'website':
+						$return = $page->getWebsite()->getID();
+					break;
+					case 'codename':
+					case 'keywords':
+					case 'description':
+					case 'category':
+					case 'author':
+					case 'replyto':
+					case 'copyright':
+					case 'language':
+					case 'robots':
+					case 'pragma':
+					case 'refresh':
+						$method = 'get'.ucfirst($type);
+						$return = $page->{$method}($public);
+					break;
+					case 'metas':
+						$return = $page->getMetas($public);
+					break;
 					default:
 						CMS_grandFather::raiseError("Unknown type value to get : ".$type);
-						return false;
+						$return = false;
 					break;
 				}
-				$pagesInfos[$id][$type] = $return;
+				$pagesInfos[$id][$type][$public] = $return;
 			}
 		}
-		return $pagesInfos[$id][$type];
+		return $pagesInfos[$id][$type][$public];
 	}
 	
 	/**
@@ -131,7 +162,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return CMS_page or false on failure to find it
 	  * @access public
 	  */
-	function getPageCodenameValue($codename, $referencePageId, $type) {
+	static function getPageCodenameValue($codename, $referencePageId, $type) {
 		static $pagesInfos;
 		if (!SensitiveIO::isPositiveInteger($referencePageId)) {
 			CMS_grandFather::raiseError("Reference Page id must be positive integer : ".$referencePageId);
@@ -168,7 +199,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return mixed integer / CMS_page : the page using the given codename
 	  * @access public
 	  */
-	function getPageByCodename($codename, $website, $public = false, $returnObject = true) {
+	static function getPageByCodename($codename, $website, $public = false, $returnObject = true) {
 		if (is_object($website)) {
 			$websiteID = $website->getID();
 		} elseif (io::isPositiveInteger($website)) {
@@ -213,7 +244,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return mixed integer / CMS_page : the page using the given codename
 	  * @access public
 	  */
-	function getPagesByCodename($codename, $public = false, $returnObject = true) {
+	static function getPagesByCodename($codename, $public = false, $returnObject = true) {
 		static $codenames;
 		if (isset($codenames[$codename])) {
 			if ($returnObject) {
@@ -262,7 +293,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return mixed boolean / array of page(s) id(s) in userspace
 	  * @access public
 	  */
-	function pagesExistsInUserSpace($pagesID) {
+	static function pagesExistsInUserSpace($pagesID) {
 		if (is_array($pagesID)) {
 			$sql = "
 					select
@@ -314,7 +345,7 @@ class CMS_tree extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function pageExistsForUser($pageID) {
+	static function pageExistsForUser($pageID) {
 		global $cms_user;
 		if (APPLICATION_ENFORCES_ACCESS_CONTROL) {
 			if (!is_object($cms_user) || !$cms_user->hasPageClearance($pageID, CLEARANCE_PAGE_VIEW)) {
@@ -334,7 +365,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return array(CMS_page) The siblings ordered
 	  * @access public
 	  */
-	function getSiblings(&$page, $publicTree = false, $getPages=true)
+	static function getSiblings(&$page, $publicTree = false, $getPages=true)
 	{
 		if (sensitiveIO::isPositiveInteger($page)) {
 			$pageID = $page;
@@ -380,7 +411,7 @@ class CMS_tree extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function hasSiblings(&$page, $publicTree = false)
+	static function hasSiblings(&$page, $publicTree = false)
 	{
 		if (!is_a($page, "CMS_page") && sensitiveIO::isPositiveInteger($page)) {
 			$pageID = $page;
@@ -410,7 +441,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return array(id) All siblings page id
 	  * @access public
 	  */
-	function getAllSiblings($pageID, $publicTree = false, $stopAtWebsites = false) {
+	static function getAllSiblings($pageID, $publicTree = false, $stopAtWebsites = false) {
 		$pages = array();
 		if (!io::isPositiveInteger($pageID)) {
 			return $pages;
@@ -441,7 +472,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return CMS_page The brother, or false if not found
 	  * @access public
 	  */
-	function getBrother(&$page, $offset, $publicTree = false)
+	static function getBrother(&$page, $offset, $publicTree = false)
 	{
 		if (!is_a($page, "CMS_page")) {
 			CMS_grandFather::raiseError("Page must be instance of CMS_page");
@@ -499,7 +530,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return boolean true on success, false if the page is not in the public tree
 	  * @access public
 	  */
-	function isInPublicTree($page) {
+	static function isInPublicTree($page) {
 		if (io::isPositiveInteger($page)) {
 			$pageId = $page;
 		} elseif (is_a($page, "CMS_page")) {
@@ -530,7 +561,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return array(CMS_page) The ancestors, from root to the page. Minimum is array(rootpage) if lineage of root wanted. Return false if break in lineage or page is archived or deleted.
 	  * @access public
 	  */
-	function getLineage($ancestor, $page, $IO_CMS_page=true, $publicTree = false)
+	static function getLineage($ancestor, $page, $IO_CMS_page=true, $publicTree = false)
 	{
 		static $fathers;
 		if ($IO_CMS_page && (!is_a($ancestor, "CMS_page") || !is_a($page, "CMS_page"))) {
@@ -593,7 +624,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return mixed, cms_page or page id
 	  * @access public
 	  */
-	function getFather($page, $outputObject = false, $publicTree = false) {
+	static function getFather($page, $outputObject = false, $publicTree = false) {
 		//check argument is a page
 		if (!is_a($page, "CMS_page") && !sensitiveIO::isPositiveInteger($page)) {
 			CMS_grandFather::raiseError("Page must be instance of CMS_page or positive integer");
@@ -628,7 +659,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return CMS_page The ancestor, or false if not found
 	  * @access public
 	  */
-	function getAncestor(&$page, $offset, $stopAtWebsites = false, $publicTree = false)
+	static function getAncestor(&$page, $offset, $stopAtWebsites = false, $publicTree = false)
 	{
 		if (!is_a($page, "CMS_page")) {
 			CMS_grandFather::raiseError("Page must be instance of CMS_page");
@@ -666,7 +697,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return boolean true is there's a lineage beetween the two
 	  * @access public
 	  */
-	function isAncestor(&$ancestor, &$page, $publicTree = false)
+	static function isAncestor(&$ancestor, &$page, $publicTree = false)
 	{
 		if (!is_a($ancestor, "CMS_page") || !is_a($page, "CMS_page")) {
 			CMS_grandFather::raiseError("Ancestor and page must be instances of CMS_page");
@@ -689,7 +720,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function changePagesOrder($newSiblingOrder, &$user)
+	static function changePagesOrder($newSiblingOrder, &$user)
 	{
 		//checks : pages must be CMS_pages and offset in (1, -1)
 		if (!$newSiblingOrder) {
@@ -735,7 +766,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function revertSiblingsOrder($page) {
+	static function revertSiblingsOrder($page) {
 		//check arguments are pages
 		if (!is_a($page, "CMS_page")) {
 			CMS_grandFather::raiseError("Page must be an instance of CMS_page");
@@ -822,7 +853,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function revertPageMove($page) {
+	static function revertPageMove($page) {
 		//check arguments are pages
 		if (!is_a($page, "CMS_page")) {
 			CMS_grandFather::raiseError("Page must be an instance of CMS_page");
@@ -918,7 +949,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function publishSiblingsOrder(&$page)
+	static function publishSiblingsOrder(&$page)
 	{
 		//check arguments are pages
 		if (!is_a($page, "CMS_page")) {
@@ -974,7 +1005,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function publishPageMove(&$page)
+	static function publishPageMove(&$page)
 	{
 		//check arguments are pages
 		if (!is_a($page, "CMS_page")) {
@@ -1079,7 +1110,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function changeSiblingOrder(&$sibling, $moveOffset, &$user)
+	static function changeSiblingOrder(&$sibling, $moveOffset, &$user)
 	{
 		//checks : pages must be CMS_pages and offset in (1, -1)
 		if (!is_a($sibling, "CMS_page")) {
@@ -1158,7 +1189,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return boolean true on succes, false if error
 	  * @access public
 	  */
-	function compactSiblingOrder(&$page, $publicTree = false)
+	static function compactSiblingOrder(&$page, $publicTree = false)
 	{
 		$proceed = true;
 		// Chekcs
@@ -1221,7 +1252,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return CMS_website or false on failure
 	  * @access public
 	  */
-	function getPageWebsite($page) {
+	static function getPageWebsite($page) {
 		//check argument is a page
 		if (is_object($page)) {
 			$pageID = $page->getID();
@@ -1263,7 +1294,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return string The error string (abbreviated) or false if no error
 	  * @access public
 	  */
-	function movePage(&$page, &$newFather, $newSiblingOrder, &$user)
+	static function movePage(&$page, &$newFather, $newSiblingOrder, &$user)
 	{
 		//check arguments are pages
 		if (!is_a($page, "CMS_page") || !is_a($newFather, "CMS_page")) {
@@ -1324,7 +1355,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function regenerateAllPages($fromScratch = false)
+	static function regenerateAllPages($fromScratch = false)
 	{
 		//first, clean all the linx files
 		if ($fromScratch === true) {
@@ -1373,7 +1404,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return boolean true or false
 	  * @access public
 	  */
-	function hasAncestor($pageId, $publicTree = false) {
+	static function hasAncestor($pageId, $publicTree = false) {
 		$table = ($publicTree) ? "linx_tree_public" : "linx_tree_edited";
 		//check that the page ain't already in the tree
 		$sql = "
@@ -1401,7 +1432,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access private
 	  */
-	function attachPageToTree($page, $ancestor, $publicTree = false)
+	static function attachPageToTree($page, $ancestor, $publicTree = false)
 	{
 		//check argument is a page
 		if (!is_a($page, "CMS_page") && !sensitiveIO::isPositiveInteger($page)) {
@@ -1482,7 +1513,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function detachPageFromTree(&$page, $publicTree = false)
+	static function detachPageFromTree(&$page, $publicTree = false)
 	{
 		//check argument is a page
 		if (!is_a($page, "CMS_page")) {
@@ -1538,7 +1569,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return array(string=>string) The basic attribute indexed by "title", "id", "lastFileCreation"
 	  * @access public
 	  */
-	function getArchivedPagesData()
+	static function getArchivedPagesData()
 	{
 		$sql = "
 			select
@@ -1580,7 +1611,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return string the tree string
 	  * @access public
 	  */
-	function getTreeString(&$user, $pageID, $separator, &$treeString)
+	static function getTreeString(&$user, $pageID, $separator, &$treeString)
 	{
 		static $treeStringInfos;
 		$root = CMS_tree::getRoot();
@@ -1629,7 +1660,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function submitToRegenerator($pages, $fromScratch, $dontLaunchRegenerator=false)
+	static function submitToRegenerator($pages, $fromScratch, $dontLaunchRegenerator=false)
 	{
 		$fs = ($fromScratch) ? true : false;
 		if (!is_array($pages)) {
@@ -1680,7 +1711,7 @@ class CMS_tree extends CMS_grandFather
 	  * @return CMS_page if page founded, false otherwise
 	  * @access public
 	  */
-	function analyseURL($pageUrl, $useDomain = true) {
+	static function analyseURL($pageUrl, $useDomain = true) {
 		if (strpos($pageUrl, PATH_FORBIDDEN_WR) === 0 || strpos($pageUrl, PATH_SPECIAL_PAGE_NOT_FOUND_WR) === 0) {
 			return false;
 		}

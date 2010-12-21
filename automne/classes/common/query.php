@@ -117,7 +117,8 @@
 			if (STATS_DEBUG) {
 				$currenttime = getmicrotime();
   	            $time = $currenttime - $time_start;
-				if (VIEW_SQL) $GLOBALS["sql_table"][]=array('sql' => $this->_sql, 'time' => $time, 'current' => $currenttime - $GLOBALS["time_start"], 'from' => io::getCallInfos(3));
+				if (VIEW_SQL) $GLOBALS["sql_table"][]=array('sql' => $this->_sql, 'time' => $time, 'current' => $currenttime - $GLOBALS["time_start"], 'from' => io::getCallInfos(3), 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
+				
 				$GLOBALS["sql_nb_requests"]++;
 				$GLOBALS["total_time"] += $time;
 			}

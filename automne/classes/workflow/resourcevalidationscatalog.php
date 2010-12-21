@@ -36,7 +36,7 @@ class CMS_resourceValidationsCatalog extends CMS_grandFather
 	  * @return resourceValidation the instance unserialized, false if not found.
 	  * @access public
 	  */
-	function getValidationInstance($id,$user=false)
+	static function getValidationInstance($id,$user=false)
 	{
 		if (!SensitiveIO::isPositiveInteger($id) && base64_decode($id) && $user) {
 			//load validation form encoded ID (new validations system)
@@ -78,7 +78,7 @@ class CMS_resourceValidationsCatalog extends CMS_grandFather
 	  * @return array(string=>CMS_resourceValidation) The validations to do, indexed by module codename
 	  * @access public
 	  */
-	function getValidations(&$user, $module_codename = false)
+	static function getValidations(&$user, $module_codename = false)
 	{
 		if (!is_a($user, "CMS_user")) {
 			parent::raiseError("User is not a valid CMS_user object");

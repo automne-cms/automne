@@ -66,12 +66,13 @@ class CMS_modulesTags extends CMS_grandFather
 	protected $_definition;
 	protected $_wantedTags;
 	protected $_treatmentParameters;
+	protected $_tagsCallback;
 	
 	/**
 	  * Constructor.
 	  * initializes object.
-	  * @param integer $treatmentMode The current treatment mode (see constants on top of this file for accepted values).
-	  * @param integer $visualizationMode The current visualization mode (see constants on top of cms_page class for accepted values).
+	  * @param integer $treatmentMode The current treatment mode (see constants in cms_rc.php for accepted values).
+	  * @param integer $visualizationMode The current visualization mode (see constants in cms_rc.php for accepted values).
 	  * @param object $treatedObject The reference object to treat.
 	  *
 	  * @return void
@@ -114,6 +115,9 @@ class CMS_modulesTags extends CMS_grandFather
 					if (is_array($this->_modulesTreatment[$aModule->getCodename()]) && $this->_modulesTreatment[$aModule->getCodename()]) {
 						foreach ($this->_modulesTreatment[$aModule->getCodename()] as $tagName => $aTagToTreat) {
 							$this->_wantedTags[]=array("tagName" => $tagName, "selfClosed" => $aTagToTreat["selfClosed"], "parameters" => $aTagToTreat["parameters"]);
+							if (isset($aTagToTreat["class"]) && $aTagToTreat["class"]) {
+								$this->_tagsCallback[$tagName] = $aTagToTreat["class"];
+							}
 						}
 					}
 				}
@@ -136,7 +140,7 @@ class CMS_modulesTags extends CMS_grandFather
 			$this->raiseError("Object not initialized");
 			return false;
 		}
-		if (!is_a($tag,"CMS_XMLTag")) {
+		if (!($tag instanceof CMS_XMLTag)) {
 			$this->raiseError("Tag parameter must be a CMS_XMLTag object");
 			return false;
 		}
@@ -155,12 +159,30 @@ class CMS_modulesTags extends CMS_grandFather
 					}
 					if ($match) {
 						$hasMatch = true;
-						$tagContents = $this->_modules[$aModuleCodeName]->treatWantedTag($tag, $tagContents, $this->_treatmentMode, $this->_visualizationMode, $this->_treatedObject, $this->_treatmentParameters);
+						if (isset($this->_tagsCallback[$tag->getName()])) {
+							$tagContents = $tag->compute(array(
+								'mode'			=> $this->_treatmentMode,
+								'visualization' => $this->_visualizationMode,
+								'object'		=> $this->_treatedObject,
+								'parameters'	=> $this->_treatmentParameters
+							));
+						} else {
+							$tagContents = $this->_modules[$aModuleCodeName]->treatWantedTag($tag, $tagContents, $this->_treatmentMode, $this->_visualizationMode, $this->_treatedObject, $this->_treatmentParameters);
+						}
 					}
 				} else {
 					//else no tag parameters so query the module
 					$hasMatch = true;
-					$tagContents = $this->_modules[$aModuleCodeName]->treatWantedTag($tag, $tagContents, $this->_treatmentMode, $this->_visualizationMode, $this->_treatedObject, $this->_treatmentParameters);
+					if (isset($this->_tagsCallback[$tag->getName()])) {
+						$tagContents = $tag->compute(array(
+							'mode'			=> $this->_treatmentMode,
+							'visualization' => $this->_visualizationMode,
+							'object'		=> $this->_treatedObject,
+							'parameters'	=> $this->_treatmentParameters
+						));
+					} else {
+						$tagContents = $this->_modules[$aModuleCodeName]->treatWantedTag($tag, $tagContents, $this->_treatmentMode, $this->_visualizationMode, $this->_treatedObject, $this->_treatmentParameters);
+					}
 				}
 			}
 		}
@@ -240,9 +262,21 @@ class CMS_modulesTags extends CMS_grandFather
 					$tags = array_merge($this->_getTags($definition[$key]['childrens'], $tagFilters, ++$level), $tags);
 				}
 				if (isset($definition[$key]['nodename']) && $this->_isWanted($definition[$key]) && (!$tagFilters || in_array($definition[$key]['nodename'], $tagFilters))) {
-					$xmlTag = new CMS_XMLTag($definition[$key]['nodename'], $definition[$key]['attributes']);
+					$className = isset($this->_tagsCallback[$definition[$key]['nodename']]) ? $this->_tagsCallback[$definition[$key]['nodename']] : 'CMS_XMLTag';
+					if (!class_exists($className)) {
+						$this->raiseError('Unknown class '.$className.'. Cannot compute tag '.$definition[$key]['nodename']);
+						return false;
+					}
+					$xmlTag = new $className(
+						$definition[$key]['nodename'], 
+						$definition[$key]['attributes'], 
+						(isset($definition[$key]['childrens']) ? $definition[$key]['childrens'] : array()),
+						array(
+							'context'			=> CMS_XMLTag::HTML_CONTEXT,
+							'childrenCallback'	=> array($this, 'computeTags'),
+						)
+					);
 					$xml = array($definition[$key]);
-					$xmlTag->setTextContent($this->_parser->toXML($xml));
 					$tags[] = $xmlTag;
 				}
 			}
@@ -269,7 +303,7 @@ class CMS_modulesTags extends CMS_grandFather
 			return false;
 		}
 		//then return computed definition
-		return $this->_computeTags($this->_definitionArray);
+		return $this->computeTags($this->_definitionArray);
 	}
 	
 	/**
@@ -279,34 +313,57 @@ class CMS_modulesTags extends CMS_grandFather
 	  * @param multidimentionnal array $definition : the reference of the definition to compute
 	  * @param integer $level : the current level of recursion (default : 0)
 	  * @return string the PHP / HTML content computed
-	  * @access private
 	  */
-	protected function _computeTags(&$definition, $level = 0) {
+	function computeTags(&$definition, $level = 0) {
 		$code = '';
 		if (is_array($definition) && is_array($definition[0])) {
 			//loop on subtags
 			foreach (array_keys($definition) as $key) {
 				if (isset($definition[$key]['nodename']) && $this->_isWanted($definition[$key]) && !isset($definition[$key]['childrens'])) {
-					$xmlTag = new CMS_XMLTag($definition[$key]['nodename'], $definition[$key]['attributes']);
+					$className = isset($this->_tagsCallback[$definition[$key]['nodename']]) ? $this->_tagsCallback[$definition[$key]['nodename']] : 'CMS_XMLTag';
+					if (!class_exists($className)) {
+						$this->raiseError('Unknown class '.$className.'. Cannot compute tag '.$definition[$key]['nodename']);
+						return false;
+					}
+					$xmlTag = new $className(
+						$definition[$key]['nodename'], 
+						$definition[$key]['attributes'], 
+						array(), 
+						array(
+							'context'			=> CMS_XMLTag::HTML_CONTEXT
+						)
+					);
 					$xml = array($definition[$key]);
-					$xmlTag->setTextContent($this->_parser->toXML($xml));
 					$code .= $this->treatWantedTag($xmlTag);
 				} elseif (isset($definition[$key]['childrens'])) {
-					$childrens = $this->_computeTags($definition[$key]['childrens'], ++$level);
+					$computedChildren = $this->computeTags($definition[$key]['childrens'], ++$level);
 					unset($definition[$key]['childrens']);
-					$definition[$key]['childrens'][0]['textnode'] = $childrens;
+					$definition[$key]['childrens'][0]['textnode'] = $computedChildren;
 					$xml = array($definition[$key]);
 					if (isset($definition[$key]['nodename']) && $this->_isWanted($definition[$key])) {
-						$xmlTag = new CMS_XMLTag($definition[$key]['nodename'], $definition[$key]['attributes']);
-						$xmlTag->setTextContent($this->_parser->toXML($xml));
+						$className = isset($this->_tagsCallback[$definition[$key]['nodename']]) ? $this->_tagsCallback[$definition[$key]['nodename']] : 'CMS_XMLTag';
+						if (!class_exists($className)) {
+							$this->raiseError('Unknown class '.$className.'. Cannot compute tag '.$definition[$key]['nodename']);
+							return false;
+						}
+						$xmlTag = new $className(
+							$definition[$key]['nodename'], 
+							$definition[$key]['attributes'], 
+							$definition[$key]['childrens'],
+							array(
+								'context'			=> CMS_XMLTag::HTML_CONTEXT,
+								'childrenCallback'	=> array($this, 'computeTags'),
+							)
+						);
 						$code .= $this->treatWantedTag($xmlTag);
 					} else {
 						//append computed tags as code
-						$code .= $this->_parser->toXML($xml);
+						$code .= $this->_parser->toXML($xml, false, ($this->_treatmentMode == MODULE_TREATMENT_PAGEHEADER_TAGS));
 					}
 				} else {
+					//append text node
 					$xml = array($definition[$key]);
-					$code .= $this->_parser->toXML($xml);
+					$code .= $this->_parser->toXML($xml, false, ($this->_treatmentMode == MODULE_TREATMENT_PAGEHEADER_TAGS));
 				}
 			}
 		}

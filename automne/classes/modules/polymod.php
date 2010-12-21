@@ -111,6 +111,12 @@ class CMS_polymod extends CMS_modulePolymodValidation
 				if (is_array($pluginsIDs) && $pluginsIDs) {
 					$return["span"] = array("selfClosed" => false, "parameters" => array('id' => 'polymod-('.implode('|',$pluginsIDs).')-(.*)'));
 				}
+				$return["atm-if"] 			= array("selfClosed" => false,	"parameters" => array(), 'class' => 'CMS_XMLTag_if');
+				$return["atm-else"] 		= array("selfClosed" => false,	"parameters" => array(), 'class' => 'CMS_XMLTag_else');
+				$return["atm-start-tag"] 	= array("selfClosed" => true,	"parameters" => array(), 'class' => 'CMS_XMLTag_start');
+				$return["atm-end-tag"] 		= array("selfClosed" => true,	"parameters" => array(), 'class' => 'CMS_XMLTag_end');
+				$return["atm-setvar"] 		= array("selfClosed" => true,	"parameters" => array(), 'class' => 'CMS_XMLTag_setvar');
+				
 			break;
 			case MODULE_TREATMENT_WYSIWYG_OUTER_TAGS :
 			case MODULE_TREATMENT_WYSIWYG_INNER_TAGS :
@@ -148,7 +154,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 				return parent::treatWantedTag($tag, $tagContent, $treatmentMode, $visualizationMode, $treatedObject, $treatmentParameters);
 			break;
 			case MODULE_TREATMENT_PAGECONTENT_TAGS :
-				if (!is_a($treatedObject,"CMS_page")) {
+				if (!($treatedObject instanceof CMS_page)) {
 					$this->raiseError('$treatedObject must be a CMS_page object');
 					return false;
 				}
@@ -476,7 +482,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			break;
 			case MODULE_TREATMENT_AFTER_VALIDATION_TREATMENT :
 				//if object is a polyobject and module is the current object's module
-				if (is_a($treatedObject,'CMS_poly_object') && $this->_codename == CMS_poly_object_catalog::getModuleCodenameForObject($treatedObject->getID())) {
+				if (($treatedObject instanceof CMS_poly_object) && $this->_codename == CMS_poly_object_catalog::getModuleCodenameForObject($treatedObject->getID())) {
 					//send notification of the validation result to polyobject
 					$treatedObject->afterValidation($treatmentParameters['result']);
 				}
@@ -532,25 +538,24 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  */
 	function convertDefinitionString($definition, $toHumanReadableFormat) {
 		global $cms_language;
-		//get all definition variables (braket enclosed terms)
-		if (preg_match_all("#{[^{}]+}}?#", $definition, $matches)) {
+		global $modulesConversionTable;
+		$count = 1;
+		//loop on text for vars to replace if any
+		while (preg_match_all("#\{[^{}]+[|}]{1}#U", $definition, $matches) && $count) {
 			$matches = array_unique($matches[0]);
 			//get module variables conversion table
-			$convertionTable = CMS_poly_module_structure::getModuleTranslationTable($this->getCodename(), $cms_language);
-			if ($toHumanReadableFormat) {
-				$convertionTable = array_flip($convertionTable);
+			if (!isset($modulesConversionTable[$this->getCodename()])) {
+				$modulesConversionTable[$this->getCodename()] = CMS_poly_module_structure::getModuleTranslationTable($this->getCodename(), $cms_language);
 			}
+			$convertionTable = $toHumanReadableFormat ? array_flip($modulesConversionTable[$this->getCodename()]) : $modulesConversionTable[$this->getCodename()];
 			//create definition conversion table
 			$replace = array();
+			$count = 0;
 			foreach ($matches as $variable) {
-				$replacedValue1 = preg_replace("#\{([^|}]+)[^}]*\}}?#", '\1', $variable);
-				if (isset($convertionTable[$replacedValue1])) {
-					if (io::strpos($variable, '|') !== false) {
-						$replacedValue2 = preg_replace("#[^|]+\|([^|]+)\}#U", '\1', $variable);
-						$replace[$variable] = '{' . $convertionTable[$replacedValue1] . '|'. ((io::strpos($replacedValue2, '{') !== false && $convertionTable[io::substr($replacedValue2,1,-1)]) ? '{'.$convertionTable[io::substr($replacedValue2,1,-1)].'}' : $replacedValue2) . '}';
-					} else {
-						$replace[$variable] = '{' . $convertionTable[$replacedValue1] . '}';
-					}
+				$strippedVar = io::substr($variable, 1, io::strlen($variable)-2);
+				if (isset($convertionTable[$strippedVar])) {
+					$replace[$variable] = '{' . $convertionTable[$strippedVar] . io::substr($variable, -1);
+					$count++;
 				}
 			}
 			//then replace variables in definition
@@ -689,6 +694,11 @@ class CMS_polymod extends CMS_modulePolymodValidation
 				'cms_poly_rss_definitions' 			=> PATH_MODULES_FS.'/polymod/poly_rss_definition.php',
 				'cms_block_polymod' 				=> PATH_MODULES_FS.'/polymod/block.php',
 				'cms_poly_definition_functions' 	=> PATH_MODULES_FS.'/polymod/poly_definition_functions.php',
+				'cms_xmltag_if' 					=> PATH_MODULES_FS.'/polymod/tags/if.php',
+				'cms_xmltag_else' 					=> PATH_MODULES_FS.'/polymod/tags/else.php',
+				'cms_xmltag_start' 					=> PATH_MODULES_FS.'/polymod/tags/start.php',
+				'cms_xmltag_end' 					=> PATH_MODULES_FS.'/polymod/tags/end.php',
+				'cms_xmltag_setvar' 				=> PATH_MODULES_FS.'/polymod/tags/setvar.php',
 			);
 		}
 		$file = '';
@@ -771,6 +781,33 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			);
 		}
 		return $objectsInfos;
+	}
+	
+	/**
+	  * Module replacements vars
+	  *
+	  * @return array of replacements values (pattern to replace => replacement)
+	  * @access public
+	  */
+	function getModuleReplacements($parameterVarName) {
+		$replace = array();
+		//replace {plugin:selection} values
+		$replace["#^\{plugin:selection\}$#U"]								= '$'.$parameterVarName.'[\'selection\']';
+		//replace 'fieldID' value by corresponding fieldID
+		$replace["#^\{.*\[([n0-9]+)\]\['fieldID'\]\}$#U"] 					= '\1';
+		//create the real object path to vars
+		$replace["#\['fields'\]\[([n0-9]+)\]\}?#"] 							= '->objectValues(\1)';
+		$replace["#\['values'\]\[([n0-9]+)\]\['([a-zA-Z]+)'\]\}$#U"]		= '->getValue(\'\1\',\'\2\')';
+		$replace["#\['([a-zA-Z]+)'\]\|?\"\.([^|}]*)\.\"\}$#U"] 				= '->getValue(\'\1\',\2)';
+		
+		$replace["#\['([a-zA-Z]+)'\]\|?([^|}]*)\}$#U"] 						= '->getValue(\'\1\',\'\2\')';
+		
+		$replace["#^\{\['object([0-9]+)'\]#U"] 								= '$object[\1]';
+		$replace["#\[([n0-9]+)]}$#U"] 										= '[\1]';
+		//replace the loop 'n' value by $key
+		$replace["#\(([n0-9]+)\)->objectValues(\(n\))#U"] 					= '(\1)->objectValues($key_\1)';
+		$replace["#\(([n0-9]+)\)->getValue\(('n')#U"] 						= '(\1)->getValue($key_\1';
+		return $replace;
 	}
 	
 	/**

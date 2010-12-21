@@ -48,7 +48,7 @@ if (APPLICATION_CONFIG_LOADED) {
 		//check if user session exists
 		if (isset($_SESSION["cms_context"])) {
 			//check session object
-			if (is_a($_SESSION["cms_context"], "CMS_context")) {
+			if ($_SESSION["cms_context"] instanceof CMS_context) {
 				$_SESSION["cms_context"]->checkSession();
 				//then if session always exists, set some useful vars
 				if (is_object($_SESSION["cms_context"])) {
@@ -57,7 +57,7 @@ if (APPLICATION_CONFIG_LOADED) {
 					$cms_language = $cms_user->getLanguage();
 				}
 			}
-		} elseif (isset($cms_user) && is_a($cms_user, "CMS_profile_user")) {
+		} elseif (isset($cms_user) && ($cms_user instanceof CMS_profile_user)) {
 			//user already exists, only need to declare language
 			$cms_language = $cms_user->getLanguage();
 		}
@@ -67,7 +67,7 @@ if (APPLICATION_CONFIG_LOADED) {
 		if (isset($_SESSION["cms_context"])) {
 			//check session object
 			//CMS_grandFather::log('Frontend ok2');
-			if (is_a($_SESSION["cms_context"], "CMS_context")) {
+			if ($_SESSION["cms_context"] instanceof CMS_context) {
 				//CMS_grandFather::log('Frontend ok3');
 				$_SESSION["cms_context"]->checkSession();
 				//then if session always exists, set some useful vars
@@ -106,7 +106,7 @@ if (APPLICATION_CONFIG_LOADED) {
 					//CMS_grandFather::log('Frontend ok10');
 					CMS_view::redirect(PATH_FRONTEND_SPECIAL_LOGIN_WR);
 				}
-			} elseif (is_a($cms_user, "CMS_profile_user")) {
+			} elseif ($cms_user instanceof CMS_profile_user) {
 				//user already exists, only need to declare language
 				$cms_language = $cms_user->getLanguage();
 			}

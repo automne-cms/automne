@@ -41,7 +41,7 @@ if (strpos($_SERVER['SCRIPT_NAME'], PATH_ADMIN_MODULES_WR) === 0
 if (APPLICATION_EXEC_TYPE == 'http') {
 	//check user privileges
 	//CMS_grandFather::log('Admin session exists : '.isset($_SESSION["cms_context"]));
-	if (isset($_SESSION["cms_context"]) && is_a($_SESSION["cms_context"], "CMS_context")) {
+	if (isset($_SESSION["cms_context"]) && ($_SESSION["cms_context"] instanceof CMS_context)) {
 		//CMS_grandFather::log('Admin ok1');
 		$_SESSION["cms_context"]->checkSession();
 		

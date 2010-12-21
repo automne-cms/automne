@@ -60,14 +60,8 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			'atm-search-limit'		=> '_searchLimitTag',
 			'atm-search-order'		=> '_searchOrderTag',
 			'atm-loop' 				=> '_loopTag',
-			'atm-if' 				=> '_ifTag',
-			'atm-else' 				=> '_elseTag',
-			'atm-elseif'			=> '_elseifTag',
-			'atm-parameter'			=> '_parameterTag',
-			'atm-start-tag'			=> '_tagStart',
-			'atm-end-tag'			=> '_tagEnd',
+			'atm-parameter'			=> '_parameterTag', //DEPRECATED
 			'atm-function'			=> '_functionTag',
-			'atm-setvar'			=> '_setvarTag',
 			'atm-plugin'			=> '_pluginTag',
 			'atm-plugin-view'		=> '_pluginViewTag',
 			'atm-plugin-valid'		=> '_pluginValidTag',
@@ -160,26 +154,42 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  *		self::CHECK_PARSING_MODE : Check for definition parsing errors
 	  *		self::BLOCK_PARAM_MODE : Get definition block parameters form
 	  * @param string $module : the current module codename which use this definition. this parameter is optionnal but it can enforce definition parsing requirements (used to verify specific modules languages for now).
+	  * @param integer $visualizationMode The current visualization mode (see constants in cms_rc.php for accepted values).
 	  * @return void
 	  * @access public
 	  */
-	function __construct($definition, $parse = true, $mode = self::PARSE_MODE, $module = false) {
+	function __construct($definition, $parse = true, $mode = self::PARSE_MODE, $module = false, $visualizationMode = PAGE_VISUALMODE_HTML_PUBLIC) {
 		if (!trim($definition)) {
 			return;
 		}
 		if($module) {
 			$this->_parameters['module'] = $module;
 		}
+		$this->_parameters['visualization'] = $visualizationMode;
 		$this->_mode = $mode;
 		if ($parse || $mode == self::BLOCK_PARAM_MODE) {
+			
+			//get all tags handled by modules
+			$modules = CMS_modulesCatalog::getAll("id");
+			foreach ($modules as $codename => $aModule) {
+				$moduleTreatments = $aModule->getWantedTags(MODULE_TREATMENT_PAGECONTENT_TAGS, $this->_parameters['visualization']);
+				if (is_array($moduleTreatments) && $moduleTreatments) {
+					//if module return tags, save them.
+					foreach ($moduleTreatments as $tagName => $parameters) {
+						if (isset($parameters['class']) && !isset($this->_tagsCallBack[$tagName])) {
+							$this->_tagsCallBack[$tagName] = $parameters['class'];
+						}
+					}
+				}
+			}
 			//parse definiton
 			$this->_parser = new CMS_xml2Array($definition, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES | CMS_xml2Array::XML_CORRECT_ENTITIES);
 			$this->_definitionArray = $this->_parser->getParsedArray();
 			//compute definition
-			$this->_definition = $this->_computeTags($this->_definitionArray);
+			$this->_definition = $this->computeTags($this->_definitionArray);
 			if ($mode != self::BLOCK_PARAM_MODE) {
 				//clean some useless codes
-				$this->_definition = $this->_cleanComputedDefinition($this->_definition);
+				$this->_definition = CMS_XMLTag::cleanComputedDefinition($this->_definition);
 			}
 		} else {
 			$this->_definition = $this->preReplaceVars(str_replace('"','&quot;', $definition), false, true);
@@ -315,7 +325,8 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				   				'$content = CMS_polymod_definition_parsing::replaceVars($content, $replace);'."\n".
 								$footers."\n".
 								'echo $content;'."\n".
-								'unset($content);';
+								'unset($content);'."\n".
+								'unset($replace);';
 					
 				$return .= 
 				'}'."\n".
@@ -389,9 +400,9 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @param multidimentionnal array $definition : the reference of the definition to compute
 	  * @param integer $level : the current level of recursion (default : 0)
 	  * @return string the PHP / HTML content computed
-	  * @access private
+	  * @access public
 	  */
-	protected function _computeTags(&$definition, $level = 0) {
+	function computeTags(&$definition, $level = 0) {
 		$code = '';
 		if ($level == 0) {
 			$code .= '$content .="';
@@ -405,8 +416,33 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 						$code = CMS_polymod_definition_parsing::preReplaceVars($code);
 						$code .= $this->{$this->_tagsCallBack[$definition[$key]['nodename']]}($definition[$key]);
 						$code .= '$content .="';
+					} elseif (class_exists($this->_tagsCallBack[$definition[$key]['nodename']])) {
+						$code .= '";'."\n";
+						$code = CMS_polymod_definition_parsing::preReplaceVars($code);
+						
+						$oTag = new $this->_tagsCallBack[$definition[$key]['nodename']](
+							$definition[$key]['nodename'], 
+							$definition[$key]['attributes'], 
+							(isset($definition[$key]['childrens']) ? $definition[$key]['childrens'] : array()),
+							array(
+								'context'			=> CMS_XMLTag::PHP_CONTEXT,
+								'module'			=> isset($this->_parameters['module']) ? $this->_parameters['module'] : false,
+								'childrenCallback'	=> array($this, 'computeTags'),
+							)
+						);
+						
+						if ($this->_mode == self::CHECK_PARSING_MODE) {
+							$this->_parsingError .= $oTag->getTagError() ? "\n".$oTag->getTagError() : '';
+						} else {
+							$code .= $oTag->compute(array(
+								'mode'			=> $this->_mode,
+								'visualization'	=> $this->_parameters['visualization']
+							));
+							$this->_elements = array_merge_recursive((array) $this->_elements, (array) $oTag->getTagReferences());
+						}
+						$code .= '$content .="';
 					} else {
-						$this->raiseError("Unknown compute callback method : ".$this->_tagsCallBack[$definition[$key]['nodename']]);
+						$this->raiseError('Unknown compute callback method : '.$this->_tagsCallBack[$definition[$key]['nodename']].' for tag '.$definition[$key]['nodename']);
 						return false;
 					}
 				} elseif (isset($definition[$key]['phpnode'])) {
@@ -415,7 +451,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 					//append php code
 					$code .= '";'."\n";
 					$code = CMS_polymod_definition_parsing::preReplaceVars($code);
-					$code .= 'eval(sensitiveIO::sanitizeExecCommand(CMS_polymod_definition_parsing::replaceVars(\''.str_replace("'","\'",str_replace("\'","\\\'",CMS_polymod_definition_parsing::preReplaceVars($definition[$key]['phpnode'], false, false, false))).'\', $replace)));'."\n";
+					$code .= 'eval(sensitiveIO::sanitizeExecCommand(CMS_polymod_definition_parsing::replaceVars(\''.addcslashes(CMS_polymod_definition_parsing::preReplaceVars($definition[$key]['phpnode'], false, false, false),"'").'\', $replace)));'."\n";
 					$code .= '$content .="';
 				} elseif (isset($definition[$key]['childrens'])) {
 					//compute subtags
@@ -423,7 +459,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 					//append computed tags as code
 					$xml = array($definition[$key]);
 					$code .= str_replace('"', '\"', $this->_parser->toXML($xml, CMS_xml2Array::ARRAY2XML_START_TAG));
-					$code .= $this->_computeTags($definition[$key]['childrens'], $level+1);
+					$code .= $this->computeTags($definition[$key]['childrens'], $level+1);
 					$code .= str_replace('"', '\"', $this->_parser->toXML($xml, CMS_xml2Array::ARRAY2XML_END_TAG));
 				} else {
 					$xml = array($definition[$key]);
@@ -461,7 +497,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			))) {
 			return;
 		}
-		$uniqueID = $this->getUniqueID();
+		$uniqueID = CMS_XMLTag::getUniqueID();
 		$objectID = io::substr($tag['attributes']['what'],9,-3);
 		$return = '
 		//SEARCH '.$tag['attributes']['name'].' TAG START '.$uniqueID.'
@@ -494,13 +530,11 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			}
 		}
 		if (is_array($tag['childrens']) && $tag['childrens']) {
-			$return .= $this->_computeTags($tag['childrens']).'
+			$return .= $this->computeTags($tag['childrens']).'
 			';
 		}
 		$return .='//destroy search and results '.$tag['attributes']['name'].' objects
-		unset($search_'.$tag['attributes']['name'].');
-		unset($launchSearch_'.$tag['attributes']['name'].');
-		unset($searchLaunched_'.$tag['attributes']['name'].');
+		unset($search_'.$tag['attributes']['name'].', $launchSearch_'.$tag['attributes']['name'].', $searchLaunched_'.$tag['attributes']['name'].');
 		//SEARCH '.$tag['attributes']['name'].' TAG END '.$uniqueID.'
 		';
 		return $return;
@@ -527,7 +561,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		} else {
 			$returnType = '';
 		}
-		$uniqueID = $this->getUniqueID();
+		$uniqueID = CMS_XMLTag::getUniqueID();
 		$return = '
 		//RESULT '.$tag['attributes']['search'].' TAG START '.$uniqueID.'
 		if(isset($search_'.$tag['attributes']['search'].') && $launchSearch_'.$tag['attributes']['search'].' && $searchLaunched_'.$tag['attributes']['search'].' === false) {
@@ -567,17 +601,15 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 					"{maxresults}"  => $maxResults_'.$uniqueID.',
 					"{altclass}"    => (($count_'.$uniqueID.'+1) % 2) ? "CMS_odd" : "CMS_even",
 				);
-				'.$this->_computeTags($tag['childrens']).'
+				'.$this->computeTags($tag['childrens']).'
 				$count_'.$uniqueID.'++;
 				//do all result vars replacement
 				$content_'.$uniqueID.'.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
 			}
 			$content = $content_'.$uniqueID.'; //retrieve previous content var if any
-			unset($content_'.$uniqueID.');
 			$replace = $replace_'.$uniqueID.'; //retrieve previous replace vars if any
-			unset($replace_'.$uniqueID.');
 			$object[$objectDefinition_'.$tag['attributes']['search'].'] = $object_'.$uniqueID.'; //retrieve previous object search if any
-			unset($object_'.$uniqueID.');
+			unset($object_'.$uniqueID.', $replace_'.$uniqueID.', $content_'.$uniqueID.');
 		}
 		//RESULT '.$tag['attributes']['search'].' TAG END '.$uniqueID.'
 		';
@@ -598,7 +630,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			))) {
 			return;
 		}
-		$uniqueID = $this->getUniqueID();
+		$uniqueID = CMS_XMLTag::getUniqueID();
 		$return = '
 		//NO-RESULT '.$tag['attributes']['search'].' TAG START '.$uniqueID.'
 		if(isset($search_'.$tag['attributes']['search'].') && $launchSearch_'.$tag['attributes']['search'].' && $searchLaunched_'.$tag['attributes']['search'].' === false) {
@@ -614,7 +646,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		}
 		if (isset($search_'.$tag['attributes']['search'].') && $launchSearch_'.$tag['attributes']['search'].' && $searchLaunched_'.$tag['attributes']['search'].' === true) {
 			if (!$search_'.$tag['attributes']['search'].'->getNumRows()) {
-				'.$this->_computeTags($tag['childrens']).'
+				'.$this->computeTags($tag['childrens']).'
 			}
 		}
 		//NO-RESULT '.$tag['attributes']['search'].' TAG END '.$uniqueID.'
@@ -646,7 +678,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			if ($this->_mode == self::BLOCK_PARAM_MODE) {
 				$this->_blockParams['search'][ $tag['attributes']['search'] ][ $type ] = ($tag['attributes']['mandatory'] == 'true') ? true : false;
 			}
-			$uniqueID = $this->getUniqueID();
+			$uniqueID = CMS_XMLTag::getUniqueID();
 			$return .= '
 			if (isset($blockAttributes[\'search\'][\''.$tag['attributes']['search'].'\'][\''.$type.'\'])) {
 				$values_'.$uniqueID.' = '.CMS_polymod_definition_parsing::preReplaceVars(var_export($tag['attributes'],true),true).';
@@ -745,7 +777,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access private
 	  * @static
 	  */
-	function addSearchCondition(&$search, $tagAttributes) {
+	static function addSearchCondition(&$search, $tagAttributes) {
 		global $cms_language;
 		
 		if (!isset($tagAttributes['type'])) {
@@ -793,105 +825,6 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	}
 	
 	/**
-	  * Compute an atm-if tag
-	  *
-	  * @param array $tag : the reference atm-if tag to compute
-	  * @return string the PHP / HTML content computed
-	  * @access private
-	  */
-	protected function _ifTag(&$tag) {
-		//check tags requirements
-		if (!$this->checkTagRequirements($tag, array(
-				'what' => true, 
-			))) {
-			return;
-		}
-		if (isset($tag['attributes']['name']) && $tag['attributes']['name']) {
-			if (!$this->checkTagRequirements($tag, array(
-					'name' => 'alphanum', 
-				))) {
-				return;
-			}
-		}
-		
-		//decode ampersand
-		$tag['attributes']['what'] = io::decodeEntities($tag['attributes']['what']);
-		
-		$uniqueID = $this->getUniqueID();
-		$return = '
-		//IF TAG START '.$uniqueID.'
-		$ifcondition_'.$uniqueID.' = CMS_polymod_definition_parsing::replaceVars("'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['what'], false, false, array('CMS_polymod_definition_parsing', 'encloseWithPrepareVar')).'", $replace);
-		if ($ifcondition_'.$uniqueID.') {
-			$func_'.$uniqueID.' = create_function("","return (".$ifcondition_'.$uniqueID.'.");");';
-			//if attribute name is set, store if result
-			if (isset($tag['attributes']['name']) && $tag['attributes']['name']) {
-				$return .= '$atmIfResults[\''.$tag['attributes']['name'].'\'][\'if\'] = false;';
-			}
-		$return .= '
-			if ($func_'.$uniqueID.'()) {';
-				//if attribute name is set, store if result
-				if (isset($tag['attributes']['name']) && $tag['attributes']['name']) {
-					$return .= '$atmIfResults[\''.$tag['attributes']['name'].'\'][\'if\'] = true;';
-				}
-			$return .= '
-				'.$this->_computeTags($tag['childrens']).'
-			}
-			unset($func_'.$uniqueID.');
-		}
-		unset($ifcondition_'.$uniqueID.');
-		//IF TAG END '.$uniqueID.'
-		';
-		return $return;
-	}
-	
-	/**
-	  * Compute an atm-else tag
-	  *
-	  * @param array $tag : the reference atm-else tag to compute
-	  * @return string the PHP / HTML content computed
-	  * @access private
-	  */
-	protected function _elseTag(&$tag) {
-		//check tags requirements
-		if (!$this->checkTagRequirements($tag, array(
-				'for' => 'alphanum', 
-			))) {
-			return;
-		}
-		$uniqueID = $this->getUniqueID();
-		
-		//decode ampersand
-		if (isset($tag['attributes']['what']) && $tag['attributes']['what']) {
-			$tag['attributes']['what'] = io::decodeEntities($tag['attributes']['what']);
-			
-			$return = '
-			//ELSE TAG START '.$uniqueID.'
-			if (isset($atmIfResults[\''.$tag['attributes']['for'].'\'][\'if\']) && $atmIfResults[\''.$tag['attributes']['for'].'\'][\'if\'] === false) {
-				$ifcondition_'.$uniqueID.' = CMS_polymod_definition_parsing::replaceVars("'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['what'], false, false, array('CMS_polymod_definition_parsing', 'encloseWithPrepareVar')).'", $replace);
-				if ($ifcondition_'.$uniqueID.') {
-					$func_'.$uniqueID.' = create_function("","return (".$ifcondition_'.$uniqueID.'.");");
-					if ($func_'.$uniqueID.'()) {
-						'.$this->_computeTags($tag['childrens']).'
-					}
-					unset($func_'.$uniqueID.');
-				}
-				unset($ifcondition_'.$uniqueID.');
-			}
-			//ELSE TAG END '.$uniqueID.'
-			';
-		} else {
-			$return = '
-			//ELSE TAG START '.$uniqueID.'
-			if (isset($atmIfResults[\''.$tag['attributes']['for'].'\'][\'if\']) && $atmIfResults[\''.$tag['attributes']['for'].'\'][\'if\'] === false) {
-				'.$this->_computeTags($tag['childrens']).'
-			}
-			//ELSE TAG END '.$uniqueID.'
-			';
-		}
-		return $return;
-	}
-	
-	/**
 	  * DEPRECATED : Compute an atm-parameter tag
 	  *
 	  * @param array $tag : the reference atm-parameter tag to compute
@@ -914,7 +847,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			))) {
 			return;
 		}
-		$uniqueID = $this->getUniqueID();
+		$uniqueID = CMS_XMLTag::getUniqueID();
 		$return = '
 		//FUNCTION TAG START '.$uniqueID.'
 		$parameters_'.$uniqueID.' = array (';
@@ -934,7 +867,9 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				$content .= CMS_polymod_definition_parsing::replaceVars($object_'.$uniqueID.'->'.$tag['attributes']["function"].'($parameters_'.$uniqueID.', '.CMS_polymod_definition_parsing::preReplaceVars(var_export($childrens ,true), true).'), $replace);
 			} else {
 				CMS_grandFather::raiseError("Malformed atm-function tag : can\'t found method '.$tag['attributes']["function"].' on object : ".get_class($object_'.$uniqueID.'));
-			}';
+			}
+			unset($object_'.$uniqueID.');
+			';
 		} else {
 			$return .='
 			if (method_exists(new CMS_poly_definition_functions(), "'.$tag['attributes']["function"].'")) {
@@ -963,7 +898,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			))) {
 			return;
 		}
-		$uniqueID = $this->getUniqueID();
+		$uniqueID = CMS_XMLTag::getUniqueID();
 		$reverse = '';
 		if (isset($tag['attributes']["reverse"]) && $tag['attributes']["reverse"] == 'true') {
 			$reverse = '$loopcondition_'.$uniqueID.' = array_reverse ( $loopcondition_'.$uniqueID.' , true );';
@@ -992,90 +927,22 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 					"{maxloops}" 	=> $maxloops_'.$uniqueID.',
 					"{altloopclass}"=> (($count_'.$uniqueID.'+1) % 2) ? "CMS_odd" : "CMS_even",
 				);
-				'.$this->_computeTags($tag['childrens']).'
+				'.$this->computeTags($tag['childrens']).'
 				$count_'.$uniqueID.'++;
 				//do all result vars replacement
 				$content_'.$uniqueID.'.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
 			}
 			$content = $content_'.$uniqueID.'; //retrieve previous content var if any
-			unset($content_'.$uniqueID.');
 			$replace = $replace_'.$uniqueID.'; //retrieve previous replace vars if any
-			unset($replace_'.$uniqueID.');
-			unset($loopcondition_'.$uniqueID.'); //unset loopcondition
+			unset($replace_'.$uniqueID.', $content_'.$uniqueID.');
+			
 		} else {
 			CMS_grandFather::raiseError("Malformed atm-loop tag : malformed \'on\' attribute");
-		}//LOOP TAG END '.$uniqueID.'
+		}
+		unset($loopcondition_'.$uniqueID.'); //unset loopcondition
+		//LOOP TAG END '.$uniqueID.'
 		';
 		return $return;
-	}
-	
-	/**
-	  * Compute an atm-setvar tag
-	  *
-	  * @param array $tag : the reference atm-setvar tag to compute
-	  * @return string the PHP / HTML content computed
-	  * @access private
-	  */
-	protected function _setvarTag(&$tag) {
-		//check tags requirements
-		if (!$this->checkTagRequirements($tag, array(
-				'varname' => 'alphanum', 
-				'vartype' => 'request|session|var', 
-			))) {
-			return;
-		}
-		$uniqueID = $this->getUniqueID();
-		$return = '
-		//SETVAR TAG START '.$uniqueID;
-		if ($tag['attributes']["vartype"] == 'request') {
-			$return .= '
-			$_REQUEST[\''.$tag['attributes']["varname"].'\'] = CMS_polymod_definition_parsing::replaceVars('.CMS_polymod_definition_parsing::preReplaceVars(var_export($tag['attributes']["value"],true),true).',$replace);';
-		} elseif ($tag['attributes']["vartype"] == 'session') {
-			$return .= '
-			$_SESSION[\''.$tag['attributes']["varname"].'\'] = CMS_polymod_definition_parsing::replaceVars('.CMS_polymod_definition_parsing::preReplaceVars(var_export($tag['attributes']["value"],true),true).',$replace);';
-		} else {
-			$return .= '
-			$'.$tag['attributes']["varname"].' = CMS_polymod_definition_parsing::replaceVars('.CMS_polymod_definition_parsing::preReplaceVars(var_export($tag['attributes']["value"],true),true).',$replace);';
-		}
-		$return .= '
-		//SETVAR TAG END '.$uniqueID.'
-		';
-		return $return;
-	}
-	
-	/**
-	  * Compute an atm-start-tag tag
-	  *
-	  * @param array $tag : the reference atm-start-tag tag to compute
-	  * @return string the PHP / HTML content computed
-	  * @access private
-	  */
-	protected function _tagStart(&$tag) {
-		//check tags requirements
-		if (!$this->checkTagRequirements($tag, array(
-				'tag' => 'alphanum', 
-			))) {
-			return;
-		}
-		$attributes = '';
-		foreach ($tag['attributes'] as $attribute => $value) {
-			if ($attribute != 'tag') {
-				$attributes .= ' '.$attribute.'=\"'.$value.'\"';
-			}
-		}
-		$return = '$content .= "<'.$tag['attributes']["tag"].$attributes.'>";';
-		return $return;
-	}
-	
-	/**
-	  * Compute an atm-end-tag tag
-	  *
-	  * @param array $tag : the reference atm-end-tag tag to compute
-	  * @return string the PHP / HTML content computed
-	  * @access private
-	  */
-	protected function _tagEnd(&$tag) {
-		return '$content .= "</'.$tag['attributes']["tag"].'>";';
 	}
 	
 	/**
@@ -1094,7 +961,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		}
 		//set language
 		$this->_parameters['language'] = $tag['attributes']["language"];
-		$uniqueID = $this->getUniqueID();
+		$uniqueID = CMS_XMLTag::getUniqueID();
 		//search for an atm-plugin-view tag in direct child tags
 		$pluginView = false;
 		foreach ($tag['childrens'] as $child) {
@@ -1121,7 +988,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			}
 			unset($search_'.$uniqueID.');
 			$parameters[\'has-plugin-view\'] = '.($pluginView ? 'true' : 'false').';
-			'.$this->_computeTags($tag['childrens']).'
+			'.$this->computeTags($tag['childrens']).'
 		}
 		//PLUGIN TAG END '.$uniqueID.'
 		';
@@ -1136,11 +1003,11 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access private
 	  */
 	protected function _pluginValidTag(&$tag) {
-		$uniqueID = $this->getUniqueID();
+		$uniqueID = CMS_XMLTag::getUniqueID();
 		$return = '
 		//PLUGIN-VALID TAG START '.$uniqueID.'
 		if ($object[$parameters[\'objectID\']]->isInUserSpace() && !(@$parameters[\'plugin-view\'] && @$parameters[\'has-plugin-view\']) ) {
-			'.$this->_computeTags($tag['childrens']).'
+			'.$this->computeTags($tag['childrens']).'
 		}
 		//PLUGIN-VALID END '.$uniqueID.'
 		';
@@ -1155,11 +1022,11 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access private
 	  */
 	protected function _pluginInvalidTag(&$tag) {
-		$uniqueID = $this->getUniqueID();
+		$uniqueID = CMS_XMLTag::getUniqueID();
 		$return = '
 		//PLUGIN-INVALID TAG START '.$uniqueID.'
 		if (!$object[$parameters[\'objectID\']]->isInUserSpace()) {
-			'.$this->_computeTags($tag['childrens']).'
+			'.$this->computeTags($tag['childrens']).'
 		}
 		//PLUGIN-INVALID END '.$uniqueID.'
 		';
@@ -1174,11 +1041,11 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access private
 	  */
 	protected function _pluginViewTag(&$tag) {
-		$uniqueID = $this->getUniqueID();
+		$uniqueID = CMS_XMLTag::getUniqueID();
 		$return = '
 		//PLUGIN-VIEW TAG START '.$uniqueID.'
 		if ($object[$parameters[\'objectID\']]->isInUserSpace() && isset($parameters[\'plugin-view\'])) {
-			'.$this->_computeTags($tag['childrens']).'
+			'.$this->computeTags($tag['childrens']).'
 		}
 		//PLUGIN-VIEW END '.$uniqueID.'
 		';
@@ -1201,13 +1068,13 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		}
 		//set language
 		$this->_parameters['language'] = $tag['attributes']["language"];
-		$uniqueID = $this->getUniqueID();
+		$uniqueID = CMS_XMLTag::getUniqueID();
 		$return = '
 		//RSS TAG START '.$uniqueID.'
 		if (!sensitiveIO::isPositiveInteger($parameters[\'objectID\'])) {
 			CMS_grandFather::raiseError(\'Error into atm-rss tag : can\\\'t found object infos to use into : $parameters[\\\'objectID\\\']\');
 		} else {
-			'.$this->_computeTags($tag['childrens']).'
+			'.$this->computeTags($tag['childrens']).'
 		}
 		//RSS TAG END '.$uniqueID.'
 		';
@@ -1222,12 +1089,12 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access private
 	  */
 	protected function _RSSItemTag(&$tag) {
-		$uniqueID = $this->getUniqueID();
+		$uniqueID = CMS_XMLTag::getUniqueID();
 		$return = '
 		//RSS-ITEM TAG START '.$uniqueID.'
 		$content .= \'<item>
 		<guid isPermaLink="false">object\'.$parameters[\'objectID\'].\'-\'.$object[$parameters[\'objectID\']]->getID().\'</guid>\';
-		'.$this->_computeTags($tag['childrens']).'
+		'.$this->computeTags($tag['childrens']).'
 		$content .= \'</item>\';
 		//RSS-ITEM TAG END '.$uniqueID.'
 		';
@@ -1242,7 +1109,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access private
 	  */
 	protected function _RSSItemContentTag(&$tag) {
-		$uniqueID = $this->getUniqueID();
+		$uniqueID = CMS_XMLTag::getUniqueID();
 		switch ($tag['nodename']) {
 			case 'atm-rss-item-url':
 				$rssTagName = 'link';
@@ -1273,7 +1140,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		if ($tag['nodename'] == 'atm-rss-item-content') {
 			$return .= '$content .= \'<![CDATA[\';
 			';
-			$return .= $this->_computeTags($tag['childrens']);
+			$return .= $this->computeTags($tag['childrens']);
 			$return .= '
 			$content .= \']]>\';';
 		} else {
@@ -1281,7 +1148,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			//save content
 			$content_'.$uniqueID.' = $content;
 			$content = \'\';
-			'.$this->_computeTags($tag['childrens']).'
+			'.$this->computeTags($tag['childrens']).'
 			//then remove tags from content and add it to old content
 			$entities = array(\'&\' => \'&amp;\',\'>\' => \'&gt;\',\'<\' => \'&lt;\',);
 			$content = $content_'.$uniqueID.'.str_replace(array_keys($entities),$entities,strip_tags(io::decodeEntities($content)));
@@ -1309,11 +1176,11 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			))) {
 			return;
 		}
-		$uniqueID = $this->getUniqueID();
+		$uniqueID = CMS_XMLTag::getUniqueID();
 		//return code
 		$return = '
 		//AJAX TAG START '.$uniqueID.'
-		'.$this->_computeTags($tag['childrens']).'
+		'.$this->computeTags($tag['childrens']).'
 		//AJAX TAG END '.$uniqueID.'
 		';
 		$strict = isset($tag['attributes']["strict"]) && ($tag['attributes']['what'] == 'true' || $tag['attributes']['what'] == true || $tag['attributes']['what'] == 1) ? true : false;
@@ -1329,7 +1196,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		}';
 		//do some cleaning on code and add reference to it into header callback
 		$ajax = array(
-			'code' 		=> $this->indentPHP($this->_cleanComputedDefinition($ajaxCode)),
+			'code' 		=> $this->indentPHP(CMS_XMLTag::cleanComputedDefinition($ajaxCode)),
 			'output' 	=> $strict ? 'CMS_view::SHOW_XML' : 'CMS_view::SHOW_RAW',
 		);
 		$this->_headCallBack['ajax'][] = $ajax;
@@ -1351,7 +1218,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			))) {
 			return;
 		}
-		$uniqueID = $this->getUniqueID();
+		$uniqueID = CMS_XMLTag::getUniqueID();
 		//add reference to this form to header callback
 		$this->_headCallBack['form'][] = $tag['attributes']['name'];
 		//form tag start
@@ -1380,7 +1247,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			"{malformed}"	=> (isset($polymodFormsError[\''.$tag['attributes']['name'].'\'][\'malformed\'])) ? 1 : 0,
 			"{error}"		=> (isset($polymodFormsError[\''.$tag['attributes']['name'].'\'][\'error\'])) ? 1 : 0,
 		);
-		'.$this->_computeTags($tag['childrens']).'
+		'.$this->computeTags($tag['childrens']).'
 		$replace = $replace_'.$uniqueID.'; //retrieve previous replace vars if any
 		$content .= \'</form>\';
 		//FORM TAG END '.$uniqueID.'
@@ -1403,7 +1270,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			return;
 		}
 		$tagType = ($tag['nodename'] == 'atm-form-required') ? 'required' : 'malformed';
-		$uniqueID = $this->getUniqueID();
+		$uniqueID = CMS_XMLTag::getUniqueID();
 		$return = '
 		//FORM '.io::strtoupper($tagType).' TAG START '.$uniqueID.'
 		if (isset($polymodFormsError[\''.$tag['attributes']['form'].'\'][\''.$tagType.'\'])) {
@@ -1422,7 +1289,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 					"{'.$tagType.'name}" 	=> $object_'.$uniqueID.'->objectValues($'.$tagType.'FieldID)->getFieldLabel($cms_language),
 					"{'.$tagType.'field}" 	=> $'.$tagType.'FieldID,
 				);
-				'.$this->_computeTags($tag['childrens']).'
+				'.$this->computeTags($tag['childrens']).'
 				$count_'.$uniqueID.'++;
 				//do all result vars replacement
 				$content_'.$uniqueID.'.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
@@ -1452,7 +1319,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			))) {
 			return;
 		}
-		$uniqueID = $this->getUniqueID();
+		$uniqueID = CMS_XMLTag::getUniqueID();
 		$fieldID = preg_replace ('#(.*\[)([0-9]+)(\]})$#U', '\2', $tag['attributes']["field"]);
 		$return = '
 		//INPUT TAG START '.$uniqueID.'
@@ -1473,9 +1340,9 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		//check for tag callback content
 		if (isset($tag['childrens'])) {
 			//callback code
-			$inputCallback = $this->_computeTags($tag['childrens']);
+			$inputCallback = $this->computeTags($tag['childrens']);
 			//add reference to this form to header callback
-			$this->_headCallBack['formsCallback'][$tag['attributes']['form']][$fieldID] = $this->indentPHP($this->_cleanComputedDefinition($inputCallback));
+			$this->_headCallBack['formsCallback'][$tag['attributes']['form']][$fieldID] = $this->indentPHP(CMS_XMLTag::cleanComputedDefinition($inputCallback));
 		}
 		$return .='
 		//INPUT TAG END '.$uniqueID.'
@@ -1497,7 +1364,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			))) {
 			return;
 		}
-		$uniqueID = $this->getUniqueID();
+		$uniqueID = CMS_XMLTag::getUniqueID();
 		if ($tag['attributes']['return'] == 'valid') {
 			$return = '
 			//INPUT-CALLBACK TAG START '.$uniqueID.'
@@ -1531,9 +1398,9 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		//check for tag callback content
 		if (isset($tag['childrens'])) {
 			//callback code
-			$formCallback = $this->_computeTags($tag['childrens']);
+			$formCallback = $this->computeTags($tag['childrens']);
 			//add reference to this form to header callback
-			$this->_headCallBack['formsCallback'][$tag['attributes']['form']]['form'] = $this->indentPHP($this->_cleanComputedDefinition($formCallback));
+			$this->_headCallBack['formsCallback'][$tag['attributes']['form']]['form'] = $this->indentPHP(CMS_XMLTag::cleanComputedDefinition($formCallback));
 		}
 	}
 	
@@ -1574,7 +1441,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			))) {
 			return;
 		}
-		$uniqueID = $this->getUniqueID();
+		$uniqueID = CMS_XMLTag::getUniqueID();
 		
 		$return = '
 		//OBJECT-LINK TAG START '.$uniqueID.'
@@ -1625,7 +1492,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function replaceVars($text, $replacement) {
+	static function replaceVars($text, $replacement) {
 		//if no text => return
 		if (!$text) {
 			return '';
@@ -1653,43 +1520,34 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @param mixed $matchCallback : function name or array(object classname, object method) which represent a valid callback function to execute on matches
 	  * @return text : the text replaced
 	  * @access public
-	  * @static
 	  */
 	function preReplaceVars($text, $reverse = false, $cleanNotMatches = false, $matchCallback = array('CMS_polymod_definition_parsing', 'encloseString'), $returnMatchedVarsArray = false) {
+		static $replacements;
 		//if no text => return
 		if (!$text) {
 			return '';
 		}
-		//second, check text for vars to replace if any
-		if (preg_match_all("#{[^{}\n]+}#", $text, $matches)) {
+		$count = 1;
+		//loop on text for vars to replace if any
+		while (preg_match_all("#{[^{}\n]+}#", $text, $matches) && $count) {
 			$matches = array_unique($matches[0]);
-			//create replacement array
-			$replace = array();
-			//replace {page:self:type}, {user:self:type}, {plugin:selection} values
-			$replace["#^\{page:self:(.*?)\}$#U"]								= 'CMS_tree::getPageValue($parameters[\'pageID\'],"\1")';
-			$replace["#^\{user:self:(.*?)\}$#U"]								= 'CMS_profile_usersCatalog::getUserValue(($cms_user ? $cms_user->getUserId() : null),"\1")';
-			$replace["#^\{plugin:selection\}$#U"]								= '$parameters[\'selection\']';
-			//replace '{vartype:type:name}' value by corresponding var call
-			$replace["#^\{(var|request|session|constant)\:([^:]+):(.+)\}$#U"] 	= 'CMS_poly_definition_functions::getVarContent("\1", "\3", "\2", @$\3)';
-			//replace '{page:id:type}' value by corresponding CMS_tree::getPageValue(id, type) call
-			$replace["#^\{page\:([0-9]+)\:(.*?)\}$#U"]							= 'CMS_tree::getPageValue("\1","\2")';
-			//replace '{page:codename:type}' value by corresponding CMS_tree::getPageCodenameValue(codename, current, type) call
-			$replace["#^\{page\:([a-z0-9-]+)\:(.*?)\}$#U"]						= 'CMS_tree::getPageCodenameValue("\1",$parameters[\'pageID\'],"\2")';
-			//replace '{user:id:type}' value by corresponding CMS_profile_usersCatalog::getUserValue(id, type) call
-			$replace["#^\{user\:([0-9]+)\:(.*?)\}$#U"]							= 'CMS_profile_usersCatalog::getUserValue("\1","\2")';
-			//replace 'fieldID' value by corresponding fieldID
-			$replace["#^\{.*\[([n0-9]+)\]\['fieldID'\]\}$#U"] 					= '\1';
-			//create the real object path to vars
-			$replace["#\['fields'\]\[([n0-9]+)\]\}?#"] 							= '->objectValues(\1)';
-			$replace["#\['values'\]\[([n0-9]+)\]\['([a-zA-Z]+)'\]\}$#U"]		= '->getValue(\'\1\',\'\2\')';
-			$replace["#\['([a-zA-Z]+)'\]\|?\"\.([^|}]*)\.\"\}$#U"] 				= '->getValue(\'\1\',\2)';
-			$replace["#\['([a-zA-Z]+)'\]\|?([^|}]*)\}$#U"] 						= '->getValue(\'\1\',\'\2\')';
-			$replace["#^\{\['object([0-9]+)'\]#U"] 								= '$object[\1]';
-			$replace["#\[([n0-9]+)]}$#U"] 										= '[\1]';
-			//replace the loop 'n' value by $key
-			$replace["#\(([n0-9]+)\)->objectValues(\(n\))#U"] 					= '(\1)->objectValues($key_\1)';
-			$replace["#\(([n0-9]+)\)->getValue\(('n')#U"] 						= '(\1)->getValue($key_\1';
 			
+			//get all tags handled by modules
+			if (!$replacements) {
+				//create replacement array
+				$replacements = array();
+				$modules = CMS_modulesCatalog::getAll("id");
+				foreach ($modules as $codename => $aModule) {
+					$moduleReplacements = $aModule->getModuleReplacements('parameters');
+					if (is_array($moduleReplacements) && $moduleReplacements) {
+						foreach ($moduleReplacements as $pattern => $replacement) {
+							$replacements[$pattern] = $replacement;
+						}
+					}
+				}
+			}
+			$replace = $replacements;
+			//pr($matches);
 			if ($reverse) {
 				$reversedReplace = array();
 				foreach ($replace as $key => $value) {
@@ -1697,60 +1555,59 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				}
 				$replace = $reversedReplace;
 			}
-			
-			$matchesValues = preg_replace(array_keys($replace), $replace, $matches);
-			if (isset($this->_parameters['module'])) {
-				$externalReferences = CMS_poly_object_catalog::getFieldsReferencesUsage($this->_parameters['module']);
-			} else {
-				$externalReferences = CMS_poly_object_catalog::getFieldsReferencesUsage();
-			}
+			$count = 0;
+			$matchesValues = preg_replace(array_keys($replace), $replace, $matches, -1, $count);
 			//create vars conversion table
 			$replace = array();
-			foreach ($matches as $key => $match) {
-				//record external references for cache reference
-				if ($externalReferences) {
-					foreach ($externalReferences as $id => $type) {
-						if (strpos($match , '[\'fields\']['.$id.']') !== false || strpos($match , '[\\\'fields\\\']['.$id.']') !== false) {
-							//CMS_grandFather::log(print_r($this->_elements, true));
-							$this->_elements = array_merge_recursive($type, (array) $this->_elements);
-							//CMS_grandFather::log(print_r($this->_elements, true));
-						}
-					}
-				}
-				//record used pages for cache reference
-				if (strpos($match, '{page:') !== false) {
-					$this->_elements['module'][] = MOD_STANDARD_CODENAME;
-				}
-				//record used users for cache reference
-				if (strpos($match, '{user:') !== false) {
-					$this->_elements['resource'][] = 'users';
-				}
-				if ($match != $matchesValues[$key]) {
-					$matchValue = $matchesValues[$key];
+			if ($matchesValues) {
+				if (isset($this->_parameters['module'])) {
+					$externalReferences = CMS_poly_object_catalog::getFieldsReferencesUsage($this->_parameters['module']);
 				} else {
-					$matchValue = null;
+					$externalReferences = CMS_poly_object_catalog::getFieldsReferencesUsage();
 				}
-				//apply callback if any to value
-				if (isset($matchValue)) {
-					if ($matchCallback !== false) {
-						if (is_array($matchCallback) && is_callable($matchCallback)) {
-							$replace[$match] = call_user_func($matchCallback, $matchValue, $reverse);
-						} elseif (function_exists($matchCallback)) {
-							$replace[$match] = $matchCallback($matchValue, $reverse);
-						} else {
-							CMS_grandFather::raiseError("Unknown callback function : ".$matchCallback);
-							return false;
+				foreach ($matches as $key => $match) {
+					//record external references for cache reference
+					if ($externalReferences) {
+						foreach ($externalReferences as $id => $type) {
+							if (strpos($match , '[\'fields\']['.$id.']') !== false || strpos($match , '[\\\'fields\\\']['.$id.']') !== false) {
+								//CMS_grandFather::log(print_r($this->_elements, true));
+								$this->_elements = array_merge_recursive($type, (array) $this->_elements);
+								//CMS_grandFather::log(print_r($this->_elements, true));
+							}
 						}
-					} else {
-						$replace[$match] = $matchValue;
 					}
-				} 
-				//clean not matches if needed
-				elseif ($cleanNotMatches) {
-					$replace[$match] = '';
+					//record used pages for cache reference
+					if (strpos($match, '{page:') !== false) {
+						$this->_elements['module'][] = MOD_STANDARD_CODENAME;
+					}
+					//record used users for cache reference
+					if (strpos($match, '{user:') !== false) {
+						$this->_elements['resource'][] = 'users';
+					}
+					if ($match != $matchesValues[$key]) {
+						$matchValue = $matchesValues[$key];
+					} else {
+						$matchValue = null;
+					}
+					//apply callback if any to value
+					if (isset($matchValue)) {
+						if ($matchCallback !== false) {
+							if (is_callable($matchCallback)) {
+								$replace[$match] = call_user_func($matchCallback, $matchValue, $reverse);
+							} else {
+								CMS_grandFather::raiseError("Unknown callback function : ".$matchCallback);
+								return false;
+							}
+						} else {
+							$replace[$match] = $matchValue;
+						}
+					} 
+					//clean not matches if needed
+					elseif ($cleanNotMatches) {
+						$replace[$match] = '';
+					}
 				}
 			}
-			
 			//return matched vars if needed
 			if ($returnMatchedVarsArray) {
 				return $replace;
@@ -1772,7 +1629,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function prepareVar($var) {
+	static function prepareVar($var) {
 		if (is_array($var)) {
 			return sizeof($var);
 		} else {
@@ -1788,7 +1645,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function encloseWithPrepareVar($var) {
+	static function encloseWithPrepareVar($var) {
 		return CMS_polymod_definition_parsing::encloseString("CMS_polymod_definition_parsing::prepareVar(".$var.")",false);
 	}
 	
@@ -1801,7 +1658,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function encloseString($var, $reverse) {
+	static function encloseString($var, $reverse) {
 		return ($reverse) ? "'.".$var.".'" : '".'.$var.'."';
 	}
 	
@@ -1837,45 +1694,20 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				continue;
 			}
 			//check for indent level down
-			if (io::substr($phpline, 0, 1) == '}' || io::substr($phpline, 0, 1) == ')') {
+			$firstChar = substr($phpline, 0, 1);
+			if ($firstChar == '}' || $firstChar == ')' || substr($phpline, 0, 5) == 'endif') {
 				$level--;
 			}
 			//indent code
 			$indent = str_replace(' ', "\t",sprintf("%".($level)."s",  ''));
 			$phparray[$linenb] = $indent.$phpline;
 			//check for indent level up
-			if (io::substr($phpline, -1) == '{' || io::substr($phpline, -7) == 'array (') {
+			$lastChar = substr($phpline, -1);
+			if ($lastChar == '{' || $lastChar == ':' || substr($phpline, -7) == 'array (') {
 				$level++;
 			}
 		}
 		return implode ("\n",$phparray);
-	}
-	
-	/**
-	  * Do some replacements to clean produced definition code
-	  *
-	  * @param string $definition : php code to clean
-	  * @return string cleaned php code
-	  * @access private
-	  * @static
-	  */
-	protected function _cleanComputedDefinition($definition) {
-		$replace = array(
-			'$content .="";' => '',
-			'("".' 	=> '(',
-			'="".' 	=> '=',
-			'.""' 	=> '',
-			' "".' 	=> ' ',
-			'["".' 	=> '[',
-			"\t".'"".' 	=> "\t",
-			'\'\'.' => '',
-			'.\'\'' => '',
-		);
-		$pregreplace = array(
-			'#\$content .="\n\s+";#' 	=> '',
-			'#\<\!\-\-(.*)\-\-\>#sU' 	=> '', //Strip multi lines HTML comments
-		);
-		return preg_replace(array_keys($pregreplace), $pregreplace, str_replace(array_keys($replace), $replace, $definition));
 	}
 	
 	/**
@@ -1892,7 +1724,6 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			- valid PERL regular expression : attribute value must be mattch the regular expression
 	  * @return string indented php code
 	  * @access public
-	  * @static
 	  */
 	function checkTagRequirements(&$tag, $requirements) {
 		if (!is_array($requirements)) {

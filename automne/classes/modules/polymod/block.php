@@ -127,13 +127,13 @@ class CMS_block_polymod extends CMS_block
 		case PAGE_VISUALMODE_PRINT:
 		case PAGE_VISUALMODE_HTML_PUBLIC:
 			if (($this->_hasParameters && $this->_musthaveParameters) || !$this->_musthaveParameters) {
-				return  $this->_createDatasFromDefinition($data["value"], $page, true, CMS_polymod_definition_parsing::OUTPUT_PHP);
+				return  $this->_createDatasFromDefinition($data["value"], $page, $visualizationMode, CMS_polymod_definition_parsing::OUTPUT_PHP);
 			}
 			break;
 		case PAGE_VISUALMODE_HTML_EDITED:
 		case PAGE_VISUALMODE_HTML_EDITION:
 			if (($this->_hasParameters && $this->_musthaveParameters) || !$this->_musthaveParameters) {
-				return $this->_createDatasFromDefinition($data["value"], $page, false, CMS_polymod_definition_parsing::OUTPUT_PHP);
+				return $this->_createDatasFromDefinition($data["value"], $page, $visualizationMode, CMS_polymod_definition_parsing::OUTPUT_PHP);
 			}
 			break;
 		case PAGE_VISUALMODE_FORM:
@@ -144,7 +144,7 @@ class CMS_block_polymod extends CMS_block
 			$this->_editable = $this->_canhasParameters;
 			if (($this->_hasParameters && $this->_musthaveParameters) || !$this->_musthaveParameters) {
 				$this->_hasContent = true;
-				$form_data = $this->_createDatasFromDefinition($data["value"], $page, false, CMS_polymod_definition_parsing::OUTPUT_PHP);
+				$form_data = $this->_createDatasFromDefinition($data["value"], $page, $visualizationMode, CMS_polymod_definition_parsing::OUTPUT_PHP);
 			} else {
 				$this->_hasContent = false;
 				$form_data = '<img src="'.PATH_ADMIN_MODULES_WR.'/polymod/block.gif" alt="X" title="X" />';
@@ -171,7 +171,8 @@ class CMS_block_polymod extends CMS_block
 	  * @return string The PHP / HTML datas
 	  * @access private
 	  */
-	protected function _createDatasFromDefinition($rawDatas, &$page, $public = false, $type = CMS_polymod_definition_parsing::OUTPUT_RESULT) {
+	protected function _createDatasFromDefinition($rawDatas, &$page, $visualizationMode, $type = CMS_polymod_definition_parsing::OUTPUT_RESULT) {
+		$public = ($visualizationMode == PAGE_VISUALMODE_PRINT || $visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC);
 		$parameters = ($rawDatas) ? array_merge($rawDatas, $this->_attributes) : $this->_attributes;
 		// If no language parameter : set page language
 		$parameters['language'] = (isset($parameters['language']) && $parameters['language']) ? $parameters['language'] : $page->getLanguage();
@@ -180,7 +181,7 @@ class CMS_block_polymod extends CMS_block
 							'language' => $parameters['language'],
 							'pageID' => $page->getID(),
 							'public' => $public,);
-		$polymodParsing = new CMS_polymod_definition_parsing($this->_definition, true, CMS_polymod_definition_parsing::PARSE_MODE, $this->_attributes['module']);
+		$polymodParsing = new CMS_polymod_definition_parsing($this->_definition, true, CMS_polymod_definition_parsing::PARSE_MODE, $this->_attributes['module'], $visualizationMode);
 		$content = $polymodParsing->getContent($type, $parameters);
 		
 		if (!$public) {

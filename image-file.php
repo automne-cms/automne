@@ -113,18 +113,29 @@ $image = new CMS_image($imagepathFS);
 //get current file size
 $sizeX = $image->getWidth();
 $sizeY = $image->getHeight();
-
+//pr('original : '.$sizeX.' - '.$sizeY);
+//pr('queried : '.$x.' - '.$y);
 //set new file infos
 $pathInfo = pathinfo($imagepathFS);
-if ($x > $sizeX || $y > $sizeY) {
+if ($x > $sizeX && $y > $sizeY) {
 	$newSizeX = $sizeX;
 	$newSizeY = $sizeY;
+} elseif (($x > $sizeX && $y <= $sizeY) || ($x <= $sizeX && $y > $sizeY)) {
+	if (($x - $sizeX) < ($y - $sizeY)) {
+		$newSizeX = $x;
+		$newSizeY = $sizeY;
+	} else {
+		$newSizeX = $sizeX;
+		$newSizeY = $y;
+	}
 } else {
 	$newSizeX = $x ? $x : round(($y * $sizeX) / $sizeY);
 	$newSizeY = $y ? $y : round(($x * $sizeY) / $sizeX);
 }
 $resizedImage = $pathInfo['filename'] .'-'. $newSizeX .'-'. $newSizeY .($crop ? '-c' : '').'.'. $pathInfo['extension'];
-
+//pr('result : '.$newSizeX.' - '.$newSizeY);
+//pr($resizedImage);
+//exit;
 //resized image path
 $resizedImagepathFS = PATH_MODULES_FILES_FS . '/' . $module . '/' . $location . '/' . $resizedImage;
 

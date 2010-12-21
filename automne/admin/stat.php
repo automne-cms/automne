@@ -271,9 +271,9 @@ $count='0';
 foreach ($sql_table as $sql_request) {
 	$count++;
 	if ($sql_request["time"] >= $SQL_TIME_MARK) {
-		$content .=  $count.' : <strong style="color:red;">'.io::htmlspecialchars($sql_request["sql"]).'</strong><br />Loaded in ' . $sql_request["time"] . ' From '.$sql_request["from"].'<br /><br />';
+		$content .=  $count.' : <strong style="color:red;">'.io::htmlspecialchars($sql_request["sql"]).'</strong><br />Loaded in ' . $sql_request["time"] . ' From '.$sql_request["from"].'<br />Memory : '.round(($sql_request['memory']/1048576),3).'Mo / '.round(($sql_request['peak']/1048576),3).'Mo<br /><br />';
 	} else {
-		$content .=  $count.' : <strong>'.io::htmlspecialchars($sql_request["sql"]).'</strong><br />Loaded in ' . $sql_request["time"] . ' From '.$sql_request["from"].'<br /><br />';
+		$content .=  $count.' : <strong>'.io::htmlspecialchars($sql_request["sql"]).'</strong><br />Loaded in ' . $sql_request["time"] . ' From '.$sql_request["from"].'<br />Memory : '.round(($sql_request['memory']/1048576),3).'Mo / '.round(($sql_request['peak']/1048576),3).'Mo<br /><br />';
 	}
 }
 $content .=  '<a href="#top" class="admin" style="float:right;padding:10px;">[TOP]</a>';

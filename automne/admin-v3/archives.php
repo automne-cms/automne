@@ -54,7 +54,7 @@ switch ($_GET["cms_action"]) {
 case "delete":
 	if ($_GET["action_page"]) {
 		$pg = CMS_tree::getPageByID($_GET["action_page"]);
-		if (is_a($pg, "CMS_page")) {
+		if ($pg instanceof CMS_page) {
 			//sets the edition status and validate it
 			$pg->setProposedLocation(RESOURCE_LOCATION_DELETED, $cms_user);
 			$pg->validateProposedLocation();
@@ -75,7 +75,7 @@ case "unarchive":
 	if ($_GET["action_page"] && $_GET["father"]) {
 		$pg = CMS_tree::getPageByID($_GET["action_page"]);
 		$father = CMS_tree::getPageByID($_GET["father"]);
-		if (is_a($pg, "CMS_page") && is_a($father, "CMS_page")) {
+		if (($pg instanceof CMS_page) && is_a($father, "CMS_page")) {
 			//sets the edition status and validate it
 			$pg->setProposedLocation(RESOURCE_LOCATION_USERSPACE, $cms_user);
 			$pg->validateProposedLocation();

@@ -35,6 +35,13 @@ class CMS_moduleClientspace extends CMS_grandFather
 	protected $_attributes;
 	
 	/**
+	  * ID attribute of the client space tag
+	  * @var string
+	  * @access private
+	  */
+	protected $_tagID;
+	
+	/**
 	  * Constructor.
 	  *
 	  * @param integer $attributes The attributes of the clientSpace Tag
@@ -49,6 +56,17 @@ class CMS_moduleClientspace extends CMS_grandFather
 			$this->raiseError("Attributes not a valid array");
 			return;
 		}
+	}
+	
+	/**
+	  * Gets the tag ID.
+	  *
+	  * @return integer the tag ID attribute
+	  * @access public
+	  */
+	function getTagID()
+	{
+		return $this->_tagID;
 	}
 	
 	/**
@@ -134,7 +152,7 @@ class CMS_moduleClientspace extends CMS_grandFather
 	protected function _parseTemplateForParameters($filename)
 	{
 		$module = CMS_modulesCatalog::getByCodename($this->_attributes["module"]);
-		if (!is_a($module, "CMS_module")) {
+		if (!($module instanceof CMS_module)) {
 			$this->raiseError("No module defined for the clientspace");
 			return false;
 		}

@@ -200,7 +200,7 @@ class CMS_module_standard extends CMS_module
 	  */
 	function getValidations($user)
 	{
-		if (!is_a($user, "CMS_profile_user")) {
+		if (!($user instanceof CMS_profile_user)) {
 			$this->raiseError("User is not a valid CMS_profile_user object");
 			return false;
 		}
@@ -245,7 +245,7 @@ class CMS_module_standard extends CMS_module
 	  */
 	function getValidationsInfo($user)
 	{
-		if (!is_a($user, "CMS_profile_user")) {
+		if (!($user instanceof CMS_profile_user)) {
 			$this->raiseError("User is not a valid CMS_profile_user object");
 			return false;
 		}
@@ -292,7 +292,7 @@ class CMS_module_standard extends CMS_module
 	  */
 	function getValidationByID($pageID, &$user, $getEditionType=false)
 	{
-		if (!is_a($user, "CMS_profile_user")) {
+		if (!($user instanceof CMS_profile_user)) {
 			$this->raiseError("User is not a valid CMS_profile_user object");
 			return false;
 		}
@@ -883,7 +883,7 @@ class CMS_module_standard extends CMS_module
 	  */
 	function processValidation($resourceValidation, $result, $lastValidation = true)
 	{
-		if (!is_a($resourceValidation, "CMS_resourceValidation")) {
+		if (!($resourceValidation instanceof CMS_resourceValidation)) {
 			$this->raiseError("ResourceValidation is not a valid CMS_resourceValidation object");
 			return false;
 		}
@@ -1259,7 +1259,7 @@ class CMS_module_standard extends CMS_module
 			$users = array();
 			foreach ($users_stack_elements as $element) {
 				$usr = CMS_profile_usersCatalog::getByID($element[0]);
-				if (is_a($usr, "CMS_profile_user")) {
+				if ($usr instanceof CMS_profile_user) {
 					$users[$element[0]] = $usr;
 				}
 			}
@@ -1366,7 +1366,7 @@ class CMS_module_standard extends CMS_module
 		
 		// Move the client spaces
 		$tpl = $resource->getTemplate();
-		if (is_a($tpl, 'CMS_pageTemplate') && $tpl->getID() > 0) {
+		if (($tpl instanceof CMS_pageTemplate) && $tpl->getID() > 0) {
 			CMS_moduleClientspace_standard_catalog::moveClientSpaces($tpl->getID(), $locationFrom, $locationTo, $copyOnly);
 		} else {
 			CMS_grandFather::raiseError("Bad template founded for page ".$resourceID);
@@ -1473,13 +1473,13 @@ class CMS_module_standard extends CMS_module
 			break;
 			case MODULE_TREATMENT_PAGECONTENT_TAGS :
 				$return = array (
-					"atm-admin" 		=> array("selfClosed" => false, "parameters" => array()),
-					"atm-noadmin" 		=> array("selfClosed" => false, "parameters" => array()),
-					"atm-edit" 			=> array("selfClosed" => false, "parameters" => array()),
-					"atm-noedit" 		=> array("selfClosed" => false, "parameters" => array()),
-					"atm-title" 		=> array("selfClosed" => true, "parameters" => array()),
-					"atm-website" 		=> array("selfClosed" => true, "parameters" => array()),
-					"atm-page" 			=> array("selfClosed" => true, "parameters" => array()),
+					"atm-admin" 		=> array("selfClosed" => false, "parameters" => array(),	'class' => 'CMS_XMLTag_admin'),
+					"atm-noadmin" 		=> array("selfClosed" => false, "parameters" => array(),	'class' => 'CMS_XMLTag_noadmin'),
+					"atm-edit" 			=> array("selfClosed" => false, "parameters" => array(),	'class' => 'CMS_XMLTag_edit'),
+					"atm-noedit" 		=> array("selfClosed" => false, "parameters" => array(),	'class' => 'CMS_XMLTag_noedit'),
+					"atm-title" 		=> array("selfClosed" => true, "parameters" => array(),		'class' => 'CMS_XMLTag_title'),
+					"atm-website" 		=> array("selfClosed" => true, "parameters" => array(),		'class' => 'CMS_XMLTag_website'),
+					"atm-page" 			=> array("selfClosed" => true, "parameters" => array(),		'class' => 'CMS_XMLTag_page'),
 					"atm-main-url" 		=> array("selfClosed" => true, "parameters" => array()),
 					"atm-constant" 		=> array("selfClosed" => true, "parameters" => array()),
 					"atm-last-update" 	=> array("selfClosed" => false, "parameters" => array()),
@@ -1531,19 +1531,19 @@ class CMS_module_standard extends CMS_module
 	{
 		switch ($treatmentMode) {
 			case MODULE_TREATMENT_BLOCK_TAGS:
-				if (!is_a($treatedObject,"CMS_row")) {
+				if (!($treatedObject instanceof CMS_row)) {
 					$this->raiseError('$treatedObject must be a CMS_row object');
 					return false;
 				}
-				if (!is_a($treatmentParameters["page"],"CMS_page")) {
+				if (!($treatmentParameters["page"] instanceof CMS_page)) {
 					$this->raiseError('$treatmentParameters["page"] must be a CMS_page object');
 					return false;
 				}
-				if (!is_a($treatmentParameters["language"],"CMS_language")) {
+				if (!($treatmentParameters["language"] instanceof CMS_language)) {
 					$this->raiseError('$treatmentParameters["language"] must be a CMS_language object');
 					return false;
 				}
-				if (!is_a($treatmentParameters["clientSpace"],"CMS_moduleClientspace")) {
+				if (!($treatmentParameters["clientSpace"] instanceof CMS_moduleClientspace)) {
 					$this->raiseError('$treatmentParameters["clientSpace"] must be a CMS_moduleClientspace object');
 					return false;
 				}
@@ -1557,15 +1557,15 @@ class CMS_module_standard extends CMS_module
 				}
 			break;
 			case MODULE_TREATMENT_CLIENTSPACE_TAGS:
-				if (!is_a($treatedObject,"CMS_pageTemplate")) {
+				if (!($treatedObject instanceof CMS_pageTemplate)) {
 					$this->raiseError('$treatedObject must be a CMS_pageTemplate object');
 					return false;
 				}
-				if (!is_a($treatmentParameters["page"],"CMS_page")) {
+				if (!($treatmentParameters["page"] instanceof CMS_page)) {
 					$this->raiseError('$treatmentParameters["page"] must be a CMS_page object');
 					return false;
 				}
-				if (!is_a($treatmentParameters["language"],"CMS_language")) {
+				if (!($treatmentParameters["language"] instanceof CMS_language)) {
 					$this->raiseError('$treatmentParameters["language"] must be a CMS_language object');
 					return false;
 				}
@@ -1619,7 +1619,7 @@ class CMS_module_standard extends CMS_module
 				return '';
 			break;
 			case MODULE_TREATMENT_PAGECONTENT_TAGS:
-				if (!is_a($treatedObject,"CMS_page")) {
+				if (!($treatedObject instanceof CMS_page)) {
 					$this->raiseError('$treatedObject must be a CMS_page object');
 					return false;
 				}
@@ -1642,100 +1642,6 @@ class CMS_module_standard extends CMS_module
 							$linx = $tag->getRepresentationInstance($linx_args);
 							return $linx->getOutput();
 						}
-					break;
-					case 'atm-edit':
-						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM || $visualizationMode == PAGE_VISUALMODE_FORM) {
-							return $tag->getInnerContent();
-						}
-						return '';
-					break;
-					case 'atm-noedit':
-						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM || $visualizationMode == PAGE_VISUALMODE_FORM) {
-							return '';
-						} else {
-							return $tag->getInnerContent();
-						}
-					break;
-					case 'atm-admin':
-						return '<?php if (strpos($_SERVER["REQUEST_URI"], \'automne/admin\') !== false  || (isset($_REQUEST[\'atm-context\']) && $_REQUEST[\'atm-context\'] == \'adminframe\')): ?>'.$tag->getInnerContent().'<?php endif; ?>';
-					break;
-					case 'atm-noadmin':
-						return '<?php if (!(strpos($_SERVER["REQUEST_URI"], \'automne/admin\') !== false  || (isset($_REQUEST[\'atm-context\']) && $_REQUEST[\'atm-context\'] == \'adminframe\'))): ?>'.$tag->getInnerContent().'<?php endif; ?>';
-					break;
-					case "atm-title":
-						return SensitiveIO::sanitizeHTMLString($treatedObject->getTitle($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC));
-					break;
-					case "atm-page":
-						if ($treatedObject && !$treatedObject->hasError()) {
-							switch ($tag->getAttribute('name')) {
-								case 'id':
-									return SensitiveIO::sanitizeHTMLString($treatedObject->getID());
-								break;
-								case 'url':
-									return SensitiveIO::sanitizeHTMLString($treatedObject->getURL());
-								break;
-								case 'linktitle':
-									return SensitiveIO::sanitizeHTMLString($treatedObject->getLinkTitle($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC));
-								break;
-								case 'codename':
-								case 'keywords':
-								case 'description':
-								case 'category':
-								case 'author':
-								case 'replyto':
-								case 'copyright':
-								case 'language':
-								case 'robots':
-								case 'pragma':
-								case 'refresh':
-									$method = 'get'.ucfirst($tag->getAttribute('name'));
-									return SensitiveIO::sanitizeHTMLString($treatedObject->{$method}($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC));
-								break;
-								case 'metas':
-									return $treatedObject->getMetas($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC);
-								break;
-								case 'title':
-								default:
-									return SensitiveIO::sanitizeHTMLString($treatedObject->getTitle($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC));
-								break;
-							}
-						}
-						return '';
-					break;
-					case "atm-website":
-						$website = $treatedObject->getWebsite();
-						if ($website && !$website->hasError()) {
-							switch ($tag->getAttribute('name')) {
-								case 'codename':
-									return SensitiveIO::sanitizeHTMLString($website->getCodename());
-								break;
-								case 'root':
-									return SensitiveIO::sanitizeHTMLString($website->getRoot()->getID());
-								break;
-								case 'domain':
-									return SensitiveIO::sanitizeHTMLString($website->getURL());
-								break;
-								case 'keywords':
-								case 'description':
-								case 'category':
-								case 'author':
-								case 'replyto':
-								case 'copyright':
-								case 'language':
-								case 'robots':
-								case 'favicon':
-									return SensitiveIO::sanitizeHTMLString($website->getMeta($tag->getAttribute('name')));
-								break;
-								case 'metas':
-									return $website->getMeta('metas');
-								break;
-								case 'title':
-								default:
-									return SensitiveIO::sanitizeHTMLString($website->getLabel());
-								break;
-							}
-						}
-						return '';
 					break;
 					case "atm-main-url":
 						return CMS_websitesCatalog::getMainURL();
@@ -1794,7 +1700,7 @@ class CMS_module_standard extends CMS_module
 				return '';
 			break;
 			case MODULE_TREATMENT_PAGEHEADER_TAGS:
-				if (!is_a($treatedObject,"CMS_page")) {
+				if (!($treatedObject instanceof CMS_page)) {
 					$this->raiseError('$treatedObject must be a CMS_page object');
 					return false;
 				}
@@ -2123,6 +2029,28 @@ class CMS_module_standard extends CMS_module
 			break;
 		}
 		return $modulesCode;
+	}
+	
+	/**
+	  * Module replacements vars
+	  *
+	  * @return array of replacements values (pattern to replace => replacement)
+	  * @access public
+	  */
+	function getModuleReplacements($parameterVarName) {
+		$replace = array();
+		
+		//replace '{vartype:type:name}' value by corresponding var call
+		$replace["#^\{(var|request|session|constant)\:([^:]*?(::)?[^:]*?):([^:]*?)\}$#U"] = 'CMS_poly_definition_functions::getVarContent("\1", "\4", "\2", @$\4)';
+		$replace["#^\{(var|request|session|constant)\:([^:]*?(::)?[^:]*?):([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_poly_definition_functions::getVarContent("\1", "\4", "\2", "\4")';
+		
+		//replace '{page:id:type}' value by corresponding CMS_tree::getPageValue(id, type) call
+		$replace["#^\{page\:([^:]*?(::)?[^:]*?)\:([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_tree::getPageValue("\1", "\3", @$public_search, @$'.$parameterVarName.'["pageID"])';
+		
+		//replace '{user:id:type}' value by corresponding CMS_profile_usersCatalog::getUserValue(id, type) call
+		$replace["#^\{user\:([^:]*?(::)?[^:]*?)\:([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_profile_usersCatalog::getUserValue("\1", "\3", (isset($cms_user) ? $cms_user->getUserId() : null))';
+		
+		return $replace;
 	}
 	
 	/**

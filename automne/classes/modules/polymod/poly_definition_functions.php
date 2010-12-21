@@ -38,7 +38,7 @@ class CMS_poly_definition_functions
 	  * @access public
 	  * @static
 	  */
-	function pages($values, $tags) {
+	static function pages($values, $tags) {
 		if (!sensitiveIO::isPositiveInteger($values['maxpages'])) {
 			CMS_grandFather::raiseError("Maxpages value parameter must be a positive integer : ".$values['maxpages']);
 			return false;
@@ -124,7 +124,7 @@ class CMS_poly_definition_functions
 	  * @access public
 	  * @static
 	  */
-	function getRequest($name, $type) {
+	static function getRequest($name, $type) {
 		if ($type == 'string') {
 			$type = 'safestring'; //To avoid XSS
 		}
@@ -140,7 +140,7 @@ class CMS_poly_definition_functions
 	  * @access public
 	  * @static
 	  */
-	function getSession($name, $type) {
+	static function getSession($name, $type) {
 		return CMS_poly_definition_functions::getVarContent('session', $name, $type);
 	}
 	
@@ -153,7 +153,7 @@ class CMS_poly_definition_functions
 	  * @access public
 	  * @static
 	  */
-	function getVar($name, $type) {
+	static function getVar($name, $type) {
 		return CMS_poly_definition_functions::getVarContent('var', $name, $type);
 	}
 	
@@ -166,7 +166,7 @@ class CMS_poly_definition_functions
 	  * @access public
 	  * @static
 	  */
-	function getConstant($name, $type) {
+	static function getConstant($name, $type) {
 		return CMS_poly_definition_functions::getVarContent('constant', $name, $type);
 	}
 	
@@ -181,7 +181,7 @@ class CMS_poly_definition_functions
 	  * @access public
 	  * @static
 	  */
-	function getVarContent($varType, $name, $dataType, $varValue = '') {
+	static function getVarContent($varType, $name, $dataType, $varValue = '') {
 		if (!$name || !$dataType) {
 			return false;
 		}
@@ -288,7 +288,7 @@ class CMS_poly_definition_functions
 	  * @access public
 	  * @static
 	  */
-	function pluginCode($pluginID, $itemID, $selection, $public = false, $pluginView = false) {
+	static function pluginCode($pluginID, $itemID, $selection, $public = false, $pluginView = false) {
 		global $cms_user;
 		//then create the code to paste for the current selected object if any
 		if (sensitiveIO::isPositiveInteger($itemID) && sensitiveIO::isPositiveInteger($pluginID)) {
@@ -334,7 +334,7 @@ class CMS_poly_definition_functions
 	  * @access public
 	  * @static
 	  */
-	function formActions($formIDs, $pageID, $languageCode, $public, &$polymodFormsError, &$polymodFormsItems) {
+	static function formActions($formIDs, $pageID, $languageCode, $public, &$polymodFormsError, &$polymodFormsItems) {
 		global $cms_language, $cms_user;
 		
 		if (!is_array($formIDs)) {

@@ -512,7 +512,7 @@ class CMS_page extends CMS_resource
 	  * @access public
 	  */
 	function getContent(&$language, $visualizationMode = false) {
-		if (!is_a($language, "CMS_language") || !SensitiveIO::isInSet($visualizationMode, CMS_page::getAllVisualizationModes())) {
+		if (!($language instanceof CMS_language) || !SensitiveIO::isInSet($visualizationMode, CMS_page::getAllVisualizationModes())) {
 			$this->raiseError("Language must be a valid language and visualization mode in the set of possibles");
 			return false;
 		}
@@ -1869,7 +1869,7 @@ class CMS_page extends CMS_resource
 	protected function _checkTemplate()
 	{
 		if (!$this->_template && $this->_templateID) {
-			$this->_template =& CMS_pageTemplatesCatalog::getByID($this->_templateID);
+			$this->_template = CMS_pageTemplatesCatalog::getByID($this->_templateID);
 		}
 	}
 	
@@ -1882,7 +1882,7 @@ class CMS_page extends CMS_resource
 	protected function _checkWebsite()
 	{
 		if (!is_object($this->_website)) {
-			$this->_website =& CMS_tree::getPageWebsite($this->_pageID);
+			$this->_website = CMS_tree::getPageWebsite($this->_pageID);
 		}
 		if (!is_object($this->_website)) {
 			$this->raiseError('No website founded for page : '.$this->_pageID);
@@ -2101,7 +2101,7 @@ class CMS_page extends CMS_resource
 	  * @return void
 	  * @access private
 	  */
-	function getAllVisualizationModes()
+	static function getAllVisualizationModes()
 	{
 		return array(	PAGE_VISUALMODE_FORM, 
 						PAGE_VISUALMODE_HTML_PUBLIC,

@@ -396,23 +396,18 @@ class CMS_row extends CMS_grandFather
 	  * @return string the definition
 	  * @access public
 	  */
-	function getDefinition()
-	{
-		if ($file = $this->getDefinitionFileName()) {
-			$fp = fopen(PATH_TEMPLATES_ROWS_FS."/".$file, 'rb');
-			if (is_resource($fp)) {
-				$data = fread($fp, filesize (PATH_TEMPLATES_ROWS_FS."/".$file));
-				fclose($fp);
-				//check if rows use a polymod block, if so pass to module for variables conversion
-				foreach ($this->getModules(false) as $moduleCodename) {
-					if (CMS_modulesCatalog::isPolymod($moduleCodename)) {
-						$module = CMS_modulesCatalog::getByCodename($moduleCodename);
-						$data = $module->convertDefinitionString($data, true);
-					}
+	function getDefinition() {
+		if ($filename = $this->getDefinitionFileName()) {
+			$file = new CMS_file(PATH_TEMPLATES_ROWS_FS."/".$filename);
+			$data = $file->getContent();
+			//check if rows use a polymod block, if so pass to module for variables conversion
+			foreach ($this->getModules(false) as $moduleCodename) {
+				if (CMS_modulesCatalog::isPolymod($moduleCodename)) {
+					$module = CMS_modulesCatalog::getByCodename($moduleCodename);
+					$data = $module->convertDefinitionString($data, true);
 				}
-
-				return $data;
 			}
+			return $data;
 		}
 		return false;
 	}

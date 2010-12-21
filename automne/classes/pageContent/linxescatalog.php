@@ -36,7 +36,7 @@ class CMS_linxesCatalog extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function getAllTypes()
+	static function getAllTypes()
 	{
 		return array("direct", "desclinks", "sublinks","recursivelinks");
 	}
@@ -50,7 +50,7 @@ class CMS_linxesCatalog extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function deleteLinxes(&$page, $includingWhenTarget = false)
+	static function deleteLinxes(&$page, $includingWhenTarget = false)
 	{
 		//check argument is a page
 		if (!is_a($page, "CMS_page")) {
@@ -100,7 +100,7 @@ class CMS_linxesCatalog extends CMS_grandFather
 	  * @return array(integer) The DB IDs of pages watching the one in argument
 	  * @access public
 	  */
-	function getWatchers($page) {
+	static function getWatchers($page) {
 		//check argument is a page
 		if (!is_a($page, "CMS_page") && !sensitiveIO::isPositiveInteger($page)) {
 			CMS_grandFather::raiseError("Page must be instance of CMS_page or positive integer");
@@ -132,7 +132,7 @@ class CMS_linxesCatalog extends CMS_grandFather
 	  * @return array(integer) The DB IDs of pages linking the one in argument
 	  * @access public
 	  */
-	function getLinkers($page) {
+	static function getLinkers($page) {
 		//check argument is a page
 		if (!is_a($page, "CMS_page") && !sensitiveIO::isPositiveInteger($page)) {
 			CMS_grandFather::raiseError("Page must be instance of CMS_page or positive integer");
@@ -165,7 +165,7 @@ class CMS_linxesCatalog extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function searchRelations($type, $pageID){
+	static function searchRelations($type, $pageID){
 		if (!sensitiveIO::isPositiveInteger($pageID)) {
 			CMS_grandFather::raiseError('$pageID must be a positive integer : '.$pageID);
 			return false;

@@ -111,7 +111,7 @@ if ($cache->exist()) {
 		$content .=
 		'<item>'."\n".
 		'    <title>RSS Feed Error ..</title>'."\n".
-		'    <guid isPermaLink="false">Error'.mktime().'</guid>'."\n".
+		'    <guid isPermaLink="false">Error'.time().'</guid>'."\n".
 		'    <description><![CDATA[';
 		switch ($error) {
 			case 1:

@@ -527,7 +527,7 @@ class CMS_dialog extends CMS_JSDialog
 							<table width="562" height="30" border="0" cellpadding="0" cellspacing="0">
 								<tr>
 									<td width="472" height="30" class="admin_date">
-										'.$language->getMessage(self::MESSAGE_WEBSITE).' <a href="'.CMS_websitesCatalog::getMainURL().'" target="_blank" class="admin_menu_back"><span class="admin_site_label">'.APPLICATION_LABEL.'</span></a> - <b>'. date($language->getDateFormat(), mktime()) . '</b></td>
+										'.$language->getMessage(self::MESSAGE_WEBSITE).' <a href="'.CMS_websitesCatalog::getMainURL().'" target="_blank" class="admin_menu_back"><span class="admin_site_label">'.APPLICATION_LABEL.'</span></a> - <b>'. date($language->getDateFormat(), time()) . '</b></td>
 									<td width="90" height="30" class="admin"><a href="http://www.automne.ws" target="_blank"><img src="'.PATH_ADMIN_IMAGES_WR.'/../v3/img/powered.gif" border="0" /></a></td>
 								</tr>
 							</table>
@@ -845,7 +845,7 @@ class CMS_dialog extends CMS_JSDialog
 								<table width="562" height="30" border="0" cellpadding="0" cellspacing="0">
 									<tr>
 										<td width="472" height="30" class="admin_date">
-											<!--&nbsp;&nbsp;<span class="admin_site_label">'.APPLICATION_LABEL.'</span> - <b>'. date($language->getDateFormat(), mktime()) . '</b>--></td>
+											<!--&nbsp;&nbsp;<span class="admin_site_label">'.APPLICATION_LABEL.'</span> - <b>'. date($language->getDateFormat(), time()) . '</b>--></td>
 										<td width="90" height="30" class="admin"><a href="http://www.automne.ws" target="_blank"><img src="'.PATH_ADMIN_IMAGES_WR.'/../v3/img/powered.gif" border="0" /></a></td>
 									</tr>
 								</table>

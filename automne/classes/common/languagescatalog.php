@@ -34,7 +34,7 @@ class CMS_languagesCatalog extends CMS_grandFather
 	  * @return array(CMS_language) The available languages sorted by label
 	  * @access public
 	  */
-	function getAllLanguages($module = false, $orderBy="label_lng")
+	static function getAllLanguages($module = false, $orderBy="label_lng")
 	{
 		static $languagesCatalog;
 		if (isset($languagesCatalog[($module) ? $module : 'all'])) {
@@ -76,7 +76,7 @@ class CMS_languagesCatalog extends CMS_grandFather
 	  * @return CMS_language The found language, false if not found
 	  * @access public
 	  */
-	function getByCode($code) {
+	static function getByCode($code) {
 		static $languages;
 		if (!isset($languages[$code])) {
 			$languages[$code] = new CMS_language($code);
@@ -95,7 +95,7 @@ class CMS_languagesCatalog extends CMS_grandFather
 	  * @return CMS_language The default language
 	  * @access public
 	  */
-	function getDefaultLanguage($guessFromNavigator = false)
+	static function getDefaultLanguage($guessFromNavigator = false)
 	{
 		if ($guessFromNavigator) {
 			//load language object from get value if any

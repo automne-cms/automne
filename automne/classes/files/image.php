@@ -156,22 +156,16 @@ class CMS_image extends CMS_file
 					$newSizeX = $sizeX;
 					$newSizeY = $sizeY;
 				} else {
-					if ($sizeX > $sizeY) {
-						$ratio = $sizeY / $sizeX;
-					} else {
-						$ratio = $sizeX / $sizeY;
-					}
-					if (round(($newSizeX * $sizeY) / $sizeX) <= $newSizeY) {
-						$newSizeX = round(($newSizeY * $sizeX) / $sizeY);
-						$newSizeY = round($newSizeX * $ratio);
-					} else {
-						$newSizeY = round(($newSizeX * $sizeY) / $sizeX);
-						$newSizeX = round($newSizeY * $ratio);
+					$newSizeX = $x;
+					$newSizeY = round(($sizeY * $x) / $sizeX);
+					if ($newSizeY < $y) {
+						$newSizeX = round(($sizeX * $y) / $sizeY);
+						$newSizeY = $y;
 					}
 				}
 			}
 		}
-		
+		//CMS_grandFather::log("\n".'Image : '.$this->getFilename(false).' -- original : '.$sizeX.' - '.$sizeY." -- ".'queried : '.$x.' - '.$y." -- ".'new : '.$newSizeX.' - '.$newSizeY);
 		//resize image
 		if ($newSizeX < $sizeX || $newSizeY < $sizeY) {
 			//resize image and keep transparency if any
@@ -224,6 +218,9 @@ class CMS_image extends CMS_file
 			}
 			//chmod new file
 			CMS_file::chmodFile(FILES_CHMOD, $saveToPathFS);
+		} elseif ($imagepathFS != $saveToPathFS) {
+			//copy file to new destination if saveToPathFS is not the same as current imagepathFS
+			CMS_file::copyTo($imagepathFS, $saveToPathFS);
 		}
 		
 		//check for crop if needed
@@ -237,9 +234,6 @@ class CMS_image extends CMS_file
 			if ($newSizeY > $y) {
 				$cropTop = ceil(($newSizeY - $y) / 2);
 				$cropBottom = floor(($newSizeY - $y) / 2);
-			}
-			if (!file_exists($saveToPathFS)) {
-				CMS_file::copyTo($imagepathFS, $saveToPathFS);
 			}
 			$tmpImage = new CMS_image($saveToPathFS);
 			return $tmpImage->crop($cropTop, $cropBottom, $cropLeft, $cropRight);

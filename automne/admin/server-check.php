@@ -26,7 +26,7 @@
 require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
 
 //Controler vars
-$action = sensitiveIO::request('action', array('check-files', 'check-htaccess', 'browser-cache-reset', 'polymod-cache-reset', 'update-db'));
+$action = sensitiveIO::request('action', array('check-files', 'check-htaccess', 'browser-cache-reset', 'polymod-cache-reset', 'cache-reset', 'update-db'));
 
 define("MESSAGE_PAGE_NO_SERVER_RIGHTS",748);
 define("MESSAGE_PAGE_MORE_THAN_THOUSAND",763);
@@ -149,7 +149,15 @@ switch ($action) {
 	break;
 	case 'polymod-cache-reset':
 		//remove polymod cache
-		if (CMS_cache::clearTypeCache('polymod')) {
+		if (CMS_cache::clearTypeCache('polymod') && CMS_cache::clearTypeCache('atm-polymod-structure')) {
+			$cms_message = $cms_language->getMessage(MESSAGE_OPERATION_DONE);
+		} else {
+			$cms_message = $cms_language->getMessage(MESSAGE_CREATION_ERROR);
+		}
+	break;
+	case 'cache-reset':
+		//remove polymod cache
+		if (CMS_file::deltree(PATH_CACHE_FS, false)) {
 			$cms_message = $cms_language->getMessage(MESSAGE_OPERATION_DONE);
 		} else {
 			$cms_message = $cms_language->getMessage(MESSAGE_CREATION_ERROR);
