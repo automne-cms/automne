@@ -538,9 +538,13 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 			select
 				userId_puv
 			from
-				profilesUsers_validators
+				profilesUsers_validators,
+				profilesUsers
 			where
 				module_puv='".SensitiveIO::sanitizeSQLString($moduleCodename)."'
+				and userId_puv = id_pru
+				and active_pru = 1
+				and deleted_pru = 0
 		";
 		$q = new CMS_query($sql);
 		$users = array();
@@ -548,7 +552,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 		while ($id = $q->getValue("userId_puv")) {
 			$usr = CMS_profile_usersCatalog::getByID($id);
 			if (!$usr->hasError()) {
-				$users[] = $usr;
+				$users[$usr->getLastName().'-'.$id] = $usr;
 				$users_ids[] = $id;
 			}
 		}
@@ -563,17 +567,20 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 			where
 				profile_pru = id_pr
 				and administrationClearance_pr & " . CLEARANCE_ADMINISTRATION_EDITVALIDATEALL . "
-			order by lastName_pru
+				and active_pru = 1
+				and deleted_pru = 0
 		";
 		$q = new CMS_query($sql);
 		while ($id = $q->getValue("id_pru")) {
 			if (!in_array($id, $users_ids)) {
 				$usr = CMS_profile_usersCatalog::getByID($id);
 				if (!$usr->hasError()) {
-					$users[] = $usr;
+					$users[$usr->getLastName().'-'.$id] = $usr;
 				}
 			}
 		}
+		//sort users by last name
+		uksort($users, array('io','natcasecmp'));
 		
 		return $users;
 	}

@@ -856,6 +856,20 @@ class SensitiveIO extends CMS_grandFather
 		$args = func_get_args();
 		return call_user_func_array ($func, $args);
 	}
+	
+	/**
+	  * Callback function for natural sorting without care of accentuation
+	  * Usage :
+	  * Sort on array values : uasort( (array) $array, array('io','natcasecmp'));
+	  * Sort on array keys : uksort( (array) $array, array('io','natcasecmp'));
+	  *
+	  * @access public
+	  */
+	static function natcasecmp($str1, $str2) {
+		$str1 = sensitiveIO::sanitizeAsciiString($str1);
+		$str2 = sensitiveIO::sanitizeAsciiString($str2);
+		return strnatcasecmp($str1, $str2);
+	}
 }
 /**
   * Class io
