@@ -487,6 +487,10 @@ class CMS_XMLTag extends CMS_grandFather
 		if (!$text || !trim($text)) {
 			return $text;
 		}
+		//substitute simple replacement values
+		$preReplaceCount = 0;
+		$text = preg_replace("#{([a-zA-Z]+)}#", '@@@\1@@@', $text, -1, $preReplaceCount);
+		
 		$count = 1;
 		//loop on text for vars to replace if any
 		while (preg_match_all("#{[^{}\n]+}#", $text, $matches) && $count) {
@@ -570,6 +574,10 @@ class CMS_XMLTag extends CMS_grandFather
 			}
 			//return matched vars if needed
 			if ($returnMatchedVarsArray) {
+				//substitute simple replacement values
+				if ($preReplaceCount) {
+					$replace = preg_replace("#\@\@\@([a-zA-Z]+)\@\@\@#", '{\1}', $replace);
+				}
 				return $replace;
 			} 
 			//else replace vars in text
@@ -589,6 +597,10 @@ class CMS_XMLTag extends CMS_grandFather
 				$replace[$replacement] = '<?php echo "'.$replacement.'"; ?>';
 			}
 			$text = CMS_XMLTag::cleanComputedDefinition(str_replace(array_keys($replace), $replace, $text));
+		}
+		//substitute simple replacement values
+		if ($preReplaceCount) {
+			$text = preg_replace("#\@\@\@([a-zA-Z]+)\@\@\@#", '{\1}', $text);
 		}
 		return $text;
 	}
