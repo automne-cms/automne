@@ -379,7 +379,7 @@ switch ($fromtab) {
 //the page file may not exists yet, 
 //so to prevent the display of an error, we must force the page generation here
 if ($cms_page->getPublication() == RESOURCE_PUBLICATION_PUBLIC && ($regenerate || ($active == 'public' && !file_exists($cms_page->getURL(false, false, PATH_RELATIVETO_FILESYSTEM, true))))) {
-	pr($regenerate ? 'Page regeneration queried' : 'Page file missing => auto regeneration');
+	//pr($regenerate ? 'Page regeneration queried' : 'Page file missing => auto regeneration');
 	$cms_page->regenerate(true);
 	//if anything goes wrong during regeneration, we must desactivate the public tab
 	if (!file_exists($cms_page->getURL(false, false, PATH_RELATIVETO_FILESYSTEM, true))) {
