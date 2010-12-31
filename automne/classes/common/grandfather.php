@@ -277,6 +277,8 @@ class CMS_grandFather
 				'cms_fileupload'					=> PATH_PACKAGES_FS.'/files/fileupload.php',
 				'cms_cache'							=> PATH_PACKAGES_FS.'/files/cache.php',
 				'cms_image'							=> PATH_PACKAGES_FS.'/files/image.php',
+				'cms_po'							=> PATH_PACKAGES_FS.'/files/po.php',
+				'cms_po_entry'						=> PATH_PACKAGES_FS.'/files/poentry.php',
 
 				//modules
 				'cms_module'						=> PATH_MODULES_FS.'/module.php',
@@ -363,6 +365,10 @@ class CMS_grandFather
 
 				//CSSMin
 				'cssmin' 							=> PATH_MAIN_FS.'/cssmin/cssmin.php',
+				
+				//PHPExcel
+				'phpexcel'							=> PATH_MAIN_FS.'/phpexcel/PHPExcel.php',
+				'phpexcel_iofactory'				=> PATH_MAIN_FS.'/phpexcel/PHPExcel/IOFactory.php',
 			);
 		}
 		$file = '';

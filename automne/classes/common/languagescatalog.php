@@ -113,5 +113,189 @@ class CMS_languagesCatalog extends CMS_grandFather
 		}
 		return CMS_languagesCatalog::getByCode(ADMINISTRATION_DEFAULT_LANGUAGE);
 	}
+	
+	/**
+	  * Search messages
+	  * Static function.
+	  *
+	  * @param string module : module to search messages
+	  * @param string search : search message by value
+	  * @param array languagesOnly : limit search to given languages codes
+	  * @param array options : search options
+	  * @param string direction : search is ordered by results id. Specify order direction (asc or desc). Default : asc
+	  * @param integer start : search start offset
+	  * @param integer limit : search limit (default : 0 : unlimited)
+	  * @param integer resultsnb : return results count by reference
+	  * @return array(id => msg)
+	  * @access public
+	  */
+	static function searchMessages($module, $search = '', $languagesOnly = array(), $options = array(), $direction = 'asc', $start = 0, $limit = 0, &$resultsnb) {
+		//pr(func_get_args());
+		
+		$start = (int) $start;
+		$limit = (int) $limit;
+		$direction = (in_array(io::strtolower($direction), array('asc', 'desc'))) ? io::strtolower($direction) : 'asc';
+		
+		$emptyOnly = $idsOnly = false;
+		if (is_array($options)) {
+			$emptyOnly = isset($options['empty']) && $options['empty'] ? true : false;
+			$idsOnly = isset($options['ids']) && is_array($options['ids']) ? $options['ids'] : false;
+		}
+		
+		$keywordsWhere = $languagesWhere = $emptyWhere = $orderBy = $orderClause = $idsWhere = '';
+		
+		//get ids for which one message is missing
+		if ($emptyOnly) {
+			$qLanguages = new CMS_query("
+				select 
+					distinct language_mes
+				from 
+					messages
+				where
+					module_mes = '".io::sanitizeSQLString($module)."'
+			");
+			$qIds = new CMS_query("
+				select 
+					distinct id_mes
+				from 
+					messages
+				where
+					module_mes = '".io::sanitizeSQLString($module)."'
+			");
+			$allIds = $qIds->getAll(PDO::FETCH_COLUMN|PDO::FETCH_UNIQUE, 0);
+			$missingIds = array();
+			while ($language = $qLanguages->getValue('language_mes')) {
+				$qLang = new CMS_query("
+					select 
+						distinct id_mes
+					from 
+						messages
+					where
+						module_mes = '".io::sanitizeSQLString($module)."'
+						and language_mes='".$language."'
+						and message_mes != ''
+				");
+				$ids = $qLang->getAll(PDO::FETCH_COLUMN|PDO::FETCH_UNIQUE, 0);
+				$missingIds = array_merge($missingIds, array_diff($allIds, $ids));
+			}
+			if (!$missingIds) {
+				$resultsnb = 0;
+				return array();
+			}
+			$emptyWhere = ' and id_mes in ('.implode($missingIds, ',').')';
+		}
+		if ($idsOnly) {
+			$idsWhere = ' and id_mes in ('.io::sanitizeSQLString(implode($idsOnly, ',')).')';
+		}
+		if ($search) {
+			//clean user keywords (never trust user input, user is evil)
+			$search = strtr($search, ",;", "  ");
+			if (isset($options['phrase']) && $options['phrase']) {
+				$search = str_replace(array('%','_'), array('\%','\_'), $search);
+				if (htmlentities($search) != $search) {
+					$keywordsWhere .= " and (
+						message_mes like '%".sensitiveIO::sanitizeSQLString($search)."%' or message_mes like '%".sensitiveIO::sanitizeSQLString(htmlentities($search))."%'
+					)";
+				} else {
+					$keywordsWhere .= " and message_mes like '%".sensitiveIO::sanitizeSQLString($search)."%'";
+				}
+			} else {
+				$words=array();
+				$words=array_map("trim",array_unique(explode(" ", io::strtolower($search))));
+				$cleanedWords = array();
+				foreach ($words as $aWord) {
+					if ($aWord && $aWord!='' && io::strlen($aWord) >= 3) {
+						$aWord = str_replace(array('%','_'), array('\%','\_'), $aWord);
+						$cleanedWords[] = $aWord;
+					}
+				}
+				if (!$cleanedWords) {
+					//if no words after cleaning, return
+					return array();
+				}
+				foreach ($cleanedWords as $cleanedWord) {
+					$keywordsWhere .= ($keywordsWhere) ? " and " : '';
+					if (htmlentities($aWord) != $aWord) {
+						$keywordsWhere .= " (
+							message_mes like '%".sensitiveIO::sanitizeSQLString($cleanedWord)."%' or message_mes like '%".sensitiveIO::sanitizeSQLString(htmlentities($cleanedWord))."%'
+						)";
+					} else {
+						$keywordsWhere .= " (
+							message_mes like '%".sensitiveIO::sanitizeSQLString($cleanedWord)."%'
+						)";
+					}
+				}
+				$keywordsWhere = ' and ('.$keywordsWhere.')';
+			}
+		}
+		if (is_array($languagesOnly) && $languagesOnly) {
+			$languagesWhere = ' and language_mes in (\''.implode($languagesOnly,'\',\'').'\')';
+		}
+		
+		$orderClause = "order by
+			id_mes
+			".$direction;
+		
+		$sql = "
+			select
+				id_mes as id
+			from
+				messages
+			where 
+			module_mes = '".io::sanitizeSQLString($module)."'
+			".$keywordsWhere."
+			".$languagesWhere."
+			".$emptyWhere."
+			".$idsWhere."
+		";
+		//pr($sql);
+		
+		$q = new CMS_query($sql);
+		if (!$q->getNumRows()) {
+			$resultsnb = 0;
+			return array();
+		}
+		$messageIds = array();
+		$messageIds = $q->getAll(PDO::FETCH_COLUMN|PDO::FETCH_UNIQUE, 0);
+		//pr($messageIds);
+		$sql = "
+			select
+				id_mes as id,
+				module_mes as module,
+				language_mes as language,
+				message_mes as message
+			from
+				messages
+			where 
+				module_mes = '".io::sanitizeSQLString($module)."'
+				and id_mes in (".implode($messageIds, ',').")
+				".$orderClause."
+		";
+		
+		$q = new CMS_query($sql);
+		//pr($sql);
+		//pr($q->getNumRows());
+		if (!$q->getNumRows()) {
+			$resultsnb = 0;
+			return array();
+		}
+		$messageGroups = array();
+		$messageGroups = $q->getAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
+		//pr($messageGroups);
+		
+		$resultsnb = count($messageGroups);
+		if ($limit) {
+			$messageGroups = array_slice($messageGroups, $start, $limit, true);
+		}
+		$messages = array();
+		foreach ($messageGroups as $key => $messageGroup) {
+			$messages[$key]['id'] = $key;
+			foreach ($messageGroup as $message) {
+				$messages[$key][$message['language']] = $message['message'];
+			}
+		}
+		//pr($messages);
+		return $messages;
+	}
 }
 ?>

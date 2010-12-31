@@ -40,6 +40,10 @@ $view->setDisplayMode(CMS_view::SHOW_RAW);
 //This file is an admin file. Interface must be secure
 $view->setSecure();
 
+if (!defined('MOD_POLYMOD_CODENAME')) {
+	define('MOD_POLYMOD_CODENAME', 'polymod');
+}
+
 //show version number
 $polymodVersion = file_exists(PATH_MODULES_FS.'/'.MOD_POLYMOD_CODENAME.'/VERSION') ? file_get_contents(PATH_MODULES_FS.'/'.MOD_POLYMOD_CODENAME.'/VERSION') : $cms_language->getMessage(MESSAGE_PAGE_UNKNOWN);
 $lastUpdate = AUTOMNE_LASTUPDATE ? date($cms_language->getDateFormat().' - H:i:s' , AUTOMNE_LASTUPDATE) : $cms_language->getMessage(MESSAGE_PAGE_NEVER);

@@ -522,7 +522,7 @@ class CMS_language extends CMS_grandFather
 	 * @return					Id of the inserted message.
 	 */
 	public function createMessage($sCodename, $aMessages) {
-		$iId = $this->getNextMessageId($sCodename);
+		$iId = CMS_language::getNextMessageId($sCodename);
 		foreach ($aMessages as $sLanguageCode => $sMessage) {
 			$oQuery = new CMS_query("
 				INSERT INTO
@@ -535,6 +535,51 @@ class CMS_language extends CMS_grandFather
 			");
 		}
 		return $iId;
+	}
+	
+	/**
+	 * Update messages.
+	 * @var	string	$sCodename	Module's codename.
+	 * @var	integer	$iId		Messages id.
+	 * @var	array	$aMessages	Localised message. $sLanguageCode => $sMessage
+	 * @return					boolean
+	 */
+	public function updateMessage($sCodename, $iId, $aMessages) {
+		foreach ($aMessages as $sLanguageCode => $sMessage) {
+			$oQuery = new CMS_query("
+				replace into
+					messages
+				set
+					id_mes = ".SensitiveIO::sanitizeSQLString($iId).",
+					module_mes = '".SensitiveIO::sanitizeSQLString($sCodename)."',
+					language_mes = '".SensitiveIO::sanitizeSQLString($sLanguageCode)."',
+					message_mes = '".SensitiveIO::sanitizeSQLString($sMessage)."'
+			");
+			if ($oQuery->hasError()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Delete messages.
+	 * @var	string	$sCodename	Module's codename.
+	 * @var	integer	$iId		Messages id.
+	 * @return					boolean
+	 */
+	public function deleteMessage($sCodename, $iId) {
+		$oQuery = new CMS_query("
+			delete from
+				messages
+			where
+				id_mes = ".SensitiveIO::sanitizeSQLString($iId)."
+				and module_mes = '".SensitiveIO::sanitizeSQLString($sCodename)."'
+		");
+		if ($oQuery->hasError()) {
+			return false;
+		}
+		return true;
 	}
 }
 ?>
