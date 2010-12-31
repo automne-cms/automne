@@ -95,7 +95,7 @@ if ($filename || $cms_action=='errorsCorrected') {
 	if ($cms_action!='errorsCorrected') {
 		//patch uncompress
 		report('Uncompressing patch in progress...');
-		$archive = new CMS_gzip_file(PATH_REALROOT_FS.$filename);
+		$archive = new CMS_gzip_file($_SERVER['DOCUMENT_ROOT'].$filename);
 		
 		if (!$archive->hasError()) {
 			$archive->set_options(array('basedir'=>PATH_TMP_FS."/", 'overwrite'=>1, 'level'=>1, 'dontUseFilePerms'=>1, 'forceWriting'=>1));
