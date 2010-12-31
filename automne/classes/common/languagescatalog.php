@@ -47,7 +47,7 @@ class CMS_languagesCatalog extends CMS_grandFather
 				languages
 		";
 		
-		if (!$module) {
+		if (!$module && $module != 'all') {
 			$sql .= 'where availableForBackoffice_lng=1';
 		}
 		if ($orderBy) {
@@ -130,8 +130,6 @@ class CMS_languagesCatalog extends CMS_grandFather
 	  * @access public
 	  */
 	static function searchMessages($module, $search = '', $languagesOnly = array(), $options = array(), $direction = 'asc', $start = 0, $limit = 0, &$resultsnb) {
-		//pr(func_get_args());
-		
 		$start = (int) $start;
 		$limit = (int) $limit;
 		$direction = (in_array(io::strtolower($direction), array('asc', 'desc'))) ? io::strtolower($direction) : 'asc';
@@ -248,7 +246,6 @@ class CMS_languagesCatalog extends CMS_grandFather
 			".$emptyWhere."
 			".$idsWhere."
 		";
-		//pr($sql);
 		
 		$q = new CMS_query($sql);
 		if (!$q->getNumRows()) {
@@ -257,7 +254,6 @@ class CMS_languagesCatalog extends CMS_grandFather
 		}
 		$messageIds = array();
 		$messageIds = $q->getAll(PDO::FETCH_COLUMN|PDO::FETCH_UNIQUE, 0);
-		//pr($messageIds);
 		$sql = "
 			select
 				id_mes as id,
@@ -273,15 +269,12 @@ class CMS_languagesCatalog extends CMS_grandFather
 		";
 		
 		$q = new CMS_query($sql);
-		//pr($sql);
-		//pr($q->getNumRows());
 		if (!$q->getNumRows()) {
 			$resultsnb = 0;
 			return array();
 		}
 		$messageGroups = array();
 		$messageGroups = $q->getAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
-		//pr($messageGroups);
 		
 		$resultsnb = count($messageGroups);
 		if ($limit) {
@@ -294,8 +287,33 @@ class CMS_languagesCatalog extends CMS_grandFather
 				$messages[$key][$message['language']] = $message['message'];
 			}
 		}
-		//pr($messages);
 		return $messages;
+	}
+	
+	/**
+	  * Get all available languages codes from ISO 639-1 standard
+	  * Static function.
+	  *
+	  * @return array(code => label)
+	  * @access public
+	  */
+	function getAllLanguagesCodes() {
+		if (!file_exists(PATH_PACKAGES_FS.'/files/iso639-1.txt')) {
+			return array();
+		}
+		$codeFile = new CMS_file(PATH_PACKAGES_FS.'/files/iso639-1.txt');
+		$languagesCodes = $codeFile->readContent('array');
+		$return = array();
+		foreach ($languagesCodes as $languagesCode) {
+			if (substr($languagesCode, 0, 1) != '#') {
+				list($code, $label) = explode("\t", $languagesCode);
+				if (io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
+					$label = utf8_decode($label);
+				}
+				$return[$code] = ucfirst($label);
+			}
+		}
+		return $return;
 	}
 }
 ?>

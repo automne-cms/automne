@@ -401,10 +401,8 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) || $c
 	if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 		$contentEl .= '
 			<li><div class="atm-modules atm-sidepic"></div><a atm:action="modules" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_MODULES_MANAGEMENT).'</a></li>
-			<li><div class="atm-websites atm-sidepic"></div><a atm:action="websites" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_SITE_MANAGEMENT).'</a></li>';
-			//TODOV4
-			/*<li><div class="atm-languages atm-sidepic"></div><a atm:action="languages" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_LANGUAGE_MANAGEMENT).'</a></li>*/
-		$contentEl .= '
+			<li><div class="atm-websites atm-sidepic"></div><a atm:action="websites" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_SITE_MANAGEMENT).'</a></li>
+			<li><div class="atm-languages atm-sidepic"></div><a atm:action="languages" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_LANGUAGE_MANAGEMENT).'</a></li>
 			<li><div class="atm-separator"></div></li>
 			<li><div class="atm-database atm-sidepic"></div><a href="'.PATH_PHPMYADMIN_WR.'" target="_blank">'.$cms_language->getMessage(MESSAGE_PAGE_DATABASE).'</a></li>
 			<li><div class="atm-server atm-sidepic"></div><a atm:action="server" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_SERVER_SETTINGS).'</a></li>
@@ -697,7 +695,7 @@ $jscontent = <<<END
 			window.show();
     	},
 		'languages' : function(t){
-    		Automne.message.show('TODOV4 : Show languages panel');
+    		openWindow(t, 'languages.php', {}, 750, 580);
     	},
 		'server' : function(t){
     		openWindow(t, '{$automnePath}/admin/server.php', {}, 750, 580);
