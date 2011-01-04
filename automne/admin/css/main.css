@@ -468,7 +468,7 @@ tr.atm-even {
 }
 #atm-chooser-view .loading-indicator {
     font-size:			11px;
-    background-image:	url('/automne/admin/img/resources/images/grid/loading.gif');
+    background-image:	url('../automne/admin/img/resources/images/grid/loading.gif');
     background-repeat: 	no-repeat;
     background-position:left;
     padding-left:		20px;

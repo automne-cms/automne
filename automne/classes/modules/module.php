@@ -231,6 +231,24 @@ class CMS_module extends CMS_grandFather
 		return true;
 	}
 	
+	/** 
+	  * Get the default language code for this module
+	  * Comes from parameters or Constant
+	  * Upgrades constant with parameter founded
+	  *
+	  * @return String the language codename
+	  * @access public
+	  */
+	function getDefaultLanguageCodename()
+	{
+		if ($this->hasParameters() && $s = $this->getParameters(io::strtolower("default_language"))) {
+			define("MOD_".io::strtoupper($this->getCodename())."_DEFAULT_LANGUAGE", io::strtolower($s));
+		} else {
+			define("MOD_".io::strtoupper($this->getCodename())."_DEFAULT_LANGUAGE", APPLICATION_DEFAULT_LANGUAGE);
+		}
+		return constant("MOD_".io::strtoupper($this->getCodename())."_DEFAULT_LANGUAGE");
+	}
+	
 	/**
 	  * Get the module parameters. Search for a file name "CODENAME_rc.xml" in PATH_MODULES_FS
 	  *

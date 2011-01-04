@@ -38,14 +38,14 @@ class CMS_object_i18nm extends CMS_grandFather
 	  * @var array
 	  * @access private
 	  */
-	protected $_languageCodesPriority = array('fr','en');
+	protected $_languageCodesPriority = array();
 	
 	/**
 	  * languages labels
 	  * @var array(string "languageCode" => string "label")
 	  * @access private
 	  */
-	protected $_languageLabels = array('fr' => 'Français','en' => 'English');
+	protected $_languageLabels = array();
 	
 	/**
 	  * all values by languageCode
@@ -73,7 +73,7 @@ class CMS_object_i18nm extends CMS_grandFather
 	function __construct($id = 0, $dbValues=array())
 	{
 		static $i18nm;
-		//load languages
+		//load available languages
 		$this->getAvailableLanguages();
 		if ($id) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
@@ -143,7 +143,12 @@ class CMS_object_i18nm extends CMS_grandFather
 			//check for polymod properly loaded
 			$module =  (class_exists('CMS_polymod')) ? MOD_POLYMOD_CODENAME : '';
 			//order by dateFormat to get fr in first place
-			$languages = CMS_languagesCatalog::getAllLanguages($module,"dateFormat_lng");
+			$languages = CMS_languagesCatalog::getAllLanguages($module);
+			//set default language as first one
+			$firstLanguage = $languages[APPLICATION_DEFAULT_LANGUAGE];
+			unset($languages[APPLICATION_DEFAULT_LANGUAGE]);
+			$languages = array_merge(array(APPLICATION_DEFAULT_LANGUAGE => $firstLanguage), $languages);
+			
 			foreach ($languages as $language) {
 				$availableLanguages[$language->getCode()] = $language->getLabel();
 				$languagesPriority[] = $language->getCode();

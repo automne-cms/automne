@@ -169,13 +169,15 @@ class CMS_block_flash extends CMS_block
 		}
 		
 		$id = ($data["name"]) ? 'flash-'.sensitiveIO::sanitizeHTMLString($data["name"]) : 'flash-'.md5(mt_rand().microtime());
-		$html = '<script type="text/javascript">'."\n".
-		'	swfobject.embedSWF(\''.$src.'\', \''.$id.'\', \''.$data['width'].'\', \''.$data['height'].'\', \''.$data['version'].'\', "'.PATH_MAIN_WR.'/swfobject/expressInstall.swf", {'.sensitiveIO::sanitizeJSString($data['flashvars'], false, false).'}, {'.sensitiveIO::sanitizeJSString($data['params'], false, false).'}, {'.sensitiveIO::sanitizeJSString($data['attributes'], false, false).'});'."\n".
-		'</script>'."\n".
-		'<div id="'.$id.'" class="atm-blockflash" style="width:'.$data["width"].'px;height:'.$data["height"].'px;">'."\n".
-		'	<noscript>'.$language->getMessage(self::MESSAGE_PAGE_JAVASCRIPT_MANDATORY).'</noscript>'."\n".
-		'	<p><a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a></p>'."\n".
-		'</div>';
+		$html = '<div>'."\n". //first div is used to avoid row positionning problems
+		'	<script type="text/javascript">'."\n".
+		'		swfobject.embedSWF(\''.$src.'\', \''.$id.'\', \''.$data['width'].'\', \''.$data['height'].'\', \''.$data['version'].'\', "'.PATH_MAIN_WR.'/swfobject/expressInstall.swf", {'.sensitiveIO::sanitizeJSString($data['flashvars'], false, false).'}, {'.sensitiveIO::sanitizeJSString($data['params'], false, false).'}, {'.sensitiveIO::sanitizeJSString($data['attributes'], false, false).'});'."\n".
+		'	</script>'."\n".
+		'	<div id="'.$id.'" class="atm-blockflash" style="width:'.$data["width"].'px;height:'.$data["height"].'px;">'."\n".
+		'		<noscript>'.$language->getMessage(self::MESSAGE_PAGE_JAVASCRIPT_MANDATORY).'</noscript>'."\n".
+		'		<p><a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a></p>'."\n".
+		'	</div>'.
+		'</div>'."\n";
 		
 		$blockinfos = array('blockflash' => array());
 		$blockinfos['blockflash'] = true;

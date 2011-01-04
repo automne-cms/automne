@@ -152,13 +152,14 @@ Automne.view = {
 		}
 		if (Ext.getCmp('scriptsProgressBar')) {
 			var progressScripts = Ext.getCmp('scriptsProgressBar');
-			v = av.currentScripts / av.maxScripts;
-			if (!isNaN(v) && v != 0) {
-				progressScripts.updateProgress((av.currentScripts / av.maxScripts), toptext, true );
-			} else {
-				progressScripts.updateProgress(0, toptext, true );
+			if (progressScripts.el.dom && progressScripts.el.dom.firstChild) {
+				v = av.currentScripts / av.maxScripts;
+				if (!isNaN(v) && v != 0) {
+					progressScripts.updateProgress((av.currentScripts / av.maxScripts), toptext, true );
+				} else {
+					progressScripts.updateProgress(0, toptext, true );
+				}
 			}
-			
 		}
 	},
 	disconnect: function() {

@@ -111,7 +111,7 @@ class CMS_languagesCatalog extends CMS_grandFather
 				}
 			}
 		}
-		return CMS_languagesCatalog::getByCode(ADMINISTRATION_DEFAULT_LANGUAGE);
+		return CMS_languagesCatalog::getByCode(APPLICATION_DEFAULT_LANGUAGE);
 	}
 	
 	/**
