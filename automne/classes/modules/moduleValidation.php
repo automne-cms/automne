@@ -510,24 +510,6 @@ class CMS_moduleValidation extends CMS_module
 	}
 	
 	/** 
-	  * Get the default language code for this module
-	  * Comes from parameters or Constant
-	  * Upgrades constant with parameter founded
-	  *
-	  * @return String the language codename
-	  * @access public
-	  */
-	function getDefaultLanguageCodename()
-	{
-		if ($this->hasParameters() && $s = $this->getParameters(io::strtolower("default_language"))) {
-			define("MOD_".io::strtoupper($this->getCodename())."_DEFAULT_LANGUAGE", io::strtolower($s));
-		} else {
-			define("MOD_".io::strtoupper($this->getCodename())."_DEFAULT_LANGUAGE", "en");
-		}
-		return constant("MOD_".io::strtoupper($this->getCodename())."_DEFAULT_LANGUAGE");
-	}
-	
-	/** 
 	  * Get the module message constants
 	  *
 	  * @param string, the constant name to get

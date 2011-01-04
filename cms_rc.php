@@ -598,10 +598,10 @@ if (extension_loaded('soap')) {
 }
 /*
   *	Administration default language
-  *	Default : fr (French)
+  *	Default : APPLICATION_DEFAULT_LANGUAGE
   */
 if (!defined("ADMINISTRATION_DEFAULT_LANGUAGE")) {
-	define("ADMINISTRATION_DEFAULT_LANGUAGE", "fr");
+	define("ADMINISTRATION_DEFAULT_LANGUAGE", APPLICATION_DEFAULT_LANGUAGE);
 }
 
 /**

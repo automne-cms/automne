@@ -50,22 +50,6 @@ class CMS_module_cms_forms extends CMS_moduleValidation
 		return new CMS_forms_formular($ID);
 	}
 	
-	/** 
-	  * Get the default language code for this module
-	  * Comes from parameters or Constant
-	  * Upgrades constant with parameter founded
-	  *
-	  * @return String the language codename
-	  * @access public
-	  */
-	function getDefaultLanguageCodename() {
-		if ($this->hasParameters() && $s = $this->getParameters("default_language")) {
-			return $s;
-		} else {
-			return APPLICATION_DEFAULT_LANGUAGE;
-		}
-	}
-	
 	/**
 	  * Gets a tag representation instance
 	  *

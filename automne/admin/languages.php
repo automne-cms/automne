@@ -132,15 +132,15 @@ $jscontent = <<<END
 				width:			750,
 				height:			580,
 				animateTarget:	button,
-				listeners:{'close':function(window){
+				listeners:{'close':function(win){
 					//enable button to allow creation of a other items
-					if (!window.code) {
+					if (!win.code) {
 						Ext.getCmp('{$winId}createItem').enable();
 					}
 					//reload search
 					moduleObjectWindow.search();
 					//delete window from list
-					delete objectsWindows[window.id];
+					delete objectsWindows[win.id];
 				}}
 			});
 			//display window
@@ -157,14 +157,14 @@ $jscontent = <<<END
 		collapsible:		false,
 		region:				'center',
 		border:				false,
-		store: store,
+		store: 				store,
         autoExpandColumn:	'label',
 		colModel: new Ext.grid.ColumnModel([
 			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_LABEL)}", 			width: 80, 	dataIndex: 'label', 		sortable: false},
 			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_CODE)}", 			width: 80, 	dataIndex: 'code', 			sortable: false},
-			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_ADMIN_LANGUAGE)}", 	width: 80, 	dataIndex: 'admin', 		sortable: false,	renderer:function(value) {return value == 1 ? '{$cms_language->getJSMessage(MESSAGE_PAGE_YES)}' : '{$cms_language->getJSMessage(MESSAGE_PAGE_NO)}';}},
+			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_ADMIN_LANGUAGE)}", 	width: 80, 	dataIndex: 'admin', 		sortable: false,	renderer:function(value) {return (value == 1 ? '{$cms_language->getJSMessage(MESSAGE_PAGE_YES)}' : '{$cms_language->getJSMessage(MESSAGE_PAGE_NO)}');}},
 			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_DATE_FORMAT)}", 	width: 80, 	dataIndex: 'dateFormat', 	sortable: false},
-			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_EXCLUDED_MODULES)}",width: 80, 	dataIndex: 'modulesDenied', sortable: false},
+			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_EXCLUDED_MODULES)}",width: 80, 	dataIndex: 'modulesDenied', sortable: false}
 		]),
 		selModel: new Ext.grid.RowSelectionModel({singleSelect:true}),
 		anchor:				'100%',

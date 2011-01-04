@@ -73,6 +73,7 @@ require_once(dirname(__FILE__).'/../../../../cms_rc_admin.php');
 				Automne.message = parent.parent.Automne.message;
 				Ext.MessageBox = parent.parent.Ext.MessageBox;
 				Automne.server = parent.parent.Automne.server;
+				Automne.context = parent.parent.Automne.context;
 				Ext.Ajax = parent.parent.Ext.Ajax;
 				Ext.BLANK_IMAGE_URL = '<?php echo PATH_ADMIN_IMAGES_WR; ?>/s.gif';
 			}

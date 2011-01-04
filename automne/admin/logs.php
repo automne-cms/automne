@@ -236,7 +236,7 @@ $jscontent = <<<END
 			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_ACTION)}", 	width: 120, dataIndex: 'action',	sortable: true},
 			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_USER)}", 		width: 110,	dataIndex: 'user',		sortable: true,		renderer:renderUser},
 			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_STATUS)}", 	width: 35, 	dataIndex: 'status',	sortable: false},
-			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_COMMENTS)}", 	width: 120, dataIndex: 'comment',	sortable: false,	renderer:renderComment},
+			{header: "{$cms_language->getJsMessage(MESSAGE_PAGE_FIELD_COMMENTS)}", 	width: 120, dataIndex: 'comment',	sortable: false,	renderer:renderComment}
 		]),
 		sm: 				sm,
 		viewConfig: 		{
@@ -249,12 +249,12 @@ $jscontent = <<<END
 			tooltip:	'{$cms_language->getJsMessage(MESSAGE_ACTION_EXPORT_DESC)}',
 			handler:	function(button) {
 				var formValues = Ext.getCmp('logsSearchPanel').getForm().getValues();
-				params = Ext.apply(formValues, {
-					export:			1,
-					limit:			2000,
-					start:			0
+				var params = Ext.apply(formValues, {
+					'export':		'1', //export is quoted for IE7...
+					limit:			'2000',
+					start:			'0'
 				});
-				window.open('logs-datas.php?'+Ext.urlEncode(params));
+				window.open('logs-datas.php?' + Ext.urlEncode(params) );
 			}
 		}{$purgeLogs}],
 		bbar:				new Ext.PagingToolbar({
