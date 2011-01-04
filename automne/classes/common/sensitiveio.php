@@ -480,17 +480,26 @@ class SensitiveIO extends CMS_grandFather
 	  *
 	  * @param string $value The string value to troncate
 	  * @param integer $length The maximum length of the returned string
+	  * @param integer $ellipsis The ellipsis to add at the end of string (default : '...')
+	  * @param boolean $center If true, cut the string in the middle (default : false)
+	  * @param boolean $breakWords If false, do not cut the string in the middle of a word (default : true)
 	  * @return string the value troncated
 	  * @access public
 	  */
-	static function ellipsis($value, $length, $ellipsis = '...', $center = false) {
+	static function ellipsis($value, $length, $ellipsis = '...', $center = false, $breakWords = true) {
 		if (io::strlen($value) <= $length) {
 			return $value;
 		}
 		if ($center) {
 			return io::substr($value, 0, ceil(($length - io::strlen($ellipsis))/2)) . $ellipsis . io::substr($value, - floor(($length - io::strlen($ellipsis))/2));
 		} else {
-			return io::substr($value, 0, ($length - io::strlen($ellipsis))) . $ellipsis;
+			if(!$breakWords){
+				$length -= io::strlen($ellipsis);
+				$value = preg_replace('/\s+?(\S+)?$/', '', io::substr($value, 0, $length+1));
+				return io::substr($value, 0, $length).$ellipsis;
+			} else {
+				return io::substr($value, 0, ($length - io::strlen($ellipsis))) . $ellipsis;
+			}
 		}
 	}
 

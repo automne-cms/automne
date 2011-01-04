@@ -646,24 +646,27 @@ class CMS_pageTemplate extends CMS_grandFather
 			}
 			//build the filename
 			$filename = 'pt'.$this->_id.'_'.SensitiveIO::sanitizeAsciiString($this->_label).'.xml';
+		} else {
+			//save old definition (before replacement)
+			$old_definition = @file_get_contents(PATH_TEMPLATES_FS."/".$filename);
 		}
-		
-		//save old definition (before replacement)
-		$old_definition = @file_get_contents(PATH_TEMPLATES_FS."/".$filename);
-		
 		$file = new CMS_file(PATH_TEMPLATES_FS."/".$filename);
 		$file->setContent($definition);
 		if (!$file->writeToPersistence()) {
 			$this->raiseError("Can't write definition file : ".PATH_TEMPLATES_FS."/".$filename);
 			return false;
+		} else {
+			$this->_definitionFile = $filename;
 		}
 		//then parse file to get modules and CS datas
-		$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_CLIENTSPACE_TAGS,PAGE_VISUALMODE_HTML_EDITED,$this);
+		$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_CLIENTSPACE_TAGS,PAGE_VISUALMODE_HTML_EDITED, $this);
 		$error = $this->_parseDefinitionFile($modulesTreatment, self::CONVERT_TO_AUTOMNE);
 		if ($error !== true) {
-			$file = new CMS_file(PATH_TEMPLATES_FS."/".$filename);
-			$file->setContent($old_definition);
-			$file->writeToPersistence();
+			if (isset($old_definition) && $old_definition) {
+				$file = new CMS_file(PATH_TEMPLATES_FS."/".$filename);
+				$file->setContent($old_definition);
+				$file->writeToPersistence();
+			}
 			return $error;
 		}
 		
@@ -857,6 +860,7 @@ class CMS_pageTemplate extends CMS_grandFather
 		global $cms_language;
 		
 		$filename = PATH_TEMPLATES_FS."/".$this->_definitionFile;
+		pr($filename);
 		$tpl = new CMS_file(PATH_TEMPLATES_FS."/".$this->_definitionFile);
 		if (!$tpl->exists()) {
 			$this->raiseError('Can not found template file '.PATH_TEMPLATES_FS."/".$this->_definitionFile);

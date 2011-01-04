@@ -65,42 +65,44 @@ $objectsInfos = $module->getObjectsInfos($cms_user);
 $items = '';
 $activeTab = 0;
 foreach ($objectsInfos as $objectsInfo) {
-	$items .= ($items) ? ',':'';
-	$label = $objectsInfo['description'] ? '<span ext:qtip="'.sensitiveIO::sanitizeJSString($objectsInfo['description']).'">'.sensitiveIO::sanitizeJSString($objectsInfo['label']).'</span>' : sensitiveIO::sanitizeJSString($objectsInfo['label']);
-	$url = (isset($objectsInfo['url'])) ? $objectsInfo['url'] : PATH_ADMIN_MODULES_WR.'/'.$codename.'/items.php';
-	$objectWinId = 'module'. $codename . $objectsInfo['objectId'] .'Panel';
-	$objectsInfo['winId'] = $objectWinId;
-	$objectsInfo['fatherId'] = $winId;
-	$params = sensitiveIO::jsonEncode($objectsInfo);
-	if (isset($options['objectId']) && $options['objectId'] == $objectsInfo['objectId']) {
-		$activeTab = $objectWinId;
-	} elseif($activeTab === 0) {
-		$activeTab = $objectWinId;
-	}
-	if ($objectsInfo['objectId'] == 'categories') {
-		$url = 'modules-categories.php';
-	}
-	if (!isset($objectsInfo['frame']) || $objectsInfo['frame'] == false) {
-		$items .= "{
-			title:	'{$label}',
-			id:		'{$objectWinId}',
-			xtype:	'atmPanel',
-			layout:	'atm-border',
-			autoLoad:		{
-				url:		'{$url}',
-				params:		{$params},
-				nocache:	true,
-				scope:		center
-			}
-		}";
-	} else {
-		$items .= "{
-			title:			'{$label}',
-			id:				'{$objectWinId}',
-			xtype:			'framePanel',
-			frameURL:		'{$url}',
-			allowFrameNav:	true
-		}";
+	if (!isset($objectsInfo['class']) || $objectsInfo['class'] != 'atm-separator') {
+		$items .= ($items) ? ',':'';
+		$label = $objectsInfo['description'] ? '<span ext:qtip="'.sensitiveIO::sanitizeJSString($objectsInfo['description']).'">'.sensitiveIO::sanitizeJSString($objectsInfo['label']).'</span>' : sensitiveIO::sanitizeJSString($objectsInfo['label']);
+		$url = (isset($objectsInfo['url'])) ? $objectsInfo['url'] : PATH_ADMIN_MODULES_WR.'/'.$codename.'/items.php';
+		$objectWinId = 'module'. $codename . $objectsInfo['objectId'] .'Panel';
+		$objectsInfo['winId'] = $objectWinId;
+		$objectsInfo['fatherId'] = $winId;
+		$params = sensitiveIO::jsonEncode($objectsInfo);
+		if (isset($options['objectId']) && $options['objectId'] == $objectsInfo['objectId']) {
+			$activeTab = $objectWinId;
+		} elseif($activeTab === 0) {
+			$activeTab = $objectWinId;
+		}
+		if ($objectsInfo['objectId'] == 'categories') {
+			$url = 'modules-categories.php';
+		}
+		if (!isset($objectsInfo['frame']) || $objectsInfo['frame'] == false) {
+			$items .= "{
+				title:	'{$label}',
+				id:		'{$objectWinId}',
+				xtype:	'atmPanel',
+				layout:	'atm-border',
+				autoLoad:		{
+					url:		'{$url}',
+					params:		{$params},
+					nocache:	true,
+					scope:		center
+				}
+			}";
+		} else {
+			$items .= "{
+				title:			'{$label}',
+				id:				'{$objectWinId}',
+				xtype:			'framePanel',
+				frameURL:		'{$url}',
+				allowFrameNav:	true
+			}";
+		}
 	}
 }
 

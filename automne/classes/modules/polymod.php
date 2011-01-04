@@ -25,7 +25,9 @@
   */
 
 //Polymod Codename
-define("MOD_POLYMOD_CODENAME", "polymod");
+if (!defined('MOD_POLYMOD_CODENAME')) {
+	define("MOD_POLYMOD_CODENAME", "polymod");
+}
 
 class CMS_polymod extends CMS_modulePolymodValidation
 {

@@ -26,7 +26,10 @@
 class CMS_array2Xml extends CMS_grandFather {
 	protected $_doc;
 	
-	function __construct($array, $tag) {
+	protected $_keyname;
+	
+	function __construct($array, $tag, $keyname='key') {
+		$this->_keyname = $keyname;
 		$this->_doc = new CMS_DOMDocument();
 		$this->_doc->loadXML("<$tag>".$this->_2xml($array)."</$tag>", 0, true, false);
 		$this->_doc->formatOutput = true; 
@@ -57,13 +60,13 @@ class CMS_array2Xml extends CMS_grandFather {
 				if (!is_numeric($key)) {
 					$xml .= "<$key>".$value."</$key>";
 				} else {
-					$xml .= "<value key=\"$key\">".$value."</value>";
+					$xml .= "<value ".$this->_keyname."=\"$key\">".$value."</value>";
 				}
 			} else {
 				if (!is_numeric($key)) {
 					$xml .= "<$key />";
 				} else {
-					$xml .= "<value key=\"$key\" />";
+					$xml .= "<value ".$this->_keyname."=\"$key\" />";
 				}
 			}
 		}

@@ -363,6 +363,10 @@ class CMS_grandFather
 
 				//CSSMin
 				'cssmin' 							=> PATH_MAIN_FS.'/cssmin/cssmin.php',
+				
+				//PHPExcel
+				'phpexcel'							=> PATH_MAIN_FS.'/phpexcel/PHPExcel.php',
+				'phpexcel_iofactory'				=> PATH_MAIN_FS.'/phpexcel/PHPExcel/IOFactory.php',
 			);
 		}
 		$file = '';

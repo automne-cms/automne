@@ -257,7 +257,7 @@ class CMS_forms_formular extends CMS_grandFather {
 				$referer = isset($_REQUEST['referer']) ? sensitiveIO::sanitizeHTMLString($_REQUEST['referer']) : null;
 				//and add already selected values (from $_POST global values)
 				//$xml2Array = new CMS_xml2Array(str_replace('&', '&amp;',io::decodeEntities($source)));
-				$xml2Array = new CMS_xml2Array($source, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES | CMS_xml2Array::XML_CORRECT_ENTITIES);
+				$xml2Array = new CMS_xml2Array($source, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES);
 				//parse XHTML form content
 				$xmlArray = $xml2Array->getParsedArray();
 				//add already selected values
@@ -350,8 +350,7 @@ class CMS_forms_formular extends CMS_grandFather {
 		$replace = array(
 			'&' => '&amp;'
 		);
-		//$xml2Array = new CMS_xml2Array(str_replace(array_keys($replace), $replace, io::decodeEntities($source)));
-		$xml2Array = new CMS_xml2Array($source, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES | CMS_xml2Array::XML_CORRECT_ENTITIES);
+		$xml2Array = new CMS_xml2Array($source, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES);
 		//parse XHTML form content
 		$xmlArray = $xml2Array->getParsedArray();
 		//add already selected values
@@ -400,8 +399,7 @@ class CMS_forms_formular extends CMS_grandFather {
 		$replace = array(
 			'&' => '&amp;'
 		);
-		//$xml2Array = new CMS_xml2Array(str_replace(array_keys($replace), $replace, io::decodeEntities($source)));
-		$xml2Array = new CMS_xml2Array($source, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES | CMS_xml2Array::XML_CORRECT_ENTITIES);
+		$xml2Array = new CMS_xml2Array($source, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES);
 		//parse XHTML form content
 		$xmlArray = $xml2Array->getParsedArray();
 		//replace field
@@ -433,8 +431,7 @@ class CMS_forms_formular extends CMS_grandFather {
 							'&' => '&amp;'
 						);
 						//transform XHTML code to XML definition
-						//$xmlArray = new CMS_xml2Array(str_replace(array_keys($replace), $replace, io::decodeEntities($input)));
-						$xmlArray = new CMS_xml2Array($input, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES | CMS_xml2Array::XML_CORRECT_ENTITIES);
+						$xmlArray = new CMS_xml2Array($input, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES);
 						//then replace field definition into current definition tag
 						$fieldDefinition = $xmlArray->getParsedArray();
 						// Default : add the first tag
@@ -482,8 +479,7 @@ class CMS_forms_formular extends CMS_grandFather {
 		$replace = array(
 			'&' => '&amp;'
 		);
-		//$xml2Array = new CMS_xml2Array(str_replace(array_keys($replace), $replace, io::decodeEntities($source)));
-		$xml2Array = new CMS_xml2Array($source, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES | CMS_xml2Array::XML_CORRECT_ENTITIES);
+		$xml2Array = new CMS_xml2Array($source, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES);
 		//parse XHTML form content
 		$xmlArray = $xml2Array->getParsedArray();
 		//replace field
@@ -513,8 +509,7 @@ class CMS_forms_formular extends CMS_grandFather {
 						'&' => '&amp;'
 					);
 					//transform XHTML code to XML definition
-					//$xmlArray = new CMS_xml2Array(str_replace(array_keys($replace), $replace, io::decodeEntities($input)));
-					$xmlArray = new CMS_xml2Array($input, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES | CMS_xml2Array::XML_CORRECT_ENTITIES);
+					$xmlArray = new CMS_xml2Array($input, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES);
 					//then replace field definition into current definition tag
 					$fieldDefinition = $xmlArray->getParsedArray();
 					// Default : add the first tag
@@ -535,8 +530,7 @@ class CMS_forms_formular extends CMS_grandFather {
 						'&' => '&amp;'
 					);
 					//transform XHTML code to XML definition
-					//$xmlArray = new CMS_xml2Array(str_replace(array_keys($replace), $replace, io::decodeEntities($label)));
-					$xmlArray = new CMS_xml2Array($label, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES | CMS_xml2Array::XML_CORRECT_ENTITIES);
+					$xmlArray = new CMS_xml2Array($label, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES);
 					//then replace field definition into current definition tag
 					$fieldDefinition = $xmlArray->getParsedArray();
 					$definition[$key] = $fieldDefinition[0];

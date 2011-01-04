@@ -40,6 +40,6 @@ Automne.message = {
 		}
 	},
 	popup: function(config) {
-		return Ext.MessageBox.show(config);
+		return Ext.MessageBox.show(Ext.applyIf(config,{minWidth:300}));
 	}
 };

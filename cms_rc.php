@@ -1139,24 +1139,36 @@ if (STATS_DEBUG) {
 				$cache->save($stat);
 			}
 		}
+		$content = !$return ? '<fieldset style="width:200px;" class="atm-debug"><legend>Debug Statistics</legend><pre>'.$content.'</pre>' : 'Debug Statistics :'."\n".$content;
+		if (isset($statName)) {
+			$content .= '<a href="'.PATH_ADMIN_WR.'/stat.php?stat='.$statName.'" target="_blank">View statistics detail</a>';
+		}
+		//end xhprof profiling
+		if (defined('APPLICATION_ENABLE_PROFILING') && APPLICATION_ENABLE_PROFILING && function_exists('xhprof_disable')) {
+			$xhprof_data = xhprof_disable();
+			$XHPROF_ROOT = '/smb/clients/automne4/www-rev/lib/xhprof';
+			include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
+			include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
+			$xhprof_runs = new XHProfRuns_Default();
+			$profileName = md5($_SERVER['REQUEST_URI']);
+			$run_id = $xhprof_runs->save_run($xhprof_data, md5($_SERVER['REQUEST_URI']));
+			$content .= '<a href="http://automne4.lib/xhprof/xhprof_html/index.php?run='.$run_id.'&amp;source='.$profileName.'" target="_blank">View profiling detail</a>';
+		}
+		$content .= !$return ? '</fieldset>' : '';
 		if (!$return) {
-			$content = '<fieldset style="width:200px;" class="atm-debug"><legend>Debug Statistics</legend><pre>'.$content.'</pre>';
-			if (isset($statName)) {
-				$content .= '<a href="'.PATH_ADMIN_WR.'/stat.php?stat='.$statName.'" target="_blank">View statistics detail</a>';
-			}
-			$content .= '</fieldset>';
 			echo $content;
 		} else {
-			$content = 'Debug Statistics :'."\n".$content;
-			if (isset($statName)) {
-				$content .= '<a href="'.PATH_ADMIN_WR.'/stat.php?stat='.$statName.'" target="_blank">View statistics detail</a>';
-			}
 			return $content;
 		}
 	}
 	$GLOBALS["sql_nb_requests"] = $GLOBALS["total_time"] = $GLOBALS["files_time"] = 0;
 	$GLOBALS["files_loaded"] = 4; //Start at 4 : 3 config files and the require at the end of this file
 	$GLOBALS["time_start"] = getmicrotime();
+	//start xhprof profiling
+	if (defined('APPLICATION_ENABLE_PROFILING') && APPLICATION_ENABLE_PROFILING && function_exists('xhprof_enable')) {
+		// start profiling
+		xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
+	}
 }
 //include base packages
 require_once(PATH_PACKAGES_FS."/common/grandfather.php");

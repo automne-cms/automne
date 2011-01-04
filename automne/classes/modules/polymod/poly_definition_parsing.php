@@ -183,7 +183,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				}
 			}
 			//parse definiton
-			$this->_parser = new CMS_xml2Array($definition, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES | CMS_xml2Array::XML_CORRECT_ENTITIES);
+			$this->_parser = new CMS_xml2Array($definition, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES);
 			$this->_definitionArray = $this->_parser->getParsedArray();
 			//compute definition
 			$this->_definition = $this->computeTags($this->_definitionArray);
@@ -1524,9 +1524,13 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	function preReplaceVars($text, $reverse = false, $cleanNotMatches = false, $matchCallback = array('CMS_polymod_definition_parsing', 'encloseString'), $returnMatchedVarsArray = false) {
 		static $replacements;
 		//if no text => return
-		if (!$text) {
-			return '';
+		if (!$text || !trim($text)) {
+			return $text;
 		}
+		//substitute simple replacement values
+		$preReplaceCount = 0;
+		$text = preg_replace("#{([a-zA-Z]+)}#", '@@@\1@@@', $text, -1, $preReplaceCount);
+		
 		$count = 1;
 		//loop on text for vars to replace if any
 		while (preg_match_all("#{[^{}\n]+}#", $text, $matches) && $count) {
@@ -1610,6 +1614,10 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			}
 			//return matched vars if needed
 			if ($returnMatchedVarsArray) {
+				//substitute simple replacement values
+				if ($preReplaceCount) {
+					$replace = preg_replace("#\@\@\@([a-zA-Z]+)\@\@\@#", '{\1}', $replace);
+				}
 				return $replace;
 			} 
 			//else replace vars in text
@@ -1617,6 +1625,10 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				//then replace variables in text and return it
 				$text = str_replace(array_keys($replace), $replace, $text);
 			}
+		}
+		//substitute simple replacement values
+		if ($preReplaceCount) {
+			$text = preg_replace("#\@\@\@([a-zA-Z]+)\@\@\@#", '{\1}', $text);
 		}
 		return $text;
 	}
@@ -1694,12 +1706,12 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				continue;
 			}
 			//check for indent level down
-			$firstChar = substr($phpline, 0, 1);
+			$firstChar = $phpline[0];
 			if ($firstChar == '}' || $firstChar == ')' || substr($phpline, 0, 5) == 'endif') {
 				$level--;
 			}
 			//indent code
-			$indent = str_replace(' ', "\t",sprintf("%".($level)."s",  ''));
+			$indent = str_repeat("\t" , $level);
 			$phparray[$linenb] = $indent.$phpline;
 			//check for indent level up
 			$lastChar = substr($phpline, -1);

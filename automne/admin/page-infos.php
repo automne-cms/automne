@@ -147,7 +147,7 @@ if (!$pageUrl && !$pageId && !$from) {
 $jscontent = '';
 $isAutomne = $querystring = false;
 //current http host
-$httpHost = parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST'];
+$httpHost = @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST'];
 if ($pageUrl && !$pageId) {
 	//get page from requested url
 	if ($cms_page = CMS_tree::analyseURL($pageUrl)) {
@@ -161,13 +161,13 @@ if ($pageUrl && !$pageId) {
 }
 if (!isset($cms_page) || !$cms_page || !is_object($cms_page) || $cms_page->hasError() || ($cms_page->getID() != APPLICATION_ROOT_PAGE_ID && !CMS_tree::hasAncestor($cms_page->getID()))) {
 	if ($pageUrl && !$isAutomne) {
-		if ($pageUrl == PATH_REALROOT_WR.'/' && $httpHost != parse_url(CMS_websitesCatalog::getMainURL(), PHP_URL_HOST)) {
+		if ($pageUrl == PATH_REALROOT_WR.'/' && $httpHost != @parse_url(CMS_websitesCatalog::getMainURL(), PHP_URL_HOST)) {
 			//Website domain is not properly set
 			if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 				$jscontent = "
 					Automne.message.popup({
 						title: 		'".$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_DOMAIN)."', 
-						msg: 		'".$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_WEBSITE_CONFIG, array($httpHost, parse_url(CMS_websitesCatalog::getMainURL(), PHP_URL_HOST)))."',
+						msg: 		'".$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_WEBSITE_CONFIG, array($httpHost, @parse_url(CMS_websitesCatalog::getMainURL(), PHP_URL_HOST)))."',
 						buttons:	Ext.MessageBox.OK,
 						icon: 		Ext.MessageBox.WARNING,
 						fn: 		function (button) {
@@ -186,7 +186,7 @@ if (!isset($cms_page) || !$cms_page || !is_object($cms_page) || $cms_page->hasEr
 				$jscontent = "
 					Automne.message.popup({
 						title: 		'".$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_DOMAIN)."', 
-						msg: 		'".$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_WEBSITE_CONFIG_ADMIN, array($httpHost, parse_url(CMS_websitesCatalog::getMainURL(), PHP_URL_HOST)))."',
+						msg: 		'".$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_WEBSITE_CONFIG_ADMIN, array($httpHost, @parse_url(CMS_websitesCatalog::getMainURL(), PHP_URL_HOST)))."',
 						buttons:	Ext.MessageBox.OK,
 						icon: 		Ext.MessageBox.ERROR
 					});
@@ -379,7 +379,7 @@ switch ($fromtab) {
 //the page file may not exists yet, 
 //so to prevent the display of an error, we must force the page generation here
 if ($cms_page->getPublication() == RESOURCE_PUBLICATION_PUBLIC && ($regenerate || ($active == 'public' && !file_exists($cms_page->getURL(false, false, PATH_RELATIVETO_FILESYSTEM, true))))) {
-	pr($regenerate ? 'Page regeneration queried' : 'Page file missing => auto regeneration');
+	//pr($regenerate ? 'Page regeneration queried' : 'Page file missing => auto regeneration');
 	$cms_page->regenerate(true);
 	//if anything goes wrong during regeneration, we must desactivate the public tab
 	if (!file_exists($cms_page->getURL(false, false, PATH_RELATIVETO_FILESYSTEM, true))) {
@@ -1122,14 +1122,14 @@ foreach ($userPanels as $panel => $panelStatus) {
 				} else {
 					if ($pageUrl) {
 						//analyse get parameters
-						$query = parse_url($pageUrl, PHP_URL_QUERY);
-						$fragment = parse_url($pageUrl, PHP_URL_FRAGMENT);
+						$query = @parse_url($pageUrl, PHP_URL_QUERY);
+						$fragment = @parse_url($pageUrl, PHP_URL_FRAGMENT);
 						$panelURL = $cms_page->getURL().($query ? '?'.$query : '').($fragment ? '#'.$fragment : '');
 					} else {
 						$panelURL = $cms_page->getURL();
 					}
 					//check for website host
-					$pageHost = parse_url($panelURL, PHP_URL_HOST);
+					$pageHost = @parse_url($panelURL, PHP_URL_HOST);
 					if ($pageHost && $_SERVER['HTTP_HOST'] && io::strtolower($httpHost) != io::strtolower($pageHost)) {
 						//page host is not the same of current host so change it to avoid JS restriction
 						$panelURL = str_replace($pageHost, $httpHost, $panelURL);

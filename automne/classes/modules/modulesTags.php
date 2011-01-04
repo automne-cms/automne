@@ -226,12 +226,10 @@ class CMS_modulesTags extends CMS_grandFather
 		if (!$this->_parser) {
 			if ($enclose) {
 				$options = CMS_xml2Array::XML_PROTECT_ENTITIES
-						 | CMS_xml2Array::XML_CORRECT_ENTITIES
 						 | CMS_xml2Array::XML_DONT_THROW_ERROR
 						 | CMS_xml2Array::XML_ENCLOSE;
 			} else {
 				$options = CMS_xml2Array::XML_PROTECT_ENTITIES
-						  | CMS_xml2Array::XML_CORRECT_ENTITIES
 						  | CMS_xml2Array::XML_DONT_THROW_ERROR;
 			}
 			$this->_parse($options);
@@ -288,12 +286,10 @@ class CMS_modulesTags extends CMS_grandFather
 		if (!$this->_parser) {
 			if ($enclose) {
 				$options = CMS_xml2Array::XML_PROTECT_ENTITIES
-						 | CMS_xml2Array::XML_CORRECT_ENTITIES
 						 | CMS_xml2Array::XML_DONT_THROW_ERROR
 						 | CMS_xml2Array::XML_ENCLOSE;
 			} else {
 				$options = CMS_xml2Array::XML_PROTECT_ENTITIES
-						  | CMS_xml2Array::XML_CORRECT_ENTITIES
 						  | CMS_xml2Array::XML_DONT_THROW_ERROR;
 			}
 			$this->_parse($options);

@@ -27,6 +27,8 @@ V4.1.0 (in progress)
 [FEATURE] : Add auto resize and auto crop on images for image and file objects
 [FEATURE] : Add email notification to user/group field of objects (like author for example)
 [FEATURE] : Add atm-page and atm-website tags
+[FEATURE] : Add PHPExcel library (working on excel files) : http://phpexcel.codeplex.com
+[FEATURE] : Add Languages management
 
 V4.0.2 (25/05/2010)
 [BUG] : Corrected bugs : 269, 270, 486, 497 (see http://www.automne.ws/bug/)

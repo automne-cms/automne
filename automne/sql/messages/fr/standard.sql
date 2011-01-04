@@ -1647,3 +1647,16 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1687, 'standard', 'fr', 'Remise à zéro du l\'ensemble du cache :');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1688, 'standard', 'fr', 'Cette fonction vous permet de remettre à zéro l\'ensemble du cache employé par Automne et tous ses modules.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1689, 'standard', 'fr', 'Gestion du cache');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1690, 'standard', 'fr', 'Code');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1691, 'standard', 'fr', 'Langue d\'administration');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1692, 'standard', 'fr', 'Format de date');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1693, 'standard', 'fr', 'Modules exclus');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1694, 'standard', 'fr', 'Modifier la langue s&eacute;lectionn&eacute;e');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1695, 'standard', 'fr', 'Cr&eacute;er une nouvelle langue');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1696, 'standard', 'fr', 'Cr&eacute;ation / Modification d\'une langue');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1697, 'standard', 'fr', 'S&eacute;lectionnez ici les modules qui n\'ont pas acc&egrave;s &agrave; cette langue');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1698, 'standard', 'fr', 'Exclus');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1699, 'standard', 'fr', 'Langue disponible pour traduire l\'administration d\'Automne');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1700, 'standard', 'fr', 'Cette fen&ecirc;tre vous permet de g&eacute;rer une langue d\'Automne');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1701, 'standard', 'fr', 'Erreur durant l\'enregistrement');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1702, 'standard', 'fr', 'Les valeurs du formulaire sont incorrectes');

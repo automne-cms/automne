@@ -303,7 +303,7 @@ switch ($action) {
 					$cms_message = $cms_language->getMessage(MESSAGE_ERROR_WRITE_TEMPLATE);
 				}
 			}
-		} elseif (is_a($templateFile, "CMS_file") && $templateFile->exists()) {
+		} elseif (isset($templateFile) && is_a($templateFile, "CMS_file") && $templateFile->exists()) {
 			//definition parsing test
 			$domdocument = new CMS_DOMDocument();
 			try {

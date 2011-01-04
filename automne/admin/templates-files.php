@@ -180,7 +180,7 @@ $jscontent = <<<END
 					icon: 				Ext.MessageBox.WARNING,
 					fn: 				function (button) {
 						if (button == 'ok') {
-							pr(node);
+							//pr(node);
 							Automne.server.call({
 								url:				'templates-files-controler.php',
 								params: 			{

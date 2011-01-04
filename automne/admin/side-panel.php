@@ -260,21 +260,25 @@ foreach ($modules as $module) {
 				} else {
 					$objectsInfos = $module->getObjectsInfos($cms_user);
 					foreach ($objectsInfos as $objectsInfo) {
-						$version = isset($objectsInfo['version']) ? $objectsInfo['version'] : 4;
-						if (isset($objectsInfo['description'])) {
-							$description = ' ext:qtip="'.io::htmlspecialchars($objectsInfo['description']).'"';
-							unset($objectsInfo['description']);
+						if (isset($objectsInfo['class']) && $objectsInfo['class'] == 'atm-separator') {
+							$contentEl .= '<li><div class="atm-separator"></div></li>';
 						} else {
-							$description = '';
+							$version = isset($objectsInfo['version']) ? $objectsInfo['version'] : 4;
+							if (isset($objectsInfo['description'])) {
+								$description = ' ext:qtip="'.io::htmlspecialchars($objectsInfo['description']).'"';
+								unset($objectsInfo['description']);
+							} else {
+								$description = '';
+							}
+							if (isset($objectsInfo['adminLabel'])) {
+								$label = io::htmlspecialchars($objectsInfo['adminLabel']);
+								unset($objectsInfo['adminLabel']);
+							} else {
+								$label = $cms_language->getMessage(MESSAGE_PAGE_MODULE_ADMIN, array(io::htmlspecialchars($module->getLabel($cms_language))));
+							}
+							$class = isset($objectsInfo['class']) ? $objectsInfo['class'] : 'atm-modules';
+							$contentEl .= '<li><div class="'.$class.' atm-sidepic"></div><a atm:action="module"'.$description.' atm:module="'.$module->getCodename().'" atm:version="'.$version.'" atm:options="'.io::htmlspecialchars(sensitiveIO::jsonEncode($objectsInfo)).'" href="#">'.$label.'</a></li>';
 						}
-						if (isset($objectsInfo['adminLabel'])) {
-							$label = io::htmlspecialchars($objectsInfo['adminLabel']);
-							unset($objectsInfo['adminLabel']);
-						} else {
-							$label = $cms_language->getMessage(MESSAGE_PAGE_MODULE_ADMIN, array(io::htmlspecialchars($module->getLabel($cms_language))));
-						}
-						$class = isset($objectsInfo['class']) ? $objectsInfo['class'] : 'atm-modules';
-						$contentEl .= '<li><div class="'.$class.' atm-sidepic"></div><a atm:action="module"'.$description.' atm:module="'.$module->getCodename().'" atm:version="'.$version.'" atm:options="'.io::htmlspecialchars(sensitiveIO::jsonEncode($objectsInfo)).'" href="#">'.$label.'</a></li>';
 					}
 				}
 		$contentEl .= '
@@ -397,10 +401,10 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) || $c
 	if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 		$contentEl .= '
 			<li><div class="atm-modules atm-sidepic"></div><a atm:action="modules" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_MODULES_MANAGEMENT).'</a></li>
-			<li><div class="atm-websites atm-sidepic"></div><a atm:action="websites" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_SITE_MANAGEMENT).'</a></li>';
-			//TODOV4
-			/*<li><div class="atm-languages atm-sidepic"></div><a atm:action="languages" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_LANGUAGE_MANAGEMENT).'</a></li>*/
-		$contentEl .= '<li><div class="atm-database atm-sidepic"></div><a href="'.PATH_PHPMYADMIN_WR.'" target="_blank">'.$cms_language->getMessage(MESSAGE_PAGE_DATABASE).'</a></li>
+			<li><div class="atm-websites atm-sidepic"></div><a atm:action="websites" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_SITE_MANAGEMENT).'</a></li>
+			<li><div class="atm-languages atm-sidepic"></div><a atm:action="languages" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_LANGUAGE_MANAGEMENT).'</a></li>
+			<li><div class="atm-separator"></div></li>
+			<li><div class="atm-database atm-sidepic"></div><a href="'.PATH_PHPMYADMIN_WR.'" target="_blank">'.$cms_language->getMessage(MESSAGE_PAGE_DATABASE).'</a></li>
 			<li><div class="atm-server atm-sidepic"></div><a atm:action="server" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_SERVER_SETTINGS).'</a></li>
 			<li><div class="atm-parameters atm-sidepic"></div><a atm:action="parameters" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_AUTUMN_SETTINGS).'</a></li>';
 	}
@@ -691,7 +695,7 @@ $jscontent = <<<END
 			window.show();
     	},
 		'languages' : function(t){
-    		Automne.message.show('TODOV4 : Show languages panel');
+    		openWindow(t, 'languages.php', {}, 750, 580);
     	},
 		'server' : function(t){
     		openWindow(t, '{$automnePath}/admin/server.php', {}, 750, 580);

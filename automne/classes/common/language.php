@@ -13,8 +13,6 @@
 // | Author: Andre Haynes <andre.haynes@ws-interactive.fr> &              |
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: language.php,v 1.3 2010/03/08 16:43:27 sebastien Exp $
 
 /**
   * Class CMS_language
@@ -35,21 +33,21 @@ class CMS_language extends CMS_grandFather
 	  * @var string
 	  * @access private
 	  */
-	protected $_label = "Français";
+	protected $_label;
 
 	/**
 	  * Code (2-chars code)
 	  * @var string
 	  * @access private
 	  */
-	protected $_code = "fr";
+	protected $_code;
 
 	/**
 	  * Date format, see http://www.php.net/manual/en/function.date.php for available format. Only indicate day, month and year though.
 	  * @var string
 	  * @access private
 	  */
-	protected $_dateFormat = "d/m/y";
+	protected $_dateFormat;
 
 	/**
 	  * Is the language available for backoffice use ?
@@ -86,37 +84,39 @@ class CMS_language extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($code = "fr") {
+	function __construct($code = '') {
 		static $languageObject;
-		if (!isset($languageObject[$code])) {
-			// Get Language label
-			$sql = "
-				select 
-					*
-				from
-					languages
-				where
-					code_lng='".SensitiveIO::sanitizeSQLString($code)."'
-			";
-			$q = new CMS_query($sql);
-			
-			if ($q->getNumRows()) {
-				$data = $q->getArray();
-				$this->_code = $code;
-				$this->_label = $data["label_lng"];
-				$this->_dateFormat = $data["dateFormat_lng"];
-				$this->_availableForBackoffice = $data["availableForBackoffice_lng"];
-				$this->_modulesDenied = explode(';', $data["modulesDenied_lng"]);
+		if ($code) {
+			if (!isset($languageObject[$code])) {
+				// Get Language label
+				$sql = "
+					select 
+						*
+					from
+						languages
+					where
+						code_lng='".SensitiveIO::sanitizeSQLString($code)."'
+				";
+				$q = new CMS_query($sql);
+				
+				if ($q->getNumRows()) {
+					$data = $q->getArray();
+					$this->_code = $code;
+					$this->_label = $data["label_lng"];
+					$this->_dateFormat = $data["dateFormat_lng"];
+					$this->_availableForBackoffice = $data["availableForBackoffice_lng"];
+					$this->_modulesDenied = explode(';', $data["modulesDenied_lng"]);
+				} else {
+					$this->raiseError("Unknown code: ".$code);
+				}
+				$languageObject[$code] = $this;
 			} else {
-				$this->raiseError("Unknown code: ".$code);
+				$this->_code = $languageObject[$code]->_code;
+				$this->_label = $languageObject[$code]->_label;
+				$this->_dateFormat = $languageObject[$code]->_dateFormat;
+				$this->_availableForBackoffice = $languageObject[$code]->_availableForBackoffice;
+				$this->_modulesDenied = $languageObject[$code]->_modulesDenied;
 			}
-			$languageObject[$code] = $this;
-		} else {
-			$this->_code = $languageObject[$code]->_code;
-			$this->_label = $languageObject[$code]->_label;
-			$this->_dateFormat = $languageObject[$code]->_dateFormat;
-			$this->_availableForBackoffice = $languageObject[$code]->_availableForBackoffice;
-			$this->_modulesDenied = $languageObject[$code]->_modulesDenied;
 		}
 	}
 	
@@ -332,33 +332,11 @@ class CMS_language extends CMS_grandFather
 	  *
 	  * @return boolean
 	  * @access public
-	  
-	protected function _setCode($code) {
-		static $codeExists;
-		$code = trim($code);
-		$return = false;
-		if (!$codeExists[$code]) {
-			$sql = "
-				show
-					columns
-				from
-					I18NM_messages
-			";
-			$q = new CMS_query($sql);
-			while ($data = $q->getArray()) {
-				if ($data["Field"] == $code) {
-					$return = true;
-					$this->_code = $code;
-					$codeExists[$code] = true;
-					break;
-				}
-			}
-		} else {
-			$return = true;
-			$this->_code = $code;
-		}
-		return $return;
-	}*/
+	  */
+	function setCode($code) {
+		$this->_code = $code;
+		return true;
+	}
 	
 	/**
 	  * Get the label.
@@ -368,6 +346,17 @@ class CMS_language extends CMS_grandFather
 	  */
 	function getLabel() {
 		return $this->_label;
+	}
+	
+	/**
+	  * Set the label.
+	  *
+	  * @return boolean
+	  * @access public
+	  */
+	function setLabel($label) {
+		$this->_label = $label;
+		return true;
 	}
 	
 	/**
@@ -381,6 +370,17 @@ class CMS_language extends CMS_grandFather
 	}
 	
 	/**
+	  * Set the date format.
+	  *
+	  * @return boolean
+	  * @access public
+	  */
+	function setDateFormat($format) {
+		$this->_dateFormat = $format;
+		return true;
+	}
+	
+	/**
 	  * Is this language available for backoffice use ?
 	  *
 	  * @return boolean
@@ -391,6 +391,17 @@ class CMS_language extends CMS_grandFather
 	}
 	
 	/**
+	  * Is this language available for backoffice use ?
+	  *
+	  * @return boolean
+	  * @access public
+	  */
+	function setAvailableForBackoffice($status) {
+		$this->_availableForBackoffice = $status ? true : false;
+		return true;
+	}
+	
+	/**
 	  * Get the array of modules codenames which can't use this language in their backoffice.
 	  *
 	  * @return array(string)
@@ -398,6 +409,51 @@ class CMS_language extends CMS_grandFather
 	  */
 	function getModulesDenied() {
 		return $this->_modulesDenied;
+	}
+	
+	/**
+	  * Set the array of modules codenames which can't use this language in their backoffice.
+	  *
+	  * @return array(string)
+	  * @access public
+	  */
+	function setModulesDenied($modules) {
+		if (!is_array($modules)) {
+			return false;
+		}
+		$this->_modulesDenied = $modules;
+		return true;
+	}
+	
+	/**
+	  * Writes the language Data into persistence (MySQL for now).
+	  *
+	  * @return boolean true on success, false on failure
+	  * @access public
+	  */
+	function writeToPersistence()
+	{
+		if (!$this->_code) {
+			$this->raiseError("missing language code");
+			return false;
+		}
+		$sql_fields = "
+			code_lng='".SensitiveIO::sanitizeSQLString($this->_code)."',
+			label_lng='".SensitiveIO::sanitizeSQLString($this->_label)."',
+			dateFormat_lng='".SensitiveIO::sanitizeSQLString($this->_dateFormat)."',
+			availableForBackoffice_lng='".SensitiveIO::sanitizeSQLString($this->_availableForBackoffice)."',
+			modulesDenied_lng='".SensitiveIO::sanitizeSQLString(implode(';', $this->_modulesDenied))."'
+		";
+		$sql = "
+			replace into
+				languages
+			set
+				".$sql_fields;
+		$q = new CMS_query($sql);
+		if ($q->hasError()) {
+			return false;
+		}
+		return true;
 	}
 	
 	/**
@@ -522,7 +578,7 @@ class CMS_language extends CMS_grandFather
 	 * @return					Id of the inserted message.
 	 */
 	public function createMessage($sCodename, $aMessages) {
-		$iId = $this->getNextMessageId($sCodename);
+		$iId = CMS_language::getNextMessageId($sCodename);
 		foreach ($aMessages as $sLanguageCode => $sMessage) {
 			$oQuery = new CMS_query("
 				INSERT INTO
@@ -535,6 +591,51 @@ class CMS_language extends CMS_grandFather
 			");
 		}
 		return $iId;
+	}
+	
+	/**
+	 * Update messages.
+	 * @var	string	$sCodename	Module's codename.
+	 * @var	integer	$iId		Messages id.
+	 * @var	array	$aMessages	Localised message. $sLanguageCode => $sMessage
+	 * @return					boolean
+	 */
+	public function updateMessage($sCodename, $iId, $aMessages) {
+		foreach ($aMessages as $sLanguageCode => $sMessage) {
+			$oQuery = new CMS_query("
+				replace into
+					messages
+				set
+					id_mes = ".SensitiveIO::sanitizeSQLString($iId).",
+					module_mes = '".SensitiveIO::sanitizeSQLString($sCodename)."',
+					language_mes = '".SensitiveIO::sanitizeSQLString($sLanguageCode)."',
+					message_mes = '".SensitiveIO::sanitizeSQLString($sMessage)."'
+			");
+			if ($oQuery->hasError()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Delete messages.
+	 * @var	string	$sCodename	Module's codename.
+	 * @var	integer	$iId		Messages id.
+	 * @return					boolean
+	 */
+	public function deleteMessage($sCodename, $iId) {
+		$oQuery = new CMS_query("
+			delete from
+				messages
+			where
+				id_mes = ".SensitiveIO::sanitizeSQLString($iId)."
+				and module_mes = '".SensitiveIO::sanitizeSQLString($sCodename)."'
+		");
+		if ($oQuery->hasError()) {
+			return false;
+		}
+		return true;
 	}
 }
 ?>

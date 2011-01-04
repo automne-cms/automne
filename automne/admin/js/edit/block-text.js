@@ -156,12 +156,14 @@ Automne.blockText = Ext.extend(Automne.block, {
 						var iframes = bd.select('iframe', true);
 						var count = 0;
 						iframes.each(function(iframe){
-							if (iframe.id.indexOf('fck-' + this.row.rowTagID + '-' + this.id) == -1 && iframe.getStyle('position') == 'absolute') {
-								if (count) { //skip first frame which is the mouse contextual menu
-									iframe.setStyle('position', 'fixed');
+							try{
+								if (iframe.id.indexOf('fck-' + this.row.rowTagID + '-' + this.id) == -1 && iframe.getStyle('position') == 'absolute') {
+									if (count) { //skip first frame which is the mouse contextual menu
+										iframe.setStyle('position', 'fixed');
+									}
+									count++;
 								}
-								count++;
-							}
+							} catch(e){}
 						}, this);
 					}, this);
 					catchFrames.delay(1000);
