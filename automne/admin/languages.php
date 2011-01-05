@@ -33,12 +33,12 @@ define("MESSAGE_PAGE_NO", 1083);
 define("MESSAGE_PAGE_LOADING", 1321);
 define("MESSAGE_PAGE_LANGUAGE_MANAGEMENT", 446);
 define("MESSAGE_PAGE_LABEL", 814);
-define("MESSAGE_PAGE_CODE", 1691);
-define("MESSAGE_PAGE_ADMIN_LANGUAGE", 1692);
-define("MESSAGE_PAGE_DATE_FORMAT", 1693);
-define("MESSAGE_PAGE_EXCLUDED_MODULES", 1694);
-define("MESSAGE_PAGE_EDIT_SELECTED", 1695);
-define("MESSAGE_PAGE_CREATE_NEW_LANGUAGE", 1696);
+define("MESSAGE_PAGE_CODE", 1690);
+define("MESSAGE_PAGE_ADMIN_LANGUAGE", 1691);
+define("MESSAGE_PAGE_DATE_FORMAT", 1692);
+define("MESSAGE_PAGE_EXCLUDED_MODULES", 1693);
+define("MESSAGE_PAGE_EDIT_SELECTED", 1694);
+define("MESSAGE_PAGE_CREATE_NEW_LANGUAGE", 1695);
 
 //check user rights
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
@@ -212,19 +212,19 @@ $jscontent = <<<END
 	moduleObjectWindow.ok = true;
 	//launch search
 	moduleObjectWindow.search();
-	
 	//add selection events to selection model
 	var qtips = [];
-	qtips['edit'] = new Ext.ToolTip({
-		target: 		Ext.getCmp('{$winId}editItem').getEl(),
-		html: 			'{$cms_language->getJsMessage(MESSAGE_PAGE_EDIT_SELECTED)}',
-		disabled:		true
-	});
-	qtips['create'] = new Ext.ToolTip({
-		target: 		Ext.getCmp('{$winId}createItem').getEl(),
-		html: 			'{$cms_language->getJsMessage(MESSAGE_PAGE_CREATE_NEW_LANGUAGE)}'
-	});
-	
+	setTimeout(function(){
+		qtips['edit'] = new Ext.ToolTip({
+			target: 		Ext.getCmp('{$winId}editItem').getEl(),
+			html: 			'{$cms_language->getJsMessage(MESSAGE_PAGE_EDIT_SELECTED)}',
+			disabled:		true
+		});
+		qtips['create'] = new Ext.ToolTip({
+			target: 		Ext.getCmp('{$winId}createItem').getEl(),
+			html: 			'{$cms_language->getJsMessage(MESSAGE_PAGE_CREATE_NEW_LANGUAGE)}'
+		});
+	}, 500);
 	resultsPanel.getSelectionModel().on('selectionchange', function(sm){
 		if (!sm.getCount()) {
 			qtips['edit'].disable();
