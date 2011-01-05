@@ -51,8 +51,6 @@ class CMS_module_standard extends CMS_module
 	const MESSAGE_MOD_STANDARD_EMAIL_REMINDER_SUBJECT = 923;
 	const MESSAGE_MOD_STANDARD_EMAIL_REMINDER_BODY = 924;
 	const MESSAGE_MOD_STANDARD_EMAIL_REMINDER_BODY_MESSAGE = 925;
-	const MESSAGE_MOD_STANDARD_ROWS_EXPLANATION = 1219;
-	const MESSAGE_MOD_STANDARD_TEMPLATE_EXPLANATION = 1222;
 	const MESSAGE_MOD_STANDARD_PLUGIN = 1403;
 	
 	const MESSAGE_MOD_STANDARD_LINKTITLE = 133;
@@ -101,6 +99,18 @@ class CMS_module_standard extends CMS_module
 	const MESSAGE_PARAM_ALLOW_IMAGES_IN_WYSIWYG_DESC = 633;
 	const MESSAGE_PARAM_LOG_SENDING_MAIL_DESC = 634;
 	//const MESSAGE_PARAM_ALLOW_WYSIWYG_XHTML_VALIDATION_DESC = 1567;
+	
+	const MESSAGE_PAGE_TAGS_CHOOSE = 1707;
+	const MESSAGE_PAGE_ROW_EXPLANATION = 1219;
+	const MESSAGE_PAGE_WORKING_TAGS = 1704;
+	const MESSAGE_PAGE_WORKING_TAGS_EXPLANATION = 1703;
+	const MESSAGE_PAGE_BLOCK_GENERAL_VARS = 1706;
+	const MESSAGE_PAGE_BLOCK_GENERAL_VARS_EXPLANATION = 1705;
+	const MESSAGE_PAGE_BLOCK_TAGS = 1708;
+	const MESSAGE_PAGE_BLOCK_TAGS_EXPLANATION = 1219;
+	const MESSAGE_PAGE_WORKING_STANDARD_TAGS = 1710;
+	const MESSAGE_PAGE_WORKING_STANDARD_TAGS_EXPLANATION = 1709;
+	const MESSAGE_PAGE_TEMPLATE_EXPLANATION = 1222;
 	
 	/**
 	  * Gets the administration frontend path. No centralized admin for the standard module.
@@ -2006,12 +2016,82 @@ class CMS_module_standard extends CMS_module
 				return $modulesCode;
 			break;
 			case MODULE_TREATMENT_ROWS_EDITION_LABELS :
-				$modulesCode[MOD_STANDARD_CODENAME] = $treatmentParameters["language"]->getMessage(self::MESSAGE_MOD_STANDARD_ROWS_EXPLANATION);
+				$modulesCode[$this->_codename] = '';
+				//if user has rights on module
+				if ($treatmentParameters["user"]->hasModuleClearance($this->_codename, CLEARANCE_MODULE_EDIT)) {
+					if (!isset($treatmentParameters['request'])) {
+						//add form to choose object to display
+						$modulesCode[$this->_codename] = '
+							<h1>'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_TAGS_CHOOSE).'<select onchange="Ext.get(\'help'.$this->_codename.'\').getUpdater().update({url: \''.PATH_ADMIN_WR.'/help-detail.php\',params: {module: \''.$this->_codename.'\',object: this.value, mode:'.MODULE_TREATMENT_ROWS_EDITION_LABELS.'}});">
+								<option value="">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_CHOOSE).'</option>
+								<option value="block">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_BLOCK_TAGS).'</option>
+								<option value="working">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_WORKING_TAGS).'</option>
+								<option value="working-standard">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_WORKING_STANDARD_TAGS).'</option>
+								<option value="vars">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_BLOCK_GENERAL_VARS).'</option>
+							</select></h1>
+							<div id="help'.$this->_codename.'"></div>
+						';
+					}
+					//then display chosen object infos
+					if (isset($treatmentParameters['request'][$this->_codename]) && isset($treatmentParameters['request'][$this->_codename.'object'])) {
+						switch ($treatmentParameters['request'][$this->_codename.'object']) {
+							case 'block':
+								$modulesCode[$this->_codename] .= $treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_BLOCK_TAGS_EXPLANATION);
+							break;
+							case 'working':
+								$modulesCode[$this->_codename] .= $treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_WORKING_TAGS_EXPLANATION);
+							break;
+							case 'working-standard':
+								$modulesCode[$this->_codename] .= $treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_WORKING_STANDARD_TAGS_EXPLANATION);
+							break;
+							case 'vars':
+								$modulesCode[$this->_codename] .= $treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_BLOCK_GENERAL_VARS_EXPLANATION,array($treatmentParameters["language"]->getDateFormatMask(),$treatmentParameters["language"]->getDateFormatMask(),$treatmentParameters["language"]->getDateFormatMask()));
+							break;
+						}
+					}
+				}
 				return $modulesCode;
 			break;
 			case MODULE_TREATMENT_TEMPLATES_EDITION_LABELS :
-				$modulesCode[MOD_STANDARD_CODENAME] = $treatmentParameters["language"]->getMessage(self::MESSAGE_MOD_STANDARD_TEMPLATE_EXPLANATION);
+				$modulesCode[$this->_codename] = '';
+				//if user has rights on module
+				if ($treatmentParameters["user"]->hasModuleClearance($this->_codename, CLEARANCE_MODULE_EDIT)) {
+					if (!isset($treatmentParameters['request'])) {
+						//add form to choose object to display
+						$modulesCode[$this->_codename] = '
+							<h1>'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_TAGS_CHOOSE).'<select onchange="Ext.get(\'help'.$this->_codename.'\').getUpdater().update({url: \''.PATH_ADMIN_WR.'/help-detail.php\',params: {module: \''.$this->_codename.'\',object: this.value, mode:'.MODULE_TREATMENT_TEMPLATES_EDITION_LABELS.'}});">
+								<option value="">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_CHOOSE).'</option>
+								<option value="block">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_BLOCK_TAGS).'</option>
+								<option value="working">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_WORKING_TAGS).'</option>
+								<option value="working-standard">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_WORKING_STANDARD_TAGS).'</option>
+								<option value="vars">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_BLOCK_GENERAL_VARS).'</option>
+							</select></h1>
+							<div id="help'.$this->_codename.'"></div>
+						';
+					}
+					//then display chosen object infos
+					if (isset($treatmentParameters['request'][$this->_codename]) && isset($treatmentParameters['request'][$this->_codename.'object'])) {
+						switch ($treatmentParameters['request'][$this->_codename.'object']) {
+							case 'block':
+								$modulesCode[$this->_codename] .= $treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_TEMPLATE_EXPLANATION);
+							break;
+							case 'working':
+								$modulesCode[$this->_codename] .= $treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_WORKING_TAGS_EXPLANATION);
+							break;
+							case 'working-standard':
+								$modulesCode[$this->_codename] .= $treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_WORKING_STANDARD_TAGS_EXPLANATION);
+							break;
+							case 'vars':
+								$modulesCode[$this->_codename] .= $treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_BLOCK_GENERAL_VARS_EXPLANATION,array($treatmentParameters["language"]->getDateFormatMask(),$treatmentParameters["language"]->getDateFormatMask(),$treatmentParameters["language"]->getDateFormatMask()));
+							break;
+						}
+					}
+				}
 				return $modulesCode;
+				
+				
+				/*$modulesCode[MOD_STANDARD_CODENAME] = $treatmentParameters["language"]->getMessage(self::MESSAGE_MOD_STANDARD_TEMPLATE_EXPLANATION);
+				return $modulesCode;*/
 			break;
 			case MODULE_TREATMENT_ALERTS :
 				$modulesCode[MOD_STANDARD_CODENAME] = array(

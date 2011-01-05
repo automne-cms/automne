@@ -505,17 +505,19 @@ class CMS_object_email extends CMS_object_common
 			if (!isset($_POST['objectexplanation'])) $_POST['objectexplanation'] = '';
 			//selected value
 			$selected['working'] = ($_POST['objectexplanation'] == 'working') ? ' selected="selected"':'';
-			$selected['search'] = ($_POST['objectexplanation'] == 'search') ? ' selected="selected"':'';
+			$selected['working-polymod'] = ($_POST['objectexplanation'] == 'working-polymod') ? ' selected="selected"':'';
 			$selected['vars'] = ($_POST['objectexplanation'] == 'vars') ? ' selected="selected"':'';
+			$selected['search'] = ($_POST['objectexplanation'] == 'search') ? ' selected="selected"':'';
 			
 			$input.= '
 			<select name="objectexplanation" class="admin_input_text" onchange="document.getElementById(\'cms_action\').value=\'switchexplanation\';document.frm.submit();">
 				<option value="">'.$cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_CHOOSE).'</option>
 				<optgroup label="'.$cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_ROW_TAGS_EXPLANATION,false,MOD_POLYMOD_CODENAME).'">
 					<option value="search"'.$selected['search'].'>'.$cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_SEARCH_TAGS,false,MOD_POLYMOD_CODENAME).'</option>
-					<option value="working"'.$selected['working'].'>'.$cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_WORKING_TAGS,false,MOD_POLYMOD_CODENAME).'</option>
-					<option value="vars"'.$selected['vars'].'>'.$cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_BLOCK_GENRAL_VARS,false,MOD_POLYMOD_CODENAME).'</option>
-				</optgroup>
+					<option value="working"'.$selected['working'].'>'.$cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_WORKING_TAGS).'</option>
+					<option value="working-polymod"'.$selected['working-polymod'].'>'.$cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_WORKING_POLYMOD_TAGS,false,MOD_POLYMOD_CODENAME).'</option>
+					<option value="vars"'.$selected['vars'].'>'.$cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_BLOCK_GENERAL_VARS).'</option>
+					</optgroup>
 				<optgroup label="'.$cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_ROW_OBJECTS_VARS_EXPLANATION,false,MOD_POLYMOD_CODENAME).'">';
 					$input.= CMS_poly_module_structure::viewObjectInfosList($moduleCodename, $cms_language, $_POST['objectexplanation'], $object->getID());
 				$input.= '
@@ -530,10 +532,13 @@ class CMS_object_email extends CMS_object_common
 						$input.= $cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_SEARCH_TAGS_EXPLANATION,array(implode(', ',CMS_object_search::getStaticSearchConditionTypes()), implode(', ',CMS_object_search::getStaticOrderConditionTypes())),MOD_POLYMOD_CODENAME);
 					break;
 					case 'working':
-						$input.= $cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_WORKING_TAGS_EXPLANATION,false,MOD_POLYMOD_CODENAME);
+						$content.= $cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_WORKING_TAGS_EXPLANATION);
+					break;
+					case 'working-polymod':
+						$content.= $cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_WORKING_POLYMOD_TAGS_EXPLANATION,false,MOD_POLYMOD_CODENAME);
 					break;
 					case 'vars':
-						$input.= $cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_BLOCK_GENRAL_VARS_EXPLANATION,false,MOD_POLYMOD_CODENAME);
+						$content.= $cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_BLOCK_GENERAL_VARS_EXPLANATION);
 					break;
 					default:
 						//object info

@@ -32,18 +32,24 @@ if (!defined('MOD_POLYMOD_CODENAME')) {
 class CMS_polymod extends CMS_modulePolymodValidation
 {
 	/**
+	  * Standard Messages
+	  */
+	const MESSAGE_PAGE_WORKING_TAGS = 1704;
+	const MESSAGE_PAGE_WORKING_TAGS_EXPLANATION = 1703;
+	const MESSAGE_PAGE_BLOCK_GENERAL_VARS = 1706;
+	const MESSAGE_PAGE_BLOCK_GENERAL_VARS_EXPLANATION = 1705;
+	
+	/**
 	  * Polymod Messages
 	  */
 	const MESSAGE_PAGE_ROW_TAGS_EXPLANATION = 111;
 	const MESSAGE_PAGE_ROW_OBJECTS_VARS_EXPLANATION = 112;
 	const MESSAGE_PAGE_SEARCH_TAGS = 109;
 	const MESSAGE_PAGE_SEARCH_TAGS_EXPLANATION = 110;
-	const MESSAGE_PAGE_WORKING_TAGS = 113;
-	const MESSAGE_PAGE_WORKING_TAGS_EXPLANATION = 114;
+	const MESSAGE_PAGE_WORKING_POLYMOD_TAGS = 113;
+	const MESSAGE_PAGE_WORKING_POLYMOD_TAGS_EXPLANATION = 114;
 	const MESSAGE_PAGE_BLOCK_TAGS = 115;
 	const MESSAGE_PAGE_BLOCK_TAGS_EXPLANATION = 116;
-	const MESSAGE_PAGE_BLOCK_GENRAL_VARS = 140;
-	const MESSAGE_PAGE_BLOCK_GENRAL_VARS_EXPLANATION = 139;
 	const MESSAGE_PAGE_BLOCK_FORMS = 382;
 	const MESSAGE_PAGE_BLOCK_FORMS_EXPLANATION = 383;
 	const MESSAGE_PAGE_CATEGORIES_USED = 500;
@@ -382,13 +388,14 @@ class CMS_polymod extends CMS_modulePolymodValidation
 					if (!isset($treatmentParameters['request'])) {
 						//add form to choose object to display
 						$modulesCode[$this->_codename] = '
-							<h1>'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_ROW_TAGS_CHOOSE,false,MOD_POLYMOD_CODENAME).'<select onchange="Ext.get(\'help'.$this->_codename.'\').getUpdater().update({url: \''.PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/polymod-help.php\',params: {module: \''.$this->_codename.'\',object: this.value}});">
+							<h1>'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_ROW_TAGS_CHOOSE,false,MOD_POLYMOD_CODENAME).'<select onchange="Ext.get(\'help'.$this->_codename.'\').getUpdater().update({url: \''.PATH_ADMIN_WR.'/help-detail.php\',params: {module: \''.$this->_codename.'\',object: this.value, mode:'.MODULE_TREATMENT_ROWS_EDITION_LABELS.'}});">
 								<option value="">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_CHOOSE).'</option>
 								<optgroup label="'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_ROW_TAGS_EXPLANATION,false,MOD_POLYMOD_CODENAME).'">
 									<option value="block">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_BLOCK_TAGS,false,MOD_POLYMOD_CODENAME).'</option>
 									<option value="search">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_SEARCH_TAGS,false,MOD_POLYMOD_CODENAME).'</option>
-									<option value="working">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_WORKING_TAGS,false,MOD_POLYMOD_CODENAME).'</option>
-									<option value="vars">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_BLOCK_GENRAL_VARS,false,MOD_POLYMOD_CODENAME).'</option>
+									<option value="working">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_WORKING_TAGS).'</option>
+									<option value="working-polymod">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_WORKING_POLYMOD_TAGS,false,MOD_POLYMOD_CODENAME).'</option>
+									<option value="vars">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_BLOCK_GENERAL_VARS).'</option>
 									<option value="forms">'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_BLOCK_FORMS,false,MOD_POLYMOD_CODENAME).'</option>
 								</optgroup>
 								<optgroup label="'.$treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_ROW_OBJECTS_VARS_EXPLANATION,false,MOD_POLYMOD_CODENAME).'">';
@@ -414,10 +421,13 @@ class CMS_polymod extends CMS_modulePolymodValidation
 								$modulesCode[$this->_codename] .= $treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_SEARCH_TAGS_EXPLANATION,array(implode(', ',CMS_object_search::getStaticSearchConditionTypes()), implode(', ',CMS_object_search::getStaticOrderConditionTypes())),MOD_POLYMOD_CODENAME);
 							break;
 							case 'working':
-								$modulesCode[$this->_codename] .= $treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_WORKING_TAGS_EXPLANATION,array(implode(', ', CMS_modulesCatalog::getAllCodenames())),MOD_POLYMOD_CODENAME);
+								$modulesCode[$this->_codename] .= $treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_WORKING_TAGS_EXPLANATION);
+							break;
+							case 'working-polymod':
+								$modulesCode[$this->_codename] .= $treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_WORKING_POLYMOD_TAGS_EXPLANATION,array(implode(', ', CMS_modulesCatalog::getAllCodenames())),MOD_POLYMOD_CODENAME);
 							break;
 							case 'vars':
-								$modulesCode[$this->_codename] .= $treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_BLOCK_GENRAL_VARS_EXPLANATION,array($treatmentParameters["language"]->getDateFormatMask(),$treatmentParameters["language"]->getDateFormatMask(),$treatmentParameters["language"]->getDateFormatMask()),MOD_POLYMOD_CODENAME);
+								$modulesCode[$this->_codename] .= $treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_BLOCK_GENERAL_VARS_EXPLANATION,array($treatmentParameters["language"]->getDateFormatMask(),$treatmentParameters["language"]->getDateFormatMask(),$treatmentParameters["language"]->getDateFormatMask()));
 							break;
 							case 'forms':
 								$modulesCode[$this->_codename] .= $treatmentParameters["language"]->getMessage(self::MESSAGE_PAGE_BLOCK_FORMS_EXPLANATION,false,MOD_POLYMOD_CODENAME);
