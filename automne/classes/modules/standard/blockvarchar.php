@@ -113,7 +113,11 @@ class CMS_block_varchar extends CMS_block
 		case PAGE_VISUALMODE_PRINT:
 			if ($data && $data["value"]) {
 				$html = io::htmlspecialchars($data["value"]);
-				return str_replace("{{data}}", $html, $this->_definition);
+				$replace = array(
+					'{{data}}'	=> $html,
+					'{{jsdata}}' => io::sanitizeJSString($html),
+				);
+				return str_replace(array_keys($replace), $replace, $this->_definition);
 			}
 			break;
 		//case PAGE_VISUALMODE_CLIENTSPACES_FORM:
@@ -125,7 +129,11 @@ class CMS_block_varchar extends CMS_block
 			} else {
 				$html = "<span class=\"atm-ipsum\">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diem nonummy.</span>";
 			}
-			$form_data = str_replace("{{data}}", $html, $this->_definition);
+			$replace = array(
+				'{{data}}'	=> $html,
+				'{{jsdata}}' => io::sanitizeJSString($html),
+			);
+			$form_data = str_replace(array_keys($replace), $replace, $this->_definition);
 			$this->_hasContent = ($data && $data["value"]) ? true:false;
 			$this->_editable = true;
 			return $this->_getHTMLForm($language, $page, $clientSpace, $row, $this->_tagID, $form_data);
@@ -136,7 +144,11 @@ class CMS_block_varchar extends CMS_block
 			} else {
 				$html = "<span class=\"atm-ipsum\">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diem nonummy.</span>";
 			}
-			$form_data = str_replace("{{data}}", $html, $this->_definition);
+			$replace = array(
+				'{{data}}'	=> $html,
+				'{{jsdata}}' => io::sanitizeJSString($html),
+			);
+			$form_data = str_replace(array_keys($replace), $replace, $this->_definition);
 			$this->_hasContent = false;
 			$this->_editable = false;
 			return $this->_getHTMLForm($language, $page, $clientSpace, $row, $this->_tagID, $form_data);

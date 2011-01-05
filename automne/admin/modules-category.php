@@ -101,7 +101,7 @@ if (!function_exists("build_category_tree_options")) {
 		$a = array();
 		if ($category->getID() != $catId) {
 			$category->setAttribute('language', $cms_language);
-			$label = io::htmlspecialchars($category->getLabel());
+			$label = htmlspecialchars($category->getLabel());
 			if ($count >= 1) {
 				$label = str_repeat(' ::', $count).' '.$label;
 			}

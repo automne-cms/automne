@@ -860,7 +860,6 @@ class CMS_pageTemplate extends CMS_grandFather
 		global $cms_language;
 		
 		$filename = PATH_TEMPLATES_FS."/".$this->_definitionFile;
-		pr($filename);
 		$tpl = new CMS_file(PATH_TEMPLATES_FS."/".$this->_definitionFile);
 		if (!$tpl->exists()) {
 			$this->raiseError('Can not found template file '.PATH_TEMPLATES_FS."/".$this->_definitionFile);

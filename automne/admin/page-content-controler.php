@@ -109,7 +109,7 @@ switch ($action) {
 			$datas = $row->getData($cms_language, $cms_page, $clientSpace, $visualMode);
 			//instanciate modules treatments for page content tags
 			$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_PAGECONTENT_TAGS, PAGE_VISUALMODE_FORM, $cms_page);
-			$modulesTreatment->setTreatmentParameters(array("language" => $cms_language));
+			$modulesTreatment->setTreatmentParameters(array("language" => $cms_language, 'replaceVars' => true));
 			$modulesTreatment->setDefinition($datas);
 			$datas = $modulesTreatment->treatContent(true);
 			//append JS and CSS class needed by modules blocks
@@ -207,7 +207,7 @@ switch ($action) {
 				$datas = $row->getData($cms_language, $cms_page, $clientSpace, PAGE_VISUALMODE_FORM, true);
 				//instanciate modules treatments for page content tags
 				$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_PAGECONTENT_TAGS, PAGE_VISUALMODE_FORM, $cms_page);
-				$modulesTreatment->setTreatmentParameters(array("language" => $cms_language));
+				$modulesTreatment->setTreatmentParameters(array("language" => $cms_language, 'replaceVars' => true));
 				$modulesTreatment->setDefinition($datas);
 				$datas = $modulesTreatment->treatContent(true);
 				//set datas as returned content
@@ -235,7 +235,7 @@ switch ($action) {
 				$datas = $row->getData($cms_language, $cms_page, $clientSpace, PAGE_VISUALMODE_FORM, true);
 				//instanciate modules treatments for page content tags
 				$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_PAGECONTENT_TAGS, PAGE_VISUALMODE_FORM, $cms_page);
-				$modulesTreatment->setTreatmentParameters(array("language" => $cms_language));
+				$modulesTreatment->setTreatmentParameters(array("language" => $cms_language, 'replaceVars' => true));
 				$modulesTreatment->setDefinition($datas);
 				$datas = $modulesTreatment->treatContent(true);
 				//set datas as returned content
@@ -282,7 +282,7 @@ switch ($action) {
 				$datas = $row->getData($cms_language, $cms_page, $clientSpace, PAGE_VISUALMODE_FORM);
 				//instanciate modules treatments for page content tags
 				$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_PAGECONTENT_TAGS, PAGE_VISUALMODE_FORM, $cms_page);
-				$modulesTreatment->setTreatmentParameters(array("language" => $cms_language));
+				$modulesTreatment->setTreatmentParameters(array("language" => $cms_language, 'replaceVars' => true));
 				$modulesTreatment->setDefinition($datas);
 				$datas = $modulesTreatment->treatContent(true);
 				//set datas as returned content
@@ -335,7 +335,7 @@ switch ($action) {
 				$datas = $row->getData($cms_language, $cms_page, $clientSpace, PAGE_VISUALMODE_FORM);
 				//instanciate modules treatments for page content tags
 				$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_PAGECONTENT_TAGS, PAGE_VISUALMODE_FORM, $cms_page);
-				$modulesTreatment->setTreatmentParameters(array("language" => $cms_language));
+				$modulesTreatment->setTreatmentParameters(array("language" => $cms_language, 'replaceVars' => true));
 				$modulesTreatment->setDefinition($datas);
 				$datas = $modulesTreatment->treatContent(true);
 				//set datas as returned content
@@ -396,7 +396,7 @@ switch ($action) {
 				$datas = $row->getData($cms_language, $cms_page, $clientSpace, PAGE_VISUALMODE_FORM);
 				//instanciate modules treatments for page content tags
 				$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_PAGECONTENT_TAGS, PAGE_VISUALMODE_FORM, $cms_page);
-				$modulesTreatment->setTreatmentParameters(array("language" => $cms_language));
+				$modulesTreatment->setTreatmentParameters(array("language" => $cms_language, 'replaceVars' => true));
 				$modulesTreatment->setDefinition($datas);
 				$datas = $modulesTreatment->treatContent(true);
 				//set datas as returned content
@@ -481,7 +481,7 @@ switch ($action) {
 				$datas = $row->getData($cms_language, $cms_page, $clientSpace, PAGE_VISUALMODE_FORM);
 				//instanciate modules treatments for page content tags
 				$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_PAGECONTENT_TAGS, PAGE_VISUALMODE_FORM, $cms_page);
-				$modulesTreatment->setTreatmentParameters(array("language" => $cms_language));
+				$modulesTreatment->setTreatmentParameters(array("language" => $cms_language, 'replaceVars' => true));
 				$modulesTreatment->setDefinition($datas);
 				$datas = $modulesTreatment->treatContent(true);
 				//set datas as returned content
