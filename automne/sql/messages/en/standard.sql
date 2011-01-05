@@ -4,7 +4,6 @@
 # English Messages
 #
 #----------------------------------------------------------------
-# $Id: standard.sql,v 1.6 2010/03/08 15:19:54 sebastien Exp $
 
 DELETE FROM messages WHERE module_mes = 'standard' and language_mes = 'en';
 
