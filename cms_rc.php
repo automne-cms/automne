@@ -1210,6 +1210,7 @@ if (SYSTEM_DEBUG) {
 	}
 	//Usefull function to dump a var.
 	function pr($data,$useVarDump = false) {
+		//$data .= ' ('.io::getCallInfos().')';
 		$view = CMS_view::getInstance();
 		if (!$useVarDump) {
 			$view->addRawData(print_r($data,true));

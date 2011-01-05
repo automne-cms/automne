@@ -34,9 +34,7 @@ require_once(PATH_MODULES_FS."/cms_forms.php");
 require_once(PATH_MODULES_FS."/polymod.php");
 
 define("MESSAGE_PAGE_TITLE", 932);
-
-//Polymod Message
-define("MESSAGE_PAGE_BLOCK_GENRAL_VARS_EXPLANATION", 139);
+define("MESSAGE_PAGE_BLOCK_GENERAL_VARS_EXPLANATION", 1705);
 
 $step = (isset($_POST["step"])) ? $_POST["step"]:1;
 
@@ -503,7 +501,7 @@ switch ($step) {
 			</table>
 			<br />
 			<input onclick="manageFormFromSelect();" type="button" fckLang="DlgCMSFormsReturn" value="Retour au formulaire"><br />
-			'.$cms_language->getMessage(MESSAGE_PAGE_BLOCK_GENRAL_VARS_EXPLANATION,array($cms_language->getDateFormatMask(),$cms_language->getDateFormatMask(),$cms_language->getDateFormatMask()),MOD_POLYMOD_CODENAME).'
+			'.$cms_language->getMessage(MESSAGE_PAGE_BLOCK_GENERAL_VARS_EXPLANATION,array($cms_language->getDateFormatMask(),$cms_language->getDateFormatMask(),$cms_language->getDateFormatMask())).'
 		</div>
 	    <div id="divDefault" style="DISPLAY: none">
 		    <span fckLang="DlgCMSFormsDefaultAvail">Saisissez la valeur par d&eacute;faut du champ :</span>
@@ -515,7 +513,7 @@ switch ($step) {
 		    </table>
 		    <br />
 		    <input onclick="manageFormFromDefault();" type="button" fckLang="DlgCMSFormsReturn" value="Retour au formulaire"><br />
-		    '.$cms_language->getMessage(MESSAGE_PAGE_BLOCK_GENRAL_VARS_EXPLANATION,array($cms_language->getDateFormatMask(),$cms_language->getDateFormatMask(),$cms_language->getDateFormatMask()),MOD_POLYMOD_CODENAME).'
+		    '.$cms_language->getMessage(MESSAGE_PAGE_BLOCK_GENERAL_VARS_EXPLANATION,array($cms_language->getDateFormatMask(),$cms_language->getDateFormatMask(),$cms_language->getDateFormatMask())).'
 	    </div>
 	    <div id="divFileParams" style="display: none">
 		    <strong><span fckLang="DlgCMSFormsFileParamsTitle">Modifiez ici les parametres :</span></strong>
@@ -534,7 +532,7 @@ switch ($step) {
 		    </table>
 		    <br />
 		    <input onclick="manageFormFromFileParams();" type="button" fckLang="DlgCMSFormsReturn" value="Retour au formulaire"><br />
-		    '.$cms_language->getMessage(MESSAGE_PAGE_BLOCK_GENRAL_VARS_EXPLANATION,array($cms_language->getDateFormatMask(),$cms_language->getDateFormatMask(),$cms_language->getDateFormatMask()),MOD_POLYMOD_CODENAME).'
+		    '.$cms_language->getMessage(MESSAGE_PAGE_BLOCK_GENERAL_VARS_EXPLANATION,array($cms_language->getDateFormatMask(),$cms_language->getDateFormatMask(),$cms_language->getDateFormatMask())).'
 	    </div>';
 	break;
 	case 4:

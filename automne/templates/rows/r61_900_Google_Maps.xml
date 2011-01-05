@@ -5,61 +5,60 @@
 			//				Googlemaps settings			   //
 			/////////////////////////////////////////////////
 			// Zoom value (0~23) :
-			$zoom = 12;
+			$gmapZoom = 12;
 			// View type (HYBRID/ROADMAP/SATELLITE/TERRAIN/) :
-			$vue = "ROADMAP";
-			
-			$address = <<<END
-				{{data}}
-END;
-			$mapId = 'map-'.md5(rand());
+			$gmapView = "ROADMAP";
+			// Block address (use jsdata to avoid problems with quotes)
+			$gmapAddress = '{{jsdata}}';
+			// Map id
+			$gmapId = 'map-'.md5(rand());
+			// Empty block message
+			$gmapMsg = 'Saisissez dans ce bloc une adresse &agrave; afficher.';
 			if (isset($cms_language)) {
 				switch($cms_language->getCode()){
 					case 'en':
-						$msg = 'Please enter in this block an address to display.';
-						break;
-					default:
-						$msg = 'Saisissez dans ce bloc une adresse &agrave; afficher.';
-						break;
+						$gmapMsg = 'Please enter in this block an address to display.';
+					break;
 				}
-			} else {
-				$msg = '';
 			}
-			echo '<p id="'.$mapId.'" class="atm-google-map">Google Map : '.($address && strpos($address, 'Lorem') === false ? $address : $msg).'</p>';
-			$frontend = (strpos($_SERVER["SCRIPT_NAME"], 'automne/admin') === false) ? true : false;
-			if ($frontend) {
-				echo '
-					<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-					<script type="text/javascript">
-					<!--
-					(function(){
-						var div = document.getElementById("'.$mapId.'");
-						if (div) {
-							var mapOptions = {
-								zoom: ' . $zoom . ',
-								mapTypeId: google.maps.MapTypeId.' . $vue . '
-							};
-							var map = new google.maps.Map(div, mapOptions);
-							var geocoder = new google.maps.Geocoder();
-							var infowindow = new google.maps.InfoWindow();
-							geocoder.geocode({"address":"'.sensitiveIO::sanitizeJSString($address,"'").'"}, function(results, status) {
-								if (status == google.maps.GeocoderStatus.OK) {
-									map.setCenter(results[0].geometry.location);
-									var marker = new google.maps.Marker({
-										map: map, 
-										position: results[0].geometry.location
-									});
-									google.maps.event.addListener(marker, "click", function() {
-										infowindow.setContent(\'<div style="width: 210px; padding-right: 10px">'.sensitiveIO::sanitizeJSString($address,"'").'<\/div>\');
-										infowindow.open(map, marker);
-									});
-								}
-							});
-						}
-					})();
-					</script>
-				';
-			}
-			?>
+			// Does this block have an address to display ?
+			$gmapEmpty = ($gmapAddress && strpos($gmapAddress, 'Lorem') === false);
+		?>
+		<atm-if what="!{var:bool:gmapEmpty}">
+			<p id="{var:string:gmapId}" class="atm-google-map">Google Map : {var:string:gmapMsg}</p>
+		</atm-if>
+		<atm-if what="{var:bool:gmapEmpty}">
+			<p id="{var:string:gmapId}" class="atm-google-map">Google Map : {var:string:gmapAddress}</p>
+			<atm-noedit>
+				<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+				<script type="text/javascript">
+				(function(){
+					var div = document.getElementById("{var:string:gmapId}");
+					if (div) {
+						var mapOptions = {
+							zoom: {var:int:gmapZoom},
+							mapTypeId: google.maps.MapTypeId['{var:string:gmapView}']
+						};
+						var map = new google.maps.Map(div, mapOptions);
+						var geocoder = new google.maps.Geocoder();
+						var infowindow = new google.maps.InfoWindow();
+						geocoder.geocode({"address":"{var:string:gmapAddress}"}, function(results, status) {
+							if (status == google.maps.GeocoderStatus.OK) {
+								map.setCenter(results[0].geometry.location);
+								var marker = new google.maps.Marker({
+									map: map, 
+									position: results[0].geometry.location
+								});
+								google.maps.event.addListener(marker, "click", function() {
+									infowindow.setContent('<p>{var:string:gmapAddress}</p>');
+									infowindow.open(map, marker);
+								});
+							}
+						});
+					}
+				})();
+				</script>
+			</atm-noedit>
+		</atm-if>
 	</block>
 </row>

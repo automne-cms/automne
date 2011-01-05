@@ -306,7 +306,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	  * @access public
 	  * @return CMS_moduleCategory
 	  */
-	function &getParent() {
+	function getParent() {
 		if (sensitiveIO::isPositiveInteger($this->_parentID)) {
 			return CMS_moduleCategories_catalog::getById($this->_parentID);
 		} else {

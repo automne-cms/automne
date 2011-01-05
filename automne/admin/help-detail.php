@@ -22,15 +22,16 @@
   * @subpackage polymod
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
-require_once(dirname(__FILE__).'/../../../../cms_rc_admin.php');
+require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
 //load interface instance
 $view = CMS_view::getInstance();
 
 $module = sensitiveIO::request('module');
 $object = sensitiveIO::request('object');
+$mode = sensitiveIO::request('mode');
 if ($object) {
 	$modulesCodes = new CMS_modulesCodes();
-	$modulesCodeInclude = $modulesCodes->getModulesCodes(MODULE_TREATMENT_ROWS_EDITION_LABELS, PAGE_VISUALMODE_CLIENTSPACES_FORM, '', array("language" => $cms_language, "user" => $cms_user, 'request' => array($module => true, $module.'object' => $object)));
+	$modulesCodeInclude = $modulesCodes->getModulesCodes($mode, PAGE_VISUALMODE_CLIENTSPACES_FORM, '', array("language" => $cms_language, "user" => $cms_user, 'request' => array($module => true, $module.'object' => $object)));
 	$view->setContent($modulesCodeInclude[$module]);
 } else {
 	$view->setContent('');

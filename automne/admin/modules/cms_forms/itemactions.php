@@ -72,11 +72,7 @@ define("MESSAGE_PAGE_FIELD_REMEMBERME", 81);
 define("MESSAGE_ACTION_NO_REMEMBER_FIELD_FOUNDED", 82);
 define("MESSAGE_ACTION_ENTER_EMAIL_SENDER", 88);
 define("MESSAGE_ACTION_DOWNLOAD_CSV_FILE_WITH_DATE", 89);
-
-/**
- * Message of polymod module
- */
-define("MESSAGE_PAGE_BLOCK_GENRAL_VARS_EXPLANATION", 139);
+define("MESSAGE_PAGE_BLOCK_GENERAL_VARS_EXPLANATION", 1705);
 
 //CHECKS
 $cms_module = CMS_modulesCatalog::getByCodename(MOD_CMS_FORMS_CODENAME);
@@ -555,7 +551,7 @@ $content .= '
 </form>
 
 <br />
-'.$cms_language->getMessage(MESSAGE_PAGE_BLOCK_GENRAL_VARS_EXPLANATION,array($cms_language->getDateFormatMask(),$cms_language->getDateFormatMask(),$cms_language->getDateFormatMask()),MOD_POLYMOD_CODENAME).'
+'.$cms_language->getMessage(MESSAGE_PAGE_BLOCK_GENERAL_VARS_EXPLANATION, array($cms_language->getDateFormatMask(),$cms_language->getDateFormatMask(),$cms_language->getDateFormatMask())).'
 ';
 
 $dialog->setContent($content);

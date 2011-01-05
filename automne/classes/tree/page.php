@@ -529,7 +529,7 @@ class CMS_page extends CMS_resource
 			
 			//instanciate modules treatments for page header tags
 			$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_PAGEHEADER_TAGS, $visualizationMode, $this);
-			$modulesTreatment->setTreatmentParameters(array("language" => $language));
+			$modulesTreatment->setTreatmentParameters(array("language" => $language, 'replaceVars' => true));
 			$modulesTreatment->setDefinition($content);
 			$content = $modulesTreatment->treatContent(true);
 			
