@@ -105,6 +105,11 @@ class CMS_block_text extends CMS_block
 			break;
 		}
 		
+		//We need to encode { and } to avoid vars detection in texts blocks
+		$replace = array(
+			'{' => '&#123;',
+			'}' => '&#125;',
+		);
 		//build the HTML
 		switch ($visualizationMode) {
 		case PAGE_VISUALMODE_HTML_PUBLIC:
@@ -112,13 +117,13 @@ class CMS_block_text extends CMS_block
 		case PAGE_VISUALMODE_HTML_EDITED:
 		case PAGE_VISUALMODE_HTML_EDITION:
 			if ($data && $data["value"]) {
-				$html = $data["value"];
+				$html = str_replace(array_keys($replace), $replace, $data["value"]);
 				return str_replace("{{data}}", $html, $this->_definition);
 			}
 			break;
 		case PAGE_VISUALMODE_FORM:
 			if ($data && $data["value"]) {
-				$html = $data["value"];
+				$html = str_replace(array_keys($replace), $replace, $data["value"]);
 			} elseif (isset($this->_attributes['default'])) {
 				$html = $this->_attributes['default'];
 			} else {
