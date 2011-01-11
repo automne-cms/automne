@@ -134,7 +134,7 @@ class CMS_website extends CMS_grandFather
 					$data = $q->getArray();
 					$this->_id = $id;
 					$this->_label = $data["label_web"];
-					$this->_codename = $data["codename_web"];
+					$this->_codename = isset($data["codename_web"]) ? $data["codename_web"] : '';
 					$this->_url = $data["url_web"];
 					$this->_altdomains = $data["altdomains_web"];
 					$this->_root = new CMS_page($data["root_web"]);

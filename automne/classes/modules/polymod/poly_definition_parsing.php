@@ -638,10 +638,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			if ($search_'.$tag['attributes']['search'].'->search(CMS_object_search::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS)) {
 				$searchLaunched_'.$tag['attributes']['search'].' = true;
 			}
-		} elseif (isset($search_'.$tag['attributes']['search'].') && $launchSearch_'.$tag['attributes']['search'].' && $searchLaunched_'.$tag['attributes']['search'].' === true) {
-			//reset search stack (search already done before)
-			$search_'.$tag['attributes']['search'].'->resetResultStack();
-		} else {
+		} elseif (!isset($search_'.$tag['attributes']['search'].') || !$launchSearch_'.$tag['attributes']['search'].') {
 			CMS_grandFather::raiseError("Malformed atm-noresult tag : can\'t use this tag outside of atm-search \"'.$tag['attributes']['search'].'\" tag ...");
 		}
 		if (isset($search_'.$tag['attributes']['search'].') && $launchSearch_'.$tag['attributes']['search'].' && $searchLaunched_'.$tag['attributes']['search'].' === true) {
