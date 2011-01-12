@@ -841,27 +841,42 @@ class SensitiveIO extends CMS_grandFather
 	  * @access public
 	  */
 	static function substr() {
-		$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? 'substr' : 'mb_substr';
+		static $func;
+		if (!isset($func) || !$func) {
+			$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8' || !function_exists('mb_substr')) ? 'substr' : 'mb_substr';
+		}
 		$args = func_get_args();
 		return call_user_func_array ($func, $args);
 	}
 	static function strlen() {
-		$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? 'strlen' : 'mb_strlen';
+		static $func;
+		if (!isset($func) || !$func) {
+			$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8' || !function_exists('strlen')) ? 'strlen' : 'mb_strlen';
+		}
 		$args = func_get_args();
 		return call_user_func_array ($func, $args);
 	}
 	static function strpos() {
-		$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? 'strpos' : 'mb_strpos';
+		static $func;
+		if (!isset($func) || !$func) {
+			$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8' || !function_exists('strpos')) ? 'strpos' : 'mb_strpos';
+		}
 		$args = func_get_args();
 		return call_user_func_array ($func, $args);
 	}
 	static function strtolower() {
-		$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? 'strtolower' : 'mb_strtolower';
+		static $func;
+		if (!isset($func) || !$func) {
+			$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8' || !function_exists('strtolower')) ? 'strtolower' : 'mb_strtolower';
+		}
 		$args = func_get_args();
 		return call_user_func_array ($func, $args);
 	}
 	static function strtoupper() {
-		$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? 'strtoupper' : 'mb_strtoupper';
+		static $func;
+		if (!isset($func) || !$func) {
+			$func = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8' || !function_exists('strtoupper')) ? 'strtoupper' : 'mb_strtoupper';
+		}
 		$args = func_get_args();
 		return call_user_func_array ($func, $args);
 	}

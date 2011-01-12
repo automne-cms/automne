@@ -165,6 +165,10 @@
 	private function _connect($dsn, $user, $pass) {
 		$connectID = md5($dsn.$user.$pass);
 		if (!isset(self::$_connection[$connectID])) {
+			if (!defined('PDO::MYSQL_ATTR_USE_BUFFERED_QUERY')) {
+				$this->raiseError('PDO MySQL driver not loaded ... please check your PHP configuration.');
+				exit;
+			}
 			try {
 				self::$_connection[$connectID] = new PDO($dsn, $user, $pass, array(PDO::ATTR_PERSISTENT => APPLICATION_DB_PERSISTENT_CONNNECTION, PDO::ERRMODE_EXCEPTION => true, PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true));
 			} catch (PDOException $e) {
