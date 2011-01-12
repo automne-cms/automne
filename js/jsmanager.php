@@ -193,21 +193,23 @@ if ($files) {
 					'\\' => '',
 					'/' => '',
 				);
-				//check if file exists in current directory
-				if ($file == str_replace(array_keys($replace), $replace, $file) && file_exists(dirname(__FILE__).'/'.$file) && is_file(dirname(__FILE__).'/'.$file)) {
-					$jsfiles[] = dirname(__FILE__).'/'.$file;
+				$docrootPath = realpath($_SERVER["DOCUMENT_ROOT"].$file);
+				$realrootPath = realpath(PATH_REALROOT_FS.'/'.$file);
+				$dirnamePath = realpath(dirname(__FILE__).'/'.$file);
+				if ($file == str_replace(array_keys($replace), $replace, $file) && file_exists($dirnamePath) && is_file($dirnamePath)) {
+					$jsfiles[] = $dirnamePath;
 				} elseif(pathinfo($file, PATHINFO_EXTENSION) == 'js' && substr($file, 0, 1) == '/'
-						&& file_exists($_SERVER["DOCUMENT_ROOT"].$file) 
-						&& is_file($_SERVER["DOCUMENT_ROOT"].$file)
-						&& (strpos(pathinfo($_SERVER["DOCUMENT_ROOT"].$file, PATHINFO_DIRNAME), realpath(PATH_JS_FS)) === 0 
-							|| strpos(pathinfo($_SERVER["DOCUMENT_ROOT"].$file, PATHINFO_DIRNAME), realpath(PATH_ADMIN_JS_FS)) === 0)) {
-					$jsfiles[] = $_SERVER["DOCUMENT_ROOT"].$file;
+						&& file_exists($docrootPath) 
+						&& is_file($docrootPath)
+						&& (strpos(pathinfo($docrootPath, PATHINFO_DIRNAME), realpath(PATH_JS_FS)) === 0 
+							|| strpos(pathinfo($docrootPath, PATHINFO_DIRNAME), realpath(PATH_ADMIN_JS_FS)) === 0)) {
+					$jsfiles[] = $docrootPath;
 				} elseif(pathinfo($file, PATHINFO_EXTENSION) == 'js' && substr($file, 0, 1) != '/'
-						&& file_exists(PATH_REALROOT_FS.'/'.$file) 
-						&& is_file(PATH_REALROOT_FS.'/'.$file)
-						&& (strpos(pathinfo(PATH_REALROOT_FS.'/'.$file, PATHINFO_DIRNAME), realpath(PATH_JS_FS)) === 0 
-							|| strpos(pathinfo(PATH_REALROOT_FS.'/'.$file, PATHINFO_DIRNAME), realpath(PATH_ADMIN_JS_FS)) === 0)) {
-					$jsfiles[] = PATH_REALROOT_FS.'/'.$file;
+						&& file_exists($realrootPath) 
+						&& is_file($realrootPath)
+						&& (strpos(pathinfo($realrootPath, PATHINFO_DIRNAME), realpath(PATH_JS_FS)) === 0 
+							|| strpos(pathinfo($realrootPath, PATHINFO_DIRNAME), realpath(PATH_ADMIN_JS_FS)) === 0)) {
+					$jsfiles[] = $realrootPath;
 				}
 			break;
 		}
