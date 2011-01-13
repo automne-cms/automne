@@ -50,6 +50,8 @@ class CMS_DOMDocument extends DOMDocument {
 			'.($appendDTD ? $doctype : '').'
 			'.$source;
 		}
+		//$this->resolveExternals = true;
+		//$this->strictErrorChecking = false;
 		set_error_handler (array('CMS_DOMDocument','XmlError'));
 		$return = parent::loadXml($source, $options);
 		restore_error_handler();

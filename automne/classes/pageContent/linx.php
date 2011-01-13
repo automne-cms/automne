@@ -279,21 +279,25 @@ class CMS_linx extends CMS_grandFather
 				$rowXML = $rowNodes->item(0);
 			}
 			$elements = array();
-			foreach($rowXML->childNodes as $rowChildNode) {
-				if (is_a($rowChildNode, 'DOMElement') && $rowChildNode->tagName != 'script') {
-					if ($this->_args['class'] !== false) {
-						if ($rowChildNode->hasAttribute('class')) {
-							$rowChildNode->setAttribute('class', $rowChildNode->getAttribute('class').' '.$this->_args['class']);
-						} else {
-							$rowChildNode->setAttribute('class', $this->_args['class']);
+			if (isset($rowXML)) {
+				foreach($rowXML->childNodes as $rowChildNode) {
+					if (is_a($rowChildNode, 'DOMElement') && $rowChildNode->tagName != 'script') {
+						if ($this->_args['class'] !== false) {
+							if ($rowChildNode->hasAttribute('class')) {
+								$rowChildNode->setAttribute('class', $rowChildNode->getAttribute('class').' '.$this->_args['class']);
+							} else {
+								$rowChildNode->setAttribute('class', $this->_args['class']);
+							}
+						}
+						if ($this->_args['id'] !== false) {
+							$rowChildNode->setAttribute('id', $this->_args['id']);
 						}
 					}
-					if ($this->_args['id'] !== false) {
-						$rowChildNode->setAttribute('id', $this->_args['id']);
-					}
 				}
+				$output = CMS_DOMDocument::DOMElementToString($rowXML, true);
+			} else {
+				$output = '';
 			}
-			$output = CMS_DOMDocument::DOMElementToString($rowXML, true);
 		}
 		return $output;
 	}
