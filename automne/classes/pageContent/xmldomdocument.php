@@ -61,7 +61,10 @@ class CMS_DOMDocument extends DOMDocument {
 	static function XmlError($errno, $errstr, $errfile, $errline) {
 		if ($errno==E_WARNING && (substr_count($errstr,"DOMDocument::loadXML()")>0)) {
 			$error = str_replace('[<a href=\'domdocument.loadxml\'>domdocument.loadxml</a>]', '', $errstr);
+			//log error
 			CMS_grandFather::raiseError($error);
+			//throw exception to inform user of the error
+			throw new DOMException($error, 1);
 		} else {
 			return false;
 		}
