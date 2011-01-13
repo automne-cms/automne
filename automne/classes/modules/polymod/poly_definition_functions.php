@@ -197,7 +197,7 @@ class CMS_poly_definition_functions
 			break;
 			case 'var':
 				global ${$name};
-				$varContent = (${$name} !== null) ? ${$name} : $varValue;
+				$varContent = (isset(${$name}) && ${$name} !== null) ? ${$name} : $varValue;
 			break;
 			case 'constant':
 				$varContent = defined($name) ? constant($name) : null;

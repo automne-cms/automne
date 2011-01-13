@@ -451,7 +451,7 @@ if (!defined("PATH_MODULES_FILES_WR")) {
 	define("PATH_MODULES_FILES_WR", PATH_REALROOT_WR."/files");
 }
 if (!defined("PATH_MODULES_FILES_FS")) {
-	define("PATH_MODULES_FILES_FS", PATH_REALROOT_FS."/files");
+	define("PATH_MODULES_FILES_FS", $_SERVER["DOCUMENT_ROOT"].PATH_MODULES_FILES_WR);
 }
 /**
   * PATH to the module files of the standard module
@@ -483,7 +483,7 @@ if (!defined("PATH_PAGES_HTML_WR")) {
 	define("PATH_PAGES_HTML_WR", PATH_MAIN_WR."/html");
 }
 if (!defined("PATH_PAGES_HTML_FS")) {
-	define("PATH_PAGES_HTML_FS", PATH_MAIN_FS."/html");
+	define("PATH_PAGES_HTML_FS", $_SERVER["DOCUMENT_ROOT"].PATH_PAGES_HTML_WR);
 }
 
 /**

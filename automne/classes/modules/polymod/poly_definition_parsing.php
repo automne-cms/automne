@@ -397,12 +397,12 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * Compute recursively all parsed definition tags 
 	  * and send them to callback methods (according to $this->_tagsCallBack)
 	  *
-	  * @param multidimentionnal array $definition : the reference of the definition to compute
+	  * @param multidimentionnal array $definition : the definition to compute
 	  * @param integer $level : the current level of recursion (default : 0)
 	  * @return string the PHP / HTML content computed
 	  * @access public
 	  */
-	function computeTags(&$definition, $level = 0) {
+	function computeTags($definition, $level = 0) {
 		$code = '';
 		if ($level == 0) {
 			$code .= '$content .="';
@@ -451,7 +451,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 					//append php code
 					$code .= '";'."\n";
 					$code = CMS_polymod_definition_parsing::preReplaceVars($code);
-					$code .= 'eval(sensitiveIO::sanitizeExecCommand(CMS_polymod_definition_parsing::replaceVars(\''.addcslashes(CMS_polymod_definition_parsing::preReplaceVars($definition[$key]['phpnode'], false, false, false),"'").'\', $replace)));'."\n";
+					$code .= 'eval(sensitiveIO::sanitizeExecCommand(CMS_polymod_definition_parsing::replaceVars(\''.str_replace("'","\'",str_replace("\'","\\\'",CMS_polymod_definition_parsing::preReplaceVars($definition[$key]['phpnode'], false, false, false))).'\', $replace)));'."\n";
 					$code .= '$content .="';
 				} elseif (isset($definition[$key]['childrens'])) {
 					//compute subtags
@@ -638,10 +638,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			if ($search_'.$tag['attributes']['search'].'->search(CMS_object_search::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS)) {
 				$searchLaunched_'.$tag['attributes']['search'].' = true;
 			}
-		} elseif (isset($search_'.$tag['attributes']['search'].') && $launchSearch_'.$tag['attributes']['search'].' && $searchLaunched_'.$tag['attributes']['search'].' === true) {
-			//reset search stack (search already done before)
-			$search_'.$tag['attributes']['search'].'->resetResultStack();
-		} else {
+		} elseif (!isset($search_'.$tag['attributes']['search'].') || !$launchSearch_'.$tag['attributes']['search'].') {
 			CMS_grandFather::raiseError("Malformed atm-noresult tag : can\'t use this tag outside of atm-search \"'.$tag['attributes']['search'].'\" tag ...");
 		}
 		if (isset($search_'.$tag['attributes']['search'].') && $launchSearch_'.$tag['attributes']['search'].' && $searchLaunched_'.$tag['attributes']['search'].' === true) {

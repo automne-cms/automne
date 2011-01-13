@@ -1961,7 +1961,11 @@ class CMS_module_standard extends CMS_module
 						$href = $redirectlink->getHTML(false, MOD_STANDARD_CODENAME, RESOURCE_DATA_LOCATION_PUBLIC, false, true);
 						$modulesCode[MOD_STANDARD_CODENAME] .= 
 								'<?php'."\n".
-								'require_once(dirname(__FILE__).\''.$path.'\');'."\n".
+								'if (!defined(\'PATH_REALROOT_FS\')){'."\n".
+								'	require_once(dirname(__FILE__).\''.$path.'\');'."\n".
+								'} else {'."\n".
+								'	require_once(PATH_REALROOT_FS."/cms_rc_frontend.php");'."\n".
+								'}'."\n".
 								'CMS_view::redirect(\''.$href.'\', true, 302);'."\n".
 								'?>';
 					}
@@ -1969,7 +1973,11 @@ class CMS_module_standard extends CMS_module
 					$modulesCode[MOD_STANDARD_CODENAME] .= 
 					'<?php'."\n".
 					'//Generated on '.date('r').' by '.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION."\n".
-					'require_once(dirname(__FILE__).\''.$path.'\');'."\n".
+					'if (!defined(\'PATH_REALROOT_FS\')){'."\n".
+					'	require_once(dirname(__FILE__).\''.$path.'\');'."\n".
+					'} else {'."\n".
+					'	require_once(PATH_REALROOT_FS."/cms_rc_frontend.php");'."\n".
+					'}'."\n".
 					'if (!isset($cms_page_included) && !$_POST && !$_GET) {'."\n".
 					'	CMS_view::redirect(\''.$treatedObject->getURL(($visualizationMode == PAGE_VISUALMODE_PRINT) ? true : false).'\', true, 301);'."\n".
 					'}'."\n".

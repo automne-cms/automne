@@ -347,7 +347,7 @@ class CMS_multi_poly_object extends CMS_object_common
 				$cache->save($datas, array('type' => 'object'));
 			}
 		}
-		return $objectDef;
+		return $datas;
 	}
 
 	/**
