@@ -30,18 +30,18 @@ class CMS_DOMDocument extends DOMDocument {
 	}
 	
 	public function loadXML($source, $options = 0, $appendEncoding = true, $appendDTD = true) {
-		//convert source encoding if needed
-		if (io::isUTF8($source)) {
-			if (io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
-				$source = utf8_decode($source);
-			}
-		} else {
-			if (io::strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8') {
-				$source = utf8_encode($source);
-			}
-		}
 		//append xml encoding and DTD if needed
 		if ($appendEncoding) {
+			//convert source encoding if needed
+			if (io::isUTF8($source)) {
+				if (io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
+					$source = utf8_decode($source);
+				}
+			} else {
+				if (io::strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8') {
+					$source = utf8_encode($source);
+				}
+			}
 			if ($appendDTD) {
 				$options = ($options) ? $options | LIBXML_DTDLOAD : LIBXML_DTDLOAD;
 				$doctype = !APPLICATION_IS_WINDOWS ? '<!DOCTYPE automne SYSTEM "'.PATH_PACKAGES_FS.'/files/xhtml.ent">' : '<!DOCTYPE automne ['.file_get_contents(PATH_PACKAGES_FS.'/files/xhtml.ent').']>';

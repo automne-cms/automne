@@ -50,7 +50,7 @@ class CMS_xml2Array extends CMS_grandFather
 			if ($this->_params & self::XML_ARRAY2XML_FORMAT) {
 				$domDocument = new CMS_DOMDocument();
 		        $domDocument->loadXML($xml, 0, false, false);
-				$this->_arrOutput = $this->_xml2Array($domDocument->documentElement);
+				$this->_arrOutput = $this->_xml2Array($domDocument->documentElement, $domDocument->encoding);
 			} else {
 				$parser = xml_parser_create(APPLICATION_DEFAULT_ENCODING);
 				xml_set_object($parser,$this);
@@ -93,18 +93,30 @@ class CMS_xml2Array extends CMS_grandFather
 	  * @return array
 	  * @access public
 	  */
-	private function _xml2Array($domElement) {
+	private function _xml2Array($domElement, $encoding) {
 		$array = array();
 		if (is_object($domElement)) {
 			foreach ($domElement->childNodes as $node) {
 				if ($node->nodeType == XML_ELEMENT_NODE && $node->hasChildNodes()) {
 					if ($node->childNodes->length > 1) {
-						$value = $this->_xml2Array($node);
+						$value = $this->_xml2Array($node, $encoding);
 					} else {
 						$value = $node->textContent;
+						//check encoding and transcode if source is utf and current encoding is iso (not needed otherwise)
+						if ($encoding == 'utf-8') {
+							if (io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
+								$value = utf8_decode($value);
+							}
+						}
 					}
 				} else {
 					$value = $node->textContent;
+					//check encoding and transcode if source is utf and current encoding is iso (not needed otherwise)
+					if ($encoding == 'utf-8') {
+						if (io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
+							$value = utf8_decode($value);
+						}
+					}
 				}
 				if ($node->nodeType == XML_ELEMENT_NODE && $node->hasAttribute('key')) {
 					$array[$node->getAttribute('key')] = $value;

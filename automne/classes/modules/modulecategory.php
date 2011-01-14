@@ -322,7 +322,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * @access public
 	 * @return CMS_moduleCategory
 	 */
-	function &getRoot() {
+	function getRoot() {
 		if ($this->isRoot()) {
 			return null;
 		} else {
