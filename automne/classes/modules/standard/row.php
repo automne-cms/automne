@@ -1040,7 +1040,22 @@ class CMS_row extends CMS_grandFather
 		if (isset($data['id']) && $data['id'] && $this->getID() != $data['id']) {
 			$idsRelation['rows'][$data['id']] = $this->getID();
 		}
+		//set this object into definition to convert array so it can be converted again at end of import process
+		$idsRelation['definitionToConvert'][] = $this;
 		return true;
+	}
+	
+	/**
+	  * Convert all definitions used by this object from human format to Automne format.
+	  * This method is usually used at end of module import process, when all objects are imported
+	  *
+	  * @param CMS_module $module The current object module
+	  * @return boolean : true on success, false on failure
+	  * @access public
+	  */
+	function convertDefinitions($module) {
+		$this->setDefinition($module->convertDefinitionString($this->getDefinition(), false, true));
+		return $this->writeToPersistence();
 	}
 }
 ?>

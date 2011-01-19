@@ -544,19 +544,20 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  *
 	  * @param string $definition the definition string to convert
 	  * @param boolean $toHumanReadableFormat if true, convert founded variables to a human readable format, else to a machine readable format
+	  * @param boolean $reset if true, reset convertion table if already loaded
 	  *
 	  * @return string : the module definition string converted
 	  * @access public
 	  */
-	function convertDefinitionString($definition, $toHumanReadableFormat) {
+	function convertDefinitionString($definition, $toHumanReadableFormat, $reset = false) {
 		global $cms_language;
-		global $modulesConversionTable;
+		static $modulesConversionTable;
 		$count = 1;
 		//loop on text for vars to replace if any
 		while (preg_match_all("#\{[^{}]+[|}]{1}#U", $definition, $matches) && $count) {
 			$matches = array_unique($matches[0]);
 			//get module variables conversion table
-			if (!isset($modulesConversionTable[$this->getCodename()])) {
+			if (!isset($modulesConversionTable[$this->getCodename()]) || $reset) {
 				$modulesConversionTable[$this->getCodename()] = CMS_poly_module_structure::getModuleTranslationTable($this->getCodename(), $cms_language);
 			}
 			$convertionTable = $toHumanReadableFormat ? array_flip($modulesConversionTable[$this->getCodename()]) : $modulesConversionTable[$this->getCodename()];
@@ -1097,6 +1098,14 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			if (!CMS_poly_object_catalog::fromArray($data['objects'], $params, $cms_language, $idsRelation, $infos)) {
 				$infos .= 'Error during objects import ...'."\n";
 				$return = false;
+			}
+		}
+		//import of module is complete so compile all definitions
+		if (isset($idsRelation['definitionToConvert'])&& $idsRelation['definitionToConvert']) {
+			foreach ($idsRelation['definitionToConvert'] as $objectToCompile) {
+				if (method_exists($objectToCompile, 'convertDefinitions')) {
+					$objectToCompile->convertDefinitions($this);
+				}
 			}
 		}
 		return $return;

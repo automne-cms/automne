@@ -286,28 +286,38 @@ class CMS_object_email extends CMS_object_common
 					$params[$aParameter['internalName']] = $module->convertDefinitionString($params[$aParameter['internalName']], false);
 				break;
 				case 'emailbody':
-					$bodyType = $bodyPageId = $bodyHTML = $bodyPageURL = '';
-					if (isset($post[$prefix.'emailBody'])) {
-						$bodyType = $post[$prefix.'emailBody'];
+					if (isset($post[$prefix.'emailBody']) && is_array($post[$prefix.'emailBody'])) {
+						//this case is used during module import : datas are already posted with the good format
+						$params[$aParameter['internalName']] = array(
+							'type' 		=> (isset($post[$prefix.'emailBody']['type']) ? $post[$prefix.'emailBody']['type'] : ''),
+							'pageID'	=> (isset($post[$prefix.'emailBody']['pageID']) ? $post[$prefix.'emailBody']['pageID'] : ''),
+							'html' 		=> (isset($post[$prefix.'emailBody']['html']) ? $module->convertDefinitionString($post[$prefix.'emailBody']['html'], false) : ''),
+							'pageURL'	=> (isset($post[$prefix.'emailBody']['pageURL']) ? $module->convertDefinitionString($post[$prefix.'emailBody']['pageURL'], false) : ''),
+						);
+					} else {
+						$bodyType = $bodyPageId = $bodyHTML = $bodyPageURL = '';
+						if (isset($post[$prefix.'emailBody'])) {
+							$bodyType = $post[$prefix.'emailBody'];
+						}
+						if (isset($post[$prefix.'emailBody_pageID'])) {
+							$bodyPageId = (int) $post[$prefix.'emailBody_pageID'];
+						}
+						if (isset($post[$prefix.'emailBody_html'])) {
+							$bodyHTML = $post[$prefix.'emailBody_html'];
+						}
+						if (isset($post[$prefix.'emailBody_pageURL'])) {
+							$bodyPageURL = $post[$prefix.'emailBody_pageURL'];
+						}
+						if (!$bodyType || ($bodyType == 1 && !$bodyHTML) || ($bodyType == 2 && !$bodyPageId)) {
+							return false;
+						}
+						$params[$aParameter['internalName']] = array(
+							'type' 		=> $bodyType,
+							'pageID'	=> $bodyPageId,
+							'html' 		=> $module->convertDefinitionString($bodyHTML, false),
+							'pageURL'	=> $module->convertDefinitionString($bodyPageURL, false),
+						);
 					}
-					if (isset($post[$prefix.'emailBody_pageID'])) {
-						$bodyPageId = (int) $post[$prefix.'emailBody_pageID'];
-					}
-					if (isset($post[$prefix.'emailBody_html'])) {
-						$bodyHTML = $post[$prefix.'emailBody_html'];
-					}
-					if (isset($post[$prefix.'emailBody_pageURL'])) {
-						$bodyPageURL = $post[$prefix.'emailBody_pageURL'];
-					}
-					if (!$bodyType || ($bodyType == 1 && !$bodyHTML) || ($bodyType == 2 && !$bodyPageId)) {
-						return false;
-					}
-					$params[$aParameter['internalName']] = array(
-						'type' 		=> $bodyType,
-						'pageID'	=> $bodyPageId,
-						'html' 		=> $module->convertDefinitionString($bodyHTML, false),
-						'pageURL'	=> $module->convertDefinitionString($bodyPageURL, false),
-					);
 				break;
 			}
 		}

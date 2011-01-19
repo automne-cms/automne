@@ -452,7 +452,9 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 			$this->setValue("email", $data['params']['email']);
 		}
 		if (isset($data['params']['definition'])) {
-			$this->setValue("definition", $module->convertDefinitionString($data['params']['definition'], false));
+			//do not use set value for this because it try to compile definition and fail
+			//$this->setValue("definition", $module->convertDefinitionString($data['params']['definition'], false));
+			$this->_objectValues['definition'] = $module->convertDefinitionString($data['params']['definition'], false);
 		}
 		
 		//write object
@@ -464,7 +466,22 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 		if (isset($data['id']) && $data['id'] && $this->getID() != $data['id']) {
 			$idsRelation['rss'][$data['id']] = $this->getID();
 		}
+		//set this object into definition to convert array so it can be converted again at end of import process
+		$idsRelation['definitionToConvert'][] = $this;
 		return true;
+	}
+	
+	/**
+	  * Convert all definitions used by this object from human format to Automne format.
+	  * This method is usually used at end of module import process, when all objects are imported
+	  *
+	  * @param CMS_module $module The current object module
+	  * @return boolean : true on success, false on failure
+	  * @access public
+	  */
+	function convertDefinitions($module) {
+		$this->setValue("definition", $module->convertDefinitionString($this->_objectValues['definition'], false, true));
+		return $this->writeToPersistence();
 	}
 }
 ?>

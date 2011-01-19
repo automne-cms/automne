@@ -969,6 +969,12 @@ class CMS_poly_object_catalog
 						$idsRelation['objects-uuid'][$objectDatas['uuid']] = $object->getValue('uuid');
 					}
 				}
+			} elseif (isset($objectDatas['uuid']) && isset($objectDatas['id'])) {
+				//get relation between imported object id and local id
+				$id = CMS_poly_object_catalog::objectExists($params['module'], $objectDatas['uuid']);
+				if (io::isPositiveInteger($id)) {
+					$idsRelation['objects'][$objectDatas['id']] = $id;
+				}
 			}
 		}
 		//then import objects datas
@@ -980,6 +986,8 @@ class CMS_poly_object_catalog
 				if (!isset($params['update']) || $params['update'] == true) {
 					$object = new CMS_poly_object_definition($id);
 					$importType = ' (Update)';
+					//set id translation
+					$idsRelation['objects'][$objectDatas['id']] = $id;
 				}
 			} else {
 				//check for translated id

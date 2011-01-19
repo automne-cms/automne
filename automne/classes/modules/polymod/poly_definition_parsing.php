@@ -858,15 +858,17 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		$childrens = (isset($tag['childrens'])) ? $tag['childrens'] : null;
 		if (isset($tag['attributes']["object"]) && $tag['attributes']["object"]) {
 			$objects = CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']["object"], false, true, false, true);
-			$return .='
-			$object_'.$uniqueID.' = &'.array_pop($objects).';
-			if (method_exists($object_'.$uniqueID.', "'.$tag['attributes']["function"].'")) {
-				$content .= CMS_polymod_definition_parsing::replaceVars($object_'.$uniqueID.'->'.$tag['attributes']["function"].'($parameters_'.$uniqueID.', '.CMS_polymod_definition_parsing::preReplaceVars(var_export($childrens ,true), true).'), $replace);
-			} else {
-				CMS_grandFather::raiseError("Malformed atm-function tag : can\'t found method '.$tag['attributes']["function"].' on object : ".get_class($object_'.$uniqueID.'));
+			if (is_array($objects) && $objects) {
+				$return .='
+				$object_'.$uniqueID.' = &'.array_pop($objects).';
+				if (method_exists($object_'.$uniqueID.', "'.$tag['attributes']["function"].'")) {
+					$content .= CMS_polymod_definition_parsing::replaceVars($object_'.$uniqueID.'->'.$tag['attributes']["function"].'($parameters_'.$uniqueID.', '.CMS_polymod_definition_parsing::preReplaceVars(var_export($childrens ,true), true).'), $replace);
+				} else {
+					CMS_grandFather::raiseError("Malformed atm-function tag : can\'t found method '.$tag['attributes']["function"].' on object : ".get_class($object_'.$uniqueID.'));
+				}
+				unset($object_'.$uniqueID.');
+				';
 			}
-			unset($object_'.$uniqueID.');
-			';
 		} else {
 			$return .='
 			if (method_exists(new CMS_poly_definition_functions(), "'.$tag['attributes']["function"].'")) {
@@ -905,40 +907,42 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		//get key name
 		$matches = array();
 		preg_match("#\(([n0-9]+)\)->getValue\(#U", $on, $matches);
-		$keyName = '$key_'.$matches[1];
-		$return = '
-		//LOOP TAG START '.$uniqueID.'
-		$loopcondition_'.$uniqueID.' = '.$on.';
-		if (is_array($loopcondition_'.$uniqueID.')) {
-			$count_'.$uniqueID.' = 0;
-			$replace_'.$uniqueID.' = $replace; //save previous replace vars if any
-			$content_'.$uniqueID.' = $content; //save previous content var if any
-			'.$reverse.'
-			$maxloops_'.$uniqueID.' = sizeof($loopcondition_'.$uniqueID.');
-			foreach (array_keys($loopcondition_'.$uniqueID.') as '.$keyName.') {
-				$content = "";
-				$replace["atm-loop"] = array (
-					"{firstloop}" 	=> (!$count_'.$uniqueID.') ? 1 : 0,
-					"{lastloop}" 	=> ($count_'.$uniqueID.' == $maxloops_'.$uniqueID.' - 1) ? 1 : 0,
-					"{loopcount}" 	=> ($count_'.$uniqueID.'+1),
-					"{maxloops}" 	=> $maxloops_'.$uniqueID.',
-					"{altloopclass}"=> (($count_'.$uniqueID.'+1) % 2) ? "CMS_odd" : "CMS_even",
-				);
-				'.$this->computeTags($tag['childrens']).'
-				$count_'.$uniqueID.'++;
-				//do all result vars replacement
-				$content_'.$uniqueID.'.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
+		if (isset($matches[1])) {
+			$keyName = '$key_'.$matches[1];
+			$return = '
+			//LOOP TAG START '.$uniqueID.'
+			$loopcondition_'.$uniqueID.' = '.$on.';
+			if (is_array($loopcondition_'.$uniqueID.')) {
+				$count_'.$uniqueID.' = 0;
+				$replace_'.$uniqueID.' = $replace; //save previous replace vars if any
+				$content_'.$uniqueID.' = $content; //save previous content var if any
+				'.$reverse.'
+				$maxloops_'.$uniqueID.' = sizeof($loopcondition_'.$uniqueID.');
+				foreach (array_keys($loopcondition_'.$uniqueID.') as '.$keyName.') {
+					$content = "";
+					$replace["atm-loop"] = array (
+						"{firstloop}" 	=> (!$count_'.$uniqueID.') ? 1 : 0,
+						"{lastloop}" 	=> ($count_'.$uniqueID.' == $maxloops_'.$uniqueID.' - 1) ? 1 : 0,
+						"{loopcount}" 	=> ($count_'.$uniqueID.'+1),
+						"{maxloops}" 	=> $maxloops_'.$uniqueID.',
+						"{altloopclass}"=> (($count_'.$uniqueID.'+1) % 2) ? "CMS_odd" : "CMS_even",
+					);
+					'.$this->computeTags($tag['childrens']).'
+					$count_'.$uniqueID.'++;
+					//do all result vars replacement
+					$content_'.$uniqueID.'.= CMS_polymod_definition_parsing::replaceVars($content, $replace);
+				}
+				$content = $content_'.$uniqueID.'; //retrieve previous content var if any
+				$replace = $replace_'.$uniqueID.'; //retrieve previous replace vars if any
+				unset($replace_'.$uniqueID.', $content_'.$uniqueID.');
+				
+			} else {
+				CMS_grandFather::raiseError("Malformed atm-loop tag : malformed \'on\' attribute");
 			}
-			$content = $content_'.$uniqueID.'; //retrieve previous content var if any
-			$replace = $replace_'.$uniqueID.'; //retrieve previous replace vars if any
-			unset($replace_'.$uniqueID.', $content_'.$uniqueID.');
-			
-		} else {
-			CMS_grandFather::raiseError("Malformed atm-loop tag : malformed \'on\' attribute");
+			unset($loopcondition_'.$uniqueID.'); //unset loopcondition
+			//LOOP TAG END '.$uniqueID.'
+			';
 		}
-		unset($loopcondition_'.$uniqueID.'); //unset loopcondition
-		//LOOP TAG END '.$uniqueID.'
-		';
 		return $return;
 	}
 	
