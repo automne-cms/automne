@@ -20,7 +20,7 @@ Ext.ux.TabScrollerMenu =  Ext.extend(Object, {
     /**
      * @cfg {Number} maxText How long should the title of each {@link Ext.menu.Item} be.
      */
-	maxText        : 20,
+	maxText        : 50,
     /**
      * @cfg {String} menuPrefixText Text to prefix the submenus.
      */    
@@ -190,7 +190,7 @@ Ext.ux.TabScrollerMenu =  Ext.extend(Object, {
 			}
 			else {
 				this.items.each(function(item) {
-					if (item.id != curActive.id && !item.hidden) {
+					if (!item.hidden) {
 						this.tabsMenu.add(this.autoGenMenuItem(item));
 					}
 				}, this);
