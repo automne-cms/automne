@@ -127,7 +127,7 @@ foreach ($allclearances as $clearance => $messages) {
 		boxLabel:		'<span ext:qtip=\"".$cms_language->getJSMessage($messages['description'])."\" class=\"atm-help\">".$cms_language->getJSMessage($messages['label'])."</span>',
 		name:			'{$moduleCodename}-access-{$profileId}',
 		".($clearance == CLEARANCE_MODULE_NONE ? "id:'{$moduleCodename}-access-{$profileId}'," : '')."
-		inputValue:		'".$clearance."',
+		inputValue:		".$clearance.",
 		checked:		".($moduleClearance == $clearance ? 'true' : 'false').",
 		disabled:		".(($disableFields || !$cms_user->hasModuleClearance($moduleCodename, $clearance)) ? 'true' : 'false')."
 	},";

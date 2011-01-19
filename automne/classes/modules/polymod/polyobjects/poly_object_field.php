@@ -229,7 +229,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 			}
 		} elseif(io::strpos($this->_objectFieldValues['type'],'multi|') !== false) {
 			return new CMS_multi_poly_object(io::substr($this->_objectFieldValues['type'],6),array(), $this, $public);
-		} else {
+		} elseif (class_exists($this->_objectFieldValues['type'])) {
 			return new $this->_objectFieldValues['type'](array(), $this, $public);
 		}
 	}
@@ -473,6 +473,17 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 		}
 		if (isset($data['type']) && $data['type']) {
 			$type = !io::isPositiveInteger($data['type']) ? $data['type'] : ((isset($data['multi']) && $data['multi']) ? 'multi|'.$data['type'] : $data['type']);
+			
+			if (!io::isPositiveInteger($data['type'])) {
+				$type = $data['type'];
+			} else {
+				if (isset($idsRelation['objects'][$data['type']])) {
+					$objectId = $idsRelation['objects'][$data['type']];
+					$type = (isset($data['multi']) && $data['multi']) ? 'multi|'.$objectId : $objectId;
+				} else {
+					$type = 'Unknown imported type '.$data['type'];
+				}
+			}
 			$this->setValue("type", $type);
 		} else {
 			$infos .= 'Error : missing or invalid type for field importation ...'."\n";
@@ -518,12 +529,13 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 				$params = $fieldObject->treatParams($data['params']['params'], '');
 				if ($params) {
 					$this->setValue("params", $params);
+					//set this object into definition to convert array so it can be converted again at end of import process
+					$idsRelation['definitionToConvert'][] = $this;
 				} else {
 					$infos .= 'Error : missing or invalid parameters for field importation ...'."\n";
 					return false;
 				}
 			}
-			
 		}
 		//write field
 		if (!$this->writeToPersistence()) {
@@ -531,6 +543,25 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 			return false;
 		}
 		return true;
+	}
+	
+	/**
+	  * Convert all definitions used by this object from human format to Automne format.
+	  * This method is usually used at end of module import process, when all objects are imported
+	  *
+	  * @param CMS_module $module The current object module
+	  * @return boolean : true on success, false on failure
+	  * @access public
+	  */
+	function convertDefinitions($module) {
+		$GLOBALS['moduleCodename'] = $module->getCodename();
+		$params = $this->getValue("params");
+		if ($params) {
+			$fieldObject = $this->getTypeObject();
+			$params = $fieldObject->treatParams($params, '');
+			$this->setValue("params", $params);
+		}
+		return $this->writeToPersistence();
 	}
 }
 ?>

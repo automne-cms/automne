@@ -30,18 +30,18 @@ class CMS_DOMDocument extends DOMDocument {
 	}
 	
 	public function loadXML($source, $options = 0, $appendEncoding = true, $appendDTD = true) {
-		//convert source encoding if needed
-		if (io::isUTF8($source)) {
-			if (io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
-				$source = utf8_decode($source);
-			}
-		} else {
-			if (io::strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8') {
-				$source = utf8_encode($source);
-			}
-		}
 		//append xml encoding and DTD if needed
 		if ($appendEncoding) {
+			//convert source encoding if needed
+			if (io::isUTF8($source)) {
+				if (io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
+					$source = utf8_decode($source);
+				}
+			} else {
+				if (io::strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8') {
+					$source = utf8_encode($source);
+				}
+			}
 			if ($appendDTD) {
 				$options = ($options) ? $options | LIBXML_DTDLOAD : LIBXML_DTDLOAD;
 				$doctype = !APPLICATION_IS_WINDOWS ? '<!DOCTYPE automne SYSTEM "'.PATH_PACKAGES_FS.'/files/xhtml.ent">' : '<!DOCTYPE automne ['.file_get_contents(PATH_PACKAGES_FS.'/files/xhtml.ent').']>';
@@ -50,6 +50,8 @@ class CMS_DOMDocument extends DOMDocument {
 			'.($appendDTD ? $doctype : '').'
 			'.$source;
 		}
+		//$this->resolveExternals = true;
+		//$this->strictErrorChecking = false;
 		set_error_handler (array('CMS_DOMDocument','XmlError'));
 		$return = parent::loadXml($source, $options);
 		restore_error_handler();
@@ -59,7 +61,10 @@ class CMS_DOMDocument extends DOMDocument {
 	static function XmlError($errno, $errstr, $errfile, $errline) {
 		if ($errno==E_WARNING && (substr_count($errstr,"DOMDocument::loadXML()")>0)) {
 			$error = str_replace('[<a href=\'domdocument.loadxml\'>domdocument.loadxml</a>]', '', $errstr);
+			//log error
 			CMS_grandFather::raiseError($error);
+			//throw exception to inform user of the error
+			throw new DOMException($error, 1);
 		} else {
 			return false;
 		}

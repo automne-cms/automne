@@ -800,7 +800,7 @@ class CMS_object_categories extends CMS_object_common
 	  * @access public
 	  */
 	function getValue($name, $parameters = '') {
-		global $cms_language;
+		global $cms_language, $cms_user;
 		$name = ($name !== 0) ? $name : "0";
 		switch ($name) {
 			case 'ids':
@@ -826,6 +826,40 @@ class CMS_object_categories extends CMS_object_common
 				return implode($labels, $parameters);
 			break;
 			case 'values':
+				if ($parameters && is_object($cms_user)) {
+					$values = array();
+					$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
+					foreach (array_keys($this->_subfieldValues) as $subFieldID) {
+						if (is_object($this->_subfieldValues[$subFieldID]) && io::isPositiveInteger($this->_subfieldValues[$subFieldID]->getValue())) {
+							switch ($parameters) {
+								case 'none':
+									if ($cms_user->hasModuleCategoryClearance($this->_subfieldValues[$subFieldID]->getValue(), CLEARANCE_MODULE_NONE, $moduleCodename)) {
+										$values[$subFieldID] = $this->_subfieldValues[$subFieldID];
+									}
+								break;
+								case 'view':
+									if ($cms_user->hasModuleCategoryClearance($this->_subfieldValues[$subFieldID]->getValue(), CLEARANCE_MODULE_VIEW, $moduleCodename)) {
+										$values[$subFieldID] = $this->_subfieldValues[$subFieldID];
+									}
+								break;
+								case 'edit':
+									if ($cms_user->hasModuleCategoryClearance($this->_subfieldValues[$subFieldID]->getValue(), CLEARANCE_MODULE_EDIT, $moduleCodename)) {
+										$values[$subFieldID] = $this->_subfieldValues[$subFieldID];
+									}
+								break;
+								case 'manage':
+									if ($cms_user->hasModuleCategoryClearance($this->_subfieldValues[$subFieldID]->getValue(), CLEARANCE_MODULE_MANAGE, $moduleCodename)) {
+										$values[$subFieldID] = $this->_subfieldValues[$subFieldID];
+									}
+								break;
+								default:
+									$values[$subFieldID] = $this->_subfieldValues[$subFieldID];
+								break;
+							}
+						}
+					}
+					return $values;
+				}
 				return $this->_subfieldValues;
 			break;
 			case 'count' :

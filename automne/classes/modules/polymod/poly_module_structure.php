@@ -87,22 +87,24 @@ class CMS_poly_module_structure
 	  * @static
 	  */
 	protected function _createRecursiveStructure($structure, $flatStructure, &$infos) {
-		foreach($structure as $key => $value) {
-			if (is_array($value)) {
-				$structure[$key] = CMS_poly_module_structure::_createRecursiveStructure($value, $flatStructure, $infos);
-			} elseif (io::strpos($value,"multi|") !== false) {
-				$structure[$key] = array('multiobject'.io::substr($value,6) => CMS_poly_module_structure::_createRecursiveStructure($flatStructure['object'.io::substr($value,6)], $flatStructure, $infos));
-			} elseif (sensitiveIO::isPositiveInteger($value)) {
-				$structure[$key] = array('object'.$value => CMS_poly_module_structure::_createRecursiveStructure($flatStructure['object'.$value], $flatStructure, $infos));
-			}
-			if (is_array($infos) && !isset($infos[$key])) {
-				if (io::strpos($key,"field") !== false) {
-					$infos[$key] = new CMS_poly_object_field(io::substr($key,5));
-					if (!sensitiveIO::isPositiveInteger($value) && io::strpos($value,"multi|") === false && class_exists($value)) {
-						$infos[$value] = new $value(array(), $infos[$key]);
+		if ($structure) {
+			foreach($structure as $key => $value) {
+				if (is_array($value)) {
+					$structure[$key] = CMS_poly_module_structure::_createRecursiveStructure($value, $flatStructure, $infos);
+				} elseif (io::strpos($value,"multi|") !== false) {
+					$structure[$key] = array('multiobject'.io::substr($value,6) => CMS_poly_module_structure::_createRecursiveStructure($flatStructure['object'.io::substr($value,6)], $flatStructure, $infos));
+				} elseif (sensitiveIO::isPositiveInteger($value)) {
+					$structure[$key] = array('object'.$value => CMS_poly_module_structure::_createRecursiveStructure($flatStructure['object'.$value], $flatStructure, $infos));
+				}
+				if (is_array($infos) && !isset($infos[$key])) {
+					if (io::strpos($key,"field") !== false) {
+						$infos[$key] = new CMS_poly_object_field(io::substr($key,5));
+						if (!sensitiveIO::isPositiveInteger($value) && io::strpos($value,"multi|") === false && class_exists($value)) {
+							$infos[$value] = new $value(array(), $infos[$key]);
+						}
+					} elseif (io::strpos($key,"object") !== false) {
+						$infos[$key] = new CMS_poly_object_definition(io::substr($key,6));
 					}
-				} elseif (io::strpos($key,"object") !== false) {
-					$infos[$key] = new CMS_poly_object_definition(io::substr($key,6));
 				}
 			}
 		}
@@ -159,20 +161,22 @@ class CMS_poly_module_structure
 		$structure = array();
 		foreach ($objectsStructure as $fieldID => $field) {
 			if (!is_array($field)) { //Field
-				$object = new $field(array(), $objectInfos[$fieldID]);
-				//get object structure infos
-				$structure[io::substr($fieldID,5)] = $object->getStructure();
-				//create path and translated path
-				$structure[io::substr($fieldID,5)]['path'] = $path.'['.io::substr($fieldID,5).']';
-				$structure[io::substr($fieldID,5)]['fieldID'] = io::substr($fieldID,5);
-				if ($language && is_a($language, 'CMS_language')) {
-					$structure[io::substr($fieldID,5)]['translatedpath'] = $translatedpath.':'.sensitiveIO::sanitizeAsciiString($objectInfos[$fieldID]->getLabel($language));
-					$count = 1;
-					while (isset($translationtable[$structure[io::substr($fieldID,5)]['translatedpath']])) {
-						$count++;
-						$structure[io::substr($fieldID,5)]['translatedpath'] = $translatedpath.':'.sensitiveIO::sanitizeAsciiString($objectInfos[$fieldID]->getLabel($language)).$count;
+				if (class_exists($field)) {
+					$object = new $field(array(), $objectInfos[$fieldID]);
+					//get object structure infos
+					$structure[io::substr($fieldID,5)] = $object->getStructure();
+					//create path and translated path
+					$structure[io::substr($fieldID,5)]['path'] = $path.'['.io::substr($fieldID,5).']';
+					$structure[io::substr($fieldID,5)]['fieldID'] = io::substr($fieldID,5);
+					if ($language && is_a($language, 'CMS_language')) {
+						$structure[io::substr($fieldID,5)]['translatedpath'] = $translatedpath.':'.sensitiveIO::sanitizeAsciiString($objectInfos[$fieldID]->getLabel($language));
+						$count = 1;
+						while (isset($translationtable[$structure[io::substr($fieldID,5)]['translatedpath']])) {
+							$count++;
+							$structure[io::substr($fieldID,5)]['translatedpath'] = $translatedpath.':'.sensitiveIO::sanitizeAsciiString($objectInfos[$fieldID]->getLabel($language)).$count;
+						}
+						CMS_poly_module_structure::_updateTranslationTable($translationtable, $structure[io::substr($fieldID,5)]);
 					}
-					CMS_poly_module_structure::_updateTranslationTable($translationtable, $structure[io::substr($fieldID,5)]);
 				}
 			} else {
 				$object = array_shift(array_keys($field));

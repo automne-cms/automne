@@ -286,69 +286,71 @@ if (is_object($object)) {
 			$type = $field->getValue("type");
 			$label = new CMS_object_i18nm($field->getValue("labelID"));
 			$typeObject = $field->getTypeObject(true);
+			if (is_object($typeObject)) {
+				$content .= '
+				<li id="f'.$field->getID().'" alt="ID : '.$field->getID().'" title="ID : '.$field->getID().'">
+					<table border="0" cellpadding="2" cellspacing="2">
+					<tr>
+						<td width="150" class="'.$td_class.'">'.$label->getValue($cms_language->getCode());
+						if (POLYMOD_DEBUG) {
+							$content .= ' <span class="admin_text_alert"><small>(FieldID : '.$field->getID().')</small></span>';
+						}
+						$content .= '
+						</td>
+						<td width="150" class="'.$td_class.'">'.$typeObject->getObjectLabel($cms_language).'</td>
+						<td width="200" class="'.$td_class.'">'.$typeObject->getDescription($cms_language).'</td>';
+			//if ASE module exists, add field indexation options
+			if (class_exists('CMS_module_ase')) {
+				$content .= '
+						<td width="70" class="'.$td_class.'">
+							<table border="0" cellpadding="2" cellspacing="0">
+								<tr>
+									<form action="'.$_SERVER["SCRIPT_NAME"].'" method="post">
+									<input type="hidden" name="cms_action" value="index" />
+									<input type="hidden" name="field" value="'.$field->getID().'" />
+									<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
+									<input type="hidden" name="object" value="'.$object->getID().'" />
+										<td class="admin"><input name="indexable" onchange="this.form.submit();" type="checkbox" value="1" '.($field->getValue("indexable") ? ' checked="checked"' : '').' /></td>
+									</form>
+									</tr>
+								</table>
+						</td>';
+			}
 			$content .= '
-			<li id="f'.$field->getID().'" alt="ID : '.$field->getID().'" title="ID : '.$field->getID().'">
-				<table border="0" cellpadding="2" cellspacing="2">
-				<tr>
-					<td width="150" class="'.$td_class.'">'.$label->getValue($cms_language->getCode());
-					if (POLYMOD_DEBUG) {
-						$content .= ' <span class="admin_text_alert"><small>(FieldID : '.$field->getID().')</small></span>';
-					}
-					$content .= '
-					</td>
-					<td width="150" class="'.$td_class.'">'.$typeObject->getObjectLabel($cms_language).'</td>
-					<td width="200" class="'.$td_class.'">'.$typeObject->getDescription($cms_language).'</td>';
-		//if ASE module exists, add field indexation options
-		if (class_exists('CMS_module_ase')) {
-			$content .= '
-					<td width="70" class="'.$td_class.'">
-						<table border="0" cellpadding="2" cellspacing="0">
-							<tr>
-								<form action="'.$_SERVER["SCRIPT_NAME"].'" method="post">
-								<input type="hidden" name="cms_action" value="index" />
+						<td width="150" class="'.$td_class.'">
+							<table border="0" cellpadding="2" cellspacing="0">
+								<tr>';
+								//a field can't be deleted if it's the last one of the object and if it is used by another object
+								if (sizeof($objectUseage) && sizeof($fields) == 1) {
+									$canBeDeleted = false;
+								} else {
+									$canBeDeleted = true;
+								}
+								if ($canBeDeleted) {
+									$content .= '
+									<form action="'.$_SERVER["SCRIPT_NAME"].'" method="post" onSubmit="return confirm(\''.addslashes($cms_language->getMessage(MESSAGE_PAGE_ACTION_DELETECONFIRM, array(htmlspecialchars($label->getValue($cms_language->getCode()))))) . ' ?\')">
+									<input type="hidden" name="cms_action" value="delete" />
+									<input type="hidden" name="field" value="'.$field->getID().'" />
+									<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
+									<input type="hidden" name="object" value="'.$object->getID().'" />
+										<td class="admin"><input type="submit" class="admin_input_'.$td_class.'" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_DELETE).'" /></td>
+									</form>';
+								}
+								$content .= '
+								<form action="polymod_field.php" method="post">
 								<input type="hidden" name="field" value="'.$field->getID().'" />
 								<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
 								<input type="hidden" name="object" value="'.$object->getID().'" />
-									<td class="admin"><input name="indexable" onchange="this.form.submit();" type="checkbox" value="1" '.($field->getValue("indexable") ? ' checked="checked"' : '').' /></td>
+									<td class="admin"><input type="submit" class="admin_input_'.$td_class.'" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_EDIT).'" /></td>
 								</form>
 								</tr>
 							</table>
-					</td>';
-		}
-		$content .= '
-					<td width="150" class="'.$td_class.'">
-						<table border="0" cellpadding="2" cellspacing="0">
-							<tr>';
-							//a field can't be deleted if it's the last one of the object and if it is used by another object
-							if (sizeof($objectUseage) && sizeof($fields) == 1) {
-								$canBeDeleted = false;
-							} else {
-								$canBeDeleted = true;
-							}
-							if ($canBeDeleted) {
-								$content .= '
-								<form action="'.$_SERVER["SCRIPT_NAME"].'" method="post" onSubmit="return confirm(\''.addslashes($cms_language->getMessage(MESSAGE_PAGE_ACTION_DELETECONFIRM, array(htmlspecialchars($label->getValue($cms_language->getCode()))))) . ' ?\')">
-								<input type="hidden" name="cms_action" value="delete" />
-								<input type="hidden" name="field" value="'.$field->getID().'" />
-								<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
-								<input type="hidden" name="object" value="'.$object->getID().'" />
-									<td class="admin"><input type="submit" class="admin_input_'.$td_class.'" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_DELETE).'" /></td>
-								</form>';
-							}
-							$content .= '
-							<form action="polymod_field.php" method="post">
-							<input type="hidden" name="field" value="'.$field->getID().'" />
-							<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
-							<input type="hidden" name="object" value="'.$object->getID().'" />
-								<td class="admin"><input type="submit" class="admin_input_'.$td_class.'" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_EDIT).'" /></td>
-							</form>
-							</tr>
-						</table>
-					</td>
-					<td width="36" align="center" class="'.$td_class.'" style="cursor:move;"><img src="'.PATH_ADMIN_IMAGES_WR.'/drag.gif" border="0" /></td>
-				</tr>
-				</table>
-			</li>';
+						</td>
+						<td width="36" align="center" class="'.$td_class.'" style="cursor:move;"><img src="'.PATH_ADMIN_IMAGES_WR.'/drag.gif" border="0" /></td>
+					</tr>
+					</table>
+				</li>';
+			}
 		}
 		$content .= '
 		</ul>
