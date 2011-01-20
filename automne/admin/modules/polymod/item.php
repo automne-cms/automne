@@ -79,6 +79,10 @@ if (!isset($object) || $object->hasError()) {
 //load item if any
 if ($itemId) {
 	$item = new CMS_poly_object($objectId, $itemId);
+	if (!$item || $item->hasError()) {
+		CMS_grandFather::raiseError('Error, unknown item Id : '.$itemId);
+		$view->show();
+	}
 	$itemLabel = sensitiveIO::sanitizeJSString($item->getLabel());
 	if ($object->isPrimaryResource()) {
 		//put a lock on the resource or warn user if item is already locked
