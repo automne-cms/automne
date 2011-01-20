@@ -37,6 +37,7 @@ $view->setSecure();
 $pageId = sensitiveIO::request('page', 'sensitiveIO::isPositiveInteger');
 $keyword = sensitiveIO::request('keyword');
 $groups = sensitiveIO::request('groups', 'is_array');
+$module = sensitiveIO::request('module');
 $viewinactive = sensitiveIO::request('viewinactive', '', false) ? true : false;
 $definition = sensitiveIO::request('definition') ? true : false; //append XML definition to returned content ?
 $currentTpl = sensitiveIO::request('template', 'sensitiveIO::isPositiveInteger');
@@ -60,15 +61,25 @@ if (!$cms_user->hasModuleClearance(MOD_STANDARD_CODENAME, CLEARANCE_MODULE_EDIT)
 	$view->show();
 }
 
+$skipSearch = false;
 if (!$items) {
-	//filter by page if needed
 	$rowIds = array();
-	if ($pageId) {
+	if ($pageId) {//filter by page if needed
 		$rowIds = CMS_rowsCatalog::getRowsByPage($pageId);
+		if (!$rowIds) {
+			$skipSearch = true;
+		}
 	}
-	if (io::isPositiveInteger($keyword)) {
-		$rowIds[] = $keyword;
+	if (io::isPositiveInteger($keyword)) {//filter by id
+		$rowIds = array($keyword);
 		$keyword = '';
+	}
+	if ($module) {//filter by module
+		$ids = CMS_rowsCatalog::getByModules(array($module), false);
+		$rowIds = $rowIds ? array_intersect($rowIds, $ids) : $ids;
+		if (!$rowIds) {
+			$skipSearch = true;
+		}
 	}
 } else {
 	$rowIds = $items;
@@ -80,8 +91,13 @@ if ($currentTpl) {
 		$currentTpl = $tplId;
 	}
 }
-$rows = CMS_rowsCatalog::getAll($viewinactive, $keyword, $groups, $rowIds, $cms_user, $currentTpl, $currentCS, $start, $limit);
-$rowsDatas['total'] = sizeof(CMS_rowsCatalog::getAll($viewinactive, $keyword, $groups, $rowIds, $cms_user, $currentTpl, $currentCS, 0, 0, false));
+if (!$skipSearch) {
+	$rows = CMS_rowsCatalog::getAll($viewinactive, $keyword, $groups, $rowIds, $cms_user, $currentTpl, $currentCS, $start, $limit);
+	$rowsDatas['total'] = sizeof(CMS_rowsCatalog::getAll($viewinactive, $keyword, $groups, $rowIds, $cms_user, $currentTpl, $currentCS, 0, 0, false));
+} else {
+	$rows = array();
+	$rowsDatas['total'] = 0;
+}
 foreach ($rows as $row) {
 	if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES)) { //rows
 		if ($delete) {

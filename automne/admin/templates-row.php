@@ -50,6 +50,7 @@ define("MESSAGE_PAGE_VIEW_INACTIVE_ROWS", 1522);
 define("MESSAGE_PAGE_DELETE_CONFIRM", 1523);
 define("MESSAGE_PAGE_DUPLICATE", 1520);
 define("MESSAGE_ACTION_DUPLICATE_SELECTED", 1521);
+define("MESSAGE_PAGE_MODULES", 999);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -125,18 +126,63 @@ if ($allGroups) {
 		]
 	},";
 }
+
+$modules = CMS_modulesCatalog::getAll();
+if (sizeof($modules) > 1) {
+	$modulesDatas = array();
+	$modulesDatas['module'] = array(array(
+		'id'			=> 0,
+		'label'			=> '-',
+	));
+	foreach ($modules as $module) {
+		$modulesDatas['module'][] = array(
+			'id'			=> $module->getCodename(),
+			'label'			=> $module->getLabel($cms_language),
+		);
+	}
+	//json encode websites datas
+	$modulesDatas = sensitiveIO::jsonEncode($modulesDatas);
+	$searchPanel .= "{
+		xtype:				'combo',
+		id:					'moduleField',
+		name:				'module',
+		fieldLabel:			'{$cms_language->getJSMessage(MESSAGE_PAGE_MODULES)}',
+		anchor:				'-20px',
+		forceSelection:		true,
+		mode:				'local',
+		triggerAction:		'all',
+		valueField:			'id',
+		hiddenName: 		'module',
+		displayField:		'label',
+		store:				new Ext.data.JsonStore({
+			id:				'id',
+			root: 			'module',
+			fields: 		['id', 'label'],
+			data:			{$modulesDatas}
+		}),
+		validateOnBlur:		false,
+		allowBlank: 		true,
+		selectOnFocus:		true,
+		editable:			true,
+		typeAhead:			true,
+		listeners:			{'valid':rowWindow.search}
+	},";
+}
 $searchPanel .= "{
 	xtype:			'atmPageField',
 	fieldLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_PAGE)}',
 	name:			'page',
 	value:			'',
+	anchor:			'-20px',
 	allowBlank:		true,
 	validateOnBlur:	false,
 	listeners:		{'valid':{
 		fn: 			rowWindow.search,
 		options:		{buffer:300}
 	}}
-},{
+},";
+
+$searchPanel .= "{
 	hideLabel:		true,
 	labelSeparator:	'',
 	labelAlign:		'left',
@@ -147,6 +193,7 @@ $searchPanel .= "{
 	checked:		true,
 	listeners: 		{'check':rowWindow.search}
 }";
+
 //$searchPanel = io::substr($searchPanel, 0, -1);
 $jscontent = <<<END
 	var rowWindow = Ext.getCmp('{$winId}');
@@ -259,17 +306,20 @@ $jscontent = <<<END
 		fields:			['id', 'label', 'description', 'groups', 'templates', 'activated', 'image', 'used'],
 		listeners:		{
 			'load': 		{fn:function(store, records, options){
-				//Update results title
-				if (store.getTotalCount()) {
-					var start = (options.params && options.params.start) ? options.params.start : 0;
-					if (store.getTotalCount() < (start + {$recordsPerPage})) {
-						var resultCount = store.getTotalCount();
+				var resultsPanel = Ext.getCmp('{$winId}resultsPanel');
+				if (resultsPanel) {
+					//Update results title
+					if (store.getTotalCount()) {
+						var start = (options.params && options.params.start) ? options.params.start : 0;
+						if (store.getTotalCount() < (start + {$recordsPerPage})) {
+							var resultCount = store.getTotalCount();
+						} else {
+							var resultCount = start + {$recordsPerPage};
+						}
+						resultsPanel.setTitle(String.format('{$cms_language->getJSMessage(MESSAGE_PAGE_RESULTS_COUNT)}', resultCount, store.getTotalCount()));
 					} else {
-						var resultCount = start + {$recordsPerPage};
+						resultsPanel.setTitle('{$cms_language->getJSMessage(MESSAGE_PAGE_NORESULTS)}');
 					}
-					resultsPanel.setTitle(String.format('{$cms_language->getJSMessage(MESSAGE_PAGE_RESULTS_COUNT)}', resultCount, store.getTotalCount()));
-				} else {
-					resultsPanel.setTitle('{$cms_language->getJSMessage(MESSAGE_PAGE_NORESULTS)}');
 				}
 				rowWindow.syncSize();
 			}},
@@ -289,6 +339,7 @@ $jscontent = <<<END
 	var resultsPanel = new Ext.ux.LiveDataPanel({
 		title: 				'{$cms_language->getJSMessage(MESSAGE_PAGE_RESULTS)}',
 		cls:				'atm-results',
+		id:					'{$winId}resultsPanel',
 		collapsible:		false,
 		region:				'center',
 		border:				false,

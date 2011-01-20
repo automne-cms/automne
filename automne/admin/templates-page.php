@@ -175,6 +175,7 @@ $searchPanel .= "{
 	name:			'page',
 	validateOnBlur:	false,
 	value:			'',
+	anchor:			'-20px',
 	allowBlank:		true,
 	listeners:		{'valid':{
 		fn: 			templateWindow.search, 
@@ -334,17 +335,20 @@ $jscontent = <<<END
 		fields:			['id', 'label', 'description', 'groups', 'websites', 'activated', 'image', 'used'],
 		listeners:		{
 			'load': 		{fn:function(store, records, options){
-				//Update results title
-				if (store.getTotalCount()) {
-					var start = (options.params && options.params.start) ? options.params.start : 0;
-					if (store.getTotalCount() < (start + {$recordsPerPage})) {
-						var resultCount = store.getTotalCount();
+				var resultsPanel = Ext.getCmp('{$winId}resultsPanel');
+				if (resultsPanel) {
+					//Update results title
+					if (store.getTotalCount()) {
+						var start = (options.params && options.params.start) ? options.params.start : 0;
+						if (store.getTotalCount() < (start + {$recordsPerPage})) {
+							var resultCount = store.getTotalCount();
+						} else {
+							var resultCount = start + {$recordsPerPage};
+						}
+						resultsPanel.setTitle(String.format('{$cms_language->getJSMessage(MESSAGE_PAGE_RESULTS_COUNT)}', resultCount, store.getTotalCount()));
 					} else {
-						var resultCount = start + {$recordsPerPage};
+						resultsPanel.setTitle('{$cms_language->getJSMessage(MESSAGE_PAGE_NORESULTS)}');
 					}
-					resultsPanel.setTitle(String.format('{$cms_language->getJSMessage(MESSAGE_PAGE_RESULTS_COUNT)}', resultCount, store.getTotalCount()));
-				} else {
-					resultsPanel.setTitle('{$cms_language->getJSMessage(MESSAGE_PAGE_NORESULTS)}');
 				}
 				templateWindow.syncSize();
 			}},
@@ -364,6 +368,7 @@ $jscontent = <<<END
 	var resultsPanel = new Ext.ux.LiveDataPanel({
 		title: 				'{$cms_language->getJSMessage(MESSAGE_PAGE_RESULTS)}',
 		cls:				'atm-results',
+		id:					'{$winId}resultsPanel',
 		collapsible:		false,
 		region:				'center',
 		border:				false,
