@@ -767,8 +767,21 @@ class CMS_object_search extends CMS_grandFather
 					break;
 				case "keywords":
 					if ($value) {
+						//check operators
+						$supportedOperator = array(
+							'any',
+							'all',
+							'phrase',
+						);
+						if ($operator && !in_array($operator, $supportedOperator)) {
+							$this->raiseError("Unkown search operator : ".$operator.", use default search instead");
+							$operator = 'any';
+						} elseif(!$operator) {
+							$operator = 'any';
+						}
+						
 						//if ASE module exists and object is indexed, and search is public, use it to do this search
-						if (class_exists('CMS_module_ase') && $this->_object->getValue('indexable') && $this->_public) {
+						if ($operator == 'any' && class_exists('CMS_module_ase') && $this->_object->getValue('indexable') && $this->_public) {
 							//get language code for stemming
 							$languageCode = '';
 							if ($languageFieldIDs = CMS_poly_object_catalog::objectHasLanguageField($this->_object->getID())) {
@@ -839,7 +852,8 @@ class CMS_object_search extends CMS_grandFather
 							$where .= ($fields) ? ' objectFieldID  in ('.implode(',',$fields).') and ':'';
 							
 							//first do a fulltext search
-							$tables = array(
+							//fulltext is removed because it does not work with operators "all" and "phrase"
+							/*$tables = array(
 								'mod_subobject_text',
 								'mod_subobject_string',
 							);
@@ -856,7 +870,6 @@ class CMS_object_search extends CMS_grandFather
 										".($value != htmlentities($value) ? "or match (value) against ('".htmlentities($value)."')" : '').")
 								";
 								$qTmp = new cms_query($sqlTmp);
-								//pr($sqlTmp);
 								$IDs = array();
 								while ($r = $qTmp->getArray()) {
 									if (!isset($this->_score[$r['objectID']]) || (isset($this->_score[$r['objectID']]) && $r['m1'] > $this->_score[$r['objectID']])) {
@@ -867,19 +880,15 @@ class CMS_object_search extends CMS_grandFather
 									}
 									$fullTextResults[$r['objectID']] = $r['objectID'];
 								}
-							}
-							
+							}*/
 							//clean user keywords (never trust user input, user is evil)
-							$keyword = strtr($value, ",;", "  ");
-							$words=array();
-							$words=array_map("trim",array_unique(explode(" ", $keyword)));
+							$value = strtr($value, ",;", "  ");
+							$words = array();
+							$words = array_map("trim",array_unique(explode(" ", $value)));
 							$cleanedWords = array();
 							foreach ($words as $aWord) {
 								if ($aWord && $aWord!='' && io::strlen($aWord) >= 3) {
 									$aWord = str_replace(array('%','_'), array('\%','\_'), $aWord);
-									if (htmlentities($aWord) != $aWord) {
-										$cleanedWords[] = htmlentities($aWord);
-									}
 									$cleanedWords[] = $aWord;
 								}
 							}
@@ -887,15 +896,45 @@ class CMS_object_search extends CMS_grandFather
 								//if no words after cleaning, return
 								break;
 							}
-							$where .= '(';
-							//then add keywords
-							$count='0';
-							foreach ($cleanedWords as $aWord) {
-								$where.= ($count) ? ' or ':'';
-								$count++;
-								$where .= "value like '%".$aWord."%'";
+							switch ($operator) {
+								case 'any';
+									$where .= '(';
+									//then add keywords
+									$count='0';
+									foreach ($cleanedWords as $aWord) {
+										$where.= ($count) ? ' or ':'';
+										$count++;
+										$where .= "value like '%".$aWord."%'";
+										if (htmlentities($aWord) != $aWord) {
+											$where .= " or value like '%".htmlentities($aWord)."%'";
+										}
+									}
+									$where .= ')';
+								break;
+								case 'all':
+									$where .= '(';
+									//then add keywords
+									$count='0';
+									foreach ($cleanedWords as $aWord) {
+										$where.= ($count) ? ' and ':'';
+										$count++;
+										if (htmlentities($aWord) != $aWord) {
+											$where .= "(value like '%".$aWord."%' or value like '%".htmlentities($aWord)."%')";
+										} else {
+											$where .= "value like '%".$aWord."%'";
+										}
+									}
+									$where .= ')';
+								break;
+								case 'phrase':
+									$value = str_replace(array('%','_'), array('\%','\_'), trim($value));
+									if (htmlentities($value) != $value) {
+										$where .= "(value like '%".$value."%' or value like '%".htmlentities($value)."%')";
+									} else {
+										$where .= "value like '%".$value."%'";
+									}
+								break;
 							}
-							$where .= ')';
 							
 							$sql = "
 								select
@@ -927,7 +966,7 @@ class CMS_object_search extends CMS_grandFather
 									$where
 							";
 							//append fulltext results if any
-							if ($fullTextResults) {
+							/*if ($fullTextResults) {
 								$sql .= "
 								union distinct
 								select
@@ -936,7 +975,7 @@ class CMS_object_search extends CMS_grandFather
 									mod_object_polyobjects
 								where
 									id_moo in (".implode(',', $fullTextResults).")";
-							}
+							}*/
 						}
 					}
 					break;

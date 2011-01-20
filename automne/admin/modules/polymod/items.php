@@ -65,6 +65,11 @@ define("MESSAGE_PAGE_FIELD_UNPUBLISHED", 554);
 define("MESSAGE_PAGE_FIELD_VALIDATED", 555);
 define("MESSAGE_PAGE_FIELD_VALIDATION_PENDING", 556);
 define("MESSAGE_PAGE_HELP_MULTIPLE", 560);
+define("MESSAGE_PAGE_FIELD_KEYWORDS_OPTIONS", 585);
+define("MESSAGE_PAGE_FIELD_KEYWORDS_ANY", 586);
+define("MESSAGE_PAGE_FIELD_KEYWORDS_ALL", 587);
+define("MESSAGE_PAGE_FIELD_KEYWORDS_PHRASE", 588);
+
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -189,6 +194,32 @@ if ($keywordsSearch) {
 				options:		{buffer:300}
 			}
 		}
+	},{
+		title:			'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS_OPTIONS, false, MOD_POLYMOD_CODENAME)}',
+		collapsible:	true,
+		collapsed:		true,
+		xtype:			'fieldset',
+		autoScroll:		true,
+		anchor:			'-20px',
+		defaults:{
+			xtype:			'radio',
+			hideLabel:		true,
+			name:			'items_{$object->getID()}_kwrds_options',
+			listeners:		{'check':moduleObjectWindow.search}
+		},
+		items:			[{
+			boxLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS_ANY, false, MOD_POLYMOD_CODENAME)}',
+			inputValue:		'any',
+			checked:		true
+		},{
+			boxLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS_ALL, false, MOD_POLYMOD_CODENAME)}',
+			inputValue:		'all',
+			checked:		false
+		},{
+			boxLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS_PHRASE, false, MOD_POLYMOD_CODENAME)}',
+			inputValue:		'phrase',
+			checked:		false
+		}]
 	},";
 }
 //add publication date search

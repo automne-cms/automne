@@ -547,3 +547,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(582, 'polymod', 'fr', 'Rendre la légende obligatoire');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(583, 'polymod', 'fr', 'Champ de l\'objet');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(584, 'polymod', 'fr', 'Ce paramètre vous permet de sélectionner un champ "Utilisateur / Groupe" de l\'objet actuel.<br />Si ce paramètre est employé, le ou les destinataires de la notification seront ceux disponibles dans le champ sélectionné.<br />L\'utilisation de ce paramètre annule les trois paramètres précédents.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(585, 'polymod', 'fr', 'Options des mots-clés');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(586, 'polymod', 'fr', 'N\'importe quel mot (ou)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(587, 'polymod', 'fr', 'Tous les mots (et)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(588, 'polymod', 'fr', 'Phrase exacte');

@@ -92,6 +92,7 @@ $objectFields = CMS_poly_object_catalog::getFieldsDefinition($object->getID());
 
 //get all search datas from requests
 $keywords = sensitiveIO::request('items_'.$object->getID().'_kwrds', '', $_SESSION["cms_context"]->getSessionVar('items_'.$object->getID().'_kwrds'));
+$keywordsOptions = sensitiveIO::request('items_'.$object->getID().'_kwrds_options', array('any', 'all', 'phrase'), 'any'/*$_SESSION["cms_context"]->getSessionVar('items_'.$object->getID().'_kwrds_options')*/);
 $dateFrom = sensitiveIO::request('items_dtfrm', '', $_SESSION["cms_context"]->getSessionVar('items_dtfrm'));
 $dateEnd = sensitiveIO::request('items_dtnd', '', $_SESSION["cms_context"]->getSessionVar('items_dtnd'));
 $sort = sensitiveIO::request('sort_'.$object->getID(), '', $_SESSION["cms_context"]->getSessionVar('sort_'.$object->getID()));
@@ -106,11 +107,8 @@ foreach ($objectFields as $fieldID => $field) {
 }
 
 // Set default session search options
-
-//reset page number
-//$_SESSION["cms_context"]->setBookmark(1);
-//add search options
 $_SESSION["cms_context"]->setSessionVar('items_'.$object->getID().'_kwrds', $keywords);
+//$_SESSION["cms_context"]->setSessionVar('items_'.$object->getID().'_kwrds_options', $keywordsOptions);
 $_SESSION["cms_context"]->setSessionVar("items_dtfrm", $dateFrom);
 $_SESSION["cms_context"]->setSessionVar("items_dtnd", $dateEnd);
 $_SESSION["cms_context"]->setSessionVar('sort_'.$object->getID(), $sort);
@@ -175,7 +173,7 @@ foreach ($objectFields as $fieldID => $field) {
 if ($_SESSION["cms_context"]->getSessionVar('items_'.$object->getID().'_kwrds') != '') {
 	$kwrd = $_SESSION["cms_context"]->getSessionVar('items_'.$object->getID().'_kwrds');
 	if (!io::isPositiveInteger($kwrd)) {
-		$search->addWhereCondition("keywords", $kwrd);
+		$search->addWhereCondition("keywords", $kwrd, $keywordsOptions);
 	} else {
 		$search->addWhereCondition("item", $kwrd);
 	}

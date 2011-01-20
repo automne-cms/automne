@@ -433,3 +433,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(582, 'polymod', 'en', 'Make the legend mandatory');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(583, 'polymod', 'en', 'Object field');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(584, 'polymod', 'en', 'This setting lets you select a field "User / Group" from the current object. If this parameter is used, the recipients of the notification will be those available in the selected field. Using this setting overrides the three previous parameters.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(585, 'polymod', 'en', 'Keywords options');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(586, 'polymod', 'en', 'Any word (or)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(587, 'polymod', 'en', 'All words (and)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(588, 'polymod', 'en', 'Exact phrase');
