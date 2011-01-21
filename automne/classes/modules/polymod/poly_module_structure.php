@@ -37,6 +37,9 @@ class CMS_poly_module_structure
 	const MESSAGE_PAGE_OBJECT_OPERATORS_DESCRIPTION = 379;
 	const MESSAGE_PAGE_OBJECT_ATM_INPUT_OPERATORS = 391;
   	const MESSAGE_PAGE_OBJECT_ATM_INPUT_OPERATORS_DESCRIPTION = 392;
+	const MESSAGE_PAGE_OBJECT_ORDER_OPERATORS = 589;
+	const MESSAGE_PAGE_OBJECT_ORDER_OPERATORS_DESCRIPTION = 590;
+	
 	/**
 	  * Return a recursive structure for all objects of a given module based on objects definition
 	  *
@@ -376,6 +379,13 @@ class CMS_poly_module_structure
 			if (isset($objectLabels['operator']) && is_array($objectLabels['operator']) && $objectLabels['operator']) {
 				$return .= '<h3>'.$language->getMessage(self::MESSAGE_PAGE_OBJECT_OPERATORS,false,MOD_POLYMOD_CODENAME).' :</h3>'.$language->getMessage(self::MESSAGE_PAGE_OBJECT_OPERATORS_DESCRIPTION,false,MOD_POLYMOD_CODENAME).'<ul>';
 				foreach ($objectLabels['operator'] as $name => $label) {
+					$return .= '<li><span class="keyword">'.$name.'</span> : '.$label.'</li>';
+				}
+				$return .= '</ul>';
+			}
+			if (isset($objectLabels['orderOperator']) && is_array($objectLabels['orderOperator']) && $objectLabels['orderOperator']) {
+				$return .= '<h3>'.$language->getMessage(self::MESSAGE_PAGE_OBJECT_ORDER_OPERATORS,false,MOD_POLYMOD_CODENAME).' :</h3>'.$language->getMessage(self::MESSAGE_PAGE_OBJECT_ORDER_OPERATORS_DESCRIPTION,false,MOD_POLYMOD_CODENAME).'<ul>';
+				foreach ($objectLabels['orderOperator'] as $name => $label) {
 					$return .= '<li><span class="keyword">'.$name.'</span> : '.$label.'</li>';
 				}
 				$return .= '</ul>';

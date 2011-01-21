@@ -401,7 +401,8 @@ class CMS_object_search extends CMS_grandFather
 			"random",
 			"publication date after", //Date start
 			"publication date before", //Date end
-			//"publication date end" //end of publication : system object : hidden
+			"publication date start",
+			"publication date end",
 		);
 		//if ASE module exists, add a sort by relevance
 		if (class_exists('CMS_module_ase')) {
@@ -428,19 +429,16 @@ class CMS_object_search extends CMS_grandFather
 		case "objectID":
 			$this->_orderConditions['objectID'] = $value;
 			break;
-		case "publication date after": // Date start
 			if ($this->_object->isPrimaryResource()) {
 				$this->_orderConditions['publication date after'] = $value;
 			}
 			break;
-		case "publication date before": // Date End
+		case "publication date after": // Date start
+		case "publication date before":
+		case "publication date start":
+		case "publication date end":
 			if ($this->_object->isPrimaryResource()) {
-				$this->_orderConditions['publication date before'] = $value;
-			}
-			break;
-		case "publication date end": // End Date of publication
-			if ($this->_object->isPrimaryResource()) {
-				$this->_orderConditions['publication date end'] = $value;
+				$this->_orderConditions[$type] = $value;
 			}
 			break;
 		case "random": // Random ordering
@@ -1255,6 +1253,8 @@ class CMS_object_search extends CMS_grandFather
 					$where = (is_array($this->_resultsIds) && $this->_resultsIds) ? ' and objectID in ('.implode(',',$this->_resultsIds).')':'';
 					switch($type) {
 						case "publication date after": // Date start
+						case "publication date before": // Date start
+						case "publication date start": // Date start
 							$sql = "
 									select
 										distinct objectID
@@ -1269,22 +1269,7 @@ class CMS_object_search extends CMS_grandFather
 										$where
 									order by publicationDateStart_rs ".$direction;
 							break;
-						case "publication date before": // Date End
-							$sql = "
-									select
-										distinct objectID
-									from
-										mod_subobject_integer".$statusSuffix.",
-										resources,
-										resourceStatuses
-									where
-										objectFieldID = '0'
-										and value = id_res
-										and status_res=id_rs
-										$where
-									order by publicationDateStart_rs ".$direction;
-							break;
-						case "publication date end": // End Date of publication
+						case "publication date end": // Date end
 							$sql = "
 									select
 										distinct objectID

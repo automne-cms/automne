@@ -339,6 +339,7 @@ class CMS_object_integer extends CMS_object_common
 		if (!$operator) {
 			return parent::getFieldSearchSQL($fieldID, $value, $operator, $where, $public);
 		}
+		
 		$statusSuffix = ($public) ? "_public":"_edited";
 		$sql = "
 			select

@@ -14,6 +14,7 @@ V4.1.0 (in progress)
 [REFACTOR] : Rewrite standard and polymod parsings to be both compatibles with tags and vars replacements
 [REFACTOR] : Rewrite polymod replacement vars to handle nested vars replacements
 [REFACTOR] : Rewrite tags atm-if, atm-else, atm-setvar, atm-start-tag, atm-end-tag, atm-title, atm-page, atm-website, atm-admin, atm-edit to be compatible with both standard and polymod parsers
+[REFACTOR] : Update all rows and templates help for XML syntax.
 [FEATURE] : Add vars replacements to standard rows and templates XML codes.
 [FEATURE] : Allow handling of vars replacement by all modules
 [FEATURE] : Add Google coordinates field for Polymod
