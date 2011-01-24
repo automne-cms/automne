@@ -37,6 +37,8 @@ class CMS_object_string extends CMS_object_common
 	const MESSAGE_OBJECT_STRING_PARAMETER_MATCH_EXPRESSION_DESCRIPTION = 373;
 	const MESSAGE_OBJECT_STRING_OPERATOR_DESCRIPTION = 389;
 	const MESSAGE_OBJECT_STRING_PARAMETER_MAXLENGHT_DESC = 536;
+	const MESSAGE_OBJECT_STRING_OPERATOR_COMPARAISON_DESCRIPTION = 599;
+	const MESSAGE_OBJECT_STRING_OPERATOR_ARRAY_DESCRIPTION = 600;
 	
 	/**
 	  * object label
@@ -266,6 +268,8 @@ class CMS_object_string extends CMS_object_common
 	function getLabelsStructure(&$language, $objectName) {
 		$labels = parent::getLabelsStructure($language, $objectName);
 		$labels['operator']['like'] = $language->getMessage(self::MESSAGE_OBJECT_STRING_OPERATOR_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['operator']['!= '] = $language->getMessage(self::MESSAGE_OBJECT_STRING_OPERATOR_COMPARAISON_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['operator']['in, not in '] = $language->getMessage(self::MESSAGE_OBJECT_STRING_OPERATOR_ARRAY_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		return $labels;
 	}
 	

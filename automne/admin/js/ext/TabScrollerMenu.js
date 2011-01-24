@@ -20,7 +20,7 @@ Ext.ux.TabScrollerMenu =  Ext.extend(Object, {
     /**
      * @cfg {Number} maxText How long should the title of each {@link Ext.menu.Item} be.
      */
-	maxText        : 20,
+	maxText        : 50,
     /**
      * @cfg {String} menuPrefixText Text to prefix the submenus.
      */    
@@ -146,9 +146,9 @@ Ext.ux.TabScrollerMenu =  Ext.extend(Object, {
 		},
 		// private	
 		generateTabMenuItems : function() {
+			var curActive  = this.getActiveTab();
 			var totalItems = this.items.getCount();
 			var pageSize   = this.tabScrollerMenu.getPageSize();
-			
 			
 			if (totalItems > pageSize)  {
 				var numSubMenus = Math.floor(totalItems / pageSize);
@@ -190,15 +190,16 @@ Ext.ux.TabScrollerMenu =  Ext.extend(Object, {
 			}
 			else {
 				this.items.each(function(item) {
-					this.tabsMenu.add(this.autoGenMenuItem(item));
+					if (!item.hidden) {
+						this.tabsMenu.add(this.autoGenMenuItem(item));
+					}
 				}, this);
 			}
 		},
 		// private
 		autoGenMenuItem : function(item) {
 			var maxText = this.tabScrollerMenu.getMaxText();
-			var text    = Ext.util.Format.ellipsis(item.title, maxText);
-			
+			var text    = Ext.util.Format.ellipsis(Ext.util.Format.stripTags(item.title), maxText);
 			return {
 				text      : text,
 				handler   : this.showTabFromMenu,

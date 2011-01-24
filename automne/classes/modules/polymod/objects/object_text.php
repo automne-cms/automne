@@ -41,6 +41,9 @@ class CMS_object_text extends CMS_object_common
 	const MESSAGE_OBJECT_TEXT_PARAMETER_WYSIWYG_HEIGHT = 341;
 	const MESSAGE_OBJECT_TEXT_HASVALUE_DESCRIPTION = 411;
 	const MESSAGE_OBJECT_TEXT_COPY_PASTE_ERROR = 537;
+	const MESSAGE_OBJECT_TEXT_OPERATOR_DESCRIPTION = 389;
+	const MESSAGE_OBJECT_TEXT_OPERATOR_COMPARAISON_DESCRIPTION = 599;
+	const MESSAGE_OBJECT_TEXT_OPERATOR_ARRAY_DESCRIPTION = 600;
 	
 	/**
 	  * object label
@@ -431,6 +434,10 @@ class CMS_object_text extends CMS_object_common
 		$labels = parent::getLabelsStructure($language);
 		$labels['structure']['htmlvalue'] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_HTMLVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['hasvalue'] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_HASVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['operator']['like'] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_OPERATOR_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['operator']['!= '] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_OPERATOR_COMPARAISON_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['operator']['in, not in '] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_OPERATOR_ARRAY_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		
 		return $labels;
 	}
 	

@@ -139,7 +139,11 @@ class CMS_resource extends CMS_grandFather
 	  */
 	function getLock()
 	{
-		return $this->_status->getLock();
+		if (is_object($this->_status)) {
+			return $this->_status->getLock();
+		} else {
+			return false;
+		}
 	}
 	
 	/**
@@ -150,7 +154,11 @@ class CMS_resource extends CMS_grandFather
 	  */
 	function getLockDate()
 	{
-		return $this->_status->getLockDate();
+		if (is_object($this->_status)) {
+			return $this->_status->getLockDate();
+		} else {
+			return false;
+		}
 	}
 	
 	/**
@@ -162,7 +170,11 @@ class CMS_resource extends CMS_grandFather
 	  */
 	function lock(&$user)
 	{
-		return $this->_status->lock($user);
+		if (is_object($this->_status)) {
+			return $this->_status->lock($user);
+		} else {
+			return false;
+		}
 	}
 	
 	/**
@@ -173,7 +185,11 @@ class CMS_resource extends CMS_grandFather
 	  */
 	function unlock()
 	{
-		return $this->_status->unlock();
+		if (is_object($this->_status)) {
+			return $this->_status->unlock();
+		} else {
+			return false;
+		}
 	}
 	
 	/**

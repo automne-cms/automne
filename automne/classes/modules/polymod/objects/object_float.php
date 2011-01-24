@@ -221,7 +221,7 @@ class CMS_object_float extends CMS_object_string {
 	function getLabelsStructure(&$language, $objectName) {
 		$params = $this->getParamsValues();
 		$labels = parent::getLabelsStructure($language, $objectName);
-		$labels['operator']['&lt;, &gt;,&lt;=, &gt;= '] = $language->getMessage(self::MESSAGE_OBJECT_FLOAT_OPERATOR_OTHERS_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['operator']['&lt;, &gt;,&lt;=, &gt;=, like '] = $language->getMessage(self::MESSAGE_OBJECT_FLOAT_OPERATOR_OTHERS_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		if($params['unit']){
 			$labels['structure']['unit'] = $language->getMessage(self::MESSAGE_OBJECT_FLOAT_PARAMETER_UNIT_DESCRIPTION,array($params['unit']) ,MOD_POLYMOD_CODENAME);
 		}

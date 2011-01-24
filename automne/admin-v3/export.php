@@ -128,7 +128,7 @@ switch (io::post('action')) {
 				<br /><a name="exportDatas"></a>
 				<fieldset>
 					<legend>'.$cms_language->getMessage(MESSAGE_PAGE_EXPORTED_DATAS).'</legend>
-					<textarea style="width:100%;height:300px;">'.var_export(htmlspecialchars($exportDatas), true).'</textarea>
+					<textarea style="width:100%;height:300px;">'.htmlspecialchars(var_export($exportDatas, true)).'</textarea>
 				</fielset>';
 			break;
 			case 'xml':

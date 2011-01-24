@@ -323,7 +323,7 @@ $content = '
 							$content.= $cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_RSS_TAG_EXPLANATION,array(implode(', ',$moduleLanguagesCodes)),MOD_POLYMOD_CODENAME);
 						break;
 						case 'search':
-							$content.= $cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_SEARCH_TAGS_EXPLANATION,array(implode(', ',CMS_object_search::getStaticSearchConditionTypes()), implode(', ',CMS_object_search::getStaticOrderConditionTypes())),MOD_POLYMOD_CODENAME);
+							$content.= $cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_SEARCH_TAGS_EXPLANATION,false,MOD_POLYMOD_CODENAME);
 						break;
 						case 'working':
 							$content.= $cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_WORKING_TAGS_EXPLANATION);
