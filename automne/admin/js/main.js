@@ -27,10 +27,11 @@ Automne = {
 	viewPort:		false,
 	cookie:			false,
 	session:		false,
+	popup:			false,
 	/*************************************
 	*		Automne public methods	  *
 	*************************************/
-	init: function() {
+	init: function(mode) {
 		//check for iframe embeding
 		if (window.top != window.self) {
 	    	if (Ext) {
@@ -47,17 +48,25 @@ Automne = {
 		}
 		//init config
 		Automne.initConfig();
-		
-		//create viewport
-		Automne.createViewPort();
-		
-		//check for authenticated user
-		Automne.server.call('login.php' + ((Automne.logout) ? '?cms_action=logout' : ''));
+		if (mode == 'popup') {
+			Automne.popup = true;
+			//create popup viewport
+			Automne.createPopupViewPort();
+		} else {
+			//create viewport
+			Automne.createViewPort();
+			//check for authenticated user
+			Automne.server.call('login.php' + ((Automne.logout) ? '?cms_action=logout' : ''));
+		}
 		//remove loading element
 		setTimeout(function(){
 			Ext.get('atm-center').remove();
-			Ext.get('atm-loading-mask').fadeOut({remove:true, callback:Automne.end});
+			Ext.get('atm-loading-mask').fadeOut({remove:true});
 		}, 250);
+	},
+	//Initialize popup display
+	initPopup: function() {
+		Automne.init('popup');
 	},
 	//Initialize some basic configurations (cookies, qtips, ajax)
 	initConfig: function() {
@@ -92,7 +101,7 @@ Automne = {
 		// Header to pass in every Ajax request. Used to prevent CSRF attacks on action requests
 		Ext.Ajax.defaultHeaders = {
 		    'X-Powered-By': 'Automne',
-			'X-Atm-Token':	context.token
+			'X-Atm-Token':	Automne.context.token
 		};
 		//if it is a new connexion or a new user, load interface
 		if (!oldUser || oldUser != Automne.context.userId || !Automne.east.rendered) {
@@ -287,8 +296,48 @@ Automne = {
 		//set east panel var
 		Automne.east = Ext.getCmp('sidePanel');
 	},
-	end: function() {
-		//Nothing for now
+	createPopupViewPort: function() {
+		//if viewport already exists : destroy it
+		if (Automne.viewPort) {
+			Automne.viewPort.destroy();
+		}
+		//create viewport and first tab panel
+		params = Ext.urlDecode(window.location.search.substr(1));
+		url = params.url;
+		Automne.viewPort = new Ext.Viewport({
+			layout:			'atm-border',
+			id:				'viewPort'
+		});
+		//create window element
+		var win = new Automne.Window({
+			id:				params.id || params.winId,
+			width:			750,
+			height:			580,
+			closable:		false,
+			isPopup:		true,
+			resizable:		false,
+			maximizable:	false,
+			header:			false,
+			headerAsText:	false,
+			border:			false,
+			autoLoad:		{
+				url:		url,
+				params:		params,
+				nocache:	true,
+				scope:		this
+			}
+		});
+		win.show();
+		//check each 5 seconds if parent popup still exists, else, kill popup
+		Automne.popupCheckInterval = setInterval(function(){
+			if (!window.opener) {
+				clearInterval(Automne.popupCheckInterval);
+				var mask = Automne.viewPort.el.mask(Automne.locales.closePopup);
+				mask.setStyle('z-index', 100000);
+				var maskMsg = Ext.Element.data(Automne.viewPort.el.dom, 'maskMsg');
+				maskMsg.setStyle('z-index', 100001);
+			}
+		}, 5000);
 	}
 };
 ////////////////

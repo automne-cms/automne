@@ -521,6 +521,7 @@ $jscontent = <<<END
 							id:				windowId,
 							modal:			false,
 							father:			templateWindow.father,
+							popupable:		true,
 							autoLoad:		{
 								url:			'template-help.php',
 								params:			{

@@ -548,13 +548,14 @@ $jscontent = <<<END
 	//redo layout
 	sidePanel.doLayout();
 	
-	var openWindow = function(t, url, params, width, height) {
+	var openWindow = function(t, url, params, width, height, popupable) {
 		var action = t.getAttributeNS('atm', 'action' );
 		//create window element
 		var win = new Automne.Window({
 			id:				params.id || action+'Window',
 			width:			width,
 			height:			height,
+			popupable:		(popupable ? true : false),
 			autoLoad:		{
 				url:		url,
 				params:		Ext.apply({winId:action+'Window'},params),
@@ -622,34 +623,34 @@ $jscontent = <<<END
 						id:			'module'+ t.getAttributeNS('atm', 'module') +'Window',
 						module:		t.getAttributeNS('atm', 'module'),
 						options:	t.getAttributeNS('atm', 'options')
-					}, 750, 580);
+					}, 750, 580, true);
 				break;
 			}
     	},
 		'profile' : function(t){
     		openWindow(t, 'user.php', {
 				userId:		{$cms_user->getUserId()}
-			});
+			}, 750, 580, true);
     	},
 		'users' : function(t){
     		openWindow(t, 'users-groups.php', {
 				type:		'users'
-			}, 750, 580);
+			}, 750, 580, true);
     	},
 		'groups' : function(t){
     		openWindow(t, 'users-groups.php', {
 				type:		'groups'
-			}, 750, 580);
+			}, 750, 580, true);
     	},
 		'templates' : function(t){
     		openWindow(t, 'templates.php', {
 				type:		'template'
-			}, 750, 580);
+			}, 750, 580, true);
 		},
 		'rows' : function(t){
     		openWindow(t, 'templates.php', {
 				type:		'row'
-			}, 750, 580);
+			}, 750, 580, true);
     	},
 		'styles' : function(t){
     		openWindow(t, 'templates.php', {
@@ -678,10 +679,10 @@ $jscontent = <<<END
 			window.show();
     	},
 		'scripts' : function(t){
-    		openWindow(t, 'server-scripts.php', {}, 750, 580);
+    		openWindow(t, 'server-scripts.php', {}, 750, 580, true);
     	},
 		'logs' : function(t){
-    		openWindow(t, 'logs.php', {}, 750, 580);
+    		openWindow(t, 'logs.php', {}, 750, 580, true);
     	},
 		'websites' : function(t){
     		var window = new Automne.frameWindow({
@@ -695,15 +696,15 @@ $jscontent = <<<END
 			window.show();
     	},
 		'languages' : function(t){
-    		openWindow(t, 'languages.php', {}, 750, 580);
+    		openWindow(t, 'languages.php', {}, 750, 580, true);
     	},
 		'server' : function(t){
-    		openWindow(t, '{$automnePath}/admin/server.php', {}, 750, 580);
+    		openWindow(t, '{$automnePath}/admin/server.php', {}, 750, 580, true);
     	},
 		'parameters' : function(t){
     		openWindow(t, 'module-parameters.php', {
 				module:		'standard'
-			}, 750, 580);
+			}, 750, 580, true);
     	}
     };
 END;

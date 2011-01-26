@@ -198,7 +198,7 @@ $jscontent = <<<END
 	});
 	
 	//define update function into window (to be accessible by parent window)
-	searchWindow.update = function() {
+	searchWindow.updateTab = function() {
 		//reload search
 		searchWindow.search();
 	}

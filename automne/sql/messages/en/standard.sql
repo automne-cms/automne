@@ -1500,7 +1500,10 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1544, 'standard', 'en', 'File:');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1545, 'standard', 'en', 'Page Template');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1546, 'standard', 'en', 'Websites:');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1547, 'standard', 'en', 'Automne.locales = { validateOptions: ''See validations options'',
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1547, 'standard', 'en', 'Automne.locales = { 
+openPopup: ''Open this window in a pop-up'',
+closePopup: ''The main Automne window is closed ... Please close this window.'',
+validateOptions: ''See validations options'',
 validate: ''Validate'',
 actionImpossible: ''Action impossible'',
 cantSubmitFormPage: ''You can not submit a form from a non public page.'',

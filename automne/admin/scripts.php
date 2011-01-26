@@ -96,12 +96,9 @@ if ($detailsContent || $queueContent) {
 	$view->setContent($xmlcontent);
 	
 	$jscontent = '
-	if (Ext.get(\'scriptsDetailText\')) {
-		Ext.get(\'scriptsDetailText\').dom.innerHTML = response.responseXML.getElementsByTagName(\'details\').item(0).firstChild.nodeValue;
-	}
-	if (Ext.get(\'scriptsQueueText\')) {
-		Ext.get(\'scriptsQueueText\').dom.innerHTML = response.responseXML.getElementsByTagName(\'queue\').item(0).firstChild.nodeValue;
-	}';
+	Automne.scripts.scriptsDetailText = response.responseXML.getElementsByTagName(\'details\').item(0).firstChild.nodeValue;
+	Automne.scripts.scriptsQueueText = response.responseXML.getElementsByTagName(\'queue\').item(0).firstChild.nodeValue;
+	';
 	$view->addJavascript($jscontent);
 }
 //send

@@ -309,7 +309,7 @@ $jscontent = <<<END
 	moduleCategoriesWindow.add(tree);
 	
 	//add fake update method
-	moduleCategoriesWindow.update = function() {}
+	moduleCategoriesWindow.updateTab = function() {}
 	
 	// render the tree
     tree.getRootNode().expand();

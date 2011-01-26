@@ -35,6 +35,12 @@ Automne.Window = Ext.extend(Ext.Window, {
 				id:				'help',
 				hidden:			true,
 				handler: 		Ext.emptyFn
+			},{
+				id:				'popup',
+				handler: 		this.openPopup,
+				hidden:			true,
+				qtip:			Automne.locales.openPopup,
+				scope:			this
 			}]
 		});
 		//set winId for autoLoad if missing
@@ -47,6 +53,12 @@ Automne.Window = Ext.extend(Ext.Window, {
 		//call parent
 		Automne.Window.superclass.constructor.apply(this, arguments); 
 	},
+	openPopup: function() {
+		if (this.checkModalGroup()) {
+			window.open(Automne.context.path+'/automne/admin/popup.php?' + Ext.urlEncode(this.autoLoad.params)+'&url='+this.autoLoad.url);
+			this.close();
+		}
+	},
 	// private
 	initComponent : function(){
 		this.resources = {};
@@ -57,6 +69,24 @@ Automne.Window = Ext.extend(Ext.Window, {
 		if (this.modal) {
 			this.on("beforeclose", this.checkModalGroup, this);
 		}
+		this.on("show", function(){
+			if (Automne.popup === false && this.popupable) {
+				this.tools['popup'].show();
+			}
+			if (this.isPopup) {
+				this.maximize();
+				//remove window title
+				this.header.setHeight(0);
+				this.header.setStyle('padding', '0px');
+			}
+		}, this);
+	},
+	setTitle:function (title) {
+		var r = Automne.Window.superclass.setTitle.apply(this, arguments); 
+		if (Automne.popup === true && r) {
+			document.title = title;
+		}
+		return r;
 	},
 	checkModalGroup: function () {
 		if (this.modal && this.manager.hasDaughters(this)) {
@@ -133,8 +163,8 @@ Automne.Window = Ext.extend(Ext.Window, {
 		return g;
 	},
 	updateResource: function (action, module, resourceId) {
-		if (action == 'delete' && this.resources[module] && this.resources[module][resourceId] && this.update) {
-			this.update();
+		if (action == 'delete' && this.resources[module] && this.resources[module][resourceId] && this.updateTab) {
+			this.updateTab();
 		}
 	},
 	addResource: function (module, resourceId) {

@@ -54,6 +54,7 @@ if ($files) {
 				$jsMainFiles [] = PATH_ADMIN_JS_FS.'/message.js';
 				$jsMainFiles [] = PATH_ADMIN_JS_FS.'/utils.js';
 				$jsMainFiles [] = PATH_ADMIN_JS_FS.'/view.js';
+				$jsMainFiles [] = PATH_ADMIN_JS_FS.'/scripts.js';
 				$jsMainFiles [] = PATH_ADMIN_JS_FS.'/console.js';
 				$jsMainFiles [] = PATH_ADMIN_JS_FS.'/categories.js';
 				$jsMainFiles [] = PATH_ADMIN_JS_FS.'/panel.js';
@@ -86,10 +87,16 @@ if ($files) {
 				$jsMainFiles [] = PATH_ADMIN_JS_FS.'/fckeditor.js';
 				
 				//Append others files in folder PATH_ADMIN_JS_FS.'/' which is not already listed here
+				$excludedFiles = array(
+					'launch.js',
+					'launch-popup.js',
+					'initconfig.js',
+					'.htaccess',
+				);
 				try{
 					foreach ( new DirectoryIterator(PATH_ADMIN_JS_FS.'/') as $file) {
 						$filename = realpath($file->getPathname());
-						if ($file->isFile() && $file->getFilename() != ".htaccess" && $file->getFilename() != "launch.js") {
+						if ($file->isFile() && !in_array($file->getFilename(), $excludedFiles)) {
 							$fileExtension = pathinfo($filename, PATHINFO_EXTENSION);
 							if ($fileExtension == 'js') {
 								$exists = false;
@@ -130,6 +137,10 @@ if ($files) {
 			case 'launch':
 				//this file launch application and must be the last to include
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/launch.js';
+			break;
+			case 'popup':
+				//this file launch application and must be the last to include
+				$jsfiles [] = PATH_ADMIN_JS_FS.'/launch-popup.js';
 			break;
 			case 'initconfig':
 				//this file launch application and must be the last to include
