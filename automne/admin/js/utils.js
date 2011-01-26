@@ -11,18 +11,7 @@
   */
 Automne.utils = {
 	edit:		false,
-	//catch all text inputs in page and put focus on the first one
-	focusinput: function(target) {
-		var input, inputs = (target || document).getElementsByTagName('INPUT');
-		for (var i = 0;i < inputs.length; i++) {
-			if (inputs[i].type == 'text') {
-				input = Ext.get(inputs[i]);
-				if (input.dom.value){ input.dom.select(); } else { input.focus();}
-				return true;
-			}
-		}
-		return false;
-	},
+	//display a page by it's ID in the given tab
 	getPageById: function (pageId, tab) {
 		pr('getPageById : '+pageId+(tab ? ' ('+tab+')' : ''));
 		if (tab) {

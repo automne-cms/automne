@@ -44,6 +44,10 @@ Automne.server = {
 		if (Ext.isIE || Ext.isSafari) {
 			pr('Call to '+options.url);
 		}
+		//set token header
+		if (conn.defaultHeaders) {
+			conn.defaultHeaders['X-Atm-Token'] = Automne.context.token;
+		}
 	},
 	//hide loading spinner after server call
 	hideSpinner: function (ajax, response, options) {
@@ -75,11 +79,8 @@ Automne.server = {
 		var xml = response.responseXML;
 		//check for token update
 		if (xml.getElementsByTagName('token').length) {
-			// Header to pass in every Ajax request. Used to prevent CSRF attacks on action requests
-			Ext.Ajax.defaultHeaders = {
-			    'X-Powered-By': 'Automne',
-				'X-Atm-Token':	xml.getElementsByTagName('token').item(0).firstChild.nodeValue
-			};
+			// Update token to pass in every Ajax request. Used to prevent CSRF attacks on action requests
+			Automne.context.token = xml.getElementsByTagName('token').item(0).firstChild.nodeValue;
 		}
 		//check for errors returned
 		if (xml.getElementsByTagName('error').length
@@ -98,9 +99,9 @@ Automne.server = {
 		}
 		//scripts in progress
 		if (xml && xml.getElementsByTagName('scripts').length) {
-			Automne.view.scripts(xml.getElementsByTagName('scripts').item(0).firstChild.nodeValue, options);
+			Automne.scripts.set(xml.getElementsByTagName('scripts').item(0).firstChild.nodeValue, options);
 		} else {
-			Automne.view.scripts(0, options);
+			Automne.scripts.set(0, options);
 		}
 		//execution stats
 		if (xml && xml.getElementsByTagName('stats').length) {

@@ -1623,3 +1623,10 @@ td.x-date-mp-month a:hover,td.x-date-mp-year a:hover {
 .x-list-selected {
 	background-color:				transparent;
 }
+/* tool sprites */
+.x-tool-popup {
+	background-position:0 -330px;
+}
+.x-tool-popup-over {
+	background-position:-15px -330px;
+}

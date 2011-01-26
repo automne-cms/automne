@@ -294,10 +294,18 @@ $jscontent = <<<END
 		html:			'<div id="scriptsDetailText"></div>',
 		listeners:{
 			'beforeexpand':function(){
-				Automne.view.getScriptsDetails = true;
+				Automne.scripts.getScriptsDetails = true;
+				scriptsDetail.updateInterval = setInterval(function(){
+					var el = Ext.get('scriptsDetailText');
+					if (el && el.dom) {
+						el.dom.innerHTML = Automne.scripts.scriptsDetailText;
+					}
+				}, 1000);
 			},
 			'beforecollapse': function(){
-				Automne.view.getScriptsDetails = false;
+				Automne.scripts.getScriptsDetails = false;
+				clearInterval(scriptsDetail.updateInterval);
+				Automne.scripts.scriptsDetailText = '';
 			},
 			scope:this
 		}
@@ -311,10 +319,18 @@ $jscontent = <<<END
 		html:			'<div id="scriptsQueueText"></div>',
 		listeners:{
 			'beforeexpand':function(){
-				Automne.view.getScriptsQueue = true;
+				Automne.scripts.getScriptsQueue = true;
+				scriptsQueue.updateInterval = setInterval(function(){
+					var el = Ext.get('scriptsQueueText');
+					if (el && el.dom) {
+						el.dom.innerHTML = Automne.scripts.scriptsQueueText;
+					}
+				}, 1000);
 			},
 			'beforecollapse': function(){
-				Automne.view.getScriptsQueue = false;
+				Automne.scripts.getScriptsQueue = false;
+				clearInterval(scriptsQueue.updateInterval);
+				Automne.scripts.scriptsQueueText = '';
 			},
 			scope:this
 		}
@@ -357,7 +373,23 @@ $jscontent = <<<END
 				}
 				if (!progressScripts.rendered) {
 					progressScripts.on('afterrender', function(){
-						Automne.view.updateScriptBars();
+						Automne.scripts.update();
+						if (serverWindow.isPopup) {
+							setInterval(function(){
+								if (Ext.getCmp('scriptsProgressBar')) {
+									var toptext = Automne.scripts.currentScripts ? String.format(Automne.locales.nScripts, Automne.scripts.currentScripts) : Automne.locales.noScript;
+									var progressScripts = Ext.getCmp('scriptsProgressBar');
+									if (progressScripts.el.dom && progressScripts.el.dom.firstChild) {
+										v = Automne.scripts.currentScripts / Automne.scripts.maxScripts;
+										if (!isNaN(v) && v != 0) {
+											progressScripts.updateProgress((Automne.scripts.currentScripts / Automne.scripts.maxScripts), toptext, true );
+										} else {
+											progressScripts.updateProgress(0, toptext, true );
+										}
+									}
+								}
+							}, 1000);
+						}
 					}, this);
 					progressScripts.render('scriptsProgress');
 				}
@@ -370,8 +402,16 @@ $jscontent = <<<END
 	setTimeout(function(){serverWindow.doLayout();}, 100);
 	serverWindow.on({
 		'beforeclose':function(){
-			Automne.view.getScriptsDetails = false;
-			Automne.view.getScriptsQueue = false;
+			Automne.scripts.getScriptsDetails = false;
+			Automne.scripts.getScriptsQueue = false;
+			Automne.scripts.scriptsDetailText = '';
+			Automne.scripts.scriptsQueueText = '';
+			if (scriptsDetail.updateInterval) {
+				clearInterval(scriptsDetail.updateInterval);
+			}
+			if (scriptsQueue.updateInterval) {
+				clearInterval(scriptsQueue.updateInterval);
+			}
 		},
 		scope:this
 	});

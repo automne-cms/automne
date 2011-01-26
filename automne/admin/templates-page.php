@@ -198,7 +198,7 @@ $jscontent = <<<END
 	var fatherWindow = Ext.getCmp('{$fatherId}');
 	
 	//define update function into window (to be accessible by parent window)
-	templateWindow.update = function() {
+	templateWindow.updateTab = function() {
 		//reload search
 		templateWindow.search();
 	}

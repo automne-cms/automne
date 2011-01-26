@@ -100,8 +100,8 @@ Automne.panel = Ext.extend(Ext.Panel, {
 		}
 	},
 	updateResource: function (action, module, resourceId) {
-		if (action == 'delete' && this.resources[module] && this.resources[module][resourceId] && this.update) {
-			this.update();
+		if (action == 'delete' && this.resources[module] && this.resources[module][resourceId] && this.updateTab) {
+			this.updateTab();
 		}
 	},
 	addResource: function (module, resourceId) {

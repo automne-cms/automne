@@ -430,6 +430,7 @@ $jscontent = <<<END
 							id:				windowId,
 							modal:			false,
 							father:			rowWindow.father,
+							popupable:		true,
 							autoLoad:		{
 								url:			'row-help.php',
 								params:			{
