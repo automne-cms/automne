@@ -381,6 +381,9 @@ class CMS_page extends CMS_resource
 			if (is_object($ws)) {
 				if ($relativeTo == PATH_RELATIVETO_WEBROOT) {
 					$wsURL = $ws->getURL();
+					if (!$printPage && !$returnFilenameOnly && CMS_websitesCatalog::isWebsiteRoot($this->getID())) {
+						return $wsURL.PATH_REALROOT_WR;
+					}
 				}
 				$wsPagesPath = $ws->getPagesPath($relativeTo);
 			} else {
@@ -400,9 +403,8 @@ class CMS_page extends CMS_resource
 					return $wsURL.$wsPagesPath."/".$filename;
 				}
 			}
-		} else {
-			return '';
 		}
+		return '';
 	}
 	
 	/**
@@ -795,7 +797,11 @@ class CMS_page extends CMS_resource
 			$metaDatas .= $this->getMetas($public)."\n";
 		}
 		
-		$metaDatas .= '	<base href="'.$website->getURL().PATH_REALROOT_WR.'/" />';
+		$metaDatas .= '<?php'."\n".
+		'$atmHost = @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) ? @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) : $_SERVER[\'HTTP_HOST\'];'."\n".
+		'$atmProtocol = stripos($_SERVER["SERVER_PROTOCOL"], \'https\') !== false ? \'https://\' : \'http://\';'."\n".
+		'echo \'<base href="\'.$atmProtocol.$atmHost.PATH_REALROOT_WR.\'/" />\';'."\n".
+		' ?>';
 		
 		return $metaDatas;
 	}

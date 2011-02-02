@@ -66,14 +66,16 @@ class CMS_XMLTag_if extends CMS_XMLTag
 		$this->_attributes['what'] = io::decodeEntities($this->_attributes['what']);
 		$return = '
 		$ifcondition_'.$this->_uniqueID.' = CMS_polymod_definition_parsing::replaceVars("'.$this->replaceVars($this->_attributes['what'], false, false, array($this, 'encloseWithPrepareVar')).'", @$replace);
-		if ($ifcondition_'.$this->_uniqueID.'):
-			$func_'.$this->_uniqueID.' = create_function("","return (".$ifcondition_'.$this->_uniqueID.'.");");';
-			//if attribute name is set, store if result
-			if (isset($this->_attributes['name']) && $this->_attributes['name']) {
-				$return .= '$atmIfResults[\''.$this->_attributes['name'].'\'][\'if\'] = false;';
-			}
+		';
+		//if attribute name is set, store if result
+		if (isset($this->_attributes['name']) && $this->_attributes['name']) {
+			$return .= '$atmIfResults[\''.$this->_attributes['name'].'\'][\'if\'] = false;';
+		}
 		$return .= '
-			if ($func_'.$this->_uniqueID.'()):';
+		if ($ifcondition_'.$this->_uniqueID.'):
+			$func_'.$this->_uniqueID.' = create_function("","return (".$ifcondition_'.$this->_uniqueID.'.");");
+			if ($func_'.$this->_uniqueID.'()):
+			';
 				//if attribute name is set, store if result
 				if (isset($this->_attributes['name']) && $this->_attributes['name']) {
 					$return .= '$atmIfResults[\''.$this->_attributes ['name'].'\'][\'if\'] = true;';

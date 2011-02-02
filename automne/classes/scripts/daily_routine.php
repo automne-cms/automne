@@ -12,8 +12,6 @@
 // +----------------------------------------------------------------------+
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr>              |
 // +----------------------------------------------------------------------+
-//
-// $Id:
 
 /**
   * Daily routine script
@@ -26,6 +24,8 @@
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   */
 
+//must calculate the document root first (for compatibility with old scripts)
+$_SERVER["DOCUMENT_ROOT"] = realpath(substr(dirname(__FILE__), 0, strlen(dirname(__FILE__)) - strpos(strrev(dirname(__FILE__)), "enmotua") - strlen("automne") - 1));
 //define application type
 define('APPLICATION_EXEC_TYPE', 'cli');
 //include required file

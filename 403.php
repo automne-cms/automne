@@ -30,6 +30,9 @@
 define("ENABLE_HTML_COMPRESSION", false);
 require_once(dirname(__FILE__).'/cms_rc_frontend.php');
 
+//send 403 error code
+header('HTTP/1.x 403 Forbidden', true, 403);
+
 //check for alternative 403 file and display it if any
 if (file_exists(PATH_REALROOT_FS.'/403.html')) {
 	readfile(PATH_REALROOT_FS.'/403.html');

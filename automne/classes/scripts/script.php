@@ -12,8 +12,6 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr> &            |
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: script.php,v 1.8 2010/03/08 16:43:32 sebastien Exp $
 
 /**
   * background script : regenerator
@@ -26,8 +24,12 @@
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
   */
 
+//must calculate the document root first (for compatibility with old scripts)
+$_SERVER["DOCUMENT_ROOT"] = realpath(substr(dirname(__FILE__), 0, strlen(dirname(__FILE__)) - strpos(strrev(dirname(__FILE__)), "enmotua") - strlen("automne") - 1));
+
 //define application type
 define('APPLICATION_EXEC_TYPE', 'cli');
+
 //include required file
 require_once(dirname(__FILE__).'/../../../cms_rc_admin.php');
 

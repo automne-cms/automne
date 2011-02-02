@@ -167,8 +167,8 @@ class CMS_scriptsManager
 						return false;
 					}
 				}
-				//pr($return,true);
-				//pr("cd ".PATH_REALROOT_FS."; php ".PATH_PACKAGES_FS."/scripts/script.php -m ".REGENERATION_THREADS.$forceRestart." > /dev/null 2>&1 &");
+				//CMS_grandFather::log($return);
+				//CMS_grandFather::log("cd ".PATH_REALROOT_FS."; php ".PATH_PACKAGES_FS."/scripts/script.php -m ".REGENERATION_THREADS.$forceRestart." > /dev/null 2>&1 &");
 				//@system("cd ".PATH_REALROOT_FS."; php ".PATH_PACKAGES_FS."/scripts/script.php -m ".REGENERATION_THREADS.$forceRestart." > /dev/null 2>&1 &");
 			}
 		} else {
