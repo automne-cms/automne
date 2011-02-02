@@ -19,8 +19,8 @@
   *
   * Gathers the most usual functions of an object class for Automne
   *
-  * @package CMS
-  * @subpackage CMS_resource
+  * @package Automne
+  * @subpackage modules
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   * 
   * HOW TO USE THIS CLASS
