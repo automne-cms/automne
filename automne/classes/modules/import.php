@@ -17,7 +17,7 @@
   *
   * Import datas to module
   *
-  * @package CMS
+  * @package Automne
   * @subpackage module
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

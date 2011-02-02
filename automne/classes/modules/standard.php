@@ -1793,22 +1793,7 @@ class CMS_module_standard extends CMS_module
 							//save JS handled
 							CMS_module::moduleUsage($treatedObject->getID(), $this->_codename, array('js-files' => true));
 						}
-						if ($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC) {
-							/*$metaDatas .= 
-								'<?php'."\n".
-								'//check if user exists and has page edition privileges'."\n".
-								'if (isset($cms_user) && is_object($cms_user)) {'."\n".
-								'	if ($cms_user->hasPageClearance('.$treatedObject->getID().', CLEARANCE_PAGE_EDIT)) {'."\n".
-								'		$userLanguage = $cms_user->getLanguage();'."\n".
-								'		echo \''."\n".
-									'	<!-- user has page edition privileges, add all needed javascripts and CSS -->'."\n".
-									'	<link rel="stylesheet" href="'.PATH_ADMIN_CSS_WR.'/editPage.css" media="screen" type="text/css" />'."\n".
-									'	<script type="text/javascript" src="/js/serverCall.php?\'.session_name().\'=\'.session_id().\'"></script>'."\n".
-									'	<script type="text/javascript" src="'.PATH_ADMIN_JS_WR.'/editPage.php?page='.$treatedObject->getID().'&amp;language=\'.$userLanguage->getCode().\'&amp;\'.session_name().\'=\'.session_id().\'"></script>\';'."\n".
-								'	}'."\n".
-								'}'."\n".
-								'? >'."\n";*/
-						} elseif ($visualizationMode == PAGE_VISUALMODE_FORM) {
+						if ($visualizationMode == PAGE_VISUALMODE_FORM) {
 							global $cms_user;
 							$isValidator = (is_object($cms_user) && $cms_user->hasPageClearance($treatedObject->getID(), CLEARANCE_PAGE_EDIT) && $cms_user->hasValidationClearance(MOD_STANDARD_CODENAME)) ? 'true' : 'false';
 							//add needed javascripts

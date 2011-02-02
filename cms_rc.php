@@ -695,7 +695,7 @@ if (!defined("PATH_ADMIN_SPECIAL_SESSION_CHECK_FS")) {
 
 /**
   *	Administration special pages paths : page templates client spaces edition
-  *	Default : PATH_ADMIN_xx."/template_clientSpaces.php"
+  *	Default : PATH_ADMIN_WR."/serverResponse.php"
   */
 if (!defined("PATH_ADMIN_SPECIAL_SERVER_RESPONSE_WR")) {
 	define("PATH_ADMIN_SPECIAL_SERVER_RESPONSE_WR", PATH_ADMIN_WR."/serverResponse.php");

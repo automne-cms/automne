@@ -63,7 +63,7 @@
   * 	}
   *
   * @package Automne
-  * @subpackage files
+  * @subpackage dialogs
   * @author Cédric Soret <cedric.soret@ws-interactive.fr>
   */
 

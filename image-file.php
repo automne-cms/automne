@@ -15,7 +15,9 @@
 
 /**
   * Automne image files download handler
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &
+  * @package Automne
+  * @subpackage frontend
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
 // *******************************************************************************

@@ -19,7 +19,7 @@
   * Used accross an Ajax request. Render a cms_i18n item for edition
   *
   * @package Automne
-  * @subpackage cms_i18n
+  * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

@@ -18,7 +18,7 @@
   * This script aimed to manage atm-admin tags. it extends CMS_XMLTag
   *
   * @package Automne
-  * @subpackage polymod
+  * @subpackage standard
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 class CMS_XMLTag_admin extends CMS_XMLTag

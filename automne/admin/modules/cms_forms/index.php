@@ -102,27 +102,7 @@ if (file_exists(PATH_MODULES_FS.'/'.MOD_CMS_FORMS_CODENAME.'/VERSION')) {
 
 $content .= '
 	<br />
-	<table width="400" cellpadding="2" cellspacing="1">';
-	
-// Actions depend on user module clearance
-/*if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
-	$content .= '
-		<!-- Gestion des accès par groupes d\'utilisateurs -->
-		<tr>
-			<td width="100%" class="admin">'.$cms_language->getMessage(MESSAGE_PAGE_MENU_GROUPS).'</td>
-			<td class="admin">&nbsp;</td>
-			<form action="'.PATH_ADMIN_WR.'/modulecategories_usersgroups.php" method="get">
-			<input type="hidden" name="module" value="'.MOD_CMS_FORMS_CODENAME.'" />
-			<input type="hidden" name="backlink" value="'.$_SERVER["SCRIPT_NAME"].'" />
-			<td class="admin"><input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_LIST, false, MOD_CMS_FORMS_CODENAME).'" /></td>
-			</form>
-		</tr>
-		<tr>
-			<td class="admin" colspan="3">&nbsp;</td>
-		</tr>';
-}*/
-
-$content .= '
+	<table width="400" cellpadding="2" cellspacing="1">
 	<!-- Gestion des catégories -->
 	<tr>
 		<td width="100%" class="admin">'.$cms_language->getMessage(MESSAGE_PAGE_MENU_CATEGORIES).'</td>

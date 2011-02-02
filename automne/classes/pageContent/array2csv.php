@@ -17,8 +17,8 @@
   *
   * Create a CSV file (CMS_file) from a given array
   *
-  * @package CMS
-  * @subpackage module
+  * @package Automne
+  * @subpackage pageContent
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 class CMS_array2csv extends CMS_grandFather

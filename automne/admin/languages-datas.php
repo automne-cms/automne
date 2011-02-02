@@ -20,7 +20,7 @@
   * Return formated items infos in JSON format
   *
   * @package Automne
-  * @subpackage cms_i18n
+  * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

@@ -17,7 +17,7 @@
   *
   * Export datas from modules
   *
-  * @package CMS
+  * @package Automne
   * @subpackage module
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */

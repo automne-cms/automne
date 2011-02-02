@@ -19,7 +19,7 @@
   * Used accross an Ajax request.
   *
   * @package Automne
-  * @subpackage polymod
+  * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
