@@ -101,6 +101,13 @@ class CMS_XMLTag extends CMS_grandFather
 	protected $_uniqueID;
 	
 	/**
+	  * Does the current text content of the tag is invalid (because tags attributes have changed)
+	  * @var boolean
+	  * @access private
+	  */
+	protected $_textContentInvalid = false;
+	
+	/**
 	  * Constructor.
 	  *
 	  * @param string $name The name of the tag
@@ -138,8 +145,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @return array(string=>string) the tag attributes
 	  * @access public
 	  */
-	function getAttributes()
-	{
+	function getAttributes() {
 		return $this->_attributes;
 	}
 	
@@ -150,13 +156,30 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @return string The attribute value
 	  * @access public
 	  */
-	function getAttribute($attribute)
-	{
+	function getAttribute($attribute) {
 		if (isset($this->_attributes[$attribute])) {
 			return $this->_attributes[$attribute];
 		} else {
 			return false;
 		}
+	}
+	
+	/**
+	  * Set the value of an attribute.
+	  *
+	  * @param string $attribute The attribute we want (its the key of the associative array)
+	  * @return boolean
+	  * @access public
+	  */
+	function setAttribute($attribute, $value) {
+		if (io::sanitizeAsciiString($attribute, '', '') != $attribute) {
+			$this->raiseError('Tag attribute must be ascii only : '.$attribute);
+			return false;
+		}
+		
+		$this->_attributes[$attribute] = $value;
+		$this->_textContentInvalid = true;
+		return true;
 	}
 	
 	/**
@@ -198,7 +221,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  */
 	function getContent()
 	{
-		if (!$this->_textContent) {
+		if (!$this->_textContent || $this->_textContentInvalid) {
 			$xml = array(
 				'nodename' 	=> $this->_name,
 				'attributes'=> $this->_attributes
@@ -209,6 +232,7 @@ class CMS_XMLTag extends CMS_grandFather
 			$xml = array($xml);
 			$parser = new CMS_xml2Array();
 			$this->_textContent = $parser->toXML($xml);
+			$this->_textContentInvalid = false;
 		}
 		return $this->_textContent;
 	}
@@ -289,7 +313,7 @@ class CMS_XMLTag extends CMS_grandFather
 			if ($this->_context == CMS_XMLTag::PHP_CONTEXT) {
 				$return = '<?php '."\n".
 				'//'.strtoupper($this->_name).' TAG START [ref. '.$this->_uniqueID."]\n".
-				'$content = $replace = "";'."\n";
+				'$content = $replace = \'\';'."\n";
 				if (isset($this->_tagReferences['module']) && in_array(MOD_STANDARD_CODENAME, $this->_tagReferences['module'])) {
 					//set pageID if any
 					if (isset($this->_computeParams['object']) && ($this->_computeParams['object'] instanceof CMS_page) && sensitiveIO::isPositiveInteger($this->_computeParams['object']->getID())) {
@@ -337,11 +361,17 @@ class CMS_XMLTag extends CMS_grandFather
 			$return = call_user_func($this->_parameters['childrenCallback'], $this->_children);
 			if (isset($this->_parameters['context']) && $this->_parameters['context'] && $this->_parameters['context'] != $this->_context) {
 				if ($this->_context == CMS_XMLTag::PHP_CONTEXT) {
-					$return = 
+					/*$return = 
 					'$replace_'.$this->_uniqueID.' = $replace; $content_'.$this->_uniqueID.' = $content;'."\n".
-					' ?>'.$return.'<?php '."\n".
+					' ? >'.$return.'<?php '."\n".
 					'$content = $content_'.$this->_uniqueID.'; $replace = $replace_'.$this->_uniqueID.';'."\n".
-					'unset($replace_'.$this->_uniqueID.', $content_'.$this->_uniqueID.');'."\n";
+					'unset($replace_'.$this->_uniqueID.', $content_'.$this->_uniqueID.');'."\n";*/
+					
+					$return = 
+					'$replace_'.$this->_uniqueID.' = $replace; echo $content; $content = \'\';'."\n".
+					' ?>'.$return.'<?php '."\n".
+					'$replace = $replace_'.$this->_uniqueID.';$content = \'\';'."\n".
+					'unset($replace_'.$this->_uniqueID.');'."\n";
 				} else {
 					$return = '<?php '.$return.' ?>';
 				}

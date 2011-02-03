@@ -382,7 +382,11 @@ class CMS_page extends CMS_resource
 				if ($relativeTo == PATH_RELATIVETO_WEBROOT) {
 					$wsURL = $ws->getURL();
 					if (!$printPage && !$returnFilenameOnly && CMS_websitesCatalog::isWebsiteRoot($this->getID())) {
-						return $wsURL.PATH_REALROOT_WR;
+						//check if page website is the main for the domain
+						$mainWS = CMS_websitesCatalog::getWebsiteFromDomain(@parse_url($wsURL, PHP_URL_HOST));
+						if ($mainWS && $mainWS->getID() == $ws->getID()) {
+							return $wsURL.PATH_REALROOT_WR;
+						}
 					}
 				}
 				$wsPagesPath = $ws->getPagesPath($relativeTo);
@@ -573,8 +577,8 @@ class CMS_page extends CMS_resource
 	  */
 	function regenerate($fromScratch = false)
 	{
-		//regenerate don't work on pages that are not public
-		if ($this->getPublication() != RESOURCE_PUBLICATION_PUBLIC) {
+		//regenerate don't work on pages that are not public or which not have website
+		if ($this->getPublication() != RESOURCE_PUBLICATION_PUBLIC || !$this->_checkWebsite()) {
 			return true;
 		}
 		//need pageTemplate for regeneration

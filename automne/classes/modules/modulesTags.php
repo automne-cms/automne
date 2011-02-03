@@ -155,7 +155,7 @@ class CMS_modulesTags extends CMS_grandFather
 				if (is_array($moduleTags[$tag->getName()]["parameters"]) && $moduleTags[$tag->getName()]["parameters"]) {
 					$match = true;
 					foreach ($moduleTags[$tag->getName()]["parameters"] as $aParameter => $value) {
-						$match = ($tag->getAttribute($aParameter) == $value || preg_match('#^'.$value.'$#i', $tag->getAttribute($aParameter)) > 0) ? $match:false;
+						$match = ($tag->getAttribute($aParameter) == $value || preg_match('/^'.$value.'$/i', $tag->getAttribute($aParameter)) > 0) ? $match:false;
 					}
 					if ($match) {
 						$hasMatch = true;
