@@ -104,12 +104,12 @@ case "validate":
 				$website->setRoot($page);
 			}
 		} else {
-			$website->setLabel($_POST["label"]);
 			$website->setCodename(io::sanitizeAsciiString($_POST["codename"]));
 			$page = CMS_tree::getPageByID($_POST["root"]);
 			$website->setRoot($page);
 		}
 		//set meta values
+		$website->setLabel($_POST["label"]);
 		$website->setMeta('description', $_POST['description']);
 		$website->setMeta('keywords', $_POST['keywords']);
 		$website->setMeta('category', $_POST['category']);

@@ -381,7 +381,8 @@ class CMS_page extends CMS_resource
 			if (is_object($ws)) {
 				if ($relativeTo == PATH_RELATIVETO_WEBROOT) {
 					$wsURL = $ws->getURL();
-					if (!$printPage && !$returnFilenameOnly && CMS_websitesCatalog::isWebsiteRoot($this->getID())) {
+					//if this page is a website root, try to shorten page url using only website domain - do not shorten in Automne admin (_dc parameter)
+					if (!$printPage && !$returnFilenameOnly && !isset($_REQUEST['_dc']) && CMS_websitesCatalog::isWebsiteRoot($this->getID())) {
 						//check if page website is the main for the domain
 						$mainWS = CMS_websitesCatalog::getWebsiteFromDomain(@parse_url($wsURL, PHP_URL_HOST));
 						if ($mainWS && $mainWS->getID() == $ws->getID()) {

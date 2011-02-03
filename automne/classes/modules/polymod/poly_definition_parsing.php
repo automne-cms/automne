@@ -177,7 +177,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 					//if module return tags, save them.
 					foreach ($moduleTreatments as $tagName => $parameters) {
 						if (isset($parameters['class']) && !isset($this->_tagsCallBack[$tagName])) {
-							$this->_tagsCallBack[$tagName] = $parameters['class'];
+							$this->_tagsCallBack[$tagName] = $parameters;
 						}
 					}
 				}
@@ -411,36 +411,56 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			//loop on subtags
 			foreach (array_keys($definition) as $key) {
 				if (isset($definition[$key]['nodename']) && isset($this->_tagsCallBack[$definition[$key]['nodename']])) {
-					if (method_exists($this, $this->_tagsCallBack[$definition[$key]['nodename']])) {
+					if (!is_array($this->_tagsCallBack[$definition[$key]['nodename']]) && method_exists($this, $this->_tagsCallBack[$definition[$key]['nodename']])) {
 						$code .= '";'."\n";
 						$code = CMS_polymod_definition_parsing::preReplaceVars($code);
 						$code .= $this->{$this->_tagsCallBack[$definition[$key]['nodename']]}($definition[$key]);
 						$code .= '$content .="';
-					} elseif (class_exists($this->_tagsCallBack[$definition[$key]['nodename']])) {
-						$code .= '";'."\n";
-						$code = CMS_polymod_definition_parsing::preReplaceVars($code);
-						
-						$oTag = new $this->_tagsCallBack[$definition[$key]['nodename']](
-							$definition[$key]['nodename'], 
-							$definition[$key]['attributes'], 
-							(isset($definition[$key]['childrens']) ? $definition[$key]['childrens'] : array()),
-							array(
-								'context'			=> CMS_XMLTag::PHP_CONTEXT,
-								'module'			=> isset($this->_parameters['module']) ? $this->_parameters['module'] : false,
-								'childrenCallback'	=> array($this, 'computeTags'),
-							)
-						);
-						
-						if ($this->_mode == self::CHECK_PARSING_MODE) {
-							$this->_parsingError .= $oTag->getTagError() ? "\n".$oTag->getTagError() : '';
-						} else {
-							$code .= $oTag->compute(array(
-								'mode'			=> $this->_mode,
-								'visualization'	=> $this->_parameters['visualization']
-							));
-							$this->_elements = array_merge_recursive((array) $this->_elements, (array) $oTag->getTagReferences());
+					} elseif (is_array($this->_tagsCallBack[$definition[$key]['nodename']]) && class_exists($this->_tagsCallBack[$definition[$key]['nodename']]['class'])) {
+						//check for parameters requirements if any
+						$match = true;
+						foreach ($this->_tagsCallBack[$definition[$key]['nodename']]['parameters'] as $aParameter => $value) {
+							$match = (isset($definition[$key]['attributes'][$aParameter]) && ($definition[$key]['attributes'][$aParameter] == $value || preg_match('/^'.$value.'$/i', $definition[$key]['attributes'][$aParameter]) > 0)) ? $match : false;
 						}
-						$code .= '$content .="';
+						if ($match) {
+							$code .= '";'."\n";
+							$code = CMS_polymod_definition_parsing::preReplaceVars($code);
+							
+							$oTag = new $this->_tagsCallBack[$definition[$key]['nodename']]['class'](
+								$definition[$key]['nodename'], 
+								$definition[$key]['attributes'], 
+								(isset($definition[$key]['childrens']) ? $definition[$key]['childrens'] : array()),
+								array(
+									'context'			=> CMS_XMLTag::PHP_CONTEXT,
+									'module'			=> isset($this->_parameters['module']) ? $this->_parameters['module'] : false,
+									'childrenCallback'	=> array($this, 'computeTags'),
+								)
+							);
+							
+							if ($this->_mode == self::CHECK_PARSING_MODE) {
+								$this->_parsingError .= $oTag->getTagError() ? "\n".$oTag->getTagError() : '';
+							} else {
+								$code .= $oTag->compute(array(
+									'mode'			=> $this->_mode,
+									'visualization'	=> $this->_parameters['visualization']
+								));
+								$this->_elements = array_merge_recursive((array) $this->_elements, (array) $oTag->getTagReferences());
+							}
+							$code .= '$content .="';
+						} else {
+							if (isset($definition[$key]['childrens'])) {
+								//compute subtags
+								$childrens = $definition[$key]['childrens'];
+								//append computed tags as code
+								$xml = array($definition[$key]);
+								$code .= str_replace('"', '\"', $this->_parser->toXML($xml, CMS_xml2Array::ARRAY2XML_START_TAG));
+								$code .= $this->computeTags($definition[$key]['childrens'], $level+1);
+								$code .= str_replace('"', '\"', $this->_parser->toXML($xml, CMS_xml2Array::ARRAY2XML_END_TAG));
+							} else {
+								$xml = array($definition[$key]);
+								$code .= str_replace('"', '\"', $this->_parser->toXML($xml));
+							}
+						}
 					} else {
 						$this->raiseError('Unknown compute callback method : '.$this->_tagsCallBack[$definition[$key]['nodename']].' for tag '.$definition[$key]['nodename']);
 						return false;

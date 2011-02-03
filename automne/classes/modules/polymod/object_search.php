@@ -1335,6 +1335,53 @@ class CMS_object_search extends CMS_grandFather
 		} else {
 			$ids = $this->_resultsIds;
 		}
+		
+		//check for results existance in objects datas tables
+		if ($ids) {
+			$where = ' objectID in ('.implode(',',$ids).')';
+			$sql = "
+				select
+					distinct objectID
+				from
+					mod_subobject_text".$statusSuffix."
+				where
+					$where
+				union distinct
+				select
+					distinct objectID
+				from
+					mod_subobject_integer".$statusSuffix."
+				where
+					$where
+				union distinct
+				select
+					distinct objectID
+				from
+					mod_subobject_string".$statusSuffix."
+				where
+					$where
+				union distinct
+				select
+					distinct objectID
+				from
+					mod_subobject_date".$statusSuffix."
+				where
+					$where
+			";
+			$q = new CMS_query($sql);
+			if ($q->getNumRows() != count($ids)) {
+				$foundedIds = $q->getAll(PDO::FETCH_COLUMN, 0);
+				if ($foundedIds) {
+					$ids = array_intersect($ids , $foundedIds);
+					//update count of results
+					$this->_numRows = sizeof($ids);
+				} else {
+					$ids = array();
+					$this->_numRows = 0;
+				}
+			}
+		}
+		
 		//Limit results if needed
 		if ($ids && $this->_numRows > 0 && $this->_itemsPerPage > 0) {
 			$ids = array_slice($ids, ($this->_page * $this->_itemsPerPage), $this->_itemsPerPage, true);
