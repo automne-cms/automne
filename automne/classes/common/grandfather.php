@@ -76,7 +76,7 @@ class CMS_grandFather
 		}
 		//second condition are for static calls (made by static methods)
 		if (!defined('APPLICATION_EXEC_TYPE') || (APPLICATION_EXEC_TYPE == 'http' && ((!isset($this) && $systemDebug) || (isset($this) && isset($this->_debug) && $this->_debug)))) {
-			/*$backTrace = $backTraceLink = '';
+			$backTrace = $backTraceLink = '';
 			$bt = array_reverse(debug_backtrace(false));
 			$backtrace = array(
 				'summary'		=> sensitiveIO::printBackTrace($bt),
@@ -93,7 +93,7 @@ class CMS_grandFather
 			//append error to current view
 			$view = CMS_view::getInstance();
 			$outputMessage = $encodeOutput ? io::htmlspecialchars($errorMessage) : $errorMessage;
-			$view->addError(array('error' => $outputMessage, 'backtrace' => $backTraceLink));*/
+			$view->addError(array('error' => $outputMessage, 'backtrace' => $backTraceLink));
 		}
 		
 		//second condition are for static calls (made by static methods)
