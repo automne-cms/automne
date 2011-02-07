@@ -533,7 +533,7 @@ $jscontent = <<<END
 					fieldLabel:		'<span class=\"atm-red\">*</span> {$cms_language->getMessage(MESSAGE_PAGE_LOGIN)}',
 					name:			'login',
 					{$loginValue}
-					vtype:			'alphanum'
+					vtype:			'login'
 				},{$authentificationField}
 				{
 					xtype:				'combo',

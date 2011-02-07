@@ -317,7 +317,7 @@ class SensitiveIO extends CMS_grandFather
 			return false;
 		}
 		// Search non alphanum characters
-		if (preg_match("#[^[a-zA-Z0-9_.-]]*#", $login)){
+		if (preg_match("#[^[a-zA-Z0-9_.@-]]*#", $login)){
 			return false;
 		}
 		return true;

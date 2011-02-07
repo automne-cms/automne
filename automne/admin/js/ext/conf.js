@@ -23,3 +23,11 @@ Ext.apply(Ext.form.VTypes, {
     codenameText: 'Codename must be alphanumeric and lowercase',
     codenameMask: /[a-z0-9-]/i
 });
+//vtype login
+Ext.apply(Ext.form.VTypes, {
+    login:  function(v) {
+        return /^[a-zA-Z0-9_.@-]+$/.test(v);
+    },
+    loginText: 'Login must be alphanumeric and lowercase',
+    loginMask: /^[a-zA-Z0-9_.@-]+$/
+});

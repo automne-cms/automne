@@ -1732,7 +1732,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				$level--;
 			}
 			//indent code
-			$indent = str_repeat("\t" , $level);
+			$indent = io::isPositiveInteger($level) ? str_repeat("\t" , $level) : '';
 			$phparray[$linenb] = $indent.$phpline;
 			//check for indent level up
 			$lastChar = substr($phpline, -1);

@@ -724,45 +724,48 @@ class CMS_poly_object extends CMS_resource
       * @access public
       */
 	function getInput($fieldID, $language, $inputParams) {
-		if (is_a($this->_objectValues[$fieldID],'CMS_poly_object')) {
-			if (isset($inputParams['prefix'])) {
-				$prefixName = $inputParams['prefix'];
-				unset($inputParams['prefix']);
-			} else {
-				$prefixName = '';
-			}
-			//serialize all htmlparameters 
-			$htmlParameters = CMS_object_common::serializeHTMLParameters($inputParams);
-			$html = '';
-			//get searched objects conditions
-			$searchedObjects = (is_array($this->_objectFieldsDefinition[$fieldID]->getParameter('searchedObjects'))) ? $this->_objectFieldsDefinition[$fieldID]->getParameter('searchedObjects') : array();
-			$objectsNames = CMS_poly_object_catalog::getListOfNamesForObject($this->_objectValues[$fieldID]->getObjectID(), false, $searchedObjects);
-			if (is_array($objectsNames) && $objectsNames) {
-				//append field id to html field parameters (if not already exists)
-				$htmlParameters .= (!isset($inputParams['id'])) ? ' id="'.$prefixName.$this->_objectFieldsDefinition[$fieldID]->getID().'_0"' : '';
-				
-				$html .= '<select name="'.$prefixName.$this->_objectFieldsDefinition[$fieldID]->getID().'_0"'.$htmlParameters.'>
-							<option value="0">'.$language->getMessage(self::MESSAGE_POLYMOD_CHOOSE_OBJECT).'</option>';
-				foreach ($objectsNames as $objectID => $objectName) {
-					$selected = ((is_object($this->_polyObjectValues[$fieldID]) && $this->_polyObjectValues[$fieldID]->getValue() == $objectID) || ($inputParams['defaultvalue'] == $objectID && (!is_object($this->_polyObjectValues[$fieldID]) || !$this->_polyObjectValues[$fieldID]->getValue()))) ? ' selected="selected"':'';
-					$html .= '<option value="'.$objectID.'"'.$selected.'>'.io::htmlspecialchars(io::decodeEntities($objectName)).'</option>'."\n";
+		if (isset($this->_objectValues[$fieldID])) {
+			if (is_a($this->_objectValues[$fieldID],'CMS_poly_object')) {
+				if (isset($inputParams['prefix'])) {
+					$prefixName = $inputParams['prefix'];
+					unset($inputParams['prefix']);
+				} else {
+					$prefixName = '';
 				}
-				$html .= '</select>';
-				if (POLYMOD_DEBUG) {
-					$html .= '<span class="admin_text_alert"> (Field : '.$fieldID.' - Value : '.$this->_polyObjectValues[$fieldID]->getValue().' - objectID : '.$this->_objectValues[$fieldID]->getObjectID().')</span>';
+				//serialize all htmlparameters 
+				$htmlParameters = CMS_object_common::serializeHTMLParameters($inputParams);
+				$html = '';
+				//get searched objects conditions
+				$searchedObjects = (is_array($this->_objectFieldsDefinition[$fieldID]->getParameter('searchedObjects'))) ? $this->_objectFieldsDefinition[$fieldID]->getParameter('searchedObjects') : array();
+				$objectsNames = CMS_poly_object_catalog::getListOfNamesForObject($this->_objectValues[$fieldID]->getObjectID(), false, $searchedObjects);
+				if (is_array($objectsNames) && $objectsNames) {
+					//append field id to html field parameters (if not already exists)
+					$htmlParameters .= (!isset($inputParams['id'])) ? ' id="'.$prefixName.$this->_objectFieldsDefinition[$fieldID]->getID().'_0"' : '';
+					
+					$html .= '<select name="'.$prefixName.$this->_objectFieldsDefinition[$fieldID]->getID().'_0"'.$htmlParameters.'>
+								<option value="0">'.$language->getMessage(self::MESSAGE_POLYMOD_CHOOSE_OBJECT).'</option>';
+					foreach ($objectsNames as $objectID => $objectName) {
+						$selected = ((is_object($this->_polyObjectValues[$fieldID]) && $this->_polyObjectValues[$fieldID]->getValue() == $objectID) || ($inputParams['defaultvalue'] == $objectID && (!is_object($this->_polyObjectValues[$fieldID]) || !$this->_polyObjectValues[$fieldID]->getValue()))) ? ' selected="selected"':'';
+						$html .= '<option value="'.$objectID.'"'.$selected.'>'.io::htmlspecialchars(io::decodeEntities($objectName)).'</option>'."\n";
+					}
+					$html .= '</select>';
+					if (POLYMOD_DEBUG) {
+						$html .= '<span class="admin_text_alert"> (Field : '.$fieldID.' - Value : '.$this->_polyObjectValues[$fieldID]->getValue().' - objectID : '.$this->_objectValues[$fieldID]->getObjectID().')</span>';
+					}
+				} else {
+					$html .= $language->getMessage(self::MESSAGE_POLYMOD_EMPTY_OBJECTS_SET);
 				}
-			} else {
-				$html .= $language->getMessage(self::MESSAGE_POLYMOD_EMPTY_OBJECTS_SET);
+				//append html hidden field which store field name
+				if ($html) {
+					$html .= '<input type="hidden" name="polymodFields['.$this->_objectFieldsDefinition[$fieldID]->getID().']" value="'.$this->_objectFieldsDefinition[$fieldID]->getID().'" />';
+				}
+				return $html;
+			} elseif (is_object($this->_objectValues[$fieldID])) {
+				//return html for other type of objects fields
+				return $this->_objectValues[$fieldID]->getInput($fieldID, $language, $inputParams);
 			}
-			//append html hidden field which store field name
-			if ($html) {
-				$html .= '<input type="hidden" name="polymodFields['.$this->_objectFieldsDefinition[$fieldID]->getID().']" value="'.$this->_objectFieldsDefinition[$fieldID]->getID().'" />';
-			}
-			return $html;
-		} else {
-			//return html for other type of objects fields
-			return $this->_objectValues[$fieldID]->getInput($fieldID, $language, $inputParams);
 		}
+		return '';
 	}
 	
 	/**

@@ -49,16 +49,20 @@ $polymodVersion = file_exists(PATH_MODULES_FS.'/'.MOD_POLYMOD_CODENAME.'/VERSION
 $lastUpdate = AUTOMNE_LASTUPDATE ? date($cms_language->getDateFormat().' - H:i:s' , AUTOMNE_LASTUPDATE) : $cms_language->getMessage(MESSAGE_PAGE_NEVER);
 
 $modules = CMS_modulesCatalog::getAll();
-$modulesInfo = '';
+$modulesInfo = '<ul>';
 foreach($modules as $module){
 	if (!$module->isPolymod() && $module->getCodename() != MOD_STANDARD_CODENAME) {
-		$modulesInfo .= $module->getLabel($cms_language);
+		$modulesInfo .= '<li>'.$module->getLabel($cms_language);
 		if (file_exists(PATH_MODULES_FS.'/'.$module->getCodename().'/VERSION')) {
 			$modulesInfo .= ' - '.$cms_language->getMessage(MESSAGE_PAGE_VERSION).' : '.file_get_contents(PATH_MODULES_FS.'/'.$module->getCodename().'/VERSION');
 		}
-		$modulesInfo .= '<br />';
+		if ($module->getCodename() == 'mail' && file_exists(PATH_MODULES_FS.'/mailing/VERSION')) {
+			$modulesInfo .= ' - '.$cms_language->getMessage(MESSAGE_PAGE_VERSION).' : '.file_get_contents(PATH_MODULES_FS.'/mailing/VERSION');
+		}
+		$modulesInfo .= '</li>';
 	}
 }
+$modulesInfo .= '</ul>';
 
 //Scripts content
 $content = $cms_language->getMessage(MESSAGE_PAGE_ABOUT_MESSAGE, array(AUTOMNE_VERSION, $lastUpdate, $polymodVersion, $modulesInfo));
