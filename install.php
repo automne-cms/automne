@@ -1757,14 +1757,25 @@ $configContent .= '
 		}
 		input.submit {
 			cursor: 			pointer;
-			border: 			0px;
-			padding: 			2px;
-			color:				#FFFFFF;
-			height: 			20px;
+			font-size:			13px;
+			font-weight:		bold;
+			border: 			1px solid #fff;
+			padding: 			.5em;
+			color:				#fff;;
 			background-color:	#ABD64A;
-			background-position:top-left;
-			background-repeat: 	no-repeat;
 			float:				right;
+			line-height: 		1; 
+			text-decoration: 	none; 
+			-moz-border-radius: .4em; 
+			-webkit-border-radius: .4em; 
+			border-radius:		.4em;
+			-moz-box-shadow: 	0 1px 3px rgba(0,0,0,0.25); 
+			-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.25); 
+			text-shadow: 		0 -1px 1px rgba(0,0,0,0.25); 
+			border-bottom: 		1px solid rgba(0,0,0,0.25); 
+			position: 			relative; 
+			overflow: 			visible;
+			width: 				auto; 
 		}
 		ul.atm-server {
 			padding:			10px 0 0 0;
