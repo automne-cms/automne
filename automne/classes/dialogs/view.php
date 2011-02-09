@@ -503,7 +503,7 @@ class CMS_view extends CMS_grandFather
 	private function _copyright() {
 		$copyright = "\n<!-- \n"
 		."+----------------------------------------------------------------------+\n"
-		."| Automne (TM) v".AUTOMNE_VERSION." www.automne.ws ".sprintf("%".(39 - io::strlen(AUTOMNE_VERSION))."s",  '')."|\n"
+		."| Automne (TM) v".AUTOMNE_VERSION." www.automne-cms.org ".sprintf("%".(34 - io::strlen(AUTOMNE_VERSION))."s",  '')."|\n"
 		."| Copyright (c) 2000-".date('Y')." WS Interactive www.ws-interactive.fr         |\n"
 		."+----------------------------------------------------------------------+\n"
 		."-->\n";

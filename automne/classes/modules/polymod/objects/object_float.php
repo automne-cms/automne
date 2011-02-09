@@ -270,8 +270,7 @@ class CMS_object_float extends CMS_object_string {
 			'<',
 		);
 		if ($operator && !in_array($operator, $supportedOperator)) {
-			$this->raiseError('Unkown search operator : '.$operator.', use default search instead');
-			$operator = false;
+			return parent::getFieldSearchSQL($fieldID, $value, $operator, $where, $public);
 		}
 		if (!$operator) {
 			$operator = '=';

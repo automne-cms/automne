@@ -405,10 +405,11 @@ class CMS_rowsCatalog extends CMS_grandFather {
 	 *
 	 * @param array modules : the modules codename to search rows for
 	 * @param boolean returnObjects : does the function return array of ids or array of objects (default)
+	 * @param boolean exclusive : does the function return rows which only contain requested modules (default : true)
 	 * @return array : rows
 	 * @access public
 	 */
-	static function getByModules($modules= array(), $returnObjects = true) {
+	static function getByModules($modules= array(), $returnObjects = true, $exclusive = true) {
 		if (!is_array($modules) && is_string($modules) && $modules) {
 			$modules = array($modules);
 		}
@@ -435,9 +436,11 @@ class CMS_rowsCatalog extends CMS_grandFather {
 				}
 			}
 			//check if row does not use another module than requested ones
-			foreach ($modulesList as $module) {
-				if (!in_array($module, $modules)) {
-					$hasModules = false;
+			if ($exclusive) {
+				foreach ($modulesList as $module) {
+					if (!in_array($module, $modules)) {
+						$hasModules = false;
+					}
 				}
 			}
 			if ($hasModules) {

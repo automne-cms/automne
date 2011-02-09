@@ -528,7 +528,7 @@ class CMS_dialog extends CMS_JSDialog
 								<tr>
 									<td width="472" height="30" class="admin_date">
 										'.$language->getMessage(self::MESSAGE_WEBSITE).' <a href="'.CMS_websitesCatalog::getMainURL().'" target="_blank" class="admin_menu_back"><span class="admin_site_label">'.APPLICATION_LABEL.'</span></a> - <b>'. date($language->getDateFormat(), time()) . '</b></td>
-									<td width="90" height="30" class="admin"><a href="http://www.automne.ws" target="_blank"><img src="'.PATH_ADMIN_IMAGES_WR.'/../v3/img/powered.gif" border="0" /></a></td>
+									<td width="90" height="30" class="admin"><a href="http://www.automne-cms.org" target="_blank"><img src="'.PATH_ADMIN_IMAGES_WR.'/../v3/img/powered.gif" border="0" /></a></td>
 								</tr>
 							</table>
 							<table width="562" height="40" border="0" cellpadding="0" cellspacing="0">
@@ -620,7 +620,7 @@ class CMS_dialog extends CMS_JSDialog
 	{
 		$copyright = "\n<!-- \n"
 		."+----------------------------------------------------------------------+\n"
-		."| Automne (TM)  www.automne.ws v".AUTOMNE_VERSION."                                  |\n"
+		."| Automne (TM)  www.automne-cms.org v".AUTOMNE_VERSION."                           |\n"
 		."| Copyright (c) 2000-".date('Y')." WS Interactive www.ws-interactive.fr         |\n"
 		."+----------------------------------------------------------------------+\n"
 		."-->\n";
@@ -846,7 +846,7 @@ class CMS_dialog extends CMS_JSDialog
 									<tr>
 										<td width="472" height="30" class="admin_date">
 											<!--&nbsp;&nbsp;<span class="admin_site_label">'.APPLICATION_LABEL.'</span> - <b>'. date($language->getDateFormat(), time()) . '</b>--></td>
-										<td width="90" height="30" class="admin"><a href="http://www.automne.ws" target="_blank"><img src="'.PATH_ADMIN_IMAGES_WR.'/../v3/img/powered.gif" border="0" /></a></td>
+										<td width="90" height="30" class="admin"><a href="http://www.automne-cms.org" target="_blank"><img src="'.PATH_ADMIN_IMAGES_WR.'/../v3/img/powered.gif" border="0" /></a></td>
 									</tr>
 								</table>
 								<table width="562" height="42" border="0" cellpadding="0" cellspacing="0">

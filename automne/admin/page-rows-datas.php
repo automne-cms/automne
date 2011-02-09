@@ -75,7 +75,7 @@ if (!$items) {
 		$keyword = '';
 	}
 	if ($module) {//filter by module
-		$ids = CMS_rowsCatalog::getByModules(array($module), false);
+		$ids = CMS_rowsCatalog::getByModules(array($module), false, false);
 		$rowIds = $rowIds ? array_intersect($rowIds, $ids) : $ids;
 		if (!$rowIds) {
 			$skipSearch = true;

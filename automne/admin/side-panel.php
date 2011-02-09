@@ -439,7 +439,7 @@ $topPanel = sensitiveIO::sanitizeJSString('
 		<div id="headPanelSite" ext:qtip="Automne Version '.AUTOMNE_VERSION.'">'.APPLICATION_LABEL.'</div>
 		<div id="headPanelClient">'.$cms_user->getFullName().'</div>
 		<a href="'.PATH_REALROOT_WR.'/" id="headPanelSiteLink" target="_blank" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_VIEW_WEBSITE).'"></a>
-		<a href="http://www.automne.ws/" id="headPanelAutomneLink" target="_blank" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_VISIT_WEBSITE).'"></a>
+		<a href="http://www.automne-cms.org" id="headPanelAutomneLink" target="_blank" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_VISIT_WEBSITE).'"></a>
 		<div id="headPanelStick" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_LOCK_PANEL).'"></div>
 		<div id="headPanelLogout" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_END_SESSION).'">'.$cms_language->getMessage(MESSAGE_PAGE_DISCONNECT).'</div>
 		<div id="headPanelAutomneHelp" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_ABOUT_AUTOMNE).'"></div>

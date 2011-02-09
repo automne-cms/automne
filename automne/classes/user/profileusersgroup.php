@@ -134,9 +134,12 @@ class CMS_profile_usersGroup extends CMS_profile
 					select
 						userId_gu
 					from
-						profileUsersByGroup
+						profileUsersByGroup,
+						profilesUsers
 					where
 						groupId_gu='".$id."'
+						and userId_gu = id_pru
+						and deleted_pru = 0
 				";
 				$q = new CMS_query($sql);
 				if ($q->getNumRows()) {
