@@ -217,15 +217,15 @@ if (!isset($_GET['file'])) {
 		case "fr":
 			//General labels
 			$label_next = 'Suivant';
-			$footer = 'Installation d\'Automne version 4. Pour toute information, visitez <a href="http://www.automne.ws" target="_blank">www.automne.ws</a>';
+			$footer = 'Installation d\'Automne version 4. Pour toute information, visitez <a href="http://www.automne-cms.org" target="_blank">www.automne-cms.org</a>';
 			$needhelp = '<div id="needhelp"><a href="'.$_SERVER['SCRIPT_NAME'].'?step=help&install_language='.$install_language.'" target="_blank">Besoin d\'aide ?</a></div>';
 			
 			//STEP Help
 			$stepHelp_title = 'Aide &agrave; l\'installation d\'Automne';
-			$stepHelp_installation_help = 'Si vous rencontrez des difficult&eacute;s pour installer Automne - que vous ayez simplement besoin d\'explications ou si vous rencontrez des erreurs - n\'h&eacute;sitez pas &agrave; poser vos questions sur <a href="http://www.automne.ws/forum/" target="_blank">le forum d\'Automne</a>.<br /><br />
+			$stepHelp_installation_help = 'Si vous rencontrez des difficult&eacute;s pour installer Automne - que vous ayez simplement besoin d\'explications ou si vous rencontrez des erreurs - n\'h&eacute;sitez pas &agrave; poser vos questions sur <a href="http://www.automne-cms.org/forum/" target="_blank">le forum d\'Automne</a>.<br /><br />
 			Vous y obtiendrez une aide rapide et adapt&eacute;e &agrave; votre situation.<br /><br />
 			Pour nous aider &agrave; diagnostiquer vos probl&egrave;mes, merci de donner le plus d\'informations possible sur le type d\'h&eacute;bergement dont vous disposez ainsi que les messages d\'erreurs &eacute;ventuels que vous rencontrez. <br /><br />
-			Vous pouvez aussi fournir le fichier de diagnostic suivant &agrave; un administrateur du forum via message priv&eacute; ou par email sur <a href="mailto:contact@automne.ws">contact@automne.ws</a>.<br />Ce fichier contient toutes les informations de configuration de votre serveur et il nous aidera &agrave; identifier pr&eacute;cis&eacute;ment la source du probl&egrave;me.<br /><br />
+			Vous pouvez aussi fournir le fichier de diagnostic suivant &agrave; un administrateur du forum via message priv&eacute; ou par email sur <a href="mailto:contact@automne-cms.org">contact@automne-cms.org</a>.<br />Ce fichier contient toutes les informations de configuration de votre serveur et il nous aidera &agrave; identifier pr&eacute;cis&eacute;ment la source du probl&egrave;me.<br /><br />
 			&raquo; <a href="'.$_SERVER['SCRIPT_NAME'].'?file=info" target="_blank">T&eacute;l&eacute;charger le fichier de diagnostic</a>.';
 			
 			//STEP check
@@ -246,7 +246,7 @@ if (!isset($_GET['file'])) {
 			$error_stepCheck_gd_png_error = 'Erreur, les fonctionnalit&eacute;s de traitement d\'images PNG ne sont pas install&eacute;es (Extension GD). V&eacute;rifiez votre installation de PHP.';
 			$error_stepCheck_memory_limit_error = 'Erreur, l\'utilisation m&eacute;moire des scripts PHP ne peut &ecirc;tre modifi&eacute;e et elle est limit&eacute;e &agrave; %so. Veuillez modifier votre configuration pour allouer un minimum de 64Mo de m&eacute;moire ou bien pour laisser les scripts PHP choisir leur utilisation m&eacute;moire.';
 			$stepCheck_title = 'Compatibilit&eacute; de votre syst&egrave;me :';
-			$stepCheck_installation_stopped = 'Vous ne pouvez poursuivre l\'installation d\'Automne ...<br /><br />Plus d\'information sur les h&eacute;bergeurs sur <a href="http://www.automne.ws/faq/">les FAQ en ligne.</a>';
+			$stepCheck_installation_stopped = 'Vous ne pouvez poursuivre l\'installation d\'Automne ...<br /><br />Plus d\'information sur les h&eacute;bergeurs sur <a href="http://www.automne-cms.org/faq/">les FAQ en ligne.</a>';
 			
 			//STEP 1
 			$error_step1_directory_not_exists = 'Erreur, Le repertoire d\'extraction n\'exise pas';
@@ -259,7 +259,7 @@ if (!isset($_GET['file'])) {
 			$step1_package_extraction = 'Lancer la d&eacute;compression de l\'archive %s...';
 			$step1_htaccess_exists = 'Durant cette d&eacute;compression, Automne cr&eacute;era un fichier .htaccess comportant un certain nombre de configurations n&eacute;cessaires.<br /><br />Actuellement un fichier .htaccess existe d&eacute;j&agrave; sur le serveur. Vous en trouverez le contenu dans le champ texte ci-dessous.<br /><br />Vous pouvez modifier ou supprimer ce contenu. Ce que vous conserverez sera ajout&eacute; au fichier .htaccess d\'Automne.';
 			$step1_htaccess_not_exists = 'Durant cette d&eacute;compression, Automne cr&eacute;era un fichier .htaccess comportant un certain nombre de configurations n&eacute;cessaires.<br /><br />Si votre configuration le requiert, vous pouvez ajouter du contenu &agrave; ce fichier .htaccess dans le champ texte ci-dessous.<br /><br />Ce que vous saisirez sera ajout&eacute; au fichier .htaccess d\'Automne.';
-			$step1_htaccess_warning = 'Attention, toute erreur dans ce fichier pourrait provoquer une erreur 500 sur le serveur.<br /><br />Plus d\'information sur les h&eacute;bergeurs sur <a href="http://www.automne.ws/faq/">les FAQ en ligne.</a>';
+			$step1_htaccess_warning = 'Attention, toute erreur dans ce fichier pourrait provoquer une erreur 500 sur le serveur.<br /><br />Plus d\'information sur les h&eacute;bergeurs sur <a href="http://www.automne-cms.org/faq/">les FAQ en ligne.</a>';
 			
 			//GPL STEP
 			$stepGPL_title = 'License d\'exploitation :';
@@ -307,7 +307,7 @@ if (!isset($_GET['file'])) {
 			$error_step5_perms_files = 'Erreur, Vous devez entrer une valeur de permission pour les fichiers ...';
 			$error_step5_perms_dirs = 'Erreur, Vous devez entrer une valeur de permission pour les dossiers ...';
 			$step5_title = 'Permissions des fichiers et des dossiers :';
-			$step5_explanation = 'Automne g&eacute;n&egrave;re un grand nombre de fichiers et de dossiers. Les droits suivant ont &eacute;t&eacute; detect&eacute;s comme &eacute;tant utilis&eacute;s par votre serveur.<br /><br />Etes-vous d\'accord pour les utiliser lorsque Automne cr&eacute;&eacute;ra des fichiers et des dossiers ? (Automne doit avoir le droit d\'&eacute;criture sur tous les fichiers du serveur).<br /><br />Attention, modifier ces droits peut entrainer des erreurs sur le serveur si ce dernier ne les accepte pas. Modifiez ces param&egrave;tres seulement si vous savez ce que vous faites.<br /><br />Plus d\'information sur les h&eacute;bergeurs sur <a href="http://www.automne.ws/faq/">les FAQ en ligne.</a>';
+			$step5_explanation = 'Automne g&eacute;n&egrave;re un grand nombre de fichiers et de dossiers. Les droits suivant ont &eacute;t&eacute; detect&eacute;s comme &eacute;tant utilis&eacute;s par votre serveur.<br /><br />Etes-vous d\'accord pour les utiliser lorsque Automne cr&eacute;&eacute;ra des fichiers et des dossiers ? (Automne doit avoir le droit d\'&eacute;criture sur tous les fichiers du serveur).<br /><br />Attention, modifier ces droits peut entrainer des erreurs sur le serveur si ce dernier ne les accepte pas. Modifiez ces param&egrave;tres seulement si vous savez ce que vous faites.<br /><br />Plus d\'information sur les h&eacute;bergeurs sur <a href="http://www.automne-cms.org/faq/">les FAQ en ligne.</a>';
 			$step5_files_perms = 'Permissions sur les fichiers';
 			$step5_dirs_perms = 'Permissions sur les dossiers';
 			
@@ -378,21 +378,21 @@ if (!isset($_GET['file'])) {
 			Cette ligne de configuration &agrave; ajouter dans la crontab de votre serveur vous permettra de lancer les t&acirc;ches de publication et de d&eacute;publication automatiques, tous les jours &agrave; minuit.
 			</fieldset>
 			<br />
-			Vous trouverez toute l\'aide n&eacute;cessaire pour l\'utilisation du logiciel sur <a href="http://www.automne.ws" target="_blank">www.automne.ws</a> et sur <a href="http://doc.automne.ws" target="_blank">doc.automne.ws</a>. N\'h&eacute;sitez pas &agrave; poser vos questions sur <a href="http://www.automne.ws/forum/" target="_blank">le forum</a>.<br /><br />
+			Vous trouverez toute l\'aide n&eacute;cessaire pour l\'utilisation du logiciel sur <a href="http://www.automne-cms.org" target="_blank">www.automne-cms.org</a> et sur <a href="http://doc.automne-cms.org" target="_blank">doc.automne-cms.org</a>. N\'h&eacute;sitez pas &agrave; poser vos questions sur <a href="http://www.automne-cms.org/forum/" target="_blank">le forum</a>.<br /><br />
 			Merci d\'utiliser Automne !<br />';
 		break;
 		case "en":
 		default:
 			//General labels
 			$label_next = 'Next';
-			$footer = 'Installing Automne version 4. For more informations, visit <a href="http://www.automne.ws" target="_blank">www.automne.ws</a>.';
+			$footer = 'Installing Automne version 4. For more informations, visit <a href="http://www.automne-cms.org" target="_blank">www.automne-cms.org</a>.';
 			$needhelp = '<div id="needhelp"><a href="'.$_SERVER['SCRIPT_NAME'].'?step=help&install_language='.$install_language.'" target="_blank">Need help?</a></div>';
 			//STEP Help
 			$stepHelp_title = 'Help to Automne installation';
-			$stepHelp_installation_help = 'If you have problems installing Automne - you just need clarification or if you encounter any errors - please ask your questions on <a href="http://www.automne.ws/forum/" target="_blank">the Automne forum</a>.<br /><br />
+			$stepHelp_installation_help = 'If you have problems installing Automne - you just need clarification or if you encounter any errors - please ask your questions on <a href="http://www.automne-cms.org/forum/" target="_blank">the Automne forum</a>.<br /><br />
 			You\'ll get a quick and appropriate help for your situation.<br /><br />
 			To help us diagnose your problems, thank you to give as much information as possible about the type of hosting you use and the possible error messages you encounter.<br /><br />
-			You can also provide the following diagnostic file to an administrator using private message or by email on <a href="mailto:contact@automne.ws">contact@automne.ws</a>.<br />
+			You can also provide the following diagnostic file to an administrator using private message or by email on <a href="mailto:contact@automne-cms.org">contact@automne-cms.org</a>.<br />
 			This file contains all the configuration information for your server and will help us pinpoint the source of the problem.<br /><br />
 			&raquo; <a href="'.$_SERVER['SCRIPT_NAME'].'?file=info" target="_blank">Download the diagnostic file</a>.';
 			
@@ -415,7 +415,7 @@ if (!isset($_GET['file'])) {
 			$error_stepCheck_gd_png_error = 'Error, functionalities of PNG image processing are not installed (GD Extension). Please Check your PHP installation.';
 			$error_stepCheck_memory_limit_error = 'Error, memory usage of PHP scripts can not be changed and it is limited to %sB. Please correct your configuration to allow a minimum of 64MB of memory or let PHP scripts to choose their memory usage.';
 			$stepCheck_title = 'System compatibility:';
-			$stepCheck_installation_stopped = 'You cannot continue Automne installation...<br /><br />More information about hosts on <a href="http://www.automne.ws/faq/">the FAQ pages.</a>';
+			$stepCheck_installation_stopped = 'You cannot continue Automne installation...<br /><br />More information about hosts on <a href="http://www.automne-cms.org/faq/">the FAQ pages.</a>';
 			//STEP 1
 			$error_step1_directory_not_exists = 'Error, Extraction directory does not exist';
 			$error_step1_cant_extract = 'Error, Can\'t extract archive wanted %s. It is not a valid format...';
@@ -427,7 +427,7 @@ if (!isset($_GET['file'])) {
 			$step1_package_extraction = 'Launch extraction of package %s...';
 			$step1_htaccess_exists = 'During this decompression, Automne will create a file .htaccess containing a number of configurations needed.<br /><br />Currently a .htaccess file already exists on the server. You will find the contents into the text field below.<br /><br />You can change or remove this content. What you keep will be added to the .htaccess file of Automne.';
 			$step1_htaccess_not_exists = 'During this decompression, Automne will create a .htaccess file containing a number of configurations needed.<br /><br />If your configuration requires it, you can add content to this .htaccess file in the text field below.<br /><br />What you enter will be added to the Automne .htaccess file.';
-			$step1_htaccess_warning = 'Attention, any error in this file could cause an error 500 on the server.<br /><br />More information about hosts on <a href="http://www.automne.ws/faq/">the FAQ pages.</a>';
+			$step1_htaccess_warning = 'Attention, any error in this file could cause an error 500 on the server.<br /><br />More information about hosts on <a href="http://www.automne-cms.org/faq/">the FAQ pages.</a>';
 			
 			//GPL STEP
 			$stepGPL_title = 'User License:';
@@ -475,7 +475,7 @@ if (!isset($_GET['file'])) {
 			$error_step5_perms_files = 'Error, You must enter permission values for files ...';
 			$error_step5_perms_dirs = 'Error, You must enter permission values for directories ...';
 			$step5_title = 'Files and directories permissions:';
-			$step5_explanation = 'Automne generates many files and directories. The following rights have been detected to be used by the server for files and directories creation.<br /><br />Do you agree with using these rights when Automne creates files or directories? (Automne must have write permission on all files in the server).<br /><br />Warning, modifying these rights can involve errors on the server if it does not accept them. Modify them only if you are sure of the values.<br /><br />More information about hosts on <a href="http://www.automne.ws/faq/">the FAQ pages.</a>';
+			$step5_explanation = 'Automne generates many files and directories. The following rights have been detected to be used by the server for files and directories creation.<br /><br />Do you agree with using these rights when Automne creates files or directories? (Automne must have write permission on all files in the server).<br /><br />Warning, modifying these rights can involve errors on the server if it does not accept them. Modify them only if you are sure of the values.<br /><br />More information about hosts on <a href="http://www.automne-cms.org/faq/">the FAQ pages.</a>';
 			$step5_files_perms = 'Files permissions';
 			$step5_dirs_perms = 'Directories permissions';
 			
@@ -548,8 +548,8 @@ if (!isset($_GET['file'])) {
 			This configuration line to add to the crontab of your server will start the task of automatic publishing and unpublishing daily at midnight.
 			</fieldset>
 			<br />
-			You will find all necessary assistance for the use of the software on <a href="http://en.automne.ws" target="_blank">en.automne.ws</a> and <a href="http://man.automne.ws" target="_blank">man.automne.ws</a>.
-			Feel free to ask your questions in <a href="http://www.automne.ws/forum/" target="_blank">the forum</a>. <br /><br />
+			You will find all necessary assistance for the use of the software on <a href="http://en.automne-cms.org" target="_blank">en.automne-cms.org</a> and <a href="http://man.automne-cms.org" target="_blank">man.automne-cms.org</a>.
+			Feel free to ask your questions in <a href="http://www.automne-cms.org/forum/" target="_blank">the forum</a>. <br /><br />
 			Thank you for using Automne!<br />
 			<br />';
 		break;
@@ -756,8 +756,8 @@ if (!isset($_GET['file'])) {
 				//go to next step
 				$step = 2;
 			} else {
-				//go to www.automne.ws
-				header("Location: http://www.automne.ws");
+				//go to www.automne-cms.org
+				header("Location: http://www.automne-cms.org");
 				exit;
 			}
 		} else {
