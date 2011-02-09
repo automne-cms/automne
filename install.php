@@ -73,6 +73,7 @@ if (!isset($_GET['file'])) {
 			<label for="en"><input id="en" type="radio" name="install_language" value="en" /> English</label><br />
 			<input type="submit" class="submit" value=" OK " />
 		</form>
+		<br /><br />
 		<fieldset>
 			<legend>Tests for all needed parameters to run Automne V4</legend>
 						<ul class="atm-server">';
@@ -319,7 +320,7 @@ if (!isset($_GET['file'])) {
 				<li><strong>D&eacute;clench&eacute;es par le navigateur</strong> : Processus lent et qui n&eacute;cessite que le navigateur d\'un administrateur d\'Automne reste ouvert mais qui fonctionne sur tous les serveurs. Vous devez choisir cela sur les serveurs mutualis&eacute;s et autres solutions ne disposant pas de PHP-CLI.<br /><br /></li>
 				<li><strong>Scripts en t&acirc;che de fond sur le serveur</strong> : Processus rapide mais qui ne fonctionne pas sur tous les serveurs. Vous pouvez choisir cela sur les serveurs d&eacute;di&eacute;s qui ont l\'ex&eacute;cutable PHP-CLI install&eacute; (Aide sur PHP-CLI : <a href="http://fr.php.net/manual/fr/features.commandline.php" target="_blank">Utiliser PHP en ligne de commande</a>).</li>
 			</ul>
-			<fieldset><p>D&eacute;tection de la pr&eacute;sence de PHP-CLI sur votre serveur : <strong>%s</span></strong></p>';
+			<fieldset>D&eacute;tection de la pr&eacute;sence de PHP-CLI sur votre serveur : <span style="color:red;">%s</span></fieldset><br /><br />';
 			$step6_CLIDetection_nosystem = 'Indisponible : Fonctions "system", "exec" et "passthru" d&eacute;sactiv&eacute;es.';
 			$step6_CLIDetection_windows = 'D&eacute;tection impossible sur un serveur Windows';
 			$step6_CLIDetection_available = 'Disponible';
@@ -384,7 +385,7 @@ if (!isset($_GET['file'])) {
 		default:
 			//General labels
 			$label_next = 'Next';
-			$footer = 'For more information, please visit <a href="http://www.automne.ws" target="_blank">www.automne.ws</a>.';
+			$footer = 'Installing Automne version 4. For more informations, visit <a href="http://www.automne.ws" target="_blank">www.automne.ws</a>.';
 			$needhelp = '<div id="needhelp"><a href="'.$_SERVER['SCRIPT_NAME'].'?step=help&install_language='.$install_language.'" target="_blank">Need help?</a></div>';
 			//STEP Help
 			$stepHelp_title = 'Help to Automne installation';
@@ -457,38 +458,38 @@ if (!isset($_GET['file'])) {
 			$error_step3_must_choose_option = 'Error, You must choose an option ...';
 			$error_step3_SQL_conf = 'Warning: MySQL is configured to be case insensitive.<br /><br />If you continue the install with this configuration of MySQL, you will not be able to transfer this installation of Automne on a server where MySQL is case sensitive (which is usually the case with Unix / Linux).<br /><br />To change this setting, you must edit the MySQL configuration file (my.cnf or my.ini) and add the following line in the [mysqld] part of the file: <pre> lower_case_table_names = 0 </pre>';
 			$error_step3_SQL_script = 'Error, syntax error in sql script file: %s or file missing';
-			$error_step3_Demo_script = 'Error during demo installation :'."\n\n".'%s';
-			$step3_title = 'Installation type';
-			$step3_demo_FR = 'Automne with french demo';
-			$step3_demo_EN = 'Automne with english demo (advised to begin on the software)';
+			$error_step3_Demo_script = 'Error during Demo installation :'."\n\n".'%s';
+			$step3_title = 'Choose installation type:';
+			$step3_demo_FR = 'Automne with French Demo';
+			$step3_demo_EN = 'Automne with English Demo (advised to begin on the software)';
 			$step3_empty = 'Automne empty (to create a site from scratch)';
 			$step3_skip = 'Preserve the current database';
 			
 			//STEP 4
 			$error_step4_enter_url = 'Error, You must enter an URL ...';
 			$step4_title = 'Website URL:';
-			$step4_enter_url = '<p>Enter the URL of the website (the default should be correct). This is the URL of the site root.</p><p>If you enter a domain name, it must exist. You can change this at any time in the administration of the site.</p>';
+			$step4_enter_url = 'Enter the URL of the website (the default should be correct). This is the URL of the site root.<br />If you enter a domain name, it must exist. You can change this at any time in the administration of the site.';
 			$step4_url = 'URL * : http://';
 			
 			//STEP 5
 			$error_step5_perms_files = 'Error, You must enter permission values for files ...';
 			$error_step5_perms_dirs = 'Error, You must enter permission values for directories ...';
-			$step5_title = 'Files and directories permissions';
-			$step5_explanation = '<p>Automne generates many files and directories. The following rights have been detected to be used by the server for files and directories creation.</p><p>Do you agree with using these rights when Automne creates files or directories? (Automne must have write permission on all files in the server).</p><p>Warning, modifying these rights can involve errors on the server if it does not accept them. Modify them only if you are sure of the values.</p><p>More information about hosts on <a href="http://www.automne.ws/faq/">the FAQ pages.</a></p>';
+			$step5_title = 'Files and directories permissions:';
+			$step5_explanation = 'Automne generates many files and directories. The following rights have been detected to be used by the server for files and directories creation.<br /><br />Do you agree with using these rights when Automne creates files or directories? (Automne must have write permission on all files in the server).<br /><br />Warning, modifying these rights can involve errors on the server if it does not accept them. Modify them only if you are sure of the values.<br /><br />More information about hosts on <a href="http://www.automne.ws/faq/">the FAQ pages.</a>';
 			$step5_files_perms = 'Files permissions';
 			$step5_dirs_perms = 'Directories permissions';
 			
 			//STEP 6
 			$error_step6_choose_option = 'Error, You must choose an option ...';
-			$step6_title = 'Scripts operation';
+			$step6_title = 'Scripts operation:';
 			$step6_explanation = '
-			<p>Some operations require Automne to run scripts in the background.</p>
-			<p>Please choose the method of execution of these background tasks:</p>
+			Some operations require Automne running background tasks.<br /><br />
+			Please choose the method of execution of these background tasks:<br />
 			<ul>
 				<li><strong>Triggered by the browser</strong>: Slow process that requires the browser of an Automne administrator remains open, but that works on all servers. You should choose this on shared hosts and other solutions that do not have PHP-CLI.</li>
 				<li><strong>Scripts in the background on the server</strong>: Rapid process but that does not work on all servers. You can select it on dedicated servers which have the PHP-CLI executable installed (Help on PHP-CLI: <a href="http://www.php.net/manual/en/features.commandline.php" target="_blank">Using PHP from the command line</a>).</li>
 			</ul>
-			<h3>PHP-CLI detection on your server: <strong>%s</strong></fieldset></h3>';
+			<fieldset>PHP-CLI detection on your server: <span style="color:red;">%s</span></fieldset><br /><br />';
 			$step6_CLIDetection_nosystem = 'Unavailable : Functions "system", "exec" and "passthru" inactive.';
 			$step6_CLIDetection_windows = 'Detection impossible on Windows server';
 			$step6_CLIDetection_available = 'Available';
@@ -541,15 +542,16 @@ if (!isset($_GET['file'])) {
 				<li>Edit the settings file /automne/classes/modules/standard_rc.xml.</li>
 			</ul>
 			<strong>If you want to use automatic publish and unpublish features</strong>, schedule the script /automne/classes/scripts/daily_routine.php every nigths in your crontab (or in the windows scheduled task).<br /><br />
-			
-			<p>Example on Unix server</p>
-			<code>0 0 * * * %s php '.realpath(dirname(__FILE__).'/automne/classes/scripts/daily_routine.php').'</code>
-			<p>This configuration line to add to the crontab of your server will start the task of automatic publishing and unpublishing daily at midnight.</p>
-			
-			<p>You will find all necessary assistance for the use of the software on <a href="http://en.automne.ws" target="_blank">en.automne.ws</a> and <a href="http://man.automne.ws" target="_blank">man.automne.ws</a>.
-			Feel free to ask your questions in <a href="http://www.automne.ws/forum/" target="_blank">the forum</a>.</p>
-			<p>Thank you for using Automne!</p>
-			';
+			<fieldset>
+			<legend>Example on Unix server</legend>
+			0 0 * * * %s php '.realpath(dirname(__FILE__).'/automne/classes/scripts/daily_routine.php').'<br /><br />
+			This configuration line to add to the crontab of your server will start the task of automatic publishing and unpublishing daily at midnight.
+			</fieldset>
+			<br />
+			You will find all necessary assistance for the use of the software on <a href="http://en.automne.ws" target="_blank">en.automne.ws</a> and <a href="http://man.automne.ws" target="_blank">man.automne.ws</a>.
+			Feel free to ask your questions in <a href="http://www.automne.ws/forum/" target="_blank">the forum</a>. <br /><br />
+			Thank you for using Automne!<br />
+			<br />';
 		break;
 	}
 	
@@ -1043,16 +1045,16 @@ $configContent .= '
 			$websiteUrl = isset($_POST["website"]) ? $_POST["website"]: $_SERVER["HTTP_HOST"];
 			$title = '<h1>'.$step4_title.'</h1>';
 			if ($error) {
-				$content .= '<span class="error">'.$error.'</span>';
+				$content .= '<span class="error">'.$error.'</span><br />';
 			}
 			$content .= '
 			<form action="'.$_SERVER["PHP_SELF"].'" method="post" onsubmit="check();">
 				<input type="hidden" name="step" value="4" />
 				<input type="hidden" name="cms_action" value="website" />
 				<input type="hidden" name="install_language" value="'.$install_language.'" />
-				'.$step4_enter_url.'
-				'.$step4_url.'<input type="text" name="website" value="'.$websiteUrl.'" />
-				<p><input type="submit" class="submit" value="'.$label_next.'" /></p>
+				'.$step4_enter_url.'<br /><br />
+				'.$step4_url.'<input type="text" name="website" value="'.$websiteUrl.'" /><br />
+				<input type="submit" class="submit" value="'.$label_next.'" />
 			</form>
 			';
 		} else {
@@ -1152,14 +1154,14 @@ $configContent .= '
 			
 			$title = '<h1>'.$step5_title.'</h1>';
 			if ($error) {
-				$content .= '<span class="error">'.$error.'</span>';
+				$content .= '<span class="error">'.$error.'</span><br />';
 			}
 			$content .= '
 			<form action="'.$_SERVER["PHP_SELF"].'" method="post" onsubmit="check();">
 				<input type="hidden" name="step" value="5" />
 				<input type="hidden" name="cms_action" value="chmodConstants" />
 				<input type="hidden" name="install_language" value="'.$install_language.'" />
-				'.$step5_explanation.'
+				'.$step5_explanation.'<br /><br />
 				'.$step5_files_perms.' * : <input type="text" name="fileChmod" value="'.$fileChmod.'" /><br />
 				'.$step5_dirs_perms.' * : <input type="text" name="dirChmod" value="'.$dirChmod.'" /><br />
 				<input type="submit" class="submit" value="'.$label_next.'" />
@@ -1665,7 +1667,7 @@ $configContent .= '
 		body{
 			background-color:	#e9f1da;
 			font-family:		arial,verdana,helvetica,sans-serif;
-			font-size:			14px;
+			font-size:			13px;
 			margin:				0;
 			padding:			0;
 		}
@@ -1688,10 +1690,11 @@ $configContent .= '
 		#content{
 			background:			url('.$_SERVER['SCRIPT_NAME'].'?file=logo) no-repeat 75px 0;
 			margin:				auto;
-			background-color:	#fff;
-			width:				45em;
+			background-color:	#ffffff;
+			width:				639px;
 			border-left:		1px solid #dde6cb;
 			border-right:		1px solid #dde6cb;
+			border-bottom:		1px solid #dde6cb;
 			color:				#5d5856;
 			padding-top:		118px;
 			padding-bottom:		30px;
@@ -1715,26 +1718,25 @@ $configContent .= '
 		}
 		#footer{
 			color:				#5a6266;
-			background-color:	#fff;
-			width:				54em;
+			height:				60px;
+			width:				639px;
 			margin:				auto;
-			padding:			.5em 0;
+			padding-top:		8px;
 			text-align:			center;
-			font-size:			smaller;
+			font-size:			11px;
 		}
 		#needhelp a {
 			float:				right;
-			border-bottom: 		1px solid rgba(0,0,0,0.25); 
+			border:				1px solid #E9F1DA;
 			font-weight:		bold;
 			margin:				3px 10px;
-			padding:			.5em;
-			border-radius: 			.35em;
-			-moz-border-radius:		.35em;
-			-webkit-border-radius:	.35em;
-			text-shadow: 		0 -1px 1px rgba(0,0,0,0.25); 
-			box-shadow:				0 1px 3px rgba(0,0,0,0.25);
-			-moz-box-shadow: 	0 1px 3px rgba(0,0,0,0.25); 
-			-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+			padding:			5px;
+			border-radius: 			7px;
+			-moz-border-radius:		7px;
+			-webkit-border-radius:	7px;
+			box-shadow:				2px 2px 3px #888;
+			-moz-box-shadow:		2px 2px 3px #888;
+			-webkit-box-shadow:		2px 2px 3px #888;
 		}
 		.license,
 		.htaccess,
@@ -1755,25 +1757,14 @@ $configContent .= '
 		}
 		input.submit {
 			cursor: 			pointer;
-			font-size:			13px;
-			font-weight:		bold;
-			border: 			1px solid #fff;
-			padding: 			.5em;
-			color:				#fff;;
+			border: 			0px;
+			padding: 			2px;
+			color:				#FFFFFF;
+			height: 			20px;
 			background-color:	#ABD64A;
+			background-position:top-left;
+			background-repeat: 	no-repeat;
 			float:				right;
-			line-height: 		1; 
-			text-decoration: 	none; 
-			-moz-border-radius: .4em; 
-			-webkit-border-radius: .4em; 
-			border-radius:		.4em;
-			-moz-box-shadow: 	0 1px 3px rgba(0,0,0,0.25); 
-			-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.25); 
-			text-shadow: 		0 -1px 1px rgba(0,0,0,0.25); 
-			border-bottom: 		1px solid rgba(0,0,0,0.25); 
-			position: 			relative; 
-			overflow: 			visible;
-			width: 				auto; 
 		}
 		ul.atm-server {
 			padding:			10px 0 0 0;
