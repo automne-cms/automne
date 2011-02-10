@@ -108,7 +108,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 		$groups = array();
 		while ($id = $q->getValue("id_prg")) {
 			$grp = CMS_profile_usersGroupsCatalog::getById($id);
-			if (!$grp->hasError()) {
+			if ($grp && !$grp->hasError()) {
 				$groups[] = $grp;
 			}
 		}

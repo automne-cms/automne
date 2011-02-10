@@ -867,17 +867,22 @@ class CMS_object_usergroup extends CMS_object_common
 				}
 				//sort objects by name case insensitive
 				natcasesort($userGroupSorted);
-				$allIDs = $userGroupSorted;
 				// Search all selected users/groups
 				$associated_items = array();
 				if ($params[$parameter["internalName"]]) {
 					$associated_items = explode(";",$params[$parameter["internalName"]]);
 				}
+				//remove deleted users from selected list
+				foreach ($associated_items as $key => $userId) {
+					if (!isset($userGroupSorted[$userId])) {
+						unset($associated_items[$key]);
+					}
+				}
 				// Create usersListboxes
 				$s_items_listboxes = CMS_dialog_listboxes::getListBoxes(
 					array (
 					'field_name' 		=> $prefixName.$parameter['internalName'],	// Hidden field name to get value in
-					'items_possible' 	=> $allIDs,											// array of all categories availables: array(ID => label)
+					'items_possible' 	=> $userGroupSorted,								// array of all categories availables: array(ID => label)
 					'items_selected' 	=> $associated_items,								// array of selected ids
 					'select_width' 		=> '250px',											// Width of selects, default 200px
 					'select_height' 	=> '200px',											// Height of selects, default 140px
@@ -915,17 +920,22 @@ class CMS_object_usergroup extends CMS_object_common
 				}
 				//sort objects by name case insensitive
 				natcasesort($userGroupSorted);
-				$allIDs = $userGroupSorted;
 				// Search all selected users/groups
 				$associated_items = array();
 				if ($params[$parameter["internalName"]]) {
 					$associated_items = explode(";",$params[$parameter["internalName"]]);
 				}
+				//remove deleted groups from selected list
+				foreach ($associated_items as $key => $groupId) {
+					if (!isset($userGroupSorted[$groupId])) {
+						unset($associated_items[$key]);
+					}
+				}
 				// Create usersListboxes
 				$s_items_listboxes = CMS_dialog_listboxes::getListBoxes(
 					array (
 					'field_name' 		=> $prefixName.$parameter['internalName'],	// Hidden field name to get value in
-					'items_possible' 	=> $allIDs,											// array of all categories availables: array(ID => label)
+					'items_possible' 	=> $userGroupSorted,								// array of all categories availables: array(ID => label)
 					'items_selected' 	=> $associated_items,								// array of selected ids
 					'select_width' 		=> '250px',											// Width of selects, default 200px
 					'select_height' 	=> '200px',											// Height of selects, default 140px

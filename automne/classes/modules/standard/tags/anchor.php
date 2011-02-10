@@ -21,8 +21,7 @@
   * @subpackage standard
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
-class CMS_XMLTag_anchor extends CMS_XMLTag
-{
+class CMS_XMLTag_anchor extends CMS_XMLTag {
 	/**
 	 * Default tag context
 	 * @var string the default tag context
@@ -44,7 +43,7 @@ class CMS_XMLTag_anchor extends CMS_XMLTag
 				$attributes .= ' '.$attribute.'=\"'.$this->replaceVars($value).'\"';
 			}
 		}
-		return '$content .= "<'.$this->_name.' href=\"".$_SERVER[\'SCRIPT_NAME\'].($_SERVER["QUERY_STRING"] ? \'?\'.$_SERVER["QUERY_STRING"] : \'\')."'.$href.'\"'.$attributes.'>";
+		return '$content .= "<'.$this->_name.' href=\"".(pathinfo($_SERVER[\'SCRIPT_NAME\'], PATHINFO_BASENAME) != \'index.php\' ? $_SERVER[\'SCRIPT_NAME\'] : (pathinfo($_SERVER[\'SCRIPT_NAME\'], PATHINFO_DIRNAME) . (pathinfo($_SERVER[\'SCRIPT_NAME\'], PATHINFO_DIRNAME) == \'/\' ? \'\' : \'/\'))).($_SERVER["QUERY_STRING"] ? \'?\'.io::htmlspecialchars($_SERVER["QUERY_STRING"]) : \'\')."'.$href.'\"'.$attributes.'>";
 			'.$this->_computeChilds().'
 			$content .= "</'.$this->_name.'>";';
 	}

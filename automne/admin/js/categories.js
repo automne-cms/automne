@@ -82,7 +82,7 @@ Automne.categories = {
 			Ext.get('li-'+ hash +'-' + catID).dom.style.backgroundColor=clearancesColors[catValue];
 		} else {
 			//set color
-			Ext.get('li-'+ hash +'-' + catID).dom.style.backgroundColor = (count == 1) ? clearancesColors[0] : '';
+			Ext.get('li-'+ hash +'-' + catID).dom.style.backgroundColor = (count == 1 && Ext.get('ul-'+ hash +'-' + catID)) ? clearancesColors[0] : '';
 		}
 		//then allow or disallow checkboxes below the checked one
 		if (Ext.get('ul-'+ hash +'-' + catID)) {
@@ -107,7 +107,7 @@ Automne.categories = {
 			}
 		}
 		//force clearance 'none' checking
-		if (count == 1 && Ext.get('check-'+ hash +'-' + catID + '_' + catValue).dom.checked == false) {
+		if (count == 1 && Ext.get('check-'+ hash +'-' + catID + '_' + catValue).dom.checked == false && Ext.get('ul-'+ hash +'-' + catID)) {
 			Ext.get('check-'+ hash +'-' + catID + '_' + 0).dom.checked = true;
 			Automne.categories.unselectOthers(catID,0, 1, hash);
 		} else {
