@@ -120,6 +120,21 @@ Automne = {
 					}
 				} catch(e){}
 			}
+			if (Ext.isIE) {
+				var ieVersion;
+				if (Ext.isIE6) {
+					ieVersion = 6;
+				} else if (Ext.isIE7) {
+					ieVersion = 7;
+				} else if (Ext.isIE8) {
+					ieVersion = 8;
+				} else if (Ext.isIE9) {
+					ieVersion = 9;
+				} else {
+					ieVersion = 'unkown';
+				}
+				pr('Detected IE version: '+ieVersion);
+			}
 			//load east panel
 			if (!Automne.east.items.length) {
 				Automne.east.load({
