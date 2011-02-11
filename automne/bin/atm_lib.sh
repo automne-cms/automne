@@ -300,11 +300,15 @@ function atmBackup {
     echo "./.htpasswd" >> "$ATM_BACKUP_EXCLUDE_FILE"
     echo "./$ATM_BACKUP_FILE_PREFIX*.tar.gz" >> "$ATM_BACKUP_EXCLUDE_FILE"
     echo "./$ATM_BACKUP_FILE_PREFIX*.$ATM_BACKUP_FILE_EXTENSION" >> "$ATM_BACKUP_EXCLUDE_FILE"
-    echo "./automne_modules_files/ase/databases/*" >> "$ATM_BACKUP_EXCLUDE_FILE"
+    echo "./automne/ase/databases/*" >> "$ATM_BACKUP_EXCLUDE_FILE"
 
     #excludes?
-    ATM_BACKUP_EXCLUDE_LIST='./automne/cache/ ./automne_linx_files/ ./automne_modules_files/ ./automne/tmp/ ./automne/upload/ ./html/ ./web/'
-
+    if [ -d "./automne_modules_files/" ]; then
+        ATM_BACKUP_EXCLUDE_LIST='./automne/cache/ ./automne/linx/ ./automne_modules_files/ ./automne/tmp/ ./automne/upload/ ./html/ ./web/'
+    else
+        ATM_BACKUP_EXCLUDE_LIST='./automne/cache/ ./automne/linx/ ./files/ ./automne/tmp/ ./automne/upload/ ./automne/html/ ./web/'
+    fi
+	
     for ITEM in $ATM_BACKUP_EXCLUDE_LIST; do
         atmAsk "Backup $ITEM [Y|n]?" "y"
         if [ $? -ne 1 ]; then
@@ -409,8 +413,17 @@ function atmRestore {
     #excludes?
     echo "Exclude options"
 
-    ATM_RESTORE_EXCLUDE_LIST="./automne_linx_files/ ./html/ ./web/ ./automne/cache/ ./automne/tmp/ ./automne/upload/"
-    ATM_RESTORE_EXCLUDE_OPTIONS=".htaccess ./index.php ./config.php ./automne/templates/ ./automne_modules_files/ ./js/ ./img/"
+    
+    
+	#excludes?
+    if [ -d "./automne_modules_files/" ]; then
+        ATM_RESTORE_EXCLUDE_LIST="./automne_linx_files/ ./html/ ./web/ ./automne/cache/ ./automne/tmp/ ./automne/upload/"
+		ATM_RESTORE_EXCLUDE_OPTIONS=".htaccess ./index.php ./config.php ./automne/templates/ ./automne_modules_files/ ./js/ ./img/"
+    else
+       ATM_RESTORE_EXCLUDE_LIST="./automne/linx/ ./automne/html/ ./web/ ./automne/cache/ ./automne/tmp/ ./automne/upload/"
+	   ATM_RESTORE_EXCLUDE_OPTIONS=".htaccess ./index.php ./config.php ./automne/templates/ ./files/ ./js/ ./img/"
+    fi
+	
     for ITEM in `echo "$ATM_RESTORE_EXCLUDE_OPTIONS"`; do
         atmAsk "Overide $ITEM [y|N]?" "n"
         if [ $? -ne 1 ]; then
