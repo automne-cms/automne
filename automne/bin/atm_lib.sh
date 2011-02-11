@@ -1,7 +1,7 @@
 # +----------------------------------------------------------------------+
 # | Automne (TM)                                                         |
 # +----------------------------------------------------------------------+
-# | Copyright (c) 2000-2009 WS Interactive                               |
+# | Copyright (c) 2000-2011 WS Interactive                               |
 # +----------------------------------------------------------------------+
 # | Automne is subject to version 2.0 or above of the GPL license.       |
 # | The license text is bundled with this package in the file            |
@@ -9,16 +9,16 @@
 # | http://www.gnu.org/copyleft/gpl.html.                                |
 # +----------------------------------------------------------------------+
 # | Author: Antoine Cezar <antoine.cezar@ws-interactive.fr>              |
+# | Author: Sebastien Pauchet <sebastien.pauchet@ws-interactive.fr>		 |
 # +----------------------------------------------------------------------+
-#
-# $Id: $
 
 #
 # Automne shell commands
 #
-# To use this file, you must source it: source atm_lib.sh
+# To use this file, you must source it: 
+#	$ source /automne/bin/atm_lib.sh
 #
-# The following description of the aviable commandes is then displayed:
+# The following description of the available commands is then displayed:
 #     Automne shell commands help.
 #     All the commands must be lauched at the root of an Automne website.
 #
@@ -39,7 +39,7 @@
 #     atmBackup [options]
 #         Backup the Automne website. A tar gziped archive is created in the current
 #         directory or in ../archives/ if exists.
-#         Some step of the restore process are interactive.
+#         Some step of the backup process are interactive.
 #
 #         options    Any tar option. See the tar command help for more informations.
 #
@@ -50,9 +50,10 @@
 #         file       A tar.gz archive
 #         options    Any tar option. See the tar command help for more informations.
 #
-# @package CMS
+# @package Automne
 # @subpackage Script
 # @author Antoine Cezar <antoine.cezar@ws-interactive.fr>
+# @author Sebastien Pauchet <sebastien.pauchet@ws-interactive.fr>
 #
 
 unset ATM_SETUP_CALLS
@@ -89,7 +90,7 @@ function atmSetConstants {
         echo "  ATM_DB_HOST: Ok"
     else
         ATM_DB_HOST='localhost'
-        echo "  ATM_DB_HOST: NOT FOUND. Set to 'localhost'"
+        echo "  ATM_DB_HOST: not found, use 'localhost'"
     fi
 
     if [ "$ATM_DB_NAME" != "" ]; then
@@ -395,7 +396,7 @@ function atmRestore {
         shift
 
         # find the corresponding sql file
-        ATM_SQL_LOAD_FILE=`echo "$ATM_RESTORE_FILE" | sed "s/.*$ATM_BACKUP_FILE_PREFIX\(.*\)\.$ATM_BACKUP_FILE_EXTENSION$/.\/sql\/$ATM_SQL_DUMP_FILE_PREFIX\1.automne/sql/"`
+        ATM_SQL_LOAD_FILE=`echo "$ATM_RESTORE_FILE" | sed "s/.*$ATM_BACKUP_FILE_PREFIX\(.*\)\.$ATM_BACKUP_FILE_EXTENSION$/.\/automne\/sql\/$ATM_SQL_DUMP_FILE_PREFIX\1.sql/"`
     fi
 
     echo "Restore:"
@@ -413,19 +414,17 @@ function atmRestore {
     #excludes?
     echo "Exclude options"
 
-    
-    
-	#excludes?
+    #excludes?
     if [ -d "./automne_modules_files/" ]; then
         ATM_RESTORE_EXCLUDE_LIST="./automne_linx_files/ ./html/ ./web/ ./automne/cache/ ./automne/tmp/ ./automne/upload/"
-		ATM_RESTORE_EXCLUDE_OPTIONS=".htaccess ./index.php ./config.php ./automne/templates/ ./automne_modules_files/ ./js/ ./img/"
+		ATM_RESTORE_EXCLUDE_OPTIONS=".htaccess ./config.php ./automne/templates/ ./automne_modules_files/ ./js/ ./img/"
     else
        ATM_RESTORE_EXCLUDE_LIST="./automne/linx/ ./automne/html/ ./web/ ./automne/cache/ ./automne/tmp/ ./automne/upload/"
-	   ATM_RESTORE_EXCLUDE_OPTIONS=".htaccess ./index.php ./config.php ./automne/templates/ ./files/ ./js/ ./img/"
+	   ATM_RESTORE_EXCLUDE_OPTIONS=".htaccess ./config.php ./automne/templates/ ./files/ ./js/ ./img/"
     fi
 	
     for ITEM in `echo "$ATM_RESTORE_EXCLUDE_OPTIONS"`; do
-        atmAsk "Overide $ITEM [y|N]?" "n"
+        atmAsk "Override $ITEM [y|N]?" "n"
         if [ $? -ne 1 ]; then
             ATM_RESTORE_EXCLUDE_LIST="$ATM_RESTORE_EXCLUDE_LIST $ITEM"
         fi
@@ -544,7 +543,7 @@ atmSqlRestore sqlFile [options]
 atmBackup [options]
     Backup the Automne website. A tar gziped archive is created in the current
     directory or in ../archives/ if exists.
-    Some step of the restore process are interactive.
+    Some step of the backup process are interactive.
 
     options    Any tar option. See the tar command help for more informations.
 
