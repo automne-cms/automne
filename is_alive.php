@@ -60,7 +60,7 @@
 require_once(dirname(__FILE__).'/cms_rc_frontend.php');
 
 // Page to test HTTP response of
-define("INDEX_PAGE", '/index.php');
+define("INDEX_PAGE", PATH_REALROOT_WR.'/index.php');
 
 // Stores errors founded while running tests
 $errs = array();
