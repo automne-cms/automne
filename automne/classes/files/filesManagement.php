@@ -92,13 +92,15 @@ class CMS_file extends CMS_grandFather
 	function __construct($name, $from=self::FILE_SYSTEM, $type=self::TYPE_FILE) {
 		$this->_name = ($from==self::FILE_SYSTEM) ? $name : $_SERVER['DOCUMENT_ROOT'].$name;
 		if ($this->_name) {
-			if (@is_file($this->_name) && $type == self::TYPE_FILE) {
+			if (@is_file(realpath($this->_name)) && $type == self::TYPE_FILE) {
+				$this->_name = realpath($this->_name);
 				$this->_type = self::TYPE_FILE;
 				$this->_exists = true;
 				$this->_perms = $this->getFilePerms($this->_name);
 				$this->_basedir = dirname($this->_name);
 				$this->_filename = basename($this->_name);
-			} elseif (@is_dir($this->_name) && $type == self::TYPE_DIRECTORY) {
+			} elseif (@is_dir(realpath($this->_name)) && $type == self::TYPE_DIRECTORY) {
+				$this->_name = realpath($this->_name);
 				$this->_type = self::TYPE_DIRECTORY;
 				$this->_exists = true;
 				$this->_perms = $this->getFilePerms($this->_name);
@@ -108,6 +110,9 @@ class CMS_file extends CMS_grandFather
 				$this->_exists = false;
 				$this->_type = $type;
 			}
+		} else {
+			$this->_exists = false;
+			$this->_type = $type;
 		}
 	}
 	
@@ -284,8 +289,7 @@ class CMS_file extends CMS_grandFather
 	  * @return string/array the current content
 	  * @access public
 	  */
-	function readContent($returnAs="string",$array_map_function="trim", $csvargs = array('delimiter' => ';', 'enclosure' => '"', 'strict' => true))
-	{
+	function readContent($returnAs="string",$array_map_function="trim", $csvargs = array('delimiter' => ';', 'enclosure' => '"', 'strict' => true)) {
 		if ($this->_exists) {
 			if ($this->_type===self::TYPE_FILE) {
 				if ($returnAs == "string") {
@@ -439,15 +443,8 @@ class CMS_file extends CMS_grandFather
 				//chmod does not mean anything on windows
 				return true;
 			}
-			//if ($this->_type===self::TYPE_FILE) {
-				$right = (io::strlen($right) == 3) ? '0'.$right : $right;
-				return @chmod($this->_name,octdec($right));
-			/*} elseif($this->_type==self::TYPE_DIRECTORY) {
-				return CMS_file::makeExecutable($this->_name);
-			} else {
-				$this->raiseError("Current object type not set. Can't chmod it");
-				return false;
-			}*/
+			$right = (io::strlen($right) == 3) ? '0'.$right : $right;
+			return @chmod($this->_name,octdec($right));
 		} else {
 			$this->raiseError("Can't chmod file who does not exist : ".$this->_name);
 			return false;
@@ -533,6 +530,10 @@ class CMS_file extends CMS_grandFather
 	 */
 	function getFilePerms($file, $type="octal") 
 	{
+		$file = realpath($file);
+		if (!file_exists($file)) {
+			return false;
+		}
 		return ($type=="octal") ? @fileperms($file) : io::substr(sprintf('%o',@fileperms($file)), -4);
 	}
 	
@@ -545,12 +546,13 @@ class CMS_file extends CMS_grandFather
 	 */
 	function isDeletable($f)
 	{
+		$f = realpath($f);
 		if (is_file($f)) {
-			return is_writable(dirname($f));
+			return is_writable(dirname($f)) && is_writable($f);
 		} elseif (is_dir($f)) {
-			//todo
-			//return (is_writable(dirname($f)) && count(files::scandir($f)) <= 2);
+			return is_writable(dirname($f));
 		}
+		return false;
 	}
 	
 	/**
@@ -562,6 +564,7 @@ class CMS_file extends CMS_grandFather
 	 */
 	function deleteFile($file)
 	{
+		$file = realpath($file);
 		if (is_file($file)) {
 			return @unlink($file);
 		} elseif (@is_dir($file)) {
@@ -582,6 +585,10 @@ class CMS_file extends CMS_grandFather
 	 */
 	function deltree($dir, $withDir = false)
 	{
+		$dir = realpath($dir);
+		if (!file_exists($dir)) {
+			return false;
+		}
 		$current_dir = @opendir($dir);
 		while($entryname = @readdir($current_dir)) {
 			if (@is_dir($dir.'/'.$entryname) && ($entryname != '.' && $entryname!='..')) {
@@ -624,6 +631,10 @@ class CMS_file extends CMS_grandFather
 	 */
 	function deltreeSimulation($dir, $withDir=false)
 	{
+		$dir = realpath($dir);
+		if (!file_exists($dir)) {
+			return false;
+		}
 		$current_dir = @opendir($dir);
 		while($entryname = @readdir($current_dir)) {
 			if (@is_dir($dir.'/'.$entryname) && ($entryname != '.' && $entryname!='..')) {
@@ -657,18 +668,22 @@ class CMS_file extends CMS_grandFather
 	 */
 	function makeReadable($f)
 	{
-		$chmodValue = (@is_dir($f)) ? 7:4;
-		
-		if (APPLICATION_IS_WINDOWS) {
-			$chmodValue = 6;
+		$f = realpath($f);
+		if (!file_exists($f)) {
+			return false;
 		}
 		if (is_readable($f)) {
 			return true;
 		} else {
+			//use default chmod value
 			@chmod($fpath, octdec(FILES_CHMOD));
 			if (@is_readable($f)) {
 				return true;
 			} else {
+				$chmodValue = (@is_dir($f)) ? 7:4;
+				if (APPLICATION_IS_WINDOWS) {
+					$chmodValue = 6;
+				}
 				@chmod($f,octdec('0'.$chmodValue.$chmodValue.'4'));
 				if (@is_readable($f)) {
 					return true;
@@ -693,6 +708,10 @@ class CMS_file extends CMS_grandFather
 	 */
 	function makeWritable($f)
 	{
+		$f = realpath($f);
+		if (!file_exists($f)) {
+			return false;
+		}
 		if (@is_dir($f)) {
 			return CMS_file::makeExecutable($f);
 		}
@@ -728,6 +747,10 @@ class CMS_file extends CMS_grandFather
 	 */
 	function makeExecutable($f)
 	{
+		$f = realpath($f);
+		if (!file_exists($f)) {
+			return false;
+		}
 		if (APPLICATION_IS_WINDOWS || (function_exists('is_executable') && @is_executable($f))) {
 			return true;
 		} elseif (!function_exists('is_executable')) {
@@ -761,6 +784,10 @@ class CMS_file extends CMS_grandFather
 	 * @static
 	 */
 	function fileIsExecutable($f) {
+		$f = realpath($f);
+		if (!file_exists($f)) {
+			return false;
+		}
 		if (@is_dir($f)) {
 			return @file_exists($f."/.");
 		} elseif (function_exists("is_executable")) {
@@ -780,6 +807,10 @@ class CMS_file extends CMS_grandFather
 	 */
 	static function chmodFile($right,$file)
 	{
+		$file = realpath($file);
+		if (!file_exists($file)) {
+			return false;
+		}
 		if (@is_dir($file)) {
 			return CMS_file::makeExecutable($file);
 		} elseif(@is_file($file)) {
@@ -808,7 +839,7 @@ class CMS_file extends CMS_grandFather
 		if (!@is_dir(dirname($f))) {
 			CMS_file::makeDir(dirname($f));
 		}
-		if (!@file_exists($f)) {
+		if (!file_exists($f)) {
 			if (@mkdir($f) === false) {
 				return false;
 			}
@@ -827,6 +858,7 @@ class CMS_file extends CMS_grandFather
 	 */
 	function copyTo($from,$to)
 	{
+		$from = realpath($from);
 		if (@is_file($from)) {
 			//check if parent directory exist else create it
 			if (!@is_dir(dirname($to))) {
@@ -838,10 +870,8 @@ class CMS_file extends CMS_grandFather
 				CMS_file::chmodFile(FILES_CHMOD, $to);
 			}
 			return $return;
-		} else {
-			//create directory
-			return CMS_file::makeDir($to);
 		}
+		return false;
 	}
 	
 	/**
@@ -854,6 +884,7 @@ class CMS_file extends CMS_grandFather
 	 */
 	function moveTo($from,$to)
 	{
+		$from = realpath($from);
 		if (@is_file($from)) {
 			//check if parent directory exist else create it
 			if (!@is_dir(dirname($to))) {
@@ -865,9 +896,8 @@ class CMS_file extends CMS_grandFather
 				CMS_file::chmodFile(FILES_CHMOD, $to);
 			}
 			return $return;
-		} else {
-			return false;
 		}
+		return false;
 	}
 	
 	/**
@@ -908,7 +938,7 @@ class CMS_file extends CMS_grandFather
 	 * @static
 	 */
 	function getParent($file) {
-		if (@file_exists(dirname($file))) {
+		if (@file_exists(dirname(realpath($file)))) {
 			return dirname($file);
 		} else {
 			return CMS_file::getParent(dirname($file));

@@ -792,7 +792,7 @@ class CMS_tree extends CMS_grandFather
 			"select 
 				*
 			from
-				linx_tree_public
+				linx_tree_edited
 			where
 				father_ltr='".sensitiveIO::sanitizeSQLString($page->getID())."'
 			order by 
@@ -825,7 +825,9 @@ class CMS_tree extends CMS_grandFather
 					order_ltr='".$neworder."'
 			";
 			$q = new CMS_query($sql);
-			unset($editedOrders[$sibling]);
+			if (isset($editedOrders[$sibling])) {
+				unset($editedOrders[$sibling]);
+			}
 		}
 		//and set never validated page if any at end of order
 		foreach ($editedOrders as $sibling => $order) {

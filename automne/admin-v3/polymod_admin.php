@@ -172,7 +172,7 @@ if (!sizeof($objects)) {
 		<strong>'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_EDITABLE).' :</strong> '.$cms_language->getMessage($adminEditableStatus[$object->getValue("admineditable")]).'<br />
 		<strong>'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_COMPOSED_LABEL).' :</strong> '.$cms_language->getMessage($adminEditableStatus[($object->getValue("composedLabel")) ? 0 : 1]).'<br />
 		<strong>'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_OBJECT_USEAGE).' :</strong> '.$objectUseageLabel;
-		if (class_exists('CMS_module_ase')) {
+		if (class_exists('CMS_module_ase') && CMS_module_ase::isActive()) {
 			$content .= '<strong>'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_OBJECT_INDEXABLE, false, MOD_POLYMOD_CODENAME).' :</strong> '.$cms_language->getMessage($adminIndexableStatus[($object->getValue("indexable")) ? 0 : 1]).'<br />';
 		}
 		$content .= '
@@ -267,7 +267,7 @@ if (is_object($object)) {
 			<th width="150" class="admin">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_TYPE).'</th>
 			<th width="200" class="admin">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_DESCRIPTION).'</th>';
 		//if ASE module exists, add field indexation options
-		if (class_exists('CMS_module_ase')) {
+		if (class_exists('CMS_module_ase') && CMS_module_ase::isActive()) {
 			$content .= '
 					<th width="70" class="admin">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_INDEXABLE,false, MOD_POLYMOD_CODENAME).'</th>';
 		}
@@ -300,7 +300,7 @@ if (is_object($object)) {
 						<td width="150" class="'.$td_class.'">'.$typeObject->getObjectLabel($cms_language).'</td>
 						<td width="200" class="'.$td_class.'">'.$typeObject->getDescription($cms_language).'</td>';
 			//if ASE module exists, add field indexation options
-			if (class_exists('CMS_module_ase')) {
+			if (class_exists('CMS_module_ase') && CMS_module_ase::isActive()) {
 				$content .= '
 						<td width="70" class="'.$td_class.'">
 							<table border="0" cellpadding="2" cellspacing="0">

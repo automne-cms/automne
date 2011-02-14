@@ -347,7 +347,7 @@ $content .='
 		</td>
 	</tr>';
 	//if ASE module exists, add field indexation options
-	if (class_exists('CMS_module_ase')) {
+	if (class_exists('CMS_module_ase') && CMS_module_ase::isActive()) {
 		//indexURL
 		$indexURL = ($_POST["indexURL"]) ? $_POST["indexURL"] : $polymod->convertDefinitionString($object->getValue("indexURL"), true);
 		

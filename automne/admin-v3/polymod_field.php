@@ -278,7 +278,7 @@ $content = '
 			<td class="admin"><label for="searchlist"><input type="checkbox" id="searchlist" name="searchlist" value="1"'.$searchlist.' />&nbsp;'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_SEARCHLIST).'</label></td>
 		</tr>';
 		//if ASE module exists, add field indexation options
-		if (class_exists('CMS_module_ase')) {
+		if (class_exists('CMS_module_ase') && CMS_module_ase::isActive()) {
 			$content .= '
 			<tr>
 				<td class="admin" align="right" valign="top">&nbsp;</td>

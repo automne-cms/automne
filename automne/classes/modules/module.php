@@ -263,7 +263,7 @@ class CMS_module extends CMS_grandFather
 				unset($moduleParameters);
 			}
 			if (!isset($moduleParameters[$this->_codename])) {
-				$filename = PATH_MODULES_FS."/".$this->_codename."_rc.xml";
+				$filename = realpath(PATH_MODULES_FS."/".$this->_codename."_rc.xml");
 				if (file_exists($filename)) {
 					$file = new CMS_DOMDocument();
 					$file->loadXML(file_get_contents($filename));

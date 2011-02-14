@@ -405,7 +405,7 @@ class CMS_object_search extends CMS_grandFather
 			"publication date end",
 		);
 		//if ASE module exists, add a sort by relevance
-		if (class_exists('CMS_module_ase')) {
+		if (class_exists('CMS_module_ase') && CMS_module_ase::isActive()) {
 			$orderConditions[] = "relevance";
 		}
 		return $orderConditions;
@@ -445,7 +445,7 @@ class CMS_object_search extends CMS_grandFather
 			$this->_orderConditions['random'] = $value;
 			break;
 		case "relevance": // Only if ASE module exists
-			if (class_exists('CMS_module_ase')) {
+			if (class_exists('CMS_module_ase') && CMS_module_ase::isActive()) {
 				$this->_orderConditions['relevance'] = $value;
 			} else {
 				$this->raiseError('Sorting by relevance is not active if module ASE does not exists ... ');
@@ -776,8 +776,8 @@ class CMS_object_search extends CMS_grandFather
 							$operator = 'any';
 						}
 						
-						//if ASE module exists and object is indexed, and search is public, use it to do this search
-						if ($operator == 'any' && class_exists('CMS_module_ase') && $this->_object->getValue('indexable') && $this->_public) {
+						//if ASE module exists (and is active) and object is indexed, and search is public, use it to do this search
+						if ($operator == 'any' && class_exists('CMS_module_ase') && CMS_module_ase::isActive() && $this->_object->getValue('indexable') && $this->_public) {
 							//get language code for stemming
 							$languageCode = '';
 							if ($languageFieldIDs = CMS_poly_object_catalog::objectHasLanguageField($this->_object->getID())) {
@@ -832,7 +832,7 @@ class CMS_object_search extends CMS_grandFather
 							}
 							//search only in "searchable" fields
 							$fields = array();
-							$aseExists = (class_exists('CMS_module_ase') && $this->_object->getValue('indexable')) ? true : false;
+							$aseExists = (class_exists('CMS_module_ase') && CMS_module_ase::isActive() && $this->_object->getValue('indexable')) ? true : false;
 							foreach ($this->_fieldsDefinitions as $fieldDefinition) {
 								if ($fieldDefinition->getValue(($aseExists ? 'indexable' : 'searchable'))) {
 									$fields[] = $fieldDefinition->getID();
