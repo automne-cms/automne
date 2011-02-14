@@ -805,7 +805,7 @@ class CMS_page extends CMS_resource
 		$metaDatas .= '<?php'."\n".
 		'$atmHost = @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) ? @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) : $_SERVER[\'HTTP_HOST\'];'."\n".
 		'$atmProtocol = stripos($_SERVER["SERVER_PROTOCOL"], \'https\') !== false ? \'https://\' : \'http://\';'."\n".
-		'$atmPort = $_SERVER[\'SERVER_PORT\'] != 80 ? \':\'.$_SERVER[\'SERVER_PORT\'] : \'\';'."\n".
+		'$atmPort = @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_PORT) ? \':\'.@parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_PORT) : \'\';'."\n".
 		'echo \'<base href="\'.$atmProtocol.$atmHost.$atmPort.PATH_REALROOT_WR.\'/" />\';'."\n".
 		' ?>';
 		
