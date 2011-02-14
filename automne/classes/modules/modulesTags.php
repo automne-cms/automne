@@ -306,11 +306,11 @@ class CMS_modulesTags extends CMS_grandFather
 	  * Compute recursively all parsed definition tags 
 	  * and send them to callback methods (according to $this->_tagsCallBack)
 	  *
-	  * @param multidimentionnal array $definition : the reference of the definition to compute
+	  * @param multidimentionnal array $definition : the XML tags definition to compute
 	  * @param integer $level : the current level of recursion (default : 0)
 	  * @return string the PHP / HTML content computed
 	  */
-	function computeTags(&$definition, $level = 0) {
+	function computeTags($definition, $level = 0) {
 		$code = '';
 		if (is_array($definition) && is_array($definition[0])) {
 			//loop on subtags

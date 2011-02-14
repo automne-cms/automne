@@ -118,8 +118,10 @@ class CMS_xml2Array extends CMS_grandFather
 						}
 					}
 				}
-				if ($node->nodeType == XML_ELEMENT_NODE && $node->hasAttribute('key')) {
-					$array[$node->getAttribute('key')] = $value;
+				if ($node->nodeType == XML_ELEMENT_NODE && $node->attributes->length == 1) {
+					foreach ($node->attributes as $name => $attribute) {
+						$array[$attribute->value] = $value;
+					}
 				} elseif ($value && (is_array($value) || trim($value))) {
 					$array[$node->nodeName] = $value;
 				}
