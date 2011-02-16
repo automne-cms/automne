@@ -135,7 +135,11 @@ class CMS_file extends CMS_grandFather
 	  * @access public
 	  */
 	function setContent($content, $allowSetBlank=false) {
-		if ($content || $allowSetBlank) {
+		if (!$content && $allowSetBlank) {
+			$this->_content = '';
+			return true;
+		}
+		if ($content) {
 			if (is_string($content)) {
 				if ($this->_type===self::TYPE_FILE) {
 					$this->_content=$content;
@@ -289,7 +293,7 @@ class CMS_file extends CMS_grandFather
 	  * @return string/array the current content
 	  * @access public
 	  */
-	function readContent($returnAs="string",$array_map_function="trim", $csvargs = array('delimiter' => ';', 'enclosure' => '"', 'strict' => true)) {
+	function readContent($returnAs = "string", $array_map_function = "trim", $csvargs = array('delimiter' => ';', 'enclosure' => '"', 'strict' => true)) {
 		if ($this->_exists) {
 			if ($this->_type===self::TYPE_FILE) {
 				if ($returnAs == "string") {

@@ -181,7 +181,7 @@ class CMS_module_import extends CMS_grandFather
 			$version = '';
 		}
 		//Check for version compliance
-		if ($version && version_compare($version, AUTOMNE_VERSION, '<')) {
+		if ($version && version_compare(AUTOMNE_VERSION, $version, '<')) {
 			$infos .= 'Error: Automne version below the version of imported datas'."\n";
 			return false;
 		}

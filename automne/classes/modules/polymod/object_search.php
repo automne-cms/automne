@@ -514,7 +514,6 @@ class CMS_object_search extends CMS_grandFather
 				case "object":
 					//add previously founded IDs to where clause
 					$where = ($IDs) ? ' and id_moo in ('.implode(',',$IDs).')':'';
-					
 					//to remove deleted objects from results
 					$sql = "
 					select
@@ -522,7 +521,7 @@ class CMS_object_search extends CMS_grandFather
 					from
 						mod_object_polyobjects
 					where
-						object_type_id_moo  = '".$this->_object->getID()."'
+						object_type_id_moo = '".$this->_object->getID()."'
 						and deleted_moo = '0'
 						$where
 					";
@@ -534,6 +533,10 @@ class CMS_object_search extends CMS_grandFather
 					$supportedOperator = array(
 						'=',
 						'!=',
+						'>=',
+						'>',
+						'<=',
+						'<',
 					);
 					if ($operator && !in_array($operator, $supportedOperator)) {
 						$this->raiseError("Unknown search operator : ".$operator.", use default search instead");
@@ -1294,7 +1297,9 @@ class CMS_object_search extends CMS_grandFather
 						$ids = ($direction == 'asc') ? $ids : array_reverse($ids, true);
 					break;
 					case 'itemsOrdered':
-						$ids = ($direction == 'asc') ? $this->_orderConditions['itemsOrdered']['order'] : array_reverse($this->_orderConditions['itemsOrdered']['order'], true);
+						$orderedIds = ($direction == 'asc') ? $this->_orderConditions['itemsOrdered']['order'] : array_reverse($this->_orderConditions['itemsOrdered']['order'], true);
+						$ids = array_intersect($orderedIds , ($ids ? $ids : $this->_resultsIds));
+						unset($orderedIds);
 					break;
 					case 'random':
 						$tmpIds = $ids ? $ids : $this->_resultsIds;

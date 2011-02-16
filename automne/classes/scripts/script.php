@@ -41,7 +41,7 @@ $appCode = processManager::getAppCode();
 define("SCRIPT_CODENAME", "bgscript_" . $appCode . "_regenerator");
 
 //time out in second for scripts
-define("SUB_SCRIPT_TIME_OUT", 120); //2 minutes
+define("SUB_SCRIPT_TIME_OUT", 300); //5 minutes
 define("MASTER_SCRIPT_TIME_OUT", 43200); //12 hours
 
 //duration in seconds between each cycles of checking of sub-scripts

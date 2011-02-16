@@ -491,11 +491,11 @@ class CMS_row extends CMS_grandFather
 	  * The file must be in a specific directory : PATH_TEMPLATES_ROWS_FS (see constants from rc file)
 	  *
 	  * @param string $definition The definition
+	  * @param boolean $haltOnPolymodParsing Stop setting definition if error on polymod parsing are founded (default : true)
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setDefinition($definition)
-	{
+	function setDefinition($definition, $haltOnPolymodParsing = true) {
 		global $cms_language;
 		$defXML = new CMS_DOMDocument();
 		try {
@@ -530,7 +530,7 @@ class CMS_row extends CMS_grandFather
 			//check definition parsing
 			$parsing = new CMS_polymod_definition_parsing($definition, true, CMS_polymod_definition_parsing::CHECK_PARSING_MODE);
 			$errors = $parsing->getParsingError();
-			if ($errors) {
+			if ($errors && $haltOnPolymodParsing) {
 				return $cms_language->getMessage(self::MESSAGE_PAGE_ROW_SYNTAX_ERROR, array($errors));
 			}
 		}
@@ -1024,8 +1024,9 @@ class CMS_row extends CMS_grandFather
 			if (isset($data['definition']) && $data['definition']) {
 				if (!isset($params['updateRows']) || $params['updateRows'] == true) {
 					//set definition
-					if (!$this->setDefinition($data['definition'])) {
-						$infos .= 'Error : cannot set row definition ...'."\n";
+					$return = $this->setDefinition($data['definition'], false);
+					if ($return !== true) {
+						$infos .= 'Error : cannot set row definition ... : '.$return."\n";
 						return false;
 					}
 				}

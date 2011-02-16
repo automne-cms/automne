@@ -532,9 +532,6 @@ class CMS_email extends CMS_grandFather
 			return false;
 		}
 		$emailSent = true;
-		if (NO_APPLICATION_MAIL) {
-			return $emailSent;
-		}
 		if (!$this->_emailTo) {
 			$this->raiseError('emailTo can not be null');
 			return false;
@@ -655,8 +652,17 @@ class CMS_email extends CMS_grandFather
 				$headers.="Content-Type: multipart/mixed;\n\tboundary=\"".$OB."\"\n";
 				//Check drop emails list (Automne default emails)
 				if (!in_array($to, $this->_drop) && !in_array($From, $this->_drop)) {
-					//send emails
-					$sent = @mail($to,$this->EncodeHeader($Subject),$Msg,$headers);
+					//log in the cms_error_log the complete email
+					if (LOG_APPLICATION_MAIL) {
+						$this->log($to."\n".$this->EncodeHeader($Subject)."\n\n".$Msg);
+					}
+					//if mail deactivated always return true
+					if (NO_APPLICATION_MAIL) {
+						return $emailSent;
+					}else{
+						//send emails
+						$sent = @mail($to,$this->EncodeHeader($Subject),$Msg,$headers);
+					}
 					$emailSent = $emailSent && $sent;
 					if (LOG_SENDING_MAIL) {
 						$log = new CMS_log();

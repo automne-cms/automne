@@ -902,6 +902,13 @@ if (!defined('SESSION_TOKEN_MAXAGE')) {
 if (!defined('SESSION_EXPIRED_TOKEN_MAXAGE')) {
 	define('SESSION_EXPIRED_TOKEN_MAXAGE', 60);
 }
+/**
+  *	Enable logging (in the cms_error_log) of all generated email (not limited to sent ones)
+  *	Default : false
+  */
+if (!defined('LOG_APPLICATION_MAIL')) {
+	define('LOG_APPLICATION_MAIL', false);
+}
 
 // ****************************************************************
 // ** CONSTANTS ARE NOT EDITABLE BEYOND THIS POINT               **

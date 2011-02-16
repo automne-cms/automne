@@ -256,25 +256,27 @@ class CMS_module extends CMS_grandFather
 	  * @return array(string=>string) The parameters from the file, or false if no file found
 	  * @access public
 	  */
-	function getParameters($onlyOne = false, $withType=false, $reset = false)
-	{
+	function getParameters($onlyOne = false, $withType=false, $reset = false) {
 		if ($this->_hasParameters) {
 			if ($reset) {
 				unset($moduleParameters);
 			}
 			if (!isset($moduleParameters[$this->_codename])) {
-				$filename = realpath(PATH_MODULES_FS."/".$this->_codename."_rc.xml");
+				$filename = PATH_MODULES_FS."/".$this->_codename."_rc.xml";
 				if (file_exists($filename)) {
-					$file = new CMS_DOMDocument();
-					$file->loadXML(file_get_contents($filename));
-					$paramTags = $file->getElementsByTagName('param');
+					$paramsFileContent = @file_get_contents(realpath($filename));
 					$moduleParameters[$this->_codename] = array();
-					foreach ($paramTags as $paramTag) {
-						$value = (io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? utf8_decode(trim($paramTag->nodeValue)) : trim($paramTag->nodeValue);
-						if ($withType) {
-							$moduleParameters[$this->_codename][$paramTag->getAttribute("name")] = array($value, $paramTag->getAttribute("type"));
-						} else {
-							$moduleParameters[$this->_codename][$paramTag->getAttribute("name")] = trim($value);
+					if ($paramsFileContent) {
+						$file = new CMS_DOMDocument();
+						$file->loadXML($paramsFileContent);
+						$paramTags = $file->getElementsByTagName('param');
+						foreach ($paramTags as $paramTag) {
+							$value = (io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? utf8_decode(trim($paramTag->nodeValue)) : trim($paramTag->nodeValue);
+							if ($withType) {
+								$moduleParameters[$this->_codename][$paramTag->getAttribute("name")] = array($value, $paramTag->getAttribute("type"));
+							} else {
+								$moduleParameters[$this->_codename][$paramTag->getAttribute("name")] = trim($value);
+							}
 						}
 					}
 				} else {
@@ -1181,6 +1183,9 @@ class CMS_module extends CMS_grandFather
 			$jsFiles = $this->getJSFiles();
 			$aModule['js'] = array();
 			if ($jsFiles) {
+				foreach ($jsFiles as $key => $jsFile) {
+					$jsFiles[$key] = '/'.$jsFile;
+				}
 				$aModule['js'] = $jsFiles;
 				$files = array_merge($files, $jsFiles);
 			}
@@ -1191,6 +1196,9 @@ class CMS_module extends CMS_grandFather
 			if ($cssFiles) {
 				foreach ($cssFiles as $media => $cssMediaFiles) {
 					if ($cssMediaFiles) {
+						foreach ($cssMediaFiles as $key => $cssFile) {
+							$cssMediaFiles[$key] = '/'.$cssFile;
+						}
 						$files = array_merge($files, $cssMediaFiles);
 						$aModule['css'] = array_merge($aModule['css'], $cssMediaFiles);
 					}

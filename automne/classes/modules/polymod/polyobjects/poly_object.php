@@ -1320,18 +1320,22 @@ class CMS_poly_object extends CMS_resource
 	/**
 	  * get an object field
 	  *
-	  * @param integer $fieldID : the field to get
-	  * @return mixed : the object field
+	  * @param integer $fieldID : the field to get. If empty, return an array of all objects values
+	  * @return mixed : the object field or an array of the object fields
 	  * @access public
 	  */
-	function objectValues($fieldID) {
-		if (!isset($this->_objectValues[$fieldID])) {
-			global $cms_language;
-			$language = $cms_language ? $cms_language : CMS_languagesCatalog::getDefaultLanguage();
-			$this->raiseError('Object field with ID '.$fieldID.' does not exists as a field of object '.$this->getFieldLabel($language));
-			return $this;
+	function objectValues($fieldID = '') {
+		if (!$fieldID) {
+			return $this->_objectValues;
+		} else {
+			if (!isset($this->_objectValues[$fieldID])) {
+				global $cms_language;
+				$language = $cms_language ? $cms_language : CMS_languagesCatalog::getDefaultLanguage();
+				$this->raiseError('Object field with ID '.$fieldID.' does not exists as a field of object '.$this->getFieldLabel($language));
+				return $this;
+			}
+			return $this->_objectValues[$fieldID];
 		}
-		return $this->_objectValues[$fieldID];
 	}
 	
 	/**
