@@ -73,6 +73,7 @@ define("MESSAGE_PAGE_ACTION_PARAMETERS", 807);
 define("MESSAGE_PAGE_ACTION_MODULE_PARAMETERS", 808);
 define("MESSAGE_PAGE_ACTION_IMPORT", 1649);
 define("MESSAGE_PAGE_ACTION_EXPORT", 1672);
+define("MESSAGE_PAGE_ACTION_DELETE_MODULE_CONFIRM", 1711);
 
 //checks rights
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
@@ -109,15 +110,23 @@ case "validate_module":
 	if (sizeof($new_parameters)) {
 		$module->setAndWriteParameters($new_parameters);
 	}
-	if ($_GET["module"]=='standard') {
-		//$dialog->reloadAll();
-	}
 	$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 	if ($_GET["module"]=='standard') {
 		$parameters = $module->getParameters(false,true);
 	} else {
 		$parameters = $module->getParameters();
 	}
+break;
+case 'delete_module':
+	if ($module->destroy()) {
+		$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
+	} else {
+		$cms_message = 'Error during module deletion ...';
+	}
+	unset($module);
+	unset($modules);
+	unset($moduleCodename);
+	$modules = CMS_modulesCatalog::getAll("label", false, true);
 break;
 }
 
@@ -187,6 +196,14 @@ if (!sizeof($modules)) {
 						<input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_EXPORT).'" />
 					</td>
 				</form>';
+			}
+			if ($module->isDestroyable()) {
+				$content .= '
+					<form action="'.$_SERVER['SCRIPT_NAME'].'" method="post"onSubmit="return confirm(\''.$cms_language->getJsMessage(MESSAGE_PAGE_ACTION_DELETE_MODULE_CONFIRM, array($module->getLabel($cms_language))) . '\')">
+					<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
+					<input type="hidden" name="cms_action" value="delete_module" />
+					<td><input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_DELETE).'" /></td>
+					</form>';
 			}
 		}
 		$content .= '

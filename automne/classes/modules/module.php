@@ -671,15 +671,34 @@ class CMS_module extends CMS_grandFather
 	}
 	
 	/**
-	  * Totally destroys the module from database, and launch the file which is charged to destroy all the module files.
+	  * Does this module is destroyable ?
+	  *
+	  * @return boolean
+	  * @access public
+	  */
+	function isDestroyable() {
+		//@TODO
+		return false;
+	}
+	
+	/**
+	  * Remove the module from database
 	  *
 	  * @return void
 	  * @access public
 	  */
-	function destroy()
-	{
+	function destroy() {
 		if ($this->_id) {
-			//delete from database
+			//delete module messages
+			$sql = "
+				delete
+				from
+					messages
+				where
+					module_mes='".$this->_codename."'
+			";
+			$q = new CMS_query($sql);
+			//delete module record from database
 			$sql = "
 				delete
 				from
@@ -688,7 +707,10 @@ class CMS_module extends CMS_grandFather
 					id_mod='".$this->_id."'
 			";
 			$q = new CMS_query($sql);
+			
+			return true;
 		}
+		return false;
 	}
 	
 	/**

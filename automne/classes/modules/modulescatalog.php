@@ -103,11 +103,11 @@ class CMS_modulesCatalog extends CMS_grandFather
 	  * @return array(CMS_module) All the available modules sorted by label
 	  * @access public
 	  */
-	static function getAll($orderBy="label", $polymodOnly = false)
+	static function getAll($orderBy="label", $polymodOnly = false, $reset = false)
 	{
 		static $modules;
 		$hash = md5(serialize(func_get_args()));
-		if (isset($modules[$hash])) {
+		if (!$reset && isset($modules[$hash])) {
 			return $modules[$hash];
 		}
 		
@@ -152,7 +152,7 @@ class CMS_modulesCatalog extends CMS_grandFather
 		}
 		//in case of label ordering, check for missing modules (no labels founded for modules for current language)
 		if ($orderBy == 'label') {
-			$allCodenames = CMS_modulesCatalog::getAllCodenames();
+			$allCodenames = CMS_modulesCatalog::getAllCodenames($reset);
 			foreach ($allCodenames as $codename) {
 				if (!isset($modules[$hash][$codename])) {
 					$module = CMS_modulesCatalog::getByCodename($codename);
@@ -171,9 +171,9 @@ class CMS_modulesCatalog extends CMS_grandFather
 	  * @return array(codename => codename)
 	  * @access public
 	  */
-	static function getAllCodenames() {
+	static function getAllCodenames($reset = false) {
 		static $codenames;
-		if ($codenames) {
+		if (!$reset && $codenames) {
 			return $codenames;
 		}
 		$sql = "

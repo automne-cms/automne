@@ -1110,5 +1110,143 @@ class CMS_polymod extends CMS_modulePolymodValidation
 		}
 		return $return;
 	}
+	
+	/**
+	  * Does this module is destroyable ?
+	  *
+	  * @return boolean
+	  * @access public
+	  */
+	function isDestroyable() {
+		global $cms_user;
+		// Check module exists and is polymod
+		if($this->hasError() || !$this->isPolymod()){
+			return false;
+		}
+		//check if user is admin
+		if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
+			return false;
+		}
+		//check if module has objects
+		if (CMS_poly_object_catalog::getObjectsForModule($this->_codename)) {
+			return false;
+		}
+		// CHECK USED ROWS
+		$usedRows = array();
+		$rowsIds = CMS_rowsCatalog::getByModules(array($this->_codename), false, false);
+		if($rowsIds){
+			foreach($rowsIds as $rowId){
+				if (CMS_rowsCatalog::getPagesByRow($rowId, false, false)) {
+					$usedRows[] = $rowId;
+				}
+			}
+		}
+		// If any used rows : alert user and break module deletion
+		if($usedRows){
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	  * Destroy the module
+	  *
+	  * @return void
+	  * @access public
+	  */
+	function destroy () {
+		global $cms_user;
+		// Check module exists and is polymod
+		if (!$this->isDestroyable()) {
+			return false;
+		}
+		// CHECK USED ROWS
+		$rowsIds = CMS_rowsCatalog::getByModules(array($this->_codename), false, false);
+		//delete all module rows
+		foreach ($rowsIds as $rowId) {
+			$row = CMS_rowsCatalog::getByID($rowId);
+			if (is_object($row)) {
+				$row->destroy();
+			}
+		}
+		
+		// TREAT CATEGORIES
+		$attrs = array ( 
+			"module" => $this->_codename,
+			"language" => CMS_languagesCatalog::getDefaultLanguage(),
+			"level" => -1,
+			"root" => -1,
+			"cms_user" => $cms_user,
+			"clearanceLevel" => CLEARANCE_MODULE_EDIT,
+			"strict" => false,
+		);
+		$cats = CMS_moduleCategories_catalog::getAll($attrs);
+		if($cats){
+			foreach($cats as $cat){
+				// Destroy category
+				$cat->destroy();
+			}
+		}
+		
+		// TREAT MODULE & VALIDATIONS RIGHTS
+		$sql = "
+			select 
+				*
+			from
+				profiles
+			where
+				moduleClearancesStack_pr like '".io::sanitizeSQLString($this->_codename).",%'
+				 or moduleClearancesStack_pr like '%;".io::sanitizeSQLString($this->_codename).",%'
+		 ";
+		$q = new CMS_query($sql);
+		if ($q->getNumRows()) {
+			while($r = $q->getArray()) {
+				$stack = new CMS_stack();
+				$stack->setTextDefinition($r['moduleClearancesStack_pr']);
+				$stack->delAllWithOneKey($this->_codename);
+				$qInsert = new CMS_query("update profiles set moduleClearancesStack_pr='".io::sanitizeSQLString($stack->getTextDefinition())."' where id_pr='".$r['id_pr']."'");
+			}
+		}
+		$sql = "
+			select 
+				*
+			from
+				profiles
+			where
+				validationClearancesStack_pr like '".io::sanitizeSQLString($this->_codename).";%'
+				 or validationClearancesStack_pr like '%;".io::sanitizeSQLString($this->_codename).";%'
+				 or validationClearancesStack_pr = '".io::sanitizeSQLString($this->_codename)."'
+			";
+		$q = new CMS_query($sql);
+		if ($q->getNumRows()) {
+			while($r = $q->getArray()) {
+				$stack = new CMS_stack();
+				$stack->setTextDefinition($r['validationClearancesStack_pr']);
+				$stack->delAllWithOneKey($this->_codename);
+				$qInsert = new CMS_query("update profiles set validationClearancesStack_pr='".io::sanitizeSQLString($stack->getTextDefinition())."' where id_pr='".$r['id_pr']."'");
+			}
+		}
+		
+		//remove module files
+		if (CMS_file::deltreeSimulation(PATH_MODULES_FILES_FS.'/'.$this->_codename, true)) {
+			CMS_file::deltree(PATH_MODULES_FILES_FS.'/'.$this->_codename, true);
+		}
+		
+		//remove JS and CSS
+		if (is_dir(PATH_JS_FS.'/modules/'.$this->_codename) && CMS_file::deltreeSimulation(PATH_JS_FS.'/modules/'.$this->_codename, true)) {
+			CMS_file::deltree(PATH_JS_FS.'/modules/'.$this->_codename, true);
+		}
+		$cssFiles = $this->getCSSFiles();
+		foreach ($cssFiles as $mediaCssFiles) {
+			foreach ($mediaCssFiles as $cssFile) {
+				CMS_file::deleteFile(PATH_REALROOT_FS.'/'.$cssFile);
+			}
+		}
+		//Clear polymod cache
+		CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_codename));
+		
+		// Destroy module
+		return parent::destroy();
+	}
 }
 ?>
