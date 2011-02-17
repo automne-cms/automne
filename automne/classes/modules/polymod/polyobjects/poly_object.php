@@ -1332,7 +1332,8 @@ class CMS_poly_object extends CMS_resource
 				global $cms_language;
 				$language = $cms_language ? $cms_language : CMS_languagesCatalog::getDefaultLanguage();
 				$this->raiseError('Object field with ID '.$fieldID.' does not exists as a field of object '.$this->getFieldLabel($language));
-				return $this;
+				//return dummy object field (correct bug 536)
+				return new CMS_poly_object($this->_objectID);
 			}
 			return $this->_objectValues[$fieldID];
 		}

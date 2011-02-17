@@ -142,10 +142,12 @@ abstract class CMS_object_common extends CMS_grandFather
 			}
 		}
 		//set $this->_parameterValues
-		foreach ($this->_parameters as $parameterID => $parameter) {
-			$param = $field->getParameter($parameter['internalName']);
-			if (isset($param)) {
-				$this->_parameterValues[$parameterID] = $param;
+		if (is_object($field)) {
+			foreach ($this->_parameters as $parameterID => $parameter) {
+				$param = $field->getParameter($parameter['internalName']);
+				if (isset($param)) {
+					$this->_parameterValues[$parameterID] = $param;
+				}
 			}
 		}
 	}
