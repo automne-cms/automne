@@ -225,7 +225,7 @@ foreach ($all_languages as $aLanguage) {
 				'fieldLabel'		=> $cms_language->getMessage(MESSAGE_PAGE_FIELD_DESC),
 				'xtype'				=> 'fckeditor',
 				'name'				=> 'description_'.$aLanguage->getCode(),
-				'value'				=> (string) $item->getDescription($aLanguage, false),
+				'value'				=> (string) $item->getDescription($aLanguage, false, false),
 				'height'			=> 200,
 				'editor'			=> array(
 					'ToolbarSet' 		=> 'BasicLink',

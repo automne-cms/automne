@@ -489,20 +489,30 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * @param CMS_language $language 
 	 * @return string
 	 */
-	function getDescription($language = false, $useAlternative = true) {
+	function getDescription($language = false, $useAlternative = true, $pluginsCode = true) {
 		if(!$this->_descriptions) {
 			$this->_retrieveLabels();
 		}
 		if (!is_a($language, 'CMS_language')) {
 			$language = $this->_language;
 		}
+		$description = '';
 		if (is_a($language, 'CMS_language') && isset($this->_descriptions[$language->getCode()]) && $this->_descriptions[$language->getCode()]) {
-			return $this->_descriptions[$language->getCode()];
+			$description = $this->_descriptions[$language->getCode()];
 		} elseif ($useAlternative && isset($this->_descriptions[APPLICATION_DEFAULT_LANGUAGE]) && $this->_descriptions[APPLICATION_DEFAULT_LANGUAGE]) {
-			return $this->_descriptions[APPLICATION_DEFAULT_LANGUAGE];
+			$description = $this->_descriptions[APPLICATION_DEFAULT_LANGUAGE];
 		} else {
-			return '';
+			$description = '';
 		}
+		
+		if ($pluginsCode) {
+			//search and convert plugins codes
+			$description = FCKeditor::createAutomneLinks($description, $this->_moduleCodename);
+			//then eval all plugin codes
+			$callbackFunc = create_function('$string', 'ob_start();eval(sensitiveIO::sanitizeExecCommand("$string[2];"));$ret = ob_get_contents();ob_end_clean();return $ret;');
+			$description = preg_replace_callback("/(<\?php|<\?)(.*?)\?>/si", $callbackFunc, $description);
+		}
+		return $description;
 	}
 
 	/**
