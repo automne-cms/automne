@@ -431,7 +431,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	* @access public
 	*/
 	function redirect() {
-		$params = isset($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : '';
+		$params = (isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : '';
 		if (isset($_SERVER['HTTP_REFERER'])) {
 			header("Referer: ".$_SERVER['HTTP_REFERER']);
 		}

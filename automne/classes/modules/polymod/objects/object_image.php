@@ -1081,7 +1081,7 @@ class CMS_object_image extends CMS_object_common
 						if(file_exists($resizedImagepathFS)) {
 							return CMS_websitesCatalog::getMainURL() . PATH_MODULES_FILES_WR . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
 						} else {
-							return CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[0]->getValue() .'&module='. $moduleCodename .'&x='. $x .'&y='. $y.'&crop='.$crop.($location != RESOURCE_DATA_LOCATION_PUBLIC ? '&location='.$location : '');
+							return CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[0]->getValue() .'&amp;module='. $moduleCodename .'&amp;x='. $x .'&amp;y='. $y.'&amp;crop='.$crop.($location != RESOURCE_DATA_LOCATION_PUBLIC ? '&amp;location='.$location : '');
 						}
 					}
 				}
@@ -1109,7 +1109,7 @@ class CMS_object_image extends CMS_object_common
 						if(file_exists($resizedImagepathFS)) {
 							return CMS_websitesCatalog::getMainURL() . PATH_MODULES_FILES_WR . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
 						} else {
-							return CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[2]->getValue() .'&module='. $moduleCodename .'&x='. $x .'&y='. $y.'&crop='.$crop.($location != RESOURCE_DATA_LOCATION_PUBLIC ? '&location='.$location : '');
+							return CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[2]->getValue() .'&amp;module='. $moduleCodename .'&amp;x='. $x .'&amp;y='. $y.'&amp;crop='.$crop.($location != RESOURCE_DATA_LOCATION_PUBLIC ? '&amp;location='.$location : '');
 						}
 					}
 				}
