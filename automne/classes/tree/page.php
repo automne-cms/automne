@@ -386,7 +386,7 @@ class CMS_page extends CMS_resource
 						//check if page website is the main for the domain
 						$mainWS = CMS_websitesCatalog::getWebsiteFromDomain(@parse_url($wsURL, PHP_URL_HOST));
 						if ($mainWS && $mainWS->getID() == $ws->getID()) {
-							return $wsURL.PATH_REALROOT_WR;
+							return $wsURL.PATH_REALROOT_WR . (substr($wsURL.PATH_REALROOT_WR, -1) === '/' ? '' : '/');
 						}
 					}
 				}
