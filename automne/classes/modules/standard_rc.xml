@@ -12,9 +12,9 @@
 	<param name="NO_APPLICATION_MAIL" type="boolean">0</param>
 	<param name="LOG_SENDING_MAIL" type="boolean">1</param>
 	<param name="ERROR404_EMAIL_ALERT" type="boolean">1</param>
-	<param name="USE_PRINT_PAGES" type="boolean">1</param>
+	<param name="USE_PRINT_PAGES" type="boolean">0</param>
 	<param name="PAGE_LINK_NAME_IN_TREE" type="boolean">0</param>
-	<param name="OPEN_ZOOMIMAGE_IN_POPUP" type="boolean">1</param>
+	<param name="OPEN_ZOOMIMAGE_IN_POPUP" type="boolean">0</param>
 	<param name="NO_PAGES_EXTENDED_META_TAGS" type="boolean">0</param>
 	<param name="ALLOW_IMAGES_IN_WYSIWYG" type="boolean">0</param>
 </cms-module-parameters>

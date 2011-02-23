@@ -1123,19 +1123,18 @@ class CMS_object_image extends CMS_object_common
 				$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
 				//set location
 				$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
-
 				//link content
 				$img = '';
 				if ($parameters) {
 					$img = $parameters;
 				} elseif($this->_subfieldValues[0]->getValue()) { //bug 1380
-					$img = '<img src="'.PATH_MODULES_FILES_WR.'/'.$moduleCodename.'/'.$location.'/'.$this->_subfieldValues[0]->getValue().'" alt="'.$this->_subfieldValues[1]->getValue().'" title="'.$this->_subfieldValues[1]->getValue().'" />';
+					$img = '<img src="'.$this->getValue('image').'" alt="'.$this->_subfieldValues[1]->getValue().'" />';
 				}
 				//add link to zoom if any
 				if ($img && $this->_subfieldValues[2]->getValue()) {
 					$href = CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR . "/" . self::OBJECT_IMAGE_POPUP_FILE . '?'.(($location != RESOURCE_DATA_LOCATION_PUBLIC) ? 'location='.RESOURCE_DATA_LOCATION_EDITED.'&amp;':'').'file=' . $this->_subfieldValues[2]->getValue() . '&amp;label=' . urlencode($this->_subfieldValues[1]->getValue()).'&amp;module='.$moduleCodename;
 					$popup = (OPEN_ZOOMIMAGE_IN_POPUP) ? ' onclick="javascript:CMS_openPopUpImage(\''.addslashes($href).'\');return false;"':'';
-					$img = '<a target="_blank" href="'. $href . '"'.$popup.' title="'.$this->_subfieldValues[1]->getValue().'">' . $img . '</a>';
+					$img = '<a target="_blank" rel="atm-enlarged" href="'. $href . '"'.$popup.' title="'.$this->_subfieldValues[1]->getValue().'">' . $img . '</a>';
 				}
 				return $img;
 			break;

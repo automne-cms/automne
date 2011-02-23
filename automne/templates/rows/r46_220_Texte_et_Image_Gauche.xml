@@ -1,10 +1,10 @@
 <row>
 	<block module="standard" type="image" id="image" maxWidth="300">
-		<div class="imgLeft shadow">
+		<div class="left">
 			{{data}}
 		</div>
 	</block>
 	<block module="standard" type="text" id="texte">
-		<div class="text">{{data}}</div>
+		<div class="clearfix">{{data}}</div>
 	</block>
 </row>

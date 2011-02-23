@@ -96,8 +96,8 @@ DELETE FROM modulesCategories_clearances where category_mcc not in (1,2,18);
 DELETE FROM modulesCategories_i18nm where category_mcl not in (1,2,18);
 
 DELETE FROM pageTemplates;
-INSERT INTO `pageTemplates` (`id_pt`, `label_pt`, `groupsStack_pt`, `modulesStack_pt`, `definitionFile_pt`, `creator_pt`, `private_pt`, `image_pt`, `inUse_pt`, `printingCSOrder_pt`, `description_pt`, `websitesdenied_pt`) VALUES (1, 'Splash', 'fr', '', 'splash.xml', 0, 0, 'nopicto.gif', 0, '', 'Modèle vide. Employé pour les pages de redirections.', '');
-INSERT INTO `pageTemplates` (`id_pt`, `label_pt`, `groupsStack_pt`, `modulesStack_pt`, `definitionFile_pt`, `creator_pt`, `private_pt`, `image_pt`, `inUse_pt`, `printingCSOrder_pt`, `description_pt`, `websitesdenied_pt`) VALUES (2, 'Exemple', 'fr', 'standard', 'example.xml', 0, 0, 'nopicto.gif', 0, '', 'Modèle d''exemple.', '');
+INSERT INTO `pageTemplates` (`id_pt`, `label_pt`, `groupsStack_pt`, `modulesStack_pt`, `definitionFile_pt`, `creator_pt`, `private_pt`, `image_pt`, `inUse_pt`, `printingCSOrder_pt`, `description_pt`, `websitesdenied_pt`) VALUES (1,'[Vide] Redirection','fr','','splash.xml',0,0,'nopicto.gif',0,'','Modèle vide. Usuellement employé pour les pages de redirections.','');
+INSERT INTO `pageTemplates` (`id_pt`, `label_pt`, `groupsStack_pt`, `modulesStack_pt`, `definitionFile_pt`, `creator_pt`, `private_pt`, `image_pt`, `inUse_pt`, `printingCSOrder_pt`, `description_pt`, `websitesdenied_pt`) VALUES (2,'Exemple','fr','standard','example.xml',0,0,'nopicto.gif',0,'','Modèle d\'exemple. Comporte les différents tags Automne disponibles pour la création d\'un modèle de page.','');
 
 # To reset Pages ID
 DROP TABLE IF EXISTS `pages`;

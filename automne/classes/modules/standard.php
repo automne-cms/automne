@@ -1466,20 +1466,13 @@ class CMS_module_standard extends CMS_module
 				);
 			break;
 			case MODULE_TREATMENT_PAGEHEADER_TAGS :
-				switch ($visualizationMode) {
-					case PAGE_VISUALMODE_PRINT :
-						$return = array ();
-					break;
-					default:
-						$return = array (
-							"atm-keywords" 		=> array("selfClosed" => true, "parameters" => array()),
-							"atm-description" 	=> array("selfClosed" => true, "parameters" => array()),
-							"atm-meta-tags" 	=> array("selfClosed" => true, "parameters" => array()),
-							"atm-css-tags" 		=> array("selfClosed" => true, "parameters" => array()),
-							"atm-js-tags" 		=> array("selfClosed" => true, "parameters" => array()),
-						);
-					break;
-				}
+				$return = array (
+					"atm-keywords" 		=> array("selfClosed" => true, "parameters" => array()),
+					"atm-description" 	=> array("selfClosed" => true, "parameters" => array()),
+					"atm-meta-tags" 	=> array("selfClosed" => true, "parameters" => array()),
+					"atm-css-tags" 		=> array("selfClosed" => true, "parameters" => array()),
+					"atm-js-tags" 		=> array("selfClosed" => true, "parameters" => array()),
+				);
 			break;
 			case MODULE_TREATMENT_PAGECONTENT_TAGS :
 				$return = array (
@@ -1738,12 +1731,7 @@ class CMS_module_standard extends CMS_module
 									$files = array_merge($files, $tagFiles);
 									//append CMS_function.js file
 									if (!isset($usage['js-files']) && file_exists(PATH_JS_FS.'/CMS_functions.js')) {
-										
-										if (PATH_REALROOT_WR) {
-											$file = str_replace(PATH_REALROOT_WR.'/', '', PATH_JS_WR.'/CMS_functions.js');
-										} else {
-											$file = PATH_JS_WR.'/CMS_functions.js';
-										}
+										$file = str_replace(PATH_REALROOT_FS.'/', '', PATH_JS_FS.'/CMS_functions.js');
 										$files = array_merge($files, array($file));
 									}
 									//append swfobject for block flash

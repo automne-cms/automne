@@ -1,11 +1,11 @@
 <row>
 	<block module="standard" type="image" id="image" maxWidth="300">
-		<div class="imgRight shadow">
+		<div class="right">
 			{{data}}
 		</div>
 	</block>
 	<block module="standard" type="text" id="texte">
-		<div class="text">{{data}}</div>
+		<div class="clearfix">{{data}}</div>
 	</block>
 </row>
 

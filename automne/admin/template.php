@@ -177,74 +177,74 @@ $title = sensitiveIO::isPositiveInteger($templateId) ? $cms_language->getJSMessa
 $rowsURL = PATH_ADMIN_WR.'/templates-rows.php';
 
 $printTab = '';
-if (USE_PRINT_PAGES) {
-	$cstags = $template->getClientSpacesTags();
-	if (!is_array($cstags)) {
-		$cstags = array();
-	}
-	$clientspaces = array();
-	$printableCS = array();
-	$print_clientspaces = $template->getPrintingClientSpaces();
-	foreach ($cstags as $tag) {
-		$id = $tag->getAttribute("id");
-		//$module = $tag->getAttribute("module");
-		if (!in_array($id, $print_clientspaces)) {
-			$clientspaces[] = array($id);
-		} else {
-			$printableCS[] =  array($id);
-		}
-	}
-	$clientspaces = sensitiveIO::jsonEncode($clientspaces);
-	$printableCS = sensitiveIO::jsonEncode($printableCS);
-	
-	$printTab = ",{
-		id:				'printcs-{$templateId}',
-		title:			'{$cms_language->getJsMessage(MESSAGE_PAGE_PRINT)}',
-		layout: 		'form',
-		xtype:			'atmForm',
-		url:			'templates-controler.php',
-		bodyStyle: 		'padding:5px',
-		labelAlign:		'right',
-		border:			false,
-		buttonAlign:	'center',
-		items:[{
-			xtype:			'panel',
-			border:			false,
-			html:			'{$cms_language->getJsMessage(MESSAGE_PAGE_PRINT_DESC)}',
-			bodyStyle: 		'padding:10px 0 10px 0'
-		},{
-			xtype:			'itemselector',
-			name:			'printableCS',
-			fieldLabel:		'{$cms_language->getJsMessage(MESSAGE_PAGE_PRINT_ZONES)}',
-			dataFields:		['code'],
-			toData:			{$printableCS},
-			msWidth:		250,
-			msHeight:		130,
-			height:			140,
-			valueField:		'code',
-			displayField:	'code',
-			toLegend:		'{$cms_language->getJsMessage(MESSAGE_PAGE_SELECT)}',
-			fromLegend:		'{$cms_language->getJsMessage(MESSAGE_PAGE_AVAILABLE)}',
-			fromData:		{$clientspaces}
-		}],
-		buttons:[{
-			text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
-			iconCls:		'atm-pic-validate',
-			xtype:			'button',
-			name:			'submitAdmin',
-			handler:		function() {
-				var form = Ext.getCmp('printcs-{$templateId}').getForm();
-				form.submit({
-					params:{
-						action:		'printcs',
-						templateId:	templateWindow.templateId
-					},
-					scope:this
-				});
-			}
-		}]
-	}";
+
+$cstags = $template->getClientSpacesTags();
+if (!is_array($cstags)) {
+	$cstags = array();
 }
+$clientspaces = array();
+$printableCS = array();
+$print_clientspaces = $template->getPrintingClientSpaces();
+foreach ($cstags as $tag) {
+	$id = $tag->getAttribute("id");
+	//$module = $tag->getAttribute("module");
+	if (!in_array($id, $print_clientspaces)) {
+		$clientspaces[] = array($id);
+	} else {
+		$printableCS[] =  array($id);
+	}
+}
+$clientspaces = sensitiveIO::jsonEncode($clientspaces);
+$printableCS = sensitiveIO::jsonEncode($printableCS);
+
+$printTab = ",{
+	id:				'printcs-{$templateId}',
+	title:			'{$cms_language->getJsMessage(MESSAGE_PAGE_PRINT)}',
+	layout: 		'form',
+	xtype:			'atmForm',
+	url:			'templates-controler.php',
+	bodyStyle: 		'padding:5px',
+	labelAlign:		'right',
+	border:			false,
+	buttonAlign:	'center',
+	items:[{
+		xtype:			'panel',
+		border:			false,
+		html:			'{$cms_language->getJsMessage(MESSAGE_PAGE_PRINT_DESC)}',
+		bodyStyle: 		'padding:10px 0 10px 0'
+	},{
+		xtype:			'itemselector',
+		name:			'printableCS',
+		fieldLabel:		'{$cms_language->getJsMessage(MESSAGE_PAGE_PRINT_ZONES)}',
+		dataFields:		['code'],
+		toData:			{$printableCS},
+		msWidth:		250,
+		msHeight:		130,
+		height:			140,
+		valueField:		'code',
+		displayField:	'code',
+		toLegend:		'{$cms_language->getJsMessage(MESSAGE_PAGE_SELECT)}',
+		fromLegend:		'{$cms_language->getJsMessage(MESSAGE_PAGE_AVAILABLE)}',
+		fromData:		{$clientspaces}
+	}],
+	buttons:[{
+		text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+		iconCls:		'atm-pic-validate',
+		xtype:			'button',
+		name:			'submitAdmin',
+		handler:		function() {
+			var form = Ext.getCmp('printcs-{$templateId}').getForm();
+			form.submit({
+				params:{
+					action:		'printcs',
+					templateId:	templateWindow.templateId
+				},
+				scope:this
+			});
+		}
+	}]
+}";
+
 
 $automnePath = PATH_MAIN_WR;
 $jscontent = <<<END

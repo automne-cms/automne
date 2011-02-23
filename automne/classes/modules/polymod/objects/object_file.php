@@ -1270,12 +1270,15 @@ class CMS_object_file extends CMS_object_common
 		$structure['filePath'] = '';
 		$structure['thumbWidth'] = '';
 		$structure['thumbHeight'] = '';
+		$structure['imageWidth'] = '';
+		$structure['imageHeight'] = '';
 		$structure['thumbMaxWidth'] = '';
 		$structure['thumbMaxHeight'] = '';
 		$structure['fileSize'] = '';
 		$structure['fileIcon'] = '';
 		$structure['fileExtension'] = '';
 		$structure['thumbExtension'] = '';
+		
 		return $structure;
 	}
 	

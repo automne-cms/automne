@@ -181,11 +181,11 @@ class CMS_block_image extends CMS_block
 				$form_data=$this->_replaceBlockVars($data, $html_attributes, RESOURCE_DATA_LOCATION_EDITION, false);
 			} else {
 				$replace = array(
-					'{{data}}'				=> '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/image.gif" alt="X" title="X" '.$html_attributes.' />',
+					'{{data}}'				=> '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/image.gif" alt="X" '.$html_attributes.' />',
 					'{{label}}'				=> io::htmlspecialchars($data["label"]),
 					'{{jslabel}}'			=> io::htmlspecialchars($data["label"]),
 					'{{linkLabel}}'			=> io::htmlspecialchars($data["label"]),
-					'{{imageZoomHtml}}'	 	=> '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/image.gif" alt="X" title="X" '.$html_attributes.' />',
+					'{{imageZoomHtml}}'	 	=> '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/image.gif" alt="X" '.$html_attributes.' />',
 					'{{imagePath}}'			=> PATH_MODULES_FILES_STANDARD_WR,
 					'{{imageName}}'			=> 'image.gif',
 					'{{imageZoomHref}}'		=> '',
@@ -203,11 +203,11 @@ class CMS_block_image extends CMS_block
 			$this->_hasContent = false;
 			$this->_editable = false;
 			$replace = array(
-				'{{data}}'				=> '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/image.gif" alt="X" title="X" '.$html_attributes.' />',
+				'{{data}}'				=> '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/image.gif" alt="X" '.$html_attributes.' />',
 				'{{label}}'				=> io::htmlspecialchars($data["label"]),
 				'{{jslabel}}'			=> io::htmlspecialchars($data["label"]),
 				'{{linkLabel}}'			=> io::htmlspecialchars($data["label"]),
-				'{{imageZoomHtml}}'	 	=> '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/image.gif" alt="X" title="X" '.$html_attributes.' />',
+				'{{imageZoomHtml}}'	 	=> '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/image.gif" alt="X" '.$html_attributes.' />',
 				'{{imagePath}}'			=> PATH_MODULES_FILES_STANDARD_WR,
 				'{{imageName}}'			=> 'image.gif',
 				'{{imageZoomHref}}'		=> '',
@@ -257,25 +257,25 @@ class CMS_block_image extends CMS_block
 		$html_imageZoomHref='';
 		$html_imageZoomPop='';
 		if ($data["file"]) {
-			$html_img = '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/'.$folder.'/'.$data["file"].'" alt="'.io::htmlspecialchars($data["label"]).'" title="' . io::htmlspecialchars($data["label"]) . '" '.$html_attributes.' />';
+			$html_img = '<img src="'.CMS_websitesCatalog::getMainURL().PATH_MODULES_FILES_STANDARD_WR.'/'.$folder.'/'.$data["file"].'" alt="'.io::htmlspecialchars($data["label"]).'" '.$html_attributes.' />';
 		}
 		if ($data["enlargedFile"]) {
 			$html_imgZoomName = $data["enlargedFile"];
-			$html_imgZoomHtml = '<img src="'.PATH_MODULES_FILES_STANDARD_WR.'/'.$folder.'/'.$data["enlargedFile"].'" alt="'.io::htmlspecialchars($data["label"]).'" title="' . io::htmlspecialchars($data["label"]) . '" '.$html_attributes.' />';
+			$html_imgZoomHtml = '<img src="'.CMS_websitesCatalog::getMainURL().PATH_MODULES_FILES_STANDARD_WR.'/'.$folder.'/'.$data["enlargedFile"].'" alt="'.io::htmlspecialchars($data["label"]).'" '.$html_attributes.' />';
 		}
 		if ($data["enlargedFile"]) {
-			$href = PATH_REALROOT_WR . "/" . CMS_block_image::BLOCK_IMAGE_POPUP . '?location='.$folder.'&amp;file=' . $data["enlargedFile"] . '&amp;label=' . urlencode($data["label"]);
-			$popup = (OPEN_ZOOMIMAGE_IN_POPUP) ? ' onclick="javascript:CMS_openPopUpImage(\''.addslashes($href).'\');return false;"':'';
+			$href = (OPEN_ZOOMIMAGE_IN_POPUP) ? CMS_websitesCatalog::getMainURL().PATH_REALROOT_WR . "/" . CMS_block_image::BLOCK_IMAGE_POPUP . '?location='.$folder.'&amp;file=' . $data["enlargedFile"] . '&amp;label=' . urlencode($data["label"]) : CMS_websitesCatalog::getMainURL().PATH_MODULES_FILES_STANDARD_WR.'/'.$folder.'/'.$data["enlargedFile"];
+			$popup = (OPEN_ZOOMIMAGE_IN_POPUP) ? ' onclick="javascript:CMS_openPopUpImage(\''.addslashes($href).'\');return false;"' : '';
 			if ($html_img) {
-				$html = '<a target="_blank" href="'. $href . '"'.$popup.' title="' . io::htmlspecialchars($data["label"]) . '">' . $html_img . '</a>';
+				$html = '<a target="_blank" rel="atm-enlarge" href="'. $href . '"'.$popup.' title="' . io::htmlspecialchars($data["label"]) . '">' . $html_img . '</a>';
 			}
 			$html_imageZoomHref = $href;
 			$linkLabel = '<a class="imagezoomlink" target="_blank" href="'. $href . '"'.$popup.' title="' . io::htmlspecialchars($data["label"]) . '">' . io::htmlspecialchars($data["label"]) . '</a>';
 		} else {
 			if ($currentLink->getHTML(false,MOD_STANDARD_CODENAME,$location)) {
-				$html = $currentLink->getHTML($html_img,MOD_STANDARD_CODENAME, $location);
+				$html = $currentLink->getHTML($html_img, MOD_STANDARD_CODENAME, $location);
 				$currentLink->setLabel('');
-				$linkLabel = $currentLink->getHTML($data['label'],MOD_STANDARD_CODENAME, $location);
+				$linkLabel = $currentLink->getHTML($data['label'], MOD_STANDARD_CODENAME, $location);
 			} else {
 				$html = $html_img;
 				$linkLabel = io::htmlspecialchars($data["label"]);
@@ -287,7 +287,7 @@ class CMS_block_image extends CMS_block
 			'{{jslabel}}'		=> io::htmlspecialchars($data["label"]),
 			'{{linkLabel}}'		=> $linkLabel,
 			'{{imageZoomHtml}}'	=> $html_imgZoomHtml,
-			'{{imagePath}}'		=> PATH_MODULES_FILES_STANDARD_WR.'/'.$folder,
+			'{{imagePath}}'		=> CMS_websitesCatalog::getMainURL().PATH_MODULES_FILES_STANDARD_WR.'/'.$folder,
 			'{{imageName}}'		=> $data["file"],
 			'{{imageZoomHref}}'	=> $html_imageZoomHref,
 			'{{imageZoomName}}'	=> $html_imgZoomName,

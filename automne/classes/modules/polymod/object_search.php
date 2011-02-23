@@ -584,6 +584,7 @@ class CMS_object_search extends CMS_grandFather
 					$where = ($IDs) ? ' and objectID in ('.implode(',',$IDs).')':'';
 					//check operator
 					$supportedOperator = array(
+						'in',
 						'not in'
 					);
 					if ($operator && !in_array($operator, $supportedOperator)) {
@@ -596,6 +597,10 @@ class CMS_object_search extends CMS_grandFather
 					//no values to found so break search
 					if ((!is_array($value) || !$value) && $operator == 'in') {
 						$IDs = array();
+						break;
+					}
+					//no filter to do so break search
+					if ((!is_array($value) || !$value) && $operator == 'not in') {
 						break;
 					}
 					$sql = "
