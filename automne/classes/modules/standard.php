@@ -1486,8 +1486,8 @@ class CMS_module_standard extends CMS_module
 					"atm-main-url" 		=> array("selfClosed" => true, "parameters" => array()),
 					"atm-constant" 		=> array("selfClosed" => true, "parameters" => array()),
 					"atm-last-update" 	=> array("selfClosed" => false, "parameters" => array()),
-					"a"					=> array("selfClosed" => false, "parameters" => array('href' => '#(\w*)'),'class' => 'CMS_XMLTag_anchor'),
-					"area"				=> array("selfClosed" => false, "parameters" => array('href' => '#(\w*)'),'class' => 'CMS_XMLTag_anchor'),
+					"a"					=> array("selfClosed" => false, "parameters" => array('href' => '#([a-zA-Z0-9._-]*)'),'class' => 'CMS_XMLTag_anchor'),
+					"area"				=> array("selfClosed" => false, "parameters" => array('href' => '#([a-zA-Z0-9._-]*)'),'class' => 'CMS_XMLTag_anchor'),
 					"body" 				=> array("selfClosed" => false, "parameters" => array()),
 					"html" 				=> array("selfClosed" => false, "parameters" => array()),
 				);
