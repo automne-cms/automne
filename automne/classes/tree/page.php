@@ -557,6 +557,9 @@ class CMS_page extends CMS_resource
 			if (is_array($footerInclude) && $footerInclude) {
 				$content .= implode("\n",$footerInclude);
 			}
+			//replace {{pageID}} tag in all page content.
+			$content = str_replace('{{pageID}}', $this->getID(), $content);
+			
 			if ($visualizationMode != PAGE_VISUALMODE_HTML_PUBLIC 
 				&& $visualizationMode != PAGE_VISUALMODE_PRINT ) {
 				//eval() the PHP code
