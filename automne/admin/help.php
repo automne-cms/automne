@@ -65,7 +65,7 @@ foreach($modules as $module){
 $modulesInfo .= '</ul>';
 
 //Scripts content
-$content = $cms_language->getMessage(MESSAGE_PAGE_ABOUT_MESSAGE, array(AUTOMNE_VERSION, $lastUpdate, $polymodVersion, $modulesInfo));
+$content = $cms_language->getMessage(MESSAGE_PAGE_ABOUT_MESSAGE, array(AUTOMNE_VERSION, $lastUpdate, APPLICATION_DEFAULT_ENCODING, LIBXML_DOTTED_VERSION, $polymodVersion, $modulesInfo));
 
 $content = sensitiveIO::sanitizeJSString($content);
 
