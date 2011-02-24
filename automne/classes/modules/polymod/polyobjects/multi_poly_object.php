@@ -175,7 +175,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	function __construct($objectID, $datas = array(), $field, $public = false)
 	{
 		//first, remove paramters 3 if no module ASE founded
-		if (!class_exists('CMS_module_ase') && CMS_module_ase::isActive()) {
+		if (!class_exists('CMS_module_ase')) {
 			unset($this->_parameters[4]);
 			unset($this->_parameterValues[4]);
 		}
