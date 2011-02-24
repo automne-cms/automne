@@ -251,77 +251,80 @@ foreach ($modules as $module) {
 	if ($module->hasAdmin()
 		&& $module->getCodename() != MOD_STANDARD_CODENAME
 		&& $cms_user->hasModuleClearance($module->getCodename(), CLEARANCE_MODULE_EDIT)) {
-		$contentEl = '
-		<div id="module'.$module->getCodename().'DivPanel">
-			<ul>';
-				if (!method_exists($module,'getObjectsInfos')) {
-					$options = io::htmlspecialchars(sensitiveIO::jsonEncode(array('admin' => $module->getAdminFrontendPath(PATH_RELATIVETO_WEBROOT))));
-					$contentEl .= '<li><div class="atm-modules atm-sidepic"></div><a atm:action="module" atm:module="'.$module->getCodename().'" atm:version="3" href="#" atm:options="'.$options.'">'.$cms_language->getMessage(MESSAGE_PAGE_MODULE_ADMIN, array(io::htmlspecialchars($module->getLabel($cms_language)))).'</a></li>';
-				} else {
-					$objectsInfos = $module->getObjectsInfos($cms_user);
-					foreach ($objectsInfos as $objectsInfo) {
-						if (isset($objectsInfo['class']) && $objectsInfo['class'] == 'atm-separator') {
-							$contentEl .= '<li><div class="atm-separator"></div></li>';
-						} else {
-							$version = isset($objectsInfo['version']) ? $objectsInfo['version'] : 4;
-							if (isset($objectsInfo['description'])) {
-								$description = ' ext:qtip="'.io::htmlspecialchars($objectsInfo['description']).'"';
-								unset($objectsInfo['description']);
+		
+		$modLabel = sensitiveIO::sanitizeJSString($module->getLabel($cms_language));
+		if ($modLabel) {
+			$contentEl = '
+			<div id="module'.$module->getCodename().'DivPanel">
+				<ul>';
+					if (!method_exists($module,'getObjectsInfos')) {
+						$options = io::htmlspecialchars(sensitiveIO::jsonEncode(array('admin' => $module->getAdminFrontendPath(PATH_RELATIVETO_WEBROOT))));
+						$contentEl .= '<li><div class="atm-modules atm-sidepic"></div><a atm:action="module" atm:module="'.$module->getCodename().'" atm:version="3" href="#" atm:options="'.$options.'">'.$cms_language->getMessage(MESSAGE_PAGE_MODULE_ADMIN, array(io::htmlspecialchars($module->getLabel($cms_language)))).'</a></li>';
+					} else {
+						$objectsInfos = $module->getObjectsInfos($cms_user);
+						foreach ($objectsInfos as $objectsInfo) {
+							if (isset($objectsInfo['class']) && $objectsInfo['class'] == 'atm-separator') {
+								$contentEl .= '<li><div class="atm-separator"></div></li>';
 							} else {
-								$description = '';
+								$version = isset($objectsInfo['version']) ? $objectsInfo['version'] : 4;
+								if (isset($objectsInfo['description'])) {
+									$description = ' ext:qtip="'.io::htmlspecialchars($objectsInfo['description']).'"';
+									unset($objectsInfo['description']);
+								} else {
+									$description = '';
+								}
+								if (isset($objectsInfo['adminLabel'])) {
+									$label = io::htmlspecialchars($objectsInfo['adminLabel']);
+									unset($objectsInfo['adminLabel']);
+								} else {
+									$label = $cms_language->getMessage(MESSAGE_PAGE_MODULE_ADMIN, array(io::htmlspecialchars($module->getLabel($cms_language))));
+								}
+								$class = isset($objectsInfo['class']) ? $objectsInfo['class'] : 'atm-modules';
+								$contentEl .= '<li><div class="'.$class.' atm-sidepic"></div><a atm:action="module"'.$description.' atm:module="'.$module->getCodename().'" atm:version="'.$version.'" atm:options="'.io::htmlspecialchars(sensitiveIO::jsonEncode($objectsInfo)).'" href="#">'.$label.'</a></li>';
 							}
-							if (isset($objectsInfo['adminLabel'])) {
-								$label = io::htmlspecialchars($objectsInfo['adminLabel']);
-								unset($objectsInfo['adminLabel']);
-							} else {
-								$label = $cms_language->getMessage(MESSAGE_PAGE_MODULE_ADMIN, array(io::htmlspecialchars($module->getLabel($cms_language))));
-							}
-							$class = isset($objectsInfo['class']) ? $objectsInfo['class'] : 'atm-modules';
-							$contentEl .= '<li><div class="'.$class.' atm-sidepic"></div><a atm:action="module"'.$description.' atm:module="'.$module->getCodename().'" atm:version="'.$version.'" atm:options="'.io::htmlspecialchars(sensitiveIO::jsonEncode($objectsInfo)).'" href="#">'.$label.'</a></li>';
 						}
 					}
-				}
-		$contentEl .= '
-			</ul>
-		</div>';
-		//panel
-		$modLabel = sensitiveIO::sanitizeJSString($module->getLabel($cms_language));
-		$modulesPanels .= "{
-			id:					'module{$module->getCodename()}Panel',
-			frame:				true,
-			title: 				'{$modLabel}',
-			collapsible:		true,
-			titleCollapse: 		true,
-			collapsed:			true,
-			html:				'".sensitiveIO::sanitizeJSString($contentEl)."',
-			listeners:			{'expand': scrollPanel}";
-		//add modules parameters
-		if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
-			$modulesPanels .= ",
-			hideCollapseTool:	true,
-			tools: [{
-				id:				'gear',
-				handler:		function(e, toolEl, panel){
-					var window = new Automne.frameWindow({
-						id:				'modulesWindow',
-						frameURL:		'".PATH_MAIN_WR."/admin-v3/modules_admin.php?moduleCodename={$module->getCodename()}',
-						allowFrameNav:	true,
-						width:			750,
-						height:			580,
-						animateTarget:	e
-					});
-					window.show();
-				},
-				qtip:			'".$cms_language->getMessage(MESSAGE_PAGE_MODULE_PARAMETERS)."'
-			}, {
-				id:				'toggle',
-				handler:		function(e, toolEl, panel){
-					panel.toggleCollapse(true);
-				}
-			}]";
+			$contentEl .= '
+				</ul>
+			</div>';
+			//panel
+			$modulesPanels .= "{
+				id:					'module{$module->getCodename()}Panel',
+				frame:				true,
+				title: 				'{$modLabel}',
+				collapsible:		true,
+				titleCollapse: 		true,
+				collapsed:			true,
+				html:				'".sensitiveIO::sanitizeJSString($contentEl)."',
+				listeners:			{'expand': scrollPanel}";
+			//add modules parameters
+			if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
+				$modulesPanels .= ",
+				hideCollapseTool:	true,
+				tools: [{
+					id:				'gear',
+					handler:		function(e, toolEl, panel){
+						var window = new Automne.frameWindow({
+							id:				'modulesWindow',
+							frameURL:		'".PATH_MAIN_WR."/admin-v3/modules_admin.php?moduleCodename={$module->getCodename()}',
+							allowFrameNav:	true,
+							width:			750,
+							height:			580,
+							animateTarget:	e
+						});
+						window.show();
+					},
+					qtip:			'".$cms_language->getMessage(MESSAGE_PAGE_MODULE_PARAMETERS)."'
+				}, {
+					id:				'toggle',
+					handler:		function(e, toolEl, panel){
+						panel.toggleCollapse(true);
+					}
+				}]";
+			}
+			$modulesPanels .= "
+			},";
 		}
-		$modulesPanels .= "
-		},";
 	}
 }
 

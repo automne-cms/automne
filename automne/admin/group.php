@@ -181,23 +181,25 @@ $modules = CMS_modulesCatalog::getAll();
 unset($modules[MOD_STANDARD_CODENAME]);
 foreach ($modules as $codename => $module) {
 	$modLabel = sensitiveIO::sanitizeJSString($module->getLabel($cms_language));
-	$modulesTab .= ",{
-		id:					'group-{$codename}-{$groupId}',
-		title:				'{$modLabel}',
-		border:				false,
-		xtype:				'atmPanel',
-		autoScroll:			true,
-		autoLoad:		{
-			url:		'user-modules-rights.php',
-			params:			{
-				fatherId:		groupWindow.id,
-				module:			'{$codename}',
-				winId:			'group-{$codename}-{$groupId}',
-				groupId:		groupWindow.groupId
-			},
-			nocache:	true
-		}
-	}";
+	if ($modLabel) {
+		$modulesTab .= ",{
+			id:					'group-{$codename}-{$groupId}',
+			title:				'{$modLabel}',
+			border:				false,
+			xtype:				'atmPanel',
+			autoScroll:			true,
+			autoLoad:		{
+				url:		'user-modules-rights.php',
+				params:			{
+					fatherId:		groupWindow.id,
+					module:			'{$codename}',
+					winId:			'group-{$codename}-{$groupId}',
+					groupId:		groupWindow.groupId
+				},
+				nocache:	true
+			}
+		}";
+	}
 }
 //ADMIN TAB
 $adminTab = ",{

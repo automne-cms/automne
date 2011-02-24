@@ -279,23 +279,25 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
 	unset($modules[MOD_STANDARD_CODENAME]);
 	foreach ($modules as $codename => $module) {
 		$label = sensitiveIO::sanitizeJSString($module->getLabel($cms_language));
-		$modulesTab .= ",{
-			id:					'user-{$codename}-{$userId}',
-			title:				'{$label}',
-			border:				false,
-			xtype:				'atmPanel',
-			autoScroll:			true,
-			autoLoad:		{
-				url:		'user-modules-rights.php',
-				params:			{
-					fatherId:		userWindow.id,
-					module:			'{$codename}',
-					winId:			'user-{$codename}-{$userId}',
-					userId:			userWindow.userId
-				},
-				nocache:	true
-			}
-		}";
+		if ($label) {
+			$modulesTab .= ",{
+				id:					'user-{$codename}-{$userId}',
+				title:				'{$label}',
+				border:				false,
+				xtype:				'atmPanel',
+				autoScroll:			true,
+				autoLoad:		{
+					url:		'user-modules-rights.php',
+					params:			{
+						fatherId:		userWindow.id,
+						module:			'{$codename}',
+						winId:			'user-{$codename}-{$userId}',
+						userId:			userWindow.userId
+					},
+					nocache:	true
+				}
+			}";
+		}
 	}
 	//ADMIN TAB
 	$adminTab = ",{
