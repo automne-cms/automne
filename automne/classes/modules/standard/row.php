@@ -648,7 +648,7 @@ class CMS_row extends CMS_grandFather
 				}
 				$data = CMS_DOMDocument::DOMElementToString($rowXML, true);
 				//add row specification
-				//pr(io::htmlspecialchars($data), true);
+				
 				$data = '
 				<script type="text/javascript">
 					atmRowsDatas[\''.$rowId.'\'] = {

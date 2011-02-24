@@ -100,6 +100,11 @@ class CMS_DOMDocument extends DOMDocument {
 				$output = utf8_encode($output);
 			}
 		}
+		//to correct a bug in libXML < 2.6.27
+		if (LIBXML_VERSION < 20627 && strpos($output, '&#x') !== false) {
+			$output = preg_replace_callback('/(&#x[0-9A-Z]+;)/U', create_function('$matches', 'return io::decodeEntities($matches[0]);'), $output);
+		}
+		
 		//replace tags like <br></br> by auto closed tags and strip cariage return arround entities
 		$output = preg_replace(array('#\n(&[a-z]+;)\n#U', '#<('.$autoClosedTagsList.')([^>]*)></\1>#U'), array('\1', '<\1\2/>'), $output);
 		return $output;
