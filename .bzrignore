@@ -9,6 +9,7 @@
 ./automne/upload/*
 ./automne/tmp/*
 ./automne/linx/*
+./automne/ase/*
 ./automne_modules_files/*/*/*.*
 ./automne_modules_files/*/*.*
 ./automne_modules_files/*
