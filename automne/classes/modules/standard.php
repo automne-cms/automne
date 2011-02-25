@@ -1696,10 +1696,8 @@ class CMS_module_standard extends CMS_module
 						return preg_replace('#</body>$#', $statsCode."\n".'</body>', $tag->getContent());
 					break;
 					case "html":
-						//replace {{pageID}} tag in all page content.
-						$content = str_replace('{{pageID}}', $treatedObject->getID(), $tag->getContent());
 						//Append DTD
-						return '<?php if (defined(\'APPLICATION_XHTML_DTD\')) echo APPLICATION_XHTML_DTD."\n"; ?>'."\n".$content;
+						return '<?php if (defined(\'APPLICATION_XHTML_DTD\')) echo APPLICATION_XHTML_DTD."\n"; ?>'."\n".$tag->getContent();
 					break;
 				}
 				return '';
