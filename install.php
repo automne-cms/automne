@@ -678,15 +678,15 @@ if (!isset($_GET['file'])) {
 		//read current dir and search archive (.tar.gz or .tgz file)
 		$directory = dir(realpath(dirname(__FILE__)));
 		
-		$archiveFound=false;
+		$archiveFound = false;
 		while (false !== ($file = $directory->read())) {
 			if ($file!='.' && $file!='..') {
-				if ((strpos($file, '.tar.gz')!==false || strpos($file, '.tgz')!==false) && strpos($file, 'automne')!==false) {
-					$archiveFound=true;
+				if ((strpos($file, '.tar.gz') !== false || strpos($file, '.tgz') !== false) && strpos($file, 'automne') !== false && strpos($file, '._') !== 0) {
+					$archiveFound = true;
 					$archiveFile = $file;
 				}
-				if ($file == 'cms_rc_frontend.php') {
-					//archive allready uncompressed, then skip to next installation step
+				if ($file == 'cms_rc.php') {
+					//archive already uncompressed, then skip to next installation step
 					$step = 'gpl';
 				}
 			}
