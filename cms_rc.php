@@ -471,7 +471,7 @@ if (!defined("PATH_PAGES_WR")) {
 	define("PATH_PAGES_WR", PATH_REALROOT_WR."/web");
 }
 if (!defined("PATH_PAGES_FS")) {
-	define("PATH_PAGES_FS", PATH_REALROOT_FS."/web");
+	define("PATH_PAGES_FS", $_SERVER["DOCUMENT_ROOT"].PATH_PAGES_WR);
 }
 
 /**

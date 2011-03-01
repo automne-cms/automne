@@ -433,9 +433,19 @@ class CMS_website extends CMS_grandFather
 			if (SensitiveIO::isInSet($relativeTo, array(PATH_RELATIVETO_WEBROOT, PATH_RELATIVETO_FILESYSTEM))) {
 				$relative = ($relativeTo == PATH_RELATIVETO_WEBROOT) ? PATH_PAGES_WR : PATH_PAGES_FS;
 				if ($this->_isMain) {
+					if (!is_dir(PATH_PAGES_FS)) {
+						if (CMS_file::makeDir(PATH_PAGES_FS)) {
+							$this->raiseError('Can\'t create pages dir : '.PATH_PAGES_FS);
+						}
+					}
 					return $relative;
 				} else {
-					return $relative."/".io::sanitizeAsciiString($this->_codename);
+					if (!is_dir(PATH_PAGES_FS."/".io::sanitizeAsciiString($this->_codename))) {
+						if (CMS_file::makeDir(PATH_PAGES_FS."/".io::sanitizeAsciiString($this->_codename))) {
+							$this->raiseError('Can\'t create pages dir : '.PATH_PAGES_FS.'/'.io::sanitizeAsciiString($this->_codename));
+						}
+					}
+					return $relative.'/'.io::sanitizeAsciiString($this->_codename);
 				}
 			} else {
 				$this->raiseError("Can't give pages path relative to anything other than WR or FS");

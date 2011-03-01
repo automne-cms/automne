@@ -31,4 +31,7 @@ Thumbs.db
 ./img/demo
 ./js/modules/*/*-demo.js
 ./js/modules/*
-./sql/demo-*.sql
+./js/demo
+./js/demo/*
+./automne/sql/demo-*.sql
+./automne/templates/images/*
