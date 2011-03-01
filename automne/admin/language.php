@@ -125,7 +125,8 @@ $itemFields = "{
 	}),
 	allowBlank:		 	false,
 	selectOnFocus:		true,
-	editable:			false,
+	editable:			true,
+	typeAhead:			true,
 	validateOnBlur:		false,
 	disabled:			{$selectLanguageDisabled}
 },{
