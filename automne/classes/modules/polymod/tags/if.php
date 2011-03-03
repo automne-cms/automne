@@ -73,8 +73,11 @@ class CMS_XMLTag_if extends CMS_XMLTag
 		}
 		$return .= '
 		if ($ifcondition_'.$this->_uniqueID.'):
-			$func_'.$this->_uniqueID.' = create_function("","return (".$ifcondition_'.$this->_uniqueID.'.");");
-			if ($func_'.$this->_uniqueID.'()):
+			$func_'.$this->_uniqueID.' = @create_function("","return (".$ifcondition_'.$this->_uniqueID.'.");");
+			if ($func_'.$this->_uniqueID.' === false) {
+				CMS_grandFather::raiseError(\'Error in atm-if ['.$this->_uniqueID.'] syntax : \'.$ifcondition_'.$this->_uniqueID.');
+			}
+			if ($func_'.$this->_uniqueID.' && $func_'.$this->_uniqueID.'()):
 			';
 				//if attribute name is set, store if result
 				if (isset($this->_attributes['name']) && $this->_attributes['name']) {

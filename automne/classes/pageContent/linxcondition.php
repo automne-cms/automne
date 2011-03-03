@@ -144,6 +144,9 @@ class CMS_linxCondition extends CMS_grandFather
 			$func_body = sprintf('return (%s %s %s);', $page_value, $this->_operator, $condition_value);
 		}
 		$func = @create_function('', $func_body);
+		if (!$func) {
+			return false;
+		}
 		return @$func();
 	}
 	

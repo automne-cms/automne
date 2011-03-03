@@ -1,5 +1,5 @@
 V4.1.1 (in progress)
-[BUG] : Correct bugs numbers: 1742, 1746 (see http://www.automne-cms.org/bug/)
+[BUG] : Correct bugs numbers: 1742, 1746, 1715 (see http://www.automne-cms.org/bug/)
 [REFACTOR] : Update JSMin to last version available
 
 V4.1.0 (24/02/2011)

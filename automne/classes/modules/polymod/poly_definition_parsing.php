@@ -1210,7 +1210,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		$xmlCondition = CMS_polymod_definition_parsing::replaceVars("'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['what'], false, false, array('CMS_polymod_definition_parsing', 'encloseWithPrepareVar')).'", $replace);
 		if ($xmlCondition) {
 			$func = create_function("","return (".$xmlCondition.");");
-			if ($func()) {
+			if ($func && $func()) {
 				'.$return.'
 				$content = CMS_polymod_definition_parsing::replaceVars($content, $replace);
 			}
