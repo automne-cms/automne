@@ -28,11 +28,13 @@ if (!$website) {
 	$website = CMS_websitesCatalog::getMainWebsite();
 }
 $rootPage = $website->getRoot();
-//redirect to subpage if any
-$redirectlink = $rootPage->getRedirectLink(true);
-while ($redirectlink->hasValidHREF() && sensitiveIO::IsPositiveInteger($redirectlink->getInternalLink())) {
-	$rootPage = new CMS_page($redirectlink->getInternalLink());
+if ($rootPage->getPublication() == RESOURCE_PUBLICATION_PUBLIC) {
+	//redirect to subpage if any
 	$redirectlink = $rootPage->getRedirectLink(true);
+	while ($redirectlink->hasValidHREF() && sensitiveIO::IsPositiveInteger($redirectlink->getInternalLink())) {
+		$rootPage = new CMS_page($redirectlink->getInternalLink());
+		$redirectlink = $rootPage->getRedirectLink(true);
+	}
 }
 $pPath = $rootPage->getHTMLURL(false, false, PATH_RELATIVETO_FILESYSTEM);
 if ($pPath) {
