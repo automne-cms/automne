@@ -354,15 +354,17 @@ class CMS_modulesTags extends CMS_grandFather
 						$code .= $this->treatWantedTag($xmlTag);
 					} else {
 						//append computed tags as code
-						$code .= $this->_parser->toXML($xml, false, (isset($this->_treatmentParameters['replaceVars']) && isset($this->_treatmentParameters['replaceVars']) == true));
-						
+						$code .= $this->_parser->toXML($xml, false, (isset($this->_treatmentParameters['replaceVars']) && $this->_treatmentParameters['replaceVars'] == true));
 					}
 				} else {
 					//append text node
 					$xml = array($definition[$key]);
-					$code .= $this->_parser->toXML($xml, false, (isset($this->_treatmentParameters['replaceVars']) && isset($this->_treatmentParameters['replaceVars']) == true));
+					$code .= $this->_parser->toXML($xml, false, (isset($this->_treatmentParameters['replaceVars']) && $this->_treatmentParameters['replaceVars'] == true));
 				}
 			}
+		}
+		if (is_a($this->_treatedObject, 'CMS_page') && isset($this->_treatmentParameters['replaceVars']) && $this->_treatmentParameters['replaceVars'] == true) {
+			$code = str_replace('{{pageID}}', $this->_treatedObject->getID(), $code);
 		}
 		return $code;
 	}

@@ -2098,7 +2098,7 @@ class CMS_module_standard extends CMS_module
 	  * @return array of replacements values (pattern to replace => replacement)
 	  * @access public
 	  */
-	function getModuleReplacements($parameterVarName) {
+	function getModuleReplacements() {
 		$replace = array();
 		
 		//replace '{vartype:type:name}' value by corresponding var call
@@ -2106,7 +2106,7 @@ class CMS_module_standard extends CMS_module
 		$replace["#^\{(var|request|session|constant)\:([^:]*?(::)?[^:]*?):([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_poly_definition_functions::getVarContent("\1", "\4", "\2", "\4")';
 		
 		//replace '{page:id:type}' value by corresponding CMS_tree::getPageValue(id, type) call
-		$replace["#^\{page\:([^:]*?(::)?[^:]*?)\:([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_tree::getPageValue("\1", "\3", @$public_search, @$'.$parameterVarName.'["pageID"])';
+		$replace["#^\{page\:([^:]*?(::)?[^:]*?)\:([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_tree::getPageValue("\1", "\3", @$public_search, \'{{pageID}}\')';
 		
 		//replace '{user:id:type}' value by corresponding CMS_profile_usersCatalog::getUserValue(id, type) call
 		$replace["#^\{user\:([^:]*?(::)?[^:]*?)\:([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_profile_usersCatalog::getUserValue("\1", "\3", (isset($cms_user) ? $cms_user->getUserId() : null))';

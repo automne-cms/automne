@@ -1563,7 +1563,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				$replacements = array();
 				$modules = CMS_modulesCatalog::getAll("id");
 				foreach ($modules as $codename => $aModule) {
-					$moduleReplacements = $aModule->getModuleReplacements('parameters');
+					$moduleReplacements = $aModule->getModuleReplacements();
 					if (is_array($moduleReplacements) && $moduleReplacements) {
 						foreach ($moduleReplacements as $pattern => $replacement) {
 							$replacements[$pattern] = $replacement;

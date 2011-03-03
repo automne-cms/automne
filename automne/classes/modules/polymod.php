@@ -802,10 +802,10 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return array of replacements values (pattern to replace => replacement)
 	  * @access public
 	  */
-	function getModuleReplacements($parameterVarName) {
+	function getModuleReplacements() {
 		$replace = array();
 		//replace {plugin:selection} values
-		$replace["#^\{plugin:selection\}$#U"]								= '$'.$parameterVarName.'[\'selection\']';
+		$replace["#^\{plugin:selection\}$#U"]								= '$parameters[\'selection\']';
 		//replace 'fieldID' value by corresponding fieldID
 		$replace["#^\{.*\[([n0-9]+)\]\['fieldID'\]\}$#U"] 					= '\1';
 		//create the real object path to vars
