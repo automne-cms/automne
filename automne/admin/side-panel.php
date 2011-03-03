@@ -124,7 +124,7 @@ if ($cms_user->hasValidationClearance() && APPLICATION_ENFORCES_WORKFLOW) {
 	$contentEl .= '</div>';
 	//panel
 	$validationsPanel = "{
-		id:					'validationsPanel',
+		id:					'validationsSidePanel',
 		frame:				true,
 		xtype:				'atmPanel',
 		title: 				'{$cms_language->getMessage(MESSAGE_PAGE_VALIDATIONS_PENDING)} : {$validationsCount}',
@@ -193,7 +193,7 @@ if (isset($modules[MOD_STANDARD_CODENAME]) && $cms_user->hasModuleClearance(MOD_
 	</div>';
 	//panel
 	$modulesPanels .= "{
-		id:					'module{$module->getCodename()}Panel',
+		id:					'module{$module->getCodename()}SidePanel',
 		frame:				true,
 		title: 				'".$cms_language->getMessage(MESSAGE_PAGE_PAGE_MANAGEMENT)."',
 		collapsible:		true,
@@ -289,7 +289,7 @@ foreach ($modules as $module) {
 			</div>';
 			//panel
 			$modulesPanels .= "{
-				id:					'module{$module->getCodename()}Panel',
+				id:					'module{$module->getCodename()}SidePanel',
 				frame:				true,
 				title: 				'{$modLabel}',
 				collapsible:		true,
@@ -345,7 +345,7 @@ $contentEl .= '
 </div>';
 //panel
 $usersPanel = "{
-	id:					'usersPanel',
+	id:					'usersSidePanel',
 	frame:				true,
 	title: 				'".$cms_language->getMessage(MESSAGE_PAGE_USERS_MANAGEMENT)."',
 	collapsible:		true,
@@ -378,7 +378,7 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES) || $cms_use
 	</div>';
 	//panel
 	$templatesPanel = "{
-		id:					'templatesPanel',
+		id:					'templatesSidePanel',
 		frame:				true,
 		title: 				'".$cms_language->getMessage(MESSAGE_PAGE_TEMPLATES)."',
 		collapsible:		true,
@@ -416,7 +416,7 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) || $c
 	</div>';
 	//panel
 	$adminPanel = "{
-		id:					'adminPanel',
+		id:					'adminSidePanel',
 		frame:				true,
 		title: 				'".$cms_language->getMessage(MESSAGE_PAGE_ADMIN)."',
 		collapsible:		true,
@@ -579,7 +579,7 @@ $jscontent = <<<END
 			}, 800, 600);
 			win.on('close', function() {
 				//try to refresh validation panel
-				var validationPanel = Ext.getCmp('validationsPanel');
+				var validationPanel = Ext.getCmp('validationsSidePanel');
 				if (validationPanel) validationPanel.refresh();
 			});
     	},

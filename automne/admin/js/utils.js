@@ -58,7 +58,7 @@ Automne.utils = {
 		});
 		//try to refresh validation panel
 		if (!Ext.getCmp('validationsWindow')) {
-			var validationPanel = Ext.getCmp('validationsPanel');
+			var validationPanel = Ext.getCmp('validationsSidePanel');
 			if (validationPanel) validationPanel.refresh();
 		}
 		pr('switchStatus : '+ statusId +' : '+ count +' statuses switched');
@@ -96,7 +96,7 @@ Automne.utils = {
 			win.show(el);
 			win.on('close', function() {
 				//try to refresh validation panel
-				var validationPanel = Ext.getCmp('validationsPanel');
+				var validationPanel = Ext.getCmp('validationsSidePanel');
 				if (validationPanel) validationPanel.refresh();
 			});
 			return true;
