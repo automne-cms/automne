@@ -31,9 +31,13 @@ $rootPage = $website->getRoot();
 if ($rootPage->getPublication() == RESOURCE_PUBLICATION_PUBLIC) {
 	//redirect to subpage if any
 	$redirectlink = $rootPage->getRedirectLink(true);
-	while ($redirectlink->hasValidHREF() && sensitiveIO::IsPositiveInteger($redirectlink->getInternalLink())) {
+	while ($redirectlink && $redirectlink->hasValidHREF() && sensitiveIO::IsPositiveInteger($redirectlink->getInternalLink())) {
 		$rootPage = new CMS_page($redirectlink->getInternalLink());
-		$redirectlink = $rootPage->getRedirectLink(true);
+		if ($rootPage->getPublication() == RESOURCE_PUBLICATION_PUBLIC) {
+			$redirectlink = $rootPage->getRedirectLink(true);
+		} else {
+			$redirectlink = '';
+		}
 	}
 }
 $pPath = $rootPage->getHTMLURL(false, false, PATH_RELATIVETO_FILESYSTEM);

@@ -449,3 +449,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(598, 'polymod', 'en', 'Field description when selecting multiple categories.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(599, 'polymod', 'en', 'To search for a different value of the specified value.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(600, 'polymod', 'en', 'If the value is an array of values, lets you search elements among these values or elements that do not belong to these values.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(601, 'polymod', 'en', 'Unpublish %s selected elements: Sets the end date of publication of the item to the date of yesterday. The item will no longer be available online. This action is subject to validation and may be canceled.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(602, 'polymod', 'en', 'Re-publish %s selected elements: Delete the end date of publication of the item. The item will again be available online. This action is subject to validation and may be canceled.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(603, 'polymod', 'en', 'Unpublish');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(604, 'polymod', 'en', 'Publish');

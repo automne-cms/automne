@@ -69,7 +69,10 @@ define("MESSAGE_PAGE_FIELD_KEYWORDS_OPTIONS", 585);
 define("MESSAGE_PAGE_FIELD_KEYWORDS_ANY", 586);
 define("MESSAGE_PAGE_FIELD_KEYWORDS_ALL", 587);
 define("MESSAGE_PAGE_FIELD_KEYWORDS_PHRASE", 588);
-
+define("MESSAGE_ACTION_UNPUBLISH", 603);
+define("MESSAGE_ACTION_PUBLISH", 604);
+define("MESSAGE_ACTION_PUBLISH_SELECTED", 602);
+define("MESSAGE_ACTION_UNPUBLISH_SELECTED", 601);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -581,7 +584,7 @@ $jscontent = <<<END
 			module:			'{$codename}',
 			objectId:		'{$objectId}'
 		},
-		fields:			['id', 'status', 'pubrange', 'label', 'description', 'locked', 'deleted', 'previz', 'edit'],
+		fields:			['id', 'status', 'pubrange', 'label', 'description', 'locked', 'deleted', 'previz', 'edit', 'published', 'unpublished'],
 		listeners:		{
 			'load': 		{fn:function(store, records, options){
 				var resultsPanel = Ext.getCmp('{$winId}resultsPanel');
@@ -731,6 +734,26 @@ $jscontent = <<<END
 				scope:		resultsPanel,
 				hidden:		true
 			},{
+				id:			'{$winId}publishItem',
+				iconCls:	'atm-pic-publish',
+				xtype:		'button',
+				text:		'{$cms_language->getJSMessage(MESSAGE_ACTION_PUBLISH, false, MOD_POLYMOD_CODENAME)}',
+				handler:	function(button) {
+					refresh(selectedObjects, {publish:true});
+				},
+				scope:		resultsPanel,
+				hidden:		true
+			},{
+				id:			'{$winId}unpublishItem',
+				iconCls:	'atm-pic-unpublish',
+				xtype:		'button',
+				text:		'{$cms_language->getJSMessage(MESSAGE_ACTION_UNPUBLISH, false, MOD_POLYMOD_CODENAME)}',
+				handler:	function(button) {
+					refresh(selectedObjects, {unpublish:true});
+				},
+				scope:		resultsPanel,
+				hidden:		true
+			},{
 				id:			'{$winId}unlockItem',
 				iconCls:	'atm-pic-unlock',
 				xtype:		'button',
@@ -850,6 +873,16 @@ $jscontent = <<<END
 		html: 			'{$cms_language->getJSMessage(MESSAGE_ACTION_UNDELETE_SELECTED, array($object->getLabel($cms_language)), MOD_POLYMOD_CODENAME)}',
 		disabled:		true
 	});
+	qtips['publish'] = new Ext.ToolTip({
+		target: 		Ext.getCmp('{$winId}publishItem').getEl(),
+		html: 			'{$cms_language->getJSMessage(MESSAGE_ACTION_PUBLISH_SELECTED, array($object->getLabel($cms_language)), MOD_POLYMOD_CODENAME)}',
+		disabled:		true
+	});
+	qtips['unpublish'] = new Ext.ToolTip({
+		target: 		Ext.getCmp('{$winId}unpublishItem').getEl(),
+		html: 			'{$cms_language->getJSMessage(MESSAGE_ACTION_UNPUBLISH_SELECTED, array($object->getLabel($cms_language)), MOD_POLYMOD_CODENAME)}',
+		disabled:		true
+	});
 	qtips['unlock'] = new Ext.ToolTip({
 		target: 		Ext.getCmp('{$winId}unlockItem').getEl(),
 		html: 			'{$cms_language->getJSMessage(MESSAGE_ACTION_UNLOCK_SELECTED, array($object->getLabel($cms_language)), MOD_POLYMOD_CODENAME)}',
@@ -877,7 +910,7 @@ $jscontent = <<<END
 			selectedObjects[selectedObjects.length] = selections[i].id.substr(7);
 		}
 		//check for options in common for all objects
-		var hasEdit = true, hasDelete = true, hasPreviz = true, hasUndelete = true, hasUnlock = true;
+		var hasEdit = true, hasDelete = true, hasPreviz = true, hasUndelete = true, hasUnlock = true, hasPublish = false, hasUnpublish = false;
 		for (var i = 0; i < selectLen; i++) {
 			var datas = store.getById(selectedObjects[i]).data;
 			//edit
@@ -901,6 +934,14 @@ $jscontent = <<<END
 			if (!datas.previz) {
 				hasPreviz = false;
 			}
+			//unpublish
+			if (datas.unpublished) {
+				hasUnpublish = true;
+			}
+			//publish
+			if (datas.published) {
+				hasPublish = true;
+			}
 		}
 		if (!selectLen) { //if no row selected, disable all buttons
 			qtips['edit'].disable();
@@ -908,24 +949,33 @@ $jscontent = <<<END
 			qtips['previz'].disable();
 			qtips['unlock'].disable();
 			qtips['undelete'].disable();
+			qtips['publish'].disable();
+			qtips['unpublish'].disable();
 			
 			Ext.getCmp('{$winId}editItem').disable();
 			Ext.getCmp('{$winId}deleteItem').disable();
 			Ext.getCmp('{$winId}previzItem').hide();
 			Ext.getCmp('{$winId}unlockItem').hide();
 			Ext.getCmp('{$winId}undeleteItem').hide();
+			Ext.getCmp('{$winId}publishItem').hide();
+			Ext.getCmp('{$winId}unpublishItem').hide();
+			
 		} else { //enable / disable buttons allowed by selection
 			qtips['edit'].setDisabled(!hasEdit);
 			qtips['delete'].setDisabled(!hasDelete);
 			qtips['previz'].setDisabled(!hasPreviz);
 			qtips['unlock'].setDisabled(!hasUnlock);
 			qtips['undelete'].setDisabled(!hasUndelete);
+			qtips['publish'].setDisabled(!(hasUnpublish && !hasPublish));
+			qtips['unpublish'].setDisabled(!(hasPublish && !hasUnpublish));
 			
 			Ext.getCmp('{$winId}editItem').setDisabled(!hasEdit);
 			Ext.getCmp('{$winId}deleteItem').setDisabled(!hasDelete);
 			Ext.getCmp('{$winId}previzItem').setVisible(hasPreviz);
 			Ext.getCmp('{$winId}unlockItem').setVisible(hasUnlock);
 			Ext.getCmp('{$winId}undeleteItem').setVisible(hasUndelete);
+			Ext.getCmp('{$winId}publishItem').setVisible(hasUnpublish && !hasPublish);
+			Ext.getCmp('{$winId}unpublishItem').setVisible(hasPublish && !hasUnpublish);
 		}
 		if (Ext.getCmp('{$winId}toolbar')) {
 			Ext.getCmp('{$winId}toolbar').syncSize();

@@ -1,6 +1,7 @@
 V4.1.1 (in progress)
 [BUG] : Correct bugs numbers: 1742, 1746, 1715, 1753 (see http://www.automne-cms.org/bug/)
 [REFACTOR] : Update JSMin to last version available
+[FEATURE] : Add publish and unpublish tools to pages and polymod primary resource objects
 
 V4.1.0 (24/02/2011)
 [BUG] : Correct bugs numbers: 1432, 1412, 1410, 1432, 1430, 1389, 1380, 1362, 1315, 1243, 1209, 1062, 522, 883, 539, 930, 536, 535, 519, 293 (see http://www.automne-cms.org/bug/)

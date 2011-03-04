@@ -42,10 +42,12 @@ if ($_SERVER['REQUEST_URI'] && $_SERVER['REQUEST_URI'] != $_SERVER['SCRIPT_NAME'
 		if (file_exists($pageURL)) {
 			$redirectTo = $page->getURL( (substr($basename,0,5) == 'print' ? true : false));
 		} else {
-			//try to get direct html file
-			$pageURL = $page->getHTMLURL( (substr($basename,0,5) == 'print' ? true : false) , false, PATH_RELATIVETO_FILESYSTEM);
-			if (file_exists($pageURL)) {
-				$redirectTo = $page->getHTMLURL( (substr($basename,0,5) == 'print' ? true : false));
+			//try to regenerate page
+			if ($page->regenerate(true)) {
+				clearstatcache ();
+				if (file_exists($pageURL)) {
+					$redirectTo = $page->getURL( (substr($basename,0,5) == 'print' ? true : false));
+				}
 			}
 		}
 	}

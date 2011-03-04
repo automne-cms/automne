@@ -1270,6 +1270,14 @@ td.x-grid3-hd-over, td.sort-desc, td.sort-asc, td.x-grid3-hd-menu-open{
 	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -361px; /*-364px;*/
 }
+.x-toolbar .x-btn-text-icon .x-btn-mc .atm-pic-publish{
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
+	background-position:			0px -385px;
+}
+.x-toolbar .x-btn-text-icon .x-btn-mc .atm-pic-unpublish{
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
+	background-position:			0px -1249px;
+}
 .x-toolbar .x-btn-text-icon .x-btn-mc .atm-pic-undelete{
 	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -265px; /*-268px;*/
@@ -1484,6 +1492,14 @@ td.x-grid3-hd-over, td.sort-desc, td.sort-asc, td.x-grid3-hd-menu-open{
 .x-menu-item .atm-pic-validate{
 	background-image:				url(../automne/admin/img/pictos/pictos.png);
 	background-position:			0px -388px;
+}
+.x-menu-item .atm-pic-publish{
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
+	background-position:			0px -388px;
+}
+.x-menu-item .atm-pic-unpublish{
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
+	background-position:			0px -1252px;
 }
 .x-menu-item .atm-pic-scripts{
 	background-image:				url(../automne/admin/img/pictos/pictos.png);
