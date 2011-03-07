@@ -1319,10 +1319,17 @@ class CMS_module_standard extends CMS_module
 	  * @access private
 	  */
 	protected function _dailyRoutineClean() {
-		//clean all files older than 24h in upload directory
+		//clean all files older than 24h in both uploads directories
 		$yesterday = time() - 86400; //24h
 		try{
 			foreach ( new DirectoryIterator(PATH_UPLOAD_FS) as $file) {
+				if ($file->isFile() && $file->getFilename() != ".htaccess" && $file->getMTime() < $yesterday) {
+					@unlink($file->getPathname());
+				}
+			}
+		} catch(Exception $e) {}
+		try{
+			foreach ( new DirectoryIterator(PATH_UPLOAD_VAULT_FS) as $file) {
 				if ($file->isFile() && $file->getFilename() != ".htaccess" && $file->getMTime() < $yesterday) {
 					@unlink($file->getPathname());
 				}

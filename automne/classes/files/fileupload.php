@@ -41,7 +41,7 @@
   *         $your_final_filename = $o_file_upload->getFilename();
   * 	}
   * 
-  * @see function move_uploaded_file()
+  * @see function doUpload()
   * @see CMS_file
   *
   * @package Automne
@@ -333,10 +333,17 @@ class CMS_fileUpload extends CMS_grandFather
 					$this->raiseError("File too wide for server (".$this->getInputValue("name")."), upload failed");
 					return false;
 				}
-				if (!@move_uploaded_file($this->getInputValue("tmp_name"), $this->_pathes["destination"])) {
-					$this->raiseError("Move_uploaded_file ".$this->getInputValue("tmp_name")." to ".$this->_pathes["destination"]." failed");
+				//move uploaded file
+				$fileDatas = CMS_file::uploadFile($this->getInputValue("tmp_name"), PATH_TMP_FS);
+				if ($fileDatas['error']) {
+					$this->raiseError("Move uploaded file ".$this->getInputValue("tmp_name")." to ".$this->_pathes["destination"]." failed");
 					return false;
 				}
+				if (!CMS_file::moveTo(PATH_TMP_FS.'/'.$fileDatas['filename'], $this->_pathes["destination"])) {
+					$this->raiseError("Move uploaded file ".$this->getInputValue("tmp_name")." to ".$this->_pathes["destination"]." failed");
+					return false;
+				}
+				
 				$this->file = new CMS_file($this->_pathes["destination"]);
 				//check uploaded file
 				if (!$this->file->checkUploadedFile()) {

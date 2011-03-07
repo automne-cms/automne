@@ -860,11 +860,15 @@ class CMS_object_image extends CMS_object_common
 				if (io::strlen($filename) > 255) {
 					$filename = sensitiveIO::ellipsis($filename, 255, '-', true);
 				}
-				if (!move_uploaded_file($_FILES[$prefixName.$this->_field->getID().'_0']["tmp_name"], $path."/".$filename)) {
+				
+				//move uploaded file
+				$fileDatas = CMS_file::uploadFile($prefixName.$this->_field->getID().'_0', PATH_TMP_FS);
+				if ($fileDatas['error']) {
 					return false;
 				}
-				//chmod it
-				@chmod($path."/".$filename, octdec(FILES_CHMOD));
+				if (!CMS_file::moveTo(PATH_TMP_FS.'/'.$fileDatas['filename'], $path."/".$filename)) {
+					return false;
+				}
 				//check uploaded file
 				$tmp = new CMS_file($path."/".$filename);
 				if (!$tmp->checkUploadedFile()) {
@@ -968,11 +972,15 @@ class CMS_object_image extends CMS_object_common
 				if (io::strlen($filename) > 255) {
 					$filename = sensitiveIO::ellipsis($filename, 255, '-', true);
 				}
-				if (!move_uploaded_file($_FILES[$prefixName.$this->_field->getID().'_2']["tmp_name"], $path."/".$filename)) {
+				
+				//move uploaded file
+				$fileDatas = CMS_file::uploadFile($prefixName.$this->_field->getID().'_2', PATH_TMP_FS);
+				if ($fileDatas['error']) {
 					return false;
 				}
-				//chmod it
-				@chmod($path."/".$filename, octdec(FILES_CHMOD));
+				if (!CMS_file::moveTo(PATH_TMP_FS.'/'.$fileDatas['filename'], $path."/".$filename)) {
+					return false;
+				}
 				//check uploaded file
 				$tmp = new CMS_file($path."/".$filename);
 				if (!$tmp->checkUploadedFile()) {

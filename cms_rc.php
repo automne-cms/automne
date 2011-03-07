@@ -721,6 +721,9 @@ if (!defined("PATH_UPLOAD_WR")) {
 if (!defined("PATH_UPLOAD_FS")) {
 	define("PATH_UPLOAD_FS", PATH_MAIN_FS."/upload");
 }
+if (!defined("PATH_UPLOAD_VAULT_FS")) {
+	define("PATH_UPLOAD_VAULT_FS", PATH_MAIN_FS."/upload-vault");
+}
 /**
   *	Cache path (where automne files are cached)
   *	Default : PATH_MAIN_xx."/cache"
@@ -855,10 +858,10 @@ if (!defined('APPLICATION_LDAP_USER_REGIONSTATE')) {
 
 /**
   *	Files extensions denied for upload, comma separated
-  *	Default : 'exe,php,pif,vbs,bat,com,scr,reg'
+  *	Default : 'exe,php,pif,vbs,bat,com,scr,reg,html,htm,php3,php4,php5,php6,phps,phtml,shtml,sh,py,pl,js,cgi,asp,jsp,aspx,plx,perl'
   */
 if (!defined('FILE_UPLOAD_EXTENSIONS_DENIED')) {
-	define('FILE_UPLOAD_EXTENSIONS_DENIED', 'exe,php,pif,vbs,bat,com,scr,reg');
+	define('FILE_UPLOAD_EXTENSIONS_DENIED', 'exe,php,pif,vbs,bat,com,scr,reg,html,htm,php3,php4,php5,php6,phps,phtml,shtml,sh,py,pl,js,cgi,asp,jsp,aspx,plx,perl');
 }
 /**
   * Check remote IP mask format ?

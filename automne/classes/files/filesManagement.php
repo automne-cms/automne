@@ -32,6 +32,14 @@ class CMS_file extends CMS_grandFather
 	const TYPE_FILE = 0;
 	const TYPE_DIRECTORY = 5;
 	
+	//define upload constants
+	const UPLOAD_SECURITY_ERROR = -230;
+	const UPLOAD_UPLOAD_LIMIT_EXCEEDED = -240;
+	const UPLOAD_UPLOAD_FAILED = -250;
+	const UPLOAD_FILE_VALIDATION_FAILED = -270;
+	const UPLOAD_FILE_CANCELLED = -280;
+	const UPLOAD_UPLOAD_STOPPED = -290;
+	
 	/**
 	 * Contain full filename of the file or dir
 	 * @var string
@@ -456,6 +464,78 @@ class CMS_file extends CMS_grandFather
 	}
 	
 	/**
+	 * Upload a file with as much as security we can
+	 *
+	 * @param string $fileVarName, var name in which we can found the file in $_FILES
+	 * @param string $destinationDirFS, the destination dir in which we want the file to be moved
+	 * @return array of uploaded file meta datas
+	 */
+	function uploadFile($fileVarName = 'Filedata', $destinationDirFS = PATH_UPLOAD_FS) {
+		//init returned file datas
+		$fileDatas = array(
+			'error' 		=> 0,
+			'filename'		=> '',
+			'filepath'		=> '',
+			'filesize'		=> '',
+			'fileicon'		=> '',
+			'success'		=> false
+		);
+		
+		// Check if the upload exists
+		if (!isset($_FILES[$fileVarName]) || !is_uploaded_file($_FILES[$fileVarName]["tmp_name"]) || $_FILES[$fileVarName]["error"] != 0) {
+			CMS_grandFather::raiseError('Uploaded file has an error : '.print_r($_FILES, true));
+			$fileDatas['error'] = CMS_file::UPLOAD_UPLOAD_FAILED;
+			$view->setContent($fileDatas);
+			$view->show();
+		}
+		//move uploaded file to upload vault (and rename it if needed)
+		$originalFilename = io::sanitizeAsciiString($_FILES[$fileVarName]["name"]);
+		if (io::strlen($originalFilename) > 255) {
+			$originalFilename = sensitiveIO::ellipsis($originalFilename, 255, '-');
+		}
+		$count = 2;
+		$filename = $originalFilename;
+		while (file_exists(PATH_UPLOAD_VAULT_FS.'/'.$filename) || file_exists($destinationDirFS.'/'.$filename)) {
+			$pathinfo = pathinfo($originalFilename);
+			$filename = $pathinfo['filename'].'-'.$count++.'.'.$pathinfo['extension'];
+		}
+		if (!@move_uploaded_file($_FILES[$fileVarName]["tmp_name"], PATH_UPLOAD_VAULT_FS.'/'.$filename)) {
+			CMS_grandFather::raiseError('Can\'t move uploaded file to : '.PATH_UPLOAD_VAULT_FS.'/'.$filename);
+			$fileDatas['error'] = CMS_file::UPLOAD_FILE_VALIDATION_FAILED;
+			return $fileDatas;
+		}
+		$file = new CMS_file(PATH_UPLOAD_VAULT_FS.'/'.$filename);
+		$file->chmod(FILES_CHMOD);
+
+		//check uploaded file
+		if (!$file->checkUploadedFile()) {
+			$file->delete();
+			$fileDatas['error'] = CMS_file::UPLOAD_SECURITY_ERROR;
+			return $fileDatas;
+		}
+
+		//move file to upload directory
+		if (!CMS_file::moveTo(PATH_UPLOAD_VAULT_FS.'/'.$filename, $destinationDirFS.'/'.$filename)) {
+			$fileDatas['error'] = CMS_file::UPLOAD_FILE_VALIDATION_FAILED;
+			return $fileDatas;
+		}
+		$file = new CMS_file($destinationDirFS.'/'.$filename);
+		$file->chmod(FILES_CHMOD);
+
+		//return file datas
+		$fileDatas = array(
+			'error' 		=> 0,
+			'filename'		=> $file->getName(false),
+			'filepath'		=> $file->getFilePath(CMS_file::WEBROOT),
+			'filesize'		=> $file->getFileSize(),
+			'fileicon'		=> $file->getFileIcon(CMS_file::WEBROOT),
+			'extension'		=> $file->getExtension(),
+			'success'		=> true
+		);
+		return $fileDatas;
+	}
+	
+	/**
 	 * Check a file to avoid upload threat
 	 *
 	 * @return boolean true on success, false on failure
@@ -483,19 +563,19 @@ class CMS_file extends CMS_grandFather
 		}
 		//check for image JPG
 		if (in_array($this->getExtension(), array('jpg', 'jpe', 'jpeg'))) {
-			if (function_exists('imagecreatefromjpeg') && !@imagecreatefromjpeg($this->getFilename())) {
+			if (function_exists('imagecreatefromjpeg') && (!@imagecreatefromjpeg($this->getFilename()) || @getimagesize($this->getFilename()) === false)) {
 				return false;
 			}
 		}
 		//check for image GIF
 		if ($this->getExtension() == 'gif') {
-			if (function_exists('imagecreatefromgif') && !@imagecreatefromgif($this->getFilename())) {
+			if (function_exists('imagecreatefromgif') && (!@imagecreatefromgif($this->getFilename()) || @getimagesize($this->getFilename()) === false)) {
 				return false;
 			}
 		}
 		//check for image PNG
 		if ($this->getExtension() == 'png') {
-			if (function_exists('imagecreatefrompng') && !@imagecreatefrompng($this->getFilename())) {
+			if (function_exists('imagecreatefrompng') && (!@imagecreatefrompng($this->getFilename()) || @getimagesize($this->getFilename()) === false)) {
 				return false;
 			}
 		}

@@ -22,7 +22,7 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-require_once(dirname(__FILE__).'/../../../../cms_rc_frontend.php');
+require_once(dirname(__FILE__).'/../../../../cms_rc_admin.php');
 
 CMS_polymod::compileDefinitions();
 

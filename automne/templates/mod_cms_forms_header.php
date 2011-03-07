@@ -326,17 +326,17 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 													$count++;
 													$filename = $count.'_'.sensitiveIO::sanitizeAsciiString($_FILES[$aField->getAttribute('name')]['name']);
 												}
-												if (@move_uploaded_file($_FILES[$aField->getAttribute('name')]['tmp_name'], $filepath.'/'.$filename)) {
-													//check uploaded file
-													$tmp = new CMS_file($filepath.'/'.$filename);
-													if (!$tmp->checkUploadedFile()) {
-														$tmp->delete();
-														$filename = '';
-													}
-													unset($tmp);
-													$_FILES[$aField->getAttribute('name')]['atm_name'] = $filename;
+												//move uploaded file
+												$fileDatas = CMS_file::uploadFile($aField->getAttribute('name'), PATH_TMP_FS);
+												if ($fileDatas['error']) {
+													$filename = '';
 												}
-												$fieldRecord->setAttribute('value', @$_FILES[$aField->getAttribute('name')]['atm_name']);
+												if (!CMS_file::moveTo(PATH_TMP_FS.'/'.$fileDatas['filename'], $path."/".$filename)) {
+													$filename = '';
+												}
+												$_FILES[$aField->getAttribute('name')]['atm_name'] = $filename;
+												
+												$fieldRecord->setAttribute('value', $_FILES[$aField->getAttribute('name')]['atm_name']);
 											} else {
 												$fieldRecord->setAttribute('value', $_POST[$aField->getAttribute('name')]);
 											}
