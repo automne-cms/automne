@@ -196,7 +196,7 @@ $jscontent = <<<END
 	var submitItem = function (action) {
 		var form = Ext.getCmp('{$winId}-form').getForm();
 		var values = form.getValues();
-		if (!values.selectedCode || !values.dateformat) {
+		if ((!values.selectedCode && !window.code) || !values.dateformat) {
 			Automne.message.show('{$cms_language->getJSMessage(MESSAGE_ERROR_INCORRECT_VALUES)}', '', window);
 		} else {
 			form.submit({

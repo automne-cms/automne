@@ -869,13 +869,6 @@ class CMS_object_image extends CMS_object_common
 				if (!CMS_file::moveTo(PATH_TMP_FS.'/'.$fileDatas['filename'], $path."/".$filename)) {
 					return false;
 				}
-				//check uploaded file
-				$tmp = new CMS_file($path."/".$filename);
-				if (!$tmp->checkUploadedFile()) {
-					$tmp->delete();
-					return false;
-				}
-				unset($tmp);
 				if ($params['maxWidth'] > 0) {
 					$oImage = new CMS_image($path."/".$filename);
 					//get current file size
@@ -981,13 +974,6 @@ class CMS_object_image extends CMS_object_common
 				if (!CMS_file::moveTo(PATH_TMP_FS.'/'.$fileDatas['filename'], $path."/".$filename)) {
 					return false;
 				}
-				//check uploaded file
-				$tmp = new CMS_file($path."/".$filename);
-				if (!$tmp->checkUploadedFile()) {
-					$tmp->delete();
-					return false;
-				}
-				unset($tmp);
 				//set it
 				if (!$this->_subfieldValues[2]->setValue($filename)) {
 					return false;

@@ -154,7 +154,6 @@ class CMS_dialog_href extends CMS_grandFather
 			if ($_FILES[$this->_prefix.'link_file']['name'] != '' && $resourceID > 0) {
 				$path = $this->_href->getFileLink(true, $module, $locationType, PATH_RELATIVETO_FILESYSTEM, false);
 				$filename = $fileprefix.SensitiveIO::sanitizeAsciiString($_FILES[$this->_prefix.'link_file']['name']);
-				
 				//move uploaded file
 				$fileDatas = CMS_file::uploadFile($this->_prefix.'link_file', PATH_TMP_FS);
 				if ($fileDatas['error']) {
@@ -163,15 +162,6 @@ class CMS_dialog_href extends CMS_grandFather
 				if (!CMS_file::moveTo(PATH_TMP_FS.'/'.$fileDatas['filename'], $path."/".$filename)) {
 					return false;
 				}
-				
-				//check uploaded file
-				$tmp = new CMS_file($path."/".$filename);
-				if (!$tmp->checkUploadedFile()) {
-					$tmp->delete();
-					$this->raiseError("Error while uploading file {$_FILES[$this->_prefix.'link_file']['name']}");
-					$filename = '';
-				}
-				unset($tmp);
 			} else {
 				$filename = '';
 			}

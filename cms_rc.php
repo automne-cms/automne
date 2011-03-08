@@ -790,6 +790,13 @@ if (!defined("PATH_AUTOMNE_MIMETYPE_FS")) {
 	define("PATH_AUTOMNE_MIMETYPE_FS", PATH_PACKAGES_FS."/files/mime.types");
 }
 /**
+  *	Automne mime types file
+  *	Default : PATH_PACKAGES_FS."/files/mime.types"
+  */
+if (!defined("PATH_AUTOMNE_WHITELIST_FS")) {
+	define("PATH_AUTOMNE_WHITELIST_FS", PATH_PACKAGES_FS."/files/whitelist.txt");
+}
+/**
   * Special profile users ID
   */
 if (!defined("ROOT_PROFILEUSER_ID")) {
@@ -861,7 +868,15 @@ if (!defined('APPLICATION_LDAP_USER_REGIONSTATE')) {
   *	Default : 'exe,php,pif,vbs,bat,com,scr,reg,html,htm,php3,php4,php5,php6,phps,phtml,shtml,sh,py,pl,js,cgi,asp,jsp,aspx,plx,perl'
   */
 if (!defined('FILE_UPLOAD_EXTENSIONS_DENIED')) {
-	define('FILE_UPLOAD_EXTENSIONS_DENIED', 'exe,php,pif,vbs,bat,com,scr,reg,html,htm,php3,php4,php5,php6,phps,phtml,shtml,sh,py,pl,js,cgi,asp,jsp,aspx,plx,perl');
+	define('FILE_UPLOAD_EXTENSIONS_DENIED', 'exe,php,pif,vbs,bat,com,scr,reg,html,htm,php3,php4,php5,php6,phps,phtml,shtml,xhtml,sh,py,pl,js,cgi,asp,jsp,aspx,plx,perl,rb,phpt,inc,htaccess,htpasswd,cfm,cfc');
+}
+/**
+  *	Files extensions allowed for upload, comma separated
+  * This constant extend the whitelist in /automne/classes/files/whitelist.txt
+  *	Default : ''
+  */
+if (!defined('FILE_UPLOAD_EXTENSIONS_ALLOWED')) {
+	define('FILE_UPLOAD_EXTENSIONS_ALLOWED', '');
 }
 /**
   * Check remote IP mask format ?

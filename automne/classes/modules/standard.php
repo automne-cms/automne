@@ -1319,8 +1319,8 @@ class CMS_module_standard extends CMS_module
 	  * @access private
 	  */
 	protected function _dailyRoutineClean() {
-		//clean all files older than 24h in both uploads directories
-		$yesterday = time() - 86400; //24h
+		//clean all files older than 4h in both uploads directories
+		$yesterday = time() - 14400; //4h
 		try{
 			foreach ( new DirectoryIterator(PATH_UPLOAD_FS) as $file) {
 				if ($file->isFile() && $file->getFilename() != ".htaccess" && $file->getMTime() < $yesterday) {
@@ -1496,6 +1496,7 @@ class CMS_module_standard extends CMS_module
 					"a"					=> array("selfClosed" => false, "parameters" => array('href' => '#([a-zA-Z0-9._-]*)'),'class' => 'CMS_XMLTag_anchor'),
 					"area"				=> array("selfClosed" => false, "parameters" => array('href' => '#([a-zA-Z0-9._-]*)'),'class' => 'CMS_XMLTag_anchor'),
 					"body" 				=> array("selfClosed" => false, "parameters" => array()),
+					"head" 				=> array("selfClosed" => false, "parameters" => array()),
 					"html" 				=> array("selfClosed" => false, "parameters" => array()),
 				);
 				//for public (and print) visualmode, this is done by MODULE_TREATMENT_LINXES_TAGS mode during page file linx treatment
@@ -1696,6 +1697,16 @@ class CMS_module_standard extends CMS_module
 							return constant($const);
 						}
 						return '';
+					break;
+					case "head":
+						$headCode = '<?php'."\n".
+						'$atmHost = @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) ? @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) : $_SERVER[\'HTTP_HOST\'];'."\n".
+						'$atmProtocol = stripos($_SERVER["SERVER_PROTOCOL"], \'https\') !== false ? \'https://\' : \'http://\';'."\n".
+						'$atmPort = @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_PORT) ? \':\'.@parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_PORT) : \'\';'."\n".
+						'echo "\t".\'<base href="\'.$atmProtocol.$atmHost.$atmPort.PATH_REALROOT_WR.\'/" />\'."\n";'."\n".
+						' ?>';
+						//Append base code
+						return preg_replace('#<head([^>]*)>#', '<head\1>'."\n".$headCode, $tag->getContent());
 					break;
 					case "body":
 						$statsCode = '<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat();} ?>';

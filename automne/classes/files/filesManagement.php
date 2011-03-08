@@ -471,6 +471,23 @@ class CMS_file extends CMS_grandFather
 	 * @return array of uploaded file meta datas
 	 */
 	function uploadFile($fileVarName = 'Filedata', $destinationDirFS = PATH_UPLOAD_FS) {
+		//for security, clean all files older than 4h in both uploads directories
+		$yesterday = time() - 14400; //4h
+		try{
+			foreach ( new DirectoryIterator(PATH_UPLOAD_FS) as $file) {
+				if ($file->isFile() && $file->getFilename() != ".htaccess" && $file->getMTime() < $yesterday) {
+					@unlink($file->getPathname());
+				}
+			}
+		} catch(Exception $e) {}
+		try{
+			foreach ( new DirectoryIterator(PATH_UPLOAD_VAULT_FS) as $file) {
+				if ($file->isFile() && $file->getFilename() != ".htaccess" && $file->getMTime() < $yesterday) {
+					@unlink($file->getPathname());
+				}
+			}
+		} catch(Exception $e) {}
+		
 		//init returned file datas
 		$fileDatas = array(
 			'error' 		=> 0,
@@ -488,10 +505,15 @@ class CMS_file extends CMS_grandFather
 			$view->setContent($fileDatas);
 			$view->show();
 		}
-		//move uploaded file to upload vault (and rename it if needed)
+		//move uploaded file to upload vault (and rename it with a clean name if needed)
 		$originalFilename = io::sanitizeAsciiString($_FILES[$fileVarName]["name"]);
-		if (io::strlen($originalFilename) > 255) {
-			$originalFilename = sensitiveIO::ellipsis($originalFilename, 255, '-');
+		if (io::strlen($originalFilename) > 250) {
+			$originalFilename = sensitiveIO::ellipsis($originalFilename, 250, '-');
+		}
+		//remove multiple extensions to avoid double extension threat (cf. http://www.acunetix.com/websitesecurity/upload-forms-threat.htm)
+		if (substr_count('.', $originalFilename) > 1) {
+			$parts = pathinfo($originalFilename);
+			$originalFilename = str_replace('.', '-', $parts['filename']).'.'.$parts['extension'];
 		}
 		$count = 2;
 		$filename = $originalFilename;
@@ -506,22 +528,22 @@ class CMS_file extends CMS_grandFather
 		}
 		$file = new CMS_file(PATH_UPLOAD_VAULT_FS.'/'.$filename);
 		$file->chmod(FILES_CHMOD);
-
+		
 		//check uploaded file
 		if (!$file->checkUploadedFile()) {
 			$file->delete();
 			$fileDatas['error'] = CMS_file::UPLOAD_SECURITY_ERROR;
 			return $fileDatas;
 		}
-
-		//move file to upload directory
+		
+		//move file to final directory
 		if (!CMS_file::moveTo(PATH_UPLOAD_VAULT_FS.'/'.$filename, $destinationDirFS.'/'.$filename)) {
 			$fileDatas['error'] = CMS_file::UPLOAD_FILE_VALIDATION_FAILED;
 			return $fileDatas;
 		}
 		$file = new CMS_file($destinationDirFS.'/'.$filename);
 		$file->chmod(FILES_CHMOD);
-
+		
 		//return file datas
 		$fileDatas = array(
 			'error' 		=> 0,
@@ -541,8 +563,22 @@ class CMS_file extends CMS_grandFather
 	 * @return boolean true on success, false on failure
 	 */
 	function checkUploadedFile() {
-		//check file extension
-		if (in_array($this->getExtension(), explode(',', FILE_UPLOAD_EXTENSIONS_DENIED))) {
+		//load whitelist
+		$extensionAllowed = @file(PATH_AUTOMNE_WHITELIST_FS);
+		if (!is_array($extensionAllowed) || !$extensionAllowed) {
+			CMS_grandFather::raiseError('Cannot load whitelist : '.PATH_AUTOMNE_WHITELIST_FS);
+			return false;
+		}
+		if (FILE_UPLOAD_EXTENSIONS_ALLOWED) {
+			$extensionAllowed = array_merge($extensionAllowed, explode(',', FILE_UPLOAD_EXTENSIONS_ALLOWED));
+		}
+		$extensionAllowed = array_map('trim', $extensionAllowed);
+		//check for file extension in whitelist
+		if (!in_array($this->getExtension(), $extensionAllowed)) {
+			return false;
+		}
+		//check if file extension is in blacklist
+		if (in_array($this->getExtension(), array_map('trim', explode(',', FILE_UPLOAD_EXTENSIONS_DENIED)))) {
 			return false;
 		}
 		//Avoid double extension threat (cf. http://www.acunetix.com/websitesecurity/upload-forms-threat.htm)
@@ -552,7 +588,7 @@ class CMS_file extends CMS_grandFather
 			array_shift($extensions);
 			//check file extensions
 			foreach ($extensions as $extension) {
-				if (in_array($extension, explode(',', FILE_UPLOAD_EXTENSIONS_DENIED))) {
+				if (in_array($extension, array_map('trim', explode(',', FILE_UPLOAD_EXTENSIONS_DENIED)))) {
 					return false;
 				}
 			}

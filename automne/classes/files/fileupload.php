@@ -343,14 +343,7 @@ class CMS_fileUpload extends CMS_grandFather
 					$this->raiseError("Move uploaded file ".$this->getInputValue("tmp_name")." to ".$this->_pathes["destination"]." failed");
 					return false;
 				}
-				
 				$this->file = new CMS_file($this->_pathes["destination"]);
-				//check uploaded file
-				if (!$this->file->checkUploadedFile()) {
-					$tmp->delete();
-					$this->raiseError("Security error on uploaded file");
-					return false;
-				}
 				return $this->file->chmod(FILES_CHMOD);
 			} else {
 				return false;
