@@ -1,4 +1,4 @@
-V4.1.1 (in progress)
+V4.1.1 (08/03/2011)
 [BUG] : Correct bugs numbers: 1742, 1746, 1715, 1753, 1757, 1758 (see http://www.automne-cms.org/bug/)
 [REFACTOR] : Update JSMin to last version available
 [REFACTOR] : Review all uploading files methods to comply with security consideration
