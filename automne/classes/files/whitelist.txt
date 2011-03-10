@@ -172,7 +172,6 @@ shp
 shs
 shx
 six
-smarty
 spec
 sql
 sqlite
