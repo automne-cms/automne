@@ -1791,3 +1791,5 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1715, 'standard', 'en', 'Re-publish the page');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1716, 'standard', 'en', 'Re-publish the page: delete the end date of publication of the page. The page will again be available online. This action is subject to validation and may be canceled.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1717, 'standard', 'en', 'Are you sure you want to re-publish this page?<br /><br />This action is subject to validation.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1718, 'standard', 'en', 'Specific 404 page');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1719, 'standard', 'en', 'Specific 403 page');

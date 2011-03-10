@@ -56,6 +56,6 @@ if ($pPath) {
 	}
 }
 header('HTTP/1.x 301 Moved Permanently', true, 301);
-header('Location: '.PATH_SPECIAL_PAGE_NOT_FOUND_WR.'');
+header('Location: '.PATH_SPECIAL_PAGE_NOT_FOUND_WR);
 exit;
 ?>

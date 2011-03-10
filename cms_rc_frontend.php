@@ -62,31 +62,31 @@ if (APPLICATION_CONFIG_LOADED) {
 			$cms_language = $cms_user->getLanguage();
 		}
 	} else {
-		//CMS_grandFather::log('Frontend ok1');
+		//CMS_grandFather::log('Frontend ok1 '.$_SERVER['SCRIPT_NAME']);
 		//check if user session exists
 		if (isset($_SESSION["cms_context"])) {
 			//check session object
-			//CMS_grandFather::log('Frontend ok2');
+			//CMS_grandFather::log('Frontend ok2 '.$_SERVER['SCRIPT_NAME']);
 			if ($_SESSION["cms_context"] instanceof CMS_context) {
-				//CMS_grandFather::log('Frontend ok3');
+				//CMS_grandFather::log('Frontend ok3 '.$_SERVER['SCRIPT_NAME']);
 				$_SESSION["cms_context"]->checkSession();
 				//then if session always exists, set some useful vars
 				if (is_object($_SESSION["cms_context"])) {
-					//CMS_grandFather::log('Frontend ok4 (user : '.$_SESSION["cms_context"]->getUserId().')');
+					//CMS_grandFather::log('Frontend ok4 (user : '.$_SESSION["cms_context"]->getUserId().') '.$_SERVER['SCRIPT_NAME']);
 					$cms_context =& $_SESSION["cms_context"];
 					$cms_user = $_SESSION["cms_context"]->getUser();
 					$cms_language = $cms_user->getLanguage();
 				} else {
-					//CMS_grandFather::log('Frontend ok5');
+					//CMS_grandFather::log('Frontend ok5 '.$_SERVER['SCRIPT_NAME']);
 					//else initialize public user
 					$cms_context = new CMS_context(DEFAULT_USER_LOGIN, DEFAULT_USER_PASSWORD);
 					if (!$cms_context->hasError()) {
-						//CMS_grandFather::log('Frontend ok6');
+						//CMS_grandFather::log('Frontend ok6 '.$_SERVER['SCRIPT_NAME']);
 						$_SESSION["cms_context"] = $cms_context;
 						$cms_user = $_SESSION["cms_context"]->getUser();
 						$cms_language = $cms_user->getLanguage();
 					} else {
-						//CMS_grandFather::log('Frontend ok7');
+						//CMS_grandFather::log('Frontend ok7 '.$_SERVER['SCRIPT_NAME']);
 						CMS_view::redirect(PATH_FRONTEND_SPECIAL_LOGIN_WR);
 					}
 				}
@@ -94,16 +94,16 @@ if (APPLICATION_CONFIG_LOADED) {
 		} else {
 			global $cms_user; //try to get user from global in case it has declared somewhere else
 			if (!is_object($cms_user)) {
-				//CMS_grandFather::log('Frontend ok8');
+				//CMS_grandFather::log('Frontend ok8 '.$_SERVER['SCRIPT_NAME']);
 				//initialize public user
 				$cms_context = new CMS_context(DEFAULT_USER_LOGIN, DEFAULT_USER_PASSWORD);
 				if (!$cms_context->hasError()) {
-					//CMS_grandFather::log('Frontend ok9');
+					//CMS_grandFather::log('Frontend ok9 '.$_SERVER['SCRIPT_NAME']);
 					$_SESSION["cms_context"] = $cms_context;
 					$cms_user = $_SESSION["cms_context"]->getUser();
 					$cms_language = $cms_user->getLanguage();
 				} else {
-					//CMS_grandFather::log('Frontend ok10');
+					//CMS_grandFather::log('Frontend ok10 '.$_SERVER['SCRIPT_NAME']);
 					CMS_view::redirect(PATH_FRONTEND_SPECIAL_LOGIN_WR);
 				}
 			} elseif ($cms_user instanceof CMS_profile_user) {
@@ -115,7 +115,7 @@ if (APPLICATION_CONFIG_LOADED) {
 	//try autologin
 	if (CMS_context::autoLoginSucceeded()) {
 		if (!$_SESSION["cms_context"]->hasError()) {
-			//CMS_grandFather::log('Frontend ok11');
+			//CMS_grandFather::log('Frontend ok11 '.$_SERVER['SCRIPT_NAME']);
 			$cms_user = $_SESSION["cms_context"]->getUser();
 			$language = $cms_user->getLanguage();
 		}
