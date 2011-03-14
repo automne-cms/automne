@@ -331,7 +331,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 												if ($fileDatas['error']) {
 													$filename = '';
 												}
-												if (!CMS_file::moveTo(PATH_TMP_FS.'/'.$fileDatas['filename'], $path."/".$filename)) {
+												if (!CMS_file::moveTo(PATH_TMP_FS.'/'.$fileDatas['filename'], $filepath."/".$filename)) {
 													$filename = '';
 												}
 												$_FILES[$aField->getAttribute('name')]['atm_name'] = $filename;

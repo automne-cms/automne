@@ -11,8 +11,6 @@
 // +----------------------------------------------------------------------+
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: list-categories.php,v 1.7 2010/03/08 16:42:07 sebastien Exp $
 
 /**
   * PHP page : Load polyobjects items datas
@@ -39,6 +37,7 @@ $view->setSecure();
 $objectId = sensitiveIO::request('objectId', 'sensitiveIO::isPositiveInteger');
 $codename = sensitiveIO::request('module', CMS_modulesCatalog::getAllCodenames());
 $fieldId = sensitiveIO::request('fieldId', 'sensitiveIO::isPositiveInteger');
+$query = sensitiveIO::request('query', '');
 
 $objectsDatas = array();
 $objectsDatas['objects'] = array();
@@ -86,10 +85,12 @@ if ($objectFields[$fieldId]) {
 				'label'			=> '--',
 			);
 			foreach($a_all_categories as $id => $label) {
-				$objectsDatas['objects'][] = array(
-					'id'			=> $id,
-					'label'			=> io::decodeEntities($label),
-				);
+				if (!$query || stripos(io::sanitizeAsciiString(io::decodeEntities($label)), io::sanitizeAsciiString($query)) !== false) {
+					$objectsDatas['objects'][] = array(
+						'id'			=> $id,
+						'label'			=> io::decodeEntities($label),
+					);
+				}
 			}
 		} else {
 			$objectsDatas['objects'][] = array(
