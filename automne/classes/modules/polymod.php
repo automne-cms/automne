@@ -807,7 +807,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 		//replace {plugin:selection} values
 		$replace["#^\{plugin:selection\}$#U"]								= '$parameters[\'selection\']';
 		//replace 'fieldID' value by corresponding fieldID
-		$replace["#^\{.*\[([n0-9]+)\]\['fieldID'\]\}$#U"] 					= '\1';
+		$replace["#^\{.*\[([n0-9]+)\]\['fieldID'\]\}$#U"] 					= '(\1)';
 		//create the real object path to vars
 		$replace["#\['fields'\]\[([n0-9]+)\]\}?#"] 							= '->objectValues(\1)';
 		$replace["#\['values'\]\[([n0-9]+)\]\['([a-zA-Z]+)'\]\}$#U"]		= '->getValue(\'\1\',\'\2\')';

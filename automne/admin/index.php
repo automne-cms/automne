@@ -92,7 +92,7 @@ $content .= '
     <iframe id="x-history-frame"></iframe>
 </form>
 </div>
-<div class="x-hidden"><hr />If this message does not disappear in a few seconds, please contact your system administrator or consult the Automne error log file.<hr />Si ce message ne dispara&icirc;t pas dans quelques secondes, veuillez contacter votre administrateur syst&egrave;me ou consulter le fichier de log d\'erreur d\'Automne.</div>
+<div class="x-hidden"><hr />If this message does not disappear in a few seconds, please contact your system administrator or consult the Automne error log file. If no error appears, verify that Apache has write permissions on all Automne files. <hr />Si ce message ne dispara&icirc;t pas dans quelques secondes, veuillez contacter votre administrateur syst&egrave;me ou consulter le fichier de log d\'erreur d\'Automne. Si aucune erreur n\'appara&icirc;t, v&eacute;rifiez qu\'Apache a les permissions d\'&eacute;criture sur tous les fichiers d\'Automne.</div>
 ';
 
 $view->setContent($content);

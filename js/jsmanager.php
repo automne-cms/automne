@@ -98,7 +98,7 @@ if ($files) {
 						$filename = realpath($file->getPathname());
 						if ($file->isFile() && !in_array($file->getFilename(), $excludedFiles)) {
 							$fileExtension = pathinfo($filename, PATHINFO_EXTENSION);
-							if ($fileExtension == 'js') {
+							if ($fileExtension == 'js' && substr(pathinfo($filename, PATHINFO_BASENAME),0,2) !== '._') {
 								$exists = false;
 								foreach ($jsMainFiles as $aFile) {
 									if ($filename == realpath($aFile)) {

@@ -85,7 +85,7 @@ if ($objectFields[$fieldId]) {
 				'label'			=> '--',
 			);
 			foreach($a_all_categories as $id => $label) {
-				if (!$query || stripos(io::sanitizeAsciiString(io::decodeEntities($label)), io::sanitizeAsciiString($query)) !== false) {
+				if (!$query || stripos(io::sanitizeAsciiString(io::decodeEntities($label)), io::sanitizeAsciiString(trim($query))) !== false) {
 					$objectsDatas['objects'][] = array(
 						'id'			=> $id,
 						'label'			=> io::decodeEntities($label),

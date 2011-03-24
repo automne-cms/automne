@@ -209,12 +209,19 @@ if (defined('APPLICATION_EXEC_TYPE') && APPLICATION_EXEC_TYPE == 'cli') {
 	//We are in CLI mode, we must calculate the document root first
 	$_SERVER["DOCUMENT_ROOT"] = dirname(__FILE__);
 	if (defined('PATH_REALROOT_WR')) {
-		$_SERVER["DOCUMENT_ROOT"] = substr($_SERVER["DOCUMENT_ROOT"], 0, - strlen(PATH_REALROOT_WR));
+		$_SERVER["DOCUMENT_ROOT"] = realpath(substr($_SERVER["DOCUMENT_ROOT"], 0, - strlen(PATH_REALROOT_WR)));
 	}
 } else {
 	if ($_SERVER["DOCUMENT_ROOT"] != realpath($_SERVER["DOCUMENT_ROOT"])) {
 		//rewrite server document root if needed
-		$_SERVER["DOCUMENT_ROOT"] = realpath($_SERVER["DOCUMENT_ROOT"]);
+		if (realpath($_SERVER["DOCUMENT_ROOT"])) {
+			$_SERVER["DOCUMENT_ROOT"] = realpath($_SERVER["DOCUMENT_ROOT"]);
+		} else {
+			$_SERVER["DOCUMENT_ROOT"] = dirname(__FILE__);
+			if (defined('PATH_REALROOT_WR')) {
+				$_SERVER["DOCUMENT_ROOT"] = realpath(substr($_SERVER["DOCUMENT_ROOT"], 0, - strlen(PATH_REALROOT_WR)));
+			}
+		}
 	}
 }
 

@@ -143,7 +143,8 @@ if (sizeof($blockParamsDefinition['search'])) {
 							'triggerAction' 	=> 'all',
 							'allowBlank'		=> !$mandatory,
 							'selectOnFocus'		=> true,
-							'editable'			=> false,
+							'editable'			=> true,
+							'typeAhead'			=> true,
 							'value'				=> $value,
 							'store' 			=> array(
 								'url'			=> PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/list-objects.php',

@@ -135,13 +135,13 @@ class CMS_linxCondition extends CMS_grandFather
 		}
 		//build the body of the test function
 		if ($this->_pageProperty == "rank") {
-			$func_body = sprintf('return (%s %s %s);', $rank, $this->_operator, $condition_value);
+			$func_body = sprintf('return (\'%s\' %s \'%s\');', $rank, $this->_operator, $condition_value);
 		} else {
 			$page_value = $this->_getPageProperty($page, $this->_pageProperty, $publicTree);
 			if (is_null($page_value)) {
 				return false;
 			}
-			$func_body = sprintf('return (%s %s %s);', $page_value, $this->_operator, $condition_value);
+			$func_body = sprintf('return (\'%s\' %s \'%s\');', $page_value, $this->_operator, $condition_value);
 		}
 		$func = @create_function('', $func_body);
 		if (!$func) {

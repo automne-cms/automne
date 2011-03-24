@@ -375,8 +375,8 @@ class CMS_website extends CMS_grandFather
 			$old_codename = $this->_codename;
 			$this->_codename = $codename;
 			
-			//now test to see if a directory already exists with that name (Because label must _not_ be moveable once set)
-			if (!$this->_isMain && is_dir($this->getPagesPath(PATH_RELATIVETO_FILESYSTEM))) {
+			//now test to see if a directory already exists with that name (Because codename must _not_ be moveable once set)
+			if (!$this->_isMain && CMS_websitesCatalog::getByCodename($this->_codename)) {
 				$this->_codename = $old_codename;
 				$this->raiseError("Codename to set has same directory for pages than a previously set one.");
 				return false;
@@ -529,14 +529,14 @@ class CMS_website extends CMS_grandFather
 				$relative = ($relativeTo == PATH_RELATIVETO_WEBROOT) ? PATH_PAGES_WR : PATH_PAGES_FS;
 				if ($this->_isMain) {
 					if (!is_dir(PATH_PAGES_FS)) {
-						if (CMS_file::makeDir(PATH_PAGES_FS)) {
+						if (!CMS_file::makeDir(PATH_PAGES_FS)) {
 							$this->raiseError('Can\'t create pages dir : '.PATH_PAGES_FS);
 						}
 					}
 					return $relative;
 				} else {
 					if (!is_dir(PATH_PAGES_FS."/".io::sanitizeAsciiString($this->_codename))) {
-						if (CMS_file::makeDir(PATH_PAGES_FS."/".io::sanitizeAsciiString($this->_codename))) {
+						if (!CMS_file::makeDir(PATH_PAGES_FS."/".io::sanitizeAsciiString($this->_codename))) {
 							$this->raiseError('Can\'t create pages dir : '.PATH_PAGES_FS.'/'.io::sanitizeAsciiString($this->_codename));
 						}
 					}

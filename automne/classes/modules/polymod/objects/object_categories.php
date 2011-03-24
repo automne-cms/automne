@@ -1507,7 +1507,10 @@ class CMS_object_categories extends CMS_object_common
 				";
 		} else {
 			if ($operator == 'strict') {
-				//get category searched
+				if (!is_array($value)) {
+					$value = array($value);
+				}
+				//get categories searched
 				$sql = "
 					select
 						distinct objectID
@@ -1516,11 +1519,15 @@ class CMS_object_categories extends CMS_object_common
 						modulesCategories
 					where
 						objectFieldID = '".$fieldID."'
-						and value = '".$value."'
+						and id_mca = value
+						and value in (".implode(',',$value).")
 						$where
 					";
 			} elseif ($operator == 'not in strict') {
-				//get category searched
+				if (!is_array($value)) {
+					$value = array($value);
+				}
+				//get categories searched
 				$sql = "
 					select
 						distinct objectID
@@ -1529,7 +1536,8 @@ class CMS_object_categories extends CMS_object_common
 						modulesCategories
 					where
 						objectFieldID = '".$fieldID."'
-						and value != '".$value."'
+						and id_mca = value
+						and value not in (".implode(',',$value).")
 						$where
 					";
 			} else {

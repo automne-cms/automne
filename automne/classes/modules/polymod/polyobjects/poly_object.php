@@ -692,7 +692,8 @@ class CMS_poly_object extends CMS_resource
 				$return['triggerAction'] 	= 'all';
 				$return['allowBlank']		= true;
 				$return['selectOnFocus']	= true;
-				$return['editable']			= false;
+				$return['editable']			= true;
+				$return['typeAhead']		= true;
 				$return['value']			= $selectedValue;
 				$return['store'] 			= array(
 					'url'			=> PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/list-objects.php',

@@ -64,6 +64,8 @@ define("MESSAGE_PAGE_NO_BOOKMARK", 645);
 define("MESSAGE_PAGE_SCRIPTS", 646);
 define("MESSAGE_PAGE_MODULES_MANAGEMENT", 647);
 define("MESSAGE_PAGE_DATABASE", 648);
+define("MESSAGE_PAGE_TPL_HELP", 1468);
+define("MESSAGE_PAGE_ROW_HELP", 727);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -363,10 +365,10 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES) || $cms_use
 	<div id="templatesDivPanel">
 		<ul>';
 	if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //templates
-		$contentEl .= '<li><div class="atm-templates atm-sidepic"></div><a atm:action="templates" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_PAGE_TEMPLATES).'</a></li>';
+		$contentEl .= '<li><div class="atm-templates atm-sidepic"></div><div id="template-help-button" class="atm-sidepic-help" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_TPL_HELP).'"></div><a atm:action="templates" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_PAGE_TEMPLATES).'</a></li>';
 	}
 	if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES)) { //rows
-		$contentEl .= '<li><div class="atm-rows atm-sidepic"></div><a atm:action="rows" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_ROWS_TEMPLATES).'</a></li>';
+		$contentEl .= '<li><div class="atm-rows atm-sidepic"></div><div id="row-help-button" class="atm-sidepic-help" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_ROW_HELP).'"></div><a atm:action="rows" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_ROWS_TEMPLATES).'</a></li>';
 	}
 	if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //templates
 		$contentEl .= '<li><div class="atm-styles atm-sidepic"></div><a atm:action="styles" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_STYLESHEETS).'</a></li>
@@ -710,6 +712,53 @@ $jscontent = <<<END
 			}, 750, 580, true);
     	}
     };
+	//help windows
+	Ext.get('template-help-button').on('click', function(el) {
+		var windowId = 'templateHelpWindow';
+		if (Ext.WindowMgr.get(windowId)) {
+			Ext.WindowMgr.bringToFront(windowId);
+		} else {
+			//create window element
+			var win = new Automne.Window({
+				id:				windowId,
+				modal:			false,
+				popupable:		true,
+				autoLoad:		{
+					url:			'template-help.php',
+					params:			{
+						winId:			windowId
+					},
+					nocache:		true,
+					scope:			this
+				}
+			});
+			//display window
+			win.show(el);
+		}
+	});
+	Ext.get('row-help-button').on('click', function(el) {
+		var windowId = 'rowHelpWindow';
+		if (Ext.WindowMgr.get(windowId)) {
+			Ext.WindowMgr.bringToFront(windowId);
+		} else {
+			//create window element
+			var win = new Automne.Window({
+				id:				windowId,
+				modal:			false,
+				popupable:		true,
+				autoLoad:		{
+					url:			'row-help.php',
+					params:			{
+						winId:			windowId
+					},
+					nocache:		true,
+					scope:			this
+				}
+			});
+			//display window
+			win.show(el);
+		}
+	});
 END;
 $view->addJavascript($jscontent);
 
