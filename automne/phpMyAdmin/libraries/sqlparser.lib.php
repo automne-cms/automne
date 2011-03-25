@@ -2165,7 +2165,6 @@ if (! defined('PMA_MINIMUM_COMMON')) {
 // DEBUG echo "Loop format <strong>" . $arr[$i]['data'] . "</strong> " . $arr[$i]['type'] . "<br />";
             $before = '';
             $after  = '';
-            $indent = 0;
             // array_shift($typearr);
             /*
             0 prev2
@@ -2217,6 +2216,10 @@ if (! defined('PMA_MINIMUM_COMMON')) {
                         $after      = '';
                         $before     = '';
                     }
+                    // for example SELECT 1 somealias
+                    if ($typearr[1] == 'digit_integer') {
+                        $before     = ' ';
+                    }
                     if (($typearr[3] == 'alpha_columnType') || ($typearr[3] == 'alpha_identifier')) {
                         $after      .= ' ';
                     }
@@ -2261,17 +2264,20 @@ if (! defined('PMA_MINIMUM_COMMON')) {
                     }
                     break;
                 case 'punct_bracket_close_round':
-                    $bracketlevel--;
-                    if ($infunction == TRUE) {
-                        $functionlevel--;
-                        $after     .= ' ';
-                        $before    .= ' ';
-                    } else {
-                        $indent--;
-                        $before    .= ($mode != 'query_only' ? '</div>' : ' ');
-                    }
-                    $infunction    = ($functionlevel > 0) ? TRUE : FALSE;
-                    break;
+			// only close bracket level when it was opened before
+			if ($bracketlevel > 0) {
+				$bracketlevel--;
+				if ($infunction == TRUE) {
+					$functionlevel--;
+					$after     .= ' ';
+					$before    .= ' ';
+				} else {
+					$indent--;
+					$before    .= ($mode != 'query_only' ? '</div>' : ' ');
+				}
+				$infunction    = ($functionlevel > 0) ? TRUE : FALSE;
+			}
+			break;
                 case 'alpha_columnType':
                     if ($typearr[3] == 'alpha_columnAttrib') {
                         $after     .= ' ';
@@ -2452,8 +2458,21 @@ if (! defined('PMA_MINIMUM_COMMON')) {
             }
             $after                 .= "\n";
 */
-            $str .= $before . ($mode=='color' ? PMA_SQP_formatHTML_colorize($arr[$i]) : $arr[$i]['data']). $after;
+            $str .= $before;
+            if ($mode=='color') {
+                $str .= PMA_SQP_formatHTML_colorize($arr[$i]);
+            } elseif ($mode == 'text') {
+                $str .= htmlspecialchars($arr[$i]['data']);
+            } else {
+                $str .= $arr[$i]['data'];
+            }
+            $str .= $after;
         } // end for
+	// close unclosed indent levels
+	while ($indent > 0) {
+		$indent--;
+		$str .= ($mode != 'query_only' ? '</div>' : ' ');
+	}
         if ($mode=='color') {
             $str .= '</span>';
         }

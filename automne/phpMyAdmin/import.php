@@ -151,6 +151,7 @@ $bookmark_created = FALSE;
 
 // Bookmark Support: get a query back from bookmark if required
 if (!empty($id_bookmark)) {
+    $id_bookmark = (int)$id_bookmark;
     require_once './libraries/bookmark.lib.php';
     switch ($action_bookmark) {
         case 0: // bookmarked query that have to be run
@@ -444,6 +445,15 @@ if (isset($my_die)) {
     foreach ($my_die AS $key => $die) {
         PMA_mysqlDie($die['error'], $die['sql'], '', $err_url, $error);
     }
+}
+
+// we want to see the results of the last query that returned at least a row
+if (! empty($last_query_with_results)) {
+    // but we want to show intermediate results too
+    $disp_query = $sql_query;
+    $disp_message = $strSuccess;
+    $sql_query = $last_query_with_results;
+    $go_sql = true;
 }
 
 if ($go_sql) {

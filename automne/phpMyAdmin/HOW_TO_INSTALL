@@ -19,10 +19,18 @@ if (isset($_SESSION['PMA_single_signon_only_db'])) {
 phpMyAdmin/libraries/PHPExcel/PHPExcel/Shared/Escher/DggContainer/BstoreContainer/BSE/Blip.php
 into :
 phpMyAdmin/libraries/PHPExcel/PHPExcel/Shared/Escher/DggContainer/BstoreContainer/BSE/B.php
-and rename required files in php code also (search : BSE/Blip.php)
+and rename all class name reference PHPExcel_Shared_Escher_DggContainer_BstoreContainer_BSE_Blip into PHPExcel_Shared_Escher_DggContainer_BstoreContainer_BSE_B
 
 5- rename file (path too long) :
 phpMyAdmin/libraries/PHPExcel/PHPExcel/Shared/Escher/DgContainer/SpgrContainer/SpContainer.php
 into :
 phpMyAdmin/libraries/PHPExcel/PHPExcel/Shared/Escher/DgContainer/SpgrContainer/SpCont.php
-and rename required files in php code also (search : SpgrContainer/SpContainer.php)
+and rename all class name reference PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer into PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpCont
+
+6- Remove useless folders :
+	- phpMyAdmin/documentation-gsoc
+	- phpMyAdmin/themes/darkblue_orange
+	- phpMyAdmin/setup
+	- phpMyAdmin/contrib
+	- phpMyAdmin/lang/* except english-utf-8.inc.php and french-utf-8.inc.php files
+	
