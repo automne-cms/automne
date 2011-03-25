@@ -875,7 +875,7 @@ if (!defined('APPLICATION_LDAP_USER_REGIONSTATE')) {
   *	Default : 'exe,php,pif,vbs,bat,com,scr,reg,html,htm,php3,php4,php5,php6,phps,phtml,shtml,sh,py,pl,js,cgi,asp,jsp,aspx,plx,perl'
   */
 if (!defined('FILE_UPLOAD_EXTENSIONS_DENIED')) {
-	define('FILE_UPLOAD_EXTENSIONS_DENIED', 'exe,php,pif,vbs,bat,com,scr,reg,html,htm,php3,php4,php5,php6,phps,phtml,shtml,xhtml,sh,py,pl,js,cgi,asp,jsp,aspx,plx,perl,rb,phpt,inc,htaccess,htpasswd,cfm,cfc');
+	define('FILE_UPLOAD_EXTENSIONS_DENIED', 'exe,php,pif,vbs,bat,com,scr,reg,html,htm,php3,php4,php5,php6,phps,phtml,shtml,xhtml,sh,py,pl,prl,js,cgi,asp,jsp,aspx,plx,perl,rb,phpt,inc,htaccess,htpasswd,cfm,cfc');
 }
 /**
   *	Files extensions allowed for upload, comma separated
@@ -915,17 +915,17 @@ if (!defined('SESSION_TOKEN_CHECK')) {
 }
 /**
   *	Set max session token age. Used to protect form actions from CSRF attacks
-  *	Default : 600 seconds
+  *	Default : 1800 seconds
   */
 if (!defined('SESSION_TOKEN_MAXAGE')) {
-	define('SESSION_TOKEN_MAXAGE', 600);
+	define('SESSION_TOKEN_MAXAGE', 1800);
 }
 /**
   *	Set max expired token age. Used to protect form actions from CSRF attacks
-  *	Default : 60 seconds
+  *	Default : 180 seconds
   */
 if (!defined('SESSION_EXPIRED_TOKEN_MAXAGE')) {
-	define('SESSION_EXPIRED_TOKEN_MAXAGE', 60);
+	define('SESSION_EXPIRED_TOKEN_MAXAGE', 180);
 }
 /**
   *	Enable logging (in the cms_error_log) of all generated email (not limited to sent ones)

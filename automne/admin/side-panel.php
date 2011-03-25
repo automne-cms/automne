@@ -712,6 +712,7 @@ $jscontent = <<<END
 			}, 750, 580, true);
     	}
     };
+	
 	//help windows
 	Ext.get('template-help-button').on('click', function(el) {
 		var windowId = 'templateHelpWindow';

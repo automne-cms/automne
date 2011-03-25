@@ -80,7 +80,7 @@ if ($objectFields[$fieldId]) {
 		$objectsNames = $objectType->getListOfNamesForObject(false, $conditions);
 		$objectsDatas['objects'][] = array(
 			'id'			=> '',
-			'label'			=> '--',
+			'label'			=> ' ',
 		);
 		foreach($objectsNames as $id => $label) {
 			$objectsDatas['objects'][] = array(

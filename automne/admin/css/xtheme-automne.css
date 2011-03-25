@@ -858,6 +858,15 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 	height:							16px;
 	width:							20px;
 }
+#sidePanel li div.atm-sidepic-help{
+	background-repeat:				no-repeat;
+	float:							right;
+	height:							16px;
+	width:							20px;
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
+	background-position:			left -78px;
+	cursor:							pointer;
+}
 #sidePanel li div.atm-separator{
 	border-bottom:					1px dashed grey;
 }

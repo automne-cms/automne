@@ -83,7 +83,7 @@ if (!$object->hasError()) {
 	if (is_array($objectsNames) && $objectsNames) {
 		$objectsDatas['objects'][] = array(
 			'id'			=> '0',
-			'label'			=> '--',
+			'label'			=> ' ',
 		);
 		foreach($objectsNames as $id => $label) {
 			if (!$removeIds || !in_array($id, $removeIds)) {

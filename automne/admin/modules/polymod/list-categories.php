@@ -82,7 +82,7 @@ if ($objectFields[$fieldId]) {
 		if (is_array($a_all_categories) && $a_all_categories) {
 			$objectsDatas['objects'][] = array(
 				'id'			=> '',
-				'label'			=> '--',
+				'label'			=> ' ',
 			);
 			foreach($a_all_categories as $id => $label) {
 				if (!$query || stripos(io::sanitizeAsciiString(io::decodeEntities($label)), io::sanitizeAsciiString(trim($query))) !== false) {
