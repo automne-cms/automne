@@ -1009,7 +1009,6 @@ class CMS_module_standard extends CMS_module
 				}
 			}
 			//2. If the page has been validated, attach it to the public tree
-			
 			$grand_root = CMS_tree::getRoot();
 			if ($page->getPublication() == RESOURCE_PUBLICATION_PUBLIC && $page->getID() != $grand_root->getID()) {
 				$father = CMS_tree::getFather($page);

@@ -390,7 +390,7 @@ switch ($action) {
 			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
 			$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : unpublish page');
 		}
-    break;
+	break;
 	case "publish":
 		//clear page date end
 		$dt_end = new CMS_date();
