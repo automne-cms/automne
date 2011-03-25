@@ -20,7 +20,7 @@ Automne.server = {
 			scope:				this
 		};
 		if (typeof url == 'object') {
-			config = Ext.apply(config, url, defaultConfig);
+			config = Ext.applyIf(url, defaultConfig);
 		} else {
 			config = Ext.apply(config, {
 				url:			url,
@@ -161,7 +161,10 @@ Automne.server = {
 	},
 	//method used for a server call : request exception
 	requestException: function(conn, response, options) {
-		Automne.server.hideSpinner();
+		Automne.server.hideSpinner(conn, response, options);
+		if (options && options.isUpload) {
+			return true;
+		}
 		Automne.server.failureResponse(response, options, null, 'http');
 	},
 	//method used for a server call : failure response
@@ -186,6 +189,9 @@ Automne.server = {
 			case 'html':
 			default:
 				msg = al.loadingError;
+				if (type == undefined) {
+					type = al.loadingError;
+				}
 			break;
 		}
 		msg += '<br /><br />'+ al.contactAdministrator +'<br /><br />';

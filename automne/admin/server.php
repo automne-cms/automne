@@ -92,6 +92,12 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) { /
 $content = '
 <h1>'.$cms_language->getMessage(MESSAGE_PAGE_AUTOMNE_PARAMS_TESTS).'</h1>
 <ul class="atm-server">';
+//htaccess files
+$content .= '
+<li class="atm-pic-ok x-hidden" id="htaccess-ok">Support for .htaccess files OK</li>
+<li class="atm-pic-cancel x-hidden" id="htaccess-nok">Error, .htaccess files are not supported : YOUR INSTALLATION IS NOT SECURE ! Do not use this configuration on a public server.</li>
+';
+//PHP
 if (version_compare(PHP_VERSION, "5.2.0") === -1) {
 	$content .= '<li class="atm-pic-cancel">Error, PHP version ('.PHP_VERSION.') not match</li>';
 } else {
@@ -171,6 +177,7 @@ if (ini_get('memory_limit') && ini_get('memory_limit') < 32) {
 } else {
 	$content .= '<li class="atm-pic-ok">Memory limit OK</li>';
 }
+
 //CLI
 if (io::strtolower(io::substr(PHP_OS, 0, 3)) === 'win') {
 	if (defined('PATH_PHP_CLI_WINDOWS') && PATH_PHP_CLI_WINDOWS && is_file(PATH_PHP_CLI_WINDOWS)) {
@@ -729,7 +736,21 @@ $jscontent = <<<END
 			autoScroll:			true,
 			border:				false,
 			bodyStyle: 			'padding:5px',
-			html: 				'$content'
+			html: 				'$content',
+			listeners:			{'afterrender':function(){
+				//check for htaccess support
+				Automne.server.call({
+					url:				'/automne/classes/files/htaccess.txt',
+					isUpload:			true,
+					success: 			function(response, options, content) {
+						Ext.get('htaccess-nok').removeClass('x-hidden');
+					},
+					failure:			function(response, options, content) {
+						Ext.get('htaccess-ok').removeClass('x-hidden');
+					},
+					callBackScope:		this
+				});
+			}, scope:this}
 		},{
 			id:					'serverFiles',
 			title:				'{$cms_language->getJsMessage(MESSAGE_PAGE_FILE_ACCESS)}',
