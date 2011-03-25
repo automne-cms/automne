@@ -479,3 +479,4 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(602, 'polymod', 'fr', 'Re-publier le ou les éléments %s sélectionnés : supprime la date de fin de publication de l\'élément. L\'élément sera à nouveau consultable en ligne. Cette action est soumise à validation et peut être annulée.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(603, 'polymod', 'fr', 'Dépublier');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(604, 'polymod', 'fr', 'Publier');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(605, 'polymod', 'fr', 'Timestamp de la date');

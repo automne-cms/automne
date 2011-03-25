@@ -57,6 +57,8 @@ class CMS_poly_object extends CMS_resource
 	const MESSAGE_OBJECT_VALIDATION_AWAIT_NOTIFICATION = 364;
 	const MESSAGE_OBJECT_DELETION_AWAIT_NOTIFICATION = 365;
 	const MESSAGE_OBJECT_FIELD_DESC_DESCRIPTION = 402;
+	const MESSAGE_POLYOBJECT_DATE_HASVALUE_DESCRIPTION = 411;
+	const MESSAGE_POLYOBJECT_DATE_TIMESTAMP_DESCRIPTION = 605;
 	
 	/**
 	  * object id (relative to id in mod_object_polyobjects table)
@@ -1314,6 +1316,10 @@ class CMS_poly_object extends CMS_resource
 			$structure['resource'] = '';
 			$structure['formatedDateStart'] = '';
 			$structure['formatedDateEnd'] = '';
+			$structure['dateStartNotNull'] = '';
+			$structure['dateStartTimestamp'] = '';
+			$structure['dateEndNotNull'] = '';
+			$structure['dateEndTimestamp'] = '';
 		}
 		return $structure;
 	}
@@ -1451,6 +1457,30 @@ class CMS_poly_object extends CMS_resource
 						}
 						return io::htmlspecialchars($date);
 					}
+				}
+			break;
+			case 'dateStartNotNull':
+				if($this->_objectResourceStatus == 1) {
+					$date = parent::getPublicationDateStart();
+					return !$date->isNull();
+				}
+			break;
+			case 'dateStartTimestamp':
+				if($this->_objectResourceStatus == 1) {
+					$date = parent::getPublicationDateStart();
+					return $date->getTimestamp();
+				}
+			break;
+			case 'dateEndNotNull':
+				if($this->_objectResourceStatus == 1) {
+					$date = parent::getPublicationDateEnd();
+					return !$date->isNull();
+				}
+			break;
+			case 'dateEndTimestamp':
+				if($this->_objectResourceStatus == 1) {
+					$date = parent::getPublicationDateEnd();
+					return $date->getTimestamp();
 				}
 			break;
 			//field related values, may not exists ...
@@ -1594,6 +1624,13 @@ class CMS_poly_object extends CMS_resource
 			$labels['structure']['resource'] = $language->getMessage(self::MESSAGE_POLYOBJECT_RESOURCE_DESCRIPTION,false,MOD_POLYMOD_CODENAME);
 			$labels['structure']['formatedDateStart|format'] = $language->getMessage(self::MESSAGE_POLYOBJECT_DATESTART_FORMATEDVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 			$labels['structure']['formatedDateEnd|format'] = $language->getMessage(self::MESSAGE_POLYOBJECT_DATEEND_FORMATEDVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+			
+			$labels['structure']['dateStartNotNull'] = $language->getMessage(self::MESSAGE_POLYOBJECT_DATE_HASVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+			$labels['structure']['dateStartTimestamp'] = $language->getMessage(self::MESSAGE_POLYOBJECT_DATE_TIMESTAMP_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+			$labels['structure']['dateEndNotNull'] = $language->getMessage(self::MESSAGE_POLYOBJECT_DATE_HASVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+			$labels['structure']['dateEndTimestamp'] = $language->getMessage(self::MESSAGE_POLYOBJECT_DATE_TIMESTAMP_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+			
+			
 		}
 		$RRSDefinitions = CMS_poly_object_catalog::getAllRSSDefinitionsForObject($this->getObjectID());
 		if (is_array($RRSDefinitions) && $RRSDefinitions) {

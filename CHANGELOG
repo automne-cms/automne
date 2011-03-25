@@ -7,6 +7,7 @@ V4.1.2 (in progress)
 [FEATURE] : Allow combo search in categories selection in polymod edition
 [FEATURE] : Allow combo search in users/groups selection in polymod edition
 [FEATURE] : Allow combo search in subobjects selection in polymod edition
+[FEATURE] : Add timestamp var to polymod date fields
 
 V4.1.1 (08/03/2011)
 [BUG] : Correct bugs numbers: 1742, 1746, 1715, 1753, 1757, 1758 (see http://www.automne-cms.org/bug/)
