@@ -382,6 +382,7 @@ class CMS_profile_user extends CMS_profile
 	  * Set Password
 	  *
 	  * @param string $password
+	  * @param boolean $encode : encode the setted password using sha1 hash function
 	  * @return boolean
 	  * @access public
 	  */
@@ -391,14 +392,14 @@ class CMS_profile_user extends CMS_profile
 			$this->raiseError('Invalid password. Length must be > '.MINIMUM_PASSWORD_LENGTH);
 			return false;
 		}
-		$this->_password = $encode ? md5($password) : $password;
+		$this->_password = $encode ? '{sha}'.sha1($password) : $password;
 		return true;
 	}
 	
 	/**
 	  * Get Password
 	  *
-	  * @return string The MD5 user password
+	  * @return string The SHA1 user password
 	  * @access public
 	  */
 	function getPassword()

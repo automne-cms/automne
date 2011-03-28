@@ -125,7 +125,10 @@ class CMS_context extends CMS_grandFather
 					profilesUsers
 				where
 					login_pru='".SensitiveIO::sanitizeSQLString($login)."'
-					and password_pru='".SensitiveIO::sanitizeSQLString(md5($password))."'
+					and (
+						password_pru='".SensitiveIO::sanitizeSQLString(md5($password))."'
+						or password_pru='{sha}".SensitiveIO::sanitizeSQLString(sha1($password))."'
+					)
 					and active_pru=1
 			";
 			$q = new CMS_query($sql);

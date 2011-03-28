@@ -248,6 +248,23 @@ if (!$installed) {
 		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v411-to-v412.sql must be executed manualy<br/>';
 	}
 }
+#change field password_pru to use a longer field size for sha1 storage
+$sql = "show columns from profilesUsers";
+$q = new CMS_query($sql);
+$installed = false;
+while($r = $q->getArray()) {
+	if ($r["Field"] == "password_pru" && $r["Type"] == 'varchar(45)') {
+		$installed = true;
+	}
+}
+if (!$installed) {
+	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v411-to-v412-2.sql',true)) {
+		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v411-to-v412-2.sql',false);
+		echo 'Database successfuly updated (sha1 password storage)<br/>';
+	} else {
+		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v411-to-v412-2.sql must be executed manualy<br/>';
+	}
+}
 //END UPDATE FROM 4.1.1 TO 4.1.2
 
 //Update Automne messages
