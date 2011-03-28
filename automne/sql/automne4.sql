@@ -2558,6 +2558,8 @@ CREATE TABLE `websites` (
   `favicon_web` varchar(255) NOT NULL default '',
   `metas_web` text NOT NULL,
   `order_web` int(11) unsigned NOT NULL default '0',
+  `403_web` INT( 11 ) UNSIGNED NOT NULL,
+  `404_web` INT( 11 ) UNSIGNED NOT NULL,
   PRIMARY KEY  (`id_web`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
