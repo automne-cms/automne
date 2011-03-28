@@ -101,7 +101,7 @@ $usersTab = ",{
 		cm: 				new Ext.grid.ColumnModel([
 			sm,
 			{header: \"ID\", 													width: 30, 	dataIndex: 'id', 			sortable: true, 	hidden:true},
-			{header: \"{$cms_language->getJsMessage(MESSAGE_PAGE_NAME)}\", 		width: 80, 	dataIndex: 'lastName', 		sortable: true},
+			{header: \"{$cms_language->getJsMessage(MESSAGE_PAGE_NAME)}\", 		width: 80, 	dataIndex: 'lastName', 		sortable: true,						renderer:renderUsers},
 			{header: \"{$cms_language->getJsMessage(MESSAGE_PAGE_FIRSTNAME)}\", width: 80, 	dataIndex: 'firstName', 	sortable: true},
 			{header: \"{$cms_language->getJsMessage(MESSAGE_PAGE_EMAIL)}\", 	width: 120, dataIndex: 'email', 		sortable: false, 	hidden:true, 	renderer:function(value) {return '<a href=\"mailto:'+value+'\">'+value+'</a>';}},
 			{header: \"{$cms_language->getJsMessage(MESSAGE_PAGE_ACTIVE)}\", 	width: 20, 	dataIndex: 'active', 		sortable: true, 					renderer:function(value) {return value == 1 ? '{$cms_language->getJsMessage(MESSAGE_PAGE_YES)}' : '{$cms_language->getJsMessage(MESSAGE_PAGE_NO)}';}}
@@ -112,35 +112,6 @@ $usersTab = ",{
 			forceFit:			true
 		},
 		tbar:[{
-			text:		'{$cms_language->getJsMessage(MESSAGE_TOOLBAR_FILTER)}',
-			iconCls:	'atm-pic-filter',
-			menu: new Ext.menu.Menu({
-				id: 	'groupFilterMenu-{$groupId}',
-				items: [{
-							text: 		'{$cms_language->getJsMessage(MESSAGE_PAGE_ALL_USERS)}',
-							checked: 	true,
-							group: 		'groupBelongsTo-' + Ext.getCmp('{$winId}').groupId,
-							value:		0,
-							listeners:	{'checkchange': function(item, checked) {
-								if (checked) {
-									filterGroupsUsers = false;
-									filter();
-								}
-							}}
-						}, {
-							text:		'{$cms_language->getJsMessage(MESSAGE_PAGE_GROUP_USERS, array($label))}',
-							checked: 	false,
-							group: 		'groupBelongsTo-' + Ext.getCmp('{$winId}').groupId,
-							value:		1,
-							listeners:	{'checkchange': function(item, checked) {
-								if (checked) {
-									filterGroupsUsers = true;
-									filter();
-								}
-							}}
-						}]
-			})
-		},'-',{
 			xtype: 			'textfield',
 			emptyText:		'{$cms_language->getJsMessage(MESSAGE_PAGE_SEARCH)} ...',
 			id: 			'groupSearch-{$groupId}',
@@ -151,6 +122,17 @@ $usersTab = ",{
 					Ext.getCmp('groupSearch-{$groupId}').getEl().on('keyup', filter, this, {buffer:500});
 				}, scope:groupWindow}
 			}
+		},'-',{
+			xtype:			'checkbox',
+			boxLabel:		'{$cms_language->getJsMessage(MESSAGE_PAGE_ALL_USERS)}',
+			listeners:		{'check': function(item, checked) {
+				if (checked) {
+					filterGroupsUsers = false;
+				} else {
+					filterGroupsUsers = true;
+				}
+				filter();
+			}}
 		}],
 		bbar:				new Ext.PagingToolbar({
 			pageSize: 			{$recordsPerPage},
@@ -248,6 +230,48 @@ $jscontent = <<<END
 		dismissDelay:	0
 	});
 	
+	//renderer for users names
+	var renderUsers = function(label, row, record) {
+		return '<a onclick="var groupWindow = Ext.getCmp(\'{$winId}\');groupWindow.editUser('+ record.id +', this);">'+ label +'</a>';
+	}
+	//edit user
+	groupWindow.editUser = function(userId, el) {
+		el = Ext.get(el);
+		var groupWindow = Ext.getCmp('{$winId}');
+		var fatherWindow = groupWindow.father;
+		if (fatherWindow.userWindows[userId]) {
+			Ext.WindowMgr.bringToFront(fatherWindow.userWindows[userId]);
+		} else {
+			//create window element
+			fatherWindow.userWindows[userId] = new Automne.Window({
+				id:				'userWindow'+userId,
+				modal:			false,
+				father:			fatherWindow,
+				autoLoad:		{
+					url:			'user.php',
+					params:			{
+						winId:			'userWindow'+userId,
+						userId:			userId
+					},
+					nocache:		true,
+					scope:			this
+				},
+				listeners:{'close':function(window){
+					delete fatherWindow.userWindows[window.id.substr(10)];
+					//refresh search list
+					if (fatherWindow.usersWindow && fatherWindow.usersWindow.launchSearch) {
+						fatherWindow.usersWindow.launchSearch();
+					}
+				}}
+			});
+			//display window
+			fatherWindow.userWindows[userId].show(el);
+		}
+	}
+	if (groupWindow.father.userWindows == undefined) {
+		groupWindow.father.userWindows = [];
+	}
+	
 	//users store
 	var store = new Automne.JsonStore({
 		url: 			'users-datas.php',
@@ -313,7 +337,7 @@ $jscontent = <<<END
 			}
 		});
 	}
-	var filterGroupsUsers = false;
+	var filterGroupsUsers = true;
 	//create center panel
 	var center = new Ext.TabPanel({
 		activeTab:			 0,

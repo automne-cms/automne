@@ -162,17 +162,55 @@ $jscontent = <<<END
 			}}
 		}
 	});
+	
+	usersWindow.editGroup = function(groupId, el) {
+		el = Ext.get(el);
+		var fatherWindow = Ext.getCmp('{$fatherId}');
+		if (fatherWindow.groupWindows[groupId]) {
+			Ext.WindowMgr.bringToFront(fatherWindow.groupWindows[groupId]);
+		} else {
+			//create window element
+			fatherWindow.groupWindows[groupId] = new Automne.Window({
+				id:				'groupWindow'+groupId,
+				modal:			false,
+				father:			fatherWindow,
+				autoLoad:		{
+					url:			'group.php',
+					params:			{
+						winId:			'groupWindow'+groupId,
+						groupId:		groupId
+					},
+					nocache:		true,
+					scope:			this
+				},
+				listeners:{'close':function(window){
+					delete fatherWindow.groupWindows[window.id.substr(11)];
+					//refresh search list
+					if (fatherWindow.groupsWindow && fatherWindow.groupsWindow.launchSearch) {
+						fatherWindow.groupsWindow.launchSearch();
+					}
+				}}
+			});
+			//display window
+			fatherWindow.groupWindows[groupId].show(el);
+		}
+	}
 	//renderer for groups names
 	var renderGroups = function(groups) {
 		var stringGroups = '', groupsLength = groups.length;
 		if (groupsLength) {
-			for (var i = 0; i < groupsLength; i++) stringGroups += '<span class="atm-help" ext:qtip="'+ groups[i].description +'">'+ groups[i].label +'</span>, ';
+			for (var i = 0; i < groupsLength; i++) stringGroups += '<a class="atm-help" ext:qtip="'+ groups[i].description +'" onclick="var usersWindow = Ext.getCmp(\'{$winId}\');usersWindow.editGroup('+ groups[i].id +', this);">'+ groups[i].label +'</a>, ';
 			stringGroups = stringGroups.substr(0, (stringGroups.length -2));
 		}
 		return stringGroups;
 	}
 	var sm = new Ext.grid.RowSelectionModel({singleSelect:true});
-	var userWindows = [];
+	if (fatherWindow.groupWindows == undefined) {
+		fatherWindow.groupWindows = [];
+	}
+	if (fatherWindow.userWindows == undefined) {
+		fatherWindow.userWindows = [];
+	}
 	//results grid
 	var grid = new Ext.grid.GridPanel({
 		id:					'usersResultsGrid',
@@ -201,11 +239,11 @@ $jscontent = <<<END
 			handler:	function(button) {
 				if (sm.getSelected().id) {
 					var userId = sm.getSelected().id;
-					if (userWindows[userId]) {
-						Ext.WindowMgr.bringToFront(userWindows[userId]);
+					if (fatherWindow.userWindows[userId]) {
+						Ext.WindowMgr.bringToFront(fatherWindow.userWindows[userId]);
 					} else {
 						//create window element
-						userWindows[userId] = new Automne.Window({
+						fatherWindow.userWindows[userId] = new Automne.Window({
 							id:				'userWindow'+userId,
 							modal:			false,
 							father:			fatherWindow,
@@ -219,15 +257,15 @@ $jscontent = <<<END
 								scope:			this
 							},
 							listeners:{'close':function(window){
-								delete userWindows[window.id.substr(10)];
+								delete fatherWindow.userWindows[window.id.substr(10)];
 								//refresh search list
-								if (usersWindow && usersWindow.launchSearch) {
-									usersWindow.launchSearch();
+								if (fatherWindow.usersWindow && fatherWindow.usersWindow.launchSearch) {
+									fatherWindow.usersWindow.launchSearch();
 								}
 							}}
 						});
 						//display window
-						userWindows[userId].show(button.getEl());
+						fatherWindow.userWindows[userId].show(button.getEl());
 					}
 				}
 			},

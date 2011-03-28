@@ -201,7 +201,7 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
 			cm: 				new Ext.grid.ColumnModel([
 				sm,
 				{header: \"ID\", 												width: 30, 	dataIndex: 'id', 			sortable: true, 	hidden:true},
-				{header: \"{$cms_language->getMessage(MESSAGE_PAGE_LABEL)}\", 	width: 50, 	dataIndex: 'label', 		sortable: true},
+				{header: \"{$cms_language->getMessage(MESSAGE_PAGE_LABEL)}\", 	width: 50, 	dataIndex: 'label', 		sortable: true,						renderer:renderGroups},
 				{header: \"{$cms_language->getMessage(MESSAGE_PAGE_DESC)}\", 	width: 170, dataIndex: 'description',	sortable: true, 					renderer:function(value) {return '<span ext:qtip=\"'+value+'\">'+value+'</span>';}}
 			]),
 			sm: 				sm,
@@ -210,35 +210,6 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
 				forceFit:			true
 			},
 			tbar:[{
-				text:		'{$cms_language->getJsMessage(MESSAGE_TOOLBAR_FILTER)}',
-				iconCls:	'atm-pic-filter',
-				menu: new Ext.menu.Menu({
-					id: 	'filterMenu-{$userId}',
-					items: [{
-								text: 		'{$cms_language->getJsMessage(MESSAGE_PAGE_ALL_GROUPS)}',
-								checked: 	true,
-								group: 		'belongsTo-' + Ext.getCmp('{$winId}').userId,
-								value:		0,
-								listeners:	{'checkchange': function(item, checked) {
-									if (checked) {
-										filterUsersGroups = false;
-										filter();
-									}
-								}}
-							}, {
-								text:		'{$cms_language->getJsMessage(MESSAGE_PAGE_USER_GROUPS)}',
-								checked: 	false,
-								group: 		'belongsTo-' + Ext.getCmp('{$winId}').userId,
-								value:		1,
-								listeners:	{'checkchange': function(item, checked) {
-									if (checked) {
-										filterUsersGroups = true;
-										filter();
-									}
-								}}
-							}]
-				})
-			},'-',{
 				xtype: 			'textfield',
 				emptyText:		'{$cms_language->getJsMessage(MESSAGE_PAGE_SEARCH)} ...',
 				id: 			'search-{$userId}',
@@ -249,6 +220,17 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
 						Ext.getCmp('search-{$userId}').getEl().on('keyup', filter, this, {buffer:500});
 					}, scope:userWindow}
 				}
+			},'-',{
+				xtype:			'checkbox',
+				boxLabel:		'{$cms_language->getJsMessage(MESSAGE_PAGE_ALL_GROUPS)}',
+				listeners:		{'check': function(item, checked) {
+					if (checked) {
+						filterUsersGroups = false;
+					} else {
+						filterUsersGroups = true;
+					}
+					filter();
+				}}
 			}],
 			bbar:				new Ext.PagingToolbar({
 				pageSize: 			{$recordsPerPage},
@@ -398,6 +380,49 @@ $jscontent = <<<END
 		return true;
 	}
 	
+	//renderer for groups names
+	var renderGroups = function(label, row, record) {
+		return '<a onclick="var userWindow = Ext.getCmp(\'{$winId}\');userWindow.editGroup('+ record.id +', this);">'+ label +'</a>';
+	}
+	//edit group
+	userWindow.editGroup = function(groupId, el) {
+		el = Ext.get(el);
+		var userWindow = Ext.getCmp('{$winId}');
+		var fatherWindow = userWindow.father;
+		if (fatherWindow.groupWindows[groupId]) {
+			Ext.WindowMgr.bringToFront(fatherWindow.groupWindows[groupId]);
+		} else {
+			//create window element
+			fatherWindow.groupWindows[groupId] = new Automne.Window({
+				id:				'groupWindow'+groupId,
+				modal:			false,
+				father:			fatherWindow,
+				autoLoad:		{
+					url:			'group.php',
+					params:			{
+						winId:			'groupWindow'+groupId,
+						groupId:		groupId
+					},
+					nocache:		true,
+					scope:			this
+				},
+				listeners:{'close':function(window){
+					delete fatherWindow.groupWindows[window.id.substr(11)];
+					//refresh search list
+					if (fatherWindow.groupsWindow && fatherWindow.groupsWindow.launchSearch) {
+						fatherWindow.groupsWindow.launchSearch();
+					}
+				}}
+			});
+			//display window
+			fatherWindow.groupWindows[groupId].show(el);
+		}
+	}
+	if (userWindow.father.groupWindows == undefined) {
+		userWindow.father.groupWindows = [];
+	}
+	
+	
 	//groups store
 	var store = new Automne.JsonStore({
 		url: 			'groups-datas.php',
@@ -461,7 +486,7 @@ $jscontent = <<<END
 			}
 		});
 	}
-	var filterUsersGroups = false;
+	var filterUsersGroups = true;
 	//create center panel
 	var center = new Ext.TabPanel({
 		activeTab:			 0,
