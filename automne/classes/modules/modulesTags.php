@@ -219,6 +219,9 @@ class CMS_modulesTags extends CMS_grandFather
 	}
 	
 	function getParsingError() {
+		if (!is_object($this->_parser)) {
+			return false;
+		}
 		return $this->_parser->getParsingError();
 	}
 	
