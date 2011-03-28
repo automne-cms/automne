@@ -77,7 +77,11 @@ class CMS_grandFather
 		//second condition are for static calls (made by static methods)
 		if (!defined('APPLICATION_EXEC_TYPE') || (APPLICATION_EXEC_TYPE == 'http' && ((!isset($this) && $systemDebug) || (isset($this) && isset($this->_debug) && $this->_debug)))) {
 			$backTrace = $backTraceLink = '';
-			$bt = array_reverse(debug_backtrace(false));
+			if (version_compare(phpversion(), "5.2.5", "<")) {
+				$bt = @array_reverse(debug_backtrace());
+			} else {
+				$bt = @array_reverse(debug_backtrace(false));
+			}
 			$backtrace = array(
 				'summary'		=> sensitiveIO::printBackTrace($bt),
 				'backtrace'		=> @print_r($bt,true),

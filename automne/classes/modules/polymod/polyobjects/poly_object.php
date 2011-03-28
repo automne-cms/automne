@@ -1085,6 +1085,11 @@ class CMS_poly_object extends CMS_resource
 				$log = new CMS_log();
 				$language = $cms_user->getLanguage();
 				$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_EDIT_CONTENT, $cms_user, $polyModuleCodename, $this->getStatus(), 'Item \''.$this->getLabel().'\' ('.$objectDef->getLabel($language).')', $this);
+			} else {
+				//Log action
+				$log = new CMS_log();
+				$language = $cms_user->getLanguage();
+				$log->logMiscAction(CMS_log::LOG_ACTION_RESOURCE_EDIT_CONTENT, $cms_user, 'Item \''.$this->getLabel().'\' ('.$objectDef->getLabel($language).')', $polyModuleCodename);
 			}
 			
 			//Clear polymod cache
@@ -1152,10 +1157,15 @@ class CMS_poly_object extends CMS_resource
 					$primaryItem->writeToPersistence();
 				}
 			}
+			
+			//Log action
+			$log = new CMS_log();
+			$language = $cms_user->getLanguage();
+			$log->logMiscAction(CMS_log::LOG_ACTION_RESOURCE_DELETE, $cms_user, 'Item \''.$this->getLabel().'\' ('.$objectDef->getLabel($language).')', $polyModuleCodename);
+			
 			if ($hardDelete) {
 				unset($this);
 			}
-			
 			//Clear polymod cache
 			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $polyModuleCodename));
 			return true;
