@@ -98,7 +98,6 @@ class CMS_view extends CMS_grandFather
 			$jsarray = $this->_js;
 			$this->_js = array();
 		}
-		$version = AUTOMNE_VERSION.'-'.AUTOMNE_LASTUPDATE.(SYSTEM_DEBUG ? 'd':'');
 		$return = '';
 		if ($onlyFiles) {
 			return $jsarray;
@@ -153,7 +152,7 @@ class CMS_view extends CMS_grandFather
 	}
 	
 	static function getJSManagerURL() {
-		$version = AUTOMNE_VERSION.'-'.AUTOMNE_LASTUPDATE.(SYSTEM_DEBUG ? 'd':'');
+		$version = md5(AUTOMNE_VERSION.'-'.AUTOMNE_LASTUPDATE.(SYSTEM_DEBUG ? 'd':''));
 		return PATH_JS_WR.'/jsmanager.php?version='.$version;
 	}
 	
@@ -197,7 +196,7 @@ class CMS_view extends CMS_grandFather
 	}
 	
 	static function getCSSManagerURL() {
-		$version = AUTOMNE_VERSION.'-'.AUTOMNE_LASTUPDATE.(SYSTEM_DEBUG ? 'd':'');
+		$version = md5(AUTOMNE_VERSION.'-'.AUTOMNE_LASTUPDATE.(SYSTEM_DEBUG ? 'd':''));
 		return PATH_CSS_WR.'/cssmanager.php?version='.$version;
 	}
 	
