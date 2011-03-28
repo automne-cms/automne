@@ -305,9 +305,9 @@ function atmBackup {
 
     #excludes?
     if [ -d "./automne_modules_files/" ]; then
-        ATM_BACKUP_EXCLUDE_LIST='./automne/cache/ ./automne/linx/ ./automne_modules_files/ ./automne/tmp/ ./automne/upload/ ./html/ ./web/'
+        ATM_BACKUP_EXCLUDE_LIST='./automne/cache/ ./automne/linx/ ./automne_modules_files/ ./automne/tmp/ ./automne/upload/ ./html/ ./web/ ./.htaccess ./.bzr ./.bzrignore'
     else
-        ATM_BACKUP_EXCLUDE_LIST='./automne/cache/ ./automne/linx/ ./files/ ./automne/tmp/ ./automne/upload/ ./automne/html/ ./web/'
+        ATM_BACKUP_EXCLUDE_LIST='./automne/cache/ ./automne/linx/ ./files/ ./automne/tmp/ ./automne/upload/ ./automne/html/ ./web/ ./.htaccess ./.bzr ./.bzrignore'
     fi
 	
     for ITEM in $ATM_BACKUP_EXCLUDE_LIST; do
