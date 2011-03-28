@@ -93,6 +93,7 @@ $content = '
 <h1>'.$cms_language->getMessage(MESSAGE_PAGE_AUTOMNE_PARAMS_TESTS).'</h1>
 <ul class="atm-server">';
 //htaccess files
+$htaccessURL = PATH_AUTOMNE_CHMOD_SCRIPT_WR;
 $content .= '
 <li class="atm-pic-ok x-hidden" id="htaccess-ok">Support for .htaccess files OK</li>
 <li class="atm-pic-cancel x-hidden" id="htaccess-nok">Error, .htaccess files are not supported : YOUR INSTALLATION IS NOT SECURE ! Do not use this configuration on a public server.</li>
@@ -740,7 +741,7 @@ $jscontent = <<<END
 			listeners:			{'afterrender':function(){
 				//check for htaccess support
 				Automne.server.call({
-					url:				'/automne/classes/files/htaccess.txt',
+					url:				'{$htaccessURL}',
 					isUpload:			true,
 					success: 			function(response, options, content) {
 						Ext.get('htaccess-nok').removeClass('x-hidden');

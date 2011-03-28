@@ -789,6 +789,9 @@ if (!defined("PATH_WINDOWS_BIN_FS")) {
 if (!defined("PATH_AUTOMNE_CHMOD_SCRIPT_FS")) {
 	define("PATH_AUTOMNE_CHMOD_SCRIPT_FS", PATH_PACKAGES_FS."/files/htaccess.txt");
 }
+if (!defined("PATH_AUTOMNE_CHMOD_SCRIPT_FS")) {
+	define("PATH_AUTOMNE_CHMOD_SCRIPT_WR", PATH_PACKAGES_WR."/files/htaccess.txt");
+}
 /**
   *	Automne mime types file
   *	Default : PATH_PACKAGES_FS."/files/mime.types"
