@@ -503,7 +503,7 @@ class CMS_view extends CMS_grandFather
 	private function _copyright() {
 		$copyright = "\n<!-- \n"
 		."+----------------------------------------------------------------------+\n"
-		."| Automne (TM) v".AUTOMNE_VERSION." www.automne-cms.org ".sprintf("%".(34 - io::strlen(AUTOMNE_VERSION))."s",  '')."|\n"
+		."| Automne (TM) www.automne-cms.org                                     |\n"
 		."| Copyright (c) 2000-".date('Y')." WS Interactive www.ws-interactive.fr         |\n"
 		."+----------------------------------------------------------------------+\n"
 		."-->\n";
@@ -616,7 +616,7 @@ class CMS_view extends CMS_grandFather
 						<meta http-equiv="Content-Type" content="text/html; charset='.APPLICATION_DEFAULT_ENCODING.'" />
 						'.$title.'
 						'.$this->_copyright().'
-						<meta name="generator" content="'.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION.'" />
+						<meta name="generator" content="'.CMS_grandFather::SYSTEM_LABEL.'" />
 						'.CMS_view::getCSS().'
 						'.CMS_view::getJavascript();
 						if (APPLICATION_GCF_SUPPORT) {

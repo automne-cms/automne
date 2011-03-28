@@ -1111,9 +1111,9 @@ require_once(PATH_PACKAGES_FS."/modules/readStandardParam.php");
 /**
   *	Automne version number
   */
-if (!defined("AUTOMNE_VERSION") && file_exists(PATH_REALROOT_FS."/VERSION")) {
-	define("AUTOMNE_VERSION", file_get_contents(PATH_REALROOT_FS."/VERSION"));
-} else if(!defined("AUTOMNE_VERSION") && !file_exists(PATH_REALROOT_FS."/VERSION")) {
+if (!defined("AUTOMNE_VERSION") && file_exists(PATH_MAIN_FS."/VERSION")) {
+	define("AUTOMNE_VERSION", file_get_contents(PATH_MAIN_FS."/VERSION"));
+} else if(!defined("AUTOMNE_VERSION") && !file_exists(PATH_MAIN_FS."/VERSION")) {
 	define("AUTOMNE_VERSION", 'Unknown');
 }
 /**

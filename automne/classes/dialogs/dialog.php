@@ -620,7 +620,7 @@ class CMS_dialog extends CMS_JSDialog
 	{
 		$copyright = "\n<!-- \n"
 		."+----------------------------------------------------------------------+\n"
-		."| Automne (TM)  www.automne-cms.org v".AUTOMNE_VERSION."                           |\n"
+		."| Automne (TM)  www.automne-cms.org                                    |\n"
 		."| Copyright (c) 2000-".date('Y')." WS Interactive www.ws-interactive.fr         |\n"
 		."+----------------------------------------------------------------------+\n"
 		."-->\n";
