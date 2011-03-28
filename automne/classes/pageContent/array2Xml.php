@@ -51,7 +51,7 @@ class CMS_array2Xml extends CMS_grandFather {
 				if (is_array($value)) {
 					$value = $this->_2xml($value);
 				} elseif (is_numeric($value)) {
-					$value = $value;
+					//$value = $value;
 				} elseif (is_bool($value)) {
 					$value = (int) $value;
 				} else {

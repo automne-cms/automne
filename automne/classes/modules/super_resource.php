@@ -355,7 +355,7 @@ class CMS_superResource extends CMS_resource
 					$stringValue = SensitiveIO::sanitizeHTMLString($stringValue);
 				break;
 				case "html":
-					$stringValue = $stringValue;
+					//$stringValue = $stringValue;
 				break;
 				default:
 					$this->raiseError("Unknown string or not a string dataType :".$stringName);

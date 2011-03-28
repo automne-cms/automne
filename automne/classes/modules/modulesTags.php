@@ -62,7 +62,7 @@ class CMS_modulesTags extends CMS_grandFather
 	protected $_treatedObject = '';
 	
 	protected $_parser;
-	protected $_definitionArray;
+	protected $_definitionArray = array();
 	protected $_definition;
 	protected $_wantedTags;
 	protected $_treatmentParameters;

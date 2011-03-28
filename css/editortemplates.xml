@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Templates>
-	<Template title="Tableau paramétré pour Automne.">
-		<Description>Ceci est un exemple de tableau paramétré pour Automne, vous pouvez en créer en éditant le fichier de styles editortemplates.xml</Description>
+	<Template title="Tableau paramÃ©trÃ© pour Automne.">
+		<Description>Ceci est un exemple de tableau paramÃ©trÃ© pour Automne, vous pouvez en crÃ©er en Ã©ditant le fichier de styles editortemplates.xml</Description>
 		<Html>
 			<![CDATA[
 				<table class="CMS_table" cellpadding="2" cellspacing="1" border="0">
