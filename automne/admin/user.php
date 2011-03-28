@@ -68,6 +68,7 @@ define("MESSAGE_PAGE_PASSWORD_INFO", 503);
 define("MESSAGE_PAGE_USER_CREATION", 574);
 define("MESSAGE_PAGE_ADMIN_NO_GROUPS", 1594);
 define("MESSAGE_PAGE_INCORRECT_FORM_VALUES", 682);
+define("MESSAGE_PAGE_LOG_LABEL", 29);
 
 $winId = sensitiveIO::request('winId', '', 'userWindow');
 $userId = sensitiveIO::request('userId', 'sensitiveIO::isPositiveInteger', 'createUser');
@@ -297,6 +298,25 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
 				nocache:	true
 			}
 		}";
+	//LOGS TAB
+	$logsTab = ", {
+			id:				'userLogs-{$userId}',
+			title:			'{$cms_language->getJSMessage(MESSAGE_PAGE_LOG_LABEL)}',
+			border:			false,
+			xtype:			'atmPanel',
+			layout:			'fit',
+			autoScroll:		true,
+			autoLoad:		{
+				url:			'user-logs.php',
+				params:			{
+					winId:			'userLogs-{$userId}',
+					user:			'{$userId}',
+					action:			'view'
+				},
+				nocache:		true,
+				scope:			this
+			}
+           }";
 }
 
 //create dynamic vars
@@ -746,7 +766,7 @@ $jscontent = <<<END
 					}
 				}]
 			}]
-		}{$groupsTab}{$modulesTab}{$adminTab}]
+		}{$groupsTab}{$modulesTab}{$adminTab}{$logsTab}]
 	});
 	
 	userWindow.add(center);
