@@ -171,8 +171,8 @@ class CMS_object_i18nm extends CMS_grandFather
 	  */
 	function setValue($languageCode, $value)
 	{
-		if (io::strlen($languageCode) > 2) {
-			$this->raiseError("Can't use a language code longuer than 2 caracters : ".$languageCode);
+		if (io::strlen($languageCode) > 5) {
+			$this->raiseError("Can't use a language code longuer than 5 caracters : ".$languageCode);
 			return false;
 		}
 		$this->_values[$languageCode] = $value;

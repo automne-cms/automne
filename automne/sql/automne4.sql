@@ -1079,7 +1079,7 @@ DROP TABLE IF EXISTS `modulesCategories_i18nm`;
 CREATE TABLE `modulesCategories_i18nm` (
   `id_mcl` int(11) unsigned NOT NULL auto_increment,
   `category_mcl` int(11) unsigned NOT NULL default '0',
-  `language_mcl` char(2) NOT NULL default 'en',
+  `language_mcl` char(5) NOT NULL default 'en',
   `label_mcl` varchar(255) NOT NULL default '',
   `description_mcl` text NOT NULL,
   `file_mcl` varchar(255) NOT NULL default '',
@@ -1201,7 +1201,7 @@ CREATE TABLE `mod_cms_forms_formulars` (
   `id_frm` int(11) unsigned NOT NULL auto_increment,
   `name_frm` varchar(255) NOT NULL default '',
   `source_frm` text NOT NULL,
-  `language_frm` char(2) NOT NULL default 'en',
+  `language_frm` char(5) NOT NULL default 'en',
   `owner_frm` int(11) unsigned NOT NULL default '0',
   `closed_frm` tinyint(1) NOT NULL default '0',
   `destinationType_frm` int(2) NOT NULL default '0',
@@ -1342,7 +1342,7 @@ INSERT INTO `mod_object_field` (`id_mof`, `uuid_mof`, `object_id_mof`, `label_id
 DROP TABLE IF EXISTS `mod_object_i18nm`;
 CREATE TABLE `mod_object_i18nm` (
   `id_i18nm` int(11) unsigned NOT NULL auto_increment,
-  `code_i18nm` char(2) NOT NULL default '',
+  `code_i18nm` char(5) NOT NULL default '',
   `value_i18nm` mediumtext NOT NULL,
   UNIQUE KEY `id` (`id_i18nm`,`code_i18nm`),
   KEY `code` (`code_i18nm`),

@@ -265,6 +265,23 @@ if (!$installed) {
 		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v411-to-v412-2.sql must be executed manualy<br/>';
 	}
 }
+#change field language_mcl of modulesCategories_i18nm to use a longer field size for 5 characters language code storage
+$sql = "show columns from modulesCategories_i18nm";
+$q = new CMS_query($sql);
+$installed = false;
+while($r = $q->getArray()) {
+	if ($r["Field"] == "language_mcl" && $r["Type"] == 'char(5)') {
+		$installed = true;
+	}
+}
+if (!$installed) {
+	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v411-to-v412-3.sql',true)) {
+		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v411-to-v412-3.sql',false);
+		echo 'Database successfuly updated (handle language codes of 5 characters)<br/>';
+	} else {
+		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v411-to-v412-3.sql must be executed manualy<br/>';
+	}
+}
 //END UPDATE FROM 4.1.1 TO 4.1.2
 
 //Update Automne messages

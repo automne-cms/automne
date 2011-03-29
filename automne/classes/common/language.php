@@ -36,7 +36,7 @@ class CMS_language extends CMS_grandFather
 	protected $_label;
 
 	/**
-	  * Code (2-chars code)
+	  * Code (max 5-chars code)
 	  * @var string
 	  * @access private
 	  */
