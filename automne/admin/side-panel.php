@@ -660,17 +660,17 @@ $jscontent = <<<END
 		'styles' : function(t){
     		openWindow(t, 'templates.php', {
 				type:		'css'
-			}, 750, 580);
+			}, 750, 580, true);
     	},
 		'javascripts' : function(t){
     		openWindow(t, 'templates.php', {
 				type:		'js'
-			}, 750, 580);
+			}, 750, 580, true);
     	},
 		'wysiwyg-toolbar' : function(t){
 			openWindow(t, 'templates.php', {
 				type:		'wysiwyg-toolbar'
-			}, 750, 580);
+			}, 750, 580, true);
     	},
 		'modules' : function(t){
     		var window = new Automne.frameWindow({

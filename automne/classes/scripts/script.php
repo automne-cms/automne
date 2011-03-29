@@ -41,14 +41,21 @@ $appCode = processManager::getAppCode();
 define("SCRIPT_CODENAME", "bgscript_" . $appCode . "_regenerator");
 
 //time out in second for scripts
-define("SUB_SCRIPT_TIME_OUT", 300); //5 minutes
-define("MASTER_SCRIPT_TIME_OUT", 43200); //12 hours
-
+if (!defined('SUB_SCRIPT_TIME_OUT')) {
+	define("SUB_SCRIPT_TIME_OUT", 300); //5 minutes
+}
+if (!defined('MASTER_SCRIPT_TIME_OUT')) {
+	define("MASTER_SCRIPT_TIME_OUT", 43200); //12 hours
+}
 //duration in seconds between each cycles of checking of sub-scripts
-define("SLEEP_TIME", 1);
+if (!defined('SLEEP_TIME')) {
+	define("SLEEP_TIME", 1);
+}
 
 //for script debug - verbose in cms_error_log
-define("SCRIPT_DEBUG", false);
+if (!defined('SCRIPT_DEBUG')) {
+	define("SCRIPT_DEBUG", false);
+}
 
 class automne_script extends backgroundScript
 {
