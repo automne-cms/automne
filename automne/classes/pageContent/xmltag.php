@@ -150,6 +150,26 @@ class CMS_XMLTag extends CMS_grandFather
 	}
 	
 	/**
+	  * Get all the tag children
+	  *
+	  * @return array(string=>string) the tag children
+	  * @access public
+	  */
+	function getChildren() {
+		return $this->_children;
+	}
+	
+	/**
+	  * Get all the tag parameters
+	  *
+	  * @return array(string=>string) the tag parameters
+	  * @access public
+	  */
+	function getParameters() {
+		return $this->_parameters;
+	}
+	
+	/**
 	  * Get the value of an attribute.
 	  *
 	  * @param string $attribute The attribute we want (its the key of the associative array)

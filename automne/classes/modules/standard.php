@@ -1492,8 +1492,8 @@ class CMS_module_standard extends CMS_module
 					"atm-main-url" 		=> array("selfClosed" => true, "parameters" => array()),
 					"atm-constant" 		=> array("selfClosed" => true, "parameters" => array()),
 					"atm-last-update" 	=> array("selfClosed" => false, "parameters" => array()),
-					"a"					=> array("selfClosed" => false, "parameters" => array('href' => '#([a-zA-Z0-9._-]*)'),'class' => 'CMS_XMLTag_anchor'),
-					"area"				=> array("selfClosed" => false, "parameters" => array('href' => '#([a-zA-Z0-9._-]*)'),'class' => 'CMS_XMLTag_anchor'),
+					"a"					=> array("selfClosed" => false, "parameters" => array('href' => '#([a-zA-Z0-9._{}:-]*)'),'class' => 'CMS_XMLTag_anchor'),
+					"area"				=> array("selfClosed" => false, "parameters" => array('href' => '#([a-zA-Z0-9._{}:-]*)'),'class' => 'CMS_XMLTag_anchor'),
 					"body" 				=> array("selfClosed" => false, "parameters" => array()),
 					"head" 				=> array("selfClosed" => false, "parameters" => array()),
 					"html" 				=> array("selfClosed" => false, "parameters" => array()),
@@ -1520,7 +1520,8 @@ class CMS_module_standard extends CMS_module
 			break;
 			case MODULE_TREATMENT_WYSIWYG_OUTER_TAGS :
 				$return = array (
-					"a" => array("selfClosed" => false, "parameters" => array("href"	=> ".*\{\{(\d+)\}\}.*")),
+					"a"		=> array("selfClosed" => false, "parameters" => array()), //this definition handle both anchors and internal links 
+					"area"	=> array("selfClosed" => false, "parameters" => array('href' => '#([a-zA-Z0-9._{}:-]*)'),'class' => 'CMS_XMLTag_anchor'),
 				);
 			break;
 		}
@@ -1892,32 +1893,49 @@ class CMS_module_standard extends CMS_module
 				}
 				return $treatedLink;
 			case MODULE_TREATMENT_WYSIWYG_OUTER_TAGS :
-				/* Pattern explanation :
-				 * 
-				 * \<a([^>]*) : start with "<a" and any characters after except a ">". Content found into the "()" (first parameters of the link) is the first variable : "\\1"
-				 * {{(\d+)}} : some numbers only into "{{" and "}}". Content found into the "()" (the page number) is the second variable : "\\2"
-				 * (.*)\<\/a> : any characters after followed by "</a>". Content found into the "()" (last parameters of the link and link content) is the third variable : "\\3"
-				 * /U : PCRE_UNGREEDY stop to the first finded occurence.
-				*/
-				$pattern = "/<a([^>]*){{(\d+)}}(.*)\<\/a>/Us";
-				if ($tag->getName() == 'a' && $treatmentParameters['module'] == MOD_STANDARD_CODENAME) {
-					if ($tag->getAttribute('noselection') == 'true') {
-						$replacement = "<atm-linx type=\"direct\"><selection><start><nodespec type=\"node\" value=\"\\2\"/></start></selection><noselection>".$tag->getInnerContent()."</noselection><display><htmltemplate><a\\1{{href}}\\3</a></htmltemplate></display></atm-linx>";
-						$treatedLink = preg_replace($pattern,$replacement,str_replace('noselection="true"','',$tag->getContent()));
-					} else {
-						$replacement = "<atm-linx type=\"direct\"><selection><start><nodespec type=\"node\" value=\"\\2\"/></start></selection><display><htmltemplate><a\\1{{href}}\\3</a></htmltemplate></display></atm-linx>";
-						$treatedLink = preg_replace($pattern,$replacement,$tag->getContent());
+				//Anchor
+				if (preg_match('/^#([a-zA-Z0-9._{}:-]*)$/i', $tag->getAttribute('href')) > 0) {
+					//instanciate anchor tag
+					$anchor = new CMS_XMLTag_anchor(
+							$tag->getName(),
+							$tag->getAttributes(),
+							$tag->getChildren(),
+							$tag->getParameters()
+					);
+					return $anchor->compute(array(
+						'mode'			=> $treatmentMode,
+						'visualization' => $visualizationMode,
+						'object'		=> $treatedObject,
+						'parameters'	=> $treatmentParameters
+					));
+				} elseif (preg_match('/^.*\{\{(\d+)\}\}.*$/i', $tag->getAttribute('href')) > 0) { //internal links
+					/* Pattern explanation :
+					 * 
+					 * \<a([^>]*) : start with "<a" and any characters after except a ">". Content found into the "()" (first parameters of the link) is the first variable : "\\1"
+					 * {{(\d+)}} : some numbers only into "{{" and "}}". Content found into the "()" (the page number) is the second variable : "\\2"
+					 * (.*)\<\/a> : any characters after followed by "</a>". Content found into the "()" (last parameters of the link and link content) is the third variable : "\\3"
+					 * /U : PCRE_UNGREEDY stop to the first finded occurence.
+					*/
+					$pattern = "/<a([^>]*){{(\d+)}}(.*)\<\/a>/Us";
+					if ($tag->getName() == 'a' && $treatmentParameters['module'] == MOD_STANDARD_CODENAME) {
+						if ($tag->getAttribute('noselection') == 'true') {
+							$replacement = "<atm-linx type=\"direct\"><selection><start><nodespec type=\"node\" value=\"\\2\"/></start></selection><noselection>".$tag->getInnerContent()."</noselection><display><htmltemplate><a\\1{{href}}\\3</a></htmltemplate></display></atm-linx>";
+							$treatedLink = preg_replace($pattern, $replacement, str_replace('noselection="true"', '', $tag->getContent()));
+						} else {
+							$replacement = "<atm-linx type=\"direct\"><selection><start><nodespec type=\"node\" value=\"\\2\"/></start></selection><display><htmltemplate><a\\1{{href}}\\3</a></htmltemplate></display></atm-linx>";
+							$treatedLink = preg_replace($pattern, $replacement, $tag->getContent());
+						}
+					} elseif ($tag->getName() == 'a' && $treatmentParameters['module'] != MOD_STANDARD_CODENAME) {
+						if ($tag->getAttribute('noselection') == 'true') {
+							$replacement = '<span id="'.MOD_STANDARD_CODENAME.'-\\2-true"><?php if (CMS_tree::pageExistsForUser(\\2)) { echo \'<a\\1\'.CMS_tree::getPageValue(\\2, \'url\').\'\\3</a>\';} else { echo '.var_export($tag->getInnerContent(),true).';} ?><!--{elements:'.base64_encode(serialize(array('module' => array(0 => MOD_STANDARD_CODENAME)))).'}--></span>';
+							$treatedLink = preg_replace($pattern, $replacement, str_replace(array('noselection="true"',"'"), array('',"\'"), $tag->getContent()));
+						} else {
+							$replacement = '<span id="'.MOD_STANDARD_CODENAME.'-\\2-false"><?php if (CMS_tree::pageExistsForUser(\\2)) { echo \'<a\\1\'.CMS_tree::getPageValue(\\2, \'url\').\'\\3</a>\';} ?><!--{elements:'.base64_encode(serialize(array('module' => array(0 => MOD_STANDARD_CODENAME)))).'}--></span>';
+							$treatedLink = preg_replace($pattern, $replacement, str_replace("'","\'", $tag->getContent()));
+						}
 					}
-				} elseif ($tag->getName() == 'a' && $treatmentParameters['module'] != MOD_STANDARD_CODENAME) {
-					if ($tag->getAttribute('noselection') == 'true') {
-						$replacement = '<span id="'.MOD_STANDARD_CODENAME.'-\\2-true"><?php if (CMS_tree::pageExistsForUser(\\2)) { echo \'<a\\1\'.CMS_tree::getPageValue(\\2, \'url\').\'\\3</a>\';} else { echo '.var_export($tag->getInnerContent(),true).';} ?><!--{elements:'.base64_encode(serialize(array('module' => array(0 => MOD_STANDARD_CODENAME)))).'}--></span>';
-						$treatedLink = preg_replace($pattern,$replacement,str_replace(array('noselection="true"',"'"),array('',"\'"),$tag->getContent()));
-					} else {
-						$replacement = '<span id="'.MOD_STANDARD_CODENAME.'-\\2-false"><?php if (CMS_tree::pageExistsForUser(\\2)) { echo \'<a\\1\'.CMS_tree::getPageValue(\\2, \'url\').\'\\3</a>\';} ?><!--{elements:'.base64_encode(serialize(array('module' => array(0 => MOD_STANDARD_CODENAME)))).'}--></span>';
-						$treatedLink = preg_replace($pattern,$replacement,str_replace("'","\'",$tag->getContent()));
-					}
+					return $treatedLink;
 				}
-				return $treatedLink;
 			break;
 		}
 		//in case of no tag treatment, simply return it

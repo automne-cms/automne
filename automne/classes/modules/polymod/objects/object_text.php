@@ -400,12 +400,9 @@ class CMS_object_text extends CMS_object_common
 								}
 							}
 						}
-            			//then eval all plugin codes
-						$callbackFunc = create_function('$string', 'ob_start();eval(sensitiveIO::sanitizeExecCommand("$string[2];"));$ret = ob_get_contents();ob_end_clean();return $ret;');
-						if ($callbackFunc) {
-							$content = preg_replace_callback("/(<\?php|<\?)(.*?)\?>/si", $callbackFunc, $this->_subfieldValues[0]->getValue());
-						} else {
-							$content = $this->_subfieldValues[0]->getValue();
+            			//then eval all php codes if any
+						if (strpos($this->_subfieldValues[0]->getValue(), '<?php') !== false) {
+							$content = io::evalPHPCode($this->_subfieldValues[0]->getValue());
 						}
 						if (isset($GLOBALS['polymod']['preparedItems'])) {
 							unset($GLOBALS['polymod']['preparedItems']);

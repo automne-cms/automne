@@ -682,7 +682,7 @@ class CMS_dialog extends CMS_JSDialog
 				$this->_showBody();
 				if ($this->_displayMode != "loading") {
 					/*only for stats*/
-					if (STATS_DEBUG && $_SERVER["SCRIPT_NAME"] != PATH_REALROOT_WR."/automne/admin/stat.php") {
+					if (STATS_DEBUG && $_SERVER["SCRIPT_NAME"] != PATH_ADMIN_WR.'/stat.php') {
 						view_stat();
 					}
 				}
@@ -884,7 +884,7 @@ class CMS_dialog extends CMS_JSDialog
 								}
 								echo '<br />'.$this->_showMessage();
 								$replace = array(
-									PATH_REALROOT_WR.'/automne/admin/' => '',
+									PATH_ADMIN_WR => '',
 									'modules/' => '',
 									'/' => '_',
 									'.php' => ''

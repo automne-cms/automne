@@ -184,6 +184,11 @@ class CMS_block_text extends CMS_block
 		$this->_value = $editor->getHTML();
 		$this->_administrable = false;
 		$html = parent::_getHTMLForm($language, $page, $clientSpace, $row, $blockID, $data);
+		
+		//encode brackets to avoid vars ( {something:type:var} ) to be interpretted
+		//decoded into CMS_row::getData
+		$html = preg_replace ('#{([a-zA-Z0-9._{}:-]*)}#U' , '||bo||\1||bc||', $html);
+		
 		return $html;
 	}
 	
@@ -285,7 +290,7 @@ class CMS_block_text extends CMS_block
 				clientSpaceID='".$clientSpaceID."',
 				rowID='".$rowID."',
 				blockID='".$this->_tagID."',
-				value='".SensitiveIO::sanitizeSQLString(SensitiveIO::stripPHPTags(stripslashes($data["value"])))."'
+				value='".SensitiveIO::sanitizeSQLString($data["value"])."'
 		";
 		$q = new CMS_query($sql);
 		if ($q->hasError()) {

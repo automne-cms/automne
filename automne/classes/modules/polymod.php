@@ -267,8 +267,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 							}
 							$tagContent =
 							'<span id="polymod-'.$selectedPluginID.'-'.$selectedItem.'" class="polymod">'."\n".
-							'<?php require_once(PATH_REALROOT_FS.\'/automne/classes/polymodFrontEnd.php\');'."\n".
-							'echo CMS_poly_definition_functions::pluginCode(\''.$selectedPluginID.'\', \''.$selectedItem.'\', '.var_export($selectedText,true).', true); ?>'."\n".
+							'<?php echo CMS_poly_definition_functions::pluginCode(\''.$selectedPluginID.'\', \''.$selectedItem.'\', '.var_export($selectedText,true).', true); ?>'."\n".
 							$commentSelectedText.'</span>';
 						}
 						return $tagContent;

@@ -87,7 +87,7 @@ class CMS_grandFather
 				'backtrace'		=> @print_r($bt,true),
 			);
 			$backtraceName = 'bt_'.md5(rand());
-			$backTraceLink = PATH_REALROOT_WR.'/automne/admin/backtrace.php?bt='.$backtraceName;
+			$backTraceLink = PATH_ADMIN_WR.'/backtrace.php?bt='.$backtraceName;
 			//save backtrace to cache (for 10 min)
 			$cache = new CMS_cache($backtraceName, 'atm-backtrace', 600, false);
 			if ($cache) {

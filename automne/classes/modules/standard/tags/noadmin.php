@@ -37,7 +37,7 @@ class CMS_XMLTag_noadmin extends CMS_XMLTag
 	  * @access private
 	  */
 	protected function _compute() {
-		return 'if (!(strpos($_SERVER["REQUEST_URI"], \'automne/admin\') !== false  || (isset($_REQUEST[\'atm-context\']) && $_REQUEST[\'atm-context\'] == \'adminframe\'))): '."\n".
+		return 'if (!(strpos($_SERVER["REQUEST_URI"], PATH_ADMIN_WR) !== false  || (isset($_REQUEST[\'atm-context\']) && $_REQUEST[\'atm-context\'] == \'adminframe\'))): '."\n".
 		$this->_computeChilds()."\n".
 		'endif; ';
 	}
