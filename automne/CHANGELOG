@@ -7,6 +7,7 @@ V4.1.2 (in progress)
 [REFACTOR] : Move VERSION and CHANGELOG files into /automne folder
 [REFACTOR] : Automne passwords are now stored with sha1 hashing method (more secure)
 [REFACTOR] : Handle language code of 5 characters
+[REFACTOR] : Change email addresses validation to ensure they are properly validated according to the standards
 [FEATURE] : Add logs for all actions done on polymod objects which are not subject to validation
 [FEATURE] : Add direct access to rows and templates help links in side panel
 [FEATURE] : Add website specific 403 and 404 pages
