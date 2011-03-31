@@ -82,6 +82,18 @@ if (!isset($_GET['file'])) {
 			} else {
 				$content .= '<li class="atm-pic-ok">PHP version <strong style="color:green">OK</strong> ('.PHP_VERSION.')</li>';
 			}
+			//XML
+			$pi = phpinfo_array(true);
+			if (!isset($pi['xml'])) {
+				$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, XML extension not installed</li>';
+			} else {
+				if (isset($pi['xml']['EXPAT Version'])) {
+					$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, XML extension installed with Expat library.</li>';
+				} else {
+					//isset($pi['xml']['libxml2 Version'])
+					$content .= '<li class="atm-pic-ok">XML extension <strong style="color:green">OK</strong></li>';
+				}
+			}
 			//GD
 			if (!function_exists('imagecreatefromgif') || !function_exists('imagecreatefromjpeg') || !function_exists('imagecreatefrompng')) {
 				$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, GD extension not installed</li>';
@@ -159,7 +171,7 @@ if (!isset($_GET['file'])) {
 				$error = '';
 				$return = executeCommand('which php 2>&1',$error);
 				if ($error && $return !== false) {
-					$content .= '<li class="atm-pic-cancel"><strong style="color:orange">Warning</strong>, unable to find php CLI with command "which php" : '.$error."\n";
+					$content .= '<li class="atm-pic-cancel"><strong style="color:orange">Warning</strong>, unable to find php CLI with command "which php" : '.$error.'</li>';
 				}
 				if ($return === false) {
 					$content .= '<li class="atm-pic-cancel"><strong style="color:orange">Warning</strong>, commands passthru() and exec() are not available. PHP CLI is not usable.</li>';
@@ -240,6 +252,8 @@ if (!isset($_GET['file'])) {
 			$error_stepCheck_magic_quotes_runtime_error = 'Attention ! L\'option "magic_quotes_runtime" est active sur votre configuration de PHP. Cette option est incompatible avec Automne. V&eacute;rifiez votre installation de PHP.';
 			$error_stepCheck_magic_quotes_sybase_error = 'Attention ! L\'option "magic_quotes_sybase" est active sur votre configuration de PHP. Cette option est incompatible avec Automne. V&eacute;rifiez votre installation de PHP.';
 			$error_stepCheck_register_globals_error = 'Attention ! L\'option "register_globals" est active sur votre configuration de PHP. Cette option est incompatible avec Automne. V&eacute;rifiez votre installation de PHP.';
+			$error_stepCheck_xml_error = 'Erreur, l\'extension XML n\'est pas install&eacute;e sur votre serveur. V&eacute;rifiez votre installation de PHP.';
+			$error_stepCheck_xml_expat_error = 'Erreur, l\'extension XML est install&eacute;e avec EXPAT au lieu de LibXML. V&eacute;rifiez votre installation de PHP.';
 			$error_stepCheck_gd_error = 'Erreur, l\'extension GD n\'est pas install&eacute;e sur votre serveur. V&eacute;rifiez votre installation de PHP.';
 			$error_stepCheck_gd_gif_error = 'Erreur, les fonctionnalit&eacute;s de traitement d\'images GIF ne sont pas install&eacute;es (Extension GD). V&eacute;rifiez votre installation de PHP.';
 			$error_stepCheck_gd_jpeg_error = 'Erreur, les fonctionnalit&eacute;s de traitement d\'images JPEG ne sont pas install&eacute;es (Extension GD). V&eacute;rifiez votre installation de PHP.';
@@ -409,6 +423,8 @@ if (!isset($_GET['file'])) {
 			$error_stepCheck_magic_quotes_runtime_error = 'Beware! The "magic_quotes_runtime" option is active on your PHP configuration. This option is not compatible with Automne. Please Check your PHP installation.';
 			$error_stepCheck_magic_quotes_sybase_error = 'Beware! The "magic_quotes_sybase" option is active on your PHP configuration. This option is not compatible with Automne. Please Check your PHP installation.';
 			$error_stepCheck_register_globals_error = 'Beware ! The "register_globals" option is active on your PHP configuration. This option is not compatible with Automne. Please Check your PHP installation.';
+			$error_stepCheck_xml_error = 'Error, XML extension is not installed on your server. Please Check your PHP installation.';
+			$error_stepCheck_xml_expat_error =  = 'Error, XML extension is installed with EXPAT instead of LibXML. Please Check your PHP installation.';
 			$error_stepCheck_gd_error = 'Error, GD extension is not installed on your server. Please Check your PHP installation.';
 			$error_stepCheck_gd_gif_error = 'Error, functionalities of GIF image processing are not installed (GD Extension). Please Check your PHP installation.';
 			$error_stepCheck_gd_jpeg_error = 'Error, functionalities of JPEG image processing are not installed (GD Extension). Please Check your PHP installation.';
@@ -582,6 +598,19 @@ if (!isset($_GET['file'])) {
 				$error .= sprintf($error_docroot, realpath(dirname(__FILE__))).'<br /><br />';
 				$stopInstallation = true;
 			}*/
+			
+			//XML
+			$pi = phpinfo_array(true);
+			if (!isset($pi['xml'])) {
+				$error .= $error_stepCheck_xml_error.'<br /><br />';
+				$stopInstallation = true;
+			} else {
+				if (isset($pi['xml']['EXPAT Version'])) {
+					$error .= $error_stepCheck_xml_expat_error.'<br /><br />';
+					$stopInstallation = true;
+				}
+			}
+			
 			//check for GD
 			if (!function_exists("imagecopyresampled")) {
 				$error .= $error_stepCheck_gd_error.'<br /><br />';
