@@ -73,6 +73,7 @@ define("MESSAGE_ACTION_UNPUBLISH", 603);
 define("MESSAGE_ACTION_PUBLISH", 604);
 define("MESSAGE_ACTION_PUBLISH_SELECTED", 602);
 define("MESSAGE_ACTION_UNPUBLISH_SELECTED", 601);
+define("MESSAGE_ACTION_DELETE_CONFIRM", 606);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -720,7 +721,21 @@ $jscontent = <<<END
 				xtype:		'button',
 				text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_DELETE)}',
 				handler:	function(button) {
-					refresh(selectedObjects, {del:true});
+					if (selectedObjects.length) {
+						Automne.message.popup({
+							msg: 				'{$cms_language->getJsMessage(MESSAGE_ACTION_DELETE_CONFIRM, array($object->getLabel($cms_language)), MOD_POLYMOD_CODENAME)} ' + (({$isPrimary}) ? '{$cms_language->getJSMessage(MESSAGE_ACTION_DELETE_VALIDATION, false, MOD_POLYMOD_CODENAME)}' : '{$cms_language->getJSMessage(MESSAGE_ACTION_DELETE_NO_VALIDATION, false, MOD_POLYMOD_CODENAME)}'),
+							buttons: 			Ext.MessageBox.OKCANCEL,
+							animEl: 			button.getEl(),
+							closable: 			false,
+							icon: 				Ext.MessageBox.WARNING,
+							scope:				this,
+							fn: 				function (button) {
+								if (button == 'ok') {
+									refresh(selectedObjects, {del:true});
+								}
+							}
+						});
+					}
 				},
 				scope:		resultsPanel,
 				disabled:	true

@@ -272,34 +272,6 @@ $jscontent = <<<END
 			scope:		usersWindow,
 			disabled:	true
 		}),new Ext.Button({
-			id:			'desactivateUser',
-			iconCls:	'atm-pic-disable',
-			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_DISACTIVATE)}',
-			handler:	function() {
-				if (sm.getSelected().id) {
-					Automne.server.call('users-controler.php', function() {store.reload();}, {
-						userId:			sm.getSelected().id,
-						action:			'disactivate'
-					});
-				}
-			},
-			scope:		usersWindow,
-			hidden:		true
-		}),new Ext.Button({
-			id:			'activateUser',
-			iconCls:	'atm-pic-enable',
-			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_ACTIVATE)}',
-			handler:	function() {
-				if (sm.getSelected().id) {
-					Automne.server.call('users-controler.php', function() {store.reload();}, {
-						userId:			sm.getSelected().id,
-						action:			'activate'
-					});
-				}
-			},
-			scope:		usersWindow,
-			hidden:		true
-		}),new Ext.Button({
 			id:			'deleteUser',
 			iconCls:	'atm-pic-deletion',
 			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_DELETE)}',
@@ -325,6 +297,44 @@ $jscontent = <<<END
 			},
 			scope:		usersWindow,
 			disabled:	true
+		}),new Ext.Button({
+			id:			'desactivateUser',
+			iconCls:	'atm-pic-disable',
+			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_DISACTIVATE)}',
+			handler:	function() {
+				if (sm.getSelected().id) {
+					Automne.server.call('users-controler.php', function() {
+							store.reload();
+							Ext.getCmp('desactivateUser').hide();
+							Ext.getCmp('activateUser').show();
+						}, {
+							userId:			sm.getSelected().id,
+							action:			'disactivate'
+						}
+					);
+				}
+			},
+			scope:		usersWindow,
+			hidden:		true
+		}),new Ext.Button({
+			id:			'activateUser',
+			iconCls:	'atm-pic-enable',
+			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_ACTIVATE)}',
+			handler:	function() {
+				if (sm.getSelected().id) {
+					Automne.server.call('users-controler.php', function() {
+							store.reload();
+							Ext.getCmp('activateUser').hide();
+							Ext.getCmp('desactivateUser').show();
+						}, {
+							userId:			sm.getSelected().id,
+							action:			'activate'
+						}
+					);
+				}
+			},
+			scope:		usersWindow,
+			hidden:		true
 		}), '->', new Ext.Button({
 			id:			'createUser',
 			iconCls:	'atm-pic-add',

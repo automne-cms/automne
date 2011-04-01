@@ -295,7 +295,11 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			$pluginSelection.
 			$languageObject.
 			$public.
-			'if (isset($parameters[\'item\'])) {$parameters[\'objectID\'] = $parameters[\'item\']->getObjectID();} elseif (isset($parameters[\'itemID\']) && sensitiveIO::isPositiveInteger($parameters[\'itemID\']) && !isset($parameters[\'objectID\'])) $parameters[\'objectID\'] = CMS_poly_object_catalog::getObjectDefinitionByID($parameters[\'itemID\']);'."\n".
+			'if (isset($parameters[\'item\'])) {'."\n".
+			'	$parameters[\'objectID\'] = $parameters[\'item\']->getObjectID();'."\n".
+			'} elseif (isset($parameters[\'itemID\']) && sensitiveIO::isPositiveInteger($parameters[\'itemID\']) && !isset($parameters[\'objectID\'])) {'."\n".
+			'	$parameters[\'objectID\'] = CMS_poly_object_catalog::getObjectDefinitionByID($parameters[\'itemID\']);'."\n".
+			'}'."\n".
 			'if (!isset($object) || !is_array($object)) $object = array();'."\n".
 			$polyobjectsDefinitions;
 		}

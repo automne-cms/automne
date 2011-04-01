@@ -480,3 +480,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(603, 'polymod', 'fr', 'Dépublier');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(604, 'polymod', 'fr', 'Publier');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(605, 'polymod', 'fr', 'Timestamp de la date');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(606, 'polymod', 'fr', 'Etes-vous sûr de vouloir supprimer le ou les éléments %s sélectionnés ?');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(607, 'polymod', 'fr', 'Etes-vous sûr de vouloir désassocier l\'élément %s sélectionné ?');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(608, 'polymod', 'fr', 'Veuillez sélectionner un élément sur lequel réaliser cette opération ...');
+

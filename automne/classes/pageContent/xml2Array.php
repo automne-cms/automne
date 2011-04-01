@@ -270,7 +270,15 @@ class CMS_xml2Array extends CMS_grandFather
 				}
 				
 			} elseif (isset($definition[$c]["phpnode"]) ){
-				$result .= '<?php '.$definition[$c]["phpnode"].' ?>';
+				
+				//replacements on text nodes
+				if ($replaceVars) {
+					$dummyTag = new CMS_XMLTag('html', array(), array(), array('context' => CMS_XMLTag::HTML_TAG_CONTEXT));
+					$result .= '<?php '.$dummyTag->replaceVars($definition[$c]["phpnode"]).' ?>';
+				} else {
+					$result .= '<?php '.$definition[$c]["phpnode"].' ?>';
+				}
+				
 			} else {
 				$autoclosed = (in_array($definition[$c]["nodename"], CMS_xml2Array::$autoClosedTagsList) || (substr($definition[$c]["nodename"],0,3) == 'atm' && !isset($definition[$c]["childrens"])));
 				if (!$part || $part == self::ARRAY2XML_START_TAG) {

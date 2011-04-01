@@ -190,8 +190,17 @@ Ext.ux.Multiselect2 = Ext.extend(Ext.form.Field,  {
         this.hiddenField.dom.disabled = this.hiddenName != this.name;
 		fs.on('afterlayout', function() {
 			this.setWidth(this.fs.getWidth());
+			pr(this);
 		}, this, {buffer:1000});
         fs.doLayout();
+		this.on('resize', function() {
+			if (this.fs.tbar) {
+				this.fs.tbar.setWidth('auto');
+			}
+			if (this.fs.topToolbar) {
+				this.fs.topToolbar.setWidth('auto');
+			}
+		}, this);
 	},
 	
     // private

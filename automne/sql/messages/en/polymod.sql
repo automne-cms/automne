@@ -454,3 +454,6 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(603, 'polymod', 'en', 'Unpublish');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(604, 'polymod', 'en', 'Publish');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(605, 'polymod', 'en', 'Date timestamp');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(606, 'polymod', 'en', 'Are you sure you want to remove the selected item or items %s?');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(607, 'polymod', 'en', 'Are you sure you want to disassociate the selected item %s?');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(608, 'polymod', 'en', 'Please select an item on which make this operation...');
