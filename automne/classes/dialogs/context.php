@@ -213,9 +213,11 @@ class CMS_context extends CMS_grandFather
 					lastTouch_ses=NOW(),
 					phpid_ses='".sensitiveIO::sanitizeSQLString(session_id())."',
 					user_ses='".sensitiveIO::sanitizeSQLString($this->_userID)."',
-					remote_addr_ses='".sensitiveIO::sanitizeSQLString(@$_SERVER['REMOTE_ADDR'])."',
-					http_user_agent_ses='".sensitiveIO::sanitizeSQLString(@$_SERVER['HTTP_USER_AGENT'])."'
+					remote_addr_ses='".sensitiveIO::sanitizeSQLString(@$_SERVER['REMOTE_ADDR'])."'
 			";
+			
+			/*, http_user_agent_ses='".sensitiveIO::sanitizeSQLString(@$_SERVER['HTTP_USER_AGENT'])."'*/
+			
 			if ($permanent_cookie) {
 				$sql .= ",
 				cookie_expire_ses = DATE_ADD(NOW(), INTERVAL ".APPLICATION_COOKIE_EXPIRATION." DAY)";
@@ -450,8 +452,8 @@ class CMS_context extends CMS_grandFather
 					sessions
 				where
 					phpid_ses='".session_id()."'
-					and http_user_agent_ses like '".SensitiveIO::sanitizeSQLString(@$_SERVER['HTTP_USER_AGENT'])."'
 			";
+			/* and http_user_agent_ses like '".SensitiveIO::sanitizeSQLString(@$_SERVER['HTTP_USER_AGENT'])."'*/
 			if (CHECK_REMOTE_IP_MASK) {
 				//Check for a range in IPv4 or for the exact address in IPv6
 				if (filter_var(@$_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
@@ -555,9 +557,9 @@ class CMS_context extends CMS_grandFather
 				where
 					id_ses = '".SensitiveIO::sanitizeSQLString($id_ses)."'
 					and phpid_ses = '".SensitiveIO::sanitizeSQLString($session_id)."'
-					and http_user_agent_ses = '".SensitiveIO::sanitizeSQLString(@$_SERVER['HTTP_USER_AGENT'])."'
 					and cookie_expire_ses != '0000:00:00 00:00:00'
 			";
+			/* and http_user_agent_ses = '".SensitiveIO::sanitizeSQLString(@$_SERVER['HTTP_USER_AGENT'])."'*/
 			if (CHECK_REMOTE_IP_MASK) {
 				//Check for a range in IPv4 or for the exact address in IPv6
 				if (filter_var(@$_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
@@ -602,13 +604,21 @@ class CMS_context extends CMS_grandFather
 			}
 			$cms_context = new CMS_context("", "", true);
 			if (!$cms_context->hasError()) {
-				if (!isset($_SESSION["cms_context"]) || (isset($_SESSION["cms_context"]) && !($_SESSION["cms_context"] instanceof CMS_context)) || ($_SESSION["cms_context"]->getUserID() != $cms_context->getUserID())) {
+				//check loaded user in session
+				$user = $cms_context->getUser();
+				if (!$user || $user->hasError() || !$user->isActive() || $user->isDeleted()) {
+					//session has error so reset cookie
 					//CMS_grandFather::log('autoLoginSucceeded3');
+					CMS_context::setCookie(CMS_context::getAutoLoginCookieName());
+					return false;
+				}
+				if (!isset($_SESSION["cms_context"]) || (isset($_SESSION["cms_context"]) && !($_SESSION["cms_context"] instanceof CMS_context)) || ($_SESSION["cms_context"]->getUserID() != $cms_context->getUserID())) {
+					//CMS_grandFather::log('autoLoginSucceeded4');
 					$_SESSION["cms_context"] = $cms_context;
 				}
 				return true;
 			}
-			//CMS_grandFather::log('autoLoginSucceeded4');
+			//CMS_grandFather::log('autoLoginSucceeded5');
 			//session has error so reset cookie
 			CMS_context::setCookie(CMS_context::getAutoLoginCookieName());
 		}

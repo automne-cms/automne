@@ -2495,7 +2495,6 @@ CREATE TABLE `sessions` (
   `lastTouch_ses` datetime NOT NULL default '0000-00-00 00:00:00',
   `user_ses` int(11) unsigned NOT NULL default '0',
   `remote_addr_ses` varchar(64) NOT NULL,
-  `http_user_agent_ses` varchar(255) NOT NULL default '',
   `cookie_expire_ses` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`id_ses`),
   KEY `lastTouch_ses` (`lastTouch_ses`),

@@ -282,6 +282,24 @@ if (!$installed) {
 		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v411-to-v412-3.sql must be executed manualy<br/>';
 	}
 }
+
+#remove field http_user_agent_ses of sessions table
+$sql = "show columns from sessions";
+$q = new CMS_query($sql);
+$installed = true;
+while($r = $q->getArray()) {
+	if ($r["Field"] == "http_user_agent_ses") {
+		$installed = false;
+	}
+}
+if (!$installed) {
+	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v411-to-v412-4.sql',true)) {
+		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v411-to-v412-4.sql',false);
+		echo 'Database successfuly updated (remove user agent check in session management)<br/>';
+	} else {
+		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v411-to-v412-4.sql must be executed manualy<br/>';
+	}
+}
 //END UPDATE FROM 4.1.1 TO 4.1.2
 
 //Update Automne messages
