@@ -311,6 +311,9 @@ class CMS_XMLTag extends CMS_grandFather
 					if (isset($this->_attributes["node"]) && io::isPositiveInteger($this->_attributes["node"])) {
 						$linxArgs['node'] = $this->_attributes["node"];
 					}
+					if (isset($this->_attributes["codename"]) && $this->_attributes["codename"]) {
+						$linxArgs['codename'] = $this->_attributes["codename"];
+					}
 					return new CMS_linx($this->_attributes["type"], $this->getContent(), $args["page"], $args["publicTree"], $linxArgs);
 				} else {
 					return false;
