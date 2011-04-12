@@ -114,10 +114,11 @@ class CMS_scriptsManager
 					return false;
 				}
 				// Create the BAT file
-				$command ="@echo off"."\r\n"."start /LOW ".realpath(PATH_PHP_CLI_WINDOWS)." " .realpath(PATH_PACKAGES_FS . '\scripts\script.php').' -m '.REGENERATION_THREADS.$forceRestart;
+				$command ='@echo off'."\r\n".'start /B /LOW '.realpath(PATH_PHP_CLI_WINDOWS).' ' .realpath(PATH_PACKAGES_FS . '\scripts\script.php').' -m '.REGENERATION_THREADS.$forceRestart;
 				$replace = array(
-					'program files' => 'progra~1',
-					'documents and settings' => 'docume~1',
+					'program files (x86)'		=> 'progra~2',
+					'program files'				=> 'progra~1',
+					'documents and settings'	=> 'docume~1',
 				);
 				$command = str_ireplace(array_keys($replace), $replace, $command);
 				if (!@touch (PATH_WINDOWS_BIN_FS."/script.bat")) {
@@ -131,9 +132,10 @@ class CMS_scriptsManager
 					}
 					@fclose($fh);
 				}
-				$sys = realpath(PATH_WINDOWS_BIN_FS) . "\bgrun.exe ".realpath(PATH_WINDOWS_BIN_FS) . '\script.bat';
-				$sys = str_ireplace(array_keys($replace), $replace, $sys);
-				$log = @system($sys);
+				
+				$WshShell = new COM("WScript.Shell");
+				$oExec = $WshShell->Run(str_ireplace(array_keys($replace), $replace, realpath(PATH_WINDOWS_BIN_FS . '\script.bat')), 0, false);
+				
 			} else {
 				$error = '';
 				if (!defined('PATH_PHP_CLI_UNIX') || !PATH_PHP_CLI_UNIX) {

@@ -169,10 +169,18 @@ class automne_script extends backgroundScript
 						} else {
 							// On windows system
 							//Create the BAT file
-							$command ="@echo off"."\r\n"."@start /BELOWNORMAL ".str_replace('program files', 'progra~1',str_replace('/', "\\", PATH_PHP_CLI_WINDOWS))." " . str_replace('program files', 'progra~1',str_replace('/', '\\', PATH_PACKAGES_FS)) . '\scripts\script.php -s '.$data["id_reg"];
+							$command = '@echo off'."\r\n".'@start /B /BELOWNORMAL '.realpath(PATH_PHP_CLI_WINDOWS). ' ' . realpath(PATH_PACKAGES_FS . '\scripts\script.php').' -s '.$data["id_reg"];
 							if (!@touch(PATH_WINDOWS_BIN_FS."/sub_script.bat")) {
 								$this->raiseError(processManager::MASTER_SCRIPT_NAME." : Create file error : sub_script.bat");
 							}
+							
+							$replace = array(
+								'program files (x86)' 		=> 'progra~2',
+								'program files' 			=> 'progra~1',
+								'documents and settings'	=> 'docume~1',
+							);
+							$command = str_ireplace(array_keys($replace), $replace, $command);
+							
 							$fh = fopen( PATH_WINDOWS_BIN_FS."/sub_script.bat", "wb" );
 							if (is_resource($fh)) {
 								if (!fwrite($fh, $command,io::strlen($command))) {
@@ -180,8 +188,9 @@ class automne_script extends backgroundScript
 								}
 								fclose($fh);
 							}
-							$sub_system = str_replace('program files', 'progra~1',str_replace('/', '\\', PATH_WINDOWS_BIN_FS)) . "\bgrun.exe ".str_replace('program files', 'progra~1',str_replace('/', '\\', PATH_WINDOWS_BIN_FS)) . '\sub_script.bat';
-							@system($sub_system);
+							
+							$WshShell = new COM("WScript.Shell");
+							$oExec = $WshShell->Run(str_ireplace(array_keys($replace), $replace, realpath(PATH_WINDOWS_BIN_FS . '\sub_script.bat')), 0, false);
 							
 							$PIDfile = $this->_processManager->getTempPath().'/'.SCRIPT_CODENAME . "_" . $data["id_reg"];
 							//sleep a little 
@@ -201,8 +210,15 @@ class automne_script extends backgroundScript
 					// > delete all temporary files
 					// > end script
 					if (APPLICATION_IS_WINDOWS) {
-						// On windows systems only
-						@system("del ".str_replace('/', '\\', $this->_processManager->getTempPath().'/'.SCRIPT_CODENAME)."*.ok /Q /F");
+						$files = glob(realpath($this->_processManager->getTempPath()).'/'.SCRIPT_CODENAME.'*.ok', GLOB_NOSORT);
+						if (is_array($files)) {
+							foreach($files as $file) {
+								if (!CMS_file::deleteFile($file)) {
+									$this->raiseError("Can't delete file ".$file);
+									return false;
+								}
+							}
+						}
 					} else {
 						$tmpDir = dir($this->_processManager->getTempPath());
 						while (false !== ($file = $tmpDir->read())) {

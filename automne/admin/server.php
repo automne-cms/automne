@@ -232,7 +232,9 @@ if (ini_get('memory_limit') && ini_get('memory_limit') < 32) {
 }
 
 //CLI
-if (io::strtolower(io::substr(PHP_OS, 0, 3)) === 'win') {
+$cliOk = false;
+$cliPath = '';
+if (APPLICATION_IS_WINDOWS) {
 	if (defined('PATH_PHP_CLI_WINDOWS') && PATH_PHP_CLI_WINDOWS && is_file(PATH_PHP_CLI_WINDOWS)) {
 		//test CLI version
 		$return = CMS_patch::executeCommand('"'.PATH_PHP_CLI_WINDOWS.'" -v',$error);
@@ -249,6 +251,8 @@ if (io::strtolower(io::substr(PHP_OS, 0, 3)) === 'win') {
 			if (version_compare($cliversion, "5.2.0") === -1) {
 				$content .= '<li class="atm-pic-cancel">Error, PHP CLI version ('.$cliversion.') not match</li>';
 			} else {
+				$cliOk = true;
+				$cliPath = PATH_PHP_CLI_WINDOWS;
 				$content .= '<li class="atm-pic-ok">PHP CLI version OK ('.$cliversion.')</li>';
 			}
 		}
@@ -266,6 +270,8 @@ if (io::strtolower(io::substr(PHP_OS, 0, 3)) === 'win') {
 			$content .= '<li class="atm-pic-cancel">Error, passthru() and exec() commands not available</li>';
 		} elseif (io::substr($return,0,1) != '/') {
 			$content .= '<li class="atm-pic-cancel">Error when finding php CLI with command "which php"</li>';
+		} else {
+			$cliPath = $return;
 		}
 		//test CLI version
 		$return = CMS_patch::executeCommand('php -v',$error);
@@ -278,6 +284,7 @@ if (io::strtolower(io::substr(PHP_OS, 0, 3)) === 'win') {
 		if ($return === false) {
 			$content .= '<li class="atm-pic-cancel">Error, passthru() and exec() commands not available</li>';
 		}
+		$cliPath = PATH_PHP_CLI_UNIX;
 	}
 	if (io::strpos(io::strtolower($return), '(cli)') === false) {
 		$content .= '<li class="atm-pic-cancel">Error, installed php is not the CLI version : '.$return."\n";
@@ -286,11 +293,11 @@ if (io::strtolower(io::substr(PHP_OS, 0, 3)) === 'win') {
 		if (version_compare($cliversion, "5.2.0") === -1) {
 			$content .= '<li class="atm-pic-cancel">Error, PHP CLI version ('.$cliversion.') not match</li>';
 		} else {
+			$cliOk = true;
 			$content .= '<li class="atm-pic-ok">PHP CLI version OK ('.$cliversion.')</li>';
 		}
 	}
 }
-
 //Conf PHP
 //try to change some misconfigurations
 @ini_set('magic_quotes_gpc', 0);
@@ -316,6 +323,43 @@ if (ini_get('safe_mode') && strtolower(ini_get('safe_mode')) != 'off') {
 	$content .= '<li class="atm-pic-cancel">Error, PHP safe_mode is active</li>';
 }
 $content .='</ul>';
+
+//Test CLI configuration
+if ($cliOk) {
+	$content .= '<br />
+	<fieldset>
+		<legend>Test CLI configuration</legend>
+		<ul class="atm-server">';
+	//Test CLI PDO
+	$return = CMS_patch::executeCommand('"'.$cliPath.'" -r "echo class_exists(\'PDO\');"',$error);
+	if ($error || $return != '1') {
+		$content .= '<li class="atm-pic-cancel">Error, PDO extension not installed</li>';
+	} else {
+		$return = CMS_patch::executeCommand('"'.$cliPath.'" -r "echo in_array(\'mysql\', PDO::getAvailableDrivers());"',$error);
+		if ($error || $return != '1') {
+			$content .= '<li class="atm-pic-cancel">Error, PDO MySQL driver not installed</li>';
+		} elseif ($return == 1) {
+			 $content .= '<li class="atm-pic-ok">PDO MySQL driver OK</li>';
+		}
+	}
+	//MBSTRING
+	$return = CMS_patch::executeCommand('"'.$cliPath.'" -r "echo (function_exists(\'mb_substr\') && function_exists(\'mb_convert_encoding\'));"',$error);
+	if ($error || $return != '1') {
+		$content .= '<li class="atm-pic-cancel">Error, Multibyte String (mbsring) extension not installed (only needed if UTF-8 encoding is used)</li>';
+	} else {
+		$content .= '<li class="atm-pic-ok">Multibyte String (mbsring) extension OK</li>';
+	}
+	//GD
+	$return = CMS_patch::executeCommand('"'.$cliPath.'" -r "echo (function_exists(\'imagecreatefromgif\') && function_exists(\'imagecreatefromjpeg\') && function_exists(\'imagecreatefrompng\'));"',$error);
+	if ($error || $return != '1') {
+		$content .= '<li class="atm-pic-cancel">Error, GD extension not installed</li>';
+	} else {
+		$content .= '<li class="atm-pic-ok">GD extension OK</li>';
+	}
+	$content .='
+		</ul>
+	</fieldset>';
+}
 
 $content = sensitiveIO::sanitizeJSString($content);
 
