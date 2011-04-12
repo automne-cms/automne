@@ -358,7 +358,9 @@ if (!isset($_GET['file'])) {
 			$error_step8_smtp_error = 'Erreur, Aucun serveur SMTP trouv&eacute;. V&eacute;rifiez votre installation de PHP ou cochez la case ci-dessous si vous souhaitez d&eacute;sactiver l\'envoi d\'email par l\'application.';
 			$error_step8_label = 'Erreur, Merci de saisir un nom pour votre site.';
 			$step8_title = 'Finalisation de l\'installation :';
-			$step8_htaccess_explanation = '<h2>Fichiers .htaccess</h2>Automne utilise des fichiers .htaccess pour renforcer la s&eacute;curit&eacute; du syst&egrave;me, prot&eacute;ger l\'acc&egrave;s de certains repertoires et sp&eacute;cifier certaines configurations.<br /><br /><strong>V&eacute;rifiez que le serveur d\'h&eacute;bergement que vous utilisez accepte bien l\'utilisation des fichiers .htaccess</strong>';
+			$step8_htaccess_explanation = '<h2>Fichiers .htaccess</h2>Automne utilise des fichiers .htaccess pour renforcer la s&eacute;curit&eacute; du syst&egrave;me, prot&eacute;ger l\'acc&egrave;s de certains repertoires et sp&eacute;cifier certaines configurations.<noscript><br /><br /><strong>V&eacute;rifiez que le serveur d\'h&eacute;bergement que vous utilisez accepte bien l\'utilisation des fichiers .htaccess</strong></noscript>';
+			$step8_htaccess_ok = 'Les fichiers .htaccess sont support&eacute;s par votre serveur.';
+			$step8_htaccess_error = 'Erreur, les fichiers .htaccess ne sont pas support&eacute;s par votre serveur.<br />VOTRE INSTALLATION N\'EST PAS SECURIS&Eacute;E.<br />N\'employez pas cette configuration sur un serveur public !';
 			$step8_no_application_email_title = '<h2>Serveur SMTP introuvable</h2>';
 			$step8_no_application_email = 'Cochez cette case si vous souhaitez d&eacute;sactiver l\'envoi d\'email par l\'application';
 			$step8_application_label = '<h2>Nommez votre installation</h2>Saisissez un nom pour cette installation d\'Automne.';
@@ -424,7 +426,7 @@ if (!isset($_GET['file'])) {
 			$error_stepCheck_magic_quotes_sybase_error = 'Beware! The "magic_quotes_sybase" option is active on your PHP configuration. This option is not compatible with Automne. Please Check your PHP installation.';
 			$error_stepCheck_register_globals_error = 'Beware ! The "register_globals" option is active on your PHP configuration. This option is not compatible with Automne. Please Check your PHP installation.';
 			$error_stepCheck_xml_error = 'Error, XML extension is not installed on your server. Please Check your PHP installation.';
-			$error_stepCheck_xml_expat_error =  = 'Error, XML extension is installed with EXPAT instead of LibXML. Please Check your PHP installation.';
+			$error_stepCheck_xml_expat_error = 'Error, XML extension is installed with EXPAT instead of LibXML. Please Check your PHP installation.';
 			$error_stepCheck_gd_error = 'Error, GD extension is not installed on your server. Please Check your PHP installation.';
 			$error_stepCheck_gd_gif_error = 'Error, functionalities of GIF image processing are not installed (GD Extension). Please Check your PHP installation.';
 			$error_stepCheck_gd_jpeg_error = 'Error, functionalities of JPEG image processing are not installed (GD Extension). Please Check your PHP installation.';
@@ -530,6 +532,8 @@ if (!isset($_GET['file'])) {
 			$error_step8_label = 'Error, Please to enter a name for your site.';
 			$step8_title = 'Installation finalisation:';
 			$step8_htaccess_explanation = '<h2>.htaccess files</h2>Automne uses .htaccess files to enhance system security, protect some directories and specify some configurations.<br /><br /><strong>Check that the hosting server that you use accepts the usage of the .htaccess files.</strong>';
+			$step8_htaccess_ok = '.htaccess files are supported by your server.';
+			$step8_htaccess_error = 'Error, .htaccess files are not supported : YOUR INSTALLATION IS NOT SECURE ! Do not use this configuration on a public server.';
 			$step8_no_application_email_title = '<h2>SMTP Server not found</h2>';
 			$step8_no_application_email = 'Check this box if you want to disable sending email through the application';
 			$step8_application_label = '<h2>Name your installation</h2>Enter a name for this installation of Automne.';
@@ -1625,7 +1629,61 @@ $configContent .= '
 					$content .= $step8_no_application_email_title.'<label for="no_application_email"><input type="checkbox" id="no_application_email" name="no_application_email" value="1" /> '.$step8_no_application_email.'</label><br /><br />';
 				}
 				$content .= $step8_htaccess_explanation.'<br /><br />
-				'.$step8_application_label.'<br /><br />
+				<div id="htaccess-ok" style="display:none;" class="valid">'.$step8_htaccess_ok.'</div>
+				<div id="htaccess-nok" style="display:none;" class="error">'.$step8_htaccess_error.'</div>
+				<script type="text/javascript">
+					function getHTTPObject() {
+						var xmlhttp = false;
+						responseXML = null;
+						/*@cc_on
+						@if (@_jscript_version >= 5)
+							var msxml = new Array(\'MSXML2.XMLHTTP.5.0\',\'MSXML2.XMLHTTP.4.0\',\'MSXML2.XMLHTTP.3.0\',\'MSXML2.XMLHTTP\',\'Microsoft.XMLHTTP\');
+							for(var i=0; i<msxml.length; i++){
+								try {
+									// Instantiates XMLHttpRequest for IE and assign to xmlhttp.
+									xmlhttp = new ActiveXObject(msxml[i]);
+									if(xmlhttp){
+										break;
+									}
+								} catch(e){}
+							}
+							
+							@else
+								xmlhttp = false;
+						@end @*/
+						if (!xmlhttp && typeof XMLHttpRequest != \'undefined\') {
+							try {
+								xmlhttp = new XMLHttpRequest();
+							} catch (e) {
+								xmlhttp = false;
+							}
+						}
+						return xmlhttp;
+					}
+					function checkHTAccess() {
+						var xmlhttp = getHTTPObject();
+						var response;
+						xmlhttp.onreadystatechange=function() {
+							if (xmlhttp.readyState == 4) {
+								if (xmlhttp.status && xmlhttp.status == 403) {
+									document.getElementById(\'htaccess-ok\').style.display=\'block\';
+									return true;
+								} else if (xmlhttp.status) {
+									document.getElementById(\'htaccess-nok\').style.display=\'block\';
+									return false;
+								}
+							}
+						}
+						//add timestamp at end of query to avoid navigator cache
+						var time = new Date();
+						url = \''.PATH_AUTOMNE_CHMOD_SCRIPT_WR.'?time=\' + time.getTime();
+						xmlhttp.open("GET", url, true);
+						xmlhttp.send(null);
+					}
+					checkHTAccess();
+				</script>';
+				
+				$content .= $step8_application_label.'<br /><br />
 				'.$step8_label.' *  : <input type="text" name="label" value="Automne" /><br />
 				<input type="submit" class="submit" value="'.$label_next.'" />
 			</form>
@@ -1703,6 +1761,13 @@ $configContent .= '
 		.error {
 			color:				orange;
 			border:				2px solid red;
+			font-weight:		bold;
+			display:			block;
+			padding:			5px;
+			margin-bottom:		10px;
+		}
+		.valid {
+			border:				2px solid green;
 			font-weight:		bold;
 			display:			block;
 			padding:			5px;
@@ -1818,17 +1883,17 @@ $configContent .= '
 		    padding:			2px 0 6px 20px;
 		}
 		.atm-pic-ok {
-				background-image:	url('.$_SERVER['SCRIPT_NAME'].'?file=pictos);
-				background-position:0px -91px;
-			}
-			.atm-pic-cancel{
-				background-image:	url('.$_SERVER['SCRIPT_NAME'].'?file=pictos);
-				background-position:0px -182px;
-			}
-			.atm-pic-question{
-				background-image:	url('.$_SERVER['SCRIPT_NAME'].'?file=pictos);
-				background-position:0px 0px;
-			}
+			background-image:	url('.$_SERVER['SCRIPT_NAME'].'?file=pictos);
+			background-position:0px -91px;
+		}
+		.atm-pic-cancel{
+			background-image:	url('.$_SERVER['SCRIPT_NAME'].'?file=pictos);
+			background-position:0px -182px;
+		}
+		.atm-pic-question{
+			background-image:	url('.$_SERVER['SCRIPT_NAME'].'?file=pictos);
+			background-position:0px 0px;
+		}
 	</style>
 	<!-- javascriptCheck usefull initialisation javascript functions -->
 	<script language="JavaScript" type="text/javascript">
