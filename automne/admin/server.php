@@ -327,7 +327,7 @@ $content .='</ul>';
 //Test CLI configuration
 if ($cliOk) {
 	$content .= '<br />
-	<fieldset>
+	<fieldset style="padding:5px;">
 		<legend>Test CLI configuration</legend>
 		<ul class="atm-server">';
 	//Test CLI PDO
@@ -357,7 +357,13 @@ if ($cliOk) {
 		$content .= '<li class="atm-pic-ok">GD extension OK</li>';
 	}
 	$content .='
-		</ul>
+		</ul>';
+	//Ini file infos
+	$return = CMS_patch::executeCommand('"'.$cliPath.'" --ini',$error);
+	if (!$error && $return) {
+		$content .= '<code>'.str_replace("\n", '<br />', $return).'</code>';
+	}
+	$content .= '
 	</fieldset>';
 }
 
