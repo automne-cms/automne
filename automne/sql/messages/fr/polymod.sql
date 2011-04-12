@@ -483,4 +483,6 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(606, 'polymod', 'fr', 'Etes-vous sûr de vouloir supprimer le ou les éléments %s sélectionnés ?');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(607, 'polymod', 'fr', 'Etes-vous sûr de vouloir désassocier l\'élément %s sélectionné ?');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(608, 'polymod', 'fr', 'Veuillez sélectionner un élément sur lequel réaliser cette opération ...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(609, 'polymod', 'fr', 'Coché par défaut');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(610, 'polymod', 'fr', 'Si \'Emission au choix\' est actif, la case permettant de choisir est elle coché par défaut ?');
 

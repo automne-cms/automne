@@ -457,3 +457,5 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(606, 'polymod', 'en', 'Are you sure you want to remove the selected item or items %s?');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(607, 'polymod', 'en', 'Are you sure you want to disassociate the selected item %s?');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(608, 'polymod', 'en', 'Please select an item on which make this operation...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(609, 'polymod', 'en', 'Checked by default');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(610, 'polymod', 'en', 'If \'Choice for sending\' is active, does the box to select it is checked by default?');
