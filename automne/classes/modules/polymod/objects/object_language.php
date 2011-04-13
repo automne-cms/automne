@@ -273,6 +273,36 @@ class CMS_object_language extends CMS_object_common
 		}
 		return $return;
 	}
+	
+	/**
+	  * Get field search SQL request (used by class CMS_object_search)
+	  *
+	  * @param integer $fieldID : this field id in object (aka $this->_field->getID())
+	  * @param mixed $value : the value to search
+	  * @param string $operator : additionnal search operator
+	  * @param string $where : where clauses to add to SQL
+	  * @param boolean $public : values are public or edited ? (default is edited)
+	  * @return string : the SQL request
+	  * @access public
+	  */
+	function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
+		$statusSuffix = ($public) ? "_public":"_edited";
+		$supportedOperator = array();
+		if ($operator && !in_array($operator, $supportedOperator)) {
+			$this->raiseError("Unkown search operator : ".$operator.", use default search instead");
+			$operator = false;
+		}
+		$sql = '';
+		$sql .= "
+			select
+				distinct objectID
+			from
+				mod_subobject_string".$statusSuffix."
+			where
+				objectFieldID = '".SensitiveIO::sanitizeSQLString($fieldID)."'
+				and value = '".SensitiveIO::sanitizeSQLString($value)."'
+				$where";
+		return $sql;
+	}
 }
-
 ?>

@@ -20,7 +20,7 @@ Automne.server = {
 			scope:				this
 		};
 		if (typeof url == 'object') {
-			config = Ext.apply(config, url, defaultConfig);
+			config = Ext.applyIf(url, defaultConfig);
 		} else {
 			config = Ext.apply(config, {
 				url:			url,
@@ -161,7 +161,10 @@ Automne.server = {
 	},
 	//method used for a server call : request exception
 	requestException: function(conn, response, options) {
-		Automne.server.hideSpinner();
+		Automne.server.hideSpinner(conn, response, options);
+		if (options && options.isUpload) {
+			return true;
+		}
 		Automne.server.failureResponse(response, options, null, 'http');
 	},
 	//method used for a server call : failure response
@@ -186,33 +189,36 @@ Automne.server = {
 			case 'html':
 			default:
 				msg = al.loadingError;
+				if (type == undefined) {
+					type = al.loadingError;
+				}
 			break;
 		}
 		msg += '<br /><br />'+ al.contactAdministrator +'<br /><br />';
-		msg += 'Error type : '+ type +'<br /><br />';
+		msg += 'Error type: '+ type +'<br /><br />';
 		if (e || response) {
 			if (e) {
-				msg += 'Message : '+ e.name +' : '+ e.message +'<br /><br />';
+				msg += 'Message: '+ e.name +' : '+ e.message +'<br /><br />';
 				if (e.lineNumber && e.fileName) {
-					msg += 'Line : '+ e.lineNumber +' of file '+ e.fileName +'<br /><br />';
+					msg += 'Line: '+ e.lineNumber +' of file '+ e.fileName +'<br /><br />';
 				}
 			}
 			if (response) {
 				if (response.argument) {
-					msg += 'Address : '+ response.argument.url +'<br /><br />'+
+					msg += 'Address: '+ response.argument.url +'<br /><br />'+
 					'Parameters : '+ Ext.urlEncode(response.argument.params) +'<br /><br />';
 				} else if (options.url) {
-					msg += 'Address : '+ options.url +'<br /><br />';
+					msg += 'Address: '+ options.url +'<br /><br />';
 					if (options.params) {
-						msg += 'Parameters : '+ Ext.urlEncode(options.params) +'<br /><br />';
+						msg += 'Parameters: '+ Ext.urlEncode(options.params) +'<br /><br />';
 					}
 				}
 				if (response.status) {
-					msg += 'Status : '+ response.status +' ('+ response.statusText +')<br /><br />'+
-					'Response Headers : <pre class="atm-debug">'+ response.getAllResponseHeaders() +'</pre>';
+					msg += 'Status: '+ response.status +' ('+ response.statusText +')<br /><br />'+
+					'Response Headers: <pre class="atm-debug">'+ response.getAllResponseHeaders() +'</pre>';
 				}
 				if (response.responseText) {
-					msg += '<br />Server return : <pre class="atm-debug">' + (!e && !response.responseXML ? response.responseText :  Ext.util.Format.htmlEncode(response.responseText)) +'</pre><br />';
+					msg += '<br />Server response: <pre class="atm-debug">' + (!e && !response.responseXML ? response.responseText :  Ext.util.Format.htmlEncode(response.responseText)) +'</pre><br />';
 				}
 			}
 		}

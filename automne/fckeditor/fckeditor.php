@@ -299,6 +299,10 @@ class FCKeditor
 			$modulesTreatment->setDefinition($value);
 			$value = $modulesTreatment->treatContent(true);
 		}
+		//eval PHP content if any
+		if (strpos($value, '<?php') !== false) {
+			$value = io::evalPHPCode($value);
+		}
 		return $value;
 	}
 	
@@ -318,21 +322,28 @@ class FCKeditor
 		if ($cleanedText == '<p></p>' || $cleanedText == '<div></div>') {
 			$text = '';
 		}
-	
 		if ($text) {
 			/*
 			 * we need to do some replacements to be completely conform with Automne
 			 * you can add here all dirty tags to be removed from editor's output
 			 */
 			$replace = array(
-				"%7B%7B" 					=> "{{",	//in case of internal links copy/paste, editor encode {{
-				"%7D%7D" 					=> "}}",	//in case of internal links copy/paste, editor encode }}
+				'{' 						=> '&#123;',//encode brackets to avoid vars ( {something:type:var} ) to be interpretted
+				'}' 						=> '&#125;',
+				'&#123;&#123;' 				=> '{{',	//in case of internal links copy/paste, editor decode {{ and }}
+				'&#125;&#125;' 				=> '}}',	
+				"%7B%7B" 					=> "{{",	
+				"%7D%7D" 					=> "}}",	
 				"/>" 						=> " />",	//xhtml missing space on auto-closed tags
 				"<o:p>" 					=> "",		//dirty tags from MS Word pasting
-				"</o:p>" 					=> "",
-				"<!--[if !supportLists]-->" => "",
-				"<!--[endif]-->" 			=> "",
+				"</o:p>" 					=> "",		
+				"<!--[if !supportLists]-->" => "",		
+				"<!--[endif]-->" 			=> "",		
+				"<?php" 					=> "",		//remove PHP tags for security
+				"<?" 						=> "",		
+				"?>" 						=> "",		
 			);
+			
 			$text = str_replace(array_keys($replace),$replace,$text);
 			$text = sensitiveIO::decodeWindowsChars($text);
 			

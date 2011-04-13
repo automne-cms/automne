@@ -65,6 +65,8 @@ class CMS_object_email extends CMS_object_common
 	const MESSAGE_OBJECT_EMAIL_MESSAGES_SENT = 427;
 	const MESSAGE_OBJECT_EMAIL_PARAMETER_USERGROUPFIELD = 583;
 	const MESSAGE_OBJECT_EMAIL_PARAMETER_USERGROUPFIELD_DESC = 584;
+	const MESSAGE_OBJECT_EMAIL_PARAMETER_DEFAULT = 609;
+	const MESSAGE_OBJECT_EMAIL_PARAMETER_DEFAULT_DESC = 610;
 	
 	const OBJECT_EMAIL_PARAMETER_SEND_ON_VALIDATION = 1;
 	const OBJECT_EMAIL_PARAMETER_SEND_ON_SYSTEM_EVENT = 2;
@@ -135,6 +137,13 @@ class CMS_object_email extends CMS_object_common
 										'externalName'	=> self::MESSAGE_OBJECT_EMAIL_PARAMETER_SEND_EMAIL,
 										'description'	=> self::MESSAGE_OBJECT_EMAIL_PARAMETER_SEND_EMAIL_DESC,
 									),
+							10 => array(
+										'type' 			=> 'boolean',
+										'required' 		=> false,
+										'internalName'	=> 'defaultValue',
+										'externalName'	=> self::MESSAGE_OBJECT_EMAIL_PARAMETER_DEFAULT,
+										'description'	=> self::MESSAGE_OBJECT_EMAIL_PARAMETER_DEFAULT_DESC,
+									),
 							3 => array(
 										'type' 			=> 'sendemailon',
 										'required' 		=> false,
@@ -189,16 +198,17 @@ class CMS_object_email extends CMS_object_common
 	  * @var array(integer "subFieldID" => mixed)
 	  * @access private
 	  */
-	protected $_parameterValues = array(	0 => '',
-									1 => '',
-									2 => false,
-									3 => self::OBJECT_EMAIL_PARAMETER_SEND_ON_VALIDATION,
-									4 => false,
-									5 => '',
-									6 => false, 
-									7 => '', 
-									8 => '',
-									9 => '',);
+	protected $_parameterValues = array(0	=> '',
+									1		=> '',
+									2		=> false,
+									10		=> false,
+									3		=> self::OBJECT_EMAIL_PARAMETER_SEND_ON_VALIDATION,
+									4		=> false,
+									5		=> '',
+									6		=> false, 
+									7		=> '', 
+									8		=> '',
+									9		=> '',);
 	
 	/**
 	  * Constructor.
@@ -646,7 +656,7 @@ class CMS_object_email extends CMS_object_common
 							'labelSeparator'=> '',
 							'inputValue'	=> 1,
 							'anchor'		=> false,
-							'checked'		=> !!$this->_subfieldValues[0]->getValue(),
+							'checked'		=> $params['defaultValue'] ? 1 : !!$this->_subfieldValues[0]->getValue(),
 							'boxLabel'		=> $label.'&nbsp;<small>('.$language->getMessage(self::MESSAGE_OBJECT_EMAIL_LAST_SENDING, false, MOD_POLYMOD_CODENAME).' : '.$lastSendingDate.')</small>'
 						))
 					)

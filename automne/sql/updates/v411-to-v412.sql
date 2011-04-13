@@ -1,0 +1,2 @@
+ALTER TABLE  `websites` ADD  `403_web` INT( 11 ) UNSIGNED NOT NULL ,
+ADD  `404_web` INT( 11 ) UNSIGNED NOT NULL ;

@@ -192,6 +192,14 @@ Ext.ux.Multiselect2 = Ext.extend(Ext.form.Field,  {
 			this.setWidth(this.fs.getWidth());
 		}, this, {buffer:1000});
         fs.doLayout();
+		this.on('resize', function() {
+			if (this.fs.tbar) {
+				this.fs.tbar.setWidth('auto');
+			}
+			if (this.fs.topToolbar) {
+				this.fs.topToolbar.setWidth('auto');
+			}
+		}, this);
 	},
 	
     // private

@@ -4,24 +4,29 @@
 ./automne/cms_error_log
 ./automne/SUBVERSION
 ./automne/UPDATE.DENY
+./utils
+# Mac OS X files
+.DS_Store
+._*
+# Windows files
+Thumbs.db
+#Automne generated files
 ./automne/cache/*
 ./automne/logs/*
 ./automne/upload/*
 ./automne/tmp/*
 ./automne/linx/*
-./automne/ase/*
+./automne/html/*
+./web/*
+./html/*
+#Module files
+./files/*/*/p*_*.*
+./files/*/*/r*_*.*
 ./automne_modules_files/*/*/*.*
 ./automne_modules_files/*/*.*
 ./automne_modules_files/*
-./files/*/*/p*_*.*
-./files/*/*/r*_*.*
-./web/*
-./html/*
-./automne/html/*
-.DS_Store
-._*
-./utils
-Thumbs.db
+#ASE (search engine) files
+./automne/ase/*
 # Demo files
 ./font
 ./automne/templates/pt*.xml
@@ -31,4 +36,7 @@ Thumbs.db
 ./img/demo
 ./js/modules/*/*-demo.js
 ./js/modules/*
-./sql/demo-*.sql
+./js/demo
+./js/demo/*
+./automne/sql/demo-*.sql
+./automne/templates/images/*

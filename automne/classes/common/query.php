@@ -167,6 +167,9 @@
 		if (!isset(self::$_connection[$connectID])) {
 			if (!defined('PDO::MYSQL_ATTR_USE_BUFFERED_QUERY')) {
 				$this->raiseError('PDO MySQL driver not loaded ... please check your PHP configuration.');
+				if (SYSTEM_DEBUG) {
+					die('<pre><b>'.self::SYSTEM_LABEL.' '.AUTOMNE_VERSION.' error : PDO MySQL driver not loaded ... please check your PHP configuration.'."</b></pre>\n");
+				}
 				exit;
 			}
 			try {
@@ -174,6 +177,9 @@
 			} catch (PDOException $e) {
 				unset(self::$_connection[$connectID]);
 				$this->raiseError($e->getMessage());
+				if (SYSTEM_DEBUG) {
+					die('<pre><b>'.self::SYSTEM_LABEL.' '.AUTOMNE_VERSION.' error : '.$e->getMessage()."</b></pre>\n");
+				}
 				exit;
 			}
 			if(io::strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8') {

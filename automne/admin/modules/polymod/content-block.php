@@ -104,7 +104,6 @@ $cms_module = CMS_modulesCatalog::getByCodename($codename);
 $data = $cms_block->getRawData($cms_page->getID(), $cs, $rowTag, RESOURCE_LOCATION_EDITION, false);
 //get block parameters requirements
 $blockParamsDefinition = $cms_block->getBlockParametersRequirement($data["value"], $cms_page, true);
-
 //instanciate row
 $row = new CMS_row($rowId);
 
@@ -143,7 +142,8 @@ if (sizeof($blockParamsDefinition['search'])) {
 							'triggerAction' 	=> 'all',
 							'allowBlank'		=> !$mandatory,
 							'selectOnFocus'		=> true,
-							'editable'			=> false,
+							'editable'			=> true,
+							'typeAhead'			=> true,
 							'value'				=> $value,
 							'store' 			=> array(
 								'url'			=> PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/list-objects.php',
@@ -198,13 +198,26 @@ if (sizeof($blockParamsDefinition['search'])) {
 							);
 							$searchOrderContent = array();
 							foreach ($paramValue as $orderName => $orderValue) {
+								$fieldLabel = '';
 								if (in_array($orderName, CMS_object_search::getStaticOrderConditionTypes())) {
+									$fieldLabel = $cms_language->getMessage($orderNameList[$orderName], false, MOD_POLYMOD_CODENAME);
+								} else {
+									$orderName = trim($orderName, '()');
+									if (io::isPositiveInteger($orderName)) {
+										$field = new CMS_poly_object_field($orderName);
+										if ($field && !$field->hasError()) {
+											$label = new CMS_object_i18nm($field->getValue('labelID'));
+											$fieldLabel = $label->getValue($cms_language->getCode());
+										}
+									}
+								}
+								if ($fieldLabel) {
 									// Order direction
 									$mandatory = ($paramValue == true) ? '<span class="atm-red">*</span> ':'';
 									$value = isset($data["value"]['search'][$searchName][$paramType][$orderName]) ? $data["value"]['search'][$searchName][$paramType][$orderName] : '';
 									$searchOrderContent[] = array(
 										'xtype'			=> 'atmCombo',
-										'fieldLabel'	=> $mandatory.$cms_language->getMessage($orderNameList[$orderName], false, MOD_POLYMOD_CODENAME),
+										'fieldLabel'	=> $mandatory.$fieldLabel,
 										'name'			=> 'value[search]['.$searchName.']['.$paramType.']['.$orderName.']',
 										'hiddenName'	=> 'value[search]['.$searchName.']['.$paramType.']['.$orderName.']',
 										'forceSelection'=> true,
@@ -268,6 +281,7 @@ if (sizeof($blockParamsDefinition['search'])) {
 						);
 					break;
 					default:
+						$paramType = trim($paramType, '()'); //remove bracket around field id
 						if (sensitiveIO::isPositiveInteger($paramType)) {
 							//subobjects
 							$field = $objectFields[$paramType];

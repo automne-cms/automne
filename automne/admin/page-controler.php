@@ -370,6 +370,42 @@ switch ($action) {
 		$logAction = CMS_log::LOG_ACTION_RESOURCE_UNDELETE;
 		$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 	break;
+	case "unpublish":
+		//set page date end to yesterday
+		$dt_end = new CMS_date();
+		$dt_end->setDebug(false);
+		$dt_end->setNow();
+		$dt_end->moveDate('-1 day');
+		$dateStart = $cms_page->getPublicationDateStart(false);
+		if (CMS_date::compare($dateStart, $dt_end, '>')) {
+			$dateStart = $dt_end;
+		}
+		$cms_page->setPublicationDates($dateStart, $dt_end);
+		$cms_page->addEdition(RESOURCE_EDITION_BASEDATA, $cms_user);
+		if ($cms_page->writeToPersistence()) {
+			$edited = true;
+			$logAction = CMS_log::LOG_ACTION_RESOURCE_EDIT_BASEDATA;
+			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
+		} else {
+			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
+			$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : unpublish page');
+		}
+	break;
+	case "publish":
+		//clear page date end
+		$dt_end = new CMS_date();
+		$dateStart = $cms_page->getPublicationDateStart(false);
+		$cms_page->setPublicationDates($dateStart, $dt_end);
+		$cms_page->addEdition(RESOURCE_EDITION_BASEDATA, $cms_user);
+		if ($cms_page->writeToPersistence()) {
+			$edited = true;
+			$logAction = CMS_log::LOG_ACTION_RESOURCE_EDIT_BASEDATA;
+			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
+		} else {
+			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
+			$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : re-publish page');
+		}
+	break;
 	case 'move':
 		$newParent = sensitiveIO::request('newParent');
 		$oldParent = sensitiveIO::request('oldParent');
@@ -566,7 +602,6 @@ switch ($action) {
 			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
 			$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : update pageMetas');
 		}
-		
 		
 		$dt_beg = new CMS_date();
 		$dt_beg->setDebug(false);

@@ -507,6 +507,9 @@ class CMS_date extends CMS_grandFather
 			$func_body = sprintf('if (%s %s %s) { return true ; } else { return false ; }',
 							$date1->getTimestamp(), $operator, $date2->getTimestamp()) ;
 			$func = create_function('', $func_body);
+			if (!$func) {
+				return false;
+			}
 			return $func();
 		} else {
 			return false;

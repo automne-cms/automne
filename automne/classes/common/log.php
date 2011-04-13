@@ -263,8 +263,7 @@ class CMS_log extends CMS_grandFather
 	  *
 	  * @param integer action
 	  * @param CMS_profile_user user 
-	  * @param CMS_module module
-	  * @param CMS_resourceStatus resourceStatusBefore
+	  * @param string $module the module codename
 	  * @param CMS_resourceStatus resourceStatusAfter
 	  * @param string textData
 	  * @param CMS_resource resource
@@ -333,6 +332,7 @@ class CMS_log extends CMS_grandFather
 	  * @param integer action
 	  * @param CMS_profile_user user 
 	  * @param string textData
+	  * @param string $module : the module codename
 	  * @return void
 	  * @access public
 	  */
@@ -551,13 +551,17 @@ class CMS_log extends CMS_grandFather
 	/**
 	  * Set ModuleId
 	  *
-	  * @param string $module The module codename
+	  * @param mixed string or CMS_module $module The module codename
 	  * @return void
 	  * @access public
 	  */
 	protected function _setModule($module)
 	{
-		$this->_module = $module;
+		if (is_object($module)) {
+			$this->_module = $module->getCodename();
+		} else {
+			$this->_module = $module;
+		}
 	}
 	
 	/**

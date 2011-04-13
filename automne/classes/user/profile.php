@@ -1275,8 +1275,10 @@ class CMS_profile extends CMS_grandFather
 				// Take only categories from given module
 				$stack_categoriesClearances = $this->_moduleCategoriesClearances->getCategoriesClearances($module);
 			}
-			$elements = $stack_categoriesClearances->getElements();
-			if (is_array($elements) && $elements) {
+			if (isset($stack_categoriesClearances)) {
+				$elements = $stack_categoriesClearances->getElements();
+			}
+			if (isset($elements) && is_array($elements) && $elements) {
 				$items = array();
 				while (list($k, $v) = each($elements)) {
 					$categoryID = $v[0];

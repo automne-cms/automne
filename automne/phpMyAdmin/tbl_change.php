@@ -180,7 +180,7 @@ if (isset($where_clause)) {
         } else { // end if (no row returned)
             $meta = PMA_DBI_get_fields_meta($result[$key_id]);
             list($unique_condition, $tmp_clause_is_unique) = PMA_getUniqueCondition($result[$key_id], count($meta), $meta, $rows[$key_id], true);
-            if (! empty($unique_condition)) { 
+            if (! empty($unique_condition)) {
                 $found_unique_key = true;
             }
             unset($unique_condition, $tmp_clause_is_unique);
@@ -429,10 +429,7 @@ foreach ($rows as $row_id => $vrow) {
         $real_null_value = FALSE;
         $special_chars_encoded = '';
         if (isset($vrow)) {
-            // On a BLOB that can have a NULL value, the is_null() returns
-            // true if it has no content but for me this is different than
-            // having been set explicitely to NULL so I put an exception here
-            if (! $field['is_blob'] && is_null($vrow[$field['Field']])) {
+            if (is_null($vrow[$field['Field']])) {
                 $real_null_value = TRUE;
                 $vrow[$field['Field']]    = '';
                 $special_chars   = '';
@@ -441,7 +438,7 @@ foreach ($rows as $row_id => $vrow) {
                 $special_chars = PMA_printable_bit_value($vrow[$field['Field']], $extracted_fieldspec['spec_in_brackets']);
             } else {
                 // loic1: special binary "characters"
-                if ($field['is_binary'] || $field['is_blob']) {
+                if ($field['is_binary'] || ($field['is_blob'] && ! $cfg['ProtectBinary'])) {
                 	if ($_SESSION['tmp_user_values']['display_binary_as_hex'] && $cfg['ShowFunctionFields']) {
                 		$vrow[$field['Field']] = bin2hex($vrow[$field['Field']]);
                 		$field['display_binary_as_hex'] = true;
@@ -464,6 +461,7 @@ foreach ($rows as $row_id => $vrow) {
                 . $field_name_appendix . '" value="'
                 . htmlspecialchars($vrow[$field['Field']]) . '" />';
         } else {
+            // (we are inserting)
             // loic1: display default values
             if (!isset($field['Default'])) {
                 $field['Default'] = '';
@@ -479,6 +477,10 @@ foreach ($rows as $row_id => $vrow) {
             }
             $backup_field  = '';
             $special_chars_encoded = PMA_duplicateFirstNewline($special_chars);
+            // this will select the UNHEX function while inserting
+            if (($field['is_binary'] || ($field['is_blob'] && ! $cfg['ProtectBinary'])) && $_SESSION['tmp_user_values']['display_binary_as_hex'] && $cfg['ShowFunctionFields']) {
+                $field['display_binary_as_hex'] = true;
+            }
         }
 
         $idindex  = ($o_rows * $fields_cnt) + $i + 1;
@@ -495,7 +497,7 @@ foreach ($rows as $row_id => $vrow) {
             if (($cfg['ProtectBinary'] && $field['is_blob'] && !$is_upload)
              || ($cfg['ProtectBinary'] == 'all' && $field['is_binary'])) {
                 echo '        <td align="center">' . $strBinary . '</td>' . "\n";
-            } elseif (strstr($field['True_Type'], 'enum') || strstr($field['True_Type'], 'set')) {
+            } elseif (strstr($field['True_Type'], 'enum') || strstr($field['True_Type'], 'set') || 'geometry' == $field['pma_type']) {
                 echo '        <td align="center">--</td>' . "\n";
             } else {
                 ?>
@@ -530,6 +532,7 @@ foreach ($rows as $row_id => $vrow) {
 
                 if ($field['True_Type'] == 'timestamp'
                   && empty($field['Default'])
+                  && empty($data)
                   && ! isset($analyzed_sql[0]['create_table_fields'][$field['Field']]['on_update_current_timestamp'])) {
                     $default_function = $cfg['DefaultFunctions']['first_timestamp'];
                 }
@@ -542,12 +545,12 @@ foreach ($rows as $row_id => $vrow) {
                 ) {
                      $default_function = $cfg['DefaultFunctions']['pk_char36'];
                 }
-				
+
                 // this is set only when appropriate and is always true
 				if (isset($field['display_binary_as_hex'])) {
                 	$default_function = 'UNHEX';
 				}
-				
+
                 // garvin: loop on the dropdown array and print all available options for that field.
                 foreach ($dropdown as $each_dropdown){
                     echo '<option';
@@ -621,7 +624,7 @@ foreach ($rows as $row_id => $vrow) {
                     // foreign key in a drop-down
                     $onclick     .= '4, ';
                 } elseif ($foreigners && isset($foreigners[$field['Field']]) && $foreignData['foreign_link'] == true) {
-                    // foreign key with a browsing icon 
+                    // foreign key with a browsing icon
                     $onclick     .= '6, ';
                 } else {
                     $onclick     .= '5, ';
@@ -1025,6 +1028,10 @@ foreach ($rows as $row_id => $vrow) {
                 }
             } // end if (web-server upload directory)
         } // end elseif (binary or blob)
+
+        elseif ('geometry' == $field['pma_type']) {
+            // ignore this column to avoid changing it
+        }
         else {
             // field size should be at least 4 and max 40
             $fieldsize = min(max($field['len'], 4), 40);

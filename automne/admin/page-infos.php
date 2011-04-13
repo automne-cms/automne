@@ -27,7 +27,7 @@
 require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
 
 //define used messages (standard)
-$cms_language->startPrefetch();
+$cms_language->startPrefetch(); //Prefetch all the following messages to load to speed up script treatment
 define("MESSAGE_PAGE_TREE_TIP_TITLE",1031);
 define("MESSAGE_PAGE_TREE_TIP_DESC",304);
 define("MESSAGE_PAGE_EDIT_CONTENT",330);
@@ -110,6 +110,12 @@ define("MESSAGE_PAGE_NO_PAGES_RIGHTS", 668);
 define("MESSAGE_PAGE_NO_PAGE_RIGHT", 669);
 define("MESSAGE_PAGE_LOCKED_ON_AT", 1591);
 define("MESSAGE_PAGE_CODENAME", 1675);
+define("MESSAGE_PAGE_UNPUBLISH_PAGE", 1712);
+define("MESSAGE_PAGE_UNPUBLISH_PAGE_INFO", 1713);
+define("MESSAGE_PAGE_UNPUBLISH_PAGE_CONFIRM", 1714);
+define("MESSAGE_PAGE_PUBLISH", 1715);
+define("MESSAGE_PAGE_PUBLISH_INFO", 1716);
+define("MESSAGE_PAGE_PUBLISH_PAGE_CONFIRM", 1717);
 $cms_language->endPrefetch();
 
 //load interface instance
@@ -637,6 +643,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 				- move
 				- delete / undelete
 				- archive / unarchive
+				- publish / unpublish
 				- cancel edition
 				- cancel draft 
 				- submit draft to validation
@@ -971,6 +978,82 @@ foreach ($userPanels as $panel => $panelStatus) {
 											resource:			'".$cms_page->getID()."',
 											module:				'".MOD_STANDARD_CODENAME."',
 											evalMessage:		false
+										});
+									}
+								}));";
+							}
+							$endPublication = $cms_page->getPublicationDateEnd(false);
+							$now = new CMS_date();
+							$now->setNow();
+							if ($cms_page->getPublication() == RESOURCE_PUBLICATION_PUBLIC && ($endPublication->isNull() || CMS_date::compare($endPublication, $now, '>'))) {
+								//unpublish
+								$panelContent .= "
+								menu.addSeparator();
+								menu.addItem(new Ext.menu.Item({
+									text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_UNPUBLISH_PAGE_INFO)."\">".$cms_language->getJSMessage(MESSAGE_PAGE_UNPUBLISH_PAGE)."</span>',
+									iconCls: 'atm-pic-unpublish',
+									handler: function(){
+										Automne.message.popup({
+											msg: 				'".$cms_language->getJSMessage(MESSAGE_PAGE_UNPUBLISH_PAGE_CONFIRM)."',
+											buttons: 			Ext.MessageBox.OKCANCEL,
+											animEl: 			this.getEl(),
+											closable: 			false,
+											icon: 				Ext.MessageBox.QUESTION,
+											fn: 				function (button) {
+												if (button == 'ok') {
+													Automne.server.call({
+														url:				'page-controler.php',
+														params: 			{
+															currentPage:		'".$cms_page->getID()."',
+															action:				'unpublish'
+														},
+														fcnCallback: 		function() {
+															//then reload page infos
+															tabs.getPageInfos({
+																pageId:		'".$cms_page->getID()."',
+																noreload:	true
+															});
+														},
+														callBackScope:		this
+													});
+												}
+											}
+										});
+									}
+								}));";
+							} elseif ($cms_page->getPublication() != RESOURCE_PUBLICATION_NEVERVALIDATED && !$endPublication->isNull() && CMS_date::compare($endPublication, $now, '<=')) {
+								//publish
+								$panelContent .= "
+								menu.addSeparator();
+								menu.addItem(new Ext.menu.Item({
+									text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_PUBLISH_INFO)."\">".$cms_language->getJSMessage(MESSAGE_PAGE_PUBLISH)."</span>',
+									iconCls: 'atm-pic-publish',
+									handler: function () {
+										Automne.message.popup({
+											msg: 				'".$cms_language->getJSMessage(MESSAGE_PAGE_PUBLISH_PAGE_CONFIRM)."',
+											buttons: 			Ext.MessageBox.OKCANCEL,
+											animEl: 			this.getEl(),
+											closable: 			false,
+											icon: 				Ext.MessageBox.QUESTION,
+											fn: 				function (button) {
+												if (button == 'ok') {
+													Automne.server.call({
+														url:				'page-controler.php',
+														params: 			{
+															currentPage:		'".$cms_page->getID()."',
+															action:				'publish'
+														},
+														fcnCallback: 		function() {
+															//then reload page infos
+															tabs.getPageInfos({
+																pageId:		'".$cms_page->getID()."',
+																noreload:	true
+															});
+														},
+														callBackScope:		this
+													});
+												}
+											}
 										});
 									}
 								}));";

@@ -12,8 +12,6 @@
 // | Authors: Antoine Pouch <antoine.pouch@ws-interactive.fr>			  |
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
-//
-// $Id: sensitiveio.php,v 1.12 2010/03/08 16:43:28 sebastien Exp $
 
 /**
   * Class SensitiveIO
@@ -23,8 +21,6 @@
   * @package Automne
   * @subpackage common
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr>
-  * @author Tomas V.V.Cox <cox@idecnet.com> (For isValidEmail())
-  * @author Pierre-Alain Joye <pajoye@phpindex.com> (For isValidEmail())
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
@@ -286,13 +282,9 @@ class SensitiveIO extends CMS_grandFather
 	  * @access public
 	  */
 	static function isValidEmail($email, $checkDomain = false) {
-		if (is_array($email)) {
-			extract($email);
-		}
-		if (preg_match('§^[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+'.'@'.
-				 	'[-!#$%&\'*+\\/0-9=?A-Z^_`a-z{|}~]+\.'.
-			'[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+$§', $email)) {
-
+		require_once(dirname(__FILE__).'/emailAddressValidator.php');
+		$validator = new EmailAddressValidator;
+		if ($validator->check_email_address($email)) {
 			if ($checkDomain && function_exists('checkdnsrr')) {
 				list (, $domain)  = explode('@', $email);
 				if (checkdnsrr($domain, 'MX') || checkdnsrr($domain, 'A')) {
@@ -470,7 +462,9 @@ class SensitiveIO extends CMS_grandFather
 		//encode nodes array in utf-8 if needed
 		if (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
 			$func = create_function('&$data,$key', '$data = is_string($data) ? io::utf8Encode($data) : $data;');
-			array_walk_recursive($datas, $func);
+			if ($func) {
+				array_walk_recursive($datas, $func);
+			}
 		}
 		return json_encode($datas);
 	}

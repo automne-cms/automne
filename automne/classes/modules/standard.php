@@ -1009,7 +1009,6 @@ class CMS_module_standard extends CMS_module
 				}
 			}
 			//2. If the page has been validated, attach it to the public tree
-			
 			$grand_root = CMS_tree::getRoot();
 			if ($page->getPublication() == RESOURCE_PUBLICATION_PUBLIC && $page->getID() != $grand_root->getID()) {
 				$father = CMS_tree::getFather($page);
@@ -1319,10 +1318,17 @@ class CMS_module_standard extends CMS_module
 	  * @access private
 	  */
 	protected function _dailyRoutineClean() {
-		//clean all files older than 24h in upload directory
-		$yesterday = time() - 86400; //24h
+		//clean all files older than 4h in both uploads directories
+		$yesterday = time() - 14400; //4h
 		try{
 			foreach ( new DirectoryIterator(PATH_UPLOAD_FS) as $file) {
+				if ($file->isFile() && $file->getFilename() != ".htaccess" && $file->getMTime() < $yesterday) {
+					@unlink($file->getPathname());
+				}
+			}
+		} catch(Exception $e) {}
+		try{
+			foreach ( new DirectoryIterator(PATH_UPLOAD_VAULT_FS) as $file) {
 				if ($file->isFile() && $file->getFilename() != ".htaccess" && $file->getMTime() < $yesterday) {
 					@unlink($file->getPathname());
 				}
@@ -1486,9 +1492,10 @@ class CMS_module_standard extends CMS_module
 					"atm-main-url" 		=> array("selfClosed" => true, "parameters" => array()),
 					"atm-constant" 		=> array("selfClosed" => true, "parameters" => array()),
 					"atm-last-update" 	=> array("selfClosed" => false, "parameters" => array()),
-					"a"					=> array("selfClosed" => false, "parameters" => array('href' => '#([a-zA-Z0-9._-]*)'),'class' => 'CMS_XMLTag_anchor'),
-					"area"				=> array("selfClosed" => false, "parameters" => array('href' => '#([a-zA-Z0-9._-]*)'),'class' => 'CMS_XMLTag_anchor'),
+					"a"					=> array("selfClosed" => false, "parameters" => array('href' => '#([a-zA-Z0-9._{}:-]*)'),'class' => 'CMS_XMLTag_anchor'),
+					"area"				=> array("selfClosed" => false, "parameters" => array('href' => '#([a-zA-Z0-9._{}:-]*)'),'class' => 'CMS_XMLTag_anchor'),
 					"body" 				=> array("selfClosed" => false, "parameters" => array()),
+					"head" 				=> array("selfClosed" => false, "parameters" => array()),
 					"html" 				=> array("selfClosed" => false, "parameters" => array()),
 				);
 				//for public (and print) visualmode, this is done by MODULE_TREATMENT_LINXES_TAGS mode during page file linx treatment
@@ -1513,7 +1520,8 @@ class CMS_module_standard extends CMS_module
 			break;
 			case MODULE_TREATMENT_WYSIWYG_OUTER_TAGS :
 				$return = array (
-					"a" => array("selfClosed" => false, "parameters" => array("href"	=> ".*\{\{(\d+)\}\}.*")),
+					"a"		=> array("selfClosed" => false, "parameters" => array()), //this definition handle both anchors and internal links 
+					"area"	=> array("selfClosed" => false, "parameters" => array('href' => '#([a-zA-Z0-9._{}:-]*)'),'class' => 'CMS_XMLTag_anchor'),
 				);
 			break;
 		}
@@ -1689,6 +1697,16 @@ class CMS_module_standard extends CMS_module
 							return constant($const);
 						}
 						return '';
+					break;
+					case "head":
+						$headCode = '<?php'."\n".
+						'$atmHost = @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) ? @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) : $_SERVER[\'HTTP_HOST\'];'."\n".
+						'$atmProtocol = stripos($_SERVER["SERVER_PROTOCOL"], \'https\') !== false ? \'https://\' : \'http://\';'."\n".
+						'$atmPort = @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_PORT) ? \':\'.@parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_PORT) : \'\';'."\n".
+						'echo "\t".\'<base href="\'.$atmProtocol.$atmHost.$atmPort.PATH_REALROOT_WR.\'/" />\'."\n";'."\n".
+						' ?>';
+						//Append base code
+						return preg_replace('#<head([^>]*)>#', '<head\1>'."\n".$headCode, $tag->getContent());
 					break;
 					case "body":
 						$statsCode = '<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat();} ?>';
@@ -1875,32 +1893,49 @@ class CMS_module_standard extends CMS_module
 				}
 				return $treatedLink;
 			case MODULE_TREATMENT_WYSIWYG_OUTER_TAGS :
-				/* Pattern explanation :
-				 * 
-				 * \<a([^>]*) : start with "<a" and any characters after except a ">". Content found into the "()" (first parameters of the link) is the first variable : "\\1"
-				 * {{(\d+)}} : some numbers only into "{{" and "}}". Content found into the "()" (the page number) is the second variable : "\\2"
-				 * (.*)\<\/a> : any characters after followed by "</a>". Content found into the "()" (last parameters of the link and link content) is the third variable : "\\3"
-				 * /U : PCRE_UNGREEDY stop to the first finded occurence.
-				*/
-				$pattern = "/<a([^>]*){{(\d+)}}(.*)\<\/a>/Us";
-				if ($tag->getName() == 'a' && $treatmentParameters['module'] == MOD_STANDARD_CODENAME) {
-					if ($tag->getAttribute('noselection') == 'true') {
-						$replacement = "<atm-linx type=\"direct\"><selection><start><nodespec type=\"node\" value=\"\\2\"/></start></selection><noselection>".$tag->getInnerContent()."</noselection><display><htmltemplate><a\\1{{href}}\\3</a></htmltemplate></display></atm-linx>";
-						$treatedLink = preg_replace($pattern,$replacement,str_replace('noselection="true"','',$tag->getContent()));
-					} else {
-						$replacement = "<atm-linx type=\"direct\"><selection><start><nodespec type=\"node\" value=\"\\2\"/></start></selection><display><htmltemplate><a\\1{{href}}\\3</a></htmltemplate></display></atm-linx>";
-						$treatedLink = preg_replace($pattern,$replacement,$tag->getContent());
+				//Anchor
+				if (preg_match('/^#([a-zA-Z0-9._{}:-]*)$/i', $tag->getAttribute('href')) > 0) {
+					//instanciate anchor tag
+					$anchor = new CMS_XMLTag_anchor(
+							$tag->getName(),
+							$tag->getAttributes(),
+							$tag->getChildren(),
+							$tag->getParameters()
+					);
+					return $anchor->compute(array(
+						'mode'			=> $treatmentMode,
+						'visualization' => $visualizationMode,
+						'object'		=> $treatedObject,
+						'parameters'	=> $treatmentParameters
+					));
+				} elseif (preg_match('/^.*\{\{(\d+)\}\}.*$/i', $tag->getAttribute('href')) > 0) { //internal links
+					/* Pattern explanation :
+					 * 
+					 * \<a([^>]*) : start with "<a" and any characters after except a ">". Content found into the "()" (first parameters of the link) is the first variable : "\\1"
+					 * {{(\d+)}} : some numbers only into "{{" and "}}". Content found into the "()" (the page number) is the second variable : "\\2"
+					 * (.*)\<\/a> : any characters after followed by "</a>". Content found into the "()" (last parameters of the link and link content) is the third variable : "\\3"
+					 * /U : PCRE_UNGREEDY stop to the first finded occurence.
+					*/
+					$pattern = "/<a([^>]*){{(\d+)}}(.*)\<\/a>/Us";
+					if ($tag->getName() == 'a' && $treatmentParameters['module'] == MOD_STANDARD_CODENAME) {
+						if ($tag->getAttribute('noselection') == 'true') {
+							$replacement = "<atm-linx type=\"direct\"><selection><start><nodespec type=\"node\" value=\"\\2\"/></start></selection><noselection>".$tag->getInnerContent()."</noselection><display><htmltemplate><a\\1{{href}}\\3</a></htmltemplate></display></atm-linx>";
+							$treatedLink = preg_replace($pattern, $replacement, str_replace('noselection="true"', '', $tag->getContent()));
+						} else {
+							$replacement = "<atm-linx type=\"direct\"><selection><start><nodespec type=\"node\" value=\"\\2\"/></start></selection><display><htmltemplate><a\\1{{href}}\\3</a></htmltemplate></display></atm-linx>";
+							$treatedLink = preg_replace($pattern, $replacement, $tag->getContent());
+						}
+					} elseif ($tag->getName() == 'a' && $treatmentParameters['module'] != MOD_STANDARD_CODENAME) {
+						if ($tag->getAttribute('noselection') == 'true') {
+							$replacement = '<span id="'.MOD_STANDARD_CODENAME.'-\\2-true"><?php if (CMS_tree::pageExistsForUser(\\2)) { echo \'<a\\1\'.CMS_tree::getPageValue(\\2, \'url\').\'\\3</a>\';} else { echo '.var_export($tag->getInnerContent(),true).';} ?><!--{elements:'.base64_encode(serialize(array('module' => array(0 => MOD_STANDARD_CODENAME)))).'}--></span>';
+							$treatedLink = preg_replace($pattern, $replacement, str_replace(array('noselection="true"',"'"), array('',"\'"), $tag->getContent()));
+						} else {
+							$replacement = '<span id="'.MOD_STANDARD_CODENAME.'-\\2-false"><?php if (CMS_tree::pageExistsForUser(\\2)) { echo \'<a\\1\'.CMS_tree::getPageValue(\\2, \'url\').\'\\3</a>\';} ?><!--{elements:'.base64_encode(serialize(array('module' => array(0 => MOD_STANDARD_CODENAME)))).'}--></span>';
+							$treatedLink = preg_replace($pattern, $replacement, str_replace("'","\'", $tag->getContent()));
+						}
 					}
-				} elseif ($tag->getName() == 'a' && $treatmentParameters['module'] != MOD_STANDARD_CODENAME) {
-					if ($tag->getAttribute('noselection') == 'true') {
-						$replacement = '<span id="'.MOD_STANDARD_CODENAME.'-\\2-true"><?php if (CMS_tree::pageExistsForUser(\\2)) { echo \'<a\\1\'.CMS_tree::getPageValue(\\2, \'url\').\'\\3</a>\';} else { echo '.var_export($tag->getInnerContent(),true).';} ?><!--{elements:'.base64_encode(serialize(array('module' => array(0 => MOD_STANDARD_CODENAME)))).'}--></span>';
-						$treatedLink = preg_replace($pattern,$replacement,str_replace(array('noselection="true"',"'"),array('',"\'"),$tag->getContent()));
-					} else {
-						$replacement = '<span id="'.MOD_STANDARD_CODENAME.'-\\2-false"><?php if (CMS_tree::pageExistsForUser(\\2)) { echo \'<a\\1\'.CMS_tree::getPageValue(\\2, \'url\').\'\\3</a>\';} ?><!--{elements:'.base64_encode(serialize(array('module' => array(0 => MOD_STANDARD_CODENAME)))).'}--></span>';
-						$treatedLink = preg_replace($pattern,$replacement,str_replace("'","\'",$tag->getContent()));
-					}
+					return $treatedLink;
 				}
-				return $treatedLink;
 			break;
 		}
 		//in case of no tag treatment, simply return it
@@ -2098,7 +2133,7 @@ class CMS_module_standard extends CMS_module
 	  * @return array of replacements values (pattern to replace => replacement)
 	  * @access public
 	  */
-	function getModuleReplacements($parameterVarName) {
+	function getModuleReplacements() {
 		$replace = array();
 		
 		//replace '{vartype:type:name}' value by corresponding var call
@@ -2106,7 +2141,7 @@ class CMS_module_standard extends CMS_module
 		$replace["#^\{(var|request|session|constant)\:([^:]*?(::)?[^:]*?):([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_poly_definition_functions::getVarContent("\1", "\4", "\2", "\4")';
 		
 		//replace '{page:id:type}' value by corresponding CMS_tree::getPageValue(id, type) call
-		$replace["#^\{page\:([^:]*?(::)?[^:]*?)\:([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_tree::getPageValue("\1", "\3", @$public_search, @$'.$parameterVarName.'["pageID"])';
+		$replace["#^\{page\:([^:]*?(::)?[^:]*?)\:([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_tree::getPageValue("\1", "\3", @$public_search, \'{{pageID}}\')';
 		
 		//replace '{user:id:type}' value by corresponding CMS_profile_usersCatalog::getUserValue(id, type) call
 		$replace["#^\{user\:([^:]*?(::)?[^:]*?)\:([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_profile_usersCatalog::getUserValue("\1", "\3", (isset($cms_user) ? $cms_user->getUserId() : null))';

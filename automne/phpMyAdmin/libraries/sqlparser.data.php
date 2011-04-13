@@ -211,7 +211,6 @@ $PMA_SQPdata_function_name = array (
     'MOD',
     'MONTH',
     'MONTHNAME',
-    'NOW',
     'MPOINTFROMTEXT',           // MPointFromText()
     'MPOINTFROMWKB',            // MPointFromWKB()
     'MPOLYFROMTEXT',            // MPolyFromText()
@@ -339,7 +338,7 @@ $PMA_SQPdata_function_name = array (
  *
  * @global integer MySQL attributes count
  */
-$PMA_SQPdata_function_name_cnt = 299;
+$PMA_SQPdata_function_name_cnt = 298;
 
 /*
  * DEBUG
@@ -529,7 +528,6 @@ $PMA_SQPdata_reserved_word = array (
     'LAST_INSERT_ID',
     'LEADING',
     'LEFT',
-    'LEVEL',
     'LIKE',
     'LIMIT',
     'LINEAR',               // 5.1
@@ -698,7 +696,7 @@ $PMA_SQPdata_reserved_word = array (
  *
  * @global integer MySQL reserved words count
  */
-$PMA_SQPdata_reserved_word_cnt = 288;
+$PMA_SQPdata_reserved_word_cnt = 287;
 /**
  * The previous array must be sorted so that the binary search work.
  * Sometimes a word is not added in the correct order, so
@@ -934,7 +932,6 @@ $PMA_SQPdata_forbidden_word = array (
     'LEAVE',
     'LEAVES',
     'LEFT',
-    'LEVEL',
     'LIKE',
     'LIMIT',
     'LINEAR',               // 5.1
@@ -1047,9 +1044,9 @@ $PMA_SQPdata_forbidden_word = array (
     'RAID_TYPE',
     'RANGE',                // 5.1
     'READ',
+    'READS',
     'READ_ONLY',            // 5.1
     'READ_WRITE',           // 5.1
-    'READS',
     'REAL',
     'RECOVER',
     'REDUNDANT',
@@ -1213,7 +1210,7 @@ $PMA_SQPdata_forbidden_word = array (
  *
  * @global integer MySQL forbidden words count
  */
-$PMA_SQPdata_forbidden_word_cnt = 483;
+$PMA_SQPdata_forbidden_word_cnt = 482;
 
 /**
  * the MySQL column/data types

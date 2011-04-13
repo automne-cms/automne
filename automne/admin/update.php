@@ -230,6 +230,78 @@ if ($actionsDone) {
 echo 'Directories successfuly updated.<br/><br/>';
 //END UPDATE FROM 4.0.2 TO 4.1.0
 
+//START UPDATE FROM 4.1.1 TO 4.1.2
+# Change structure of website table to add 403 and 404 data
+$sql = "show columns from websites";
+$q = new CMS_query($sql);
+$installed = false;
+while($r = $q->getArray()) {
+	if ($r["Field"] == "403_web") {
+		$installed = true;
+	}
+}
+if (!$installed) {
+	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v411-to-v412.sql',true)) {
+		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v411-to-v412.sql',false);
+		echo 'Database successfuly updated (website 403 and 404)<br/>';
+	} else {
+		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v411-to-v412.sql must be executed manualy<br/>';
+	}
+}
+#change field password_pru to use a longer field size for sha1 storage
+$sql = "show columns from profilesUsers";
+$q = new CMS_query($sql);
+$installed = false;
+while($r = $q->getArray()) {
+	if ($r["Field"] == "password_pru" && $r["Type"] == 'varchar(45)') {
+		$installed = true;
+	}
+}
+if (!$installed) {
+	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v411-to-v412-2.sql',true)) {
+		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v411-to-v412-2.sql',false);
+		echo 'Database successfuly updated (sha1 password storage)<br/>';
+	} else {
+		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v411-to-v412-2.sql must be executed manualy<br/>';
+	}
+}
+#change field language_mcl of modulesCategories_i18nm to use a longer field size for 5 characters language code storage
+$sql = "show columns from modulesCategories_i18nm";
+$q = new CMS_query($sql);
+$installed = false;
+while($r = $q->getArray()) {
+	if ($r["Field"] == "language_mcl" && $r["Type"] == 'char(5)') {
+		$installed = true;
+	}
+}
+if (!$installed) {
+	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v411-to-v412-3.sql',true)) {
+		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v411-to-v412-3.sql',false);
+		echo 'Database successfuly updated (handle language codes of 5 characters)<br/>';
+	} else {
+		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v411-to-v412-3.sql must be executed manualy<br/>';
+	}
+}
+
+#remove field http_user_agent_ses of sessions table
+$sql = "show columns from sessions";
+$q = new CMS_query($sql);
+$installed = true;
+while($r = $q->getArray()) {
+	if ($r["Field"] == "http_user_agent_ses") {
+		$installed = false;
+	}
+}
+if (!$installed) {
+	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v411-to-v412-4.sql',true)) {
+		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v411-to-v412-4.sql',false);
+		echo 'Database successfuly updated (remove user agent check in session management)<br/>';
+	} else {
+		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v411-to-v412-4.sql must be executed manualy<br/>';
+	}
+}
+//END UPDATE FROM 4.1.1 TO 4.1.2
+
 //Update Automne messages
 $files = glob(PATH_MAIN_FS."/sql/messages/*/*.sql", GLOB_NOSORT);
 if (is_array($files)) {

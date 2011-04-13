@@ -42,6 +42,7 @@ $codename = sensitiveIO::request('module', CMS_modulesCatalog::getAllCodenames()
 $fieldId = sensitiveIO::request('fieldId', 'sensitiveIO::isPositiveInteger');
 $removeIds = sensitiveIO::request('removeIds');
 $removeIds = $removeIds ? explode(',',$removeIds) : array();
+$query = sensitiveIO::request('query');
 
 $objectsDatas = array();
 $objectsDatas['objects'] = array();
@@ -77,11 +78,12 @@ if (!$objectId && !$fieldId) {
 $object = new CMS_poly_object_definition($objectId);
 
 if (!$object->hasError()) {
-	$objectsNames = CMS_poly_object_catalog::getListOfNamesForObject($objectId, false, array());
+	$conditions = $query ? array('keywords' => $query) : array();
+	$objectsNames = CMS_poly_object_catalog::getListOfNamesForObject($objectId, false, $conditions);
 	if (is_array($objectsNames) && $objectsNames) {
 		$objectsDatas['objects'][] = array(
 			'id'			=> '0',
-			'label'			=> '--',
+			'label'			=> ' ',
 		);
 		foreach($objectsNames as $id => $label) {
 			if (!$removeIds || !in_array($id, $removeIds)) {

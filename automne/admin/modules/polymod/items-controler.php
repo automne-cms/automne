@@ -360,6 +360,7 @@ switch ($action) {
 							if (sizeof($paramValue)) {
 								foreach ($paramValue as $orderName => $orderValue) {
 									// Order direction
+									$orderName = trim($orderName, '()');
 									if ($paramValue && !$value['search'][$searchName][$paramType][$orderName]) { //mandatory ?
 										$formok = false;
 									}
@@ -367,6 +368,7 @@ switch ($action) {
 							}
 						break;
 						default:
+							$paramType = trim($paramType, '()');
 							if (sensitiveIO::isPositiveInteger($paramType)) {
 								if ($paramValue && !$value['search'][$searchName][$paramType]) { //mandatory ?
 									$formok = false;

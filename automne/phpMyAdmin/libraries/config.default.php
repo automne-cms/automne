@@ -439,7 +439,7 @@ $cfg['Servers'][$i]['tracking_default_statements'] = 'CREATE TABLE,ALTER TABLE,D
                                           'CREATE DATABASE,ALTER DATABASE,DROP DATABASE';
 
 /**
- * Whether a DROP VIEW IF EXISTS statement will added as first line to the log when creating a view.
+ * Whether a DROP VIEW IF EXISTS statement will be added as first line to the log when creating a view.
  *
  * @global bool $cfg['Servers'][$i]['tracking_add_drop_view']
  */
@@ -447,7 +447,7 @@ $cfg['Servers'][$i]['tracking_default_statements'] = 'CREATE TABLE,ALTER TABLE,D
 $cfg['Servers'][$i]['tracking_add_drop_view'] = true;
 
 /**
- * Whether a DROP TABLE IF EXISTS statement will added as first line to the log when creating a table.
+ * Whether a DROP TABLE IF EXISTS statement will be added as first line to the log when creating a table.
  *
  * @global bool $cfg['Servers'][$i]['tracking_add_drop_table']
  */
@@ -455,7 +455,7 @@ $cfg['Servers'][$i]['tracking_add_drop_view'] = true;
 $cfg['Servers'][$i]['tracking_add_drop_table'] = true;
 
 /**
- * Whether a DROP DATABASE IF EXISTS statement will added as first line to the log when creating a database.
+ * Whether a DROP DATABASE IF EXISTS statement will be added as first line to the log when creating a database.
  *
  * @global bool $cfg['Servers'][$i]['tracking_add_drop_database']
  */
@@ -463,7 +463,7 @@ $cfg['Servers'][$i]['tracking_add_drop_table'] = true;
 $cfg['Servers'][$i]['tracking_add_drop_database'] = true;
 
 /**
- * Whether a DROP DATABASE IF EXISTS statement will added as first line to the log when creating a database.
+ * Whether a DROP DATABASE IF EXISTS statement will be added as first line to the log when creating a database.
  *
  * @global bool $cfg['Servers'][$i]['tracking_version_drop_database']
  */
@@ -536,11 +536,13 @@ $cfg['ForceSSL'] = false;
 $cfg['ExecTimeLimit'] = 300;
 
 /**
- * maximum allocated bytes (0 for no limit)
+ * maximum allocated bytes ('0' for no limit)
+ * this is a string because '16M' is a valid value; we must put here
+ * a string as the default value so that /setup accepts strings 
  *
- * @global integer $cfg['MemoryLimit']
+ * @global string $cfg['MemoryLimit']
  */
-$cfg['MemoryLimit'] = 0;
+$cfg['MemoryLimit'] = '0';
 
 /**
  * mark used tables, make possible to show locked tables (since MySQL 3.23.30)
@@ -578,7 +580,8 @@ $cfg['Confirm'] = true;
 $cfg['LoginCookieRecall'] = true;
 
 /**
- * validity of cookie login (in seconds)
+ * validity of cookie login (in seconds; 1440 matches php.ini's
+ * session.gc_maxlifetime)
  *
  * @global integer $cfg['LoginCookieValidity']
  */

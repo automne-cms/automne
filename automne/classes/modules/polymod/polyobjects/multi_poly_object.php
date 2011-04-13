@@ -58,13 +58,16 @@ class CMS_multi_poly_object extends CMS_object_common
 	const MESSAGE_MULTI_OBJECT_EDIT_ELEMENT = 516;
   	const MESSAGE_MULTI_OBJECT_DISASSOCIATE_ELEMENT = 517;
   	const MESSAGE_MULTI_OBJECT_CHOOSE_ELEMENT = 518;
-
+	
 	const MESSAGE_EMPTY_OBJECTS_SET = 265;
 	const MESSAGE_CHOOSE_OBJECT = 1132;
 	const MESSAGE_PAGE_ACTION_MODIFIY = 261;
 	const MESSAGE_PAGE_ACTION_NEW = 262;
 	const MESSAGE_PAGE_ACTION_DESASSOCIATE = 1268;
 	const MESSAGE_PAGE_ACTION_ASSOCIATE = 1267;
+	const MESSAGE_PAGE_ACTION_DESASSOCIATE_CONFIRM = 607;
+	const MESSAGE_MULTI_OBJECT_SELECT_BEFORE = 608;
+
 	/**
 	  * CMS_object_field reference
 	  * @var CMS_object_field
@@ -586,23 +589,47 @@ class CMS_multi_poly_object extends CMS_object_common
 					array(
 						'text'		=> $language->getMessage(self::MESSAGE_PAGE_ACTION_DESASSOCIATE),
 						'tooltip'	=> $language->getMessage(self::MESSAGE_MULTI_OBJECT_DISASSOCIATE_ELEMENT, false, MOD_POLYMOD_CODENAME),
-						'handler'	=> sensitiveIO::sanitizeJSString('function(){
+						'handler'	=> sensitiveIO::sanitizeJSString('function(button){
 							var cmp = Ext.getCmp(\''.$listId2.'\');
 							var selected = cmp.view.getSelectedRecords();
 							if (!selected.length || selected.length > 1) {
+								Automne.message.popup({
+									msg: 				\''.$language->getJSMessage(self::MESSAGE_MULTI_OBJECT_SELECT_BEFORE, false, MOD_POLYMOD_CODENAME).'\',
+									buttons: 			Ext.MessageBox.OKCANCEL,
+									animEl: 			button.getEl(),
+									closable: 			false,
+									icon: 				Ext.MessageBox.INFO
+								});
 								return;
 							}
-							var objectId = selected[0].id;
-							var values = cmp.getRawValue();
-							values.remove(objectId);
-							cmp.setValue(values.join(cmp.delimiter));
-							if (\''.$listId.'\') {
-								var list = Ext.getCmp(\''.$listId.'\');
-								if (list) {
-									list.store.baseParams.removeIds = values.join(cmp.delimiter);
-									list.store.load();
+							Automne.message.popup({
+								msg: 				\''.io::htmlspecialchars($language->getMessage(self::MESSAGE_PAGE_ACTION_DESASSOCIATE_CONFIRM, array($objectDef->getObjectLabel($language)), MOD_POLYMOD_CODENAME)).'\',
+								buttons: 			Ext.MessageBox.OKCANCEL,
+								animEl: 			button.getEl(),
+								closable: 			false,
+								icon: 				Ext.MessageBox.WARNING,
+								scope:				this,
+								fn: 				function (button) {
+									if (button == \'ok\') {
+										var cmp = Ext.getCmp(\''.$listId2.'\');
+										var selected = cmp.view.getSelectedRecords();
+										if (!selected.length || selected.length > 1) {
+											return;
+										}
+										var objectId = selected[0].id;
+										var values = cmp.getRawValue();
+										values.remove(objectId);
+										cmp.setValue(values.join(cmp.delimiter));
+										if (\''.$listId.'\') {
+											var list = Ext.getCmp(\''.$listId.'\');
+											if (list) {
+												list.store.baseParams.removeIds = values.join(cmp.delimiter);
+												list.store.load();
+											}
+										}
+									}
 								}
-							}
+							});
 						}', false, false),
 						'scope'		=> 'this'
 					),'->', array(
@@ -613,6 +640,13 @@ class CMS_multi_poly_object extends CMS_object_common
 							var cmp = Ext.getCmp(\''.$listId2.'\');
 							var selected = cmp.view.getSelectedRecords();
 							if (!selected.length || selected.length > 1) {
+								Automne.message.popup({
+									msg: 				\''.$language->getJSMessage(self::MESSAGE_MULTI_OBJECT_SELECT_BEFORE, false, MOD_POLYMOD_CODENAME).'\',
+									buttons: 			Ext.MessageBox.OKCANCEL,
+									animEl: 			button.getEl(),
+									closable: 			false,
+									icon: 				Ext.MessageBox.INFO
+								});
 								return;
 							}
 							var objectId = selected[0].id;

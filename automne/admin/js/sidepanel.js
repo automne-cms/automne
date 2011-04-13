@@ -64,7 +64,7 @@ Automne.sidePanel = Ext.extend(Automne.panel, {
 	},
 	expand: function() {
 		//try to refresh validation panel
-		var validationPanel = Ext.getCmp('validationsPanel');
+		var validationPanel = Ext.getCmp('validationsSidePanel');
 		if (validationPanel) validationPanel.refresh();
 		// call parent
 		return Automne.sidePanel.superclass.expand.apply(this, arguments); 

@@ -295,7 +295,11 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			$pluginSelection.
 			$languageObject.
 			$public.
-			'if (isset($parameters[\'item\'])) {$parameters[\'objectID\'] = $parameters[\'item\']->getObjectID();} elseif (isset($parameters[\'itemID\']) && sensitiveIO::isPositiveInteger($parameters[\'itemID\']) && !isset($parameters[\'objectID\'])) $parameters[\'objectID\'] = CMS_poly_object_catalog::getObjectDefinitionByID($parameters[\'itemID\']);'."\n".
+			'if (isset($parameters[\'item\'])) {'."\n".
+			'	$parameters[\'objectID\'] = $parameters[\'item\']->getObjectID();'."\n".
+			'} elseif (isset($parameters[\'itemID\']) && sensitiveIO::isPositiveInteger($parameters[\'itemID\']) && !isset($parameters[\'objectID\'])) {'."\n".
+			'	$parameters[\'objectID\'] = CMS_poly_object_catalog::getObjectDefinitionByID($parameters[\'itemID\']);'."\n".
+			'}'."\n".
 			'if (!isset($object) || !is_array($object)) $object = array();'."\n".
 			$polyobjectsDefinitions;
 		}
@@ -592,7 +596,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		} elseif (isset($search_'.$tag['attributes']['search'].') && $launchSearch_'.$tag['attributes']['search'].' && $searchLaunched_'.$tag['attributes']['search'].' === true) {
 			//reset search stack (search already done before)
 			$search_'.$tag['attributes']['search'].'->resetResultStack();
-		} else {
+		} elseif (!isset($search_'.$tag['attributes']['search'].')) {
 			CMS_grandFather::raiseError("Malformed atm-result tag : can\'t use this tag outside of atm-search \"'.$tag['attributes']['search'].'\" tag ...");
 		}
 		if (isset($search_'.$tag['attributes']['search'].') && $launchSearch_'.$tag['attributes']['search'].' && $searchLaunched_'.$tag['attributes']['search'].' === true) {
@@ -658,11 +662,11 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			if ($search_'.$tag['attributes']['search'].'->search(CMS_object_search::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS)) {
 				$searchLaunched_'.$tag['attributes']['search'].' = true;
 			}
-		} elseif (!isset($search_'.$tag['attributes']['search'].') || !$launchSearch_'.$tag['attributes']['search'].') {
+		} elseif (!isset($search_'.$tag['attributes']['search'].')) {
 			CMS_grandFather::raiseError("Malformed atm-noresult tag : can\'t use this tag outside of atm-search \"'.$tag['attributes']['search'].'\" tag ...");
 		}
-		if (isset($search_'.$tag['attributes']['search'].') && $launchSearch_'.$tag['attributes']['search'].' && $searchLaunched_'.$tag['attributes']['search'].' === true) {
-			if (!$search_'.$tag['attributes']['search'].'->getNumRows()) {
+		if (isset($search_'.$tag['attributes']['search'].') && (($launchSearch_'.$tag['attributes']['search'].' && $searchLaunched_'.$tag['attributes']['search'].' === true) || !$launchSearch_'.$tag['attributes']['search'].')) {
+			if (!$launchSearch_'.$tag['attributes']['search'].' || !$search_'.$tag['attributes']['search'].'->getNumRows()) {
 				'.$this->computeTags($tag['childrens']).'
 			}
 		}
@@ -697,9 +701,9 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			}
 			$uniqueID = CMS_XMLTag::getUniqueID();
 			$return .= '
-			if (isset($blockAttributes[\'search\'][\''.$tag['attributes']['search'].'\'][\''.$type.'\'])) {
+			if (isset($blockAttributes[\'search\'][\''.$tag['attributes']['search'].'\']['.$type.'])) {
 				$values_'.$uniqueID.' = '.CMS_polymod_definition_parsing::preReplaceVars(var_export($tag['attributes'],true),true).';
-				$values_'.$uniqueID.'[\'value\'] = $blockAttributes[\'search\'][\''.$tag['attributes']['search'].'\'][\''.$type.'\'];
+				$values_'.$uniqueID.'[\'value\'] = $blockAttributes[\'search\'][\''.$tag['attributes']['search'].'\']['.$type.'];
 				if ($values_'.$uniqueID.'[\'type\'] == \'publication date after\' || $values_'.$uniqueID.'[\'type\'] == \'publication date before\') {
 					//convert DB format to current language format
 					$dt = new CMS_date();
@@ -773,10 +777,10 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		//if direction value came from block parameters
 		if ($tag['attributes']['direction'] == 'block') {
 			if ($this->_mode == self::BLOCK_PARAM_MODE) {
-				$this->_blockParams['search'][ $tag['attributes']['search'] ][ 'order' ][ $type ] = true;
+				$this->_blockParams['search'][ $tag['attributes']['search'] ][ 'order' ][CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['type'], false, false, false)] = true;
 			}
 			//replace tag direction value by corresponding block parameter value
-			$tag['attributes']['direction'] = '".@$blockAttributes[\'search\'][\''.$tag['attributes']['search'].'\'][\'order\'][\''.$type.'\']."';
+			$tag['attributes']['direction'] = '".@$blockAttributes[\'search\'][\''.$tag['attributes']['search'].'\'][\'order\']["'.$type.'"]."';
 		}
 		//if direction came from a var content
 		elseif (io::substr($tag['attributes']['direction'],0,1) == '{' && io::substr($tag['attributes']['direction'],-1,1) == '}') {
@@ -1210,7 +1214,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		$xmlCondition = CMS_polymod_definition_parsing::replaceVars("'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['what'], false, false, array('CMS_polymod_definition_parsing', 'encloseWithPrepareVar')).'", $replace);
 		if ($xmlCondition) {
 			$func = create_function("","return (".$xmlCondition.");");
-			if ($func()) {
+			if ($func && $func()) {
 				'.$return.'
 				$content = CMS_polymod_definition_parsing::replaceVars($content, $replace);
 			}
@@ -1563,7 +1567,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				$replacements = array();
 				$modules = CMS_modulesCatalog::getAll("id");
 				foreach ($modules as $codename => $aModule) {
-					$moduleReplacements = $aModule->getModuleReplacements('parameters');
+					$moduleReplacements = $aModule->getModuleReplacements();
 					if (is_array($moduleReplacements) && $moduleReplacements) {
 						foreach ($moduleReplacements as $pattern => $replacement) {
 							$replacements[$pattern] = $replacement;

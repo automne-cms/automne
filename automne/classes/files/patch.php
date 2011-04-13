@@ -588,6 +588,14 @@ class CMS_patch extends CMS_grandFather
 		} else {
 			$ok = (is_array($queries) && $queries) ? true : false;
 		}
+		//reset connection charset
+		if(io::strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8') {
+			//set connection to utf-8 charset
+			$q = new CMS_query("SET NAMES 'utf8'");
+		} else {
+			$q = new CMS_query("SET NAMES 'latin1'");
+		}
+		
 		return $ok;
 	}
 	

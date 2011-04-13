@@ -1319,14 +1319,18 @@ class CMS_object_search extends CMS_grandFather
 					break;
 					default:
 						if(sensitiveIO::isPositiveInteger($type)) {
-							if (!is_object($this->_fieldsDefinitions[$type])) {
+							if (!isset($this->_fieldsDefinitions[$type]) || !is_object($this->_fieldsDefinitions[$type])) {
 								//get object fields definition
 								$this->_fieldsDefinitions = CMS_poly_object_catalog::getFieldsDefinition($this->_object->getID());
 							}
-							//get type object for field
-							$objectField = $this->_fieldsDefinitions[$type]->getTypeObject();
-							$operator = isset($operator) ? $operator : '';
-							$sql = $objectField->getFieldOrderSQL($type, $direction, $operator, $where, $this->_public);
+							if (isset($this->_fieldsDefinitions[$type])) {
+								//get type object for field
+								$objectField = $this->_fieldsDefinitions[$type]->getTypeObject();
+								$operator = isset($operator) ? $operator : '';
+								$sql = $objectField->getFieldOrderSQL($type, $direction, $operator, $where, $this->_public);
+							} else {
+								$this->raiseError('Unknown field '.$type.' to use as order with value '.print_r($value, true));
+							}
 						}
 					break;
 				}

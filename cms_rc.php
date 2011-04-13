@@ -209,12 +209,19 @@ if (defined('APPLICATION_EXEC_TYPE') && APPLICATION_EXEC_TYPE == 'cli') {
 	//We are in CLI mode, we must calculate the document root first
 	$_SERVER["DOCUMENT_ROOT"] = dirname(__FILE__);
 	if (defined('PATH_REALROOT_WR')) {
-		$_SERVER["DOCUMENT_ROOT"] = substr($_SERVER["DOCUMENT_ROOT"], 0, - strlen(PATH_REALROOT_WR));
+		$_SERVER["DOCUMENT_ROOT"] = realpath(substr($_SERVER["DOCUMENT_ROOT"], 0, - strlen(PATH_REALROOT_WR)));
 	}
 } else {
 	if ($_SERVER["DOCUMENT_ROOT"] != realpath($_SERVER["DOCUMENT_ROOT"])) {
 		//rewrite server document root if needed
-		$_SERVER["DOCUMENT_ROOT"] = realpath($_SERVER["DOCUMENT_ROOT"]);
+		if (realpath($_SERVER["DOCUMENT_ROOT"])) {
+			$_SERVER["DOCUMENT_ROOT"] = realpath($_SERVER["DOCUMENT_ROOT"]);
+		} else {
+			$_SERVER["DOCUMENT_ROOT"] = dirname(__FILE__);
+			if (defined('PATH_REALROOT_WR')) {
+				$_SERVER["DOCUMENT_ROOT"] = realpath(substr($_SERVER["DOCUMENT_ROOT"], 0, - strlen(PATH_REALROOT_WR)));
+			}
+		}
 	}
 }
 
@@ -471,7 +478,7 @@ if (!defined("PATH_PAGES_WR")) {
 	define("PATH_PAGES_WR", PATH_REALROOT_WR."/web");
 }
 if (!defined("PATH_PAGES_FS")) {
-	define("PATH_PAGES_FS", PATH_REALROOT_FS."/web");
+	define("PATH_PAGES_FS", $_SERVER["DOCUMENT_ROOT"].PATH_PAGES_WR);
 }
 
 /**
@@ -721,6 +728,9 @@ if (!defined("PATH_UPLOAD_WR")) {
 if (!defined("PATH_UPLOAD_FS")) {
 	define("PATH_UPLOAD_FS", PATH_MAIN_FS."/upload");
 }
+if (!defined("PATH_UPLOAD_VAULT_FS")) {
+	define("PATH_UPLOAD_VAULT_FS", PATH_MAIN_FS."/upload-vault");
+}
 /**
   *	Cache path (where automne files are cached)
   *	Default : PATH_MAIN_xx."/cache"
@@ -779,12 +789,22 @@ if (!defined("PATH_WINDOWS_BIN_FS")) {
 if (!defined("PATH_AUTOMNE_CHMOD_SCRIPT_FS")) {
 	define("PATH_AUTOMNE_CHMOD_SCRIPT_FS", PATH_PACKAGES_FS."/files/htaccess.txt");
 }
+if (!defined("PATH_AUTOMNE_CHMOD_SCRIPT_WR")) {
+	define("PATH_AUTOMNE_CHMOD_SCRIPT_WR", PATH_PACKAGES_WR."/files/htaccess.txt");
+}
 /**
   *	Automne mime types file
   *	Default : PATH_PACKAGES_FS."/files/mime.types"
   */
 if (!defined("PATH_AUTOMNE_MIMETYPE_FS")) {
 	define("PATH_AUTOMNE_MIMETYPE_FS", PATH_PACKAGES_FS."/files/mime.types");
+}
+/**
+  *	Automne mime types file
+  *	Default : PATH_PACKAGES_FS."/files/mime.types"
+  */
+if (!defined("PATH_AUTOMNE_WHITELIST_FS")) {
+	define("PATH_AUTOMNE_WHITELIST_FS", PATH_PACKAGES_FS."/files/whitelist.txt");
 }
 /**
   * Special profile users ID
@@ -855,10 +875,18 @@ if (!defined('APPLICATION_LDAP_USER_REGIONSTATE')) {
 
 /**
   *	Files extensions denied for upload, comma separated
-  *	Default : 'exe,php,pif,vbs,bat,com,scr,reg'
+  *	Default : 'exe,php,pif,vbs,bat,com,scr,reg,html,htm,php3,php4,php5,php6,phps,phtml,shtml,sh,py,pl,js,cgi,asp,jsp,aspx,plx,perl'
   */
 if (!defined('FILE_UPLOAD_EXTENSIONS_DENIED')) {
-	define('FILE_UPLOAD_EXTENSIONS_DENIED', 'exe,php,pif,vbs,bat,com,scr,reg');
+	define('FILE_UPLOAD_EXTENSIONS_DENIED', 'exe,php,pif,vbs,bat,com,scr,reg,html,htm,php3,php4,php5,php6,phps,phtml,shtml,xhtml,sh,py,pl,prl,js,cgi,asp,jsp,aspx,plx,perl,rb,phpt,inc,htaccess,htpasswd,cfm,cfc');
+}
+/**
+  *	Files extensions allowed for upload, comma separated
+  * This constant extend the whitelist in /automne/classes/files/whitelist.txt
+  *	Default : ''
+  */
+if (!defined('FILE_UPLOAD_EXTENSIONS_ALLOWED')) {
+	define('FILE_UPLOAD_EXTENSIONS_ALLOWED', '');
 }
 /**
   * Check remote IP mask format ?
@@ -890,17 +918,17 @@ if (!defined('SESSION_TOKEN_CHECK')) {
 }
 /**
   *	Set max session token age. Used to protect form actions from CSRF attacks
-  *	Default : 600 seconds
+  *	Default : 1800 seconds
   */
 if (!defined('SESSION_TOKEN_MAXAGE')) {
-	define('SESSION_TOKEN_MAXAGE', 600);
+	define('SESSION_TOKEN_MAXAGE', 1800);
 }
 /**
   *	Set max expired token age. Used to protect form actions from CSRF attacks
-  *	Default : 60 seconds
+  *	Default : 180 seconds
   */
 if (!defined('SESSION_EXPIRED_TOKEN_MAXAGE')) {
-	define('SESSION_EXPIRED_TOKEN_MAXAGE', 60);
+	define('SESSION_EXPIRED_TOKEN_MAXAGE', 180);
 }
 /**
   *	Enable logging (in the cms_error_log) of all generated email (not limited to sent ones)
@@ -1083,9 +1111,9 @@ require_once(PATH_PACKAGES_FS."/modules/readStandardParam.php");
 /**
   *	Automne version number
   */
-if (!defined("AUTOMNE_VERSION") && file_exists(PATH_REALROOT_FS."/VERSION")) {
-	define("AUTOMNE_VERSION", file_get_contents(PATH_REALROOT_FS."/VERSION"));
-} else if(!defined("AUTOMNE_VERSION") && !file_exists(PATH_REALROOT_FS."/VERSION")) {
+if (!defined("AUTOMNE_VERSION") && file_exists(PATH_MAIN_FS."/VERSION")) {
+	define("AUTOMNE_VERSION", file_get_contents(PATH_MAIN_FS."/VERSION"));
+} else if(!defined("AUTOMNE_VERSION") && !file_exists(PATH_MAIN_FS."/VERSION")) {
 	define("AUTOMNE_VERSION", 'Unknown');
 }
 /**

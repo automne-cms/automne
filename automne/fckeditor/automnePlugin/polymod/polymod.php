@@ -48,7 +48,7 @@ require_once(dirname(__FILE__).'/../../../../cms_rc_admin.php');
 					border: 		false,
 					xtype:			'atmPanel',
 					autoLoad:		{
-						url:		'<?php echo PATH_REALROOT_WR; ?>/automne/admin/modules/polymod/fckplugin.php',
+						url:		'<?php echo PATH_ADMIN_WR; ?>/modules/polymod/fckplugin.php',
 						params:		{
 							winId:			'FCKPolymod',
 							id:				id,

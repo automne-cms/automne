@@ -510,7 +510,9 @@ class CMS_moduleCategory extends CMS_grandFather {
 			$description = FCKeditor::createAutomneLinks($description, $this->_moduleCodename);
 			//then eval all plugin codes
 			$callbackFunc = create_function('$string', 'ob_start();eval(sensitiveIO::sanitizeExecCommand("$string[2];"));$ret = ob_get_contents();ob_end_clean();return $ret;');
-			$description = preg_replace_callback("/(<\?php|<\?)(.*?)\?>/si", $callbackFunc, $description);
+			if ($callbackFunc) {
+				$description = preg_replace_callback("/(<\?php|<\?)(.*?)\?>/si", $callbackFunc, $description);
+			}
 		}
 		return $description;
 	}

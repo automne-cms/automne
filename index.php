@@ -28,11 +28,17 @@ if (!$website) {
 	$website = CMS_websitesCatalog::getMainWebsite();
 }
 $rootPage = $website->getRoot();
-//redirect to subpage if any
-$redirectlink = $rootPage->getRedirectLink(true);
-while ($redirectlink->hasValidHREF() && sensitiveIO::IsPositiveInteger($redirectlink->getInternalLink())) {
-	$rootPage = new CMS_page($redirectlink->getInternalLink());
+if ($rootPage->getPublication() == RESOURCE_PUBLICATION_PUBLIC) {
+	//redirect to subpage if any
 	$redirectlink = $rootPage->getRedirectLink(true);
+	while ($redirectlink && $redirectlink->hasValidHREF() && sensitiveIO::IsPositiveInteger($redirectlink->getInternalLink())) {
+		$rootPage = new CMS_page($redirectlink->getInternalLink());
+		if ($rootPage->getPublication() == RESOURCE_PUBLICATION_PUBLIC) {
+			$redirectlink = $rootPage->getRedirectLink(true);
+		} else {
+			$redirectlink = '';
+		}
+	}
 }
 $pPath = $rootPage->getHTMLURL(false, false, PATH_RELATIVETO_FILESYSTEM);
 if ($pPath) {
@@ -50,6 +56,6 @@ if ($pPath) {
 	}
 }
 header('HTTP/1.x 301 Moved Permanently', true, 301);
-header('Location: '.PATH_SPECIAL_PAGE_NOT_FOUND_WR.'');
+header('Location: '.PATH_SPECIAL_PAGE_NOT_FOUND_WR);
 exit;
 ?>

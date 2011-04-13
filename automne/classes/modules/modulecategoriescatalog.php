@@ -621,14 +621,10 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	 * )
 	 * @return array(CMS_moduleCategory)
 	 */
-	static function getAll($attrs) {
+	 function getAll($attrs) {
 		$items = array();
 		if (!$attrs["module"]) {
 			CMS_grandFather::raiseError("Not a valid module codename given");
-			return $items;
-		}
-		if (!($attrs["language"] instanceof CMS_language)) {
-			CMS_grandFather::raiseError("Not a valid CMS_language");
 			return $items;
 		}
 		if (!isset($attrs["clearanceLevel"])) {
@@ -651,7 +647,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 				and module_mca='".SensitiveIO::sanitizeSQLString($attrs["module"])."'";
 		}
 		// Limit to user permissions on module categories
-		if (isset($attrs["cms_user"]) && ($attrs["cms_user"] instanceof CMS_profile)) {
+		if (isset($attrs["cms_user"]) && is_a($attrs["cms_user"], 'CMS_profile')) {
 			$a_where = CMS_moduleCategories_catalog::getViewvableCategoriesForProfile($attrs["cms_user"], $attrs["module"], true, $attrs["clearanceLevel"], $attrs['strict']);
 			//pr(array_keys($a_where));
 			if (is_array($a_where) && $a_where) {
@@ -664,25 +660,27 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 		}
 		
 		// Limit to parent and/or root categories given
-		if (isset($attrs["level"]) && $attrs["level"] !== false && (int) $attrs["level"] >- 1) {
+		if ($attrs["level"] !== false && (int) $attrs["level"] >- 1) {
 			$s_where .= "
 				and parent_mca='".SensitiveIO::sanitizeSQLString($attrs["level"])."'";
 		}
-		if (isset($attrs["root"]) && $attrs["root"] !== false && (int) $attrs["root"] >- 1) {
+		if ($attrs["root"] !== false && (int) $attrs["root"] >- 1) {
 			$s_where .= "
 				and root_mca='".SensitiveIO::sanitizeSQLString($attrs["root"])."'";
+		}
+		if (isset($attrs["language"]) && is_a($attrs["language"], 'CMS_language')) {
+			$s_table .= ',modulesCategories_i18nm ';
+			$s_where .= "and id_mca=category_mcl and language_mcl='".SensitiveIO::sanitizeSQLString($attrs["language"]->getCode())."'";
 		}
 		
 		$sql = "
 			select
 				id_mca as id
 			from
-				modulesCategories,
-				modulesCategories_i18nm
+				modulesCategories
 				$s_table
 			where
-				id_mca=category_mcl
-				and language_mcl='".SensitiveIO::sanitizeSQLString($attrs["language"]->getCode())."'
+				1 = 1
 				$s_where
 			group by
 				id_mca
@@ -795,17 +793,17 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	  * @return array(string) the statements or false if profile hasn't any access to any categories
 	  * @static
 	  */
-	static function getAllCategoriesAsArray(&$cms_user, $cms_module, &$cms_language, $level = 0, $root = -1, $clearanceLevel = false, $strict = false) {
-		if (!($cms_user instanceof CMS_profile) 
+	function getAllCategoriesAsArray(&$cms_user, $cms_module, $cms_language, $level = 0, $root = -1, $clearanceLevel = false, $strict = false, $crossLanguage = false) {
+		if (!is_a($cms_user, 'CMS_profile') 
 				|| !$cms_module
-				|| !($cms_language instanceof CMS_language)) {
+				|| !is_a($cms_language, 'CMS_language')) {
 			return false;
 		}
 		if ($strict === false) {
 			// Get root categories
 			$categories_search_attrs = array(
 				"module" 		=> $cms_module,
-				"language" 		=> $cms_language,
+				"language" 		=> $crossLanguage ? '' : $cms_language,
 				"level" 		=> $level,
 				"root" 			=> $root,
 				"cms_user" 		=> &$cms_user,
@@ -864,7 +862,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 							//only sub categories needed
 							$categories_search_attrs = array(
 								"module" 		=> $cms_module,
-								"language" 		=> $cms_language,
+								"language" 		=> $crossLanguage ? '' : $cms_language,
 								"level" 		=> $level,
 								"root" 			=> $root,
 								"cms_user" 		=> &$cms_user,
@@ -909,7 +907,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	  * @return array(string) the statements or false if profile hasn't any access to any categories
 	  * @static
 	  */
-	static function getSiblingCategoriesAsArray(&$category, $count, &$cms_user, $cms_module, &$cms_language, $clearanceLevel = false, $strict = false) {
+	function getSiblingCategoriesAsArray(&$category, $count, &$cms_user, $cms_module, $cms_language, $clearanceLevel = false, $strict = false) {
 		$count++;
 		$attrs = array(
 			"module" 		=> $cms_module,

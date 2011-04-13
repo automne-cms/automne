@@ -37,6 +37,7 @@ $view->setSecure();
 $objectId = sensitiveIO::request('objectId', 'sensitiveIO::isPositiveInteger');
 $codename = sensitiveIO::request('module', CMS_modulesCatalog::getAllCodenames());
 $fieldId = sensitiveIO::request('fieldId', 'sensitiveIO::isPositiveInteger');
+$query = sensitiveIO::request('query');
 
 $objectsDatas = array();
 $objectsDatas['objects'] = array();
@@ -75,10 +76,11 @@ $objectFields = CMS_poly_object_catalog::getFieldsDefinition($object->getID());
 if ($objectFields[$fieldId]) {
 	$objectType = $objectFields[$fieldId]->getTypeObject();
 	if (method_exists($objectType, 'getListOfNamesForObject')) {
-		$objectsNames = $objectType->getListOfNamesForObject();
+		$conditions = $query ? array('keywords' => $query) : array();
+		$objectsNames = $objectType->getListOfNamesForObject(false, $conditions);
 		$objectsDatas['objects'][] = array(
 			'id'			=> '',
-			'label'			=> '--',
+			'label'			=> ' ',
 		);
 		foreach($objectsNames as $id => $label) {
 			$objectsDatas['objects'][] = array(

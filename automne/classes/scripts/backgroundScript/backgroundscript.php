@@ -69,7 +69,14 @@ class backgroundScript extends CMS_grandFather
 					}
 				}
 			} else {
-				@system("del ".$this->_processManager->getTempPath().'/'.SCRIPT_CODENAME . "*.* /Q /F");
+				$files = glob(realpath($this->_processManager->getTempPath()).'/'.SCRIPT_CODENAME.'*.*', GLOB_NOSORT);
+				if (is_array($files)) {
+					foreach($files as $file) {
+						if (!CMS_file::deleteFile($file)) {
+							$this->raiseError("Can't delete file ".$file);
+						}
+					}
+				}
 			}
 		}
 		//write script process PID File
