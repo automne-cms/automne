@@ -1,4 +1,4 @@
-V4.1.2 (in progress)
+V4.1.2 (12/04/2011)
 [BUG] : Correct bugs numbers: 1916, 1860, 1861, 1837 (see http://www.automne-cms.org/bug/)
 [REFACTOR] : Update upload file whitelist
 [REFACTOR] : Change session token max age from 600  to 1800 seconds
