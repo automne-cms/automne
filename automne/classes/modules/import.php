@@ -18,7 +18,7 @@
   * Import datas to module
   *
   * @package Automne
-  * @subpackage module
+  * @subpackage modules
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 class CMS_module_import extends CMS_grandFather

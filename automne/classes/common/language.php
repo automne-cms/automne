@@ -573,8 +573,8 @@ class CMS_language extends CMS_grandFather
 
 	/**
 	 * Create messages.
-	 * @var	string	$sCodename	Module's codename.
-	 * @var	array	$aMessages	Localised message. $sLanguageCode => $sMessage
+	 * @param	string	$sCodename	Module's codename.
+	 * @param	array	$aMessages	Localised message. $sLanguageCode => $sMessage
 	 * @return					Id of the inserted message.
 	 */
 	public function createMessage($sCodename, $aMessages) {
@@ -595,9 +595,9 @@ class CMS_language extends CMS_grandFather
 	
 	/**
 	 * Update messages.
-	 * @var	string	$sCodename	Module's codename.
-	 * @var	integer	$iId		Messages id.
-	 * @var	array	$aMessages	Localised message. $sLanguageCode => $sMessage
+	 * @param	string	$sCodename	Module's codename.
+	 * @param	integer	$iId		Messages id.
+	 * @param	array	$aMessages	Localised message. $sLanguageCode => $sMessage
 	 * @return					boolean
 	 */
 	public function updateMessage($sCodename, $iId, $aMessages) {
