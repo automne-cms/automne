@@ -53,6 +53,8 @@ if ($limitToOrderedItems) {
 $unlock = sensitiveIO::request('unlock') ? true : false;
 $delete = sensitiveIO::request('del') ? true : false;
 $undelete = sensitiveIO::request('undelete') ? true : false;
+$publish = sensitiveIO::request('publish') ? true : false;
+$unpublish = sensitiveIO::request('unpublish') ? true : false;
 
 $itemsDatas = array();
 $itemsDatas['results'] = array();
@@ -232,10 +234,34 @@ while($item = $search->getNextResult()) {
 	if ($undelete && $object->isPrimaryResource()) {
 		$item->undelete();
 	}
+	//unpublish
+	if ($unpublish && $object->isPrimaryResource()) {
+		//set item date end to yesterday
+		pr('ok unpublish');
+		$dt_end = new CMS_date();
+		$dt_end->setDebug(false);
+		$dt_end->setNow();
+		$dt_end->moveDate('-1 day');
+		$dateStart = $item->getPublicationDateStart(false);
+		if (CMS_date::compare($dateStart, $dt_end, '>')) {
+			$dateStart = $dt_end;
+		}
+		$item->setPublicationDates($dateStart, $dt_end);
+		$item->writeToPersistence();
+	}
+	//publish
+	if ($publish && $object->isPrimaryResource()) {
+		//clear page date end
+		pr('ok publish');
+		$dt_end = new CMS_date();
+		$dateStart = $item->getPublicationDateStart(false);
+		$item->setPublicationDates($dateStart, $dt_end);
+		$item->writeToPersistence();
+	}
 	
 	//Resource related informations
 	$htmlStatus = $pubRange = '';
-	$lock = $deleted = false;
+	$lock = $deleted = $published = $unpublished = false;
 	if ($object->isPrimaryResource()) {
 		$status = $item->getStatus();
 		if (is_object($status)) {
@@ -244,6 +270,11 @@ while($item = $search->getNextResult()) {
 			$lock = $item->getLock();
 			$deleted = ($item->getProposedLocation() == RESOURCE_LOCATION_DELETED);
 		}
+		$endPublication = $item->getPublicationDateEnd(false);
+		$now = new CMS_date();
+		$now->setNow();
+		$published = $item->getPublication() == RESOURCE_PUBLICATION_PUBLIC && ($endPublication->isNull() || CMS_date::compare($endPublication, $now, '>'));
+		$unpublished = $item->getPublication() != RESOURCE_PUBLICATION_NEVERVALIDATED && !$endPublication->isNull() && CMS_date::compare($endPublication, $now, '<=');
 	}
 	//Previz
 	$previz = ($object->getValue("previewURL")) ? $item->getPrevizPageURL() : '';
@@ -288,6 +319,8 @@ while($item = $search->getNextResult()) {
 		'deleted'		=> $deleted,
 		'previz'		=> $previz,
 		'edit'			=> $edit,
+		'published'		=> !$lock && !$deleted && $edit && $published,
+		'unpublished'	=> !$lock && !$deleted && $edit && $unpublished
 	);
 }
 

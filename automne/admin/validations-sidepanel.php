@@ -44,7 +44,7 @@ $validationsCount = 0;
 if ($cms_user->hasValidationClearance() && APPLICATION_ENFORCES_WORKFLOW) {
 	$modulesValidations = CMS_modulesCatalog::getAllValidations($cms_user, true);
 	//panel content
-	$content .= '<div id="validationsPanel">';
+	$content .= '<div id="validationsSidePanel">';
 	if ($modulesValidations && sizeof($modulesValidations)) {
 		foreach ($modulesValidations as $codename => $moduleValidations) {
 			//if module is not standard, echo its name, the number of validations to do and a link to its admin frontend
@@ -86,7 +86,7 @@ if ($cms_user->hasValidationClearance() && APPLICATION_ENFORCES_WORKFLOW) {
 }
 
 $jscontent = <<<END
-	var validationsPanel = Ext.getCmp('validationsPanel');
+	var validationsPanel = Ext.getCmp('validationsSidePanel');
 	validationsPanel.setTitle('{$cms_language->getJSMessage(MESSAGE_PAGE_VALIDATIONS_PENDING)} : {$validationsCount}');
 END;
 $view->addJavascript($jscontent);

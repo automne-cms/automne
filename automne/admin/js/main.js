@@ -82,7 +82,6 @@ Automne = {
 			/*,domain: 	window.location.host*/
 		});
 		Ext.state.Manager.setProvider(Automne.cookie);
-		
 		//set Global Ajax events
 		Ext.Ajax.on({'beforerequest': Automne.server.showSpinner, 'requestcomplete': Automne.server.hideSpinner, 'requestexception': Automne.server.requestException, scope: this});
 		

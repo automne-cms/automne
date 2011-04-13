@@ -11,24 +11,11 @@
 // +----------------------------------------------------------------------+
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
-//
-// $Id: page-logs.php,v 1.6 2010/03/08 16:41:19 sebastien Exp $
-
+  
 /**
-  * PHP page : Load tree window infos. Presents a portion of the pages tree. Can be used by any admin page.
-  * Used accross an Ajax request render page tree in the tree window
-  * 
-  * REQUEST parameters : 
-  * - root : DB ID of the tree root page
-  * - editable : display editable only pages (default : false)
-  * - backLink : the back link //TODOV4
-  * - pageLink : string, will be the link the pages will have. May contain a '%s' which will be replaced by the page DB ID. If not defined, no link on pages
-  * - encodedPageLink : same as pageLink but base64 encoded (default)
-  * - encodedOnClick : add javascript action on click on a page
-  * - pageProperty : string, a page property which will be displayed along the page title. 
-  * - title : the title of this page
-  * - heading : the heading text of this page
-  * - hideMenu : if true, the menu will not be shown
+  * PHP page : Load page logs datas
+  * Used accross an Ajax request.
+  * Return formated logs infos in JSON format
   *
   * @package Automne
   * @subpackage admin
@@ -60,14 +47,14 @@ $order = sensitiveIO::request('sort', '', 'datetime');
 $direction = io::strtolower(sensitiveIO::request('dir', '', 'desc'));
 
 //user can view logs only if it has rights on logs or on page edition
-if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_VIEWLOG) && $action != 'view' && !$cms_user->hasPageClearance($currentPage, CLEARANCE_PAGE_EDIT)) {
+if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_VIEWLOG) && !$cms_user->hasPageClearance($currentPage, CLEARANCE_PAGE_EDIT)) {
 	CMS_grandFather::raiseError('User has not rights to view logs ...');
 	$view->show();
 }
 
 //load page
 $cms_page = CMS_tree::getPageByID($currentPage);
-if ($cms_page->hasError()) {
+if (!$cms_page || $cms_page->hasError()) {
 	CMS_grandFather::raiseError('Selected page ('.$currentPage.') has error ...');
 	$view->show();
 }
@@ -121,7 +108,6 @@ switch ($action) {
 					emptyMsg: 			'{$cms_language->getJsMessage(MESSAGE_PAGE_NO_LOG)} ...'
 				})
 			});
-			//logPanel.add(top);
 			logPanel.add(grid);
 			//redo windows layout
 			logPanel.doLayout();

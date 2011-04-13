@@ -105,6 +105,21 @@ class CMS_website extends CMS_grandFather
 	);
 	
 	/**
+	  * Website 403 page
+	  * @var integer
+	  * @access private
+	  */
+	protected $_403;
+	
+	/**
+	  * Website 404 page
+	  * @var integer
+	  * @access private
+	  */
+	protected $_404;
+
+	
+	/**
 	  * Constructor.
 	  * initializes the website if the id is given.
 	  *
@@ -139,6 +154,8 @@ class CMS_website extends CMS_grandFather
 					$this->_altdomains = $data["altdomains_web"];
 					$this->_root = new CMS_page($data["root_web"]);
 					$this->_order = $data["order_web"];
+					$this->_403 = $data["403_web"];
+					$this->_404 = $data["404_web"];
 					//the main website has The main page (ID 1) as root
 					if ($data["root_web"] == APPLICATION_ROOT_PAGE_ID) {
 						$this->_isMain = true;
@@ -167,6 +184,8 @@ class CMS_website extends CMS_grandFather
 				$this->_altdomains = $applicationWebroot->_altdomains;
 				$this->_root = $applicationWebroot->_root;
 				$this->_order = $applicationWebroot->_order;
+				$this->_403 = $applicationWebroot->_403;
+				$this->_404 = $applicationWebroot->_404;
 				$this->_isMain = $applicationWebroot->_isMain;
 				$this->_meta = $applicationWebroot->_meta;
 			}
@@ -252,6 +271,82 @@ class CMS_website extends CMS_grandFather
 	}
 	
 	/**
+	  * Gets the 404 page
+	  *
+	  * @param boolean $returnObject Return a public CMS_page. If false, return only page Id (default : true)
+	  * @return mixed The 404 CMS_page object if any and public or false if none found
+	  * @access public
+	  */
+	function get404($returnObject = true)
+	{
+		if (!io::isPositiveInteger($this->_404)) {
+			return false;
+		}
+		if (!$returnObject) {
+			return $this->_404;
+		}
+		$page = CMS_tree::getPageById($this->_404);
+		if ($page && !$page->hasError() && $page->getPublication() == RESOURCE_PUBLICATION_PUBLIC) {
+			return $page;
+		}
+		return false;
+	}
+	
+	/**
+	  * Sets the 404 page Id for the website
+	  *
+	  * @param integer $pageId The 404 page Id to set
+	  * @return boolean true on success, false on failure.
+	  * @access public
+	  */
+	function set404($pageId)
+	{
+		if ($pageId && !io::isPositiveInteger($pageId)) {
+			return false;
+		}
+		$this->_404 = $pageId;
+		return true;
+	}
+	
+	/**
+	  * Gets the 403 page
+	  *
+	  * @param boolean $returnObject Return a public CMS_page. If false, return only page Id (default : true)
+	  * @return mixed The 403 CMS_page object if any and public or false if none found
+	  * @access public
+	  */
+	function get403($returnObject = true)
+	{
+		if (!io::isPositiveInteger($this->_403)) {
+			return false;
+		}
+		if (!$returnObject) {
+			return $this->_403;
+		}
+		$page = CMS_tree::getPageById($this->_403);
+		if ($page && !$page->hasError() && $page->getPublication() == RESOURCE_PUBLICATION_PUBLIC) {
+			return $page;
+		}
+		return false;
+	}
+	
+	/**
+	  * Sets the 403 page Id for the website
+	  *
+	  * @param integer $pageId The 403 page Id to set
+	  * @return boolean true on success, false on failure.
+	  * @access public
+	  */
+	function set403($pageId)
+	{
+		if ($pageId && !io::isPositiveInteger($pageId)) {
+			return false;
+		}
+		$this->_403 = $pageId;
+		return true;
+	}
+	
+	/**
 	  * Gets the Codename
 	  *
 	  * @return string The Codename
@@ -280,8 +375,8 @@ class CMS_website extends CMS_grandFather
 			$old_codename = $this->_codename;
 			$this->_codename = $codename;
 			
-			//now test to see if a directory already exists with that name (Because label must _not_ be moveable once set)
-			if (!$this->_isMain && is_dir($this->getPagesPath(PATH_RELATIVETO_FILESYSTEM))) {
+			//now test to see if a directory already exists with that name (Because codename must _not_ be moveable once set)
+			if (!$this->_isMain && CMS_websitesCatalog::getByCodename($this->_codename)) {
 				$this->_codename = $old_codename;
 				$this->raiseError("Codename to set has same directory for pages than a previously set one.");
 				return false;
@@ -434,14 +529,14 @@ class CMS_website extends CMS_grandFather
 				$relative = ($relativeTo == PATH_RELATIVETO_WEBROOT) ? PATH_PAGES_WR : PATH_PAGES_FS;
 				if ($this->_isMain) {
 					if (!is_dir(PATH_PAGES_FS)) {
-						if (CMS_file::makeDir(PATH_PAGES_FS)) {
+						if (!CMS_file::makeDir(PATH_PAGES_FS)) {
 							$this->raiseError('Can\'t create pages dir : '.PATH_PAGES_FS);
 						}
 					}
 					return $relative;
 				} else {
 					if (!is_dir(PATH_PAGES_FS."/".io::sanitizeAsciiString($this->_codename))) {
-						if (CMS_file::makeDir(PATH_PAGES_FS."/".io::sanitizeAsciiString($this->_codename))) {
+						if (!CMS_file::makeDir(PATH_PAGES_FS."/".io::sanitizeAsciiString($this->_codename))) {
 							$this->raiseError('Can\'t create pages dir : '.PATH_PAGES_FS.'/'.io::sanitizeAsciiString($this->_codename));
 						}
 					}
@@ -555,7 +650,9 @@ class CMS_website extends CMS_grandFather
 			robots_web='".SensitiveIO::sanitizeSQLString($this->_meta['robots'])."',
 			favicon_web='".SensitiveIO::sanitizeSQLString($this->_meta['favicon'])."',
 			metas_web='".SensitiveIO::sanitizeSQLString($this->_meta['metas'])."',
-			order_web='".SensitiveIO::sanitizeSQLString($this->_order)."'
+			order_web='".SensitiveIO::sanitizeSQLString($this->_order)."',
+			403_web='".SensitiveIO::sanitizeSQLString($this->_403)."',
+			404_web='".SensitiveIO::sanitizeSQLString($this->_404)."'
 		";
 		if ($this->_id) {
 			$sql = "

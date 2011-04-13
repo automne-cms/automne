@@ -150,7 +150,8 @@ foreach ($objectFields as $fieldID => $field) {
 				}),
 				allowBlank: 		true,
 				selectOnFocus:		true,
-				editable:			false,
+				editable:			true,
+				typeAhead:			true,
 				listeners:			{'valid':moduleObjectWindow.search}
 			},";
 		} else {

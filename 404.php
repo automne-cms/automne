@@ -42,10 +42,12 @@ if ($_SERVER['REQUEST_URI'] && $_SERVER['REQUEST_URI'] != $_SERVER['SCRIPT_NAME'
 		if (file_exists($pageURL)) {
 			$redirectTo = $page->getURL( (substr($basename,0,5) == 'print' ? true : false));
 		} else {
-			//try to get direct html file
-			$pageURL = $page->getHTMLURL( (substr($basename,0,5) == 'print' ? true : false) , false, PATH_RELATIVETO_FILESYSTEM);
-			if (file_exists($pageURL)) {
-				$redirectTo = $page->getHTMLURL( (substr($basename,0,5) == 'print' ? true : false));
+			//try to regenerate page
+			if ($page->regenerate(true)) {
+				clearstatcache ();
+				if (file_exists($pageURL)) {
+					$redirectTo = $page->getURL( (substr($basename,0,5) == 'print' ? true : false));
+				}
 			}
 		}
 	}
@@ -94,7 +96,34 @@ if (ERROR404_EMAIL_ALERT && sensitiveIO::isValidEmail(APPLICATION_MAINTAINER_EMA
 	
 	$mail->sendEmail();
 }
-//check for alternative 404 file and display it if any
+
+//try to get website by domain to serve specific 404 page
+$domain = @parse_url($_SERVER['REQUEST_URI'], PHP_URL_HOST) ? @parse_url($_SERVER['REQUEST_URI'], PHP_URL_HOST) : (@parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST']);
+if ($domain) {
+	$website = CMS_websitesCatalog::getWebsiteFromDomain($domain);
+	if ($website && !$website->hasError()) {
+		//check if website has a 404 page defined
+		$page404 = $website->get404();
+		if ($page404) {
+			$pPath = $page404->getHTMLURL(false, false, PATH_RELATIVETO_FILESYSTEM);
+			if ($pPath) {
+				if (file_exists($pPath)) {
+					$cms_page_included = true;
+					require($pPath);
+					exit;
+				} elseif ($page404->regenerate(true)) {
+					clearstatcache ();
+					if (file_exists($pPath)) {
+						$cms_page_included = true;
+						require($pPath);
+						exit;
+					}
+				}
+			}
+		}
+	}
+}
+//check for an alternative 404 file and display it if any
 if (file_exists(PATH_REALROOT_FS.'/404.html')) {
 	readfile(PATH_REALROOT_FS.'/404.html');
 	exit;

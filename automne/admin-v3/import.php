@@ -115,11 +115,12 @@ switch (io::post('action')) {
 			break;
 		}
 		if (isset($_FILES['file']['tmp_name']) && $_FILES['file']['tmp_name'] && file_exists($_FILES['file']['tmp_name'])) {
-			if (!move_uploaded_file ($_FILES['file']['tmp_name'] , PATH_TMP_FS.'/'.$_FILES['file']['name'])) {
+			$fileDatas = CMS_file::uploadFile('file', PATH_TMP_FS);
+			if ($fileDatas['error']) {
 				$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_ERROR_FILE_UPLOAD)."\n";
 				break;
 			}
-			$filename = $_FILES['file']['name'];
+			$filename = $fileDatas['filename'];
 			$archive = new CMS_gzip_file(PATH_TMP_FS.'/'.$filename);
 			if (!$archive->hasError()) {
 				$archive->set_options(array('basedir'=>PATH_TMP_FS."/", 'overwrite'=>1, 'level'=>1, 'dontUseFilePerms'=>1, 'forceWriting'=>1));

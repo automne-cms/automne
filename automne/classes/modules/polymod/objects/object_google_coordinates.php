@@ -347,6 +347,61 @@ class CMS_object_google_coordinates extends CMS_object_common
 		$labels['structure']['latitude'] = $language->getMessage(self::MESSAGE_OBJECT_COORDINATES_LATITUDE_DESCRIPTION,false ,$this->_messagesModule);
 		return $labels;
     }
+	
+	/**
+	 * return the lat and long of a point by is adress
+	 * @param object $language cms_language object
+	 * @param string $address
+	 * @param string ccTld country top level domain to wich restrain the geocoding
+	 * @return array of coordonate
+	 * @access protected
+	 */
+	public static function getCoordinates (&$language,  $address = '' , $ccTld = false ){
+		$lat = $long = '';
+		//for the moment the adress is mandatory but we'll set it optionnal in the future
+		if(!$address){
+			CMS_grandFather::raiseError('Address is required for geocoding');
+			return false;
+		}
+		
+		$sGoogleApiUrl = sprintf('http://maps.google.com/maps/api/geocode/json?address=%s&sensor=false&language=%s',
+						 urlencode($address),
+						 $language->getCode()
+					);
+		if( $sCcTld ){						 
+			$sGoogleApiUrl .= '&region='.$sCcTld;
+		}
+		//creating a call context to limit call duration
+		$oContext = stream_context_create(array(
+			'http' => array(
+			  'method'  => 'GET',
+			  'timeout' => 4 //we wait 4second for the service to answer
+			)
+		));
+		
+		$sTmpData = file_get_contents($sGoogleApiUrl,false,$oContext);
+		
+		if( $sTmpData === false) {
+			//error trying reading the file
+			CMS_grandFather::raiseError('Unable to read distant file at address '.$sGoogleApiUrl);
+		}else{
+			//if we can decode the answer
+			if ( ($oAnswer = json_decode($sTmpData)) ){
+				
+				if( $oAnswer->status != 'OK' ){
+					CMS_grandFather::raiseError('Error while requesting google maps api '.$sGoogleApiUrl);
+				}
+				
+				//we use the first result
+				$oPoint = array_shift($oAnswer->results);
+				unset($oAnswer);
+				
+				$lat =  isset( $oPoint->geometry->location->lat ) ? $oPoint->geometry->location->lat : '';
+				$long = isset( $oPoint->geometry->location->lng ) ? $oPoint->geometry->location->lng : '';
+			}
+		}
+		return  ( array( 'lat' => $lat , 'long' => $long ) );
+	}
 }
 
 ?>

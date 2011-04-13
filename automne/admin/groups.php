@@ -111,7 +111,9 @@ $jscontent = <<<END
 	});
 	
 	var sm = new Ext.grid.RowSelectionModel({singleSelect:true});
-	var groupWindows = [];
+	if (fatherWindow.groupWindows == undefined) {
+		fatherWindow.groupWindows = [];
+	}
 	//results grid
 	var grid = new Ext.grid.GridPanel({
 		id:					'groupsResultsGrid',
@@ -136,12 +138,13 @@ $jscontent = <<<END
 			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_MODIFY)}',
 			handler:	function(button) {
 				if (sm.getSelected().id) {
+					var fatherWindow = Ext.getCmp('{$fatherId}');
 					var groupId = sm.getSelected().id;
-					if (groupWindows[groupId]) {
-						Ext.WindowMgr.bringToFront(groupWindows[groupId]);
+					if (fatherWindow.groupWindows[groupId]) {
+						Ext.WindowMgr.bringToFront(fatherWindow.groupWindows[groupId]);
 					} else {
 						//create window element
-						groupWindows[groupId] = new Automne.Window({
+						fatherWindow.groupWindows[groupId] = new Automne.Window({
 							id:				'groupWindow'+groupId,
 							modal:			false,
 							father:			fatherWindow,
@@ -155,19 +158,19 @@ $jscontent = <<<END
 								scope:			this
 							},
 							listeners:{'close':function(window){
-								delete groupWindows[window.id.substr(11)];
+								delete fatherWindow.groupWindows[window.id.substr(11)];
 								//refresh search list
-								if (groupsWindow && groupsWindow.launchSearch) {
-									groupsWindow.launchSearch();
+								if (fatherWindow.groupsWindow && fatherWindow.groupsWindow.launchSearch) {
+									fatherWindow.groupsWindow.launchSearch();
 								}
 							}}
 						});
 						//display window
-						groupWindows[groupId].show(button.getEl());
+						fatherWindow.groupWindows[groupId].show(button.getEl());
 					}
 				}
 			},
-			scope:		groupsWindow,
+			scope:		fatherWindow.groupsWindow,
 			disabled:	true
 		}),new Ext.Button({
 			id:			'deleteGroup',

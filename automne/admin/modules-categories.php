@@ -67,7 +67,7 @@ if (!$cms_user->hasModuleClearance($codename, CLEARANCE_MODULE_EDIT)) {
 	$view->show();
 }
 
-$moduleLabel = sensitiveIO::sanitizeJSString($module->getLabel($cms_language));
+$moduleLabel = sensitiveIO::sanitizeJSString(io::htmlspecialchars($module->getLabel($cms_language)));
 
 $jscontent = <<<END
 	var moduleCategoriesWindow = Ext.getCmp('{$winId}');

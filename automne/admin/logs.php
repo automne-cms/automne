@@ -342,8 +342,8 @@ $jscontent = <<<END
 					store:				modulesStore,
 					allowBlank: 		true,
 					selectOnFocus:		true,
-					editable:			false,
-					typeAhead:			false,
+					editable:			true,
+					typeAhead:			true,
 					listeners:			{
 						'valid':function(field){
 							logWindow.launchSearch();
@@ -384,8 +384,8 @@ $jscontent = <<<END
 					store:				usersStore,
 					allowBlank: 		true,
 					selectOnFocus:		true,
-					editable:			false,
-					typeAhead:			false,
+					editable:			true,
+					typeAhead:			true,
 					listeners:			{'valid':logWindow.launchSearch}
 		        },{
 					xtype:				'combo',

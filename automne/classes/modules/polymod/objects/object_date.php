@@ -42,7 +42,8 @@ class CMS_object_date extends CMS_object_common
 	const MESSAGE_OBJECT_DATE_OPERATOR_DESCRIPTION = 380;
 	const MESSAGE_OBJECT_DATE_OPERATOR_TITLE = 390;
 	const MESSAGE_OBJECT_DATE_HOURS = 515;
-	const MESSAGE_OBJECT_TEXT_HASVALUE_DESCRIPTION = 411;
+	const MESSAGE_OBJECT_DATE_HASVALUE_DESCRIPTION = 411;
+	const MESSAGE_OBJECT_DATE_TIMESTAMP_DESCRIPTION = 605;
 	
 	/**
 	  * Standard Messages
@@ -420,6 +421,7 @@ class CMS_object_date extends CMS_object_common
 		$structure = parent::getStructure();
 		$structure['formatedValue'] = '';
 		$structure['notNull'] = '';
+		$structure['timestamp'] = '';
 		return $structure;
 	}
 	
@@ -498,6 +500,11 @@ class CMS_object_date extends CMS_object_common
 				$date->setFromDBValue($this->_subfieldValues[0]->getValue());
 				return !$date->isNull();
 			break;
+			case 'timestamp':
+				$date = new CMS_date();
+				$date->setFromDBValue($this->_subfieldValues[0]->getValue());
+				return $date->getTimestamp();
+			break;
 			default:
 				return parent::getValue($name, $parameters);
 			break;
@@ -513,7 +520,8 @@ class CMS_object_date extends CMS_object_common
 	function getLabelsStructure(&$language, $objectName) {
 		$labels = parent::getLabelsStructure($language, $objectName);
 		$labels['structure']['formatedValue|format'] = $language->getMessage(self::MESSAGE_OBJECT_DATE_FORMATEDVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
-		$labels['structure']['notNull'] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_HASVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['structure']['notNull'] = $language->getMessage(self::MESSAGE_OBJECT_DATE_HASVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['structure']['timestamp'] = $language->getMessage(self::MESSAGE_OBJECT_DATE_TIMESTAMP_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['operator'][$language->getMessage(self::MESSAGE_OBJECT_DATE_OPERATOR_TITLE,false ,MOD_POLYMOD_CODENAME)] = $language->getMessage(self::MESSAGE_OBJECT_DATE_OPERATOR_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		return $labels;
 	}

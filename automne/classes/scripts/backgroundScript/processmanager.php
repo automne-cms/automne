@@ -343,9 +343,7 @@ class processManager
 	  * @access public
 	  */
 	function getAppCode() {
-		$sanitized = strtr(APPLICATION_LABEL, " אגהיטכךןמצפשüû", "_aaaeeeeiioouuu");
-		$sanitized = preg_replace("#[^[a-zA-Z0-9_.-]]*#", "", $sanitized);
-		return $sanitized;
+		return io::sanitizeAsciiString(APPLICATION_LABEL);
 	}
 }
 ?>

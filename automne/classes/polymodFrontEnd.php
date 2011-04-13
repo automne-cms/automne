@@ -29,5 +29,5 @@ if (file_exists(PATH_PACKAGES_FS.'/aseFrontEnd.php')) {
 	require_once(PATH_PACKAGES_FS.'/aseFrontEnd.php');
 }
 //set public search status
-$public_search = (isset($_GET["atm-previz"]) && $_GET["atm-previz"] == 'previz' && isset($_SERVER["HTTP_REFERER"]) && io::strpos($_SERVER["HTTP_REFERER"], "automne/admin") !== false) ? false : true;
+$public_search = (isset($_GET["atm-previz"]) && $_GET["atm-previz"] == 'previz' && isset($_SERVER["HTTP_REFERER"]) && io::strpos($_SERVER["HTTP_REFERER"], PATH_ADMIN_WR) !== false) ? false : true;
 ?>

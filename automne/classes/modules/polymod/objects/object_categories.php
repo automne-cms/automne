@@ -282,7 +282,8 @@ class CMS_object_categories extends CMS_object_common
 			$return['triggerAction'] 	= 'all';
 			$return['allowBlank']		= true;
 			$return['selectOnFocus']	= true;
-			$return['editable']			= false;
+			$return['editable']			= true;
+			$return['typeAhead']		= true;
 			$return['value']			= $selectedValue;
 			$return['store'] 			= array(
 				'url'			=> PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/list-categories.php',
@@ -573,7 +574,7 @@ class CMS_object_categories extends CMS_object_common
 	  * @return array(string) the statements or false if profile hasn't any access to any categories
 	  * @access public
 	  */
-	function getAllCategoriesAsArray($language = false, $restrictToUsedCat = false, $module = false, $clearanceLevel = false, $categoriesRoot = false, $strict = false, $usedByItemsIds = false) {
+	function getAllCategoriesAsArray($language = false, $restrictToUsedCat = false, $module = false, $clearanceLevel = false, $categoriesRoot = false, $strict = false, $usedByItemsIds = false, $crossLanguage = false) {
 		global $cms_user;
 		$params = $this->getParamsValues();
 		$categoriesRoot = ($categoriesRoot) ? $categoriesRoot : $params['rootCategory'];
@@ -588,10 +589,10 @@ class CMS_object_categories extends CMS_object_common
 		if(/*($params['bypassRights'] && $clearanceLevel === false) || */!is_object($cms_user)) {
 			//TODO : ugly but missing time (need to redo the getAllCategoriesAsArray to accept no valid cms_user : append only in frontend without APPLICATION_ENFORCES_ACCESS_CONTROL. Medias module already doing something like this)
 			$user = new CMS_profile_user(1);
-			$categories = CMS_moduleCategories_catalog::getAllCategoriesAsArray($user, $module, $language, $categoriesRoot, -1, $clearanceLevel, $strict);
+			$categories = CMS_moduleCategories_catalog::getAllCategoriesAsArray($user, $module, $language, $categoriesRoot, -1, $clearanceLevel, $strict, $crossLanguage);
 		} else {
 			$user = $cms_user;
-			$categories = CMS_moduleCategories_catalog::getAllCategoriesAsArray($user, $module, $language, $categoriesRoot, -1, $clearanceLevel, $strict);
+			$categories = CMS_moduleCategories_catalog::getAllCategoriesAsArray($user, $module, $language, $categoriesRoot, -1, $clearanceLevel, $strict, $crossLanguage);
 		}
 		if ($restrictToUsedCat) {
 			
@@ -1321,6 +1322,7 @@ class CMS_object_categories extends CMS_object_common
 	  *		usedbyitemsids : display only categories used by items list. Accept array of items ids or list of ids (comma separated). Used only if 'usedcategories' is active (optional, default : false)
 	  * 	editableonly : display only editable categories (optional, default : false)
 	  * 	root : the category id to use as root (optional)
+	  * 	crosslanguage : returned categories do not filter by language and return all categories even if current language has no label (default : false)
 	  * @param multidimentionnal array $tags : xml2Array content of atm-function tag (nothing for this one)
 	  * @return string : options tag list
 	  * @access public
@@ -1345,13 +1347,17 @@ class CMS_object_categories extends CMS_object_common
 		} else {
 			$editableOnly = true;
 		}
-		
+		if (!isset($values['crosslanguage']) || $values['crosslanguage'] == 'false' || $values['crosslanguage'] == '0') {
+			$crossLanguage = false;
+		} else {
+			$crossLanguage = true;
+		}
 		if (isset($values['root']) && sensitiveIO::isPositiveInteger($values['root'])) {
 			$rootCategory = $values['root'];
 		} else {
 			$rootCategory = false;
 		}
-		$categories = $this->getAllCategoriesAsArray($cms_language, $usedCategories, false, $editableOnly, $rootCategory, false, $usedByItemsIds);
+		$categories = $this->getAllCategoriesAsArray($cms_language, $usedCategories, false, $editableOnly, $rootCategory, false, $usedByItemsIds, $crossLanguage);
 		$return = "";
 		if (is_array($categories) && $categories) {
 			//natsort objects by name case insensitive
@@ -1501,7 +1507,10 @@ class CMS_object_categories extends CMS_object_common
 				";
 		} else {
 			if ($operator == 'strict') {
-				//get category searched
+				if (!is_array($value)) {
+					$value = array($value);
+				}
+				//get categories searched
 				$sql = "
 					select
 						distinct objectID
@@ -1510,11 +1519,15 @@ class CMS_object_categories extends CMS_object_common
 						modulesCategories
 					where
 						objectFieldID = '".$fieldID."'
-						and value = '".$value."'
+						and id_mca = value
+						and value in (".implode(',',$value).")
 						$where
 					";
 			} elseif ($operator == 'not in strict') {
-				//get category searched
+				if (!is_array($value)) {
+					$value = array($value);
+				}
+				//get categories searched
 				$sql = "
 					select
 						distinct objectID
@@ -1523,7 +1536,8 @@ class CMS_object_categories extends CMS_object_common
 						modulesCategories
 					where
 						objectFieldID = '".$fieldID."'
-						and value != '".$value."'
+						and id_mca = value
+						and value not in (".implode(',',$value).")
 						$where
 					";
 			} else {

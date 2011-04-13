@@ -40,8 +40,8 @@ class CMS_poly_definition_functions
 	  */
 	static function pages($values, $tags) {
 		if (!sensitiveIO::isPositiveInteger($values['maxpages'])) {
-			CMS_grandFather::raiseError("Maxpages value parameter must be a positive integer : ".$values['maxpages']);
-			return false;
+			//no pages to display so return
+			return '';
 		}
 		$xml2Array = new CMS_xml2Array();
 		$pagesPattern = $xml2Array->getXMLInTag($tags, 'pages');

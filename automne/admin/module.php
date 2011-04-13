@@ -59,7 +59,7 @@ if (!$cms_user->hasModuleClearance($codename, CLEARANCE_MODULE_EDIT)) {
 if ($options) {
 	$options = json_decode($options, true);
 }
-$moduleLabel = sensitiveIO::sanitizeJSString($module->getLabel($cms_language));
+$moduleLabel = sensitiveIO::sanitizeJSString(io::htmlspecialchars($module->getLabel($cms_language)));
 //create item for each objects
 $objectsInfos = $module->getObjectsInfos($cms_user);
 $items = '';

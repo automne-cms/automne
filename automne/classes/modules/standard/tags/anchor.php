@@ -36,16 +36,42 @@ class CMS_XMLTag_anchor extends CMS_XMLTag {
 	  * @access private
 	  */
 	protected function _compute() {
-		$href = $this->_attributes['href'];
+		if (!isset($this->_attributes['href'])) {
+			return '';
+		}
+		$anchor = $this->replaceVars($this->_attributes['href']);
 		$attributes = '';
 		foreach ($this->_attributes as $attribute => $value) {
 			if ($attribute != 'href') {
 				$attributes .= ' '.$attribute.'=\"'.$this->replaceVars($value).'\"';
 			}
 		}
-		return '$content .= "<'.$this->_name.' href=\"".(pathinfo($_SERVER[\'SCRIPT_NAME\'], PATHINFO_BASENAME) != \'index.php\' ? $_SERVER[\'SCRIPT_NAME\'] : (pathinfo($_SERVER[\'SCRIPT_NAME\'], PATHINFO_DIRNAME) . (pathinfo($_SERVER[\'SCRIPT_NAME\'], PATHINFO_DIRNAME) == \'/\' ? \'\' : \'/\'))).($_SERVER["QUERY_STRING"] ? \'?\'.io::htmlspecialchars($_SERVER["QUERY_STRING"]) : \'\')."'.$href.'\"'.$attributes.'>";
+		return '$content .= CMS_XMLTag_anchor::anchorStart(\''.$this->_name.'\', "'.$anchor.'", "'.$attributes.'");
 			'.$this->_computeChilds().'
-			$content .= "</'.$this->_name.'>";';
+			$content .= CMS_XMLTag_anchor::anchorEnd(\''.$this->_name.'\');';
+	}
+	
+	/**
+	  * Output the anchor start tag
+	  *
+	  * @return string the HTML content
+	  * @access private
+	  */
+	function anchorStart($tagName, $anchor, $attributes) {
+		if (strpos($_SERVER['SCRIPT_NAME'], PATH_ADMIN_WR) !== false) {
+			return '<'.$tagName.' href="'.$anchor.'"'.$attributes.'>';
+		}
+		return '<'.$tagName.' href="'.(pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME) != 'index.php' ? $_SERVER['SCRIPT_NAME'] : (pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME) . (pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME) == '/' ? '' : '/'))).($_SERVER["QUERY_STRING"] ? '?'.io::htmlspecialchars($_SERVER["QUERY_STRING"]) : '').$anchor.'"'.$attributes.'>';
+	}
+	
+	/**
+	  * Output the anchor end tag
+	  *
+	  * @return string the HTML content
+	  * @access private
+	  */
+	function anchorEnd($tagName) {
+		return '</'.$tagName.'>';
 	}
 }
 ?>

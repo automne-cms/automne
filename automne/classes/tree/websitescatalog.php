@@ -304,7 +304,7 @@ class CMS_websitesCatalog extends CMS_grandFather {
 	  * @access public
 	  */
 	static function setOrders($websitesIDsOrdered) {
-		$count = 0;
+		$count = 1;
 		foreach ($websitesIDsOrdered as $websiteID) {
 			if (!sensitiveIO::isPositiveInteger($websiteID)) {
 				CMS_grandFather::raiseError('Website id must be a positive integer : '.$websiteID);

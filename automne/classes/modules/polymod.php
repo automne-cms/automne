@@ -267,8 +267,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 							}
 							$tagContent =
 							'<span id="polymod-'.$selectedPluginID.'-'.$selectedItem.'" class="polymod">'."\n".
-							'<?php require_once(PATH_REALROOT_FS.\'/automne/classes/polymodFrontEnd.php\');'."\n".
-							'echo CMS_poly_definition_functions::pluginCode(\''.$selectedPluginID.'\', \''.$selectedItem.'\', '.var_export($selectedText,true).', true); ?>'."\n".
+							'<?php echo CMS_poly_definition_functions::pluginCode(\''.$selectedPluginID.'\', \''.$selectedItem.'\', '.var_export($selectedText,true).', true); ?>'."\n".
 							$commentSelectedText.'</span>';
 						}
 						return $tagContent;
@@ -802,12 +801,12 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return array of replacements values (pattern to replace => replacement)
 	  * @access public
 	  */
-	function getModuleReplacements($parameterVarName) {
+	function getModuleReplacements() {
 		$replace = array();
 		//replace {plugin:selection} values
-		$replace["#^\{plugin:selection\}$#U"]								= '$'.$parameterVarName.'[\'selection\']';
+		$replace["#^\{plugin:selection\}$#U"]								= '$parameters[\'selection\']';
 		//replace 'fieldID' value by corresponding fieldID
-		$replace["#^\{.*\[([n0-9]+)\]\['fieldID'\]\}$#U"] 					= '\1';
+		$replace["#^\{.*\[([n0-9]+)\]\['fieldID'\]\}$#U"] 					= '(\1)';
 		//create the real object path to vars
 		$replace["#\['fields'\]\[([n0-9]+)\]\}?#"] 							= '->objectValues(\1)';
 		$replace["#\['values'\]\[([n0-9]+)\]\['([a-zA-Z]+)'\]\}$#U"]		= '->getValue(\'\1\',\'\2\')';

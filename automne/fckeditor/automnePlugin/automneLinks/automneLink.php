@@ -73,7 +73,7 @@ define("MESSAGE_PAGE_TREE_TITLE", 935);
 					border: 		false,
 					xtype:			'atmPanel',
 					autoLoad:		{
-						url:		'<?php echo PATH_REALROOT_WR; ?>/automne/admin/tree.php',
+						url:		'<?php echo PATH_ADMIN_WR; ?>/tree.php',
 						params:		{
 							winId:			'FCKPagesTree',
 							editable:		false,

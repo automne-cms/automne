@@ -548,8 +548,10 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 		}
 		//sort tables by template labels
 		$sortfunc = create_function('$a,$b', 'return strnatcasecmp($a->getLabel(), $b->getLabel());');
-		if ($matchTpl) usort($matchTpl, $sortfunc);
-		if ($notMatchTpl) usort($notMatchTpl, $sortfunc);
+		if ($sortfunc) {
+			if ($matchTpl) usort($matchTpl, $sortfunc);
+			if ($notMatchTpl) usort($notMatchTpl, $sortfunc);
+		}
 		//then return array of templates
 		return array('match' => $matchTpl, 'nomatch' => $notMatchTpl);
 	}

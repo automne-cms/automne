@@ -150,6 +150,26 @@ class CMS_XMLTag extends CMS_grandFather
 	}
 	
 	/**
+	  * Get all the tag children
+	  *
+	  * @return array(string=>string) the tag children
+	  * @access public
+	  */
+	function getChildren() {
+		return $this->_children;
+	}
+	
+	/**
+	  * Get all the tag parameters
+	  *
+	  * @return array(string=>string) the tag parameters
+	  * @access public
+	  */
+	function getParameters() {
+		return $this->_parameters;
+	}
+	
+	/**
 	  * Get the value of an attribute.
 	  *
 	  * @param string $attribute The attribute we want (its the key of the associative array)
@@ -290,6 +310,9 @@ class CMS_XMLTag extends CMS_grandFather
 					$linxArgs['class'] = isset($this->_attributes["class"]) ? $this->_attributes["class"] : false;
 					if (isset($this->_attributes["node"]) && io::isPositiveInteger($this->_attributes["node"])) {
 						$linxArgs['node'] = $this->_attributes["node"];
+					}
+					if (isset($this->_attributes["codename"]) && $this->_attributes["codename"]) {
+						$linxArgs['codename'] = $this->_attributes["codename"];
 					}
 					return new CMS_linx($this->_attributes["type"], $this->getContent(), $args["page"], $args["publicTree"], $linxArgs);
 				} else {
@@ -531,7 +554,7 @@ class CMS_XMLTag extends CMS_grandFather
 				$replacements = array();
 				$modules = CMS_modulesCatalog::getAll("id");
 				foreach ($modules as $codename => $aModule) {
-					$moduleReplacements = $aModule->getModuleReplacements('parameters');
+					$moduleReplacements = $aModule->getModuleReplacements();
 					if (is_array($moduleReplacements) && $moduleReplacements) {
 						foreach ($moduleReplacements as $pattern => $replacement) {
 							$replacements[$pattern] = $replacement;

@@ -1000,18 +1000,14 @@ class CMS_object_file extends CMS_object_common
 				if (io::strlen($filename) > 255) {
 					$filename = sensitiveIO::ellipsis($filename, 255, '-', true);
 				}
-				if (!move_uploaded_file($_FILES[$prefixName.$this->_field->getID().'_1']["tmp_name"], $path."/".$filename)) {
+				//move uploaded file
+				$fileDatas = CMS_file::uploadFile($prefixName.$this->_field->getID().'_1', PATH_TMP_FS);
+				if ($fileDatas['error']) {
 					return false;
 				}
-				//chmod it
-				@chmod($path."/".$filename, octdec(FILES_CHMOD));
-				//check uploaded file
-				$tmp = new CMS_file($path."/".$filename);
-				if (!$tmp->checkUploadedFile()) {
-					$tmp->delete();
+				if (!CMS_file::moveTo(PATH_TMP_FS.'/'.$fileDatas['filename'], $path."/".$filename)) {
 					return false;
 				}
-				unset($tmp);
 				if ($params['thumbMaxWidth'] > 0 || $params['thumbMaxHeight'] > 0) {
 					$oImage = new CMS_image($path."/".$filename);
 					//get current file size
@@ -1171,18 +1167,15 @@ class CMS_object_file extends CMS_object_common
 				if (io::strlen($filename) > 255) {
 					$filename = sensitiveIO::ellipsis($filename, 255, '-', true);
 				}
-				if (!move_uploaded_file($_FILES[$prefixName.$this->_field->getID().'_4']["tmp_name"], $path."/".$filename)) {
+				
+				//move uploaded file
+				$fileDatas = CMS_file::uploadFile($prefixName.$this->_field->getID().'_4', PATH_TMP_FS);
+				if ($fileDatas['error']) {
 					return false;
 				}
-				//chmod it
-				@chmod($path."/".$filename, octdec(FILES_CHMOD));
-				//check uploaded file
-				$tmp = new CMS_file($path."/".$filename);
-				if (!$tmp->checkUploadedFile()) {
-					$tmp->delete();
+				if (!CMS_file::moveTo(PATH_TMP_FS.'/'.$fileDatas['filename'], $path."/".$filename)) {
 					return false;
 				}
-				unset($tmp);
 				//set it
 				if (!$this->_subfieldValues[4]->setValue($filename)) {
 					return false;

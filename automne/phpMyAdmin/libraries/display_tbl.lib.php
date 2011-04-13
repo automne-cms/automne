@@ -1343,6 +1343,12 @@ function PMA_displayTableBody(&$dt_result, &$is_display, $map, $analyzed_sql) {
                         $vertical_display['data'][$row_no][$i] = '    <td' . $mouse_events . ' class="' . $class . ($condition_field ? ' condition' : '') . '">&nbsp;</td>' . "\n";
                     }
                 }
+            // g e o m e t r y
+            } elseif ($meta->type == 'geometry') {
+                $geometry_text = PMA_handle_non_printable_contents('GEOMETRY', (isset($row[$i]) ? $row[$i] : ''), $transform_function, $transform_options, $default_function, $meta);
+                $vertical_display['data'][$row_no][$i]      = '    <td align="left"' . $mouse_events . ' class="' . $class . ($condition_field ? ' condition' : '') . '">' . $geometry_text . '</td>';
+                unset($geometry_text);
+
             // n o t   n u m e r i c   a n d   n o t   B L O B 
             } else {
                 if (!isset($row[$i]) || is_null($row[$i])) {
@@ -1361,13 +1367,14 @@ function PMA_displayTableBody(&$dt_result, &$is_display, $map, $analyzed_sql) {
                     $field_flags = PMA_DBI_field_flags($dt_result, $i);
                     if (isset($meta->_type) && $meta->_type === MYSQLI_TYPE_BIT) {
                         $row[$i]     = PMA_printable_bit_value($row[$i], $meta->length);
-                    } elseif (stristr($field_flags, 'BINARY') && $meta->type == 'string') {
-                        if ($_SESSION['tmp_user_values']['display_binary'] || (isset($GLOBALS['is_analyse']) && $GLOBALS['is_analyse'])) {
+                        // some results of PROCEDURE ANALYSE() are reported as
+                        // being BINARY but they are quite readable,
+                        // so don't treat them as BINARY
+                    } elseif (stristr($field_flags, 'BINARY') && $meta->type == 'string' && !(isset($GLOBALS['is_analyse']) && $GLOBALS['is_analyse'])) {
+                        if ($_SESSION['tmp_user_values']['display_binary']) {
                             // user asked to see the real contents of BINARY
-                            // fields, or we detected a PROCEDURE ANALYSE in
-                            // the query (results are reported as being
-                            // binary strings)
-                            if ($_SESSION['tmp_user_values']['display_binary_as_hex']) {
+                            // fields
+                            if ($_SESSION['tmp_user_values']['display_binary_as_hex'] && PMA_contains_nonprintable_ascii($row[$i])) {
                             	$row[$i] = bin2hex($row[$i]);
 							}
 							else {
@@ -1670,7 +1677,11 @@ function PMA_displayTable_checkConfigParams()
         $_SESSION['tmp_user_values']['query'][$sql_key]['repeat_cells'] = $GLOBALS['cfg']['RepeatCells'];
     }
 
-    if (PMA_isValid($_REQUEST['session_max_rows'], 'numeric') || $_REQUEST['session_max_rows'] == 'all') {
+    // as this is a form value, the type is always string so we cannot
+    // use PMA_isValid($_REQUEST['session_max_rows'], 'integer')
+    if ((PMA_isValid($_REQUEST['session_max_rows'], 'numeric') 
+        && (int) $_REQUEST['session_max_rows'] == $_REQUEST['session_max_rows']) 
+        || $_REQUEST['session_max_rows'] == 'all') {
         $_SESSION['tmp_user_values']['query'][$sql_key]['max_rows'] = $_REQUEST['session_max_rows'];
         unset($_REQUEST['session_max_rows']);
     } elseif (empty($_SESSION['tmp_user_values']['query'][$sql_key]['max_rows'])) {
@@ -1877,7 +1888,12 @@ function PMA_displayTable(&$dt_result, &$the_disp_mode, $analyzed_sql)
     // 1.4 Prepares display of first and last value of the sorted column
 
     if (! empty($sort_expression_nodirection)) {
-        list($sort_table, $sort_column) = explode('.', $sort_expression_nodirection);
+        if (strpos($sort_expression_nodirection, '.') === false) {
+            $sort_table = $table;
+            $sort_column = $sort_expression_nodirection;
+        } else {
+            list($sort_table, $sort_column) = explode('.', $sort_expression_nodirection);
+        }
         $sort_table = PMA_unQuote($sort_table);
         $sort_column = PMA_unQuote($sort_column);
         // find the sorted column index in row result
@@ -2236,7 +2252,7 @@ function PMA_displayResultsOperations($the_disp_mode, $analyzed_sql) {
  * @uses    PMA_formatByteDown()
  * @uses    strpos()
  * @uses    str_replace()
- * @param   string  $category BLOB|BINARY
+ * @param   string  $category BLOB|BINARY|GEOMETRY
  * @param   string  $content  the binary content
  * @param   string  $transform_function
  * @param   string  $transform_options

@@ -86,17 +86,76 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) { /
 	$view->show();
 }
 
+//Return an array of all phpinfo values
+function phpinfo_array($return=false){
+	ob_start();
+	phpinfo(-1);
+	
+	$pi = preg_replace(
+	array('#^.*<body>(.*)</body>.*$#ms', '#<h2>PHP License</h2>.*$#ms',
+	'#<h1>Configuration</h1>#',  "#\r?\n#", "#</(h1|h2|h3|tr)>#", '# +<#',
+	"#[ \t]+#", '#&nbsp;#', '#  +#', '# class=".*?"#', '%&#039;%',
+	'#<tr>(?:.*?)" src="(?:.*?)=(.*?)" alt="PHP Logo" /></a>'
+	.'<h1>PHP Version (.*?)</h1>(?:\n+?)</td></tr>#',
+	'#<h1><a href="(?:.*?)\?=(.*?)">PHP Credits</a></h1>#',
+	'#<tr>(?:.*?)" src="(?:.*?)=(.*?)"(?:.*?)Zend Engine (.*?),(?:.*?)</tr>#',
+	"# +#", '#<tr>#', '#</tr>#'),
+	array('$1', '', '', '', '</$1>' . "\n", '<', ' ', ' ', ' ', '', ' ',
+	'<h2>PHP Configuration</h2>'."\n".'<tr><td>PHP Version</td><td>$2</td></tr>'.
+	"\n".'<tr><td>PHP Egg</td><td>$1</td></tr>',
+	'<tr><td>PHP Credits Egg</td><td>$1</td></tr>',
+	'<tr><td>Zend Engine</td><td>$2</td></tr>' . "\n" .
+	'<tr><td>Zend Egg</td><td>$1</td></tr>', ' ', '%S%', '%E%'),
+	ob_get_clean());
+	
+	$sections = explode('<h2>', strip_tags($pi, '<h2><th><td>'));
+	unset($sections[0]);
+	
+	$pi = array();
+	foreach($sections as $section){
+		$n = substr($section, 0, strpos($section, '</h2>'));
+		preg_match_all(
+		'#%S%(?:<td>(.*?)</td>)?(?:<td>(.*?)</td>)?(?:<td>(.*?)</td>)?%E%#',
+		$section, $askapache, PREG_SET_ORDER);
+		foreach($askapache as $m)
+			$pi[$n][$m[1]]=(!isset($m[3])||@$m[2]==$m[3]) ? @$m[2] : array_slice($m,2);
+	}
+	
+	return ($return === false) ? print_r($pi) : $pi;
+}
+
 //Test all PHP requirements
 
 //Test PHP version
 $content = '
 <h1>'.$cms_language->getMessage(MESSAGE_PAGE_AUTOMNE_PARAMS_TESTS).'</h1>
 <ul class="atm-server">';
+//htaccess files
+$htaccessURL = PATH_AUTOMNE_CHMOD_SCRIPT_WR;
+$content .= '
+<li class="atm-pic-ok x-hidden" id="htaccess-ok">Support for .htaccess files OK</li>
+<li class="atm-pic-cancel x-hidden" id="htaccess-nok">Error, .htaccess files are not supported : YOUR INSTALLATION IS NOT SECURE ! Do not use this configuration on a public server.</li>
+';
+//PHP
 if (version_compare(PHP_VERSION, "5.2.0") === -1) {
 	$content .= '<li class="atm-pic-cancel">Error, PHP version ('.PHP_VERSION.') not match</li>';
 } else {
 	$content .= '<li class="atm-pic-ok">PHP version OK ('.PHP_VERSION.')</li>';
 }
+
+//XML
+$pi = phpinfo_array(true);
+if (!isset($pi['xml'])) {
+	$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, XML extension not installed</li>';
+} else {
+	if (isset($pi['xml']['EXPAT Version'])) {
+		$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, XML extension installed with Expat library.</li>';
+	} else {
+		//isset($pi['xml']['libxml2 Version'])
+		$content .= '<li class="atm-pic-ok">XML extension OK</li>';
+	}
+}
+
 //GD
 if (!function_exists('imagecreatefromgif') || !function_exists('imagecreatefromjpeg') || !function_exists('imagecreatefrompng')) {
 	$content .= '<li class="atm-pic-cancel">Error, GD extension not installed</li>';
@@ -156,7 +215,7 @@ $randomFile = PATH_REALROOT_FS.'/test_'.md5(mt_rand().microtime()).'.tmp';
 if (!is_writable(PATH_REALROOT_FS)) {
 	$content .= '<li class="atm-pic-cancel">Error, No permissions to write files on website root directory ('.PATH_REALROOT_FS.')</li>';
 } else {
-	$content .= '<li class="atm-pic-ok">Website root filesystem permissions are OK</li>';
+	$content .= '<li class="atm-pic-ok">File system write permissions are OK</li>';
 }
 //Email
 if (!@mail("root@localhost", "Automne SMTP Test", "Automne SMTP Test")) {
@@ -171,8 +230,11 @@ if (ini_get('memory_limit') && ini_get('memory_limit') < 32) {
 } else {
 	$content .= '<li class="atm-pic-ok">Memory limit OK</li>';
 }
+
 //CLI
-if (io::strtolower(io::substr(PHP_OS, 0, 3)) === 'win') {
+$cliOk = false;
+$cliPath = '';
+if (APPLICATION_IS_WINDOWS) {
 	if (defined('PATH_PHP_CLI_WINDOWS') && PATH_PHP_CLI_WINDOWS && is_file(PATH_PHP_CLI_WINDOWS)) {
 		//test CLI version
 		$return = CMS_patch::executeCommand('"'.PATH_PHP_CLI_WINDOWS.'" -v',$error);
@@ -189,6 +251,8 @@ if (io::strtolower(io::substr(PHP_OS, 0, 3)) === 'win') {
 			if (version_compare($cliversion, "5.2.0") === -1) {
 				$content .= '<li class="atm-pic-cancel">Error, PHP CLI version ('.$cliversion.') not match</li>';
 			} else {
+				$cliOk = true;
+				$cliPath = PATH_PHP_CLI_WINDOWS;
 				$content .= '<li class="atm-pic-ok">PHP CLI version OK ('.$cliversion.')</li>';
 			}
 		}
@@ -206,6 +270,8 @@ if (io::strtolower(io::substr(PHP_OS, 0, 3)) === 'win') {
 			$content .= '<li class="atm-pic-cancel">Error, passthru() and exec() commands not available</li>';
 		} elseif (io::substr($return,0,1) != '/') {
 			$content .= '<li class="atm-pic-cancel">Error when finding php CLI with command "which php"</li>';
+		} else {
+			$cliPath = $return;
 		}
 		//test CLI version
 		$return = CMS_patch::executeCommand('php -v',$error);
@@ -218,6 +284,7 @@ if (io::strtolower(io::substr(PHP_OS, 0, 3)) === 'win') {
 		if ($return === false) {
 			$content .= '<li class="atm-pic-cancel">Error, passthru() and exec() commands not available</li>';
 		}
+		$cliPath = PATH_PHP_CLI_UNIX;
 	}
 	if (io::strpos(io::strtolower($return), '(cli)') === false) {
 		$content .= '<li class="atm-pic-cancel">Error, installed php is not the CLI version : '.$return."\n";
@@ -226,11 +293,11 @@ if (io::strtolower(io::substr(PHP_OS, 0, 3)) === 'win') {
 		if (version_compare($cliversion, "5.2.0") === -1) {
 			$content .= '<li class="atm-pic-cancel">Error, PHP CLI version ('.$cliversion.') not match</li>';
 		} else {
+			$cliOk = true;
 			$content .= '<li class="atm-pic-ok">PHP CLI version OK ('.$cliversion.')</li>';
 		}
 	}
 }
-
 //Conf PHP
 //try to change some misconfigurations
 @ini_set('magic_quotes_gpc', 0);
@@ -256,6 +323,49 @@ if (ini_get('safe_mode') && strtolower(ini_get('safe_mode')) != 'off') {
 	$content .= '<li class="atm-pic-cancel">Error, PHP safe_mode is active</li>';
 }
 $content .='</ul>';
+
+//Test CLI configuration
+if ($cliOk) {
+	$content .= '<br />
+	<fieldset style="padding:5px;">
+		<legend>Test CLI configuration</legend>
+		<ul class="atm-server">';
+	//Test CLI PDO
+	$return = CMS_patch::executeCommand('"'.$cliPath.'" -r "echo class_exists(\'PDO\');"',$error);
+	if ($error || $return != '1') {
+		$content .= '<li class="atm-pic-cancel">Error, PDO extension not installed</li>';
+	} else {
+		$return = CMS_patch::executeCommand('"'.$cliPath.'" -r "echo in_array(\'mysql\', PDO::getAvailableDrivers());"',$error);
+		if ($error || $return != '1') {
+			$content .= '<li class="atm-pic-cancel">Error, PDO MySQL driver not installed</li>';
+		} elseif ($return == 1) {
+			 $content .= '<li class="atm-pic-ok">PDO MySQL driver OK</li>';
+		}
+	}
+	//MBSTRING
+	$return = CMS_patch::executeCommand('"'.$cliPath.'" -r "echo (function_exists(\'mb_substr\') && function_exists(\'mb_convert_encoding\'));"',$error);
+	if ($error || $return != '1') {
+		$content .= '<li class="atm-pic-cancel">Error, Multibyte String (mbsring) extension not installed (only needed if UTF-8 encoding is used)</li>';
+	} else {
+		$content .= '<li class="atm-pic-ok">Multibyte String (mbsring) extension OK</li>';
+	}
+	//GD
+	$return = CMS_patch::executeCommand('"'.$cliPath.'" -r "echo (function_exists(\'imagecreatefromgif\') && function_exists(\'imagecreatefromjpeg\') && function_exists(\'imagecreatefrompng\'));"',$error);
+	if ($error || $return != '1') {
+		$content .= '<li class="atm-pic-cancel">Error, GD extension not installed</li>';
+	} else {
+		$content .= '<li class="atm-pic-ok">GD extension OK</li>';
+	}
+	$content .='
+		</ul>';
+	//Ini file infos
+	$return = CMS_patch::executeCommand('"'.$cliPath.'" --ini',$error);
+	if (!$error && $return) {
+		$content .= '<code>'.str_replace("\n", '<br />', $return).'</code>';
+	}
+	$content .= '
+	</fieldset>';
+}
 
 $content = sensitiveIO::sanitizeJSString($content);
 
@@ -729,7 +839,21 @@ $jscontent = <<<END
 			autoScroll:			true,
 			border:				false,
 			bodyStyle: 			'padding:5px',
-			html: 				'$content'
+			html: 				'$content',
+			listeners:			{'afterrender':function(){
+				//check for htaccess support
+				Automne.server.call({
+					url:				'{$htaccessURL}',
+					isUpload:			true,
+					success: 			function(response, options, content) {
+						Ext.get('htaccess-nok').removeClass('x-hidden');
+					},
+					failure:			function(response, options, content) {
+						Ext.get('htaccess-ok').removeClass('x-hidden');
+					},
+					callBackScope:		this
+				});
+			}, scope:this}
 		},{
 			id:					'serverFiles',
 			title:				'{$cms_language->getJsMessage(MESSAGE_PAGE_FILE_ACCESS)}',

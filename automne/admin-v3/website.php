@@ -56,6 +56,9 @@ define("MESSAGE_PAGE_FIELD_SUB_DOMAINS", 1603);
 define("MESSAGE_PAGE_FIELD_SUB_DOMAINS_DESC", 1604);
 define("MESSAGE_PAGE_CODENAMES", 1683);
 define("MESSAGE_PAGE_FIELD_CODENAME", 1675);
+define("MESSAGE_PAGE_TREEH1", 1049);
+define("MESSAGE_PAGE_FIELD_403_PAGE", 1719);
+define("MESSAGE_PAGE_FIELD_404_PAGE", 1718);
 
 //RIGHTS CHECK
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES)) {
@@ -110,6 +113,8 @@ case "validate":
 		}
 		//set meta values
 		$website->setLabel($_POST["label"]);
+		$website->set404($_POST["page404"]);
+		$website->set403($_POST["page403"]);
 		$website->setMeta('description', $_POST['description']);
 		$website->setMeta('keywords', $_POST['keywords']);
 		$website->setMeta('category', $_POST['category']);
@@ -184,12 +189,35 @@ if ($website_root->getID() != $grand_root->getID()) {
 		<input type="Button" onClick="location.replace(\''.$tree_href.'&'.session_name().'='.session_id().'\');" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_BUTTON_CHANGE).'" />
 	';
 }
+
+//build tree link
+$grand_root = CMS_tree::getRoot();
+$href404 = PATH_ADMIN_SPECIAL_TREE_WR;
+$href404 .= '?root='.$grand_root->getID();
+$href404 .= '&amp;heading='.$cms_language->getMessage(MESSAGE_PAGE_TREEH1);
+$href404 .= '&amp;encodedOnClick='.base64_encode("window.opener.document.getElementById('page404').value = '%s';self.close();");
+$href404 .= '&encodedPageLink='.base64_encode('false');
+
+$href403 = PATH_ADMIN_SPECIAL_TREE_WR;
+$href403 .= '?root='.$grand_root->getID();
+$href403 .= '&amp;heading='.$cms_language->getMessage(MESSAGE_PAGE_TREEH1);
+$href403 .= '&amp;encodedOnClick='.base64_encode("window.opener.document.getElementById('page403').value = '%s';self.close();");
+$href403 .= '&encodedPageLink='.base64_encode('false');
+
 $content .= '
 		</td>
 	</tr>
 	<tr>
 		<td class="admin" align="right">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_SUB_DOMAINS).'</td>
 		<td class="admin"><input type="text" size="30" class="admin_input_text" name="altdomains" value="'.htmlspecialchars(implode(';', $website->getAltDomains())).'" /><br /><small>'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_SUB_DOMAINS_DESC).'</small></td>
+	</tr>
+	<tr>
+		<td class="admin" align="right">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_404_PAGE).'</td>
+		<td class="admin"><input type="text" size="30" class="admin_input_text" name="page404" id="page404" value="'.htmlspecialchars($website->get404(false)).'" /> <a href="'.$href404.'" class="admin" target="_blank"><img src="'.PATH_ADMIN_IMAGES_WR. '/picto-arbo.gif" border="0" /></a></td>
+	</tr>
+	<tr>
+		<td class="admin" align="right">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_403_PAGE).'</td>
+		<td class="admin"><input type="text" size="30" class="admin_input_text" name="page403" id="page403" value="'.htmlspecialchars($website->get403(false)).'" /> <a href="'.$href403.'" class="admin" target="_blank"><img src="'.PATH_ADMIN_IMAGES_WR. '/picto-arbo.gif" border="0" /></a></td>
 	</tr>
 </table>
 <fieldset class="admin">

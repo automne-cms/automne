@@ -110,9 +110,8 @@ function PMA_DBI_connect($user, $password, $is_controluser = false, $server = nu
     
     if (!$server) {
       $return_value = @mysqli_real_connect($link, $GLOBALS['cfg']['Server']['host'], $user, $password, false, $server_port, $server_socket, $client_flags);
-
       // Retry with empty password if we're allowed to
-      if ($return_value == false && isset($cfg['Server']['nopassword']) && $cfg['Server']['nopassword'] && !$is_controluser) {
+      if ($return_value == false && isset($GLOBALS['cfg']['Server']['nopassword']) && $GLOBALS['cfg']['Server']['nopassword'] && !$is_controluser) {
 	  $return_value = @mysqli_real_connect($link, $GLOBALS['cfg']['Server']['host'], $user, '', false, $server_port, $server_socket, $client_flags);
       }
     } else {
@@ -176,9 +175,10 @@ function PMA_DBI_select_db($dbname, $link = null)
  * @param   string          $query      query to execute
  * @param   object mysqli   $link       mysqli object
  * @param   integer         $options
+ * @param   boolean         $cache_affected_rows
  * @return  mixed           true, false or result object
  */
-function PMA_DBI_try_query($query, $link = null, $options = 0)
+function PMA_DBI_try_query($query, $link = null, $options = 0, $cache_affected_rows = true)
 {
     if ($options == ($options | PMA_DBI_QUERY_STORE)) {
         $method = MYSQLI_STORE_RESULT;
@@ -200,6 +200,11 @@ function PMA_DBI_try_query($query, $link = null, $options = 0)
         $time = microtime(true);
     }
     $r = mysqli_query($link, $query, $method);
+
+    if ($cache_affected_rows) { 
+       $GLOBALS['cached_affected_rows'] = PMA_DBI_affected_rows($link, $get_from_cache = false); 
+    }
+
     if ($GLOBALS['cfg']['DBG']['sql']) {
         $time = microtime(true) - $time;
 
@@ -380,6 +385,11 @@ function PMA_DBI_getError($link = null)
 {
     $GLOBALS['errno'] = 0;
 
+    /* Treat false same as null because of controllink */
+    if ($link === false) {
+        $link = null;
+    }
+
     if (null === $link && isset($GLOBALS['userlink'])) {
         $link =& $GLOBALS['userlink'];
         // Do not stop now. We still can get the error code
@@ -405,6 +415,8 @@ function PMA_DBI_getError($link = null)
     if (! empty($error_message)) {
         $error_message = PMA_DBI_convert_message($error_message);
     }
+
+    $error_message = htmlspecialchars($error_message);
 
     if ($error_number == 2002) {
         $error = '#' . ((string) $error_number) . ' - ' . $GLOBALS['strServerNotResponding'] . ' ' . $GLOBALS['strSocketProblem'];
@@ -445,7 +457,13 @@ function PMA_DBI_insert_id($link = '')
             return false;
         }
     }
-    return mysqli_insert_id($link);
+    // When no controluser is defined, using mysqli_insert_id($link) 
+    // does not always return the last insert id due to a mixup with
+    // the tracking mechanism, but this works: 
+    return PMA_DBI_fetch_value('SELECT LAST_INSERT_ID();', 0, 0, $link);
+    // Curiously, this problem does not happen with the mysql extension but
+    // there is another problem with BIGINT primary keys so PMA_DBI_insert_id()
+    // in the mysql extension also uses this logic.
 }
 
 /**
@@ -454,9 +472,10 @@ function PMA_DBI_insert_id($link = '')
  * @uses    $GLOBALS['userlink']
  * @uses    mysqli_affected_rows()
  * @param   object mysqli   $link   the mysqli object
+ * @param   boolean         $get_from_cache 
  * @return  string integer
  */
-function PMA_DBI_affected_rows($link = null)
+function PMA_DBI_affected_rows($link = null, $get_from_cache = true)
 {
     if (empty($link)) {
         if (isset($GLOBALS['userlink'])) {
@@ -465,7 +484,11 @@ function PMA_DBI_affected_rows($link = null)
             return false;
         }
     }
-    return mysqli_affected_rows($link);
+    if ($get_from_cache) {
+        return $GLOBALS['cached_affected_rows'];
+    } else {
+        return mysqli_affected_rows($link);
+    }
 }
 
 /**
@@ -523,7 +546,7 @@ function PMA_DBI_get_fields_meta($result)
     // so this would override TINYINT and mark all TINYINT as string
     // https://sf.net/tracker/?func=detail&aid=1532111&group_id=23067&atid=377408
     //$typeAr[MYSQLI_TYPE_CHAR]        = 'string';
-    $typeAr[MYSQLI_TYPE_GEOMETRY]    = 'unknown';
+    $typeAr[MYSQLI_TYPE_GEOMETRY]    = 'geometry';
     $typeAr[MYSQLI_TYPE_BIT]         = 'bit';
 
     $fields = mysqli_fetch_fields($result);

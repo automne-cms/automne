@@ -620,7 +620,7 @@ class CMS_dialog extends CMS_JSDialog
 	{
 		$copyright = "\n<!-- \n"
 		."+----------------------------------------------------------------------+\n"
-		."| Automne (TM)  www.automne-cms.org v".AUTOMNE_VERSION."                           |\n"
+		."| Automne (TM)  www.automne-cms.org                                    |\n"
 		."| Copyright (c) 2000-".date('Y')." WS Interactive www.ws-interactive.fr         |\n"
 		."+----------------------------------------------------------------------+\n"
 		."-->\n";
@@ -682,7 +682,7 @@ class CMS_dialog extends CMS_JSDialog
 				$this->_showBody();
 				if ($this->_displayMode != "loading") {
 					/*only for stats*/
-					if (STATS_DEBUG && $_SERVER["SCRIPT_NAME"] != PATH_REALROOT_WR."/automne/admin/stat.php") {
+					if (STATS_DEBUG && $_SERVER["SCRIPT_NAME"] != PATH_ADMIN_WR.'/stat.php') {
 						view_stat();
 					}
 				}
@@ -884,7 +884,7 @@ class CMS_dialog extends CMS_JSDialog
 								}
 								echo '<br />'.$this->_showMessage();
 								$replace = array(
-									PATH_REALROOT_WR.'/automne/admin/' => '',
+									PATH_ADMIN_WR => '',
 									'modules/' => '',
 									'/' => '_',
 									'.php' => ''

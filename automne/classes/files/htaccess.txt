@@ -12,6 +12,7 @@ htaccess	/automne/playermp3	yes
 htaccess	/automne/swfobject	yes
 htaccess	/automne/swfupload	yes
 htaccess	/automne/upload	yes
+htaccess	/automne/upload-vault	no
 htaccess	/automne/templates/images	yes
 htaccess	/automne/templates/rows/images	yes
 htaccess	/files/*/deleted	no

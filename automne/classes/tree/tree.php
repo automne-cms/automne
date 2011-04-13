@@ -548,7 +548,11 @@ class CMS_tree extends CMS_grandFather
 				sibling_ltr='".io::sanitizeSQLString($pageId)."'
 		";
 		$q = new CMS_query($sql);
-		return ($q->getNumRows());
+		if ($q->getNumRows()) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	/**

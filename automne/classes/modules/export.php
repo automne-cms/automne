@@ -18,7 +18,7 @@
   * Export datas from modules
   *
   * @package Automne
-  * @subpackage module
+  * @subpackage modules
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 class CMS_module_export extends CMS_grandFather

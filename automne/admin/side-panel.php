@@ -64,6 +64,8 @@ define("MESSAGE_PAGE_NO_BOOKMARK", 645);
 define("MESSAGE_PAGE_SCRIPTS", 646);
 define("MESSAGE_PAGE_MODULES_MANAGEMENT", 647);
 define("MESSAGE_PAGE_DATABASE", 648);
+define("MESSAGE_PAGE_TPL_HELP", 1468);
+define("MESSAGE_PAGE_ROW_HELP", 727);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -124,7 +126,7 @@ if ($cms_user->hasValidationClearance() && APPLICATION_ENFORCES_WORKFLOW) {
 	$contentEl .= '</div>';
 	//panel
 	$validationsPanel = "{
-		id:					'validationsPanel',
+		id:					'validationsSidePanel',
 		frame:				true,
 		xtype:				'atmPanel',
 		title: 				'{$cms_language->getMessage(MESSAGE_PAGE_VALIDATIONS_PENDING)} : {$validationsCount}',
@@ -193,7 +195,7 @@ if (isset($modules[MOD_STANDARD_CODENAME]) && $cms_user->hasModuleClearance(MOD_
 	</div>';
 	//panel
 	$modulesPanels .= "{
-		id:					'module{$module->getCodename()}Panel',
+		id:					'module{$module->getCodename()}SidePanel',
 		frame:				true,
 		title: 				'".$cms_language->getMessage(MESSAGE_PAGE_PAGE_MANAGEMENT)."',
 		collapsible:		true,
@@ -289,7 +291,7 @@ foreach ($modules as $module) {
 			</div>';
 			//panel
 			$modulesPanels .= "{
-				id:					'module{$module->getCodename()}Panel',
+				id:					'module{$module->getCodename()}SidePanel',
 				frame:				true,
 				title: 				'{$modLabel}',
 				collapsible:		true,
@@ -345,7 +347,7 @@ $contentEl .= '
 </div>';
 //panel
 $usersPanel = "{
-	id:					'usersPanel',
+	id:					'usersSidePanel',
 	frame:				true,
 	title: 				'".$cms_language->getMessage(MESSAGE_PAGE_USERS_MANAGEMENT)."',
 	collapsible:		true,
@@ -363,10 +365,10 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES) || $cms_use
 	<div id="templatesDivPanel">
 		<ul>';
 	if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //templates
-		$contentEl .= '<li><div class="atm-templates atm-sidepic"></div><a atm:action="templates" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_PAGE_TEMPLATES).'</a></li>';
+		$contentEl .= '<li><div class="atm-templates atm-sidepic"></div><div id="template-help-button" class="atm-sidepic-help" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_TPL_HELP).'"></div><a atm:action="templates" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_PAGE_TEMPLATES).'</a></li>';
 	}
 	if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES)) { //rows
-		$contentEl .= '<li><div class="atm-rows atm-sidepic"></div><a atm:action="rows" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_ROWS_TEMPLATES).'</a></li>';
+		$contentEl .= '<li><div class="atm-rows atm-sidepic"></div><div id="row-help-button" class="atm-sidepic-help" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_ROW_HELP).'"></div><a atm:action="rows" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_ROWS_TEMPLATES).'</a></li>';
 	}
 	if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //templates
 		$contentEl .= '<li><div class="atm-styles atm-sidepic"></div><a atm:action="styles" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_STYLESHEETS).'</a></li>
@@ -378,7 +380,7 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES) || $cms_use
 	</div>';
 	//panel
 	$templatesPanel = "{
-		id:					'templatesPanel',
+		id:					'templatesSidePanel',
 		frame:				true,
 		title: 				'".$cms_language->getMessage(MESSAGE_PAGE_TEMPLATES)."',
 		collapsible:		true,
@@ -416,7 +418,7 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) || $c
 	</div>';
 	//panel
 	$adminPanel = "{
-		id:					'adminPanel',
+		id:					'adminSidePanel',
 		frame:				true,
 		title: 				'".$cms_language->getMessage(MESSAGE_PAGE_ADMIN)."',
 		collapsible:		true,
@@ -579,7 +581,7 @@ $jscontent = <<<END
 			}, 800, 600);
 			win.on('close', function() {
 				//try to refresh validation panel
-				var validationPanel = Ext.getCmp('validationsPanel');
+				var validationPanel = Ext.getCmp('validationsSidePanel');
 				if (validationPanel) validationPanel.refresh();
 			});
     	},
@@ -658,17 +660,17 @@ $jscontent = <<<END
 		'styles' : function(t){
     		openWindow(t, 'templates.php', {
 				type:		'css'
-			}, 750, 580);
+			}, 750, 580, true);
     	},
 		'javascripts' : function(t){
     		openWindow(t, 'templates.php', {
 				type:		'js'
-			}, 750, 580);
+			}, 750, 580, true);
     	},
 		'wysiwyg-toolbar' : function(t){
 			openWindow(t, 'templates.php', {
 				type:		'wysiwyg-toolbar'
-			}, 750, 580);
+			}, 750, 580, true);
     	},
 		'modules' : function(t){
     		var window = new Automne.frameWindow({
@@ -710,6 +712,60 @@ $jscontent = <<<END
 			}, 750, 580, true);
     	}
     };
+	
+	//help windows
+	var tplHelp = Ext.get('template-help-button');
+	if (tplHelp) {
+		tplHelp.on('click', function(el) {
+			var windowId = 'templateHelpWindow';
+			if (Ext.WindowMgr.get(windowId)) {
+				Ext.WindowMgr.bringToFront(windowId);
+			} else {
+				//create window element
+				var win = new Automne.Window({
+					id:				windowId,
+					modal:			false,
+					popupable:		true,
+					autoLoad:		{
+						url:			'template-help.php',
+						params:			{
+							winId:			windowId
+						},
+						nocache:		true,
+						scope:			this
+					}
+				});
+				//display window
+				win.show(el);
+			}
+		});
+	}
+	var rowHelp = Ext.get('row-help-button');
+	if (rowHelp) {
+		rowHelp.on('click', function(el) {
+			var windowId = 'rowHelpWindow';
+			if (Ext.WindowMgr.get(windowId)) {
+				Ext.WindowMgr.bringToFront(windowId);
+			} else {
+				//create window element
+				var win = new Automne.Window({
+					id:				windowId,
+					modal:			false,
+					popupable:		true,
+					autoLoad:		{
+						url:			'row-help.php',
+						params:			{
+							winId:			windowId
+						},
+						nocache:		true,
+						scope:			this
+					}
+				});
+				//display window
+				win.show(el);
+			}
+		});
+	}
 END;
 $view->addJavascript($jscontent);
 

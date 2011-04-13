@@ -33,7 +33,33 @@ require_once(dirname(__FILE__).'/cms_rc_frontend.php');
 //send 403 error code
 header('HTTP/1.x 403 Forbidden', true, 403);
 
-//check for alternative 403 file and display it if any
+//try to get website by domain to serve specific 403 page
+$domain = @parse_url($_SERVER['REQUEST_URI'], PHP_URL_HOST) ? @parse_url($_SERVER['REQUEST_URI'], PHP_URL_HOST) : (@parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST']);
+if ($domain) {
+	$website = CMS_websitesCatalog::getWebsiteFromDomain($domain);
+	if ($website && !$website->hasError()) {
+		//check if website has a 403 page defined
+		$page403 = $website->get403();
+		if ($page403) {
+			$pPath = $page403->getHTMLURL(false, false, PATH_RELATIVETO_FILESYSTEM);
+			if ($pPath) {
+				if (file_exists($pPath)) {
+					$cms_page_included = true;
+					require($pPath);
+					exit;
+				} elseif ($page403->regenerate(true)) {
+					clearstatcache ();
+					if (file_exists($pPath)) {
+						$cms_page_included = true;
+						require($pPath);
+						exit;
+					}
+				}
+			}
+		}
+	}
+}
+//check for an alternative 403 file and display it if any
 if (file_exists(PATH_REALROOT_FS.'/403.html')) {
 	readfile(PATH_REALROOT_FS.'/403.html');
 	exit;
