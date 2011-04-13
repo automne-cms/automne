@@ -714,52 +714,58 @@ $jscontent = <<<END
     };
 	
 	//help windows
-	Ext.get('template-help-button').on('click', function(el) {
-		var windowId = 'templateHelpWindow';
-		if (Ext.WindowMgr.get(windowId)) {
-			Ext.WindowMgr.bringToFront(windowId);
-		} else {
-			//create window element
-			var win = new Automne.Window({
-				id:				windowId,
-				modal:			false,
-				popupable:		true,
-				autoLoad:		{
-					url:			'template-help.php',
-					params:			{
-						winId:			windowId
-					},
-					nocache:		true,
-					scope:			this
-				}
-			});
-			//display window
-			win.show(el);
-		}
-	});
-	Ext.get('row-help-button').on('click', function(el) {
-		var windowId = 'rowHelpWindow';
-		if (Ext.WindowMgr.get(windowId)) {
-			Ext.WindowMgr.bringToFront(windowId);
-		} else {
-			//create window element
-			var win = new Automne.Window({
-				id:				windowId,
-				modal:			false,
-				popupable:		true,
-				autoLoad:		{
-					url:			'row-help.php',
-					params:			{
-						winId:			windowId
-					},
-					nocache:		true,
-					scope:			this
-				}
-			});
-			//display window
-			win.show(el);
-		}
-	});
+	var tplHelp = Ext.get('template-help-button');
+	if (tplHelp) {
+		tplHelp.on('click', function(el) {
+			var windowId = 'templateHelpWindow';
+			if (Ext.WindowMgr.get(windowId)) {
+				Ext.WindowMgr.bringToFront(windowId);
+			} else {
+				//create window element
+				var win = new Automne.Window({
+					id:				windowId,
+					modal:			false,
+					popupable:		true,
+					autoLoad:		{
+						url:			'template-help.php',
+						params:			{
+							winId:			windowId
+						},
+						nocache:		true,
+						scope:			this
+					}
+				});
+				//display window
+				win.show(el);
+			}
+		});
+	}
+	var rowHelp = Ext.get('row-help-button');
+	if (rowHelp) {
+		rowHelp.on('click', function(el) {
+			var windowId = 'rowHelpWindow';
+			if (Ext.WindowMgr.get(windowId)) {
+				Ext.WindowMgr.bringToFront(windowId);
+			} else {
+				//create window element
+				var win = new Automne.Window({
+					id:				windowId,
+					modal:			false,
+					popupable:		true,
+					autoLoad:		{
+						url:			'row-help.php',
+						params:			{
+							winId:			windowId
+						},
+						nocache:		true,
+						scope:			this
+					}
+				});
+				//display window
+				win.show(el);
+			}
+		});
+	}
 END;
 $view->addJavascript($jscontent);
 

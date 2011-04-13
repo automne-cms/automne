@@ -27,6 +27,12 @@
 class CMS_poly_object_definition extends CMS_grandFather
 {
 	/**
+	  * Standard Messages
+	  */
+	const MESSAGE_FIELD_YES = 1082;
+	const MESSAGE_FIELD_NO = 1083;
+	
+	/**
 	  * Polymod Messages
 	  */
 	const MESSAGE_OBJECT_PARAMETER_LOADSUBOBJECTS = 197;
@@ -349,8 +355,8 @@ class CMS_poly_object_definition extends CMS_grandFather
 				case 'boolean':
 					$yes = ($paramValue) ? ' selected="selected"':'';
 					$input = '<select name="'.$prefixName.$parameter['internalName'].'" class="admin_input_text">
-						<option value="0">'.$language->getMessage(MESSAGE_FIELD_NO).'</option>
-						<option value="1"'.$yes.'>'.$language->getMessage(MESSAGE_FIELD_YES).'</option>
+						<option value="0">'.$language->getMessage(self::MESSAGE_FIELD_NO).'</option>
+						<option value="1"'.$yes.'>'.$language->getMessage(self::MESSAGE_FIELD_YES).'</option>
 					</select>';
 				break;
 				case 'integer':

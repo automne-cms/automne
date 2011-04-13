@@ -182,7 +182,7 @@ $minimumPasswordLength = MINIMUM_PASSWORD_LENGTH;
 //get records / pages
 $recordsPerPage = $_SESSION["cms_context"]->getRecordsPerPage();
 
-$groupsTab = $modulesTab = $adminTab = '';
+$groupsTab = $modulesTab = $adminTab = $logsTab = '';
 
 //OTHERS TABS
 if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {

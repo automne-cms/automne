@@ -701,9 +701,9 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			}
 			$uniqueID = CMS_XMLTag::getUniqueID();
 			$return .= '
-			if (isset($blockAttributes[\'search\'][\''.$tag['attributes']['search'].'\'][\''.$type.'\'])) {
+			if (isset($blockAttributes[\'search\'][\''.$tag['attributes']['search'].'\']['.$type.'])) {
 				$values_'.$uniqueID.' = '.CMS_polymod_definition_parsing::preReplaceVars(var_export($tag['attributes'],true),true).';
-				$values_'.$uniqueID.'[\'value\'] = $blockAttributes[\'search\'][\''.$tag['attributes']['search'].'\'][\''.$type.'\'];
+				$values_'.$uniqueID.'[\'value\'] = $blockAttributes[\'search\'][\''.$tag['attributes']['search'].'\']['.$type.'];
 				if ($values_'.$uniqueID.'[\'type\'] == \'publication date after\' || $values_'.$uniqueID.'[\'type\'] == \'publication date before\') {
 					//convert DB format to current language format
 					$dt = new CMS_date();
@@ -777,10 +777,10 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		//if direction value came from block parameters
 		if ($tag['attributes']['direction'] == 'block') {
 			if ($this->_mode == self::BLOCK_PARAM_MODE) {
-				$this->_blockParams['search'][ $tag['attributes']['search'] ][ 'order' ][ $type ] = true;
+				$this->_blockParams['search'][ $tag['attributes']['search'] ][ 'order' ][CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['type'], false, false, false)] = true;
 			}
 			//replace tag direction value by corresponding block parameter value
-			$tag['attributes']['direction'] = '".@$blockAttributes[\'search\'][\''.$tag['attributes']['search'].'\'][\'order\'][\''.$type.'\']."';
+			$tag['attributes']['direction'] = '".@$blockAttributes[\'search\'][\''.$tag['attributes']['search'].'\'][\'order\']["'.$type.'"]."';
 		}
 		//if direction came from a var content
 		elseif (io::substr($tag['attributes']['direction'],0,1) == '{' && io::substr($tag['attributes']['direction'],-1,1) == '}') {
