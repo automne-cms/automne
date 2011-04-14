@@ -160,8 +160,8 @@ $jscontent = <<<END
 							listeners:{'close':function(window){
 								delete fatherWindow.groupWindows[window.id.substr(11)];
 								//refresh search list
-								if (fatherWindow.groupsWindow && fatherWindow.groupsWindow.launchSearch) {
-									fatherWindow.groupsWindow.launchSearch();
+								if (groupsWindow && groupsWindow.launchSearch) {
+									groupsWindow.launchSearch();
 								}
 							}}
 						});
@@ -170,7 +170,7 @@ $jscontent = <<<END
 					}
 				}
 			},
-			scope:		fatherWindow.groupsWindow,
+			scope:		groupsWindow,
 			disabled:	true
 		}),new Ext.Button({
 			id:			'deleteGroup',
@@ -204,7 +204,7 @@ $jscontent = <<<END
 			text:		'{$cms_language->getJsMessage(MESSAGE_PAGE_CREATE_NEW_GROUP)}',
 			handler:	function(button) {
 				//create window element
-				groupWindows[0] = new Automne.Window({
+				fatherWindow.groupWindows[0] = new Automne.Window({
 					id:				'groupWindowCreate',
 					modal:			false,
 					father:			fatherWindow,
@@ -217,7 +217,7 @@ $jscontent = <<<END
 						scope:			this
 					},
 					listeners:{'close':function(window){
-						delete groupWindows[0];
+						delete fatherWindow.groupWindows[0];
 						//refresh search list
 						if (groupsWindow && groupsWindow.launchSearch) {
 							groupsWindow.launchSearch();
@@ -227,7 +227,7 @@ $jscontent = <<<END
 					}}
 				});
 				//display window
-				groupWindows[0].show(button.getEl());
+				fatherWindow.groupWindows[0].show(button.getEl());
 				//disable button to avoid creation of a second group
 				button.disable();
 			},

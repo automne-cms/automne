@@ -259,8 +259,8 @@ $jscontent = <<<END
 							listeners:{'close':function(window){
 								delete fatherWindow.userWindows[window.id.substr(10)];
 								//refresh search list
-								if (fatherWindow.usersWindow && fatherWindow.usersWindow.launchSearch) {
-									fatherWindow.usersWindow.launchSearch();
+								if (usersWindow && usersWindow.launchSearch) {
+									usersWindow.launchSearch();
 								}
 							}}
 						});
@@ -341,7 +341,7 @@ $jscontent = <<<END
 			text:		'{$cms_language->getJSMessage(MESSAGE_PAGE_CREATE_USER)}',
 			handler:	function(button) {
 				//create window element
-				userWindows[0] = new Automne.Window({
+				fatherWindow.userWindows[0] = new Automne.Window({
 					id:				'userWindowCreate',
 					modal:			false,
 					father:			fatherWindow,
@@ -354,7 +354,7 @@ $jscontent = <<<END
 						scope:			this
 					},
 					listeners:{'close':function(window){
-						delete userWindows[0];
+						delete fatherWindow.userWindows[0];
 						//refresh search list
 						if (usersWindow && usersWindow.launchSearch) {
 							usersWindow.launchSearch();
@@ -364,7 +364,7 @@ $jscontent = <<<END
 					}}
 				});
 				//display window
-				userWindows[0].show(button.getEl());
+				fatherWindow.userWindows[0].show(button.getEl());
 				//disable button to avoid creation of a second user
 				button.disable();
 			},
