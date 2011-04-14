@@ -1046,13 +1046,18 @@ class CMS_multi_poly_object extends CMS_object_common
 				return ($this->_field->getValue('required')) ? true : false;
 			break;
 			case 'ids':
-				$ids = array();
+				/*$ids = array();
 				if($this->_objectValues){
 					foreach($this->_objectValues as $polyObject){
 						$ids[$polyObject->getID()] = $polyObject->getID();
 					}
+				} else if ($this->_subfieldValues) { //in case object is not loaded
+					foreach($this->_subfieldValues as $subObject){
+						$ids[$subObject->getValue()] = $subObject->getValue();
+					}
 				}
-				return $ids;
+				return $ids;*/
+				return $this->getIDs();
 				break;
 			case 'fields':
 				return $this->_objectValues;
