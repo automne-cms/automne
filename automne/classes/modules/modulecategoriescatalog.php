@@ -660,11 +660,11 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 		}
 		
 		// Limit to parent and/or root categories given
-		if ($attrs["level"] !== false && (int) $attrs["level"] >- 1) {
+		if (isset($attrs["level"]) && $attrs["level"] !== false && (int) $attrs["level"] >- 1) {
 			$s_where .= "
 				and parent_mca='".SensitiveIO::sanitizeSQLString($attrs["level"])."'";
 		}
-		if ($attrs["root"] !== false && (int) $attrs["root"] >- 1) {
+		if (isset($attrs["root"]) && $attrs["root"] !== false && (int) $attrs["root"] >- 1) {
 			$s_where .= "
 				and root_mca='".SensitiveIO::sanitizeSQLString($attrs["root"])."'";
 		}
