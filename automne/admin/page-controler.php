@@ -308,6 +308,8 @@ switch ($action) {
 		$mod = CMS_modulesCatalog::getByCodename(MOD_STANDARD_CODENAME);
 		$mod->processValidation($validation, VALIDATION_OPTION_ACCEPT);
 		$edited = true;
+		//reload page to force update status
+		$cms_page = CMS_tree::getPageById($cms_page->getID(), true);
 		//check for basedatas edition pending
 		if ($cms_page->getStatus()->getEditions() & RESOURCE_EDITION_BASEDATA) {
 			//then validate this page basedatas content
@@ -316,7 +318,7 @@ switch ($action) {
 			$mod->processValidation($validation, VALIDATION_OPTION_ACCEPT);
 		}
 		//reload page to force update status
-		$cms_page = CMS_tree::getPageById($cms_page->getID());
+		$cms_page = CMS_tree::getPageById($cms_page->getID(), true);
 		//reload current tab
 		$jscontent = '
 		//goto previz tab

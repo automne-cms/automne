@@ -60,13 +60,13 @@ class CMS_tree extends CMS_grandFather
 	  * @return CMS_page or false on failure to find it
 	  * @access public
 	  */
-	static function getPageByID($id) {
+	static function getPageByID($id, $reset = false) {
 		if (!SensitiveIO::isPositiveInteger($id)) {
 			CMS_grandFather::raiseError("Id must be positive integer : ".$id);
 			return false;
 		}
 		static $pages;
-		if (isset($pages[$id])) {
+		if (isset($pages[$id]) && !$reset) {
 			return $pages[$id];
 		}
 		$pages[$id] = new CMS_page($id);
