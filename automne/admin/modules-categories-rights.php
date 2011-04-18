@@ -141,7 +141,21 @@ if (!function_exists("build_items_tree")) {
 		} else {
 			$thumbnail = '';
 		}
+		//disabled checkboxes if needed
+		if ($disableFields) {
+			$disabled = ' disabled="disabled"';
+		} else {
+			//check if user has edition rights on item
+			if (is_a($item, 'CMS_moduleCategory')) {
+				$disabled = $cms_user->hasModuleCategoryClearance($item->getID(), CLEARANCE_MODULE_MANAGE) ? '' : ' disabled="disabled"';
+			} else {
+				$disabled = $cms_user->hasPageClearance($item->getId(), CLEARANCE_PAGE_EDIT) ? '' : ' disabled="disabled"';
+			}
+		}
+		
 		$label = (is_a($item, 'CMS_moduleCategory')) ? $item->getLabel() : $item->getTitle();
+		$label = $disabled ? '<span style="color:grey;">'.$label.'</span>' : $label;
+		
 		// Get title and form actions
 		$s .= '
 			<li'.$bgColor.' id="li-'.$hash.'-'.$item->getID().'">
@@ -151,7 +165,6 @@ if (!function_exists("build_items_tree")) {
 						<td width="120">
 							<table width="120" border="0" cellpadding="0" cellspacing="0" id="checkboxes-'.$hash.'-'.$item->getID().'">
 								<tr>';
-		$disabled = ($disableFields) ? ' disabled="disabled"':'';
 		@reset($modules_clearances);
 		while (list ($msg, $value) = @each($modules_clearances)) {
 			$sel = '';
