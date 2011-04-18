@@ -155,15 +155,21 @@ if (!function_exists("build_items_tree")) {
 		@reset($modules_clearances);
 		while (list ($msg, $value) = @each($modules_clearances)) {
 			$sel = '';
+			//check if user has edition rights on item
+			if (is_a($item, 'CMS_moduleCategory')) {
+				$disabled = $cms_user->hasModuleCategoryClearance($item->getID(), CLEARANCE_MODULE_MANAGE) ? '' : ' disabled="disabled"';
+			} else {
+				$disabled = $cms_user->hasPageClearance($item->getId(), CLEARANCE_PAGE_EDIT) ? '' : ' disabled="disabled"';
+			}
 			if ($item->isRoot() || (!$item->isRoot() && $parent_clearance !== $value)) {
 				// If none clearance defined yet, access is denied to any root category
 				if ((!$i_default_clearance && $value === CLEARANCE_MODULE_NONE && $item->isRoot())
 					|| ($i_default_clearance !== false && (int) $i_default_clearance === $value)) {
 					$sel = ' checked="checked"';
 				}
-				$s .= '<td width="30" align="center"><input type="checkbox" onclick="Automne.categories.unselectOthers(\''.$item->getID().'\',\''.$value.'\', \''.$count.'\', \''.$hash.'\');" id="check-'.$hash.'-'.$item->getID().'_'.$value.'" name="cat'.$item->getID().'" value="'.$value.'"'.$sel.$disabled.' /></td>';
+				$s .= '<td width="30" align="center"><input type="checkbox"'.$disabled.' onclick="Automne.categories.unselectOthers(\''.$item->getID().'\',\''.$value.'\', \''.$count.'\', \''.$hash.'\');" id="check-'.$hash.'-'.$item->getID().'_'.$value.'" name="cat'.$item->getID().'" value="'.$value.'"'.$sel.$disabled.' /></td>';
 			} else {
-				$s .= '<td width="30" align="center"><input type="checkbox" onclick="Automne.categories.unselectOthers(\''.$item->getID().'\',\''.$value.'\', \''.$count.'\', \''.$hash.'\');" id="check-'.$hash.'-'.$item->getID().'_'.$value.'" name="cat'.$item->getID().'" value="'.$value.'" style="display:none;"'.$disabled.' /></td>';
+				$s .= '<td width="30" align="center"><input type="checkbox"'.$disabled.' onclick="Automne.categories.unselectOthers(\''.$item->getID().'\',\''.$value.'\', \''.$count.'\', \''.$hash.'\');" id="check-'.$hash.'-'.$item->getID().'_'.$value.'" name="cat'.$item->getID().'" value="'.$value.'" style="display:none;"'.$disabled.' /></td>';
 			}
 		}
 		$s .= '					</tr>
