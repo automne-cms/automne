@@ -161,19 +161,21 @@ foreach ($siblings as $sibling) {
 		$hasSiblings = CMS_tree::hasSiblings($sibling) ? true : false;
 		$ddtext = '';
 		$draggable = $allowDrop = false;
+		$editableSibling = $cms_user->hasPageClearance($sibling->getId(), CLEARANCE_PAGE_EDIT);
 		if ($enableDD) {
 			//does this node draggable ? (/!\ only public nodes can be draggable)
-			$draggable = ($cms_user->hasPageClearance($sibling->getID(), CLEARANCE_PAGE_EDIT)
-				 && (!$hasSiblings || ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) && $sibling->getID() != APPLICATION_ROOT_PAGE_ID))
-				 && $sibling->getPublication() == RESOURCE_PUBLICATION_PUBLIC);
+			$draggable = ($editableSibling
+							 && (!$hasSiblings || ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) && $sibling->getID() != APPLICATION_ROOT_PAGE_ID))
+							 && $sibling->getPublication() == RESOURCE_PUBLICATION_PUBLIC);
 			
 			//does this node can be a drop target ?
 			$allowDrop = (!$maxlevelReached && $cms_user->hasPageClearance($sibling->getId(), CLEARANCE_PAGE_EDIT));
 			//$ddtext = $allowDrop ? ' allowDrop' : '';
 		}
+		
 		$nodes[] = array(
 			'id'		=>	'page'.$sibling->getID(), 
-			'onClick'	=>	sprintf($onClick, $sibling->getID()),
+			'onClick'	=>	($editableSibling || $sibling->getPublication() == RESOURCE_PUBLICATION_PUBLIC) ? sprintf($onClick, $sibling->getID()) : '',
 			'onSelect'	=>	sprintf($onSelect, $sibling->getID()),
 			'text'		=>	io::htmlspecialchars($pageTitle).' '.$property.$ddtext,
 			'status'	=>	$sibling->getStatus()->getHTML(true, $cms_user, MOD_STANDARD_CODENAME, $sibling->getID()),
