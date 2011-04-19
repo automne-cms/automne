@@ -578,6 +578,14 @@ class CMS_object_categories extends CMS_object_common
 		global $cms_user;
 		$params = $this->getParamsValues();
 		$categoriesRoot = ($categoriesRoot) ? $categoriesRoot : $params['rootCategory'];
+		//check category root
+		if ($categoriesRoot) {
+			 $cat = CMS_moduleCategories_catalog::getByID($categoriesRoot);
+			 if (!$cat || $cat->hasError()) {
+			 	$categoriesRoot = false;
+			 }
+		}
+		
 		//get module if none passed
 		if (!$module) {
 			$module = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());

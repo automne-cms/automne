@@ -365,7 +365,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 		}
 		
 		$sGoogleApiUrl = sprintf('http://maps.google.com/maps/api/geocode/json?address=%s&sensor=false&language=%s',
-						 urlencode($address),
+						 urlencode(io::sanitizeAsciiString($address, ' ')),
 						 $language->getCode()
 					);
 		if( $sCcTld ){						 

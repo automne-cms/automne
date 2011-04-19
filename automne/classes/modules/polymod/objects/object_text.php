@@ -510,9 +510,13 @@ class CMS_object_text extends CMS_object_common
 		$parameters = $this->getSubFieldParameters();
 		$treatedParams = array();
 		foreach($parameters as $aParameter) {
-			//string|boolean|integer|date|text
-			$postedParamValue = isset($post[$prefix.$aParameter['internalName']]) ? $post[$prefix.$aParameter['internalName']] : null;
-			$params[$aParameter['internalName']] = $postedParamValue;
+			$paramType = $aParameter['type'];
+			if ($aParameter['type'] == 'boolean') {
+				$params[$aParameter['internalName']] = ($postedParamValue) ? true:false;
+			} else {
+				$postedParamValue = isset($post[$prefix.$aParameter['internalName']]) ? $post[$prefix.$aParameter['internalName']] : null;
+				$params[$aParameter['internalName']] = $postedParamValue;
+			}
 		}
 		return $params;
 	}

@@ -781,7 +781,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 		//Categories
 		//if user has some categories to manage
 		$userManageCategories = $user->getRootModuleCategoriesManagable($this->getCodename());
-		if ((is_array($userManageCategories) && $userManageCategories) || $user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
+		if ($catFieldsNames && ((is_array($userManageCategories) && $userManageCategories) || $user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL))) {
 			$objectsInfos[] = array(
 				'label'			=> $cms_language->getMessage(self::MESSAGE_PAGE_CATEGORIES),
 				'adminLabel'	=> $cms_language->getMessage(self::MESSAGE_PAGE_ADMIN_CATEGORIES),
