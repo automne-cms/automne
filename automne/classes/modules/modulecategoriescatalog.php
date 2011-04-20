@@ -154,12 +154,13 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 			return false;
 		}
 		if ($category->getId() > 0) {
-			$park_integer = CMS_moduleCategory::LINEAGE_PARK_POSITION; //This park position is almost impossible ot reach
+			$park_integer = CMS_moduleCategory::LINEAGE_PARK_POSITION; //This park position is almost impossible to reach
 			$parentCategory = $category->getParent();
 			$sql = "
 				update
 					modulesCategories
 				set
+					uuid_mca=$park_integer,
 					parent_mca=$park_integer,
 					root_mca=$park_integer,
 					order_mca=$park_integer,
@@ -1093,6 +1094,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 				modulesCategories 
 			where
 				uuid_mca='".io::sanitizeSQLString($uuid)."'
+				and parent_mca != '".CMS_moduleCategory::LINEAGE_PARK_POSITION."'
 		");
 		return $q->getNumRows() ? true : false;
 	}
