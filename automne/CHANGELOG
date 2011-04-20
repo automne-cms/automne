@@ -2,7 +2,8 @@ V4.1.3 (in progress)
 [BUG] : Correct bugs numbers: 1860, 2021, 2024, 2032 (see http://www.automne-cms.org/bug/)
 [BUG] : Correct a bug with atm-search-param tag when search type is item and value is block
 [BUG] : Users can set categories or pages rights above their own. They can also set grups denied even if they do not have rights for it.
-[BUG] : Secondary resources are deleted with the attached primary resource 
+[BUG] : Secondary resources are deleted with the attached primary resource
+[REFACTOR] : Refactor daily routine to add a check on server parameter page
 [FEATURE] : Add {page:XXX:exists} var to check if a page exists without throwing an error
 
 V4.1.2 (12/04/2011)

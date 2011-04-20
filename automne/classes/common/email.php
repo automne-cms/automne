@@ -423,7 +423,8 @@ class CMS_email extends CMS_grandFather
 	  */
 	function setFromName($from)
 	{
-		$this->_fromName = $from;
+		//from name should not contain comma
+		$this->_fromName = str_replace(',', '', $from);
 		return true;
 	}
 	

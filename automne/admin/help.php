@@ -45,7 +45,6 @@ if (!defined('MOD_POLYMOD_CODENAME')) {
 }
 
 //show version number
-$polymodVersion = file_exists(PATH_MODULES_FS.'/'.MOD_POLYMOD_CODENAME.'/VERSION') ? file_get_contents(PATH_MODULES_FS.'/'.MOD_POLYMOD_CODENAME.'/VERSION') : $cms_language->getMessage(MESSAGE_PAGE_UNKNOWN);
 $lastUpdate = AUTOMNE_LASTUPDATE ? date($cms_language->getDateFormat().' - H:i:s' , AUTOMNE_LASTUPDATE) : $cms_language->getMessage(MESSAGE_PAGE_NEVER);
 
 $modules = CMS_modulesCatalog::getAll();
@@ -65,7 +64,7 @@ foreach($modules as $module){
 $modulesInfo .= '</ul>';
 
 //Scripts content
-$content = $cms_language->getMessage(MESSAGE_PAGE_ABOUT_MESSAGE, array(AUTOMNE_VERSION, $lastUpdate, APPLICATION_DEFAULT_ENCODING, LIBXML_DOTTED_VERSION, $polymodVersion, $modulesInfo));
+$content = $cms_language->getMessage(MESSAGE_PAGE_ABOUT_MESSAGE, array(AUTOMNE_VERSION, $lastUpdate, APPLICATION_DEFAULT_ENCODING, LIBXML_DOTTED_VERSION, $modulesInfo));
 
 $content = sensitiveIO::sanitizeJSString($content);
 
