@@ -21,7 +21,7 @@
   * Utility class : used to show a subMenu inside a pack,  which are post forms
   *
   * @package Automne
-  * @subpackage dialogs
+  * @subpackage deprecated
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

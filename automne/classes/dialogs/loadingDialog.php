@@ -20,7 +20,7 @@
   * Interface generation : send texts in real-time to user navigator.
   *
   * @package Automne
-  * @subpackage dialogs
+  * @subpackage deprecated
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 class CMS_LoadingDialog extends CMS_dialog
