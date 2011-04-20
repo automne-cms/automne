@@ -102,20 +102,16 @@ class CMS_xml2Array extends CMS_grandFather
 						$value = $this->_xml2Array($node, $encoding);
 					} else {
 						$value = $node->textContent;
-						//check encoding and transcode if source is utf and current encoding is iso (not needed otherwise)
-						if ($encoding == 'utf-8') {
-							if (io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
-								$value = utf8_decode($value);
-							}
+						//check encoding and transcode if current encoding is iso (not needed otherwise)
+						if (io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
+							$value = utf8_decode($value);
 						}
 					}
 				} else {
 					$value = $node->textContent;
-					//check encoding and transcode if source is utf and current encoding is iso (not needed otherwise)
-					if ($encoding == 'utf-8') {
-						if (io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
-							$value = utf8_decode($value);
-						}
+					//check encoding and transcode if current encoding is iso (not needed otherwise)
+					if (io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
+						$value = utf8_decode($value);
 					}
 				}
 				if ($node->nodeType == XML_ELEMENT_NODE && $node->attributes->length == 1) {
