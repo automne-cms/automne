@@ -526,7 +526,11 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 			$fieldObject = $this->getTypeObject();
 			$GLOBALS['moduleCodename'] = $params['module'];
 			if (isset($data['params']['params']) && $data['params']['params']) {
-				$params = $fieldObject->treatParams($data['params']['params'], '');
+				if (method_exists($fieldObject, 'importParams')) {
+					$params = $fieldObject->importParams($data['params']['params'], $cms_language, $idsRelation, $infos);
+				} else {
+					$params = $fieldObject->treatParams($data['params']['params'], '');
+				}
 				if ($params) {
 					$this->setValue("params", $params);
 					//set this object into definition to convert array so it can be converted again at end of import process

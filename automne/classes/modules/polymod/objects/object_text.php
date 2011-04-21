@@ -511,10 +511,10 @@ class CMS_object_text extends CMS_object_common
 		$treatedParams = array();
 		foreach($parameters as $aParameter) {
 			$paramType = $aParameter['type'];
+			$postedParamValue = isset($post[$prefix.$aParameter['internalName']]) ? $post[$prefix.$aParameter['internalName']] : null;
 			if ($aParameter['type'] == 'boolean') {
 				$params[$aParameter['internalName']] = ($postedParamValue) ? true:false;
 			} else {
-				$postedParamValue = isset($post[$prefix.$aParameter['internalName']]) ? $post[$prefix.$aParameter['internalName']] : null;
 				$params[$aParameter['internalName']] = $postedParamValue;
 			}
 		}

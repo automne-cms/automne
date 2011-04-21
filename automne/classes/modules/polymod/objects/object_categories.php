@@ -1669,5 +1669,33 @@ class CMS_object_categories extends CMS_object_common
 		
 		return $a_all_categories;
 	}
+	
+	/**
+	  * Treat fields parameters to import
+	  *
+	  * @param array $params The import parameters.
+	  *		array(
+	  *				create	=> false|true : create missing objects (default : true)
+	  *				update	=> false|true : update existing objects (default : true)
+	  *				files	=> false|true : use files from PATH_TMP_FS (default : true)
+	  *			)
+	  * @param CMS_language $cms_language The CMS_langage to use
+	  * @param array $idsRelation : Reference : The relations between import datas ids and real imported ids
+	  * @param string $infos : Reference : The import infos returned
+	  * @return array : the treated parameters
+	  * @access public
+	  */
+	function importParams($params, $cms_language, &$idsRelation, &$infos) {
+		//here we need to convert categories ids used in parameters
+		$params = parent::treatParams($params, '');
+		//then try to convert categories ids if needed
+		if (isset($params['rootCategory']) && $params['rootCategory'] && isset($idsRelation['categories'][$params['rootCategory']])) {
+			$params['rootCategory'] = $idsRelation['categories'][$params['rootCategory']];
+		}
+		if (isset($params['defaultValue']) && $params['defaultValue'] && isset($idsRelation['categories'][$params['defaultValue']])) {
+			$params['defaultValue'] = $idsRelation['categories'][$params['defaultValue']];
+		}
+		return $params;
+	}
 }
 ?>
