@@ -397,7 +397,7 @@ $jscontent = <<<END
 	usersWindow.launchSearch = function() {
 		var formValues = Ext.getCmp('usersSearchPanel').getForm().getValues();
 		store.reload({params:{
-			start:			0,
+			start:			store.lastOptions.params.start,
 			limit:			{$recordsPerPage},
 			groupId:		formValues.groups,
 			search:			formValues.search,

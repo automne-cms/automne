@@ -260,7 +260,7 @@ $jscontent = <<<END
 	groupsWindow.launchSearch = function() {
 		var formValues = Ext.getCmp('groupsSearchPanel').getForm().getValues();
 		store.reload({params:{
-			start:			0,
+			start:			store.lastOptions.params.start,
 			limit:			{$recordsPerPage},
 			search:			formValues.search,
 			letter:			(clickedLetter) ? clickedLetter.text.toLowerCase() : ''
