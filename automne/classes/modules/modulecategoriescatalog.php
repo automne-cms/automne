@@ -594,7 +594,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	  * @static
 	  */
 	static function getCategoryIdFromLineage($lineage, $level = 0) {
-		if (false !== ($a_lineage = split(';', $lineage))) {
+		if (false !== ($a_lineage = explode(';', $lineage))) {
 			if (sizeof($a_lineage) > $level) {
 				return (int) $a_lineage[$level];
 			}
