@@ -177,9 +177,9 @@ class CMS_object_google_coordinates extends CMS_object_common
 						var field = form.findField(\'polymodFieldsValue[\' + addrFields[i] + \'_0]\');
 						var listfield = form.findField(\'polymodFieldsValue[list\' + addrFields[i] + \'_0]\');
 						if (field) {
-							addr += \' \' + field.getValue();
+							addr += \' \' + Ext.util.Format.stripTags(field.getValue());
 						} else if (listfield) {
-							addr += \' \' + listfield.lastSelectionText;
+							addr += \' \' + Ext.util.Format.stripTags(listfield.lastSelectionText);
 						}
 					}
 					var geocoder = new google.maps.Geocoder();
@@ -189,7 +189,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 							Ext.getCmp(\''.$ids.'-lat\').setValue(results[0].geometry.location.lat());
 						} else {
 							Automne.message.popup({
-								msg: 				Ext.String.format(\''.$language->getJsMessage(self::MESSAGE_OBJECT_COORDINATES_FIELD_UNKOWN_ADDRESS,false ,$this->_messagesModule).'\', addr),
+								msg: 				String.format(\''.$language->getJsMessage(self::MESSAGE_OBJECT_COORDINATES_FIELD_UNKOWN_ADDRESS,false ,$this->_messagesModule).'\', addr),
 								buttons: 			Ext.MessageBox.OK,
 								closable: 			false,
 								icon: 				Ext.MessageBox.ERROR
@@ -401,6 +401,33 @@ class CMS_object_google_coordinates extends CMS_object_common
 			}
 		}
 		return  ( array( 'lat' => $lat , 'long' => $long ) );
+	}
+	
+	/**
+	  * Treat fields parameters to import
+	  *
+	  * @param array $params The import parameters.
+	  *		array(
+	  *				create	=> false|true : create missing objects (default : true)
+	  *				update	=> false|true : update existing objects (default : true)
+	  *				files	=> false|true : use files from PATH_TMP_FS (default : true)
+	  *			)
+	  * @param CMS_language $cms_language The CMS_langage to use
+	  * @param array $idsRelation : Reference : The relations between import datas ids and real imported ids
+	  * @param string $infos : Reference : The import infos returned
+	  * @return array : the treated parameters
+	  * @access public
+	  */
+	function importParams($params, $cms_language, &$idsRelation, &$infos) {
+		if (isset($params['fieldsForAddress']) && $params['fieldsForAddress']) {
+			$fieldsIds = explode(';', $params['fieldsForAddress']);
+			$convertedFieldsIds = array();
+			foreach ($fieldsIds as $fieldId) {
+				$convertedFieldsIds[] = isset($idsRelation['fields'][$fieldId]) ? $idsRelation['fields'][$fieldId] : $fieldId;
+			}
+			$params['fieldsForAddress'] = implode(';', $convertedFieldsIds);
+		}
+		return $params;
 	}
 }
 

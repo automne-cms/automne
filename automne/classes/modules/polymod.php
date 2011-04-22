@@ -1107,6 +1107,20 @@ class CMS_polymod extends CMS_modulePolymodValidation
 				}
 			}
 		}
+		//convert params of imported fields
+		if (isset($idsRelation['paramsFieldsToConvert'])&& $idsRelation['paramsFieldsToConvert']) {
+			foreach ($idsRelation['paramsFieldsToConvert'] as $field) {
+				$fieldObject = $field->getTypeObject();
+				if (method_exists($fieldObject, 'importParams')) {
+					$params = $fieldObject->getParamsValues();
+					$params = $fieldObject->importParams($params, $cms_language, $idsRelation, $infos);
+					if ($params) {
+						$field->setValue("params", $params);
+						$field->writeToPersistence();
+					}
+				}
+			}
+		}
 		return $return;
 	}
 	
