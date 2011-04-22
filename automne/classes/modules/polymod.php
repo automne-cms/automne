@@ -641,10 +641,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			return false;
 		}
 		//instanciate root user to avoid rights problems during item loading
-		global $cms_user;
-		if (!is_object($cms_user)) {
-			$GLOBALS['cms_user'] = new CMS_profile_user(1);
-		}
+		$GLOBALS['cms_user'] = new CMS_profile_user(ROOT_PROFILEUSER_ID);
 		//instanciate script related item (use edited object because the script can launch writing of values into object)
 		$item = CMS_poly_object_catalog::getObjectByID($parameters['object'],false,false);
 		if (!is_object($item) || $item->hasError()) {

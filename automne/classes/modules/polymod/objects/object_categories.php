@@ -596,7 +596,7 @@ class CMS_object_categories extends CMS_object_common
 		}
 		if(/*($params['bypassRights'] && $clearanceLevel === false) || */!is_object($cms_user)) {
 			//TODO : ugly but missing time (need to redo the getAllCategoriesAsArray to accept no valid cms_user : append only in frontend without APPLICATION_ENFORCES_ACCESS_CONTROL. Medias module already doing something like this)
-			$user = new CMS_profile_user(1);
+			$user = new CMS_profile_user(ROOT_PROFILEUSER_ID);
 			$categories = CMS_moduleCategories_catalog::getAllCategoriesAsArray($user, $module, $language, $categoriesRoot, -1, $clearanceLevel, $strict, $crossLanguage);
 		} else {
 			$user = $cms_user;
@@ -712,7 +712,7 @@ class CMS_object_categories extends CMS_object_common
 			}
 			if(/*$params['bypassRights'] || */!is_object($cms_user)) {
 				//TODO : ugly but missing time (need to redo the getAllCategoriesAsArray to accept no valid cms_user : append only in frontend without APPLICATION_ENFORCES_ACCESS_CONTROL. Medias module already doing something like this)
-				$user = new CMS_profile_user(1);
+				$user = new CMS_profile_user(ROOT_PROFILEUSER_ID);
 			} else {
 				$user = $cms_user;
 			}
