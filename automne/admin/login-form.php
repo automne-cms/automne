@@ -44,7 +44,7 @@ define("MESSAGE_PAGE_PRESS_F2_FOR_LOG", 675);
 define("MESSAGE_ERROR_SESSION_EXPIRED", 676);
 
 //load language object
-$language = CMS_languagesCatalog::getDefaultLanguage(true);
+$cms_language = CMS_languagesCatalog::getDefaultLanguage(true);
 //load interface instance
 $view = CMS_view::getInstance();
 //var used to display error of login
@@ -54,26 +54,29 @@ $cms_action = io::request('cms_action');
 
 switch ($cms_action) {
 case "login":
-	$permanent = isset($_POST["permanent"]) ? $_POST["permanent"] : 0;
-	$cms_context = new CMS_context($_POST["login"], $_POST["pass"], $permanent, $_POST["atm-token"]);
-	//CMS_grandFather::log('Login ok1 (user : '.$cms_context->getUserId().')');
-	if (!$cms_context->hasError() && ($cms_user = $cms_context->getUser()) && $cms_user->hasAdminAccess()) {
-		//CMS_grandFather::log('Login ok2 (user : '.$cms_context->getUserId().')');
-		$_SESSION["cms_context"] = $cms_context;
+	//Auth parameters
+	$params = array(
+		'login'		=> io::request('login'),
+		'password'	=> io::request('pass'),
+		'remember'	=> (io::request('permanent') ? true : false),
+		'tokenName'	=> 'login',
+		'token'		=> io::request('atm-token'),
+	);
+	CMS_session::authenticate($params);
+	$cms_user = CMS_session::getUser();
+	if ($cms_user && $cms_user->hasAdminAccess()) {
 		//launch the daily routine in case it's not in the cron
 		CMS_module_standard::processDailyRoutine();
-		$userSessionsInfos = CMS_context::getSessionInfos();
-		
-		$cms_user = $_SESSION["cms_context"]->getUser();
-		$language = $cms_user->getLanguage();
+		$userSessionsInfos = CMS_session::getSessionInfos();
+		$cms_language = $cms_user->getLanguage();
 		
 		//welcome message
-		$welcome = $language->getJsMessage(MESSAGE_PAGE_USER_WELCOME, array($userSessionsInfos['fullname']));
+		$welcome = $cms_language->getJsMessage(MESSAGE_PAGE_USER_WELCOME, array($userSessionsInfos['fullname']));
 		if ($userSessionsInfos['hasValidations']) {
-			$welcome .= '<br /><br />'.(($userSessionsInfos['awaitingValidation']) ? $language->getJsMessage(MESSAGE_PAGE_USER_VALIDATIONS, array($userSessionsInfos['awaitingValidation'])) : $language->getJsMessage(MESSAGE_PAGE_USER_NOVALIDATION));
+			$welcome .= '<br /><br />'.(($userSessionsInfos['awaitingValidation']) ? $cms_language->getJsMessage(MESSAGE_PAGE_USER_VALIDATIONS, array($userSessionsInfos['awaitingValidation'])) : $cms_language->getJsMessage(MESSAGE_PAGE_USER_NOVALIDATION));
 		}
 		if (SYSTEM_DEBUG && $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
-			$welcome .= '<br /><br /><span class="atm-red">'.$language->getJsMessage(MESSAGE_PAGE_DEBUG).'</span> '.$language->getJsMessage(MESSAGE_PAGE_PRESS_F2_FOR_LOG);
+			$welcome .= '<br /><br /><span class="atm-red">'.$cms_language->getJsMessage(MESSAGE_PAGE_DEBUG).'</span> '.$cms_language->getJsMessage(MESSAGE_PAGE_PRESS_F2_FOR_LOG);
 		}
 		
 		//then set context, remove login window and load Automne interface
@@ -86,7 +89,7 @@ case "login":
 		try {delete Ext.Element.cache[\'loginField\'];} catch (e) {}
 		';
 		//add all JS locales
-		$jscontent .= CMS_context::getJSLocales();
+		$jscontent .= CMS_session::getJSLocales();
 		$jscontent .= '
 		/*show front page in tab*/
 		Automne.tabPanels.getActiveTab().reload();
@@ -100,7 +103,7 @@ case "login":
 		$view->show(CMS_view::SHOW_HTML);
 	} else {
 		//reset session (start fresh)
-		session_destroy();
+		Zend_Session::destroy();
 		CMS_view::redirect($_SERVER['SCRIPT_NAME'].'?cms_action=wrongcredentials', true, 301);
 	}
 	break;
@@ -108,7 +111,7 @@ case "login":
 		//display error login window on top of login form
 		$loginError = "
 		parent.Automne.message.popup({
-			msg: '{$language->getJsMessage(MESSAGE_ERROR_LOGIN_INCORRECT)}',
+			msg: '{$cms_language->getJsMessage(MESSAGE_ERROR_LOGIN_INCORRECT)}',
 			buttons: Ext.MessageBox.OK,
 			icon: Ext.MessageBox.ERROR,
 			fn:function() {
@@ -138,22 +141,22 @@ $jscontent =
 		Ext.form.Field.prototype.msgTarget = 'under';
 		var loginField = new Ext.form.TextField({
 			allowBlank:	false,
-			blankText:	'{$language->getJsMessage(MESSAGE_PAGE_REQUIRED_FIELD)}',
+			blankText:	'{$cms_language->getJsMessage(MESSAGE_PAGE_REQUIRED_FIELD)}',
 			applyTo:	'loginField'
 		});
 		var passField = new Ext.form.TextField({
 			allowBlank:	false,
 			inputType: 	'password',
-			blankText:	'{$language->getJsMessage(MESSAGE_PAGE_REQUIRED_FIELD)}',
+			blankText:	'{$cms_language->getJsMessage(MESSAGE_PAGE_REQUIRED_FIELD)}',
 			applyTo:	'passField'
 		});
 		var cancelButton = new Ext.Button({
-			text: 		'{$language->getJsMessage(MESSAGE_BUTTON_CANCEL)}',
+			text: 		'{$cms_language->getJsMessage(MESSAGE_BUTTON_CANCEL)}',
 			handler:	function() {if (parent) {parent.Ext.WindowMgr.get('loginWindow').close();}},
 			applyTo:	'cancelButton'
 		});
 		var submitButton = new Ext.Button({
-			text: 		'{$language->getJsMessage(MESSAGE_BUTTON_VALIDATE)}',
+			text: 		'{$cms_language->getJsMessage(MESSAGE_BUTTON_VALIDATE)}',
 			handler:	function() {loginForm.doSubmit();},
 			applyTo:	'submitButton'
 		});
@@ -163,7 +166,7 @@ $jscontent =
 					this.getEl().dom.submit();
 				} else {
 					parent.Ext.MessageBox.show({
-						msg: '{$language->getJsMessage(MESSAGE_ERROR_REQUIRED_FIELD)}',
+						msg: '{$cms_language->getJsMessage(MESSAGE_ERROR_REQUIRED_FIELD)}',
 						buttons: Ext.MessageBox.OK,
 						icon: Ext.MessageBox.ERROR,
 						fn:function() {
@@ -214,16 +217,16 @@ $content = '<div class="x-panel x-form-label-left" style="width: 374px;">
 					<div style="width: 362px; height: 126px;" class="x-panel-body">
 						<form id="loginForm" class="x-form" method="post" action="'.$_SERVER['SCRIPT_NAME'].'">
 							<input name="cms_action" value="login" type="hidden" />
-							<input name="atm-token" value="'.CMS_context::getToken('login').'" type="hidden" />
+							<input name="atm-token" value="'.CMS_session::getToken('login').'" type="hidden" />
 							<div class="x-form-item" tabindex="-1">
-								<label for="loginField" style="width: 90px;" class="x-form-item-label">'.$language->getMessage(MESSAGE_PAGE_LOGIN).':</label>
+								<label for="loginField" style="width: 90px;" class="x-form-item-label">'.$cms_language->getMessage(MESSAGE_PAGE_LOGIN).':</label>
 								<div class="x-form-element" style="padding-left: 95px;">
 									<input style="width: 240px;" class="x-form-text x-form-field" autocomplete="on" id="loginField" name="login" type="text" value="'.(isset($_POST['login']) ? io::htmlspecialchars($_POST['login']) : '').'" />
 								</div>
 								<div class="x-form-clear-left"></div>
 							</div>
 							<div class="x-form-item" tabindex="-1">
-								<label for="passField" style="width: 90px;" class="x-form-item-label">'.$language->getMessage(MESSAGE_PAGE_PASSWORD).':</label>
+								<label for="passField" style="width: 90px;" class="x-form-item-label">'.$cms_language->getMessage(MESSAGE_PAGE_PASSWORD).':</label>
 								<div class="x-form-element" style="padding-left: 95px;">
 									<input style="width: 240px;" class="x-form-text x-form-field" autocomplete="on" id="passField" name="pass" type="password" value="'.(isset($_POST['pass']) ? io::htmlspecialchars($_POST['pass']) : '').'" />
 								</div>
@@ -233,7 +236,7 @@ $content = '<div class="x-panel x-form-label-left" style="width: 374px;">
 								<div class="x-form-element" style="padding-left: 95px;">
 									<label for="rememberField" class="x-form-item-label" style="width: 240px;">
 										<input value="1" class="x-form-checkbox x-form-field" size="20" autocomplete="on" id="rememberField" name="permanent" type="checkbox" />
-										'.$language->getMessage(MESSAGE_PAGE_REMEMBER_ME).'
+										'.$cms_language->getMessage(MESSAGE_PAGE_REMEMBER_ME).'
 									</label>
 								</div>
 								<div class="x-form-clear-left"></div>

@@ -114,7 +114,7 @@ $object = new CMS_poly_object_definition($objectId);
 $objectFields = CMS_poly_object_catalog::getFieldsDefinition($object->getID());
 
 //usefull vars
-$recordsPerPage = $_SESSION["cms_context"]->getRecordsPerPage();
+$recordsPerPage = CMS_session::getRecordsPerPage();
 $searchURL = PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/search.php';
 $editURL = PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/item.php';
 $listURL = PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/list-datas.php';
@@ -135,7 +135,7 @@ foreach ($objectFields as $fieldID => $field) {
 		$objectType = $field->getTypeObject();
 		if (method_exists($objectType, 'getListOfNamesForObject')) {
 			$fieldLabel = sensitiveIO::sanitizeJSString($field->getLabel($cms_language));
-			$value = $_SESSION["cms_context"]->getSessionVar('items_'.$object->getID().'_'.$fieldID);
+			$value = CMS_session::getSessionVar('items_'.$object->getID().'_'.$fieldID);
 			$searchLists .= "{
 				fieldLabel:			'{$fieldLabel}',
 				anchor:				'-20px',
@@ -172,7 +172,7 @@ foreach ($objectFields as $fieldID => $field) {
 }
 //add keyword search
 if ($keywordsSearch) {
-	$value = sensitiveIO::sanitizeJSString($_SESSION["cms_context"]->getSessionVar('items_'.$object->getID().'_kwrds'));
+	$value = sensitiveIO::sanitizeJSString(CMS_session::getSessionVar('items_'.$object->getID().'_kwrds'));
 	// Keywords
 	$searchPanel .= "{
 		fieldLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS, false, MOD_POLYMOD_CODENAME)}',
@@ -230,8 +230,8 @@ if ($keywordsSearch) {
 //add publication date search
 if ($object->isPrimaryResource()) {
 	// Publication Dates
-	$startValue = sensitiveIO::sanitizeJSString($_SESSION["cms_context"]->getSessionVar("items_dtfrm"));
-	$endValue = sensitiveIO::sanitizeJSString($_SESSION["cms_context"]->getSessionVar("items_dtnd"));
+	$startValue = sensitiveIO::sanitizeJSString(CMS_session::getSessionVar("items_dtfrm"));
+	$endValue = sensitiveIO::sanitizeJSString(CMS_session::getSessionVar("items_dtnd"));
 	$searchPanel .= "{
 		layout:			'column',
 		xtype:			'panel',
@@ -275,7 +275,7 @@ $searchPanel .= $searchLists;
 
 //add status filter
 if ($object->isPrimaryResource()) {
-	$statusValue = $_SESSION["cms_context"]->getSessionVar('status_'.$object->getID());
+	$statusValue = CMS_session::getSessionVar('status_'.$object->getID());
 	$statusValue = $statusValue ? $statusValue : '';
 	$statusValues = array(
 		array('id' => '', 			'label' => '-'),
@@ -333,7 +333,7 @@ foreach ($objectFields as $fieldID => $field) {
 }
 // check if there are other sortable object than creation date
 if(count($items_possible) > 1){
-	$sortValue = $_SESSION["cms_context"]->getSessionVar('sort_'.$object->getID());
+	$sortValue = CMS_session::getSessionVar('sort_'.$object->getID());
 	$sortValue = $sortValue ? $sortValue : 'objectID';
 	$sortValues = array();
 	foreach($items_possible as $key => $label){
@@ -379,7 +379,7 @@ if(count($items_possible) > 1){
 // build direction select
 $items_possible = array('asc' => $cms_language->getMessage(MESSAGE_PAGE_FIELD_ASC, false, MOD_POLYMOD_CODENAME), 
 						'desc' => $cms_language->getMessage(MESSAGE_PAGE_FIELD_DESC, false, MOD_POLYMOD_CODENAME));
-$dirValue = $_SESSION["cms_context"]->getSessionVar('direction_'.$object->getID());
+$dirValue = CMS_session::getSessionVar('direction_'.$object->getID());
 $dirValue = ($dirValue) ? $dirValue : 'desc';
 $dirValues = array();
 foreach($items_possible as $key => $label){

@@ -132,7 +132,7 @@ $view->setDisplayMode(CMS_view::SHOW_RAW);
 $view->setSecure();
 
 $winId = sensitiveIO::request('winId', '', 'propertiesWindow');
-$currentPage = sensitiveIO::request('currentPage', 'sensitiveIO::isPositiveInteger', $cms_context->getPageID());
+$currentPage = sensitiveIO::request('currentPage', 'sensitiveIO::isPositiveInteger', CMS_session::getPageID());
 
 //load page
 $cms_page = CMS_tree::getPageByID($currentPage);

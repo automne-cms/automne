@@ -761,10 +761,6 @@ class CMS_dialog extends CMS_JSDialog
 			default:
 				$this->addFrameCheck();
 				$this->addJavascriptCheck($this->_makeFocus);
-				//launch regenerator popup if needed
-				/*if (!USE_BACKGROUND_REGENERATOR && $_SESSION["cms_context"]->getSessionVar('start_script')==true) {
-					$this->launchScriptPopup();
-				}*/
 				echo '
 					<html>
 					<head>

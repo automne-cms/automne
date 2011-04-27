@@ -42,7 +42,7 @@ $winId = sensitiveIO::request('winId', '', 'logPanel');
 $userId = sensitiveIO::request('user', 'sensitiveIO::isPositiveInteger');
 $action = sensitiveIO::request('action', '', 'view');
 $start = sensitiveIO::request('start', '', 0);
-$limit = sensitiveIO::request('limit', '', $_SESSION["cms_context"]->getRecordsPerPage());
+$limit = sensitiveIO::request('limit', '', CMS_session::getRecordsPerPage());
 $order = sensitiveIO::request('sort', '', 'datetime');
 $direction = io::strtolower(sensitiveIO::request('dir', '', 'desc'));
 
@@ -60,7 +60,7 @@ if (!$user || $user->hasError()) {
 }
 
 //get records / pages
-$recordsPerPage = $_SESSION["cms_context"]->getRecordsPerPage();
+$recordsPerPage = CMS_session::getRecordsPerPage();
 
 switch ($action) {
 	case 'view':

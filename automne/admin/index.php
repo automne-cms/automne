@@ -36,8 +36,9 @@ $view = CMS_view::getInstance();
 
 //Disconnect user
 if (isset($_REQUEST["cms_action"]) && $_REQUEST["cms_action"] == 'logout') {
-	// Reset cookie (kill current session)
-	CMS_context::resetSessionCookies();
+	// disconnect user
+	CMS_session::authenticate(array('disconnect'=> true));
+	
 	header("Location: ".PATH_ADMIN_WR.'/');
 	exit;
 }

@@ -72,7 +72,7 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
 }
 
 //get records / pages
-$recordsPerPage = $_SESSION["cms_context"]->getRecordsPerPage();
+$recordsPerPage = CMS_session::getRecordsPerPage();
 //special users Id
 $rootProfileUserId = ROOT_PROFILEUSER_ID;
 $anonymousProfileUserId = ANONYMOUS_PROFILEUSER_ID;

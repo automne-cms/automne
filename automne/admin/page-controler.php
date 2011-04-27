@@ -69,7 +69,7 @@ $view->setDisplayMode(CMS_view::SHOW_XML);
 //This file is an admin file. Interface must be secure
 $view->setSecure();
 
-$currentPage = sensitiveIO::request('currentPage', 'sensitiveIO::isPositiveInteger', $cms_context->getPageID());
+$currentPage = sensitiveIO::request('currentPage', 'sensitiveIO::isPositiveInteger', CMS_session::getPageID());
 $field = sensitiveIO::request('field', '', '');
 $action = sensitiveIO::request('action', '', '');
 $value = sensitiveIO::request('value', '', '');

@@ -268,7 +268,7 @@ class CMS_forms_formular extends CMS_grandFather {
 				$source = preg_replace('#<form([^>]+)>#U', 
 				'<form action="'.$_SERVER["SCRIPT_NAME"].'?'.sensitiveIO::sanitizeHTMLString($_SERVER['QUERY_STRING']).'#formAnchor'.$this->getID().'" method="post" enctype="multipart/form-data"\1>'."\n".
 				'<input type="hidden" name="cms_action" value="validate" />'."\n".
-				'<input type="hidden" name="atm-token" value="'.CMS_context::getToken(MOD_CMS_FORMS_CODENAME).'" />'."\n".
+				'<input type="hidden" name="atm-token" value="'.CMS_session::getToken(MOD_CMS_FORMS_CODENAME).'" />'."\n".
 				'<input type="hidden" name="formID" value="'.$this->getID().'" />'."\n".
 				'<input type="hidden" name="referer" value="'.$referer.'" />'."\n"
 				, $source);
@@ -751,8 +751,7 @@ class CMS_forms_formular extends CMS_grandFather {
 	 */
 	function isAlreadyFolded($sender) {
 		if (!is_a($sender, 'CMS_forms_sender')) {
-			$context = isset($_SESSION["cms_context"]) ? $_SESSION["cms_context"] : '';
-			$sender = CMS_forms_sender::getSenderForContext($context);
+			$sender = CMS_forms_sender::getSenderForContext();
 		}
 		//get number of responses for sender for this form
 		if (!$this->getAttribute('responses')) {

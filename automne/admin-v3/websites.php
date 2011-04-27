@@ -105,16 +105,16 @@ case "change_order":
 }
 
 if ($_GET["records_per_page"]) {
-	$_SESSION["cms_context"]->setRecordsPerPage($_GET["records_per_page"]);
+	CMS_session::setRecordsPerPage($_GET["records_per_page"]);
 }
 if ($_GET["bookmark"]) {
-	$_SESSION["cms_context"]->setBookmark($_GET["bookmark"]);
+	CMS_session::setBookmark($_GET["bookmark"]);
 }
 
 $websites = CMS_websitesCatalog::getAll('order');
 
-$records_per_page = $_SESSION["cms_context"]->getRecordsPerPage();
-$bookmark = $_SESSION["cms_context"]->getBookmark();
+$records_per_page = CMS_session::getRecordsPerPage();
+$bookmark = CMS_session::getBookmark();
 $pages = ceil(sizeof($websites) / $records_per_page);
 $first_record = ($bookmark - 1) * $records_per_page;
 

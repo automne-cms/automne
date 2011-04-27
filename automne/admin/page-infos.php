@@ -257,14 +257,10 @@ if(!$cms_page->isUseable() || $followRedirect) {
 	}
 	$pageId = $cms_page->getID();
 }
-if (!isset($cms_context) || !is_object($cms_context)) {
-	CMS_grandFather::raiseError('Error, user context not found');
-	$view->show();
-}
 pr('View page : '.$cms_page->getID().($reload ? ' (Force reload queried by interface)' : ''));
 
 //set page into user context
-$cms_context->setPage($cms_page);
+CMS_session::setPage($cms_page);
 
 //for the page, create all javascript informations needed
 $hasPreviz = $hasPublic = $hasDraft = $isEditable = $hasLock = $hasRedirect = false;

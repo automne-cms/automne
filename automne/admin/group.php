@@ -86,7 +86,7 @@ $dn = sensitiveIO::sanitizeJSString($group->getDN());
 $description = sensitiveIO::sanitizeJSString($group->getDescription()); 
 
 //get records / pages
-$recordsPerPage = $_SESSION["cms_context"]->getRecordsPerPage();
+$recordsPerPage = CMS_session::getRecordsPerPage();
 
 $usersTab = $modulesTab = $adminTab = '';
 

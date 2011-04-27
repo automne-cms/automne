@@ -520,13 +520,12 @@ class CMS_view extends CMS_grandFather
 		$this->_secure = $secure ? true : false;
 		if ($this->_secure) {
 			if (isset($_SERVER['HTTP_X_POWERED_BY']) && $_SERVER['HTTP_X_POWERED_BY'] == 'Automne' && isset($_SERVER['HTTP_X_ATM_TOKEN'])) {
-				if (CMS_context::checkToken('admin', $_SERVER['HTTP_X_ATM_TOKEN'])) {
+				if (CMS_session::checkToken('admin', $_SERVER['HTTP_X_ATM_TOKEN'])) {
 					return true;
 				}
 			}
 			$this->raiseError('Unautorized query on a secure interface : Query on '.$_SERVER['SCRIPT_NAME'].' - from '.@$_SERVER['HTTP_REFERER']);
-			//$this->raiseError(time());
-			//$this->raiseError(print_r(CMS_context::getSessionVar('atm-tokens'), true));
+			
 			$this->setDisconnected(true);
 			$this->show();
 		}
@@ -552,8 +551,8 @@ class CMS_view extends CMS_grandFather
 					$return .= 
 					'	<error>0</error>'."\n";
 				}
-				if ($this->_secure && CMS_context::tokenIsExpired('admin')) {
-					$token = CMS_context::getToken('admin');
+				if ($this->_secure && CMS_session::tokenIsExpired('admin')) {
+					$token = CMS_session::getToken('admin');
 					//pr('new token : '.$token);
 					$return .= 
 					'	<token><![CDATA['.$token.']]></token>'."\n";

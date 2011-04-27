@@ -160,7 +160,7 @@ if ($modulesValidations && sizeof($modulesValidations)) {
 //json encode validations types
 $validationsType = sensitiveIO::jsonEncode($validationsType);
 //get records / pages
-$recordsPerPage = $_SESSION["cms_context"]->getRecordsPerPage();
+$recordsPerPage = CMS_session::getRecordsPerPage();
 
 $jscontent = <<<END
 	var validationsWindow = Ext.getCmp('{$winId}');

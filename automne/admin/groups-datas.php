@@ -39,7 +39,7 @@ $letter = sensitiveIO::request('letter');
 $sort = sensitiveIO::request('sort');
 $dir = sensitiveIO::request('dir');
 $start = sensitiveIO::request('start', 'sensitiveIO::isPositiveInteger', 0);
-$limit = sensitiveIO::request('limit', 'sensitiveIO::isPositiveInteger', $_SESSION["cms_context"]->getRecordsPerPage());
+$limit = sensitiveIO::request('limit', 'sensitiveIO::isPositiveInteger', CMS_session::getRecordsPerPage());
 $userId = sensitiveIO::request('userId', 'sensitiveIO::isPositiveInteger');
 $filter = (sensitiveIO::request('filter')) ? true : false;
 

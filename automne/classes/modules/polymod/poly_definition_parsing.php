@@ -1254,16 +1254,15 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		if (isset($polymodFormsItems[\''.$tag['attributes']['name'].'\'])) $object['.$objectID.'] = $polymodFormsItems[\''.$tag['attributes']['name'].'\'];
 		$content .= \'<form name="'.$tag['attributes']['name'].'" action="\'.$_SERVER[\'SCRIPT_NAME\'].\'" method="post" enctype="multipart/form-data">
 		<input type="hidden" name="cms_action" value="validate" />
-		<input type="hidden" name="atm-token" value="\'.CMS_context::getToken(MOD_POLYMOD_CODENAME.\'-'.$tag['attributes']['name'].'\').\'" />
+		<input type="hidden" name="atm-token" value="\'.CMS_session::getToken(MOD_POLYMOD_CODENAME.\'-'.$tag['attributes']['name'].'\').\'" />
 		<input type="hidden" name="item" value="\'.$object['.$objectID.']->getID().\'" />
 		<input type="hidden" name="polymod" value="\'.$parameters[\'module\'].\'" />
 		<input type="hidden" name="object" value="'.$objectID.'" />
 		<input type="hidden" name="formID" value="'.$tag['attributes']['name'].'" />\';
 		//for forms we absolutely needs cms_user
 		if (!is_object($cms_user)) {
-			//initialize public user
-			$cms_context = new CMS_context(DEFAULT_USER_LOGIN, DEFAULT_USER_PASSWORD);
-			$cms_user = $cms_context->getUser();
+			//load anonymous user
+			$cms_user = CMS_profile_usersCatalog::getByID(ANONYMOUS_PROFILEUSER_ID);
 		}
 		$replace_'.$uniqueID.' = $replace; //save previous replace vars if any
 		$replace["atm-form"] = array (

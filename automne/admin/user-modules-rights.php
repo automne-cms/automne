@@ -164,7 +164,7 @@ if (!$disableFields) {
 	}]";
 }
 
-$maxDepth = sensitiveIO::isPositiveInteger($_SESSION["cms_context"]->getSessionVar("modules_clearances_max_depth")) ? $_SESSION["cms_context"]->getSessionVar("modules_clearances_max_depth") : 3;
+$maxDepth = sensitiveIO::isPositiveInteger(CMS_session::getSessionVar("modules_clearances_max_depth")) ? CMS_session::getSessionVar("modules_clearances_max_depth") : 3;
 
 $moduleElements = "{
 	id:				'categories-rights-{$moduleCodename}-{$profileId}',

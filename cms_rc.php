@@ -12,8 +12,6 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr> &            |
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: cms_rc.php,v 1.25 2010/03/08 16:45:48 sebastien Exp $
 
 /**
   * AUTOMNE rc file : contains all default constants
@@ -199,6 +197,13 @@ if (!defined("APPLICATION_IS_WINDOWS")) {
   */
 if (!defined("APPLICATION_DEFAULT_TIMEZONE")) {
 	define("APPLICATION_DEFAULT_TIMEZONE", 'Europe/Paris');
+}
+
+/**
+  * Define execution Type
+  */
+if (!defined("APPLICATION_EXEC_TYPE")) {
+	define("APPLICATION_EXEC_TYPE", (strtolower(php_sapi_name()) != 'cli' ? 'http' : 'cli'));
 }
 
 /**
@@ -1069,25 +1074,14 @@ define("PAGE_VISUALMODE_CLIENTSPACES_FORM", 5);
 define("PAGE_VISUALMODE_PRINT", 6);
 define("PAGE_VISUALMODE_HTML_PUBLIC_INDEXABLE", 7);
 
-/**
-  * Define execution Type
-  */
-if (!defined("APPLICATION_EXEC_TYPE")) {
-	define("APPLICATION_EXEC_TYPE", "http");
-}
-
 //augment memory_limit
 if (ini_get('memory_limit') < (int) APPLICATION_MEMORY_LIMIT) {
 	@ini_set('memory_limit', APPLICATION_MEMORY_LIMIT);
 }
-//try to remove magic quotes
+//try to change some misconfigurations
 @ini_set('magic_quotes_gpc', 0);
 @ini_set('magic_quotes_runtime', 0);
 @ini_set('magic_quotes_sybase', 0);
-//try to change some misconfigurations
-@ini_set('session.gc_probability', 1);
-@ini_set('session.gc_divisor', 100);
-@ini_set('session.gc_maxlifetime', APPLICATION_SESSION_TIMEOUT);
 @ini_set('allow_call_time_pass_reference', 0);
 //set default timezone
 date_default_timezone_set(APPLICATION_DEFAULT_TIMEZONE);
@@ -1154,6 +1148,9 @@ if (STATS_DEBUG) {
 		if (function_exists('xdebug_get_profiler_filename') && xdebug_get_tracefile_name()) {
 			$content .= 'XDebug Trace : '. xdebug_get_tracefile_name()."\n";
 		}
+		$content .= 'User : '.(CMS_session::getUserId() ? CMS_session::getUser()->getFullName().' ('.CMS_session::getUserId().')' : 'none')."\n";
+		$content .= 'Persistent login: '.(CMS_session::getPermanent() ? 'Yes' : 'No')."\n";
+		$content .= 'Session Id '.Zend_Session::getId()."\n";
 		if (VIEW_SQL && $_SERVER["SCRIPT_NAME"] != PATH_ADMIN_WR.'/stat.php') {
 			$stat = array(
 				'stat_time_start'		=> $GLOBALS["time_start"],
@@ -1357,54 +1354,28 @@ function atm_regen() {
 	}
 }
 
-/**
-  * Start Automne session
-  */
+//Function to start Automne session (deprecated, use CMS_session::init() instead)
 function start_atm_session() {
-	// verify if PHP supports session, die if it does not
-	if (!@function_exists('session_name')) {
-	    die('Session is not available');
-	} elseif (ini_get('session.auto_start') == true && session_name() != 'AutomneSession') {
-	    // Do not delete the existing session, it might be used by other 
-	    // applications; instead just close it.
-	    session_write_close();
-	}
-	//if session already exists, return
-	if (session_name() == 'AutomneSession') {
-		return;
-	}
-	// session cookie settings
-	session_set_cookie_params(0, '/', APPLICATION_COOKIE_DOMAIN, false, true);
-	
-	// cookies are safer (use @ini_set() in case this function is disabled)
-	@ini_set('session.use_cookies', true);
-	
-	// but not all user allow cookies
-	@ini_set('session.use_only_cookies', false);
-	//remove session trans sid to prevent session fixation
-	@ini_set('session.use_trans_sid', false);
-	// delete session/cookies when browser is closed
-	@ini_set('session.cookie_lifetime', 0);
-	
-	// warn but dont work with bug
-	@ini_set('session.bug_compat_42', false);
-	@ini_set('session.bug_compat_warn', true);
-	
-	// use more secure session ids
-	@ini_set('session.hash_function', 1);
-	
-	@session_name('AutomneSession');
-	@session_start();
+	CMS_session::init();
 }
 
-//Start session
-if (APPLICATION_CONFIG_LOADED) {
-	start_atm_session();
+//Start Automne session
+if (APPLICATION_CONFIG_LOADED && APPLICATION_EXEC_TYPE != 'cli') {
+	CMS_session::init();
 }
 
 // Start output buffering for compression so we don't prevent
 // headers from being sent if there's a blank line in an included file
 if (!defined('HTML_COMPRESSION_STARTED')) {
 	ob_start( 'compress_handler' );
+}
+
+//load current user if exists
+if (APPLICATION_EXEC_TYPE == 'http') {
+	CMS_session::authenticate();
+	$cms_user = CMS_session::getUser();
+	if ($cms_user) {
+		$cms_language = $cms_user->getLanguage();
+	}
 }
 ?>

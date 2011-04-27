@@ -424,12 +424,12 @@ class CMS_poly_definition_functions
 						}
 					}
 					//Check form token
-					if (!isset($_POST["atm-token"]) || !CMS_context::checkToken(MOD_POLYMOD_CODENAME.'-'.$formID, $_POST["atm-token"])) {
+					if (!isset($_POST["atm-token"]) || !CMS_session::checkToken(MOD_POLYMOD_CODENAME.'-'.$formID, $_POST["atm-token"])) {
 						$polymodFormsError[$formID]['error'][] = 'form-token';
 						return false;
 					} else {
 						//Token is used so expire it
-						CMS_context::expireToken(MOD_POLYMOD_CODENAME.'-'.$formID);
+						CMS_session::expireToken(MOD_POLYMOD_CODENAME.'-'.$formID);
 					}
 					if (!$polymodFormsError[$formID]) {
 						//save the data

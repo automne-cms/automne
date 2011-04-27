@@ -174,7 +174,7 @@ class CMS_scriptsManager
 				//@system("cd ".PATH_REALROOT_FS."; php ".PATH_PACKAGES_FS."/scripts/script.php -m ".REGENERATION_THREADS.$forceRestart." > /dev/null 2>&1 &");
 			}
 		} else {
-			$_SESSION["cms_context"]->setSessionVar('start_script',true);
+			CMS_session::setSessionVar('start_script',true);
 		}
 	}
 	

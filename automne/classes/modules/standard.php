@@ -2296,5 +2296,17 @@ class CMS_module_standard extends CMS_module
 		}
 		return $results;
 	}
+	
+	/**
+	  * Get the module authentification adapter
+	  *
+	  * @param array : the authentification params
+	  * @return CMS_auth : the module authentification adapter
+	  * @access public
+	  */
+	function getAuthAdapter($params) {
+		//create auth adapter with params
+		return new CMS_auth($params);
+	}
 }
 ?>

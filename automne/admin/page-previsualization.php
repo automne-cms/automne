@@ -27,7 +27,7 @@
 
 require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
 
-$currentPage = sensitiveIO::request('currentPage', 'sensitiveIO::isPositiveInteger', $cms_context->getPageID());
+$currentPage = sensitiveIO::request('currentPage', 'sensitiveIO::isPositiveInteger', CMS_session::getPageID());
 $draft = sensitiveIO::request('draft') ? true : false;
 //unset request to avoid it to have interaction with page code
 sensitiveIO::unsetRequest(array('draft', 'currentPage'));

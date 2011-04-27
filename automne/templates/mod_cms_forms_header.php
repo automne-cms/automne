@@ -53,7 +53,7 @@ $separator = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? "\xa7\xa7" 
 
 //if page has forms
 if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
-	$sender = CMS_forms_sender::getSenderForContext((isset($_SESSION["cms_context"]) ? $_SESSION["cms_context"] : false));
+	$sender = CMS_forms_sender::getSenderForContext();
 	foreach($mod_cms_forms["usedforms"] as $formID) {
 		$form = new CMS_forms_formular($formID);
 		$cms_forms_msg[$form->getID()] = $cms_forms_error_msg[$form->getID()] = $cms_forms_token[$form->getID()] = '';
@@ -65,26 +65,12 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 			//check for authentification action in form
 			if ($form->getActionsByType(CMS_forms_action::ACTION_AUTH)) {
 				//check for valid session / logout attempt / and autologin
-				//CMS_grandFather::log('Forms ok1');
-				if (!isset($_SESSION["cms_context"]) || (isset($_SESSION["cms_context"]) && !is_a($_SESSION["cms_context"], 'CMS_context')) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] == 'true')) {
-					/*@session_destroy();
-					start_atm_session();*/
-					//CMS_grandFather::log('Forms ok2');
-					if ((!isset($_REQUEST["logout"]) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] != 'true')) && CMS_context::autoLoginSucceeded()) {
-						//declare form ok action
-						$cms_forms_okAction[$form->getID()] = true;
-						//CMS_grandFather::log('Forms ok3');
-					} elseif (isset($_REQUEST["logout"]) && $_REQUEST["logout"] == 'true') {
-						// Reset cookie
-						CMS_context::resetSessionCookies();
-						//then reload current page (to load public user)
-						//CMS_grandFather::log('Forms ok4');
-						CMS_view::redirect($_SERVER["SCRIPT_NAME"]);
-					}
-				}
-				//CMS_grandFather::log('Forms ok5');
-				if (isset($_SESSION["cms_context"]) && is_a($_SESSION["cms_context"], 'CMS_context') && (!isset($_REQUEST["logout"]) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] != 'true')) && CMS_context::autoLoginSucceeded()) {
-					//CMS_grandFather::log('Forms ok6');
+				if (io::request('logout') == 'true') {
+					// Disconnect user
+					CMS_session::authenticate(array('disconnect'=> true));
+					//then reload current page (to load public user)
+					CMS_view::redirect($_SERVER["SCRIPT_NAME"]);
+				} elseif (CMS_session::autoLoginSucceeded()) {
 					//declare form ok action
 					$cms_forms_okAction[$form->getID()] = true;
 				}
@@ -157,7 +143,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 			if (isset($_POST["formID"]) && $_POST["formID"] == $formID && $_POST["cms_action"] == 'validate') {
 				$form_language = $form->getLanguage();
 				//check form token
-				if (!isset($_POST["atm-token"]) || !CMS_context::checkToken(MOD_CMS_FORMS_CODENAME, $_POST["atm-token"])) {
+				if (!isset($_POST["atm-token"]) || !CMS_session::checkToken(MOD_CMS_FORMS_CODENAME, $_POST["atm-token"])) {
 					$cms_forms_token[$form->getID()] = true;
 				}
 				//check for required fields
@@ -434,14 +420,19 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 								if ($login && $password) {
 									// Vérification données obligatoires
 									if (trim($login) != '' && trim($password) != '') {
-										$cms_context = new CMS_context(trim($login), trim($password), $permanent);
-										if (!$cms_context->hasError()) {
-											//user is ok so create session
-											$_SESSION["cms_context"] = $cms_context;
-											$cms_user = $_SESSION["cms_context"]->getUser();
+										
+										//Auth parameters
+										$params = array(
+											'login'		=> $login,
+											'password'	=> $password,
+											'remember'	=> ($permanent ? true : false)
+										);
+										CMS_session::authenticate($params);
+										$user = CMS_session::getUser();
+										if ($user) {
+											$cms_user = $user;
 											$cms_language = $cms_user->getLanguage();
 										} else {
-											unset($_SESSION["cms_context"]);
 											//append message to form error message
 											if ($action->getString("text")) {
 												$cms_forms_error_msg[$form->getID()] .= nl2br($action->getString("text")).'<br />';

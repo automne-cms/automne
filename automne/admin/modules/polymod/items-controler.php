@@ -246,7 +246,7 @@ switch ($action) {
 			$parameters = array();
 			$parameters['itemID'] = $itemId;
 			$parameters['module'] = $codename;
-			$cms_page = $cms_context->getPage();
+			$cms_page = CMS_session::getPage();
 			if (is_object($cms_page) && !$cms_page->hasError()) {
 				$parameters['pageID'] = $cms_page->getID();
 			}
@@ -277,7 +277,7 @@ switch ($action) {
 		$rowId = sensitiveIO::request('rowType', 'sensitiveIO::isPositiveInteger');
 		$rowTag = sensitiveIO::request('rowTag');
 		$cs = sensitiveIO::request('cs');
-		$currentPage = is_object($cms_context) ? sensitiveIO::request('page', 'sensitiveIO::isPositiveInteger', $cms_context->getPageID()) : '';
+		$currentPage = sensitiveIO::request('page', 'sensitiveIO::isPositiveInteger', CMS_session::getPageID());
 		$blockId = sensitiveIO::request('block');
 		$blockClass = sensitiveIO::request('blockClass');
 		$value = sensitiveIO::request('value', 'is_array');

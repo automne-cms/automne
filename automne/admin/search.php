@@ -71,7 +71,7 @@ if (!$winId) {
 }
 
 //usefull vars
-$recordsPerPage = $_SESSION["cms_context"]->getRecordsPerPage();
+$recordsPerPage = CMS_session::getRecordsPerPage();
 
 //
 // Search Panel

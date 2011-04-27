@@ -45,7 +45,7 @@ define("MESSAGE_ERROR_SESSION_EXPIRED", 676);
 define("MESSAGE_PAGE_PLEASE_WAIT", 1631);
 
 //load language object
-$language = CMS_languagesCatalog::getDefaultLanguage(true);
+$cms_language = CMS_languagesCatalog::getDefaultLanguage(true);
 //load interface instance
 $view = CMS_view::getInstance();
 //var used to display error of login
@@ -56,41 +56,42 @@ $cms_action = io::request('cms_action');
 //Action management	
 switch ($cms_action) {
 case 'logout':
-		// Reset cookie (kill current session)
-		CMS_context::resetSessionCookies();
+		// disconnect user
+		CMS_session::authenticate(array('disconnect'=> true));
 	break;
 case 'reconnect':
 		//display error login window on top of login form
 		$loginError = "
 		Automne.message.popup({
-			msg: '{$language->getJsMessage(MESSAGE_ERROR_SESSION_EXPIRED)}',
+			msg: '{$cms_language->getJsMessage(MESSAGE_ERROR_SESSION_EXPIRED)}',
 			buttons: Ext.MessageBox.OK,
 			icon: Ext.MessageBox.ERROR,
 			fn:function() {
-				loginWindow.body.mask('{$language->getJsMessage(MESSAGE_PAGE_PLEASE_WAIT)}');
+				loginWindow.body.mask('{$cms_language->getJsMessage(MESSAGE_PAGE_PLEASE_WAIT)}');
 				loginWindow.reload();
 			}
 		});";
-		//reset session (start fresh)
-		CMS_context::resetSessionCookies();
+		// disconnect user
+		CMS_session::authenticate(array('disconnect'=> true));
 	break;
 default:
 	// First attempt to obtain $_COOKIE information from domain
-	if ((!$cms_action || $cms_action != 'logout') && CMS_context::autoLoginSucceeded()) {
-		if (!$_SESSION["cms_context"]->hasError() && ($cms_user = $_SESSION["cms_context"]->getUser()) && $cms_user->hasAdminAccess()) {
+	if ((!$cms_action || $cms_action != 'logout')) {
+		CMS_session::authenticate();
+		$cms_user = CMS_session::getUser();
+		if ($cms_user && $cms_user->hasAdminAccess()) {
 			//launch the daily routine incase it's not in the cron
 			CMS_module_standard::processDailyRoutine();
 			//then set context and load Automne interface
-			$userSessionsInfos = CMS_context::getSessionInfos();
-			$cms_user = $_SESSION["cms_context"]->getUser();
-			$language = $cms_user->getLanguage();
+			$userSessionsInfos = CMS_session::getSessionInfos();
+			$cms_language = $cms_user->getLanguage();
 			//welcome message
-			$welcome = $language->getJsMessage(MESSAGE_PAGE_USER_WELCOME, array($userSessionsInfos['fullname']));
+			$welcome = $cms_language->getJsMessage(MESSAGE_PAGE_USER_WELCOME, array($userSessionsInfos['fullname']));
 			if ($userSessionsInfos['hasValidations']) {
-				$welcome .= '<br /><br />'.(($userSessionsInfos['awaitingValidation']) ? $language->getJsMessage(MESSAGE_PAGE_USER_VALIDATIONS, array($userSessionsInfos['awaitingValidation'])) : $language->getJsMessage(MESSAGE_PAGE_USER_NOVALIDATION));
+				$welcome .= '<br /><br />'.(($userSessionsInfos['awaitingValidation']) ? $cms_language->getJsMessage(MESSAGE_PAGE_USER_VALIDATIONS, array($userSessionsInfos['awaitingValidation'])) : $cms_language->getJsMessage(MESSAGE_PAGE_USER_NOVALIDATION));
 			}
 			if (SYSTEM_DEBUG && $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
-				$welcome .= '<br /><br /><span class="atm-red">'.$language->getJsMessage(MESSAGE_PAGE_DEBUG).'</span> '.$language->getJsMessage(MESSAGE_PAGE_PRESS_F2_FOR_LOG);
+				$welcome .= '<br /><br /><span class="atm-red">'.$cms_language->getJsMessage(MESSAGE_PAGE_DEBUG).'</span> '.$cms_language->getJsMessage(MESSAGE_PAGE_PRESS_F2_FOR_LOG);
 			}
 			$jscontent = '
 			//show front page in tab
@@ -102,14 +103,14 @@ default:
 			Automne.message.show(\''.sensitiveIO::sanitizeJSString($welcome).'\');
 			';
 			//add all JS locales
-			$jscontent .= CMS_context::getJSLocales();
+			$jscontent .= CMS_session::getJSLocales();
 			$view->addJavascript($jscontent);
 			$view->show(CMS_view::SHOW_RAW);
 		} else {
 			//display error login window on top of login form
 			$loginError = "
 			Automne.message.popup({
-				msg: '{$language->getJsMessage(MESSAGE_ERROR_SESSION_EXPIRED)}',
+				msg: '{$cms_language->getJsMessage(MESSAGE_ERROR_SESSION_EXPIRED)}',
 				buttons: Ext.MessageBox.OK,
 				icon: Ext.MessageBox.ERROR
 			});";
@@ -125,7 +126,7 @@ $rootPath = PATH_REALROOT_WR;
 $jscontent = 
 <<<END
 	var loginWindow = new Automne.frameWindow({
-		title: 			'{$language->getJsMessage(MESSAGE_PAGE_TITLE, array($applicationLabel))}',
+		title: 			'{$cms_language->getJsMessage(MESSAGE_PAGE_TITLE, array($applicationLabel))}',
 		id:				'loginWindow',
 		frameURL:		'{$loginURL}',
 		allowFrameNav:	true,

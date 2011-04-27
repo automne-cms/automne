@@ -61,7 +61,7 @@ $sort = sensitiveIO::request('sort', array('datetime', 'user', 'action'), 'datet
 $dir = sensitiveIO::request('dir', array('ASC','DESC'), 'DESC');
 $userId = sensitiveIO::request('userId', 'sensitiveIO::isPositiveInteger');
 $start = sensitiveIO::request('start', 'sensitiveIO::isPositiveInteger', 0);
-$limit = sensitiveIO::request('limit', 'sensitiveIO::isPositiveInteger', $_SESSION["cms_context"]->getRecordsPerPage());
+$limit = sensitiveIO::request('limit', 'sensitiveIO::isPositiveInteger', CMS_session::getRecordsPerPage());
 $delete = sensitiveIO::request('del') ? true : false;
 
 if ($delete && !$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {

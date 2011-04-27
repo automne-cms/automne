@@ -55,7 +55,7 @@ class CMS_cache extends CMS_grandFather {
 	  */
 	function __construct($hash, $type, $lifetime = null, $contextAware = false) {
 		if ($contextAware) {
-			$this->_parameters['hash'] = $hash.'_'.CMS_context::getContextHash();
+			$this->_parameters['hash'] = $hash.'_'.CMS_session::getContextHash();
 		} else {
 			$this->_parameters['hash'] = $hash;
 		}

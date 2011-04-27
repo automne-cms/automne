@@ -1,5 +1,6 @@
 V4.2.0 (in progress)
 [REFACTOR] : Update Zend Framework to version 1.11.5
+[REFACTOR] : Session management and users authentification are completely refactored to use Zend Framework
 
 V4.1.2 (12/04/2011)
 [BUG] : Correct bugs numbers: 1916, 1860, 1861, 1837 (see http://www.automne-cms.org/bug/)

@@ -180,7 +180,7 @@ $disableLoginField = ($disableUserInfosFields || $user->getUserId() == ANONYMOUS
 //min password length
 $minimumPasswordLength = MINIMUM_PASSWORD_LENGTH;
 //get records / pages
-$recordsPerPage = $_SESSION["cms_context"]->getRecordsPerPage();
+$recordsPerPage = CMS_session::getRecordsPerPage();
 
 $groupsTab = $modulesTab = $adminTab = $logsTab = '';
 

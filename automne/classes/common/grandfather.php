@@ -257,7 +257,7 @@ class CMS_grandFather
 				'io' 								=> PATH_PACKAGES_FS.'/common/sensitiveio.php',
 				
 				//dialogs
-				'cms_context' 						=> PATH_PACKAGES_FS.'/dialogs/context.php',
+				'cms_context' 						=> PATH_PACKAGES_FS.'/dialogs/context.php', //Deprecated
 				'cms_wysiwyg_toolbar' 				=> PATH_PACKAGES_FS.'/dialogs/toolbar.php',
 				'cms_dialog' 						=> PATH_PACKAGES_FS.'/dialogs/dialog.php', //Deprecated
 				'cms_jsdialog' 						=> PATH_PACKAGES_FS.'/dialogs/jsdialog.php', //Deprecated
@@ -274,7 +274,6 @@ class CMS_grandFather
 				'cms_patch'							=> PATH_PACKAGES_FS.'/files/patch.php',
 				'cms_file'							=> PATH_PACKAGES_FS.'/files/filesManagement.php',
 				'cms_archive'						=> PATH_PACKAGES_FS.'/files/archive.php',
-				'cms_bzip_file'						=> PATH_PACKAGES_FS.'/files/archive-bzip.php',
 				'cms_gzip_file'						=> PATH_PACKAGES_FS.'/files/archive-gzip.php',
 				'cms_tar_file'						=> PATH_PACKAGES_FS.'/files/archive-tar.php',
 				'cms_zip_file'						=> PATH_PACKAGES_FS.'/files/archive-zip.php',
@@ -352,6 +351,8 @@ class CMS_grandFather
 				'cms_profile_userscatalog'			=> PATH_PACKAGES_FS.'/user/profileuserscatalog.php',
 				'cms_profile_usersgroupscatalog'	=> PATH_PACKAGES_FS.'/user/profileusersgroupscatalog.php',
 				'cms_profile_usersgroup'			=> PATH_PACKAGES_FS.'/user/profileusersgroup.php',
+				'cms_session' 						=> PATH_PACKAGES_FS.'/user/session.php',
+				'cms_auth' 							=> PATH_PACKAGES_FS.'/user/auth.php',
 
 				//workflow
 				'cms_resource' 						=> PATH_PACKAGES_FS.'/workflow/resource.php',

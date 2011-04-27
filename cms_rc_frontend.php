@@ -11,8 +11,6 @@
 // +----------------------------------------------------------------------+
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: cms_rc_frontend.php,v 1.9 2010/03/08 16:45:48 sebastien Exp $
 
 /**
   * AUTOMNE Frontend rc file.
@@ -32,95 +30,6 @@ if (!defined("APPLICATION_USER_TYPE")) {
 //include general configuration file
 require_once(dirname(__FILE__)."/cms_rc.php");
 
-/**
-  * User session management :
-  * if not APPLICATION_ENFORCES_ACCESS_CONTROL (default)
-  *  - user connected : create user context object
-  *  - user disconnected (or session lost) : destroy user context
-  *  - user not connected : continue
-  * if APPLICATION_ENFORCES_ACCESS_CONTROL
-  *  - user connected : create user context object
-  *  - user disconnected (or session lost) : destroy user context and create public context
-  *  - user not connected : create public context
-  */
-if (APPLICATION_CONFIG_LOADED) {
-	if (!APPLICATION_ENFORCES_ACCESS_CONTROL) {
-		//check if user session exists
-		if (isset($_SESSION["cms_context"])) {
-			//check session object
-			if ($_SESSION["cms_context"] instanceof CMS_context) {
-				$_SESSION["cms_context"]->checkSession();
-				//then if session always exists, set some useful vars
-				if (is_object($_SESSION["cms_context"])) {
-					$cms_context =& $_SESSION["cms_context"];
-					$cms_user = $_SESSION["cms_context"]->getUser();
-					$cms_language = $cms_user->getLanguage();
-				}
-			}
-		} elseif (isset($cms_user) && ($cms_user instanceof CMS_profile_user)) {
-			//user already exists, only need to declare language
-			$cms_language = $cms_user->getLanguage();
-		}
-	} else {
-		//CMS_grandFather::log('Frontend ok1 '.$_SERVER['SCRIPT_NAME']);
-		//check if user session exists
-		if (isset($_SESSION["cms_context"])) {
-			//check session object
-			//CMS_grandFather::log('Frontend ok2 '.$_SERVER['SCRIPT_NAME']);
-			if ($_SESSION["cms_context"] instanceof CMS_context) {
-				//CMS_grandFather::log('Frontend ok3 '.$_SERVER['SCRIPT_NAME']);
-				$_SESSION["cms_context"]->checkSession();
-				//then if session always exists, set some useful vars
-				if (is_object($_SESSION["cms_context"])) {
-					//CMS_grandFather::log('Frontend ok4 (user : '.$_SESSION["cms_context"]->getUserId().') '.$_SERVER['SCRIPT_NAME']);
-					$cms_context =& $_SESSION["cms_context"];
-					$cms_user = $_SESSION["cms_context"]->getUser();
-					$cms_language = $cms_user->getLanguage();
-				} else {
-					//CMS_grandFather::log('Frontend ok5 '.$_SERVER['SCRIPT_NAME']);
-					//else initialize public user
-					$cms_context = new CMS_context(DEFAULT_USER_LOGIN, DEFAULT_USER_PASSWORD);
-					if (!$cms_context->hasError()) {
-						//CMS_grandFather::log('Frontend ok6 '.$_SERVER['SCRIPT_NAME']);
-						$_SESSION["cms_context"] = $cms_context;
-						$cms_user = $_SESSION["cms_context"]->getUser();
-						$cms_language = $cms_user->getLanguage();
-					} else {
-						//CMS_grandFather::log('Frontend ok7 '.$_SERVER['SCRIPT_NAME']);
-						CMS_view::redirect(PATH_FRONTEND_SPECIAL_LOGIN_WR);
-					}
-				}
-			}
-		} else {
-			global $cms_user; //try to get user from global in case it has declared somewhere else
-			if (!is_object($cms_user)) {
-				//CMS_grandFather::log('Frontend ok8 '.$_SERVER['SCRIPT_NAME']);
-				//initialize public user
-				$cms_context = new CMS_context(DEFAULT_USER_LOGIN, DEFAULT_USER_PASSWORD);
-				if (!$cms_context->hasError()) {
-					//CMS_grandFather::log('Frontend ok9 '.$_SERVER['SCRIPT_NAME']);
-					$_SESSION["cms_context"] = $cms_context;
-					$cms_user = $_SESSION["cms_context"]->getUser();
-					$cms_language = $cms_user->getLanguage();
-				} else {
-					//CMS_grandFather::log('Frontend ok10 '.$_SERVER['SCRIPT_NAME']);
-					CMS_view::redirect(PATH_FRONTEND_SPECIAL_LOGIN_WR);
-				}
-			} elseif ($cms_user instanceof CMS_profile_user) {
-				//user already exists, only need to declare language
-				$cms_language = $cms_user->getLanguage();
-			}
-		}
-	}
-	//try autologin
-	if (CMS_context::autoLoginSucceeded()) {
-		if (!$_SESSION["cms_context"]->hasError()) {
-			//CMS_grandFather::log('Frontend ok11 '.$_SERVER['SCRIPT_NAME']);
-			$cms_user = $_SESSION["cms_context"]->getUser();
-			$language = $cms_user->getLanguage();
-		}
-	}
-}
 //force module standard loading
 if (!class_exists('CMS_module_standard')) {
 	die('Cannot find standard module ...');

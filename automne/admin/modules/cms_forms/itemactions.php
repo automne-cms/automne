@@ -90,11 +90,11 @@ $form = new CMS_forms_formular($_POST["form"]);
 
 // Language
 if ($_REQUEST["items_language"] != '') {
-	$_SESSION["cms_context"]->setSessionVar("items_language", $_REQUEST["items_language"]);
-} elseif ($_SESSION["cms_context"]->getSessionVar("items_language") == '' || is_object($_SESSION["cms_context"]->getSessionVar("items_language"))) {
-	$_SESSION["cms_context"]->setSessionVar("items_language", $cms_module->getParameters("default_language"));
+	CMS_session::setSessionVar("items_language", $_REQUEST["items_language"]);
+} elseif (CMS_session::getSessionVar("items_language") == '' || is_object(CMS_session::getSessionVar("items_language"))) {
+	CMS_session::setSessionVar("items_language", $cms_module->getParameters("default_language"));
 }
-$items_language = new CMS_language($_SESSION["cms_context"]->getSessionVar("items_language"));
+$items_language = new CMS_language(CMS_session::getSessionVar("items_language"));
 
 $separator = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? "\xa7\xa7" : "\xc2\xa7\xc2\xa7";
 
@@ -292,7 +292,7 @@ if (sizeof($formActions)) {
 							$fields = $form->getFields(true);
 							$fieldscontent = '';
 							foreach ($fields as $fieldID => $field) {
-								if ($field->getAttribute('type') == 'email' || $field->getAttribute('type') == 'select') {
+								if ($field->getAttribute('type') == 'email' || $field->getAttribute('type') == 'select' || $field->getAttribute('type') == 'hidden') {
 									$selected = ($field->getID() == $item->getString('value')) ? ' selected="selected"':'';
 									$fieldscontent .= '<option value="'.$field->getID().'"'.$selected.'>'.$field->getAttribute('label').'</option>';
 								}

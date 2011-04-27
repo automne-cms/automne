@@ -151,7 +151,7 @@ if ($filename || $cms_action=='errorsCorrected') {
 			if (!$force) {
 				//if process continue, then we can correct patch errors.
 				//save errors infos
-				$_SESSION["cms_context"]->setSessionVar('patchErrors',$errorsInfos);
+				CMS_session::setSessionVar('patchErrors',$errorsInfos);
 				//go to errors correction page
 				$send = '
 				<div id="correctUpdateErrors"></div>

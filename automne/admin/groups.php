@@ -60,7 +60,7 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
 }
 
 //get records / pages
-$recordsPerPage = $_SESSION["cms_context"]->getRecordsPerPage();
+$recordsPerPage = CMS_session::getRecordsPerPage();
 
 //groups letters
 $letters = CMS_profile_usersGroupsCatalog::getLettersForTitle();

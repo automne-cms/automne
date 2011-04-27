@@ -79,11 +79,11 @@ CMS_forms_formular::cleanEmptyForms();
 
 // Language
 if ($_REQUEST["items_language"] != '') {
-	$_SESSION["cms_context"]->setSessionVar("items_language", $_REQUEST["items_language"]);
-} elseif ($_SESSION["cms_context"]->getSessionVar("items_language") == '' || is_object($_SESSION["cms_context"]->getSessionVar("items_language"))) {
-	$_SESSION["cms_context"]->setSessionVar("items_language", $cms_module->getParameters("default_language"));
+	CMS_session::setSessionVar("items_language", $_REQUEST["items_language"]);
+} elseif (CMS_session::getSessionVar("items_language") == '' || is_object(CMS_session::getSessionVar("items_language"))) {
+	CMS_session::setSessionVar("items_language", $cms_module->getParameters("default_language"));
 }
-$items_language = new CMS_language($_SESSION["cms_context"]->getSessionVar("items_language"));
+$items_language = new CMS_language(CMS_session::getSessionVar("items_language"));
 
 //
 // Get default search options
@@ -91,7 +91,7 @@ $items_language = new CMS_language($_SESSION["cms_context"]->getSessionVar("item
 
 // Get search options from posted datas
 if ($_POST["cms_action"] == 'search') {
-	$_SESSION["cms_context"]->setSessionVar("items_ctg", $_POST["items_ctg"]);
+	CMS_session::setSessionVar("items_ctg", $_POST["items_ctg"]);
 }
 
 // +----------------------------------------------------------------------+
@@ -130,8 +130,8 @@ $search->addWhereCondition("profile", $cms_user);
 // Param : Language
 $search->addWhereCondition("language", $items_language);
 // Param : With categories
-if ($_SESSION["cms_context"]->getSessionVar("items_ctg") != '') {
-	$search->addWhereCondition("category", $_SESSION["cms_context"]->getSessionVar("items_ctg"));
+if (CMS_session::getSessionVar("items_ctg") != '') {
+	$search->addWhereCondition("category", CMS_session::getSessionVar("items_ctg"));
 }
 //language selection
 $content .= '
@@ -164,7 +164,7 @@ if (sizeof($a_all_categories)) {
 		array (
 		'field_name' => 'items_ctg',									// Select field name to get value in
 		'items_possible' => $a_all_categories,							// array of all categories availables: array(ID => label)
-		'default_value' => $cms_context->getSessionVar("items_ctg"),	// Same format
+		'default_value' => CMS_session::getSessionVar("items_ctg"),	// Same format
 		'attributes' => 'class="admin_input_text" style="width:250px;"'
 		)
 	);

@@ -48,7 +48,7 @@ define("MESSAGE_PAGE_ERROR_FATHER_IS_IDENTICAL", 1319);
 //Action management	
 if (isset($_GET["cms_action"]) && $_GET["cms_action"] == "displace") {
 	if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES)) {
-		$cms_page = $cms_context->getPage();
+		$cms_page = CMS_session::getPage();
 		$father = CMS_tree::getPageByID($_GET["new_father"]);
 		//augment the execution time, because things here can be quite lengthy
 		@set_time_limit(9000);

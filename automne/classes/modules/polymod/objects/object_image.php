@@ -1128,7 +1128,7 @@ class CMS_object_image extends CMS_object_common
 				if ($img && $this->_subfieldValues[2]->getValue()) {
 					$href = CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR . "/" . self::OBJECT_IMAGE_POPUP_FILE . '?'.(($location != RESOURCE_DATA_LOCATION_PUBLIC) ? 'location='.RESOURCE_DATA_LOCATION_EDITED.'&amp;':'').'file=' . $this->_subfieldValues[2]->getValue() . '&amp;label=' . urlencode($this->_subfieldValues[1]->getValue()).'&amp;module='.$moduleCodename;
 					$popup = (OPEN_ZOOMIMAGE_IN_POPUP) ? ' onclick="javascript:CMS_openPopUpImage(\''.addslashes($href).'\');return false;"':'';
-					$img = '<a target="_blank" rel="atm-enlarged" href="'. $href . '"'.$popup.' title="'.$this->_subfieldValues[1]->getValue().'">' . $img . '</a>';
+					$img = '<a target="_blank" rel="atm-enlarge" href="'. $href . '"'.$popup.' title="'.$this->_subfieldValues[1]->getValue().'">' . $img . '</a>';
 				}
 				return $img;
 			break;

@@ -43,7 +43,7 @@ $definition = sensitiveIO::request('definition') ? true : false; //append XML de
 $currentTpl = sensitiveIO::request('template', 'sensitiveIO::isPositiveInteger');
 $currentCS = sensitiveIO::request('cs');
 $start = sensitiveIO::request('start', 'sensitiveIO::isPositiveInteger', 0);
-$limit = sensitiveIO::request('limit', 'sensitiveIO::isPositiveInteger', $_SESSION["cms_context"]->getRecordsPerPage());
+$limit = sensitiveIO::request('limit', 'sensitiveIO::isPositiveInteger', CMS_session::getRecordsPerPage());
 
 //items
 $items = (sensitiveIO::request('items')) ? explode(',', sensitiveIO::request('items')) : array();

@@ -70,11 +70,11 @@ if (!$cms_user->hasModuleClearance(MOD_CMS_FORMS_CODENAME, CLEARANCE_MODULE_EDIT
 
 // Language
 if ($_REQUEST["items_language"] != '') {
-	$_SESSION["cms_context"]->setSessionVar("items_language", $_REQUEST["items_language"]);
-} elseif ($_SESSION["cms_context"]->getSessionVar("items_language") == '' || is_object($_SESSION["cms_context"]->getSessionVar("items_language"))) {
-	$_SESSION["cms_context"]->setSessionVar("items_language", $cms_module->getParameters("default_language"));
+	CMS_session::setSessionVar("items_language", $_REQUEST["items_language"]);
+} elseif (CMS_session::getSessionVar("items_language") == '' || is_object(CMS_session::getSessionVar("items_language"))) {
+	CMS_session::setSessionVar("items_language", $cms_module->getParameters("default_language"));
 }
-$items_language = new CMS_language($_SESSION["cms_context"]->getSessionVar("items_language"));
+$items_language = new CMS_language(CMS_session::getSessionVar("items_language"));
 
 // +----------------------------------------------------------------------+
 // | Actions                                                              |
@@ -211,7 +211,7 @@ $content = '
 	<table border="0" cellpadding="3" cellspacing="2">
 	<form name="frmitem" action="'.$_SERVER["SCRIPT_NAME"].'" method="post" enctype="multipart/form-data" onSubmit="getSelectedOptionsInField_ids();">
 	<input type="hidden" name="cms_action" value="validate" />
-	<input type="hidden" name="language" value="'.$_SESSION["cms_context"]->getSessionVar("items_language").'" />
+	<input type="hidden" name="language" value="'.CMS_session::getSessionVar("items_language").'" />
 	<input id="itemId" type="hidden" name="item" value="'.$item->getID().'" />
 	<tr>
 		<td class="admin" align="right">
