@@ -66,7 +66,7 @@ class processManager
 		}
 		
 		//captures the launch date
-		$this->_startDate = getmicrotime();
+		$this->_startDate = CMS_stats::getmicrotime();
 		
 		//computes the directory to put files in
 		$this->_tmpPath = $this->getTempPath();
@@ -235,7 +235,7 @@ class processManager
 	  */
 	function getExecutionTime()
 	{
-		return getmicrotime() - $this->_startDate;
+		return CMS_stats::getmicrotime() - $this->_startDate;
 	}
 	
 	/**

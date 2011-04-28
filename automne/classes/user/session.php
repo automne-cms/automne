@@ -15,7 +15,7 @@
 /**
   * Class CMS_session
   *
-  *  Keeps track of user session context
+  *  Keeps track of user session context and manage authentification with modules
   *
   * @package Automne
   * @subpackage user

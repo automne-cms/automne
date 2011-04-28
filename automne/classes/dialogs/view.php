@@ -580,7 +580,7 @@ class CMS_view extends CMS_grandFather
 				}
 				if (SYSTEM_DEBUG && STATS_DEBUG) {
 					$return .= 
-					'	<stats><![CDATA['.view_stat(true).']]></stats>'."\n";
+					'	<stats><![CDATA['.CMS_stats::view(true).']]></stats>'."\n";
 				}
 				$jsfiles = CMS_view::getJavascript(array(), 'screen', true);
 				if ($jsfiles) {

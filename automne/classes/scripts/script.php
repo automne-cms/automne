@@ -198,7 +198,7 @@ class automne_script extends backgroundScript
 						}
 						$scriptsArray[] = array(
 									"PID" 			=> $PIDfile,
-									"startTime" 	=> getmicrotime(),
+									"startTime" 	=> CMS_stats::getmicrotime(),
 									"scriptID" 		=> $data["id_reg"],
 									"scriptDatas"	=> $data);
 					}
@@ -229,7 +229,7 @@ class automne_script extends backgroundScript
 				while (true) {
 					@sleep(SLEEP_TIME); //wait a little to check sub_scripts
 					$break = false;
-					$timeStop = getmicrotime();
+					$timeStop = CMS_stats::getmicrotime();
 					if ($this->_debug) {
 						$this->raiseError(processManager::MASTER_SCRIPT_NAME." Scripts in progress : ".sizeof($scriptsArray));
 					}

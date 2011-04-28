@@ -269,6 +269,7 @@ class CMS_grandFather
 				'cms_fileupload_dialog' 			=> PATH_PACKAGES_FS.'/dialogs/fileupload.php', //Deprecated
 				'cms_loadingdialog' 				=> PATH_PACKAGES_FS.'/dialogs/loadingDialog.php', //Deprecated
 				'cms_texteditor' 					=> PATH_PACKAGES_FS.'/dialogs/texteditor.php',
+				'cms_stats'							=> PATH_PACKAGES_FS.'/dialogs/stats.php',
 
 				//files
 				'cms_patch'							=> PATH_PACKAGES_FS.'/files/patch.php',
@@ -395,10 +396,10 @@ class CMS_grandFather
 					return false;
 				}
 				/*only for stats*/
-				if (STATS_DEBUG) $GLOBALS["files_loaded"]++;
+				if (STATS_DEBUG) CMS_stats::$filesLoaded++;
 				if (STATS_DEBUG && VIEW_SQL) {
-					$GLOBALS["files_table"][] = 'Zend framework file';
-					$GLOBALS["memory_table"][] = array('file' => 'Zend framework file', 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
+					CMS_stats::$filesTable[] = 'Zend framework file';
+					CMS_stats::$memoryTable[] = array('file' => 'Zend framework file', 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
 				}
 				return true;
 			}
@@ -431,10 +432,10 @@ class CMS_grandFather
 			require_once($file);
 			/*only for stats*/
 			if (defined('STATS_DEBUG') && defined('VIEW_SQL')) {
-				if (STATS_DEBUG) $GLOBALS["files_loaded"]++;
+				if (STATS_DEBUG) CMS_stats::$filesLoaded++;
 				if (STATS_DEBUG && VIEW_SQL) { 
-					$GLOBALS["files_table"][] = $file; 
-					$GLOBALS["memory_table"][] = array('file' => $file, 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
+					CMS_stats::$filesTable[] = $file; 
+					CMS_stats::$memoryTable[] = array('file' => $file, 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
 				}
 			}
 		}

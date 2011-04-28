@@ -942,6 +942,27 @@ if (!defined('SESSION_EXPIRED_TOKEN_MAXAGE')) {
 if (!defined('LOG_APPLICATION_MAIL')) {
 	define('LOG_APPLICATION_MAIL', false);
 }
+/**
+  *	Enable profiling with xhprof (must be installed)
+  *	Default : false
+  */
+if (!defined('APPLICATION_ENABLE_PROFILING')) {
+	define('APPLICATION_ENABLE_PROFILING', false);
+}
+/**
+  *	xhprof root. Used when profiling is active
+  *	Default : false
+  */
+if (!defined('APPLICATION_XHPROF_ROOT_FS')) {
+	define('APPLICATION_XHPROF_ROOT_FS', '/smb/clients/automne4/www-rev/lib/xhprof');
+}
+/**
+  *	xhprof root. Used when profiling is active
+  *	Default : false
+  */
+if (!defined('APPLICATION_XHPROF_URI')) {
+	define('APPLICATION_XHPROF_URI', 'http://automne4.lib/xhprof/');
+}
 
 // ****************************************************************
 // ** CONSTANTS ARE NOT EDITABLE BEYOND THIS POINT               **
@@ -1127,81 +1148,6 @@ if (!defined("AUTOMNE_LASTUPDATE") && file_exists(PATH_MAIN_FS."/SUBVERSION")) {
 	define("AUTOMNE_LASTUPDATE", 0);
 }
 
-if (STATS_DEBUG) {
-	function view_stat($return = false){ 
-		$time_end = getmicrotime();
-		$time = sprintf('%.5f', $time_end - $GLOBALS["time_start"]);
-		$files = sprintf('%.5f', $GLOBALS["files_time"]);
-		$rapportSQL = sprintf('%.2f', ((100*$GLOBALS["total_time"])/$time));
-		$rapportPHP = 100-$rapportSQL;
-		$memoryPeak = round((memory_get_peak_usage()/1048576),3);
-		$content = 
-		'File ' .$_SERVER['SCRIPT_NAME'] ."\n".
-		'Loaded in ' . $time . ' seconds'."\n".
-		'Loaded PHP files : '. $GLOBALS["files_loaded"] ."\n".
-		'SQL requests : ' . sprintf('%.5f',$GLOBALS["total_time"]) . ' seconds ('. $GLOBALS["sql_nb_requests"] .' requests)'."\n".
-		'% SQL/PHP : '. $rapportSQL .' / '. $rapportPHP .' %'."\n".
-		'Memory Peak : '. $memoryPeak .'Mo'."\n";
-		if (function_exists('xdebug_get_profiler_filename') && xdebug_get_profiler_filename()) {
-			$content .= 'XDebug Profile : '. xdebug_get_profiler_filename()."\n";
-		}
-		if (function_exists('xdebug_get_profiler_filename') && xdebug_get_tracefile_name()) {
-			$content .= 'XDebug Trace : '. xdebug_get_tracefile_name()."\n";
-		}
-		$content .= 'User : '.(CMS_session::getUserId() ? CMS_session::getUser()->getFullName().' ('.CMS_session::getUserId().')' : 'none')."\n";
-		$content .= 'Persistent login: '.(CMS_session::getPermanent() ? 'Yes' : 'No')."\n";
-		$content .= 'Session Id '.Zend_Session::getId()."\n";
-		if (VIEW_SQL && $_SERVER["SCRIPT_NAME"] != PATH_ADMIN_WR.'/stat.php') {
-			$stat = array(
-				'stat_time_start'		=> $GLOBALS["time_start"],
-				'stat_time_end'			=> getmicrotime(),
-				'stat_total_time'		=> $GLOBALS["total_time"],
-				'stat_sql_nb_requests'	=> $GLOBALS["sql_nb_requests"],
-				'stat_sql_table'		=> $GLOBALS["sql_table"],
-				'stat_content_name'		=> basename($_SERVER["SCRIPT_NAME"]),
-				'stat_files_table'		=> $GLOBALS["files_table"],
-				'stat_memory_table'		=> $GLOBALS["memory_table"],
-				'stat_memory_peak'		=> $memoryPeak,
-				'stat_files_loaded'		=> $GLOBALS["files_loaded"],
-			);
-			$statName = 'stat_'.md5(rand());
-			//save stats to cache (for 10 min)
-			$cache = new CMS_cache($statName, 'atm-stats', 600, false);
-			if ($cache) {
-				$cache->save($stat);
-			}
-		}
-		$content = !$return ? '<fieldset style="width:200px;" class="atm-debug"><legend>Debug Statistics</legend><pre>'.$content.'</pre>' : 'Debug Statistics :'."\n".$content;
-		if (isset($statName)) {
-			$content .= '<a href="'.PATH_ADMIN_WR.'/stat.php?stat='.$statName.'" target="_blank">View statistics detail</a>';
-		}
-		//end xhprof profiling
-		if (defined('APPLICATION_ENABLE_PROFILING') && APPLICATION_ENABLE_PROFILING && function_exists('xhprof_disable')) {
-			$xhprof_data = xhprof_disable();
-			$XHPROF_ROOT = '/smb/clients/automne4/www-rev/lib/xhprof';
-			include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
-			include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
-			$xhprof_runs = new XHProfRuns_Default();
-			$profileName = md5($_SERVER['REQUEST_URI']);
-			$run_id = $xhprof_runs->save_run($xhprof_data, md5($_SERVER['REQUEST_URI']));
-			$content .= '<a href="http://automne4.lib/xhprof/xhprof_html/index.php?run='.$run_id.'&amp;source='.$profileName.'" target="_blank">View profiling detail</a>';
-		}
-		$content .= !$return ? '</fieldset>' : '';
-		if (!$return) {
-			echo $content;
-		} else {
-			return $content;
-		}
-	}
-	$GLOBALS["sql_nb_requests"] = $GLOBALS["total_time"] = $GLOBALS["files_time"] = 0;
-	$GLOBALS["files_loaded"] = 4; //Start at 4 : 3 config files and the require at the end of this file
-	$GLOBALS["time_start"] = getmicrotime();
-	//start xhprof profiling
-	if (defined('APPLICATION_ENABLE_PROFILING') && APPLICATION_ENABLE_PROFILING && function_exists('xhprof_enable')) {
-		// start profiling
-		xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
-	}
-}
 //include base packages
 require_once(PATH_PACKAGES_FS."/common/grandfather.php");
 //log PHP Errors
@@ -1274,13 +1220,9 @@ if (SYSTEM_DEBUG) {
 	//Usefull function to dump a var : Do nothing if debug is inactive
 	function pr($data,$useVarDump = false){}
 }
-
-/**
-  * Usefull time function for statistics and regenerator
-  */
-function getmicrotime(){ 
-	list($usec, $sec) = explode(" ",microtime()); 
-	return ((float)$usec + (float)$sec); 
+//launch stats recording
+if (STATS_DEBUG && APPLICATION_EXEC_TYPE != 'cli') {
+	CMS_stats::start();
 }
 
 /**
@@ -1288,14 +1230,14 @@ function getmicrotime(){
   */
 if (get_magic_quotes_gpc()) {
 	// Strip slashes in content 
-	function CMS_stripslashes($value) {
+	function atm_stripslashes($value) {
 		$value = is_array($value) ? array_map('CMS_stripslashes', $value) : stripslashes($value) ;
 		return $value;
 	}
-	$_POST = array_map('CMS_stripslashes', $_POST);
-	$_GET = array_map('CMS_stripslashes', $_GET);
-	$_COOKIE = array_map('CMS_stripslashes', $_COOKIE);
-	$_REQUEST = array_map('CMS_stripslashes', $_REQUEST);
+	$_POST = array_map('atm_stripslashes', $_POST);
+	$_GET = array_map('atm_stripslashes', $_GET);
+	$_COOKIE = array_map('atm_stripslashes', $_COOKIE);
+	$_REQUEST = array_map('atm_stripslashes', $_REQUEST);
 }
 
 /**
@@ -1304,10 +1246,10 @@ if (get_magic_quotes_gpc()) {
 if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])
 	&& strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8' 
 	&& $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
-	function utf8_decode_callback (&$input, $index = '') {
+	function atm_utf8_decode_callback (&$input, $index = '') {
 		if (is_string($input)) {
 			//decode UTF8 with support of CP1252
-			$input = sensitiveIO::utf8Decode($input);
+			$input = io::utf8Decode($input);
 			return $input;
 		} elseif (is_array($input)) {
 			array_walk_recursive($input, 'utf8_decode_callback');
@@ -1315,16 +1257,16 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])
 		}
 		return $input;
 	}
-	$_POST = array_map('utf8_decode_callback', $_POST);
-	$_GET = array_map('utf8_decode_callback', $_GET);
-	$_COOKIE = array_map('utf8_decode_callback', $_COOKIE);
-	$_REQUEST = array_map('utf8_decode_callback', $_REQUEST);
+	$_POST = array_map('atm_utf8_decode_callback', $_POST);
+	$_GET = array_map('atm_utf8_decode_callback', $_GET);
+	$_COOKIE = array_map('atm_utf8_decode_callback', $_COOKIE);
+	$_REQUEST = array_map('atm_utf8_decode_callback', $_REQUEST);
 }
 
 /**
   * Launch output compression if enabled
   */
-function compress_handler( $p_buffer, $p_mode ) {
+function atm_compress_handler( $p_buffer, $p_mode ) {
 	if (ENABLE_HTML_COMPRESSION															//conf must accept HTML compression
 			 && APPLICATION_EXEC_TYPE == 'http'											//current mode must be HTTP (not CLI)
 			 && !headers_sent()															//headers must not already sent
@@ -1366,8 +1308,8 @@ if (APPLICATION_CONFIG_LOADED && APPLICATION_EXEC_TYPE != 'cli') {
 
 // Start output buffering for compression so we don't prevent
 // headers from being sent if there's a blank line in an included file
-if (!defined('HTML_COMPRESSION_STARTED')) {
-	ob_start( 'compress_handler' );
+if (!defined('HTML_COMPRESSION_STARTED') && APPLICATION_EXEC_TYPE != 'cli') {
+	ob_start( 'atm_compress_handler' );
 }
 
 //load current user if exists

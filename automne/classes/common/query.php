@@ -88,7 +88,7 @@
 		$this->_connect($dsn, $user, $pass);
 		if ($this->_sql && $this->_db) {
 			/*only for stats*/
-			if (STATS_DEBUG) $time_start = getmicrotime();
+			if (STATS_DEBUG) $time_start = CMS_stats::getmicrotime();
 			if (preg_match("#^(insert|update)#i", $this->_sql)) {
 				$this->_numRows = $this->_db->exec($this->_sql);
 				if (preg_match("#^insert#i", $this->_sql)) {
@@ -115,12 +115,12 @@
 			}
 			/*only for stats*/
 			if (STATS_DEBUG) {
-				$currenttime = getmicrotime();
+				$currenttime = CMS_stats::getmicrotime();
   	            $time = $currenttime - $time_start;
-				if (VIEW_SQL) $GLOBALS["sql_table"][]=array('sql' => $this->_sql, 'time' => $time, 'current' => $currenttime - $GLOBALS["time_start"], 'from' => io::getCallInfos(3), 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
+				if (VIEW_SQL) CMS_stats::$sqlTable[]=array('sql' => $this->_sql, 'time' => $time, 'current' => $currenttime - CMS_stats::$timeStart, 'from' => io::getCallInfos(3), 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
 				
-				$GLOBALS["sql_nb_requests"]++;
-				$GLOBALS["total_time"] += $time;
+				CMS_stats::$sqlNbRequests++;
+				CMS_stats::$totalTime += $time;
 			}
 		}
 	}

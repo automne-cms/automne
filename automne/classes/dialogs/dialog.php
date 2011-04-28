@@ -683,7 +683,7 @@ class CMS_dialog extends CMS_JSDialog
 				if ($this->_displayMode != "loading") {
 					/*only for stats*/
 					if (STATS_DEBUG && $_SERVER["SCRIPT_NAME"] != PATH_ADMIN_WR.'/stat.php') {
-						view_stat();
+						echo CMS_stats::view();
 					}
 				}
 			break;

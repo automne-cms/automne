@@ -1709,7 +1709,7 @@ class CMS_module_standard extends CMS_module
 						return preg_replace('#<head([^>]*)>#', '<head\1>'."\n".$headCode, $tag->getContent());
 					break;
 					case "body":
-						$statsCode = '<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat();} ?>';
+						$statsCode = '<?php if (SYSTEM_DEBUG && STATS_DEBUG) {echo CMS_stats::view();} ?>';
 						//Append stats code
 						return preg_replace('#</body>$#', $statsCode."\n".'</body>', $tag->getContent());
 					break;
