@@ -1,0 +1,1 @@
+ALTER TABLE  `actionsTimestamps` ADD  `module_at` VARCHAR( 255 ) NOT NULL ;

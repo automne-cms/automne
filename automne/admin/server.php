@@ -163,6 +163,7 @@ if (!function_exists('imagecreatefromgif') || !function_exists('imagecreatefromj
 	$content .= '<li class="atm-pic-ok">GD extension OK</li>';
 }
 //MySQL
+$mysqlOk = false;
 if (!class_exists('PDO')) {
 	$content .= '<li class="atm-pic-cancel">Error, PDO extension not installed</li>';
 } else {
@@ -174,6 +175,7 @@ if (!class_exists('PDO')) {
 		if (version_compare($version, '5.0.0') === -1) {
 			$content .= '<li class="atm-pic-cancel">Error, MySQL version ('.$version.') not match (5.0.0 minimum)</li>';
 		} else {
+			$mysqlOk = true;
 			$content .= '<li class="atm-pic-ok">MySQL connection and version OK ('.$version.')</li>';
 		}
 	}
@@ -366,7 +368,36 @@ if ($cliOk) {
 	$content .= '
 	</fieldset>';
 }
-
+//Daily Routine
+if ($mysqlOk) {
+	$modules = CMS_modulesCatalog::getAll();
+	$drContent = '';
+	foreach ($modules as $aModule) {
+		//see if the action was done today
+		$sql = "
+			select
+				*
+			from
+				actionsTimestamps
+			where
+				type_at='DAILY_ROUTINE'
+				and module_at='".io::sanitizeSQLString($aModule->getCodename())."'
+		";
+		$q = new CMS_query($sql);
+		if ($q->getNumRows()) {
+			$drContent .= '<li class="atm-pic-ok">OK for "'.$aModule->getLabel($cms_language).'". Last execution: '.$q->getValue('date_at').'</li>';
+		}
+	}
+	if ($drContent) {
+		$content .= '<br />
+		<fieldset style="padding:5px;">
+			<legend>Test Daily Routine</legend>
+			<ul class="atm-server">
+				'.$drContent.'
+			</ul>
+		</fieldset>';
+	}
+}
 $content = sensitiveIO::sanitizeJSString($content);
 
 //Files tab

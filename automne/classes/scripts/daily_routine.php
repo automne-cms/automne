@@ -32,6 +32,44 @@ require_once(dirname(__FILE__).'/../../../cms_rc_admin.php');
 
 $modules = CMS_modulesCatalog::getAll();
 foreach ($modules as $aModule) {
-	$aModule->processDailyRoutine();
+	if ($aModule->getCodename() == MOD_STANDARD_CODENAME) {
+		//module standard auto check if daily routine is already done today
+		$aModule->processDailyRoutine();
+	} else {
+		//see if the action was done today
+		$sql = "
+			select
+				1
+			from
+				actionsTimestamps
+			where
+				to_days(date_at) = to_days(now())
+				and type_at='DAILY_ROUTINE'
+				and module_at='".io::sanitizeSQLString($aModule->getCodename())."'
+		";
+		$q = new CMS_query($sql);
+		if (!$q->getNumRows()) {
+			//process module daily routine
+			$aModule->processDailyRoutine();
+			//update the timestamp
+			$sql = "
+				delete from
+					actionsTimestamps
+				where
+					type_at='DAILY_ROUTINE'
+					and module_at='".io::sanitizeSQLString($aModule->getCodename())."'
+			";
+			$q = new CMS_query($sql);
+			$sql = "
+				insert into
+					actionsTimestamps
+				set
+					type_at='DAILY_ROUTINE',
+					date_at=now(),
+					module_at='".io::sanitizeSQLString($aModule->getCodename())."'
+			";
+			$q = new CMS_query($sql);
+		}
+	}
 }
 ?>

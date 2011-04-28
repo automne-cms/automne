@@ -154,12 +154,13 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 			return false;
 		}
 		if ($category->getId() > 0) {
-			$park_integer = CMS_moduleCategory::LINEAGE_PARK_POSITION; //This park position is almost impossible ot reach
+			$park_integer = CMS_moduleCategory::LINEAGE_PARK_POSITION; //This park position is almost impossible to reach
 			$parentCategory = $category->getParent();
 			$sql = "
 				update
 					modulesCategories
 				set
+					uuid_mca=$park_integer,
 					parent_mca=$park_integer,
 					root_mca=$park_integer,
 					order_mca=$park_integer,
@@ -593,7 +594,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	  * @static
 	  */
 	static function getCategoryIdFromLineage($lineage, $level = 0) {
-		if (false !== ($a_lineage = split(';', $lineage))) {
+		if (false !== ($a_lineage = explode(';', $lineage))) {
 			if (sizeof($a_lineage) > $level) {
 				return (int) $a_lineage[$level];
 			}
@@ -660,11 +661,11 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 		}
 		
 		// Limit to parent and/or root categories given
-		if ($attrs["level"] !== false && (int) $attrs["level"] >- 1) {
+		if (isset($attrs["level"]) && $attrs["level"] !== false && (int) $attrs["level"] >- 1) {
 			$s_where .= "
 				and parent_mca='".SensitiveIO::sanitizeSQLString($attrs["level"])."'";
 		}
-		if ($attrs["root"] !== false && (int) $attrs["root"] >- 1) {
+		if (isset($attrs["root"]) && $attrs["root"] !== false && (int) $attrs["root"] >- 1) {
 			$s_where .= "
 				and root_mca='".SensitiveIO::sanitizeSQLString($attrs["root"])."'";
 		}
@@ -1093,6 +1094,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 				modulesCategories 
 			where
 				uuid_mca='".io::sanitizeSQLString($uuid)."'
+				and parent_mca != '".CMS_moduleCategory::LINEAGE_PARK_POSITION."'
 		");
 		return $q->getNumRows() ? true : false;
 	}

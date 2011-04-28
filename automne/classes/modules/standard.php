@@ -1059,6 +1059,7 @@ class CMS_module_standard extends CMS_module
 			where
 				to_days(date_at) = to_days(now())
 				and type_at='DAILY_ROUTINE'
+				and module_at='".MOD_STANDARD_CODENAME."'
 		";
 		$q = new CMS_query($sql);
 		if ($q->getNumRows()) {
@@ -1076,6 +1077,7 @@ class CMS_module_standard extends CMS_module
 				actionsTimestamps
 			where
 				type_at='DAILY_ROUTINE'
+				and module_at='".MOD_STANDARD_CODENAME."'
 		";
 		$q = new CMS_query($sql);
 		
@@ -1084,7 +1086,8 @@ class CMS_module_standard extends CMS_module
 				actionsTimestamps
 			set
 				type_at='DAILY_ROUTINE',
-				date_at=now()
+				date_at=now(),
+				module_at='".MOD_STANDARD_CODENAME."'
 		";
 		$q = new CMS_query($sql);
 	}

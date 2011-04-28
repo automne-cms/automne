@@ -302,6 +302,26 @@ if (!$installed) {
 }
 //END UPDATE FROM 4.1.1 TO 4.1.2
 
+//START UPDATE FROM 4.1.2 TO 4.1.3
+# Change structure of actionsTimestamps table to add module data
+$sql = "show columns from actionsTimestamps";
+$q = new CMS_query($sql);
+$installed = false;
+while($r = $q->getArray()) {
+	if ($r["Field"] == "module_at") {
+		$installed = true;
+	}
+}
+if (!$installed) {
+	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v412-to-v413.sql',true)) {
+		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v412-to-v413.sql',false);
+		echo 'Database successfuly updated (actionsTimestamps)<br/>';
+	} else {
+		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v412-to-v413.sql must be executed manualy<br/>';
+	}
+}
+//END UPDATE FROM 4.1.2 TO 4.1.3
+
 //Update Automne messages
 $files = glob(PATH_MAIN_FS."/sql/messages/*/*.sql", GLOB_NOSORT);
 if (is_array($files)) {

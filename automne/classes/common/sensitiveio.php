@@ -205,7 +205,9 @@ class SensitiveIO extends CMS_grandFather
 	  */
 	static function sanitizeAsciiString($input, $keep = '', $special='_.-') {
 		$map = io::sanitizeAsciiMap();
-		$map = array_merge($map, array(" " => "_"));
+		if (!$keep || strpos($keep, ' ') === false) {
+			$map = array_merge($map, array(" " => "_"));
+		}
 		if (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
 			$sanitized = strtr($input, $map);
 			$sanitized = preg_replace("#[^[a-zA-Z0-9".$keep.$special."]]*#", "", $sanitized);

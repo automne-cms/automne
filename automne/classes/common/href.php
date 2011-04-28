@@ -133,17 +133,17 @@ class CMS_href extends CMS_grandFather
 				$this->_target = @$tmp[4];
 				// Attributes
 				if (@$tmp[5] != '') {
-					$attrs = split('&&', @$tmp[5]);
+					$attrs = explode('&&', @$tmp[5]);
 					if (is_array($attrs) && $attrs) {
 						foreach ($attrs as $attr) {
-							$t = split(',', $attr);
+							$t = explode(',', $attr);
 							$this->setAttribute($t[0], $t[1]);
 						}
 					}
 				}
 				// Popup
 				if (@$tmp[6] != '') {
-					$p = split(',', @$tmp[6]);
+					$p = explode(',', @$tmp[6]);
 					if (is_array($p) && $p) {
 						$this->setPopup($p[0], $p[1]);
 					}

@@ -667,8 +667,9 @@ class CMS_row extends CMS_grandFather
 				'.$data;
 				//decode brackets encoded in CMS_block_text::_getHTMLForm
 				$replace = array(
-					'||bo||' => '&#123;',
-					'||bc||' => '&#125;',
+					'||bo||'		=> '&#123;',
+					'||bc||'		=> '&#125;',
+					'&#123;0&#125;' => '{0}', //for editor stylesheet parameter
 				);
 				$data = str_replace(array_keys($replace), $replace, $data);
 			}

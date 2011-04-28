@@ -103,7 +103,7 @@ switch ($action) {
 				if (SensitiveIO::isPositiveInteger($p)) {
 					$pages[] = $p;		
 				} elseif (preg_match("#[0-9]+\-[0-9]+#", $p)) {
-					$subPages = split('-', $p);
+					$subPages = explode('-', $p);
 					sort($subPages);
 					for ($idp = $subPages[0]; $idp <= $subPages[1]; $idp++) {
 						$pages[] = $idp;

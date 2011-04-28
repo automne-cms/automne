@@ -695,15 +695,15 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		$return = '';
 		//if value came from block parameters
 		if ($tag['attributes']['value'] == 'block') {
-			$type = CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['type'], false, false, false);
+			$type = CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['type'], false, false);
 			if ($this->_mode == self::BLOCK_PARAM_MODE) {
-				$this->_blockParams['search'][ $tag['attributes']['search'] ][ $type ] = ($tag['attributes']['mandatory'] == 'true') ? true : false;
+				$this->_blockParams['search'][ $tag['attributes']['search'] ][ CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['type'], false, false, false) ] = ($tag['attributes']['mandatory'] == 'true') ? true : false;
 			}
 			$uniqueID = CMS_XMLTag::getUniqueID();
 			$return .= '
-			if (isset($blockAttributes[\'search\'][\''.$tag['attributes']['search'].'\']['.$type.'])) {
+			if (isset($blockAttributes[\'search\'][\''.$tag['attributes']['search'].'\']["'.$type.'"])) {
 				$values_'.$uniqueID.' = '.CMS_polymod_definition_parsing::preReplaceVars(var_export($tag['attributes'],true),true).';
-				$values_'.$uniqueID.'[\'value\'] = $blockAttributes[\'search\'][\''.$tag['attributes']['search'].'\']['.$type.'];
+				$values_'.$uniqueID.'[\'value\'] = $blockAttributes[\'search\'][\''.$tag['attributes']['search'].'\']["'.$type.'"];
 				if ($values_'.$uniqueID.'[\'type\'] == \'publication date after\' || $values_'.$uniqueID.'[\'type\'] == \'publication date before\') {
 					//convert DB format to current language format
 					$dt = new CMS_date();

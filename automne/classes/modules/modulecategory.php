@@ -991,7 +991,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 		}
 		if (isset($data['descriptions'])) {
 			foreach ($data['descriptions'] as $language => $desc) {
-				$this->setDescription($label, $desc);
+				$this->setDescription($desc, $language);
 			}
 		}
 		if (!isset($params['files']) || $params['files'] == true) {
