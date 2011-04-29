@@ -92,7 +92,9 @@ case "login":
 		$jscontent .= CMS_session::getJSLocales();
 		$jscontent .= '
 		/*show front page in tab*/
-		Automne.tabPanels.getActiveTab().reload();
+		if (Automne.tabPanels.getActiveTab().id != \'edit\') {
+			Automne.tabPanels.getActiveTab().reload();
+		}
 		/*close login window*/
 		Ext.WindowMgr.get(\'loginWindow\').close();';
 		//eval content into parent
@@ -102,8 +104,11 @@ case "login":
 		$view->addJavascript($jscontent);
 		$view->show(CMS_view::SHOW_HTML);
 	} else {
-		//reset session (start fresh)
+		//Disconnect user
+		CMS_session::authenticate(array('disconnect'=> true));
+		//Reset session (start fresh)
 		Zend_Session::destroy();
+		//Redirect 
 		CMS_view::redirect($_SERVER['SCRIPT_NAME'].'?cms_action=wrongcredentials', true, 301);
 	}
 	break;

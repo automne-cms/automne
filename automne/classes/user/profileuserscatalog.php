@@ -51,6 +51,42 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	}
 	
 	/**
+	  * Returns an active CMS_profile_user with a given user login
+	  * Static function.
+	  *
+	  * @param string $login The user login of the wanted CMS_profile_user
+	  * @param boolean $reset : Reset the local cache (force to reload user from DB)
+	  * @return CMS_profile_user or false on failure to find it
+	  * @access public
+	  */
+	static function getByLogin($login, $reset = false)
+	{
+		static $users;
+		if (!isset($users[$login]) || $reset) {
+			$sql = "
+				select
+					id_pru
+				from
+					profilesUsers
+				where
+					login_pru = '".SensitiveIO::sanitizeSQLString($login)."'
+					and deleted_pru='0'
+					and active_pru='1'
+			";
+			$q = new CMS_query($sql);
+			if($q->getNumRows() == 1){
+				$users[$login] = new CMS_profile_user($q->getValue('id_pru'));
+				if ($users[$login]->hasError()) {
+					$users[$login] = false;
+				}
+			} else {
+				$users[$login] = false;
+			}
+		}
+		return $users[$login];
+	}
+	
+	/**
 	  * Returns a queried CMS_profile_user value
 	  * Static function.
 	  *

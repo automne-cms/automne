@@ -76,6 +76,8 @@ class CMS_stats extends CMS_grandFather
 		}
 		$content .= 'User : '.(CMS_session::getUserId() ? CMS_session::getUser()->getFullName().' ('.CMS_session::getUserId().')' : 'none')."\n";
 		$content .= 'Session Id '.Zend_Session::getId()."\n";
+		//$content .= 'Current page '.CMS_session::getPageID()."\n";
+		
 		if (VIEW_SQL && $_SERVER["SCRIPT_NAME"] != PATH_ADMIN_WR.'/stat.php') {
 			$stat = array(
 				'stat_time_start'		=> self::$timeStart,
@@ -108,7 +110,7 @@ class CMS_stats extends CMS_grandFather
 			$xhprof_runs = new XHProfRuns_Default();
 			$profileName = md5($_SERVER['REQUEST_URI']);
 			$run_id = $xhprof_runs->save_run($xhprof_data, md5($_SERVER['REQUEST_URI']));
-			$content .= '<a href="'.APPLICATION_XHPROF_URI.'xhprof_html/index.php?run='.$run_id.'&amp;source='.$profileName.'" target="_blank">View profiling detail</a>';
+			$content .= '<br /><a href="'.APPLICATION_XHPROF_URI.'xhprof_html/index.php?run='.$run_id.'&amp;source='.$profileName.'" target="_blank">View profiling detail</a>';
 		}
 		$content .= !$removefieldset ? '</fieldset>' : '';
 		

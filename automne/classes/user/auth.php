@@ -37,6 +37,8 @@ class CMS_auth extends CMS_grandFather implements Zend_Auth_Adapter_Interface
 	const AUTH_AUTOLOGIN_VALID = 6;
 	const AUTH_AUTOLOGIN_INVALID_USER = 7;
 	const AUTH_INVALID_TOKEN = 8;
+	const AUTH_SSOLOGIN_VALID = 9;
+	const AUTH_SSOLOGIN_INVALID_USER = 10;
 	
 	
 	/**
@@ -122,6 +124,12 @@ class CMS_auth extends CMS_grandFather implements Zend_Auth_Adapter_Interface
 				//clear session content
 				$authStorage->clear();
 				$this->_deleteSession(true);
+				//remove autologin cookiçe if exists
+				if (isset($_COOKIE[CMS_session::getAutoLoginCookieName()])) {
+					//remove cookie
+					CMS_session::setCookie(CMS_session::getAutoLoginCookieName());
+				}
+				
 			} else {
 				//check user from session table
 				if ($this->_checkSession($userId)) {
@@ -145,11 +153,42 @@ class CMS_auth extends CMS_grandFather implements Zend_Auth_Adapter_Interface
 			}
 		}
 		
-		
 		//SSO
-		//@TODO
-		//MOD_STANDARD_SSO_VAR
-		//MOD_STANDARD_SSO_FUNCTION
+		//@TODO : check those SSO methods
+		if (defined('MOD_STANDARD_SSO_LOGIN') && MOD_STANDARD_SSO_LOGIN) {
+			$this->_user = CMS_profile_usersCatalog::getByLogin(MOD_STANDARD_SSO_LOGIN);
+			if ($this->_user && !$this->_user->hasError()) {
+				$this->_messages[] = self::AUTH_SSOLOGIN_VALID;
+				$this->_result = new Zend_Auth_Result(Zend_Auth_Result::SUCCESS, $this->_user->getUserId(), $this->_messages);
+				return $this->_result;
+			} else {
+				$this->_messages[] = self::AUTH_SSOLOGIN_INVALID_USER;
+				$this->_result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE, null, $this->_messages);
+			}
+		} elseif (defined('MOD_STANDARD_SSO_FUNCTION') && MOD_STANDARD_SSO_FUNCTION) {
+			if (is_callable(MOD_STANDARD_SSO_FUNCTION, false)) {//check if function/method name exists.
+				$login = '';
+				if (io::strpos(MOD_STANDARD_SSO_FUNCTION, '::') !== false) {//static method call
+					$method = explode('::', MOD_STANDARD_SSO_FUNCTION);
+					$login = call_user_func(array($method[0], $method[1]));
+				} else { //function call
+					$login = call_user_func(MOD_STANDARD_SSO_FUNCTION);
+				}
+				if ($login) {
+					$this->_user = CMS_profile_usersCatalog::getByLogin($login);
+					if ($this->_user && !$this->_user->hasError()) {
+						$this->_messages[] = self::AUTH_SSOLOGIN_VALID;
+						$this->_result = new Zend_Auth_Result(Zend_Auth_Result::SUCCESS, $this->_user->getUserId(), $this->_messages);
+						return $this->_result;
+					} else {
+						$this->_messages[] = self::AUTH_SSOLOGIN_INVALID_USER;
+						$this->_result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE, null, $this->_messages);
+					}
+				}
+			} else {
+				$this->raiseError('Cannot call SSO method/function: '.MOD_STANDARD_SSO_FUNCTION);
+			}
+		}
 		
 		//COOKIE
 		if (isset($_COOKIE[CMS_session::getAutoLoginCookieName()])) {
@@ -217,6 +256,50 @@ class CMS_auth extends CMS_grandFather implements Zend_Auth_Adapter_Interface
 					$this->_messages[] = self::AUTH_AUTOLOGIN_INVALID_USER;
 					$this->_result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE, null, $this->_messages);
 				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	  * Test user auto login to see if it is active
+	  * 
+	  * @return boolean true if autologin is active, false otherwise
+	  * @access public
+	  * @static
+	  */
+	function autoLoginActive() {
+		if (!isset($_COOKIE[CMS_session::getAutoLoginCookieName()])) {
+			return false;
+		}
+		$attrs = @explode("|", base64_decode($_COOKIE[CMS_session::getAutoLoginCookieName()]));
+		$id_ses = (int) $attrs[0];
+		$session_id = $attrs[1];
+		if ($id_ses > 0 && $session_id) {
+			$sql = "
+				select
+					*
+				from
+					sessions
+				where
+					id_ses = '".SensitiveIO::sanitizeSQLString($id_ses)."'
+					and phpid_ses = '".SensitiveIO::sanitizeSQLString($session_id)."'
+					and cookie_expire_ses != '0000-00-00 00:00:00'
+			";
+			if (CHECK_REMOTE_IP_MASK && isset($_SERVER['REMOTE_ADDR'])) {
+				//Check for a range in IPv4 or for the exact address in IPv6
+				if (filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+					$a_ip_seq = explode(".", $_SERVER['REMOTE_ADDR']);
+					$sql .= "and remote_addr_ses like '".SensitiveIO::sanitizeSQLString($a_ip_seq[0].".".$a_ip_seq[1].".")."%'
+					";
+				} else {
+					$sql .= "and remote_addr_ses = '".SensitiveIO::sanitizeSQLString($_SERVER['REMOTE_ADDR'])."'
+					";
+				}
+			}
+			$q = new CMS_query($sql);
+			if ($q->getNumRows() == 1) {
+				return true;
 			}
 		}
 		return false;

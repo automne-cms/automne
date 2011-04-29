@@ -403,8 +403,9 @@ class CMS_session extends CMS_grandFather
 	  */
 	public static function setPage(&$page) {
 		if ($page instanceof CMS_page) {
-			self::$_pageID = $page->getID();
-		} else {	
+			$sessionNS = new Zend_Session_Namespace('atm-page');
+			$sessionNS->pageId = $page->getID();
+		} else {
 			$this->raiseError("Incorrect Page type");
 		}
 	}
@@ -416,8 +417,9 @@ class CMS_session extends CMS_grandFather
 	  * @access public
 	  */
 	public static function getPage() {
-		if (io::isPositiveInteger(self::$_pageID)) {
-			return CMS_tree::getPageByID(self::$_pageID);
+		$sessionNS = new Zend_Session_Namespace('atm-page');
+		if (isset($sessionNS->pageId) && io::isPositiveInteger($sessionNS->pageId)) {
+			return CMS_tree::getPageByID($sessionNS->pageId);
 		} else {
 			return false;
 		}
@@ -430,7 +432,11 @@ class CMS_session extends CMS_grandFather
 	  * @access public
 	  */
 	public static function getPageID() {
-		return self::$_pageID;
+		$sessionNS = new Zend_Session_Namespace('atm-page');
+		if (!isset($sessionNS->pageId)) {
+			return false;
+		}
+		return $sessionNS->pageId;
 	}
 	
 	/**
@@ -506,7 +512,7 @@ class CMS_session extends CMS_grandFather
 		if (!$result) {
 			return false;
 		}
-		return in_array(CMS_auth::AUTH_AUTOLOGIN_VALID, $result->getMessages());
+		return in_array(CMS_auth::AUTH_AUTOLOGIN_VALID, $result->getMessages()) || CMS_auth::autoLoginActive();
 	}
 	
 	/**

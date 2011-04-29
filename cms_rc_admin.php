@@ -36,6 +36,25 @@ if (strpos($_SERVER['SCRIPT_NAME'], PATH_ADMIN_MODULES_WR) === 0
 	require_once(PATH_MODULES_FS.'/'.pathinfo(str_replace(PATH_ADMIN_MODULES_WR.'/', '', $_SERVER['SCRIPT_NAME']),PATHINFO_DIRNAME).'.php');
 }
 
+//check for authentification
+if (APPLICATION_EXEC_TYPE == 'http') {
+	if (!isset($cms_user) || (isset($cms_user) && is_object($cms_user) && !$cms_user->hasAdminAccess())) {
+		//load interface instance
+		$view = CMS_view::getInstance();
+		//set disconnected status
+		$view->setDisconnected(true);
+		//set default display mode for this page
+		if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
+			$view->setDisplayMode(4); //4 = CMS_view::SHOW_RAW : this constant cannot be used here because this file can be parsed by PHP4
+		}
+		if (!isset($cms_user)) {
+			$view->show();
+		}
+	}
+}
+//init message var
+$cms_message = '';
+
 //force module standard loading
 if (!class_exists('CMS_module_standard')) {
 	die('Cannot find standard module ...');

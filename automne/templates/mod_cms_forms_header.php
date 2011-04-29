@@ -60,17 +60,17 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 		//if form exists and is public
 		if ($form->getID() && $form->isPublic()) {
 			/***********************************************************
-			*                   AUTOLOGIN ATTEMPT                      *
+			*                     LOGIN ATTEMPT                        *
 			***********************************************************/
 			//check for authentification action in form
 			if ($form->getActionsByType(CMS_forms_action::ACTION_AUTH)) {
-				//check for valid session / logout attempt / and autologin
-				if (io::request('logout') == 'true') {
+				//check for valid session / logout attempt
+				if (io::request('logout') == 'true' || io::request('logout') == 1) {
 					// Disconnect user
 					CMS_session::authenticate(array('disconnect'=> true));
 					//then reload current page (to load public user)
 					CMS_view::redirect($_SERVER["SCRIPT_NAME"]);
-				} elseif (CMS_session::autoLoginSucceeded()) {
+				} elseif (isset($cms_user) && $cms_user->getUserId() != ANONYMOUS_PROFILEUSER_ID) {
 					//declare form ok action
 					$cms_forms_okAction[$form->getID()] = true;
 				}

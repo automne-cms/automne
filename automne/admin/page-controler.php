@@ -77,7 +77,7 @@ $forceblank = sensitiveIO::request('forceblank') ? true : false;
 
 //load page
 $cms_page = CMS_tree::getPageByID($currentPage);
-if ($cms_page->hasError()) {
+if (!$cms_page || $cms_page->hasError()) {
 	CMS_grandFather::raiseError('Selected page ('.$currentPage.') has error ...');
 	$view->show();
 }

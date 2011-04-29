@@ -1,5 +1,6 @@
 V4.2.0 (in progress)
 [REFACTOR] : Update Zend Framework to version 1.11.5
+[REFACTOR] : Update debug statistics : more accurate and more extensible
 [REFACTOR] : Session management and users authentification are completely refactored to use Zend Framework
 
 V4.1.3 (in progress)

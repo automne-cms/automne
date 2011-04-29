@@ -1165,9 +1165,11 @@ set_error_handler (array('CMS_grandFather','PHPErrorHandler'));
 spl_autoload_register (array('CMS_grandFather','autoload'));
 
 /**
-  * Set shutdown function
+  * Set shutdown function (only if debug or admin)
   */
-register_shutdown_function(array('CMS_view','quit'));
+if (SYSTEM_DEBUG || APPLICATION_USER_TYPE == 'admin') {
+	register_shutdown_function(array('CMS_view','quit'));
+}
 
 /**
   * Debug mode configuration changes.
@@ -1318,6 +1320,8 @@ if (APPLICATION_EXEC_TYPE == 'http') {
 	$cms_user = CMS_session::getUser();
 	if ($cms_user) {
 		$cms_language = $cms_user->getLanguage();
+	} else {
+		unset($cms_user);
 	}
 }
 ?>

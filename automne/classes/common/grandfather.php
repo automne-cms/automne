@@ -398,8 +398,8 @@ class CMS_grandFather
 				/*only for stats*/
 				if (STATS_DEBUG) CMS_stats::$filesLoaded++;
 				if (STATS_DEBUG && VIEW_SQL) {
-					CMS_stats::$filesTable[] = 'Zend framework file';
-					CMS_stats::$memoryTable[] = array('file' => 'Zend framework file', 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
+					CMS_stats::$filesTable[] = array('class' => $classname, 'from' => io::getCallInfos(3)); ;
+					CMS_stats::$memoryTable[] = array('class' => $classname, 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
 				}
 				return true;
 			}
@@ -434,8 +434,8 @@ class CMS_grandFather
 			if (defined('STATS_DEBUG') && defined('VIEW_SQL')) {
 				if (STATS_DEBUG) CMS_stats::$filesLoaded++;
 				if (STATS_DEBUG && VIEW_SQL) { 
-					CMS_stats::$filesTable[] = $file; 
-					CMS_stats::$memoryTable[] = array('file' => $file, 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
+					CMS_stats::$filesTable[] = array('file' => $file, 'class' => $classname, 'from' => io::getCallInfos(3)); 
+					CMS_stats::$memoryTable[] = array('file' => $file, 'class' => $classname, 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
 				}
 			}
 		}
