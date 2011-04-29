@@ -82,7 +82,6 @@ if (sensitiveIO::isPositiveInteger($groupId)) {
 //Need to sanitize all datas which can contain single quotes
 $label = sensitiveIO::sanitizeJSString($group->getLabel());
 $labelValue = ($label) ? "value:'{$label}'," : '';
-$dn = sensitiveIO::sanitizeJSString($group->getDN()); 
 $description = sensitiveIO::sanitizeJSString($group->getDescription()); 
 
 //get records / pages
@@ -201,17 +200,7 @@ $adminTab = ",{
 	}";
 
 //create dynamic vars
-if (!APPLICATION_LDAP_AUTH) {
-	$authentificationField = '';
-} else {
-	// LDAP DN
-	$authentificationField = "{
-		$disableUserInfosFields
-		fieldLabel:		'{$cms_language->getJsMessage(MESSAGE_PAGE_DISTINGUISHED_NAME)}',
-		name:			'dn',
-		value:			'{$dn}'
-	},";
-}
+$authentificationField = '';
 
 $title = (sensitiveIO::isPositiveInteger($groupId)) ? $cms_language->getJsMessage(MESSAGE_PAGE_GROUP_PROFILE).' : '.$label : $cms_language->getJsMessage(MESSAGE_PAGE_CREATE_GROUP);
 

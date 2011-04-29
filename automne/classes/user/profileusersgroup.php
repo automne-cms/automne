@@ -51,22 +51,6 @@ class CMS_profile_usersGroup extends CMS_profile
 	protected $_label;
 	
 	/**
-	  * LDAP distinguished name
-	  *
-	  * @var string
-	  * @access private
-	  */
-	protected $_dn;
-	
-	/**
-	  * Invert LDAP distinguished name
-	  *
-	  * @var boolean
-	  * @access private
-	  */
-	protected $_invertdn;
-	
-	/**
 	  * Group description
 	  *
 	  * @var string
@@ -124,8 +108,6 @@ class CMS_profile_usersGroup extends CMS_profile
 				$data = $q->getArray();
 				$this->_groupId = $id;
 				$this->_label = $data["label_prg"];
-				$this->_dn = $data["dn_prg"];
-				$this->_invertdn = ($data["invertdn_prg"]) ? true : false;
 				$this->_description = $data["description_prg"];
 				parent::__construct($data);
 				
@@ -216,57 +198,6 @@ class CMS_profile_usersGroup extends CMS_profile
 	function setDescription($description)
 	{
 		$this->_description = (string) $description;
-		return true;
-	}
-	
-	/**
-	  * Get DN
-	  *
-	  * @return string
-	  * @access public
-	  */
-	function getDN()
-	{
-		return $this->_dn;
-	}
-	
-	/**
-	  * Set DN
-	  *
-	  * @param string $s
-	  * @return void
-	  * @access public
-	  */
-	function setDN($s)
-	{
-		if ($s) {
-			$this->_dn = $s;
-		} else {
-			$this->raiseError('Must be string > 0');
-		}
-	}
-	
-	/**
-	  * Get Invert DN
-	  *
-	  * @return boolean
-	  * @access public
-	  */
-	function getInvertDN()
-	{
-		return $this->_invertdn;
-	}
-	
-	/**
-	  * Set Invert DN
-	  *
-	  * @param string $s
-	  * @return boolean
-	  * @access public
-	  */
-	function setInvertDN($s)
-	{
-		$this->_invertdn = ($s) ? true : false;
 		return true;
 	}
 	
@@ -595,9 +526,7 @@ class CMS_profile_usersGroup extends CMS_profile
 		$sql_fields = "
 			label_prg='".SensitiveIO::sanitizeSQLString($this->_label)."',
 			description_prg='".SensitiveIO::sanitizeSQLString($this->_description)."',
-			profile_prg='".SensitiveIO::sanitizeSQLString(parent::getId())."',
-			dn_prg='".SensitiveIO::sanitizeSQLString($this->_dn)."',
-			invertdn_prg='".($this->_invertdn ? 1 : 0)."'
+			profile_prg='".SensitiveIO::sanitizeSQLString(parent::getId())."'
 		";
 		
 		if ($this->_groupId) {

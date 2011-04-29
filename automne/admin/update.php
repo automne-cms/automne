@@ -322,6 +322,26 @@ if (!$installed) {
 }
 //END UPDATE FROM 4.1.2 TO 4.1.3
 
+//START UPDATE FROM 4.1.3 TO 4.2.0
+# Change structure of profilesUsers and profilesUsersGroups table to drop ldap fields
+$sql = "show columns from profilesUsers";
+$q = new CMS_query($sql);
+$installed = true;
+while($r = $q->getArray()) {
+	if ($r["Field"] == "dn_pru") {
+		$installed = false;
+	}
+}
+if (!$installed) {
+	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v413-to-v420.sql',true)) {
+		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v413-to-v420.sql',false);
+		echo 'Database successfuly updated (drop ldap fields)<br/>';
+	} else {
+		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v413-to-v420.sql must be executed manualy<br/>';
+	}
+}
+//END UPDATE FROM 4.1.3 TO 4.2.0
+
 //Update Automne messages
 $files = glob(PATH_MAIN_FS."/sql/messages/*/*.sql", GLOB_NOSORT);
 if (is_array($files)) {

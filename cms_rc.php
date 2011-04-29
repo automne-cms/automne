@@ -315,68 +315,6 @@ if (!defined("DIRS_CHMOD")) {
 }
 
 /**
- * LDAP Authentication server address
- * For further options :
- * @see CMS_ldap_auth
- * @see CMS_ldap_query
- * 
- * Default : ldap://localhost
- */
-if (!defined("APPLICATION_LDAP_SERVER")) {
-	define("APPLICATION_LDAP_SERVER", "ldap://localhost");
-}
-
-/**
- * LDAP Server port
- * Default : 389
- */
-if (!defined("APPLICATION_LDAP_PORT")) {
-	define("APPLICATION_LDAP_PORT", 389);
-}
-
-/**
- * LDAP Server base DN
- * Default : dc=ws,o=automne
- */
-if (!defined("APPLICATION_LDAP_BASE_DN")) {
-	define("APPLICATION_LDAP_BASE_DN", "dc=ws,dc=automne");
-}
-
-/**
- * Default user to connect to server
- * Default : anonymous
- */
-if (!defined("APPLICATION_LDAP_AUTH_USER")) {
-	define("APPLICATION_LDAP_AUTH_USER", "cn=anonymous,dc=ws,dc=net");
-}
-
-/**
- * Default password to connect to server
- * Default : anonymous
- */
-if (!defined("APPLICATION_LDAP_AUTH_PASSWORD")) {
-	define("APPLICATION_LDAP_AUTH_PASSWORD", "anonymous");
-}
-
-/**
- * LDAP group user belong to
- * 
- * Represents the LDAP attribute determining the group user belongs to
- * It must be present in the LDAP directory for each user entry
- * Corresponds to a CMS_profile_usersGroup 'cn' part(s) of its 'dn'
- * attribute (the value of this attribute will be appened with
- * APPLICATION_LDAP_BASE_DN to get full group 'dn').
- * 
- * or represents the CMS_profile_usersGroup ID used by default 
- * for any new user entering for the first time in the application
- * 
- * Default : 1
- */
-if (!defined('APPLICATION_LDAP_DEFAULT_GROUP')) {
-	define('APPLICATION_LDAP_DEFAULT_GROUP', '1');
-}
-
-/**
   *	Application Main root page DB ID
   *	Default : 1
   */
@@ -820,64 +758,6 @@ if (!defined("ROOT_PROFILEUSER_ID")) {
 if (!defined("ANONYMOUS_PROFILEUSER_ID")) {
 	define("ANONYMOUS_PROFILEUSER_ID", 3);
 }
-/**
-  * LDAP constants
-  */
-if (!defined('APPLICATION_LDAP_USER_DN')) {
-	define('APPLICATION_LDAP_USER_DN', 'dn');
-}
-if (!defined('APPLICATION_LDAP_USER_LOGIN')) {
-	define('APPLICATION_LDAP_USER_LOGIN', 'uid');
-}
-if (!defined('APPLICATION_LDAP_USER_PASSWORD')) {
-	define('APPLICATION_LDAP_USER_PASSWORD', 'userpassword');
-}
-if (!defined('APPLICATION_LDAP_USER_FIRSTNAME')) {
-	define('APPLICATION_LDAP_USER_FIRSTNAME', 'givenname');
-}
-if (!defined('APPLICATION_LDAP_USER_LASTNAME')) {
-	define('APPLICATION_LDAP_USER_LASTNAME', 'cn');
-}
-if (!defined('APPLICATION_LDAP_USER_EMAIL')) {
-	define('APPLICATION_LDAP_USER_EMAIL', 'mail');
-}
-if (!defined('APPLICATION_LDAP_USER_JOBTITLE')) {
-	define('APPLICATION_LDAP_USER_JOBTITLE', '');
-}
-if (!defined('APPLICATION_LDAP_USER_FAX')) {
-	define('APPLICATION_LDAP_USER_FAX', '');
-}
-if (!defined('APPLICATION_LDAP_USER_PHONE')) {
-	define('APPLICATION_LDAP_USER_PHONE', '');
-}
-if (!defined('APPLICATION_LDAP_USER_CELLPHONE')) {
-	define('APPLICATION_LDAP_USER_CELLPHONE', '');
-}
-if (!defined('APPLICATION_LDAP_USER_SERVICE')) {
-	define('APPLICATION_LDAP_USER_SERVICE', '');
-}
-if (!defined('APPLICATION_LDAP_USER_ADDRESS1')) {
-	define('APPLICATION_LDAP_USER_ADDRESS1', '');
-}
-if (!defined('APPLICATION_LDAP_USER_ADDRESS2')) {
-	define('APPLICATION_LDAP_USER_ADDRESS2', '');
-}
-if (!defined('APPLICATION_LDAP_USER_ADDRESS3')) {
-	define('APPLICATION_LDAP_USER_ADDRESS3', '');
-}
-if (!defined('APPLICATION_LDAP_USER_CITY')) {
-	define('APPLICATION_LDAP_USER_CITY', '');
-}
-if (!defined('APPLICATION_LDAP_USER_ZIPCODE')) {
-	define('APPLICATION_LDAP_USER_ZIPCODE', '');
-}
-if (!defined('APPLICATION_LDAP_USER_COUNTRY')) {
-	define('APPLICATION_LDAP_USER_COUNTRY', '');
-}
-if (!defined('APPLICATION_LDAP_USER_REGIONSTATE')) {
-	define('APPLICATION_LDAP_USER_REGIONSTATE', '');
-}
-
 /**
   *	Files extensions denied for upload, comma separated
   *	Default : 'exe,php,pif,vbs,bat,com,scr,reg,html,htm,php3,php4,php5,php6,phps,phtml,shtml,sh,py,pl,js,cgi,asp,jsp,aspx,plx,perl'

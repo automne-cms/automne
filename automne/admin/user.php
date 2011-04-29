@@ -125,7 +125,6 @@ $login = sensitiveIO::sanitizeJSString($user->getLogin());
 $loginValue = ($login) ? "value:'{$login}'," : '';
 $email = sensitiveIO::sanitizeJSString($user->getEmail());
 $emailValue = ($email) ? "value:'{$email}'," : '';
-$dn = sensitiveIO::sanitizeJSString($user->getDN()); 
 //Contact datas
 $service = sensitiveIO::sanitizeJSString($contactData->getService()); 
 $jobtitle = sensitiveIO::sanitizeJSString($contactData->getJobTitle()); 
@@ -173,8 +172,8 @@ foreach ($alerts as $codename => $modAlerts) {
 }
 //remove last comma
 $alertsPanel = io::substr($alertsPanel,0,-1);
-//disable user infos fields if LDAP is active and user has no user edition rights
-$disableUserInfosFields = (APPLICATION_LDAP_AUTH && $user->getDN() && !$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) ? 'disabled:true,':'';
+//disable user infos fields (always false)
+$disableUserInfosFields = '';
 //disable login field for root and anonymous users
 $disableLoginField = ($disableUserInfosFields || $user->getUserId() == ANONYMOUS_PROFILEUSER_ID || $user->getUserId() == ROOT_PROFILEUSER_ID) ? 'disabled:true,':'';
 //min password length
@@ -320,52 +319,43 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
 }
 
 //create dynamic vars
-if (!APPLICATION_LDAP_AUTH) {
-	// Local passwords (root password is allowed only for root, and disabled for anonymous user)
-	if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID
-		&& ($user->getUserId() != ROOT_PROFILEUSER_ID || ($user->getUserId() == ROOT_PROFILEUSER_ID && $cms_user->getUserId() == ROOT_PROFILEUSER_ID))) {
-		$authentificationField = "{
-			layout:			'column',
-			xtype:			'panel',
-			border:			false,
-			items:[{
-				columnWidth:	.5,
-				layout: 		'form',
-				border:			false,
-				items: [{
-					fieldLabel:		'<span class=\"atm-red\">*</span> {$cms_language->getJsMessage(MESSAGE_PAGE_PASSWORD)}',
-					xtype:			'textfield',
-					name:			'pass1',
-					inputType:		'password',
-					anchor:			'98%',
-					allowBlank:		(!isNaN(parseInt(userWindow.userId))) ? true : false
-				}]
-			},{
-				columnWidth:	.5,
-				layout: 		'form',
-				border:			false,
-				items: [{
-					fieldLabel:		'{$cms_language->getJsMessage(MESSAGE_PAGE_CONFIRM)}',
-					xtype:			'textfield',
-					name:			'pass2',
-					inputType:		'password',
-					anchor:			'100%',
-					allowBlank:		(!isNaN(parseInt(userWindow.userId))) ? true : false,
-					validator:		validatePass
-				}]
-			}]
-		},";
-	} else {
-		$authentificationField = '';
-	}
-} else {
-	// LDAP DN
+
+// Local passwords (root password is allowed only for root, and disabled for anonymous user)
+if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID
+	&& ($user->getUserId() != ROOT_PROFILEUSER_ID || ($user->getUserId() == ROOT_PROFILEUSER_ID && $cms_user->getUserId() == ROOT_PROFILEUSER_ID))) {
 	$authentificationField = "{
-		$disableUserInfosFields
-		fieldLabel:		'{$cms_language->getJsMessage(MESSAGE_PAGE_DISTINGUISHED_NAME)}',
-		name:			'dn',
-		value:			'{$dn}'
+		layout:			'column',
+		xtype:			'panel',
+		border:			false,
+		items:[{
+			columnWidth:	.5,
+			layout: 		'form',
+			border:			false,
+			items: [{
+				fieldLabel:		'<span class=\"atm-red\">*</span> {$cms_language->getJsMessage(MESSAGE_PAGE_PASSWORD)}',
+				xtype:			'textfield',
+				name:			'pass1',
+				inputType:		'password',
+				anchor:			'98%',
+				allowBlank:		(!isNaN(parseInt(userWindow.userId))) ? true : false
+			}]
+		},{
+			columnWidth:	.5,
+			layout: 		'form',
+			border:			false,
+			items: [{
+				fieldLabel:		'{$cms_language->getJsMessage(MESSAGE_PAGE_CONFIRM)}',
+				xtype:			'textfield',
+				name:			'pass2',
+				inputType:		'password',
+				anchor:			'100%',
+				allowBlank:		(!isNaN(parseInt(userWindow.userId))) ? true : false,
+				validator:		validatePass
+			}]
+		}]
 	},";
+} else {
+	$authentificationField = '';
 }
 
 $title = (sensitiveIO::isPositiveInteger($userId)) ? $cms_language->getJsMessage(MESSAGE_PAGE_USER_PROFILE).' : '.$fullname : $cms_language->getJsMessage(MESSAGE_PAGE_USER_CREATION);

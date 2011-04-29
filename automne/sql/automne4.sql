@@ -2294,13 +2294,11 @@ CREATE TABLE `profilesUsers` (
   `contactData_pru` int(11) unsigned NOT NULL default '0',
   `profile_pru` int(11) unsigned NOT NULL default '0',
   `language_pru` varchar(16) NOT NULL default 'fr',
-  `dn_pru` varchar(255) NOT NULL default '',
   `active_pru` tinyint(4) NOT NULL default '0',
   `deleted_pru` tinyint(4) unsigned NOT NULL default '0',
   `alerts_pru` text NOT NULL,
   `favorites_pru` text NOT NULL,
   PRIMARY KEY  (`id_pru`),
-  KEY `ldapDN_pru` (`dn_pru`),
   FULLTEXT KEY `login_pru` (`login_pru`,`firstName_pru`,`lastName_pru`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
@@ -2308,8 +2306,8 @@ CREATE TABLE `profilesUsers` (
 -- Contenu de la table `profilesUsers`
 --
 
-INSERT INTO `profilesUsers` (`id_pru`, `login_pru`, `password_pru`, `firstName_pru`, `lastName_pru`, `contactData_pru`, `profile_pru`, `language_pru`, `dn_pru`, `active_pru`, `deleted_pru`, `alerts_pru`, `favorites_pru`) VALUES(1, 'root', '{sha}38f5e2ad12977a6100562dd369aba61aee589454', '', 'Super Administrator', 1, 1, 'en', '', 1, 0, 'standard,7;pnews,1;pmedia,1', '');
-INSERT INTO `profilesUsers` (`id_pru`, `login_pru`, `password_pru`, `firstName_pru`, `lastName_pru`, `contactData_pru`, `profile_pru`, `language_pru`, `dn_pru`, `active_pru`, `deleted_pru`, `alerts_pru`, `favorites_pru`) VALUES(3, 'anonymous', '{sha}0a92fab3230134cca6eadd9898325b9b2ae67998', '', 'Anonymous User', 3, 3, 'en', '', 1, 0, '', '');
+INSERT INTO `profilesUsers` (`id_pru`, `login_pru`, `password_pru`, `firstName_pru`, `lastName_pru`, `contactData_pru`, `profile_pru`, `language_pru`, `active_pru`, `deleted_pru`, `alerts_pru`, `favorites_pru`) VALUES(1, 'root', '{sha}38f5e2ad12977a6100562dd369aba61aee589454', '', 'Super Administrator', 1, 1, 'en', 1, 0, 'standard,7;pnews,1;pmedia,1', '');
+INSERT INTO `profilesUsers` (`id_pru`, `login_pru`, `password_pru`, `firstName_pru`, `lastName_pru`, `contactData_pru`, `profile_pru`, `language_pru`, `active_pru`, `deleted_pru`, `alerts_pru`, `favorites_pru`) VALUES(3, 'anonymous', '{sha}0a92fab3230134cca6eadd9898325b9b2ae67998', '', 'Anonymous User', 3, 3, 'en', 1, 0, '', '');
 
 -- --------------------------------------------------------
 
@@ -2323,10 +2321,7 @@ CREATE TABLE `profilesUsersGroups` (
   `description_prg` mediumtext NOT NULL,
   `label_prg` varchar(50) NOT NULL default '',
   `profile_prg` int(11) unsigned NOT NULL default '0',
-  `dn_prg` varchar(255) NOT NULL default '',
-  `invertdn_prg` int(1) NOT NULL default '0',
   PRIMARY KEY  (`id_prg`),
-  KEY `ldapDN_prg` (`dn_prg`),
   FULLTEXT KEY `description_prg` (`description_prg`,`label_prg`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 

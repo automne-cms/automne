@@ -40,8 +40,6 @@ $groupId = sensitiveIO::request('groupId', 'sensitiveIO::isPositiveInteger');
 //Identity vars
 $label = sensitiveIO::request('label');
 $description = sensitiveIO::request('description');
-$dn = sensitiveIO::request('dn');
-$invertdn = sensitiveIO::request('invertdn');
 //alerts
 $alerts = sensitiveIO::request('alerts');
 //users
@@ -286,17 +284,6 @@ switch ($action) {
 		$groupCreation = $group->getGroupId() ? false : true;
 		
 		$group->setLabel($label);
-		
-		// LDAP dn
-		$group->setInvertDN($invertdn);
-		// LDAP dn, only required when LDAP Auth activated
-		if ($dn) {
-			if (CMS_profile_usersCatalog::dnExists($dn, $group)) {
-				$cms_message .= $cms_language->getMessage(MESSAGE_DISTINGUISHED_NAME_EXISTS, array($dn))."\n";
-			} else {
-				$group->setDN(CMS_ldap_query::appendWithBaseDn($dn));
-			}
-		}
 		
 		$group->setDescription($description);
 		// Check if any errors when updating group datas

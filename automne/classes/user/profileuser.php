@@ -102,14 +102,6 @@ class CMS_profile_user extends CMS_profile
 	protected $_language;
 	
 	/**
-	  * LDAP distinguished name
-	  *
-	  * @var string
-	  * @access private
-	  */
-	protected $_dn;
-	
-	/**
 	  * Is the user active ?
 	  *
 	  * @var boolean
@@ -149,7 +141,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return  void
 	  * @access public
 	  */
-	function __construct($id = false, $forceRefreshLDAP = false)
+	function __construct($id = false)
 	{
 		// Initiate Stack objects
 		$this->_alerts = new CMS_stack();
@@ -173,29 +165,6 @@ class CMS_profile_user extends CMS_profile
 			$q = new CMS_query($sql);
 			if ($q->getNumRows()) {
 				$data = $q->getArray();
-			} elseif (defined("APPLICATION_LDAP_AUTH") && APPLICATION_LDAP_AUTH != false) {
-				//here in some unkown case (with LDAP connection) contactDatas is not set (or destroyed ?) 
-				//then request must be done without this table
-				$sql = "
-					select
-						*
-					from
-						profilesUsers,
-						profiles
-					where
-						id_pru='$id' and
-						id_pr=profile_pru
-				";
-				$q = new CMS_query($sql);
-				if ($q->getNumRows()) {
-					$data = $q->getArray();
-				} else {
-					$this->raiseError("Unknown DB ID : ".$id);
-					$this->_language = new CMS_language();
-					$this->_contactData = CMS_contactDatas_catalog::getByUser(array(), $forceRefreshLDAP);
-					// Initialize super class
-					parent::__construct();
-				}
 			} else {
 				$this->raiseError("Unknown DB ID : ".$id);
 				$this->_language = new CMS_language();
@@ -211,12 +180,11 @@ class CMS_profile_user extends CMS_profile
 				$this->_lastName = $data["lastName_pru"];
 				parent::__construct($data);
 				$this->_language = new CMS_language($data["language_pru"]);
-				$this->_dn = $data["dn_pru"];
 				$this->_active = $data["active_pru"];
 				$this->_deleted = $data["deleted_pru"];
 				$this->_favorites = $data["favorites_pru"] ? explode(',',$data["favorites_pru"]) : array();
 				$this->_alerts->setTextDefinition($data["alerts_pru"]);
-				$this->_contactData = CMS_contactDatas_catalog::getByUser($data, $forceRefreshLDAP);
+				$this->_contactData = CMS_contactDatas_catalog::getByUser($data);
 			}
 		} else {
 			$this->_language = new CMS_language();
@@ -276,7 +244,6 @@ class CMS_profile_user extends CMS_profile
 	/**
 	  * Set The deleted flag
 	  * Sets the login to nothing, so this login could be reused in the future
-	  * idem for LDAP dn
 	  *
 	  * @param boolean $active
 	  * @return boolean
@@ -579,35 +546,6 @@ class CMS_profile_user extends CMS_profile
 	}
 	
 	/**
-	  * Get DN
-	  *
-	  * @return string
-	  * @access public
-	  */
-	function getDN()
-	{
-		return $this->_dn;
-	}
-	
-	/**
-	  * Set DN
-	  *
-	  * @param string $s
-	  * @return boolean
-	  * @access public
-	  */
-	function setDN($s)
-	{
-		if ($s) {
-			$this->_dn = $s;
-			return true;
-		} else {
-			$this->raiseError("Must be string > 0");
-		}
-		return false;
-	}
-	
-	/**
 	  * Add Validation Clearance
 	  * Overwrite super class function to update validation catalog
 	  *
@@ -704,9 +642,6 @@ class CMS_profile_user extends CMS_profile
 		    break;
 		    case 'validationChange':
 		        return $this->_validationChange;
-		    break;
-            case 'dn':
-		        return $this->getDN();
 		    break;
             case 'deleted':
 		        return $this->isDeleted();
@@ -814,14 +749,6 @@ class CMS_profile_user extends CMS_profile
 	        $view->addError('Values to set are invalid.');
 	        return false;
 	    }
-	    if(APPLICATION_LDAP_AUTH && !$this->getValue('dn')){
-	        $view->addError('With LDAP Authentication, dn value is required.');
-	        return false;
-	    }
-	    if(!$this->getValue('dn') && !$this->havePassword()){
-	        $view->addError('Password or dn is required.');
-	        return false;
-	    }
 	    if($currentPassword == $this->getValue('login')){
 	        $view->addError('Login and password must be different.');
 	        return false;
@@ -888,7 +815,6 @@ class CMS_profile_user extends CMS_profile
 		//if deleted, must set the login to nothing, so this login could be reused in the future
 		if ($this->_deleted) {
 			$this->_login = '';
-			$this->_dn = '';
 		}
 		$sql_fields = "
 			active_pru='".$this->_active."',
@@ -899,7 +825,6 @@ class CMS_profile_user extends CMS_profile
 			lastName_pru='".SensitiveIO::sanitizeSQLString($this->_lastName)."',
 			contactData_pru='".SensitiveIO::sanitizeSQLString($this->_contactData->getId())."',
 			language_pru='".SensitiveIO::sanitizeSQLString($this->_language->getCode())."',
-			dn_pru='".SensitiveIO::sanitizeSQLString($this->_dn)."',
 			profile_pru='".SensitiveIO::sanitizeSQLString(parent::getId())."',
 			alerts_pru='".SensitiveIO::sanitizeSQLString($this->_alerts->getTextDefinition())."',
 			favorites_pru='".SensitiveIO::sanitizeSQLString(implode(',',$this->_favorites))."'

@@ -45,25 +45,6 @@ class CMS_contactDatas_catalog extends CMS_grandFather
 	}
 	
 	/**
-	  * Get a contact data by DN
-	  *
-	  * @param string $dn
-	  * @param integer $id : the Automne contact data ID associated
-	  * @return CMS_ldap_contactData or null
-	  * @access public
-	  */
-	static function getByDN($dn, $id = false)
-	{
-		if (trim($dn) != '') {
-			$obj = new CMS_ldap_contactData(trim($dn), $id);
-			if (!$obj->hasError()) {
-				return $obj;
-			}
-		}
-		return new CMS_ldap_contactData();
-	}
-	
-	/**
 	  * Get array of contacts data by Email
 	  *
 	  * @param string $data
@@ -104,30 +85,20 @@ class CMS_contactDatas_catalog extends CMS_grandFather
 
 	/**
 	  * Get by user : returns the contact data for given user
-	  * Depend on LDAP authentification status
-	  * @param boolean getLDAPDatas : if LDAP connection is used, force getting CD from LDAP to get fresh datas (default false)
+	  *
 	  * @param array $data : datas from DB (loaded by CMS_profile_user) or CMS_profile_user object
-	  * @return CMS_contactData or CMS_ldap_contactData
+	  * @return CMS_contactData
 	  * @access public
 	  */
-	static function getByUser($data, $getLDAPDatas = false)
+	static function getByUser($data)
 	{
 		if (is_array($data)) {
-			if (defined("APPLICATION_LDAP_AUTH") && APPLICATION_LDAP_AUTH != false && $getLDAPDatas) {
-				return CMS_contactDatas_catalog::getByDN($data["dn_pru"], $data["contactData_pru"]);
-			} else {
-				return CMS_contactDatas_catalog::getById($data);
-			}
+			return CMS_contactDatas_catalog::getById($data);
 		} elseif (is_a($data, 'CMS_profile_user')) {
-			if (defined("APPLICATION_LDAP_AUTH") && APPLICATION_LDAP_AUTH != false && $getLDAPDatas) {
-				$cd = $data->getContactData();
-				return CMS_contactDatas_catalog::getByDN($data->getDN(), $cd->getID());
-			} else {
-				//ugly method but need it for compatibility
-				//I do not think that it is very often useful, so ...
-				$user = new CMS_profile_user($data->getUserID());
-				return $user->getContactData();
-			}
+			//ugly method but need it for compatibility
+			//I do not think that it is very often useful, so ...
+			$user = new CMS_profile_user($data->getUserID());
+			return $user->getContactData();
 		} else {
 			return null;
 		}

@@ -7,7 +7,6 @@
 	<param name="VIEW_SQL" type="boolean">0</param>
 	<param name="POLYMOD_DEBUG" type="boolean">0</param>
 	<param name="APPLICATION_ENFORCES_ACCESS_CONTROL" type="boolean">0</param>
-	<param name="APPLICATION_LDAP_AUTH" type="boolean">0</param>
 	<param name="USE_BACKGROUND_REGENERATOR" type="boolean">1</param>
 	<param name="NO_APPLICATION_MAIL" type="boolean">0</param>
 	<param name="LOG_SENDING_MAIL" type="boolean">1</param>

@@ -54,40 +54,6 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	}
 	
 	/**
-	  * Returns a CMS_profile_usersGroups when given a LDAP dn
-	  * 
-	  * @param string $dn The LDAP dn to search a group with
-	  * @return CMS_profile_usersGroup or false on failure
-	  * @access public
-	  * @static
-	  */
-	/*function getByDN($dn)
-	{
-		if (trim($dn) != '') {
-			$attribute = io::substr($dn,0,io::strpos($dn,'=')+1);
-			$sql = "
-				select
-					id_prg as id
-				from
-					profilesUsersGroups
-				where
-					(dn_prg = '".SensitiveIO::sanitizeSQLString($dn)."' and invertdn_prg=0";
-			if ($attribute) {
-				$sql .= " or  (dn_prg LIKE '".$attribute."%' and dn_prg != '".SensitiveIO::sanitizeSQLString($dn)."' and invertdn_prg=1)";
-			}
-			$sql .= " )";
-			$q = new CMS_query($sql);
-			if ($q->getNumRows() == 1) {
-				$obj = CMS_profile_usersGroupsCatalog::getById($q->getValue("id"));
-				if (!$obj->hasError()) {
-					return $obj;
-				}
-			}
-		}
-		return false;
-	}*/
-	
-	/**
 	  * Returns all the profile usersGroups, sorted by label.
 	  * Static function.
 	  *
@@ -349,46 +315,6 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	}
 	
 	/**
-	  * Checks all the profile groups, except $group to see if LDAP dn doesnt
-	  * exist. Static function.
-	  *
-	  * @param CMS_profile_userGroup $group
-	  * @param string $dn
-	  * @return boolean
-	  * @access public
-	  */
-	static function dnExists($dn, &$group)
-	{
-		if($group->getInvertDN()) {
-			$attribute = io::substr($dn,0,io::strpos($dn,'=')+1);
-			$sql = "
-				select
-					*
-				from
-					profilesUsersGroups
-				where
-					dn_prg LIKE '".$attribute."%' 
-					and dn_prg != '".SensitiveIO::sanitizeSQLString($dn)."' 
-					and invertdn_prg=1
-					and id_prg != '".$group->getGroupId()."'
-			";
-		} else {
-			$sql = "
-				select
-					*
-				from
-					profilesUsersGroups
-				where
-					dn_prg = '".SensitiveIO::sanitizeSQLString($dn)."' 
-					and invertdn_prg=0
-					and id_prg != '".$group->getGroupId()."'
-			";
-		}
-		$q = new CMS_query($sql);
-		return $q->getNumRows();
-	}
-	
-	/**
 	  * Gets the users for a group
 	  * Static function.
 	  * 
@@ -508,37 +434,5 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 		}
 		return $groupsLabel;
 	}
-	
-	/**
-      * Get all groups DNs infos
-      *
-      * @return array(id => dn) groups dn
-      * @access public
-      * @static
-      */
-    static function getGroupsDN() {
-            $sql = "
-                    select
-                            id_prg as id,
-                            dn_prg as dn
-                    from
-                            profilesUsersGroups
-                    where
-                            dn_prg != ''
-                    order by
-                            dn_prg asc
-            ";
-            $q = new CMS_query($sql);
-            $groupsDN = array();
-            if ($q->getNumRows()) {
-                    while ($r = $q->getArray()) {
-                            $dnInfos = explode('§§', $r['dn']);
-                            $ldapDN = (isset($dnInfos[0])) ? $dnInfos[0] : '';
-                            $ldapFilter = (isset($dnInfos[1])) ? $dnInfos[1] : '';
-                            $groupsDN[$r['id']] = array('dn' => $ldapDN, 'filter' => $ldapFilter);
-                    }
-            }
-            return $groupsDN;
-    }
 }
 ?>

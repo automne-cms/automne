@@ -116,68 +116,6 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	}
 	
 	/**
-	  * Returns a CMS_profile_user when given a LDAP dn
-	  * 
-	  * @param string $dn The LDAP dn to search a user with
-	  * @return CMS_profile_user or false on failure
-	  * @access public
-	  * @static
-	  */
-	static function getByDN($dn)
-	{
-		if (trim($dn) != '') {
-			// Check that dn fields exist
-			$sql = "
-				DESCRIBE profilesUsers dn_pru
-			";
-			$q = new CMS_query($sql);
-			if (!$q->getNumRows() || io::strtolower($q->getValue("Type")) != 'varchar(255)') {
-				$sqls[] = "
-					ALTER TABLE 
-						profilesUsers
-					ADD
-						dn_pru VARCHAR( 255 ) NOT NULL
-					AFTER
-						textEditor_pru
-				";
-				$sqls[] = "
-					ALTER TABLE
-						profilesUsers ADD INDEX ( dn_pru )
-				";
-				$sqls[] = "
-					ALTER TABLE
-						profilesUsersGroups
-					ADD 
-						dn_prg VARCHAR( 255 ) NOT NULL
-				";
-				$sqls[] = "
-					ALTER TABLE
-						profilesUsersGroups ADD INDEX ( `dn_prg` )
-				";
-				foreach ($sqls as $sql) {
-					$qa = new CMS_query($sql);
-				}
-			}
-			$sql = "
-				select
-					id_pru as id
-				from
-					profilesUsers
-				where
-					dn_pru like '".SensitiveIO::sanitizeSQLString($dn)."'
-			";
-			$q = new CMS_query($sql);
-			if ($q->getNumRows() == 1) {
-				$obj = new CMS_profile_user($q->getValue("id"), true);
-				if (!$obj->hasError()) {
-					return $obj;
-				}
-			}
-		}
-		return false;
-	}
-	
-	/**
 	  * Has a user the right to view a page biven by its ID ?
 	  * Static function.
 	  *
@@ -210,7 +148,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
         $attrWhere = '';
 		$from = '';
 		if($attrs and is_array($attrs)){
-			$availableAttrs = array('id_pru', 'login_pru', 'firstName_pru', 'lastName_pru', 'contactData_pru', 'profile_pru', 'language_pru', 'dn_pru', 'textEditor_pru', 'email_cd');
+			$availableAttrs = array('id_pru', 'login_pru', 'firstName_pru', 'lastName_pru', 'contactData_pru', 'profile_pru', 'language_pru', 'textEditor_pru', 'email_cd');
 			foreach($attrs as $attrName => $attrValue){
 				// Check $attrName is available
 				if(in_array($attrName,$availableAttrs)){
@@ -337,7 +275,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	 * Search users by xml definition. Return XML
 	 * 
 	 * @access public
-	 * @param string $searchConditions XML definition to search with ('id','login','firstName','lastName','contactData','profile','language','dn')
+	 * @param string $searchConditions XML definition to search with ('id','login','firstName','lastName','contactData','profile','language')
 	 * @return string XML definition of users IDs
 	 */
 	static function soapSearch($searchConditions = '') {
@@ -619,31 +557,6 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 		uksort($users, array('io','natcasecmp'));
 		
 		return $users;
-	}
-	
-	/**
-	  * Checks all the profile users, except $user
-	  * to see if LDAP dn doesnt exist. Static function.
-	  *
-	  * @param CMS_profile_user $user
-	  * @param string $dn
-	  * @return boolean
-	  * @access public
-	  */
-	static function dnExists($dn, &$user)
-	{
-		$sql = "
-			select
-				*
-			from
-				profilesUsers
-			where
-				dn_pru = '".SensitiveIO::sanitizeSQLString($dn)."'
-			  and
-				id_pru <> '".$user->getUserId()."'
-		";
-		$q = new CMS_query($sql);
-		return $q->getNumRows();
 	}
 	
 	/**
