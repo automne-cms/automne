@@ -278,17 +278,20 @@ $jscontent = <<<END
 		fields:			['id', 'type', 'status', 'pubrange', 'label', 'description', 'edit', 'view', 'resource'],
 		listeners:		{
 			'load': 		{fn:function(store, records, options){
+				var resultsPanel = Ext.getCmp('{$winId}resultsPanel');
 				//Update results title
-				if (store.getTotalCount()) {
-					var start = (options.params && options.params.start) ? options.params.start : 0;
-					if (store.getTotalCount() < (start + {$recordsPerPage})) {
-						var resultCount = store.getTotalCount();
+				if (resultsPanel) {
+					if (store.getTotalCount()) {
+						var start = (options.params && options.params.start) ? options.params.start : 0;
+						if (store.getTotalCount() < (start + {$recordsPerPage})) {
+							var resultCount = store.getTotalCount();
+						} else {
+							var resultCount = start + {$recordsPerPage};
+						}
+						resultsPanel.setTitle(String.format('{$cms_language->getJSMessage(MESSAGE_PAGE_RESULTS_COUNT)}', resultCount, store.getTotalCount()));
 					} else {
-						var resultCount = start + {$recordsPerPage};
+						resultsPanel.setTitle('{$cms_language->getJSMessage(MESSAGE_PAGE_NORESULTS)}');
 					}
-					resultsPanel.setTitle(String.format('{$cms_language->getJSMessage(MESSAGE_PAGE_RESULTS_COUNT)}', resultCount, store.getTotalCount()));
-				} else {
-					resultsPanel.setTitle('{$cms_language->getJSMessage(MESSAGE_PAGE_NORESULTS)}');
 				}
 				searchWindow.syncSize();
 			}},
@@ -314,6 +317,7 @@ $jscontent = <<<END
 	resultTpl.compile();
 	
 	var resultsPanel = new Ext.ux.LiveDataPanel({
+		id:					'{$winId}resultsPanel',
 		title: 				'{$cms_language->getJSMessage(MESSAGE_PAGE_RESULTS)}',
 		cls:				'atm-results',
 		collapsible:		false,

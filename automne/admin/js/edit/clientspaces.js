@@ -383,6 +383,7 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 				onNodeDrop : function(target, dd, e, data){
 					//if index to drop and cs to drop are the same of current row position, skip moving row
 					if ((dd.row.csOrder != this.el.csIndex && dd.row.csOrder + 1 != this.el.csIndex) || dd.row.clientspace.getId() != this.el.cs.getId()) {
+						var newIndex = this.el.csIndex;
 						if (dd.row.clientspace.getId() != this.el.cs.getId()) { //row change of CS
 							//create blocks infos to move them on server
 							var blocks = {};
@@ -400,11 +401,14 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 								page:			dd.row.clientspace.page,
 								rowType:		dd.row.rowType,
 								rowTag:			dd.row.rowTagID,
-								index:			this.el.csIndex,
+								index:			newIndex,
 								blocks:			parent.Ext.util.JSON.encode(blocks),
 								visualMode:		this.visualMode
 							}, this);
 						} else { //row stay in the same cs, so it is only a move
+							if (dd.row.csOrder < this.el.csIndex && (this.el.csIndex - 1) >= 0) {
+								var newIndex = this.el.csIndex - 1;
+							}
 							//send all datas to server to move row at queried index
 							Automne.server.call('page-content-controler.php', false, {
 								action:			'move-row',
@@ -413,12 +417,12 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 								page:			dd.row.clientspace.page,
 								rowType:		dd.row.rowType,
 								rowTag:			dd.row.rowTagID,
-								index:			this.el.csIndex,
+								index:			newIndex,
 								visualMode:		this.visualMode
 							}, this);
 						}
 						//move row to given CS at given index
-						this.el.cs.moveRowAt(dd.row, this.el.csIndex);
+						this.el.cs.moveRowAt(dd.row, newIndex);
 					} else {
 						//allow row mask to be displayed
 						atmContent.startRowsMask();

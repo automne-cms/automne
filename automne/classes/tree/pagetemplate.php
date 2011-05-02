@@ -42,7 +42,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	const MESSAGE_DESC_SEE = 1541;
 	const MESSAGE_DESC_REGENERATE = 1542;
 	const MESSAGE_DESC_PAGES = 1543;
-	const MESSAGE_DESC_FILE = 1544;
+	const MESSAGE_DESC_XML_FILE = 723;
 	const MESSAGE_TPL_SYNTAX_ERROR = 1296;
 	const MESSAGE_BLOCK_SYNTAX_ERROR = 1295;
 	
@@ -264,8 +264,14 @@ class CMS_pageTemplate extends CMS_grandFather
 				set
 					label_pt='".SensitiveIO::sanitizeSQLString($this->_label)."'
 				where
-					definitionFile_pt = '".$this->_definitionFile."'
-			";
+					id_pt='".$this->_id."'";
+			if ($this->_definitionFile) {
+				$sql .= "
+					or (
+						definitionFile_pt = '".$this->_definitionFile."'
+					)
+				";
+			}
 			$q = new CMS_query($sql);
 			
 			return true;
@@ -782,7 +788,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  */
 	function hasPages()
 	{
-		if (!$this->_id) {
+		if (!$this->_id || !$this->_definitionFile) {
 			return false;
 		}
 		$sql = "
@@ -813,7 +819,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  */
 	function getPages($withClones = false)
 	{
-		if (!$this->_id) {
+		if (!$this->_id || !$this->_definitionFile) {
 			return array();
 		}
 		if ($withClones) {
@@ -858,7 +864,9 @@ class CMS_pageTemplate extends CMS_grandFather
 	protected function _parseDefinitionFile(&$modulesTreatment, $convert = null)
 	{
 		global $cms_language;
-		
+		if (!$this->_definitionFile) {
+			return false;
+		}
 		$filename = PATH_TEMPLATES_FS."/".$this->_definitionFile;
 		$tpl = new CMS_file(PATH_TEMPLATES_FS."/".$this->_definitionFile);
 		if (!$tpl->exists()) {
@@ -1005,20 +1013,21 @@ class CMS_pageTemplate extends CMS_grandFather
 		if ($this->_id) {
 			// Some changes must be applied
 			// to all private templates similar to this one using same xml file
-			$sql = "
-				update
-					pageTemplates
-				set
-					label_pt='".SensitiveIO::sanitizeSQLString($this->_label)."',
-					image_pt='".SensitiveIO::sanitizeSQLString($this->_image)."',
-					groupsStack_pt='".SensitiveIO::sanitizeSQLString($this->_groups->getTextDefinition())."',
-					modulesStack_pt='".SensitiveIO::sanitizeSQLString($this->_modules->getTextDefinition())."',
-					printingCSOrder_pt='".SensitiveIO::sanitizeSQLString(implode(";", $this->_printingClientSpaces))."'
-				where
-					definitionFile_pt like '".SensitiveIO::sanitizeSQLString($this->_definitionFile)."'
-					and private_pt='1'
-			";
-			$q = new CMS_query($sql);
+			if ($this->_definitionFile) {
+				$sql = "
+					update
+						pageTemplates
+					set
+						label_pt='".SensitiveIO::sanitizeSQLString($this->_label)."',
+						image_pt='".SensitiveIO::sanitizeSQLString($this->_image)."',
+						groupsStack_pt='".SensitiveIO::sanitizeSQLString($this->_groups->getTextDefinition())."',
+						modulesStack_pt='".SensitiveIO::sanitizeSQLString($this->_modules->getTextDefinition())."',
+						printingCSOrder_pt='".SensitiveIO::sanitizeSQLString(implode(";", $this->_printingClientSpaces))."'
+					where
+						definitionFile_pt like '".SensitiveIO::sanitizeSQLString($this->_definitionFile)."'
+				";
+				$q = new CMS_query($sql);
+			}
 			$sql = "
 				update
 					pageTemplates
@@ -1097,7 +1106,7 @@ class CMS_pageTemplate extends CMS_grandFather
 									$cms_language->getMessage(self::MESSAGE_DESC_ACTIVE).' <strong>'.($this->isUseable() ? $cms_language->getMessage(self::MESSAGE_DESC_YES) : $cms_language->getMessage(self::MESSAGE_DESC_NO)).'</strong><br />'.
 									$cms_language->getMessage(self::MESSAGE_DESC_USED).' <strong>'.($hasPages ? $cms_language->getMessage(self::MESSAGE_DESC_YES) : $cms_language->getMessage(self::MESSAGE_DESC_NO)).'</strong>'.($hasPages ? ' - <a href="#" onclick="Automne.view.search(\'template:'.$this->getID().'\');return false;">'.$cms_language->getMessage(self::MESSAGE_DESC_SEE).'</a>'.
 									($user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) ? ' / <a href="#" onclick="Automne.server.call(\'templates-controler.php\', \'\', {templateId:'.$this->getID().', action:\'regenerate\'});return false;">'.$cms_language->getMessage(self::MESSAGE_DESC_REGENERATE).'</a>' : '').' '.$cms_language->getMessage(self::MESSAGE_DESC_PAGES) : '').'<br />'.
-									$cms_language->getMessage(self::MESSAGE_DESC_FILE).' <strong>'.$this->getDefinitionFile().'</strong>'.
+									$cms_language->getMessage(self::MESSAGE_DESC_XML_FILE).': <strong>'.($this->getDefinitionFile() ? $this->getDefinitionFile() : $cms_language->getMessage(self::MESSAGE_DESC_NONE)).'</strong>'.
 									'<br class="x-form-clear" />'.
 								'</div>',
 			'activated'		=> $this->isUseable() ? true : false,
