@@ -399,6 +399,9 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 		} else {
 			$definition = $q->getValue('definitionFile_pt');
 		}
+		if (!$definition) {
+			return false;
+		}
 		$sql="
 			select
 				id_pt

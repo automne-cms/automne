@@ -264,8 +264,14 @@ class CMS_pageTemplate extends CMS_grandFather
 				set
 					label_pt='".SensitiveIO::sanitizeSQLString($this->_label)."'
 				where
-					definitionFile_pt = '".$this->_definitionFile."'
-			";
+					id_pt='".$this->_id."'";
+			if ($this->_definitionFile) {
+				$sql .= "
+					or (
+						definitionFile_pt = '".$this->_definitionFile."'
+					)
+				";
+			}
 			$q = new CMS_query($sql);
 			
 			return true;
@@ -782,7 +788,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  */
 	function hasPages()
 	{
-		if (!$this->_id) {
+		if (!$this->_id || !$this->_definitionFile) {
 			return false;
 		}
 		$sql = "
@@ -813,7 +819,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  */
 	function getPages($withClones = false)
 	{
-		if (!$this->_id) {
+		if (!$this->_id || !$this->_definitionFile) {
 			return array();
 		}
 		if ($withClones) {
@@ -1005,20 +1011,21 @@ class CMS_pageTemplate extends CMS_grandFather
 		if ($this->_id) {
 			// Some changes must be applied
 			// to all private templates similar to this one using same xml file
-			$sql = "
-				update
-					pageTemplates
-				set
-					label_pt='".SensitiveIO::sanitizeSQLString($this->_label)."',
-					image_pt='".SensitiveIO::sanitizeSQLString($this->_image)."',
-					groupsStack_pt='".SensitiveIO::sanitizeSQLString($this->_groups->getTextDefinition())."',
-					modulesStack_pt='".SensitiveIO::sanitizeSQLString($this->_modules->getTextDefinition())."',
-					printingCSOrder_pt='".SensitiveIO::sanitizeSQLString(implode(";", $this->_printingClientSpaces))."'
-				where
-					definitionFile_pt like '".SensitiveIO::sanitizeSQLString($this->_definitionFile)."'
-					and private_pt='1'
-			";
-			$q = new CMS_query($sql);
+			if ($this->_definitionFile) {
+				$sql = "
+					update
+						pageTemplates
+					set
+						label_pt='".SensitiveIO::sanitizeSQLString($this->_label)."',
+						image_pt='".SensitiveIO::sanitizeSQLString($this->_image)."',
+						groupsStack_pt='".SensitiveIO::sanitizeSQLString($this->_groups->getTextDefinition())."',
+						modulesStack_pt='".SensitiveIO::sanitizeSQLString($this->_modules->getTextDefinition())."',
+						printingCSOrder_pt='".SensitiveIO::sanitizeSQLString(implode(";", $this->_printingClientSpaces))."'
+					where
+						definitionFile_pt like '".SensitiveIO::sanitizeSQLString($this->_definitionFile)."'
+				";
+				$q = new CMS_query($sql);
+			}
 			$sql = "
 				update
 					pageTemplates

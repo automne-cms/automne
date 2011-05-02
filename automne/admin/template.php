@@ -351,7 +351,7 @@ $jscontent = <<<END
 				fileinfos:	{$imageDatas}
 			},{
 				xtype: 			'atmFileUploadField',
-				id: 			'form-file',
+				id: 			'form-file-{$templateId}',
 				emptyText: 		'{$cms_language->getJSMessage(MESSAGE_SELECT_FILE)}',
 				fieldLabel: 	'<span class="atm-help" ext:qtip="{$cms_language->getJsMessage(MESSAGE_PAGE_XML_DEFINITION_DESC)}">{$cms_language->getJSMessage(MESSAGE_PAGE_XML_DEFINITION)}</span>',
 				name: 			'definitionfile',
@@ -383,9 +383,7 @@ $jscontent = <<<END
 									//display hidden elements
 									Ext.getCmp('templateDef-{$templateId}').enable();
 									Ext.getCmp('templateRows-{$templateId}').enable();
-									if (Ext.getCmp('print-{$templateId}')) {
-										Ext.getCmp('print-{$templateId}').enable();
-									}
+									Ext.getCmp('printcs-{$templateId}').enable();
 								}
 							},
 							scope:this
@@ -604,9 +602,7 @@ $jscontent = <<<END
 		//hide elements
 		Ext.getCmp('templateDef-{$templateId}').disable();
 		Ext.getCmp('templateRows-{$templateId}').disable();
-		if (Ext.getCmp('print-{$templateId}')) {
-			Ext.getCmp('print-{$templateId}').disable();
-		}
+		Ext.getCmp('printcs-{$templateId}').disable();
 	}
 	if (Ext.isIE) {
 		center.syncSize(); //needed for IE7
