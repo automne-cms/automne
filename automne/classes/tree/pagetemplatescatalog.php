@@ -120,6 +120,7 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 		if (!$includeInactive) {
 			$where .= ($where) ? ' and ' : '';
 			$where .= " inUse_pt=1 ";
+			$where .= " and definitionFile_pt!='' ";
 		}
 		//tplIds
 		if ($tplIds) {

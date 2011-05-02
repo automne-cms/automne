@@ -42,7 +42,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	const MESSAGE_DESC_SEE = 1541;
 	const MESSAGE_DESC_REGENERATE = 1542;
 	const MESSAGE_DESC_PAGES = 1543;
-	const MESSAGE_DESC_FILE = 1544;
+	const MESSAGE_DESC_XML_FILE = 723;
 	const MESSAGE_TPL_SYNTAX_ERROR = 1296;
 	const MESSAGE_BLOCK_SYNTAX_ERROR = 1295;
 	
@@ -864,7 +864,9 @@ class CMS_pageTemplate extends CMS_grandFather
 	protected function _parseDefinitionFile(&$modulesTreatment, $convert = null)
 	{
 		global $cms_language;
-		
+		if (!$this->_definitionFile) {
+			return false;
+		}
 		$filename = PATH_TEMPLATES_FS."/".$this->_definitionFile;
 		$tpl = new CMS_file(PATH_TEMPLATES_FS."/".$this->_definitionFile);
 		if (!$tpl->exists()) {
@@ -1104,7 +1106,7 @@ class CMS_pageTemplate extends CMS_grandFather
 									$cms_language->getMessage(self::MESSAGE_DESC_ACTIVE).' <strong>'.($this->isUseable() ? $cms_language->getMessage(self::MESSAGE_DESC_YES) : $cms_language->getMessage(self::MESSAGE_DESC_NO)).'</strong><br />'.
 									$cms_language->getMessage(self::MESSAGE_DESC_USED).' <strong>'.($hasPages ? $cms_language->getMessage(self::MESSAGE_DESC_YES) : $cms_language->getMessage(self::MESSAGE_DESC_NO)).'</strong>'.($hasPages ? ' - <a href="#" onclick="Automne.view.search(\'template:'.$this->getID().'\');return false;">'.$cms_language->getMessage(self::MESSAGE_DESC_SEE).'</a>'.
 									($user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) ? ' / <a href="#" onclick="Automne.server.call(\'templates-controler.php\', \'\', {templateId:'.$this->getID().', action:\'regenerate\'});return false;">'.$cms_language->getMessage(self::MESSAGE_DESC_REGENERATE).'</a>' : '').' '.$cms_language->getMessage(self::MESSAGE_DESC_PAGES) : '').'<br />'.
-									$cms_language->getMessage(self::MESSAGE_DESC_FILE).' <strong>'.$this->getDefinitionFile().'</strong>'.
+									$cms_language->getMessage(self::MESSAGE_DESC_XML_FILE).': <strong>'.($this->getDefinitionFile() ? $this->getDefinitionFile() : $cms_language->getMessage(self::MESSAGE_DESC_NONE)).'</strong>'.
 									'<br class="x-form-clear" />'.
 								'</div>',
 			'activated'		=> $this->isUseable() ? true : false,
