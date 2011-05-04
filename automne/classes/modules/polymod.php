@@ -641,10 +641,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			return false;
 		}
 		//instanciate root user to avoid rights problems during item loading
-		global $cms_user;
-		if (!is_object($cms_user)) {
-			$GLOBALS['cms_user'] = new CMS_profile_user(1);
-		}
+		$GLOBALS['cms_user'] = new CMS_profile_user(ROOT_PROFILEUSER_ID);
 		//instanciate script related item (use edited object because the script can launch writing of values into object)
 		$item = CMS_poly_object_catalog::getObjectByID($parameters['object'],false,false);
 		if (!is_object($item) || $item->hasError()) {
@@ -781,7 +778,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 		//Categories
 		//if user has some categories to manage
 		$userManageCategories = $user->getRootModuleCategoriesManagable($this->getCodename());
-		if ((is_array($userManageCategories) && $userManageCategories) || $user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
+		if ($catFieldsNames && ((is_array($userManageCategories) && $userManageCategories) || $user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL))) {
 			$objectsInfos[] = array(
 				'label'			=> $cms_language->getMessage(self::MESSAGE_PAGE_CATEGORIES),
 				'adminLabel'	=> $cms_language->getMessage(self::MESSAGE_PAGE_ADMIN_CATEGORIES),
@@ -1104,6 +1101,20 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			foreach ($idsRelation['definitionToConvert'] as $objectToCompile) {
 				if (method_exists($objectToCompile, 'convertDefinitions')) {
 					$objectToCompile->convertDefinitions($this);
+				}
+			}
+		}
+		//convert params of imported fields
+		if (isset($idsRelation['paramsFieldsToConvert'])&& $idsRelation['paramsFieldsToConvert']) {
+			foreach ($idsRelation['paramsFieldsToConvert'] as $field) {
+				$fieldObject = $field->getTypeObject();
+				if (method_exists($fieldObject, 'importParams')) {
+					$params = $fieldObject->getParamsValues();
+					$params = $fieldObject->importParams($params, $cms_language, $idsRelation, $infos);
+					if ($params) {
+						$field->setValue("params", $params);
+						$field->writeToPersistence();
+					}
 				}
 			}
 		}

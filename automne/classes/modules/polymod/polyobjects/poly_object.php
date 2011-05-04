@@ -304,7 +304,7 @@ class CMS_poly_object extends CMS_resource
 			}
 			//if this object is a primary resource, load CMS_subobject_integer to store resource value if any
 			if ($this->_objectResourceStatus == 1) {
-				if ($datas[$this->_ID][0]) {
+				if (isset($datas[$this->_ID][0]) && $datas[$this->_ID][0]) {
 					$subFieldsValues = $datas[$this->_ID][0];
 					$this->_resource = new CMS_subobject_integer($subFieldsValues[0]['id'],array(),$subFieldsValues[0], $this->_public);
 					parent::__construct($subFieldsValues[0]['value']);

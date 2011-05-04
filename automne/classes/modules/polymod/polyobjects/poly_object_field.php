@@ -531,6 +531,10 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 					$this->setValue("params", $params);
 					//set this object into definition to convert array so it can be converted again at end of import process
 					$idsRelation['definitionToConvert'][] = $this;
+					//store field to convert params at end of import
+					if (method_exists($fieldObject, 'importParams')) {
+						$idsRelation['paramsFieldsToConvert'][] = $this;
+					}
 				} else {
 					$infos .= 'Error : missing or invalid parameters for field importation ...'."\n";
 					return false;
@@ -541,6 +545,13 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 		if (!$this->writeToPersistence()) {
 			$infos .= 'Error : can not write object field ...'."\n";
 			return false;
+		}
+		//if current field id has changed from imported id, set relation
+		if (isset($data['id']) && $data['id'] && $this->getID() != $data['id']) {
+			$idsRelation['fields'][$data['id']] = $this->getID();
+			if (isset($data['uuid']) && $data['uuid']) {
+				$idsRelation['fields'][$data['uuid']] = $this->getID();
+			}
 		}
 		return true;
 	}

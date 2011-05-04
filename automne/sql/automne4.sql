@@ -11,7 +11,8 @@
 DROP TABLE IF EXISTS `actionsTimestamps`;
 CREATE TABLE `actionsTimestamps` (
   `type_at` varchar(50) NOT NULL default '',
-  `date_at` datetime NOT NULL default '0000-00-00 00:00:00'
+  `date_at` datetime NOT NULL default '0000-00-00 00:00:00',
+  `module_at` varchar(255) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --

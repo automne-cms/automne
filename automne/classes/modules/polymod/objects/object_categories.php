@@ -578,6 +578,14 @@ class CMS_object_categories extends CMS_object_common
 		global $cms_user;
 		$params = $this->getParamsValues();
 		$categoriesRoot = ($categoriesRoot) ? $categoriesRoot : $params['rootCategory'];
+		//check category root
+		if ($categoriesRoot) {
+			 $cat = CMS_moduleCategories_catalog::getByID($categoriesRoot);
+			 if (!$cat || $cat->hasError()) {
+			 	$categoriesRoot = false;
+			 }
+		}
+		
 		//get module if none passed
 		if (!$module) {
 			$module = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
@@ -588,7 +596,7 @@ class CMS_object_categories extends CMS_object_common
 		}
 		if(/*($params['bypassRights'] && $clearanceLevel === false) || */!is_object($cms_user)) {
 			//TODO : ugly but missing time (need to redo the getAllCategoriesAsArray to accept no valid cms_user : append only in frontend without APPLICATION_ENFORCES_ACCESS_CONTROL. Medias module already doing something like this)
-			$user = new CMS_profile_user(1);
+			$user = new CMS_profile_user(ROOT_PROFILEUSER_ID);
 			$categories = CMS_moduleCategories_catalog::getAllCategoriesAsArray($user, $module, $language, $categoriesRoot, -1, $clearanceLevel, $strict, $crossLanguage);
 		} else {
 			$user = $cms_user;
@@ -704,7 +712,7 @@ class CMS_object_categories extends CMS_object_common
 			}
 			if(/*$params['bypassRights'] || */!is_object($cms_user)) {
 				//TODO : ugly but missing time (need to redo the getAllCategoriesAsArray to accept no valid cms_user : append only in frontend without APPLICATION_ENFORCES_ACCESS_CONTROL. Medias module already doing something like this)
-				$user = new CMS_profile_user(1);
+				$user = new CMS_profile_user(ROOT_PROFILEUSER_ID);
 			} else {
 				$user = $cms_user;
 			}
@@ -1660,6 +1668,34 @@ class CMS_object_categories extends CMS_object_common
 		$a_all_categories[CMS_moduleCategory::LINEAGE_PARK_POSITION] = '['.$cms_language->getMessage(self::MESSAGE_OBJECT_CATEGORIES_FIELD_WITHOUT_CATEGORIES, array($this->_field->getLabel($cms_language)), MOD_POLYMOD_CODENAME).']';
 		
 		return $a_all_categories;
+	}
+	
+	/**
+	  * Treat fields parameters to import
+	  *
+	  * @param array $params The import parameters.
+	  *		array(
+	  *				create	=> false|true : create missing objects (default : true)
+	  *				update	=> false|true : update existing objects (default : true)
+	  *				files	=> false|true : use files from PATH_TMP_FS (default : true)
+	  *			)
+	  * @param CMS_language $cms_language The CMS_langage to use
+	  * @param array $idsRelation : Reference : The relations between import datas ids and real imported ids
+	  * @param string $infos : Reference : The import infos returned
+	  * @return array : the treated parameters
+	  * @access public
+	  */
+	function importParams($params, $cms_language, &$idsRelation, &$infos) {
+		//here we need to convert categories ids used in parameters
+		$params = parent::treatParams($params, '');
+		//then try to convert categories ids if needed
+		if (isset($params['rootCategory']) && $params['rootCategory'] && isset($idsRelation['categories'][$params['rootCategory']])) {
+			$params['rootCategory'] = $idsRelation['categories'][$params['rootCategory']];
+		}
+		if (isset($params['defaultValue']) && $params['defaultValue'] && isset($idsRelation['categories'][$params['defaultValue']])) {
+			$params['defaultValue'] = $idsRelation['categories'][$params['defaultValue']];
+		}
+		return $params;
 	}
 }
 ?>

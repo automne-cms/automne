@@ -119,7 +119,7 @@ default:
 }
 
 //Send Login form window
-$applicationLabel = addcslashes(APPLICATION_LABEL, "'");
+$applicationLabel = io::htmlspecialchars(APPLICATION_LABEL);
 $loginURL = PATH_ADMIN_WR.'/login-form.php?_ts='.time();
 $rootPath = PATH_REALROOT_WR;
 $jscontent = 

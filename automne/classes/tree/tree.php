@@ -60,13 +60,13 @@ class CMS_tree extends CMS_grandFather
 	  * @return CMS_page or false on failure to find it
 	  * @access public
 	  */
-	static function getPageByID($id) {
+	static function getPageByID($id, $reset = false) {
 		if (!SensitiveIO::isPositiveInteger($id)) {
 			CMS_grandFather::raiseError("Id must be positive integer : ".$id);
 			return false;
 		}
 		static $pages;
-		if (isset($pages[$id])) {
+		if (isset($pages[$id]) && !$reset) {
 			return $pages[$id];
 		}
 		$pages[$id] = new CMS_page($id);
@@ -94,8 +94,10 @@ class CMS_tree extends CMS_grandFather
 				$id = $currentPageId;
 			} elseif (SensitiveIO::isPositiveInteger($currentPageId) && strtolower(io::sanitizeAsciiString($id)) == $id) {
 				return CMS_tree::getPageCodenameValue($id, $currentPageId, $type);
-			} else {
+			} elseif ($type != 'exists') {
 				CMS_grandFather::raiseError("Page id must be positive integer : ".print_r(func_get_args(), true));
+				return false;
+			} else {
 				return false;
 			}
 		}
@@ -105,6 +107,9 @@ class CMS_tree extends CMS_grandFather
 				$return = false;
 			} else {
 				switch ($type) {
+					case 'exists':
+						$return = $page->getPublication() == RESOURCE_PUBLICATION_PUBLIC ? true : false;
+					break;
 					case 'url':
 						$return = $page->getURL();
 					break;

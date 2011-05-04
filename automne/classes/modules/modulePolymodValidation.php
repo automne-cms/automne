@@ -722,11 +722,9 @@ class CMS_modulePolymodValidation extends CMS_module
 		$secondaryResourceIds = $resource->getAllSecondaryResourcesForPrimaryResource();
 		if (is_array($secondaryResourceIds) && $secondaryResourceIds) {
 			foreach($secondaryResourceIds as $secondaryResourceId) {
-				//move the data
-				CMS_modulePolymodValidation::moveResourceData($this->getCodename(), $secondaryResourceId, $locationFrom, $locationTo, $copyOnly);
-				if ($locationTo == RESOURCE_DATA_LOCATION_DELETED) {
-					//mark item as deleted
-					CMS_modulePolymodValidation::markDeletedItem($secondaryResourceId);
+				if ($locationTo != RESOURCE_DATA_LOCATION_DELETED && $locationTo != RESOURCE_DATA_LOCATION_DEVNULL) {
+					//move the data
+					CMS_modulePolymodValidation::moveResourceData($this->getCodename(), $secondaryResourceId, $locationFrom, $locationTo, $copyOnly);
 				}
 			}
 		}

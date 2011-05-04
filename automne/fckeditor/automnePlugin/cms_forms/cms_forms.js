@@ -87,7 +87,7 @@ function getFieldCode()
 			var e = FCK.EditorDocument.getElementById(label.htmlFor);
 			FCK.Selection.SelectNode(e);
 			selectedElement = FCK.Selection.GetSelectedElement();
-			alert(selectedElement);
+			//alert(selectedElement);
 		}
 	} else if (selectedElement.htmlFor) {
 		//get corresponding tag for selected label
