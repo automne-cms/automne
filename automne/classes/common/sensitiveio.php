@@ -265,12 +265,12 @@ class SensitiveIO extends CMS_grandFather
 			if ($addslashes) {
 				$input = addcslashes($input, "'\\");
 			}
-			$sanitized = str_replace(array("\r", "\n", "\t"), '', $input);
+			$sanitized = str_replace(array("\r", "\n", "\t", "\xE2\x80\xA8"), '', $input);
 		} else {
 			if ($addslashes) {
 				$input = addcslashes($input, '"\\');
 			}
-			$sanitized = str_replace(array("\r", "\n", "\t"), array('', '\n', ''), $input);
+			$sanitized = str_replace(array("\r", "\n", "\t", "\xE2\x80\xA8"), array('', '\n', '', ''), $input);
 		}
 		return $sanitized;
 	}

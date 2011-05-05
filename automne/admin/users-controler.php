@@ -410,8 +410,6 @@ switch ($action) {
 		//Check password fields
 		if($pass1 && $pass2 && $pass1 == $pass2 && $user->getLogin() != $pass1) {
 		   $user->setPassword($pass1);
-		} elseif (!$user->havePassword()) {
-			$cms_message .= $cms_language->getMessage(MESSAGE_INCORRECT_FIELD_VALUE, array($cms_language->getMessage(MESSAGE_FIELD_PASSWORD)))."\n";
 		} elseif ($pass1 || $pass2) {
 			$cms_message .= $cms_language->getMessage(MESSAGE_INCORRECT_PASSWORD_VALUES)."\n";
 		}

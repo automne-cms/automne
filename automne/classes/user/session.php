@@ -118,12 +118,14 @@ class CMS_session extends CMS_grandFather
 			'cookie_httponly'		=> true,
 			'remember_me_seconds'	=> (60 * 60 * 24 * APPLICATION_COOKIE_EXPIRATION),
 			'use_trans_sid'			=> false,	//remove session trans sid to prevent session fixation
-			
 		));
 		Zend_Session::start();
 	}
 	
 	public static function authenticate($params = array()) {
+		//first clean old sessions datas from database
+		CMS_session::_cleanSessions();
+		
 		// Get Zend Auth instance
 		$auth = Zend_Auth::getInstance();
 		
@@ -138,59 +140,76 @@ class CMS_session extends CMS_grandFather
 		if (isset($params['remember']) && $params['remember']) {
 			self::$_permanent = true;
 		}
+		//clear auth storage if disconnection is queried
+		if (isset($params['disconnect']) && $params['disconnect']) {
+			//clear session content
+			CMS_session::deleteSession(true);
+		}
 		
 		//load modules
 		$modules = CMS_modulesCatalog::getAll('id');
 		//get last module
 		$module = array_pop($modules);
 		$authenticated = false;
+		//keep old storage value, because storage will be reseted by each module authentification
+		$storageValue = $auth->getStorage()->read();
 		do {
 			//if module has auth method, try it
 			if (method_exists($module, 'getAuthAdapter')) {
+				//overwrite auth storage value with old value
+				$auth->getStorage()->write($storageValue);
 				//get module auth adapter
 				$authAdapter = $module->getAuthAdapter($params);
 				
 				//authenticate user
 				self::$_result = $auth->authenticate($authAdapter);
-				//CMS_grandFather::log('Auth result : '.self::$_result->getCode().' - Message : '.print_r(self::$_result->getMessages(), true));
+				//CMS_grandFather::log($module->getCodename().' - Auth result : '.self::$_result->getCode().' - Message : '.print_r(self::$_result->getMessages(), true));
 				
 				switch (self::$_result->getCode()) {
 					case Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND: //user crendentials does not exists (ex: no login/pass provided)
-				        /** l'identifiant n'existe pas **/
-						//si des infos de création existent : on créé l'utilisateur puis on le charge
-						//ex : aucun login/pass fourni
+				        //nothing for now
 					break;
 					case Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID: //invalid login/pass
-				        
+				        //nothing for now
 					break;
 					case Zend_Auth_Result::SUCCESS:
 						if ($auth->hasIdentity()) {
-						    // get user
+						    // get user identity
 						    $userId = $auth->getIdentity();
-							$user = CMS_profile_usersCatalog::getByID($userId);
-							if ($user && !$user->hasError() && !$user->isDeleted() && $user->isActive()) {
-								$authenticated = true;
-							} else {
-								unset($user);
-								unset($userId);
+							if ($userId) {
+								if (io::isPositiveInteger($userId)) { //userId is a CMS_profile_user id
+									$user = CMS_profile_usersCatalog::getByID($userId);
+								} else { //userId is a CMS_profile_user id
+									$user = CMS_profile_usersCatalog::getByLogin($userId);
+								}
+								
+								//If user is founded and auth adapter can update user : update it
+								//ex : LDAP login and Automne user
+								if (isset($user) && $user && method_exists($authAdapter, 'updateUser')) {
+									$user = $authAdapter->updateUser($user);
+								} else 
+								//If user is not founded but auth adapter can create user : try to create it
+								//ex : LDAP login but no Automne user
+								if(method_exists($authAdapter, 'createUser')) {
+									$user = $authAdapter->createUser();
+								}
+								
+								//check if user is valid
+								if (isset($user) && $user && !$user->hasError() && !$user->isDeleted() && $user->isActive()) {
+									$authenticated = true;
+									//overwrite auth identity with valid user Id
+									$auth->getStorage()->write($user->getUserId());
+								} else {
+									unset($user);
+									unset($userId);
+								}
 							}
-							//si des infos de mise à jour existent : on met à jour l'utilisateur
-							//ex : login LDAP ok et utilisateur Automne
-							
-							
-						} else {
-							//si des infos de création existent : on créé l'utilisateur puis on le charge
-							//ex : login LDAP ok mais pas d'utilisateur Automne
-							
-							
-							
-							//$authenticated = true;
 						}
 					break;
 					case Zend_Auth_Result::FAILURE: //user founded but has error during loading (user inactive or deleted)
-						// L'utilisateur est trouvé mais le chargement de l'objet cms_profile_user echoue
+						//nothing for now
 					break;
-					default: //other cases
+					default: //other unidentified cases : thrown an error
 						CMS_grandFather::raiseError('Authentification return code '.self::$_result->getCode().' for module '.$module->getCodename().' with parameters '.print_r($params, true));
 					break;
 				}
@@ -299,6 +318,98 @@ class CMS_session extends CMS_grandFather
 		}
 		//for backward compatibility
 		$_SESSION["cms_context"] = new CMS_context();
+	}
+	
+	/**
+	  * Clean old sessions datas
+	  *
+	  * @return void
+	  * @access private
+	  */
+	protected function _cleanSessions() {
+		//fetch all deletable sessions
+		$sql = "
+			select
+				*
+			from
+				sessions
+			where
+				(
+					UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(lastTouch_ses) > ".io::sanitizeSQLString(APPLICATION_SESSION_TIMEOUT)."
+					and cookie_expire_ses = '0000-00-00 00:00:00'
+				) OR (
+					cookie_expire_ses != '0000-00-00 00:00:00'
+					and TO_DAYS(NOW()) >= cookie_expire_ses
+				)
+		";
+		$q = new CMS_query($sql);
+		if ($q->getNumRows()) {
+			// Remove locks
+			while ($usr = $q->getValue("user_ses")) {
+				$sql = "
+					delete from 
+						locks 
+					where 
+						locksmithData_lok='".io::sanitizeSQLString($usr)."'
+				";
+				$qry = new CMS_query($sql);
+			}
+		 	// Delete all old sessions
+			$sql = "
+				delete from
+					sessions 
+				where
+					(
+						UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(lastTouch_ses) > ".io::sanitizeSQLString(APPLICATION_SESSION_TIMEOUT)."
+						and cookie_expire_ses = '0000-00-00 00:00:00'
+					) or (
+						cookie_expire_ses != '0000-00-00 00:00:00'
+						and TO_DAYS(NOW()) >= cookie_expire_ses
+					)
+			";
+			$q = new CMS_query($sql);
+		}
+	}
+	
+	/**
+	  * Delete current session datas
+	  *
+	  * @param boolean $force : force removing persistent session (default false)
+	  * @return void
+	  * @access public
+	  * @static
+	  */
+	static function deleteSession($force = false) {
+		//clear session storage
+		$authStorage = new Zend_Auth_Storage_Session('atm-auth');
+		$authStorage->clear();
+		//clear session table
+		$sql = "
+			delete
+			from
+				sessions
+			where
+				phpid_ses='".io::sanitizeSQLString(Zend_Session::getId())."'
+		";
+		if (!$force) { //keep session with persistent cookie
+			$sql .= "
+				and (
+					UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(lastTouch_ses) > ".io::sanitizeSQLString(APPLICATION_SESSION_TIMEOUT)."
+					and cookie_expire_ses = '0000-00-00 00:00:00'
+				) or (
+					cookie_expire_ses != '0000-00-00 00:00:00'
+					and TO_DAYS(NOW()) >= cookie_expire_ses
+				)
+			";
+		} else {
+			//remove autologin cookie if exists
+			if (isset($_COOKIE[CMS_session::getAutoLoginCookieName()])) {
+				//remove cookie
+				CMS_session::setCookie(CMS_session::getAutoLoginCookieName());
+			}
+		}
+		$q = new CMS_query($sql);
+		return true;
 	}
 	
 	/**

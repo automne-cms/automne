@@ -38,7 +38,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	static function &getByID($id, $reset = false)
+	static function getByID($id, $reset = false)
 	{
 		static $groups;
 		if($reset){

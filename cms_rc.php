@@ -1204,4 +1204,12 @@ if (APPLICATION_EXEC_TYPE == 'http') {
 		unset($cms_user);
 	}
 }
+
+//force module standard loading
+if (!class_exists('CMS_module_standard')) {
+	die('Cannot find standard module ...');
+}
+
+//regenerate current page if needed
+atm_regen();
 ?>

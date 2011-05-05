@@ -183,6 +183,10 @@ $recordsPerPage = CMS_session::getRecordsPerPage();
 
 $groupsTab = $modulesTab = $adminTab = $logsTab = '';
 
+//Get modules and remove standard (which is already treated in this file)
+$modules = CMS_modulesCatalog::getAll();
+unset($modules[MOD_STANDARD_CODENAME]);
+
 //OTHERS TABS
 if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
 	$groupsDisabled = '';
@@ -257,8 +261,6 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
 				nocache:	true
 			}
 		}";
-	$modules = CMS_modulesCatalog::getAll();
-	unset($modules[MOD_STANDARD_CODENAME]);
 	foreach ($modules as $codename => $module) {
 		$label = sensitiveIO::sanitizeJSString($module->getLabel($cms_language));
 		if ($label) {
@@ -332,12 +334,12 @@ if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID
 			layout: 		'form',
 			border:			false,
 			items: [{
-				fieldLabel:		'<span class=\"atm-red\">*</span> {$cms_language->getJsMessage(MESSAGE_PAGE_PASSWORD)}',
+				fieldLabel:		'{$cms_language->getJsMessage(MESSAGE_PAGE_PASSWORD)}',
 				xtype:			'textfield',
 				name:			'pass1',
 				inputType:		'password',
 				anchor:			'98%',
-				allowBlank:		(!isNaN(parseInt(userWindow.userId))) ? true : false
+				allowBlank:		true
 			}]
 		},{
 			columnWidth:	.5,
@@ -349,7 +351,7 @@ if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID
 				name:			'pass2',
 				inputType:		'password',
 				anchor:			'100%',
-				allowBlank:		(!isNaN(parseInt(userWindow.userId))) ? true : false,
+				allowBlank:		true,
 				validator:		validatePass
 			}]
 		}]
@@ -358,6 +360,67 @@ if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID
 	$authentificationField = '';
 }
 
+/********************************************\
+*             MODULES ACCORDION              *
+\********************************************/
+$modulesAccordion = '';
+if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID && $user->getUserId() != ROOT_PROFILEUSER_ID) {
+	//usefull temporary function
+	function replaceCallBack($parts) {
+		return 'function('.str_replace(array('\"','\/'), array('"', '/'), $parts[1]).'}';
+	}
+	
+	foreach ($modules as $aModule) {
+		if (method_exists($aModule,'getUserAccordionProperties')) {
+			$moduleLabel = io::sanitizeJSString($aModule->getLabel($cms_language));
+			$moduleCodename = $aModule->getCodename();
+			$moduleURL = PATH_ADMIN_MODULES_WR.'/'.$aModule->getCodename().'/users-controler.php';
+			
+			$moduleFields = $aModule->getUserAccordionProperties($userId, $cms_language);
+			if (is_array($moduleFields)) {
+				$moduleFields = sensitiveIO::jsonEncode($moduleFields);
+			}
+			//do some search and replace to allow use of js functions in returned code
+			$moduleFields = str_replace('"scope":"this"', '"scope":this', $moduleFields);
+			$moduleFields = preg_replace_callback('#"function\((.*)}"#U', 'replaceCallBack', $moduleFields);
+			
+			$modulesAccordion .= ",{
+				title:			'{$moduleLabel}',
+				id:				'userPanel-{$moduleCodename}-{$userId}',
+				layout: 		'form',
+				xtype:			'atmForm',
+				url:			'{$moduleURL}',
+				collapsible:	true,
+				defaultType:	'textfield',
+				collapsed:		true,
+				autoWidth:		true,
+				autoScroll:		true,
+				buttonAlign:	'center',
+				labelAlign:		'right',
+				autoScroll:		true,
+				defaults: {
+					xtype:			'textfield',
+					anchor:			'97%'
+				},
+				items:[{$moduleFields}],
+				buttons:[{
+					text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+					iconCls:		'atm-pic-validate',
+					xtype:			'button',
+					name:			'submit{$moduleCodename}User',
+					scope:			this,
+					handler:		function() {
+						var form = Ext.getCmp('userPanel-{$moduleCodename}-{$userId}').getForm();
+						form.submit({params:{
+							action:		'update-user',
+							userId:		userWindow.userId
+						}});
+					}
+				}]
+			}";
+		}
+	}
+}
 $title = (sensitiveIO::isPositiveInteger($userId)) ? $cms_language->getJsMessage(MESSAGE_PAGE_USER_PROFILE).' : '.$fullname : $cms_language->getJsMessage(MESSAGE_PAGE_USER_CREATION);
 
 $jscontent = <<<END
@@ -431,7 +494,6 @@ $jscontent = <<<END
 	if (userWindow.father.groupWindows == undefined) {
 		userWindow.father.groupWindows = [];
 	}
-	
 	
 	//groups store
 	var store = new Automne.JsonStore({
@@ -543,6 +605,7 @@ $jscontent = <<<END
 				labelAlign:		'right',
 				defaultType:	'textfield',
 				buttonAlign:	'center',
+				autoScroll:		true,
 				defaults: {
 					xtype:			'textfield',
 					anchor:			'97%',
@@ -614,8 +677,11 @@ $jscontent = <<<END
 										//set userId
 										userWindow.userId = action.result.success.userId;
 										//display hidden elements
-										Ext.getCmp('alertsPanel-{$userId}').enable();
-										Ext.getCmp('userDetailsPanel-{$userId}').enable();
+										Ext.getCmp('userProfile-{$userId}').items.each(function(panel) {
+											if (panel.id != 'identityPanel-{$userId}') {
+												panel.enable();
+											}
+										});
 										Ext.getCmp('userPanels-{$userId}').items.each(function(panel) {
 											if (panel.disabled) {
 												panel.enable();
@@ -633,7 +699,7 @@ $jscontent = <<<END
 						}
 					}
 				}]
-			},{
+			}{$modulesAccordion},{
 				title:			'{$cms_language->getJSMessage(MESSAGE_PAGE_CONTACT_INFO)}',
 				id:				'userDetailsPanel-{$userId}',
 				layout: 		'form',
@@ -644,6 +710,7 @@ $jscontent = <<<END
 				collapsed:		true,
 				labelAlign:		'right',
 				buttonAlign:	'center',
+				autoScroll:		true,
 				defaults: {
 					xtype:			'textfield',
 					anchor:			'97%'
@@ -765,8 +832,11 @@ $jscontent = <<<END
 	
 	//disable all elements not usable in first user creation step
 	if (isNaN(parseInt(userWindow.userId))) {
-		Ext.getCmp('alertsPanel-{$userId}').disable();
-		Ext.getCmp('userDetailsPanel-{$userId}').disable();
+		Ext.getCmp('userProfile-{$userId}').items.each(function(panel) {
+			if (panel.id != 'identityPanel-{$userId}') {
+				panel.disable();
+			}
+		});
 		Ext.getCmp('userPanels-{$userId}').items.each(function(panel) {
 			if (panel.id != 'userProfile-{$userId}') {
 				panel.disable();

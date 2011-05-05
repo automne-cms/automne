@@ -75,7 +75,7 @@ class CMS_profile_user extends CMS_profile
 	  * @var string
 	  * @access private
 	  */
-	protected $_lastName;	
+	protected $_lastName;
 	
 	/**
 	  * contactData
@@ -179,7 +179,7 @@ class CMS_profile_user extends CMS_profile
 				$this->_firstName = $data["firstName_pru"];
 				$this->_lastName = $data["lastName_pru"];
 				parent::__construct($data);
-				$this->_language = new CMS_language($data["language_pru"]);
+				$this->_language = CMS_languagesCatalog::getByCode($data["language_pru"]);
 				$this->_active = $data["active_pru"];
 				$this->_deleted = $data["deleted_pru"];
 				$this->_favorites = $data["favorites_pru"] ? explode(',',$data["favorites_pru"]) : array();

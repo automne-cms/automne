@@ -30,14 +30,6 @@ if (!defined("APPLICATION_USER_TYPE")) {
 //include general configuration file
 require_once(dirname(__FILE__)."/cms_rc.php");
 
-//force module standard loading
-if (!class_exists('CMS_module_standard')) {
-	die('Cannot find standard module ...');
-}
-
-//regenerate current page if needed
-atm_regen();
-
 /**
   * This constant is only for compatibility with old modules
   * because this file no longer exists since V3.2.1

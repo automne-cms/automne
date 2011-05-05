@@ -1477,13 +1477,16 @@ class CMS_profile extends CMS_grandFather
 				return $categories;
 			}
 			//construct n level tree with all of these categories and array of lineages
+			$nLevelArray = array();
 			foreach($categories as $catID) {
 				//get category lineage
 				$lineage = CMS_moduleCategories_catalog::getLineageOfCategoryAsString($catID);
-				$lineageArray[$catID] = $lineage;
-				//then create n level table
-				$ln = sensitiveIO::sanitizeExecCommand('if (!isset($nLevelArray['.str_replace(';','][',$lineage).'])) $nLevelArray['.str_replace(';','][',$lineage).'] =  array();');
-				eval($ln);
+				if ($lineage) {
+					$lineageArray[$catID] = $lineage;
+					//then create n level table
+					$ln = sensitiveIO::sanitizeExecCommand('if (!isset($nLevelArray['.str_replace(';','][',$lineage).'])) $nLevelArray['.str_replace(';','][',$lineage).'] =  array();');
+					eval($ln);
+				}
 			}
 			$filteredCategories = $this->_filterModuleCategoriesClearanceRecursion($nLevelArray, $matchingCats, $deniedCats, false);
 			$returnedFilteredCategories = array();

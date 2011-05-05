@@ -40,7 +40,6 @@ class CMS_auth extends CMS_grandFather implements Zend_Auth_Adapter_Interface
 	const AUTH_SSOLOGIN_VALID = 9;
 	const AUTH_SSOLOGIN_INVALID_USER = 10;
 	
-	
 	/**
      * Set authentification paramaters
      *
@@ -62,10 +61,7 @@ class CMS_auth extends CMS_grandFather implements Zend_Auth_Adapter_Interface
      */
     public function authenticate()
     {
-        //first clean old sessions datas from database
-		$this->_cleanSessions();
-		
-		//PARAMS DATAS
+        //PARAMS DATAS
 		if (isset($this->_params['login']) && isset($this->_params['password']) && $this->_params['login'] && $this->_params['password']) {
 			//check token
 			if (isset($this->_params['tokenName']) && $this->_params['tokenName']
@@ -81,13 +77,14 @@ class CMS_auth extends CMS_grandFather implements Zend_Auth_Adapter_Interface
 					from
 						profilesUsers
 					where
-						login_pru='".SensitiveIO::sanitizeSQLString($this->_params['login'])."'
+						login_pru = '".SensitiveIO::sanitizeSQLString($this->_params['login'])."'
 						and (
-							password_pru='".SensitiveIO::sanitizeSQLString(md5($this->_params['password']))."'
-							or password_pru='{sha}".SensitiveIO::sanitizeSQLString(sha1($this->_params['password']))."'
+							password_pru = '".SensitiveIO::sanitizeSQLString(md5($this->_params['password']))."'
+							or password_pru = '{sha}".SensitiveIO::sanitizeSQLString(sha1($this->_params['password']))."'
 						)
-						and active_pru=1
-						and deleted_pru=0
+						and password_pru != ''
+						and active_pru = 1
+						and deleted_pru = 0
 				";
 				$q = new CMS_query($sql);
 				if ($q->getNumRows()) {
@@ -120,17 +117,7 @@ class CMS_auth extends CMS_grandFather implements Zend_Auth_Adapter_Interface
 		$authStorage = new Zend_Auth_Storage_Session('atm-auth');
 		$userId = $authStorage->read();
 		if (io::isPositiveInteger($userId)) {
-			if (isset($this->_params['disconnect']) && $this->_params['disconnect']) {
-				//clear session content
-				$authStorage->clear();
-				$this->_deleteSession(true);
-				//remove autologin cookiçe if exists
-				if (isset($_COOKIE[CMS_session::getAutoLoginCookieName()])) {
-					//remove cookie
-					CMS_session::setCookie(CMS_session::getAutoLoginCookieName());
-				}
-				
-			} else {
+			if (!isset($this->_params['disconnect']) || !$this->_params['disconnect']) {
 				//check user from session table
 				if ($this->_checkSession($userId)) {
 					$this->_user = CMS_profile_usersCatalog::getByID($userId);
@@ -142,13 +129,11 @@ class CMS_auth extends CMS_grandFather implements Zend_Auth_Adapter_Interface
 						$this->_messages[] = self::AUTH_INVALID_USER_SESSION;
 						$this->_result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE, null, $this->_messages);
 						//clear session content
-						$authStorage->clear();
-						$this->_deleteSession(true);
+						CMS_session::deleteSession(true);
 					}
 				} else {
 					//clear session content
-					$authStorage->clear();
-					$this->_deleteSession();
+					CMS_session::deleteSession();
 				}
 			}
 		}
@@ -192,10 +177,7 @@ class CMS_auth extends CMS_grandFather implements Zend_Auth_Adapter_Interface
 		
 		//COOKIE
 		if (isset($_COOKIE[CMS_session::getAutoLoginCookieName()])) {
-			if (isset($this->_params['disconnect']) && $this->_params['disconnect']) {
-				//remove cookie
-				CMS_session::setCookie(CMS_session::getAutoLoginCookieName());
-			} else {
+			if (!isset($this->_params['disconnect']) || !$this->_params['disconnect']) {
 				if (!$this->_autoLogin()) {
 					//remove cookie
 					CMS_session::setCookie(CMS_session::getAutoLoginCookieName());
@@ -341,86 +323,6 @@ class CMS_auth extends CMS_grandFather implements Zend_Auth_Adapter_Interface
 			}
 		}
 		return false;
-	}
-	
-	/**
-	  * Clean old sessions datas
-	  *
-	  * @return void
-	  * @access private
-	  */
-	function _cleanSessions() {
-		//fetch all deletable sessions
-		$sql = "
-			select
-				*
-			from
-				sessions
-			where
-				(
-					UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(lastTouch_ses) > ".io::sanitizeSQLString(APPLICATION_SESSION_TIMEOUT)."
-					and cookie_expire_ses = '0000-00-00 00:00:00'
-				) OR (
-					cookie_expire_ses != '0000-00-00 00:00:00'
-					and TO_DAYS(NOW()) >= cookie_expire_ses
-				)
-		";
-		$q = new CMS_query($sql);
-		if ($q->getNumRows()) {
-			// Remove locks
-			while ($usr = $q->getValue("user_ses")) {
-				$sql = "
-					delete from 
-						locks 
-					where 
-						locksmithData_lok='".io::sanitizeSQLString($usr)."'
-				";
-				$qry = new CMS_query($sql);
-			}
-		 	// Delete all old sessions
-			$sql = "
-				delete from
-					sessions 
-				where
-					(
-						UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(lastTouch_ses) > ".io::sanitizeSQLString(APPLICATION_SESSION_TIMEOUT)."
-						and cookie_expire_ses = '0000-00-00 00:00:00'
-					) or (
-						cookie_expire_ses != '0000-00-00 00:00:00'
-						and TO_DAYS(NOW()) >= cookie_expire_ses
-					)
-			";
-			$q = new CMS_query($sql);
-		}
-	}
-	
-	/**
-	  * Delete old session datas
-	  *
-	  * @return void
-	  * @access private
-	  */
-	function _deleteSession($force = false) {
-		$sql = "
-			delete
-			from
-				sessions
-			where
-				phpid_ses='".io::sanitizeSQLString(Zend_Session::getId())."'
-		";
-		if (!$force) {
-			$sql .= "
-				and (
-					UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(lastTouch_ses) > ".io::sanitizeSQLString(APPLICATION_SESSION_TIMEOUT)."
-					and cookie_expire_ses = '0000-00-00 00:00:00'
-				) or (
-					cookie_expire_ses != '0000-00-00 00:00:00'
-					and TO_DAYS(NOW()) >= cookie_expire_ses
-				)
-			";
-		}
-		$q = new CMS_query($sql);
-		return true;
 	}
 }
 ?>
