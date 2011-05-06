@@ -1793,3 +1793,4 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1717, 'standard', 'en', 'Are you sure you want to re-publish this page?<br /><br />This action is subject to validation.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1718, 'standard', 'en', 'Specific 404 page');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1719, 'standard', 'en', 'Specific 403 page');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1720, 'standard', 'en', 'No password is defined for this user.');

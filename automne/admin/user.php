@@ -69,6 +69,7 @@ define("MESSAGE_PAGE_USER_CREATION", 574);
 define("MESSAGE_PAGE_ADMIN_NO_GROUPS", 1594);
 define("MESSAGE_PAGE_INCORRECT_FORM_VALUES", 682);
 define("MESSAGE_PAGE_LOG_LABEL", 29);
+define("MESSAGE_PAGE_NO_PASSWORD", 1720);
 
 $winId = sensitiveIO::request('winId', '', 'userWindow');
 $userId = sensitiveIO::request('userId', 'sensitiveIO::isPositiveInteger', 'createUser');
@@ -356,6 +357,14 @@ if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID
 			}]
 		}]
 	},";
+	if (!$user->havePassword() && $user->getUserId()) {
+		$authentificationField .= "{
+			bodyStyle:		'padding:0 0 10px 105px',
+			xtype:			'panel',
+			html:			'{$cms_language->getJsMessage(MESSAGE_PAGE_NO_PASSWORD)}',
+			border:			false
+		},";
+	}
 } else {
 	$authentificationField = '';
 }
@@ -372,11 +381,23 @@ if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID && $user->getUserId() != ROOT
 	
 	foreach ($modules as $aModule) {
 		if (method_exists($aModule,'getUserAccordionProperties')) {
-			$moduleLabel = io::sanitizeJSString($aModule->getLabel($cms_language));
 			$moduleCodename = $aModule->getCodename();
-			$moduleURL = PATH_ADMIN_MODULES_WR.'/'.$aModule->getCodename().'/users-controler.php';
+			//get accordion datas from module
+			$moduleDatas = $aModule->getUserAccordionProperties($userId, $cms_language);
 			
-			$moduleFields = $aModule->getUserAccordionProperties($userId, $cms_language);
+			$moduleURL = PATH_ADMIN_MODULES_WR.'/'.$aModule->getCodename().'/users-controler.php';
+			if (isset($moduleDatas['url'])) {
+				$moduleURL = $moduleDatas['url'];
+			}
+			$moduleLabel = io::sanitizeJSString($aModule->getLabel($cms_language));
+			if (isset($moduleDatas['label'])) {
+				$moduleLabel = $moduleDatas['label'];
+			}
+			
+			$moduleFields = array();
+			if (isset($moduleDatas['fields']) && is_array($moduleDatas['fields'])) {
+				$moduleFields = $moduleDatas['fields'];
+			}
 			if (is_array($moduleFields)) {
 				$moduleFields = sensitiveIO::jsonEncode($moduleFields);
 			}

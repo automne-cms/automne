@@ -1676,3 +1676,4 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1717, 'standard', 'fr', 'Etes-vous sur de vouloir re-publier cette page ?<br /><br />Cette action est soumise à validation.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1718, 'standard', 'fr', 'Page 404 spécifique');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1719, 'standard', 'fr', 'Page 403 spécifique');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1720, 'standard', 'fr', 'Aucun mot de passe n\'est d&eacute;fini pour cet utilisateur.');
