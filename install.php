@@ -823,9 +823,6 @@ if (!isset($_GET['file'])) {
 	//Load all Automne classes
 	if (file_exists(dirname(__FILE__).'/cms_rc_frontend.php')) {
 		//Remove session if exists
-		@session_name('AutomneSession');
-		@session_start();
-		@session_destroy();
 		require_once(dirname(__FILE__).'/cms_rc_frontend.php');
 		//if file config.php exists then go to next step
 		if ($step == 2 && file_exists(dirname(__FILE__).'/config.php')) {
@@ -1593,9 +1590,6 @@ $configContent .= '
 			if (ini_get("session.save_path") && !@is_dir(ini_get("session.save_path"))) {
 				@mkdir(ini_get("session.save_path"));
 			}
-			if (!@session_start()) {
-				$session = false;
-			}
 			@error_reporting(E_ALL ^ E_NOTICE);
 		} else {
 			$session = false;
@@ -1703,8 +1697,10 @@ $configContent .= '
 		if (APPLICATION_IS_WINDOWS) {
 			$uname = 'www-data';
 		} else {
-			$uid = @posix_getpwuid(@posix_getuid());
-			$uname = isset($uid['name']) ? $uid['name'] : @posix_getuid();
+			if (function_exists('posix_getpwuid') && function_exists('posix_getuid')) {
+			  $uid = @posix_getpwuid(@posix_getuid());
+			  $uname = isset($uid['name']) ? $uid['name'] : @posix_getuid();
+			}
 			if (!$uname) {
 				$uname = 'www-data';
 			}
