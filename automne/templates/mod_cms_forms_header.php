@@ -73,6 +73,18 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 				} elseif (isset($cms_user) && $cms_user->getUserId() != ANONYMOUS_PROFILEUSER_ID) {
 					//declare form ok action
 					$cms_forms_okAction[$form->getID()] = true;
+				} else {
+					//launch authentification process (for modules which can use it)
+					CMS_session::authenticate(array('authenticate' => true));
+					//load current user if exists
+					$cms_user = CMS_session::getUser();
+					if ($cms_user) {
+						$cms_language = $cms_user->getLanguage();
+						//declare form ok action
+						$cms_forms_okAction[$form->getID()] = true;
+					} else {
+						unset($cms_user);
+					}
 				}
 				//get form ok action
 				$actions = $form->getActionsByType(CMS_forms_action::ACTION_FORMOK);

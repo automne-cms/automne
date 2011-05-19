@@ -57,7 +57,10 @@ $cms_action = io::request('cms_action');
 switch ($cms_action) {
 case 'logout':
 		//Disconnect user
-		CMS_session::authenticate(array('disconnect'=> true));
+		CMS_session::authenticate(array(
+			'disconnect'=> true,
+			'type'		=> 'admin',
+		));
 		//Reset session (start fresh)
 		Zend_Session::destroy();
 	break;
@@ -74,10 +77,17 @@ case 'reconnect':
 			}
 		});";
 		//Disconnect user
-		CMS_session::authenticate(array('disconnect'=> true));
+		CMS_session::authenticate(array(
+			'disconnect'=> true,
+			'type'		=> 'admin',
+		));
 	break;
 case '':
-	CMS_session::authenticate();
+	//launch authentification process (for modules which can use it)
+	CMS_session::authenticate(array(
+		'authenticate'	=> true,
+		'type'			=> 'admin'
+	));
 	$cms_user = CMS_session::getUser();
 	if ($cms_user && $cms_user->hasAdminAccess()) {
 		//launch the daily routine incase it's not in the cron
@@ -106,15 +116,9 @@ case '':
 		$jscontent .= CMS_session::getJSLocales();
 		$view->addJavascript($jscontent);
 		$view->show(CMS_view::SHOW_RAW);
-	}/* else {
-		//display error login window on top of login form
-		$loginError = "
-		Automne.message.popup({
-			msg: '{$cms_language->getJsMessage(MESSAGE_ERROR_SESSION_EXPIRED)}',
-			buttons: Ext.MessageBox.OK,
-			icon: Ext.MessageBox.ERROR
-		});";
-	}*/
+	} else {
+		unset($cms_user);
+	}
 	break;
 }
 

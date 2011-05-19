@@ -391,7 +391,7 @@ if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID && $user->getUserId() != ROOT
 			}
 			$moduleLabel = io::sanitizeJSString($aModule->getLabel($cms_language));
 			if (isset($moduleDatas['label'])) {
-				$moduleLabel = $moduleDatas['label'];
+				$moduleLabel = io::sanitizeJSString($moduleDatas['label']);
 			}
 			
 			$moduleFields = array();

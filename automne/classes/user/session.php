@@ -88,7 +88,11 @@ class CMS_session extends CMS_grandFather
     protected function __construct(){}
 	
 	/**
-	  * Start session
+	  * Start session and load existant user if any
+	  *
+	  * @return void
+	  * @access public
+	  * @static
 	  */
 	public static function init() {
 		if (!@function_exists('session_name')) {
@@ -120,8 +124,32 @@ class CMS_session extends CMS_grandFather
 			'use_trans_sid'			=> false,	//remove session trans sid to prevent session fixation
 		));
 		Zend_Session::start();
+		//Then load existant user if any without launching authentification process
+		CMS_session::authenticate(array('authenticate' => false));
 	}
 	
+	/**
+	  * Authenticate user
+	  * This method can 
+	  * - authenticate user throught authentification process
+	  * - load already authenticated user in current session (or SSO)
+	  * - disconnect user
+	  *
+	  * @param array $params : indexed array of authentification parameters (default : nothing)
+	  * Accepted array keys are :
+	  * - authenticate : boolean : default true if disconnect is not set
+	  * - disconnect : boolean : default false
+	  * - login : string : user login to authenticate
+	  * - password : string : user password to authenticate
+	  * - remember : boolean : default false
+	  * - tokenName : string
+	  * - token : string
+	  * - type : string : type of authentification (admin|frontend) : default APPLICATION_USER_TYPE contant
+	  * - ... and any parameter needed by authentifications processes handled by modules
+	  * @return void
+	  * @access public
+	  * @static
+	  */
 	public static function authenticate($params = array()) {
 		//first clean old sessions datas from database
 		CMS_session::_cleanSessions();
@@ -131,19 +159,28 @@ class CMS_session extends CMS_grandFather
 		
 		// Use CMS_auth as session storage space
 		$auth->setStorage(new Zend_Auth_Storage_Session('atm-auth'));
-		
-		$params = array_merge($params, array(
-			'type'		=> APPLICATION_USER_TYPE,
-		));
-		
+		//set authentification type
+		if (!isset($params['type'])) {
+			$params['type']	= APPLICATION_USER_TYPE;
+		}
 		//set permanent auth status
 		if (isset($params['remember']) && $params['remember']) {
 			self::$_permanent = true;
+		} else {
+			$params['remember'] = false;
 		}
-		//clear auth storage if disconnection is queried
+		//clear auth storage if disconnection is queried and set default authenticate value
 		if (isset($params['disconnect']) && $params['disconnect']) {
 			//clear session content
 			CMS_session::deleteSession(true);
+			if (!isset($params['authenticate'])) {
+				$params['authenticate'] = false;
+			}
+		} else {
+			$params['disconnect'] = false;
+			if (!isset($params['authenticate'])) {
+				$params['authenticate'] = true;
+			}
 		}
 		
 		//load modules
@@ -163,7 +200,9 @@ class CMS_session extends CMS_grandFather
 				
 				//authenticate user
 				self::$_result = $auth->authenticate($authAdapter);
-				//CMS_grandFather::log($module->getCodename().' - Auth result : '.self::$_result->getCode().' - Message : '.print_r(self::$_result->getMessages(), true));
+				
+				//To debug Auth process easily, discomment this line
+				//CMS_grandFather::log($_SERVER['SCRIPT_NAME'].' - '.$module->getCodename().' - Auth result : '.self::$_result->getCode().' - Message : '.print_r(self::$_result->getMessages(), true));
 				
 				switch (self::$_result->getCode()) {
 					case Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND: //user crendentials does not exists (ex: no login/pass provided)
@@ -174,35 +213,15 @@ class CMS_session extends CMS_grandFather
 					break;
 					case Zend_Auth_Result::SUCCESS:
 						if ($auth->hasIdentity()) {
-						    // get user identity
-						    $userId = $auth->getIdentity();
-							if ($userId) {
-								if (io::isPositiveInteger($userId)) { //userId is a CMS_profile_user id
-									$user = CMS_profile_usersCatalog::getByID($userId);
-								} else { //userId is a CMS_profile_user id
-									$user = CMS_profile_usersCatalog::getByLogin($userId);
-								}
-								
-								//If user is founded and auth adapter can update user : update it
-								//ex : LDAP login and Automne user
-								if (isset($user) && $user && method_exists($authAdapter, 'updateUser')) {
-									$user = $authAdapter->updateUser($user);
-								} else 
-								//If user is not founded but auth adapter can create user : try to create it
-								//ex : LDAP login but no Automne user
-								if(method_exists($authAdapter, 'createUser')) {
-									$user = $authAdapter->createUser();
-								}
-								
-								//check if user is valid
-								if (isset($user) && $user && !$user->hasError() && !$user->isDeleted() && $user->isActive()) {
-									$authenticated = true;
-									//overwrite auth identity with valid user Id
-									$auth->getStorage()->write($user->getUserId());
-								} else {
-									unset($user);
-									unset($userId);
-								}
+						    // get user from identity founded
+						    $user = $authAdapter->getUser($auth->getIdentity());
+							//check if user is valid
+							if (isset($user) && $user && !$user->hasError() && !$user->isDeleted() && $user->isActive()) {
+								$authenticated = true;
+								//overwrite auth identity with valid user Id
+								$auth->getStorage()->write($user->getUserId());
+							} else {
+								unset($user);
 							}
 						}
 					break;

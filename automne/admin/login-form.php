@@ -61,6 +61,7 @@ case "login":
 		'remember'	=> (io::request('permanent') ? true : false),
 		'tokenName'	=> 'login',
 		'token'		=> io::request('atm-token'),
+		'type'		=> 'admin',
 	);
 	CMS_session::authenticate($params);
 	$cms_user = CMS_session::getUser();
@@ -105,7 +106,10 @@ case "login":
 		$view->show(CMS_view::SHOW_HTML);
 	} else {
 		//Disconnect user
-		CMS_session::authenticate(array('disconnect'=> true));
+		CMS_session::authenticate(array(
+			'disconnect'=> true,
+			'type'		=> 'admin',
+		));
 		//Reset session (start fresh)
 		Zend_Session::destroy();
 		//Redirect 

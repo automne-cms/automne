@@ -471,7 +471,7 @@ class CMS_profile_user extends CMS_profile
 			$this->_contactData = $contactData;
 			return true;
 		} else {
-			$this->raiseError("Contact data object required: ".$contactData);
+			$this->raiseError("Try to set an invalid Contact data object or object has an error: ".print_r($contactData, true));
 		}
 		return false;
 	}

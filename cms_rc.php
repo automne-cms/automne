@@ -247,7 +247,7 @@ if (!defined('PATH_REALROOT_FS')) {
 
 /**
   *	FrontEnd not found page URL (404)
-  * wrong users privilège or session time out redirect to this page
+  * wrong users privilege or session time out redirect to this page
   * this page is declared in root htaccess too
   *	Default : /404.php
   */
@@ -257,7 +257,7 @@ if (!defined("PATH_SPECIAL_PAGE_NOT_FOUND_WR")) {
 
 /**
   *	FrontEnd forbidden page URL (403)
-  * wrong users privilège or session time out redirect to this page
+  * wrong users privilege or session time out redirect to this page
   *	Default : /403.php
   */
 if (!defined("PATH_FORBIDDEN_WR")) {
@@ -1180,12 +1180,7 @@ function atm_regen() {
 
 //Function to start Automne session (deprecated, use CMS_session::init() instead)
 function start_atm_session() {
-	CMS_session::init();
-}
-
-//Start Automne session
-if (APPLICATION_CONFIG_LOADED && APPLICATION_EXEC_TYPE != 'cli') {
-	CMS_session::init();
+	//nothing
 }
 
 // Start output buffering for compression so we don't prevent
@@ -1194,9 +1189,12 @@ if (!defined('HTML_COMPRESSION_STARTED') && APPLICATION_EXEC_TYPE != 'cli') {
 	ob_start( 'atm_compress_handler' );
 }
 
-//load current user if exists
-if (APPLICATION_EXEC_TYPE == 'http') {
-	CMS_session::authenticate();
+//Session operations
+if (APPLICATION_CONFIG_LOADED && APPLICATION_EXEC_TYPE == 'http') {
+	//Start Automne session	
+	CMS_session::init();
+
+	//load current user if exists
 	$cms_user = CMS_session::getUser();
 	if ($cms_user) {
 		$cms_language = $cms_user->getLanguage();

@@ -76,9 +76,11 @@ Automne.frameWindow = Ext.extend(Automne.Window, {
 		//get frame and document from event
 		this.loadFrameDocument();
 		//set title
-		if (this.frameDocument && this.frameDocument.title && (!this.title || this.title == '&nbsp;')) {
-			this.setTitle(this.frameDocument.title);
-		}
+		try {		
+			if (this.frameDocument && this.frameDocument.title && (!this.title || this.title == '&nbsp;')) {
+				this.setTitle(this.frameDocument.title);
+			}
+		} catch (e){}
 		//show frame
 		this.frameEl.removeClass('x-hide-visibility');
 	},

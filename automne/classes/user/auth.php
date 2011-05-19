@@ -194,6 +194,17 @@ class CMS_auth extends CMS_grandFather implements Zend_Auth_Adapter_Interface
 		}
 		return $this->_result;
     }
+    
+    /**
+	  * Get CMS_profile_user from his Id
+	  * 
+	  * @param integer $userId the user id to get
+	  * @return CMS_profile_user, false otherwise
+	  * @access public
+	  */
+    function getUser($userId) {
+    	return CMS_profile_usersCatalog::getByID($userId);
+    }
 	
 	/**
 	  * Test user auto login from cookie values
