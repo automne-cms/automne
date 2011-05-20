@@ -1704,7 +1704,7 @@ class CMS_module_standard extends CMS_module
 					case "head":
 						$headCode = '<?php'."\n".
 						'$atmHost = @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) ? @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) : $_SERVER[\'HTTP_HOST\'];'."\n".
-						'$atmProtocol = stripos($_SERVER["SERVER_PROTOCOL"], \'https\') !== false ? \'https://\' : \'http://\';'."\n".
+						'$atmProtocol = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] && strtolower($_SERVER["HTTPS"]) != \'off\') ? \'https://\' : \'http://\';'."\n".
 						'$atmPort = @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_PORT) ? \':\'.@parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_PORT) : \'\';'."\n".
 						'echo "\t".\'<base href="\'.$atmProtocol.$atmHost.$atmPort.PATH_REALROOT_WR.\'/" />\'."\n";'."\n".
 						' ?>';
