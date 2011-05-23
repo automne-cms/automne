@@ -2004,7 +2004,7 @@ class CMS_module_standard extends CMS_module
 					}
 					return $modulesCode;
 				} else {
-					$modulesCode[MOD_STANDARD_CODENAME] .= '<?php if (!in_array("'.PATH_REALROOT_FS.'/cms_rc_frontend.php", get_included_files())){ require_once("'.PATH_REALROOT_FS.'/cms_rc_frontend.php");} else { global $cms_user,$cms_language;} ?>';
+					$modulesCode[MOD_STANDARD_CODENAME] .= '<?php if (!in_array(\''.PATH_REALROOT_FS.'/cms_rc_frontend.php\', get_included_files())){ require_once(\''.PATH_REALROOT_FS.'/cms_rc_frontend.php\');} else { global $cms_user,$cms_language;} ?>';
 				}
 			break;
 			case MODULE_TREATMENT_EDITOR_CODE :
