@@ -706,39 +706,24 @@ class CMS_file extends CMS_grandFather
 	function deltree($dir, $withDir = false)
 	{
 		$dir = realpath($dir);
-		if (!file_exists($dir)) {
+		if (!is_dir($dir)) {
 			return false;
 		}
-		$current_dir = @opendir($dir);
-		while($entryname = @readdir($current_dir)) {
-			if (@is_dir($dir.'/'.$entryname) && ($entryname != '.' && $entryname!='..')) {
-				if (!CMS_file::deltree($dir.'/'.$entryname,true)) {
-					return false;
-				}
-			} elseif ($entryname != '.' and $entryname!='..') {
-				if (!@unlink($dir.'/'.$entryname)) {
-					CMS_file::makeWritable($dir.'/'.$entryname);
-					if (!@unlink($dir.'/'.$entryname)) {
-						return false;
+		$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::CHILD_FIRST);
+		foreach($objects as $name => $object){
+		    if ($object->isWritable()) {
+				if ($object->isFile()) {
+					unlink($object->getPathname());
+				} else {
+					if ($withDir || ($object->getPathname() != $dir)) {
+						rmdir($object->getPathname());
 					}
 				}
-			}
-		}
-		@closedir($current_dir);
-		if ($withDir) {
-			if (!@rmdir($dir)) {
-				CMS_file::makeWritable($dir);
-				if (!@rmdir($dir)) {
-					return false;
-				} else {
-					return true;
-				}
 			} else {
-				return true;
+				return false;
 			}
-		} else {
-			return true;
 		}
+		return true;
 	}
 	
 	/**
@@ -752,31 +737,16 @@ class CMS_file extends CMS_grandFather
 	function deltreeSimulation($dir, $withDir=false)
 	{
 		$dir = realpath($dir);
-		if (!file_exists($dir)) {
+		if (!is_dir($dir)) {
 			return false;
 		}
-		$current_dir = @opendir($dir);
-		while($entryname = @readdir($current_dir)) {
-			if (@is_dir($dir.'/'.$entryname) && ($entryname != '.' && $entryname!='..')) {
-				if (!CMS_file::deltreeSimulation($dir.'/'.$entryname,true)) {
-					return false;
-				}
-			} elseif ($entryname != '.' and $entryname!='..') {
-				if (!CMS_file::makeWritable($dir.'/'.$entryname)) {
-					return false;
-				}
-			}
-		}
-		@closedir($current_dir);
-		if ($withDir) {
-			if (!CMS_file::makeWritable($dir)) {
+		$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::CHILD_FIRST);
+		foreach($objects as $name => $object){
+		    if ($object->isWritable()) {
 				return false;
-			} else {
-				return true;
 			}
-		} else {
-			return true;
 		}
+		return true;
 	}
 	
 	/**
