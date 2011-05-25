@@ -161,14 +161,6 @@ if (!defined("ENABLE_HTML_COMPRESSION")) {
 }
 
 /**
- * Activate JS and CSS compression for Automne pages
- * Default : true
- */
-if (!defined('APPLICATION_JS_AND_CSS_COMPRESSION')) {
-	define('APPLICATION_JS_AND_CSS_COMPRESSION', true);
-}
-
-/**
  * Activate Google Chrome Frame support for Automne administration
  * Default : false
  */

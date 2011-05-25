@@ -1702,7 +1702,7 @@ class CMS_module_standard extends CMS_module
 					case "head":
 						$headCode = '<?php'."\n".
 						'$atmHost = @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) ? @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) : $_SERVER[\'HTTP_HOST\'];'."\n".
-						'$atmProtocol = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == \'on\') ? \'https://\' : \'http://\';'."\n".
+						'$atmProtocol = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] && strtolower($_SERVER["HTTPS"]) != \'off\') ? \'https://\' : \'http://\';'."\n".
 						'$atmPort = @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_PORT) ? \':\'.@parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_PORT) : \'\';'."\n".
 						'echo "\t".\'<base href="\'.$atmProtocol.$atmHost.$atmPort.PATH_REALROOT_WR.\'/" />\'."\n";'."\n".
 						' ?>';
@@ -2002,7 +2002,7 @@ class CMS_module_standard extends CMS_module
 					}
 					return $modulesCode;
 				} else {
-					$modulesCode[MOD_STANDARD_CODENAME] .= '<?php if (!in_array("'.PATH_REALROOT_FS.'/cms_rc_frontend.php", get_included_files())){ require_once("'.PATH_REALROOT_FS.'/cms_rc_frontend.php");} else { global $cms_user,$cms_language;} ?>';
+					$modulesCode[MOD_STANDARD_CODENAME] .= '<?php if (!in_array(\''.PATH_REALROOT_FS.'/cms_rc_frontend.php\', get_included_files())){ require_once(\''.PATH_REALROOT_FS.'/cms_rc_frontend.php\');} else { global $cms_user,$cms_language;} ?>';
 				}
 			break;
 			case MODULE_TREATMENT_EDITOR_CODE :

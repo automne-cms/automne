@@ -564,6 +564,9 @@ class CMS_href extends CMS_grandFather
 			break;
 		case RESOURCE_LINK_TYPE_EXTERNAL:
 			$href = io::htmlspecialchars($this->_externalLink);
+			if (strtolower(substr($href, 0, 4)) != 'http') {
+				$href = 'http://'.$href;
+			}
 			// Set a popup link, not a trivial link
 			if (isset($this->_popup['width']) && $this->_popup['width'] > 0 && isset($this->_popup['height']) && $this->_popup['height'] > 0) {
 				$onClick = "javascript:CMS_openPopUpPage('".$href."', 'external', ".$this->_popup['width'].", ".$this->_popup['height'].");return false;";
@@ -615,7 +618,7 @@ class CMS_href extends CMS_grandFather
 			}
 			break;
 		case RESOURCE_LINK_TYPE_EXTERNAL:
-			if	($this->_externalLink == 'http://' || $this->_externalLink == '') {
+			if	($this->_externalLink == 'http://' || $this->_externalLink == '' || !@parse_url($this->_externalLink)) {
 				return false;
 			}
 			break;

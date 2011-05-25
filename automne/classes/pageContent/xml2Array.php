@@ -202,24 +202,24 @@ class CMS_xml2Array extends CMS_grandFather
 	
 	//called on data for xml
 	protected function _tagData($parser, $tagData) {
-		if($tagData) {
+		if((string) $tagData) {
 			if ($this->_params & self::XML_PROTECT_ENTITIES) {
 				$tagData = $this->_decodeEntities($tagData);
 			}
 			$last_element = count($this->_arrOutput) - 1;
-			$this->_arrOutput[$last_element]['childrens'][] = array("textnode" => $tagData);
+			$this->_arrOutput[$last_element]['childrens'][] = array("textnode" => (string) $tagData);
 		}
 	}
 	
 	//called on data for xml
 	protected function _charData($parser, $tagData) {
 		//here we have a mess with & so try to correct it
-		if($tagData) {
+		if(strlen($tagData)) {
 			if ($this->_params & self::XML_PROTECT_ENTITIES) {
 				$tagData = $this->_decodeEntities($tagData);
 			}
 			$last_element = count($this->_arrOutput) - 1;
-			$this->_arrOutput[$last_element]['childrens'][] = array("textnode" => $tagData);
+			$this->_arrOutput[$last_element]['childrens'][] = array("textnode" => (string) $tagData);
 		}
 	}
 	
@@ -260,9 +260,9 @@ class CMS_xml2Array extends CMS_grandFather
 				//replacements on text nodes
 				if ($replaceVars) {
 					$dummyTag = new CMS_XMLTag('html', array(), array(), array('context' => CMS_XMLTag::HTML_CONTEXT));
-					$result .= $dummyTag->replaceVars($definition[$c]["textnode"]);
+					$result .= $dummyTag->replaceVars((string) $definition[$c]["textnode"]);
 				} else {
-					$result .= $definition[$c]["textnode"];
+					$result .= (string) $definition[$c]["textnode"];
 				}
 				
 			} elseif (isset($definition[$c]["phpnode"]) ){
