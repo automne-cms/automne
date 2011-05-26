@@ -27,6 +27,7 @@
 
 //here automatic HTML colmpression is not welcome. It is handled directly by CMS_file::sendFiles method
 define('ENABLE_HTML_COMPRESSION', false);
+define('APPLICATION_EXEC_TYPE', 'js');
 require_once(dirname(__FILE__).'/../cms_rc_frontend.php');
 
 $files = '';

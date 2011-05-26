@@ -182,60 +182,70 @@ class CMS_session extends CMS_grandFather
 				$params['authenticate'] = true;
 			}
 		}
-		
-		//load modules
-		$modules = CMS_modulesCatalog::getAll('id');
-		//get last module
-		$module = array_pop($modules);
+		//init authenticated boolean
 		$authenticated = false;
 		//keep old storage value, because storage will be reseted by each module authentification
 		$storageValue = $auth->getStorage()->read();
-		do {
-			//if module has auth method, try it
-			if (method_exists($module, 'getAuthAdapter')) {
-				//overwrite auth storage value with old value
-				$auth->getStorage()->write($storageValue);
-				//get module auth adapter
-				$authAdapter = $module->getAuthAdapter($params);
-				
-				//authenticate user
-				self::$_result = $auth->authenticate($authAdapter);
-				
-				//To debug Auth process easily, discomment this line
-				//CMS_grandFather::log($_SERVER['SCRIPT_NAME'].' - '.$module->getCodename().' - Auth result : '.self::$_result->getCode().' - Message : '.print_r(self::$_result->getMessages(), true));
-				
-				switch (self::$_result->getCode()) {
-					case Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND: //user crendentials does not exists (ex: no login/pass provided)
-				        //nothing for now
-					break;
-					case Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID: //invalid login/pass
-				        //nothing for now
-					break;
-					case Zend_Auth_Result::SUCCESS:
-						if ($auth->hasIdentity()) {
-						    // get user from identity founded
-						    $user = $authAdapter->getUser($auth->getIdentity());
-							//check if user is valid
-							if (isset($user) && $user && !$user->hasError() && !$user->isDeleted() && $user->isActive()) {
-								$authenticated = true;
-								//overwrite auth identity with valid user Id
-								$auth->getStorage()->write($user->getUserId());
-							} else {
-								unset($user);
-							}
-						}
-					break;
-					case Zend_Auth_Result::FAILURE: //user founded but has error during loading (user inactive or deleted)
-						//nothing for now
-					break;
-					default: //other unidentified cases : thrown an error
-						CMS_grandFather::raiseError('Authentification return code '.self::$_result->getCode().' for module '.$module->getCodename().' with parameters '.print_r($params, true));
-					break;
-				}
-			}
-			//get next last module
+		//loop on each authentification types suupported
+		foreach (array('credentials', 'session', 'cookie', 'sso') as $authType) {
+			//load modules
+			$modules = CMS_modulesCatalog::getAll('id');
+			//get last module
 			$module = array_pop($modules);
-		} while (!$authenticated && $module);
+			//set authentification type as param
+			$params['authType'] = $authType;
+			//then try it for each modules
+			do {
+				//if module has auth method, try it
+				if (method_exists($module, 'getAuthAdapter')) {
+					//overwrite auth storage value with old value
+					$auth->getStorage()->write($storageValue);
+					//get module auth adapter
+					$authAdapter = $module->getAuthAdapter($params);
+					
+					//authenticate user
+					self::$_result = $auth->authenticate($authAdapter);
+					
+					//To debug Auth process easily, discomment this line
+					//CMS_grandFather::log($_SERVER['SCRIPT_NAME'].' - '.$module->getCodename().' - Auth type : '.$authType.' - Auth result : '.self::$_result->getCode().($auth->hasIdentity() ? ' - Identity : '.$auth->getIdentity() : '').' - Message : '.(sizeof(self::$_result->getMessages()) == 1 ? array_pop(self::$_result->getMessages()) : print_r(self::$_result->getMessages(), true)));
+					
+					switch (self::$_result->getCode()) {
+						case Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND: //user crendentials does not exists (ex: no login/pass provided)
+					        //nothing for now
+						break;
+						case Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID: //invalid login/pass
+					        //nothing for now
+						break;
+						case Zend_Auth_Result::SUCCESS:
+							if ($auth->hasIdentity()) {
+							    // get user from identity founded
+							    $user = $authAdapter->getUser($auth->getIdentity());
+								//check if user is valid
+								if (isset($user) && $user && !$user->hasError() && !$user->isDeleted() && $user->isActive()) {
+									$authenticated = true;
+									//overwrite auth identity with valid user Id
+									$auth->getStorage()->write($user->getUserId());
+								} else {
+									unset($user);
+								}
+							}
+						break;
+						case Zend_Auth_Result::FAILURE: //user founded but has error during loading (user inactive or deleted)
+							//nothing for now
+						break;
+						default: //other unidentified cases : thrown an error
+							CMS_grandFather::raiseError('Authentification return code '.self::$_result->getCode().' for module '.$module->getCodename().' with parameters '.print_r($params, true));
+						break;
+					}
+				}
+				//get next last module
+				$module = array_pop($modules);
+			} while (!$authenticated && $module);
+			//if user is authenticated, break authentification foreach
+			if ($authenticated) {
+				break;
+			}
+		}
 		
 		//if authenticated : set or refresh session datas in table, regenerate session Id
 		if ($authenticated && $user) {
@@ -250,8 +260,8 @@ class CMS_session extends CMS_grandFather
 			//get old session Id
 			$oldSessionId = Zend_Session::getId();
 			if ($q->getNumRows() > 0) { //if session already exists : update it
-				//regenerate session Id randomly (each 10 times)
-				if (!rand(0,9)) {
+				//regenerate session Id randomly (arround 30 times)
+				if (!rand(0, 29)) {
 					//session id should not be regenerated each times because in case of a lot of concurrent calls, session can be destroyed
 					Zend_Session::regenerateId();
 				}

@@ -61,132 +61,140 @@ class CMS_auth extends CMS_grandFather implements Zend_Auth_Adapter_Interface
      */
     public function authenticate()
     {
-        //PARAMS DATAS
-		if (isset($this->_params['login']) && isset($this->_params['password']) && $this->_params['login'] && $this->_params['password']) {
-			//check token
-			if (isset($this->_params['tokenName']) && $this->_params['tokenName']
-				&& (!isset($this->_params['token']) || !$this->_params['token'] || !CMS_session::checkToken($this->_params['tokenName'], $this->_params['token']))) {
-				
-				$this->_messages[] = self::AUTH_INVALID_TOKEN;
-				$this->_result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE, null, $this->_messages);
-			} else {
-				//check user credentials from DB
-				$sql = "
-					select
-						id_pru
-					from
-						profilesUsers
-					where
-						login_pru = '".SensitiveIO::sanitizeSQLString($this->_params['login'])."'
-						and (
-							password_pru = '".SensitiveIO::sanitizeSQLString(md5($this->_params['password']))."'
-							or password_pru = '{sha}".SensitiveIO::sanitizeSQLString(sha1($this->_params['password']))."'
-						)
-						and password_pru != ''
-						and active_pru = 1
-						and deleted_pru = 0
-				";
-				$q = new CMS_query($sql);
-				if ($q->getNumRows()) {
-					$userId = $q->getValue("id_pru");
-					$this->_user = CMS_profile_usersCatalog::getByID($userId);
-					if ($this->_user && !$this->_user->hasError() && !$this->_user->isDeleted() && $this->_user->isActive()) {
-						$this->_messages[] = self::AUTH_VALID_CREDENTIALS;
-						$this->_result = new Zend_Auth_Result(Zend_Auth_Result::SUCCESS, $this->_user->getUserId(), $this->_messages);
-						//remove previous autologin cookie if exists
-						if (isset($_COOKIE[CMS_session::getAutoLoginCookieName()])) {
-							CMS_session::setCookie(CMS_session::getAutoLoginCookieName());
+		if (isset($this->_params['authType'])) {
+			switch ($this->_params['authType']) {
+				case 'credentials':
+					if (isset($this->_params['login']) && isset($this->_params['password']) && $this->_params['login'] && $this->_params['password']) {
+						//check token
+						if (isset($this->_params['tokenName']) && $this->_params['tokenName']
+							&& (!isset($this->_params['token']) || !$this->_params['token'] || !CMS_session::checkToken($this->_params['tokenName'], $this->_params['token']))) {
+							
+							$this->_messages[] = self::AUTH_INVALID_TOKEN;
+							$this->_result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE, null, $this->_messages);
+						} else {
+							//check user credentials from DB
+							$sql = "
+								select
+									id_pru
+								from
+									profilesUsers
+								where
+									login_pru = '".SensitiveIO::sanitizeSQLString($this->_params['login'])."'
+									and (
+										password_pru = '".SensitiveIO::sanitizeSQLString(md5($this->_params['password']))."'
+										or password_pru = '{sha}".SensitiveIO::sanitizeSQLString(sha1($this->_params['password']))."'
+									)
+									and password_pru != ''
+									and active_pru = 1
+									and deleted_pru = 0
+							";
+							$q = new CMS_query($sql);
+							if ($q->getNumRows()) {
+								$userId = $q->getValue("id_pru");
+								$this->_user = CMS_profile_usersCatalog::getByID($userId);
+								if ($this->_user && !$this->_user->hasError() && !$this->_user->isDeleted() && $this->_user->isActive()) {
+									$this->_messages[] = self::AUTH_VALID_CREDENTIALS;
+									$this->_result = new Zend_Auth_Result(Zend_Auth_Result::SUCCESS, $this->_user->getUserId(), $this->_messages);
+									//remove previous autologin cookie if exists
+									if (isset($_COOKIE[CMS_session::getAutoLoginCookieName()])) {
+										CMS_session::setCookie(CMS_session::getAutoLoginCookieName());
+									}
+									return $this->_result;
+								} else {
+									$this->_messages[] = self::AUTH_INVALID_USER;
+									$this->_result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE, null, $this->_messages);
+									$this->raiseError("user_id found don't instanciate a valid user object. ID : ".$userId);
+								}
+							} else {
+								$this->_messages[] = self::AUTH_INVALID_CREDENTIALS;
+								$this->_result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID, null, $this->_messages);
+								
+								//wait a little (5 seconds) to avoid multiple simultaneous attempts
+								sleep(5);
+							}
 						}
-						return $this->_result;
-					} else {
-						$this->_messages[] = self::AUTH_INVALID_USER;
-						$this->_result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE, null, $this->_messages);
-						$this->raiseError("user_id found don't instanciate a valid user object. ID : ".$userId);
 					}
-				} else {
-					$this->_messages[] = self::AUTH_INVALID_CREDENTIALS;
-					$this->_result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID, null, $this->_messages);
-					
-					//wait a little (5 seconds) to avoid multiple simultaneous attempts
-					sleep(5);
-				}
-			}
-		}
-		
-		//SESSION
-		$authStorage = new Zend_Auth_Storage_Session('atm-auth');
-		$userId = $authStorage->read();
-		if (io::isPositiveInteger($userId)) {
-			if (!isset($this->_params['disconnect']) || !$this->_params['disconnect']) {
-				//check user from session table
-				if ($this->_checkSession($userId)) {
-					$this->_user = CMS_profile_usersCatalog::getByID($userId);
-					if ($this->_user && !$this->_user->hasError() && !$this->_user->isDeleted() && $this->_user->isActive()) {
-						$this->_messages[] = self::AUTH_VALID_USER_SESSION;
-						$this->_result = new Zend_Auth_Result(Zend_Auth_Result::SUCCESS, $this->_user->getUserId(), $this->_messages);
-						return $this->_result;
-					} else {
-						$this->_messages[] = self::AUTH_INVALID_USER_SESSION;
-						$this->_result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE, null, $this->_messages);
-						//clear session content
-						CMS_session::deleteSession(true);
+				break;
+				case 'session':
+					$authStorage = new Zend_Auth_Storage_Session('atm-auth');
+					$userId = $authStorage->read();
+					if (io::isPositiveInteger($userId)) {
+						if (!isset($this->_params['disconnect']) || !$this->_params['disconnect']) {
+							//check user from session table
+							if ($this->_checkSession($userId)) {
+								$this->_user = CMS_profile_usersCatalog::getByID($userId);
+								if ($this->_user && !$this->_user->hasError() && !$this->_user->isDeleted() && $this->_user->isActive()) {
+									$this->_messages[] = self::AUTH_VALID_USER_SESSION;
+									$this->_result = new Zend_Auth_Result(Zend_Auth_Result::SUCCESS, $this->_user->getUserId(), $this->_messages);
+									return $this->_result;
+								} else {
+									$this->_messages[] = self::AUTH_INVALID_USER_SESSION;
+									$this->_result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE, null, $this->_messages);
+									//clear session content
+									CMS_session::deleteSession(true);
+								}
+							} else {
+								//clear session content
+								CMS_session::deleteSession();
+							}
+						}
 					}
-				} else {
-					//clear session content
-					CMS_session::deleteSession();
-				}
-			}
-		}
-		
-		//SSO
-		//@TODO : check those SSO methods
-		if (defined('MOD_STANDARD_SSO_LOGIN') && MOD_STANDARD_SSO_LOGIN) {
-			$this->_user = CMS_profile_usersCatalog::getByLogin(MOD_STANDARD_SSO_LOGIN);
-			if ($this->_user && !$this->_user->hasError()) {
-				$this->_messages[] = self::AUTH_SSOLOGIN_VALID;
-				$this->_result = new Zend_Auth_Result(Zend_Auth_Result::SUCCESS, $this->_user->getUserId(), $this->_messages);
-				return $this->_result;
-			} else {
-				$this->_messages[] = self::AUTH_SSOLOGIN_INVALID_USER;
-				$this->_result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE, null, $this->_messages);
-			}
-		} elseif (defined('MOD_STANDARD_SSO_FUNCTION') && MOD_STANDARD_SSO_FUNCTION) {
-			if (is_callable(MOD_STANDARD_SSO_FUNCTION, false)) {//check if function/method name exists.
-				$login = '';
-				if (io::strpos(MOD_STANDARD_SSO_FUNCTION, '::') !== false) {//static method call
-					$method = explode('::', MOD_STANDARD_SSO_FUNCTION);
-					$login = call_user_func(array($method[0], $method[1]));
-				} else { //function call
-					$login = call_user_func(MOD_STANDARD_SSO_FUNCTION);
-				}
-				if ($login) {
-					$this->_user = CMS_profile_usersCatalog::getByLogin($login);
-					if ($this->_user && !$this->_user->hasError()) {
-						$this->_messages[] = self::AUTH_SSOLOGIN_VALID;
-						$this->_result = new Zend_Auth_Result(Zend_Auth_Result::SUCCESS, $this->_user->getUserId(), $this->_messages);
-						return $this->_result;
-					} else {
-						$this->_messages[] = self::AUTH_SSOLOGIN_INVALID_USER;
-						$this->_result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE, null, $this->_messages);
+				break;
+				case 'cookie':
+					if (isset($_COOKIE[CMS_session::getAutoLoginCookieName()])) {
+						if (!isset($this->_params['disconnect']) || !$this->_params['disconnect']) {
+							if (!$this->_autoLogin()) {
+								//remove cookie
+								CMS_session::setCookie(CMS_session::getAutoLoginCookieName());
+							} else {
+								return $this->_result;
+							}
+						}
 					}
-				}
-			} else {
-				$this->raiseError('Cannot call SSO method/function: '.MOD_STANDARD_SSO_FUNCTION);
+				break;
+				case 'sso':
+					if (!(isset($this->_params['login']) && isset($this->_params['password']) && $this->_params['login'] && $this->_params['password'])) {
+						if (defined('MOD_STANDARD_SSO_LOGIN') && MOD_STANDARD_SSO_LOGIN) {
+							$this->_user = CMS_profile_usersCatalog::getByLogin(MOD_STANDARD_SSO_LOGIN);
+							if ($this->_user && !$this->_user->hasError()) {
+								$this->_messages[] = self::AUTH_SSOLOGIN_VALID;
+								$this->_result = new Zend_Auth_Result(Zend_Auth_Result::SUCCESS, $this->_user->getUserId(), $this->_messages);
+								return $this->_result;
+							} else {
+								$this->_messages[] = self::AUTH_SSOLOGIN_INVALID_USER;
+								$this->_result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE, null, $this->_messages);
+							}
+						} elseif (defined('MOD_STANDARD_SSO_FUNCTION') && MOD_STANDARD_SSO_FUNCTION) {
+							if (is_callable(MOD_STANDARD_SSO_FUNCTION, false)) {//check if function/method name exists.
+								$login = '';
+								if (io::strpos(MOD_STANDARD_SSO_FUNCTION, '::') !== false) {//static method call
+									$method = explode('::', MOD_STANDARD_SSO_FUNCTION);
+									$login = call_user_func(array($method[0], $method[1]));
+								} else { //function call
+									$login = call_user_func(MOD_STANDARD_SSO_FUNCTION);
+								}
+								if ($login) {
+									$this->_user = CMS_profile_usersCatalog::getByLogin($login);
+									if ($this->_user && !$this->_user->hasError()) {
+										$this->_messages[] = self::AUTH_SSOLOGIN_VALID;
+										$this->_result = new Zend_Auth_Result(Zend_Auth_Result::SUCCESS, $this->_user->getUserId(), $this->_messages);
+										return $this->_result;
+									} else {
+										$this->_messages[] = self::AUTH_SSOLOGIN_INVALID_USER;
+										$this->_result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE, null, $this->_messages);
+									}
+								}
+							} else {
+								$this->raiseError('Cannot call SSO method/function: '.MOD_STANDARD_SSO_FUNCTION);
+							}
+						}
+					}
+				break;
+				default:
+					CMS_grandFather::raiseError('Unknown authType: '.$this->_params['authType']);
+				break;
 			}
 		}
-		
-		//COOKIE
-		if (isset($_COOKIE[CMS_session::getAutoLoginCookieName()])) {
-			if (!isset($this->_params['disconnect']) || !$this->_params['disconnect']) {
-				if (!$this->_autoLogin()) {
-					//remove cookie
-					CMS_session::setCookie(CMS_session::getAutoLoginCookieName());
-				} else {
-					return $this->_result;
-				}
-			}
-		}
-		
 		//Nothing founded
 		if (!$this->_result) {
 			$this->_messages[] = self::AUTH_MISSING_CREDENTIALS;

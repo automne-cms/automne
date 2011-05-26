@@ -81,7 +81,9 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 					if ($cms_user) {
 						$cms_language = $cms_user->getLanguage();
 						//declare form ok action
-						$cms_forms_okAction[$form->getID()] = true;
+						if ($cms_user->getUserId() != ANONYMOUS_PROFILEUSER_ID) {
+							$cms_forms_okAction[$form->getID()] = true;
+						}
 					} else {
 						unset($cms_user);
 					}
