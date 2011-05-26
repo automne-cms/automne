@@ -1752,8 +1752,15 @@ class CMS_page extends CMS_resource
 		
 		//5- destroy all previous url files for this page
 		$printfiles = glob($this->_getFilePath(PATH_RELATIVETO_FILESYSTEM).'/print-'.$this->getID().'-*.php', GLOB_NOSORT);
-		$files = array_merge(glob($this->_getFilePath(PATH_RELATIVETO_FILESYSTEM).'/'.$this->getID().'-*.php', GLOB_NOSORT),$printfiles);
-		if (is_array($files) && $files) {
+		if (!is_array($printfiles)) {
+			$printfiles = array();
+		}
+		$files = glob($this->_getFilePath(PATH_RELATIVETO_FILESYSTEM).'/'.$this->getID().'-*.php', GLOB_NOSORT);
+		if (!is_array($files)) {
+			$files = array();
+		}
+		$files = array_merge($files, $printfiles);
+		if ($files) {
 			foreach ($files as $file) {
 				@unlink($file);
 			}

@@ -1177,7 +1177,7 @@ class CMS_module extends CMS_grandFather
 			'labels'	=> CMS_language::getMessages(1, $this->_codename),
 		);
 		$defaultLanguage = CMS_languagesCatalog::getDefaultLanguage();
-		if (!isset($params['categories']) || $params['categories'] == true) {
+		if (in_array('categories', $params)) {
 			global $cms_user;
 			if (APPLICATION_ENFORCES_ACCESS_CONTROL != false
 				&& isset($cms_user)) {
@@ -1189,7 +1189,7 @@ class CMS_module extends CMS_grandFather
 				$aModule['categories'][] = $category->asArray($params, $files);
 			}
 		}
-		if (!isset($params['rows']) || $params['rows'] == true) {
+		if (in_array('rows', $params)) {
 			$modulesRows = CMS_rowsCatalog::getByModules(array($this->_codename));
 			if ($this->_codename != MOD_STANDARD_CODENAME) {
 				$modulesStandardRows = CMS_rowsCatalog::getByModules(array($this->_codename, MOD_STANDARD_CODENAME));
@@ -1201,7 +1201,7 @@ class CMS_module extends CMS_grandFather
 				$aModule['rows'][] = $row->asArray($params, $files);
 			}
 		}
-		if (!isset($params['js']) || $params['js'] == true) {
+		if (in_array('js', $params)) {
 			$jsFiles = $this->getJSFiles();
 			$aModule['js'] = array();
 			if ($jsFiles) {
@@ -1212,7 +1212,7 @@ class CMS_module extends CMS_grandFather
 				$files = array_merge($files, $jsFiles);
 			}
 		}
-		if (!isset($params['css']) || $params['css'] == true) {
+		if (in_array('css', $params)) {
 			$cssFiles = $this->getCSSFiles();
 			$aModule['css'] = array();
 			if ($cssFiles) {
