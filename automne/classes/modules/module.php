@@ -272,7 +272,7 @@ class CMS_module extends CMS_grandFather
 						$paramTags = $file->getElementsByTagName('param');
 						foreach ($paramTags as $paramTag) {
 							$value = (io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? utf8_decode(trim($paramTag->nodeValue)) : trim($paramTag->nodeValue);
-							if ($withType) {
+							if ($withType && $paramTag->hasAttribute("type")) {
 								$moduleParameters[$this->_codename][$paramTag->getAttribute("name")] = array($value, $paramTag->getAttribute("type"));
 							} else {
 								$moduleParameters[$this->_codename][$paramTag->getAttribute("name")] = trim($value);

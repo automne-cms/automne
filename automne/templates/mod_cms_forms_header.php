@@ -443,7 +443,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 										);
 										CMS_session::authenticate($params);
 										$user = CMS_session::getUser();
-										if ($user) {
+										if ($user && $user->getUserId() != ANONYMOUS_PROFILEUSER_ID) {
 											$cms_user = $user;
 											$cms_language = $cms_user->getLanguage();
 										} else {

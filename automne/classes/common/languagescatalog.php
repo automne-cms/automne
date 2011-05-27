@@ -31,11 +31,11 @@ class CMS_languagesCatalog extends CMS_grandFather
 	  * Static function.
 	  *
 	  * @param string $module The codename of a module we want the languages of.
+	  * @param string $orderBy The ordering key to use (default : label_lng)
 	  * @return array(CMS_language) The available languages sorted by label
 	  * @access public
 	  */
-	static function getAllLanguages($module = false, $orderBy="label_lng")
-	{
+	static function getAllLanguages($module = false, $orderBy="label_lng") {
 		static $languagesCatalog;
 		if (isset($languagesCatalog[($module) ? $module : 'all'])) {
 			return $languagesCatalog[($module) ? $module : 'all'];
