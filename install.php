@@ -1,13 +1,13 @@
 <?php
 // +----------------------------------------------------------------------+
-// | Automne (TM)													 |
+// | Automne (TM)														  |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 2000-2010 WS Interactive							 |
+// | Copyright (c) 2000-2011 WS Interactive								  |
 // +----------------------------------------------------------------------+
-// | Automne is subject to version 2.0 or above of the GPL license.		 |
-// | The license text is bundled with this package in the file			 |
-// | LICENSE-GPL, and is available through the world-wide-web at		 |
-// | http://www.gnu.org/copyleft/gpl.html.							 |
+// | Automne is subject to version 2.0 or above of the GPL license.		  |
+// | The license text is bundled with this package in the file			  |
+// | LICENSE-GPL, and is available through the world-wide-web at		  |
+// | http://www.gnu.org/copyleft/gpl.html.							 	  |
 // +----------------------------------------------------------------------+
 // | Author: Sebastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
@@ -315,7 +315,7 @@ if (!isset($_GET['file'])) {
 			$error_step4_enter_url = 'Erreur, Vous devez saisir une adresse ...';
 			$step4_title = 'Adresse du site web :';
 			$step4_enter_url = 'Entrez l\'adresse du site web (la valeur par d&eacute;faut doit-&ecirc;tre correcte).<br /><br />Il s\'agit de l\'adresse de la racine du site (sans sous r&eacute;pertoire).<br />Si vous saisissez un nom de domaine, ce dernier doit exister. Vous pourrez modifier cela &agrave; tout moment dans l\'administration du site.';
-			$step4_url = 'Adresse * : http://';
+			$step4_url = 'Adresse * : ';
 			
 			//STEP 5
 			$error_step5_perms_files = 'Erreur, Vous devez entrer une valeur de permission pour les fichiers ...';
@@ -487,7 +487,7 @@ if (!isset($_GET['file'])) {
 			$error_step4_enter_url = 'Error, You must enter an URL ...';
 			$step4_title = 'Website URL:';
 			$step4_enter_url = 'Enter the URL of the website (the default should be correct). This is the URL of the site root.<br />If you enter a domain name, it must exist. You can change this at any time in the administration of the site.';
-			$step4_url = 'URL * : http://';
+			$step4_url = 'URL *: ';
 			
 			//STEP 5
 			$error_step5_perms_files = 'Error, You must enter permission values for files ...';
@@ -1072,7 +1072,8 @@ $configContent .= '
 		}
 		
 		if ($error || $cms_action != "website") {
-			$websiteUrl = isset($_POST["website"]) ? $_POST["website"]: $_SERVER["HTTP_HOST"];
+			$protocol = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] && strtolower($_SERVER["HTTPS"]) != 'off') ? 'https://' : 'http://';
+			$websiteUrl = isset($_POST["website"]) ? $_POST["website"] : $protocol . $_SERVER["HTTP_HOST"];
 			$title = '<h1>'.$step4_title.'</h1>';
 			if ($error) {
 				$content .= '<span class="error">'.$error.'</span><br />';
