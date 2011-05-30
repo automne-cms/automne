@@ -946,11 +946,11 @@ class CMS_row extends CMS_grandFather
 			'groups'		=> $this->_groups->getTextDefinition(),
 			'useable'		=> $this->_useable,
 			'description'	=> $this->_description,
-			'image'			=> $image,
+			'image'			=> substr($image, strlen(PATH_REALROOT_WR)),
 		);
 		if ($image) {
 			if (!in_array($image, $files)) {
-				$files[] = $image;
+				$files[] = substr($image, strlen(PATH_REALROOT_WR));
 			}
 		}
 		return $aRow;

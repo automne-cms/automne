@@ -653,6 +653,8 @@ class CMS_profile_user extends CMS_profile
 				$method = 'get'.ucfirst($property);
 				if (method_exists($this, $method)) {
 					return $this->{$method}();
+				} else if (method_exists($this->_contactData, $method)) {
+					return $this->_contactData->{$method}();
 				} else {
 					$this->raiseError('Unknown property to get : "'.$property.'"');
 				}

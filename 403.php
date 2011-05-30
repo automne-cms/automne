@@ -112,11 +112,11 @@ if (file_exists(PATH_REALROOT_FS.'/403.html')) {
 <div id="message">
 <h1>403 Forbidden</h1>
 You do not have sufficient privileges to view this page ...<br /><br />
-<a href="/">Back to the Home Page</a><br /><br />
+<a href="<?php echo PATH_REALROOT_WR; ?>/">Back to the Home Page</a><br /><br />
 <hr />
 <h1>403 Acc&egrave;s interdit.</h1>
 Vous n'avez pas le droit de voir cette page ...<br /><br />
-<a href="/">Retour &agrave; l'accueil</a><br /><br />
+<a href="<?php echo PATH_REALROOT_WR; ?>/">Retour &agrave; l'accueil</a><br /><br />
 </div>
 </body>
 </html>

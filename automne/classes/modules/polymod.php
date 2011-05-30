@@ -1034,7 +1034,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  */
 	public function asArray($params = array(), &$files) {
 		$aModule = parent::asArray($params, $files);
-		if (!isset($params['objects']) || $params['objects'] == true) {
+		if (in_array('objects', $params)) {
 			//get all objects definitions
 			$objectsDefinitions = CMS_poly_object_catalog::getObjectsForModule($this->_codename);
 			if ($objectsDefinitions) {

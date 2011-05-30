@@ -870,7 +870,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 			$files = array();
 		}
 		$this->_retrieveLabels();
-		$icon = $this->_icon ? $this->getIconPath(true, PATH_RELATIVETO_WEBROOT, true) : '';
+		$icon = $this->_icon ? substr($this->getIconPath(true, PATH_RELATIVETO_WEBROOT, true), strlen(PATH_REALROOT_WR)) : '';
 		$aCategory = array(
 			'id'			=> $this->getID(),
 			'uuid'			=> $this->_uuid,
@@ -898,7 +898,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 		if ($this->_files) {
 			foreach ($this->_files as $language => $file) {
 				if ($file) {
-					$file = $this->getFilePath($language, true, PATH_RELATIVETO_WEBROOT, true);
+					$file = substr($this->getFilePath($language, true, PATH_RELATIVETO_WEBROOT, true), strlen(PATH_REALROOT_WR));
 					$files[] = $file;
 					$aCategory['files'][$language] = $file;
 				}

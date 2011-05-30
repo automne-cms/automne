@@ -174,11 +174,11 @@ if (file_exists(PATH_REALROOT_FS.'/404.html')) {
 <div id="message">
 <h1>Error 404...</h1>
 Sorry, the requested page was not found.<br /><br />
-<a href="/">Back to the Home Page</a><br /><br />
+<a href="<?php echo PATH_REALROOT_WR; ?>/">Back to the Home Page</a><br /><br />
 <hr />
 <h1>Erreur 404 ...</h1>
 Nous ne trouvons pas la page que vous demandez.<br /><br />
-<a href="/">Retour &agrave; l'accueil</a><br /><br />
+<a href="<?php echo PATH_REALROOT_WR; ?>/">Retour &agrave; l'accueil</a><br /><br />
 </div>
 </body>
 </html>
