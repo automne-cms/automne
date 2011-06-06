@@ -248,6 +248,7 @@ class CMS_grandFather
 				'cms_query' 						=> PATH_PACKAGES_FS.'/common/query.php',
 				'cms_date' 							=> PATH_PACKAGES_FS.'/common/date.php',
 				'cms_language' 						=> PATH_PACKAGES_FS.'/common/language.php',
+				'cms_oembed'						=> PATH_PACKAGES_FS.'/common/oembed.php',
 				'sensitiveio' 						=> PATH_PACKAGES_FS.'/common/sensitiveio.php',
 				'io' 								=> PATH_PACKAGES_FS.'/common/sensitiveio.php',
 				

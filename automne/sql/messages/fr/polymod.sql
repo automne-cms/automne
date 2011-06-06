@@ -485,4 +485,20 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(608, 'polymod', 'fr', 'Veuillez sélectionner un élément sur lequel réaliser cette opération ...');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(609, 'polymod', 'fr', 'Coché par défaut');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(610, 'polymod', 'fr', 'Si \'Emission au choix\' est actif, la case permettant de choisir est elle coché par défaut ?');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(611, 'polymod', 'fr', 'Média externe');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(612, 'polymod', 'fr', 'URL d\'un Média provenant d\'un site externe (Youtube, Flickr, Scribd, Dailymotion, Slideshare, Vimeo, etc ...). Permet d\'inclure directement le média dans votre site (oEmbed). Liste des sites supportés à l\'adresse <a href="http://api.embed.ly/" target="_blank">http://api.embed.ly/</a>.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(613, 'polymod', 'fr', 'Titre du média (optionnel)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(614, 'polymod', 'fr', 'Adresse (URL) saisie pour le média');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(615, 'polymod', 'fr', 'Média au format HTML. Cette variable accepte deux paramètres optionnels largeur maximum (maxwidth) et hauteur maximum (maxheight) permettant de spécifier les tailles maximum possibles pour le média. Spécifiez pour ces valeurs les dimensions attendues en pixels.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(616, 'polymod', 'fr', 'Vignette du média (optionnel)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(617, 'polymod', 'fr', 'Largeur en pixels du média');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(618, 'polymod', 'fr', 'Hauteur en pixels du média');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(619, 'polymod', 'fr', 'Type du média (parmis : video, photo, rich, link)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(620, 'polymod', 'fr', 'Description du média (optionnel)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(621, 'polymod', 'fr', 'Nom de l\'auteur du média (optionnel)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(622, 'polymod', 'fr', 'Adresse (URL) vers l\'auteur du média (optionnel)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(623, 'polymod', 'fr', 'Nom du fournisseur du média (optionnel)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(624, 'polymod', 'fr', 'Adresse (URL) vers le fournisseur du média (optionnel)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(625, 'polymod', 'fr', 'Une URL a t\'elle été saisie pour ce champ ? (renvoie un booléen true ou false)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(626, 'polymod', 'fr', 'Données oembed brutes du média (tableau de données)');
 

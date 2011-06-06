@@ -354,6 +354,16 @@ if (!defined("APPLICATION_COOKIE_DOMAIN")) {
 }
 
 /**
+  *	Application oembed frame domain
+  * Used to display oembed objets with a specific cookieless frame to avoid XSS
+  * Use specific domain for this usage (like embed.yourdomain.org)
+  *	Default : "". 
+  */
+if (!defined("APPLICATION_EMBED_DOMAIN")) {
+	define("APPLICATION_EMBED_DOMAIN", '');
+}
+
+/**
   *	Allow redirection from a page to an external web site
   *	Default : true
   */
