@@ -92,6 +92,8 @@ class CMS_tree extends CMS_grandFather
 		if (!SensitiveIO::isPositiveInteger($id)) {
 			if ($id == 'self' && SensitiveIO::isPositiveInteger($currentPageId)) {
 				$id = $currentPageId;
+			} elseif ($id == 'father' && SensitiveIO::isPositiveInteger($currentPageId)) {
+				$id = CMS_tree::getFather($currentPageId);
 			} elseif (SensitiveIO::isPositiveInteger($currentPageId) && strtolower(io::sanitizeAsciiString($id)) == $id) {
 				return CMS_tree::getPageCodenameValue($id, $currentPageId, $type);
 			} elseif ($type != 'exists') {
