@@ -1,6 +1,7 @@
 V4.2.0 (in progress)
 [REFACTOR] : Drop all old V3 LDAP methods
 [REFACTOR] : Update Zend Framework to version 1.11.5
+[REFACTOR] : Update ExtJS to version 3.4.0 (add support for IE9)
 [REFACTOR] : Update debug statistics : more accurate and more extensible
 [REFACTOR] : Session management and users authentification are completely refactored to use Zend Framework
 [FEATURE] : Add oembed object and oembed polymod field (external media field). Update Mediacenter to manage oembed medias

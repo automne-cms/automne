@@ -586,7 +586,6 @@ class CMS_view extends CMS_grandFather
 			default:
 				$title = ($this->_title) ? '<title>'.APPLICATION_LABEL.' :: '.$this->_title.'</title>' : '';
 				echo '<head>
-						<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
 						<meta http-equiv="Content-Type" content="text/html; charset='.APPLICATION_DEFAULT_ENCODING.'" />
 						'.$title.'
 						'.$this->_copyright().'
