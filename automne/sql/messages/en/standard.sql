@@ -1794,3 +1794,5 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1718, 'standard', 'en', 'Specific 404 page');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1719, 'standard', 'en', 'Specific 403 page');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1720, 'standard', 'en', 'No password is defined for this user.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1721, 'standard', 'en', 'Father page');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1722, 'standard', 'en', 'Error of page creation... You do not have edition rights on the selected parent page.');

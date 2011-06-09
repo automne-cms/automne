@@ -1677,3 +1677,5 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1718, 'standard', 'fr', 'Page 404 spécifique');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1719, 'standard', 'fr', 'Page 403 spécifique');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1720, 'standard', 'fr', 'Aucun mot de passe n\'est d&eacute;fini pour cet utilisateur.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1721, 'standard', 'fr', 'Page parente');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1722, 'standard', 'fr', 'Erreur lors de la création de la page ... Vous n''avez pas les droits d''édition sur la page parente sélectionnée.');

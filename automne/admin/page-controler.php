@@ -61,6 +61,7 @@ define("MESSAGE_FORM_ERROR_CODENAME_EXISTS", 1679);
 define("MESSAGE_PAGE_ACTION_COPY_CODENAME_DUPLICATION", 1680);
 define("MESSAGE_PAGE_ACTION_MOVE_CODENAME_DUPLICATION", 1681);
 define("MESSAGE_PAGE_ACTION_TREE_DUPLICATE_CODENAME_DUPLICATION", 1682);
+define("MESSAGE_PAGE_ERROR_FATHER_PAGE", 1722);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -109,9 +110,13 @@ switch ($action) {
 		
 		$cms_page = new CMS_page();
 		$cms_father = CMS_tree::getPageByID($father);
-		if ($cms_father->hasError()) {
+		if (!$cms_father || $cms_father->hasError()) {
 			CMS_grandFather::raiseError('Page creation : Father page ('.$father.') has error ...');
 			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ERROR_CREATION);
+			break;
+		}
+		if (!$cms_user->hasPageClearance($father, CLEARANCE_PAGE_EDIT)) {
+			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ERROR_FATHER_PAGE);
 			break;
 		}
 		//must set the lastReminder to today
