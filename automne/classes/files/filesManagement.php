@@ -715,7 +715,7 @@ class CMS_file extends CMS_grandFather
 				if ($object->isFile()) {
 					unlink($object->getPathname());
 				} else {
-					if ($withDir || ($object->getPathname() != $dir)) {
+					if ($object->getFilename() != "." && $object->getFilename() != ".." && ($withDir || ($object->getPathname() != $dir))) {
 						rmdir($object->getPathname());
 					}
 				}
@@ -1044,17 +1044,17 @@ class CMS_file extends CMS_grandFather
 	 */
 	function getTmpPath() {
 		$tmpPath = '';
-		if (@is_dir(ini_get("session.save_path")) && is_object(@dir(ini_get("session.save_path")))) {
-			$tmpPath = ini_get("session.save_path");
-		} elseif(@is_dir(PATH_PHP_TMP) && is_object(@dir(PATH_PHP_TMP))) {
+		if(PATH_PHP_TMP && @is_dir(PATH_PHP_TMP) && is_object(@dir(PATH_PHP_TMP)) && is_writable(PATH_PHP_TMP)) {
 			$tmpPath = PATH_PHP_TMP;
-		} elseif (@is_dir(PATH_TMP_FS) && is_object(@dir(PATH_TMP_FS))){
+		} elseif (@is_dir(ini_get("session.save_path")) && is_object(@dir(ini_get("session.save_path"))) && is_writable(ini_get("session.save_path"))) {
+			$tmpPath = ini_get("session.save_path");
+		} elseif (@is_dir(PATH_TMP_FS) && is_object(@dir(PATH_TMP_FS)) && is_writable(PATH_PHP_TMP)){
 			$tmpPath = PATH_TMP_FS;
 		} else {
-			CMS_grandFather::raiseError('Can\'t found temporary path ...');
+			CMS_grandFather::raiseError('Can\'t found writable temporary path ...');
 			return false;
 		}
-		if (!@is_writable($tmpPath)) {
+		if (!is_writable($tmpPath)) {
 			CMS_grandFather::raiseError('Can\'t write in temporary path : '.$tmpPath);
 			return false;
 		}

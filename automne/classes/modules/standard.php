@@ -1354,7 +1354,7 @@ class CMS_module_standard extends CMS_module
 			}
 			//then directories
 			foreach ( new RecursiveIteratorIterator(new RecursiveDirectoryIterator(PATH_TMP_FS), RecursiveIteratorIterator::SELF_FIRST) as $file) {
-				if ($file->isDir()) @rmdir($file->getPathname());
+				if ($file->isDir() && $file->getFilename() != "." && $file->getFilename() != "..") @rmdir($file->getPathname());
 			}
 		} catch(Exception $e) {}
 		//rotate error log file
@@ -2144,7 +2144,7 @@ class CMS_module_standard extends CMS_module
 		$replace["#^\{(var|request|session|constant)\:([^:]*?(::)?[^:]*?):([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_poly_definition_functions::getVarContent("\1", "\4", "\2", "\4")';
 		
 		//replace '{page:id:type}' value by corresponding CMS_tree::getPageValue(id, type) call
-		$replace["#^\{page\:([^:]*?(::)?[^:]*?)\:([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_tree::getPageValue("\1", "\3", @$public_search, \'{{pageID}}\')';
+		$replace["#^\{page\:([^:]*?(::)?[^:]*?)\:([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_tree::getPageValue("\1", "\3", @$public_search, (@$parameters[\'pageID\'] ? @$parameters[\'pageID\'] : \'{{pageID}}\'))';
 		
 		//replace '{user:id:type}' value by corresponding CMS_profile_usersCatalog::getUserValue(id, type) call
 		$replace["#^\{user\:([^:]*?(::)?[^:]*?)\:([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_profile_usersCatalog::getUserValue("\1", "\3", (isset($cms_user) ? $cms_user->getUserId() : null))';

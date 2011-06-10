@@ -80,12 +80,22 @@ class JSMin {
 		foreach ($matches[1] as $key => $match) {
 			$code = explode('//!>>', $js[$key]);
 			$jsmin = new JSMin($code[1]);
-			$return .= $match."\n".$jsmin->min();
+			try {
+				$return .= $match."\n".$jsmin->min();
+			} catch(JSMinException $e) {
+				CMS_grandFather::raiseError($e->getMessage());
+				$return .= $match."\n".$code[1];
+			}
 		}
 		return $return;
 	} else {
 		$jsmin = new JSMin($js);
-    	return $jsmin->min();
+    	try {
+			return $jsmin->min();
+		} catch(JSMinException $e) {
+			CMS_grandFather::raiseError($e->getMessage());
+			return $js;
+		}
 	}
   }
 

@@ -154,12 +154,12 @@ case "validate":
 			if ($_POST["value"]) {
 				$emails = array_map('trim',preg_split("/[,;]+/",$_POST["value"]));
 				$ok = true;
-				foreach($emails as $email) {
+				/*foreach($emails as $email) {
 					//value can be a valid email or a $_SESSION value
 					if (!sensitiveIO::isValidEmail($email) && io::strpos($email, '$_SESSION') === false) {
 						$ok = false;
 					}
-				}
+				}*/
 				if (!$ok) {
 					$cms_message .= $cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD, array($cms_language->getMessage(MESSAGE_ACTION_ENTER_EMAILS, false, MOD_CMS_FORMS_CODENAME)));
 				} else {
