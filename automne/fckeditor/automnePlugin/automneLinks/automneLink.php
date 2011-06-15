@@ -43,7 +43,7 @@ define("MESSAGE_PAGE_TREE_TITLE", 935);
 			echo CMS_view::getJavascript(array('ext','main', 'initConfig'));
 		?>
 		<script type="text/javascript">
-			if (parent.parent) {
+			if (parent.parent && parent.parent.Ext) {
 				//Declare Automne namespace
 				Ext.namespace('Automne');
 				pr = parent.parent.pr;
@@ -53,8 +53,11 @@ define("MESSAGE_PAGE_TREE_TITLE", 935);
 				Automne.server = parent.parent.Automne.server;
 				Automne.context = parent.parent.Automne.context;
 				Ext.Ajax = parent.parent.Ext.Ajax;
-				Ext.BLANK_IMAGE_URL = '<?php echo PATH_ADMIN_IMAGES_WR; ?>/s.gif';
+				
+			} else {
+				
 			}
+			Ext.BLANK_IMAGE_URL = '<?php echo PATH_ADMIN_IMAGES_WR; ?>/s.gif';
 		</script>
 		<script type="text/javascript">
 			var displayTree = function(currentPage) {

@@ -1355,12 +1355,22 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		}
 		$return .= ');
 		';
-		$return .='
-		if (method_exists($object[$objectDefinition_'.$tag['attributes']['form'].'], "getInput")) {
-			$content .= CMS_polymod_definition_parsing::replaceVars($object[$objectDefinition_'.$tag['attributes']['form'].']->getInput('.$fieldID.', $cms_language, $parameters_'.$uniqueID.'), $replace);
-		} else {
-			CMS_grandFather::raiseError("Malformed atm-input tag : can\'t found method getInput on object : ".get_class($object[$objectDefinition_'.$tag['attributes']['form'].']));
-		}';
+		
+		/*if (isset($tag['attributes']['hidden']) && ($tag['attributes']['hidden'] == 'true' || $tag['attributes']['hidden'] == 1) && isset($tag['attributes']['value'])) {
+			$subFieldID = (isset($tag['attributes']['subfield']) && io::isPositiveInteger($tag['attributes']['subfield'])) ? (string) $tag['attributes']['subfield'] : '0';
+			$return .='
+				$value_'.$uniqueID.' = CMS_polymod_definition_parsing::replaceVars(\''.$tag['attributes']['value'].'\', $replace);
+				$content .= \'<input type="hidden" name="'.$fieldID.'_'.$subFieldID.'" value="\'.$value_'.$uniqueID.'.\'" /><input type="hidden" name="polymodFields['.$fieldID.']" value="'.$fieldID.'" />\';
+				unset($value_'.$uniqueID.');
+			';
+		} else {*/
+			$return .='
+			if (method_exists($object[$objectDefinition_'.$tag['attributes']['form'].'], "getInput")) {
+				$content .= CMS_polymod_definition_parsing::replaceVars($object[$objectDefinition_'.$tag['attributes']['form'].']->getInput('.$fieldID.', $cms_language, $parameters_'.$uniqueID.'), $replace);
+			} else {
+				CMS_grandFather::raiseError("Malformed atm-input tag : can\'t found method getInput on object : ".get_class($object[$objectDefinition_'.$tag['attributes']['form'].']));
+			}';
+		//}
 		//check for tag callback content
 		if (isset($tag['childrens'])) {
 			//callback code

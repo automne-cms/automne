@@ -130,7 +130,7 @@ END;
 		$view->setSecure();
 		
 		$actionlabels = CMS_log_catalog::getAllActions($cms_language);
-		$logs = CMS_log_catalog::search('', 0, $userId, array(), $start, $limit, $order, $direction);
+		$logs = CMS_log_catalog::search('', 0, $userId, array(), false, false, $start, $limit, $order, $direction);
 		
 		$feeds = array();
 		$feeds['items'] = array();
@@ -205,7 +205,7 @@ END;
 			);
 		}
 		
-		$feeds['total_count'] = CMS_log_catalog::search('', 0, $userId, array(), $start, $limit, $order, $direction, true);
+		$feeds['total_count'] = CMS_log_catalog::search('', 0, $userId, array(), false, false, $start, $limit, $order, $direction, true);
 		$feeds['version']	= 1;
 		
 		$view->setContent($feeds);

@@ -325,36 +325,41 @@ class CMS_object_categories extends CMS_object_common
 						$associated_items[] = $this->_subfieldValues[$subFieldID]->getValue();
 					}
 				}
-				//set some default parameters
-				if (!isset($inputParams['no_admin'])) {
-					$inputParams['no_admin'] = true;
-				}
-				if (!isset($inputParams['position'])) {
-					$inputParams['position'] = 'horizontal';
-				}
-				if (isset($inputParams['width']) && !isset($inputParams['select_width'])) {
-					$inputParams['select_width'] = $inputParams['width'];
-				}
-				if (isset($inputParams['height']) && !isset($inputParams['select_height'])) {
-					$inputParams['select_height'] = $inputParams['height'];
-				}
-				$params['selectWidth'] = (SensitiveIO::isPositiveInteger($params['selectWidth'])) ? $params['selectWidth'] : '300';
-				$params['selectHeight'] = (SensitiveIO::isPositiveInteger($params['selectHeight'])) ? $params['selectHeight'] : '200';
-				$listboxesParameters = array (
-					'field_name' 		=> 'list'.$prefixName.$this->_field->getID().'_0',	// Hidden field name to get value in
-					'items_possible' 	=> $a_all_categories,								// array of all categories availables: array(ID => label)
-					'items_selected' 	=> $associated_items,								// array of selected ids
-					'select_width'		=> $params['selectWidth'].'px',        				// Width of selects, default 200px
-					'select_height'		=> $params['selectHeight'].'px',					// Height of selects, default 140px
-					'form_name' 		=> $inputParams['form'] 							// Javascript form name
-					);
-				//append optional attributes
-				foreach ($inputParams as $k => $v) {
-					if (in_array($k, array('select_width','select_height','no_admin','leftTitle','rightTitle','position','description','selectIDFrom','selectIDTo',))) {
-						$listboxesParameters[$k] = $v;
+				if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
+					$value = isset($inputParams['value']) ? $inputParams['value'] : implode(',', $associated_items);
+					$html = '<input type="hidden"'.$htmlParameters.' name="list'.$prefixName.$this->_field->getID().'_0" value="'.$value.'" />'."\n";
+				} else {
+					//set some default parameters
+					if (!isset($inputParams['no_admin'])) {
+						$inputParams['no_admin'] = true;
 					}
+					if (!isset($inputParams['position'])) {
+						$inputParams['position'] = 'horizontal';
+					}
+					if (isset($inputParams['width']) && !isset($inputParams['select_width'])) {
+						$inputParams['select_width'] = $inputParams['width'];
+					}
+					if (isset($inputParams['height']) && !isset($inputParams['select_height'])) {
+						$inputParams['select_height'] = $inputParams['height'];
+					}
+					$params['selectWidth'] = (SensitiveIO::isPositiveInteger($params['selectWidth'])) ? $params['selectWidth'] : '300';
+					$params['selectHeight'] = (SensitiveIO::isPositiveInteger($params['selectHeight'])) ? $params['selectHeight'] : '200';
+					$listboxesParameters = array (
+						'field_name' 		=> 'list'.$prefixName.$this->_field->getID().'_0',	// Hidden field name to get value in
+						'items_possible' 	=> $a_all_categories,								// array of all categories availables: array(ID => label)
+						'items_selected' 	=> $associated_items,								// array of selected ids
+						'select_width'		=> $params['selectWidth'].'px',        				// Width of selects, default 200px
+						'select_height'		=> $params['selectHeight'].'px',					// Height of selects, default 140px
+						'form_name' 		=> $inputParams['form'] 							// Javascript form name
+						);
+					//append optional attributes
+					foreach ($inputParams as $k => $v) {
+						if (in_array($k, array('select_width','select_height','no_admin','leftTitle','rightTitle','position','description','selectIDFrom','selectIDTo',))) {
+							$listboxesParameters[$k] = $v;
+						}
+					}
+					$html = CMS_dialog_listboxes::getListBoxes($listboxesParameters);
 				}
-				$html = CMS_dialog_listboxes::getListBoxes($listboxesParameters);
 			} else {
 				$html = $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET);
 			}
@@ -364,36 +369,47 @@ class CMS_object_categories extends CMS_object_common
 		} else {
 			//serialize all htmlparameters 
 			$htmlParameters = $this->serializeHTMLParameters($inputParams);
-			// Get categories
-			$a_all_categories = $this->getAllCategoriesAsArray($language, false, $moduleCodename, CLEARANCE_MODULE_EDIT, $rootCategory, true);
-			if (is_array($a_all_categories) && $a_all_categories) {
-				$html = '
-				<select name="list'.$prefixName.$this->_field->getID().'_0"'.$htmlParameters.'>';
-				//selected value
-				if (!sensitiveIO::isPositiveInteger($params['defaultValue'])) {
-					$html .= '<option value="0">'.$language->getMessage(self::MESSAGE_CHOOSE_OBJECT).'</option>';
-				}
-				if (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0]) && !is_null($this->_subfieldValues[0]->getValue())) {
-					$selectedValue = $this->_subfieldValues[0]->getValue();
-				} elseif (sensitiveIO::isPositiveInteger($params['defaultValue'])) {
-					$selectedValue = $params['defaultValue'];
+			if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
+				if (isset($inputParams['value'])) {
+					$value = $inputParams['value'];
+				} elseif (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0]) && !is_null($this->_subfieldValues[0]->getValue())) {
+					$value = $this->_subfieldValues[0]->getValue();
 				} else {
-					$selectedValue = '';
+					$value='';
 				}
-				//natsort objects by name case insensitive
-				if (isset($inputParams['sort']) && (io::strtolower($inputParams['sort']) == 'asc' || io::strtolower($inputParams['sort']) == 'desc')) {
-					uasort($a_all_categories, array('CMS_object_categories','_natecasecomp'));
-					if (io::strtolower($inputParams['sort']) == 'desc') {
-						$a_all_categories = array_reverse($a_all_categories, true);
-					}
-				}
-				foreach($a_all_categories as $catID => $aCategory) {
-					$selected = ($selectedValue == $catID) ? ' selected="selected"':'';
-					$html .= '<option value="'.$catID.'"'.$selected.'>'.$aCategory.'</option>';
-				}
-				$html .= '</select>';
+				$html = '<input type="hidden"'.$htmlParameters.' name="list'.$prefixName.$this->_field->getID().'_0" value="'.$value.'" />'."\n";
 			} else {
-				$html .= $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET);
+				// Get categories
+				$a_all_categories = $this->getAllCategoriesAsArray($language, false, $moduleCodename, CLEARANCE_MODULE_EDIT, $rootCategory, true);
+				if (is_array($a_all_categories) && $a_all_categories) {
+					$html = '
+					<select name="list'.$prefixName.$this->_field->getID().'_0"'.$htmlParameters.'>';
+					//selected value
+					if (!sensitiveIO::isPositiveInteger($params['defaultValue'])) {
+						$html .= '<option value="0">'.$language->getMessage(self::MESSAGE_CHOOSE_OBJECT).'</option>';
+					}
+					if (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0]) && !is_null($this->_subfieldValues[0]->getValue())) {
+						$selectedValue = $this->_subfieldValues[0]->getValue();
+					} elseif (sensitiveIO::isPositiveInteger($params['defaultValue'])) {
+						$selectedValue = $params['defaultValue'];
+					} else {
+						$selectedValue = '';
+					}
+					//natsort objects by name case insensitive
+					if (isset($inputParams['sort']) && (io::strtolower($inputParams['sort']) == 'asc' || io::strtolower($inputParams['sort']) == 'desc')) {
+						uasort($a_all_categories, array('CMS_object_categories','_natecasecomp'));
+						if (io::strtolower($inputParams['sort']) == 'desc') {
+							$a_all_categories = array_reverse($a_all_categories, true);
+						}
+					}
+					foreach($a_all_categories as $catID => $aCategory) {
+						$selected = ($selectedValue == $catID) ? ' selected="selected"':'';
+						$html .= '<option value="'.$catID.'"'.$selected.'>'.$aCategory.'</option>';
+					}
+					$html .= '</select>';
+				} else {
+					$html .= $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET);
+				}
 			}
 			if (POLYMOD_DEBUG) {
 				$html .= '<span class="admin_text_alert"> (Field : '.$fieldID.' - Value : '.((isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0])) ? $this->_subfieldValues[0]->getValue() : '').')</span>';

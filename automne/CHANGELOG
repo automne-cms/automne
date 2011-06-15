@@ -4,6 +4,8 @@ V4.2.0 (in progress)
 [REFACTOR] : Update ExtJS to version 3.4.0 (add support for IE9)
 [REFACTOR] : Update debug statistics : more accurate and more extensible
 [REFACTOR] : Session management and users authentification are completely refactored to use Zend Framework
+[REFACTOR] : Add support for hidden fields in polymod am-form
+[REFACTOR] : Add filter by dates on activity logs
 [FEATURE] : Add oembed object and oembed polymod field (external media field). Update Mediacenter to manage oembed medias
 [FEATURE] : Add parent page selection on new page creation
 [FEATURE] : Add variable type {page:father:XXX} to get infos from current parent page

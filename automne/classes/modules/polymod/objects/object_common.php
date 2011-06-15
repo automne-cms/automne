@@ -265,10 +265,14 @@ abstract class CMS_object_common extends CMS_grandFather
 				//append field id to html field parameters (if not already exists)
 				$htmlParameters .= (!isset($inputParams['id'])) ? ' id="'.$prefixName.$this->_field->getID().'_'.$subFieldID.'"' : '';
 				//create field value
-				$value = $this->_subfieldValues[$subFieldID]->getValue();
+				$value = isset($inputParams['value']) ? $inputParams['value'] : $this->_subfieldValues[$subFieldID]->getValue();
 				//then create field HTML
 				$html .= ($html) ? '<br />':'';
-				$html .= '<input type="text"'.$htmlParameters.' name="'.$prefixName.$this->_field->getID().'_'.$subFieldID.'" value="'.$value.'" />'."\n";
+				if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
+					$html .= '<input type="hidden"'.$htmlParameters.' name="'.$prefixName.$this->_field->getID().'_'.$subFieldID.'" value="'.$value.'" />'."\n";
+				} else {
+					$html .= '<input type="text"'.$htmlParameters.' name="'.$prefixName.$this->_field->getID().'_'.$subFieldID.'" value="'.$value.'" />'."\n";
+				}
 				if (POLYMOD_DEBUG) {
 					$html .= ' <span class="admin_text_alert">(Field : '.$this->_field->getID().' - SubField : '.$subFieldID.')</span>';
 				}

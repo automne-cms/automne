@@ -30,6 +30,11 @@ class CMS_oembed extends CMS_grandFather
 	protected $_provider;
 	protected $_datas = array();
 	
+	/**
+	 * Oembed Providers list
+	 * @var array
+	 * @access public
+	 */
 	public $providers = array(
 		array(
 			'api'		=> 'http://www.youtube.com/oembed',
@@ -75,6 +80,10 @@ class CMS_oembed extends CMS_grandFather
 			'api'		=> 'http://www.scribd.com/services/oembed',
 			'scheme'	=> array('http://*scribd.com/*')
 		),
+		/*array(
+			'api'		=> 'http://www.slideshare.net/api/oembed/1',
+			'scheme'	=> array('http://*.slideshare.net/*')
+		),*/
 		array(
 			'api'		=> 'http://api.embed.ly/1/oembed',
 			/* Regexp from http://api.embed.ly/tools/generator/
@@ -106,6 +115,12 @@ class CMS_oembed extends CMS_grandFather
 		$this->_maxheight = $maxheight && io::isPositiveInteger($maxheight) ? $maxheight : '';
 	}
 	
+	/**
+	  * Get current provider using media URL.
+	  *
+	  * @return boolean
+	  * @access protected
+	  */
 	protected function _getProvider() {
 		if ($this->_provider) {
 			return true;
@@ -149,6 +164,12 @@ class CMS_oembed extends CMS_grandFather
 		return false;
 	}
 	
+	/**
+	  * Does current oembed object has provider
+	  *
+	  * @return boolean
+	  * @access public
+	  */
 	function hasProvider() {
 		//load provider if needed
 		if (!$this->_getProvider()) {
@@ -157,6 +178,12 @@ class CMS_oembed extends CMS_grandFather
 		return $this->_provider ? true : false;
 	}
 	
+	/**
+	  * Get current provider using media URL.
+	  *
+	  * @return string the provider API url
+	  * @access public
+	  */
 	function getProvider() {
 		//load provider if needed
 		if (!$this->_getProvider()) {
@@ -165,6 +192,12 @@ class CMS_oembed extends CMS_grandFather
 		return $this->_provider;
 	}
 	
+	/**
+	  * Retrieve current media datas from provider
+	  *
+	  * @return boolean
+	  * @access protected
+	  */
 	protected function _retrieveDatas() {
 		if ($this->_datas) {
 			return true;
@@ -241,6 +274,12 @@ class CMS_oembed extends CMS_grandFather
 		return true;
 	}
 	
+	/**
+	  * Get current media datas from provider
+	  *
+	  * @return array the medias datas returned by provider
+	  * @access public
+	  */
 	function getDatas() {
 		//load datas if needed
 		if (!$this->_retrieveDatas()) {
@@ -249,6 +288,14 @@ class CMS_oembed extends CMS_grandFather
 		return $this->_datas;
 	}
 	
+	/**
+	  * Get HTML embed code for current media
+	  *
+	  * @param array the html attributes to add to returned code
+	  * @param boolean does the HTML should be returned into an iframe ? (default false)
+	  * @return string the html embed code (framed if needed)
+	  * @access public
+	  */
 	function getHTML($attributes = array(), $inframe = false) {
 		//load datas
 		if (!($datas = $this->getDatas())) {
@@ -310,6 +357,13 @@ class CMS_oembed extends CMS_grandFather
 		}
 	}
 	
+	/**
+	  * Get thumbnial HTML code for current media
+	  *
+	  * @param array the html attributes to add to returned code
+	  * @return string the html thumbnail code
+	  * @access public
+	  */
 	function getThumbnail($attributes = array()) {
 		//load datas
 		if (!($datas = $this->getDatas())) {
@@ -348,6 +402,12 @@ class CMS_oembed extends CMS_grandFather
 		return '<img src="'.io::htmlspecialchars($datas['thumbnail_url']).'"'.(isset($datas['title']) && !isset($attributes['title']) ? ' title="'.io::htmlspecialchars($datas['title']).'"' : '').$style.$attr.' />';
 	}
 	
+	/**
+	  * Get title for current media
+	  *
+	  * @return string the media title
+	  * @access public
+	  */
 	function getTitle() {
 		//load datas
 		if (!($datas = $this->getDatas())) {
@@ -356,6 +416,12 @@ class CMS_oembed extends CMS_grandFather
 		return $this->getData('title');
 	}
 	
+	/**
+	  * Get provider name for current media
+	  *
+	  * @return string the media provider name
+	  * @access public
+	  */
 	function getProviderName() {
 		//load datas
 		if (!($datas = $this->getDatas())) {
@@ -367,6 +433,12 @@ class CMS_oembed extends CMS_grandFather
 		return isset($datas['provider_name']) ? $datas['provider_name'] : (isset($datas['provider']) ? $datas['provider'] : '');
 	}
 	
+	/**
+	  * Get datas for current media
+	  *
+	  * @return array the media datas
+	  * @access public
+	  */
 	function getData($name) {
 		//load datas
 		if (!($datas = $this->getDatas())) {
@@ -378,6 +450,13 @@ class CMS_oembed extends CMS_grandFather
 		return isset($datas[$name]) ? $datas[$name] : '';
 	}
 	
+	/**
+	  * Add wmode transparent to flash embed code
+	  *
+	  * @param string $html the html code to transform
+	  * @return string the html code transformed
+	  * @access protected
+	  */
 	protected function _addWmode($html) {
 		$matches = array();
 		if (stripos($html, '<object ') !== false && stripos($html, ' name="wmode"') === false) {
@@ -389,6 +468,14 @@ class CMS_oembed extends CMS_grandFather
 		return $html;
 	}
 	
+	/**
+	  * Get iframe code for current html embed code
+	  *
+	  * @param string $style the html style code to add
+	  * @param string $attr the html attributes code to add
+	  * @return string the html code
+	  * @access protected
+	  */
 	protected function _getIframe($style, $attr) {
 		//load datas
 		if (!($datas = $this->getDatas())) {
@@ -434,11 +521,11 @@ class CMS_oembed extends CMS_grandFather
 				$height = $this->_maxheight;
 			}
 		}
-		return '<iframe frameBorder="0"'.
+		return '<iframe scrolling="no" frameBorder="0"'.
 				($width ? ' width="'.$width.'"' : '').
 				($height ? ' height="'.$height.'"' : '').
 				'src="'.$domain.PATH_MAIN_WR.'/oembed/frame.php?params='.$frameParam.'"'.
-				$style.$attr.'>'.
+				'>'.
 				'	<a href="'.PATH_MAIN_WR.'/oembed/frame.php" target="_blank">Click to view media</a>'.
 				'</iframe>';
 	}

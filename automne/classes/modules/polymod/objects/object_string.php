@@ -173,6 +173,10 @@ class CMS_object_string extends CMS_object_common
       * @access public
       */
 	function getInput($fieldID, $language, $inputParams) {
+		//hidden field : use parent method
+		if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
+			return parent::getInput($fieldID, $language, $inputParams);
+		}
 		if (isset($inputParams['prefix'])) {
 			$prefixName = $inputParams['prefix'];
 			unset($inputParams['prefix']);
