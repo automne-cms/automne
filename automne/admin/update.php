@@ -340,6 +340,23 @@ if (!$installed) {
 		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v413-to-v420.sql must be executed manualy<br/>';
 	}
 }
+#change page codename to use a longer field size
+$sql = "show columns from pagesBaseData_edited";
+$q = new CMS_query($sql);
+$installed = false;
+while($r = $q->getArray()) {
+	if ($r["Field"] == "codename_pbd" && $r["Type"] == 'varchar(20)') {
+		$installed = true;
+	}
+}
+if (!$installed) {
+	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v413-to-v420-2.sql',true)) {
+		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v413-to-v420-2.sql',false);
+		echo 'Database successfuly updated (page codename update)<br/>';
+	} else {
+		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v413-to-v420-2.sql must be executed manualy<br/>';
+	}
+}
 //END UPDATE FROM 4.1.3 TO 4.2.0
 
 //Update Automne messages

@@ -1020,6 +1020,10 @@ class CMS_page extends CMS_resource
 			$this->raiseError("Page codename must be alphanumeric only");
 			return false;
 		}
+		if (strlen($data) > 100) {
+			$this->raiseError("Page codename must have 100 characters max");
+			return false;
+		}
 		//check if codename already exists
 		if ($checkForDuplicate && $data) {
 			$pageId = CMS_tree::getPageByCodename($data, $this->getWebsite(), false, false);

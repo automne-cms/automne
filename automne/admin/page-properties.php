@@ -471,7 +471,7 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES) || $cms_use
 				fieldLabel:		'<span ext:qtip=\"{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_FIELD_CODENAME)}\" class=\"atm-help\">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_CODENAME)}</span>',
 				xtype:			'textfield',
 				name:			'codename',
-				maxLength:		20,
+				maxLength:		100,
 				vtype:			'codename',
 				allowBlank:		true,
 				vtypeText:		'{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_FIELD_CODENAME_VTYPE)}',
