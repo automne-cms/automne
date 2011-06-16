@@ -10,6 +10,7 @@ V4.2.0 (in progress)
 [FEATURE] : Add oembed object and oembed polymod field (external media field). Update Mediacenter to manage oembed medias
 [FEATURE] : Add parent page selection on new page creation
 [FEATURE] : Add variable type {page:father:XXX} to get infos from current parent page
+[FEATURE] : Add protection for pages and categories to avoid changing important datas inadvertently
 
 V4.1.4 (in progress)
 [BUG] : Correct bugs numbers: 2070 (see http://www.automne-cms.org/bug/)

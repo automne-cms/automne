@@ -110,6 +110,13 @@ class CMS_page extends CMS_resource
 	protected $_pageURL = '';
 	
 	/**
+	  * The page protected status
+	  * @var boolean
+	  * @access private
+	  */
+	protected $_protected = false;
+	
+	/**
 	  * Constructor.
 	  * initializes the page if the id is given.
 	  *
@@ -149,6 +156,7 @@ class CMS_page extends CMS_resource
 				$this->_templateID = $data["template_pag"];
 				$this->_lastFileCreation->setFromDBValue($data["lastFileCreation_pag"]);
 				$this->_pageURL = $data["url_pag"];
+				$this->_protected = $data["protected_pag"] ? true : false;
 				//initialize super-class
 				parent::__construct($data);
 			} else {
@@ -1037,6 +1045,28 @@ class CMS_page extends CMS_resource
 		}
 		$this->_editedBaseData["codename"] = $data;
 		$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
+		return true;
+	}
+	
+	/**
+	  * Get the page protected status
+	  *
+	  * @return boolean
+	  * @access public
+	  */
+	function isProtected() {
+		return $this->_protected ? true : false;
+	}
+	
+	/**
+	  * Set the page protected status
+	  *
+	  * @param boolean $protected The new page protected status
+	  * @return boolean
+	  * @access public
+	  */
+	function setProtected($protected) {
+		$this->_protected = $protected ? true : false;
 		return true;
 	}
 	
@@ -1947,7 +1977,8 @@ class CMS_page extends CMS_resource
 			lastReminder_pag='".$this->_lastReminder->getDBValue()."',
 			template_pag='".$this->_templateID."',
 			lastFileCreation_pag='".$this->_lastFileCreation->getDBValue()."',
-			url_pag='".SensitiveIO::sanitizeSQLString($this->_pageURL)."'
+			url_pag='".SensitiveIO::sanitizeSQLString($this->_pageURL)."',
+			protected_pag='".($this->_protected ? 1 : 0)."'
 		";
 
 		if ($this->_pageID) {

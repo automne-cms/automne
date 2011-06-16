@@ -345,7 +345,7 @@ $sql = "show columns from pagesBaseData_edited";
 $q = new CMS_query($sql);
 $installed = false;
 while($r = $q->getArray()) {
-	if ($r["Field"] == "codename_pbd" && $r["Type"] == 'varchar(20)') {
+	if ($r["Field"] == "codename_pbd" && $r["Type"] == 'varchar(100)') {
 		$installed = true;
 	}
 }

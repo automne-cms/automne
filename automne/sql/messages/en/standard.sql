@@ -1798,3 +1798,12 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1722, 'standard', 'en', 'Error of page creation... You do not have edition rights on the selected parent page.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1723, 'standard', 'en', 'From');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1724, 'standard', 'en', 'To');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1725, 'standard', 'en', 'Error during update: the page is protected and can not be changed.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1726, 'standard', 'en', 'Protected page');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1727, 'standard', 'en', 'A protected page can not be changed, moved, deleted except by an administrator.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1728, 'standard', 'en', 'If a page is protected, it is no longer possible to modify his properties or position in the tree. Only an administrator can remove the protection on a page. It is then possible to modify properties or position. Use protection to prevent that an important page of your site to be inadvertently altered.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1729, 'standard', 'en', 'Error during update: the category is protected and can not be changed.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1730, 'standard', 'en', 'Protected category');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1731, 'standard', 'en', 'A protected category can not be changed, moved, deleted except by an administrator.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1732, 'standard', 'en', 'If a category is protected, it is no longer possible to modify his properties or position in the tree. Only an administrator can remove the protection on a category. It is then possible to modify properties or position. Use protection to prevent that an important category of your site to be inadvertently altered.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1733, 'standard', 'en', 'This page is protected. Only an administrator can change it.');
