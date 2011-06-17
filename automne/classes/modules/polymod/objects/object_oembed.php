@@ -45,6 +45,8 @@ class CMS_object_oembed extends CMS_object_common
 	const MESSAGE_OBJECT_IMAGE_PROVIDERURL_DESCRIPTION = 624;
 	const MESSAGE_OBJECT_IMAGE_HASVALUE_DESCRIPTION = 625;
 	const MESSAGE_OBJECT_IMAGE_DATAS_DESCRIPTION = 626;
+	const MESSAGE_OBJECT_OEMBED_MEDIA_URL = 630;
+	const MESSAGE_OBJECT_OEMBED_MEDIA_URL_DESC = 629;
 	
 	/**
 	  * object label
@@ -99,6 +101,92 @@ class CMS_object_oembed extends CMS_object_common
 	  * @access private
 	  */
 	protected $_oembedObjects = array();
+	
+	/**
+	  * get HTML admin (used to enter object values in admin)
+	  *
+	  * @param integer $fieldID, the current field id (only for poly object compatibility)
+	  * @param CMS_language $language, the current admin language
+	  * @param string prefixname : the prefix to use for post names
+	  * @return string : the html admin
+	  * @access public
+	  */
+	function getHTMLAdmin($fieldID, $language, $prefixName) {
+		//get module codename
+		$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
+		//is this field mandatory ?
+		$mandatory = $this->_field->getValue('required') ? '<span class="atm-red">*</span> ' : '';
+		$desc = $this->getFieldDescription($language);
+		if (POLYMOD_DEBUG) {
+			$values = array();
+			foreach (array_keys($this->_subfieldValues) as $subFieldID) {
+				if (is_object($this->_subfieldValues[$subFieldID])) {
+					$values[$subFieldID] = sensitiveIO::ellipsis(strip_tags($this->_subfieldValues[$subFieldID]->getValue()), 50);
+				}
+			}
+			$desc .= $desc ? '<br />' : '';
+			$desc .= '<span class="atm-red">Field : '.$fieldID.' - Value(s) : <ul>';
+			foreach ($values as $subFieldID => $value) {
+				$desc .= '<li>'.$subFieldID.'&nbsp;:&nbsp;'.$value.'</li>';
+			}
+			$desc .= '</ul></span>';
+		}
+		
+		$label = $desc ? '<span class="atm-help" ext:qtip="'.io::htmlspecialchars($desc).'">'.$mandatory.$this->getFieldLabel($language).'</span>' : $mandatory.$this->getFieldLabel($language);
+		
+		$ids = 'oembed-'.md5(mt_rand().microtime());
+		$oembedURL = PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/oembed.php';
+		$loadingURL = PATH_ADMIN_IMAGES_WR.'/loading-old.gif';
+		
+		$fields = array();
+		$fields[] = array(
+			'fieldLabel' 	=>	'<span class="atm-help" ext:qtip="'.io::htmlspecialchars($language->getMessage(self::MESSAGE_OBJECT_OEMBED_MEDIA_URL_DESC, false, MOD_POLYMOD_CODENAME)).'">'.$language->getMessage(self::MESSAGE_OBJECT_OEMBED_MEDIA_URL, false, MOD_POLYMOD_CODENAME).'</span>',
+			'xtype'			=>	'textfield',
+			'name'			=>	'polymodFieldsValue['.$prefixName.$this->_field->getID().'_0]',
+			'value'			=>	($this->_subfieldValues[0]->getValue() ? sensitiveIO::decodeEntities($this->_subfieldValues[0]->getValue()) : ''),
+			'enableKeyEvents'=> true,
+			'listeners'		=>	array(
+				'keyup' => array(
+					'fn' =>	sensitiveIO::sanitizeJSString('function(el){
+						/*call server for oembed HTML content*/
+						Ext.get(\''.$ids.'-view\').update(\'<img src="'.$loadingURL.'" />\');
+						Automne.server.call({
+							url:			\''.$oembedURL.'\',
+							scope:			this,
+							fcnCallback:	function(response, options, htmlResponse){
+								Ext.get(\''.$ids.'-view\').update(htmlResponse);
+							},
+							params:			{
+								module:			\''.$moduleCodename.'\',
+								url:			el.getValue(),
+								width:			600,
+								height:			250
+							}
+						});
+					}', false, false), 
+					'buffer'=> 600
+				)
+			)
+		);
+		$fields[] = array(
+			'xtype'		=> 'panel',
+			'border'	=> false,
+			'html'		=> '<div id="'.$ids.'-view" style="overflow:auto;text-align:center;">'.($this->getValue('hasValue') ? $this->getValue('html', '600,250') : '').'</div>',
+		);
+		$return = array();
+		$return = array(
+			'title' 		=>	$label,
+			'xtype'			=>	'fieldset',
+			'autoHeight'	=>	true,
+			'defaultType'	=>	'textfield',
+			'defaults'		=> 	array(
+				'anchor'		=>	'97%',
+				'allowBlank'	=>	!$this->_field->getValue('required')
+			),
+			'items'			=>	$fields
+		);
+		return $return;
+	}
 	
 	/**
 	  * get labels for object structure and functions

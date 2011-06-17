@@ -502,3 +502,6 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(625, 'polymod', 'fr', 'Une URL a t\'elle été saisie pour ce champ ? (renvoie un booléen true ou false)');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(626, 'polymod', 'fr', 'Données oembed brutes du média (tableau de données)');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(627, 'polymod', 'fr', 'Valeur texte brut du texte (tags HTML supprimés pour le texte HTML)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(628, 'polymod', 'fr', 'Aucun média trouvé pour cette adresse ...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(629, 'polymod', 'fr', 'Il s\'agit de l\'adresse du média telle qu\'elle apparait dans la barre d\'adresse de votre navigateur. Elle doit commencer par http:// .');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(630, 'polymod', 'fr', 'URL du média');

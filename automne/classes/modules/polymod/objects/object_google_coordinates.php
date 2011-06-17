@@ -162,7 +162,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 		
 		//Add on change listeners to update image
 		$return['items'][1]['listeners'] = $return['items'][2]['listeners'] = array('change' => sensitiveIO::sanitizeJSString('function(el){
-			Ext.get(\''.$ids.'-view\').update(\'<img style="float:right;border:float:right;1px solid #C0C7CB;" src="http://maps.google.com/maps/api/staticmap?center=\'+Ext.getCmp(\''.$ids.'-lat\').getValue()+\',\'+Ext.getCmp(\''.$ids.'-long\').getValue()+\'&zoom=15&size=600x200&markers=\'+Ext.getCmp(\''.$ids.'-lat\').getValue()+\',\'+Ext.getCmp(\''.$ids.'-long\').getValue()+\'&sensor=false" />\');
+			Ext.get(\''.$ids.'-view\').update(\'<img style="border:1px solid #C0C7CB;" src="http://maps.google.com/maps/api/staticmap?center=\'+Ext.getCmp(\''.$ids.'-lat\').getValue()+\',\'+Ext.getCmp(\''.$ids.'-long\').getValue()+\'&zoom=15&size=600x200&markers=\'+Ext.getCmp(\''.$ids.'-lat\').getValue()+\',\'+Ext.getCmp(\''.$ids.'-long\').getValue()+\'&sensor=false" />\');
 		}', false, false));
 		
 		
@@ -193,7 +193,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 						if (status == \'OK\') {
 							Ext.getCmp(\''.$ids.'-long\').setValue(results[0].geometry.location.lng());
 							Ext.getCmp(\''.$ids.'-lat\').setValue(results[0].geometry.location.lat());
-							Ext.get(\''.$ids.'-view\').update(\'<img style="float:right;border:float:right;1px solid #C0C7CB;" src="http://maps.google.com/maps/api/staticmap?center=\'+results[0].geometry.location.lat()+\',\'+results[0].geometry.location.lng()+\'&zoom=15&size=600x200&markers=\'+results[0].geometry.location.lat()+\',\'+results[0].geometry.location.lng()+\'&sensor=false" />\');
+							Ext.get(\''.$ids.'-view\').update(\'<img style="border:1px solid #C0C7CB;" src="http://maps.google.com/maps/api/staticmap?center=\'+results[0].geometry.location.lat()+\',\'+results[0].geometry.location.lng()+\'&zoom=15&size=600x200&markers=\'+results[0].geometry.location.lat()+\',\'+results[0].geometry.location.lng()+\'&sensor=false" />\');
 						} else {
 							Automne.message.popup({
 								msg: 				String.format(\''.$language->getJsMessage(self::MESSAGE_OBJECT_COORDINATES_FIELD_UNKOWN_ADDRESS,false ,$this->_messagesModule).'\', addr),
@@ -239,7 +239,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 							if (map.gmarks && map.gmarks[0]) {
 								Ext.getCmp(\''.$ids.'-long\').setValue(map.gmarks[0].getPosition().lng());
 								Ext.getCmp(\''.$ids.'-lat\').setValue(map.gmarks[0].getPosition().lat());
-								Ext.get(\''.$ids.'-view\').update(\'<img style="float:right;border:1px solid #C0C7CB;" src="http://maps.google.com/maps/api/staticmap?center=\'+map.gmarks[0].getPosition().lat()+\',\'+map.gmarks[0].getPosition().lng()+\'&zoom=15&size=600x200&markers=\'+map.gmarks[0].getPosition().lat()+\',\'+map.gmarks[0].getPosition().lng()+\'&sensor=false" />\');
+								Ext.get(\''.$ids.'-view\').update(\'<img style="border:1px solid #C0C7CB;" src="http://maps.google.com/maps/api/staticmap?center=\'+map.gmarks[0].getPosition().lat()+\',\'+map.gmarks[0].getPosition().lng()+\'&zoom=15&size=600x200&markers=\'+map.gmarks[0].getPosition().lat()+\',\'+map.gmarks[0].getPosition().lng()+\'&sensor=false" />\');
 							}
 						}}
 		            });
@@ -270,7 +270,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 									if (map.gmarks && map.gmarks[0]) {
 										Ext.getCmp(\''.$ids.'-long\').setValue(map.gmarks[0].getPosition().lng());
 										Ext.getCmp(\''.$ids.'-lat\').setValue(map.gmarks[0].getPosition().lat());
-										Ext.get(\''.$ids.'-view\').update(\'<img style="float:right;border:1px solid #C0C7CB;" src="http://maps.google.com/maps/api/staticmap?center=\'+map.gmarks[0].getPosition().lat()+\',\'+map.gmarks[0].getPosition().lng()+\'&zoom=15&size=600x200&markers=\'+map.gmarks[0].getPosition().lat()+\',\'+map.gmarks[0].getPosition().lng()+\'&sensor=false" />\');
+										Ext.get(\''.$ids.'-view\').update(\'<img style="border:1px solid #C0C7CB;" src="http://maps.google.com/maps/api/staticmap?center=\'+map.gmarks[0].getPosition().lat()+\',\'+map.gmarks[0].getPosition().lng()+\'&zoom=15&size=600x200&markers=\'+map.gmarks[0].getPosition().lat()+\',\'+map.gmarks[0].getPosition().lng()+\'&sensor=false" />\');
 									}
 								}}
 				          	});
@@ -293,7 +293,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 		$return['items'][3] = array(
 			'xtype'		=> 'panel',
 			'border'	=> false,
-			'html'		=> '<div id="'.$ids.'-view" style="overflow:auto;">'.($this->_subfieldValues[0]->getValue() && $this->_subfieldValues[1]->getValue() ? '<img style="float:right;border:1px solid #C0C7CB;" src="http://maps.google.com/maps/api/staticmap?center='.$this->_subfieldValues[1]->getValue().','.$this->_subfieldValues[0]->getValue().'&zoom=15&size=600x200&markers='.$this->_subfieldValues[1]->getValue().','.$this->_subfieldValues[0]->getValue().'&sensor=false" />' : '').'</div>',
+			'html'		=> '<div id="'.$ids.'-view" style="overflow:auto;text-align:center;">'.($this->_subfieldValues[0]->getValue() && $this->_subfieldValues[1]->getValue() ? '<img style="border:1px solid #C0C7CB;" src="http://maps.google.com/maps/api/staticmap?center='.$this->_subfieldValues[1]->getValue().','.$this->_subfieldValues[0]->getValue().'&zoom=15&size=600x200&markers='.$this->_subfieldValues[1]->getValue().','.$this->_subfieldValues[0]->getValue().'&sensor=false" />' : '').'</div>',
 		);
 		return $return;
 	}

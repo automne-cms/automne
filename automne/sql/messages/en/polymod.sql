@@ -476,3 +476,6 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(625, 'polymod', 'en', 'Does this field received an URL? (returns a boolean true or false)');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(626, 'polymod', 'en', 'Raw oembed datas for the media (array of datas)');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(627, 'polymod', 'en', 'Plain text value of the text (HTML tags deleted for the HTML text)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(628, 'polymod', 'en', 'No media founded for this address...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(629, 'polymod', 'en', 'This is the address of the media as it appears in the address bar of your browser. It must begin with http:// .');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(630, 'polymod', 'en', 'Media URL');
