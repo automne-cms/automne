@@ -155,7 +155,7 @@ class CMS_object_href extends CMS_object_common
 		//create field value
 		$maxFileSize = CMS_file::getMaxUploadFileSize('K');
 		$value = $this->_subfieldValues[0]->getValue();
-		$return['name'] = /*$return['id'] =*/ 'polymodFieldsValue[href'.$prefixName.$this->_field->getID().'_0]';
+		$return['name'] = 	'polymodFieldsValue[href'.$prefixName.$this->_field->getID().'_0]';
 		$return['xtype'] =	'atmLinkField';
 		$return['value'] =	(string) $value;
 		$return['uploadCfg'] =	array(

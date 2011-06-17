@@ -7,6 +7,7 @@ V4.2.0 (in progress)
 [REFACTOR] : Add support for hidden fields in polymod am-form
 [REFACTOR] : Add filter by dates on activity logs
 [REFACTOR] : Update page codename to allow codenames of 100 characters
+[REFACTOR] : Add thumbnail to field google coordinates in modules admin
 [FEATURE] : Add oembed object and oembed polymod field (external media field). Update Mediacenter to manage oembed medias
 [FEATURE] : Add parent page selection on new page creation
 [FEATURE] : Add variable type {page:father:XXX} to get infos from current parent page
