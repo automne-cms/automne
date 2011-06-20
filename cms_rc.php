@@ -177,6 +177,16 @@ if (!defined("APPLICATION_XHTML_DTD")) {
 }
 
 /**
+  *	Embedly service API key
+  * This key allow usage of embed.ly service for any URL.
+  * Get a free account at http://app.embed.ly/pricing/free
+  *	Default : nothing
+  */
+if (!defined("OEMBED_EMBEDLY_KEY")) {
+	define("OEMBED_EMBEDLY_KEY", "");
+}
+
+/**
   *	Does system application run on Windows platform
   *	Default : strtolower(substr(PHP_OS, 0, 3)) === 'win'
   */

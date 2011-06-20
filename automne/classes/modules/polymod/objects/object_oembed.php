@@ -47,7 +47,8 @@ class CMS_object_oembed extends CMS_object_common
 	const MESSAGE_OBJECT_IMAGE_DATAS_DESCRIPTION = 626;
 	const MESSAGE_OBJECT_OEMBED_MEDIA_URL = 630;
 	const MESSAGE_OBJECT_OEMBED_MEDIA_URL_DESC = 629;
-	
+	const MESSAGE_OBJECT_OEMBED_PARAMETER_EMBEDLYKEY = 631;
+	const MESSAGE_OBJECT_OEMBED_PARAMETER_EMBEDLYKEY_DESCRIPTION = 632;
 	/**
 	  * object label
 	  * @var integer
@@ -86,14 +87,21 @@ class CMS_object_oembed extends CMS_object_common
 	  * @var array(integer "subFieldID" => array("type" => string "(string|boolean|integer|date)", "required" => boolean, 'internalName' => string [, 'externalName' => i18nm ID]))
 	  * @access private
 	  */
-	protected $_parameters = array();
+	protected $_parameters = array(0 => array(
+										'type' 			=> 'string',
+										'required' 		=> false,
+										'internalName'	=> 'embedlyKey',
+										'externalName'	=> self::MESSAGE_OBJECT_OEMBED_PARAMETER_EMBEDLYKEY,
+										'description'	=> self::MESSAGE_OBJECT_OEMBED_PARAMETER_EMBEDLYKEY_DESCRIPTION,
+									),
+							);
 	
 	/**
 	  * all subFields values for object
 	  * @var array(integer "subFieldID" => mixed)
 	  * @access private
 	  */
-	protected $_parameterValues = array();
+	protected $_parameterValues = array(0 => OEMBED_EMBEDLY_KEY);
 	
 	/**
 	  * all oembed objects (in different sizes)
@@ -137,7 +145,7 @@ class CMS_object_oembed extends CMS_object_common
 		$ids = 'oembed-'.md5(mt_rand().microtime());
 		$oembedURL = PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/oembed.php';
 		$loadingURL = PATH_ADMIN_IMAGES_WR.'/loading-old.gif';
-		
+		$params = $this->getParamsValues();
 		$fields = array();
 		$fields[] = array(
 			'fieldLabel' 	=>	'<span class="atm-help" ext:qtip="'.io::htmlspecialchars($language->getMessage(self::MESSAGE_OBJECT_OEMBED_MEDIA_URL_DESC, false, MOD_POLYMOD_CODENAME)).'">'.$language->getMessage(self::MESSAGE_OBJECT_OEMBED_MEDIA_URL, false, MOD_POLYMOD_CODENAME).'</span>',
@@ -160,7 +168,8 @@ class CMS_object_oembed extends CMS_object_common
 								module:			\''.$moduleCodename.'\',
 								url:			el.getValue(),
 								width:			600,
-								height:			250
+								height:			250,
+								key:			\''.$params['embedlyKey'].'\'
 							}
 						});
 					}', false, false), 
@@ -256,6 +265,7 @@ class CMS_object_oembed extends CMS_object_common
 		if (in_array($name, array('fieldname', 'required', 'fieldID', 'value'))) {
 			return parent::getValue($name, $parameters);
 		}
+		$params = $this->getParamsValues();
 		if ($name == 'hasValue') {
 			return $this->_subfieldValues[0]->getValue() ? true : false;
 		}
@@ -270,7 +280,7 @@ class CMS_object_oembed extends CMS_object_common
 		//load oembed object
 		if (in_array($name, array('html', 'width', 'height'))) { //size specific values : get oembed object at queried size
 			if (!isset($this->_oembedObjects[$width.'-'.$height])) {
-				$this->_oembedObjects[$width.'-'.$height] = new CMS_oembed($this->_subfieldValues[0]->getValue(), $width, $height);
+				$this->_oembedObjects[$width.'-'.$height] = new CMS_oembed($this->_subfieldValues[0]->getValue(), $width, $height, $params['embedlyKey']);
 			}
 			$oembed = $this->_oembedObjects[$width.'-'.$height];
 		} else {
@@ -278,7 +288,7 @@ class CMS_object_oembed extends CMS_object_common
 				//load current oembed object
 				$oembed = current($this->_oembedObjects);
 			} else {
-				$this->_oembedObjects[$width.'-'.$height] = new CMS_oembed($this->_subfieldValues[0]->getValue(), $width, $height);
+				$this->_oembedObjects[$width.'-'.$height] = new CMS_oembed($this->_subfieldValues[0]->getValue(), $width, $height, $params['embedlyKey']);
 				$oembed = $this->_oembedObjects[$width.'-'.$height];
 			}
 		}

@@ -460,7 +460,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(609, 'polymod', 'en', 'Checked by default');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(610, 'polymod', 'en', 'If \'Choice for sending\' is active, does the box to select it is checked by default?');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(611, 'polymod', 'en', 'External Media');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(612, 'polymod', 'en', 'URL of a Media from an external site (YouTube, Flickr, Scribd, Dailymotion, Slideshare, Vimeo, etc. ...). Allow inclusion of the media directly in your site (oEmbed). List of supported sites at the address <a href="http://api.embed.ly/" target="_blank">http://api.embed.ly/</a>.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(612, 'polymod', 'en', 'URL of a Media from an external site (YouTube, Flickr, Scribd, Dailymotion, Vimeo, etc.). Allow inclusion of the media directly in your site (oEmbed).');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(613, 'polymod', 'en', 'Media title (optional)');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(614, 'polymod', 'en', 'Address (URL) entered for the media');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(615, 'polymod', 'en', 'Media in HTML format. This variable accepts two optional arguments: maximum width (maxwidth) and maximum height (maxheight) to specify the maximum size possible for the media. Specify values ​​for the expected size in pixels.');
@@ -479,3 +479,5 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(628, 'polymod', 'en', 'No media founded for this address...');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(629, 'polymod', 'en', 'This is the address of the media as it appears in the address bar of your browser. It must begin with http:// .');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(630, 'polymod', 'en', 'Media URL');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(631, 'polymod', 'en', 'embed.ly key');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(632, 'polymod', 'en', 'To enjoy the service <a href="http://embed.ly" target="_blank">embed.ly</a> to integrate all types of media, enter your embed.ly key in this field. You can get a free key at this address: <a href="http://app.embed.ly/pricing/free" target="_blank">http://app.embed.ly/pricing/free</a>.');
