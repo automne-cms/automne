@@ -1490,6 +1490,9 @@ class CMS_module_standard extends CMS_module
 					"atm-title" 		=> array("selfClosed" => true, "parameters" => array(),		'class' => 'CMS_XMLTag_title'),
 					"atm-website" 		=> array("selfClosed" => true, "parameters" => array(),		'class' => 'CMS_XMLTag_website'),
 					"atm-page" 			=> array("selfClosed" => true, "parameters" => array(),		'class' => 'CMS_XMLTag_page'),
+					"atm-header" 		=> array("selfClosed" => false,	"parameters" => array(),	'class' => 'CMS_XMLTag_header'),
+					"atm-redirect" 		=> array("selfClosed" => true,	"parameters" => array(),	'class' => 'CMS_XMLTag_redirect'),
+					"atm-xml" 			=> array("selfClosed" => true,	"parameters" => array(),	'class' => 'CMS_XMLTag_xml'),
 					"atm-main-url" 		=> array("selfClosed" => true, "parameters" => array()),
 					"atm-constant" 		=> array("selfClosed" => true, "parameters" => array()),
 					"atm-last-update" 	=> array("selfClosed" => false, "parameters" => array()),
@@ -2000,10 +2003,21 @@ class CMS_module_standard extends CMS_module
 							'}'."\n".
 							'?>';
 					}
-					return $modulesCode;
 				} else {
 					$modulesCode[MOD_STANDARD_CODENAME] .= '<?php if (!in_array(\''.PATH_REALROOT_FS.'/cms_rc_frontend.php\', get_included_files())){ require_once(\''.PATH_REALROOT_FS.'/cms_rc_frontend.php\');} else { global $cms_user,$cms_language;} ?>';
 				}
+				//Get header code (atm-header tags)
+				if ($usage = CMS_module::moduleUsage($treatedObject->getID(), $this->_codename)) {
+					//add header codes
+					if (isset($usage['headCallback'])) {
+						foreach ($usage['headCallback'] as $headCallback) {
+							if (isset($headCallback['code'])) {
+								$modulesCode[MOD_STANDARD_CODENAME] .= $headCallback['code'];
+							}
+						}
+					}
+				}
+				return $modulesCode;
 			break;
 			case MODULE_TREATMENT_EDITOR_CODE :
 				if ($treatmentParameters["editor"] == "fckeditor") {
@@ -2138,8 +2152,8 @@ class CMS_module_standard extends CMS_module
 		$replace = array();
 		
 		//replace '{vartype:type:name}' value by corresponding var call
-		$replace["#^\{(var|request|session|constant)\:([^:]*?(::)?[^:]*?):([^:]*?)\}$#U"] = 'CMS_poly_definition_functions::getVarContent("\1", "\4", "\2", @$\4)';
-		$replace["#^\{(var|request|session|constant)\:([^:]*?(::)?[^:]*?):([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_poly_definition_functions::getVarContent("\1", "\4", "\2", "\4")';
+		$replace["#^\{(var|request|session|constant|server)\:([^:]*?(::)?[^:]*?):([^:]*?)\}$#U"] = 'CMS_poly_definition_functions::getVarContent("\1", "\4", "\2", @$\4)';
+		$replace["#^\{(var|request|session|constant|server)\:([^:]*?(::)?[^:]*?):([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_poly_definition_functions::getVarContent("\1", "\4", "\2", "\4")';
 		
 		//replace '{page:id:type}' value by corresponding CMS_tree::getPageValue(id, type) call
 		$replace["#^\{page\:([^:]*?(::)?[^:]*?)\:([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_tree::getPageValue("\1", "\3", @$public_search, (@$parameters[\'pageID\'] ? @$parameters[\'pageID\'] : \'{{pageID}}\'))';

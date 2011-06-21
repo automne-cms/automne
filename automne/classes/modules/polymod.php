@@ -297,85 +297,57 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			case MODULE_TREATMENT_PAGECONTENT_HEADER_CODE :
 				//if this page use a row of this module then add the header code to the page
 				if ($usage = CMS_module::moduleUsage($treatedObject->getID(), $this->_codename)) {
-					$modulesCode[$this->_codename] = '<?php require_once(PATH_REALROOT_FS.\'/automne/classes/polymodFrontEnd.php\'); ?>';
-					//add forms header if needed
-					if (isset($usage['form']) && $usage['form']) {
-						$modulesCode[$this->_codename] .= '<?php CMS_poly_definition_functions::formActions('.var_export($usage['form'],true).', \''.$treatedObject->getID().'\', \''.$usage['language'].'\', '.(($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC || $visualizationMode == PAGE_VISUALMODE_PRINT || $visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC_INDEXABLE) ? 'true' : 'false').', $polymodFormsError, $polymodFormsItems); ?>';
-					}
-					//add forms callback if needed
-					if (isset($usage['formsCallback']) && is_array($usage['formsCallback']) && isset($usage['headcode'])) {
-						foreach ($usage['formsCallback'] as $formName => $formCallback) {
-							foreach ($formCallback as $formFieldID => $callback) {
-								if (io::isPositiveInteger($formFieldID)) {
-									$modulesCode[$this->_codename] .= '<?php'."\n".
-									'//callback function to check field '.$formFieldID.' for atm-form '.$formName."\n".
-									'function form_'.$formName.'_'.$formFieldID.'($formName, $fieldID, &$item) {'."\n".
-									'		global $cms_user;'."\n".
-									'		global $public_search;'."\n".
-									'		global $cms_language;'."\n".
-									'       $object[$item->getObjectID()] = $item;'."\n".
-									'       '.$usage['headcode']."\n".
-									'       '.$callback."\n".
-									'       return false;'."\n".
-									'}'."\n".
-									'?>';
-								} elseif ($formFieldID == 'form') {
-									$modulesCode[$this->_codename] .= '<?php'."\n".
-									'//callback function for atm-form '.$formName."\n".
-									'function form_'.$formName.'($formName, &$item) {'."\n".
-									'		global $cms_user;'."\n".
-									'		global $public_search;'."\n".
-									'		global $cms_language;'."\n".
-									'       $object[$item->getObjectID()] = $item;'."\n".
-									'       '.$usage['headcode']."\n".
-									'       '.$callback."\n".
-									'       return true;'."\n".
-									'}'."\n".
-									'?>';
+					//CMS_grandFather::log($usage);
+					if (isset($usage['headCallback'])) {
+						$modulesCode[$this->_codename] = '<?php require_once(PATH_REALROOT_FS.\'/automne/classes/polymodFrontEnd.php\'); ?>';
+						foreach ($usage['headCallback'] as $headCallback) {
+							//add header codes
+							if (isset($headCallback['tagsCallback'])) {
+								foreach ($headCallback['tagsCallback'] as $key => $headcode) {
+									if (isset($headcode['code'])) {
+										$modulesCode[$this->_codename] .= '<?php'."\n".$headCallback['headcode']."\n".$headcode['code']."\n".'?>';
+									}
+								}
+							}
+							//add forms header if needed
+							if (isset($headCallback['form']) && $headCallback['form']) {
+								$modulesCode[$this->_codename] .= '<?php CMS_poly_definition_functions::formActions('.var_export($headCallback['form'],true).', \''.$treatedObject->getID().'\', \''.$headCallback['language'].'\', '.(($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC || $visualizationMode == PAGE_VISUALMODE_PRINT || $visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC_INDEXABLE) ? 'true' : 'false').', $polymodFormsError, $polymodFormsItems); ?>';
+							}
+							//add forms callback if needed
+							if (isset($headCallback['formsCallback']) && is_array($headCallback['formsCallback']) && isset($headCallback['headcode'])) {
+								foreach ($headCallback['formsCallback'] as $formName => $formCallback) {
+									foreach ($formCallback as $formFieldID => $callback) {
+										if (io::isPositiveInteger($formFieldID)) {
+											$modulesCode[$this->_codename] .= '<?php'."\n".
+											'//callback function to check field '.$formFieldID.' for atm-form '.$formName."\n".
+											'function form_'.$formName.'_'.$formFieldID.'($formName, $fieldID, &$item) {'."\n".
+											'		global $cms_user;'."\n".
+											'		global $public_search;'."\n".
+											'		global $cms_language;'."\n".
+											'       $object[$item->getObjectID()] = $item;'."\n".
+											'       '.$headCallback['headcode']."\n".
+											'       '.$callback."\n".
+											'       return false;'."\n".
+											'}'."\n".
+											'?>';
+										} elseif ($formFieldID == 'form') {
+											$modulesCode[$this->_codename] .= '<?php'."\n".
+											'//callback function for atm-form '.$formName."\n".
+											'function form_'.$formName.'($formName, &$item) {'."\n".
+											'		global $cms_user;'."\n".
+											'		global $public_search;'."\n".
+											'		global $cms_language;'."\n".
+											'       $object[$item->getObjectID()] = $item;'."\n".
+											'       '.$headCallback['headcode']."\n".
+											'       '.$callback."\n".
+											'       return true;'."\n".
+											'}'."\n".
+											'?>';
+										}
+									}
 								}
 							}
 						}
-					}
-					//add ajax header if needed
-					if (isset($usage['ajax']) && is_array($usage['ajax']) && isset($usage['headcode'])) {
-						$modulesCode[$this->_codename] .= '<?php if(isset($_REQUEST[\'out\']) && $_REQUEST[\'out\'] == \'xml\') {'."\n".
-						'$cms_view = CMS_view::getInstance();'."\n".
-						'//set default display mode for this page'."\n".
-						'$cms_view->setDisplayMode(CMS_view::SHOW_RAW);'."\n";
-						foreach ($usage['ajax'] as $key => $ajaxCode) {
-							$head = (is_array($usage['headcode'])) ? $usage['headcode'][$key] : $usage['headcode'];
-							$foot = (is_array($usage['footcode'])) ? $usage['footcode'][$key] : $usage['footcode'];
-							$code = "\n".$head."\n".$ajaxCode['code']."\n".$foot."\n";
-							
-							//Cache management
-							$hash = md5(serialize(array(
-								'definition' => $code,
-							)));
-							
-							$code = 
-							'$cache_'.$hash.' = new CMS_cache(\''.$hash.'\', \'polymod\', \'auto\', true);'."\n".
-							'if ($cache_'.$hash.'->exist()):'."\n".
-							'	//Get content from cache'."\n".
-							'	$cache_'.$hash.'_content = $cache_'.$hash.'->load();'."\n".
-							'else:'."\n".
-							'	$cache_'.$hash.'->start();'."\n".
-								$code."\n".
-							'	echo $content;'."\n".
-							'	$cache_'.$hash.'_content = $cache_'.$hash.'->endSave();'."\n".
-							'endif;'."\n".
-							'unset($cache_'.$hash.');'."\n".
-							'$content = $cache_'.$hash.'_content;'."\n".
-							'unset($cache_'.$hash.'_content);'."\n".
-							'//set view format'."\n".
-							'$cms_view->setDisplayMode('.$ajaxCode['output'].');'."\n";
-							$modulesCode[$this->_codename] .= $code;
-						}
-						$modulesCode[$this->_codename] .= 
-						'$cms_view->setContent($content);'."\n".
-						'//output empty XML response'."\n".
-						'unset($content);'."\n".
-						'$cms_view->setContentTag(\'data\');'."\n".
-						'$cms_view->show();'."\n".'} ?>';
 					}
 				}
 				return $modulesCode;

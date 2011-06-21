@@ -171,6 +171,19 @@ class CMS_poly_definition_functions
 	}
 	
 	/**
+	  * Return a PHP constant value of a given name and check it for a given type
+	  *
+	  * @param string $name : the constant name to get
+	  * @param string $type : the type of value to check
+	  * @return mixed : the constant value
+	  * @access public
+	  * @static
+	  */
+	static function getServer($name, $type) {
+		return CMS_poly_definition_functions::getVarContent('server', $name, $type);
+	}
+	
+	/**
 	  * Return a variable value of a given name and check it for a given dataType
 	  *
 	  * @param string $varType : the variable type to get between var, request, session
@@ -201,6 +214,9 @@ class CMS_poly_definition_functions
 			break;
 			case 'constant':
 				$varContent = defined($name) ? constant($name) : null;
+			break;
+			case 'server':
+				$varContent = isset($_SERVER[$name]) ? $_SERVER[$name] : null;
 			break;
 			default:
 				CMS_grandFather::raiseError('Unknown var type to get : '.$varType);

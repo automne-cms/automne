@@ -700,9 +700,19 @@ class CMS_view extends CMS_grandFather
 	  * @param boolean $exit : does the script must exit now ? (default : true)
 	  * @param integer $type : the http redirection code to use. Accept 302 and 301 (default : 302)
 	  * @return boolean
-	  * @access private
+	  * @access public
+	  * @static
 	  */
-	function redirect($url, $exit = true, $type = 302) {
+	static function redirect($url, $exit = true, $type = 302) {
+		$url = trim($url);
+		if (!$url || !@parse_url($url)) {
+			CMS_grandFather::raiseError('Try to make a redirection to an empty or invalid url: '.$url);
+			return false;
+		}
+		if (headers_sent()) {
+			CMS_grandFather::raiseError('Try to make a redirection to '.$url.' while content already sent to browser.');
+			return false;
+		}
 		if ($type == 302) {
 			header('HTTP/1.x 302 Found', true, 302);
 		} elseif($type == 301) {

@@ -8,10 +8,14 @@ V4.2.0 (in progress)
 [REFACTOR] : Add filter by dates on activity logs
 [REFACTOR] : Update page codename to allow codenames of 100 characters
 [REFACTOR] : Add thumbnail to field google coordinates in modules admin
+[REFACTOR] : Update tag atm-xml to be used in rows and in page templates
 [FEATURE] : Add oembed object and oembed polymod field (external media field). Update Mediacenter to manage oembed medias
 [FEATURE] : Add parent page selection on new page creation
 [FEATURE] : Add variable type {page:father:XXX} to get infos from current parent page
 [FEATURE] : Add protection for pages and categories to avoid changing important datas inadvertently
+[FEATURE] : Add {server:XXX:YYY} variable type
+[FEATURE] : Add atm-header tag to create content to be executed before page content
+[FEATURE] : Add atm-redirect tag to create a redirection from one page to another one
 
 V4.1.4 (in progress)
 [BUG] : Correct bugs numbers: 2070 (see http://www.automne-cms.org/bug/)
