@@ -1366,6 +1366,7 @@ class CMS_object_categories extends CMS_object_common
 			$usedCategories = false;
 			$usedByItemsIds = false;
 		}
+		$disableCategories = isset($values['disable']) ? explode(';',$values['disable']) : array(); 
 		if (!isset($values['editableonly']) || $values['editableonly'] == 'false' || $values['editableonly'] == '0') {
 			$editableOnly = false;
 		} else {
@@ -1391,7 +1392,17 @@ class CMS_object_categories extends CMS_object_common
 					$categories = array_reverse($categories, true);
 				}
 			}
+			
 			foreach ($categories as $catID => $catLabel) {
+				// Disable categories
+				if(is_array($disableCategories) && $disableCategories){
+					$lineage = CMS_moduleCategories_catalog::getLineageOfCategory($catID);
+					foreach($disableCategories as $disableCategory){
+						if(SensitiveIO::isPositiveInteger($disableCategory) && in_array($disableCategory, $lineage)){
+							continue;
+						}
+					}
+				}
 				$selected = (isset($values['selected']) && $catID == $values['selected']) ? ' selected="selected"':'';
 				$return .= '<option title="'.io::htmlspecialchars($catLabel).'" value="'.$catID.'"'.$selected.'>'.$catLabel.'</option>';
 			}
