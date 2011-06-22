@@ -2054,8 +2054,9 @@ CREATE TABLE `pages` (
   `template_pag` int(11) unsigned NOT NULL default '0',
   `lastFileCreation_pag` datetime NOT NULL default '0000-00-00 00:00:00',
   `url_pag` varchar(255) NOT NULL default '',
+  `protected_pag` int(1) NOT NULL,
+  `https_pag` int(1) NOT NULL,
   PRIMARY KEY  (`id_pag`),
-  KEY `id_pag` (`id_pag`),
   KEY `template_pag` (`template_pag`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
@@ -2094,7 +2095,7 @@ CREATE TABLE `pagesBaseData_archived` (
   `refreshUrl_pbd` int(1) NOT NULL default '0',
   `url_pbd` varchar(255) NOT NULL default '',
   `metas_pbd` text NOT NULL,
-  `codename_pbd` varchar(20) NOT NULL,
+  `codename_pbd` varchar(100) NOT NULL,
   PRIMARY KEY  (`id_pbd`),
   KEY `page_pbd` (`page_pbd`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
@@ -2133,7 +2134,7 @@ CREATE TABLE `pagesBaseData_deleted` (
   `refreshUrl_pbd` int(1) NOT NULL default '0',
   `url_pbd` varchar(255) NOT NULL default '',
   `metas_pbd` text NOT NULL,
-  `codename_pbd` varchar(20) NOT NULL,
+  `codename_pbd` varchar(100) NOT NULL,
   PRIMARY KEY  (`id_pbd`),
   KEY `page_pbd` (`page_pbd`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
@@ -2172,7 +2173,7 @@ CREATE TABLE `pagesBaseData_edited` (
   `refreshUrl_pbd` int(1) NOT NULL default '0',
   `url_pbd` varchar(255) NOT NULL default '',
   `metas_pbd` text NOT NULL,
-  `codename_pbd` varchar(20) NOT NULL,
+  `codename_pbd` varchar(100) NOT NULL,
   PRIMARY KEY  (`id_pbd`),
   KEY `page_pbd` (`page_pbd`),
   FULLTEXT KEY `title_pbd` (`title_pbd`,`linkTitle_pbd`,`keywords_pbd`,`description_pbd`,`codename_pbd`)
@@ -2213,7 +2214,7 @@ CREATE TABLE `pagesBaseData_public` (
   `refreshUrl_pbd` int(1) NOT NULL default '0',
   `url_pbd` varchar(255) NOT NULL default '',
   `metas_pbd` text NOT NULL,
-  `codename_pbd` varchar(20) NOT NULL,
+  `codename_pbd` varchar(100) NOT NULL,
   PRIMARY KEY  (`id_pbd`),
   KEY `page_pbd` (`page_pbd`),
   FULLTEXT KEY `title_pbd` (`title_pbd`,`linkTitle_pbd`,`keywords_pbd`,`description_pbd`,`codename_pbd`)

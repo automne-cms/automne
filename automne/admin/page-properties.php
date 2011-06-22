@@ -123,6 +123,10 @@ define("MESSAGE_PAGE_INFORMATIONS", 702);
 define("MESSAGE_PAGE_ALERTS_DISABLED", 1593);
 define("MESSAGE_PAGE_FIELD_TEMPLATE_ALERT", 1600);
 define("MESSAGE_PAGE_ALERTS_PROTECTED", 1733);
+define("MESSAGE_PAGE_FIELD_HTTPS", 1734);
+define("MESSAGE_PAGE_FIELD_HTTPS_DESC", 1735);
+define("MESSAGE_PAGE_FIELD_HTTPS_INFO", 1736);
+
 $cms_language->endPrefetch();
 
 //load interface instance
@@ -173,6 +177,25 @@ if (!$cms_page->isProtected() || ($cms_page->isProtected() && $cms_user->hasAdmi
 		xtype:	'fieldset',
 		html:	'{$cms_language->getJSMessage(MESSAGE_PAGE_ALERTS_PROTECTED)}'
 	},";
+}
+
+//https field
+if (!ALLOW_SPECIFIC_PAGE_HTTPS) {
+	$httpsField = '';
+} else {
+	if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
+		$disabledHttps = 'disabled:true,';
+	}
+	$httpsValue = $cms_page->isHTTPS() ? 'true' : 'false';
+	$httpsField = ",{
+		{$disabledHttps}
+		fieldLabel:		'<span ext:qtip=\"{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_HTTPS_INFO)}\" class=\"atm-help\">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_HTTPS)}</span>',
+		name:			'https',
+		inputValue:		'1',
+		xtype:			'checkbox',
+		checked:		{$httpsValue},
+		boxLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_HTTPS_DESC)}'
+	}";
 }
 
 /***************************************\
@@ -490,6 +513,7 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES) || $cms_use
 				maxLength:		100,
 				vtype:			'codename',
 				allowBlank:		true,
+				width:			550,
 				vtypeText:		'{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_FIELD_CODENAME_VTYPE)}',
 				value:			'{$codename}'
 			}";
@@ -640,7 +664,7 @@ $jscontent .= <<<END
 						xtype:			'checkbox',
 						checked:		{$protectedValue},
 						boxLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_PROTECTED_DESC)}'
-					},{
+					}{$httpsField},{
 						title:			'{$cms_language->getJSMessage(MESSAGE_PAGE_INFORMATIONS)}',
 						xtype:			'fieldset',
 						autoHeight:		true,

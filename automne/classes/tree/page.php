@@ -117,6 +117,13 @@ class CMS_page extends CMS_resource
 	protected $_protected = false;
 	
 	/**
+	  * The page https status
+	  * @var boolean
+	  * @access private
+	  */
+	protected $_https = false;
+	
+	/**
 	  * Constructor.
 	  * initializes the page if the id is given.
 	  *
@@ -157,6 +164,7 @@ class CMS_page extends CMS_resource
 				$this->_lastFileCreation->setFromDBValue($data["lastFileCreation_pag"]);
 				$this->_pageURL = $data["url_pag"];
 				$this->_protected = $data["protected_pag"] ? true : false;
+				$this->_https = $data["https_pag"] ? true : false;
 				//initialize super-class
 				parent::__construct($data);
 			} else {
@@ -401,6 +409,9 @@ class CMS_page extends CMS_resource
 				$wsPagesPath = $ws->getPagesPath($relativeTo);
 			} else {
 				return '';
+			}
+			if ($this->isHTTPS()) {
+				$wsURL = str_ireplace('http://', 'https://', $wsURL);
 			}
 			$filename = $this->_getFilename();
 			if ($printPage) {
@@ -1067,6 +1078,28 @@ class CMS_page extends CMS_resource
 	  */
 	function setProtected($protected) {
 		$this->_protected = $protected ? true : false;
+		return true;
+	}
+	
+	/**
+	  * Get the page https status
+	  *
+	  * @return boolean
+	  * @access public
+	  */
+	function isHTTPS() {
+		return $this->_https ? true : false;
+	}
+	
+	/**
+	  * Set the page https status
+	  *
+	  * @param boolean $https The new page https status
+	  * @return boolean
+	  * @access public
+	  */
+	function setHTTPS($https) {
+		$this->_https = $https ? true : false;
 		return true;
 	}
 	
@@ -1978,7 +2011,8 @@ class CMS_page extends CMS_resource
 			template_pag='".$this->_templateID."',
 			lastFileCreation_pag='".$this->_lastFileCreation->getDBValue()."',
 			url_pag='".SensitiveIO::sanitizeSQLString($this->_pageURL)."',
-			protected_pag='".($this->_protected ? 1 : 0)."'
+			protected_pag='".($this->_protected ? 1 : 0)."',
+			https_pag='".($this->_https ? 1 : 0)."'
 		";
 
 		if ($this->_pageID) {

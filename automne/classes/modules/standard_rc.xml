@@ -16,4 +16,5 @@
 	<param name="OPEN_ZOOMIMAGE_IN_POPUP" type="boolean">0</param>
 	<param name="NO_PAGES_EXTENDED_META_TAGS" type="boolean">0</param>
 	<param name="ALLOW_IMAGES_IN_WYSIWYG" type="boolean">0</param>
+	<param name="ALLOW_SPECIFIC_PAGE_HTTPS" type="boolean">1</param>
 </cms-module-parameters>
