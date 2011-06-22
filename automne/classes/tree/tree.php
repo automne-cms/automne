@@ -89,6 +89,10 @@ class CMS_tree extends CMS_grandFather
 	  */
 	static function getPageValue($id, $type, $public = true, $currentPageId = null) {
 		static $pagesInfos;
+		//if no current page given, try to get it from constant
+		if (!io::isPositiveInteger($currentPageId) && io::isPositiveInteger(CURRENT_PAGE)) {
+			$currentPageId = CURRENT_PAGE;
+		}
 		if (!SensitiveIO::isPositiveInteger($id)) {
 			if ($id == 'self' && SensitiveIO::isPositiveInteger($currentPageId)) {
 				$id = $currentPageId;

@@ -1963,49 +1963,64 @@ class CMS_module_standard extends CMS_module
 		switch ($treatmentMode) {
 			case MODULE_TREATMENT_PAGECONTENT_HEADER_CODE :
 				$modulesCode[MOD_STANDARD_CODENAME] = '';
+				
+				$modulesCode[MOD_STANDARD_CODENAME] .= 
+				'<?php'."\n".
+				'//Generated on '.date('r').' by '.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION."\n";
+				//HTTPS constant
+				if ($treatedObject->isHTTPS()) {
+					$modulesCode[MOD_STANDARD_CODENAME] .= 'defined(\'PAGE_SSL_MODE\') || define(\'PAGE_SSL_MODE\', true);'."\n";
+				}
+				//Current page constant
+				$modulesCode[MOD_STANDARD_CODENAME] .= 'defined(\'CURRENT_PAGE\') || define(\'CURRENT_PAGE\', '.$treatedObject->getID().');'."\n";
+				
 				if ($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC 
 					|| $visualizationMode == PAGE_VISUALMODE_PRINT) {
 					//path to cms_rc_frontend
 					$path = PATH_PAGES_HTML_WR == PATH_MAIN_WR."/html" ? '/../../cms_rc_frontend.php' : '/../cms_rc_frontend.php';
+					//cms_rc_frontend include
+					$modulesCode[MOD_STANDARD_CODENAME] .= 
+					'if (!defined(\'PATH_REALROOT_FS\')){'."\n".
+					'	require_once(dirname(__FILE__).\''.$path.'\');'."\n".
+					'} else {'."\n".
+					'	require_once(PATH_REALROOT_FS."/cms_rc_frontend.php");'."\n".
+					'}'."\n";
 					//redirection code if any
 					$redirectlink = $treatedObject->getRedirectLink(true);
 					if ($redirectlink->hasValidHREF()) {
 						$href = $redirectlink->getHTML(false, MOD_STANDARD_CODENAME, RESOURCE_DATA_LOCATION_PUBLIC, false, true);
 						$modulesCode[MOD_STANDARD_CODENAME] .= 
-								'<?php'."\n".
-								'if (!defined(\'PATH_REALROOT_FS\')){'."\n".
-								'	require_once(dirname(__FILE__).\''.$path.'\');'."\n".
-								'} else {'."\n".
-								'	require_once(PATH_REALROOT_FS."/cms_rc_frontend.php");'."\n".
-								'}'."\n".
-								'CMS_view::redirect(\''.$href.'\', true, 302);'."\n".
-								'?>';
+							'CMS_view::redirect(\''.$href.'\', true, 302);'."\n";
 					}
-					//include frontend files
+					//old url pattern redireciton
 					$modulesCode[MOD_STANDARD_CODENAME] .= 
-					'<?php'."\n".
-					'//Generated on '.date('r').' by '.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION."\n".
-					'if (!defined(\'PATH_REALROOT_FS\')){'."\n".
-					'	require_once(dirname(__FILE__).\''.$path.'\');'."\n".
-					'} else {'."\n".
-					'	require_once(PATH_REALROOT_FS."/cms_rc_frontend.php");'."\n".
-					'}'."\n".
 					'if (!isset($cms_page_included) && !$_POST && !$_GET) {'."\n".
 					'	CMS_view::redirect(\''.$treatedObject->getURL(($visualizationMode == PAGE_VISUALMODE_PRINT) ? true : false).'\', true, 301);'."\n".
-					'}'."\n".
-					'?>';
+					'}'."\n";
+					//non-https redirection for https page
+					if ($treatedObject->isHTTPS()) {
+						$modulesCode[MOD_STANDARD_CODENAME] .= 
+							'//Page must be HTTPS'."\n".
+							'if (!(strpos($_SERVER["REQUEST_URI"], PATH_ADMIN_WR) !== false  || (isset($_REQUEST[\'atm-context\']) && $_REQUEST[\'atm-context\'] == \'adminframe\'))) {'."\n".
+							'	$atmHTTPS = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] && strtolower($_SERVER["HTTPS"]) != \'off\') ? true : false;'."\n".
+							'	if (!$atmHTTPS) {'."\n".
+							'		CMS_view::redirect(\''.$treatedObject->getURL(($visualizationMode == PAGE_VISUALMODE_PRINT) ? true : false).'\', true, 301);'."\n".
+							'	}'."\n".
+							'}'."\n";
+					}
+					//rights 403 redirection
 					if (APPLICATION_ENFORCES_ACCESS_CONTROL) {
 						//include user access checking on top of output file
 						$modulesCode[MOD_STANDARD_CODENAME] .= 
-							'<?php'."\n".
 							'if (!is_object($cms_user) || !$cms_user->hasPageClearance('.$treatedObject->getID().', CLEARANCE_PAGE_VIEW)) {'."\n".
 							'	CMS_view::redirect(PATH_FRONTEND_SPECIAL_LOGIN_WR.\'?referer=\'.base64_encode($_SERVER[\'REQUEST_URI\']));'."\n".
-							'}'."\n".
-							'?>';
+							'}'."\n";
 					}
 				} else {
-					$modulesCode[MOD_STANDARD_CODENAME] .= '<?php if (!in_array(\''.PATH_REALROOT_FS.'/cms_rc_frontend.php\', get_included_files())){ require_once(\''.PATH_REALROOT_FS.'/cms_rc_frontend.php\');} else { global $cms_user,$cms_language;} ?>';
+					//page previz & edition
+					$modulesCode[MOD_STANDARD_CODENAME] .= 'if (!in_array(\''.PATH_REALROOT_FS.'/cms_rc_frontend.php\', get_included_files())){ require_once(\''.PATH_REALROOT_FS.'/cms_rc_frontend.php\');} else { global $cms_user,$cms_language;}';
 				}
+				$modulesCode[MOD_STANDARD_CODENAME] .= ' ?>';
 				//Get header code (atm-header tags)
 				if ($usage = CMS_module::moduleUsage($treatedObject->getID(), $this->_codename)) {
 					//add header codes

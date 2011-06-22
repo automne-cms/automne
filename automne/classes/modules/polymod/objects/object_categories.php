@@ -945,7 +945,7 @@ class CMS_object_categories extends CMS_object_common
 							$category = CMS_moduleCategories_catalog::getByID($this->_subfieldValues[$name]->getValue());
 							if (!$category->hasError()) {
 								$iconPathFS = $category->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, true);
-								$iconPathWR = CMS_websitesCatalog::getMainURL().$category->getIconPath(true, PATH_RELATIVETO_WEBROOT, true);
+								$iconPathWR = CMS_websitesCatalog::getCurrentDomain().$category->getIconPath(true, PATH_RELATIVETO_WEBROOT, true);
 								if ($iconPathFS && file_exists($iconPathFS) && is_file($iconPathFS) && $iconPathWR) {
 									return $iconPathWR;
 								}
@@ -1003,7 +1003,7 @@ class CMS_object_categories extends CMS_object_common
 							$category = CMS_moduleCategories_catalog::getByID($this->_subfieldValues[0]->getValue());
 							if (!$category->hasError()) {
 								$iconPathFS = $category->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, true);
-								$iconPathWR = CMS_websitesCatalog::getMainURL().$category->getIconPath(true, PATH_RELATIVETO_WEBROOT, true);
+								$iconPathWR = CMS_websitesCatalog::getCurrentDomain().$category->getIconPath(true, PATH_RELATIVETO_WEBROOT, true);
 								if ($iconPathFS && file_exists($iconPathFS) && is_file($iconPathFS) && $iconPathWR) {
 									return $iconPathWR;
 								}
@@ -1313,7 +1313,7 @@ class CMS_object_categories extends CMS_object_common
 			}
 			$iconPathFS = $category->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, true);
 			if ($iconPathFS && file_exists($iconPathFS)) {
-				$iconPathWR = CMS_websitesCatalog::getMainURL().$category->getIconPath(true, PATH_RELATIVETO_WEBROOT, true);
+				$iconPathWR = CMS_websitesCatalog::getCurrentDomain().$category->getIconPath(true, PATH_RELATIVETO_WEBROOT, true);
 				$icon = '<img src="'.$iconPathWR.'" alt="" title="'.SensitiveIO::sanitizeHTMLString($category->getLabel($cms_language)).'" />';
 			} else {
 				$icon = '';

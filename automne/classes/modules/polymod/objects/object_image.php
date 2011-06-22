@@ -522,7 +522,7 @@ class CMS_object_image extends CMS_object_common
 			$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
 			$img = '<img src="'.PATH_MODULES_FILES_WR.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[0]->getValue().'" border="0" alt="'.$this->_subfieldValues[1]->getValue().'" title="'.$this->_subfieldValues[1]->getValue().'" />';
 			if ($this->_subfieldValues[2]->getValue()) {
-				$href = CMS_websitesCatalog::getMainURL(). PATH_REALROOT_WR . "/" . self::OBJECT_IMAGE_POPUP_FILE . '?location='.RESOURCE_DATA_LOCATION_EDITED.'&amp;file=' . $this->_subfieldValues[2]->getValue() . '&amp;label=' . urlencode($this->_subfieldValues[1]->getValue()).'&amp;module='.$moduleCodename;
+				$href = CMS_websitesCatalog::getCurrentDomain(). PATH_REALROOT_WR . "/" . self::OBJECT_IMAGE_POPUP_FILE . '?location='.RESOURCE_DATA_LOCATION_EDITED.'&amp;file=' . $this->_subfieldValues[2]->getValue() . '&amp;label=' . urlencode($this->_subfieldValues[1]->getValue()).'&amp;module='.$moduleCodename;
 				$popup = (OPEN_ZOOMIMAGE_IN_POPUP) ? ' onclick="javascript:CMS_openPopUpImage(\''.addslashes($href).'\');return false;"':'';
 				$img = '<a target="_blank" href="'. $href . '"'.$popup.' title="'.$this->_subfieldValues[1]->getValue().'">' . $img . '</a>';
 			}
@@ -1007,11 +1007,11 @@ class CMS_object_image extends CMS_object_common
 			$params = $this->getParamsValues();
 			$img = '<img width="'.$params['maxWidthPreviz'].'" src="'.PATH_MODULES_FILES_WR.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[0]->getValue().'" border="0" alt="'.$this->_subfieldValues[1]->getValue().'" title="'.$this->_subfieldValues[1]->getValue().'" align="center" />';
 			if ($this->_subfieldValues[2]->getValue()) {
-				$href = CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR . "/" . self::OBJECT_IMAGE_POPUP_FILE . '?location='.RESOURCE_DATA_LOCATION_EDITED.'&amp;file=' . $this->_subfieldValues[2]->getValue() . '&amp;label=' . urlencode($this->_subfieldValues[1]->getValue()).'&amp;module='.$moduleCodename;
+				$href = CMS_websitesCatalog::getCurrentDomain() . PATH_REALROOT_WR . "/" . self::OBJECT_IMAGE_POPUP_FILE . '?location='.RESOURCE_DATA_LOCATION_EDITED.'&amp;file=' . $this->_subfieldValues[2]->getValue() . '&amp;label=' . urlencode($this->_subfieldValues[1]->getValue()).'&amp;module='.$moduleCodename;
 				$popup = (OPEN_ZOOMIMAGE_IN_POPUP) ? ' onclick="javascript:CMS_openPopUpImage(\''.addslashes($href).'\');return false;"':'';
 				$img = '<a target="_blank" href="'. $href . '"'.$popup.' title="'.$this->_subfieldValues[1]->getValue().'">' . $img . '</a>';
 			} else {
-				$href = CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR . "/" . self::OBJECT_IMAGE_POPUP_FILE . '?location='.RESOURCE_DATA_LOCATION_EDITED.'&amp;file=' . $this->_subfieldValues[0]->getValue() . '&amp;label=' . urlencode($this->_subfieldValues[1]->getValue()).'&amp;module='.$moduleCodename;
+				$href = CMS_websitesCatalog::getCurrentDomain() . PATH_REALROOT_WR . "/" . self::OBJECT_IMAGE_POPUP_FILE . '?location='.RESOURCE_DATA_LOCATION_EDITED.'&amp;file=' . $this->_subfieldValues[0]->getValue() . '&amp;label=' . urlencode($this->_subfieldValues[1]->getValue()).'&amp;module='.$moduleCodename;
 				$popup = (OPEN_ZOOMIMAGE_IN_POPUP) ? ' onclick="javascript:CMS_openPopUpImage(\''.addslashes($href).'\');return false;"':'';
 				$img = '<a target="_blank" href="'. $href . '"'.$popup.' title="'.$this->_subfieldValues[1]->getValue().'">' . $img . '</a>';
 			}
@@ -1077,9 +1077,9 @@ class CMS_object_image extends CMS_object_common
 						$resizedImagepathFS = PATH_MODULES_FILES_FS . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
 						//if file already exists, no need to resize file send it
 						if(file_exists($resizedImagepathFS)) {
-							return CMS_websitesCatalog::getMainURL() . PATH_MODULES_FILES_WR . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
+							return CMS_websitesCatalog::getCurrentDomain() . PATH_MODULES_FILES_WR . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
 						} else {
-							return CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[0]->getValue() .'&amp;module='. $moduleCodename .'&amp;x='. $x .'&amp;y='. $y.'&amp;crop='.$crop.($location != RESOURCE_DATA_LOCATION_PUBLIC ? '&amp;location='.$location : '');
+							return CMS_websitesCatalog::getCurrentDomain() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[0]->getValue() .'&amp;module='. $moduleCodename .'&amp;x='. $x .'&amp;y='. $y.'&amp;crop='.$crop.($location != RESOURCE_DATA_LOCATION_PUBLIC ? '&amp;location='.$location : '');
 						}
 					}
 				}
@@ -1105,9 +1105,9 @@ class CMS_object_image extends CMS_object_common
 						$resizedImagepathFS = PATH_MODULES_FILES_FS . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
 						//if file already exists, no need to resize file send it
 						if(file_exists($resizedImagepathFS)) {
-							return CMS_websitesCatalog::getMainURL() . PATH_MODULES_FILES_WR . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
+							return CMS_websitesCatalog::getCurrentDomain() . PATH_MODULES_FILES_WR . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
 						} else {
-							return CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[2]->getValue() .'&amp;module='. $moduleCodename .'&amp;x='. $x .'&amp;y='. $y.'&amp;crop='.$crop.($location != RESOURCE_DATA_LOCATION_PUBLIC ? '&amp;location='.$location : '');
+							return CMS_websitesCatalog::getCurrentDomain() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[2]->getValue() .'&amp;module='. $moduleCodename .'&amp;x='. $x .'&amp;y='. $y.'&amp;crop='.$crop.($location != RESOURCE_DATA_LOCATION_PUBLIC ? '&amp;location='.$location : '');
 						}
 					}
 				}
@@ -1130,7 +1130,7 @@ class CMS_object_image extends CMS_object_common
 				}
 				//add link to zoom if any
 				if ($img && $this->_subfieldValues[2]->getValue()) {
-					$href = CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR . "/" . self::OBJECT_IMAGE_POPUP_FILE . '?'.(($location != RESOURCE_DATA_LOCATION_PUBLIC) ? 'location='.RESOURCE_DATA_LOCATION_EDITED.'&amp;':'').'file=' . $this->_subfieldValues[2]->getValue() . '&amp;label=' . urlencode($this->_subfieldValues[1]->getValue()).'&amp;module='.$moduleCodename;
+					$href = CMS_websitesCatalog::getCurrentDomain() . PATH_REALROOT_WR . "/" . self::OBJECT_IMAGE_POPUP_FILE . '?'.(($location != RESOURCE_DATA_LOCATION_PUBLIC) ? 'location='.RESOURCE_DATA_LOCATION_EDITED.'&amp;':'').'file=' . $this->_subfieldValues[2]->getValue() . '&amp;label=' . urlencode($this->_subfieldValues[1]->getValue()).'&amp;module='.$moduleCodename;
 					$popup = (OPEN_ZOOMIMAGE_IN_POPUP) ? ' onclick="javascript:CMS_openPopUpImage(\''.addslashes($href).'\');return false;"':'';
 					$img = '<a target="_blank" rel="atm-enlarge" href="'. $href . '"'.$popup.' title="'.$this->_subfieldValues[1]->getValue().'">' . $img . '</a>';
 				}
@@ -1150,7 +1150,7 @@ class CMS_object_image extends CMS_object_common
 				$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
 				//set location
 				$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
-				return CMS_websitesCatalog::getMainURL() . PATH_MODULES_FILES_WR.'/'.$moduleCodename.'/'.$location;
+				return CMS_websitesCatalog::getCurrentDomain() . PATH_MODULES_FILES_WR.'/'.$moduleCodename.'/'.$location;
 			break;
 			case 'imageMaxWidth':
 				//get field parameters

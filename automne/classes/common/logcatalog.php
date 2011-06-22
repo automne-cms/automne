@@ -85,7 +85,7 @@ class CMS_log_catalog extends CMS_grandFather
 				$sql .= " limit ".$start.", ".$limit;
 			}
 		}
-		pr($sql);
+		//pr($sql);
 		$q = new CMS_query($sql);
 		if ($returnCount) {
 			return $q->getNumRows();

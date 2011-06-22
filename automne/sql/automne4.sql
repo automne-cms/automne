@@ -1027,6 +1027,7 @@ CREATE TABLE `modulesCategories` (
   `lineage_mca` varchar(255) NOT NULL default '',
   `order_mca` int(10) unsigned NOT NULL default '1',
   `icon_mca` varchar(255) NOT NULL default '',
+  `protected_mca` int(1) NOT NULL,
   PRIMARY KEY  (`id_mca`),
   KEY `module` (`module_mca`),
   KEY `lineage` (`lineage_mca`),

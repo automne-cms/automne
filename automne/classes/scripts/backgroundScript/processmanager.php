@@ -194,7 +194,7 @@ class processManager
 		if (!$this->_scriptName) {
 			return false;
 		}
-		return $this->_tmpPath.'/'.$this->_scriptName;
+		return realpath($this->_tmpPath). DIRECTORY_SEPARATOR .$this->_scriptName;
 	}
 	
 	/**

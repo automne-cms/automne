@@ -1224,6 +1224,12 @@ foreach ($userPanels as $panel => $panelStatus) {
 						//page host is not the same of current host so change it to avoid JS restriction
 						$panelURL = str_replace($pageHost, $httpHost, $panelURL);
 					}
+					//check for website protocol
+					$pageScheme = @parse_url($panelURL, PHP_URL_SCHEME);
+					$currentScheme = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] && strtolower($_SERVER["HTTPS"]) != 'off') ? 'https' : 'http';
+					if ($pageScheme && $currentScheme != io::strtolower($pageScheme)) {
+						$panelURL = str_replace($pageScheme.'://', $currentScheme.'://', $panelURL);
+					}
 				}
 			break;
 			case 'nopages':

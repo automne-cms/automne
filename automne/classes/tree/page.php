@@ -13,8 +13,6 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &    |
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
-//
-// $Id: page.php,v 1.13 2010/03/08 16:43:34 sebastien Exp $
 
 /**
   * Class CMS_page
@@ -397,6 +395,9 @@ class CMS_page extends CMS_resource
 			if (is_object($ws)) {
 				if ($relativeTo == PATH_RELATIVETO_WEBROOT) {
 					$wsURL = $ws->getURL();
+					if ($this->isHTTPS()) {
+						$wsURL = str_ireplace('http://', 'https://', $wsURL);
+					}
 					//if this page is a website root, try to shorten page url using only website domain - do not shorten in Automne admin (_dc parameter)
 					if (!$printPage && !$returnFilenameOnly && !isset($_REQUEST['_dc']) && CMS_websitesCatalog::isWebsiteRoot($this->getID())) {
 						//check if page website is the main for the domain
@@ -409,9 +410,6 @@ class CMS_page extends CMS_resource
 				$wsPagesPath = $ws->getPagesPath($relativeTo);
 			} else {
 				return '';
-			}
-			if ($this->isHTTPS()) {
-				$wsURL = str_ireplace('http://', 'https://', $wsURL);
 			}
 			$filename = $this->_getFilename();
 			if ($printPage) {
@@ -776,11 +774,11 @@ class CMS_page extends CMS_resource
 			} else {
 				$type = 'application/octet-stream';
 			}
-			$metaDatas .= '<link rel="icon" type="'.$type.'" href="'.$website->getURL().PATH_REALROOT_WR.$website->getMeta('favicon').'" />'."\n";
+			$metaDatas .= '<link rel="icon" type="'.$type.'" href="'.CMS_websitesCatalog::getCurrentDomain($this).PATH_REALROOT_WR.$website->getMeta('favicon').'" />'."\n";
 		} elseif (file_exists(PATH_REALROOT_FS.'/favicon.ico')) {
-			$metaDatas .= '<link rel="icon" type="image/x-icon" href="'.$website->getURL().PATH_REALROOT_WR.'/favicon.ico" />'."\n";
+			$metaDatas .= '<link rel="icon" type="image/x-icon" href="'.CMS_websitesCatalog::getCurrentDomain($this).PATH_REALROOT_WR.'/favicon.ico" />'."\n";
 		} elseif (file_exists(PATH_REALROOT_FS.'/img/favicon.png')) {
-			$metaDatas .= '<link rel="icon" type="image/png" href="'.$website->getURL().PATH_REALROOT_WR.'/img/favicon.png" />'."\n";
+			$metaDatas .= '<link rel="icon" type="image/png" href="'.CMS_websitesCatalog::getCurrentDomain($this).PATH_REALROOT_WR.'/img/favicon.png" />'."\n";
 		}
 		if ($this->getDescription($public)) {
 			$metaDatas .= '	<meta name="description" content="'.io::htmlspecialchars($this->getDescription($public), ENT_COMPAT).'" />'."\n";
@@ -1088,7 +1086,7 @@ class CMS_page extends CMS_resource
 	  * @access public
 	  */
 	function isHTTPS() {
-		return $this->_https ? true : false;
+		return ALLOW_SPECIFIC_PAGE_HTTPS && $this->_https ? true : false;
 	}
 	
 	/**

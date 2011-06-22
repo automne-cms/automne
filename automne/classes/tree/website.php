@@ -397,6 +397,10 @@ class CMS_website extends CMS_grandFather
 	  */
 	function getURL($includeHTTP = true)
 	{
+		//strip final slash
+		if (io::substr($this->_url, io::strlen($this->_url) - 1) == "/") {
+			$this->_url = io::substr($this->_url, 0, -1);
+		}
 		if ($includeHTTP) {
 			return (io::substr($this->_url,0,4) != 'http') ? "http://".$this->_url : $this->_url;
 		} else {
@@ -417,6 +421,7 @@ class CMS_website extends CMS_grandFather
 			$url = io::substr($url, 7);
 		}
 		if ($url) {
+			//strip final slash
 			if (io::substr($url, io::strlen($url) - 1) == "/") {
 				$url = io::substr($url, 0, -1);
 			}

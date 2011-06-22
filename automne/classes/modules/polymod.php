@@ -298,8 +298,8 @@ class CMS_polymod extends CMS_modulePolymodValidation
 				//if this page use a row of this module then add the header code to the page
 				if ($usage = CMS_module::moduleUsage($treatedObject->getID(), $this->_codename)) {
 					//CMS_grandFather::log($usage);
+					$modulesCode[$this->_codename] = '<?php require_once(PATH_REALROOT_FS.\'/automne/classes/polymodFrontEnd.php\'); ?>';
 					if (isset($usage['headCallback'])) {
-						$modulesCode[$this->_codename] = '<?php require_once(PATH_REALROOT_FS.\'/automne/classes/polymodFrontEnd.php\'); ?>';
 						foreach ($usage['headCallback'] as $headCallback) {
 							//add header codes
 							if (isset($headCallback['tagsCallback'])) {

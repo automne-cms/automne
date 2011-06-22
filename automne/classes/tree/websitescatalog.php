@@ -201,11 +201,41 @@ class CMS_websitesCatalog extends CMS_grandFather {
 		if (!isset($mainURL)) {
 			$website = CMS_websitesCatalog::getMainWebsite();
 			$mainURL = $website->getURL();
-			if (io::substr($mainURL, io::strlen($mainURL) - 1) == "/") {
-				$mainURL = io::substr($mainURL, 0, -1);
-			}
 		}
 		return $mainURL;
+	}
+	
+	/**
+	  * Returns The URL of the current website, according to parameter or constant CURRENT_PAGE or the main domain URL if constant does not exists
+	  * Static function.
+	  *
+	  * @param mixed $currentPage : The current page id or CMS_page
+	  * @return string The current website URL
+	  * @access public
+	  */
+	static function getCurrentDomain($currentPage = '') {
+		static $domain;
+		if (!isset($domain)) {
+			$domain = '';
+			if (io::isPositiveInteger($currentPage)) {
+				$page = CMS_tree::getPageByID($currentPage);
+			} elseif (is_object($currentPage)) {
+				$page = $currentPage;
+			} elseif (io::isPositiveInteger(CURRENT_PAGE)) {
+				$page = CMS_tree::getPageByID(CURRENT_PAGE);
+			}
+			if (isset($page) && is_object($page) && !$page->hasError()) {
+				$domain = $page->getWebsite()->getURL();
+				//check for HTTPS
+				if ($page->isHTTPS()) {
+					$domain = str_ireplace('http://', 'https://', $domain);
+				}
+			}
+			if (!$domain) {
+				$domain = CMS_websitesCatalog::getMainURL();
+			}
+		}
+		return $domain;
 	}
 	
 	/**

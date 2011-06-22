@@ -569,7 +569,7 @@ class CMS_oembed extends CMS_grandFather
 		if (defined('APPLICATION_EMBED_DOMAIN') && APPLICATION_EMBED_DOMAIN) {
 			$domain = strtolower(substr(APPLICATION_EMBED_DOMAIN,0,4)) == 'http' ? APPLICATION_EMBED_DOMAIN : 'http://'.APPLICATION_EMBED_DOMAIN;
 		} else {
-			$domain = '';
+			$domain = CMS_websitesCatalog::getCurrentDomain();
 		}
 		//iframe width/height
 		$width = $height = '';
@@ -599,7 +599,7 @@ class CMS_oembed extends CMS_grandFather
 				($width ? ' width="'.$width.'"' : '').
 				($height ? ' height="'.$height.'"' : '').
 				'src="'.$domain.PATH_MAIN_WR.'/oembed/frame.php?params='.$frameParam.'">'.
-				'	<a href="'.PATH_MAIN_WR.'/oembed/frame.php?params='.$frameParam.'" target="_blank">Click to view media</a>'.
+				'	<a href="'.$domain.PATH_MAIN_WR.'/oembed/frame.php?params='.$frameParam.'" target="_blank">Click to view media</a>'.
 				'</iframe>';
 	}
 }

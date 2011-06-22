@@ -524,7 +524,7 @@ switch ($action) {
 			$redirection = sensitiveIO::request('redirection');
 			$updateURL = sensitiveIO::request('updateURL') ? true : false;
 			$codename = sensitiveIO::request('codename');
-			$https = sensitiveIO::request('https', '', $cms_page->isHTTPS()) ? true : false;
+			$https = sensitiveIO::request('https') ? true : false;
 			//base datas has changed so write the new ones
 			if ($cms_page->getTitle() != $title
 				 || $cms_page->getLinkTitle() != $linktitle
@@ -601,7 +601,9 @@ switch ($action) {
 			//protected status update
 			$cms_page->setProtected($protected);
 			//https status update
-			$cms_page->setHTTPS($https);
+			if (ALLOW_SPECIFIC_PAGE_HTTPS && $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
+				$cms_page->setHTTPS($https);
+			}
 			if (!$cms_page->hasError() && $cms_page->writeToPersistence()) {
 				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 			}

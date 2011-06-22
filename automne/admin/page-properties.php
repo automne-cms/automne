@@ -183,6 +183,7 @@ if (!$cms_page->isProtected() || ($cms_page->isProtected() && $cms_user->hasAdmi
 if (!ALLOW_SPECIFIC_PAGE_HTTPS) {
 	$httpsField = '';
 } else {
+	$disabledHttps = '';
 	if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 		$disabledHttps = 'disabled:true,';
 	}
