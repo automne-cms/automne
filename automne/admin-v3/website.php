@@ -59,6 +59,8 @@ define("MESSAGE_PAGE_FIELD_CODENAME", 1675);
 define("MESSAGE_PAGE_TREEH1", 1049);
 define("MESSAGE_PAGE_FIELD_403_PAGE", 1719);
 define("MESSAGE_PAGE_FIELD_404_PAGE", 1718);
+define("MESSAGE_PAGE_FIELD_REDIRECT_ALT_DOMAINS", 1741);
+define("MESSAGE_PAGE_FIELD_REDIRECT_ALT_DOMAINS_DESC", 1742);
 
 //RIGHTS CHECK
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES)) {
@@ -115,6 +117,7 @@ case "validate":
 		$website->setLabel($_POST["label"]);
 		$website->set404($_POST["page404"]);
 		$website->set403($_POST["page403"]);
+		$website->setRedirectAltDomain($_POST["altredir"]);
 		$website->setMeta('description', $_POST['description']);
 		$website->setMeta('keywords', $_POST['keywords']);
 		$website->setMeta('category', $_POST['category']);
@@ -204,12 +207,18 @@ $href403 .= '&amp;heading='.$cms_language->getMessage(MESSAGE_PAGE_TREEH1);
 $href403 .= '&amp;encodedOnClick='.base64_encode("window.opener.document.getElementById('page403').value = '%s';self.close();");
 $href403 .= '&encodedPageLink='.base64_encode('false');
 
+$redirAltChecked = $website->redirectAltDomain() ? ' checked="checked"' : '';
+
 $content .= '
 		</td>
 	</tr>
 	<tr>
 		<td class="admin" align="right">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_SUB_DOMAINS).'</td>
 		<td class="admin"><input type="text" size="30" class="admin_input_text" name="altdomains" value="'.htmlspecialchars(implode(';', $website->getAltDomains())).'" /><br /><small>'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_SUB_DOMAINS_DESC).'</small></td>
+	</tr>
+	<tr>
+		<td class="admin" align="right"><label for="altredir">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_REDIRECT_ALT_DOMAINS).'</label></td>
+		<td class="admin"><input type="checkbox" id="altredir" name="altredir" value="1"'.$redirAltChecked.' /><small><label for="altredir">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_REDIRECT_ALT_DOMAINS_DESC).'</label></small></td>
 	</tr>
 	<tr>
 		<td class="admin" align="right">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_404_PAGE).'</td>

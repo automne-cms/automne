@@ -1814,3 +1814,5 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1738, 'standard', 'en', 'Title');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1739, 'standard', 'en', 'Logout');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1740, 'standard', 'en', 'Previous login:');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1741, 'standard', 'en', 'Redirect alternative domains');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1742, 'standard', 'en', 'If this box is checked, visitors using an alternate domain to access the site will automatically be redirected (via a redirection 301) to the main domain of the site.');

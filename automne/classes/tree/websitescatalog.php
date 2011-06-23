@@ -12,8 +12,6 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr> &            |
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: websitescatalog.php,v 1.5 2010/03/08 16:43:35 sebastien Exp $
 
 /**
   * Class CMS_websitesCatalog
@@ -365,7 +363,7 @@ class CMS_websitesCatalog extends CMS_grandFather {
 	  * @return CMS_website or false
 	  * @access public
 	  */
-	static function getWebsiteFromDomain($domain) {
+	static function getWebsiteFromDomain($domain, &$isAlt = false) {
 		//get all websites
 		$websites = CMS_websitesCatalog::getAll('order');
 		foreach ($websites as $website) {
@@ -375,6 +373,7 @@ class CMS_websitesCatalog extends CMS_grandFather {
 			$altDomains = $website->getAltDomains();
 			foreach ($altDomains as $altDomain) {
 				if (io::strtolower($domain) == io::strtolower(@parse_url($altDomain, PHP_URL_HOST))) {
+					$isAlt = true;
 					return $website;
 				}
 			}

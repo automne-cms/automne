@@ -21,6 +21,7 @@ V4.2.0 (in progress)
 [FEATURE] : Add atm-header tag to create content to be executed before page content
 [FEATURE] : Add atm-redirect tag to create a redirection from one page to another one
 [FEATURE] : Add HTTPS option for individual pages
+[FEATURE] : Add an option to redirect from alt domain to main domain for websites
 
 V4.1.4 (in progress)
 [BUG] : Correct bugs numbers: 2070 (see http://www.automne-cms.org/bug/)

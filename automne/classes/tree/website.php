@@ -64,7 +64,14 @@ class CMS_website extends CMS_grandFather
 	  * @access private
 	  */
 	protected $_altdomains;
-
+	
+	/**
+	  * Does alternative domains should be redirected to main domain ?
+	  * @var boolean
+	  * @access private
+	  */
+	protected $_altredir = false;
+	
 	/**
 	  * Root page.
 	  * @var CMS_page
@@ -152,6 +159,7 @@ class CMS_website extends CMS_grandFather
 					$this->_codename = isset($data["codename_web"]) ? $data["codename_web"] : '';
 					$this->_url = $data["url_web"];
 					$this->_altdomains = $data["altdomains_web"];
+					$this->_altredir = $data["altredir_web"] ? true : false;
 					$this->_root = new CMS_page($data["root_web"]);
 					$this->_order = $data["order_web"];
 					$this->_403 = $data["403_web"];
@@ -486,6 +494,31 @@ class CMS_website extends CMS_grandFather
 	}
 	
 	/**
+	  * Should we redirect altdomains to main domain
+	  *
+	  * @return boolean
+	  * @access public
+	  */
+	function redirectAltDomain()
+	{
+		return $this->_altredir ? true : false;
+	}
+	
+	/**
+	  * Sets the redirect altdomains to main domain status
+	  *
+	  * @param boolean $altredir redirect status
+	  * @return boolean true on success, false on failure.
+	  * @access public
+	  */
+	function setRedirectAltDomain($altredir)
+	{
+		$this->_altredir = $altredir ? true : false;
+		return true;
+	}
+	
+	
+	/**
 	  * Gets the root page.
 	  *
 	  * @return CMS_page The Root page
@@ -644,6 +677,7 @@ class CMS_website extends CMS_grandFather
 			codename_web='".SensitiveIO::sanitizeSQLString($this->_codename)."',
 			url_web='".SensitiveIO::sanitizeSQLString($this->_url)."',
 			altdomains_web='".SensitiveIO::sanitizeSQLString($this->_altdomains)."',
+			altredir_web='".($this->_altredir ? 1 : 0)."',
 			root_web='".$this->_root->getID()."',
 			keywords_web='".SensitiveIO::sanitizeSQLString($this->_meta['keywords'])."',
 			description_web='".SensitiveIO::sanitizeSQLString($this->_meta['description'])."',
