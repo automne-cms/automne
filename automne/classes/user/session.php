@@ -683,8 +683,6 @@ class CMS_session extends CMS_grandFather
 		$sessionInfos['fullname'] = $user->getFullName();
 		$sessionInfos['userId'] = $user->getUserId();
 		$sessionInfos['language'] = $user->getLanguage()->getCode();
-		$sessionInfos['animation'] = $user->getAnimation();
-		$sessionInfos['tooltips'] = $user->getTooltips();
 		$sessionInfos['scriptsInProgress'] = CMS_scriptsManager::getScriptsNumberLeft();
 		$sessionInfos['hasValidations'] = $user->hasValidationClearance();
 		$sessionInfos['awaitingValidation'] = CMS_modulesCatalog::getValidationsCount($user);

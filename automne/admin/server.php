@@ -212,7 +212,7 @@ if (!is_writable(PATH_REALROOT_FS)) {
 	$content .= '<li class="atm-pic-ok">File system write permissions are OK</li>';
 }
 //Email
-if (!@mail("root@localhost", "Automne SMTP Test", "Automne SMTP Test")) {
+if (!@mail(AUTOMNE_DEFAULT_EMAIL, "Automne SMTP Test", "Automne SMTP Test")) {
 	$content .= '<li class="atm-pic-cancel">Error, No SMTP server founded</li>';
 } else {
 	$content .= '<li class="atm-pic-ok">SMTP server OK</li>';

@@ -524,28 +524,6 @@ class CMS_profile_user extends CMS_profile
 	}
 	
 	/**
-	  * Get Animation
-	  *
-	  * @return boolean
-	  * @access public
-	  */
-	 
-	function getAnimation() {
-		return null; //TODOV4
-	}
-	
-	/**
-	  * Get Tooltips
-	  *
-	  * @return boolean
-	  * @access public
-	  */
-	 
-	function getTooltips() {
-		return null; //TODOV4
-	}
-	
-	/**
 	  * Add Validation Clearance
 	  * Overwrite super class function to update validation catalog
 	  *

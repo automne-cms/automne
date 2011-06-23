@@ -381,6 +381,14 @@ if (!defined("ALLOW_EXTERNAL_PAGE_REDIRECTION")) {
 	define("ALLOW_EXTERNAL_PAGE_REDIRECTION", true);
 }
 
+/**
+  *	Automne default email address
+  *	Default : root@localhost
+  */
+if (!defined("AUTOMNE_DEFAULT_EMAIL")) {
+	define("AUTOMNE_DEFAULT_EMAIL", "root@localhost");
+}
+
 //rewrite some server conf if HTTP_X_FORWARDED exists
 if (isset($_SERVER["HTTP_X_FORWARDED_HOST"])) {
 	$_SERVER["HTTP_HOST"] = $_SERVER["HTTP_X_FORWARDED_HOST"];
