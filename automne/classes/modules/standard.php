@@ -2002,8 +2002,7 @@ class CMS_module_standard extends CMS_module
 						$modulesCode[MOD_STANDARD_CODENAME] .= 
 							'//Page must be HTTPS'."\n".
 							'if (!(strpos($_SERVER["REQUEST_URI"], PATH_ADMIN_WR) !== false  || (isset($_REQUEST[\'atm-context\']) && $_REQUEST[\'atm-context\'] == \'adminframe\'))) {'."\n".
-							'	$atmHTTPS = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] && strtolower($_SERVER["HTTPS"]) != \'off\') ? true : false;'."\n".
-							'	if (!$atmHTTPS) {'."\n".
+							'	if (!(isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] && strtolower($_SERVER["HTTPS"]) != \'off\')) {'."\n".
 							'		CMS_view::redirect(\''.$treatedObject->getURL(($visualizationMode == PAGE_VISUALMODE_PRINT) ? true : false).'\', true, 301);'."\n".
 							'	}'."\n".
 							'}'."\n";

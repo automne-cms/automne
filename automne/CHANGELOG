@@ -10,6 +10,7 @@ V4.2.0 (in progress)
 [REFACTOR] : Add thumbnail to field google coordinates in modules admin
 [REFACTOR] : Update tag atm-xml to be used in rows and in page templates
 [REFACTOR] : Images and files inserted into polymod fields now use correct website domain instead of main website domain
+[REFACTOR] : Add civility and company to users details
 [FEATURE] : Add oembed object and oembed polymod field (external media field). Update Mediacenter to manage oembed medias
 [FEATURE] : Add parent page selection on new page creation
 [FEATURE] : Add variable type {page:father:XXX} to get infos from current parent page

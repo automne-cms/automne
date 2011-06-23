@@ -795,6 +795,8 @@ CREATE TABLE `contactDatas` (
   `cellphone_cd` varchar(20) NOT NULL default '',
   `fax_cd` varchar(20) NOT NULL default '',
   `email_cd` varchar(255) NOT NULL default '',
+  `company_cd` varchar(255) NOT NULL,
+  `gender_cd` varchar(255) NOT NULL,
   PRIMARY KEY  (`id_cd`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
