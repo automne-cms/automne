@@ -1695,3 +1695,4 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1736, 'standard', 'fr', 'Cette page sera servie via le protocole sécurisé HTTPS. Attention, n\'activez cette option que si votre serveur le supporte et si les informations renvoyées par cette page sont confidentielle et ne doivent pas pouvoir être interceptées.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1737, 'standard', 'fr', 'Entreprise');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1738, 'standard', 'fr', 'Civilité');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1739, 'standard', 'fr', 'Déconnexion');

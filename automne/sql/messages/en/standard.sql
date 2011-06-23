@@ -1811,4 +1811,5 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1735, 'standard', 'en', 'Enable HTTPS for this page');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1736, 'standard', 'en', 'This page will be served via the secure protocol HTTPS. Warning, activate this option only if your server supports it and if the information returned by this page are confidential and should not be intercepted.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1737, 'standard', 'en', 'Company');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1738, 'standard', 'en', 'Civility');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1738, 'standard', 'en', 'Title');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1739, 'standard', 'en', 'Logout');

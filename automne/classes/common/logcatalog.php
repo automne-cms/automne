@@ -282,7 +282,8 @@ class CMS_log_catalog extends CMS_grandFather
 	static function getLoginActions()
 	{
 		return array(	CMS_log::MESSAGE_LOG_ACTION_LOGIN						=> CMS_log::LOG_ACTION_LOGIN,
-						CMS_log::MESSAGE_LOG_ACTION_AUTO_LOGIN					=> CMS_log::LOG_ACTION_AUTO_LOGIN);
+						CMS_log::MESSAGE_LOG_ACTION_AUTO_LOGIN					=> CMS_log::LOG_ACTION_AUTO_LOGIN,
+						CMS_log::MESSAGE_LOG_ACTION_DISCONNECT					=> CMS_log::LOG_ACTION_DISCONNECT,);
 	}
 	
 	/**
@@ -352,7 +353,8 @@ class CMS_log_catalog extends CMS_grandFather
 						CMS_log::MESSAGE_LOG_ACTION_TEMPLATE_DELETE_FILE		=> CMS_log::LOG_ACTION_TEMPLATE_DELETE_FILE,
 						CMS_log::MESSAGE_LOG_ACTION_SEND_EMAIL					=> CMS_log::LOG_ACTION_SEND_EMAIL,
 						CMS_log::MESSAGE_LOG_ACTION_LOGIN						=> CMS_log::LOG_ACTION_LOGIN,
-						CMS_log::MESSAGE_LOG_ACTION_AUTO_LOGIN					=> CMS_log::LOG_ACTION_AUTO_LOGIN
+						CMS_log::MESSAGE_LOG_ACTION_AUTO_LOGIN					=> CMS_log::LOG_ACTION_AUTO_LOGIN,
+						CMS_log::MESSAGE_LOG_ACTION_DISCONNECT					=> CMS_log::LOG_ACTION_DISCONNECT,
 		);
 		return $modulesActions ? array_merge($modulesActions, $defaultActions) : $defaultActions;
 	}
