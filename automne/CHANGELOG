@@ -1,4 +1,5 @@
 V4.2.0 (in progress)
+[BUG] : Polymod modules can be deleted even if RSS feeds or plugins exists
 [REFACTOR] : Drop all old V3 LDAP methods
 [REFACTOR] : Update Zend Framework to version 1.11.5
 [REFACTOR] : Update ExtJS to version 3.4.0 (add support for IE9)
@@ -8,7 +9,7 @@ V4.2.0 (in progress)
 [REFACTOR] : Add filter by dates on activity logs
 [REFACTOR] : Update page codename to allow codenames of 100 characters
 [REFACTOR] : Add thumbnail to field google coordinates in modules admin
-[REFACTOR] : Update tag atm-xml to be used in rows and in page templates
+[REFACTOR] : Refactor tag atm-xml to be used in rows and in page templates
 [REFACTOR] : Images and files inserted into polymod fields now use correct website domain instead of main website domain
 [REFACTOR] : Add civility and company to users details
 [REFACTOR] : Add log for user disconnection
