@@ -795,6 +795,8 @@ CREATE TABLE `contactDatas` (
   `cellphone_cd` varchar(20) NOT NULL default '',
   `fax_cd` varchar(20) NOT NULL default '',
   `email_cd` varchar(255) NOT NULL default '',
+  `company_cd` varchar(255) NOT NULL,
+  `gender_cd` varchar(255) NOT NULL,
   PRIMARY KEY  (`id_cd`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
@@ -1027,6 +1029,7 @@ CREATE TABLE `modulesCategories` (
   `lineage_mca` varchar(255) NOT NULL default '',
   `order_mca` int(10) unsigned NOT NULL default '1',
   `icon_mca` varchar(255) NOT NULL default '',
+  `protected_mca` int(1) NOT NULL,
   PRIMARY KEY  (`id_mca`),
   KEY `module` (`module_mca`),
   KEY `lineage` (`lineage_mca`),
@@ -1291,8 +1294,7 @@ CREATE TABLE `mod_object_definition` (
 --
 
 INSERT INTO `mod_object_definition` (`id_mod`, `uuid_mod`, `label_id_mod`, `description_id_mod`, `resource_usage_mod`, `module_mod`, `admineditable_mod`, `composedLabel_mod`, `previewURL_mod`, `indexable_mod`, `indexURL_mod`, `compiledIndexURL_mod`, `resultsDefinition_mod`) VALUES(1, 'e583bc28-0baa-102e-80e2-001a6470da26', 1, 2, 1, 'pnews', 0, '', '', 0, '', '', '');
-INSERT INTO `mod_object_definition` (`id_mod`, `uuid_mod`, `label_id_mod`, `description_id_mod`, `resource_usage_mod`, `module_mod`, `admineditable_mod`, `composedLabel_mod`, `previewURL_mod`, `indexable_mod`, `indexURL_mod`, `compiledIndexURL_mod`, `resultsDefinition_mod`) VALUES(2, 'e583bd90-0baa-102e-80e2-001a6470da26', 70, 71, 1, 'pmedia', 0, '', '', 0, '', '', '<div class="pmedias">\r\n	<atm-if what="{[''object2''][''fields''][9][''fileExtension'']} == ''flv''">\r\n		<atm-if what="{[''object2''][''fields''][9][''thumbnail'']}">\r\n			<script type="text/javascript">\r\n				swfobject.embedSWF(''{constant:string:PATH_REALROOT_WR}/automne/playerflv/player_flv.swf'', ''media-{[''object2''][''id'']}'', ''320'', ''200'', ''9.0.0'', ''{constant:string:PATH_REALROOT_WR}/automne/swfobject/expressInstall.swf'', {flv:''{[''object2''][''fields''][9][''file'']}'', configxml:''{constant:string:PATH_REALROOT_WR}/automne/playerflv/config_playerflv.xml'', startimage:''{[''object2''][''fields''][9][''thumb'']}''}, {allowfullscreen:true, wmode:''transparent''}, {''style'':''float:right;''});\r\n			</script>\r\n		</atm-if>\r\n		<atm-if what="!{[''object2''][''fields''][9][''thumbnail'']}">\r\n			<script type="text/javascript">\r\n				swfobject.embedSWF(''{constant:string:PATH_REALROOT_WR}/automne/playerflv/player_flv.swf'', ''media-{[''object2''][''id'']}'', ''320'', ''200'', ''9.0.0'', ''{constant:string:PATH_REALROOT_WR}/automne/swfobject/expressInstall.swf'', {flv:''{[''object2''][''fields''][9][''file'']}'', configxml:''{constant:string:PATH_REALROOT_WR}/automne/playerflv/config_playerflv.xml''}, {allowfullscreen:true, wmode:''transparent''}, {''style'':''float:right;''});\r\n			</script>\r\n		</atm-if>\r\n		<div id="media-{[''object2''][''id'']}" class="pmedias-video" style="width:320px;height:200px;float:right;">\r\n			<p><a href="http://www.adobe.com/go/getflashplayer" target="_blank"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a></p>\r\n		</div>\r\n	</atm-if>\r\n	<atm-if what="{[''object2''][''fields''][9][''fileExtension'']} == ''mp3''">\r\n		<script type="text/javascript">\r\n			swfobject.embedSWF(''{constant:string:PATH_REALROOT_WR}/automne/playermp3/player_mp3.swf'', ''media-{[''object2''][''id'']}'', ''200'', ''20'', ''9.0.0'', ''{constant:string:PATH_REALROOT_WR}/automne/swfobject/expressInstall.swf'', {mp3:''{[''object2''][''fields''][9][''file'']}'', configxml:''{constant:string:PATH_REALROOT_WR}/automne/playermp3/config_playermp3.xml''}, {wmode:''transparent''}, {''style'':''float:right;''});\r\n		</script>\r\n		<div id="media-{[''object2''][''id'']}" class="pmedias-audio" style="width:200px;height:20px;float:right;">\r\n			<p><a href="http://www.adobe.com/go/getflashplayer" target="_blank"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a></p>\r\n		</div>\r\n	</atm-if>\r\n	<atm-if what="{[''object2''][''fields''][9][''thumbname'']} &amp;&amp; {[''object2''][''fields''][9][''fileExtension'']} != ''flv'' &amp;&amp; {[''object2''][''fields''][9][''fileExtension'']} != ''mp3''">\r\n		<p style="float:right;" class="pmedias-file"><a href="{[''object2''][''fields''][9][''file'']}" target="_blank"><img src="{[''object2''][''fields''][9][''thumb'']|200}" /></a></p>\r\n	</atm-if>\r\n	<atm-if what="!{[''object2''][''fields''][9][''thumbname'']} &amp;&amp; ({[''object2''][''fields''][9][''fileExtension'']} == ''jpg'' || {[''object2''][''fields''][9][''fileExtension'']} == ''gif'' || {[''object2''][''fields''][9][''fileExtension'']} == ''png'')">\r\n		<p style="float:right;" class="pmedias-image"><a href="{[''object2''][''fields''][9][''file'']}" target="_blank"><img src="{[''object2''][''fields''][9][''file'']|200}" /></a></p>\r\n	</atm-if>\r\n	<p>{[''object2''][''fields''][9][''fieldname'']} : <strong><atm-if what="{[''object2''][''fields''][9][''fileIcon'']}"><img src="{[''object2''][''fields''][9][''fileIcon'']}" alt="{[''object2''][''fields''][9][''fileExtension'']}" title="{[''object2''][''fields''][9][''fileExtension'']}" /></atm-if> {[''object2''][''fields''][9][''fileHTML'']} ({[''object2''][''fields''][9][''fileSize'']}Mo)</strong></p>\r\n	<p>{[''object2''][''fields''][8][''fieldname'']} : <strong>{[''object2''][''fields''][8][''label'']}</strong></p>\r\n	<div style="clear:both;"> </div>\r\n</div>');
-
+INSERT INTO `mod_object_definition` (`id_mod`, `uuid_mod`, `label_id_mod`, `description_id_mod`, `resource_usage_mod`, `module_mod`, `admineditable_mod`, `composedLabel_mod`, `previewURL_mod`, `indexable_mod`, `indexURL_mod`, `compiledIndexURL_mod`, `resultsDefinition_mod`) VALUES(2, 'e583bd90-0baa-102e-80e2-001a6470da26', 70, 71, 1, 'pmedia', 0, '', '', 0, '', '', '<div class=\"pmedias\">\r\n	<atm-if name=\"oembed\" what=\"{[\'object2\'][\'fields\'][10][\'hasValue\']}\">\r\n		<div style=\"float:right;\" class=\"pmedias-oembed\">{[\'object2\'][\'fields\'][10][\'html\']|320,250}</div>\r\n		<atm-if name=\"oembedTitle\" what=\"{[\'object2\'][\'fields\'][10][\'url\']} &amp;&amp; {[\'object2\'][\'fields\'][10][\'title\']}\">\r\n			<p>Média : <a href=\"{[\'object2\'][\'fields\'][10][\'url\']}\" target=\"_blank\"><strong>{[\'object2\'][\'fields\'][10][\'title\']}</strong></a></p>\r\n		</atm-if>\r\n		<atm-else for=\"oembedTitle\" what=\"{[\'object2\'][\'fields\'][10][\'title\']}\">\r\n			<p>Média : <strong>{[\'object2\'][\'fields\'][10][\'title\']}</strong></p>\r\n		</atm-else>\r\n		<atm-if name=\"oembedAuthor\" what=\"{[\'object2\'][\'fields\'][10][\'authorName\']} &amp;&amp; {[\'object2\'][\'fields\'][10][\'authorUrl\']}\">\r\n			<p>Auteur : <a href=\"{[\'object2\'][\'fields\'][10][\'authorUrl\']}\" target=\"_blank\"><strong>{[\'object2\'][\'fields\'][10][\'authorName\']}</strong></a></p>\r\n		</atm-if>\r\n		<atm-else for=\"oembedAuthor\" what=\"{[\'object2\'][\'fields\'][10][\'authorName\']}\">\r\n			<p>Auteur : <strong>{[\'object2\'][\'fields\'][10][\'authorName\']}</strong></p>\r\n		</atm-else>\r\n		<atm-if name=\"oembedSource\" what=\"{[\'object2\'][\'fields\'][10][\'providerName\']} &amp;&amp; {[\'object2\'][\'fields\'][10][\'providerUrl\']}\">\r\n			<p>Source : <a href=\"{[\'object2\'][\'fields\'][10][\'providerUrl\']}\" target=\"_blank\"><strong>{[\'object2\'][\'fields\'][10][\'providerName\']}</strong></a></p>\r\n		</atm-if>\r\n		<atm-else for=\"oembedSource\" what=\"{[\'object2\'][\'fields\'][10][\'providerName\']}\">\r\n			<p>Source : <strong>{[\'object2\'][\'fields\'][10][\'providerName\']}</strong></p>\r\n		</atm-else>\r\n		<p>{[\'object2\'][\'fields\'][8][\'fieldname\']} : <strong>{[\'object2\'][\'fields\'][8][\'label\']}</strong></p>\r\n	</atm-if>\r\n	<atm-else for=\"oembed\">\r\n		<atm-if what=\"{[\'object2\'][\'fields\'][9][\'fileExtension\']} == \'flv\'\">\r\n			<atm-if what=\"{[\'object2\'][\'fields\'][9][\'thumbnail\']}\">\r\n				<script type=\"text/javascript\">\r\n					swfobject.embedSWF(\'{constant:string:PATH_REALROOT_WR}/automne/playerflv/player_flv.swf\', \'media-{[\'object2\'][\'id\']}\', \'320\', \'200\', \'9.0.0\', \'{constant:string:PATH_REALROOT_WR}/automne/swfobject/expressInstall.swf\', {flv:\'{[\'object2\'][\'fields\'][9][\'file\']}\', configxml:\'{constant:string:PATH_REALROOT_WR}/automne/playerflv/config_playerflv.xml\', startimage:\'{[\'object2\'][\'fields\'][9][\'thumb\']}\'}, {allowfullscreen:true, wmode:\'transparent\'}, {\'style\':\'float:right;\'});\r\n				</script>\r\n			</atm-if>\r\n			<atm-if what=\"!{[\'object2\'][\'fields\'][9][\'thumbnail\']}\">\r\n				<script type=\"text/javascript\">\r\n					swfobject.embedSWF(\'{constant:string:PATH_REALROOT_WR}/automne/playerflv/player_flv.swf\', \'media-{[\'object2\'][\'id\']}\', \'320\', \'200\', \'9.0.0\', \'{constant:string:PATH_REALROOT_WR}/automne/swfobject/expressInstall.swf\', {flv:\'{[\'object2\'][\'fields\'][9][\'file\']}\', configxml:\'{constant:string:PATH_REALROOT_WR}/automne/playerflv/config_playerflv.xml\'}, {allowfullscreen:true, wmode:\'transparent\'}, {\'style\':\'float:right;\'});\r\n				</script>\r\n			</atm-if>\r\n			<div id=\"media-{[\'object2\'][\'id\']}\" class=\"pmedias-video\" style=\"width:320px;height:200px;float:right;\">\r\n				<p><a href=\"http://www.adobe.com/go/getflashplayer\" target=\"_blank\"><img src=\"http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif\" alt=\"Get Adobe Flash player\" /></a></p>\r\n			</div>\r\n		</atm-if>\r\n		<atm-if what=\"{[\'object2\'][\'fields\'][9][\'fileExtension\']} == \'mp3\'\">\r\n			<script type=\"text/javascript\">\r\n				swfobject.embedSWF(\'{constant:string:PATH_REALROOT_WR}/automne/playermp3/player_mp3.swf\', \'media-{[\'object2\'][\'id\']}\', \'200\', \'20\', \'9.0.0\', \'{constant:string:PATH_REALROOT_WR}/automne/swfobject/expressInstall.swf\', {mp3:\'{[\'object2\'][\'fields\'][9][\'file\']}\', configxml:\'{constant:string:PATH_REALROOT_WR}/automne/playermp3/config_playermp3.xml\'}, {wmode:\'transparent\'}, {\'style\':\'float:right;\'});\r\n			</script>\r\n			<div id=\"media-{[\'object2\'][\'id\']}\" class=\"pmedias-audio\" style=\"width:200px;height:20px;float:right;\">\r\n				<p><a href=\"http://www.adobe.com/go/getflashplayer\" target=\"_blank\"><img src=\"http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif\" alt=\"Get Adobe Flash player\" /></a></p>\r\n			</div>\r\n		</atm-if>\r\n		<atm-if what=\"{[\'object2\'][\'fields\'][9][\'thumbname\']} &amp;&amp; {[\'object2\'][\'fields\'][9][\'fileExtension\']} != \'flv\' &amp;&amp; {[\'object2\'][\'fields\'][9][\'fileExtension\']} != \'mp3\'\">\r\n			<p style=\"float:right;\" class=\"pmedias-file\"><a href=\"{[\'object2\'][\'fields\'][9][\'file\']}\" target=\"_blank\"><img src=\"{[\'object2\'][\'fields\'][9][\'thumb\']|200}\" /></a></p>\r\n		</atm-if>\r\n		<atm-if what=\"!{[\'object2\'][\'fields\'][9][\'thumbname\']} &amp;&amp; ({[\'object2\'][\'fields\'][9][\'fileExtension\']} == \'jpg\' || {[\'object2\'][\'fields\'][9][\'fileExtension\']} == \'gif\' || {[\'object2\'][\'fields\'][9][\'fileExtension\']} == \'png\')\">\r\n			<p style=\"float:right;\" class=\"pmedias-image\"><a href=\"{[\'object2\'][\'fields\'][9][\'file\']}\" target=\"_blank\"><img src=\"{[\'object2\'][\'fields\'][9][\'file\']|200}\" /></a></p>\r\n		</atm-if>\r\n		<p>{[\'object2\'][\'fields\'][9][\'fieldname\']} : <strong><atm-if what=\"{[\'object2\'][\'fields\'][9][\'fileIcon\']}\"><img src=\"{[\'object2\'][\'fields\'][9][\'fileIcon\']}\" alt=\"{[\'object2\'][\'fields\'][9][\'fileExtension\']}\" title=\"{[\'object2\'][\'fields\'][9][\'fileExtension\']}\" /></atm-if> {[\'object2\'][\'fields\'][9][\'fileHTML\']} ({[\'object2\'][\'fields\'][9][\'fileSize\']}Mo)</strong></p>\r\n		<p>{[\'object2\'][\'fields\'][8][\'fieldname\']} : <strong>{[\'object2\'][\'fields\'][8][\'label\']}</strong></p>\r\n	</atm-else>\r\n	<div style=\"clear:both;\"> </div>\r\n</div>');
 
 -- --------------------------------------------------------
 
@@ -1331,7 +1333,7 @@ INSERT INTO `mod_object_field` (`id_mof`, `uuid_mof`, `object_id_mof`, `label_id
 INSERT INTO `mod_object_field` (`id_mof`, `uuid_mof`, `object_id_mof`, `label_id_mof`, `desc_id_mof`, `type_mof`, `order_mof`, `system_mof`, `required_mof`, `indexable_mof`, `searchlist_mof`, `searchable_mof`, `params_mof`) VALUES(6, 'e58e023c-0baa-102e-80e2-001a6470da26', 2, 80, 0, 'CMS_object_string', 1, 0, 1, 0, 0, 1, 'a:3:{s:9:"maxLength";s:3:"255";s:7:"isEmail";b:0;s:8:"matchExp";s:0:"";}');
 INSERT INTO `mod_object_field` (`id_mof`, `uuid_mof`, `object_id_mof`, `label_id_mof`, `desc_id_mof`, `type_mof`, `order_mof`, `system_mof`, `required_mof`, `indexable_mof`, `searchlist_mof`, `searchable_mof`, `params_mof`) VALUES(7, 'e58e0304-0baa-102e-80e2-001a6470da26', 2, 83, 0, 'CMS_object_text', 2, 0, 0, 0, 0, 1, 'a:4:{s:4:"html";b:1;s:7:"toolbar";s:9:"BasicLink";s:12:"toolbarWidth";s:4:"100%";s:13:"toolbarHeight";s:3:"200";}');
 INSERT INTO `mod_object_field` (`id_mof`, `uuid_mof`, `object_id_mof`, `label_id_mof`, `desc_id_mof`, `type_mof`, `order_mof`, `system_mof`, `required_mof`, `indexable_mof`, `searchlist_mof`, `searchable_mof`, `params_mof`) VALUES(8, 'e58e03d6-0baa-102e-80e2-001a6470da26', 2, 84, 0, 'CMS_object_categories', 3, 0, 1, 0, 1, 1, 'a:6:{s:15:"multiCategories";b:0;s:12:"rootCategory";s:2:"18";s:12:"defaultValue";s:0:"";s:15:"associateUnused";b:0;s:11:"selectWidth";s:0:"";s:12:"selectHeight";s:0:"";}');
-INSERT INTO `mod_object_field` (`id_mof`, `uuid_mof`, `object_id_mof`, `label_id_mof`, `desc_id_mof`, `type_mof`, `order_mof`, `system_mof`, `required_mof`, `indexable_mof`, `searchlist_mof`, `searchable_mof`, `params_mof`) VALUES(9, 'e58e049e-0baa-102e-80e2-001a6470da26', 2, 85, 86, 'CMS_object_file', 4, 0, 0, 0, 1, 1, 'a:8:{s:12:"useThumbnail";b:1;s:13:"thumbMaxWidth";s:0:"";s:14:"thumbMaxHeight";s:0:"";s:9:"fileIcons";a:18:{s:3:"doc";s:7:"doc.gif";s:3:"gif";s:7:"gif.gif";s:4:"html";s:8:"html.gif";s:3:"htm";s:8:"html.gif";s:3:"jpg";s:7:"jpg.gif";s:4:"jpeg";s:7:"jpg.gif";s:3:"jpe";s:7:"jpg.gif";s:3:"mov";s:7:"mov.gif";s:3:"mp3";s:7:"mp3.gif";s:3:"pdf";s:7:"pdf.gif";s:3:"png";s:7:"png.gif";s:3:"ppt";s:7:"ppt.gif";s:3:"pps";s:7:"ppt.gif";s:3:"swf";s:7:"swf.gif";s:3:"sxw";s:7:"sxw.gif";s:3:"url";s:7:"url.gif";s:3:"xls";s:7:"xls.gif";s:3:"xml";s:7:"xml.gif";}s:8:"allowFtp";b:0;s:6:"ftpDir";s:13:"/automne/tmp/";s:11:"allowedType";s:0:"";s:14:"disallowedType";s:31:"exe,php,pif,vbs,bat,com,scr,reg";}');
+INSERT INTO `mod_object_field` (`id_mof`, `uuid_mof`, `object_id_mof`, `label_id_mof`, `desc_id_mof`, `type_mof`, `order_mof`, `system_mof`, `required_mof`, `indexable_mof`, `searchlist_mof`, `searchable_mof`, `params_mof`) VALUES(9, 'e58e049e-0baa-102e-80e2-001a6470da26', 2, 85, 86, 'CMS_object_file', 5, 0, 0, 0, 1, 1, 'a:8:{s:12:"useThumbnail";b:1;s:13:"thumbMaxWidth";s:0:"";s:14:"thumbMaxHeight";s:0:"";s:9:"fileIcons";a:18:{s:3:"doc";s:7:"doc.gif";s:3:"gif";s:7:"gif.gif";s:4:"html";s:8:"html.gif";s:3:"htm";s:8:"html.gif";s:3:"jpg";s:7:"jpg.gif";s:4:"jpeg";s:7:"jpg.gif";s:3:"jpe";s:7:"jpg.gif";s:3:"mov";s:7:"mov.gif";s:3:"mp3";s:7:"mp3.gif";s:3:"pdf";s:7:"pdf.gif";s:3:"png";s:7:"png.gif";s:3:"ppt";s:7:"ppt.gif";s:3:"pps";s:7:"ppt.gif";s:3:"swf";s:7:"swf.gif";s:3:"sxw";s:7:"sxw.gif";s:3:"url";s:7:"url.gif";s:3:"xls";s:7:"xls.gif";s:3:"xml";s:7:"xml.gif";}s:8:"allowFtp";b:0;s:6:"ftpDir";s:13:"/automne/tmp/";s:11:"allowedType";s:0:"";s:14:"disallowedType";s:31:"exe,php,pif,vbs,bat,com,scr,reg";}');
 INSERT INTO `mod_object_field` (`id_mof`, `uuid_mof`, `object_id_mof`, `label_id_mof`, `desc_id_mof`, `type_mof`, `order_mof`, `system_mof`, `required_mof`, `indexable_mof`, `searchlist_mof`, `searchable_mof`, `params_mof`) VALUES(10, '0fd1e174-dcea-102e-9870-001a6470da26', 2, 91, 92, 'CMS_object_oembed', 4, 0, 0, 0, 0, 1, 'a:0:{}');
 
 
@@ -2055,8 +2057,9 @@ CREATE TABLE `pages` (
   `template_pag` int(11) unsigned NOT NULL default '0',
   `lastFileCreation_pag` datetime NOT NULL default '0000-00-00 00:00:00',
   `url_pag` varchar(255) NOT NULL default '',
+  `protected_pag` int(1) NOT NULL,
+  `https_pag` int(1) NOT NULL,
   PRIMARY KEY  (`id_pag`),
-  KEY `id_pag` (`id_pag`),
   KEY `template_pag` (`template_pag`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
@@ -2095,7 +2098,7 @@ CREATE TABLE `pagesBaseData_archived` (
   `refreshUrl_pbd` int(1) NOT NULL default '0',
   `url_pbd` varchar(255) NOT NULL default '',
   `metas_pbd` text NOT NULL,
-  `codename_pbd` varchar(20) NOT NULL,
+  `codename_pbd` varchar(100) NOT NULL,
   PRIMARY KEY  (`id_pbd`),
   KEY `page_pbd` (`page_pbd`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
@@ -2134,7 +2137,7 @@ CREATE TABLE `pagesBaseData_deleted` (
   `refreshUrl_pbd` int(1) NOT NULL default '0',
   `url_pbd` varchar(255) NOT NULL default '',
   `metas_pbd` text NOT NULL,
-  `codename_pbd` varchar(20) NOT NULL,
+  `codename_pbd` varchar(100) NOT NULL,
   PRIMARY KEY  (`id_pbd`),
   KEY `page_pbd` (`page_pbd`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
@@ -2173,7 +2176,7 @@ CREATE TABLE `pagesBaseData_edited` (
   `refreshUrl_pbd` int(1) NOT NULL default '0',
   `url_pbd` varchar(255) NOT NULL default '',
   `metas_pbd` text NOT NULL,
-  `codename_pbd` varchar(20) NOT NULL,
+  `codename_pbd` varchar(100) NOT NULL,
   PRIMARY KEY  (`id_pbd`),
   KEY `page_pbd` (`page_pbd`),
   FULLTEXT KEY `title_pbd` (`title_pbd`,`linkTitle_pbd`,`keywords_pbd`,`description_pbd`,`codename_pbd`)
@@ -2214,7 +2217,7 @@ CREATE TABLE `pagesBaseData_public` (
   `refreshUrl_pbd` int(1) NOT NULL default '0',
   `url_pbd` varchar(255) NOT NULL default '',
   `metas_pbd` text NOT NULL,
-  `codename_pbd` varchar(20) NOT NULL,
+  `codename_pbd` varchar(100) NOT NULL,
   PRIMARY KEY  (`id_pbd`),
   KEY `page_pbd` (`page_pbd`),
   FULLTEXT KEY `title_pbd` (`title_pbd`,`linkTitle_pbd`,`keywords_pbd`,`description_pbd`,`codename_pbd`)
@@ -2546,6 +2549,7 @@ CREATE TABLE `websites` (
   `label_web` varchar(255) NOT NULL default '',
   `url_web` varchar(255) NOT NULL default '',
   `altdomains_web` text NOT NULL,
+  `altredir_web` int(1) NOT NULL,
   `root_web` int(11) unsigned NOT NULL default '0',
   `keywords_web` mediumtext NOT NULL,
   `description_web` mediumtext NOT NULL,
@@ -2558,10 +2562,10 @@ CREATE TABLE `websites` (
   `favicon_web` varchar(255) NOT NULL default '',
   `metas_web` text NOT NULL,
   `order_web` int(11) unsigned NOT NULL default '0',
-  `403_web` INT( 11 ) UNSIGNED NOT NULL,
-  `404_web` INT( 11 ) UNSIGNED NOT NULL,
+  `403_web` int(11) unsigned NOT NULL,
+  `404_web` int(11) unsigned NOT NULL,
   PRIMARY KEY  (`id_web`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
 -- Contenu de la table `websites`

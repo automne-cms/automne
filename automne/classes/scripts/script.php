@@ -167,7 +167,7 @@ class automne_script extends backgroundScript
 							// On windows system
 							//Create the BAT file
 							$command = '@echo off'."\r\n".'@start /B /BELOWNORMAL '.realpath(PATH_PHP_CLI_WINDOWS). ' ' . realpath(PATH_PACKAGES_FS . '\scripts\script.php').' -s '.$data["id_reg"];
-							if (!@touch(PATH_WINDOWS_BIN_FS."/sub_script.bat")) {
+							if (!@touch(realpath(PATH_WINDOWS_BIN_FS). DIRECTORY_SEPARATOR ."sub_script.bat")) {
 								$this->raiseError(processManager::MASTER_SCRIPT_NAME." : Create file error : sub_script.bat");
 							}
 							
@@ -178,7 +178,7 @@ class automne_script extends backgroundScript
 							);
 							$command = str_ireplace(array_keys($replace), $replace, $command);
 							
-							$fh = fopen( PATH_WINDOWS_BIN_FS."/sub_script.bat", "wb" );
+							$fh = fopen(realpath(PATH_WINDOWS_BIN_FS. DIRECTORY_SEPARATOR ."sub_script.bat"), "wb" );
 							if (is_resource($fh)) {
 								if (!fwrite($fh, $command,io::strlen($command))) {
 									CMS_grandFather::raiseError(processManager::MASTER_SCRIPT_NAME." : Save file error : sub_script.bat");
@@ -189,7 +189,7 @@ class automne_script extends backgroundScript
 							$WshShell = new COM("WScript.Shell");
 							$oExec = $WshShell->Run(str_ireplace(array_keys($replace), $replace, realpath(PATH_WINDOWS_BIN_FS . '\sub_script.bat')), 0, false);
 							
-							$PIDfile = $this->_processManager->getTempPath().'/'.SCRIPT_CODENAME . "_" . $data["id_reg"];
+							$PIDfile = $this->_processManager->getTempPath(). DIRECTORY_SEPARATOR .SCRIPT_CODENAME . "_" . $data["id_reg"];
 							//sleep a little 
 							@sleep(SLEEP_TIME);
 						}
@@ -207,7 +207,7 @@ class automne_script extends backgroundScript
 					// > delete all temporary files
 					// > end script
 					if (APPLICATION_IS_WINDOWS) {
-						$files = glob(realpath($this->_processManager->getTempPath()).'/'.SCRIPT_CODENAME.'*.ok', GLOB_NOSORT);
+						$files = glob(realpath($this->_processManager->getTempPath()). DIRECTORY_SEPARATOR .SCRIPT_CODENAME.'*.ok', GLOB_NOSORT);
 						if (is_array($files)) {
 							foreach($files as $file) {
 								if (!CMS_file::deleteFile($file)) {

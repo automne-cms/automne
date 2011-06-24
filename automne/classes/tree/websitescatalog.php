@@ -12,8 +12,6 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr> &            |
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: websitescatalog.php,v 1.5 2010/03/08 16:43:35 sebastien Exp $
 
 /**
   * Class CMS_websitesCatalog
@@ -201,11 +199,41 @@ class CMS_websitesCatalog extends CMS_grandFather {
 		if (!isset($mainURL)) {
 			$website = CMS_websitesCatalog::getMainWebsite();
 			$mainURL = $website->getURL();
-			if (io::substr($mainURL, io::strlen($mainURL) - 1) == "/") {
-				$mainURL = io::substr($mainURL, 0, -1);
-			}
 		}
 		return $mainURL;
+	}
+	
+	/**
+	  * Returns The URL of the current website, according to parameter or constant CURRENT_PAGE or the main domain URL if constant does not exists
+	  * Static function.
+	  *
+	  * @param mixed $currentPage : The current page id or CMS_page
+	  * @return string The current website URL
+	  * @access public
+	  */
+	static function getCurrentDomain($currentPage = '') {
+		static $domain;
+		if (!isset($domain)) {
+			$domain = '';
+			if (io::isPositiveInteger($currentPage)) {
+				$page = CMS_tree::getPageByID($currentPage);
+			} elseif (is_object($currentPage)) {
+				$page = $currentPage;
+			} elseif (io::isPositiveInteger(CURRENT_PAGE)) {
+				$page = CMS_tree::getPageByID(CURRENT_PAGE);
+			}
+			if (isset($page) && is_object($page) && !$page->hasError()) {
+				$domain = $page->getWebsite()->getURL();
+				//check for HTTPS
+				if ($page->isHTTPS()) {
+					$domain = str_ireplace('http://', 'https://', $domain);
+				}
+			}
+			if (!$domain) {
+				$domain = CMS_websitesCatalog::getMainURL();
+			}
+		}
+		return $domain;
 	}
 	
 	/**
@@ -335,7 +363,7 @@ class CMS_websitesCatalog extends CMS_grandFather {
 	  * @return CMS_website or false
 	  * @access public
 	  */
-	static function getWebsiteFromDomain($domain) {
+	static function getWebsiteFromDomain($domain, &$isAlt = false) {
 		//get all websites
 		$websites = CMS_websitesCatalog::getAll('order');
 		foreach ($websites as $website) {
@@ -345,6 +373,7 @@ class CMS_websitesCatalog extends CMS_grandFather {
 			$altDomains = $website->getAltDomains();
 			foreach ($altDomains as $altDomain) {
 				if (io::strtolower($domain) == io::strtolower(@parse_url($altDomain, PHP_URL_HOST))) {
+					$isAlt = true;
 					return $website;
 				}
 			}

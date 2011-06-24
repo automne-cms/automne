@@ -197,7 +197,7 @@ class CMS_textEditor extends CMS_grandFather
 	 * of this class or an attribute to fckeditor
 	 * @return CMS_textEditor or null if error
 	 */
-	function &getEditorFromParams($attrs)
+	function getEditorFromParams($attrs)
 	{
 		if (!is_array($attrs)) {
 			CMS_grandFather::raiseError("None array of attributes passed to factory");

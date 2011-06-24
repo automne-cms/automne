@@ -13,8 +13,6 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &    |
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
-//
-// $Id: page.php,v 1.13 2010/03/08 16:43:34 sebastien Exp $
 
 /**
   * Class CMS_page
@@ -110,6 +108,20 @@ class CMS_page extends CMS_resource
 	protected $_pageURL = '';
 	
 	/**
+	  * The page protected status
+	  * @var boolean
+	  * @access private
+	  */
+	protected $_protected = false;
+	
+	/**
+	  * The page https status
+	  * @var boolean
+	  * @access private
+	  */
+	protected $_https = false;
+	
+	/**
 	  * Constructor.
 	  * initializes the page if the id is given.
 	  *
@@ -149,6 +161,8 @@ class CMS_page extends CMS_resource
 				$this->_templateID = $data["template_pag"];
 				$this->_lastFileCreation->setFromDBValue($data["lastFileCreation_pag"]);
 				$this->_pageURL = $data["url_pag"];
+				$this->_protected = $data["protected_pag"] ? true : false;
+				$this->_https = $data["https_pag"] ? true : false;
 				//initialize super-class
 				parent::__construct($data);
 			} else {
@@ -381,6 +395,9 @@ class CMS_page extends CMS_resource
 			if (is_object($ws)) {
 				if ($relativeTo == PATH_RELATIVETO_WEBROOT) {
 					$wsURL = $ws->getURL();
+					if ($this->isHTTPS()) {
+						$wsURL = str_ireplace('http://', 'https://', $wsURL);
+					}
 					//if this page is a website root, try to shorten page url using only website domain - do not shorten in Automne admin (_dc parameter)
 					if (!$printPage && !$returnFilenameOnly && !isset($_REQUEST['_dc']) && CMS_websitesCatalog::isWebsiteRoot($this->getID())) {
 						//check if page website is the main for the domain
@@ -757,11 +774,11 @@ class CMS_page extends CMS_resource
 			} else {
 				$type = 'application/octet-stream';
 			}
-			$metaDatas .= '<link rel="icon" type="'.$type.'" href="'.$website->getURL().PATH_REALROOT_WR.$website->getMeta('favicon').'" />'."\n";
+			$metaDatas .= '<link rel="icon" type="'.$type.'" href="'.CMS_websitesCatalog::getCurrentDomain($this).PATH_REALROOT_WR.$website->getMeta('favicon').'" />'."\n";
 		} elseif (file_exists(PATH_REALROOT_FS.'/favicon.ico')) {
-			$metaDatas .= '<link rel="icon" type="image/x-icon" href="'.$website->getURL().PATH_REALROOT_WR.'/favicon.ico" />'."\n";
+			$metaDatas .= '<link rel="icon" type="image/x-icon" href="'.CMS_websitesCatalog::getCurrentDomain($this).PATH_REALROOT_WR.'/favicon.ico" />'."\n";
 		} elseif (file_exists(PATH_REALROOT_FS.'/img/favicon.png')) {
-			$metaDatas .= '<link rel="icon" type="image/png" href="'.$website->getURL().PATH_REALROOT_WR.'/img/favicon.png" />'."\n";
+			$metaDatas .= '<link rel="icon" type="image/png" href="'.CMS_websitesCatalog::getCurrentDomain($this).PATH_REALROOT_WR.'/img/favicon.png" />'."\n";
 		}
 		if ($this->getDescription($public)) {
 			$metaDatas .= '	<meta name="description" content="'.io::htmlspecialchars($this->getDescription($public), ENT_COMPAT).'" />'."\n";
@@ -1020,6 +1037,10 @@ class CMS_page extends CMS_resource
 			$this->raiseError("Page codename must be alphanumeric only");
 			return false;
 		}
+		if (strlen($data) > 100) {
+			$this->raiseError("Page codename must have 100 characters max");
+			return false;
+		}
 		//check if codename already exists
 		if ($checkForDuplicate && $data) {
 			$pageId = CMS_tree::getPageByCodename($data, $this->getWebsite(), false, false);
@@ -1033,6 +1054,50 @@ class CMS_page extends CMS_resource
 		}
 		$this->_editedBaseData["codename"] = $data;
 		$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
+		return true;
+	}
+	
+	/**
+	  * Get the page protected status
+	  *
+	  * @return boolean
+	  * @access public
+	  */
+	function isProtected() {
+		return $this->_protected ? true : false;
+	}
+	
+	/**
+	  * Set the page protected status
+	  *
+	  * @param boolean $protected The new page protected status
+	  * @return boolean
+	  * @access public
+	  */
+	function setProtected($protected) {
+		$this->_protected = $protected ? true : false;
+		return true;
+	}
+	
+	/**
+	  * Get the page https status
+	  *
+	  * @return boolean
+	  * @access public
+	  */
+	function isHTTPS() {
+		return ALLOW_SPECIFIC_PAGE_HTTPS && $this->_https ? true : false;
+	}
+	
+	/**
+	  * Set the page https status
+	  *
+	  * @param boolean $https The new page https status
+	  * @return boolean
+	  * @access public
+	  */
+	function setHTTPS($https) {
+		$this->_https = $https ? true : false;
 		return true;
 	}
 	
@@ -1943,7 +2008,9 @@ class CMS_page extends CMS_resource
 			lastReminder_pag='".$this->_lastReminder->getDBValue()."',
 			template_pag='".$this->_templateID."',
 			lastFileCreation_pag='".$this->_lastFileCreation->getDBValue()."',
-			url_pag='".SensitiveIO::sanitizeSQLString($this->_pageURL)."'
+			url_pag='".SensitiveIO::sanitizeSQLString($this->_pageURL)."',
+			protected_pag='".($this->_protected ? 1 : 0)."',
+			https_pag='".($this->_https ? 1 : 0)."'
 		";
 
 		if ($this->_pageID) {

@@ -70,6 +70,8 @@ define("MESSAGE_PAGE_ADMIN_NO_GROUPS", 1594);
 define("MESSAGE_PAGE_INCORRECT_FORM_VALUES", 682);
 define("MESSAGE_PAGE_LOG_LABEL", 29);
 define("MESSAGE_PAGE_NO_PASSWORD", 1720);
+define("MESSAGE_PAGE_GENDER", 1738);
+define("MESSAGE_PAGE_COMPANY", 1737);
 
 $winId = sensitiveIO::request('winId', '', 'userWindow');
 $userId = sensitiveIO::request('userId', 'sensitiveIO::isPositiveInteger', 'createUser');
@@ -139,6 +141,8 @@ $country = sensitiveIO::sanitizeJSString($contactData->getCountry());
 $phone = sensitiveIO::sanitizeJSString($contactData->getPhone()); 
 $cellphone = sensitiveIO::sanitizeJSString($contactData->getCellphone()); 
 $fax = sensitiveIO::sanitizeJSString($contactData->getFax()); 
+$company = sensitiveIO::sanitizeJSString($contactData->getCompany()); 
+$gender = sensitiveIO::sanitizeJSString($contactData->getGender()); 
 //Alerts
 $modulesCodes = new CMS_modulesCodes();
 $alerts = $modulesCodes->getModulesCodes(MODULE_TREATMENT_ALERTS, '', $user, array("user" => $cms_user));
@@ -737,6 +741,16 @@ $jscontent = <<<END
 					anchor:			'97%'
 				},
 				items:[{
+					{$disableUserInfosFields}
+					fieldLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_GENDER)}',
+					name:			'gender',
+					value:			'{$gender}'
+				},{
+					{$disableUserInfosFields}
+					fieldLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_COMPANY)}',
+					name:			'company',
+					value:			'{$company}'
+				},{
 					{$disableUserInfosFields}
 					fieldLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_JOB_TITLE)}',
 					name:			'jobtitle',

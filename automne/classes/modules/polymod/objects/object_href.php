@@ -155,7 +155,7 @@ class CMS_object_href extends CMS_object_common
 		//create field value
 		$maxFileSize = CMS_file::getMaxUploadFileSize('K');
 		$value = $this->_subfieldValues[0]->getValue();
-		$return['name'] = /*$return['id'] =*/ 'polymodFieldsValue[href'.$prefixName.$this->_field->getID().'_0]';
+		$return['name'] = 	'polymodFieldsValue[href'.$prefixName.$this->_field->getID().'_0]';
 		$return['xtype'] =	'atmLinkField';
 		$return['value'] =	(string) $value;
 		$return['uploadCfg'] =	array(
@@ -190,29 +190,43 @@ class CMS_object_href extends CMS_object_common
 		if (!isset($inputParams['no_admin'])) {
 			$options['no_admin'] = true;
 		}
-		//get module codename
-		$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
 		//create a sub prefix for CMS_dialog_href object
 		$subPrefixName = 'href'.$prefixName.$this->_field->getID().'_0';
-		//create object CMS_href & CMS_dialog_href
-		$href = new CMS_href($this->_subfieldValues[0]->getValue());
-		foreach ($inputParams as $k => $v) {
-			if (in_array($k, array('id','class','style','tabindex','disabled','dir','lang','width','height','alt','title',))) {
-				$href->setAttribute($k, $v);
+		if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
+			if (isset($inputParams['value'])) {
+				$value = $inputParams['value'];
+			} elseif (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0]) && !is_null($this->_subfieldValues[0]->getValue())) {
+				//create object CMS_href & CMS_dialog_href
+				$href = new CMS_href($this->_subfieldValues[0]->getValue());
+				$value = $href->getTextDefinition();
+			} else {
+				$value='';
 			}
-		}
-		//redefine temporarily this constant here, because it is defined in cms_rc_admin and sometimes, only cms_rc_frontend is available
-		if (!defined("PATH_ADMIN_WR")) {
-			define("PATH_ADMIN_WR", PATH_MAIN_WR."/admin");
-		}
-		if (!defined("PATH_ADMIN_IMAGES_WR")) {
-			define("PATH_ADMIN_IMAGES_WR", PATH_ADMIN_WR."/img");
-		}
-		$hrefDialog = new CMS_dialog_href($href, $subPrefixName);
-		$existingLink = ($hrefDialog->getHTML($moduleCodename)) ? $hrefDialog->getHTML($moduleCodename) : $language->getMessage(self::MESSAGE_OBJECT_HREF_FIELD_NONE);
-		$html .= $hrefDialog->getHTMLFields($language, $moduleCodename, RESOURCE_DATA_LOCATION_EDITED, $options).'<br />'.$language->getMessage(self::MESSAGE_OBJECT_HREF_EXISTING_LINK, false, MOD_POLYMOD_CODENAME).' : '.$existingLink;
-		if (POLYMOD_DEBUG) {
-			$html .= ' <span class="admin_text_alert">(Field : '.$this->_field->getID().' - SubField : 0)</span>';
+			$html = '<input type="hidden" name="'.$subPrefixName.'" value="'.$value.'" />'."\n";
+		} else {
+			//get module codename
+			$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
+			
+			//create object CMS_href & CMS_dialog_href
+			$href = new CMS_href($this->_subfieldValues[0]->getValue());
+			foreach ($inputParams as $k => $v) {
+				if (in_array($k, array('id','class','style','tabindex','disabled','dir','lang','width','height','alt','title',))) {
+					$href->setAttribute($k, $v);
+				}
+			}
+			//redefine temporarily this constant here, because it is defined in cms_rc_admin and sometimes, only cms_rc_frontend is available
+			if (!defined("PATH_ADMIN_WR")) {
+				define("PATH_ADMIN_WR", PATH_MAIN_WR."/admin");
+			}
+			if (!defined("PATH_ADMIN_IMAGES_WR")) {
+				define("PATH_ADMIN_IMAGES_WR", PATH_ADMIN_WR."/img");
+			}
+			$hrefDialog = new CMS_dialog_href($href, $subPrefixName);
+			$existingLink = ($hrefDialog->getHTML($moduleCodename)) ? $hrefDialog->getHTML($moduleCodename) : $language->getMessage(self::MESSAGE_OBJECT_HREF_FIELD_NONE);
+			$html .= $hrefDialog->getHTMLFields($language, $moduleCodename, RESOURCE_DATA_LOCATION_EDITED, $options).'<br />'.$language->getMessage(self::MESSAGE_OBJECT_HREF_EXISTING_LINK, false, MOD_POLYMOD_CODENAME).' : '.$existingLink;
+			if (POLYMOD_DEBUG) {
+				$html .= ' <span class="admin_text_alert">(Field : '.$this->_field->getID().' - SubField : 0)</span>';
+			}
 		}
 		//append html hidden field which store field name
 		if ($html) {

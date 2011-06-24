@@ -103,7 +103,7 @@ $jscontent = <<<END
         },
 		listeners:{
 			'click':function(node, e) {
-				Ext.getCmp('{$codename}CatsEdit').setDisabled(node.disabled || node.id == 'source');
+				Ext.getCmp('{$codename}CatsEdit').setDisabled(node.disabled || node.attributes.protected || node.id == 'source');
 				Ext.getCmp('{$codename}CatsCreate').setDisabled(!node.attributes.manageable && node.id != 'source');
 				Ext.getCmp('{$codename}CatsDelete').setDisabled(!node.attributes.deletable);
 			},

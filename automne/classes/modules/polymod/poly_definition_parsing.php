@@ -80,7 +80,6 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			'atm-form-required'		=> '_formRequirementsTag',
 			'atm-form-malformed'	=> '_formRequirementsTag',
 			'atm-input-callback'    => '_inputCallback',
-			'atm-xml'				=> '_xmlTag',
 			'atm-object-link'		=> '_linkObject',
 			'atm-object-unlink'		=> '_unlinkObject',
 			'atm-form-callback'		=> '_formCallback',
@@ -312,7 +311,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 						$this->_headCallBack['language'] = $this->_parameters['language'];
 						$this->_headCallBack['headcode'] = $headers;
 						$this->_headCallBack['footcode'] = $footers;
-						CMS_module::moduleUsage($this->_parameters['pageID'], $this->_parameters['module'], $this->_headCallBack);
+						CMS_module::moduleUsage($this->_parameters['pageID'], $this->_parameters['module'], array('headCallback' => array($this->_headCallBack)));
 					} else {
 						$this->raiseError('Missing valid pageID or module codename or language code in parameters to use header callback.');
 						return false;
@@ -335,7 +334,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				$return .= 
 				'}'."\n".
 				'?>';
-				return $this->indentPHP($return);
+				return CMS_XMLTag::indentPHP($return);
 			break;
 			case self::OUTPUT_RESULT:
 				global $cms_user, $cms_language;
@@ -449,6 +448,10 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 									'visualization'	=> $this->_parameters['visualization']
 								));
 								$this->_elements = array_merge_recursive((array) $this->_elements, (array) $oTag->getTagReferences());
+								//get header code if any
+								if ($oTag->getHeaderCode()) {
+									$this->_headCallBack['tagsCallback'][] = $oTag->getHeaderCode();
+								}
 							}
 							$code .= '$content .="';
 						} else {
@@ -1188,47 +1191,6 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	}
 	
 	/**
-	  * Compute an atm-ajax tag
-	  *
-	  * @param array $tag : the reference atm-form tag to compute
-	  * @return string the PHP / HTML content computed
-	  * @access private
-	  */
-	protected function _xmlTag(&$tag) {
-		//check tags requirements
-		if (!$this->checkTagRequirements($tag, array(
-				'what' => true, 
-			))) {
-			return;
-		}
-		$uniqueID = CMS_XMLTag::getUniqueID();
-		//return code
-		$return = '
-		//AJAX TAG START '.$uniqueID.'
-		'.$this->computeTags($tag['childrens']).'
-		//AJAX TAG END '.$uniqueID.'
-		';
-		$strict = isset($tag['attributes']["strict"]) && ($tag['attributes']['what'] == 'true' || $tag['attributes']['what'] == true || $tag['attributes']['what'] == 1) ? true : false;
-		//Ajax code
-		$ajaxCode = '
-		$xmlCondition = CMS_polymod_definition_parsing::replaceVars("'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['what'], false, false, array('CMS_polymod_definition_parsing', 'encloseWithPrepareVar')).'", $replace);
-		if ($xmlCondition) {
-			$func = create_function("","return (".$xmlCondition.");");
-			if ($func && $func()) {
-				'.$return.'
-				$content = CMS_polymod_definition_parsing::replaceVars($content, $replace);
-			}
-		}';
-		//do some cleaning on code and add reference to it into header callback
-		$ajax = array(
-			'code' 		=> $this->indentPHP(CMS_XMLTag::cleanComputedDefinition($ajaxCode)),
-			'output' 	=> $strict ? 'CMS_view::SHOW_XML' : 'CMS_view::SHOW_RAW',
-		);
-		$this->_headCallBack['ajax'][] = $ajax;
-		return $return;
-	}
-	
-	/**
 	  * Compute an atm-form tag
 	  *
 	  * @param array $tag : the reference atm-form tag to compute
@@ -1355,6 +1317,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		}
 		$return .= ');
 		';
+		
 		$return .='
 		if (method_exists($object[$objectDefinition_'.$tag['attributes']['form'].'], "getInput")) {
 			$content .= CMS_polymod_definition_parsing::replaceVars($object[$objectDefinition_'.$tag['attributes']['form'].']->getInput('.$fieldID.', $cms_language, $parameters_'.$uniqueID.'), $replace);
@@ -1366,7 +1329,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			//callback code
 			$inputCallback = $this->computeTags($tag['childrens']);
 			//add reference to this form to header callback
-			$this->_headCallBack['formsCallback'][$tag['attributes']['form']][$fieldID] = $this->indentPHP(CMS_XMLTag::cleanComputedDefinition($inputCallback));
+			$this->_headCallBack['formsCallback'][$tag['attributes']['form']][$fieldID] = CMS_XMLTag::indentPHP(CMS_XMLTag::cleanComputedDefinition($inputCallback));
 		}
 		$return .='
 		//INPUT TAG END '.$uniqueID.'
@@ -1424,7 +1387,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			//callback code
 			$formCallback = $this->computeTags($tag['childrens']);
 			//add reference to this form to header callback
-			$this->_headCallBack['formsCallback'][$tag['attributes']['form']]['form'] = $this->indentPHP(CMS_XMLTag::cleanComputedDefinition($formCallback));
+			$this->_headCallBack['formsCallback'][$tag['attributes']['form']]['form'] = CMS_XMLTag::indentPHP(CMS_XMLTag::cleanComputedDefinition($formCallback));
 		}
 	}
 	
@@ -1710,40 +1673,6 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		static $count;
 		$count++;
 		return ($count+1).'_'.io::substr(md5(mt_rand().microtime()),0,6);
-	}
-	
-	/**
-	  * Return well indented php code
-	  *
-	  * @param string $phpcode : php code to indent
-	  * @return string indented php code
-	  * @access public
-	  * @static
-	  */
-	function indentPHP($phpcode) {
-		$phparray = array_map('trim',explode("\n",$phpcode));
-		$level = 0;
-		foreach ($phparray as $linenb => $phpline) {
-			//remove blank lines
-			if ($phpline == '') {
-				unset($phparray[$linenb]);
-				continue;
-			}
-			//check for indent level down
-			$firstChar = $phpline[0];
-			if ($firstChar == '}' || $firstChar == ')' || substr($phpline, 0, 5) == 'endif') {
-				$level--;
-			}
-			//indent code
-			$indent = io::isPositiveInteger($level) ? str_repeat("\t" , $level) : '';
-			$phparray[$linenb] = $indent.$phpline;
-			//check for indent level up
-			$lastChar = substr($phpline, -1);
-			if ($lastChar == '{' || $lastChar == ':' || substr($phpline, -7) == 'array (') {
-				$level++;
-			}
-		}
-		return implode ("\n",$phparray);
 	}
 	
 	/**

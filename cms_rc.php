@@ -177,6 +177,16 @@ if (!defined("APPLICATION_XHTML_DTD")) {
 }
 
 /**
+  *	Embedly service API key
+  * This key allow usage of embed.ly service for any URL.
+  * Get a free account at http://app.embed.ly/pricing/free
+  *	Default : nothing
+  */
+if (!defined("OEMBED_EMBEDLY_KEY")) {
+	define("OEMBED_EMBEDLY_KEY", "");
+}
+
+/**
   *	Does system application run on Windows platform
   *	Default : strtolower(substr(PHP_OS, 0, 3)) === 'win'
   */
@@ -369,6 +379,14 @@ if (!defined("APPLICATION_EMBED_DOMAIN")) {
   */
 if (!defined("ALLOW_EXTERNAL_PAGE_REDIRECTION")) {
 	define("ALLOW_EXTERNAL_PAGE_REDIRECTION", true);
+}
+
+/**
+  *	Automne default email address
+  *	Default : root@localhost
+  */
+if (!defined("AUTOMNE_DEFAULT_EMAIL")) {
+	define("AUTOMNE_DEFAULT_EMAIL", "root@localhost");
 }
 
 //rewrite some server conf if HTTP_X_FORWARDED exists
@@ -976,7 +994,20 @@ define("PAGE_VISUALMODE_HTML_EDITION", 4);
 define("PAGE_VISUALMODE_CLIENTSPACES_FORM", 5);
 define("PAGE_VISUALMODE_PRINT", 6);
 define("PAGE_VISUALMODE_HTML_PUBLIC_INDEXABLE", 7);
-
+/**
+ * Page https status
+ * Defined in top of generated pages
+ */
+if (!defined('PAGE_SSL_MODE')) {
+	define('PAGE_SSL_MODE', false);
+}
+/**
+ * Current page id
+ * Defined in top of generated pages
+ */
+if (!defined('CURRENT_PAGE')) {
+	define('CURRENT_PAGE', false);
+}
 //augment memory_limit
 if (ini_get('memory_limit') < (int) APPLICATION_MEMORY_LIMIT) {
 	@ini_set('memory_limit', APPLICATION_MEMORY_LIMIT);
@@ -1195,7 +1226,6 @@ if (!defined('HTML_COMPRESSION_STARTED') && APPLICATION_EXEC_TYPE != 'cli') {
 if (APPLICATION_CONFIG_LOADED && APPLICATION_EXEC_TYPE == 'http') {
 	//Start Automne session	
 	CMS_session::init();
-
 	//load current user if exists
 	$cms_user = CMS_session::getUser();
 	if ($cms_user) {

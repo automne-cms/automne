@@ -43,6 +43,7 @@ define("MESSAGE_PAGE_DEBUG", 674);
 define("MESSAGE_PAGE_PRESS_F2_FOR_LOG", 675);
 define("MESSAGE_ERROR_SESSION_EXPIRED", 676);
 define("MESSAGE_PAGE_PLEASE_WAIT", 1631);
+define("MESSAGE_PAGE_PREVIOUS_LOGIN", 1740);
 
 //load language object
 $cms_language = CMS_languagesCatalog::getDefaultLanguage(true);
@@ -97,11 +98,19 @@ case '':
 		$cms_language = $cms_user->getLanguage();
 		//welcome message
 		$welcome = $cms_language->getJsMessage(MESSAGE_PAGE_USER_WELCOME, array($userSessionsInfos['fullname']));
-		if ($userSessionsInfos['hasValidations']) {
-			$welcome .= '<br /><br />'.(($userSessionsInfos['awaitingValidation']) ? $cms_language->getJsMessage(MESSAGE_PAGE_USER_VALIDATIONS, array($userSessionsInfos['awaitingValidation'])) : $cms_language->getJsMessage(MESSAGE_PAGE_USER_NOVALIDATION));
+		$welcomeMsg = '';
+		//last login
+		$logs = CMS_log_catalog::search('', 0, $cms_user->getUserId(), array(CMS_log::LOG_ACTION_AUTO_LOGIN, CMS_log::LOG_ACTION_LOGIN), false, false, 0, 2, 'datetime', 'desc', false);
+		if (isset($logs[1])) {
+			$welcomeMsg .= '<br /><br />'.$cms_language->getJsMessage(MESSAGE_PAGE_PREVIOUS_LOGIN).' '.$logs[1]->getDateTime()->getLocalizedDate($cms_language->getDateFormat().' H:i:s');
 		}
+		//validations
+		if ($userSessionsInfos['hasValidations']) {
+			$welcomeMsg .= '<br /><br />'.(($userSessionsInfos['awaitingValidation']) ? $cms_language->getJsMessage(MESSAGE_PAGE_USER_VALIDATIONS, array($userSessionsInfos['awaitingValidation'])) : $cms_language->getJsMessage(MESSAGE_PAGE_USER_NOVALIDATION));
+		}
+		//debug
 		if (SYSTEM_DEBUG && $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
-			$welcome .= '<br /><br /><span class="atm-red">'.$cms_language->getJsMessage(MESSAGE_PAGE_DEBUG).'</span> '.$cms_language->getJsMessage(MESSAGE_PAGE_PRESS_F2_FOR_LOG);
+			$welcomeMsg .= '<br /><br /><span class="atm-red">'.$cms_language->getJsMessage(MESSAGE_PAGE_DEBUG).'</span> '.$cms_language->getJsMessage(MESSAGE_PAGE_PRESS_F2_FOR_LOG);
 		}
 		$jscontent = '
 		//show front page in tab
@@ -110,7 +119,7 @@ case '':
 		//load interface
 		Automne.load('.sensitiveIO::jsonEncode($userSessionsInfos).');
 		//display welcome message
-		Automne.message.show(\''.sensitiveIO::sanitizeJSString($welcome).'\');
+		Automne.message.show(\''.sensitiveIO::sanitizeJSString($welcome).'\', \''.sensitiveIO::sanitizeJSString($welcomeMsg).'\', \'\', 6);
 		';
 		//add all JS locales
 		$jscontent .= CMS_session::getJSLocales();

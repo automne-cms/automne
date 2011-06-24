@@ -171,6 +171,18 @@ class CMS_session extends CMS_grandFather
 		}
 		//clear auth storage if disconnection is queried and set default authenticate value
 		if (isset($params['disconnect']) && $params['disconnect']) {
+			//log disconection if user exists
+			$storageValue = $auth->getStorage()->read();
+			if (io::isPositiveInteger($storageValue)) {
+				//load user
+				$user = CMS_profile_usersCatalog::getByID($storageValue);
+				if ($user) {
+					//log new session
+					$log = new CMS_log();
+					$log->logMiscAction(CMS_log::LOG_ACTION_DISCONNECT, $user, 'IP: '.@$_SERVER['REMOTE_ADDR'].', UA: '.@$_SERVER['HTTP_USER_AGENT']);
+				}
+			}
+			
 			//clear session content
 			CMS_session::deleteSession(true);
 			if (!isset($params['authenticate'])) {
@@ -438,6 +450,9 @@ class CMS_session extends CMS_grandFather
 			}
 		}
 		$q = new CMS_query($sql);
+		//remove phpMyAdmin cookie if any
+		@setcookie(session_name(), false, time() - 3600, PATH_REALROOT_WR.'/automne/phpMyAdmin/', APPLICATION_COOKIE_DOMAIN, 0);
+		
 		return true;
 	}
 	
@@ -671,8 +686,6 @@ class CMS_session extends CMS_grandFather
 		$sessionInfos['fullname'] = $user->getFullName();
 		$sessionInfos['userId'] = $user->getUserId();
 		$sessionInfos['language'] = $user->getLanguage()->getCode();
-		$sessionInfos['animation'] = $user->getAnimation();
-		$sessionInfos['tooltips'] = $user->getTooltips();
 		$sessionInfos['scriptsInProgress'] = CMS_scriptsManager::getScriptsNumberLeft();
 		$sessionInfos['hasValidations'] = $user->hasValidationClearance();
 		$sessionInfos['awaitingValidation'] = CMS_modulesCatalog::getValidationsCount($user);

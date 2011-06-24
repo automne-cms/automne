@@ -1,8 +1,10 @@
 /*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
+ * Ext JS Library 3.4.0
+ * Copyright(c) 2006-2011 Sencha Inc.
  * licensing@sencha.com
  * http://www.sencha.com/license
+ */
+﻿/*
  * France (France) translation
  * By Thylia
  * 09-11-2007, 02:22 PM

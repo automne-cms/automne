@@ -521,6 +521,11 @@ class CMS_object_file extends CMS_object_common
       * @access public
       */
 	function getInput($fieldID, $language, $inputParams) {
+		//hidden field : use parent method
+		if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
+			return parent::getInput($fieldID, $language, $inputParams);
+		}
+		
 		$params = $this->getParamsValues();
 		if (isset($inputParams['prefix'])) {
 			$prefixName = $inputParams['prefix'];
@@ -1303,9 +1308,9 @@ class CMS_object_file extends CMS_object_common
 							$resizedImagepathFS = PATH_MODULES_FILES_FS . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
 							//if file already exists, no need to resize file send it
 							if(file_exists($resizedImagepathFS)) {
-								return CMS_websitesCatalog::getMainURL() . PATH_MODULES_FILES_WR . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
+								return CMS_websitesCatalog::getCurrentDomain() . PATH_MODULES_FILES_WR . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
 							} else {
-								return CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[4]->getValue() .'&amp;module='. $moduleCodename .'&amp;x='. $x .'&amp;y='. $y.'&amp;crop='.$crop.($location != RESOURCE_DATA_LOCATION_PUBLIC ? '&amp;location='.$location : '');
+								return CMS_websitesCatalog::getCurrentDomain() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[4]->getValue() .'&amp;module='. $moduleCodename .'&amp;x='. $x .'&amp;y='. $y.'&amp;crop='.$crop.($location != RESOURCE_DATA_LOCATION_PUBLIC ? '&amp;location='.$location : '');
 							}
 						}
 					}
@@ -1332,9 +1337,9 @@ class CMS_object_file extends CMS_object_common
 							$resizedImagepathFS = PATH_MODULES_FILES_FS . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
 							//if file already exists, no need to resize file send it
 							if(file_exists($resizedImagepathFS)) {
-								return CMS_websitesCatalog::getMainURL() . PATH_MODULES_FILES_WR . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
+								return CMS_websitesCatalog::getCurrentDomain() . PATH_MODULES_FILES_WR . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
 							} else {
-								return CMS_websitesCatalog::getMainURL() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[1]->getValue() .'&amp;module='. $moduleCodename .'&amp;x='. $x .'&amp;y='. $y.'&amp;crop='.$crop.($location != RESOURCE_DATA_LOCATION_PUBLIC ? '&amp;location='.$location : '');
+								return CMS_websitesCatalog::getCurrentDomain() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[1]->getValue() .'&amp;module='. $moduleCodename .'&amp;x='. $x .'&amp;y='. $y.'&amp;crop='.$crop.($location != RESOURCE_DATA_LOCATION_PUBLIC ? '&amp;location='.$location : '');
 							}
 						}
 					}
@@ -1352,7 +1357,7 @@ class CMS_object_file extends CMS_object_common
 				$filepath = ($this->_subfieldValues[3]->getValue() == self::OBJECT_FILE_TYPE_INTERNAL) ? PATH_MODULES_FILES_WR.'/'.$moduleCodename.'/'.$location.'/'.$this->_subfieldValues[4]->getValue() : $this->_subfieldValues[4]->getValue();
 				//append website url if missing
 				if (io::substr($filepath,0,1) == '/') {
-					$filepath = CMS_websitesCatalog::getMainURL() . $filepath;
+					$filepath = CMS_websitesCatalog::getCurrentDomain() . $filepath;
 				}
 				//link content
 				$linkContent = ($parameters) ? $parameters : $this->_subfieldValues[0]->getValue();
@@ -1374,7 +1379,7 @@ class CMS_object_file extends CMS_object_common
 				$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
 				//set location
 				$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
-				return CMS_websitesCatalog::getMainURL() . PATH_MODULES_FILES_WR.'/'.$moduleCodename.'/'.$location;
+				return CMS_websitesCatalog::getCurrentDomain() . PATH_MODULES_FILES_WR.'/'.$moduleCodename.'/'.$location;
 			break;
 			case 'thumbMaxWidth':
 				//get field parameters

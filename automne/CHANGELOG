@@ -1,9 +1,28 @@
 V4.2.0 (in progress)
+[BUG] : Polymod modules can be deleted even if RSS feeds or plugins exists
 [REFACTOR] : Drop all old V3 LDAP methods
 [REFACTOR] : Update Zend Framework to version 1.11.5
+[REFACTOR] : Update ExtJS to version 3.4.0 (add support for IE9)
 [REFACTOR] : Update debug statistics : more accurate and more extensible
 [REFACTOR] : Session management and users authentification are completely refactored to use Zend Framework
+[REFACTOR] : Add support for hidden fields in polymod am-form
+[REFACTOR] : Add filter by dates on activity logs
+[REFACTOR] : Update page codename to allow codenames of 100 characters
+[REFACTOR] : Add thumbnail to field google coordinates in modules admin
+[REFACTOR] : Refactor tag atm-xml to be used in rows and in page templates
+[REFACTOR] : Images and files inserted into polymod fields now use correct website domain instead of main website domain
+[REFACTOR] : Add title and company to users details
+[REFACTOR] : Add log for user disconnection
+[REFACTOR] : Add previous login message on connection
 [FEATURE] : Add oembed object and oembed polymod field (external media field). Update Mediacenter to manage oembed medias
+[FEATURE] : Add parent page selection on new page creation
+[FEATURE] : Add variable type {page:father:XXX} to get infos from current parent page
+[FEATURE] : Add protection for pages and categories to avoid changing important datas inadvertently
+[FEATURE] : Add {server:XXX:YYY} variable type
+[FEATURE] : Add atm-header tag to create content to be executed before page content
+[FEATURE] : Add atm-redirect tag to create a redirection from one page to another one
+[FEATURE] : Add HTTPS option for individual pages
+[FEATURE] : Add an option to redirect from alt domain to main domain for websites
 
 V4.1.4 (in progress)
 [BUG] : Correct bugs numbers: 2070 (see http://www.automne-cms.org/bug/)

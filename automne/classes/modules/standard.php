@@ -77,7 +77,7 @@ class CMS_module_standard extends CMS_module
 	const MESSAGE_PARAM_APPLICATION_ENFORCES_ACCESS_CONTROL = 614;
 	const MESSAGE_PARAM_ALLOW_IMAGES_IN_WYSIWYG = 615;
 	const MESSAGE_PARAM_LOG_SENDING_MAIL = 616;
-	//const MESSAGE_PARAM_ALLOW_WYSIWYG_XHTML_VALIDATION = 1566;
+	const MESSAGE_ALLOW_SPECIFIC_PAGE_HTTPS = 1566;
 	
 	const MESSAGE_PARAM_APPLICATION_LABEL_DESC = 617;
 	const MESSAGE_PARAM_APPLICATION_MAINTAINER_EMAIL_DESC = 618;
@@ -96,7 +96,7 @@ class CMS_module_standard extends CMS_module
 	const MESSAGE_PARAM_APPLICATION_ENFORCES_ACCESS_CONTROL_DESC = 632;
 	const MESSAGE_PARAM_ALLOW_IMAGES_IN_WYSIWYG_DESC = 633;
 	const MESSAGE_PARAM_LOG_SENDING_MAIL_DESC = 634;
-	//const MESSAGE_PARAM_ALLOW_WYSIWYG_XHTML_VALIDATION_DESC = 1567;
+	const MESSAGE_ALLOW_SPECIFIC_PAGE_HTTPS_DESC = 1567;
 	
 	const MESSAGE_PAGE_TAGS_CHOOSE = 1707;
 	const MESSAGE_PAGE_ROW_EXPLANATION = 1219;
@@ -1490,6 +1490,9 @@ class CMS_module_standard extends CMS_module
 					"atm-title" 		=> array("selfClosed" => true, "parameters" => array(),		'class' => 'CMS_XMLTag_title'),
 					"atm-website" 		=> array("selfClosed" => true, "parameters" => array(),		'class' => 'CMS_XMLTag_website'),
 					"atm-page" 			=> array("selfClosed" => true, "parameters" => array(),		'class' => 'CMS_XMLTag_page'),
+					"atm-header" 		=> array("selfClosed" => false,	"parameters" => array(),	'class' => 'CMS_XMLTag_header'),
+					"atm-redirect" 		=> array("selfClosed" => true,	"parameters" => array(),	'class' => 'CMS_XMLTag_redirect'),
+					"atm-xml" 			=> array("selfClosed" => true,	"parameters" => array(),	'class' => 'CMS_XMLTag_xml'),
 					"atm-main-url" 		=> array("selfClosed" => true, "parameters" => array()),
 					"atm-constant" 		=> array("selfClosed" => true, "parameters" => array()),
 					"atm-last-update" 	=> array("selfClosed" => false, "parameters" => array()),
@@ -1960,50 +1963,75 @@ class CMS_module_standard extends CMS_module
 		switch ($treatmentMode) {
 			case MODULE_TREATMENT_PAGECONTENT_HEADER_CODE :
 				$modulesCode[MOD_STANDARD_CODENAME] = '';
+				
+				$modulesCode[MOD_STANDARD_CODENAME] .= 
+				'<?php'."\n".
+				'//Generated on '.date('r').' by '.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION."\n";
+				//HTTPS constant
+				if ($treatedObject->isHTTPS()) {
+					$modulesCode[MOD_STANDARD_CODENAME] .= 'defined(\'PAGE_SSL_MODE\') || define(\'PAGE_SSL_MODE\', true);'."\n";
+				}
+				//Current page constant
+				$modulesCode[MOD_STANDARD_CODENAME] .= 'defined(\'CURRENT_PAGE\') || define(\'CURRENT_PAGE\', '.$treatedObject->getID().');'."\n";
+				
 				if ($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC 
 					|| $visualizationMode == PAGE_VISUALMODE_PRINT) {
 					//path to cms_rc_frontend
 					$path = PATH_PAGES_HTML_WR == PATH_MAIN_WR."/html" ? '/../../cms_rc_frontend.php' : '/../cms_rc_frontend.php';
+					//cms_rc_frontend include
+					$modulesCode[MOD_STANDARD_CODENAME] .= 
+					'if (!defined(\'PATH_REALROOT_FS\')){'."\n".
+					'	require_once(dirname(__FILE__).\''.$path.'\');'."\n".
+					'} else {'."\n".
+					'	require_once(PATH_REALROOT_FS."/cms_rc_frontend.php");'."\n".
+					'}'."\n";
 					//redirection code if any
 					$redirectlink = $treatedObject->getRedirectLink(true);
 					if ($redirectlink->hasValidHREF()) {
 						$href = $redirectlink->getHTML(false, MOD_STANDARD_CODENAME, RESOURCE_DATA_LOCATION_PUBLIC, false, true);
 						$modulesCode[MOD_STANDARD_CODENAME] .= 
-								'<?php'."\n".
-								'if (!defined(\'PATH_REALROOT_FS\')){'."\n".
-								'	require_once(dirname(__FILE__).\''.$path.'\');'."\n".
-								'} else {'."\n".
-								'	require_once(PATH_REALROOT_FS."/cms_rc_frontend.php");'."\n".
-								'}'."\n".
-								'CMS_view::redirect(\''.$href.'\', true, 302);'."\n".
-								'?>';
+							'CMS_view::redirect(\''.$href.'\', true, 302);'."\n";
 					}
-					//include frontend files
+					//old url pattern redireciton
 					$modulesCode[MOD_STANDARD_CODENAME] .= 
-					'<?php'."\n".
-					'//Generated on '.date('r').' by '.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION."\n".
-					'if (!defined(\'PATH_REALROOT_FS\')){'."\n".
-					'	require_once(dirname(__FILE__).\''.$path.'\');'."\n".
-					'} else {'."\n".
-					'	require_once(PATH_REALROOT_FS."/cms_rc_frontend.php");'."\n".
-					'}'."\n".
 					'if (!isset($cms_page_included) && !$_POST && !$_GET) {'."\n".
 					'	CMS_view::redirect(\''.$treatedObject->getURL(($visualizationMode == PAGE_VISUALMODE_PRINT) ? true : false).'\', true, 301);'."\n".
-					'}'."\n".
-					'?>';
+					'}'."\n";
+					//non-https redirection for https page
+					if ($treatedObject->isHTTPS()) {
+						$modulesCode[MOD_STANDARD_CODENAME] .= 
+							'//Page must be HTTPS'."\n".
+							'if (!(strpos($_SERVER["REQUEST_URI"], PATH_ADMIN_WR) !== false  || (isset($_REQUEST[\'atm-context\']) && $_REQUEST[\'atm-context\'] == \'adminframe\'))) {'."\n".
+							'	if (!(isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] && strtolower($_SERVER["HTTPS"]) != \'off\')) {'."\n".
+							'		CMS_view::redirect(\''.$treatedObject->getURL(($visualizationMode == PAGE_VISUALMODE_PRINT) ? true : false).'\', true, 301);'."\n".
+							'	}'."\n".
+							'}'."\n";
+					}
+					//rights 403 redirection
 					if (APPLICATION_ENFORCES_ACCESS_CONTROL) {
 						//include user access checking on top of output file
 						$modulesCode[MOD_STANDARD_CODENAME] .= 
-							'<?php'."\n".
 							'if (!is_object($cms_user) || !$cms_user->hasPageClearance('.$treatedObject->getID().', CLEARANCE_PAGE_VIEW)) {'."\n".
 							'	CMS_view::redirect(PATH_FRONTEND_SPECIAL_LOGIN_WR.\'?referer=\'.base64_encode($_SERVER[\'REQUEST_URI\']));'."\n".
-							'}'."\n".
-							'?>';
+							'}'."\n";
 					}
-					return $modulesCode;
 				} else {
-					$modulesCode[MOD_STANDARD_CODENAME] .= '<?php if (!in_array(\''.PATH_REALROOT_FS.'/cms_rc_frontend.php\', get_included_files())){ require_once(\''.PATH_REALROOT_FS.'/cms_rc_frontend.php\');} else { global $cms_user,$cms_language;} ?>';
+					//page previz & edition
+					$modulesCode[MOD_STANDARD_CODENAME] .= 'if (!in_array(\''.PATH_REALROOT_FS.'/cms_rc_frontend.php\', get_included_files())){ require_once(\''.PATH_REALROOT_FS.'/cms_rc_frontend.php\');} else { global $cms_user,$cms_language;}';
 				}
+				$modulesCode[MOD_STANDARD_CODENAME] .= ' ?>';
+				//Get header code (atm-header tags)
+				if ($usage = CMS_module::moduleUsage($treatedObject->getID(), $this->_codename)) {
+					//add header codes
+					if (isset($usage['headCallback'])) {
+						foreach ($usage['headCallback'] as $headCallback) {
+							if (isset($headCallback['code'])) {
+								$modulesCode[MOD_STANDARD_CODENAME] .= $headCallback['code'];
+							}
+						}
+					}
+				}
+				return $modulesCode;
 			break;
 			case MODULE_TREATMENT_EDITOR_CODE :
 				if ($treatmentParameters["editor"] == "fckeditor") {
@@ -2138,8 +2166,8 @@ class CMS_module_standard extends CMS_module
 		$replace = array();
 		
 		//replace '{vartype:type:name}' value by corresponding var call
-		$replace["#^\{(var|request|session|constant)\:([^:]*?(::)?[^:]*?):([^:]*?)\}$#U"] = 'CMS_poly_definition_functions::getVarContent("\1", "\4", "\2", @$\4)';
-		$replace["#^\{(var|request|session|constant)\:([^:]*?(::)?[^:]*?):([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_poly_definition_functions::getVarContent("\1", "\4", "\2", "\4")';
+		$replace["#^\{(var|request|session|constant|server)\:([^:]*?(::)?[^:]*?):([^:]*?)\}$#U"] = 'CMS_poly_definition_functions::getVarContent("\1", "\4", "\2", @$\4)';
+		$replace["#^\{(var|request|session|constant|server)\:([^:]*?(::)?[^:]*?):([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_poly_definition_functions::getVarContent("\1", "\4", "\2", "\4")';
 		
 		//replace '{page:id:type}' value by corresponding CMS_tree::getPageValue(id, type) call
 		$replace["#^\{page\:([^:]*?(::)?[^:]*?)\:([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_tree::getPageValue("\1", "\3", @$public_search, (@$parameters[\'pageID\'] ? @$parameters[\'pageID\'] : \'{{pageID}}\'))';

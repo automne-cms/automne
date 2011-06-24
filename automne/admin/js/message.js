@@ -11,7 +11,7 @@
   */
 Automne.message = {
 	msgCt:		false,
-	show: function (title, message, el){
+	show: function (title, message, el, duration){
 		if(!Automne.message.msgCt){
 			Automne.message.msgCt = Ext.DomHelper.insertFirst(document.body, {id:'atm-msg-div'}, true);
 		}
@@ -34,7 +34,7 @@ Automne.message = {
 		}
 		Automne.message.msgCt.alignTo(el || document, 't-t');
 		var m = Ext.DomHelper.insertFirst(Automne.message.msgCt, {html:boxtpl}, true);
-		m.slideIn('t').pause(3).ghost("t", {remove:true});
+		m.slideIn('t').pause(duration || 3).ghost("t", {remove:true});
 		if (win && win.on) {
 			win.on('close',function(){m.remove();});
 		}

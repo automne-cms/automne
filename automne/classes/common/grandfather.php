@@ -136,7 +136,7 @@ class CMS_grandFather
 	  * @access public
 	  */
 	public function log($errorMessage, $encodeOutput = false) {
-		$errorMessage = sensitiveIO::getCallInfos().' : '.$errorMessage;
+		$errorMessage = sensitiveIO::getCallInfos().' : '.(!is_scalar($errorMessage) ? print_r($errorMessage, true) : $errorMessage);
 		self::_raiseError($errorMessage, $encodeOutput, false);
 	}
 
@@ -314,6 +314,9 @@ class CMS_grandFather
 				'cms_xmltag_page' 					=> PATH_MODULES_FS.'/standard/tags/page.php',
 				'cms_xmltag_website' 				=> PATH_MODULES_FS.'/standard/tags/website.php',
 				'cms_xmltag_anchor' 				=> PATH_MODULES_FS.'/standard/tags/anchor.php',
+				'cms_xmltag_header' 				=> PATH_MODULES_FS.'/standard/tags/header.php',
+				'cms_xmltag_redirect' 				=> PATH_MODULES_FS.'/standard/tags/redirect.php',
+				'cms_xmltag_xml' 					=> PATH_MODULES_FS.'/standard/tags/xml.php',
 				
 				//pageContent
 				'cms_linxescatalog' 				=> PATH_PACKAGES_FS.'/pageContent/linxescatalog.php',

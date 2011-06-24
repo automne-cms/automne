@@ -42,6 +42,7 @@ define("MESSAGE_PAGE_DEFAULT_ROWS_HELP", 564);
 define("MESSAGE_PAGE_DEFAULT_ROWS", 565);
 define("MESSAGE_PAGE_FILTER", 693);
 define("MESSAGE_PAGE_WEBSITES", 1461);
+define('MESSAGE_PAGE_FATHER_PAGE', 1721);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -178,6 +179,13 @@ $jscontent = <<<END
 			name:			'linktitle',
 			anchor:			'100%'
 		},{
+			fieldLabel:		'<span class="atm-red">*</span> {$cms_language->getJsMessage(MESSAGE_PAGE_FATHER_PAGE)}',
+			name:			'parent',
+			xtype:			'atmPageField',
+			value:			'{$cms_page->getID()}',
+			anchor:			'100%',
+			allowBlank:		false
+		},{
 			fieldLabel:		'',
 			labelSeparator:	'',
 			boxLabel:		'<span ext:qtip="{$cms_language->getJsMessage(MESSAGE_PAGE_DEFAULT_ROWS_HELP)}" class="atm-help">{$cms_language->getJsMessage(MESSAGE_PAGE_DEFAULT_ROWS)}</span>',
@@ -237,12 +245,11 @@ $jscontent = <<<END
 				Automne.server.call({
 					url:				'page-controler.php',
 					params: 			{
-						title:				values
-						.title,
+						title:				values.title,
 						linktitle:			values.linktitle,
+						father:				values.parent,
 						template:			templateId,
 						emptytpl:			values.emptytpl,
-						father:				'{$cms_page->getID()}',
 						action:				'creation'
 					}
 				});

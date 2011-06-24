@@ -125,6 +125,20 @@ class CMS_contactData extends CMS_grandFather
 	  * @access private
 	  */
 	protected $_email;
+	
+	/**
+	  * company
+	  * @var string
+	  * @access private
+	  */
+	protected $_company;
+	
+	/**
+	  * gender
+	  * @var string
+	  * @access private
+	  */
+	protected $_gender;
 
 	/**
 	  * Constructor.
@@ -138,7 +152,6 @@ class CMS_contactData extends CMS_grandFather
 	{
 		if ($id) {
 			if (SensitiveIO::isPositiveInteger($id)) {
-				
 				$sql = "
 					select
 						*
@@ -150,43 +163,32 @@ class CMS_contactData extends CMS_grandFather
 				$q = new CMS_query($sql);
 				if ($q->getNumRows()) {
 					$data = $q->getArray();
-					$this->_id = $id;
-					$this->_service = $data["service_cd"];
-					$this->_jobTitle = $data["jobTitle_cd"];
-					$this->_addressField1 = $data["addressField1_cd"];
-					$this->_addressField2 = $data["addressField2_cd"];
-					$this->_addressField3 = $data["addressField3_cd"];
-					$this->_zip = $data["zip_cd"];
-					$this->_city = $data["city_cd"];
-					$this->_state = $data["state_cd"];
-					$this->_country = $data["country_cd"];
-					$this->_phone = $data["phone_cd"];
-					$this->_cellphone = $data["cellphone_cd"];
-					$this->_fax = $data["fax_cd"];
-					$this->_email = $data["email_cd"];
 				} else {
 					$this->raiseError("Unknown DB ID : ".$id);
+					return;
 				}
-			 } elseif (is_array($id)) {
-				$data=$id;
-				$this->_id = $data["id_cd"];
-				$this->_service = $data["service_cd"];
-				$this->_jobTitle = $data["jobTitle_cd"];
-				$this->_addressField1 = $data["addressField1_cd"];
-				$this->_addressField2 = $data["addressField2_cd"];
-				$this->_addressField3 = $data["addressField3_cd"];
-				$this->_zip = $data["zip_cd"];
-				$this->_city = $data["city_cd"];
-				$this->_state = $data["state_cd"];
-				$this->_country = $data["country_cd"];
-				$this->_phone = $data["phone_cd"];
-				$this->_cellphone = $data["cellphone_cd"];
-				$this->_fax = $data["fax_cd"];
-				$this->_email = $data["email_cd"];
+			} elseif (is_array($id)) {
+				$data = $id;
 			} else {
 				$this->raiseError("Id is not a positive integer nor array");
 				return;
 			}
+			$this->_id = $data["id_cd"];
+			$this->_service = $data["service_cd"];
+			$this->_jobTitle = $data["jobTitle_cd"];
+			$this->_addressField1 = $data["addressField1_cd"];
+			$this->_addressField2 = $data["addressField2_cd"];
+			$this->_addressField3 = $data["addressField3_cd"];
+			$this->_zip = $data["zip_cd"];
+			$this->_city = $data["city_cd"];
+			$this->_state = $data["state_cd"];
+			$this->_country = $data["country_cd"];
+			$this->_phone = $data["phone_cd"];
+			$this->_cellphone = $data["cellphone_cd"];
+			$this->_fax = $data["fax_cd"];
+			$this->_email = $data["email_cd"];
+			$this->_company = $data["company_cd"];
+			$this->_gender = $data["gender_cd"];
 		}
 	}
 	
@@ -517,6 +519,54 @@ class CMS_contactData extends CMS_grandFather
 	}
 	
 	/**
+	  * Gets the company.
+	  *
+	  * @return string the company
+	  * @access public
+	  */
+	function getCompany()
+	{
+		return $this->_company;
+	}
+	
+	/**
+	  * Sets the company
+	  *
+	  * @param string $company the new company
+	  * @return boolean true on success, false on failure to set it
+	  * @access public
+	  */
+	function setCompany($company)
+	{
+		$this->_company = $company;
+		return true;
+	}
+	
+	/**
+	  * Gets the gender.
+	  *
+	  * @return string the gender
+	  * @access public
+	  */
+	function getGender()
+	{
+		return $this->_gender;
+	}
+	
+	/**
+	  * Sets the gender
+	  *
+	  * @param string $gender the new gender
+	  * @return boolean true on success, false on failure to set it
+	  * @access public
+	  */
+	function setGender($gender)
+	{
+		$this->_gender = $gender;
+		return true;
+	}
+	
+	/**
 	  * Short hand to get values by property name
 	  *
 	  * @param string $property The name of the property
@@ -604,7 +654,9 @@ class CMS_contactData extends CMS_grandFather
 			phone_cd='".SensitiveIO::sanitizeSQLString($this->_phone)."',
 			cellphone_cd='".SensitiveIO::sanitizeSQLString($this->_cellphone)."',
 			fax_cd='".SensitiveIO::sanitizeSQLString($this->_fax)."',
-			email_cd='".SensitiveIO::sanitizeSQLString($this->_email)."'
+			email_cd='".SensitiveIO::sanitizeSQLString($this->_email)."',
+			company_cd='".SensitiveIO::sanitizeSQLString($this->_company)."',
+			gender_cd='".SensitiveIO::sanitizeSQLString($this->_gender)."'
 		";
 		if ($this->_id) {
 			$sql = "

@@ -33,6 +33,8 @@ $view->setDisplayMode(CMS_view::SHOW_JSON);
 $view->setSecure();
 
 define("MESSAGE_ERROR_MODULE_RIGHTS",570);
+define("MESSAGE_CATEGORY_PROTECTED", 1730);
+define("MESSAGE_CATEGORY_PROTECTED_DESC", 1731);
 
 function checkCatId($catId) {
 	return (io::strpos($catId, 'cat') === 0) && sensitiveIO::isPositiveInteger(io::substr($catId, 3));
@@ -77,20 +79,24 @@ foreach ($categories as $category) {
 	$hasSiblings = $category->hasSiblings();
 	$qtip = $category->getIconPath(false, PATH_RELATIVETO_WEBROOT, true) ? '<img style="max-width:280px;" src="'.$category->getIconPath(true).'" /><br />' : '';
 	$qtip .= $category->getDescription() ? $category->getDescription().'<br />' : '';
+	if ($category->isProtected()) {
+		$qtip .= '<strong>'.$cms_language->getMessage(MESSAGE_CATEGORY_PROTECTED).' : </strong>'.$cms_language->getMessage(MESSAGE_CATEGORY_PROTECTED_DESC).'<br />';
+	}
 	$qtip .= 'ID : '.$category->getID();
 	$nodes[] = array(
 		'id'			=>	'cat'.$category->getID(), 
 		'catId'			=>	$category->getID(), 
-		'text'			=>	$category->getLabel(),
+		'text'			=>	($category->isProtected() ? '<span style="color:grey;"'.($qtip ? ' ext:qtip="'.io::htmlspecialchars($qtip).'"' : '').'>' : '').$category->getLabel().($category->isProtected() ? '</span>' : ''),
 		'leaf'			=>	!$hasSiblings, 
 		'qtip'			=>	($qtip ? $qtip : false),
-		'draggable'		=>	$parentRight,
+		'draggable'		=>	$parentRight && !$category->isProtected(),
 		'allowDrop'		=>	$categoryRight,
 		'allowChildren' =>	true,
-		'disabled'		=>	!$categoryRight,
-		'deletable'		=>	$categoryRight && !$hasSiblings && !$module->isCategoryUsed($category),
+		'disabled'		=>	!$categoryRight ,
+		'deletable'		=>	$categoryRight && !$hasSiblings && !$category->isProtected() && !$module->isCategoryUsed($category),
 		'manageable'	=>	$categoryRight,
 		'expanded'		=>	(sizeof($category->getLineageStack()) < $maxDepth),
+		'protected'		=>  ($category->isProtected() && !$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)),
 	);
 }
 $view->setContent($nodes);

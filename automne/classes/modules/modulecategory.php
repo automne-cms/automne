@@ -129,6 +129,13 @@ class CMS_moduleCategory extends CMS_grandFather {
 	protected $_uuid = '';
 	
 	/**
+	  * The category protected status
+	  * @var boolean
+	  * @access private
+	  */
+	protected $_protected = false;
+	
+	/**
 	 * Constructor
 	 *
 	 * @access public
@@ -163,6 +170,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 				$this->_icon = $data["icon_mca"];
 				$this->_order = $data["order_mca"];
 				$this->_uuid = $data["uuid_mca"];
+				$this->_protected = $data["protected_mca"] ? true : false;
 			} else {
 				$this->raiseError("unknown ID :".$id);
 			}
@@ -215,6 +223,28 @@ class CMS_moduleCategory extends CMS_grandFather {
 		}
 		$name = '_'.$name;
 		$this->$name = $value;
+		return true;
+	}
+	
+	/**
+	  * Get the category protected status
+	  *
+	  * @return boolean
+	  * @access public
+	  */
+	function isProtected() {
+		return $this->_protected ? true : false;
+	}
+	
+	/**
+	  * Set the category protected status
+	  *
+	  * @param boolean $protected The new category protected status
+	  * @return boolean
+	  * @access public
+	  */
+	function setProtected($protected) {
+		$this->_protected = $protected ? true : false;
 		return true;
 	}
 	
@@ -702,7 +732,10 @@ class CMS_moduleCategory extends CMS_grandFather {
 			parent_mca='".SensitiveIO::sanitizeSQLString($this->_parentID)."',
 			order_mca='".SensitiveIO::sanitizeSQLString($this->_order)."',
 			icon_mca='".SensitiveIO::sanitizeSQLString($this->_icon)."',
-			uuid_mca='".SensitiveIO::sanitizeSQLString($this->_uuid)."'";
+			uuid_mca='".SensitiveIO::sanitizeSQLString($this->_uuid)."',
+			protected_mca='".($this->_protected ? 1 : 0)."'
+		";
+		
 		// Finish SQL
 		if ($this->_categoryID) {
 			$sql = "

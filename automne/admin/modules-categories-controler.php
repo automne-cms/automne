@@ -29,6 +29,7 @@ define("MESSAGE_PAGE_ACTION_DELETE_ERROR", 121);
 define("MESSAGE_PAGE_ACTION_SAVE_ERROR", 178);
 define("MESSAGE_ERROR_CATEGORY_RIGHTS", 687);
 define("MESSAGE_ERROR_CATEGORY_MOVE", 688);
+define("MESSAGE_PAGE_ACTION_ERROR_PROTECTED", 1729);
 
 //Controler vars
 $action = sensitiveIO::request('action', array('delete', 'move', 'save'));
@@ -85,78 +86,118 @@ switch ($action) {
 		
 		// Current category object to manipulate
 		$item = new CMS_moduleCategory($categoryId);
-		$item->setAttribute('language', $cms_language);
-		$item->setAttribute('moduleCodename', $codename);
-		if (!$parentId) {
-			$parentCategory = $item->getParent();
-		} else {
-			// Parent category
-			$parentCategory = CMS_moduleCategories_catalog::getById($parentId);
-		}
-		$parentCategory->setAttribute('language', $cms_language);
 		
-		//check mandatory fields
-		if (!$defaultLabel) {
-			$cms_message .= $cms_language->getMessage(MESSAGE_FORM_ERROR_MANDATORY_FIELDS);
-			break;
-		} else {
-			// If insertion, must be saved once added to its parent
-			$newParentCategory = CMS_moduleCategories_catalog::getById($parentId);
-			if (!$newParentCategory->hasError()) {
-				// Detach from current category
-				$oldParentCategory = $item->getParent();
-				if ($item->getID()) {
-					if ($oldParentCategory->getID() != $newParentCategory->getID()) {
-						if (!CMS_moduleCategories_catalog::detachCategory($item)) {
-							$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_ACTION_SAVE_ERROR);
+		//check protected status
+		$protected = sensitiveIO::request('protected') ? true : false;
+		if (!$item->isProtected() || (!$protected && $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL))) {
+			$item->setAttribute('language', $cms_language);
+			$item->setAttribute('moduleCodename', $codename);
+			$item->setProtected($protected);
+			if (!$parentId) {
+				$parentCategory = $item->getParent();
+			} else {
+				// Parent category
+				$parentCategory = CMS_moduleCategories_catalog::getById($parentId);
+			}
+			$parentCategory->setAttribute('language', $cms_language);
+			
+			//check mandatory fields
+			if (!$defaultLabel) {
+				$cms_message .= $cms_language->getMessage(MESSAGE_FORM_ERROR_MANDATORY_FIELDS);
+				break;
+			} else {
+				// If insertion, must be saved once added to its parent
+				$newParentCategory = CMS_moduleCategories_catalog::getById($parentId);
+				if (!$newParentCategory->hasError()) {
+					// Detach from current category
+					$oldParentCategory = $item->getParent();
+					if ($item->getID()) {
+						if ($oldParentCategory->getID() != $newParentCategory->getID()) {
+							if (!CMS_moduleCategories_catalog::detachCategory($item)) {
+								$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_ACTION_SAVE_ERROR);
+							}
+							// Attach to new category
+							if (!CMS_moduleCategories_catalog::attachCategory($item, $newParentCategory)) {
+								$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_ACTION_SAVE_ERROR);
+							}
 						}
+					} else {
 						// Attach to new category
 						if (!CMS_moduleCategories_catalog::attachCategory($item, $newParentCategory)) {
 							$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_ACTION_SAVE_ERROR);
 						}
 					}
 				} else {
-					// Attach to new category
-					if (!CMS_moduleCategories_catalog::attachCategory($item, $newParentCategory)) {
-						$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_ACTION_SAVE_ERROR);
-					}
+					$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_ACTION_SAVE_ERROR);
 				}
-			} else {
-				$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_ACTION_SAVE_ERROR);
 			}
-		}
-		// Save all translated datas
-		foreach ($all_languages as $aLanguage) {
-			$lng = $aLanguage->getCode();
-			
-			$label = sensitiveIO::request('label_'.$lng);
-			$desc = sensitiveIO::request('description_'.$lng);
-			$file = sensitiveIO::request('file_'.$lng);
-			
-			$item->setLabel($label, $aLanguage);
-			$item->setDescription($desc, $aLanguage);
-			// File upload management
-			if ($item->getFilePath($aLanguage, false, PATH_RELATIVETO_WEBROOT, true) && (!$file || pathinfo($file, PATHINFO_BASENAME) != $item->getFilePath($aLanguage, false, PATH_RELATIVETO_WEBROOT, true))) {
-				@unlink($item->getFilePath($aLanguage, true, PATH_RELATIVETO_FILESYSTEM, true));
-				$item->setFile('', $aLanguage);
-			}
-			if ($file && io::strpos($file, PATH_UPLOAD_WR.'/') !== false) {
-				//destroy old file if any
-				if ($item->getFilePath($aLanguage, false, PATH_RELATIVETO_WEBROOT, true)) {
+			// Save all translated datas
+			foreach ($all_languages as $aLanguage) {
+				$lng = $aLanguage->getCode();
+				
+				$label = sensitiveIO::request('label_'.$lng);
+				$desc = sensitiveIO::request('description_'.$lng);
+				$file = sensitiveIO::request('file_'.$lng);
+				
+				$item->setLabel($label, $aLanguage);
+				$item->setDescription($desc, $aLanguage);
+				// File upload management
+				if ($item->getFilePath($aLanguage, false, PATH_RELATIVETO_WEBROOT, true) && (!$file || pathinfo($file, PATHINFO_BASENAME) != $item->getFilePath($aLanguage, false, PATH_RELATIVETO_WEBROOT, true))) {
 					@unlink($item->getFilePath($aLanguage, true, PATH_RELATIVETO_FILESYSTEM, true));
 					$item->setFile('', $aLanguage);
 				}
+				if ($file && io::strpos($file, PATH_UPLOAD_WR.'/') !== false) {
+					//destroy old file if any
+					if ($item->getFilePath($aLanguage, false, PATH_RELATIVETO_WEBROOT, true)) {
+						@unlink($item->getFilePath($aLanguage, true, PATH_RELATIVETO_FILESYSTEM, true));
+						$item->setFile('', $aLanguage);
+					}
+					
+					//move and rename uploaded file 
+					$filename = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $file);
+					$basename = pathinfo($filename, PATHINFO_BASENAME);
+					if (!$item->getID()) { //need item ID
+						$item->writeToPersistence();
+					}
+					//create file path
+					$path = $item->getFilePath($aLanguage, true, PATH_RELATIVETO_FILESYSTEM, false).'/';
+					$extension = pathinfo($file, PATHINFO_EXTENSION);
+					$newBasename = "cat-".$item->getID()."-file-".$lng.".".$extension;
+					$newFilename = $path.'/'.$newBasename;
+					if (!CMS_file::moveTo($filename, $newFilename)) {
+						$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_FILE_ERROR)."\n";
+						break;
+					}
+					CMS_file::chmodFile(FILES_CHMOD, $newFilename);
+					//set it
+					if (!$item->setFile($newBasename, $aLanguage)) {
+						$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_FILE_ERROR)."\n";
+						break;
+					}
+				}
+				$item->writeToPersistence();
+			}
+			if ($item->getIconPath(false, PATH_RELATIVETO_WEBROOT, true) && (!$icon || pathinfo($icon, PATHINFO_BASENAME) != $item->getIconPath(false, PATH_RELATIVETO_WEBROOT, true))) {
+				@unlink($item->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, true));
+				$item->setAttribute('icon', '');
+			}
+			if ($icon && io::strpos($icon, PATH_UPLOAD_WR.'/') !== false) {
+				//destroy old file if any
+				if ($item->getIconPath(false, PATH_RELATIVETO_WEBROOT, true)) {
+					@unlink($item->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, true));
+					$item->setAttribute('icon', '');
+				}
 				
 				//move and rename uploaded file 
-				$filename = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $file);
+				$filename = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $icon);
 				$basename = pathinfo($filename, PATHINFO_BASENAME);
 				if (!$item->getID()) { //need item ID
 					$item->writeToPersistence();
 				}
 				//create file path
-				$path = $item->getFilePath($aLanguage, true, PATH_RELATIVETO_FILESYSTEM, false).'/';
-				$extension = pathinfo($file, PATHINFO_EXTENSION);
-				$newBasename = "cat-".$item->getID()."-file-".$lng.".".$extension;
+				$path = $item->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, false).'/';
+				$extension = pathinfo($icon, PATHINFO_EXTENSION);
+				$newBasename = "cat-".$item->getID()."-icon.".$extension;
 				$newFilename = $path.'/'.$newBasename;
 				if (!CMS_file::moveTo($filename, $newFilename)) {
 					$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_FILE_ERROR)."\n";
@@ -164,77 +205,56 @@ switch ($action) {
 				}
 				CMS_file::chmodFile(FILES_CHMOD, $newFilename);
 				//set it
-				if (!$item->setFile($newBasename, $aLanguage)) {
+				if (!$item->setAttribute('icon', $newBasename)) {
 					$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_FILE_ERROR)."\n";
 					break;
 				}
-			}
-			$item->writeToPersistence();
-		}
-		if ($item->getIconPath(false, PATH_RELATIVETO_WEBROOT, true) && (!$icon || pathinfo($icon, PATHINFO_BASENAME) != $item->getIconPath(false, PATH_RELATIVETO_WEBROOT, true))) {
-			@unlink($item->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, true));
-			$item->setAttribute('icon', '');
-		}
-		if ($icon && io::strpos($icon, PATH_UPLOAD_WR.'/') !== false) {
-			//destroy old file if any
-			if ($item->getIconPath(false, PATH_RELATIVETO_WEBROOT, true)) {
-				@unlink($item->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, true));
-				$item->setAttribute('icon', '');
-			}
-			
-			//move and rename uploaded file 
-			$filename = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $icon);
-			$basename = pathinfo($filename, PATHINFO_BASENAME);
-			if (!$item->getID()) { //need item ID
 				$item->writeToPersistence();
 			}
-			//create file path
-			$path = $item->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, false).'/';
-			$extension = pathinfo($icon, PATHINFO_EXTENSION);
-			$newBasename = "cat-".$item->getID()."-icon.".$extension;
-			$newFilename = $path.'/'.$newBasename;
-			if (!CMS_file::moveTo($filename, $newFilename)) {
-				$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_FILE_ERROR)."\n";
-				break;
+			if (!$cms_message) {
+				if (!$item->writeToPersistence()) {
+					$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_SAVE_ERROR);
+				} else {
+					$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
+					$content = array('success' => true, 'id' => $item->getID());
+				}
 			}
-			CMS_file::chmodFile(FILES_CHMOD, $newFilename);
-			//set it
-			if (!$item->setAttribute('icon', $newBasename)) {
-				$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_FILE_ERROR)."\n";
-				break;
-			}
-			$item->writeToPersistence();
-		}
-		if (!$cms_message) {
-			if (!$item->writeToPersistence()) {
-				$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_SAVE_ERROR);
-			} else {
-				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
-				$content = array('success' => true, 'id' => $item->getID());
-			}
+		} else {
+			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_ERROR_PROTECTED);
+			$item->raiseError('Error during modification of category '.$item->getID().'. Category is protected.');
 		}
 	break;
 	case 'delete':
 		$category = new CMS_moduleCategory($categoryId);
-		$father = new CMS_moduleCategory($category->getAttribute('parentID'));
-		if (CMS_moduleCategories_catalog::detachCategory($category)) {
-			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
-			$content = array('success' => true);
+		if (!$category->isProtected()) {
+			$father = new CMS_moduleCategory($category->getAttribute('parentID'));
+			if (CMS_moduleCategories_catalog::detachCategory($category)) {
+				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
+				$content = array('success' => true);
+			} else {
+				$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_DELETE_ERROR);
+			}
 		} else {
-			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_DELETE_ERROR);
+			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_ERROR_PROTECTED);
+			$category->raiseError('Error during modification of category '.$category->getID().'. Category is protected.');
 		}
 	break;
 	case 'move':
 		$category = new CMS_moduleCategory($categoryId);
-		$newParent = new CMS_moduleCategory($newParentId);
-		if (!$newParentId) {
-			$newParent->setAttribute('moduleCodename', $codename);
-		}
-		$index++; //+1 because interface start index to 0 and system start it to 1
-		if (CMS_moduleCategories_catalog::moveCategory($category, $newParent, $index)) { 
-			$content = array('success' => true);
+		if (!$category->isProtected()) {
+			$newParent = new CMS_moduleCategory($newParentId);
+			if (!$newParentId) {
+				$newParent->setAttribute('moduleCodename', $codename);
+			}
+			$index++; //+1 because interface start index to 0 and system start it to 1
+			if (CMS_moduleCategories_catalog::moveCategory($category, $newParent, $index)) { 
+				$content = array('success' => true);
+			} else {
+				$cms_message = $cms_language->getMessage(MESSAGE_ERROR_CATEGORY_MOVE);
+			}
 		} else {
-			$cms_message = $cms_language->getMessage(MESSAGE_ERROR_CATEGORY_MOVE);
+			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_ERROR_PROTECTED);
+			$category->raiseError('Error during modification of category '.$category->getID().'. Category is protected.');
 		}
 	break;
 	default:

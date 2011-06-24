@@ -80,6 +80,9 @@ $phone = sensitiveIO::request('phone');
 $service = sensitiveIO::request('service');
 $state = sensitiveIO::request('state');
 $zipcode = sensitiveIO::request('zipcode');
+$company = sensitiveIO::request('company');
+$gender = sensitiveIO::request('gender');
+
 //alerts
 $alerts = sensitiveIO::request('alerts', 'is_array', array());
 //groups
@@ -478,6 +481,9 @@ switch ($action) {
 			$contactData->setCity($city);
 			$contactData->setState($state);
 			$contactData->setCountry($country);
+			$contactData->setCompany($company);
+			$contactData->setGender($gender);
+			
 			$user->setContactData($contactData); 
 			$user->writeToPersistence();
 			

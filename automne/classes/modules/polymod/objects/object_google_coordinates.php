@@ -98,14 +98,14 @@ class CMS_object_google_coordinates extends CMS_object_common
 	  */
 	protected $_parameters = array(0 => array(
 										'type' 			=> 'boolean',
-										'required' 		=> true,
+										'required' 		=> false,
 										'internalName'	=> 'useFieldsAsAddress',
 										'externalName'	=> self::MESSAGE_OBJECT_COORDINATES_PARAMETER_USE_FIELDS,
 										'description'	=> self::MESSAGE_OBJECT_COORDINATES_PARAMETER_USE_FIELDS_DESC,
 									),
 									1 => array(
 										'type' 			=> 'fields',
-										'required' 		=> true,
+										'required' 		=> false,
 										'internalName'	=> 'fieldsForAddress',
 										'externalName'	=> self::MESSAGE_OBJECT_COORDINATES_PARAMETER_FIELDS,
 										'description'	=> self::MESSAGE_OBJECT_COORDINATES_PARAMETER_FIELDS_DESC,
@@ -160,6 +160,12 @@ class CMS_object_google_coordinates extends CMS_object_common
 		$return['items'][2] = $return['items'][1];
 		$return['items'][1] = $return['items'][0];
 		
+		//Add on change listeners to update image
+		$return['items'][1]['listeners'] = $return['items'][2]['listeners'] = array('change' => sensitiveIO::sanitizeJSString('function(el){
+			Ext.get(\''.$ids.'-view\').update(\'<img style="border:1px solid #C0C7CB;" src="http://maps.google.com/maps/api/staticmap?center=\'+Ext.getCmp(\''.$ids.'-lat\').getValue()+\',\'+Ext.getCmp(\''.$ids.'-long\').getValue()+\'&zoom=15&size=600x200&markers=\'+Ext.getCmp(\''.$ids.'-lat\').getValue()+\',\'+Ext.getCmp(\''.$ids.'-long\').getValue()+\'&sensor=false" />\');
+		}', false, false));
+		
+		
 		//Create toolbar
 		$return['items'][0] = array(
 			'xtype'		=> 'toolbar',
@@ -187,6 +193,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 						if (status == \'OK\') {
 							Ext.getCmp(\''.$ids.'-long\').setValue(results[0].geometry.location.lng());
 							Ext.getCmp(\''.$ids.'-lat\').setValue(results[0].geometry.location.lat());
+							Ext.get(\''.$ids.'-view\').update(\'<img style="border:1px solid #C0C7CB;" src="http://maps.google.com/maps/api/staticmap?center=\'+results[0].geometry.location.lat()+\',\'+results[0].geometry.location.lng()+\'&zoom=15&size=600x200&markers=\'+results[0].geometry.location.lat()+\',\'+results[0].geometry.location.lng()+\'&sensor=false" />\');
 						} else {
 							Automne.message.popup({
 								msg: 				String.format(\''.$language->getJsMessage(self::MESSAGE_OBJECT_COORDINATES_FIELD_UNKOWN_ADDRESS,false ,$this->_messagesModule).'\', addr),
@@ -232,6 +239,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 							if (map.gmarks && map.gmarks[0]) {
 								Ext.getCmp(\''.$ids.'-long\').setValue(map.gmarks[0].getPosition().lng());
 								Ext.getCmp(\''.$ids.'-lat\').setValue(map.gmarks[0].getPosition().lat());
+								Ext.get(\''.$ids.'-view\').update(\'<img style="border:1px solid #C0C7CB;" src="http://maps.google.com/maps/api/staticmap?center=\'+map.gmarks[0].getPosition().lat()+\',\'+map.gmarks[0].getPosition().lng()+\'&zoom=15&size=600x200&markers=\'+map.gmarks[0].getPosition().lat()+\',\'+map.gmarks[0].getPosition().lng()+\'&sensor=false" />\');
 							}
 						}}
 		            });
@@ -262,6 +270,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 									if (map.gmarks && map.gmarks[0]) {
 										Ext.getCmp(\''.$ids.'-long\').setValue(map.gmarks[0].getPosition().lng());
 										Ext.getCmp(\''.$ids.'-lat\').setValue(map.gmarks[0].getPosition().lat());
+										Ext.get(\''.$ids.'-view\').update(\'<img style="border:1px solid #C0C7CB;" src="http://maps.google.com/maps/api/staticmap?center=\'+map.gmarks[0].getPosition().lat()+\',\'+map.gmarks[0].getPosition().lng()+\'&zoom=15&size=600x200&markers=\'+map.gmarks[0].getPosition().lat()+\',\'+map.gmarks[0].getPosition().lng()+\'&sensor=false" />\');
 									}
 								}}
 				          	});
@@ -280,6 +289,11 @@ class CMS_object_google_coordinates extends CMS_object_common
 				}
 			}', false, false)),
 			'scope'		=> 'this'
+		);
+		$return['items'][3] = array(
+			'xtype'		=> 'panel',
+			'border'	=> false,
+			'html'		=> '<div id="'.$ids.'-view" style="overflow:auto;text-align:center;">'.($this->_subfieldValues[0]->getValue() && $this->_subfieldValues[1]->getValue() ? '<img style="border:1px solid #C0C7CB;" src="http://maps.google.com/maps/api/staticmap?center='.$this->_subfieldValues[1]->getValue().','.$this->_subfieldValues[0]->getValue().'&zoom=15&size=600x200&markers='.$this->_subfieldValues[1]->getValue().','.$this->_subfieldValues[0]->getValue().'&sensor=false" />' : '').'</div>',
 		);
 		return $return;
 	}
@@ -310,8 +324,10 @@ class CMS_object_google_coordinates extends CMS_object_common
 		switch($name) {
 		    case "longitude" :
 		        return $this->_subfieldValues[0]->getValue();
+			break;
 		    case "latitude" :
 		        return $this->_subfieldValues[1]->getValue();
+			break;
 		    default:
 				return parent::getValue($name, $parameters);
 			break;
@@ -328,6 +344,10 @@ class CMS_object_google_coordinates extends CMS_object_common
   * @access public
   */
     function getInput($fieldID, $language, $inputParams) {
+		//hidden field : use parent method
+		if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
+			return parent::getInput($fieldID, $language, $inputParams);
+		}
 		$params = $this->getParamsValues();
 		$html = 'todo';
 		return $html;

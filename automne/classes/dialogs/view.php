@@ -11,8 +11,6 @@
 // +----------------------------------------------------------------------+
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: view.php,v 1.14 2010/03/08 16:43:32 sebastien Exp $
 
 /**
   * Class CMS_view
@@ -586,7 +584,6 @@ class CMS_view extends CMS_grandFather
 			default:
 				$title = ($this->_title) ? '<title>'.APPLICATION_LABEL.' :: '.$this->_title.'</title>' : '';
 				echo '<head>
-						<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
 						<meta http-equiv="Content-Type" content="text/html; charset='.APPLICATION_DEFAULT_ENCODING.'" />
 						'.$title.'
 						'.$this->_copyright().'
@@ -703,13 +700,25 @@ class CMS_view extends CMS_grandFather
 	  * @param boolean $exit : does the script must exit now ? (default : true)
 	  * @param integer $type : the http redirection code to use. Accept 302 and 301 (default : 302)
 	  * @return boolean
-	  * @access private
+	  * @access public
+	  * @static
 	  */
-	function redirect($url, $exit = true, $type = 302) {
-		if ($type == 302) {
-			header('HTTP/1.x 302 Found', true, 302);
-		} elseif($type == 301) {
+	static function redirect($url, $exit = true, $type = 302) {
+		$url = trim($url);
+		if (!$url || !@parse_url($url)) {
+			CMS_grandFather::raiseError('Try to make a redirection to an empty or invalid url: '.$url);
+			return false;
+		}
+		if (headers_sent()) {
+			CMS_grandFather::raiseError('Try to make a redirection to '.$url.' while content already sent to browser.');
+			return false;
+		}
+		if($type == 301) {
 			header('HTTP/1.x 301 Moved Permanently', true, 301);
+		} elseif ($type == 302) {
+			header('HTTP/1.x 302 Found', true, 302);
+		} elseif($type == 303) {
+			header('HTTP/1.x 303 See Other', true, 303);
 		}
 		//in case of redirect in an admin frame, send to information page
 		if (isset($_REQUEST['atm-context']) && $_REQUEST['atm-context'] == 'adminframe') {

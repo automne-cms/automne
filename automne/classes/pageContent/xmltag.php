@@ -108,6 +108,13 @@ class CMS_XMLTag extends CMS_grandFather
 	protected $_textContentInvalid = false;
 	
 	/**
+	  * Tags header code
+	  * @var array
+	  * @access private
+	  */
+	protected $_tagHeaderCode = array();
+	
+	/**
 	  * Constructor.
 	  *
 	  * @param string $name The name of the tag
@@ -332,6 +339,11 @@ class CMS_XMLTag extends CMS_grandFather
 	function compute($parameters = array()) {
 		$this->_computeParams = (array) $parameters;
 		$this->_uniqueID = CMS_XMLTag::getUniqueID();
+		return $this->_returnComputedDatas($this->_compute());
+	}
+	
+	function _returnComputedDatas($datas) {
+		$return = '';
 		if (isset($this->_parameters['context']) && $this->_parameters['context'] && $this->_parameters['context'] != $this->_context) {
 			if ($this->_context == CMS_XMLTag::PHP_CONTEXT) {
 				$return = '<?php '."\n".
@@ -343,17 +355,13 @@ class CMS_XMLTag extends CMS_grandFather
 						$return .= '$parameters[\'pageID\'] = \''.$this->_computeParams['object']->getID().'\';'."\n";
 					}
 				}
-				$return .= $this->_compute()."\n".
+				$return .= $datas."\n".
 				'echo $content;'."\n".
 				'unset($content, $replace);'."\n".
 				'//'.strtoupper($this->_name).' TAG END [ref. '.$this->_uniqueID."]\n".
 				'?>';
 			} else {
-				return ' ?> '.$this->_compute().' <?php ';
-				
-				$return .= '/* '.strtoupper($this->_name).' TAG START [ref. '.$this->_uniqueID."]*/ ?>".
-				$this->_compute().
-				'<?php /* '.strtoupper($this->_name).' TAG END [ref. '.$this->_uniqueID."]*/ \n";
+				$return = ' ?> '.$datas.' <?php ';
 			}
 		} else {
 			if ($this->_context == CMS_XMLTag::PHP_CONTEXT) {
@@ -361,7 +369,7 @@ class CMS_XMLTag extends CMS_grandFather
 			} else {
 				$return = '<?php /* '.strtoupper($this->_name).' TAG START [ref. '.$this->_uniqueID.']*/ ?>';
 			}
-			$return .= $this->_compute();
+			$return .= $datas;
 			if ($this->_context == CMS_XMLTag::PHP_CONTEXT) {
 				$return .= '//'.strtoupper($this->_name).' TAG END [ref. '.$this->_uniqueID."]\n";
 			} else {
@@ -384,12 +392,6 @@ class CMS_XMLTag extends CMS_grandFather
 			$return = call_user_func($this->_parameters['childrenCallback'], $this->_children);
 			if (isset($this->_parameters['context']) && $this->_parameters['context'] && $this->_parameters['context'] != $this->_context) {
 				if ($this->_context == CMS_XMLTag::PHP_CONTEXT) {
-					/*$return = 
-					'$replace_'.$this->_uniqueID.' = $replace; $content_'.$this->_uniqueID.' = $content;'."\n".
-					' ? >'.$return.'<?php '."\n".
-					'$content = $content_'.$this->_uniqueID.'; $replace = $replace_'.$this->_uniqueID.';'."\n".
-					'unset($replace_'.$this->_uniqueID.', $content_'.$this->_uniqueID.');'."\n";*/
-					
 					$return = 
 					'$replace_'.$this->_uniqueID.' = $replace; echo $content; $content = \'\';'."\n".
 					' ?>'.$return.'<?php '."\n".
@@ -435,6 +437,16 @@ class CMS_XMLTag extends CMS_grandFather
 	  */
 	function getTagReferences() {
 		return $this->_tagReferences;
+	}
+	
+	/**
+	  * Return tag header code
+	   *
+	  * @return array
+	  * @access public
+	  */
+	function getHeaderCode() {
+		return $this->_tagHeaderCode;
 	}
 	
 	/**
@@ -706,6 +718,40 @@ class CMS_XMLTag extends CMS_grandFather
 			'#\<\!\-\-(.*)\-\-\>#sU' 	=> '', //Strip multi lines HTML comments
 		);
 		return preg_replace(array_keys($pregreplace), $pregreplace, str_replace(array_keys($replace), $replace, $definition));
+	}
+	
+	/**
+	  * Return well indented php code
+	  *
+	  * @param string $phpcode : php code to indent
+	  * @return string indented php code
+	  * @access public
+	  * @static
+	  */
+	function indentPHP($phpcode) {
+		$phparray = array_map('trim',explode("\n",$phpcode));
+		$level = 0;
+		foreach ($phparray as $linenb => $phpline) {
+			//remove blank lines
+			if ($phpline == '') {
+				unset($phparray[$linenb]);
+				continue;
+			}
+			//check for indent level down
+			$firstChar = $phpline[0];
+			if ($firstChar == '}' || $firstChar == ')' || substr($phpline, 0, 5) == 'endif') {
+				$level--;
+			}
+			//indent code
+			$indent = io::isPositiveInteger($level) ? str_repeat("\t" , $level) : '';
+			$phparray[$linenb] = $indent.$phpline;
+			//check for indent level up
+			$lastChar = substr($phpline, -1);
+			if ($lastChar == '{' || $lastChar == ':' || substr($phpline, -7) == 'array (') {
+				$level++;
+			}
+		}
+		return implode ("\n",$phparray);
 	}
 }
 ?>
