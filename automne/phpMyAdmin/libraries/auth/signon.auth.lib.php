@@ -108,6 +108,13 @@ function PMA_auth_check()
             /* No need to care about token on logout */
             $pma_token = $_SESSION['PMA_single_signon_token'];
         }
+		
+		//Added for Automne : Do not remove
+		//set the database name to connect
+		if (isset($_SESSION['PMA_single_signon_only_db'])) {
+			$GLOBALS['cfg']['Server']['only_db']=$_SESSION['PMA_single_signon_only_db'];
+		}
+		//End Added for Automne : Do not remove
 
         /* End single signon session */
         session_write_close();
@@ -124,13 +131,6 @@ function PMA_auth_check()
 
        /* Set the single signon port */
        $GLOBALS['cfg']['Server']['port'] = $single_signon_port;
-	   
-	   //Added for Automne : Do not remove
-		//set the database name to connect
-		if (isset($_SESSION['PMA_single_signon_only_db'])) {
-			$GLOBALS['cfg']['Server']['only_db']=$_SESSION['PMA_single_signon_only_db'];
-		}
-		//End Added for Automne : Do not remove
 	   
         /* Restore our token */
         if (!empty($pma_token)) {

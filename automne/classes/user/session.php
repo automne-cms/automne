@@ -450,6 +450,9 @@ class CMS_session extends CMS_grandFather
 			}
 		}
 		$q = new CMS_query($sql);
+		//remove phpMyAdmin cookie if any
+		@setcookie(session_name(), false, time() - 3600, PATH_REALROOT_WR.'/automne/phpMyAdmin/', APPLICATION_COOKIE_DOMAIN, 0);
+		
 		return true;
 	}
 	

@@ -11,7 +11,7 @@ V4.2.0 (in progress)
 [REFACTOR] : Add thumbnail to field google coordinates in modules admin
 [REFACTOR] : Refactor tag atm-xml to be used in rows and in page templates
 [REFACTOR] : Images and files inserted into polymod fields now use correct website domain instead of main website domain
-[REFACTOR] : Add civility and company to users details
+[REFACTOR] : Add title and company to users details
 [REFACTOR] : Add log for user disconnection
 [REFACTOR] : Add previous login message on connection
 [FEATURE] : Add oembed object and oembed polymod field (external media field). Update Mediacenter to manage oembed medias

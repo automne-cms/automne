@@ -713,10 +713,12 @@ class CMS_view extends CMS_grandFather
 			CMS_grandFather::raiseError('Try to make a redirection to '.$url.' while content already sent to browser.');
 			return false;
 		}
-		if ($type == 302) {
-			header('HTTP/1.x 302 Found', true, 302);
-		} elseif($type == 301) {
+		if($type == 301) {
 			header('HTTP/1.x 301 Moved Permanently', true, 301);
+		} elseif ($type == 302) {
+			header('HTTP/1.x 302 Found', true, 302);
+		} elseif($type == 303) {
+			header('HTTP/1.x 303 See Other', true, 303);
 		}
 		//in case of redirect in an admin frame, send to information page
 		if (isset($_REQUEST['atm-context']) && $_REQUEST['atm-context'] == 'adminframe') {
