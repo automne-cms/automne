@@ -1,5 +1,5 @@
 V4.1.4 (in progress)
-[BUG] : Correct bugs numbers: 2070, 2154, 2252 (see http://www.automne-cms.org/bug/)
+[BUG] : Correct bugs numbers: 2049, 2070, 2154, 2252 (see http://www.automne-cms.org/bug/)
 [BUG] : Correct bug for better handling of HTTPS websites and cross HTTP and HTTPS websites on the same Automne
 [BUG] : Correct bug with external home page redirection
 [BUG] : Correct bug with tags which only contain character zero

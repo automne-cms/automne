@@ -65,14 +65,15 @@ Automne.treePanel = Ext.extend(Ext.tree.TreePanel, {
 		return true;
 	},
 	filterSearch: function(queryEvent) {
+		var parsed = parseInt(queryEvent.query, 10);
 		//check for integer search
-		if (!isNaN(parseInt(queryEvent.query,10))) {
+		if (!isNaN(parsed) && parsed.toString().length == queryEvent.query.length) {
 			//cancel query
 			queryEvent.cancel = true;
 			//collapse panel if it is open
 			queryEvent.combo.collapse();
 			//and reload tree with given id
-			var nodeId = parseInt(queryEvent.query,10);
+			var nodeId = parsed;
 			this.getLoader().baseParams.currentPage = nodeId;
 			var node = this.getNodeById('page' + nodeId);
 			if (node) {
@@ -128,9 +129,10 @@ Automne.treePanel = Ext.extend(Ext.tree.TreePanel, {
 		return true;
 	},
 	searchBeforeSelect: function(combo, record, index) {
+		var parsed = parseInt(record.id, 10);
 		//reload tree with given page id
-		if (!isNaN(parseInt(record.id,10))) {
-			var nodeId = parseInt(record.id,10);
+		if (!isNaN(parsed) && parsed.toString().length == record.id.length) {
+			var nodeId = parsed;
 			this.getLoader().baseParams.currentPage = nodeId;
 			var node = this.getNodeById('page' + nodeId);
 			if (node) {
