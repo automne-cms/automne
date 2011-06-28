@@ -290,7 +290,7 @@ class CMS_cache extends CMS_grandFather {
 				}
 				unset($matches);
 			}
-			//do not save content if cache has auto lifetime and content has phpnode or random element
+			//do not save content if cache has auto lifetime and content has phpnode or random or form elements
 			if ($this->_auto && 
 				(isset($cachedElements['phpnode']) && $cachedElements['phpnode'])
 				|| (isset($cachedElements['random']) && $cachedElements['random'])
