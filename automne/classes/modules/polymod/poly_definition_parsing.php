@@ -1243,6 +1243,9 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			))) {
 			return;
 		}
+		//disable cache for this row
+		$this->_parameters['cache'] = false;
+		$this->_elements['form'] = true;
 		$uniqueID = CMS_XMLTag::getUniqueID();
 		//add reference to this form to header callback
 		$this->_headCallBack['form'][] = $tag['attributes']['name'];
@@ -1669,9 +1672,10 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	static function prepareVar($var) {
 		if (is_array($var)) {
 			return sizeof($var);
-		} else {
+		} elseif (is_scalar($var)) {
 			return "'".str_replace("'","\'",str_replace("\'","\\\'",$var))."'"; 
 		}
+		return $var;
 	}
 	
 	/**
