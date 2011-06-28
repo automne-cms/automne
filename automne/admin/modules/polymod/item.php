@@ -186,6 +186,7 @@ if ($object->isPrimaryResource()) {
 	},";
 	if ($cms_user->hasValidationClearance($codename)) {
 		$saveAndValidate = ",{
+			id:				'{$winId}-save-validate',
 			xtype:			'button',
 			text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_PUBLISH)}',
 			tooltip:		'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE_AND_VALID_DESC, false, MOD_POLYMOD_CODENAME)}',
@@ -227,6 +228,15 @@ $jscontent = <<<END
 	var submitItem = function (action) {
 		var form = Ext.getCmp('{$winId}-form').getForm();
 		if (form.isValid()) {
+			//disable button
+			var saveButton = Ext.getCmp('{$winId}-save');
+			if (saveButton) {
+				saveButton.disable();
+			}
+			var publishButton = Ext.getCmp('{$winId}-save-validate');
+			if (publishButton) {
+				publishButton.disable();
+			}
 			form.submit({
 				params:{
 					action:		action,
@@ -235,6 +245,15 @@ $jscontent = <<<END
 					item:		window.objectId
 				},
 				success:function(form, action){
+					//enbale button
+					var saveButton = Ext.getCmp('{$winId}-save');
+					if (saveButton) {
+						saveButton.enable();
+					}
+					var publishButton = Ext.getCmp('{$winId}-save-validate');
+					if (publishButton) {
+						publishButton.enable();
+					}
 					if (!action.result || action.result.success == false) {
 						Automne.message.show('{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE_ERROR, false, MOD_POLYMOD_CODENAME)}', '', window);
 					}
@@ -290,6 +309,7 @@ $jscontent = <<<END
 			items:[{$itemFields}]
 		}],
 		buttons:[{
+			id:				'{$winId}-save',
 			text:			'{$saveLabel}',
 			tooltip:		'{$saveTooltip}',
 			iconCls:		'{$saveIconCls}',
