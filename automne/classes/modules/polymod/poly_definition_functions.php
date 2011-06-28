@@ -479,5 +479,29 @@ class CMS_poly_definition_functions
 		}
 		return true;
 	}
+	
+	/**
+	  * 
+	  *
+	  * @param string $helper : 
+	  * @param mixed $string : 
+	  * @return mixed : 
+	  * @access public
+	  * @static
+	  */
+	static function helper($helper, $value) {
+		//split params if any
+		$params = (io::strpos($value, '|') !== false) ? explode('|', $value) : array($value);
+		if (is_callable($helper, false)) {//check if function/method name exists. false to adress bug 1389
+			if (io::strpos($helper, '::') !== false) {//static method call
+				$method = explode('::', $helper);
+				return call_user_func_array(array($method[0], $method[1]), $params);
+			} else { //function call
+				return call_user_func_array($helper, $params);
+			}
+		}
+		CMS_grandFather::raiseError('Unknown function '.$helper);
+		return $value;
+	}
 }
 ?>

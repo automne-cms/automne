@@ -688,15 +688,16 @@ class CMS_poly_object_catalog
 			$q = new CMS_query($sql);
 		}
 		//delete associated objects module files if any
-		$files = glob(PATH_MODULES_FILES_FS.'/'.$objectDef->getValue('module').'/*/r{'.implode(',',$itemIDs).'}_*', GLOB_BRACE);
-		if (is_array($files) && $files) {
-			foreach ($files as $file) {
-				if (is_file($file)) {
-					@unlink($file);
+		foreach ($itemIDs as $itemID) {
+			$files = glob(PATH_MODULES_FILES_FS.'/'.$objectDef->getValue('module').'/*/r'.$itemID.'_*');
+			if (is_array($files) && $files) {
+				foreach ($files as $file) {
+					if (is_file($file)) {
+						@unlink($file);
+					}
 				}
 			}
 		}
-		
 		//Clear polymod cache
 		CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $objectDef->getValue('module')));
 		return true;

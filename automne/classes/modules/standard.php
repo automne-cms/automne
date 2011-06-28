@@ -2175,6 +2175,9 @@ class CMS_module_standard extends CMS_module
 		//replace '{user:id:type}' value by corresponding CMS_profile_usersCatalog::getUserValue(id, type) call
 		$replace["#^\{user\:([^:]*?(::)?[^:]*?)\:([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_profile_usersCatalog::getUserValue("\1", "\3", (isset($cms_user) ? $cms_user->getUserId() : null))';
 		
+		//replace '{helper:function:var}' value by corresponding CMS_poly_definition_functions::helper(function, var) call
+		$replace["#^\{helper\:(([^:]*?(\:\:)?[^:]*?)*)\:(([^:]*?(\:\:)?[^:]*?)*)\}$#U"] = 'CMS_poly_definition_functions::helper("\1", "\4")';
+		
 		return $replace;
 	}
 	

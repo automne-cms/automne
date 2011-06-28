@@ -1,5 +1,6 @@
 # Dev files
 ./test.php
+./test*.php
 ./config.php
 ./automne/cms_error_log
 ./automne/SUBVERSION

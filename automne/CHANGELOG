@@ -12,7 +12,7 @@ V4.2.0 (in progress)
 [REFACTOR] : Refactor tag atm-xml to be used in rows and in page templates
 [REFACTOR] : Images and files inserted into polymod fields now use correct website domain instead of main website domain
 [REFACTOR] : Add title and company to users details
-[REFACTOR] : Add log for user disconnection
+[REFACTOR] : Add log for user logout
 [REFACTOR] : Add previous login message on connection
 [FEATURE] : Add oembed object and oembed polymod field (external media field). Update Mediacenter to manage oembed medias
 [FEATURE] : Add parent page selection on new page creation
@@ -23,6 +23,7 @@ V4.2.0 (in progress)
 [FEATURE] : Add atm-redirect tag to create a redirection from one page to another one
 [FEATURE] : Add HTTPS option for individual pages
 [FEATURE] : Add an option to redirect from alt domain to main domain for websites
+[FEATURE] : Add {helper:XXX:YYY} variable type which allow usage of PHP helpers to format given variables
 
 V4.1.4 (in progress)
 [BUG] : Correct bugs numbers: 2070 (see http://www.automne-cms.org/bug/)
