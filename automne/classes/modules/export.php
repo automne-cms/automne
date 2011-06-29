@@ -177,6 +177,8 @@ class CMS_module_export extends CMS_grandFather
 	function export($format = 'php') {
 		$aExport = array();
 		if ($this->_hasExport) {
+			//force default language loading to overwrite user language
+			global $cms_language;
 			$oModule = CMS_modulesCatalog::getByCodename($this->_module);
 			if (!$oModule->hasError()) {
 				$aModule = $oModule->asArray($this->_parameters, $files);
@@ -188,6 +190,7 @@ class CMS_module_export extends CMS_grandFather
 				//create export datas
 				$aExport = array(
 					'version'		=> AUTOMNE_VERSION,
+					'language'		=> $cms_language->getCode(),
 					'description'	=> isset($this->_parameters['description']) ? $this->_parameters['description'] : '',
 					'modules'		=> array($aModule),
 				);

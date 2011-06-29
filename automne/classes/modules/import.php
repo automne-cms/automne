@@ -143,11 +143,11 @@ class CMS_module_import extends CMS_grandFather
 	 * 
 	 * @param mixed $datas, the import datas
 	 * @param string $format, the import format in : php (default), xml
-	 * @param CMS_language $cms_language, the current cms_language to use
+	 * @param CMS_language $cms_language, the current cms_language to use. Passed by reference to temporary overwrite it with import language
 	 * @param string $infos (reference), the returned import infos
 	 * @return boolean : the import status
 	 */
-	function import($datas, $format = 'php', $cms_language, &$infos) {
+	function import($datas, $format = 'php', &$cms_language, &$infos) {
 		$infos = '';
 		$return = true;
 		switch ($format) {
@@ -185,6 +185,16 @@ class CMS_module_import extends CMS_grandFather
 			$infos .= 'Error: Automne version below the version of imported datas'."\n";
 			return false;
 		}
+		if (isset($importedArray['language'])) {
+			//force import language to overwrite user language because imported datas refer to this language
+			$oldLanguage = $cms_language->getCode();
+			$cms_language = CMS_languagesCatalog::getByCode($importedArray['language']);
+			if (!$cms_language || $cms_language->hasError()) {
+				//reload user language
+				$cms_language = CMS_languagesCatalog::getByCode($oldLanguage);
+			}
+		}
+		
 		//return import description if exists
 		if (isset($importedArray['description']) && $importedArray['description']) {
 			$infos .= '--------------------------------------------------------------------------------------------------------'."\n";
@@ -210,6 +220,10 @@ class CMS_module_import extends CMS_grandFather
 					$return &= false;
 				break;
 			}
+		}
+		if (isset($importedArray['language'])) {
+			//reload user language
+			$cms_language = CMS_languagesCatalog::getByCode($oldLanguage);
 		}
 		return $return;
 	}
