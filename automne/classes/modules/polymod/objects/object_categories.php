@@ -681,6 +681,39 @@ class CMS_object_categories extends CMS_object_common
 		}
 		//if this field is the only one which use categories
 		if (sizeof($categoriesFields) == 1 && in_array($this->_field->getID(), $categoriesFields)) {
+			if ($this->_public) {
+				//check for publication dates
+				$sql = "
+					select
+						distinct objectID
+					from
+						mod_subobject_integer_public,
+						resources,
+						resourceStatuses
+					where
+						objectFieldID = '0'
+						and value = id_res
+						and status_res=id_rs
+						and location_rs='".RESOURCE_LOCATION_USERSPACE."'
+						and publication_rs='".RESOURCE_PUBLICATION_PUBLIC."'
+						and publicationDateStart_rs <= '".date('Y-m-d')."'
+						and publicationDateStart_rs != '0000-00-00'
+						and (publicationDateEnd_rs >= '".date('Y-m-d')."'
+						or publicationDateEnd_rs = '0000-00-00')
+					";
+				if ($restrictToItemsIds) {
+					$sql .= " and objectID in (".implode($restrictToItemsIds, ', ').")";
+				} else {
+					$sql .= " and objectID in (select objectID from mod_subobject_integer_public where objectFieldID = '".$this->_field->getID()."')";
+				}
+				$q = new CMS_query($sql);
+				$restrictToItemsIds = array();
+				if ($q->getNumRows()) {
+					while ($arr = $q->getArray()) {
+						$restrictToItemsIds[] = $arr['objectID'];
+					}
+				}
+			}
 			$table = ($this->_public) ? 'mod_subobject_integer_public' : 'mod_subobject_integer_edited';
 			$sql = "
 				select
