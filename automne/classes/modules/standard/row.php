@@ -1030,8 +1030,8 @@ class CMS_row extends CMS_grandFather
 		if (!isset($params['files']) || $params['files'] == true) {
 			if (isset($data['definition']) && $data['definition']) {
 				if (!isset($params['updateRows']) || $params['updateRows'] == true) {
-					//set definition
-					$return = $this->setDefinition($data['definition'], false);
+					//set definition (and unescape cdata)
+					$return = $this->setDefinition(str_replace(']]\>', ']]>', $data['definition']), false);
 					if ($return !== true) {
 						$infos .= 'Error : cannot set row definition ... : '.$return."\n";
 						return false;

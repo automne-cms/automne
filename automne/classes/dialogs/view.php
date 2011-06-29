@@ -501,11 +501,20 @@ class CMS_view extends CMS_grandFather
 				}
 			}
 			$this->raiseError('Unautorized query on a secure interface : Query on '.$_SERVER['SCRIPT_NAME'].' - from '.@$_SERVER['HTTP_REFERER']);
-			//$this->raiseError(time());
-			//$this->raiseError(print_r(CMS_context::getSessionVar('atm-tokens'), true));
 			$this->setDisconnected(true);
 			$this->show();
 		}
+	}
+	
+	/**
+	  * Escape cdata end tag in text to avoid error in returned content
+	  *
+	  * @param string $text : the text to escape
+	  * @return string : the escaped content
+	  * @access private
+	  */
+	private function _espaceCdata($text) {
+		return str_replace(']]>', ']]\>', $text);
 	}
 	
 	/**
@@ -523,7 +532,7 @@ class CMS_view extends CMS_grandFather
 				if ($this->hasErrors()) {
 					$return .= 
 					'	<error>1</error>'."\n".
-					'	<errormessage><![CDATA['.$this->getErrors(true).']]></errormessage>'."\n";
+					'	<errormessage><![CDATA['.$this->_espaceCdata($this->getErrors(true)).']]></errormessage>'."\n";
 				} else {
 					$return .= 
 					'	<error>0</error>'."\n";
@@ -536,15 +545,15 @@ class CMS_view extends CMS_grandFather
 				}
 				if ($this->hasRawDatas()) {
 					$return .= 
-					'	<rawdatas><![CDATA['.$this->getRawDatas(true).']]></rawdatas>'."\n";
+					'	<rawdatas><![CDATA['.$this->_espaceCdata($this->getRawDatas(true)).']]></rawdatas>'."\n";
 				}
 				if ($this->_actionmessage) {
 					$return .= 
-					'	<message><![CDATA['.$this->_actionmessage.']]></message>'."\n";
+					'	<message><![CDATA['.$this->_espaceCdata($this->_actionmessage).']]></message>'."\n";
 				}
 				if ($this->_title) {
 					$return .= 
-					'	<title><![CDATA['.$this->_title.']]></title>'."\n";
+					'	<title><![CDATA['.$this->_espaceCdata($this->_title).']]></title>'."\n";
 				}
 				if ($this->_disconnected) {
 					$return .= 
@@ -557,7 +566,7 @@ class CMS_view extends CMS_grandFather
 				}
 				if (SYSTEM_DEBUG && STATS_DEBUG) {
 					$return .= 
-					'	<stats><![CDATA['.view_stat(true).']]></stats>'."\n";
+					'	<stats><![CDATA['.$this->_espaceCdata(view_stat(true)).']]></stats>'."\n";
 				}
 				$jsfiles = CMS_view::getJavascript(array(), 'screen', true);
 				if ($jsfiles) {
@@ -566,7 +575,7 @@ class CMS_view extends CMS_grandFather
 						'manager'	=> CMS_view::getJSManagerURL()
 					);
 					$return .= 
-					'	<jsfiles><![CDATA['.sensitiveIO::jsonEncode($files).']]></jsfiles>'."\n";
+					'	<jsfiles><![CDATA['.$this->_espaceCdata(sensitiveIO::jsonEncode($files)).']]></jsfiles>'."\n";
 				}
 				$cssfiles = CMS_view::getCSS(array(), 'screen', true);
 				if ($cssfiles) {
@@ -575,7 +584,7 @@ class CMS_view extends CMS_grandFather
 						'manager'	=> CMS_view::getCSSManagerURL()
 					);
 					$return .= 
-					'	<cssfiles><![CDATA['.sensitiveIO::jsonEncode($files).']]></cssfiles>'."\n";
+					'	<cssfiles><![CDATA['.$this->_espaceCdata(sensitiveIO::jsonEncode($files)).']]></cssfiles>'."\n";
 				}
 				if (!$returnValue) {
 					echo $return;
@@ -629,11 +638,11 @@ class CMS_view extends CMS_grandFather
 				$return = '';
 				if ($this->_jscontent) {
 					$return .= 
-					'	<jscontent><![CDATA['.$this->_jscontent.']]></jscontent>'."\n";
+					'	<jscontent><![CDATA['.$this->_espaceCdata($this->_jscontent).']]></jscontent>'."\n";
 				}
 				if ($this->_content) {
 					$return .= 
-					'	<'.$this->_contentTags[$this->_displayMode].'><![CDATA['.sensitiveIO::jsonEncode($this->_content).']]></'.$this->_contentTags[$this->_displayMode].'>'."\n";
+					'	<'.$this->_contentTags[$this->_displayMode].'><![CDATA['.$this->_espaceCdata(sensitiveIO::jsonEncode($this->_content)).']]></'.$this->_contentTags[$this->_displayMode].'>'."\n";
 				}
 				if (!$returnValue) {
 					echo $return;
@@ -645,11 +654,11 @@ class CMS_view extends CMS_grandFather
 				$return = '';
 				if ($this->_jscontent) {
 					$return .= 
-					'	<jscontent><![CDATA['.$this->_jscontent.']]></jscontent>'."\n";
+					'	<jscontent><![CDATA['.$this->_espaceCdata($this->_jscontent).']]></jscontent>'."\n";
 				}
 				if ($this->_content) {
 					$return .= 
-					'	<'.$this->_contentTags[$this->_displayMode].'><![CDATA['.$this->_content.']]></'.$this->_contentTags[$this->_displayMode].'>'."\n";
+					'	<'.$this->_contentTags[$this->_displayMode].'><![CDATA['.$this->_espaceCdata($this->_content).']]></'.$this->_contentTags[$this->_displayMode].'>'."\n";
 				}
 				if (!$returnValue) {
 					echo $return;
@@ -661,7 +670,7 @@ class CMS_view extends CMS_grandFather
 				$return = '';
 				if ($this->_jscontent) {
 					$return .= 
-					'	<jscontent><![CDATA['.$this->_jscontent.']]></jscontent>'."\n";
+					'	<jscontent><![CDATA['.$this->_espaceCdata($this->_jscontent).']]></jscontent>'."\n";
 				}
 				if ($this->_content) {
 					//TODOV4 : check for XML conformity of $this->_content
