@@ -101,6 +101,10 @@ class CMS_oembed extends CMS_grandFather
 	  * @access public
 	  */
 	function __construct($url, $maxwidth='', $maxheight='', $embedlyKey = '') {
+		$url = trim($url);
+		if (strtolower(substr($url, 0, 4)) != 'http') {
+			$url = 'http://'.$url;
+		}
 		if (!@parse_url($url)) {
 			$this->raiseError('Malformed url: '.$url);
 			return;
@@ -110,7 +114,6 @@ class CMS_oembed extends CMS_grandFather
 		} elseif (defined('OEMBED_EMBEDLY_KEY') && OEMBED_EMBEDLY_KEY) {
 			$this->_embedlyKey = OEMBED_EMBEDLY_KEY;
 		}
-		
 		$this->_url = $url;
 		$this->_maxwidth = $maxwidth && io::isPositiveInteger($maxwidth) ? $maxwidth : '';
 		$this->_maxheight = $maxheight && io::isPositiveInteger($maxheight) ? $maxheight : '';
@@ -300,8 +303,6 @@ class CMS_oembed extends CMS_grandFather
 				    'timeout'		=> 30,
 					'useragent'		=> 'Mozilla/5.0 (compatible; Automne/'.AUTOMNE_VERSION.'; +http://www.automne-cms.org)',
 				));
-				 
-				// Ajout de plusieurs paramètres en un appel
 				$client->setParameterGet(array(
 				    'url'		=> $this->_url,
 					'format'	=> 'json',

@@ -6,7 +6,7 @@
 				<atm-result search="mediaresult">
 					<atm-if name="oembed" what="{['object2']['fields'][10]['hasValue']}">
 						<div class="pmedia-oembed">{['object2']['fields'][10]['html']|320,250}</div>
-						<atm-if what="{['object2']['fields'][10]['authorName']} || {['object2']['fields'][10]['title']}">
+						<atm-if what="{['object2']['fields'][10]['type']} != 'link' &amp;&amp; ({['object2']['fields'][10]['authorName']} || {['object2']['fields'][10]['title']})">
 							<div class="pmedia-oembed-legend">
 								<atm-if name="oembedTitle" what="{['object2']['fields'][10]['url']} &amp;&amp; {['object2']['fields'][10]['title']}">
 									<a href="{['object2']['fields'][10]['url']}" target="_blank">{['object2']['fields'][10]['title']}</a>

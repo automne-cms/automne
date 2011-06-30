@@ -154,7 +154,7 @@ class CMS_object_oembed extends CMS_object_common
 			'value'			=>	($this->_subfieldValues[0]->getValue() ? sensitiveIO::decodeEntities($this->_subfieldValues[0]->getValue()) : ''),
 			'enableKeyEvents'=> true,
 			'listeners'		=>	array(
-				'keyup' => array(
+				'blur' => array(
 					'fn' =>	sensitiveIO::sanitizeJSString('function(el){
 						/*call server for oembed HTML content*/
 						Ext.get(\''.$ids.'-view\').update(\'<img src="'.$loadingURL.'" />\');
