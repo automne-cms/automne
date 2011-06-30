@@ -140,29 +140,36 @@ class CMS_linxNodespec extends CMS_grandFather
 			}
 			break;
 		case "codename":
-			if ($this->_crosswebsite) {
-				return CMS_tree::getPagesByCodename($this->_value, $publicTree, true);
+			if ($this->_website) {
+				$website = CMS_websitesCatalog::getByCodename($this->_website);
+				if ($website) {
+					$pg = CMS_tree::getPageByCodename($this->_value, $website, $publicTree, true);
+				}
 			} else {
-				if ($this->_website) {
-					$website = CMS_websitesCatalog::getByCodename($this->_website);
-					if ($website) {
-						$pg = CMS_tree::getPageByCodename($this->_value, $website, $publicTree, true);
-					}
+				if ($this->_crosswebsite) {
+					return CMS_tree::getPagesByCodename($this->_value, $publicTree, true);
 				} else {
 					$pg = CMS_tree::getPageByCodename($this->_value, $page->getWebsite(), $publicTree, true);
 				}
-				if ($pg && !$pg->hasError()) {
-					return $pg;
-				} else {
-					return false;
-				}
+			}
+			if ($pg && !$pg->hasError()) {
+				return $pg;
+			} else {
+				return false;
 			}
 			break;
 		case "relative" :
 			switch ($this->_value) {
 				case "root":
-					$offset = abs($this->_relativeOffset) * -1;
-					$pg = CMS_tree::getAncestor($page, $offset, !$this->_crosswebsite, false); //here we do not want to use public tree because, in public tree, some page may be unpublished or in this case, it break the lineage and root page cannot be founded
+					if ($this->_website) {
+						$website = CMS_websitesCatalog::getByCodename($this->_website);
+						if ($website) {
+							$pg = $website->getRoot();
+						}
+					} else {
+						$offset = abs($this->_relativeOffset) * -1;
+						$pg = CMS_tree::getAncestor($page, $offset, !$this->_crosswebsite, false); //here we do not want to use public tree because, in public tree, some page may be unpublished or in this case, it break the lineage and root page cannot be founded
+					}
 				break;
 				case "father":
 					$offset = abs($this->_relativeOffset);
