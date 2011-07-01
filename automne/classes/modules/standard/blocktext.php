@@ -118,7 +118,11 @@ class CMS_block_text extends CMS_block
 		case PAGE_VISUALMODE_HTML_EDITION:
 			if ($data && $data["value"]) {
 				$html = str_replace(array_keys($replace), $replace, $data["value"]);
-				return str_replace("{{data}}", $html, $this->_definition);
+				$replace = array(
+					'{{data}}'	=> $html,
+					'{{jsdata}}' => io::sanitizeJSString($html),
+				);
+				return str_replace(array_keys($replace), $replace, $this->_definition);
 			}
 			break;
 		case PAGE_VISUALMODE_FORM:
@@ -131,7 +135,12 @@ class CMS_block_text extends CMS_block
 				$html .= "facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit au gue duis";
 				$html .= "dolore te feugat nulla facilisi.</span>";
 			}
-			$form_data = str_replace("{{data}}", $html, $this->_definition);
+			
+			$replace = array(
+				'{{data}}'	=> $html,
+				'{{jsdata}}' => io::sanitizeJSString($html),
+			);
+			$form_data = str_replace(array_keys($replace), $replace, $this->_definition);
 			$this->_hasContent = ($data && $data["value"]) ? true:false;
 			$this->_editable = true;
 			return $this->_getHTMLForm($language, $page, $clientSpace, $row, $this->_tagID, $form_data);
@@ -144,7 +153,11 @@ class CMS_block_text extends CMS_block
 				$html .= "facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit au gue duis";
 				$html .= "dolore te feugat nulla facilisi.</span>";
 			}
-			$form_data = str_replace("{{data}}", $html, $this->_definition);
+			$replace = array(
+				'{{data}}'	=> $html,
+				'{{jsdata}}' => io::sanitizeJSString($html),
+			);
+			$form_data = str_replace(array_keys($replace), $replace, $this->_definition);
 			$this->_hasContent = false;
 			$this->_editable = false;
 			return $this->_getHTMLForm($language, $page, $clientSpace, $row, $this->_tagID, $form_data);

@@ -402,10 +402,13 @@ class CMS_poly_definition_functions
 					foreach ($fieldsObjects as $fieldID => $aFieldObject) {
 						//if field is part of formular
 						if (isset($_REQUEST['polymodFields'][$fieldID])) {
+							//if form use a callback, call it
+							//do not use call_user_function here
+							$funcName = 'form_'.$formID.'_'.$fieldID;
 							if (!$item->setValues($fieldID, $_REQUEST,'')) {
 								$polymodFormsError[$formID]['malformed'][] = $fieldID;
 							} elseif (!isset($polymodFormsError[$formID]['required'][$fieldID]) && function_exists('form_'.$formID.'_'.$fieldID)
-										&& !call_user_func('form_'.$formID.'_'.$fieldID, $formID, $fieldID, $item)) {
+										&& !$funcName($formID, $fieldID, $item)) {
 								$polymodFormsError[$formID]['malformed'][] = $fieldID;
 							}
 						}
@@ -455,7 +458,9 @@ class CMS_poly_definition_functions
 						} else {
 							$polymodFormsError[$formID]['filled'] = 1;
 							//if form use a callback, call it
-							if (function_exists('form_'.$formID) && !call_user_func('form_'.$formID, $formID, $item)) {
+							//do not use call_user_function here
+							$funcName = 'form_'.$formID;
+							if (function_exists('form_'.$formID) && !$funcName($formID, $item)) {
 								$polymodFormsError[$formID]['filled'] = 0;
 								$polymodFormsError[$formID]['error'][] = 'callback';
 							}

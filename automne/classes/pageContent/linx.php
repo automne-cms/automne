@@ -174,7 +174,6 @@ class CMS_linx extends CMS_grandFather
 						'<htmltemplate>'.$tag->getInnerContent().'</htmltemplate>'.
 					'</display>'.
 				'</atm-linx>';
-				
 			}
 			
 			$this->_page = $page;
@@ -468,13 +467,14 @@ class CMS_linx extends CMS_grandFather
 			break;
 		case "recursivelinks":
 			//construct targets and recursive targets then apply the selection to the builded targets
-			$start = $this->_selectionStartPages[0];
-			$targets[$start->getID()] = $start;
-			$returnedDatas = $this->_buildRecursiveTargets($start->getID());
-			$targets = $targets + $returnedDatas["targets"];
-			$this->_recursiveTargets[$start->getID()] = $returnedDatas["recursiveTree"];
-			//add this page to father watches
-			$this->_fatherWatches[] = $this->_page->getID();
+			foreach ($this->_selectionStartPages as $start) {
+				$targets[$start->getID()] = $start;
+				$returnedDatas = $this->_buildRecursiveTargets($start->getID());
+				$targets = $targets + $returnedDatas["targets"];
+				$this->_recursiveTargets[$start->getID()] = $returnedDatas["recursiveTree"];
+				//add this page to father watches
+				$this->_fatherWatches[] = $this->_page->getID();
+			}
 			break;
 		}
 		return $targets;

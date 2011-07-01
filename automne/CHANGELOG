@@ -26,10 +26,13 @@ V4.2.0 (in progress)
 [FEATURE] : Add {helper:XXX:YYY} variable type which allow usage of PHP helpers to format given variables
 
 V4.1.4 (in progress)
-[BUG] : Correct bugs numbers: 2070 (see http://www.automne-cms.org/bug/)
+[BUG] : Correct bugs numbers: 2049, 2070, 2154, 2162, 2195, 2252, 2265, 2271, 2272 (see http://www.automne-cms.org/bug/)
 [BUG] : Correct bug for better handling of HTTPS websites and cross HTTP and HTTPS websites on the same Automne
 [BUG] : Correct bug with external home page redirection
 [BUG] : Correct bug with tags which only contain character zero
+[BUG] : Correct bug with atm-form tags and cache
+[BUG] : Correct some inconsistencies with the recursive atm-linx
+[REFACTOR] : Add {{jsdata}} to block text
 
 V4.1.3 (02/05/2011)
 [BUG] : Correct bugs numbers: 1860, 2021, 2024, 2032, 2039, 2040, 2043, 2044 (see http://www.automne-cms.org/bug/)

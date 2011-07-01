@@ -528,10 +528,10 @@ class CMS_polymod extends CMS_modulePolymodValidation
 		while (preg_match_all("#\{[^{}]+[|}]{1}#U", $definition, $matches) && $count) {
 			$matches = array_unique($matches[0]);
 			//get module variables conversion table
-			if (!isset($modulesConversionTable[$this->getCodename()]) || $reset) {
-				$modulesConversionTable[$this->getCodename()] = CMS_poly_module_structure::getModuleTranslationTable($this->getCodename(), $cms_language);
+			if (!isset($modulesConversionTable[$cms_language->getCode()][$this->getCodename()]) || $reset) {
+				$modulesConversionTable[$cms_language->getCode()][$this->getCodename()] = CMS_poly_module_structure::getModuleTranslationTable($this->getCodename(), $cms_language);
 			}
-			$convertionTable = $toHumanReadableFormat ? array_flip($modulesConversionTable[$this->getCodename()]) : $modulesConversionTable[$this->getCodename()];
+			$convertionTable = $toHumanReadableFormat ? array_flip($modulesConversionTable[$cms_language->getCode()][$this->getCodename()]) : $modulesConversionTable[$cms_language->getCode()][$this->getCodename()];
 			//create definition conversion table
 			$replace = array();
 			$count = 0;

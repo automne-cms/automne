@@ -187,7 +187,7 @@ $jscontent = <<<END
 					delete fatherWindow.groupWindows[window.id.substr(11)];
 					//refresh search list
 					if (fatherWindow.groupsWindow && fatherWindow.groupsWindow.launchSearch) {
-						fatherWindow.groupsWindow.launchSearch();
+						fatherWindow.groupsWindow.launchSearch(true);
 					}
 				}}
 			});
@@ -260,7 +260,7 @@ $jscontent = <<<END
 								delete fatherWindow.userWindows[window.id.substr(10)];
 								//refresh search list
 								if (usersWindow && usersWindow.launchSearch) {
-									usersWindow.launchSearch();
+									usersWindow.launchSearch(true);
 								}
 							}}
 						});
@@ -357,7 +357,7 @@ $jscontent = <<<END
 						delete fatherWindow.userWindows[0];
 						//refresh search list
 						if (usersWindow && usersWindow.launchSearch) {
-							usersWindow.launchSearch();
+							usersWindow.launchSearch(true);
 						}
 						//enable button to allow creation of a other users
 						Ext.getCmp('createUser').enable();
@@ -394,10 +394,10 @@ $jscontent = <<<END
 		items:	[{$lettersButtons}]
 	};
 	//define search function into window (to be accessible by parent window)
-	usersWindow.launchSearch = function() {
+	usersWindow.launchSearch = function(keepPage) {
 		var formValues = Ext.getCmp('usersSearchPanel').getForm().getValues();
 		store.reload({params:{
-			start:			store.lastOptions.params.start,
+			start:			keepPage ? store.lastOptions.params.start : 0,
 			limit:			{$recordsPerPage},
 			groupId:		formValues.groups,
 			search:			formValues.search,
