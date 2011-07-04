@@ -1492,7 +1492,9 @@ class CMS_module_standard extends CMS_module
 					"atm-page" 			=> array("selfClosed" => true, "parameters" => array(),		'class' => 'CMS_XMLTag_page'),
 					"atm-header" 		=> array("selfClosed" => false,	"parameters" => array(),	'class' => 'CMS_XMLTag_header'),
 					"atm-redirect" 		=> array("selfClosed" => true,	"parameters" => array(),	'class' => 'CMS_XMLTag_redirect'),
-					"atm-xml" 			=> array("selfClosed" => true,	"parameters" => array(),	'class' => 'CMS_XMLTag_xml'),
+					"atm-xml" 			=> array("selfClosed" => false,	"parameters" => array(),	'class' => 'CMS_XMLTag_xml'),
+					"atm-js-add" 		=> array("selfClosed" => true,	"parameters" => array(),	'class' => 'CMS_XMLTag_js_add'),
+					"atm-css-add" 		=> array("selfClosed" => true,	"parameters" => array(),	'class' => 'CMS_XMLTag_css_add'),
 					"atm-main-url" 		=> array("selfClosed" => true, "parameters" => array()),
 					"atm-constant" 		=> array("selfClosed" => true, "parameters" => array()),
 					"atm-last-update" 	=> array("selfClosed" => false, "parameters" => array()),
@@ -1733,6 +1735,7 @@ class CMS_module_standard extends CMS_module
 					case "atm-js-tags":
 					case "atm-css-tags":
 						$usage = CMS_module::moduleUsage($treatedObject->getID(), $this->_codename);
+						
 						$tagFiles = $tag->getAttribute('files');
 						$tagFiles = array_map('trim', explode(',', $tagFiles));
 						//only if current page use a block of this module
@@ -1746,7 +1749,6 @@ class CMS_module_standard extends CMS_module
 									//get old files for this tag already needed by other modules
 									$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-js-tags");
 									$files = is_array($files) ? $files : array();
-									
 									//append module js files
 									$files = array_merge($files, $tagFiles);
 									//append CMS_function.js file
@@ -1780,14 +1782,14 @@ class CMS_module_standard extends CMS_module
 								case "atm-js-tags":
 									//get old files for this tag already needed by other modules
 									$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-js-tags");
-									$return .= '<?php echo CMS_view::getJavascript(array(\''.implode('\',\'', $files).'\')); ?>'."\n";
+									$return .= '<?php echo CMS_view::getJavascript(array(\''.implode('\',\'', array_unique($files)).'\')); ?>'."\n";
 								break;
 								case "atm-css-tags":
 									$media = $tag->getAttribute('media') ? $tag->getAttribute('media') : 'all';
 									//get old files for this tag already needed by other modules
 									$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-css-tags");
 									if (isset($files[$media])) {
-										$return .= '	<?php echo CMS_view::getCSS(array(\''.implode('\',\'', $files[$media]).'\'), \''.$media.'\'); ?>'."\n";
+										$return .= '	<?php echo CMS_view::getCSS(array(\''.implode('\',\'', array_unique($files[$media])).'\'), \''.$media.'\'); ?>'."\n";
 									}
 								break;
 							}

@@ -1218,7 +1218,10 @@ class CMS_polymod extends CMS_modulePolymodValidation
 		if (is_dir(PATH_JS_FS.'/modules/'.$this->_codename) && CMS_file::deltreeSimulation(PATH_JS_FS.'/modules/'.$this->_codename, true)) {
 			CMS_file::deltree(PATH_JS_FS.'/modules/'.$this->_codename, true);
 		}
-		$cssFiles = $this->getCSSFiles();
+		if (is_dir(PATH_CSS_FS.'/modules/'.$this->_codename) && CMS_file::deltreeSimulation(PATH_CSS_FS.'/modules/'.$this->_codename, true)) {
+			CMS_file::deltree(PATH_CSS_FS.'/modules/'.$this->_codename, true);
+		}
+		$cssFiles = $this->getCSSFiles('', true);
 		foreach ($cssFiles as $mediaCssFiles) {
 			foreach ($mediaCssFiles as $cssFile) {
 				CMS_file::deleteFile(PATH_REALROOT_FS.'/'.$cssFile);

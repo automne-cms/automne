@@ -115,11 +115,11 @@ switch ($action) {
 			//append JS and CSS class needed by modules blocks
 			$modules = $row->getModules();
 			foreach ($modules as $module) {
-				$jsFiles = $module->getJSFiles();
+				$jsFiles = $module->getJSFiles($cms_page->getID());
 				foreach ($jsFiles as $jsFile) {
 					$view->addJSFile($jsFile);
 				}
-				$cssFiles = $module->getCSSFiles();
+				$cssFiles = $module->getCSSFiles($cms_page->getID());
 				if (isset($cssFiles['screen'])) {
 					foreach ($cssFiles['screen'] as $cssFile) {
 						$view->addCSSFile($cssFile);

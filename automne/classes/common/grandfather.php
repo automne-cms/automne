@@ -317,6 +317,8 @@ class CMS_grandFather
 				'cms_xmltag_header' 				=> PATH_MODULES_FS.'/standard/tags/header.php',
 				'cms_xmltag_redirect' 				=> PATH_MODULES_FS.'/standard/tags/redirect.php',
 				'cms_xmltag_xml' 					=> PATH_MODULES_FS.'/standard/tags/xml.php',
+				'cms_xmltag_js_add'					=> PATH_MODULES_FS.'/standard/tags/js-add.php',
+				'cms_xmltag_css_add'				=> PATH_MODULES_FS.'/standard/tags/css-add.php',
 				
 				//pageContent
 				'cms_linxescatalog' 				=> PATH_PACKAGES_FS.'/pageContent/linxescatalog.php',
