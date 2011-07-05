@@ -11,8 +11,6 @@
 // +----------------------------------------------------------------------+
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
-//
-// $Id: page-infos.php,v 1.21 2010/03/08 16:41:19 sebastien Exp $
 
 /**
   * PHP page : Load page infos

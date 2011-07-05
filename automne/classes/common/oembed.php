@@ -599,8 +599,8 @@ class CMS_oembed extends CMS_grandFather
 		return '<iframe scrolling="no" frameBorder="0"'.
 				($width ? ' width="'.$width.'"' : '').
 				($height ? ' height="'.$height.'"' : '').
-				'src="'.$domain.PATH_MAIN_WR.'/oembed/frame.php?params='.$frameParam.'">'.
-				'	<a href="'.$domain.PATH_MAIN_WR.'/oembed/frame.php?params='.$frameParam.'" target="_blank">Click to view media</a>'.
+				'src="'.$domain.PATH_MAIN_WR.'/oembed/frame'.(!STRIP_PHP_EXTENSION ? '.php' : '').'?params='.$frameParam.'">'.
+				'	<a href="'.$domain.PATH_MAIN_WR.'/oembed/frame'.(!STRIP_PHP_EXTENSION ? '.php' : '').'?params='.$frameParam.'" target="_blank">Click to view media</a>'.
 				'</iframe>';
 	}
 }

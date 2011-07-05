@@ -412,6 +412,9 @@ class CMS_page extends CMS_resource
 				return '';
 			}
 			$filename = $this->_getFilename();
+			if (STRIP_PHP_EXTENSION && $relativeTo == PATH_RELATIVETO_WEBROOT) {
+				$filename = substr($filename, 0, -4);
+			}
 			if ($printPage) {
 				if ($returnFilenameOnly) {
 					return "print-".$filename;

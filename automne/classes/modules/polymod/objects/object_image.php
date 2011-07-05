@@ -1079,7 +1079,7 @@ class CMS_object_image extends CMS_object_common
 						if(file_exists($resizedImagepathFS)) {
 							return CMS_websitesCatalog::getCurrentDomain() . PATH_MODULES_FILES_WR . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
 						} else {
-							return CMS_websitesCatalog::getCurrentDomain() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[0]->getValue() .'&amp;module='. $moduleCodename .'&amp;x='. $x .'&amp;y='. $y.'&amp;crop='.$crop.($location != RESOURCE_DATA_LOCATION_PUBLIC ? '&amp;location='.$location : '');
+							return CMS_websitesCatalog::getCurrentDomain() . PATH_REALROOT_WR .'/image-file'.(!STRIP_PHP_EXTENSION ? '.php' : '').'?image='. $this->_subfieldValues[0]->getValue() .'&amp;module='. $moduleCodename .'&amp;x='. $x .'&amp;y='. $y.'&amp;crop='.$crop.($location != RESOURCE_DATA_LOCATION_PUBLIC ? '&amp;location='.$location : '');
 						}
 					}
 				}
@@ -1107,7 +1107,7 @@ class CMS_object_image extends CMS_object_common
 						if(file_exists($resizedImagepathFS)) {
 							return CMS_websitesCatalog::getCurrentDomain() . PATH_MODULES_FILES_WR . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
 						} else {
-							return CMS_websitesCatalog::getCurrentDomain() . PATH_REALROOT_WR .'/image-file.php?image='. $this->_subfieldValues[2]->getValue() .'&amp;module='. $moduleCodename .'&amp;x='. $x .'&amp;y='. $y.'&amp;crop='.$crop.($location != RESOURCE_DATA_LOCATION_PUBLIC ? '&amp;location='.$location : '');
+							return CMS_websitesCatalog::getCurrentDomain() . PATH_REALROOT_WR .'/image-file'.(!STRIP_PHP_EXTENSION ? '.php' : '').'?image='. $this->_subfieldValues[2]->getValue() .'&amp;module='. $moduleCodename .'&amp;x='. $x .'&amp;y='. $y.'&amp;crop='.$crop.($location != RESOURCE_DATA_LOCATION_PUBLIC ? '&amp;location='.$location : '');
 						}
 					}
 				}

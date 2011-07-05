@@ -247,6 +247,21 @@ if (!defined('PATH_REALROOT_FS')) {
 	define("PATH_REALROOT_FS", $_SERVER["DOCUMENT_ROOT"].PATH_REALROOT_WR);
 }
 
+
+/**
+  *	Strip PHP extension from generated page links
+  * To use this function, you must add the following lines in your .htaccess
+  *
+  * RewriteEngine On
+  * RewriteCond %{REQUEST_FILENAME} !-f
+  * RewriteCond %{REQUEST_FILENAME} !-d
+  * RewriteRule ^([^\.]+)$ $1.php [NC,L]
+  *	Default : false. 
+  */
+if (!defined("STRIP_PHP_EXTENSION")) {
+	define("STRIP_PHP_EXTENSION", false);
+}
+
 /**
   *	FrontEnd not found page URL (404)
   * wrong users privilege or session time out redirect to this page
@@ -254,7 +269,7 @@ if (!defined('PATH_REALROOT_FS')) {
   *	Default : /404.php
   */
 if (!defined("PATH_SPECIAL_PAGE_NOT_FOUND_WR")) {
-	define("PATH_SPECIAL_PAGE_NOT_FOUND_WR", PATH_REALROOT_WR.'/404.php');
+	define("PATH_SPECIAL_PAGE_NOT_FOUND_WR", PATH_REALROOT_WR.'/404'.(!STRIP_PHP_EXTENSION ? '.php' : ''));
 }
 
 /**
@@ -263,7 +278,7 @@ if (!defined("PATH_SPECIAL_PAGE_NOT_FOUND_WR")) {
   *	Default : /403.php
   */
 if (!defined("PATH_FORBIDDEN_WR")) {
-	define("PATH_FORBIDDEN_WR", PATH_REALROOT_WR.'/403.php');
+	define("PATH_FORBIDDEN_WR", PATH_REALROOT_WR.'/403'.(!STRIP_PHP_EXTENSION ? '.php' : ''));
 }
 
 /**

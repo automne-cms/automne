@@ -1,6 +1,5 @@
 # Automne general .htaccess file. 
 # Author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-# $Id: .htaccess,v 1.15 2010/01/19 15:51:39 sebastien Exp $
 
 # Errors documents. 
 # The 404.php must be the 404 error document, but you can create a specific design with a file 404.html which will be displayed by the 404.php file
@@ -25,8 +24,8 @@ Allow from all
 <IfModule mod_mime.c>
 	<IfModule mod_php5.c>
 		php_flag magic_quotes_gpc		Off
-		php_flag magic_quotes_runtime		Off
-		php_flag magic_quotes_sybase		Off
+		php_flag magic_quotes_runtime	Off
+		php_flag magic_quotes_sybase	Off
 		php_flag allow_call_time_pass_reference Off
 		php_flag register_globals 		Off
 		php_flag allow_url_include		Off
@@ -49,4 +48,15 @@ Allow from all
 #    BrowserMatch chromeframe gcf
 #    Header append X-UA-Compatible "chrome=1" env=gcf
 #  </IfModule>
+#</IfModule>
+
+# To remove .php extension of generated pages,
+# Uncomment the following lines (mod_rewrite is needed)
+# You must also add the following constant in config.php file :
+# define('STRIP_PHP_EXTENSION', true);
+#<IfModule mod_rewrite.c>
+#	RewriteEngine On
+#	RewriteCond %{REQUEST_FILENAME} !-f
+#	RewriteCond %{REQUEST_FILENAME} !-d
+#	RewriteRule ^([^\.]+)$ $1.php [NC,L]
 #</IfModule>
