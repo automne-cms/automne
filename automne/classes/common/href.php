@@ -299,7 +299,7 @@ class CMS_href extends CMS_grandFather
 	  */
 	function getInternalLinkPage()
 	{
-		if ($this->_internalLink > 0) {
+		if (io::isPositiveInteger($this->_internalLink)) {
 			return CMS_tree::getPageByID($this->_internalLink);
 		} else {
 			return false;

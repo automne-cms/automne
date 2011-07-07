@@ -1111,15 +1111,19 @@ INSERT INTO `modulesCategories_i18nm` (`id_mcl`, `category_mcl`, `language_mcl`,
 --
 
 DROP TABLE IF EXISTS `mod_cms_aliases`;
-CREATE TABLE `mod_cms_aliases` (
+CREATE TABLE IF NOT EXISTS `mod_cms_aliases` (
   `id_ma` int(11) unsigned NOT NULL auto_increment,
   `parent_ma` int(11) unsigned NOT NULL default '0',
   `page_ma` int(11) NOT NULL default '0',
   `url_ma` varchar(255) NOT NULL default '',
   `alias_ma` varchar(255) NOT NULL default '',
+  `websites_ma` varchar(255) NOT NULL,
+  `replace_ma` int(1) unsigned NOT NULL,
+  `permanent_ma` int(1) unsigned NOT NULL,
+  `protected_ma` int(1) unsigned NOT NULL,
   PRIMARY KEY  (`id_ma`),
   KEY `alias_ma` (`alias_ma`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `mod_cms_aliases`

@@ -1617,7 +1617,8 @@ endEdition: ''You are quitting page edition. Do you want to submit actual page c
 quitConfirm: ''You will lose all modifications which are not saved.'',
 refresh: ''Refreshing current page...'',
 formSubmit: ''Form validation'',
-formSubmitDesc: ''Be careful, you\\''ll validate a form. The result will be opened in a new window.'' };');
+formSubmitDesc: ''Be careful, you\\''ll validate a form. The result will be opened in a new window.'',
+selectPage:	''Select the destination page in the tree'' };');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1548, 'standard', 'en', 'Save and regenerate');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1549, 'standard', 'en', 'Save the XML definition and regenerate all the pages that use this row for a direct application of the changes on the site.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1550, 'standard', 'en', 'Save the XML definition and regenerate all the pages that use this template for a direct application of the changes on the site.');

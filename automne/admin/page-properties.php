@@ -379,7 +379,7 @@ foreach ($modules as $aModule) {
 		foreach ($tabsInfos as $tabInfos) {
 			$label = $tabInfos['description'] ? '<span ext:qtip="'.sensitiveIO::sanitizeJSString($tabInfos['description']).'">'.sensitiveIO::sanitizeJSString($tabInfos['label']).'</span>' : sensitiveIO::sanitizeJSString($tabInfos['label']);
 			$url = $tabInfos['url'];
-			$tabInfos['winId'] = $objectWinId = 'module'. $aModule->getCodename() . $tabInfos['tabId'] .'TabPanel';
+			$tabInfos['winId'] = $objectWinId = 'module'. $aModule->getCodename() . (isset($tabInfos['tabId']) ? $tabInfos['tabId'] : '') .'TabPanel';
 			$tabInfos['fatherId'] = $winId;
 			$params = sensitiveIO::jsonEncode($tabInfos);
 			if (!isset($tabInfos['frame']) || $tabInfos['frame'] == false) {

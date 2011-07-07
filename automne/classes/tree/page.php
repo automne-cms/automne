@@ -168,7 +168,7 @@ class CMS_page extends CMS_resource
 			} else {
 				//display this error only if we are in HTTP mode (not cli) because it is only relevant in this mode
 				if (!defined('APPLICATION_EXEC_TYPE') || APPLICATION_EXEC_TYPE == 'http') {
-					$this->raiseError("Unknown ID :".$id);
+					$this->raiseError("Unknown ID :".$id.' from '.io::getCallInfos(3));
 				}
 			}
 		} else {
@@ -399,11 +399,24 @@ class CMS_page extends CMS_resource
 						$wsURL = str_ireplace('http://', 'https://', $wsURL);
 					}
 					//if this page is a website root, try to shorten page url using only website domain - do not shorten in Automne admin (_dc parameter)
-					if (!$printPage && !$returnFilenameOnly && !isset($_REQUEST['_dc']) && CMS_websitesCatalog::isWebsiteRoot($this->getID())) {
+					if (!$printPage && !$returnFilenameOnly && !isset($_REQUEST['_dc'])) {
 						//check if page website is the main for the domain
-						$mainWS = CMS_websitesCatalog::getWebsiteFromDomain(@parse_url($wsURL, PHP_URL_HOST));
-						if ($mainWS && $mainWS->getID() == $ws->getID()) {
-							return $wsURL.PATH_REALROOT_WR . (substr($wsURL.PATH_REALROOT_WR, -1) === '/' ? '' : '/');
+						if (CMS_websitesCatalog::isWebsiteRoot($this->getID())) {
+							$mainWS = CMS_websitesCatalog::getWebsiteFromDomain(@parse_url($wsURL, PHP_URL_HOST));
+							if ($mainWS && $mainWS->getID() == $ws->getID()) {
+								return $wsURL.PATH_REALROOT_WR . (substr($wsURL.PATH_REALROOT_WR, -1) === '/' ? '' : '/');
+							}
+						} else {
+							//query modules to get new page URL
+							$modules = CMS_modulesCatalog::getAll();
+							foreach ($modules as $module) {
+								if (method_exists($module, 'getPageURL')) {
+									$url = $module->getPageURL($this);
+									if ($url) {
+										return $wsURL.$url;
+									}
+								}
+							}
 						}
 					}
 				}

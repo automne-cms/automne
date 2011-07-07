@@ -93,7 +93,7 @@ class CMS_cache extends CMS_grandFather {
 			'cache_dir'					=> PATH_CACHE_FS.'/'.$this->_parameters['type'],		// Directory where the cache files are stored
 			'cache_file_umask'			=> octdec(FILES_CHMOD),
 			'hashed_directory_umask'	=> octdec(DIRS_CHMOD),
-			'hashed_directory_level'	=> 1,
+			'hashed_directory_level'	=> 2,
 		);
 		// getting a Zend_Cache_Core object
 		if (!class_exists('Zend_Cache')) {

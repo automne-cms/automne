@@ -9,11 +9,8 @@
 // | LICENSE-GPL, and is available through the world-wide-web at		  |
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
-
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: resource.php,v 1.6 2010/03/08 16:43:35 sebastien Exp $
 
 /**
   * Class CMS_resource_cms_aliases
@@ -39,14 +36,14 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @var string
 	  * @access private
 	  */
-	protected $_cms_alias;
+	protected $_alias;
 
 	/**
 	  * parent alias DB ID
-	  * @var integer
+	  * @var integer or 0 if no parent
 	  * @access private
 	  */
-	protected $_parentID;
+	protected $_parentID = 0;
 
 	/**
 	  * page ID
@@ -61,6 +58,34 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @access private
 	  */
 	protected $_url;
+
+	/**
+	  * Websites
+	  * @var string
+	  * @access private
+	  */
+	protected $_websites;
+
+	/**
+	  * Replace page URL
+	  * @var boolean
+	  * @access private
+	  */
+	protected $_replace = false;
+
+	/**
+	  * Permanent
+	  * @var boolean
+	  * @access private
+	  */
+	protected $_permanent = false;
+
+	/**
+	  * Protected
+	  * @var boolean
+	  * @access private
+	  */
+	protected $_protected;
 
 	/**
 	  * Constructor.
@@ -89,16 +114,18 @@ class CMS_resource_cms_aliases extends CMS_resource
 			if ($q->getNumRows()) {
 				$data = $q->getArray();
 				$this->_ID = $id;
-				$this->_cms_alias = $data["alias_ma"];
+				$this->_alias = $data["alias_ma"];
 				$this->_parentID = $data["parent_ma"];
 				$this->_pageID = $data["page_ma"];
 				$this->_url = $data["url_ma"];
+				$this->_websites = $data["websites_ma"];
+				$this->_replace = $data["replace_ma"] ? true : false;
+				$this->_permanent = $data["permanent_ma"] ? true : false;
+				$this->_protected = $data["protected_ma"] ? true : false;
 				
 			} else {
 				$this->raiseError("Unknown ID :".$id);
 			}
-		} else {
-			//do nothing
 		}
 	}
 	
@@ -122,7 +149,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  */
 	function getAlias()
 	{
-		return $this->_cms_alias;
+		return $this->_alias;
 	}
 	
 	/**
@@ -134,36 +161,73 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  */
 	function setAlias($alias)
 	{
-		if ($this->getParent()==='') {
-			$this->raiseError("Must have a parent to check directory");
-			return;
-		}
-		if ($this->getID()) {
-			//alias already exist and name can't change so return
-			return;
-		}
-		$alias = sensitiveIO::sanitizeAsciiString($alias);
-		//need to check here if alias folder don't already exist
-		if (!@is_dir(PATH_REALROOT_FS.$this->getAliasLineAge().'/'.$alias)) {
-			$this->_cms_alias = $alias;
+		//clean alias characters
+		$alias = sensitiveIO::sanitizeURLString($alias);
+		if ($this->_alias == $alias) {
 			return true;
+		}
+		//check if alias directory already exists
+		if (@is_dir($this->getPath(false, PATH_RELATIVETO_FILESYSTEM).'/'.$alias)) {
+			//check if directory is used by another alias
+			$aliases = CMS_module_cms_aliases::getByName($alias);
+			$otherAlias = false;
+			foreach($aliases as $anAlias) {
+				if ($this->getID() != $anAlias->getID() && $this->getPath(false).$alias.'/' == $anAlias->getPath(true)) {
+					$otherAlias = true;
+				}
+			}
+			if (!$otherAlias) {
+				return false;
+			}
+		}
+		//alias already exists, check if alias name change. If so, delete old files
+		if ($this->getID() && $this->_alias != $alias) {
+			$this->_deleteFiles();
+		}
+		$this->_alias = $alias;
+		return true;
+	}
+	
+	/**
+	  * Get alias path
+	  *
+	  * @param boolean $withName Return the alias name in path
+	  * @param constant $relativeTo Return the alias path relative from webroot (default) or from filesystem (PATH_RELATIVETO_FILESYSTEM)
+	  * @return string : the alias path
+	  * @access public
+	  */
+	function getPath($withName = true, $relativeTo = PATH_RELATIVETO_WEBROOT) {
+		$path = ($relativeTo == PATH_RELATIVETO_WEBROOT) ? PATH_REALROOT_WR.'/' : PATH_REALROOT_FS.'/';
+		if ($withName) {
+			return $path.$this->getAliasLineAge().$this->getAlias().'/';
 		} else {
-			return false;
+			return $path.$this->getAliasLineAge();
 		}
 	}
 	
 	/**
 	  * Sets the parent
 	  *
-	  * @param CMS_resource_cms_aliases $parent The parent to set
+	  * @param CMS_resource_cms_aliases $parent The parent to set or false if alias has no parent
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
 	function setParent($parent)
 	{
 		if (is_a($parent, "CMS_resource_cms_aliases")) {
+			//delete old alias files if any
+			if ($this->getID() && $this->_parentID != $parent->getID()) {
+				$this->_deleteFiles();
+			}
 			$this->_parentID = $parent->getID();
 			return true;
+		} elseif ($parent === false) {
+			//delete old alias files if any
+			if ($this->getID() && $this->_parentID !== 0) {
+				$this->_deleteFiles();
+			}
+			$this->_parentID = 0;
+			return false;
 		} else {
 			return false;
 		}
@@ -199,7 +263,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  */
 	function setURL($url)
 	{
-		$this->_url = (io::substr($url,0,7)=='http://') ? $url:'http://'.$url;
+		$this->_url = (io::substr($url,0,4) == 'http') ? $url : 'http://'.$url;
 		$this->_pageID ='';
 		return true;
 	}
@@ -225,6 +289,23 @@ class CMS_resource_cms_aliases extends CMS_resource
 	function setPage($page)
 	{
 		if (is_a($page, "CMS_page") && !$page->hasError()) {
+			if ($this->_replace) {
+				//check if another alias already replace this page URL
+				$sql = "
+					select 
+						id_ma
+					from
+						mod_cms_aliases
+					where
+						page_ma='".io::sanitizeSQLString($page->getID())."'";
+				if ($this->getID()) {
+					$sql .= " and id_ma != '".$this->getID()."'";
+				}
+				$q = new CMS_query($sql);
+				if ($q->getNumRows()) {
+					return false;
+				}
+			}
 			$this->_pageID = $page->getID();
 			$this->_url = '';
 			return true;
@@ -234,7 +315,101 @@ class CMS_resource_cms_aliases extends CMS_resource
 	}
 	
 	/**
-	  * Writes the alias into persistence (MySQL for now), along with base data.
+	  * Gets the websites codenames on which alias is restricted.
+	  * If none, all websites use this alias
+	  *
+	  * @return array of websites codenames
+	  * @access public
+	  */
+	function getWebsites() {
+		return $this->_websites ? explode(';', $this->_websites) : array();
+	}
+	
+	/**
+	  * Sets the websites codename on which alias is restricted
+	  * If none, all websites use this alias
+	  *
+	  * @param array $websites : array of websites codenames
+	  * @return boolean true on success, false on failure
+	  * @access public
+	  */
+	function setWebsites($websites) {
+		if (!is_array($websites)) {
+			$this->raiseError('websites must be an array');
+			return false;
+		}
+		$this->_websites = implode(';', $websites);
+		return true;
+	}
+	
+	/**
+	  * Does this alias replace target page URL ?
+	  *
+	  * @return boolean
+	  * @access public
+	  */
+	function urlReplaced() {
+		return $this->_replace ? true : false;
+	}
+	
+	/**
+	  * Sets the replace URL status
+	  *
+	  * @param boolean $replace : the replace status
+	  * @return boolean true on success, false on failure
+	  * @access public
+	  */
+	function setReplaceURL($replace) {
+		$this->_replace = $replace ? true : false;
+		return true;
+	}
+	
+	/**
+	  * Is this alias permanent (redirection 301) ?
+	  *
+	  * @return boolean
+	  * @access public
+	  */
+	function isPermanent() {
+		return $this->_permanent ? true : false;
+	}
+	
+	/**
+	  * Sets the permanent status
+	  *
+	  * @param boolean $permanent : the permanent status
+	  * @return boolean true on success, false on failure
+	  * @access public
+	  */
+	function setPermanent($permanent) {
+		$this->_permanent = $permanent ? true : false;
+		return true;
+	}
+	
+	/**
+	  * Is this alias protected
+	  *
+	  * @return boolean
+	  * @access public
+	  */
+	function isProtected() {
+		return $this->_protected ? true : false;
+	}
+	
+	/**
+	  * Sets the protected status
+	  *
+	  * @param boolean $protected : the protected status
+	  * @return boolean true on success, false on failure
+	  * @access public
+	  */
+	function setProtected($protected) {
+		$this->_protected = $protected ? true : false;
+		return true;
+	}
+	
+	/**
+	  * Writes the alias into persistence and create files if needed
 	  *
 	  * @return boolean true on success, false on failure
 	  * @access public
@@ -243,10 +418,14 @@ class CMS_resource_cms_aliases extends CMS_resource
 	{
 		//save data
 		$sql_fields = "
-			parent_ma='".$this->_parentID."',
-			page_ma='".$this->_pageID."',
+			parent_ma='".SensitiveIO::sanitizeSQLString($this->_parentID)."',
+			page_ma='".SensitiveIO::sanitizeSQLString($this->_pageID)."',
 			url_ma='".SensitiveIO::sanitizeSQLString($this->_url)."',
-			alias_ma='".SensitiveIO::sanitizeSQLString($this->_cms_alias)."'
+			alias_ma='".SensitiveIO::sanitizeSQLString($this->_alias)."',
+			websites_ma='".SensitiveIO::sanitizeSQLString($this->_websites)."',
+			replace_ma='".($this->_replace ? 1 : 0)."',
+			permanent_ma='".($this->_permanent ? 1 : 0)."',
+			protected_ma='".($this->_protected ? 1 : 0)."'
 		";
 		
 		if ($this->_ID) {
@@ -270,49 +449,8 @@ class CMS_resource_cms_aliases extends CMS_resource
 			return false;
 		} elseif (!$this->_ID) {
 			$this->_ID = $q->getLastInsertedID();
-			//its a creation, then create folder and index.php redirection file
-			if ($this->createFolder()) {
-				$this->createRedirectionFile();
-			}
-		} else {
-			$this->createRedirectionFile();
 		}
-		return true;
-	}
-	
-	/**
-	  * Get all the sub-aliases of a given alias
-	  *
-	  * @param CMS_resource_cms_aliases $parent The parent of the sub-aliases to get
-	  * @param boolean $returnObject function return array of id (default) or array of CMS_resource_cms_aliases
-	  * @return array
-	  * @access public
-	  */
-	function getAll($parent,$returnObject=false)
-	{
-		if (is_a($parent, "CMS_resource_cms_aliases")) {
-			$id = $parent->getID();
-		} else {
-			$id = 0;
-		}
-		$sql = "
-			select
-				id_ma
-			from
-				mod_cms_aliases
-			where
-				parent_ma=".$id."
-		";
-		$q = new CMS_query($sql);
-		$result = array();
-		while ($arr = $q->getArray()) {
-			if ($returnObject) {
-				$result[] = new CMS_resource_cms_aliases($arr["id_ma"]);
-			} else {
-				$result[] = $arr["id_ma"];
-			}
-		}
-		return $result;
+		return $this->createRedirectionFile();
 	}
 	
 	/**
@@ -322,29 +460,30 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return array or string
 	  * @access public
 	  */
-	function getAliasLineAge($returnObject=false) 
-	{
-		if ($this->getParent()==0) {
-			if ($returnObject) {
-				return array();
-			} else {
-				return false;
+	function getAliasLineAge($returnObject=false) {
+		static $aliasesLineAge;
+		if (!isset($aliasesLineAge[$this->getID()])) {
+			$aliasesLineAge[$this->getID()] = array();
+			if ($this->getParent()) {
+				$aliasesLineAge[$this->getID()] = array();
+				$parent = CMS_module_cms_aliases::getByID($this->_parentID);
+				while($parent && $parent->getID() != 0) {
+					$aliasesLineAge[$this->getID()][$parent->getID()] = $parent;
+					if ($parent->getParent()) {
+						$parent = CMS_module_cms_aliases::getByID($parent->getParent());
+					} else {
+						$parent = '';
+					}
+				}
 			}
-		} else {
-			$aliasesLineAge=array();
-			$parent = new CMS_resource_cms_aliases($this->_parentID);
-			while($parent->getID() !=0) {
-				$aliasesLineAge[] = $parent;
-				$parent = new CMS_resource_cms_aliases($parent->getParent());
-			}
+			$aliasesLineAge[$this->getID()] = array_reverse($aliasesLineAge[$this->getID()], true);
 		}
-		$aliasesLineAge = array_reverse($aliasesLineAge);
 		if ($returnObject) {
-			return $aliasesLineAge;
+			return $aliasesLineAge[$this->getID()];
 		} else {
 			$lineAgeString='';
-			foreach ($aliasesLineAge as $anAlias) {
-				$lineAgeString.=$anAlias->getAlias()."/";
+			foreach ($aliasesLineAge[$this->getID()] as $anAlias) {
+				$lineAgeString .= $anAlias->getAlias()."/";
 			}
 			return $lineAgeString;
 		}
@@ -358,6 +497,9 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  */
 	function hasSubAliases() 
 	{
+		if (!$this->getID()) {
+			return false;
+		}
 		$sql = "
 			select
 				id_ma
@@ -374,15 +516,19 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * Create the folder of an alias
 	  *
 	  * @return boolean true on success, false on failure
-	  * @access public
+	  * @access private
 	  */
-	function createFolder() 
+	private function _createFolder() 
 	{
 		if (!$this->getAlias()) {
 			$this->raiseError("Must have an alias name to create directory");
 			return false;
 		}
-		return @mkdir (PATH_REALROOT_FS.'/'.$this->getAliasLineAge().$this->getAlias(), octdec(DIRS_CHMOD));
+		if (!CMS_file::makeDir($this->getPath(true, PATH_RELATIVETO_FILESYSTEM))) {
+			$this->raiseError("Cannot create directory ".$this->getPath(true, PATH_RELATIVETO_FILESYSTEM));
+			return false;
+		}
+		return true;
 	}
 	
 	/**
@@ -392,70 +538,23 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @access public
 	  */
 	function createRedirectionFile() {
-		//check wich type of redirection we need to create
-		if ($this->getPageID()) {
-			//it's a redirection to an Automne Page
-			$page = new CMS_page($this->getPageID());
-			if ($page->hasError()) {
-				$this->raiseError("Can't create redirection to invalid page");
-				return false;
-			}
-		} elseif (!$this->getURL()) {
-			$this->raiseError("Must have an destination");
+		if (!$this->_createFolder()) {
 			return false;
 		}
 		//get alias position
 		$pos = substr_count('/'.$this->getAliasLineAge().$this->getAlias()  , '/');
 		$fileContent =
 		'<?php'."\n".
+		'//Alias file generated on '.date('r').' by '.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION."\n".
 		'require_once(dirname(__FILE__).\'/'.str_repeat  ('../', $pos).'cms_rc_frontend.php\');'."\n".
-		'$alias = new CMS_resource_cms_aliases('.$this->getID().');'."\n".
-		'$alias->redirect();'."\n".
+		'$pPath = CMS_module_cms_aliases::redirect();'."\n".
+		'$cms_page_included = true;'."\n".
+		'require($pPath);'."\n".
 		'?>';
 		//then create index.php file in folder
-		$fp = @fopen(PATH_REALROOT_FS.'/'.$this->getAliasLineAge().$this->getAlias() . "/index.php", "wb");
-		if (is_resource($fp) && @fwrite($fp, $fileContent)) {
-			@fclose($fp);
-			@chmod(PATH_REALROOT_FS.'/'.$this->getAliasLineAge().$this->getAlias() . "/index.php", octdec(FILES_CHMOD));
-			return true;
-		} else {
-			$this->raiseError("Can't create redirection file : check write permissions");
-			return false;
-		}
-	}
-	
-	/**
-	* Create the redirection  of an alias
-	*
-	* @return boolean true on success, false on failure
-	* @access public
-	*/
-	function redirect() {
-		$params = (isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : '';
-		if (isset($_SERVER['HTTP_REFERER'])) {
-			header("Referer: ".$_SERVER['HTTP_REFERER']);
-		}
-		if ($this->getPageID()) {
-			//it's a redirection to an Automne Page
-			$page = new CMS_page($this->getPageID());
-			if (!$page->hasError()) {
-				$pageURL = CMS_tree::getPageValue($this->getPageID(), 'url');
-				if ($pageURL) {
-					CMS_view::redirect($pageURL.$params, true, 302);
-				} else {
-					CMS_view::redirect(CMS_websitesCatalog::getMainURL().$params, true, 302);
-				}
-			}  else {
-				$this->raiseError("Can't create redirection to invalid page");
-				return false;
-			}
-		} elseif ($this->getURL()) {
-			//it's a redirection to an URL
-			CMS_view::redirect($this->getURL(), true, 302);
-		} else {
-			$this->raiseError("Must have an destination");
-			return false;
-		}
+		$file = new CMS_file($this->getPath(true, PATH_RELATIVETO_FILESYSTEM).'index.php');
+		$file->setContent($fileContent);
+		return $file->writeToPersistence();
 	}
 	
 	/**
@@ -466,17 +565,12 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  */
 	function destroy()
 	{
-		//1- delete index.php file
-		if (is_file(PATH_REALROOT_FS.'/'.$this->getAliasLineAge().$this->getAlias() . "/index.php") && !@unlink(PATH_REALROOT_FS.'/'.$this->getAliasLineAge().$this->getAlias() . "/index.php")) {
-			$this->raiseError("Error during deletion of index.php file, check file right");
+		//1- delete alias files
+		if (!$this->_deleteFiles()) {
 			return false;
 		}
-		//2- delete alias folder
-		if (is_dir(PATH_REALROOT_FS.'/'.$this->getAliasLineAge().$this->getAlias()) && !@rmdir(PATH_REALROOT_FS.'/'.$this->getAliasLineAge().$this->getAlias() )) {
-			$this->raiseError("Error during deletion of alias folder, check file right");
-			return false;
-		}
-		//3- delete mysql data
+		
+		//2- delete mysql data
 		$sql = "
 			delete
 			from
@@ -489,6 +583,58 @@ class CMS_resource_cms_aliases extends CMS_resource
 		//4-unset object
 		unset($this);
 		return true;
+	}
+	
+	/**
+	  * Delete alias files (folder and redirection file)
+	  *
+	  * @return boolean true on success, false on failure
+	  * @access private
+	  */
+	private function _deleteFiles() {
+		//check if alias directory already exists
+		if (!@is_dir($this->getPath(true, PATH_RELATIVETO_FILESYSTEM))) {
+			return true;
+		}
+		//if this directory is used by subaliases, do not delete it
+		if ($this->hasSubAliases()) {
+			return true;
+		}
+		//check if directory is used by another alias
+		$aliases = CMS_module_cms_aliases::getByName($this->getAlias());
+		$otherAlias = false;
+		foreach($aliases as $anAlias) {
+			if ($this->getID() != $anAlias->getID() && $this->getPath() == $anAlias->getPath()) {
+				$otherAlias = true;
+			}
+		}
+		if ($otherAlias) {
+			//another alias still use this directory so, do not delete it
+			return true;
+		}
+		return CMS_file::deltree($this->getPath(true, PATH_RELATIVETO_FILESYSTEM), true);
+	}
+	
+	/**
+	  * Does this alias has the given id as parent ?
+	  *
+	  * @param integer $id The alias id to check
+	  * @return boolean
+	  * @access public
+	  */
+	function hasParent($id) {
+		$lineage = $this->getAliasLineAge(true);
+		return isset($lineage[$id]);
+	}
+	
+	/**
+	  * Method used for compatibility with cms_aliases V1
+	  *
+	  * @return string
+	  * @access public
+	  */
+	function redirect() {
+		return CMS_module_cms_aliases::redirect();
 	}
 }
 ?>

@@ -110,7 +110,7 @@
 					$clean_sql = preg_replace("#\t+#", " ", $clean_sql);
 					$errorInfos = $this->_db->errorInfo();
 					$errorInfo = isset($errorInfos[2]) ? $errorInfos[2] : 'No error returned';
-					$this->raiseError('Database querying failed : '.$errorInfo."\nQuery : ".$clean_sql);
+					$this->raiseError('Database querying failed : '.$errorInfo."\nQuery : ".$clean_sql."\nFrom : ".io::getCallInfos(3));
 				}
 			}
 			/*only for stats*/

@@ -15,6 +15,7 @@ V4.2.0 (in progress)
 [REFACTOR] : Add log for user logout
 [REFACTOR] : Add previous login message on connection
 [REFACTOR] : Use a temporary table to store poly objects search ids to avoid MySQL limitations
+[REFACTOR] : Completely refactor cms_aliases module for a better integration in Automne 4
 [FEATURE] : Add oembed object and oembed polymod field (external media field). Update Mediacenter to manage oembed medias
 [FEATURE] : Add parent page selection on new page creation
 [FEATURE] : Add variable type {page:father:XXX} to get infos from current parent page

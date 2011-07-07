@@ -58,7 +58,7 @@ Automne.PageField = Ext.extend(Ext.form.NumberField,  {
 				url:		'tree.php',
 				params:		{
 					winId:			'pagesTree',
-					heading:		'Sélectionner la page de destination dans l\'arborescence',
+					heading:		Automne.locales.selectPage,
 					onClick:		onclick,
 					currentPage:	this.getValue() || this.root
 				},

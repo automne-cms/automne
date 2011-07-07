@@ -283,7 +283,6 @@ foreach ($all_languages as $aLanguage) {
 			'fileinfos'	=> $imageDatas
 		);
 		//Protected status
-		pr($item->isProtected(), true);
 		$items[] = array(
 			'fieldLabel'	=> '<span ext:qtip="'.io::htmlspecialchars($cms_language->getMessage(MESSAGE_PAGE_FIELD_PROTECTED_INFO)).'" class="atm-help">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_PROTECTED).'</span>',
 			'name'			=> 'protected',

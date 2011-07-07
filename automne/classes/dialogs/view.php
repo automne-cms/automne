@@ -140,7 +140,7 @@ class CMS_view extends CMS_grandFather
 	
 	static function getJSManagerURL() {
 		$version = md5(AUTOMNE_VERSION.'-'.AUTOMNE_LASTUPDATE.(SYSTEM_DEBUG ? 'd':''));
-		return PATH_JS_WR.'/jsmanager.php?version='.$version;
+		return PATH_JS_WR.'/jsmanager'.(!STRIP_PHP_EXTENSION ? '.php' : '').'?version='.$version;
 	}
 	
 	/**
@@ -171,7 +171,7 @@ class CMS_view extends CMS_grandFather
 	
 	static function getCSSManagerURL() {
 		$version = md5(AUTOMNE_VERSION.'-'.AUTOMNE_LASTUPDATE.(SYSTEM_DEBUG ? 'd':''));
-		return PATH_CSS_WR.'/cssmanager.php?version='.$version;
+		return PATH_CSS_WR.'/cssmanager'.(!STRIP_PHP_EXTENSION ? '.php' : '').'?version='.$version;
 	}
 	
 	/**

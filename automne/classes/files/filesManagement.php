@@ -710,20 +710,24 @@ class CMS_file extends CMS_grandFather
 			return false;
 		}
 		$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::CHILD_FIRST);
+		$return = true;
 		foreach($objects as $name => $object){
 		    if ($object->isWritable()) {
 				if ($object->isFile()) {
-					unlink($object->getPathname());
+					$return &= unlink($object->getPathname());
 				} else {
 					if ($object->getFilename() != "." && $object->getFilename() != ".." && ($withDir || ($object->getPathname() != $dir))) {
-						rmdir($object->getPathname());
+						$return &= rmdir($object->getPathname());
 					}
 				}
 			} else {
 				return false;
 			}
 		}
-		return true;
+		if ($withDir) {
+			$return &= rmdir($dir);
+		}
+		return $return;
 	}
 	
 	/**

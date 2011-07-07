@@ -1775,6 +1775,16 @@ class CMS_tree extends CMS_grandFather
 				}
 			}
 		}
+		//try to query modules to get page from them
+		$modules = CMS_modulesCatalog::getAll();
+		foreach ($modules as $module) {
+			if (method_exists($module, 'getPageFromURL')) {
+				$cms_page = $module->getPageFromURL($pageUrl, $useDomain);
+				if ($cms_page) {
+					return $cms_page;
+				}
+			}
+		}
 		return false;
 	}
 }

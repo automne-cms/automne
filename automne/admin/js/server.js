@@ -226,7 +226,7 @@ Automne.server = {
 			buttons: 			Ext.MessageBox.OK,
 			closable: 			false,
 			icon: 				Ext.MessageBox.ERROR,
-			minWidth:			500
+			minWidth:			600
 		});
 	}
 };

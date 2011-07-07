@@ -603,12 +603,12 @@ class Zend_Validate_Hostname extends Zend_Validate_Abstract
                                     $length = $this->_idnLength[strtoupper($this->_tld)];
                                 }
 
-                                if (iconv_strlen($domainPart, 'UTF-8') > $length) {
-                                    $this->_error(self::INVALID_HOSTNAME);
-                                } else {
+                                //if (iconv_strlen($domainPart, 'UTF-8') > $length) {
+                                //    $this->_error(self::INVALID_HOSTNAME);
+                                //} else {
                                     $checked = true;
                                     break;
-                                }
+                                //}
                             }
                         }
 
