@@ -736,11 +736,15 @@ class CMS_page extends CMS_resource
 	function redirectionCode($filePath) {
 		//replace absolute filePath to DOCUMENT_ROOT one
 		$filePath = str_replace(PATH_REALROOT_FS.'/', '', $filePath);
-		$pagePath = '/'.str_replace(PATH_REALROOT_FS.'/', '', $this->_getFilePath(PATH_RELATIVETO_FILESYSTEM));
-		//get alias position
-		$pos = substr_count($pagePath  , '/');
+		$pos = 0;
+		if (PATH_REALROOT_FS != $this->_getFilePath(PATH_RELATIVETO_FILESYSTEM)) {
+			$pagePath = '/'.str_replace(PATH_REALROOT_FS.'/', '', $this->_getFilePath(PATH_RELATIVETO_FILESYSTEM));
+			//get alias position
+			$pos = substr_count($pagePath  , '/');
+		}
 		$content = 
 		'<?php'."\n".
+		'//Page file generated on '.date('r').' by '.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION."\n".
 		'if (file_exists(dirname(__FILE__).\'/'.str_repeat  ('../', $pos).$filePath.'\')) {'."\n".
 		'	$cms_page_included = true;'."\n".
 		'	require(dirname(__FILE__).\'/'.str_repeat  ('../', $pos).$filePath.'\');'."\n".
