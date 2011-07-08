@@ -565,7 +565,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(565, 'standard', 'en', 'Create page without any default rows');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(566, 'standard', 'en', 'Advanced parameters');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(567, 'standard', 'en', 'Actions from {0} to {1} on {2}');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(568, 'standard', 'en', 'No action founded...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(568, 'standard', 'en', 'No action found...');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(569, 'standard', 'en', 'Administrate module %s');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(570, 'standard', 'en', 'You have no privileges to access module %s administration.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(571, 'standard', 'en', 'Administration of module %s');
@@ -732,9 +732,9 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(733, 'standard', 'en', '%s pages during regeneration.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(734, 'standard', 'en', 'No public page uses this model...');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(735, 'standard', 'en', 'Script in progress, No PID file found. Check the configuration of the temporary directory of Automne.');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(736, 'standard', 'en', 'Script in progress, PID file founded.');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(737, 'standard', 'en', 'PID file founded without reference in database...');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(738, 'standard', 'en', 'PID file founded and script marked as completed...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(736, 'standard', 'en', 'Script in progress, PID file found.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(737, 'standard', 'en', 'PID file found without reference in database...');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(738, 'standard', 'en', 'PID file found and script marked as completed...');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(739, 'standard', 'en', 'No script in progress.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(740, 'standard', 'en', 'No script in the queue.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(741, 'standard', 'en', 'By name, description, keywords');
@@ -1512,7 +1512,7 @@ jsError: ''Error during Javascript loading, please retry or reconnect...'',
 jsonError: ''Error during JSon loading, please retry or reconnect...'',
 contactAdministrator: ''If the problem persist, please contact your administrator with this informations:'',
 cannotCloseModalGroup: ''You can not close this window since dependent windows are open. Please close them first.'',
-noPageFounded: ''No page founded...'',
+noPageFounded: ''No page found...'',
 noScript: ''No script in progress.'',
 nScripts: ''{0} scripts in progress.'',
 //Page edition 
@@ -1679,7 +1679,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1605, 'standard', 'en', 'Publish');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1606, 'standard', 'en', 'Choose a date');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1607, 'standard', 'en', 'Consult Automne errors logs:');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1608, 'standard', 'en', 'No logs founded for this date');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1608, 'standard', 'en', 'No logs found for this date');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1609, 'standard', 'en', 'Errors logs');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1610, 'standard', 'en', 'All errors are corrected. You can close this window to return to the update installation.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1611, 'standard', 'en', 'Automne updates');
@@ -1817,3 +1817,4 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1740, 'standard', 'en', 'Previous login:');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1741, 'standard', 'en', 'Redirect alternative domains');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1742, 'standard', 'en', 'If this box is checked, visitors using an alternate domain to access the site will automatically be redirected (via a redirection 301) to the main domain of the site.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1743, 'standard', 'en', 'Warning! You are not an administrator. If you check this option and you submit, you will not be able to edit again this element. Only an administrator will be able to modify it later.');

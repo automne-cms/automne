@@ -107,7 +107,8 @@ foreach ($aliases as $alias) {
 		$qtip .= '<strong>'.$cms_language->getMessage(MESSAGE_ALIAS_PROTECTED, false, 'cms_aliases').' : </strong>'.$cms_language->getMessage(MESSAGE_ALIAS_PROTECTED_DESC, false, 'cms_aliases').'<br />';
 	}
 	if ($pageId) {
-		$manageable = $deletable = $alias->getPageID() == $pageId ? true : false;
+		$manageable = $alias->getPageID() == $pageId ? true : false;
+		$deletable = !$hasSiblings && !$alias->isProtected() && $alias->getPageID() == $pageId ? true : false;
 		$protected = $alias->getPageID() != $pageId || ($alias->isProtected() && !$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL));
 		$expanded = true;
 	} else {

@@ -40,6 +40,7 @@ define("MESSAGE_PAGE_FIELD_PROTECTED_INFO", 1732);
 define("MESSAGE_PAGE_INFO_FIELD_CODENAME_VTYPE", 1677);
 define("MESSAGE_PAGE_ALLOWED", 719);
 define("MESSAGE_PAGE_AVAILABLE", 720);
+define("MESSAGE_PAGE_PROTECTED_ALERT", 1743);
 
 //Alias specific messages
 define("MESSAGE_PAGE_TITLE", 7);
@@ -155,6 +156,25 @@ $availableWebsites = sensitiveIO::jsonEncode($availableWebsites);
 $selectedWebsites = sensitiveIO::jsonEncode($selectedWebsites);
 
 $subAliasesDisabled = $item->hasSubAliases() ? 'disabled:true,' : '';
+
+//add an alert on protected option for non admin users
+$protectedAlert = '';
+if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
+	$protectedAlert = ",
+		listeners:	{
+			'check':function(el, checked) {
+				if (checked) {
+					Automne.message.popup({
+						msg: 				'{$cms_language->getJsMessage(MESSAGE_PAGE_PROTECTED_ALERT)}',
+						buttons: 			Ext.MessageBox.OK,
+						closable: 			false,
+						icon: 				Ext.MessageBox.WARNING
+					});
+				}
+			},
+			scope:this
+		}";
+}
 
 $jscontent = <<<END
 	var window = Ext.getCmp('{$winId}');
@@ -302,6 +322,7 @@ $jscontent = <<<END
 				xtype:			'checkbox',
 				checked:		'{$item->isProtected()}',
 				boxLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_PROTECTED_INFO, false, "cms_aliases")}'
+				{$protectedAlert}
 			}]
 		}],
 		buttons:[{

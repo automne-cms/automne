@@ -126,7 +126,7 @@ define("MESSAGE_PAGE_ALERTS_PROTECTED", 1733);
 define("MESSAGE_PAGE_FIELD_HTTPS", 1734);
 define("MESSAGE_PAGE_FIELD_HTTPS_DESC", 1735);
 define("MESSAGE_PAGE_FIELD_HTTPS_INFO", 1736);
-
+define("MESSAGE_PAGE_PROTECTED_ALERT", 1743);
 $cms_language->endPrefetch();
 
 //load interface instance
@@ -150,7 +150,6 @@ if ($cms_page->hasError()) {
 if ($cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)) {
 	if ($cms_page->isProtected()) {
 		$editable = false;
-		
 	} elseif ($cms_page->getLock() && $cms_page->getLock() != $cms_user->getUserId()) {
 		$editable = false;
 	} else {
@@ -177,6 +176,25 @@ if (!$cms_page->isProtected() || ($cms_page->isProtected() && $cms_user->hasAdmi
 		xtype:	'fieldset',
 		html:	'{$cms_language->getJSMessage(MESSAGE_PAGE_ALERTS_PROTECTED)}'
 	},";
+}
+
+//add an alert on protected option for non admin users
+$protectedAlert = '';
+if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
+	$protectedAlert = ",
+		listeners:	{
+			'check':function(el, checked) {
+				if (checked) {
+					Automne.message.popup({
+						msg: 				'{$cms_language->getJsMessage(MESSAGE_PAGE_PROTECTED_ALERT)}',
+						buttons: 			Ext.MessageBox.OK,
+						closable: 			false,
+						icon: 				Ext.MessageBox.WARNING
+					});
+				}
+			},
+			scope:this
+		}";
 }
 
 //https field
@@ -665,6 +683,7 @@ $jscontent .= <<<END
 						xtype:			'checkbox',
 						checked:		{$protectedValue},
 						boxLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_PROTECTED_DESC)}'
+						{$protectedAlert}
 					}{$httpsField},{
 						title:			'{$cms_language->getJSMessage(MESSAGE_PAGE_INFORMATIONS)}',
 						xtype:			'fieldset',

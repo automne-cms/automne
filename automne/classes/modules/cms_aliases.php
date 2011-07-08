@@ -153,7 +153,8 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 			from
 				mod_cms_aliases
 			where
-				page_ma='".io::sanitizeSQLString($pageId)."'";
+				page_ma='".io::sanitizeSQLString($pageId)."'
+				and replace_ma = 1";
 		$q = new CMS_query($sql);
 		if (!$q->getNumRows()) {
 			return false;
