@@ -132,7 +132,7 @@ if (!isset($_GET['file'])) {
 			}
 			//Email
 			if (!@mail("root@localhost", "Automne SMTP Test", "Automne SMTP Test")) {
-				$content .= '<li class="atm-pic-cancel"><strong style="color:orange">Warning</strong>, No SMTP server founded</li>';
+				$content .= '<li class="atm-pic-cancel"><strong style="color:orange">Warning</strong>, No SMTP server found</li>';
 			} else {
 				$content .= '<li class="atm-pic-ok">SMTP server <strong style="color:green">OK</strong></li>';
 			}
@@ -523,7 +523,7 @@ if (!isset($_GET['file'])) {
 			$step7_title = 'Background scripts:';
 			$step7_CLI_explanation = 'Enter here the path to the PHP-CLI executable.';
 			$step7_CLI = 'PHP-CLI path';
-			$step7_tmp_path_explanation = 'No Path founded for the temporary directory on this server. <br />Please enter a temporary path here (full path needed ex: /tmp or c:\tmp). This directory must be writable by the server.';
+			$step7_tmp_path_explanation = 'No Path found for the temporary directory on this server. <br />Please enter a temporary path here (full path needed ex: /tmp or c:\tmp). This directory must be writable by the server.';
 			$step7_tmp_path = 'Temp path';
 			
 			//STEP 8
@@ -725,7 +725,7 @@ if (!isset($_GET['file'])) {
 			}
 		}
 	}
-	//if archive founded, uncompress it
+	//if archive found, uncompress it
 	if (isset($archiveFound) && $archiveFound && $step==1) {
 		if ($cms_action == 'extract') {
 			//to avoid error on server with lots of PHP extensions, extend memory limit during this step
@@ -782,7 +782,7 @@ if (!isset($_GET['file'])) {
 	// | STEP GPL : Accept GNU-GPL license                                    |
 	// +----------------------------------------------------------------------+
 	
-	//if archive founded, uncompress it
+	//if archive found, uncompress it
 	if ($step === 'gpl') {
 		if ($cms_action == 'acceptlicense') {
 			if (isset($_POST["license"]) && $_POST["license"] == 'yes') {
@@ -1415,7 +1415,7 @@ $configContent .= '
 				CMS_file::makeExecutable($aScriptFile["name"]);
 			}
 			
-			//test temporary directory and create it if none founded
+			//test temporary directory and create it if none found
 			$tmpPath ='';
 			if (@is_dir(ini_get("session.save_path")) && is_writable(PATH_TMP_FS)) {
 				$tmpPath = ini_get("session.save_path");
@@ -2600,7 +2600,7 @@ class CMS_archive_install
 	 * Parse a directory to get its content
 	 *  
 	 * @param string $dirname, name of the directory to parse
-	 * @return array $files founded in the directory
+	 * @return array $files found in the directory
 	 */
 	function parse_dir($dirname) {
 		if ($this->options['storepaths'] == 1 && !preg_match("/^(\.+\/*)+$/", $dirname)) {
