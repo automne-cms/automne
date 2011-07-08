@@ -651,7 +651,9 @@ class CMS_modulePolymodValidation extends CMS_module
 		} else {
 			$resource->writeToPersistence(false);
 			//Clear polymod cache
-			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_codename));
+			//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_codename));
+			CMS_cache::clearTypeCache('polymod');
+			
 		}
 		$modulesCodes->getModulesCodes(MODULE_TREATMENT_AFTER_VALIDATION_TREATMENT, '', $resource, array('result' => $result, 'lastvalidation' => $lastValidation, 'module' => $this->_codename));
 		return true;

@@ -315,7 +315,9 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 		CMS_cache::clearTypeCacheByMetas('atm-polymod-structure', array('type' => 'fields'));
 		
 		//Clear polymod cache
-		CMS_cache::clearTypeCacheByMetas('polymod', array('module' => CMS_poly_object_catalog::getModuleCodenameForField($this->_fieldID)));
+		//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => CMS_poly_object_catalog::getModuleCodenameForField($this->_fieldID)));
+		CMS_cache::clearTypeCache('polymod');
+		
 		return true;
 	}
 	
@@ -391,7 +393,9 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 			}
 			
 			//Clear polymod cache
-			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $module));
+			//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $module));
+			CMS_cache::clearTypeCache('polymod');
+			
 		}
 		//unset fields catalog in cache
 		CMS_cache::clearTypeCacheByMetas('atm-polymod-structure', array('type' => 'fields'));

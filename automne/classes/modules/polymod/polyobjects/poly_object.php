@@ -1093,7 +1093,8 @@ class CMS_poly_object extends CMS_resource
 			}
 			
 			//Clear polymod cache
-			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $polyModuleCodename));
+			//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $polyModuleCodename));
+			CMS_cache::clearTypeCache('polymod');
 		}
 		return true;
 	}
@@ -1167,7 +1168,9 @@ class CMS_poly_object extends CMS_resource
 				unset($this);
 			}
 			//Clear polymod cache
-			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $polyModuleCodename));
+			//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $polyModuleCodename));
+			CMS_cache::clearTypeCache('polymod');
+			
 			return true;
 		} else {
 			//change the article proposed location and send emails to all the validators
@@ -1200,7 +1203,9 @@ class CMS_poly_object extends CMS_resource
 				$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_DELETE, $cms_user, $polyModuleCodename, $this->getStatus(), 'Item \''.$this->getLabel().'\' ('.$objectDef->getLabel($language).')', $this);
 				
 				//Clear polymod cache
-				CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $polyModuleCodename));
+				//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $polyModuleCodename));
+				CMS_cache::clearTypeCache('polymod');
+				
 				return true;
 			} else {
 				return false;

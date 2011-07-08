@@ -769,7 +769,8 @@ class CMS_profile_user extends CMS_profile
 	            }
 	            
 				//Clear polymod cache
-				CMS_cache::clearTypeCacheByMetas('polymod', array('resource' => 'users'));
+				//CMS_cache::clearTypeCacheByMetas('polymod', array('resource' => 'users'));
+				CMS_cache::clearTypeCache('polymod');
 				
 	            return true;
 	        } else {
@@ -876,7 +877,9 @@ class CMS_profile_user extends CMS_profile
 			$q = new CMS_query($sql);
 		}
 		//Clear polymod cache
-		CMS_cache::clearTypeCacheByMetas('polymod', array('resource' => 'users'));
+		//CMS_cache::clearTypeCacheByMetas('polymod', array('resource' => 'users'));
+		CMS_cache::clearTypeCache('polymod');
+		
 		return true;
 	}
 	

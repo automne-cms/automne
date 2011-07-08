@@ -823,11 +823,15 @@ class CMS_moduleCategory extends CMS_grandFather {
 			}
 			
 			//Clear polymod cache
-			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_moduleCodename));
+			//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_moduleCodename));
+			CMS_cache::clearTypeCache('polymod');
+			
 			return ($err <= 0);
 		}
 		//Clear polymod cache
-		CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_moduleCodename));
+		//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_moduleCodename));
+		CMS_cache::clearTypeCache('polymod');
+		
 		return true;
 	}
 
@@ -880,7 +884,9 @@ class CMS_moduleCategory extends CMS_grandFather {
 			}
 			
 			//Clear polymod cache
-			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_moduleCodename));
+			//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_moduleCodename));
+			CMS_cache::clearTypeCache('polymod');
+			
 			unset($this);
 			return ($err <= 0);
 		}

@@ -309,7 +309,9 @@ class CMS_profile_usersGroup extends CMS_profile
 			return false;
 		}
 		//Clear polymod cache
-		CMS_cache::clearTypeCacheByMetas('polymod', array('resource' => 'users'));
+		//CMS_cache::clearTypeCacheByMetas('polymod', array('resource' => 'users'));
+		CMS_cache::clearTypeCache('polymod');
+		
 		return true;
 	}
 	
@@ -473,7 +475,9 @@ class CMS_profile_usersGroup extends CMS_profile
 			}
 		}
 		//Clear polymod cache
-		CMS_cache::clearTypeCacheByMetas('polymod', array('resource' => 'users'));
+		//CMS_cache::clearTypeCacheByMetas('polymod', array('resource' => 'users'));
+		CMS_cache::clearTypeCache('polymod');
+		
 		return true;
 	}
 	
@@ -511,7 +515,9 @@ class CMS_profile_usersGroup extends CMS_profile
 		unset($this);
 		
 		//Clear polymod cache
-		CMS_cache::clearTypeCacheByMetas('polymod', array('resource' => 'users'));
+		//CMS_cache::clearTypeCacheByMetas('polymod', array('resource' => 'users'));
+		CMS_cache::clearTypeCache('polymod');
+		
 	}
 	
 	/**
@@ -575,7 +581,9 @@ class CMS_profile_usersGroup extends CMS_profile
 		}
 		
 		//Clear polymod cache
-		CMS_cache::clearTypeCacheByMetas('polymod', array('resource' => 'users'));
+		//CMS_cache::clearTypeCacheByMetas('polymod', array('resource' => 'users'));
+		CMS_cache::clearTypeCache('polymod');
+		
 		return true;
 	}
 	

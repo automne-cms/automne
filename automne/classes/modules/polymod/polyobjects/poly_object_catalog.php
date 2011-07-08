@@ -699,7 +699,9 @@ class CMS_poly_object_catalog
 			}
 		}
 		//Clear polymod cache
-		CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $objectDef->getValue('module')));
+		//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $objectDef->getValue('module')));
+		CMS_cache::clearTypeCache('polymod');
+		
 		return true;
 	}
 	

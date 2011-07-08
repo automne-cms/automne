@@ -606,7 +606,9 @@ class CMS_poly_object_definition extends CMS_grandFather
 		}
 		
 		//Clear polymod cache
-		CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_objectValues["module"]));
+		//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_objectValues["module"]));
+		CMS_cache::clearTypeCache('polymod');
+		
 		//unset polymod structure in cache
 		CMS_cache::clearTypeCache('atm-polymod-structure');
 		return true;
@@ -659,7 +661,9 @@ class CMS_poly_object_definition extends CMS_grandFather
 			CMS_cache::clearTypeCacheByMetas('atm-polymod-structure', array('type' => 'object'));
 			
 			//Clear polymod cache
-			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_objectValues["module"]));
+			//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_objectValues["module"]));
+			CMS_cache::clearTypeCache('polymod');
+			
 		}
 		unset($this);
 		return true;

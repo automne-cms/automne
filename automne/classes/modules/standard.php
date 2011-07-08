@@ -902,7 +902,8 @@ class CMS_module_standard extends CMS_module
 		$location_before = $page->getLocation();
 		
 		//Clear polymod cache
-		CMS_cache::clearTypeCacheByMetas('polymod', array('module' => MOD_STANDARD_CODENAME));
+		//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => MOD_STANDARD_CODENAME));
+		CMS_cache::clearTypeCache('polymod');
 		
 		//Get the linked pages (it will be too late after parent processing if pages move outside USERSPACE
 		

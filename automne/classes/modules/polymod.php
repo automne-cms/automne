@@ -1228,7 +1228,8 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			}
 		}
 		//Clear polymod cache
-		CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_codename));
+		//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_codename));
+		CMS_cache::clearTypeCache('polymod');
 		
 		// Destroy module
 		return parent::destroy();
