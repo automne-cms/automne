@@ -16,6 +16,7 @@ V4.2.0 (in progress)
 [REFACTOR] : Add previous login message on connection
 [REFACTOR] : Use a temporary table to store poly objects search ids to avoid MySQL limitations
 [REFACTOR] : Completely refactor cms_aliases module for a better integration in Automne 4
+[REFACTOR] : Refactor single sub objects administration to allow creation and modification
 [FEATURE] : Add oembed object and oembed polymod field (external media field). Update Mediacenter to manage oembed medias
 [FEATURE] : Add parent page selection on new page creation
 [FEATURE] : Add variable type {page:father:XXX} to get infos from current parent page
@@ -28,6 +29,7 @@ V4.2.0 (in progress)
 [FEATURE] : Add {helper:XXX:YYY} variable type which allow usage of PHP helpers to format given variables
 [FEATURE] : Add atm-js-add and atm-css-add tags. Allow website subfolder auto inclusion for JS and CSS tags
 [FEATURE] : Allow stripping of .php extension for generated pages (see constant STRIP_PHP_EXTENSION in cms_rc.php)
+[FEATURE] : Allow sharing of polymod objects accross polymod modules
 
 V4.1.4 (in progress)
 [BUG] : Correct bugs numbers: 2049, 2070, 2154, 2162, 2195, 2252, 2265, 2271, 2272 (see http://www.automne-cms.org/bug/)

@@ -150,6 +150,7 @@ $itemFields = preg_replace_callback('#"function\((.*)}"#U', 'replaceCallBack', $
 
 //Append pub dates if object is a primary resource
 $saveAndValidate = '';
+$saveIconCls = $saveTooltip = '';
 if ($object->isPrimaryResource()) {
 	if (!$item->getID()) {
 		$dt = new CMS_date();

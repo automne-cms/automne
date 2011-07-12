@@ -236,6 +236,7 @@ $content = '
 						if ($object->getID() != $anObjectType->getID() && !in_array($anObjectType->getID(),$objectUseage)) {
 							//load fields objects for object
 							$objectFields = CMS_poly_object_catalog::getFieldsDefinition($anObjectType->getID());
+							$objectModule = CMS_modulesCatalog::getByCodename(CMS_poly_object_catalog::getModuleCodenameForObjectType($anObjectType->getID()));
 							//a poly object can't be empty
 							if(sizeof($objectFields)) {
 								$selected = ($field->getValue("type") == 'multi|'.$anObjectType->getID()) ? ' selected="selected"':'';
