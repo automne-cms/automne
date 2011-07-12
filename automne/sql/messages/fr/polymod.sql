@@ -507,3 +507,4 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(630, 'polymod', 'fr', 'URL du média');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(631, 'polymod', 'fr', 'Clé embed.ly');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(632, 'polymod', 'fr', 'Pour profiter du service <a href="http://embed.ly" target="_blank">embed.ly</a> permettant d\'intégrer tout type de média, saisissez votre clé embed.ly dans ce champ. Vous pouvez obtenir une clé gratuite à cette adresse : <a href="http://app.embed.ly/pricing/free" target="_blank">http://app.embed.ly/pricing/free</a>.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(633, 'polymod', 'fr', 'Elément ''%s'' actuellement associé');

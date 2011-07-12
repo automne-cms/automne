@@ -20,3 +20,31 @@ Ext.override(Ext.Panel, {
      return this;
  }
 });
+//Pb on DD with Multiselect2.js
+Ext.dd.DragDropMgr.getLocation = function(oDD) {
+    if (! this.isTypeOfDD(oDD)) {
+        return null;
+    }
+
+    var el = oDD.getEl(), pos, x1, x2, y1, y2, t, r, b, l;
+
+    try {
+        pos= Ext.lib.Dom.getXY(el);
+    } catch (e) { }
+
+    if (!pos) {
+        return null;
+    }
+
+    x1 = pos[0];
+    x2 = x1 + el.offsetWidth;
+    y1 = pos[1];
+    y2 = y1 + el.offsetHeight;
+
+    t = y1 - oDD.padding[0];
+    r = x2 + oDD.padding[1];
+    b = y2 + oDD.padding[2];
+    l = x1 - oDD.padding[3];
+
+    return new Ext.lib.Region( t, r, b, l );
+};

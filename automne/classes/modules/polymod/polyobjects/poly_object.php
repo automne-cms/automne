@@ -59,6 +59,17 @@ class CMS_poly_object extends CMS_resource
 	const MESSAGE_OBJECT_FIELD_DESC_DESCRIPTION = 402;
 	const MESSAGE_POLYOBJECT_DATE_HASVALUE_DESCRIPTION = 411;
 	const MESSAGE_POLYOBJECT_DATE_TIMESTAMP_DESCRIPTION = 605;
+	const MESSAGE_POLYOBJECT_OBJECT_LIST_ZONE = 633;
+	const MESSAGE_PAGE_ACTION_ASSOCIATE = 1267;
+	const MESSAGE_POLYOBJECT_OBJECT_CHOOSE_ELEMENT = 518;
+	const MESSAGE_PAGE_ACTION_DESASSOCIATE = 1268;
+	const MESSAGE_POLYOBJECT_OBJECT_DISASSOCIATE_ELEMENT = 517;
+  	const MESSAGE_POLYOBJECT_OBJECT_SELECT_BEFORE = 608;
+	const MESSAGE_PAGE_ACTION_DESASSOCIATE_CONFIRM = 607;
+	const MESSAGE_PAGE_ACTION_MODIFIY = 261;
+	const MESSAGE_POLYOBJECT_OBJECT_EDIT_ELEMENT = 516;
+  	const MESSAGE_PAGE_ACTION_NEW = 262;
+	const MESSAGE_POLYOBJECT_OBJECT_CREATE_ZONE = 193;
 	
 	/**
 	  * object id (relative to id in mod_object_polyobjects table)
@@ -651,61 +662,333 @@ class CMS_poly_object extends CMS_resource
 	/**
 	  * get HTML admin (used to enter object values in admin)
 	  *
-	  * @param integer $fieldID, the current field id (only for poly object compatibility)
 	  * @param CMS_language $language, the current admin language
 	  * @param string prefixname : the prefix to use for post names
 	  * @return string : the html admin
 	  * @access public
 	  */
 	function getHTMLAdmin($fieldID, $language, $prefixName) {
+		global $cms_user;
 		if (is_object($this->_objectFieldsDefinition[$fieldID])) {
 			if (is_a($this->_objectValues[$fieldID],'CMS_poly_object')) {
 				//is this field mandatory ?
 				$mandatory = $this->_objectFieldsDefinition[$fieldID]->getValue('required') ? '<span class="atm-red">*</span> ' : '';
 				$desc = $this->_objectFieldsDefinition[$fieldID]->getFieldDescription($language);
+				$params = array();
+				$params['doNotUseExternalSubObjects'] = false;
+				
 				if (POLYMOD_DEBUG) {
 					$desc .= $desc ? '<br />' : '';
-					$desc .= '<span class="atm-red">Field : '.$fieldID.' - Value(s) : <ul>';
+					$desc .= '<span class="atm-red">Field : '.$fieldID.' - Value : <ul>';
 					$desc .= '<li>'.$fieldID.'&nbsp;:&nbsp;'.$this->_polyObjectValues[$fieldID]->getValue().'</li>';
 					$desc .= '</ul></span>';
 				}
+				
 				$label = $desc ? '<span class="atm-help" ext:qtip="'.io::htmlspecialchars($desc).'">'.$mandatory.$this->_objectFieldsDefinition[$fieldID]->getLabel($language).'</span>' : $mandatory.$this->_objectFieldsDefinition[$fieldID]->getLabel($language);
-				$return = array(
-					'allowBlank'	=>	!$this->_objectFieldsDefinition[$fieldID]->getValue('required'),
-					'fieldLabel' 	=>	$label,
-					'name'			=>	'polymodFieldsValue['.$prefixName.$this->_objectFieldsDefinition[$fieldID]->getID().'_0]',
-				);
-				//get Object definition
-				$objectDef = $this->getObjectDefinition();
-				//get module codename
-				$moduleCodename = $objectDef->getValue('module');
+				
+				$listId = 'list'.md5(mt_rand().microtime());
+				
+				//get object definition
+				$objectDef = $this->_objectFieldsDefinition[$fieldID]->getTypeObject(true);
+				
+				$associatedItems = array();
 				if (isset($this->_polyObjectValues[$fieldID]) && is_object($this->_polyObjectValues[$fieldID]) && !is_null($this->_polyObjectValues[$fieldID]->getValue())) {
-					$selectedValue = $this->_polyObjectValues[$fieldID]->getValue() ? $this->_polyObjectValues[$fieldID]->getValue() : '';
+					$associatedItem = $this->_polyObjectValues[$fieldID]->getValue();
 				} else {
-					$selectedValue = '';
+					$associatedItem = '';
 				}
 				
-				$return['xtype'] 			= 'atmCombo';
-				$return['hiddenName'] 		= $return['name'];
-				$return['forceSelection'] 	= true;
-				$return['mode'] 			= 'remote';
-				$return['valueField'] 		= 'id';
-				$return['displayField'] 	= 'label';
-				$return['triggerAction'] 	= 'all';
-				$return['allowBlank']		= true;
-				$return['selectOnFocus']	= true;
-				$return['editable']			= true;
-				$return['typeAhead']		= true;
-				$return['value']			= $selectedValue;
-				$return['store'] 			= array(
-					'url'			=> PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/list-objects.php',
-					'baseParams'	=> array(
-						'objectId'		=> $this->_objectValues[$fieldID]->getObjectID(),
-						'module'		=> $moduleCodename,
-						'query'			=> ''
+				$items = array();
+				$editURL = PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/item.php';
+				$associateURL = PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/associate-items.php';
+				$searchURL = PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/search.php';
+				$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_objectFieldsDefinition[$fieldID]->getID());
+				$objectID = $this->_objectValues[$fieldID]->getObjectID();
+				if (!$cms_user->hasModuleClearance($moduleCodename, CLEARANCE_MODULE_EDIT)) {
+					define("MESSAGE_ERROR_MODULE_RIGHTS",570);
+					$module = CMS_modulesCatalog::getByCodename($moduleCodename);
+					$items[] = array(
+							'width'			=> '100%',
+							'layout'		=> 'fit',
+							'border'		=> false,
+							'bodyStyle'		=> 'margin:5px 0 3px 0',
+							'html'			=> $language->getMessage(MESSAGE_ERROR_MODULE_RIGHTS,array($module->getLabel($language)))
+						);
+				} else {
+					$items[] = array(
+							'width'			=> '100%',
+							'layout'		=> 'fit',
+							'border'		=> false,
+							'bodyStyle'		=> 'margin:5px 0 3px 0',
+							'html'			=> $language->getMessage(self::MESSAGE_POLYOBJECT_OBJECT_LIST_ZONE,array($objectDef->getObjectLabel($language)), MOD_POLYMOD_CODENAME)
+						);
+					$items[] = array(
+						'xtype'			=> "multiselect2",
+			            'hideLabel'		=> true,
+			            'id'			=>	$listId,
+						'name'			=>	'polymodFieldsValue['.$prefixName.$this->_objectFieldsDefinition[$fieldID]->getID().'_0]',
+						'allowBlank'	=> !$this->_objectFieldsDefinition[$fieldID]->getValue('required'),
+			            'valueField'	=> 'id',
+						'displayField'	=> 'label',
+						'listeners'		=> array(
+							'valid' => sensitiveIO::sanitizeJSString('function(field) {
+								if (field.getValue()) {
+									Ext.getCmp(\'btnAssociate'.$listId.'\').disable();
+									Ext.getCmp(\'btnDesassociate'.$listId.'\').enable();
+									Ext.getCmp(\'btnModify'.$listId.'\').enable();
+									Ext.getCmp(\'btnNew'.$listId.'\').disable();
+								} else {
+									Ext.getCmp(\'btnAssociate'.$listId.'\').enable();
+									Ext.getCmp(\'btnDesassociate'.$listId.'\').disable();
+									Ext.getCmp(\'btnModify'.$listId.'\').disable();
+									Ext.getCmp(\'btnNew'.$listId.'\').enable();
+								}
+								return true;
+							}', false, false),
+							'render' => sensitiveIO::sanitizeJSString('function(field) {
+								if (field.getValue()) {
+									Ext.getCmp(\'btnAssociate'.$listId.'\').disable();
+									Ext.getCmp(\'btnDesassociate'.$listId.'\').enable();
+									Ext.getCmp(\'btnModify'.$listId.'\').enable();
+									Ext.getCmp(\'btnNew'.$listId.'\').disable();
+								} else {
+									Ext.getCmp(\'btnAssociate'.$listId.'\').enable();
+									Ext.getCmp(\'btnDesassociate'.$listId.'\').disable();
+									Ext.getCmp(\'btnModify'.$listId.'\').disable();
+									Ext.getCmp(\'btnNew'.$listId.'\').enable();
+								}
+								return true;
+							}', false, false)
+						),
+						'tpl'			=> sensitiveIO::sanitizeJSString('<tpl for="rows">
+							<dl>
+								<tpl for="parent.columns">
+									<dt style="width:100%;text-align:{align};" class="MultiselectDD">
+										<div unselectable="on" class="atm-result x-unselectable" id="object-{parent.id}">
+											<div class="atm-title">
+												<table>
+													<tr>
+														<td class="atm-label" ext:qtip="ID: {parent.id}">{parent.status}&nbsp;{parent.label}</td>
+														<td class="atm-pubrange">{parent.pubrange}</td>
+													</tr>
+												</table>
+											</div>
+											<div class="atm-description">{parent.description}<div style="clear:both;height:1px;">&nbsp;</div></div>
+										</div>
+									</dt>
+								</tpl>
+								<div class="x-clear"></div>
+							</dl>
+		                </tpl>'),
+						'scripts'		=> true, //execute JS scripts in response
+						'store'			=> array(
+							'xtype'				=> 'atmJsonstore',
+							'root'				=> 'results',
+							'totalProperty'		=> 'total',
+							'url'				=> $searchURL,
+							'id'				=> 'id',
+							'remoteSort'		=> true,
+							'baseParams'		=> array(
+								'module'			=> $moduleCodename,
+								'objectId'			=> $objectID
+							),
+							'fields'			=> array('id', 'status', 'pubrange', 'label', 'description', 'locked', 'deleted', 'previz', 'edit')
+						),
+						'value' 		=> $associatedItem,
+			            'width'			=> 'auto',
+						'height'		=> 'auto',
+						'cls'			=> 'x-list-body',
+						'tbar'			=> array(
+							array(
+								'id'		=> 'btnAssociate'.$listId,
+								'text'		=> $language->getMessage(self::MESSAGE_PAGE_ACTION_ASSOCIATE),
+								'tooltip'	=> $language->getMessage(self::MESSAGE_POLYOBJECT_OBJECT_CHOOSE_ELEMENT,array($objectDef->getObjectLabel($language)), MOD_POLYMOD_CODENAME),
+								'handler'	=> sensitiveIO::sanitizeJSString('function(button){
+									var windowId = \'module'.$moduleCodename.'AssociateWindow\';
+									/*create window element*/
+									var window = new Automne.Window({
+										id:				windowId,
+										objectId:		\'\',
+										autoLoad:		{
+											url:			\''.$associateURL.'\',
+											params:			{
+												winId:			windowId,
+												module:			\''.$moduleCodename.'\',
+												type:			\''.$objectID.'\',
+												unique:			1
+											},
+											nocache:		true,
+											scope:			this
+										},
+										modal:			true,
+										width:			750,
+										height:			580,
+										animateTarget:	button,
+										listeners:{\'close\':function(window){
+											var cmp = Ext.getCmp(\''.$listId.'\');
+											if (window.selectedItem) {
+												cmp.setValue(window.selectedItem);
+											}
+										}}
+									});
+									/*display window*/
+									window.show(button.getEl());
+								}', false, false),
+								'scope'		=> 'this'
+							), 
+							array(
+								'id'		=> 'btnDesassociate'.$listId,
+								'text'		=> $language->getMessage(self::MESSAGE_PAGE_ACTION_DESASSOCIATE),
+								'tooltip'	=> $language->getMessage(self::MESSAGE_POLYOBJECT_OBJECT_DISASSOCIATE_ELEMENT, false, MOD_POLYMOD_CODENAME),
+								'handler'	=> sensitiveIO::sanitizeJSString('function(button){
+									var cmp = Ext.getCmp(\''.$listId.'\');
+									var selected = cmp.view.getSelectedRecords();
+									if (!selected.length || selected.length > 1) {
+										Automne.message.popup({
+											msg: 				\''.$language->getJSMessage(self::MESSAGE_POLYOBJECT_OBJECT_SELECT_BEFORE, false, MOD_POLYMOD_CODENAME).'\',
+											buttons: 			Ext.MessageBox.OKCANCEL,
+											animEl: 			button.getEl(),
+											closable: 			false,
+											icon: 				Ext.MessageBox.INFO
+										});
+										return;
+									}
+									Automne.message.popup({
+										msg: 				\''.io::htmlspecialchars($language->getMessage(self::MESSAGE_PAGE_ACTION_DESASSOCIATE_CONFIRM, array($objectDef->getObjectLabel($language)), MOD_POLYMOD_CODENAME)).'\',
+										buttons: 			Ext.MessageBox.OKCANCEL,
+										animEl: 			button.getEl(),
+										closable: 			false,
+										icon: 				Ext.MessageBox.WARNING,
+										scope:				this,
+										fn: 				function (button) {
+											if (button == \'ok\') {
+												var cmp = Ext.getCmp(\''.$listId.'\');
+												var selected = cmp.view.getSelectedRecords();
+												if (!selected.length || selected.length > 1) {
+													return;
+												}
+												var objectId = selected[0].id;
+												var values = cmp.getRawValue();
+												values.remove(objectId);
+												cmp.setValue(values.join(cmp.delimiter));
+												
+												if (cmp.getValue()) {
+													Ext.getCmp(\'btnAssociate'.$listId.'\').disable();
+													Ext.getCmp(\'btnDesassociate'.$listId.'\').enable();
+													Ext.getCmp(\'btnModify'.$listId.'\').enable();
+													Ext.getCmp(\'btnNew'.$listId.'\').disable();
+												} else {
+													Ext.getCmp(\'btnAssociate'.$listId.'\').enable();
+													Ext.getCmp(\'btnDesassociate'.$listId.'\').disable();
+													Ext.getCmp(\'btnModify'.$listId.'\').disable();
+													Ext.getCmp(\'btnNew'.$listId.'\').enable();
+												}
+											}
+										}
+									});
+								}', false, false),
+								'scope'		=> 'this'
+							),'->', array(
+								'id'		=> 'btnModify'.$listId,
+								'text'		=> $language->getMessage(self::MESSAGE_PAGE_ACTION_MODIFIY),
+								'tooltip'	=> $language->getMessage(self::MESSAGE_POLYOBJECT_OBJECT_EDIT_ELEMENT, false, MOD_POLYMOD_CODENAME),
+								'iconCls'	=> 'atm-pic-modify',
+								'handler'	=> sensitiveIO::sanitizeJSString('function(button){
+									var cmp = Ext.getCmp(\''.$listId.'\');
+									var selected = cmp.view.getSelectedRecords();
+									if (!selected.length || selected.length > 1) {
+										Automne.message.popup({
+											msg: 				\''.$language->getJSMessage(self::MESSAGE_POLYOBJECT_OBJECT_SELECT_BEFORE, false, MOD_POLYMOD_CODENAME).'\',
+											buttons: 			Ext.MessageBox.OKCANCEL,
+											animEl: 			button.getEl(),
+											closable: 			false,
+											icon: 				Ext.MessageBox.INFO
+										});
+										return;
+									}
+									var objectId = selected[0].id;
+									var windowId = \'module'.$moduleCodename.'EditWindow\'+objectId;
+									/*create window element*/
+									var window = new Automne.Window({
+										id:				windowId,
+										objectId:		objectId,
+										autoLoad:		{
+											url:			\''.$editURL.'\',
+											params:			{
+												winId:			windowId,
+												module:			\''.$moduleCodename.'\',
+												type:			\''.$objectID.'\',
+												item:			objectId
+											},
+											nocache:		true,
+											scope:			this
+										},
+										modal:			true,
+										width:			750,
+										height:			580,
+										animateTarget:	button,
+										listeners:{\'close\':function(window){
+											var cmp = Ext.getCmp(\''.$listId.'\');
+											cmp.store.reload();
+										}}
+									});
+									/*display window*/
+									window.show(button.getEl());
+								}', false, false),
+								'scope'		=> 'this'
+							), array(
+								'id'		=> 'btnNew'.$listId,
+								'text'		=> $language->getMessage(self::MESSAGE_PAGE_ACTION_NEW),
+								'tooltip'	=> $language->getMessage(self::MESSAGE_POLYOBJECT_OBJECT_CREATE_ZONE,array($objectDef->getObjectLabel($language)), MOD_POLYMOD_CODENAME),
+								'iconCls'	=> 'atm-pic-add',
+								'handler'	=> sensitiveIO::sanitizeJSString('function(button){
+									var objectId = \'create\';
+									var windowId = \'module'.$moduleCodename.'EditWindow\'+objectId;
+									/*create window element*/
+									var window = new Automne.Window({
+										id:				windowId,
+										objectId:		\'\',
+										autoLoad:		{
+											url:			\''.$editURL.'\',
+											params:			{
+												winId:			windowId,
+												module:			\''.$moduleCodename.'\',
+												type:			\''.$objectID.'\'
+											},
+											nocache:		true,
+											scope:			this
+										},
+										modal:			true,
+										width:			750,
+										height:			580,
+										animateTarget:	button,
+										listeners:{\'close\':function(window){
+											var cmp = Ext.getCmp(\''.$listId.'\');
+											if (window.objectId) {
+												var values = cmp.getRawValue();
+												values.unshift(window.objectId);
+												cmp.setValue(values.join(cmp.delimiter));
+											}
+										}}
+									});
+									/*display window*/
+									window.show(button.getEl());
+								}', false, false),
+								'scope'		=> 'this'
+							),
+						),
+			            'ddReorder'		=> true
+					);
+				}
+				$return = array(
+					'title' 		=>	$label,
+					'xtype'			=>	'fieldset',
+					'autoHeight'	=>	true,
+					'layout'		=>	'form',
+					'defaults'		=> 	array(
+						'anchor'		=> '97%',
 					),
-					'root' 			=> 'objects',
-					'fields' 		=> array('id', 'label')
+					'items'			=>	$items
 				);
 				return $return;
 			} else {

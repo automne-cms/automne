@@ -28,6 +28,7 @@ require_once(dirname(__FILE__).'/../../../../cms_rc_admin.php');
 
 define("MESSAGE_PAGE_NO_ITEM", 530);
 define("MESSAGE_PAGE_ITEM_NON_EXISTENT", 531);
+define("MESSAGE_ERROR_MODULE_RIGHTS",570);
 
 //load interface instance
 $view = CMS_view::getInstance();

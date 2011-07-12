@@ -26,6 +26,8 @@
 
 require_once(dirname(__FILE__).'/../../../../cms_rc_admin.php');
 
+define("MESSAGE_ERROR_MODULE_RIGHTS",570);
+
 //load interface instance
 $view = CMS_view::getInstance();
 //set default display mode for this page
@@ -237,7 +239,6 @@ while($item = $search->getNextResult()) {
 	//unpublish
 	if ($unpublish && $object->isPrimaryResource()) {
 		//set item date end to yesterday
-		pr('ok unpublish');
 		$dt_end = new CMS_date();
 		$dt_end->setDebug(false);
 		$dt_end->setNow();
@@ -252,7 +253,6 @@ while($item = $search->getNextResult()) {
 	//publish
 	if ($publish && $object->isPrimaryResource()) {
 		//clear page date end
-		pr('ok publish');
 		$dt_end = new CMS_date();
 		$dateStart = $item->getPublicationDateStart(false);
 		$item->setPublicationDates($dateStart, $dt_end);

@@ -68,7 +68,6 @@ $view->setDisplayMode(CMS_view::SHOW_RAW);
 $view->setSecure();
 
 $winId = sensitiveIO::request('winId');
-$fatherId = sensitiveIO::request('fatherId');
 $objectId = sensitiveIO::request('objectId', 'sensitiveIO::isPositiveInteger');
 $codename = sensitiveIO::request('module', CMS_modulesCatalog::getAllCodenames());
 $selectedItem = sensitiveIO::request('selectedItem', 'sensitiveIO::isPositiveInteger', '');
@@ -104,7 +103,6 @@ $objectFields = CMS_poly_object_catalog::getFieldsDefinition($object->getID());
 $recordsPerPage = CMS_session::getRecordsPerPage();
 $searchURL = PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/search.php';
 $listURL = PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/list-datas.php';
-$editURL = PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/item.php';
 $dateFormat = $cms_language->getDateFormat();
 $isPrimary = $object->isPrimaryResource() ? 'true' : 'false';
 

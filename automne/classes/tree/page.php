@@ -2135,21 +2135,21 @@ class CMS_page extends CMS_resource
 			//Duplicate page base datas
 			$pg->setTitle($this->getTitle(), $user);
 			$pg->setLinkTitle($this->getLinkTitle(), $user);
-			$pg->setDescription($this->getDescription(), $user);
-			$pg->setKeywords($this->getKeywords(), $user);
+			$pg->setDescription($this->getDescription(false, false), $user);
+			$pg->setKeywords($this->getKeywords(false, false), $user);
 			$pg->setPublicationDates($this->getPublicationDateStart(false), $this->getPublicationDateEnd(false));
-			$pg->setReminderOn($this->getReminderOn(), $user);
-			$pg->setReminderOnMessage($this->getReminderOnMessage(), $user);
-			$pg->setCategory($this->getCategory(), $user);
-			$pg->setAuthor($this->getAuthor(), $user);
-			$pg->setReplyto($this->getReplyto(), $user);
-			$pg->setCopyright($this->getCopyright(), $user);
-			$pg->setLanguage($this->getLanguage(), $user);
-			$pg->setRobots($this->getRobots(), $user);
-			$pg->setPragma($this->getPragma(), $user);
-			$pg->setRefresh($this->getRefresh(), $user);
+			$pg->setReminderOn($this->getReminderOn(false, false), $user);
+			$pg->setReminderOnMessage($this->getReminderOnMessage(false, false), $user);
+			$pg->setCategory($this->getCategory(false, false), $user);
+			$pg->setAuthor($this->getAuthor(false, false), $user);
+			$pg->setReplyto($this->getReplyto(false, false), $user);
+			$pg->setCopyright($this->getCopyright(false, false), $user);
+			$pg->setLanguage($this->getLanguage(false, false), $user);
+			$pg->setRobots($this->getRobots(false, false), $user);
+			$pg->setPragma($this->getPragma(false, false), $user);
+			$pg->setRefresh($this->getRefresh(false, false), $user);
 			$pg->setRedirectLink($this->getRedirectLink(), $user);
-			$pg->setMetas($this->getMetas(), $user);
+			$pg->setMetas($this->getMetas(false, false), $user);
 			$pg->setCodename($this->getCodename(), $user, false);
 			if (SensitiveIO::isPositiveInteger($this->getReminderPeriodicity())) {
 				$pg->setReminderPeriodicity($this->getReminderPeriodicity(), $user);

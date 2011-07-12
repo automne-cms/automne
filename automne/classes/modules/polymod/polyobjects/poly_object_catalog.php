@@ -11,8 +11,6 @@
 // +----------------------------------------------------------------------+
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: poly_object_catalog.php,v 1.9 2010/03/08 16:43:33 sebastien Exp $
 
 /**
   * static Class CMS_poly_object_catalog
@@ -374,10 +372,10 @@ class CMS_poly_object_catalog
 	  * @static
 	  */
 	static function getFieldsDefinition($objectID) {
+		$datas = array();
 		if (sensitiveIO::isPositiveInteger($objectID)) {
 			//create cache object
 			$cache = new CMS_cache('fields'.$objectID, 'atm-polymod-structure', 2592000, false);
-			$datas = array();
 			if (!$cache->exist() || !($datas = $cache->load())) {
 				//datas does not exists : load them
 				$sql = "
@@ -508,7 +506,7 @@ class CMS_poly_object_catalog
 			if (!isset($moduleCodenameForField[$fieldID])) {
 				$sql = "
 					select
-						module_mod
+						module_mod, type_mof
 					from
 						mod_object_field,
 						mod_object_definition
@@ -517,7 +515,26 @@ class CMS_poly_object_catalog
 						and object_id_mof = id_mod
 				";
 				$q = new CMS_query($sql);
-				$moduleCodenameForField[$fieldID] = ($q->getNumRows()) ? $q->getValue('module_mod'):false;
+				if ($q->getNumRows()) {
+					$r = $q->getArray();
+					if (io::isPositiveInteger($r['type_mof']) || io::substr($r['type_mof'], 0, 6) == 'multi|') {
+						$objectID = io::substr($r['type_mof'], 0, 6) == 'multi|' ? io::substr($r['type_mof'], 6) : $r['type_mof'];
+						$sql = "
+							select
+								module_mod
+							from
+								mod_object_definition
+							where
+								id_mod = '".$objectID."'
+						";
+						$q = new CMS_query($sql);
+						$moduleCodenameForField[$fieldID] = ($q->getNumRows()) ? $q->getValue('module_mod') : false;
+					} else {
+						$moduleCodenameForField[$fieldID] = $r['module_mod'];
+					}
+				} else {
+					$moduleCodenameForField[$fieldID] = false;
+				}
 			}
 			return $moduleCodenameForField[$fieldID];
 		} else {

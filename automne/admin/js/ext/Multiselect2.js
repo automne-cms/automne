@@ -177,13 +177,13 @@ Ext.ux.Multiselect2 = Ext.extend(Ext.form.Field,  {
             store: this.store,
             columns: [{ header: 'Value', width: 1, dataIndex: this.displayField }],
             hideHeaders: true,
-			tpl: this.tpl
+			tpl: this.tpl,
+			scripts:true
         });
 		fs.add(this.view);
         this.view.on('click', this.onViewClick, this);
         this.view.on('beforeclick', this.onViewBeforeClick, this);
         this.view.on('dblclick', this.onViewDblClick, this);
-        
         this.hiddenName = this.name || Ext.id();
         var hiddenTag = { tag: "input", type: "hidden", value: "", name: this.hiddenName };
         this.hiddenField = this.el.createChild(hiddenTag);
@@ -264,7 +264,6 @@ Ext.ux.Multiselect2 = Ext.extend(Ext.form.Field,  {
         var selections = [];
         this.view.clearSelections();
         this.hiddenField.dom.value = '';
-        
         if (!values || (values == '')) { 
 			this.store.removeAll()
 			return; 
@@ -359,7 +358,7 @@ Ext.ux.Multiselect2.DragZone = function(ms, config){
         dd = ddGroup;
         ddGroup = null;
     }
-    Ext.ux.Multiselect2.DragZone.superclass.constructor.call(this, this.ms.fs.body, { containerScroll: true, ddGroup: dd });
+	Ext.ux.Multiselect2.DragZone.superclass.constructor.call(this, this.ms.fs.body, { containerScroll: true, ddGroup: dd });
     this.setDraggable(ddGroup);
 };
 
@@ -418,12 +417,10 @@ Ext.extend(Ext.ux.Multiselect2.DragZone, Ext.dd.DragZone, {
         }
         return false;
     },
-    
     // override the default repairXY.
     getRepairXY : function(e){
         return this.dragData.repairXY;
     },
-    
     // private
     setDraggable: function(ddGroup){
         if (!ddGroup) return;
@@ -434,7 +431,6 @@ Ext.extend(Ext.ux.Multiselect2.DragZone, Ext.dd.DragZone, {
         this.addToGroup(ddGroup);
     }
 });
-
 Ext.ux.Multiselect2.DropZone = function(ms, config){
     this.ms = ms;
     this.view = ms.view;

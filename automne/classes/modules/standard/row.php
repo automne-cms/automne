@@ -463,7 +463,7 @@ class CMS_row extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function hasUserRight(&$cms_user, $right = CLEARANCE_MODULE_EDIT) {
+	function hasUserRight(&$cms_user, $right = CLEARANCE_MODULE_VIEW) {
 		if (!is_a($cms_user, 'CMS_profile_user')) {
 			$this->raiseError("cms_user must be a valid CMS_profile_user");
 			return false;

@@ -169,7 +169,13 @@ $required = ($field->getValue("required")) ? ' checked="checked"':'';
 $indexable = ($field->getValue("indexable")) ? ' checked="checked"':'';
 $searchlist = ($field->getValue("searchlist")) ? ' checked="checked"':'';
 $searchable = ($field->getValue("searchable")) ? ' checked="checked"':'';
-$poly_types = CMS_poly_object_catalog::getObjectsForModule($moduleCodename);
+
+$polyModules =  CMS_modulesCatalog::getAll("label", true);
+$poly_types = array();
+foreach ($polyModules as $aModule) {
+	$poly_types = array_merge($poly_types, CMS_poly_object_catalog::getObjectsForModule($aModule->getCodename()));
+}
+
 $object_types = CMS_object_catalog::getObjects($field,true);
 $typeObject = $field->getTypeObject(true);
 $objectUseage = CMS_poly_object_catalog::getObjectUsage($object->getID());
@@ -212,10 +218,11 @@ $content = '
 						if ($object->getID() != $anObjectType->getID() && !in_array($anObjectType->getID(),$objectUseage)) {
 							//load fields objects for object
 							$objectFields = CMS_poly_object_catalog::getFieldsDefinition($anObjectType->getID());
+							$objectModule = CMS_modulesCatalog::getByCodename(CMS_poly_object_catalog::getModuleCodenameForObjectType($anObjectType->getID()));
 							//a poly object can't be empty
 							if(sizeof($objectFields)) {
 								$selected = ($field->getValue("type") == $anObjectType->getID()) ? ' selected="selected"':'';
-								$content .= '<option value="'.$anObjectType->getID().'"'.$selected.' title="'.htmlspecialchars($anObjectType->getDescription($cms_language)).'">'.$anObjectType->getObjectLabel($cms_language).'</option>';
+								$content .= '<option value="'.$anObjectType->getID().'"'.$selected.' title="'.htmlspecialchars($anObjectType->getDescription($cms_language)).'">'.$anObjectType->getObjectLabel($cms_language).' ('.$objectModule->getLabel($cms_language).')</option>';
 							}
 						}
 					}
@@ -232,7 +239,7 @@ $content = '
 							//a poly object can't be empty
 							if(sizeof($objectFields)) {
 								$selected = ($field->getValue("type") == 'multi|'.$anObjectType->getID()) ? ' selected="selected"':'';
-								$content .= '<option value="multi|'.$anObjectType->getID().'"'.$selected.' title="'.htmlspecialchars($anObjectType->getDescription($cms_language)).'">'.$anObjectType->getObjectLabel($cms_language).'</option>';
+								$content .= '<option value="multi|'.$anObjectType->getID().'"'.$selected.' title="'.htmlspecialchars($anObjectType->getDescription($cms_language)).'">'.$anObjectType->getObjectLabel($cms_language).' ('.$objectModule->getLabel($cms_language).')</option>';
 							}
 						}
 					}

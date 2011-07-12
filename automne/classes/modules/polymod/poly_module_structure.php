@@ -11,8 +11,6 @@
 // +----------------------------------------------------------------------+
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: poly_module_structure.php,v 1.4 2010/03/08 16:43:30 sebastien Exp $
 
 /**
   * static Class CMS_poly_module_structure
@@ -25,8 +23,7 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-class CMS_poly_module_structure
-{
+class CMS_poly_module_structure {
 	/**
 	  * Polymod Messages
 	*/
@@ -58,10 +55,13 @@ class CMS_poly_module_structure
 					mod_object_definition,
 					mod_object_field
 				where
-					module_mod='".sensitiveIO::sanitizeSQLString($module)."'
-					and id_mod = object_id_mof
+					id_mod = object_id_mof
 				order by objectID, order_mof
 		";
+		//SQL where clause removed when add cross modules link into objects
+		/*module_mod='".sensitiveIO::sanitizeSQLString($module)."'
+					and */
+		
 		$q = new CMS_query($sql);
 		$flatStructure = array();
 		if ($q->getNumRows()) {
@@ -240,7 +240,6 @@ class CMS_poly_module_structure
 			//unset fieldID if it is on a top level object (not a field of another object)
 			unset($levelkeys['fieldID']);
 		}
-
 		foreach ($levelkeys as $levelkey => $levelvalue) {
 			if (is_array($levelvalue)) {
 				if ($translatedpath && $path) {
@@ -290,7 +289,7 @@ class CMS_poly_module_structure
 		} else {
 			$list = '';
 			foreach ($objectsStructure as $objectID => $objectStructure) {
-				if ($objectID != 'objectInfos') {
+				if ($objectID != 'objectInfos' && CMS_poly_object_catalog::getModuleCodenameForObjectType(io::substr($objectID,6)) == $codename) {
 					$currentPath = '[\''.$objectID.'\']';
 					$selected = ($currentPath == $selectedValue) ? ' selected="selected"':'';
 					$list .= '<option value="'.$currentPath.'" style="font-weight: bold;"'.$selected.'>'.$objectsStructure['objectInfos'][$objectID]->getObjectLabel($language).'</option>';
@@ -304,7 +303,7 @@ class CMS_poly_module_structure
 	protected function _viewObjectInfosList($objectID, &$language, &$objectsStructure, $selectedValue, $path = '') {
 		static $level;
 		$level++;
-		$space = str_replace(' ', '|&nbsp;&nbsp;',sprintf("%".($level-1)."s",  '')).'|-&nbsp;';
+		$space = str_repeat ('|&nbsp;&nbsp;' , ($level-1)).'|-&nbsp;';
 		$style = ($level <= 2) ? 'color: black;':'color: grey;';
 		$style .= 'font:11px Fixed, monospace;';
 		$html = '';
@@ -316,7 +315,6 @@ class CMS_poly_module_structure
 					$html .= '<option value="'.$currentPath.'" style="'.$style.'"'.$selected.'>'.$space.$objectsStructure['objectInfos'][$objectFieldID]->getObjectLabel($language).'</option>'."\n";
 				} elseif (is_array($objectField)) {
 					$object = array_shift(array_keys($objectField));
-					//$currentPath = $path.'[\''.$objectFieldID.'\'][\''.$object.'\']';
 					$currentPath = $path.'[\''.$objectFieldID.'\']';
 					$selected = ($currentPath == $selectedValue) ? ' selected="selected"':'';
 					if (io::strpos($object, 'object') === 0) {

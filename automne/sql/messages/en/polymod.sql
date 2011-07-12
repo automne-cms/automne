@@ -480,3 +480,4 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(630, 'polymod', 'en', 'Media URL');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(631, 'polymod', 'en', 'embed.ly key');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(632, 'polymod', 'en', 'To enjoy the service <a href="http://embed.ly" target="_blank">embed.ly</a> to integrate all types of media, enter your embed.ly key in this field. You can get a free key at this address: <a href="http://app.embed.ly/pricing/free" target="_blank">http://app.embed.ly/pricing/free</a>.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(633, 'polymod', 'en', 'Currently associated ''%s'' element');

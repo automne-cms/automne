@@ -141,7 +141,7 @@ class CMS_block_polymod extends CMS_block
 			$module = CMS_modulesCatalog::getByCodename($this->_attributes['module']);
 			$this->_administrable = $module->hasAdmin() && $cms_user->hasModuleClearance($this->_attributes['module'], CLEARANCE_MODULE_EDIT);
 			
-			$this->_editable = $this->_canhasParameters;
+			$this->_editable = $this->_canhasParameters && $cms_user->hasModuleClearance($this->_attributes['module'], CLEARANCE_MODULE_EDIT);
 			if (($this->_hasParameters && $this->_musthaveParameters) || !$this->_musthaveParameters) {
 				$this->_hasContent = true;
 				$form_data = $this->_createDatasFromDefinition($data["value"], $page, $visualizationMode, CMS_polymod_definition_parsing::OUTPUT_PHP);

@@ -54,9 +54,9 @@ Allow from all
 # Uncomment the following lines (mod_rewrite is needed)
 # You must also add the following constant in config.php file :
 # define('STRIP_PHP_EXTENSION', true);
-<IfModule mod_rewrite.c>
-	RewriteEngine On
-	RewriteCond %{REQUEST_FILENAME} !-f
-	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteRule ^([^\.]+)$ $1.php [NC,L]
-</IfModule>
+#<IfModule mod_rewrite.c>
+#	RewriteEngine On
+#	RewriteCond %{REQUEST_FILENAME} !-f
+#	RewriteCond %{REQUEST_FILENAME} !-d
+#	RewriteRule ^([^\.]+)$ $1.php [NC,L]
+#</IfModule>

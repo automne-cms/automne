@@ -89,7 +89,7 @@ if ($itemId) {
 		if ($lock = $item->getLock()) {
 			$lockUser = CMS_profile_usersCatalog::getById($lock);
 			$lockDate = $item->getLockDate();
-			$date = $lockDate ? $lockDate->getLocalizedDate($cms_language->getDateFormat().' à H:i:s') : '';
+			$date = $lockDate ? $lockDate->getLocalizedDate($cms_language->getDateFormat().' @ H:i:s') : '';
 			$name = sensitiveIO::sanitizeJSString($lockUser->getFullName());
 			CMS_grandFather::raiseError('Error, item '.$itemId.' is locked by '.$lockUser->getFullName());
 			$jscontent = "

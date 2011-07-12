@@ -54,7 +54,6 @@ $action = sensitiveIO::request('action', array('save', 'save-validate', 'setRowP
 $objectId = sensitiveIO::request('type', 'sensitiveIO::isPositiveInteger');
 $itemId = sensitiveIO::request('item', 'sensitiveIO::isPositiveInteger');
 $codename = sensitiveIO::request('module', CMS_modulesCatalog::getAllCodenames());
-
 $fieldsValues = sensitiveIO::request('polymodFieldsValue', 'is_array', array());
 $pubStart = sensitiveIO::request('pubStart');
 $pubEnd = sensitiveIO::request('pubEnd');
@@ -100,7 +99,7 @@ if (isset($object)) {
 					$lockUser = CMS_profile_usersCatalog::getById($lock);
 					if ($lockUser->getUserId() != $cms_user->getUserId()) {
 						$lockDate = $item->getLockDate();
-						$date = $lockDate ? $lockDate->getLocalizedDate($cms_language->getDateFormat().' à H:i:s') : '';
+						$date = $lockDate ? $lockDate->getLocalizedDate($cms_language->getDateFormat().' @ H:i:s') : '';
 						$name = sensitiveIO::sanitizeJSString($lockUser->getFullName());
 						CMS_grandFather::raiseError('Error, item '.$itemId.' is locked by '.$lockUser->getFullName());
 						$jscontent = "

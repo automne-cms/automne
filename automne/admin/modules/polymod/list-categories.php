@@ -25,6 +25,7 @@
 require_once(dirname(__FILE__).'/../../../../cms_rc_admin.php');
 
 define("MESSAGE_PAGE_NO_CATEGORIES", 529);
+define("MESSAGE_ERROR_MODULE_RIGHTS",570);
 
 //load interface instance
 $view = CMS_view::getInstance();
