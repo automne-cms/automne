@@ -246,7 +246,7 @@ $jscontent = <<<END
 					item:		window.objectId
 				},
 				success:function(form, action){
-					//enbale button
+					//enable button
 					var saveButton = Ext.getCmp('{$winId}-save');
 					if (saveButton) {
 						saveButton.enable();
@@ -277,6 +277,17 @@ $jscontent = <<<END
 								form.findField(i).setValue(jsonResponse.datas[i]);
 							}
 						}
+					}
+				},
+				failure:function(form, action){
+					//enable button
+					var saveButton = Ext.getCmp('{$winId}-save');
+					if (saveButton) {
+						saveButton.enable();
+					}
+					var publishButton = Ext.getCmp('{$winId}-save-validate');
+					if (publishButton) {
+						publishButton.enable();
 					}
 				},
 				scope:this
