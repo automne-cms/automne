@@ -25,7 +25,7 @@
 						</atm-if>
 					</atm-if>
 					<atm-else for="oembed">
-						<atm-if what="{['object2']['fields'][9]['fileExtension']} != 'flv' &amp;&amp; {['object2']['fields'][9]['fileExtension']} != 'mp3' &amp;&amp; {['object2']['fields'][9]['fileExtension']} != 'jpg' &amp;&amp; {['object2']['fields'][9]['fileExtension']} != 'gif' &amp;&amp; {['object2']['fields'][9]['fileExtension']} != 'png'">
+						<atm-if what="{['object2']['fields'][9]['filename']} &amp;&amp; {['object2']['fields'][9]['fileExtension']} &amp;&amp; {['object2']['fields'][9]['fileExtension']} != 'flv' &amp;&amp; {['object2']['fields'][9]['fileExtension']} != 'mp3' &amp;&amp; {['object2']['fields'][9]['fileExtension']} != 'jpg' &amp;&amp; {['object2']['fields'][9]['fileExtension']} != 'gif' &amp;&amp; {['object2']['fields'][9]['fileExtension']} != 'png'">
 							<a href="{['object2']['fields'][9]['file']}" target="_blank" title="T&eacute;l&eacute;charger le document '{['object2']['label']}' ({['object2']['fields'][9]['fileExtension']} - {['object2']['fields'][9]['fileSize']}Mo)"><atm-if what="{['object2']['fields'][9]['fileIcon']}"><img src="{['object2']['fields'][9]['fileIcon']}" alt="Fichier {['object2']['fields'][9]['fileExtension']}" /></atm-if> {['object2']['label']}</a>
 							<atm-if what="{['object2']['fields'][9]['thumbname']}">
 								<img src="{['object2']['fields'][9]['thumb']|200}" alt="{['object2']['label']}" />
