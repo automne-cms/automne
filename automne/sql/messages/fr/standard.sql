@@ -439,7 +439,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(439, 'standard', 'fr', 'Voir les paramètres du module.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(440, 'standard', 'fr', 'Modèles de pages');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(441, 'standard', 'fr', 'Modèles de rangées');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(442, 'standard', 'fr', 'Feuilles de styles');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(442, 'standard', 'fr', 'Styles et Javascripts');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(443, 'standard', 'fr', 'Styles Wysiwyg');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(444, 'standard', 'fr', 'Barre d''outils Wysiwyg');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(445, 'standard', 'fr', 'Gestion des scripts');
@@ -1700,3 +1700,5 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1741, 'standard', 'fr', 'Rediriger les domaines alternatifs');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1742, 'standard', 'fr', 'Si cette case est cochée, les visiteurs utilisant un domaine alternatif pour accéder au site seront automatiquement redirigés (via une redirection 301) vers le domaine principal du site.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1743, 'standard', 'fr', 'Attention ! Vous n\'êtes pas administrateur. Si vous cochez cette option et que vous validez, vous ne pourrez plus modifier cet élément. Seul un administrateur pourra le modifier par la suite.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1744, 'standard', 'fr', 'Création d\'un fichier');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1745, 'standard', 'fr', 'Nom du fichier');

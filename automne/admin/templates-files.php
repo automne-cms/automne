@@ -43,7 +43,6 @@ $view->setSecure();
 
 $winId = sensitiveIO::request('winId');
 $fatherId = sensitiveIO::request('fatherId');
-$fileType = sensitiveIO::request('type', array('css', 'js'));
 
 if (!$winId) {
 	CMS_grandFather::raiseError('Unknown window Id ...');
@@ -54,8 +53,6 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) {
 	CMS_grandFather::raiseError('User has no rights on page templates ...');
 	$view->show();
 }
-
-$treeLabel = sensitiveIO::sanitizeJSString($fileType == 'css' ? $cms_language->getJsMessage(MESSAGE_PAGE_WEBSITES_CSS) : $cms_language->getJsMessage(MESSAGE_PAGE_WEBSITES_JS));
 
 $jscontent = <<<END
 	var moduleCSSWindow = Ext.getCmp('{$winId}');
@@ -72,25 +69,24 @@ $jscontent = <<<END
 		border:			false,
 		enableDD:		false,
         containerScroll:true,
+		rootVisible: false,
 		loader: new Automne.treeLoader({
 			dataUrl:		'templates-files-nodes.php',
 			baseParams: {
-				type:			'{$fileType}',
 				maxDepth:		2
 			}
 		}),
 		root: {
             nodeType:		'async',
-            text:			'{$treeLabel}',
             draggable:		false,
             id:				'source',
 			expanded:		true
         },
 		listeners:{
 			'click':function(node, e) {
-				Ext.getCmp('{$fileType}FileEdit').setDisabled(!node.isLeaf() || node.id == 'source');
-				Ext.getCmp('{$fileType}FileCreate').setDisabled(node.isLeaf());
-				Ext.getCmp('{$fileType}FileDelete').setDisabled(!node.attributes.deletable || node.id == 'source');
+				Ext.getCmp('atmFileEdit').setDisabled(!node.isLeaf() || node.id == 'source');
+				Ext.getCmp('atmFileCreate').setDisabled(node.isLeaf());
+				Ext.getCmp('atmFileDelete').setDisabled(!node.attributes.deletable || node.id == 'source');
 			},
 			scope:this
 		},
@@ -118,7 +114,7 @@ $jscontent = <<<END
 				scope:this
 			}
 		},'-',{
-			id:				'{$fileType}FileEdit',
+			id:				'atmFileEdit',
 			iconCls:		'atm-pic-modify',
 			xtype:			'button',
 			text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_MODIFY)}',
@@ -142,8 +138,7 @@ $jscontent = <<<END
 							url:			'templates-file.php',
 							params:			{
 								winId:			'fileWindow'+fileId,
-								node:			fileId,
-								type:			'{$fileType}'
+								node:			fileId
 							},
 							nocache:		true,
 							scope:			this
@@ -165,7 +160,7 @@ $jscontent = <<<END
 			},
 			scope:this
 		},{
-			id:				'{$fileType}FileDelete',
+			id:				'atmFileDelete',
 			iconCls:		'atm-pic-deletion',
 			xtype:			'button',
 			text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_DELETE)}',
@@ -185,8 +180,7 @@ $jscontent = <<<END
 								url:				'templates-files-controler.php',
 								params: 			{
 									action:			'delete',
-									node:			node.id,
-									type:			'{$fileType}'
+									node:			node.id
 								},
 								fcnCallback: 		function(response, options, jsonResponse) {
 									if (jsonResponse.success == true) {
@@ -204,7 +198,7 @@ $jscontent = <<<END
 			},
 			scope:this
 		},'->',{
-			id:				'{$fileType}FileCreate',
+			id:				'atmFileCreate',
 			iconCls:		'atm-pic-add',
 			xtype:			'button',
 			text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_NEW)}',
@@ -223,8 +217,7 @@ $jscontent = <<<END
 						url:			'templates-file.php',
 						params:			{
 							winId:			'fileWindowCreate',
-							node:			node.id,
-							type:			'{$fileType}'
+							node:			node.id
 						},
 						nocache:		true,
 						scope:			this
@@ -239,7 +232,7 @@ $jscontent = <<<END
 								node.parentNode.reload();
 							}
 							//enable button to allow creation of a other users
-							Ext.getCmp('{$fileType}FileCreate').enable();
+							Ext.getCmp('atmFileCreate').enable();
 						},
 						scope:this
 					}

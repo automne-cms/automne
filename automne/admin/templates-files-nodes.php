@@ -30,6 +30,9 @@ define("MESSAGE_PAGE_WYSIWYG", 1487);
 define("MESSAGE_PAGE_JAVASCRIPT", 1488);
 define("MESSAGE_PAGE_FOLDER_LAST_UPDATE", 1507);
 define("MESSAGE_PAGE_FILE_LAST_UPDATE_SIZE", 1508);
+define("MESSAGE_PAGE_WEBSITES_CSS", 1496);
+define("MESSAGE_PAGE_WEBSITES_JS", 1497);
+define("MESSAGE_PAGE_TXT", 273);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -42,7 +45,6 @@ function checkNode($value) {
 	return $value != 'source' && io::strpos($value, '..') === false;
 }
 
-$fileType = sensitiveIO::request('type', array('css', 'js'));
 $node = sensitiveIO::request('node', 'checkNode', '');
 $maxDepth = sensitiveIO::request('maxDepth', 'sensitiveIO::isPositiveInteger', 2);
 
@@ -53,7 +55,7 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) {
 }
 
 // from php manual page
-function formatBytes($val, $digits = 3, $mode = "SI", $bB = "B"){ //$mode == "SI"|"IEC", $bB == "b"|"B"
+function formatBytes($val, $digits = 3, $mode = "SI", $bB = "B"){
    $si = array("", "K", "M", "G", "T", "P", "E", "Z", "Y");
    $iec = array("", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi", "Yi");
    switch(io::strtoupper($mode)) {
@@ -72,40 +74,46 @@ function formatBytes($val, $digits = 3, $mode = "SI", $bB = "B"){ //$mode == "SI
    elseif($p !== false) $val = round($val, $digits-$p);
    return round($val, $digits) . " " . $symbols[$i] . $bB;
 }
-switch ($fileType) {
-	case 'css':
-		$dir = PATH_REALROOT_FS.'/css/';
-		$allowedFiles = array(
-			'css' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_STYLESHEET), 'class' => 'atm-css'),
-			'xml' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_WYSIWYG), 'class' => 'atm-xml'),
-		);
-	break;
-	case 'js':
-		$dir = PATH_REALROOT_FS.'/js/';
-		$allowedFiles = array('js' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_JAVASCRIPT), 'class' => 'atm-js'));
-	break;
-	default:
-		CMS_grandFather::raiseError('Unknown fileType to use ...');
-		$view->show();
-	break;
+
+if (!$node) {
+	$lastmod = date($cms_language->getDateFormat().' H:i:s',filemtime(PATH_REALROOT_FS.'/robots.txt'));
+	$size = formatBytes(filesize(PATH_REALROOT_FS.'/robots.txt'), 2);
+	$qtip = $cms_language->getMessage(MESSAGE_PAGE_FILE_LAST_UPDATE_SIZE, array($cms_language->getMessage(MESSAGE_PAGE_TXT), $lastmod, $size));
+	
+	$nodes = array(
+		array('text' => $cms_language->getJsMessage(MESSAGE_PAGE_WEBSITES_CSS), 'id' => 'css', 'leaf' => false, 'cls'=> 'folder', 'qtip' => '', 'deletable' => false),
+		array('text' => $cms_language->getJsMessage(MESSAGE_PAGE_WEBSITES_JS), 'id' => 'js', 'leaf' => false, 'cls'=> 'folder', 'qtip' => '', 'deletable' => false),
+		array('text' => 'robots.txt', 'id' => 'robots.txt', 'leaf' => true, 'cls'=> 'atm-txt', 'qtip' => $qtip, 'deletable' => false),
+	);
+	$view->setContent($nodes);
+	$view->show();
 }
+
+$allowedFiles = array(
+	'css' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_STYLESHEET), 'class' => 'atm-css'),
+	'xml' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_WYSIWYG), 'class' => 'atm-xml'),
+	'js' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_JAVASCRIPT), 'class' => 'atm-js'),
+	'txt' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_TXT), 'class' => 'atm-txt'),
+);
+
 $nodes = array();
-$d = dir($dir.$node);
+$d = dir(PATH_REALROOT_FS.'/'.$node);
 $currentDepth = count(explode('/', $node));
 
 if ($d) {
 	while($f = $d->read()){
 	    if($f == '.' || $f == '..' || io::substr($f, 0, 1) == '.') continue;
-	    $lastmod = date($cms_language->getDateFormat().' H:i:s',filemtime($dir.$node.'/'.$f));
-	    if(is_dir($dir.$node.'/'.$f)){
+	    
+		$lastmod = date($cms_language->getDateFormat().' H:i:s',filemtime(PATH_REALROOT_FS.'/'.$node.'/'.$f));
+	    if(is_dir(PATH_REALROOT_FS.'/'.$node.'/'.$f)){
 	        $qtip = $cms_language->getMessage(MESSAGE_PAGE_FOLDER_LAST_UPDATE).' '.$lastmod;
 	        $nodes[] = array('text' => $f, 'id' => $node.'/'.$f, 'qtip' => $qtip, 'leaf' => false, 'cls'=> 'folder', 'expanded' => ($currentDepth < $maxDepth), 'deletable' => false);
 	    }else{
-	        $extension = io::strtolower(pathinfo($dir.$node.'/'.$f, PATHINFO_EXTENSION));
+	        $extension = io::strtolower(pathinfo(PATH_REALROOT_FS.'/'.$node.'/'.$f, PATHINFO_EXTENSION));
 			if (isset($allowedFiles[$extension])) {
-				$size = formatBytes(filesize($dir.$node.'/'.$f), 2);
+				$size = formatBytes(filesize(PATH_REALROOT_FS.'/'.$node.'/'.$f), 2);
 				$qtip = $cms_language->getMessage(MESSAGE_PAGE_FILE_LAST_UPDATE_SIZE, array($allowedFiles[$extension]['name'], $lastmod, $size));
-				$deletable = $extension != 'xml' && is_writable($dir.$node.'/'.$f);
+				$deletable = $extension != 'xml' && is_writable(PATH_REALROOT_FS.'/'.$node.'/'.$f);
 				$nodes[] = array('text' => $f, 'id' => $node.'/'.$f, 'leaf' => true, 'qtip' => $qtip, 'cls' => $allowedFiles[$extension]['class'], 'deletable' => $deletable);
 			}
 	    }

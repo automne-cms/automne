@@ -439,7 +439,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(439, 'standard', 'en', 'See the module parameters.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(440, 'standard', 'en', 'Pages templates');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(441, 'standard', 'en', 'Templates of rows');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(442, 'standard', 'en', 'Stylesheets');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(442, 'standard', 'en', 'Stylesheets and Javascripts');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(443, 'standard', 'en', 'Wysiwyg Styles');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(444, 'standard', 'en', 'WYSIWYG toolbars');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(445, 'standard', 'en', 'Scripts management');
@@ -1818,3 +1818,5 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1741, 'standard', 'en', 'Redirect alternative domains');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1742, 'standard', 'en', 'If this box is checked, visitors using an alternate domain to access the site will automatically be redirected (via a redirection 301) to the main domain of the site.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1743, 'standard', 'en', 'Warning! You are not an administrator. If you check this option and you submit, you will not be able to edit again this element. Only an administrator will be able to modify it later.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1744, 'standard', 'en', 'File creation');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1745, 'standard', 'en', 'File name');

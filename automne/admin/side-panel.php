@@ -43,7 +43,7 @@ define("MESSAGE_PAGE_USERS_MANAGEMENT", 77);
 define("MESSAGE_PAGE_TEMPLATES", 30);
 define("MESSAGE_PAGE_PAGE_TEMPLATES", 440);
 define("MESSAGE_PAGE_ROWS_TEMPLATES", 441);
-define("MESSAGE_PAGE_STYLESHEETS", 442);
+define("MESSAGE_PAGE_STYLES", 442);
 define("MESSAGE_PAGE_WYSIWYG_STYLES", 443);
 define("MESSAGE_PAGE_WYSIWYG_TOOLBAR", 444);
 define("MESSAGE_PAGE_SCRIPTS_MANAGEMENT", 445);
@@ -371,8 +371,7 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES) || $cms_use
 		$contentEl .= '<li><div class="atm-rows atm-sidepic"></div><div id="row-help-button" class="atm-sidepic-help" ext:qtip="'.$cms_language->getMessage(MESSAGE_PAGE_ROW_HELP).'"></div><a atm:action="rows" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_ROWS_TEMPLATES).'</a></li>';
 	}
 	if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //templates
-		$contentEl .= '<li><div class="atm-styles atm-sidepic"></div><a atm:action="styles" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_STYLESHEETS).'</a></li>
-		<li><div class="atm-wysiwyg-styles atm-sidepic"></div><a atm:action="javascripts" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_SCRIPTS).'</a></li>
+		$contentEl .= '<li><div class="atm-styles atm-sidepic"></div><a atm:action="styles" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_STYLES).'</a></li>
 		<li><div class="atm-wysiwyg-toolbar atm-sidepic"></div><a atm:action="wysiwyg-toolbar" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_WYSIWYG_TOOLBAR).'</a></li>';
 	}
 	$contentEl .= '
@@ -658,14 +657,7 @@ $jscontent = <<<END
 			}, 750, 580, true);
     	},
 		'styles' : function(t){
-    		openWindow(t, 'templates.php', {
-				type:		'css'
-			}, 750, 580, true);
-    	},
-		'javascripts' : function(t){
-    		openWindow(t, 'templates.php', {
-				type:		'js'
-			}, 750, 580, true);
+    		openWindow(t, 'templates.php', {type:'styles'}, 750, 580, true);
     	},
 		'wysiwyg-toolbar' : function(t){
 			openWindow(t, 'templates.php', {
