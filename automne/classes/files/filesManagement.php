@@ -716,7 +716,7 @@ class CMS_file extends CMS_grandFather
 				if ($object->isFile()) {
 					$return &= unlink($object->getPathname());
 				} else {
-					if ($object->getFilename() != "." && $object->getFilename() != ".." && ($withDir || ($object->getPathname() != $dir))) {
+					if (!$object->isDot() && ($withDir || ($object->getPathname() != $dir))) {
 						$return &= rmdir($object->getPathname());
 					}
 				}

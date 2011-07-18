@@ -97,29 +97,26 @@ $allowedFiles = array(
 );
 
 $nodes = array();
-$d = dir(PATH_REALROOT_FS.'/'.$node);
 $currentDepth = count(explode('/', $node));
-
-if ($d) {
-	while($f = $d->read()){
-	    if($f == '.' || $f == '..' || io::substr($f, 0, 1) == '.') continue;
-	    
-		$lastmod = date($cms_language->getDateFormat().' H:i:s',filemtime(PATH_REALROOT_FS.'/'.$node.'/'.$f));
-	    if(is_dir(PATH_REALROOT_FS.'/'.$node.'/'.$f)){
-	        $qtip = $cms_language->getMessage(MESSAGE_PAGE_FOLDER_LAST_UPDATE).' '.$lastmod;
-	        $nodes[] = array('text' => $f, 'id' => $node.'/'.$f, 'qtip' => $qtip, 'leaf' => false, 'cls'=> 'folder', 'expanded' => ($currentDepth < $maxDepth), 'deletable' => false);
-	    }else{
-	        $extension = io::strtolower(pathinfo(PATH_REALROOT_FS.'/'.$node.'/'.$f, PATHINFO_EXTENSION));
+try{
+	foreach ( new DirectoryIterator(PATH_REALROOT_FS.'/'.$node) as $file) {
+		$lastmod = date($cms_language->getDateFormat().' H:i:s', $file->getMTime());
+		if ($file->isFile() && $file->getFilename() != ".htaccess") {
+			$extension = io::strtolower(pathinfo($file->getPathname(), PATHINFO_EXTENSION));
 			if (isset($allowedFiles[$extension])) {
-				$size = formatBytes(filesize(PATH_REALROOT_FS.'/'.$node.'/'.$f), 2);
+				$size = formatBytes($file->getSize(), 2);
 				$qtip = $cms_language->getMessage(MESSAGE_PAGE_FILE_LAST_UPDATE_SIZE, array($allowedFiles[$extension]['name'], $lastmod, $size));
-				$deletable = $extension != 'xml' && is_writable(PATH_REALROOT_FS.'/'.$node.'/'.$f);
-				$nodes[] = array('text' => $f, 'id' => $node.'/'.$f, 'leaf' => true, 'qtip' => $qtip, 'cls' => $allowedFiles[$extension]['class'], 'deletable' => $deletable);
+				$deletable = $extension != 'xml' && $file->isWritable();
+				$nodes[$file->getFilename()] = array('text' => $file->getFilename(), 'id' => $node.'/'.$file->getFilename(), 'leaf' => true, 'qtip' => $qtip, 'cls' => $allowedFiles[$extension]['class'], 'deletable' => $deletable);
 			}
-	    }
+		} elseif ($file->isDir() && !$file->isDot()) {
+			$qtip = $cms_language->getMessage(MESSAGE_PAGE_FOLDER_LAST_UPDATE).' '.$lastmod;
+			$nodes['-'.$file->getFilename()] = array('text' => $file->getFilename(), 'id' => $node.'/'.$file->getFilename(), 'qtip' => $qtip, 'leaf' => false, 'cls'=> 'folder', 'expanded' => ($currentDepth < $maxDepth), 'deletable' => false);
+		}
 	}
-	$d->close();
-}
+} catch(Exception $e) {}
+ksort($nodes);
+$nodes = array_values($nodes);
 $view->setContent($nodes);
 $view->show();
 ?>
