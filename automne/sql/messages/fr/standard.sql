@@ -439,7 +439,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(439, 'standard', 'fr', 'Voir les paramètres du module.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(440, 'standard', 'fr', 'Modèles de pages');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(441, 'standard', 'fr', 'Modèles de rangées');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(442, 'standard', 'fr', 'Styles et Javascripts');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(442, 'standard', 'fr', 'Styles et Javascript');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(443, 'standard', 'fr', 'Styles Wysiwyg');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(444, 'standard', 'fr', 'Barre d''outils Wysiwyg');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(445, 'standard', 'fr', 'Gestion des scripts');
@@ -1429,7 +1429,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1473, 'standard', 'fr', 'Modèles de pages');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1474, 'standard', 'fr', 'Modèles de rangées');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1475, 'standard', 'fr', 'Feuilles de styles');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1476, 'standard', 'fr', 'Scripts Javascripts');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1476, 'standard', 'fr', 'Scripts Javascript');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1477, 'standard', 'fr', 'Barres d''outils Wysiwyg');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1478, 'standard', 'fr', 'Gestion des modèles.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1479, 'standard', 'fr', 'Sur cette page, vous pouvez gérer les modèles servant à la création des pages ainsi que les modèles des rangées de contenu employés dans les pages. Vous pouvez aussi gérer les feuilles de styles et les barres d''outils employées par l''éditeur WYSIWYG.');

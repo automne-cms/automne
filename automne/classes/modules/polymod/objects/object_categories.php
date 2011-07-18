@@ -235,35 +235,84 @@ class CMS_object_categories extends CMS_object_common
 		if ($params['multiCategories']) {
 			// Get categories
 			$a_all_categories = $this->getAllCategoriesAsArray($language, false, $moduleCodename, CLEARANCE_MODULE_EDIT, $rootCategory, true);
-			$associated_items = $availableCategories = array();
-			if (is_array($a_all_categories) && $a_all_categories) {
-				if (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0]) && !is_null($this->_subfieldValues[0]->getValue()) && $this->_subfieldValues[0]->getID()) {
-					foreach (array_keys($this->_subfieldValues) as $subFieldID) {
-						if (is_object($this->_subfieldValues[$subFieldID])) {
-							$associated_items[$this->_subfieldValues[$subFieldID]->getValue()] = $this->_subfieldValues[$subFieldID]->getValue();
-						}
+			$checkedValues = array();
+			if (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0]) && !is_null($this->_subfieldValues[0]->getValue()) && $this->_subfieldValues[0]->getID()) {
+				foreach (array_keys($this->_subfieldValues) as $subFieldID) {
+					if (is_object($this->_subfieldValues[$subFieldID])) {
+						$checkedValues[$this->_subfieldValues[$subFieldID]->getValue()] = $this->_subfieldValues[$subFieldID]->getValue();
 					}
-				} elseif (sensitiveIO::isPositiveInteger($params['defaultValue'])) {
-					$associated_items[$params['defaultValue']] = $params['defaultValue'];
 				}
+			} elseif (sensitiveIO::isPositiveInteger($params['defaultValue'])) {
+				$checkedValues[$params['defaultValue']] = $params['defaultValue'];
+			}
+			$valueString = implode(',', $checkedValues);
+			if (is_array($a_all_categories) && $a_all_categories) {
 				foreach ($a_all_categories as $id => $category) {
-					$availableCategories[] = array($id, $category);
+					$level = substr_count($category, '-&nbsp;');
+					$father = false;
+					if (isset($cat) && $level != $cat->level && $level > $cat->level) {
+						$father = $cat;
+					}
+					$cat			= new stdClass();
+					$cat->id		= $id;
+					$cat->checked	= isset($checkedValues[$id]);
+					$cat->cls		= isset($checkedValues[$id]) ? 'x-tree-checked' : '';
+					$cat->level		= $level;
+					$cat->text		= str_replace('-&nbsp;', '', $category);
+					$cat->leaf		= true;
+					if ($father) {
+						$father->children[] = $cat;
+						$father->leaf = false;
+						$father->expanded = true;
+					} else {
+						$availableCategories[] = $cat;
+					}
 				}
 			} else {
-				$availableCategories[] = array('', $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET));
+				$availableCategories[] = array(
+					'id'	=> '',
+					'text'	=> $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET),
+					'leaf'	=> true
+				);
 			}
-			
-			$return['xtype'] 			= 'multiselect';
-			$return['name'] 			= 'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]';
-			$return['dataFields'] 		= array('id', 'label');
-			$return['data'] 			= $availableCategories;
-			$return['value'] 			= implode(',',$associated_items);
-			$return['valueField'] 		= "id";
-			$return['displayField'] 	= "label";
-			if (SensitiveIO::isPositiveInteger($params['selectHeight'])) {
-				$return['height'] 		= $params['selectHeight'];
-			}
-			$return['width'] 			= SensitiveIO::isPositiveInteger($params['selectWidth']) ? SensitiveIO::isPositiveInteger($params['selectWidth']) : '100%';
+			$fieldId = md5(mt_rand().microtime());
+			$field = array();
+			$field['id'] 				= 'tree-'.$fieldId;
+			$field['xtype'] 			= 'treepanel';
+			$field['height'] 			= io::isPositiveInteger($params['selectHeight']) ? $params['selectHeight'] : 150;
+			$field['width'] 			= io::isPositiveInteger($params['selectWidth']) ? $params['selectWidth'] : '100%';
+			$field['autoScroll'] 		= true;
+	        $field['animate'] 			= true;
+	        $field['containerScroll'] 	= true;
+	        $field['rootVisible'] 		= false;
+			$field['root'] = array(
+	            'expanded' => true,
+	            'children' => $availableCategories
+	        );
+			$field['listeners'] = array(
+				'checkchange' => array(
+					'fn' =>	sensitiveIO::sanitizeJSString('function(node, checked){
+						var tree = Ext.getCmp(\'tree-'.$fieldId.'\');
+						var input = Ext.getCmp(\'cat-'.$fieldId.'\');
+						if (tree && input) {
+							input.setValue(tree.getChecked(\'id\').toString());
+						}
+						if(checked){
+		                    node.getUI().addClass(\'x-tree-checked\');
+		                }else{
+		                    node.getUI().removeClass(\'x-tree-checked\');
+		                }
+					}', false, false)
+				)
+			);
+			$return['xtype'] = 'compositefield';
+			$return['labelWidth'] = 120;
+			$return['items'] = array($field, array(
+				'id'		=> 'cat-'.$fieldId,
+				'xtype'		=> 'hidden',
+				'name'		=> 'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]',
+				'value'		=> $valueString,
+			));
 		} else {
 			if (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0]) && !is_null($this->_subfieldValues[0]->getValue()) && $this->_subfieldValues[0]->getID()) {
 				$selectedValue = $this->_subfieldValues[0]->getValue() ? $this->_subfieldValues[0]->getValue() : '';

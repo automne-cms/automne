@@ -1128,6 +1128,9 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 .x-tree-node .x-tree-selected{
 	background-color:				#dfe1e2;
 }
+.x-tree-node .x-tree-checked {
+	background-color:				#EEFAE0;
+}
 .x-panel .x-tree-node a, .x-dd-drag-ghost a {
 	color:							black;
 }

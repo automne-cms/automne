@@ -18,6 +18,7 @@ V4.2.0 (in progress)
 [REFACTOR] : Completely refactor cms_aliases module for a better integration in Automne 4
 [REFACTOR] : Refactor single sub objects administration to allow creation and modification
 [REFACTOR] : Refactor JS and CSS editor to add robots.txt edition
+[REFACTOR] : Refactor multi categories field in polymod administration using tree UI.
 [FEATURE] : Add oembed object and oembed polymod field (external media field). Update Mediacenter to manage oembed medias
 [FEATURE] : Add parent page selection on new page creation
 [FEATURE] : Add variable type {page:father:XXX} to get infos from current parent page
