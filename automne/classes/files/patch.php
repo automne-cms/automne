@@ -393,7 +393,7 @@ class CMS_patch extends CMS_grandFather
 							}
 						break;
 						case "<": //delete a file or folder (recursively)
-							if (CMS_FILE::deleteFile($originalFile)) {
+							if (file_exists($originalFile) && CMS_FILE::deleteFile($originalFile)) {
 								$this->_verbose(' -> File '.$originalFile.' successfully deleted');
 							} else {
 								$this->_verbose(' -> Cannot delete '.$originalFile.'. It does not exists.');
