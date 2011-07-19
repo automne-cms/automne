@@ -29,13 +29,15 @@ Allow from all
 		php_flag allow_call_time_pass_reference Off
 		php_flag register_globals 		Off
 		php_flag allow_url_include		Off
+		php_flag expose_php				Off
 	</IfModule>
 </IfModule>
 
 # To allow static files cache (2 weeks). 
 # Uncomment the following lines (mod_headers is needed)
+# Disabled by default.
 #<Ifmodule mod_headers.c>
-#	<FilesMatch "\.(ico|jpg|jpeg|png|gif|swf|js|css)$">
+#	<FilesMatch "\.(ico|jpg|jpeg|png|gif|swf|js|css|ttf|otf|eot|woff)$">
 #		Header set Cache-Control "max-age=1209600, public"
 #	</FilesMatch>
 #</IfModule>
@@ -43,6 +45,7 @@ Allow from all
 # To force usage of Google Chrome Frame for IE6,7,8
 # Uncomment the following lines (mod_setenvif and mod_headers are needed)
 # GCF must be installed
+# Disabled by default.
 #<IfModule mod_setenvif.c>
 #  <IfModule mod_headers.c>
 #    BrowserMatch chromeframe gcf
@@ -54,6 +57,7 @@ Allow from all
 # Uncomment the following lines (mod_rewrite is needed)
 # You must also add the following constant in config.php file :
 # define('STRIP_PHP_EXTENSION', true);
+# Disabled by default.
 #<IfModule mod_rewrite.c>
 #	RewriteEngine On
 #	RewriteCond %{REQUEST_FILENAME} !-f

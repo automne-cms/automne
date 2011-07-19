@@ -100,19 +100,20 @@ class CMS_file extends CMS_grandFather
 	function __construct($name, $from=self::FILE_SYSTEM, $type=self::TYPE_FILE) {
 		$this->_name = ($from==self::FILE_SYSTEM) ? $name : $_SERVER['DOCUMENT_ROOT'].$name;
 		if ($this->_name) {
-			if (@is_file(realpath($this->_name)) && $type == self::TYPE_FILE) {
-				$this->_name = realpath($this->_name);
+			$name = realpath($this->_name);
+			if (@is_file($name) && $type == self::TYPE_FILE) {
+				$this->_name = $name;
 				$this->_type = self::TYPE_FILE;
 				$this->_exists = true;
 				$this->_perms = $this->getFilePerms($this->_name);
 				$this->_basedir = dirname($this->_name);
 				$this->_filename = basename($this->_name);
-			} elseif (@is_dir(realpath($this->_name)) && $type == self::TYPE_DIRECTORY) {
-				$this->_name = realpath($this->_name);
+			} elseif (@is_dir($name) && $type == self::TYPE_DIRECTORY) {
+				$this->_name = $name;
 				$this->_type = self::TYPE_DIRECTORY;
 				$this->_exists = true;
 				$this->_perms = $this->getFilePerms($this->_name);
-				$this->_basedir = $this->_name;
+				$this->_basedir = $name;
 				$this->_filename = "";
 			} else {
 				$this->_exists = false;
@@ -716,7 +717,7 @@ class CMS_file extends CMS_grandFather
 				if ($object->isFile()) {
 					$return &= unlink($object->getPathname());
 				} else {
-					if (!$object->isDot() && ($withDir || ($object->getPathname() != $dir))) {
+					if ($object->getFilename() != "." && $object->getFilename() != ".." && ($withDir || ($object->getPathname() != $dir))) {
 						$return &= rmdir($object->getPathname());
 					}
 				}

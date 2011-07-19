@@ -1353,7 +1353,7 @@ class CMS_module_standard extends CMS_module
 			}
 			//then directories
 			foreach ( new RecursiveIteratorIterator(new RecursiveDirectoryIterator(PATH_TMP_FS), RecursiveIteratorIterator::SELF_FIRST) as $file) {
-				if ($file->isDir() && !$file->isDot()) @rmdir($file->getPathname());
+				if ($file->isDir() && $file->getFilename() != "." && $file->getFilename() != "..") @rmdir($file->getPathname());
 			}
 		} catch(Exception $e) {}
 		//rotate error log file

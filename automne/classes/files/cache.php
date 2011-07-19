@@ -44,6 +44,13 @@ class CMS_cache extends CMS_grandFather {
 	protected $_auto = false;
 	
 	/**
+	  * Does the cache is context aware ?
+	  * @var boolean
+	  * @access private
+	  */
+	protected $_context = false;
+	
+	/**
 	  * Constructor.
 	  * initialize object.
 	  *
@@ -56,6 +63,7 @@ class CMS_cache extends CMS_grandFather {
 	function __construct($hash, $type, $lifetime = null, $contextAware = false) {
 		if ($contextAware) {
 			$this->_parameters['hash'] = $hash.'_'.CMS_session::getContextHash();
+			$this->_context = true;
 		} else {
 			$this->_parameters['hash'] = $hash;
 		}
@@ -123,7 +131,7 @@ class CMS_cache extends CMS_grandFather {
 			return false;
 		}
 		try {
-			return !$_POST && !isset($_REQUEST['atm-skip-cache']) && $this->_cache->test($this->_parameters['hash']);
+			return (!$this->_context || !$_POST) && !isset($_REQUEST['atm-skip-cache']) && $this->_cache->test($this->_parameters['hash']);
 		} catch (Zend_Cache_Exception $e) {
 			$this->raiseError($e->getMessage());
 			return false;
