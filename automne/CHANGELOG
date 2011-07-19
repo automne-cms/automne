@@ -19,6 +19,7 @@ V4.2.0 (in progress)
 [REFACTOR] : Refactor single sub objects administration to allow creation and modification
 [REFACTOR] : Refactor JS and CSS editor to add robots.txt edition
 [REFACTOR] : Refactor multi categories field in polymod administration using tree UI.
+[REFACTOR] : Update phpMyAdmin to version 3.4.3.1
 [FEATURE] : Add oembed object and oembed polymod field (external media field). Update Mediacenter to manage oembed medias
 [FEATURE] : Add parent page selection on new page creation
 [FEATURE] : Add variable type {page:father:XXX} to get infos from current parent page
