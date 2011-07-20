@@ -21,9 +21,26 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
-require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
+//does this file is directly included by another automne script ?
+$included = defined('APPLICATION_CONFIG_LOADED') ? true : false;
+if (!$included) {
+	if (file_exists(dirname(__FILE__).'/../upload-vault/allow_front_update')) {
+		//in case of update patch which destroy admin user session, we need to allow 
+		//this file with frontend rights
+		@unlink(dirname(__FILE__).'/../upload-vault/allow_front_update');
+		require_once(dirname(__FILE__).'/../../cms_rc_frontend.php');
+	} else {
+		require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
+	}
+	//load interface instance
+	$view = CMS_view::getInstance();
+	//set default display mode for this page
+	$view->setDisplayMode(CMS_view::SHOW_HTML);
+}
 
-echo "Start update of Automne database ... <br />";
+$content = '';
+
+$content .= "<pre>Start update of Automne database ... <br />";
 
 //START UPDATE FROM 4.0.2 TO 4.1.0
 if (!function_exists('atm_regen')) {
@@ -45,9 +62,9 @@ while($r = $q->getArray()) {
 if (!$installed) {
 	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v402-to-v410.sql',true)) {
 		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v402-to-v410.sql',false);
-		echo 'Database successfuly updated (uuid)<br/>';
+		$content .= 'Database successfuly updated (uuid)<br/>';
 	} else {
-		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v402-to-v410.sql must be executed manualy<br/>';
+		$content .= 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v402-to-v410.sql must be executed manualy<br/>';
 	}
 }
 # Change structure of base datas tables to add codename data
@@ -62,9 +79,9 @@ while($r = $q->getArray()) {
 if (!$installed) {
 	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v402-to-v410-2.sql',true)) {
 		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v402-to-v410-2.sql',false);
-		echo 'Database successfuly updated (pages codename)<br/>';
+		$content .= 'Database successfuly updated (pages codename)<br/>';
 	} else {
-		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v402-to-v410-2.sql must be executed manualy<br/>';
+		$content .= 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v402-to-v410-2.sql must be executed manualy<br/>';
 	}
 }
 # Change structure of website table to add codename data
@@ -79,15 +96,15 @@ while($r = $q->getArray()) {
 if (!$installed) {
 	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v402-to-v410-3.sql',true)) {
 		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v402-to-v410-3.sql',false);
-		echo 'Database successfuly updated (website codename)<br/>';
+		$content .= 'Database successfuly updated (website codename)<br/>';
 	} else {
-		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v402-to-v410-3.sql must be executed manualy<br/>';
+		$content .= 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v402-to-v410-3.sql must be executed manualy<br/>';
 	}
 }
 
-echo "Automne database updated.<br /><br />";
+$content .= "Automne database updated.<br /><br />";
 
-echo "Start update of Automne directories ... <br />";
+$content .= "Start update of Automne directories ... <br />";
 //Update folders if needed
 $actionsTodo = $actionsDone = '';
 // Create dir /automne/linx/
@@ -222,12 +239,12 @@ if (is_dir(PATH_REALROOT_FS.'/automne_modules_files') && PATH_MODULES_FILES_FS =
 	}
 }
 if ($actionsTodo) {
-	echo '<fieldset style="padding:3px;margin:3px;"><legend>/!\ Warning : Remaining actions to be done manually to complete update :</legend>'.$actionsTodo.'</fieldset><br />';
+	$content .= '<fieldset style="padding:3px;margin:3px;"><legend>/!\ Warning : Remaining actions to be done manually to complete update :</legend>'.$actionsTodo.'</fieldset><br />';
 }
 if ($actionsDone) {
-	echo '<fieldset style="padding:3px;margin:3px;"><legend>Update actions done :</legend>'.$actionsDone.'</fieldset><br />';
+	$content .= '<fieldset style="padding:3px;margin:3px;"><legend>Update actions done :</legend>'.$actionsDone.'</fieldset><br />';
 }
-echo 'Directories successfuly updated.<br/><br/>';
+$content .= 'Directories successfuly updated.<br/><br/>';
 //END UPDATE FROM 4.0.2 TO 4.1.0
 
 //START UPDATE FROM 4.1.1 TO 4.1.2
@@ -243,9 +260,9 @@ while($r = $q->getArray()) {
 if (!$installed) {
 	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v411-to-v412.sql',true)) {
 		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v411-to-v412.sql',false);
-		echo 'Database successfuly updated (website 403 and 404)<br/>';
+		$content .= 'Database successfuly updated (website 403 and 404)<br/>';
 	} else {
-		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v411-to-v412.sql must be executed manualy<br/>';
+		$content .= 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v411-to-v412.sql must be executed manualy<br/>';
 	}
 }
 #change field password_pru to use a longer field size for sha1 storage
@@ -260,9 +277,9 @@ while($r = $q->getArray()) {
 if (!$installed) {
 	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v411-to-v412-2.sql',true)) {
 		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v411-to-v412-2.sql',false);
-		echo 'Database successfuly updated (sha1 password storage)<br/>';
+		$content .= 'Database successfuly updated (sha1 password storage)<br/>';
 	} else {
-		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v411-to-v412-2.sql must be executed manualy<br/>';
+		$content .= 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v411-to-v412-2.sql must be executed manualy<br/>';
 	}
 }
 #change field language_mcl of modulesCategories_i18nm to use a longer field size for 5 characters language code storage
@@ -277,9 +294,9 @@ while($r = $q->getArray()) {
 if (!$installed) {
 	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v411-to-v412-3.sql',true)) {
 		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v411-to-v412-3.sql',false);
-		echo 'Database successfuly updated (handle language codes of 5 characters)<br/>';
+		$content .= 'Database successfuly updated (handle language codes of 5 characters)<br/>';
 	} else {
-		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v411-to-v412-3.sql must be executed manualy<br/>';
+		$content .= 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v411-to-v412-3.sql must be executed manualy<br/>';
 	}
 }
 
@@ -295,9 +312,9 @@ while($r = $q->getArray()) {
 if (!$installed) {
 	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v411-to-v412-4.sql',true)) {
 		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v411-to-v412-4.sql',false);
-		echo 'Database successfuly updated (remove user agent check in session management)<br/>';
+		$content .= 'Database successfuly updated (remove user agent check in session management)<br/>';
 	} else {
-		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v411-to-v412-4.sql must be executed manualy<br/>';
+		$content .= 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v411-to-v412-4.sql must be executed manualy<br/>';
 	}
 }
 //END UPDATE FROM 4.1.1 TO 4.1.2
@@ -315,9 +332,9 @@ while($r = $q->getArray()) {
 if (!$installed) {
 	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v412-to-v413.sql',true)) {
 		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v412-to-v413.sql',false);
-		echo 'Database successfuly updated (actionsTimestamps)<br/>';
+		$content .= 'Database successfuly updated (actionsTimestamps)<br/>';
 	} else {
-		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v412-to-v413.sql must be executed manualy<br/>';
+		$content .= 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v412-to-v413.sql must be executed manualy<br/>';
 	}
 }
 //END UPDATE FROM 4.1.2 TO 4.1.3
@@ -335,9 +352,9 @@ while($r = $q->getArray()) {
 if (!$installed) {
 	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v413-to-v420.sql',true)) {
 		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v413-to-v420.sql',false);
-		echo 'Database successfuly updated (drop ldap fields)<br/>';
+		$content .= 'Database successfuly updated (drop ldap fields)<br/>';
 	} else {
-		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v413-to-v420.sql must be executed manualy<br/>';
+		$content .= 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v413-to-v420.sql must be executed manualy<br/>';
 	}
 }
 #change page codename to use a longer field size
@@ -352,9 +369,9 @@ while($r = $q->getArray()) {
 if (!$installed) {
 	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v413-to-v420-2.sql',true)) {
 		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v413-to-v420-2.sql',false);
-		echo 'Database successfuly updated (page codename update)<br/>';
+		$content .= 'Database successfuly updated (page codename update)<br/>';
 	} else {
-		echo 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v413-to-v420-2.sql must be executed manualy<br/>';
+		$content .= 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v413-to-v420-2.sql must be executed manualy<br/>';
 	}
 }
 //END UPDATE FROM 4.1.3 TO 4.2.0
@@ -362,19 +379,19 @@ if (!$installed) {
 //Update Automne messages
 $files = glob(PATH_MAIN_FS."/sql/messages/*/*.sql", GLOB_NOSORT);
 if (is_array($files)) {
-	echo "Start update of Automne messages ...<br />";
+	$content .= "Start update of Automne messages ...<br />";
 	foreach($files as $file) {
 		if (file_exists($file) && CMS_patch::executeSqlScript($file, true)) {
 			CMS_patch::executeSqlScript($file);
 		} else {
-			echo 'Error during database update ! Script '.$file.' must be executed manualy<br/>';
+			$content .= 'Error during database update ! Script '.$file.' must be executed manualy<br/>';
 		}
 	}
-	echo "Automne messages updated.<br /><br />";
+	$content .= "Automne messages updated.<br /><br />";
 }
 
 //clear caches
-echo "Clean Automne cache.<br /><br />";
+$content .= "Clean Automne cache.<br /><br />";
 CMS_cache::clearTypeCache('polymod');
 CMS_cache::clearTypeCache('atm-polymod-structure');
 CMS_cache::clearTypeCache('text/javascript');
@@ -383,9 +400,17 @@ CMS_cache::clearTypeCache('atm-backtrace');
 
 //compile polymod definitions
 CMS_polymod::compileDefinitions();
-echo "Objects definitions recompilations is done.<br />";
+$content .= "Objects definitions recompilations is done.<br />";
 
 //regenerate pages
-echo "<br />Launch pages regeneration.<br />";
+$content .= "<br />Launch pages regeneration.";
 CMS_tree::regenerateAllPages(true);
+$content .= '</pre>';
+
+if (!$included) {
+	$view->setContent($content);
+	$view->show();
+} else {
+	echo $content;
+}
 ?>

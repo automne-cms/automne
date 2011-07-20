@@ -683,8 +683,7 @@ class CMS_file extends CMS_grandFather
 	 * @return boolean true on success, false on failure
 	 * @static
 	 */
-	function deleteFile($file)
-	{
+	function deleteFile($file) {
 		$file = realpath($file);
 		if (is_file($file)) {
 			return @unlink($file);
@@ -704,8 +703,7 @@ class CMS_file extends CMS_grandFather
 	 * @return boolean true on success, false on failure
 	 * @static
 	 */
-	function deltree($dir, $withDir = false)
-	{
+	function deltree($dir, $withDir = false) {
 		$dir = realpath($dir);
 		if (!is_dir($dir)) {
 			return false;
@@ -739,15 +737,14 @@ class CMS_file extends CMS_grandFather
 	 * @return boolean true on success, false on failure
 	 * @static
 	 */
-	function deltreeSimulation($dir, $withDir=false)
-	{
+	function deltreeSimulation($dir, $withDir=false) {
 		$dir = realpath($dir);
 		if (!is_dir($dir)) {
 			return false;
 		}
 		$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::CHILD_FIRST);
 		foreach($objects as $name => $object){
-		    if ($object->isWritable()) {
+		    if (!$object->isWritable()) {
 				return false;
 			}
 		}

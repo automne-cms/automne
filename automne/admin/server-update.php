@@ -122,7 +122,7 @@ if ($filename || $cms_action=='errorsCorrected') {
 	$automnePatch = new CMS_patch($cms_user);
 	
 	//read patch or export param file and check versions
-	verbose('Read working file...');
+	verbose('Read patch file...');
 	$patchFile = new CMS_file(PATH_TMP_FS."/patch");
 	$exportFile = new CMS_file(PATH_TMP_FS."/export.xml");
 	
@@ -218,7 +218,7 @@ if ($filename || $cms_action=='errorsCorrected') {
 	if (!CMS_file::deltree(PATH_TMP_FS)) {
 		report('Error during temporary folder cleaning...');
 	} else {
-		verbose('-> Cleaning done without error.');
+		verbose('-> Cleaning done.');
 	}
 	$content .= $send;
 	echo $content;
