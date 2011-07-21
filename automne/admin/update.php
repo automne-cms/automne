@@ -374,6 +374,26 @@ if (!$installed) {
 		$content .= 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v413-to-v420-2.sql must be executed manualy<br/>';
 	}
 }
+#add polymod tmp table
+$sql = "SHOW TABLE STATUS";
+$q = new CMS_query($sql);
+$installed = false;
+while($r = $q->getArray()) {
+	if ($r['Name'] == "mod_object_search_tmp") {
+		mod_object_search_tmp
+		
+		
+		$installed = true;
+	}
+}
+if (!$installed) {
+	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v413-to-v420-3.sql',true)) {
+		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v413-to-v420-3.sql',false);
+		$content .= 'Database successfuly updated (polymod tmp table update)<br/>';
+	} else {
+		$content .= 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v413-to-v420-3.sql must be executed manualy<br/>';
+	}
+}
 //END UPDATE FROM 4.1.3 TO 4.2.0
 
 //Update Automne messages
