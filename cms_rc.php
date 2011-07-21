@@ -1182,7 +1182,7 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])
 			$input = io::utf8Decode($input);
 			return $input;
 		} elseif (is_array($input)) {
-			array_walk_recursive($input, 'utf8_decode_callback');
+			array_walk_recursive($input, 'atm_utf8_decode_callback');
 			return $input;
 		}
 		return $input;

@@ -169,6 +169,22 @@ class CMS_object_search extends CMS_grandFather
 	protected $_searchTmpId;
 	
 	/**
+	  * Search temporary Ids list, used to store tmp datas
+	  * 
+	  * @var array()
+	  * @access private
+	  */
+	protected $_searchTmpList = array();
+	
+	/**
+	  * Does search must use a temporary table
+	  * 
+	  * @var boolean
+	  * @access private
+	  */
+	protected $_useTmpTable = false;
+	
+	/**
 	  * Constructor
 	  * 
 	  * @access public
@@ -522,7 +538,7 @@ class CMS_object_search extends CMS_grandFather
 				switch($type) {
 				case "object":
 					//add previously founded IDs to where clause
-					$where = ($IDs) ? ' and id_moo in (select id_mos from mod_object_search_tmp where search_mos = \''.$this->_searchTmpId.'\')':'';
+					$where = ($IDs) ? ' and id_moo in ('.$this->_getSQLTmpList().')' : '';
 					//to remove deleted objects from results
 					$sql = "
 					select
@@ -537,7 +553,7 @@ class CMS_object_search extends CMS_grandFather
 					break;
 				case "item":
 					//add previously founded IDs to where clause
-					$where = ($IDs) ? ' and objectID in (select id_mos from mod_object_search_tmp where search_mos = \''.$this->_searchTmpId.'\')':'';
+					$where = ($IDs) ? ' and objectID in ('.$this->_getSQLTmpList().')' : '';
 					//check operator
 					$supportedOperator = array(
 						'=',
@@ -590,7 +606,7 @@ class CMS_object_search extends CMS_grandFather
 					break;
 				case "items":
 					//add previously founded IDs to where clause
-					$where = ($IDs) ? ' and objectID in (select id_mos from mod_object_search_tmp where search_mos = \''.$this->_searchTmpId.'\')':'';
+					$where = ($IDs) ? ' and objectID in ('.$this->_getSQLTmpList().')' : '';
 					//check operator
 					$supportedOperator = array(
 						'in',
@@ -692,7 +708,7 @@ class CMS_object_search extends CMS_grandFather
 							}
 							$removedIDs = array();
 							//add previously founded IDs to where clause
-							$where = ($IDs) ? ' and objectID in (select id_mos from mod_object_search_tmp where search_mos = \''.$this->_searchTmpId.'\')':'';
+							$where = ($IDs) ? ' and objectID in ('.$this->_getSQLTmpList().')':'';
 							$sqlTmp = "
 								select
 									distinct objectID
@@ -739,7 +755,7 @@ class CMS_object_search extends CMS_grandFather
 							//if field is required and if it is a public search, object must have this category in DB
 							if ($this->_fieldsDefinitions[$categoriesField]->getValue('required') && $this->_public) {
 								//update tmp table with founded ids
-								$this->_updateTmpTable($IDs);
+								$this->_updateTmpList($IDs);
 								$sqlTmp = "
 									select
 										distinct objectID
@@ -747,7 +763,7 @@ class CMS_object_search extends CMS_grandFather
 										mod_subobject_integer".$statusSuffix."
 									where
 										objectFieldID = '".$categoriesField."'
-										and objectID in (select id_mos from mod_object_search_tmp where search_mos = '".$this->_searchTmpId."')
+										and objectID in (".$this->_getSQLTmpList().")
 								";
 								$qTmp = new CMS_query($sqlTmp);
 								$IDs = array();
@@ -770,9 +786,9 @@ class CMS_object_search extends CMS_grandFather
 						break;
 					}
 					//update tmp table with founded ids
-					$this->_updateTmpTable($IDs);
+					$this->_updateTmpList($IDs);
 					//add previously founded IDs to where clause
-					$where = ($IDs) ? ' id_moo in (select id_mos from mod_object_search_tmp where search_mos = \''.$this->_searchTmpId.'\')' : '';
+					$where = ($IDs) ? ' id_moo in ('.$this->_getSQLTmpList().')' : '';
 					$sql = "
 						select
 							distinct id_moo as objectID
@@ -864,9 +880,9 @@ class CMS_object_search extends CMS_grandFather
 								break;
 							}
 							//add previously founded IDs to where clause
-							$where = ($IDs) ? ' objectID in (select id_mos from mod_object_search_tmp where search_mos = \''.$this->_searchTmpId.'\') and ':'';
+							$where = ($IDs) ? ' objectID in ('.$this->_getSQLTmpList().') and ' : '';
 							//filter on specified fields
-							$where .= ($fields) ? ' objectFieldID  in ('.implode(',',$fields).') and ':'';
+							$where .= ($fields) ? ' objectFieldID  in ('.implode(',',$fields).') and ' : '';
 							
 							//clean user keywords (never trust user input, user is evil)
 							$value = strtr($value, ",;", "  ");
@@ -957,7 +973,7 @@ class CMS_object_search extends CMS_grandFather
 					break;
 				case "publication date after": // Date start
 					//add previously founded IDs to where clause
-					$where = ($IDs) ? ' and objectID in (select id_mos from mod_object_search_tmp where search_mos = \''.$this->_searchTmpId.'\')' : '';
+					$where = ($IDs) ? ' and objectID in ('.$this->_getSQLTmpList().')' : '';
 					
 					$sql = "
 							select
@@ -977,7 +993,7 @@ class CMS_object_search extends CMS_grandFather
 					break;
 				case "publication date before": // Date End
 					//add previously founded IDs to where clause
-					$where = ($IDs) ? ' and objectID in (select id_mos from mod_object_search_tmp where search_mos = \''.$this->_searchTmpId.'\')' : '';
+					$where = ($IDs) ? ' and objectID in ('.$this->_getSQLTmpList().')' : '';
 					
 					$sql = "
 							select
@@ -997,7 +1013,7 @@ class CMS_object_search extends CMS_grandFather
 					break;
 				case "publication date end": // End Date of publication
 					//add previously founded IDs to where clause
-					$where = ($IDs) ? ' and objectID in (select id_mos from mod_object_search_tmp where search_mos = \''.$this->_searchTmpId.'\')' : '';
+					$where = ($IDs) ? ' and objectID in ('.$this->_getSQLTmpList().')' : '';
 					
 					$sql = "
 							select
@@ -1017,7 +1033,7 @@ class CMS_object_search extends CMS_grandFather
 					break;
 				case "status": // Publication status
 					//add previously founded IDs to where clause
-					$where = ($IDs) ? ' and objectID in (select id_mos from mod_object_search_tmp where search_mos = \''.$this->_searchTmpId.'\')' : '';
+					$where = ($IDs) ? ' and objectID in ('.$this->_getSQLTmpList().')' : '';
 					switch ($value) {
 						case 'online':
 							$sql = "
@@ -1093,7 +1109,7 @@ class CMS_object_search extends CMS_grandFather
 					break;
 				default:
 					//add previously founded IDs to where clause
-					$where = ($IDs) ? ' and objectID in (select id_mos from mod_object_search_tmp where search_mos = \''.$this->_searchTmpId.'\')' : '';
+					$where = ($IDs) ? ' and objectID in ('.$this->_getSQLTmpList().')' : '';
 					if (!isset($this->_fieldsDefinitions[$type]) || !is_object($this->_fieldsDefinitions[$type])) {
 						//get object fields definition
 						$this->_fieldsDefinitions = CMS_poly_object_catalog::getFieldsDefinition($this->_object->getID());
@@ -1153,7 +1169,7 @@ class CMS_object_search extends CMS_grandFather
 				        return $IDs;
 				    }
 					//update tmp table with founded ids
-					$this->_updateTmpTable($IDs);
+					$this->_updateTmpList($IDs);
 				} else {
 				    //if no sql request, then no results (can be used by 'profile'), no need to continue
 				    $IDs = array();
@@ -1174,22 +1190,41 @@ class CMS_object_search extends CMS_grandFather
 	 * @access private
 	 * @return boolean
 	 */
-	private function _updateTmpTable($ids = array()) {
-		//insert founded ids into tmp table
-		$q = new CMS_query("delete from `mod_object_search_tmp` where search_mos = '".$this->_searchTmpId."'");
-		if (is_array($ids) && $ids) {
-			$length = sizeof($ids);
-			$max = 500; //split insert each $max ids
-			if ($length > $max ) {
-				$count = 0;
-				while (($count * $max) < $length) {
-					$q = new CMS_query("Insert into `mod_object_search_tmp` (id_mos, search_mos) VALUES (".implode(', \''.$this->_searchTmpId.'\'),(', array_slice($ids, ($count++ * $max), $max)).', \''.$this->_searchTmpId.'\')');
-				}
-			} else {
-				$q = new CMS_query("Insert into `mod_object_search_tmp` (id_mos, search_mos) VALUES (".implode(', \''.$this->_searchTmpId.'\'),(', $ids).', \''.$this->_searchTmpId.'\')');
+	private function _updateTmpList($ids = array()) {
+		$max = 10000; //max ids before using a temporary table
+		$length = is_array($ids) ? sizeof($ids) : 0;
+		if ($this->_useTmpTable || $length > $max ) {
+			$this->_useTmpTable = true;
+			if (!$this->_searchTmpId) {
+				//Create temporary search id to be used in tmp table
+				$this->_searchTmpId = md5(mt_rand().microtime());
 			}
+			//clean tmp table
+			$q = new CMS_query("delete from `mod_object_search_tmp` where search_mos = '".$this->_searchTmpId."'");
+			//insert founded ids into tmp table
+			$count = 0;
+			while (($count * $max) < $length) {
+				$q = new CMS_query("Insert into `mod_object_search_tmp` (id_mos, search_mos) VALUES (".implode(', \''.$this->_searchTmpId.'\'),(', array_slice($ids, ($count++ * $max), $max)).', \''.$this->_searchTmpId.'\')');
+			}
+		} else {
+			$this->_searchTmpList = $ids;
 		}
 		return true;
+	}
+	
+	/**
+	 * Get SQL tmp list of ids
+	 * This method is used to avoid mysql crash because variable max_allowed_packet is too low
+	 * 
+	 * @access private
+	 * @return string : the SQL 
+	 */
+	private function _getSQLTmpList() {
+		if ($this->_useTmpTable) {
+			return 'select id_mos from mod_object_search_tmp where search_mos = \''.$this->_searchTmpId.'\'';
+		} else {
+			return implode(',', $this->_searchTmpList);
+		}
 	}
 	
 	/**
@@ -1212,12 +1247,12 @@ class CMS_object_search extends CMS_grandFather
 		}
 		if (is_array($subObjectsFieldsIds) && $subObjectsFieldsIds) {
 			//update tmp table with founded ids
-			$this->_updateTmpTable($this->_sortedResultsIds);
-			$where = ' and objectID in (select id_mos from mod_object_search_tmp where search_mos = \''.$this->_searchTmpId.'\')';
+			$this->_updateTmpList($this->_sortedResultsIds);
+			$where = ' and objectID in ('.$this->_getSQLTmpList().')';
 			// Prepare conditions
 			$where = "
 			where
-				objectID in (select id_mos from mod_object_search_tmp where search_mos = '".$this->_searchTmpId."')
+				objectID in (".$this->_getSQLTmpList().")
 				and objectFieldID in (".implode($subObjectsFieldsIds,',').")";
 			$statusSuffix = ($this->_public) ? "_public":"_edited";
 			$sql = "select
@@ -1267,8 +1302,8 @@ class CMS_object_search extends CMS_grandFather
 				//add previously founded ids to where clause
 				if (is_array($this->_resultsIds) && $this->_resultsIds) {
 					//update tmp table with founded ids
-					$this->_updateTmpTable($this->_resultsIds);
-					$where = ' and objectID in (select id_mos from mod_object_search_tmp where search_mos = \''.$this->_searchTmpId.'\')';
+					$this->_updateTmpList($this->_resultsIds);
+					$where = ' and objectID in ('.$this->_getSQLTmpList().')';
 				} else {
 					$where = '';
 				}
@@ -1365,8 +1400,8 @@ class CMS_object_search extends CMS_grandFather
 		//check for results existance in objects datas tables
 		if ($ids) {
 			//update tmp table with founded ids
-			$this->_updateTmpTable($ids);
-			$where = ' objectID in (select id_mos from mod_object_search_tmp where search_mos = \''.$this->_searchTmpId.'\')';
+			$this->_updateTmpList($ids);
+			$where = ' objectID in ('.$this->_getSQLTmpList().')';
 			
 			$sql = "
 				select
@@ -1509,8 +1544,6 @@ class CMS_object_search extends CMS_grandFather
 			}
 			return ($return == self::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS) ? false : $items;
 		}
-		//Create temporary search id to be used in tmp table
-		$this->_searchTmpId = md5(mt_rand().microtime());
 		//get all ids and numrows for search
 		$this->_resultsIds = $this->_getIds();
 		//if results
@@ -1527,10 +1560,10 @@ class CMS_object_search extends CMS_grandFather
 				$this->_values = $this->_getObjectValues();
 			}
 			//clean tmp table
-			$this->_updateTmpTable();
+			$this->_updateTmpList();
 		} else {
 			//clean tmp table
-			$this->_updateTmpTable();
+			$this->_updateTmpList();
 			return ($return == self::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS) ? true : array();
 		}
 		//return datas

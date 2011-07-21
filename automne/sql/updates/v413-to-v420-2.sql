@@ -19,7 +19,7 @@ CREATE TABLE `mod_object_search_tmp` (
   `id_mos` int(11) unsigned NOT NULL,
   UNIQUE KEY `index_mos` (`search_mos`,`id_mos`),
   KEY `search_mos` (`search_mos`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MEMORY DEFAULT CHARSET=utf8;
 
 ALTER TABLE  `mod_cms_aliases` ADD  `websites_ma` VARCHAR( 255 ) NOT NULL ,
 ADD  `replace_ma` INT( 1 ) UNSIGNED NOT NULL ,
