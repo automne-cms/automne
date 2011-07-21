@@ -379,10 +379,7 @@ $sql = "SHOW TABLE STATUS";
 $q = new CMS_query($sql);
 $installed = false;
 while($r = $q->getArray()) {
-	if ($r['Name'] == "mod_object_search_tmp") {
-		mod_object_search_tmp
-		
-		
+	if ($r['Name'] == "mod_object_search_tmp" && $r['Engine'] == 'MEMORY') {
 		$installed = true;
 	}
 }
