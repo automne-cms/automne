@@ -1,4 +1,4 @@
-Automne 4.1
+Automne 4
 
 Website : http://www.automne-cms.org
 

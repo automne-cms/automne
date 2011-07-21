@@ -94,6 +94,12 @@ if (!isset($_GET['file'])) {
 					$content .= '<li class="atm-pic-ok">XML extension <strong style="color:green">OK</strong></li>';
 				}
 			}
+			//DOM
+			if (!class_exists('DOMDocument')) {
+				$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, DOM extension not installed</li>';
+			} else{
+				$content .= '<li class="atm-pic-ok">DOM extension <strong style="color:green">OK</strong></li>';
+			}
 			//GD
 			if (!function_exists('imagecreatefromgif') || !function_exists('imagecreatefromjpeg') || !function_exists('imagecreatefrompng')) {
 				$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, GD extension not installed</li>';
@@ -118,12 +124,6 @@ if (!isset($_GET['file'])) {
 			} else {
 				$content .= '<li class="atm-pic-ok">Multibyte String (mbsring) extension <strong style="color:green">OK</strong></li>';
 			}
-			//Doc Root
-			/*if (realpath($_SERVER["DOCUMENT_ROOT"]) != realpath(dirname(__FILE__))) {
-				$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, Automne must be installed in the server document root ('.realpath(dirname(__FILE__)).')</li>';
-			} else {
-				$content .= '<li class="atm-pic-ok">Automne installed in the document root <strong style="color:green">OK</strong></li>';
-			}*/
 			//Files writing
 			if (!is_writable(realpath(dirname(__FILE__)))) {
 				$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, No permissions to write files on website directory ('.realpath(dirname(__FILE__)).')</li>';
@@ -253,6 +253,7 @@ if (!isset($_GET['file'])) {
 			$error_stepCheck_magic_quotes_sybase_error = 'Attention ! L\'option "magic_quotes_sybase" est active sur votre configuration de PHP. Cette option est incompatible avec Automne. V&eacute;rifiez votre installation de PHP.';
 			$error_stepCheck_register_globals_error = 'Attention ! L\'option "register_globals" est active sur votre configuration de PHP. Cette option est incompatible avec Automne. V&eacute;rifiez votre installation de PHP.';
 			$error_stepCheck_xml_error = 'Erreur, l\'extension XML n\'est pas install&eacute;e sur votre serveur. V&eacute;rifiez votre installation de PHP.';
+			$error_stepCheck_dom_error = 'Erreur, l\'extension DOM n\'est pas install&eacute;e sur votre serveur. V&eacute;rifiez votre installation de PHP.';
 			$error_stepCheck_xml_expat_error = 'Erreur, l\'extension XML est install&eacute;e avec EXPAT au lieu de LibXML. V&eacute;rifiez votre installation de PHP.';
 			$error_stepCheck_gd_error = 'Erreur, l\'extension GD n\'est pas install&eacute;e sur votre serveur. V&eacute;rifiez votre installation de PHP.';
 			$error_stepCheck_gd_gif_error = 'Erreur, les fonctionnalit&eacute;s de traitement d\'images GIF ne sont pas install&eacute;es (Extension GD). V&eacute;rifiez votre installation de PHP.';
@@ -426,6 +427,7 @@ if (!isset($_GET['file'])) {
 			$error_stepCheck_magic_quotes_sybase_error = 'Beware! The "magic_quotes_sybase" option is active on your PHP configuration. This option is not compatible with Automne. Please Check your PHP installation.';
 			$error_stepCheck_register_globals_error = 'Beware ! The "register_globals" option is active on your PHP configuration. This option is not compatible with Automne. Please Check your PHP installation.';
 			$error_stepCheck_xml_error = 'Error, XML extension is not installed on your server. Please Check your PHP installation.';
+			$error_stepCheck_dom_error = 'Error, DOM extension is not installed on your server. Please Check your PHP installation.';
 			$error_stepCheck_xml_expat_error = 'Error, XML extension is installed with EXPAT instead of LibXML. Please Check your PHP installation.';
 			$error_stepCheck_gd_error = 'Error, GD extension is not installed on your server. Please Check your PHP installation.';
 			$error_stepCheck_gd_gif_error = 'Error, functionalities of GIF image processing are not installed (GD Extension). Please Check your PHP installation.';
@@ -614,7 +616,11 @@ if (!isset($_GET['file'])) {
 					$stopInstallation = true;
 				}
 			}
-			
+			//DOM
+			if (!class_exists('DOMDocument')) {
+				$stopInstallation = true;
+				$error .= $error_stepCheck_dom_error.'<br /><br />';
+			}
 			//check for GD
 			if (!function_exists("imagecopyresampled")) {
 				$error .= $error_stepCheck_gd_error.'<br /><br />';
