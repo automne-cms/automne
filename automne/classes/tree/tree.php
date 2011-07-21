@@ -101,7 +101,7 @@ class CMS_tree extends CMS_grandFather
 			} elseif (SensitiveIO::isPositiveInteger($currentPageId) && strtolower(io::sanitizeAsciiString($id)) == $id) {
 				return CMS_tree::getPageCodenameValue($id, $currentPageId, $type);
 			} elseif ($type != 'exists') {
-				CMS_grandFather::raiseError("Page id must be positive integer : ".print_r(func_get_args(), true));
+				CMS_grandFather::raiseError("Page id must be positive integer : ".print_r(func_get_args(), true).' - '.io::getCallInfos(3));
 				return false;
 			} else {
 				return false;

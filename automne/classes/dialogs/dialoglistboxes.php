@@ -312,8 +312,8 @@ class CMS_dialog_listboxes extends CMS_grandFather
 		}
 		//-->
 		</script>
-		<input type="hidden" name="'.$s_hiddenField.'" value="'.@implode($s_separator, array_merge($a_selected_categoriesIDs,$a_keeped_categoriesIDs)).'" />
-		<input type="hidden" name="keep_'.$s_hiddenField.'" value="'.@implode($s_separator, $a_keeped_categoriesIDs).'" />
+		<input type="hidden" id="hidden_'.$s_hiddenField.'" name="'.$s_hiddenField.'" value="'.@implode($s_separator, array_merge($a_selected_categoriesIDs,$a_keeped_categoriesIDs)).'" />
+		<input type="hidden" id="hidden_keep_'.$s_hiddenField.'" name="keep_'.$s_hiddenField.'" value="'.@implode($s_separator, $a_keeped_categoriesIDs).'" />
 		<table>';
 		$fromID = (isset($args['selectIDFrom'])) ? ' id="'.io::htmlspecialchars($args['selectIDFrom']).'"' : '';
 		$toID = (isset($args['selectIDTo'])) ? ' id="'.io::htmlspecialchars($args['selectIDTo']).'"' : '';

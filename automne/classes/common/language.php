@@ -478,9 +478,9 @@ class CMS_language extends CMS_grandFather
 	  * @access public
 	  */
 	function startPrefetch($module = MOD_STANDARD_CODENAME) {
-		$constants = get_defined_constants(true);
-		if (isset($constants['user'])) {
-			$this->_prefetchStatus[$module] = $constants['user'];
+		$constants = get_defined_constants();
+		if (is_array($constants)) {
+			$this->_prefetchStatus[$module] = $constants;
 		} else {
 			$this->_prefetchStatus[$module] = array();
 		}
@@ -497,12 +497,15 @@ class CMS_language extends CMS_grandFather
 	  * @access public
 	  */
 	function endPrefetch($module = MOD_STANDARD_CODENAME) {
-		$constants = get_defined_constants(true);
+		$constants = get_defined_constants();
+		if (!is_array($constants)) {
+			return false;
+		}
 		if (!isset($this->_prefetchStatus[$module]) || !is_array($this->_prefetchStatus[$module])) {
 			$this->raiseError("Try to end message prefetch which not already started");
 			return false;
 		}
-		$diff = array_diff_assoc((array) @$constants['user'], $this->_prefetchStatus[$module]);
+		$diff = array_diff_assoc((array) @$constants, $this->_prefetchStatus[$module]);
 		if (!$diff) {
 			return true;
 		}
