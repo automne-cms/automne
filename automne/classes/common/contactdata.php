@@ -187,8 +187,8 @@ class CMS_contactData extends CMS_grandFather
 			$this->_cellphone = $data["cellphone_cd"];
 			$this->_fax = $data["fax_cd"];
 			$this->_email = $data["email_cd"];
-			$this->_company = $data["company_cd"];
-			$this->_gender = $data["gender_cd"];
+			$this->_company = isset($data["company_cd"]) ? $data["company_cd"] : '';
+			$this->_gender = isset($data["gender_cd"]) ? $data["gender_cd"] : '';
 		}
 	}
 	

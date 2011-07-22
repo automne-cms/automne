@@ -184,7 +184,7 @@ class CMS_block_file extends CMS_block
 		//get folder for files
 		$folder = $this->_getFolderName($location, $public);
 		//must put the main website URL before
-		$mainurl = CMS_websitesCatalog::getCurrentDomain($this->_pageID);
+		$mainurl = CMS_websitesCatalog::getCurrentDomain(@$this->_pageID);
 		$html = '<a href="'.$mainurl.PATH_MODULES_FILES_STANDARD_WR.'/'.$folder.'/'.$data["file"].'"'.$html_attributes.' title="'.io::htmlspecialchars($data["label"]).'">'.$data["label"].'</a>';
 		$file = new CMS_file(PATH_MODULES_FILES_STANDARD_FS.'/'.$folder.'/'.$data["file"]);
 		$filesize = $file->getFileSize();

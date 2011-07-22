@@ -257,14 +257,14 @@ class CMS_block_image extends CMS_block
 		$html_imageZoomHref='';
 		$html_imageZoomPop='';
 		if ($data["file"]) {
-			$html_img = '<img src="'.CMS_websitesCatalog::getCurrentDomain($this->_pageID).PATH_MODULES_FILES_STANDARD_WR.'/'.$folder.'/'.$data["file"].'" alt="'.io::htmlspecialchars($data["label"]).'" '.$html_attributes.' />';
+			$html_img = '<img src="'.CMS_websitesCatalog::getCurrentDomain(@$this->_pageID).PATH_MODULES_FILES_STANDARD_WR.'/'.$folder.'/'.$data["file"].'" alt="'.io::htmlspecialchars($data["label"]).'" '.$html_attributes.' />';
 		}
 		if ($data["enlargedFile"]) {
 			$html_imgZoomName = $data["enlargedFile"];
-			$html_imgZoomHtml = '<img src="'.CMS_websitesCatalog::getCurrentDomain($this->_pageID).PATH_MODULES_FILES_STANDARD_WR.'/'.$folder.'/'.$data["enlargedFile"].'" alt="'.io::htmlspecialchars($data["label"]).'" '.$html_attributes.' />';
+			$html_imgZoomHtml = '<img src="'.CMS_websitesCatalog::getCurrentDomain(@$this->_pageID).PATH_MODULES_FILES_STANDARD_WR.'/'.$folder.'/'.$data["enlargedFile"].'" alt="'.io::htmlspecialchars($data["label"]).'" '.$html_attributes.' />';
 		}
 		if ($data["enlargedFile"]) {
-			$href = (OPEN_ZOOMIMAGE_IN_POPUP) ? CMS_websitesCatalog::getCurrentDomain($this->_pageID).PATH_REALROOT_WR . "/" . CMS_block_image::BLOCK_IMAGE_POPUP . '?location='.$folder.'&amp;file=' . $data["enlargedFile"] . '&amp;label=' . urlencode($data["label"]) : CMS_websitesCatalog::getCurrentDomain($this->_pageID).PATH_MODULES_FILES_STANDARD_WR.'/'.$folder.'/'.$data["enlargedFile"];
+			$href = (OPEN_ZOOMIMAGE_IN_POPUP) ? CMS_websitesCatalog::getCurrentDomain(@$this->_pageID).PATH_REALROOT_WR . "/" . CMS_block_image::BLOCK_IMAGE_POPUP . '?location='.$folder.'&amp;file=' . $data["enlargedFile"] . '&amp;label=' . urlencode($data["label"]) : CMS_websitesCatalog::getCurrentDomain(@$this->_pageID).PATH_MODULES_FILES_STANDARD_WR.'/'.$folder.'/'.$data["enlargedFile"];
 			$popup = (OPEN_ZOOMIMAGE_IN_POPUP) ? ' onclick="javascript:CMS_openPopUpImage(\''.addslashes($href).'\');return false;"' : '';
 			if ($html_img) {
 				$html = '<a target="_blank" rel="atm-enlarge" href="'. $href . '"'.$popup.' title="' . io::htmlspecialchars($data["label"]) . '">' . $html_img . '</a>';
@@ -287,7 +287,7 @@ class CMS_block_image extends CMS_block
 			'{{jslabel}}'		=> io::htmlspecialchars($data["label"]),
 			'{{linkLabel}}'		=> $linkLabel,
 			'{{imageZoomHtml}}'	=> $html_imgZoomHtml,
-			'{{imagePath}}'		=> CMS_websitesCatalog::getCurrentDomain($this->_pageID).PATH_MODULES_FILES_STANDARD_WR.'/'.$folder,
+			'{{imagePath}}'		=> CMS_websitesCatalog::getCurrentDomain(@$this->_pageID).PATH_MODULES_FILES_STANDARD_WR.'/'.$folder,
 			'{{imageName}}'		=> $data["file"],
 			'{{imageZoomHref}}'	=> $html_imageZoomHref,
 			'{{imageZoomName}}'	=> $html_imgZoomName,

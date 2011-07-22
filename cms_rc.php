@@ -1231,6 +1231,11 @@ function start_atm_session() {
 	//nothing
 }
 
+//function to get current time in microsecond
+function getmicrotime() {
+	return CMS_stats::getmicrotime();
+}
+
 // Start output buffering for compression so we don't prevent
 // headers from being sent if there's a blank line in an included file
 if (!defined('HTML_COMPRESSION_STARTED') && APPLICATION_EXEC_TYPE != 'cli') {
