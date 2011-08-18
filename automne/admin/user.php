@@ -389,7 +389,7 @@ if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID && $user->getUserId() != ROOT
 			//get accordion datas from module
 			$moduleDatas = $aModule->getUserAccordionProperties($userId, $cms_language);
 			
-			$moduleURL = PATH_ADMIN_MODULES_WR.'/'.$aModule->getCodename().'/users-controler.php';
+			$moduleURL = false;
 			if (isset($moduleDatas['url'])) {
 				$moduleURL = $moduleDatas['url'];
 			}
@@ -408,7 +408,21 @@ if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID && $user->getUserId() != ROOT
 			//do some search and replace to allow use of js functions in returned code
 			$moduleFields = str_replace('"scope":"this"', '"scope":this', $moduleFields);
 			$moduleFields = preg_replace_callback('#"function\((.*)}"#U', 'replaceCallBack', $moduleFields);
-			
+			$button = ($moduleURL) ? ",
+				buttons:[{
+					text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+					iconCls:		'atm-pic-validate',
+					xtype:			'button',
+					name:			'submit{$moduleCodename}User',
+					scope:			this,
+					handler:		function() {
+						var form = Ext.getCmp('userPanel-{$moduleCodename}-{$userId}').getForm();
+						form.submit({params:{
+							action:		'update-user',
+							userId:		userWindow.userId
+						}});
+					}
+				}]" : '';
 			$modulesAccordion .= ",{
 				title:			'{$moduleLabel}',
 				id:				'userPanel-{$moduleCodename}-{$userId}',
@@ -427,21 +441,8 @@ if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID && $user->getUserId() != ROOT
 					xtype:			'textfield',
 					anchor:			'97%'
 				},
-				items:[{$moduleFields}],
-				buttons:[{
-					text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
-					iconCls:		'atm-pic-validate',
-					xtype:			'button',
-					name:			'submit{$moduleCodename}User',
-					scope:			this,
-					handler:		function() {
-						var form = Ext.getCmp('userPanel-{$moduleCodename}-{$userId}').getForm();
-						form.submit({params:{
-							action:		'update-user',
-							userId:		userWindow.userId
-						}});
-					}
-				}]
+				items:[{$moduleFields}]
+				{$button}
 			}";
 		}
 	}

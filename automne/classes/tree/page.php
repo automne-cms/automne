@@ -390,7 +390,7 @@ class CMS_page extends CMS_resource
 	  */
 	function getURL($printPage = false, $returnFilenameOnly = false, $relativeTo = PATH_RELATIVETO_WEBROOT, $force = false) {
 		if ($force || ($this->getLocation() == RESOURCE_LOCATION_USERSPACE && $this->getPublication() == RESOURCE_PUBLICATION_PUBLIC)) {
-			$ws = CMS_tree::getPageWebsite($this);
+			$ws = $this->getWebsite();
 			$wsURL = '';
 			if (is_object($ws)) {
 				if ($relativeTo == PATH_RELATIVETO_WEBROOT) {
@@ -405,6 +405,8 @@ class CMS_page extends CMS_resource
 							$mainWS = CMS_websitesCatalog::getWebsiteFromDomain(@parse_url($wsURL, PHP_URL_HOST));
 							if ($mainWS && $mainWS->getID() == $ws->getID()) {
 								return $wsURL.PATH_REALROOT_WR . (substr($wsURL.PATH_REALROOT_WR, -1) === '/' ? '' : '/');
+							} else {
+								return $wsURL . $ws->getPagesPath(PATH_RELATIVETO_WEBROOT) . '/';
 							}
 						} else {
 							//query modules to get new page URL
@@ -661,6 +663,17 @@ class CMS_page extends CMS_resource
 		$redirectionFile = new CMS_file($pagePath, CMS_file::FILE_SYSTEM, CMS_file::TYPE_FILE);
 		$redirectionFile->setContent($this->redirectionCode($pageHTMLPath));
 		$redirectionFile->writeToPersistence(true, true);
+		
+		//write website index
+		if (CMS_websitesCatalog::isWebsiteRoot($this->getID())) {
+			$ws = $this->getWebsite();
+			if ($ws && !$ws->isMain()) {
+				$wsPath = $ws->getPagesPath(PATH_RELATIVETO_FILESYSTEM).'/index.php';
+				$redirectionFile = new CMS_file($wsPath, CMS_file::FILE_SYSTEM, CMS_file::TYPE_FILE);
+				$redirectionFile->setContent($this->redirectionCode($pageHTMLPath));
+				$redirectionFile->writeToPersistence(true, true);
+			}
+		}
 		
 		//write print page if any
 		if (USE_PRINT_PAGES && $this->_template->getPrintingClientSpaces()) {

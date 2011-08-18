@@ -500,6 +500,18 @@ class CMS_profile_user extends CMS_profile
 	}
 	
 	/**
+	  * Get Language
+	  *
+	  * @return CMS_language
+	  * @access public
+	  */
+	 
+	function getLanguageCode()
+	{
+		return $this->_language->getCode();
+	}
+	
+	/**
 	  * Set language
 	  *
 	  * @param CMS_language $language

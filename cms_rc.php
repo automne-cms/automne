@@ -1016,13 +1016,6 @@ define("PAGE_VISUALMODE_HTML_PUBLIC_INDEXABLE", 7);
 if (!defined('PAGE_SSL_MODE')) {
 	define('PAGE_SSL_MODE', false);
 }
-/**
- * Current page id
- * Defined in top of generated pages
- */
-if (!defined('CURRENT_PAGE')) {
-	define('CURRENT_PAGE', false);
-}
 //augment memory_limit
 if (ini_get('memory_limit') < (int) APPLICATION_MEMORY_LIMIT) {
 	@ini_set('memory_limit', APPLICATION_MEMORY_LIMIT);

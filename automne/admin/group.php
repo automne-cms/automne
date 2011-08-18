@@ -210,12 +210,12 @@ function replaceCallBack($parts) {
 }
 
 foreach ($modules as $aModule) {
-	if (method_exists($aModule,'getUserAccordionProperties')) {
+	if (method_exists($aModule,'getGroupAccordionProperties')) {
 		$moduleCodename = $aModule->getCodename();
 		//get accordion datas from module
 		$moduleDatas = $aModule->getGroupAccordionProperties($groupId, $cms_language);
 		
-		$moduleURL = PATH_ADMIN_MODULES_WR.'/'.$aModule->getCodename().'/users-controler.php';
+		$moduleURL = false;
 		if (isset($moduleDatas['url'])) {
 			$moduleURL = $moduleDatas['url'];
 		}
@@ -234,7 +234,21 @@ foreach ($modules as $aModule) {
 		//do some search and replace to allow use of js functions in returned code
 		$moduleFields = str_replace('"scope":"this"', '"scope":this', $moduleFields);
 		$moduleFields = preg_replace_callback('#"function\((.*)}"#U', 'replaceCallBack', $moduleFields);
-		
+		$button = ($moduleURL) ? ",
+			buttons:[{
+				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+				iconCls:		'atm-pic-validate',
+				xtype:			'button',
+				name:			'submit{$moduleCodename}Group',
+				scope:			this,
+				handler:		function() {
+					var form = Ext.getCmp('groupPanel-{$moduleCodename}-{$groupId}').getForm();
+					form.submit({params:{
+						action:		'update-group',
+						groupId:	groupWindow.groupId
+					}});
+				}
+			}]" : '';
 		$modulesAccordion .= ",{
 			title:			'{$moduleLabel}',
 			id:				'groupPanel-{$moduleCodename}-{$groupId}',
@@ -253,25 +267,11 @@ foreach ($modules as $aModule) {
 				xtype:			'textfield',
 				anchor:			'97%'
 			},
-			items:[{$moduleFields}],
-			buttons:[{
-				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
-				iconCls:		'atm-pic-validate',
-				xtype:			'button',
-				name:			'submit{$moduleCodename}Group',
-				scope:			this,
-				handler:		function() {
-					var form = Ext.getCmp('groupPanel-{$moduleCodename}-{$groupId}').getForm();
-					form.submit({params:{
-						action:		'update-group',
-						groupId:	groupWindow.groupId
-					}});
-				}
-			}]
+			items:[{$moduleFields}]
+			{$button}
 		}";
 	}
 }
-
 
 $title = (sensitiveIO::isPositiveInteger($groupId)) ? $cms_language->getJsMessage(MESSAGE_PAGE_GROUP_PROFILE).' : '.$label : $cms_language->getJsMessage(MESSAGE_PAGE_CREATE_GROUP);
 

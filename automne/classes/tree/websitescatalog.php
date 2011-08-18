@@ -219,7 +219,7 @@ class CMS_websitesCatalog extends CMS_grandFather {
 				$page = CMS_tree::getPageByID($currentPage);
 			} elseif (is_object($currentPage)) {
 				$page = $currentPage;
-			} elseif (io::isPositiveInteger(CURRENT_PAGE)) {
+			} elseif (defined('CURRENT_PAGE') && io::isPositiveInteger(CURRENT_PAGE)) {
 				$page = CMS_tree::getPageByID(CURRENT_PAGE);
 			}
 			if (isset($page) && is_object($page) && !$page->hasError()) {

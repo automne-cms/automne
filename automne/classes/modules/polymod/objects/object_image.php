@@ -1015,7 +1015,7 @@ class CMS_object_image extends CMS_object_common
 				$popup = (OPEN_ZOOMIMAGE_IN_POPUP) ? ' onclick="javascript:CMS_openPopUpImage(\''.addslashes($href).'\');return false;"':'';
 				$img = '<a target="_blank" href="'. $href . '"'.$popup.' title="'.$this->_subfieldValues[1]->getValue().'">' . $img . '</a>';
 			}
-			$img = $this->_subfieldValues[1]->getValue().' : '.$img;
+			$img = ($this->_subfieldValues[1]->getValue() ? $this->_subfieldValues[1]->getValue().' : ' : '').$img;
 		}
 		return $img;
 	}
