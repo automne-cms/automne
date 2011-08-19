@@ -1481,6 +1481,11 @@ class CMS_module_standard extends CMS_module
 					"atm-css-tags" 		=> array("selfClosed" => true, "parameters" => array()),
 					"atm-js-tags" 		=> array("selfClosed" => true, "parameters" => array()),
 				);
+				//for public (and print) visualmode, this is done by MODULE_TREATMENT_LINXES_TAGS mode during page file linx treatment
+				if ($visualizationMode != PAGE_VISUALMODE_HTML_PUBLIC) {
+					$return['atm-linx'] = array("selfClosed" => false, "parameters" => array());
+				}
+				
 			break;
 			case MODULE_TREATMENT_PAGECONTENT_TAGS :
 				$return = array (
@@ -1505,10 +1510,6 @@ class CMS_module_standard extends CMS_module
 					"head" 				=> array("selfClosed" => false, "parameters" => array()),
 					"html" 				=> array("selfClosed" => false, "parameters" => array()),
 				);
-				//for public (and print) visualmode, this is done by MODULE_TREATMENT_LINXES_TAGS mode during page file linx treatment
-				if ($visualizationMode != PAGE_VISUALMODE_HTML_PUBLIC) {
-					$return['atm-linx'] = array("selfClosed" => false, "parameters" => array());
-				}
 				//for print visualmode, this tag is useless
 				if ($visualizationMode != PAGE_VISUALMODE_PRINT) {
 					$return['atm-print-link'] = array("selfClosed" => false, "parameters" => array());
@@ -1644,25 +1645,6 @@ class CMS_module_standard extends CMS_module
 					return false;
 				}
 				switch ($tag->getName()) {
-					case "atm-linx":
-						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM || $visualizationMode == PAGE_VISUALMODE_FORM) {
-							//direct linx are visible even if target pages are not published (edited tree)
-							//all other linx are only visible if they are published (public tree)
-							$linx_args = array("page"=> $treatedObject, "publicTree"=> !($tag->getAttribute('type') == 'direct' || !$tag->getAttribute('type')));
-							$linx = $tag->getRepresentationInstance($linx_args);
-							$linx->setDebug(false);
-							$linx->setLog(false);
-							return $linx->getOutput();
-						} else
-						//for public and print visualmode, this treatment is done by MODULE_TREATMENT_LINXES_TAGS mode during page file linx treatment
-						if ($visualizationMode != PAGE_VISUALMODE_HTML_PUBLIC 
-							&& $visualizationMode != PAGE_VISUALMODE_PRINT) {
-							//linx are visible only if target pages are published (public tree)
-							$linx_args = array("page"=> $treatedObject, "publicTree"=> true);
-							$linx = $tag->getRepresentationInstance($linx_args);
-							return $linx->getOutput();
-						}
-					break;
 					case "atm-main-url":
 						return CMS_websitesCatalog::getMainURL();
 					break;
@@ -1733,6 +1715,25 @@ class CMS_module_standard extends CMS_module
 					return false;
 				}
 				switch ($tag->getName()) {
+					case "atm-linx":
+						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM || $visualizationMode == PAGE_VISUALMODE_FORM) {
+							//direct linx are visible even if target pages are not published (edited tree)
+							//all other linx are only visible if they are published (public tree)
+							$linx_args = array("page"=> $treatedObject, "publicTree"=> !($tag->getAttribute('type') == 'direct' || !$tag->getAttribute('type')));
+							$linx = $tag->getRepresentationInstance($linx_args);
+							$linx->setDebug(false);
+							$linx->setLog(false);
+							return $linx->getOutput();
+						} else
+						//for public and print visualmode, this treatment is done by MODULE_TREATMENT_LINXES_TAGS mode during page file linx treatment
+						if ($visualizationMode != PAGE_VISUALMODE_HTML_PUBLIC 
+							&& $visualizationMode != PAGE_VISUALMODE_PRINT) {
+							//linx are visible only if target pages are published (public tree)
+							$linx_args = array("page"=> $treatedObject, "publicTree"=> true);
+							$linx = $tag->getRepresentationInstance($linx_args);
+							return $linx->getOutput();
+						}
+					break;
 					case "atm-js-tags":
 					case "atm-css-tags":
 						$usage = CMS_module::moduleUsage($treatedObject->getID(), $this->_codename);
