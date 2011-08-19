@@ -1,5 +1,6 @@
 V4.2.0 (in progress)
 [BUG] : Polymod modules can be deleted even if RSS feeds or plugins exists
+[BUG] : Polymod blocks are not duplicated during page copy
 [REFACTOR] : Drop all old V3 LDAP methods
 [REFACTOR] : Update Zend Framework to version 1.11.5
 [REFACTOR] : Update ExtJS to version 3.4.0 (add support for IE9)

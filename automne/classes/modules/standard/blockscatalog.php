@@ -165,6 +165,7 @@ class CMS_blocksCatalog extends CMS_grandFather
 		$_blocks = array();
 		//@var : array ( array(Table prefix, Class name) )
 		$_blockTypes = array(
+					array('blocksRawDatas','CMS_block_polymod'),
 					array('blocksImages','CMS_block_image'),
 					array('blocksFlashes','CMS_block_flash'),
 					array('blocksFiles','CMS_block_file'),

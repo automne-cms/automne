@@ -326,11 +326,11 @@ class CMS_block_text extends CMS_block
 		if (SensitiveIO::isPositiveInteger($this->_dbID)) {
 			$table = $this->_getDataTableName(RESOURCE_LOCATION_USERSPACE, $public);
 			$str_set = "
-					page='".$destinationPage->getID()."',
-					clientSpaceID='".$this->_clientSpaceID."',
-					rowID='".$this->_rowID."',
-					blockID='".$this->_tagID."',
-					value='".SensitiveIO::sanitizeSQLString(SensitiveIO::stripPHPTags($this->_value))."'
+					page='".io::sanitizeSQLString($destinationPage->getID())."',
+					clientSpaceID='".io::sanitizeSQLString($this->_clientSpaceID)."',
+					rowID='".io::sanitizeSQLString($this->_rowID)."',
+					blockID='".io::sanitizeSQLString($this->_tagID)."',
+					value='".io::sanitizeSQLString($this->_value)."'
 			";
 			$sql = "
 				insert into

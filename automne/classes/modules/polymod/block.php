@@ -428,7 +428,7 @@ class CMS_block_polymod extends CMS_block
 					clientSpaceID='".sensitiveIO::sanitizeSQLString($this->_clientSpaceID)."',
 					rowID='".sensitiveIO::sanitizeSQLString($this->_rowID)."',
 					blockID='".sensitiveIO::sanitizeSQLString($this->_tagID)."',
-					value='".sensitiveIO::sanitizeSQLString($this->_value)."'
+					value='".sensitiveIO::sanitizeSQLString(serialize($this->_value))."'
 			";
 			$sql = "
 				insert into
@@ -437,14 +437,13 @@ class CMS_block_polymod extends CMS_block
 					".$str_set."
 			";
 			$q = new CMS_query($sql);
-			//$q->executePreparedQuery($sql, $sqlParameters);
 			if (!$q->hasError()) {
 				//Table Edition
 				$sql = "
 					insert into
 						".$this->_getDataTableName(RESOURCE_LOCATION_EDITION, false)."
 					set
-						id='".$id."',
+						id='',
 						".$str_set."
 				";
 				$q = new CMS_query($sql);
