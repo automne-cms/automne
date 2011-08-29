@@ -517,7 +517,13 @@ switch ($action) {
 	case 'pageContent':
 		//check protected status
 		$protected = sensitiveIO::request('protected') ? true : false;
-		if (!$cms_page->isProtected() || (!$protected && $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL))) {
+		if ($cms_page->isProtected() && !$protected && $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
+			//remove protected status
+			$cms_page->setProtected($protected);
+			if (!$cms_page->hasError() && $cms_page->writeToPersistence()) {
+				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
+			}
+		} else if (!$cms_page->isProtected() || (!$protected && $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL))) {
 			$template = sensitiveIO::request('template', 'sensitiveIO::isPositiveInteger');
 			$title = strip_tags(sensitiveIO::request('title'));
 			$linktitle = strip_tags(sensitiveIO::request('linkTitle'));

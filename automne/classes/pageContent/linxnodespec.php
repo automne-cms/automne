@@ -130,6 +130,7 @@ class CMS_linxNodespec extends CMS_grandFather
 	  */
 	function getTarget(&$page, $publicTree)
 	{
+		$pg = false;
 		switch ($this->_type) {
 		case "node":
 			$pg = CMS_tree::getPageByID($this->_value);

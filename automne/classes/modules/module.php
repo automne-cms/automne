@@ -837,6 +837,10 @@ class CMS_module extends CMS_grandFather
 					break;
 					case 'block':
 						$attributes = $tag->getAttributes();
+						if (!isset($attributes['id'])) {
+							$this->raiseError('Missing attribute id in block tag');
+							return false;
+						}
 						//create the block data
 						$block = $tag->getRepresentationInstance();
 						//instanciate fake row

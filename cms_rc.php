@@ -187,6 +187,18 @@ if (!defined("OEMBED_EMBEDLY_KEY")) {
 }
 
 /**
+  *	Proxy used to access external services
+  * Used to access oembed webservices for example
+  *	Default : nothing (leave blank for none)
+  */
+if (!defined('APPLICATION_PROXY_HOST')) {
+	define('APPLICATION_PROXY_HOST', '');
+	if (!defined('APPLICATION_PROXY_PORT')) {
+		define('APPLICATION_PROXY_PORT', '');
+	}
+}
+
+/**
   *	Does system application run on Windows platform
   *	Default : strtolower(substr(PHP_OS, 0, 3)) === 'win'
   */

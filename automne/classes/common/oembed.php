@@ -188,11 +188,21 @@ class CMS_oembed extends CMS_grandFather
 			try {
 				$client = new Zend_Http_Client();
 				$client->setUri($this->_embedlyRegexpService);
-				$client->setConfig(array(
+				//HTTP config
+				$httpConfig = array(
 				    'maxredirects'	=> 5,
-				    'timeout'		=> 30,
+				    'timeout'		=> 10,
 					'useragent'		=> 'Mozilla/5.0 (compatible; Automne/'.AUTOMNE_VERSION.'; +http://www.automne-cms.org)',
-				));
+				);
+				if (defined('APPLICATION_PROXY_HOST') && APPLICATION_PROXY_HOST) {
+					$httpConfig['adapter'] = 'Zend_Http_Client_Adapter_Proxy';
+					$httpConfig['proxy_host'] = APPLICATION_PROXY_HOST;
+					if (defined('APPLICATION_PROXY_PORT') && APPLICATION_PROXY_PORT) {
+						$httpConfig['proxy_port'] = APPLICATION_PROXY_PORT;
+					}
+				}
+				$client->setConfig($httpConfig);
+				
 				$client->request();
 				$response = $client->getLastResponse();
 			} catch (Zend_Http_Client_Exception $e) {
@@ -298,11 +308,22 @@ class CMS_oembed extends CMS_grandFather
 			try {
 				$client = new Zend_Http_Client();
 				$client->setUri($this->getProvider());
-				$client->setConfig(array(
+				
+				//HTTP config
+				$httpConfig = array(
 				    'maxredirects'	=> 5,
-				    'timeout'		=> 30,
+				    'timeout'		=> 10,
 					'useragent'		=> 'Mozilla/5.0 (compatible; Automne/'.AUTOMNE_VERSION.'; +http://www.automne-cms.org)',
-				));
+				);
+				if (defined('APPLICATION_PROXY_HOST') && APPLICATION_PROXY_HOST) {
+					$httpConfig['adapter'] = 'Zend_Http_Client_Adapter_Proxy';
+					$httpConfig['proxy_host'] = APPLICATION_PROXY_HOST;
+					if (defined('APPLICATION_PROXY_PORT') && APPLICATION_PROXY_PORT) {
+						$httpConfig['proxy_port'] = APPLICATION_PROXY_PORT;
+					}
+				}
+				$client->setConfig($httpConfig);
+				
 				$client->setParameterGet(array(
 				    'url'		=> $this->_url,
 					'format'	=> 'json',

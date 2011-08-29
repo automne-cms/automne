@@ -272,8 +272,8 @@ class CMS_session extends CMS_grandFather
 			//get old session Id
 			$oldSessionId = Zend_Session::getId();
 			if ($q->getNumRows() > 0) { //if session already exists : update it
-				//regenerate session Id randomly (arround 30 times)
-				if (!rand(0, 29)) {
+				//regenerate session Id randomly (arround 1/100 times)
+				if (!rand(0, 100)) {
 					//session id should not be regenerated each times because in case of a lot of concurrent calls, session can be destroyed
 					Zend_Session::regenerateId();
 				}
