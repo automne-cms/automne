@@ -259,6 +259,9 @@ class CMS_object_categories extends CMS_object_common
 					$cat->cls		= isset($checkedValues[$id]) ? 'x-tree-checked' : '';
 					$cat->level		= $level;
 					$cat->text		= str_replace('-&nbsp;', '', $category);
+					if (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
+						$cat->text = io::utf8Encode($cat->text);
+					}
 					$cat->leaf		= true;
 					if ($father) {
 						$father->children[] = $cat;
