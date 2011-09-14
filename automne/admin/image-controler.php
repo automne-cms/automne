@@ -24,7 +24,7 @@
   */
 
 require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
-
+set_time_limit(300);
 define("MESSAGE_PAGE_NO_IMG", 555);
 define("MESSAGE_PAGE_GIF_SUPPORT", 556);
 define("MESSAGE_PAGE_JPG_SUPPORT", 557);

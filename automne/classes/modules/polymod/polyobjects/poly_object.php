@@ -470,6 +470,47 @@ class CMS_poly_object extends CMS_resource
 	}
 	
 	/**
+	  * Get languages for object from
+	  * - Categories (which support multi language)
+	  * - Sub object multiple which has a language field
+	  *
+	  * @return array of supported languages codes or false if only one language is supported
+	  * @access public
+	  */
+	function getLanguages() {
+		static $languages;
+		//find language field for this type of object
+		if (!isset($languageFieldIDForObjectType[$this->_objectID])) {
+			//get Object definition
+			$objectDef = $this->getObjectDefinition();
+			$languages[$this->_objectID] = array();
+			if ($objectDef->getValue("multilanguage")) {
+				foreach(array_keys($this->_subObjectsDefinitions) as $fieldID) {
+					$type = $this->_objectFieldsDefinition[$fieldID]->getValue('type');
+					if ($type == 'CMS_object_language') { //language field
+						//object is not multilanguage if a language field exists
+						return false;
+					} elseif ($type == 'CMS_object_category') {
+						//get module codename
+						$polyModuleCodename = $objectDef->getValue('module');
+						$allLanguages = CMS_languagesCatalog::getAllLanguages($polyModuleCodename);
+						foreach ($allLanguages as $code => $language) {
+							$languages[$this->_objectID][$code] = $code;
+						}
+					} elseif (substr($type, 0, 6) == 'multi|') {
+						$subObjects = $this->_objectValues[$fieldID]->getValue('fields');
+						foreach ($subObjects as $subObject) {
+							$code = $subObject->getLanguage();
+							$languages[$this->_objectID][$code] = $code;
+						}
+					}
+				}
+			}
+		}
+		return $languages[$this->_objectID];
+	}
+	
+	/**
 	  * Get object publication date
 	  * If object is a primary resource, return resource pub date else, try to find a date field with creation date
 	  *
@@ -1028,13 +1069,19 @@ class CMS_poly_object extends CMS_resource
 					//append field id to html field parameters (if not already exists)
 					$htmlParameters .= (!isset($inputParams['id'])) ? ' id="'.$prefixName.$this->_objectFieldsDefinition[$fieldID]->getID().'_0"' : '';
 					
-					$html .= '<select name="'.$prefixName.$this->_objectFieldsDefinition[$fieldID]->getID().'_0"'.$htmlParameters.'>
-								<option value="0">'.$language->getMessage(self::MESSAGE_POLYMOD_CHOOSE_OBJECT).'</option>';
-					foreach ($objectsNames as $objectID => $objectName) {
-						$selected = ((is_object($this->_polyObjectValues[$fieldID]) && $this->_polyObjectValues[$fieldID]->getValue() == $objectID) || ($inputParams['defaultvalue'] == $objectID && (!is_object($this->_polyObjectValues[$fieldID]) || !$this->_polyObjectValues[$fieldID]->getValue()))) ? ' selected="selected"':'';
-						$html .= '<option value="'.$objectID.'"'.$selected.'>'.io::htmlspecialchars(io::decodeEntities($objectName)).'</option>'."\n";
+					if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
+						//create field value
+						$value = isset($inputParams['value']) ? $inputParams['value'] : $this->_polyObjectValues[$fieldID]->getValue();
+						$html .= '<input type="hidden"'.$htmlParameters.' name="'.$prefixName.$this->_objectFieldsDefinition[$fieldID]->getID().'_0" value="'.$value.'" />'."\n";
+					} else {
+						$html .= '<select name="'.$prefixName.$this->_objectFieldsDefinition[$fieldID]->getID().'_0"'.$htmlParameters.'>
+									<option value="0">'.$language->getMessage(self::MESSAGE_POLYMOD_CHOOSE_OBJECT).'</option>';
+						foreach ($objectsNames as $objectID => $objectName) {
+							$selected = ((is_object($this->_polyObjectValues[$fieldID]) && $this->_polyObjectValues[$fieldID]->getValue() == $objectID) || ($inputParams['defaultvalue'] == $objectID && (!is_object($this->_polyObjectValues[$fieldID]) || !$this->_polyObjectValues[$fieldID]->getValue()))) ? ' selected="selected"':'';
+							$html .= '<option value="'.$objectID.'"'.$selected.'>'.io::htmlspecialchars(io::decodeEntities($objectName)).'</option>'."\n";
+						}
+						$html .= '</select>';
 					}
-					$html .= '</select>';
 					if (POLYMOD_DEBUG) {
 						$html .= '<span class="admin_text_alert"> (Field : '.$fieldID.' - Value : '.$this->_polyObjectValues[$fieldID]->getValue().' - objectID : '.$this->_objectValues[$fieldID]->getObjectID().')</span>';
 					}

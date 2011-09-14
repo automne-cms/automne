@@ -135,11 +135,14 @@ class CMS_block_text extends CMS_block
 				$html .= "facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit au gue duis";
 				$html .= "dolore te feugat nulla facilisi.</span>";
 			}
-			
+			//This is used to avoid replacing {vars:type:value} inside text but to keep those vars inside block definition
+			//decoded into CMS_block_text::_getHTMLForm
 			$replace = array(
-				'{{data}}'	=> $html,
-				'{{jsdata}}' => io::sanitizeJSString($html),
+				'||bovd||{data||bcvd||}'	=> $html,
+				'||bovd||{jsdata||bcvd||}' => io::sanitizeJSString($html),
 			);
+			$this->_definition = preg_replace ('#{([a-zA-Z0-9._{}:-]*)}#U' , '||bovd||\1||bcvd||', $this->_definition);
+			
 			$form_data = str_replace(array_keys($replace), $replace, $this->_definition);
 			$this->_hasContent = ($data && $data["value"]) ? true:false;
 			$this->_editable = true;
@@ -186,14 +189,18 @@ class CMS_block_text extends CMS_block
 		$editor->setEditorAttributes(array(
 			'Height' => '100%',
 		));
-		$editor->setEditorConfigAttributes(array(
+		$editorConfig = array(
 			'EditorAreaStyles' 		=> '/css/editor.css',
 			'ToolbarCanCollapse' 	=> '0',
 			'SourcePopup'			=> '1',
 			'ToolbarLocation'		=> 'Out:fcktoolbar',
-			'EditorAreaCSS'			=> '{0}',
+			'EditorAreaCSS'			=> '||bo||0||bc||', //ie. {0}
 			'doNotFollowScroll'		=> true //FCKEditor hack : editors panel should not follow iframe page scroll
-		));
+		);
+		if (isset($this->_attributes['bgcolor'])) {
+			$editorConfig['EditorAreaStyles'] = 'body { background: '.$this->_attributes['bgcolor'].' };';
+		}
+		$editor->setEditorConfigAttributes($editorConfig);
 		$this->_value = $editor->getHTML();
 		$this->_administrable = false;
 		$html = parent::_getHTMLForm($language, $page, $clientSpace, $row, $blockID, $data);
@@ -201,6 +208,13 @@ class CMS_block_text extends CMS_block
 		//encode brackets to avoid vars ( {something:type:var} ) to be interpretted
 		//decoded into CMS_row::getData
 		$html = preg_replace ('#{([a-zA-Z0-9._{}:-]*)}#U' , '||bo||\1||bc||', $html);
+		
+		$replace = array(
+			'||bovd||'		=> '&#123;',
+			'||bcvd||'		=> '&#125;',
+		);
+		$html = str_replace(array_keys($replace), $replace, $html);
+		
 		
 		return $html;
 	}

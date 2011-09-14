@@ -193,7 +193,7 @@ class CMS_object_string extends CMS_object_common
 		//append field id to html field parameters (if not already exists)
 		$htmlParameters .= (!isset($inputParams['id'])) ? ' id="'.$prefixName.$this->_field->getID().'_0"' : '';
 		//create field value
-		$value = $this->_subfieldValues[0]->getValue();
+		$value = isset($inputParams['value']) ? $inputParams['value'] : $this->_subfieldValues[0]->getValue();
 		//then create field HTML
 		$html .= ($html) ? '<br />':'';
 		$html .= '<input type="text"'.$htmlParameters.' name="'.$prefixName.$this->_field->getID().'_0" maxlength="'.$params['maxLength'].'" value="'.$value.'" />'."\n";

@@ -786,8 +786,8 @@ class CMS_polymod extends CMS_modulePolymodValidation
 		$replace["#^\{\['object([0-9]+)'\]#U"] 								= '$object[\1]';
 		$replace["#\[([n0-9]+)]}$#U"] 										= '[\1]';
 		//replace the loop 'n' value by $key
-		$replace["#\(([n0-9]+)\)->objectValues(\(n\))#U"] 					= '(\1)->objectValues($key_\1)';
-		$replace["#\(([n0-9]+)\)->getValue\(('n')#U"] 						= '(\1)->getValue($key_\1';
+		$replace["#\(([n0-9]+)\)->objectValues(\(n\))#U"] 					= '(\1)->objectValues(isset($key_\1) ? $key_\1 : 0)';
+		$replace["#\(([n0-9]+)\)->getValue\(('n')#U"] 						= '(\1)->getValue(isset($key_\1) ? $key_\1 : 0';
 		return $replace;
 	}
 	

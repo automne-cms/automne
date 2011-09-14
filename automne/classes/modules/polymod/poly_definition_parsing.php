@@ -359,6 +359,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 					}
 					//make object available
 					$object[$this->_parameters['item']->getObjectID()] = $this->_parameters['item'];
+					//CMS_grandFather::log($this->_definition);
 					$return = eval(sensitiveIO::sanitizeExecCommand('return "'.$this->_definition.'";'));
 				}
 				if (isset($ckeck) && $ckeck === false) {
@@ -981,14 +982,10 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access private
 	  */
 	protected function _pluginTag(&$tag) {
-		//check tags requirements
-		if (!$this->checkTagRequirements($tag, array(
-				'language' => 'language', 
-			))) {
-			return;
-		}
 		//set language
-		$this->_parameters['language'] = $tag['attributes']["language"];
+		if (isset($tag['attributes']["language"])) {
+			$this->_parameters['language'] = $tag['attributes']["language"];
+		}
 		$uniqueID = CMS_XMLTag::getUniqueID();
 		//search for an atm-plugin-view tag in direct child tags
 		$pluginView = false;

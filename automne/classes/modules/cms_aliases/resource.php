@@ -297,7 +297,8 @@ class CMS_resource_cms_aliases extends CMS_resource
 					from
 						mod_cms_aliases
 					where
-						page_ma='".io::sanitizeSQLString($page->getID())."'";
+						page_ma='".io::sanitizeSQLString($page->getID())."'
+						and replace_ma='1'";
 				if ($this->getID()) {
 					$sql .= " and id_ma != '".$this->getID()."'";
 				}

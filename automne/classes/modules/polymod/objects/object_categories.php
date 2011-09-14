@@ -247,11 +247,12 @@ class CMS_object_categories extends CMS_object_common
 			}
 			$valueString = implode(',', $checkedValues);
 			if (is_array($a_all_categories) && $a_all_categories) {
+				$fathers = array(0 => false);
 				foreach ($a_all_categories as $id => $category) {
 					$level = substr_count($category, '-&nbsp;');
 					$father = false;
-					if (isset($cat) && $level != $cat->level && $level > $cat->level) {
-						$father = $cat;
+					if ($level && isset($fathers[$level - 1])) {
+						$father = $fathers[$level - 1];
 					}
 					$cat			= new stdClass();
 					$cat->id		= $id;
@@ -263,6 +264,7 @@ class CMS_object_categories extends CMS_object_common
 						$cat->text = io::utf8Encode($cat->text);
 					}
 					$cat->leaf		= true;
+					$fathers[$level] = $cat;
 					if ($father) {
 						$father->children[] = $cat;
 						$father->leaf = false;
@@ -440,7 +442,9 @@ class CMS_object_categories extends CMS_object_common
 					if (!sensitiveIO::isPositiveInteger($params['defaultValue'])) {
 						$html .= '<option value="0">'.$language->getMessage(self::MESSAGE_CHOOSE_OBJECT).'</option>';
 					}
-					if (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0]) && !is_null($this->_subfieldValues[0]->getValue())) {
+					if (isset($inputParams['value'])) {
+						$selectedValue = $inputParams['value'];
+					} elseif (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0]) && !is_null($this->_subfieldValues[0]->getValue())) {
 						$selectedValue = $this->_subfieldValues[0]->getValue();
 					} elseif (sensitiveIO::isPositiveInteger($params['defaultValue'])) {
 						$selectedValue = $params['defaultValue'];
@@ -1467,6 +1471,7 @@ class CMS_object_categories extends CMS_object_common
 		} else {
 			$rootCategory = false;
 		}
+		$maxlevel = isset($values['maxlevel']) ? (int) $values['maxlevel'] : 0; 
 		$categories = $this->getAllCategoriesAsArray($cms_language, $usedCategories, false, $editableOnly, $rootCategory, false, $usedByItemsIds, $crossLanguage);
 		$return = "";
 		if (is_array($categories) && $categories) {
@@ -1486,6 +1491,12 @@ class CMS_object_categories extends CMS_object_common
 						if(SensitiveIO::isPositiveInteger($disableCategory) && in_array($disableCategory, $lineage)){
 							continue;
 						}
+					}
+				}
+				//max level
+				if ($maxlevel) {
+					if (substr_count($catLabel, '-&nbsp;') >= $maxlevel) {
+						continue;
 					}
 				}
 				$selected = (isset($values['selected']) && $catID == $values['selected']) ? ' selected="selected"':'';

@@ -1005,7 +1005,11 @@ class CMS_object_image extends CMS_object_common
 		if ($this->_subfieldValues[0]->getValue()) {
 			$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
 			$params = $this->getParamsValues();
-			$img = '<img width="'.$params['maxWidthPreviz'].'" src="'.PATH_MODULES_FILES_WR.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[0]->getValue().'" border="0" alt="'.$this->_subfieldValues[1]->getValue().'" title="'.$this->_subfieldValues[1]->getValue().'" align="center" />';
+			$float = '';
+			if ($params['maxWidthPreviz'] > 50) {
+				$float = ' style="float:right;padding-left:3px;"';
+			}
+			$img = '<img width="'.$params['maxWidthPreviz'].'" src="'.PATH_MODULES_FILES_WR.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[0]->getValue().'" border="0" alt="'.$this->_subfieldValues[1]->getValue().'" title="'.$this->_subfieldValues[1]->getValue().'" align="center"'.$float.' />';
 			if ($this->_subfieldValues[2]->getValue()) {
 				$href = CMS_websitesCatalog::getCurrentDomain() . PATH_REALROOT_WR . "/" . self::OBJECT_IMAGE_POPUP_FILE . '?location='.RESOURCE_DATA_LOCATION_EDITED.'&amp;file=' . $this->_subfieldValues[2]->getValue() . '&amp;label=' . urlencode($this->_subfieldValues[1]->getValue()).'&amp;module='.$moduleCodename;
 				$popup = (OPEN_ZOOMIMAGE_IN_POPUP) ? ' onclick="javascript:CMS_openPopUpImage(\''.addslashes($href).'\');return false;"':'';
@@ -1169,11 +1173,15 @@ class CMS_object_image extends CMS_object_common
 				//set location
 				$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
 				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.$location;
-				list($sizeX, $sizeY) = @getimagesize($path."/".$this->_subfieldValues[0]->getValue());
+				$imgPath = $path."/".$this->_subfieldValues[0]->getValue();
+				$sizeX = $sizeY = 0;
+				if(file_exists($imgPath)){
+				    list($sizeX, $sizeY) = @getimagesize($imgPath);
+				}
 				if ($name == 'imageWidth') {
-					return $sizeX;
+					return (string) $sizeX;
 				} else {
-					return $sizeY;
+					return (string) $sizeY;
 				}
 			break;
 			case 'imageZoomWidth':
@@ -1183,11 +1191,15 @@ class CMS_object_image extends CMS_object_common
 				//set location
 				$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
 				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.$location;
-				list($sizeX, $sizeY) = @getimagesize($path."/".$this->_subfieldValues[2]->getValue());
+				$imgPath = $path."/".$this->_subfieldValues[2]->getValue();
+				$sizeX = $sizeY = 0;
+				if(file_exists($imgPath)){
+				    list($sizeX, $sizeY) = @getimagesize($imgPath);
+				}
 				if ($name == 'imageZoomWidth') {
-					return $sizeX;
+					return (string) $sizeX;
 				} else {
-					return $sizeY;
+					return (string) $sizeY;
 				}
 			break;
 			case 'imageSize':

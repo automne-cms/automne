@@ -285,6 +285,13 @@ switch ($action) {
 				$modulesTreatment->setTreatmentParameters(array("language" => $cms_language, 'replaceVars' => true));
 				$modulesTreatment->setDefinition($datas);
 				$datas = $modulesTreatment->treatContent(true);
+				if ($action == 'update-block-text') {
+					//instanciate modules treatments for page content tags (needed for links)
+					$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_PAGEHEADER_TAGS, PAGE_VISUALMODE_FORM, $cms_page);
+					$modulesTreatment->setTreatmentParameters(array("language" => $cms_language));
+					$modulesTreatment->setDefinition($datas);
+					$datas = $modulesTreatment->treatContent(true);
+				}
 				//set datas as returned content
 				$view->setContent($datas);
 				$edited = true;

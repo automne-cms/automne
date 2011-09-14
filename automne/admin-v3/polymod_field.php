@@ -205,8 +205,10 @@ $content = '
 				if (sizeof($object_types)) {
 					$content .= '<optgroup label="'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_STANDARD_OBJECTS).'">';
 					foreach ($object_types as $anObjectTypeName => $anObjectType) {
-						$selected = ($field->getValue("type") == $anObjectTypeName) ? ' selected="selected"':'';
-						$content .= '<option value="'.$anObjectTypeName.'"'.$selected.' title="'.htmlspecialchars($anObjectType->getDescription($cms_language)).'">'.$anObjectType->getObjectLabel($cms_language).'</option>';
+						if (!$object->getValue("multilanguage") || ($object->getValue("multilanguage") && $anObjectTypeName != 'CMS_object_language')) {
+							$selected = ($field->getValue("type") == $anObjectTypeName) ? ' selected="selected"':'';
+							$content .= '<option value="'.$anObjectTypeName.'"'.$selected.' title="'.htmlspecialchars($anObjectType->getDescription($cms_language)).'">'.$anObjectType->getObjectLabel($cms_language).'</option>';
+						}
 					}
 					$content .= '</optgroup>';
 				}

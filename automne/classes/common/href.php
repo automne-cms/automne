@@ -553,7 +553,7 @@ class CMS_href extends CMS_grandFather
 				case RESOURCE_DATA_LOCATION_EDITED:
 				default:
 					if (sensitiveIO::isPositiveInteger($this->_internalLink) && $href = CMS_tree::getPageValue($this->_internalLink, 'url')) {
-						$href = (io::strpos($href,PATH_PAGES_WR) !== false || stripos($href,'http') !== false) ? $href : PATH_PAGES_WR.$href;
+						$href = ((PATH_PAGES_WR && strpos($href,PATH_PAGES_WR) !== false) || stripos($href,'http') !== false) ? $href : PATH_PAGES_WR.$href;
 					}
 					break;
 			}

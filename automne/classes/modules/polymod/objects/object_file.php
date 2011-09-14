@@ -1398,11 +1398,15 @@ class CMS_object_file extends CMS_object_common
 				//set location
 				$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
 				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.$location;
-				list($sizeX, $sizeY) = @getimagesize($path."/".$this->_subfieldValues[1]->getValue());
+				$imgPath = $path."/".$this->_subfieldValues[1]->getValue();
+				$sizeX = $sizeY = 0;
+				if(file_exists($imgPath)){
+				    list($sizeX, $sizeY) = @getimagesize($imgPath);
+				}
 				if ($name == 'thumbWidth') {
-					return $sizeX;
+					return (string) $sizeX;
 				} else {
-					return $sizeY;
+					return (string) $sizeY;
 				}
 			break;
 			case 'imageWidth':
@@ -1413,11 +1417,15 @@ class CMS_object_file extends CMS_object_common
 					//set location
 					$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
 					$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.$location;
-					list($sizeX, $sizeY) = @getimagesize($path."/".$this->_subfieldValues[4]->getValue());
+					$imgPath = $path."/".$this->_subfieldValues[4]->getValue();
+					$sizeX = $sizeY = 0;
+					if(file_exists($imgPath)){
+					    list($sizeX, $sizeY) = @getimagesize($imgPath);
+					}
 					if ($name == 'imageWidth') {
-						return $sizeX;
+						return (string) $sizeX;
 					} else {
-						return $sizeY;
+						return (string) $sizeY;
 					}
 				}
 				return 0;
