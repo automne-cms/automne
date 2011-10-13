@@ -807,11 +807,11 @@ class CMS_page extends CMS_resource
 			} else {
 				$type = 'application/octet-stream';
 			}
-			$metaDatas .= '<link rel="icon" type="'.$type.'" href="'.CMS_websitesCatalog::getCurrentDomain($this).PATH_REALROOT_WR.$website->getMeta('favicon').'" />'."\n";
+			$metaDatas .= '<?php echo \'<link rel="icon" type="'.$type.'" href="\'.CMS_websitesCatalog::getCurrentDomain().\''.PATH_REALROOT_WR.$website->getMeta('favicon').'" />\'."\n"; ?>'."\n";
 		} elseif (file_exists(PATH_REALROOT_FS.'/favicon.ico')) {
-			$metaDatas .= '<link rel="icon" type="image/x-icon" href="'.CMS_websitesCatalog::getCurrentDomain($this).PATH_REALROOT_WR.'/favicon.ico" />'."\n";
+			$metaDatas .= '<?php echo \'<link rel="icon" type="image/x-icon" href="\'.CMS_websitesCatalog::getCurrentDomain().\''.PATH_REALROOT_WR.'/favicon.ico" />\'."\n"; ?>'."\n";
 		} elseif (file_exists(PATH_REALROOT_FS.'/img/favicon.png')) {
-			$metaDatas .= '<link rel="icon" type="image/png" href="'.CMS_websitesCatalog::getCurrentDomain($this).PATH_REALROOT_WR.'/img/favicon.png" />'."\n";
+			$metaDatas .= '<?php echo \'<link rel="icon" type="image/png" href="\'.CMS_websitesCatalog::getCurrentDomain().\''.PATH_REALROOT_WR.'/img/favicon.png" />\'."\n"; ?>'."\n";
 		}
 		if ($this->getDescription($public)) {
 			$metaDatas .= '	<meta name="description" content="'.io::htmlspecialchars($this->getDescription($public), ENT_COMPAT).'" />'."\n";
@@ -841,7 +841,7 @@ class CMS_page extends CMS_resource
 		}
 		$metaDatas .= 
 			'	<meta name="generator" content="'.CMS_grandFather::SYSTEM_LABEL.'" />'."\n".
-			'	<meta name="identifier-url" content="'.$website->getURL().PATH_REALROOT_WR.'" />'."\n";
+			'	<?php echo \'<meta name="identifier-url" content="\'.CMS_websitesCatalog::getCurrentDomain().\''.PATH_REALROOT_WR.'" />\'."\n"; ?>'."\n";
 		if ($this->getReminderPeriodicity($public) && $this->getReminderPeriodicity($public) > 0) {
 			$metaDatas .= '	<meta name="revisit-after" content="'.$this->getReminderPeriodicity($public).' days" />'."\n";
 		}

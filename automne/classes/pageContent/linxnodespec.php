@@ -177,7 +177,7 @@ class CMS_linxNodespec extends CMS_grandFather
 					$pg = CMS_tree::getAncestor($page, $offset, !$this->_crosswebsite, $publicTree);
 				break;
 				case "self":
-					return $page;
+					$pg = $page;
 				break;
 				case "brother":
 					$pg = CMS_tree::getBrother($page, $this->_relativeOffset, $publicTree);

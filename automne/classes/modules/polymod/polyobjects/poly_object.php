@@ -1196,6 +1196,23 @@ class CMS_poly_object extends CMS_resource
 		$polymodParsing = new CMS_polymod_definition_parsing($previzInfos[1], false);
 		$previewPageParams = $polymodParsing->getContent(CMS_polymod_definition_parsing::OUTPUT_RESULT, $parameters);
 		
+		//overwrite website host with admin current host (to avoid session lost)
+		if ($addPrevizParameter) {
+			//check for website host
+			$pageHost = @parse_url($previewPageURL, PHP_URL_HOST);
+			$httpHost = @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST'];
+			if ($pageHost && $_SERVER['HTTP_HOST'] && io::strtolower($httpHost) != io::strtolower($pageHost)) {
+				//page host is not the same of current host so change it to avoid JS restriction
+				$previewPageURL = str_replace($pageHost, $httpHost, $previewPageURL);
+			}
+			//check for website protocol
+			$pageScheme = @parse_url($previewPageURL, PHP_URL_SCHEME);
+			$currentScheme = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] && strtolower($_SERVER["HTTPS"]) != 'off') ? 'https' : 'http';
+			if ($pageScheme && $currentScheme != io::strtolower($pageScheme)) {
+				$previewPageURL = str_replace($pageScheme.'://', $currentScheme.'://', $panelURL);
+			}
+		}
+		
 		return $previewPageURL.'?'.$previewPageParams.($addPrevizParameter ? '&atm-previz=previz':'');
 	}
 	

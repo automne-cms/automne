@@ -1974,6 +1974,14 @@ class CMS_module_standard extends CMS_module
 				//HTTPS constant
 				if ($treatedObject->isHTTPS()) {
 					$modulesCode[MOD_STANDARD_CODENAME] .= 'defined(\'PAGE_SSL_MODE\') || define(\'PAGE_SSL_MODE\', true);'."\n";
+				} else {
+					$modulesCode[MOD_STANDARD_CODENAME] .= 
+					'//Page can be HTTPS'."\n".
+					'if (!(strpos($_SERVER["REQUEST_URI"], PATH_ADMIN_WR) !== false  || (isset($_REQUEST[\'atm-context\']) && $_REQUEST[\'atm-context\'] == \'adminframe\'))) {'."\n".
+					'	if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] && strtolower($_SERVER["HTTPS"]) != \'off\') {'."\n".
+					'		defined(\'PAGE_SSL_MODE\') || define(\'PAGE_SSL_MODE\', true);'."\n".
+					'	}'."\n".
+					'}'."\n";
 				}
 				//Current page constant
 				$modulesCode[MOD_STANDARD_CODENAME] .= 'defined(\'CURRENT_PAGE\') || define(\'CURRENT_PAGE\', '.$treatedObject->getID().');'."\n";

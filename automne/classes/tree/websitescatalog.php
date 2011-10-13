@@ -225,7 +225,7 @@ class CMS_websitesCatalog extends CMS_grandFather {
 			if (isset($page) && is_object($page) && !$page->hasError()) {
 				$domain = $page->getWebsite()->getURL();
 				//check for HTTPS
-				if ($page->isHTTPS()) {
+				if ($page->isHTTPS() || (defined('PAGE_SSL_MODE') && PAGE_SSL_MODE)) {
 					$domain = str_ireplace('http://', 'https://', $domain);
 				}
 			}
