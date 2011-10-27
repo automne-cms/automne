@@ -1820,3 +1820,4 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1743, 'standard', 'en', 'Warning! You are not an administrator. If you check this option and you submit, you will not be able to edit again this element. Only an administrator will be able to modify it later.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1744, 'standard', 'en', 'File creation');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1745, 'standard', 'en', 'File name');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1746, 'standard', 'en', 'Validations types:');

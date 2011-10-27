@@ -1799,7 +1799,23 @@ class CMS_module_standard extends CMS_module
 						}
 					break;
 					case "atm-meta-tags":
-						$metaDatas = $treatedObject->getMetaTags($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC);
+						$attributes = array();
+						//normalize values for attributes
+						if ($tag->getAttributes()) {
+							$attributes = $tag->getAttributes();
+							foreach ($tags as $tagName => $value) {
+								if ($value == '1' || $value == 'true') {
+									$tags[$tagName] = true;
+								} elseif ($value == '0' || $value == 'false') {
+									$tags[$tagName] = false;
+								}
+								if ($tags[$tagName] !== false && $tags[$tagName] !== true) {
+									unset($tags[$tagName]);
+								}
+							}
+							
+						}
+						$metaDatas = $treatedObject->getMetaTags($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC, $attributes);
 						$usage = CMS_module::moduleUsage($treatedObject->getID(), $this->_codename);
 						//if page template already use atm-js-tags tag, no need to add JS again
 						if (!is_array($usage) || !isset($usage['atm-js-tags'])) {

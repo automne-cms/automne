@@ -794,7 +794,7 @@ class CMS_object_usergroup extends CMS_object_common
 	  * Return a list of all objects names of given type
 	  *
 	  * @param boolean $public are the needed datas public ? /!\ Does not apply for this type of object
-	  * @param array $searchConditions, search conditions to add. /!\ Does not apply for this type of object
+	  * @param array $searchConditions, search conditions to add. /!\ only keywords apply for this type of object
 	  * @return array(integer objectID => string objectName)
 	  * @access public
 	  * @static
@@ -803,6 +803,15 @@ class CMS_object_usergroup extends CMS_object_common
 		$params = $this->getParamsValues();
 		//load user/group
 		$userGroupSorted = ($params['isGroup']) ? CMS_profile_usersGroupsCatalog::getGroupsLabels() : CMS_profile_usersCatalog::getUsersLabels(true, true);
+		//filter by keyword if any
+		if (isset($searchConditions['keywords']) && $searchConditions['keywords']) {
+			$keywords = trim($searchConditions['keywords']);
+			foreach ($userGroupSorted as $id => $label) {
+				if (stripos($label, $keywords) === false) {
+					unset($userGroupSorted[$id]);
+				}
+			}
+		}
 		
 		// Clean users/groups with enable/disable parameters
 		if ($params['isGroup']) {

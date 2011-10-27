@@ -1326,7 +1326,15 @@ class CMS_superResource extends CMS_resource
 			foreach ($searchConditions as $label => $condition) {
 				$where .= ($count) ? " and ":'';
 				$count++;
-				$where .= " ".$label.$this->_tableSufix." ".$operator." '".SensitiveIO::sanitizeSQLString($condition)."' ";
+				if (is_array($condition)) {
+					if ($condition) {
+						$where .= " ".$label.$this->_tableSufix." in (".SensitiveIO::sanitizeSQLString(implode(',', $condition)).") ";
+					} else {
+						return array();
+					}
+				} else {
+					$where .= " ".$label.$this->_tableSufix." ".$operator." '".SensitiveIO::sanitizeSQLString($condition)."' ";
+				}
 			}
 		} else {
 			$where = '';

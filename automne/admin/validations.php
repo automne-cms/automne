@@ -51,7 +51,7 @@ define("MESSAGE_PAGE_COMMENT", 907);
 define("MESSAGE_PAGE_SAVE", 952);
 define("MESSAGE_PAGE_NO_PENDING_VALIDATION_SELECTED", 435);
 define("MESSAGE_PAGE_VALIDATION_CHOICE", 1599);
-
+define("MESSAGE_PAGE_VALIDATION_TYPES", 1746);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -283,7 +283,7 @@ $jscontent = <<<END
 			forceFit:		true
 		},
 		// inline toolbars
-		tbar:['Types de validations : ', {
+		tbar:['{$cms_language->getJsMessage(MESSAGE_PAGE_VALIDATION_TYPES)} ', {
 			xtype:				'combo',
 			id:					'validationsType',
 			name:				'validationsType',

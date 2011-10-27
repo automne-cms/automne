@@ -1702,3 +1702,5 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1743, 'standard', 'fr', 'Attention ! Vous n\'êtes pas administrateur. Si vous cochez cette option et que vous validez, vous ne pourrez plus modifier cet élément. Seul un administrateur pourra le modifier par la suite.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1744, 'standard', 'fr', 'Création d\'un fichier');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1745, 'standard', 'fr', 'Nom du fichier');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1746, 'standard', 'fr', 'Types de validations :');
+

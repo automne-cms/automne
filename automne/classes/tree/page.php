@@ -774,81 +774,88 @@ class CMS_page extends CMS_resource
 	  * Get HTML meta tags for a given page
 	  *
 	  * @param boolean $public Do we want the edited or public value ? (default : false => edited).
+	  * @param array $tags the tags names to activate/desactivate (by default all tags are present if they have content)
+	  *		array('description' => false)
 	  * @return string : HTML meta tags infos infos
 	  * @access public
 	  */
-	function getMetaTags($public = false) {
+	function getMetaTags($public = false, $tags = array()) {
 		$website = $this->getWebsite();
 		$favicon = '';
 		$metaDatas = '';
 		if (!is_object($website)) {
 			return '';
 		}
-		if ($website->getMeta('favicon')) {
-			$infos = pathinfo($website->getMeta('favicon'));
-			if ($infos['extension']) {
-				switch ($infos['extension']) {
-					case 'ico':
-						$type = 'image/x-icon';
-					break;
-					case 'jpg':
-						$type = 'image/jpeg';
-					break;
-					case 'gif':
-						$type = 'image/gif';
-					break;
-					case 'png':
-						$type = 'image/png';
-					break;
-					default:
-						$type = 'application/octet-stream';
-					break;
+		if (!isset($tags['icon']) || $tags['icon']) {
+			if ($website->getMeta('favicon')) {
+				$infos = pathinfo($website->getMeta('favicon'));
+				if ($infos['extension']) {
+					switch ($infos['extension']) {
+						case 'ico':
+							$type = 'image/x-icon';
+						break;
+						case 'jpg':
+							$type = 'image/jpeg';
+						break;
+						case 'gif':
+							$type = 'image/gif';
+						break;
+						case 'png':
+							$type = 'image/png';
+						break;
+						default:
+							$type = 'application/octet-stream';
+						break;
+					}
+				} else {
+					$type = 'application/octet-stream';
 				}
-			} else {
-				$type = 'application/octet-stream';
+				$metaDatas .= '<?php echo \'<link rel="icon" type="'.$type.'" href="\'.CMS_websitesCatalog::getCurrentDomain().\''.PATH_REALROOT_WR.$website->getMeta('favicon').'" />\'."\n"; ?>'."\n";
+			} elseif (file_exists(PATH_REALROOT_FS.'/favicon.ico')) {
+				$metaDatas .= '<?php echo \'<link rel="icon" type="image/x-icon" href="\'.CMS_websitesCatalog::getCurrentDomain().\''.PATH_REALROOT_WR.'/favicon.ico" />\'."\n"; ?>'."\n";
+			} elseif (file_exists(PATH_REALROOT_FS.'/img/favicon.png')) {
+				$metaDatas .= '<?php echo \'<link rel="icon" type="image/png" href="\'.CMS_websitesCatalog::getCurrentDomain().\''.PATH_REALROOT_WR.'/img/favicon.png" />\'."\n"; ?>'."\n";
 			}
-			$metaDatas .= '<?php echo \'<link rel="icon" type="'.$type.'" href="\'.CMS_websitesCatalog::getCurrentDomain().\''.PATH_REALROOT_WR.$website->getMeta('favicon').'" />\'."\n"; ?>'."\n";
-		} elseif (file_exists(PATH_REALROOT_FS.'/favicon.ico')) {
-			$metaDatas .= '<?php echo \'<link rel="icon" type="image/x-icon" href="\'.CMS_websitesCatalog::getCurrentDomain().\''.PATH_REALROOT_WR.'/favicon.ico" />\'."\n"; ?>'."\n";
-		} elseif (file_exists(PATH_REALROOT_FS.'/img/favicon.png')) {
-			$metaDatas .= '<?php echo \'<link rel="icon" type="image/png" href="\'.CMS_websitesCatalog::getCurrentDomain().\''.PATH_REALROOT_WR.'/img/favicon.png" />\'."\n"; ?>'."\n";
 		}
-		if ($this->getDescription($public)) {
+		if ((!isset($tags['description']) || $tags['description']) && $this->getDescription($public)) {
 			$metaDatas .= '	<meta name="description" content="'.io::htmlspecialchars($this->getDescription($public), ENT_COMPAT).'" />'."\n";
 		}
-		if ($this->getKeywords($public)) {
+		if ((!isset($tags['keywords']) || $tags['keywords']) && $this->getKeywords($public)) {
 			$metaDatas .= '	<meta name="keywords" content="'.io::htmlspecialchars($this->getKeywords($public), ENT_COMPAT).'" />'."\n";
 		}
-		if ($this->getCategory($public)) {
+		if ((!isset($tags['category']) || $tags['category']) && $this->getCategory($public)) {
 			$metaDatas .= '	<meta name="category" content="'.io::htmlspecialchars($this->getCategory($public), ENT_COMPAT).'" />'."\n";
 		}
-		if ($this->getRobots($public)) {
+		if ((!isset($tags['robots']) || $tags['robots']) && $this->getRobots($public)) {
 			$metaDatas .= '	<meta name="robots" content="'.io::htmlspecialchars($this->getRobots($public), ENT_COMPAT).'" />'."\n";
 		}
-		if ($this->getLanguage($public)) {
+		if ((!isset($tags['language']) || $tags['language']) && $this->getLanguage($public)) {
 			$metaDatas .= '	<meta name="language" content="'.io::htmlspecialchars($this->getLanguage($public), ENT_COMPAT).'" />'."\n";
 		}
 		if (!NO_PAGES_EXTENDED_META_TAGS) {
-			if ($this->getAuthor($public)) {
+			if ((!isset($tags['author']) || $tags['author']) && $this->getAuthor($public)) {
 				$metaDatas .= '	<meta name="author" content="'.io::htmlspecialchars($this->getAuthor($public), ENT_COMPAT).'" />'."\n";
 			}
-			if ($this->getReplyto($public)) {
+			if ((!isset($tags['reply-to']) || $tags['reply-to']) && $this->getReplyto($public)) {
 				$metaDatas .= '	<meta name="reply-to" content="'.io::htmlspecialchars($this->getReplyto($public), ENT_COMPAT).'" />'."\n";
 			}
-			if ($this->getCopyright($public)) {
+			if ((!isset($tags['copyright']) || $tags['copyright']) && $this->getCopyright($public)) {
 				$metaDatas .= '	<meta name="copyright" content="'.io::htmlspecialchars($this->getCopyright($public), ENT_COMPAT).'" />'."\n";
 			}
 		}
-		$metaDatas .= 
-			'	<meta name="generator" content="'.CMS_grandFather::SYSTEM_LABEL.'" />'."\n".
-			'	<?php echo \'<meta name="identifier-url" content="\'.CMS_websitesCatalog::getCurrentDomain().\''.PATH_REALROOT_WR.'" />\'."\n"; ?>'."\n";
-		if ($this->getReminderPeriodicity($public) && $this->getReminderPeriodicity($public) > 0) {
+		if (!isset($tags['generator']) || $tags['generator']) {
+			$metaDatas .= '	<meta name="generator" content="'.CMS_grandFather::SYSTEM_LABEL.'" />'."\n";
+		}
+		if (!isset($tags['identifier-url']) || $tags['identifier-url']) {
+			$metaDatas .= '	<?php echo \'<meta name="identifier-url" content="\'.CMS_websitesCatalog::getCurrentDomain().\''.PATH_REALROOT_WR.'" />\'."\n"; ?>'."\n";
+		}
+		if ((!isset($tags['revisit-after']) || $tags['revisit-after']) && $this->getReminderPeriodicity($public) && $this->getReminderPeriodicity($public) > 0) {
 			$metaDatas .= '	<meta name="revisit-after" content="'.$this->getReminderPeriodicity($public).' days" />'."\n";
 		}
-		if ($this->getPragma($public)) {
+		if ((!isset($tags['pragma']) || $tags['pragma']) && $this->getPragma($public)) {
 			$metaDatas .= '	<meta http-equiv="pragma" content="no-cache" />'."\n";
 		}
-		if ($this->getRefresh($public)) {
+		if ((!isset($tags['refresh']) || $tags['refresh']) && $this->getRefresh($public)) {
 			$metaDatas .= '	<meta http-equiv="refresh" content="'.io::htmlspecialchars($this->getRefresh($public), ENT_COMPAT).'" />'."\n";
 		}
 		if ($this->getMetas($public)) {

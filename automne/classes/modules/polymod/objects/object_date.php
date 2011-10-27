@@ -642,5 +642,90 @@ class CMS_object_date extends CMS_object_common
 		}
 		return parent::writeToPersistence();
 	}
+	
+	/**
+     * Return options tag list (for a select tag) of all float values for this field
+     *
+     * @param array $values : parameters values array(parameterName => parameterValue) in :
+     *     selected : the float value which is selected (optional)
+     * @param multidimentionnal array $tags : xml2Array content of atm-function tag (nothing for this one)
+     * @return string : options tag list
+     * @access public
+     */
+	function selectOptions($values, $tags) {
+		global $cms_language;
+        $return = "";
+		$fieldID = $this->_field->getID();
+		$allValues = array();
+		$status = ($this->_public ? 'public' : 'edited');
+		
+        $supportedOperator = array(
+            '>=',
+            '<=',
+            '>',
+            '<',
+            '>= or null',
+            '<= or null',
+            '> or null',
+            '< or null',
+            '>= and not null',
+            '<= and not null',
+            '> and not null',
+            '< and not null'
+        );
+        $sqlOperator = '';
+        if (isset($values['operator']) && isset($values['boundary'])
+                && $values['operator'] && $values['boundary']
+                && in_array(htmlspecialchars_decode($values['operator']), $supportedOperator)) {
+            
+            $operator = htmlspecialchars_decode($values['operator']);
+            $boundary = $values['boundary'];
+            // canBeNull
+            $operators = explode('or',$operator);
+            $operator = trim($operators[0]);
+            $canBeNull = (isset($operators[1])) ? ' or value is NULL' : '';
+            // cantBeNull
+            $operators = explode('and',$operator);
+            $operator = trim($operators[0]);
+            $cantBeNull = (isset($operators[1])) ? ' and value is not NULL and value != \'0000-00-00\' and value != \'0000-00-00 00:00:00\'' : '';
+            
+            //boundary
+            $date = new CMS_date();
+            $date->setFormat($cms_language->getDateFormat());
+            $date->setLocalizedDate($boundary);
+            $sqlOperator = " and (value ".$operator." '".SensitiveIO::sanitizeSQLString($date->getDBValue())."'".$canBeNull.$cantBeNull.")";
+        }
+        // Search all values for this field
+		$sql = "select
+                   distinct value
+               from
+                   mod_subobject_date_".$status."
+               where
+                   objectFieldID='".$fieldID."'
+                   ".$sqlOperator."
+		";
+		$q = new CMS_query($sql);
+		
+        $date = new CMS_date();
+        while(($value = $q->getValue('value')) !== false) {
+			if ($value) {
+                $date->setFromDBValue($value);
+                if (isset($values['format']) && $values['format']) {
+                    $dateValue = date($values['format'], $date->getTimeStamp());
+                } else {
+                    $dateValue = $date->getLocalizedDate($cms_language->GetDateFormat());
+                }
+                $allValues[$date->getTimeStamp()] = $dateValue;
+            }
+		}
+        if (is_array($allValues) && $allValues) {
+			ksort($allValues);
+			foreach ($allValues as $id => $label) {
+				$selected = ($id == $values['selected']) ? ' selected="selected"':'';
+				$return .= '<option title="'.io::htmlspecialchars($label).'" value="'.$id.'"'.$selected.'>'.$label.'</option>';
+			}
+		}
+		return $return;
+	}
 }
 ?>

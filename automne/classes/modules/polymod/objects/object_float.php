@@ -362,8 +362,10 @@ class CMS_object_float extends CMS_object_string {
                    objectFieldID='".$fieldID."'
 		";
 		$q = new CMS_query($sql);
-		while($value = $q->getValue('value')) {
-			$allValues[$value] = $value;
+		while(($value = $q->getValue('value')) !== false) {
+			if ($value) {
+				$allValues[$value] = $value;
+			}
 		}
 		if (is_array($allValues) && $allValues) {
 			natsort($allValues);

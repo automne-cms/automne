@@ -1286,6 +1286,7 @@ CREATE TABLE `mod_object_definition` (
   `composedLabel_mod` varchar(255) NOT NULL default '',
   `previewURL_mod` varchar(255) NOT NULL default '',
   `indexable_mod` int(1) NOT NULL default '0',
+  `multilanguage_mod` int(1) NOT NULL default '0',
   `indexURL_mod` mediumtext NOT NULL,
   `compiledIndexURL_mod` mediumtext NOT NULL,
   `resultsDefinition_mod` mediumtext NOT NULL,

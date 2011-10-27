@@ -400,22 +400,19 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 								} else {
 									$email->setEmailFrom($texts[3]);
 								}
-								//$email->setFromName(APPLICATION_LABEL);
-								
 								//and send emails
 								if ($action->getInteger('type') == CMS_forms_action::ACTION_EMAIL) {
 									$emailAddresses = array_map('trim',explode(';',io::decodeEntities($action->getString("value"))));
+								} elseif ($action->getInteger('type') == CMS_forms_action::ACTION_FIELDEMAIL) {
+									$emailAddresses = array_map('trim',explode(';',$_POST[$fields[$action->getString("value")]->getAttribute('name')]));
+								}
+								if ($emailAddresses) {
 									foreach ($emailAddresses as $emailAddress) {
 										$emailAddress = evalPolymodVars($emailAddress, $form_language->getCode());
 										if (sensitiveIO::isValidEmail($emailAddress)) {
 											$email->setEmailTo($emailAddress);
 											$email->sendEmail();
 										}
-									}
-								} elseif ($action->getInteger('type') == CMS_forms_action::ACTION_FIELDEMAIL) {
-									if ($action->getString("value") && is_object($fields[$action->getString("value")]) && sensitiveIO::isValidEmail($_POST[$fields[$action->getString("value")]->getAttribute('name')])) {
-										$email->setEmailTo($_POST[$fields[$action->getString("value")]->getAttribute('name')]);
-										$email->sendEmail();
 									}
 								}
 							break;
