@@ -227,15 +227,18 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 					ok = (box.x < csBox.x && (box.x + box.width) < (csBox.x + csBox.width));
 				break;
 				case 'top':
-					ok = (box.y > csBox.y && ((box.x < csBox.x && box.x + box.width - csBox.x > 0) || (box.x > csBox.x && csBox.x + csBox.width - box.x > 0)));
+					ok = (box.y > csBox.y && ((box.x <= csBox.x && box.x + box.width - csBox.x > 0) || (box.x >= csBox.x && csBox.x + csBox.width - box.x > 0)));
 				break;
 				case 'bottom':
-					ok = (box.y < csBox.y && ((box.x < csBox.x && box.x + box.width - csBox.x > 0) || (box.x > csBox.x && csBox.x + csBox.width - box.x > 0)));
+					ok = (box.y < csBox.y && ((box.x <= csBox.x && box.x + box.width - csBox.x > 0) || (box.x >= csBox.x && csBox.x + csBox.width - box.x > 0)));
 				break;
 			}
-			//var status = (ok && (!this.brothers[pos] || distance(box, csBox) < distance(box, this.brothers[pos].getBox()))) ? true : false;
+			//var status = (ok && (!this.brothers[pos] || distance(box, csBox) <= distance(box, this.brothers[pos].getBox()))) ? true : false;
 			this.brothers[pos] = (ok && (!this.brothers[pos] || distance(box, csBox) < distance(box, this.brothers[pos].getBox()))) ? cs : this.brothers[pos]; 
 			//pr(pos+' : '+status);
+			//pr(box);
+			//pr(csBox);
+			//pr('------');
 		}
 	},
 	getBox: function() {

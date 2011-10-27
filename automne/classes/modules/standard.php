@@ -1803,14 +1803,14 @@ class CMS_module_standard extends CMS_module
 						//normalize values for attributes
 						if ($tag->getAttributes()) {
 							$attributes = $tag->getAttributes();
-							foreach ($tags as $tagName => $value) {
-								if ($value == '1' || $value == 'true') {
-									$tags[$tagName] = true;
+							foreach ($attributes as $tagName => $value) {
+								if ($attributes == '1' || $value == 'true') {
+									$attributes[$tagName] = true;
 								} elseif ($value == '0' || $value == 'false') {
-									$tags[$tagName] = false;
+									$attributes[$tagName] = false;
 								}
-								if ($tags[$tagName] !== false && $tags[$tagName] !== true) {
-									unset($tags[$tagName]);
+								if ($attributes[$tagName] !== false && $attributes[$tagName] !== true) {
+									unset($attributes[$tagName]);
 								}
 							}
 							
