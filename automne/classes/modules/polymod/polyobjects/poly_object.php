@@ -1185,7 +1185,13 @@ class CMS_poly_object extends CMS_resource
 			//no valid previz page set
 			return false;
 		}
-		$previewPageURL = CMS_tree::getPageValue($previzInfos[0], 'url');
+		$page = CMS_tree::getPageByID($previzInfos[0]);
+		if (!$page || $page->hasError()) {
+			//no valid previz page set
+			return false;
+		}
+		$previewPageURL = $page->getURL(false, false, PATH_RELATIVETO_WEBROOT, false, $addPrevizParameter);
+		
 		if (!$previewPageURL) {
 			//no valid previz page set
 			return false;
@@ -1213,7 +1219,7 @@ class CMS_poly_object extends CMS_resource
 			}
 		}
 		
-		return $previewPageURL.'?'.$previewPageParams.($addPrevizParameter ? '&atm-previz=previz':'');
+		return $previewPageURL.'?'.$previewPageParams.($addPrevizParameter ? '&atm-previz=previz' : '');
 	}
 	
 	/**

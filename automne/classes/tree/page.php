@@ -385,10 +385,11 @@ class CMS_page extends CMS_resource
 	  * @param boolean $returnFilenameOnly : return only the page filename (default false)
 	  * @param constant $relativeTo : get URL relative to webroot (PATH_RELATIVETO_WEBROOT) or file system (PATH_RELATIVETO_FILESYSTEM)
 	  * @param boolean $force : get URL even if page is not published (default : false)
+	  * @param boolean $doNotShorten : get full page URL (default : false)
 	  * @return string The url; complete with PATH and website information. Empty string if page not published.
 	  * @access public
 	  */
-	function getURL($printPage = false, $returnFilenameOnly = false, $relativeTo = PATH_RELATIVETO_WEBROOT, $force = false) {
+	function getURL($printPage = false, $returnFilenameOnly = false, $relativeTo = PATH_RELATIVETO_WEBROOT, $force = false, $doNotShorten = false) {
 		if ($force || ($this->getLocation() == RESOURCE_LOCATION_USERSPACE && $this->getPublication() == RESOURCE_PUBLICATION_PUBLIC)) {
 			$ws = $this->getWebsite();
 			$wsURL = '';
@@ -399,7 +400,7 @@ class CMS_page extends CMS_resource
 						$wsURL = str_ireplace('http://', 'https://', $wsURL);
 					}
 					//if this page is a website root, try to shorten page url using only website domain - do not shorten in Automne admin (_dc parameter)
-					if (!$printPage && !$returnFilenameOnly && !isset($_REQUEST['_dc'])) {
+					if (!$printPage && !$returnFilenameOnly && !isset($_REQUEST['_dc']) && !$doNotShorten) {
 						//check if page website is the main for the domain
 						if (CMS_websitesCatalog::isWebsiteRoot($this->getID())) {
 							$mainWS = CMS_websitesCatalog::getWebsiteFromDomain(@parse_url($wsURL, PHP_URL_HOST));
