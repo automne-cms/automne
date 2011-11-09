@@ -35,8 +35,26 @@ $redirectTo = '';
 if ($_SERVER['REQUEST_URI'] && $_SERVER['REQUEST_URI'] != $_SERVER['SCRIPT_NAME']) {
 	$pathinfo = pathinfo($_SERVER['REQUEST_URI']);
 	$basename = (isset($pathinfo['filename'])) ? $pathinfo['filename'] : $pathinfo['basename'];
-	//get page from requested url
-	if ($page = CMS_tree::analyseURL($_SERVER['REQUEST_URI'], false)) {
+	//first try to get redirection rules from CSV file if exists
+	if (file_exists(PATH_MAIN_FS.'/redirect/redirectRules.csv')) {
+		$csvFile = new CMS_file(PATH_MAIN_FS.'/redirect/redirectRules.csv');
+		$csvDatas = $csvFile->readContent('csv', 'trim', array('delimiter' => ';', 'enclosure' => '"', 'strict' => true));
+		$rules = array();
+		foreach ($csvDatas as $line => $csvData) {
+			if (isset($csvData[0]) && $csvData[0] && isset($csvData[1]) && $csvData[1]) {
+				$rules[$csvData[0]] = $csvData[1];
+			}
+		}
+		if (isset($rules[$_SERVER['REQUEST_URI']]) && io::isPositiveInteger($rules[$_SERVER['REQUEST_URI']])) {
+			$page = CMS_tree::getPageById($rules[$_SERVER['REQUEST_URI']]);
+		} elseif (isset($rules[parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)]) && io::isPositiveInteger($rules[parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)])) {
+			$page = CMS_tree::getPageById($rules[$_SERVER['REQUEST_URI']]);
+		}
+	} else { //get page from requested url
+		$page = CMS_tree::analyseURL($_SERVER['REQUEST_URI'], false);
+	}
+	//get redirection URL for page
+	if (isset($page) && is_object($page) && !$page->hasError()) {
 		//get page file
 		$pageURL = $page->getURL( (substr($basename,0,5) == 'print' ? true : false) , false, PATH_RELATIVETO_FILESYSTEM);
 		if (file_exists($pageURL)) {
@@ -44,7 +62,7 @@ if ($_SERVER['REQUEST_URI'] && $_SERVER['REQUEST_URI'] != $_SERVER['SCRIPT_NAME'
 		} else {
 			//try to regenerate page
 			if ($page->regenerate(true)) {
-				clearstatcache ();
+				clearstatcache();
 				if (file_exists($pageURL)) {
 					$redirectTo = $page->getURL( (substr($basename,0,5) == 'print' ? true : false));
 				}

@@ -1,0 +1,9 @@
+If you want to make an automatic redirection 301 from some non-existant URLs (like, URLs from tour old website) to current Automne pages :
+- Create a CSV file named redirectRules.csv in this folder
+- Set content into this CSV like this :
+	oldURI;pageId
+	oldURI;pageId
+	...
+
+With oldURI is the old URI to redirect (local URI format, without HTTP and domain, eg. /my/old/url.php) and pageId is the Id of the new page to redirect to.
+The file 404.php will handle the redirection 301 from the old, non-existant URL to the new page URL.

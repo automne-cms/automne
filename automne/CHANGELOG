@@ -1,5 +1,5 @@
 V4.2.0 (in progress)
-[BUG] : Correct bug number: 2350 (see http://www.automne-cms.org/bug/)
+[BUG] : Correct bug number: 2350, 2549 (see http://www.automne-cms.org/bug/)
 [BUG] : Admin lock cannot be removed, even with admin rights
 [BUG] : Polymod modules can be deleted even if RSS feeds or plugins exists
 [BUG] : Polymod blocks are not duplicated during page copy
@@ -36,6 +36,7 @@ V4.2.0 (in progress)
 [FEATURE] : Add atm-js-add and atm-css-add tags. Allow website subfolder auto inclusion for JS and CSS tags
 [FEATURE] : Allow stripping of .php extension for generated pages (see constant STRIP_PHP_EXTENSION in cms_rc.php)
 [FEATURE] : Allow sharing of polymod objects accross polymod modules
+[FEATURE] : Handle redirections from old website URL to the new website page (see /automne/redirect/HOW_TO for details)
 
 V4.1.4 (in progress)
 [BUG] : Correct bugs numbers: 2049, 2070, 2154, 2162, 2195, 2252, 2265, 2271, 2272 (see http://www.automne-cms.org/bug/)
