@@ -1166,7 +1166,7 @@ if (STATS_DEBUG && APPLICATION_EXEC_TYPE != 'cli') {
 if (get_magic_quotes_gpc()) {
 	// Strip slashes in content 
 	function atm_stripslashes($value) {
-		$value = is_array($value) ? array_map('CMS_stripslashes', $value) : stripslashes($value) ;
+		$value = is_array($value) ? array_map('atm_stripslashes', $value) : stripslashes($value) ;
 		return $value;
 	}
 	$_POST = array_map('atm_stripslashes', $_POST);

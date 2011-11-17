@@ -1127,7 +1127,11 @@ class CMS_page extends CMS_resource
 	  * @access public
 	  */
 	function isHTTPS() {
-		return ALLOW_SPECIFIC_PAGE_HTTPS && $this->_https ? true : false;
+		if (io::substr($this->getWebsite()->getURL(true), 0, 8) == "https://") {
+			return true;
+		} else {
+			return ALLOW_SPECIFIC_PAGE_HTTPS && $this->_https ? true : false;
+		}
 	}
 	
 	/**

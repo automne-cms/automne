@@ -50,7 +50,8 @@ if ($_SERVER['REQUEST_URI'] && $_SERVER['REQUEST_URI'] != $_SERVER['SCRIPT_NAME'
 		} elseif (isset($rules[parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)]) && io::isPositiveInteger($rules[parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)])) {
 			$page = CMS_tree::getPageById($rules[$_SERVER['REQUEST_URI']]);
 		}
-	} else { //get page from requested url
+	}
+	if (!isset($page)) { //get page from requested url
 		$page = CMS_tree::analyseURL($_SERVER['REQUEST_URI'], false);
 	}
 	//get redirection URL for page

@@ -37,7 +37,7 @@ Automne.sidePanel = Ext.extend(Automne.panel, {
 		Automne.sidePanel.superclass.onCollapse.call(this, doAnim, animArg);
 		//set mouse over on collaspsed zone if not exists
 		if (this.hasMouseOver === false) {
-			Ext.get(this.id + '-xcollapsed').on('mouseover', this.expand, this);
+			Ext.get(this.id + '-xcollapsed').on('mouseover', this.mouseOverExpand, this);
 			this.hasMouseOver = true;
 		}
 	},
@@ -61,6 +61,11 @@ Automne.sidePanel = Ext.extend(Automne.panel, {
 	//mouseIn reset timer
 	onMouseIn: function(){
 		if (this.mouseOutTimeOut !== false) this.mouseOutTimeOut.cancel();
+	},
+	mouseOverExpand: function () {
+		if (this.collapsible) {
+			this.expand();
+		}
 	},
 	expand: function() {
 		//try to refresh validation panel

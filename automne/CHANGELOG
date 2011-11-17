@@ -1,5 +1,5 @@
 V4.2.0 (in progress)
-[BUG] : Correct bug number: 2350, 2549 (see http://www.automne-cms.org/bug/)
+[BUG] : Correct bug number: 2350, 2549, 2561 (see http://www.automne-cms.org/bug/)
 [BUG] : Admin lock cannot be removed, even with admin rights
 [BUG] : Polymod modules can be deleted even if RSS feeds or plugins exists
 [BUG] : Polymod blocks are not duplicated during page copy
