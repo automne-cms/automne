@@ -1,0 +1,4 @@
+<IfModule mod_mime.c>
+	#because IE9 is strict on this point
+	AddType 'text/css; charset=UTF-8' .php
+</IfModule>

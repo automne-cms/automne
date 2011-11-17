@@ -1265,8 +1265,8 @@ class CMS_file extends CMS_grandFather
 	    @set_time_limit(0);
 		
 		//send http headers
-		header("Cache-Control: ", false);// leave blank to avoid IE errors
-		header("Pragma: ", false);// leave blank to avoid IE errors
+		header("Cache-Control: public", true);//This is needed to avoid bug with IE in HTTPS
+		header("Pragma:", true);//This is needed to avoid bug with IE in HTTPS
 		header('Content-Type: '.$filetype);
 		header("Content-transfer-encoding: binary");
 		clearstatcache(); //to avoid bug on filesize

@@ -175,7 +175,7 @@ foreach ($websites as $website) {
 	<li id="w'.$website->getID().'">
 		<table border="0" cellpadding="2" cellspacing="2">
 		<tr>
-			<td class="'.$td_class.'" width="80">'.htmlspecialchars($website->getLabel()).'</td>
+			<td class="'.$td_class.'" width="80"><span alt="'.$website->getID().'" title="'.$website->getID().'">'.htmlspecialchars($website->getLabel()).'</span></td>
 			<td class="'.$td_class.'" width="80">'.htmlspecialchars($website->getCodename()).'</td>
 			<td class="'.$td_class.'" width="200"><a href="#" onclick="Automne.utils.getPageById('.$website_root->getID().');Ext.WindowMgr.getActive().close();" class="admin">'.htmlspecialchars($website_root->getTitle()).' ('.$website_root->getID().')</a></td>
 			<td class="'.$td_class.'" width="150"><a href="'.$website->getURL().'" target="_blank" class="admin">'.htmlspecialchars($website->getURL()).'</a></td>

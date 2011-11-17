@@ -429,7 +429,7 @@ class CMS_object_categories extends CMS_object_common
 				} elseif (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0]) && !is_null($this->_subfieldValues[0]->getValue())) {
 					$value = $this->_subfieldValues[0]->getValue();
 				} else {
-					$value='';
+					$value = '';
 				}
 				$html = '<input type="hidden"'.$htmlParameters.' name="list'.$prefixName.$this->_field->getID().'_0" value="'.$value.'" />'."\n";
 			} else {
@@ -464,7 +464,7 @@ class CMS_object_categories extends CMS_object_common
 					}
 					$html .= '</select>';
 				} else {
-					$html .= $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET);
+					$html = $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET);
 				}
 			}
 			if (POLYMOD_DEBUG) {
