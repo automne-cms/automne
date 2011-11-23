@@ -68,6 +68,11 @@ class CMS_forms_action extends CMS_superResource
 	const ACTION_AUTH = 5;
 	
 	/**
+	 * Execute specific PHP code
+	 */
+	const ACTION_SPECIFIC_PHP = 6;
+	
+	/**
 	 * Form destination type : action if form validation is OK
 	 * (high id because it must be the last action done)
 	 */
@@ -80,6 +85,7 @@ class CMS_forms_action extends CMS_superResource
 	const MESSAGE_CMS_FORMS_ACTION_EMAIL = 42;
 	const MESSAGE_CMS_FORMS_ACTION_FIELDEMAIL = 43;
 	const MESSAGE_CMS_FORMS_ACTION_AUTH = 75;
+	const MESSAGE_CMS_FORMS_ACTION_SPECIFIC_PHP = 94;
 	/**
 	  * DB id
 	  * @var integer
@@ -207,6 +213,7 @@ class CMS_forms_action extends CMS_superResource
 			self::ACTION_EMAIL			=> self::MESSAGE_CMS_FORMS_ACTION_EMAIL,
 			self::ACTION_FIELDEMAIL		=> self::MESSAGE_CMS_FORMS_ACTION_FIELDEMAIL,
 			self::ACTION_AUTH			=> self::MESSAGE_CMS_FORMS_ACTION_AUTH,
+			self::ACTION_SPECIFIC_PHP	=> self::MESSAGE_CMS_FORMS_ACTION_SPECIFIC_PHP,
 		);
 	}
 }

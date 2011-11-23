@@ -455,6 +455,12 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 									}
 								}
 							break;
+							case CMS_forms_action::ACTION_SPECIFIC_PHP :
+								//load specific PHP code
+								if ($action->getString("value") && file_exists(PATH_TEMPLATES_FS.'/'.$action->getString("value"))) {
+									include(PATH_TEMPLATES_FS.'/'.$action->getString("value"));
+								}
+							break;
 							case CMS_forms_action::ACTION_FORMOK:
 								//if we have an encoded referer, use it
 								if ($_REQUEST['referer'] && ($url = base64_decode($_REQUEST['referer']))) {

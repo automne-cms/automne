@@ -101,3 +101,5 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(91, 'cms_forms', 'en', 'The form has expired after a long inactivity. Please submit it again.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(92, 'cms_forms', 'en', 'Allowed extensions:');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(93, 'cms_forms', 'en', 'Maximum weight:');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(94, 'cms_forms', 'en', 'Execute specific PHP code');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(95, 'cms_forms', 'en', 'File name of the PHP file to execute. This file must be in the folder /automne/templates/');

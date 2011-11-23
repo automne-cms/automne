@@ -73,6 +73,7 @@ define("MESSAGE_ACTION_NO_REMEMBER_FIELD_FOUNDED", 82);
 define("MESSAGE_ACTION_ENTER_EMAIL_SENDER", 88);
 define("MESSAGE_ACTION_DOWNLOAD_CSV_FILE_WITH_DATE", 89);
 define("MESSAGE_PAGE_BLOCK_GENERAL_VARS_EXPLANATION", 1705);
+define("MESSAGE_ACTION_SPECIFIC_PHP", 95);
 
 //CHECKS
 $cms_module = CMS_modulesCatalog::getByCodename(MOD_CMS_FORMS_CODENAME);
@@ -285,6 +286,10 @@ if (sizeof($formActions)) {
 								<option value="page"'.$pageSelected.'>'.$cms_language->getMessage(MESSAGE_ACTION_REDIRECT_TO_PAGE, false, MOD_CMS_FORMS_CODENAME).'</option>
 							</select>';
 					break;
+					case CMS_forms_action::ACTION_SPECIFIC_PHP :
+						$content .= '<small>'.$cms_language->getMessage(MESSAGE_ACTION_SPECIFIC_PHP, false, MOD_CMS_FORMS_CODENAME).' :</small><br />';
+						$content .= '<input type="text" class="admin_input_text" name="value" value="'.htmlspecialchars($item->getString('value')).'" />';
+					break;
 					case CMS_forms_action::ACTION_FIELDEMAIL :
 						//select form field
 						//enter emails
@@ -491,7 +496,7 @@ if (sizeof($formActions)) {
 				<td class="'.$td_class.'">';
 					if ($item->getInteger('type') == CMS_forms_action::ACTION_FIELDEMAIL
 						|| $item->getInteger('type') == CMS_forms_action::ACTION_EMAIL
-						/*|| $item->getInteger('type') == CMS_forms_action::ACTION_FILE*/
+						|| $item->getInteger('type') == CMS_forms_action::ACTION_SPECIFIC_PHP
 						|| $item->getInteger('type') == CMS_forms_action::ACTION_AUTH ) {
 						$content .= '
 						<table border="0" cellpadding="2" cellspacing="0">

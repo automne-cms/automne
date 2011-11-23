@@ -356,7 +356,7 @@ class CMS_log_catalog extends CMS_grandFather
 						CMS_log::MESSAGE_LOG_ACTION_AUTO_LOGIN					=> CMS_log::LOG_ACTION_AUTO_LOGIN,
 						CMS_log::MESSAGE_LOG_ACTION_DISCONNECT					=> CMS_log::LOG_ACTION_DISCONNECT,
 		);
-		return $modulesActions ? array_merge($modulesActions, $defaultActions) : $defaultActions;
+		return $modulesActions ? ($modulesActions + $defaultActions) : $defaultActions;
 	}
 }
 ?>

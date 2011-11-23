@@ -125,7 +125,7 @@ if (APPLICATION_ENFORCES_ACCESS_CONTROL) {
 				} else {
 					$public = (preg_match('#.*/(edited|edition)$#',$pathinfo['dirname'])) ? false : true;
 					$item = CMS_poly_object_catalog::getObjectByID($itemID, false, $public);
-					if (!$item->userHasClearance($cms_user,CLEARANCE_MODULE_VIEW, true)) {
+					if (!$item || !is_object($item) || !$item->userHasClearance($cms_user,CLEARANCE_MODULE_VIEW, true)) {
 						if ($cms_user->getLogin() == DEFAULT_USER_LOGIN) {
 							//no rights and anonymous => LOGIN
 							header('Location: '.PATH_FRONTEND_SPECIAL_LOGIN_WR.'?referer='.base64_encode($_SERVER['REQUEST_URI']));
