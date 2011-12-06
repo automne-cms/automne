@@ -1085,16 +1085,25 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access private
 	  */
 	protected function _RSSTag(&$tag) {
-		//check tags requirements
-		if (!$this->checkTagRequirements($tag, array(
-				'language' => 'language', 
-			))) {
-			return;
-		}
-		//set language
-		$this->_parameters['language'] = $tag['attributes']["language"];
 		$uniqueID = CMS_XMLTag::getUniqueID();
-		$return = '
+		$return = '';
+		//set language
+		$languages = array_keys(CMS_languagesCatalog::getAllLanguages($this->_parameters['module']));
+		if (isset($tag['attributes']["language"])) {
+			if (in_array($tag['attributes']["language"], $languages)) {
+				$this->_parameters['language'] = $tag['attributes']["language"];
+			} else {
+				$return .= '$cms_language = new CMS_language("'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['language'], false, false).'");'."\n";
+			}
+		} else {
+			//check tags requirements
+			if (!$this->checkTagRequirements($tag, array(
+					'language' => 'language', 
+				))) {
+				return;
+			}
+		}
+		$return .= '
 		//RSS TAG START '.$uniqueID.'
 		if (!sensitiveIO::isPositiveInteger($parameters[\'objectID\'])) {
 			CMS_grandFather::raiseError(\'Error into atm-rss tag : can\\\'t found object infos to use into : $parameters[\\\'objectID\\\']\');

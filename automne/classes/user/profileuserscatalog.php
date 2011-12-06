@@ -570,7 +570,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	static function loginExists($login, &$user, $returnProfileUserId = false)
+	static function loginExists($login, $user = false, $returnProfileUserId = false)
 	{
 		$sql = "
 			select
@@ -578,10 +578,10 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 			from
 				profilesUsers
 			where
-				login_pru = '".SensitiveIO::sanitizeSQLString($login)."'
-			  and
-				id_pru != '".$user->getUserId()."'
-		";
+				login_pru = '".SensitiveIO::sanitizeSQLString($login)."'";
+		if ($user && is_object($user) && !$user->hasError()) {
+			$sql .= " and id_pru != '".$user->getUserId()."'";
+		}
 		$q = new CMS_query($sql);
 		if($q->getNumRows() && $returnProfileUserId){
 			return $q->getValue('id_pru');

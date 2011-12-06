@@ -1350,6 +1350,7 @@ class CMS_poly_object extends CMS_resource
 				return true;
 			}
 		}
+		$forceSecondaryRessourcePublication = false;
 		//if this object is a primary resource
 		if($this->_objectResourceStatus == 1) {
 			if ($treatResource) {
@@ -1372,8 +1373,12 @@ class CMS_poly_object extends CMS_resource
 		} elseif ($this->_objectResourceStatus == 2) { //if this object is a secondary resource
 			//get all primary resource associated
 			$primaryItems = CMS_poly_object_catalog::getPrimaryItemsWhichUsesSecondaryItem($this->_ID, true, false);
-			foreach ($primaryItems as $primaryItem) {
-				$primaryItem->writeToPersistence();
+			if ($primaryItems) {
+				foreach ($primaryItems as $primaryItem) {
+					$primaryItem->writeToPersistence();
+				}
+			} else {
+				$forceSecondaryRessourcePublication = true;
 			}
 		}
 		//save all subobjects
@@ -1402,7 +1407,7 @@ class CMS_poly_object extends CMS_resource
 			//get module codename
 			$polyModuleCodename = $objectDef->getValue('module');
 			//if object is not a resource, copy datas to public location
-			if ($this->_objectResourceStatus != 1 && $this->_objectResourceStatus != 2) {
+			if (($this->_objectResourceStatus != 1 && $this->_objectResourceStatus != 2) || ($this->_objectResourceStatus == 2 && $forceSecondaryRessourcePublication)) {
 				$modulesCodes = new CMS_modulesCodes();
 				//add a call to all modules for before validation specific treatment
 				$modulesCodes->getModulesCodes(MODULE_TREATMENT_BEFORE_VALIDATION_TREATMENT, '', $this, array('result' => VALIDATION_OPTION_ACCEPT, 'lastvalidation' => true, 'module' => $polyModuleCodename, 'action' => 'update'));
@@ -1470,9 +1475,20 @@ class CMS_poly_object extends CMS_resource
 		
 		//if object is not a primary resource
 		if ($this->_objectResourceStatus != 1 || $hardDelete) {
-			
+			$forceSecondaryRessourcePublication = false;
+			if ($this->_objectResourceStatus == 2 && !$hardDelete) { //if this object is a secondary resource, primary items which uses this object must be updated
+				//get all primary resource associated
+				$primaryItems = CMS_poly_object_catalog::getPrimaryItemsWhichUsesSecondaryItem($this->_ID, true, false);
+				if ($primaryItems) {
+					foreach ($primaryItems as $primaryItem) {
+						$primaryItem->writeToPersistence();
+					}
+				} else {
+					$forceSecondaryRessourcePublication = true;
+				}
+			}
 			//if object is not a secondary resource, delete public datas, else preserve it : it will be deleted on primary resource validation
-			if ($this->_objectResourceStatus != 2 || $hardDelete) {
+			if ($this->_objectResourceStatus != 2 || ($this->_objectResourceStatus == 2 && $forceSecondaryRessourcePublication) || $hardDelete) {
 				//delete datas from public locations
 				CMS_modulePolymodValidation::moveResourceData($polyModuleCodename, $this->getID(), RESOURCE_DATA_LOCATION_PUBLIC, RESOURCE_DATA_LOCATION_DEVNULL);
 				if (!$hardDelete) {
@@ -1484,7 +1500,7 @@ class CMS_poly_object extends CMS_resource
 					new CMS_query($sql);
 				}
 			}
-			if ($this->_objectResourceStatus != 1 && $this->_objectResourceStatus != 2) {
+			if (($this->_objectResourceStatus != 1 && $this->_objectResourceStatus != 2) || ($this->_objectResourceStatus == 2 && $forceSecondaryRessourcePublication)) {
 				$modulesCodes = new CMS_modulesCodes();
 				//add a call to all modules for before validation specific treatment
 				$modulesCodes->getModulesCodes(MODULE_TREATMENT_BEFORE_VALIDATION_TREATMENT, '', $this, array('result' => VALIDATION_OPTION_ACCEPT, 'lastvalidation' => true, 'module' => $polyModuleCodename, 'action' => 'delete'));
@@ -1496,20 +1512,13 @@ class CMS_poly_object extends CMS_resource
 				//delete datas from edited locations
 				CMS_modulePolymodValidation::moveResourceData($polyModuleCodename, $this->getID(), RESOURCE_DATA_LOCATION_EDITED, RESOURCE_DATA_LOCATION_DEVNULL);
 			}
-			if ($this->_objectResourceStatus != 1 && $this->_objectResourceStatus != 2) {
+			if (($this->_objectResourceStatus != 1 && $this->_objectResourceStatus != 2) || ($this->_objectResourceStatus == 2 && $forceSecondaryRessourcePublication)) {
 				//add a call to all modules for after validation specific treatment
 				$modulesCodes->getModulesCodes(MODULE_TREATMENT_AFTER_VALIDATION_TREATMENT, '', $this, array('result' => VALIDATION_OPTION_ACCEPT, 'lastvalidation' => true, 'module' => $polyModuleCodename, 'action' => 'delete'));
 			}
 			if ($this->_objectResourceStatus == 1 && $hardDelete) {
 				//delete associated resource
 				parent::destroy();
-			}
-			if ($this->_objectResourceStatus == 2) { //if this object is a secondary resource, primary items which uses this object must be updated
-				//get all primary resource associated
-				$primaryItems = CMS_poly_object_catalog::getPrimaryItemsWhichUsesSecondaryItem($this->_ID, true, false);
-				foreach ($primaryItems as $primaryItem) {
-					$primaryItem->writeToPersistence();
-				}
 			}
 			
 			//Log action

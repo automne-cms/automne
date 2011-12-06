@@ -1,4 +1,4 @@
-<IfModule mod_mime.c>
+<IfModule mod_negotiation.c>
 	#because IE9 is strict on this point
-	AddType 'text/css; charset=UTF-8' .php
+	Options -MultiViews
 </IfModule>

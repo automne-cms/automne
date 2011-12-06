@@ -1673,3 +1673,4 @@ td.x-date-mp-month a:hover,td.x-date-mp-year a:hover {
 .x-tool-popup-over {
 	background-position:-15px -330px;
 }
+.x-combo-list-inner div:first-child { height:14px; }

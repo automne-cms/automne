@@ -1182,7 +1182,7 @@ class CMS_object_categories extends CMS_object_common
       */
     function category($values, $tags) {
         global $cms_language;
-       
+      
         $return = "";
         if (!sensitiveIO::isPositiveInteger($values['category'])) {
             $this->raiseError("Category value parameter must be a valid category ID : ".$values['category']);
@@ -1202,7 +1202,10 @@ class CMS_object_categories extends CMS_object_common
             '{id}' => $values['category'],
             '{label}' => $category->getLabel($cms_language)
         );
-        $return .= str_replace(array_keys($replace), $replace, $tags[0]['textnode']);
+       
+        $xml2Array = new CMS_XML2Array();
+        $xml = $xml2Array->toXML($tags);
+        $return .= str_replace(array_keys($replace), $replace, $xml);
         return $return;
     }
 	

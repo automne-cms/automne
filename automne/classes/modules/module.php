@@ -1030,14 +1030,14 @@ class CMS_module extends CMS_grandFather
 	  */
 	function getJSFiles($pageId = '', $allFiles = false) {
 		$files = array();
-		$dirname = PATH_JS_FS.'/modules/'.$this->_codename;
+		$dirname = PATH_JS_FS.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$this->_codename;
 		if (@is_dir($dirname)) {
 			try{
 				//all subdirs or only this dir
 				$dir = $allFiles ? new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dirname), RecursiveIteratorIterator::CHILD_FIRST) : new DirectoryIterator($dirname);
 				foreach ($dir as $file) {
 					if ($file->isFile() && io::substr($file->getFilename(), -3) == ".js") {
-						$filename = str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname());
+						$filename = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname()));
 						$files[] = $filename;
 					}
 				}
@@ -1050,11 +1050,11 @@ class CMS_module extends CMS_grandFather
 			if ($page) {
 				$website = $page->getWebsite();
 				if ($website) {
-					if (@is_dir($dirname.'/'.$website->getCodename())) {
+					if (@is_dir($dirname.DIRECTORY_SEPARATOR.$website->getCodename())) {
 						try{
 							foreach ( new DirectoryIterator($dirname.'/'.$website->getCodename()) as $file) {
 								if ($file->isFile() && io::substr($file->getFilename(), -3) == ".js") {
-									$filename = str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname());
+									$filename = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname()));
 									$files[] = $filename;
 								}
 							}
@@ -1078,16 +1078,16 @@ class CMS_module extends CMS_grandFather
 		//get generic files
 		foreach ($medias as $media) {
 			if ($media == 'all') {
-				if (file_exists(PATH_CSS_FS.'/modules/'.$this->_codename.'.css')) {
-					$files['all'][] = str_replace(PATH_REALROOT_FS.'/', '', PATH_CSS_FS.'/modules/'.$this->_codename.'.css');
+				if (file_exists(PATH_CSS_FS.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$this->_codename.'.css')) {
+					$files['all'][] = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', PATH_CSS_FS.'/modules/'.$this->_codename.'.css'));
 				}
 			}
-			if (file_exists(PATH_CSS_FS.'/modules/'.$this->_codename.'-'.$media.'.css')) {
-				$files[$media][] = str_replace(PATH_REALROOT_FS.'/', '', PATH_CSS_FS.'/modules/'.$this->_codename.'-'.$media.'.css');
+			if (file_exists(PATH_CSS_FS.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$this->_codename.'-'.$media.'.css')) {
+				$files[$media][] = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', PATH_CSS_FS.'/modules/'.$this->_codename.'-'.$media.'.css'));
 			}
 		}
 		//get subdir files if any
-		$dirname = PATH_CSS_FS.'/modules/'.$this->_codename;
+		$dirname = PATH_CSS_FS.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$this->_codename;
 		if (@is_dir($dirname)) {
 			try{
 				//all subdirs or only this dir
@@ -1097,12 +1097,12 @@ class CMS_module extends CMS_grandFather
 						$founded = false;
 						foreach ($medias as $media) {
 							if (io::substr($file->getFilename(), -5 - strlen($media)) == '-'.$media.'.css') {
-								$files[$media][] = str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname());
+								$files[$media][] = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname()));
 								$founded = true;
 							}
 						}
 						if (!$founded) {
-							$files['all'][] = str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname());
+							$files['all'][] = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname()));
 						}
 					}
 				}
@@ -1114,19 +1114,19 @@ class CMS_module extends CMS_grandFather
 			if ($page) {
 				$website = $page->getWebsite();
 				if ($website) {
-					if (@is_dir($dirname.'/'.$website->getCodename())) {
+					if (@is_dir($dirname.DIRECTORY_SEPARATOR.$website->getCodename())) {
 						try{
-							foreach ( new DirectoryIterator($dirname.'/'.$website->getCodename()) as $file) {
+							foreach ( new DirectoryIterator($dirname.DIRECTORY_SEPARATOR.$website->getCodename()) as $file) {
 								if ($file->isFile() && io::substr($file->getFilename(), -4) == ".css") {
 									$founded = false;
 									foreach ($medias as $media) {
 										if (io::substr($file->getFilename(), -5 - strlen($media)) == '-'.$media.'.css') {
-											$files[$media][] = str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname());
+											$files[$media][] = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname()));
 											$founded = true;
 										}
 									}
 									if (!$founded) {
-										$files['all'][] = str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname());
+										$files['all'][] = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname()));
 									}
 								}
 							}
