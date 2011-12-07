@@ -743,7 +743,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 			FROM `mod_object_field`
 			WHERE `object_id_mof` = '.$this->_ID.'
 		');
-		if ($oQuery->getNumRows() > 1) {
+		if ($oQuery->getNumRows()) {
 			foreach ($oQuery->getAll(PDO::FETCH_ASSOC) as $aRow) {
 				$oFieldDefiniton = new CMS_poly_object_field($aRow['id_mof']);
 				$aClass['fields'][] = $oFieldDefiniton->asArray($params, $files);

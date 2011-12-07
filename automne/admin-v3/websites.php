@@ -123,6 +123,8 @@ $content = '';
 $dialog->setTitle($cms_language->getMessage(MESSAGE_PAGE_TITLE));
 if ($cms_message) {
 	$dialog->setActionMessage($cms_message);
+} elseif (io::request('cms_message_id', 'io::isPositiveInteger')) {
+	$dialog->setActionMessage($cms_language->getMessage(io::request('cms_message_id')));
 }
 
 $content .= '

@@ -35,6 +35,8 @@ $mod_cms_forms["pageID"] = '{{pageID}}';
 $form = new CMS_forms_formular($mod_cms_forms["formID"]);
 //Instanciate language
 $cms_language = $form->getLanguage();
+//Instanciate field error Ids
+$cms_forms_error_ids = array();
 //Form actions treatment
 if ($form->getID() && $form->isPublic()) {
 	echo '<a name="formAnchor'.$form->getID().'"></a>';
@@ -48,6 +50,7 @@ if ($form->getID() && $form->isPublic()) {
 		foreach ($cms_forms_required[$form->getID()] as $fieldName) {
 			$field = $form->getFieldByName($fieldName, true);
 			$cms_forms_error_msg[$form->getID()] .= '<li>'.$field->getAttribute('label').'</li>';
+			$cms_forms_error_ids[] .= $field->generateFieldIdDatas();
 		}
 		$cms_forms_error_msg[$form->getID()] .= '</ul>';
 	}
@@ -57,6 +60,7 @@ if ($form->getID() && $form->isPublic()) {
 		foreach ($cms_forms_malformed[$form->getID()] as $fieldName) {
 			$field = $form->getFieldByName($fieldName, true);
 			$cms_forms_error_msg[$form->getID()] .= '<li>'.$field->getAttribute('label').'</li>';
+			$cms_forms_error_ids[] .= $field->generateFieldIdDatas();
 		}
 		$cms_forms_error_msg[$form->getID()] .= '</ul>';
 	}
@@ -68,7 +72,7 @@ if ($form->getID() && $form->isPublic()) {
 	if (!isset($cms_forms_msg[$form->getID()]) || !$cms_forms_msg[$form->getID()]) {
 		//check if form is already folded by sender
 		if (isset($sender) && !$form->isAlreadyFolded($sender)) { 
-			echo $form->getContent(CMS_forms_formular::ALLOW_FORM_SUBMIT);
+			echo $form->getContent(CMS_forms_formular::ALLOW_FORM_SUBMIT, $cms_forms_error_ids);
 		}
 	}
 	if (isset($cms_forms_msg[$form->getID()]) && $cms_forms_msg[$form->getID()]) {

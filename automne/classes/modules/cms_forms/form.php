@@ -237,10 +237,11 @@ class CMS_forms_formular extends CMS_grandFather {
 	 * @param constant $actionParams : add some params to form execution (default : false, return form just as it is in db)
 	 *  - self::REMOVE_FORM_SUBMIT : form can't be submitted, throw js alert message
 	 *  - self::ALLOW_FORM_SUBMIT : form can be submitted, add form action, hidden fields, selected values, etc. (used in public mode)
+	 * @param array $fieldsError : add an array of error fields' id
 	 * @access public
 	 * @return XHTML string
 	 */
-	function getContent($actionParams = false) {
+	function getContent($actionParams = false, $fieldsError = array()) {
 		global $cms_language;
 		if ($actionParams === false) {
 			return $this->_source;
@@ -261,7 +262,7 @@ class CMS_forms_formular extends CMS_grandFather {
 				//parse XHTML form content
 				$xmlArray = $xml2Array->getParsedArray();
 				//add already selected values
-				$this->_fillSelectedFormValues($xmlArray, $fields);
+				$this->_fillSelectedFormValues($xmlArray, $fields, $fieldsError);
 				//then convert back into XHTML
 				$source = $xml2Array->toXML($xmlArray);
 				//add target and hidden fields
@@ -282,18 +283,22 @@ class CMS_forms_formular extends CMS_grandFather {
 	 * Recursive method to add all selected values into a multidimentionnal array representing a formular source
 	 * 
 	 * @param multidimentionnal array &$definition : the XML definition to treat (by reference)
-	 * @param array &$fields : all form fields (by reference) to get default values
+	 * @param array $fields : all form fields to get default values
+	 * @param array $fieldsError : all form fields malformed or required
 	 * @param (inplicit) the current global $_POST values
 	 * @access private
 	 * @return void
 	 */
-	protected function _fillSelectedFormValues(&$definition, &$fields) {
+	protected function _fillSelectedFormValues(&$definition, $fields, $fieldsError) {
 		global $mod_cms_forms, $cms_user;
 		if (is_array($definition) && is_array($definition[0])) {
 			//loop on subtags
 			foreach (array_keys($definition) as $key) {
 				$fieldValue = null;
 				if (isset($definition[$key]['attributes']['name'])) {
+					if (in_array($definition[$key]['attributes']['id'], $fieldsError)){ //set class cms_field_error to field
+						$definition[$key]['attributes']['class'] = 'cms_field_error';
+					}
 					if (isset($_POST[$definition[$key]['attributes']['name']])) { //set value from POST
 						$fieldValue = $_POST[$definition[$key]['attributes']['name']];
 					} else { //set value from default field value
@@ -329,7 +334,7 @@ class CMS_forms_formular extends CMS_grandFather {
 					}
 				}
 				if (isset($definition[$key]['childrens'])) {
-					$this->_fillSelectedFormValues($definition[$key]['childrens'], $fields);
+					$this->_fillSelectedFormValues($definition[$key]['childrens'], $fields, $fieldsError);
 				}
 			}
 		} else {

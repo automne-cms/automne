@@ -1703,4 +1703,4 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1744, 'standard', 'fr', 'Création d\'un fichier');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1745, 'standard', 'fr', 'Nom du fichier');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1746, 'standard', 'fr', 'Types de validations :');
-
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1747, 'standard', 'fr', 'Erreur : le nom de code fourni existe déjà');

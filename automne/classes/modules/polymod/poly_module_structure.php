@@ -69,6 +69,21 @@ class CMS_poly_module_structure {
 				$flatStructure['object'.$r['objectID']]['field'.$r['fieldID']] = $r['fieldType'];
 			}
 		}
+		//append objects without fields
+		$sql = "select
+					id_mod as objectID
+				from
+					mod_object_definition
+				order by objectID
+		";
+		$q = new CMS_query($sql);
+		if ($q->getNumRows()) {
+			while($r = $q->getArray()) {
+				if (!isset($flatStructure['object'.$r['objectID']])) {
+					$flatStructure['object'.$r['objectID']] = array();
+				}
+			}
+		}
 		if ($withObjectInfos) {
 			$objectInfos = array();
 		}

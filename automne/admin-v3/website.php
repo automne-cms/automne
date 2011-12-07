@@ -61,6 +61,7 @@ define("MESSAGE_PAGE_FIELD_403_PAGE", 1719);
 define("MESSAGE_PAGE_FIELD_404_PAGE", 1718);
 define("MESSAGE_PAGE_FIELD_REDIRECT_ALT_DOMAINS", 1741);
 define("MESSAGE_PAGE_FIELD_REDIRECT_ALT_DOMAINS_DESC", 1742);
+define("MESSAGE_PAGE_ERROR_CODENAME", 1747);
 
 //RIGHTS CHECK
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES)) {
@@ -109,7 +110,9 @@ case "validate":
 				$website->setRoot($page);
 			}
 		} else {
-			$website->setCodename(io::sanitizeAsciiString($_POST["codename"]));
+			if (!$website->setCodename(io::sanitizeAsciiString($_POST["codename"]))) {
+				$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ERROR_CODENAME);
+			}
 			$page = CMS_tree::getPageByID($_POST["root"]);
 			$website->setRoot($page);
 		}
@@ -128,15 +131,16 @@ case "validate":
 		$website->setMeta('language', $_POST['language']);
 		$website->setMeta('favicon', $_POST['favicon']);
 		$website->setMeta('metas', $_POST['metas']);
-		if (!$website->hasError()) {
+		if (!$cms_message && !$website->hasError()) {
 			$website->writeToPersistence();
 			CMS_tree::regenerateAllPages(true);
 			$log = new CMS_log();
 			$log->logMiscAction(CMS_log::LOG_ACTION_WEBSITE_EDIT, $cms_user, "Website : ".$website->getLabel());
 			$dialog->reloadAll();
+			
+			header("Location: websites.php?cms_message_id=".MESSAGE_ACTION_OPERATION_DONE."&".session_name()."=".session_id());
+			exit;
 		}
-		header("Location: websites.php?cms_message_id=".MESSAGE_ACTION_OPERATION_DONE."&".session_name()."=".session_id());
-		exit;
 	}
 	break;
 }
