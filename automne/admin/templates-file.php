@@ -65,6 +65,7 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) {
 }
 
 $allowedFiles = array(
+	'less' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_STYLESHEET), 'class' => 'atm-css'),
 	'css' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_STYLESHEET), 'class' => 'atm-css'),
 	'xml' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_WYSIWYG), 'class' => 'atm-xml'),
 	'js' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_JAVASCRIPT), 'class' => 'atm-js'),
@@ -123,6 +124,7 @@ $content = '<textarea id="file-content-'.$fileId.'" style="display:none;">'.html
 $view->setContent($content);
 
 switch ($extension) {
+	case 'less':
 	case 'css':
 		$codemirrorConf = '
 			parserfile: 	["parsecss.js"],

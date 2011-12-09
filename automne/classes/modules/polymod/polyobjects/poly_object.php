@@ -784,6 +784,11 @@ class CMS_poly_object extends CMS_resource
 									Ext.getCmp(\'btnModify'.$listId.'\').disable();
 									Ext.getCmp(\'btnNew'.$listId.'\').enable();
 								}
+								if (field.store.getAt(0)) {
+									if (field.store.getAt(0).data.locked) {
+										Ext.getCmp(\'btnModify'.$listId.'\').disable();
+									}
+								}
 								return true;
 							}', false, false),
 							'render' => sensitiveIO::sanitizeJSString('function(field) {
@@ -797,6 +802,11 @@ class CMS_poly_object extends CMS_resource
 									Ext.getCmp(\'btnDesassociate'.$listId.'\').disable();
 									Ext.getCmp(\'btnModify'.$listId.'\').disable();
 									Ext.getCmp(\'btnNew'.$listId.'\').enable();
+								}
+								if (field.store.getAt(0)) {
+									if (field.store.getAt(0).data.locked) {
+										Ext.getCmp(\'btnModify'.$listId.'\').disable();
+									}
 								}
 								return true;
 							}', false, false)
@@ -2006,8 +2016,6 @@ class CMS_poly_object extends CMS_resource
 			$labels['structure']['dateStartTimestamp'] = $language->getMessage(self::MESSAGE_POLYOBJECT_DATE_TIMESTAMP_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 			$labels['structure']['dateEndNotNull'] = $language->getMessage(self::MESSAGE_POLYOBJECT_DATE_HASVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 			$labels['structure']['dateEndTimestamp'] = $language->getMessage(self::MESSAGE_POLYOBJECT_DATE_TIMESTAMP_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
-			
-			
 		}
 		$RRSDefinitions = CMS_poly_object_catalog::getAllRSSDefinitionsForObject($this->getObjectID());
 		if (is_array($RRSDefinitions) && $RRSDefinitions) {

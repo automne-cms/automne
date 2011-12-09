@@ -42,6 +42,7 @@ define("MESSAGE_PAGE_ALIAS_RESTRICTED", 32);
 define("MESSAGE_PAGE_ALIAS_FOR_WEBSITES", 33);
 define("MESSAGE_PAGE_ALIAS", 34);
 define("MESSAGE_PAGE_REPLACE_ADDRESS", 40);
+define("MESSAGE_PAGE_ALIAS_ERROR", 42);
 
 function checkAliasId($aliasId) {
 	return (io::strpos($aliasId, 'alias') === 0) && sensitiveIO::isPositiveInteger(io::substr($aliasId, 5));
@@ -74,13 +75,19 @@ if ($pageId) {
 $nodes = array();
 foreach ($aliases as $alias) {
 	$hasSiblings = $alias->hasSubAliases();
-	if ($pageId && $alias->getPageID() == $pageId && $alias->urlReplaced()) {
+	if ($alias->hasError()) {
 		$label = ($alias->getWebsites() ? '<span style="color:red;">*</span>' : '').'<span style="color:red;">'.$alias->getAlias().'</span>';
+	} elseif ($pageId && $alias->getPageID() == $pageId && $alias->urlReplaced()) {
+		$label = ($alias->getWebsites() ? '<span style="color:red;">*</span>' : '').'<span style="color:green;">'.$alias->getAlias().'</span>';
 	} else {
 		$label = ($alias->getWebsites() ? '<span style="color:red;">*</span>' : '').$alias->getAlias();
 	}
 	
-	$qtip = $cms_language->getMessage(MESSAGE_PAGE_ALIAS, false, 'cms_aliases').' <strong>'.$alias->getPath().'</strong><br />';
+	if ($alias->hasError()) {
+		$qtip = '<span style="color:red;"><strong>'.$cms_language->getMessage(MESSAGE_PAGE_ALIAS_ERROR, false, 'cms_aliases').'</strong></span><br />';
+	} else {
+		$qtip = $cms_language->getMessage(MESSAGE_PAGE_ALIAS, false, 'cms_aliases').' <strong>'.$alias->getPath().'</strong><br />';
+	}
 	if ($alias->getPageID()) {
 		$page = CMS_tree::getPageById($alias->getPageID());
 		if ($page && !$page->hasError()) {

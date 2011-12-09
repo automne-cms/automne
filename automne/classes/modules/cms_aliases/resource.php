@@ -72,6 +72,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @access private
 	  */
 	protected $_replace = false;
+	protected $_needRegen = false;
 
 	/**
 	  * Permanent
@@ -122,7 +123,9 @@ class CMS_resource_cms_aliases extends CMS_resource
 				$this->_replace = $data["replace_ma"] ? true : false;
 				$this->_permanent = $data["permanent_ma"] ? true : false;
 				$this->_protected = $data["protected_ma"] ? true : false;
-				
+				if (!$this->_checkfiles()) {
+					$this->raiseError('Alias files does not exists and cannot be recreated: '.$this->getPath(true, PATH_RELATIVETO_FILESYSTEM));
+				}
 			} else {
 				$this->raiseError("Unknown ID :".$id);
 			}
@@ -163,21 +166,47 @@ class CMS_resource_cms_aliases extends CMS_resource
 	{
 		//clean alias characters
 		$alias = sensitiveIO::sanitizeURLString($alias);
-		if ($this->_alias == $alias) {
-			return true;
-		}
 		//check if alias directory already exists
 		if (@is_dir($this->getPath(false, PATH_RELATIVETO_FILESYSTEM).'/'.$alias)) {
 			//check if directory is used by another alias
 			$aliases = CMS_module_cms_aliases::getByName($alias);
 			$otherAlias = false;
+			$otherAliasesUsesWebsites = array();
 			foreach($aliases as $anAlias) {
 				if ($this->getID() != $anAlias->getID() && $this->getPath(false).$alias.'/' == $anAlias->getPath(true)) {
+					//check websites of other aliases. It must not use same domain as current one
+					if (!$anAlias->getWebsites()) {
+						//this other alias use all domains, so current alias can never be used
+						return false;
+					} else {
+						$otherAliasesUsesWebsites = array_merge($anAlias->getWebsites(), $otherAliasesUsesWebsites);
+					}
 					$otherAlias = true;
 				}
 			}
 			if (!$otherAlias) {
+				//no other alias use this directory, so it is used by something else
 				return false;
+			} elseif($otherAliasesUsesWebsites) {
+				//check if this alias can be used by a website
+				$otherAliasesUsesWebsites = array_unique($otherAliasesUsesWebsites);
+				if ($this->getWebsites()) {
+					$websites = $this->getWebsites();
+				} else {
+					$websites = array_keys(CMS_websitesCatalog::getAll());
+				}
+				$freeWebsite = array();
+				foreach ($websites as $codename) {
+					if (!in_array($codename, $otherAliasesUsesWebsites)) {
+						$freeWebsite[] = $codename;
+					}
+				}
+				if (!$freeWebsite) {
+					//no free website for this alias
+					return false;
+				}
+				//limit alias to free websites
+				$this->setWebsites($freeWebsite);
 			}
 		}
 		//alias already exists, check if alias name change. If so, delete old files
@@ -361,6 +390,9 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @access public
 	  */
 	function setReplaceURL($replace) {
+		if ($this->_replace && !$replace) {
+			$this->_needRegen = true;
+		}
 		$this->_replace = $replace ? true : false;
 		return true;
 	}
@@ -451,6 +483,9 @@ class CMS_resource_cms_aliases extends CMS_resource
 		} elseif (!$this->_ID) {
 			$this->_ID = $q->getLastInsertedID();
 		}
+		//regenerate pages if needed
+		$this->_regenerate();
+		
 		return $this->createRedirectionFile();
 	}
 	
@@ -519,6 +554,22 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access private
 	  */
+	private function _checkfiles() {
+		//check if alias directory already exists
+		if (!@is_dir($this->getPath(true, PATH_RELATIVETO_FILESYSTEM))) {
+			return $this->createRedirectionFile();
+		} elseif (!is_file($this->getPath(true, PATH_RELATIVETO_FILESYSTEM).'index.php')) {
+			return $this->createRedirectionFile();
+		}
+		return true;
+	}
+	
+	/**
+	  * Create the folder of an alias
+	  *
+	  * @return boolean true on success, false on failure
+	  * @access private
+	  */
 	private function _createFolder() 
 	{
 		if (!$this->getAlias()) {
@@ -570,8 +621,10 @@ class CMS_resource_cms_aliases extends CMS_resource
 		if (!$this->_deleteFiles()) {
 			return false;
 		}
+		//2- launch pages regen if needed
+		$this->_regenerate();
 		
-		//2- delete mysql data
+		//3- delete mysql data
 		$sql = "
 			delete
 			from
@@ -581,7 +634,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 		";
 		$q = new CMS_query($sql);
 		
-		//4-unset object
+		//4- unset object
 		unset($this);
 		return true;
 	}
@@ -636,6 +689,35 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  */
 	function redirect() {
 		return CMS_module_cms_aliases::redirect();
+	}
+	
+	/**
+	  * Regenerate alias page and all pages related to this alias
+	  *
+	  * @return string
+	  * @access protected
+	  */
+	protected function _regenerate() {
+		if (($this->_replace || $this->_needRegen) && $this->_pageID) {
+			$page = CMS_tree::getPageById($this->_pageID);
+			if ($page && !$page->hasError()) {
+				$regen_pages = array();
+				$temp_regen = CMS_linxesCatalog::getWatchers($page);
+				if ($temp_regen) {
+					$regen_pages = array_merge($regen_pages, $temp_regen);
+				}
+				$temp_regen = CMS_linxesCatalog::getLinkers($page);
+				if ($temp_regen) {
+					$regen_pages = array_merge($regen_pages, $temp_regen);
+				}
+				$regen_pages = array_unique($regen_pages);
+				//regen page itself
+				CMS_tree::submitToRegenerator($page->getID(), false, false);
+				//regen all pages which link this one and lauch regeneration
+				CMS_tree::submitToRegenerator($regen_pages, false, true);
+			}
+		}
+		return true;
 	}
 }
 ?>

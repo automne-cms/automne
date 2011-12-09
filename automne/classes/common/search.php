@@ -76,6 +76,7 @@ class CMS_search extends CMS_grandFather {
 			$cms_language = new CMS_language('fr');
 		}
 		$results = array();
+		$count = 0;
 		/*$messages = array();
 		$message = '';*/
 		$where = $order = '';

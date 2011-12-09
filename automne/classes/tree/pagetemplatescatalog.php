@@ -76,17 +76,42 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 				//if no words after cleaning, return
 				return array();
 			}
-			$keywordWhere = '';
-			foreach ($cleanedWords as $cleanedWord) {
-				$keywordWhere .= ($keywordWhere) ? ' and ' : '';
-				$keywordWhere .= " (
-					description_pt like '%".sensitiveIO::sanitizeSQLString($cleanedWord)."%'
-					or label_pt like '%".sensitiveIO::sanitizeSQLString($cleanedWord)."%'
-				)";
+			//extract row: keywords which are used by general search engine to filter templates by row usage
+			$rows = array();
+			foreach ($cleanedWords as $key => $word) {
+				if (io::strpos($word, 'row:') === 0) {
+					unset($cleanedWords[$key]);
+					$rows[] = substr($word, 4);
+				}
 			}
-			$where .= ($where) ? ' and ' : '';
-			$where .= " ((".$keywordWhere.") or MATCH (label_pt, description_pt) AGAINST ('".sensitiveIO::sanitizeSQLString($keyword)."') )";
-			$select .= " , MATCH (label_pt, description_pt) AGAINST ('".sensitiveIO::sanitizeSQLString($keyword)."') as m ";
+			if ($cleanedWords) {
+				$keywordWhere = '';
+				foreach ($cleanedWords as $cleanedWord) {
+					$keywordWhere .= ($keywordWhere) ? ' and ' : '';
+					$keywordWhere .= " (
+						description_pt like '%".sensitiveIO::sanitizeSQLString($cleanedWord)."%'
+						or label_pt like '%".sensitiveIO::sanitizeSQLString($cleanedWord)."%'
+					)";
+				}
+				$where .= ($where) ? ' and ' : '';
+				$where .= " ((".$keywordWhere.") or MATCH (label_pt, description_pt) AGAINST ('".sensitiveIO::sanitizeSQLString($keyword)."') )";
+				$select .= " , MATCH (label_pt, description_pt) AGAINST ('".sensitiveIO::sanitizeSQLString($keyword)."') as m ";
+			}
+			if ($rows) {
+				$q = new CMS_query("
+					select
+						distinct(template_cs)
+					from
+						mod_standard_clientSpaces_edited
+					where
+						type_cs in (".io::sanitizeSQLString(implode($rows, ',')).")
+				");
+				if ($q->getNumRows()) {
+					while($r = $q->getArray()) {
+						$tplIds[] = $r['template_cs'];
+					}
+				}
+			}
 		}
 		$sql = "
 			select

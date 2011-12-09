@@ -84,7 +84,9 @@ switch ($action) {
 		//check protected status
 		$protected = sensitiveIO::request('protected') ? true : false;
 		if (!$item->isProtected() || (!$protected && $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL))) {
-			//first set parent only if alias has no subaliases
+			//set alias websites (needed to know if alias is correct in case of name conflict)
+			$item->setWebsites(explode(',', $websites));
+			//set parent only if alias has no subaliases
 			if (!$item->hasSubAliases()) {
 				if (io::isPositiveInteger($newFatherId)) {
 					$parent = CMS_module_cms_aliases::getByID($newFatherId);
@@ -98,7 +100,6 @@ switch ($action) {
 					break;
 				}
 			}
-			$item->setWebsites(explode(',', $websites));
 			$item->setReplaceURL($replaceURL);
 			$item->setPermanent($permanent);
 			$item->setProtected($protected);

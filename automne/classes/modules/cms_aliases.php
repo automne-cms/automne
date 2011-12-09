@@ -256,7 +256,7 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 		while ($arr = $q->getArray()) {
 			if ($returnObject) {
 				$alias = CMS_module_cms_aliases::getByID($arr["id_ma"]);
-				if ($alias && !$alias->hasError()) {
+				if ($alias/* && !$alias->hasError()*/) {
 					$result[strtolower($alias->getAlias()).$alias->getID()] = $alias;
 				}
 			} else {
@@ -303,7 +303,7 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 		while ($r = $q->getArray()) {
 			$aliasesIds[$r['id_ma']] = $r['id_ma'];
 			$alias = CMS_module_cms_aliases::getByID($r["id_ma"]);
-			if ($alias && !$alias->hasError()) {
+			if ($alias/* && !$alias->hasError()*/) {
 				$lineage = $alias->getAliasLineAge(true);
 				foreach ($lineage as $anAlias) {
 					$aliasesIds[$anAlias->getID()] = $anAlias->getID();
@@ -392,9 +392,9 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 			return $aliases[$id];
 		}
 		$aliases[$id] = new CMS_resource_cms_aliases($id);
-		if ($aliases[$id]->hasError()) {
+		/*if ($aliases[$id]->hasError()) {
 			$aliases[$id] = false;
-		}
+		}*/
 		return $aliases[$id];
 	}
 	

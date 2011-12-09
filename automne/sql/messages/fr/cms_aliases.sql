@@ -49,4 +49,4 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(39, 'cms_aliases', 'fr', 'Gestion des alias de la page. L\'alias en rouge remplace l\'adresse de la page.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(40, 'cms_aliases', 'fr', 'Remplace l\'adresse :');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(41, 'cms_aliases', 'fr', 'Erreur : La page %s possède déjà un alias qui remplace son adresse ...');
-
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(42, 'cms_aliases', 'fr', 'L\'ALIAS A UNE ERREUR.');

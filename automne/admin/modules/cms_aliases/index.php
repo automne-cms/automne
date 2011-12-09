@@ -262,7 +262,7 @@ $jscontent = <<<END
 			iconCls:		'atm-pic-add',
 			xtype:			'button',
 			text:			'{$cms_language->getJsMessage(MESSAGE_PAGE_NEW)}',
-			disabled:		true,
+			disabled:		false,
 			handler:		function(button) {
 				var node = tree.getSelectionModel().getSelectedNode();
 				if (!node) {
@@ -320,9 +320,11 @@ $jscontent = <<<END
 	
 	// render the tree
     tree.getRootNode().expand();
+	
 	//allow change max depth after layout only
 	moduleAliasWindow.on('afterlayout', function(){
 		allowChangeMaxdepth = true;
+		tree.getRootNode().select();
 	}, this);
 	
 	//redo windows layout

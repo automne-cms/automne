@@ -174,8 +174,8 @@ switch ($step) {
 				$formTags[$aFieldId]->setAttribute("params", $params);
 				
 				$options = array();
-				$optionsValues = explode (',',$_POST["selectValues_".$aFieldId]);
-				$optionsLabels = explode (',',$_POST["selectLabels_".$aFieldId]);
+				$optionsValues = explode ('||',$_POST["selectValues_".$aFieldId]);
+				$optionsLabels = explode ('||',$_POST["selectLabels_".$aFieldId]);
 				if (sizeof($optionsValues) && sizeof($optionsLabels)) {
 					foreach ($optionsValues as $key => $value) {
 						$options[$value] = $optionsLabels[$key];

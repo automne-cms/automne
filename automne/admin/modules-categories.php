@@ -239,7 +239,11 @@ $jscontent = <<<END
 									if (jsonResponse.success == true) {
 										//if success, reload parent
 										if (node.parentNode.reload) {
-											node.parentNode.reload();
+											if (node.isLast() && node.parentNode.parentNode.reload) {
+												node.parentNode.parentNode.reload();
+											} else {
+												node.parentNode.reload();
+											}
 										}
 									}
 								},

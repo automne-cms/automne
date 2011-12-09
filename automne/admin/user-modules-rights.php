@@ -86,6 +86,10 @@ $moduleClearance = $moduleClearancesStack->getElementValueFromKey($moduleCodenam
 if (!$moduleClearance) {
 	$moduleClearance = CLEARANCE_MODULE_NONE;
 }
+if ($moduleCodename == MOD_STANDARD_CODENAME && $moduleClearance == CLEARANCE_MODULE_NONE) {
+	$moduleClearance = CLEARANCE_PAGE_VIEW; //users has always this right on standard module
+}
+
 //if user is admin, then it has all rights on module
 if ($isUser) {
 	if ($profile->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
@@ -123,13 +127,17 @@ if ($isUser) {
 $allclearances = CMS_profile::getAllModuleClearances();
 $moduleAccess = '';
 foreach ($allclearances as $clearance => $messages) {
+	$standardDisableNone = false;
+	if ($moduleCodename == MOD_STANDARD_CODENAME && $clearance == CLEARANCE_PAGE_NONE) {
+		$standardDisableNone = true;
+	}
 	$moduleAccess .= "{
 		boxLabel:		'<span ext:qtip=\"".$cms_language->getJSMessage($messages['description'])."\" class=\"atm-help\">".$cms_language->getJSMessage($messages['label'])."</span>',
 		name:			'{$moduleCodename}-access-{$profileId}',
 		".($clearance == CLEARANCE_MODULE_NONE ? "id:'{$moduleCodename}-access-{$profileId}'," : '')."
 		inputValue:		".$clearance.",
 		checked:		".($moduleClearance == $clearance ? 'true' : 'false').",
-		disabled:		".(($disableFields || !$cms_user->hasModuleClearance($moduleCodename, $clearance)) ? 'true' : 'false')."
+		disabled:		".(($standardDisableNone || $disableFields || !$cms_user->hasModuleClearance($moduleCodename, $clearance)) ? 'true' : 'false')."
 	},";
 }
 //validations clearance
