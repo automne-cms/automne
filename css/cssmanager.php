@@ -40,6 +40,7 @@ if (isset($_GET['files'])) {
 				$cssfiles [] = PATH_MAIN_FS.'/ext/resources/css/xtheme-blue.css';
 				$cssfiles [] = PATH_ADMIN_CSS_FS.'/xtheme-automne.css'; //Automne theme
 				$cssfiles [] = PATH_ADMIN_CSS_FS.'/ext.css'; //overwrite some ext definitions
+				$cssfiles [] = PATH_ADMIN_CSS_FS.'/superboxselect.css';//superselect styles
 			break;
 			case 'main':
 				//Main Automne CSS file

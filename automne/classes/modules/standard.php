@@ -1993,7 +1993,7 @@ class CMS_module_standard extends CMS_module
 				} else {
 					$modulesCode[MOD_STANDARD_CODENAME] .= 
 					'//Page can be HTTPS'."\n".
-					'if (!(strpos($_SERVER["REQUEST_URI"], PATH_ADMIN_WR) !== false  || (isset($_REQUEST[\'atm-context\']) && $_REQUEST[\'atm-context\'] == \'adminframe\'))) {'."\n".
+					'if (!((isset($_SERVER["REQUEST_URI"]) && strpos($_SERVER["REQUEST_URI"], PATH_ADMIN_WR) !== false) || (isset($_REQUEST[\'atm-context\']) && $_REQUEST[\'atm-context\'] == \'adminframe\'))) {'."\n".
 					'	if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] && strtolower($_SERVER["HTTPS"]) != \'off\') {'."\n".
 					'		defined(\'PAGE_SSL_MODE\') || define(\'PAGE_SSL_MODE\', true);'."\n".
 					'	}'."\n".

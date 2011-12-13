@@ -1,5 +1,5 @@
 V4.2.0 (in progress)
-[BUG] : Correct bug number: 2350, 2549, 2561 (see http://www.automne-cms.org/bug/)
+[BUG] : Correct bug number: 2350, 2549, 2561, 2586, 2585, 2584, 2582, 2566 (see http://www.automne-cms.org/bug/)
 [BUG] : Admin lock cannot be removed, even with admin rights
 [BUG] : Polymod modules can be deleted even if RSS feeds or plugins exists
 [BUG] : Polymod blocks are not duplicated during page copy
@@ -23,6 +23,8 @@ V4.2.0 (in progress)
 [REFACTOR] : Refactor JS and CSS editor to add robots.txt edition
 [REFACTOR] : Refactor multi categories field in polymod administration using tree UI.
 [REFACTOR] : Update phpMyAdmin to version 3.4.3.1
+[REFACTOR] : Add less files edition in stylesheet files edition
+[REFACTOR] : Replace multiselect ExtJS extension by superselect for better ergonomics
 [FEATURE] : Add oembed object and oembed polymod field (external media field). Update Mediacenter to manage oembed medias
 [FEATURE] : Add parent page selection on new page creation
 [FEATURE] : Add variable type {page:father:XXX} to get infos from current parent page

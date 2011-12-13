@@ -177,8 +177,8 @@ if ($files) {
 				//Ext.ux.LiveDataPanel
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/ext/LiveDataPanel.js';
 				//Ext.ux.ItemSelector
-				$jsfiles [] = PATH_ADMIN_JS_FS.'/ext/MultiSelect.js';
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/ext/Multiselect2.js';
+				$jsfiles [] = PATH_ADMIN_JS_FS.'/ext/SuperBoxSelect.js';
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/ext/DDView.js';
 				//Ext.ux.TabScrollerMenu
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/ext/TabScrollerMenu.js';

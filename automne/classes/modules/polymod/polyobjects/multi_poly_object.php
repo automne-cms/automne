@@ -768,13 +768,23 @@ class CMS_multi_poly_object extends CMS_object_common
 				$availableItems[] = array('', $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET));
 				$return['disabled'] 	= true;
 			}
-			$return['xtype'] 			= 'multiselect';
+			/*$return['xtype'] 			= 'multiselect';
 			$return['dataFields'] 		= array('id', 'label');
 			$return['data'] 			= $availableItems;
 			$return['value'] 			= implode(',',$associatedItems);
 			$return['valueField'] 		= "id";
 			$return['displayField'] 	= "label";
+			$return['width'] 			= '100%';*/
+			
+			$return['xtype'] 			= 'superboxselect';
+			$return['dataFields'] 		= array('id', 'label');
+			$return['store'] 			= $availableItems;
+			$return['mode'] 			= 'local';
+			$return['value'] 			= implode(',',$associatedItems);
+			$return['valueField'] 		= "id";
+			$return['displayField'] 	= "label";
 			$return['width'] 			= '100%';
+			$return['stackItems'] 		= true;
 			
 			return $return;
 		}

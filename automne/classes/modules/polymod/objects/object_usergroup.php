@@ -240,13 +240,26 @@ class CMS_object_usergroup extends CMS_object_common
 				$return['disabled'] = true;
 				$return['value']	= '';
 			}
-			$return['xtype'] 			= 'multiselect';
+			/*$return['xtype'] 			= 'multiselect';
 			$return['dataFields'] 		= array('id', 'label');
 			$return['data'] 			= $availableItems;
 			$return['value'] 			= implode(',',$associatedItems);
 			$return['valueField'] 		= "id";
 			$return['displayField'] 	= "label";
-			$return['width'] 			= '97%';
+			$return['width'] 			= '97%';*/
+			
+			
+			$return['xtype'] 			= 'superboxselect';
+			$return['dataFields'] 		= array('id', 'label');
+			$return['store'] 			= $availableItems;
+			$return['mode'] 			= 'local';
+			$return['value'] 			= implode(',',$associatedItems);
+			$return['valueField'] 		= "id";
+			$return['displayField'] 	= "label";
+			$return['width'] 			= '100%';
+			$return['stackItems'] 		= true;
+			
+			
 		} else {
 			$usersDatas = array();
 			if ($params['isCurrentUser']) {

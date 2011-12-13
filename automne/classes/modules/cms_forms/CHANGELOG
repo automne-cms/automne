@@ -1,3 +1,6 @@
+v1.34
+[BUG] : Correct a bug in select tag : values containing commas are not allowed
+
 v1.33
 [FEATURE] : Add specific PHP code inclusion in forms actions
 
