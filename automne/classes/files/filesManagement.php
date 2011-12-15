@@ -1273,6 +1273,12 @@ class CMS_file extends CMS_grandFather
 		header('Content-Length: '.(string) filesize($source));
 		header('Content-Disposition: '.($inline ? 'inline' : 'attachment').'; filename="'.basename($source).'"');
 		
+		//If mod_xsendfile exists, use it to send files
+		if (!$deleteFile && ((isset($_SERVER["REDIRECT_ATM_X_SENDFILE"]) && $_SERVER["REDIRECT_ATM_X_SENDFILE"] == 1) || getenv('ATM_X_SENDFILE') == 1)) {
+			header('X-Sendfile: '.$source);
+			exit;
+		}
+		
 		//send file
 		if($file = fopen($source, 'rb')){
 			while( (!feof($file)) && (connection_status()==0) ){

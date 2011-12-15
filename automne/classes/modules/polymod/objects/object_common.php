@@ -164,7 +164,12 @@ abstract class CMS_object_common extends CMS_grandFather
 		$htmlParameters = '';		
 		if(is_array($inputParams)){
 		    foreach ($inputParams as $k => $v) {
-			    if (in_array($k, array('id','class','cols','size','rows','style','tabindex','disabled','dir','lang','width','height','onchange',))) {
+			    if (in_array($k, array('accesskey','class','contenteditable','contextmenu','dir','draggable','dropzone','id','lang','spellcheck','style',
+					'tabindex','title','accept','alt','autocomplete','autofocus','checked','dirname','disabled','form','formaction',
+					'formenctype','formmethod','formnovalidate','formtarget','height','list','max','maxlength','min','multiple','pattern',
+					'placeholder','readonly','required','size','src','step','type','value','width','cols','rows','wrap','onblur','onclick',
+					'onchange','ondblclick','onfocus','onmousedown','onmousemove','onmouseout','onmouseover','onmouseup','onkeydown',
+					'onkeypress','onkeyup',))) {
 				    $htmlParameters .= ' '.$k.'="'.$v.'"';
 			    }
 		    }

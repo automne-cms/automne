@@ -415,6 +415,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 	if ($panelStatus['visible']) {
 		//init vars
 		$panelContent = $panelTitle = $panelHTML = $panelTip = $panelTipTitle = $panelURL = $panelPicto = '';
+		$popupable = false;
 		$panelDisabled = 'true';
 		$panelEditable = $allowFrameNav = 'false';
 		$panelID = $panel;
@@ -553,6 +554,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 				$panelTipTitle = $cms_language->getMessage(MESSAGE_PAGE_TREE_TIP_TITLE);
 				$panelTip = $cms_language->getMessage(MESSAGE_PAGE_TREE_TIP_DESC);
 				$panelURL = 'tree.php';
+				$popupable = true;
 			break;
 			case 'favorite':
 				$panelTitle = '<img src="'.PATH_ADMIN_IMAGES_WR.'/s.gif" width="1" height="16" />';
@@ -1260,6 +1262,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 						title:			\''.sensitiveIO::sanitizeJSString($panelTitle).'\',
 						id:				\''.$panel.'\',
 						disabled:		'.$panelDisabled.',
+						popupable:		'.($popupable ? 1 : 0).',
 						currentPage:	'.$cms_page->getID();
 						if ($panelPicto) {
 							$jscontent .= ',

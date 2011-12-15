@@ -25,6 +25,7 @@ V4.2.0 (in progress)
 [REFACTOR] : Update phpMyAdmin to version 3.4.3.1
 [REFACTOR] : Add less files edition in stylesheet files edition
 [REFACTOR] : Replace multiselect ExtJS extension by superselect for better ergonomics
+[REFACTOR] : Allow page tree to be opened in a new window
 [FEATURE] : Add oembed object and oembed polymod field (external media field). Update Mediacenter to manage oembed medias
 [FEATURE] : Add parent page selection on new page creation
 [FEATURE] : Add variable type {page:father:XXX} to get infos from current parent page
@@ -40,6 +41,9 @@ V4.2.0 (in progress)
 [FEATURE] : Allow sharing of polymod objects accross polymod modules
 [FEATURE] : Handle redirections from old website URL to the new website page (see /automne/redirect/HOW_TO for details)
 [FEATURE] : Add specific PHP code inclusion in forms actions
+[FEATURE] : Add support for mod_xsendfile if exists to boost file download when served by PHP
+[FEATURE] : Add HTML5 attributes to atm-input tags
+[FEATURE] : Add attributes support to atm-form tags and rewrite for action attribute
 
 V4.1.4 (in progress)
 [BUG] : Correct bugs numbers: 2049, 2070, 2154, 2162, 2195, 2252, 2265, 2271, 2272 (see http://www.automne-cms.org/bug/)

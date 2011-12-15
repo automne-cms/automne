@@ -1211,6 +1211,22 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			))) {
 			return;
 		}
+		
+		$htmlParameters = '';
+		if(is_array($tag['attributes'])){
+		    foreach ($tag['attributes'] as $k => $v) {
+			    if (in_array($k, array('accesskey','class','contextmenu','dir','id','lang','spellcheck','style',
+						'tabindex','title','accept-charset','autocomplete','novalidate','target','onreset','onsubmit','accept',))) {
+				    $htmlParameters .= ' '.$k.'="\'.CMS_polymod_definition_parsing::replaceVars("'.CMS_polymod_definition_parsing::preReplaceVars($v).'", $replace).\'"';
+			    }
+		    }
+		}
+		if (isset($tag['attributes']['action'])) {
+			$action = ' action="\'.CMS_polymod_definition_parsing::replaceVars("'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['action']).'", $replace).\'"';
+		} else {
+			$action = ' action="\'.$_SERVER[\'SCRIPT_NAME\'].\'"';
+		}
+		
 		//disable cache for this row
 		$this->_elements['form'] = true;
 		$uniqueID = CMS_XMLTag::getUniqueID();
@@ -1222,7 +1238,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		//FORM TAG START '.$uniqueID.'
 		$objectDefinition_'.$tag['attributes']['name'].' = \''.$objectID.'\';
 		if (isset($polymodFormsItems[\''.$tag['attributes']['name'].'\'])) $object['.$objectID.'] = $polymodFormsItems[\''.$tag['attributes']['name'].'\'];
-		$content .= \'<form name="'.$tag['attributes']['name'].'" action="\'.$_SERVER[\'SCRIPT_NAME\'].\'" method="post" enctype="multipart/form-data">
+		$content .= \'<form name="'.$tag['attributes']['name'].'"'.$action.' method="post" enctype="multipart/form-data"'.$htmlParameters.'>
 		<input type="hidden" name="cms_action" value="validate" />
 		<input type="hidden" name="atm-token" value="\'.CMS_session::getToken(MOD_POLYMOD_CODENAME.\'-'.$tag['attributes']['name'].'\').\'" />
 		<input type="hidden" name="item" value="\'.$object['.$objectID.']->getID().\'" />

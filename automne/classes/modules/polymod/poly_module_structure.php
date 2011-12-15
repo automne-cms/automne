@@ -165,6 +165,11 @@ class CMS_poly_module_structure {
 			$moduleDetailledStructure[$object]['path'] = '[\''.$object.'\']';
 			if ($language && is_a($language, 'CMS_language')) {
 				$moduleDetailledStructure[$object]['translatedpath'] = sensitiveIO::sanitizeAsciiString($objectInfos[$object]->getLabel($language));
+				$count = 1;
+				while (isset($translationtable[$moduleDetailledStructure[$object]['translatedpath']])) {
+					$count++;
+					$moduleDetailledStructure[$object]['translatedpath'] = sensitiveIO::sanitizeAsciiString($objectInfos[$object]->getLabel($language)).$count;
+				}
 				CMS_poly_module_structure::_updateTranslationTable($translationtable, $moduleDetailledStructure[$object]);
 			}
 			$moduleDetailledStructure[$object]['fields'] = CMS_poly_module_structure::_createRecursiveDetailledStructure($objectStructure, $objectInfos, $language, $translationtable, $moduleDetailledStructure[$object]['path']."['fields']", $moduleDetailledStructure[$object]['translatedpath']);

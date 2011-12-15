@@ -41,3 +41,7 @@ Thumbs.db
 ./js/demo/*
 ./automne/sql/demo-*.sql
 ./automne/templates/images/*
+# Misc. files
+*.tgz
+*.tar.gz
+*.zip

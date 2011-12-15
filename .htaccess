@@ -33,6 +33,15 @@ Allow from all
 	</IfModule>
 </IfModule>
 
+# Use mod_xsendfile to send files if exists
+<IfModule mod_env.c>
+	<IfModule mod_xsendfile.c>
+		XSendFile On
+		XSendFileAllowAbove On
+		SetEnv ATM-X-SENDFILE 1
+	</IfModule>
+</IfModule>
+
 # To allow static files cache (2 weeks). 
 # Uncomment the following lines (mod_headers is needed)
 # Disabled by default.

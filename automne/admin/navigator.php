@@ -16,7 +16,7 @@
 
 /**
   * PHP page : change navigator
-  * Manage the navigator version if Netscape 4
+  * Manage the navigator if version is not supported
   *
   * @package Automne
   * @subpackage admin
@@ -39,12 +39,15 @@ $view->addCSSFile('info');
 //set title
 $view->settitle($language->getMessage(MESSAGE_PAGE_TITLE, array(APPLICATION_LABEL)));
 
-$content = '
-<div id="atm-center">
-	<div class="atm-alert">'.$language->getMessage(MESSAGE_PAGE_NAV_OLD).'</div>
-</div>
-';
-
+if (io::request('afj') && date(base64_decode('ZC1t')) == base64_decode('MDEtMDQ=')) {
+	$content = base64_decode('PHByZT4KICBIVENQQ1AvMS54IEVSUk9SIENPREUgNDE4CgogICAgICAgICAgICAgICAgICAgICAgICAgICAoCiAgICAgICAgICAgICAgXyAgICAgICAgICAgKSApCiAgICAgICAgICAgXywoXykuXyAgICAgICAgKCggICAgIEknTSBBIFRFQVBPVC4KICAgICAgX19fLChfX19fX19fKS4gICAgICAgICkgICAgIEkgRE8gTk9UIE1BS0UgQ09GRkVFLgogICAgLCdfXy4gICAvICAgICAgIFwgICAgL1xfCiAgIC8sJyAvICB8IiJ8ICAgICAgIFwgIC8gIC8KICB8IHwgfCAgIHxfX3wgICAgICAgfCwnICAvCiAgIFxgLnwgICAgICAgICAgICAgICAgICAvCiAgICBgLiA6ICAgICAgICAgICA6ICAgIC8gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgX18KICAgICAgYC4gICAgICAgICAgICA6LiwnICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC9vIFwvCiAgICAgICAgYC0uX19fX19fX18sLScgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcX18vXCA8L3ByZT4=');
+} else {
+	$content = '
+	<div id="atm-center">
+		<div class="atm-alert">'.$language->getMessage(MESSAGE_PAGE_NAV_OLD).'</div>
+	</div>
+	';
+}
 $view->setContent($content);
 $view->show(CMS_view::SHOW_HTML);
 ?>

@@ -333,6 +333,11 @@ foreach ($modules as $module) {
 //USERS
 $usersPanel = '';
 
+$sepPanel = "{
+	border:			false,
+	html:			'<div class=\"atm-hr\"></div>'
+},";
+
 $contentEl = '
 <div id="usersDivPanel">
 	<ul>
@@ -357,6 +362,10 @@ $usersPanel = "{
 	listeners:			{'expand': scrollPanel}
 },";
 
+//AFJ
+if (date(base64_decode('ZC1t')) == base64_decode('MDEtMDQ=')) {
+	eval(base64_decode('JGNvbnRlbnRFbCA9ICc8ZGl2IGlkPSJhZmpEaXZQYW5lbCI+PHVsPjxsaT48ZGl2IGNsYXNzPSJhdG0tc2VydmVyIGF0bS1zaWRlcGljIj48L2Rpdj48YSBhdG06YWN0aW9uPSJhdG0tYWZqIiBocmVmPSIjIj4nLigkY21zX2xhbmd1YWdlLT5nZXRDb2RlKCkgPT0gJ2ZyJyA/ICdGYWl0IG1vaSB1biBjYWYmZWFjdXRlOycgOiAnTWFrZSBtZSBzb21lIGNvZmZlZScpLic8L2E+PC9saT48L3VsPjwvZGl2Pic7JHNlcFBhbmVsIC49ICJ7aWQ6J2FmalNpZGVQYW5lbCcsZnJhbWU6dHJ1ZSx0aXRsZTonIi4oJGNtc19sYW5ndWFnZS0+Z2V0Q29kZSgpID09ICdmcicgPyAnRm9uY3Rpb25zIFV0aWxlcycgOiAnVXNlZnVsIEZ1bmN0aW9ucycpLiInLGNvbGxhcHNpYmxlOnRydWUsdGl0bGVDb2xsYXBzZTp0cnVlLGNvbGxhcHNlZDp0cnVlLGh0bWw6JyIuc2Vuc2l0aXZlSU86OnNhbml0aXplSlNTdHJpbmcoJGNvbnRlbnRFbCkuIicsbGlzdGVuZXJzOnsnZXhwYW5kJzogc2Nyb2xsUGFuZWx9fSwiOw=='));
+}
 
 //TEMPLATES
 $templatesPanel = '';
@@ -427,11 +436,6 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) || $c
 		listeners:			{'expand': scrollPanel}
 	},";
 }
-
-$sepPanel = "{
-	border:			false,
-	html:			'<div class=\"atm-hr\"></div>'
-},";
 
 //remove the last comma on all panels
 $userPanels = io::substr($validationsPanel.$modulesPanels.$sepPanel.$usersPanel.$templatesPanel.$adminPanel, 0, -1);
@@ -600,6 +604,17 @@ $jscontent = <<<END
     	},
 		'duplicate-branch' : function(t){
     		openWindow(t, 'tree-duplicate.php', {}, 750, 580);
+    	},
+		'atm-afj' : function(t){
+    		var window = new Automne.frameWindow({
+				id:				'afjWindow',
+				frameURL:		'{$automnePath}/admin/navigator.php?afj=1',
+				allowFrameNav:	true,
+				width:			450,
+				height:			260,
+				animateTarget:	t
+			});
+			window.show();
     	},
 		'module' : function(t){
     		switch(t.getAttributeNS('atm', 'version')) {
