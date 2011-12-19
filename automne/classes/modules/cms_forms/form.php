@@ -267,7 +267,7 @@ class CMS_forms_formular extends CMS_grandFather {
 				$source = $xml2Array->toXML($xmlArray);
 				//add target and hidden fields
 				$source = preg_replace('#<form([^>]+)>#U', 
-				'<form action="'.$_SERVER["SCRIPT_NAME"].'?'.sensitiveIO::sanitizeHTMLString($_SERVER['QUERY_STRING']).'#formAnchor'.$this->getID().'" method="post" enctype="multipart/form-data"\1>'."\n".
+				'<form action="'.$_SERVER["SCRIPT_NAME"].(isset($_SERVER['QUERY_STRING']) ? '?'.sensitiveIO::sanitizeHTMLString($_SERVER['QUERY_STRING']) : '').'#formAnchor'.$this->getID().'" method="post" enctype="multipart/form-data"\1>'."\n".
 				'<input type="hidden" name="cms_action" value="validate" />'."\n".
 				'<input type="hidden" name="atm-token" value="'.CMS_session::getToken(MOD_CMS_FORMS_CODENAME).'" />'."\n".
 				'<input type="hidden" name="formID" value="'.$this->getID().'" />'."\n".

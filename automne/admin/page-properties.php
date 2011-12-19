@@ -543,6 +543,10 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES) || $cms_use
 				name:			'pageCodename',
 				xtype:			'atmEmptyfield',
 				value:			'{$codename}'
+			},{
+				name:			'codename',
+				xtype:			'hidden',
+				value:			'{$codename}'
 			}";
 	}
 }

@@ -935,6 +935,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		//get key name
 		$matches = array();
 		preg_match("#\(([n0-9]+)\)->getValue\(#U", $on, $matches);
+		$return = '';
 		if (isset($matches[1])) {
 			$keyName = '$key_'.$matches[1];
 			$return = '
