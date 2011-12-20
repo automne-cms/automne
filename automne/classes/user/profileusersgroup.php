@@ -416,10 +416,123 @@ class CMS_profile_usersGroup extends CMS_profile
 	  * @access public
 	  */
 	function applyToUsers() {
+		if (!$this->_users) {
+			return true;
+		}
 		// class users by groups they belong to
 		$usersByGroups = array();
 		foreach ($this->_users as $userId) {
 			$userGroupsIds = CMS_profile_usersGroupsCatalog::getGroupsOfUser($userId, true);
+			ksort($userGroupsIds);
+			$usersByGroups[implode(',',$userGroupsIds)][] = $userId;
+		}
+		ksort($usersByGroups);
+		
+		$profiles = array();
+		//then loop through usersByGroups to compute rights of each  combination of groups
+		foreach ($usersByGroups as $groupsIds => $usersIds) {
+			$groupIds = explode(',', $groupsIds);
+			$groupStack = $oldGroupStack = '';
+			$profile = null;
+			foreach ($groupIds as $groupId) {
+				$oldGroupStack = $groupStack;
+				$groupStack .= $groupStack ? ','.$groupId : $groupId;
+				
+				if ($groupStack && isset($profiles[$groupStack])) {
+					//already computed : do nothing
+				} elseif ($oldGroupStack && isset($profiles[$oldGroupStack])) {
+					$profile = clone $profiles[$oldGroupStack]; //get last computation
+				} else {
+					$profile = new CMS_profile();
+				}
+				if ($profile) {
+					//add group clearances
+					$group = CMS_profile_usersGroupsCatalog::getById($groupId);
+					if ($group && !$group->hasError()) {
+						$profile->addPageClearances($group->getPageClearances());
+						$profile->addModuleClearances($group->getModuleClearances());
+						$profile->addModuleCategoriesClearancesStack($group->getModuleCategoriesClearancesStack());
+						$profile->addValidationClearances($group->getValidationClearances());
+						$profile->addAdminClearance($group->getAdminClearance());
+						$profile->addTemplateGroupsDenied($group->getTemplateGroupsDenied());
+						$profile->addRowGroupsDenied($group->getRowGroupsDenied());
+						
+						//store profile
+						$profiles[$groupStack] = $profile;
+					}
+				}
+			}
+		}
+		// Delete old categories clearances first (to speedup further inserts)
+		$q = new CMS_query("select profile_pru from profilesUsers where id_pru in (".implode(',', $this->_users).")");
+		while (($id = $q->getValue('profile_pru')) !== false) {
+			$qdel = new CMS_query("delete from modulesCategories_clearances where profile_mcc ='".SensitiveIO::sanitizeSQLString($id)."'");
+		}
+		//then loop through usersByGroups to apply rights of users by groups
+		foreach ($usersByGroups as $groupsIds => $usersIds) {
+			//get profile for groups
+			if (isset($profiles[$groupsIds])) {
+				$profile = $profiles[$groupsIds];
+				//get profilesIds for users
+				$q = new CMS_query("select profile_pru from profilesUsers where id_pru in (".implode(',', $usersIds).")");
+				$usersProfilesIds = array();
+				while (($id = $q->getValue('profile_pru')) !== false) {
+					$usersProfilesIds[] = $id;
+				}
+				if ($usersProfilesIds) {
+					//Update profiles
+					$pagesClearancesStack = $profile->getPageClearances();
+					$validationClearancesStack = $profile->getValidationClearances();
+					$moduleClearancesStack = $profile->getModuleClearances();
+					$templateGroupsDenied = $profile->getTemplateGroupsDenied();
+					$rowGroupsDenied = $profile->getRowGroupsDenied();
+					$q = new CMS_query("
+						update
+							profiles
+						set
+							administrationClearance_pr='".SensitiveIO::sanitizeSQLString($profile->getAdminClearance())."',
+							pageClearancesStack_pr='".SensitiveIO::sanitizeSQLString($pagesClearancesStack->getTextDefinition())."',
+							validationClearancesStack_pr='".SensitiveIO::sanitizeSQLString($validationClearancesStack->getTextDefinition())."',
+							moduleClearancesStack_pr='".SensitiveIO::sanitizeSQLString($moduleClearancesStack->getTextDefinition())."',
+							templateGroupsDeniedStack_pr='".SensitiveIO::sanitizeSQLString($templateGroupsDenied->getTextDefinition())."',
+							rowGroupsDeniedStack_pr='".SensitiveIO::sanitizeSQLString($rowGroupsDenied->getTextDefinition())."'
+						where
+							id_pr in (".implode(',', $usersProfilesIds).")
+					");
+					//Update categories clearances
+					$moduleCategoriesClearanceStack = $profile->getModuleCategoriesClearancesStack();
+					// Insert new ones
+					$elements = $moduleCategoriesClearanceStack->getElements();
+					if (is_array($elements) && $elements) {
+						$values = '';
+						foreach ($usersProfilesIds as $userProfileId) {
+							foreach ($elements as $v) {
+								$values .= ($values) ? ',':'';
+								$values .= "('".$userProfileId."', '".$v[0]."', '".$v[1]."')";
+							}
+						}
+						$sql = "
+							insert into modulesCategories_clearances
+								(profile_mcc, category_mcc, clearance_mcc)
+							values ".$values."
+						";
+						$q = new CMS_query($sql);
+					}
+				}
+			}
+		}
+		
+		//Clear polymod cache
+		CMS_cache::clearTypeCache('polymod');
+		
+		return true;
+	}
+	/*function applyToUsers() {
+		// class users by groups they belong to
+		$usersByGroups = array();
+		foreach ($this->_users as $userId) {
+			$userGroupsIds = CMS_profile_usersGroupsCatalog::getGroupsOfUser($userId, true);
+			ksort($userGroupsIds);
 			$usersByGroups[implode(',',$userGroupsIds)][] = $userId;
 		}
 		//then loop through usersByGroups to compute rights of users by groups
@@ -479,7 +592,7 @@ class CMS_profile_usersGroup extends CMS_profile
 		CMS_cache::clearTypeCache('polymod');
 		
 		return true;
-	}
+	}*/
 	
 	/**
 	  * destroys the cmsprofile from persistence (MySQL for now).

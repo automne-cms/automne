@@ -423,10 +423,22 @@ if (isset($_SERVER["HTTP_X_FORWARDED_HOST"])) {
 if (isset($_SERVER["HTTP_X_FORWARDED_SERVER"])) {
 	$_SERVER["HTTP_SERVER"] = $_SERVER["HTTP_X_FORWARDED_SERVER"];
 }
-if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) {
-	$_SERVER["REMOTE_ADDR"] = $_SERVER["HTTP_X_FORWARDED_FOR"];
-} elseif (isset($_SERVER["HTTP_CLIENT_IP"])) {
-	$_SERVER["REMOTE_ADDR"] = $_SERVER["HTTP_CLIENT_IP"];
+if (isset($_SERVER["HTTP_X_REAL_IP"])) {
+	$_SERVER["REMOTE_ADDR"] = $_SERVER["HTTP_X_REAL_IP"];
+}
+if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+	$_SERVER["REMOTE_ADDR"] = $_SERVER['HTTP_CLIENT_IP']; 
+} elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && preg_match_all('#\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}#s', $_SERVER['HTTP_X_FORWARDED_FOR'], $matches)) {
+	// make sure we dont pick up an internal or local IP
+	foreach ($matches[0] as $ip) { 
+		if (!preg_match('#^(10|127\.0\.0|172\.16|192\.168)\.#', $ip)) { 
+			$_SERVER["REMOTE_ADDR"] = $ip; 
+			break;
+		}
+	}
+	unset($ip);
+} elseif (isset($_SERVER['HTTP_FROM'])) { 
+	$_SERVER["REMOTE_ADDR"] = $_SERVER['HTTP_FROM']; 
 }
 
 /**

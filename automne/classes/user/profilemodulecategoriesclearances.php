@@ -73,7 +73,6 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 				$this->_profileID = $profileID;
 				$sql = "
 					select
-						id_mcc as id,
 						category_mcc as categoryID,
 						clearance_mcc as clearance
 					from
@@ -197,7 +196,6 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 				if (!$this->_isAdmin) {
 					$sql = "
 						select
-							id_mcc as id,
 							category_mcc as categoryID,
 							clearance_mcc as clearance
 						from
@@ -358,11 +356,11 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 				$values = '';
 				foreach ($elements as $v) {
 					$values .= ($values) ? ',':'';
-					$values .= "('', '".$this->_profileID."', '".$v[0]."', '".$v[1]."')";
+					$values .= "('".$this->_profileID."', '".$v[0]."', '".$v[1]."')";
 				}
 				$sql = "
 					insert into modulesCategories_clearances
-						(id_mcc, profile_mcc, category_mcc, clearance_mcc)
+						(profile_mcc, category_mcc, clearance_mcc)
 					values ".$values."
 				";
 				$q = new CMS_query($sql);

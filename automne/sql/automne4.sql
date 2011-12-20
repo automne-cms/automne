@@ -1053,25 +1053,22 @@ INSERT INTO `modulesCategories` (`id_mca`, `uuid_mca`, `module_mca`, `parent_mca
 
 DROP TABLE IF EXISTS `modulesCategories_clearances`;
 CREATE TABLE `modulesCategories_clearances` (
-  `id_mcc` int(11) unsigned NOT NULL auto_increment,
   `profile_mcc` int(11) unsigned NOT NULL default '0',
-  `category_mcc` int(10) unsigned NOT NULL default '0',
-  `clearance_mcc` tinyint(16) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`id_mcc`),
-  UNIQUE KEY `profilecategories` (`profile_mcc`,`category_mcc`),
+  `category_mcc` int(11) unsigned NOT NULL default '0',
+  `clearance_mcc` int(11) unsigned NOT NULL default '0',
   KEY `profile` (`profile_mcc`),
   KEY `category` (`category_mcc`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `modulesCategories_clearances`
 --
 
-INSERT INTO `modulesCategories_clearances` (`id_mcc`, `profile_mcc`, `category_mcc`, `clearance_mcc`) VALUES(668, 1, 18, 3);
-INSERT INTO `modulesCategories_clearances` (`id_mcc`, `profile_mcc`, `category_mcc`, `clearance_mcc`) VALUES(172, 3, 2, 1);
-INSERT INTO `modulesCategories_clearances` (`id_mcc`, `profile_mcc`, `category_mcc`, `clearance_mcc`) VALUES(171, 3, 1, 1);
-INSERT INTO `modulesCategories_clearances` (`id_mcc`, `profile_mcc`, `category_mcc`, `clearance_mcc`) VALUES(667, 1, 2, 3);
-INSERT INTO `modulesCategories_clearances` (`id_mcc`, `profile_mcc`, `category_mcc`, `clearance_mcc`) VALUES(666, 1, 1, 3);
+INSERT INTO `modulesCategories_clearances` (`profile_mcc`, `category_mcc`, `clearance_mcc`) VALUES(1, 18, 3);
+INSERT INTO `modulesCategories_clearances` (`profile_mcc`, `category_mcc`, `clearance_mcc`) VALUES(3, 2, 1);
+INSERT INTO `modulesCategories_clearances` (`profile_mcc`, `category_mcc`, `clearance_mcc`) VALUES(3, 1, 1);
+INSERT INTO `modulesCategories_clearances` (`profile_mcc`, `category_mcc`, `clearance_mcc`) VALUES(1, 2, 3);
+INSERT INTO `modulesCategories_clearances` (`profile_mcc`, `category_mcc`, `clearance_mcc`) VALUES(1, 1, 3);
 
 -- --------------------------------------------------------
 

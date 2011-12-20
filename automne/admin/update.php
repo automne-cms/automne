@@ -408,6 +408,23 @@ if (!$installed) {
 		$content .= 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v413-to-v420-4.sql must be executed manualy<br/>';
 	}
 }
+#refactor modulesCategories_clearances
+$sql = "show columns from modulesCategories_clearances";
+$q = new CMS_query($sql);
+$installed = true;
+while($r = $q->getArray()) {
+	if ($r["Field"] == "id_mcc") {
+		$installed = false;
+	}
+}
+if (!$installed) {
+	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v413-to-v420-5.sql',true)) {
+		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v413-to-v420-5.sql',false);
+		$content .= 'Database successfuly updated (refactor modules categories clearances)<br/>';
+	} else {
+		$content .= 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v413-to-v420-5.sql must be executed manualy<br/>';
+	}
+}
 //END UPDATE FROM 4.1.3 TO 4.2.0
 
 //Update Automne messages

@@ -82,7 +82,7 @@ if (sensitiveIO::isPositiveInteger($groupId)) {
 //Need to sanitize all datas which can contain single quotes
 $label = sensitiveIO::sanitizeJSString($group->getLabel());
 $labelValue = ($label) ? "value:'{$label}'," : '';
-$description = sensitiveIO::sanitizeJSString($group->getDescription(), false, true, true); 
+$description = addslashes(sensitiveIO::sanitizeJSString($group->getDescription(), false, true, true));
 
 //get records / pages
 $recordsPerPage = CMS_session::getRecordsPerPage();
