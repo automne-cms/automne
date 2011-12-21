@@ -805,6 +805,7 @@ class CMS_object_search extends CMS_grandFather
 							'any',
 							'all',
 							'phrase',
+							'beginswith',
 						);
 						if ($operator && !in_array($operator, $supportedOperator)) {
 							$this->raiseError("Unkown search operator : ".$operator.", use default search instead");
@@ -935,6 +936,14 @@ class CMS_object_search extends CMS_grandFather
 										$where .= "(value like '%".$value."%' or value like '%".htmlentities($value)."%')";
 									} else {
 										$where .= "value like '%".$value."%'";
+									}
+								break;
+								case 'beginswith':
+									$value = str_replace(array('%','_'), array('\%','\_'), trim($value));
+									if (htmlentities($value) != $value) {
+										$where .= "(value like '".$value."%' or value like '".htmlentities($value)."%')";
+									} else {
+										$where .= "value like '".$value."%'";
 									}
 								break;
 							}
