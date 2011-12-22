@@ -69,6 +69,10 @@ define("MESSAGE_PAGE_FIELD_KEYWORDS_OPTIONS", 585);
 define("MESSAGE_PAGE_FIELD_KEYWORDS_ANY", 586);
 define("MESSAGE_PAGE_FIELD_KEYWORDS_ALL", 587);
 define("MESSAGE_PAGE_FIELD_KEYWORDS_PHRASE", 588);
+define("MESSAGE_PAGE_FIELD_KEYWORDS_STARTSWITH", 634);
+define("MESSAGE_PAGE_FIELD_KEYWORDS_STARTSWITH_HELP", 639);
+define("MESSAGE_PAGE_FIELD_KEYWORDS_TARGET", 640);
+define("MESSAGE_PAGE_FIELD_KEYWORDS_TARGET_ALL", 641);
 define("MESSAGE_ACTION_UNPUBLISH", 603);
 define("MESSAGE_ACTION_PUBLISH", 604);
 define("MESSAGE_ACTION_PUBLISH_SELECTED", 602);
@@ -127,6 +131,10 @@ $isPrimary = $object->isPrimaryResource() ? 'true' : 'false';
 $searchPanel = '';
 $keywordsSearch = false;
 $searchLists = '';
+$possibleTargets = array();
+$possibleTargets[] = array('id' 	=> -1,
+				'label'	=> sensitiveIO::sanitizeJSString($cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS_TARGET_ALL, false, MOD_POLYMOD_CODENAME))
+				);
 //Add all subobjects or special fields (like categories) to search if any
 foreach ($objectFields as $fieldID => $field) {
 	//check if field is searchable
@@ -167,12 +175,42 @@ foreach ($objectFields as $fieldID => $field) {
 			},";
 		} else {
 			$keywordsSearch = true;
+			$possibleTargets[]= array(
+				'id' 	=> $fieldID,
+				'label'	=> sensitiveIO::sanitizeJSString($field->getLabel($cms_language))
+			);
 		}
 	}
 }
 //add keyword search
 if ($keywordsSearch) {
 	$value = sensitiveIO::sanitizeJSString(CMS_session::getSessionVar('items_'.$object->getID().'_kwrds'));
+	$targetvalue = CMS_session::getSessionVar('kwrds_target_'.$object->getID());
+	$targetvalue = $targetvalue ? $targetvalue : -1;
+	$possibleTargets = sensitiveIO::jsonEncode($possibleTargets);
+	$targetcombo = "{
+				xtype:				'combo',
+				name:				'kwrds_target_{$object->getID()}',
+				hiddenName:		 	'kwrds_target_{$object->getID()}',
+				forceSelection:		true,
+				fieldLabel:			'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS_TARGET, false, MOD_POLYMOD_CODENAME)}',
+				hideLabel:			false,
+				mode:				'local',
+				triggerAction:		'all',
+				valueField:			'id',
+				displayField:		'label',
+				value:				'{$targetvalue}',
+				anchor:				'98%',
+				store:				new Ext.data.JsonStore({
+					fields:				['id', 'label'],
+					data:				{$possibleTargets}
+				}),
+				allowBlank:		 	false,
+				selectOnFocus:		true,
+				editable:			false,
+				validateOnBlur:		false,
+				listeners:			{'valid':moduleObjectWindow.search}
+			}";
 	// Keywords
 	$searchPanel .= "{
 		fieldLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS, false, MOD_POLYMOD_CODENAME)}',
@@ -224,9 +262,14 @@ if ($keywordsSearch) {
 			boxLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS_PHRASE, false, MOD_POLYMOD_CODENAME)}',
 			inputValue:		'phrase',
 			checked:		false
-		}]
+		},{
+			boxLabel:		'<span class=\"atm-help\" ext:qtip=\"{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS_STARTSWITH_HELP, false, MOD_POLYMOD_CODENAME)}\">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS_STARTSWITH, false, MOD_POLYMOD_CODENAME)}</span>',
+			inputValue:		'beginswith',
+			checked:		false
+		},{$targetcombo}]
 	},";
 }
+
 //add publication date search
 if ($object->isPrimaryResource()) {
 	// Publication Dates

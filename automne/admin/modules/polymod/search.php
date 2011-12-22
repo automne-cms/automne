@@ -94,9 +94,24 @@ $resultsDefinition = $object->getValue('resultsDefinition');
 //load fields objects for object
 $objectFields = CMS_poly_object_catalog::getFieldsDefinition($object->getID());
 
+$possibleTargets = array();
+foreach ($objectFields as $fieldID => $field) {
+	if (isset($_REQUEST['items_'.$object->getID().'_'.$fieldID])) {
+		$fields[$fieldID] = sensitiveIO::request('items_'.$object->getID().'_'.$fieldID, '', CMS_session::getSessionVar('items_'.$object->getID().'_'.$fieldID));
+	}
+	// get the value of all possible searchable fields in case a target is specified by the user
+	if ($field->getValue('searchable')){
+		$objectType = $field->getTypeObject();
+		if (!method_exists($objectType, 'getListOfNamesForObject')) {
+			$possibleTargets[]= $fieldID;
+		}
+	}
+}
+
 //get all search datas from requests
 $keywords = sensitiveIO::request('items_'.$object->getID().'_kwrds', '', CMS_session::getSessionVar('items_'.$object->getID().'_kwrds'));
-$keywordsOptions = sensitiveIO::request('items_'.$object->getID().'_kwrds_options', array('any', 'all', 'phrase'), 'any'/*CMS_session::getSessionVar('items_'.$object->getID().'_kwrds_options')*/);
+$keywordsOptions = sensitiveIO::request('items_'.$object->getID().'_kwrds_options', array('any', 'all', 'phrase','beginswith'), 'any'/*CMS_session::getSessionVar('items_'.$object->getID().'_kwrds_options')*/);
+$keywordsTarget = sensitiveIO::request('kwrds_target_'.$object->getID(),$possibleTargets,-1);
 $dateFrom = sensitiveIO::request('items_dtfrm', '', CMS_session::getSessionVar('items_dtfrm'));
 $dateEnd = sensitiveIO::request('items_dtnd', '', CMS_session::getSessionVar('items_dtnd'));
 $sort = sensitiveIO::request('sort_'.$object->getID(), '', CMS_session::getSessionVar('sort_'.$object->getID()));
@@ -104,15 +119,12 @@ $status = sensitiveIO::request('status_'.$object->getID(), '', CMS_session::getS
 $direction = sensitiveIO::request('direction_'.$object->getID(), '', CMS_session::getSessionVar('direction_'.$object->getID()));
 //Add all subobjects to search if any
 $fields = array();
-foreach ($objectFields as $fieldID => $field) {
-	if (isset($_REQUEST['items_'.$object->getID().'_'.$fieldID])) {
-		$fields[$fieldID] = sensitiveIO::request('items_'.$object->getID().'_'.$fieldID, '', CMS_session::getSessionVar('items_'.$object->getID().'_'.$fieldID));
-	}
-}
+
 
 // Set default session search options
 CMS_session::setSessionVar('items_'.$object->getID().'_kwrds', $keywords);
 //CMS_session::setSessionVar('items_'.$object->getID().'_kwrds_options', $keywordsOptions);
+CMS_session::setSessionVar('kwrds_target_'.$object->getID(),$keywordsTarget);
 CMS_session::setSessionVar("items_dtfrm", $dateFrom);
 CMS_session::setSessionVar("items_dtnd", $dateEnd);
 CMS_session::setSessionVar('sort_'.$object->getID(), $sort);
@@ -177,7 +189,13 @@ foreach ($objectFields as $fieldID => $field) {
 if (CMS_session::getSessionVar('items_'.$object->getID().'_kwrds') != '') {
 	$kwrd = CMS_session::getSessionVar('items_'.$object->getID().'_kwrds');
 	if (!io::isPositiveInteger($kwrd)) {
-		$search->addWhereCondition("keywords", $kwrd, $keywordsOptions);
+		if(io::isPositiveInteger($keywordsTarget)) {
+			// a specific field target was specified
+			$search->addWhereCondition($keywordsTarget, $kwrd, $keywordsOptions);
+		}
+		else {
+			$search->addWhereCondition("keywords", $kwrd, $keywordsOptions);
+		}
 	} else {
 		$search->addWhereCondition("item", $kwrd);
 	}
