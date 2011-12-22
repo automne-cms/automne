@@ -94,6 +94,9 @@ $resultsDefinition = $object->getValue('resultsDefinition');
 //load fields objects for object
 $objectFields = CMS_poly_object_catalog::getFieldsDefinition($object->getID());
 
+//Add all subobjects to search if any
+$fields = array();
+
 $possibleTargets = array();
 foreach ($objectFields as $fieldID => $field) {
 	if (isset($_REQUEST['items_'.$object->getID().'_'.$fieldID])) {
@@ -117,9 +120,6 @@ $dateEnd = sensitiveIO::request('items_dtnd', '', CMS_session::getSessionVar('it
 $sort = sensitiveIO::request('sort_'.$object->getID(), '', CMS_session::getSessionVar('sort_'.$object->getID()));
 $status = sensitiveIO::request('status_'.$object->getID(), '', CMS_session::getSessionVar('status_'.$object->getID()));
 $direction = sensitiveIO::request('direction_'.$object->getID(), '', CMS_session::getSessionVar('direction_'.$object->getID()));
-//Add all subobjects to search if any
-$fields = array();
-
 
 // Set default session search options
 CMS_session::setSessionVar('items_'.$object->getID().'_kwrds', $keywords);
