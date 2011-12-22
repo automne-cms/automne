@@ -388,8 +388,8 @@ switch ($step) {
 				$countOptions=0;
 				if (sizeof($aFormField->getAttribute("options"))) {
 					foreach ($aFormField->getAttribute("options") as $aSelectValue => $aSelectValueLabel) {
-						$selectValues .= ($countOptions) ? ",".$aSelectValue : $aSelectValue;
-						$selectLabels .= ($countOptions) ? ",".$aSelectValueLabel : $aSelectValueLabel ;
+						$selectValues .= ($countOptions) ? "||".$aSelectValue : $aSelectValue;
+						$selectLabels .= ($countOptions) ? "||".$aSelectValueLabel : $aSelectValueLabel ;
 						$countOptions++;
 					}
 				}

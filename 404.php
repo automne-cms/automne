@@ -116,27 +116,42 @@ if (ERROR404_EMAIL_ALERT && sensitiveIO::isValidEmail(APPLICATION_MAINTAINER_EMA
 	$mail->sendEmail();
 }
 
-//try to get website by domain to serve specific 404 page
-$domain = @parse_url($_SERVER['REQUEST_URI'], PHP_URL_HOST) ? @parse_url($_SERVER['REQUEST_URI'], PHP_URL_HOST) : (@parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST']);
-if ($domain) {
-	$website = CMS_websitesCatalog::getWebsiteFromDomain($domain);
-	if ($website && !$website->hasError()) {
-		//check if website has a 404 page defined
-		$page404 = $website->get404();
-		if ($page404) {
-			$pPath = $page404->getHTMLURL(false, false, PATH_RELATIVETO_FILESYSTEM);
-			if ($pPath) {
+//try to get website by path to serve specific 404 page
+$path = pathinfo (parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), PATHINFO_DIRNAME);
+$website = null;
+if ($path) {
+	$websites = CMS_websitesCatalog::getAll('order');
+	foreach ($websites as $website) {
+		if ($website->getPagesPath(PATH_RELATIVETO_WEBROOT)) {
+			if (strpos($path, $website->getPagesPath(PATH_RELATIVETO_WEBROOT)) === 0 && is_object($website->get404())) {
+				break;
+			}
+		}
+	}
+}
+if (!isset($website)) {
+	//try to get website by domain to serve specific 404 page
+	$domain = @parse_url($_SERVER['REQUEST_URI'], PHP_URL_HOST) ? @parse_url($_SERVER['REQUEST_URI'], PHP_URL_HOST) : (@parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST']);
+	if ($domain) {
+		$website = CMS_websitesCatalog::getWebsiteFromDomain($domain);
+	}
+}
+if (isset($website) && $website && !$website->hasError()) {
+	//check if website has a 404 page defined
+	$page404 = $website->get404();
+	if ($page404) {
+		$pPath = $page404->getHTMLURL(false, false, PATH_RELATIVETO_FILESYSTEM);
+		if ($pPath) {
+			if (file_exists($pPath)) {
+				$cms_page_included = true;
+				require($pPath);
+				exit;
+			} elseif ($page404->regenerate(true)) {
+				clearstatcache ();
 				if (file_exists($pPath)) {
 					$cms_page_included = true;
 					require($pPath);
 					exit;
-				} elseif ($page404->regenerate(true)) {
-					clearstatcache ();
-					if (file_exists($pPath)) {
-						$cms_page_included = true;
-						require($pPath);
-						exit;
-					}
 				}
 			}
 		}

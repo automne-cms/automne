@@ -264,8 +264,8 @@ switch ($step) {
 		$countOptions=0;
 		if (sizeof($field->getAttribute("options"))) {
 			foreach ($field->getAttribute("options") as $aSelectValue => $aSelectValueLabel) {
-				$selectValues .= ($countOptions) ? ",".$aSelectValue : $aSelectValue;
-				$selectLabels .= ($countOptions) ? ",".$aSelectValueLabel : $aSelectValueLabel ;
+				$selectValues .= ($countOptions) ? "||".$aSelectValue : $aSelectValue;
+				$selectLabels .= ($countOptions) ? "||".$aSelectValueLabel : $aSelectValueLabel ;
 				$countOptions++;
 			}
 		}
