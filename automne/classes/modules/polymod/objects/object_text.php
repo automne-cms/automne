@@ -540,8 +540,7 @@ class CMS_object_text extends CMS_object_common
 						$cleanedWords[] = $aWord;
 					}
 				}
-			}
-			else {
+			} elseif ($operator != 'phrase' && $operator != 'beginswith') {
 				// we keep this for backward compatibility, where the user can specify his search with % at the beginning / end
 				$value = "'".SensitiveIO::sanitizeSQLString($value)."'";
 			}

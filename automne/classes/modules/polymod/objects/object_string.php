@@ -346,7 +346,7 @@ class CMS_object_string extends CMS_object_common
 		} elseif (strtolower($value) == 'null') {
 			$value = "''";
 		} else {
-			if(($operator == 'any') || ($operator == 'all')) {
+			if (($operator == 'any') || ($operator == 'all')) {
 				$words = array();
 				$words = array_map("trim",array_unique(explode(" ", $value)));
 				
@@ -356,8 +356,7 @@ class CMS_object_string extends CMS_object_common
 						$cleanedWords[] = $aWord;
 					}
 				}
-			}
-			else {
+			} elseif ($operator != 'phrase' && $operator != 'beginswith') {
 				// we keep this for backward compatibility, where the user can specify his search with % at the beginning / end
 				$value = "'".SensitiveIO::sanitizeSQLString($value)."'";
 			}
@@ -424,7 +423,7 @@ class CMS_object_string extends CMS_object_common
 				objectFieldID = '".SensitiveIO::sanitizeSQLString($fieldID)."'
 				and ". $whereClause. "
 				$where";
-				
+		
 		return $sql;
 	}
 }
