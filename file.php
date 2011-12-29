@@ -22,7 +22,7 @@
   * @subpackage apache
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
-
+ 
 // *************************************************************************
 // **   FILE HANDLER. THIS PHP CODE IS NEEDED TO DOWNLOAD ALL DOCUMENTS   **
 // *************************************************************************
