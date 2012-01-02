@@ -304,6 +304,7 @@ class CMS_grandFather
 				'cms_blockscatalog' 				=> PATH_MODULES_FS.'/standard/blockscatalog.php',
 				'cms_block_text' 					=> PATH_MODULES_FS.'/standard/blocktext.php',
 				'cms_block_varchar' 				=> PATH_MODULES_FS.'/standard/blockvarchar.php',
+				'cms_block_link' 					=> PATH_MODULES_FS.'/standard/blocklink.php',
 				'cms_moduleclientspace_standard' 	=> PATH_MODULES_FS.'/standard/clientspace.php',
 				'cms_moduleclientspace_standard_catalog' => PATH_MODULES_FS.'/standard/clientspacescatalog.php',
 				'cms_xmltag_admin' 					=> PATH_MODULES_FS.'/standard/tags/admin.php',

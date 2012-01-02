@@ -40,7 +40,7 @@ $view->setDisplayMode(CMS_view::SHOW_RAW);
 //This file is an admin file. Interface must be secure
 $view->setSecure();
 
-$action = sensitiveIO::request('action', array('add-row', 'del-row', 'move-row', 'move-row-cs', 'clear-block', 'update-row', 'update-block-varchar', 'update-block-text', 'update-block-file', 'update-block-flash', 'update-block-image'));
+$action = sensitiveIO::request('action', array('add-row', 'del-row', 'move-row', 'move-row-cs', 'clear-block', 'update-row', 'update-block-varchar', 'update-block-text', 'update-block-file', 'update-block-flash', 'update-block-image', 'update-block-link'));
 $tpl = sensitiveIO::request('template', 'sensitiveIO::isPositiveInteger');
 $index = sensitiveIO::request('index', 'sensitiveIO::isPositiveInteger');
 $rowId = sensitiveIO::request('rowType', 'sensitiveIO::isPositiveInteger');
@@ -69,6 +69,8 @@ $attributes = sensitiveIO::request('flashattributes');
 $imagelink = sensitiveIO::request('imagelink');
 $imagelabel = sensitiveIO::request('imagelabel');
 $zoomname = sensitiveIO::request('zoomname');
+//block link
+$linktext = sensitiveIO::request('link');
 
 //unset requests to avoid them to have interaction with evaluated page codes
 sensitiveIO::unsetRequest(array_keys($_REQUEST));
@@ -477,6 +479,45 @@ switch ($action) {
 			$linkDialog->create($imagelink, MOD_STANDARD_CODENAME, $cms_page->getID());
 			$link = $linkDialog->getHref();
 			$data['externalLink'] = $link->getTextDefinition();
+			
+			$cms_block->writeToPersistence($cms_page->getID(), $cs, $rowTag, RESOURCE_LOCATION_EDITION, false, $data);
+			//instanciate the clientspace
+			$clientSpace = CMS_moduleClientSpace_standard_catalog::getByTemplateAndTagID($tpl, $cs, $visualMode == PAGE_VISUALMODE_FORM);
+			//get block's row from CS
+			$row = $clientSpace->getRow($rowId, $rowTag);
+			if ($row) {
+				//get row datas
+				$datas = $row->getData($cms_language, $cms_page, $clientSpace, PAGE_VISUALMODE_FORM);
+				//instanciate modules treatments for page content tags
+				$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_PAGECONTENT_TAGS, PAGE_VISUALMODE_FORM, $cms_page);
+				$modulesTreatment->setTreatmentParameters(array("language" => $cms_language, 'replaceVars' => true));
+				$modulesTreatment->setDefinition($datas);
+				$datas = $modulesTreatment->treatContent(true);
+				//set datas as returned content
+				$view->setContent($datas);
+				$edited = true;
+			} else {
+				CMS_grandFather::raiseError('Can\'t get row type '.$rowId.' from clientspace '.$cs.' of page '.$cms_page->getID().' with row id '.$rowTag);
+				$view->setActionMessage($cms_language->getJsMessage(MESSAGE_PAGE_ERROR_UPDATE_BLOCK_CONTENT));
+			}
+		} else {
+			CMS_grandFather::raiseError('Can\'t get block class type '.$blockClass.' to update content');
+			$view->setActionMessage($cms_language->getJsMessage(MESSAGE_PAGE_ERROR_UPDATE_BLOCK_CONTENT));
+		}
+	break;
+	case 'update-block-link':
+		//update block content
+		if (class_exists($blockClass)) {
+			$cms_block = new $blockClass();
+			$cms_block->initializeFromBasicAttributes($blockId);
+			//get old datas
+			$old_data = $cms_block->getRawData($cms_page->getID(), $cs, $rowTag, RESOURCE_LOCATION_EDITION, false);
+			//Link
+			$link = ($old_data['value']) ? new CMS_href($old_data['value']) : new CMS_href();
+			$linkDialog = new CMS_dialog_href($link);
+			$linkDialog->create($linktext, MOD_STANDARD_CODENAME, $cms_page->getID());
+			$link = $linkDialog->getHref();
+			$data['value'] = $link->getTextDefinition();
 			
 			$cms_block->writeToPersistence($cms_page->getID(), $cs, $rowTag, RESOURCE_LOCATION_EDITION, false, $data);
 			//instanciate the clientspace

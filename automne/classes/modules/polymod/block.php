@@ -353,18 +353,11 @@ class CMS_block_polymod extends CMS_block
 				clientSpaceID='".sensitiveIO::sanitizeSQLString($clientSpaceID)."',
 				rowID='".sensitiveIO::sanitizeSQLString($rowID)."',
 				blockID='".sensitiveIO::sanitizeSQLString($this->_tagID)."',
+				type='CMS_block_polymod',
 				value='".sensitiveIO::sanitizeSQLString(serialize($data["value"]))."'
 		";
 		
-		/*$sqlParameters = array(
-			'page' => $pageID,
-			'clientspace' => $clientSpaceID,
-			'rowID' => $rowID,
-			'blockID' => $this->_tagID,
-			'value' => serialize($data["value"]),
-		);*/
 		$q = new CMS_query($sql);
-		//$q->executePreparedQuery($sql, $sqlParameters);
 		if ($q->hasError()) {
 			return false;
 		} else {
@@ -428,6 +421,7 @@ class CMS_block_polymod extends CMS_block
 					clientSpaceID='".sensitiveIO::sanitizeSQLString($this->_clientSpaceID)."',
 					rowID='".sensitiveIO::sanitizeSQLString($this->_rowID)."',
 					blockID='".sensitiveIO::sanitizeSQLString($this->_tagID)."',
+					type='CMS_block_polymod',
 					value='".sensitiveIO::sanitizeSQLString(serialize($this->_value))."'
 			";
 			$sql = "

@@ -134,6 +134,7 @@ if ($files) {
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/edit/block-image.js';
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/edit/block-text.js';
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/edit/block-varchar.js';
+				$jsfiles [] = PATH_ADMIN_JS_FS.'/edit/block-link.js';
 			break;
 			case 'launch':
 				//this file launch application and must be the last to include

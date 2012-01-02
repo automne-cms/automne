@@ -1469,7 +1469,7 @@ class CMS_module_standard extends CMS_module
 			case MODULE_TREATMENT_BLOCK_TAGS :
 				$return = array (
 					"block" => array("selfClosed" => false, "parameters" => array("module"	=> MOD_STANDARD_CODENAME,
-																				  "type"	=> "file|text|varchar|image|flash")),
+																				  "type"	=> "file|text|varchar|image|flash|link")),
 					"row" => array("selfClosed" => false, "parameters" => array()),
 				);
 			break;

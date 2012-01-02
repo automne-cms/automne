@@ -132,8 +132,8 @@ class CMS_href extends CMS_grandFather
 				$this->_fileLink = @$tmp[3];
 				$this->_target = @$tmp[4];
 				// Attributes
-				if (@$tmp[5] != '') {
-					$attrs = explode('&&', @$tmp[5]);
+				if (isset($tmp[5]) && $tmp[5] != '') {
+					$attrs = explode('&&', $tmp[5]);
 					if (is_array($attrs) && $attrs) {
 						foreach ($attrs as $attr) {
 							$t = explode(',', $attr);
@@ -142,15 +142,15 @@ class CMS_href extends CMS_grandFather
 					}
 				}
 				// Popup
-				if (@$tmp[6] != '') {
-					$p = explode(',', @$tmp[6]);
+				if (isset($tmp[6]) && $tmp[6] != '') {
+					$p = explode(',', $tmp[6]);
 					if (is_array($p) && $p) {
 						$this->setPopup($p[0], $p[1]);
 					}
 				}
 				// Link label
-				if (@$tmp[7] != '') {
-					$this->setLabel(@$tmp[7]);
+				if (isset($tmp[7]) && $tmp[7] != '') {
+					$this->setLabel($tmp[7]);
 				}
 				return;
 			} else {

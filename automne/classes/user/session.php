@@ -652,8 +652,7 @@ class CMS_session extends CMS_grandFather
 	  */
 	public static function getAutoLoginCookieName() {
 		$input = APPLICATION_LABEL."_autologin";
-		$sanitized = strtr($input, " אגהיטכךןמצפשüû", "_aaaeeeeiioouuu");
-		$sanitized = preg_replace("#[^[a-zA-Z0-9_-]]*#", "", $sanitized);
+		$sanitized = io::sanitizeAsciiString($input, '', '_-');
 		return $sanitized;
 	}
 	

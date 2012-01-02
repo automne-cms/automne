@@ -425,6 +425,23 @@ if (!$installed) {
 		$content .= 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v413-to-v420-5.sql must be executed manualy<br/>';
 	}
 }
+#add type to raws datas tables to manage link block
+$sql = "show columns from blocksRawDatas_edited";
+$q = new CMS_query($sql);
+$installed = false;
+while($r = $q->getArray()) {
+	if ($r["Field"] == "type") {
+		$installed = true;
+	}
+}
+if (!$installed) {
+	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v413-to-v420-6.sql',true)) {
+		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v413-to-v420-6.sql',false);
+		$content .= 'Database successfuly updated (add link block)<br/>';
+	} else {
+		$content .= 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v413-to-v420-6.sql must be executed manualy<br/>';
+	}
+}
 //END UPDATE FROM 4.1.3 TO 4.2.0
 
 //Update Automne messages

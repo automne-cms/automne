@@ -1150,7 +1150,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return CMS_moduleCategoriesClearances
 	  * @access public
 	  */
-	function &getModuleCategoriesClearances()
+	function getModuleCategoriesClearances()
 	{
 		return $this->_moduleCategoriesClearances;
 	}
