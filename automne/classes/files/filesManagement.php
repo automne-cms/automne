@@ -1050,7 +1050,7 @@ class CMS_file extends CMS_grandFather
 			$tmpPath = PATH_PHP_TMP;
 		} elseif (@is_dir(ini_get("session.save_path")) && is_object(@dir(ini_get("session.save_path"))) && is_writable(ini_get("session.save_path"))) {
 			$tmpPath = ini_get("session.save_path");
-		} elseif (@is_dir(PATH_TMP_FS) && is_object(@dir(PATH_TMP_FS)) && is_writable(PATH_PHP_TMP)){
+		} elseif (@is_dir(PATH_TMP_FS) && is_object(@dir(PATH_TMP_FS)) && is_writable(PATH_TMP_FS)){
 			$tmpPath = PATH_TMP_FS;
 		} else {
 			CMS_grandFather::raiseError('Can\'t found writable temporary path ...');
