@@ -144,11 +144,16 @@ class CMS_block_link extends CMS_block
 			if ($link->hasValidHREF()) {
 				$form_data = $this->_replaceBlockVars($link, $html_attributes, RESOURCE_DATA_LOCATION_EDITION, false);
 			} else {
+				if(isset($this->_attributes['default'])) {
+					$html = $this->_attributes['default'];
+				} else {
+					$html = $language->getMessage(self::MESSAGE_BLOCK_LINK_LABEL);
+				}
 				$replace = array(
-					'{{data}}' 		=> '<a href="#"'.$html_attributes.' title="'.io::htmlspecialchars($language->getMessage(self::MESSAGE_BLOCK_LINK_LABEL)).'">'.$language->getMessage(self::MESSAGE_BLOCK_LINK_LABEL).'</a>',
+					'{{data}}' 		=> '<a href="#"'.$html_attributes.' title="'.io::htmlspecialchars($language->getMessage(self::MESSAGE_BLOCK_LINK_LABEL)).'">'.$html.'</a>',
 					'{{href}}' 		=> '#',
-					'{{label}}' 	=> $language->getMessage(self::MESSAGE_BLOCK_LINK_LABEL),
-					'{{jslabel}}' 	=> io::htmlspecialchars($language->getMessage(self::MESSAGE_BLOCK_LINK_LABEL))
+					'{{label}}' 	=> $html,
+					'{{jslabel}}' 	=> io::htmlspecialchars($html)
 				);
 				$form_data = str_replace(array_keys($replace), $replace, $this->_definition);
 			}
@@ -157,11 +162,16 @@ class CMS_block_link extends CMS_block
 		case PAGE_VISUALMODE_CLIENTSPACES_FORM:
 			$this->_hasContent = false;
 			$this->_editable = true;
+			if(isset($this->_attributes['default'])) {
+				$html = $this->_attributes['default'];
+			} else {
+				$html = $language->getMessage(self::MESSAGE_BLOCK_LINK_LABEL);
+			}
 			$replace = array(
-					'{{data}}' 		=> '<a href="#"'.$html_attributes.' title="'.io::htmlspecialchars($language->getMessage(self::MESSAGE_BLOCK_LINK_LABEL)).'">'.$language->getMessage(self::MESSAGE_BLOCK_LINK_LABEL).'</a>',
+					'{{data}}' 		=> '<a href="#"'.$html_attributes.' title="'.io::htmlspecialchars($language->getMessage(self::MESSAGE_BLOCK_LINK_LABEL)).'">'.$html.'</a>',
 					'{{href}}' 		=> '#',
-					'{{label}}' 	=> $language->getMessage(self::MESSAGE_BLOCK_LINK_LABEL),
-					'{{jslabel}}' 	=> io::htmlspecialchars($language->getMessage(self::MESSAGE_BLOCK_LINK_LABEL)),
+					'{{label}}' 	=> $html,
+					'{{jslabel}}' 	=> io::htmlspecialchars($html)
 				);
 			$form_data = str_replace(array_keys($replace), $replace, $this->_definition);
 			return $this->_getHTMLForm($language, $page, $clientSpace, $row, $this->_tagID, $form_data);
