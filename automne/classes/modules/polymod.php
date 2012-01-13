@@ -847,7 +847,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 		$results = array();
 		foreach ($resultsType as $type => $ids) {
 			//load current object definition
-			$object = new CMS_poly_object_definition($type);
+			$object = CMS_poly_object_catalog::getObjectDefinition($type);
 			//create search object for current object
 			$search = new CMS_object_search($object);
 			$search->addWhereCondition("items", $ids);

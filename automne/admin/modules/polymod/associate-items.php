@@ -68,7 +68,7 @@ if (!$cms_user->hasModuleClearance($codename, CLEARANCE_MODULE_EDIT)) {
 }
 
 //load current object definition
-$object = new CMS_poly_object_definition($objectId);
+$object = CMS_poly_object_catalog::getObjectDefinition($objectId);
 
 $winLabel = sensitiveIO::sanitizeJSString($cms_language->getMessage(MESSAGE_MULTI_OBJECT_CHOOSE_ELEMENT,array($object->getObjectLabel($cms_language)), MOD_POLYMOD_CODENAME));
 

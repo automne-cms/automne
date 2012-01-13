@@ -118,7 +118,7 @@ if (sizeof($blockParamsDefinition['search'])) {
 			continue;
 		}
 		//load searched object
-		$object = new CMS_poly_object_definition($searchType);
+		$object = CMS_poly_object_catalog::getObjectDefinition($searchType);
 		if (!$object->hasError()) {
 			//load fields objects for object
 			$objectFields = CMS_poly_object_catalog::getFieldsDefinition($object->getID());

@@ -41,15 +41,14 @@ class CMS_poly_object_catalog
 		}
 		if ($objectID = CMS_poly_object_catalog::getObjectDefinitionByID($itemID)) {
 			if (!$returnDefinition) {
-				//$object = new CMS_poly_object($objectID, $itemID, array(), $public);
-				$search = new CMS_object_search(new CMS_poly_object_definition($objectID), $public);
+				$search = new CMS_object_search(CMS_poly_object_catalog::getObjectDefinition($objectID), $public);
 				$search->addWhereCondition('item', $itemID);
 				$result = $search->search();
 				if ($result) {
 					return array_shift($result);
 				}
 			} else {
-				return new CMS_poly_object_definition($objectID);
+				return CMS_poly_object_catalog::getObjectDefinition($objectID);
 			}
 		}
 		return false;
@@ -77,7 +76,30 @@ class CMS_poly_object_catalog
 				id_moo = '".sensitiveIO::sanitizeSQLString($itemID)."'
 		";
 		$q = new CMS_query($sql);
-		return ($q->getNumRows() == 1) ? (!$returnObject ? $q->getValue('objectID') : new CMS_poly_object_definition($q->getValue('objectID'))) : false;
+		return ($q->getNumRows() == 1) ? (!$returnObject ? $q->getValue('objectID') : CMS_poly_object_catalog::getObjectDefinition($q->getValue('objectID'))) : false;
+	}
+	
+	/**
+	  * Gets object definition
+	  *
+	  * @param integer $objectID The DB ID of the object definition to get
+	  * @return object CMS_poly_object_definition
+	  * @access public
+	  */
+	static function getObjectDefinition($objectID) {
+		static $objectDefinitions;
+		if (!isset($objectDefinitions[$objectID])) {
+			if (!sensitiveIO::isPositiveInteger($objectID)) {
+				CMS_grandFather::raiseError("objectID is not a positive integer : ".$objectID);
+				$objectDefinitions[$objectID] = false;
+			} else {
+				$objectDefinitions[$objectID] = new CMS_poly_object_definition($objectID);
+				if ($objectDefinitions[$objectID]->hasError()) {
+					$objectDefinitions[$objectID] = false;
+				}
+			}
+		}
+		return $objectDefinitions[$objectID];
 	}
 	
 	/**
@@ -99,7 +121,7 @@ class CMS_poly_object_catalog
 		$q = new CMS_query($sql);
 		$results = array();
 		while ($r = $q->getArray()) {
-			$object = new CMS_poly_object_definition($r["id_mod"],$r);
+			$object = CMS_poly_object_catalog::getObjectDefinition($r["id_mod"],$r);
 			if ($r["resource_usage_mod"] == 1) {
 				//if it is a primary resource, add an underscore to put it on top of objects list
 				$results['_'.$object->getLabel().$r["id_mod"]] = $object;
@@ -372,11 +394,15 @@ class CMS_poly_object_catalog
 	  * @static
 	  */
 	static function getFieldsDefinition($objectID) {
-		$datas = array();
+		static $datas;
+		if (isset($datas[$objectID])) {
+			return $datas[$objectID];
+		}
+		$datas[$objectID] = array();
 		if (sensitiveIO::isPositiveInteger($objectID)) {
 			//create cache object
 			$cache = new CMS_cache('fields'.$objectID, 'atm-polymod-structure', 2592000, false);
-			if (!$cache->exist() || !($datas = $cache->load())) {
+			if (!$cache->exist() || !($datas[$objectID] = $cache->load())) {
 				//datas does not exists : load them
 				$sql = "
 					select
@@ -392,14 +418,14 @@ class CMS_poly_object_catalog
 				";
 				$q = new CMS_query($sql);
 				while ($r = $q->getArray()) {
-					$datas[$r["id_mof"]] = new CMS_poly_object_field($r["id_mof"],$r);
+					$datas[$objectID][$r["id_mof"]] = new CMS_poly_object_field($r["id_mof"],$r);
 				}
 				if ($cache) {
-					$cache->save($datas, array('type' => 'fields'));
+					$cache->save($datas[$objectID], array('type' => 'fields'));
 				}
 			}
 		}
-		return $datas;
+		return $datas[$objectID];
 	}
 	
 	/**
@@ -425,7 +451,7 @@ class CMS_poly_object_catalog
 			return array();
 		}
 		//load current object definition
-		$object = new CMS_poly_object_definition($objectID);
+		$object = CMS_poly_object_catalog::getObjectDefinition($objectID);
 		$search = new CMS_object_search($object,$public);
 		if (is_array($searchConditions) && $searchConditions) {
 			foreach($searchConditions as $conditionType => $conditionValue) {
@@ -464,7 +490,7 @@ class CMS_poly_object_catalog
 		}
 		$listNames[$paramsHash] = array();
 		//load current object definition
-		$object = new CMS_poly_object_definition($objectID);
+		$object = CMS_poly_object_catalog::getObjectDefinition($objectID);
 		//create search
 		$search = new CMS_object_search($object, $public);
 		//add conditions
@@ -601,7 +627,7 @@ class CMS_poly_object_catalog
 		$objectsWhichUseObject = array();
 		while($id = $q->getValue('objectID')) {
 			if ($returnObjectsDefinition) {
-				$objectsWhichUseObject[$id] = new CMS_poly_object_definition($id);
+				$objectsWhichUseObject[$id] = CMS_poly_object_catalog::getObjectDefinition($id);
 			} else {
 				$objectsWhichUseObject[$id] = $id;
 			}
@@ -628,7 +654,7 @@ class CMS_poly_object_catalog
 			return false;
 		}
 		//get object definition
-		$objectDef = new CMS_poly_object_definition($objectID);
+		$objectDef = CMS_poly_object_catalog::getObjectDefinition($objectID);
 		//if object is a primary resource, destroy all resources associated to objects
 		if ($objectDef->isPrimaryResource()) {
 			//get resources Ids
@@ -1004,7 +1030,7 @@ class CMS_poly_object_catalog
 				 && ($id = CMS_poly_object_catalog::objectExists($params['module'], $objectDatas['uuid']))) {
 				//object already exist : load it if we can update it
 				if (!isset($params['update']) || $params['update'] == true) {
-					$object = new CMS_poly_object_definition($id);
+					$object = CMS_poly_object_catalog::getObjectDefinition($id);
 					$importType = ' (Update)';
 					//set id translation
 					$idsRelation['objects'][$objectDatas['id']] = $id;
@@ -1015,7 +1041,7 @@ class CMS_poly_object_catalog
 					//object exists with a translated id
 					$objectDatas['id'] = $idsRelation['objects'][$objectDatas['id']];
 					//load translated object
-					$object = new CMS_poly_object_definition($objectDatas['id']);
+					$object = CMS_poly_object_catalog::getObjectDefinition($objectDatas['id']);
 					$importType = ' (Creation)';
 				}
 				//check for translated uuid
@@ -1024,7 +1050,7 @@ class CMS_poly_object_catalog
 					$objectDatas['uuid'] = $idsRelation['objects-uuid'][$objectDatas['uuid']];
 					//load translated object
 					if ($id = CMS_poly_object_catalog::objectExists($params['module'], $objectDatas['uuid'])) {
-						$object = new CMS_poly_object_definition($id);
+						$object = CMS_poly_object_catalog::getObjectDefinition($id);
 						$importType = ' (Creation)';
 					}
 				}

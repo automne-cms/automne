@@ -220,7 +220,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 		}
 		if (sensitiveIO::isPositiveInteger($this->_objectFieldValues['type'])) {
 			if ($returnDefinition) {
-				return new CMS_poly_object_definition($this->_objectFieldValues['type']);
+				return CMS_poly_object_catalog::getObjectDefinition($this->_objectFieldValues['type']);
 			} else {
 				$item = new CMS_poly_object($this->_objectFieldValues['type'], 0, array(), $public);
 				//object is used as field as another object so set it

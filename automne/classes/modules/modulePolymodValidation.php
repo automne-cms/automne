@@ -888,7 +888,7 @@ class CMS_modulePolymodValidation extends CMS_module
 	function getPrimaryResourceDefinition()
 	{
 		if (!($this->_primaryResourceObjectDefinition instanceof CMS_poly_object_definition)) {
-			$this->_primaryResourceObjectDefinition = new CMS_poly_object_definition(CMS_poly_object_catalog::getPrimaryResourceObjectType($this->getCodename()));
+			$this->_primaryResourceObjectDefinition = CMS_poly_object_catalog::getObjectDefinition(CMS_poly_object_catalog::getPrimaryResourceObjectType($this->getCodename()));
 		}
 		return true;
 	}

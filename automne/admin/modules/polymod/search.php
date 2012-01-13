@@ -87,7 +87,7 @@ if (!$objectId) {
 }
 
 //load current object definition
-$object = new CMS_poly_object_definition($objectId);
+$object = CMS_poly_object_catalog::getObjectDefinition($objectId);
 // Check if need to use a specific display for search results
 $resultsDefinition = $object->getValue('resultsDefinition');
 
@@ -100,7 +100,7 @@ $fields = array();
 $possibleTargets = array();
 foreach ($objectFields as $fieldID => $field) {
 	if (isset($_REQUEST['items_'.$object->getID().'_'.$fieldID])) {
-		$fields[$fieldID] = sensitiveIO::request('items_'.$object->getID().'_'.$fieldID, '', CMS_session::getSessionVar('items_'.$object->getID().'_'.$fieldID));
+		$fields[$fieldID] = sensitiveIO::request('items_'.$object->getID().'_'.$fieldID, '', '');
 	}
 	// get the value of all possible searchable fields in case a target is specified by the user
 	if ($field->getValue('searchable')){
@@ -112,14 +112,14 @@ foreach ($objectFields as $fieldID => $field) {
 }
 
 //get all search datas from requests
-$keywords = sensitiveIO::request('items_'.$object->getID().'_kwrds', '', CMS_session::getSessionVar('items_'.$object->getID().'_kwrds'));
-$keywordsOptions = sensitiveIO::request('items_'.$object->getID().'_kwrds_options', array('any', 'all', 'phrase','beginswith'), 'any'/*CMS_session::getSessionVar('items_'.$object->getID().'_kwrds_options')*/);
-$keywordsTarget = sensitiveIO::request('kwrds_target_'.$object->getID(),$possibleTargets,-1);
-$dateFrom = sensitiveIO::request('items_dtfrm', '', CMS_session::getSessionVar('items_dtfrm'));
-$dateEnd = sensitiveIO::request('items_dtnd', '', CMS_session::getSessionVar('items_dtnd'));
-$sort = sensitiveIO::request('sort_'.$object->getID(), '', CMS_session::getSessionVar('sort_'.$object->getID()));
-$status = sensitiveIO::request('status_'.$object->getID(), '', CMS_session::getSessionVar('status_'.$object->getID()));
-$direction = sensitiveIO::request('direction_'.$object->getID(), '', CMS_session::getSessionVar('direction_'.$object->getID()));
+$keywords = sensitiveIO::request('items_'.$object->getID().'_kwrds', '', '');
+$keywordsOptions = sensitiveIO::request('items_'.$object->getID().'_kwrds_options', array('any', 'all', 'phrase','beginswith'), 'any');
+$keywordsTarget = sensitiveIO::request('kwrds_target_'.$object->getID(), $possibleTargets, -1);
+$dateFrom = sensitiveIO::request('items_dtfrm', '', '');
+$dateEnd = sensitiveIO::request('items_dtnd', '', '');
+$sort = sensitiveIO::request('sort_'.$object->getID(), '', '');
+$status = sensitiveIO::request('status_'.$object->getID(), '', '');
+$direction = sensitiveIO::request('direction_'.$object->getID(), '', '');
 
 // Set default session search options
 CMS_session::setSessionVar('items_'.$object->getID().'_kwrds', $keywords);

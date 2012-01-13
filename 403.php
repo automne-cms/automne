@@ -35,7 +35,8 @@ header('HTTP/1.x 403 Forbidden', true, 403);
 
 //try to get website by domain to serve specific 403 page
 $domain = @parse_url($_SERVER['REQUEST_URI'], PHP_URL_HOST) ? @parse_url($_SERVER['REQUEST_URI'], PHP_URL_HOST) : (@parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST']);
-if ($domain) {
+$path = @parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+if ($domain && strpos($path, 'htaccess.txt') === false) {
 	$website = CMS_websitesCatalog::getWebsiteFromDomain($domain);
 	if ($website && !$website->hasError()) {
 		//check if website has a 403 page defined

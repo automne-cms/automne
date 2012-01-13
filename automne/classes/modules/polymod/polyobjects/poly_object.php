@@ -11,8 +11,6 @@
 // +----------------------------------------------------------------------+
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: poly_object.php,v 1.17 2010/03/08 16:43:33 sebastien Exp $
 
 /**
   * Class CMS_poly_object
@@ -550,17 +548,7 @@ class CMS_poly_object extends CMS_resource
 	  * @access public
 	  */
 	function getObjectDefinition () {
-		//create cache object
-		$cache = new CMS_cache('object'.$this->_objectID, 'atm-polymod-structure', 2592000, false);
-		$datas = '';
-		if (!$cache->exist() || !($datas = $cache->load())) {
-			//datas does not exists : load it
-			$datas = new CMS_poly_object_definition($this->_objectID);
-			if ($cache) {
-				$cache->save($datas, array('type' => 'object'));
-			}
-		}
-		return $datas;
+		return CMS_poly_object_catalog::getObjectDefinition($this->_objectID);
 	}
 	
 	/**
@@ -2309,7 +2297,7 @@ class CMS_poly_object extends CMS_resource
 						$categoriesFields = CMS_poly_object_catalog::objectHasCategories($objectParentID);
 						if (is_array($categoriesFields) && $categoriesFields) {
 							//load current object definition
-							$object = new CMS_poly_object_definition($objectParentID);
+							$object = CMS_poly_object_catalog::getObjectDefinition($objectParentID);
 							foreach($objectParentFields as $fieldID) {
 								$search = new CMS_object_search($object,$this->_public);
 								$search->addWhereCondition($fieldID, $this->getID());
