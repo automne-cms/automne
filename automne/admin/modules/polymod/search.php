@@ -188,16 +188,15 @@ foreach ($objectFields as $fieldID => $field) {
 // Param : With keywords (this is best if it is done at last)
 if (CMS_session::getSessionVar('items_'.$object->getID().'_kwrds') != '') {
 	$kwrd = CMS_session::getSessionVar('items_'.$object->getID().'_kwrds');
-	if (!io::isPositiveInteger($kwrd)) {
+	if (io::isPositiveInteger($kwrd) && !io::isPositiveInteger($keywordsTarget)) {
+		$search->addWhereCondition("item", $kwrd);
+	} else {
 		if(io::isPositiveInteger($keywordsTarget)) {
 			// a specific field target was specified
 			$search->addWhereCondition($keywordsTarget, $kwrd, $keywordsOptions);
-		}
-		else {
+		} else {
 			$search->addWhereCondition("keywords", $kwrd, $keywordsOptions);
 		}
-	} else {
-		$search->addWhereCondition("item", $kwrd);
 	}
 }
 
