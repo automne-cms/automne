@@ -285,7 +285,7 @@ class CMS_object_categories extends CMS_object_common
 			$field['id'] 				= 'tree-'.$fieldId;
 			$field['xtype'] 			= 'treepanel';
 			$field['height'] 			= io::isPositiveInteger($params['selectHeight']) ? $params['selectHeight'] : 150;
-			$field['width'] 			= io::isPositiveInteger($params['selectWidth']) ? $params['selectWidth'] : '1000';
+			$field['width'] 			= io::isPositiveInteger($params['selectWidth']) ? $params['selectWidth'] : '100%';
 			$field['autoScroll'] 		= true;
 	        $field['animate'] 			= true;
 	        $field['containerScroll'] 	= true;
