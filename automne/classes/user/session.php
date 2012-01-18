@@ -219,7 +219,7 @@ class CMS_session extends CMS_grandFather
 					self::$_result = $auth->authenticate($authAdapter);
 					
 					//To debug Auth process easily, discomment this line
-					//CMS_grandFather::log($_SERVER['SCRIPT_NAME'].' - '.$module->getCodename().' - Auth type : '.$authType.' - Auth result : '.self::$_result->getCode().($auth->hasIdentity() ? ' - Identity : '.$auth->getIdentity() : '').' - Message : '.(sizeof(self::$_result->getMessages()) == 1 ? array_pop(self::$_result->getMessages()) : print_r(self::$_result->getMessages(), true)));
+					//CMS_grandFather::log($_SERVER['SCRIPT_NAME'].' - '.$module->getCodename().' - Auth type : '.$authType.'/'.$params['type'].' - Auth result : '.self::$_result->getCode().($auth->hasIdentity() ? ' - Identity : '.$auth->getIdentity() : '').' - Message : '.(sizeof(self::$_result->getMessages()) == 1 ? array_pop(self::$_result->getMessages()) : print_r(self::$_result->getMessages(), true)));
 					
 					switch (self::$_result->getCode()) {
 						case Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND: //user crendentials does not exists (ex: no login/pass provided)

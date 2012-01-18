@@ -1706,3 +1706,5 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1747, 'standard', 'fr', 'Erreur : le nom de code fourni existe déjà');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1748, 'standard', 'fr', 'Modification d''un élément ''Lien''');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1749, 'standard', 'fr', 'Cette fenêtre vous permet de saisir ou modifier un lien vers une page interne ou externe pour l''élément de la page en cours de modification.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1750, 'standard', 'fr', 'Gestion des noms de code des pages');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1751, 'standard', 'fr', 'Ce droit permet à l\'utilisateur de modifier le nom de code (codename) des pages sur lesquelles il a le droit d\'administration.');
