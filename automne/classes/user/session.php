@@ -107,11 +107,21 @@ class CMS_session extends CMS_grandFather
 			return;
 		}
 		
+		//check session dir as writable
+		$sessionPath = session_save_path();
+		if ($sessionPath && !is_writable($sessionPath)) {
+			if(PATH_PHP_TMP && @is_dir(PATH_PHP_TMP) && is_object(@dir(PATH_PHP_TMP)) && is_writable(PATH_PHP_TMP)) {
+				$sessionPath = PATH_PHP_TMP;
+			} elseif (@is_dir(PATH_TMP_FS) && is_object(@dir(PATH_TMP_FS)) && is_writable(PATH_TMP_FS)){
+				$sessionPath = PATH_TMP_FS;
+			} else {
+				CMS_grandFather::raiseError('Can\'t found writable session path ...');
+			}
+		}
+		
 		Zend_Session::setOptions(array(
 			'name'					=> 'AutomneSession',
 			'gc_maxlifetime'		=> APPLICATION_SESSION_TIMEOUT,
-			'gc_probability'		=> 1,
-			'gc_divisor'			=> 100,	
 			'hash_function'			=> 1,		// use more secure session ids
 			'use_cookies'			=> true,
 			'use_only_cookies'		=> true,
@@ -119,11 +129,17 @@ class CMS_session extends CMS_grandFather
 			'cookie_path'			=> '/',
 			'cookie_secure'			=> false,
 			'cookie_domain'			=> APPLICATION_COOKIE_DOMAIN,
+			'save_path'				=> $sessionPath,
 			'cookie_httponly'		=> true,
 			'remember_me_seconds'	=> (60 * 60 * 24 * APPLICATION_COOKIE_EXPIRATION),
 			'use_trans_sid'			=> false,	//remove session trans sid to prevent session fixation
 		));
-		Zend_Session::start();
+		
+		try {
+			Zend_Session::start();
+		} catch (Zend_Session_Exception $e) {
+			$this->raiseError($e->getMessage());
+		}
 		//Then load existant user if any without launching authentification process
 		CMS_session::authenticate(array('authenticate' => false));
 	}
