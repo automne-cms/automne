@@ -22,7 +22,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(12, 'cms_aliases', 'fr', 'Redirection');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(13, 'cms_aliases', 'fr', 'Choisissez la destination de l\'alias');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(14, 'cms_aliases', 'fr', 'Sites');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(15, 'cms_aliases', 'fr', 'Choisissez les sites pour lesquels l\'alias s\'applique. Attention, pour que cette distinction s\'opère, les sites doivent avoir des noms de domaines distincts. Si aucun site n\'est sélectionné, tous les sites utiliseront cet alias.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(15, 'cms_aliases', 'fr', 'Choisissez les domaines pour lesquels l\'alias s\'applique. Si aucun domaine n\'est sélectionné, tous les domaine gérés dans les sites Automne utiliseront cet alias. Il est déconseillé de remplir ce champ si vous n\'employez pas le multi-site dans Automne.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(16, 'cms_aliases', 'fr', 'Remplacer l\'adresse');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(17, 'cms_aliases', 'fr', 'Remplacer l\'adresse de la page sélectionnée par l\'adresse de l\'alias ?');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(18, 'cms_aliases', 'fr', 'Si vous cochez cette case, l\'adresse de la page sélectionnée sera replacée par l\'adresse de cet alias. Une page ne peut avoir qu\'un seul alias possédant cette propriété cochée.');
@@ -50,3 +50,4 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(40, 'cms_aliases', 'fr', 'Remplace l\'adresse :');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(41, 'cms_aliases', 'fr', 'Erreur : La page %s possède déjà un alias qui remplace son adresse ...');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(42, 'cms_aliases', 'fr', 'L\'ALIAS A UNE ERREUR.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(43, 'cms_aliases', 'fr', 'Restreindre aux domaines');

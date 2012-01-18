@@ -162,12 +162,11 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setAlias($alias)
-	{
+	function setAlias($alias) {
 		//clean alias characters
 		$alias = sensitiveIO::sanitizeURLString($alias);
 		//check if alias directory already exists
-		if (@is_dir($this->getPath(false, PATH_RELATIVETO_FILESYSTEM).'/'.$alias)) {
+		if (@is_dir($this->getPath(false, PATH_RELATIVETO_FILESYSTEM).$alias)) {
 			//check if directory is used by another alias
 			$aliases = CMS_module_cms_aliases::getByName($alias);
 			$otherAlias = false;
@@ -184,7 +183,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 					$otherAlias = true;
 				}
 			}
-			if (!$otherAlias) {
+			if (!$otherAlias && $this->getPath(false).$alias.'/' != $this->getPath(true)) {
 				//no other alias use this directory, so it is used by something else
 				return false;
 			} elseif($otherAliasesUsesWebsites) {
@@ -249,6 +248,8 @@ class CMS_resource_cms_aliases extends CMS_resource
 				$this->_deleteFiles();
 			}
 			$this->_parentID = $parent->getID();
+			//reset lineage cache
+			$this->getAliasLineAge(false, true);
 			return true;
 		} elseif ($parent === false) {
 			//delete old alias files if any
@@ -256,7 +257,9 @@ class CMS_resource_cms_aliases extends CMS_resource
 				$this->_deleteFiles();
 			}
 			$this->_parentID = 0;
-			return false;
+			//reset lineage cache
+			$this->getAliasLineAge(false, true);
+			return true;
 		} else {
 			return false;
 		}
@@ -496,9 +499,9 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return array or string
 	  * @access public
 	  */
-	function getAliasLineAge($returnObject=false) {
+	function getAliasLineAge($returnObject=false, $reset = false) {
 		static $aliasesLineAge;
-		if (!isset($aliasesLineAge[$this->getID()])) {
+		if ($reset || !isset($aliasesLineAge[$this->getID()])) {
 			$aliasesLineAge[$this->getID()] = array();
 			if ($this->getParent()) {
 				$aliasesLineAge[$this->getID()] = array();

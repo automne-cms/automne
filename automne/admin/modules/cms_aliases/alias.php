@@ -49,7 +49,7 @@ define("MESSAGE_PAGE_LABEL", 11);
 define("MESSAGE_PAGE_LABEL_DESC", 10);
 define("MESSAGE_PAGE_REDIR", 12);
 define("MESSAGE_PAGE_REDIR_DESC", 13);
-define("MESSAGE_PAGE_WEBSITES", 14);
+define("MESSAGE_PAGE_WEBSITES", 43);
 define("MESSAGE_PAGE_WEBSITES_DESC", 15);
 define("MESSAGE_PAGE_REPLACE", 16);
 define("MESSAGE_PAGE_REPLACE_INFO", 17);
@@ -147,11 +147,28 @@ $websites = CMS_websitesCatalog::getAll();
 $availableWebsites = $selectedWebsites = array();
 foreach ($websites as $id => $website) {
 	if (in_array($website->getId(), $currentWebsites)) {
-		$selectedWebsites[] = array($id, $website->getLabel());
+		$exists = false;
+		foreach ($selectedWebsites as $data) {
+			if ($data[1] == $website->getURL()) {
+				$exists = true;
+			}
+		}
+		if (!$exists) {
+			$selectedWebsites[] = array($id, $website->getURL());
+		}
 	} else {
-		$availableWebsites[] = array($id, $website->getLabel());
+		$exists = false;
+		foreach ($availableWebsites as $data) {
+			if ($data[1] == $website->getURL()) {
+				$exists = true;
+			}
+		}
+		if (!$exists) {
+			$availableWebsites[] = array($id, $website->getURL());
+		}
 	}
 }
+
 $availableWebsites = sensitiveIO::jsonEncode($availableWebsites);
 $selectedWebsites = sensitiveIO::jsonEncode($selectedWebsites);
 
@@ -313,6 +330,7 @@ $jscontent = <<<END
 				name:			'permanent',
 				inputValue:		'1',
 				checked:		'{$item->isPermanent()}',
+				disabled:		'!!{$item->urlReplaced()}',
 				xtype:			'checkbox',
 				boxLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_REDIR_TYPE_INFO, false, "cms_aliases")}',
 			},{

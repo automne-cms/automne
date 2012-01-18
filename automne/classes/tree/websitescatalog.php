@@ -357,7 +357,7 @@ class CMS_websitesCatalog extends CMS_grandFather {
 	}
 	
 	/**
-	  * get website for a given domain or false if none founded
+	  * get first website for a given domain or false if none founded
 	  *
 	  * @param string $domain : the domain to found website of
 	  * @return CMS_website or false
@@ -379,6 +379,33 @@ class CMS_websitesCatalog extends CMS_grandFather {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	  * get websites for a given domain or false if none founded
+	  *
+	  * @param string $domain : the domain to found website of
+	  * @return array(CMS_website)
+	  * @access public
+	  */
+	static function getWebsitesFromDomain($domain, &$isAlt = false) {
+		//get all websites
+		$websites = CMS_websitesCatalog::getAll('order');
+		$matchWebsites = array();
+		foreach ($websites as $website) {
+			if (io::strtolower($domain) == io::strtolower(@parse_url($website->getURL(), PHP_URL_HOST))) {
+				$matchWebsites[$website->getID()] = $website;
+			} else {
+				$altDomains = $website->getAltDomains();
+				foreach ($altDomains as $altDomain) {
+					if (io::strtolower($domain) == io::strtolower(@parse_url($altDomain, PHP_URL_HOST))) {
+						$isAlt = true;
+						$matchWebsites[$website->getID()] = $website;
+					}
+				}
+			}
+		}
+		return $matchWebsites;
 	}
 	
 	/**
