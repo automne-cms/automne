@@ -78,7 +78,7 @@ class CMS_context extends CMS_grandFather
 	  * @access public
 	  */
 	static function setSessionVar($name, $value) {
-		return CMS_session::getSessionVar($name, $value);
+		return CMS_session::setSessionVar($name, $value);
 	}
 	
 	/**

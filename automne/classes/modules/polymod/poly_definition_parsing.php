@@ -533,11 +533,10 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		if (!isset($objectDefinitions[$objectDefinition_'.$tag['attributes']['name'].'])) {
 			$objectDefinitions[$objectDefinition_'.$tag['attributes']['name'].'] = CMS_poly_object_catalog::getObjectDefinition($objectDefinition_'.$tag['attributes']['name'].');
 		}
-		//public search ?'."\n";
+		//public search ?'."\n".
+		'$public_'.$uniqueID.' = (io::get("atm-previz") == \'previz\' && isset($_SERVER["HTTP_REFERER"]) && io::strpos($_SERVER["HTTP_REFERER"], PATH_ADMIN_WR) !== false) ? false : true;'."\n";
 		if (isset($tag['attributes']['public']) && ($tag['attributes']['public'] == 'true' || $tag['attributes']['public'] == 'false')) {
-			$return .= '$public_'.$uniqueID.' = (!isset($public_search) || !$public_search) ? false : '.$tag['attributes']['public'].';'."\n";
-		} else {
-			$return .= '$public_'.$uniqueID.' = isset($public_search) ? $public_search : false;'."\n";
+			$return .= '$public_'.$uniqueID.' = !$public_'.$uniqueID.' ? false : '.$tag['attributes']['public'].';'."\n";
 		}
 		$return .= '//get search params
 		$search_'.$tag['attributes']['name'].' = new CMS_object_search($objectDefinitions[$objectDefinition_'.$tag['attributes']['name'].'], $public_'.$uniqueID.');
