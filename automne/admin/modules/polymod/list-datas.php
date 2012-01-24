@@ -85,10 +85,12 @@ if ($objectFields[$fieldId]) {
 			'label'			=> ' ',
 		);
 		foreach($objectsNames as $id => $label) {
-			$objectsDatas['objects'][] = array(
-				'id'			=> $id,
-				'label'			=> io::decodeEntities($label),
-			);
+			if (!$query || stripos(io::sanitizeAsciiString(io::decodeEntities($label)), io::sanitizeAsciiString(trim($query))) !== false) {
+				$objectsDatas['objects'][] = array(
+					'id'			=> $id,
+					'label'			=> io::decodeEntities($label),
+				);
+			}
 		}
 	}
 }

@@ -1,10 +1,7 @@
 #----------------------------------------------------------------
-#
 # Messages content for module cms_forms
 # French Messages
-#
 #----------------------------------------------------------------
-# $Id: cms_forms.sql,v 1.2 2010/01/27 13:45:05 sebastien Exp $
 
 DELETE FROM messages WHERE module_mes = 'cms_forms' and language_mes = 'fr';
 

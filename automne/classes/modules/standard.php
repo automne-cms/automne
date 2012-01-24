@@ -1769,6 +1769,7 @@ class CMS_module_standard extends CMS_module
 									//get old files for this tag already needed by other modules
 									$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-css-tags");
 									$files = is_array($files) ? $files : array();
+									
 									$media = $tag->getAttribute('media') ? $tag->getAttribute('media') : 'all';
 									//append module css files
 									if (!isset($files[$media])) {

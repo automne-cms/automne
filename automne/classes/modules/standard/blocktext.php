@@ -129,7 +129,7 @@ class CMS_block_text extends CMS_block
 			if ($data && $data["value"]) {
 				$html = str_replace(array_keys($replace), $replace, $data["value"]);
 			} elseif (isset($this->_attributes['default'])) {
-				$html = $this->_attributes['default'];
+				$html = '<span class=\"atm-ipsum\">'.$this->_attributes['default'].'</span>';
 			} else {
 				$html = "<span class=\"atm-ipsum\">Duis autem dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla";
 				$html .= "facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit au gue duis";
@@ -150,7 +150,7 @@ class CMS_block_text extends CMS_block
 			break;
 		case PAGE_VISUALMODE_CLIENTSPACES_FORM:
 			if (isset($this->_attributes['default'])) {
-				$html = $this->_attributes['default'];
+				$html = '<span class=\"atm-ipsum\">'.$this->_attributes['default'].'</span>';
 			} else {
 				$html = "<span class=\"atm-ipsum\">Duis autem dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla";
 				$html .= "facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit au gue duis";

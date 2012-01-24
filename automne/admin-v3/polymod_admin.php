@@ -164,7 +164,7 @@ if (!sizeof($objects)) {
 			}
 			$objectUseageLabel .='</ul>';
 		}
-		$fields = CMS_poly_object_catalog::getFieldsDefinition($object->getID());
+		$fields = CMS_poly_object_catalog::getFieldsDefinition($object->getID(), true);
 		
 		//get all RSS def for object
 		$RRSDefinitions = CMS_poly_object_catalog::getAllRSSDefinitionsForObject($object->getID());

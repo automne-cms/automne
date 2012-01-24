@@ -141,7 +141,7 @@ if ($filename || $cms_action=='errorsCorrected') {
 		if ($installFile->exists()) {
 			$install = $installFile->readContent("array");
 		} else {
-			report('Error : File '.PATH_TMP_FS.'/install does not exists ...',true);
+			report('Error : File '.PATH_TMP_FS.'/install does not exists ... This file is not a valid Automne patch.',true);
 		}
 		$installError = $automnePatch->checkInstall($install,$errorsInfos);
 		if ($installError) {
@@ -211,7 +211,7 @@ if ($filename || $cms_action=='errorsCorrected') {
 			verbose($importLog);
 		}
 	} else {
-		report('Error : File '.PATH_TMP_FS.'/patch does not exists ...',true);
+		report('Error : File '.PATH_TMP_FS.'/patch does not exists ... This file is not a valid Automne patch.',true);
 	}
 	//remove temporary files
 	report('Start cleaning temporary files...');

@@ -393,16 +393,16 @@ class CMS_poly_object_catalog
 	  * @access public
 	  * @static
 	  */
-	static function getFieldsDefinition($objectID) {
+	static function getFieldsDefinition($objectID, $reset = false) {
 		static $datas;
-		if (isset($datas[$objectID])) {
+		if (!$reset && isset($datas[$objectID])) {
 			return $datas[$objectID];
 		}
 		$datas[$objectID] = array();
 		if (sensitiveIO::isPositiveInteger($objectID)) {
 			//create cache object
 			$cache = new CMS_cache('fields'.$objectID, 'atm-polymod-structure', 2592000, false);
-			if (!$cache->exist() || !($datas[$objectID] = $cache->load())) {
+			if ($reset || !$cache->exist() || !($datas[$objectID] = $cache->load())) {
 				//datas does not exists : load them
 				$sql = "
 					select
