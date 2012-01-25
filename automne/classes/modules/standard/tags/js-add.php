@@ -59,6 +59,10 @@ class CMS_XMLTag_js_add extends CMS_XMLTag
 			CMS_grandFather::raiseError('atm-js-add tag must be outside of <block> tags');
 			return '';
 		}
+		if (!isset($this->_attributes['file'])) {
+			CMS_grandFather::raiseError('atm-js-add tag must have file parameter');
+			return '';
+		}
 		$files = CMS_module::moduleUsage($this->_computeParams['object']->getID(), "atm-js-tags-add");
 		$files = is_array($files) ? $files : array();
 		//append module js files

@@ -297,9 +297,8 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			case MODULE_TREATMENT_PAGECONTENT_HEADER_CODE :
 				//if this page use a row of this module then add the header code to the page
 				if ($usage = CMS_module::moduleUsage($treatedObject->getID(), $this->_codename)) {
-					//CMS_grandFather::log($usage);
-					$modulesCode[$this->_codename] = '';
 					if (isset($usage['headCallback'])) {
+						$modulesCode[$this->_codename] = '';
 						foreach ($usage['headCallback'] as $headCallback) {
 							//add header codes
 							if (isset($headCallback['tagsCallback'])) {

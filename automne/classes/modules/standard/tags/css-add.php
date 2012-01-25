@@ -59,6 +59,10 @@ class CMS_XMLTag_css_add extends CMS_XMLTag
 			CMS_grandFather::raiseError('atm-css-add tag must be outside of <block> tags');
 			return '';
 		}
+		if (!isset($this->_attributes['file'])) {
+			CMS_grandFather::raiseError('atm-css-add tag must have file parameter');
+			return '';
+		}
 		$files = CMS_module::moduleUsage($this->_computeParams['object']->getID(), "atm-css-tags-add");
 		$files = is_array($files) ? $files : array();
 		$media = isset($this->_attributes['media']) ? $this->_attributes['media'] : 'all';
