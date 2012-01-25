@@ -357,19 +357,34 @@ $jscontent = <<<END
 				boxLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_SYNTAX_COLOR)}',
 				listeners:		{'check':function(field, checked) {
 					if (checked) {
-						editor = CodeMirror.fromTextArea('defText-{$rowId}', {
-							iframeClass:	'x-form-text',
-							lineNumbers:	true,
-							parserfile:		["parsexml.js", "parsecss.js", "tokenizejavascript.js", "parsejavascript.js",
-											"../contrib/php/js/tokenizephp.js", "../contrib/php/js/parsephp.js",
-											"../contrib/php/js/parsephphtmlmixed.js"],
-					        stylesheet: 	["{$automnePath}/codemirror/css/xmlcolors.css", "{$automnePath}/codemirror/css/jscolors.css", "{$automnePath}/codemirror/css/csscolors.css", "{$automnePath}/codemirror/contrib/php/css/phpcolors.css"],
-							path: 			"{$automnePath}/codemirror/js/",
-							textWrapping:	false,
-							initCallback:	function(){
-								editor.reindent();
+						var textarea = Ext.get('defText-{$rowId}');
+						var width = textarea.getWidth();
+						var height = textarea.getHeight();
+						var foldFunc = CodeMirror.newFoldFunction(CodeMirror.tagRangeFinder);
+						editor = CodeMirror.fromTextArea(document.getElementById('defText-{$rowId}'), {
+					        lineNumbers: true,
+					        matchBrackets: true,
+					        mode: "application/x-httpd-php",
+					        indentWithTabs: true,
+					        enterMode: "keep",
+					        tabMode: "shift",
+							tabSize: 2,
+							onGutterClick: foldFunc,
+							extraKeys: {
+								"Ctrl-Q": function(cm){
+									foldFunc(cm, cm.getCursor().line);
+								},
+								"Ctrl-S": function() {
+									Ext.getCmp('save-{$rowId}').handler();
+								},
+								"Shift-Ctrl-S": function() {
+									Ext.getCmp('save-regen-{$rowId}').handler();
+								}
 							}
-						});
+					    });
+						Ext.select('.CodeMirror-scroll').setHeight((height - 6));
+						Ext.select('.CodeMirror-scroll').setWidth(width);
+						
 						field.disable();
 						Ext.getCmp('reindent-{$rowId}').show();
 					}
@@ -409,8 +424,8 @@ $jscontent = <<<END
 					}
 				}, 'resize': function(field, width, height){
 					if (editor) { //resize editor according to textarea size
-						if (width) editor.frame.style.width = (width - 8) + 'px';
-						if (height) editor.frame.style.height = (height - 6) + 'px';
+						if (height) Ext.select('.CodeMirror-scroll').setHeight((height - 6));
+						if (width) Ext.select('.CodeMirror-scroll').setWidth(width);
 					}
 				},
 				scope:this}
@@ -440,7 +455,6 @@ $jscontent = <<<END
 								scope:			this
 							}
 						});
-
 						//display window
 						win.show(button.getEl());
 					}
@@ -455,15 +469,16 @@ $jscontent = <<<END
 					editor.reindent();
 				}, scope:this}
 			},{
+				id:				'save-{$rowId}',
 				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
 				iconCls:		'atm-pic-validate',
 				anchor:			'',
 				scope:			this,
 				handler:		function() {
-					var form = Ext.getCmp('rowDef-{$rowId}').getForm();
 					if (editor) {
-						form.setValues({'defText-{$rowId}': editor.getCode().replace(/  /g, "\t")});
+						editor.save();
 					}
+					var form = Ext.getCmp('rowDef-{$rowId}').getForm();
 					form.submit({
 						params:{
 							action:		'definition',
@@ -474,16 +489,17 @@ $jscontent = <<<END
 					});
 				}
 			},{
+				id:				'save-regen-{$rowId}',
 				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE_AND_REGEN)}',
 				iconCls:		'atm-pic-reload',
 				anchor:			'',
 				scope:			this,
 				tooltip:		'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE_AND_REGEN_DESC)}',
 				handler:		function() {
-					var form = Ext.getCmp('rowDef-{$rowId}').getForm();
 					if (editor) {
-						form.setValues({'defText-{$rowId}': editor.getCode().replace(/  /g, "\t")});
+						editor.save();
 					}
+					var form = Ext.getCmp('rowDef-{$rowId}').getForm();
 					form.submit({
 						params:{
 							action:		'definition',

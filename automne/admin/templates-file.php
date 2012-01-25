@@ -127,27 +127,26 @@ switch ($extension) {
 	case 'less':
 	case 'css':
 		$codemirrorConf = '
-			parserfile: 	["parsecss.js"],
-			stylesheet: 	["'.PATH_MAIN_WR.'/codemirror/css/csscolors.css"],
+			mode: "text/css",
 		';
 		$title = sensitiveIO::sanitizeJSString($fileCreation ? $cms_language->getMessage(MESSAGE_PAGE_CREATE_CSS) : $cms_language->getMessage(MESSAGE_PAGE_EDIT_CSS).' '.$node);
 	break;
 	case 'js':
 		$codemirrorConf = '
-			parserfile: 	["tokenizejavascript.js", "parsejavascript.js"],
-			stylesheet: 	["'.PATH_MAIN_WR.'/codemirror/css/jscolors.css"],
+			mode: "text/javascript",
 		';
 		$title = sensitiveIO::sanitizeJSString($fileCreation ? $cms_language->getMessage(MESSAGE_PAGE_CREATE_JS) : $cms_language->getMessage(MESSAGE_PAGE_EDIT_JS).' '.$node);
 	break;
 	case 'xml':
 		$codemirrorConf = '
-			parserfile: 	["parsexml.js", "parsecss.js", "tokenizejavascript.js", "parsejavascript.js", "parsehtmlmixed.js"],
-			stylesheet: 	["'.PATH_MAIN_WR.'/codemirror/css/xmlcolors.css", "'.PATH_MAIN_WR.'/codemirror/css/jscolors.css", "'.PATH_MAIN_WR.'/codemirror/css/csscolors.css"],
+			mode: "text/html",
 		';
 		$title = sensitiveIO::sanitizeJSString($cms_language->getMessage(MESSAGE_PAGE_EDIT_WYSIWYG).' '.$node);
 	break;
 	default:
-		$codemirrorConf = '';
+		$codemirrorConf = '
+			mode: "text/html",
+		';
 		$title = sensitiveIO::sanitizeJSString($cms_language->getMessage(MESSAGE_PAGE_CREATE_FILE));
 	break;
 }
@@ -161,16 +160,31 @@ if ($codemirrorConf) {
 		hideLabel:		true,
 		listeners:		{'check':function(field, checked) {
 			if (checked) {
-				editor = CodeMirror.fromTextArea('defText-{$fileId}', {
-					{$codemirrorConf}
-					path: 			\"{$automnePath}/codemirror/js/\",
-					iframeClass:	'x-form-text',
-					lineNumbers:	true,
-					textWrapping:	false,
-					initCallback:	function(){
-						editor.reindent();
+				var textarea = Ext.get('defText-{$fileId}');
+				var width = textarea.getWidth();
+				var height = textarea.getHeight();
+				var foldFunc = CodeMirror.newFoldFunction(CodeMirror.braceRangeFinder);
+				editor = CodeMirror.fromTextArea(document.getElementById('defText-{$fileId}'), {
+			        lineNumbers: true,
+			        matchBrackets: true,
+			        {$codemirrorConf}
+					indentWithTabs: true,
+			        enterMode: \"keep\",
+			        tabMode: \"shift\",
+					tabSize: 2,
+					onGutterClick: foldFunc,
+					extraKeys: {
+						\"Ctrl-Q\": function(cm){
+							foldFunc(cm, cm.getCursor().line);
+						},
+						\"Ctrl-S\": function() {
+							Ext.getCmp('save-{$fileId}').handler();
+						}
 					}
-				});
+			    });
+				Ext.select('.CodeMirror-scroll').setHeight((height - 6));
+				Ext.select('.CodeMirror-scroll').setWidth(width);
+				
 				field.disable();
 				Ext.getCmp('reindent-{$fileId}').show();
 			}
@@ -250,8 +264,8 @@ $jscontent = <<<END
 				}
 			}, 'resize': function(field, width, height){
 				if (editor) { //resize editor according to textarea size
-					if (width) editor.frame.style.width = (width - 8) + 'px';
-					if (height) editor.frame.style.height = (height - 6) + 'px';
+					if (height) Ext.select('.CodeMirror-scroll').setHeight((height - 6));
+					if (width) Ext.select('.CodeMirror-scroll').setWidth(width);
 				}
 			},
 			scope:this}
@@ -265,15 +279,16 @@ $jscontent = <<<END
 				editor.reindent();
 			}, scope:this}
 		},{
+			id:				'save-{$fileId}',
 			text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
 			iconCls:		'atm-pic-validate',
 			anchor:			'',
 			scope:			this,
 			handler:		function() {
-				var form = Ext.getCmp('fileDef-{$fileId}').getForm();
 				if (editor) {
-					form.setValues({'defText-{$fileId}': editor.getCode().replace(/  /g, "\t")});
+					editor.save();
 				}
+				var form = Ext.getCmp('fileDef-{$fileId}').getForm();
 				if (form.isValid()) {
 					form.submit({
 						params:{
