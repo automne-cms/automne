@@ -277,12 +277,12 @@ if (!isset($_GET['file'])) {
 			$step1_htaccess_warning = 'Attention, toute erreur dans ce fichier pourrait provoquer une erreur 500 sur le serveur.<br /><br />Plus d\'information sur les h&eacute;bergeurs sur <a href="http://www.automne-cms.org/faq/">les FAQ en ligne.</a>';
 			
 			//GPL STEP
-			$stepGPL_title = 'License d\'exploitation :';
-			$stepGPL_explanation = 'L\'utilisation d\'Automne est soumis &agrave; l\'acceptation de la license GNU-GPL suivante.';
-			$stepGPL_licenseNotFound = 'Le fichier de license est introuvable, veuillez le consulter ici : <a href="http://www.gnu.org/copyleft/gpl.html" target="_blank">http://www.gnu.org/copyleft/gpl.html</a>';
-			$stepGPL_accept = 'Acceptez vous les termes de cette license ?';
-			$stepGPL_yes = 'J\'accepte les termes de la license.';
-			$stepGPL_no = 'Je n\'accepte pas les termes de la license.';
+			$stepGPL_title = 'Licence d\'exploitation :';
+			$stepGPL_explanation = 'L\'utilisation d\'Automne est soumis &agrave; l\'acceptation de la licence GNU-GPL suivante.';
+			$stepGPL_licenseNotFound = 'Le fichier de licence est introuvable, veuillez le consulter ici : <a href="http://www.gnu.org/copyleft/gpl.html" target="_blank">http://www.gnu.org/copyleft/gpl.html</a>';
+			$stepGPL_accept = 'Acceptez vous les termes de cette licence ?';
+			$stepGPL_yes = 'J\'accepte les termes de la licence.';
+			$stepGPL_no = 'Je n\'accepte pas les termes de la licence.';
 			
 			//STEP 2
 			$error_step2_no_cms_rc_admin = 'Erreur, impossible de trouver %s/cms_rc_admin.php';
