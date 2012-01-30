@@ -1,4 +1,4 @@
-﻿// ============== Indentation extensions ============================
+// ============== Indentation extensions ============================
 // Applies automatic mode-aware indentation to all document
 CodeMirror.defineExtension("reindent", function () {
   var cmInstance = this;
