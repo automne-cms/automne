@@ -1785,14 +1785,29 @@ class CMS_module_standard extends CMS_module
 								case "atm-js-tags":
 									//get old files for this tag already needed by other modules
 									$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-js-tags");
+									
+									//add files from atm-js-add tag
+									$filesAdd = CMS_module::moduleUsage($treatedObject->getID(), "atm-js-tags-add");
+									$filesAdd = is_array($filesAdd) ? $filesAdd : array();
+									$files = array_merge($files, $filesAdd);
+									
 									$return .= '<?php echo CMS_view::getJavascript(array(\''.implode('\',\'', array_unique($files)).'\')); ?>'."\n";
 								break;
 								case "atm-css-tags":
 									$media = $tag->getAttribute('media') ? $tag->getAttribute('media') : 'all';
 									//get old files for this tag already needed by other modules
 									$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-css-tags");
+									
+									//add files from atm-css-add tag
+									$filesAdd = CMS_module::moduleUsage($treatedObject->getID(), "atm-css-tags-add");
+									$filesAdd = is_array($filesAdd) ? $filesAdd : array();
+									
 									if (isset($files[$media])) {
-										$return .= '	<?php echo CMS_view::getCSS(array(\''.implode('\',\'', array_unique($files[$media])).'\'), \''.$media.'\'); ?>'."\n";
+										if (isset($filesAdd[$media])) {
+											$files[$media] = array_merge($files[$media], $filesAdd[$media]);
+										}
+										
+										$return .= '<?php echo CMS_view::getCSS(array(\''.implode('\',\'', array_unique($files[$media])).'\'), \''.$media.'\'); ?>'."\n";
 									}
 								break;
 							}

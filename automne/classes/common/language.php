@@ -107,7 +107,7 @@ class CMS_language extends CMS_grandFather
 					$this->_availableForBackoffice = $data["availableForBackoffice_lng"];
 					$this->_modulesDenied = explode(';', $data["modulesDenied_lng"]);
 				} else {
-					$this->raiseError("Unknown code: ".$code);
+					$this->raiseError("Unknown code: ".$code.' - '.io::getCallInfos(3));
 				}
 				$languageObject[$code] = $this;
 			} else {
