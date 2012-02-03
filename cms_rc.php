@@ -1267,6 +1267,7 @@ if (APPLICATION_CONFIG_LOADED && APPLICATION_EXEC_TYPE == 'http') {
 	CMS_session::init();
 	//load current user if exists
 	$cms_user = CMS_session::getUser();
+	$cms_context = new CMS_context();
 	if ($cms_user) {
 		$cms_language = $cms_user->getLanguage();
 	} else {
