@@ -345,7 +345,7 @@ class CMS_multi_poly_object extends CMS_object_common
 		$datas = '';
 		if (!$cache->exist() || !($datas = $cache->load())) {
 			//datas does not exists : load it
-			$datas = new CMS_poly_object_definition($this->_objectID);
+			$datas = CMS_poly_object_catalog::getObjectDefinition($this->_objectID);
 			if ($cache) {
 				$cache->save($datas, array('type' => 'object'));
 			}

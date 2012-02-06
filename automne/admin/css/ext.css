@@ -178,3 +178,6 @@
     filter:alpha(opacity=50);
     cursor:default;
 }
+.x-tree.x-box-item {
+	position: relative;
+}

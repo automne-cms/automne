@@ -67,7 +67,10 @@ class CMS_context extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	static function resetSessionCookies() {}
+	static function resetSessionCookies() {
+		// Disconnect user
+		CMS_session::authenticate(array('disconnect'=> true));
+	}
 	
 	/**
 	  * Sets session variable
@@ -78,7 +81,7 @@ class CMS_context extends CMS_grandFather
 	  * @access public
 	  */
 	static function setSessionVar($name, $value) {
-		return CMS_session::getSessionVar($name, $value);
+		return CMS_session::setSessionVar($name, $value);
 	}
 	
 	/**

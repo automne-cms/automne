@@ -1011,6 +1011,8 @@ define("CLEARANCE_ADMINISTRATION_EDITUSERS", 32);
 define("CLEARANCE_ADMINISTRATION_VIEWCALENDAR", 64);
 define("CLEARANCE_ADMINISTRATION_STATS", 128);
 define("CLEARANCE_ADMINISTRATION_DUPLICATE_BRANCH", 256);
+define("CLEARANCE_ADMINISTRATION_PAGE_CODENAMES", 512);
+
 /**
 * Alert Levels
 */
@@ -1265,6 +1267,7 @@ if (APPLICATION_CONFIG_LOADED && APPLICATION_EXEC_TYPE == 'http') {
 	CMS_session::init();
 	//load current user if exists
 	$cms_user = CMS_session::getUser();
+	$cms_context = new CMS_context();
 	if ($cms_user) {
 		$cms_language = $cms_user->getLanguage();
 	} else {

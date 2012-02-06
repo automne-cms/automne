@@ -144,12 +144,14 @@ if (isset($website) && $website && !$website->hasError()) {
 		if ($pPath) {
 			if (file_exists($pPath)) {
 				$cms_page_included = true;
+				$_SERVER['SCRIPT_NAME'] = $page404->getURL(); //to avoid errors in page forms
 				require($pPath);
 				exit;
 			} elseif ($page404->regenerate(true)) {
 				clearstatcache ();
 				if (file_exists($pPath)) {
 					$cms_page_included = true;
+					$_SERVER['SCRIPT_NAME'] = $page404->getURL(); //to avoid errors in page forms
 					require($pPath);
 					exit;
 				}

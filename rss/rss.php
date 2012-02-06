@@ -27,7 +27,7 @@ if (!isset($_REQUEST['atm-previz'])) {
 }
 
 //Include all needed classes
-require_once(dirname(__FILE__)."/../automne/classes/polymodFrontEnd.php");
+require_once(dirname(__FILE__).'/../cms_rc_frontend.php');
 
 //Get RSS object
 $error = 0;

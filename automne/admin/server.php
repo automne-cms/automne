@@ -213,7 +213,7 @@ if (!is_writable(PATH_REALROOT_FS)) {
 }
 //Email
 if (!@mail(AUTOMNE_DEFAULT_EMAIL, "Automne SMTP Test", "Automne SMTP Test")) {
-	$content .= '<li class="atm-pic-cancel">Error, No SMTP server founded</li>';
+	$content .= '<li class="atm-pic-cancel">Error, No SMTP server found</li>';
 } else {
 	$content .= '<li class="atm-pic-ok">SMTP server OK</li>';
 }

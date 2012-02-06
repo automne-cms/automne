@@ -136,7 +136,7 @@ $jscontent = <<<END
 		listeners:{
 			'click':function(node, e) {
 				Ext.getCmp('{$codename}Edit').setDisabled(node.disabled || node.attributes.protected || node.id == 'source');
-				Ext.getCmp('{$codename}Create').setDisabled(!node.attributes.manageable && node.id != 'source');
+				Ext.getCmp('{$codename}Create').setDisabled(false);//!node.attributes.manageable && node.id != 'source');
 				Ext.getCmp('{$codename}Delete').setDisabled(!node.attributes.deletable);
 			},
 			'beforemovenode':function(tree, node, oldParent, newParent, index) {

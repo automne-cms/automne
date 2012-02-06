@@ -48,6 +48,7 @@ if (io::request('cms_action') == 'logout') {
 //set main and ext CSS
 $view->addCSSFile('ext');
 $view->addCSSFile('main');
+$view->addCSSFile('codemirror');
 if (SYSTEM_DEBUG) {
 	$view->addCSSFile('debug');
 }
