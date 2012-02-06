@@ -64,10 +64,13 @@
   visibility: visible;
 }
 
-span.CodeMirror-selected { background: #d9d9d9; }
-.CodeMirror-focused span.CodeMirror-selected { background: #d2dcf8; }
+div.CodeMirror-selected { background: #d9d9d9; }
+.CodeMirror-focused div.CodeMirror-selected { background: #d7d4f0; }
 
-.CodeMirror-searching {background: #ffa;}
+.CodeMirror-searching {
+  background: #ffa;
+  background: rgba(255, 255, 0, .4);
+}
 
 /* Default theme */
 
@@ -104,7 +107,5 @@ div.CodeMirror span.CodeMirror-matchingbracket {color: #0f0;}
 div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
 
 /*Added for Automne*/
-.CodeMirror-gutter {min-width: 2.6em; cursor: pointer;}
-.CodeMirror-scroll{border: 1px solid;line-height:16px;}
-
-
+ 7.CodeMirror-gutter {min-width: 2.6em; cursor: pointer;}
+ 8.CodeMirror {border: 1px solid;line-height:16px;}
