@@ -554,7 +554,8 @@ class CMS_object_date extends CMS_object_common
 			'>= and not null',
 			'<= and not null',
 			'> and not null',
-			'< and not null'
+			'< and not null',
+			'beginswith'
 		);
 		if ($operator && !in_array($operator, $supportedOperator)) {
 			$this->raiseError("Unknown search operator : ".$operator.", use default search instead");
@@ -574,6 +575,20 @@ class CMS_object_date extends CMS_object_common
 		$cantBeNull = (isset($operators[1])) ? ' and value is not NULL and value != \'0000-00-00\' and value != \'0000-00-00 00:00:00\'' : '';
 		
 		$statusSuffix = ($public) ? "_public":"_edited";
+		
+		$whereClause = '';
+		if($operator == 'beginswith'){
+			global $cms_language;
+			$dateFormat = $cms_language->getDateFormat();
+			$dateFormatSql = str_replace(array('D','M','n','jS','d','j','u','H','h','g','i','z','G','g','F','m','A','s','s','W','l','w','Y','y'),
+										array('%a','%b','%c','%D','%d','%e','%f','%H','%h','%I','%i','%j','%k','%l','%M','%m','%p','%S','%s','%u','%W','%w','%Y','%y'),
+										$dateFormat);
+			$whereClause = "(DATE_FORMAT(value,'".$dateFormatSql."') like '".SensitiveIO::sanitizeSQLString($value)."%')";
+		}
+		else {
+			$whereClause = "(value ".$operator." '".SensitiveIO::sanitizeSQLString($value)."'".$canBeNull.$cantBeNull.")";
+		}
+		
 		$sql = "
 			select
 				distinct objectID
@@ -581,7 +596,7 @@ class CMS_object_date extends CMS_object_common
 				mod_subobject_date".$statusSuffix."
 			where
 				objectFieldID = '".SensitiveIO::sanitizeSQLString($fieldID)."'
-				and (value ".$operator." '".SensitiveIO::sanitizeSQLString($value)."'".$canBeNull.$cantBeNull.")
+				and ". $whereClause ."
 				$where";
 		return $sql;
 	}

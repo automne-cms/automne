@@ -1,5 +1,5 @@
 <cms-module-parameters>
-	<param name="APPLICATION_LABEL" type="text">Automne - 4.2 - Guillaume</param>
+	<param name="APPLICATION_LABEL" type="text">Automne</param>
 	<param name="APPLICATION_MAINTAINER_EMAIL" type="email">root@localhost</param>
 	<param name="APPLICATION_POSTMASTER_EMAIL" type="email">root@localhost</param>
 	<param name="SYSTEM_DEBUG" type="boolean">1</param>
