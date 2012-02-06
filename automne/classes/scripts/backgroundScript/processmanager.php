@@ -252,6 +252,9 @@ class processManager
 		
 		//computes the directory to put files in
 		$tempDir = @dir($tempPath);
+		if (!is_object($tempDir)) {
+			return array();
+		}
 		
 		//script application label
 		$scriptAppLbl = processManager::getAppCode();

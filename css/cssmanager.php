@@ -58,6 +58,10 @@ if (isset($_GET['files'])) {
 				//Blackbird CSS file
 				$cssfiles [] = PATH_MAIN_FS.'/blackbirdjs/blackbird.css';
 			break;
+			case 'codemirror':
+				//CodeMirror CSS file
+				$cssfiles [] = PATH_MAIN_FS.'/codemirror/codemirror.css';
+			break;
 			default:
 				$replace = array(
 					'..' => '',

@@ -22,7 +22,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(12, 'cms_aliases', 'en', 'Redirection');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(13, 'cms_aliases', 'en', 'Choose destination for the alias');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(14, 'cms_aliases', 'en', 'Sites');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(15, 'cms_aliases', 'en', 'Select Websites for which the alias applies. Attention to this distinction applies, sites should have separate domain names. If no site is selected, all sites will use this alias.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(15, 'cms_aliases', 'en', 'Choose the domain name for which the alias applies. If no domain are selected, all sites managed in Automne will use this alias. You should not fill this field if you do not use multi-site in Automne.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(16, 'cms_aliases', 'en', 'Replace address');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(17, 'cms_aliases', 'en', 'Replace the address of the page selected by the address of the alias?');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(18, 'cms_aliases', 'en', 'If you check this box, the address of the selected page will be replaced by the address of the alias. A page can have only one alias with this property checked.');
@@ -46,7 +46,8 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(36, 'cms_aliases', 'en', 'The specified redirection is incorrect ...');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(37, 'cms_aliases', 'en', 'Error on the landing page of the redirection ...');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(38, 'cms_aliases', 'en', 'Error during update: the alias is protected and can not be changed.');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(39, 'cms_aliases', 'en', 'Managing alias of the page. The red alias replaces the address of the page.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(39, 'cms_aliases', 'en', 'Managing alias of the page. The green alias replaces the address of the page.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(40, 'cms_aliases', 'en', 'Replaces the address:');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(41, 'cms_aliases', 'en', 'Error: Page %s already has an alias that replaces address...');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(42, 'cms_aliases', 'en', 'ALIAS HAS AN ERROR.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(43, 'cms_aliases', 'en', 'Restrict to domains');

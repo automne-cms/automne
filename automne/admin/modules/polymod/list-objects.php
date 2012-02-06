@@ -76,7 +76,7 @@ if (!$objectId && !$fieldId) {
 }
 
 //load current object definition
-$object = new CMS_poly_object_definition($objectId);
+$object = CMS_poly_object_catalog::getObjectDefinition($objectId);
 
 if (!$object->hasError()) {
 	$conditions = $query ? array('keywords' => $query) : array();

@@ -1824,3 +1824,5 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1747, 'standard', 'en', 'Error: codename already exists');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1748, 'standard', 'en', 'Modifying a ''Link'' element');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1749, 'standard', 'en', 'This window allows you to enter or modify a link to an internal or external page.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1750, 'standard', 'en', 'Pages codenames management');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1751, 'standard', 'en', 'This right allows the user to modify the codename of pages which he can administrate.');

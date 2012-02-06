@@ -121,7 +121,7 @@ class CMS_poly_module_structure {
 							$infos[$value] = new $value(array(), $infos[$key]);
 						}
 					} elseif (io::strpos($key,"object") !== false) {
-						$infos[$key] = new CMS_poly_object_definition(io::substr($key,6));
+						$infos[$key] = CMS_poly_object_catalog::getObjectDefinition(io::substr($key,6));
 					}
 				}
 			}

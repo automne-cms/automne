@@ -417,19 +417,30 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 		//check each aliases returned to get the one which respond to current alias
 		$matchAlias = false;
 		$domain = @parse_url($_SERVER['REQUEST_URI'], PHP_URL_HOST) ? @parse_url($_SERVER['REQUEST_URI'], PHP_URL_HOST) : (@parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST']);
-		$website = false;
+		$websites = array();
 		if ($domain) {
-			$website = CMS_websitesCatalog::getWebsiteFromDomain($domain);
+			$websites = CMS_websitesCatalog::getWebsitesFromDomain($domain);
 		}
 		foreach ($aliases as $alias) {
 			if (!$matchAlias && dirname($_SERVER['SCRIPT_NAME']) == substr($alias->getPath(), 0, -1)) {
-				//alias match path, check for website
-				if (!$alias->getWebsites() || !$website || in_array($website->getId(), $alias->getWebsites())) {
-					//alias match website, use it
-					$matchAlias = $alias;
+				if ($websites) {
+					foreach ($websites as $website) {
+						//alias match path, check for website
+						if (!$alias->getWebsites() || !$website || in_array($website->getId(), $alias->getWebsites())) {
+							//alias match website, use it
+							$matchAlias = $alias;
+						}
+					}
+				} else {
+					//alias match path, check for website
+					if (!$alias->getWebsites()) {
+						//alias match website, use it
+						$matchAlias = $alias;
+					}
 				}
 			}
 		}
+		
 		if (!$matchAlias) {
 			//no alias founded, go to 404
 			CMS_grandFather::raiseError('No alias founded for directory '.dirname($_SERVER['SCRIPT_NAME']).' and domain '.$domain);

@@ -69,7 +69,7 @@ if (!$cms_user->hasModuleClearance($codename, CLEARANCE_MODULE_EDIT)) {
 
 //load object
 if ($objectId) {
-	$object = new CMS_poly_object_definition($objectId);
+	$object = CMS_poly_object_catalog::getObjectDefinition($objectId);
 	$objectLabel = sensitiveIO::sanitizeJSString($object->getLabel($cms_language));
 }
 if (!isset($object) || $object->hasError()) {

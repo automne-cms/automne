@@ -284,13 +284,13 @@ switch ($action) {
 				$datas = $row->getData($cms_language, $cms_page, $clientSpace, PAGE_VISUALMODE_FORM);
 				//instanciate modules treatments for page content tags
 				$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_PAGECONTENT_TAGS, PAGE_VISUALMODE_FORM, $cms_page);
-				$modulesTreatment->setTreatmentParameters(array("language" => $cms_language, 'replaceVars' => true));
+				$modulesTreatment->setTreatmentParameters(array("language" => $cms_language, 'replaceVars' => ($action != 'update-block-text')));
 				$modulesTreatment->setDefinition($datas);
 				$datas = $modulesTreatment->treatContent(true);
 				if ($action == 'update-block-text') {
 					//instanciate modules treatments for page content tags (needed for links)
 					$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_PAGEHEADER_TAGS, PAGE_VISUALMODE_FORM, $cms_page);
-					$modulesTreatment->setTreatmentParameters(array("language" => $cms_language));
+					$modulesTreatment->setTreatmentParameters(array("language" => $cms_language, 'replaceVars' => true));
 					$modulesTreatment->setDefinition($datas);
 					$datas = $modulesTreatment->treatContent(true);
 				}

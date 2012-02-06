@@ -437,6 +437,7 @@ CREATE TABLE `blocksRawDatas_archived` (
   `clientSpaceID` varchar(100) NOT NULL default '',
   `rowID` varchar(100) NOT NULL default '',
   `blockID` varchar(100) NOT NULL default '',
+  `type` varchar(255) NOT NULL,
   `value` text NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
@@ -460,6 +461,7 @@ CREATE TABLE `blocksRawDatas_deleted` (
   `clientSpaceID` varchar(100) NOT NULL default '',
   `rowID` varchar(100) NOT NULL default '',
   `blockID` varchar(100) NOT NULL default '',
+  `type` varchar(255) NOT NULL,
   `value` text NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
@@ -483,6 +485,7 @@ CREATE TABLE `blocksRawDatas_edited` (
   `clientSpaceID` varchar(100) NOT NULL default '',
   `rowID` varchar(100) NOT NULL default '',
   `blockID` varchar(100) NOT NULL default '',
+  `type` varchar(255) NOT NULL,
   `value` text NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
@@ -506,6 +509,7 @@ CREATE TABLE `blocksRawDatas_edition` (
   `clientSpaceID` varchar(100) NOT NULL default '',
   `rowID` varchar(100) NOT NULL default '',
   `blockID` varchar(100) NOT NULL default '',
+  `type` varchar(255) NOT NULL,
   `value` text NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
@@ -529,6 +533,7 @@ CREATE TABLE `blocksRawDatas_public` (
   `clientSpaceID` varchar(100) NOT NULL default '',
   `rowID` varchar(100) NOT NULL default '',
   `blockID` varchar(100) NOT NULL default '',
+  `type` varchar(255) NOT NULL,
   `value` text NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)

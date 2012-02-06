@@ -357,31 +357,33 @@ class CMS_poly_definition_functions
 			return false;
 		}
 		foreach ($formIDs as $formID) {
-			if (isset($_REQUEST['formID']) && $_REQUEST['formID'] == $formID) {
+			if (io::request('formID') && io::request('formID') == $formID) {
 				if (!isset($cms_language) || $cms_language->getCode() != $languageCode) {
 					$cms_language = new CMS_language($languageCode);
 				}
-				//check user rights on module
-				$module = CMS_poly_object_catalog::getModuleCodenameForObjectType($_REQUEST["object"]);
-				//Check user rights
-				//here assume than user should only need the view right on module, because admin right allow Automne administration access
-				if (!is_object($cms_user) || !$cms_user->hasModuleClearance($module, CLEARANCE_MODULE_VIEW)) {
-					CMS_grandFather::raiseError('No user found or user has no administration rights on module '.$module);
-					return false;
-				}
-				//instanciate object
-				$object = new CMS_poly_object_definition(($_REQUEST["object"]) ? $_REQUEST["object"]:'');
 				//instanciate item
 				$item = '';
-				if (isset($_REQUEST["item"]) && $_REQUEST["item"] && sensitiveIO::isPositiveInteger($_REQUEST["item"])) {
-					$search = new CMS_object_search($object,false);
-					$search->addWhereCondition('item', $_REQUEST["item"]);
-					$items = $search->search();
-					if (isset($items[$_REQUEST["item"]])) {
-						$item = $items[$_REQUEST["item"]];
+				if (io::request('object', 'io::isPositiveInteger', '')) {
+					//check user rights on module
+					$module = CMS_poly_object_catalog::getModuleCodenameForObjectType(io::request('object'));
+					//Check user rights
+					//here assume than user should only need the view right on module, because admin right allow Automne administration access
+					if (!is_object($cms_user) || !$cms_user->hasModuleClearance($module, CLEARANCE_MODULE_VIEW)) {
+						CMS_grandFather::raiseError('No user found or user has no administration rights on module '.$module);
+						return false;
 					}
-				} else {
-					$item = new CMS_poly_object($object->getID());
+					//instanciate object
+					$object = CMS_poly_object_catalog::getObjectDefinition(io::request('object'));
+					if ($object && io::request('item', 'io::isPositiveInteger', '')) {
+						$search = new CMS_object_search($object,false);
+						$search->addWhereCondition('item', io::request('item'));
+						$items = $search->search();
+						if (isset($items[io::request('item')])) {
+							$item = $items[io::request('item')];
+						}
+					} else {
+						$item = new CMS_poly_object($object->getID());
+					}
 				}
 				if (is_object($item) && !$item->hasError()) {
 					//get item fieldsObjects

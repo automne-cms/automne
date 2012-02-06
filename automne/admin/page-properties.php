@@ -523,7 +523,9 @@ if (!$pageTplId) {
 
 $codename = $cms_page->getCodename();
 $codenameField = '';
-if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES) || $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) {
+if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES) 
+	|| $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)
+	|| $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_PAGE_CODENAMES)) {
 	$codenameField = ",{
 				{$disabled}
 				fieldLabel:		'<span ext:qtip=\"{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_FIELD_CODENAME)}\" class=\"atm-help\">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_CODENAME)}</span>',

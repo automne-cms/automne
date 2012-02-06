@@ -1,5 +1,5 @@
 <row>
-<block module="standard" type="varchar" id="stitre">
+<block module="standard" type="varchar" id="stitre" default="lorem ipsum">
 <h3>{{data}}</h3>
 </block>
 </row>

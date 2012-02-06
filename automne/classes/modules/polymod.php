@@ -297,9 +297,8 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			case MODULE_TREATMENT_PAGECONTENT_HEADER_CODE :
 				//if this page use a row of this module then add the header code to the page
 				if ($usage = CMS_module::moduleUsage($treatedObject->getID(), $this->_codename)) {
-					//CMS_grandFather::log($usage);
-					$modulesCode[$this->_codename] = '<?php require_once(PATH_REALROOT_FS.\'/automne/classes/polymodFrontEnd.php\'); ?>';
 					if (isset($usage['headCallback'])) {
+						$modulesCode[$this->_codename] = '';
 						foreach ($usage['headCallback'] as $headCallback) {
 							//add header codes
 							if (isset($headCallback['tagsCallback'])) {
@@ -320,11 +319,11 @@ class CMS_polymod extends CMS_modulePolymodValidation
 										if (io::isPositiveInteger($formFieldID)) {
 											$modulesCode[$this->_codename] .= '<?php'."\n".
 											'//callback function to check field '.$formFieldID.' for atm-form '.$formName."\n".
-											'function form_'.$formName.'_'.$formFieldID.'($formName, $fieldID, &$item) {'."\n".
+											'function form_'.$formName.'_'.$formFieldID.'($formName, $fieldID, &$item_'.$formName.'_'.$formFieldID.') {'."\n".
 											'		global $cms_user;'."\n".
 											'		global $public_search;'."\n".
 											'		global $cms_language;'."\n".
-											'       $object[$item->getObjectID()] = $item;'."\n".
+											'       $object[$item_'.$formName.'_'.$formFieldID.'->getObjectID()] = $item_'.$formName.'_'.$formFieldID.';'."\n".
 											'       '.$headCallback['headcode']."\n".
 											'       '.$callback."\n".
 											'       return false;'."\n".
@@ -333,11 +332,11 @@ class CMS_polymod extends CMS_modulePolymodValidation
 										} elseif ($formFieldID == 'form') {
 											$modulesCode[$this->_codename] .= '<?php'."\n".
 											'//callback function for atm-form '.$formName."\n".
-											'function form_'.$formName.'($formName, &$item) {'."\n".
+											'function form_'.$formName.'($formName, &$item_'.$formName.') {'."\n".
 											'		global $cms_user;'."\n".
 											'		global $public_search;'."\n".
 											'		global $cms_language;'."\n".
-											'       $object[$item->getObjectID()] = $item;'."\n".
+											'       $object[$item_'.$formName.'->getObjectID()] = $item_'.$formName.';'."\n".
 											'       '.$headCallback['headcode']."\n".
 											'       '.$callback."\n".
 											'       return true;'."\n".
@@ -847,7 +846,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 		$results = array();
 		foreach ($resultsType as $type => $ids) {
 			//load current object definition
-			$object = new CMS_poly_object_definition($type);
+			$object = CMS_poly_object_catalog::getObjectDefinition($type);
 			//create search object for current object
 			$search = new CMS_object_search($object);
 			$search->addWhereCondition("items", $ids);

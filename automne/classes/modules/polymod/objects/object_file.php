@@ -561,7 +561,7 @@ class CMS_object_file extends CMS_object_common
 		$html .= '
 			<tr>
 				<th'.$thclass.'>'.$language->getMessage(self::MESSAGE_OBJECT_FILE_FIELD_SOURCEFILE, false, MOD_POLYMOD_CODENAME).'</th>
-				<td'.$tdclass.'><input'.$htmlParameters.' name="'.$prefixName.$this->_field->getID().'_4" type="file" />&nbsp;<small>'.$language->getMessage(self::MESSAGE_OBJECT_FILE_FIELD_MAX_FILESIZE, array(ini_get("upload_max_filesize")), MOD_POLYMOD_CODENAME).'</small></td>
+				<td'.$tdclass.'><input'.$htmlParameters.' name="'.$prefixName.$this->_field->getID().'_4" type="file" />&nbsp;<small>'.$language->getMessage(self::MESSAGE_OBJECT_FILE_FIELD_MAX_FILESIZE, array(CMS_file::getMaxUploadFileSize('M'). 'M'), MOD_POLYMOD_CODENAME).'</small></td>
 			</tr>';
 		if ($params['allowFtp'] && is_dir(PATH_REALROOT_FS.$params['ftpDir'])) {
 			$html .= '

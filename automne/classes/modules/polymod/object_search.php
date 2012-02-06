@@ -194,7 +194,7 @@ class CMS_object_search extends CMS_grandFather
 	function __construct($objectDefinition, $public = false) {
 		global $cms_user;
 		if (io::isPositiveInteger($objectDefinition)) {
-            $objectDefinition = new CMS_poly_object_definition($objectDefinition);
+            $objectDefinition = CMS_poly_object_catalog::getObjectDefinition($objectDefinition);
         }
 		if (!is_a($objectDefinition,'CMS_poly_object_definition')) {
 			$this->raiseError('ObjectDefinition must be a valid CMS_poly_object_definition.');

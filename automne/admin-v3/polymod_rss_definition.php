@@ -69,7 +69,7 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 }
 //load page objects and vars
 $moduleCodename = ($_POST["moduleCodename"]) ? $_POST["moduleCodename"]:$_GET["moduleCodename"];
-$object = new CMS_poly_object_definition($_POST["object"]);
+$object = CMS_poly_object_catalog::getObjectDefinition($_POST["object"]);
 $RSSDefinition = new CMS_poly_rss_definitions($_POST["RSSDefinition"]);
 
 $label = new CMS_object_i18nm($RSSDefinition->getValue("labelID"));

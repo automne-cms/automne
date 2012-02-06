@@ -56,16 +56,20 @@ class CMS_XMLTag_css_add extends CMS_XMLTag
 	  */
 	protected function _compute() {
 		if (!isset($this->_computeParams['object']) || !($this->_computeParams['object'] instanceof CMS_page)) {
-			CMS_grandFather::raiseErreor('atm-css-add tag must be outside of <block> tags');
+			CMS_grandFather::raiseError('atm-css-add tag must be outside of <block> tags');
 			return '';
 		}
-		$files = CMS_module::moduleUsage($this->_computeParams['object']->getID(), "atm-css-tags");
+		if (!isset($this->_attributes['file'])) {
+			CMS_grandFather::raiseError('atm-css-add tag must have file parameter');
+			return '';
+		}
+		$files = CMS_module::moduleUsage($this->_computeParams['object']->getID(), "atm-css-tags-add");
 		$files = is_array($files) ? $files : array();
 		$media = isset($this->_attributes['media']) ? $this->_attributes['media'] : 'all';
-		//append module js files
+		//append module css files
 		$files = array_merge($files, array($media => array($this->_attributes['file'])));
 		//save files
-		CMS_module::moduleUsage($this->_computeParams['object']->getID(), "atm-css-tags", $files, true);
+		CMS_module::moduleUsage($this->_computeParams['object']->getID(), "atm-css-tags-add", $files, true);
 	}
 }
 ?>

@@ -159,7 +159,15 @@ if ($files) {
 			break;
 			case 'codemirror':
 				//CodeMirror JS file
-				$jsfiles [] = PATH_MAIN_FS.'/codemirror/js/codemirror.js';
+				$jsfiles [] = PATH_MAIN_FS.'/codemirror/codemirror.js';
+				$jsfiles [] = PATH_MAIN_FS.'/codemirror/indent.js';
+				$jsfiles [] = PATH_MAIN_FS.'/codemirror/foldcode.js';
+				$jsfiles [] = PATH_MAIN_FS.'/codemirror/xml.js';
+				$jsfiles [] = PATH_MAIN_FS.'/codemirror/javascript.js';
+				$jsfiles [] = PATH_MAIN_FS.'/codemirror/css.js';
+				$jsfiles [] = PATH_MAIN_FS.'/codemirror/clike.js';
+				$jsfiles [] = PATH_MAIN_FS.'/codemirror/php.js';
+				$jsfiles [] = PATH_MAIN_FS.'/codemirror/htmlmixed.js';
 			break;
 			case 'ext':
 				//Ext license (protected)

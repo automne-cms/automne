@@ -332,23 +332,25 @@ class CMS_file extends CMS_grandFather
 						$array_map_function = '';
 					}
 					$handle = @fopen($this->_name, 'rb');
-					while (($data = fgetcsv($handle, 4096, $csvargs['delimiter'], $csvargs['enclosure'])) !== false) {
-						if ($array_map_function) {
-							$data = array_map($array_map_function, $data);
-						}
-						//at first line, get number of values/lines of CSV array
-						if ($csvargs['strict']) {
-							if (!$count) {
-								$num = count($data);
-							} 
-							//check for number of values in current line (tolerance is one because last CSV value can be empty so PHP array is smaller)
-							elseif (sizeof($data) != $num && (sizeof($data)+1) != $num && (sizeof($data)-1) != $num) {
-								$this->raiseError("Invalid CSV content file : column count does not match : ".sizeof($data)." should be ".$num." at line ".($count+1));
-								return false;
+					if (is_resource($handle)) {
+						while (($data = fgetcsv($handle, 4096, $csvargs['delimiter'], $csvargs['enclosure'])) !== false) {
+							if ($array_map_function) {
+								$data = array_map($array_map_function, $data);
 							}
+							//at first line, get number of values/lines of CSV array
+							if ($csvargs['strict']) {
+								if (!$count) {
+									$num = count($data);
+								} 
+								//check for number of values in current line (tolerance is one because last CSV value can be empty so PHP array is smaller)
+								elseif (sizeof($data) != $num && (sizeof($data)+1) != $num && (sizeof($data)-1) != $num) {
+									$this->raiseError("Invalid CSV content file : column count does not match : ".sizeof($data)." should be ".$num." at line ".($count+1));
+									return false;
+								}
+							}
+							$array[] = $data;
+							$count++;
 						}
-						$array[] = $data;
-						$count++;
 					}
 					return $array;
 				} else {
@@ -768,7 +770,7 @@ class CMS_file extends CMS_grandFather
 			return true;
 		} else {
 			//use default chmod value
-			@chmod($fpath, octdec(FILES_CHMOD));
+			@chmod($f, octdec(FILES_CHMOD));
 			if (@is_readable($f)) {
 				return true;
 			} else {
@@ -810,7 +812,7 @@ class CMS_file extends CMS_grandFather
 		if (is_writable($f)) {
 			return true;
 		} else {
-			@chmod($fpath, octdec(FILES_CHMOD));
+			@chmod($f, octdec(FILES_CHMOD));
 			if (@is_writable($f)) {
 				return true;
 			} else {
@@ -849,7 +851,7 @@ class CMS_file extends CMS_grandFather
 			//assume we are on windows platform because this function does not exists before PHP5.0.0 (so files are always executable)
 			return true;
 		} else {
-			@chmod($fpath, octdec(DIRS_CHMOD));
+			@chmod($f, octdec(DIRS_CHMOD));
 			if (CMS_file::fileIsExecutable($f)) {
 				return true;
 			} else {
@@ -1050,7 +1052,7 @@ class CMS_file extends CMS_grandFather
 			$tmpPath = PATH_PHP_TMP;
 		} elseif (@is_dir(ini_get("session.save_path")) && is_object(@dir(ini_get("session.save_path"))) && is_writable(ini_get("session.save_path"))) {
 			$tmpPath = ini_get("session.save_path");
-		} elseif (@is_dir(PATH_TMP_FS) && is_object(@dir(PATH_TMP_FS)) && is_writable(PATH_PHP_TMP)){
+		} elseif (@is_dir(PATH_TMP_FS) && is_object(@dir(PATH_TMP_FS)) && is_writable(PATH_TMP_FS)){
 			$tmpPath = PATH_TMP_FS;
 		} else {
 			CMS_grandFather::raiseError('Can\'t found writable temporary path ...');

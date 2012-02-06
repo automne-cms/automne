@@ -531,13 +531,12 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		//SEARCH '.$tag['attributes']['name'].' TAG START '.$uniqueID.'
 		$objectDefinition_'.$tag['attributes']['name'].' = \''.$objectID.'\';
 		if (!isset($objectDefinitions[$objectDefinition_'.$tag['attributes']['name'].'])) {
-			$objectDefinitions[$objectDefinition_'.$tag['attributes']['name'].'] = new CMS_poly_object_definition($objectDefinition_'.$tag['attributes']['name'].');
+			$objectDefinitions[$objectDefinition_'.$tag['attributes']['name'].'] = CMS_poly_object_catalog::getObjectDefinition($objectDefinition_'.$tag['attributes']['name'].');
 		}
-		//public search ?'."\n";
+		//public search ?'."\n".
+		'$public_'.$uniqueID.' = (io::get("atm-previz") == \'previz\' && isset($_SERVER["HTTP_REFERER"]) && io::strpos($_SERVER["HTTP_REFERER"], PATH_ADMIN_WR) !== false) ? false : true;'."\n";
 		if (isset($tag['attributes']['public']) && ($tag['attributes']['public'] == 'true' || $tag['attributes']['public'] == 'false')) {
-			$return .= '$public_'.$uniqueID.' = (!isset($public_search) || !$public_search) ? false : '.$tag['attributes']['public'].';'."\n";
-		} else {
-			$return .= '$public_'.$uniqueID.' = isset($public_search) ? $public_search : false;'."\n";
+			$return .= '$public_'.$uniqueID.' = !$public_'.$uniqueID.' ? false : '.$tag['attributes']['public'].';'."\n";
 		}
 		$return .= '//get search params
 		$search_'.$tag['attributes']['name'].' = new CMS_object_search($objectDefinitions[$objectDefinition_'.$tag['attributes']['name'].'], $public_'.$uniqueID.');
@@ -1002,7 +1001,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		} else {
 			//search needed object (need to search it for publications and rights purpose)
 			if (!isset($objectDefinitions[$parameters[\'objectID\']])) {
-				$objectDefinitions[$parameters[\'objectID\']] = new CMS_poly_object_definition($parameters[\'objectID\']);
+				$objectDefinitions[$parameters[\'objectID\']] = CMS_poly_object_catalog::getObjectDefinition($parameters[\'objectID\']);
 			}
 			$search_'.$uniqueID.' = new CMS_object_search($objectDefinitions[$parameters[\'objectID\']], $parameters[\'public\']);
 			$search_'.$uniqueID.'->addWhereCondition(\'item\', $parameters[\'itemID\']);
