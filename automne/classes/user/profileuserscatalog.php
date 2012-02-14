@@ -578,7 +578,8 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 			from
 				profilesUsers
 			where
-				login_pru = '".SensitiveIO::sanitizeSQLString($login)."'";
+				deleted_pru = 0
+				and login_pru = '".SensitiveIO::sanitizeSQLString($login)."'";
 		if ($user && is_object($user) && !$user->hasError()) {
 			$sql .= " and id_pru != '".$user->getUserId()."'";
 		}

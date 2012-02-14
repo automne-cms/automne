@@ -255,7 +255,7 @@ $jscontent = <<<END
 				xtype:			'textfield',
 				name:			'name',
 				maxLength:		100,
-				vtype:			'codename',
+				vtype:			'login',
 				allowBlank:		false,
 				vtypeText:		'{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_FIELD_CODENAME_VTYPE)}',
 				value:			'{$item->getAlias()}'
@@ -330,7 +330,7 @@ $jscontent = <<<END
 				name:			'permanent',
 				inputValue:		'1',
 				checked:		'{$item->isPermanent()}',
-				disabled:		'!!{$item->urlReplaced()}',
+				disabled:		'{$item->urlReplaced()}',
 				xtype:			'checkbox',
 				boxLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_REDIR_TYPE_INFO, false, "cms_aliases")}',
 			},{

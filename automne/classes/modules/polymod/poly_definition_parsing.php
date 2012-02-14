@@ -593,9 +593,20 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		//RESULT '.$tag['attributes']['search'].' TAG START '.$uniqueID.'
 		if(isset($search_'.$tag['attributes']['search'].') && $launchSearch_'.$tag['attributes']['search'].' && $searchLaunched_'.$tag['attributes']['search'].' === false) {
 			//launch search
-			if ($search_'.$tag['attributes']['search'].'->search(CMS_object_search::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS)) {
+			';
+			if ($returnType == CMS_object_search::POLYMOD_SEARCH_RETURN_IDS) {
+				$return .= '
+				$results_'.$tag['attributes']['search'].' = $search_'.$tag['attributes']['search'].'->search('.$returnType.');
 				$searchLaunched_'.$tag['attributes']['search'].' = true;
+				';
+			} else {
+				$return .= '
+				if ($search_'.$tag['attributes']['search'].'->search(CMS_object_search::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS)) {
+					$searchLaunched_'.$tag['attributes']['search'].' = true;
+				}
+				';
 			}
+			$return .= '
 		} elseif (isset($search_'.$tag['attributes']['search'].') && $launchSearch_'.$tag['attributes']['search'].' && $searchLaunched_'.$tag['attributes']['search'].' === true) {
 			//reset search stack (search already done before)
 			$search_'.$tag['attributes']['search'].'->resetResultStack();
@@ -611,7 +622,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
             $maxResults_'.$uniqueID.' = $search_'.$tag['attributes']['search'].'->getNumRows();';
 			if ($returnType == CMS_object_search::POLYMOD_SEARCH_RETURN_IDS) {
 				$return .= '
-				while ($resultID_'.$tag['attributes']['search'].' = $search_'.$tag['attributes']['search'].'->getNextResult('.$returnType.')) {';
+				foreach ($results_'.$tag['attributes']['search'].' as $resultID_'.$tag['attributes']['search'].') {';
 			} else {
 				$return .= '
 				while ($object[$objectDefinition_'.$tag['attributes']['search'].'] = $search_'.$tag['attributes']['search'].'->getNextResult('.$returnType.')) {';
@@ -621,7 +632,9 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				$replace["atm-search"] = array (
 					"{resultid}" 	=> (isset($resultID_'.$tag['attributes']['search'].')) ? $resultID_'.$tag['attributes']['search'].' : $object[$objectDefinition_'.$tag['attributes']['search'].']->getID(),
 					"{firstresult}" => (!$count_'.$uniqueID.') ? 1 : 0,
-					"{lastresult}" 	=> $search_'.$tag['attributes']['search'].'->isLastResult() ? 1 : 0,
+					"{lastresult}" 	=> (isset($results_'.$tag['attributes']['search'].') && is_array($results_'.$tag['attributes']['search'].')) 
+						? (($count_'.$uniqueID.' == sizeof($results_'.$tag['attributes']['search'].')-1) ? 1 : 0) 
+						: ($search_'.$tag['attributes']['search'].'->isLastResult() ? 1 : 0),
 					"{resultcount}" => ($count_'.$uniqueID.'+1),
 					"{maxpages}"    => $maxPages_'.$uniqueID.',
 					"{currentpage}" => ($search_'.$tag['attributes']['search'].'->getAttribute(\'page\')+1),

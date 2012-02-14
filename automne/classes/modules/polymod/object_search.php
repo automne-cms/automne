@@ -1200,7 +1200,7 @@ class CMS_object_search extends CMS_grandFather
 	 * @return boolean
 	 */
 	private function _updateTmpList($ids = array()) {
-		$max = 10000; //max ids before using a temporary table
+		$max = 100000; //max ids before using a temporary table
 		$length = is_array($ids) ? sizeof($ids) : 0;
 		if ($this->_useTmpTable || $length > $max ) {
 			$this->_useTmpTable = true;

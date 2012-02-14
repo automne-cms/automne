@@ -164,7 +164,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  */
 	function setAlias($alias) {
 		//clean alias characters
-		$alias = sensitiveIO::sanitizeURLString($alias);
+		$alias = sensitiveIO::sanitizeAsciiString($alias, '@');
 		//check if alias directory already exists
 		if (@is_dir($this->getPath(false, PATH_RELATIVETO_FILESYSTEM).$alias)) {
 			//check if directory is used by another alias
