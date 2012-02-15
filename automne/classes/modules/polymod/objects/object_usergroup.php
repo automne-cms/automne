@@ -304,7 +304,7 @@ class CMS_object_usergroup extends CMS_object_common
 				'data' 			=> $usersDatas
 			);
 			$return['selectOnFocus'] 	= true;
-			$return['editable'] 		= false;
+			$return['editable'] 		= true;
 		}
 		return $return;
 	}
