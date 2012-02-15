@@ -25,12 +25,14 @@
 class CMS_image extends CMS_file
 {
 	/**
-	 * @constant integer the jpg quality used from 0 (min quality) to 100 (max quality)
+	 * jpg quality used from 0 (min quality) to 100 (max quality)
+	 * @constant integer
 	 * @access public
 	 */
 	const JPEG_QUALITY = 90;
 	/**
-	 * @constant integer the png compression used from 0 (max quality) to 9 (min quality)
+	 * png compression used from 0 (max quality) to 9 (min quality)
+	 * @constant integer
 	 * @access public
 	 */
 	const PNG_COMPRESSION = 9;

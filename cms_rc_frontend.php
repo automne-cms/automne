@@ -42,10 +42,7 @@ if (!defined("PATH_FRONTEND_SPECIAL_SESSION_CHECK_FS")) {
 *     DEPRECATED FUNCTIONS      *
 *   Keeped for compatibility    *
 \*******************************/
-function getWebsites() {
-	CMS_grandFather::raiseError('This function is no longer available in this version of Automne');
-	return false;
-}
+
 /**
   * Gets the URL of a page by its ID (DEPRECATED)
   *
@@ -59,6 +56,10 @@ function getPageURL($pageID, $withMainURL = true) {
 		CMS_grandFather::raiseError('$withMainURL parameter is no longer available in this version of Automne');
 	}
 	return CMS_tree::getPageValue($pageID, 'url');
+}
+function getWebsites() {
+	CMS_grandFather::raiseError('This function is no longer available in this version of Automne');
+	return false;
 }
 function getLineage() {
 	CMS_grandFather::raiseError('This function is no longer available in this version of Automne');

@@ -1127,15 +1127,15 @@ if (SYSTEM_DEBUG) {
 		@ini_set("display_errors", "1");
 		@ini_set('output_buffering','Off');
 		if (extension_loaded('soap')) {
-			/**
-			  * SOAP cache
-			  * Disabled if SYSTEM_DEBUG is true
-			  */
+			// SOAP cache
+			// Disabled if SYSTEM_DEBUG is true
 			@ini_set('soap.wsdl_cache_enabled', '0');
 			@ini_set('soap.wsdl_cache_ttl', '1');
 		}
 	}
-	//Usefull function to dump a var.
+	/**
+	  * Usefull function to dump a var.
+	  */
 	function pr($data,$useVarDump = false) {
 		//$data .= ' ('.io::getCallInfos().')';
 		$view = CMS_view::getInstance();
@@ -1156,10 +1156,8 @@ if (SYSTEM_DEBUG) {
 		@ini_set("display_errors", "0");
 		@ini_set('output_buffering','On');
 		if (extension_loaded('soap')) {
-			/**
-			  * SOAP cache
-			  * Enabled if SYSTEM_DEBUG is false
-			  */
+			// SOAP cache
+			// Enabled if SYSTEM_DEBUG is false
 			@ini_set('soap.wsdl_cache_enabled', '1');
 			@ini_set('soap.wsdl_cache_ttl', '86400'); // 1 day
 		}
@@ -1245,12 +1243,16 @@ function atm_regen() {
 	}
 }
 
-//Function to start Automne session (deprecated, use CMS_session::init() instead)
+/**
+  * Function to start Automne session (deprecated, use CMS_session::init() instead)
+  */
 function start_atm_session() {
 	//nothing
 }
 
-//function to get current time in microsecond
+/**
+  * Function to get current time in microsecond
+  */
 function getmicrotime() {
 	return CMS_stats::getmicrotime();
 }
