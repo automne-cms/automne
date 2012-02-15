@@ -71,12 +71,12 @@ if (!isset($profile) || $profile->hasError()) {
 
 //Set max depth (iterations count)
 if ($maxDepth) {
-	$_SESSION["cms_context"]->setSessionVar("modules_clearances_max_depth", $maxDepth);
+	CMS_session::setSessionVar("modules_clearances_max_depth", $maxDepth);
 }
-if (!sensitiveIO::isPositiveInteger($_SESSION["cms_context"]->getSessionVar("modules_clearances_max_depth"))) {
-	$_SESSION["cms_context"]->setSessionVar("modules_clearances_max_depth", 3);
+if (!sensitiveIO::isPositiveInteger(CMS_session::getSessionVar("modules_clearances_max_depth"))) {
+	CMS_session::setSessionVar("modules_clearances_max_depth", 3);
 }
-$maxDepth = $_SESSION["cms_context"]->getSessionVar("modules_clearances_max_depth");
+$maxDepth = CMS_session::getSessionVar("modules_clearances_max_depth");
 
 // Colors used to visualize access level
 $clearance_colors = array (
@@ -294,7 +294,6 @@ if (!$item) {
 } else {
 	//get siblings
 	if ($moduleCodename != MOD_STANDARD_CODENAME) {
-		//$item = CMS_moduleCategories_catalog::getByID($_SESSION["cms_context"]->getSessionVar("current_item"));
 		$item = CMS_moduleCategories_catalog::getByID($item);
 		$attrs = array(
 			"module" => $moduleCodename,

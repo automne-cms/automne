@@ -177,6 +177,8 @@ class CMS_module_export extends CMS_grandFather
 	function export($format = 'php') {
 		$aExport = array();
 		if ($this->_hasExport) {
+			//force default language loading to overwrite user language
+			global $cms_language;
 			$oModule = CMS_modulesCatalog::getByCodename($this->_module);
 			if (!$oModule->hasError()) {
 				$aModule = $oModule->asArray($this->_parameters, $files);
@@ -188,6 +190,7 @@ class CMS_module_export extends CMS_grandFather
 				//create export datas
 				$aExport = array(
 					'version'		=> AUTOMNE_VERSION,
+					'language'		=> $cms_language->getCode(),
 					'description'	=> isset($this->_parameters['description']) ? $this->_parameters['description'] : '',
 					'modules'		=> array($aModule),
 				);
@@ -203,15 +206,15 @@ class CMS_module_export extends CMS_grandFather
 				break;
 				case 'patch':
 					//create patch datas
-					$archiveFile = PATH_TMP_WR.'/'.$this->_module.'-'.date('Ymd-His').'.tgz';
-					$archive = new CMS_gzip_file(substr($archiveFile, 1));
-					$archive->set_options(array('basedir' => PATH_REALROOT_FS));
+					$archiveFile = PATH_TMP_FS.'/'.$this->_module.'-'.date('Ymd-His').'.tgz';
+					$archive = new CMS_gzip_file(substr($archiveFile, strlen(PATH_REALROOT_FS) + 1));
+					$archive->set_options(array('basedir' => PATH_REALROOT_FS.'/'));
 					if (isset($aExport['modules'])) {
 						foreach ($aExport['modules'] as $moduleDatas) {
 							if (isset($moduleDatas['files'])) {
 								foreach ($moduleDatas['files'] as $file) {
 									if (file_exists(PATH_REALROOT_FS.$file)) {
-										$archive->add_files(array(substr($file, 1))); //strip initial slash
+										$archive->add_files(array(substr($file, 1)));
 									}
 								}
 							}
@@ -226,7 +229,7 @@ class CMS_module_export extends CMS_grandFather
 					$archive->add_files(array('export.xml'));
 					//create archive
 					if ($archive->create_archive()) {
-						$return = PATH_REALROOT_FS.$archiveFile;
+						$return = $archiveFile;
 					} else {
 						$this->raiseError('Error during archive creation ...');
 					}

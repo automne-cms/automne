@@ -118,33 +118,49 @@ class CMS_block_text extends CMS_block
 		case PAGE_VISUALMODE_HTML_EDITION:
 			if ($data && $data["value"]) {
 				$html = str_replace(array_keys($replace), $replace, $data["value"]);
-				return str_replace("{{data}}", $html, $this->_definition);
+				$replace = array(
+					'{{data}}'	=> $html,
+					'{{jsdata}}' => io::sanitizeJSString($html),
+				);
+				return str_replace(array_keys($replace), $replace, $this->_definition);
 			}
 			break;
 		case PAGE_VISUALMODE_FORM:
 			if ($data && $data["value"]) {
 				$html = str_replace(array_keys($replace), $replace, $data["value"]);
 			} elseif (isset($this->_attributes['default'])) {
-				$html = $this->_attributes['default'];
+				$html = '<span class=\"atm-ipsum\">'.$this->_attributes['default'].'</span>';
 			} else {
 				$html = "<span class=\"atm-ipsum\">Duis autem dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla";
 				$html .= "facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit au gue duis";
 				$html .= "dolore te feugat nulla facilisi.</span>";
 			}
-			$form_data = str_replace("{{data}}", $html, $this->_definition);
+			//This is used to avoid replacing {vars:type:value} inside text but to keep those vars inside block definition
+			//decoded into CMS_block_text::_getHTMLForm
+			$replace = array(
+				'||bovd||{data||bcvd||}'	=> $html,
+				'||bovd||{jsdata||bcvd||}' => io::sanitizeJSString($html),
+			);
+			$this->_definition = preg_replace ('#{([a-zA-Z0-9._{}:-]*)}#U' , '||bovd||\1||bcvd||', $this->_definition);
+			
+			$form_data = str_replace(array_keys($replace), $replace, $this->_definition);
 			$this->_hasContent = ($data && $data["value"]) ? true:false;
 			$this->_editable = true;
 			return $this->_getHTMLForm($language, $page, $clientSpace, $row, $this->_tagID, $form_data);
 			break;
 		case PAGE_VISUALMODE_CLIENTSPACES_FORM:
 			if (isset($this->_attributes['default'])) {
-				$html = $this->_attributes['default'];
+				$html = '<span class=\"atm-ipsum\">'.$this->_attributes['default'].'</span>';
 			} else {
 				$html = "<span class=\"atm-ipsum\">Duis autem dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla";
 				$html .= "facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit au gue duis";
 				$html .= "dolore te feugat nulla facilisi.</span>";
 			}
-			$form_data = str_replace("{{data}}", $html, $this->_definition);
+			$replace = array(
+				'{{data}}'	=> $html,
+				'{{jsdata}}' => io::sanitizeJSString($html),
+			);
+			$form_data = str_replace(array_keys($replace), $replace, $this->_definition);
 			$this->_hasContent = false;
 			$this->_editable = false;
 			return $this->_getHTMLForm($language, $page, $clientSpace, $row, $this->_tagID, $form_data);
@@ -173,14 +189,18 @@ class CMS_block_text extends CMS_block
 		$editor->setEditorAttributes(array(
 			'Height' => '100%',
 		));
-		$editor->setEditorConfigAttributes(array(
+		$editorConfig = array(
 			'EditorAreaStyles' 		=> '/css/editor.css',
 			'ToolbarCanCollapse' 	=> '0',
 			'SourcePopup'			=> '1',
 			'ToolbarLocation'		=> 'Out:fcktoolbar',
-			'EditorAreaCSS'			=> '{0}',
+			'EditorAreaCSS'			=> '||bo||0||bc||', //ie. {0}
 			'doNotFollowScroll'		=> true //FCKEditor hack : editors panel should not follow iframe page scroll
-		));
+		);
+		if (isset($this->_attributes['bgcolor'])) {
+			$editorConfig['EditorAreaStyles'] = 'body { background: '.$this->_attributes['bgcolor'].' };';
+		}
+		$editor->setEditorConfigAttributes($editorConfig);
 		$this->_value = $editor->getHTML();
 		$this->_administrable = false;
 		$html = parent::_getHTMLForm($language, $page, $clientSpace, $row, $blockID, $data);
@@ -188,6 +208,13 @@ class CMS_block_text extends CMS_block
 		//encode brackets to avoid vars ( {something:type:var} ) to be interpretted
 		//decoded into CMS_row::getData
 		$html = preg_replace ('#{([a-zA-Z0-9._{}:-]*)}#U' , '||bo||\1||bc||', $html);
+		
+		$replace = array(
+			'||bovd||'		=> '&#123;',
+			'||bcvd||'		=> '&#125;',
+		);
+		$html = str_replace(array_keys($replace), $replace, $html);
+		
 		
 		return $html;
 	}
@@ -313,11 +340,11 @@ class CMS_block_text extends CMS_block
 		if (SensitiveIO::isPositiveInteger($this->_dbID)) {
 			$table = $this->_getDataTableName(RESOURCE_LOCATION_USERSPACE, $public);
 			$str_set = "
-					page='".$destinationPage->getID()."',
-					clientSpaceID='".$this->_clientSpaceID."',
-					rowID='".$this->_rowID."',
-					blockID='".$this->_tagID."',
-					value='".SensitiveIO::sanitizeSQLString(SensitiveIO::stripPHPTags($this->_value))."'
+					page='".io::sanitizeSQLString($destinationPage->getID())."',
+					clientSpaceID='".io::sanitizeSQLString($this->_clientSpaceID)."',
+					rowID='".io::sanitizeSQLString($this->_rowID)."',
+					blockID='".io::sanitizeSQLString($this->_tagID)."',
+					value='".io::sanitizeSQLString($this->_value)."'
 			";
 			$sql = "
 				insert into

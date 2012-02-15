@@ -34,7 +34,7 @@ class CMS_log_catalog extends CMS_grandFather
 	  * @return array(CMS_log)
 	  * @access public
 	  */
-	static function search($moduleCodename = '', $resourceId = 0, $userId = 0, $types = array(), $start = 0, $limit = false, $order = 'datetime', $direction = 'desc', $returnCount = false) {
+	static function search($moduleCodename = '', $resourceId = 0, $userId = 0, $types = array(), $datestart = false, $dateend = false, $start = 0, $limit = false, $order = 'datetime', $direction = 'desc', $returnCount = false) {
 		$start = (int) $start;
 		$limit = ($limit) ? (int) $limit : false;
 		$order = (in_array($order, array('datetime', 'user', 'action'))) ? $order.'_log' : 'datetime_log';
@@ -55,6 +55,17 @@ class CMS_log_catalog extends CMS_grandFather
 			$where .= "
 				user_log='".sensitiveIO::sanitizeSQLString($userId)."'";
 		}
+		if ($datestart && is_a($datestart, 'CMS_date')) {
+			$where .= $where ? ' and ' : '';
+			$where .= "
+				datetime_log >= '".sensitiveIO::sanitizeSQLString($datestart->getDBValue(true))."'";
+		}
+		if ($dateend && is_a($dateend, 'CMS_date')) {
+			$dateend->moveDate('+1 day');
+			$where .= $where ? ' and ' : '';
+			$where .= "
+				datetime_log <= '".sensitiveIO::sanitizeSQLString($dateend->getDBValue(true))."'";
+		}
 		if (is_array($types) && $types) {
 			$where .= $where ? ' and ' : '';
 			$where .= "
@@ -74,6 +85,7 @@ class CMS_log_catalog extends CMS_grandFather
 				$sql .= " limit ".$start.", ".$limit;
 			}
 		}
+		//pr($sql);
 		$q = new CMS_query($sql);
 		if ($returnCount) {
 			return $q->getNumRows();
@@ -270,7 +282,8 @@ class CMS_log_catalog extends CMS_grandFather
 	static function getLoginActions()
 	{
 		return array(	CMS_log::MESSAGE_LOG_ACTION_LOGIN						=> CMS_log::LOG_ACTION_LOGIN,
-						CMS_log::MESSAGE_LOG_ACTION_AUTO_LOGIN					=> CMS_log::LOG_ACTION_AUTO_LOGIN);
+						CMS_log::MESSAGE_LOG_ACTION_AUTO_LOGIN					=> CMS_log::LOG_ACTION_AUTO_LOGIN,
+						CMS_log::MESSAGE_LOG_ACTION_DISCONNECT					=> CMS_log::LOG_ACTION_DISCONNECT,);
 	}
 	
 	/**
@@ -340,9 +353,10 @@ class CMS_log_catalog extends CMS_grandFather
 						CMS_log::MESSAGE_LOG_ACTION_TEMPLATE_DELETE_FILE		=> CMS_log::LOG_ACTION_TEMPLATE_DELETE_FILE,
 						CMS_log::MESSAGE_LOG_ACTION_SEND_EMAIL					=> CMS_log::LOG_ACTION_SEND_EMAIL,
 						CMS_log::MESSAGE_LOG_ACTION_LOGIN						=> CMS_log::LOG_ACTION_LOGIN,
-						CMS_log::MESSAGE_LOG_ACTION_AUTO_LOGIN					=> CMS_log::LOG_ACTION_AUTO_LOGIN
+						CMS_log::MESSAGE_LOG_ACTION_AUTO_LOGIN					=> CMS_log::LOG_ACTION_AUTO_LOGIN,
+						CMS_log::MESSAGE_LOG_ACTION_DISCONNECT					=> CMS_log::LOG_ACTION_DISCONNECT,
 		);
-		return $modulesActions ? array_merge($modulesActions, $defaultActions) : $defaultActions;
+		return $modulesActions ? ($modulesActions + $defaultActions) : $defaultActions;
 	}
 }
 ?>

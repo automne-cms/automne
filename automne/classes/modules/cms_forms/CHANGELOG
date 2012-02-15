@@ -1,3 +1,9 @@
+v1.34
+[BUG] : Correct a bug in select tag : values containing commas are not allowed
+
+v1.33
+[FEATURE] : Add specific PHP code inclusion in forms actions
+
 v1.32
 [BUG] : Correct some bugs with IE and with form edition
 [REFACTOR] : Add max size on file upload

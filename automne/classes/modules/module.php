@@ -272,7 +272,7 @@ class CMS_module extends CMS_grandFather
 						$paramTags = $file->getElementsByTagName('param');
 						foreach ($paramTags as $paramTag) {
 							$value = (io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? utf8_decode(trim($paramTag->nodeValue)) : trim($paramTag->nodeValue);
-							if ($withType) {
+							if ($withType && $paramTag->hasAttribute("type")) {
 								$moduleParameters[$this->_codename][$paramTag->getAttribute("name")] = array($value, $paramTag->getAttribute("type"));
 							} else {
 								$moduleParameters[$this->_codename][$paramTag->getAttribute("name")] = trim($value);
@@ -837,6 +837,10 @@ class CMS_module extends CMS_grandFather
 					break;
 					case 'block':
 						$attributes = $tag->getAttributes();
+						if (!isset($attributes['id'])) {
+							$this->raiseError('Missing attribute id in block tag');
+							return false;
+						}
 						//create the block data
 						$block = $tag->getRepresentationInstance();
 						//instanciate fake row
@@ -923,7 +927,7 @@ class CMS_module extends CMS_grandFather
 										$files = is_array($files) ? $files : array();
 										
 										//append module js files
-										$files = array_merge($files, $this->getJSFiles());
+										$files = array_merge($files, $this->getJSFiles($treatedObject->getID()));
 										//save files
 										CMS_module::moduleUsage($treatedObject->getID(), $tag->getName(), $files, true);
 										//save JS handled
@@ -938,7 +942,7 @@ class CMS_module extends CMS_grandFather
 										$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-css-tags");
 										$files = is_array($files) ? $files : array();
 										//append module css files
-										$moduleCSSFiles = $this->getCSSFiles();
+										$moduleCSSFiles = $this->getCSSFiles($treatedObject->getID());
 										foreach ($moduleCSSFiles as $filesMedia => $mediaFiles) {
 											if (!isset($files[$filesMedia])) {
 												$files[$filesMedia] = array();
@@ -957,14 +961,29 @@ class CMS_module extends CMS_grandFather
 								case "atm-js-tags":
 									//get old files for this tag already needed by other modules
 									$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-js-tags");
-									$return .= '<?php echo CMS_view::getJavascript(array(\''.implode('\',\'', $files).'\')); ?>'."\n";
+									
+									//add files from atm-js-add tag
+									$filesAdd = CMS_module::moduleUsage($treatedObject->getID(), "atm-js-tags-add");
+									$filesAdd = is_array($filesAdd) ? $filesAdd : array();
+									$files = array_merge($files, $filesAdd);
+									
+									$return .= '<?php echo CMS_view::getJavascript(array(\''.implode('\',\'', array_unique($files)).'\')); ?>'."\n";
 								break;
 								case "atm-css-tags":
 									$media = $tag->getAttribute('media') ? $tag->getAttribute('media') : 'all';
 									//get old files for this tag already needed by other modules
 									$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-css-tags");
+									
+									//add files from atm-css-add tag
+									$filesAdd = CMS_module::moduleUsage($treatedObject->getID(), "atm-css-tags-add");
+									$filesAdd = is_array($filesAdd) ? $filesAdd : array();
+									
 									if (isset($files[$media])) {
-										$return .= '<?php echo CMS_view::getCSS(array(\''.implode('\',\'', $files[$media]).'\'), \''.$media.'\'); ?>'."\n";
+										if (isset($filesAdd[$media])) {
+											$files[$media] = array_merge($files[$media], $filesAdd[$media]);
+										}
+										
+										$return .= '<?php echo CMS_view::getCSS(array(\''.implode('\',\'', array_unique($files[$media])).'\'), \''.$media.'\'); ?>'."\n";
 									}
 								break;
 							}
@@ -976,7 +995,7 @@ class CMS_module extends CMS_grandFather
 						$usage = CMS_module::moduleUsage($treatedObject->getID(), $this->_codename);
 						if (isset($usage['block'])) {
 							//append module css files
-							$moduleCSSFiles = $this->getCSSFiles();
+							$moduleCSSFiles = $this->getCSSFiles($treatedObject->getID());
 							foreach ($moduleCSSFiles as $media => $mediaFiles) {
 								if (!isset($usage['css-media'][$media])) {
 									$tagContent .= "\n".
@@ -989,7 +1008,7 @@ class CMS_module extends CMS_grandFather
 								}
 							}
 							if (!isset($usage['atm-js-tags'])) {
-								$jsFiles = $this->getJSFiles();
+								$jsFiles = $this->getJSFiles($treatedObject->getID());
 								if ($jsFiles) {
 									$tagContent .= "\n".'	<!-- load js file of '.$this->_codename.' module -->'."\n";
 									foreach ($jsFiles as $jsfile) {
@@ -1024,18 +1043,40 @@ class CMS_module extends CMS_grandFather
 	  * @return array : the module js file in /js/modules/codename
 	  * @access public
 	  */
-	function getJSFiles() {
+	function getJSFiles($pageId = '', $allFiles = false) {
 		$files = array();
-		if (@is_dir(PATH_JS_FS.'/modules/'.$this->_codename)) {
+		$dirname = PATH_JS_FS.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$this->_codename;
+		if (@is_dir($dirname)) {
 			try{
-				foreach ( new DirectoryIterator(PATH_JS_FS.'/modules/'.$this->_codename) as $file) {
+				//all subdirs or only this dir
+				$dir = $allFiles ? new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dirname), RecursiveIteratorIterator::CHILD_FIRST) : new DirectoryIterator($dirname);
+				foreach ($dir as $file) {
 					if ($file->isFile() && io::substr($file->getFilename(), -3) == ".js") {
-						$filename = str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname());
+						$filename = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname()));
 						$files[] = $filename;
 					}
 				}
 			} catch(Exception $e) {}
 			sort($files);
+		}
+		//get website files if any
+		if (!$allFiles && io::isPositiveInteger($pageId)) {
+			$page = CMS_tree::getPageById($pageId);
+			if ($page) {
+				$website = $page->getWebsite();
+				if ($website) {
+					if (@is_dir($dirname.DIRECTORY_SEPARATOR.$website->getCodename())) {
+						try{
+							foreach ( new DirectoryIterator($dirname.'/'.$website->getCodename()) as $file) {
+								if ($file->isFile() && io::substr($file->getFilename(), -3) == ".js") {
+									$filename = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname()));
+									$files[] = $filename;
+								}
+							}
+						} catch(Exception $e) {}
+					}
+				}
+			}
 		}
 		return $files;
 	}
@@ -1046,17 +1087,67 @@ class CMS_module extends CMS_grandFather
 	  * @return array : the module css file in /css/modules/codename
 	  * @access public
 	  */
-	function getCSSFiles() {
+	function getCSSFiles($pageId = '', $allFiles = false) {
 		$files = array();
 		$medias = array('all', 'aural', 'braille', 'embossed', 'handheld', 'print', 'projection', 'screen', 'tty', 'tv');
+		//get generic files
 		foreach ($medias as $media) {
 			if ($media == 'all') {
-				if (file_exists(PATH_CSS_FS.'/modules/'.$this->_codename.'.css')) {
-					$files['all'][] = str_replace(PATH_REALROOT_FS.'/', '', PATH_CSS_FS.'/modules/'.$this->_codename.'.css');
+				if (file_exists(PATH_CSS_FS.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$this->_codename.'.css')) {
+					$files['all'][] = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', PATH_CSS_FS.'/modules/'.$this->_codename.'.css'));
 				}
 			}
-			if (file_exists(PATH_CSS_FS.'/modules/'.$this->_codename.'-'.$media.'.css')) {
-				$files[$media][] = str_replace(PATH_REALROOT_FS.'/', '', PATH_CSS_FS.'/modules/'.$this->_codename.'-'.$media.'.css');
+			if (file_exists(PATH_CSS_FS.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$this->_codename.'-'.$media.'.css')) {
+				$files[$media][] = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', PATH_CSS_FS.'/modules/'.$this->_codename.'-'.$media.'.css'));
+			}
+		}
+		//get subdir files if any
+		$dirname = PATH_CSS_FS.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$this->_codename;
+		if (@is_dir($dirname)) {
+			try{
+				//all subdirs or only this dir
+				$dir = $allFiles ? new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dirname), RecursiveIteratorIterator::CHILD_FIRST) : new DirectoryIterator($dirname);
+				foreach ($dir as $file) {
+					if ($file->isFile() && io::substr($file->getFilename(), -4) == ".css") {
+						$founded = false;
+						foreach ($medias as $media) {
+							if (io::substr($file->getFilename(), -5 - strlen($media)) == '-'.$media.'.css') {
+								$files[$media][] = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname()));
+								$founded = true;
+							}
+						}
+						if (!$founded) {
+							$files['all'][] = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname()));
+						}
+					}
+				}
+			} catch(Exception $e) {}
+		}
+		//get website files if any
+		if (!$allFiles && io::isPositiveInteger($pageId)) {
+			$page = CMS_tree::getPageById($pageId);
+			if ($page) {
+				$website = $page->getWebsite();
+				if ($website) {
+					if (@is_dir($dirname.DIRECTORY_SEPARATOR.$website->getCodename())) {
+						try{
+							foreach ( new DirectoryIterator($dirname.DIRECTORY_SEPARATOR.$website->getCodename()) as $file) {
+								if ($file->isFile() && io::substr($file->getFilename(), -4) == ".css") {
+									$founded = false;
+									foreach ($medias as $media) {
+										if (io::substr($file->getFilename(), -5 - strlen($media)) == '-'.$media.'.css') {
+											$files[$media][] = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname()));
+											$founded = true;
+										}
+									}
+									if (!$founded) {
+										$files['all'][] = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname()));
+									}
+								}
+							}
+						} catch(Exception $e) {}
+					}
+				}
 			}
 		}
 		return $files;
@@ -1177,7 +1268,7 @@ class CMS_module extends CMS_grandFather
 			'labels'	=> CMS_language::getMessages(1, $this->_codename),
 		);
 		$defaultLanguage = CMS_languagesCatalog::getDefaultLanguage();
-		if (!isset($params['categories']) || $params['categories'] == true) {
+		if (in_array('categories', $params)) {
 			global $cms_user;
 			if (APPLICATION_ENFORCES_ACCESS_CONTROL != false
 				&& isset($cms_user)) {
@@ -1189,7 +1280,7 @@ class CMS_module extends CMS_grandFather
 				$aModule['categories'][] = $category->asArray($params, $files);
 			}
 		}
-		if (!isset($params['rows']) || $params['rows'] == true) {
+		if (in_array('rows', $params)) {
 			$modulesRows = CMS_rowsCatalog::getByModules(array($this->_codename));
 			if ($this->_codename != MOD_STANDARD_CODENAME) {
 				$modulesStandardRows = CMS_rowsCatalog::getByModules(array($this->_codename, MOD_STANDARD_CODENAME));
@@ -1201,8 +1292,8 @@ class CMS_module extends CMS_grandFather
 				$aModule['rows'][] = $row->asArray($params, $files);
 			}
 		}
-		if (!isset($params['js']) || $params['js'] == true) {
-			$jsFiles = $this->getJSFiles();
+		if (in_array('js', $params)) {
+			$jsFiles = $this->getJSFiles('', true);
 			$aModule['js'] = array();
 			if ($jsFiles) {
 				foreach ($jsFiles as $key => $jsFile) {
@@ -1212,8 +1303,8 @@ class CMS_module extends CMS_grandFather
 				$files = array_merge($files, $jsFiles);
 			}
 		}
-		if (!isset($params['css']) || $params['css'] == true) {
-			$cssFiles = $this->getCSSFiles();
+		if (in_array('css', $params)) {
+			$cssFiles = $this->getCSSFiles('', true);
 			$aModule['css'] = array();
 			if ($cssFiles) {
 				foreach ($cssFiles as $media => $cssMediaFiles) {

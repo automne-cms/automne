@@ -26,6 +26,8 @@
 
 require_once(dirname(__FILE__).'/../../../../cms_rc_admin.php');
 
+define("MESSAGE_ERROR_MODULE_RIGHTS",570);
+
 //load interface instance
 $view = CMS_view::getInstance();
 //set default display mode for this page
@@ -70,7 +72,7 @@ if (!$objectId && !$fieldId) {
 }
 
 //load current object definition
-$object = new CMS_poly_object_definition($objectId);
+$object = CMS_poly_object_catalog::getObjectDefinition($objectId);
 //load fields objects for object
 $objectFields = CMS_poly_object_catalog::getFieldsDefinition($object->getID());
 if ($objectFields[$fieldId]) {
@@ -83,10 +85,12 @@ if ($objectFields[$fieldId]) {
 			'label'			=> ' ',
 		);
 		foreach($objectsNames as $id => $label) {
-			$objectsDatas['objects'][] = array(
-				'id'			=> $id,
-				'label'			=> io::decodeEntities($label),
-			);
+			if (!$query || stripos(io::sanitizeAsciiString(io::decodeEntities($label)), io::sanitizeAsciiString(trim($query))) !== false) {
+				$objectsDatas['objects'][] = array(
+					'id'			=> $id,
+					'label'			=> io::decodeEntities($label),
+				);
+			}
 		}
 	}
 }

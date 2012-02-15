@@ -91,8 +91,6 @@ $jscontent = <<<END
 END;
 $view->addJavascript($jscontent);
 
-//CMS_context::resetSessionCookies();
-
 //send content
 $view->setContent($content);
 $view->show();

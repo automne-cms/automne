@@ -463,7 +463,7 @@ class CMS_row extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function hasUserRight(&$cms_user, $right = CLEARANCE_MODULE_EDIT) {
+	function hasUserRight(&$cms_user, $right = CLEARANCE_MODULE_VIEW) {
 		if (!is_a($cms_user, 'CMS_profile_user')) {
 			$this->raiseError("cms_user must be a valid CMS_profile_user");
 			return false;
@@ -946,11 +946,11 @@ class CMS_row extends CMS_grandFather
 			'groups'		=> $this->_groups->getTextDefinition(),
 			'useable'		=> $this->_useable,
 			'description'	=> $this->_description,
-			'image'			=> $image,
+			'image'			=> substr($image, strlen(PATH_REALROOT_WR)),
 		);
 		if ($image) {
 			if (!in_array($image, $files)) {
-				$files[] = $image;
+				$files[] = substr($image, strlen(PATH_REALROOT_WR));
 			}
 		}
 		return $aRow;
@@ -1030,8 +1030,8 @@ class CMS_row extends CMS_grandFather
 		if (!isset($params['files']) || $params['files'] == true) {
 			if (isset($data['definition']) && $data['definition']) {
 				if (!isset($params['updateRows']) || $params['updateRows'] == true) {
-					//set definition
-					$return = $this->setDefinition($data['definition'], false);
+					//set definition (and unescape cdata)
+					$return = $this->setDefinition(str_replace(']]\>', ']]>', $data['definition']), false);
 					if ($return !== true) {
 						$infos .= 'Error : cannot set row definition ... : '.$return."\n";
 						return false;

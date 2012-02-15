@@ -58,10 +58,10 @@ class CMS_XMLTag_anchor extends CMS_XMLTag {
 	  * @access private
 	  */
 	function anchorStart($tagName, $anchor, $attributes) {
-		if (strpos($_SERVER['SCRIPT_NAME'], PATH_ADMIN_WR) !== false) {
+		if (strpos($_SERVER['SCRIPT_NAME'], PATH_ADMIN_WR) !== false && strpos($_SERVER['SCRIPT_NAME'], 'page-previsualization.php') === false) {
 			return '<'.$tagName.' href="'.$anchor.'"'.$attributes.'>';
 		}
-		return '<'.$tagName.' href="'.(pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME) != 'index.php' ? $_SERVER['SCRIPT_NAME'] : (pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME) . (pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME) == '/' ? '' : '/'))).($_SERVER["QUERY_STRING"] ? '?'.io::htmlspecialchars($_SERVER["QUERY_STRING"]) : '').$anchor.'"'.$attributes.'>';
+		return '<'.$tagName.' href="'.(pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME) != 'index.php' ? $_SERVER['SCRIPT_NAME'] : (pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME) . (pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME) == '/' ? '' : '/'))).(isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] ? '?'.io::htmlspecialchars($_SERVER["QUERY_STRING"]) : '').$anchor.'"'.$attributes.'>';
 	}
 	
 	/**

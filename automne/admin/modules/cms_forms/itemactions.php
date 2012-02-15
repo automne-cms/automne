@@ -73,6 +73,7 @@ define("MESSAGE_ACTION_NO_REMEMBER_FIELD_FOUNDED", 82);
 define("MESSAGE_ACTION_ENTER_EMAIL_SENDER", 88);
 define("MESSAGE_ACTION_DOWNLOAD_CSV_FILE_WITH_DATE", 89);
 define("MESSAGE_PAGE_BLOCK_GENERAL_VARS_EXPLANATION", 1705);
+define("MESSAGE_ACTION_SPECIFIC_PHP", 95);
 
 //CHECKS
 $cms_module = CMS_modulesCatalog::getByCodename(MOD_CMS_FORMS_CODENAME);
@@ -90,11 +91,11 @@ $form = new CMS_forms_formular($_POST["form"]);
 
 // Language
 if ($_REQUEST["items_language"] != '') {
-	$_SESSION["cms_context"]->setSessionVar("items_language", $_REQUEST["items_language"]);
-} elseif ($_SESSION["cms_context"]->getSessionVar("items_language") == '' || is_object($_SESSION["cms_context"]->getSessionVar("items_language"))) {
-	$_SESSION["cms_context"]->setSessionVar("items_language", $cms_module->getParameters("default_language"));
+	CMS_session::setSessionVar("items_language", $_REQUEST["items_language"]);
+} elseif (CMS_session::getSessionVar("items_language") == '' || is_object(CMS_session::getSessionVar("items_language"))) {
+	CMS_session::setSessionVar("items_language", $cms_module->getParameters("default_language"));
 }
-$items_language = new CMS_language($_SESSION["cms_context"]->getSessionVar("items_language"));
+$items_language = new CMS_language(CMS_session::getSessionVar("items_language"));
 
 $separator = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? "\xa7\xa7" : "\xc2\xa7\xc2\xa7";
 
@@ -154,12 +155,12 @@ case "validate":
 			if ($_POST["value"]) {
 				$emails = array_map('trim',preg_split("/[,;]+/",$_POST["value"]));
 				$ok = true;
-				foreach($emails as $email) {
+				/*foreach($emails as $email) {
 					//value can be a valid email or a $_SESSION value
 					if (!sensitiveIO::isValidEmail($email) && io::strpos($email, '$_SESSION') === false) {
 						$ok = false;
 					}
-				}
+				}*/
 				if (!$ok) {
 					$cms_message .= $cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD, array($cms_language->getMessage(MESSAGE_ACTION_ENTER_EMAILS, false, MOD_CMS_FORMS_CODENAME)));
 				} else {
@@ -285,6 +286,10 @@ if (sizeof($formActions)) {
 								<option value="page"'.$pageSelected.'>'.$cms_language->getMessage(MESSAGE_ACTION_REDIRECT_TO_PAGE, false, MOD_CMS_FORMS_CODENAME).'</option>
 							</select>';
 					break;
+					case CMS_forms_action::ACTION_SPECIFIC_PHP :
+						$content .= '<small>'.$cms_language->getMessage(MESSAGE_ACTION_SPECIFIC_PHP, false, MOD_CMS_FORMS_CODENAME).' :</small><br />';
+						$content .= '<input type="text" class="admin_input_text" name="value" value="'.htmlspecialchars($item->getString('value')).'" />';
+					break;
 					case CMS_forms_action::ACTION_FIELDEMAIL :
 						//select form field
 						//enter emails
@@ -292,7 +297,7 @@ if (sizeof($formActions)) {
 							$fields = $form->getFields(true);
 							$fieldscontent = '';
 							foreach ($fields as $fieldID => $field) {
-								if ($field->getAttribute('type') == 'email' || $field->getAttribute('type') == 'select') {
+								if ($field->getAttribute('type') == 'email' || $field->getAttribute('type') == 'select' || $field->getAttribute('type') == 'hidden') {
 									$selected = ($field->getID() == $item->getString('value')) ? ' selected="selected"':'';
 									$fieldscontent .= '<option value="'.$field->getID().'"'.$selected.'>'.$field->getAttribute('label').'</option>';
 								}
@@ -491,7 +496,7 @@ if (sizeof($formActions)) {
 				<td class="'.$td_class.'">';
 					if ($item->getInteger('type') == CMS_forms_action::ACTION_FIELDEMAIL
 						|| $item->getInteger('type') == CMS_forms_action::ACTION_EMAIL
-						/*|| $item->getInteger('type') == CMS_forms_action::ACTION_FILE*/
+						|| $item->getInteger('type') == CMS_forms_action::ACTION_SPECIFIC_PHP
 						|| $item->getInteger('type') == CMS_forms_action::ACTION_AUTH ) {
 						$content .= '
 						<table border="0" cellpadding="2" cellspacing="0">

@@ -26,6 +26,8 @@
 
 require_once(dirname(__FILE__).'/../../../../cms_rc_admin.php');
 
+define("MESSAGE_ERROR_MODULE_RIGHTS",570);
+
 //load interface instance
 $view = CMS_view::getInstance();
 //set default display mode for this page
@@ -40,7 +42,7 @@ $search = sensitiveIO::request('search');
 $sort = sensitiveIO::request('sort');
 $dir = sensitiveIO::request('dir');
 $start = sensitiveIO::request('start', 'sensitiveIO::isPositiveInteger', 0);
-$limit = sensitiveIO::request('limit', 'sensitiveIO::isPositiveInteger', $_SESSION["cms_context"]->getRecordsPerPage());
+$limit = sensitiveIO::request('limit', 'sensitiveIO::isPositiveInteger', CMS_session::getRecordsPerPage());
 $limitToItems = sensitiveIO::request('items');
 if ($limitToItems) {
 	$limitToItems = explode(',',$limitToItems);
@@ -85,41 +87,53 @@ if (!$objectId) {
 }
 
 //load current object definition
-$object = new CMS_poly_object_definition($objectId);
+$object = CMS_poly_object_catalog::getObjectDefinition($objectId);
 // Check if need to use a specific display for search results
 $resultsDefinition = $object->getValue('resultsDefinition');
 
 //load fields objects for object
 $objectFields = CMS_poly_object_catalog::getFieldsDefinition($object->getID());
 
-//get all search datas from requests
-$keywords = sensitiveIO::request('items_'.$object->getID().'_kwrds', '', $_SESSION["cms_context"]->getSessionVar('items_'.$object->getID().'_kwrds'));
-$keywordsOptions = sensitiveIO::request('items_'.$object->getID().'_kwrds_options', array('any', 'all', 'phrase'), 'any'/*$_SESSION["cms_context"]->getSessionVar('items_'.$object->getID().'_kwrds_options')*/);
-$dateFrom = sensitiveIO::request('items_dtfrm', '', $_SESSION["cms_context"]->getSessionVar('items_dtfrm'));
-$dateEnd = sensitiveIO::request('items_dtnd', '', $_SESSION["cms_context"]->getSessionVar('items_dtnd'));
-$sort = sensitiveIO::request('sort_'.$object->getID(), '', $_SESSION["cms_context"]->getSessionVar('sort_'.$object->getID()));
-$status = sensitiveIO::request('status_'.$object->getID(), '', $_SESSION["cms_context"]->getSessionVar('status_'.$object->getID()));
-$direction = sensitiveIO::request('direction_'.$object->getID(), '', $_SESSION["cms_context"]->getSessionVar('direction_'.$object->getID()));
 //Add all subobjects to search if any
 $fields = array();
+
+$possibleTargets = array();
 foreach ($objectFields as $fieldID => $field) {
 	if (isset($_REQUEST['items_'.$object->getID().'_'.$fieldID])) {
-		$fields[$fieldID] = sensitiveIO::request('items_'.$object->getID().'_'.$fieldID, '', $_SESSION["cms_context"]->getSessionVar('items_'.$object->getID().'_'.$fieldID));
+		$fields[$fieldID] = sensitiveIO::request('items_'.$object->getID().'_'.$fieldID, '', '');
+	}
+	// get the value of all possible searchable fields in case a target is specified by the user
+	if ($field->getValue('searchable')){
+		$objectType = $field->getTypeObject();
+		if (!method_exists($objectType, 'getListOfNamesForObject')) {
+			$possibleTargets[]= $fieldID;
+		}
 	}
 }
 
+//get all search datas from requests
+$keywords = sensitiveIO::request('items_'.$object->getID().'_kwrds', '', '');
+$keywordsOptions = sensitiveIO::request('items_'.$object->getID().'_kwrds_options', array('any', 'all', 'phrase','beginswith'), 'any');
+$keywordsTarget = sensitiveIO::request('kwrds_target_'.$object->getID(), $possibleTargets, -1);
+$dateFrom = sensitiveIO::request('items_dtfrm', '', '');
+$dateEnd = sensitiveIO::request('items_dtnd', '', '');
+$sort = sensitiveIO::request('sort_'.$object->getID(), '', '');
+$status = sensitiveIO::request('status_'.$object->getID(), '', '');
+$direction = sensitiveIO::request('direction_'.$object->getID(), '', '');
+
 // Set default session search options
-$_SESSION["cms_context"]->setSessionVar('items_'.$object->getID().'_kwrds', $keywords);
-//$_SESSION["cms_context"]->setSessionVar('items_'.$object->getID().'_kwrds_options', $keywordsOptions);
-$_SESSION["cms_context"]->setSessionVar("items_dtfrm", $dateFrom);
-$_SESSION["cms_context"]->setSessionVar("items_dtnd", $dateEnd);
-$_SESSION["cms_context"]->setSessionVar('sort_'.$object->getID(), $sort);
-$_SESSION["cms_context"]->setSessionVar('status_'.$object->getID(), $status);
-$_SESSION["cms_context"]->setSessionVar('direction_'.$object->getID(), $direction);
+CMS_session::setSessionVar('items_'.$object->getID().'_kwrds', $keywords);
+//CMS_session::setSessionVar('items_'.$object->getID().'_kwrds_options', $keywordsOptions);
+CMS_session::setSessionVar('kwrds_target_'.$object->getID(),$keywordsTarget);
+CMS_session::setSessionVar("items_dtfrm", $dateFrom);
+CMS_session::setSessionVar("items_dtnd", $dateEnd);
+CMS_session::setSessionVar('sort_'.$object->getID(), $sort);
+CMS_session::setSessionVar('status_'.$object->getID(), $status);
+CMS_session::setSessionVar('direction_'.$object->getID(), $direction);
 //Add all subobjects to search if any
 foreach ($objectFields as $fieldID => $field) {
 	if (isset($fields[$fieldID])) {
-		$_SESSION["cms_context"]->setSessionVar('items_'.$object->getID().'_'.$fieldID, $fields[$fieldID]);
+		CMS_session::setSessionVar('items_'.$object->getID().'_'.$fieldID, $fields[$fieldID]);
 	}
 }
 
@@ -147,14 +161,14 @@ if ($object->isPrimaryResource()) {
 	$dt_from = new CMS_date();
 	$dt_from->setDebug(false);
 	$dt_from->setFormat($dateFormat);
-	if ($dt_from->setLocalizedDate($_SESSION["cms_context"]->getSessionVar("items_dtfrm"),true)) {
+	if ($dt_from->setLocalizedDate(CMS_session::getSessionVar("items_dtfrm"),true)) {
 		$search->addWhereCondition("publication date after", $dt_from);
 	}
 	
 	$dt_end = new CMS_date();
 	$dt_end->setDebug(false);
 	$dt_end->setFormat($dateFormat);
-	if ($dt_end->setLocalizedDate($_SESSION["cms_context"]->getSessionVar("items_dtnd"),true)) {
+	if ($dt_end->setLocalizedDate(CMS_session::getSessionVar("items_dtnd"),true)) {
 		// Check this date isn't greater than start date given
 		if (!CMS_date::compare($dt_from, $dt_end, ">=")) {
 			$search->addWhereCondition("publication date before", $dt_end);
@@ -167,17 +181,22 @@ if ($object->isPrimaryResource()) {
 //Add all subobjects to search if any
 foreach ($objectFields as $fieldID => $field) {
 	//if field is a poly object
-	if ($_SESSION["cms_context"]->getSessionVar('items_'.$object->getID().'_'.$fieldID) != '') {
-		$search->addWhereCondition($fieldID, $_SESSION["cms_context"]->getSessionVar('items_'.$object->getID().'_'.$fieldID));
+	if (CMS_session::getSessionVar('items_'.$object->getID().'_'.$fieldID) != '') {
+		$search->addWhereCondition($fieldID, CMS_session::getSessionVar('items_'.$object->getID().'_'.$fieldID));
 	}
 }
 // Param : With keywords (this is best if it is done at last)
-if ($_SESSION["cms_context"]->getSessionVar('items_'.$object->getID().'_kwrds') != '') {
-	$kwrd = $_SESSION["cms_context"]->getSessionVar('items_'.$object->getID().'_kwrds');
-	if (!io::isPositiveInteger($kwrd)) {
-		$search->addWhereCondition("keywords", $kwrd, $keywordsOptions);
-	} else {
+if (CMS_session::getSessionVar('items_'.$object->getID().'_kwrds') != '') {
+	$kwrd = CMS_session::getSessionVar('items_'.$object->getID().'_kwrds');
+	if (io::isPositiveInteger($kwrd) && !io::isPositiveInteger($keywordsTarget)) {
 		$search->addWhereCondition("item", $kwrd);
+	} else {
+		if(io::isPositiveInteger($keywordsTarget)) {
+			// a specific field target was specified
+			$search->addWhereCondition($keywordsTarget, $kwrd, $keywordsOptions);
+		} else {
+			$search->addWhereCondition("keywords", $kwrd, $keywordsOptions);
+		}
 	}
 }
 
@@ -192,15 +211,15 @@ if ($limitToItems) {
 	$search->setAttribute('page', ($start / $limit));
 	
 	// Params : set default direction direction
-	if(!$_SESSION["cms_context"]->getSessionVar('direction_'.$object->getID())){
-		$_SESSION["cms_context"]->setSessionVar('direction_'.$object->getID(), 'desc');
+	if(!CMS_session::getSessionVar('direction_'.$object->getID())){
+		CMS_session::setSessionVar('direction_'.$object->getID(), 'desc');
 	}
 	
 	// Params : order
-	if($_SESSION["cms_context"]->getSessionVar('sort_'.$object->getID())){
-		$search->addOrderCondition($_SESSION["cms_context"]->getSessionVar('sort_'.$object->getID()),$_SESSION["cms_context"]->getSessionVar('direction_'.$object->getID()));
+	if(CMS_session::getSessionVar('sort_'.$object->getID())){
+		$search->addOrderCondition(CMS_session::getSessionVar('sort_'.$object->getID()),CMS_session::getSessionVar('direction_'.$object->getID()));
 	} else {
-		$search->addOrderCondition('objectID', $_SESSION["cms_context"]->getSessionVar('direction_'.$object->getID()));
+		$search->addOrderCondition('objectID', CMS_session::getSessionVar('direction_'.$object->getID()));
 	}
 }
 //launch search
@@ -237,7 +256,6 @@ while($item = $search->getNextResult()) {
 	//unpublish
 	if ($unpublish && $object->isPrimaryResource()) {
 		//set item date end to yesterday
-		pr('ok unpublish');
 		$dt_end = new CMS_date();
 		$dt_end->setDebug(false);
 		$dt_end->setNow();
@@ -252,7 +270,6 @@ while($item = $search->getNextResult()) {
 	//publish
 	if ($publish && $object->isPrimaryResource()) {
 		//clear page date end
-		pr('ok publish');
 		$dt_end = new CMS_date();
 		$dateStart = $item->getPublicationDateStart(false);
 		$item->setPublicationDates($dateStart, $dt_end);

@@ -55,6 +55,8 @@ define("MESSAGE_ACTION_PURGE_CONFIRM", 1589);
 define("MESSAGE_ACTION_EXPORT", 1672);
 define("MESSAGE_ACTION_EXPORT_DESC", 1673);
 define("MESSAGE_PAGE_TYPE_MODULES", 1674);
+define("MESSAGE_PAGE_FIELD_FROM", 1723);
+define("MESSAGE_PAGE_FIELD_TO", 1724);
 
 $winId = sensitiveIO::request('winId', '', 'logsWindow');
 
@@ -72,7 +74,7 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_VIEWLOG)) {
 }
 
 //get records / pages
-$recordsPerPage = $_SESSION["cms_context"]->getRecordsPerPage();
+$recordsPerPage = CMS_session::getRecordsPerPage();
 
 //users
 $users = array();
@@ -176,6 +178,8 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 } else {
 	$purgeLogs = '';
 }
+
+$dateFormat = $cms_language->getDateFormat();
 
 $jscontent = <<<END
 	var logWindow = Ext.getCmp('{$winId}');
@@ -355,20 +359,58 @@ $jscontent = <<<END
 						}
 					}
 		        },{
-					xtype:				'atmPageField',
-					id:					'logPageSelect',
-					fieldLabel:			'<span class="atm-help" ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_BY_PAGE_DESC)}">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_BY_PAGE)}</span>',
-					name:				'page',
-					disabled:			true,
-					value:				'',
-					width:				200,
-					anchor:				false,
-					allowBlank:			true,
-					validateOnBlur:		false,
-					listeners:			{'valid':{
-						fn: 				logWindow.launchSearch,
-						options:			{buffer:300}
-					}}
+					layout:			'column',
+					xtype:			'panel',
+					border:			false,
+					items:[{
+						columnWidth:	.33,
+						layout: 		'form',
+						border:			false,
+						items: [{
+							xtype:				'atmPageField',
+							id:					'logPageSelect',
+							fieldLabel:			'<span class="atm-help" ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_BY_PAGE_DESC)}">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_BY_PAGE)}</span>',
+							name:				'page',
+							disabled:			true,
+							value:				'',
+							width:				200,
+							anchor:				false,
+							allowBlank:			true,
+							validateOnBlur:		false,
+							listeners:			{'valid':{
+								fn: 				logWindow.launchSearch,
+								options:			{buffer:300}
+							}}
+						}]
+					},{
+						columnWidth:	.33,
+						layout: 		'form',
+						border:			false,
+						items: [{
+							fieldLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_FROM)}',
+							xtype:			'datefield',
+							name:			'datestart',
+							format:			'{$dateFormat}',
+							width:			200,
+							anchor:			false,
+							allowBlank:		true,
+							listeners:		{'valid':logWindow.launchSearch}
+						}]
+					},{
+						columnWidth:	.33,
+						layout: 		'form',
+						border:			false,
+						items: [{
+							fieldLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_TO)}',
+							xtype:			'datefield',
+							name:			'dateend',
+							format:			'{$dateFormat}',
+							width:			200,
+							anchor:			false,
+							allowBlank:		true,
+							listeners:		{'valid':logWindow.launchSearch}
+						}]
+					}]
 				},{
 					xtype:				'combo',
 					id:					'usersField',

@@ -57,11 +57,23 @@ define("MESSAGE_PAGE_FIELD_ELEMENT", 1579);
 $codename = sensitiveIO::request('module', CMS_modulesCatalog::getAllCodenames());
 $pageId = sensitiveIO::request('page', 'sensitiveIO::isPositiveInteger', 0);
 $type = sensitiveIO::request('type', array('all','login','resource','admin','email','modules'), 'all');
+$datestart = false;
+if (sensitiveIO::request('datestart')) {
+	$datestart = new CMS_date();
+	$datestart->setFormat($cms_language->getDateFormat());
+	$datestart->setLocalizedDate(sensitiveIO::request('datestart'), true);
+}
+$dateend = false;
+if (sensitiveIO::request('dateend')) {
+	$dateend = new CMS_date();
+	$dateend->setFormat($cms_language->getDateFormat());
+	$dateend->setLocalizedDate(sensitiveIO::request('dateend'), true);
+}
 $sort = sensitiveIO::request('sort', array('datetime', 'user', 'action'), 'datetime');
 $dir = sensitiveIO::request('dir', array('ASC','DESC'), 'DESC');
 $userId = sensitiveIO::request('userId', 'sensitiveIO::isPositiveInteger');
 $start = sensitiveIO::request('start', 'sensitiveIO::isPositiveInteger', 0);
-$limit = sensitiveIO::request('limit', 'sensitiveIO::isPositiveInteger', $_SESSION["cms_context"]->getRecordsPerPage());
+$limit = sensitiveIO::request('limit', 'sensitiveIO::isPositiveInteger', CMS_session::getRecordsPerPage());
 $delete = sensitiveIO::request('del') ? true : false;
 
 if ($delete && !$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
@@ -104,7 +116,7 @@ if ($delete) {
 	CMS_log_catalog::purge($codename, $pageId, $userId, $types);
 } else {
 	//search logs
-	$logs = CMS_log_catalog::search($codename, $pageId, $userId, $types, $start, $limit, $sort, io::strtolower($dir), $returnCount = false);
+	$logs = CMS_log_catalog::search($codename, $pageId, $userId, $types, $datestart, $dateend, $start, $limit, $sort, io::strtolower($dir), $returnCount = false);
 	$actions = CMS_log_catalog::getAllActions($cms_language);
 	//loop over users to get all required infos
 	foreach ($logs as $log) {
@@ -161,7 +173,7 @@ if ($delete) {
 		$logsDatas['logs'][] = $datas;
 	}
 	//total logs count for search
-	$logsDatas['totalCount'] = CMS_log_catalog::search($codename, $pageId, $userId, $types = array(), $start, $limit, 'datetime', 'desc', true);
+	$logsDatas['totalCount'] = CMS_log_catalog::search($codename, $pageId, $userId, $types, $datestart, $dateend, $start, $limit, 'datetime', 'desc', true);
 }
 //export datas as CSV
 if ($export) {

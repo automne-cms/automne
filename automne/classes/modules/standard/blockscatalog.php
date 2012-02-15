@@ -165,6 +165,7 @@ class CMS_blocksCatalog extends CMS_grandFather
 		$_blocks = array();
 		//@var : array ( array(Table prefix, Class name) )
 		$_blockTypes = array(
+					array('blocksRawDatas', false),
 					array('blocksImages','CMS_block_image'),
 					array('blocksFlashes','CMS_block_flash'),
 					array('blocksFiles','CMS_block_file'),
@@ -174,18 +175,22 @@ class CMS_blocksCatalog extends CMS_grandFather
 		//Rotate all block types availables
 		foreach ($_blockTypes as $b) {
 			$table = ($public) ? $b[0].'_public' : $b[0].'_edited';
-			$klass = $b[1];
+			$class = $b[1];
 			$sql = "
 				select
-					id
+					*
 				from
 					".$table."
 				where
 					page=".$page->getID()."
 				";
 			$q = new CMS_query($sql);
-			while($id = $q->getvalue("id")) {
-				$_blocks[] = new $klass($id, RESOURCE_LOCATION_USERSPACE, $public);
+			while($r = $q->getArray()) {
+				if (isset($r['type']) && $r['type'] && class_exists($r['type'])) {
+					$_blocks[] = new $r['type']($r['id'], RESOURCE_LOCATION_USERSPACE, $public);
+				} elseif ($class && class_exists($class)) {
+					$_blocks[] = new $class($r['id'], RESOURCE_LOCATION_USERSPACE, $public);
+				}
 			}
 		}
 		return $_blocks ;

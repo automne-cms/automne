@@ -69,6 +69,9 @@ define("MESSAGE_PAGE_USER_CREATION", 574);
 define("MESSAGE_PAGE_ADMIN_NO_GROUPS", 1594);
 define("MESSAGE_PAGE_INCORRECT_FORM_VALUES", 682);
 define("MESSAGE_PAGE_LOG_LABEL", 29);
+define("MESSAGE_PAGE_NO_PASSWORD", 1720);
+define("MESSAGE_PAGE_GENDER", 1738);
+define("MESSAGE_PAGE_COMPANY", 1737);
 
 $winId = sensitiveIO::request('winId', '', 'userWindow');
 $userId = sensitiveIO::request('userId', 'sensitiveIO::isPositiveInteger', 'createUser');
@@ -125,7 +128,6 @@ $login = sensitiveIO::sanitizeJSString($user->getLogin());
 $loginValue = ($login) ? "value:'{$login}'," : '';
 $email = sensitiveIO::sanitizeJSString($user->getEmail());
 $emailValue = ($email) ? "value:'{$email}'," : '';
-$dn = sensitiveIO::sanitizeJSString($user->getDN()); 
 //Contact datas
 $service = sensitiveIO::sanitizeJSString($contactData->getService()); 
 $jobtitle = sensitiveIO::sanitizeJSString($contactData->getJobTitle()); 
@@ -139,6 +141,8 @@ $country = sensitiveIO::sanitizeJSString($contactData->getCountry());
 $phone = sensitiveIO::sanitizeJSString($contactData->getPhone()); 
 $cellphone = sensitiveIO::sanitizeJSString($contactData->getCellphone()); 
 $fax = sensitiveIO::sanitizeJSString($contactData->getFax()); 
+$company = sensitiveIO::sanitizeJSString($contactData->getCompany()); 
+$gender = sensitiveIO::sanitizeJSString($contactData->getGender()); 
 //Alerts
 $modulesCodes = new CMS_modulesCodes();
 $alerts = $modulesCodes->getModulesCodes(MODULE_TREATMENT_ALERTS, '', $user, array("user" => $cms_user));
@@ -173,16 +177,20 @@ foreach ($alerts as $codename => $modAlerts) {
 }
 //remove last comma
 $alertsPanel = io::substr($alertsPanel,0,-1);
-//disable user infos fields if LDAP is active and user has no user edition rights
-$disableUserInfosFields = (APPLICATION_LDAP_AUTH && $user->getDN() && !$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) ? 'disabled:true,':'';
+//disable user infos fields (always false)
+$disableUserInfosFields = '';
 //disable login field for root and anonymous users
 $disableLoginField = ($disableUserInfosFields || $user->getUserId() == ANONYMOUS_PROFILEUSER_ID || $user->getUserId() == ROOT_PROFILEUSER_ID) ? 'disabled:true,':'';
 //min password length
 $minimumPasswordLength = MINIMUM_PASSWORD_LENGTH;
 //get records / pages
-$recordsPerPage = $_SESSION["cms_context"]->getRecordsPerPage();
+$recordsPerPage = CMS_session::getRecordsPerPage();
 
 $groupsTab = $modulesTab = $adminTab = $logsTab = '';
+
+//Get modules and remove standard (which is already treated in this file)
+$modules = CMS_modulesCatalog::getAll();
+unset($modules[MOD_STANDARD_CODENAME]);
 
 //OTHERS TABS
 if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
@@ -258,8 +266,6 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
 				nocache:	true
 			}
 		}";
-	$modules = CMS_modulesCatalog::getAll();
-	unset($modules[MOD_STANDARD_CODENAME]);
 	foreach ($modules as $codename => $module) {
 		$label = sensitiveIO::sanitizeJSString($module->getLabel($cms_language));
 		if ($label) {
@@ -320,54 +326,127 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
 }
 
 //create dynamic vars
-if (!APPLICATION_LDAP_AUTH) {
-	// Local passwords (root password is allowed only for root, and disabled for anonymous user)
-	if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID
-		&& ($user->getUserId() != ROOT_PROFILEUSER_ID || ($user->getUserId() == ROOT_PROFILEUSER_ID && $cms_user->getUserId() == ROOT_PROFILEUSER_ID))) {
-		$authentificationField = "{
-			layout:			'column',
-			xtype:			'panel',
+
+// Local passwords (root password is allowed only for root, and disabled for anonymous user)
+if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID
+	&& ($user->getUserId() != ROOT_PROFILEUSER_ID || ($user->getUserId() == ROOT_PROFILEUSER_ID && $cms_user->getUserId() == ROOT_PROFILEUSER_ID))) {
+	$authentificationField = "{
+		layout:			'column',
+		xtype:			'panel',
+		border:			false,
+		items:[{
+			columnWidth:	.5,
+			layout: 		'form',
 			border:			false,
-			items:[{
-				columnWidth:	.5,
-				layout: 		'form',
-				border:			false,
-				items: [{
-					fieldLabel:		'<span class=\"atm-red\">*</span> {$cms_language->getJsMessage(MESSAGE_PAGE_PASSWORD)}',
-					xtype:			'textfield',
-					name:			'pass1',
-					inputType:		'password',
-					anchor:			'98%',
-					allowBlank:		(!isNaN(parseInt(userWindow.userId))) ? true : false
-				}]
-			},{
-				columnWidth:	.5,
-				layout: 		'form',
-				border:			false,
-				items: [{
-					fieldLabel:		'{$cms_language->getJsMessage(MESSAGE_PAGE_CONFIRM)}',
-					xtype:			'textfield',
-					name:			'pass2',
-					inputType:		'password',
-					anchor:			'100%',
-					allowBlank:		(!isNaN(parseInt(userWindow.userId))) ? true : false,
-					validator:		validatePass
-				}]
+			items: [{
+				fieldLabel:		'{$cms_language->getJsMessage(MESSAGE_PAGE_PASSWORD)}',
+				xtype:			'textfield',
+				name:			'pass1',
+				inputType:		'password',
+				anchor:			'98%',
+				allowBlank:		true
 			}]
+		},{
+			columnWidth:	.5,
+			layout: 		'form',
+			border:			false,
+			items: [{
+				fieldLabel:		'{$cms_language->getJsMessage(MESSAGE_PAGE_CONFIRM)}',
+				xtype:			'textfield',
+				name:			'pass2',
+				inputType:		'password',
+				anchor:			'100%',
+				allowBlank:		true,
+				validator:		validatePass
+			}]
+		}]
+	},";
+	if (!$user->havePassword() && $user->getUserId()) {
+		$authentificationField .= "{
+			bodyStyle:		'padding:0 0 10px 105px',
+			xtype:			'panel',
+			html:			'{$cms_language->getJsMessage(MESSAGE_PAGE_NO_PASSWORD)}',
+			border:			false
 		},";
-	} else {
-		$authentificationField = '';
 	}
 } else {
-	// LDAP DN
-	$authentificationField = "{
-		$disableUserInfosFields
-		fieldLabel:		'{$cms_language->getJsMessage(MESSAGE_PAGE_DISTINGUISHED_NAME)}',
-		name:			'dn',
-		value:			'{$dn}'
-	},";
+	$authentificationField = '';
 }
 
+/********************************************\
+*             MODULES ACCORDION              *
+\********************************************/
+$modulesAccordion = '';
+if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID && $user->getUserId() != ROOT_PROFILEUSER_ID) {
+	//usefull temporary function
+	function replaceCallBack($parts) {
+		return 'function('.str_replace(array('\"','\/'), array('"', '/'), $parts[1]).'}';
+	}
+	
+	foreach ($modules as $aModule) {
+		if (method_exists($aModule,'getUserAccordionProperties')) {
+			$moduleCodename = $aModule->getCodename();
+			//get accordion datas from module
+			$moduleDatas = $aModule->getUserAccordionProperties($userId, $cms_language);
+			
+			$moduleURL = false;
+			if (isset($moduleDatas['url'])) {
+				$moduleURL = $moduleDatas['url'];
+			}
+			$moduleLabel = io::sanitizeJSString($aModule->getLabel($cms_language));
+			if (isset($moduleDatas['label'])) {
+				$moduleLabel = io::sanitizeJSString($moduleDatas['label']);
+			}
+			
+			$moduleFields = array();
+			if (isset($moduleDatas['fields']) && is_array($moduleDatas['fields'])) {
+				$moduleFields = $moduleDatas['fields'];
+			}
+			if (is_array($moduleFields)) {
+				$moduleFields = sensitiveIO::jsonEncode($moduleFields);
+			}
+			//do some search and replace to allow use of js functions in returned code
+			$moduleFields = str_replace('"scope":"this"', '"scope":this', $moduleFields);
+			$moduleFields = preg_replace_callback('#"function\((.*)}"#U', 'replaceCallBack', $moduleFields);
+			$button = ($moduleURL) ? ",
+				buttons:[{
+					text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+					iconCls:		'atm-pic-validate',
+					xtype:			'button',
+					name:			'submit{$moduleCodename}User',
+					scope:			this,
+					handler:		function() {
+						var form = Ext.getCmp('userPanel-{$moduleCodename}-{$userId}').getForm();
+						form.submit({params:{
+							action:		'update-user',
+							userId:		userWindow.userId
+						}});
+					}
+				}]" : '';
+			$modulesAccordion .= ",{
+				title:			'{$moduleLabel}',
+				id:				'userPanel-{$moduleCodename}-{$userId}',
+				layout: 		'form',
+				xtype:			'atmForm',
+				url:			'{$moduleURL}',
+				collapsible:	true,
+				defaultType:	'textfield',
+				collapsed:		true,
+				autoWidth:		true,
+				autoScroll:		true,
+				buttonAlign:	'center',
+				labelAlign:		'right',
+				autoScroll:		true,
+				defaults: {
+					xtype:			'textfield',
+					anchor:			'97%'
+				},
+				items:[{$moduleFields}]
+				{$button}
+			}";
+		}
+	}
+}
 $title = (sensitiveIO::isPositiveInteger($userId)) ? $cms_language->getJsMessage(MESSAGE_PAGE_USER_PROFILE).' : '.$fullname : $cms_language->getJsMessage(MESSAGE_PAGE_USER_CREATION);
 
 $jscontent = <<<END
@@ -441,7 +520,6 @@ $jscontent = <<<END
 	if (userWindow.father.groupWindows == undefined) {
 		userWindow.father.groupWindows = [];
 	}
-	
 	
 	//groups store
 	var store = new Automne.JsonStore({
@@ -553,6 +631,7 @@ $jscontent = <<<END
 				labelAlign:		'right',
 				defaultType:	'textfield',
 				buttonAlign:	'center',
+				autoScroll:		true,
 				defaults: {
 					xtype:			'textfield',
 					anchor:			'97%',
@@ -624,8 +703,11 @@ $jscontent = <<<END
 										//set userId
 										userWindow.userId = action.result.success.userId;
 										//display hidden elements
-										Ext.getCmp('alertsPanel-{$userId}').enable();
-										Ext.getCmp('userDetailsPanel-{$userId}').enable();
+										Ext.getCmp('userProfile-{$userId}').items.each(function(panel) {
+											if (panel.id != 'identityPanel-{$userId}') {
+												panel.enable();
+											}
+										});
 										Ext.getCmp('userPanels-{$userId}').items.each(function(panel) {
 											if (panel.disabled) {
 												panel.enable();
@@ -643,7 +725,7 @@ $jscontent = <<<END
 						}
 					}
 				}]
-			},{
+			}{$modulesAccordion},{
 				title:			'{$cms_language->getJSMessage(MESSAGE_PAGE_CONTACT_INFO)}',
 				id:				'userDetailsPanel-{$userId}',
 				layout: 		'form',
@@ -654,11 +736,22 @@ $jscontent = <<<END
 				collapsed:		true,
 				labelAlign:		'right',
 				buttonAlign:	'center',
+				autoScroll:		true,
 				defaults: {
 					xtype:			'textfield',
 					anchor:			'97%'
 				},
 				items:[{
+					{$disableUserInfosFields}
+					fieldLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_GENDER)}',
+					name:			'gender',
+					value:			'{$gender}'
+				},{
+					{$disableUserInfosFields}
+					fieldLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_COMPANY)}',
+					name:			'company',
+					value:			'{$company}'
+				},{
 					{$disableUserInfosFields}
 					fieldLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_JOB_TITLE)}',
 					name:			'jobtitle',
@@ -775,8 +868,11 @@ $jscontent = <<<END
 	
 	//disable all elements not usable in first user creation step
 	if (isNaN(parseInt(userWindow.userId))) {
-		Ext.getCmp('alertsPanel-{$userId}').disable();
-		Ext.getCmp('userDetailsPanel-{$userId}').disable();
+		Ext.getCmp('userProfile-{$userId}').items.each(function(panel) {
+			if (panel.id != 'identityPanel-{$userId}') {
+				panel.disable();
+			}
+		});
 		Ext.getCmp('userPanels-{$userId}').items.each(function(panel) {
 			if (panel.id != 'userProfile-{$userId}') {
 				panel.disable();

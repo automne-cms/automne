@@ -1,5 +1,10 @@
 <?php
 require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
+
+//remove phpMyAdmin previous cookies if any
+@setcookie(session_name(), false, time() - 3600, PATH_REALROOT_WR.'/automne/phpMyAdmin/', '', 0);
+@setcookie('phpMyAdmin', false, time() - 3600, PATH_REALROOT_WR.'/automne/phpMyAdmin/', '', 0);
+
 //Check user rights
 if (!isset($cms_user) || !$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 	die('Access denied ... ');
@@ -12,7 +17,7 @@ $_SESSION['PMA_single_signon_host'] = APPLICATION_DB_HOST;
 $_SESSION['PMA_single_signon_only_db'] = APPLICATION_DB_NAME;
 
 /* Close that session */
-session_write_close();
+Zend_Session::writeClose();
 /* Redirect to phpMyAdmin (should use absolute URL here!) */
 header('Location: '.PATH_REALROOT_WR.'/automne/phpMyAdmin/index.php?time='.time());
 ?>

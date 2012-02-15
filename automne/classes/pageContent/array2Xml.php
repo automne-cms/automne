@@ -44,6 +44,17 @@ class CMS_array2Xml extends CMS_grandFather {
 		return $this->_doc->saveXML();
 	}
 	
+	/**
+	  * Escape cdata end tag in text to avoid error in returned content
+	  *
+	  * @param string $text : the text to escape
+	  * @return string : the escaped content
+	  * @access private
+	  */
+	private function _espaceCdata($text) {
+		return str_replace(']]>', ']]\>', $text);
+	}
+	
 	protected function _2xml($array) {
 		$xml="";
 		foreach ($array as $key => $value) {
@@ -55,7 +66,7 @@ class CMS_array2Xml extends CMS_grandFather {
 				} elseif (is_bool($value)) {
 					$value = (int) $value;
 				} else {
-					$value = '<![CDATA['.$value.']]>';
+					$value = '<![CDATA['.$this->_espaceCdata($value).']]>';
 				}
 				if (!is_numeric($key)) {
 					$xml .= "<$key>".$value."</$key>";

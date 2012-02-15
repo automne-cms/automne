@@ -36,7 +36,7 @@ define("MESSAGE_PAGE_PASTE_NEW_PATCH_FILE", 1190);
 define("MESSAGE_PAGE_ERROR_5_LABEL", 1191);
 define("MESSAGE_PAGE_CORRECTION_DONE", 1610);
 
-if (!$_SESSION["cms_context"]->getSessionVar('patchErrors')) {
+if (!CMS_session::getSessionVar('patchErrors')) {
 	die('Missing parameter...');
 	exit;
 }
@@ -45,7 +45,7 @@ switch ($_POST["cms_action"]) {
 	case "validate":
 		$errorCorrected = false;
 		//correct first error of the array
-		$errors = $_SESSION["cms_context"]->getSessionVar('patchErrors');
+		$errors = CMS_session::getSessionVar('patchErrors');
 		$error = $errors[0];
 		
 		switch ($error['no']) {
@@ -84,7 +84,7 @@ switch ($_POST["cms_action"]) {
 			foreach ($errors as $anError) {
 				$updateErrors[] = $anError;
 			}
-			$_SESSION["cms_context"]->setSessionVar('patchErrors',$updateErrors);
+			CMS_session::setSessionVar('patchErrors',$updateErrors);
 		}
 	break;
 }
@@ -94,7 +94,7 @@ $content = '';
 $dialog->setTitle($cms_language->getMessage(MESSAGE_PAGE_TITLE));
 
 //correct first error of the array
-$errors = $_SESSION["cms_context"]->getSessionVar('patchErrors');
+$errors = CMS_session::getSessionVar('patchErrors');
 $error = $errors[0];
 
 //button message

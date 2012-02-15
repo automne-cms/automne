@@ -12,8 +12,6 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr> &            |
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: cms_rc.php,v 1.25 2010/03/08 16:45:48 sebastien Exp $
 
 /**
   * AUTOMNE rc file : contains all default constants
@@ -163,14 +161,6 @@ if (!defined("ENABLE_HTML_COMPRESSION")) {
 }
 
 /**
- * Activate JS and CSS compression for Automne pages
- * Default : true
- */
-if (!defined('APPLICATION_JS_AND_CSS_COMPRESSION')) {
-	define('APPLICATION_JS_AND_CSS_COMPRESSION', true);
-}
-
-/**
  * Activate Google Chrome Frame support for Automne administration
  * Default : false
  */
@@ -187,6 +177,28 @@ if (!defined("APPLICATION_XHTML_DTD")) {
 }
 
 /**
+  *	Embedly service API key
+  * This key allow usage of embed.ly service for any URL.
+  * Get a free account at http://app.embed.ly/pricing/free
+  *	Default : nothing
+  */
+if (!defined("OEMBED_EMBEDLY_KEY")) {
+	define("OEMBED_EMBEDLY_KEY", "");
+}
+
+/**
+  *	Proxy used to access external services
+  * Used to access oembed webservices for example
+  *	Default : nothing (leave blank for none)
+  */
+if (!defined('APPLICATION_PROXY_HOST')) {
+	define('APPLICATION_PROXY_HOST', '');
+	if (!defined('APPLICATION_PROXY_PORT')) {
+		define('APPLICATION_PROXY_PORT', '');
+	}
+}
+
+/**
   *	Does system application run on Windows platform
   *	Default : strtolower(substr(PHP_OS, 0, 3)) === 'win'
   */
@@ -199,6 +211,13 @@ if (!defined("APPLICATION_IS_WINDOWS")) {
   */
 if (!defined("APPLICATION_DEFAULT_TIMEZONE")) {
 	define("APPLICATION_DEFAULT_TIMEZONE", 'Europe/Paris');
+}
+
+/**
+  * Define execution Type
+  */
+if (!defined("APPLICATION_EXEC_TYPE")) {
+	define("APPLICATION_EXEC_TYPE", (strtolower(php_sapi_name()) != 'cli' ? 'http' : 'cli'));
 }
 
 /**
@@ -240,23 +259,38 @@ if (!defined('PATH_REALROOT_FS')) {
 	define("PATH_REALROOT_FS", $_SERVER["DOCUMENT_ROOT"].PATH_REALROOT_WR);
 }
 
+
+/**
+  *	Strip PHP extension from generated page links
+  * To use this function, you must add the following lines in your .htaccess
+  *
+  * RewriteEngine On
+  * RewriteCond %{REQUEST_FILENAME} !-f
+  * RewriteCond %{REQUEST_FILENAME} !-d
+  * RewriteRule ^([^\.]+)$ $1.php [NC,L]
+  *	Default : false. 
+  */
+if (!defined("STRIP_PHP_EXTENSION")) {
+	define("STRIP_PHP_EXTENSION", false);
+}
+
 /**
   *	FrontEnd not found page URL (404)
-  * wrong users privilège or session time out redirect to this page
+  * wrong users privilege or session time out redirect to this page
   * this page is declared in root htaccess too
   *	Default : /404.php
   */
 if (!defined("PATH_SPECIAL_PAGE_NOT_FOUND_WR")) {
-	define("PATH_SPECIAL_PAGE_NOT_FOUND_WR", PATH_REALROOT_WR.'/404.php');
+	define("PATH_SPECIAL_PAGE_NOT_FOUND_WR", PATH_REALROOT_WR.'/404'.(!STRIP_PHP_EXTENSION ? '.php' : ''));
 }
 
 /**
   *	FrontEnd forbidden page URL (403)
-  * wrong users privilège or session time out redirect to this page
+  * wrong users privilege or session time out redirect to this page
   *	Default : /403.php
   */
 if (!defined("PATH_FORBIDDEN_WR")) {
-	define("PATH_FORBIDDEN_WR", PATH_REALROOT_WR.'/403.php');
+	define("PATH_FORBIDDEN_WR", PATH_REALROOT_WR.'/403'.(!STRIP_PHP_EXTENSION ? '.php' : ''));
 }
 
 /**
@@ -310,68 +344,6 @@ if (!defined("DIRS_CHMOD")) {
 }
 
 /**
- * LDAP Authentication server address
- * For further options :
- * @see CMS_ldap_auth
- * @see CMS_ldap_query
- * 
- * Default : ldap://localhost
- */
-if (!defined("APPLICATION_LDAP_SERVER")) {
-	define("APPLICATION_LDAP_SERVER", "ldap://localhost");
-}
-
-/**
- * LDAP Server port
- * Default : 389
- */
-if (!defined("APPLICATION_LDAP_PORT")) {
-	define("APPLICATION_LDAP_PORT", 389);
-}
-
-/**
- * LDAP Server base DN
- * Default : dc=ws,o=automne
- */
-if (!defined("APPLICATION_LDAP_BASE_DN")) {
-	define("APPLICATION_LDAP_BASE_DN", "dc=ws,dc=automne");
-}
-
-/**
- * Default user to connect to server
- * Default : anonymous
- */
-if (!defined("APPLICATION_LDAP_AUTH_USER")) {
-	define("APPLICATION_LDAP_AUTH_USER", "cn=anonymous,dc=ws,dc=net");
-}
-
-/**
- * Default password to connect to server
- * Default : anonymous
- */
-if (!defined("APPLICATION_LDAP_AUTH_PASSWORD")) {
-	define("APPLICATION_LDAP_AUTH_PASSWORD", "anonymous");
-}
-
-/**
- * LDAP group user belong to
- * 
- * Represents the LDAP attribute determining the group user belongs to
- * It must be present in the LDAP directory for each user entry
- * Corresponds to a CMS_profile_usersGroup 'cn' part(s) of its 'dn'
- * attribute (the value of this attribute will be appened with
- * APPLICATION_LDAP_BASE_DN to get full group 'dn').
- * 
- * or represents the CMS_profile_usersGroup ID used by default 
- * for any new user entering for the first time in the application
- * 
- * Default : 1
- */
-if (!defined('APPLICATION_LDAP_DEFAULT_GROUP')) {
-	define('APPLICATION_LDAP_DEFAULT_GROUP', '1');
-}
-
-/**
   *	Application Main root page DB ID
   *	Default : 1
   */
@@ -419,11 +391,29 @@ if (!defined("APPLICATION_COOKIE_DOMAIN")) {
 }
 
 /**
+  *	Application oembed frame domain
+  * Used to display oembed objets with a specific cookieless frame to avoid XSS
+  * Use specific domain for this usage (like embed.yourdomain.org)
+  *	Default : "". 
+  */
+if (!defined("APPLICATION_EMBED_DOMAIN")) {
+	define("APPLICATION_EMBED_DOMAIN", '');
+}
+
+/**
   *	Allow redirection from a page to an external web site
   *	Default : true
   */
 if (!defined("ALLOW_EXTERNAL_PAGE_REDIRECTION")) {
 	define("ALLOW_EXTERNAL_PAGE_REDIRECTION", true);
+}
+
+/**
+  *	Automne default email address
+  *	Default : root@localhost
+  */
+if (!defined("AUTOMNE_DEFAULT_EMAIL")) {
+	define("AUTOMNE_DEFAULT_EMAIL", "root@localhost");
 }
 
 //rewrite some server conf if HTTP_X_FORWARDED exists
@@ -433,10 +423,22 @@ if (isset($_SERVER["HTTP_X_FORWARDED_HOST"])) {
 if (isset($_SERVER["HTTP_X_FORWARDED_SERVER"])) {
 	$_SERVER["HTTP_SERVER"] = $_SERVER["HTTP_X_FORWARDED_SERVER"];
 }
-if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) {
-	$_SERVER["REMOTE_ADDR"] = $_SERVER["HTTP_X_FORWARDED_FOR"];
-} elseif (isset($_SERVER["HTTP_CLIENT_IP"])) {
-	$_SERVER["REMOTE_ADDR"] = $_SERVER["HTTP_CLIENT_IP"];
+if (isset($_SERVER["HTTP_X_REAL_IP"])) {
+	$_SERVER["REMOTE_ADDR"] = $_SERVER["HTTP_X_REAL_IP"];
+}
+if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+	$_SERVER["REMOTE_ADDR"] = $_SERVER['HTTP_CLIENT_IP']; 
+} elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && preg_match_all('#\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}#s', $_SERVER['HTTP_X_FORWARDED_FOR'], $matches)) {
+	// make sure we dont pick up an internal or local IP
+	foreach ($matches[0] as $ip) { 
+		if (!preg_match('#^(10|127\.0\.0|172\.16|192\.168)\.#', $ip)) { 
+			$_SERVER["REMOTE_ADDR"] = $ip; 
+			break;
+		}
+	}
+	unset($ip);
+} elseif (isset($_SERVER['HTTP_FROM'])) { 
+	$_SERVER["REMOTE_ADDR"] = $_SERVER['HTTP_FROM']; 
 }
 
 /**
@@ -816,64 +818,6 @@ if (!defined("ANONYMOUS_PROFILEUSER_ID")) {
 	define("ANONYMOUS_PROFILEUSER_ID", 3);
 }
 /**
-  * LDAP constants
-  */
-if (!defined('APPLICATION_LDAP_USER_DN')) {
-	define('APPLICATION_LDAP_USER_DN', 'dn');
-}
-if (!defined('APPLICATION_LDAP_USER_LOGIN')) {
-	define('APPLICATION_LDAP_USER_LOGIN', 'uid');
-}
-if (!defined('APPLICATION_LDAP_USER_PASSWORD')) {
-	define('APPLICATION_LDAP_USER_PASSWORD', 'userpassword');
-}
-if (!defined('APPLICATION_LDAP_USER_FIRSTNAME')) {
-	define('APPLICATION_LDAP_USER_FIRSTNAME', 'givenname');
-}
-if (!defined('APPLICATION_LDAP_USER_LASTNAME')) {
-	define('APPLICATION_LDAP_USER_LASTNAME', 'cn');
-}
-if (!defined('APPLICATION_LDAP_USER_EMAIL')) {
-	define('APPLICATION_LDAP_USER_EMAIL', 'mail');
-}
-if (!defined('APPLICATION_LDAP_USER_JOBTITLE')) {
-	define('APPLICATION_LDAP_USER_JOBTITLE', '');
-}
-if (!defined('APPLICATION_LDAP_USER_FAX')) {
-	define('APPLICATION_LDAP_USER_FAX', '');
-}
-if (!defined('APPLICATION_LDAP_USER_PHONE')) {
-	define('APPLICATION_LDAP_USER_PHONE', '');
-}
-if (!defined('APPLICATION_LDAP_USER_CELLPHONE')) {
-	define('APPLICATION_LDAP_USER_CELLPHONE', '');
-}
-if (!defined('APPLICATION_LDAP_USER_SERVICE')) {
-	define('APPLICATION_LDAP_USER_SERVICE', '');
-}
-if (!defined('APPLICATION_LDAP_USER_ADDRESS1')) {
-	define('APPLICATION_LDAP_USER_ADDRESS1', '');
-}
-if (!defined('APPLICATION_LDAP_USER_ADDRESS2')) {
-	define('APPLICATION_LDAP_USER_ADDRESS2', '');
-}
-if (!defined('APPLICATION_LDAP_USER_ADDRESS3')) {
-	define('APPLICATION_LDAP_USER_ADDRESS3', '');
-}
-if (!defined('APPLICATION_LDAP_USER_CITY')) {
-	define('APPLICATION_LDAP_USER_CITY', '');
-}
-if (!defined('APPLICATION_LDAP_USER_ZIPCODE')) {
-	define('APPLICATION_LDAP_USER_ZIPCODE', '');
-}
-if (!defined('APPLICATION_LDAP_USER_COUNTRY')) {
-	define('APPLICATION_LDAP_USER_COUNTRY', '');
-}
-if (!defined('APPLICATION_LDAP_USER_REGIONSTATE')) {
-	define('APPLICATION_LDAP_USER_REGIONSTATE', '');
-}
-
-/**
   *	Files extensions denied for upload, comma separated
   *	Default : 'exe,php,pif,vbs,bat,com,scr,reg,html,htm,php3,php4,php5,php6,phps,phtml,shtml,sh,py,pl,js,cgi,asp,jsp,aspx,plx,perl'
   */
@@ -936,6 +880,27 @@ if (!defined('SESSION_EXPIRED_TOKEN_MAXAGE')) {
   */
 if (!defined('LOG_APPLICATION_MAIL')) {
 	define('LOG_APPLICATION_MAIL', false);
+}
+/**
+  *	Enable profiling with xhprof (must be installed)
+  *	Default : false
+  */
+if (!defined('APPLICATION_ENABLE_PROFILING')) {
+	define('APPLICATION_ENABLE_PROFILING', false);
+}
+/**
+  *	xhprof root. Used when profiling is active
+  *	Default : false
+  */
+if (!defined('APPLICATION_XHPROF_ROOT_FS')) {
+	define('APPLICATION_XHPROF_ROOT_FS', '/smb/clients/automne4/www-rev/lib/xhprof');
+}
+/**
+  *	xhprof root. Used when profiling is active
+  *	Default : false
+  */
+if (!defined('APPLICATION_XHPROF_URI')) {
+	define('APPLICATION_XHPROF_URI', 'http://automne4.lib/xhprof/');
 }
 
 // ****************************************************************
@@ -1046,6 +1011,8 @@ define("CLEARANCE_ADMINISTRATION_EDITUSERS", 32);
 define("CLEARANCE_ADMINISTRATION_VIEWCALENDAR", 64);
 define("CLEARANCE_ADMINISTRATION_STATS", 128);
 define("CLEARANCE_ADMINISTRATION_DUPLICATE_BRANCH", 256);
+define("CLEARANCE_ADMINISTRATION_PAGE_CODENAMES", 512);
+
 /**
 * Alert Levels
 */
@@ -1068,26 +1035,21 @@ define("PAGE_VISUALMODE_HTML_EDITION", 4);
 define("PAGE_VISUALMODE_CLIENTSPACES_FORM", 5);
 define("PAGE_VISUALMODE_PRINT", 6);
 define("PAGE_VISUALMODE_HTML_PUBLIC_INDEXABLE", 7);
-
 /**
-  * Define execution Type
-  */
-if (!defined("APPLICATION_EXEC_TYPE")) {
-	define("APPLICATION_EXEC_TYPE", "http");
+ * Page https status
+ * Defined in top of generated pages
+ */
+if (!defined('PAGE_SSL_MODE')) {
+	define('PAGE_SSL_MODE', false);
 }
-
 //augment memory_limit
 if (ini_get('memory_limit') < (int) APPLICATION_MEMORY_LIMIT) {
 	@ini_set('memory_limit', APPLICATION_MEMORY_LIMIT);
 }
-//try to remove magic quotes
+//try to change some misconfigurations
 @ini_set('magic_quotes_gpc', 0);
 @ini_set('magic_quotes_runtime', 0);
 @ini_set('magic_quotes_sybase', 0);
-//try to change some misconfigurations
-@ini_set('session.gc_probability', 1);
-@ini_set('session.gc_divisor', 100);
-@ini_set('session.gc_maxlifetime', APPLICATION_SESSION_TIMEOUT);
 @ini_set('allow_call_time_pass_reference', 0);
 //set default timezone
 date_default_timezone_set(APPLICATION_DEFAULT_TIMEZONE);
@@ -1133,78 +1095,6 @@ if (!defined("AUTOMNE_LASTUPDATE") && file_exists(PATH_MAIN_FS."/SUBVERSION")) {
 	define("AUTOMNE_LASTUPDATE", 0);
 }
 
-if (STATS_DEBUG) {
-	function view_stat($return = false){ 
-		$time_end = getmicrotime();
-		$time = sprintf('%.5f', $time_end - $GLOBALS["time_start"]);
-		$files = sprintf('%.5f', $GLOBALS["files_time"]);
-		$rapportSQL = sprintf('%.2f', ((100*$GLOBALS["total_time"])/$time));
-		$rapportPHP = 100-$rapportSQL;
-		$memoryPeak = round((memory_get_peak_usage()/1048576),3);
-		$content = 
-		'File ' .$_SERVER['SCRIPT_NAME'] ."\n".
-		'Loaded in ' . $time . ' seconds'."\n".
-		'Loaded PHP files : '. $GLOBALS["files_loaded"] ."\n".
-		'SQL requests : ' . sprintf('%.5f',$GLOBALS["total_time"]) . ' seconds ('. $GLOBALS["sql_nb_requests"] .' requests)'."\n".
-		'% SQL/PHP : '. $rapportSQL .' / '. $rapportPHP .' %'."\n".
-		'Memory Peak : '. $memoryPeak .'Mo'."\n";
-		if (function_exists('xdebug_get_profiler_filename') && xdebug_get_profiler_filename()) {
-			$content .= 'XDebug Profile : '. xdebug_get_profiler_filename()."\n";
-		}
-		if (function_exists('xdebug_get_profiler_filename') && xdebug_get_tracefile_name()) {
-			$content .= 'XDebug Trace : '. xdebug_get_tracefile_name()."\n";
-		}
-		if (VIEW_SQL && $_SERVER["SCRIPT_NAME"] != PATH_ADMIN_WR.'/stat.php') {
-			$stat = array(
-				'stat_time_start'		=> $GLOBALS["time_start"],
-				'stat_time_end'			=> getmicrotime(),
-				'stat_total_time'		=> $GLOBALS["total_time"],
-				'stat_sql_nb_requests'	=> $GLOBALS["sql_nb_requests"],
-				'stat_sql_table'		=> $GLOBALS["sql_table"],
-				'stat_content_name'		=> basename($_SERVER["SCRIPT_NAME"]),
-				'stat_files_table'		=> $GLOBALS["files_table"],
-				'stat_memory_table'		=> $GLOBALS["memory_table"],
-				'stat_memory_peak'		=> $memoryPeak,
-				'stat_files_loaded'		=> $GLOBALS["files_loaded"],
-			);
-			$statName = 'stat_'.md5(rand());
-			//save stats to cache (for 10 min)
-			$cache = new CMS_cache($statName, 'atm-stats', 600, false);
-			if ($cache) {
-				$cache->save($stat);
-			}
-		}
-		$content = !$return ? '<fieldset style="width:200px;" class="atm-debug"><legend>Debug Statistics</legend><pre>'.$content.'</pre>' : 'Debug Statistics :'."\n".$content;
-		if (isset($statName)) {
-			$content .= '<a href="'.PATH_ADMIN_WR.'/stat.php?stat='.$statName.'" target="_blank">View statistics detail</a>';
-		}
-		//end xhprof profiling
-		if (defined('APPLICATION_ENABLE_PROFILING') && APPLICATION_ENABLE_PROFILING && function_exists('xhprof_disable')) {
-			$xhprof_data = xhprof_disable();
-			$XHPROF_ROOT = '/smb/clients/automne4/www-rev/lib/xhprof';
-			include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
-			include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
-			$xhprof_runs = new XHProfRuns_Default();
-			$profileName = md5($_SERVER['REQUEST_URI']);
-			$run_id = $xhprof_runs->save_run($xhprof_data, md5($_SERVER['REQUEST_URI']));
-			$content .= '<a href="http://automne4.lib/xhprof/xhprof_html/index.php?run='.$run_id.'&amp;source='.$profileName.'" target="_blank">View profiling detail</a>';
-		}
-		$content .= !$return ? '</fieldset>' : '';
-		if (!$return) {
-			echo $content;
-		} else {
-			return $content;
-		}
-	}
-	$GLOBALS["sql_nb_requests"] = $GLOBALS["total_time"] = $GLOBALS["files_time"] = 0;
-	$GLOBALS["files_loaded"] = 4; //Start at 4 : 3 config files and the require at the end of this file
-	$GLOBALS["time_start"] = getmicrotime();
-	//start xhprof profiling
-	if (defined('APPLICATION_ENABLE_PROFILING') && APPLICATION_ENABLE_PROFILING && function_exists('xhprof_enable')) {
-		// start profiling
-		xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
-	}
-}
 //include base packages
 require_once(PATH_PACKAGES_FS."/common/grandfather.php");
 //log PHP Errors
@@ -1222,9 +1112,11 @@ set_error_handler (array('CMS_grandFather','PHPErrorHandler'));
 spl_autoload_register (array('CMS_grandFather','autoload'));
 
 /**
-  * Set shutdown function
+  * Set shutdown function (only if debug or admin)
   */
-register_shutdown_function(array('CMS_view','quit'));
+if (SYSTEM_DEBUG || APPLICATION_USER_TYPE == 'admin') {
+	register_shutdown_function(array('CMS_view','quit'));
+}
 
 /**
   * Debug mode configuration changes.
@@ -1235,15 +1127,15 @@ if (SYSTEM_DEBUG) {
 		@ini_set("display_errors", "1");
 		@ini_set('output_buffering','Off');
 		if (extension_loaded('soap')) {
-			/**
-			  * SOAP cache
-			  * Disabled if SYSTEM_DEBUG is true
-			  */
+			// SOAP cache
+			// Disabled if SYSTEM_DEBUG is true
 			@ini_set('soap.wsdl_cache_enabled', '0');
 			@ini_set('soap.wsdl_cache_ttl', '1');
 		}
 	}
-	//Usefull function to dump a var.
+	/**
+	  * Usefull function to dump a var.
+	  */
 	function pr($data,$useVarDump = false) {
 		//$data .= ' ('.io::getCallInfos().')';
 		$view = CMS_view::getInstance();
@@ -1264,10 +1156,8 @@ if (SYSTEM_DEBUG) {
 		@ini_set("display_errors", "0");
 		@ini_set('output_buffering','On');
 		if (extension_loaded('soap')) {
-			/**
-			  * SOAP cache
-			  * Enabled if SYSTEM_DEBUG is false
-			  */
+			// SOAP cache
+			// Enabled if SYSTEM_DEBUG is false
 			@ini_set('soap.wsdl_cache_enabled', '1');
 			@ini_set('soap.wsdl_cache_ttl', '86400'); // 1 day
 		}
@@ -1277,13 +1167,9 @@ if (SYSTEM_DEBUG) {
 	//Usefull function to dump a var : Do nothing if debug is inactive
 	function pr($data,$useVarDump = false){}
 }
-
-/**
-  * Usefull time function for statistics and regenerator
-  */
-function getmicrotime(){ 
-	list($usec, $sec) = explode(" ",microtime()); 
-	return ((float)$usec + (float)$sec); 
+//launch stats recording
+if (STATS_DEBUG && APPLICATION_EXEC_TYPE != 'cli') {
+	CMS_stats::start();
 }
 
 /**
@@ -1291,14 +1177,14 @@ function getmicrotime(){
   */
 if (get_magic_quotes_gpc()) {
 	// Strip slashes in content 
-	function CMS_stripslashes($value) {
-		$value = is_array($value) ? array_map('CMS_stripslashes', $value) : stripslashes($value) ;
+	function atm_stripslashes($value) {
+		$value = is_array($value) ? array_map('atm_stripslashes', $value) : stripslashes($value) ;
 		return $value;
 	}
-	$_POST = array_map('CMS_stripslashes', $_POST);
-	$_GET = array_map('CMS_stripslashes', $_GET);
-	$_COOKIE = array_map('CMS_stripslashes', $_COOKIE);
-	$_REQUEST = array_map('CMS_stripslashes', $_REQUEST);
+	$_POST = array_map('atm_stripslashes', $_POST);
+	$_GET = array_map('atm_stripslashes', $_GET);
+	$_COOKIE = array_map('atm_stripslashes', $_COOKIE);
+	$_REQUEST = array_map('atm_stripslashes', $_REQUEST);
 }
 
 /**
@@ -1307,27 +1193,27 @@ if (get_magic_quotes_gpc()) {
 if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])
 	&& strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8' 
 	&& $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
-	function utf8_decode_callback (&$input, $index = '') {
+	function atm_utf8_decode_callback (&$input, $index = '') {
 		if (is_string($input)) {
 			//decode UTF8 with support of CP1252
-			$input = sensitiveIO::utf8Decode($input);
+			$input = io::utf8Decode($input);
 			return $input;
 		} elseif (is_array($input)) {
-			array_walk_recursive($input, 'utf8_decode_callback');
+			array_walk_recursive($input, 'atm_utf8_decode_callback');
 			return $input;
 		}
 		return $input;
 	}
-	$_POST = array_map('utf8_decode_callback', $_POST);
-	$_GET = array_map('utf8_decode_callback', $_GET);
-	$_COOKIE = array_map('utf8_decode_callback', $_COOKIE);
-	$_REQUEST = array_map('utf8_decode_callback', $_REQUEST);
+	$_POST = array_map('atm_utf8_decode_callback', $_POST);
+	$_GET = array_map('atm_utf8_decode_callback', $_GET);
+	$_COOKIE = array_map('atm_utf8_decode_callback', $_COOKIE);
+	$_REQUEST = array_map('atm_utf8_decode_callback', $_REQUEST);
 }
 
 /**
   * Launch output compression if enabled
   */
-function compress_handler( $p_buffer, $p_mode ) {
+function atm_compress_handler( $p_buffer, $p_mode ) {
 	if (ENABLE_HTML_COMPRESSION															//conf must accept HTML compression
 			 && APPLICATION_EXEC_TYPE == 'http'											//current mode must be HTTP (not CLI)
 			 && !headers_sent()															//headers must not already sent
@@ -1358,53 +1244,44 @@ function atm_regen() {
 }
 
 /**
-  * Start Automne session
+  * Function to start Automne session (deprecated, use CMS_session::init() instead)
   */
 function start_atm_session() {
-	// verify if PHP supports session, die if it does not
-	if (!@function_exists('session_name')) {
-	    die('Session is not available');
-	} elseif (ini_get('session.auto_start') == true && session_name() != 'AutomneSession') {
-	    // Do not delete the existing session, it might be used by other 
-	    // applications; instead just close it.
-	    session_write_close();
-	}
-	//if session already exists, return
-	if (session_name() == 'AutomneSession') {
-		return;
-	}
-	// session cookie settings
-	session_set_cookie_params(0, '/', APPLICATION_COOKIE_DOMAIN, false, true);
-	
-	// cookies are safer (use @ini_set() in case this function is disabled)
-	@ini_set('session.use_cookies', true);
-	
-	// but not all user allow cookies
-	@ini_set('session.use_only_cookies', false);
-	//remove session trans sid to prevent session fixation
-	@ini_set('session.use_trans_sid', false);
-	// delete session/cookies when browser is closed
-	@ini_set('session.cookie_lifetime', 0);
-	
-	// warn but dont work with bug
-	@ini_set('session.bug_compat_42', false);
-	@ini_set('session.bug_compat_warn', true);
-	
-	// use more secure session ids
-	@ini_set('session.hash_function', 1);
-	
-	@session_name('AutomneSession');
-	@session_start();
+	//nothing
 }
 
-//Start session
-if (APPLICATION_CONFIG_LOADED) {
-	start_atm_session();
+/**
+  * Function to get current time in microsecond
+  */
+function getmicrotime() {
+	return CMS_stats::getmicrotime();
 }
 
 // Start output buffering for compression so we don't prevent
 // headers from being sent if there's a blank line in an included file
-if (!defined('HTML_COMPRESSION_STARTED')) {
-	ob_start( 'compress_handler' );
+if (!defined('HTML_COMPRESSION_STARTED') && APPLICATION_EXEC_TYPE != 'cli') {
+	ob_start( 'atm_compress_handler' );
 }
+
+//Session operations
+if (APPLICATION_CONFIG_LOADED && APPLICATION_EXEC_TYPE == 'http') {
+	//Start Automne session	
+	CMS_session::init();
+	//load current user if exists
+	$cms_user = CMS_session::getUser();
+	$cms_context = new CMS_context();
+	if ($cms_user) {
+		$cms_language = $cms_user->getLanguage();
+	} else {
+		unset($cms_user);
+	}
+}
+
+//force module standard loading
+if (!class_exists('CMS_module_standard')) {
+	die('Cannot find standard module ...');
+}
+
+//regenerate current page if needed
+atm_regen();
 ?>

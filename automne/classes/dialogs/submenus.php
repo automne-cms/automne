@@ -20,7 +20,7 @@
   * Utility class : used to show a pack of menus,  which are post forms
   *
   * @package Automne
-  * @subpackage dialogs
+  * @subpackage deprecated
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 

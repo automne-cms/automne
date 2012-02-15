@@ -37,6 +37,10 @@ define("MESSAGE_PAGE_SAVE", 952);
 define("MESSAGE_PAGE_TITLE", 689);
 define("MESSAGE_TOOLBAR_HELP_MESSAGE", 690);
 define("MESSAGE_PAGE_FORM_INCORRECT", 682);
+define("MESSAGE_PAGE_FIELD_PROTECTED", 1730);
+define("MESSAGE_PAGE_FIELD_PROTECTED_DESC", 1731);
+define("MESSAGE_PAGE_FIELD_PROTECTED_INFO", 1732);
+define("MESSAGE_PAGE_PROTECTED_ALERT", 1743);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -245,8 +249,7 @@ foreach ($all_languages as $aLanguage) {
 		)
 	);
 	
-	
-	//Thumbnail after first language
+	//Thumbnail and protected after first language
 	if (!$count) {
 		if ($item->getIconPath(false, PATH_RELATIVETO_WEBROOT, true) && file_exists($item->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, true))) {
 			$file = new CMS_file($item->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, true));
@@ -279,11 +282,43 @@ foreach ($all_languages as $aLanguage) {
 			),
 			'fileinfos'	=> $imageDatas
 		);
+		
+		//Protected status
+		$protectedItem = array(
+			'fieldLabel'	=> '<span ext:qtip="'.io::htmlspecialchars($cms_language->getMessage(MESSAGE_PAGE_FIELD_PROTECTED_INFO)).'" class="atm-help">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_PROTECTED).'</span>',
+			'name'			=> 'protected',
+			'inputValue'	=> '1',
+			'xtype'			=> 'checkbox',
+			'checked'		=> ($item->isProtected() ? true : false),
+			'boxLabel'		=> $cms_language->getMessage(MESSAGE_PAGE_FIELD_PROTECTED_DESC)
+		);
+		//add an alert on protected option for non admin users
+		if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
+			$protectedItem['listeners'] = array('check' => sensitiveIO::sanitizeJSString('function(el, checked) {
+				if (checked) {
+					Automne.message.popup({
+						msg: 				\''.io::htmlspecialchars($cms_language->getMessage(MESSAGE_PAGE_PROTECTED_ALERT)).'\',
+						buttons: 			Ext.MessageBox.OK,
+						closable: 			false,
+						icon: 				Ext.MessageBox.WARNING
+					});
+				}
+			}', false, false));
+		}
+		$items[] = $protectedItem;
 	}
+	
 	$count++;
 }
 
 $items = sensitiveIO::jsonEncode($items);
+
+//do some search and replace to allow use of js functions in returned code
+$items = str_replace('"scope":"this"', '"scope":this', $items);
+function replaceCallBack($parts) {
+	return 'function('.str_replace(array('\"','\/'), array('"', '/'), $parts[1]).'}';
+}
+$items = preg_replace_callback('#"function\((.*)}"#U', 'replaceCallBack', $items);
 
 $jscontent = <<<END
 	var window = Ext.getCmp('{$winId}');

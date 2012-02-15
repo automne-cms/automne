@@ -68,6 +68,7 @@ class CMS_log extends CMS_grandFather
 	
 	const LOG_ACTION_AUTO_LOGIN = 31;
 	const LOG_ACTION_LOGIN = 33;
+	const LOG_ACTION_DISCONNECT = 35;
 	
 	/**
 	  * Log actions messages
@@ -109,6 +110,7 @@ class CMS_log extends CMS_grandFather
 	
 	const MESSAGE_LOG_ACTION_AUTO_LOGIN = 1572;
 	const MESSAGE_LOG_ACTION_LOGIN = 1571;
+	const MESSAGE_LOG_ACTION_DISCONNECT = 1739;
 	
 	/**
 	  * Id

@@ -240,13 +240,26 @@ class CMS_object_usergroup extends CMS_object_common
 				$return['disabled'] = true;
 				$return['value']	= '';
 			}
-			$return['xtype'] 			= 'multiselect';
+			/*$return['xtype'] 			= 'multiselect';
 			$return['dataFields'] 		= array('id', 'label');
 			$return['data'] 			= $availableItems;
 			$return['value'] 			= implode(',',$associatedItems);
 			$return['valueField'] 		= "id";
 			$return['displayField'] 	= "label";
-			$return['width'] 			= '97%';
+			$return['width'] 			= '97%';*/
+			
+			
+			$return['xtype'] 			= 'superboxselect';
+			$return['dataFields'] 		= array('id', 'label');
+			$return['store'] 			= $availableItems;
+			$return['mode'] 			= 'local';
+			$return['value'] 			= implode(',',$associatedItems);
+			$return['valueField'] 		= "id";
+			$return['displayField'] 	= "label";
+			$return['width'] 			= '100%';
+			$return['stackItems'] 		= true;
+			
+			
 		} else {
 			$usersDatas = array();
 			if ($params['isCurrentUser']) {
@@ -291,7 +304,7 @@ class CMS_object_usergroup extends CMS_object_common
 				'data' 			=> $usersDatas
 			);
 			$return['selectOnFocus'] 	= true;
-			$return['editable'] 		= false;
+			$return['editable'] 		= true;
 		}
 		return $return;
 	}
@@ -332,71 +345,98 @@ class CMS_object_usergroup extends CMS_object_common
 				$html .= '<span class="admin_text_alert"> (Field : '.$fieldID.' - Value : '.$this->_subfieldValues[0]->getValue().')</span>';
 			}
 		} else {
-			if ($params['multiUserGroup']) {
-				// Get all users or groups
-				$a_all_users = $this->getListOfNamesForObject();
-				if (is_array($a_all_users) && $a_all_users) {
-					$associated_items = array();
-					foreach (array_keys($this->_subfieldValues) as $subFieldID) {
-						if (is_object($this->_subfieldValues[$subFieldID])) {
-							$associated_items[] = $this->_subfieldValues[$subFieldID]->getValue();
+			
+			
+			if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
+				if (isset($inputParams['value'])) {
+					$value = $inputParams['value'];
+				} elseif (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0]) && !is_null($this->_subfieldValues[0]->getValue())) {
+					if ($params['multiUserGroup']) {
+						// Get all users or groups
+						$a_all_users = $this->getListOfNamesForObject();
+						if (is_array($a_all_users) && $a_all_users) {
+							$associated_items = array();
+							foreach (array_keys($this->_subfieldValues) as $subFieldID) {
+								if (is_object($this->_subfieldValues[$subFieldID])) {
+									$associated_items[] = $this->_subfieldValues[$subFieldID]->getValue();
+								}
+							}
 						}
+						$value = implode(',', $associated_items);
+					} else {
+						$value = $this->_subfieldValues[0]->getValue();
 					}
-					//set some default parameters
-					if (!isset($inputParams['no_admin'])) {
-						$inputParams['no_admin'] = true;
-					}
-					if (!isset($inputParams['position'])) {
-						$inputParams['position'] = 'horizontal';
-					}
-					if (isset($inputParams['width']) && !isset($inputParams['select_width'])) {
-						$inputParams['select_width'] = $inputParams['width'];
-					}
-					if (isset($inputParams['height']) && !isset($inputParams['select_height'])) {
-						$inputParams['select_height'] = $inputParams['height'];
-					}
-					$listboxesParameters = array (
-						'field_name' 		=> 'list'.$prefixName.$this->_field->getID().'_0',	// Hidden field name to get value in
-						'items_possible' 	=> $a_all_users,			// array of all categories availables: array(ID => label)
-						'items_selected' 	=> $associated_items,		// array of selected ids
-						'select_width' 		=> '300px',					// Width of selects, default 200px
-						'select_height' 	=> '200px',					// Height of selects, default 140px
-						'form_name' 		=> $inputParams['form']				// Javascript form name
-					);
-					//append optional attributes
-					foreach ($inputParams as $k => $v) {
-						if (in_array($k, array('select_width','select_height','no_admin','leftTitle','rightTitle','position','description','selectIDFrom','selectIDTo',))) {
-							$listboxesParameters[$k] = $v;
-						}
-					}
-					$html .= CMS_dialog_listboxes::getListBoxes($listboxesParameters);
 				} else {
-					$html .= $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET);
+					$value = '';
 				}
-				if (POLYMOD_DEBUG) {
-					$html .= '<span class="admin_text_alert"> (Field : '.$fieldID.' - Values : '.implode(';',$associated_items).')</span>';
-				}
+				$html = '<input type="hidden" name="list'.$prefixName.$this->_field->getID().'_0" value="'.$value.'" />'."\n";
 			} else {
-				//serialize all htmlparameters 
-				$htmlParameters = $this->serializeHTMLParameters($inputParams);
-				// Get all users or groups
-				$a_all_users = $this->getListOfNamesForObject();
-				$value = (is_object($this->_subfieldValues[0])) ? $this->_subfieldValues[0]->getValue() : '';
-				if (is_array($a_all_users) && $a_all_users) {
-					$html .= '
-					<select name="list'.$prefixName.$this->_field->getID().'_0"'.$htmlParameters.'>
-						<option value="0">'.$language->getMessage(self::MESSAGE_CHOOSE_OBJECT).'</option>';
-					foreach($a_all_users as $userGroupID => $aUserGroupLabel) {
-						$selected = ($value == $userGroupID) ? ' selected="selected"':'';
-						$html .= '<option value="'.$userGroupID.'"'.$selected.'>'.$aUserGroupLabel.'</option>';
+				if ($params['multiUserGroup']) {
+					// Get all users or groups
+					$a_all_users = $this->getListOfNamesForObject();
+					if (is_array($a_all_users) && $a_all_users) {
+						$associated_items = array();
+						foreach (array_keys($this->_subfieldValues) as $subFieldID) {
+							if (is_object($this->_subfieldValues[$subFieldID])) {
+								$associated_items[] = $this->_subfieldValues[$subFieldID]->getValue();
+							}
+						}
+						//set some default parameters
+						if (!isset($inputParams['no_admin'])) {
+							$inputParams['no_admin'] = true;
+						}
+						if (!isset($inputParams['position'])) {
+							$inputParams['position'] = 'horizontal';
+						}
+						if (isset($inputParams['width']) && !isset($inputParams['select_width'])) {
+							$inputParams['select_width'] = $inputParams['width'];
+						}
+						if (isset($inputParams['height']) && !isset($inputParams['select_height'])) {
+							$inputParams['select_height'] = $inputParams['height'];
+						}
+						$listboxesParameters = array (
+							'field_name' 		=> 'list'.$prefixName.$this->_field->getID().'_0',	// Hidden field name to get value in
+							'items_possible' 	=> $a_all_users,			// array of all categories availables: array(ID => label)
+							'items_selected' 	=> $associated_items,		// array of selected ids
+							'select_width' 		=> '300px',					// Width of selects, default 200px
+							'select_height' 	=> '200px',					// Height of selects, default 140px
+							'form_name' 		=> $inputParams['form']				// Javascript form name
+						);
+						//append optional attributes
+						foreach ($inputParams as $k => $v) {
+							if (in_array($k, array('select_width','select_height','no_admin','leftTitle','rightTitle','position','description','selectIDFrom','selectIDTo',))) {
+								$listboxesParameters[$k] = $v;
+							}
+						}
+						$html .= CMS_dialog_listboxes::getListBoxes($listboxesParameters);
+					} else {
+						$html .= $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET);
 					}
-					$html .= '</select>';
-					
+					if (POLYMOD_DEBUG) {
+						$html .= '<span class="admin_text_alert"> (Field : '.$fieldID.' - Values : '.implode(';',$associated_items).')</span>';
+					}
 				} else {
-					$html .= $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET);
-				}
-				if (POLYMOD_DEBUG) {
-					$html .= '<span class="admin_text_alert"> (Field : '.$fieldID.' - Value : '.$value.')</span>';
+					//serialize all htmlparameters 
+					$htmlParameters = $this->serializeHTMLParameters($inputParams);
+					// Get all users or groups
+					$a_all_users = $this->getListOfNamesForObject();
+					$value = (is_object($this->_subfieldValues[0])) ? $this->_subfieldValues[0]->getValue() : '';
+					if (is_array($a_all_users) && $a_all_users) {
+						$html .= '
+						<select name="list'.$prefixName.$this->_field->getID().'_0"'.$htmlParameters.'>
+							<option value="0">'.$language->getMessage(self::MESSAGE_CHOOSE_OBJECT).'</option>';
+						foreach($a_all_users as $userGroupID => $aUserGroupLabel) {
+							$selected = ($value == $userGroupID) ? ' selected="selected"':'';
+							$html .= '<option value="'.$userGroupID.'"'.$selected.'>'.$aUserGroupLabel.'</option>';
+						}
+						$html .= '</select>';
+						
+					} else {
+						$html .= $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET);
+					}
+					if (POLYMOD_DEBUG) {
+						$html .= '<span class="admin_text_alert"> (Field : '.$fieldID.' - Value : '.$value.')</span>';
+					}
 				}
 			}
 		}
@@ -767,7 +807,7 @@ class CMS_object_usergroup extends CMS_object_common
 	  * Return a list of all objects names of given type
 	  *
 	  * @param boolean $public are the needed datas public ? /!\ Does not apply for this type of object
-	  * @param array $searchConditions, search conditions to add. /!\ Does not apply for this type of object
+	  * @param array $searchConditions, search conditions to add. /!\ only keywords apply for this type of object
 	  * @return array(integer objectID => string objectName)
 	  * @access public
 	  * @static
@@ -776,6 +816,15 @@ class CMS_object_usergroup extends CMS_object_common
 		$params = $this->getParamsValues();
 		//load user/group
 		$userGroupSorted = ($params['isGroup']) ? CMS_profile_usersGroupsCatalog::getGroupsLabels() : CMS_profile_usersCatalog::getUsersLabels(true, true);
+		//filter by keyword if any
+		if (isset($searchConditions['keywords']) && $searchConditions['keywords']) {
+			$keywords = trim($searchConditions['keywords']);
+			foreach ($userGroupSorted as $id => $label) {
+				if (stripos($label, $keywords) === false) {
+					unset($userGroupSorted[$id]);
+				}
+			}
+		}
 		
 		// Clean users/groups with enable/disable parameters
 		if ($params['isGroup']) {

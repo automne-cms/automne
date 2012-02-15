@@ -164,7 +164,13 @@ if (!sizeof($objects)) {
 			}
 			$objectUseageLabel .='</ul>';
 		}
-		$fields = CMS_poly_object_catalog::getFieldsDefinition($object->getID());
+		$fields = CMS_poly_object_catalog::getFieldsDefinition($object->getID(), true);
+		
+		//get all RSS def for object
+		$RRSDefinitions = CMS_poly_object_catalog::getAllRSSDefinitionsForObject($object->getID());
+		//get all plugin def for object
+		$pluginDefinitions = CMS_poly_object_catalog::getAllPluginDefinitionsForObject($object->getID());
+		
 		$content .= '
 		<strong>ID :</strong> '.$object->getID().'<br />
 		<strong>'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_DESCRIPTION).' :</strong> '.$object->getDescription($cms_language).'<br />
@@ -183,7 +189,7 @@ if (!sizeof($objects)) {
 			<input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_EDIT).'" />
 		</td>
 		</form>';
-		if (!sizeof($fields)) {
+		if (!$fields && !$RRSDefinitions && !$pluginDefinitions) {
 			$content .= '
 			<form action="'.$_SERVER['SCRIPT_NAME'].'" method="post" onSubmit="return confirm(\''.addslashes($cms_language->getMessage(MESSAGE_PAGE_ACTION_DELETE_OBJECT_CONFIRM, array($object->getLabel($cms_language)))) . '\')">
 			<td class="admin">
@@ -372,12 +378,10 @@ if (is_object($object)) {
 	}
 	
 	//RSS
-	if (sizeof($fields)) {
+	if ($object->getID()) {
 		$content .= '
 		<dialog-title type="admin_h2">'.$cms_language->getMessage(MESSAGE_PAGE_RSS_DEFINITIONS, false, MOD_POLYMOD_CODENAME).' :</dialog-title>
 		<br />';
-		//get all RSS def for object
-		$RRSDefinitions = CMS_poly_object_catalog::getAllRSSDefinitionsForObject($object->getID());
 		if (sizeof($RRSDefinitions)) {
 			$content .= '<table border="0" cellpadding="2" cellspacing="2">
 			<tr>
@@ -435,8 +439,6 @@ if (is_object($object)) {
 		$content .= '
 		<dialog-title type="admin_h2">'.$cms_language->getMessage(MESSAGE_PAGE_PLUGIN_DEFINITIONS, false, MOD_POLYMOD_CODENAME).' :</dialog-title>
 		<br />';
-		//get all plugin def for object
-		$pluginDefinitions = CMS_poly_object_catalog::getAllPluginDefinitionsForObject($object->getID());
 		if (sizeof($pluginDefinitions)) {
 			$content .= '<table border="0" cellpadding="2" cellspacing="2">
 			<tr>

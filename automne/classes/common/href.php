@@ -132,8 +132,8 @@ class CMS_href extends CMS_grandFather
 				$this->_fileLink = @$tmp[3];
 				$this->_target = @$tmp[4];
 				// Attributes
-				if (@$tmp[5] != '') {
-					$attrs = explode('&&', @$tmp[5]);
+				if (isset($tmp[5]) && $tmp[5] != '') {
+					$attrs = explode('&&', $tmp[5]);
 					if (is_array($attrs) && $attrs) {
 						foreach ($attrs as $attr) {
 							$t = explode(',', $attr);
@@ -142,15 +142,15 @@ class CMS_href extends CMS_grandFather
 					}
 				}
 				// Popup
-				if (@$tmp[6] != '') {
-					$p = explode(',', @$tmp[6]);
+				if (isset($tmp[6]) && $tmp[6] != '') {
+					$p = explode(',', $tmp[6]);
 					if (is_array($p) && $p) {
 						$this->setPopup($p[0], $p[1]);
 					}
 				}
 				// Link label
-				if (@$tmp[7] != '') {
-					$this->setLabel(@$tmp[7]);
+				if (isset($tmp[7]) && $tmp[7] != '') {
+					$this->setLabel($tmp[7]);
 				}
 				return;
 			} else {
@@ -299,7 +299,7 @@ class CMS_href extends CMS_grandFather
 	  */
 	function getInternalLinkPage()
 	{
-		if ($this->_internalLink > 0) {
+		if (io::isPositiveInteger($this->_internalLink)) {
 			return CMS_tree::getPageByID($this->_internalLink);
 		} else {
 			return false;
@@ -553,7 +553,7 @@ class CMS_href extends CMS_grandFather
 				case RESOURCE_DATA_LOCATION_EDITED:
 				default:
 					if (sensitiveIO::isPositiveInteger($this->_internalLink) && $href = CMS_tree::getPageValue($this->_internalLink, 'url')) {
-						$href = (io::strpos($href,PATH_PAGES_WR) !== false || stripos($href,'http') !== false) ? $href : PATH_PAGES_WR.$href;
+						$href = ((PATH_PAGES_WR && strpos($href,PATH_PAGES_WR) !== false) || stripos($href,'http') !== false) ? $href : PATH_PAGES_WR.$href;
 					}
 					break;
 			}
@@ -564,6 +564,9 @@ class CMS_href extends CMS_grandFather
 			break;
 		case RESOURCE_LINK_TYPE_EXTERNAL:
 			$href = io::htmlspecialchars($this->_externalLink);
+			if (strtolower(substr($href, 0, 4)) != 'http') {
+				$href = 'http://'.$href;
+			}
 			// Set a popup link, not a trivial link
 			if (isset($this->_popup['width']) && $this->_popup['width'] > 0 && isset($this->_popup['height']) && $this->_popup['height'] > 0) {
 				$onClick = "javascript:CMS_openPopUpPage('".$href."', 'external', ".$this->_popup['width'].", ".$this->_popup['height'].");return false;";
@@ -615,7 +618,7 @@ class CMS_href extends CMS_grandFather
 			}
 			break;
 		case RESOURCE_LINK_TYPE_EXTERNAL:
-			if	($this->_externalLink == 'http://' || $this->_externalLink == '') {
+			if	($this->_externalLink == 'http://' || $this->_externalLink == '' || !@parse_url($this->_externalLink)) {
 				return false;
 			}
 			break;

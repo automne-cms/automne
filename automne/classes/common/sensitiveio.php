@@ -265,12 +265,12 @@ class SensitiveIO extends CMS_grandFather
 			if ($addslashes) {
 				$input = addcslashes($input, "'\\");
 			}
-			$sanitized = str_replace(array("\r", "\n", "\t"), '', $input);
+			$sanitized = str_replace(array("\r", "\n", "\t", "\xE2\x80\xA8"), '', $input);
 		} else {
 			if ($addslashes) {
 				$input = addcslashes($input, '"\\');
 			}
-			$sanitized = str_replace(array("\r", "\n", "\t"), array('', '\n', ''), $input);
+			$sanitized = str_replace(array("\r", "\n", "\t", "\xE2\x80\xA8"), array('', '\n', '', ''), $input);
 		}
 		return $sanitized;
 	}
@@ -518,7 +518,7 @@ class SensitiveIO extends CMS_grandFather
 			} elseif (isset($bt[$level + 3]) && isset($bt[$level + 1]['class']) && $bt[$level + 1]['class'] == 'CMS_grandFather' && ($bt[$level + 1]['function'] == 'autoload' || $bt[$level + 1]['function'] == '__call')) {
 				//if error is sent by generic __call or autoload method of grandFather class, display point of call
 				$callInfos .= str_replace($_SERVER['DOCUMENT_ROOT'], '', @$bt[$level + 3]['file']).' (line '.@$bt[$level + 3]['line'].')';
-			} elseif (isset($bt[$level + 1]) && $bt[$level + 1]['function'] == 'require') {
+			} elseif (isset($bt[$level + 1]) && ($bt[$level + 1]['function'] == 'require' || $bt[$level + 1]['function'] == 'require_once')) {
 				//if error came from direct require, display point of call
 				$callInfos .= str_replace($_SERVER['DOCUMENT_ROOT'], '', @$bt[$level]['file']).' (line '.@$bt[$level]['line'].')';
 			} elseif (isset($bt[$level + 1])) {
@@ -636,19 +636,6 @@ class SensitiveIO extends CMS_grandFather
 	static function checkXHTMLValue($value, &$errors) {
 		//Check XHTML validity
 		$value = str_replace('&#9;','',$value);
-		/*if (defined('ALLOW_WYSIWYG_XHTML_VALIDATION') && ALLOW_WYSIWYG_XHTML_VALIDATION) {
-			global $CMS_Xhtml_tagDefinition;
-			include(PATH_MAIN_FS.'/xhtmlValidator/taglist.php');
-			$v = new XhtmlValidator($value, $CMS_Xhtml_tagDefinition);
-			try {
-				$v->load();
-				//$errors = $v->show_tree();
-			} catch (valid_except $e) {
-				$s = new valid_show($value,$e);
-				$errors = $s->show(200);
-				return false;
-			}
-		}*/
 		//Check XML validity
 		$defXML = new CMS_DOMDocument();
 		try {

@@ -17,6 +17,7 @@ Automne.winPanel = Ext.extend(Automne.panel, {
 	winURL: 	false,
 	//current displayed page
 	currentPage:false,
+	popupable:false,
 	//constructor
 	constructor: function(config) { 
 		// preprocessing
@@ -38,6 +39,7 @@ Automne.winPanel = Ext.extend(Automne.panel, {
 			id:				this.id+'Window',
 			currentPage:	this.currentPage,
 			height:			570,
+			popupable:		this.popupable,
 			autoLoad:		{
 				url:		this.winURL,
 				params:		{

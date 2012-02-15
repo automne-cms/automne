@@ -14,15 +14,15 @@
  *
  * @category   Zend
  * @package    Zend_Cache
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2011 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Cache.php,v 1.2 2010/03/08 15:48:01 sebastien Exp $
+ * @version    $Id: Cache.php 23775 2011-03-01 17:25:24Z ralph $
  */
 
 
 /**
  * @package    Zend_Cache
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2011 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 abstract class Zend_Cache
@@ -40,17 +40,18 @@ abstract class Zend_Cache
      *
      * @var array
      */
-    public static $standardBackends = array('File', 'Sqlite', 'Memcached', 'Apc', 'ZendPlatform', 'Xcache', 'TwoLevels');
+    public static $standardBackends = array('File', 'Sqlite', 'Memcached', 'Libmemcached', 'Apc', 'ZendPlatform',
+                                            'Xcache', 'TwoLevels', 'WinCache', 'ZendServer_Disk', 'ZendServer_ShMem');
 
     /**
      * Standard backends which implement the ExtendedInterface
      *
      * @var array
      */
-    public static $standardExtendedBackends = array('File', 'Apc', 'TwoLevels', 'Memcached', 'Sqlite');
+    public static $standardExtendedBackends = array('File', 'Apc', 'TwoLevels', 'Memcached', 'Libmemcached', 'Sqlite', 'WinCache');
 
     /**
-     * Only for backward compatibily (may be removed in next major release)
+     * Only for backward compatibility (may be removed in next major release)
      *
      * @var array
      * @deprecated
@@ -58,12 +59,12 @@ abstract class Zend_Cache
     public static $availableFrontends = array('Core', 'Output', 'Class', 'File', 'Function', 'Page');
 
     /**
-     * Only for backward compatibily (may be removed in next major release)
+     * Only for backward compatibility (may be removed in next major release)
      *
      * @var array
      * @deprecated
      */
-    public static $availableBackends = array('File', 'Sqlite', 'Memcached', 'Apc', 'ZendPlatform', 'Xcache', 'TwoLevels');
+    public static $availableBackends = array('File', 'Sqlite', 'Memcached', 'Libmemcached', 'Apc', 'ZendPlatform', 'Xcache', 'WinCache', 'TwoLevels');
 
     /**
      * Consts for clean() method
@@ -83,7 +84,7 @@ abstract class Zend_Cache
      * @param array  $backendOptions  associative array of options for the corresponding backend constructor
      * @param boolean $customFrontendNaming if true, the frontend argument is used as a complete class name ; if false, the frontend argument is used as the end of "Zend_Cache_Frontend_[...]" class name
      * @param boolean $customBackendNaming if true, the backend argument is used as a complete class name ; if false, the backend argument is used as the end of "Zend_Cache_Backend_[...]" class name
-     * @param boolean $autoload if true, there will no require_once for backend and frontend (usefull only for custom backends/frontends)
+     * @param boolean $autoload if true, there will no require_once for backend and frontend (useful only for custom backends/frontends)
      * @throws Zend_Cache_Exception
      * @return Zend_Cache_Core|Zend_Cache_Frontend
      */
@@ -112,7 +113,7 @@ abstract class Zend_Cache
     }
 
     /**
-     * Frontend Constructor
+     * Backend Constructor
      *
      * @param string  $backend
      * @param array   $backendOptions
@@ -153,7 +154,7 @@ abstract class Zend_Cache
     }
 
     /**
-     * Backend Constructor
+     * Frontend Constructor
      *
      * @param string  $frontend
      * @param array   $frontendOptions
@@ -220,6 +221,10 @@ abstract class Zend_Cache
         $name = str_replace(array('-', '_', '.'), ' ', $name);
         $name = ucwords($name);
         $name = str_replace(' ', '', $name);
+        if (stripos($name, 'ZendServer') === 0) {
+            $name = 'ZendServer_' . substr($name, strlen('ZendServer'));
+        }
+
         return $name;
     }
 

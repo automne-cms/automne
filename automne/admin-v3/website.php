@@ -59,6 +59,9 @@ define("MESSAGE_PAGE_FIELD_CODENAME", 1675);
 define("MESSAGE_PAGE_TREEH1", 1049);
 define("MESSAGE_PAGE_FIELD_403_PAGE", 1719);
 define("MESSAGE_PAGE_FIELD_404_PAGE", 1718);
+define("MESSAGE_PAGE_FIELD_REDIRECT_ALT_DOMAINS", 1741);
+define("MESSAGE_PAGE_FIELD_REDIRECT_ALT_DOMAINS_DESC", 1742);
+define("MESSAGE_PAGE_ERROR_CODENAME", 1747);
 
 //RIGHTS CHECK
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES)) {
@@ -107,7 +110,9 @@ case "validate":
 				$website->setRoot($page);
 			}
 		} else {
-			$website->setCodename(io::sanitizeAsciiString($_POST["codename"]));
+			if (!$website->setCodename(io::sanitizeAsciiString($_POST["codename"]))) {
+				$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ERROR_CODENAME);
+			}
 			$page = CMS_tree::getPageByID($_POST["root"]);
 			$website->setRoot($page);
 		}
@@ -115,6 +120,7 @@ case "validate":
 		$website->setLabel($_POST["label"]);
 		$website->set404($_POST["page404"]);
 		$website->set403($_POST["page403"]);
+		$website->setRedirectAltDomain($_POST["altredir"]);
 		$website->setMeta('description', $_POST['description']);
 		$website->setMeta('keywords', $_POST['keywords']);
 		$website->setMeta('category', $_POST['category']);
@@ -125,15 +131,16 @@ case "validate":
 		$website->setMeta('language', $_POST['language']);
 		$website->setMeta('favicon', $_POST['favicon']);
 		$website->setMeta('metas', $_POST['metas']);
-		if (!$website->hasError()) {
+		if (!$cms_message && !$website->hasError()) {
 			$website->writeToPersistence();
 			CMS_tree::regenerateAllPages(true);
 			$log = new CMS_log();
 			$log->logMiscAction(CMS_log::LOG_ACTION_WEBSITE_EDIT, $cms_user, "Website : ".$website->getLabel());
 			$dialog->reloadAll();
+			
+			header("Location: websites.php?cms_message_id=".MESSAGE_ACTION_OPERATION_DONE."&".session_name()."=".session_id());
+			exit;
 		}
-		header("Location: websites.php?cms_message_id=".MESSAGE_ACTION_OPERATION_DONE."&".session_name()."=".session_id());
-		exit;
 	}
 	break;
 }
@@ -204,12 +211,18 @@ $href403 .= '&amp;heading='.$cms_language->getMessage(MESSAGE_PAGE_TREEH1);
 $href403 .= '&amp;encodedOnClick='.base64_encode("window.opener.document.getElementById('page403').value = '%s';self.close();");
 $href403 .= '&encodedPageLink='.base64_encode('false');
 
+$redirAltChecked = $website->redirectAltDomain() ? ' checked="checked"' : '';
+
 $content .= '
 		</td>
 	</tr>
 	<tr>
 		<td class="admin" align="right">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_SUB_DOMAINS).'</td>
 		<td class="admin"><input type="text" size="30" class="admin_input_text" name="altdomains" value="'.htmlspecialchars(implode(';', $website->getAltDomains())).'" /><br /><small>'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_SUB_DOMAINS_DESC).'</small></td>
+	</tr>
+	<tr>
+		<td class="admin" align="right"><label for="altredir">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_REDIRECT_ALT_DOMAINS).'</label></td>
+		<td class="admin"><input type="checkbox" id="altredir" name="altredir" value="1"'.$redirAltChecked.' /><small><label for="altredir">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_REDIRECT_ALT_DOMAINS_DESC).'</label></small></td>
 	</tr>
 	<tr>
 		<td class="admin" align="right">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_404_PAGE).'</td>

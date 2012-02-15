@@ -235,35 +235,89 @@ class CMS_object_categories extends CMS_object_common
 		if ($params['multiCategories']) {
 			// Get categories
 			$a_all_categories = $this->getAllCategoriesAsArray($language, false, $moduleCodename, CLEARANCE_MODULE_EDIT, $rootCategory, true);
-			$associated_items = $availableCategories = array();
-			if (is_array($a_all_categories) && $a_all_categories) {
-				if (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0]) && !is_null($this->_subfieldValues[0]->getValue()) && $this->_subfieldValues[0]->getID()) {
-					foreach (array_keys($this->_subfieldValues) as $subFieldID) {
-						if (is_object($this->_subfieldValues[$subFieldID])) {
-							$associated_items[$this->_subfieldValues[$subFieldID]->getValue()] = $this->_subfieldValues[$subFieldID]->getValue();
-						}
+			$checkedValues = array();
+			if (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0]) && !is_null($this->_subfieldValues[0]->getValue()) && $this->_subfieldValues[0]->getID()) {
+				foreach (array_keys($this->_subfieldValues) as $subFieldID) {
+					if (is_object($this->_subfieldValues[$subFieldID])) {
+						$checkedValues[$this->_subfieldValues[$subFieldID]->getValue()] = $this->_subfieldValues[$subFieldID]->getValue();
 					}
-				} elseif (sensitiveIO::isPositiveInteger($params['defaultValue'])) {
-					$associated_items[$params['defaultValue']] = $params['defaultValue'];
 				}
+			} elseif (sensitiveIO::isPositiveInteger($params['defaultValue'])) {
+				$checkedValues[$params['defaultValue']] = $params['defaultValue'];
+			}
+			$valueString = implode(',', $checkedValues);
+			if (is_array($a_all_categories) && $a_all_categories) {
+				$fathers = array(0 => false);
 				foreach ($a_all_categories as $id => $category) {
-					$availableCategories[] = array($id, $category);
+					$level = substr_count($category, '-&nbsp;');
+					$father = false;
+					if ($level && isset($fathers[$level - 1])) {
+						$father = $fathers[$level - 1];
+					}
+					$cat			= new stdClass();
+					$cat->id		= $id;
+					$cat->checked	= isset($checkedValues[$id]);
+					$cat->cls		= isset($checkedValues[$id]) ? 'x-tree-checked' : '';
+					$cat->level		= $level;
+					$cat->text		= str_replace('-&nbsp;', '', $category);
+					if (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') {
+						$cat->text = io::utf8Encode($cat->text);
+					}
+					$cat->leaf		= true;
+					$fathers[$level] = $cat;
+					if ($father) {
+						$father->children[] = $cat;
+						$father->leaf = false;
+						$father->expanded = true;
+					} else {
+						$availableCategories[] = $cat;
+					}
 				}
 			} else {
-				$availableCategories[] = array('', $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET));
+				$availableCategories[] = array(
+					'id'	=> '',
+					'text'	=> $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET),
+					'leaf'	=> true
+				);
 			}
-			
-			$return['xtype'] 			= 'multiselect';
-			$return['name'] 			= 'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]';
-			$return['dataFields'] 		= array('id', 'label');
-			$return['data'] 			= $availableCategories;
-			$return['value'] 			= implode(',',$associated_items);
-			$return['valueField'] 		= "id";
-			$return['displayField'] 	= "label";
-			if (SensitiveIO::isPositiveInteger($params['selectHeight'])) {
-				$return['height'] 		= $params['selectHeight'];
-			}
-			$return['width'] 			= SensitiveIO::isPositiveInteger($params['selectWidth']) ? SensitiveIO::isPositiveInteger($params['selectWidth']) : '100%';
+			$fieldId = md5(mt_rand().microtime());
+			$field = array();
+			$field['id'] 				= 'tree-'.$fieldId;
+			$field['xtype'] 			= 'treepanel';
+			$field['height'] 			= io::isPositiveInteger($params['selectHeight']) ? (int) $params['selectHeight'] : 150;
+			$field['width'] 			= io::isPositiveInteger($params['selectWidth']) ? (int) $params['selectWidth'] : '100%';
+			$field['autoScroll'] 		= true;
+	        $field['animate'] 			= true;
+	        $field['containerScroll'] 	= true;
+	        $field['rootVisible'] 		= false;
+			$field['root'] = array(
+	            'expanded' => true,
+	            'children' => $availableCategories
+	        );
+			$field['listeners'] = array(
+				'checkchange' => array(
+					'fn' =>	sensitiveIO::sanitizeJSString('function(node, checked){
+						var tree = Ext.getCmp(\'tree-'.$fieldId.'\');
+						var input = Ext.getCmp(\'cat-'.$fieldId.'\');
+						if (tree && input) {
+							input.setValue(tree.getChecked(\'id\').toString());
+						}
+						if(checked){
+		                    node.getUI().addClass(\'x-tree-checked\');
+		                }else{
+		                    node.getUI().removeClass(\'x-tree-checked\');
+		                }
+					}', false, false)
+				)
+			);
+			$return['xtype'] = 'compositefield';
+			$return['labelWidth'] = 120;
+			$return['items'] = array($field, array(
+				'id'		=> 'cat-'.$fieldId,
+				'xtype'		=> 'hidden',
+				'name'		=> 'polymodFieldsValue[list'.$prefixName.$this->_field->getID().'_0]',
+				'value'		=> $valueString,
+			));
 		} else {
 			if (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0]) && !is_null($this->_subfieldValues[0]->getValue()) && $this->_subfieldValues[0]->getID()) {
 				$selectedValue = $this->_subfieldValues[0]->getValue() ? $this->_subfieldValues[0]->getValue() : '';
@@ -325,36 +379,41 @@ class CMS_object_categories extends CMS_object_common
 						$associated_items[] = $this->_subfieldValues[$subFieldID]->getValue();
 					}
 				}
-				//set some default parameters
-				if (!isset($inputParams['no_admin'])) {
-					$inputParams['no_admin'] = true;
-				}
-				if (!isset($inputParams['position'])) {
-					$inputParams['position'] = 'horizontal';
-				}
-				if (isset($inputParams['width']) && !isset($inputParams['select_width'])) {
-					$inputParams['select_width'] = $inputParams['width'];
-				}
-				if (isset($inputParams['height']) && !isset($inputParams['select_height'])) {
-					$inputParams['select_height'] = $inputParams['height'];
-				}
-				$params['selectWidth'] = (SensitiveIO::isPositiveInteger($params['selectWidth'])) ? $params['selectWidth'] : '300';
-				$params['selectHeight'] = (SensitiveIO::isPositiveInteger($params['selectHeight'])) ? $params['selectHeight'] : '200';
-				$listboxesParameters = array (
-					'field_name' 		=> 'list'.$prefixName.$this->_field->getID().'_0',	// Hidden field name to get value in
-					'items_possible' 	=> $a_all_categories,								// array of all categories availables: array(ID => label)
-					'items_selected' 	=> $associated_items,								// array of selected ids
-					'select_width'		=> $params['selectWidth'].'px',        				// Width of selects, default 200px
-					'select_height'		=> $params['selectHeight'].'px',					// Height of selects, default 140px
-					'form_name' 		=> $inputParams['form'] 							// Javascript form name
-					);
-				//append optional attributes
-				foreach ($inputParams as $k => $v) {
-					if (in_array($k, array('select_width','select_height','no_admin','leftTitle','rightTitle','position','description','selectIDFrom','selectIDTo',))) {
-						$listboxesParameters[$k] = $v;
+				if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
+					$value = isset($inputParams['value']) ? $inputParams['value'] : implode(',', $associated_items);
+					$html = '<input type="hidden"'.$htmlParameters.' name="list'.$prefixName.$this->_field->getID().'_0" value="'.$value.'" />'."\n";
+				} else {
+					//set some default parameters
+					if (!isset($inputParams['no_admin'])) {
+						$inputParams['no_admin'] = true;
 					}
+					if (!isset($inputParams['position'])) {
+						$inputParams['position'] = 'horizontal';
+					}
+					if (isset($inputParams['width']) && !isset($inputParams['select_width'])) {
+						$inputParams['select_width'] = $inputParams['width'];
+					}
+					if (isset($inputParams['height']) && !isset($inputParams['select_height'])) {
+						$inputParams['select_height'] = $inputParams['height'];
+					}
+					$params['selectWidth'] = (SensitiveIO::isPositiveInteger($params['selectWidth'])) ? $params['selectWidth'] : '300';
+					$params['selectHeight'] = (SensitiveIO::isPositiveInteger($params['selectHeight'])) ? $params['selectHeight'] : '200';
+					$listboxesParameters = array (
+						'field_name' 		=> 'list'.$prefixName.$this->_field->getID().'_0',	// Hidden field name to get value in
+						'items_possible' 	=> $a_all_categories,								// array of all categories availables: array(ID => label)
+						'items_selected' 	=> $associated_items,								// array of selected ids
+						'select_width'		=> $params['selectWidth'].'px',        				// Width of selects, default 200px
+						'select_height'		=> $params['selectHeight'].'px',					// Height of selects, default 140px
+						'form_name' 		=> $inputParams['form'] 							// Javascript form name
+						);
+					//append optional attributes
+					foreach ($inputParams as $k => $v) {
+						if (in_array($k, array('select_width','select_height','no_admin','leftTitle','rightTitle','position','description','selectIDFrom','selectIDTo',))) {
+							$listboxesParameters[$k] = $v;
+						}
+					}
+					$html = CMS_dialog_listboxes::getListBoxes($listboxesParameters);
 				}
-				$html = CMS_dialog_listboxes::getListBoxes($listboxesParameters);
 			} else {
 				$html = $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET);
 			}
@@ -364,36 +423,49 @@ class CMS_object_categories extends CMS_object_common
 		} else {
 			//serialize all htmlparameters 
 			$htmlParameters = $this->serializeHTMLParameters($inputParams);
-			// Get categories
-			$a_all_categories = $this->getAllCategoriesAsArray($language, false, $moduleCodename, CLEARANCE_MODULE_EDIT, $rootCategory, true);
-			if (is_array($a_all_categories) && $a_all_categories) {
-				$html = '
-				<select name="list'.$prefixName.$this->_field->getID().'_0"'.$htmlParameters.'>';
-				//selected value
-				if (!sensitiveIO::isPositiveInteger($params['defaultValue'])) {
-					$html .= '<option value="0">'.$language->getMessage(self::MESSAGE_CHOOSE_OBJECT).'</option>';
-				}
-				if (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0]) && !is_null($this->_subfieldValues[0]->getValue())) {
-					$selectedValue = $this->_subfieldValues[0]->getValue();
-				} elseif (sensitiveIO::isPositiveInteger($params['defaultValue'])) {
-					$selectedValue = $params['defaultValue'];
+			if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
+				if (isset($inputParams['value'])) {
+					$value = $inputParams['value'];
+				} elseif (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0]) && !is_null($this->_subfieldValues[0]->getValue())) {
+					$value = $this->_subfieldValues[0]->getValue();
 				} else {
-					$selectedValue = '';
+					$value = '';
 				}
-				//natsort objects by name case insensitive
-				if (isset($inputParams['sort']) && (io::strtolower($inputParams['sort']) == 'asc' || io::strtolower($inputParams['sort']) == 'desc')) {
-					uasort($a_all_categories, array('CMS_object_categories','_natecasecomp'));
-					if (io::strtolower($inputParams['sort']) == 'desc') {
-						$a_all_categories = array_reverse($a_all_categories, true);
-					}
-				}
-				foreach($a_all_categories as $catID => $aCategory) {
-					$selected = ($selectedValue == $catID) ? ' selected="selected"':'';
-					$html .= '<option value="'.$catID.'"'.$selected.'>'.$aCategory.'</option>';
-				}
-				$html .= '</select>';
+				$html = '<input type="hidden"'.$htmlParameters.' name="list'.$prefixName.$this->_field->getID().'_0" value="'.$value.'" />'."\n";
 			} else {
-				$html .= $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET);
+				// Get categories
+				$a_all_categories = $this->getAllCategoriesAsArray($language, false, $moduleCodename, CLEARANCE_MODULE_EDIT, $rootCategory, true);
+				if (is_array($a_all_categories) && $a_all_categories) {
+					$html = '
+					<select name="list'.$prefixName.$this->_field->getID().'_0"'.$htmlParameters.'>';
+					//selected value
+					if (!sensitiveIO::isPositiveInteger($params['defaultValue'])) {
+						$html .= '<option value="0">'.$language->getMessage(self::MESSAGE_CHOOSE_OBJECT).'</option>';
+					}
+					if (isset($inputParams['value'])) {
+						$selectedValue = $inputParams['value'];
+					} elseif (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0]) && !is_null($this->_subfieldValues[0]->getValue())) {
+						$selectedValue = $this->_subfieldValues[0]->getValue();
+					} elseif (sensitiveIO::isPositiveInteger($params['defaultValue'])) {
+						$selectedValue = $params['defaultValue'];
+					} else {
+						$selectedValue = '';
+					}
+					//natsort objects by name case insensitive
+					if (isset($inputParams['sort']) && (io::strtolower($inputParams['sort']) == 'asc' || io::strtolower($inputParams['sort']) == 'desc')) {
+						uasort($a_all_categories, array('CMS_object_categories','_natecasecomp'));
+						if (io::strtolower($inputParams['sort']) == 'desc') {
+							$a_all_categories = array_reverse($a_all_categories, true);
+						}
+					}
+					foreach($a_all_categories as $catID => $aCategory) {
+						$selected = ($selectedValue == $catID) ? ' selected="selected"':'';
+						$html .= '<option value="'.$catID.'"'.$selected.'>'.$aCategory.'</option>';
+					}
+					$html .= '</select>';
+				} else {
+					$html = $language->getMessage(self::MESSAGE_EMPTY_OBJECTS_SET);
+				}
 			}
 			if (POLYMOD_DEBUG) {
 				$html .= '<span class="admin_text_alert"> (Field : '.$fieldID.' - Value : '.((isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0])) ? $this->_subfieldValues[0]->getValue() : '').')</span>';
@@ -681,6 +753,39 @@ class CMS_object_categories extends CMS_object_common
 		}
 		//if this field is the only one which use categories
 		if (sizeof($categoriesFields) == 1 && in_array($this->_field->getID(), $categoriesFields)) {
+			if ($this->_public) {
+				//check for publication dates
+				$sql = "
+					select
+						distinct objectID
+					from
+						mod_subobject_integer_public,
+						resources,
+						resourceStatuses
+					where
+						objectFieldID = '0'
+						and value = id_res
+						and status_res=id_rs
+						and location_rs='".RESOURCE_LOCATION_USERSPACE."'
+						and publication_rs='".RESOURCE_PUBLICATION_PUBLIC."'
+						and publicationDateStart_rs <= '".date('Y-m-d')."'
+						and publicationDateStart_rs != '0000-00-00'
+						and (publicationDateEnd_rs >= '".date('Y-m-d')."'
+						or publicationDateEnd_rs = '0000-00-00')
+					";
+				if ($restrictToItemsIds) {
+					$sql .= " and objectID in (".implode($restrictToItemsIds, ', ').")";
+				} else {
+					$sql .= " and objectID in (select objectID from mod_subobject_integer_public where objectFieldID = '".$this->_field->getID()."')";
+				}
+				$q = new CMS_query($sql);
+				$restrictToItemsIds = array();
+				if ($q->getNumRows()) {
+					while ($arr = $q->getArray()) {
+						$restrictToItemsIds[] = $arr['objectID'];
+					}
+				}
+			}
 			$table = ($this->_public) ? 'mod_subobject_integer_public' : 'mod_subobject_integer_edited';
 			$sql = "
 				select
@@ -929,7 +1034,7 @@ class CMS_object_categories extends CMS_object_common
 							$category = CMS_moduleCategories_catalog::getByID($this->_subfieldValues[$name]->getValue());
 							if (!$category->hasError()) {
 								$iconPathFS = $category->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, true);
-								$iconPathWR = CMS_websitesCatalog::getMainURL().$category->getIconPath(true, PATH_RELATIVETO_WEBROOT, true);
+								$iconPathWR = CMS_websitesCatalog::getCurrentDomain().$category->getIconPath(true, PATH_RELATIVETO_WEBROOT, true);
 								if ($iconPathFS && file_exists($iconPathFS) && is_file($iconPathFS) && $iconPathWR) {
 									return $iconPathWR;
 								}
@@ -987,7 +1092,7 @@ class CMS_object_categories extends CMS_object_common
 							$category = CMS_moduleCategories_catalog::getByID($this->_subfieldValues[0]->getValue());
 							if (!$category->hasError()) {
 								$iconPathFS = $category->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, true);
-								$iconPathWR = CMS_websitesCatalog::getMainURL().$category->getIconPath(true, PATH_RELATIVETO_WEBROOT, true);
+								$iconPathWR = CMS_websitesCatalog::getCurrentDomain().$category->getIconPath(true, PATH_RELATIVETO_WEBROOT, true);
 								if ($iconPathFS && file_exists($iconPathFS) && is_file($iconPathFS) && $iconPathWR) {
 									return $iconPathWR;
 								}
@@ -1077,7 +1182,7 @@ class CMS_object_categories extends CMS_object_common
       */
     function category($values, $tags) {
         global $cms_language;
-       
+      
         $return = "";
         if (!sensitiveIO::isPositiveInteger($values['category'])) {
             $this->raiseError("Category value parameter must be a valid category ID : ".$values['category']);
@@ -1097,7 +1202,10 @@ class CMS_object_categories extends CMS_object_common
             '{id}' => $values['category'],
             '{label}' => $category->getLabel($cms_language)
         );
-        $return .= str_replace(array_keys($replace), $replace, $tags[0]['textnode']);
+       
+        $xml2Array = new CMS_XML2Array();
+        $xml = $xml2Array->toXML($tags);
+        $return .= str_replace(array_keys($replace), $replace, $xml);
         return $return;
     }
 	
@@ -1297,7 +1405,7 @@ class CMS_object_categories extends CMS_object_common
 			}
 			$iconPathFS = $category->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, true);
 			if ($iconPathFS && file_exists($iconPathFS)) {
-				$iconPathWR = CMS_websitesCatalog::getMainURL().$category->getIconPath(true, PATH_RELATIVETO_WEBROOT, true);
+				$iconPathWR = CMS_websitesCatalog::getCurrentDomain().$category->getIconPath(true, PATH_RELATIVETO_WEBROOT, true);
 				$icon = '<img src="'.$iconPathWR.'" alt="" title="'.SensitiveIO::sanitizeHTMLString($category->getLabel($cms_language)).'" />';
 			} else {
 				$icon = '';
@@ -1350,6 +1458,7 @@ class CMS_object_categories extends CMS_object_common
 			$usedCategories = false;
 			$usedByItemsIds = false;
 		}
+		$disableCategories = isset($values['disable']) ? explode(';',$values['disable']) : array(); 
 		if (!isset($values['editableonly']) || $values['editableonly'] == 'false' || $values['editableonly'] == '0') {
 			$editableOnly = false;
 		} else {
@@ -1365,6 +1474,7 @@ class CMS_object_categories extends CMS_object_common
 		} else {
 			$rootCategory = false;
 		}
+		$maxlevel = isset($values['maxlevel']) ? (int) $values['maxlevel'] : 0; 
 		$categories = $this->getAllCategoriesAsArray($cms_language, $usedCategories, false, $editableOnly, $rootCategory, false, $usedByItemsIds, $crossLanguage);
 		$return = "";
 		if (is_array($categories) && $categories) {
@@ -1375,7 +1485,23 @@ class CMS_object_categories extends CMS_object_common
 					$categories = array_reverse($categories, true);
 				}
 			}
+			
 			foreach ($categories as $catID => $catLabel) {
+				// Disable categories
+				if(is_array($disableCategories) && $disableCategories){
+					$lineage = CMS_moduleCategories_catalog::getLineageOfCategory($catID);
+					foreach($disableCategories as $disableCategory){
+						if(SensitiveIO::isPositiveInteger($disableCategory) && in_array($disableCategory, $lineage)){
+							continue;
+						}
+					}
+				}
+				//max level
+				if ($maxlevel) {
+					if (substr_count($catLabel, '-&nbsp;') >= $maxlevel) {
+						continue;
+					}
+				}
 				$selected = (isset($values['selected']) && $catID == $values['selected']) ? ' selected="selected"':'';
 				$return .= '<option title="'.io::htmlspecialchars($catLabel).'" value="'.$catID.'"'.$selected.'>'.$catLabel.'</option>';
 			}

@@ -21,7 +21,7 @@
   * This class is deprecated since Automne V4, only here for compatibility with old modules.
   *
   * @package Automne
-  * @subpackage dialogs
+  * @subpackage deprecated
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
@@ -589,34 +589,6 @@ class CMS_JSDialog extends CMS_grandFather
 	  * @access private
 	  */
 	function launchScriptPopup() {
-		//check for anti popup system.
-		/*if (!$_SESSION["cms_context"]->getSessionVar('scriptpopup_is_open')) {
-			$_SESSION["cms_context"]->setSessionVar('scriptpopup_opening_try',$_SESSION["cms_context"]->getSessionVar('scriptpopup_opening_try')+1);
-		}
-		if ($_SESSION["cms_context"]->getSessionVar('scriptpopup_opening_try')>1) {
-			define("MESSAGE_PAGE_REMOVE_ANTI_POPUP", 1182);
-			$user = $this->_context->getUser();
-			$language = $user->getLanguage();
-			$this->_actionMessage .= "\n".$language->getMessage(MESSAGE_PAGE_REMOVE_ANTI_POPUP);
-			$_SESSION["cms_context"]->setSessionVar('scriptpopup_opening_try',0);
-		}
-		//launch popup
-		$searchCheck = '
-			<!-- launch regenerator popup -->
-			<script language="Javascript">
-				// Change popup window format here
-				var name = "popRegenerator";// Name
-				var w = 280;				// Width
-				var h = 120;				// Height
-				var r = "no";				// Resize ?
-				var s = "no";				// Scrolling ?
-				var m = "no";				// Menubar ?
-				var left = 40;				// Left position
-				var top = 40;				// Top position
-				// Opens
-				scriptsPopup = window.open(\''.PATH_ADMIN_WR.'/scriptspopup.php?'.session_name().'='.session_id().'\', name, \'width=\' + w + \',height=\' + h + \',resizable=\' + r +\',scrollbars=\'+ s + \',menubar=\' + m + \',left=\' + left + \',top=\' + top);
-			</script>';
-		$this->setJavascript($searchCheck);*/
 		return true;
 	}
 
@@ -629,11 +601,11 @@ class CMS_JSDialog extends CMS_grandFather
 	function switchRows() {
 		$switchRows =
 		'<script type="text/javascript">
-			var viewWhat = "'.$_SESSION["cms_context"]->getSessionVar('viewWhat').'";
+			var viewWhat = "'.CMS_session::getSessionVar('viewWhat').'";
 			function switchView() {
 				var rowElements = new Array(';
 				$count=0;
-				foreach ($_SESSION["cms_context"]->getSessionVar('switchRow') as $aRowID) {
+				foreach (CMS_session::getSessionVar('switchRow') as $aRowID) {
 					if ($count) $switchRows .= ',';
 					$count++;
 					$switchRows .= '"'.$aRowID.'"';
@@ -641,7 +613,7 @@ class CMS_JSDialog extends CMS_grandFather
 			$switchRows .= ');
 				var blockElements = new Array(';
 				$count=0;
-				foreach ($_SESSION["cms_context"]->getSessionVar('switchBlock') as $aBlockID) {
+				foreach (CMS_session::getSessionVar('switchBlock') as $aBlockID) {
 					if ($count) $switchRows .= ',';
 					$count++;
 					$switchRows .= '"'.$aBlockID.'"';

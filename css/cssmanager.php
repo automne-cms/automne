@@ -27,6 +27,7 @@
 
 //here automatic HTML colmpression is not welcome. It is handled directly by CMS_file::sendFiles method
 define('ENABLE_HTML_COMPRESSION', false);
+define('APPLICATION_EXEC_TYPE', 'css');
 require_once(dirname(__FILE__).'/../cms_rc_frontend.php');
 
 $cssfiles = array();
@@ -39,6 +40,7 @@ if (isset($_GET['files'])) {
 				$cssfiles [] = PATH_MAIN_FS.'/ext/resources/css/xtheme-blue.css';
 				$cssfiles [] = PATH_ADMIN_CSS_FS.'/xtheme-automne.css'; //Automne theme
 				$cssfiles [] = PATH_ADMIN_CSS_FS.'/ext.css'; //overwrite some ext definitions
+				$cssfiles [] = PATH_ADMIN_CSS_FS.'/superboxselect.css';//superselect styles
 			break;
 			case 'main':
 				//Main Automne CSS file
@@ -55,6 +57,10 @@ if (isset($_GET['files'])) {
 			case 'debug':
 				//Blackbird CSS file
 				$cssfiles [] = PATH_MAIN_FS.'/blackbirdjs/blackbird.css';
+			break;
+			case 'codemirror':
+				//CodeMirror CSS file
+				$cssfiles [] = PATH_MAIN_FS.'/codemirror/codemirror.css';
 			break;
 			default:
 				$replace = array(

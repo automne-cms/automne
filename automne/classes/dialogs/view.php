@@ -11,8 +11,6 @@
 // +----------------------------------------------------------------------+
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: view.php,v 1.14 2010/03/08 16:43:32 sebastien Exp $
 
 /**
   * Class CMS_view
@@ -102,21 +100,10 @@ class CMS_view extends CMS_grandFather
 		if ($onlyFiles) {
 			return $jsarray;
 		}
-		$inAdmin = (bool)strpos($_SERVER['SCRIPT_NAME'], substr(PATH_ADMIN_WR, 1));
-		if ($jsarray && (APPLICATION_JS_AND_CSS_COMPRESSION || $inAdmin)) {
+		if ($jsarray) {
 			$return .= '<script src="'.CMS_view::getJSManagerURL().'&amp;files='.implode(',',$jsarray).'" type="text/javascript"></script>'."\n";
 		}
-        if ($jsarray && !APPLICATION_JS_AND_CSS_COMPRESSION && !$inAdmin) {
-            if (is_array($jsarray) && count($jsarray)) {
-                foreach ($jsarray as $file) {
-                    if (trim($file) != '') {
-                        $file  = str_replace('\\', '/', $file);
-                        $return .= '<script src="' . $file . '" type="text/javascript"></script>' . "\n";
-                    }
-                }
-            }
-        }
-		if (isset($this) && isset($this->_jscontent) && $this->_jscontent) {
+        if (isset($this) && isset($this->_jscontent) && $this->_jscontent) {
 			$return .= "\n".'<script type="text/javascript">'.$this->_jscontent.'</script>'."\n";
 			$this->_jscontent = '';
 		}
@@ -153,7 +140,7 @@ class CMS_view extends CMS_grandFather
 	
 	static function getJSManagerURL() {
 		$version = md5(AUTOMNE_VERSION.'-'.AUTOMNE_LASTUPDATE.(SYSTEM_DEBUG ? 'd':''));
-		return PATH_JS_WR.'/jsmanager.php?version='.$version;
+		return PATH_JS_WR.'/jsmanager'.(!STRIP_PHP_EXTENSION ? '.php' : '').'?version='.$version;
 	}
 	
 	/**
@@ -170,23 +157,10 @@ class CMS_view extends CMS_grandFather
 		if ($onlyFiles) {
 			return $cssarray;
 		}
-		$inAdmin = (bool)strpos($_SERVER['SCRIPT_NAME'], substr(PATH_ADMIN_WR, 1));
-		if ($cssarray && (APPLICATION_JS_AND_CSS_COMPRESSION || $inAdmin)) {
+		if ($cssarray) {
 			return '<link rel="stylesheet" type="text/css" href="'.CMS_view::getCSSManagerURL().'&amp;files='.implode(',',$cssarray).'" media="'.$media.'" />'."\n";
 		}
-        if ($cssarray && !APPLICATION_JS_AND_CSS_COMPRESSION && !$inAdmin) {
-            $ouput = '';
-            if (is_array($cssarray) && count($cssarray)) {
-                foreach ($cssarray as $file) {
-                    if (trim($file) != '') {
-                        $file  = str_replace('\\', '/', $file);
-                        $ouput .= '<link rel="stylesheet" type="text/css" href="' . $file . '" media="' . $media . '" />' . "\n";
-                    }
-                }
-            }
-            return $ouput;
-        }
-		return '';
+        return '';
 	}
 	
 	function addCSSFile($css) {
@@ -197,7 +171,7 @@ class CMS_view extends CMS_grandFather
 	
 	static function getCSSManagerURL() {
 		$version = md5(AUTOMNE_VERSION.'-'.AUTOMNE_LASTUPDATE.(SYSTEM_DEBUG ? 'd':''));
-		return PATH_CSS_WR.'/cssmanager.php?version='.$version;
+		return PATH_CSS_WR.'/cssmanager'.(!STRIP_PHP_EXTENSION ? '.php' : '').'?version='.$version;
 	}
 	
 	/**
@@ -520,16 +494,25 @@ class CMS_view extends CMS_grandFather
 		$this->_secure = $secure ? true : false;
 		if ($this->_secure) {
 			if (isset($_SERVER['HTTP_X_POWERED_BY']) && $_SERVER['HTTP_X_POWERED_BY'] == 'Automne' && isset($_SERVER['HTTP_X_ATM_TOKEN'])) {
-				if (CMS_context::checkToken('admin', $_SERVER['HTTP_X_ATM_TOKEN'])) {
+				if (CMS_session::checkToken('admin', $_SERVER['HTTP_X_ATM_TOKEN'])) {
 					return true;
 				}
 			}
 			$this->raiseError('Unautorized query on a secure interface : Query on '.$_SERVER['SCRIPT_NAME'].' - from '.@$_SERVER['HTTP_REFERER']);
-			//$this->raiseError(time());
-			//$this->raiseError(print_r(CMS_context::getSessionVar('atm-tokens'), true));
 			$this->setDisconnected(true);
 			$this->show();
 		}
+	}
+	
+	/**
+	  * Escape cdata end tag in text to avoid error in returned content
+	  *
+	  * @param string $text : the text to escape
+	  * @return string : the escaped content
+	  * @access private
+	  */
+	private function _espaceCdata($text) {
+		return str_replace(']]>', ']]\>', $text);
 	}
 	
 	/**
@@ -547,28 +530,28 @@ class CMS_view extends CMS_grandFather
 				if ($this->hasErrors()) {
 					$return .= 
 					'	<error>1</error>'."\n".
-					'	<errormessage><![CDATA['.$this->getErrors(true).']]></errormessage>'."\n";
+					'	<errormessage><![CDATA['.$this->_espaceCdata($this->getErrors(true)).']]></errormessage>'."\n";
 				} else {
 					$return .= 
 					'	<error>0</error>'."\n";
 				}
-				if ($this->_secure && CMS_context::tokenIsExpired('admin')) {
-					$token = CMS_context::getToken('admin');
+				if ($this->_secure && CMS_session::tokenIsExpired('admin')) {
+					$token = CMS_session::getToken('admin');
 					//pr('new token : '.$token);
 					$return .= 
 					'	<token><![CDATA['.$token.']]></token>'."\n";
 				}
 				if ($this->hasRawDatas()) {
 					$return .= 
-					'	<rawdatas><![CDATA['.$this->getRawDatas(true).']]></rawdatas>'."\n";
+					'	<rawdatas><![CDATA['.$this->_espaceCdata($this->getRawDatas(true)).']]></rawdatas>'."\n";
 				}
 				if ($this->_actionmessage) {
 					$return .= 
-					'	<message><![CDATA['.$this->_actionmessage.']]></message>'."\n";
+					'	<message><![CDATA['.$this->_espaceCdata($this->_actionmessage).']]></message>'."\n";
 				}
 				if ($this->_title) {
 					$return .= 
-					'	<title><![CDATA['.$this->_title.']]></title>'."\n";
+					'	<title><![CDATA['.$this->_espaceCdata($this->_title).']]></title>'."\n";
 				}
 				if ($this->_disconnected) {
 					$return .= 
@@ -581,7 +564,7 @@ class CMS_view extends CMS_grandFather
 				}
 				if (SYSTEM_DEBUG && STATS_DEBUG) {
 					$return .= 
-					'	<stats><![CDATA['.view_stat(true).']]></stats>'."\n";
+					'	<stats><![CDATA['.$this->_espaceCdata(CMS_stats::view(true)).']]></stats>'."\n";
 				}
 				$jsfiles = CMS_view::getJavascript(array(), 'screen', true);
 				if ($jsfiles) {
@@ -590,7 +573,7 @@ class CMS_view extends CMS_grandFather
 						'manager'	=> CMS_view::getJSManagerURL()
 					);
 					$return .= 
-					'	<jsfiles><![CDATA['.sensitiveIO::jsonEncode($files).']]></jsfiles>'."\n";
+					'	<jsfiles><![CDATA['.$this->_espaceCdata(sensitiveIO::jsonEncode($files)).']]></jsfiles>'."\n";
 				}
 				$cssfiles = CMS_view::getCSS(array(), 'screen', true);
 				if ($cssfiles) {
@@ -599,7 +582,7 @@ class CMS_view extends CMS_grandFather
 						'manager'	=> CMS_view::getCSSManagerURL()
 					);
 					$return .= 
-					'	<cssfiles><![CDATA['.sensitiveIO::jsonEncode($files).']]></cssfiles>'."\n";
+					'	<cssfiles><![CDATA['.$this->_espaceCdata(sensitiveIO::jsonEncode($files)).']]></cssfiles>'."\n";
 				}
 				if (!$returnValue) {
 					echo $return;
@@ -611,7 +594,6 @@ class CMS_view extends CMS_grandFather
 			default:
 				$title = ($this->_title) ? '<title>'.APPLICATION_LABEL.' :: '.$this->_title.'</title>' : '';
 				echo '<head>
-						<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
 						<meta http-equiv="Content-Type" content="text/html; charset='.APPLICATION_DEFAULT_ENCODING.'" />
 						'.$title.'
 						'.$this->_copyright().'
@@ -653,11 +635,11 @@ class CMS_view extends CMS_grandFather
 				$return = '';
 				if ($this->_jscontent) {
 					$return .= 
-					'	<jscontent><![CDATA['.$this->_jscontent.']]></jscontent>'."\n";
+					'	<jscontent><![CDATA['.$this->_espaceCdata($this->_jscontent).']]></jscontent>'."\n";
 				}
 				if ($this->_content) {
 					$return .= 
-					'	<'.$this->_contentTags[$this->_displayMode].'><![CDATA['.sensitiveIO::jsonEncode($this->_content).']]></'.$this->_contentTags[$this->_displayMode].'>'."\n";
+					'	<'.$this->_contentTags[$this->_displayMode].'><![CDATA['.$this->_espaceCdata(sensitiveIO::jsonEncode($this->_content)).']]></'.$this->_contentTags[$this->_displayMode].'>'."\n";
 				}
 				if (!$returnValue) {
 					echo $return;
@@ -669,11 +651,11 @@ class CMS_view extends CMS_grandFather
 				$return = '';
 				if ($this->_jscontent) {
 					$return .= 
-					'	<jscontent><![CDATA['.$this->_jscontent.']]></jscontent>'."\n";
+					'	<jscontent><![CDATA['.$this->_espaceCdata($this->_jscontent).']]></jscontent>'."\n";
 				}
 				if ($this->_content) {
 					$return .= 
-					'	<'.$this->_contentTags[$this->_displayMode].'><![CDATA['.$this->_content.']]></'.$this->_contentTags[$this->_displayMode].'>'."\n";
+					'	<'.$this->_contentTags[$this->_displayMode].'><![CDATA['.$this->_espaceCdata($this->_content).']]></'.$this->_contentTags[$this->_displayMode].'>'."\n";
 				}
 				if (!$returnValue) {
 					echo $return;
@@ -685,7 +667,7 @@ class CMS_view extends CMS_grandFather
 				$return = '';
 				if ($this->_jscontent) {
 					$return .= 
-					'	<jscontent><![CDATA['.$this->_jscontent.']]></jscontent>'."\n";
+					'	<jscontent><![CDATA['.$this->_espaceCdata($this->_jscontent).']]></jscontent>'."\n";
 				}
 				if ($this->_content) {
 					//TODOV4 : check for XML conformity of $this->_content
@@ -728,13 +710,25 @@ class CMS_view extends CMS_grandFather
 	  * @param boolean $exit : does the script must exit now ? (default : true)
 	  * @param integer $type : the http redirection code to use. Accept 302 and 301 (default : 302)
 	  * @return boolean
-	  * @access private
+	  * @access public
+	  * @static
 	  */
-	function redirect($url, $exit = true, $type = 302) {
-		if ($type == 302) {
-			header('HTTP/1.x 302 Found', true, 302);
-		} elseif($type == 301) {
+	static function redirect($url, $exit = true, $type = 302) {
+		$url = trim($url);
+		if (!$url || !@parse_url($url)) {
+			CMS_grandFather::raiseError('Try to make a redirection to an empty or invalid url: '.$url);
+			return false;
+		}
+		if (headers_sent()) {
+			CMS_grandFather::raiseError('Try to make a redirection to '.$url.' while content already sent to browser.');
+			return false;
+		}
+		if($type == 301) {
 			header('HTTP/1.x 301 Moved Permanently', true, 301);
+		} elseif ($type == 302) {
+			header('HTTP/1.x 302 Found', true, 302);
+		} elseif($type == 303) {
+			header('HTTP/1.x 303 See Other', true, 303);
 		}
 		//in case of redirect in an admin frame, send to information page
 		if (isset($_REQUEST['atm-context']) && $_REQUEST['atm-context'] == 'adminframe') {

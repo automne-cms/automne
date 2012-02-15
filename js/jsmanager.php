@@ -27,6 +27,7 @@
 
 //here automatic HTML colmpression is not welcome. It is handled directly by CMS_file::sendFiles method
 define('ENABLE_HTML_COMPRESSION', false);
+define('APPLICATION_EXEC_TYPE', 'js');
 require_once(dirname(__FILE__).'/../cms_rc_frontend.php');
 
 $files = '';
@@ -133,6 +134,7 @@ if ($files) {
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/edit/block-image.js';
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/edit/block-text.js';
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/edit/block-varchar.js';
+				$jsfiles [] = PATH_ADMIN_JS_FS.'/edit/block-link.js';
 			break;
 			case 'launch':
 				//this file launch application and must be the last to include
@@ -157,7 +159,15 @@ if ($files) {
 			break;
 			case 'codemirror':
 				//CodeMirror JS file
-				$jsfiles [] = PATH_MAIN_FS.'/codemirror/js/codemirror.js';
+				$jsfiles [] = PATH_MAIN_FS.'/codemirror/codemirror.js';
+				$jsfiles [] = PATH_MAIN_FS.'/codemirror/indent.js';
+				$jsfiles [] = PATH_MAIN_FS.'/codemirror/foldcode.js';
+				$jsfiles [] = PATH_MAIN_FS.'/codemirror/xml.js';
+				$jsfiles [] = PATH_MAIN_FS.'/codemirror/javascript.js';
+				$jsfiles [] = PATH_MAIN_FS.'/codemirror/css.js';
+				$jsfiles [] = PATH_MAIN_FS.'/codemirror/clike.js';
+				$jsfiles [] = PATH_MAIN_FS.'/codemirror/php.js';
+				$jsfiles [] = PATH_MAIN_FS.'/codemirror/htmlmixed.js';
 			break;
 			case 'ext':
 				//Ext license (protected)
@@ -178,6 +188,7 @@ if ($files) {
 				//Ext.ux.ItemSelector
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/ext/MultiSelect.js';
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/ext/Multiselect2.js';
+				$jsfiles [] = PATH_ADMIN_JS_FS.'/ext/SuperBoxSelect.js';
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/ext/DDView.js';
 				//Ext.ux.TabScrollerMenu
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/ext/TabScrollerMenu.js';

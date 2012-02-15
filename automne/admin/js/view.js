@@ -49,8 +49,9 @@ Automne.view = {
 	},
 	search: function(search) {
 		if (search) {
+			var parsed = parseInt(search, 10);
 			//if search is a positive integer, get page
-			if (!isNaN(parseInt(search, 10))) {
+			if (!isNaN(parsed) && parsed.toString().length == search.length) {
 				//force reload page infos without reloading the frame itself
 				Automne.tabPanels.getPageInfos({
 					pageId:		search

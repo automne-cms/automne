@@ -385,8 +385,8 @@ function manageSelectOptions(fieldID)
 	GetE('fieldIDValue').value = fieldID;
 	
 	//load current options
-	var selectValues = GetE( 'selectValues_' + fieldID ).value.split(",");
-	var selectLabels = GetE( 'selectLabels_' + fieldID ).value.split(",");
+	var selectValues = GetE( 'selectValues_' + fieldID ).value.split("||");
+	var selectLabels = GetE( 'selectLabels_' + fieldID ).value.split("||");
 	var defaultValue = GetE( 'defaultValue_' + fieldID ).value;
 	
 	//set default value
@@ -436,8 +436,8 @@ function manageFormFromSelect()
 		if ( oListValue.options[i].value.length == 0 ) oListValue.options[i].value = oListText.options[i].value ;
 		
 		if (i > 0) {
-			finalText	+= ',';
-			finalValue	+= ',';
+			finalText	+= '||';
+			finalValue	+= '||';
 		}
 		finalText	+= oListText.options[i].value ;
 		finalValue	+= oListValue.options[i].value ;

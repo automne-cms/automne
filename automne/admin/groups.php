@@ -60,7 +60,7 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
 }
 
 //get records / pages
-$recordsPerPage = $_SESSION["cms_context"]->getRecordsPerPage();
+$recordsPerPage = CMS_session::getRecordsPerPage();
 
 //groups letters
 $letters = CMS_profile_usersGroupsCatalog::getLettersForTitle();
@@ -161,7 +161,7 @@ $jscontent = <<<END
 								delete fatherWindow.groupWindows[window.id.substr(11)];
 								//refresh search list
 								if (groupsWindow && groupsWindow.launchSearch) {
-									groupsWindow.launchSearch();
+									groupsWindow.launchSearch(true);
 								}
 							}}
 						});
@@ -220,7 +220,7 @@ $jscontent = <<<END
 						delete fatherWindow.groupWindows[0];
 						//refresh search list
 						if (groupsWindow && groupsWindow.launchSearch) {
-							groupsWindow.launchSearch();
+							groupsWindow.launchSearch(true);
 						}
 						//enable button to allow creation of a other groups
 						Ext.getCmp('createGroup').enable();
@@ -257,10 +257,10 @@ $jscontent = <<<END
 		items:	[{$lettersButtons}]
 	};
 	//define search function into window (to be accessible by parent window)
-	groupsWindow.launchSearch = function() {
+	groupsWindow.launchSearch = function(keepPage) {
 		var formValues = Ext.getCmp('groupsSearchPanel').getForm().getValues();
 		store.reload({params:{
-			start:			store.lastOptions.params.start,
+			start:			keepPage ? store.lastOptions.params.start : 0,
 			limit:			{$recordsPerPage},
 			search:			formValues.search,
 			letter:			(clickedLetter) ? clickedLetter.text.toLowerCase() : ''

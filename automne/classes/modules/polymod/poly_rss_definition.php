@@ -297,7 +297,8 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 		}
 		
 		//Clear polymod cache
-		CMS_cache::clearTypeCacheByMetas('polymod', array('module' => CMS_poly_object_catalog::getModuleCodenameForObjectType($this->getValue('objectID'))));
+		//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => CMS_poly_object_catalog::getModuleCodenameForObjectType($this->getValue('objectID'))));
+		CMS_cache::clearTypeCache('polymod');
 		
 		//unset polymod structure in cache
 		CMS_cache::clearTypeCache('atm-polymod-structure');
@@ -335,7 +336,8 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 				$description->destroy();
 			}
 			//Clear polymod cache
-			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => CMS_poly_object_catalog::getModuleCodenameForObjectType($this->getValue('objectID'))));
+			//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => CMS_poly_object_catalog::getModuleCodenameForObjectType($this->getValue('objectID'))));
+			CMS_cache::clearTypeCache('polymod');
 			
 			//unset polymod structure in cache
 			CMS_cache::clearTypeCache('atm-polymod-structure');

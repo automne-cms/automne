@@ -29,7 +29,7 @@ define("MESSAGE_TOOLBAR_HELP",1073);
 define("MESSAGE_PAGE_SAVE", 952);
 define("MESSAGE_PAGE_SYNTAX_COLOR", 725);
 define("MESSAGE_PAGE_ACTION_REINDENT", 726);
-define("MESSAGE_PAGE_LABEL", 814);
+define("MESSAGE_PAGE_LABEL", 1745);
 define("MESSAGE_PAGE_STYLESHEET", 1486);
 define("MESSAGE_PAGE_WYSIWYG", 1487);
 define("MESSAGE_PAGE_JAVASCRIPT", 1488);
@@ -40,6 +40,8 @@ define("MESSAGE_PAGE_EDIT_JS", 1492);
 define("MESSAGE_PAGE_EDIT_WYSIWYG", 1493);
 define("MESSAGE_TOOLBAR_HELP_DESC", 1494);
 define("MESSAGE_PAGE_DEFINITION", 1495);
+define("MESSAGE_PAGE_CREATE_FILE", 1744);
+define("MESSAGE_PAGE_TXT", 273);
 
 function checkNode($value) {
 	return $value != 'source' && io::strpos($value, '..') === false;
@@ -47,7 +49,6 @@ function checkNode($value) {
 
 //Controler vars
 $winId = sensitiveIO::request('winId', '', 'printTemplateWindow');
-$fileType = sensitiveIO::request('type', array('css', 'js'));
 $node = sensitiveIO::request('node', 'checkNode', '');
 
 //load interface instance
@@ -63,33 +64,24 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) {
 	$view->show();
 }
 
-switch ($fileType) {
-	case 'css':
-		$dir = PATH_REALROOT_FS.'/css/';
-		$allowedFiles = array(
-			'css' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_STYLESHEET), 'class' => 'atm-css'),
-			'xml' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_WYSIWYG), 'class' => 'atm-xml'),
-		);
-	break;
-	case 'js':
-		$dir = PATH_REALROOT_FS.'/js/';
-		$allowedFiles = array('js' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_JAVASCRIPT), 'class' => 'atm-js'));
-	break;
-	default:
-		CMS_grandFather::raiseError('Unknown fileType to use ...');
-		$view->show();
-	break;
-}
+$allowedFiles = array(
+	'less' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_STYLESHEET), 'class' => 'atm-css'),
+	'css' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_STYLESHEET), 'class' => 'atm-css'),
+	'xml' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_WYSIWYG), 'class' => 'atm-xml'),
+	'js' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_JAVASCRIPT), 'class' => 'atm-js'),
+	'txt' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_TXT), 'class' => 'atm-txt'),
+);
 
-$file = $dir.$node;
+$file = PATH_REALROOT_FS.'/'.$node;
 if (!is_file($file) && !is_dir($file)) {
 	CMS_grandFather::raiseError('Queried file does not exists.');
 	$view->show();
 }
+
 if (!is_file($file)) {
 	//file creation
 	$fileCreation = true;
-	$extension = $fileType;
+	$extension = '';
 	$fileId = md5(rand());
 	$fileDefinition = '';
 	$labelField = "{
@@ -132,29 +124,74 @@ $content = '<textarea id="file-content-'.$fileId.'" style="display:none;">'.html
 $view->setContent($content);
 
 switch ($extension) {
+	case 'less':
 	case 'css':
 		$codemirrorConf = '
-			parserfile: 	["parsecss.js"],
-			stylesheet: 	["'.PATH_MAIN_WR.'/codemirror/css/csscolors.css"],
+			mode: "text/css",
 		';
 		$title = sensitiveIO::sanitizeJSString($fileCreation ? $cms_language->getMessage(MESSAGE_PAGE_CREATE_CSS) : $cms_language->getMessage(MESSAGE_PAGE_EDIT_CSS).' '.$node);
 	break;
 	case 'js':
 		$codemirrorConf = '
-			parserfile: 	["tokenizejavascript.js", "parsejavascript.js"],
-			stylesheet: 	["'.PATH_MAIN_WR.'/codemirror/css/jscolors.css"],
+			mode: "text/javascript",
 		';
 		$title = sensitiveIO::sanitizeJSString($fileCreation ? $cms_language->getMessage(MESSAGE_PAGE_CREATE_JS) : $cms_language->getMessage(MESSAGE_PAGE_EDIT_JS).' '.$node);
 	break;
 	case 'xml':
 		$codemirrorConf = '
-			parserfile: 	["parsexml.js", "parsecss.js", "tokenizejavascript.js", "parsejavascript.js", "parsehtmlmixed.js"],
-			stylesheet: 	["'.PATH_MAIN_WR.'/codemirror/css/xmlcolors.css", "'.PATH_MAIN_WR.'/codemirror/css/jscolors.css", "'.PATH_MAIN_WR.'/codemirror/css/csscolors.css"],
+			mode: "text/html",
 		';
 		$title = sensitiveIO::sanitizeJSString($cms_language->getMessage(MESSAGE_PAGE_EDIT_WYSIWYG).' '.$node);
 	break;
+	default:
+		$codemirrorConf = '
+			mode: "text/html",
+		';
+		$title = sensitiveIO::sanitizeJSString($cms_language->getMessage(MESSAGE_PAGE_CREATE_FILE));
+	break;
 }
+
 $automnePath = PATH_MAIN_WR;
+$colorcoding = '';
+if ($codemirrorConf) {
+	$colorcoding = "{
+		xtype:			'checkbox',
+		boxLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_SYNTAX_COLOR)}',
+		hideLabel:		true,
+		listeners:		{'check':function(field, checked) {
+			if (checked) {
+				var textarea = Ext.get('defText-{$fileId}');
+				var width = textarea.getWidth();
+				var height = textarea.getHeight();
+				var foldFunc = CodeMirror.newFoldFunction(CodeMirror.braceRangeFinder);
+				editor = CodeMirror.fromTextArea(document.getElementById('defText-{$fileId}'), {
+			        lineNumbers: true,
+			        matchBrackets: true,
+			        {$codemirrorConf}
+					indentWithTabs: true,
+			        enterMode: \"keep\",
+			        tabMode: \"shift\",
+					tabSize: 2,
+					onGutterClick: foldFunc,
+					extraKeys: {
+						\"Ctrl-Q\": function(cm){
+							foldFunc(cm, cm.getCursor().line);
+						},
+						\"Ctrl-S\": function() {
+							Ext.getCmp('save-{$fileId}').handler();
+						}
+					}
+			    });
+				Ext.select('.CodeMirror-scroll').setHeight((height - 6));
+				Ext.select('.CodeMirror-scroll').setWidth(width);
+				
+				field.disable();
+				Ext.getCmp('reindent-{$fileId}').show();
+			}
+		}, scope:this}
+	},";
+}
+
 $jscontent = <<<END
 	var fileWindow = Ext.getCmp('{$winId}');
 	fileWindow.fileId = '{$fileId}';
@@ -190,27 +227,7 @@ $jscontent = <<<END
 	        labelAlign: 		'top'
 	    },
 		labelAlign: 		'top',
-		items:[{$labelField}{
-			xtype:			'checkbox',
-			boxLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_SYNTAX_COLOR)}',
-			hideLabel:		true,
-			listeners:		{'check':function(field, checked) {
-				if (checked) {
-					editor = CodeMirror.fromTextArea('defText-{$fileId}', {
-						{$codemirrorConf}
-						path: 			"{$automnePath}/codemirror/js/",
-						iframeClass:	'x-form-text',
-						lineNumbers:	true,
-						textWrapping:	false,
-						initCallback:	function(){
-							editor.reindent();
-						}
-					});
-					field.disable();
-					Ext.getCmp('reindent-{$fileId}').show();
-				}
-			}, scope:this}
-		},{
+		items:[{$labelField}{$colorcoding}{
 			id:				'defText-{$fileId}',
 			xtype:			'textarea',
 			name:			'definition',
@@ -247,8 +264,8 @@ $jscontent = <<<END
 				}
 			}, 'resize': function(field, width, height){
 				if (editor) { //resize editor according to textarea size
-					if (width) editor.frame.style.width = (width - 8) + 'px';
-					if (height) editor.frame.style.height = (height - 6) + 'px';
+					if (height) Ext.select('.CodeMirror-scroll').setHeight((height - 6));
+					if (width) Ext.select('.CodeMirror-scroll').setWidth(width);
 				}
 			},
 			scope:this}
@@ -262,20 +279,20 @@ $jscontent = <<<END
 				editor.reindent();
 			}, scope:this}
 		},{
+			id:				'save-{$fileId}',
 			text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
 			iconCls:		'atm-pic-validate',
 			anchor:			'',
 			scope:			this,
 			handler:		function() {
-				var form = Ext.getCmp('fileDef-{$fileId}').getForm();
 				if (editor) {
-					form.setValues({'defText-{$fileId}': editor.getCode().replace(/  /g, "\t")});
+					editor.save();
 				}
+				var form = Ext.getCmp('fileDef-{$fileId}').getForm();
 				if (form.isValid()) {
 					form.submit({
 						params:{
 							action:		'{$action}',
-							type:		'{$fileType}',
 							node:		'{$node}'
 						},
 						scope:this

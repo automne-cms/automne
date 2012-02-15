@@ -69,7 +69,7 @@ if (!$cms_user->hasModuleClearance($codename, CLEARANCE_MODULE_EDIT)) {
 
 //load object
 if ($objectId) {
-	$object = new CMS_poly_object_definition($objectId);
+	$object = CMS_poly_object_catalog::getObjectDefinition($objectId);
 	$objectLabel = sensitiveIO::sanitizeJSString($object->getLabel($cms_language));
 }
 if (!isset($object) || $object->hasError()) {
@@ -89,7 +89,7 @@ if ($itemId) {
 		if ($lock = $item->getLock()) {
 			$lockUser = CMS_profile_usersCatalog::getById($lock);
 			$lockDate = $item->getLockDate();
-			$date = $lockDate ? $lockDate->getLocalizedDate($cms_language->getDateFormat().' à H:i:s') : '';
+			$date = $lockDate ? $lockDate->getLocalizedDate($cms_language->getDateFormat().' @ H:i:s') : '';
 			$name = sensitiveIO::sanitizeJSString($lockUser->getFullName());
 			CMS_grandFather::raiseError('Error, item '.$itemId.' is locked by '.$lockUser->getFullName());
 			$jscontent = "
@@ -150,6 +150,7 @@ $itemFields = preg_replace_callback('#"function\((.*)}"#U', 'replaceCallBack', $
 
 //Append pub dates if object is a primary resource
 $saveAndValidate = '';
+$saveIconCls = $saveTooltip = '';
 if ($object->isPrimaryResource()) {
 	if (!$item->getID()) {
 		$dt = new CMS_date();
@@ -186,6 +187,7 @@ if ($object->isPrimaryResource()) {
 	},";
 	if ($cms_user->hasValidationClearance($codename)) {
 		$saveAndValidate = ",{
+			id:				'{$winId}-save-validate',
 			xtype:			'button',
 			text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_PUBLISH)}',
 			tooltip:		'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE_AND_VALID_DESC, false, MOD_POLYMOD_CODENAME)}',
@@ -227,6 +229,15 @@ $jscontent = <<<END
 	var submitItem = function (action) {
 		var form = Ext.getCmp('{$winId}-form').getForm();
 		if (form.isValid()) {
+			//disable button
+			var saveButton = Ext.getCmp('{$winId}-save');
+			if (saveButton) {
+				saveButton.disable();
+			}
+			var publishButton = Ext.getCmp('{$winId}-save-validate');
+			if (publishButton) {
+				publishButton.disable();
+			}
 			form.submit({
 				params:{
 					action:		action,
@@ -235,6 +246,15 @@ $jscontent = <<<END
 					item:		window.objectId
 				},
 				success:function(form, action){
+					//enable button
+					var saveButton = Ext.getCmp('{$winId}-save');
+					if (saveButton) {
+						saveButton.enable();
+					}
+					var publishButton = Ext.getCmp('{$winId}-save-validate');
+					if (publishButton) {
+						publishButton.enable();
+					}
 					if (!action.result || action.result.success == false) {
 						Automne.message.show('{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE_ERROR, false, MOD_POLYMOD_CODENAME)}', '', window);
 					}
@@ -257,6 +277,17 @@ $jscontent = <<<END
 								form.findField(i).setValue(jsonResponse.datas[i]);
 							}
 						}
+					}
+				},
+				failure:function(form, action){
+					//enable button
+					var saveButton = Ext.getCmp('{$winId}-save');
+					if (saveButton) {
+						saveButton.enable();
+					}
+					var publishButton = Ext.getCmp('{$winId}-save-validate');
+					if (publishButton) {
+						publishButton.enable();
 					}
 				},
 				scope:this
@@ -290,6 +321,7 @@ $jscontent = <<<END
 			items:[{$itemFields}]
 		}],
 		buttons:[{
+			id:				'{$winId}-save',
 			text:			'{$saveLabel}',
 			tooltip:		'{$saveTooltip}',
 			iconCls:		'{$saveIconCls}',

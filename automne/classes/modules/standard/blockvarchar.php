@@ -125,7 +125,7 @@ class CMS_block_varchar extends CMS_block
 			if ($data && $data["value"]) {
 				$html = io::htmlspecialchars($data["value"]);
 			} elseif (isset($this->_attributes['default'])) {
-				$html = $this->_attributes['default'];
+				$html = '<span class=\"atm-ipsum\">'.$this->_attributes['default'].'</span>';
 			} else {
 				$html = "<span class=\"atm-ipsum\">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diem nonummy.</span>";
 			}
@@ -140,7 +140,7 @@ class CMS_block_varchar extends CMS_block
 			break;
 		case PAGE_VISUALMODE_CLIENTSPACES_FORM:
 			if (isset($this->_attributes['default'])) {
-				$html = $this->_attributes['default'];
+				$html = '<span class=\"atm-ipsum\">'.$this->_attributes['default'].'</span>';
 			} else {
 				$html = "<span class=\"atm-ipsum\">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diem nonummy.</span>";
 			}

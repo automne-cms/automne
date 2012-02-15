@@ -180,8 +180,8 @@ switch ($step) {
 				$field->setAttribute("params", $params);
 				
 				$options = array();
-				$optionsValues = explode (',',$_POST["selectValues_".$fieldId]);
-				$optionsLabels = explode (',',$_POST["selectLabels_".$fieldId]);
+				$optionsValues = explode ('||',$_POST["selectValues_".$fieldId]);
+				$optionsLabels = explode ('||',$_POST["selectLabels_".$fieldId]);
 				if (sizeof($optionsValues) && sizeof($optionsLabels)) {
 					foreach ($optionsValues as $key => $value) {
 						$options[$value] = $optionsLabels[$key];
@@ -271,8 +271,8 @@ switch ($step) {
 		$countOptions=0;
 		if (sizeof($field->getAttribute("options"))) {
 			foreach ($field->getAttribute("options") as $aSelectValue => $aSelectValueLabel) {
-				$selectValues .= ($countOptions) ? ",".$aSelectValue : $aSelectValue;
-				$selectLabels .= ($countOptions) ? ",".$aSelectValueLabel : $aSelectValueLabel ;
+				$selectValues .= ($countOptions) ? "||".$aSelectValue : $aSelectValue;
+				$selectLabels .= ($countOptions) ? "||".$aSelectValueLabel : $aSelectValueLabel ;
 				$countOptions++;
 			}
 		}

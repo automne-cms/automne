@@ -65,6 +65,7 @@ define("MESSAGE_PAGE_PLUGIN_DEFINITIONS", 275);
 define("MESSAGE_PAGE_OBJECT_PROPERTIES", 276);
 define("MESSAGE_PAGE_ACTION_DELETEPLUGINCONFIRM", 279);
 define("MESSAGE_PAGE_OBJECT_INDEXABLE", 325);
+define("MESSAGE_PAGE_OBJECT_MULTILANGUAGE", 634);
 define("MESSAGE_PAGE_OBJECT_INDEXATION", 326);
 define("MESSAGE_PAGE_OBJECT_INDEXABLE_EXPLANATION", 327);
 define("MESSAGE_PAGE_OBJECT_INDEXATION_LINK_TO", 328);
@@ -153,6 +154,8 @@ case "switchexplanation":
 				array($cms_language->getMessage(MESSAGE_PAGE_FIELD_PREVIEW_URL,false,MOD_POLYMOD_CODENAME)));
 		}
 	}
+	//Multilanguage
+	$object->setValue("multilanguage", $_POST["multilanguage"]);
 	//IndexURL
 	$object->setValue("indexable", $_POST["indexable"]);
 	if ($_POST["indexable"] && !$_POST["indexURL"]) {
@@ -351,8 +354,8 @@ $content .='
 		//indexURL
 		$indexURL = ($_POST["indexURL"]) ? $_POST["indexURL"] : $polymod->convertDefinitionString($object->getValue("indexURL"), true);
 		
-		
 		$indexable = ($object->getValue("indexable")) ? ' checked="checked"':'';
+		$multilanguage = ($object->getValue("multilanguage")) ? ' checked="checked"':'';
 		$content .= '
 		<tr>
 			<td class="admin" align="right" valign="top">'.$cms_language->getMessage(MESSAGE_PAGE_OBJECT_INDEXATION,false, MOD_POLYMOD_CODENAME).'</td>
@@ -361,6 +364,7 @@ $content .='
 					<legend><label for="indexable"><input id="indexable" type="checkbox" name="indexable" value="1"'.$indexable.' />&nbsp;'.$cms_language->getMessage(MESSAGE_PAGE_OBJECT_INDEXABLE,false, MOD_POLYMOD_CODENAME).'</label></legend>
 					'.$cms_language->getMessage(MESSAGE_PAGE_OBJECT_INDEXABLE_EXPLANATION,false, MOD_POLYMOD_CODENAME).'
 					<br /><br />
+					<label for="multilanguage"><input type="checkbox" id="multilanguage" name="multilanguage" value="1"'.$multilanguage.' />&nbsp;'.$cms_language->getMessage(MESSAGE_PAGE_OBJECT_MULTILANGUAGE,false,MOD_POLYMOD_CODENAME).'</label><br /><br />
 					<span class="admin_text_alert">*</span> '.$cms_language->getMessage(MESSAGE_PAGE_OBJECT_INDEXATION_LINK_TO,false, MOD_POLYMOD_CODENAME).' :
 					<br />
 					<textarea class="admin_textarea"'.$stopTab.' name="indexURL" rows="10" cols="100">'.htmlspecialchars($indexURL).'</textarea>

@@ -174,7 +174,9 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 					return CMS_moduleCategories_catalog::compactSiblingsOrder($parentCategory->getID());
 				} else {
 					//Clear polymod cache
-					CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $category->getAttribute('moduleCodename')));
+					//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $category->getAttribute('moduleCodename')));
+					CMS_cache::clearTypeCache('polymod');
+					
 					return true;
 				}
 			} else  {
@@ -302,7 +304,9 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 		}
 		if ($codename) {
 			//Clear polymod cache
-			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $codename));
+			//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $codename));
+			CMS_cache::clearTypeCache('polymod');
+			
 		}
 		
 		return $proceed;
@@ -380,7 +384,9 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 		$q = new CMS_query($sql);
 		
 		//Clear polymod cache
-		CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $category->getAttribute('moduleCodename')));
+		//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $category->getAttribute('moduleCodename')));
+		CMS_cache::clearTypeCache('polymod');
+		
 		return true;
 	}
 	
@@ -453,7 +459,9 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 			$q = new CMS_query($sql);
 			
 			//Clear polymod cache
-			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $sibling_to_move_right->getAttribute('moduleCodename')));
+			//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $sibling_to_move_right->getAttribute('moduleCodename')));
+			CMS_cache::clearTypeCache('polymod');
+			
 			return true;
 		} else {
 			CMS_grandFather::raiseError("Move impossible (first or last sibling to move, or parent and sibling not related");

@@ -51,7 +51,9 @@ define("MESSAGE_PAGE_INFO_FORCEURLREFRESH", 1318);
 define("MESSAGE_PAGE_FIELD_CODENAME", 1675);
 define("MESSAGE_PAGE_INFO_FIELD_CODENAME", 1676);
 define("MESSAGE_PAGE_INFO_FIELD_CODENAME_VTYPE", 1677);
-
+define("MESSAGE_PAGE_FIELD_PROTECTED", 1726);
+define("MESSAGE_PAGE_FIELD_PROTECTED_DESC", 1727);
+define("MESSAGE_PAGE_FIELD_PROTECTED_INFO", 1728);
 define("MESSAGE_PAGE_FIELD_PUBDATE_BEG", 134);
 define("MESSAGE_PAGE_FIELD_DATE_COMMENT", 148);
 define("MESSAGE_PAGE_FIELD_PUBDATE_END", 135);
@@ -59,7 +61,6 @@ define("MESSAGE_PAGE_FIELD_REMINDERDELAY", 136);
 define("MESSAGE_PAGE_FIELD_REMINDERDELAY_COMMENT", 150);
 define("MESSAGE_PAGE_FIELD_REMINDERDATE", 137);
 define("MESSAGE_PAGE_FIELD_REMINDERMESSAGE", 138);
-
 define("MESSAGE_PAGE_FIELD_DESCRIPTION", 139);
 define("MESSAGE_PAGE_FIELD_DESCRIPTION_COMMENT", 149);
 define("MESSAGE_PAGE_FIELD_KEYWORDS", 140);
@@ -75,7 +76,6 @@ define("MESSAGE_PAGE_FIELD_ROBOTS", 1037);
 define("MESSAGE_PAGE_FIELD_ROBOTS_COMMENT", 1042);
 define("MESSAGE_PAGE_FIELD_PRAGMA", 1038);
 define("MESSAGE_PAGE_FIELD_PRAGMA_COMMENTS", 1040);
-
 define("MESSAGE_PAGE_UNPUBLISHED", 367);
 define("MESSAGE_PAGE_UPDATE_NEXT_VALIDATION", 368);
 define("MESSAGE_PAGE_LINK_LABEL_POINTING", 369);
@@ -122,6 +122,11 @@ define("MESSAGE_PAGE_FIELD_CURRENT_ADDRESS", 701);
 define("MESSAGE_PAGE_INFORMATIONS", 702);
 define("MESSAGE_PAGE_ALERTS_DISABLED", 1593);
 define("MESSAGE_PAGE_FIELD_TEMPLATE_ALERT", 1600);
+define("MESSAGE_PAGE_ALERTS_PROTECTED", 1733);
+define("MESSAGE_PAGE_FIELD_HTTPS", 1734);
+define("MESSAGE_PAGE_FIELD_HTTPS_DESC", 1735);
+define("MESSAGE_PAGE_FIELD_HTTPS_INFO", 1736);
+define("MESSAGE_PAGE_PROTECTED_ALERT", 1743);
 $cms_language->endPrefetch();
 
 //load interface instance
@@ -132,7 +137,7 @@ $view->setDisplayMode(CMS_view::SHOW_RAW);
 $view->setSecure();
 
 $winId = sensitiveIO::request('winId', '', 'propertiesWindow');
-$currentPage = sensitiveIO::request('currentPage', 'sensitiveIO::isPositiveInteger', $cms_context->getPageID());
+$currentPage = sensitiveIO::request('currentPage', 'sensitiveIO::isPositiveInteger', CMS_session::getPageID());
 
 //load page
 $cms_page = CMS_tree::getPageByID($currentPage);
@@ -143,7 +148,9 @@ if ($cms_page->hasError()) {
 
 //set editable status
 if ($cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)) {
-	if ($cms_page->getLock() && $cms_page->getLock() != $cms_user->getUserId()) {
+	if ($cms_page->isProtected()) {
+		$editable = false;
+	} elseif ($cms_page->getLock() && $cms_page->getLock() != $cms_user->getUserId()) {
 		$editable = false;
 	} else {
 		$editable = true;
@@ -157,6 +164,57 @@ if (!$editable) {
 	$disabled = 'disabled:true,';
 } else {
 	$disabled = '';
+}
+
+//page disabled ?
+if (!$cms_page->isProtected() || ($cms_page->isProtected() && $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL))) {
+	$disabledProtected = $alertProtected = '';
+} else {
+	$disabledProtected = 'disabled:true,';
+	$alertProtected = "{
+		cls:	'atm-text-alert',
+		xtype:	'fieldset',
+		html:	'{$cms_language->getJSMessage(MESSAGE_PAGE_ALERTS_PROTECTED)}'
+	},";
+}
+
+//add an alert on protected option for non admin users
+$protectedAlert = '';
+if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
+	$protectedAlert = ",
+		listeners:	{
+			'check':function(el, checked) {
+				if (checked) {
+					Automne.message.popup({
+						msg: 				'{$cms_language->getJsMessage(MESSAGE_PAGE_PROTECTED_ALERT)}',
+						buttons: 			Ext.MessageBox.OK,
+						closable: 			false,
+						icon: 				Ext.MessageBox.WARNING
+					});
+				}
+			},
+			scope:this
+		}";
+}
+
+//https field
+if (!ALLOW_SPECIFIC_PAGE_HTTPS) {
+	$httpsField = '';
+} else {
+	$disabledHttps = '';
+	if (!$editable || !$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
+		$disabledHttps = 'disabled:true,';
+	}
+	$httpsValue = $cms_page->isHTTPS() ? 'true' : 'false';
+	$httpsField = ",{
+		{$disabledHttps}
+		fieldLabel:		'<span ext:qtip=\"{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_HTTPS_INFO)}\" class=\"atm-help\">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_HTTPS)}</span>',
+		name:			'https',
+		inputValue:		'1',
+		xtype:			'checkbox',
+		checked:		{$httpsValue},
+		boxLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_HTTPS_DESC)}'
+	}";
 }
 
 /***************************************\
@@ -213,6 +271,9 @@ if ($cms_page->getURL()) {
 } else {
 	$pageUrl = '<em>'.$cms_language->getMessage(MESSAGE_PAGE_UNPUBLISHED).'</em>';
 }
+//protected Page ?
+$protectedValue = $cms_page->isProtected() ? 'true' : 'false';
+
 //mandatory 
 $mandatory='<span class="atm-red">*</span> ';
 
@@ -305,25 +366,22 @@ if (CMS_tree::hasSiblings($cms_page)) {
 /***************************************\
 *              PAGE LOGS                *
 \***************************************/
-$logs = '';
-//if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_VIEWLOG)) {
-	$logs = ", {
-					title:	'".$cms_language->getMessage(MESSAGE_PAGE_LOG_LABEL)."',
-					xtype:	'atmPanel',
-					layout:	'fit',
-					id:		'logPanel',
-					autoLoad:		{
-						url:		'page-logs.php',
-						params:		{
-							winId:		'logPanel',
-							currentPage:'$pageId',
-							action:		'view'
-						},
-						nocache:	true,
-						scope:		this
-					}
-	            }";
-//}
+$logs = ", {
+			title:	'".$cms_language->getMessage(MESSAGE_PAGE_LOG_LABEL)."',
+			xtype:	'atmPanel',
+			layout:	'fit',
+			id:		'logPanel',
+			autoLoad:		{
+				url:		'page-logs.php',
+				params:		{
+					winId:		'logPanel',
+					currentPage:'$pageId',
+					action:		'view'
+				},
+				nocache:	true,
+				scope:		this
+			}
+           }";
 
 /***************************************\
 *             MODULES TABS              *
@@ -339,7 +397,7 @@ foreach ($modules as $aModule) {
 		foreach ($tabsInfos as $tabInfos) {
 			$label = $tabInfos['description'] ? '<span ext:qtip="'.sensitiveIO::sanitizeJSString($tabInfos['description']).'">'.sensitiveIO::sanitizeJSString($tabInfos['label']).'</span>' : sensitiveIO::sanitizeJSString($tabInfos['label']);
 			$url = $tabInfos['url'];
-			$tabInfos['winId'] = $objectWinId = 'module'. $aModule->getCodename() . $tabInfos['tabId'] .'TabPanel';
+			$tabInfos['winId'] = $objectWinId = 'module'. $aModule->getCodename() . (isset($tabInfos['tabId']) ? $tabInfos['tabId'] : '') .'TabPanel';
 			$tabInfos['fatherId'] = $winId;
 			$params = sensitiveIO::jsonEncode($tabInfos);
 			if (!isset($tabInfos['frame']) || $tabInfos['frame'] == false) {
@@ -465,15 +523,18 @@ if (!$pageTplId) {
 
 $codename = $cms_page->getCodename();
 $codenameField = '';
-if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES) || $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) {
+if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES) 
+	|| $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)
+	|| $cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_PAGE_CODENAMES)) {
 	$codenameField = ",{
 				{$disabled}
 				fieldLabel:		'<span ext:qtip=\"{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_FIELD_CODENAME)}\" class=\"atm-help\">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_CODENAME)}</span>',
 				xtype:			'textfield',
 				name:			'codename',
-				maxLength:		20,
+				maxLength:		100,
 				vtype:			'codename',
 				allowBlank:		true,
+				width:			550,
 				vtypeText:		'{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_FIELD_CODENAME_VTYPE)}',
 				value:			'{$codename}'
 			}";
@@ -483,6 +544,10 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES) || $cms_use
 				fieldLabel:		'<span ext:qtip=\"{$cms_language->getJSMessage(MESSAGE_PAGE_INFO_FIELD_CODENAME)}\" class=\"atm-help\">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_CODENAME)}</span>',
 				name:			'pageCodename',
 				xtype:			'atmEmptyfield',
+				value:			'{$codename}'
+			},{
+				name:			'codename',
+				xtype:			'hidden',
 				value:			'{$codename}'
 			}";
 	}
@@ -532,7 +597,7 @@ $jscontent .= <<<END
 						anchor:			'97%',
 						allowBlank:		true
 					},
-					items:[{
+					items:[{$alertProtected}{
 						{$disabled}
 						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_TITLE_INFO)}" class="atm-help">{$mandatory}{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_TITLE)}</span>',
 						name:			'title',
@@ -617,6 +682,15 @@ $jscontent .= <<<END
 							visualmode:			'{$visualmode}'
 						}
 					},{
+						{$disabledProtected}
+						fieldLabel:		'<span ext:qtip="{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_PROTECTED_INFO)}" class="atm-help">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_PROTECTED)}</span>',
+						name:			'protected',
+						inputValue:		'1',
+						xtype:			'checkbox',
+						checked:		{$protectedValue},
+						boxLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_PROTECTED_DESC)}'
+						{$protectedAlert}
+					}{$httpsField},{
 						title:			'{$cms_language->getJSMessage(MESSAGE_PAGE_INFORMATIONS)}',
 						xtype:			'fieldset',
 						autoHeight:		true,
@@ -648,7 +722,7 @@ $jscontent .= <<<END
 						}]
 					}],
 					buttons:[{
-						{$disabled}
+						{$disabledProtected}
 						iconCls:		'atm-pic-validate',
 						text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
 						name:			'submitPageContent',

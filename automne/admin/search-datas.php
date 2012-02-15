@@ -57,7 +57,6 @@ if (in_array('users', $elements)) {
 		//pr($rowsScore);
 	}
 }
-
 if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {
 	//Groups search
 	if (in_array('groups', $elements)) {
@@ -88,9 +87,6 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //t
 					$scores[0][] = array('templates', $resultId);
 				}
 			}
-			//pr('Templates :');
-			//pr($templatesResults);
-			//pr($templatesScore);
 		}
 	}
 }

@@ -60,8 +60,11 @@ $content = '';
 switch ($action) {
 	case 'check-files':
 		@set_time_limit(600);
-		$path = PATH_REALROOT_FS;
-		$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::SELF_FIRST);
+		if (!class_exists('FilesystemIterator', false)) { //below php 5.3
+			$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(PATH_REALROOT_FS), RecursiveIteratorIterator::SELF_FIRST);
+		} else {
+			$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(PATH_REALROOT_FS, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::SELF_FIRST);
+		}
 		$countFile = 0;
 		$countDir = 0;
 		$countSize = 0;

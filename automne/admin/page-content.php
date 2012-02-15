@@ -29,7 +29,7 @@ require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
 
 $cms_view = CMS_view::getInstance();
 
-$currentPage = is_object($cms_context) ? sensitiveIO::request('page', 'sensitiveIO::isPositiveInteger', $cms_context->getPageID()) : '';
+$currentPage = sensitiveIO::request('page', 'sensitiveIO::isPositiveInteger', CMS_session::getPageID());
 $action = sensitiveIO::request('action');
 //unset request to avoid it to have interaction with page code
 sensitiveIO::unsetRequest(array('action', 'page'));
@@ -43,7 +43,7 @@ if (!is_object($cms_page) || $cms_page->hasError()) {
 	die("Invalid page or page error");
 }
 //set page to context
-$cms_context->setPage($cms_page);
+CMS_session::setPage($cms_page);
 
 //RIGHTS CHECK
 if (!$cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)

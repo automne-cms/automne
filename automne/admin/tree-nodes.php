@@ -164,7 +164,7 @@ foreach ($siblings as $sibling) {
 		$editableSibling = $cms_user->hasPageClearance($sibling->getId(), CLEARANCE_PAGE_EDIT);
 		if ($enableDD) {
 			//does this node draggable ? (/!\ only public nodes can be draggable)
-			$draggable = ($editableSibling
+			$draggable = (!$sibling->isProtected() && $editableSibling
 							 && (!$hasSiblings || ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) && $sibling->getID() != APPLICATION_ROOT_PAGE_ID))
 							 && $sibling->getPublication() == RESOURCE_PUBLICATION_PUBLIC);
 			

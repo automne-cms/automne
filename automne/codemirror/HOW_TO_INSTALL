@@ -1,7 +1,8 @@
-Pour mettre à jour codemirror :
+To update codemirror :
 
-- Ligne 59 du fichier js/codemirror.js, supprimer la bordure à 0 et ajouter la classe x-form-text à la frame :
-//MODIFIED FOR AUTOMNE
-//frame.style.border = "0";
-frame.className = "x-form-text";
-//END MODIFIED FOR AUTOMNE
+- update all files
+- add following styles at end of file codemirror.css :
+
+/*Added for Automne*/
+.CodeMirror-gutter {min-width: 2.6em; cursor: pointer;}
+.CodeMirror {border: 1px solid;line-height:16px;}

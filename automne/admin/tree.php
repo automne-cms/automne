@@ -126,7 +126,9 @@ if ($enableDD === 'false') {
 	} elseif (!$onClick) {
 		$onClick = sensitiveIO::sanitizeJSString('
 				Automne.utils.getPageById(%s);
-				Ext.getCmp(\''.$winId.'\').close();
+				if (Ext.getCmp(\''.$winId.'\').closable) {
+					Ext.getCmp(\''.$winId.'\').close();
+				}
 			');
 	} else {
 		$onClick = sensitiveIO::sanitizeJSString($onClick);

@@ -25,6 +25,7 @@
 require_once(dirname(__FILE__).'/../../../../cms_rc_admin.php');
 
 define("MESSAGE_PAGE_NO_CATEGORIES", 529);
+define("MESSAGE_ERROR_MODULE_RIGHTS",570);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -70,7 +71,7 @@ if (!$objectId && !$fieldId) {
 }
 
 //load current object definition
-$object = new CMS_poly_object_definition($objectId);
+$object = CMS_poly_object_catalog::getObjectDefinition($objectId);
 //load fields objects for object
 $objectFields = CMS_poly_object_catalog::getFieldsDefinition($object->getID());
 

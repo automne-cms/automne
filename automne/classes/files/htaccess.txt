@@ -9,6 +9,7 @@ htaccess	/automne/fckeditor	yes
 htaccess	/automne/phpMyAdmin	yes
 htaccess	/automne/playerflv	yes
 htaccess	/automne/playermp3	yes
+htaccess	/automne/oembed	yes
 htaccess	/automne/swfobject	yes
 htaccess	/automne/swfupload	yes
 htaccess	/automne/upload	yes

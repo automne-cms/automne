@@ -12,8 +12,6 @@
 // | Author: Cיdric Soret <cedric.soret@ws-interactive.fr>                |
 // | Author: Sיbastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: dialoglistboxes.php,v 1.5 2010/03/08 16:43:31 sebastien Exp $
 
 /**
   * Class CMS_dialog_listboxes
@@ -314,8 +312,8 @@ class CMS_dialog_listboxes extends CMS_grandFather
 		}
 		//-->
 		</script>
-		<input type="hidden" name="'.$s_hiddenField.'" value="'.@implode($s_separator, array_merge($a_selected_categoriesIDs,$a_keeped_categoriesIDs)).'" />
-		<input type="hidden" name="keep_'.$s_hiddenField.'" value="'.@implode($s_separator, $a_keeped_categoriesIDs).'" />
+		<input type="hidden" id="hidden_'.$s_hiddenField.'" name="'.$s_hiddenField.'" value="'.@implode($s_separator, array_merge($a_selected_categoriesIDs,$a_keeped_categoriesIDs)).'" />
+		<input type="hidden" id="hidden_keep_'.$s_hiddenField.'" name="keep_'.$s_hiddenField.'" value="'.@implode($s_separator, $a_keeped_categoriesIDs).'" />
 		<table>';
 		$fromID = (isset($args['selectIDFrom'])) ? ' id="'.io::htmlspecialchars($args['selectIDFrom']).'"' : '';
 		$toID = (isset($args['selectIDTo'])) ? ' id="'.io::htmlspecialchars($args['selectIDTo']).'"' : '';
@@ -361,7 +359,7 @@ class CMS_dialog_listboxes extends CMS_grandFather
 				@reset($a_selected_categoriesIDs);
 				if (is_array($a_selected_categoriesIDs) && $a_selected_categoriesIDs) {
 					foreach ($a_selected_categoriesIDs as $id) {
-						$s .= '<option value="'.$id.'">'.trim(preg_replace("#[^a-zA-Z0-9\.\s\חbאגהיטכךןמצפשüû_\&\;\f\n\r\t\v\ -]#", "", $a_all_categoriesIDs[$id])).'</option>';
+						$s .= '<option value="'.$id.'">'.trim($a_all_categoriesIDs[$id]).'</option>';
 					}
 				}
 			$s .= '
@@ -419,7 +417,7 @@ class CMS_dialog_listboxes extends CMS_grandFather
 				@reset($a_selected_categoriesIDs);
 				if (is_array($a_selected_categoriesIDs) && $a_selected_categoriesIDs) {
 					foreach ($a_selected_categoriesIDs as $id) {
-						$s .= '<option value="'.$id.'">'.trim(preg_replace("#[^a-zA-Z0-9\.\s\חbאגהיטכךןמצפשüû_\&\;\f\n\r\t\v\ -]#", "", $a_all_categoriesIDs[$id])).'</option>';
+						$s .= '<option value="'.$id.'">'.trim($a_all_categoriesIDs[$id]).'</option>';
 					}
 				}
 			$s .= '

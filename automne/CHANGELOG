@@ -1,3 +1,65 @@
+V4.2.0 (15/02/2012)
+[BUG] : Correct bug number: 2350, 2549, 2561, 2586, 2585, 2584, 2582, 2566, 2672, 2689, 2751, 2754, 2763, 2764, 2818, 2831 (see http://www.automne-cms.org/bug/)
+[BUG] : Admin lock cannot be removed, even with admin rights
+[BUG] : Polymod modules can be deleted even if RSS feeds or plugins exists
+[BUG] : Polymod blocks are not duplicated during page copy
+[REFACTOR] : Drop all old V3 LDAP methods
+[REFACTOR] : Update Zend Framework to version 1.11.5
+[REFACTOR] : Update ExtJS to version 3.4.0 (add support for IE9)
+[REFACTOR] : Update debug statistics : more accurate and more extensible
+[REFACTOR] : Session management and users authentification are completely refactored to use Zend Framework
+[REFACTOR] : Add support for hidden fields in polymod am-form
+[REFACTOR] : Add filter by dates on activity logs
+[REFACTOR] : Update page codename to allow codenames of 100 characters
+[REFACTOR] : Add an administration right to allow update of pages codenames without a right on pages/rows templates
+[REFACTOR] : Add thumbnail to field google coordinates in modules admin
+[REFACTOR] : Refactor tag atm-xml to be used in rows and in page templates
+[REFACTOR] : Images and files inserted into polymod fields now use correct website domain instead of main website domain
+[REFACTOR] : Add title and company to users details
+[REFACTOR] : Add log for user logout
+[REFACTOR] : Add previous login message on connection
+[REFACTOR] : Use a temporary table to store poly objects search ids to avoid MySQL limitations
+[REFACTOR] : Completely refactor cms_aliases module for a better integration in Automne 4
+[REFACTOR] : Refactor single sub objects administration to allow creation and modification
+[REFACTOR] : Refactor JS and CSS editor to add robots.txt edition
+[REFACTOR] : Refactor multi categories field in polymod administration using tree UI.
+[REFACTOR] : Update phpMyAdmin to version 3.4.3.1
+[REFACTOR] : Update codemirror to version 2.2
+[REFACTOR] : Add less files edition in stylesheet files edition
+[REFACTOR] : Replace multiselect ExtJS extension by superselect for better ergonomics
+[REFACTOR] : Allow page tree to be opened in a new window
+[FEATURE] : Add oembed object and oembed polymod field (external media field). Update Mediacenter to manage oembed medias
+[FEATURE] : Add parent page selection on new page creation
+[FEATURE] : Add variable type {page:father:XXX} to get infos from current parent page
+[FEATURE] : Add protection for pages and categories to avoid changing important datas inadvertently
+[FEATURE] : Add {server:XXX:YYY} variable type
+[FEATURE] : Add atm-header tag to create content to be executed before page content
+[FEATURE] : Add atm-redirect tag to create a redirection from one page to another one
+[FEATURE] : Add HTTPS option for individual pages
+[FEATURE] : Add an option to redirect from alt domain to main domain for websites
+[FEATURE] : Add {helper:XXX:YYY} variable type which allow usage of PHP helpers to format given variables
+[FEATURE] : Add atm-js-add and atm-css-add tags. Allow website subfolder auto inclusion for JS and CSS tags
+[FEATURE] : Allow stripping of .php extension for generated pages (see constant STRIP_PHP_EXTENSION in cms_rc.php)
+[FEATURE] : Allow sharing of polymod objects accross polymod modules
+[FEATURE] : Handle redirections from old website URL to the new website page (see /automne/redirect/HOW_TO for details)
+[FEATURE] : Add specific PHP code inclusion in forms actions
+[FEATURE] : Add support for mod_xsendfile if exists to boost file download when served by PHP
+[FEATURE] : Add HTML5 attributes to atm-input tags
+[FEATURE] : Add attributes support to atm-form tags and rewrite for action attribute
+[FEATURE] : Add polymod text search options: "begin with" and "restrict to text field"
+[FEATURE] : Add standard block of type "link"
+[FEATURE] : In rows and templates edition : add code folding
+[FEATURE] : In rows and templates edition : add ctrl-s and shift-ctrl-s to save or save and regenerate files.
+
+V4.1.4 (aborted)
+[BUG] : Correct bugs numbers: 2049, 2070, 2154, 2162, 2195, 2252, 2265, 2271, 2272 (see http://www.automne-cms.org/bug/)
+[BUG] : Correct bug for better handling of HTTPS websites and cross HTTP and HTTPS websites on the same Automne
+[BUG] : Correct bug with external home page redirection
+[BUG] : Correct bug with tags which only contain character zero
+[BUG] : Correct bug with atm-form tags and cache
+[BUG] : Correct some inconsistencies with the recursive atm-linx
+[REFACTOR] : Add {{jsdata}} to block text
+
 V4.1.3 (02/05/2011)
 [BUG] : Correct bugs numbers: 1860, 2021, 2024, 2032, 2039, 2040, 2043, 2044 (see http://www.automne-cms.org/bug/)
 [BUG] : Correct a bug with atm-search-param tag when search type is item and value is block

@@ -46,16 +46,16 @@ define("MESSAGE_PAGE_LEVEL", 230);
 //GET arguments checks
 if (isset($_GET["loadFromContext"]) && $_GET["loadFromContext"]=='1') {
 	//load context info
-	if ($cms_context->getPage()) {
-		$currentContextPage = $cms_context->getPage();
+	if (CMS_session::getPage()) {
+		$currentContextPage = CMS_session::getPage();
 		$startRoot = $currentContextPage->getID();
 		$pageLink = PATH_ADMIN_SPECIAL_PAGE_SUMMARY_WR.chr(167).chr(167).'page=%s';
 		$frame = 1;
-	} elseif ($cms_context->getSessionVar('treeHref')) {
+	} elseif (CMS_session::getSessionVar('treeHref')) {
 		//redirect to this page with good infos from starting context
-		header ("Location: ".$cms_context->getSessionVar('treeHref').'&'.session_name().'='.session_id());
+		header ("Location: ".CMS_session::getSessionVar('treeHref').'&'.session_name().'='.session_id());
 		exit;
-	} elseif($cms_context->getSessionVar('hauteurArbo') != '0') {
+	} elseif(CMS_session::getSessionVar('hauteurArbo') != '0') {
 		//lost sessions info, need to reload all
 		//so create a new dialog only to reload all frames.
 		$dialog = new CMS_dialog();
@@ -99,7 +99,7 @@ if ($hideMenu) {
 
 //add title
 $title = ($title) ? SensitiveIO::sanitizeHTMLString($title) : $cms_language->getMessage(MESSAGE_PAGE_TITLE);
-$pageTitle = ($frame && !$onClick) ? '<a href="'.$cms_context->getSessionVar('treeHref').'" target="_self" class="admin_frame">'.$title.'</a>':$title;
+$pageTitle = ($frame && !$onClick) ? '<a href="'.CMS_session::getSessionVar('treeHref').'" target="_self" class="admin_frame">'.$title.'</a>':$title;
 $dialog->setTitle($pageTitle);
 $dialog->changeColor();
 //add message if any
@@ -119,7 +119,7 @@ if ($backLink) {
 $getRoot = array($startRoot);
 $displayed=array();
 $cms_root=CMS_tree::getRoot();
-$sectionsRoots = $cms_context->getSessionVar('sectionsRoots');
+$sectionsRoots = CMS_session::getSessionVar('sectionsRoots');
 
 foreach ($getRoot as $aRootID) {
 	if ($pages[$aRootID]) {

@@ -344,7 +344,7 @@ Automne = {
 		win.show();
 		//check each 5 seconds if parent popup still exists, else, kill popup
 		Automne.popupCheckInterval = setInterval(function(){
-			if (!window.opener) {
+			if (!window.opener || !window.opener.Automne.context || Automne.context != window.opener.Automne.context) {
 				clearInterval(Automne.popupCheckInterval);
 				var mask = Automne.viewPort.el.mask(Automne.locales.closePopup);
 				mask.setStyle('z-index', 100000);

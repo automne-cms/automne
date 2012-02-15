@@ -320,7 +320,6 @@ class CMS_dialog_href extends CMS_grandFather
 	function getHTMLFields($cms_language, $module = MOD_STANDARD_CODENAME, $dataLocation = RESOURCE_DATA_LOCATION_EDITED, $options = false)
 	{
 		global $cms_user;
-		global $cms_context;
 		if (!is_a($this->_href, 'CMS_href')) {
 			$this->raiseError("\$this->_href isn't a CMS_href");
 			return '';
@@ -378,7 +377,7 @@ class CMS_dialog_href extends CMS_grandFather
 						$sections_roots=array();
 						$sections_roots = $cms_user->getViewablePageClearanceRoots();
 						if($sections_roots){
-							$cms_context->setSessionVar('sectionsRoots',$sections_roots);
+							CMS_session::setSessionVar('sectionsRoots',$sections_roots);
 							$sections_roots = array_reverse($sections_roots);
 							foreach($sections_roots as $pageID){
 								$lineages[count(CMS_tree::getLineage($grand_rootID,$pageID,false))] = $pageID;

@@ -22,7 +22,7 @@
   * This class is deprecated since Automne V4, only here for compatibility with old modules.
   *
   * @package Automne
-  * @subpackage dialogs
+  * @subpackage deprecated
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
@@ -683,7 +683,7 @@ class CMS_dialog extends CMS_JSDialog
 				if ($this->_displayMode != "loading") {
 					/*only for stats*/
 					if (STATS_DEBUG && $_SERVER["SCRIPT_NAME"] != PATH_ADMIN_WR.'/stat.php') {
-						view_stat();
+						echo CMS_stats::view();
 					}
 				}
 			break;
@@ -761,10 +761,6 @@ class CMS_dialog extends CMS_JSDialog
 			default:
 				$this->addFrameCheck();
 				$this->addJavascriptCheck($this->_makeFocus);
-				//launch regenerator popup if needed
-				/*if (!USE_BACKGROUND_REGENERATOR && $_SESSION["cms_context"]->getSessionVar('start_script')==true) {
-					$this->launchScriptPopup();
-				}*/
 				echo '
 					<html>
 					<head>

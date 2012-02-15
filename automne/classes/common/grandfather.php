@@ -136,7 +136,7 @@ class CMS_grandFather
 	  * @access public
 	  */
 	public function log($errorMessage, $encodeOutput = false) {
-		$errorMessage = sensitiveIO::getCallInfos().' : '.$errorMessage;
+		$errorMessage = sensitiveIO::getCallInfos().' : '.(!is_scalar($errorMessage) ? print_r($errorMessage, true) : $errorMessage);
 		self::_raiseError($errorMessage, $encodeOutput, false);
 	}
 
@@ -242,22 +242,18 @@ class CMS_grandFather
 				'cms_actions' 						=> PATH_PACKAGES_FS.'/common/actions.php',
 				'cms_action' 						=> PATH_PACKAGES_FS.'/common/action.php',
 				'cms_search' 						=> PATH_PACKAGES_FS.'/common/search.php',
-				'cms_ldap_contactdata' 				=> PATH_PACKAGES_FS.'/common/contactdataldap.php',
 				'cms_contactdatas_catalog' 			=> PATH_PACKAGES_FS.'/common/contactdatascatalog.php',
 				'cms_email' 						=> PATH_PACKAGES_FS.'/common/email.php',
 				'cms_emailscatalog' 				=> PATH_PACKAGES_FS.'/common/emailscatalog.php',
-				'cms_ldap_auth' 					=> PATH_PACKAGES_FS.'/common/ldapauth.php',
-				'cms_ldap_connexion' 				=> PATH_PACKAGES_FS.'/common/ldapconnexion.php',
-				'cms_ldap_query' 					=> PATH_PACKAGES_FS.'/common/ldapquery.php',
-				'cms_ldap_set' 						=> PATH_PACKAGES_FS.'/common/ldapset.php',
 				'cms_query' 						=> PATH_PACKAGES_FS.'/common/query.php',
 				'cms_date' 							=> PATH_PACKAGES_FS.'/common/date.php',
 				'cms_language' 						=> PATH_PACKAGES_FS.'/common/language.php',
+				'cms_oembed'						=> PATH_PACKAGES_FS.'/common/oembed.php',
 				'sensitiveio' 						=> PATH_PACKAGES_FS.'/common/sensitiveio.php',
 				'io' 								=> PATH_PACKAGES_FS.'/common/sensitiveio.php',
 				
 				//dialogs
-				'cms_context' 						=> PATH_PACKAGES_FS.'/dialogs/context.php',
+				'cms_context' 						=> PATH_PACKAGES_FS.'/dialogs/context.php', //Deprecated
 				'cms_wysiwyg_toolbar' 				=> PATH_PACKAGES_FS.'/dialogs/toolbar.php',
 				'cms_dialog' 						=> PATH_PACKAGES_FS.'/dialogs/dialog.php', //Deprecated
 				'cms_jsdialog' 						=> PATH_PACKAGES_FS.'/dialogs/jsdialog.php', //Deprecated
@@ -269,12 +265,12 @@ class CMS_grandFather
 				'cms_fileupload_dialog' 			=> PATH_PACKAGES_FS.'/dialogs/fileupload.php', //Deprecated
 				'cms_loadingdialog' 				=> PATH_PACKAGES_FS.'/dialogs/loadingDialog.php', //Deprecated
 				'cms_texteditor' 					=> PATH_PACKAGES_FS.'/dialogs/texteditor.php',
+				'cms_stats'							=> PATH_PACKAGES_FS.'/dialogs/stats.php',
 
 				//files
 				'cms_patch'							=> PATH_PACKAGES_FS.'/files/patch.php',
 				'cms_file'							=> PATH_PACKAGES_FS.'/files/filesManagement.php',
 				'cms_archive'						=> PATH_PACKAGES_FS.'/files/archive.php',
-				'cms_bzip_file'						=> PATH_PACKAGES_FS.'/files/archive-bzip.php',
 				'cms_gzip_file'						=> PATH_PACKAGES_FS.'/files/archive-gzip.php',
 				'cms_tar_file'						=> PATH_PACKAGES_FS.'/files/archive-tar.php',
 				'cms_zip_file'						=> PATH_PACKAGES_FS.'/files/archive-zip.php',
@@ -308,6 +304,7 @@ class CMS_grandFather
 				'cms_blockscatalog' 				=> PATH_MODULES_FS.'/standard/blockscatalog.php',
 				'cms_block_text' 					=> PATH_MODULES_FS.'/standard/blocktext.php',
 				'cms_block_varchar' 				=> PATH_MODULES_FS.'/standard/blockvarchar.php',
+				'cms_block_link' 					=> PATH_MODULES_FS.'/standard/blocklink.php',
 				'cms_moduleclientspace_standard' 	=> PATH_MODULES_FS.'/standard/clientspace.php',
 				'cms_moduleclientspace_standard_catalog' => PATH_MODULES_FS.'/standard/clientspacescatalog.php',
 				'cms_xmltag_admin' 					=> PATH_MODULES_FS.'/standard/tags/admin.php',
@@ -318,6 +315,11 @@ class CMS_grandFather
 				'cms_xmltag_page' 					=> PATH_MODULES_FS.'/standard/tags/page.php',
 				'cms_xmltag_website' 				=> PATH_MODULES_FS.'/standard/tags/website.php',
 				'cms_xmltag_anchor' 				=> PATH_MODULES_FS.'/standard/tags/anchor.php',
+				'cms_xmltag_header' 				=> PATH_MODULES_FS.'/standard/tags/header.php',
+				'cms_xmltag_redirect' 				=> PATH_MODULES_FS.'/standard/tags/redirect.php',
+				'cms_xmltag_xml' 					=> PATH_MODULES_FS.'/standard/tags/xml.php',
+				'cms_xmltag_js_add'					=> PATH_MODULES_FS.'/standard/tags/js-add.php',
+				'cms_xmltag_css_add'				=> PATH_MODULES_FS.'/standard/tags/css-add.php',
 				
 				//pageContent
 				'cms_linxescatalog' 				=> PATH_PACKAGES_FS.'/pageContent/linxescatalog.php',
@@ -352,6 +354,8 @@ class CMS_grandFather
 				'cms_profile_userscatalog'			=> PATH_PACKAGES_FS.'/user/profileuserscatalog.php',
 				'cms_profile_usersgroupscatalog'	=> PATH_PACKAGES_FS.'/user/profileusersgroupscatalog.php',
 				'cms_profile_usersgroup'			=> PATH_PACKAGES_FS.'/user/profileusersgroup.php',
+				'cms_session' 						=> PATH_PACKAGES_FS.'/user/session.php',
+				'cms_auth' 							=> PATH_PACKAGES_FS.'/user/auth.php',
 
 				//workflow
 				'cms_resource' 						=> PATH_PACKAGES_FS.'/workflow/resource.php',
@@ -394,10 +398,10 @@ class CMS_grandFather
 					return false;
 				}
 				/*only for stats*/
-				if (STATS_DEBUG) $GLOBALS["files_loaded"]++;
+				if (STATS_DEBUG) CMS_stats::$filesLoaded++;
 				if (STATS_DEBUG && VIEW_SQL) {
-					$GLOBALS["files_table"][] = 'Zend framework file';
-					$GLOBALS["memory_table"][] = array('file' => 'Zend framework file', 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
+					CMS_stats::$filesTable[] = array('class' => $classname, 'from' => io::getCallInfos(3)); ;
+					CMS_stats::$memoryTable[] = array('class' => $classname, 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
 				}
 				return true;
 			}
@@ -430,10 +434,10 @@ class CMS_grandFather
 			require_once($file);
 			/*only for stats*/
 			if (defined('STATS_DEBUG') && defined('VIEW_SQL')) {
-				if (STATS_DEBUG) $GLOBALS["files_loaded"]++;
+				if (STATS_DEBUG) CMS_stats::$filesLoaded++;
 				if (STATS_DEBUG && VIEW_SQL) { 
-					$GLOBALS["files_table"][] = $file; 
-					$GLOBALS["memory_table"][] = array('file' => $file, 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
+					CMS_stats::$filesTable[] = array('file' => $file, 'class' => $classname, 'from' => io::getCallInfos(3)); 
+					CMS_stats::$memoryTable[] = array('file' => $file, 'class' => $classname, 'memory' => memory_get_usage(), 'peak' => memory_get_peak_usage());
 				}
 			}
 		}

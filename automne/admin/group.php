@@ -82,11 +82,10 @@ if (sensitiveIO::isPositiveInteger($groupId)) {
 //Need to sanitize all datas which can contain single quotes
 $label = sensitiveIO::sanitizeJSString($group->getLabel());
 $labelValue = ($label) ? "value:'{$label}'," : '';
-$dn = sensitiveIO::sanitizeJSString($group->getDN()); 
-$description = sensitiveIO::sanitizeJSString($group->getDescription()); 
+$description = addslashes(sensitiveIO::sanitizeJSString($group->getDescription(), false, true, true));
 
 //get records / pages
-$recordsPerPage = $_SESSION["cms_context"]->getRecordsPerPage();
+$recordsPerPage = CMS_session::getRecordsPerPage();
 
 $usersTab = $modulesTab = $adminTab = '';
 
@@ -200,17 +199,78 @@ $adminTab = ",{
 		}
 	}";
 
-//create dynamic vars
-if (!APPLICATION_LDAP_AUTH) {
-	$authentificationField = '';
-} else {
-	// LDAP DN
-	$authentificationField = "{
-		$disableUserInfosFields
-		fieldLabel:		'{$cms_language->getJsMessage(MESSAGE_PAGE_DISTINGUISHED_NAME)}',
-		name:			'dn',
-		value:			'{$dn}'
-	},";
+/********************************************\
+*             MODULES ACCORDION              *
+\********************************************/
+$modulesAccordion = '';
+
+//usefull temporary function
+function replaceCallBack($parts) {
+	return 'function('.str_replace(array('\"','\/'), array('"', '/'), $parts[1]).'}';
+}
+
+foreach ($modules as $aModule) {
+	if (method_exists($aModule,'getGroupAccordionProperties')) {
+		$moduleCodename = $aModule->getCodename();
+		//get accordion datas from module
+		$moduleDatas = $aModule->getGroupAccordionProperties($groupId, $cms_language);
+		
+		$moduleURL = false;
+		if (isset($moduleDatas['url'])) {
+			$moduleURL = $moduleDatas['url'];
+		}
+		$moduleLabel = io::sanitizeJSString($aModule->getLabel($cms_language));
+		if (isset($moduleDatas['label'])) {
+			$moduleLabel = $moduleDatas['label'];
+		}
+		
+		$moduleFields = array();
+		if (isset($moduleDatas['fields']) && is_array($moduleDatas['fields'])) {
+			$moduleFields = $moduleDatas['fields'];
+		}
+		if (is_array($moduleFields)) {
+			$moduleFields = sensitiveIO::jsonEncode($moduleFields);
+		}
+		//do some search and replace to allow use of js functions in returned code
+		$moduleFields = str_replace('"scope":"this"', '"scope":this', $moduleFields);
+		$moduleFields = preg_replace_callback('#"function\((.*)}"#U', 'replaceCallBack', $moduleFields);
+		$button = ($moduleURL) ? ",
+			buttons:[{
+				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+				iconCls:		'atm-pic-validate',
+				xtype:			'button',
+				name:			'submit{$moduleCodename}Group',
+				scope:			this,
+				handler:		function() {
+					var form = Ext.getCmp('groupPanel-{$moduleCodename}-{$groupId}').getForm();
+					form.submit({params:{
+						action:		'update-group',
+						groupId:	groupWindow.groupId
+					}});
+				}
+			}]" : '';
+		$modulesAccordion .= ",{
+			title:			'{$moduleLabel}',
+			id:				'groupPanel-{$moduleCodename}-{$groupId}',
+			layout: 		'form',
+			xtype:			'atmForm',
+			url:			'{$moduleURL}',
+			collapsible:	true,
+			defaultType:	'textfield',
+			collapsed:		true,
+			autoWidth:		true,
+			autoScroll:		true,
+			buttonAlign:	'center',
+			labelAlign:		'right',
+			autoScroll:		true,
+			defaults: {
+				xtype:			'textfield',
+				anchor:			'97%'
+			},
+			items:[{$moduleFields}]
+			{$button}
+		}";
+	}
 }
 
 $title = (sensitiveIO::isPositiveInteger($groupId)) ? $cms_language->getJsMessage(MESSAGE_PAGE_GROUP_PROFILE).' : '.$label : $cms_language->getJsMessage(MESSAGE_PAGE_CREATE_GROUP);
@@ -359,71 +419,93 @@ $jscontent = <<<END
 			return true;
 		}},
 		items:[{
-			title:			'{$cms_language->getMessage(MESSAGE_PAGE_GROUP_PROFILE)}',
-			id:				'groupIdentityPanel-{$groupId}',
-			layout: 		'form',
-			xtype:			'atmForm',
-			url:			'groups-controler.php',
-			collapsible:	true,
-			labelAlign:		'right',
-			defaultType:	'textfield',
-			bodyStyle: 		'padding:5px',
-			border:			false,
-			buttonAlign:	'center',
+			title:				'{$cms_language->getJSMessage(MESSAGE_PAGE_GROUP_PROFILE)}',
+			id:					'groupIdentityPanel-{$groupId}',
+			autoScroll:			true,
+			layout: 			'accordion',
+			border:				false,
+			bodyBorder: 		false,
 			defaults: {
-				anchor:			'97%'
+				// applied to each contained panel
+				bodyStyle: 			'padding:5px',
+				border:				false
+			},
+			layoutConfig: {
+				// layout-specific configs go here
+				animate: 			true
 			},
 			items:[{
-				fieldLabel:		'<span class=\"atm-red\">*</span> {$cms_language->getMessage(MESSAGE_PAGE_LABEL)}',
-				name:			'label',
-				xtype:			'textfield',
-				{$labelValue}
-				allowBlank:		false
-			},{$authentificationField}
-			{
-				fieldLabel:		'{$cms_language->getMessage(MESSAGE_PAGE_DESC)}',
-				name:			'description',
-				xtype:			'textarea',
-				value:			'{$description}',
-				allowBlank:		true
-			}],
-			buttons:[{
-				text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
-				iconCls:		'atm-pic-validate',
-				name:			'submitIdentity',
-				anchor:			'',
-				scope:			this,
-				handler:		function() {
-					var form = Ext.getCmp('groupIdentityPanel-{$groupId}').getForm();
-					if (form.isValid()) {
-						form.submit({
-							params:{
-								action:		'identity',
-								groupId:	groupWindow.groupId
-							},
-							success:function(form, action){
-								//if it is a successful group creation
-								if (action.result.success != false && isNaN(parseInt(groupWindow.groupId))) {
-									//set groupId
-									groupWindow.groupId = action.result.success.groupId;
-									//display hidden elements
-									Ext.getCmp('groupPanels-{$groupId}').items.each(function(panel) {
-										if (panel.disabled) {
-											panel.enable();
-											if (panel.autoLoad) {
-												panel.autoLoad.params.groupId = groupWindow.groupId;
+				title:			'{$cms_language->getJSMessage(MESSAGE_PAGE_GROUP_PROFILE)}',
+				id:				'groupIdentityAccordion-{$groupId}',
+				layout: 		'form',
+				xtype:			'atmForm',
+				url:			'groups-controler.php',
+				collapsible:	true,
+				labelAlign:		'right',
+				defaultType:	'textfield',
+				buttonAlign:	'center',
+				autoScroll:		true,
+				defaults: {
+					xtype:			'textfield',
+					anchor:			'97%',
+					allowBlank:		false
+				},
+				items:[{
+					fieldLabel:		'<span class=\"atm-red\">*</span> {$cms_language->getMessage(MESSAGE_PAGE_LABEL)}',
+					name:			'label',
+					xtype:			'textfield',
+					{$labelValue}
+					allowBlank:		false
+				},{
+					fieldLabel:		'{$cms_language->getMessage(MESSAGE_PAGE_DESC)}',
+					name:			'description',
+					xtype:			'textarea',
+					value:			'{$description}',
+					allowBlank:		true
+				}],
+				buttons:[{
+					text:			'{$cms_language->getJSMessage(MESSAGE_PAGE_SAVE)}',
+					iconCls:		'atm-pic-validate',
+					name:			'submitIdentity',
+					anchor:			'',
+					scope:			this,
+					handler:		function() {
+						var form = Ext.getCmp('groupIdentityAccordion-{$groupId}').getForm();
+						if (form.isValid()) {
+							form.submit({
+								params:{
+									action:		'identity',
+									groupId:	groupWindow.groupId
+								},
+								success:function(form, action){
+									//if it is a successful group creation
+									if (action.result.success != false && isNaN(parseInt(groupWindow.groupId))) {
+										//set groupId
+										groupWindow.groupId = action.result.success.groupId;
+										//display hidden elements
+										Ext.getCmp('groupPanels-{$groupId}').items.each(function(panel) {
+											if (panel.disabled) {
+												panel.enable();
+												if (panel.autoLoad) {
+													panel.autoLoad.params.groupId = groupWindow.groupId;
+												}
 											}
-										}
-									});
-								}
-							},
-							scope:this
-						});
-					} else {
-						Automne.message.show('{$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_FORM_VALUES)}', '', groupWindow);
+										});
+										Ext.getCmp('groupIdentityPanel-{$groupId}').items.each(function(panel) {
+											if (panel.disabled) {
+												panel.enable();
+											}
+										});
+									}
+								},
+								scope:this
+							});
+						} else {
+							Automne.message.show('{$cms_language->getJSMessage(MESSAGE_PAGE_INCORRECT_FORM_VALUES)}', '', groupWindow);
+						}
 					}
-				}
-			}]
+				}]
+			}{$modulesAccordion}]
 		}{$usersTab}{$modulesTab}{$adminTab}]
 	});
 	
@@ -435,6 +517,11 @@ $jscontent = <<<END
 	if (isNaN(parseInt(groupWindow.groupId))) {
 		Ext.getCmp('groupPanels-{$groupId}').items.each(function(panel) {
 			if (panel.id != 'groupIdentityPanel-{$groupId}') {
+				panel.disable();
+			}
+		});
+		Ext.getCmp('groupIdentityPanel-{$groupId}').items.each(function(panel) {
+			if (panel.id != 'groupIdentityAccordion-{$groupId}') {
 				panel.disable();
 			}
 		});

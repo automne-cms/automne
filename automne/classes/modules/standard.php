@@ -72,13 +72,12 @@ class CMS_module_standard extends CMS_module
 	const MESSAGE_PARAM_VIEW_SQL = 608;
 	const MESSAGE_PARAM_NO_APPLICATION_MAIL = 609;
 	const MESSAGE_PARAM_NO_PAGES_EXTENDED_META_TAGS = 610;
-	const MESSAGE_PARAM_APPLICATION_LDAP_AUTH = 611;
 	const MESSAGE_PARAM_USE_BACKGROUND_REGENERATOR = 612;
 	const MESSAGE_PARAM_ERROR404_EMAIL_ALERT = 613;
 	const MESSAGE_PARAM_APPLICATION_ENFORCES_ACCESS_CONTROL = 614;
 	const MESSAGE_PARAM_ALLOW_IMAGES_IN_WYSIWYG = 615;
 	const MESSAGE_PARAM_LOG_SENDING_MAIL = 616;
-	//const MESSAGE_PARAM_ALLOW_WYSIWYG_XHTML_VALIDATION = 1566;
+	const MESSAGE_PARAM_ALLOW_SPECIFIC_PAGE_HTTPS = 1566;
 	
 	const MESSAGE_PARAM_APPLICATION_LABEL_DESC = 617;
 	const MESSAGE_PARAM_APPLICATION_MAINTAINER_EMAIL_DESC = 618;
@@ -92,13 +91,12 @@ class CMS_module_standard extends CMS_module
 	const MESSAGE_PARAM_VIEW_SQL_DESC = 626;
 	const MESSAGE_PARAM_NO_APPLICATION_MAIL_DESC = 627;
 	const MESSAGE_PARAM_NO_PAGES_EXTENDED_META_TAGS_DESC = 628;
-	const MESSAGE_PARAM_APPLICATION_LDAP_AUTH_DESC = 629;
 	const MESSAGE_PARAM_USE_BACKGROUND_REGENERATOR_DESC = 630;
 	const MESSAGE_PARAM_ERROR404_EMAIL_ALERT_DESC = 631;
 	const MESSAGE_PARAM_APPLICATION_ENFORCES_ACCESS_CONTROL_DESC = 632;
 	const MESSAGE_PARAM_ALLOW_IMAGES_IN_WYSIWYG_DESC = 633;
 	const MESSAGE_PARAM_LOG_SENDING_MAIL_DESC = 634;
-	//const MESSAGE_PARAM_ALLOW_WYSIWYG_XHTML_VALIDATION_DESC = 1567;
+	const MESSAGE_PARAM_ALLOW_SPECIFIC_PAGE_HTTPS_DESC = 1567;
 	
 	const MESSAGE_PAGE_TAGS_CHOOSE = 1707;
 	const MESSAGE_PAGE_ROW_EXPLANATION = 1219;
@@ -904,7 +902,8 @@ class CMS_module_standard extends CMS_module
 		$location_before = $page->getLocation();
 		
 		//Clear polymod cache
-		CMS_cache::clearTypeCacheByMetas('polymod', array('module' => MOD_STANDARD_CODENAME));
+		//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => MOD_STANDARD_CODENAME));
+		CMS_cache::clearTypeCache('polymod');
 		
 		//Get the linked pages (it will be too late after parent processing if pages move outside USERSPACE
 		
@@ -1354,7 +1353,7 @@ class CMS_module_standard extends CMS_module
 			}
 			//then directories
 			foreach ( new RecursiveIteratorIterator(new RecursiveDirectoryIterator(PATH_TMP_FS), RecursiveIteratorIterator::SELF_FIRST) as $file) {
-				if ($file->isDir()) @rmdir($file->getPathname());
+				if ($file->isDir() && $file->getFilename() != "." && $file->getFilename() != "..") @rmdir($file->getPathname());
 			}
 		} catch(Exception $e) {}
 		//rotate error log file
@@ -1470,7 +1469,7 @@ class CMS_module_standard extends CMS_module
 			case MODULE_TREATMENT_BLOCK_TAGS :
 				$return = array (
 					"block" => array("selfClosed" => false, "parameters" => array("module"	=> MOD_STANDARD_CODENAME,
-																				  "type"	=> "file|text|varchar|image|flash")),
+																				  "type"	=> "file|text|varchar|image|flash|link")),
 					"row" => array("selfClosed" => false, "parameters" => array()),
 				);
 			break;
@@ -1482,6 +1481,11 @@ class CMS_module_standard extends CMS_module
 					"atm-css-tags" 		=> array("selfClosed" => true, "parameters" => array()),
 					"atm-js-tags" 		=> array("selfClosed" => true, "parameters" => array()),
 				);
+				//for public (and print) visualmode, this is done by MODULE_TREATMENT_LINXES_TAGS mode during page file linx treatment
+				if ($visualizationMode != PAGE_VISUALMODE_HTML_PUBLIC) {
+					$return['atm-linx'] = array("selfClosed" => false, "parameters" => array());
+				}
+				
 			break;
 			case MODULE_TREATMENT_PAGECONTENT_TAGS :
 				$return = array (
@@ -1492,6 +1496,11 @@ class CMS_module_standard extends CMS_module
 					"atm-title" 		=> array("selfClosed" => true, "parameters" => array(),		'class' => 'CMS_XMLTag_title'),
 					"atm-website" 		=> array("selfClosed" => true, "parameters" => array(),		'class' => 'CMS_XMLTag_website'),
 					"atm-page" 			=> array("selfClosed" => true, "parameters" => array(),		'class' => 'CMS_XMLTag_page'),
+					"atm-header" 		=> array("selfClosed" => false,	"parameters" => array(),	'class' => 'CMS_XMLTag_header'),
+					"atm-redirect" 		=> array("selfClosed" => true,	"parameters" => array(),	'class' => 'CMS_XMLTag_redirect'),
+					"atm-xml" 			=> array("selfClosed" => false,	"parameters" => array(),	'class' => 'CMS_XMLTag_xml'),
+					"atm-js-add" 		=> array("selfClosed" => true,	"parameters" => array(),	'class' => 'CMS_XMLTag_js_add'),
+					"atm-css-add" 		=> array("selfClosed" => true,	"parameters" => array(),	'class' => 'CMS_XMLTag_css_add'),
 					"atm-main-url" 		=> array("selfClosed" => true, "parameters" => array()),
 					"atm-constant" 		=> array("selfClosed" => true, "parameters" => array()),
 					"atm-last-update" 	=> array("selfClosed" => false, "parameters" => array()),
@@ -1501,10 +1510,6 @@ class CMS_module_standard extends CMS_module
 					"head" 				=> array("selfClosed" => false, "parameters" => array()),
 					"html" 				=> array("selfClosed" => false, "parameters" => array()),
 				);
-				//for public (and print) visualmode, this is done by MODULE_TREATMENT_LINXES_TAGS mode during page file linx treatment
-				if ($visualizationMode != PAGE_VISUALMODE_HTML_PUBLIC) {
-					$return['atm-linx'] = array("selfClosed" => false, "parameters" => array());
-				}
 				//for print visualmode, this tag is useless
 				if ($visualizationMode != PAGE_VISUALMODE_PRINT) {
 					$return['atm-print-link'] = array("selfClosed" => false, "parameters" => array());
@@ -1640,25 +1645,6 @@ class CMS_module_standard extends CMS_module
 					return false;
 				}
 				switch ($tag->getName()) {
-					case "atm-linx":
-						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM || $visualizationMode == PAGE_VISUALMODE_FORM) {
-							//direct linx are visible even if target pages are not published (edited tree)
-							//all other linx are only visible if they are published (public tree)
-							$linx_args = array("page"=> $treatedObject, "publicTree"=> !($tag->getAttribute('type') == 'direct' || !$tag->getAttribute('type')));
-							$linx = $tag->getRepresentationInstance($linx_args);
-							$linx->setDebug(false);
-							$linx->setLog(false);
-							return $linx->getOutput();
-						} else
-						//for public and print visualmode, this treatment is done by MODULE_TREATMENT_LINXES_TAGS mode during page file linx treatment
-						if ($visualizationMode != PAGE_VISUALMODE_HTML_PUBLIC 
-							&& $visualizationMode != PAGE_VISUALMODE_PRINT) {
-							//linx are visible only if target pages are published (public tree)
-							$linx_args = array("page"=> $treatedObject, "publicTree"=> true);
-							$linx = $tag->getRepresentationInstance($linx_args);
-							return $linx->getOutput();
-						}
-					break;
 					case "atm-main-url":
 						return CMS_websitesCatalog::getMainURL();
 					break;
@@ -1704,7 +1690,7 @@ class CMS_module_standard extends CMS_module
 					case "head":
 						$headCode = '<?php'."\n".
 						'$atmHost = @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) ? @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) : $_SERVER[\'HTTP_HOST\'];'."\n".
-						'$atmProtocol = stripos($_SERVER["SERVER_PROTOCOL"], \'https\') !== false ? \'https://\' : \'http://\';'."\n".
+						'$atmProtocol = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] && strtolower($_SERVER["HTTPS"]) != \'off\') ? \'https://\' : \'http://\';'."\n".
 						'$atmPort = @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_PORT) ? \':\'.@parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_PORT) : \'\';'."\n".
 						'echo "\t".\'<base href="\'.$atmProtocol.$atmHost.$atmPort.PATH_REALROOT_WR.\'/" />\'."\n";'."\n".
 						' ?>';
@@ -1712,7 +1698,7 @@ class CMS_module_standard extends CMS_module
 						return preg_replace('#<head([^>]*)>#', '<head\1>'."\n".$headCode, $tag->getContent());
 					break;
 					case "body":
-						$statsCode = '<?php if (SYSTEM_DEBUG && STATS_DEBUG) {view_stat();} ?>';
+						$statsCode = '<?php if (SYSTEM_DEBUG && STATS_DEBUG) {echo CMS_stats::view();} ?>';
 						//Append stats code
 						return preg_replace('#</body>$#', $statsCode."\n".'</body>', $tag->getContent());
 					break;
@@ -1729,9 +1715,29 @@ class CMS_module_standard extends CMS_module
 					return false;
 				}
 				switch ($tag->getName()) {
+					case "atm-linx":
+						if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM || $visualizationMode == PAGE_VISUALMODE_FORM) {
+							//direct linx are visible even if target pages are not published (edited tree)
+							//all other linx are only visible if they are published (public tree)
+							$linx_args = array("page"=> $treatedObject, "publicTree"=> !($tag->getAttribute('type') == 'direct' || !$tag->getAttribute('type')));
+							$linx = $tag->getRepresentationInstance($linx_args);
+							$linx->setDebug(false);
+							$linx->setLog(false);
+							return $linx->getOutput();
+						} else
+						//for public and print visualmode, this treatment is done by MODULE_TREATMENT_LINXES_TAGS mode during page file linx treatment
+						if ($visualizationMode != PAGE_VISUALMODE_HTML_PUBLIC 
+							&& $visualizationMode != PAGE_VISUALMODE_PRINT) {
+							//linx are visible only if target pages are published (public tree)
+							$linx_args = array("page"=> $treatedObject, "publicTree"=> true);
+							$linx = $tag->getRepresentationInstance($linx_args);
+							return $linx->getOutput();
+						}
+					break;
 					case "atm-js-tags":
 					case "atm-css-tags":
 						$usage = CMS_module::moduleUsage($treatedObject->getID(), $this->_codename);
+						
 						$tagFiles = $tag->getAttribute('files');
 						$tagFiles = array_map('trim', explode(',', $tagFiles));
 						//only if current page use a block of this module
@@ -1745,7 +1751,6 @@ class CMS_module_standard extends CMS_module
 									//get old files for this tag already needed by other modules
 									$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-js-tags");
 									$files = is_array($files) ? $files : array();
-									
 									//append module js files
 									$files = array_merge($files, $tagFiles);
 									//append CMS_function.js file
@@ -1764,6 +1769,7 @@ class CMS_module_standard extends CMS_module
 									//get old files for this tag already needed by other modules
 									$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-css-tags");
 									$files = is_array($files) ? $files : array();
+									
 									$media = $tag->getAttribute('media') ? $tag->getAttribute('media') : 'all';
 									//append module css files
 									if (!isset($files[$media])) {
@@ -1779,14 +1785,29 @@ class CMS_module_standard extends CMS_module
 								case "atm-js-tags":
 									//get old files for this tag already needed by other modules
 									$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-js-tags");
-									$return .= '<?php echo CMS_view::getJavascript(array(\''.implode('\',\'', $files).'\')); ?>'."\n";
+									
+									//add files from atm-js-add tag
+									$filesAdd = CMS_module::moduleUsage($treatedObject->getID(), "atm-js-tags-add");
+									$filesAdd = is_array($filesAdd) ? $filesAdd : array();
+									$files = array_merge($files, $filesAdd);
+									
+									$return .= '<?php echo CMS_view::getJavascript(array(\''.implode('\',\'', array_unique($files)).'\')); ?>'."\n";
 								break;
 								case "atm-css-tags":
 									$media = $tag->getAttribute('media') ? $tag->getAttribute('media') : 'all';
 									//get old files for this tag already needed by other modules
 									$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-css-tags");
+									
+									//add files from atm-css-add tag
+									$filesAdd = CMS_module::moduleUsage($treatedObject->getID(), "atm-css-tags-add");
+									$filesAdd = is_array($filesAdd) ? $filesAdd : array();
+									
 									if (isset($files[$media])) {
-										$return .= '	<?php echo CMS_view::getCSS(array(\''.implode('\',\'', $files[$media]).'\'), \''.$media.'\'); ?>'."\n";
+										if (isset($filesAdd[$media])) {
+											$files[$media] = array_merge($files[$media], $filesAdd[$media]);
+										}
+										
+										$return .= '<?php echo CMS_view::getCSS(array(\''.implode('\',\'', array_unique($files[$media])).'\'), \''.$media.'\'); ?>'."\n";
 									}
 								break;
 							}
@@ -1794,7 +1815,23 @@ class CMS_module_standard extends CMS_module
 						}
 					break;
 					case "atm-meta-tags":
-						$metaDatas = $treatedObject->getMetaTags($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC);
+						$attributes = array();
+						//normalize values for attributes
+						if ($tag->getAttributes()) {
+							$attributes = $tag->getAttributes();
+							foreach ($attributes as $tagName => $value) {
+								if ($attributes == '1' || $value == 'true') {
+									$attributes[$tagName] = true;
+								} elseif ($value == '0' || $value == 'false') {
+									$attributes[$tagName] = false;
+								}
+								if ($attributes[$tagName] !== false && $attributes[$tagName] !== true) {
+									unset($attributes[$tagName]);
+								}
+							}
+							
+						}
+						$metaDatas = $treatedObject->getMetaTags($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC, $attributes);
 						$usage = CMS_module::moduleUsage($treatedObject->getID(), $this->_codename);
 						//if page template already use atm-js-tags tag, no need to add JS again
 						if (!is_array($usage) || !isset($usage['atm-js-tags'])) {
@@ -1962,50 +1999,83 @@ class CMS_module_standard extends CMS_module
 		switch ($treatmentMode) {
 			case MODULE_TREATMENT_PAGECONTENT_HEADER_CODE :
 				$modulesCode[MOD_STANDARD_CODENAME] = '';
+				
+				$modulesCode[MOD_STANDARD_CODENAME] .= 
+				'<?php'."\n".
+				'//Generated on '.date('r').' by '.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION."\n";
+				//HTTPS constant
+				if ($treatedObject->isHTTPS()) {
+					$modulesCode[MOD_STANDARD_CODENAME] .= 'defined(\'PAGE_SSL_MODE\') || define(\'PAGE_SSL_MODE\', true);'."\n";
+				} else {
+					$modulesCode[MOD_STANDARD_CODENAME] .= 
+					'//Page can be HTTPS'."\n".
+					'if (!((isset($_SERVER["REQUEST_URI"]) && strpos($_SERVER["REQUEST_URI"], PATH_ADMIN_WR) !== false) || (isset($_REQUEST[\'atm-context\']) && $_REQUEST[\'atm-context\'] == \'adminframe\'))) {'."\n".
+					'	if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] && strtolower($_SERVER["HTTPS"]) != \'off\') {'."\n".
+					'		defined(\'PAGE_SSL_MODE\') || define(\'PAGE_SSL_MODE\', true);'."\n".
+					'	}'."\n".
+					'}'."\n";
+				}
+				//Current page constant
+				$modulesCode[MOD_STANDARD_CODENAME] .= 'defined(\'CURRENT_PAGE\') || define(\'CURRENT_PAGE\', '.$treatedObject->getID().');'."\n";
+				
 				if ($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC 
 					|| $visualizationMode == PAGE_VISUALMODE_PRINT) {
 					//path to cms_rc_frontend
 					$path = PATH_PAGES_HTML_WR == PATH_MAIN_WR."/html" ? '/../../cms_rc_frontend.php' : '/../cms_rc_frontend.php';
+					//cms_rc_frontend include
+					$modulesCode[MOD_STANDARD_CODENAME] .= 
+					'if (!defined(\'PATH_REALROOT_FS\')){'."\n".
+					'	require_once(dirname(__FILE__).\''.$path.'\');'."\n".
+					'} else {'."\n".
+					'	require_once(PATH_REALROOT_FS."/cms_rc_frontend.php");'."\n".
+					'}'."\n";
 					//redirection code if any
 					$redirectlink = $treatedObject->getRedirectLink(true);
 					if ($redirectlink->hasValidHREF()) {
 						$href = $redirectlink->getHTML(false, MOD_STANDARD_CODENAME, RESOURCE_DATA_LOCATION_PUBLIC, false, true);
 						$modulesCode[MOD_STANDARD_CODENAME] .= 
-								'<?php'."\n".
-								'if (!defined(\'PATH_REALROOT_FS\')){'."\n".
-								'	require_once(dirname(__FILE__).\''.$path.'\');'."\n".
-								'} else {'."\n".
-								'	require_once(PATH_REALROOT_FS."/cms_rc_frontend.php");'."\n".
-								'}'."\n".
-								'CMS_view::redirect(\''.$href.'\', true, 302);'."\n".
-								'?>';
+							'CMS_view::redirect(\''.$href.'\', true, 302);'."\n";
 					}
-					//include frontend files
+					//old url pattern redireciton
 					$modulesCode[MOD_STANDARD_CODENAME] .= 
-					'<?php'."\n".
-					'//Generated on '.date('r').' by '.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION."\n".
-					'if (!defined(\'PATH_REALROOT_FS\')){'."\n".
-					'	require_once(dirname(__FILE__).\''.$path.'\');'."\n".
-					'} else {'."\n".
-					'	require_once(PATH_REALROOT_FS."/cms_rc_frontend.php");'."\n".
-					'}'."\n".
 					'if (!isset($cms_page_included) && !$_POST && !$_GET) {'."\n".
 					'	CMS_view::redirect(\''.$treatedObject->getURL(($visualizationMode == PAGE_VISUALMODE_PRINT) ? true : false).'\', true, 301);'."\n".
-					'}'."\n".
-					'?>';
+					'}'."\n";
+					//non-https redirection for https page
+					if ($treatedObject->isHTTPS()) {
+						$modulesCode[MOD_STANDARD_CODENAME] .= 
+							'//Page must be HTTPS'."\n".
+							'if (!(strpos($_SERVER["REQUEST_URI"], PATH_ADMIN_WR) !== false  || (isset($_REQUEST[\'atm-context\']) && $_REQUEST[\'atm-context\'] == \'adminframe\'))) {'."\n".
+							'	if (!(isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] && strtolower($_SERVER["HTTPS"]) != \'off\')) {'."\n".
+							'		CMS_view::redirect(\''.$treatedObject->getURL(($visualizationMode == PAGE_VISUALMODE_PRINT) ? true : false).'\', true, 301);'."\n".
+							'	}'."\n".
+							'}'."\n";
+					}
+					//rights 403 redirection
 					if (APPLICATION_ENFORCES_ACCESS_CONTROL) {
 						//include user access checking on top of output file
 						$modulesCode[MOD_STANDARD_CODENAME] .= 
-							'<?php'."\n".
 							'if (!is_object($cms_user) || !$cms_user->hasPageClearance('.$treatedObject->getID().', CLEARANCE_PAGE_VIEW)) {'."\n".
 							'	CMS_view::redirect(PATH_FRONTEND_SPECIAL_LOGIN_WR.\'?referer=\'.base64_encode($_SERVER[\'REQUEST_URI\']));'."\n".
-							'}'."\n".
-							'?>';
+							'}'."\n";
 					}
-					return $modulesCode;
 				} else {
-					$modulesCode[MOD_STANDARD_CODENAME] .= '<?php if (!in_array("'.PATH_REALROOT_FS.'/cms_rc_frontend.php", get_included_files())){ require_once("'.PATH_REALROOT_FS.'/cms_rc_frontend.php");} else { global $cms_user,$cms_language;} ?>';
+					//page previz & edition
+					$modulesCode[MOD_STANDARD_CODENAME] .= 'if (!in_array(\''.PATH_REALROOT_FS.'/cms_rc_frontend.php\', get_included_files())){ require_once(\''.PATH_REALROOT_FS.'/cms_rc_frontend.php\');} else { global $cms_user,$cms_language;}';
 				}
+				$modulesCode[MOD_STANDARD_CODENAME] .= ' ?>';
+				//Get header code (atm-header tags)
+				if ($usage = CMS_module::moduleUsage($treatedObject->getID(), $this->_codename)) {
+					//add header codes
+					if (isset($usage['headCallback'])) {
+						foreach ($usage['headCallback'] as $headCallback) {
+							if (isset($headCallback['code'])) {
+								$modulesCode[MOD_STANDARD_CODENAME] .= $headCallback['code'];
+							}
+						}
+					}
+				}
+				return $modulesCode;
 			break;
 			case MODULE_TREATMENT_EDITOR_CODE :
 				if ($treatmentParameters["editor"] == "fckeditor") {
@@ -2140,14 +2210,17 @@ class CMS_module_standard extends CMS_module
 		$replace = array();
 		
 		//replace '{vartype:type:name}' value by corresponding var call
-		$replace["#^\{(var|request|session|constant)\:([^:]*?(::)?[^:]*?):([^:]*?)\}$#U"] = 'CMS_poly_definition_functions::getVarContent("\1", "\4", "\2", @$\4)';
-		$replace["#^\{(var|request|session|constant)\:([^:]*?(::)?[^:]*?):([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_poly_definition_functions::getVarContent("\1", "\4", "\2", "\4")';
+		$replace["#^\{(var|request|session|constant|server)\:([^:]*?(::)?[^:]*?):([^:]*?)\}$#U"] = 'CMS_poly_definition_functions::getVarContent("\1", "\4", "\2", @$\4)';
+		$replace["#^\{(var|request|session|constant|server)\:([^:]*?(::)?[^:]*?):([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_poly_definition_functions::getVarContent("\1", "\4", "\2", "\4")';
 		
 		//replace '{page:id:type}' value by corresponding CMS_tree::getPageValue(id, type) call
-		$replace["#^\{page\:([^:]*?(::)?[^:]*?)\:([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_tree::getPageValue("\1", "\3", @$public_search, \'{{pageID}}\')';
+		$replace["#^\{page\:([^:]*?(::)?[^:]*?)\:([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_tree::getPageValue("\1", "\3", @$public_search, (@$parameters[\'pageID\'] ? @$parameters[\'pageID\'] : \'{{pageID}}\'))';
 		
 		//replace '{user:id:type}' value by corresponding CMS_profile_usersCatalog::getUserValue(id, type) call
 		$replace["#^\{user\:([^:]*?(::)?[^:]*?)\:([^:]*?(::)?[^:]*?)\}$#U"] = 'CMS_profile_usersCatalog::getUserValue("\1", "\3", (isset($cms_user) ? $cms_user->getUserId() : null))';
+		
+		//replace '{helper:function:var}' value by corresponding CMS_poly_definition_functions::helper(function, var) call
+		$replace["#^\{helper\:(([^:]*?(\:\:)?[^:]*?)*)\:(([^:]*?(\:\:)?[^:]*?)*)\}$#U"] = 'CMS_poly_definition_functions::helper("\1", "\4")';
 		
 		return $replace;
 	}
@@ -2298,6 +2371,18 @@ class CMS_module_standard extends CMS_module
 			);
 		}
 		return $results;
+	}
+	
+	/**
+	  * Get the module authentification adapter
+	  *
+	  * @param array : the authentification params
+	  * @return CMS_auth : the module authentification adapter
+	  * @access public
+	  */
+	function getAuthAdapter($params) {
+		//create auth adapter with params
+		return new CMS_auth($params);
 	}
 }
 ?>

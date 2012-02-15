@@ -122,7 +122,7 @@ if ($filename || $cms_action=='errorsCorrected') {
 	$automnePatch = new CMS_patch($cms_user);
 	
 	//read patch or export param file and check versions
-	verbose('Read working file...');
+	verbose('Read patch file...');
 	$patchFile = new CMS_file(PATH_TMP_FS."/patch");
 	$exportFile = new CMS_file(PATH_TMP_FS."/export.xml");
 	
@@ -141,7 +141,7 @@ if ($filename || $cms_action=='errorsCorrected') {
 		if ($installFile->exists()) {
 			$install = $installFile->readContent("array");
 		} else {
-			report('Error : File '.PATH_TMP_FS.'/install does not exists ...',true);
+			report('Error : File '.PATH_TMP_FS.'/install does not exists ... This file is not a valid Automne patch.',true);
 		}
 		$installError = $automnePatch->checkInstall($install,$errorsInfos);
 		if ($installError) {
@@ -151,7 +151,7 @@ if ($filename || $cms_action=='errorsCorrected') {
 			if (!$force) {
 				//if process continue, then we can correct patch errors.
 				//save errors infos
-				$_SESSION["cms_context"]->setSessionVar('patchErrors',$errorsInfos);
+				CMS_session::setSessionVar('patchErrors',$errorsInfos);
 				//go to errors correction page
 				$send = '
 				<div id="correctUpdateErrors"></div>
@@ -211,14 +211,14 @@ if ($filename || $cms_action=='errorsCorrected') {
 			verbose($importLog);
 		}
 	} else {
-		report('Error : File '.PATH_TMP_FS.'/patch does not exists ...',true);
+		report('Error : File '.PATH_TMP_FS.'/patch does not exists ... This file is not a valid Automne patch.',true);
 	}
 	//remove temporary files
 	report('Start cleaning temporary files...');
 	if (!CMS_file::deltree(PATH_TMP_FS)) {
 		report('Error during temporary folder cleaning...');
 	} else {
-		verbose('-> Cleaning done without error.');
+		verbose('-> Cleaning done.');
 	}
 	$content .= $send;
 	echo $content;

@@ -171,6 +171,19 @@ class CMS_poly_definition_functions
 	}
 	
 	/**
+	  * Return a PHP constant value of a given name and check it for a given type
+	  *
+	  * @param string $name : the constant name to get
+	  * @param string $type : the type of value to check
+	  * @return mixed : the constant value
+	  * @access public
+	  * @static
+	  */
+	static function getServer($name, $type) {
+		return CMS_poly_definition_functions::getVarContent('server', $name, $type);
+	}
+	
+	/**
 	  * Return a variable value of a given name and check it for a given dataType
 	  *
 	  * @param string $varType : the variable type to get between var, request, session
@@ -201,6 +214,9 @@ class CMS_poly_definition_functions
 			break;
 			case 'constant':
 				$varContent = defined($name) ? constant($name) : null;
+			break;
+			case 'server':
+				$varContent = isset($_SERVER[$name]) ? $_SERVER[$name] : null;
 			break;
 			default:
 				CMS_grandFather::raiseError('Unknown var type to get : '.$varType);
@@ -341,31 +357,33 @@ class CMS_poly_definition_functions
 			return false;
 		}
 		foreach ($formIDs as $formID) {
-			if (isset($_REQUEST['formID']) && $_REQUEST['formID'] == $formID) {
+			if (io::request('formID') && io::request('formID') == $formID) {
 				if (!isset($cms_language) || $cms_language->getCode() != $languageCode) {
 					$cms_language = new CMS_language($languageCode);
 				}
-				//check user rights on module
-				$module = CMS_poly_object_catalog::getModuleCodenameForObjectType($_REQUEST["object"]);
-				//Check user rights
-				//here assume than user should only need the view right on module, because admin right allow Automne administration access
-				if (!is_object($cms_user) || !$cms_user->hasModuleClearance($module, CLEARANCE_MODULE_VIEW)) {
-					CMS_grandFather::raiseError('No user found or user has no administration rights on module '.$module);
-					return false;
-				}
-				//instanciate object
-				$object = new CMS_poly_object_definition(($_REQUEST["object"]) ? $_REQUEST["object"]:'');
 				//instanciate item
 				$item = '';
-				if (isset($_REQUEST["item"]) && $_REQUEST["item"] && sensitiveIO::isPositiveInteger($_REQUEST["item"])) {
-					$search = new CMS_object_search($object,false);
-					$search->addWhereCondition('item', $_REQUEST["item"]);
-					$items = $search->search();
-					if (isset($items[$_REQUEST["item"]])) {
-						$item = $items[$_REQUEST["item"]];
+				if (io::request('object', 'io::isPositiveInteger', '')) {
+					//check user rights on module
+					$module = CMS_poly_object_catalog::getModuleCodenameForObjectType(io::request('object'));
+					//Check user rights
+					//here assume than user should only need the view right on module, because admin right allow Automne administration access
+					if (!is_object($cms_user) || !$cms_user->hasModuleClearance($module, CLEARANCE_MODULE_VIEW)) {
+						CMS_grandFather::raiseError('No user found or user has no administration rights on module '.$module);
+						return false;
 					}
-				} else {
-					$item = new CMS_poly_object($object->getID());
+					//instanciate object
+					$object = CMS_poly_object_catalog::getObjectDefinition(io::request('object'));
+					if ($object && io::request('item', 'io::isPositiveInteger', '')) {
+						$search = new CMS_object_search($object,false);
+						$search->addWhereCondition('item', io::request('item'));
+						$items = $search->search();
+						if (isset($items[io::request('item')])) {
+							$item = $items[io::request('item')];
+						}
+					} else {
+						$item = new CMS_poly_object($object->getID());
+					}
 				}
 				if (is_object($item) && !$item->hasError()) {
 					//get item fieldsObjects
@@ -386,10 +404,13 @@ class CMS_poly_definition_functions
 					foreach ($fieldsObjects as $fieldID => $aFieldObject) {
 						//if field is part of formular
 						if (isset($_REQUEST['polymodFields'][$fieldID])) {
+							//if form use a callback, call it
+							//do not use call_user_function here
+							$funcName = 'form_'.$formID.'_'.$fieldID;
 							if (!$item->setValues($fieldID, $_REQUEST,'')) {
 								$polymodFormsError[$formID]['malformed'][] = $fieldID;
 							} elseif (!isset($polymodFormsError[$formID]['required'][$fieldID]) && function_exists('form_'.$formID.'_'.$fieldID)
-										&& !call_user_func('form_'.$formID.'_'.$fieldID, $formID, $fieldID, $item)) {
+										&& !$funcName($formID, $fieldID, $item)) {
 								$polymodFormsError[$formID]['malformed'][] = $fieldID;
 							}
 						}
@@ -424,12 +445,12 @@ class CMS_poly_definition_functions
 						}
 					}
 					//Check form token
-					if (!isset($_POST["atm-token"]) || !CMS_context::checkToken(MOD_POLYMOD_CODENAME.'-'.$formID, $_POST["atm-token"])) {
+					if (!isset($_POST["atm-token"]) || !CMS_session::checkToken(MOD_POLYMOD_CODENAME.'-'.$formID, $_POST["atm-token"])) {
 						$polymodFormsError[$formID]['error'][] = 'form-token';
 						return false;
 					} else {
 						//Token is used so expire it
-						CMS_context::expireToken(MOD_POLYMOD_CODENAME.'-'.$formID);
+						CMS_session::expireToken(MOD_POLYMOD_CODENAME.'-'.$formID);
 					}
 					if (!$polymodFormsError[$formID]) {
 						//save the data
@@ -439,7 +460,9 @@ class CMS_poly_definition_functions
 						} else {
 							$polymodFormsError[$formID]['filled'] = 1;
 							//if form use a callback, call it
-							if (function_exists('form_'.$formID) && !call_user_func('form_'.$formID, $formID, $item)) {
+							//do not use call_user_function here
+							$funcName = 'form_'.$formID;
+							if (function_exists('form_'.$formID) && !$funcName($formID, $item)) {
 								$polymodFormsError[$formID]['filled'] = 0;
 								$polymodFormsError[$formID]['error'][] = 'callback';
 							}
@@ -462,6 +485,30 @@ class CMS_poly_definition_functions
 			}
 		}
 		return true;
+	}
+	
+	/**
+	  * 
+	  *
+	  * @param string $helper : 
+	  * @param mixed $string : 
+	  * @return mixed : 
+	  * @access public
+	  * @static
+	  */
+	static function helper($helper, $value) {
+		//split params if any
+		$params = (io::strpos($value, '|') !== false) ? explode('|', $value) : array($value);
+		if (is_callable($helper, false)) {//check if function/method name exists. false to adress bug 1389
+			if (io::strpos($helper, '::') !== false) {//static method call
+				$method = explode('::', $helper);
+				return call_user_func_array(array($method[0], $method[1]), $params);
+			} else { //function call
+				return call_user_func_array($helper, $params);
+			}
+		}
+		CMS_grandFather::raiseError('Unknown function '.$helper);
+		return $value;
 	}
 }
 ?>

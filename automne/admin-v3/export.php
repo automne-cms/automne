@@ -119,8 +119,14 @@ switch (io::post('action')) {
 		}
 		//set export parameters
 		$export->setParameters($options);
+		
+		//force default language loading to overwrite user language because datas is more accurate in default language
+		$oldLanguage = $cms_language->getCode();
+		$cms_language = CMS_languagesCatalog::getDefaultLanguage(false);
 		//export datas
 		$exportDatas = $export->export($format);
+		//reload user language
+		$cms_language = CMS_languagesCatalog::getByCode($oldLanguage);
 		
 		switch ($format) {
 			case 'php':

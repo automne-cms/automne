@@ -13,8 +13,6 @@
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &    |
 // | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
-//
-// $Id: page.php,v 1.13 2010/03/08 16:43:34 sebastien Exp $
 
 /**
   * Class CMS_page
@@ -110,6 +108,20 @@ class CMS_page extends CMS_resource
 	protected $_pageURL = '';
 	
 	/**
+	  * The page protected status
+	  * @var boolean
+	  * @access private
+	  */
+	protected $_protected = false;
+	
+	/**
+	  * The page https status
+	  * @var boolean
+	  * @access private
+	  */
+	protected $_https = false;
+	
+	/**
 	  * Constructor.
 	  * initializes the page if the id is given.
 	  *
@@ -149,12 +161,14 @@ class CMS_page extends CMS_resource
 				$this->_templateID = $data["template_pag"];
 				$this->_lastFileCreation->setFromDBValue($data["lastFileCreation_pag"]);
 				$this->_pageURL = $data["url_pag"];
+				$this->_protected = $data["protected_pag"] ? true : false;
+				$this->_https = $data["https_pag"] ? true : false;
 				//initialize super-class
 				parent::__construct($data);
 			} else {
 				//display this error only if we are in HTTP mode (not cli) because it is only relevant in this mode
 				if (!defined('APPLICATION_EXEC_TYPE') || APPLICATION_EXEC_TYPE == 'http') {
-					$this->raiseError("Unknown ID :".$id);
+					$this->raiseError("Unknown ID :".$id.' from '.io::getCallInfos(3));
 				}
 			}
 		} else {
@@ -371,22 +385,41 @@ class CMS_page extends CMS_resource
 	  * @param boolean $returnFilenameOnly : return only the page filename (default false)
 	  * @param constant $relativeTo : get URL relative to webroot (PATH_RELATIVETO_WEBROOT) or file system (PATH_RELATIVETO_FILESYSTEM)
 	  * @param boolean $force : get URL even if page is not published (default : false)
+	  * @param boolean $doNotShorten : get full page URL (default : false)
 	  * @return string The url; complete with PATH and website information. Empty string if page not published.
 	  * @access public
 	  */
-	function getURL($printPage = false, $returnFilenameOnly = false, $relativeTo = PATH_RELATIVETO_WEBROOT, $force = false) {
+	function getURL($printPage = false, $returnFilenameOnly = false, $relativeTo = PATH_RELATIVETO_WEBROOT, $force = false, $doNotShorten = false) {
 		if ($force || ($this->getLocation() == RESOURCE_LOCATION_USERSPACE && $this->getPublication() == RESOURCE_PUBLICATION_PUBLIC)) {
-			$ws = CMS_tree::getPageWebsite($this);
+			$ws = $this->getWebsite();
 			$wsURL = '';
 			if (is_object($ws)) {
 				if ($relativeTo == PATH_RELATIVETO_WEBROOT) {
 					$wsURL = $ws->getURL();
+					if ($this->isHTTPS()) {
+						$wsURL = str_ireplace('http://', 'https://', $wsURL);
+					}
 					//if this page is a website root, try to shorten page url using only website domain - do not shorten in Automne admin (_dc parameter)
-					if (!$printPage && !$returnFilenameOnly && !isset($_REQUEST['_dc']) && CMS_websitesCatalog::isWebsiteRoot($this->getID())) {
+					if (!$printPage && !$returnFilenameOnly && !isset($_REQUEST['_dc']) && !$doNotShorten) {
 						//check if page website is the main for the domain
-						$mainWS = CMS_websitesCatalog::getWebsiteFromDomain(@parse_url($wsURL, PHP_URL_HOST));
-						if ($mainWS && $mainWS->getID() == $ws->getID()) {
-							return $wsURL.PATH_REALROOT_WR . (substr($wsURL.PATH_REALROOT_WR, -1) === '/' ? '' : '/');
+						if (CMS_websitesCatalog::isWebsiteRoot($this->getID())) {
+							$mainWS = CMS_websitesCatalog::getWebsiteFromDomain(@parse_url($wsURL, PHP_URL_HOST));
+							if ($mainWS && $mainWS->getID() == $ws->getID()) {
+								return $wsURL.PATH_REALROOT_WR . (substr($wsURL.PATH_REALROOT_WR, -1) === '/' ? '' : '/');
+							} else {
+								return $wsURL . $ws->getPagesPath(PATH_RELATIVETO_WEBROOT) . '/';
+							}
+						} else {
+							//query modules to get new page URL
+							$modules = CMS_modulesCatalog::getAll();
+							foreach ($modules as $module) {
+								if (method_exists($module, 'getPageURL')) {
+									$url = $module->getPageURL($this);
+									if ($url) {
+										return $wsURL.$url;
+									}
+								}
+							}
 						}
 					}
 				}
@@ -395,6 +428,9 @@ class CMS_page extends CMS_resource
 				return '';
 			}
 			$filename = $this->_getFilename();
+			if (STRIP_PHP_EXTENSION && $relativeTo == PATH_RELATIVETO_WEBROOT) {
+				$filename = substr($filename, 0, -4);
+			}
 			if ($printPage) {
 				if ($returnFilenameOnly) {
 					return "print-".$filename;
@@ -629,6 +665,17 @@ class CMS_page extends CMS_resource
 		$redirectionFile->setContent($this->redirectionCode($pageHTMLPath));
 		$redirectionFile->writeToPersistence(true, true);
 		
+		//write website index
+		if (CMS_websitesCatalog::isWebsiteRoot($this->getID())) {
+			$ws = $this->getWebsite();
+			if ($ws && !$ws->isMain()) {
+				$wsPath = $ws->getPagesPath(PATH_RELATIVETO_FILESYSTEM).'/index.php';
+				$redirectionFile = new CMS_file($wsPath, CMS_file::FILE_SYSTEM, CMS_file::TYPE_FILE);
+				$redirectionFile->setContent($this->redirectionCode($pageHTMLPath));
+				$redirectionFile->writeToPersistence(true, true);
+			}
+		}
+		
 		//write print page if any
 		if (USE_PRINT_PAGES && $this->_template->getPrintingClientSpaces()) {
 			//reload linx file
@@ -703,11 +750,15 @@ class CMS_page extends CMS_resource
 	function redirectionCode($filePath) {
 		//replace absolute filePath to DOCUMENT_ROOT one
 		$filePath = str_replace(PATH_REALROOT_FS.'/', '', $filePath);
-		$pagePath = '/'.str_replace(PATH_REALROOT_FS.'/', '', $this->_getFilePath(PATH_RELATIVETO_FILESYSTEM));
-		//get alias position
-		$pos = substr_count($pagePath  , '/');
+		$pos = 0;
+		if (PATH_REALROOT_FS != $this->_getFilePath(PATH_RELATIVETO_FILESYSTEM)) {
+			$pagePath = '/'.str_replace(PATH_REALROOT_FS.'/', '', $this->_getFilePath(PATH_RELATIVETO_FILESYSTEM));
+			//get alias position
+			$pos = substr_count($pagePath  , '/');
+		}
 		$content = 
 		'<?php'."\n".
+		'//Page file generated on '.date('r').' by '.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION."\n".
 		'if (file_exists(dirname(__FILE__).\'/'.str_repeat  ('../', $pos).$filePath.'\')) {'."\n".
 		'	$cms_page_included = true;'."\n".
 		'	require(dirname(__FILE__).\'/'.str_repeat  ('../', $pos).$filePath.'\');'."\n".
@@ -724,81 +775,88 @@ class CMS_page extends CMS_resource
 	  * Get HTML meta tags for a given page
 	  *
 	  * @param boolean $public Do we want the edited or public value ? (default : false => edited).
+	  * @param array $tags the tags names to activate/desactivate (by default all tags are present if they have content)
+	  *		array('description' => false)
 	  * @return string : HTML meta tags infos infos
 	  * @access public
 	  */
-	function getMetaTags($public = false) {
+	function getMetaTags($public = false, $tags = array()) {
 		$website = $this->getWebsite();
 		$favicon = '';
 		$metaDatas = '';
 		if (!is_object($website)) {
 			return '';
 		}
-		if ($website->getMeta('favicon')) {
-			$infos = pathinfo($website->getMeta('favicon'));
-			if ($infos['extension']) {
-				switch ($infos['extension']) {
-					case 'ico':
-						$type = 'image/x-icon';
-					break;
-					case 'jpg':
-						$type = 'image/jpeg';
-					break;
-					case 'gif':
-						$type = 'image/gif';
-					break;
-					case 'png':
-						$type = 'image/png';
-					break;
-					default:
-						$type = 'application/octet-stream';
-					break;
+		if (!isset($tags['icon']) || $tags['icon']) {
+			if ($website->getMeta('favicon')) {
+				$infos = pathinfo($website->getMeta('favicon'));
+				if ($infos['extension']) {
+					switch ($infos['extension']) {
+						case 'ico':
+							$type = 'image/x-icon';
+						break;
+						case 'jpg':
+							$type = 'image/jpeg';
+						break;
+						case 'gif':
+							$type = 'image/gif';
+						break;
+						case 'png':
+							$type = 'image/png';
+						break;
+						default:
+							$type = 'application/octet-stream';
+						break;
+					}
+				} else {
+					$type = 'application/octet-stream';
 				}
-			} else {
-				$type = 'application/octet-stream';
+				$metaDatas .= '<?php echo \'<link rel="icon" type="'.$type.'" href="\'.CMS_websitesCatalog::getCurrentDomain().\''.PATH_REALROOT_WR.$website->getMeta('favicon').'" />\'."\n"; ?>'."\n";
+			} elseif (file_exists(PATH_REALROOT_FS.'/favicon.ico')) {
+				$metaDatas .= '<?php echo \'<link rel="icon" type="image/x-icon" href="\'.CMS_websitesCatalog::getCurrentDomain().\''.PATH_REALROOT_WR.'/favicon.ico" />\'."\n"; ?>'."\n";
+			} elseif (file_exists(PATH_REALROOT_FS.'/img/favicon.png')) {
+				$metaDatas .= '<?php echo \'<link rel="icon" type="image/png" href="\'.CMS_websitesCatalog::getCurrentDomain().\''.PATH_REALROOT_WR.'/img/favicon.png" />\'."\n"; ?>'."\n";
 			}
-			$metaDatas .= '<link rel="icon" type="'.$type.'" href="'.$website->getURL().PATH_REALROOT_WR.$website->getMeta('favicon').'" />'."\n";
-		} elseif (file_exists(PATH_REALROOT_FS.'/favicon.ico')) {
-			$metaDatas .= '<link rel="icon" type="image/x-icon" href="'.$website->getURL().PATH_REALROOT_WR.'/favicon.ico" />'."\n";
-		} elseif (file_exists(PATH_REALROOT_FS.'/img/favicon.png')) {
-			$metaDatas .= '<link rel="icon" type="image/png" href="'.$website->getURL().PATH_REALROOT_WR.'/img/favicon.png" />'."\n";
 		}
-		if ($this->getDescription($public)) {
+		if ((!isset($tags['description']) || $tags['description']) && $this->getDescription($public)) {
 			$metaDatas .= '	<meta name="description" content="'.io::htmlspecialchars($this->getDescription($public), ENT_COMPAT).'" />'."\n";
 		}
-		if ($this->getKeywords($public)) {
+		if ((!isset($tags['keywords']) || $tags['keywords']) && $this->getKeywords($public)) {
 			$metaDatas .= '	<meta name="keywords" content="'.io::htmlspecialchars($this->getKeywords($public), ENT_COMPAT).'" />'."\n";
 		}
-		if ($this->getCategory($public)) {
+		if ((!isset($tags['category']) || $tags['category']) && $this->getCategory($public)) {
 			$metaDatas .= '	<meta name="category" content="'.io::htmlspecialchars($this->getCategory($public), ENT_COMPAT).'" />'."\n";
 		}
-		if ($this->getRobots($public)) {
+		if ((!isset($tags['robots']) || $tags['robots']) && $this->getRobots($public)) {
 			$metaDatas .= '	<meta name="robots" content="'.io::htmlspecialchars($this->getRobots($public), ENT_COMPAT).'" />'."\n";
 		}
-		if ($this->getLanguage($public)) {
+		if ((!isset($tags['language']) || $tags['language']) && $this->getLanguage($public)) {
 			$metaDatas .= '	<meta name="language" content="'.io::htmlspecialchars($this->getLanguage($public), ENT_COMPAT).'" />'."\n";
 		}
 		if (!NO_PAGES_EXTENDED_META_TAGS) {
-			if ($this->getAuthor($public)) {
+			if ((!isset($tags['author']) || $tags['author']) && $this->getAuthor($public)) {
 				$metaDatas .= '	<meta name="author" content="'.io::htmlspecialchars($this->getAuthor($public), ENT_COMPAT).'" />'."\n";
 			}
-			if ($this->getReplyto($public)) {
+			if ((!isset($tags['reply-to']) || $tags['reply-to']) && $this->getReplyto($public)) {
 				$metaDatas .= '	<meta name="reply-to" content="'.io::htmlspecialchars($this->getReplyto($public), ENT_COMPAT).'" />'."\n";
 			}
-			if ($this->getCopyright($public)) {
+			if ((!isset($tags['copyright']) || $tags['copyright']) && $this->getCopyright($public)) {
 				$metaDatas .= '	<meta name="copyright" content="'.io::htmlspecialchars($this->getCopyright($public), ENT_COMPAT).'" />'."\n";
 			}
 		}
-		$metaDatas .= 
-			'	<meta name="generator" content="'.CMS_grandFather::SYSTEM_LABEL.'" />'."\n".
-			'	<meta name="identifier-url" content="'.$website->getURL().PATH_REALROOT_WR.'" />'."\n";
-		if ($this->getReminderPeriodicity($public) && $this->getReminderPeriodicity($public) > 0) {
+		if (!isset($tags['generator']) || $tags['generator']) {
+			$metaDatas .= '	<meta name="generator" content="'.CMS_grandFather::SYSTEM_LABEL.'" />'."\n";
+		}
+		if (!isset($tags['identifier-url']) || $tags['identifier-url']) {
+			$metaDatas .= '	<?php echo \'<meta name="identifier-url" content="\'.CMS_websitesCatalog::getCurrentDomain().\''.PATH_REALROOT_WR.'" />\'."\n"; ?>'."\n";
+		}
+		if ((!isset($tags['revisit-after']) || $tags['revisit-after']) && $this->getReminderPeriodicity($public) && $this->getReminderPeriodicity($public) > 0) {
 			$metaDatas .= '	<meta name="revisit-after" content="'.$this->getReminderPeriodicity($public).' days" />'."\n";
 		}
-		if ($this->getPragma($public)) {
+		if ((!isset($tags['pragma']) || $tags['pragma']) && $this->getPragma($public)) {
 			$metaDatas .= '	<meta http-equiv="pragma" content="no-cache" />'."\n";
 		}
-		if ($this->getRefresh($public)) {
+		if ((!isset($tags['refresh']) || $tags['refresh']) && $this->getRefresh($public)) {
 			$metaDatas .= '	<meta http-equiv="refresh" content="'.io::htmlspecialchars($this->getRefresh($public), ENT_COMPAT).'" />'."\n";
 		}
 		if ($this->getMetas($public)) {
@@ -1020,6 +1078,10 @@ class CMS_page extends CMS_resource
 			$this->raiseError("Page codename must be alphanumeric only");
 			return false;
 		}
+		if (strlen($data) > 100) {
+			$this->raiseError("Page codename must have 100 characters max");
+			return false;
+		}
 		//check if codename already exists
 		if ($checkForDuplicate && $data) {
 			$pageId = CMS_tree::getPageByCodename($data, $this->getWebsite(), false, false);
@@ -1033,6 +1095,54 @@ class CMS_page extends CMS_resource
 		}
 		$this->_editedBaseData["codename"] = $data;
 		$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
+		return true;
+	}
+	
+	/**
+	  * Get the page protected status
+	  *
+	  * @return boolean
+	  * @access public
+	  */
+	function isProtected() {
+		return $this->_protected ? true : false;
+	}
+	
+	/**
+	  * Set the page protected status
+	  *
+	  * @param boolean $protected The new page protected status
+	  * @return boolean
+	  * @access public
+	  */
+	function setProtected($protected) {
+		$this->_protected = $protected ? true : false;
+		return true;
+	}
+	
+	/**
+	  * Get the page https status
+	  *
+	  * @return boolean
+	  * @access public
+	  */
+	function isHTTPS() {
+		if (io::substr($this->getWebsite()->getURL(true), 0, 8) == "https://") {
+			return true;
+		} else {
+			return ALLOW_SPECIFIC_PAGE_HTTPS && $this->_https ? true : false;
+		}
+	}
+	
+	/**
+	  * Set the page https status
+	  *
+	  * @param boolean $https The new page https status
+	  * @return boolean
+	  * @access public
+	  */
+	function setHTTPS($https) {
+		$this->_https = $https ? true : false;
 		return true;
 	}
 	
@@ -1752,8 +1862,15 @@ class CMS_page extends CMS_resource
 		
 		//5- destroy all previous url files for this page
 		$printfiles = glob($this->_getFilePath(PATH_RELATIVETO_FILESYSTEM).'/print-'.$this->getID().'-*.php', GLOB_NOSORT);
-		$files = array_merge(glob($this->_getFilePath(PATH_RELATIVETO_FILESYSTEM).'/'.$this->getID().'-*.php', GLOB_NOSORT),$printfiles);
-		if (is_array($files) && $files) {
+		if (!is_array($printfiles)) {
+			$printfiles = array();
+		}
+		$files = glob($this->_getFilePath(PATH_RELATIVETO_FILESYSTEM).'/'.$this->getID().'-*.php', GLOB_NOSORT);
+		if (!is_array($files)) {
+			$files = array();
+		}
+		$files = array_merge($files, $printfiles);
+		if ($files) {
 			foreach ($files as $file) {
 				@unlink($file);
 			}
@@ -1936,7 +2053,9 @@ class CMS_page extends CMS_resource
 			lastReminder_pag='".$this->_lastReminder->getDBValue()."',
 			template_pag='".$this->_templateID."',
 			lastFileCreation_pag='".$this->_lastFileCreation->getDBValue()."',
-			url_pag='".SensitiveIO::sanitizeSQLString($this->_pageURL)."'
+			url_pag='".SensitiveIO::sanitizeSQLString($this->_pageURL)."',
+			protected_pag='".($this->_protected ? 1 : 0)."',
+			https_pag='".($this->_https ? 1 : 0)."'
 		";
 
 		if ($this->_pageID) {
@@ -2041,21 +2160,21 @@ class CMS_page extends CMS_resource
 			//Duplicate page base datas
 			$pg->setTitle($this->getTitle(), $user);
 			$pg->setLinkTitle($this->getLinkTitle(), $user);
-			$pg->setDescription($this->getDescription(), $user);
-			$pg->setKeywords($this->getKeywords(), $user);
+			$pg->setDescription($this->getDescription(false, false), $user);
+			$pg->setKeywords($this->getKeywords(false, false), $user);
 			$pg->setPublicationDates($this->getPublicationDateStart(false), $this->getPublicationDateEnd(false));
-			$pg->setReminderOn($this->getReminderOn(), $user);
-			$pg->setReminderOnMessage($this->getReminderOnMessage(), $user);
-			$pg->setCategory($this->getCategory(), $user);
-			$pg->setAuthor($this->getAuthor(), $user);
-			$pg->setReplyto($this->getReplyto(), $user);
-			$pg->setCopyright($this->getCopyright(), $user);
-			$pg->setLanguage($this->getLanguage(), $user);
-			$pg->setRobots($this->getRobots(), $user);
-			$pg->setPragma($this->getPragma(), $user);
-			$pg->setRefresh($this->getRefresh(), $user);
+			$pg->setReminderOn($this->getReminderOn(false, false), $user);
+			$pg->setReminderOnMessage($this->getReminderOnMessage(false, false), $user);
+			$pg->setCategory($this->getCategory(false, false), $user);
+			$pg->setAuthor($this->getAuthor(false, false), $user);
+			$pg->setReplyto($this->getReplyto(false, false), $user);
+			$pg->setCopyright($this->getCopyright(false, false), $user);
+			$pg->setLanguage($this->getLanguage(false, false), $user);
+			$pg->setRobots($this->getRobots(false, false), $user);
+			$pg->setPragma($this->getPragma(false, false), $user);
+			$pg->setRefresh($this->getRefresh(false, false), $user);
 			$pg->setRedirectLink($this->getRedirectLink(), $user);
-			$pg->setMetas($this->getMetas(), $user);
+			$pg->setMetas($this->getMetas(false, false), $user);
 			$pg->setCodename($this->getCodename(), $user, false);
 			if (SensitiveIO::isPositiveInteger($this->getReminderPeriodicity())) {
 				$pg->setReminderPeriodicity($this->getReminderPeriodicity(), $user);

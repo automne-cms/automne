@@ -186,14 +186,6 @@ if (!function_exists('mb_substr') || !function_exists('mb_convert_encoding')) {
 } else {
 	$content .= '<li class="atm-pic-ok">Multibyte String (mbsring) extension OK</li>';
 }
-//LDAP
-if (!defined('APPLICATION_LDAP_AUTH') || (defined('APPLICATION_LDAP_AUTH') && APPLICATION_LDAP_AUTH)) {
-	if (!function_exists('ldap_bind')) {
-		$content .= '<li class="atm-pic-cancel">Error, LDAP extension not installed (only needed if LDAP authentification is used)</li>';
-	} else {
-		$content .= '<li class="atm-pic-ok">LDAP extension OK</li>';
-	}
-}
 //XAPIAN
 if (class_exists('CMS_module_ase')) {
 	$xapianVersion = '';
@@ -220,8 +212,8 @@ if (!is_writable(PATH_REALROOT_FS)) {
 	$content .= '<li class="atm-pic-ok">File system write permissions are OK</li>';
 }
 //Email
-if (!@mail("root@localhost", "Automne SMTP Test", "Automne SMTP Test")) {
-	$content .= '<li class="atm-pic-cancel">Error, No SMTP server founded</li>';
+if (!@mail(AUTOMNE_DEFAULT_EMAIL, "Automne SMTP Test", "Automne SMTP Test")) {
+	$content .= '<li class="atm-pic-cancel">Error, No SMTP server found</li>';
 } else {
 	$content .= '<li class="atm-pic-ok">SMTP server OK</li>';
 }

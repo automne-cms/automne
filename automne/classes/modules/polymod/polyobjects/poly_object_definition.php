@@ -54,6 +54,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 					 "composedLabel"		=> string,
 					 "previewURL"			=> string,
 					 "indexable"			=> integer,
+					 "multilanguage"		=> integer,
 					 "indexURL"				=> integer,
 					 "compiledIndexURL"		=> string,
 					 "resultsDefinition"	=> string)
@@ -67,6 +68,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 									 "composedLabel"=> "",
 									 "previewURL"	=> "",
 									 "indexable" 	=> 0,
+									 "multilanguage"=> 0,
 									 "indexURL" 	=> "",
 									 "compiledIndexURL"=> "",
 									 "resultsDefinition"=> "",
@@ -152,6 +154,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 			$this->_objectValues["composedLabel"] = isset($datas['composedLabel_mod']) ? $datas['composedLabel_mod'] : '';
 			$this->_objectValues["previewURL"] = isset($datas['previewURL_mod']) ? $datas['previewURL_mod'] : '';
 			$this->_objectValues["indexable"] = (isset($datas['indexable_mod']) && $datas['indexable_mod']) ? 1 : 0;
+			$this->_objectValues["multilanguage"] = (isset($datas['multilanguage_mod']) && $datas['multilanguage_mod']) ? 1 : 0;
 			$this->_objectValues["indexURL"] = isset($datas['indexURL_mod']) ? $datas['indexURL_mod'] : '';
 			$this->_objectValues["compiledIndexURL"] = isset($datas['compiledIndexURL_mod']) ? $datas['compiledIndexURL_mod'] : '';
 			$this->_objectValues["resultsDefinition"] = isset($datas['resultsDefinition_mod']) ? $datas['resultsDefinition_mod'] : '';
@@ -576,6 +579,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 			composedLabel_mod='".SensitiveIO::sanitizeSQLString($this->_objectValues["composedLabel"])."',
 			previewURL_mod='".SensitiveIO::sanitizeSQLString($this->_objectValues["previewURL"])."',
 			indexable_mod='".SensitiveIO::sanitizeSQLString($this->_objectValues["indexable"])."',
+			multilanguage_mod='".SensitiveIO::sanitizeSQLString($this->_objectValues["multilanguage"])."',
 			indexURL_mod='".SensitiveIO::sanitizeSQLString($this->_objectValues["indexURL"])."',
 			compiledIndexURL_mod='".SensitiveIO::sanitizeSQLString($this->_objectValues["compiledIndexURL"])."',
 			resultsDefinition_mod='".SensitiveIO::sanitizeSQLString($this->_objectValues["resultsDefinition"])."',
@@ -606,7 +610,9 @@ class CMS_poly_object_definition extends CMS_grandFather
 		}
 		
 		//Clear polymod cache
-		CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_objectValues["module"]));
+		//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_objectValues["module"]));
+		CMS_cache::clearTypeCache('polymod');
+		
 		//unset polymod structure in cache
 		CMS_cache::clearTypeCache('atm-polymod-structure');
 		return true;
@@ -659,7 +665,9 @@ class CMS_poly_object_definition extends CMS_grandFather
 			CMS_cache::clearTypeCacheByMetas('atm-polymod-structure', array('type' => 'object'));
 			
 			//Clear polymod cache
-			CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_objectValues["module"]));
+			//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_objectValues["module"]));
+			CMS_cache::clearTypeCache('polymod');
+			
 		}
 		unset($this);
 		return true;
@@ -711,6 +719,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 				'composedLabel'		=> $this->_objectValues['composedLabel'],
 				'previewURL'		=> $this->_objectValues['previewURL'],
 				'indexable'			=> $this->_objectValues['indexable'],
+				'multilanguage'		=> $this->_objectValues['multilanguage'],
 				'indexURL'			=> $this->_objectValues['indexURL'],
 				'resultsDefinition'	=> $this->_objectValues['resultsDefinition'],
 			),
@@ -734,7 +743,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 			FROM `mod_object_field`
 			WHERE `object_id_mof` = '.$this->_ID.'
 		');
-		if ($oQuery->getNumRows() > 1) {
+		if ($oQuery->getNumRows()) {
 			foreach ($oQuery->getAll(PDO::FETCH_ASSOC) as $aRow) {
 				$oFieldDefiniton = new CMS_poly_object_field($aRow['id_mof']);
 				$aClass['fields'][] = $oFieldDefiniton->asArray($params, $files);
@@ -802,6 +811,9 @@ class CMS_poly_object_definition extends CMS_grandFather
 		}
 		if (isset($data['params']['indexable'])) {
 			$this->setValue("indexable", $data['params']['indexable']);
+		}
+		if (isset($data['params']['multilanguage'])) {
+			$this->setValue("multilanguage", $data['params']['multilanguage']);
 		}
 		if (isset($data['params']['composedLabel'])) {
 			$this->setValue("composedLabel", $module->convertDefinitionString($data['params']['composedLabel'], false));

@@ -66,7 +66,7 @@ class processManager
 		}
 		
 		//captures the launch date
-		$this->_startDate = getmicrotime();
+		$this->_startDate = CMS_stats::getmicrotime();
 		
 		//computes the directory to put files in
 		$this->_tmpPath = $this->getTempPath();
@@ -194,7 +194,7 @@ class processManager
 		if (!$this->_scriptName) {
 			return false;
 		}
-		return $this->_tmpPath.'/'.$this->_scriptName;
+		return realpath($this->_tmpPath). DIRECTORY_SEPARATOR .$this->_scriptName;
 	}
 	
 	/**
@@ -235,7 +235,7 @@ class processManager
 	  */
 	function getExecutionTime()
 	{
-		return getmicrotime() - $this->_startDate;
+		return CMS_stats::getmicrotime() - $this->_startDate;
 	}
 	
 	/**
@@ -252,6 +252,9 @@ class processManager
 		
 		//computes the directory to put files in
 		$tempDir = @dir($tempPath);
+		if (!is_object($tempDir)) {
+			return array();
+		}
 		
 		//script application label
 		$scriptAppLbl = processManager::getAppCode();

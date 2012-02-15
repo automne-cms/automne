@@ -43,7 +43,7 @@ define("MESSAGE_ALL_FILE",530);
 define("MESSAGE_PAGE_INCORRECT_FORM_VALUES", 682);
 
 $winId = sensitiveIO::request('winId', '', 'blockFileWindow');
-$currentPage = is_object($cms_context) ? sensitiveIO::request('page', 'sensitiveIO::isPositiveInteger', $cms_context->getPageID()) : '';
+$currentPage = sensitiveIO::request('page', 'sensitiveIO::isPositiveInteger', CMS_session::getPageID());
 $tpl = sensitiveIO::request('template', 'sensitiveIO::isPositiveInteger');
 $rowId = sensitiveIO::request('rowType', 'sensitiveIO::isPositiveInteger');
 $rowTag = sensitiveIO::request('rowTag');

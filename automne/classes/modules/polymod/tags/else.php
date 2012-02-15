@@ -67,6 +67,12 @@ class CMS_XMLTag_else extends CMS_XMLTag
 						CMS_grandFather::raiseError(\'Error in atm-else ['.$this->_uniqueID.'] syntax : \'.$ifcondition_'.$this->_uniqueID.');
 					}
 					if ($func_'.$this->_uniqueID.' && $func_'.$this->_uniqueID.'()):
+					';
+					//if attribute name is set, store if result
+					if (isset($this->_attributes['for']) && $this->_attributes['for']) {
+						$return .= '$atmIfResults[\''.$this->_attributes ['for'].'\'][\'if\'] = true;';
+					}
+					$return .= '
 						'.$this->_computeChilds().'
 					endif;
 					unset($func_'.$this->_uniqueID.');

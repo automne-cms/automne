@@ -1,5 +1,6 @@
 # Dev files
 ./test.php
+./test*.php
 ./config.php
 ./automne/cms_error_log
 ./automne/SUBVERSION
@@ -40,3 +41,7 @@ Thumbs.db
 ./js/demo/*
 ./automne/sql/demo-*.sql
 ./automne/templates/images/*
+# Misc. files
+*.tgz
+*.tar.gz
+*.zip

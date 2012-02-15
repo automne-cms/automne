@@ -62,7 +62,7 @@ $tpl = sensitiveIO::request('template', 'sensitiveIO::isPositiveInteger');
 $rowId = sensitiveIO::request('rowType', 'sensitiveIO::isPositiveInteger');
 $rowTag = sensitiveIO::request('rowTag');
 $cs = sensitiveIO::request('cs');
-$currentPage = is_object($cms_context) ? sensitiveIO::request('page', 'sensitiveIO::isPositiveInteger', $cms_context->getPageID()) : '';
+$currentPage = sensitiveIO::request('page', 'sensitiveIO::isPositiveInteger', CMS_session::getPageID());
 $blockId = sensitiveIO::request('block');
 $blockClass = sensitiveIO::request('blockClass');
 $codename = sensitiveIO::request('module', CMS_modulesCatalog::getAllCodenames());
@@ -118,7 +118,7 @@ if (sizeof($blockParamsDefinition['search'])) {
 			continue;
 		}
 		//load searched object
-		$object = new CMS_poly_object_definition($searchType);
+		$object = CMS_poly_object_catalog::getObjectDefinition($searchType);
 		if (!$object->hasError()) {
 			//load fields objects for object
 			$objectFields = CMS_poly_object_catalog::getFieldsDefinition($object->getID());

@@ -53,40 +53,40 @@ $separator = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? "\xa7\xa7" 
 
 //if page has forms
 if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
-	$sender = CMS_forms_sender::getSenderForContext((isset($_SESSION["cms_context"]) ? $_SESSION["cms_context"] : false));
+	$sender = CMS_forms_sender::getSenderForContext();
 	foreach($mod_cms_forms["usedforms"] as $formID) {
 		$form = new CMS_forms_formular($formID);
 		$cms_forms_msg[$form->getID()] = $cms_forms_error_msg[$form->getID()] = $cms_forms_token[$form->getID()] = '';
 		//if form exists and is public
 		if ($form->getID() && $form->isPublic()) {
 			/***********************************************************
-			*                   AUTOLOGIN ATTEMPT                      *
+			*                     LOGIN ATTEMPT                        *
 			***********************************************************/
 			//check for authentification action in form
 			if ($form->getActionsByType(CMS_forms_action::ACTION_AUTH)) {
-				//check for valid session / logout attempt / and autologin
-				//CMS_grandFather::log('Forms ok1');
-				if (!isset($_SESSION["cms_context"]) || (isset($_SESSION["cms_context"]) && !is_a($_SESSION["cms_context"], 'CMS_context')) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] == 'true')) {
-					/*@session_destroy();
-					start_atm_session();*/
-					//CMS_grandFather::log('Forms ok2');
-					if ((!isset($_REQUEST["logout"]) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] != 'true')) && CMS_context::autoLoginSucceeded()) {
-						//declare form ok action
-						$cms_forms_okAction[$form->getID()] = true;
-						//CMS_grandFather::log('Forms ok3');
-					} elseif (isset($_REQUEST["logout"]) && $_REQUEST["logout"] == 'true') {
-						// Reset cookie
-						CMS_context::resetSessionCookies();
-						//then reload current page (to load public user)
-						//CMS_grandFather::log('Forms ok4');
-						CMS_view::redirect($_SERVER["SCRIPT_NAME"]);
-					}
-				}
-				//CMS_grandFather::log('Forms ok5');
-				if (isset($_SESSION["cms_context"]) && is_a($_SESSION["cms_context"], 'CMS_context') && (!isset($_REQUEST["logout"]) || (isset($_REQUEST["logout"]) && $_REQUEST["logout"] != 'true')) && CMS_context::autoLoginSucceeded()) {
-					//CMS_grandFather::log('Forms ok6');
+				//check for valid session / logout attempt
+				if (io::request('logout') == 'true' || io::request('logout') == 1) {
+					// Disconnect user
+					CMS_session::authenticate(array('disconnect'=> true));
+					//then reload current page (to load public user)
+					CMS_view::redirect($_SERVER["SCRIPT_NAME"]);
+				} elseif (isset($cms_user) && $cms_user->getUserId() != ANONYMOUS_PROFILEUSER_ID) {
 					//declare form ok action
 					$cms_forms_okAction[$form->getID()] = true;
+				} else {
+					//launch authentification process (for modules which can use it)
+					CMS_session::authenticate(array('authenticate' => true));
+					//load current user if exists
+					$cms_user = CMS_session::getUser();
+					if ($cms_user) {
+						$cms_language = $cms_user->getLanguage();
+						//declare form ok action
+						if ($cms_user->getUserId() != ANONYMOUS_PROFILEUSER_ID) {
+							$cms_forms_okAction[$form->getID()] = true;
+						}
+					} else {
+						unset($cms_user);
+					}
 				}
 				//get form ok action
 				$actions = $form->getActionsByType(CMS_forms_action::ACTION_FORMOK);
@@ -157,7 +157,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 			if (isset($_POST["formID"]) && $_POST["formID"] == $formID && $_POST["cms_action"] == 'validate') {
 				$form_language = $form->getLanguage();
 				//check form token
-				if (!isset($_POST["atm-token"]) || !CMS_context::checkToken(MOD_CMS_FORMS_CODENAME, $_POST["atm-token"])) {
+				if (!isset($_POST["atm-token"]) || !CMS_session::checkToken(MOD_CMS_FORMS_CODENAME, $_POST["atm-token"])) {
 					$cms_forms_token[$form->getID()] = true;
 				}
 				//check for required fields
@@ -400,22 +400,19 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 								} else {
 									$email->setEmailFrom($texts[3]);
 								}
-								//$email->setFromName(APPLICATION_LABEL);
-								
 								//and send emails
 								if ($action->getInteger('type') == CMS_forms_action::ACTION_EMAIL) {
 									$emailAddresses = array_map('trim',explode(';',io::decodeEntities($action->getString("value"))));
+								} elseif ($action->getInteger('type') == CMS_forms_action::ACTION_FIELDEMAIL) {
+									$emailAddresses = array_map('trim',explode(';',$_POST[$fields[$action->getString("value")]->getAttribute('name')]));
+								}
+								if ($emailAddresses) {
 									foreach ($emailAddresses as $emailAddress) {
 										$emailAddress = evalPolymodVars($emailAddress, $form_language->getCode());
 										if (sensitiveIO::isValidEmail($emailAddress)) {
 											$email->setEmailTo($emailAddress);
 											$email->sendEmail();
 										}
-									}
-								} elseif ($action->getInteger('type') == CMS_forms_action::ACTION_FIELDEMAIL) {
-									if ($action->getString("value") && is_object($fields[$action->getString("value")]) && sensitiveIO::isValidEmail($_POST[$fields[$action->getString("value")]->getAttribute('name')])) {
-										$email->setEmailTo($_POST[$fields[$action->getString("value")]->getAttribute('name')]);
-										$email->sendEmail();
 									}
 								}
 							break;
@@ -434,14 +431,19 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 								if ($login && $password) {
 									// Vérification données obligatoires
 									if (trim($login) != '' && trim($password) != '') {
-										$cms_context = new CMS_context(trim($login), trim($password), $permanent);
-										if (!$cms_context->hasError()) {
-											//user is ok so create session
-											$_SESSION["cms_context"] = $cms_context;
-											$cms_user = $_SESSION["cms_context"]->getUser();
+										
+										//Auth parameters
+										$params = array(
+											'login'		=> $login,
+											'password'	=> $password,
+											'remember'	=> ($permanent ? true : false)
+										);
+										CMS_session::authenticate($params);
+										$user = CMS_session::getUser();
+										if ($user && $user->getUserId() != ANONYMOUS_PROFILEUSER_ID) {
+											$cms_user = $user;
 											$cms_language = $cms_user->getLanguage();
 										} else {
-											unset($_SESSION["cms_context"]);
 											//append message to form error message
 											if ($action->getString("text")) {
 												$cms_forms_error_msg[$form->getID()] .= nl2br($action->getString("text")).'<br />';
@@ -451,6 +453,12 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 									} else {
 										break 2; //quit actions loop
 									}
+								}
+							break;
+							case CMS_forms_action::ACTION_SPECIFIC_PHP :
+								//load specific PHP code
+								if ($action->getString("value") && file_exists(PATH_TEMPLATES_FS.'/'.$action->getString("value"))) {
+									include(PATH_TEMPLATES_FS.'/'.$action->getString("value"));
 								}
 							break;
 							case CMS_forms_action::ACTION_FORMOK:

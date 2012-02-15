@@ -39,7 +39,7 @@ $replace = array(
 $image = io::get('image');
 $location = (io::get('location') && isset($_SERVER["HTTP_REFERER"]) && strpos($_SERVER["HTTP_REFERER"], "automne/admin") !== false) ? io::get('location') : RESOURCE_DATA_LOCATION_PUBLIC;
 $location = in_array($location, array(RESOURCE_DATA_LOCATION_EDITED, RESOURCE_DATA_LOCATION_EDITION, RESOURCE_DATA_LOCATION_PUBLIC)) ? $location : '';
-$module = io::get('module') ? io::get('module') : MOD_STANDARD_CODENAME;
+$module = io::get('module') ? io::get('module') : 'standard';
 $module = in_array($module, CMS_modulesCatalog::getAllCodenames()) ? $module : '';
 $x = io::get('x', 'io::isPositiveInteger');
 $y = io::get('y', 'io::isPositiveInteger');

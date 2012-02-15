@@ -71,7 +71,7 @@ if (!$winId) {
 }
 
 //usefull vars
-$recordsPerPage = $_SESSION["cms_context"]->getRecordsPerPage();
+$recordsPerPage = CMS_session::getRecordsPerPage();
 
 //
 // Search Panel
@@ -141,11 +141,14 @@ $searchCodes['users'] = array('user', 'group');
 if ($elements) {
 	foreach ($searchCodes as $searchElement => $searchCode) {
 		foreach ($searchCode as $code) {
-			if (io::strpos($search, $code.':') !== false) {
+			if (io::strpos($search, $code.':') !== false && isset($elements[$searchElement])) {
 				$checkedElements = array();
 				$checkedElements[$searchElement] = true;
 			}
 		}
+	}
+	if (io::strpos($search,'row:') !== false && isset($elements['templates'])) {
+		$checkedElements['templates'] = true;
 	}
 	$searchPanel .= "{
 		xtype: 		'checkboxgroup',

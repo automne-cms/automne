@@ -42,7 +42,7 @@ $winId = sensitiveIO::request('winId', '', 'logPanel');
 $userId = sensitiveIO::request('user', 'sensitiveIO::isPositiveInteger');
 $action = sensitiveIO::request('action', '', 'view');
 $start = sensitiveIO::request('start', '', 0);
-$limit = sensitiveIO::request('limit', '', $_SESSION["cms_context"]->getRecordsPerPage());
+$limit = sensitiveIO::request('limit', '', CMS_session::getRecordsPerPage());
 $order = sensitiveIO::request('sort', '', 'datetime');
 $direction = io::strtolower(sensitiveIO::request('dir', '', 'desc'));
 
@@ -60,7 +60,7 @@ if (!$user || $user->hasError()) {
 }
 
 //get records / pages
-$recordsPerPage = $_SESSION["cms_context"]->getRecordsPerPage();
+$recordsPerPage = CMS_session::getRecordsPerPage();
 
 switch ($action) {
 	case 'view':
@@ -130,7 +130,7 @@ END;
 		$view->setSecure();
 		
 		$actionlabels = CMS_log_catalog::getAllActions($cms_language);
-		$logs = CMS_log_catalog::search('', 0, $userId, array(), $start, $limit, $order, $direction);
+		$logs = CMS_log_catalog::search('', 0, $userId, array(), false, false, $start, $limit, $order, $direction);
 		
 		$feeds = array();
 		$feeds['items'] = array();
@@ -205,7 +205,7 @@ END;
 			);
 		}
 		
-		$feeds['total_count'] = CMS_log_catalog::search('', 0, $userId, array(), $start, $limit, $order, $direction, true);
+		$feeds['total_count'] = CMS_log_catalog::search('', 0, $userId, array(), false, false, $start, $limit, $order, $direction, true);
 		$feeds['version']	= 1;
 		
 		$view->setContent($feeds);

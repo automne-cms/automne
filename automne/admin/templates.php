@@ -29,7 +29,7 @@ define("MESSAGE_TOOLBAR_HELP",1073);
 define("MESSAGE_ERROR_NO_RIGHTS_FOR_TEMPLATES", 799);
 define("MESSAGE_PAGE_PAGES_TEMPLATES", 1473);
 define("MESSAGE_PAGE_ROWS_TEMPLATES", 1474);
-define("MESSAGE_PAGE_STYLESHEETS", 1475);
+define("MESSAGE_PAGE_STYLES", 442);
 define("MESSAGE_PAGE_JAVASCRIPTS", 1476);
 define("MESSAGE_PAGE_WYSIWYG_TOOLBARS", 1477);
 define("MESSAGE_PAGE_TITLE", 1478);
@@ -43,7 +43,7 @@ $view->setDisplayMode(CMS_view::SHOW_RAW);
 $view->setSecure();
 
 $winId = sensitiveIO::request('winId', '', 'templatesWindow');
-$type = sensitiveIO::request('type', array('template','row','css','js','wysiwyg-toolbar'));
+$type = sensitiveIO::request('type', array('template','row','styles','wysiwyg-toolbar'));
 
 //CHECKS user has templates or rows clearance
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES) && !$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) {
@@ -88,31 +88,15 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_TEMPLATES)) { //rows
 }
 if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDIT_TEMPLATES)) { //templates
 	$items .= "{
-		title:	'{$cms_language->getJsMessage(MESSAGE_PAGE_STYLESHEETS)}',
-		id:		'cssPanel',
+		title:	'{$cms_language->getJsMessage(MESSAGE_PAGE_STYLES)}',
+		id:		'stylesPanel',
 		xtype:	'atmPanel',
 		layout:	'atm-border',
 		autoLoad:		{
 			url:		'templates-files.php',
 			params:		{
-				winId:		'cssPanel',
-				fatherId:	'{$winId}',
-				type:		'css'
-			},
-			nocache:	true,
-			scope:		center
-		}
-	},{
-		title:	'{$cms_language->getJsMessage(MESSAGE_PAGE_JAVASCRIPTS)}',
-		id:		'jsPanel',
-		xtype:	'atmPanel',
-		layout:	'atm-border',
-		autoLoad:		{
-			url:		'templates-files.php',
-			params:		{
-				winId:		'jsPanel',
-				fatherId:	'{$winId}',
-				type:		'js'
+				winId:		'stylesPanel',
+				fatherId:	'{$winId}'
 			},
 			nocache:	true,
 			scope:		center
@@ -132,11 +116,8 @@ switch($type) {
 	case 'row':
 		$activeTab = 'rowPanel';
 	break;
-	case 'css':
-		$activeTab = 'cssPanel';
-	break;
-	case 'js':
-		$activeTab = 'jsPanel';
+	case 'styles':
+		$activeTab = 'stylesPanel';
 	break;
 	case 'wysiwyg-toolbar':
 		$activeTab = 'toolbarWysiwygPanel';

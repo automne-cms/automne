@@ -133,7 +133,7 @@ class CMS_patch extends CMS_grandFather
 						case ">":
 						case "+":
 							if (!file_exists($patchFile)) {
-								$error .= "Error at line : ".$line.", temporary file ".$patchFile." does not exist<br />";
+								$error .= "Error at line : ".$line.", patch file ".$patchFile." does not exist<br />";
 								$filesExists=false;
 								$errorsInfo[] = array('no' => 2, 'line' => $line, 'command' => $aInstallCheck);
 								unset($array[$line-1]);
@@ -368,8 +368,7 @@ class CMS_patch extends CMS_grandFather
 								$this->_report('Error during copy of '.$patchFile.' to '.$originalFile,true);
 								if ($stopOnErrors) return;
 							}
-							if (!isset($installParams[2]))
-								break;
+							if (!isset($installParams[2])) break;
 						case "ch": //execute chmod
 							$filesNOK = $this->applyChmod($installParams[2],$originalFile);
 							if (!$filesNOK) {
@@ -389,11 +388,12 @@ class CMS_patch extends CMS_grandFather
 								}
 							} else {
 								$this->_report('Error during chmod operation of '.$originalFile.'. Can\'t apply chmod value \''.$installParams[2].'\' on files :<br />'.$filesNOK.'<br />',true);
-								if ($stopOnErrors) return;
+								//do not stop on chmod error : only report them
+								//if ($stopOnErrors) return;
 							}
 						break;
 						case "<": //delete a file or folder (recursively)
-							if (CMS_FILE::deleteFile($originalFile)) {
+							if (file_exists($originalFile) && CMS_FILE::deleteFile($originalFile)) {
 								$this->_verbose(' -> File '.$originalFile.' successfully deleted');
 							} else {
 								$this->_verbose(' -> Cannot delete '.$originalFile.'. It does not exists.');

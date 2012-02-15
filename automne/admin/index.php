@@ -35,9 +35,12 @@ $language = CMS_languagesCatalog::getDefaultLanguage(true);
 $view = CMS_view::getInstance();
 
 //Disconnect user
-if (isset($_REQUEST["cms_action"]) && $_REQUEST["cms_action"] == 'logout') {
-	// Reset cookie (kill current session)
-	CMS_context::resetSessionCookies();
+if (io::request('cms_action') == 'logout') {
+	//Disconnect user
+	CMS_session::authenticate(array('disconnect'=> true));
+	//Reset session (start fresh)
+	Zend_Session::destroy();
+	//Redirect
 	header("Location: ".PATH_ADMIN_WR.'/');
 	exit;
 }
@@ -45,6 +48,7 @@ if (isset($_REQUEST["cms_action"]) && $_REQUEST["cms_action"] == 'logout') {
 //set main and ext CSS
 $view->addCSSFile('ext');
 $view->addCSSFile('main');
+$view->addCSSFile('codemirror');
 if (SYSTEM_DEBUG) {
 	$view->addCSSFile('debug');
 }
@@ -65,7 +69,7 @@ $content = '
 	<noscript class="atm-alert">You must have Javascript enabled to access Automne.<hr />Vous devez avoir Javascript actif pour acc&eacute;der &agrave; Automne.</noscript>
 </div>
 '.CMS_view::getJavascript($jsfiles).CMS_view::getJavascript(array('launch'));
-if (isset($_REQUEST["cms_action"]) && $_REQUEST["cms_action"] == 'logout') {
+if (io::request('cms_action') == 'logout') {
 	//append logout info
 	$content .= '<script type="text/javascript">Automne.logout = true;</script>';
 }

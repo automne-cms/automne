@@ -37,6 +37,7 @@ class CMS_profile extends CMS_grandFather
 	const MESSAGE_CLEARANCE_ADMINISTRATION_VIEWLOG = 20;
 	const MESSAGE_CLEARANCE_ADMINISTRATION_EDITUSERS = 77;
 	const MESSAGE_CLEARANCE_ADMINISTRATION_DUPLICATE_BRANCH = 438;
+	const MESSAGE_CLEARANCE_ADMINISTRATION_PAGE_CODENAMES = 1750;
 	const MESSAGE_CLEARANCE_ADMINISTRATION_EDITVALIDATEALL_DESCRIPTION = 487;
 	const MESSAGE_CLEARANCE_ADMINISTRATION_REGENERATEPAGES_DESCRIPTION = 488;
 	const MESSAGE_CLEARANCE_ADMINISTRATION_TEMPLATES_DESCRIPTION = 489;  
@@ -44,6 +45,7 @@ class CMS_profile extends CMS_grandFather
 	const MESSAGE_CLEARANCE_ADMINISTRATION_VIEWLOG_DESCRIPTION = 491;
 	const MESSAGE_CLEARANCE_ADMINISTRATION_EDITUSERS_DESCRIPTION = 492;
 	const MESSAGE_CLEARANCE_ADMINISTRATION_DUPLICATE_BRANCH_DESCRIPTION = 1448;
+	const MESSAGE_CLEARANCE_ADMINISTRATION_PAGE_CODENAMES_DESCRIPTION = 1751;
 	
 	const MESSAGE_ALERT_LEVEL_VALIDATION = 21;
 	const MESSAGE_ALERT_LEVEL_PROFILE = 22;
@@ -1150,7 +1152,7 @@ class CMS_profile extends CMS_grandFather
 	  * @return CMS_moduleCategoriesClearances
 	  * @access public
 	  */
-	function &getModuleCategoriesClearances()
+	function getModuleCategoriesClearances()
 	{
 		return $this->_moduleCategoriesClearances;
 	}
@@ -1477,13 +1479,16 @@ class CMS_profile extends CMS_grandFather
 				return $categories;
 			}
 			//construct n level tree with all of these categories and array of lineages
+			$nLevelArray = array();
 			foreach($categories as $catID) {
 				//get category lineage
 				$lineage = CMS_moduleCategories_catalog::getLineageOfCategoryAsString($catID);
-				$lineageArray[$catID] = $lineage;
-				//then create n level table
-				$ln = sensitiveIO::sanitizeExecCommand('if (!isset($nLevelArray['.str_replace(';','][',$lineage).'])) $nLevelArray['.str_replace(';','][',$lineage).'] =  array();');
-				eval($ln);
+				if ($lineage) {
+					$lineageArray[$catID] = $lineage;
+					//then create n level table
+					$ln = sensitiveIO::sanitizeExecCommand('if (!isset($nLevelArray['.str_replace(';','][',$lineage).'])) $nLevelArray['.str_replace(';','][',$lineage).'] =  array();');
+					eval($ln);
+				}
 			}
 			$filteredCategories = $this->_filterModuleCategoriesClearanceRecursion($nLevelArray, $matchingCats, $deniedCats, false);
 			$returnedFilteredCategories = array();
@@ -1539,6 +1544,7 @@ class CMS_profile extends CMS_grandFather
 					 CLEARANCE_ADMINISTRATION_VIEWLOG 			=> array('label' => self::MESSAGE_CLEARANCE_ADMINISTRATION_VIEWLOG, 		'description' => self::MESSAGE_CLEARANCE_ADMINISTRATION_VIEWLOG_DESCRIPTION),
 					 CLEARANCE_ADMINISTRATION_EDITUSERS 		=> array('label' => self::MESSAGE_CLEARANCE_ADMINISTRATION_EDITUSERS, 	 	'description' => self::MESSAGE_CLEARANCE_ADMINISTRATION_EDITUSERS_DESCRIPTION),
 					 CLEARANCE_ADMINISTRATION_DUPLICATE_BRANCH	=> array('label' => self::MESSAGE_CLEARANCE_ADMINISTRATION_DUPLICATE_BRANCH,'description' => self::MESSAGE_CLEARANCE_ADMINISTRATION_DUPLICATE_BRANCH_DESCRIPTION),
+					 CLEARANCE_ADMINISTRATION_PAGE_CODENAMES	=> array('label' => self::MESSAGE_CLEARANCE_ADMINISTRATION_PAGE_CODENAMES,	'description' => self::MESSAGE_CLEARANCE_ADMINISTRATION_PAGE_CODENAMES_DESCRIPTION),
 		);
 	}
 	

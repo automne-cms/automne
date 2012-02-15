@@ -1128,9 +1128,27 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 .x-tree-node .x-tree-selected{
 	background-color:				#dfe1e2;
 }
+.x-tree-node .x-tree-checked {
+	background-color:				#EEFAE0;
+}
 .x-panel .x-tree-node a, .x-dd-drag-ghost a {
 	color:							black;
 }
+
+.x-tree-node .atm-txt .x-tree-node-icon, 
+.x-tree-node .atm-xml .x-tree-node-icon {
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
+	background-position:			left -964px;
+}
+.x-tree-node .atm-css .x-tree-node-icon{
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
+	background-position:			left -892px;
+}
+.x-tree-node .atm-js .x-tree-node-icon{
+	background-image:				url(../automne/admin/img/pictos/pictos.png);
+	background-position:			left -916px;
+}
+
 /* menu */
 .x-menu{
 	background:						url(../automne/admin/img/menu/menu.gif) repeat-y top left;
@@ -1655,3 +1673,4 @@ td.x-date-mp-month a:hover,td.x-date-mp-year a:hover {
 .x-tool-popup-over {
 	background-position:-15px -330px;
 }
+.x-combo-list-inner div:first-child { min-height:14px; }

@@ -111,11 +111,7 @@ case "validate_module":
 		$module->setAndWriteParameters($new_parameters);
 	}
 	$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
-	if ($_GET["module"]=='standard') {
-		$parameters = $module->getParameters(false,true);
-	} else {
-		$parameters = $module->getParameters();
-	}
+	$parameters = $module->getParameters(false,true);
 break;
 case 'delete_module':
 	if ($module->destroy()) {
@@ -218,11 +214,7 @@ if (is_object($module)) {
 	}
 	if(!$module->isPolymod() || ($module->isPolymod() && $_REQUEST['action'] == 'parameters')){
 		//get module Paramaters
-		if ($module->getCodename()=='standard') {
-			$parameters = $module->getParameters(false,true);
-		} else {
-			$parameters = $module->getParameters();
-		}
+		$parameters = $module->getParameters(false,true);
 		if (is_array($parameters) && sizeof($parameters)) {
 			$content .= '
 			<dialog-title type="admin_h2">'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_MODULE_PARAMETERS,array('"'.$module->getLabel($cms_language).'"'),MOD_STANDARD_CODENAME).' :</dialog-title>
@@ -253,10 +245,14 @@ if (is_object($module)) {
 						break;
 					}
 					$paramContent .='<input type="hidden" name="'.$label.'_contentType" value="'.$value[1].'" />';
+					
+					$paramLabel = defined(get_class($module).'::MESSAGE_PARAM_'.$label) ? $cms_language->getMessage(constant(get_class($module).'::MESSAGE_PARAM_'.$label), false, $moduleCodename) : htmlspecialchars(str_replace("_"," ",$label));
+					$paramDesc = defined(get_class($module).'::MESSAGE_PARAM_'.$label.'_DESC') ? '<br /><small>'.$cms_language->getMessage(constant(get_class($module).'::MESSAGE_PARAM_'.$label.'_DESC'), false, $moduleCodename).'</small>' : '';
+					
 					$content .= '
 						<tr>
-							<td class="admin" align="right">'.htmlspecialchars(str_replace("_"," ",$label)).'</td>
-							<td class="admin">'.$paramContent.'</td>
+							<td class="admin" align="right" valign="top">'.$paramLabel.'</td>
+							<td class="admin">'.$paramContent.$paramDesc.'</td>
 						</tr>
 					';
 				} else {

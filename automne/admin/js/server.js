@@ -111,7 +111,6 @@ Automne.server = {
 		if (options.evalJSon !== false && xml && xml.getElementsByTagName('jsoncontent').length) {
 			var jsonResponse = {};
 			try{
-				//eval('jsonResponse = '+xml.getElementsByTagName('jsoncontent').item(0).firstChild.nodeValue+';');
 				jsonResponse = Ext.decode(xml.getElementsByTagName('jsoncontent').item(0).firstChild.nodeValue);
 			} catch(e) {
 				jsonResponse = {};
@@ -227,7 +226,7 @@ Automne.server = {
 			buttons: 			Ext.MessageBox.OK,
 			closable: 			false,
 			icon: 				Ext.MessageBox.ERROR,
-			minWidth:			500
+			minWidth:			600
 		});
 	}
 };

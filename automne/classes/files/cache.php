@@ -44,6 +44,13 @@ class CMS_cache extends CMS_grandFather {
 	protected $_auto = false;
 	
 	/**
+	  * Does the cache is context aware ?
+	  * @var boolean
+	  * @access private
+	  */
+	protected $_context = false;
+	
+	/**
 	  * Constructor.
 	  * initialize object.
 	  *
@@ -55,7 +62,8 @@ class CMS_cache extends CMS_grandFather {
 	  */
 	function __construct($hash, $type, $lifetime = null, $contextAware = false) {
 		if ($contextAware) {
-			$this->_parameters['hash'] = $hash.'_'.CMS_context::getContextHash();
+			$this->_parameters['hash'] = $hash.'_'.CMS_session::getContextHash();
+			$this->_context = true;
 		} else {
 			$this->_parameters['hash'] = $hash;
 		}
@@ -93,7 +101,7 @@ class CMS_cache extends CMS_grandFather {
 			'cache_dir'					=> PATH_CACHE_FS.'/'.$this->_parameters['type'],		// Directory where the cache files are stored
 			'cache_file_umask'			=> octdec(FILES_CHMOD),
 			'hashed_directory_umask'	=> octdec(DIRS_CHMOD),
-			'hashed_directory_level'	=> 1,
+			'hashed_directory_level'	=> 2,
 		);
 		// getting a Zend_Cache_Core object
 		if (!class_exists('Zend_Cache')) {
@@ -123,7 +131,7 @@ class CMS_cache extends CMS_grandFather {
 			return false;
 		}
 		try {
-			return !$_POST && !isset($_REQUEST['atm-skip-cache']) && $this->_cache->test($this->_parameters['hash']);
+			return (!$this->_context || !$_POST) && !isset($_REQUEST['atm-skip-cache']) && $this->_cache->test($this->_parameters['hash']);
 		} catch (Zend_Cache_Exception $e) {
 			$this->raiseError($e->getMessage());
 			return false;
@@ -290,10 +298,11 @@ class CMS_cache extends CMS_grandFather {
 				}
 				unset($matches);
 			}
-			//do not save content if cache has auto lifetime and content has phpnode or random element
+			//do not save content if cache has auto lifetime and content has phpnode or random or form elements
 			if ($this->_auto && 
 				(isset($cachedElements['phpnode']) && $cachedElements['phpnode'])
-				|| (isset($cachedElements['random']) && $cachedElements['random'])) {
+				|| (isset($cachedElements['random']) && $cachedElements['random'])
+				|| (isset($cachedElements['form']) && $cachedElements['form'])) {
 				return $content;
 			}
 			$this->save($content, $cachedElements);

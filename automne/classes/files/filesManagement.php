@@ -100,19 +100,20 @@ class CMS_file extends CMS_grandFather
 	function __construct($name, $from=self::FILE_SYSTEM, $type=self::TYPE_FILE) {
 		$this->_name = ($from==self::FILE_SYSTEM) ? $name : $_SERVER['DOCUMENT_ROOT'].$name;
 		if ($this->_name) {
-			if (@is_file(realpath($this->_name)) && $type == self::TYPE_FILE) {
-				$this->_name = realpath($this->_name);
+			$name = realpath($this->_name);
+			if (@is_file($name) && $type == self::TYPE_FILE) {
+				$this->_name = $name;
 				$this->_type = self::TYPE_FILE;
 				$this->_exists = true;
 				$this->_perms = $this->getFilePerms($this->_name);
 				$this->_basedir = dirname($this->_name);
 				$this->_filename = basename($this->_name);
-			} elseif (@is_dir(realpath($this->_name)) && $type == self::TYPE_DIRECTORY) {
-				$this->_name = realpath($this->_name);
+			} elseif (@is_dir($name) && $type == self::TYPE_DIRECTORY) {
+				$this->_name = $name;
 				$this->_type = self::TYPE_DIRECTORY;
 				$this->_exists = true;
 				$this->_perms = $this->getFilePerms($this->_name);
-				$this->_basedir = $this->_name;
+				$this->_basedir = $name;
 				$this->_filename = "";
 			} else {
 				$this->_exists = false;
@@ -331,23 +332,25 @@ class CMS_file extends CMS_grandFather
 						$array_map_function = '';
 					}
 					$handle = @fopen($this->_name, 'rb');
-					while (($data = fgetcsv($handle, 4096, $csvargs['delimiter'], $csvargs['enclosure'])) !== false) {
-						if ($array_map_function) {
-							$data = array_map($array_map_function, $data);
-						}
-						//at first line, get number of values/lines of CSV array
-						if ($csvargs['strict']) {
-							if (!$count) {
-								$num = count($data);
-							} 
-							//check for number of values in current line (tolerance is one because last CSV value can be empty so PHP array is smaller)
-							elseif (sizeof($data) != $num && (sizeof($data)+1) != $num && (sizeof($data)-1) != $num) {
-								$this->raiseError("Invalid CSV content file : column count does not match : ".sizeof($data)." should be ".$num." at line ".($count+1));
-								return false;
+					if (is_resource($handle)) {
+						while (($data = fgetcsv($handle, 4096, $csvargs['delimiter'], $csvargs['enclosure'])) !== false) {
+							if ($array_map_function) {
+								$data = array_map($array_map_function, $data);
 							}
+							//at first line, get number of values/lines of CSV array
+							if ($csvargs['strict']) {
+								if (!$count) {
+									$num = count($data);
+								} 
+								//check for number of values in current line (tolerance is one because last CSV value can be empty so PHP array is smaller)
+								elseif (sizeof($data) != $num && (sizeof($data)+1) != $num && (sizeof($data)-1) != $num) {
+									$this->raiseError("Invalid CSV content file : column count does not match : ".sizeof($data)." should be ".$num." at line ".($count+1));
+									return false;
+								}
+							}
+							$array[] = $data;
+							$count++;
 						}
-						$array[] = $data;
-						$count++;
 					}
 					return $array;
 				} else {
@@ -682,8 +685,7 @@ class CMS_file extends CMS_grandFather
 	 * @return boolean true on success, false on failure
 	 * @static
 	 */
-	function deleteFile($file)
-	{
+	function deleteFile($file) {
 		$file = realpath($file);
 		if (is_file($file)) {
 			return @unlink($file);
@@ -703,42 +705,30 @@ class CMS_file extends CMS_grandFather
 	 * @return boolean true on success, false on failure
 	 * @static
 	 */
-	function deltree($dir, $withDir = false)
-	{
+	function deltree($dir, $withDir = false) {
 		$dir = realpath($dir);
-		if (!file_exists($dir)) {
+		if (!is_dir($dir)) {
 			return false;
 		}
-		$current_dir = @opendir($dir);
-		while($entryname = @readdir($current_dir)) {
-			if (@is_dir($dir.'/'.$entryname) && ($entryname != '.' && $entryname!='..')) {
-				if (!CMS_file::deltree($dir.'/'.$entryname,true)) {
-					return false;
-				}
-			} elseif ($entryname != '.' and $entryname!='..') {
-				if (!@unlink($dir.'/'.$entryname)) {
-					CMS_file::makeWritable($dir.'/'.$entryname);
-					if (!@unlink($dir.'/'.$entryname)) {
-						return false;
+		$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::CHILD_FIRST);
+		$return = true;
+		foreach($objects as $name => $object){
+		    if ($object->isWritable()) {
+				if ($object->isFile()) {
+					$return &= unlink($object->getPathname());
+				} else {
+					if ($object->getFilename() != "." && $object->getFilename() != ".." && ($withDir || ($object->getPathname() != $dir))) {
+						$return &= rmdir($object->getPathname());
 					}
 				}
-			}
-		}
-		@closedir($current_dir);
-		if ($withDir) {
-			if (!@rmdir($dir)) {
-				CMS_file::makeWritable($dir);
-				if (!@rmdir($dir)) {
-					return false;
-				} else {
-					return true;
-				}
 			} else {
-				return true;
+				return false;
 			}
-		} else {
-			return true;
 		}
+		if ($withDir) {
+			$return &= rmdir($dir);
+		}
+		return $return;
 	}
 	
 	/**
@@ -749,34 +739,18 @@ class CMS_file extends CMS_grandFather
 	 * @return boolean true on success, false on failure
 	 * @static
 	 */
-	function deltreeSimulation($dir, $withDir=false)
-	{
+	function deltreeSimulation($dir, $withDir=false) {
 		$dir = realpath($dir);
-		if (!file_exists($dir)) {
+		if (!is_dir($dir)) {
 			return false;
 		}
-		$current_dir = @opendir($dir);
-		while($entryname = @readdir($current_dir)) {
-			if (@is_dir($dir.'/'.$entryname) && ($entryname != '.' && $entryname!='..')) {
-				if (!CMS_file::deltreeSimulation($dir.'/'.$entryname,true)) {
-					return false;
-				}
-			} elseif ($entryname != '.' and $entryname!='..') {
-				if (!CMS_file::makeWritable($dir.'/'.$entryname)) {
-					return false;
-				}
-			}
-		}
-		@closedir($current_dir);
-		if ($withDir) {
-			if (!CMS_file::makeWritable($dir)) {
+		$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::CHILD_FIRST);
+		foreach($objects as $name => $object){
+		    if (!$object->isWritable()) {
 				return false;
-			} else {
-				return true;
 			}
-		} else {
-			return true;
 		}
+		return true;
 	}
 	
 	/**
@@ -796,7 +770,7 @@ class CMS_file extends CMS_grandFather
 			return true;
 		} else {
 			//use default chmod value
-			@chmod($fpath, octdec(FILES_CHMOD));
+			@chmod($f, octdec(FILES_CHMOD));
 			if (@is_readable($f)) {
 				return true;
 			} else {
@@ -838,7 +812,7 @@ class CMS_file extends CMS_grandFather
 		if (is_writable($f)) {
 			return true;
 		} else {
-			@chmod($fpath, octdec(FILES_CHMOD));
+			@chmod($f, octdec(FILES_CHMOD));
 			if (@is_writable($f)) {
 				return true;
 			} else {
@@ -877,7 +851,7 @@ class CMS_file extends CMS_grandFather
 			//assume we are on windows platform because this function does not exists before PHP5.0.0 (so files are always executable)
 			return true;
 		} else {
-			@chmod($fpath, octdec(DIRS_CHMOD));
+			@chmod($f, octdec(DIRS_CHMOD));
 			if (CMS_file::fileIsExecutable($f)) {
 				return true;
 			} else {
@@ -1074,17 +1048,17 @@ class CMS_file extends CMS_grandFather
 	 */
 	function getTmpPath() {
 		$tmpPath = '';
-		if (@is_dir(ini_get("session.save_path")) && is_object(@dir(ini_get("session.save_path")))) {
-			$tmpPath = ini_get("session.save_path");
-		} elseif(@is_dir(PATH_PHP_TMP) && is_object(@dir(PATH_PHP_TMP))) {
+		if(PATH_PHP_TMP && @is_dir(PATH_PHP_TMP) && is_object(@dir(PATH_PHP_TMP)) && is_writable(PATH_PHP_TMP)) {
 			$tmpPath = PATH_PHP_TMP;
-		} elseif (@is_dir(PATH_TMP_FS) && is_object(@dir(PATH_TMP_FS))){
+		} elseif (@is_dir(ini_get("session.save_path")) && is_object(@dir(ini_get("session.save_path"))) && is_writable(ini_get("session.save_path"))) {
+			$tmpPath = ini_get("session.save_path");
+		} elseif (@is_dir(PATH_TMP_FS) && is_object(@dir(PATH_TMP_FS)) && is_writable(PATH_TMP_FS)){
 			$tmpPath = PATH_TMP_FS;
 		} else {
-			CMS_grandFather::raiseError('Can\'t found temporary path ...');
+			CMS_grandFather::raiseError('Can\'t found writable temporary path ...');
 			return false;
 		}
-		if (!@is_writable($tmpPath)) {
+		if (!is_writable($tmpPath)) {
 			CMS_grandFather::raiseError('Can\'t write in temporary path : '.$tmpPath);
 			return false;
 		}
@@ -1293,13 +1267,19 @@ class CMS_file extends CMS_grandFather
 	    @set_time_limit(0);
 		
 		//send http headers
-		header("Cache-Control: ", false);// leave blank to avoid IE errors
-		header("Pragma: ", false);// leave blank to avoid IE errors
+		header("Cache-Control: public", true);//This is needed to avoid bug with IE in HTTPS
+		header("Pragma:", true);//This is needed to avoid bug with IE in HTTPS
 		header('Content-Type: '.$filetype);
 		header("Content-transfer-encoding: binary");
 		clearstatcache(); //to avoid bug on filesize
 		header('Content-Length: '.(string) filesize($source));
 		header('Content-Disposition: '.($inline ? 'inline' : 'attachment').'; filename="'.basename($source).'"');
+		
+		//If mod_xsendfile exists, use it to send files
+		if (!$deleteFile && ((isset($_SERVER["REDIRECT_ATM_X_SENDFILE"]) && $_SERVER["REDIRECT_ATM_X_SENDFILE"] == 1) || getenv('ATM_X_SENDFILE') == 1)) {
+			header('X-Sendfile: '.$source);
+			exit;
+		}
 		
 		//send file
 		if($file = fopen($source, 'rb')){

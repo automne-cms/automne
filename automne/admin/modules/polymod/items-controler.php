@@ -54,7 +54,6 @@ $action = sensitiveIO::request('action', array('save', 'save-validate', 'setRowP
 $objectId = sensitiveIO::request('type', 'sensitiveIO::isPositiveInteger');
 $itemId = sensitiveIO::request('item', 'sensitiveIO::isPositiveInteger');
 $codename = sensitiveIO::request('module', CMS_modulesCatalog::getAllCodenames());
-
 $fieldsValues = sensitiveIO::request('polymodFieldsValue', 'is_array', array());
 $pubStart = sensitiveIO::request('pubStart');
 $pubEnd = sensitiveIO::request('pubEnd');
@@ -80,7 +79,7 @@ if (!$cms_user->hasModuleClearance($codename, CLEARANCE_MODULE_EDIT)) {
 
 //load object
 if ($objectId) {
-	$object = new CMS_poly_object_definition($objectId);
+	$object = CMS_poly_object_catalog::getObjectDefinition($objectId);
 	$objectLabel = sensitiveIO::sanitizeJSString($object->getLabel($cms_language));
 }
 if ($objectId && (!isset($object) || $object->hasError())) {
@@ -100,7 +99,7 @@ if (isset($object)) {
 					$lockUser = CMS_profile_usersCatalog::getById($lock);
 					if ($lockUser->getUserId() != $cms_user->getUserId()) {
 						$lockDate = $item->getLockDate();
-						$date = $lockDate ? $lockDate->getLocalizedDate($cms_language->getDateFormat().' à H:i:s') : '';
+						$date = $lockDate ? $lockDate->getLocalizedDate($cms_language->getDateFormat().' @ H:i:s') : '';
 						$name = sensitiveIO::sanitizeJSString($lockUser->getFullName());
 						CMS_grandFather::raiseError('Error, item '.$itemId.' is locked by '.$lockUser->getFullName());
 						$jscontent = "
@@ -246,7 +245,7 @@ switch ($action) {
 			$parameters = array();
 			$parameters['itemID'] = $itemId;
 			$parameters['module'] = $codename;
-			$cms_page = $cms_context->getPage();
+			$cms_page = CMS_session::getPage();
 			if (is_object($cms_page) && !$cms_page->hasError()) {
 				$parameters['pageID'] = $cms_page->getID();
 			}
@@ -277,7 +276,7 @@ switch ($action) {
 		$rowId = sensitiveIO::request('rowType', 'sensitiveIO::isPositiveInteger');
 		$rowTag = sensitiveIO::request('rowTag');
 		$cs = sensitiveIO::request('cs');
-		$currentPage = is_object($cms_context) ? sensitiveIO::request('page', 'sensitiveIO::isPositiveInteger', $cms_context->getPageID()) : '';
+		$currentPage = sensitiveIO::request('page', 'sensitiveIO::isPositiveInteger', CMS_session::getPageID());
 		$blockId = sensitiveIO::request('block');
 		$blockClass = sensitiveIO::request('blockClass');
 		$value = sensitiveIO::request('value', 'is_array');

@@ -39,6 +39,10 @@ class CMS_object_string extends CMS_object_common
 	const MESSAGE_OBJECT_STRING_PARAMETER_MAXLENGHT_DESC = 536;
 	const MESSAGE_OBJECT_STRING_OPERATOR_COMPARAISON_DESCRIPTION = 599;
 	const MESSAGE_OBJECT_STRING_OPERATOR_ARRAY_DESCRIPTION = 600;
+	const MESSAGE_OBJECT_TEXT_OPERATOR_ANY_DESCRIPTION = 635;
+	const MESSAGE_OBJECT_TEXT_OPERATOR_ALL_DESCRIPTION = 636;
+	const MESSAGE_OBJECT_TEXT_OPERATOR_PHRASE_DESCRIPTION = 637;
+	const MESSAGE_OBJECT_TEXT_OPERATOR_BEGINSWITH_DESCRIPTION = 638;
 	
 	/**
 	  * object label
@@ -173,6 +177,10 @@ class CMS_object_string extends CMS_object_common
       * @access public
       */
 	function getInput($fieldID, $language, $inputParams) {
+		//hidden field : use parent method
+		if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
+			return parent::getInput($fieldID, $language, $inputParams);
+		}
 		if (isset($inputParams['prefix'])) {
 			$prefixName = $inputParams['prefix'];
 			unset($inputParams['prefix']);
@@ -189,7 +197,7 @@ class CMS_object_string extends CMS_object_common
 		//append field id to html field parameters (if not already exists)
 		$htmlParameters .= (!isset($inputParams['id'])) ? ' id="'.$prefixName.$this->_field->getID().'_0"' : '';
 		//create field value
-		$value = $this->_subfieldValues[0]->getValue();
+		$value = isset($inputParams['value']) ? $inputParams['value'] : $this->_subfieldValues[0]->getValue();
 		//then create field HTML
 		$html .= ($html) ? '<br />':'';
 		$html .= '<input type="text"'.$htmlParameters.' name="'.$prefixName.$this->_field->getID().'_0" maxlength="'.$params['maxLength'].'" value="'.$value.'" />'."\n";
@@ -270,6 +278,10 @@ class CMS_object_string extends CMS_object_common
 		$labels['operator']['like'] = $language->getMessage(self::MESSAGE_OBJECT_STRING_OPERATOR_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['operator']['!= '] = $language->getMessage(self::MESSAGE_OBJECT_STRING_OPERATOR_COMPARAISON_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['operator']['in, not in '] = $language->getMessage(self::MESSAGE_OBJECT_STRING_OPERATOR_ARRAY_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['operator']['any'] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_OPERATOR_ANY_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['operator']['all'] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_OPERATOR_ALL_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['operator']['phrase'] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_OPERATOR_PHRASE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['operator']['beginswith'] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_OPERATOR_BEGINSWITH_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		return $labels;
 	}
 	
@@ -289,11 +301,18 @@ class CMS_object_string extends CMS_object_common
 			'like',
 			'!=',
 			'=',
+			'any',
+			'all',
+			'phrase',
+			'beginswith'
 		);
 		$supportedOperatorForArray = array(
 			'in',
 			'not in',
+			'any',
+			'all',
 		);
+		
 		// No operator : use default search
 		if (!$operator) {
 			return parent::getFieldSearchSQL($fieldID, $value, $operator, $where, $public);
@@ -309,16 +328,92 @@ class CMS_object_string extends CMS_object_common
 			return '';
 		}
 		$statusSuffix = ($public) ? "_public":"_edited";
+		$cleanedWords = array();
 		if(is_array($value)){
-			foreach($value as $i => $val){
-				$value[$i] = "'".SensitiveIO::sanitizeSQLString($val)."'";
+			if(($operator == 'any') || ($operator == 'all')) {
+				// in this case, we do a specific cleanup
+				foreach($value as $i => $val){
+					$cleanedWords[] = str_replace(array('%','_'), array('\%','\_'), $val);
+				}
 			}
-			$value = '('.implode(',', $value).')';
+			else {
+				foreach($value as $i => $val){
+					$value[$i] = "'".SensitiveIO::sanitizeSQLString($val)."'";
+				}
+				$value = '('.implode(',', $value).')';
+			}
+			
 		} elseif (strtolower($value) == 'null') {
 			$value = "''";
 		} else {
-			$value = "'".SensitiveIO::sanitizeSQLString($value)."'";
+			if (($operator == 'any') || ($operator == 'all')) {
+				$words = array();
+				$words = array_map("trim",array_unique(explode(" ", $value)));
+				
+				foreach ($words as $aWord) {
+					if ($aWord && $aWord!='' && io::strlen($aWord) >= 3) {
+						$aWord = str_replace(array('%','_'), array('\%','\_'), $aWord);
+						$cleanedWords[] = $aWord;
+					}
+				}
+			} elseif ($operator != 'phrase' && $operator != 'beginswith') {
+				// we keep this for backward compatibility, where the user can specify his search with % at the beginning / end
+				$value = "'".SensitiveIO::sanitizeSQLString($value)."'";
+			}
 		}
+		
+		$whereClause = '';
+		switch ($operator) {
+			case 'any';
+				$whereClause .= '(';
+				//then add keywords
+				$count='0';
+				foreach ($cleanedWords as $aWord) {
+					$whereClause.= ($count) ? ' or ':'';
+					$count++;
+					$whereClause .= "value like '%".$aWord."%'";
+					if (htmlentities($aWord) != $aWord) {
+						$whereClause .= " or value like '%".htmlentities($aWord)."%'";
+					}
+				}
+				$whereClause .= ')';
+			break;
+			case 'all':
+				$whereClause .= '(';
+				//then add keywords
+				$count='0';
+				foreach ($cleanedWords as $aWord) {
+					$whereClause.= ($count) ? ' and ':'';
+					$count++;
+					if (htmlentities($aWord) != $aWord) {
+						$whereClause .= "(value like '%".$aWord."%' or value like '%".htmlentities($aWord)."%')";
+					} else {
+						$whereClause .= "value like '%".$aWord."%'";
+					}
+				}
+				$whereClause .= ')';
+			break;
+			case 'phrase':
+				$value = str_replace(array('%','_'), array('\%','\_'), trim($value));
+				if (htmlentities($value) != $value) {
+					$whereClause .= "(value like '%".$value."%' or value like '%".htmlentities($value)."%')";
+				} else {
+					$whereClause .= "value like '%".$value."%'";
+				}
+			break;
+			case 'beginswith':
+				$value = str_replace(array('%','_'), array('\%','\_'), trim($value));
+				if (htmlentities($value) != $value) {
+					$whereClause .= "(value like '".$value."%' or value like '".htmlentities($value)."%')";
+				} else {
+					$whereClause .= "value like '".$value."%'";
+				}
+			break;
+			default:
+				$whereClause .= " value ".$operator." ".$value;
+			break;
+		}
+		
 		$sql = "
 			select
 				distinct objectID
@@ -326,8 +421,9 @@ class CMS_object_string extends CMS_object_common
 				mod_subobject_string".$statusSuffix."
 			where
 				objectFieldID = '".SensitiveIO::sanitizeSQLString($fieldID)."'
-				and value ".$operator." ".$value."
+				and ". $whereClause. "
 				$where";
+		
 		return $sql;
 	}
 }

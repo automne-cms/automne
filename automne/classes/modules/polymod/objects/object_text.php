@@ -37,6 +37,7 @@ class CMS_object_text extends CMS_object_common
 	const MESSAGE_OBJECT_TEXT_PARAMETER_HTML_ALLOWED = 183;
 	const MESSAGE_OBJECT_TEXT_PARAMETER_WYSIWYG_TYPE = 184;
 	const MESSAGE_OBJECT_TEXT_HTMLVALUE_DESCRIPTION = 255;
+	const MESSAGE_OBJECT_TEXT_TXTVALUE_DESCRIPTION = 627;
 	const MESSAGE_OBJECT_TEXT_PARAMETER_WYSIWYG_WIDTH = 342;
 	const MESSAGE_OBJECT_TEXT_PARAMETER_WYSIWYG_HEIGHT = 341;
 	const MESSAGE_OBJECT_TEXT_HASVALUE_DESCRIPTION = 411;
@@ -44,7 +45,11 @@ class CMS_object_text extends CMS_object_common
 	const MESSAGE_OBJECT_TEXT_OPERATOR_DESCRIPTION = 389;
 	const MESSAGE_OBJECT_TEXT_OPERATOR_COMPARAISON_DESCRIPTION = 599;
 	const MESSAGE_OBJECT_TEXT_OPERATOR_ARRAY_DESCRIPTION = 600;
-	
+	const MESSAGE_OBJECT_TEXT_OPERATOR_ANY_DESCRIPTION = 635;
+	const MESSAGE_OBJECT_TEXT_OPERATOR_ALL_DESCRIPTION = 636;
+	const MESSAGE_OBJECT_TEXT_OPERATOR_PHRASE_DESCRIPTION = 637;
+	const MESSAGE_OBJECT_TEXT_OPERATOR_BEGINSWITH_DESCRIPTION = 638;
+
 	/**
 	  * object label
 	  * @var integer
@@ -248,6 +253,10 @@ class CMS_object_text extends CMS_object_common
       * @access public
       */
 	function getInput($fieldID, $language, $inputParams) {
+		//hidden field : use parent method
+		if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
+			return parent::getInput($fieldID, $language, $inputParams);
+		}
 		global $cms_user;
 		$params = $this->getParamsValues();
 		if (isset($inputParams['prefix'])) {
@@ -340,6 +349,7 @@ class CMS_object_text extends CMS_object_common
 	function getStructure() {
 		$structure = parent::getStructure();
 		$structure['htmlvalue'] = '';
+		$structure['txtvalue'] = '';
 		$structure['hasvalue'] = '';
 		$structure['rawvalue'] = '';
 		return $structure;
@@ -374,41 +384,18 @@ class CMS_object_text extends CMS_object_common
 			case 'label':
 				return (isset($params['html']) && $params['html']) ? $this->getLabel() : io::htmlspecialchars($this->getLabel());
 			break;
+			case 'txtvalue':
+				if (isset($params['html']) && $params['html']) {
+					return strip_tags(str_replace('<br />',"\n",str_replace(array("\n","\r"),"", $this->_evalPHPContent($this->_subfieldValues[0]->getValue()))));
+				} else {
+					return $this->_subfieldValues[0]->getValue();
+				}
+			break;
 			case 'htmlvalue':
 			case 'value':
 				//do not put an htmlspecialchars on text only value because line-breaks are auto converted to <br /> tags
 				if (isset($params['html']) && $params['html']) {
-					//eval() the PHP code
-					$content = $this->_subfieldValues[0]->getValue();
-					if ($this->_subfieldValues[0]->getValue() != '' && !function_exists((string) $this->_subfieldValues[0]->getValue())) {
-						//first, try to get all items ids to search
-						$count = preg_match_all("#(<\?php|<\?).*'([0-9]*?)', '([0-9]*?)',.*\?>#Usi", $this->_subfieldValues[0]->getValue(), $matches);
-						//if more than one item is founded in text, it is faster to search them by one search
-						if ($count > 1) {
-							$ids = $GLOBALS['polymod']['preparedItems'] = array();
-							//then sort all items ids by plugin ID
-							foreach ($matches[2] as $key => $match) {
-								$ids[$match][] = $matches[3][$key];
-							}
-							//then search all items
-							foreach ($ids as $pluginID => $itemsIds) {
-								//get plugin
-								$plugin = new CMS_poly_plugin_definitions($pluginID);
-								if (is_object($plugin) && !$plugin->hasError()) {
-									//then search all objects and put results in a global var usable in CMS_poly_definition_functions::pluginCode method (ugly i know)
-									$GLOBALS['polymod']['preparedItems'][$plugin->getValue('objectID')] = CMS_poly_object_catalog::getAllObjects($plugin->getValue('objectID'), $this->_public, array('items' => $itemsIds), true);
-								}
-							}
-						}
-            			//then eval all php codes if any
-						if (strpos($this->_subfieldValues[0]->getValue(), '<?php') !== false) {
-							$content = io::evalPHPCode($this->_subfieldValues[0]->getValue());
-						}
-						if (isset($GLOBALS['polymod']['preparedItems'])) {
-							unset($GLOBALS['polymod']['preparedItems']);
- 						}
-					}
-					return $content;
+					return $this->_evalPHPContent($this->_subfieldValues[0]->getValue());
 				} else {
 					return ($name == 'value') ? str_replace('<br />',"\n",str_replace(array("\n","\r"),"",$this->_subfieldValues[0]->getValue())) : sensitiveIO::convertTextToHTML($this->_subfieldValues[0]->getValue(), false);
 				}
@@ -425,6 +412,39 @@ class CMS_object_text extends CMS_object_common
 		}
 	}
 	
+	protected function _evalPHPContent($content) {
+		//eval() the PHP code
+		if ($content != '' && !function_exists((string) $content)) {
+			//first, try to get all items ids to search
+			$count = preg_match_all("#(<\?php|<\?).*'([0-9]*?)', '([0-9]*?)',.*\?>#Usi", $content, $matches);
+			//if more than one item is founded in text, it is faster to search them by one search
+			if ($count > 1) {
+				$ids = $GLOBALS['polymod']['preparedItems'] = array();
+				//then sort all items ids by plugin ID
+				foreach ($matches[2] as $key => $match) {
+					$ids[$match][] = $matches[3][$key];
+				}
+				//then search all items
+				foreach ($ids as $pluginID => $itemsIds) {
+					//get plugin
+					$plugin = new CMS_poly_plugin_definitions($pluginID);
+					if ($plugin && is_object($plugin) && !$plugin->hasError()) {
+						//then search all objects and put results in a global var usable in CMS_poly_definition_functions::pluginCode method (ugly i know)
+						$GLOBALS['polymod']['preparedItems'][$plugin->getValue('objectID')] = CMS_poly_object_catalog::getAllObjects($plugin->getValue('objectID'), $this->_public, array('items' => $itemsIds), true);
+					}
+				}
+			}
+         	//then eval all php codes if any
+			if (strpos($content, '<?php') !== false) {
+				$content = io::evalPHPCode($content);
+			}
+			if (isset($GLOBALS['polymod']['preparedItems'])) {
+				unset($GLOBALS['polymod']['preparedItems']);
+			}
+		}
+		return $content;
+	}
+	
 	/**
 	  * get labels for object structure and functions
 	  *
@@ -434,10 +454,15 @@ class CMS_object_text extends CMS_object_common
 	function getLabelsStructure(&$language) {
 		$labels = parent::getLabelsStructure($language);
 		$labels['structure']['htmlvalue'] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_HTMLVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['structure']['txtvalue'] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_TXTVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['hasvalue'] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_HASVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['operator']['like'] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_OPERATOR_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['operator']['!= '] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_OPERATOR_COMPARAISON_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['operator']['in, not in '] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_OPERATOR_ARRAY_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['operator']['any'] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_OPERATOR_ANY_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['operator']['all'] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_OPERATOR_ALL_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['operator']['phrase'] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_OPERATOR_PHRASE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['operator']['beginswith'] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_OPERATOR_BEGINSWITH_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		
 		return $labels;
 	}
@@ -458,11 +483,18 @@ class CMS_object_text extends CMS_object_common
 			'like',
 			'!=',
 			'=',
+			'any',
+			'all',
+			'phrase',
+			'beginswith'
 		);
 		$supportedOperatorForArray = array(
 			'in',
 			'not in',
+			'any',
+			'all',
 		);
+		
 		// No operator : use default search
 		if (!$operator) {
 			return parent::getFieldSearchSQL($fieldID, $value, $operator, $where, $public);
@@ -478,14 +510,94 @@ class CMS_object_text extends CMS_object_common
 			return '';
 		}
 		$statusSuffix = ($public) ? "_public":"_edited";
+		$cleanedWords = array();
 		if(is_array($value)){
-			foreach($value as $i => $val){
-				$value[$i] = "'".SensitiveIO::sanitizeSQLString($val)."'";
+			if(($operator == 'any') || ($operator == 'all')) {
+				// in this case, we do a specific cleanup
+				foreach($value as $i => $val){
+					$cleanedWords[] = str_replace(array('%','_'), array('\%','\_'), $val);
+					
+					
+				}
 			}
-			$value = '('.implode(',', $value).')';
+			else {
+				foreach($value as $i => $val){
+					$value[$i] = "'".SensitiveIO::sanitizeSQLString($val)."'";
+				}
+				$value = '('.implode(',', $value).')';
+			}
+			
+		} elseif (strtolower($value) == 'null') {
+			$value = "''";
 		} else {
-			$value = "'".SensitiveIO::sanitizeSQLString($value)."'";
+			if(($operator == 'any') || ($operator == 'all')) {
+				$words = array();
+				$words = array_map("trim",array_unique(explode(" ", $value)));
+				
+				foreach ($words as $aWord) {
+					if ($aWord && $aWord!='' && io::strlen($aWord) >= 3) {
+						$aWord = str_replace(array('%','_'), array('\%','\_'), $aWord);
+						$cleanedWords[] = $aWord;
+					}
+				}
+			} elseif ($operator != 'phrase' && $operator != 'beginswith') {
+				// we keep this for backward compatibility, where the user can specify his search with % at the beginning / end
+				$value = "'".SensitiveIO::sanitizeSQLString($value)."'";
+			}
 		}
+		
+		$whereClause = '';
+		switch ($operator) {
+			case 'any';
+				$whereClause .= '(';
+				//then add keywords
+				$count='0';
+				foreach ($cleanedWords as $aWord) {
+					$whereClause.= ($count) ? ' or ':'';
+					$count++;
+					$whereClause .= "value like '%".$aWord."%'";
+					if (htmlentities($aWord) != $aWord) {
+						$whereClause .= " or value like '%".htmlentities($aWord)."%'";
+					}
+				}
+				$whereClause .= ')';
+			break;
+			case 'all':
+				$whereClause .= '(';
+				//then add keywords
+				$count='0';
+				foreach ($cleanedWords as $aWord) {
+					$whereClause.= ($count) ? ' and ':'';
+					$count++;
+					if (htmlentities($aWord) != $aWord) {
+						$whereClause .= "(value like '%".$aWord."%' or value like '%".htmlentities($aWord)."%')";
+					} else {
+						$whereClause .= "value like '%".$aWord."%'";
+					}
+				}
+				$whereClause .= ')';
+			break;
+			case 'phrase':
+				$value = str_replace(array('%','_'), array('\%','\_'), trim($value));
+				if (htmlentities($value) != $value) {
+					$whereClause .= "(value like '%".$value."%' or value like '%".htmlentities($value)."%')";
+				} else {
+					$whereClause .= "value like '%".$value."%'";
+				}
+			break;
+			case 'beginswith':
+				$value = str_replace(array('%','_'), array('\%','\_'), trim($value));
+				if (htmlentities($value) != $value) {
+					$whereClause .= "(value like '".$value."%' or value like '".htmlentities($value)."%')";
+				} else {
+					$whereClause .= "value like '".$value."%'";
+				}
+			break;
+			default:
+				$whereClause .= " value ".$operator." ".$value;
+			break;
+		}
+		
 		$sql = "
 			select
 				distinct objectID
@@ -493,7 +605,7 @@ class CMS_object_text extends CMS_object_common
 				mod_subobject_text".$statusSuffix."
 			where
 				objectFieldID = '".SensitiveIO::sanitizeSQLString($fieldID)."'
-				and value ".$operator." ".$value."
+				and ". $whereClause. "
 				$where";
 		return $sql;
 	}

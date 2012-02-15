@@ -89,13 +89,19 @@ class CMS_tree extends CMS_grandFather
 	  */
 	static function getPageValue($id, $type, $public = true, $currentPageId = null) {
 		static $pagesInfos;
+		//if no current page given, try to get it from constant
+		if (!io::isPositiveInteger($currentPageId) && defined('CURRENT_PAGE') && io::isPositiveInteger(CURRENT_PAGE)) {
+			$currentPageId = CURRENT_PAGE;
+		}
 		if (!SensitiveIO::isPositiveInteger($id)) {
 			if ($id == 'self' && SensitiveIO::isPositiveInteger($currentPageId)) {
 				$id = $currentPageId;
+			} elseif ($id == 'father' && SensitiveIO::isPositiveInteger($currentPageId)) {
+				$id = CMS_tree::getFather($currentPageId);
 			} elseif (SensitiveIO::isPositiveInteger($currentPageId) && strtolower(io::sanitizeAsciiString($id)) == $id) {
 				return CMS_tree::getPageCodenameValue($id, $currentPageId, $type);
 			} elseif ($type != 'exists') {
-				CMS_grandFather::raiseError("Page id must be positive integer : ".print_r(func_get_args(), true));
+				CMS_grandFather::raiseError("Page id must be positive integer : ".print_r(func_get_args(), true).' - '.io::getCallInfos(3));
 				return false;
 			} else {
 				return false;
@@ -1752,7 +1758,7 @@ class CMS_tree extends CMS_grandFather
 			while(!preg_match($patterns[$count] , $basename, $requestedPageId) && $count+1 < sizeof($patterns)) {
 				$count++;
 			}
-			if (isset($requestedPageId[1]) && sensitiveIO::IsPositiveInteger($requestedPageId[1])) {
+			if (isset($requestedPageId[1]) && sensitiveIO::IsPositiveInteger($requestedPageId[1]) && CMS_tree::getPageValue($requestedPageId[1], 'exists')) {
 				//try to instanciate the requested page
 				$cms_page = CMS_tree::getPageByID($requestedPageId[1]);
 				if ($cms_page && !$cms_page->hasError() && (!$useDomain || $domainFounded)) {
@@ -1765,6 +1771,16 @@ class CMS_tree extends CMS_grandFather
 			if (is_object($domainFounded)) {
 				$cms_page = $domainFounded->getRoot();
 				if ($cms_page && !$cms_page->hasError()) {
+					return $cms_page;
+				}
+			}
+		}
+		//try to query modules to get page from them
+		$modules = CMS_modulesCatalog::getAll();
+		foreach ($modules as $module) {
+			if (method_exists($module, 'getPageFromURL')) {
+				$cms_page = $module->getPageFromURL($pageUrl, $useDomain);
+				if ($cms_page) {
 					return $cms_page;
 				}
 			}

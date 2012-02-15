@@ -33,8 +33,7 @@ require_once(dirname(__FILE__).'/../../cms_rc_frontend.php');
 
 if (!is_object($cms_user)) {
 	//initialize public user
-	$cms_context = new CMS_context(DEFAULT_USER_LOGIN, DEFAULT_USER_PASSWORD);
-	$cms_user = $cms_context->getUser();
+	$cms_user = CMS_profile_usersCatalog::getByID(ANONYMOUS_PROFILEUSER_ID);
 }
 
 // Prevent the browser from caching the result.

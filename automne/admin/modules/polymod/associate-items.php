@@ -44,6 +44,7 @@ $view->setSecure();
 $winId = sensitiveIO::request('winId');
 $objectId = sensitiveIO::request('type', 'sensitiveIO::isPositiveInteger');
 $codename = sensitiveIO::request('module', CMS_modulesCatalog::getAllCodenames());
+$unique = sensitiveIO::request('unique') ? true : false;
 
 if (!$codename) {
 	CMS_grandFather::raiseError('Unknown module ...');
@@ -67,7 +68,7 @@ if (!$cms_user->hasModuleClearance($codename, CLEARANCE_MODULE_EDIT)) {
 }
 
 //load current object definition
-$object = new CMS_poly_object_definition($objectId);
+$object = CMS_poly_object_catalog::getObjectDefinition($objectId);
 
 $winLabel = sensitiveIO::sanitizeJSString($cms_language->getMessage(MESSAGE_MULTI_OBJECT_CHOOSE_ELEMENT,array($object->getObjectLabel($cms_language)), MOD_POLYMOD_CODENAME));
 
@@ -77,8 +78,11 @@ $params = sensitiveIO::jsonEncode(array(
 	'winId'			=> 'selector-'.$md5,
 	'objectId'		=> $object->getID(),
 	'module'		=> $codename,
-	'multiple'		=> true
+	'multiple'		=> $unique ? 0 : 1
 ));
+
+$unique = $unique ? '1' : '0';
+
 //this is only an single item selection, so help selection a little
 $jscontent = <<<END
 	var window = Ext.getCmp('{$winId}');
@@ -94,6 +98,7 @@ $jscontent = <<<END
 		dismissDelay:	0
 	});
 	window.selectedItems = [];
+	window.selectedItem = '';
 	//create center panel
 	var center = new Ext.Panel({
 		region:				'center',
@@ -121,7 +126,11 @@ $jscontent = <<<END
 			xtype:			'button',
 			name:			'submitAdmin',
 			handler:		function() {
-				window.selectedItems = Ext.getCmp('selector-{$md5}').selectedItems;
+				if ({$unique}) {
+					window.selectedItem = Ext.getCmp('selector-{$md5}').selectedItem
+				} else {
+					window.selectedItems = Ext.getCmp('selector-{$md5}').selectedItems;
+				}
 				window.close();
 			},
 			scope:			this

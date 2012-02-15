@@ -121,6 +121,10 @@ class CMS_object_boolean extends CMS_object_common
       * @access public
       */
 	function getInput($fieldID, $language, $inputParams) {
+		//hidden field : use parent method
+		if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
+			return parent::getInput($fieldID, $language, $inputParams);
+		}
 		if (isset($inputParams['prefix'])) {
 			$prefixName = $inputParams['prefix'];
 			unset($inputParams['prefix']);
@@ -137,7 +141,7 @@ class CMS_object_boolean extends CMS_object_common
 		//append field id to html field parameters (if not already exists)
 		$htmlParameters .= (!isset($inputParams['id'])) ? ' id="'.$prefixName.$this->_field->getID().'_0"' : '';
 		//create field value
-		$value = $this->_subfieldValues[0]->getValue();
+		$value = isset($inputParams['value']) ? $inputParams['value'] : $this->_subfieldValues[0]->getValue();
 		//then create field HTML
 		$html .= ($html) ? '<br />':'';
 		$checked = ($value) ? 'checked="checked"' : '';

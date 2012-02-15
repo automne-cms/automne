@@ -11,8 +11,6 @@
 // +----------------------------------------------------------------------+
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: cms_rc_admin.php,v 1.14 2010/03/08 16:45:48 sebastien Exp $
 
 /**
   * AUTOMNE Administration rc file.
@@ -37,30 +35,10 @@ if (strpos($_SERVER['SCRIPT_NAME'], PATH_ADMIN_MODULES_WR) === 0
 	&& file_exists(PATH_MODULES_FS.'/'.pathinfo(str_replace(PATH_ADMIN_MODULES_WR.'/', '', $_SERVER['SCRIPT_NAME']),PATHINFO_DIRNAME).'.php')) {
 	require_once(PATH_MODULES_FS.'/'.pathinfo(str_replace(PATH_ADMIN_MODULES_WR.'/', '', $_SERVER['SCRIPT_NAME']),PATHINFO_DIRNAME).'.php');
 }
+
 //check for authentification
 if (APPLICATION_EXEC_TYPE == 'http') {
-	//check user privileges
-	//CMS_grandFather::log('Admin session exists : '.isset($_SESSION["cms_context"]));
-	if (isset($_SESSION["cms_context"]) && ($_SESSION["cms_context"] instanceof CMS_context)) {
-		//CMS_grandFather::log('Admin ok1');
-		$_SESSION["cms_context"]->checkSession();
-		
-		//set some useful vars
-		$cms_context =& $_SESSION["cms_context"];
-		$cms_user = $_SESSION["cms_context"]->getUser();
-		$cms_language = $cms_user->getLanguage();
-		//CMS_grandFather::log('Admin ok2');
-	} elseif (isset($_REQUEST["cms_action"]) && $_REQUEST["cms_action"] != 'logout' && CMS_context::autoLoginSucceeded()) {
-		//CMS_grandFather::log('Admin ok3');
-		$_SESSION["cms_context"]->checkSession();
-		
-		//set some useful vars
-		$cms_context =& $_SESSION["cms_context"];
-		$cms_user = $_SESSION["cms_context"]->getUser();
-		$cms_language = $cms_user->getLanguage();
-		//CMS_grandFather::log('Admin ok4');
-	} else {
-		//CMS_grandFather::log('Admin Nok1');
+	if (!isset($cms_user) || (isset($cms_user) && is_object($cms_user) && !$cms_user->hasAdminAccess())) {
 		//load interface instance
 		$view = CMS_view::getInstance();
 		//set disconnected status
@@ -69,29 +47,13 @@ if (APPLICATION_EXEC_TYPE == 'http') {
 		if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
 			$view->setDisplayMode(4); //4 = CMS_view::SHOW_RAW : this constant cannot be used here because this file can be parsed by PHP4
 		}
-		//CMS_grandFather::log('Admin Nok2');
-		$view->show();
+		if (!isset($cms_user)) {
+			$view->show();
+		}
 	}
-	//if user exists and does not have admin clearance, force disconnection
-	if (isset($cms_user) && is_object($cms_user) && !$cms_user->hasAdminAccess()) {
-		//CMS_grandFather::log('Admin Nok3');
-		//load interface instance
-		$view = CMS_view::getInstance();
-		//set disconnected status
-		$view->setDisconnected(true);
-		//CMS_grandFather::log('Admin Nok4');
-	}
-	//init message var
-	$cms_message = '';
 }
-
-//force module standard loading
-if (!class_exists('CMS_module_standard')) {
-	die('Cannot find standard module ...');
-}
-
-//regenerate current page if needed
-atm_regen();
+//init message var
+$cms_message = '';
 
 //some commonly used messages
 define("MESSAGE_BUTTON_EDIT", 24);

@@ -35,8 +35,27 @@ $redirectTo = '';
 if ($_SERVER['REQUEST_URI'] && $_SERVER['REQUEST_URI'] != $_SERVER['SCRIPT_NAME']) {
 	$pathinfo = pathinfo($_SERVER['REQUEST_URI']);
 	$basename = (isset($pathinfo['filename'])) ? $pathinfo['filename'] : $pathinfo['basename'];
-	//get page from requested url
-	if ($page = CMS_tree::analyseURL($_SERVER['REQUEST_URI'], false)) {
+	//first try to get redirection rules from CSV file if exists
+	if (file_exists(PATH_MAIN_FS.'/redirect/redirectRules.csv')) {
+		$csvFile = new CMS_file(PATH_MAIN_FS.'/redirect/redirectRules.csv');
+		$csvDatas = $csvFile->readContent('csv', 'trim', array('delimiter' => ';', 'enclosure' => '"', 'strict' => true));
+		$rules = array();
+		foreach ($csvDatas as $line => $csvData) {
+			if (isset($csvData[0]) && $csvData[0] && isset($csvData[1]) && $csvData[1]) {
+				$rules[$csvData[0]] = $csvData[1];
+			}
+		}
+		if (isset($rules[$_SERVER['REQUEST_URI']]) && io::isPositiveInteger($rules[$_SERVER['REQUEST_URI']])) {
+			$page = CMS_tree::getPageById($rules[$_SERVER['REQUEST_URI']]);
+		} elseif (isset($rules[parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)]) && io::isPositiveInteger($rules[parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)])) {
+			$page = CMS_tree::getPageById($rules[$_SERVER['REQUEST_URI']]);
+		}
+	}
+	if (!isset($page)) { //get page from requested url
+		$page = CMS_tree::analyseURL($_SERVER['REQUEST_URI'], false);
+	}
+	//get redirection URL for page
+	if (isset($page) && is_object($page) && !$page->hasError()) {
 		//get page file
 		$pageURL = $page->getURL( (substr($basename,0,5) == 'print' ? true : false) , false, PATH_RELATIVETO_FILESYSTEM);
 		if (file_exists($pageURL)) {
@@ -44,7 +63,7 @@ if ($_SERVER['REQUEST_URI'] && $_SERVER['REQUEST_URI'] != $_SERVER['SCRIPT_NAME'
 		} else {
 			//try to regenerate page
 			if ($page->regenerate(true)) {
-				clearstatcache ();
+				clearstatcache();
 				if (file_exists($pageURL)) {
 					$redirectTo = $page->getURL( (substr($basename,0,5) == 'print' ? true : false));
 				}
@@ -97,27 +116,44 @@ if (ERROR404_EMAIL_ALERT && sensitiveIO::isValidEmail(APPLICATION_MAINTAINER_EMA
 	$mail->sendEmail();
 }
 
-//try to get website by domain to serve specific 404 page
-$domain = @parse_url($_SERVER['REQUEST_URI'], PHP_URL_HOST) ? @parse_url($_SERVER['REQUEST_URI'], PHP_URL_HOST) : (@parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST']);
-if ($domain) {
-	$website = CMS_websitesCatalog::getWebsiteFromDomain($domain);
-	if ($website && !$website->hasError()) {
-		//check if website has a 404 page defined
-		$page404 = $website->get404();
-		if ($page404) {
-			$pPath = $page404->getHTMLURL(false, false, PATH_RELATIVETO_FILESYSTEM);
-			if ($pPath) {
+//try to get website by path to serve specific 404 page
+$path = pathinfo (parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), PATHINFO_DIRNAME);
+$website = null;
+if ($path) {
+	$websites = CMS_websitesCatalog::getAll('order');
+	foreach ($websites as $website) {
+		if ($website->getPagesPath(PATH_RELATIVETO_WEBROOT)) {
+			if (strpos($path, $website->getPagesPath(PATH_RELATIVETO_WEBROOT)) === 0 && is_object($website->get404())) {
+				break;
+			}
+		}
+	}
+}
+if (!isset($website)) {
+	//try to get website by domain to serve specific 404 page
+	$domain = @parse_url($_SERVER['REQUEST_URI'], PHP_URL_HOST) ? @parse_url($_SERVER['REQUEST_URI'], PHP_URL_HOST) : (@parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST']);
+	if ($domain) {
+		$website = CMS_websitesCatalog::getWebsiteFromDomain($domain);
+	}
+}
+if (isset($website) && $website && !$website->hasError()) {
+	//check if website has a 404 page defined
+	$page404 = $website->get404();
+	if ($page404) {
+		$pPath = $page404->getHTMLURL(false, false, PATH_RELATIVETO_FILESYSTEM);
+		if ($pPath) {
+			if (file_exists($pPath)) {
+				$cms_page_included = true;
+				$_SERVER['SCRIPT_NAME'] = $page404->getURL(); //to avoid errors in page forms
+				require($pPath);
+				exit;
+			} elseif ($page404->regenerate(true)) {
+				clearstatcache ();
 				if (file_exists($pPath)) {
 					$cms_page_included = true;
+					$_SERVER['SCRIPT_NAME'] = $page404->getURL(); //to avoid errors in page forms
 					require($pPath);
 					exit;
-				} elseif ($page404->regenerate(true)) {
-					clearstatcache ();
-					if (file_exists($pPath)) {
-						$cms_page_included = true;
-						require($pPath);
-						exit;
-					}
 				}
 			}
 		}
@@ -174,11 +210,11 @@ if (file_exists(PATH_REALROOT_FS.'/404.html')) {
 <div id="message">
 <h1>Error 404...</h1>
 Sorry, the requested page was not found.<br /><br />
-<a href="/">Back to the Home Page</a><br /><br />
+<a href="<?php echo PATH_REALROOT_WR; ?>/">Back to the Home Page</a><br /><br />
 <hr />
 <h1>Erreur 404 ...</h1>
 Nous ne trouvons pas la page que vous demandez.<br /><br />
-<a href="/">Retour &agrave; l'accueil</a><br /><br />
+<a href="<?php echo PATH_REALROOT_WR; ?>/">Retour &agrave; l'accueil</a><br /><br />
 </div>
 </body>
 </html>

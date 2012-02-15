@@ -109,9 +109,6 @@ class CMS_block_cms_forms extends CMS_block
 		case PAGE_VISUALMODE_HTML_PUBLIC:
 		case PAGE_VISUALMODE_PRINT:
 			if (isset($data["value"]['formID']) && sensitiveIO::IsPositiveInteger($data["value"]['formID'])) {
-				//$form = new CMS_forms_formular($data["value"]['formID']);
-				//$html = $form->getContent(CMS_FORMS_PHP_FORM_CALL);
-				
 				//call cms_forms clientspace content
 				$cs = new CMS_moduleClientspace(array("module" => MOD_CMS_FORMS_CODENAME,  "id" => "cms_forms", "type" => "formular", "formID" => $data["value"]['formID']));
 				$html = $cs->getClientspaceData(MOD_CMS_FORMS_CODENAME, new CMS_date(), $page, $visualizationMode);
@@ -125,9 +122,6 @@ class CMS_block_cms_forms extends CMS_block
 		case PAGE_VISUALMODE_HTML_EDITED:
 		case PAGE_VISUALMODE_HTML_EDITION:
 			if ($data && isset($data["value"]['formID']) && sensitiveIO::IsPositiveInteger($data["value"]['formID'])) {
-				//$form = new CMS_forms_formular($data["value"]['formID']);
-				//$html = $form->getContent(CMS_FORMS_PHP_FORM_CALL);
-				
 				//call cms_forms clientspace content
 				$cs = new CMS_moduleClientspace(array("module" => MOD_CMS_FORMS_CODENAME,  "id" => "cms_forms", "type" => "formular", "formID" => $data["value"]['formID']));
 				//$html = $cs->getClientspaceData(MOD_CMS_FORMS_CODENAME, new CMS_date(), $page, $visualizationMode);
@@ -301,17 +295,10 @@ class CMS_block_cms_forms extends CMS_block
 				clientSpaceID='".sensitiveIO::sanitizeSQLString($clientSpaceID)."',
 				rowID='".sensitiveIO::sanitizeSQLString($rowID)."',
 				blockID='".sensitiveIO::sanitizeSQLString($this->_tagID)."',
+				type='CMS_block_cms_forms',
 				value='".sensitiveIO::sanitizeSQLString(serialize($data["value"]))."'
 		";
-		/*$sqlParameters = array(
-			'page' => ,
-			'clientspace' => $clientSpaceID,
-			'rowID' => $rowID,
-			'blockID' => $this->_tagID,
-			'value' => serialize($data["value"]),
-		);*/
 		$q = new CMS_query($sql);
-		//$q->executePreparedQuery($sql, $sqlParameters);
 		if ($q->hasError()) {
 			return false;
 		} else {
@@ -333,11 +320,6 @@ class CMS_block_cms_forms extends CMS_block
 	  */
 	protected function _getHTMLForm($language, &$page, &$clientSpace, &$row, $blockID, $data)
 	{
-		//global $cms_user;
-		//$html = parent::_getHTMLForm($language, $page, $clientSpace, $row, $blockID, '<div class="atm-form-block">'.$data.'</div>');
-		
-		
-		
 		global $cms_user;
 		$this->_jsBlockClass = 'Automne.blockCMS_Forms';
 		$rawDatas = $this->getRawData($page->getID(), $clientSpace->getTagID(), $row->getTagID(), RESOURCE_LOCATION_EDITION, false);
@@ -381,22 +363,9 @@ class CMS_block_cms_forms extends CMS_block
 					clientSpaceID='".$this->_clientSpaceID."',
 					rowID='".$this->_rowID."',
 					blockID='".$this->_tagID."',
+					type='CMS_block_cms_forms',
 					value='".SensitiveIO::sanitizeSQLString(serialize($this->_value))."'
 			";
-			/*$str_set = "
-					page=:page,
-					clientSpaceID=:clientspace,
-					rowID=:rowID,
-					blockID=:blockID,
-					value=:value
-			";
-			$sqlParameters = array(
-				'page' => $destinationPage->getID(),
-				'clientspace' => $this->_clientSpaceID,
-				'rowID' => $this->_rowID,
-				'blockID' => $this->_tagID,
-				'value' => serialize($this->_value),
-			);*/
 			$sql = "
 				insert into
 					".$table."
@@ -404,7 +373,6 @@ class CMS_block_cms_forms extends CMS_block
 					".$str_set."
 			";
 			$q = new CMS_query($sql);
-			//$q->executePreparedQuery($sql, $sqlParameters);
 			if (!$q->hasError()) {
 				//Table Edition
 				$sql = "

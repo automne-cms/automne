@@ -69,6 +69,10 @@ define("MESSAGE_PAGE_FIELD_KEYWORDS_OPTIONS", 585);
 define("MESSAGE_PAGE_FIELD_KEYWORDS_ANY", 586);
 define("MESSAGE_PAGE_FIELD_KEYWORDS_ALL", 587);
 define("MESSAGE_PAGE_FIELD_KEYWORDS_PHRASE", 588);
+define("MESSAGE_PAGE_FIELD_KEYWORDS_STARTSWITH", 634);
+define("MESSAGE_PAGE_FIELD_KEYWORDS_STARTSWITH_HELP", 639);
+define("MESSAGE_PAGE_FIELD_KEYWORDS_TARGET", 640);
+define("MESSAGE_PAGE_FIELD_KEYWORDS_TARGET_ALL", 641);
 define("MESSAGE_ACTION_UNPUBLISH", 603);
 define("MESSAGE_ACTION_PUBLISH", 604);
 define("MESSAGE_ACTION_PUBLISH_SELECTED", 602);
@@ -109,12 +113,12 @@ if (!$cms_user->hasModuleClearance($codename, CLEARANCE_MODULE_EDIT)) {
 }
 
 //load current object definition
-$object = new CMS_poly_object_definition($objectId);
+$object = CMS_poly_object_catalog::getObjectDefinition($objectId);
 //load fields objects for object
 $objectFields = CMS_poly_object_catalog::getFieldsDefinition($object->getID());
 
 //usefull vars
-$recordsPerPage = $_SESSION["cms_context"]->getRecordsPerPage();
+$recordsPerPage = CMS_session::getRecordsPerPage();
 $searchURL = PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/search.php';
 $editURL = PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/item.php';
 $listURL = PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/list-datas.php';
@@ -127,6 +131,10 @@ $isPrimary = $object->isPrimaryResource() ? 'true' : 'false';
 $searchPanel = '';
 $keywordsSearch = false;
 $searchLists = '';
+$possibleTargets = array();
+$possibleTargets[] = array('id' 	=> -1,
+				'label'	=> sensitiveIO::sanitizeJSString($cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS_TARGET_ALL, false, MOD_POLYMOD_CODENAME))
+				);
 //Add all subobjects or special fields (like categories) to search if any
 foreach ($objectFields as $fieldID => $field) {
 	//check if field is searchable
@@ -135,7 +143,7 @@ foreach ($objectFields as $fieldID => $field) {
 		$objectType = $field->getTypeObject();
 		if (method_exists($objectType, 'getListOfNamesForObject')) {
 			$fieldLabel = sensitiveIO::sanitizeJSString($field->getLabel($cms_language));
-			$value = $_SESSION["cms_context"]->getSessionVar('items_'.$object->getID().'_'.$fieldID);
+			$value = CMS_session::getSessionVar('items_'.$object->getID().'_'.$fieldID);
 			$searchLists .= "{
 				fieldLabel:			'{$fieldLabel}',
 				anchor:				'-20px',
@@ -167,12 +175,42 @@ foreach ($objectFields as $fieldID => $field) {
 			},";
 		} else {
 			$keywordsSearch = true;
+			$possibleTargets[]= array(
+				'id' 	=> $fieldID,
+				'label'	=> sensitiveIO::sanitizeJSString($field->getLabel($cms_language))
+			);
 		}
 	}
 }
 //add keyword search
 if ($keywordsSearch) {
-	$value = sensitiveIO::sanitizeJSString($_SESSION["cms_context"]->getSessionVar('items_'.$object->getID().'_kwrds'));
+	$value = sensitiveIO::sanitizeJSString(CMS_session::getSessionVar('items_'.$object->getID().'_kwrds'));
+	$targetvalue = CMS_session::getSessionVar('kwrds_target_'.$object->getID());
+	$targetvalue = $targetvalue ? $targetvalue : -1;
+	$possibleTargets = sensitiveIO::jsonEncode($possibleTargets);
+	$targetcombo = "{
+				xtype:				'combo',
+				name:				'kwrds_target_{$object->getID()}',
+				hiddenName:		 	'kwrds_target_{$object->getID()}',
+				forceSelection:		true,
+				fieldLabel:			'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS_TARGET, false, MOD_POLYMOD_CODENAME)}',
+				hideLabel:			false,
+				mode:				'local',
+				triggerAction:		'all',
+				valueField:			'id',
+				displayField:		'label',
+				value:				'{$targetvalue}',
+				anchor:				'98%',
+				store:				new Ext.data.JsonStore({
+					fields:				['id', 'label'],
+					data:				{$possibleTargets}
+				}),
+				allowBlank:		 	false,
+				selectOnFocus:		true,
+				editable:			false,
+				validateOnBlur:		false,
+				listeners:			{'valid':moduleObjectWindow.search}
+			}";
 	// Keywords
 	$searchPanel .= "{
 		fieldLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS, false, MOD_POLYMOD_CODENAME)}',
@@ -224,14 +262,19 @@ if ($keywordsSearch) {
 			boxLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS_PHRASE, false, MOD_POLYMOD_CODENAME)}',
 			inputValue:		'phrase',
 			checked:		false
-		}]
+		},{
+			boxLabel:		'<span class=\"atm-help\" ext:qtip=\"{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS_STARTSWITH_HELP, false, MOD_POLYMOD_CODENAME)}\">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS_STARTSWITH, false, MOD_POLYMOD_CODENAME)}</span>',
+			inputValue:		'beginswith',
+			checked:		false
+		},{$targetcombo}]
 	},";
 }
+
 //add publication date search
 if ($object->isPrimaryResource()) {
 	// Publication Dates
-	$startValue = sensitiveIO::sanitizeJSString($_SESSION["cms_context"]->getSessionVar("items_dtfrm"));
-	$endValue = sensitiveIO::sanitizeJSString($_SESSION["cms_context"]->getSessionVar("items_dtnd"));
+	$startValue = sensitiveIO::sanitizeJSString(CMS_session::getSessionVar("items_dtfrm"));
+	$endValue = sensitiveIO::sanitizeJSString(CMS_session::getSessionVar("items_dtnd"));
 	$searchPanel .= "{
 		layout:			'column',
 		xtype:			'panel',
@@ -275,7 +318,7 @@ $searchPanel .= $searchLists;
 
 //add status filter
 if ($object->isPrimaryResource()) {
-	$statusValue = $_SESSION["cms_context"]->getSessionVar('status_'.$object->getID());
+	$statusValue = CMS_session::getSessionVar('status_'.$object->getID());
 	$statusValue = $statusValue ? $statusValue : '';
 	$statusValues = array(
 		array('id' => '', 			'label' => '-'),
@@ -333,7 +376,7 @@ foreach ($objectFields as $fieldID => $field) {
 }
 // check if there are other sortable object than creation date
 if(count($items_possible) > 1){
-	$sortValue = $_SESSION["cms_context"]->getSessionVar('sort_'.$object->getID());
+	$sortValue = CMS_session::getSessionVar('sort_'.$object->getID());
 	$sortValue = $sortValue ? $sortValue : 'objectID';
 	$sortValues = array();
 	foreach($items_possible as $key => $label){
@@ -379,7 +422,7 @@ if(count($items_possible) > 1){
 // build direction select
 $items_possible = array('asc' => $cms_language->getMessage(MESSAGE_PAGE_FIELD_ASC, false, MOD_POLYMOD_CODENAME), 
 						'desc' => $cms_language->getMessage(MESSAGE_PAGE_FIELD_DESC, false, MOD_POLYMOD_CODENAME));
-$dirValue = $_SESSION["cms_context"]->getSessionVar('direction_'.$object->getID());
+$dirValue = CMS_session::getSessionVar('direction_'.$object->getID());
 $dirValue = ($dirValue) ? $dirValue : 'desc';
 $dirValues = array();
 foreach($items_possible as $key => $label){

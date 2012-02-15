@@ -29,4 +29,5 @@ error_reporting(E_ALL & ~E_NOTICE);
 if (!defined('PATH_ADMIN_SPECIAL_TREE_WR')) {
 	define('PATH_ADMIN_SPECIAL_TREE_WR', PATH_REALROOT_WR.'/automne/admin-v3/tree.php');
 }
+$cms_context = $_SESSION['cms_context'];
 ?>

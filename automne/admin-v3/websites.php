@@ -105,16 +105,16 @@ case "change_order":
 }
 
 if ($_GET["records_per_page"]) {
-	$_SESSION["cms_context"]->setRecordsPerPage($_GET["records_per_page"]);
+	CMS_session::setRecordsPerPage($_GET["records_per_page"]);
 }
 if ($_GET["bookmark"]) {
-	$_SESSION["cms_context"]->setBookmark($_GET["bookmark"]);
+	CMS_session::setBookmark($_GET["bookmark"]);
 }
 
 $websites = CMS_websitesCatalog::getAll('order');
 
-$records_per_page = $_SESSION["cms_context"]->getRecordsPerPage();
-$bookmark = $_SESSION["cms_context"]->getBookmark();
+$records_per_page = CMS_session::getRecordsPerPage();
+$bookmark = CMS_session::getBookmark();
 $pages = ceil(sizeof($websites) / $records_per_page);
 $first_record = ($bookmark - 1) * $records_per_page;
 
@@ -123,6 +123,8 @@ $content = '';
 $dialog->setTitle($cms_language->getMessage(MESSAGE_PAGE_TITLE));
 if ($cms_message) {
 	$dialog->setActionMessage($cms_message);
+} elseif (io::request('cms_message_id', 'io::isPositiveInteger')) {
+	$dialog->setActionMessage($cms_language->getMessage(io::request('cms_message_id')));
 }
 
 $content .= '
@@ -175,7 +177,7 @@ foreach ($websites as $website) {
 	<li id="w'.$website->getID().'">
 		<table border="0" cellpadding="2" cellspacing="2">
 		<tr>
-			<td class="'.$td_class.'" width="80">'.htmlspecialchars($website->getLabel()).'</td>
+			<td class="'.$td_class.'" width="80"><span alt="'.$website->getID().'" title="'.$website->getID().'">'.htmlspecialchars($website->getLabel()).'</span></td>
 			<td class="'.$td_class.'" width="80">'.htmlspecialchars($website->getCodename()).'</td>
 			<td class="'.$td_class.'" width="200"><a href="#" onclick="Automne.utils.getPageById('.$website_root->getID().');Ext.WindowMgr.getActive().close();" class="admin">'.htmlspecialchars($website_root->getTitle()).' ('.$website_root->getID().')</a></td>
 			<td class="'.$td_class.'" width="150"><a href="'.$website->getURL().'" target="_blank" class="admin">'.htmlspecialchars($website->getURL()).'</a></td>

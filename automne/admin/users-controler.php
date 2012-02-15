@@ -67,7 +67,6 @@ $email = sensitiveIO::request('email', 'sensitiveIO::isValidEmail');
 $pass1 = sensitiveIO::request('pass1', 'sensitiveIO::isValidPassword');
 $pass2 = sensitiveIO::request('pass2', 'sensitiveIO::isValidPassword');
 $language = sensitiveIO::request('language');
-$dn = sensitiveIO::request('dn');
 //user details vars
 $address1 = sensitiveIO::request('address1');
 $address2 = sensitiveIO::request('address2');
@@ -81,6 +80,9 @@ $phone = sensitiveIO::request('phone');
 $service = sensitiveIO::request('service');
 $state = sensitiveIO::request('state');
 $zipcode = sensitiveIO::request('zipcode');
+$company = sensitiveIO::request('company');
+$gender = sensitiveIO::request('gender');
+
 //alerts
 $alerts = sensitiveIO::request('alerts', 'is_array', array());
 //groups
@@ -396,7 +398,7 @@ switch ($action) {
 		//lastname
 		if ($lastname) {
 			$user->setLastName(ucfirst($lastname));
-		} elseif (!$user->getDN()) {
+		} elseif (!$user->getLastName()) {
 			$cms_message = $cms_language->getMessage(MESSAGE_INCORRECT_FIELD_VALUE, array($cms_language->getMessage(MESSAGE_FIELD_LASTNAME)))."\n";
 		}
 		//firstname
@@ -406,18 +408,11 @@ switch ($action) {
 			$cms_message .= $cms_language->getMessage(MESSAGE_LOGIN_EXISTS, array($login))."\n";
 		} elseif ($login && !$user->setLogin($login)) { 
 			$cms_message .= $cms_language->getMessage(MESSAGE_INCORRECT_FIELD_VALUE, array($cms_language->getMessage(MESSAGE_FIELD_LOGIN)))."\n";
-		} elseif (APPLICATION_LDAP_AUTH && !$user->getDN()) {
-			$cms_message .= $cms_language->getMessage(MESSAGE_INCORRECT_FIELD_VALUE, array($cms_language->getMessage(MESSAGE_FIELD_LOGIN)))."\n";
 		}
 		
 		//Check password fields
 		if($pass1 && $pass2 && $pass1 == $pass2 && $user->getLogin() != $pass1) {
 		   $user->setPassword($pass1);
-		   /*if (!APPLICATION_LDAP_AUTH)  {
-				$cms_message .= $cms_language->getMessage(MESSAGE_INCORRECT_PASSWORD_VALUES)."\n";
-		   }*/
-		} elseif (!$user->havePassword() && !$user->getDN()) {
-			$cms_message .= $cms_language->getMessage(MESSAGE_INCORRECT_FIELD_VALUE, array($cms_language->getMessage(MESSAGE_FIELD_PASSWORD)))."\n";
 		} elseif ($pass1 || $pass2) {
 			$cms_message .= $cms_language->getMessage(MESSAGE_INCORRECT_PASSWORD_VALUES)."\n";
 		}
@@ -430,17 +425,6 @@ switch ($action) {
 				//TODOV4 : reload cms_user and user interface
 				$reloadAll = true;
 			}
-		}
-		
-		// LDAP dn, only required when LDAP Auth activated
-		if ($dn) {
-			if (CMS_profile_usersCatalog::dnExists($dn, $user)) {
-				$cms_message .= $cms_language->getMessage(MESSAGE_DISTINGUISHED_NAME_EXISTS, array($dn))."\n";
-			} else {
-				$user->setDN(CMS_ldap_query::appendWithBaseDn($dn));
-			}
-		} elseif (APPLICATION_LDAP_AUTH && !$user->getDN()) {
-			$cms_message .= $cms_language->getMessage(MESSAGE_INCORRECT_FIELD_VALUE,array($cms_language->getMessage(MESSAGE_FIELD_DISTINGUISHED_NAME)))."\n";
 		}
 		
 		// Check if any errors when updating user datas
@@ -497,6 +481,9 @@ switch ($action) {
 			$contactData->setCity($city);
 			$contactData->setState($state);
 			$contactData->setCountry($country);
+			$contactData->setCompany($company);
+			$contactData->setGender($gender);
+			
 			$user->setContactData($contactData); 
 			$user->writeToPersistence();
 			

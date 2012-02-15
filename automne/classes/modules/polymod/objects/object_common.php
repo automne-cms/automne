@@ -164,7 +164,12 @@ abstract class CMS_object_common extends CMS_grandFather
 		$htmlParameters = '';		
 		if(is_array($inputParams)){
 		    foreach ($inputParams as $k => $v) {
-			    if (in_array($k, array('id','class','cols','size','rows','style','tabindex','disabled','dir','lang','width','height','onchange',))) {
+			    if (in_array($k, array('accesskey','class','contenteditable','contextmenu','dir','draggable','dropzone','id','lang','spellcheck','style',
+					'tabindex','title','accept','alt','autocomplete','autofocus','checked','dirname','disabled','formaction',
+					'formenctype','formmethod','formnovalidate','formtarget','height','list','max','maxlength','min','multiple','pattern',
+					'placeholder','readonly','required','size','src','step','type','value','width','cols','rows','wrap','onblur','onclick',
+					'onchange','ondblclick','onfocus','onmousedown','onmousemove','onmouseout','onmouseover','onmouseup','onkeydown',
+					'onkeypress','onkeyup',))) {
 				    $htmlParameters .= ' '.$k.'="'.$v.'"';
 			    }
 		    }
@@ -265,10 +270,14 @@ abstract class CMS_object_common extends CMS_grandFather
 				//append field id to html field parameters (if not already exists)
 				$htmlParameters .= (!isset($inputParams['id'])) ? ' id="'.$prefixName.$this->_field->getID().'_'.$subFieldID.'"' : '';
 				//create field value
-				$value = $this->_subfieldValues[$subFieldID]->getValue();
+				$value = isset($inputParams['value']) ? $inputParams['value'] : $this->_subfieldValues[$subFieldID]->getValue();
 				//then create field HTML
 				$html .= ($html) ? '<br />':'';
-				$html .= '<input type="text"'.$htmlParameters.' name="'.$prefixName.$this->_field->getID().'_'.$subFieldID.'" value="'.$value.'" />'."\n";
+				if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
+					$html .= '<input type="hidden"'.$htmlParameters.' name="'.$prefixName.$this->_field->getID().'_'.$subFieldID.'" value="'.$value.'" />'."\n";
+				} else {
+					$html .= '<input type="text"'.$htmlParameters.' name="'.$prefixName.$this->_field->getID().'_'.$subFieldID.'" value="'.$value.'" />'."\n";
+				}
 				if (POLYMOD_DEBUG) {
 					$html .= ' <span class="admin_text_alert">(Field : '.$this->_field->getID().' - SubField : '.$subFieldID.')</span>';
 				}

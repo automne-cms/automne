@@ -11,8 +11,6 @@
 // +----------------------------------------------------------------------+
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
-//
-// $Id: page-infos.php,v 1.21 2010/03/08 16:41:19 sebastien Exp $
 
 /**
   * PHP page : Load page infos
@@ -116,6 +114,8 @@ define("MESSAGE_PAGE_UNPUBLISH_PAGE_CONFIRM", 1714);
 define("MESSAGE_PAGE_PUBLISH", 1715);
 define("MESSAGE_PAGE_PUBLISH_INFO", 1716);
 define("MESSAGE_PAGE_PUBLISH_PAGE_CONFIRM", 1717);
+define("MESSAGE_PAGE_PROTECTED", 1726);
+define("MESSAGE_PAGE_PROTECTED_DESC", 1727);
 $cms_language->endPrefetch();
 
 //load interface instance
@@ -257,14 +257,10 @@ if(!$cms_page->isUseable() || $followRedirect) {
 	}
 	$pageId = $cms_page->getID();
 }
-if (!isset($cms_context) || !is_object($cms_context)) {
-	CMS_grandFather::raiseError('Error, user context not found');
-	$view->show();
-}
 pr('View page : '.$cms_page->getID().($reload ? ' (Force reload queried by interface)' : ''));
 
 //set page into user context
-$cms_context->setPage($cms_page);
+CMS_session::setPage($cms_page);
 
 //for the page, create all javascript informations needed
 $hasPreviz = $hasPublic = $hasDraft = $isEditable = $hasLock = $hasRedirect = false;
@@ -419,6 +415,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 	if ($panelStatus['visible']) {
 		//init vars
 		$panelContent = $panelTitle = $panelHTML = $panelTip = $panelTipTitle = $panelURL = $panelPicto = '';
+		$popupable = false;
 		$panelDisabled = 'true';
 		$panelEditable = $allowFrameNav = 'false';
 		$panelID = $panel;
@@ -557,6 +554,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 				$panelTipTitle = $cms_language->getMessage(MESSAGE_PAGE_TREE_TIP_TITLE);
 				$panelTip = $cms_language->getMessage(MESSAGE_PAGE_TREE_TIP_DESC);
 				$panelURL = 'tree.php';
+				$popupable = true;
 			break;
 			case 'favorite':
 				$panelTitle = '<img src="'.PATH_ADMIN_IMAGES_WR.'/s.gif" width="1" height="16" />';
@@ -822,96 +820,100 @@ foreach ($userPanels as $panel => $panelStatus) {
 								}
 							}));";
 						} else {
-							//move page
-							$father = CMS_tree::getAncestor($cms_page, 1);
-							$draggable = is_object($father) && $cms_user->hasPageClearance($father->getID(), CLEARANCE_PAGE_EDIT)
-			 							&& (!$hasSiblings || ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) && $cms_page->getID() != APPLICATION_ROOT_PAGE_ID));
-							
-							if ($draggable) {
-								$panelContent .= "
-								menu.addItem(new Ext.menu.Item({
-									text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_MOVE_PAGE_INFO)."\">".$cms_language->getJSMessage(MESSAGE_PAGE_MOVE_PAGE)."</span>',
-									iconCls: 'atm-pic-move',
-									handler: function() {
-										//create window element
-										var win = new Automne.Window({
-											id:				'pageMoveWindow',
-											currentPage:	".$cms_page->getID().",
-											autoLoad:		{
-												url:		'tree.php',
-												params:		{
-													winId:		'pageMoveWindow',
-													currentPage:".$cms_page->getID().",
-													enableDD:	true,
-													heading:	'".$cms_language->getJSMessage(MESSAGE_PAGE_MOVE_PAGE_USING_ICONS)."',
-													title:		'".$cms_language->getJSMessage(MESSAGE_PAGE_MOVING_PAGE)."'
-												},
-												nocache:	true,
-												scope:		this
-											}
-										});
-										win.show(this.getEl());
-									}
-								}));";
+							if (!$cms_page->isProtected()) {
+								//move page
+								$father = CMS_tree::getAncestor($cms_page, 1);
+								$draggable = is_object($father) && $cms_user->hasPageClearance($father->getID(), CLEARANCE_PAGE_EDIT)
+				 							&& (!$hasSiblings || ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) && $cms_page->getID() != APPLICATION_ROOT_PAGE_ID));
+								
+								if ($draggable) {
+									$panelContent .= "
+									menu.addItem(new Ext.menu.Item({
+										text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_MOVE_PAGE_INFO)."\">".$cms_language->getJSMessage(MESSAGE_PAGE_MOVE_PAGE)."</span>',
+										iconCls: 'atm-pic-move',
+										handler: function() {
+											//create window element
+											var win = new Automne.Window({
+												id:				'pageMoveWindow',
+												currentPage:	".$cms_page->getID().",
+												autoLoad:		{
+													url:		'tree.php',
+													params:		{
+														winId:		'pageMoveWindow',
+														currentPage:".$cms_page->getID().",
+														enableDD:	true,
+														heading:	'".$cms_language->getJSMessage(MESSAGE_PAGE_MOVE_PAGE_USING_ICONS)."',
+														title:		'".$cms_language->getJSMessage(MESSAGE_PAGE_MOVING_PAGE)."'
+													},
+													nocache:	true,
+													scope:		this
+												}
+											});
+											win.show(this.getEl());
+										}
+									}));";
+								}
 							}
 							//page copy
 							$panelContent .= $pageCopy;
-							//archiving
-							if (!$hasSiblings) {
-								$panelContent .= "
-								menu.addSeparator();
-								menu.addItem(new Ext.menu.Item({
-									text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_ARCHIVING_PAGE_INFO)."\">".$cms_language->getJSMessage(MESSAGE_PAGE_ARCHIVING_PAGE)."</span>',
-									iconCls: 'atm-pic-archiving',
-									handler: function(){
-										Automne.message.popup({
-											msg: 				'".$cms_language->getJSMessage(MESSAGE_PAGE_ARCHIVING_PAGE_CONFIRM)."',
-											buttons: 			Ext.MessageBox.OKCANCEL,
-											animEl: 			this.getEl(),
-											closable: 			false,
-											icon: 				Ext.MessageBox.QUESTION,
-											fn: 				function (button) {
-												if (button == 'ok') {
-													Automne.server.call({
-														url:				'page-controler.php',
-														params: 			{
-															currentPage:		'".$cms_page->getID()."',
-															action:				'archive'
-														}
-													});
+							if (!$cms_page->isProtected()) {
+								//archiving
+								if (!$hasSiblings) {
+									$panelContent .= "
+									menu.addSeparator();
+									menu.addItem(new Ext.menu.Item({
+										text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_ARCHIVING_PAGE_INFO)."\">".$cms_language->getJSMessage(MESSAGE_PAGE_ARCHIVING_PAGE)."</span>',
+										iconCls: 'atm-pic-archiving',
+										handler: function(){
+											Automne.message.popup({
+												msg: 				'".$cms_language->getJSMessage(MESSAGE_PAGE_ARCHIVING_PAGE_CONFIRM)."',
+												buttons: 			Ext.MessageBox.OKCANCEL,
+												animEl: 			this.getEl(),
+												closable: 			false,
+												icon: 				Ext.MessageBox.QUESTION,
+												fn: 				function (button) {
+													if (button == 'ok') {
+														Automne.server.call({
+															url:				'page-controler.php',
+															params: 			{
+																currentPage:		'".$cms_page->getID()."',
+																action:				'archive'
+															}
+														});
+													}
 												}
-											}
-										});
-									}
-								}));";
-							}
-							//deletion
-							if (!$hasSiblings && !CMS_websitesCatalog::isWebsiteRoot($cms_page->getID())) {
-								$panelContent .= "
-								menu.addItem(new Ext.menu.Item({
-									text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_DELETING_PAGE_INFO)."\">".$cms_language->getJSMessage(MESSAGE_PAGE_DELETING_PAGE)."</span>',
-									iconCls: 'atm-pic-deletion',
-									handler: function(){
-										Automne.message.popup({
-											msg: 				'".$cms_language->getJSMessage(MESSAGE_PAGE_DELETING_PAGE_CONFIRM)."',
-											buttons: 			Ext.MessageBox.OKCANCEL,
-											animEl: 			this.getEl(),
-											closable: 			false,
-											icon: 				Ext.MessageBox.QUESTION,
-											fn: 				function (button) {
-												if (button == 'ok') {
-													Automne.server.call({
-														url:				'page-controler.php',
-														params: 			{
-															currentPage:		'".$cms_page->getID()."',
-															action:				'delete'
-														}
-													});
+											});
+										}
+									}));";
+								}
+								//deletion
+								if (!$hasSiblings && !CMS_websitesCatalog::isWebsiteRoot($cms_page->getID())) {
+									$panelContent .= "
+									menu.addItem(new Ext.menu.Item({
+										text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_DELETING_PAGE_INFO)."\">".$cms_language->getJSMessage(MESSAGE_PAGE_DELETING_PAGE)."</span>',
+										iconCls: 'atm-pic-deletion',
+										handler: function(){
+											Automne.message.popup({
+												msg: 				'".$cms_language->getJSMessage(MESSAGE_PAGE_DELETING_PAGE_CONFIRM)."',
+												buttons: 			Ext.MessageBox.OKCANCEL,
+												animEl: 			this.getEl(),
+												closable: 			false,
+												icon: 				Ext.MessageBox.QUESTION,
+												fn: 				function (button) {
+													if (button == 'ok') {
+														Automne.server.call({
+															url:				'page-controler.php',
+															params: 			{
+																currentPage:		'".$cms_page->getID()."',
+																action:				'delete'
+															}
+														});
+													}
 												}
-											}
-										});
-									}
-								}));";
+											});
+										}
+									}));";
+								}
 							}
 							//page editions cancelling
 							$editions = $cms_page->getStatus()->getEditions();
@@ -986,41 +988,43 @@ foreach ($userPanels as $panel => $panelStatus) {
 							$now = new CMS_date();
 							$now->setNow();
 							if ($cms_page->getPublication() == RESOURCE_PUBLICATION_PUBLIC && ($endPublication->isNull() || CMS_date::compare($endPublication, $now, '>'))) {
-								//unpublish
-								$panelContent .= "
-								menu.addSeparator();
-								menu.addItem(new Ext.menu.Item({
-									text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_UNPUBLISH_PAGE_INFO)."\">".$cms_language->getJSMessage(MESSAGE_PAGE_UNPUBLISH_PAGE)."</span>',
-									iconCls: 'atm-pic-unpublish',
-									handler: function(){
-										Automne.message.popup({
-											msg: 				'".$cms_language->getJSMessage(MESSAGE_PAGE_UNPUBLISH_PAGE_CONFIRM)."',
-											buttons: 			Ext.MessageBox.OKCANCEL,
-											animEl: 			this.getEl(),
-											closable: 			false,
-											icon: 				Ext.MessageBox.QUESTION,
-											fn: 				function (button) {
-												if (button == 'ok') {
-													Automne.server.call({
-														url:				'page-controler.php',
-														params: 			{
-															currentPage:		'".$cms_page->getID()."',
-															action:				'unpublish'
-														},
-														fcnCallback: 		function() {
-															//then reload page infos
-															tabs.getPageInfos({
-																pageId:		'".$cms_page->getID()."',
-																noreload:	true
-															});
-														},
-														callBackScope:		this
-													});
+								if (!$cms_page->isProtected()) {
+									//unpublish
+									$panelContent .= "
+									menu.addSeparator();
+									menu.addItem(new Ext.menu.Item({
+										text: '<span ext:qtip=\"".$cms_language->getJSMessage(MESSAGE_PAGE_UNPUBLISH_PAGE_INFO)."\">".$cms_language->getJSMessage(MESSAGE_PAGE_UNPUBLISH_PAGE)."</span>',
+										iconCls: 'atm-pic-unpublish',
+										handler: function(){
+											Automne.message.popup({
+												msg: 				'".$cms_language->getJSMessage(MESSAGE_PAGE_UNPUBLISH_PAGE_CONFIRM)."',
+												buttons: 			Ext.MessageBox.OKCANCEL,
+												animEl: 			this.getEl(),
+												closable: 			false,
+												icon: 				Ext.MessageBox.QUESTION,
+												fn: 				function (button) {
+													if (button == 'ok') {
+														Automne.server.call({
+															url:				'page-controler.php',
+															params: 			{
+																currentPage:		'".$cms_page->getID()."',
+																action:				'unpublish'
+															},
+															fcnCallback: 		function() {
+																//then reload page infos
+																tabs.getPageInfos({
+																	pageId:		'".$cms_page->getID()."',
+																	noreload:	true
+																});
+															},
+															callBackScope:		this
+														});
+													}
 												}
-											}
-										});
-									}
-								}));";
+											});
+										}
+									}));";
+								}
 							} elseif ($cms_page->getPublication() != RESOURCE_PUBLICATION_NEVERVALIDATED && !$endPublication->isNull() && CMS_date::compare($endPublication, $now, '<=')) {
 								//publish
 								$panelContent .= "
@@ -1197,6 +1201,9 @@ foreach ($userPanels as $panel => $panelStatus) {
 					$date = $lastvalidation[0]->getDateTime();
 					$panelTip .= $cms_language->getMessage(MESSAGE_PAGE_PUBLIC_TIP_LASTVALIDATION, array($user->getFullName(), $date->getLocalizedDate($format))).'<br />';
 				}
+				if ($cms_page->isProtected()) {
+					$panelTip .= '<br /><strong>'.$cms_language->getMessage(MESSAGE_PAGE_PROTECTED).' : </strong>'.$cms_language->getMessage(MESSAGE_PAGE_PROTECTED_DESC).'<br />';
+				}
 				if (!$hasPublic) {
 					$panelTip .= '<br /><br />'.$cms_language->getMessage(MESSAGE_PAGE_PUBLIC_TIP_DISABLED_DESC);
 				}
@@ -1216,6 +1223,12 @@ foreach ($userPanels as $panel => $panelStatus) {
 					if ($pageHost && $_SERVER['HTTP_HOST'] && io::strtolower($httpHost) != io::strtolower($pageHost)) {
 						//page host is not the same of current host so change it to avoid JS restriction
 						$panelURL = str_replace($pageHost, $httpHost, $panelURL);
+					}
+					//check for website protocol
+					$pageScheme = @parse_url($panelURL, PHP_URL_SCHEME);
+					$currentScheme = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] && strtolower($_SERVER["HTTPS"]) != 'off') ? 'https' : 'http';
+					if ($pageScheme && $currentScheme != io::strtolower($pageScheme)) {
+						$panelURL = str_replace($pageScheme.'://', $currentScheme.'://', $panelURL);
 					}
 				}
 			break;
@@ -1249,6 +1262,7 @@ foreach ($userPanels as $panel => $panelStatus) {
 						title:			\''.sensitiveIO::sanitizeJSString($panelTitle).'\',
 						id:				\''.$panel.'\',
 						disabled:		'.$panelDisabled.',
+						popupable:		'.($popupable ? 1 : 0).',
 						currentPage:	'.$cms_page->getID();
 						if ($panelPicto) {
 							$jscontent .= ',

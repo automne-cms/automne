@@ -141,7 +141,7 @@ class CMS_block_polymod extends CMS_block
 			$module = CMS_modulesCatalog::getByCodename($this->_attributes['module']);
 			$this->_administrable = $module->hasAdmin() && $cms_user->hasModuleClearance($this->_attributes['module'], CLEARANCE_MODULE_EDIT);
 			
-			$this->_editable = $this->_canhasParameters;
+			$this->_editable = $this->_canhasParameters && $cms_user->hasModuleClearance($this->_attributes['module'], CLEARANCE_MODULE_EDIT);
 			if (($this->_hasParameters && $this->_musthaveParameters) || !$this->_musthaveParameters) {
 				$this->_hasContent = true;
 				$form_data = $this->_createDatasFromDefinition($data["value"], $page, $visualizationMode, CMS_polymod_definition_parsing::OUTPUT_PHP);
@@ -353,18 +353,11 @@ class CMS_block_polymod extends CMS_block
 				clientSpaceID='".sensitiveIO::sanitizeSQLString($clientSpaceID)."',
 				rowID='".sensitiveIO::sanitizeSQLString($rowID)."',
 				blockID='".sensitiveIO::sanitizeSQLString($this->_tagID)."',
+				type='CMS_block_polymod',
 				value='".sensitiveIO::sanitizeSQLString(serialize($data["value"]))."'
 		";
 		
-		/*$sqlParameters = array(
-			'page' => $pageID,
-			'clientspace' => $clientSpaceID,
-			'rowID' => $rowID,
-			'blockID' => $this->_tagID,
-			'value' => serialize($data["value"]),
-		);*/
 		$q = new CMS_query($sql);
-		//$q->executePreparedQuery($sql, $sqlParameters);
 		if ($q->hasError()) {
 			return false;
 		} else {
@@ -428,7 +421,8 @@ class CMS_block_polymod extends CMS_block
 					clientSpaceID='".sensitiveIO::sanitizeSQLString($this->_clientSpaceID)."',
 					rowID='".sensitiveIO::sanitizeSQLString($this->_rowID)."',
 					blockID='".sensitiveIO::sanitizeSQLString($this->_tagID)."',
-					value='".sensitiveIO::sanitizeSQLString($this->_value)."'
+					type='CMS_block_polymod',
+					value='".sensitiveIO::sanitizeSQLString(serialize($this->_value))."'
 			";
 			$sql = "
 				insert into
@@ -437,14 +431,13 @@ class CMS_block_polymod extends CMS_block
 					".$str_set."
 			";
 			$q = new CMS_query($sql);
-			//$q->executePreparedQuery($sql, $sqlParameters);
 			if (!$q->hasError()) {
 				//Table Edition
 				$sql = "
 					insert into
 						".$this->_getDataTableName(RESOURCE_LOCATION_EDITION, false)."
 					set
-						id='".$id."',
+						id='',
 						".$str_set."
 				";
 				$q = new CMS_query($sql);

@@ -248,35 +248,54 @@ $content .= '</table><br />
 <a name="files"></a>
 <h3>PHP Files Detail:</h3>
 <a href="#top" class="admin" style="float:right;padding:10px;">[TOP]</a>
-<br />';
-foreach ($files_loaded as $file) {
-	$content .= str_replace(PATH_REALROOT_FS, '', $file).'<br />';
+<ol>';
+foreach ($files_loaded as $fileData) {
+	$content .= '<li>';
+	if (isset($fileData['file'])) {
+		$content .= str_replace(PATH_REALROOT_FS, '', $fileData['file']);
+	}
+	if (isset($fileData['class'])) {
+		$content .= ' ('.$fileData['class'].')';
+	}
+	if (isset($fileData['from'])) {
+		$content .= ' - From '.$fileData['from'];
+	}
+	$content .= '</li>';
 }
-$content .= '<br />
+$content .= '</ol>
 <a name="memory"></a>
 <h3>Memory Usage Evolution (file : current / max):</h3>
 <a href="#top" class="admin" style="float:right;padding:10px;">[TOP]</a>
 Memory is measured after the inclusion of a file<br />
-<br />';
+<ol>';
 foreach ($memoryUsages as $memoryUsage) {
-	$content .= str_replace(PATH_REALROOT_FS, '', $memoryUsage['file']).' : '.round(($memoryUsage['memory']/1048576),3).'Mo / '.round(($memoryUsage['peak']/1048576),3).'Mo<br />';
+	$content .= '<li>';
+	$content .= round(($memoryUsage['memory']/1048576),3).'Mo / '.round(($memoryUsage['peak']/1048576),3).'Mo';
+	if (isset($memoryUsage['file'])) {
+		$content .= ' - '.str_replace(PATH_REALROOT_FS, '', $memoryUsage['file']);
+	}
+	if (isset($memoryUsage['class'])) {
+		$content .= ' ('.$memoryUsage['class'].')';
+	}
+	$content .= '</li>';
 }
-$content .= '<br />
+$content .= '</ol>
 <a name="sql"></a>
 <h3>SQL Detail:</h3>
 <a href="#top" class="admin" style="float:right;padding:10px;">[TOP]</a>
-<br />
-';
-$count='0';
+<ol>';
 foreach ($sql_table as $sql_request) {
-	$count++;
+	$content .= '<li>';
 	if ($sql_request["time"] >= $SQL_TIME_MARK) {
-		$content .=  $count.' : <strong style="color:red;">'.io::htmlspecialchars($sql_request["sql"]).'</strong><br />Loaded in ' . $sql_request["time"] . ' From '.$sql_request["from"].'<br />Memory : '.round(($sql_request['memory']/1048576),3).'Mo / '.round(($sql_request['peak']/1048576),3).'Mo<br /><br />';
+		$content .=  '<strong style="color:red;">'.io::htmlspecialchars($sql_request["sql"]).'</strong><br />Loaded in ' . $sql_request["time"] . ' sec - at '.$sql_request["current"].' sec from start<br />From '.$sql_request["from"].'<br />Memory : '.round(($sql_request['memory']/1048576),3).'Mo / '.round(($sql_request['peak']/1048576),3).'Mo<br /><br />';
 	} else {
-		$content .=  $count.' : <strong>'.io::htmlspecialchars($sql_request["sql"]).'</strong><br />Loaded in ' . $sql_request["time"] . ' From '.$sql_request["from"].'<br />Memory : '.round(($sql_request['memory']/1048576),3).'Mo / '.round(($sql_request['peak']/1048576),3).'Mo<br /><br />';
+		$content .=  '<strong>'.io::htmlspecialchars($sql_request["sql"]).'</strong><br />Loaded in ' . $sql_request["time"] . ' sec - at '.$sql_request["current"].' sec from start<br />From '.$sql_request["from"].'<br />Memory : '.round(($sql_request['memory']/1048576),3).'Mo / '.round(($sql_request['peak']/1048576),3).'Mo<br /><br />';
 	}
+	$content .= '</li>';
 }
-$content .=  '<a href="#top" class="admin" style="float:right;padding:10px;">[TOP]</a>';
+$content .=  '
+</ol>
+<a href="#top" class="admin" style="float:right;padding:10px;">[TOP]</a>';
 $dialog->setContent($content);
 $dialog->show();
 ?>

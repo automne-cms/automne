@@ -103,7 +103,7 @@ $jscontent = <<<END
         },
 		listeners:{
 			'click':function(node, e) {
-				Ext.getCmp('{$codename}CatsEdit').setDisabled(node.disabled || node.id == 'source');
+				Ext.getCmp('{$codename}CatsEdit').setDisabled(node.disabled || node.attributes.protected || node.id == 'source');
 				Ext.getCmp('{$codename}CatsCreate').setDisabled(!node.attributes.manageable && node.id != 'source');
 				Ext.getCmp('{$codename}CatsDelete').setDisabled(!node.attributes.deletable);
 			},
@@ -239,7 +239,11 @@ $jscontent = <<<END
 									if (jsonResponse.success == true) {
 										//if success, reload parent
 										if (node.parentNode.reload) {
-											node.parentNode.reload();
+											if (node.isLast() && node.parentNode.parentNode.reload) {
+												node.parentNode.parentNode.reload();
+											} else {
+												node.parentNode.reload();
+											}
 										}
 									}
 								},

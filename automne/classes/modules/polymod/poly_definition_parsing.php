@@ -80,7 +80,6 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			'atm-form-required'		=> '_formRequirementsTag',
 			'atm-form-malformed'	=> '_formRequirementsTag',
 			'atm-input-callback'    => '_inputCallback',
-			'atm-xml'				=> '_xmlTag',
 			'atm-object-link'		=> '_linkObject',
 			'atm-object-unlink'		=> '_unlinkObject',
 			'atm-form-callback'		=> '_formCallback',
@@ -312,7 +311,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 						$this->_headCallBack['language'] = $this->_parameters['language'];
 						$this->_headCallBack['headcode'] = $headers;
 						$this->_headCallBack['footcode'] = $footers;
-						CMS_module::moduleUsage($this->_parameters['pageID'], $this->_parameters['module'], $this->_headCallBack);
+						CMS_module::moduleUsage($this->_parameters['pageID'], $this->_parameters['module'], array('headCallback' => array($this->_headCallBack)));
 					} else {
 						$this->raiseError('Missing valid pageID or module codename or language code in parameters to use header callback.');
 						return false;
@@ -335,7 +334,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				$return .= 
 				'}'."\n".
 				'?>';
-				return $this->indentPHP($return);
+				return CMS_XMLTag::indentPHP($return);
 			break;
 			case self::OUTPUT_RESULT:
 				global $cms_user, $cms_language;
@@ -360,6 +359,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 					}
 					//make object available
 					$object[$this->_parameters['item']->getObjectID()] = $this->_parameters['item'];
+					//CMS_grandFather::log($this->_definition);
 					$return = eval(sensitiveIO::sanitizeExecCommand('return "'.$this->_definition.'";'));
 				}
 				if (isset($ckeck) && $ckeck === false) {
@@ -449,6 +449,10 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 									'visualization'	=> $this->_parameters['visualization']
 								));
 								$this->_elements = array_merge_recursive((array) $this->_elements, (array) $oTag->getTagReferences());
+								//get header code if any
+								if ($oTag->getHeaderCode()) {
+									$this->_headCallBack['tagsCallback'][] = $oTag->getHeaderCode();
+								}
 							}
 							$code .= '$content .="';
 						} else {
@@ -527,13 +531,12 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		//SEARCH '.$tag['attributes']['name'].' TAG START '.$uniqueID.'
 		$objectDefinition_'.$tag['attributes']['name'].' = \''.$objectID.'\';
 		if (!isset($objectDefinitions[$objectDefinition_'.$tag['attributes']['name'].'])) {
-			$objectDefinitions[$objectDefinition_'.$tag['attributes']['name'].'] = new CMS_poly_object_definition($objectDefinition_'.$tag['attributes']['name'].');
+			$objectDefinitions[$objectDefinition_'.$tag['attributes']['name'].'] = CMS_poly_object_catalog::getObjectDefinition($objectDefinition_'.$tag['attributes']['name'].');
 		}
-		//public search ?'."\n";
+		//public search ?'."\n".
+		'$public_'.$uniqueID.' = (io::get("atm-previz") == \'previz\' && isset($_SERVER["HTTP_REFERER"]) && io::strpos($_SERVER["HTTP_REFERER"], PATH_ADMIN_WR) !== false) ? false : true;'."\n";
 		if (isset($tag['attributes']['public']) && ($tag['attributes']['public'] == 'true' || $tag['attributes']['public'] == 'false')) {
-			$return .= '$public_'.$uniqueID.' = (!isset($public_search) || !$public_search) ? false : '.$tag['attributes']['public'].';'."\n";
-		} else {
-			$return .= '$public_'.$uniqueID.' = isset($public_search) ? $public_search : false;'."\n";
+			$return .= '$public_'.$uniqueID.' = !$public_'.$uniqueID.' ? false : '.$tag['attributes']['public'].';'."\n";
 		}
 		$return .= '//get search params
 		$search_'.$tag['attributes']['name'].' = new CMS_object_search($objectDefinitions[$objectDefinition_'.$tag['attributes']['name'].'], $public_'.$uniqueID.');
@@ -590,9 +593,20 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		//RESULT '.$tag['attributes']['search'].' TAG START '.$uniqueID.'
 		if(isset($search_'.$tag['attributes']['search'].') && $launchSearch_'.$tag['attributes']['search'].' && $searchLaunched_'.$tag['attributes']['search'].' === false) {
 			//launch search
-			if ($search_'.$tag['attributes']['search'].'->search(CMS_object_search::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS)) {
+			';
+			if ($returnType == CMS_object_search::POLYMOD_SEARCH_RETURN_IDS) {
+				$return .= '
+				$results_'.$tag['attributes']['search'].' = $search_'.$tag['attributes']['search'].'->search('.$returnType.');
 				$searchLaunched_'.$tag['attributes']['search'].' = true;
+				';
+			} else {
+				$return .= '
+				if ($search_'.$tag['attributes']['search'].'->search(CMS_object_search::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS)) {
+					$searchLaunched_'.$tag['attributes']['search'].' = true;
+				}
+				';
 			}
+			$return .= '
 		} elseif (isset($search_'.$tag['attributes']['search'].') && $launchSearch_'.$tag['attributes']['search'].' && $searchLaunched_'.$tag['attributes']['search'].' === true) {
 			//reset search stack (search already done before)
 			$search_'.$tag['attributes']['search'].'->resetResultStack();
@@ -608,7 +622,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
             $maxResults_'.$uniqueID.' = $search_'.$tag['attributes']['search'].'->getNumRows();';
 			if ($returnType == CMS_object_search::POLYMOD_SEARCH_RETURN_IDS) {
 				$return .= '
-				while ($resultID_'.$tag['attributes']['search'].' = $search_'.$tag['attributes']['search'].'->getNextResult('.$returnType.')) {';
+				foreach ($results_'.$tag['attributes']['search'].' as $resultID_'.$tag['attributes']['search'].') {';
 			} else {
 				$return .= '
 				while ($object[$objectDefinition_'.$tag['attributes']['search'].'] = $search_'.$tag['attributes']['search'].'->getNextResult('.$returnType.')) {';
@@ -618,7 +632,9 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				$replace["atm-search"] = array (
 					"{resultid}" 	=> (isset($resultID_'.$tag['attributes']['search'].')) ? $resultID_'.$tag['attributes']['search'].' : $object[$objectDefinition_'.$tag['attributes']['search'].']->getID(),
 					"{firstresult}" => (!$count_'.$uniqueID.') ? 1 : 0,
-					"{lastresult}" 	=> $search_'.$tag['attributes']['search'].'->isLastResult() ? 1 : 0,
+					"{lastresult}" 	=> (isset($results_'.$tag['attributes']['search'].') && is_array($results_'.$tag['attributes']['search'].')) 
+						? (($count_'.$uniqueID.' == sizeof($results_'.$tag['attributes']['search'].')-1) ? 1 : 0) 
+						: ($search_'.$tag['attributes']['search'].'->isLastResult() ? 1 : 0),
 					"{resultcount}" => ($count_'.$uniqueID.'+1),
 					"{maxpages}"    => $maxPages_'.$uniqueID.',
 					"{currentpage}" => ($search_'.$tag['attributes']['search'].'->getAttribute(\'page\')+1),
@@ -931,6 +947,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		//get key name
 		$matches = array();
 		preg_match("#\(([n0-9]+)\)->getValue\(#U", $on, $matches);
+		$return = '';
 		if (isset($matches[1])) {
 			$keyName = '$key_'.$matches[1];
 			$return = '
@@ -978,14 +995,10 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access private
 	  */
 	protected function _pluginTag(&$tag) {
-		//check tags requirements
-		if (!$this->checkTagRequirements($tag, array(
-				'language' => 'language', 
-			))) {
-			return;
-		}
 		//set language
-		$this->_parameters['language'] = $tag['attributes']["language"];
+		if (isset($tag['attributes']["language"])) {
+			$this->_parameters['language'] = $tag['attributes']["language"];
+		}
 		$uniqueID = CMS_XMLTag::getUniqueID();
 		//search for an atm-plugin-view tag in direct child tags
 		$pluginView = false;
@@ -1001,7 +1014,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		} else {
 			//search needed object (need to search it for publications and rights purpose)
 			if (!isset($objectDefinitions[$parameters[\'objectID\']])) {
-				$objectDefinitions[$parameters[\'objectID\']] = new CMS_poly_object_definition($parameters[\'objectID\']);
+				$objectDefinitions[$parameters[\'objectID\']] = CMS_poly_object_catalog::getObjectDefinition($parameters[\'objectID\']);
 			}
 			$search_'.$uniqueID.' = new CMS_object_search($objectDefinitions[$parameters[\'objectID\']], $parameters[\'public\']);
 			$search_'.$uniqueID.'->addWhereCondition(\'item\', $parameters[\'itemID\']);
@@ -1085,16 +1098,25 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access private
 	  */
 	protected function _RSSTag(&$tag) {
-		//check tags requirements
-		if (!$this->checkTagRequirements($tag, array(
-				'language' => 'language', 
-			))) {
-			return;
-		}
-		//set language
-		$this->_parameters['language'] = $tag['attributes']["language"];
 		$uniqueID = CMS_XMLTag::getUniqueID();
-		$return = '
+		$return = '';
+		//set language
+		$languages = array_keys(CMS_languagesCatalog::getAllLanguages($this->_parameters['module']));
+		if (isset($tag['attributes']["language"])) {
+			if (in_array($tag['attributes']["language"], $languages)) {
+				$this->_parameters['language'] = $tag['attributes']["language"];
+			} else {
+				$return .= '$cms_language = new CMS_language("'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['language'], false, false).'");'."\n";
+			}
+		} else {
+			//check tags requirements
+			if (!$this->checkTagRequirements($tag, array(
+					'language' => 'language', 
+				))) {
+				return;
+			}
+		}
+		$return .= '
 		//RSS TAG START '.$uniqueID.'
 		if (!sensitiveIO::isPositiveInteger($parameters[\'objectID\'])) {
 			CMS_grandFather::raiseError(\'Error into atm-rss tag : can\\\'t found object infos to use into : $parameters[\\\'objectID\\\']\');
@@ -1188,47 +1210,6 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	}
 	
 	/**
-	  * Compute an atm-ajax tag
-	  *
-	  * @param array $tag : the reference atm-form tag to compute
-	  * @return string the PHP / HTML content computed
-	  * @access private
-	  */
-	protected function _xmlTag(&$tag) {
-		//check tags requirements
-		if (!$this->checkTagRequirements($tag, array(
-				'what' => true, 
-			))) {
-			return;
-		}
-		$uniqueID = CMS_XMLTag::getUniqueID();
-		//return code
-		$return = '
-		//AJAX TAG START '.$uniqueID.'
-		'.$this->computeTags($tag['childrens']).'
-		//AJAX TAG END '.$uniqueID.'
-		';
-		$strict = isset($tag['attributes']["strict"]) && ($tag['attributes']['what'] == 'true' || $tag['attributes']['what'] == true || $tag['attributes']['what'] == 1) ? true : false;
-		//Ajax code
-		$ajaxCode = '
-		$xmlCondition = CMS_polymod_definition_parsing::replaceVars("'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['what'], false, false, array('CMS_polymod_definition_parsing', 'encloseWithPrepareVar')).'", $replace);
-		if ($xmlCondition) {
-			$func = create_function("","return (".$xmlCondition.");");
-			if ($func && $func()) {
-				'.$return.'
-				$content = CMS_polymod_definition_parsing::replaceVars($content, $replace);
-			}
-		}';
-		//do some cleaning on code and add reference to it into header callback
-		$ajax = array(
-			'code' 		=> $this->indentPHP(CMS_XMLTag::cleanComputedDefinition($ajaxCode)),
-			'output' 	=> $strict ? 'CMS_view::SHOW_XML' : 'CMS_view::SHOW_RAW',
-		);
-		$this->_headCallBack['ajax'][] = $ajax;
-		return $return;
-	}
-	
-	/**
 	  * Compute an atm-form tag
 	  *
 	  * @param array $tag : the reference atm-form tag to compute
@@ -1243,6 +1224,24 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			))) {
 			return;
 		}
+		
+		$htmlParameters = '';
+		if(is_array($tag['attributes'])){
+		    foreach ($tag['attributes'] as $k => $v) {
+			    if (in_array($k, array('accesskey','class','contextmenu','dir','id','lang','spellcheck','style',
+						'tabindex','title','accept-charset','autocomplete','novalidate','target','onreset','onsubmit','accept',))) {
+				    $htmlParameters .= ' '.$k.'="\'.CMS_polymod_definition_parsing::replaceVars("'.CMS_polymod_definition_parsing::preReplaceVars($v).'", $replace).\'"';
+			    }
+		    }
+		}
+		if (isset($tag['attributes']['action'])) {
+			$action = ' action="\'.CMS_polymod_definition_parsing::replaceVars("'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['action']).'", $replace).\'"';
+		} else {
+			$action = ' action="\'.$_SERVER[\'SCRIPT_NAME\'].\'"';
+		}
+		
+		//disable cache for this row
+		$this->_elements['form'] = true;
 		$uniqueID = CMS_XMLTag::getUniqueID();
 		//add reference to this form to header callback
 		$this->_headCallBack['form'][] = $tag['attributes']['name'];
@@ -1252,18 +1251,17 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		//FORM TAG START '.$uniqueID.'
 		$objectDefinition_'.$tag['attributes']['name'].' = \''.$objectID.'\';
 		if (isset($polymodFormsItems[\''.$tag['attributes']['name'].'\'])) $object['.$objectID.'] = $polymodFormsItems[\''.$tag['attributes']['name'].'\'];
-		$content .= \'<form name="'.$tag['attributes']['name'].'" action="\'.$_SERVER[\'SCRIPT_NAME\'].\'" method="post" enctype="multipart/form-data">
+		$content .= \'<form name="'.$tag['attributes']['name'].'"'.$action.' method="post" enctype="multipart/form-data"'.$htmlParameters.'>
 		<input type="hidden" name="cms_action" value="validate" />
-		<input type="hidden" name="atm-token" value="\'.CMS_context::getToken(MOD_POLYMOD_CODENAME.\'-'.$tag['attributes']['name'].'\').\'" />
+		<input type="hidden" name="atm-token" value="\'.CMS_session::getToken(MOD_POLYMOD_CODENAME.\'-'.$tag['attributes']['name'].'\').\'" />
 		<input type="hidden" name="item" value="\'.$object['.$objectID.']->getID().\'" />
 		<input type="hidden" name="polymod" value="\'.$parameters[\'module\'].\'" />
 		<input type="hidden" name="object" value="'.$objectID.'" />
 		<input type="hidden" name="formID" value="'.$tag['attributes']['name'].'" />\';
 		//for forms we absolutely needs cms_user
 		if (!is_object($cms_user)) {
-			//initialize public user
-			$cms_context = new CMS_context(DEFAULT_USER_LOGIN, DEFAULT_USER_PASSWORD);
-			$cms_user = $cms_context->getUser();
+			//load anonymous user
+			$cms_user = CMS_profile_usersCatalog::getByID(ANONYMOUS_PROFILEUSER_ID);
 		}
 		$replace_'.$uniqueID.' = $replace; //save previous replace vars if any
 		$replace["atm-form"] = array (
@@ -1356,6 +1354,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		}
 		$return .= ');
 		';
+		
 		$return .='
 		if (method_exists($object[$objectDefinition_'.$tag['attributes']['form'].'], "getInput")) {
 			$content .= CMS_polymod_definition_parsing::replaceVars($object[$objectDefinition_'.$tag['attributes']['form'].']->getInput('.$fieldID.', $cms_language, $parameters_'.$uniqueID.'), $replace);
@@ -1367,7 +1366,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			//callback code
 			$inputCallback = $this->computeTags($tag['childrens']);
 			//add reference to this form to header callback
-			$this->_headCallBack['formsCallback'][$tag['attributes']['form']][$fieldID] = $this->indentPHP(CMS_XMLTag::cleanComputedDefinition($inputCallback));
+			$this->_headCallBack['formsCallback'][$tag['attributes']['form']][$fieldID] = CMS_XMLTag::indentPHP(CMS_XMLTag::cleanComputedDefinition($inputCallback));
 		}
 		$return .='
 		//INPUT TAG END '.$uniqueID.'
@@ -1425,7 +1424,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			//callback code
 			$formCallback = $this->computeTags($tag['childrens']);
 			//add reference to this form to header callback
-			$this->_headCallBack['formsCallback'][$tag['attributes']['form']]['form'] = $this->indentPHP(CMS_XMLTag::cleanComputedDefinition($formCallback));
+			$this->_headCallBack['formsCallback'][$tag['attributes']['form']]['form'] = CMS_XMLTag::indentPHP(CMS_XMLTag::cleanComputedDefinition($formCallback));
 		}
 	}
 	
@@ -1669,9 +1668,10 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	static function prepareVar($var) {
 		if (is_array($var)) {
 			return sizeof($var);
-		} else {
+		} elseif (is_scalar($var)) {
 			return "'".str_replace("'","\'",str_replace("\'","\\\'",$var))."'"; 
 		}
+		return $var;
 	}
 	
 	/**
@@ -1711,40 +1711,6 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 		static $count;
 		$count++;
 		return ($count+1).'_'.io::substr(md5(mt_rand().microtime()),0,6);
-	}
-	
-	/**
-	  * Return well indented php code
-	  *
-	  * @param string $phpcode : php code to indent
-	  * @return string indented php code
-	  * @access public
-	  * @static
-	  */
-	function indentPHP($phpcode) {
-		$phparray = array_map('trim',explode("\n",$phpcode));
-		$level = 0;
-		foreach ($phparray as $linenb => $phpline) {
-			//remove blank lines
-			if ($phpline == '') {
-				unset($phparray[$linenb]);
-				continue;
-			}
-			//check for indent level down
-			$firstChar = $phpline[0];
-			if ($firstChar == '}' || $firstChar == ')' || substr($phpline, 0, 5) == 'endif') {
-				$level--;
-			}
-			//indent code
-			$indent = io::isPositiveInteger($level) ? str_repeat("\t" , $level) : '';
-			$phparray[$linenb] = $indent.$phpline;
-			//check for indent level up
-			$lastChar = substr($phpline, -1);
-			if ($lastChar == '{' || $lastChar == ':' || substr($phpline, -7) == 'array (') {
-				$level++;
-			}
-		}
-		return implode ("\n",$phparray);
 	}
 	
 	/**

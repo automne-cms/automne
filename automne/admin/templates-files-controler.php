@@ -28,6 +28,9 @@ require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
 function checkNode($value) {
 	return $value != 'source' && io::strpos($value, '..') === false;
 }
+function checkFile($value) {
+	return io::strpos($value, '..') === false && io::strpos($value, '/') === false && io::strpos($value, '\\') === false;
+}
 
 define("MESSAGE_PAGE_STYLESHEET", 1486);
 define("MESSAGE_PAGE_WYSIWYG", 1487);
@@ -39,13 +42,13 @@ define("MESSAGE_ERROR_UPDATE_FILE", 1503);
 define("MESSAGE_ACTION_CREATE_FILE", 1504);
 define("MESSAGE_ERROR_CREATE_FILE_EXTENSION", 1505);
 define("MESSAGE_ERROR_CREATE_FILE_EXISTS", 1506);
+define("MESSAGE_PAGE_TXT", 273);
 
 //Controler vars
 $action = sensitiveIO::request('action', array('delete', 'update', 'create'));
-$fileType = sensitiveIO::request('type', array('css', 'js'));
 $node = sensitiveIO::request('node', 'checkNode', '');
 $definition = sensitiveIO::request('definition');
-$filelabel = sensitiveIO::request('filelabel');
+$filelabel = sensitiveIO::request('filelabel', 'checkFile', '');
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -64,25 +67,15 @@ if (!$node && $action != 'create') {
 	$view->show();
 }
 
-switch ($fileType) {
-	case 'css':
-		$dir = PATH_REALROOT_FS.'/css/';
-		$allowedFiles = array(
-			'css' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_STYLESHEET), 'class' => 'atm-css'),
-			'xml' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_WYSIWYG), 'class' => 'atm-xml'),
-		);
-	break;
-	case 'js':
-		$dir = PATH_REALROOT_FS.'/js/';
-		$allowedFiles = array('js' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_JAVASCRIPT), 'class' => 'atm-js'));
-	break;
-	default:
-		CMS_grandFather::raiseError('Unknown fileType to use ...');
-		$view->show();
-	break;
-}
+$allowedFiles = array(
+	'less' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_STYLESHEET), 'class' => 'atm-css'),
+	'css' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_STYLESHEET), 'class' => 'atm-css'),
+	'xml' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_WYSIWYG), 'class' => 'atm-xml'),
+	'js' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_JAVASCRIPT), 'class' => 'atm-js'),
+	'txt' => array('name' => $cms_language->getMessage(MESSAGE_PAGE_TXT), 'class' => 'atm-txt'),
+);
 
-$file = $dir.$node;
+$file = PATH_REALROOT_FS.'/'.$node;
 if (!is_file($file) && $action != 'create') {
 	CMS_grandFather::raiseError('Action on folders is not allowed');
 	$view->show();
@@ -122,11 +115,11 @@ switch ($action) {
 		}
 	break;
 	case 'create':
-		if (is_dir($file)) {
-			if (!is_file($dir.$node.'/'.$filelabel)) {
-				$extension = io::strtolower(pathinfo($dir.$node.'/'.$filelabel, PATHINFO_EXTENSION));
+		if (is_dir($file) && $filelabel) {
+			if (!is_file($file.'/'.$filelabel)) {
+				$extension = io::strtolower(pathinfo($file.'/'.$filelabel, PATHINFO_EXTENSION));
 				if (isset($allowedFiles[$extension])) {
-					$file = new CMS_file($dir.$node.'/'.$filelabel);
+					$file = new CMS_file($file.'/'.$filelabel);
 					if ($file->setContent($definition) && $file->writeToPersistence()) {
 						$log = new CMS_log();
 						$log->logMiscAction(CMS_log::LOG_ACTION_TEMPLATE_EDIT_FILE, $cms_user, "File : ".$node.'/'.$filelabel);

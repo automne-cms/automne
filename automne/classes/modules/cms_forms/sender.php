@@ -204,42 +204,21 @@ class CMS_forms_sender extends CMS_grandFather {
 	/**
 	 * Factory, instanciate a sender from current context
 	 * 
-	 * @param CMS_context
 	 * @return CMS_forms_sender 
 	 */
-	function getSenderForContext($cms_context = false) {
-		//first check for an existing sender with the same session_id
-		if (!session_id()) {
-			//Set session name
-			session_name('AutomneSession');
-			@session_start();
+	function getSenderForContext() {
+		//sender does not exists in DB so create a new one*/
+		$obj = new CMS_forms_sender();
+		$obj->setAttribute('sessionID', Zend_Session::getId());
+		if (io::isPositiveInteger(CMS_session::getUserID())) {
+			$obj->setAttribute('userID', CMS_session::getUserID());
 		}
-		/*$sql = "
-				select
-					id_snd as id
-				from
-					mod_cms_forms_senders
-				where
-					sessionID_snd='".SensitiveIO::sanitizeSQLString(session_id())."'
-		";
-		$q = new CMS_query($sql);
-		if (!$q->hasNumRows()) {
-			//sender does not exists in DB so create a new one*/
-			$obj = new CMS_forms_sender();
-			$obj->setAttribute('sessionID', session_id());
-			if (is_a($cms_context, 'CMS_context')) {
-				$obj->setAttribute('userID', $cms_context->getUserID());
-			}
-			$obj->setAttribute('clientIP', @$_SERVER["REMOTE_ADDR"]);
-			if (isset($_SERVER["HTTP_ACCEPT_LANGUAGE"])) {
-				$obj->setAttribute('languages', @$_SERVER["HTTP_ACCEPT_LANGUAGE"]);
-			}
-			$obj->setAttribute('userAgent', @$_SERVER["HTTP_USER_AGENT"]);
-			return $obj;
-		/*} else {
-			//get already created sender object
-			return new CMS_forms_sender($q->getValue('id'));
-		}*/
+		$obj->setAttribute('clientIP', @$_SERVER["REMOTE_ADDR"]);
+		if (isset($_SERVER["HTTP_ACCEPT_LANGUAGE"])) {
+			$obj->setAttribute('languages', @$_SERVER["HTTP_ACCEPT_LANGUAGE"]);
+		}
+		$obj->setAttribute('userAgent', @$_SERVER["HTTP_USER_AGENT"]);
+		return $obj;
 	}
 	
 	function getNumberOfresponseForForm($formID) {
