@@ -1,47 +1,47 @@
-<row>
-	<block module="standard" type="varchar" id="first">
-		<!--
-			Automne block varchar.
-			Can store a 255 characters string
-		-->
+<row>                                                  
+	<!--
+	Automne block varchar.
+	Can store a 255 characters string
+	-->
+	<block module="standard" type="varchar" id="title">
 		{{data}}
-		<br /><br />
 	</block>
-	<block module="standard" type="text" id="second">
-		<!--
-			Automne block text.
-			Can store a long text
-		-->
-		{{data}}
-		<br /><br />
+	<!--
+	Automne block text.
+	Can store a long text
+	-->
+	<block module="standard" type="text" id="content">
+		<div>{{data}}</div>
 	</block>
-	<block module="standard" type="image" id="third" minWidth="100" maxWidth="300">
-		<!--
-			Automne block image.
-			Can store a image and a legend for it
-		-->
+	<!--
+	Automne block image.
+	Can store a image and a caption
+	-->
+	<block module="standard" type="image" id="img" minWidth="100" maxWidth="300">
 		<div class="image">	
 			{{data}}
-			<div class="legend">
+			<div class="caption">
 				{{linkLabel}}
 			</div>
 		</div>
-		<br /><br />
 	</block>
-	<block module="standard" type="file" id="fourth">
-		<!--
-			Automne block file.
-			Can store a file to download
-		-->
-		{{data}}
-		<br /><br />
+	<!--
+	Automne block file.
+	Can store a file to download
+	-->
+	<block module="standard" type="file" id="download">
+		<p>{{data}}</p>
 	</block>
-	<block module="standard" type="flash" id="fifth">
-		<!--
-			Automne block flash.
-			Can store a flash animation
-		-->
-		{{data}}
-		<br /><br />
+	<!--
+	Automne block flash.
+	Can store a flash animation
+	-->
+	<block module="standard" type="flash" id="animation">
+		<div>{{data}}</div>
 	</block>
+	<!--
+	Automne block link.
+	Can store a link
+	-->
+	<block module="standard" type="link" id="link"><p>{{data}}</p></block>
 </row>
