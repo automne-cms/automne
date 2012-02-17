@@ -241,7 +241,7 @@ switch ($action) {
 			$newTemplateGroups = new CMS_Stack();
 			$newTemplateGroups->setValuesByAtom(1);
 			foreach ($templateGroups as $templateGroup) {
-				if	(!isset($templates[$templateGroup]) || $templates[$templateGroup] != 'on') {
+				if	(!isset($templates[base64_encode($templateGroup)]) || $templates[base64_encode($templateGroup)] != 'on') {
 					$newTemplateGroups->add($templateGroup);
 				}
 			}
@@ -273,7 +273,7 @@ switch ($action) {
 			$newRowGroups = new CMS_Stack();
 			$newRowGroups->setValuesByAtom(1);
 			foreach ($rowGroups as $rowGroup) {
-				if	(!isset($rows[$rowGroup]) || $rows[$rowGroup] != 'on') {
+				if	(!isset($rows[base64_encode($rowGroup)]) || $rows[base64_encode($rowGroup)] != 'on') {
 					$newRowGroups->add($rowGroup);
 				}
 			}

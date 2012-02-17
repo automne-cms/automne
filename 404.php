@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_URI'] && $_SERVER['REQUEST_URI'] != $_SERVER['SCRIPT_NAME'
 		if (isset($rules[$_SERVER['REQUEST_URI']]) && io::isPositiveInteger($rules[$_SERVER['REQUEST_URI']])) {
 			$page = CMS_tree::getPageById($rules[$_SERVER['REQUEST_URI']]);
 		} elseif (isset($rules[parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)]) && io::isPositiveInteger($rules[parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)])) {
-			$page = CMS_tree::getPageById($rules[$_SERVER['REQUEST_URI']]);
+			$page = CMS_tree::getPageById($rules[parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)]);
 		}
 	}
 	if (!isset($page)) { //get page from requested url

@@ -707,7 +707,7 @@ abstract class CMS_object_common extends CMS_grandFather
 				return io::htmlspecialchars($this->getFieldLabel($cms_language));
 			break;
 			case 'value':
-				return (is_object($this->_subfieldValues[0])) ? io::htmlspecialchars($this->_subfieldValues[0]->getValue()) : '';
+				return (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0])) ? io::htmlspecialchars($this->_subfieldValues[0]->getValue()) : '';
 			break;
 			case 'set':
 				return $this->_subfieldValues[0]->setValue($parameters);

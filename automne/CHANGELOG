@@ -1,3 +1,6 @@
+V4.2.1 (in progress)
+[BUG] : Correct a bug in users groups rights for rows and templates
+
 V4.2.0 (15/02/2012)
 [BUG] : Correct bug number: 2350, 2549, 2561, 2586, 2585, 2584, 2582, 2566, 2672, 2689, 2751, 2754, 2763, 2764, 2818, 2831 (see http://www.automne-cms.org/bug/)
 [BUG] : Admin lock cannot be removed, even with admin rights
