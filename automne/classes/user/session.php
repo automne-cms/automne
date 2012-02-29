@@ -109,7 +109,7 @@ class CMS_session extends CMS_grandFather
 		
 		//check session dir as writable
 		$sessionPath = session_save_path();
-		if ($sessionPath && !is_writable($sessionPath)) {
+		if ($sessionPath && !@is_writable($sessionPath)) {
 			if(PATH_PHP_TMP && @is_dir(PATH_PHP_TMP) && is_object(@dir(PATH_PHP_TMP)) && is_writable(PATH_PHP_TMP)) {
 				$sessionPath = PATH_PHP_TMP;
 			} elseif (@is_dir(PATH_TMP_FS) && is_object(@dir(PATH_TMP_FS)) && is_writable(PATH_TMP_FS)){

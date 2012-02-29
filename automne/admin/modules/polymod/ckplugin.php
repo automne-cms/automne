@@ -11,8 +11,6 @@
 // +----------------------------------------------------------------------+
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>	  |
 // +----------------------------------------------------------------------+
-//
-// $Id: fckplugin.php,v 1.6 2010/03/08 16:42:06 sebastien Exp $
 
 /**
   * PHP page : Load module backend window

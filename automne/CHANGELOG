@@ -1,7 +1,10 @@
 V4.2.1 (in progress)
 [BUG] : Correct a bug in users groups rights for rows and templates
+[BUG] : Correct a bug in wysiwyg toolbar deletion
+[BUG] : Correct a bug in HTML compression (caused by a notice in generated content)
 [REFACTOR] : Update codemirror to version 2.2.1
 [REFACTOR] : Optimize all images used in Automne
+[REFACTOR] : Replace fckeditor with ckeditor version 3.6.2 in block text and polymod
 
 V4.2.0 (15/02/2012)
 [BUG] : Correct bug number: 2350, 2549, 2561, 2586, 2585, 2584, 2582, 2566, 2672, 2689, 2751, 2754, 2763, 2764, 2818, 2831 (see http://www.automne-cms.org/bug/)

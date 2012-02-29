@@ -632,11 +632,6 @@ class CMS_row extends CMS_grandFather
 				$rowId = 'row-'.$this->_tagID;
 				foreach($rowXML->childNodes as $rowChildNode) {
 					if (is_a($rowChildNode, 'DOMElement') && $rowChildNode->tagName != 'script' && $rowChildNode->tagName != 'p' && io::substr($rowChildNode->tagName, 0, 4) != 'atm-') {
-						/*if ($rowChildNode->hasAttribute('class')) {
-							$rowChildNode->setAttribute('class', $rowChildNode->getAttribute('class').' '.$rowId);
-						} else {
-							$rowChildNode->setAttribute('class',$rowId);
-						}*/
 						if ($rowChildNode->hasAttribute('id')) {
 							$elementId = $rowChildNode->getAttribute('id');
 						} else {
@@ -665,13 +660,6 @@ class CMS_row extends CMS_grandFather
 					};
 				</script>
 				'.$data;
-				//decode brackets encoded in CMS_block_text::_getHTMLForm
-				$replace = array(
-					'||bo||'		=> '&#123;',
-					'||bc||'		=> '&#125;',
-					'&#123;0&#125;' => '{0}', //for editor stylesheet parameter
-				);
-				$data = str_replace(array_keys($replace), $replace, $data);
 			}
 			$data = '<?php /* Start row ['.$this->getLabel().' - '.$this->getDefinitionFileName().'] */?>'.$data.'<?php /* End row ['.$this->getLabel().' - '.$this->getDefinitionFileName().'] */?>';
 			return $data;

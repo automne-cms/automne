@@ -221,14 +221,16 @@ class CMS_object_text extends CMS_object_common
 			$value = $this->_subfieldValues[0]->getValue();
 			if (class_exists('CMS_wysiwyg_toolbar')) {
 				$toolbar = CMS_wysiwyg_toolbar::getByCode($toolbarset, $cms_user);
-				$value = $toolbar->hasModulePlugins() ? FCKeditor::parsePluginsTags($value, $module) : $value;
+				$value = $toolbar->hasModulePlugins() ? CMS_textEditor::parseInnerContent($value, $module) : $value;
 			}
-			$return['xtype'] =	'fckeditor';
-			$return['id'] =		'fckeditor'.md5(mt_rand().microtime());
+			$return['xtype'] =	'ckeditor';
+			$return['id'] =		'ckeditor'.md5(mt_rand().microtime());
 			$return['value'] =	(string) $value;
 			$return['editor'] = array(
-				'ToolbarSet' 		=> $toolbarset,
-				'DefaultLanguage'	=> $language->getCode()
+				'scayt_sLang'		=> $language->getCode(),
+				'language'			=> $language->getCode(),
+				'customConfig'		=> PATH_MAIN_WR.'/ckeditor/config.php',
+				'atmToolbar'		=> $toolbarset,
 			);
 		} else {
 			$return['xtype'] = 'textarea';
@@ -278,7 +280,7 @@ class CMS_object_text extends CMS_object_common
 			$toolbarset = (!$params['toolbar']) ? $module : $params['toolbar'] ;
 			if (class_exists('CMS_wysiwyg_toolbar')) {
 				$toolbar = CMS_wysiwyg_toolbar::getByCode($toolbarset, $cms_user);
-				$value = ($toolbar->hasModulePlugins()) ? FCKeditor::parsePluginsTags($value, $module) : $value;
+				$value = ($toolbar->hasModulePlugins()) ? CMS_textEditor::parseInnerContent($value, $module) : $value;
 			}
 			$attrs = array(
 				'form' 		=> $inputParams['form'],					// Form name
@@ -332,7 +334,7 @@ class CMS_object_text extends CMS_object_common
 			//remove html characters if any then convert line breaks to <br /> tags
 			$value = isset($values[$prefixName.$this->_field->getID().'_0']) ? nl2br(strip_tags(io::htmlspecialchars($values[$prefixName.$this->_field->getID().'_0']))) : '';
 		} else {
-			$value = FCKeditor::createAutomneLinks($values[$prefixName.$this->_field->getID().'_0'], CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID()));
+			$value = CMS_textEditor::parseOuterContent($values[$prefixName.$this->_field->getID().'_0'], CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID()));
 		}
 		if (!$this->_subfieldValues[0]->setValue($value)) {
 			return false;

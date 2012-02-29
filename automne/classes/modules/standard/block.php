@@ -74,6 +74,9 @@ class CMS_block extends CMS_grandFather
 	
 	protected $_jsBlockClass = 'Automne.block';
 	
+	protected $_options = array();
+	
+	
 	/**
 	  * Constructor, unset by default
 	  * Only used for each sub class while getting all datas from database
@@ -118,15 +121,13 @@ class CMS_block extends CMS_grandFather
 	function initializeFromTag($attributes, $tagInnerContent)
 	{
 		if (is_array($attributes)) {
-			foreach ($attributes as $name=>$value) {
+			foreach ($attributes as $name => $value) {
 				switch ($name) {
 				case "id":
 					$this->_tagID = $value;
 					break;
 				default:
-					if ($name != "repeat") {
-						$this->_attributes[$name] = $value;
-					}
+					$this->_attributes[$name] = $value;
 					break;
 				}
 			}
@@ -404,6 +405,7 @@ class CMS_block extends CMS_grandFather
 				hasContent:			\''.$this->_hasContent.'\',
 				editable:			\''.$this->_editable.'\',
 				administrable:		\''.$this->_administrable.'\',
+				options:			'.io::jsonEncode($this->_options).',
 				value:				'.(is_array($this->_value) ? sensitiveIO::jsonEncode($this->_value) : '\''.sensitiveIO::sanitizeJSString($this->_value).'\'').',
 				elements:			['.($elements ? '\''.implode('\',\'', $elements).'\'' : '').']
 			};

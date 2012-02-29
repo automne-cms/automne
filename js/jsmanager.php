@@ -84,8 +84,11 @@ if ($files) {
 				$jsMainFiles [] = PATH_ADMIN_JS_FS.'/linkfield.js';
 				$jsMainFiles [] = PATH_ADMIN_JS_FS.'/pagefield.js';
 				//FCKEditor
-				$jsMainFiles [] = PATH_MAIN_FS.'/fckeditor/fckeditor.js';
-				$jsMainFiles [] = PATH_ADMIN_JS_FS.'/fckeditor.js';
+				//$jsMainFiles [] = PATH_MAIN_FS.'/fckeditor/fckeditor.js';
+				//$jsMainFiles [] = PATH_ADMIN_JS_FS.'/fckeditor.js';
+				//CKEditor
+				$jsMainFiles [] = PATH_MAIN_FS.'/ckeditor/ckeditor.js';
+				$jsMainFiles [] = PATH_ADMIN_JS_FS.'/ckeditor.js';
 				
 				//Append others files in folder PATH_ADMIN_JS_FS.'/' which is not already listed here
 				$excludedFiles = array(
@@ -135,6 +138,8 @@ if ($files) {
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/edit/block-text.js';
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/edit/block-varchar.js';
 				$jsfiles [] = PATH_ADMIN_JS_FS.'/edit/block-link.js';
+				//CKEditor
+				$jsfiles [] = PATH_MAIN_FS.'/ckeditor/ckeditor.js';
 			break;
 			case 'launch':
 				//this file launch application and must be the last to include
@@ -237,5 +242,6 @@ if ($files) {
 		}
 	}
 }
+
 CMS_file::sendFiles($jsfiles, 'text/javascript');
 ?>

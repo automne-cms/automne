@@ -8,13 +8,11 @@
   * @package CMS
   * @subpackage JS
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
-  * $Id: block-text.js,v 1.9 2010/01/18 08:46:36 sebastien Exp $
   */
 Automne.blockText = Ext.extend(Automne.block, {
 	blockClass:	'CMS_block_text',
 	stylesheet:	false,
-	FCKTimer:	false,
-	FCKEditor:	false,
+	CKEditor:	false,
 	edit: function() {
 		//create contener with all block edition elements
 		var bd = Ext.get(this.document.body);
@@ -32,41 +30,21 @@ Automne.blockText = Ext.extend(Automne.block, {
 			box.x = docbox.width - box.width - 5;
 		}
 		var cont = bd.createChild({cls: 'atm-edit-content atm-edit-text-content'});
-		var tb = bd.createChild({id:'fcktoolbar'});
+		var tb = bd.createChild({id:'cktoolbar'});
 		cont.setVisibilityMode(Ext.Element.DISPLAY);
 		cont.setStyle('position', 'absolute');
 		cont.setDisplayed('block');
-		cont.setBounds(box.x-1, box.y-1, box.width + 5, box.height + 26);
+		cont.setX(box.x);
+		cont.setY(box.y);
 		var dh = Ext.DomHelper;
-		var textCont = dh.append(cont, {tag:'div'}, true);
-		textCont.setBounds(box.x, box.y, box.width, box.height);
-		var ctrlCont = dh.append(cont, {tag:'div'}, true);
+		var ctrlCont = dh.append(cont, {tag:'div', cls:'atm-block-text-control'}, true);
 		var validateCtrl = dh.append(ctrlCont, {tag:'span', cls:'atm-block-control atm-block-control-validate'}, true);
-		validateCtrl.setX(box.x + box.width - 42);
 		validateCtrl.addClassOnOver('atm-block-control-validate-on');
 		validateCtrl.dom.title = validateCtrl.dom.alt = Automne.locales.blockValidate;
 		var cancelCtrl = dh.append(ctrlCont, {tag:'span', cls:'atm-block-control atm-block-control-cancel'}, true);
-		cancelCtrl.setX(box.x + box.width - 22);
 		cancelCtrl.addClassOnOver('atm-block-control-cancel-on');
 		cancelCtrl.dom.title = cancelCtrl.dom.alt = Automne.locales.cancel;
 		cont.show();
-		//add resize handler
-		var resizer = new Ext.Resizable(cont, {
-			width:		box.width + 5,
-			height:		box.height + 26,
-			minWidth:	175,
-			minHeight:	126,
-			pinned:		true
-		});
-		resizer.on("resize", function(el, width, height, e){
-			textCont.setWidth(width - 5);
-			textCont.setHeight(height - 26);
-			ctrlCont.setWidth(width - 5);
-			validateCtrl.setX(ctrlCont.getX() + ctrlCont.getWidth() - 42);
-			validateCtrl.setY(ctrlCont.getY() + 2);
-			cancelCtrl.setX(ctrlCont.getX() + ctrlCont.getWidth() - 22);
-			cancelCtrl.setY(ctrlCont.getY() + 2);
-		}, this);
 		//if we do not have stylesheet for this block, create it
 		if(!this.stylesheet) {
 			var tagName = this.elements.first().dom.tagName.toLowerCase();
@@ -83,7 +61,7 @@ Automne.blockText = Ext.extend(Automne.block, {
 			}
 			styleEl.setVisibilityMode(Ext.Element.DISPLAY);
 			styleEl.hide();
-			var tagList = ['b', 'strong', 'i', 'em', {tag:'a', href:'/', html:'text'}, 'p', {tag:'ul', children:[{tag:'li'}]}, {tag:'ol', children:[{tag:'li'}]}, 'span', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'img', 'small', 'abbr', 'acronym', 'blockquote', 'cite', 'code'];
+			var tagList = ['b', 'strong', 'i', 'em', {tag:'a', href:'/', html:'text'}, 'p', {tag:'ul', children:[{tag:'li'}]}, {tag:'ol', children:[{tag:'li'}]}, {tag:'div', children:[{tag:'p'}]}, 'span', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'img', 'small', 'abbr', 'acronym', 'blockquote', 'cite', 'code'];
 			var elements = new Ext.CompositeElement([sourceEl]);
 			for(var i = 0, tagLen = tagList.length; i < tagLen; i++) {
 				if (typeof tagList[i] == 'string') {
@@ -135,53 +113,56 @@ Automne.blockText = Ext.extend(Automne.block, {
 				stylesheet += '}\n';
 			});
 			//pr(stylesheet);
-			//append some style for fckeditor
+			//append some style for ckeditor
 			stylesheet += '\n.ForceBaseFont {\n'+
 			'	background-color:#FFFFFF;\n'+
 			'}\n';
+			if (this.options.bgcolor) {
+				stylesheet += '\n body {\n'+
+				'	background-color:'+this.options.bgcolor+';\n'+
+				'}\n';
+			}
 			this.stylesheet = stylesheet;
 			styleEl.remove();
+		} else {
+			var stylesheet = this.stylesheet;
 		}
-		textCont.update(this.value.replace(/\{0\}/g, encodeURIComponent(this.stylesheet)));
-		//set a timer on this function to wait until editor is fully loaded
-		this.FCKTimer = new Ext.util.DelayedTask(function() {
-			if (window.FCKeditorAPI && window.FCKeditorAPI.GetInstance) {
-				this.FCKEditor = window.FCKeditorAPI.GetInstance('fck-' + this.row.rowTagID + '-' + this.id);
-				if (!this.FCKEditor) {
-					this.FCKTimer.delay(5);
-					return;
-				} else {
-					//get all iframes and set them to position fixed
-					var catchFrames = new Ext.util.DelayedTask(function() {
-						var iframes = bd.select('iframe', true);
-						var count = 0;
-						iframes.each(function(iframe){
-							try{
-								if (iframe.id.indexOf('fck-' + this.row.rowTagID + '-' + this.id) == -1 && iframe.getStyle('position') == 'absolute') {
-									if (count) { //skip first frame which is the mouse contextual menu
-										iframe.setStyle('position', 'fixed');
-									}
-									count++;
-								}
-							} catch(e){}
-						}, this);
-					}, this);
-					catchFrames.delay(1000);
-				}
-			} else {
-				this.FCKTimer.delay(10);
-				return;
-			}
-		}, this);
-		this.FCKTimer.delay(10);
+		//set editor options
+		var ckconf = {};
+		ckconf.height = box.height;
+		ckconf.width = box.width;
+		ckconf.language = this.options.language;
+		ckconf.scayt_sLang = this.options.language;
+		ckconf.sharedSpaces = {top: 'cktoolbar'};
+		if (this.options.styles) {
+			ckconf.extraPlugins = 'stylesheetparser';
+			ckconf.stylesSet = [];
+			ckconf.contentsCss = Automne.context.path + this.options.styles;
+		}
+		if (this.options.atmToolbar) {
+			ckconf.customConfig = Automne.context.path +'/automne/ckeditor/config.php?toolbar=' + this.options.atmToolbar;
+		} else {
+			ckconf.customConfig = Automne.context.path +'/automne/ckeditor/config.php?toolbar=Default';
+		}
+		//append stylesheet to editor (use events because addCss only works before editor exists)
+		var loadStyles = function (e) {
+			e.editor.addCss(stylesheet);
+		}
+		CKEDITOR.on( 'instanceCreated', loadStyles);
+		CKEDITOR.on( 'instanceDestroyed', function (e) {
+			CKEDITOR.removeListener('instanceCreated', loadStyles);
+		});
+		//create editor
+		this.CKEditor = CKEDITOR.appendTo( cont.dom, ckconf, decodeURIComponent(this.value) );
+		
 		//put click events on controls
-		cancelCtrl.on('mousedown', this.stopEdition.createDelegate(this, [cancelCtrl, validateCtrl, ctrlCont, textCont, cont, tb]), this);
-		validateCtrl.on('mousedown', this.validateEdition.createDelegate(this, [cancelCtrl, validateCtrl, ctrlCont, textCont, cont, tb]), this);
+		cancelCtrl.on('mousedown', this.stopEdition.createDelegate(this, [cancelCtrl, validateCtrl, ctrlCont, cont, tb]), this);
+		validateCtrl.on('mousedown', this.validateEdition.createDelegate(this, [cancelCtrl, validateCtrl, ctrlCont, cont, tb]), this);
 	},
-	validateEdition: function(cancelCtrl, validateCtrl, ctrlCont, textCont, cont, tb) {
+	validateEdition: function(cancelCtrl, validateCtrl, ctrlCont, cont, tb) {
 		//get new value from textarea
-		if (this.FCKEditor) {
-			this.value = this.FCKEditor.GetXHTML(true);
+		if (this.CKEditor) {
+			this.value = this.CKEditor.getData();
 			//send all datas to server to update block content and get new row HTML code
 			Automne.server.call('page-content-controler.php', this.stopEditionAfterValidation, {
 				action:			'update-block-text',
@@ -193,7 +174,7 @@ Automne.blockText = Ext.extend(Automne.block, {
 				block:			this.getId(),
 				blockClass:		this.blockClass,
 				value:			this.value,
-				stopParams:		[cancelCtrl, validateCtrl, ctrlCont, textCont, cont, tb]
+				stopParams:		[cancelCtrl, validateCtrl, ctrlCont, cont, tb]
 			}, this);
 		}
 		
@@ -208,15 +189,25 @@ Automne.blockText = Ext.extend(Automne.block, {
 			elements.removeAllListeners();
 			elements.remove();
 			delete elements;
+			//remove editor
+			if (this.CKEditor) {
+				this.CKEditor.destroy();
+				this.CKEditor = null;
+			}
 			//replace row content
 			this.row.replaceContent(response, option);
 		}
 	},
-	stopEdition: function(cancelCtrl, validateCtrl, ctrlCont, textCont, cont, tb) {
+	stopEdition: function(cancelCtrl, validateCtrl, ctrlCont, cont, tb) {
 		this.endModify();
-		var elements = new Ext.CompositeElement([cancelCtrl, validateCtrl, ctrlCont, textCont, cont, tb]);
+		var elements = new Ext.CompositeElement([cancelCtrl, validateCtrl, ctrlCont, cont, tb]);
 		elements.removeAllListeners();
 		elements.remove();
 		delete elements;
+		//remove editor
+		if (this.CKEditor) {
+			this.CKEditor.destroy();
+			this.CKEditor = null;
+		}
 	}
 });

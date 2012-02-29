@@ -184,38 +184,26 @@ class CMS_block_text extends CMS_block
 		global $cms_user;
 		$rawDatas = $this->getRawData($page->getID(), $clientSpace->getTagID(), $row->getTagID(), RESOURCE_LOCATION_EDITION, false);
 		$this->_jsBlockClass = 'Automne.blockText';
-		//$editor->getJavascript();
-		$editor = new CMS_textEditor("Formular", 'fck-'.$row->getTagID().'-'.$blockID, $rawDatas['value'], $_SERVER["HTTP_USER_AGENT"], false, $cms_user->getLanguage());
-		$editor->setEditorAttributes(array(
-			'Height' => '100%',
-		));
-		$editorConfig = array(
-			'EditorAreaStyles' 		=> '/css/editor.css',
-			'ToolbarCanCollapse' 	=> '0',
-			'SourcePopup'			=> '1',
-			'ToolbarLocation'		=> 'Out:fcktoolbar',
-			'EditorAreaCSS'			=> '||bo||0||bc||', //ie. {0}
-			'doNotFollowScroll'		=> true //FCKEditor hack : editors panel should not follow iframe page scroll
+		
+		$this->_value = CMS_textEditor::parseInnerContent($rawDatas['value']);
+		$this->_value = rawurlencode($this->_value);
+		
+		//set editor options
+		$this->_options = array(
+			'styles' 		=> (isset($this->_attributes['styles']) ? $this->_attributes['styles'] : ''),
+			'bgcolor' 		=> (isset($this->_attributes['bgcolor']) ? $this->_attributes['bgcolor'] : ''),
+			'language'		=> $language->getCode(),
+			'atmToolbar'	=> (isset($this->_attributes['toolbar']) ? $this->_attributes['toolbar'] : ''),
 		);
-		if (isset($this->_attributes['bgcolor'])) {
-			$editorConfig['EditorAreaStyles'] = 'body { background: '.$this->_attributes['bgcolor'].' };';
-		}
-		$editor->setEditorConfigAttributes($editorConfig);
-		$this->_value = $editor->getHTML();
+		
 		$this->_administrable = false;
 		$html = parent::_getHTMLForm($language, $page, $clientSpace, $row, $blockID, $data);
-		
-		//encode brackets to avoid vars ( {something:type:var} ) to be interpretted
-		//decoded into CMS_row::getData
-		$html = preg_replace ('#{([a-zA-Z0-9._{}:-]*)}#U' , '||bo||\1||bc||', $html);
 		
 		$replace = array(
 			'||bovd||'		=> '&#123;',
 			'||bcvd||'		=> '&#125;',
 		);
 		$html = str_replace(array_keys($replace), $replace, $html);
-		
-		
 		return $html;
 	}
 	

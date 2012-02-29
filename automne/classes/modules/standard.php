@@ -12,8 +12,6 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr> &            |
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: standard.php,v 1.22 2010/03/08 16:43:31 sebastien Exp $
 
 /**
   * Codename of the standard module
@@ -1850,6 +1848,8 @@ class CMS_module_standard extends CMS_module
 								'var atmIsValidator = '.$isValidator.';'."\n".
 								'var atmIsValidable = true;'."\n".
 								'var atmHasPreview = true;'."\n".
+								'var atmHasPreview = true;'."\n".
+								'var CKEDITOR_BASEPATH = '.PATH_REALROOT_WR.'\'/automne/ckeditor/\';'."\n".
 							'</script>';
 							//append JS from current view instance
 							$view = CMS_view::getInstance();
@@ -1864,6 +1864,7 @@ class CMS_module_standard extends CMS_module
 								'var atmIsValidator = false;'."\n".
 								'var atmIsValidable = false;'."\n".
 								'var atmHasPreview = false;'."\n".
+								'var CKEDITOR_BASEPATH = '.PATH_REALROOT_WR.'\'/automne/ckeditor/\';'."\n".
 							'</script>';
 							//append JS from current view instance
 							$view = CMS_view::getInstance();
@@ -2009,7 +2010,7 @@ class CMS_module_standard extends CMS_module
 				} else {
 					$modulesCode[MOD_STANDARD_CODENAME] .= 
 					'//Page can be HTTPS'."\n".
-					'if (!((isset($_SERVER["REQUEST_URI"]) && strpos($_SERVER["REQUEST_URI"], PATH_ADMIN_WR) !== false) || (isset($_REQUEST[\'atm-context\']) && $_REQUEST[\'atm-context\'] == \'adminframe\'))) {'."\n".
+					'if (!((isset($_SERVER["REQUEST_URI"]) && strpos($_SERVER["REQUEST_URI"], \''.PATH_ADMIN_WR.'\') !== false) || (isset($_REQUEST[\'atm-context\']) && $_REQUEST[\'atm-context\'] == \'adminframe\'))) {'."\n".
 					'	if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] && strtolower($_SERVER["HTTPS"]) != \'off\') {'."\n".
 					'		defined(\'PAGE_SSL_MODE\') || define(\'PAGE_SSL_MODE\', true);'."\n".
 					'	}'."\n".

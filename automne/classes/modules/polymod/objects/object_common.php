@@ -892,6 +892,10 @@ abstract class CMS_object_common extends CMS_grandFather
 		}
 		if (isset($types['integer']) && $types['integer'] == true) {
 			$sql .= ($sql) ? "\n".' union distinct '."\n" : '';
+			if (is_array($value) && !$value) {
+				//no value in array for an integer search => no results
+				return false;
+			}
 			$sql .= "
 				select
 					distinct objectID

@@ -119,7 +119,7 @@ if (ERROR404_EMAIL_ALERT && sensitiveIO::isValidEmail(APPLICATION_MAINTAINER_EMA
 //try to get website by path to serve specific 404 page
 $path = pathinfo (parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), PATHINFO_DIRNAME);
 $website = null;
-if ($path) {
+if ($path && $path != '/') {
 	$websites = CMS_websitesCatalog::getAll('order');
 	foreach ($websites as $website) {
 		if ($website->getPagesPath(PATH_RELATIVETO_WEBROOT)) {

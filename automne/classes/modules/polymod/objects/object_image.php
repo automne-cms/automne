@@ -946,13 +946,8 @@ class CMS_object_image extends CMS_object_common
 				}
 			} elseif (isset($_FILES[$prefixName.$this->_field->getID().'_0']) && $_FILES[$prefixName.$this->_field->getID().'_0']['name'] && $_FILES[$prefixName.$this->_field->getID().'_0']['error'] != 0) {
 				return false;
-			} elseif (isset($values[$prefixName.$this->_field->getID().'_0_hidden']) && $values[$prefixName.$this->_field->getID().'_0_hidden'] && isset($values[$prefixName.$this->_field->getID().'_delete']) && $values[$prefixName.$this->_field->getID().'_delete'] != 1) {
+			} elseif (isset($values[$prefixName.$this->_field->getID().'_0_hidden']) && $values[$prefixName.$this->_field->getID().'_0_hidden'] && (!isset($values[$prefixName.$this->_field->getID().'_delete']) || $values[$prefixName.$this->_field->getID().'_delete'] != 1)) {
 				//set label as image name if none set
-				/*if ($values[$prefixName.$this->_field->getID().'_1']) {
-					if (!$this->_subfieldValues[1]->setValue(io::htmlspecialchars($values[$prefixName.$this->_field->getID().'_1']))) {
-						return false;
-					}
-				}*/
 				if(!$this->_subfieldValues[0]->setValue($values[$prefixName.$this->_field->getID().'_0_hidden'])) {
 					return false;
 				}
@@ -984,7 +979,7 @@ class CMS_object_image extends CMS_object_common
 				}
 			} elseif (isset($_FILES[$prefixName.$this->_field->getID().'_2']) && $_FILES[$prefixName.$this->_field->getID().'_2']['name'] && $_FILES[$prefixName.$this->_field->getID().'_2']['error'] != 0) {
 				return false;
-			} elseif (isset($values[$prefixName.$this->_field->getID().'_2_hidden']) && $values[$prefixName.$this->_field->getID().'_2_hidden'] && isset($values[$prefixName.$this->_field->getID().'_delete']) && $values[$prefixName.$this->_field->getID().'_delete'] != 1) {
+			} elseif (isset($values[$prefixName.$this->_field->getID().'_2_hidden']) && $values[$prefixName.$this->_field->getID().'_2_hidden'] && (!isset($values[$prefixName.$this->_field->getID().'_delete']) || $values[$prefixName.$this->_field->getID().'_delete'] != 1)) {
 				if(!$this->_subfieldValues[2]->setValue($values[$prefixName.$this->_field->getID().'_2_hidden'])) {
 					return false;
 				}

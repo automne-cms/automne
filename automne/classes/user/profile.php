@@ -1658,5 +1658,21 @@ class CMS_profile extends CMS_grandFather
 		// Write moduleCategories clearances to persistence also
 		return $this->_moduleCategoriesClearances->writeToPersistence();
 	}
+	
+	/**
+	  * Clone object : clone all sub objects
+	  *
+	  * @return void
+	  * @access public
+	  */
+	function __clone() {    
+    	// clone Stack objects
+		$this->_pageClearances = clone $this->_pageClearances;
+		$this->_validationClearances = clone $this->_validationClearances;
+		$this->_moduleClearances = clone $this->_moduleClearances;
+		$this->_templateGroupsDenied = clone $this->_templateGroupsDenied;
+		$this->_rowGroupsDenied = clone $this->_rowGroupsDenied;
+		$this->_moduleCategoriesClearances = clone $this->_moduleCategoriesClearances;
+	}
 }
 ?>

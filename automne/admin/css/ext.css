@@ -181,3 +181,8 @@
 .x-tree.x-box-item {
 	position: relative;
 }
+div#public .x-panel-body,
+div#edited .x-panel-body,
+div#edit .x-panel-body{
+  overflow-y: hidden !important;
+}

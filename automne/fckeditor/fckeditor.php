@@ -156,14 +156,7 @@ class FCKeditor
 		
 		if ($this->ToolbarSet == 'Default' && $this->Value!='') {
 			//parse all plugin tags
-			$this->Value = $this->parsePluginsTags($this->Value);
-			//we need to do some replacements to be completely conform with FCKeditor attempt
-			$replace = array(
-				" />" 				//xhtml remove space on auto-closed tags
-			);
-			$replaceBy = array(
-				"/>"
-			);
+			$this->Value = CMS_textEditor::parseInnerContent($this->Value);
 			$this->Value = str_replace($replace,$replaceBy,$this->Value);
 		}
 		return $this->CreateHtml() ;
@@ -277,92 +270,19 @@ class FCKeditor
 	}
 	
 	/**
-	  * Parse All plugins tags
-	  *
-	  * @param string $text The inputed text of fckeditor
-	  * @param string $module The module codename which made the request
-	  * @return string the text with plugins tags adapted for fckeditor
-	  * @access public
+	  * This function is only used for old Automne modules compatibility
 	  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
 	  */
 	function parsePluginsTags($value, $module = MOD_STANDARD_CODENAME) {
-		$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_WYSIWYG_INNER_TAGS, RESOURCE_DATA_LOCATION_EDITION, $this);
-		$wantedTags = $modulesTreatment->getWantedTags();
-		//create regular expression on wanted tags
-		$exp = '';
-		foreach ($wantedTags as $aWantedTag) {
-			$exp .= ($exp) ? '|<'.$aWantedTag["tagName"] : '<'.$aWantedTag["tagName"];
-		}
-		//is parsing needed (value contain some of these wanted tags)
-		if ($value && is_array($wantedTags) && $wantedTags && preg_match('#('.$exp.')+#' ,$value) !== false) {
-			$modulesTreatment->setTreatmentParameters(array('module' => $module));
-			$modulesTreatment->setDefinition($value);
-			$value = $modulesTreatment->treatContent(true);
-		}
-		//eval PHP content if any
-		if (strpos($value, '<?php') !== false) {
-			$value = io::evalPHPCode($value);
-		}
-		return $value;
+		return CMS_textEditor::parseInnerContent($value, $module);
 	}
 	
 	/**
-	  * Create All plugins tags
-	  * (initialy Automne Links only)
-	  *
-	  * @param string $text The outputed text of fckeditor
-	  * @param string $module The module codename which made the request
-	  * @return string the text with all plugin tags
-	  * @access public
+	  * This function is only used for old Automne modules compatibility
 	  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
 	  */
 	function createAutomneLinks($text, $module = MOD_STANDARD_CODENAME) {
-		//if post only contain a space or empty div or paragraph then the block is empty.
-		$cleanedText = trim(str_replace(array('&#160;', '&nbsp;', ' ') , '', $text));
-		if ($cleanedText == '<p></p>' || $cleanedText == '<div></div>') {
-			$text = '';
-		}
-		if ($text) {
-			/*
-			 * we need to do some replacements to be completely conform with Automne
-			 * you can add here all dirty tags to be removed from editor's output
-			 */
-			$replace = array(
-				'{' 						=> '&#123;',//encode brackets to avoid vars ( {something:type:var} ) to be interpretted
-				'}' 						=> '&#125;',
-				'&#123;&#123;' 				=> '{{',	//in case of internal links copy/paste, editor decode {{ and }}
-				'&#125;&#125;' 				=> '}}',	
-				"%7B%7B" 					=> "{{",	
-				"%7D%7D" 					=> "}}",	
-				"/>" 						=> " />",	//xhtml missing space on auto-closed tags
-				"<o:p>" 					=> "",		//dirty tags from MS Word pasting
-				"</o:p>" 					=> "",		
-				"<!--[if !supportLists]-->" => "",		
-				"<!--[endif]-->" 			=> "",		
-				"<?php" 					=> "",		//remove PHP tags for security
-				"<?" 						=> "",		
-				"?>" 						=> "",		
-			);
-			
-			$text = str_replace(array_keys($replace),$replace,$text);
-			$text = sensitiveIO::decodeWindowsChars($text);
-			
-			$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_WYSIWYG_OUTER_TAGS, RESOURCE_DATA_LOCATION_EDITION, new CMS_date());
-			$wantedTags = $modulesTreatment->getWantedTags();
-			
-			//create regular expression on wanted tags
-			$exp = '';
-			foreach ($wantedTags as $aWantedTag) {
-				$exp .= ($exp) ? '|<'.$aWantedTag["tagName"] : '<'.$aWantedTag["tagName"];
-			}
-			//is parsing needed (value contain some of these wanted tags)
-			if (is_array($wantedTags) && $wantedTags && preg_match('#('.$exp.')+#' ,$text) !== false) {
-				$modulesTreatment->setTreatmentParameters(array('module' => $module));
-				$modulesTreatment->setDefinition($text);
-				$text = $modulesTreatment->treatContent(true);
-			}
-		}
-		return $text;
+		return CMS_textEditor::parseOuterContent($text, $module);
 	}
 }
 ?>

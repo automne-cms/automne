@@ -367,12 +367,15 @@ class CMS_grandFather
 				//fckeditor
 				'fckeditor' 						=> PATH_MAIN_FS.'/fckeditor/fckeditor.php',
 
+				//ckeditor
+				'ckeditor' 							=> PATH_MAIN_FS.'/ckeditor/ckeditor.php',
+
 				//JSMin
 				'jsmin' 							=> PATH_MAIN_FS.'/jsmin/jsmin.php',
 
 				//CSSMin
 				'cssmin' 							=> PATH_MAIN_FS.'/cssmin/cssmin.php',
-				
+
 				//PHPExcel
 				'phpexcel'							=> PATH_MAIN_FS.'/phpexcel/PHPExcel.php',
 				'phpexcel_iofactory'				=> PATH_MAIN_FS.'/phpexcel/PHPExcel/IOFactory.php',

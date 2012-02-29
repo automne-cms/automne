@@ -190,9 +190,16 @@ img.atm-block-on {
 }
 .atm-edit-text-content {
 	background-color:	white;
-	border-top:			1px solid #696969;
-	border-left:		1px solid #696969;
-	padding:			0 4px 4px 0;
+}
+.atm-block-text-control {
+	bottom:				6px;
+	right:				24px;
+	position:			absolute;
+	width: 				40px;
+	height:				22px;
+}
+.atm-block-text-control .atm-block-control-cancel {
+	right:				0px;
 }
 /*DD Styles*/
 .x-dd-drag-proxy{
@@ -347,15 +354,18 @@ img.atm-block-on {
 	-moz-user-select:	none;
 	-khtml-user-select:	none;
 }
-#fcktoolbar {
+#cktoolbar {
 	position:			fixed;
 	left:				0;
 	top:				0;
 	width:				100%;
-	z-index:			15000;
+	z-index:			9990;
 }
 .atm-ipsum {
     background:  		url(../automne/admin/img/ipsum.png) repeat;
 	border:				0px !important;
 	display:			inline !important;
+}
+#cktoolbar .cke_shared .cke_skin_kama {
+	background-color:	#FFF;
 }

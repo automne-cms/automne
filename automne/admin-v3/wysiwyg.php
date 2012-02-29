@@ -48,8 +48,7 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES)) {
 	header("Location: ".PATH_ADMIN_SPECIAL_ENTRY_WR."?cms_message_id=".MESSAGE_PAGE_CLEARANCE_ERROR."&".session_name()."=".session_id());
 	exit;
 }
-//get all toolbars
-$toolbars = CMS_wysiwyg_toolbar::getAll($cms_user);
+
 $cms_message = '';
 switch ($_POST["cms_action"]) {
 case "validate":
@@ -91,6 +90,9 @@ case "delete":
 	$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 	break;
 }
+
+//get all toolbars
+$toolbars = CMS_wysiwyg_toolbar::getAll($cms_user);
 
 $dialog = new CMS_dialog();
 $content = '';

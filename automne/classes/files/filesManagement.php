@@ -1167,8 +1167,22 @@ class CMS_file extends CMS_grandFather
 		if (!$cache->exist() || !($datas = $cache->load())) {
 			// datas cache missing so create it
 			foreach ($files as $file) {
-				$datas .= file_get_contents($file)."\n";
+				$fileData = file_get_contents($file);
+				//strip BOM from file if exists
+				if (substr($fileData, 0,3) === '﻿') {
+					$fileData = substr($fileData, 3);
+				}
+				//append file origin comment
+				if ($contentType == 'text/javascript') {
+					$fileData = '//<<'."\n".'//JS file: '.(str_replace(PATH_REALROOT_FS, '', $file)).''."\n".'//!>>'."\n".$fileData;
+				}
+				//append file origin comment
+				if ($contentType == 'text/css') {
+					$fileData = '/*<<*/'."\n".'/* CSS file: '.(str_replace(PATH_REALROOT_FS, '', $file)).' */'."\n".'/*!>>*/'."\n".$fileData;
+				}
+				$datas .= $fileData."\n";
 			}
+			
 			//minimize JS files if needed
 			if (!SYSTEM_DEBUG && $contentType == 'text/javascript') {
 				$datas = JSMin::minify($datas);

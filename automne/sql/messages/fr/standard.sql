@@ -1708,3 +1708,12 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1749, 'standard', 'fr', 'Cette fenêtre vous permet de saisir ou modifier un lien vers une page interne ou externe pour l''élément de la page en cours de modification.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1750, 'standard', 'fr', 'Gestion des noms de code des pages');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1751, 'standard', 'fr', 'Ce droit permet à l\'utilisateur de modifier le nom de code (codename) des pages sur lesquelles il a le droit d\'administration.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1752, 'standard', 'fr', 'Vérificateur d\'orthographe');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1753, 'standard', 'fr', 'Citation');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1754, 'standard', 'fr', 'Bloc div');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1755, 'standard', 'fr', 'Ecrire Droite à Gauche');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1756, 'standard', 'fr', 'Ecrire Gauche à Droite');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1757, 'standard', 'fr', 'Insertion d\'Iframe');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1758, 'standard', 'fr', 'Maximiser');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1759, 'standard', 'fr', 'Afficher les blocs');
+
