@@ -138,7 +138,7 @@ class CMS_session extends CMS_grandFather
 		try {
 			Zend_Session::start();
 		} catch (Zend_Session_Exception $e) {
-			$this->raiseError($e->getMessage());
+			CMS_grandFather::raiseError($e->getMessage());
 		}
 		//Then load existant user if any without launching authentification process
 		CMS_session::authenticate(array('authenticate' => false));

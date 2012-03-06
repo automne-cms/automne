@@ -42,10 +42,7 @@ CKEDITOR.dialog.add( 'automneLinks', function( editor )
 				targetName.getElement().hide();
 				break;
  		}
-
 	};
-
-	
 
 	// Loads the parameters in a selected link to the link dialog fields.
 	var selectableTargets = /^(_(?:self|top|parent|blank))$/;

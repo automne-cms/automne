@@ -73,7 +73,7 @@ CKEDITOR.editorConfig = function( config )
 	}
 	$content .= '
 	config.templates_files = [\''.PATH_MAIN_WR.'/ckeditor/templates.php\'];
-	config.menu_groups = \'clipboard,form,tablecell,tablecellproperties,tablerow,tablecolumn,table,anchor,link,automneLinks,image,flash,checkbox,radio,textfield,hiddenfield,imagebutton,button,select,textarea\';
+	config.menu_groups = \'clipboard,form,tablecell,tablecellproperties,tablerow,tablecolumn,table,anchor,link,automneLinks,editPlugin,image,flash,checkbox,radio,textfield,hiddenfield,imagebutton,button,select,textarea\';
 };
 ';
 echo $content;

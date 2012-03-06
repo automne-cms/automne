@@ -116,19 +116,16 @@ foreach ($availablePlugin as $aPolyModuleCodename => $pluginDefinitions) {
 					scope:		center
 				},
 				selectItem:		function(id, params) {
+					fieldPluginCode.setValue('');
 					if (id) {
-						window.parent.SetOkButton( false ) ;
 						//grab code to paste from selected item id
 						Automne.server.call('{$pluginControler}', function(response, option, content){
-							window.parent.SetOkButton( true ) ;
-							document.getElementById('codeToPaste').value = content;
+							fieldPluginCode.setValue(content);
 						}, Ext.apply({
 							item:		id,
 							type:		params.objectId,
 							action:		'pluginSelection'
 						}, params), this);
-					} else {
-						document.getElementById('codeToPaste').value = ' ';
 					}
 				}.createDelegate(this, [{$params}], true)
 			}";

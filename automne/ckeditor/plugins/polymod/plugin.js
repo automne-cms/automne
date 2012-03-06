@@ -7,94 +7,145 @@
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   * @author CKSource - Frederico Knabben.
   */
-
 CKEDITOR.plugins.add( 'polymod',
 {
-	
+	requires : [ 'dialog', 'fakeobjects', 'iframedialog' ],
 	lang : [ 'en', 'fr' ],
 	init : function( editor )
 	{
-		// Add the link and unlink buttons.
-		editor.addCommand( 'polymod', new CKEDITOR.dialogCommand( 'polymod' ) );
+		var lang = editor.lang.polymod;
+
+		editor.addCommand( 'createPlugin', new CKEDITOR.dialogCommand( 'createPlugin' ) );
+		editor.addCommand( 'editPlugin', new CKEDITOR.dialogCommand( 'editPlugin' ) );
+
 		editor.ui.addButton( 'polymod',
+		{
+			label : lang.toolbar,
+			command :'createPlugin',
+			icon : this.path + 'polymod.gif'
+		});
+		CKEDITOR.dialog.add( 'createPlugin', this.path + 'dialogs/polymod.js' );
+		CKEDITOR.dialog.add( 'editPlugin', this.path + 'dialogs/polymod.js' );
+
+		if ( editor.addMenuItems )
+		{
+			editor.addMenuGroup( 'polymod', 20 );
+			editor.addMenuItems(
+				{
+					editPlugin :
+					{
+						label : lang.edit,
+						command : 'editPlugin',
+						group : 'polymod',
+						order : 1,
+						icon : this.path + 'polymod.gif'
+					}
+				} );
+
+			if ( editor.contextMenu )
 			{
-				label : editor.lang.polymod.toolbar,
-				command : 'polymod',
-				icon : this.path + 'polymod.gif'
-			} );
-		CKEDITOR.dialog.add( 'polymod', this.path + 'dialogs/polymod.js' );
-		//on doubleclick, edit link
+				editor.contextMenu.addListener( function( element, selection )
+					{
+						if ( !element || !element.hasClass('polymod') )
+							return null;
+						
+						return { editPlugin : CKEDITOR.TRISTATE_OFF };
+					} );
+			}
+		}
+
 		editor.on( 'doubleclick', function( evt )
 			{
-				var element = CKEDITOR.plugins.polymod.getSelectedPlugin( editor ) || evt.data.element;
-				if ( !element.isReadOnly() )
-				{
-					if ( element.is( 'a' ) && element.getAttribute('href') && (element.getAttribute('href').indexOf('}}') != -1 || element.getAttribute('href').indexOf('%7D%7D') != -1))
+				if ( CKEDITOR.plugins.polymod.getSelectedPlugin( editor ) )
+					evt.data.dialog = 'editPlugin';
+			});
+
+		editor.addCss(
+			'.polymod' +
+			'{' +
+				'border-bottom:		1px dotted #008000;' +
+				'padding:			1px 10px 1px 1px;' +
+				'background:			url(../automne/ckeditor/plugins/polymod/polymod-mini.gif) no-repeat right top;' +
+				( CKEDITOR.env.gecko ? 'cursor: default;' : '' ) +
+			'}'
+		);
+
+		editor.on( 'contentDom', function()
+			{
+				editor.document.getBody().on( 'resizestart', function( evt )
 					{
-						evt.data.dialog = 'polymod';
-						editor.getSelection().selectElement( element );
+						if ( editor.getSelection().getSelectedElement().attributes[ 'class' ] 
+								&& editor.getSelection().getSelectedElement().attributes[ 'class' ].indexOf ( 'polymod' ) != -1 )
+							evt.data.preventDefault();
+					});
+			});
+
+		
+	},
+	afterInit : function( editor )
+	{
+		var dataProcessor = editor.dataProcessor,
+			dataFilter = dataProcessor && dataProcessor.dataFilter,
+			htmlFilter = dataProcessor && dataProcessor.htmlFilter;
+
+		if ( dataFilter )
+		{
+			dataFilter.addRules(
+			{
+				elements :
+				{
+					'span' : function( element )
+					{
+						if ( element.attributes && element.attributes[ 'class' ] && element.attributes[ 'class' ].indexOf ( 'polymod' ) != -1 )
+							element.attributes.contenteditable = "false";
+							
 					}
 				}
 			});
-
-		// If the "menu" plugin is loaded, register the menu items.
-		if ( editor.addMenuItems )
-		{
-			editor.addMenuItems(
-				{
-					polymod : {
-						label : editor.lang.polymod.menu,
-						command : 'polymod',
-						group : 'polymod',
-						icon : this.path + 'polymod.gif',
-						order : 1
-					}
-				});
 		}
 
-		// If the "contextmenu" plugin is loaded, register the listeners.
-		if ( editor.contextMenu )
+		if ( htmlFilter )
 		{
-			editor.contextMenu.addListener( function( element, selection )
+			htmlFilter.addRules(
+			{
+				elements :
 				{
-					if ( !element || element.isReadOnly() )
-						return null;
-					var menu = {};
-
-					if ( element.getAttribute( 'href' ) && element.getAttribute( 'href' ).substr(0,2) == '{{') {
-						menu = { polymod : CKEDITOR.TRISTATE_ON };
+					'span' : function( element )
+					{
+						if ( element.attributes && element.attributes[ 'class' ] && element.attributes[ 'class' ].indexOf ( 'polymod' ) != -1 )
+							delete element.attributes.contenteditable;
 					}
-					return menu;
-				});
+				}
+			});
 		}
-	},
-	requires : [ 'fakeobjects', 'iframedialog' ]
-} );
+	}
+});
 
 CKEDITOR.plugins.polymod =
 {
+	createPlugin : function( editor, oldElement, text )
+	{
+		element = new CKEDITOR.dom.element( 'span', editor.document );
+		element.setHtml( text );
+		element = element.getChild(0);
+		element.setAttributes({contentEditable : 'false'});
+		
+		if (!oldElement) {
+			editor.insertElement( element );
+		} else {
+			element.replace(oldElement);
+		}
+		
+		return null;
+	},
+
 	getSelectedPlugin : function( editor )
 	{
-		try
-		{
-			var selection = editor.getSelection();
-			if ( selection.getType() == CKEDITOR.SELECTION_ELEMENT )
-			{
-				var selectedElement = selection.getSelectedElement();
-				if ( selectedElement.is( 'a' ) && (selectedElement.getAttribute('href').indexOf('}}') != -1 || selectedElement.getAttribute('href').indexOf('%7D%7D') != -1))
-					return selectedElement;
-			}
-
-			var range = selection.getRanges( true )[ 0 ];
-			range.shrink( CKEDITOR.SHRINK_TEXT );
-			var root = range.getCommonAncestor();
-			return root.getAscendant( 'a', true );
-		}
-		catch( e ) { return null; }
-	},
+		var range = editor.getSelection().getRanges()[ 0 ];
+		range.shrink( CKEDITOR.SHRINK_TEXT );
+		var node = range.startContainer;
+		while( node && !( node.type == CKEDITOR.NODE_ELEMENT && node.hasClass('polymod') ))
+			node = node.getParent();
+		return node;
+	}
 };
-CKEDITOR.tools.extend( CKEDITOR.config,
-{
-	linkShowAdvancedTab : true,
-	linkShowTargetTab : true
-} );

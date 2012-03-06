@@ -52,8 +52,13 @@ require_once(dirname(__FILE__).'/../../../../../cms_rc_admin.php');
 	</head>
 	<body scroll="no" style="OVERFLOW: hidden">
 		<div id="atmCKPolymod"></div>
-		<input type="hidden" id="codeToPaste" value="" />
 		<script type="text/javascript">
+			var CKEDITOR   = parent.CKEDITOR;
+			var dialog = CKEDITOR.dialog.getCurrent();
+			var fieldPluginCode = dialog._.contents.info.pluginCode;
+			var pluginId = dialog._.contents.info.pluginId.getValue();
+			var pluginSelection = dialog._.contents.info.pluginSelection.getValue();
+			
 			var displayPolymod = function(id, content) {
 				Ext.QuickTips.init();
 				var polymodPlugins = new Automne.panel({
@@ -77,7 +82,7 @@ require_once(dirname(__FILE__).'/../../../../../cms_rc_admin.php');
 					}
 				});
 			}
-			displayPolymod('', '');
+			displayPolymod(pluginId, pluginSelection);
 		</script>
 	</body>
 </html>
