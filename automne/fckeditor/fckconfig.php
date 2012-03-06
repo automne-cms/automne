@@ -163,7 +163,7 @@ FCKConfig.ToolbarSets["Default"] = [
 	['OrderedList','UnorderedList','-','Outdent','Indent','Blockquote'/*,'CreateDiv'*/],
 	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
 	['Link','Unlink','Anchor'<?php if (isset($modulesCodeInclude["Default"])) echo ','.implode(",",$modulesCodeInclude["Default"]); ?>],
-	[<?php if (ALLOW_IMAGES_IN_WYSIWYG) echo '\'Image\','; ?>'Table','Rule','SpecialChar'],//['Image','Flash','Table','Rule','Smiley','SpecialChar','PageBreak'],
+	['Table','Rule','SpecialChar'],//['Image','Flash','Table','Rule','Smiley','SpecialChar','PageBreak'],
 	//['Image','Flash','Table','Rule','Smiley','SpecialChar','PageBreak'],
 	['Style','FontFormat','FontSize','-','TextColor','BGColor'],//['Style','FontFormat','FontName','FontSize'],
 	//['FitWindow','ShowBlocks','-','About']

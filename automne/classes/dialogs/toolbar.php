@@ -11,8 +11,6 @@
 // +----------------------------------------------------------------------+
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: toolbar.php,v 1.3 2010/03/08 16:43:32 sebastien Exp $
 
 /**
   * Class CMS_wysiwyg_toolbar
@@ -92,7 +90,6 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 			'Unlink' 		=> 1387,
 			'Anchor' 		=> 1388,
 			'Separator14' 	=> 1398,
-			'Image' 		=> 1389,
 			'Table' 		=> 1390,
 			'HorizontalRule'=> 1391, // Rule
 			'SpecialChar' 	=> 1392,
@@ -240,10 +237,6 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 	  * @access public
 	  */
 	protected function _getDefaultElements() {
-		//if image tool is not allowed, remove it from list
-		if (!ALLOW_IMAGES_IN_WYSIWYG && isset($this->_elements['Image'])) {
-			unset($this->_elements['Image']);
-		}
 		return $this->_elements;
 	}
 	
