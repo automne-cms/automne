@@ -145,7 +145,7 @@ class CMS_textEditor extends CMS_grandFather
 	  * @return string
 	  * @access public
 	  */
-	function getHTML($fckeditor = false)
+	function getHTML($fckeditor = true)
 	{
 		$value = $this->_initialContent;
 		

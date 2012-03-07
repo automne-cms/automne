@@ -369,3 +369,40 @@ img.atm-block-on {
 #cktoolbar .cke_shared .cke_skin_kama {
 	background-color:	#FFF;
 }
+.cke_skin_kama .cke_dialog_footer_buttons span.cke_dialog_ui_button {
+	background-image: none;
+	padding: 2px 10px;
+	text-align: center;
+	color: #444;
+	display: inline-block;
+	cursor: default;
+	cursor: pointer !important;
+}
+.cke_skin_kama a.cke_dialog_ui_button_ok span {
+	background: none !important;
+	cursor: pointer !important;
+}
+.cke_skin_kama a.cke_dialog_ui_button {
+	background: none !important;
+	cursor: pointer !important;
+	background-image: url(../automne/admin/img/toolbar/tb-btn-sprite-valid.gif) !important;
+	background-position: 0pt -48px !important;
+	height: 19px !important;
+	border-radius: 0px !important;
+}
+.cke_skin_kama a.cke_dialog_ui_button:hover {
+	background-position: 0pt -120px !important;
+}
+.cke_skin_kama .cke_dialog .cke_dialog_body .cke_dialog_close_button {
+	cursor: pointer !important;
+	background: transparent no-repeat !important;
+	margin-left: 2px !important;
+	margin-top: 2px !important;
+	background-image: url(../automne/admin/img/panel/tool-sprites.gif) !important;
+	background-position: 0 -0 !important;
+	width: 15px !important;
+	height: 15px !important;
+}
+.cke_skin_kama .cke_dialog .cke_dialog_body .cke_dialog_close_button:hover {
+	background-position: -15px -0 !important;
+}

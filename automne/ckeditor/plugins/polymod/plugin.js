@@ -81,7 +81,7 @@ CKEDITOR.plugins.add( 'polymod',
 			});
 
 		
-	},
+	}/*,
 	afterInit : function( editor )
 	{
 		var dataProcessor = editor.dataProcessor,
@@ -118,7 +118,7 @@ CKEDITOR.plugins.add( 'polymod',
 				}
 			});
 		}
-	}
+	}*/
 });
 
 CKEDITOR.plugins.polymod =

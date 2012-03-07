@@ -198,7 +198,7 @@ if (isset($modulesCodeInclude["ToolbarSets"])) echo implode("\n\n",$modulesCodeI
 //get all toolbars
 $toolbars = CMS_wysiwyg_toolbar::getAll($cms_user);
 foreach ($toolbars as $toolbar) {
-	echo $toolbar->getDefinition();
+	echo $toolbar->getDefinition(true);
 }
 ?>
 

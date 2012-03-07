@@ -66,8 +66,8 @@ require_once(dirname(__FILE__).'/../../../../../cms_rc_admin.php');
 					region:			'center',
 					applyTo:		document.getElementById('atmCKPolymod'),
 					layout: 		'atm-border',
-					height:			465,
-					width:			718,
+					height:			383,
+					width:			736,
 					border: 		false,
 					xtype:			'atmPanel',
 					autoLoad:		{

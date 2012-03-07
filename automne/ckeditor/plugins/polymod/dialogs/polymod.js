@@ -21,21 +21,24 @@
 		return {
 			title : polymodLang.title,
 			resizable: CKEDITOR.DIALOG_RESIZE_NONE,
+			height : 380,
 			contents : [
 				{
 					id : 'info',
 					label : polymodLang.info,
 					title : polymodLang.info,
+					height : 380,
 					elements :
 					[
 						{
 							type : 'iframe',
 							src : editor.plugins.polymod.path + 'dialogs/polymod.php',
 							width : 718, 
-							height : 465
+							height : 365
 						}, 
 						{
 							type : 'hbox',
+							height : 1,
 							children :
 							[{
 								type : 'text',

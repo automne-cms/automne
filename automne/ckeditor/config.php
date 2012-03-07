@@ -33,10 +33,19 @@ $content = '﻿
 CKEDITOR.editorConfig = function( config )
 {
 	config.uiColor = \'#D6DCDF\';
-	config.disableObjectResizing = true;
-	config.contentsCss = \''.PATH_CSS_WR.'/editor.css\';
+	config.disableObjectResizing = true;';
+	if (file_exists(PATH_CSS_FS.'/editor.css')) {
+		$content .= 'config.contentsCss = [\''.PATH_MAIN_WR.'/ckeditor/contents.css\', \''.PATH_CSS_WR.'/editor.css\'];'."\n";
+	} else {
+		$content .= 'config.contentsCss = \''.PATH_MAIN_WR.'/ckeditor/contents.css\';'."\n";
+	}
+	$content .= '
 	config.baseHref = \''.PATH_REALROOT_WR.'/\';
 	config.extraPlugins = \'automneLinks,polymod\';
+	
+	config.entities = '.(strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8' ? 'false' : 'true').';
+	config.entities_processNumerical = '.(strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8' ? 'false' : 'true').';
+	
 	var toolbarSets = {};
 	';
 	//get all toolbars
@@ -73,7 +82,7 @@ CKEDITOR.editorConfig = function( config )
 	}
 	$content .= '
 	config.templates_files = [\''.PATH_MAIN_WR.'/ckeditor/templates.php\'];
-	config.menu_groups = \'clipboard,form,tablecell,tablecellproperties,tablerow,tablecolumn,table,anchor,link,automneLinks,editPlugin,image,flash,checkbox,radio,textfield,hiddenfield,imagebutton,button,select,textarea\';
+	config.menu_groups = \'clipboard,tablecell,tablecellproperties,tablerow,tablecolumn,table,anchor,link,automneLinks,editPlugin\';
 };
 ';
 echo $content;
