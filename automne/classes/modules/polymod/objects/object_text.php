@@ -267,7 +267,7 @@ class CMS_object_text extends CMS_object_common
 			$prefixName = '';
 		}
 		//serialize all htmlparameters 
-		$htmlParameters = $this->serializeHTMLParameters($inputParams);
+		//$htmlParameters = $this->serializeHTMLParameters($inputParams);
 		
 		$html = '';
 		//create fieldname
@@ -282,7 +282,7 @@ class CMS_object_text extends CMS_object_common
 				$toolbar = CMS_wysiwyg_toolbar::getByCode($toolbarset, $cms_user);
 				$value = ($toolbar->hasModulePlugins()) ? CMS_textEditor::parseInnerContent($value, $module) : $value;
 			}
-			$attrs = array(
+			/*$attrs = array(
 				'form' 		=> $inputParams['form'],					// Form name
 				'field' 	=> $fieldName,								// Field name
 				'value' 	=> $value,									// Default value
@@ -292,13 +292,20 @@ class CMS_object_text extends CMS_object_common
 				'rows' 		=> 8,										// textarea rows
 				'toolbarset'=> $toolbarset								// fckeditor toolbarset
 			);
-			//redefine temporarily this constant here, because it is defined in cms_rc_admin and sometimes, only cms_rc_frontend is available
-			if (!defined("PATH_ADMIN_WR")) {
-				define("PATH_ADMIN_WR", PATH_MAIN_WR."/admin");
-			}
+			
 			$text_editor = CMS_textEditor::getEditorFromParams($attrs);
 			$html .= $text_editor->getJavascript();
-			$html .= $text_editor->getHTML();
+			$html .= $text_editor->getHTML();*/
+			
+			$CKEditor = new CKEditor(PATH_MAIN_WR.'/ckeditor/');
+			$CKEditor->returnOutput = true;
+			$html .= $CKEditor->editor($fieldName, $value, array(
+				'language'		=> $language->getCode(),
+				'width' 		=> ($params['toolbarWidth']) ? $params['toolbarWidth'] : '100%',								// textarea width
+				'height' 		=> (sensitiveIO::isPositiveInteger($params['toolbarHeight'])) ? $params['toolbarHeight'] : 200, // textarea height
+				'customConfig'	=> (PATH_MAIN_WR.'/ckeditor/config.php?toolbar='.$toolbarset),
+			));
+			
 		} else {
 			//serialize all htmlparameters 
 			$htmlParameters = $this->serializeHTMLParameters($inputParams);

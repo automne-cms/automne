@@ -186,7 +186,7 @@ class CMS_block_text extends CMS_block
 		$this->_jsBlockClass = 'Automne.blockText';
 		
 		$this->_value = CMS_textEditor::parseInnerContent($rawDatas['value']);
-		$this->_value = rawurlencode($this->_value);
+		$this->_value = base64_encode($this->_value);
 		
 		//set editor options
 		$this->_options = array(
@@ -199,11 +199,16 @@ class CMS_block_text extends CMS_block
 		$this->_administrable = false;
 		$html = parent::_getHTMLForm($language, $page, $clientSpace, $row, $blockID, $data);
 		
+		//encode brackets to avoid vars ( {something:type:var} ) to be interpretted
+		//decoded into CMS_row::getData
+		$html = preg_replace ('#{([a-zA-Z0-9._{}:-]*)}#U' , '||bo||\1||bc||', $html);
+		
 		$replace = array(
 			'||bovd||'		=> '&#123;',
 			'||bcvd||'		=> '&#125;',
 		);
 		$html = str_replace(array_keys($replace), $replace, $html);
+		
 		return $html;
 	}
 	

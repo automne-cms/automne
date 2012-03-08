@@ -197,6 +197,9 @@ img.atm-block-on {
 	position:			absolute;
 	width: 				40px;
 	height:				22px;
+	text-align:			left !important;
+	padding: 			0px !important;
+	margin:				0px !important;
 }
 .atm-block-text-control .atm-block-control-cancel {
 	right:				0px;

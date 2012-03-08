@@ -660,6 +660,13 @@ class CMS_row extends CMS_grandFather
 					};
 				</script>
 				'.$data;
+				
+				//decode brackets encoded in CMS_block_text::_getHTMLForm
+				$replace = array(
+					'||bo||'		=> '&#123;',
+					'||bc||'		=> '&#125;',
+				);
+				$data = str_replace(array_keys($replace), $replace, $data);
 			}
 			$data = '<?php /* Start row ['.$this->getLabel().' - '.$this->getDefinitionFileName().'] */?>'.$data.'<?php /* End row ['.$this->getLabel().' - '.$this->getDefinitionFileName().'] */?>';
 			return $data;
