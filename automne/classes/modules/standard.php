@@ -1847,7 +1847,7 @@ class CMS_module_standard extends CMS_module
 								'var atmIsValidable = true;'."\n".
 								'var atmHasPreview = true;'."\n".
 								'var atmHasPreview = true;'."\n".
-								'var CKEDITOR_BASEPATH = '.PATH_REALROOT_WR.'\'/automne/ckeditor/\';'."\n".
+								'var CKEDITOR_BASEPATH = \''.PATH_MAIN_WR.'/ckeditor/\';'."\n".
 							'</script>';
 							//append JS from current view instance
 							$view = CMS_view::getInstance();
@@ -1862,7 +1862,7 @@ class CMS_module_standard extends CMS_module
 								'var atmIsValidator = false;'."\n".
 								'var atmIsValidable = false;'."\n".
 								'var atmHasPreview = false;'."\n".
-								'var CKEDITOR_BASEPATH = '.PATH_REALROOT_WR.'\'/automne/ckeditor/\';'."\n".
+								'var CKEDITOR_BASEPATH = \''.PATH_MAIN_WR.'/ckeditor/\';'."\n".
 							'</script>';
 							//append JS from current view instance
 							$view = CMS_view::getInstance();

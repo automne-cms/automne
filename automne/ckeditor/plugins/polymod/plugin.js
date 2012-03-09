@@ -59,13 +59,12 @@ CKEDITOR.plugins.add( 'polymod',
 				if ( CKEDITOR.plugins.polymod.getSelectedPlugin( editor ) )
 					evt.data.dialog = 'editPlugin';
 			});
-
 		editor.addCss(
 			'.polymod' +
 			'{' +
 				'border-bottom:		1px dotted #008000;' +
 				'padding:			1px 10px 1px 1px;' +
-				'background:			url(../automne/ckeditor/plugins/polymod/polymod-mini.gif) no-repeat right top;' +
+				'background:			url(' + this.path + 'polymod-mini.gif) no-repeat right top;' +
 				( CKEDITOR.env.gecko ? 'cursor: default;' : '' ) +
 			'}'
 		);

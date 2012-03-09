@@ -69,7 +69,7 @@ $content = '
 	<noscript class="atm-alert">You must have Javascript enabled to access Automne.<hr />Vous devez avoir Javascript actif pour acc&eacute;der &agrave; Automne.</noscript>
 </div>
 <script type="text/javascript">
-var CKEDITOR_BASEPATH = '.PATH_REALROOT_WR.'\'/automne/ckeditor/\';
+var CKEDITOR_BASEPATH = \''.PATH_MAIN_WR.'/ckeditor/\';
 </script>
 '.CMS_view::getJavascript($jsfiles).CMS_view::getJavascript(array('launch'));
 if (io::request('cms_action') == 'logout') {

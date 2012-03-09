@@ -136,6 +136,14 @@ switch ($action) {
 				if (!$item->writeToPersistence()) {
 					$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_SAVE_ERROR);
 				} else {
+					//Log action
+					$log = new CMS_log();
+					if ($aliasId) {
+						$log->logMiscAction(CMS_log::LOG_ACTION_RESOURCE_EDIT_CONTENT, $cms_user, 'Edit Alias '.$item->getPath(), 'cms_aliases');
+					} else {
+						$log->logMiscAction(CMS_log::LOG_ACTION_RESOURCE_EDIT_CONTENT, $cms_user, 'Create Alias '.$item->getPath(), 'cms_aliases');
+					}
+					
 					$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 					$content = array('success' => true, 'id' => $item->getID());
 				}
@@ -148,7 +156,12 @@ switch ($action) {
 	case 'delete':
 		$item = CMS_module_cms_aliases::getByID($aliasId);
 		if (!$item->isProtected()) {
+			$path = $item->getPath();
 			if ($item->destroy()) {
+				//Log action
+				$log = new CMS_log();
+				$log->logMiscAction(CMS_log::LOG_ACTION_RESOURCE_DELETE, $cms_user, 'Delete Alias '.$path, 'cms_aliases');
+				
 				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 				$content = array('success' => true);
 			} else {

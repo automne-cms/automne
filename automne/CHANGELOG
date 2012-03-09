@@ -7,6 +7,7 @@ V4.2.1 (in progress)
 [REFACTOR] : Optimize all images used in Automne
 [REFACTOR] : Replace fckeditor with ckeditor version 3.6.2 in block text and polymod
 [REFACTOR] : Remove deprecated parameter ALLOW_IMAGES_IN_WYSIWYG
+[FEATURE] : Add user logs in alias module
 
 V4.2.0 (15/02/2012)
 [BUG] : Correct bug number: 2350, 2549, 2561, 2586, 2585, 2584, 2582, 2566, 2672, 2689, 2751, 2754, 2763, 2764, 2818, 2831 (see http://www.automne-cms.org/bug/)
