@@ -197,7 +197,9 @@ class CMS_grandFather
 							E_COMPILE_ERROR		=> 'Compile Error',
 							E_COMPILE_WARNING	=> 'Compile Warning',
 							E_STRICT			=> 'Runtime Notice',
-							E_RECOVERABLE_ERROR	=> 'Catchable Fatal Error'
+							E_RECOVERABLE_ERROR	=> 'Catchable Fatal Error',
+							8192				=> 'Deprecated', //E_DEPRECATED - numeric value because only supported from PHP 5.3
+							16384				=> 'User deprecated', //E_USER_DEPRECATED - numeric value because only supported from PHP 5.3
 						);
 		$errorLabel = isset($errortype[$errno]) ? $errortype[$errno] : 'Error '.$errno;
 		CMS_grandFather::_raiseError('PHP '.$errorLabel.' : '.$errstr.' line '.$errline.' of file '.$errfile);
