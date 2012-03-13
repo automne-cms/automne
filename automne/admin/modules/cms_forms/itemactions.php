@@ -56,20 +56,20 @@ define("MESSAGE_ACTION_DISPLAYED_TEXT", 57);
 define("MESSAGE_ACTION_FORM_FIELD", 58);
 define("MESSAGE_ACTION_LINK_TO_CSV_FILE", 59);
 define("MESSAGE_ACTION_LINK_TO_CSV_FILE_WHEN_EXISTS", 60);
-define("MESSAGE_ACTION_NO_MAIL_FIELD_FOUNDED", 61);
+define("MESSAGE_ACTION_NO_MAIL_FIELD_FOUND", 61);
 define("MESSAGE_ACTION_ENTER_HEADER_MESSAGE", 56);
 define("MESSAGE_ACTION_ENTER_FOOTER_MESSAGE", 70);
 define("MESSAGE_ACTION_ENTER_SUBJECT_MESSAGE", 71);
 define("MESSAGE_ACTION_DOWNLOAD_CSV_FILE", 72);
 define("MESSAGE_PAGE_RESET_DB_CONFIRM", 73);
 define("MESSAGE_PAGE_RESET_DB", 74);
-define("MESSAGE_ACTION_NO_USERID_FIELD_FOUNDED", 76);
-define("MESSAGE_ACTION_NO_PASS_FIELD_FOUNDED", 77);
+define("MESSAGE_ACTION_NO_USERID_FIELD_FOUND", 76);
+define("MESSAGE_ACTION_NO_PASS_FIELD_FOUND", 77);
 define("MESSAGE_PAGE_FIELD_LOGIN", 78);
 define("MESSAGE_PAGE_FIELD_PASSWORD", 79);
 define("MESSAGE_ACTION_AUTH_DISPLAYED_TEXT", 80);
 define("MESSAGE_PAGE_FIELD_REMEMBERME", 81);
-define("MESSAGE_ACTION_NO_REMEMBER_FIELD_FOUNDED", 82);
+define("MESSAGE_ACTION_NO_REMEMBER_FIELD_FOUND", 82);
 define("MESSAGE_ACTION_ENTER_EMAIL_SENDER", 88);
 define("MESSAGE_ACTION_DOWNLOAD_CSV_FILE_WITH_DATE", 89);
 define("MESSAGE_PAGE_BLOCK_GENERAL_VARS_EXPLANATION", 1705);
@@ -309,7 +309,7 @@ if (sizeof($formActions)) {
 									.$fieldscontent.
 								'</select>';
 							} else {
-								$content .= $cms_language->getMessage(MESSAGE_ACTION_NO_MAIL_FIELD_FOUNDED, false, MOD_CMS_FORMS_CODENAME);
+								$content .= $cms_language->getMessage(MESSAGE_ACTION_NO_MAIL_FIELD_FOUND, false, MOD_CMS_FORMS_CODENAME);
 							}
 						$content .= '</small>';
 					break;
@@ -338,7 +338,7 @@ if (sizeof($formActions)) {
 								'</select>
 							</td>';
 						} else {
-							$content .= '<td class="admin"><small>'.$cms_language->getMessage(MESSAGE_ACTION_NO_USERID_FIELD_FOUNDED, false, MOD_CMS_FORMS_CODENAME).'</small></td>';
+							$content .= '<td class="admin"><small>'.$cms_language->getMessage(MESSAGE_ACTION_NO_USERID_FIELD_FOUND, false, MOD_CMS_FORMS_CODENAME).'</small></td>';
 						}
 						//password field
 						$content .= '
@@ -361,7 +361,7 @@ if (sizeof($formActions)) {
 							'</select>
 						</td>';
 						} else {
-							$content .= '<td class="admin"><small>'.$cms_language->getMessage(MESSAGE_ACTION_NO_PASS_FIELD_FOUNDED, false, MOD_CMS_FORMS_CODENAME).'</small></td>';
+							$content .= '<td class="admin"><small>'.$cms_language->getMessage(MESSAGE_ACTION_NO_PASS_FIELD_FOUND, false, MOD_CMS_FORMS_CODENAME).'</small></td>';
 						}
 						//remember me field
 						$content .= '
@@ -384,7 +384,7 @@ if (sizeof($formActions)) {
 							'</select>
 						</td>';
 						} else {
-							$content .= '<td class="admin"><small>'.$cms_language->getMessage(MESSAGE_ACTION_NO_REMEMBER_FIELD_FOUNDED, false, MOD_CMS_FORMS_CODENAME).'</small></td>';
+							$content .= '<td class="admin"><small>'.$cms_language->getMessage(MESSAGE_ACTION_NO_REMEMBER_FIELD_FOUND, false, MOD_CMS_FORMS_CODENAME).'</small></td>';
 						}
 						$content .= '</tr></table>';
 					break;

@@ -50,7 +50,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 		Ext.apply(this, {
 			html:  			'<iframe id="' + this.id + 'Frame" width="100%" height="100%" frameborder="no"' + (!Ext.isIE ? ' class="x-hide-visibility"' : '') + ' src="' + Ext.SSL_SECURE_URL + '">&nbsp;</iframe>',
 			hideBorders:	true,
-			/*height:			'100%', removed : bug 1432*/
+			ctCls:			'atm-iframe', //used to remove overflow-x in xtheme-automne.css
 			autoScroll:		true,
 			//only for edit frame panel
 			tbar:			!this.editable ? false : new Ext.Toolbar({
@@ -473,7 +473,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 		if (this.loadFrameDocument()) {
 			if (this.frameDocument) {
 				if (!this.frameURL) {
-					pr('Reload '+ this.id +' tab queried but no URL founded for frame => skip.');
+					pr('Reload '+ this.id +' tab queried but no URL found for frame => skip.');
 					return false;
 				}
 				pr('Reload '+ this.id +' tab => Get : '+this.frameURL);

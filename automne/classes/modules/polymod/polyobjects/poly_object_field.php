@@ -409,7 +409,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	  * Get object field as an array structure used for export
 	  *
 	  * @param array $params The export parameters. Not used here
-	  * @param array $files The reference to the founded files used by object
+	  * @param array $files The reference to the found files used by object
 	  * @return array : the object array structure
 	  * @access public
 	  */

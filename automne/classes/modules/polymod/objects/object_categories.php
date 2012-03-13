@@ -854,7 +854,7 @@ class CMS_object_categories extends CMS_object_common
 			if (!$r) {
 				return array();
 			}
-			//add previously founded IDs to where clause
+			//add previously found IDs to where clause
 			$sql = "
 				select
 					distinct value
@@ -1548,7 +1548,7 @@ class CMS_object_categories extends CMS_object_common
 				return false;
 			}
 			
-			//add previously founded IDs to where clause
+			//add previously found IDs to where clause
 			$sql = "
 					select
 						distinct objectID

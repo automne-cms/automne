@@ -113,7 +113,7 @@ switch ($action) {
 			}
 		}
 		if (!sizeof($validationIds)) {//stop
-			CMS_grandFather::raiseError('No validation founded for module '.$module.' and resource ID '.$resource->getID());
+			CMS_grandFather::raiseError('No validation found for module '.$module.' and resource ID '.$resource->getID());
 			break;
 		}
 		$acceptStatus = VALIDATION_OPTION_ACCEPT;

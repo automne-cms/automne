@@ -30,7 +30,7 @@ class CMS_poly_object_catalog
 	  * @param integer $itemID The DB ID of the item in the mod_object_polyobjects table(s)
 	  * @param boolean $returnDefinition, if true, return item CMS_poly_object_definition instead of CMS_poly_object
 	  * @param boolean $public, if true, return public CMS_poly_object
-	  * @return CMS_poly_object or false if not founded
+	  * @return CMS_poly_object or false if not found
 	  * @access public
 	  */
 	static function getObjectByID($itemID, $returnDefinition = false, $public = false)
@@ -884,12 +884,12 @@ class CMS_poly_object_catalog
 		//get secondary item module
 		$codename = CMS_poly_object_catalog::getModuleCodenameForObject($secondaryItemId);
 		if (!$codename) {
-			CMS_grandFather::raiseError("No module codename founded for secondary resource item : ".$secondaryItemId);
+			CMS_grandFather::raiseError("No module codename found for secondary resource item : ".$secondaryItemId);
 			return false;
 		}
 		$primaryResourceType = CMS_poly_object_catalog::getPrimaryResourceObjectType($codename);
 		if (!$primaryResourceType) {
-			// no primary resource founded for module so return nothing
+			// no primary resource found for module so return nothing
 			return array();
 		}
 		//get secondary item type

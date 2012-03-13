@@ -1249,7 +1249,7 @@ class CMS_profile extends CMS_grandFather
 	  * @param string $module, the codename of the module we want root categories from
 	  * @param integer $clearance, clearance level categories equals to (Default set to false)
 	  * @param boolean $return_objects, if set to true method will return an array of CMS_moduleCategory (Default set to false)
-	  * @return array(integer or CMS_moduleCategory), false if nothing founded
+	  * @return array(integer or CMS_moduleCategory), false if nothing found
 	  * @access public
 	  */
 	function getRootModuleCategories($module = false, $return_objects = false)
@@ -1265,7 +1265,7 @@ class CMS_profile extends CMS_grandFather
 	  * @param string $module, the module codename we want root categories of
 	  * @param boolean $return_objects, if set to true method will return an array of CMS_moduleCategory (Default set to false)
 	  * @param boolean $strict, if set to true method strictly check clearance (default : true)
-	  * @return array(integer or CMS_moduleCategory), false if nothing founded
+	  * @return array(integer or CMS_moduleCategory), false if nothing found
 	  * @access public
 	  */
 	function getRootCategories($clearance = false, $module = false, $return_objects = false, $strict = true) {
@@ -1321,7 +1321,7 @@ class CMS_profile extends CMS_grandFather
 	  *
 	  * @param string $module, the codename of the module we want root categories from
 	  * @param boolean $return_objects, if set to true method will return an array of CMS_moduleCategory (Default set to false)
-	  * @return array(integer or CMS_moduleCategory), false if nothing founded
+	  * @return array(integer or CMS_moduleCategory), false if nothing found
 	  * @access public
 	  */
 	function getRootModuleCategoriesDenied($module = false, $return_objects = false)
@@ -1338,7 +1338,7 @@ class CMS_profile extends CMS_grandFather
 	  *
 	  * @param string $module, the codename of the module we want root categories from
 	  * @param boolean $return_objects, if set to true method will return an array of CMS_moduleCategory (Default set to false)
-	  * @return array(integer or CMS_moduleCategory), false if nothing founded
+	  * @return array(integer or CMS_moduleCategory), false if nothing found
 	  * @access public
 	  */
 	function getRootModuleCategoriesReadable($module = false, $return_objects = false)
@@ -1356,7 +1356,7 @@ class CMS_profile extends CMS_grandFather
 	  *
 	  * @param string $module, the codename of the module we want root categories from
 	  * @param boolean $return_objects, if set to true method will return an array of CMS_moduleCategory (Default set to false)
-	  * @return array(integer or CMS_moduleCategory), false if nothing founded
+	  * @return array(integer or CMS_moduleCategory), false if nothing found
 	  * @access public
 	  */
 	function getRootModuleCategoriesWritable($module = false, $return_objects = false)
@@ -1374,7 +1374,7 @@ class CMS_profile extends CMS_grandFather
 	  *
 	  * @param string $module, the codename of the module we want root categories from
 	  * @param boolean $return_objects, if set to true method will return an array of CMS_moduleCategory (Default set to false)
-	  * @return array(integer or CMS_moduleCategory), false if nothing founded
+	  * @return array(integer or CMS_moduleCategory), false if nothing found
 	  * @access public
 	  */
 	function getRootModuleCategoriesManagable($module = false, $return_objects = false)
@@ -1431,7 +1431,7 @@ class CMS_profile extends CMS_grandFather
 				return false;
 			}
 		}
-		//no match founded so we return false for security
+		//no match found so we return false for security
 		return false;
 	}
 	

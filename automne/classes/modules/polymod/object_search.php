@@ -34,7 +34,7 @@ class CMS_object_search extends CMS_grandFather
 	const POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS = 5;
 	
 	/**
-	  * Number of items founded
+	  * Number of items found
 	  * If it set before searching then number of items to be searched is limited to this number
 	  * 
 	  * @var integer
@@ -59,7 +59,7 @@ class CMS_object_search extends CMS_grandFather
 	protected $_whereConditions = array();
 	
 	/**
-	  * Array of founded results ids unsorted
+	  * Array of found results ids unsorted
 	  * 
 	  * @var array(integer id => integer id)
 	  * @access private
@@ -67,7 +67,7 @@ class CMS_object_search extends CMS_grandFather
 	protected $_resultsIds = array();
 	
 	/**
-	  * Array of founded results ids sorted
+	  * Array of found results ids sorted
 	  * 
 	  * @var array(integer id => integer id)
 	  * @access private
@@ -75,7 +75,7 @@ class CMS_object_search extends CMS_grandFather
 	protected $_sortedResultsIds = array();
 	
 	/**
-	  * Array of founded results subobjects ids
+	  * Array of found results subobjects ids
 	  * 
 	  * @var array(integer id => integer id)
 	  * @access private
@@ -83,7 +83,7 @@ class CMS_object_search extends CMS_grandFather
 	protected $_resultsSubObjectsIds = array();
 	
 	/**
-	  * Array of founded results objects (and subobjects) values
+	  * Array of found results objects (and subobjects) values
 	  * 
 	  * @var array(objectID => array(objectFieldID => array(objectSubfieldId => array(sql datas))))
 	  * @access private
@@ -488,7 +488,7 @@ class CMS_object_search extends CMS_grandFather
 	}
 	
 	/**
-	 * Count items founded with query COUNT(*)
+	 * Count items found with query COUNT(*)
 	 * 
 	 * @access public
 	 * @return integer
@@ -537,7 +537,7 @@ class CMS_object_search extends CMS_grandFather
 				$sql = '';
 				switch($type) {
 				case "object":
-					//add previously founded IDs to where clause
+					//add previously found IDs to where clause
 					$where = ($IDs) ? ' and id_moo in ('.$this->_getSQLTmpList().')' : '';
 					//to remove deleted objects from results
 					$sql = "
@@ -552,7 +552,7 @@ class CMS_object_search extends CMS_grandFather
 					";
 					break;
 				case "item":
-					//add previously founded IDs to where clause
+					//add previously found IDs to where clause
 					$where = ($IDs) ? ' and objectID in ('.$this->_getSQLTmpList().')' : '';
 					//check operator
 					$supportedOperator = array(
@@ -605,7 +605,7 @@ class CMS_object_search extends CMS_grandFather
 					";
 					break;
 				case "items":
-					//add previously founded IDs to where clause
+					//add previously found IDs to where clause
 					$where = ($IDs) ? ' and objectID in ('.$this->_getSQLTmpList().')' : '';
 					//check operator
 					$supportedOperator = array(
@@ -707,7 +707,7 @@ class CMS_object_search extends CMS_grandFather
 								break;
 							}
 							$removedIDs = array();
-							//add previously founded IDs to where clause
+							//add previously found IDs to where clause
 							$where = ($IDs) ? ' and objectID in ('.$this->_getSQLTmpList().')':'';
 							$sqlTmp = "
 								select
@@ -754,7 +754,7 @@ class CMS_object_search extends CMS_grandFather
 							}
 							//if field is required and if it is a public search, object must have this category in DB
 							if ($this->_fieldsDefinitions[$categoriesField]->getValue('required') && $this->_public) {
-								//update tmp table with founded ids
+								//update tmp table with found ids
 								$this->_updateTmpList($IDs);
 								$sqlTmp = "
 									select
@@ -785,9 +785,9 @@ class CMS_object_search extends CMS_grandFather
 					} elseif ($this->_public && !$value->hasModuleClearance($this->_object->getValue('module'), CLEARANCE_MODULE_VIEW)) {
 						break;
 					}
-					//update tmp table with founded ids
+					//update tmp table with found ids
 					$this->_updateTmpList($IDs);
-					//add previously founded IDs to where clause
+					//add previously found IDs to where clause
 					$where = ($IDs) ? ' id_moo in ('.$this->_getSQLTmpList().')' : '';
 					$sql = "
 						select
@@ -842,7 +842,7 @@ class CMS_object_search extends CMS_grandFather
 								$this->raiseError('No active Xapian interface for module : '.$module);
 								return false;
 							}
-							//add previously founded IDs to search filters
+							//add previously found IDs to search filters
 							$moduleInterface->addFilter('items', $IDs);
 							//set module interface to search engine
 							$search->setModuleInterface($module, $moduleInterface);
@@ -880,7 +880,7 @@ class CMS_object_search extends CMS_grandFather
 								//if no fields after cleaning, return
 								break;
 							}
-							//add previously founded IDs to where clause
+							//add previously found IDs to where clause
 							$where = ($IDs) ? ' objectID in ('.$this->_getSQLTmpList().') and ' : '';
 							//filter on specified fields
 							$where .= ($fields) ? ' objectFieldID  in ('.implode(',',$fields).') and ' : '';
@@ -981,7 +981,7 @@ class CMS_object_search extends CMS_grandFather
 					}
 					break;
 				case "publication date after": // Date start
-					//add previously founded IDs to where clause
+					//add previously found IDs to where clause
 					$where = ($IDs) ? ' and objectID in ('.$this->_getSQLTmpList().')' : '';
 					
 					$sql = "
@@ -1001,7 +1001,7 @@ class CMS_object_search extends CMS_grandFather
 							";
 					break;
 				case "publication date before": // Date End
-					//add previously founded IDs to where clause
+					//add previously found IDs to where clause
 					$where = ($IDs) ? ' and objectID in ('.$this->_getSQLTmpList().')' : '';
 					
 					$sql = "
@@ -1021,7 +1021,7 @@ class CMS_object_search extends CMS_grandFather
 							";
 					break;
 				case "publication date end": // End Date of publication
-					//add previously founded IDs to where clause
+					//add previously found IDs to where clause
 					$where = ($IDs) ? ' and objectID in ('.$this->_getSQLTmpList().')' : '';
 					
 					$sql = "
@@ -1041,7 +1041,7 @@ class CMS_object_search extends CMS_grandFather
 							";
 					break;
 				case "status": // Publication status
-					//add previously founded IDs to where clause
+					//add previously found IDs to where clause
 					$where = ($IDs) ? ' and objectID in ('.$this->_getSQLTmpList().')' : '';
 					switch ($value) {
 						case 'online':
@@ -1117,7 +1117,7 @@ class CMS_object_search extends CMS_grandFather
 					}
 					break;
 				default:
-					//add previously founded IDs to where clause
+					//add previously found IDs to where clause
 					$where = ($IDs) ? ' and objectID in ('.$this->_getSQLTmpList().')' : '';
 					if (!isset($this->_fieldsDefinitions[$type]) || !is_object($this->_fieldsDefinitions[$type])) {
 						//get object fields definition
@@ -1177,7 +1177,7 @@ class CMS_object_search extends CMS_grandFather
 				        $this->_numRows = 0;
 				        return $IDs;
 				    }
-					//update tmp table with founded ids
+					//update tmp table with found ids
 					$this->_updateTmpList($IDs);
 				} else {
 				    //if no sql request, then no results (can be used by 'profile'), no need to continue
@@ -1192,7 +1192,7 @@ class CMS_object_search extends CMS_grandFather
 	}
 	
 	/**
-	 * Update temporary table with founded ids
+	 * Update temporary table with found ids
 	 * This method is used to avoid mysql crash because variable max_allowed_packet is too low
 	 * 
 	 * @param array $ids : the list of ids to update
@@ -1210,7 +1210,7 @@ class CMS_object_search extends CMS_grandFather
 			}
 			//clean tmp table
 			$q = new CMS_query("delete from `mod_object_search_tmp` where search_mos = '".$this->_searchTmpId."'");
-			//insert founded ids into tmp table
+			//insert found ids into tmp table
 			$count = 0;
 			while (($count * $max) < $length) {
 				$q = new CMS_query("Insert into `mod_object_search_tmp` (id_mos, search_mos) VALUES (".implode(', \''.$this->_searchTmpId.'\'),(', array_slice($ids, ($count++ * $max), $max)).', \''.$this->_searchTmpId.'\')');
@@ -1255,7 +1255,7 @@ class CMS_object_search extends CMS_grandFather
 			}
 		}
 		if (is_array($subObjectsFieldsIds) && $subObjectsFieldsIds) {
-			//update tmp table with founded ids
+			//update tmp table with found ids
 			$this->_updateTmpList($this->_sortedResultsIds);
 			$where = ' and objectID in ('.$this->_getSQLTmpList().')';
 			// Prepare conditions
@@ -1285,7 +1285,7 @@ class CMS_object_search extends CMS_grandFather
 	}
 	
 	/**
-	 * Sort and limit founded ids by orders and limit clauses
+	 * Sort and limit found ids by orders and limit clauses
 	 * This method limit results to existant objects too
 	 * 
 	 * @access private
@@ -1308,9 +1308,9 @@ class CMS_object_search extends CMS_grandFather
 				}
 				$direction = $value['direction'];
 				$operator = $value['operator'];
-				//add previously founded ids to where clause
+				//add previously found ids to where clause
 				if (is_array($this->_resultsIds) && $this->_resultsIds) {
-					//update tmp table with founded ids
+					//update tmp table with found ids
 					$this->_updateTmpList($this->_resultsIds);
 					$where = ' and objectID in ('.$this->_getSQLTmpList().')';
 				} else {
@@ -1408,7 +1408,7 @@ class CMS_object_search extends CMS_grandFather
 		
 		//check for results existance in objects datas tables
 		if ($ids) {
-			//update tmp table with founded ids
+			//update tmp table with found ids
 			$this->_updateTmpList($ids);
 			$where = ' objectID in ('.$this->_getSQLTmpList().')';
 			
@@ -1443,9 +1443,9 @@ class CMS_object_search extends CMS_grandFather
 			";
 			$q = new CMS_query($sql);
 			if ($q->getNumRows() != count($ids)) {
-				$foundedIds = $q->getAll(PDO::FETCH_COLUMN, 0);
-				if ($foundedIds) {
-					$ids = array_intersect($ids , $foundedIds);
+				$foundIds = $q->getAll(PDO::FETCH_COLUMN, 0);
+				if ($foundIds) {
+					$ids = array_intersect($ids , $foundIds);
 					//update count of results
 					$this->_numRows = sizeof($ids);
 				} else {
@@ -1516,7 +1516,7 @@ class CMS_object_search extends CMS_grandFather
 	
 	/**
 	 * Proceed to search and returns the array of results, null if none 
-	 * founded. All search options had been set yet.
+	 * found. All search options had been set yet.
 	 * 
 	 * @access public
 	 * @param $return, the returned values in : 
@@ -1526,7 +1526,7 @@ class CMS_object_search extends CMS_grandFather
 	 *	self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT for light objects (without subobjects datas)
 	 *  self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT_EDITED for edited light objects. /!\ This method must not be used for objects which should be saved (used by getListOfNamesForObject only) /!\
 	 *	self::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS use this method to get individual results with method getNextResult
-	 * @param boolean $loadSubObjects : all the founded objects can load theirs own sub objects (default false)
+	 * @param boolean $loadSubObjects : all the found objects can load theirs own sub objects (default false)
 	 * 	/!\ CAUTION : Pass this option to true can generate a lot of subqueries /!\
 	 * @return mixed array(CMS_poly_object) or boolean (for POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS)
 	 */
@@ -1590,7 +1590,7 @@ class CMS_object_search extends CMS_grandFather
 		//return objects
 		$count = 0;
 		if ($this->_values && $this->_sortedResultsIds) {
-			//1- create objects values : all subObjects founded for searched objects
+			//1- create objects values : all subObjects found for searched objects
 			$subObjectValues = array();
 			foreach ($this->_resultsSubObjectsIds as $subObjectId) {
 				$subObjectValues[$subObjectId] = &$this->_values[$subObjectId];
@@ -1622,7 +1622,7 @@ class CMS_object_search extends CMS_grandFather
 	 *	self::POLYMOD_SEARCH_RETURN_OBJECTS for objetcs (default)
 	 *	self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT for light objects (without subobjects datas)
 	 *  self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT_EDITED for edited light objects. /!\ This method must not be used for objects which should be saved (used by getListOfNamesForObject only) /!\
-	 * @param boolean $loadSubObjects : all the founded objects can load theirs own sub objects (default false)
+	 * @param boolean $loadSubObjects : all the found objects can load theirs own sub objects (default false)
 	 * 	/!\ CAUTION : Pass this option to true can generate a lot of subqueries /!\
 	 * @return array(CMS_poly_object)
 	 */
@@ -1649,7 +1649,7 @@ class CMS_object_search extends CMS_grandFather
 		}
 		//return objects
 		if ($this->_values && $this->_sortedResultsIds) {
-			//1- create objects values : all subObjects founded for searched objects
+			//1- create objects values : all subObjects found for searched objects
 			if ($this->_objectsValues === false) {
 				$this->_objectsValues = array();
 				foreach ($this->_resultsSubObjectsIds as $subObjectId) {

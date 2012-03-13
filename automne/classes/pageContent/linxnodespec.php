@@ -169,7 +169,7 @@ class CMS_linxNodespec extends CMS_grandFather
 						}
 					} else {
 						$offset = abs($this->_relativeOffset) * -1;
-						$pg = CMS_tree::getAncestor($page, $offset, !$this->_crosswebsite, false); //here we do not want to use public tree because, in public tree, some page may be unpublished or in this case, it break the lineage and root page cannot be founded
+						$pg = CMS_tree::getAncestor($page, $offset, !$this->_crosswebsite, false); //here we do not want to use public tree because, in public tree, some page may be unpublished or in this case, it break the lineage and root page cannot be found
 					}
 				break;
 				case "father":

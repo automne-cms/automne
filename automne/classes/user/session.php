@@ -246,7 +246,7 @@ class CMS_session extends CMS_grandFather
 						break;
 						case Zend_Auth_Result::SUCCESS:
 							if ($auth->hasIdentity()) {
-							    // get user from identity founded
+							    // get user from identity found
 							    $user = $authAdapter->getUser($auth->getIdentity());
 								//check if user is valid
 								if (isset($user) && $user && !$user->hasError() && !$user->isDeleted() && $user->isActive()) {
@@ -258,7 +258,7 @@ class CMS_session extends CMS_grandFather
 								}
 							}
 						break;
-						case Zend_Auth_Result::FAILURE: //user founded but has error during loading (user inactive or deleted)
+						case Zend_Auth_Result::FAILURE: //user found but has error during loading (user inactive or deleted)
 							//nothing for now
 						break;
 						default: //other unidentified cases : thrown an error

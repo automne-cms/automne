@@ -357,7 +357,7 @@ class CMS_websitesCatalog extends CMS_grandFather {
 	}
 	
 	/**
-	  * get first website for a given domain or false if none founded
+	  * get first website for a given domain or false if none found
 	  *
 	  * @param string $domain : the domain to found website of
 	  * @return CMS_website or false
@@ -382,7 +382,7 @@ class CMS_websitesCatalog extends CMS_grandFather {
 	}
 	
 	/**
-	  * get websites for a given domain or false if none founded
+	  * get websites for a given domain or false if none found
 	  *
 	  * @param string $domain : the domain to found website of
 	  * @return array(CMS_website)

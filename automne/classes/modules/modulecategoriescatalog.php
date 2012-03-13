@@ -477,7 +477,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	 * @access public
 	 * @param integer $categoryID, the category ID to get parent of
 	 * @param boolean $reset, force cache reloading : default false (used by writeToPersistence in CMS_moduleCategory)
-	 * @return false if nothing founded, or integer parentID
+	 * @return false if nothing found, or integer parentID
 	 */
 	static function getParentIdOf($categoryID, $reset = false) {
 		static $categoriesTree;
@@ -553,7 +553,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 			$stack = $childID = $categoryID;
 			while (false !== ($parentID = CMS_moduleCategories_catalog::getParentIdOf($childID))) {
 				if (!$parentID || $parentID == $childID) {
-					CMS_grandFather::raiseError('Bad category lineage founded for category '.$categoryID.' (Infinite loop ?)');
+					CMS_grandFather::raiseError('Bad category lineage found for category '.$categoryID.' (Infinite loop ?)');
 					return array();
 				}
 				$stack = $parentID.';'.$stack;
@@ -611,7 +611,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	}
 	
 	/**
-	 * Return categories founded in given module in current language
+	 * Return categories found in given module in current language
 	 * 
 	 * @static
 	 * @access public

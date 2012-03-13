@@ -331,7 +331,7 @@ class CMS_archive extends CMS_grandFather
 	 * Parse a directory to get its content
 	 *  
 	 * @param string $dirname, name of the directory to parse
-	 * @return array $files founded in the directory
+	 * @return array $files found in the directory
 	 */
 	function parse_dir($dirname) {
 		if ($this->options['storepaths'] == 1 && !preg_match("/^(\.+\/*)+$/", $dirname)) {

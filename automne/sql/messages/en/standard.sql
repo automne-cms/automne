@@ -1512,7 +1512,7 @@ jsError: ''Error during Javascript loading, please retry or reconnect...'',
 jsonError: ''Error during JSon loading, please retry or reconnect...'',
 contactAdministrator: ''If the problem persist, please contact your administrator with this informations:'',
 cannotCloseModalGroup: ''You can not close this window since dependent windows are open. Please close them first.'',
-noPageFounded: ''No page found...'',
+noPageFound: ''No page found...'',
 noScript: ''No script in progress.'',
 nScripts: ''{0} scripts in progress.'',
 //Page edition 

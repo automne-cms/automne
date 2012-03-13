@@ -74,18 +74,12 @@ if ($files) {
 				$jsMainFiles [] = PATH_ADMIN_JS_FS.'/form.js';
 				//swfobject file
 				$jsMainFiles [] = PATH_MAIN_FS.'/swfobject/swfobject.js';
-				//SWF Upload
-				//$jsMainFiles [] = PATH_MAIN_FS.'/swfupload/swfupload.js';
-				//$jsMainFiles [] = PATH_MAIN_FS.'/swfupload/swfupload.cookies.js';
 				
 				$jsMainFiles [] = PATH_ADMIN_JS_FS.'/fileupload.js';
 				$jsMainFiles [] = PATH_ADMIN_JS_FS.'/imageupload.js';
 				$jsMainFiles [] = PATH_ADMIN_JS_FS.'/emptyfield.js';
 				$jsMainFiles [] = PATH_ADMIN_JS_FS.'/linkfield.js';
 				$jsMainFiles [] = PATH_ADMIN_JS_FS.'/pagefield.js';
-				//FCKEditor
-				//$jsMainFiles [] = PATH_MAIN_FS.'/fckeditor/fckeditor.js';
-				//$jsMainFiles [] = PATH_ADMIN_JS_FS.'/fckeditor.js';
 				//CKEditor
 				$jsMainFiles [] = PATH_MAIN_FS.'/ckeditor/ckeditor.js';
 				$jsMainFiles [] = PATH_ADMIN_JS_FS.'/ckeditor.js';

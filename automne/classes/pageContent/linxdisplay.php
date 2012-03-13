@@ -347,7 +347,7 @@ class CMS_linxDisplay extends CMS_grandFather
 	}
 	
 	/**
-	  * add slash arround all php content founded in string.
+	  * add slash arround all php content found in string.
 	  * Static function
 	  * @param $html string
 	  * @return string evalued content

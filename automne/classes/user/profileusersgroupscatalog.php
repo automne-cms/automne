@@ -144,15 +144,15 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 		}
 		if ($order != 'score') {
 			if ($order) {
-				$founded = false;
+				$found = false;
 				$sql = "DESCRIBE profilesUsersGroups";
 				$q = new CMS_query($sql);
 				while ($field = $q->getValue('Field')) {
 					if ($field == $order.'_prg') {
-						$founded = true;
+						$found = true;
 					}
 				}
-				if ($founded) {
+				if ($found) {
 					$orderBy = $order.'_prg';
 				} else {
 					$orderBy = 'label_prg';

@@ -145,55 +145,30 @@ class CMS_textEditor extends CMS_grandFather
 	  * @return string
 	  * @access public
 	  */
-	function getHTML($fckeditor = true)
-	{
+	function getHTML() {
 		$value = $this->_initialContent;
-		
-		if ($fckeditor) {
-			// Editor base path
-			$sBasePath = PATH_MAIN_WR.'/fckeditor/';
-			$oFCKeditor = new FCKeditor($this->_formField);
-			$oFCKeditor->BasePath = $sBasePath ;
-			$oFCKeditor->Config['AutoDetectLanguage'] = false ;
-			$oFCKeditor->Config['DefaultLanguage'] = $this->_language->getCode();
-			$oFCKeditor->Value = $value;
-			if (is_array($this->_editorAttributes)) {
-				while (list($k, $v) = @each($this->_editorAttributes)) {
-					if ($v != '') {
-						$oFCKeditor->{$k} = $v ;
-					}
+		// Editor base path
+		$sBasePath = PATH_MAIN_WR.'/fckeditor/';
+		$oFCKeditor = new FCKeditor($this->_formField);
+		$oFCKeditor->BasePath = $sBasePath ;
+		$oFCKeditor->Config['AutoDetectLanguage'] = false ;
+		$oFCKeditor->Config['DefaultLanguage'] = $this->_language->getCode();
+		$oFCKeditor->Value = $value;
+		if (is_array($this->_editorAttributes)) {
+			while (list($k, $v) = @each($this->_editorAttributes)) {
+				if ($v != '') {
+					$oFCKeditor->{$k} = $v ;
 				}
 			}
-			if (is_array($this->_editorConfigAttributes)) {
-				while (list($k, $v) = @each($this->_editorConfigAttributes)) {
-					if ($v != '') {
-						$oFCKeditor->Config[$k] = $v;
-					}
-				}
-			}
-			return $oFCKeditor->Create();
-		} else {
-			$CKEditor = new CKEditor(PATH_MAIN_WR.'/ckeditor/');
-			$CKEditor->config['defaultLanguage'] = $this->_language->getCode();
-			//$CKEditor->Value = $value;
-			if (is_array($this->_editorAttributes)) {
-				while (list($k, $v) = @each($this->_editorAttributes)) {
-					if ($v != '') {
-						$CKEditor->{$k} = $v ;
-					}
-				}
-			}
-			if (is_array($this->_editorConfigAttributes)) {
-				while (list($k, $v) = @each($this->_editorConfigAttributes)) {
-					if ($v != '') {
-						$CKEditor->config[$k] = $v;
-					}
-				}
-			}
-			$CKEditor->initialized = true;
-			$CKEditor->returnOutput = true;
-			return $CKEditor->replace($this->_formField);
 		}
+		if (is_array($this->_editorConfigAttributes)) {
+			while (list($k, $v) = @each($this->_editorConfigAttributes)) {
+				if ($v != '') {
+					$oFCKeditor->Config[$k] = $v;
+				}
+			}
+		}
+		return $oFCKeditor->Create();
 	}
 	
 	/**

@@ -2259,7 +2259,7 @@ class CMS_poly_object extends CMS_resource
 	  *
 	  * @param cms_profile_user $user : the user to check clearance
 	  * @param constant $clearance : the requested clearance to check (default : CLEARANCE_MODULE_VIEW)
-	  * @param boolean $checkParent : if no categories fields founded, check the parent object (if any) to see if it as some (beware this is heavy). Default : false
+	  * @param boolean $checkParent : if no categories fields found, check the parent object (if any) to see if it as some (beware this is heavy). Default : false
 	  * @return boolean
 	  * @access public
 	  */
@@ -2291,8 +2291,8 @@ class CMS_poly_object extends CMS_resource
 				}
 				//check for a parent for the given object
 				if ($objectParentsIDs = CMS_poly_object_catalog::getParentsObject($this->getObjectID())) {
-					$founded = false;
-					//check object for each parent objects founded
+					$found = false;
+					//check object for each parent objects found
 					foreach ($objectParentsIDs as $objectParentID => $objectParentFields) {
 						$categoriesFields = CMS_poly_object_catalog::objectHasCategories($objectParentID);
 						if (is_array($categoriesFields) && $categoriesFields) {
@@ -2302,12 +2302,12 @@ class CMS_poly_object extends CMS_resource
 								$search = new CMS_object_search($object,$this->_public);
 								$search->addWhereCondition($fieldID, $this->getID());
 								$ids = $search->search(CMS_object_search::POLYMOD_SEARCH_RETURN_IDS);
-								$founded = ($ids) ? true : $founded;
+								$found = ($ids) ? true : $found;
 							}
 						}
 					}
-					//if one parent was founded then object is visible
-					return $founded;
+					//if one parent was found then object is visible
+					return $found;
 				} else {
 					//no parent object for this object, item is viewvable
 					return true;

@@ -194,6 +194,7 @@ class CMS_block_text extends CMS_block
 			'bgcolor' 		=> (isset($this->_attributes['bgcolor']) ? $this->_attributes['bgcolor'] : ''),
 			'language'		=> $language->getCode(),
 			'atmToolbar'	=> (isset($this->_attributes['toolbar']) ? $this->_attributes['toolbar'] : ''),
+			'utf8'			=> (strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8'),
 		);
 		
 		$this->_administrable = false;

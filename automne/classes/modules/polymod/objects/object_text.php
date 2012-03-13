@@ -282,21 +282,6 @@ class CMS_object_text extends CMS_object_common
 				$toolbar = CMS_wysiwyg_toolbar::getByCode($toolbarset, $cms_user);
 				$value = ($toolbar->hasModulePlugins()) ? CMS_textEditor::parseInnerContent($value, $module) : $value;
 			}
-			/*$attrs = array(
-				'form' 		=> $inputParams['form'],					// Form name
-				'field' 	=> $fieldName,								// Field name
-				'value' 	=> $value,									// Default value
-				'language' 	=> $language,								// language
-				'width' 	=> ($params['toolbarWidth']) ? $params['toolbarWidth'] : '100%',	// textarea width
-				'height' 	=> (sensitiveIO::isPositiveInteger($params['toolbarHeight'])) ? $params['toolbarHeight'] : 200, // textarea height
-				'rows' 		=> 8,										// textarea rows
-				'toolbarset'=> $toolbarset								// fckeditor toolbarset
-			);
-			
-			$text_editor = CMS_textEditor::getEditorFromParams($attrs);
-			$html .= $text_editor->getJavascript();
-			$html .= $text_editor->getHTML();*/
-			
 			$CKEditor = new CKEditor(PATH_MAIN_WR.'/ckeditor/');
 			$CKEditor->returnOutput = true;
 			$html .= $CKEditor->editor($fieldName, $value, array(
@@ -305,7 +290,6 @@ class CMS_object_text extends CMS_object_common
 				'height' 		=> (sensitiveIO::isPositiveInteger($params['toolbarHeight'])) ? $params['toolbarHeight'] : 200, // textarea height
 				'customConfig'	=> (PATH_MAIN_WR.'/ckeditor/config.php?toolbar='.$toolbarset),
 			));
-			
 		} else {
 			//serialize all htmlparameters 
 			$htmlParameters = $this->serializeHTMLParameters($inputParams);
@@ -426,7 +410,7 @@ class CMS_object_text extends CMS_object_common
 		if ($content != '' && !function_exists((string) $content)) {
 			//first, try to get all items ids to search
 			$count = preg_match_all("#(<\?php|<\?).*'([0-9]*?)', '([0-9]*?)',.*\?>#Usi", $content, $matches);
-			//if more than one item is founded in text, it is faster to search them by one search
+			//if more than one item is found in text, it is faster to search them by one search
 			if ($count > 1) {
 				$ids = $GLOBALS['polymod']['preparedItems'] = array();
 				//then sort all items ids by plugin ID

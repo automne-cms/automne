@@ -427,7 +427,7 @@ class SensitiveIO extends CMS_grandFather
 	}
 
 	/**
-	  * Evaluate all php blocks (like <?php ... ? >) founded in input string
+	  * Evaluate all php blocks (like <?php ... ? >) found in input string
 	  * Static method.
 	  *
 	  * @param string $input The input string in which eval the code
@@ -629,7 +629,7 @@ class SensitiveIO extends CMS_grandFather
 	  * Check a value for XHTML errors
 	  *
 	  * @param string $value The value to check
-	  * @param string &$errors : Errors founded, returned by reference
+	  * @param string &$errors : Errors found, returned by reference
 	  * @return boolean : true on success, false on failure
 	  * @access public
 	  */

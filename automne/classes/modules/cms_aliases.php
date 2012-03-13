@@ -142,7 +142,7 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 	  *
 	  * @param mixed $page the page or page Id to get URL of
 	  * @param constant $relativeTo Return the alias path relative from webroot (default) or from filesystem (PATH_RELATIVETO_FILESYSTEM)
-	  * @return string : the alias page url or false if none founded
+	  * @return string : the alias page url or false if none found
 	  * @access public
 	  */
 	function getPageURL($page, $relativeTo = PATH_RELATIVETO_WEBROOT) {
@@ -171,7 +171,7 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 	  *
 	  * @param string $pageUrl the page URL
 	  * @param boolean $useDomain : use queried domain to found root page associated (default : true)
-	  * @return CMS_page if page founded, false otherwise
+	  * @return CMS_page if page found, false otherwise
 	  * @access public
 	  */
 	function getPageFromURL($pageUrl, $useDomain = true) {
@@ -378,7 +378,7 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 	  * Gets alias by its internal ID
 	  *
 	  * @param integer $id The DB ID of the alias to get
-	  * @return CMS_resource_cms_aliases or false if not founded
+	  * @return CMS_resource_cms_aliases or false if not found
 	  * @access public
 	  * @static
 	  */
@@ -410,8 +410,8 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 		$dirname = array_pop(explode(DIRECTORY_SEPARATOR, dirname($_SERVER['SCRIPT_NAME'])));
 		$aliases = CMS_module_cms_aliases::getByName($dirname);
 		if (!$aliases) {
-			//no alias founded, go to 404
-			CMS_grandFather::raiseError('No alias founded for directory '.dirname($_SERVER['SCRIPT_NAME']));
+			//no alias found, go to 404
+			CMS_grandFather::raiseError('No alias found for directory '.dirname($_SERVER['SCRIPT_NAME']));
 			CMS_view::redirect(PATH_SPECIAL_PAGE_NOT_FOUND_WR, true, 301);
 		}
 		//check each aliases returned to get the one which respond to current alias
@@ -442,8 +442,8 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 		}
 		
 		if (!$matchAlias) {
-			//no alias founded, go to 404
-			CMS_grandFather::raiseError('No alias founded for directory '.dirname($_SERVER['SCRIPT_NAME']).' and domain '.$domain);
+			//no alias found, go to 404
+			CMS_grandFather::raiseError('No alias found for directory '.dirname($_SERVER['SCRIPT_NAME']).' and domain '.$domain);
 			CMS_view::redirect(PATH_SPECIAL_PAGE_NOT_FOUND_WR, true, 301);
 		}
 		//if alias is used as a page url, return page
@@ -456,7 +456,7 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 				CMS_view::redirect(PATH_SPECIAL_PAGE_NOT_FOUND_WR, true, 301);
 			}
 			if (!$page || $page->hasError()) {
-				//no valid page founded, go to 404
+				//no valid page found, go to 404
 				$matchAlias->raiseError('Invalid page '.$matchAlias->getPageID().' for alias '.$matchAlias->getID());
 				CMS_view::redirect(PATH_SPECIAL_PAGE_NOT_FOUND_WR, true, 301);
 			}
@@ -472,7 +472,7 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 					}
 				}
 			}
-			//no valid url page founded, go to 404
+			//no valid url page found, go to 404
 			$matchAlias->raiseError('Invalid url page '.$matchAlias->getPageID().' for alias '.$matchAlias->getID());
 			CMS_view::redirect(PATH_SPECIAL_PAGE_NOT_FOUND_WR, true, 301);
 		} else {
@@ -489,12 +489,12 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 					if ($pageURL) {
 						CMS_view::redirect($pageURL.$params, true, ($matchAlias->isPermanent() ? 301 : 302));
 					} else {
-						//no valid url page founded, go to 404
+						//no valid url page found, go to 404
 						$matchAlias->raiseError('Invalid url page '.$matchAlias->getPageID().' for alias '.$matchAlias->getID());
 						CMS_view::redirect(PATH_SPECIAL_PAGE_NOT_FOUND_WR, true, 301);
 					}
 				}  else {
-					//no valid page founded, go to 404
+					//no valid page found, go to 404
 					$matchAlias->raiseError('Invalid page '.$matchAlias->getPageID().' for alias '.$matchAlias->getID());
 					CMS_view::redirect(PATH_SPECIAL_PAGE_NOT_FOUND_WR, true, 301);
 				}
@@ -502,7 +502,7 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 				//it's a redirection to an URL
 				CMS_view::redirect($matchAlias->getURL(), true, ($matchAlias->isPermanent() ? 301 : 302));
 			} else {
-				//no valid redirection founded, go to 404
+				//no valid redirection found, go to 404
 				$matchAlias->raiseError('Invalid redirection for alias '.$matchAlias->getID());
 				CMS_view::redirect(PATH_SPECIAL_PAGE_NOT_FOUND_WR, true, 301);
 			}

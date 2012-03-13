@@ -265,7 +265,7 @@ class CMS_linx extends CMS_grandFather
 		}
 		//append args to generated linx code
 		if ($this->_args) {
-			//append atm-row class and row-id to all first level tags founded in row datas
+			//append atm-row class and row-id to all first level tags found in row datas
 			$domdocument = new CMS_DOMDocument();
 			try {
 				$domdocument->loadXML('<linx>'.$output.'</linx>');

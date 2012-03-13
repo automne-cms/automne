@@ -493,7 +493,7 @@ class CMS_page extends CMS_resource
 				//create new filename
 				$title = $this->getTitle(true);
 				if (!$title) {
-					//no public title founded, to avoid error, try to use the edited one.
+					//no public title found, to avoid error, try to use the edited one.
 					$title = $this->getTitle(false);
 					if (!$title) {
 						$this->raiseError("Can't get page title for page ".$this->getID()." to create page filename ...");
@@ -2009,7 +2009,7 @@ class CMS_page extends CMS_resource
 			$this->_website = CMS_tree::getPageWebsite($this->_pageID);
 		}
 		if (!is_object($this->_website)) {
-			$this->raiseError('No website founded for page : '.$this->_pageID);
+			$this->raiseError('No website found for page : '.$this->_pageID);
 			return false;
 		}
 		return true;

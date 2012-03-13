@@ -15,7 +15,7 @@
 /**
   * Class CMS_wysiwyg_toolbar
   *
-  * represent a wwysiwyg (fckeditor) toolbar with a set of elements
+  * represent a wwysiwyg (ckeditor) toolbar with a set of elements
   *
   * @package Automne
   * @subpackage dialogs

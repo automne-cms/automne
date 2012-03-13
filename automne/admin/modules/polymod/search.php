@@ -51,7 +51,7 @@ $limitToOrderedItems = sensitiveIO::request('itemsOrdered');
 if ($limitToOrderedItems) {
 	$limitToOrderedItems = explode(',',$limitToOrderedItems);
 }
-//Some actions to do on items founded
+//Some actions to do on items found
 $unlock = sensitiveIO::request('unlock') ? true : false;
 $delete = sensitiveIO::request('del') ? true : false;
 $undelete = sensitiveIO::request('undelete') ? true : false;

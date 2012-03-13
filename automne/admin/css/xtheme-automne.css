@@ -1673,8 +1673,13 @@ td.x-date-mp-month a:hover,td.x-date-mp-year a:hover {
 .x-tool-popup-over {
 	background-position:-15px -330px;
 }
-.x-combo-list-inner div:first-child { min-height:14px; }
-
+.x-combo-list-inner div:first-child {
+	min-height:14px;
+}
+.atm-iframe .x-panel .x-panel-body-noborder {
+	overflow-x: hidden !important;
+	overflow-y: auto !important;
+}
 /*ckeditor specific styles*/
 .cke_skin_kama .cke_dialog_footer_buttons span.cke_dialog_ui_button {
 	background-image: none;

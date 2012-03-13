@@ -71,11 +71,11 @@ if ($_SERVER['REQUEST_URI'] && $_SERVER['REQUEST_URI'] != $_SERVER['SCRIPT_NAME'
 		}
 	}
 }
-//do redirection to page if founded
+//do redirection to page if found
 if ($redirectTo) {
 	CMS_view::redirect($redirectTo.(isset($_SERVER['REDIRECT_QUERY_STRING']) ? '?'.$_SERVER['REDIRECT_QUERY_STRING'] : ''), true, 301);
 }
-//then if no page founded, display 404 error page
+//then if no page found, display 404 error page
 header('HTTP/1.x 404 Not Found', true, 404);
 //Check if requested file is an image
 $imagesExtensions = array('jpg', 'jpeg', 'gif', 'png', 'ico');

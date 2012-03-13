@@ -977,7 +977,7 @@ class CMS_forms_formular extends CMS_grandFather {
 	 * Analyse a form xhtml code check if it has some copy-pasted code inside
 	 *
 	 * @access public
-	 * @return true if none error founded
+	 * @return true if none error found
 	 */
 	function checkFormCode($formCode)  {
 		//get form ID in xhtml code

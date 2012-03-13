@@ -426,7 +426,7 @@ class CMS_row extends CMS_grandFather
 			$this->_parseDefinitionFile($modulesTreatment);
 		}
 		if (!$this->_blocks) {
-			$this->raiseError("No blocks tags founded in row definition");
+			$this->raiseError("No blocks tags found in row definition");
 			return false;
 		}
 		foreach ($this->_blocks as $block) {
@@ -434,7 +434,7 @@ class CMS_row extends CMS_grandFather
 				return $block;
 			}
 		}
-		$this->raiseError("No block tag founded in row with id : ".$blockID);
+		$this->raiseError("No block tag found in row with id : ".$blockID);
 		return false;
 	}
 
@@ -491,7 +491,7 @@ class CMS_row extends CMS_grandFather
 	  * The file must be in a specific directory : PATH_TEMPLATES_ROWS_FS (see constants from rc file)
 	  *
 	  * @param string $definition The definition
-	  * @param boolean $haltOnPolymodParsing Stop setting definition if error on polymod parsing are founded (default : true)
+	  * @param boolean $haltOnPolymodParsing Stop setting definition if error on polymod parsing are found (default : true)
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
@@ -582,7 +582,7 @@ class CMS_row extends CMS_grandFather
 			//if $visualizationMode is CLIENTSPACES_FORM and
             //no page uses the template calling this row, add the form here
 			if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM || $visualizationMode == PAGE_VISUALMODE_FORM) {
-				//append atm-row class and row-id to all first level tags founded in row datas
+				//append atm-row class and row-id to all first level tags found in row datas
 				$domdocument = new CMS_DOMDocument();
 				try {
 					$domdocument->loadXML('<row>'.$data.'</row>');
@@ -615,7 +615,7 @@ class CMS_row extends CMS_grandFather
 				}
 				
 				if (!$hasNode) {
-					//append atm-row class and row-id to all first level tags founded in row datas
+					//append atm-row class and row-id to all first level tags found in row datas
 					$domdocument = new CMS_DOMDocument();
 					try {
 						$domdocument->loadXML('<row><div class="atm-dummy-row-tag">'.$data.'</div></row>');
@@ -700,7 +700,7 @@ class CMS_row extends CMS_grandFather
 				return $modulesTreatment->getParsingError();
 			}
 		} else {
-			$this->raiseError('No row definition file founded for row : '.$this->getLabel());
+			$this->raiseError('No row definition file found for row : '.$this->getLabel());
 			return true;
 		}
 	}
@@ -926,7 +926,7 @@ class CMS_row extends CMS_grandFather
 	  * Get object as an array structure used for export
 	  *
 	  * @param array $params The export parameters. Not used here
-	  * @param array $files The reference to the founded files used by object
+	  * @param array $files The reference to the found files used by object
 	  * @return array : the object array structure
 	  * @access public
 	  */

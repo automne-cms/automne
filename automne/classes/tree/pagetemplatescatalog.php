@@ -407,7 +407,7 @@ class CMS_pageTemplatesCatalog extends CMS_grandFather
 	  * Return a template ID corresponding of a given clone ID
 	  *
 	  * @param integer cloneID : the clone ID to get template ID
-	  * @return integer : the template ID or false if none founded
+	  * @return integer : the template ID or false if none found
 	  * @access public
 	  */
 	static function getTemplateIDForCloneID($cloneID) {

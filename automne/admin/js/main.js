@@ -158,7 +158,7 @@ Automne = {
 					followRedirect:	true
 				}
 			}
-			//if token history is founded, use it
+			//if token history is found, use it
 			if (window.location.hash.indexOf('#') !== -1) {
 				Automne.getToHistory(window.location.hash);
 			} else {

@@ -234,7 +234,7 @@ class CMS_module extends CMS_grandFather
 	/** 
 	  * Get the default language code for this module
 	  * Comes from parameters or Constant
-	  * Upgrades constant with parameter founded
+	  * Upgrades constant with parameter found
 	  *
 	  * @return String the language codename
 	  * @access public
@@ -1109,14 +1109,14 @@ class CMS_module extends CMS_grandFather
 				$dir = $allFiles ? new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dirname), RecursiveIteratorIterator::CHILD_FIRST) : new DirectoryIterator($dirname);
 				foreach ($dir as $file) {
 					if ($file->isFile() && io::substr($file->getFilename(), -4) == ".css") {
-						$founded = false;
+						$found = false;
 						foreach ($medias as $media) {
 							if (io::substr($file->getFilename(), -5 - strlen($media)) == '-'.$media.'.css') {
 								$files[$media][] = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname()));
-								$founded = true;
+								$found = true;
 							}
 						}
-						if (!$founded) {
+						if (!$found) {
 							$files['all'][] = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname()));
 						}
 					}
@@ -1133,14 +1133,14 @@ class CMS_module extends CMS_grandFather
 						try{
 							foreach ( new DirectoryIterator($dirname.DIRECTORY_SEPARATOR.$website->getCodename()) as $file) {
 								if ($file->isFile() && io::substr($file->getFilename(), -4) == ".css") {
-									$founded = false;
+									$found = false;
 									foreach ($medias as $media) {
 										if (io::substr($file->getFilename(), -5 - strlen($media)) == '-'.$media.'.css') {
 											$files[$media][] = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname()));
-											$founded = true;
+											$found = true;
 										}
 									}
-									if (!$founded) {
+									if (!$found) {
 										$files['all'][] = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname()));
 									}
 								}
@@ -1254,7 +1254,7 @@ class CMS_module extends CMS_grandFather
 	  *				css			=> false|true : export module JS (default : true)
 	  *				js			=> false|true : export module CSS (default : true)
 	  *			)
-	  * @param array $files The reference to the founded files used by object
+	  * @param array $files The reference to the found files used by object
 	  * @return array : the object array structure
 	  * @access public
 	  */

@@ -50,7 +50,7 @@ class CMS_rowsCatalog extends CMS_grandFather {
 	 * @param string $csId : restrict to rows usable in given clientspace (default : false)
 	 * @param integer $start : start position
 	 * @param integer $limit : limit position
-	 * @param integer $count : number of rows founded (passed by reference)
+	 * @param integer $count : number of rows found (passed by reference)
 	 * @access public
 	 */
 	static function getAll($includeInactive = false, $keyword = '', $groups = array(), $rowIds = array(), $user = false, $tplId = false, $csId = false, $start = 0, $limit = 0, $returnObjects = true, &$score = array()) {

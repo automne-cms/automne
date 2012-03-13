@@ -153,7 +153,7 @@ Automne.blockText = Ext.extend(Automne.block, {
 			CKEDITOR.removeListener('instanceCreated', loadStyles);
 		});
 		//create editor
-		this.CKEditor = CKEDITOR.appendTo( cont.dom, ckconf, this._base64_decode(this.value) );
+		this.CKEditor = CKEDITOR.appendTo( cont.dom, ckconf, this._base64_decode(this.value, this.options.utf8) );
 		
 		//put click events on controls
 		cancelCtrl.on('mousedown', this.stopEdition.createDelegate(this, [cancelCtrl, validateCtrl, ctrlCont, cont, tb]), this);
@@ -212,7 +212,7 @@ Automne.blockText = Ext.extend(Automne.block, {
 	},
 	_keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
  	// private method for base64 decoding
-	_base64_decode : function (input) {
+	_base64_decode : function (input, isUtf8) {
 		var output = "";
 		var chr1, chr2, chr3;
 		var enc1, enc2, enc3, enc4;
@@ -234,7 +234,9 @@ Automne.blockText = Ext.extend(Automne.block, {
 				output = output + String.fromCharCode(chr3);
 			}
 		}
-		output = this._utf8_decode(output);
+		if (isUtf8) {
+			output = this._utf8_decode(output);
+		}
 		return output;
 	},
 	// private method for UTF-8 decoding

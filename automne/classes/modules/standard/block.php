@@ -333,7 +333,7 @@ class CMS_block extends CMS_grandFather
 	protected function _getHTMLForm($language, &$page, &$clientSpace, &$row, $blockID, $data){
 		global $cms_user;
 		
-		//append atm-block class and block-id to all first level tags founded in block datas
+		//append atm-block class and block-id to all first level tags found in block datas
 		$domdocument = new CMS_DOMDocument();
 		try {
 			$domdocument->loadXML('<block>'.$data.'</block>');

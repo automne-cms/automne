@@ -1069,7 +1069,7 @@ class CMS_file extends CMS_grandFather
 	  * get mime type of a given file
 	  *
 	  * @param string $file : the file location to get mime type (relative to FS) or none to use method on current object
-	  * @return string the mime type founded or false if file does not exists. application/octet-stream is returned if no type founded
+	  * @return string the mime type found or false if file does not exists. application/octet-stream is returned if no type found
 	  * @access public
 	  * @static
 	  */

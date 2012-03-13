@@ -183,11 +183,12 @@ class CMS_object_google_coordinates extends CMS_object_common
 						var field = form.findField(\'polymodFieldsValue[\' + addrFields[i] + \'_0]\');
 						var listfield = form.findField(\'polymodFieldsValue[list\' + addrFields[i] + \'_0]\');
 						if (field) {
-							addr += \' \' + field.getValue().replace(/\r?\n/g, \' \');
+							addr += \' \' + Ext.util.Format.stripTags(field.getValue()).replace(/\r?\n/g, \' \');
 						} else if (listfield) {
-							addr += \' \' + Ext.util.Format.stripTags(listfield.lastSelectionText);
+							addr += \' \' + Ext.util.Format.stripTags(listfield.lastSelectionText).replace(/\r?\n/g, \' \');
 						}
 					}
+					alert(addr);
 					var geocoder = new google.maps.Geocoder();
 					geocoder.geocode({address:addr}, function(results, status) {
 						if (status == \'OK\') {

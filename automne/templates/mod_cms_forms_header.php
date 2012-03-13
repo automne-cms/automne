@@ -118,7 +118,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 						//analyse url to get page if any
 						$redirectPage = CMS_tree::analyseURL($url);
 						if ($redirectPage) {
-							//if page founded, check existence and rights
+							//if page found, check existence and rights
 							$pageID = $redirectPage->getID();
 							if ($redirectPage->hasError() || !CMS_tree::pagesExistsInUserSpace($pageID) || 
 									(APPLICATION_ENFORCES_ACCESS_CONTROL && (!isset($cms_user) || !$cms_user->hasPageClearance($pageID, CLEARANCE_PAGE_VIEW)))

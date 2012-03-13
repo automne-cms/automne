@@ -900,7 +900,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	  *		array(
 	  *				categoriesChildren	=> false|true : export children categories also (default : true)
 	  *			)
-	  * @param array $files The reference to the founded files used by object
+	  * @param array $files The reference to the found files used by object
 	  * @return array : the object array structure
 	  * @access public
 	  */

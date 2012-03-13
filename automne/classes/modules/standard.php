@@ -1383,7 +1383,7 @@ class CMS_module_standard extends CMS_module
 		if (($tpl instanceof CMS_pageTemplate) && $tpl->getID() > 0) {
 			CMS_moduleClientspace_standard_catalog::moveClientSpaces($tpl->getID(), $locationFrom, $locationTo, $copyOnly);
 		} else {
-			CMS_grandFather::raiseError("Bad template founded for page ".$resourceID);
+			CMS_grandFather::raiseError("Bad template found for page ".$resourceID);
 			return false;
 		}
 		// Move the blocks
@@ -2032,6 +2032,7 @@ class CMS_module_standard extends CMS_module
 					$redirectlink = $treatedObject->getRedirectLink(true);
 					if ($redirectlink->hasValidHREF()) {
 						$href = $redirectlink->getHTML(false, MOD_STANDARD_CODENAME, RESOURCE_DATA_LOCATION_PUBLIC, false, true);
+						CMS_grandfather::log($href);
 						$modulesCode[MOD_STANDARD_CODENAME] .= 
 							'CMS_view::redirect(\''.$href.'\', true, 302);'."\n";
 					}
