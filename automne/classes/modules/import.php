@@ -193,6 +193,7 @@ class CMS_module_import extends CMS_grandFather
 				//reload user language
 				$cms_language = CMS_languagesCatalog::getByCode($oldLanguage);
 			}
+			unset($importedArray['language']);
 		}
 		
 		//return import description if exists

@@ -441,7 +441,12 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 		}
 
 		if (!io::isPositiveInteger($aField['type'])) {
-			$oType = new $aField['type'](array(), $this, false);
+			if (class_exists($aField['type'])) {
+				$oType = new $aField['type'](array(), $this, false);
+				$aField['params']['params'] = $oType->asArray();
+			}
+		} elseif ($aField['multi']) {
+			$oType = new CMS_multi_poly_object($aField['type'], array(), $this, false);
 			$aField['params']['params'] = $oType->asArray();
 		}
 		return $aField;
@@ -527,10 +532,10 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 			$this->setValue("searchable", $data['params']['searchable']);
 		}
 		//parameters
-		if (!io::isPositiveInteger($data['type'])) {
+		if (!io::isPositiveInteger($data['type']) || (isset($data['multi']) && $data['multi'])) {
 			$fieldObject = $this->getTypeObject();
 			$GLOBALS['moduleCodename'] = $params['module'];
-			if (isset($data['params']['params']) && $data['params']['params']) {
+			if ($fieldObject && isset($data['params']['params']) && $data['params']['params']) {
 				$params = $fieldObject->treatParams($data['params']['params'], '');
 				if ($params) {
 					$this->setValue("params", $params);
