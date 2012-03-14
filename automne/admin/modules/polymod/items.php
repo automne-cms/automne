@@ -452,7 +452,7 @@ $searchPanel .= "{
 			name:				'direction_{$object->getID()}',
 			hiddenName:		 	'direction_{$object->getID()}',
 			forceSelection:		true,
-			fieldLabel:			'',
+			fieldLabel:			'&nbsp;',
 			labelSeparator:		'',
 			mode:				'local',
 			triggerAction:		'all',

@@ -2032,7 +2032,6 @@ class CMS_module_standard extends CMS_module
 					$redirectlink = $treatedObject->getRedirectLink(true);
 					if ($redirectlink->hasValidHREF()) {
 						$href = $redirectlink->getHTML(false, MOD_STANDARD_CODENAME, RESOURCE_DATA_LOCATION_PUBLIC, false, true);
-						CMS_grandfather::log($href);
 						$modulesCode[MOD_STANDARD_CODENAME] .= 
 							'CMS_view::redirect(\''.$href.'\', true, 302);'."\n";
 					}

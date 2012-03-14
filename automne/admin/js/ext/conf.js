@@ -31,3 +31,9 @@ Ext.apply(Ext.form.VTypes, {
     loginText: 'Login must be alphanumeric and lowercase',
     loginMask: /^[a-zA-Z0-9_.@-]+$/
 });
+
+Ext.apply(Ext.util.Format, {
+    stripLines:  function(v) {
+        return v.replace(/\s+/g, " ").trim();
+    }
+});

@@ -211,7 +211,6 @@ CKEDITOR.dialog.add( 'automneLinks', function( editor )
 				title : linkLang.info,
 				elements :
 				[
-					
 					{
 						type : 'vbox',
 						id : 'urlOptions',
@@ -236,8 +235,7 @@ CKEDITOR.dialog.add( 'automneLinks', function( editor )
 										{
 											data.pageId = this.getValue();
 										}
-									},
-									{
+									},{
 										type : 'checkbox',
 										id : 'keeplink',
 										label : linkLang.keeplink,
@@ -248,8 +246,7 @@ CKEDITOR.dialog.add( 'automneLinks', function( editor )
 										commit : function (data) {
 											data.noselection = this.getValue() ? true : false;
 										}
-									},
-									
+									}
 								]
 							}
 						]
