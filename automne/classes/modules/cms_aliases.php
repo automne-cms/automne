@@ -348,7 +348,7 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 	  * @static
 	  */
 	static function getByName($name, $returnObject = true) {
-		if (!$name || $name != sensitiveIO::sanitizeURLString($name)) {
+		if (!$name || $name != sensitiveIO::sanitizeAsciiString($name, '@')) {
 			return array();
 		}
 		$sql = "
