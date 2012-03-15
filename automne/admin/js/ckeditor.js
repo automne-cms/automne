@@ -76,3 +76,4 @@ Ext.extend(Ext.ux.form.CKEditor, Ext.form.TextArea,  {
 });
 
 Ext.reg('ckeditor', Ext.ux.form.CKEditor);
+Ext.reg('fckeditor', Ext.ux.form.CKEditor); //for compatibility

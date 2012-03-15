@@ -33,7 +33,7 @@ $content = '﻿
 CKEDITOR.editorConfig = function( config )
 {
 	config.uiColor = \'#D6DCDF\';
-	config.disableObjectResizing = true;';
+	config.disableObjectResizing = true;'."\n";
 	if (file_exists(PATH_CSS_FS.'/editor.css')) {
 		$content .= 'config.contentsCss = [\''.PATH_MAIN_WR.'/ckeditor/contents.css\', \''.PATH_CSS_WR.'/editor.css\'];'."\n";
 	} else {
@@ -47,15 +47,26 @@ CKEDITOR.editorConfig = function( config )
 	config.entities_processNumerical = '.(strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8' ? 'false' : 'true').';
 	
 	var toolbarSets = {};
+	//set default toolbar
+	toolbarSets["Default"] = [[\'Source\'],[\'ShowBlocks\'],[\'Preview\',\'Templates\'],[\'Cut\',\'Copy\',\'Paste\',\'PasteText\',\'PasteFromWord\'],[\'Print\'],[\'Undo\',\'Redo\'],[\'Find\',\'Replace\'],[\'SelectAll\',\'RemoveFormat\'],[\'Bold\',\'Italic\',\'Underline\',\'Strike\'],[\'Subscript\',\'Superscript\'],[\'NumberedList\',\'BulletedList\'],[\'Outdent\',\'Indent\'],[\'JustifyLeft\',\'JustifyCenter\',\'JustifyRight\',\'JustifyBlock\'],[\'Link\',\'Unlink\',\'Anchor\'],[\'Table\',\'SpecialChar\'],[\'Styles\', \'Format\',\'FontSize\'],[\'TextColor\',\'BGColor\'],[\'automneLinks\',\'polymod\']];
 	';
-	//get all toolbars
+	//get all modules toolbars
+	$modulesCodes = new CMS_modulesCodes();
+	$modulesCodeInclude = $modulesCodes->getModulesCodes(MODULE_TREATMENT_EDITOR_CODE, '', new CMS_date(), array("editor" => "ckeditor", "toolbar" => "Default|Basic|BasicLink", "user" => $cms_user));
+	if (isset($modulesCodeInclude["ToolbarSets"])) {
+		$content .= implode("\n\n",$modulesCodeInclude["ToolbarSets"]);
+	}
+	
+	//get all defined toolbars
 	$toolbars = CMS_wysiwyg_toolbar::getAll($cms_user);
 	foreach ($toolbars as $toolbar) {
 		$content .= $toolbar->getDefinition();
 	}
-	$content .= '
-	config.toolbar = toolbarSets[\''.(io::request('toolbar') ? io::request('toolbar') : 'Default').'\'];
-	';
+	if (io::request('toolbar')) {
+		$content .= 'config.toolbar = typeof toolbarSets[\''.io::request('toolbar').'\'] == \'undefined\' ? toolbarSets[\'Default\'] : toolbarSets[\''.io::request('toolbar').'\'];'."\n";
+	} else {
+		$content .= 'config.toolbar = toolbarSets[\'Default\'];'."\n";
+	}
 	//append XML styles
 	$filename = PATH_CSS_FS.'/editorstyles.xml';
 	if (file_exists($filename)) {
