@@ -625,6 +625,16 @@ class CMS_object_text extends CMS_object_common
 		}
 		return $params;
 	}
+	
+	/**
+	  * get object HTML description for admin search detail. Usually, the label.
+	  *
+	  * @return string : object HTML description
+	  * @access public
+	  */
+	function getHTMLDescription() {
+		return io::ellipsis(strip_tags($this->getLabel()), 500, '...', false, false);
+	}
 }
 
 ?>

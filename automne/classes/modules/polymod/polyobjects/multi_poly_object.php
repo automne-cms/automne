@@ -520,7 +520,7 @@ class CMS_multi_poly_object extends CMS_object_common
 					'tpl'			=> sensitiveIO::sanitizeJSString('<tpl for="rows">
 						<dl>
 							<tpl for="parent.columns">
-								<dt style="width:100%;text-align:{align};" class="MultiselectDD">
+								<dt style="width:100%;text-align:{align};white-space:normal;" class="MultiselectDD">
 									<div unselectable="on" class="atm-result x-unselectable" id="object-{parent.id}">
 										<div class="atm-title">
 											<table>
