@@ -1266,6 +1266,7 @@ class CMS_module extends CMS_grandFather
 			'codename'	=> $this->_codename,
 			'polymod'	=> false,
 			'labels'	=> CMS_language::getMessages(1, $this->_codename),
+			'parameters'=> $this->getParameters(false, true),
 		);
 		$defaultLanguage = CMS_languagesCatalog::getDefaultLanguage();
 		if (in_array('categories', $params)) {
@@ -1356,6 +1357,16 @@ class CMS_module extends CMS_grandFather
 			if (!$this->writeToPersistence()) {
 				$infos .= 'Error writing module ...'."\n";
 				return false;
+			} elseif (isset($data['parameters']) && is_array($data['parameters']) && $data['parameters']) {
+				//write module parameters
+				$this->_hasParameters = 1;
+				$filename = PATH_MODULES_FS."/".$this->_codename."_rc.xml";
+				if (!file_exists($filename)) {
+					$file = new CMS_file($filename);
+					$file->writeToPersistence(true);
+				}
+				$this->setAndWriteParameters($data['parameters']);
+				$this->writeToPersistence();
 			}
 		}
 		//append codename to parameters

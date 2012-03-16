@@ -408,7 +408,7 @@ class CMS_file extends CMS_grandFather
 					return false;
 				}
 			}
-			if (!@fwrite($f, $this->_content)) {
+			if (@fwrite($f, $this->_content) === false) {
 				$this->raiseError("Can't write file ".$this->_name);
 				return false;
 			} else {
