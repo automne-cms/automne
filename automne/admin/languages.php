@@ -97,13 +97,7 @@ $jscontent = <<<END
 		url:			'{$searchURL}',
 		id:				'code',
 		remoteSort:		true,
-		fields:			['label', 'code', 'admin', 'dateFormat', 'modulesDenied'],
-		listeners:		{
-			'load': 		{fn:function(store, records, options){
-				moduleObjectWindow.syncSize();
-			}},
-			scope : this
-		}
+		fields:			['label', 'code', 'admin', 'dateFormat', 'modulesDenied']
 	});
 	
 	var editItem = function(code, button) {
@@ -204,14 +198,12 @@ $jscontent = <<<END
 	//redo windows layout
 	moduleObjectWindow.doLayout();
 	
-	setTimeout(function(){
-		moduleObjectWindow.syncSize();
-	}, 500);
-	
 	//this flag is needed, because form construction, launch multiple search queries before complete page construct so we check in moduleObjectWindow.search if construction is ok
 	moduleObjectWindow.ok = true;
+	
 	//launch search
 	moduleObjectWindow.search();
+	
 	//add selection events to selection model
 	var qtips = [];
 	setTimeout(function(){
@@ -236,7 +228,6 @@ $jscontent = <<<END
 		if (Ext.getCmp('{$winId}toolbar')) {
 			Ext.getCmp('{$winId}toolbar').syncSize();
 		}
-		moduleObjectWindow.syncSize();
 	}, this);
 END;
 $view->addJavascript($jscontent);
