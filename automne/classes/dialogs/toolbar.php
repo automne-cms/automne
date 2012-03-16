@@ -276,14 +276,16 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 			'NumberedList' 	=> 'OrderedList',
 			'BulletedList'	=> 'UnorderedList',
 			'JustifyBlock' 	=> 'JustifyFull',
-			//'HorizontalRule'=> 'Rule',
-			//'Styles' 		=> 'Style',
+			'HorizontalRule'=> 'Rule',
+			'Styles' 		=> 'Style',
 			'Format' 		=> 'FontFormat',
 			'Maximize' 		=> 'FitWindow',
 		);
 		foreach ($this->_toolbarElements as $key => $toolbarElement) {
 			//for backward compat
-			$this->_toolbarElements[$key] = str_replace($conversion, array_keys($conversion), $toolbarElement);
+			if (in_array($toolbarElement, $conversion)) {
+				$this->_toolbarElements[$key] = str_replace($conversion, array_keys($conversion), $toolbarElement);
+			}
 		}
 		return $this->_toolbarElements;
 	}
@@ -345,8 +347,8 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 			'NumberedList' 	=> 'OrderedList',
 			'BulletedList'	=> 'UnorderedList',
 			'JustifyBlock' 	=> 'JustifyFull',
-			//'HorizontalRule'=> 'Rule',
-			//'Styles' 		=> 'Style',
+			'HorizontalRule'=> 'Rule',
+			'Styles' 		=> 'Style',
 			'Format' 		=> 'FontFormat',
 			'Maximize' 		=> 'FitWindow',
 		);
@@ -365,7 +367,9 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 		$count = 0;
 		foreach ($this->_toolbarElements as $toolbarElement) {
 			//for backward compat
-			$toolbarElement = str_replace($conversion, array_keys($conversion), $toolbarElement);
+			if (in_array($toolbarElement, $conversion)) {
+				$toolbarElement = str_replace($conversion, array_keys($conversion), $toolbarElement);
+			}
 			if ($fckEditor && in_array($toolbarElement, $newElements)) {
 				$toolbarElement = 'unavailable';
 			}
