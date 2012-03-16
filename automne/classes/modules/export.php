@@ -31,6 +31,7 @@ class CMS_module_export extends CMS_grandFather
 	const MESSAGE_PARAM_ROWS = 1669;
 	const MESSAGE_PARAM_CSS = 1670;
 	const MESSAGE_PARAM_JS = 1671;
+	const MESSAGE_PARAM_IMG = 1760;
 	
 	/**
 	 * Export parameters
@@ -82,13 +83,14 @@ class CMS_module_export extends CMS_grandFather
 		//only polymod for now, but can be switched by modules later
 		$this->_hasExport = CMS_modulesCatalog::isPolymod($this->_module);
 		if ($this->_hasExport) {
-			$this->_defaultParameters = array('objects', 'categories', 'rows', 'css', 'js');
+			$this->_defaultParameters = array('objects', 'categories', 'rows', 'css', 'js', 'img');
 			$this->_availableParameters = array(
 				'objects'		=> self::MESSAGE_PARAM_OBJECTS,
 				'categories'	=> self::MESSAGE_PARAM_CATEGORIES,
 				'rows'			=> self::MESSAGE_PARAM_ROWS,
 				'css'			=> self::MESSAGE_PARAM_CSS,
 				'js'			=> self::MESSAGE_PARAM_JS,
+				'img'			=> self::MESSAGE_PARAM_IMG,
 			);
 		}
 	}

@@ -32,6 +32,7 @@ class CMS_module_import extends CMS_grandFather
 	const MESSAGE_PARAM_UPDATE_ROWS = 1664;
 	const MESSAGE_PARAM_UPDATE_JS = 1665;
 	const MESSAGE_PARAM_UPDATE_CSS = 1666;
+	const MESSAGE_PARAM_UPDATE_IMG = 1761;
 	
 	/**
 	 * Import parameters
@@ -69,6 +70,7 @@ class CMS_module_import extends CMS_grandFather
 			'updateRows'	=> self::MESSAGE_PARAM_UPDATE_ROWS,
 			'updateJs'		=> self::MESSAGE_PARAM_UPDATE_JS,
 			'updateCss'		=> self::MESSAGE_PARAM_UPDATE_CSS,
+			'updateImg'		=> self::MESSAGE_PARAM_UPDATE_IMG,
 		);
 	}
 	

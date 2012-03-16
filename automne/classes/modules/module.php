@@ -1319,6 +1319,20 @@ class CMS_module extends CMS_grandFather
 				}
 			}
 		}
+		if (in_array('img', $params)) {
+			$imgFiles = array();
+			$aModule['css'] = array();
+			if (is_dir(PATH_REALROOT_FS.'/img/modules/'.$this->getCodename())) {
+				$imgFiles = glob(PATH_REALROOT_FS.'/img/modules/'.$this->getCodename().'/*.*', GLOB_NOSORT);
+			}
+			if ($imgFiles && is_array($imgFiles)) {
+				foreach ($imgFiles as $key => $imgFile) {
+					$imgFiles[$key] = str_replace(PATH_REALROOT_FS, '', $imgFile);
+				}
+				$aModule['img'] = $imgFiles;
+				$files = array_merge($files, $imgFiles);
+			}
+		}
 		return $aModule;
 	}
 	
@@ -1406,6 +1420,23 @@ class CMS_module extends CMS_grandFather
 								CMS_file::chmodFile(FILES_CHMOD, PATH_REALROOT_FS.$cssFile);
 							} else {
 								$infos .= 'Error during copy of file '.$cssFile.' ...'."\n";
+							}
+						}
+					}
+				}
+			}
+		}
+		if (!isset($params['files']) || $params['files'] == true) {
+			//add IMG
+			if (isset($data['img']) && $data['img']) {
+				foreach ($data['img'] as $imgFile) {
+					if ($imgFile && file_exists(PATH_TMP_FS.$imgFile)) {
+						if ((file_exists(PATH_REALROOT_FS.$imgFile) && (!isset($params['updateImg']) || $params['updateImg'] == true))
+								|| (!isset($params['create']) || $params['create'] == true)) {
+							if (CMS_file::moveTo(PATH_TMP_FS.$imgFile, PATH_REALROOT_FS.$imgFile)) {
+								CMS_file::chmodFile(FILES_CHMOD, PATH_REALROOT_FS.$imgFile);
+							} else {
+								$infos .= 'Error during copy of file '.$imgFile.' ...'."\n";
 							}
 						}
 					}

@@ -1737,7 +1737,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1660, 'standard', 'en', 'Import logs');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1661, 'standard', 'en', 'Create missing elements');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1662, 'standard', 'en', 'Update existing elements');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1663, 'standard', 'en', 'Import Files (Rows / Files categories / Javascript / CSS)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1663, 'standard', 'en', 'Import Files (Rows / Files categories / Javascript / CSS / Images)');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1664, 'standard', 'en', 'Update the XML definition of existing rows');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1665, 'standard', 'en', 'Update existing JavaScript files');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1666, 'standard', 'en', 'Update existing CSS files');
@@ -1834,3 +1834,5 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1757, 'standard', 'en', 'Iframe insertion');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1758, 'standard', 'en', 'Maximize');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1759, 'standard', 'en', 'Show blocks');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1760, 'standard', 'en', 'Include Images files');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1761, 'standard', 'en', 'Update existing Images files');

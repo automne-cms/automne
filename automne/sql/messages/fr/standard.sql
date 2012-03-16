@@ -1619,7 +1619,7 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1660, 'standard', 'fr', 'Log d\'import');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1661, 'standard', 'fr', 'Cr&eacute;er les &eacute;l&eacute;ments inexistants');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1662, 'standard', 'fr', 'Mettre &agrave; jour les &eacute;l&eacute;ments existants');
-INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1663, 'standard', 'fr', 'Importer les fichiers (Rang&eacute;es / Fichiers des cat&eacute;gories / Javascript / CSS)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1663, 'standard', 'fr', 'Importer les fichiers (Rang&eacute;es / Fichiers des cat&eacute;gories / Javascript / CSS / Images)');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1664, 'standard', 'fr', 'Mettre &agrave; jour la d&eacute;finition XML des rang&eacute;es existantes');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1665, 'standard', 'fr', 'Mettre &agrave; jour les fichiers Javascript existants');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1666, 'standard', 'fr', 'Mettre &agrave; jour les fichiers CSS existants');
@@ -1716,4 +1716,5 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1757, 'standard', 'fr', 'Insertion d\'Iframe');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1758, 'standard', 'fr', 'Maximiser');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1759, 'standard', 'fr', 'Afficher les blocs');
-
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1760, 'standard', 'fr', 'Inclure les fichiers Images');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1761, 'standard', 'fr', 'Mettre &agrave; jour les fichiers Images existants');
