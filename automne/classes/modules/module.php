@@ -689,6 +689,12 @@ class CMS_module extends CMS_grandFather
 	  */
 	function destroy() {
 		if ($this->_id) {
+			//delete module params if any
+			$filename = PATH_MODULES_FS."/".$this->_codename."_rc.xml";
+			if (file_exists($filename)) {
+				$file = new CMS_file($filename);
+				$file->delete();
+			}
 			//delete module messages
 			$sql = "
 				delete

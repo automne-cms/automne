@@ -1,5 +1,4 @@
-﻿
-/**
+﻿/**
   * Automne Links plugin for CKEditor
   *
   * @package CMS
@@ -835,5 +834,5 @@ CKEDITOR.dialog.add( 'automneLinks', function( editor )
 				this.hidePage( 'target' );		//Hide Target tab.
 
 		}
-	};
+	}
 });

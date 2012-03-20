@@ -153,7 +153,9 @@ class CMS_block_link extends CMS_block
 					'{{data}}' 		=> '<a href="#"'.$html_attributes.' title="'.io::htmlspecialchars($language->getMessage(self::MESSAGE_BLOCK_LINK_LABEL)).'">'.$html.'</a>',
 					'{{href}}' 		=> '#',
 					'{{label}}' 	=> $html,
-					'{{jslabel}}' 	=> io::htmlspecialchars($html)
+					'{{jslabel}}' 	=> io::htmlspecialchars($html),
+					'{{target}}'	=> '',
+					'{{type}}'		=> '',
 				);
 				$form_data = str_replace(array_keys($replace), $replace, $this->_definition);
 			}
@@ -171,7 +173,9 @@ class CMS_block_link extends CMS_block
 					'{{data}}' 		=> '<a href="#"'.$html_attributes.' title="'.io::htmlspecialchars($language->getMessage(self::MESSAGE_BLOCK_LINK_LABEL)).'">'.$html.'</a>',
 					'{{href}}' 		=> '#',
 					'{{label}}' 	=> $html,
-					'{{jslabel}}' 	=> io::htmlspecialchars($html)
+					'{{jslabel}}' 	=> io::htmlspecialchars($html),
+					'{{target}}'	=> '',
+					'{{type}}'		=> '',
 				);
 			$form_data = str_replace(array_keys($replace), $replace, $this->_definition);
 			return $this->_getHTMLForm($language, $page, $clientSpace, $row, $this->_tagID, $form_data);
@@ -195,6 +199,8 @@ class CMS_block_link extends CMS_block
 			'{{href}}' 		=> $link->getHTML(false, MOD_STANDARD_CODENAME, $location, false, true),
 			'{{label}}' 	=> io::htmlspecialchars($link->getLabel()),
 			'{{jslabel}}' 	=> io::htmlspecialchars($link->getLabel()),
+			'{{target}}'	=> $link->getTarget(),
+			'{{type}}'		=> $link->getLinkType(),
 		);
 		return str_replace(array_keys($replace), $replace, $this->_definition);
 	}

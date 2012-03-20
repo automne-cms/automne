@@ -1,5 +1,4 @@
-﻿
-/**
+﻿/**
   * Automne Links plugin for CKEditor
   *
   * @package CMS
@@ -106,7 +105,7 @@ CKEDITOR.plugins.automneLinks =
 			return root.getAscendant( 'a', true );
 		}
 		catch( e ) { return null; }
-	},
+	}
 };
 CKEDITOR.tools.extend( CKEDITOR.config,
 {
