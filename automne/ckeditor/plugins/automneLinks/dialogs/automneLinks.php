@@ -73,7 +73,7 @@ define("MESSAGE_PAGE_TREE_TITLE", 935);
 					region:			'center',
 					applyTo:		'atmCKTree',
 					layout: 		'atm-border',
-					height:			400,
+					height:			338,
 					border: 		false,
 					xtype:			'atmPanel',
 					autoLoad:		{

@@ -21,13 +21,13 @@
 		return {
 			title : polymodLang.title,
 			resizable: CKEDITOR.DIALOG_RESIZE_NONE,
-			height : 380,
+			height : 381,
 			contents : [
 				{
 					id : 'info',
 					label : polymodLang.info,
 					title : polymodLang.info,
-					height : 380,
+					height : 381,
 					elements :
 					[
 						{

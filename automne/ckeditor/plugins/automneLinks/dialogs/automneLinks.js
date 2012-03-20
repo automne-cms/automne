@@ -202,7 +202,7 @@ CKEDITOR.dialog.add( 'automneLinks', function( editor )
 		title : linkLang.title,
 		resizable: CKEDITOR.DIALOG_RESIZE_NONE,
 		minWidth : 550,
-		minHeight : 400,
+		/*minHeight : 400,*/
 		contents : [
 			{
 				id : 'info',
@@ -254,7 +254,7 @@ CKEDITOR.dialog.add( 'automneLinks', function( editor )
 						type : 'iframe',
 						src : editor.plugins.automneLinks.path + 'dialogs/automneLinks.php',
 						width : 550, 
-						height : 400
+						height : 338
 					}
 				]
 			},
