@@ -597,7 +597,7 @@ class CMS_forms_field extends CMS_grandFather {
 				$fileHelp = '';
 				switch ($this->getAttribute("type")) {
 					case 'file':
-						$input .= ' type="file" value=""';
+						$input .= ' type="file"';
 						$fileParams = $this->getAttribute("params");
 						$fileHelpTab = array();
 						if($fileParams){

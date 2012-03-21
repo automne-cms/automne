@@ -39,7 +39,11 @@ $cms_language = $form->getLanguage();
 $cms_forms_error_ids = array();
 //Form actions treatment
 if ($form->getID() && $form->isPublic()) {
-	echo '<a name="formAnchor'.$form->getID().'"></a>';
+	if (io::strtolower(APPLICATION_XHTML_DTD) != io::strtolower('<!DOCTYPE html>')) {
+		echo '<a name="formAnchor'.$form->getID().'"></a>';
+	} else {
+		echo '<div id="formAnchor'.$form->getID().'"></div>';
+	}
 	//Create or append (from header) form required message
 	if (isset($cms_forms_token[$form->getID()]) && $cms_forms_token[$form->getID()]) {
 		$cms_forms_error_msg[$form->getID()] .= $cms_language->getMessage(CMS_forms_formular::MESSAGE_CMS_FORMS_TOKEN_EXPIRED, false, MOD_CMS_FORMS_CODENAME);
