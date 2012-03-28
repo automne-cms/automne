@@ -418,7 +418,7 @@ class CMS_multi_poly_object extends CMS_object_common
 				//check if field has a method to provide a list of names
 				$objectType = $field->getTypeObject();
 				if (method_exists($objectType, 'getListOfNamesForObject')) {
-					$objectsNames = $objectType->getListOfNamesForObject();
+					$objectsNames = $objectType->getListOfNamesForObject(false, array(), false);
 					if (is_array($objectsNames) && $objectsNames) {
 						$s_object_listbox = CMS_moduleCategories_catalog::getListBox(
 							array (
