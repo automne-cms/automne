@@ -808,14 +808,24 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
 	padding:						8px;
 	background:						#FFFFFF url(../automne/admin/img/logo_small.gif) 450px 5px no-repeat;
 }
-.help-window fieldset{
-	padding:						6px;
-	width:							200px;
-	margin:							auto;
-	text-align:						center;
-	background-color:				#837873;
-	color:							#FFFFFF;
-	border:							3px solid #978E8A;
+.help-window .wsi {
+	display:						block;
+	background:						white url(../automne/admin/img/logo-ws.png) 0px 0px no-repeat;
+	color:							#4C247A;
+	width:							300px;
+	height:							84px;
+	padding:						40px 0 0 120px;
+	margin:							20px 0 0 40px;
+}
+.help-window .wsi span {
+	padding:						1px 6px;
+	line-height:					2;
+}
+.help-window .wsi .first {
+	background-color:				#e0d5ec;
+}
+.help-window .wsi .second {
+	background-color:				#f3f0f8;
 }
 #sidePanel a{
 	color:							#6aa408;
