@@ -74,38 +74,40 @@ class CMS_grandFather
 		if (isset($this) && isset($this->_debug) && $this->_debug === NULL) {
 			$this->_debug = $systemDebug;
 		}
-		//second condition are for static calls (made by static methods)
-		if (!defined('APPLICATION_EXEC_TYPE') || (APPLICATION_EXEC_TYPE == 'http' && ((!isset($this) && $systemDebug) || (isset($this) && isset($this->_debug) && $this->_debug)))) {
-			$backTrace = $backTraceLink = '';
-			if (version_compare(phpversion(), "5.2.5", "<")) {
-				$bt = @array_reverse(debug_backtrace());
-			} else {
-				$bt = @array_reverse(debug_backtrace(false));
+		if ($errorMessage) {
+			//second condition are for static calls (made by static methods)
+			if (!defined('APPLICATION_EXEC_TYPE') || (APPLICATION_EXEC_TYPE == 'http' && ((!isset($this) && $systemDebug) || (isset($this) && isset($this->_debug) && $this->_debug)))) {
+				$backTrace = $backTraceLink = '';
+				if (version_compare(phpversion(), "5.2.5", "<")) {
+					$bt = @array_reverse(debug_backtrace());
+				} else {
+					$bt = @array_reverse(debug_backtrace(false));
+				}
+				$backtrace = array(
+					'summary'		=> sensitiveIO::printBackTrace($bt),
+					'backtrace'		=> @print_r($bt,true),
+				);
+				$backtraceName = 'bt_'.md5(rand());
+				$backTraceLink = PATH_ADMIN_WR.'/backtrace.php?bt='.$backtraceName;
+				//save backtrace to cache (for 10 min)
+				$cache = new CMS_cache($backtraceName, 'atm-backtrace', 600, false);
+				if ($cache) {
+					$cache->save($backtrace);
+				}
+				unset($backtrace, $cache, $bt);
+				//append error to current view
+				$view = CMS_view::getInstance();
+				$outputMessage = $encodeOutput ? io::htmlspecialchars($errorMessage) : $errorMessage;
+				$view->addError(array('error' => $outputMessage, 'backtrace' => $backTraceLink));
 			}
-			$backtrace = array(
-				'summary'		=> sensitiveIO::printBackTrace($bt),
-				'backtrace'		=> @print_r($bt,true),
-			);
-			$backtraceName = 'bt_'.md5(rand());
-			$backTraceLink = PATH_ADMIN_WR.'/backtrace.php?bt='.$backtraceName;
-			//save backtrace to cache (for 10 min)
-			$cache = new CMS_cache($backtraceName, 'atm-backtrace', 600, false);
-			if ($cache) {
-				$cache->save($backtrace);
-			}
-			unset($backtrace, $cache, $bt);
-			//append error to current view
-			$view = CMS_view::getInstance();
-			$outputMessage = $encodeOutput ? io::htmlspecialchars($errorMessage) : $errorMessage;
-			$view->addError(array('error' => $outputMessage, 'backtrace' => $backTraceLink));
-		}
-		
-		//second condition are for static calls (made by static methods)
-		if (!isset($this) || !isset($this->_log) || $this->_log) {
-			if (@file_put_contents(PATH_MAIN_FS.'/'.self::ERROR_LOG , date("Y-m-d H:i:s", time()).'|'.APPLICATION_EXEC_TYPE.'|'.$errorMessage."\n", FILE_APPEND) !== false) {
-				CMS_file::chmodFile(FILES_CHMOD, PATH_MAIN_FS.'/'.self::ERROR_LOG);
-			} else {
-				die('<pre><b>'.CMS_view::SYSTEM_LABEL.' '.AUTOMNE_VERSION.' error : /automne dir is not writable'."</b></pre>\n");
+			
+			//second condition are for static calls (made by static methods)
+			if (!isset($this) || !isset($this->_log) || $this->_log) {
+				if (@file_put_contents(PATH_MAIN_FS.'/'.self::ERROR_LOG , date("Y-m-d H:i:s", time()).'|'.APPLICATION_EXEC_TYPE.'|'.$errorMessage."\n", FILE_APPEND) !== false) {
+					CMS_file::chmodFile(FILES_CHMOD, PATH_MAIN_FS.'/'.self::ERROR_LOG);
+				} else {
+					die('<pre><b>'.CMS_view::SYSTEM_LABEL.' '.AUTOMNE_VERSION.' error : /automne dir is not writable'."</b></pre>\n");
+				}
 			}
 		}
 		//must be at the end because it interferes with the static calls conditions above
@@ -122,8 +124,8 @@ class CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	public function raiseError($errorMessage, $encodeOutput = false) {
-		$errorMessage = sensitiveIO::getCallInfos().' : '.$errorMessage;
+	public function raiseError($errorMessage = '', $encodeOutput = false) {
+		$errorMessage = $errorMessage ? sensitiveIO::getCallInfos().' : '.$errorMessage : '';
 		self::_raiseError($errorMessage, $encodeOutput, true);
 	}
 	

@@ -169,6 +169,8 @@ class CMS_page extends CMS_resource
 				//display this error only if we are in HTTP mode (not cli) because it is only relevant in this mode
 				if (!defined('APPLICATION_EXEC_TYPE') || APPLICATION_EXEC_TYPE == 'http') {
 					$this->raiseError("Unknown ID :".$id.' from '.io::getCallInfos(3));
+				} else {
+					$this->raiseError();
 				}
 			}
 		} else {

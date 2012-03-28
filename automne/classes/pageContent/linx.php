@@ -190,6 +190,7 @@ class CMS_linx extends CMS_grandFather
 				$selection = $selections->item(0);
 				//parse the selection for nodespecs and condition
 				if (!$this->_parseSelection($selection)) {
+					$this->raiseError();
 					return;
 				}
 			}
@@ -227,6 +228,9 @@ class CMS_linx extends CMS_grandFather
 	  */
 	function getOutput($register = false)
 	{
+		if ($this->hasError()) {
+			return '';
+		}
 		//computes the targets (from selection)
 		$this->_targets = $this->_buildTargets();
 		//set output
