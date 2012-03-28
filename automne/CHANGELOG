@@ -4,6 +4,7 @@ V4.2.1 (in progress)
 [BUG] : Correct a bug in wysiwyg toolbar deletion
 [BUG] : Correct a bug in HTML compression (caused by a notice in generated content)
 [BUG] : Correct a bug in user session
+[REFACTOR] : Update Zend Framework to version 1.11.11
 [REFACTOR] : Update codemirror to version 2.2.1
 [REFACTOR] : Optimize all images used in Automne
 [REFACTOR] : Replace fckeditor with ckeditor version 3.6.2 in block text and polymod
