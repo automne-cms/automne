@@ -59,6 +59,23 @@ define("MESSAGE_ACTION_PREVIZ_SELECTED", 510);
 define("MESSAGE_ACTION_EDIT_SELECTED", 511);
 define("MESSAGE_ACTION_CREATE_SELECTED", 512);
 define("MESSAGE_PAGE_HELP_MULTIPLE", 560);
+define("MESSAGE_PAGE_FIELD_PUBLISHED", 553);
+define("MESSAGE_PAGE_FIELD_UNPUBLISHED", 554);
+define("MESSAGE_PAGE_FIELD_VALIDATED", 555);
+define("MESSAGE_PAGE_FIELD_VALIDATION_PENDING", 556);
+define("MESSAGE_PAGE_FIELD_KEYWORDS_OPTIONS", 585);
+define("MESSAGE_PAGE_FIELD_KEYWORDS_ANY", 586);
+define("MESSAGE_PAGE_FIELD_KEYWORDS_ALL", 587);
+define("MESSAGE_PAGE_FIELD_KEYWORDS_PHRASE", 588);
+define("MESSAGE_PAGE_FIELD_KEYWORDS_STARTSWITH", 634);
+define("MESSAGE_PAGE_FIELD_KEYWORDS_STARTSWITH_HELP", 639);
+define("MESSAGE_PAGE_FIELD_KEYWORDS_TARGET", 640);
+define("MESSAGE_PAGE_FIELD_KEYWORDS_TARGET_ALL", 641);
+define("MESSAGE_ACTION_UNPUBLISH", 603);
+define("MESSAGE_ACTION_PUBLISH", 604);
+define("MESSAGE_ACTION_PUBLISH_SELECTED", 602);
+define("MESSAGE_ACTION_UNPUBLISH_SELECTED", 601);
+define("MESSAGE_ACTION_DELETE_CONFIRM", 606);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -112,20 +129,22 @@ $isPrimary = $object->isPrimaryResource() ? 'true' : 'false';
 $searchPanel = '';
 $keywordsSearch = false;
 $searchLists = '';
+$possibleTargets = array();
+$possibleTargets[] = array('id' 	=> -1,
+				'label'	=> sensitiveIO::sanitizeJSString($cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS_TARGET_ALL, false, MOD_POLYMOD_CODENAME))
+				);
 //Add all subobjects or special fields (like categories) to search if any
 foreach ($objectFields as $fieldID => $field) {
 	//check if field is searchable
-	if ($field->getValue('searchable') || $field->getValue('indexable')) {
+	if ($field->getValue('searchable')/* || $field->getValue('indexable')*/) {
 		//check if field has a method to provide a list of names
 		$objectType = $field->getTypeObject();
 		if (method_exists($objectType, 'getListOfNamesForObject')) {
-			$objectsNames = $objectType->getListOfNamesForObject();
-			
 			$fieldLabel = sensitiveIO::sanitizeJSString($field->getLabel($cms_language));
 			$value = CMS_session::getSessionVar('items_'.$object->getID().'_'.$fieldID);
 			$searchLists .= "{
 				fieldLabel:			'{$fieldLabel}',
-				anchor:				'100%',
+				anchor:				'-20px',
 				xtype:				'atmCombo',
 				name:				'items_{$object->getID()}_{$fieldID}',
 				hiddenName:			'items_{$object->getID()}_{$fieldID}',
@@ -154,12 +173,42 @@ foreach ($objectFields as $fieldID => $field) {
 			},";
 		} else {
 			$keywordsSearch = true;
+			$possibleTargets[]= array(
+				'id' 	=> $fieldID,
+				'label'	=> sensitiveIO::sanitizeJSString($field->getLabel($cms_language))
+			);
 		}
 	}
 }
 //add keyword search
 if ($keywordsSearch) {
 	$value = sensitiveIO::sanitizeJSString(CMS_session::getSessionVar('items_'.$object->getID().'_kwrds'));
+	$targetvalue = CMS_session::getSessionVar('kwrds_target_'.$object->getID());
+	$targetvalue = $targetvalue ? $targetvalue : -1;
+	$possibleTargets = sensitiveIO::jsonEncode($possibleTargets);
+	$targetcombo = "{
+				xtype:				'combo',
+				name:				'kwrds_target_{$object->getID()}',
+				hiddenName:		 	'kwrds_target_{$object->getID()}',
+				forceSelection:		true,
+				fieldLabel:			'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS_TARGET, false, MOD_POLYMOD_CODENAME)}',
+				hideLabel:			false,
+				mode:				'local',
+				triggerAction:		'all',
+				valueField:			'id',
+				displayField:		'label',
+				value:				'{$targetvalue}',
+				anchor:				'98%',
+				store:				new Ext.data.JsonStore({
+					fields:				['id', 'label'],
+					data:				{$possibleTargets}
+				}),
+				allowBlank:		 	false,
+				selectOnFocus:		true,
+				editable:			false,
+				validateOnBlur:		false,
+				listeners:			{'valid':moduleObjectWindow.search}
+			}";
 	// Keywords
 	$searchPanel .= "{
 		fieldLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS, false, MOD_POLYMOD_CODENAME)}',
@@ -167,11 +216,55 @@ if ($keywordsSearch) {
 		name: 			'items_{$object->getID()}_kwrds',
 		value:			'{$value}',
 		minLength:		3,
-		anchor:			'100%',
-		listeners:		{'valid':{
-			fn: 			moduleObjectWindow.search, 
-			options:		{buffer:300}
-		}}
+		anchor:			'-20px',
+		enableKeyEvents:true,
+		listeners:		{
+			'valid':{
+				fn: 			moduleObjectWindow.search, 
+				options:		{buffer:300}
+			},
+			'invalid':{
+				fn: function(field, event) {
+					if (!isNaN(parseInt(field.getValue()))) {
+						field.clearInvalid();
+						field.fireEvent('valid', field);
+					} else if (!field.getValue()) {
+						field.clearInvalid();
+					}
+				}, 
+				options:		{buffer:300}
+			}
+		}
+	},{
+		title:			'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS_OPTIONS, false, MOD_POLYMOD_CODENAME)}',
+		collapsible:	true,
+		collapsed:		true,
+		xtype:			'fieldset',
+		autoScroll:		true,
+		anchor:			'-20px',
+		defaults:{
+			xtype:			'radio',
+			hideLabel:		true,
+			name:			'items_{$object->getID()}_kwrds_options',
+			listeners:		{'check':moduleObjectWindow.search}
+		},
+		items:			[{
+			boxLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS_ANY, false, MOD_POLYMOD_CODENAME)}',
+			inputValue:		'any',
+			checked:		true
+		},{
+			boxLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS_ALL, false, MOD_POLYMOD_CODENAME)}',
+			inputValue:		'all',
+			checked:		false
+		},{
+			boxLabel:		'{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS_PHRASE, false, MOD_POLYMOD_CODENAME)}',
+			inputValue:		'phrase',
+			checked:		false
+		},{
+			boxLabel:		'<span class=\"atm-help\" ext:qtip=\"{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS_STARTSWITH_HELP, false, MOD_POLYMOD_CODENAME)}\">{$cms_language->getJSMessage(MESSAGE_PAGE_FIELD_KEYWORDS_STARTSWITH, false, MOD_POLYMOD_CODENAME)}</span>',
+			inputValue:		'beginswith',
+			checked:		false
+		},{$targetcombo}]
 	},";
 }
 //add publication date search
@@ -183,6 +276,7 @@ if ($object->isPrimaryResource()) {
 		layout:			'column',
 		xtype:			'panel',
 		border:			false,
+		anchor:			'-20px',
 		items:[{
 			columnWidth:	.5,
 			layout: 		'form',
@@ -219,6 +313,41 @@ if ($object->isPrimaryResource()) {
 //add listboxes search
 $searchPanel .= $searchLists;
 
+//add status filter
+if ($object->isPrimaryResource()) {
+	$statusValue = CMS_session::getSessionVar('status_'.$object->getID());
+	$statusValue = $statusValue ? $statusValue : '';
+	$statusValues = array(
+		array('id' => '', 			'label' => '-'),
+		array('id' => 'online', 	'label' => $cms_language->getMessage(MESSAGE_PAGE_FIELD_PUBLISHED, false, MOD_POLYMOD_CODENAME)),
+		array('id' => 'offline', 	'label' => $cms_language->getMessage(MESSAGE_PAGE_FIELD_UNPUBLISHED, false, MOD_POLYMOD_CODENAME)),
+		array('id' => 'validated', 	'label' => $cms_language->getMessage(MESSAGE_PAGE_FIELD_VALIDATED, false, MOD_POLYMOD_CODENAME)),
+		array('id' => 'awaiting', 	'label' => $cms_language->getMessage(MESSAGE_PAGE_FIELD_VALIDATION_PENDING, false, MOD_POLYMOD_CODENAME)),
+	);
+	$statusValues = sensitiveIO::jsonEncode($statusValues);
+	$searchPanel .= "{
+		xtype:				'combo',
+		name:				'status_{$object->getID()}',
+		hiddenName:		 	'status_{$object->getID()}',
+		forceSelection:		true,
+		fieldLabel:			'Publication',
+		mode:				'local',
+		triggerAction:		'all',
+		valueField:			'id',
+		displayField:		'label',
+		value:				'{$statusValue}',
+		anchor:				'-20px',
+		store:				new Ext.data.JsonStore({
+			fields:				['id', 'label'],
+			data:				{$statusValues}
+		}),
+		allowBlank:		 	false,
+		selectOnFocus:		true,
+		editable:			false,
+		validateOnBlur:		false,
+		listeners:			{'valid':moduleObjectWindow.search}
+	},";
+}
 // Build sort select
 $items_possible['objectID'] = $cms_language->getMessage(MESSAGE_PAGE_FIELD_CREATION_DATE, false, MOD_POLYMOD_CODENAME); //Ordre de création
 
@@ -305,6 +434,7 @@ $searchPanel .= "{
 	layout:			'column',
 	xtype:			'panel',
 	border:			false,
+	anchor:			'-20px',
 	items:[{
 		columnWidth:	.65,
 		layout: 		'form',
@@ -319,7 +449,7 @@ $searchPanel .= "{
 			name:				'direction_{$object->getID()}',
 			hiddenName:		 	'direction_{$object->getID()}',
 			forceSelection:		true,
-			fieldLabel:			'',
+			fieldLabel:			'&nbsp;',
 			labelSeparator:		'',
 			mode:				'local',
 			triggerAction:		'all',

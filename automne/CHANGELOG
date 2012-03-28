@@ -10,6 +10,7 @@ V4.2.1 (in progress)
 [REFACTOR] : Replace fckeditor with ckeditor version 3.6.2 in block text and polymod
 [REFACTOR] : Remove deprecated parameter ALLOW_IMAGES_IN_WYSIWYG
 [REFACTOR] : Update WS Interactive logo
+[REFACTOR] : Update polymod item selector to add advanced filters in search
 [FEATURE] : Add user logs in alias module
 
 V4.2.0 (15/02/2012)
