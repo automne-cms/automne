@@ -445,7 +445,11 @@ class Zend_Session extends Zend_Session_Abstract
         }
 
         // See http://www.php.net/manual/en/ref.session.php for explanation
-        if (!self::$_unitTestEnabled && defined('SID')) {
+		// Guillaume Filliere 2012-03-27 : added a check on the session_name
+		// if the session was opened and closed earlier, SID would already be defined and cause a crash here.
+		// Necessary for automne usage with SimpleSAML
+		// Hopefully in php 5.4 we will be able to use http://php.net/manual/fr/function.session-status.php
+        if (!self::$_unitTestEnabled && defined('SID') && session_name() !== 'AutomneSession') {
             /** @see Zend_Session_Exception */
             require_once 'Zend/Session/Exception.php';
             throw new Zend_Session_Exception('session has already been started by session.auto-start or session_start()');
