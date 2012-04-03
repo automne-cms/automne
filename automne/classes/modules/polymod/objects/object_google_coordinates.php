@@ -75,12 +75,12 @@ class CMS_object_google_coordinates extends CMS_object_common
 	protected $_subfields = array(0 => array(
 										'type' 			=> 'string',
 										'required' 		=> true,
-										'internalName'	=> 'lat',
+										'internalName'	=> 'long',
 									),
 								  1 => array(
 										'type' 			=> 'string',
 										'required' 		=> true,
-										'internalName'	=> 'long',
+										'internalName'	=> 'lat',
 									),
 							);
 	
@@ -373,12 +373,12 @@ class CMS_object_google_coordinates extends CMS_object_common
 		<div class="m-atmMap">
 			<div class="s-map"></div>
 			<div class="m-longitude">
-				<label for="'.$prefixName.$this->_field->getID().'_1"> '.$language->getMessage(self::MESSAGE_OBJECT_COORDINATES_LONGITUDE_DESCRIPTION, false, MOD_POLYMOD_CODENAME).'</label>
-			    <input class="s-longitude" '.$htmlParameters.' id="'.$prefixName.$this->_field->getID().'_1" name="'.$prefixName.$this->_field->getID().'_1" value="'.$this->_subfieldValues[1]->getValue().'" type="text" />
+				<label for="'.$prefixName.$this->_field->getID().'_0"> '.$language->getMessage(self::MESSAGE_OBJECT_COORDINATES_LONGITUDE_DESCRIPTION, false, MOD_POLYMOD_CODENAME).'</label>
+			    <input class="s-longitude" '.$htmlParameters.' id="'.$prefixName.$this->_field->getID().'_0" name="'.$prefixName.$this->_field->getID().'_0" value="'.$this->_subfieldValues[0]->getValue().'" type="text" />
 			</div>
 			<div class="m-latitude">
-			    <label for="'.$prefixName.$this->_field->getID().'_0"> '.$language->getMessage(self::MESSAGE_OBJECT_COORDINATES_LATITUDE_DESCRIPTION, false, MOD_POLYMOD_CODENAME).'</label>
-			    <input class="s-latitude" '.$htmlParameters.' id="'.$prefixName.$this->_field->getID().'_0" name="'.$prefixName.$this->_field->getID().'_0" value="'.$this->_subfieldValues[0]->getValue().'" type="text" />
+			    <label for="'.$prefixName.$this->_field->getID().'_1"> '.$language->getMessage(self::MESSAGE_OBJECT_COORDINATES_LATITUDE_DESCRIPTION, false, MOD_POLYMOD_CODENAME).'</label>
+			    <input class="s-latitude" '.$htmlParameters.' id="'.$prefixName.$this->_field->getID().'_1" name="'.$prefixName.$this->_field->getID().'_1" value="'.$this->_subfieldValues[1]->getValue().'" type="text" />
 			</div>
 			'.$polymodDebug.'
 		</div>';
