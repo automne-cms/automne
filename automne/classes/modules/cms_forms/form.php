@@ -312,7 +312,7 @@ class CMS_forms_formular extends CMS_grandFather {
 						}
 					}
 				}
-				if ($definition[$key]['nodename'] == 'input' && $definition[$key]['attributes']['type'] == 'file') {
+				if (isset($definition[$key]['nodename']) && $definition[$key]['nodename'] == 'input' && $definition[$key]['attributes']['type'] == 'file') {
 					unset($definition[$key]['attributes']['value']);
 				}
 				if (isset($fieldValue)) {

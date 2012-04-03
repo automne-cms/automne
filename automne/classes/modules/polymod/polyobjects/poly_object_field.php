@@ -149,7 +149,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	  * @access public
 	  */
 	function setValue($valueName, $value) {
-		if (!in_array($valueName,array_keys($this->_objectFieldValues))) {
+		if (!isset($this->_objectFieldValues[$valueName])) {
 			$this->raiseError("Unknown valueName to set :".$valueName);
 			return false;
 		}
@@ -169,7 +169,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	  * @access public
 	  */
 	function getValue($valueName) {
-		if (!in_array($valueName,array_keys($this->_objectFieldValues))) {
+		if (!isset($this->_objectFieldValues[$valueName])) {
 			$this->raiseError("Unknown valueName to get : ".$valueName);
 			return false;
 		}

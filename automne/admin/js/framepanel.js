@@ -92,7 +92,9 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 						Ext.getCmp('editSaveDraft'+ this.editId).hide();
 						Ext.getCmp('editCancelAdd'+ this.editId).show();
 						Ext.get('selectedRow'+ this.editId).update('<span class="atm-text-alert">'+ al.csClickOnRed +'</span>');
-						Automne.message.show(al.csClickOnRed, '', Automne.tabPanels.getActiveTab().frameEl);
+						if (!Automne.popup) {
+							Automne.message.show(al.csClickOnRed, '', Automne.tabPanels.getActiveTab().frameEl);
+						}
 						this.frameEl.dom.contentWindow.atmContent.showZones('add');
 					}
 				},{

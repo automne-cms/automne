@@ -442,7 +442,9 @@ Ext.extend(Automne.cs, Ext.util.Observable, {
 				zone.removeAllListeners();
 				zone.addClass('atm-drop-zone-hover');
 				parent.Ext.get('selectedRow'+ atmContent.editId).update(Automne.locales.csSelectRowAdd);
-				parent.Automne.message.show(Automne.locales.csSelectRow, '', parent.Automne.tabPanels.getActiveTab().frameEl);
+				if (!Automne.popup) {
+					parent.Automne.message.show(Automne.locales.csSelectRow, '', parent.Automne.tabPanels.getActiveTab().frameEl);
+				}
 				parent.Ext.getCmp('addRowCombo'+ atmContent.editId).show();
 				var addButton = parent.Ext.getCmp('addSelectedRow'+ atmContent.editId);
 				addButton.show();
