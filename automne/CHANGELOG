@@ -1,4 +1,4 @@
-V4.2.1 (in progress)
+V4.2.1 (04/04/2012)
 [BUG] : Correct bug number: 2864, 2906, 2935, 2938, 2939, 2942, 2954, 2957, 2959, 2963, 2968, 3025, 3042 (see http://www.automne-cms.org/bug/)
 [BUG] : Correct a bug in users groups rights for rows and templates
 [BUG] : Correct a bug in wysiwyg toolbar deletion
