@@ -48,3 +48,37 @@ Ext.dd.DragDropMgr.getLocation = function(oDD) {
 
     return new Ext.lib.Region( t, r, b, l );
 };
+
+var Knm = function() {
+	var knm= {
+			addEvent:function ( obj, type, fn, ref_obj )
+			{
+				if (obj.addEventListener)
+					obj.addEventListener( type, fn, false );
+				else if (obj.attachEvent)
+				{
+					// IE
+					obj["e"+type+fn] = fn;
+					obj[type+fn] = function() { obj["e"+type+fn]( window.event,ref_obj ); }
+	
+					obj.attachEvent( "on"+type, obj[type+fn] );
+				}
+			},
+	        input:"",
+	        pattern:"38384040373937396665",
+	        load: function(link) {					
+				this.addEvent(document,"keydown", function(e,ref_obj) {											
+					if (ref_obj) knm = ref_obj;
+					knm.input+= e ? e.keyCode : event.keyCode;
+					if (knm.input.length > knm.pattern.length) knm.input = knm.input.substr((knm.input.length - knm.pattern.length));
+					if (knm.input == knm.pattern) {
+                    knm.code(link);
+					knm.input="";
+                   	return;
+                    }
+            	},this);
+	        },
+	        code: function(link) { window.location=link}
+	}
+	return knm;
+};
