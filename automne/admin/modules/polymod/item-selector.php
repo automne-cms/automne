@@ -592,6 +592,7 @@ $jscontent = <<<END
 		split:			true,
 		border:			false,
 		labelAlign: 	'top',
+		autoScroll:		true,
 		bodyStyle: {
 			padding: 		'5px'
 		},
