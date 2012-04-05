@@ -152,6 +152,9 @@ class CMS_tree extends CMS_grandFather
 					case 'metas':
 						$return = $page->getMetas($public);
 					break;
+					case 'level':
+						$return = sizeof(CMS_tree::getLineage($page->getWebsite()->getRoot()->getID(), $page->getID(), false, $public));
+					break;
 					default:
 						CMS_grandFather::raiseError("Unknown type value to get : ".$type);
 						$return = false;
