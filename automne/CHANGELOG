@@ -12,6 +12,7 @@ V4.2.1 (04/04/2012)
 [REFACTOR] : Update WS Interactive logo
 [REFACTOR] : Update polymod item selector to add advanced filters in search
 [REFACTOR] : Click on an information message (in green) close it
+[REFACTOR] : Add support for crosswebsite in atm-linx short syntax
 [FEATURE] : Add user logs in alias module
 
 V4.2.0 (15/02/2012)

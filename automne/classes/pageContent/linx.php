@@ -158,7 +158,7 @@ class CMS_linx extends CMS_grandFather
 				
 				$tagContent = 
 				'<atm-linx type="direct">'.
-					'<selection>';
+					'<selection '.(isset($this->_args['crosswebsite']) ? ' crosswebsite="'.$this->_args['crosswebsite'].'"' : '').'>';
 				if (isset($this->_args['node'])) {
 					$tagContent .= '<start><nodespec type="node" value="'.$this->_args['node'].'" /></start>';
 					//remove useless node argument
