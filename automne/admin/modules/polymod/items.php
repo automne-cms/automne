@@ -551,7 +551,7 @@ $jscontent = <<<END
 				hasReset = true;
 			}
 		});
-		resultsPanel.tools.close.setVisible(hasReset);
+		searchPanel.tools.close.setVisible(hasReset);
 		
 		var values = Ext.applyIf(form.getValues(), {
 			module:			'{$codename}',
@@ -636,6 +636,44 @@ $jscontent = <<<END
 			scope:			this,
 			handler:		moduleObjectWindow.search
 		},
+		tools: [{
+			id:				'refresh',
+			handler:		function(e, toolEl, panel){
+				moduleObjectWindow.search();
+			},
+			qtip:			'{$cms_language->getJsMessage(MESSAGE_PAGE_REFRESH_ZONE_CONTENT)}'
+		},{
+			id:				'close',
+			hidden:			true,
+			handler:		function(e, toolEl, panel){
+				var moduleObjectWindow = Ext.getCmp('{$winId}');
+				moduleObjectWindow.ok = false;
+				Ext.getCmp('{$winId}Search').getForm().items.each(function(field){
+					if (field.name != 'sort_{$object->getID()}' 
+						&& field.name != 'direction_{$object->getID()}'
+						&& field.name != 'kwrds_target_{$object->getID()}'
+						&& field.name != 'items_{$object->getID()}_kwrds_options') {
+						
+						field.setValue('');
+					}
+					if (field.name == 'sort_{$object->getID()}') {
+						field.setValue('objectID');
+					}
+					if (field.name == 'direction_{$object->getID()}') {
+						field.setValue('desc');
+					}
+					if (field.name == 'kwrds_target_{$object->getID()}') {
+						field.setValue(-1);
+					}
+					if (field.name == 'items_{$object->getID()}_kwrds_options') {
+						field.setValue('any');
+					}
+				});
+				moduleObjectWindow.ok = true;
+				moduleObjectWindow.search();
+			},
+			qtip:			'{$cms_language->getJsMessage(MESSAGE_ACTION_RESET_SEARCH, false, MOD_POLYMOD_CODENAME)}'
+		}],
 		items:[{$searchPanel}]
 	});
 	
@@ -725,44 +763,6 @@ $jscontent = <<<END
 				}
 			}}
 		},
-		tools: [{
-			id:				'close',
-			hidden:			true,
-			handler:		function(e, toolEl, panel){
-				var moduleObjectWindow = Ext.getCmp('{$winId}');
-				moduleObjectWindow.ok = false;
-				Ext.getCmp('{$winId}Search').getForm().items.each(function(field){
-					if (field.name != 'sort_{$object->getID()}' 
-						&& field.name != 'direction_{$object->getID()}'
-						&& field.name != 'kwrds_target_{$object->getID()}'
-						&& field.name != 'items_{$object->getID()}_kwrds_options') {
-						
-						field.setValue('');
-					}
-					if (field.name == 'sort_{$object->getID()}') {
-						field.setValue('objectID');
-					}
-					if (field.name == 'direction_{$object->getID()}') {
-						field.setValue('desc');
-					}
-					if (field.name == 'kwrds_target_{$object->getID()}') {
-						field.setValue(-1);
-					}
-					if (field.name == 'items_{$object->getID()}_kwrds_options') {
-						field.setValue('any');
-					}
-				});
-				moduleObjectWindow.ok = true;
-				moduleObjectWindow.search();
-			},
-			qtip:			'{$cms_language->getJsMessage(MESSAGE_ACTION_RESET_SEARCH, false, MOD_POLYMOD_CODENAME)}'
-		},{
-			id:				'refresh',
-			handler:		function(e, toolEl, panel){
-				moduleObjectWindow.search();
-			},
-			qtip:			'{$cms_language->getJsMessage(MESSAGE_PAGE_REFRESH_ZONE_CONTENT)}'
-		}],
 		tbar: new Ext.Toolbar({
             id: 			'{$winId}toolbar',
             enableOverflow: true,
