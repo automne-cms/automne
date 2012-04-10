@@ -1131,6 +1131,25 @@ class CMS_file extends CMS_grandFather
 	static function sendFiles($files, $contentType = 'text/html') {
 		//check for the closest last modification date
 		$lastdate = '';
+		//check for included files in less files
+		$includes = array();
+		if ($contentType == 'text/css') {
+			foreach ($files as $key => $file) {
+				if (pathinfo($file, PATHINFO_EXTENSION) == 'less') {
+					$lessCache = new CMS_cache(md5($file), 'lessphp', 2592000, false);
+					if ($lessCache->exist()) {
+						$includes = array_merge($includes, $lessCache->load());
+					}
+				}
+			}
+		}
+		if ($includes) {
+			foreach ($includes as $key => $file) {
+				if (file_exists($file) && is_file($file)) {
+					$lastdate = (filemtime($file) > $lastdate) ? filemtime($file) : $lastdate;
+				}
+			}
+		}
 		foreach ($files as $key => $file) {
 			if (file_exists($file) && is_file($file)) {
 				$lastdate = (filemtime($file) > $lastdate) ? filemtime($file) : $lastdate;
@@ -1180,21 +1199,12 @@ class CMS_file extends CMS_grandFather
 				if ($contentType == 'text/css') {
 					//compile less files if needed
 					if (pathinfo($file, PATHINFO_EXTENSION) == 'less') {
-						//create cache object from less file name
-						$lessCache = new CMS_cache(md5($file), 'lessphp', 2592000, false);
-						if ($lessCache->exist()) {
-							$oldDatas = $lessCache->load();
-						} else {
-							$oldDatas = $file;
-						}
-						$newDatas = lessc::cexecute($oldDatas);
-						if (!is_array($oldDatas) || (isset($newDatas['updated']) && isset($oldDatas['updated']) && $newDatas['updated'] > $oldDatas['updated'])) {
-							$lessCache->save($newDatas, array('type' => 'lessphp'));
-							$fileData = $newDatas['compiled'];
-						} elseif (is_array($oldDatas)) {
-							$fileData = $oldDatas['compiled'];
-						} else {
-							$fileData = '';
+						$less = new lessc($file);
+						$fileData = $less->parse();
+						$lessIncludes = $less->allParsedFiles();
+						if (sizeof($lessIncludes) > 1) {
+							$lessCache = new CMS_cache(md5($file), 'lessphp', 2592000, false);
+							$lessCache->save(array_keys($lessIncludes), array('type' => 'lessphp'));
 						}
 					}
 					$fileData = '/*<<*/'."\n".'/* CSS file: '.(str_replace(PATH_REALROOT_FS, '', $file)).' */'."\n".'/*!>>*/'."\n".$fileData;
