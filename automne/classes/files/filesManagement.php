@@ -1178,6 +1178,25 @@ class CMS_file extends CMS_grandFather
 				}
 				//append file origin comment
 				if ($contentType == 'text/css') {
+					//compile less files if needed
+					if (pathinfo($file, PATHINFO_EXTENSION) == 'less') {
+						//create cache object from less file name
+						$lessCache = new CMS_cache(md5($file), 'lessphp', 2592000, false);
+						if ($lessCache->exist()) {
+							$oldDatas = $lessCache->load();
+						} else {
+							$oldDatas = $file;
+						}
+						$newDatas = lessc::cexecute($oldDatas);
+						if (!is_array($oldDatas) || (isset($newDatas['updated']) && isset($oldDatas['updated']) && $newDatas['updated'] > $oldDatas['updated'])) {
+							$lessCache->save($newDatas, array('type' => 'lessphp'));
+							$fileData = $newDatas['compiled'];
+						} elseif (is_array($oldDatas)) {
+							$fileData = $oldDatas['compiled'];
+						} else {
+							$fileData = '';
+						}
+					}
 					$fileData = '/*<<*/'."\n".'/* CSS file: '.(str_replace(PATH_REALROOT_FS, '', $file)).' */'."\n".'/*!>>*/'."\n".$fileData;
 				}
 				$datas .= $fileData."\n";
@@ -1214,6 +1233,8 @@ class CMS_file extends CMS_grandFather
 		echo $datas;
 		exit;
 	}
+	
+	
 	
 	/**
 	  * Gzip a given file into another given file

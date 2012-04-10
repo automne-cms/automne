@@ -896,7 +896,7 @@ class CMS_object_image extends CMS_object_common
 						//resize image
 						$srcfilepath = $path."/".$filename;
 						$path_parts = pathinfo($srcfilepath);
-						$thumbnailFilename = io::substr($path_parts['basename'],0,-(io::strlen($path_parts['extension'])+1)).'_thumbnail.png';
+						$thumbnailFilename = io::substr($path_parts['basename'],0,-(io::strlen($path_parts['extension'])+1)).'_thumbnail.'.$path_parts['extension'];
 						$destfilepath = $path."/".$thumbnailFilename;
 						$extension = io::strtolower($path_parts['extension']);
 						

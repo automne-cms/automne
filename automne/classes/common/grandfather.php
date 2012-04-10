@@ -383,6 +383,9 @@ class CMS_grandFather
 				//PHPExcel
 				'phpexcel'							=> PATH_MAIN_FS.'/phpexcel/PHPExcel.php',
 				'phpexcel_iofactory'				=> PATH_MAIN_FS.'/phpexcel/PHPExcel/IOFactory.php',
+
+				//Less PHP
+				'lessc'								=> PATH_MAIN_FS.'/lessphp/lessc.inc.php',
 			);
 		}
 		$file = '';

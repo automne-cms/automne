@@ -297,7 +297,11 @@ class processManager
 				if (!isset($modules[$data['module_ss']])) {
 					$modules[$data['module_ss']] = CMS_modulesCatalog::getByCodename($data['module_ss']);
 				}
-				$scriptTitle = $modules[$data['module_ss']]->scriptInfo(unserialize($data['parameters_ss']));
+				if (is_object($modules[$data['module_ss']])) {
+					$scriptTitle = $modules[$data['module_ss']]->scriptInfo(unserialize($data['parameters_ss']));
+				} else {
+					$scriptTitle = 'Error : script module not set';
+				}
 			} elseif ($data['module_ss'] == self::MASTER_SCRIPT_NAME) {
 				$scriptTitle = self::MASTER_SCRIPT_NAME;
 			} else {
