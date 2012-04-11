@@ -1310,7 +1310,11 @@ class CMS_object_categories extends CMS_object_common
 		$templatePattern = $xml2Array->getXMLInTag($tags, 'template');
 		$selectedPattern = $xml2Array->getXMLInTag($tags, 'itemselected');
 		$maxlevel = isset($values['maxlevel']) ? (int) $values['maxlevel'] : 0; 
-		$selectedID = isset($values['selected']) ? (int) $values['selected'] : 0; 
+		if (isset($values['selected'])) {
+			$selectedIDs = is_array($values['selected']) ? $values['selected'] : array($values['selected']);
+		} else {
+			$selectedIDs = array();
+		}
 		$disableCategories = isset($values['disable']) ? explode(';',$values['disable']) : array(); 
 		
 		if (!$itemPattern) {
@@ -1374,12 +1378,12 @@ class CMS_object_categories extends CMS_object_common
 		}
 		//pr($nLevelArray);
 		if (isset($nLevelArray) && is_array($nLevelArray) && $nLevelArray) {
-			$return = $this->_createCategoriesTree($nLevelArray, $itemPattern, $templatePattern, $selectedPattern, $maxlevel, $selectedID);
+			$return = $this->_createCategoriesTree($nLevelArray, $itemPattern, $templatePattern, $selectedPattern, $maxlevel, $selectedIDs);
 		}
 		return $return;
 	}
 	//private function of categoriesTree method
-	protected function _createCategoriesTree($categories, $itemPattern, $templatePattern, $selectedPattern, $maxlevel = 0, $selectedID = false) {
+	protected function _createCategoriesTree($categories, $itemPattern, $templatePattern, $selectedPattern, $maxlevel = 0, $selectedIDs = array()) {
 		global $cms_language;
 		static $level;
 		$level++;
@@ -1401,7 +1405,7 @@ class CMS_object_categories extends CMS_object_common
 			$subcats = '';
 			if (is_array($subCategories) && $subCategories && (!$maxlevel || $level < $maxlevel)) {
 				//recurse on subcategories
-				$subcats = $this->_createCategoriesTree($subCategories, $itemPattern, $templatePattern, $selectedPattern, $maxlevel, $selectedID);
+				$subcats = $this->_createCategoriesTree($subCategories, $itemPattern, $templatePattern, $selectedPattern, $maxlevel, $selectedIDs);
 			}
 			$iconPathFS = $category->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, true);
 			if ($iconPathFS && file_exists($iconPathFS)) {
@@ -1418,7 +1422,7 @@ class CMS_object_categories extends CMS_object_common
 				'{lvl}' 		=> $level,
 				'{icon}'		=> $icon
 			);
-			if ($catID == $selectedID) {
+			if ($selectedIDs && in_array($catID, $selectedIDs)) {
 				$return .= str_replace(array_keys($replace), $replace, $selectedPattern);
 			} else {
 				$return .= str_replace(array_keys($replace), $replace, $itemPattern);

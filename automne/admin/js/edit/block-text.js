@@ -103,7 +103,7 @@ Automne.blockText = Ext.extend(Automne.block, {
 				stylesheet += '{\n';
 				for (var styleName in styles) {
 					if (styles[styleName]) {
-						if (el.dom.tagName.toLowerCase() == 'a') {
+						if (el.dom.tagName.toLowerCase() == 'a' && styleName.indexOf('padding') === -1 && styleName.indexOf('background') === -1) {
 							stylesheet += styleName+':'+styles[styleName]+' !important;\n'
 						} else {
 							stylesheet += styleName+':'+styles[styleName]+';\n'
