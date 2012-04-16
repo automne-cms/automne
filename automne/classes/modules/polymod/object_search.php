@@ -1200,9 +1200,11 @@ class CMS_object_search extends CMS_grandFather
 	 * @return boolean
 	 */
 	private function _updateTmpList($ids = array()) {
-		$max = 100000; //max ids before using a temporary table
-		$length = is_array($ids) ? sizeof($ids) : 0;
-		if ($this->_useTmpTable || $length > $max ) {
+		//the folowing lines are desactivated because performances impact is too big
+		//$max = 100000; //max ids before using a temporary table
+		//$length = is_array($ids) ? sizeof($ids) : 0;
+		//if ($this->_useTmpTable || $length > $max ) {
+		if (false) {
 			$this->_useTmpTable = true;
 			if (!$this->_searchTmpId) {
 				//Create temporary search id to be used in tmp table
