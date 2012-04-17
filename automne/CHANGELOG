@@ -16,7 +16,7 @@ V4.2.1 (16/04/2012)
 [REFACTOR] : Add syntax {page:self:level} to get a page level in tree
 [FEATURE] : Add user logs in alias module
 [FEATURE] : Add button to reset polymod search
-[FEATURE] : Add Less support in atm-css-tags (less files are automaticaly parsed using lessphp)
+[FEATURE] : Add Less support in atm-css-tags (less files are automaticaly parsed using lessphp version 0.3.4)
 
 V4.2.0 (15/02/2012)
 [BUG] : Correct bug number: 2350, 2549, 2561, 2586, 2585, 2584, 2582, 2566, 2672, 2689, 2751, 2754, 2763, 2764, 2818, 2831 (see http://www.automne-cms.org/bug/)
