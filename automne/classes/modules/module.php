@@ -234,7 +234,7 @@ class CMS_module extends CMS_grandFather
 	/** 
 	  * Get the default language code for this module
 	  * Comes from parameters or Constant
-	  * Upgrades constant with parameter founded
+	  * Upgrades constant with parameter found
 	  *
 	  * @return String the language codename
 	  * @access public
@@ -689,6 +689,12 @@ class CMS_module extends CMS_grandFather
 	  */
 	function destroy() {
 		if ($this->_id) {
+			//delete module params if any
+			$filename = PATH_MODULES_FS."/".$this->_codename."_rc.xml";
+			if (file_exists($filename)) {
+				$file = new CMS_file($filename);
+				$file->delete();
+			}
 			//delete module messages
 			$sql = "
 				delete
@@ -1109,14 +1115,14 @@ class CMS_module extends CMS_grandFather
 				$dir = $allFiles ? new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dirname), RecursiveIteratorIterator::CHILD_FIRST) : new DirectoryIterator($dirname);
 				foreach ($dir as $file) {
 					if ($file->isFile() && io::substr($file->getFilename(), -4) == ".css") {
-						$founded = false;
+						$found = false;
 						foreach ($medias as $media) {
 							if (io::substr($file->getFilename(), -5 - strlen($media)) == '-'.$media.'.css') {
 								$files[$media][] = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname()));
-								$founded = true;
+								$found = true;
 							}
 						}
-						if (!$founded) {
+						if (!$found) {
 							$files['all'][] = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname()));
 						}
 					}
@@ -1133,14 +1139,14 @@ class CMS_module extends CMS_grandFather
 						try{
 							foreach ( new DirectoryIterator($dirname.DIRECTORY_SEPARATOR.$website->getCodename()) as $file) {
 								if ($file->isFile() && io::substr($file->getFilename(), -4) == ".css") {
-									$founded = false;
+									$found = false;
 									foreach ($medias as $media) {
 										if (io::substr($file->getFilename(), -5 - strlen($media)) == '-'.$media.'.css') {
 											$files[$media][] = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname()));
-											$founded = true;
+											$found = true;
 										}
 									}
-									if (!$founded) {
+									if (!$found) {
 										$files['all'][] = str_replace(DIRECTORY_SEPARATOR, '/', str_replace(PATH_REALROOT_FS.'/', '', $file->getPathname()));
 									}
 								}
@@ -1254,7 +1260,7 @@ class CMS_module extends CMS_grandFather
 	  *				css			=> false|true : export module JS (default : true)
 	  *				js			=> false|true : export module CSS (default : true)
 	  *			)
-	  * @param array $files The reference to the founded files used by object
+	  * @param array $files The reference to the found files used by object
 	  * @return array : the object array structure
 	  * @access public
 	  */
@@ -1266,6 +1272,7 @@ class CMS_module extends CMS_grandFather
 			'codename'	=> $this->_codename,
 			'polymod'	=> false,
 			'labels'	=> CMS_language::getMessages(1, $this->_codename),
+			'parameters'=> $this->getParameters(false, true),
 		);
 		$defaultLanguage = CMS_languagesCatalog::getDefaultLanguage();
 		if (in_array('categories', $params)) {
@@ -1318,6 +1325,20 @@ class CMS_module extends CMS_grandFather
 				}
 			}
 		}
+		if (in_array('img', $params)) {
+			$imgFiles = array();
+			$aModule['css'] = array();
+			if (is_dir(PATH_REALROOT_FS.'/img/modules/'.$this->getCodename())) {
+				$imgFiles = glob(PATH_REALROOT_FS.'/img/modules/'.$this->getCodename().'/*.*', GLOB_NOSORT);
+			}
+			if ($imgFiles && is_array($imgFiles)) {
+				foreach ($imgFiles as $key => $imgFile) {
+					$imgFiles[$key] = str_replace(PATH_REALROOT_FS, '', $imgFile);
+				}
+				$aModule['img'] = $imgFiles;
+				$files = array_merge($files, $imgFiles);
+			}
+		}
 		return $aModule;
 	}
 	
@@ -1356,6 +1377,16 @@ class CMS_module extends CMS_grandFather
 			if (!$this->writeToPersistence()) {
 				$infos .= 'Error writing module ...'."\n";
 				return false;
+			} elseif (isset($data['parameters']) && is_array($data['parameters']) && $data['parameters']) {
+				//write module parameters
+				$this->_hasParameters = 1;
+				$filename = PATH_MODULES_FS."/".$this->_codename."_rc.xml";
+				if (!file_exists($filename)) {
+					$file = new CMS_file($filename);
+					$file->writeToPersistence(true);
+				}
+				$this->setAndWriteParameters($data['parameters']);
+				$this->writeToPersistence();
 			}
 		}
 		//append codename to parameters
@@ -1395,6 +1426,23 @@ class CMS_module extends CMS_grandFather
 								CMS_file::chmodFile(FILES_CHMOD, PATH_REALROOT_FS.$cssFile);
 							} else {
 								$infos .= 'Error during copy of file '.$cssFile.' ...'."\n";
+							}
+						}
+					}
+				}
+			}
+		}
+		if (!isset($params['files']) || $params['files'] == true) {
+			//add IMG
+			if (isset($data['img']) && $data['img']) {
+				foreach ($data['img'] as $imgFile) {
+					if ($imgFile && file_exists(PATH_TMP_FS.$imgFile)) {
+						if ((file_exists(PATH_REALROOT_FS.$imgFile) && (!isset($params['updateImg']) || $params['updateImg'] == true))
+								|| (!isset($params['create']) || $params['create'] == true)) {
+							if (CMS_file::moveTo(PATH_TMP_FS.$imgFile, PATH_REALROOT_FS.$imgFile)) {
+								CMS_file::chmodFile(FILES_CHMOD, PATH_REALROOT_FS.$imgFile);
+							} else {
+								$infos .= 'Error during copy of file '.$imgFile.' ...'."\n";
 							}
 						}
 					}

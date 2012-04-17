@@ -380,6 +380,8 @@ class CMS_poly_definition_functions
 						$items = $search->search();
 						if (isset($items[io::request('item')])) {
 							$item = $items[io::request('item')];
+						} else {
+							$item = new CMS_poly_object($object->getID());
 						}
 					} else {
 						$item = new CMS_poly_object($object->getID());

@@ -20,7 +20,7 @@
   * For a production purpose
   * 
   * In a cron can use such script :
-  * For a quiet version (Outputs only if any problem founded)
+  * For a quiet version (Outputs only if any problem found)
   *	5 * * * * root /usr/bin/lynx http://serveraddr/is_alive.php?quiet=true
   * 
   * More visually or to get informed by email set :
@@ -44,7 +44,7 @@
 // 
 // 
 // In a cron can use such script :
-// For a quiet version (Outputs only if any problem founded)
+// For a quiet version (Outputs only if any problem found)
 // */5 * * * * root /usr/bin/lynx http://serveraddr/is_alive.php?quiet=true
 // 
 // More visually or to get informed by email set :
@@ -62,7 +62,7 @@ require_once(dirname(__FILE__).'/cms_rc_frontend.php');
 // Page to test HTTP response of
 define("INDEX_PAGE", PATH_REALROOT_WR.'/index.php');
 
-// Stores errors founded while running tests
+// Stores errors found while running tests
 $errs = array();
 
 // Test database connection to server

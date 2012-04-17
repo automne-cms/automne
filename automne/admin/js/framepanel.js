@@ -50,7 +50,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 		Ext.apply(this, {
 			html:  			'<iframe id="' + this.id + 'Frame" width="100%" height="100%" frameborder="no"' + (!Ext.isIE ? ' class="x-hide-visibility"' : '') + ' src="' + Ext.SSL_SECURE_URL + '">&nbsp;</iframe>',
 			hideBorders:	true,
-			/*height:			'100%', removed : bug 1432*/
+			ctCls:			'atm-iframe', //used to remove overflow-x in xtheme-automne.css
 			autoScroll:		true,
 			//only for edit frame panel
 			tbar:			!this.editable ? false : new Ext.Toolbar({
@@ -92,7 +92,9 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 						Ext.getCmp('editSaveDraft'+ this.editId).hide();
 						Ext.getCmp('editCancelAdd'+ this.editId).show();
 						Ext.get('selectedRow'+ this.editId).update('<span class="atm-text-alert">'+ al.csClickOnRed +'</span>');
-						Automne.message.show(al.csClickOnRed, '', Automne.tabPanels.getActiveTab().frameEl);
+						if (!Automne.popup) {
+							Automne.message.show(al.csClickOnRed, '', Automne.tabPanels.getActiveTab().frameEl);
+						}
 						this.frameEl.dom.contentWindow.atmContent.showZones('add');
 					}
 				},{
@@ -119,7 +121,17 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 						root: 				'results',
 						totalProperty: 		'total',
 						fields:				['id', 'label', 'image', 'shortdesc'],
-						id: 				'id'
+						id: 				'id',
+						listeners:{
+							'beforeload':function(e, options ) {
+								//correct a bug in pagination when combo is reloaded
+								if (!options.params.limit) {
+									options.params.limit = 10;
+									options.params.page = 0;
+								}
+							},
+							scope:this
+						}
 					}),
 					forceSelection:		true,
 					valueField:			'id',
@@ -419,17 +431,6 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 		}
 		//check if page load came from a valid frame click
 		if (this.id == 'public' && win.location.href && win.location.search.indexOf('_dc') === -1) {
-			//force reload page infos without reloading the frame itself
-			/*Automne.tabPanels.getPageInfos({
-				pageUrl:	win.location.href,
-				noreload:	true
-			}, function(response){
-				if (response.getResponseHeader['X-Automne-PageId']) {
-					//add page to history
-					Ext.History.add('page:' + response.getResponseHeader['X-Automne-PageId'], true);
-				}
-			});*/
-			
 			//try to guess automne installation path if not already set
 			if (Automne.context == false || (Automne.context.path == undefined && window.location.pathname.indexOf('/automne/admin/') >= 1)) {
 				Automne.context = {};
@@ -440,7 +441,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 				this.setFrameURL(Automne.context.path + '/automne/admin/page-redirect-info.php?url=' + win.location.href);
 				this.reload();
 			}
-		} else if(/*this.id == 'public' && */this.pageId && this.pageId != 'false') {
+		} else if(this.pageId && this.pageId != 'false') {
 			//add page to history
 			Ext.History.add('page:' + this.pageId, true);
 		}
@@ -473,7 +474,7 @@ Automne.framePanel = Ext.extend(Automne.panel, {
 		if (this.loadFrameDocument()) {
 			if (this.frameDocument) {
 				if (!this.frameURL) {
-					pr('Reload '+ this.id +' tab queried but no URL founded for frame => skip.');
+					pr('Reload '+ this.id +' tab queried but no URL found for frame => skip.');
 					return false;
 				}
 				pr('Reload '+ this.id +' tab => Get : '+this.frameURL);

@@ -91,7 +91,7 @@ Automne.treePanel = Ext.extend(Ext.tree.TreePanel, {
 						} else {
 							//send error message
 							Automne.message.popup({
-								msg: 				Automne.locales.noPageFounded,
+								msg: 				Automne.locales.noPageFound,
 								buttons: 			Ext.MessageBox.OK,
 								closable: 			true,
 								icon: 				Ext.MessageBox.INFO,

@@ -169,6 +169,8 @@ class CMS_page extends CMS_resource
 				//display this error only if we are in HTTP mode (not cli) because it is only relevant in this mode
 				if (!defined('APPLICATION_EXEC_TYPE') || APPLICATION_EXEC_TYPE == 'http') {
 					$this->raiseError("Unknown ID :".$id.' from '.io::getCallInfos(3));
+				} else {
+					$this->raiseError();
 				}
 			}
 		} else {
@@ -493,7 +495,7 @@ class CMS_page extends CMS_resource
 				//create new filename
 				$title = $this->getTitle(true);
 				if (!$title) {
-					//no public title founded, to avoid error, try to use the edited one.
+					//no public title found, to avoid error, try to use the edited one.
 					$title = $this->getTitle(false);
 					if (!$title) {
 						$this->raiseError("Can't get page title for page ".$this->getID()." to create page filename ...");
@@ -824,40 +826,44 @@ class CMS_page extends CMS_resource
 		if ((!isset($tags['keywords']) || $tags['keywords']) && $this->getKeywords($public)) {
 			$metaDatas .= '	<meta name="keywords" content="'.io::htmlspecialchars($this->getKeywords($public), ENT_COMPAT).'" />'."\n";
 		}
-		if ((!isset($tags['category']) || $tags['category']) && $this->getCategory($public)) {
-			$metaDatas .= '	<meta name="category" content="'.io::htmlspecialchars($this->getCategory($public), ENT_COMPAT).'" />'."\n";
-		}
-		if ((!isset($tags['robots']) || $tags['robots']) && $this->getRobots($public)) {
-			$metaDatas .= '	<meta name="robots" content="'.io::htmlspecialchars($this->getRobots($public), ENT_COMPAT).'" />'."\n";
-		}
-		if ((!isset($tags['language']) || $tags['language']) && $this->getLanguage($public)) {
-			$metaDatas .= '	<meta name="language" content="'.io::htmlspecialchars($this->getLanguage($public), ENT_COMPAT).'" />'."\n";
+		if (io::strtolower(APPLICATION_XHTML_DTD) != io::strtolower('<!DOCTYPE html>')) {
+			if ((!isset($tags['category']) || $tags['category']) && $this->getCategory($public)) {
+				$metaDatas .= '	<meta name="category" content="'.io::htmlspecialchars($this->getCategory($public), ENT_COMPAT).'" />'."\n";
+			}
+			if ((!isset($tags['robots']) || $tags['robots']) && $this->getRobots($public)) {
+				$metaDatas .= '	<meta name="robots" content="'.io::htmlspecialchars($this->getRobots($public), ENT_COMPAT).'" />'."\n";
+			}
+			if ((!isset($tags['language']) || $tags['language']) && $this->getLanguage($public)) {
+				$metaDatas .= '	<meta name="language" content="'.io::htmlspecialchars($this->getLanguage($public), ENT_COMPAT).'" />'."\n";
+			}
+			if (!isset($tags['identifier-url']) || $tags['identifier-url']) {
+				$metaDatas .= '	<?php echo \'<meta name="identifier-url" content="\'.CMS_websitesCatalog::getCurrentDomain().\''.PATH_REALROOT_WR.'" />\'."\n"; ?>'."\n";
+			}
+			if ((!isset($tags['revisit-after']) || $tags['revisit-after']) && $this->getReminderPeriodicity($public) && $this->getReminderPeriodicity($public) > 0) {
+				$metaDatas .= '	<meta name="revisit-after" content="'.$this->getReminderPeriodicity($public).' days" />'."\n";
+			}
+			if ((!isset($tags['pragma']) || $tags['pragma']) && $this->getPragma($public)) {
+				$metaDatas .= '	<meta http-equiv="pragma" content="no-cache" />'."\n";
+			}
+			if ((!isset($tags['refresh']) || $tags['refresh']) && $this->getRefresh($public)) {
+				$metaDatas .= '	<meta http-equiv="refresh" content="'.io::htmlspecialchars($this->getRefresh($public), ENT_COMPAT).'" />'."\n";
+			}
 		}
 		if (!NO_PAGES_EXTENDED_META_TAGS) {
 			if ((!isset($tags['author']) || $tags['author']) && $this->getAuthor($public)) {
 				$metaDatas .= '	<meta name="author" content="'.io::htmlspecialchars($this->getAuthor($public), ENT_COMPAT).'" />'."\n";
 			}
-			if ((!isset($tags['reply-to']) || $tags['reply-to']) && $this->getReplyto($public)) {
-				$metaDatas .= '	<meta name="reply-to" content="'.io::htmlspecialchars($this->getReplyto($public), ENT_COMPAT).'" />'."\n";
-			}
-			if ((!isset($tags['copyright']) || $tags['copyright']) && $this->getCopyright($public)) {
-				$metaDatas .= '	<meta name="copyright" content="'.io::htmlspecialchars($this->getCopyright($public), ENT_COMPAT).'" />'."\n";
+			if (io::strtolower(APPLICATION_XHTML_DTD) != io::strtolower('<!DOCTYPE html>')) {
+				if ((!isset($tags['reply-to']) || $tags['reply-to']) && $this->getReplyto($public)) {
+					$metaDatas .= '	<meta name="reply-to" content="'.io::htmlspecialchars($this->getReplyto($public), ENT_COMPAT).'" />'."\n";
+				}
+				if ((!isset($tags['copyright']) || $tags['copyright']) && $this->getCopyright($public)) {
+					$metaDatas .= '	<meta name="copyright" content="'.io::htmlspecialchars($this->getCopyright($public), ENT_COMPAT).'" />'."\n";
+				}
 			}
 		}
 		if (!isset($tags['generator']) || $tags['generator']) {
 			$metaDatas .= '	<meta name="generator" content="'.CMS_grandFather::SYSTEM_LABEL.'" />'."\n";
-		}
-		if (!isset($tags['identifier-url']) || $tags['identifier-url']) {
-			$metaDatas .= '	<?php echo \'<meta name="identifier-url" content="\'.CMS_websitesCatalog::getCurrentDomain().\''.PATH_REALROOT_WR.'" />\'."\n"; ?>'."\n";
-		}
-		if ((!isset($tags['revisit-after']) || $tags['revisit-after']) && $this->getReminderPeriodicity($public) && $this->getReminderPeriodicity($public) > 0) {
-			$metaDatas .= '	<meta name="revisit-after" content="'.$this->getReminderPeriodicity($public).' days" />'."\n";
-		}
-		if ((!isset($tags['pragma']) || $tags['pragma']) && $this->getPragma($public)) {
-			$metaDatas .= '	<meta http-equiv="pragma" content="no-cache" />'."\n";
-		}
-		if ((!isset($tags['refresh']) || $tags['refresh']) && $this->getRefresh($public)) {
-			$metaDatas .= '	<meta http-equiv="refresh" content="'.io::htmlspecialchars($this->getRefresh($public), ENT_COMPAT).'" />'."\n";
 		}
 		if ($this->getMetas($public)) {
 			$metaDatas .= $this->getMetas($public)."\n";
@@ -2009,7 +2015,7 @@ class CMS_page extends CMS_resource
 			$this->_website = CMS_tree::getPageWebsite($this->_pageID);
 		}
 		if (!is_object($this->_website)) {
-			$this->raiseError('No website founded for page : '.$this->_pageID);
+			$this->raiseError('No website found for page : '.$this->_pageID);
 			return false;
 		}
 		return true;

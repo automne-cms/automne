@@ -89,6 +89,7 @@ $bg_color_selected = "#fdf5a2";
 
 //if user belongs to groups, all fields are disabled
 $disableFields = ($profile->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL) || ($isUser && sizeof(CMS_profile_usersGroupsCatalog::getGroupsOfUser($profile, true)))) ? true : false;
+
 //unique hash relative to user module
 $hash = md5($moduleCodename.'-'.$profileId);
 
@@ -169,10 +170,14 @@ if (!function_exists("build_items_tree")) {
 		while (list ($msg, $value) = @each($modules_clearances)) {
 			$sel = '';
 			//check if user has edition rights on item
-			if (is_a($item, 'CMS_moduleCategory')) {
-				$disabled = $cms_user->hasModuleCategoryClearance($item->getID(), CLEARANCE_MODULE_MANAGE) ? '' : ' disabled="disabled"';
+			if ($disableFields) {
+				$disabled = ' disabled="disabled"';
 			} else {
-				$disabled = $cms_user->hasPageClearance($item->getId(), CLEARANCE_PAGE_EDIT) ? '' : ' disabled="disabled"';
+				if (is_a($item, 'CMS_moduleCategory')) {
+					$disabled = $cms_user->hasModuleCategoryClearance($item->getID(), CLEARANCE_MODULE_MANAGE) ? '' : ' disabled="disabled"';
+				} else {
+					$disabled = $cms_user->hasPageClearance($item->getId(), CLEARANCE_PAGE_EDIT) ? '' : ' disabled="disabled"';
+				}
 			}
 			if ($item->isRoot() || (!$item->isRoot() && $parent_clearance !== $value)) {
 				// If none clearance defined yet, access is denied to any root category

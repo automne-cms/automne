@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_URI'] && $_SERVER['REQUEST_URI'] != $_SERVER['SCRIPT_NAME'
 		if (isset($rules[$_SERVER['REQUEST_URI']]) && io::isPositiveInteger($rules[$_SERVER['REQUEST_URI']])) {
 			$page = CMS_tree::getPageById($rules[$_SERVER['REQUEST_URI']]);
 		} elseif (isset($rules[parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)]) && io::isPositiveInteger($rules[parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)])) {
-			$page = CMS_tree::getPageById($rules[$_SERVER['REQUEST_URI']]);
+			$page = CMS_tree::getPageById($rules[parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)]);
 		}
 	}
 	if (!isset($page)) { //get page from requested url
@@ -71,11 +71,11 @@ if ($_SERVER['REQUEST_URI'] && $_SERVER['REQUEST_URI'] != $_SERVER['SCRIPT_NAME'
 		}
 	}
 }
-//do redirection to page if founded
+//do redirection to page if found
 if ($redirectTo) {
 	CMS_view::redirect($redirectTo.(isset($_SERVER['REDIRECT_QUERY_STRING']) ? '?'.$_SERVER['REDIRECT_QUERY_STRING'] : ''), true, 301);
 }
-//then if no page founded, display 404 error page
+//then if no page found, display 404 error page
 header('HTTP/1.x 404 Not Found', true, 404);
 //Check if requested file is an image
 $imagesExtensions = array('jpg', 'jpeg', 'gif', 'png', 'ico');
@@ -119,7 +119,7 @@ if (ERROR404_EMAIL_ALERT && sensitiveIO::isValidEmail(APPLICATION_MAINTAINER_EMA
 //try to get website by path to serve specific 404 page
 $path = pathinfo (parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), PATHINFO_DIRNAME);
 $website = null;
-if ($path) {
+if ($path && $path != '/') {
 	$websites = CMS_websitesCatalog::getAll('order');
 	foreach ($websites as $website) {
 		if ($website->getPagesPath(PATH_RELATIVETO_WEBROOT)) {

@@ -73,13 +73,13 @@ if (isset($_GET['files'])) {
 				$dirnamePath = realpath(dirname(__FILE__).'/'.$file);
 				if ($file == str_replace(array_keys($replace), $replace, $file) && file_exists($dirnamePath) && is_file($dirnamePath)) {
 					$cssfiles [] = $dirnamePath;
-				} elseif(pathinfo($file, PATHINFO_EXTENSION) == 'css' && substr($file, 0, 1) == '/'
+				} elseif(in_array(pathinfo($file, PATHINFO_EXTENSION), array('css', 'less')) && substr($file, 0, 1) == '/'
 						&& file_exists($docrootPath) 
 						&& is_file($docrootPath)
 						&& (strpos(pathinfo($docrootPath, PATHINFO_DIRNAME), realpath(PATH_CSS_FS)) === 0 
 							|| strpos(pathinfo($docrootPath, PATHINFO_DIRNAME), realpath(PATH_ADMIN_CSS_FS)) === 0)) {
 					$cssfiles[] = $docrootPath;
-				} elseif(pathinfo($file, PATHINFO_EXTENSION) == 'css' && substr($file, 0, 1) != '/'
+				} elseif(in_array(pathinfo($file, PATHINFO_EXTENSION), array('css', 'less')) && substr($file, 0, 1) != '/'
 						&& file_exists($realrootPath) 
 						&& is_file($realrootPath)
 						&& (strpos(pathinfo($realrootPath, PATHINFO_DIRNAME), realpath(PATH_CSS_FS)) === 0 

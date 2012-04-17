@@ -12,8 +12,6 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr> &            |
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: standard.php,v 1.22 2010/03/08 16:43:31 sebastien Exp $
 
 /**
   * Codename of the standard module
@@ -75,7 +73,6 @@ class CMS_module_standard extends CMS_module
 	const MESSAGE_PARAM_USE_BACKGROUND_REGENERATOR = 612;
 	const MESSAGE_PARAM_ERROR404_EMAIL_ALERT = 613;
 	const MESSAGE_PARAM_APPLICATION_ENFORCES_ACCESS_CONTROL = 614;
-	const MESSAGE_PARAM_ALLOW_IMAGES_IN_WYSIWYG = 615;
 	const MESSAGE_PARAM_LOG_SENDING_MAIL = 616;
 	const MESSAGE_PARAM_ALLOW_SPECIFIC_PAGE_HTTPS = 1566;
 	
@@ -94,7 +91,6 @@ class CMS_module_standard extends CMS_module
 	const MESSAGE_PARAM_USE_BACKGROUND_REGENERATOR_DESC = 630;
 	const MESSAGE_PARAM_ERROR404_EMAIL_ALERT_DESC = 631;
 	const MESSAGE_PARAM_APPLICATION_ENFORCES_ACCESS_CONTROL_DESC = 632;
-	const MESSAGE_PARAM_ALLOW_IMAGES_IN_WYSIWYG_DESC = 633;
 	const MESSAGE_PARAM_LOG_SENDING_MAIL_DESC = 634;
 	const MESSAGE_PARAM_ALLOW_SPECIFIC_PAGE_HTTPS_DESC = 1567;
 	
@@ -1387,7 +1383,7 @@ class CMS_module_standard extends CMS_module
 		if (($tpl instanceof CMS_pageTemplate) && $tpl->getID() > 0) {
 			CMS_moduleClientspace_standard_catalog::moveClientSpaces($tpl->getID(), $locationFrom, $locationTo, $copyOnly);
 		} else {
-			CMS_grandFather::raiseError("Bad template founded for page ".$resourceID);
+			CMS_grandFather::raiseError("Bad template found for page ".$resourceID);
 			return false;
 		}
 		// Move the blocks
@@ -1850,6 +1846,8 @@ class CMS_module_standard extends CMS_module
 								'var atmIsValidator = '.$isValidator.';'."\n".
 								'var atmIsValidable = true;'."\n".
 								'var atmHasPreview = true;'."\n".
+								'var atmHasPreview = true;'."\n".
+								'var CKEDITOR_BASEPATH = \''.PATH_MAIN_WR.'/ckeditor/\';'."\n".
 							'</script>';
 							//append JS from current view instance
 							$view = CMS_view::getInstance();
@@ -1864,6 +1862,7 @@ class CMS_module_standard extends CMS_module
 								'var atmIsValidator = false;'."\n".
 								'var atmIsValidable = false;'."\n".
 								'var atmHasPreview = false;'."\n".
+								'var CKEDITOR_BASEPATH = \''.PATH_MAIN_WR.'/ckeditor/\';'."\n".
 							'</script>';
 							//append JS from current view instance
 							$view = CMS_view::getInstance();
@@ -2009,7 +2008,7 @@ class CMS_module_standard extends CMS_module
 				} else {
 					$modulesCode[MOD_STANDARD_CODENAME] .= 
 					'//Page can be HTTPS'."\n".
-					'if (!((isset($_SERVER["REQUEST_URI"]) && strpos($_SERVER["REQUEST_URI"], PATH_ADMIN_WR) !== false) || (isset($_REQUEST[\'atm-context\']) && $_REQUEST[\'atm-context\'] == \'adminframe\'))) {'."\n".
+					'if (!((isset($_SERVER["REQUEST_URI"]) && strpos($_SERVER["REQUEST_URI"], \''.PATH_ADMIN_WR.'\') !== false) || (isset($_REQUEST[\'atm-context\']) && $_REQUEST[\'atm-context\'] == \'adminframe\'))) {'."\n".
 					'	if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] && strtolower($_SERVER["HTTPS"]) != \'off\') {'."\n".
 					'		defined(\'PAGE_SSL_MODE\') || define(\'PAGE_SSL_MODE\', true);'."\n".
 					'	}'."\n".

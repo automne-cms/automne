@@ -177,7 +177,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  */
 	function __construct($objectID, $datas = array(), $field, $public = false)
 	{
-		//first, remove paramters 3 if no module ASE founded
+		//first, remove paramters 3 if no module ASE found
 		if (!class_exists('CMS_module_ase')) {
 			unset($this->_parameters[4]);
 			unset($this->_parameterValues[4]);
@@ -418,7 +418,7 @@ class CMS_multi_poly_object extends CMS_object_common
 				//check if field has a method to provide a list of names
 				$objectType = $field->getTypeObject();
 				if (method_exists($objectType, 'getListOfNamesForObject')) {
-					$objectsNames = $objectType->getListOfNamesForObject();
+					$objectsNames = $objectType->getListOfNamesForObject(false, array(), false);
 					if (is_array($objectsNames) && $objectsNames) {
 						$s_object_listbox = CMS_moduleCategories_catalog::getListBox(
 							array (
@@ -520,7 +520,7 @@ class CMS_multi_poly_object extends CMS_object_common
 					'tpl'			=> sensitiveIO::sanitizeJSString('<tpl for="rows">
 						<dl>
 							<tpl for="parent.columns">
-								<dt style="width:100%;text-align:{align};" class="MultiselectDD">
+								<dt style="width:100%;text-align:{align};white-space:normal;" class="MultiselectDD">
 									<div unselectable="on" class="atm-result x-unselectable" id="object-{parent.id}">
 										<div class="atm-title">
 											<table>

@@ -12,8 +12,6 @@
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr> &            |
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: texteditor.php,v 1.4 2010/03/08 16:43:32 sebastien Exp $
 
 /**
   * Class CMS_dialog
@@ -147,10 +145,8 @@ class CMS_textEditor extends CMS_grandFather
 	  * @return string
 	  * @access public
 	  */
-	function getHTML()
-	{
+	function getHTML() {
 		$value = $this->_initialContent;
-		
 		// Editor base path
 		$sBasePath = PATH_MAIN_WR.'/fckeditor/';
 		$oFCKeditor = new FCKeditor($this->_formField);
@@ -220,6 +216,92 @@ class CMS_textEditor extends CMS_grandFather
 		);
 		$text_editor->setEditorAttributes($fck_attrs);
 		return $text_editor;
+	}
+	
+	/**
+	  * Parse content which go to the WYSIWYG editor to handle all plugins tags
+	  *
+	  * @param string $text The inputed text of fckeditor
+	  * @param string $module The module codename which made the request
+	  * @return string the text with plugins tags adapted for fckeditor
+	  * @access public
+	  */
+	function parseInnerContent($value, $module = MOD_STANDARD_CODENAME) {
+		$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_WYSIWYG_INNER_TAGS, RESOURCE_DATA_LOCATION_EDITION, $this);
+		$wantedTags = $modulesTreatment->getWantedTags();
+		//create regular expression on wanted tags
+		$exp = '';
+		foreach ($wantedTags as $aWantedTag) {
+			$exp .= ($exp) ? '|<'.$aWantedTag["tagName"] : '<'.$aWantedTag["tagName"];
+		}
+		//is parsing needed (value contain some of these wanted tags)
+		if ($value && is_array($wantedTags) && $wantedTags && preg_match('#('.$exp.')+#' ,$value) !== false) {
+			$modulesTreatment->setTreatmentParameters(array('module' => $module));
+			$modulesTreatment->setDefinition($value);
+			$value = $modulesTreatment->treatContent(true);
+		}
+		//eval PHP content if any
+		if (strpos($value, '<?php') !== false) {
+			$value = io::evalPHPCode($value);
+		}
+		return $value;
+	}
+	
+	/**
+	  * Parse content coming out of the WYSIWYG editor to handle all plugins tags
+	  *
+	  * @param string $text The outputed text of fckeditor
+	  * @param string $module The module codename which made the request
+	  * @return string the text with all plugin tags
+	  * @access public
+	  */
+	function parseOuterContent($text, $module = MOD_STANDARD_CODENAME) {
+		//if post only contain a space or empty div or paragraph then the block is empty.
+		$cleanedText = trim(str_replace(array('&#160;', '&nbsp;', ' ') , '', $text));
+		if ($cleanedText == '<p></p>' || $cleanedText == '<div></div>') {
+			$text = '';
+		}
+		if ($text) {
+			/*
+			 * we need to do some replacements to be completely conform with Automne
+			 * you can add here all dirty tags to be removed from editor's output
+			 */
+			$replace = array(
+				'{' 						=> '&#123;',//encode brackets to avoid vars ( {something:type:var} ) to be interpretted
+				'}' 						=> '&#125;',
+				'&#123;&#123;' 				=> '{{',	//in case of internal links copy/paste, editor decode {{ and }}
+				'&#125;&#125;' 				=> '}}',	
+				"%7B%7B" 					=> "{{",	
+				"%7D%7D" 					=> "}}",	
+				"/>" 						=> " />",	//xhtml missing space on auto-closed tags
+				"<o:p>" 					=> "",		//dirty tags from MS Word pasting
+				"</o:p>" 					=> "",		
+				"<!--[if !supportLists]-->" => "",		
+				"<!--[endif]-->" 			=> "",		
+				"<?php" 					=> "",		//remove PHP tags for security
+				"<?" 						=> "",		
+				"?>" 						=> "",		
+			);
+			
+			$text = str_replace(array_keys($replace),$replace,$text);
+			$text = sensitiveIO::decodeWindowsChars($text);
+			
+			$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_WYSIWYG_OUTER_TAGS, RESOURCE_DATA_LOCATION_EDITION, new CMS_date());
+			$wantedTags = $modulesTreatment->getWantedTags();
+			
+			//create regular expression on wanted tags
+			$exp = '';
+			foreach ($wantedTags as $aWantedTag) {
+				$exp .= ($exp) ? '|<'.$aWantedTag["tagName"] : '<'.$aWantedTag["tagName"];
+			}
+			//is parsing needed (value contain some of these wanted tags)
+			if (is_array($wantedTags) && $wantedTags && preg_match('#('.$exp.')+#' ,$text) !== false) {
+				$modulesTreatment->setTreatmentParameters(array('module' => $module));
+				$modulesTreatment->setDefinition($text);
+				$text = $modulesTreatment->treatContent(true);
+			}
+		}
+		return $text;
 	}
 }
 ?>

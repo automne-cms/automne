@@ -92,6 +92,15 @@ var langDir = E.FCKLang.Dir ;
 if ( FCKBrowserInfo.IsIE && !FCKBrowserInfo.IsIE7 )
 	document.write( '<' + 'script type="text/javascript" src="' + FCKConfig.SkinPath + 'fck_dialog_ie6.js"><' + '\/script>' ) ;
 
+
+FCKTools.RegisterDollarFunction = function( targetWindow )
+{
+	targetWindow.$ = function( id )
+	{
+		return targetWindow.document.getElementById( id ) ;
+	} ;
+}
+
 FCKTools.RegisterDollarFunction( window ) ;
 
 // Resize related functions.

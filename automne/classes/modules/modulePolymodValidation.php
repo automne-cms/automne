@@ -865,7 +865,7 @@ class CMS_modulePolymodValidation extends CMS_module
 	/** 
 	  * Get the default language code for this module
 	  * Comes from parameters or Constant
-	  * Upgrades constant with parameter founded
+	  * Upgrades constant with parameter found
 	  *
 	  * @return String the language codename
 	  * @access public

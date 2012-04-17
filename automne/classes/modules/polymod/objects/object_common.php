@@ -707,7 +707,7 @@ abstract class CMS_object_common extends CMS_grandFather
 				return io::htmlspecialchars($this->getFieldLabel($cms_language));
 			break;
 			case 'value':
-				return (is_object($this->_subfieldValues[0])) ? io::htmlspecialchars($this->_subfieldValues[0]->getValue()) : '';
+				return (isset($this->_subfieldValues[0]) && is_object($this->_subfieldValues[0])) ? io::htmlspecialchars($this->_subfieldValues[0]->getValue()) : '';
 			break;
 			case 'set':
 				return $this->_subfieldValues[0]->setValue($parameters);
@@ -892,6 +892,10 @@ abstract class CMS_object_common extends CMS_grandFather
 		}
 		if (isset($types['integer']) && $types['integer'] == true) {
 			$sql .= ($sql) ? "\n".' union distinct '."\n" : '';
+			if (is_array($value) && !$value) {
+				//no value in array for an integer search => no results
+				return false;
+			}
 			$sql .= "
 				select
 					distinct objectID

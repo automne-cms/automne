@@ -442,7 +442,28 @@ if (!$installed) {
 		$content .= 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v413-to-v420-6.sql must be executed manualy<br/>';
 	}
 }
+//remove APPLICATION LDAP AUTH from standard_rc.xml
+$standard = CMS_modulesCatalog::getByCodename(MOD_STANDARD_CODENAME);
+$params = $standard->getParameters(false, true, true);
+if (isset($params['APPLICATION_LDAP_AUTH'])) {
+	unset($params['APPLICATION_LDAP_AUTH']);
+	$standard->setAndWriteParameters($params);
+	$content .= 'Remove LDAP parameter from standard module.<br /><br />';
+}
 //END UPDATE FROM 4.1.3 TO 4.2.0
+
+//START UPDATE FROM 4.2.0 TO 4.2.1
+
+//remove APPLICATION ALLOW_IMAGES_IN_WYSIWYG from standard_rc.xml
+$standard = CMS_modulesCatalog::getByCodename(MOD_STANDARD_CODENAME);
+$params = $standard->getParameters(false, true, true);
+if (isset($params['ALLOW_IMAGES_IN_WYSIWYG'])) {
+	unset($params['ALLOW_IMAGES_IN_WYSIWYG']);
+	$standard->setAndWriteParameters($params);
+	$content .= 'Remove Wysiwyg image parameter from standard module.<br /><br />';
+}
+
+//END UPDATE FROM 4.2.0 TO 4.2.1
 
 //Update Automne messages
 $files = glob(PATH_MAIN_FS."/sql/messages/*/*.sql", GLOB_NOSORT);

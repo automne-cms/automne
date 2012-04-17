@@ -31,7 +31,9 @@ Ext.apply(Ext.form.VTypes, {
     loginText: 'Login must be alphanumeric and lowercase',
     loginMask: /^[a-zA-Z0-9_.@-]+$/
 });
-/*if (Ext.isIE) {
-	Ext.isIE9 = /msie 9/.test(navigator.userAgent.toLowerCase()) && document.documentMode != 7;
-	Ext.isIE6 = !Ext.isIE7 && !Ext.isIE8 && !Ext.isIE9;
-}*/
+
+Ext.apply(Ext.util.Format, {
+    stripLines:  function(v) {
+        return v.replace(/\s+/g, " ").trim();
+    }
+});

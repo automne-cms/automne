@@ -17,7 +17,7 @@
  * @package    Zend_Session
  * @copyright  Copyright (c) 2005-2011 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Session.php 23775 2011-03-01 17:25:24Z ralph $
+ * @version    $Id: Session.php 24196 2011-07-05 15:58:11Z matthew $
  * @since      Preview Release 0.2
  */
 
@@ -308,24 +308,13 @@ class Zend_Session extends Zend_Session_Abstract
                 "() before any output has been sent to the browser; output started in {$filename}/{$linenum}");
         }
 
-        if (self::$_sessionStarted && self::$_regenerateIdState <= 0) {
+        if ( !self::$_sessionStarted ) {
+            self::$_regenerateIdState = -1;
+        } else {
             if (!self::$_unitTestEnabled) {
                 session_regenerate_id(true);
             }
             self::$_regenerateIdState = 1;
-        } else {
-            /**
-             * @todo If we can detect that this requester had no session previously,
-             *       then why regenerate the id before the session has started?
-             *       Feedback wanted for:
-             //
-            if (isset($_COOKIE[session_name()]) || (!use only cookies && isset($_REQUEST[session_name()]))) {
-                self::$_regenerateIdState = 1;
-            } else {
-                self::$_regenerateIdState = -1;
-            }
-            //*/
-            self::$_regenerateIdState = -1;
         }
     }
 
@@ -456,7 +445,11 @@ class Zend_Session extends Zend_Session_Abstract
         }
 
         // See http://www.php.net/manual/en/ref.session.php for explanation
-        if (!self::$_unitTestEnabled && defined('SID')) {
+		// Guillaume Filliere 2012-03-27 : added a check on the session_name
+		// if the session was opened and closed earlier, SID would already be defined and cause a crash here.
+		// Necessary for automne usage with SimpleSAML
+		// Hopefully in php 5.4 we will be able to use http://php.net/manual/fr/function.session-status.php
+        if (!self::$_unitTestEnabled && defined('SID') && session_name() !== 'AutomneSession') {
             /** @see Zend_Session_Exception */
             require_once 'Zend/Session/Exception.php';
             throw new Zend_Session_Exception('session has already been started by session.auto-start or session_start()');
@@ -575,10 +568,10 @@ class Zend_Session extends Zend_Session_Abstract
                         unset($_SESSION['__ZF'][$namespace]['ENVGH']);
                     }
                 }
-            }
 
-            if (isset($namespace) && empty($_SESSION['__ZF'][$namespace])) {
-                unset($_SESSION['__ZF'][$namespace]);
+                if (isset($namespace) && empty($_SESSION['__ZF'][$namespace])) {
+                    unset($_SESSION['__ZF'][$namespace]);
+                }
             }
         }
 

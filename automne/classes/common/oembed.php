@@ -142,22 +142,22 @@ class CMS_oembed extends CMS_grandFather
 			'/'			=> '\/',
 		);
 		foreach ($this->providers as $provider) {
-			$founded = false;
+			$found = false;
 			if (isset($provider['scheme']) && $provider['scheme']) {
 				foreach ($provider['scheme'] as $scheme) {
 					//convert scheme to regexp
 					$regexp = str_replace(array_keys($regreplace), $regreplace, $scheme);
 					if (preg_match('/('.$regexp.')/i', $this->_url)) {
-						$founded = true;
+						$found = true;
 						break;
 					}
 				}
 			}
-			if ($founded) {
+			if ($found) {
 				break;
 			}
 		}
-		if ($founded) { //service founded with known oembed api
+		if ($found) { //service found with known oembed api
 			$this->_provider = $provider['api'];
 			return true;
 		} elseif ($this->_embedlySupported()) { //try embed.ly api

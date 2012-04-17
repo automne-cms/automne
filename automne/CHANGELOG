@@ -1,3 +1,23 @@
+V4.2.1 (16/04/2012)
+[BUG] : Correct bug number: 2864, 2906, 2935, 2938, 2939, 2942, 2954, 2957, 2959, 2963, 2968, 3025, 3042, 3051, 3052 (see http://www.automne-cms.org/bug/)
+[BUG] : Correct a bug in users groups rights for rows and templates
+[BUG] : Correct a bug in wysiwyg toolbar deletion
+[BUG] : Correct a bug in HTML compression (caused by a notice in generated content)
+[BUG] : Correct a bug in user session
+[REFACTOR] : Update Zend Framework to version 1.11.11
+[REFACTOR] : Update codemirror to version 2.23
+[REFACTOR] : Optimize all images used in Automne
+[REFACTOR] : Replace fckeditor with ckeditor version 3.6.2 in block text and polymod
+[REFACTOR] : Remove deprecated parameter ALLOW_IMAGES_IN_WYSIWYG
+[REFACTOR] : Update WS Interactive logo
+[REFACTOR] : Update polymod item selector to add advanced filters in search
+[REFACTOR] : Click on an information message (in green) close it
+[REFACTOR] : Add support for crosswebsite in atm-linx short syntax
+[REFACTOR] : Add syntax {page:self:level} to get a page level in tree
+[FEATURE] : Add user logs in alias module
+[FEATURE] : Add button to reset polymod search
+[FEATURE] : Add Less support in atm-css-tags (less files are automaticaly parsed using lessphp)
+
 V4.2.0 (15/02/2012)
 [BUG] : Correct bug number: 2350, 2549, 2561, 2586, 2585, 2584, 2582, 2566, 2672, 2689, 2751, 2754, 2763, 2764, 2818, 2831 (see http://www.automne-cms.org/bug/)
 [BUG] : Admin lock cannot be removed, even with admin rights

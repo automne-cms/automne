@@ -95,7 +95,7 @@ $enableDD = (sensitiveIO::request('enableDD', 'checkNotFalse')) ? 'true' : 'fals
 $hasSectionsRoots = ($editable) ? $cms_user->hasEditablePages() : $cms_user->hasViewvablePages();
 
 if (!$hasSectionsRoots) {
-	CMS_grandFather::raiseError('No sections root founded ...');
+	CMS_grandFather::raiseError('No sections root found ...');
 	$view->show();
 }
 

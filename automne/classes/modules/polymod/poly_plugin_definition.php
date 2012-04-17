@@ -322,7 +322,7 @@ class CMS_poly_plugin_definitions extends CMS_grandFather
 	  * Get plugin object as an array structure used for export
 	  *
 	  * @param array $params The export parameters. Not used here
-	  * @param array $files The reference to the founded files used by object
+	  * @param array $files The reference to the found files used by object
 	  * @return array : the object array structure
 	  * @access public
 	  */

@@ -75,12 +75,12 @@ class CMS_object_google_coordinates extends CMS_object_common
 	protected $_subfields = array(0 => array(
 										'type' 			=> 'string',
 										'required' 		=> true,
-										'internalName'	=> 'lat',
+										'internalName'	=> 'long',
 									),
 								  1 => array(
 										'type' 			=> 'string',
 										'required' 		=> true,
-										'internalName'	=> 'long',
+										'internalName'	=> 'lat',
 									),
 							);
 	
@@ -183,11 +183,12 @@ class CMS_object_google_coordinates extends CMS_object_common
 						var field = form.findField(\'polymodFieldsValue[\' + addrFields[i] + \'_0]\');
 						var listfield = form.findField(\'polymodFieldsValue[list\' + addrFields[i] + \'_0]\');
 						if (field) {
-							addr += \' \' + field.getValue().replace(/\r?\n/g, \' \');
+							addr += \' \' + Ext.util.Format.stripTags(field.getValue());
 						} else if (listfield) {
 							addr += \' \' + Ext.util.Format.stripTags(listfield.lastSelectionText);
 						}
 					}
+					addr = Ext.util.Format.stripLines(addr);
 					var geocoder = new google.maps.Geocoder();
 					geocoder.geocode({address:addr}, function(results, status) {
 						if (status == \'OK\') {
@@ -334,24 +335,61 @@ class CMS_object_google_coordinates extends CMS_object_common
 		}
     }
 
-/**
-  * Return the needed form field tag for current object field
-  *
-  * @param array $values : parameters values array(parameterName => parameterValue) in :
-  *     id : the form field id to set
-  * @param multidimentionnal array $tags : xml2Array content of atm-function tag
-  * @return string : the form field HTML tag
-  * @access public
-  */
-    function getInput($fieldID, $language, $inputParams) {
-		//hidden field : use parent method
-		if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
-			return parent::getInput($fieldID, $language, $inputParams);
-		}
+	/**
+	  * Return the needed form field tag for current object field
+	  *
+	  * @param array $values : parameters values array(parameterName => parameterValue) in :
+	  *     id : the form field id to set
+	  * @param multidimentionnal array $tags : xml2Array content of atm-function tag
+	  * @return string : the form field HTML tag
+	  * @access public
+	  */
+   function getInput($fieldID, $language, $inputParams) {
 		$params = $this->getParamsValues();
-		$html = 'todo';
+		$polymodDebug = '';
+		
+		// Prefix
+		if (isset($inputParams['prefix'])) {
+			$prefixName = $inputParams['prefix'];
+		} else {
+			$prefixName = '';
+		}
+		
+		//serialize all htmlparameters 
+		$htmlParameters = $this->serializeHTMLParameters($inputParams);
+		
+		// polymod debug
+		if (POLYMOD_DEBUG) {
+		    $polymodDebug = '
+	        <div class="m-debug">
+		        Field : '.$this->_field->getID().'
+		        <br />Longitude (X) : '.$this->_subfieldValues[1]->getValue().'
+		        <br />Latitude (Y) : '.$this->_subfieldValues[0]->getValue().'
+	        </div>';
+	    }
+		
+		// HTML
+		$html = '
+		<div class="m-atmMap">
+			<div class="s-map"></div>
+			<div class="m-longitude">
+				<label for="'.$prefixName.$this->_field->getID().'_0"> '.$language->getMessage(self::MESSAGE_OBJECT_COORDINATES_LONGITUDE_DESCRIPTION, false, MOD_POLYMOD_CODENAME).'</label>
+			    <input class="s-longitude" '.$htmlParameters.' id="'.$prefixName.$this->_field->getID().'_0" name="'.$prefixName.$this->_field->getID().'_0" value="'.$this->_subfieldValues[0]->getValue().'" type="text" />
+			</div>
+			<div class="m-latitude">
+			    <label for="'.$prefixName.$this->_field->getID().'_1"> '.$language->getMessage(self::MESSAGE_OBJECT_COORDINATES_LATITUDE_DESCRIPTION, false, MOD_POLYMOD_CODENAME).'</label>
+			    <input class="s-latitude" '.$htmlParameters.' id="'.$prefixName.$this->_field->getID().'_1" name="'.$prefixName.$this->_field->getID().'_1" value="'.$this->_subfieldValues[1]->getValue().'" type="text" />
+			</div>
+			'.$polymodDebug.'
+		</div>';
+		
+		//append html hidden field which store field name
+		if ($html) {
+			$html .= '<input type="hidden" name="polymodFields['.$this->_field->getID().']" value="'.$this->_field->getID().'" />';
+		}
+		
 		return $html;
-    }
+	}
 
     /**
       * get labels for object structure and functions

@@ -272,7 +272,7 @@ switch ($action) {
 					$view->addJavascript($jscontent);
 					$view->show();
 				}
-				$value = FCKeditor::createAutomneLinks($value);
+				$value = CMS_textEditor::parseOuterContent($value);
 			}
 			$cms_block->writeToPersistence($cms_page->getID(), $cs, $rowTag, RESOURCE_LOCATION_EDITION, false, array("value" => $value));
 			//instanciate the clientspace
@@ -294,6 +294,7 @@ switch ($action) {
 					$modulesTreatment->setDefinition($datas);
 					$datas = $modulesTreatment->treatContent(true);
 				}
+				//CMS_grandFather::log($datas);
 				//set datas as returned content
 				$view->setContent($datas);
 				$edited = true;

@@ -172,7 +172,7 @@ if ($elements) {
 			}, scope:this}},
 		";
 		foreach ($elements as $element => $label) {
-			$label = sensitiveIO::sanitizeJSString($label);
+			$label = io::htmlspecialchars($label);
 			//if search use special search code, only search on standard module
 			$checked = (!$search || (isset($checkedElements[$element]) && $checkedElements[$element])) ? 'true' : 'false';
 			$searchPanel .= "{boxLabel: '{$label}', ctCls:'x-masked', inputValue:'{$element}',  checked: {$checked}, name: 'elements[]', listeners: {'check':searchWindow.search}},";

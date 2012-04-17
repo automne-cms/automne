@@ -212,17 +212,25 @@ if (!is_writable(PATH_REALROOT_FS)) {
 	$content .= '<li class="atm-pic-ok">File system write permissions are OK</li>';
 }
 //Email
-if (!@mail(AUTOMNE_DEFAULT_EMAIL, "Automne SMTP Test", "Automne SMTP Test")) {
-	$content .= '<li class="atm-pic-cancel">Error, No SMTP server found</li>';
+if (!NO_APPLICATION_MAIL) {
+	if (!@mail(AUTOMNE_DEFAULT_EMAIL, "Automne SMTP Test", "Automne SMTP Test")) {
+		$content .= '<li class="atm-pic-cancel">Error, No SMTP server found or SMTP error when sending an email to '.AUTOMNE_DEFAULT_EMAIL.'</li>';
+	} else {
+		$content .= '<li class="atm-pic-ok">SMTP server OK</li>';
+	}
 } else {
-	$content .= '<li class="atm-pic-ok">SMTP server OK</li>';
+	$content .= '<li class="atm-pic-question">Emails are disabled as a parameter. The SMTP server is not tested.</li>';
 }
 //Memory
-@ini_set('memory_limit', "32M");
-if (ini_get('memory_limit') && ini_get('memory_limit') < 32) {
-	$content .= '<li class="atm-pic-cancel">Error, Cannot upgrade memory limit to 32M. Memory detected : '.ini_get('memory_limit')."\n";
+if (ini_get('memory_limit') < (int) APPLICATION_MEMORY_LIMIT) {
+	@ini_set('memory_limit', APPLICATION_MEMORY_LIMIT);
+	if (ini_get('memory_limit') && ini_get('memory_limit') < APPLICATION_MEMORY_LIMIT) {
+		$content .= '<li class="atm-pic-cancel">Error, Cannot upgrade memory limit to '.APPLICATION_MEMORY_LIMIT.'. Memory detected : '.ini_get('memory_limit')."\n";
+	} else {
+		$content .= '<li class="atm-pic-ok">Memory limit OK ('.ini_get('memory_limit').')</li>';
+	}
 } else {
-	$content .= '<li class="atm-pic-ok">Memory limit OK</li>';
+	$content .= '<li class="atm-pic-ok">Memory limit OK ('.ini_get('memory_limit').')</li>';
 }
 
 //CLI
@@ -349,6 +357,15 @@ if ($cliOk) {
 		$content .= '<li class="atm-pic-cancel">Error, GD extension not installed</li>';
 	} else {
 		$content .= '<li class="atm-pic-ok">GD extension OK</li>';
+	}
+	//XAPIAN
+	if (class_exists('CMS_module_ase')) {
+		$return = CMS_patch::executeCommand('"'.$cliPath.'" -r "echo (function_exists(\'xapian_version_string\') ? xapian_version_string() : (function_exists(\'flint_open\') ? version_string() : \'none\'));"',$error);
+		if ($error || $return == 'none') {
+			$content .= '<li class="atm-pic-cancel">Error, Xapian extension not installed '.$error.' '.$return.'</li>';
+		} else {
+			$content .= '<li class="atm-pic-ok">Xapian extension OK ('.$return.')</li>';
+		}
 	}
 	$content .='
 		</ul>';

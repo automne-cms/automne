@@ -195,7 +195,7 @@ class CMS_auth extends CMS_grandFather implements Zend_Auth_Adapter_Interface
 				break;
 			}
 		}
-		//Nothing founded
+		//Nothing found
 		if (!$this->_result) {
 			$this->_messages[] = self::AUTH_MISSING_CREDENTIALS;
 			$this->_result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND, null, $this->_messages);

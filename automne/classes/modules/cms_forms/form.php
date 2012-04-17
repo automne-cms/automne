@@ -312,6 +312,9 @@ class CMS_forms_formular extends CMS_grandFather {
 						}
 					}
 				}
+				if (isset($definition[$key]['nodename']) && $definition[$key]['nodename'] == 'input' && $definition[$key]['attributes']['type'] == 'file') {
+					unset($definition[$key]['attributes']['value']);
+				}
 				if (isset($fieldValue)) {
 					switch ($definition[$key]['nodename']) {
 						case 'select':
@@ -977,7 +980,7 @@ class CMS_forms_formular extends CMS_grandFather {
 	 * Analyse a form xhtml code check if it has some copy-pasted code inside
 	 *
 	 * @access public
-	 * @return true if none error founded
+	 * @return true if none error found
 	 */
 	function checkFormCode($formCode)  {
 		//get form ID in xhtml code

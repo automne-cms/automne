@@ -513,7 +513,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * Convert variables of a given definition string (usually a row definition)
 	  *
 	  * @param string $definition the definition string to convert
-	  * @param boolean $toHumanReadableFormat if true, convert founded variables to a human readable format, else to a machine readable format
+	  * @param boolean $toHumanReadableFormat if true, convert found variables to a human readable format, else to a machine readable format
 	  * @param boolean $reset if true, reset convertion table if already loaded
 	  *
 	  * @return string : the module definition string converted
@@ -999,7 +999,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  *		array(
 	  *				objects	=> false|true : export module objects structures (default : true)
 	  *			)
-	  * @param array $files The reference to the founded files used by object
+	  * @param array $files The reference to the found files used by object
 	  * @return array : the object array structure
 	  * @access public
 	  */

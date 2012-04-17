@@ -55,7 +55,7 @@ $definition = sensitiveIO::request('definition') ? true : false;
 
 //items
 $items = (sensitiveIO::request('items')) ? explode(',', sensitiveIO::request('items')) : array();
-//Some actions to do on items founded
+//Some actions to do on items found
 $activate = sensitiveIO::request('activate') ? true : false;
 $desactivate = sensitiveIO::request('desactivate') ? true : false;
 $delete = sensitiveIO::request('del') ? true : false;

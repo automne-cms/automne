@@ -61,28 +61,30 @@ case "delete":
 		//check for codenames duplications
 		//get website codenames
 		$websiteCodenames = $website->getAllPagesCodenames();
-		//get codenames of parent website
+		//get codenames of parent page for website
 		$websiteRoot = $website->getRoot();
 		$father = CMS_tree::getFather($websiteRoot, true);
-		$fatherWebsite = $father->getWebsite();
-		$fatherCodenames = $fatherWebsite->getAllPagesCodenames();
-		$codenamesToRemove = array();
-		//get duplicated codenames
-		foreach ($websiteCodenames as $codename => $pageId) {
-			if (isset($fatherCodenames[$codename])) {
-				$codenamesToRemove[$codename] = $pageId;
+		if ($father && is_object($father) && !$father->hasError()) {
+			$fatherWebsite = $father->getWebsite();
+			$fatherCodenames = $fatherWebsite->getAllPagesCodenames();
+			$codenamesToRemove = array();
+			//get duplicated codenames
+			foreach ($websiteCodenames as $codename => $pageId) {
+				if (isset($fatherCodenames[$codename])) {
+					$codenamesToRemove[$codename] = $pageId;
+				}
 			}
-		}
-		//remove duplicated codenames
-		if ($codenamesToRemove) {
-			foreach ($codenamesToRemove as $codename => $pageId) {
-				$page = CMS_tree::getPageById($pageId);
-				$page->setCodename('', $cms_user);
-				$page->writeToPersistence();
-				//validate the modification
-				$validation = new CMS_resourceValidation(MOD_STANDARD_CODENAME, RESOURCE_EDITION_BASEDATA, $page);
-				$mod = CMS_modulesCatalog::getByCodename(MOD_STANDARD_CODENAME);
-				$mod->processValidation($validation, VALIDATION_OPTION_ACCEPT);
+			//remove duplicated codenames
+			if ($codenamesToRemove) {
+				foreach ($codenamesToRemove as $codename => $pageId) {
+					$page = CMS_tree::getPageById($pageId);
+					$page->setCodename('', $cms_user);
+					$page->writeToPersistence();
+					//validate the modification
+					$validation = new CMS_resourceValidation(MOD_STANDARD_CODENAME, RESOURCE_EDITION_BASEDATA, $page);
+					$mod = CMS_modulesCatalog::getByCodename(MOD_STANDARD_CODENAME);
+					$mod->processValidation($validation, VALIDATION_OPTION_ACCEPT);
+				}
 			}
 		}
 		//then destroy website

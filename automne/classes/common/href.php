@@ -564,6 +564,7 @@ class CMS_href extends CMS_grandFather
 			break;
 		case RESOURCE_LINK_TYPE_EXTERNAL:
 			$href = io::htmlspecialchars($this->_externalLink);
+			$href = str_replace('&amp;', '&', $href);
 			if (strtolower(substr($href, 0, 4)) != 'http') {
 				$href = 'http://'.$href;
 			}
@@ -606,7 +607,7 @@ class CMS_href extends CMS_grandFather
 	/**
 	  * Checks the presence of a valid HREF in this link definition
 	  *
-	  * @return boolean true if good href founded
+	  * @return boolean true if good href found
 	  * @access public
 	  */
 	function hasValidHREF()

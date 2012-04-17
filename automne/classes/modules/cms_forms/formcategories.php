@@ -224,7 +224,7 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 			return false;
 		}
 		if (!is_a($this->_form, 'CMS_forms_formular') || $this->_form->getID() <= 0) {
-			$this->raiseError("No CMS_forms_formular founded");
+			$this->raiseError("No CMS_forms_formular found");
 			return false;
 		}
 		

@@ -118,7 +118,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 						//analyse url to get page if any
 						$redirectPage = CMS_tree::analyseURL($url);
 						if ($redirectPage) {
-							//if page founded, check existence and rights
+							//if page found, check existence and rights
 							$pageID = $redirectPage->getID();
 							if ($redirectPage->hasError() || !CMS_tree::pagesExistsInUserSpace($pageID) || 
 									(APPLICATION_ENFORCES_ACCESS_CONTROL && (!isset($cms_user) || !$cms_user->hasPageClearance($pageID, CLEARANCE_PAGE_VIEW)))
@@ -221,9 +221,13 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 													$cms_forms_malformed[$form->getID()][] = $aField->getAttribute('name');
 												}
 											break;
+											case 'url':
+												//check if value start with http
+												if ($_POST[$aField->getAttribute('name')] && substr($_POST[$aField->getAttribute('name')], 0, 4) != 'http') {
+													$cms_forms_malformed[$form->getID()][] = $aField->getAttribute('name');
+												}
 											case 'textarea':
 											case 'text':
-											case 'url':
 												//if field has html tags, it is malformed
 												if (strip_tags($_POST[$aField->getAttribute('name')]) != $_POST[$aField->getAttribute('name')]) {
 													$cms_forms_malformed[$form->getID()][] = $aField->getAttribute('name');

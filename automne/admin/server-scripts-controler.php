@@ -34,7 +34,7 @@ define("MESSAGE_PAGE_NO_SCRIPTS_RIGHTS", 794);
 define("MESSAGE_ACTION_ALL_PAGES_SUBMITED", 795);
 define("MESSAGE_ACTION_N_PAGES_SUBMITED", 796);
 define("MESSAGE_ACTION_N_PAGES_REGENERATED", 797);
-define("MESSAGE_ERROR_NO_PAGES_FOUNDED", 798);
+define("MESSAGE_ERROR_NO_PAGES_FOUND", 798);
 define("MESSAGE_ACTION_N_PAGES_REGENERATION_ERROR", 1602);
 
 //load interface instance
@@ -141,7 +141,7 @@ switch ($action) {
 						}
 					}
 				} else {
-					$cms_message = $cms_language->getMessage(MESSAGE_ERROR_NO_PAGES_FOUNDED);
+					$cms_message = $cms_language->getMessage(MESSAGE_ERROR_NO_PAGES_FOUND);
 				}
 			}
 		}

@@ -111,7 +111,7 @@ class CMS_moduleClientspace extends CMS_grandFather
 		// Prints wanted template
 		$tpl_name = "mod_".$codename."_".io::strtolower($this->_attributes["type"]).".php";
 		if (!is_file(PATH_TEMPLATES_FS."/".$tpl_name)) {
-			$this->raiseError("Not a valid file founded : ".$tpl_name);
+			$this->raiseError("Not a valid file found : ".$tpl_name);
 			return false;
 		} else {
 			$data = $this->_parseTemplateForParameters($tpl_name);

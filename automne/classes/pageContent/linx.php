@@ -158,7 +158,7 @@ class CMS_linx extends CMS_grandFather
 				
 				$tagContent = 
 				'<atm-linx type="direct">'.
-					'<selection>';
+					'<selection '.(isset($this->_args['crosswebsite']) ? ' crosswebsite="'.$this->_args['crosswebsite'].'"' : '').'>';
 				if (isset($this->_args['node'])) {
 					$tagContent .= '<start><nodespec type="node" value="'.$this->_args['node'].'" /></start>';
 					//remove useless node argument
@@ -190,6 +190,7 @@ class CMS_linx extends CMS_grandFather
 				$selection = $selections->item(0);
 				//parse the selection for nodespecs and condition
 				if (!$this->_parseSelection($selection)) {
+					$this->raiseError();
 					return;
 				}
 			}
@@ -227,6 +228,9 @@ class CMS_linx extends CMS_grandFather
 	  */
 	function getOutput($register = false)
 	{
+		if ($this->hasError()) {
+			return '';
+		}
 		//computes the targets (from selection)
 		$this->_targets = $this->_buildTargets();
 		//set output
@@ -265,7 +269,7 @@ class CMS_linx extends CMS_grandFather
 		}
 		//append args to generated linx code
 		if ($this->_args) {
-			//append atm-row class and row-id to all first level tags founded in row datas
+			//append atm-row class and row-id to all first level tags found in row datas
 			$domdocument = new CMS_DOMDocument();
 			try {
 				$domdocument->loadXML('<linx>'.$output.'</linx>');

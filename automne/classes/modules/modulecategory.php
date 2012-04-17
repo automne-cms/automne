@@ -537,7 +537,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 		
 		if ($pluginsCode) {
 			//search and convert plugins codes
-			$description = FCKeditor::createAutomneLinks($description, $this->_moduleCodename);
+			$description = CMS_textEditor::parseOuterContent($description, $this->_moduleCodename);
 			//then eval all plugin codes
 			$callbackFunc = create_function('$string', 'ob_start();eval(sensitiveIO::sanitizeExecCommand("$string[2];"));$ret = ob_get_contents();ob_end_clean();return $ret;');
 			if ($callbackFunc) {
@@ -900,7 +900,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	  *		array(
 	  *				categoriesChildren	=> false|true : export children categories also (default : true)
 	  *			)
-	  * @param array $files The reference to the founded files used by object
+	  * @param array $files The reference to the found files used by object
 	  * @return array : the object array structure
 	  * @access public
 	  */

@@ -152,7 +152,7 @@ class CMS_blocksCatalog extends CMS_grandFather
 	}
 	
 	/**
-	  * Get all edited blocks founded for a given page
+	  * Get all edited blocks found for a given page
 	  * Detect all blocks
 	  * Sends an array of all blocks of given page
 	  * 

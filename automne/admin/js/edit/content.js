@@ -220,7 +220,8 @@ Ext.extend(Automne.content, Ext.util.Observable, {
 							params: 			{
 								resource:		Automne.tabPanels.pageId,
 								module:			'standard',
-								action:			'unlock'
+								action:			'unlock',
+								noreload:		true //do not reload statuses because we leave page and it cause a bad iframe reload
 							},
 							callBackScope:		this
 						});

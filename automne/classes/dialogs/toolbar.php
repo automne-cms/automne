@@ -11,13 +11,11 @@
 // +----------------------------------------------------------------------+
 // | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
-//
-// $Id: toolbar.php,v 1.3 2010/03/08 16:43:32 sebastien Exp $
 
 /**
   * Class CMS_wysiwyg_toolbar
   *
-  * represent a wwysiwyg (fckeditor) toolbar with a set of elements
+  * represent a wwysiwyg (ckeditor) toolbar with a set of elements
   *
   * @package Automne
   * @subpackage dialogs
@@ -41,7 +39,7 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 	protected $_elements = array(
 			'Source' 		=> 1356,
 			'Separator1' 	=> 1398,
-			'FitWindow' 	=> 1357,
+			'Maximize' 		=> 1758, // FitWindow
 			'ShowBlocks'	=> 525,
 			'Separator2' 	=> 1398,
 			'Preview' 		=> 1358,
@@ -51,7 +49,7 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 			'Copy' 			=> 1361,
 			'Paste' 		=> 1362,
 			'PasteText' 	=> 1363,
-			'PasteWord' 	=> 1364,
+			'PasteFromWord' => 1364, // PasteWord
 			'Separator4' 	=> 1398,
 			'Print'	 		=> 1365,
 			'Separator5' 	=> 1398,
@@ -63,17 +61,20 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 			'Separator7' 	=> 1398,
 			'SelectAll' 	=> 1370,
 			'RemoveFormat' 	=> 1371,
+			'Scayt' 		=> 1752, // New tool
 			'Separator8' 	=> 1398,
 			'Bold' 			=> 1372,
 			'Italic' 		=> 1373,
 			'Underline' 	=> 1374,
-			'StrikeThrough' => 1375,
+			'Strike' 		=> 1375, // StrikeThrough
 			'Separator9' 	=> 1398,
 			'Subscript' 	=> 1376,
 			'Superscript' 	=> 1377,
 			'Separator10' 	=> 1398,
-			'OrderedList' 	=> 1378,
-			'UnorderedList' => 1379,
+			'NumberedList' 	=> 1378, // OrderedList
+			'BulletedList'	=> 1379, // UnorderedList
+			'Blockquote' 	=> 1753, // New tool
+			'CreateDiv' 	=> 1754, // New tool
 			'Separator11' 	=> 1398,
 			'Outdent' 		=> 1380,
 			'Indent' 		=> 1381,
@@ -81,19 +82,21 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 			'JustifyLeft' 	=> 1382,
 			'JustifyCenter' => 1383,
 			'JustifyRight' 	=> 1384,
-			'JustifyFull' 	=> 1385,
+			'JustifyBlock' 	=> 1385, // JustifyFull
+			'BidiLtr' 		=> 1755, // New tool
+			'BidiRtl' 		=> 1756, // New tool
 			'Separator13' 	=> 1398,
 			'Link' 			=> 1386,
 			'Unlink' 		=> 1387,
 			'Anchor' 		=> 1388,
 			'Separator14' 	=> 1398,
-			'Image' 		=> 1389,
 			'Table' 		=> 1390,
-			'Rule' 			=> 1391,
+			'HorizontalRule'=> 1391, // Rule
 			'SpecialChar' 	=> 1392,
+			'Iframe' 		=> 1757, // New tool
 			'Separator15' 	=> 1398,
-			'Style' 		=> 1393,
-			'FontFormat' 	=> 1394,
+			'Styles' 		=> 1393, // Style
+			'Format' 		=> 1394, // FontFormat
 			'FontSize' 		=> 1395,
 			'Separator16' 	=> 1398,
 			'TextColor' 	=> 1396,
@@ -234,10 +237,6 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 	  * @access public
 	  */
 	protected function _getDefaultElements() {
-		//if image tool is not allowed, remove it from list
-		if (!ALLOW_IMAGES_IN_WYSIWYG && isset($this->_elements['Image'])) {
-			unset($this->_elements['Image']);
-		}
 		return $this->_elements;
 	}
 	
@@ -270,6 +269,24 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 	  * @access public
 	  */
 	function getElements() {
+		//ckeditor => fckeditor
+		$conversion = array(
+			'PasteFromWord' => 'PasteWord',
+			'Strike' 		=> 'StrikeThrough',
+			'NumberedList' 	=> 'OrderedList',
+			'BulletedList'	=> 'UnorderedList',
+			'JustifyBlock' 	=> 'JustifyFull',
+			'HorizontalRule'=> 'Rule',
+			'Styles' 		=> 'Style',
+			'Format' 		=> 'FontFormat',
+			'Maximize' 		=> 'FitWindow',
+		);
+		foreach ($this->_toolbarElements as $key => $toolbarElement) {
+			//for backward compat
+			if (in_array($toolbarElement, $conversion)) {
+				$this->_toolbarElements[$key] = str_replace($conversion, array_keys($conversion), $toolbarElement);
+			}
+		}
 		return $this->_toolbarElements;
 	}
 	
@@ -308,22 +325,60 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 	}
 	
 	/**
-	  * Gets the FCKEditor toolbar definition
+	  * Gets the (F)CKEditor toolbar definition
 	  *
+	  * @param boolean $fckEditor Does the format must be compatible with fckeditor (default : false)
 	  * @return string the toolbar code
 	  * @access public
 	  */
-	function getDefinition() {
+	function getDefinition($fckEditor = false) {
 		$modulesElements = $this->_getModulesElements();
 		$defaultElements = $this->_getDefaultElements();
 		$availableElements = array_merge($defaultElements, $modulesElements);
-		//remove image element if it is not allowed
-		$definition = "\n".'FCKConfig.ToolbarSets["'.$this->getCode().'"] = [[';
+		if ($fckEditor) {
+			$definition = "\n".'FCKConfig.ToolbarSets["'.$this->getCode().'"] = [[';
+		} else {
+			$definition = "\n".'toolbarSets["'.$this->getCode().'"] = [[';
+		}
+		//ckeditor => fckeditor
+		$conversion = array(
+			'PasteFromWord' => 'PasteWord',
+			'Strike' 		=> 'StrikeThrough',
+			'NumberedList' 	=> 'OrderedList',
+			'BulletedList'	=> 'UnorderedList',
+			'JustifyBlock' 	=> 'JustifyFull',
+			'HorizontalRule'=> 'Rule',
+			'Styles' 		=> 'Style',
+			'Format' 		=> 'FontFormat',
+			'Maximize' 		=> 'FitWindow',
+		);
+		if ($fckEditor) {
+			$newElements = array(
+				'Scayt',
+				'Blockquote',
+				'CreateDiv',
+				'BidiLtr',
+				'BidiRtl',
+				'Iframe',
+				'Maximize',
+				'ShowBlocks',
+			);
+		}
 		$count = 0;
 		foreach ($this->_toolbarElements as $toolbarElement) {
+			//for backward compat
+			if (in_array($toolbarElement, $conversion)) {
+				$toolbarElement = str_replace($conversion, array_keys($conversion), $toolbarElement);
+			}
+			if ($fckEditor && in_array($toolbarElement, $newElements)) {
+				$toolbarElement = 'unavailable';
+			}
 			if (isset($availableElements[$toolbarElement])) {
 				if (io::substr($toolbarElement, 0, 9) != 'Separator') {
 					$definition .= ($count) ? ',':'';
+					if ($fckEditor) {
+						$toolbarElement = str_replace(array_keys($conversion), $conversion, $toolbarElement);
+					}
 					$definition .= '\''.$toolbarElement.'\'';
 					$count++;
 				} else {
@@ -347,9 +402,9 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 			$sql = "
 				delete
 				from
-					websites
+					toolbars
 				where
-					id_web='".$this->_id."'
+					id_tool = '".$this->_id."'
 			";
 			$q = new CMS_query($sql);
 		}

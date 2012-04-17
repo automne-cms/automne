@@ -57,6 +57,9 @@ $content = '
 	<div class="atm-loading-indicator">'.$language->getMessage(MESSAGE_PAGE_LOADING).'</div>
 	<noscript class="atm-alert">You must have Javascript enabled to access Automne.<hr />Vous devez avoir Javascript actif pour acc&eacute;der &agrave; Automne.</noscript>
 </div>
+<script type="text/javascript">
+var CKEDITOR_BASEPATH = \''.PATH_MAIN_WR.'/ckeditor/\';
+</script>
 '.CMS_view::getJavascript($jsfiles).CMS_view::getJavascript(array('popup'));
 
 if (APPLICATION_GCF_SUPPORT) {

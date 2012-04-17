@@ -4,8 +4,9 @@ CodeMirror.defineMode("xml", function(config, parserConfig) {
     autoSelfClosers: {"br": true, "img": true, "hr": true, "link": true, "input": true,
                       "meta": true, "col": true, "frame": true, "base": true, "area": true},
     doNotIndent: {"pre": true},
-    allowUnquoted: true
-  } : {autoSelfClosers: {}, doNotIndent: {}, allowUnquoted: false};
+    allowUnquoted: true,
+    allowMissing: false
+  } : {autoSelfClosers: {}, doNotIndent: {}, allowUnquoted: false, allowMissing: false};
   var alignCDATA = parserConfig.alignCDATA;
 
   // Return variables for tokenizers
@@ -47,9 +48,17 @@ CodeMirror.defineMode("xml", function(config, parserConfig) {
       }
     }
     else if (ch == "&") {
-      stream.eatWhile(/[^;]/);
-      stream.eat(";");
-      return "atom";
+      var ok;
+      if (stream.eat("#")) {
+        if (stream.eat("x")) {
+          ok = stream.eatWhile(/[a-fA-F\d]/) && stream.eat(";");          
+        } else {
+          ok = stream.eatWhile(/[\d]/) && stream.eat(";");
+        }
+      } else {
+        ok = stream.eatWhile(/[\w\.\-:]/) && stream.eat(";");
+      }
+      return ok ? "atom" : "error";
     }
     else {
       stream.eatWhile(/[^&<]/);
@@ -181,15 +190,21 @@ CodeMirror.defineMode("xml", function(config, parserConfig) {
   }
 
   function attributes(type) {
-    if (type == "word") {setStyle = "attribute"; return cont(attributes);}
+    if (type == "word") {setStyle = "attribute"; return cont(attribute, attributes);}
+    if (type == "endTag" || type == "selfcloseTag") return pass();
+    setStyle = "error";
+    return cont(attributes);
+  }
+  function attribute(type) {
     if (type == "equals") return cont(attvalue, attributes);
-    if (type == "string") {setStyle = "error"; return cont(attributes);}
-    return pass();
+    if (!Kludges.allowMissing) setStyle = "error";
+    return (type == "endTag" || type == "selfcloseTag") ? pass() : cont();
   }
   function attvalue(type) {
-    if (type == "word" && Kludges.allowUnquoted) {setStyle = "string"; return cont();}
     if (type == "string") return cont(attvaluemaybe);
-    return pass();
+    if (type == "word" && Kludges.allowUnquoted) {setStyle = "string"; return cont();}
+    setStyle = "error";
+    return (type == "endTag" || type == "selfCloseTag") ? pass() : cont();
   }
   function attvaluemaybe(type) {
     if (type == "string") return cont(attvaluemaybe);
@@ -249,4 +264,5 @@ CodeMirror.defineMode("xml", function(config, parserConfig) {
 });
 
 CodeMirror.defineMIME("application/xml", "xml");
-CodeMirror.defineMIME("text/html", {name: "xml", htmlMode: true});
+if (!CodeMirror.mimeModes.hasOwnProperty("text/html"))
+  CodeMirror.defineMIME("text/html", {name: "xml", htmlMode: true});

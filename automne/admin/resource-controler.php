@@ -39,6 +39,7 @@ $view->setSecure();
 $resourceId = sensitiveIO::request('resource', 'sensitiveIO::isPositiveInteger');
 $codename = sensitiveIO::request('module', CMS_modulesCatalog::getAllCodenames());
 $action = sensitiveIO::request('action', array('unlock'));
+$noreload = sensitiveIO::request('noreload') ? true : false;
 
 //load module
 if (!$codename) {
@@ -100,7 +101,7 @@ if ($cms_message) {
 }
 $status = $resource->getStatus()->getHTML(false, $cms_user, MOD_STANDARD_CODENAME, $resource->getID());
 //if page status is changed
-if ($status != $initialStatus) {
+if (!$noreload && $status != $initialStatus) {
 	//Replace all the status icons by the new one across the whole interface
 	$tinyStatus = $resource->getStatus()->getHTML(true, $cms_user, MOD_STANDARD_CODENAME, $resource->getID());
 	$statusId = $resource->getStatus()->getStatusId(MOD_STANDARD_CODENAME, $resource->getID());

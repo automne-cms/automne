@@ -227,13 +227,15 @@ foreach ($all_languages as $aLanguage) {
 				'value'				=> $item->getLabel($aLanguage, false)
 			),array(
 				'fieldLabel'		=> $cms_language->getMessage(MESSAGE_PAGE_FIELD_DESC),
-				'xtype'				=> 'fckeditor',
+				'xtype'				=> 'ckeditor',
 				'name'				=> 'description_'.$aLanguage->getCode(),
 				'value'				=> (string) $item->getDescription($aLanguage, false, false),
 				'height'			=> 200,
 				'editor'			=> array(
-					'ToolbarSet' 		=> 'BasicLink',
-					'DefaultLanguage'	=> $cms_language
+					'scayt_sLang'		=> $aLanguage->getCode(),
+					'language'			=> $cms_language->getCode(),
+					'customConfig'		=> PATH_MAIN_WR.'/ckeditor/config.php',
+					'atmToolbar'		=> 'BasicLink',
 				)
 			),array(
 				'fieldLabel'		=> $cms_language->getMessage(MESSAGE_PAGE_FIELD_FILE),

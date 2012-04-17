@@ -38,7 +38,7 @@ Automne.utils = {
 							regenerate:		(Automne.tabPanels.getActiveTab().id == 'public'),
 							unlock:			(unlock == true ? false : true)
 						});
-						pr('switchStatus : page founded and reloaded');
+						pr('switchStatus : page found and reloaded');
 					}
 				}
 			}

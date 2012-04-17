@@ -364,7 +364,7 @@ $usersPanel = "{
 
 //AFJ
 if (date(base64_decode('ZC1t')) == base64_decode('MDEtMDQ=')) {
-	eval(base64_decode('JGNvbnRlbnRFbCA9ICc8ZGl2IGlkPSJhZmpEaXZQYW5lbCI+PHVsPjxsaT48ZGl2IGNsYXNzPSJhdG0tc2VydmVyIGF0bS1zaWRlcGljIj48L2Rpdj48YSBhdG06YWN0aW9uPSJhdG0tYWZqIiBocmVmPSIjIj4nLigkY21zX2xhbmd1YWdlLT5nZXRDb2RlKCkgPT0gJ2ZyJyA/ICdGYWl0IG1vaSB1biBjYWYmZWFjdXRlOycgOiAnTWFrZSBtZSBzb21lIGNvZmZlZScpLic8L2E+PC9saT48L3VsPjwvZGl2Pic7JHNlcFBhbmVsIC49ICJ7aWQ6J2FmalNpZGVQYW5lbCcsZnJhbWU6dHJ1ZSx0aXRsZTonIi4oJGNtc19sYW5ndWFnZS0+Z2V0Q29kZSgpID09ICdmcicgPyAnRm9uY3Rpb25zIFV0aWxlcycgOiAnVXNlZnVsIEZ1bmN0aW9ucycpLiInLGNvbGxhcHNpYmxlOnRydWUsdGl0bGVDb2xsYXBzZTp0cnVlLGNvbGxhcHNlZDp0cnVlLGh0bWw6JyIuc2Vuc2l0aXZlSU86OnNhbml0aXplSlNTdHJpbmcoJGNvbnRlbnRFbCkuIicsbGlzdGVuZXJzOnsnZXhwYW5kJzogc2Nyb2xsUGFuZWx9fSwiOw=='));
+	eval(base64_decode('JGNvbnRlbnRFbCA9ICc8ZGl2IGlkPSJhZmpEaXZQYW5lbCI+PHVsPjxsaT48ZGl2IGNsYXNzPSJhdG0tc2VydmVyIGF0bS1zaWRlcGljIj48L2Rpdj48YSBhdG06YWN0aW9uPSJhdG0tYWZqIiBocmVmPSIjIj4nLigkY21zX2xhbmd1YWdlLT5nZXRDb2RlKCkgPT0gJ2ZyJyA/ICdGYWl0IG1vaSB1biBjYWYmZWFjdXRlOycgOiAnTWFrZSBtZSBzb21lIGNvZmZlZScpLic8L2E+PC9saT48bGk+PGRpdiBjbGFzcz0iYXRtLXNlcnZlciBhdG0tc2lkZXBpYyI+PC9kaXY+PGEgYXRtOmFjdGlvbj0iYXRtLWpzdCIgaHJlZj0iIyI+VGV0cmlzPC9hPjwvbGk+PC91bD48L2Rpdj4nOyRzZXBQYW5lbCAuPSAie2lkOidhZmpTaWRlUGFuZWwnLGZyYW1lOnRydWUsdGl0bGU6JyIuKCRjbXNfbGFuZ3VhZ2UtPmdldENvZGUoKSA9PSAnZnInID8gJ0ZvbmN0aW9ucyBVdGlsZXMnIDogJ1VzZWZ1bCBGdW5jdGlvbnMnKS4iJyxjb2xsYXBzaWJsZTp0cnVlLHRpdGxlQ29sbGFwc2U6dHJ1ZSxjb2xsYXBzZWQ6dHJ1ZSxodG1sOiciLnNlbnNpdGl2ZUlPOjpzYW5pdGl6ZUpTU3RyaW5nKCRjb250ZW50RWwpLiInLGxpc3RlbmVyczp7J2V4cGFuZCc6IHNjcm9sbFBhbmVsfX0sIjs='));
 }
 
 //TEMPLATES
@@ -616,6 +616,17 @@ $jscontent = <<<END
 			});
 			window.show();
     	},
+		'atm-jst' : function(t){
+    		var window = new Automne.frameWindow({
+				id:				'jstWindow',
+				frameURL:		'{$automnePath}/admin/jst.php',
+				allowFrameNav:	true,
+				width:			450,
+				height:			500,
+				animateTarget:	t
+			});
+			window.show();
+    	},
 		'module' : function(t){
     		switch(t.getAttributeNS('atm', 'version')) {
 				case '3':
@@ -747,6 +758,7 @@ $jscontent = <<<END
 			}
 		});
 	}
+	var knm = new Knm();knm.code=function(){var window=new Automne.frameWindow({id:'jstWindow',frameURL:'{$automnePath}/admin/jst.php',allowFrameNav:true,width:450,height:500});window.show();};knm.load();
 	var rowHelp = Ext.get('row-help-button');
 	if (rowHelp) {
 		rowHelp.on('click', function(el) {

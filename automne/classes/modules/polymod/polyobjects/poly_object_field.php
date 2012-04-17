@@ -149,7 +149,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	  * @access public
 	  */
 	function setValue($valueName, $value) {
-		if (!in_array($valueName,array_keys($this->_objectFieldValues))) {
+		if (!isset($this->_objectFieldValues[$valueName])) {
 			$this->raiseError("Unknown valueName to set :".$valueName);
 			return false;
 		}
@@ -169,7 +169,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	  * @access public
 	  */
 	function getValue($valueName) {
-		if (!in_array($valueName,array_keys($this->_objectFieldValues))) {
+		if (!isset($this->_objectFieldValues[$valueName])) {
 			$this->raiseError("Unknown valueName to get : ".$valueName);
 			return false;
 		}
@@ -409,7 +409,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	  * Get object field as an array structure used for export
 	  *
 	  * @param array $params The export parameters. Not used here
-	  * @param array $files The reference to the founded files used by object
+	  * @param array $files The reference to the found files used by object
 	  * @return array : the object array structure
 	  * @access public
 	  */
@@ -441,7 +441,12 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 		}
 
 		if (!io::isPositiveInteger($aField['type'])) {
-			$oType = new $aField['type'](array(), $this, false);
+			if (class_exists($aField['type'])) {
+				$oType = new $aField['type'](array(), $this, false);
+				$aField['params']['params'] = $oType->asArray();
+			}
+		} elseif ($aField['multi']) {
+			$oType = new CMS_multi_poly_object($aField['type'], array(), $this, false);
 			$aField['params']['params'] = $oType->asArray();
 		}
 		return $aField;
@@ -527,10 +532,10 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 			$this->setValue("searchable", $data['params']['searchable']);
 		}
 		//parameters
-		if (!io::isPositiveInteger($data['type'])) {
+		if (!io::isPositiveInteger($data['type']) || (isset($data['multi']) && $data['multi'])) {
 			$fieldObject = $this->getTypeObject();
 			$GLOBALS['moduleCodename'] = $params['module'];
-			if (isset($data['params']['params']) && $data['params']['params']) {
+			if ($fieldObject && isset($data['params']['params']) && $data['params']['params']) {
 				$params = $fieldObject->treatParams($data['params']['params'], '');
 				if ($params) {
 					$this->setValue("params", $params);

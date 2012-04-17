@@ -64,10 +64,14 @@ class JSMin {
 	 *	//<<
 	 *	...
 	 *	//!>>
-	 * Used to protect copyrights texts
+	 * Used to protect copyrights texts or already minimified JS
 	 */
 	$matches = array();
+	//augment pcre.backtrack_limit
+	ini_set('pcre.backtrack_limit', 500000);
 	preg_match_all("#\/{2}<{2}(.*)\/{2}\!>{2}#Us", $js, $matches);
+	//reset pcre.backtrack_limit
+	ini_set('pcre.backtrack_limit', 100000);
 	if (isset($matches[1]) && $matches[1]) {
 		$return = '';
 		$js = explode('//<<', $js);

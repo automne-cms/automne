@@ -18,7 +18,7 @@
   * Class CMS_resource_cms_news_search
   * 
   * This class performs searches and returns resultsets, number of 
-  * records founded, paginate, etc.
+  * records found, paginate, etc.
   * 
   * @package Automne
   * @subpackage cms_forms
@@ -39,7 +39,7 @@ class CMS_forms_search extends CMS_grandFather {
 	protected $_select = array('id_frm as id');
 	
 	/**
-	 * Number of items founded
+	 * Number of items found
 	 * 
 	 * @var integer
 	 * @access private
@@ -218,7 +218,7 @@ class CMS_forms_search extends CMS_grandFather {
 	 * @return string
 	 */
 	protected function _buildSQL() {
-		// reset results founded :
+		// reset results found :
 		unset($this->_numRows);
 		
 		// Complete search with date
@@ -267,7 +267,7 @@ class CMS_forms_search extends CMS_grandFather {
 	}
 	
 	/**
-	 * Count items founded with query COUNT(*)
+	 * Count items found with query COUNT(*)
 	 * 
 	 * @access public
 	 * @return integer
@@ -296,7 +296,7 @@ class CMS_forms_search extends CMS_grandFather {
 
 	/**
 	 * Proceed to serach and returns the array of results, null if none 
-	 * founded. All search options had been set yet.
+	 * found. All search options had been set yet.
 	 * 
 	 * @access public
 	 * @return array(CMS_resources_cms_news)

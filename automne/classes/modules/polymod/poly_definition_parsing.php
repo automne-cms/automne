@@ -376,7 +376,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	}
 	
 	/**
-	  * Return parsing errors founded during parsing test
+	  * Return parsing errors found during parsing test
 	  * only in self::CHECK_PARSING_MODE
 	  *
 	  * @return string the parsing errors

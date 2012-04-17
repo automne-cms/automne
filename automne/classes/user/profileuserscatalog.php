@@ -392,15 +392,15 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 		}
 		if ($order != 'score') {
 			if ($order) {
-				$founded = false;
+				$found = false;
 				$sql = "DESCRIBE profilesUsers";
 				$q = new CMS_query($sql);
 				while ($field = $q->getValue('Field')) {
 					if ($field == $order.'_pru') {
-						$founded = true;
+						$found = true;
 					}
 				}
-				if ($founded) {
+				if ($found) {
 					$orderBy = $order.'_pru';
 				} else {
 					$orderBy = 'lastName_pru,firstName_pru';

@@ -408,7 +408,7 @@ class CMS_file extends CMS_grandFather
 					return false;
 				}
 			}
-			if (!@fwrite($f, $this->_content)) {
+			if (@fwrite($f, $this->_content) === false) {
 				$this->raiseError("Can't write file ".$this->_name);
 				return false;
 			} else {
@@ -1069,7 +1069,7 @@ class CMS_file extends CMS_grandFather
 	  * get mime type of a given file
 	  *
 	  * @param string $file : the file location to get mime type (relative to FS) or none to use method on current object
-	  * @return string the mime type founded or false if file does not exists. application/octet-stream is returned if no type founded
+	  * @return string the mime type found or false if file does not exists. application/octet-stream is returned if no type found
 	  * @access public
 	  * @static
 	  */
@@ -1131,6 +1131,25 @@ class CMS_file extends CMS_grandFather
 	static function sendFiles($files, $contentType = 'text/html') {
 		//check for the closest last modification date
 		$lastdate = '';
+		//check for included files in less files
+		$includes = array();
+		if ($contentType == 'text/css') {
+			foreach ($files as $key => $file) {
+				if (pathinfo($file, PATHINFO_EXTENSION) == 'less') {
+					$lessCache = new CMS_cache(md5($file), 'lessphp', 2592000, false);
+					if ($lessCache->exist()) {
+						$includes = array_merge($includes, $lessCache->load());
+					}
+				}
+			}
+		}
+		if ($includes) {
+			foreach ($includes as $key => $file) {
+				if (file_exists($file) && is_file($file)) {
+					$lastdate = (filemtime($file) > $lastdate) ? filemtime($file) : $lastdate;
+				}
+			}
+		}
 		foreach ($files as $key => $file) {
 			if (file_exists($file) && is_file($file)) {
 				$lastdate = (filemtime($file) > $lastdate) ? filemtime($file) : $lastdate;
@@ -1167,8 +1186,32 @@ class CMS_file extends CMS_grandFather
 		if (!$cache->exist() || !($datas = $cache->load())) {
 			// datas cache missing so create it
 			foreach ($files as $file) {
-				$datas .= file_get_contents($file)."\n";
+				$fileData = file_get_contents($file);
+				//strip BOM from file if exists
+				if (substr($fileData, 0,3) === '﻿') {
+					$fileData = substr($fileData, 3);
+				}
+				//append file origin comment
+				if ($contentType == 'text/javascript') {
+					$fileData = '//<<'."\n".'//JS file: '.(str_replace(PATH_REALROOT_FS, '', $file)).''."\n".'//!>>'."\n".$fileData;
+				}
+				//append file origin comment
+				if ($contentType == 'text/css') {
+					//compile less files if needed
+					if (pathinfo($file, PATHINFO_EXTENSION) == 'less') {
+						$less = new lessc($file);
+						$fileData = $less->parse();
+						$lessIncludes = $less->allParsedFiles();
+						if (sizeof($lessIncludes) > 1) {
+							$lessCache = new CMS_cache(md5($file), 'lessphp', 2592000, false);
+							$lessCache->save(array_keys($lessIncludes), array('type' => 'lessphp'));
+						}
+					}
+					$fileData = '/*<<*/'."\n".'/* CSS file: '.(str_replace(PATH_REALROOT_FS, '', $file)).' */'."\n".'/*!>>*/'."\n".$fileData;
+				}
+				$datas .= $fileData."\n";
 			}
+			
 			//minimize JS files if needed
 			if (!SYSTEM_DEBUG && $contentType == 'text/javascript') {
 				$datas = JSMin::minify($datas);
@@ -1200,6 +1243,8 @@ class CMS_file extends CMS_grandFather
 		echo $datas;
 		exit;
 	}
+	
+	
 	
 	/**
 	  * Gzip a given file into another given file

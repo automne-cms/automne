@@ -420,7 +420,7 @@ class CMS_XMLTag extends CMS_grandFather
 	}
 	
 	/**
-	  * Return tag errors founded
+	  * Return tag errors found
 	   *
 	  * @return string the parsing errors
 	  * @access public
@@ -430,7 +430,7 @@ class CMS_XMLTag extends CMS_grandFather
 	}
 	
 	/**
-	  * Return tag references founded
+	  * Return tag references found
 	   *
 	  * @return array the tag references
 	  * @access public

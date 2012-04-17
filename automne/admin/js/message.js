@@ -34,7 +34,9 @@ Automne.message = {
 		}
 		Automne.message.msgCt.alignTo(el || document, 't-t');
 		var m = Ext.DomHelper.insertFirst(Automne.message.msgCt, {html:boxtpl}, true);
+		m.on('click', m.remove, m);
 		m.slideIn('t').pause(duration || 3).ghost("t", {remove:true});
+		
 		if (win && win.on) {
 			win.on('close',function(){m.remove();});
 		}

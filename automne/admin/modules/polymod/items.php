@@ -78,6 +78,7 @@ define("MESSAGE_ACTION_PUBLISH", 604);
 define("MESSAGE_ACTION_PUBLISH_SELECTED", 602);
 define("MESSAGE_ACTION_UNPUBLISH_SELECTED", 601);
 define("MESSAGE_ACTION_DELETE_CONFIRM", 606);
+define("MESSAGE_ACTION_RESET_SEARCH", 642);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -452,7 +453,7 @@ $searchPanel .= "{
 			name:				'direction_{$object->getID()}',
 			hiddenName:		 	'direction_{$object->getID()}',
 			forceSelection:		true,
-			fieldLabel:			'',
+			fieldLabel:			'&nbsp;',
 			labelSeparator:		'',
 			mode:				'local',
 			triggerAction:		'all',
@@ -529,6 +530,29 @@ $jscontent = <<<END
 			return;
 		}
 		var form = Ext.getCmp('{$winId}Search').getForm();
+		//check for reset button
+		var hasReset = false;
+		form.items.each(function(field){
+			if (field.name != 'sort_{$object->getID()}' 
+				&& field.name != 'direction_{$object->getID()}'
+				&& field.name != 'kwrds_target_{$object->getID()}'
+				&& field.name != 'items_{$object->getID()}_kwrds_options'
+				&& field.getValue()) {
+				
+				hasReset = true;
+			}
+			if (field.name == 'sort_{$object->getID()}' && field.getValue() != 'objectID') {
+				hasReset = true;
+			}
+			if (field.name == 'direction_{$object->getID()}' && field.getValue() != 'desc') {
+				hasReset = true;
+			}
+			if (field.name == 'kwrds_target_{$object->getID()}' && field.getValue() != -1) {
+				hasReset = true;
+			}
+		});
+		searchPanel.tools.close.setVisible(hasReset);
+		
 		var values = Ext.applyIf(form.getValues(), {
 			module:			'{$codename}',
 			objectId:		'{$objectId}',
@@ -612,6 +636,44 @@ $jscontent = <<<END
 			scope:			this,
 			handler:		moduleObjectWindow.search
 		},
+		tools: [{
+			id:				'refresh',
+			handler:		function(e, toolEl, panel){
+				moduleObjectWindow.search();
+			},
+			qtip:			'{$cms_language->getJsMessage(MESSAGE_PAGE_REFRESH_ZONE_CONTENT)}'
+		},{
+			id:				'close',
+			hidden:			true,
+			handler:		function(e, toolEl, panel){
+				var moduleObjectWindow = Ext.getCmp('{$winId}');
+				moduleObjectWindow.ok = false;
+				Ext.getCmp('{$winId}Search').getForm().items.each(function(field){
+					if (field.name != 'sort_{$object->getID()}' 
+						&& field.name != 'direction_{$object->getID()}'
+						&& field.name != 'kwrds_target_{$object->getID()}'
+						&& field.name != 'items_{$object->getID()}_kwrds_options') {
+						
+						field.setValue('');
+					}
+					if (field.name == 'sort_{$object->getID()}') {
+						field.setValue('objectID');
+					}
+					if (field.name == 'direction_{$object->getID()}') {
+						field.setValue('desc');
+					}
+					if (field.name == 'kwrds_target_{$object->getID()}') {
+						field.setValue(-1);
+					}
+					if (field.name == 'items_{$object->getID()}_kwrds_options') {
+						field.setValue('any');
+					}
+				});
+				moduleObjectWindow.ok = true;
+				moduleObjectWindow.search();
+			},
+			qtip:			'{$cms_language->getJsMessage(MESSAGE_ACTION_RESET_SEARCH, false, MOD_POLYMOD_CODENAME)}'
+		}],
 		items:[{$searchPanel}]
 	});
 	
@@ -701,13 +763,6 @@ $jscontent = <<<END
 				}
 			}}
 		},
-		tools: [{
-			id:				'refresh',
-			handler:		function(e, toolEl, panel){
-				moduleObjectWindow.search();
-			},
-			qtip:			'{$cms_language->getMessage(MESSAGE_PAGE_REFRESH_ZONE_CONTENT)}'
-		}],
 		tbar: new Ext.Toolbar({
             id: 			'{$winId}toolbar',
             enableOverflow: true,
