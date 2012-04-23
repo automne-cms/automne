@@ -376,9 +376,9 @@ $jscontent = <<<END
 	var validationTplMarkup = [
 		'<div>',
 			'<div id="validation-actions"></div>',
-			'<div style="padding:5px;">',
-				'<h3 style="">{status} {label} (ID : {resource})</h3><br/>',
-				'<strong>{$cms_language->getJSMessage(MESSAGE_PAGE_EDITORS)} :</strong> {editorsHTML}<br/>',
+			'<div style="padding:5px;height:42px;overflow:auto;">',
+				'<h3 style="">{status} {label} (ID : {resource})</h3>',
+				'<strong>{$cms_language->getJSMessage(MESSAGE_PAGE_EDITORS)} :</strong> {editorsHTML}',
 			'</div>',
 		'</div>',
 		'<div id="validation-form"></div>'

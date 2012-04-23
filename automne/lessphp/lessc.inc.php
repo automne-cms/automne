@@ -1,7 +1,7 @@
 <?php
 
 /**
- * lessphp v0.3.4
+ * lessphp v0.3.4-2
  * http://leafo.net/lessphp
  *
  * LESS css compiler, adapted from http://lesscss.org
@@ -33,7 +33,7 @@
  *
  */
 class lessc {
-	public static $VERSION = "v0.3.4";
+	public static $VERSION = "v0.3.4-2";
 	protected $buffer;
 	protected $count;
 	protected $line;
@@ -2142,6 +2142,7 @@ class lessc {
 		$b->parent = $this->env;
 
 		$b->id = self::$nextBlockId++;
+		$b->is_vararg = false;
 		$b->tags = $tags;
 		$b->props = array();
 		$b->children = array();
