@@ -322,58 +322,60 @@ switch ($action) {
 		
 		//checks and assignments
 		$formok = true;
-		if (sizeof($blockParamsDefinition['search'])) {
-			foreach ($blockParamsDefinition['search'] as $searchName => $searchParams) {
-				foreach ($searchParams as $paramType => $paramValue) {
-					switch ($paramType) {
-						case 'keywords':
-						case 'category':
-						case 'limit':
-						case 'item':
-							if ($paramValue && !$value['search'][$searchName][$paramType]) { //mandatory ?
-								$formok = false;
-							}
-							if ($paramType == 'limit' && $value['search'][$searchName][$paramType] && !sensitiveIO::IspositiveInteger($value['search'][$searchName][$paramType])) {
-								$cms_message .= $cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD,
-									array($cms_language->getMessage(MESSAGE_PAGE_FIELD_LIMIT, false, MOD_POLYMOD_CODENAME)))."\n";
-							}
-						break;
-						case 'publication date after':
-						case 'publication date before':
+		if (isset($blockParamsDefinition['search'])) {
+			if (sizeof($blockParamsDefinition['search'])) {
+				foreach ($blockParamsDefinition['search'] as $searchName => $searchParams) {
+					foreach ($searchParams as $paramType => $paramValue) {
+						switch ($paramType) {
+							case 'keywords':
+							case 'category':
+							case 'limit':
+							case 'item':
 								if ($paramValue && !$value['search'][$searchName][$paramType]) { //mandatory ?
 									$formok = false;
-								} elseif ($value['search'][$searchName][$paramType]) {
-									//replace localised date value by db format corresponding value
-									$date = new CMS_date();
-									$date->setFormat($cms_language->getDateFormat());
-									if ($date->setLocalizedDate($value['search'][$searchName][$paramType])) {
-										$value['search'][$searchName][$paramType] = $date->getDBValue();
-									} else {
-										$label = ($paramType == 'publication date after') ? MESSAGE_PAGE_FIELD_PUBLISHED_FROM : MESSAGE_PAGE_FIELD_PUBLISHED_TO;
-										$cms_message .= $cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD,
-											array($cms_language->getMessage($label, false, MOD_POLYMOD_CODENAME)))."\n";
+								}
+								if ($paramType == 'limit' && $value['search'][$searchName][$paramType] && !sensitiveIO::IspositiveInteger($value['search'][$searchName][$paramType])) {
+									$cms_message .= $cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD,
+										array($cms_language->getMessage(MESSAGE_PAGE_FIELD_LIMIT, false, MOD_POLYMOD_CODENAME)))."\n";
+								}
+							break;
+							case 'publication date after':
+							case 'publication date before':
+									if ($paramValue && !$value['search'][$searchName][$paramType]) { //mandatory ?
+										$formok = false;
+									} elseif ($value['search'][$searchName][$paramType]) {
+										//replace localised date value by db format corresponding value
+										$date = new CMS_date();
+										$date->setFormat($cms_language->getDateFormat());
+										if ($date->setLocalizedDate($value['search'][$searchName][$paramType])) {
+											$value['search'][$searchName][$paramType] = $date->getDBValue();
+										} else {
+											$label = ($paramType == 'publication date after') ? MESSAGE_PAGE_FIELD_PUBLISHED_FROM : MESSAGE_PAGE_FIELD_PUBLISHED_TO;
+											$cms_message .= $cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD,
+												array($cms_language->getMessage($label, false, MOD_POLYMOD_CODENAME)))."\n";
+										}
+									}
+								break;
+							case 'order':
+								if (sizeof($paramValue)) {
+									foreach ($paramValue as $orderName => $orderValue) {
+										// Order direction
+										$orderName = trim($orderName, '()');
+										if ($paramValue && !$value['search'][$searchName][$paramType][$orderName]) { //mandatory ?
+											$formok = false;
+										}
 									}
 								}
 							break;
-						case 'order':
-							if (sizeof($paramValue)) {
-								foreach ($paramValue as $orderName => $orderValue) {
-									// Order direction
-									$orderName = trim($orderName, '()');
-									if ($paramValue && !$value['search'][$searchName][$paramType][$orderName]) { //mandatory ?
+							default:
+								$paramType = trim($paramType, '()');
+								if (sensitiveIO::isPositiveInteger($paramType)) {
+									if ($paramValue && !$value['search'][$searchName][$paramType]) { //mandatory ?
 										$formok = false;
 									}
 								}
-							}
-						break;
-						default:
-							$paramType = trim($paramType, '()');
-							if (sensitiveIO::isPositiveInteger($paramType)) {
-								if ($paramValue && !$value['search'][$searchName][$paramType]) { //mandatory ?
-									$formok = false;
-								}
-							}
-						break;
+							break;
+						}
 					}
 				}
 			}

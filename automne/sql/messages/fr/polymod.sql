@@ -516,3 +516,4 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(639, 'polymod', 'fr', 'Fonctionne uniquement sur les champs texte simple.');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(640, 'polymod', 'fr', 'Limiter au(x) champ(s)');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(641, 'polymod', 'fr', 'Tous les champs');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(642, 'polymod', 'fr', 'Variables de la rangée');
