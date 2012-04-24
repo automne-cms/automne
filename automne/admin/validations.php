@@ -539,14 +539,14 @@ $jscontent = <<<END
 					layout:				'column',
 					border:				false,
 					items:[{
-						columnWidth:		.5,
+						columnWidth:		.60,
 						layout:				'form',
 						labelAlign:			'right',
-						labelWidth:			130,
+						labelWidth:			160,
 						border:				false,
 						items: 				items
 					},{
-						columnWidth:		.5,
+						columnWidth:		.40,
 						layout:				'form',
 						labelAlign:			'top',
 						border:				false,
