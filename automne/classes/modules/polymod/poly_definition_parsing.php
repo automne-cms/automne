@@ -52,6 +52,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access private
 	  */
 	protected $_tagsCallBack = array(
+		// TODOGF
 			'atm-search' 			=> '_searchTag',
 			'atm-result' 			=> '_searchResultTag',
 			'atm-noresult' 			=> '_searchNoResultTag',
@@ -84,6 +85,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			'atm-object-unlink'		=> '_unlinkObject',
 			'atm-form-callback'		=> '_formCallback',
 			'atm-cache-reference'	=> '_cacheReference',
+			'atm-blockvar'			=> '_blockVarTag'
 		);
 	
 	/**
@@ -203,14 +205,14 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  *  - self::OUTPUT_RESULT output evalued PHP result
 	  *  - self::OUTPUT_PHP output valid PHP to execute
 	  * @param array $parameters parameters to help parsing
-	  		'public' : current public status
-			'pageID' : current parsed page
-			'itemID' : current item ID to work with
-			'objectID' : current object type ID to work with
-			'item' : current item to work with
-			'module' : current module codename
-			'block_attributes' : current block attributes values
-	  		'language' : current language code
+	  *		'public' : current public status
+	  *		'pageID' : current parsed page
+	  *		'itemID' : current item ID to work with
+	  *		'objectID' : current object type ID to work with
+	  *		'item' : current item to work with
+	  *		'module' : current module codename
+	  *		'block_attributes' : current block attributes values
+	  * 	'language' : current language code
 	  * @return string the PHP / HTML content parsed
 	  * @access public
 	  */
@@ -1718,13 +1720,13 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  *
 	  * @param array $tag : the reference tag to compute
 	  * @param array $requirements : tag attributes requirements at the following format :
-	  		array(string attributeName => mixed attributeType)
-			With attributeType in :
-			- boolean true : check only presence of an attribute value
-			- alphanum : attribute value must be a simple alphanumeric value without special chars
-	  		- language : attribute value must be a valid language code
-			- orderType : attribute value must be a valid order type
-			- valid PERL regular expression : attribute value must be mattch the regular expression
+	  *		array(string attributeName => mixed attributeType)
+	  *		With attributeType in :
+	  *		- boolean true : check only presence of an attribute value
+	  *		- alphanum : attribute value must be a simple alphanumeric value without special chars
+	  *		- language : attribute value must be a valid language code
+	  *		- orderType : attribute value must be a valid order type
+	  *		- valid PERL regular expression : attribute value must be mattch the regular expression
 	  * @return string indented php code
 	  * @access public
 	  */
@@ -1831,6 +1833,204 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			}
 		}
 		return true;
+	}
+
+
+	protected function checkTagValues(&$tag, $requirements) {
+		if (!is_array($requirements)) {
+			$this->raiseError('Tag requirements must be an array');
+			return false;
+		}
+		foreach ($requirements as $name => $requirementType) {
+			//check parameter existence
+			if($requirementType['mandatory'] && !isset($tag['attributes'][$name])) {
+				if ($this->_mode == self::CHECK_PARSING_MODE) {
+					$this->_parsingError .= "\n".'Malformed '.$tag['nodename'].' tag : missing \''.$name.'\' attribute';
+					return false;
+				} else {
+					$this->raiseError('Malformed '.$tag['nodename'].' tag : missing \''.$name.'\' attribute');
+					return false;
+				}
+			}
+			elseif (isset($tag['attributes'][$name])) { //if any, check value requirement
+				$message = false;
+				switch ($requirementType['value']) {
+					case 'alphanum' :
+						if ($tag['attributes'][$name] != sensitiveIO::sanitizeAsciiString($tag['attributes'][$name], '', '_')) {
+							$message = 'Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute must only be composed with alphanumeric caracters (0-9a-z_) : '.$tag['attributes'][$name];
+						}
+					break;
+					case 'language' :
+						if (isset($this->_parameters['module'])) {
+							$languages = CMS_languagesCatalog::getAllLanguages($this->_parameters['module']);
+						} else {
+							$languages = CMS_languagesCatalog::getAllLanguages();
+						}
+						if (!isset($languages[$tag['attributes'][$name]])) {
+							$message = 'Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute must only be a valid language code : '.$tag['attributes'][$name];
+						}
+					break;
+					case 'object':
+						if (!sensitiveIO::isPositiveInteger(io::substr($tag['attributes'][$name],9,-3))) {
+							$message = 'Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute does not represent a valid object';
+						}
+					break;
+					case 'field':
+						if (strrpos($tag['attributes'][$name], 'fields') === false || !sensitiveIO::isPositiveInteger(io::substr($tag['attributes'][$name],strrpos($tag['attributes'][$name], 'fields')+9,-2))) {
+							$message = 'Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute does not represent a valid object field';
+						}
+					break;
+					case 'page': 
+						if(!io::isPositiveInteger($tag['attributes'][$name])) {
+							// Assuming the structure {websitecodename:pagecodename}
+							$page = trim($tag['attributes'][$name],"{}");
+							if(strpos($page, ":") !== false){
+								list($websiteCodename,$pageCodename) = explode(':', $page);
+								$website = CMS_websitesCatalog::getByCodename($websiteCodename); 
+								if(!$website){
+									$message = 'Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute : unknow Website codename : '.$websiteCodename.'';
+								}
+								else {
+									$pageID = CMS_tree::getPageByCodename($pageCodename, $website, false, false);
+									if(!$pageID) {
+										$message = 'Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute : unknow page codename '. $pageCodename .' in website : '.$websiteCodename.'';
+									}
+								}
+							}
+							else {
+								$message = 'Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute must be an integer or use the format websitecodename:pagecodename';
+							}
+						}
+						else {
+							if(!CMS_tree::getPageByID($tag['attributes'][$name])) {
+								$message = 'Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute : unknow pageID : '.$tag['attributes'][$name];
+							}
+						}
+					break;
+					default: //check 
+						if (!preg_match('#^'.$requirementType['value'].'$#i', $tag['attributes'][$name])) {
+							$message = 'Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute must match expression \''.$requirementType['value'].'\' : '.$tag['attributes'][$name];
+						}
+					break;
+				}
+				if($message) {
+					if ($this->_mode == self::CHECK_PARSING_MODE) {
+						$this->_parsingError .= "\n<br />".$message;
+						return false;
+					} else {
+						$this->raiseError($message);
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	  * Compute an atm-blockvar tag
+	  *
+	  * @param array $tag : the reference tag to compute
+	  * @return string the PHP / HTML content computed
+	  * @access private
+	  */
+	protected function _blockVarTag(&$tag) {
+		//check tags requirements
+		if (!$this->checkTagRequirements($tag, array(
+				'id' => true, 
+				'varname' => 'alphanum', 
+				'vartype' => true, 
+				'label' => true,
+				'mandatory' => '(true)|(false)', 
+			))) {
+			return;
+		}
+
+		switch ($tag['attributes']['vartype']) {
+			case 'string':
+				if (!$this->checkTagValues($tag, array(
+						'maxLength'	=> array('value' => '([-+]?[0-9]+)', 'mandatory' => false),
+						'default'	=> array('value' => 'alphanum', 'mandatory' => false),
+					))) {
+					return;
+				}
+				break;
+			case 'integer':
+				if (!$this->checkTagValues($tag, array(
+						'maxValue'	=> array('value' => '([-+]?[0-9]+)', 'mandatory' => false),
+						'minValue'	=> array('value' => '([-+]?[0-9]+)', 'mandatory' => false),
+						'default'	=> array('value' => '([-+]?[0-9]+)', 'mandatory' => false)
+					))) {
+					return;
+				}
+				break;
+			case 'boolean':
+				if (!$this->checkTagValues($tag, array(
+						'default'	=> array('value' => '[0-1]', 'mandatory' => false),
+					))) {
+					return;
+				}
+				break;
+			case 'date':
+				// do nothing
+				break;
+			case 'float':
+				$pattern = '[-+]?[0-9]*\.?[0-9]+';
+				if(isset($tag['attributes']['separator'])) {
+					if($tag['attributes']['separator'] != '.') {
+						$pattern = '[-+]?[0-9]*'.$tag['attributes']['separator'].'?[0-9]+';
+					}
+				}
+				if (!$this->checkTagValues($tag, array(
+						'separator'	=> array('value' => '\.|,', 'mandatory' => false),
+						'default'	=> array('value' => $pattern, 'mandatory' => false),
+					))) {
+					return;
+				}
+				break;
+			case 'page': 
+				if (!$this->checkTagValues($tag, array(
+						'root'		=> array('value' => 'page', 'mandatory' => false),
+						'default'	=> array('value' => 'page', 'mandatory' => false),
+					))) {
+					return;
+				}
+				break;
+			default:
+				// handle polymod stuff
+				if(strpos($tag['attributes']['vartype'], 'fields') !== false) {
+					if (!$this->checkTagValues($tag, array(
+							'vartype'	=> array('value' => 'field', 'mandatory' => true),
+						))) {
+						return;
+					}
+				}
+				else {
+					// Assume it's an object
+					if (!$this->checkTagValues($tag, array(
+							'vartype'	=> array('value' => 'object', 'mandatory' => true),
+						))) {
+						return;
+					}
+				}
+				break;
+		}
+		
+		if ($this->_mode == self::BLOCK_PARAM_MODE) {
+			// handle i18n on label and description
+			$tag['attributes']['label'] = eval(sensitiveIO::sanitizeExecCommand('return "'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['label']).'";'));
+			if(isset($tag['attributes']['description'])){
+				$tag['attributes']['description'] = eval(sensitiveIO::sanitizeExecCommand('return "'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['description']).'";'));
+			}
+			$this->_blockParams['var'][$tag['attributes']['id']][$tag['attributes']['varname'] ] =  $tag['attributes'];
+		}
+		
+
+		$tag['attributes']['value'] = '".@$blockAttributes[\'var\'][\''.$tag['attributes']['id'].'\'][\''.$tag['attributes']['varname'].'\']."';
+		return '
+			$varname_'.$tag['attributes']['id'].' = "'.$this->replaceVars($tag['attributes']['varname'],null).'";
+			${$varname_'.$tag['attributes']['id'].'} = CMS_polymod_definition_parsing::replaceVars("'.$this->replaceVars($tag['attributes']['value'],null).'", @$replace);
+			unset($varname_'.$tag['attributes']['id'].');'."\n";
 	}
 }
 ?>

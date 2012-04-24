@@ -50,6 +50,8 @@ define("MESSAGE_PAGE_FIELD_ORDER_PUBLICATION_END", 138);
 define("MESSAGE_TOOLBAR_HELP_DESC", 521);
 define("MESSAGE_PAGE_INCORRECT_FORM_VALUES", 522);
 
+define("MESSAGE_VAR_SUBTITLE",642);
+
 //load interface instance
 $view = CMS_view::getInstance();
 //set default display mode for this page
@@ -110,7 +112,300 @@ $row = new CMS_row($rowId);
 $winLabel = sensitiveIO::sanitizeJSString($cms_language->getMessage(MESSAGE_PAGE_TITLE, array($row->getLabel(), $cms_module->getLabel($cms_language)), MOD_POLYMOD_CODENAME));
 $items = array();
 $rowParams = array();
-if (sizeof($blockParamsDefinition['search'])) {
+
+if (isset($blockParamsDefinition['var'])) {
+	$blockVarContent = array();
+	
+	foreach ($blockParamsDefinition['var'] as $varId => $variables) {
+		foreach ($variables as $varName => $varAttributes) {
+			// indicate that a row param is found
+			$rowParams[] = $varName;
+			// check mandatory attribute
+			$mandatory = ($varAttributes['mandatory'] == "true") ? '<span class="atm-red">*</span> ':'';
+			// handle description
+			$description = (isset($varAttributes['description'])) ? 
+					'<span class="atm-help" ext:qtip="'.sensitiveIO::sanitizeHTMLString(strip_tags($varAttributes['description'])).'">'.sensitiveIO::sanitizeHTMLString(strip_tags($varAttributes['label'])).'</span>' :
+					$varAttributes['label'];
+			// create label
+			$label = $mandatory.$description;
+			
+			// retrieve the stored value or the default one, if any
+			if(isset($data["value"]['var'][$varId][$varName])) {
+				$value = $data["value"]['var'][$varId][$varName];
+			}
+			elseif (isset($varAttributes['default'])) {
+				$value = $varAttributes['default'];
+			}
+			else {
+				$value = null;
+			}
+
+			//  TODOGF : clean HTML strings for label and descriptions
+			if(isset($varAttributes['possibleValues'])) {
+				$possibleValues = explode('|',$varAttributes['possibleValues']);
+				$extValues = array();
+				foreach ($possibleValues as $anOption) {
+					$keyPresent = strpos($anOption,':');
+					if($keyPresent !== false && $keyPresent != 0 ){
+						list($optionValue, $optionLabel) = explode(':', $anOption);
+						$extValues[] = array($optionValue,$optionLabel);
+					}
+					else {
+						$extValues[] = array($anOption,$anOption);	
+					}
+				}
+				$item = array(
+					'xtype'			=> 'atmCombo',
+					'fieldLabel'	=> $label,
+					'name'			=> 'value[var]['.$varId.']['.$varName.']',
+					'hiddenName'	=> 'value[var]['.$varId.']['.$varName.']',
+					'forceSelection'=> true,
+					'mode'			=> 'local',
+					'valueField'	=> 'id',
+					'displayField'	=> 'name',
+					'triggerAction'	=> 'all',
+					'allowBlank'	=> !$mandatory,
+					'selectOnFocus'	=> true,
+					'editable'		=> false,
+					'value'			=> $value,
+					'store'			=> array(
+						'xtype'			=> 'arraystore',
+						'fields' 		=> array('id', 'name'),
+						'data' 			=> $extValues
+					)
+				);
+			}
+			else {
+				$item = array(
+					'name'				=> 'value[var]['.$varId.']['.$varName.']',
+					'anchor'			=> '99%',
+					'allowBlank'		=> !$mandatory,
+					'value'				=> $value,
+					'fieldLabel'		=> $label
+				);
+				$addItem = true;
+				switch ($varAttributes['vartype']) {
+					case 'integer':
+						$item['allowDecimals'] = false;
+						$item['xtype'] = 'numberfield';
+						if(isset($varAttributes['minValue'])){
+							$item['minValue'] = $varAttributes['minValue'];
+						}
+						if(isset($varAttributes['maxValue'])){
+							$item['maxValue'] = $varAttributes['maxValue'];
+						}
+						break;
+					case 'float':
+						$item['allowDecimals'] = true;
+						$item['xtype'] = 'numberfield';
+						if(isset($varAttributes['minValue'])){
+							$item['minValue'] = $varAttributes['minValue'];
+						}
+						if(isset($varAttributes['maxValue'])){
+							$item['maxValue'] = $varAttributes['maxValue'];
+						}
+						if(isset($varAttributes['separator'])){
+							$item['decimalSeparator'] = $varAttributes['separator'];
+						}
+						break;
+					case 'string':
+						$item['xtype'] = 'textfield';
+						if(isset($varAttributes['maxLength'])){
+							$item['maxLength'] = $varAttributes['maxLength'];
+						}
+						/*if(isset($varAttributes['regex'])){
+							$item['regex'] = $varAttributes['regex'];
+						}
+						pr($item);*/
+						break;
+					case 'boolean':
+						$item['xtype'] = 'radiogroup';
+						$item['mandatory'] = 'false';
+						unset($item['value']);
+						$item['items'] = array(
+							array('xtype' => 'radio',
+								'boxLabel' =>  $cms_language->getMessage(CMS_object_boolean::MESSAGE_OBJECT_BOOLEAN_YES),
+								'name'  => 'value[var]['.$varId.']['.$varName.']',
+								'inputValue' => true,
+								'checked' => ($value == 'true')
+							),
+							array('xtype' => 'radio',
+								'boxLabel' =>  $cms_language->getMessage(CMS_object_boolean::MESSAGE_OBJECT_BOOLEAN_NO),
+								'name'  => 'value[var]['.$varId.']['.$varName.']',
+								'inputValue' => false,
+								'checked' => ($value !== 'true')
+							));
+						
+						break;
+					case 'date':
+						$date = new CMS_date();
+						$item['xtype'] = 'datefield';
+						$item['mandatory'] = false;
+						$item['width'] = 100;
+						$item['anchor'] = false;
+						if(isset($varAttributes['format'])){
+							$item['format'] = $varAttributes['format'];
+						}
+						else {
+							$item['format'] = $cms_language->getDateFormat();
+						}
+						break;
+					case 'page':
+						$item['xtype'] = 'atmPageField';
+						$item['mandatory'] = false;
+						$item['anchor'] = '97%';
+						if(isset($varAttributes['root'])){
+							if(!io::isPositiveInteger($varAttributes['root'])) {
+								// Assuming the structure {websitecodename:pagecodename}
+								$page = trim($varAttributes['root'],"{}");
+								if(strpos($page, ":") !== false){
+									list($websiteCodename,$pageCodename) = explode(':', $page);
+									$website = CMS_websitesCatalog::getByCodename($websiteCodename); 
+									if($website){
+										$pageID = CMS_tree::getPageByCodename($pageCodename, $website, false, false);
+										if($pageID) {
+											$item['root'] = $pageID;
+										}
+									}
+								}
+							}
+							else {
+								if(CMS_tree::getPageByID($tag['attributes'][$name])) {
+									$item['root'] = $varAttributes['root'];
+								}
+							}
+						}
+						break;
+					default:
+						if(strpos($varAttributes['vartype'], 'fields') !== false) {
+							// Assume it's a polymod object field
+							$fieldId = io::substr($varAttributes['vartype'],strrpos($varAttributes['vartype'], 'fields')+9,-2);
+							$objectId =  CMS_poly_object_catalog::getObjectIDForField($fieldId);
+							if(io::isPositiveInteger($objectId)) {
+								$objectFields = CMS_poly_object_catalog::getFieldsDefinition($objectId);
+								if (sensitiveIO::isPositiveInteger($fieldId)) {
+									//subobjects
+									$field = $objectFields[$fieldId];
+									if (is_object($field)) {
+										//check if field has a method to provide a list of names
+										$objectType = $field->getTypeObject();
+										if (method_exists($objectType, 'getListOfNamesForObject')) {
+											//check if we can associate unused objects
+											$params = $objectType->getParamsValues();
+											if (method_exists($objectType, 'getParamsValues') && isset($params['associateUnused']) && $params['associateUnused']) {
+												$objectsNames = $objectType->getListOfNamesForObject(true, array(), false);
+											} else {
+												$objectsNames = $objectType->getListOfNamesForObject(true);
+											}
+											$availableItems = array();
+											if (is_array($objectsNames) && $objectsNames) {
+												foreach ($objectsNames as $id => $aLabel) {
+													$availableItems[] = array($id, io::decodeEntities($aLabel));
+												}
+											} else {
+												$availableItems[] = array('', $cms_language(MESSAGE_EMPTY_OBJECTS_SET));
+											}
+											$mandatory = ($paramValue == true) ? '<span class="atm-red">*</span> ':'';
+											//$value = isset($data["value"]['search'][$searchName][$paramType]) ? $data["value"]['search'][$searchName][$paramType] : '';
+											
+											$item = array(
+												'fieldLabel'		=> $label,
+												'name'				=> 'value[var]['.$varId.']['.$varName.']',
+												'hiddenName'		=> 'value[var]['.$varId.']['.$varName.']',
+												'anchor'			=> '99%',
+												'xtype' 			=> 'atmCombo',
+												'forceSelection' 	=> true,
+												'mode' 				=> 'local',
+												'valueField' 		=> 'id',
+												'displayField' 		=> 'label',
+												'triggerAction' 	=> 'all',
+												'allowBlank'		=> !$mandatory,
+												'selectOnFocus'		=> true,
+												'editable'			=> false,
+												'value'				=> $value,
+												'store' 			=> array(
+													'xtype'			=> 'arraystore',
+													'fields' 		=> array('id', 'label'),
+													'data' 			=> $availableItems
+												)
+											);
+										}
+										else {
+											$addItem = false;
+											$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_SEARCH_FIELD_ERROR, array($varId, $row->getLabel()), MOD_POLYMOD_CODENAME)."\n";
+										}
+									}
+									else {
+										$addItem = false;
+										$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_SEARCH_FIELD_ERROR, array($varId, $row->getLabel()), MOD_POLYMOD_CODENAME)."\n";
+									}
+								}
+								else {
+									$addItem = false;
+									$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_SEARCH_FIELDTYPE_ERROR, array($varId, $row->getLabel(), $paramType), MOD_POLYMOD_CODENAME)."\n";
+								}
+							} 
+							else {
+								$addItem = false;
+								$cms_message .= $cms_language->getMessage(MESSAGE_PAGE_SEARCH_FIELDTYPE_ERROR, array($varId, $row->getLabel(), $paramType), MOD_POLYMOD_CODENAME)."\n";
+							}
+						}
+						else {
+							// Assume it's an object
+							$objectDefinitionId = io::substr($varAttributes['vartype'],9,-3);
+							$object = CMS_poly_object_catalog::getObjectDefinition($objectDefinitionId);
+							$item = array(
+								'fieldLabel'		=> $label,
+								'name'				=> 'value[var]['.$varId.']['.$varName.']',
+								'hiddenName'		=> 'value[var]['.$varId.']['.$varName.']',
+								'anchor'			=> '99%',
+								'xtype' 			=> 'atmCombo',
+								'forceSelection' 	=> true,
+								'mode' 				=> 'remote',
+								'valueField' 		=> 'id',
+								'displayField' 		=> 'label',
+								'triggerAction' 	=> 'all',
+								'allowBlank'		=> !$mandatory,
+								'selectOnFocus'		=> true,
+								'editable'			=> true,
+								'typeAhead'			=> true,
+								'value'				=> $value,
+								'store' 			=> array(
+									'url'			=> PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/list-objects.php',
+									'baseParams'	=> array(
+										'objectId'		=> $object->getID(),
+										'module'		=> $codename
+									),
+									'root' 			=> 'objects',
+									'fields' 		=> array('id', 'label')
+								)
+							);
+						}
+						
+						break;
+				}
+			}
+			if($addItem){
+				$blockVarContent[] = $item;
+			}			
+		}
+	}
+
+	if ($blockVarContent) {
+		$items[] = array(
+			'title' 		=>	$cms_language->getMessage(MESSAGE_VAR_SUBTITLE, null, MOD_POLYMOD_CODENAME),
+			'xtype'			=>	'fieldset',
+			'autoHeight'	=>	true,
+			'defaults'		=> 	array(
+				'anchor'		=>	'97%',
+			),
+			'items'			=>	$blockVarContent
+		);
+	}
+	
+}
+
+if (isset($blockParamsDefinition['search'])) {
 	foreach ($blockParamsDefinition['search'] as $searchName => $searchParams) {
 		$searchType = $searchParams['searchType'];
 		unset($searchParams['searchType']);
@@ -522,5 +817,9 @@ $jscontent = <<<END
 	}, 100);
 END;
 $view->addJavascript($jscontent);
+
+if ($cms_message) {
+	$view->setActionMessage($cms_message);
+}
 $view->show();
 ?>
