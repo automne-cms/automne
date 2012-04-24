@@ -1741,16 +1741,14 @@ class CMS_tree extends CMS_grandFather
 			$pathinfo = pathinfo($urlinfo['path']);
 			$basename = (isset($pathinfo['filename'])) ? $pathinfo['filename'] : $pathinfo['basename'];
 		}
+		//if extension exists and is not PHP, return
+		if (isset($pathinfo['extension']) && $pathinfo['extension'] && $pathinfo['extension'] != 'php') {
+			return false;
+		}
 		if (isset($urlinfo['query'])) {
 			$querystring = $urlinfo['query'];
 		}
-		if ($useDomain) {
-			$httpHost = @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST'];
-			//search page id by domain address
-			$domain = isset($urlinfo['host']) ? $urlinfo['host'] : $httpHost;
-			$domainfound = CMS_websitesCatalog::getWebsiteFromDomain($domain);
-		}
-		//if basename found
+		//if basename found try to get page id
 		if (isset($urlinfo['path']) && $urlinfo['path'] != PATH_REALROOT_WR.'/' && $basename && ((isset($pathinfo['extension']) && strtolower($pathinfo['extension']) == 'php') || !isset($pathinfo['extension']))) {
 			//search page id in basename (declare matching patterns by order of research)
 			$patterns[] = "#^([0-9]+)-#U"; // for request like id-page_title.php
@@ -1764,13 +1762,16 @@ class CMS_tree extends CMS_grandFather
 			if (isset($requestedPageId[1]) && sensitiveIO::IsPositiveInteger($requestedPageId[1]) && CMS_tree::getPageValue($requestedPageId[1], 'exists')) {
 				//try to instanciate the requested page
 				$cms_page = CMS_tree::getPageByID($requestedPageId[1]);
-				if ($cms_page && !$cms_page->hasError() && (!$useDomain || $domainfound)) {
+				if ($cms_page && !$cms_page->hasError()) {
 					return $cms_page;
 				}
 			}
-		} elseif (isset($pathinfo['extension']) && $pathinfo['extension'] && $pathinfo['extension'] != 'php') {
-			return false;
-		} elseif ($useDomain) {
+		}
+		if ($useDomain) {
+			$httpHost = @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST'];
+			//search page id by domain address
+			$domain = isset($urlinfo['host']) ? $urlinfo['host'] : $httpHost;
+			$domainfound = CMS_websitesCatalog::getWebsiteFromDomain($domain, (isset($urlinfo['path']) && $urlinfo['path'] != PATH_REALROOT_WR.'/' ? $urlinfo['path'] : ''));
 			if (is_object($domainfound)) {
 				$cms_page = $domainfound->getRoot();
 				if ($cms_page && !$cms_page->hasError()) {
@@ -1778,7 +1779,7 @@ class CMS_tree extends CMS_grandFather
 				}
 			}
 		}
-		//try to query modules to get page from them
+		//query modules to get page from them
 		$modules = CMS_modulesCatalog::getAll();
 		foreach ($modules as $module) {
 			if (method_exists($module, 'getPageFromURL')) {

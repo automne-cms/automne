@@ -446,6 +446,8 @@ $jscontent = <<<END
 		html: 			'{$cms_language->getJsMessage(MESSAGE_PAGE_TOOLBAR_HELP_INFO)}',
 		dismissDelay:	0
     });
+	//reload page on window close
+	propertiesWindow.reloadOnClose = 1;
 	//unlock page just before window close
 	propertiesWindow.on('beforeclose', function() {
 		//send server call
@@ -454,7 +456,8 @@ $jscontent = <<<END
 			params: 			{
 				resource:		'{$pageId}',
 				module:			'standard',
-				action:			'unlock'
+				action:			'unlock',
+				noreload:		(propertiesWindow.reloadOnClose ? 0 : 1)
 			},
 			callBackScope:		this
 		});
@@ -499,7 +502,7 @@ $lineageTitle = '';
 if (is_array($lineage) && sizeof($lineage)) {
 	foreach ($lineage as $ancestor) {
 		if ($ancestor->getID() != $cms_page->getID()) {
-			$lineageTitle .= '&nbsp;/&nbsp;<a href="#" onclick="Automne.utils.getPageById('.$ancestor->getID().');Ext.getCmp(\''.$winId.'\').close();">'.io::htmlspecialchars($ancestor->getTitle()).'</a>';
+			$lineageTitle .= '&nbsp;/&nbsp;<a href="#" onclick="Ext.getCmp(\''.$winId.'\').reloadOnClose=0;Ext.getCmp(\''.$winId.'\').close();Automne.utils.getPageById('.$ancestor->getID().');">'.io::htmlspecialchars($ancestor->getTitle()).'</a>';
 		} else {
 			$lineageTitle .= '&nbsp;/&nbsp;'.io::htmlspecialchars($ancestor->getTitle());
 		}
