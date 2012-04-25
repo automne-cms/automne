@@ -50,7 +50,7 @@ define("MESSAGE_PAGE_FIELD_ORDER_PUBLICATION_END", 138);
 define("MESSAGE_TOOLBAR_HELP_DESC", 521);
 define("MESSAGE_PAGE_INCORRECT_FORM_VALUES", 522);
 
-define("MESSAGE_VAR_SUBTITLE",642);
+define("MESSAGE_VAR_SUBTITLE",643);
 
 //load interface instance
 $view = CMS_view::getInstance();
@@ -174,6 +174,7 @@ if (isset($blockParamsDefinition['var'])) {
 						'data' 			=> $extValues
 					)
 				);
+				$addItem = true;
 			}
 			else {
 				$item = array(
