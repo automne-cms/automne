@@ -100,3 +100,4 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(93, 'cms_forms', 'es', 'Peso máximo:');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(94, 'cms_forms', 'es', 'Llevar a cabo código PHP específico');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(95, 'cms_forms', 'es', 'Nombre del archivo PHP a utilizar. Este archivo debe estar en /automne/templates/');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(96, 'cms_forms', 'es', 'Nombre del archivo XML modelo a utilizar. Este archivo debe estar en /automne/templates/mail/');

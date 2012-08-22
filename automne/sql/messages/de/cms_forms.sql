@@ -100,5 +100,6 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(93, 'cms_forms', 'de', 'Maximale Größe:');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(94, 'cms_forms', 'de', 'Spezifischen PHP Code ausführen');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(95, 'cms_forms', 'de', 'Dateiname der PHP Datei, die ausgeführt werden soll. Die Datei muss im Ordner /automne/templates/ liegen.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(96, 'cms_forms', 'de', 'Dateiname der XML Datei, die ausgeführt werden soll. Die Datei muss im /automne/templates/mail/ liegen.');
 
 

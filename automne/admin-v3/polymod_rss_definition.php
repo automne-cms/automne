@@ -61,6 +61,8 @@ define("MESSAGE_PAGE_FIELD_DAILY", 307);
 define("MESSAGE_PAGE_FIELD_WEEKLY", 308);
 define("MESSAGE_PAGE_FIELD_MONTHLY", 309);
 define("MESSAGE_PAGE_FIELD_YEARLY", 310);
+define("MESSAGE_PAGE_FIELD_NAMESPACE", 645);
+define("MESSAGE_PAGE_FIELD_NAMESPACE_EXPLANATION", 646);
 
 //checks rights
 if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
@@ -140,6 +142,10 @@ case "switchexplanation":
 	if (!$RSSDefinition->setValue("copyright",$_POST["copyright"])) {
 		$cms_message .= "\n".$cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD, 
 			array($cms_language->getMessage(MESSAGE_PAGE_FIELD_COPYRIGHT,false,MOD_POLYMOD_CODENAME)));
+	}
+	if (!$RSSDefinition->setValue("namespaces",io::sanitizeSQLString($_POST["namespaces"]))) {
+		$cms_message .= "\n".$cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD, 
+			array($cms_language->getMessage(MESSAGE_PAGE_FIELD_NAMESPACE,false,MOD_POLYMOD_CODENAME)));
 	}
 	if (!$RSSDefinition->setValue("categories",$_POST["categories"])) {
 		$cms_message .= "\n".$cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD, 
@@ -343,6 +349,11 @@ $content = '
 			$content.='
 			</fieldset>
 			</td>
+		</tr>
+		<tr>
+			<td class="admin" align="right" valign="top">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_NAMESPACE,false,MOD_POLYMOD_CODENAME).'</td>
+			<td class="admin" width="80%"><input type="text" class="admin_input_long_text" name="namespaces"'." value='".stripslashes($RSSDefinition->getValue('namespaces'))."'".'. />
+			<br /><small>('.$cms_language->getMessage(MESSAGE_PAGE_FIELD_NAMESPACE_EXPLANATION,false,MOD_POLYMOD_CODENAME).')</small></td>
 		</tr>
 		<tr>
 			<td colspan="2"><input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_BUTTON_VALIDATE).'" /></td>

@@ -518,3 +518,6 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(641, 'polymod', 'fr', 'Tous les champs');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(642, 'polymod', 'fr', 'Remettre la recherche à zéro');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(643, 'polymod', 'fr', 'Variables de la rangée');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(644, 'polymod', 'fr', 'Trie les catégories dans l\'ordre défini dans l\'administration d\'automne.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(645, 'polymod', 'fr', 'Espaces de nom complémentaires (namespaces)');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(646, 'polymod', 'fr', 'Vous pouvez ajouter dans ce champ des espaces de nom (namespaces) supplémentaires pour complémenter la définition XML du plan de site. Exemple : xmlns:georss="http://www.georss.org/georss" xmlns:gml="http://www.opengis.net/gml"');

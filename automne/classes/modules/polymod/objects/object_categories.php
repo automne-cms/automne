@@ -79,6 +79,7 @@ class CMS_object_categories extends CMS_object_common
 	const MESSAGE_OBJECT_CATEGORY_ATM_INPUT_OPERATOR_LEFTTITLE_DESCRIPTION = 596;
 	const MESSAGE_OBJECT_CATEGORY_ATM_INPUT_OPERATOR_RIGHTTITLE_DESCRIPTION = 597;
 	const MESSAGE_OBJECT_CATEGORY_ATM_INPUT_OPERATOR_DESCRIPTION_DESCRIPTION = 598;
+	const MESSAGE_OBJECT_CATEGORY_OPERATOR_ATMORDER_DESCRIPTION = 644;
 	
 	/**
 	  * object label
@@ -1158,6 +1159,7 @@ class CMS_object_categories extends CMS_object_common
 		$labels['operator']['not in'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_OPERATOR_NOT_IN_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['operator']['not in strict'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_OPERATOR_NOT_IN_STRICT_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['orderOperator']['label'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_OPERATOR_LABEL_DESCRIPTION,false ,MOD_POLYMOD_CODENAME); //591
+		$labels['orderOperator']['atmorder'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_OPERATOR_ATMORDER_DESCRIPTION,false ,MOD_POLYMOD_CODENAME); //591
 		$labels['atmInputOperator']['root'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_ATM_INPUT_OPERATOR_ROOT_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['atmInputOperator']['sort'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_ATM_INPUT_OPERATOR_SORT_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);//592
 		$labels['atmInputOperator']['width'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_ATM_INPUT_OPERATOR_WIDTH_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);//593
@@ -1200,7 +1202,8 @@ class CMS_object_categories extends CMS_object_common
         }
         $replace = array(
             '{id}' => $values['category'],
-            '{label}' => $category->getLabel($cms_language)
+            '{label}' => $category->getLabel($cms_language),
+            '{description}' => $category->getDescription($cms_language)
         );
        
         $xml2Array = new CMS_XML2Array();
@@ -1315,7 +1318,14 @@ class CMS_object_categories extends CMS_object_common
 		} else {
 			$selectedIDs = array();
 		}
-		$disableCategories = isset($values['disable']) ? explode(';',$values['disable']) : array(); 
+		//$disableCategories = isset($values['disable']) ? explode(';',$values['disable']) : array(); 
+		$disableCategories = array();
+		if (isset($values['disable'])) {
+			$disableCategories = explode(';',$values['disable']);
+			if(count($disableCategories) == 1) {
+				$disableCategories = explode(',',$values['disable']);
+			}
+		}
 		
 		if (!$itemPattern) {
 			$this->raiseError("No 'item' tag found or tag empty");
@@ -1735,7 +1745,7 @@ class CMS_object_categories extends CMS_object_common
 	function getFieldOrderSQL($fieldID, $direction, $operator, $where, $public = false) {
 		global $cms_language;
 		$statusSuffix = ($public) ? "_public":"_edited";
-		$supportedOperator = array('label');
+		$supportedOperator = array('label','atmorder');
 		if ($operator && !in_array($operator, $supportedOperator)) {
 			$this->_raiseError(get_class($this)." : getFieldSearchSQL : unkown search operator : ".$operator.", use default search instead");
 			$operator = false;
@@ -1759,20 +1769,85 @@ class CMS_object_categories extends CMS_object_common
 				objectFieldID = '".SensitiveIO::sanitizeSQLString($fieldID)."'
 				$where
 			order by value ".$direction;
-		} elseif ($operator == 'label') {
-			// create sql
-			$sql = "
-			select
-				distinct objectID
-			from
-				".$fromTable.$statusSuffix.",
-				modulesCategories_i18nm
-			where
-				objectFieldID = '".SensitiveIO::sanitizeSQLString($fieldID)."'
-				and category_mcl = value
-				and language_mcl = '".$cms_language->getCode()."'
-				$where
-			order by label_mcl ".$direction;
+		} else {
+			switch ($operator) {
+				case 'label':
+					$sql = "
+						select
+							distinct objectID
+						from
+							".$fromTable.$statusSuffix.",
+							modulesCategories_i18nm
+						where
+							objectFieldID = '".SensitiveIO::sanitizeSQLString($fieldID)."'
+							and category_mcl = value
+							and language_mcl = '".$cms_language->getCode()."'
+							$where
+						order by label_mcl ".$direction;
+					break;
+				case 'atmorder':
+
+					
+					$sqlTemp = "select distinct(modulesCategories.root_mca) as root from ".$fromTable.$statusSuffix.", modulesCategories where id_mca = value
+							$where";
+					$q = new CMS_query($sqlTemp);
+					$roots = $q->getAll();
+					$catOrder = array();
+
+					foreach ($roots as $aRoot) {
+						$sqlRoot = "select * from modulesCategories where root_mca = ".$aRoot['root'] .' or id_mca = '.$aRoot['root'];
+						$qRoot = new CMS_query($sqlRoot);
+						$allCats = $qRoot->getAll();
+						foreach ($allCats as $aCategory) {
+							$catOrder[$aCategory['id_mca']] = $aCategory['order_mca'];
+						}
+					}
+
+					$allCatsSql = "select modulesCategories.* from ".$fromTable.$statusSuffix.", modulesCategories where id_mca = value
+							$where";
+
+
+					// get all categories matching the objects
+					$q = new CMS_query($allCatsSql);
+					$cats = $q->getAll();
+					$rootCalculated = false;
+					
+					$allCatsWeights = array();
+
+					foreach ($cats as $aCat) {
+					
+						$lineage = $aCat['lineage_mca'];
+						$lineage_parts = explode(";", $lineage);
+						$catWeight = 0;
+						$depth = 1;
+						//CMS_grandFather::log($lineage);
+						foreach ($lineage_parts as $value) {
+							$catWeight += isset($catOrder[$value]) ? $catOrder[$value] * pow(0.001,$depth) : 0;
+							$depth++;
+						}
+						$allCatsWeights[$aCat['id_mca']] = $catWeight;
+					}
+
+					$orderClauses = 'ORDER BY CASE ';
+					foreach ($allCatsWeights as $cat => $weight) {
+						$orderClauses .= "
+							WHEN value = ".$cat ." THEN ".$weight;
+					}
+					$orderClauses .= ' END ' .$direction;
+					$sql = "
+						select
+							distinct objectID
+						from
+							".$fromTable.$statusSuffix.",
+							modulesCategories
+						where
+							objectFieldID = '".SensitiveIO::sanitizeSQLString($fieldID)."'
+							and id_mca = value
+							$where
+							".$orderClauses;
+					//CMS_grandFather::log($sql);
+					break;
+			}
 		}
 		return $sql;
 	}

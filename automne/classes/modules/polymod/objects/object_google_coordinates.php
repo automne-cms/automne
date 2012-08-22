@@ -299,6 +299,18 @@ class CMS_object_google_coordinates extends CMS_object_common
 		return $return;
 	}
 
+	/**
+	  * get object HTML description for admin search detail, composed of latitude and longitude
+	  *
+	  * @return string : object HTML description
+	  * @access public
+	  */
+	function getHTMLDescription() {
+		$latitude = $this->getValue("latitude");
+		$longitude = $this->getValue("longitude");
+		return $latitude . '<br />' . $longitude;
+	}
+
     /**
       * get object values structure available with getValue method
       *

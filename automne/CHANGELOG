@@ -3,6 +3,12 @@ V4.2.2 (in progress)
 [REFACTOR] : Add optimisations in pages tree calculations
 [REFACTOR] : Update Less to version 0.3.4-2
 [FEATURE] : Add atm-blockvar tag to allow specification of variables values of any type inside of polymod blocks
+[FEATURE] : Polymod objects RSS can now have a specific namespace (to allow things like geoRSS)
+[FEATURE] : atm-function category now allows usage of {description}
+[FEATURE] : added getHTMLDescription method to CMS_object_google_coordinates class
+[BUGFIX] : Corrects a bug preventing the creation of a subobject of a new subobject of a new polyobject (yo dawg)
+[BUGFIX] : Fix bug 3157 (module import)
+[BUGFIX] : Removed an empty line at the end of mod_cms_forms_header.php that caused troubles when a page was called with out=xml
 
 V4.2.1 (16/04/2012)
 [BUG] : Correct bug number: 2864, 2906, 2935, 2938, 2939, 2942, 2954, 2957, 2959, 2963, 2968, 3025, 3042, 3051, 3052 (see http://www.automne-cms.org/bug/)

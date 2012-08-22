@@ -465,6 +465,28 @@ if (isset($params['ALLOW_IMAGES_IN_WYSIWYG'])) {
 
 //END UPDATE FROM 4.2.0 TO 4.2.1
 
+// START UPDATE FROM 4.2.1 TO 4.2.2
+
+#add namespaces to RSS mod_object_rss_definition
+$sql = "show columns from mod_object_rss_definition";
+$q = new CMS_query($sql);
+$installed = false;
+while($r = $q->getArray()) {
+	if ($r["Field"] == "namespaces_mord") {
+		$installed = true;
+	}
+}
+if (!$installed) {
+	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v421-to-v422.sql',true)) {
+		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v421-to-v422.sql',false);
+		$content .= 'Database successfuly updated (add link block)<br/>';
+	} else {
+		$content .= 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v421-to-v422.sql must be executed manualy<br/>';
+	}
+}
+
+// END UPDATE FROM 4.2.1 TO 4.2.2
+
 //Update Automne messages
 $files = glob(PATH_MAIN_FS."/sql/messages/*/*.sql", GLOB_NOSORT);
 if (is_array($files)) {

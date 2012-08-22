@@ -491,3 +491,6 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(641, 'polymod', 'en', 'All fields');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(642, 'polymod', 'en', 'Reset search filters');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(643, 'polymod', 'en', 'Row variables');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(644, 'polymod', 'en', 'Sort categories using the order defined in automne administration.');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(645, 'polymod', 'en', 'Additional namespaces');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(646, 'polymod', 'en', 'You can add in this field namespaces to complement the additional definition of the XML sitemap. Example:  Exemple : xmlns:georss="http://www.georss.org/georss" xmlns:gml="http://www.opengis.net/gml"');

@@ -50,6 +50,7 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 					 			 "compiledDefinition"	=> '',
 					 			 "lastCompilation"		=> '',
 								 "uuid"					=> '',
+								 "namespaces"			=> '',
 								);
 	
 	/**
@@ -95,6 +96,7 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 			$this->_objectValues["link"] = $datas['link_mord'];
 			$this->_objectValues["author"] = $datas['author_mord'];
 			$this->_objectValues["copyright"] = $datas['copyright_mord'];
+			$this->_objectValues["namespaces"] = $datas['namespaces_mord'];
 			$this->_objectValues["categories"] = $datas['categories_mord'];
 			$this->_objectValues["ttl"] = (int) $datas['ttl_mord'];
 			$this->_objectValues["email"] = $datas['email_mord'];
@@ -264,6 +266,7 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 			link_mord='".SensitiveIO::sanitizeSQLString($this->_objectValues["link"])."',
 			author_mord='".SensitiveIO::sanitizeSQLString($this->_objectValues["author"])."',
 			copyright_mord='".SensitiveIO::sanitizeSQLString($this->_objectValues["copyright"])."',
+			namespaces_mord='".SensitiveIO::sanitizeSQLString($this->_objectValues["namespaces"])."',
 			categories_mord='".SensitiveIO::sanitizeSQLString($this->_objectValues["categories"])."',
 			ttl_mord='".SensitiveIO::sanitizeSQLString($this->_objectValues["ttl"])."',
 			email_mord='".SensitiveIO::sanitizeSQLString($this->_objectValues["email"])."',
@@ -366,6 +369,7 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 				'link'				=> $this->getValue('link'),
 				'author'			=> $this->getValue('author'),
 				'copyright'			=> $this->getValue('copyright'),
+				'namespaces'			=> $this->getValue('namespaces'),
 				'categories'		=> $this->getValue('categories'),
 				'ttl'				=> $this->getValue('ttl'),
 				'email'				=> $this->getValue('email'),
@@ -443,6 +447,9 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 		}
 		if (isset($data['params']['copyright'])) {
 			$this->setValue("copyright", $data['params']['copyright']);
+		}
+		if (isset($data['params']['namespaces'])) {
+			$this->setValue("namespaces", $data['params']['namespaces']);
 		}
 		if (isset($data['params']['categories'])) {
 			$this->setValue("categories", $data['params']['categories']);

@@ -1007,7 +1007,9 @@ class CMS_poly_object_catalog
 					//write object to persistence to get relations ids
 					$object->writeToPersistence();
 					//set id translation
-					if (isset($objectDatas['id']) && $objectDatas['id'] && $object->getID() != $objectDatas['id']) {
+					if (isset($objectDatas['id']) && $objectDatas['id']) { // && $object->getID() != $objectDatas['id']) {
+						// Fix for bug #3157 : in some cases the imported object will have the same id has the newly created,
+						// we still need the relation table otherwise it will fail to link to the new object
 						$idsRelation['objects'][$objectDatas['id']] = $object->getID();
 					}
 					//set uuid translation

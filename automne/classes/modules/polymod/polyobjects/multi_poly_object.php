@@ -696,7 +696,7 @@ class CMS_multi_poly_object extends CMS_object_common
 							'tooltip'	=> $language->getMessage(self::MESSAGE_MULTI_OBJECT_CREATE_ZONE,array($objectDef->getObjectLabel($language)), MOD_POLYMOD_CODENAME),
 							'iconCls'	=> 'atm-pic-add',
 							'handler'	=> sensitiveIO::sanitizeJSString('function(button){
-								var objectId = \'create\';
+								var objectId = \'create'.$moduleCodename.$this->_objectID.'\';
 								var windowId = \'module'.$moduleCodename.'EditWindow\'+objectId;
 								/*create window element*/
 								var window = new Automne.Window({

@@ -34,6 +34,8 @@ $error = 0;
 $ttl = '1440';
 $data = $label = $rssTitle = $description = $link = $categoriesTags = $copyrightTag = $emailTag = '';
 
+$namespaces = 'xmlns:media="http://search.yahoo.com/mrss/" xmlns:atom="http://www.w3.org/2005/Atom"';
+
 $hash = md5(serialize($_REQUEST));
 $cache = new CMS_cache($hash, 'polymod', 'auto', true);
 if ($cache->exist()) {
@@ -79,6 +81,11 @@ if ($cache->exist()) {
 			$emailTag .= '<managingEditor>'.$RSSDefinition->getValue("email").' ('.APPLICATION_LABEL.')</managingEditor>'."\n";
 		}
 		$ttl = $RSSDefinition->getValue("ttl");
+		
+		if ($RSSDefinition->getValue("namespaces")) {
+			$namespaces .= ' '.stripslashes($RSSDefinition->getValue("namespaces"));
+		}
+
 	}
 	//if no RSS title in generated content, get the default one
 	if (!$data || $error || substr(trim($data),0,7) != '<title>') {
