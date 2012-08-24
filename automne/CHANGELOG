@@ -9,6 +9,10 @@ V4.2.2 (in progress)
 [BUGFIX] : Corrects a bug preventing the creation of a subobject of a new subobject of a new polyobject (yo dawg)
 [BUGFIX] : Fix bug 3157 (module import)
 [BUGFIX] : Removed an empty line at the end of mod_cms_forms_header.php that caused troubles when a page was called with out=xml
+[REFACTOR] : less-php updated from 0.3.4-2 to 0.3.7
+[REFACTOR] : codemirror updated from 2.23 to 2.32
+[REFACTOR] : ckeditor 3.6.2 to 3.6.4
+[FEATURE] : the polymod field Page now handle new variables in templates like :codename or :keywords
 
 V4.2.1 (16/04/2012)
 [BUG] : Correct bug number: 2864, 2906, 2935, 2938, 2939, 2942, 2954, 2957, 2959, 2963, 2968, 3025, 3042, 3051, 3052 (see http://www.automne-cms.org/bug/)
