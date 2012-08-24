@@ -1,0 +1,1 @@
+ALTER TABLE  `mod_object_rss_definition` ADD  `namespaces_mord` TEXT NOT NULL;
