@@ -1,5 +1,6 @@
 v1.35
 [FEATURE] : Add template usage for email actions
+[FEATURE] : Add form variables parsing in email subject, header and footer
 
 v1.34
 [BUG] : Correct a bug in select tag : values containing commas are not allowed

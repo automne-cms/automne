@@ -49,6 +49,28 @@ function evalPolymodVars($text, $language){
 	return $definition->getContent(CMS_polymod_definition_parsing::OUTPUT_RESULT, $parameters);
 }
 
+// Detect and parse mail string vars, if present
+function detectAndParseString($string){
+
+	$pattern = '/##([a-zA-Z0-9]+)##/';
+	preg_match_all($pattern, $string, $aMatches);
+	
+	if(!empty($aMatches)){
+		foreach($aMatches as $aValues){
+			foreach($aValues as $key => $val){
+				if(isset($_POST[$aMatches[1][$key]])) {
+					$string = str_replace($aMatches[0][$key], $_POST[$aMatches[1][$key]], $string);
+				}
+				else {
+					$string = str_replace($aMatches[0][$key], '', $string);	
+				}				
+			}
+		}
+	}
+
+	return $string;
+}
+
 $separator = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? "\xa7\xa7" : "\xc2\xa7\xc2\xa7";
 
 //if page has forms
@@ -390,12 +412,16 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 								if (isset($texts[1])) { // header
 									//needed in case of vars in text. Simple and double quotes are not welcome in this case !
 									$header = evalPolymodVars($texts[1], $form_language->getCode());
+									$header = detectAndParseString($header);
+
 									$body = $header."\n\n".$body;
 									$bodyHtml = '<div class="important">'.nl2br($header)."</div>".$bodyHtml;
 								}
 								if (isset($texts[2])) { //footer
 									//needed in case of vars in text. Simple and double quotes are not welcome in this case !
 									$footer = evalPolymodVars($texts[2], $form_language->getCode());
+									$footer = detectAndParseString($footer);
+
 									$body = $body."\n\n". $footer;
 									$bodyHtml = $bodyHtml.'<div class="important">'.nl2br($footer)."</div>";
 								}
@@ -405,6 +431,8 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 								if ($texts[0]) { //from DB if any
 									//needed in case of vars in text. Simple and double quotes are not welcome in this case !
 									$subject = evalPolymodVars($texts[0], $form_language->getCode());
+									$subject = detectAndParseString($subject);
+
 								} else { // or default subject
 									$subject = $form_language->getMessage(CMS_forms_formular::MESSAGE_CMS_FORMS_EMAIL_SUBJECT, array($form->getAttribute('name'), APPLICATION_LABEL), MOD_CMS_FORMS_CODENAME);
 								}
