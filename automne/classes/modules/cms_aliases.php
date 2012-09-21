@@ -465,7 +465,7 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 			if ($pPath) {
 				if (file_exists($pPath)) {
 					return $pPath;
-				} elseif ($rootPage->regenerate(true)) {
+				} elseif ($page->regenerate(true)) {
 					clearstatcache ();
 					if (file_exists($pPath)) {
 						return $pPath;
