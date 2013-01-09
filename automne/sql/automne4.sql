@@ -2317,7 +2317,7 @@ INSERT INTO `profiles` (`id_pr`, `templateGroupsDeniedStack_pr`, `rowGroupsDenie
 DROP TABLE IF EXISTS `profilesUsers`;
 CREATE TABLE `profilesUsers` (
   `id_pru` int(11) unsigned NOT NULL auto_increment,
-  `login_pru` varchar(50) NOT NULL default '',
+  `login_pru` varchar(100) NOT NULL default '',
   `password_pru` varchar(45) NOT NULL default '',
   `firstName_pru` varchar(50) NOT NULL default '',
   `lastName_pru` varchar(50) NOT NULL default '',
