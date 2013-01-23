@@ -36,16 +36,16 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	/**
 	  * all values for field object
 	  * @var array	("objectID"		=> integer,
-	  				 "labelID" 		=> integer,
-					 "descriptionID"=> integer,
-					 "type" 		=> "",
-					 "order" 		=> integer,
-					 "system" 		=> boolean,
-					 "required" 	=> boolean,
-					 "indexable" 	=> boolean,
-					 "searchlist" 	=> boolean,
-					 "searchable" 	=> boolean,
-					 "params" 		=> array());
+	  *				 "labelID" 		=> integer,
+	  *				 "descriptionID"=> integer,
+	  *				 "type" 		=> "",
+	  *				 "order" 		=> integer,
+	  *				 "system" 		=> boolean,
+	  *				 "required" 	=> boolean,
+	  *				 "indexable" 	=> boolean,
+	  *				 "searchlist" 	=> boolean,
+	  *				 "searchable" 	=> boolean,
+	  *				 "params" 		=> array());
 	  * @access private
 	  */
 	protected $_objectFieldValues = array	("objectID"		=> 0,
