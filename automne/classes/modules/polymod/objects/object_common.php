@@ -974,5 +974,14 @@ abstract class CMS_object_common extends CMS_grandFather
 		}
 		return $aParameters;
 	}
+
+	/**
+	 * Is the current object public or not ?
+	 * Not used yet in core but usefull for testing
+	 * @return boolean [description]
+	 */
+	public function isPublic() {
+		return $this->_public;
+	}
 }
 ?>

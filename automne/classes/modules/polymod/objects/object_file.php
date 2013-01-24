@@ -66,6 +66,8 @@ class CMS_object_file extends CMS_object_common
 	const MESSAGE_OBJECT_FILE_PARAMETER_ALLOWED_TYPE_DESC = 375;
 	const MESSAGE_OBJECT_FILE_PARAMETER_DISALLOWED_TYPE = 376;
 	const MESSAGE_OBJECT_FILE_PARAMETER_DISALLOWED_TYPE_DESC = 375;
+	const MESSAGE_OBJECT_FILE_PARAMETER_ALTERNATIVE_DOMAIN = 664;
+	const MESSAGE_OBJECT_FILE_PARAMETER_ALTERNATIVE_DOMAIN_DESC = 665;
 	const MESSAGE_OBJECT_FILE_FILE_DESCRIPTION = 574;
 	const MESSAGE_OBJECT_FILE_THUMB_DESCRIPTION = 575;
 	const MESSAGE_OBJECT_FILE_IMAGEWIDTH_DESCRIPTION = 576;
@@ -194,6 +196,13 @@ class CMS_object_file extends CMS_object_common
 										'externalName'	=> self::MESSAGE_OBJECT_FILE_PARAMETER_DISALLOWED_TYPE,
 										'description'	=> self::MESSAGE_OBJECT_FILE_PARAMETER_DISALLOWED_TYPE_DESC,
 									),
+							8 => array(
+										'type' 			=> 'string',
+										'required' 		=> false,
+										'internalName'	=> 'altDomain',
+										'externalName'	=> self::MESSAGE_OBJECT_FILE_PARAMETER_ALTERNATIVE_DOMAIN,
+										'description'	=> self::MESSAGE_OBJECT_FILE_PARAMETER_ALTERNATIVE_DOMAIN_DESC,
+									),
 							);
 	
 	/**
@@ -201,7 +210,15 @@ class CMS_object_file extends CMS_object_common
 	  * @var array(integer "subFieldID" => mixed)
 	  * @access private
 	  */
-	protected $_parameterValues = array(0 => false,1 => '',2 => '',3 => array ('doc' => 'doc.gif','gif' => 'gif.gif','html' => 'html.gif','htm' => 'html.gif','jpg' => 'jpg.gif','jpeg' => 'jpg.gif','jpe' => 'jpg.gif','mov' => 'mov.gif','mp3' => 'mp3.gif','pdf' => 'pdf.gif','png' => 'png.gif','ppt' => 'ppt.gif','pps' => 'ppt.gif','swf' => 'swf.gif','sxw' => 'sxw.gif','url' => 'url.gif','xls' => 'xls.gif','xml' => 'xml.gif',) , 4 => false , 5 => '/automne/tmp/', 6 => '', 7 => FILE_UPLOAD_EXTENSIONS_DENIED);
+	protected $_parameterValues = array(0 => false,
+										1 => '',
+										2 => '',
+										3 => array ('doc' => 'doc.gif','gif' => 'gif.gif','html' => 'html.gif','htm' => 'html.gif','jpg' => 'jpg.gif','jpeg' => 'jpg.gif','jpe' => 'jpg.gif','mov' => 'mov.gif','mp3' => 'mp3.gif','pdf' => 'pdf.gif','png' => 'png.gif','ppt' => 'ppt.gif','pps' => 'ppt.gif','swf' => 'swf.gif','sxw' => 'sxw.gif','url' => 'url.gif','xls' => 'xls.gif','xml' => 'xml.gif',),
+										4 => false,
+										5 => '/automne/tmp/',
+										6 => '',
+										7 => FILE_UPLOAD_EXTENSIONS_DENIED,
+										8 => '');
 	
 	/**
 	  * all images extension allowed
@@ -1291,70 +1308,47 @@ class CMS_object_file extends CMS_object_common
 	function getValue($name, $parameters = '') {
 		switch($name) {
 			case 'file':
-				if ($this->_subfieldValues[4]->getValue() && $parameters) {
-					if (in_array($this->getValue('fileExtension'), array('jpg', 'jpeg', 'png', 'gif'))) {
-						@list($x, $y) = explode(',',str_replace(';', ',', $parameters));
-						if ((io::isPositiveInteger($x) && $x < $this->getValue('imageWidth')) || (io::isPositiveInteger($y) && $y < $this->getValue('imageHeight'))) {
-							//get module codename
-							$crop = ($x && $y) ? 1 : 0;
-							//get module codename
-							$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
-							//set location
-							$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
-							//resized image path
-							$pathInfo = pathinfo($this->_subfieldValues[4]->getValue());
-							$resizedImage = $pathInfo['filename'] .'-'. $x .'-'. $y .($crop ? '-c' : '').'.'. $pathInfo['extension'];
-							//resized image path
-							$resizedImagepathFS = PATH_MODULES_FILES_FS . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
-							//if file already exists, no need to resize file send it
-							if(file_exists($resizedImagepathFS)) {
-								return CMS_websitesCatalog::getCurrentDomain() . PATH_MODULES_FILES_WR . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
-							} else {
-								return CMS_websitesCatalog::getCurrentDomain() . PATH_REALROOT_WR .'/image-file'.(!STRIP_PHP_EXTENSION ? '.php' : '').'?image='. $this->_subfieldValues[4]->getValue() .'&amp;module='. $moduleCodename .'&amp;x='. $x .'&amp;y='. $y.'&amp;crop='.$crop.($location != RESOURCE_DATA_LOCATION_PUBLIC ? '&amp;location='.$location : '');
-							}
-						}
-					}
-				}
-				if ($this->_subfieldValues[4]->getValue()) {
-					return $this->getValue('filePath'). '/' .$this->_subfieldValues[4]->getValue();
-				}
-				return '';
-			break;
 			case 'thumb':
-				if ($this->_subfieldValues[1]->getValue() && $parameters) {
-					if (in_array($this->getValue('thumbExtension'), array('jpg', 'jpeg', 'png', 'gif'))) {
-						@list($x, $y) = explode(',',str_replace(';', ',', $parameters));
-						if ((io::isPositiveInteger($x) && $x < $this->getValue('thumbWidth')) || (io::isPositiveInteger($y) && $y < $this->getValue('thumbHeight'))) {
-							$crop = ($x && $y) ? 1 : 0;
-							//get module codename
-							$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
-							//set location
-							$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
-							//resized image path
-							$pathInfo = pathinfo($this->_subfieldValues[1]->getValue());
-							$resizedImage = $pathInfo['filename'] .'-'. $x .'-'. $y .($crop ? '-c' : '').'.'. $pathInfo['extension'];
-							//resized image path
-							$resizedImagepathFS = PATH_MODULES_FILES_FS . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
-							//if file already exists, no need to resize file send it
-							if(file_exists($resizedImagepathFS)) {
-								return CMS_websitesCatalog::getCurrentDomain() . PATH_MODULES_FILES_WR . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
-							} else {
-								return CMS_websitesCatalog::getCurrentDomain() . PATH_REALROOT_WR .'/image-file'.(!STRIP_PHP_EXTENSION ? '.php' : '').'?image='. $this->_subfieldValues[1]->getValue() .'&amp;module='. $moduleCodename .'&amp;x='. $x .'&amp;y='. $y.'&amp;crop='.$crop.($location != RESOURCE_DATA_LOCATION_PUBLIC ? '&amp;location='.$location : '');
-							}
+				if($name == 'file') {
+					$fieldIndex = 4;
+					$fielfPrefix = 'image';
+				}
+				else {
+					$fieldIndex = 1;
+					$fielfPrefix = 'thumb';
+				}
+				// If we have a value and there are additionnal cropping parameters
+				if ($this->_subfieldValues[$fieldIndex]->getValue() && $parameters && in_array($this->getValue($name.'Extension'), array('jpg', 'jpeg', 'png', 'gif'))) {
+					@list($x, $y) = explode(',',str_replace(';', ',', $parameters));
+					if ((io::isPositiveInteger($x) && $x < $this->getValue($fielfPrefix.'Width')) || (io::isPositiveInteger($y) && $y < $this->getValue($fielfPrefix.'Height'))) {
+						$crop = ($x && $y) ? 1 : 0;
+						//get module codename
+						$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
+						//set location
+						$location = ($this->isPublic()) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
+						//resized image path
+						$pathInfo = pathinfo($this->_subfieldValues[$fieldIndex]->getValue());
+						$resizedImage = $pathInfo['filename'] .'-'. $x .'-'. $y .($crop ? '-c' : '').'.'. $pathInfo['extension'];
+						//resized image path
+						$resizedImagepathFS = PATH_MODULES_FILES_FS . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
+						//if file already exists, no need to resize file send it
+						if(file_exists($resizedImagepathFS)) {
+							return $this->getValue('filePath') . '/' . $resizedImage;
+						} else {
+							return CMS_websitesCatalog::getCurrentDomain() . PATH_REALROOT_WR .'/image-file'.(!STRIP_PHP_EXTENSION ? '.php' : '').'?image='. $this->_subfieldValues[$fieldIndex]->getValue() .'&amp;module='. $moduleCodename .'&amp;x='. $x .'&amp;y='. $y.'&amp;crop='.$crop.($location != RESOURCE_DATA_LOCATION_PUBLIC ? '&amp;location='.$location : '');
 						}
 					}
 				}
-				if ($this->_subfieldValues[1]->getValue()) {
-					return $this->getValue('filePath'). '/' .$this->_subfieldValues[1]->getValue();
+				elseif ($this->_subfieldValues[$fieldIndex]->getValue()) {
+					// If we have a value but no cropping params
+					return $this->getValue('filePath'). '/' .$this->_subfieldValues[$fieldIndex]->getValue();
 				}
 				return '';
 			break;
 			case 'fileHTML':
-				//get module codename
-				$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
-				//set location
-				$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
-				$filepath = ($this->_subfieldValues[3]->getValue() == self::OBJECT_FILE_TYPE_INTERNAL) ? PATH_MODULES_FILES_WR.'/'.$moduleCodename.'/'.$location.'/'.$this->_subfieldValues[4]->getValue() : $this->_subfieldValues[4]->getValue();
+				$filepath = ($this->_subfieldValues[3]->getValue() == self::OBJECT_FILE_TYPE_INTERNAL) ?
+						$this->getValue('filePath'). '/' .$this->_subfieldValues[4]->getValue() . '/' .$this->_subfieldValues[4]->getValue() :
+						$this->_subfieldValues[4]->getValue();
 				//append website url if missing
 				if (io::substr($filepath,0,1) == '/') {
 					$filepath = CMS_websitesCatalog::getCurrentDomain() . $filepath;
@@ -1378,8 +1372,15 @@ class CMS_object_file extends CMS_object_common
 				//get module codename
 				$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
 				//set location
-				$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
-				return CMS_websitesCatalog::getCurrentDomain() . PATH_MODULES_FILES_WR.'/'.$moduleCodename.'/'.$location;
+				$location = ($this->isPublic()) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
+				$altDomain = $this->getAlternativeDomain();
+				// If we are serving a public file and there is an alternative domain set up, change the url
+				if($this->isPublic() && $altDomain) {
+					return $altDomain . PATH_MODULES_FILES_WR . '/' . $moduleCodename . '/'.$location;
+				}
+				else {
+					return CMS_websitesCatalog::getCurrentDomain() . PATH_MODULES_FILES_WR.'/'.$moduleCodename.'/'.$location;
+				}
 			break;
 			case 'thumbMaxWidth':
 				//get field parameters
@@ -1396,7 +1397,7 @@ class CMS_object_file extends CMS_object_common
 				//get module codename
 				$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
 				//set location
-				$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
+				$location = ($this->isPublic()) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
 				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.$location;
 				$imgPath = $path."/".$this->_subfieldValues[1]->getValue();
 				$sizeX = $sizeY = 0;
@@ -1415,7 +1416,7 @@ class CMS_object_file extends CMS_object_common
 					//get module codename
 					$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
 					//set location
-					$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
+					$location = ($this->isPublic()) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
 					$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.$location;
 					$imgPath = $path."/".$this->_subfieldValues[4]->getValue();
 					$sizeX = $sizeY = 0;
@@ -1519,6 +1520,14 @@ class CMS_object_file extends CMS_object_common
 			$where
 		order by value ".$direction;
 		return $sql;
+	}
+
+	/**
+	 * Return the alternative domain to use for this object, or false if not set up
+	 * @return mixed the domain to use, or false
+	 */
+	private function getAlternativeDomain(){
+		return !empty($this->_parameterValues[8]) ? $this->_parameterValues[8] : false;
 	}
 }
 ?>
