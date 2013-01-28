@@ -64,10 +64,10 @@ class CMS_XMLTag_css_add extends CMS_XMLTag
 			return '';
 		}
 		$files = CMS_module::moduleUsage($this->_computeParams['object']->getID(), "atm-css-tags-add");
-		$files = is_array($files) ? $files : array();
 		$media = isset($this->_attributes['media']) ? $this->_attributes['media'] : 'all';
+		$files = is_array($files) ? $files : array($media => array());
 		//append module css files
-		$files = array_merge($files, array($media => array($this->_attributes['file'])));
+		$files[$media] = array_merge($files[$media], array($this->_attributes['file']));
 		//save files
 		CMS_module::moduleUsage($this->_computeParams['object']->getID(), "atm-css-tags-add", $files, true);
 	}
