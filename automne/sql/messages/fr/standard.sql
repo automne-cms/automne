@@ -1718,3 +1718,5 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1759, 'standard', 'fr', 'Afficher les blocs');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1760, 'standard', 'fr', 'Inclure les fichiers Images');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1761, 'standard', 'fr', 'Mettre &agrave; jour les fichiers Images existants');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1762, 'standard', 'fr', 'Domaine alternatif pour les medias standard');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1763, 'standard', 'fr', 'http://autre.domaine.tld  (sera utilisé pour servir les ressources dans les pages publiques)');
