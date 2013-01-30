@@ -1332,6 +1332,7 @@ class CMS_object_file extends CMS_object_common
 						//resized image path
 						$resizedImagepathFS = PATH_MODULES_FILES_FS . '/' . $moduleCodename . '/'.$location.'/' . $resizedImage;
 						//if file already exists, no need to resize file send it
+						
 						if(file_exists($resizedImagepathFS)) {
 							return $this->getValue('filePath') . '/' . $resizedImage;
 						} else {
@@ -1339,16 +1340,21 @@ class CMS_object_file extends CMS_object_common
 						}
 					}
 				}
-				elseif ($this->_subfieldValues[$fieldIndex]->getValue()) {
+				if ($this->_subfieldValues[$fieldIndex]->getValue()) {
 					// If we have a value but no cropping params
 					return $this->getValue('filePath'). '/' .$this->_subfieldValues[$fieldIndex]->getValue();
 				}
 				return '';
 			break;
 			case 'fileHTML':
+				//get module codename
+				$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
+				//set location
+				$location = ($this->_public) ? RESOURCE_DATA_LOCATION_PUBLIC : RESOURCE_DATA_LOCATION_EDITED;
 				$filepath = ($this->_subfieldValues[3]->getValue() == self::OBJECT_FILE_TYPE_INTERNAL) ?
-						$this->getValue('filePath'). '/' .$this->_subfieldValues[4]->getValue() . '/' .$this->_subfieldValues[4]->getValue() :
+						PATH_MODULES_FILES_WR.'/'.$moduleCodename.'/'.$location.'/'.$this->_subfieldValues[4]->getValue() :
 						$this->_subfieldValues[4]->getValue();
+
 				//append website url if missing
 				if (io::substr($filepath,0,1) == '/') {
 					$filepath = CMS_websitesCatalog::getCurrentDomain() . $filepath;
