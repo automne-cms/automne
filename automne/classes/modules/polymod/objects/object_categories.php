@@ -1472,7 +1472,13 @@ class CMS_object_categories extends CMS_object_common
 			$usedCategories = false;
 			$usedByItemsIds = false;
 		}
-		$disableCategories = isset($values['disable']) ? explode(';',$values['disable']) : array(); 
+		$disableCategories = array();
+		if (isset($values['disable'])) {
+			$disableCategories = explode(';',$values['disable']);
+			if(count($disableCategories) == 1) {
+				$disableCategories = explode(',',$values['disable']);
+			}
+		}
 		if (!isset($values['editableonly']) || $values['editableonly'] == 'false' || $values['editableonly'] == '0') {
 			$editableOnly = false;
 		} else {
