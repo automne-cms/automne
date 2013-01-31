@@ -1060,6 +1060,7 @@ class CMS_object_image extends CMS_object_common
 		$structure['imageZoomHeight'] = '';
 		$structure['imageSize'] = '';
 		$structure['imageZoomSize'] = '';
+		$structure['alternativeDomain'] = '';
 		return $structure;
 	}
 
@@ -1232,6 +1233,8 @@ class CMS_object_image extends CMS_object_common
 				}
 				return $filesize;
 			break;
+			case 'alternativeDomain':
+				return $this->getAlternativeDomain();
 			default:
 				return parent::getValue($name, $parameters);
 			break;
@@ -1263,6 +1266,7 @@ class CMS_object_image extends CMS_object_common
 		$labels['structure']['imageZoomHeight'] = $language->getMessage(self::MESSAGE_OBJECT_IMAGE_IMAGEZOOMHEIGHT_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['imageSize'] = $language->getMessage(self::MESSAGE_OBJECT_IMAGE_IMAGESIZE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['imageZoomSize'] = $language->getMessage(self::MESSAGE_OBJECT_IMAGE_IMAGEZOOMSIZE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['structure']['alternativeDomain'] = $language->getMessage(self::MESSAGE_OBJECT_IMAGE_PARAMETER_ALTERNATIVE_DOMAIN,false ,MOD_POLYMOD_CODENAME);
 		return $labels;
 	}
 

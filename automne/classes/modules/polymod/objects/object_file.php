@@ -1293,7 +1293,7 @@ class CMS_object_file extends CMS_object_common
 		$structure['fileIcon'] = '';
 		$structure['fileExtension'] = '';
 		$structure['thumbExtension'] = '';
-		
+		$structure['alternativeDomain'] = '';
 		return $structure;
 	}
 	
@@ -1449,6 +1449,8 @@ class CMS_object_file extends CMS_object_common
 			case 'thumbExtension':
 				return $this->_getThumbExtension();
 			break;
+			case 'alternativeDomain':
+				return $this->getAlternativeDomain();
 			default:
 				return parent::getValue($name, $parameters);
 			break;
@@ -1482,7 +1484,7 @@ class CMS_object_file extends CMS_object_common
 		$labels['structure']['fileIcon'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_FILEICON_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['fileExtension'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_FILEEXTENTION_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['thumbExtension'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_THUMBEXTENTION_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
-		
+		$labels['structure']['alternativeDomain'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_PARAMETER_ALTERNATIVE_DOMAIN,false ,MOD_POLYMOD_CODENAME);
 		return $labels;
 	}
 	
