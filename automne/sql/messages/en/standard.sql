@@ -1836,3 +1836,5 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1759, 'standard', 'en', 'Show blocks');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1760, 'standard', 'en', 'Include Images files');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1761, 'standard', 'en', 'Update existing Images files');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1762, 'standard', 'en', 'Alternative domain');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(1763, 'standard', 'en', 'http://other.domain.tld (will be used to serve the ressource on public pages)');

@@ -538,3 +538,6 @@ INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) V
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(661, 'polymod', 'fr', 'Lien de la page');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(662, 'polymod', 'fr', 'Titre du lien de la page');
 INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(663, 'polymod', 'fr', 'Description de la page');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(664, 'polymod', 'fr', 'Domaine alternatif');
+INSERT INTO `messages` (`id_mes`, `module_mes`, `language_mes`, `message_mes`) VALUES(665, 'polymod', 'fr', 'http://autre.domaine.tld  (sera utilisé pour servir les ressources dans les pages publiques)');
+
