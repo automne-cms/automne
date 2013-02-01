@@ -163,7 +163,6 @@ class CMS_object_float extends CMS_object_string {
 	  */
 	function getStructure() {
 		$structure = parent::getStructure();
-		unset($structure['value']);
 		$structure['unit'] = '';
 		return $structure;
 	}
