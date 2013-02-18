@@ -5,7 +5,7 @@
   *
   * @package CMS
   * @subpackage JS
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author Sï¿½bastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   * $Id: main.js,v 1.26 2010/02/04 15:49:59 sebastien Exp $
   */
 
@@ -41,7 +41,9 @@ Automne = {
 		}
 		//check for navigator version
 		if (Ext.isIE6) {
-			window.top.location.replace('./ie6.php');
+			if(parseFloat(navigator.appVersion.split("MSIE")[1]) == 6){
+				window.top.location.replace('./ie6.php');
+			}
 		}
 		if (Ext.isGecko2 ||  Ext.isSafari2 || !(Ext.isIE || Ext.isGecko || Ext.isSafari || Ext.isOpera || Ext.isChrome)) {
 			window.top.location.replace('./navigator.php');
