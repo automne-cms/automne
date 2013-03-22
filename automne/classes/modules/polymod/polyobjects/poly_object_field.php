@@ -431,13 +431,25 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 			)
 		);
 
+		$linkedObjectId = null;
 		if (io::strpos($this->_objectFieldValues['type'], 'multi|') !== false) {
 			$aField['multi'] = 1;
 			$type = explode('|', $this->_objectFieldValues['type']);
 			$aField['type'] = $type[1];
+			$linkedObjectId = $type[1];
 		} else {
 			$aField['multi'] = 0;
 			$aField['type'] = $this->_objectFieldValues['type'];
+			if(io::isPositiveInteger($aField['type'])){
+				$linkedObjectId = $this->_objectFieldValues['type'];
+			}
+		}
+
+		if($linkedObjectId) {
+			$objectDefition = new CMS_poly_object_definition($linkedObjectId);
+			if($objectDefition) {
+				$aField['params']['linkedObjectUuid'] = $objectDefition->getValue('uuid');
+			}
 		}
 
 		if (!io::isPositiveInteger($aField['type'])) {
@@ -491,7 +503,20 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 					$objectId = $idsRelation['objects'][$data['type']];
 					$type = (isset($data['multi']) && $data['multi']) ? 'multi|'.$objectId : $objectId;
 				} else {
-					$type = 'Unknown imported type '.$data['type'];
+					// Use UUID to look for the linked object
+					if (isset($data['params']['linkedObjectUuid'])) {
+						//$this->setValue("order", $data['params']['order']);
+						$linkedObjectDef = CMS_poly_object_catalog::getDefinitionFromUuid($data['params']['linkedObjectUuid']);
+						if($linkedObjectDef) {
+							$type = $linkedObjectDef->getID();
+						}
+						else {
+							$type = 'Unknown imported type '.$data['type'];
+						}
+					}
+					else {
+						$type = 'Unknown imported type '.$data['type'];
+					}
 				}
 			}
 			$this->setValue("type", $type);
@@ -536,18 +561,20 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 			$fieldObject = $this->getTypeObject();
 			$GLOBALS['moduleCodename'] = $params['module'];
 			if ($fieldObject && isset($data['params']['params']) && $data['params']['params']) {
-				$params = $fieldObject->treatParams($data['params']['params'], '');
-				if ($params) {
-					$this->setValue("params", $params);
-					//set this object into definition to convert array so it can be converted again at end of import process
-					$idsRelation['definitionToConvert'][] = $this;
-					//store field to convert params at end of import
-					if (method_exists($fieldObject, 'importParams')) {
-						$idsRelation['paramsFieldsToConvert'][] = $this;
+				if(method_exists($fieldObject, 'treatParams')) {
+					$params = $fieldObject->treatParams($data['params']['params'], '');
+					if ($params) {
+						$this->setValue("params", $params);
+						//set this object into definition to convert array so it can be converted again at end of import process
+						$idsRelation['definitionToConvert'][] = $this;
+						//store field to convert params at end of import
+						if (method_exists($fieldObject, 'importParams')) {
+							$idsRelation['paramsFieldsToConvert'][] = $this;
+						}
+					} else {
+						$infos .= 'Error : missing or invalid parameters for field importation ...'."\n";
+						return false;
 					}
-				} else {
-					$infos .= 'Error : missing or invalid parameters for field importation ...'."\n";
-					return false;
 				}
 			}
 		}

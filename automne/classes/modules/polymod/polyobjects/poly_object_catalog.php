@@ -1300,5 +1300,28 @@ class CMS_poly_object_catalog
 		");
 		return $q->getNumRows() ? true : false;
 	}
+
+	/**
+	  * Finds an Object Definition based on the uuid
+	  *
+	  * @param string $uuid The object uuid to look for
+	  * @return CMS_poly_object_definition|boolean
+	  * @access public
+	  */
+	public static function getDefinitionFromUuid($uuid) {
+		if (!$uuid) {
+			CMS_grandFather::raiseError("uuid must be set");
+			return false;
+		}
+		$q = new CMS_query("
+			select
+				id_mod
+			from
+				mod_object_definition
+			where
+				uuid_mod='".io::sanitizeSQLString($uuid)."'
+		");
+		return ($q->getNumRows() == 1) ? new CMS_poly_object_definition($q->getValue('id_mod')) : false;
+	}
 }
 ?>
