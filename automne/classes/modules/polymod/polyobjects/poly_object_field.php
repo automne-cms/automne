@@ -508,7 +508,8 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 						//$this->setValue("order", $data['params']['order']);
 						$linkedObjectDef = CMS_poly_object_catalog::getDefinitionFromUuid($data['params']['linkedObjectUuid']);
 						if($linkedObjectDef) {
-							$type = $linkedObjectDef->getID();
+							$objectId = $linkedObjectDef->getID();
+							$type = (isset($data['multi']) && $data['multi']) ? 'multi|'.$objectId : $objectId;
 						}
 						else {
 							$type = 'Unknown imported type '.$data['type'];
