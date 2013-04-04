@@ -4,7 +4,7 @@ Open-Source Content Management System released under the [GNU Public License](ht
 
 ## Requirements
 
- - PHP version 5.2 or greater
+ - PHP version 5.2 or 5.3
  - MySQL version 5.0.x or greater
  - Apache 1.3.x or greater
 	
@@ -35,6 +35,6 @@ To update, download and apply successively the corresponding(s) patches availabl
 
 ## Contribute
 
-We"re a small team and there is a lot of work to do, you can help us by submitting issues on Github or send pull requests.
+We"re a small team and there is a lot of work to do, you can help us by submitting [https://github.com/automne-cms/automne/issues](issues on Github) or send pull requests.
 
 Automne administration interface is available in English and French only, we can provide you a PO file if you need to translate Automne in another language.
