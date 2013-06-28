@@ -1,0 +1,34 @@
+# Image files
+AddType application/x-httpd-fastphp5 png
+AddType application/x-httpd-fastphp5 jpg
+AddType application/x-httpd-fastphp5 jpeg
+AddType application/x-httpd-fastphp5 gif
+AddType application/x-httpd-fastphp5 bmp
+# Microsoft office files
+AddType application/x-httpd-fastphp5 doc
+AddType application/x-httpd-fastphp5 xls
+AddType application/x-httpd-fastphp5 ppt
+AddType application/x-httpd-fastphp5 docm
+AddType application/x-httpd-fastphp5 docx
+AddType application/x-httpd-fastphp5 dotx
+AddType application/x-httpd-fastphp5 potm
+AddType application/x-httpd-fastphp5 potx
+AddType application/x-httpd-fastphp5 ppam
+AddType application/x-httpd-fastphp5 ppsm
+AddType application/x-httpd-fastphp5 ppsx
+AddType application/x-httpd-fastphp5 pptm
+AddType application/x-httpd-fastphp5 pptx
+AddType application/x-httpd-fastphp5 xlam
+AddType application/x-httpd-fastphp5 xlsb
+AddType application/x-httpd-fastphp5 xlsm
+AddType application/x-httpd-fastphp5 xlsx
+AddType application/x-httpd-fastphp5 xltm
+AddType application/x-httpd-fastphp5 xltx
+# Other
+AddType application/x-httpd-fastphp5 pdf
+AddType application/x-httpd-fastphp5 flv
+AddType application/x-httpd-fastphp5 avi
+AddType application/x-httpd-fastphp5 mpg
+AddType application/x-httpd-fastphp5 wmv
+AddType application/x-httpd-fastphp5 mpeg
+AddType application/x-httpd-fastphp5 mp3

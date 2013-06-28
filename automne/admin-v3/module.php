@@ -55,7 +55,7 @@ switch ($_POST["cms_action"]) {
 			$languages = CMS_languagesCatalog::getAllLanguages();
 			foreach ($languages as $aLanguage) {
 				if (!$_POST['label'.$aLanguage->getCode()]) {
-					$cms_message .= "\n".$cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD, 
+					$cms_message .= "\n".$cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD,
 						array($aLanguage->getLabel()));
 				}
 			}
@@ -77,43 +77,9 @@ switch ($_POST["cms_action"]) {
 				}
 				//create/delete all needed .htaccess files
 				if (isset($_POST['hasprotect']) && $_POST['protect'] == 1) {
-					//archived
-					if (is_dir(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/archived')) {
-						CMS_file::copyTo(PATH_HTACCESS_FS.'/htaccess_file', PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/archived/.htaccess');
-						CMS_file::chmodFile(FILES_CHMOD, PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/archived/.htaccess');
-					}
-					//edited
-					if (is_dir(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/edited')) {
-						CMS_file::copyTo(PATH_HTACCESS_FS.'/htaccess_file', PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/edited/.htaccess');
-						CMS_file::chmodFile(FILES_CHMOD, PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/edited/.htaccess');
-					}
-					//edition
-					if (is_dir(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/edition')) {
-						CMS_file::copyTo(PATH_HTACCESS_FS.'/htaccess_file', PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/edition/.htaccess');
-						CMS_file::chmodFile(FILES_CHMOD, PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/edition/.htaccess');
-					}
-					//public
-					if (is_dir(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/public')) {
-						CMS_file::copyTo(PATH_HTACCESS_FS.'/htaccess_file', PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/public/.htaccess');
-						CMS_file::chmodFile(FILES_CHMOD, PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/public/.htaccess');
-					}
+					$module->setFilesProtection(true);
 				} elseif (isset($_POST['hasprotect'])) {
-					//archived
-					if (file_exists(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/archived/.htaccess')) {
-						CMS_file::deleteFile(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/archived/.htaccess');
-					}
-					//edited
-					if (file_exists(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/edited/.htaccess')) {
-						CMS_file::deleteFile(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/edited/.htaccess');
-					}
-					//edition
-					if (file_exists(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/edition/.htaccess')) {
-						CMS_file::deleteFile(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/edition/.htaccess');
-					}
-					//public
-					if (file_exists(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/public/.htaccess')) {
-						CMS_file::deleteFile(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/public/.htaccess');
-					}
+					$module->setFilesProtection(false);
 				}
 				//set htaccess in deleted directory
 				if (is_dir(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/deleted')) {
@@ -126,7 +92,7 @@ switch ($_POST["cms_action"]) {
 		} else {
 			//checks
 			if (!$_POST["codename"] || $_POST["codename"] != sensitiveIO::sanitizeAsciiString($_POST["codename"])) {
-				$cms_message .= "\n".$cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD, 
+				$cms_message .= "\n".$cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD,
 					array($cms_language->getMessage(MESSAGE_PAGE_FIELD_CODENAME)));
 			} else {
 				//check for codename not already used
@@ -140,11 +106,11 @@ switch ($_POST["cms_action"]) {
 			$languages = CMS_languagesCatalog::getAllLanguages();
 			foreach ($languages as $aLanguage) {
 				if (!$_POST['label'.$aLanguage->getCode()]) {
-					$cms_message .= "\n".$cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD, 
+					$cms_message .= "\n".$cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD,
 						array($aLanguage->getLabel()));
 				}
 			}
-			
+
 			if (!$cms_message) {
 				//create the new module
 				$moduleCodename = $_POST["codename"];
@@ -159,7 +125,7 @@ switch ($_POST["cms_action"]) {
 					$count = 0;
 					foreach ($languages as $aLanguage) {
 						$sql = "
-							insert into 
+							insert into
 								messages
 							set
 								id_mes = '1',

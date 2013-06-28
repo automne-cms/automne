@@ -39,7 +39,7 @@ class CMS_module extends CMS_grandFather
 	const MESSAGE_PAGE_CATEGORIES = 636;
 	const MESSAGE_PAGE_MANAGE_OBJECTS = 635;
 	const MESSAGE_PAGE_CATEGORIES_USED = 637;
-	
+
 	/**
 	  * DB id
 	  * @var integer
@@ -140,7 +140,7 @@ class CMS_module extends CMS_grandFather
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Gets the DB ID of the instance.
 	  *
@@ -151,7 +151,7 @@ class CMS_module extends CMS_grandFather
 	{
 		return $this->_id;
 	}
-	
+
 	/**
 	  * Gets the label.
 	  *
@@ -167,7 +167,7 @@ class CMS_module extends CMS_grandFather
 		}
 		return $language->getMessage($this->_labelMessageID, false, $this->_codename);
 	}
-	
+
 	/**
 	  * Gets the label id.
 	  *
@@ -178,7 +178,7 @@ class CMS_module extends CMS_grandFather
 	{
 		return $this->_labelMessageID;
 	}
-	
+
 	/**
 	  * Sets the label.
 	  *
@@ -196,7 +196,7 @@ class CMS_module extends CMS_grandFather
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Does the module have parameters ?
 	  *
@@ -207,7 +207,7 @@ class CMS_module extends CMS_grandFather
 	{
 		return $this->_hasParameters;
 	}
-	
+
 	/**
 	  * Is given module is a poly module ?
 	  *
@@ -218,7 +218,7 @@ class CMS_module extends CMS_grandFather
 	function isPolymod() {
 		return ($this->_isPolymod) ? true : false;
 	}
-	
+
 	/**
 	  * Sets the polymod status of the module
 	  *
@@ -230,8 +230,8 @@ class CMS_module extends CMS_grandFather
 		$this->_isPolymod = ($isPolymod) ? true : false;
 		return true;
 	}
-	
-	/** 
+
+	/**
 	  * Get the default language code for this module
 	  * Comes from parameters or Constant
 	  * Upgrades constant with parameter found
@@ -248,7 +248,7 @@ class CMS_module extends CMS_grandFather
 		}
 		return constant("MOD_".io::strtoupper($this->getCodename())."_DEFAULT_LANGUAGE");
 	}
-	
+
 	/**
 	  * Get the module parameters. Search for a file name "CODENAME_rc.xml" in PATH_MODULES_FS
 	  *
@@ -296,7 +296,7 @@ class CMS_module extends CMS_grandFather
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Set and write to disc the module parameters file
 	  *
@@ -310,7 +310,7 @@ class CMS_module extends CMS_grandFather
 			$this->raiseError("Parameters not an array");
 			return false;
 		}
-		
+
 		$filename = PATH_MODULES_FS."/".$this->_codename."_rc.xml";
 		if (file_exists($filename)) {
 			$fh = @fopen($filename, "wb");
@@ -327,7 +327,7 @@ class CMS_module extends CMS_grandFather
 					}
 				}
 				$cdata .= "</cms-module-parameters>";
-				
+
 				fwrite($fh, $cdata);
 				fclose($fh);
 				@chmod ($filename, octdec(FILES_CHMOD));
@@ -337,7 +337,7 @@ class CMS_module extends CMS_grandFather
 		$this->raiseError("File not found or writable");
 		return false;
 	}
-	
+
 	/**
 	  * Gets the codename.
 	  *
@@ -348,7 +348,7 @@ class CMS_module extends CMS_grandFather
 	{
 		return $this->_codename;
 	}
-	
+
 	/**
 	  * Sets the codename.
 	  *
@@ -366,7 +366,7 @@ class CMS_module extends CMS_grandFather
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Gets the administration frontend path.
 	  *
@@ -394,7 +394,7 @@ class CMS_module extends CMS_grandFather
 			return $base_path."/".$this->_codename."/".$this->_administrationFrontend;
 		}
 	}
-	
+
 	/**
 	  * Does the current module has an admin backend
 	  *
@@ -407,9 +407,9 @@ class CMS_module extends CMS_grandFather
 			return false;
 		}
 		return true;
-		
+
 	}
-	
+
 	/**
 	  * Sets the administration frontend filename. It must exists of course.
 	  *
@@ -428,7 +428,7 @@ class CMS_module extends CMS_grandFather
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Gets resource by its internal ID (not the resource table DB ID)
 	  *
@@ -443,7 +443,7 @@ class CMS_module extends CMS_grandFather
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Gets a tag representation instance
 	  *
@@ -455,7 +455,7 @@ class CMS_module extends CMS_grandFather
 	function getTagRepresentation($tagName, $tagAttributes, $args = false)
 	{
 	}
-	
+
 	/**
 	  * Gets the module validations
 	  *
@@ -466,7 +466,7 @@ class CMS_module extends CMS_grandFather
 	function getValidations($user)
 	{
 	}
-	
+
 	/**
 	  * Process the module validations. Note that the EMails sent to either the transferred validator or the editors were sent before.
 	  *
@@ -486,16 +486,16 @@ class CMS_module extends CMS_grandFather
 			$this->raiseError("Result is not a valid validation option");
 			return false;
 		}
-		
+
 		//Tell the resource of the changes
 		$resource = $resourceValidation->getResource();
 		$editions = $resourceValidation->getEditions();
-		
+
 		//add a call to all modules for validation specific treatment
 		$modulesCodes = new CMS_modulesCodes();
 		//add a call to modules before validation
 		$modulesCodes->getModulesCodes(MODULE_TREATMENT_BEFORE_VALIDATION_TREATMENT, '', $resource, array('result' => $result, 'lastvalidation' => $lastValidation, 'module' => $this->_codename));
-		
+
 		switch ($result) {
 		case VALIDATION_OPTION_REFUSE:
 			//validation was refused, adjust the array of validations refused
@@ -538,7 +538,7 @@ class CMS_module extends CMS_grandFather
 						if ($resource->getPublication() != RESOURCE_PUBLICATION_NEVERVALIDATED) {
 							$this->_changeDataLocation($resource, $locationFrom, RESOURCE_DATA_LOCATION_PUBLIC, true);
 						}
-						//move data from its location to edited 
+						//move data from its location to edited
 						$this->_changeDataLocation($resource, $locationFrom, RESOURCE_DATA_LOCATION_EDITED);
 					} else {
 						//the move entirely takes place outside of USERSPACE (archived to deleted hopefully)
@@ -566,7 +566,7 @@ class CMS_module extends CMS_grandFather
 			} else {
 				$all_editions = CMS_resourceStatus::getAllEditions();
 				$this->_changeDataLocation($resource, RESOURCE_DATA_LOCATION_EDITED, RESOURCE_DATA_LOCATION_PUBLIC, true);
-				
+
 				foreach ($all_editions as $aEdition) {
 					if ($aEdition & $editions) {
 						$resource->validateEdition($aEdition);
@@ -580,7 +580,7 @@ class CMS_module extends CMS_grandFather
 		$modulesCodes->getModulesCodes(MODULE_TREATMENT_AFTER_VALIDATION_TREATMENT, '', $resource, array('result' => $result, 'lastvalidation' => $lastValidation, 'module' => $this->_codename));
 		return true;
 	}
-	
+
 	/**
 	  * Process the daily routine, which typically put out of userspace resources which have a past publication date
 	  *
@@ -590,7 +590,7 @@ class CMS_module extends CMS_grandFather
 	function processDailyRoutine()
 	{
 	}
-	
+
 	/**
 	  * Changes The page data (in the DB) from one location to another.
 	  *
@@ -612,13 +612,13 @@ class CMS_module extends CMS_grandFather
 			$this->raiseError("Locations are not in the set");
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	  * Get array of categories this module can use to archive its datas
-	  * 
+	  *
 	  * @access public
 	  * @param array $attrs, array of attributes to determine which level of categoryies wanted, etc.
 	  *        format : array(language => CMS_language, level => integer, root => integer, attrs => array())
@@ -649,7 +649,7 @@ class CMS_module extends CMS_grandFather
 		}
 		return $items;
 	}
-	
+
 	/**
 	  * Get module categories usage
 	  *
@@ -669,7 +669,7 @@ class CMS_module extends CMS_grandFather
 		$q = new CMS_query($sql);
 		return ($q->getNumRows()) ? true : false;
 	}
-	
+
 	/**
 	  * Does this module is destroyable ?
 	  *
@@ -680,7 +680,7 @@ class CMS_module extends CMS_grandFather
 		//@TODO
 		return false;
 	}
-	
+
 	/**
 	  * Remove the module from database
 	  *
@@ -713,12 +713,12 @@ class CMS_module extends CMS_grandFather
 					id_mod='".$this->_id."'
 			";
 			$q = new CMS_query($sql);
-			
+
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	  * Writes the module into persistence (MySQL for now).
 	  *
@@ -760,7 +760,7 @@ class CMS_module extends CMS_grandFather
 		$this->createModuleFiles();
 		return true;
 	}
-	
+
 	/**
 	  * Get the tags to be treated by this module for the specified treatment mode, visualization mode and object.
 	  * @param integer $treatmentMode The current treatment mode (see constants on top of CMS_modulesTags class for accepted values).
@@ -791,8 +791,8 @@ class CMS_module extends CMS_grandFather
 		}
 		return $return;
 	}
-	
-	/** 
+
+	/**
 	  * Treat given content tag by this module for the specified treatment mode, visualization mode and object.
 	  *
 	  * @param string $tag The CMS_XMLTag.
@@ -931,7 +931,7 @@ class CMS_module extends CMS_grandFather
 										//get old files for this tag already needed by other modules
 										$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-js-tags");
 										$files = is_array($files) ? $files : array();
-										
+
 										//append module js files
 										$files = array_merge($files, $this->getJSFiles($treatedObject->getID()));
 										//save files
@@ -967,28 +967,28 @@ class CMS_module extends CMS_grandFather
 								case "atm-js-tags":
 									//get old files for this tag already needed by other modules
 									$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-js-tags");
-									
+
 									//add files from atm-js-add tag
 									$filesAdd = CMS_module::moduleUsage($treatedObject->getID(), "atm-js-tags-add");
 									$filesAdd = is_array($filesAdd) ? $filesAdd : array();
 									$files = array_merge($files, $filesAdd);
-									
+
 									$return .= '<?php echo CMS_view::getJavascript(array(\''.implode('\',\'', array_unique($files)).'\')); ?>'."\n";
 								break;
 								case "atm-css-tags":
 									$media = $tag->getAttribute('media') ? $tag->getAttribute('media') : 'all';
 									//get old files for this tag already needed by other modules
 									$files = CMS_module::moduleUsage($treatedObject->getID(), "atm-css-tags");
-									
+
 									//add files from atm-css-add tag
 									$filesAdd = CMS_module::moduleUsage($treatedObject->getID(), "atm-css-tags-add");
 									$filesAdd = is_array($filesAdd) ? $filesAdd : array();
-									
+
 									if (isset($files[$media])) {
 										if (isset($filesAdd[$media])) {
 											$files[$media] = array_merge($files[$media], $filesAdd[$media]);
 										}
-										
+
 										$return .= '<?php echo CMS_view::getCSS(array(\''.implode('\',\'', array_unique($files[$media])).'\'), \''.$media.'\'); ?>'."\n";
 									}
 								break;
@@ -1032,7 +1032,7 @@ class CMS_module extends CMS_grandFather
 		}
 		return $tagContent;
 	}
-	
+
 	/**
 	  * Module replacements vars
 	  *
@@ -1042,10 +1042,10 @@ class CMS_module extends CMS_grandFather
 	function getModuleReplacements() {
 		return array();
 	}
-	
+
 	/**
 	  * Return the module JS files
-	  * 
+	  *
 	  * @return array : the module js file in /js/modules/codename
 	  * @access public
 	  */
@@ -1086,10 +1086,10 @@ class CMS_module extends CMS_grandFather
 		}
 		return $files;
 	}
-	
+
 	/**
 	  * Return the module CSS files
-	  * 
+	  *
 	  * @return array : the module css file in /css/modules/codename
 	  * @access public
 	  */
@@ -1161,7 +1161,7 @@ class CMS_module extends CMS_grandFather
 
 	/**
 	  * Return the module code for the specified treatment mode, visualization mode and object.
-	  * 
+	  *
 	  * @param mixed $modulesCode the previous modules codes (usually string)
 	  * @param integer $treatmentMode The current treatment mode (see constants on top of this file for accepted values).
 	  * @param integer $visualizationMode The current visualization mode (see constants on top of cms_page class for accepted values).
@@ -1176,7 +1176,7 @@ class CMS_module extends CMS_grandFather
 		//nothing
 		return $modulesCode;
 	}
-	
+
 	/**
 	  * If module use CMS_moduleCategory, does it use it
 	  *
@@ -1189,10 +1189,10 @@ class CMS_module extends CMS_grandFather
 		//we don't know it here so assume yes to avoid errors
 		return true;
 	}
-	
+
 	/**
 	  * Set or get the module useage for a given page id
-	  * 
+	  *
 	  * @param integer $pageID page ID to get or set useage
 	  * @param string $module module codename to set or get useage (default = polymod for generic polymod useage).
 	  * @param boolean $setUseage, if false (get mode : default), return the useage of the module for the given page ID, else (set mode), set the useage of the module for the given page ID
@@ -1227,7 +1227,7 @@ class CMS_module extends CMS_grandFather
 			return isset($moduleUseage[$module]["pageUseModule"][$pageID]) ? $moduleUseage[$module]["pageUseModule"][$pageID] : null;
 		}
 	}
-	
+
 	/**
 	  * Module script task : default function, return true
 	  *
@@ -1238,7 +1238,7 @@ class CMS_module extends CMS_grandFather
 	function scriptTask($parameters) {
 		return true;
 	}
-	
+
 	/**
 	  * Module script info : get infos for a given script parameters
 	  *
@@ -1249,7 +1249,7 @@ class CMS_module extends CMS_grandFather
 	function scriptInfo($parameters) {
 		return 'Unknown script for module '.$this->_codename;
 	}
-	
+
 	/**
 	  * Get object as an array structure used for export
 	  *
@@ -1341,7 +1341,7 @@ class CMS_module extends CMS_grandFather
 		}
 		return $aModule;
 	}
-	
+
 	/**
 	  * Import module from given array datas
 	  *
@@ -1460,7 +1460,7 @@ class CMS_module extends CMS_grandFather
 		}
 		return true;
 	}
-	
+
 	/**
 	  * Create modules files directories for current module
 	  *
@@ -1476,13 +1476,123 @@ class CMS_module extends CMS_grandFather
 			&& $moduleDeleted->writeToPersistence()
 			&& $moduleEdited->writeToPersistence()
 			&& $modulePublic->writeToPersistence()) {
-			
+
 			CMS_file::copyTo(PATH_HTACCESS_FS.'/htaccess_no', PATH_MODULES_FILES_FS.'/'.$this->_codename.'/deleted/.htaccess');
 			CMS_file::chmodFile(FILES_CHMOD, PATH_MODULES_FILES_FS.'/'.$this->_codename.'/deleted/.htaccess');
-			
+
 			return true;
 		} else {
 			return false;
+		}
+	}
+
+	/**
+	 * Set file protection for this module
+	 *
+	 * @param boolean $active if true the files will be protected, if false the protection will be deactivated
+	 */
+	public function setFilesProtection($active = true) {
+		// here we have to check php version and execution mode
+		if(version_compare(PHP_VERSION, '5.3.0') >= 0) {
+			// Php 5.3 introduced .user.ini files for CGI/FastCGI SAPI, see http://php.net/manual/en/configuration.file.per-user.php
+			switch ($this->getPhpSapiMode()) {
+				case 'fcgi':
+					$this->setHtAccessProtection($active,'htaccess_fcgi');
+					$this->setPhpUserIni($active);
+					break;
+				case 'cgi':
+					$this->setHtAccessProtection($active,'htaccess_cgi');
+					$this->setPhpUserIni($active);
+					break;
+				default:
+					$this->setHtAccessProtection($active,'htaccess_file');
+					break;
+			}
+		}
+		else {
+			// Before php 5.3 we have to rely on htaccess. Wont work when using modCGI but there isn't much choice here
+			$this->setHtAccessProtection($active,'htaccess_file');
+		}
+	}
+
+	/**
+	 * Set file protection via htaccess
+	 *
+	 * @param boolean $active        if true the .htaccess files will be added, otherwise they will be removed
+	 * @param string  $htaccess_file name of the htaccess file
+	 */
+	private function setHtAccessProtection($active = true, $htaccess_file = 'htaccess_file') {
+		if($active) {
+			$this->copyFilesToModuleDirectory($htaccess_file,'.htaccess');
+		}
+		else {
+			$this->removeFilesFromModuleDirectory('.htaccess');
+		}
+	}
+
+	/**
+	 * Set file protection via .user.ini file
+	 * @see http://php.net/manual/en/configuration.file.per-user.php
+	 *
+	 * @param boolean $active        if true the .user.ini files will be added, otherwise they will be removed
+	 */
+	private function setPhpUserIni($active) {
+		if($active) {
+			$this->copyFilesToModuleDirectory('phpuserini','.user.ini');
+		}
+		else {
+			$this->removeFilesFromModuleDirectory('.user.ini');
+		}
+	}
+
+	/**
+	 * Copy a file located in the PATH_HTACCESS_FS directory to the edited, public, archived and edition directory of the module
+	 *
+	 * @param  string $original    name of the file to copy
+	 * @param  string $destination name of the file when copied
+	 */
+	private function copyFilesToModuleDirectory($original,$destination) {
+		$moduleDirectories = array(RESOURCE_DATA_LOCATION_EDITED,RESOURCE_DATA_LOCATION_PUBLIC,RESOURCE_DATA_LOCATION_ARCHIVED,RESOURCE_DATA_LOCATION_EDITION);
+		foreach ($moduleDirectories as $directory) {
+			if (is_dir(PATH_MODULES_FILES_FS.'/'.$this->_codename.'/'.$directory)) {
+				CMS_file::copyTo(PATH_HTACCESS_FS.'/'.$original, PATH_MODULES_FILES_FS.'/'.$this->_codename.'/'.$directory.'/'.$destination);
+				CMS_file::chmodFile(FILES_CHMOD, PATH_MODULES_FILES_FS.'/'.$this->_codename.'/'.$directory.'/'.$destination);
+			}
+		}
+	}
+
+	/**
+	 * Remove a file located in the edited, public, archived and edition directory of the module
+	 *
+	 * @param  string $filename    name of the file to remove
+	 */
+	private function removeFilesFromModuleDirectory($filename) {
+		$moduleDirectories = array(RESOURCE_DATA_LOCATION_EDITED,RESOURCE_DATA_LOCATION_PUBLIC,RESOURCE_DATA_LOCATION_ARCHIVED,RESOURCE_DATA_LOCATION_EDITION);
+		foreach ($moduleDirectories as $directory) {
+			if (file_exists(PATH_MODULES_FILES_FS.'/'.$this->_codename.'/'.$directory.'/'.$filename)) {
+				CMS_file::deleteFile(PATH_MODULES_FILES_FS.'/'.$this->_codename.'/'.$directory.'/'.$filename);
+			}
+		}
+	}
+
+	/**
+	 * Helper function to find the Server API build used on this site
+	 *
+	 * @return string the SAPI type. Can return 'cgi', 'fcgi' or another type such as apache2handler
+	 */
+	private function getPhpSapiMode() {
+		if(preg_match_all('#(cgi)|(fcgi)#', PHP_SAPI ,$matches)){
+			$mode = $matches[0];
+			if(isset($mode[1])) {
+				$mode = $mode[1];
+			}
+			else {
+				$mode = $mode[0];
+			}
+			return $mode;
+		}
+		else {
+			return PHP_SAPI;
 		}
 	}
 }

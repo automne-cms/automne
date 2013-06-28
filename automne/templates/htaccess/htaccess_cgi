@@ -1,0 +1,34 @@
+# Image files
+AddType application/x-httpd-php5 png
+AddType application/x-httpd-php5 jpg
+AddType application/x-httpd-php5 jpeg
+AddType application/x-httpd-php5 gif
+AddType application/x-httpd-php5 bmp
+# Microsoft office files
+AddType application/x-httpd-php5 doc
+AddType application/x-httpd-php5 xls
+AddType application/x-httpd-php5 ppt
+AddType application/x-httpd-php5 docm
+AddType application/x-httpd-php5 docx
+AddType application/x-httpd-php5 dotx
+AddType application/x-httpd-php5 potm
+AddType application/x-httpd-php5 potx
+AddType application/x-httpd-php5 ppam
+AddType application/x-httpd-php5 ppsm
+AddType application/x-httpd-php5 ppsx
+AddType application/x-httpd-php5 pptm
+AddType application/x-httpd-php5 pptx
+AddType application/x-httpd-php5 xlam
+AddType application/x-httpd-php5 xlsb
+AddType application/x-httpd-php5 xlsm
+AddType application/x-httpd-php5 xlsx
+AddType application/x-httpd-php5 xltm
+AddType application/x-httpd-php5 xltx
+# Other
+AddType application/x-httpd-php5 pdf
+AddType application/x-httpd-php5 flv
+AddType application/x-httpd-php5 avi
+AddType application/x-httpd-php5 mpg
+AddType application/x-httpd-php5 wmv
+AddType application/x-httpd-php5 mpeg
+AddType application/x-httpd-php5 mp3
