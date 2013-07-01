@@ -3,6 +3,10 @@ AddType application/x-httpd-php5 png
 AddType application/x-httpd-php5 jpg
 AddType application/x-httpd-php5 jpeg
 AddType application/x-httpd-php5 gif
+AddType application/x-httpd-php5 webp
+AddType application/x-httpd-php5 apng
+AddType application/x-httpd-php5 dng
+AddType application/x-httpd-php5 svg
 AddType application/x-httpd-php5 bmp
 # Microsoft office files
 AddType application/x-httpd-php5 doc
@@ -24,11 +28,37 @@ AddType application/x-httpd-php5 xlsm
 AddType application/x-httpd-php5 xlsx
 AddType application/x-httpd-php5 xltm
 AddType application/x-httpd-php5 xltx
+# Open Document
+AddType application/x-httpd-php5 odt
+AddType application/x-httpd-php5 ods
+AddType application/x-httpd-php5 odp
+AddType application/x-httpd-php5 odg
+AddType application/x-httpd-php5 odc
+AddType application/x-httpd-php5 odf
+AddType application/x-httpd-php5 odb
+AddType application/x-httpd-php5 odi
+AddType application/x-httpd-php5 odm
+AddType application/x-httpd-php5 ott
+AddType application/x-httpd-php5 ots
+AddType application/x-httpd-php5 otp
+AddType application/x-httpd-php5 otg
 # Other
+AddType application/x-httpd-php5 txt
 AddType application/x-httpd-php5 pdf
+AddType application/x-httpd-php5 epub
 AddType application/x-httpd-php5 flv
 AddType application/x-httpd-php5 avi
 AddType application/x-httpd-php5 mpg
 AddType application/x-httpd-php5 wmv
 AddType application/x-httpd-php5 mpeg
+AddType application/x-httpd-php5 webm
+AddType application/x-httpd-php5 ogg
+AddType application/x-httpd-php5 ogv
 AddType application/x-httpd-php5 mp3
+#Archives
+AddType application/x-httpd-php5 zip
+AddType application/x-httpd-php5 tar
+AddType application/x-httpd-php5 gz
+AddType application/x-httpd-php5 bz2
+AddType application/x-httpd-php5 7z
+AddType application/x-httpd-php5 dmg

@@ -3,6 +3,10 @@ AddType application/x-httpd-fastphp5 png
 AddType application/x-httpd-fastphp5 jpg
 AddType application/x-httpd-fastphp5 jpeg
 AddType application/x-httpd-fastphp5 gif
+AddType application/x-httpd-fastphp5 webp
+AddType application/x-httpd-fastphp5 apng
+AddType application/x-httpd-fastphp5 dng
+AddType application/x-httpd-fastphp5 svg
 AddType application/x-httpd-fastphp5 bmp
 # Microsoft office files
 AddType application/x-httpd-fastphp5 doc
@@ -24,11 +28,37 @@ AddType application/x-httpd-fastphp5 xlsm
 AddType application/x-httpd-fastphp5 xlsx
 AddType application/x-httpd-fastphp5 xltm
 AddType application/x-httpd-fastphp5 xltx
+# Open Document
+AddType application/x-httpd-fastphp5 odt
+AddType application/x-httpd-fastphp5 ods
+AddType application/x-httpd-fastphp5 odp
+AddType application/x-httpd-fastphp5 odg
+AddType application/x-httpd-fastphp5 odc
+AddType application/x-httpd-fastphp5 odf
+AddType application/x-httpd-fastphp5 odb
+AddType application/x-httpd-fastphp5 odi
+AddType application/x-httpd-fastphp5 odm
+AddType application/x-httpd-fastphp5 ott
+AddType application/x-httpd-fastphp5 ots
+AddType application/x-httpd-fastphp5 otp
+AddType application/x-httpd-fastphp5 otg
 # Other
+AddType application/x-httpd-fastphp5 txt
 AddType application/x-httpd-fastphp5 pdf
+AddType application/x-httpd-fastphp5 epub
 AddType application/x-httpd-fastphp5 flv
 AddType application/x-httpd-fastphp5 avi
 AddType application/x-httpd-fastphp5 mpg
 AddType application/x-httpd-fastphp5 wmv
 AddType application/x-httpd-fastphp5 mpeg
+AddType application/x-httpd-fastphp5 webm
+AddType application/x-httpd-fastphp5 ogg
+AddType application/x-httpd-fastphp5 ogv
 AddType application/x-httpd-fastphp5 mp3
+#Archives
+AddType application/x-httpd-fastphp5 zip
+AddType application/x-httpd-fastphp5 tar
+AddType application/x-httpd-fastphp5 gz
+AddType application/x-httpd-fastphp5 bz2
+AddType application/x-httpd-fastphp5 7z
+AddType application/x-httpd-fastphp5 dmg
