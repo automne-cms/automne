@@ -46,7 +46,7 @@ case 'index':
 	$field = new CMS_poly_object_field($_POST["field"]);
 	if (!$field->hasError()) {
 		if (!$field->setValue("indexable",$_POST["indexable"])) {
-			$cms_message .= "\n".$cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD, 
+			$cms_message .= "\n".$cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD,
 				array($cms_language->getMessage(MESSAGE_PAGE_FIELD_FRONTEND)));
 		} else {
 			//save the data
@@ -61,7 +61,7 @@ case 'deleteObject' :
 		unset($objectID);
 		//unset fields catalog in cache
 		CMS_cache::clearTypeCacheByMetas('atm-polymod-structure', array('type' => 'fields'));
-		
+
 		$cms_message .= $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 	} else {
 		$cms_message .= $cms_language->getMessage(MESSAGE_ACTION_DELETE_OBJECT_ERROR);
@@ -165,12 +165,12 @@ if (!sizeof($objects)) {
 			$objectUseageLabel .='</ul>';
 		}
 		$fields = CMS_poly_object_catalog::getFieldsDefinition($object->getID(), true);
-		
+
 		//get all RSS def for object
 		$RRSDefinitions = CMS_poly_object_catalog::getAllRSSDefinitionsForObject($object->getID());
 		//get all plugin def for object
 		$pluginDefinitions = CMS_poly_object_catalog::getAllPluginDefinitionsForObject($object->getID());
-		
+
 		$content .= '
 		<strong>ID :</strong> '.$object->getID().'<br />
 		<strong>'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_DESCRIPTION).' :</strong> '.$object->getDescription($cms_language).'<br />
@@ -284,7 +284,7 @@ if (is_object($object)) {
 		</table>
 		<ul id="fields" class="sortable">
 		';
-		
+
 		$count = 0;
 		foreach ($fields as $field) {
 			$count++;
@@ -369,14 +369,14 @@ if (is_object($object)) {
 		<input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_SAVE_NEWORDER).'" />
 		</form>
 		</div>
-		
+
 		<form action="polymod_field.php" method="post">
 		<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
 		<input type="hidden" name="object" value="'.$object->getID().'" />
 		<input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_NEW).'" />
 		</form><br />';
 	}
-	
+
 	//RSS
 	if ($object->getID()) {
 		$content .= '
@@ -433,7 +433,7 @@ if (is_object($object)) {
 			<input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_NEW).'" />
 		</form><br />';
 	}
-	
+
 	//WYSIWYG
 	if ($object->getID()) {
 		$content .= '
@@ -488,6 +488,18 @@ if (is_object($object)) {
 			<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
 			<input type="hidden" name="object" value="'.$object->getID().'" />
 			<input type="submit" class="admin_input_submit" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_NEW).'" />
+		</form><br />';
+	}
+
+	//Oembed
+	if ($object->getID()) {
+		$content .= '
+		<dialog-title type="admin_h2">'.'Oembed (need i18n)'.' :</dialog-title>';
+		$content .= '<br /><br />
+		<form action="polymod_oembed_definition.php" method="post">
+			<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
+			<input type="hidden" name="object" value="'.$object->getID().'" />
+			<input type="submit" class="admin_input_submit" value="'.'Paramètres (need i18n)'.'" />
 		</form><br />';
 	}
 }
