@@ -1,7 +1,6 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", function(event) {
-  console.log("DOM fully loaded and parsed");
   var editorXml = CodeMirror.fromTextArea(document.getElementById('definitionXml'), {
         lineNumbers: true,
         matchBrackets: true,
