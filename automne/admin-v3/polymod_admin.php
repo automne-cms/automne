@@ -493,9 +493,50 @@ if (is_object($object)) {
 
 	//Oembed
 	if ($object->getID()) {
+
 		$content .= '
-		<dialog-title type="admin_h2">'.'Oembed (need i18n)'.' :</dialog-title>';
-		$content .= '<br /><br />
+		<dialog-title type="admin_h2">'.'Oembed'.' :</dialog-title>';
+
+		$definitions = CMS_polymod_oembed_definition_catalog::getDefinitionsForObject($object->getID());
+		if(!empty($definitions)) {
+			$content .= '<table border="0" cellpadding="2" cellspacing="2">
+			<tr>
+				<th class="admin">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_TITLE).'</th>
+				<th class="admin">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_ACTIONS).'</th>
+			</tr>';
+			$count = 0;
+			foreach ($definitions as $oembedDefinition) {
+				$count++;
+				$td_class = ($count % 2 == 0) ? "admin_lightgreybg" : "admin_darkgreybg";
+				$content .= '<tr alt="ID : '.$oembedDefinition->getId().'" title="ID : '.$oembedDefinition->getId().'">
+					<td class="'.$td_class.'">'.$oembedDefinition->getCodename().'</td>
+					<td class="'.$td_class.'">
+						<table border="0" cellpadding="2" cellspacing="0">
+							<tr>';
+							$content .= '
+								<form action="'.$_SERVER["SCRIPT_NAME"].'" method="post" onSubmit="return confirm(\''.addslashes($cms_language->getMessage(MESSAGE_PAGE_ACTION_DELETEPLUGINCONFIRM, array($pluginDefinition->getLabel($cms_language)), MOD_POLYMOD_CODENAME)) . ' ?\')">
+								<input type="hidden" name="cms_action" value="deleteOembed" />
+								<input type="hidden" name="oembedId" value="'.$oembedDefinition->getId().'" />
+								<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
+								<input type="hidden" name="object" value="'.$object->getID().'" />
+									<td class="admin"><input type="submit" class="admin_input_'.$td_class.'" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_DELETE).'" /></td>
+								</form>';
+
+							$content .= '
+							<form action="polymod_oembed_definition.php" method="post">
+							<input type="hidden" name="definition" value="'.$oembedDefinition->getID().'" />
+							<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
+							<input type="hidden" name="objectdefinition" value="'.$object->getID().'" />
+								<td class="admin"><input type="submit" class="admin_input_'.$td_class.'" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_EDIT).'" /></td>
+							</form>
+							</tr>
+						</table>
+					</td>
+				</tr>';
+			}
+			$content .= '</table>';
+		}
+		$content .= '
 		<form action="polymod_oembed_definition.php" method="post">
 			<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
 			<input type="hidden" name="object" value="'.$object->getID().'" />

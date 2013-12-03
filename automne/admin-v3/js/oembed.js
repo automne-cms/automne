@@ -1,7 +1,7 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", function(event) {
-  var editorXml = CodeMirror.fromTextArea(document.getElementById('definitionXml'), {
+  var editorXml = CodeMirror.fromTextArea(document.getElementById('xml'), {
         lineNumbers: true,
         matchBrackets: true,
         mode: "application/x-httpd-php",
@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         tabMode: "shift",
 				tabSize: 2
   });
-  var editorJson = CodeMirror.fromTextArea(document.getElementById('definitionJson'), {
+  var editorJson = CodeMirror.fromTextArea(document.getElementById('json'), {
         lineNumbers: true,
         matchBrackets: true,
         mode: "javascript",

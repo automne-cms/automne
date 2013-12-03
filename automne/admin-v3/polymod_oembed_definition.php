@@ -15,10 +15,14 @@ if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
 
 //load page objects and vars
 $moduleCodename = io::request("moduleCodename");
-$objectDefitionId = io::request("object");
+$objectDefitionId = io::request("objectdefinition");
 $objectDefinition = CMS_poly_object_catalog::getObjectDefinition($objectDefitionId);
+$oembedDefinitionId = io::request("definition");
 
-$RSSDefinition = new CMS_poly_rss_definitions();
+$oembedDefinition = CMS_polymod_oembed_definition_catalog::getById($oembedDefinitionId);
+if(!$oembedDefinition) {
+	$oembedDefinition = new CMS_polymod_oembed_definition();
+}
 
 if ($moduleCodename) {
 	$polymod = CMS_modulesCatalog::getByCodename($moduleCodename);
@@ -28,6 +32,20 @@ $cms_message = "";
 
 switch ($_POST["cms_action"]) {
 	case "validate":
+		$oembedDefinition->setObjectdefinition(io::post('objectdefinition'));
+		$oembedDefinition->setCodename(io::post('codename'));
+		$oembedDefinition->setXML(io::post('xml'));
+		$oembedDefinition->setJson(io::post('json'));
+		if($oembedDefinition->validate()) {
+			$oembedDefinition->writeToPersistence();
+		}
+		else {
+			$errors = $oembedDefinition->getValidationFailures();
+			foreach ($errors as $error) {
+				$cms_message .= "\n".$error;
+			}
+		}
+	break;
 	case "switchexplanation":
 	break;
 }
@@ -59,7 +77,8 @@ $content = <<<HTML
 <form name="frm" id="oembeddef" action="$scriptname" method="post" class="form-horizontal">
 <input type="hidden" id="cms_action" name="cms_action" value="validate" />
 <input type="hidden" name="moduleCodename" value="$moduleCodename" />
-<input type="hidden" name="object" value="$objectDefinition->getID()" />
+<input type="hidden" name="objectdefinition" value="{$objectDefinition->getID()}" />
+<input type="hidden" name="definition" value="{$oembedDefinition->getId()}" />
 <fieldset>
 	<div class="row">
 		<div class="col-md-6">
@@ -67,20 +86,20 @@ $content = <<<HTML
 			<div class="control-group">
 				<label class="control-label" for="codename">Codename</label>
 				<div class="controls">
-					<input id="codename" name="codename" type="text" placeholder="" class="input-medium" required="">
+					<input id="codename" name="codename" type="text" placeholder="" class="input-medium" required="required" value="{$oembedDefinition->getCodename()}">
 					<p class="help-block">Les pages possédant ce codename auront le code spécifique à l\'oembed rajouté dans le header de la page</p>
 				</div>
 			</div>
 		</div>
 		<div class="col-md-6">
 			<!-- Text input-->
-			<div class="control-group">
+			<!--<div class="control-group">
 				<label class="control-label" for="parameter">Paramètre</label>
 				<div class="controls">
 					<input id="parameter" name="parameter" type="text" placeholder="" class="input-medium" required="">
 					<p class="help-block">La variable dans l\'url de la page qui donne l\'identifiant de l\'objet à traiter</p>
 				</div>
-			</div>
+			</div>-->
 		</div>
 	</div>
 	<div class="row">
@@ -88,7 +107,7 @@ $content = <<<HTML
 			<div class="control-group">
 				<label class="control-label" for="textarea">Définition XML</label>
 				<div class="controls">
-					<textarea id="definitionXml" name="definitionXml" class="form-control" rows="18">'.''.'</textarea>
+					<textarea id="xml" name="xml" class="form-control" rows="18">{$oembedDefinition->getXml()}</textarea>
 				</div>
 			</div>
 		</div>
@@ -122,7 +141,7 @@ $content = <<<HTML
 			<div class="control-group">
 				<label class="control-label" for="textarea">Définition JSON</label>
 				<div class="controls">
-					<textarea id="definitionJson" name="definitionJson" class="form-control" rows="18">'.''.'</textarea>
+					<textarea id="json" name="json" class="form-control" rows="18">{$oembedDefinition->getJson()}</textarea>
 				</div>
 			</div>
 		</div>
@@ -151,7 +170,11 @@ $content = <<<HTML
 }</pre>
 		</div>
 	</div>
-
+	<div class="control-group">
+	  <div class="controls">
+	    <button type="submit" class="btn btn-success">Valider</button>
+	  </div>
+	</div>
 </fieldset>
 HTML;
 
