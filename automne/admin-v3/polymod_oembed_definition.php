@@ -87,7 +87,7 @@ $content = <<<HTML
 				<label class="control-label" for="codename">Codename</label>
 				<div class="controls">
 					<input id="codename" name="codename" type="text" placeholder="" class="input-medium" required="required" value="{$oembedDefinition->getCodename()}">
-					<p class="help-block">Les pages possédant ce codename auront le code spécifique à l\'oembed rajouté dans le header de la page</p>
+					<p class="help-block">Les pages possédant ce codename auront le code spécifique à l'oembed rajouté dans le header de la page</p>
 				</div>
 			</div>
 		</div>
@@ -97,7 +97,7 @@ $content = <<<HTML
 				<label class="control-label" for="parameter">Paramètre</label>
 				<div class="controls">
 					<input id="parameter" name="parameter" type="text" placeholder="" class="input-medium" required="">
-					<p class="help-block">La variable dans l\'url de la page qui donne l\'identifiant de l\'objet à traiter</p>
+					<p class="help-block">La variable dans l'url de la page qui donne l'identifiant de l'objet à traiter</p>
 				</div>
 			</div>-->
 		</div>
