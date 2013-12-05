@@ -539,7 +539,7 @@ if (is_object($object)) {
 		$content .= '
 		<form action="polymod_oembed_definition.php" method="post">
 			<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
-			<input type="hidden" name="object" value="'.$object->getID().'" />
+			<input type="hidden" name="objectdefinition" value="'.$object->getID().'" />
 			<input type="submit" class="admin_input_submit" value="'.'Paramètres (need i18n)'.'" />
 		</form><br />';
 	}
