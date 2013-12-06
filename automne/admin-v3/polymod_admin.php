@@ -37,7 +37,6 @@ define("MESSAGE_PAGE_FIELD_INDEXABLE", 322);
 if(sensitiveIO::IsPositiveInteger($objectID)) {
 	$object = new CMS_poly_object_definition($objectID);
 }
-
 // ****************************************************************
 // ** ACTIONS MANAGEMENT                                         **
 // ****************************************************************
@@ -87,6 +86,11 @@ break;
 case 'deletePlugin':
 	$pluginDefinition = new CMS_poly_plugin_definitions($_POST['pluginDefinition']);
 	$pluginDefinition->destroy();
+	$cms_message .= $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
+break;
+case 'deleteOembed':
+	$def = CMS_polymod_oembed_definition_catalog::getById($_POST['oembedId']);
+	$def->destroy();
 	$cms_message .= $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 break;
 case "change_order";
@@ -495,38 +499,40 @@ if (is_object($object)) {
 	if ($object->getID()) {
 
 		$content .= '
-		<dialog-title type="admin_h2">'.'Oembed'.' :</dialog-title>';
-
+		<dialog-title type="admin_h2">'.'Oembed'.' :</dialog-title>
+			<br />';
 		$definitions = CMS_polymod_oembed_definition_catalog::getDefinitionsForObject($object->getID());
 		if(!empty($definitions)) {
 			$content .= '<table border="0" cellpadding="2" cellspacing="2">
 			<tr>
-				<th class="admin">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_TITLE).'</th>
-				<th class="admin">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_ACTIONS).'</th>
+				<th class="admin">Libell&eacute;</th>
+				<th class="admin">Codename</th>
+				<th class="admin">Action</th>
 			</tr>';
 			$count = 0;
 			foreach ($definitions as $oembedDefinition) {
 				$count++;
 				$td_class = ($count % 2 == 0) ? "admin_lightgreybg" : "admin_darkgreybg";
 				$content .= '<tr alt="ID : '.$oembedDefinition->getId().'" title="ID : '.$oembedDefinition->getId().'">
+					<td class="'.$td_class.'">'.$oembedDefinition->getLabel().'</td>
 					<td class="'.$td_class.'">'.$oembedDefinition->getCodename().'</td>
 					<td class="'.$td_class.'">
 						<table border="0" cellpadding="2" cellspacing="0">
 							<tr>';
 							$content .= '
-								<form action="'.$_SERVER["SCRIPT_NAME"].'" method="post" onSubmit="return confirm(todo)">
-								<input type="hidden" name="cms_action" value="deleteOembed" />
-								<input type="hidden" name="oembedId" value="'.$oembedDefinition->getId().'" />
-								<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
-								<input type="hidden" name="object" value="'.$object->getID().'" />
+								<form action="'.$_SERVER["SCRIPT_NAME"].'" method="post" onSubmit="return confirm(\'Confirmez-vous la suppression de la definition Oembed \\\''.$oembedDefinition->getLabel().'\\\' ?\');return false;">
+									<input type="hidden" name="cms_action" value="deleteOembed" />
+									<input type="hidden" name="oembedId" value="'.$oembedDefinition->getId().'" />
+									<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
+									<input type="hidden" name="object" value="'.$object->getID().'" />
 									<td class="admin"><input type="submit" class="admin_input_'.$td_class.'" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_DELETE).'" /></td>
 								</form>';
 
 							$content .= '
 							<form action="polymod_oembed_definition.php" method="post">
-							<input type="hidden" name="definition" value="'.$oembedDefinition->getID().'" />
-							<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
-							<input type="hidden" name="objectdefinition" value="'.$object->getID().'" />
+								<input type="hidden" name="definition" value="'.$oembedDefinition->getID().'" />
+								<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
+								<input type="hidden" name="objectdefinition" value="'.$object->getID().'" />
 								<td class="admin"><input type="submit" class="admin_input_'.$td_class.'" value="'.$cms_language->getMessage(MESSAGE_PAGE_ACTION_EDIT).'" /></td>
 							</form>
 							</tr>
@@ -536,11 +542,11 @@ if (is_object($object)) {
 			}
 			$content .= '</table>';
 		}
-		$content .= '
+		$content .= '<br /><br />
 		<form action="polymod_oembed_definition.php" method="post">
 			<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
 			<input type="hidden" name="objectdefinition" value="'.$object->getID().'" />
-			<input type="submit" class="admin_input_submit" value="'.'Paramètres (need i18n)'.'" />
+			<input type="submit" class="admin_input_submit" value="'.'Nouveau'.'" />
 		</form><br />';
 	}
 }

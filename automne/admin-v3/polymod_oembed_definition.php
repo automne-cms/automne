@@ -36,7 +36,7 @@ switch ($_POST["cms_action"]) {
 		$oembedDefinition->setCodename(io::post('codename'));
 		$oembedDefinition->setHtml(io::post('html'));
 		$oembedDefinition->setParameter(io::post('parameter'));
-		$oembedDefinition->setLabel(io::post('parameter'));
+		$oembedDefinition->setLabel(io::post('label'));
 
 		if($oembedDefinition->validate()) {
 			$oembedDefinition->writeToPersistence();

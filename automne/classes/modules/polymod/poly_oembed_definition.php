@@ -95,6 +95,25 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 	}
 
 	/**
+	  * Destroy this object in DB
+	  *
+	  * @return boolean true on success, false on failure
+	  * @access public
+	  */
+	function destroy() {
+		if ($this->id) {
+			$sql = "DELETE FROM mod_object_oembed_definition WHERE id_mood = '".$this->id."'";
+			$q = new CMS_query($sql);
+			if ($q->hasError()) {
+				$this->raiseError("Can't delete datas of table mod_object_oembed_definition for object : ".$this->id);
+				return false;
+			}
+		}
+		unset($this);
+		return true;
+	}
+
+	/**
 	 * This method return the id
 	 * @return
 	 */
