@@ -239,6 +239,19 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 					rawurlencode(CMS_websitesCatalog::getCurrentDomain().$_SERVER['REQUEST_URI']);
 	}
 
+	public static function getObjectName() {
+		$page = CMS_tree::getPageByID(CURRENT_PAGE);
+
+		$oembedDefinition = CMS_polymod_oembed_definition_catalog::getByCodename($page->getCodename());
+		$parameterName = $oembedDefinition->getParameter();
+
+		$embededObject = CMS_poly_object_catalog::getObjectByID(io::get($parameterName), false,true);
+		if($embededObject) {
+			return $embededObject->getLabel();
+		}
+		return '';
+	}
+
 	public static function getDiscoveryEndpoint() {
 		$modes = array(
 			'json' => 'application/json+oembed',
@@ -246,7 +259,7 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 			);
 		$links = '';
 		foreach ($modes as $mode => $mimeType) {
-			$links .= '<link rel="alternate" type="'.$mimeType.'" href="'.self::getServiceUrl().'&format='.$mode.'"  title="Todo"/>';
+			$links .= '<link rel="alternate" type="'.$mimeType.'" href="'.self::getServiceUrl().'&format='.$mode.'"  title="'.self::getObjectName().'"/>';
 		}
 
 		return $links;
