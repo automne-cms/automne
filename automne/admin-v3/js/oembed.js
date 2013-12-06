@@ -19,4 +19,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         tabMode: "shift",
 				tabSize: 2
   });
+
+  editorXml.setSize(500,400);
+editorJson.setSize(500,400);
 });

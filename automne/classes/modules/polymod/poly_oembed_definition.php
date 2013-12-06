@@ -10,6 +10,7 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 	public $id               = null;
 	public $objectdefinition = null;
 	public $codename         = null;
+	public $parameter        = null;
 	public $json             = null;
 	public $xml              = null;
 	public $uuid             = null;
@@ -50,7 +51,11 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 		global $cms_language;
 		//check definition parsing
 		$module = CMS_poly_object_catalog::getModuleCodenameForObjectType($this->objectdefinition);
-		$parsing = new CMS_polymod_definition_parsing($value, true, CMS_polymod_definition_parsing::CHECK_PARSING_MODE, $module);
+
+		$polymod = CMS_modulesCatalog::getByCodename($module);
+
+		$convertedDefinition = $polymod->convertDefinitionString($_POST["definition"], false);
+		$parsing = new CMS_polymod_definition_parsing($convertedDefinition, true, CMS_polymod_definition_parsing::CHECK_PARSING_MODE, $module);
 		$errors = $parsing->getParsingError();
 		if ($errors) {
 			return $returnErrors ? $errors : false;
@@ -74,7 +79,7 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 		$sql_fields = '';
 		foreach ($fields as $field) {
 			$sql_fields .= (empty($sql_fields)) ? '' :', ';
-			$sql_fields .= $field.'_mood="'. $this->$field . '"';
+			$sql_fields .= $field.'_mood="'. CMS_query::echap($this->$field) . '"';
 		}
 		if($this->id) {
 			$sql = 'UPDATE mod_object_oembed_definition SET '.$sql_fields . ' WHERE id_mood = '.$this->id;
@@ -207,6 +212,66 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 	public function setUUID($UUID) {
 	 	$this->uuid = $UUID;
 		return $this;
+	}
+
+	public static function getServiceUrl() {
+		return CMS_websitesCatalog::getCurrentDomain().'/embed/oembed'.(!STRIP_PHP_EXTENSION ? '.php' : '').
+					'?url='.
+					rawurlencode(CMS_websitesCatalog::getCurrentDomain().$_SERVER['REQUEST_URI']);
+	}
+
+	public static function getDiscoveryEndpoint() {
+		$modes = array(
+			'json' => 'application/json+oembed',
+			'xml' => 'application/xml+oembed'
+			);
+		$links = '';
+		foreach ($modes as $mode => $mimeType) {
+			$links .= '<link rel="alternate" type="'.$mimeType.'" href="'.self::getServiceUrl().'&format='.$mode.'"  title="Todo"/>';
+		}
+
+		return $links;
+	}
+
+	public static function getResults($props) {
+	  $defaults = array(
+	    'type' => 'rich',
+	    'version' => '1.0',
+	    'provider_name' => 'automne',
+	    'width' => 0,
+	    'height' => 0,
+	  );
+	  $result = array_merge($defaults, $props);
+	  return $result;
+	}
+
+	public static function format_xml_elements($array) {
+	  $output = '';
+	  foreach ($array as $key => $value) {
+	    if (is_numeric($key)) {
+	      if ($value['key']) {
+	        $output .= ' <' . $value['key'];
+	        if (isset($value['attributes']) && is_array($value['attributes'])) {
+	          $output .= drupal_attributes($value['attributes']);
+	        }
+
+	        if (isset($value['value']) && $value['value'] != '') {
+	          $output .= '>' . (is_array($value['value']) ? self::format_xml_elements($value['value']) : self::check_plain($value['value'])) . '</' . $value['key'] . ">\n";
+	        }
+	        else {
+	          $output .= " />\n";
+	        }
+	      }
+	    }
+	    else {
+	      $output .= ' <' . $key . '>' . (is_array($value) ? self::format_xml_elements($value) : self::check_plain($value)) . "</$key>\n";
+	    }
+	  }
+	  return $output;
+	}
+
+	public static function check_plain($text) {
+  	return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 	}
 
 }

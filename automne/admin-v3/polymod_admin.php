@@ -514,7 +514,7 @@ if (is_object($object)) {
 						<table border="0" cellpadding="2" cellspacing="0">
 							<tr>';
 							$content .= '
-								<form action="'.$_SERVER["SCRIPT_NAME"].'" method="post" onSubmit="return confirm(\''.addslashes($cms_language->getMessage(MESSAGE_PAGE_ACTION_DELETEPLUGINCONFIRM, array($pluginDefinition->getLabel($cms_language)), MOD_POLYMOD_CODENAME)) . ' ?\')">
+								<form action="'.$_SERVER["SCRIPT_NAME"].'" method="post" onSubmit="return confirm(todo)">
 								<input type="hidden" name="cms_action" value="deleteOembed" />
 								<input type="hidden" name="oembedId" value="'.$oembedDefinition->getId().'" />
 								<input type="hidden" name="moduleCodename" value="'.$moduleCodename.'" />
