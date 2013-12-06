@@ -210,7 +210,14 @@ class CMS_polymod extends CMS_modulePolymodValidation
 				}
 			break;
 			case MODULE_TREATMENT_PAGEHEADER_TAGS :
-				return parent::treatWantedTag($tag, $tagContent, $treatmentMode, $visualizationMode, $treatedObject, $treatmentParameters);
+				$content = parent::treatWantedTag($tag, $tagContent, $treatmentMode, $visualizationMode, $treatedObject, $treatmentParameters);
+				if (($treatedObject instanceof CMS_page) && $tag->getName() === "atm-meta-tags") {
+					$oembed = CMS_polymod_oembed_definition_catalog::getByCodename($treatedObject->getCodename());
+					if($oembed && CMS_poly_object_catalog::getModuleCodenameForObjectType($oembed->getObjectdefinition()) === $this->_codename) {
+						$content .= '<?php '."\n".'echo CMS_polymod_oembed_definition::getDiscoveryEndpoint(); ?>' ;
+					}
+				}
+				return $content;
 			break;
 			case MODULE_TREATMENT_WYSIWYG_INNER_TAGS :
 				switch ($tag->getName()) {
@@ -679,6 +686,8 @@ class CMS_polymod extends CMS_modulePolymodValidation
 				'cms_xmltag_start' 					=> PATH_MODULES_FS.'/polymod/tags/start.php',
 				'cms_xmltag_end' 					=> PATH_MODULES_FS.'/polymod/tags/end.php',
 				'cms_xmltag_setvar' 				=> PATH_MODULES_FS.'/polymod/tags/setvar.php',
+				'cms_polymod_oembed_definition' 			=> PATH_MODULES_FS.'/polymod/poly_oembed_definition.php',
+				'cms_polymod_oembed_definition_catalog' 			=> PATH_MODULES_FS.'/polymod/poly_oembed_definition_catalog.php',
 			);
 		}
 		$file = '';
