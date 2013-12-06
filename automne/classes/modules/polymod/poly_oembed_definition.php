@@ -10,9 +10,9 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 	public $id               = null;
 	public $objectdefinition = null;
 	public $codename         = null;
+	public $label            = null;
 	public $parameter        = null;
-	public $json             = null;
-	public $xml              = null;
+	public $html             = null;
 	public $uuid             = null;
 	public $validationFailures = array();
 
@@ -25,17 +25,12 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 		if(!$this->checkCodenameUnicity()) {
 			$this->validationFailures[] = "Ce codename est déjà utilisé par une autre définition Oembed";
 		}
-		// XML definition must be valid
-		if(!$this->checkDefinition($this->xml)) {
-			$this->validationFailures[] = "La définition XML n'est pas valide.";
-			$this->validationFailures[] = $this->checkDefinition($this->xml,true);
+		// HTML definition must be valid
+		if(!$this->checkDefinition()) {
+			$this->validationFailures[] = "La définition n'est pas valide.";
+			$this->validationFailures[] = $this->checkDefinition(true);
 		}
-		// JSON definition must be valid
-		if(!$this->checkDefinition($this->json)) {
-			$this->validationFailures[] = "La définition Json n'est pas valide.";
-			$this->validationFailures[] = $this->checkDefinition($this->json,true);
-		}
-		// definitions must be valid
+
 		return empty($this->validationFailures);
 	}
 
@@ -47,14 +42,15 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 		return 0 === CMS_polymod_oembed_definition_catalog::countByCodename($this->codename,$this->id);
 	}
 
-	public function checkDefinition($value, $returnErrors = false) {
+	public function checkDefinition($returnErrors = false) {
 		global $cms_language;
+
 		//check definition parsing
 		$module = CMS_poly_object_catalog::getModuleCodenameForObjectType($this->objectdefinition);
 
 		$polymod = CMS_modulesCatalog::getByCodename($module);
 
-		$convertedDefinition = $polymod->convertDefinitionString($_POST["definition"], false);
+		$convertedDefinition = $polymod->convertDefinitionString($this->html, false);
 		$parsing = new CMS_polymod_definition_parsing($convertedDefinition, true, CMS_polymod_definition_parsing::CHECK_PARSING_MODE, $module);
 		$errors = $parsing->getParsingError();
 		if ($errors) {
@@ -71,8 +67,9 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 		$fields = array(
 			'objectdefinition',
 			'codename',
-			'json',
-			'xml',
+			'html',
+			'label',
+			'parameter',
 			'uuid'
 		);
 
@@ -154,45 +151,67 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 	}
 
 	/**
-	 * This method return the XML
+	 * This method return the label
 	 * @return
 	 */
-	public function getXML() {
-		return $this->xml;
+	public function getLabel() {
+		return $this->label;
 	}
 
 	/**
-	 * This method sets the XML
+	 * This method sets the label
 	 * @return  the current object
 	 */
-	public function setXML($v) {
+	public function setLabel($v) {
 		if($v !== null && is_numeric($v)) {
 			$v = (string) $v;
 		}
 
-		$this->xml = $v;
+		$this->label = $v;
 
 		return $this;
 	}
 
 	/**
-	 * This method return the Json
+	 * This method return the parameter
 	 * @return
 	 */
-	public function getJson() {
-		return $this->json;
+	public function getParameter() {
+		return $this->parameter;
 	}
 
 	/**
-	 * This method sets the Json
+	 * This method sets the parameter
 	 * @return  the current object
 	 */
-	public function setJson($v) {
+	public function setParameter($v) {
 		if($v !== null && is_numeric($v)) {
 			$v = (string) $v;
 		}
 
-		$this->json = $v;
+		$this->parameter = $v;
+
+		return $this;
+	}
+
+	/**
+	 * This method return the HTML
+	 * @return
+	 */
+	public function getHtml() {
+		return $this->html;
+	}
+
+	/**
+	 * This method sets the HTML
+	 * @return  the current object
+	 */
+	public function setHtml($v) {
+		if($v !== null && is_numeric($v)) {
+			$v = (string) $v;
+		}
+
+		$this->html = $v;
 
 		return $this;
 	}

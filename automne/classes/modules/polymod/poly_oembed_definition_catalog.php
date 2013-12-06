@@ -17,6 +17,10 @@ class CMS_polymod_oembed_definition_catalog extends CMS_grandFather
 		if($data === null) {
 			return null;
 		}
+		return self::getObj($data);
+	}
+
+	private static function getObj($data) {
 
 		$definition = new CMS_polymod_oembed_definition();
 
@@ -24,8 +28,9 @@ class CMS_polymod_oembed_definition_catalog extends CMS_grandFather
 		$definition->setUuid($data['uuid_mood']);
 		$definition->setObjectdefinition($data['objectdefinition_mood']);
 		$definition->setCodename($data['codename_mood']);
-		$definition->setXML($data['xml_mood']);
-		$definition->setJson($data['json_mood']);
+		$definition->setHtml($data['html_mood']);
+		$definition->setParameter($data['parameter_mood']);
+		$definition->setLabel($data['label_mood']);
 
 		return $definition;
 	}
@@ -38,17 +43,7 @@ class CMS_polymod_oembed_definition_catalog extends CMS_grandFather
 		if($data === null) {
 			return null;
 		}
-
-		$definition = new CMS_polymod_oembed_definition();
-
-		$definition->setId($data['id_mood']);
-		$definition->setUuid($data['uuid_mood']);
-		$definition->setObjectdefinition($data['objectdefinition_mood']);
-		$definition->setCodename($data['codename_mood']);
-		$definition->setXML($data['xml_mood']);
-		$definition->setJson($data['json_mood']);
-
-		return $definition;
+		return self::getObj($data);
 	}
 
 	public static function getDefinitionsForObject($objectid) {
@@ -58,14 +53,7 @@ class CMS_polymod_oembed_definition_catalog extends CMS_grandFather
 		$defs = array();
 
 		while ($data = $query->getArray()) {
-			$definition = new CMS_polymod_oembed_definition();
-			$definition->setId($data['id_mood']);
-			$definition->setUuid($data['uuid_mood']);
-			$definition->setObjectdefinition($data['objectdefinition_mood']);
-			$definition->setCodename($data['codename_mood']);
-			$definition->setXML($data['xml_mood']);
-			$definition->setJson($data['json_mood']);
-			$defs[] = $definition;
+			$defs[] = self::getObj($data);;
 		}
 		return $defs;
 	}

@@ -34,8 +34,10 @@ switch ($_POST["cms_action"]) {
 	case "validate":
 		$oembedDefinition->setObjectdefinition(io::post('objectdefinition'));
 		$oembedDefinition->setCodename(io::post('codename'));
-		$oembedDefinition->setXML(io::post('xml'));
-		$oembedDefinition->setJson(io::post('json'));
+		$oembedDefinition->setHtml(io::post('html'));
+		$oembedDefinition->setParameter(io::post('parameter'));
+		$oembedDefinition->setLabel(io::post('parameter'));
+
 		if($oembedDefinition->validate()) {
 			$oembedDefinition->writeToPersistence();
 		}
@@ -63,9 +65,10 @@ $scriptname = $_SERVER['SCRIPT_NAME'];
 // Automne dialog system forces us to use a $content variable and so to mix everything...
 
 $content = <<<HTML
-<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
 <link rel="stylesheet" type="text/css" href="../codemirror/codemirror.css" />
 <script type="text/javascript" src="../codemirror/codemirror.js"></script>
+<script type="text/javascript" src="../codemirror/indent.js"></script>
 <script type="text/javascript" src="../codemirror/xml.js"></script>
 <script type="text/javascript" src="../codemirror/javascript.js"></script>
 <script type="text/javascript" src="../codemirror/clike.js"></script>
@@ -74,105 +77,65 @@ $content = <<<HTML
 <script type="text/javascript" src="./js/oembed.js"></script>
 
 <div class="container">
-<form name="frm" id="oembeddef" action="$scriptname" method="post" class="form-horizontal">
+<form name="frm" id="oembeddef" action="$scriptname" method="post" class="form-horizontal" style="font-size: 12px;">
 <input type="hidden" id="cms_action" name="cms_action" value="validate" />
 <input type="hidden" name="moduleCodename" value="$moduleCodename" />
 <input type="hidden" name="objectdefinition" value="{$objectDefinition->getID()}" />
 <input type="hidden" name="definition" value="{$oembedDefinition->getId()}" />
 <fieldset>
 	<div class="row">
-		<div class="col-md-6">
+		<div class="col-md-12">
 			<!-- Text input-->
-			<div class="control-group">
-				<label class="control-label" for="codename">Codename</label>
+			<div class="form-group">
+				<label class="" for="label">Libellé</label>
 				<div class="controls">
-					<input id="codename" name="codename" type="text" placeholder="" class="input-medium" required="required" value="{$oembedDefinition->getCodename()}">
+					<p class="help-block">Un libellé décrivant la définition oembed</p>
+					<input id="label" name="label" type="text" placeholder="" class="form-control" required="" value="{$oembedDefinition->getLabel()}">
+				</div>
+			</div>
+		</div>
+		<div class="col-md-12">
+			<!-- Text input-->
+			<div class="form-group">
+				<label class="" for="codename">Codename</label>
+				<div class="controls">
 					<p class="help-block">Les pages possédant ce codename auront le code spécifique à l'oembed rajouté dans le header de la page</p>
+					<input id="codename" name="codename" type="text" placeholder="" class="form-control" required="required" value="{$oembedDefinition->getCodename()}">
 				</div>
 			</div>
 		</div>
-		<div class="col-md-6">
+		<div class="col-md-12">
 			<!-- Text input-->
-			<!--<div class="control-group">
-				<label class="control-label" for="parameter">Paramètre</label>
+			<div class="form-group">
+				<label class="" for="parameter">Paramètre</label>
 				<div class="controls">
-					<input id="parameter" name="parameter" type="text" placeholder="" class="input-medium" required="">
 					<p class="help-block">La variable dans l'url de la page qui donne l'identifiant de l'objet à traiter</p>
-				</div>
-			</div>-->
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-6">
-			<div class="control-group">
-				<label class="control-label" for="textarea">Définition XML</label>
-				<div class="controls">
-					<textarea id="xml" name="xml" class="form-control" rows="18">{$oembedDefinition->getXml()}</textarea>
+					<input id="parameter" name="parameter" type="text" placeholder="" class="form-control" required="" value="{$oembedDefinition->getParameter()}">
 				</div>
 			</div>
 		</div>
-		<div class="col-md-6">
-<label class="control-label" for="textarea">Aide</label>
-	<pre>&lt;oembed&gt;
-	&lt;type&gt;value&lt;/type&gt;
-	&lt;title&gt;value&lt;/title&gt;
-	&lt;author_name&gt;value&lt;/author_name&gt;
-	&lt;author_url&gt;value&lt;/author_url&gt;
-	&lt;width&gt;value&lt;/width&gt;
-	&lt;height&gt;value&lt;/height&gt;
-	&lt;url&gt;value&lt;/url&gt;
-	&lt;web_page&gt;value&lt;/web_page&gt;
-	&lt;thumbnail_url&gt;value&lt;/thumbnail_url&gt;
-	&lt;thumbnail_width&gt;value&lt;/thumbnail_width&gt;
-	&lt;thumbnail_height&gt;value&lt;/thumbnail_height&gt;
-	&lt;web_page_short_url&gt;value&lt;/web_page_short_url&gt;
-	&lt;license&gt;value&lt;/license&gt;
-	&lt;license_id&gt;value&lt;/license_id&gt;
-	&lt;version&gt;value&lt;/version&gt;
-	&lt;cache_age&gt;value&lt;/cache_age&gt;
-	&lt;provider_name&gt;value&lt;/provider_name&gt;
-	&lt;provider_url&gt;value&lt;/provider_url&gt;
-&lt;/oembed&gt;</pre>
-		</div>
 	</div>
-
 	<div class="row">
-		<div class="col-md-6">
-			<div class="control-group">
-				<label class="control-label" for="textarea">Définition JSON</label>
+		<div class="col-md-12">
+			<div class="form-group">
+				<label class="" for="textarea">Contenu HTML</label>
+				<p class="help-block">Le contenu ci-dessous sera utilisé pour la représentation HTML de l'objet</p>
 				<div class="controls">
-					<textarea id="json" name="json" class="form-control" rows="18">{$oembedDefinition->getJson()}</textarea>
+					<textarea id="editor" name="html" class="form-control" rows="30">{$oembedDefinition->getHtml()}</textarea>
 				</div>
 			</div>
 		</div>
-		<div class="col-md-6">
-<label class="control-label" for="textarea">Aide</label>
-	<pre>
-{
-	"type": "value",
-	"title": "value",
-	"author_name": "value",
-	"author_url": "value",
-	"width": "value",
-	"height": "value",
-	"url": "value",
-	"web_page": "value",
-	"thumbnail_url": "value",
-	"thumbnail_width": "value",
-	"thumbnail_height": "value",
-	"web_page_short_url": "value",
-	"license": "value",
-	"license_id": "value",
-	"version": "value",
-	"cache_age": "value",
-	"provider_name": "value",
-	"provider_url": "value"
-}</pre>
-		</div>
 	</div>
-	<div class="control-group">
+	<div class="form-group">
 	  <div class="controls">
-	    <button type="submit" class="btn btn-success">Valider</button>
+	  	<button type="button" class="btn btn-primary" id="reindent">
+	    	<span class="glyphicon glyphicon-transfer"></span>
+	    	Réindenter
+	    </button>
+	    <button type="submit" class="btn btn-success">
+	    <span class="glyphicon glyphicon-floppy-disk"></span>
+	    	Valider
+	    </button>
 	  </div>
 	</div>
 </fieldset>
@@ -185,9 +148,9 @@ $selected['search'] = ($_POST['objectexplanation'] == 'search') ? ' selected="se
 $selected['vars'] = ($_POST['objectexplanation'] == 'vars') ? ' selected="selected"':'';
 $selected['rss'] = ($_POST['objectexplanation'] == 'rss') ? ' selected="selected"':'';
 
-$content.= '
-<div class="control-group">
-	<label class="control-label" for="selectbasic">Aide à la syntaxe</label>
+$helpContent.= '
+<div class="form-group">
+	<label class="" for="selectbasic">Aide à la syntaxe</label>
 	<div class="controls">
 		<select name="objectexplanation" class="input-xlarge" onchange="document.getElementById(\'cms_action\').value=\'switchexplanation\';document.getElementById(\'oembeddef\').submit();">
 			<option value="">'.$cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_CHOOSE).'</option>
@@ -199,10 +162,10 @@ $content.= '
 				<option value="vars"'.$selected['vars'].'>'.$cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_BLOCK_GENERAL_VARS).'</option>
 			</optgroup>
 			<optgroup label="'.$cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_ROW_OBJECTS_VARS_EXPLANATION,false,MOD_POLYMOD_CODENAME).'">';
-				$content.= CMS_poly_module_structure::viewObjectInfosList($moduleCodename, $cms_language, $_POST['objectexplanation'], $objectDefinition->getID());
-			$content.= '
+				$helpContent.= CMS_poly_module_structure::viewObjectInfosList($moduleCodename, $cms_language, $_POST['objectexplanation'], $objectDefinition->getID());
+			$helpContent.= '
 			</optgroup>';
-		$content.= '
+		$helpContent.= '
 		</select>
 	</div>
 </div>';
@@ -216,26 +179,29 @@ if ($_POST['objectexplanation']) {
 			foreach ($moduleLanguages as $moduleLanguage) {
 				$moduleLanguagesCodes[] = $moduleLanguage->getCode();
 			}
-			$content.= $cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_RSS_TAG_EXPLANATION,array(implode(', ',$moduleLanguagesCodes)),MOD_POLYMOD_CODENAME);
+			$helpContent .= $cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_RSS_TAG_EXPLANATION,array(implode(', ',$moduleLanguagesCodes)),MOD_POLYMOD_CODENAME);
 		break;
 		case 'search':
-			$content.= $cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_SEARCH_TAGS_EXPLANATION,false,MOD_POLYMOD_CODENAME);
+			$helpContent .= $cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_SEARCH_TAGS_EXPLANATION,false,MOD_POLYMOD_CODENAME);
 		break;
 		case 'working':
-			$content.= $cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_WORKING_TAGS_EXPLANATION);
+			$helpContent .= $cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_WORKING_TAGS_EXPLANATION);
 		break;
 		case 'working-polymod':
-			$content.= $cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_WORKING_POLYMOD_TAGS_EXPLANATION,false,MOD_POLYMOD_CODENAME);
+			$helpContent .= $cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_WORKING_POLYMOD_TAGS_EXPLANATION,false,MOD_POLYMOD_CODENAME);
 		break;
 		case 'vars':
-			$content.= $cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_BLOCK_GENERAL_VARS_EXPLANATION);
+			$helpContent .= $cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_BLOCK_GENERAL_VARS_EXPLANATION);
 		break;
 		default:
 			//object info
-			$content.= CMS_poly_module_structure::viewObjectRowInfos($moduleCodename, $cms_language, $_POST['objectexplanation']);
+			$helpContent .= CMS_poly_module_structure::viewObjectRowInfos($moduleCodename, $cms_language, $_POST['objectexplanation']);
 		break;
 	}
 }
+
+$content .= '<div class="well">'.$helpContent.'</div>';
+
 $content.='</form>';
 
 $content .= '

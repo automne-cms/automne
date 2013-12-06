@@ -1,7 +1,6 @@
 <?php
 define("ENABLE_HTTP_COMPRESSION",false);
-require_once(dirname(__FILE__).'/cms_rc_frontend.php');
-CMS_grandFather::log("call");
+require_once(dirname(__FILE__).'/../cms_rc_frontend.php');
 
 $url = urldecode(io::get('url'));
 $format = io::get('format');
@@ -23,20 +22,14 @@ if (!isset($cms_language)) {
 
 define('CURRENT_PAGE', $page->getID());
 
-$definition = '';
 
-if($format === 'json') {
-	$definition = $oembedDefinition->getJson();
-}
-elseif ($format === 'xml') {
-	$definition = $oembedDefinition->getXml();
-}
+$htmlDefinition = $oembedDefinition->getHtml();
 
 $module = CMS_poly_object_catalog::getModuleCodenameForObjectType($oembedDefinition->getObjectdefinition());
 
 $polymodModule = CMS_modulesCatalog::getByCodename($module);
 
-$transformedDefinition = $polymodModule->convertDefinitionString($definition, false);
+$transformedDefinition = $polymodModule->convertDefinitionString($htmlDefinition, false);
 
 $parameters = array();
 $parameters['module'] = CMS_poly_object_catalog::getModuleCodenameForObjectType($oembedDefinition->getObjectdefinition());
@@ -46,14 +39,30 @@ $parameters['cache'] = false;
 $definitionParsing = new CMS_polymod_definition_parsing($transformedDefinition, true, CMS_polymod_definition_parsing::PARSE_MODE, $parameters['module']);
 $compiledDefinition = $definitionParsing->getContent(CMS_polymod_definition_parsing::OUTPUT_PHP, $parameters);
 
-$item = 4;
+$urlParts = parse_url($url);
+if(!isset($urlParts['query'])) {
+	die("Incorrect parameters");
+}
+parse_str($urlParts['query']);
+
+$parameterName = $oembedDefinition->getParameter();
+
+$embededObject = CMS_poly_object_catalog::getObjectByID($$parameterName, false,true);
+if(!$embededObject) {
+	die("Incorrect parameters");
+}
+
+// get label
 ob_start();
 eval(sensitiveIO::stripPHPTags($compiledDefinition));
 $data = ob_get_contents();
 ob_end_clean();
 
 $html = array(
-	'html' => $data
+	'html' => $data,
+	'title' => $embededObject->getLabel(),
+	'height' => io::get('height'),
+	'width' => io::get('width'),
 );
 
 $oembed = CMS_polymod_oembed_definition::getResults($html);
@@ -64,8 +73,6 @@ elseif ($format === 'xml') {
 	$output = "<?xml version=\"1.0\" encoding=\"utf-8\">\n";
   $output .= "<oembed>\n";
   $output .= CMS_polymod_oembed_definition::format_xml_elements($oembed);
-  //$array2xml = new CMS_array2Xml($oembed,'oembed');
-  //$output .= $array2xml->getXMLString();
   $output .= "</oembed>";
   print $output;
 
