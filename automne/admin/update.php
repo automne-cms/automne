@@ -25,7 +25,7 @@
 $included = defined('APPLICATION_CONFIG_LOADED') ? true : false;
 if (!$included) {
 	if (file_exists(dirname(__FILE__).'/../upload-vault/allow_front_update')) {
-		//in case of update patch which destroy admin user session, we need to allow 
+		//in case of update patch which destroy admin user session, we need to allow
 		//this file with frontend rights
 		@unlink(dirname(__FILE__).'/../upload-vault/allow_front_update');
 		require_once(dirname(__FILE__).'/../../cms_rc_frontend.php');
@@ -479,11 +479,25 @@ while($r = $q->getArray()) {
 if (!$installed) {
 	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v421-to-v422.sql',true)) {
 		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/v421-to-v422.sql',false);
-		$content .= 'Database successfuly updated (add link block)<br/>';
+		$content .= 'Database successfuly updated (add Namespaces to RSS definitions)<br/>';
 	} else {
 		$content .= 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/v421-to-v422.sql must be executed manualy<br/>';
 	}
 }
+
+$sql = "select 1 from mod_object_oembed_definition";
+$q = new CMS_query($sql);
+$installed = is_array($q->getArray());
+if (!$installed) {
+	if (CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/mod_object_oembed_definition.sql',true)) {
+		CMS_patch::executeSqlScript(PATH_MAIN_FS.'/sql/updates/mod_object_oembed_definition.sql',false);
+		$content .= 'Database successfuly updated (add Oembed definitions table)<br/>';
+	} else {
+		$content .= 'Error during database update ! Script '.PATH_MAIN_FS.'/sql/updates/mod_object_oembed_definition.sql must be executed manualy<br/>';
+	}
+}
+
+mod_object_oembed_definition.sql*/
 
 // END UPDATE FROM 4.2.1 TO 4.2.2
 
