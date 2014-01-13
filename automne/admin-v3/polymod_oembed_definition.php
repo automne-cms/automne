@@ -74,6 +74,7 @@ $content = <<<HTML
 <script type="text/javascript" src="../codemirror/clike.js"></script>
 <script type="text/javascript" src="../codemirror/htmlmixed.js"></script>
 <script type="text/javascript" src="../codemirror/php.js"></script>
+<script type="text/javascript" src="../codemirror/css.js"></script>
 <script type="text/javascript" src="./js/oembed.js"></script>
 
 <div class="container">
@@ -155,7 +156,6 @@ $helpContent.= '
 		<select name="objectexplanation" class="input-xlarge" onchange="document.getElementById(\'cms_action\').value=\'switchexplanation\';document.getElementById(\'oembeddef\').submit();">
 			<option value="">'.$cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_CHOOSE).'</option>
 			<optgroup label="'.$cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_ROW_TAGS_EXPLANATION,false,MOD_POLYMOD_CODENAME).'">
-				<option value="rss"'.$selected['rss'].'>'.$cms_language->getMessage(MESSAGE_PAGE_RSS_TAG,false,MOD_POLYMOD_CODENAME).'</option>
 				<option value="search"'.$selected['search'].'>'.$cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_SEARCH_TAGS,false,MOD_POLYMOD_CODENAME).'</option>
 				<option value="working"'.$selected['working'].'>'.$cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_WORKING_TAGS).'</option>
 				<option value="working-polymod"'.$selected['working-polymod'].'>'.$cms_language->getMessage(CMS_polymod::MESSAGE_PAGE_WORKING_POLYMOD_TAGS,false,MOD_POLYMOD_CODENAME).'</option>
