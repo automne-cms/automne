@@ -3,7 +3,7 @@ define("ENABLE_HTTP_COMPRESSION",false);
 require_once(dirname(__FILE__).'/../cms_rc_frontend.php');
 
 $url = urldecode(io::get('url'));
-$format = io::get('format');
+$format = io::get('format','','json');
 
 $page = CMS_tree::analyseURL($url);
 if(!$page) {
