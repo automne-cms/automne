@@ -288,7 +288,7 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 	  $defaults = array(
 	    'type' => 'rich',
 	    'version' => '1.0',
-	    'provider_name' => 'automne',
+	    'provider_name' => APPLICATION_LABEL,
 	    'width' => 0,
 	    'height' => 0,
 	  );
