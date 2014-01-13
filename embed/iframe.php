@@ -36,6 +36,7 @@ $parameters['module'] = CMS_poly_object_catalog::getModuleCodenameForObjectType(
 $parameters['objectID'] = $oembedDefinition->getObjectdefinition();
 $parameters['public'] = true;
 $parameters['cache'] = false;
+$parameters['pageID'] = CURRENT_PAGE;
 $definitionParsing = new CMS_polymod_definition_parsing($transformedDefinition, true, CMS_polymod_definition_parsing::PARSE_MODE, $parameters['module']);
 $compiledDefinition = $definitionParsing->getContent(CMS_polymod_definition_parsing::OUTPUT_PHP, $parameters);
 
