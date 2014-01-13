@@ -21,7 +21,7 @@ if (!isset($cms_language)) {
 }
 
 define('CURRENT_PAGE', $page->getID());
-
+$website = $page->getWebsite();
 
 $htmlDefinition = $oembedDefinition->getHtml();
 
@@ -58,19 +58,13 @@ ob_start();
 eval(sensitiveIO::stripPHPTags($compiledDefinition));
 $data = ob_get_contents();
 ob_end_clean();
-/*
-$html = array(
-	'html' => $data,
-	'title' => $embededObject->getLabel(),
-	'height' => io::get('height'),
-	'width' => io::get('width'),
-);
 
-$oembed = CMS_polymod_oembed_definition::getResults($html);
-*/
+$baseUrl = $website->getURL(false);
+
 echo '<html>
 <head>
 	<title>'.$embededObject->getLabel().'</title>
+	<base href="//'.$baseUrl.'/" />
 	<style>
 		body {
 			margin:		0px;
