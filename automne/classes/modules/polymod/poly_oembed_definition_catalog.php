@@ -28,7 +28,7 @@ class CMS_polymod_oembed_definition_catalog extends CMS_grandFather
 		$definition->setUuid($data['uuid_mood']);
 		$definition->setObjectdefinition($data['objectdefinition_mood']);
 		$definition->setCodename($data['codename_mood']);
-		$definition->setHtml($data['html_mood']);
+		$definition->setCompiledHtml($data['html_mood']);
 		$definition->setParameter($data['parameter_mood']);
 		$definition->setLabel($data['label_mood']);
 

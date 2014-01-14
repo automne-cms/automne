@@ -218,7 +218,13 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 	 * @return
 	 */
 	public function getHtml() {
-		return $this->html;
+		$module = CMS_poly_object_catalog::getModuleCodenameForObjectType($this->objectdefinition);
+		$polymod = CMS_modulesCatalog::getByCodename($module);
+		return $polymod->convertDefinitionString($this->html, true);
+	}
+
+	public function getCompiledHtml() {
+		return $this->compiledHtml;
 	}
 
 	/**
@@ -226,6 +232,15 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 	 * @return  the current object
 	 */
 	public function setHtml($v) {
+
+		$module = CMS_poly_object_catalog::getModuleCodenameForObjectType($this->objectdefinition);
+		$polymod = CMS_modulesCatalog::getByCodename($module);
+		$this->setCompiledHtml($polymod->convertDefinitionString($v, false));
+
+		return $this;
+	}
+
+	public function setCompiledHtml($v) {
 		if($v !== null && is_numeric($v)) {
 			$v = (string) $v;
 		}
