@@ -61,6 +61,7 @@ if ($cms_message) {
 }
 
 $scriptname = $_SERVER['SCRIPT_NAME'];
+$definitionHtml = htmlspecialchars($oembedDefinition->getHtml());
 
 // Automne dialog system forces us to use a $content variable and so to mix everything...
 
@@ -122,7 +123,7 @@ $content = <<<HTML
 				<label class="" for="textarea">Contenu HTML</label>
 				<p class="help-block">Le contenu ci-dessous sera utilisé pour la représentation HTML de l'objet</p>
 				<div class="controls">
-					<textarea id="editor" name="html" class="form-control" rows="30">{$oembedDefinition->getHtml()}</textarea>
+					<textarea id="editor" name="html" class="form-control" rows="30">{$definitionHtml}</textarea>
 				</div>
 			</div>
 		</div>
