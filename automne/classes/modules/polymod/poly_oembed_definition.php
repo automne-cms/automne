@@ -278,10 +278,10 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 
 		$oembedDefinition = CMS_polymod_oembed_definition_catalog::getByCodename($page->getCodename());
 		$parameterName = $oembedDefinition->getParameter();
+		if(io::get($parameterName) && $embededObject = CMS_poly_object_catalog::getObjectByID(io::get($parameterName), false,true)) {
 
-		$embededObject = CMS_poly_object_catalog::getObjectByID(io::get($parameterName), false,true);
-		if($embededObject) {
-			return $embededObject->getLabel();
+				return $embededObject->getLabel();
+
 		}
 		return '';
 	}
@@ -295,7 +295,6 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 		foreach ($modes as $mode => $mimeType) {
 			$links .= '<link rel="alternate" type="'.$mimeType.'" href="'.self::getServiceUrl().'&format='.$mode.'"  title="'.self::getObjectName().'"/>';
 		}
-
 		return $links;
 	}
 
