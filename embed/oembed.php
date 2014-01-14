@@ -15,10 +15,8 @@ if(!$oembedDefinition) {
 	die("Incorrect parameters");
 }
 
-if (!isset($cms_language)) {
-	$pageLang = $page->getLanguage(true);
-	$cms_language = new CMS_language($pageLang);
-}
+$pageLang = $page->getLanguage(true);
+$cms_language = new CMS_language($pageLang);
 
 define('CURRENT_PAGE', $page->getID());
 
