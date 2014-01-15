@@ -7,12 +7,14 @@ $format = io::get('format','','json');
 
 $page = CMS_tree::analyseURL($url);
 if(!$page) {
-	die("Incorrect parameters");
+	header('HTTP/1.x 404 Not Found', true, 404);
+	exit;
 }
 
 $oembedDefinition = CMS_polymod_oembed_definition_catalog::getByCodename($page->getCodename());
 if(!$oembedDefinition) {
-	die("Incorrect parameters");
+	header('HTTP/1.x 404 Not Found', true, 404);
+	exit;
 }
 
 $pageLang = $page->getLanguage(true);
