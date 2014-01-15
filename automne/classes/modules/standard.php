@@ -1687,10 +1687,13 @@ class CMS_module_standard extends CMS_module
 					break;
 					case "head":
 						$headCode = '<?php'."\n".
-						'$atmHost = @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) ? @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_HOST) : $_SERVER[\'HTTP_HOST\'];'."\n".
-						'$atmProtocol = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] && strtolower($_SERVER["HTTPS"]) != \'off\') ? \'https://\' : \'http://\';'."\n".
-						'$atmPort = @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_PORT) ? \':\'.@parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_PORT) : \'\';'."\n".
-						'echo "\t".\'<base href="\'.$atmProtocol.$atmHost.$atmPort.PATH_REALROOT_WR.\'/" />\'."\n";'."\n".
+						'$atmHost = null;'."\n".
+						'$atmPort = null;'."\n".
+						'if(isset($_SERVER["HTTP_HOST"])) {'."\n".
+						'	$atmHost = @parse_url($_SERVER["HTTP_HOST"], PHP_URL_HOST) ? @parse_url($_SERVER["HTTP_HOST"], PHP_URL_HOST) : $_SERVER["HTTP_HOST"];'."\n".
+						'	$atmPort = @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_PORT) ? \':\'.@parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_PORT) : \'\';'."\n".
+						'}'."\n".
+						'echo "\t".\'<base href="//\'.$atmHost.$atmPort.PATH_REALROOT_WR.\'/" />\'."\n";'."\n".
 						' ?>';
 						//Append base code
 						return preg_replace('#<head([^>]*)>#', '<head\1>'."\n".$headCode, $tag->getContent());
