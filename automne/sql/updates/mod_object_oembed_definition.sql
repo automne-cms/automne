@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS `mod_object_oembed_definition`;
-
 CREATE TABLE IF NOT EXISTS `mod_object_oembed_definition` (
   `id_mood` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `uuid_mood` varchar(36) NOT NULL,
