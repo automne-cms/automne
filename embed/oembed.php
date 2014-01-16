@@ -21,7 +21,7 @@ $pageLang = $page->getLanguage(true);
 $cms_language = new CMS_language($pageLang);
 
 define('CURRENT_PAGE', $page->getID());
-
+$website = $page->getWebsite();
 
 $htmlDefinition = $oembedDefinition->getHtml();
 
