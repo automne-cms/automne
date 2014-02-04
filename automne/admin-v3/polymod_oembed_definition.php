@@ -66,7 +66,7 @@ $definitionHtml = htmlspecialchars($oembedDefinition->getHtml());
 // Automne dialog system forces us to use a $content variable and so to mix everything...
 
 $content = <<<HTML
-<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="./css/admin-bootstrap.css" />
 <link rel="stylesheet" type="text/css" href="../codemirror/codemirror.css" />
 <script type="text/javascript" src="../codemirror/codemirror.js"></script>
 <script type="text/javascript" src="../codemirror/indent.js"></script>
