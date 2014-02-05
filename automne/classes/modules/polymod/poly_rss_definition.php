@@ -31,7 +31,7 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 	  * @access private
 	  */
 	protected $_ID;
-	
+
 	/**
 	  * all values for object
 	  * @var array	()
@@ -52,7 +52,7 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 								 "uuid"					=> '',
 								 "namespaces"			=> '',
 								);
-	
+
 	/**
 	  * Constructor.
 	  * initialize object.
@@ -108,7 +108,7 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 		} else {
 			$this->_objectValues["lastCompilation"] = new CMS_date();
 		}
-		
+
 		//check for last compilation date (recompile Feed each day)
 		if ($this->_objectValues["compiledDefinition"]) {
 			$lastCompilation = $this->_objectValues["lastCompilation"];
@@ -121,7 +121,7 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 			}
 		}
 	}
-	
+
 	/**
 	  * Get object ID
 	  *
@@ -132,7 +132,7 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 	{
 		return $this->_ID;
 	}
-	
+
 	/**
 	  * Sets an object value.
 	  *
@@ -178,7 +178,7 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 		}
 		return true;
 	}
-	
+
 	/**
 	  * Compile the RSS definition
 	  *
@@ -198,7 +198,7 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 		$this->_objectValues['lastCompilation'] = $date;
 		return true;
 	}
-	
+
 	/**
 	  * get an object value.
 	  *
@@ -214,7 +214,7 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 		}
 		return $this->_objectValues[$valueName];
 	}
-	
+
 	/**
 	  * get object label
 	  *
@@ -230,7 +230,7 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 			return $label->getValue($language);
 		}
 	}
-	
+
 	/**
 	  * get object description
 	  *
@@ -246,7 +246,7 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 			return $description->getValue($language);
 		}
 	}
-	
+
 	/**
 	  * Writes object into persistence (MySQL for now), along with base data.
 	  *
@@ -298,16 +298,16 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 		} elseif (!$this->_ID) {
 			$this->_ID = $q->getLastInsertedID();
 		}
-		
+
 		//Clear polymod cache
 		//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => CMS_poly_object_catalog::getModuleCodenameForObjectType($this->getValue('objectID'))));
 		CMS_cache::clearTypeCache('polymod');
-		
+
 		//unset polymod structure in cache
 		CMS_cache::clearTypeCache('atm-polymod-structure');
 		return true;
 	}
-	
+
 	/**
 	  * Destroy this object in DB
 	  *
@@ -328,7 +328,7 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 				$this->raiseError("Can't delete datas of table mod_object_polyobjects for object : ".$this->_ID);
 				return false;
 			}
-			
+
 			//second delete object label and description
 			if (sensitiveIO::IsPositiveInteger($this->getValue("labelID"))) {
 				$label = new CMS_object_i18nm($this->getValue("labelID"));
@@ -341,14 +341,14 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 			//Clear polymod cache
 			//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => CMS_poly_object_catalog::getModuleCodenameForObjectType($this->getValue('objectID'))));
 			CMS_cache::clearTypeCache('polymod');
-			
+
 			//unset polymod structure in cache
 			CMS_cache::clearTypeCache('atm-polymod-structure');
 		}
 		unset($this);
 		return true;
 	}
-	
+
 	/**
 	  * Get rss object as an array structure used for export
 	  *
@@ -381,7 +381,7 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 		}
 		return $aClass;
 	}
-	
+
 	/**
 	  * Import rss feed from given array datas
 	  *
@@ -465,7 +465,7 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 			//$this->setValue("definition", $module->convertDefinitionString($data['params']['definition'], false));
 			$this->_objectValues['definition'] = $module->convertDefinitionString($data['params']['definition'], false);
 		}
-		
+
 		//write object
 		if (!$this->writeToPersistence()) {
 			$infos .= 'Error : can not write object ...'."\n";
@@ -479,7 +479,7 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 		$idsRelation['definitionToConvert'][] = $this;
 		return true;
 	}
-	
+
 	/**
 	  * Convert all definitions used by this object from human format to Automne format.
 	  * This method is usually used at end of module import process, when all objects are imported
@@ -491,6 +491,16 @@ class CMS_poly_rss_definitions extends CMS_grandFather
 	function convertDefinitions($module) {
 		$this->setValue("definition", $module->convertDefinitionString($this->_objectValues['definition'], false, true));
 		return $this->writeToPersistence();
+	}
+
+	public static function exists($id) {
+		if (!SensitiveIO::isPositiveInteger($id)) {
+			return false;
+		}
+		$sql = 'SELECT count(*) as c from mod_object_rss_definition where id_mord = "'.$id.'"';
+		$query = new CMS_query($sql);
+		$res = $query->getAll();
+		return $res[0]['c'] > 0;
 	}
 }
 ?>
