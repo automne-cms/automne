@@ -21,7 +21,10 @@
   */
 
 require_once(dirname(__FILE__).'/cms_rc_frontend.php');
-$httpHost = @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST'];
+$httpHost = null;
+if(isset($_SERVER['HTTP_HOST'])) {
+	$httpHost = @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST'];
+}
 //search page id by domain address
 $website = CMS_websitesCatalog::getWebsiteFromDomain($httpHost, '', $isAlt);
 //redirect to website main domain if current domain is an altdomain and need redirection
