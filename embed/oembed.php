@@ -37,7 +37,7 @@ $parameters['objectID'] = $oembedDefinition->getObjectdefinition();
 $parameters['public'] = true;
 $parameters['cache'] = false;
 $parameters['pageID'] = CURRENT_PAGE;
-$definitionParsing = new CMS_polymod_definition_parsing($transformedDefinition, true, CMS_polymod_definition_parsing::PARSE_MODE, $parameters['module']);
+$definitionParsing = new CMS_polymod_definition_parsing($transformedDefinition, true, CMS_polymod_definition_parsing::BLOCK_PARAM_MODE, $parameters['module']);
 $compiledDefinition = $definitionParsing->getContent(CMS_polymod_definition_parsing::OUTPUT_PHP, $parameters);
 
 $urlParts = parse_url($url);
