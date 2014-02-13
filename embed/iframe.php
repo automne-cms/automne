@@ -69,6 +69,7 @@ echo '<html>
 		body {
 			margin:		0px;
 			padding:	0px;
+			background:transparent;
 		}
 	</style>
 </head>
