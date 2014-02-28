@@ -23,29 +23,29 @@
   */
 
 class CMS_moduleCategory extends CMS_grandFather {
-	
+
 	const MESSAGE_CATEGORY_DELETED = 1223;
 	const LINEAGE_PARK_POSITION = 99999;
-	
+
 	/**
 	 * Unique DB ID
-	 * 
+	 *
 	 * @var integer
 	 * @access private
 	 */
 	protected $_categoryID;
-	
+
 	/**
 	 * Codename of module this category belongs to
-	 * 
+	 *
 	 * @var string
 	 * @access private
 	 */
 	protected $_moduleCodename;
-	
+
 	/**
 	 * Sorting position in siblings list, from 1 to infinite
-	 * 
+	 *
 	 * @var integer
 	 * @access private
 	 */
@@ -61,7 +61,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 
 	/**
 	 * Root category ID
-	 * 
+	 *
 	 * @var integer
 	 * @access private
 	 */
@@ -69,80 +69,80 @@ class CMS_moduleCategory extends CMS_grandFather {
 
 	/**
 	 * Language to use to print out labels
-	 * 
+	 *
 	 * @var CMS_language
 	 * @access private
 	 */
 	protected $_language;
-	
+
 	/**
 	 * Stores I18NM labels in availables languages
-	 * 
+	 *
 	 * @var array(string)
 	 * @access private
 	 */
 	protected $_labels = array();
-	
+
 	/**
 	 * Stores I18NM descriptions
-	 * 
+	 *
 	 * @var array(string)
 	 * @access private
 	 */
 	protected $_descriptions = array();
-	
+
 	/**
 	 * Stores I18NM descriptions from external file
-	 * 
+	 *
 	 * @var array(string)
 	 * @access private
 	 */
 	protected $_files = array();
-	
+
 	/**
 	 * Stores icon path
-	 * 
+	 *
 	 * @var string
 	 * @access private
 	 */
 	protected $_icon;
-	
+
 	/**
 	 * Stores all parent categories IDs to this one. For ease of use and rapidity.
 	 * @var array(integer)
 	 * @access private
 	 */
 	protected $_lineageStack = array();
-	
+
 	/**
 	 * DB lineage.
 	 * @var string
 	 * @access private
 	 */
 	protected $_lineageFromDB = '';
-	
+
 	/**
 	 * Category uuid.
 	 * @var string
 	 * @access private
 	 */
 	protected $_uuid = '';
-	
+
 	/**
 	  * The category protected status
 	  * @var boolean
 	  * @access private
 	  */
 	protected $_protected = false;
-	
+
 	/**
 	 * Constructor
 	 *
 	 * @access public
-	 * @param integer $id 
-	 * @param CMS_language $language 
-	 * @param CMS_moduleCategory $parentCategory 
-	 * @param CMS_moduleCategory $rootCategory 
+	 * @param integer $id
+	 * @param CMS_language $language
+	 * @param CMS_moduleCategory $parentCategory
+	 * @param CMS_moduleCategory $rootCategory
 	 */
 	function __construct($id=0, $language = false, $parentCategory = false, $rootCategory = false) {
 		if ($id) {
@@ -196,7 +196,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	function getID() {
 		return $this->_categoryID;
 	}
-	
+
 	/**
 	  * Getter for any private attribute on this class
 	  *
@@ -208,7 +208,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 		$name = '_'.$name;
 		return $this->$name;
 	}
-	
+
 	/**
 	  * Setter for any private attribute on this class
 	  *
@@ -225,7 +225,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 		$this->$name = $value;
 		return true;
 	}
-	
+
 	/**
 	  * Get the category protected status
 	  *
@@ -235,7 +235,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	function isProtected() {
 		return $this->_protected ? true : false;
 	}
-	
+
 	/**
 	  * Set the category protected status
 	  *
@@ -247,11 +247,11 @@ class CMS_moduleCategory extends CMS_grandFather {
 		$this->_protected = $protected ? true : false;
 		return true;
 	}
-	
+
 	/**
 	  * Get all siblings (children) categories
 	  * returned ordered by order_mca position in db
-	  * 
+	  *
 	  * @access public
 	  * @param boolean $returnObjects, return CMS_moduleCategory on true, or id on false
 	  * @return array(CMS_moduleCategory or id)
@@ -282,10 +282,10 @@ class CMS_moduleCategory extends CMS_grandFather {
 		}
 		return $items;
 	}
-	
+
 	/**
 	  * Builds lineage of categories from lineage stack
-	  * 
+	  *
 	  * @access public
 	  * @return array(CMS_moduleCategory)
 	  */
@@ -300,7 +300,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 		}
 		return $lineage;
 	}
-	
+
 	/**
 	  * Stores category lineage IDs in a CMS_stack for rapid access
 	  * From oldest to itself
@@ -314,10 +314,10 @@ class CMS_moduleCategory extends CMS_grandFather {
 		}
 		return $this->_lineageStack;
 	}
-	
+
 	/**
 	  * Test if given categry has the one represented by given id as ancestor
-	  * 
+	  *
 	  * @access public
 	  * @param integer or CMS_moduleCateogry $category, the category to search in lineage
 	  */
@@ -329,10 +329,10 @@ class CMS_moduleCategory extends CMS_grandFather {
 		}
 		return in_array($category_id, $this->getLineageStack());
 	}
-	
+
 	/**
 	  * Get parent category to this one
-	  * 
+	  *
 	  * @access public
 	  * @return CMS_moduleCategory
 	  */
@@ -345,10 +345,10 @@ class CMS_moduleCategory extends CMS_grandFather {
 			return $parent;
 		}
 	}
-	
+
 	/**
 	 * Get root category to this one
-	 * 
+	 *
 	 * @access public
 	 * @return CMS_moduleCategory
 	 */
@@ -359,12 +359,12 @@ class CMS_moduleCategory extends CMS_grandFather {
 			return CMS_moduleCategories_catalog::getById($this->_rootID);
 		}
 	}
-	
+
 	/**
 	 * Test if given categry this one's parent
-	 * 
+	 *
 	 * @access public
-	 * @param CMS_moduleCategory $category 
+	 * @param CMS_moduleCategory $category
 	 * @return boolean
 	 */
 	function hasParent($category) {
@@ -374,12 +374,12 @@ class CMS_moduleCategory extends CMS_grandFather {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Test if given categry this one's root
-	 * 
+	 *
 	 * @access public
-	 * @param CMS_moduleCategory $category 
+	 * @param CMS_moduleCategory $category
 	 */
 	function hasRoot($category) {
 		if (is_a($category, 'CMS_moduleCategory')
@@ -390,31 +390,31 @@ class CMS_moduleCategory extends CMS_grandFather {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Test if given categry is a root one
-	 * 
+	 *
 	 * @access public
 	 * @return boolean
 	 */
 	function isRoot() {
 		return ($this->_categoryID > 0 && $this->_rootID == 0 && $this->_parentID == 0);
 	}
-	
+
 	/**
 	 * Prepare _labels attribute arrays with data from i18NM table
-	 * 
+	 *
 	 * @access private
 	 * @return void
 	 */
 	protected function _retrieveLabels() {
 		static $labels;
-		
+
 		$this->_labels = array();
 		$this->_descriptions = array();
 		$this->_files = array();
 		if (!isset($labels[$this->getID()])) {
-			// Initialize table with all languages currently 
+			// Initialize table with all languages currently
 			// supported by the module. The way to add new translations
 			foreach (CMS_languagesCatalog::getAllLanguages() as $aLanguage) {
 				$this->_labels[$aLanguage->getCode()] = '';
@@ -450,10 +450,10 @@ class CMS_moduleCategory extends CMS_grandFather {
 			$this->_files = $labels[$this->getID()]['files'];
 		}
 	}
-	
+
 	/**
 	 * @access public
-	 * @param CMS_language $language 
+	 * @param CMS_language $language
 	 * @return string
 	 */
 	function getLabel($language = false, $useAlternative = true) {
@@ -489,7 +489,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 
 	/**
 	 * Sets a new label
-	 * 
+	 *
 	 * @access public
 	 * @param string $value
 	 * @param mixed $language : CMS_language or language code
@@ -511,12 +511,12 @@ class CMS_moduleCategory extends CMS_grandFather {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Access to description
 	 *
 	 * @access public
-	 * @param CMS_language $language 
+	 * @param CMS_language $language
 	 * @return string
 	 */
 	function getDescription($language = false, $useAlternative = true, $pluginsCode = true) {
@@ -534,7 +534,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 		} else {
 			$description = '';
 		}
-		
+
 		if ($pluginsCode) {
 			//search and convert plugins codes
 			$description = CMS_textEditor::parseOuterContent($description, $this->_moduleCodename);
@@ -549,7 +549,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 
 	/**
 	 * Sets a new description
-	 * 
+	 *
 	 * @access public
 	 * @param string $value
 	 * @param mixed $language : CMS_language or language code
@@ -571,12 +571,12 @@ class CMS_moduleCategory extends CMS_grandFather {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Access to a filename
 	 *
 	 * @access public
-	 * @param CMS_language $language 
+	 * @param CMS_language $language
 	 * @return string
 	 */
 	function getFile($language = false) {
@@ -592,10 +592,10 @@ class CMS_moduleCategory extends CMS_grandFather {
 			return '';
 		}
 	}
-	
+
 	/**
 	 * Sets a file name
-	 * 
+	 *
 	 * @access public
 	 * @param string $value
 	 * @param mixed $language : CMS_language or language code
@@ -617,7 +617,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Access to a filename path
 	 *
@@ -662,12 +662,12 @@ class CMS_moduleCategory extends CMS_grandFather {
 			return '';
 		}
 	}
-	
+
 	/**
 	 * Get a full path to icon, or icon name only
-	 * 
+	 *
 	 * @access public
-	 * @param string $name 
+	 * @param string $name
 	 * @param boolean $withPath If false, only returns the filename
 	 * @param string $dataLocation Where does the data lies ? See CMS_resource constants
 	 * @param integer $relativeTo Can be web root or filesystem relative, see base constants
@@ -694,10 +694,10 @@ class CMS_moduleCategory extends CMS_grandFather {
 			return $this->_icon;
 		}
 	}
-	
+
 	/**
 	 * This category contains any sibling ?
-	 * 
+	 *
 	 * @access public
 	 * @return boolean
 	 */
@@ -714,7 +714,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 		$q = new CMS_query($sql);
 		return ((int) $q->getValue("c") > 0);
 	}
-	
+
 	/**
 	  * Writes into persistence (MySQL for now), along with base data.
 	  *
@@ -724,6 +724,14 @@ class CMS_moduleCategory extends CMS_grandFather {
 	function writeToPersistence() {
 		if (!$this->_uuid) {
 			$this->_uuid = io::uuid();
+		}
+		$isNew = $this->_categoryID === NULL;
+		// Inform modules of the object creation
+		$modules = CMS_modulesCatalog::getAll('id');
+		foreach ($modules as $codename => $module) {
+			if(method_exists($module, 'moduleCategoryPreSave')) {
+				$module->moduleCategoryPreSave($this, $isNew);
+			}
 		}
 		// Prepare SQL
 		$sql_fields = "
@@ -735,7 +743,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 			uuid_mca='".SensitiveIO::sanitizeSQLString($this->_uuid)."',
 			protected_mca='".($this->_protected ? 1 : 0)."'
 		";
-		
+
 		// Finish SQL
 		if ($this->_categoryID) {
 			$sql = "
@@ -821,17 +829,32 @@ class CMS_moduleCategory extends CMS_grandFather {
 					$this->raiseError("Error inserting label in language : `$lang`");
 				}
 			}
-			
+
+			// have to repeat the call here
+			$modules = CMS_modulesCatalog::getAll('id');
+			foreach ($modules as $codename => $module) {
+				if(method_exists($module, 'moduleCategoryPostSave')) {
+					$module->moduleCategoryPostSave($this, $isNew);
+				}
+			}
+
 			//Clear polymod cache
 			//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_moduleCodename));
 			CMS_cache::clearTypeCache('polymod');
-			
+
 			return ($err <= 0);
+		}
+
+		$modules = CMS_modulesCatalog::getAll('id');
+		foreach ($modules as $codename => $module) {
+			if(method_exists($module, 'moduleCategoryPostSave')) {
+				$module->moduleCategoryPostSave($this, $isNew);
+			}
 		}
 		//Clear polymod cache
 		//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_moduleCodename));
 		CMS_cache::clearTypeCache('polymod');
-		
+
 		return true;
 	}
 
@@ -839,7 +862,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * Deletes a category from persistence
 	 * Must be called from static method
 	 * @see CMS_moduleCategories_catalog
-	 * 
+	 *
 	 * @access public
 	 * @return boolean
 	 */
@@ -882,17 +905,17 @@ class CMS_moduleCategory extends CMS_grandFather {
 				$err++;
 				$this->raiseError("Error deleting category clearances.");
 			}
-			
+
 			//Clear polymod cache
 			//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_moduleCodename));
 			CMS_cache::clearTypeCache('polymod');
-			
+
 			unset($this);
 			return ($err <= 0);
 		}
 		return false;
 	}
-	
+
 	/**
 	  * Get object as an array structure used for export
 	  *
@@ -948,7 +971,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 		}
 		return $aCategory;
 	}
-	
+
 	/**
 	  * Import row from given array datas
 	  *
@@ -976,7 +999,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 			$infos .= 'Error : invalid module for categories importation : '.$params['module']."\n";
 			return false;
 		}
-		
+
 		if (!$this->getID() && CMS_moduleCategories_catalog::uuidExists($data['uuid'])) {
 			//check imported uuid. If categories does not have an Id, the uuid must be unique or must be regenerated
 			$uuid = io::uuid();
@@ -988,7 +1011,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 		if (!$this->_uuid) {
 			$this->_uuid = $data['uuid'];
 		}
-		
+
 		if (!isset($params['files']) || $params['files'] == true) {
 			if (isset($data['icon'])) {
 				$icon = $data['icon'];
@@ -998,7 +1021,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 						@unlink($this->getIconPath(true, PATH_RELATIVETO_FILESYSTEM, true));
 						$this->setAttribute('icon', '');
 					}
-					//move and rename uploaded file 
+					//move and rename uploaded file
 					$filename = PATH_TMP_FS.$icon;
 					$basename = pathinfo($filename, PATHINFO_BASENAME);
 					if (!$this->getID()) { //need item ID
@@ -1042,8 +1065,8 @@ class CMS_moduleCategory extends CMS_grandFather {
 							@unlink($this->getFilePath($language, true, PATH_RELATIVETO_FILESYSTEM, true));
 							$this->setFile('', $language);
 						}
-						
-						//move and rename uploaded file 
+
+						//move and rename uploaded file
 						$filename = PATH_TMP_FS.$file;
 						$basename = pathinfo($filename, PATHINFO_BASENAME);
 						if (!$this->getID()) { //need item ID
