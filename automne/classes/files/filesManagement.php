@@ -24,14 +24,14 @@
   * @subpackage files
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
-  
+
 class CMS_file extends CMS_grandFather
 {
 	const FILE_SYSTEM = 1;
 	const WEBROOT = 2;
 	const TYPE_FILE = 0;
 	const TYPE_DIRECTORY = 5;
-	
+
 	//define upload constants
 	const UPLOAD_SECURITY_ERROR = -230;
 	const UPLOAD_UPLOAD_LIMIT_EXCEEDED = -240;
@@ -39,59 +39,59 @@ class CMS_file extends CMS_grandFather
 	const UPLOAD_FILE_VALIDATION_FAILED = -270;
 	const UPLOAD_FILE_CANCELLED = -280;
 	const UPLOAD_UPLOAD_STOPPED = -290;
-	
+
 	/**
 	 * Contain full filename of the file or dir
 	 * @var string
 	 * @access public
 	 */
 	protected $_name = "";
-	
+
 	/**
 	 * is the file or dir exists on the server
 	 * @var boolean
 	 * @access public
 	 */
 	protected $_exists = false;
-	
+
 	/**
 	 * type of the file : file or dir
 	 * @var integer : self::TYPE_FILE for file, self::TYPE_DIRECTORY for dir, false for undefined
 	 * @access public
 	 */
 	protected $_type = false;
-	
+
 	/**
 	 * file or dir perms
 	 * @var string the octal current chmod value of the file/dir
 	 * @access public
 	 */
 	protected $_perms = "";
-	
+
 	/**
 	 * file content
 	 * @var string the file content
 	 * @access public
 	 */
 	protected $_content = "";
-	
+
 	/**
 	 * directory of the file/dir
 	 * @var string the directory of the file/dir
 	 * @access public
 	 */
 	protected $_basedir = "";
-	
+
 	/**
 	 * filename of the file (empty if current object is a directory)
 	 * @var string the filename of the file
 	 * @access public
 	 */
 	protected $_filename = "";
-	
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param string $name, the full filename of the file or dir
 	 * @param integer $from, the file path is : self::FILE_SYSTEM or self::WEBROOT
 	 * @param integer $type, the type of the current object : self::TYPE_FILE for a file, self::TYPE_DIRECTORY for a dir, false for undefined
@@ -124,7 +124,7 @@ class CMS_file extends CMS_grandFather
 			$this->_type = $type;
 		}
 	}
-	
+
 	/**
 	  * Gets the FS existence status of the file
 	  *
@@ -135,7 +135,7 @@ class CMS_file extends CMS_grandFather
 	{
 		return $this->_exists;
 	}
-	
+
 	/**
 	  * Set the content of the file
 	  *
@@ -180,7 +180,7 @@ class CMS_file extends CMS_grandFather
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Get the content of the file as string
 	  *
@@ -194,7 +194,7 @@ class CMS_file extends CMS_grandFather
 		}
 		return $this->_content;
 	}
-	
+
 	/**
 	  * Alias of getFilename
 	  *
@@ -205,7 +205,7 @@ class CMS_file extends CMS_grandFather
 	{
 		return $this->getFilename($withPath);
 	}
-	
+
 	/**
 	  * Get the full filesystem filename of the file or dir
 	  *
@@ -216,7 +216,7 @@ class CMS_file extends CMS_grandFather
 	{
 		return ($withPath) ? $this->_name : basename($this->_name);
 	}
-	
+
 	/**
 	  * Get the file extension if any (lowercase)
 	  *
@@ -227,7 +227,7 @@ class CMS_file extends CMS_grandFather
 	{
 		return io::strtolower(pathinfo($this->_name, PATHINFO_EXTENSION));
 	}
-	
+
 	/**
 	  * Get the file size
 	  *
@@ -253,7 +253,7 @@ class CMS_file extends CMS_grandFather
 		}
 		return $filesize;
 	}
-	
+
 	/**
 	  * Get the file icon if any
 	  *
@@ -271,7 +271,7 @@ class CMS_file extends CMS_grandFather
 		}
 		return false;
 	}
-	
+
 	/**
 	  * Get the file path
 	  *
@@ -291,7 +291,7 @@ class CMS_file extends CMS_grandFather
 			}
 		}
 	}
-	
+
 	/**
 	  * Read the content of the file
 	  *
@@ -341,7 +341,7 @@ class CMS_file extends CMS_grandFather
 							if ($csvargs['strict']) {
 								if (!$count) {
 									$num = count($data);
-								} 
+								}
 								//check for number of values in current line (tolerance is one because last CSV value can be empty so PHP array is smaller)
 								elseif (sizeof($data) != $num && (sizeof($data)+1) != $num && (sizeof($data)-1) != $num) {
 									$this->raiseError("Invalid CSV content file : column count does not match : ".sizeof($data)." should be ".$num." at line ".($count+1));
@@ -375,7 +375,7 @@ class CMS_file extends CMS_grandFather
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Writes the file into persistence (FS)
 	  *
@@ -396,7 +396,7 @@ class CMS_file extends CMS_grandFather
 					return false;
 				}
 			}
-			
+
 			if (!$f = @fopen($this->_name,'wb')) {
 				if ($createFolder && CMS_file::makeDir($this->_basedir)) {
 					if (!$f = @fopen($this->_name,'wb')) {
@@ -428,7 +428,7 @@ class CMS_file extends CMS_grandFather
 			return true;
 		}
 	}
-	
+
 	/**
 	 * function delete
 	 * Delete the  file or folder (recursively)
@@ -444,7 +444,7 @@ class CMS_file extends CMS_grandFather
 		}
 		return $deleted;
 	}
-	
+
 	/**
 	 * function chmod
 	 * Try to chmod this file / directory.
@@ -465,7 +465,7 @@ class CMS_file extends CMS_grandFather
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Upload a file with as much as security we can
 	 *
@@ -490,7 +490,7 @@ class CMS_file extends CMS_grandFather
 				}
 			}
 		} catch(Exception $e) {}
-		
+
 		//init returned file datas
 		$fileDatas = array(
 			'error' 		=> 0,
@@ -500,7 +500,7 @@ class CMS_file extends CMS_grandFather
 			'fileicon'		=> '',
 			'success'		=> false
 		);
-		
+
 		// Check if the upload exists
 		if (!isset($_FILES[$fileVarName]) || !is_uploaded_file($_FILES[$fileVarName]["tmp_name"]) || $_FILES[$fileVarName]["error"] != 0) {
 			CMS_grandFather::raiseError('Uploaded file has an error : '.print_r($_FILES, true));
@@ -531,14 +531,14 @@ class CMS_file extends CMS_grandFather
 		}
 		$file = new CMS_file(PATH_UPLOAD_VAULT_FS.'/'.$filename);
 		$file->chmod(FILES_CHMOD);
-		
+
 		//check uploaded file
 		if (!$file->checkUploadedFile()) {
 			$file->delete();
 			$fileDatas['error'] = CMS_file::UPLOAD_SECURITY_ERROR;
 			return $fileDatas;
 		}
-		
+
 		//move file to final directory
 		if (!CMS_file::moveTo(PATH_UPLOAD_VAULT_FS.'/'.$filename, $destinationDirFS.'/'.$filename)) {
 			$fileDatas['error'] = CMS_file::UPLOAD_FILE_VALIDATION_FAILED;
@@ -546,7 +546,7 @@ class CMS_file extends CMS_grandFather
 		}
 		$file = new CMS_file($destinationDirFS.'/'.$filename);
 		$file->chmod(FILES_CHMOD);
-		
+
 		//return file datas
 		$fileDatas = array(
 			'error' 		=> 0,
@@ -559,7 +559,7 @@ class CMS_file extends CMS_grandFather
 		);
 		return $fileDatas;
 	}
-	
+
 	/**
 	 * Check a file to avoid upload threat
 	 *
@@ -620,7 +620,7 @@ class CMS_file extends CMS_grandFather
 		}
 		return true;
 	}
-	
+
 	/**
 	  * Send the current file for download (inline or attachment)
 	  *
@@ -638,11 +638,11 @@ class CMS_file extends CMS_grandFather
 		}
 		return CMS_file::downloadFile($this->_name, $inline, $deleteFile, $forceContentType);
 	}
-	
+
 	// ****************************************************************
 	// ** BELOW THIS POINT, ALL METHOD ARE STATIC                    **
 	// ****************************************************************
-	
+
 	/**
 	 * function getFilePerms
 	 * get current file permissions
@@ -651,7 +651,7 @@ class CMS_file extends CMS_grandFather
 	 * @return octal value of the file
 	 * @static
 	 */
-	function getFilePerms($file, $type="octal") 
+	function getFilePerms($file, $type="octal")
 	{
 		$file = realpath($file);
 		if (!file_exists($file)) {
@@ -659,7 +659,7 @@ class CMS_file extends CMS_grandFather
 		}
 		return ($type=="octal") ? @fileperms($file) : io::substr(sprintf('%o',@fileperms($file)), -4);
 	}
-	
+
 	/**
 	 * function isDeletable
 	 * is file deletable ?
@@ -677,7 +677,7 @@ class CMS_file extends CMS_grandFather
 		}
 		return false;
 	}
-	
+
 	/**
 	 * function deleteFile
 	 * Delete a file or folder (recursively)
@@ -696,16 +696,17 @@ class CMS_file extends CMS_grandFather
 			return false;
 		}
 	}
-	
+
 	/**
 	 * function deltree (rm -rf)
 	 * Delete a directory and all subdirectories and files (recursively)
 	 * @param string $file, the full filename of the file or dir
 	 * @param boolean $withDir, delete also the dir $file
+	 * @param boolean $ignoreDirErrors, if set to true final status will ignore errors occuring while deleting directories
 	 * @return boolean true on success, false on failure
 	 * @static
 	 */
-	function deltree($dir, $withDir = false) {
+	public static function deltree($dir, $withDir = false, $ignoreDirErrors = false) {
 		$dir = realpath($dir);
 		if (!is_dir($dir)) {
 			return false;
@@ -713,12 +714,13 @@ class CMS_file extends CMS_grandFather
 		$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::CHILD_FIRST);
 		$return = true;
 		foreach($objects as $name => $object){
-		    if ($object->isWritable()) {
+		  if ($object->isWritable()) {
 				if ($object->isFile()) {
 					$return &= unlink($object->getPathname());
 				} else {
 					if ($object->getFilename() != "." && $object->getFilename() != ".." && ($withDir || ($object->getPathname() != $dir))) {
-						$return &= rmdir($object->getPathname());
+						$success = rmdir($object->getPathname());
+						$return &= ($ignoreDirErrors || $success);
 					}
 				}
 			} else {
@@ -730,7 +732,7 @@ class CMS_file extends CMS_grandFather
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * function deltreeSimulation (rm -rf)
 	 * Simulate the delete a directory and all subdirectories and files (recursively)
@@ -752,7 +754,7 @@ class CMS_file extends CMS_grandFather
 		}
 		return true;
 	}
-	
+
 	/**
 	 * function makeReadable
 	 * Try to make a file readable if it's not the case (and executable for a dir)
@@ -792,7 +794,7 @@ class CMS_file extends CMS_grandFather
 			}
 		}
 	}
-	
+
 	/**
 	 * function makeWritable
 	 * Try to make a file writable if it's not the case (and executable for a dir)
@@ -830,7 +832,7 @@ class CMS_file extends CMS_grandFather
 			}
 		}
 	}
-	
+
 	/**
 	 * function makeExecutable
 	 * Try to make a file executable if it's not the case
@@ -869,7 +871,7 @@ class CMS_file extends CMS_grandFather
 			}
 		}
 	}
-	
+
 	/**
 	 * function fileIsExecutable
 	 * Is file or dir executable (this function exists because php function is_executable does not work on directories)
@@ -890,7 +892,7 @@ class CMS_file extends CMS_grandFather
 			return true;
 		}
 	}
-	
+
 	/**
 	 * function chmodFile
 	 * Try to chmod a file (a dir is redirected to makeExecutable method).
@@ -919,7 +921,7 @@ class CMS_file extends CMS_grandFather
 			return false;
 		}
 	}
-	
+
 	/**
 	 * function makeDir
 	 * Try to create a dir (and all parents if needed)
@@ -929,7 +931,7 @@ class CMS_file extends CMS_grandFather
 	 */
 	function makeDir($f)
 	{
-		//create directories recursively 
+		//create directories recursively
 		if (!@is_dir(dirname($f))) {
 			CMS_file::makeDir(dirname($f));
 		}
@@ -941,7 +943,7 @@ class CMS_file extends CMS_grandFather
 		}
 		return true;
 	}
-	
+
 	/**
 	 * function copyTo
 	 * Try to copy a file (and create all parents if needed)
@@ -967,7 +969,7 @@ class CMS_file extends CMS_grandFather
 		}
 		return false;
 	}
-	
+
 	/**
 	 * function moveTo
 	 * Try to move a file (and create all parents if needed)
@@ -993,7 +995,7 @@ class CMS_file extends CMS_grandFather
 		}
 		return false;
 	}
-	
+
 	/**
 	 * function getFileList
 	 * Get an entire listing of files
@@ -1023,7 +1025,7 @@ class CMS_file extends CMS_grandFather
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * function getParent
 	 * Get the first parent dir who exists of a file
@@ -1038,7 +1040,7 @@ class CMS_file extends CMS_grandFather
 			return CMS_file::getParent(dirname($file));
 		}
 	}
-	
+
 	/**
 	  * get temporary path
 	  *
@@ -1064,7 +1066,7 @@ class CMS_file extends CMS_grandFather
 		}
 		return $tmpPath;
 	}
-	
+
 	/**
 	  * get mime type of a given file
 	  *
@@ -1100,7 +1102,7 @@ class CMS_file extends CMS_grandFather
 		}
 		return ($return) ? $return : 'application/octet-stream';
 	}
-	
+
 	/**
 	  * return the max uploadable file size
 	  *
@@ -1117,7 +1119,7 @@ class CMS_file extends CMS_grandFather
 			return $max * 1024;
 		}
 	}
-	
+
 	/**
 	  * Send a group of files to client (ie : JS or CSS files)
 	  * Provide coherent user caching infos (1 month) for files and allow gzip when possible
@@ -1173,10 +1175,10 @@ class CMS_file extends CMS_grandFather
 			header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $lastdate) . ' GMT');
 			header('Expires: ' . gmdate('D, d M Y H:i:s', time()+2592000) . ' GMT'); //30 days
 			header("Cache-Control: must-revalidate");
-			header("Pragma: public"); 
+			header("Pragma: public");
 			exit;
 		}
-		
+
 		$compress = 'ob_gzhandler' != ini_get('output_handler') && extension_loaded( 'zlib' ) && !ini_get('zlib.output_compression') && strpos( strtolower(@$_SERVER['HTTP_ACCEPT_ENCODING']), 'gzip') !== false;
 		//create cache id from files, compression status and last time files access
 		$id = md5(implode(',',$files).'-'.$compress.'-'.$lastdate);
@@ -1211,7 +1213,7 @@ class CMS_file extends CMS_grandFather
 				}
 				$datas .= $fileData."\n";
 			}
-			
+
 			//minimize JS files if needed
 			if (!SYSTEM_DEBUG && $contentType == 'text/javascript') {
 				$datas = JSMin::minify($datas);
@@ -1233,7 +1235,7 @@ class CMS_file extends CMS_grandFather
 		header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $lastdate) . ' GMT');
 		header('Expires: ' . gmdate('D, d M Y H:i:s', time()+2592000) . ' GMT'); //30 days
 		header("Cache-Control: must-revalidate");
-		header("Pragma: public"); 
+		header("Pragma: public");
 		//send gzip header if needed
 		if ($compress) {
 			header('Vary: Accept-Encoding'); // Handle proxies
@@ -1243,9 +1245,9 @@ class CMS_file extends CMS_grandFather
 		echo $datas;
 		exit;
 	}
-	
-	
-	
+
+
+
 	/**
 	  * Gzip a given file into another given file
 	  *
@@ -1277,7 +1279,7 @@ class CMS_file extends CMS_grandFather
 		}
 		return !$error;
 	}
-	
+
 	/**
 	  * Send a given file for download (inline or attachment)
 	  *
@@ -1310,7 +1312,7 @@ class CMS_file extends CMS_grandFather
 	    @ob_end_clean();
 		//to prevent long file from getting cut off from max_execution_time
 	    @set_time_limit(0);
-		
+
 		//send http headers
 		header("Cache-Control: public", true);//This is needed to avoid bug with IE in HTTPS
 		header("Pragma:", true);//This is needed to avoid bug with IE in HTTPS
@@ -1319,13 +1321,13 @@ class CMS_file extends CMS_grandFather
 		clearstatcache(); //to avoid bug on filesize
 		header('Content-Length: '.(string) filesize($source));
 		header('Content-Disposition: '.($inline ? 'inline' : 'attachment').'; filename="'.basename($source).'"');
-		
+
 		//If mod_xsendfile exists, use it to send files
 		if (!$deleteFile && ((isset($_SERVER["REDIRECT_ATM_X_SENDFILE"]) && $_SERVER["REDIRECT_ATM_X_SENDFILE"] == 1) || getenv('ATM_X_SENDFILE') == 1)) {
 			header('X-Sendfile: '.$source);
 			exit;
 		}
-		
+
 		//send file
 		if($file = fopen($source, 'rb')){
 			while( (!feof($file)) && (connection_status()==0) ){
