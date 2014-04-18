@@ -61,7 +61,7 @@ ob_end_clean();
 
 $baseUrl = $website->getURL(false);
 
-echo '<html>
+echo '<!DOCTYPE html><html>
 <head>
 	<title>'.$embededObject->getLabel().'</title>
 	<base href="//'.$baseUrl.'/" />
