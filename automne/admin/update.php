@@ -497,8 +497,6 @@ if (!$installed) {
 	}
 }
 
-mod_object_oembed_definition.sql*/
-
 // END UPDATE FROM 4.2.1 TO 4.2.2
 
 //Update Automne messages

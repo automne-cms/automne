@@ -52,7 +52,6 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access private
 	  */
 	protected $_tagsCallBack = array(
-		// TODOGF
 			'atm-search' 			=> '_searchTag',
 			'atm-result' 			=> '_searchResultTag',
 			'atm-noresult' 			=> '_searchNoResultTag',
