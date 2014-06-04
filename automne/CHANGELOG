@@ -1,4 +1,8 @@
-V4.2.2 (in progress)
+V4.2.2
+[BUG] : various bugfixes
+[FEATURE] : Allow modules to interact with page / category / polyobject insertion or update
+[FEATURE] : Enable Automne as a content provider for Polymod modules using the oEmbed Format
+[FEATURE] : Allow modules to specify a cache deletion method
 [BUG] : Correct bug number: 3083, 3086 (see http://www.automne-cms.org/bug/)
 [REFACTOR] : Add optimisations in pages tree calculations
 [REFACTOR] : Update Less to version 0.3.4-2
@@ -157,7 +161,7 @@ V4.1.0 (24/02/2011)
 [FEATURE] : Add vhost subfolder support for Automne installation
 [FEATURE] : Add import/export of polymod modules structures
 [FEATURE] : Add export of Automne activity logs in CSV
-[FEATURE] : Add Google Chrome Frame support (via the configuration constant APPLICATION_GCF_SUPPORT) 
+[FEATURE] : Add Google Chrome Frame support (via the configuration constant APPLICATION_GCF_SUPPORT)
 [FEATURE] : Add row duplication
 [FEATURE] : Add codename to pages and websites
 [FEATURE] : Add database auto update (useful for direct update from Launchpad)
@@ -260,7 +264,7 @@ V4.0.0rc1 (01/07/09)
 [REFACTOR] : use PDO instead of direct Mysql functions
 [REFACTOR] : use autoload system for classes loading
 [REFACTOR] : move FCKEditor folder to /automne, more consistent, because it can be used in admin and frontend
-[FEATURE] : Update FCKEditor to version 2.6.4 : Add Safari, Opera and Camino support. Add some features (new style system, revamped undo system, blockquotes support, etc.) and a better stability. 
+[FEATURE] : Update FCKEditor to version 2.6.4 : Add Safari, Opera and Camino support. Add some features (new style system, revamped undo system, blockquotes support, etc.) and a better stability.
 [FEATURE] : Use ExtJS 3.0rc2 javascript library for all admin management
 [FEATURE] : Add validation on page moving
 [FEATURE] : Add mysql fulltext search on users, groups, templates, rows, standard and polymod modules
