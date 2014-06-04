@@ -52,22 +52,22 @@ class CMS_object_page extends CMS_object_integer
 	const MESSAGE_OBJECT_PAGE_LINK = 661;
 	const MESSAGE_OBJECT_PAGE_LINKTITLE = 662;
 	const MESSAGE_OBJECT_PAGE_PAGE_DESCRIPTION = 663;
-	
-	
+
+
 	/**
 	  * object label
 	  * @var integer
 	  * @access private
 	  */
 	var $_objectLabel = self::MESSAGE_OBJECT_PAGE_LABEL;
-	
+
 	/**
 	  * object description
 	  * @var integer
 	  * @access private
 	  */
 	var $_objectDescription = self::MESSAGE_OBJECT_PAGE_DESCRIPTION;
-	
+
 	/**
 	  * all subFields definition
 	  * @var array(integer "subFieldID" => array("type" => string "(string|boolean|integer|date)", "required" => boolean, 'internalName' => string [, 'externalName' => i18nm ID]))
@@ -79,28 +79,28 @@ class CMS_object_page extends CMS_object_integer
 										'internalName'	=> 'page',
 									),
 							);
-	
+
 	/**
 	  * all subFields values for object
 	  * @var array(integer "subFieldID" => mixed)
 	  * @access private
 	  */
 	var $_subfieldValues = array(0 => '');
-	
+
 	/**
 	  * all parameters definition
 	  * @var array(integer "subFieldID" => array("type" => string "(string|boolean|integer|date)", "required" => boolean, 'internalName' => string [, 'externalName' => i18nm ID]))
 	  * @access private
 	  */
 	var $_parameters = array();
-	
+
 	/**
 	  * all subFields values for object
 	  * @var array(integer "subFieldID" => mixed)
 	  * @access private
 	  */
 	var $_parameterValues = array();
-	
+
 	/**
 	  * Constructor.
 	  * initialize object.
@@ -115,7 +115,7 @@ class CMS_object_page extends CMS_object_integer
 	{
 		parent::__construct($datas, $field, $public);
 	}
-	
+
 	/**
 	  * get HTML admin (used to enter object values in admin)
 	  *
@@ -136,7 +136,7 @@ class CMS_object_page extends CMS_object_integer
 		unset($return['width']);
 		return $return;
 	}
-	
+
 	/**
       * Return the needed form field tag for current object field
       *
@@ -158,10 +158,10 @@ class CMS_object_page extends CMS_object_integer
 			$prefixName = '';
 		}
 		$params = $this->getParamsValues();
-		//serialize all htmlparameters 
+		//serialize all htmlparameters
 		$htmlParameters = $this->serializeHTMLParameters($inputParams);
 		$html = '';
-		
+
 		//create fieldname
 		$fieldName = $prefixName.$this->_field->getID().'_0';
 		//append field id to html field parameters (if not already exists)
@@ -170,7 +170,7 @@ class CMS_object_page extends CMS_object_integer
 		$value = ($this->_subfieldValues[0]->getValue()) ? $this->_subfieldValues[0]->getValue() : '';
 		//then create field HTML
 		$html .= ($html) ? '<br />':'';
-		$html .= 
+		$html .=
 		'<input '.$htmlParameters.' type="text" name="'.$fieldName.'" value="'.$value.'" />'."\n";
 			//build tree link
 			$grand_root = CMS_tree::getRoot();
@@ -191,7 +191,7 @@ class CMS_object_page extends CMS_object_integer
 		}
 		return $html;
 	}
-	
+
 	/**
 	  * set object Values
 	  *
@@ -215,7 +215,7 @@ class CMS_object_page extends CMS_object_integer
 		}
 		return true;
 	}
-	
+
 	/**
 	  * get object values structure available with getValue method
 	  *
@@ -246,7 +246,7 @@ class CMS_object_page extends CMS_object_integer
 		$structure['website'] = '';
 		return $structure;
 	}
-	
+
 	/**
 	  * get an object value
 	  *
@@ -256,7 +256,6 @@ class CMS_object_page extends CMS_object_integer
 	  * @access public
 	  */
 	function getValue($name, $parameters = '') {
-		CMS_grandFather::log($name);
 		switch($name) {
 			case 'pageTitle':
 				return CMS_tree::getPageValue($this->_subfieldValues[0]->getValue(), 'title');
@@ -268,7 +267,7 @@ class CMS_object_page extends CMS_object_integer
 				return CMS_tree::getPageValue($this->_subfieldValues[0]->getValue(), 'url');
 			break;
 			default:
-				$possibleValues = array('codename', 'keywords', 'description', 'category', 'author', 'replyto', 'copyright', 'language', 
+				$possibleValues = array('codename', 'keywords', 'description', 'category', 'author', 'replyto', 'copyright', 'language',
 										'robots', 'pragma', 'refresh', 'metas', 'level', 'printurl', 'link', 'linktitle', 'website');
 				if(in_array($name, $possibleValues)) {
 					return CMS_tree::getPageValue($this->_subfieldValues[0]->getValue(), $name);
@@ -277,7 +276,7 @@ class CMS_object_page extends CMS_object_integer
 			break;
 		}
 	}
-	
+
 	/**
 	  * get labels for object structure and functions
 	  *
@@ -309,7 +308,7 @@ class CMS_object_page extends CMS_object_integer
 		$labels['structure']['website'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_WEBSITE,false,MOD_POLYMOD_CODENAME);;
 		return $labels;
 	}
-	
+
 	/**
 	  * get object HTML description for admin search detail. Usually, the label.
 	  *
