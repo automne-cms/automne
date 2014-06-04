@@ -31,21 +31,21 @@ class CMS_object_image extends CMS_object_common
 	const MESSAGE_OBJECT_IMAGE_DESCRIPTION = 201;
 	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXWIDTH = 202;
 	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXWIDTH_DESC = 212;
-  	const MESSAGE_OBJECT_IMAGE_IMAGEMAXWIDTH_DESCRIPTION = 253;
-  	const MESSAGE_OBJECT_IMAGE_IMAGEMAXHEIGHT_DESCRIPTION = 413;
-  	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXHEIGHT = 423;
-  	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXHEIGHT_DESC = 412;
+	const MESSAGE_OBJECT_IMAGE_IMAGEMAXWIDTH_DESCRIPTION = 253;
+	const MESSAGE_OBJECT_IMAGE_IMAGEMAXHEIGHT_DESCRIPTION = 413;
+	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXHEIGHT = 423;
+	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXHEIGHT_DESC = 412;
 	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAKEZOOM = 205;
 	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXZOOMWIDTH = 549;
 	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXZOOMWIDTH_DESC = 550;
-  	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXZOOMHEIGHT = 551;
-  	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXZOOMHEIGHT_DESC = 552;
+	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXZOOMHEIGHT = 551;
+	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXZOOMHEIGHT_DESC = 552;
 	const MESSAGE_OBJECT_IMAGE_FIELD_LABEL = 581;
 	const MESSAGE_OBJECT_IMAGE_FIELD_THUMBNAIL = 206;
 	const MESSAGE_OBJECT_IMAGE_FIELD_ZOOM = 207;
 	const MESSAGE_OBJECT_IMAGE_FIELD_DESC = 208;
 	const MESSAGE_OBJECT_IMAGE_FIELD_DESC_HEIGHT = 415;
-  	const MESSAGE_OBJECT_IMAGE_FIELD_DESC_HEIGHT_AND_WIDTH = 416;
+	const MESSAGE_OBJECT_IMAGE_FIELD_DESC_HEIGHT_AND_WIDTH = 416;
 	const MESSAGE_OBJECT_IMAGE_PARAMETER_USEDISTINCTZOOM = 209;
 	const MESSAGE_OBJECT_IMAGE_FIELD_USE_ORIGINAL_AS_ZOOM = 211;
 	const MESSAGE_OBJECT_IMAGE_PARAMETER_MAXWIDTHPREVIZ = 409;
@@ -68,10 +68,10 @@ class CMS_object_image extends CMS_object_common
 	const MESSAGE_OBJECT_IMAGE_PARAMETER_LEGENDMANDATORY = 582;
 	const MESSAGE_OBJECT_IMAGE_PARAMETER_ALTERNATIVE_DOMAIN = 664;
 	const MESSAGE_OBJECT_IMAGE_PARAMETER_ALTERNATIVE_DOMAIN_DESC = 665;
-	
+
 	//standard messages
 	const MESSAGE_SELECT_PICTURE = 528;
-	
+
 	/**
 	  * Name of the enlarged image pop-up file
 	  */
@@ -353,7 +353,7 @@ class CMS_object_image extends CMS_object_common
 			$return['items'][0]['fieldLabel']	= $language->getMessage(self::MESSAGE_OBJECT_IMAGE_FIELD_LABEL, false, MOD_POLYMOD_CODENAME);
 		}
 		$return['items'][0]['allowBlank']	= ($this->_field->getValue('required') && isset($params['legendMandatory']) && $params['legendMandatory']) ? false : true;
-		
+
 		//Thumbnail
 		unset($return['items'][1]['hideLabel']);
 		$return['items'][1]['xtype']		= 'atmImageUploadField';
@@ -498,8 +498,8 @@ class CMS_object_image extends CMS_object_common
 		$thclass = (isset($inputParams['thclass'])) ? ' class="'.$inputParams['thclass'].'"' : '';
 		$rowspan = ($params['makeZoom']) ? 2 : 1;
 		$mandatoryTtitle = (isset($params['legendMandatory']) && $params['legendMandatory']) ? '<span class="atm-red">*</span> ' : '';
-		
-		
+
+
 		$html = '
 		<table>
 		<tr>
@@ -639,10 +639,10 @@ class CMS_object_image extends CMS_object_common
 					@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[2]->getValue());
 					$this->_subfieldValues[2]->setValue('');
 				}
-				//move and rename uploaded file 
+				//move and rename uploaded file
 				$filename = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $filename);
 				$basename = pathinfo($filename, PATHINFO_BASENAME);
-				
+
 				//set thumbnail
 				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
 				$zoomBasename = "r".$objectID."_".$this->_field->getID()."_".io::strtolower(SensitiveIO::sanitizeAsciiString($basename));
@@ -669,14 +669,14 @@ class CMS_object_image extends CMS_object_common
 					@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[0]->getValue());
 					$this->_subfieldValues[0]->setValue('');
 				}
-				//move and rename uploaded file 
+				//move and rename uploaded file
 				$filename = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $filename);
 				$basename = pathinfo($filename, PATHINFO_BASENAME);
-				
+
 				//set thumbnail
 				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
 				$newBasename = "r".$objectID."_".$this->_field->getID()."_".io::strtolower(SensitiveIO::sanitizeAsciiString($basename));
-				
+
 				//rename image
 				$path_parts = pathinfo($newBasename);
 				$extension = io::strtolower($path_parts['extension']);
@@ -688,7 +688,7 @@ class CMS_object_image extends CMS_object_common
 				//move file from upload dir to new dir
 				CMS_file::moveTo($filename, $newFilename);
 				CMS_file::chmodFile(FILES_CHMOD, $newFilename);
-				
+
 				//if we use original image as image zoom, set it
 				if (isset($values[$prefixName.$this->_field->getID().'_makeZoom']) && $values[$prefixName.$this->_field->getID().'_makeZoom'] == 1) {
 					$zoomFilename = str_replace('_thumbnail.'.$extension, '.'.$extension, $newFilename);
@@ -706,7 +706,7 @@ class CMS_object_image extends CMS_object_common
 					//get current file size
 					$sizeX = $oImage->getWidth();
 					$sizeY = $oImage->getHeight();
-					
+
 					//check thumbnail size
 					if (($params['maxWidth'] && $sizeX > $params['maxWidth']) || ($params['maxHeight'] && $sizeY > $params['maxHeight'])) {
 						$newSizeX = $sizeX;
@@ -743,12 +743,12 @@ class CMS_object_image extends CMS_object_common
 				$basename = $this->_subfieldValues[2]->getValue();
 				$filename = $path.'/'.$basename;
 				$extension = io::strtolower(pathinfo($basename, PATHINFO_EXTENSION));
-				
+
 				$oImage = new CMS_image($filename);
 				//get current file size
 				$sizeX = $oImage->getWidth();
 				$sizeY = $oImage->getHeight();
-				
+
 				//check zoom size
 				if (($params['maxZoomWidth'] && $sizeX > $params['maxZoomWidth']) || ($params['maxZoomHeight'] && $sizeY > $params['maxZoomHeight'])) {
 					$newSizeX = $sizeX;
@@ -767,7 +767,7 @@ class CMS_object_image extends CMS_object_common
 					}
 				}
 			}
-			
+
 			//update files infos if needed
 			if ($this->_subfieldValues[0]->getValue() && file_exists(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[0]->getValue())) {
 				$file = new CMS_file(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$this->_subfieldValues[0]->getValue());
@@ -819,7 +819,7 @@ class CMS_object_image extends CMS_object_common
 				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_2]' => $zoomDatas,
 				'polymodFieldsValue['.$prefixName.$this->_field->getID().'_1]' => sensitiveIO::decodeEntities($this->_subfieldValues[1]->getValue()),
 			));
-			
+
 			$view = CMS_view::getInstance();
 			$view->addContent($content);
 			return true;
@@ -872,16 +872,16 @@ class CMS_object_image extends CMS_object_common
 					@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$values[$prefixName.$this->_field->getID().'_2_hidden']);
 					$this->_subfieldValues[2]->setValue('');
 				}
-	
+
 				//set thumbnail (resize it if needed)
-	
+
 				//create thumbnail path
 				$path = PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED;
 				$filename = "r".$objectID."_".$this->_field->getID()."_".io::strtolower(SensitiveIO::sanitizeAsciiString($_FILES[$prefixName.$this->_field->getID().'_0']["name"]));
 				if (io::strlen($filename) > 255) {
 					$filename = sensitiveIO::ellipsis($filename, 255, '-', true);
 				}
-				
+
 				//move uploaded file
 				$fileDatas = CMS_file::uploadFile($prefixName.$this->_field->getID().'_0', PATH_TMP_FS);
 				if ($fileDatas['error']) {
@@ -895,12 +895,12 @@ class CMS_object_image extends CMS_object_common
 					//get current file size
 					$sizeX = $oImage->getWidth();
 					$sizeY = $oImage->getHeight();
-					
+
 					//check thumbnail size
 					if ($sizeX > $params['maxWidth'] ||  $sizeY > $params['maxHeight']) {
 						$newSizeX = $sizeX;
 						$newSizeY = $sizeY;
-	
+
 						// Check width
 						if ($params['maxWidth'] && $newSizeX > $params['maxWidth']) {
 							$newSizeY = round(($params['maxWidth']*$newSizeY)/$newSizeX);
@@ -916,11 +916,11 @@ class CMS_object_image extends CMS_object_common
 						$thumbnailFilename = io::substr($path_parts['basename'],0,-(io::strlen($path_parts['extension'])+1)).'_thumbnail.'.$path_parts['extension'];
 						$destfilepath = $path."/".$thumbnailFilename;
 						$extension = io::strtolower($path_parts['extension']);
-						
+
 						if (!$oImage->resize($newSizeX, $newSizeY, $destfilepath)) {
 							return false;
 						}
-						
+
 						//if we use original image as image zoom, set it
 						if ($values[$prefixName.$this->_field->getID().'_makeZoom'] == 1) {
 							//set image zoom
@@ -981,7 +981,7 @@ class CMS_object_image extends CMS_object_common
 				if (io::strlen($filename) > 255) {
 					$filename = sensitiveIO::ellipsis($filename, 255, '-', true);
 				}
-				
+
 				//move uploaded file
 				$fileDatas = CMS_file::uploadFile($prefixName.$this->_field->getID().'_2', PATH_TMP_FS);
 				if ($fileDatas['error']) {
@@ -1087,7 +1087,7 @@ class CMS_object_image extends CMS_object_common
 				}
 				if ($this->_subfieldValues[$fieldIndex]->getValue() && $parameters) {
 					@list($x, $y) = explode(',',str_replace(';', ',', $parameters));
-					if ((io::isPositiveInteger($x) && $x < $this->getValue('imageWidth')) || (io::isPositiveInteger($y) && $y < $this->getValue('imageHeight'))) {
+					if ((io::isPositiveInteger($x) && $x < $this->getValue($name.'Width')) || (io::isPositiveInteger($y) && $y < $this->getValue($name.'Height'))) {
 						//get module codename
 						$crop = ($x && $y) ? 1 : 0;
 						//get module codename
@@ -1250,7 +1250,7 @@ class CMS_object_image extends CMS_object_common
 	function getLabelsStructure(&$language) {
 		$labels = parent::getLabelsStructure($language);
 		unset($labels['structure']['value']);
-		
+
 		$labels['structure']['image|width,height'] = $language->getMessage(self::MESSAGE_OBJECT_IMAGE_IMAGE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['imageZoom|width,height'] = $language->getMessage(self::MESSAGE_OBJECT_IMAGE_IMAGEZOOM_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['imageHTML'] = $language->getMessage(self::MESSAGE_OBJECT_IMAGE_IMAGEHTML_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
