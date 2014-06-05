@@ -74,6 +74,7 @@ define("MESSAGE_ACTION_ENTER_EMAIL_SENDER", 88);
 define("MESSAGE_ACTION_DOWNLOAD_CSV_FILE_WITH_DATE", 89);
 define("MESSAGE_PAGE_BLOCK_GENERAL_VARS_EXPLANATION", 1705);
 define("MESSAGE_ACTION_SPECIFIC_PHP", 95);
+define("MESSAGE_ACTION_ENTER_TEMPLATE_FILE", 96);
 
 //CHECKS
 $cms_module = CMS_modulesCatalog::getByCodename(MOD_CMS_FORMS_CODENAME);
@@ -142,9 +143,10 @@ case "validate":
 			}
 		break;
 		case CMS_forms_action::ACTION_FIELDEMAIL :
-			$sender = (isset($_POST["sender"]) && sensitiveIO::isValidEmail($_POST["sender"]) && APPLICATION_POSTMASTER_EMAIL != $_POST["sender"]) ? $separator.$_POST["sender"] : '';
+			$sender = (isset($_POST["sender"]) && sensitiveIO::isValidEmail($_POST["sender"]) && APPLICATION_POSTMASTER_EMAIL != $_POST["sender"]) ? $separator.$_POST["sender"] : $separator.'';
+			$template = (isset($_POST["template"])) ? $separator.$_POST["template"] : '';
 			//aggregate email text fields
-			$_POST["text"] = strip_tags($_POST["subject"].$separator.$_POST["header"].$separator.$_POST["footer"]).$sender;
+			$_POST["text"] = strip_tags($_POST["subject"].$separator.$_POST["header"].$separator.$_POST["footer"]).$sender.$template;
 		break;
 		/*case CMS_forms_action::ACTION_FILE :
 			//link to download file
@@ -167,9 +169,10 @@ case "validate":
 					$_POST["value"] = implode('; ', $emails);
 				}
 			}
-			$sender = (isset($_POST["sender"]) && sensitiveIO::isValidEmail($_POST["sender"]) && APPLICATION_POSTMASTER_EMAIL != $_POST["sender"]) ? $separator.$_POST["sender"] : '';
+			$sender = (isset($_POST["sender"]) && sensitiveIO::isValidEmail($_POST["sender"]) && APPLICATION_POSTMASTER_EMAIL != $_POST["sender"]) ? $separator.$_POST["sender"] : $separator.'';
+			$template = (isset($_POST["template"])) ? $separator.$_POST["template"] : '';
 			//aggregate email text fields
-			$_POST["text"] = strip_tags($_POST["subject"].$separator.$_POST["header"].$separator.$_POST["footer"]).$sender;
+			$_POST["text"] = strip_tags($_POST["subject"].$separator.$_POST["header"].$separator.$_POST["footer"]).$sender.$template;
 		break;
 		case CMS_forms_action::ACTION_AUTH :
 			//login / pass fields
@@ -478,6 +481,9 @@ if (sizeof($formActions)) {
 						$sender = (!isset($texts[3]) || !sensitiveIO::isValidEmail($texts[3])) ? APPLICATION_POSTMASTER_EMAIL : $texts[3];
 						$content .= '<small>'.$cms_language->getMessage(MESSAGE_ACTION_ENTER_EMAIL_SENDER, false, MOD_CMS_FORMS_CODENAME).' :</small><br />
 						<input type="text" name="sender" class="admin_input_text" style="width:100%;" value="'.io::htmlspecialchars($sender).'"/>';
+						$template = isset($texts[4]) ? $texts[4] : '';
+						$content .= '<small>'.$cms_language->getMessage(MESSAGE_ACTION_ENTER_TEMPLATE_FILE, false, MOD_CMS_FORMS_CODENAME).' :</small><br />';
+						$content .= '<input type="text" class="admin_input_text" name="template" value="'.io::htmlspecialchars($template).'" />';
 					break;
 					case CMS_forms_action::ACTION_DB :
 					default:

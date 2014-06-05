@@ -49,6 +49,28 @@ function evalPolymodVars($text, $language){
 	return $definition->getContent(CMS_polymod_definition_parsing::OUTPUT_RESULT, $parameters);
 }
 
+// Detect and parse mail string vars, if present
+function detectAndParseString($string){
+
+	$pattern = '/##([a-zA-Z0-9]+)##/';
+	preg_match_all($pattern, $string, $aMatches);
+	
+	if(!empty($aMatches)){
+		foreach($aMatches as $aValues){
+			foreach($aValues as $key => $val){
+				if(isset($_POST[$aMatches[1][$key]])) {
+					$string = str_replace($aMatches[0][$key], $_POST[$aMatches[1][$key]], $string);
+				}
+				else {
+					$string = str_replace($aMatches[0][$key], '', $string);	
+				}				
+			}
+		}
+	}
+
+	return $string;
+}
+
 $separator = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? "\xa7\xa7" : "\xc2\xa7\xc2\xa7";
 
 //if page has forms
@@ -357,6 +379,7 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 								$texts = explode($separator, $action->getString("text"));
 								//create email body
 								$body = '';
+								$bodyHtml = '';
 								foreach ($fields as $aField) {
 									if ((($aField->getAttribute('type') != 'file' && isset($_POST[$aField->getAttribute('name')]) && $_POST[$aField->getAttribute('name')]) || ($aField->getAttribute('type') == 'file' && $_FILES[$aField->getAttribute('name')]['name']))
 										&& $aField->getAttribute('type') != 'submit' ) {
@@ -366,26 +389,41 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 											$mainurl = CMS_websitesCatalog::getMainURL();
 											$body .= ($aField->getAttribute('label')) ? $aField->getAttribute('label').' : ' : '';
 											$body .= $mainurl.$filepath.'/'.$_FILES[$aField->getAttribute('name')]['atm_name']."\n\n";
+											$bodyHtml .= ($aField->getAttribute('label')) ? '<strong>'.$aField->getAttribute('label').' : </strong>' : '';
+											$bodyHtml .= $mainurl.$filepath.'/'.$_FILES[$aField->getAttribute('name')]['atm_name']."<br />";
 										} elseif ($aField->getAttribute('type') != 'checkbox' && $aField->getAttribute('type') != 'select') {
 											$body .= ($aField->getAttribute('label')) ? $aField->getAttribute('label').' : ' : '';
 											$body .= $_POST[$aField->getAttribute('name')]."\n\n";
+											$bodyHtml .= ($aField->getAttribute('label')) ? '<strong>'.$aField->getAttribute('label').' : </strong>' : '';
+											$bodyHtml .= $_POST[$aField->getAttribute('name')]."<br />";
 										} elseif ($aField->getAttribute('type') == 'select') {
 											$optionsLabels = $aField->getAttribute('options');
 											$body .= ($aField->getAttribute('label')) ? $aField->getAttribute('label').' : ' : '';
 											$body .= $optionsLabels[$_POST[$aField->getAttribute('name')]]."\n\n";
+											$bodyHtml .= ($aField->getAttribute('label')) ? '<strong>'.$aField->getAttribute('label').' : </strong>' : '';
+											$bodyHtml .= $optionsLabels[$_POST[$aField->getAttribute('name')]]."<br />";
 										} else {
 											$body .= ' - '.$aField->getAttribute('label')."\n\n";
+											$bodyHtml .= ' - '.$aField->getAttribute('label')."<br />";
 										}
 									}
 								}
 								//append header and footer texts if any to body text
 								if (isset($texts[1])) { // header
 									//needed in case of vars in text. Simple and double quotes are not welcome in this case !
-									$body = evalPolymodVars($texts[1], $form_language->getCode())."\n\n".$body;
+									$header = evalPolymodVars($texts[1], $form_language->getCode());
+									$header = detectAndParseString($header);
+
+									$body = $header."\n\n".$body;
+									$bodyHtml = '<div class="important">'.nl2br($header)."</div>".$bodyHtml;
 								}
 								if (isset($texts[2])) { //footer
 									//needed in case of vars in text. Simple and double quotes are not welcome in this case !
-									$body = $body."\n\n". evalPolymodVars($texts[2], $form_language->getCode());
+									$footer = evalPolymodVars($texts[2], $form_language->getCode());
+									$footer = detectAndParseString($footer);
+
+									$body = $body."\n\n". $footer;
+									$bodyHtml = $bodyHtml.'<div class="important">'.nl2br($footer)."</div>";
 								}
 								$email->setBody($body);
 								
@@ -393,6 +431,8 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 								if ($texts[0]) { //from DB if any
 									//needed in case of vars in text. Simple and double quotes are not welcome in this case !
 									$subject = evalPolymodVars($texts[0], $form_language->getCode());
+									$subject = detectAndParseString($subject);
+
 								} else { // or default subject
 									$subject = $form_language->getMessage(CMS_forms_formular::MESSAGE_CMS_FORMS_EMAIL_SUBJECT, array($form->getAttribute('name'), APPLICATION_LABEL), MOD_CMS_FORMS_CODENAME);
 								}
@@ -403,6 +443,11 @@ if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 									$email->setEmailFrom(APPLICATION_POSTMASTER_EMAIL);
 								} else {
 									$email->setEmailFrom($texts[3]);
+								}
+								// set template
+								if (isset($texts[4]) && is_file(PATH_TEMPLATES_FS. '/mail/' . $texts[4])) {
+									$email->setEmailHTML($bodyHtml);
+									$email->setTemplate(PATH_TEMPLATES_FS . '/mail/' . $texts[4]);
 								}
 								//and send emails
 								if ($action->getInteger('type') == CMS_forms_action::ACTION_EMAIL) {

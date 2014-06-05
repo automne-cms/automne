@@ -34,6 +34,8 @@ $error = 0;
 $ttl = '1440';
 $data = $label = $rssTitle = $description = $link = $categoriesTags = $copyrightTag = $emailTag = '';
 
+$namespaces = 'xmlns:media="http://search.yahoo.com/mrss/" xmlns:atom="http://www.w3.org/2005/Atom"';
+
 $hash = md5(serialize($_REQUEST));
 $cache = new CMS_cache($hash, 'polymod', 'auto', true);
 if ($cache->exist()) {
@@ -41,58 +43,67 @@ if ($cache->exist()) {
 	$content = $cache->load();
 } else {
 	$cache->start();
-	
+
 	if (!isset($_REQUEST['id']) || !sensitiveIO::isPositiveInteger($_REQUEST['id'])) {
 		$error = 1;
 	} else {
-		$RSSDefinition = new CMS_poly_rss_definitions($_REQUEST['id']);
-		if ($RSSDefinition->hasError()) {
+		if(!CMS_poly_rss_definitions::exists($_REQUEST['id'])) {
 			$error = 2;
 		}
-		
-		//Create RSS Content
-		ob_start();
-		eval(sensitiveIO::stripPHPTags($RSSDefinition->getValue('compiledDefinition')));
-		$data = ob_get_contents();
-		ob_end_clean();
-		if (!$data) {
-			$error = 3;
-		}
-		
-		$label = new CMS_object_i18nm($RSSDefinition->getValue("labelID"));
-		$description = new CMS_object_i18nm($RSSDefinition->getValue("descriptionID"));
-		$link = ($RSSDefinition->getValue("link")) ? $RSSDefinition->getValue("link") : CMS_websitesCatalog::getMainURL();
-		
-		$categoriesTags = '';
-		if ($RSSDefinition->getValue("categories")) {
-			$categories = array_map('trim', explode(',',$RSSDefinition->getValue("categories")));
-			foreach ($categories as $category) {
-				$categoriesTags .= '<category>'.$category.'</category>'."\n";
+		else {
+			$RSSDefinition = new CMS_poly_rss_definitions($_REQUEST['id']);
+			if ($RSSDefinition->hasError()) {
+				$error = 2;
+			}
+
+			//Create RSS Content
+			ob_start();
+			eval(sensitiveIO::stripPHPTags($RSSDefinition->getValue('compiledDefinition')));
+			$data = ob_get_contents();
+			ob_end_clean();
+			if (!$data) {
+				$error = 3;
+			}
+
+			$label = new CMS_object_i18nm($RSSDefinition->getValue("labelID"));
+			$description = new CMS_object_i18nm($RSSDefinition->getValue("descriptionID"));
+			$link = ($RSSDefinition->getValue("link")) ? $RSSDefinition->getValue("link") : CMS_websitesCatalog::getMainURL();
+
+			$categoriesTags = '';
+			if ($RSSDefinition->getValue("categories")) {
+				$categories = array_map('trim', explode(',',$RSSDefinition->getValue("categories")));
+				foreach ($categories as $category) {
+					$categoriesTags .= '<category>'.$category.'</category>'."\n";
+				}
+			}
+			$copyrightTag = '';
+			if ($RSSDefinition->getValue("copyright")) {
+				$copyrightTag .= '<copyright>'.$RSSDefinition->getValue("copyright").'</copyright>'."\n";
+			}
+			$emailTag = '';
+			if ($RSSDefinition->getValue("email")) {
+				$emailTag .= '<managingEditor>'.$RSSDefinition->getValue("email").' ('.APPLICATION_LABEL.')</managingEditor>'."\n";
+			}
+			$ttl = $RSSDefinition->getValue("ttl");
+
+			if ($RSSDefinition->getValue("namespaces")) {
+				$namespaces .= ' '.stripslashes($RSSDefinition->getValue("namespaces"));
 			}
 		}
-		$copyrightTag = '';
-		if ($RSSDefinition->getValue("copyright")) {
-			$copyrightTag .= '<copyright>'.$RSSDefinition->getValue("copyright").'</copyright>'."\n";
-		}
-		$emailTag = '';
-		if ($RSSDefinition->getValue("email")) {
-			$emailTag .= '<managingEditor>'.$RSSDefinition->getValue("email").' ('.APPLICATION_LABEL.')</managingEditor>'."\n";
-		}
-		$ttl = $RSSDefinition->getValue("ttl");
 	}
 	//if no RSS title in generated content, get the default one
 	if (!$data || $error || substr(trim($data),0,7) != '<title>') {
 		$rssTitle = '<title>'.((is_object($label) && is_object($cms_language)) ? $label->getValue($cms_language->getCode()) : 'Error').'</title>';
 	}
-	
+
 	// Encoding
 	$encoding = 'UTF-8';
-	
-	$content = 
+
+	$content =
 	'<?xml version="1.0" encoding="'.$encoding.'" ?>'."\n".
 	'<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/" xmlns:atom="http://www.w3.org/2005/Atom">'."\n".
 	'    <channel>'."\n".
-	'		<atom:link href="'.io::htmlspecialchars((isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] && strtolower($_SERVER["HTTPS"]) != 'off' ? 'http://' : 'https://').$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"]).'" rel="self" type="application/rss+xml" />'."\n".
+	'		<atom:link href="'.io::htmlspecialchars((isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] && strtolower($_SERVER["HTTPS"]) != 'off' ? 'https://' : 'http://').$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"]).'" rel="self" type="application/rss+xml" />'."\n".
 	'		'.$rssTitle."\n".
 	'		<description>'.((is_object($description) && is_object($cms_language)) ? $description->getValue($cms_language->getCode()) : 'This RSS Feed has an error ...').'</description>'."\n".
 	'		<link>'.$link.'</link>'."\n".
@@ -104,7 +115,7 @@ if ($cache->exist()) {
 	'		<webMaster>'.APPLICATION_MAINTAINER_EMAIL.' ('.APPLICATION_LABEL.')</webMaster>'."\n".
 	'		<docs>http://blogs.law.harvard.edu/tech/rss</docs>'."\n".
 	'		<ttl>'.$ttl.'</ttl>'."\n";
-	
+
 	if (!$error) {
 		$content .= $data."\n";
 	} else {
@@ -128,10 +139,10 @@ if ($cache->exist()) {
 		'    <link>'.CMS_websitesCatalog::getMainURL().'</link>'."\n".
 		'</item>';
 	}
-	$content .= 
+	$content .=
 	'	</channel>'."\n".
 	'</rss>';
-	
+
 	if('utf-8' != strtolower(APPLICATION_DEFAULT_ENCODING)){
 		$content = io::utf8Encode($content);
 	}

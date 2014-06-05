@@ -17,7 +17,7 @@
 /**
   * Automne 404 error handler
   * This file is used as 404 error document from .htaccess
-  * 
+  *
   * @package Automne
   * @subpackage apache
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_URI'] && $_SERVER['REQUEST_URI'] != $_SERVER['SCRIPT_NAME'
 		$page = CMS_tree::analyseURL($_SERVER['REQUEST_URI'], false);
 	}
 	//get redirection URL for page
-	if (isset($page) && is_object($page) && !$page->hasError()) {
+	if (isset($page) && is_object($page) && !$page->hasError() && $page->getStatus()->getLocation() != RESOURCE_LOCATION_DELETED) {
 		//get page file
 		$pageURL = $page->getURL( (substr($basename,0,5) == 'print' ? true : false) , false, PATH_RELATIVETO_FILESYSTEM);
 		if (file_exists($pageURL)) {
@@ -101,18 +101,18 @@ if (ERROR404_EMAIL_ALERT && sensitiveIO::isValidEmail(APPLICATION_MAINTAINER_EMA
 	}
 	$body .='Host : '.$_SERVER['HTTP_HOST'].' ('.$_SERVER['SERVER_ADDR'].")\n\n";
 	$body .='This email is automaticaly sent from your website. You can stop this sending with the parameter ERROR404 EMAIL ALERT.';
-	
+
 	$mail= new CMS_email();
 	$mail->setSubject("404 Error in ".APPLICATION_LABEL);
 	$mail->setBody($body);
 	$mail->setEmailFrom(APPLICATION_POSTMASTER_EMAIL."<".APPLICATION_POSTMASTER_EMAIL.">");
 	$mail->setEmailTo(APPLICATION_MAINTAINER_EMAIL);
-	
+
 	$mainURL = CMS_websitesCatalog::getMainURL();
 	$cms_language = CMS_languagesCatalog::getByCode('en');
 	$mail->setFooter($cms_language->getMessage(CMS_emailsCatalog::MESSAGE_EMAIL_BODY_URLS, array(APPLICATION_LABEL, $mainURL."/", $mainURL.PATH_ADMIN_WR."/")));
 	$mail->setTemplate(PATH_MAIL_TEMPLATES_FS);
-	
+
 	$mail->sendEmail();
 }
 
@@ -171,7 +171,7 @@ if (file_exists(PATH_REALROOT_FS.'/404.html')) {
 <head>
 	<title>404 Not Found ...</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo APPLICATION_DEFAULT_ENCODING; ?>" />
-	<meta name="robots" content="noindex, noarchive" /> 
+	<meta name="robots" content="noindex, noarchive" />
 	<style type="text/css">
 	body {
 		background-color: 		#E9F1DA;

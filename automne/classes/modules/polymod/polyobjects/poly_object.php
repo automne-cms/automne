@@ -29,12 +29,12 @@ class CMS_poly_object extends CMS_resource
 	  */
 	const MESSAGE_POLYMOD_EMPTY_OBJECTS_SET = 265;
 	const MESSAGE_POLYMOD_CHOOSE_OBJECT = 1132;
-	
+
 	const MESSAGE_POLYMOD_ACTION_EMAIL_SUBJECT = 31;
 	const MESSAGE_POLYMOD_ACTION_EMAIL_BODY = 32;
 	const MESSAGE_POLYMOD_ACTION_EMAIL_DELETE_SUBJECT = 53;
 	const MESSAGE_POLYMOD_ACTION_EMAIL_DELETE_BODY = 55;
-	
+
 	/**
 	  * Polymod Messages
 	  */
@@ -68,7 +68,7 @@ class CMS_poly_object extends CMS_resource
 	const MESSAGE_POLYOBJECT_OBJECT_EDIT_ELEMENT = 516;
   	const MESSAGE_PAGE_ACTION_NEW = 262;
 	const MESSAGE_POLYOBJECT_OBJECT_CREATE_ZONE = 193;
-	
+
 	/**
 	  * object id (relative to id in mod_object_polyobjects table)
 	  * @var integer
@@ -131,21 +131,21 @@ class CMS_poly_object extends CMS_resource
 	  * @access private
 	  */
 	public $_objectValues = array();
-	
+
 	/**
 	  * all Fields values for poly object
 	  * @var array(integer "fieldID" => CMS_subobject_integer)
 	  * @access private
 	  */
 	protected $_polyObjectValues = array();
-	
+
 	/**
 	  * Resource object status (0 : none, 1 : primary resource, 2 : secondary resource)
 	  * @var integer
 	  * @access private
 	  */
 	protected $_objectResourceStatus;
-	
+
 	/**
 	  * Resource object id if object is a primary resource
 	  * @var CMS_subobject_integer
@@ -159,7 +159,7 @@ class CMS_poly_object extends CMS_resource
 	  * @access private
 	  */
 	protected $_loadSubObjectsValues;
-	
+
 	/**
 	  * Constructor.
 	  * initialize object.
@@ -196,19 +196,19 @@ class CMS_poly_object extends CMS_resource
 		}
 		//set $this->_public
 		$this->_public = $public;
-		
+
 		$this->_loadSubObjectsValues = ($this->_public && !$loadSubObjectsValues) ? false : true;
-		
+
 		//set $this->_ID
 		if (sensitiveIO::isPositiveInteger($id)) {
 			$this->_ID = $id;
 		}
-		
+
 		//set $this->_subObjectsDefinitions
 		if ($this->_objectFieldsDefinition) {
 			$this->_populateSubObjectsDefinitions();
 		}
-		
+
 		//set $this->_objectValues
 		if ($this->_ID && $this->_subObjectsDefinitions && $loadObject && !isset($datas[$this->_ID])) {
 			//set $this->_objectValues from DB
@@ -228,7 +228,7 @@ class CMS_poly_object extends CMS_resource
 			$this->_populateSubObjects();
 		}
 	}
-	
+
 	/**
 	  * load all object and subobjects values from DB
 	  *
@@ -253,7 +253,7 @@ class CMS_poly_object extends CMS_resource
 		$this->_populateSubObjectsValues($datas);
 		return true;
 	}
-	
+
 	/**
 	  * Sets subobjects Values
 	  *
@@ -283,7 +283,7 @@ class CMS_poly_object extends CMS_resource
 						} else {
 							$this->_objectValues[$fieldID] = '';
 						}
-						//load CMS_subobject_integer to store id value of poly object 
+						//load CMS_subobject_integer to store id value of poly object
 						$this->_polyObjectValues[$fieldID] = new CMS_subobject_integer($subFieldsValues[0]['id'],array(),$subFieldsValues[0], $this->_public);
 					} elseif (io::strpos($type,"multi|") !== false) { //multi objects
 						if (!is_array($subFieldsValues)) {
@@ -329,7 +329,7 @@ class CMS_poly_object extends CMS_resource
 		unset($datas);
 		return true;
 	}
-	
+
 	/**
 	  * Sets clean subobjects
 	  *
@@ -345,7 +345,7 @@ class CMS_poly_object extends CMS_resource
 				$this->_polyObjectValues[$fieldID] = new CMS_subobject_integer('',array(),array(), $this->_public);
 			}
 		}
-		
+
 		//if this object is a primary resource, load CMS_subobject_integer to store resource value
 		if ($this->_objectResourceStatus == 1) {
 			parent::__construct();
@@ -353,7 +353,7 @@ class CMS_poly_object extends CMS_resource
 		}
 		return true;
 	}
-	
+
 	/**
 	  * Sets subObjectsDefinitions
 	  *
@@ -385,7 +385,7 @@ class CMS_poly_object extends CMS_resource
 		}
 		return true;
 	}
-	
+
 	/**
 	  * Get field ID
 	  *
@@ -396,7 +396,7 @@ class CMS_poly_object extends CMS_resource
 	{
 		return $this->_ID;
 	}
-	
+
 	/**
 	  * Get object ID
 	  *
@@ -407,7 +407,7 @@ class CMS_poly_object extends CMS_resource
 	{
 		return $this->_objectID;
 	}
-	
+
 	/**
 	  * Get all subobject
 	  *
@@ -417,7 +417,7 @@ class CMS_poly_object extends CMS_resource
 	function getFieldsObjects() {
 		return $this->_objectValues;
 	}
-	
+
 	/**
 	  * get object resource status
 	  * beware, for secondary resources, real status is not checked, use isSecondaryResource method of CMS_poly_object_definition instead
@@ -428,7 +428,7 @@ class CMS_poly_object extends CMS_resource
 	function getObjectResourceStatus() {
 		return $this->_objectResourceStatus;
 	}
-	
+
 	/**
 	  * set CMS_poly_object_field reference (only if this object is used as a field of another object)
 	  *
@@ -440,7 +440,7 @@ class CMS_poly_object extends CMS_resource
 		//set $this->_field
 		$this->_field = &$field;
 	}
-	
+
 	/**
 	  * get object language if any language field exists else, return APPLICATION_DEFAULT_LANGUAGE
 	  *
@@ -466,7 +466,7 @@ class CMS_poly_object extends CMS_resource
 		$value = $this->_objectValues[$languageFieldIDForObjectType[$this->_objectID]]->getValue('value');
 		return ($value) ? $value : io::strtolower(APPLICATION_DEFAULT_LANGUAGE);
 	}
-	
+
 	/**
 	  * Get languages for object from
 	  * - Categories (which support multi language)
@@ -507,7 +507,7 @@ class CMS_poly_object extends CMS_resource
 		}
 		return $languages[$this->_objectID];
 	}
-	
+
 	/**
 	  * Get object publication date
 	  * If object is a primary resource, return resource pub date else, try to find a date field with creation date
@@ -540,7 +540,7 @@ class CMS_poly_object extends CMS_resource
 			return $date;
 		}
 	}
-	
+
 	/**
 	  * Get object Definition (CMS_poly_object_definition)
 	  *
@@ -550,7 +550,7 @@ class CMS_poly_object extends CMS_resource
 	function getObjectDefinition () {
 		return CMS_poly_object_catalog::getObjectDefinition($this->_objectID);
 	}
-	
+
 	/**
 	  * Get subfields definition for current object
 	  *
@@ -571,7 +571,7 @@ class CMS_poly_object extends CMS_resource
 		}
 		return $subFieldsDefinition;
 	}
-	
+
 	/**
 	  * Get soap values
 	  *
@@ -584,16 +584,16 @@ class CMS_poly_object extends CMS_resource
 	function getSoapValues($fieldID, $language) {
 		$xml = '';
 		$xmlFields = '';
-		
+
 		//get Object definition
 		$objectDef = $this->getObjectDefinition();
 		//get module codename
 		$moduleCodename = $objectDef->getValue('module');
-		
+
 		foreach(array_keys($this->_objectValues) as $subFieldID) {
 			$xmlFields .= $this->_objectValues[$subFieldID]->getSoapValues($subFieldID, $language);
 		}
-		
+
 		$resource = '';
 		switch($this->_objectResourceStatus) {
 			case 2: //secondary
@@ -602,7 +602,7 @@ class CMS_poly_object extends CMS_resource
 			case 1: //primary
 				$dateStart = $this->getPublicationDateStart();
 		    	$dateEnd = $this->getPublicationDateEnd();
-				$resource = 
+				$resource =
 				'<resource type="1" name="primary">
 					<pubdatestart>'.$dateStart->getDBValue().'</pubdatestart>
 					<pubdateend>'.$dateEnd->getDBValue().'</pubdateend>
@@ -613,16 +613,16 @@ class CMS_poly_object extends CMS_resource
 				$resource = '<resource type="0" name="none"/>';
 			break;
 		}
-		
-		$xml .= 
+
+		$xml .=
 		'<object module="'.SensitiveIO::sanitizeHTMLString($moduleCodename).'" type="'.$objectDef->getID().'" id="'.$this->getID().'" label="'.SensitiveIO::sanitizeHTMLString($this->getLabel()).'">
 			'.$resource.'
 			'.$xmlFields.'
 		</object>';
-		
+
 		return $xml;
 	}
-	
+
 	/**
 	  * Get soap values
 	  *
@@ -653,7 +653,7 @@ class CMS_poly_object extends CMS_resource
 							return false;
 						}
 						// Check if field requires itemID to set values
-						
+
 						if(method_exists($this->_objectValues[$fieldId], 'needIDToSetValues')){
 						    if (!$this->getID()) {
 						        //if object has no id yet, save it
@@ -664,7 +664,7 @@ class CMS_poly_object extends CMS_resource
 					        }
 					        $itemId = $this->getID();
 						}
-						
+
 						if (!$this->_objectValues[$fieldId]->setSoapValues($fieldId, $childNode, $itemId)) {
 							$view->addError('Unable to set values for field '.$fieldId);
 							$return = false;
@@ -687,7 +687,7 @@ class CMS_poly_object extends CMS_resource
         }
 		return $return;
 	}
-	
+
 	/**
 	  * get HTML admin (used to enter object values in admin)
 	  *
@@ -705,28 +705,28 @@ class CMS_poly_object extends CMS_resource
 				$desc = $this->_objectFieldsDefinition[$fieldID]->getFieldDescription($language);
 				$params = array();
 				$params['doNotUseExternalSubObjects'] = false;
-				
+
 				if (POLYMOD_DEBUG) {
 					$desc .= $desc ? '<br />' : '';
 					$desc .= '<span class="atm-red">Field : '.$fieldID.' - Value : <ul>';
 					$desc .= '<li>'.$fieldID.'&nbsp;:&nbsp;'.$this->_polyObjectValues[$fieldID]->getValue().'</li>';
 					$desc .= '</ul></span>';
 				}
-				
+
 				$label = $desc ? '<span class="atm-help" ext:qtip="'.io::htmlspecialchars($desc).'">'.$mandatory.$this->_objectFieldsDefinition[$fieldID]->getLabel($language).'</span>' : $mandatory.$this->_objectFieldsDefinition[$fieldID]->getLabel($language);
-				
+
 				$listId = 'list'.md5(mt_rand().microtime());
-				
+
 				//get object definition
 				$objectDef = $this->_objectFieldsDefinition[$fieldID]->getTypeObject(true);
-				
+
 				$associatedItems = array();
 				if (isset($this->_polyObjectValues[$fieldID]) && is_object($this->_polyObjectValues[$fieldID]) && !is_null($this->_polyObjectValues[$fieldID]->getValue())) {
 					$associatedItem = $this->_polyObjectValues[$fieldID]->getValue();
 				} else {
 					$associatedItem = '';
 				}
-				
+
 				$items = array();
 				$editURL = PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/item.php';
 				$associateURL = PATH_ADMIN_MODULES_WR.'/'.MOD_POLYMOD_CODENAME.'/associate-items.php';
@@ -874,7 +874,7 @@ class CMS_poly_object extends CMS_resource
 									window.show(button.getEl());
 								}', false, false),
 								'scope'		=> 'this'
-							), 
+							),
 							array(
 								'id'		=> 'btnDesassociate'.$listId,
 								'text'		=> $language->getMessage(self::MESSAGE_PAGE_ACTION_DESASSOCIATE),
@@ -910,7 +910,7 @@ class CMS_poly_object extends CMS_resource
 												var values = cmp.getRawValue();
 												values.remove(objectId);
 												cmp.setValue(values.join(cmp.delimiter));
-												
+
 												if (cmp.getValue()) {
 													Ext.getCmp(\'btnAssociate'.$listId.'\').disable();
 													Ext.getCmp(\'btnDesassociate'.$listId.'\').enable();
@@ -1038,7 +1038,7 @@ class CMS_poly_object extends CMS_resource
 			return false;
 		}
 	}
-	
+
 	/**
       * Return the needed form field tag for current object field
       *
@@ -1057,7 +1057,7 @@ class CMS_poly_object extends CMS_resource
 				} else {
 					$prefixName = '';
 				}
-				//serialize all htmlparameters 
+				//serialize all htmlparameters
 				$htmlParameters = CMS_object_common::serializeHTMLParameters($inputParams);
 				$html = '';
 				//get searched objects conditions
@@ -1066,7 +1066,7 @@ class CMS_poly_object extends CMS_resource
 				if (is_array($objectsNames) && $objectsNames) {
 					//append field id to html field parameters (if not already exists)
 					$htmlParameters .= (!isset($inputParams['id'])) ? ' id="'.$prefixName.$this->_objectFieldsDefinition[$fieldID]->getID().'_0"' : '';
-					
+
 					if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
 						//create field value
 						$value = isset($inputParams['value']) ? $inputParams['value'] : $this->_polyObjectValues[$fieldID]->getValue();
@@ -1098,7 +1098,7 @@ class CMS_poly_object extends CMS_resource
 		}
 		return '';
 	}
-	
+
 	/**
 	  * check object Mandatories Values
 	  *
@@ -1127,7 +1127,7 @@ class CMS_poly_object extends CMS_resource
 		}
 		return true;
 	}
-	
+
 	/**
 	  * get object label (composed by some objects fields)
 	  *
@@ -1152,7 +1152,7 @@ class CMS_poly_object extends CMS_resource
 			return '';
 		}
 	}
-	
+
 	/**
 	  * get object type label
 	  *
@@ -1163,7 +1163,7 @@ class CMS_poly_object extends CMS_resource
 	function getTypeLabel($language) {
 		return $this->getObjectDefinition()->getLabel($language);
 	}
-	
+
 	/**
 	  * get object previzualisation URL if set
 	  *
@@ -1189,7 +1189,7 @@ class CMS_poly_object extends CMS_resource
 			return false;
 		}
 		$previewPageURL = $page->getURL(false, false, PATH_RELATIVETO_WEBROOT, false, $addPrevizParameter);
-		
+
 		if (!$previewPageURL) {
 			//no valid previz page set
 			return false;
@@ -1199,7 +1199,7 @@ class CMS_poly_object extends CMS_resource
 		$parameters['public'] = $this->_public;
 		$polymodParsing = new CMS_polymod_definition_parsing($previzInfos[1], false);
 		$previewPageParams = $polymodParsing->getContent(CMS_polymod_definition_parsing::OUTPUT_RESULT, $parameters);
-		
+
 		//overwrite website host with admin current host (to avoid session lost)
 		if ($addPrevizParameter) {
 			//check for website host
@@ -1216,10 +1216,10 @@ class CMS_poly_object extends CMS_resource
 				$previewPageURL = str_replace($pageScheme.'://', $currentScheme.'://', $panelURL);
 			}
 		}
-		
+
 		return $previewPageURL.'?'.$previewPageParams.($addPrevizParameter ? '&atm-previz=previz' : '');
 	}
-	
+
 	/**
 	  * get object HTML description for admin search detail. Usually, the label.
 	  *
@@ -1229,7 +1229,7 @@ class CMS_poly_object extends CMS_resource
 	function getHTMLDescription() {
 		return $this->getLabel();
 	}
-	
+
 	/**
 	  * set fields objects Values
 	  *
@@ -1271,7 +1271,7 @@ class CMS_poly_object extends CMS_resource
 			return false;
 		}
 	}
-	
+
 	/**
 	  * get admin field label
 	  *
@@ -1288,7 +1288,7 @@ class CMS_poly_object extends CMS_resource
 			return $label->getValue($language);
 		}
 	}
-	
+
 	/**
 	  * get admin field description
 	  *
@@ -1305,7 +1305,7 @@ class CMS_poly_object extends CMS_resource
 			return $label->getValue($language);
 		}
 	}
-	
+
 	/**
 	  * Writes all objects values into persistence (MySQL for now), along with base data.
 	  *
@@ -1325,7 +1325,16 @@ class CMS_poly_object extends CMS_resource
 			$this->raiseError("Can't write object with error");
 			return false;
 		}
-		
+
+		$isNew = $this->_ID === NULL;
+		// Inform modules of the object creation
+		$modules = CMS_modulesCatalog::getAll('id');
+		foreach ($modules as $codename => $module) {
+			if(method_exists($module, 'polyObjectPreSave')) {
+				$module->polyObjectPreSave($this, $isNew);
+			}
+		}
+
 		if (!$this->_ID) {
 			//first, if object does not have ID, create one
 			$sql = "
@@ -1447,14 +1456,21 @@ class CMS_poly_object extends CMS_resource
 				$language = $cms_user->getLanguage();
 				$log->logMiscAction(CMS_log::LOG_ACTION_RESOURCE_EDIT_CONTENT, $cms_user, 'Item \''.$this->getLabel().'\' ('.$objectDef->getLabel($language).')', $polyModuleCodename);
 			}
-			
 			//Clear polymod cache
 			//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $polyModuleCodename));
 			CMS_cache::clearTypeCache('polymod');
 		}
+
+		// Inform modules of the object creation
+		$modules = CMS_modulesCatalog::getAll('id');
+		foreach ($modules as $codename => $module) {
+			if(method_exists($module, 'polyObjectPostSave')) {
+				$module->polyObjectPostSave($this, $isNew);
+			}
+		}
 		return true;
 	}
-	
+
 	/**
 	  * Delete object and values.
 	  * If object is a primary resource, this deletion is submitted to validation and an email is sent to validators.
@@ -1470,7 +1486,7 @@ class CMS_poly_object extends CMS_resource
 		$objectDef = $this->getObjectDefinition();
 		//get module codename
 		$polyModuleCodename = $objectDef->getValue('module');
-		
+
 		//if object is not a primary resource
 		if ($this->_objectResourceStatus != 1 || $hardDelete) {
 			$forceSecondaryRessourcePublication = false;
@@ -1518,19 +1534,19 @@ class CMS_poly_object extends CMS_resource
 				//delete associated resource
 				parent::destroy();
 			}
-			
+
 			//Log action
 			$log = new CMS_log();
 			$language = $cms_user->getLanguage();
 			$log->logMiscAction(CMS_log::LOG_ACTION_RESOURCE_DELETE, $cms_user, 'Item \''.$this->getLabel().'\' ('.$objectDef->getLabel($language).')', $polyModuleCodename);
-			
+
 			if ($hardDelete) {
 				unset($this);
 			}
 			//Clear polymod cache
 			//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $polyModuleCodename));
 			CMS_cache::clearTypeCache('polymod');
-			
+
 			return true;
 		} else {
 			//change the article proposed location and send emails to all the validators
@@ -1561,18 +1577,18 @@ class CMS_poly_object extends CMS_resource
 				$log = new CMS_log();
 				$language = $cms_user->getLanguage();
 				$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_DELETE, $cms_user, $polyModuleCodename, $this->getStatus(), 'Item \''.$this->getLabel().'\' ('.$objectDef->getLabel($language).')', $this);
-				
+
 				//Clear polymod cache
 				//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $polyModuleCodename));
 				CMS_cache::clearTypeCache('polymod');
-				
+
 				return true;
 			} else {
 				return false;
 			}
 		}
 	}
-	
+
 	/**
 	  * Is this object deleted
 	  *
@@ -1582,7 +1598,7 @@ class CMS_poly_object extends CMS_resource
 	function isDeleted() {
 		return CMS_modulePolymodValidation::isDeletedItem($this->getID());
 	}
-	
+
 	/**
 	  * Un-delete an object proposed for deletion (only for primary resource object type)
 	  *
@@ -1600,7 +1616,7 @@ class CMS_poly_object extends CMS_resource
 			$objectDef = $this->getObjectDefinition();
 			//get module codename
 			$polyModuleCodename = $objectDef->getValue('module');
-			
+
 			//Log action
 			$log = new CMS_log();
 			$language = $cms_user->getLanguage();
@@ -1610,7 +1626,7 @@ class CMS_poly_object extends CMS_resource
 			return false;
 		}
 	}
-	
+
 	/**
 	  * get all secondary resources ids attached to this primary resource
 	  *
@@ -1642,7 +1658,7 @@ class CMS_poly_object extends CMS_resource
 		}
 		return $secondaryResourcesIds;
 	}
-	
+
 	/**
 	  * Is this object currently in userspace
 	  * return true if object is not deleted (for edited object)
@@ -1666,7 +1682,7 @@ class CMS_poly_object extends CMS_resource
 		}
 		return true;
 	}
-	
+
 	/**
 	  * get object values structure available with getValue method
 	  *
@@ -1698,7 +1714,7 @@ class CMS_poly_object extends CMS_resource
 		}
 		return $structure;
 	}
-	
+
 	/**
 	  * get an object field
 	  *
@@ -1720,7 +1736,7 @@ class CMS_poly_object extends CMS_resource
 			return $this->_objectValues[$fieldID];
 		}
 	}
-	
+
 	/**
 	  * get an object value
 	  *
@@ -1777,7 +1793,7 @@ class CMS_poly_object extends CMS_resource
             'Sat'       => 'Sam',
             'Sun'       => 'Dim',
         );
-		
+
 		switch ($name) {
 			case 'id':
 				return (string) $this->_ID;
@@ -1895,7 +1911,7 @@ class CMS_poly_object extends CMS_resource
 			break;
 		}
 	}
-	
+
 	/**
 	  * For a given object type, return options tag list (for a select tag) of all objects labels
 	  *
@@ -1916,7 +1932,7 @@ class CMS_poly_object extends CMS_resource
 		}
 		return $return;
 	}
-	
+
 	/**
 	  * For an object ID, set object
 	  *
@@ -1935,14 +1951,14 @@ class CMS_poly_object extends CMS_resource
 		$object[$this->_objectID] = new CMS_poly_object($this->_objectID, $values["value"], array(), true, true);
 		return;
 	}
-	
+
 	/**
 	  * Return given RSS feed informations
 	  *
 	  * @param array $values : parameters values array(parameterName => parameterValue) in :
 	  * 	selected : the selected rss ID
 	  * @param multidimentionnal array $tags : xml2Array content of atm-function tag
-	  * 	... {url} ... {label} ... {description} ... 
+	  * 	... {url} ... {label} ... {description} ...
 	  * @return string : the RSS feed informations
 	  * @access public
 	  */
@@ -1975,7 +1991,7 @@ class CMS_poly_object extends CMS_resource
 		$return = str_replace(array_keys($replace), $replace, $return);
 		return $return;
 	}
-	
+
 	/**
 	  * get labels for object structure and functions
 	  *
@@ -1999,7 +2015,7 @@ class CMS_poly_object extends CMS_resource
 			$labels['structure']['resource'] = $language->getMessage(self::MESSAGE_POLYOBJECT_RESOURCE_DESCRIPTION,false,MOD_POLYMOD_CODENAME);
 			$labels['structure']['formatedDateStart|format'] = $language->getMessage(self::MESSAGE_POLYOBJECT_DATESTART_FORMATEDVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 			$labels['structure']['formatedDateEnd|format'] = $language->getMessage(self::MESSAGE_POLYOBJECT_DATEEND_FORMATEDVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
-			
+
 			$labels['structure']['dateStartNotNull'] = $language->getMessage(self::MESSAGE_POLYOBJECT_DATE_HASVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 			$labels['structure']['dateStartTimestamp'] = $language->getMessage(self::MESSAGE_POLYOBJECT_DATE_TIMESTAMP_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 			$labels['structure']['dateEndNotNull'] = $language->getMessage(self::MESSAGE_POLYOBJECT_DATE_HASVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
@@ -2018,7 +2034,7 @@ class CMS_poly_object extends CMS_resource
 		$labels['function']['loadObject'] = $language->getMessage(self::MESSAGE_POLYOBJECT_FUNCTION_LOADOBJECT_DESCRIPTION,array('{'.$objectName.'}'),MOD_POLYMOD_CODENAME);
 		return $labels;
 	}
-	
+
 	/**
 	  * Get field search SQL request (used by class CMS_object_search)
 	  *
@@ -2044,7 +2060,7 @@ class CMS_poly_object extends CMS_resource
 		";
 		return $sql;
 	}
-	
+
 	/**
 	  * Return a list of all objects names of given type
 	  *
@@ -2057,7 +2073,7 @@ class CMS_poly_object extends CMS_resource
 	function getListOfNamesForObject($public = false, $searchConditions = array()) {
 		return CMS_poly_object_catalog::getListOfNamesForObject($this->_objectID, $public, $searchConditions);
 	}
-	
+
 	/**
 	  * Current object has passed the validation process
 	  *
@@ -2077,7 +2093,7 @@ class CMS_poly_object extends CMS_resource
 		}
 		return $return;
 	}
-	
+
 	/**
 	  * Module script task
 	  * @param array $parameters the task parameters
@@ -2179,7 +2195,7 @@ class CMS_poly_object extends CMS_resource
 			}
 		}
 	}
-	
+
 	/**
 	  * Module script info : get infos for a given script parameters
 	  *
@@ -2216,7 +2232,7 @@ class CMS_poly_object extends CMS_resource
 		}
 		return false;
 	}
-	
+
 	/**
 	  * Get field order SQL request (used by class CMS_object_search)
 	  *
@@ -2249,10 +2265,10 @@ class CMS_poly_object extends CMS_resource
 			objectFieldID = '".SensitiveIO::sanitizeSQLString($fieldID)."'
 			$where
 		order by value ".$direction;
-		
+
 		return $sql;
 	}
-	
+
 	/**
 	  * Does given user have the requested clearance for this object ?
 	  * This method is pretty heavy, so if it must be used on a lots of objects, prefer usage of a search on those objects, it is much faster.

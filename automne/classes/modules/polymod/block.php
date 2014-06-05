@@ -493,6 +493,20 @@ class CMS_block_polymod extends CMS_block
 				}
 			}
 		}
+		// if we are here it means that no search mandatory atm-search-param was found
+		// Let's check for atm-blockvar elements
+		$blockVarsTags = $domdocument->getElementsByTagName('atm-blockvar');
+		if ($blockVarsTags->length) {
+			// at least one atm-blockvar was found, so the tag can have parameters
+			$this->_canhasParameters = true;
+			foreach ($blockVarsTags as $blockVarTag) {
+				if ($blockVarTag->getAttribute('mandatory') == 'true') {
+					// a mandatory value was found, no need to continue the loop
+					$this->_musthaveParameters = true;
+					return true;
+				}
+			}
+		}
 		return true;
 	}
 }

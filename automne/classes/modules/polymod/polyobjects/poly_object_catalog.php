@@ -1007,7 +1007,9 @@ class CMS_poly_object_catalog
 					//write object to persistence to get relations ids
 					$object->writeToPersistence();
 					//set id translation
-					if (isset($objectDatas['id']) && $objectDatas['id'] && $object->getID() != $objectDatas['id']) {
+					if (isset($objectDatas['id']) && $objectDatas['id']) { // && $object->getID() != $objectDatas['id']) {
+						// Fix for bug #3157 : in some cases the imported object will have the same id has the newly created,
+						// we still need the relation table otherwise it will fail to link to the new object
 						$idsRelation['objects'][$objectDatas['id']] = $object->getID();
 					}
 					//set uuid translation
@@ -1297,6 +1299,29 @@ class CMS_poly_object_catalog
 				uuid_mowd='".io::sanitizeSQLString($uuid)."'
 		");
 		return $q->getNumRows() ? true : false;
+	}
+
+	/**
+	  * Finds an Object Definition based on the uuid
+	  *
+	  * @param string $uuid The object uuid to look for
+	  * @return CMS_poly_object_definition|boolean
+	  * @access public
+	  */
+	public static function getDefinitionFromUuid($uuid) {
+		if (!$uuid) {
+			CMS_grandFather::raiseError("uuid must be set");
+			return false;
+		}
+		$q = new CMS_query("
+			select
+				id_mod
+			from
+				mod_object_definition
+			where
+				uuid_mod='".io::sanitizeSQLString($uuid)."'
+		");
+		return ($q->getNumRows() == 1) ? new CMS_poly_object_definition($q->getValue('id_mod')) : false;
 	}
 }
 ?>

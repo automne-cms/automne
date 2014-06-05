@@ -360,21 +360,27 @@ class CMS_websitesCatalog extends CMS_grandFather {
 	  * get first website for a given domain or false if none found
 	  *
 	  * @param string $domain : the domain to found website of
+	  * @param string $path : the path to analyse (default nothing)
+	  * @param boolean $isAlt : does the returned website use the domain as alternative (reference)
 	  * @return CMS_website or false
 	  * @access public
 	  */
-	static function getWebsiteFromDomain($domain, &$isAlt = false) {
+	static function getWebsiteFromDomain($domain, $path = '', &$isAlt = false) {
 		//get all websites
 		$websites = CMS_websitesCatalog::getAll('order');
 		foreach ($websites as $website) {
 			if (io::strtolower($domain) == io::strtolower(@parse_url($website->getURL(), PHP_URL_HOST))) {
-				return $website;
+				if (!$path || io::strtolower($path) == io::strtolower($website->getPagesPath(PATH_RELATIVETO_WEBROOT).'/')) {
+					return $website;
+				}
 			}
 			$altDomains = $website->getAltDomains();
 			foreach ($altDomains as $altDomain) {
 				if (io::strtolower($domain) == io::strtolower(@parse_url($altDomain, PHP_URL_HOST))) {
-					$isAlt = true;
-					return $website;
+					if (!$path || io::strtolower($path) == io::strtolower($website->getPagesPath(PATH_RELATIVETO_WEBROOT).'/')) {
+						$isAlt = true;
+						return $website;
+					}
 				}
 			}
 		}

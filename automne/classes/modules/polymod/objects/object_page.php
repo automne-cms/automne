@@ -35,21 +35,39 @@ class CMS_object_page extends CMS_object_integer
 	const MESSAGE_OBJECT_PAGE_PAGE_TITLE_DESCRIPTION = 532;
 	const MESSAGE_OBJECT_PAGE_PAGE_URL_DESCRIPTION = 533;
 	const MESSAGE_OBJECT_PAGE_PAGE_ID_DESCRIPTION = 534;
-	
+	const MESSAGE_OBJECT_PAGE_CODENAME = 647;
+	const MESSAGE_OBJECT_PAGE_KEYWORDS = 648;
+	const MESSAGE_OBJECT_PAGE_WEBSITE = 649;
+	const MESSAGE_OBJECT_PAGE_CATEGORY = 650;
+	const MESSAGE_OBJECT_PAGE_AUTHOR = 651;
+	const MESSAGE_OBJECT_PAGE_REPLYTO = 652;
+	const MESSAGE_OBJECT_PAGE_COPYRIGHT = 653;
+	const MESSAGE_OBJECT_PAGE_LANGUAGE = 654;
+	const MESSAGE_OBJECT_PAGE_ROBOTS = 655;
+	const MESSAGE_OBJECT_PAGE_PRAGMA = 656;
+	const MESSAGE_OBJECT_PAGE_REFRESH = 657;
+	const MESSAGE_OBJECT_PAGE_METAS = 658;
+	const MESSAGE_OBJECT_PAGE_LEVEL = 659;
+	const MESSAGE_OBJECT_PAGE_PRINTURL = 660;
+	const MESSAGE_OBJECT_PAGE_LINK = 661;
+	const MESSAGE_OBJECT_PAGE_LINKTITLE = 662;
+	const MESSAGE_OBJECT_PAGE_PAGE_DESCRIPTION = 663;
+
+
 	/**
 	  * object label
 	  * @var integer
 	  * @access private
 	  */
 	var $_objectLabel = self::MESSAGE_OBJECT_PAGE_LABEL;
-	
+
 	/**
 	  * object description
 	  * @var integer
 	  * @access private
 	  */
 	var $_objectDescription = self::MESSAGE_OBJECT_PAGE_DESCRIPTION;
-	
+
 	/**
 	  * all subFields definition
 	  * @var array(integer "subFieldID" => array("type" => string "(string|boolean|integer|date)", "required" => boolean, 'internalName' => string [, 'externalName' => i18nm ID]))
@@ -61,28 +79,28 @@ class CMS_object_page extends CMS_object_integer
 										'internalName'	=> 'page',
 									),
 							);
-	
+
 	/**
 	  * all subFields values for object
 	  * @var array(integer "subFieldID" => mixed)
 	  * @access private
 	  */
 	var $_subfieldValues = array(0 => '');
-	
+
 	/**
 	  * all parameters definition
 	  * @var array(integer "subFieldID" => array("type" => string "(string|boolean|integer|date)", "required" => boolean, 'internalName' => string [, 'externalName' => i18nm ID]))
 	  * @access private
 	  */
 	var $_parameters = array();
-	
+
 	/**
 	  * all subFields values for object
 	  * @var array(integer "subFieldID" => mixed)
 	  * @access private
 	  */
 	var $_parameterValues = array();
-	
+
 	/**
 	  * Constructor.
 	  * initialize object.
@@ -97,7 +115,7 @@ class CMS_object_page extends CMS_object_integer
 	{
 		parent::__construct($datas, $field, $public);
 	}
-	
+
 	/**
 	  * get HTML admin (used to enter object values in admin)
 	  *
@@ -118,7 +136,7 @@ class CMS_object_page extends CMS_object_integer
 		unset($return['width']);
 		return $return;
 	}
-	
+
 	/**
       * Return the needed form field tag for current object field
       *
@@ -140,10 +158,10 @@ class CMS_object_page extends CMS_object_integer
 			$prefixName = '';
 		}
 		$params = $this->getParamsValues();
-		//serialize all htmlparameters 
+		//serialize all htmlparameters
 		$htmlParameters = $this->serializeHTMLParameters($inputParams);
 		$html = '';
-		
+
 		//create fieldname
 		$fieldName = $prefixName.$this->_field->getID().'_0';
 		//append field id to html field parameters (if not already exists)
@@ -152,7 +170,7 @@ class CMS_object_page extends CMS_object_integer
 		$value = ($this->_subfieldValues[0]->getValue()) ? $this->_subfieldValues[0]->getValue() : '';
 		//then create field HTML
 		$html .= ($html) ? '<br />':'';
-		$html .= 
+		$html .=
 		'<input '.$htmlParameters.' type="text" name="'.$fieldName.'" value="'.$value.'" />'."\n";
 			//build tree link
 			$grand_root = CMS_tree::getRoot();
@@ -173,7 +191,7 @@ class CMS_object_page extends CMS_object_integer
 		}
 		return $html;
 	}
-	
+
 	/**
 	  * set object Values
 	  *
@@ -197,7 +215,7 @@ class CMS_object_page extends CMS_object_integer
 		}
 		return true;
 	}
-	
+
 	/**
 	  * get object values structure available with getValue method
 	  *
@@ -209,9 +227,26 @@ class CMS_object_page extends CMS_object_integer
 		$structure['pageTitle'] = '';
 		$structure['pageURL'] = '';
 		$structure['pageID'] = '';
+		$structure['codename'] = '';
+		$structure['keywords'] = '';
+		$structure['description'] = '';
+		$structure['category'] = '';
+		$structure['author'] = '';
+		$structure['replyto'] = '';
+		$structure['copyright'] = '';
+		$structure['language'] = '';
+		$structure['robots'] = '';
+		$structure['pragma'] = '';
+		$structure['refresh'] = '';
+		$structure['metas'] = '';
+		$structure['level'] = '';
+		$structure['printurl'] = '';
+		$structure['link'] = '';
+		$structure['linktitle'] = '';
+		$structure['website'] = '';
 		return $structure;
 	}
-	
+
 	/**
 	  * get an object value
 	  *
@@ -232,11 +267,16 @@ class CMS_object_page extends CMS_object_integer
 				return CMS_tree::getPageValue($this->_subfieldValues[0]->getValue(), 'url');
 			break;
 			default:
+				$possibleValues = array('codename', 'keywords', 'description', 'category', 'author', 'replyto', 'copyright', 'language',
+										'robots', 'pragma', 'refresh', 'metas', 'level', 'printurl', 'link', 'linktitle', 'website');
+				if(in_array($name, $possibleValues)) {
+					return CMS_tree::getPageValue($this->_subfieldValues[0]->getValue(), $name);
+				}
 				return parent::getValue($name, $parameters);
 			break;
 		}
 	}
-	
+
 	/**
 	  * get labels for object structure and functions
 	  *
@@ -249,9 +289,26 @@ class CMS_object_page extends CMS_object_integer
 		$labels['structure']['pageTitle'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_PAGE_TITLE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['pageURL'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_PAGE_URL_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['pageID'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_PAGE_ID_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
+		$labels['structure']['codename'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_CODENAME,false,MOD_POLYMOD_CODENAME);
+		$labels['structure']['keywords'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_KEYWORDS,false,MOD_POLYMOD_CODENAME);
+		$labels['structure']['description'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_PAGE_DESCRIPTION,false,MOD_POLYMOD_CODENAME);
+		$labels['structure']['category'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_CATEGORY,false,MOD_POLYMOD_CODENAME);
+		$labels['structure']['author'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_AUTHOR,false,MOD_POLYMOD_CODENAME);
+		$labels['structure']['replyto'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_REPLYTO,false,MOD_POLYMOD_CODENAME);
+		$labels['structure']['copyright'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_COPYRIGHT,false,MOD_POLYMOD_CODENAME);
+		$labels['structure']['language'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_LANGUAGE,false,MOD_POLYMOD_CODENAME);
+		$labels['structure']['robots'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_ROBOTS,false,MOD_POLYMOD_CODENAME);
+		$labels['structure']['pragma'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_PRAGMA,false,MOD_POLYMOD_CODENAME);
+		$labels['structure']['refresh'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_REFRESH,false,MOD_POLYMOD_CODENAME);
+		$labels['structure']['metas'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_METAS,false,MOD_POLYMOD_CODENAME);
+		$labels['structure']['level'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_LEVEL,false,MOD_POLYMOD_CODENAME);
+		$labels['structure']['printurl'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_PRINTURL,false,MOD_POLYMOD_CODENAME);
+		$labels['structure']['link'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_LINK,false,MOD_POLYMOD_CODENAME);
+		$labels['structure']['linktitle'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_LINKTITLE,false,MOD_POLYMOD_CODENAME);
+		$labels['structure']['website'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_WEBSITE,false,MOD_POLYMOD_CODENAME);;
 		return $labels;
 	}
-	
+
 	/**
 	  * get object HTML description for admin search detail. Usually, the label.
 	  *

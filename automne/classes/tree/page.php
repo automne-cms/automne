@@ -29,7 +29,7 @@
 class CMS_page extends CMS_resource
 {
 	const MESSAGE_PAGE_PAGE = 1328;
-	
+
 	/**
 	  * page DB id
 	  * @var integer
@@ -78,7 +78,7 @@ class CMS_page extends CMS_resource
 	  * @access private
 	  */
 	protected $_website;
-	
+
 	/**
 	  * Last date the page file was created
 	  * @var CMS_date
@@ -99,28 +99,28 @@ class CMS_page extends CMS_resource
 	  * @access private
 	  */
 	protected $_publicBaseData = false;
-	
+
 	/**
 	  * The page URL
 	  * @var string
 	  * @access private
 	  */
 	protected $_pageURL = '';
-	
+
 	/**
 	  * The page protected status
 	  * @var boolean
 	  * @access private
 	  */
 	protected $_protected = false;
-	
+
 	/**
 	  * The page https status
 	  * @var boolean
 	  * @access private
 	  */
 	protected $_https = false;
-	
+
 	/**
 	  * Constructor.
 	  * initializes the page if the id is given.
@@ -134,7 +134,7 @@ class CMS_page extends CMS_resource
 		$this->_remindedEditors = new CMS_stack();
 		$this->_lastReminder = new CMS_date();
 		$this->_lastFileCreation = new CMS_date();
-		
+
 		if ($id) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
 				$this->raiseError("Id is not a positive integer");
@@ -178,7 +178,7 @@ class CMS_page extends CMS_resource
 			parent::__construct();
 		}
 	}
-	
+
 	/**
 	  * Gets the DB ID of the instance.
 	  *
@@ -189,7 +189,7 @@ class CMS_page extends CMS_resource
 	{
 		return $this->_pageID;
 	}
-	
+
 	/**
 	  * is this page the tree root ?
 	  *
@@ -199,7 +199,7 @@ class CMS_page extends CMS_resource
 	function isRoot() {
 		return ($this->_pageID == APPLICATION_ROOT_PAGE_ID) ? true : false;
 	}
-	
+
 	/**
 	  * is this page content in draft ?
 	  *
@@ -213,8 +213,8 @@ class CMS_page extends CMS_resource
 		}
 		return ($this->_template->isDraft()) ? true : false;
 	}
-	
-	
+
+
 	/**
 	  * Gets the page status
 	  *
@@ -226,7 +226,7 @@ class CMS_page extends CMS_resource
 		$this->_status->setDraft($this->isDraft());
 		return $this->_status;
 	}
-	
+
 	/**
 	  * Gets the template of the page
 	  *
@@ -238,7 +238,7 @@ class CMS_page extends CMS_resource
 		$this->_checkTemplate();
 		return $this->_template;
 	}
-	
+
 	/**
 	  * Sets the page template
 	  *
@@ -260,7 +260,7 @@ class CMS_page extends CMS_resource
 		$this->_templateID = $templateID;
 		return true;
 	}
-	
+
 	/**
 	  * Get the date of last file creation
 	  *
@@ -271,7 +271,7 @@ class CMS_page extends CMS_resource
 	{
 		return $this->_lastFileCreation;
 	}
-	
+
 	/**
 	  * Get the modules contained in the page (via the module clientspaces)
 	  *
@@ -285,7 +285,7 @@ class CMS_page extends CMS_resource
 			return $this->_template->getModules();
 		}
 	}
-	
+
 	/**
 	  * Does the page use module
 	  *
@@ -301,7 +301,7 @@ class CMS_page extends CMS_resource
 		}
 		return false;
 	}
-	
+
 	/**
 	  * Gets the page reminded editors for an edition
 	  *
@@ -321,7 +321,7 @@ class CMS_page extends CMS_resource
 		}
 		return $editors;
 	}
-	
+
 	/**
 	  * Gets the page reminded editors stack
 	  *
@@ -332,7 +332,7 @@ class CMS_page extends CMS_resource
 	{
 		return $this->_remindedEditors;
 	}
-	
+
 	/**
 	  * Sets the page reminded editors from a stack
 	  *
@@ -348,7 +348,7 @@ class CMS_page extends CMS_resource
 		}
 		$this->_remindedEditors = $editorsStack;
 	}
-	
+
 	/**
 	  * Get the page HTML URL.
 	  *
@@ -379,7 +379,7 @@ class CMS_page extends CMS_resource
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Get the page online URL.
 	  *
@@ -449,7 +449,7 @@ class CMS_page extends CMS_resource
 		}
 		return '';
 	}
-	
+
 	/**
 	  * Get the page path from its website
 	  *
@@ -462,7 +462,7 @@ class CMS_page extends CMS_resource
 		$ws = CMS_tree::getPageWebsite($this);
 		return $ws->getPagesPath($relativeTo);
 	}
-	
+
 	/**
 	  * Get the html page path from its website
 	  *
@@ -479,7 +479,7 @@ class CMS_page extends CMS_resource
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Get the page filename.
 	  *
@@ -511,7 +511,7 @@ class CMS_page extends CMS_resource
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Get the html page filename from the title.
 	  *
@@ -521,7 +521,7 @@ class CMS_page extends CMS_resource
 	protected function _getHTMLFilename() {
 		return $this->getID().'.php';
 	}
-	
+
 	/**
 	  * Get the linx file path.
 	  *
@@ -532,7 +532,7 @@ class CMS_page extends CMS_resource
 	{
 		return PATH_PAGES_LINXFILES_FS."/".$this->_getHTMLFilename().".linx";
 	}
-	
+
 	/**
 	  * Get the print status for this page
 	  *
@@ -549,7 +549,7 @@ class CMS_page extends CMS_resource
 		}
 		return true;
 	}
-	
+
 	/**
 	  * Get the page content for the specified visualization mode and language.
 	  *
@@ -565,19 +565,19 @@ class CMS_page extends CMS_resource
 		if ($this->_template) {
 			//get parsed content definition from template (including CS block contents)
 			$definition = $this->_template->getContent($language, $this, $visualizationMode);
-			
+
 			//instanciate modules treatments for page content tags
 			$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_PAGECONTENT_TAGS, $visualizationMode, $this);
 			$modulesTreatment->setTreatmentParameters(array("language" => $language));
 			$modulesTreatment->setDefinition($definition);
 			$content = $modulesTreatment->treatContent(true);
-			
+
 			//instanciate modules treatments for page header tags
 			$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_PAGEHEADER_TAGS, $visualizationMode, $this);
 			$modulesTreatment->setTreatmentParameters(array("language" => $language, 'replaceVars' => true));
 			$modulesTreatment->setDefinition($content);
 			$content = $modulesTreatment->treatContent(true);
-			
+
 			/*if ($visualizationMode == PAGE_VISUALMODE_HTML_PUBLIC_INDEXABLE) {
 				//eval() the PHP code
 				$content = sensitiveIO::evalPHPCode($content);
@@ -589,7 +589,7 @@ class CMS_page extends CMS_resource
 			if (is_array($headerInclude) && $headerInclude) {
 				$content = implode("\n",$headerInclude).$content;
 			}
-			
+
 			//include modules footers codes on bottom of output file
 			$footerInclude = $modulesCodes->getModulesCodes(MODULE_TREATMENT_PAGECONTENT_FOOTER_CODE, $visualizationMode, $this);
 			if (is_array($footerInclude) && $footerInclude) {
@@ -597,8 +597,8 @@ class CMS_page extends CMS_resource
 			}
 			//replace {{pageID}} tag in all page content.
 			$content = str_replace('{{pageID}}', $this->getID(), $content);
-			
-			if ($visualizationMode != PAGE_VISUALMODE_HTML_PUBLIC 
+
+			if ($visualizationMode != PAGE_VISUALMODE_HTML_PUBLIC
 				&& $visualizationMode != PAGE_VISUALMODE_PRINT ) {
 				//eval() the PHP code
 				$content = sensitiveIO::evalPHPCode($content);
@@ -608,7 +608,7 @@ class CMS_page extends CMS_resource
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Regenerate the page file, either from scratch or from the linx file.
 	  * If linx file doesn't exists, the file is regenerated from scratch (obviously).
@@ -644,7 +644,7 @@ class CMS_page extends CMS_resource
 		//instanciate modules treatments for page linx tags
 		$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_LINXES_TAGS,PAGE_VISUALMODE_HTML_PUBLIC,$this);
 		$modulesTreatment->setDefinition($linxFile->getContent());
-		
+
 		if ($content = $modulesTreatment->treatContent(true)) {
 			$pageHTMLPath = $this->_getHTMLFilePath(PATH_RELATIVETO_FILESYSTEM)."/".$this->_getHTMLFilename();
 			$pageFile = new CMS_file($pageHTMLPath, CMS_file::FILE_SYSTEM, CMS_file::TYPE_FILE);
@@ -660,13 +660,13 @@ class CMS_page extends CMS_resource
 			$this->raiseError('Malformed linx file');
 			return false;
 		}
-		
+
 		//write significant url page
 		$pagePath = $this->_getFilePath(PATH_RELATIVETO_FILESYSTEM)."/".$this->_getFilename();
 		$redirectionFile = new CMS_file($pagePath, CMS_file::FILE_SYSTEM, CMS_file::TYPE_FILE);
 		$redirectionFile->setContent($this->redirectionCode($pageHTMLPath));
 		$redirectionFile->writeToPersistence(true, true);
-		
+
 		//write website index
 		if (CMS_websitesCatalog::isWebsiteRoot($this->getID())) {
 			$ws = $this->getWebsite();
@@ -677,7 +677,7 @@ class CMS_page extends CMS_resource
 				$redirectionFile->writeToPersistence(true, true);
 			}
 		}
-		
+
 		//write print page if any
 		if (USE_PRINT_PAGES && $this->_template->getPrintingClientSpaces()) {
 			//reload linx file
@@ -706,7 +706,7 @@ class CMS_page extends CMS_resource
 		}
 		return true;
 	}
-	
+
 	/**
 	  * Write to disk the linx file, i.e. the content for the specified page.
 	  * Doesn't translates the atm-linx tags.
@@ -741,7 +741,7 @@ class CMS_page extends CMS_resource
 		}
 		return true;
 	}
-	
+
 	/**
 	  * Gets the page redirection code to html page.
 	  *
@@ -758,7 +758,7 @@ class CMS_page extends CMS_resource
 			//get alias position
 			$pos = substr_count($pagePath  , '/');
 		}
-		$content = 
+		$content =
 		'<?php'."\n".
 		'//Page file generated on '.date('r').' by '.CMS_grandFather::SYSTEM_LABEL.' '.AUTOMNE_VERSION."\n".
 		'if (file_exists(dirname(__FILE__).\'/'.str_repeat  ('../', $pos).$filePath.'\')) {'."\n".
@@ -772,7 +772,7 @@ class CMS_page extends CMS_resource
 		'?>';
 		return $content;
 	}
-	
+
 	/**
 	  * Get HTML meta tags for a given page
 	  *
@@ -870,7 +870,7 @@ class CMS_page extends CMS_resource
 		}
 		return $metaDatas;
 	}
-	
+
 	/**
 	  * Gets the title base data.
 	  *
@@ -884,10 +884,10 @@ class CMS_page extends CMS_resource
 			return false;
 		}
 		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
-		
+
 		return $this->{$var}["title"];
 	}
-	
+
 	/**
 	  * get object type label
 	  *
@@ -898,7 +898,7 @@ class CMS_page extends CMS_resource
 	function getTypeLabel($language) {
 		return $language->getMessage(self::MESSAGE_PAGE_PAGE);
 	}
-	
+
 	/**
 	  * Gets the url in base data.
 	  *
@@ -912,10 +912,10 @@ class CMS_page extends CMS_resource
 			return false;
 		}
 		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
-		
+
 		return $this->{$var}["url"];
 	}
-	
+
 	/**
 	  * Sets the title base data.
 	  *
@@ -941,7 +941,7 @@ class CMS_page extends CMS_resource
 		$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
 		return true;
 	}
-	
+
 	/**
 	  * Gets the link-title base data.
 	  *
@@ -957,7 +957,7 @@ class CMS_page extends CMS_resource
 		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
 		return $this->{$var}["linkTitle"];
 	}
-	
+
 	/**
 	  * Sets the link-title base data.
 	  *
@@ -975,12 +975,12 @@ class CMS_page extends CMS_resource
 		if (!$this->_checkBaseData(false)) {
 			return false;
 		}
-		
+
 		$this->_editedBaseData["linkTitle"] = $data;
 		$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
 		return true;
 	}
-	
+
 	/**
 	  * Gets the refresh url base data.
 	  *
@@ -994,10 +994,10 @@ class CMS_page extends CMS_resource
 			return false;
 		}
 		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
-		
+
 		return $this->{$var}["refreshUrl"];
 	}
-	
+
 	/**
 	  * Sets the refresh url base data.
 	  *
@@ -1015,12 +1015,12 @@ class CMS_page extends CMS_resource
 		if (!$this->_checkBaseData(false)) {
 			return false;
 		}
-		
+
 		$this->_editedBaseData["refreshUrl"] = ($data) ? 1 : 0;
 		$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
 		return true;
 	}
-	
+
 	/**
 	  * Gets a meta value from website.
 	  *
@@ -1035,8 +1035,8 @@ class CMS_page extends CMS_resource
 			return false;
 		}
 	}
-	
-	
+
+
 	/**
 	  * Get page website.
 	  *
@@ -1050,7 +1050,7 @@ class CMS_page extends CMS_resource
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Gets the codename base data.
 	  *
@@ -1065,7 +1065,7 @@ class CMS_page extends CMS_resource
 		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
 		return $this->{$var}["codename"];
 	}
-	
+
 	/**
 	  * Sets the codename base data.
 	  *
@@ -1103,7 +1103,7 @@ class CMS_page extends CMS_resource
 		$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
 		return true;
 	}
-	
+
 	/**
 	  * Get the page protected status
 	  *
@@ -1113,7 +1113,7 @@ class CMS_page extends CMS_resource
 	function isProtected() {
 		return $this->_protected ? true : false;
 	}
-	
+
 	/**
 	  * Set the page protected status
 	  *
@@ -1125,7 +1125,7 @@ class CMS_page extends CMS_resource
 		$this->_protected = $protected ? true : false;
 		return true;
 	}
-	
+
 	/**
 	  * Get the page https status
 	  *
@@ -1139,7 +1139,7 @@ class CMS_page extends CMS_resource
 			return ALLOW_SPECIFIC_PAGE_HTTPS && $this->_https ? true : false;
 		}
 	}
-	
+
 	/**
 	  * Set the page https status
 	  *
@@ -1151,7 +1151,7 @@ class CMS_page extends CMS_resource
 		$this->_https = $https ? true : false;
 		return true;
 	}
-	
+
 	/**
 	  * Gets the keywords base data.
 	  *
@@ -1166,10 +1166,10 @@ class CMS_page extends CMS_resource
 			return false;
 		}
 		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
-		
+
 		return (!$this->{$var}["keywords"] && $queryWebsite) ? $this->getMetaFromWebsite('keywords') : $this->{$var}["keywords"];
 	}
-	
+
 	/**
 	  * Sets the keywords base data.
 	  *
@@ -1187,12 +1187,12 @@ class CMS_page extends CMS_resource
 		if (!$this->_checkBaseData(false)) {
 			return false;
 		}
-		
+
 		$this->_editedBaseData["keywords"] = $data;
 		$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
 		return true;
 	}
-	
+
 	/**
 	  * Gets the description base data.
 	  *
@@ -1209,7 +1209,7 @@ class CMS_page extends CMS_resource
 		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
 		return (!$this->{$var}["description"] && $queryWebsite) ? $this->getMetaFromWebsite('description') : $this->{$var}["description"];
 	}
-	
+
 	/**
 	  * Sets the description base data.
 	  *
@@ -1227,12 +1227,12 @@ class CMS_page extends CMS_resource
 		if (!$this->_checkBaseData(false)) {
 			return false;
 		}
-		
+
 		$this->_editedBaseData["description"] = $data;
 		$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
 		return true;
 	}
-	
+
 	/**
 	  * Gets the category base data
 	  *
@@ -1249,7 +1249,7 @@ class CMS_page extends CMS_resource
 		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
 		return (!$this->{$var}["category"] && $queryWebsite) ? $this->getMetaFromWebsite('category') : $this->{$var}["category"];
 	}
-	
+
 	/**
 	  * Sets the category base data.
 	  *
@@ -1267,12 +1267,12 @@ class CMS_page extends CMS_resource
 		if (!$this->_checkBaseData(false)) {
 			return false;
 		}
-		
+
 		$this->_editedBaseData["category"] = $data;
 		$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
 		return true;
 	}
-	
+
 	/**
 	  * Gets the author base data
 	  *
@@ -1289,7 +1289,7 @@ class CMS_page extends CMS_resource
 		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
 		return (!$this->{$var}["author"] && $queryWebsite) ? $this->getMetaFromWebsite('author') : $this->{$var}["author"];
 	}
-	
+
 	/**
 	  * Sets the author base data.
 	  *
@@ -1307,12 +1307,12 @@ class CMS_page extends CMS_resource
 		if (!$this->_checkBaseData(false)) {
 			return false;
 		}
-		
+
 		$this->_editedBaseData["author"] = $data;
 		$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
 		return true;
 	}
-	
+
 	/**
 	  * Gets the replyto base data
 	  *
@@ -1327,10 +1327,10 @@ class CMS_page extends CMS_resource
 			return false;
 		}
 		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
-		
+
 		return (!$this->{$var}["replyto"] && $queryWebsite) ? $this->getMetaFromWebsite('replyto') : $this->{$var}["replyto"];
 	}
-	
+
 	/**
 	  * Sets the replyto base data.
 	  *
@@ -1348,12 +1348,12 @@ class CMS_page extends CMS_resource
 		if (!$this->_checkBaseData(false)) {
 			return false;
 		}
-		
+
 		$this->_editedBaseData["replyto"] = $data;
 		$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
 		return true;
 	}
-	
+
 	/**
 	  * Gets the metas base data
 	  *
@@ -1368,10 +1368,10 @@ class CMS_page extends CMS_resource
 			return false;
 		}
 		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
-		
+
 		return (!$this->{$var}["metas"] && $queryWebsite) ? $this->getMetaFromWebsite('metas') : $this->{$var}["metas"];
 	}
-	
+
 	/**
 	  * Sets the metas base data.
 	  *
@@ -1389,12 +1389,12 @@ class CMS_page extends CMS_resource
 		if (!$this->_checkBaseData(false)) {
 			return false;
 		}
-		
+
 		$this->_editedBaseData["metas"] = $data;
 		$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
 		return true;
 	}
-	
+
 	/**
 	  * Gets the copyright base data
 	  *
@@ -1409,10 +1409,10 @@ class CMS_page extends CMS_resource
 			return false;
 		}
 		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
-		
+
 		return (!$this->{$var}["copyright"] && $queryWebsite) ? $this->getMetaFromWebsite('copyright') : $this->{$var}["copyright"];
 	}
-	
+
 	/**
 	  * Sets the copyright base data.
 	  *
@@ -1430,12 +1430,12 @@ class CMS_page extends CMS_resource
 		if (!$this->_checkBaseData(false)) {
 			return false;
 		}
-		
+
 		$this->_editedBaseData["copyright"] = $data;
 		$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
 		return true;
 	}
-	
+
 	/**
 	  * Gets the language base data
 	  *
@@ -1452,14 +1452,14 @@ class CMS_page extends CMS_resource
 		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
 		if ($this->{$var}["language"]) {
 			return $this->{$var}["language"];
-		} elseif ($queryWebsite && $this->getMetaFromWebsite('language')) {		    
+		} elseif ($queryWebsite && $this->getMetaFromWebsite('language')) {
 			return $this->getMetaFromWebsite('language');
 		} else {
 			//assume application default language is the good one ...
 			return APPLICATION_DEFAULT_LANGUAGE;
 		}
 	}
-	
+
 	/**
 	  * Sets the language base data.
 	  *
@@ -1481,7 +1481,7 @@ class CMS_page extends CMS_resource
 		$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
 		return true;
 	}
-	
+
 	/**
 	  * Gets the robots base data
 	  *
@@ -1498,7 +1498,7 @@ class CMS_page extends CMS_resource
 		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
 		return (!$this->{$var}["robots"] && $queryWebsite) ? $this->getMetaFromWebsite('robots') : $this->{$var}["robots"];
 	}
-	
+
 	/**
 	  * Sets the robots base data.
 	  *
@@ -1516,12 +1516,12 @@ class CMS_page extends CMS_resource
 		if (!$this->_checkBaseData(false)) {
 			return false;
 		}
-		
+
 		$this->_editedBaseData["robots"] = $data;
 		$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
 		return true;
 	}
-	
+
 	/**
 	  * Gets the Pragma base data
 	  *
@@ -1535,10 +1535,10 @@ class CMS_page extends CMS_resource
 			return false;
 		}
 		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
-		
+
 		return $this->{$var}["pragma"];
 	}
-	
+
 	/**
 	  * Sets the Pragma base data.
 	  *
@@ -1556,12 +1556,12 @@ class CMS_page extends CMS_resource
 		if (!$this->_checkBaseData(false)) {
 			return false;
 		}
-		
+
 		$this->_editedBaseData["pragma"] = $data;
 		$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
 		return true;
 	}
-	
+
 	/**
 	  * Gets the refresh base data
 	  *
@@ -1575,10 +1575,10 @@ class CMS_page extends CMS_resource
 			return false;
 		}
 		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
-		
+
 		return $this->{$var}["refresh"];
 	}
-	
+
 	/**
 	  * Sets the refresh base data.
 	  *
@@ -1596,12 +1596,12 @@ class CMS_page extends CMS_resource
 		if (!$this->_checkBaseData(false)) {
 			return false;
 		}
-		
+
 		$this->_editedBaseData["refresh"] = $data;
 		$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
 		return true;
 	}
-	
+
 	/**
 	  * Gets the reminder periodicity base data.
 	  *
@@ -1615,10 +1615,10 @@ class CMS_page extends CMS_resource
 			return false;
 		}
 		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
-		
+
 		return $this->{$var}["reminderPeriodicity"];
 	}
-	
+
 	/**
 	  * Sets the reminder periodicity base data.
 	  *
@@ -1645,7 +1645,7 @@ class CMS_page extends CMS_resource
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Gets the reminder On base data.
 	  *
@@ -1659,10 +1659,10 @@ class CMS_page extends CMS_resource
 			return false;
 		}
 		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
-		
+
 		return $this->{$var}["reminderOn"];
 	}
-	
+
 	/**
 	  * Sets the reminder On base data.
 	  *
@@ -1680,7 +1680,7 @@ class CMS_page extends CMS_resource
 		if (!$this->_checkBaseData(false)) {
 			return false;
 		}
-		
+
 		if (is_a($data, "CMS_date")) {
 			$this->_editedBaseData["reminderOn"] = $data;
 			$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
@@ -1690,7 +1690,7 @@ class CMS_page extends CMS_resource
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Gets the reminder On message base data.
 	  *
@@ -1704,10 +1704,10 @@ class CMS_page extends CMS_resource
 			return false;
 		}
 		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
-		
+
 		return $this->{$var}["reminderOnMessage"];
 	}
-	
+
 	/**
 	  * Sets the reminder On Message base data.
 	  *
@@ -1725,12 +1725,12 @@ class CMS_page extends CMS_resource
 		if (!$this->_checkBaseData(false)) {
 			return false;
 		}
-		
+
 		$this->_editedBaseData["reminderOnMessage"] = $data;
 		$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
 		return true;
 	}
-	
+
 	/**
 	  * Gets the redirect link.
 	  *
@@ -1743,10 +1743,10 @@ class CMS_page extends CMS_resource
 			return false;
 		}
 		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
-		
+
 		return $this->{$var}["redirect"];
 	}
-	
+
 	/**
 	  * Sets the reminder On Message base data.
 	  *
@@ -1764,7 +1764,7 @@ class CMS_page extends CMS_resource
 		if (!$this->_checkBaseData(false)) {
 			return false;
 		}
-		
+
 		if (is_a($link, "CMS_href")) {
 			$this->_editedBaseData["redirect"] = $link;
 			$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
@@ -1774,7 +1774,7 @@ class CMS_page extends CMS_resource
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Sets the last reminder to today
 	  *
@@ -1785,7 +1785,7 @@ class CMS_page extends CMS_resource
 	{
 		$this->_lastReminder->setNow();
 	}
-	
+
 	/**
 	  * Validate the location proposition of the resource (proposedFor attribute).
 	  * This overloaded method deletes the html file if location proposed is outside userspace
@@ -1801,7 +1801,7 @@ class CMS_page extends CMS_resource
 			@unlink($this->_getFilePath(PATH_RELATIVETO_FILESYSTEM));
 		}
 	}
-	
+
 	/**
 	  * Validates an edition. Adds the publishing of siblings orders to the parent function, and the setting of reminded editors
 	  *
@@ -1825,7 +1825,7 @@ class CMS_page extends CMS_resource
 			foreach ($unique_reminded_editors as $editor) {
 				$final_stack->add($editor->getUserID());
 			}
-			
+
 			$this->setRemindedEditorsStack($final_stack);
 			$this->writeToPersistence();
 		}
@@ -1834,12 +1834,12 @@ class CMS_page extends CMS_resource
 			$this->_createNewURL();
 		}
 		parent::validateEdition($edition);
-		
+
 		if ($edition & RESOURCE_EDITION_SIBLINGSORDER || $edition & RESOURCE_EDITION_MOVE) {//TODOV4 : check this for RESOURCE_EDITION_MOVE
 			CMS_tree::publishSiblingsOrder($this);
 		}
 	}
-	
+
 	/**
 	  * Create new page URL filename
 	  *  /!\ This method should be used only by validateEdition method, because it is a part of the page validation process !
@@ -1853,10 +1853,10 @@ class CMS_page extends CMS_resource
 		//2- remove refreshUrl flag in base data (edited AND public)
 		$this->_editedBaseData["refreshUrl"] = 0;
 		$this->_publicBaseData["refreshUrl"] = 0;
-		
+
 		//3- generate new filename and save it (it will also save edited baseDatas)
 		$this->_getFilename(true);
-		
+
 		//4- update basedatas tables (public)
 		$sql = "update
 					pagesBaseData_public
@@ -1865,7 +1865,7 @@ class CMS_page extends CMS_resource
 				where
 					page_pbd='".$this->getID()."'";
 		$q = new CMS_query($sql);
-		
+
 		//5- destroy all previous url files for this page
 		$printfiles = glob($this->_getFilePath(PATH_RELATIVETO_FILESYSTEM).'/print-'.$this->getID().'-*.php', GLOB_NOSORT);
 		if (!is_array($printfiles)) {
@@ -1884,7 +1884,7 @@ class CMS_page extends CMS_resource
 		//then return new filename
 		return true;
 	}
-	
+
 	/**
 	  * Is page useable (not in  DELETED or ARCHIVED locations)
 	  *
@@ -1897,7 +1897,7 @@ class CMS_page extends CMS_resource
 				$this->_status->getLocation() == RESOURCE_LOCATION_DELETED)
 				? false : true;
 	}
-	
+
 	/**
 	  * Check that the base data is loaded (edited base data can't be loaded from DELETED or ARCHIVED locations)
 	  *
@@ -1908,17 +1908,17 @@ class CMS_page extends CMS_resource
 	protected function _checkBaseData($public = false)
 	{
 		$var = ($public) ? "_publicBaseData" : "_editedBaseData";
-		
+
 		if (!$this->{$var}) {
 			//can't have edited base data when page is in DELETED or ARCHIVED locations
-			if (!$public && 
+			if (!$public &&
 				($this->_status->getLocation() == RESOURCE_LOCATION_ARCHIVED ||
 				$this->_status->getLocation() == RESOURCE_LOCATION_DELETED)) {
-				
+
 				//$this->raiseError('Page '.$this->getID().' : Can\'t get edited base data from DELETED or ARCHIVED locations');
 				return false;
 			}
-			
+
 			$this->{$var} = array();
 			$this->{$var}["title"] = '';
 			$this->{$var}["linkTitle"] = '';
@@ -1951,7 +1951,7 @@ class CMS_page extends CMS_resource
 				$table = ($public) ? "pagesBaseData_public" : "pagesBaseData_edited";
 				break;
 			}
-			
+
 			$sql = "
 				select
 					*
@@ -1960,7 +1960,7 @@ class CMS_page extends CMS_resource
 				where
 					page_pbd='".$this->_pageID."'
 			";
-			
+
 			$q = new CMS_query($sql);
 			if ($q->getNumRows()) {
 				$data = $q->getArray();
@@ -1986,10 +1986,10 @@ class CMS_page extends CMS_resource
 				$this->{$var}["codename"] = $data["codename_pbd"];
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	  * Check that the template is instanciated.
 	  *
@@ -2002,7 +2002,7 @@ class CMS_page extends CMS_resource
 			$this->_template = CMS_pageTemplatesCatalog::getByID($this->_templateID);
 		}
 	}
-	
+
 	/**
 	  * Check that the website is instanciated.
 	  *
@@ -2020,7 +2020,7 @@ class CMS_page extends CMS_resource
 		}
 		return true;
 	}
-	
+
 	/**
 	  * Delete the page file, html file, print files and the page linx file
 	  *
@@ -2041,7 +2041,7 @@ class CMS_page extends CMS_resource
 		@unlink($this->getLinxFilePath());
 		return true;
 	}
-	
+
 	/**
 	  * Writes the page into persistence (MySQL for now), along with base data.
 	  *
@@ -2051,7 +2051,15 @@ class CMS_page extends CMS_resource
 	function writeToPersistence()
 	{
 		parent::writeToPersistence();
-		
+
+		$isNew = $this->_pageID === NULL;
+		// Inform modules of the page creation
+		$modules = CMS_modulesCatalog::getAll('id');
+		foreach ($modules as $codename => $module) {
+			if(method_exists($module, 'pagePreSave')) {
+				$module->pagePreSave($this, $isNew);
+			}
+		}
 		//save page data
 		$sql_fields = "
 			resource_pag='".parent::getID()."',
@@ -2086,7 +2094,7 @@ class CMS_page extends CMS_resource
 		} elseif (!$this->_pageID) {
 			$this->_pageID = $q->getLastInsertedID();
 		}
-		
+
 		//save base data if modified
 		if ($this->_editedBaseData) {
 			$sql_fields = "
@@ -2132,13 +2140,21 @@ class CMS_page extends CMS_resource
 				$this->_baseDataID = $q->getLastInsertedID();
 			}
 		}
+
+		// Inform modules of the page creation
+		$modules = CMS_modulesCatalog::getAll('id');
+		foreach ($modules as $codename => $module) {
+			if(method_exists($module, 'pagePostSave')) {
+				$module->pagePostSave($this, $isNew);
+			}
+		}
 		return true;
 	}
-	
+
 	/**
 	  * Duplicate current page into another one
 	  * All contents and external datas are duplicated too
-	  * 
+	  *
 	  * @param CMS_user user, the user processing to creation
 	  * @param integer templateID, a new template to duplicate the page with
 	  * @param boolean $dontDuplicateContent If true, the content of the page is not duplicated
@@ -2187,7 +2203,7 @@ class CMS_page extends CMS_resource
 			}
 			$pg->writeToPersistence();
 			$pg->unlock();
-			
+
 			//Duplicate contents, get all blocks and duplicate them
 			if (!$dontDuplicateContent) {
 				$this->duplicateContent($user, $pg);
@@ -2197,11 +2213,11 @@ class CMS_page extends CMS_resource
 		}
 		return $pg;
 	}
-	
+
 	/**
 	  * Duplicate current page contents into another one
 	  * All contents and external datas are duplicated too
-	  * 
+	  *
 	  * @param CMS_user user, the user processing to creation
 	  * @return boolean true on success, false on failure
 	  */
@@ -2225,7 +2241,7 @@ class CMS_page extends CMS_resource
 		}
 		return $_proceed ;
 	}
-	
+
 	/**
 	  * Get the array of visualization modes, without textual information as it's useless
 	  * Static function.
@@ -2235,7 +2251,7 @@ class CMS_page extends CMS_resource
 	  */
 	static function getAllVisualizationModes()
 	{
-		return array(	PAGE_VISUALMODE_FORM, 
+		return array(	PAGE_VISUALMODE_FORM,
 						PAGE_VISUALMODE_HTML_PUBLIC,
 						PAGE_VISUALMODE_HTML_EDITED,
 						PAGE_VISUALMODE_HTML_EDITION,

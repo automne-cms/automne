@@ -28,28 +28,28 @@ class CMS_cache extends CMS_grandFather {
 	  * @access private
 	  */
 	protected $_parameters = array();
-	
+
 	/**
 	  * The Zend cache object
 	  * @var object
 	  * @access private
 	  */
 	protected $_cache;
-	
+
 	/**
 	  * Does the cache has an auto lifetime ?
 	  * @var boolean
 	  * @access private
 	  */
 	protected $_auto = false;
-	
+
 	/**
 	  * Does the cache is context aware ?
 	  * @var boolean
 	  * @access private
 	  */
 	protected $_context = false;
-	
+
 	/**
 	  * Constructor.
 	  * initialize object.
@@ -80,16 +80,16 @@ class CMS_cache extends CMS_grandFather {
 		if (io::isPositiveInteger($lifetime)) {
 			$lifetime = (int) $lifetime;
 		}
-		
+
 		$this->_parameters['type'] = io::sanitizeAsciiString($type);
 		$this->_parameters['lifetime'] = $lifetime ? $lifetime : null;
-		
+
 		//check cache dir
 		$cachedir = new CMS_file(PATH_CACHE_FS.'/'.$this->_parameters['type'], CMS_file::FILE_SYSTEM, CMS_file::TYPE_DIRECTORY);
 		if (!$cachedir->exists()) {
 			$cachedir->writeTopersistence();
 		}
-		
+
 		//Cache options
 		$frontendOptions = array(
 			'lifetime' 					=> $this->_parameters['lifetime'],											// cache duration
@@ -118,7 +118,7 @@ class CMS_cache extends CMS_grandFather {
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Does cache content exists
 	  *
@@ -137,7 +137,7 @@ class CMS_cache extends CMS_grandFather {
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Load cache content
 	  *
@@ -156,7 +156,7 @@ class CMS_cache extends CMS_grandFather {
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Save cache content
 	  *
@@ -178,7 +178,7 @@ class CMS_cache extends CMS_grandFather {
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Clear cache by metas
 	  *
@@ -209,7 +209,7 @@ class CMS_cache extends CMS_grandFather {
 			return CMS_file::deltree(PATH_CACHE_FS.'/'.$this->_parameters['type'], false);
 		}
 	}
-	
+
 	/**
 	  * Get zend cache ids by metas
 	  *
@@ -234,7 +234,7 @@ class CMS_cache extends CMS_grandFather {
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Convert cache metas into Zend cache tags
 	  *
@@ -261,8 +261,8 @@ class CMS_cache extends CMS_grandFather {
 		$tags = array_values($tags);
 		return $tags;
 	}
-	
-	
+
+
 	/**
 	  * Start cache buffering
 	  * All output starting from this method call will be recorded to be saved in cache
@@ -273,7 +273,7 @@ class CMS_cache extends CMS_grandFather {
 	function start() {
 		ob_start();
 	}
-	
+
 	/**
 	  * End output buffering and save result to cache
 	  *
@@ -299,7 +299,7 @@ class CMS_cache extends CMS_grandFather {
 				unset($matches);
 			}
 			//do not save content if cache has auto lifetime and content has phpnode or random or form elements
-			if ($this->_auto && 
+			if ($this->_auto &&
 				(isset($cachedElements['phpnode']) && $cachedElements['phpnode'])
 				|| (isset($cachedElements['random']) && $cachedElements['random'])
 				|| (isset($cachedElements['form']) && $cachedElements['form'])) {
@@ -309,7 +309,7 @@ class CMS_cache extends CMS_grandFather {
 		}
 		return $content;
 	}
-	
+
 	/**
 	  * Clear a type cache
 	  *
@@ -325,18 +325,26 @@ class CMS_cache extends CMS_grandFather {
 			return false;
 		}
 		if (is_dir(PATH_CACHE_FS.'/'.$type)) {
-			//delete all type cache
-			if (!CMS_file::deltree(PATH_CACHE_FS.'/'.$type, false)) {
-				CMS_grandFather::raiseError('Cannot clear cache for type '.$type);
-				return false;
-			} else {
-				return true;
+			// First we'll check all modules to see if one of them implements a clearTypeCache method
+			$modules = CMS_modulesCatalog::getAll('id');
+			$cleared = false;
+			foreach ($modules as $codename => $module) {
+				if(method_exists($module, 'clearTypeCache')) {
+					$cleared = $module->clearTypeCache($type);
+				}
 			}
-		} else {
-			return true;
+			// No module deleted the cache, use automne standard cache clear
+			if(!$cleared) {
+				//delete all type cache
+				if (!CMS_file::deltree(PATH_CACHE_FS.'/'.$type, false, true)) {
+					CMS_grandFather::raiseError('Cannot clear cache for type '.$type);
+					return false;
+				}
+			}
 		}
+		return true;
 	}
-	
+
 	/**
 	  * Clear type cache using metas
 	  *
@@ -391,7 +399,7 @@ class CMS_cache extends CMS_grandFather {
 		}
 		return $return;
 	}
-	
+
 	/**
 	  * Wrap given PHP code with PHP cache code
 	  *

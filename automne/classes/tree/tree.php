@@ -31,28 +31,6 @@
 class CMS_tree extends CMS_grandFather
 {
 	/**
-	  * Returns the CMS_page of the root. It MUST exists or else everything fails.
-	  * Static function.
-	  *
-	  * @return CMS_page The root page instance
-	  * @access public
-	  */
-	static function getRoot()
-	{
-		static $applicationRoot;
-		if (!is_object($applicationRoot)) {
-			$applicationRoot = new CMS_page(APPLICATION_ROOT_PAGE_ID);
-			if ($applicationRoot->hasError()) {
-				CMS_grandFather::raiseError("Root page error...");
-				return false;
-			}
-			return $applicationRoot;
-		} else {
-			return $applicationRoot;
-		}
-	}
-	
-	/**
 	  * Returns a CMS_page when given an ID
 	  * Static function.
 	  *
@@ -74,6 +52,23 @@ class CMS_tree extends CMS_grandFather
 			$pages[$id] = false;
 		}
 		return $pages[$id];
+	}
+	
+	/**
+	  * Returns the CMS_page of the root. It MUST exists or else everything fails.
+	  * Static function.
+	  *
+	  * @return CMS_page The root page instance
+	  * @access public
+	  */
+	static function getRoot()
+	{
+		$applicationRoot = CMS_tree::getPageByID(APPLICATION_ROOT_PAGE_ID);
+		if ($applicationRoot->hasError()) {
+			CMS_grandFather::raiseError("Root page error...");
+			return false;
+		}
+		return $applicationRoot;
 	}
 	
 	/**
@@ -381,6 +376,7 @@ class CMS_tree extends CMS_grandFather
 	  */
 	static function getSiblings(&$page, $publicTree = false, $getPages=true)
 	{
+		static $siblings;
 		if (sensitiveIO::isPositiveInteger($page)) {
 			$pageID = $page;
 		} elseif(is_object($page)) {
@@ -390,26 +386,31 @@ class CMS_tree extends CMS_grandFather
 			return array();
 		}
 		$table = ($publicTree) ? "linx_tree_public" : "linx_tree_edited";
-		$sql = "
-			select
-				sibling_ltr
-			from
-				".$table."
-			where
-				father_ltr='".$pageID."'
-			order by
-				order_ltr
-		";
-		$q = new CMS_query($sql);
+		if (!isset($siblings[$pageID.$table])) {
+			$sql = "
+				select
+					sibling_ltr
+				from
+					".$table."
+				where
+					father_ltr='".$pageID."'
+				order by
+					order_ltr
+			";
+			$q = new CMS_query($sql);
+			$siblings[$pageID.$table] = array();
+			while ($id = $q->getValue("sibling_ltr")) {
+				$siblings[$pageID.$table][] = $id;
+			}
+		}
+		if (!$getPages) {
+			return $siblings[$pageID.$table];
+		}
 		$pages = array();
-		while ($id = $q->getValue("sibling_ltr")) {
-			if ($getPages) {
-				$pg = new CMS_page($id);
-				if (!$pg->hasError()) {
-					$pages[] = $pg;
-				}
-			} else {
-				$pages[]=$id;
+		foreach ($siblings[$pageID.$table] as $id) {
+			$pg = CMS_tree::getPageByID($id);
+			if (!$pg->hasError()) {
+				$pages[] = $pg;
 			}
 		}
 		return $pages;
@@ -427,22 +428,26 @@ class CMS_tree extends CMS_grandFather
 	  */
 	static function hasSiblings(&$page, $publicTree = false)
 	{
+		static $hasSiblings;
 		if (!is_a($page, "CMS_page") && sensitiveIO::isPositiveInteger($page)) {
 			$pageID = $page;
 		} else {
 			$pageID = $page->getID();
 		}
 		$table = ($publicTree) ? "linx_tree_public" : "linx_tree_edited";
-		$sql = "
-			select
-				1
-			from
-				".$table."
-			where
-				father_ltr='".$pageID."'
-		";
-		$q = new CMS_query($sql);
-		return ($q->getNumRows()) ? true : false;
+		if (!isset($hasSiblings[$pageID.$table])) {
+			$sql = "
+				select
+					1
+				from
+					".$table."
+				where
+					father_ltr='".$pageID."'
+			";
+			$q = new CMS_query($sql);
+			$hasSiblings[$pageID.$table] = ($q->getNumRows()) ? true : false;
+		}
+		return $hasSiblings[$pageID.$table];
 	}
 	
 	/**
@@ -526,7 +531,7 @@ class CMS_tree extends CMS_grandFather
 			";
 			$q = new CMS_query($sql);
 			if ($q->getNumRows()) {
-				$pg = new CMS_page($q->getValue("sibling_ltr"));
+				$pg = CMS_tree::getPageByID($q->getValue("sibling_ltr"));
 				return $pg;
 			} else {
 				return false;
@@ -592,32 +597,19 @@ class CMS_tree extends CMS_grandFather
 		$table = ($publicTree) ? 'linx_tree_public' : 'linx_tree_edited';
 		while ($currentPageID != APPLICATION_ROOT_PAGE_ID && $currentPageID != $ancestorPageID) {
 			if (!isset($fathers[$currentPageID])) {
-				$sql = "
-					select
-						father_ltr
-					from
-						".$table."
-					where
-						sibling_ltr='".sensitiveIO::sanitizeSQLString($currentPageID)."'
-				";
-				$q = new CMS_query($sql);
-				if ($q->getNumRows()) {
-					$father = $q->getValue("father_ltr");
-					$fathers[$currentPageID] = $father;
-					$currentPageID = $father;
-					if($IO_CMS_page) {
-						$pg = new CMS_page($currentPageID);
-						array_unshift($lineage, $pg);
-					} else {
-						array_unshift($lineage, $currentPageID);
-					}
+				$father = CMS_tree::getFather($currentPageID, false, $publicTree);
+				$fathers[$currentPageID] = $father;
+				$currentPageID = $father;
+				if($IO_CMS_page) {
+					$pg = CMS_tree::getPageByID($currentPageID);
+					array_unshift($lineage, $pg);
 				} else {
-					return false;
+					array_unshift($lineage, $currentPageID);
 				}
 			} else {
 				$currentPageID = $fathers[$currentPageID];
 				if($IO_CMS_page) {
-					$pg = new CMS_page($currentPageID);
+					$pg = CMS_tree::getPageByID($currentPageID);
 					array_unshift($lineage, $pg);
 				} else {
 					array_unshift($lineage, $currentPageID);
@@ -643,6 +635,7 @@ class CMS_tree extends CMS_grandFather
 	  * @access public
 	  */
 	static function getFather($page, $outputObject = false, $publicTree = false) {
+		static $fathers;
 		//check argument is a page
 		if (!is_a($page, "CMS_page") && !sensitiveIO::isPositiveInteger($page)) {
 			CMS_grandFather::raiseError("Page must be instance of CMS_page or positive integer");
@@ -650,19 +643,26 @@ class CMS_tree extends CMS_grandFather
 		}
 		$pageId = (is_object($page)) ? $page->getID() : $page;
 		$table = ($publicTree) ? 'linx_tree_public' : 'linx_tree_edited';
-		$sql = "
-			select
-				father_ltr
-			from
-				".$table."
-			where
-				sibling_ltr='".sensitiveIO::sanitizeSQLString($pageId)."'
-		";
-		$q = new CMS_query($sql);
-		if (!$q->getNumRows()) {
+		if (!isset($fathers[$pageId.$table])) {
+			$sql = "
+				select
+					father_ltr
+				from
+					".$table."
+				where
+					sibling_ltr='".sensitiveIO::sanitizeSQLString($pageId)."'
+			";
+			$q = new CMS_query($sql);
+			if (!$q->getNumRows()) {
+				$fathers[$pageId.$table] = false;
+			} else {
+				$fathers[$pageId.$table] = $q->getValue("father_ltr");
+			}
+		}
+		if (!$fathers[$pageId.$table]) {
 			return false;
 		}
-		return $outputObject ? CMS_tree::getPageByID($q->getValue("father_ltr")) : $q->getValue("father_ltr");
+		return $outputObject ? CMS_tree::getPageByID($fathers[$pageId.$table]) : $fathers[$pageId.$table];
 	}
 	
 	/**
@@ -746,7 +746,7 @@ class CMS_tree extends CMS_grandFather
 			return false;
 		}
 		// Find the siblings to switch order
-		$firstNewSibling = new CMS_page($newSiblingOrder[0]);
+		$firstNewSibling = CMS_tree::getPageByID($newSiblingOrder[0]);
 		$father = CMS_tree::getAncestor($firstNewSibling, 1);
 		// Use this function to compact of siblings order
 		if (!CMS_tree::compactSiblingOrder($father)) {
@@ -1643,7 +1643,7 @@ class CMS_tree extends CMS_grandFather
 			foreach ($lineage as $ancestor) {
 				//to reduce the total time of the function (really long on big websites).
 				if (!$treeStringInfos[$ancestor]) {
-					$ancestor = new CMS_page($ancestor);
+					$ancestor = CMS_tree::getPageByID($ancestor);
 					$ancestorTitle = $treeStringInfos[$ancestor->getID()] = $ancestor->getTitle();
 				} else {
 					$ancestorTitle = $treeStringInfos[$ancestor];
@@ -1741,16 +1741,14 @@ class CMS_tree extends CMS_grandFather
 			$pathinfo = pathinfo($urlinfo['path']);
 			$basename = (isset($pathinfo['filename'])) ? $pathinfo['filename'] : $pathinfo['basename'];
 		}
+		//if extension exists and is not PHP, return
+		if (isset($pathinfo['extension']) && $pathinfo['extension'] && $pathinfo['extension'] != 'php') {
+			return false;
+		}
 		if (isset($urlinfo['query'])) {
 			$querystring = $urlinfo['query'];
 		}
-		if ($useDomain) {
-			$httpHost = @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST'];
-			//search page id by domain address
-			$domain = isset($urlinfo['host']) ? $urlinfo['host'] : $httpHost;
-			$domainfound = CMS_websitesCatalog::getWebsiteFromDomain($domain);
-		}
-		//if basename found
+		//if basename found try to get page id
 		if (isset($urlinfo['path']) && $urlinfo['path'] != PATH_REALROOT_WR.'/' && $basename && ((isset($pathinfo['extension']) && strtolower($pathinfo['extension']) == 'php') || !isset($pathinfo['extension']))) {
 			//search page id in basename (declare matching patterns by order of research)
 			$patterns[] = "#^([0-9]+)-#U"; // for request like id-page_title.php
@@ -1764,13 +1762,16 @@ class CMS_tree extends CMS_grandFather
 			if (isset($requestedPageId[1]) && sensitiveIO::IsPositiveInteger($requestedPageId[1]) && CMS_tree::getPageValue($requestedPageId[1], 'exists')) {
 				//try to instanciate the requested page
 				$cms_page = CMS_tree::getPageByID($requestedPageId[1]);
-				if ($cms_page && !$cms_page->hasError() && (!$useDomain || $domainfound)) {
+				if ($cms_page && !$cms_page->hasError()) {
 					return $cms_page;
 				}
 			}
-		} elseif (isset($pathinfo['extension']) && $pathinfo['extension'] && $pathinfo['extension'] != 'php') {
-			return false;
-		} elseif ($useDomain) {
+		}
+		if ($useDomain) {
+			$httpHost = @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ? @parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) : $_SERVER['HTTP_HOST'];
+			//search page id by domain address
+			$domain = isset($urlinfo['host']) ? $urlinfo['host'] : $httpHost;
+			$domainfound = CMS_websitesCatalog::getWebsiteFromDomain($domain, (isset($urlinfo['path']) && $urlinfo['path'] != PATH_REALROOT_WR.'/' ? $urlinfo['path'] : ''));
 			if (is_object($domainfound)) {
 				$cms_page = $domainfound->getRoot();
 				if ($cms_page && !$cms_page->hasError()) {
@@ -1778,7 +1779,7 @@ class CMS_tree extends CMS_grandFather
 				}
 			}
 		}
-		//try to query modules to get page from them
+		//query modules to get page from them
 		$modules = CMS_modulesCatalog::getAll();
 		foreach ($modules as $module) {
 			if (method_exists($module, 'getPageFromURL')) {

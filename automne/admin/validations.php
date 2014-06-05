@@ -376,9 +376,9 @@ $jscontent = <<<END
 	var validationTplMarkup = [
 		'<div>',
 			'<div id="validation-actions"></div>',
-			'<div style="padding:5px;">',
-				'<h3 style="">{status} {label} (ID : {resource})</h3><br/>',
-				'<strong>{$cms_language->getJSMessage(MESSAGE_PAGE_EDITORS)} :</strong> {editorsHTML}<br/>',
+			'<div style="padding:5px;height:42px;overflow:auto;">',
+				'<h3 style="">{status} {label} (ID : {resource})</h3>',
+				'<strong>{$cms_language->getJSMessage(MESSAGE_PAGE_EDITORS)} :</strong> {editorsHTML}',
 			'</div>',
 		'</div>',
 		'<div id="validation-form"></div>'
@@ -539,14 +539,14 @@ $jscontent = <<<END
 					layout:				'column',
 					border:				false,
 					items:[{
-						columnWidth:		.5,
+						columnWidth:		.60,
 						layout:				'form',
 						labelAlign:			'right',
-						labelWidth:			130,
+						labelWidth:			160,
 						border:				false,
 						items: 				items
 					},{
-						columnWidth:		.5,
+						columnWidth:		.40,
 						layout:				'form',
 						labelAlign:			'top',
 						border:				false,

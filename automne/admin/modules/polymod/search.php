@@ -178,11 +178,14 @@ if ($object->isPrimaryResource()) {
 		$search->addWhereCondition("status", $status);
 	}
 }
-//Add all subobjects to search if any
-foreach ($objectFields as $fieldID => $field) {
-	//if field is a poly object
-	if (CMS_session::getSessionVar('items_'.$object->getID().'_'.$fieldID) != '') {
-		$search->addWhereCondition($fieldID, CMS_session::getSessionVar('items_'.$object->getID().'_'.$fieldID));
+// Do not apply sessions filters if limitToOrderedItems or limitToItems otherwise it could hide objects that should be displayed
+if(empty($limitToOrderedItems) && (empty($limitToItems))) {
+	//Add all subobjects to search if any
+	foreach ($objectFields as $fieldID => $field) {
+		//if field is a poly object
+		if (CMS_session::getSessionVar('items_'.$object->getID().'_'.$fieldID) != '') {
+			$search->addWhereCondition($fieldID, CMS_session::getSessionVar('items_'.$object->getID().'_'.$fieldID));
+		}
 	}
 }
 // Param : With keywords (this is best if it is done at last)
