@@ -21,7 +21,7 @@
   *
   * @package Automne
   * @subpackage polymod
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author Sï¿½bastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
 class CMS_polymod_definition_parsing extends CMS_grandFather
@@ -2020,6 +2020,9 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			$tag['attributes']['label'] = eval(sensitiveIO::sanitizeExecCommand('return "'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['label']).'";'));
 			if(isset($tag['attributes']['description'])){
 				$tag['attributes']['description'] = eval(sensitiveIO::sanitizeExecCommand('return "'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['description']).'";'));
+			}
+			if(isset($tag['attributes']['possibleValues'])){
+				$tag['attributes']['possibleValues'] = eval(sensitiveIO::sanitizeExecCommand('return "'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['possibleValues']).'";'));
 			}
 			$this->_blockParams['var'][$tag['attributes']['id']][$tag['attributes']['varname'] ] =  $tag['attributes'];
 		}
