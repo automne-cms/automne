@@ -17,7 +17,7 @@
 /**
   * PHP page : Load user detail window.
   * Used accross an Ajax request. Render user informations.
-  * 
+  *
   * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
@@ -129,20 +129,20 @@ $loginValue = ($login) ? "value:'{$login}'," : '';
 $email = sensitiveIO::sanitizeJSString($user->getEmail());
 $emailValue = ($email) ? "value:'{$email}'," : '';
 //Contact datas
-$service = sensitiveIO::sanitizeJSString($contactData->getService()); 
-$jobtitle = sensitiveIO::sanitizeJSString($contactData->getJobTitle()); 
-$address1 = sensitiveIO::sanitizeJSString($contactData->getAddressField1()); 
-$address2 = sensitiveIO::sanitizeJSString($contactData->getAddressField2()); 
-$address3 = sensitiveIO::sanitizeJSString($contactData->getAddressField3()); 
-$zipcode = sensitiveIO::sanitizeJSString($contactData->getZip()); 
-$city = sensitiveIO::sanitizeJSString($contactData->getCity()); 
-$state = sensitiveIO::sanitizeJSString($contactData->getState()); 
-$country = sensitiveIO::sanitizeJSString($contactData->getCountry()); 
-$phone = sensitiveIO::sanitizeJSString($contactData->getPhone()); 
-$cellphone = sensitiveIO::sanitizeJSString($contactData->getCellphone()); 
-$fax = sensitiveIO::sanitizeJSString($contactData->getFax()); 
-$company = sensitiveIO::sanitizeJSString($contactData->getCompany()); 
-$gender = sensitiveIO::sanitizeJSString($contactData->getGender()); 
+$service = sensitiveIO::sanitizeJSString($contactData->getService());
+$jobtitle = sensitiveIO::sanitizeJSString($contactData->getJobTitle());
+$address1 = sensitiveIO::sanitizeJSString($contactData->getAddressField1());
+$address2 = sensitiveIO::sanitizeJSString($contactData->getAddressField2());
+$address3 = sensitiveIO::sanitizeJSString($contactData->getAddressField3());
+$zipcode = sensitiveIO::sanitizeJSString($contactData->getZip());
+$city = sensitiveIO::sanitizeJSString($contactData->getCity());
+$state = sensitiveIO::sanitizeJSString($contactData->getState());
+$country = sensitiveIO::sanitizeJSString($contactData->getCountry());
+$phone = sensitiveIO::sanitizeJSString($contactData->getPhone());
+$cellphone = sensitiveIO::sanitizeJSString($contactData->getCellphone());
+$fax = sensitiveIO::sanitizeJSString($contactData->getFax());
+$company = sensitiveIO::sanitizeJSString($contactData->getCompany());
+$gender = sensitiveIO::sanitizeJSString($contactData->getGender());
 //Alerts
 $modulesCodes = new CMS_modulesCodes();
 $alerts = $modulesCodes->getModulesCodes(MODULE_TREATMENT_ALERTS, '', $user, array("user" => $cms_user));
@@ -382,13 +382,13 @@ if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID && $user->getUserId() != ROOT
 	function replaceCallBack($parts) {
 		return 'function('.str_replace(array('\"','\/'), array('"', '/'), $parts[1]).'}';
 	}
-	
+
 	foreach ($modules as $aModule) {
 		if (method_exists($aModule,'getUserAccordionProperties')) {
 			$moduleCodename = $aModule->getCodename();
 			//get accordion datas from module
 			$moduleDatas = $aModule->getUserAccordionProperties($userId, $cms_language);
-			
+
 			$moduleURL = false;
 			if (isset($moduleDatas['url'])) {
 				$moduleURL = $moduleDatas['url'];
@@ -397,7 +397,7 @@ if ($user->getUserId() != ANONYMOUS_PROFILEUSER_ID && $user->getUserId() != ROOT
 			if (isset($moduleDatas['label'])) {
 				$moduleLabel = io::sanitizeJSString($moduleDatas['label']);
 			}
-			
+
 			$moduleFields = array();
 			if (isset($moduleDatas['fields']) && is_array($moduleDatas['fields'])) {
 				$moduleFields = $moduleDatas['fields'];
@@ -463,7 +463,7 @@ $jscontent = <<<END
 		html:			 '{$cms_language->getJsMessage(MESSAGE_PAGE_WINDOW_INFO)}',
 		dismissDelay:	0
 	});
-	
+
 	var validatePass = function(value) {
 		if (value) {
 			var form = Ext.getCmp('identityPanel-{$userId}').getForm();
@@ -478,7 +478,7 @@ $jscontent = <<<END
 		}
 		return true;
 	}
-	
+
 	//renderer for groups names
 	var renderGroups = function(label, row, record) {
 		return '<a onclick="var userWindow = Ext.getCmp(\'{$winId}\');userWindow.editGroup('+ record.id +', this);">'+ label +'</a>';
@@ -520,7 +520,7 @@ $jscontent = <<<END
 	if (userWindow.father.groupWindows == undefined) {
 		userWindow.father.groupWindows = [];
 	}
-	
+
 	//groups store
 	var store = new Automne.JsonStore({
 		url: 			'groups-datas.php',
@@ -536,7 +536,7 @@ $jscontent = <<<END
 				//resume events
 				sm.resumeEvents();
 			},
-			'beforeload': 	function(store, options){ 
+			'beforeload': 	function(store, options){
 				//suspend events to avoid select events to be fired on store reload
 				sm.suspendEvents();
 				//append search parameters if missing
@@ -653,7 +653,6 @@ $jscontent = <<<END
 					fieldLabel:		'<span class=\"atm-red\">*</span> {$cms_language->getMessage(MESSAGE_PAGE_EMAIL)}',
 					name:			'email',
 					{$emailValue}
-					vtype:			'email'
 				},{
 					{$disableLoginField}
 					fieldLabel:		'<span class=\"atm-red\">*</span> {$cms_language->getMessage(MESSAGE_PAGE_LOGIN)}',
@@ -861,11 +860,11 @@ $jscontent = <<<END
 			}]
 		}{$groupsTab}{$modulesTab}{$adminTab}{$logsTab}]
 	});
-	
+
 	userWindow.add(center);
 	//redo windows layout
 	userWindow.doLayout();
-	
+
 	//disable all elements not usable in first user creation step
 	if (isNaN(parseInt(userWindow.userId))) {
 		Ext.getCmp('userProfile-{$userId}').items.each(function(panel) {
