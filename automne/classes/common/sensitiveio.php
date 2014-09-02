@@ -178,7 +178,7 @@ class SensitiveIO extends CMS_grandFather
 	static function sanitizeHTMLString($input) {
 		return io::htmlspecialchars($input);
 	}
-	
+
 	/**
 	  * Cleans a string that has to be used in an exec command
 	  * For now, remove backticks ` in string
@@ -298,25 +298,56 @@ class SensitiveIO extends CMS_grandFather
 		}
 		return false;
 	}
-	
+
 	/**
-	* Check if the login is valid
-	*
-	* @param string $login
-	* @return boolean true on success, false on failure
-	* @access public
-	*/
-	static function isValidLogin($login){
+	 * Check if the login is valid
+	 * 	Inspired by Drupal 7 user_validate_name
+	 *
+	 * @param string $login
+	 * @return boolean true on success, false on failure
+	 * @access public
+	 */
+	public static function isValidLogin($login){
 		if (!$login) {
+			CMS_grandFather::log('You must enter a username.');
 			return false;
 		}
-		// Search non alphanum characters
-		if (preg_match("#[^[a-zA-Z0-9_.@-]]*#", $login)){
+		if (substr($login, 0, 1) == ' ') {
+			CMS_grandFather::log('The username cannot begin with a space.');
+			return false;
+		}
+		if (substr($login, -1) == ' ') {
+			CMS_grandFather::log('The username cannot end with a space.');
+			return false;
+		}
+		if (strpos($login, '  ') !== FALSE) {
+			CMS_grandFather::log('The username cannot contain multiple spaces in a row.');
+			return false;
+		}
+		if (preg_match('/[^\x{80}-\x{F7} a-z0-9@_.\'\+-]/i', $login, $matches)) {
+			CMS_grandFather::log('The username contains an illegal character.');
+			return false;
+		}
+		if (preg_match('/[\x{80}-\x{A0}' . // Non-printable ISO-8859-1 + NBSP
+		'\x{AD}' . // Soft-hyphen
+		'\x{2000}-\x{200F}' . // Various space characters
+		'\x{2028}-\x{202F}' . // Bidirectional text overrides
+		'\x{205F}-\x{206F}' . // Various text hinting characters
+		'\x{FEFF}' . // Byte order mark
+		'\x{FF01}-\x{FF60}' . // Full-width latin
+		'\x{FFF9}-\x{FFFD}' . // Replacement characters
+		'\x{0}-\x{1F}]/u', // NULL byte and control characters
+		$login)) {
+			CMS_grandFather::log('The username contains an illegal character.');
+			return false;
+		}
+		if (io::strlen($login) > 50) {
+			CMS_grandFather::log('The username is too long: it must be 50 characters or less.');
 			return false;
 		}
 		return true;
 	}
-	
+
 	/**
 	  * Parses input string as if it is a password, and return the "well-formed" status : must be at least 5 chars long, ...
 	  * Static method.
@@ -533,7 +564,7 @@ class SensitiveIO extends CMS_grandFather
 		}
 		return $callInfos;
 	}
-	
+
 	static function printBackTrace($backtrace) {
 		if (!is_array($backtrace)) {
 			return false;
@@ -592,7 +623,7 @@ class SensitiveIO extends CMS_grandFather
 		}
 		return $output;
 	}
-	
+
 	/**
 	  * Convert textBody to HTMLBody, convert all links and \n tags
 	  *
@@ -624,7 +655,7 @@ class SensitiveIO extends CMS_grandFather
 				),$body);
 		return $withNl2Br ? nl2br($HTMLBody) : $HTMLBody;
 	}
-	
+
 	/**
 	  * Check a value for XHTML errors
 	  *
@@ -650,7 +681,7 @@ class SensitiveIO extends CMS_grandFather
 		}
 		return true;
 	}
-	
+
 	/**
 	  * Generate a random ascii key of determined length
 	  *
@@ -668,7 +699,7 @@ class SensitiveIO extends CMS_grandFather
 		}
 		return $key;
 	}
-	
+
 	/**
 	  * Check a value and force reencode of ampersand without double encode them :
 	  * &			=> &amp;
@@ -683,7 +714,7 @@ class SensitiveIO extends CMS_grandFather
 	static function reencodeAmpersand($text) {
 		return preg_replace("/&amp;(#[0-9]+|[a-z]+);/i", "&$1;", str_replace('&', '&amp;', $text));
 	}
-	
+
 	/**
 	  * Decode HTML entities (charset insensitive)
 	  *
@@ -694,7 +725,7 @@ class SensitiveIO extends CMS_grandFather
 	static function decodeEntities($text) {
 		return html_entity_decode($text, ENT_QUOTES, (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8' ? 'ISO-8859-1' : 'UTF-8'));
 	}
-	
+
 	/**
 	  * Encode ISO8859-1 string to UTF8 with support of cp1252 charset
 	  *
@@ -706,7 +737,7 @@ class SensitiveIO extends CMS_grandFather
 		$cp1252Map = io::cp1252ToUtf8Map();
 		return  strtr(utf8_encode($text), $cp1252Map);
 	}
-	
+
 	/**
 	  * Decode String from UTF8 to latin1 with support of cp1252 charset
 	  *
@@ -718,7 +749,7 @@ class SensitiveIO extends CMS_grandFather
 		$cp1252Map = io::cp1252ToUtf8Map();
 		return  utf8_decode(strtr($text, array_flip($cp1252Map)));
 	}
-	
+
 	/**
 	  * Map of CP1252 characters not supported into latin to utf8 encoding
 	  *
@@ -756,7 +787,7 @@ class SensitiveIO extends CMS_grandFather
 		    "\xc2\x9f" => "\xc5\xb8"      /* LATIN CAPITAL LETTER Y WITH DIAERESIS*/
 		);
 	}
-	
+
 	/**
 	  * Map of non-ascii characters to convert in ascii equivalent
 	  *
@@ -765,22 +796,22 @@ class SensitiveIO extends CMS_grandFather
 	  */
 	static function sanitizeAsciiMap() {
 		return array(
-			"\xc0" => "A", "\xc1" => "A", "\xc2" => "A", "\xc3" => "A", "\xc4" => "A", 
-			"\xc5" => "A", "\xc6" => "A", "\xe0" => "a", "\xe1" => "a", "\xe2" => "a", 
-			"\xe3" => "a", "\xe4" => "a", "\xe5" => "a", "\xe6" => "a", "\xd2" => "O", 
-			"\xd3" => "O", "\xd4" => "O", "\xd5" => "O", "\xd5" => "O", "\xd6" => "O", 
-			"\xd8" => "O", "\xf2" => "o", "\xf3" => "o", "\xf4" => "o", "\xf5" => "o", 
-			"\xf6" => "o", "\xf8" => "o", "\xc8" => "E", "\xc9" => "E", "\xca" => "E", 
-			"\xcb" => "E", "\xe8" => "e", "\xe9" => "e", "\xea" => "e", "\xeb" => "e", 
-			"\xf0" => "e", "\xc7" => "C", "\xe7" => "c", "\xd0" => "e", "\xcc" => "I", 
-			"\xcd" => "I", "\xce" => "I", "\xcf" => "I", "\xec" => "i", "\xed" => "i", 
-			"\xee" => "i", "\xef" => "i", "\xd9" => "U", "\xda" => "U", "\xdb" => "U", 
-			"\xdc" => "U", "\xf9" => "u", "\xfa" => "u", "\xfb" => "u", "\xfc" => "u", 
-			"\xd1" => "N", "\xf1" => "n", "\xde" => "t", "\xdf" => "s", "\xff" => "y", 
+			"\xc0" => "A", "\xc1" => "A", "\xc2" => "A", "\xc3" => "A", "\xc4" => "A",
+			"\xc5" => "A", "\xc6" => "A", "\xe0" => "a", "\xe1" => "a", "\xe2" => "a",
+			"\xe3" => "a", "\xe4" => "a", "\xe5" => "a", "\xe6" => "a", "\xd2" => "O",
+			"\xd3" => "O", "\xd4" => "O", "\xd5" => "O", "\xd5" => "O", "\xd6" => "O",
+			"\xd8" => "O", "\xf2" => "o", "\xf3" => "o", "\xf4" => "o", "\xf5" => "o",
+			"\xf6" => "o", "\xf8" => "o", "\xc8" => "E", "\xc9" => "E", "\xca" => "E",
+			"\xcb" => "E", "\xe8" => "e", "\xe9" => "e", "\xea" => "e", "\xeb" => "e",
+			"\xf0" => "e", "\xc7" => "C", "\xe7" => "c", "\xd0" => "e", "\xcc" => "I",
+			"\xcd" => "I", "\xce" => "I", "\xcf" => "I", "\xec" => "i", "\xed" => "i",
+			"\xee" => "i", "\xef" => "i", "\xd9" => "U", "\xda" => "U", "\xdb" => "U",
+			"\xdc" => "U", "\xf9" => "u", "\xfa" => "u", "\xfb" => "u", "\xfc" => "u",
+			"\xd1" => "N", "\xf1" => "n", "\xde" => "t", "\xdf" => "s", "\xff" => "y",
 			"\xfd" => "y",
 		);
 	}
-	
+
 	/**
 	  * Try to detect UTF-8 content
 	  *
@@ -802,11 +833,11 @@ class SensitiveIO extends CMS_grandFather
 		|\xF4[\x80-\x8F][\x80-\xBF]{2}		# plane 16
 		)+%xs', $string);
 	}
-	
+
 	/**
-	  * Generated a Universal Unique Identifier (UUID) generated according to “DCE 1.1: 
-	  * Remote Procedure Call” (Appendix A) CAE (Common Applications Environment) 
-	  * Specifications published by The Open Group in October 1997 
+	  * Generated a Universal Unique Identifier (UUID) generated according to “DCE 1.1:
+	  * Remote Procedure Call” (Appendix A) CAE (Common Applications Environment)
+	  * Specifications published by The Open Group in October 1997
 	  * (Document Number C706, http://www.opengroup.org/public/pubs/catalog/c706.htm).
 	  *
 	  * @return string
@@ -816,7 +847,7 @@ class SensitiveIO extends CMS_grandFather
 		$q = new CMS_query('select UUID() as uuid');
 		return $q->getValue('uuid');
 	}
-	
+
 	/**
 	  * Rewrite some PHP functions to be charset insensitive
 	  *
@@ -863,7 +894,7 @@ class SensitiveIO extends CMS_grandFather
 		$args = func_get_args();
 		return call_user_func_array ($func, $args);
 	}
-	
+
 	/**
 	  * Callback function for natural sorting without care of accentuation
 	  * Usage :
@@ -884,5 +915,5 @@ class SensitiveIO extends CMS_grandFather
   * @package Automne
   * @subpackage common
   */
-class io extends SensitiveIO {} 
+class io extends SensitiveIO {}
 ?>

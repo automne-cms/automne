@@ -26,7 +26,20 @@ Ext.apply(Ext.form.VTypes, {
 //vtype login
 Ext.apply(Ext.form.VTypes, {
     login:  function(v) {
-        return /^[a-zA-Z0-9_.@-]+$/.test(v);
+      if(v.substr(0, 1) === ' ') {
+        // login may not start by a space
+        return false;
+      }
+      if(v.substr(-1) === ' ') {
+        // login may not end by a space
+        return false;
+      }
+      if(v.indexOf('  ') !== -1) {
+        // login may not contains multiple spaces in a row.
+        return false;
+      }
+      // due to the lack of unicode support on js regex the other checks will be done on the server side
+      return true;
     },
     loginText: 'Login must be alphanumeric and lowercase',
     loginMask: /^[a-zA-Z0-9_.@-]+$/
