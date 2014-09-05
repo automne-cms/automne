@@ -132,7 +132,7 @@ case '':
 }
 
 //Send Login form window
-$applicationLabel = io::htmlspecialchars(APPLICATION_LABEL);
+$applicationLabel = io::ellipsis(io::htmlspecialchars(APPLICATION_LABEL),25);
 $loginURL = PATH_ADMIN_WR.'/login-form.php?_ts='.time();
 $rootPath = PATH_REALROOT_WR;
 $jscontent = 
