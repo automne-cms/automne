@@ -477,6 +477,7 @@ class CMS_website extends CMS_grandFather
 			return true;
 		}
 		$this->_altdomains = '';
+		$domains = str_replace(CHR(13).CHR(10),";", $domains);
 		$domains = explode(';', $domains);
 		foreach ($domains as $domain) {
 			if (io::substr($domain, 0, 7) == "http://") {

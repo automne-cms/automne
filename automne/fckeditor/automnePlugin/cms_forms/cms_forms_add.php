@@ -218,6 +218,7 @@ switch ($step) {
 	break;
 	case 2:
 		$fieldTypes = array (
+			"fieldset"	=> "<span fckLang=\"DlgCMSFormsFieldset\">Groupe de champs</span>",
 			"text"		=> "<span fckLang=\"DlgCMSFormsText\">Texte</span>",
 			"email" 	=> "<span fckLang=\"DlgCMSFormsTextEmail\">Texte (Email)</span>",
 			"integer" 	=> "<span fckLang=\"DlgCMSFormsTextInteger\">Texte (Chiffres)</span>",
@@ -273,7 +274,8 @@ switch ($step) {
 		$displayDefault = ($field->getAttribute("type") != 'select' 
 							&& $field->getAttribute("type") != 'submit'
 							&& $field->getAttribute("type") != 'file'
-							&& $field->getAttribute("type") != 'pass') ? 'block':'none';
+							&& $field->getAttribute("type") != 'pass'
+							&& $field->getAttribute("type") != 'fieldset') ? 'block':'none';
 	    $displayParams = ($field->getAttribute("type") == 'file') ? 'block' : 'none';
 		$content .= '
 							<input type="hidden" name="selectValues_new" id="selectValues_new" value="'.$selectValues.'" />

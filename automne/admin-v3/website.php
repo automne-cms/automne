@@ -218,7 +218,7 @@ $content .= '
 	</tr>
 	<tr>
 		<td class="admin" align="right">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_SUB_DOMAINS).'</td>
-		<td class="admin"><input type="text" size="30" class="admin_input_text" name="altdomains" value="'.htmlspecialchars(implode(';', $website->getAltDomains())).'" /><br /><small>'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_SUB_DOMAINS_DESC).'</small></td>
+		<td class="admin"><textarea cols="45" rows="2" class="admin_long_textarea" name="altdomains">'.htmlspecialchars(implode(';'.CHR(13).CHR(10), $website->getAltDomains())).'</textarea><br /><small>'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_SUB_DOMAINS_DESC).'</small></td>	</tr>
 	</tr>
 	<tr>
 		<td class="admin" align="right"><label for="altredir">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_REDIRECT_ALT_DOMAINS).'</label></td>

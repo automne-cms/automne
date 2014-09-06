@@ -14,6 +14,7 @@
 // $Id: en.js,v 1.3 2010/03/08 16:44:19 sebastien Exp $
 
 FCKLang['DlgCMSFormsTitle']			= 'Forms wizard' ;
+FCKLang['DlgCMSFormsFieldset']		= 'Fieldset';
 FCKLang['DlgCMSFormsText']			= 'Text' ;
 FCKLang['DlgCMSFormsTextEmail']		= 'Text (Email)' ;
 FCKLang['DlgCMSFormsTextInteger']	= 'Text (Numbers)' ;
