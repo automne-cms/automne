@@ -10,7 +10,7 @@
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
 // | Author: Frederico Caldeira Knabben (fredck@fckeditor.net)            |
-// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// | Author: Sï¿½bastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
 // $Id: cms_forms.php,v 1.5 2010/03/08 16:44:19 sebastien Exp $
@@ -22,7 +22,7 @@
   * @package Modules
   * @subpackage admin
   * @author Frederico Caldeira Knabben (fredck@fckeditor.net)
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author Sï¿½bastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
 //for this page, HTML output compression is not welcome.
@@ -246,6 +246,8 @@ switch ($step) {
 							}
 							if ($input) {
 								$xhtml .= str_replace(array('{{label}}','{{input}}'),array($label,$input),$xhtmlFieldMask);
+							}else{ 
+								$xhtml .= '<tr class="fieldset"><td colspan="2">'.$label.'</td></tr>'; 
 							}
 						}
 					}
@@ -282,6 +284,7 @@ switch ($step) {
 	case 2:
 	case 3:
 		$fieldTypes = array (
+			"fieldset"	=> "<span fckLang=\"DlgCMSFormsFieldset\">Groupe de champs</span>",
 			"text"		=> "<span fckLang=\"DlgCMSFormsText\">Texte</span>",
 			"email" 	=> "<span fckLang=\"DlgCMSFormsTextEmail\">Texte (Email)</span>",
 			"integer" 	=> "<span fckLang=\"DlgCMSFormsTextInteger\">Texte (Chiffres)</span>",
@@ -397,7 +400,8 @@ switch ($step) {
 				$displayDefault = ($aFormField->getAttribute("type") != 'select' 
 									&& $aFormField->getAttribute("type") != 'submit'
 									&& $aFormField->getAttribute("type") != 'file'
-									&& $aFormField->getAttribute("type") != 'pass') ? 'block':'none';
+									&& $aFormField->getAttribute("type") != 'pass'
+									&& $aFormField->getAttribute("type") != 'fieldset') ? 'block':'none';
 			    $displayParams = ($aFormField->getAttribute("type") == 'file') ? 'block' : 'none';
 				
 				$content .= '

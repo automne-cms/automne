@@ -570,6 +570,10 @@ class CMS_forms_field extends CMS_grandFather {
 		$fieldIDDatas = $this->generateFieldIdDatas();
 		$input = $label = '';
 		switch ($this->getAttribute("type")) {
+			case 'fieldset':
+				$label = $this->getAttribute("label");
+				$input = '';
+			break;
 			case 'hidden':
 				$input = '<input type="hidden" value="'.io::htmlspecialchars($this->getAttribute("value")).'" id="'.$fieldIDDatas.'" name="'.$this->getAttribute("name").'" />';
 			break;

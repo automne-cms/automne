@@ -2,4 +2,5 @@
 	<param name="default_language">fr</param>
 	<param name="default_category">1</param>
 	<param name="editor_toolbar">cms_forms</param>
+	<param name="output">default</param>
 </cms-module-parameters>

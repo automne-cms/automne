@@ -14,6 +14,7 @@
 // $Id: fr.js,v 1.3 2010/03/08 16:44:19 sebastien Exp $
 
 FCKLang['DlgCMSFormsTitle']			= 'Assistant de création de formulaires' ;
+FCKLang['DlgCMSFormsFieldset']		= 'Groupe de champs';
 FCKLang['DlgCMSFormsText']			= 'Texte' ;
 FCKLang['DlgCMSFormsTextEmail']		= 'Texte (Email)' ;
 FCKLang['DlgCMSFormsTextInteger']	= 'Texte (Chiffres)' ;
