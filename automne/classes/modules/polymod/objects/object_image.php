@@ -9,7 +9,7 @@
 // | LICENSE-GPL, and is available through the world-wide-web at		  |
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
-// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// | Author: Sï¿½bastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
 // $Id: object_image.php,v 1.15 2010/03/08 16:43:34 sebastien Exp $
@@ -21,7 +21,7 @@
   *
   * @package Automne
   * @subpackage polymod
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author Sï¿½bastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
 class CMS_object_image extends CMS_object_common
@@ -840,6 +840,11 @@ class CMS_object_image extends CMS_object_common
 					@unlink(PATH_MODULES_FILES_FS.'/'.$moduleCodename.'/'.RESOURCE_DATA_LOCATION_EDITED.'/'.$values[$prefixName.$this->_field->getID().'_2_hidden']);
 					$this->_subfieldValues[2]->setValue('');
 				}
+			}
+			// Added on 08/02/2013 - If no label found, use filename instead
+			// For use image upload field on a front atm-form
+			if($values[$prefixName.$this->_field->getID().'_1'] == null && isset($_FILES[$prefixName.$this->_field->getID().'_0'])){
+				$values[$prefixName.$this->_field->getID().'_1'] = $_FILES[$prefixName.$this->_field->getID().'_0']['name'];
 			}
 			//set label from label field
 			if (!$this->_subfieldValues[1]->setValue(io::htmlspecialchars(@$values[$prefixName.$this->_field->getID().'_1']))) {
