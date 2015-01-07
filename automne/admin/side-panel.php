@@ -18,7 +18,7 @@
   * PHP page : Load side panel infos.
   * Presents north panel with connection infos and logo and center panel with all administration panels according to user rights
   * Used accross an Ajax request render Automne side panel
-  * 
+  *
   * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
@@ -253,7 +253,7 @@ foreach ($modules as $module) {
 	if ($module->hasAdmin()
 		&& $module->getCodename() != MOD_STANDARD_CODENAME
 		&& $cms_user->hasModuleClearance($module->getCodename(), CLEARANCE_MODULE_EDIT)) {
-		
+
 		$modLabel = sensitiveIO::sanitizeJSString($module->getLabel($cms_language));
 		if ($modLabel) {
 			$contentEl = '
@@ -416,9 +416,11 @@ if ($cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_REGENERATEPAGES) || $c
 			<li><div class="atm-modules atm-sidepic"></div><a atm:action="modules" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_MODULES_MANAGEMENT).'</a></li>
 			<li><div class="atm-websites atm-sidepic"></div><a atm:action="websites" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_SITE_MANAGEMENT).'</a></li>
 			<li><div class="atm-languages atm-sidepic"></div><a atm:action="languages" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_LANGUAGE_MANAGEMENT).'</a></li>
-			<li><div class="atm-separator"></div></li>
-			<li><div class="atm-database atm-sidepic"></div><a href="'.PATH_PHPMYADMIN_WR.'" target="_blank">'.$cms_language->getMessage(MESSAGE_PAGE_DATABASE).'</a></li>
-			<li><div class="atm-server atm-sidepic"></div><a atm:action="server" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_SERVER_SETTINGS).'</a></li>
+			<li><div class="atm-separator"></div></li>';
+		if(!defined('DISABLE_PHP_MYADMIN')) {
+			$contentEl .= '<li><div class="atm-database atm-sidepic"></div><a href="'.PATH_PHPMYADMIN_WR.'" target="_blank">'.$cms_language->getMessage(MESSAGE_PAGE_DATABASE).'</a></li>';
+		}
+		$contentEl .= '<li><div class="atm-server atm-sidepic"></div><a atm:action="server" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_SERVER_SETTINGS).'</a></li>
 			<li><div class="atm-parameters atm-sidepic"></div><a atm:action="parameters" href="#">'.$cms_language->getMessage(MESSAGE_PAGE_AUTUMN_SETTINGS).'</a></li>';
 	}
 	$contentEl .= '
@@ -486,7 +488,7 @@ $jscontent = <<<END
 		},
 		scope:this}
 	});
-	
+
 	// Panel for the north
 	var top = new Ext.Panel({
 		id:				'sidePanel-north',
@@ -521,7 +523,7 @@ $jscontent = <<<END
 				win.show(Ext.get('headPanelAutomneHelp'));
 			}, this);
 			Ext.get('headPanelAutomneHelp').addClassOnOver('over');
-			
+
 			//side panel collapse stick
 			var panelStick = Ext.get('headPanelStick');
 			panelStick.addClassOnOver('over');
@@ -548,14 +550,14 @@ $jscontent = <<<END
 		},
 		scope:this}
 	});
-	
+
 	//add panel regions
 	sidePanel.add(top);
 	sidePanel.add(center);
-	
+
 	//redo layout
 	sidePanel.doLayout();
-	
+
 	var openWindow = function(t, url, params, width, height, popupable) {
 		var action = t.getAttributeNS('atm', 'action' );
 		//create window element
@@ -575,7 +577,7 @@ $jscontent = <<<END
 		win.show(t);
 		return win;
 	}
-	
+
 	var actions = {
     	'validations' : function(t){
     		var win = openWindow(t, 'validations.php', {
@@ -730,7 +732,7 @@ $jscontent = <<<END
 			}, 750, 580, true);
     	}
     };
-	
+
 	//help windows
 	var tplHelp = Ext.get('template-help-button');
 	if (tplHelp) {

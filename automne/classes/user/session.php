@@ -9,7 +9,7 @@
 // | LICENSE-GPL, and is available through the world-wide-web at		  |
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
-// | Author: S�bastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 
 /**
@@ -19,13 +19,13 @@
   *
   * @package Automne
   * @subpackage user
-  * @author S�bastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
 class CMS_session extends CMS_grandFather
 {
 	const MESSAGE_USER_JS_LOCALES = 1547;
-	
+
 	/**
 	  * User DB ID
 	  *
@@ -33,7 +33,7 @@ class CMS_session extends CMS_grandFather
 	  * @access private
 	  */
 	private static $_userID = 0;
-	
+
 	/**
 	  * Bookmark for a page of data
 	  *
@@ -41,7 +41,7 @@ class CMS_session extends CMS_grandFather
 	  * @access private
 	  */
 	private static $_bookmark = 1;
-	
+
 	/**
 	  * How many per page of data by default ?
 	  *
@@ -49,7 +49,7 @@ class CMS_session extends CMS_grandFather
 	  * @access private
 	  */
 	private static $_recordsPerPage = 30;
-	
+
 	/**
 	  * Page DB ID
 	  *
@@ -57,7 +57,7 @@ class CMS_session extends CMS_grandFather
 	  * @access private
 	  */
 	private static $_pageID;
-	
+
 	/**
 	  * User tokens
 	  *
@@ -65,7 +65,7 @@ class CMS_session extends CMS_grandFather
 	  * @access private
 	  */
 	private static $_token;
-	
+
 	/**
 	  * User use permanent session
 	  *
@@ -73,7 +73,7 @@ class CMS_session extends CMS_grandFather
 	  * @access private
 	  */
 	private static $_permanent = false;
-	
+
 	/**
 	  * Authentification result
 	  *
@@ -81,12 +81,12 @@ class CMS_session extends CMS_grandFather
 	  * @access private
 	  */
 	private static $_result;
-	
+
 	/**
      * Constructor overriding - make sure that a developer cannot instantiate
      */
     protected function __construct(){}
-	
+
 	/**
 	  * Start session and load existant user if any
 	  *
@@ -98,7 +98,7 @@ class CMS_session extends CMS_grandFather
 		if (!@function_exists('session_name')) {
 		    die('Session is not available');
 		} elseif (ini_get('session.auto_start') == true && session_name() != 'AutomneSession') {
-		    // Do not delete the existing session, it might be used by other 
+		    // Do not delete the existing session, it might be used by other
 		    // applications; instead just close it.
 		    session_write_close();
 		}
@@ -106,19 +106,51 @@ class CMS_session extends CMS_grandFather
 		if (session_name() == 'AutomneSession') {
 			return;
 		}
-		
+
 		//check session dir as writable
 		$sessionPath = session_save_path();
-		if ($sessionPath && !@is_writable($sessionPath)) {
+		if ($sessionPath && @is_dir($sessionPath) && !@is_writable($sessionPath)) {
 			if(PATH_PHP_TMP && @is_dir(PATH_PHP_TMP) && is_object(@dir(PATH_PHP_TMP)) && is_writable(PATH_PHP_TMP)) {
 				$sessionPath = PATH_PHP_TMP;
 			} elseif (@is_dir(PATH_TMP_FS) && is_object(@dir(PATH_TMP_FS)) && is_writable(PATH_TMP_FS)){
 				$sessionPath = PATH_TMP_FS;
 			} else {
-				CMS_grandFather::raiseError('Can\'t found writable session path ...');
+				CMS_grandFather::raiseError('Can\'t find writable session path ...');
 			}
 		}
-		
+		else {
+			// $sessionPath is not a directory, we need to specify the save handler to Zend_Session
+			$iniHandler = ini_get('session.save_handler');
+			switch ($iniHandler) {
+				case 'memcached':
+				case 'memcache':
+                    $saveHandler = new Zend_Session_SaveHandler_Cache();
+                    $urlParts = parse_url($sessionPath);
+                    $backendOptions = array();
+                    if($urlParts !== false && isset($urlParts['host']) && isset($urlParts['port'])) {
+                        $backendOptions = array(
+                        'servers' => array(array(
+                            'host'   => $urlParts['host'],
+                            'port'   => $urlParts['port'],
+                        ))
+                      );
+                    }
+                    $backendName = ($iniHandler === 'memcached') ? 'Libmemcached' : 'Memcached';
+                    $_cache = Zend_Cache::factory('Core', $backendName, array(), $backendOptions);
+                    $saveHandler->setCache($_cache);
+                    Zend_Session::setSaveHandler($saveHandler);
+
+                    // disable phpmyadmin link as the sso mecanism isn't working
+                    if(!defined('DISABLE_PHP_MYADMIN')) {
+                        define('DISABLE_PHP_MYADMIN',true);
+                    }
+				default:
+					// do nothing
+					break;
+			}
+
+		}
+
 		Zend_Session::setOptions(array(
 			'name'					=> 'AutomneSession',
 			'gc_maxlifetime'		=> APPLICATION_SESSION_TIMEOUT,
@@ -134,7 +166,7 @@ class CMS_session extends CMS_grandFather
 			'remember_me_seconds'	=> (60 * 60 * 24 * APPLICATION_COOKIE_EXPIRATION),
 			'use_trans_sid'			=> false,	//remove session trans sid to prevent session fixation
 		));
-		
+
 		try {
 			Zend_Session::start();
 		} catch (Zend_Session_Exception $e) {
@@ -143,10 +175,10 @@ class CMS_session extends CMS_grandFather
 		//Then load existant user if any without launching authentification process
 		CMS_session::authenticate(array('authenticate' => false));
 	}
-	
+
 	/**
 	  * Authenticate user
-	  * This method can 
+	  * This method can
 	  * - authenticate user throught authentification process
 	  * - load already authenticated user in current session (or SSO)
 	  * - disconnect user
@@ -169,10 +201,10 @@ class CMS_session extends CMS_grandFather
 	public static function authenticate($params = array()) {
 		//first clean old sessions datas from database
 		CMS_session::_cleanSessions();
-		
+
 		// Get Zend Auth instance
 		$auth = Zend_Auth::getInstance();
-		
+
 		// Use CMS_auth as session storage space
 		$auth->setStorage(new Zend_Auth_Storage_Session('atm-auth'));
 		//set authentification type
@@ -198,7 +230,7 @@ class CMS_session extends CMS_grandFather
 					$log->logMiscAction(CMS_log::LOG_ACTION_DISCONNECT, $user, 'IP: '.@$_SERVER['REMOTE_ADDR'].', UA: '.@$_SERVER['HTTP_USER_AGENT']);
 				}
 			}
-			
+
 			//clear session content
 			CMS_session::deleteSession(true);
 			if (!isset($params['authenticate'])) {
@@ -230,13 +262,17 @@ class CMS_session extends CMS_grandFather
 					$auth->getStorage()->write($storageValue);
 					//get module auth adapter
 					$authAdapter = $module->getAuthAdapter($params);
-					
+                    if(!$authAdapter) {
+                        $module = array_pop($modules);
+                        continue;
+                    }
+
 					//authenticate user
 					self::$_result = $auth->authenticate($authAdapter);
-					
+
 					//To debug Auth process easily, discomment this line
 					//CMS_grandFather::log($_SERVER['SCRIPT_NAME'].' - '.$module->getCodename().' - Auth type : '.$authType.'/'.$params['type'].' - Auth result : '.self::$_result->getCode().($auth->hasIdentity() ? ' - Identity : '.$auth->getIdentity() : '').' - Message : '.(sizeof(self::$_result->getMessages()) == 1 ? array_pop(self::$_result->getMessages()) : print_r(self::$_result->getMessages(), true)));
-					
+
 					switch (self::$_result->getCode()) {
 						case Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND: //user crendentials does not exists (ex: no login/pass provided)
 					        //nothing for now
@@ -274,16 +310,16 @@ class CMS_session extends CMS_grandFather
 				break;
 			}
 		}
-		
+
 		//if authenticated : set or refresh session datas in table, regenerate session Id
 		if ($authenticated && $user) {
 			$q = new CMS_query("
-			select 
+			select
 				id_ses, cookie_expire_ses
-			from 
-				sessions 
-			where 
-				phpid_ses='".sensitiveIO::sanitizeSQLString(Zend_Session::getId())."' 
+			from
+				sessions
+			where
+				phpid_ses='".sensitiveIO::sanitizeSQLString(Zend_Session::getId())."'
 				and user_ses='".sensitiveIO::sanitizeSQLString($user->getUserId())."'");
 			//get old session Id
 			$oldSessionId = Zend_Session::getId();
@@ -296,19 +332,19 @@ class CMS_session extends CMS_grandFather
 				}*/
 				$r = $q->getArray();
 				$id = $r['id_ses'];
-				
+
 				//Cookie
 				if (self::$_permanent || $r['cookie_expire_ses'] != '0000-00-00 00:00:00') {
 					self::$_permanent = true;
-					
+
 					// Cookie expire in APPLICATION_COOKIE_EXPIRATION days
 					$expires = time() + 60*60*24*APPLICATION_COOKIE_EXPIRATION;
 					CMS_session::setCookie(CMS_session::getAutoLoginCookieName(), base64_encode($id.'|'.Zend_Session::getId()), $expires);
 				}
 				//DB session
 				$sql = "
-					update 
-						sessions 
+					update
+						sessions
 					set
 						lastTouch_ses=NOW(),
 						user_ses='".sensitiveIO::sanitizeSQLString($user->getUserId())."',
@@ -321,25 +357,25 @@ class CMS_session extends CMS_grandFather
 				$sql .= "
 					where
 					 	id_ses='".sensitiveIO::sanitizeSQLString($id)."'";
-				
+
 				$q = new CMS_query($sql);
-				
+
 				//if autologin : log it
 				if (in_array(CMS_auth::AUTH_AUTOLOGIN_VALID, self::$_result->getMessages())) {
 					//log autologin session
 					$log = new CMS_log();
 					$log->logMiscAction(CMS_log::LOG_ACTION_AUTO_LOGIN, $user, 'IP: '.@$_SERVER['REMOTE_ADDR'].', UA: '.@$_SERVER['HTTP_USER_AGENT']);
 				}
-				
+
 			} else { //otherwhise, create user session
 				//regenerate session Id
 				Zend_Session::regenerateId();
 				//delete old session record if any
 				$q = new CMS_query("
 					delete
-					from 
-						sessions 
-					where 
+					from
+						sessions
+					where
 						phpid_ses='".sensitiveIO::sanitizeSQLString($oldSessionId)."'");
 				//insert new session record
 				$sql = "
@@ -356,7 +392,7 @@ class CMS_session extends CMS_grandFather
 					cookie_expire_ses = DATE_ADD(NOW(), INTERVAL ".APPLICATION_COOKIE_EXPIRATION." DAY)";
 				}
 				$q = new CMS_query($sql);
-				
+
 				if (!$q->hasError() && self::$_permanent) {
 					// Cookie expire in APPLICATION_COOKIE_EXPIRATION days
 					$expires = time() + 60*60*24*APPLICATION_COOKIE_EXPIRATION;
@@ -377,7 +413,7 @@ class CMS_session extends CMS_grandFather
 		//for backward compatibility
 		$_SESSION["cms_context"] = new CMS_context();
 	}
-	
+
 	/**
 	  * Clean old sessions datas
 	  *
@@ -405,9 +441,9 @@ class CMS_session extends CMS_grandFather
 			// Remove locks
 			while ($usr = $q->getValue("user_ses")) {
 				$sql = "
-					delete from 
-						locks 
-					where 
+					delete from
+						locks
+					where
 						locksmithData_lok='".io::sanitizeSQLString($usr)."'
 				";
 				$qry = new CMS_query($sql);
@@ -415,7 +451,7 @@ class CMS_session extends CMS_grandFather
 		 	// Delete all old sessions
 			$sql = "
 				delete from
-					sessions 
+					sessions
 				where
 					(
 						UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(lastTouch_ses) > ".io::sanitizeSQLString(APPLICATION_SESSION_TIMEOUT)."
@@ -428,7 +464,7 @@ class CMS_session extends CMS_grandFather
 			$q = new CMS_query($sql);
 		}
 	}
-	
+
 	/**
 	  * Delete current session datas
 	  *
@@ -470,10 +506,10 @@ class CMS_session extends CMS_grandFather
 		//remove phpMyAdmin cookies if any
 		@setcookie(session_name(), false, time() - 3600, PATH_REALROOT_WR.'/automne/phpMyAdmin/', '', 0);
 		@setcookie('phpMyAdmin', false, time() - 3600, PATH_REALROOT_WR.'/automne/phpMyAdmin/', '', 0);
-		
+
 		return true;
 	}
-	
+
 	/**
 	  * Get user object
 	  *
@@ -486,7 +522,7 @@ class CMS_session extends CMS_grandFather
 		}
 		return CMS_profile_usersCatalog::getByID(self::$_userID);
 	}
-	
+
 	/**
 	  * Get user DB ID
 	  *
@@ -496,7 +532,7 @@ class CMS_session extends CMS_grandFather
 	public static function getUserID() {
 		return self::$_userID;
 	}
-	
+
 	/**
 	  * Get permanent status for the session
 	  *
@@ -506,7 +542,7 @@ class CMS_session extends CMS_grandFather
 	public static function getPermanent() {
 		return self::$_permanent;
 	}
-	
+
 	/**
 	  * Get authentification result
 	  *
@@ -516,7 +552,7 @@ class CMS_session extends CMS_grandFather
 	public static function getAuthResult() {
 		return self::$_result;
 	}
-	
+
 	/**
 	  * Set Bookmark
 	  *
@@ -527,11 +563,11 @@ class CMS_session extends CMS_grandFather
 	public static function setBookmark($bookmark) {
 		if (io::isPositiveInteger($bookmark)) {
 			self::$_bookmark = $bookmark;
-		} else {	
+		} else {
 			$this->raiseError("Incorrect bookmark type");
 		}
 	}
-	
+
 	/**
 	  * Get Bookmark
 	  *
@@ -541,7 +577,7 @@ class CMS_session extends CMS_grandFather
 	public static function getBookmark() {
 		return self::$_bookmark;
 	}
-	
+
 	/**
 	  * Set The number of records per page
 	  *
@@ -552,11 +588,11 @@ class CMS_session extends CMS_grandFather
 	public static function setRecordsPerPage($howMany) {
 		if (SensitiveIO::isPositiveInteger($howMany)) {
 			self::$_recordsPerPage = $howMany;
-		} else {	
+		} else {
 			$this->raiseError("Not a positive value");
 		}
 	}
-	
+
 	/**
 	  * Get the number of records per page
 	  *
@@ -566,7 +602,7 @@ class CMS_session extends CMS_grandFather
 	public static function getRecordsPerPage() {
 		return self::$_recordsPerPage;
 	}
-	
+
 	/**
 	  * Set Page
 	  *
@@ -582,7 +618,7 @@ class CMS_session extends CMS_grandFather
 			$this->raiseError("Incorrect Page type");
 		}
 	}
-	
+
 	/**
 	  * Get Page
 	  *
@@ -597,7 +633,7 @@ class CMS_session extends CMS_grandFather
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Get Page ID
 	  *
@@ -611,7 +647,7 @@ class CMS_session extends CMS_grandFather
 		}
 		return $sessionNS->pageId;
 	}
-	
+
 	/**
 	  * Sets session variable
 	  *
@@ -625,9 +661,9 @@ class CMS_session extends CMS_grandFather
 		$sessionNS->{$name} = $value;
 		return $value;
 	}
-	
+
 	/**
-	  *  Gets session variable with name 
+	  *  Gets session variable with name
 	  *
 	  * @param string $name
 	  * @return void
@@ -637,11 +673,11 @@ class CMS_session extends CMS_grandFather
 		$sessionNS = new Zend_Session_Namespace('atm-context');
 		return isset($sessionNS->{$name}) ? $sessionNS->{$name} : null;
 	}
-	
+
 	/**
 	  * Sets a cookie given at least its name
 	  * If value is empty, deletes cookie
-	  * 
+	  *
 	  * @param string $name, cookie name
 	  * @param string $value, the value to store
 	  * @param int $expire, represents time in which cookie will expire
@@ -658,10 +694,10 @@ class CMS_session extends CMS_grandFather
 			@setcookie($name, $value, $expire, "/", APPLICATION_COOKIE_DOMAIN, 0, true);
 		}
 	}
-	
+
 	/**
 	  * Get autologin cookie name
-	  * 
+	  *
 	  * @return string : the autologin cookie name
 	  * @access public
 	  * @static
@@ -671,7 +707,7 @@ class CMS_session extends CMS_grandFather
 		$sanitized = io::sanitizeAsciiString($input, '', '_-');
 		return $sanitized;
 	}
-	
+
 	/**
 	  * Test auto login through cookie
 	  *
@@ -686,10 +722,10 @@ class CMS_session extends CMS_grandFather
 		}
 		return in_array(CMS_auth::AUTH_AUTOLOGIN_VALID, $result->getMessages()) || CMS_auth::autoLoginActive();
 	}
-	
+
 	/**
 	  * Get current session infos
-	  * 
+	  *
 	  * @return array : the user session infos
 	  * @access public
 	  * @static
@@ -718,10 +754,10 @@ class CMS_session extends CMS_grandFather
 		$sessionInfos['debug'] += (STATS_DEBUG) ? 2 : 0;
 		$sessionInfos['debug'] += (POLYMOD_DEBUG) ? 4 : 0;
 		$sessionInfos['debug'] += (VIEW_SQL) ? 8 : 0;
-		
+
 		return $sessionInfos;
 	}
-	
+
 	/**
 	  * Get all JS locales for current user (in current language)
 	  *
@@ -736,16 +772,16 @@ class CMS_session extends CMS_grandFather
 		}
 		//add all JS locales
 		$language = $user->getLanguage();
-		
+
 		$languageCode = $language->getCode();
-		
+
 		//Get Ext locales
 		if ($languageCode != 'en') { //english is defined as default language so we should not add it again
 			$extLocaleFile = PATH_MAIN_FS.'/ext/src/locale/ext-lang-'.$languageCode.'.js';
 			if (file_exists($extLocaleFile)) {
 				$fileContent = file_get_contents($extLocaleFile);
 				//remove BOM if any
-				if(substr($fileContent, 0, 3) == '﻿') {
+				if(substr($fileContent, 0, 3) == 'ï»¿') {
 					$fileContent = substr($fileContent, 3);
 				}
 				$locales .= (io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? utf8_decode($fileContent) : $fileContent;
@@ -755,7 +791,7 @@ class CMS_session extends CMS_grandFather
 		$locales .= $language->getMessage(self::MESSAGE_USER_JS_LOCALES);
 		return $locales;
 	}
-	
+
 	/**
 	  * Get a unique session token value for given token name
 	  *
@@ -794,7 +830,7 @@ class CMS_session extends CMS_grandFather
 		//return token value
 		return $tokens[$name];
 	}
-	
+
 	/**
 	  * Check a session token value for a given token name
 	  *
@@ -821,12 +857,12 @@ class CMS_session extends CMS_grandFather
 		//check if token exists, verify value and is too old
 		if (isset($tokens[$name]) && $tokens[$name] == $token && ($time - $tokensTime[$name]) > SESSION_TOKEN_MAXAGE) {
 			//token exists, is correct but too old, return true and set token as expired
-			
+
 			//set old token into expired tokens
 			$expiredTokens[$name] = $tokens[$name];
 			$tokensTime[$name] = $time;
 			unset($tokens[$name]);
-			
+
 			//save tokens datas
 			$tokensDatas = array(
 				'tokens'	=> $tokens,
@@ -834,7 +870,7 @@ class CMS_session extends CMS_grandFather
 				'expired'	=> $expiredTokens
 			);
 			CMS_session::setSessionVar('atm-tokens', $tokensDatas);
-			
+
 			return true;
 		}
 		//check if token expired but into expiration time
@@ -845,7 +881,7 @@ class CMS_session extends CMS_grandFather
 		//in all other cases, return false
 		return false;
 	}
-	
+
 	/**
 	  * Force a token expiration
 	  *
@@ -862,7 +898,7 @@ class CMS_session extends CMS_grandFather
 		CMS_session::setSessionVar('atm-tokens', $tokensDatas);
 		return true;
 	}
-	
+
 	/**
 	  * Check if a session token is expired for a given token name
 	  *
@@ -886,7 +922,7 @@ class CMS_session extends CMS_grandFather
 		}
 		return false;
 	}
-	
+
 	/**
 	  * Get current context hash (usually used for cache)
 	  *
@@ -920,7 +956,7 @@ class CMS_session extends CMS_grandFather
 		//sort post datas
 		ksort($aContextRef['post']);
 		$return = md5(serialize($aContextRef));
-		
+
 		return $return;
 	}
 }
