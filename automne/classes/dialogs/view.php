@@ -595,6 +595,7 @@ class CMS_view extends CMS_grandFather
 				$title = ($this->_title) ? '<title>'.APPLICATION_LABEL.' :: '.$this->_title.'</title>' : '';
 				echo '<head>
 						<meta http-equiv="Content-Type" content="text/html; charset='.APPLICATION_DEFAULT_ENCODING.'" />
+<meta http-equiv="X-UA-Compatible" content="IE=10" />
 						'.$title.'
 						'.$this->_copyright().'
 						<meta name="generator" content="'.CMS_grandFather::SYSTEM_LABEL.'" />
