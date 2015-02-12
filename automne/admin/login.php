@@ -160,7 +160,6 @@ $jscontent =
 	//show front page in tab
 	if ('{$cms_action}' != 'reconnect') {
 		Automne.tabPanels.getActiveTab().setFrameURL('{$rootPath}/');
-		Automne.tabPanels.getActiveTab().reload();
 	}
 	//display login error window if any
 	{$loginError}
