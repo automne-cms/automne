@@ -67,7 +67,7 @@ class CMS_modulePolymodValidation extends CMS_module
 	  * @return object The module tag representation instance
 	  * @access public
 	  */
-	function getTagRepresentation($tag, $args)
+	function getTagRepresentation($tag, $args, $compatArgs = false)
 	{
 		switch ($tag->getName()) {
 			case "atm-clientspace":
