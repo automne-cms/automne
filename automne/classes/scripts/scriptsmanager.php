@@ -122,7 +122,7 @@ class CMS_scriptsManager
 				);
 				$command = str_ireplace(array_keys($replace), $replace, $command);
 				if (!@touch (PATH_WINDOWS_BIN_FS."/script.bat")) {
-					CMS_grandFather::_raiseError("CMS_scriptsManager : startScript : Create file error : ".PATH_WINDOWS_BIN_FS."/script.bat");
+					CMS_grandFather::raiseError("CMS_scriptsManager : startScript : Create file error : ".PATH_WINDOWS_BIN_FS."/script.bat");
 					return false;
 				}
 				$fh = @fopen( PATH_WINDOWS_BIN_FS."/script.bat", "wb" );

@@ -68,7 +68,7 @@ class CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	public function _raiseError($errorMessage, $encodeOutput = false, $error = true) {
+	public static function _raiseError($errorMessage, $encodeOutput = false, $error = true) {
 		static $errorNumber;
 		$systemDebug = (!defined('SYSTEM_DEBUG')) ? true : SYSTEM_DEBUG;
 		if (isset($this) && isset($this->_debug) && $this->_debug === NULL) {
@@ -204,7 +204,7 @@ class CMS_grandFather
 							16384				=> 'User deprecated', //E_USER_DEPRECATED - numeric value because only supported from PHP 5.3
 						);
 		$errorLabel = isset($errortype[$errno]) ? $errortype[$errno] : 'Error '.$errno;
-		CMS_grandFather::_raiseError('PHP '.$errorLabel.' : '.$errstr.' line '.$errline.' of file '.$errfile);
+		CMS_grandFather::raiseError('PHP '.$errorLabel.' : '.$errstr.' line '.$errline.' of file '.$errfile);
 		return true;
 	}
 

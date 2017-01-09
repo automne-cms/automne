@@ -174,7 +174,7 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 						$attrWhere .= $and." ".$attrName." in (".implode(',',$attrValue).")";
 					}
 				} else {
-					CMS_grandFather::_raiseError(__CLASS__.' : '.__FUNCTION__.' : attrName must be in availableAttrs array');
+					CMS_grandFather::raiseError(__CLASS__.' : '.__FUNCTION__.' : attrName must be in availableAttrs array');
 				}
 			}
 		}
