@@ -151,7 +151,7 @@ class CMS_row extends CMS_grandFather
 		$this->_groups = new CMS_stack();
 		if ($id) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
-				$this->raiseError("Id is not a positive integer");
+				$this->setError("Id is not a positive integer");
 				return;
 			}
 			$sql = "
@@ -177,7 +177,7 @@ class CMS_row extends CMS_grandFather
 				$this->_tplfilter = trim($data["tplfilter_row"]) ? explode(';', $data["tplfilter_row"]) : array();
 				$this->_uuid = $data["uuid_row"];
 			} else {
-				$this->raiseError("Unknown id :".$id);
+				$this->setError("Unknown id :".$id);
 			}
 		}
 	}
@@ -373,7 +373,7 @@ class CMS_row extends CMS_grandFather
 	function setFilteredTemplates($tplsFilter)
 	{
 		if (!is_array($tplsFilter)) {
-			$this->_raiseError('$tplsFilter must be an array of page Ids.');
+			$this->_setError('$tplsFilter must be an array of page Ids.');
 			return false;
 		}
 		$this->_tplfilter = $tplsFilter;
@@ -426,7 +426,7 @@ class CMS_row extends CMS_grandFather
 			$this->_parseDefinitionFile($modulesTreatment);
 		}
 		if (!$this->_blocks) {
-			$this->raiseError("No blocks tags found in row definition");
+			$this->setError("No blocks tags found in row definition");
 			return false;
 		}
 		foreach ($this->_blocks as $block) {
@@ -434,7 +434,7 @@ class CMS_row extends CMS_grandFather
 				return $block;
 			}
 		}
-		$this->raiseError("No block tag found in row with id : ".$blockID);
+		$this->setError("No block tag found in row with id : ".$blockID);
 		return false;
 	}
 
@@ -465,7 +465,7 @@ class CMS_row extends CMS_grandFather
 	  */
 	function hasUserRight(&$cms_user, $right = CLEARANCE_MODULE_VIEW) {
 		if (!is_a($cms_user, 'CMS_profile_user')) {
-			$this->raiseError("cms_user must be a valid CMS_profile_user");
+			$this->setError("cms_user must be a valid CMS_profile_user");
 			return false;
 		}
 		//useless
@@ -587,12 +587,12 @@ class CMS_row extends CMS_grandFather
 				try {
 					$domdocument->loadXML('<row>'.$data.'</row>');
 				} catch (DOMException $e) {
-					//$this->raiseError('Parse error for row : Page '.$page->getID().' - Row "'.$this->getTagID().'" : '.$e->getMessage());
+					//$this->setError('Parse error for row : Page '.$page->getID().' - Row "'.$this->getTagID().'" : '.$e->getMessage());
 					//$data = '<div class="atm-error-block atm-block-helper">'.$language->getMessage(self::MESSAGE_BLOCK_CONTENT_ERROR).'</div>';
 					//$domdocument = new CMS_DOMDocument();
 					//$domdocument->loadXML('<row>'.$data.'</row>');
 					
-					$this->raiseError('Parse error for row : '.$e->getMessage()." :\n".$data, true);
+					$this->setError('Parse error for row : '.$e->getMessage()." :\n".$data, true);
 					return '';
 				}
 				$rowNodes = $domdocument->getElementsByTagName('row');
@@ -620,7 +620,7 @@ class CMS_row extends CMS_grandFather
 					try {
 						$domdocument->loadXML('<row><div class="atm-dummy-row-tag">'.$data.'</div></row>');
 					} catch (DOMException $e) {
-						$this->raiseError('Parse error for row : '.$e->getMessage()." :\n".$data, true);
+						$this->setError('Parse error for row : '.$e->getMessage()." :\n".$data, true);
 						return '';
 					}
 					$rowNodes = $domdocument->getElementsByTagName('row');
@@ -671,7 +671,7 @@ class CMS_row extends CMS_grandFather
 			$data = '<?php /* Start row ['.$this->getLabel().' - '.$this->getDefinitionFileName().'] */?>'.$data.'<?php /* End row ['.$this->getLabel().' - '.$this->getDefinitionFileName().'] */?>';
 			return $data;
 		} else {
-			$this->raiseError('Can not use row template file '.$this->_definitionFile);
+			$this->setError('Can not use row template file '.$this->_definitionFile);
 			return false;
 		}
 	}
@@ -688,7 +688,7 @@ class CMS_row extends CMS_grandFather
 			$filename = PATH_TEMPLATES_ROWS_FS."/".$this->_definitionFile;
 			$tplrow = new CMS_file(PATH_TEMPLATES_ROWS_FS."/".$this->_definitionFile);
 			if (!$tplrow->exists()) {
-				$this->raiseError('Can not found row template file '.PATH_TEMPLATES_ROWS_FS."/".$this->_definitionFile);
+				$this->setError('Can not found row template file '.PATH_TEMPLATES_ROWS_FS."/".$this->_definitionFile);
 				return true;
 			}
 			$modulesTreatment->setDefinition($tplrow->readContent());
@@ -696,11 +696,11 @@ class CMS_row extends CMS_grandFather
 			if (is_array($this->_blocks)) {
 				return false;
 			} else {
-				$this->raiseError("Malformed definition file : ".$this->_definitionFile."<br />".$modulesTreatment->getParsingError());
+				$this->setError("Malformed definition file : ".$this->_definitionFile."<br />".$modulesTreatment->getParsingError());
 				return $modulesTreatment->getParsingError();
 			}
 		} else {
-			$this->raiseError('No row definition file found for row : '.$this->getLabel());
+			$this->setError('No row definition file found for row : '.$this->getLabel());
 			return true;
 		}
 	}
@@ -773,7 +773,7 @@ class CMS_row extends CMS_grandFather
 			}
 			return true;
 		} else {
-			$this->raiseError('Trying to set an empty group or which contains illegal characters');
+			$this->setError('Trying to set an empty group or which contains illegal characters');
 			return false;
 		}
 	}
@@ -790,7 +790,7 @@ class CMS_row extends CMS_grandFather
 			$this->_groups->del($group);
 			return true;
 		} else {
-			$this->raiseError('Trying to remove an empty group');
+			$this->setError('Trying to remove an empty group');
 			return false;
 		}
 	}

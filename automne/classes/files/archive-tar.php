@@ -122,7 +122,20 @@ class CMS_tar_file extends CMS_archive
 
 			while ($block = fread($fp, 512)) {
 				$temp = unpack("a100name/a8mode/a8uid/a8gid/a12size/a12mtime/a8checksum/a1type/a100temp/a6magic/a2temp/a32temp/a32temp/a8temp/a8temp/a155prefix/a12temp", $block);
-				$file = array ('name' => $temp['prefix'].$temp['name'], 'stat' => array (2 => $temp['mode'], 4 => octdec($temp['uid']), 5 => octdec($temp['gid']), 7 => octdec($temp['size']), 9 => octdec($temp['mtime']),), 'checksum' => octdec($temp['checksum']), 'type' => $temp['type'], 'magic' => $temp['magic'],);
+				$file = array (
+					'name' => trim($temp['prefix'].$temp['name']),
+					'stat' => array (
+						2 => $temp['mode'], 
+						4 => octdec($temp['uid']), 
+						5 => octdec($temp['gid']), 
+						7 => octdec($temp['size']), 
+						9 => octdec($temp['mtime']),
+					), 
+					'checksum' => octdec($temp['checksum']), 
+					'type' => $temp['type'], 
+					'magic' => $temp['magic'],
+				);
+				
 				if ($file['checksum'] == 0x00000000) {
 					break;
 				} else

@@ -46,7 +46,7 @@ class CMS_poly_module_structure {
 	  * @access public
 	  * @static
 	  */
-	function getModuleStructure($module, $withObjectInfos = false) {
+	public static function getModuleStructure($module, $withObjectInfos = false) {
 		$sql = "select
 					object_id_mof as objectID,
 					type_mof as fieldType,
@@ -104,7 +104,7 @@ class CMS_poly_module_structure {
 	  * @access private
 	  * @static
 	  */
-	protected function _createRecursiveStructure($structure, $flatStructure, &$infos) {
+	protected static function _createRecursiveStructure($structure, $flatStructure, &$infos) {
 		if ($structure) {
 			foreach($structure as $key => $value) {
 				if (is_array($value)) {
@@ -137,7 +137,7 @@ class CMS_poly_module_structure {
 	  * @access public
 	  * @static
 	  */
-	function getModuleTranslationTable($module, &$language) {
+	public static function getModuleTranslationTable($module, &$language) {
 		if (!is_a($language, 'CMS_language')) {
 			CMS_grandFather::raiseError("Language must be a valid CMS_langage object");
 			return false;
@@ -155,7 +155,7 @@ class CMS_poly_module_structure {
 	  * @access public
 	  * @static
 	  */
-	function getModuleDetailledStructure($module, $language = false) {
+	public static function getModuleDetailledStructure($module, $language = false) {
 		$moduleStructure = CMS_poly_module_structure::getModuleStructure($module, true);
 		$objectInfos = $moduleStructure['objectInfos'];
 		unset($moduleStructure['objectInfos']);
@@ -180,7 +180,7 @@ class CMS_poly_module_structure {
 		return $moduleDetailledStructure;
 	}
 	//private function of getModuleDetailledStructure
-	protected function _createRecursiveDetailledStructure($objectsStructure, &$objectInfos, &$language, &$translationtable, $path, $translatedpath) {
+	protected static function _createRecursiveDetailledStructure($objectsStructure, &$objectInfos, &$language, &$translationtable, $path, $translatedpath) {
 		$structure = array();
 		foreach ($objectsStructure as $fieldID => $field) {
 			if (!is_array($field)) { //Field
@@ -202,7 +202,8 @@ class CMS_poly_module_structure {
 					}
 				}
 			} else {
-				$object = array_shift(array_keys($field));
+				$fieldkeys = array_keys($field);
+				$object = array_shift($fieldkeys);
 				if (io::strpos($object, 'object') === 0) { //poly_object
 					//get object structure infos
 					$structure[io::substr($fieldID,5)] = $objectInfos[$object]->getStructure();
@@ -245,7 +246,7 @@ class CMS_poly_module_structure {
 		return $structure;
 	}
 	//private function of _createRecursiveDetailledStructure
-	protected function _updateTranslationTable(&$translationtable, &$datas) {
+	protected static function _updateTranslationTable(&$translationtable, &$datas) {
 		$levelkeys = array();
 		$levelkeys = $datas;
 		if ($datas['path']) {
@@ -298,7 +299,7 @@ class CMS_poly_module_structure {
 	  * @access public
 	  * @static
 	  */
-	function viewObjectInfosList($codename, &$language, $selectedValue, $objectID = false) {
+	public static function viewObjectInfosList($codename, &$language, $selectedValue, $objectID = false) {
 		//get module structure
 		$objectsStructure = CMS_poly_module_structure::getModuleStructure($codename, true);
 		if ($objectID && isset($objectsStructure['object'.$objectID])) {
@@ -320,7 +321,7 @@ class CMS_poly_module_structure {
 		return $list;
 	}
 	//private function of viewObjectInfosList
-	protected function _viewObjectInfosList($objectID, &$language, &$objectsStructure, $selectedValue, $path = '') {
+	protected static function _viewObjectInfosList($objectID, &$language, &$objectsStructure, $selectedValue, $path = '') {
 		static $level;
 		$level++;
 		$space = str_repeat ('|&nbsp;&nbsp;' , ($level-1)).'|-&nbsp;';
@@ -334,7 +335,8 @@ class CMS_poly_module_structure {
 					$selected = ($currentPath == $selectedValue) ? ' selected="selected"':'';
 					$html .= '<option value="'.$currentPath.'" style="'.$style.'"'.$selected.'>'.$space.$objectsStructure['objectInfos'][$objectFieldID]->getObjectLabel($language).'</option>'."\n";
 				} elseif (is_array($objectField)) {
-					$object = array_shift(array_keys($objectField));
+					$keys = array_keys($objectField);
+					$object = array_shift($keys);
 					$currentPath = $path.'[\''.$objectFieldID.'\']';
 					$selected = ($currentPath == $selectedValue) ? ' selected="selected"':'';
 					if (io::strpos($object, 'object') === 0) {
@@ -363,7 +365,7 @@ class CMS_poly_module_structure {
 	  * @access public
 	  * @static
 	  */
-	function viewObjectRowInfos($codename, &$language, $selectedValue) {
+	public static function viewObjectRowInfos($codename, &$language, $selectedValue) {
 		$return = '<div class="rowComment">';
 		//first, need to convert the $selectedValue which is a moduleStructurePath format into a moduleDetailledStructurePath format
 		$convertedSelectedValue = CMS_poly_module_structure::moduleStructure2moduleDetailledStructure($selectedValue);
@@ -428,7 +430,7 @@ class CMS_poly_module_structure {
 	  * @access public
 	  * @static
 	  */
-	function moduleStructure2moduleDetailledStructure($value) {
+	public static function moduleStructure2moduleDetailledStructure($value) {
 		$replace = array();
 		$replace["#\['field([0-9]+)'\]#U"] = '[\'fields\'][\1]';
 		$replace["#\['multiobject[0-9]+'\]#U"] = '[\'fields\'][\'n\']';
@@ -443,7 +445,7 @@ class CMS_poly_module_structure {
 	  * @access public
 	  * @static
 	  */
-	function getObjectForDetailledStructurePath($detailledPath) {
+	public static function getObjectForDetailledStructurePath($detailledPath) {
 		if (io::strpos($detailledPath, 'fields') !== false) {
 			$replace = array("#\[([0-9]+)\]$#U" => '\1');
 			if (preg_match("#\[([0-9]+)\]$#U", $detailledPath, $match)) {

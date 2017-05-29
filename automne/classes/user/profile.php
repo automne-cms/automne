@@ -193,10 +193,10 @@ class CMS_profile extends CMS_grandFather
 						!$this->_rowGroupsDenied->
 							setTextDefinition($data["rowGroupsDeniedStack_pr"])) {
 							
-						$this->raiseError("Incorrect Stack formation in profile id ".$id);
+						$this->setError("Incorrect Stack formation in profile id ".$id);
 					}
 				} else {
-					$this->raiseError("Unknown DB ID : ".$id);
+					$this->setError("Unknown DB ID : ".$id);
 				}
 			} elseif (is_array($id)) {
 				$data = $id;
@@ -221,10 +221,10 @@ class CMS_profile extends CMS_grandFather
 					!$this->_rowGroupsDenied->
 						setTextDefinition($data["rowGroupsDeniedStack_pr"])) {
 						
-					$this->raiseError("Incorrect Stack formation in profile id ".$id);
+					$this->setError("Incorrect Stack formation in profile id ".$id);
 				}
 			} else {
-				$this->raiseError("Id is not a positive integer nor array");
+				$this->setError("Id is not a positive integer nor array");
 				return;
 			}
 		} else {
@@ -263,7 +263,7 @@ class CMS_profile extends CMS_grandFather
 		    $adminClearance >= 0 ) {
 			$this->_adminClearance = $adminClearance;
 		} else {
-			$this->raiseError('Invalid set admin Clearance: '.$adminClearance);
+			$this->setError('Invalid set admin Clearance: '.$adminClearance);
 		}
 	}
 	
@@ -279,7 +279,7 @@ class CMS_profile extends CMS_grandFather
 		$adminClearance = (int) $adminClearance;
 		$sumAllAdminClearances = array_sum(array_keys($this->getAllAdminClearances()));
 		if ($adminClearance > $sumAllAdminClearances || ($adminClearance | $this->_adminClearance) > $sumAllAdminClearances) {
-			$this->raiseError('Invalid set admin Clearance: '.$adminClearance);
+			$this->setError('Invalid set admin Clearance: '.$adminClearance);
 			return false;
 		}
 		//bitwise addition
@@ -335,7 +335,7 @@ class CMS_profile extends CMS_grandFather
 		if (is_a($pageClearances, "CMS_stack")) {
 			$this->_pageClearances = $pageClearances;
 		} else {
-			$this->raiseError('Stack object required: '.$pageClearances);
+			$this->setError('Stack object required: '.$pageClearances);
 		}
 	}
 	
@@ -349,7 +349,7 @@ class CMS_profile extends CMS_grandFather
 	function addPageClearances($pageClearances)
 	{
 		if (!is_a($pageClearances, "CMS_stack")) {
-			$this->raiseError('Stack object required: '.$pageClearances);
+			$this->setError('Stack object required: '.$pageClearances);
 			return false;
 		}
 		$this->_pageClearances = $this->_addStackClearances($pageClearances, $this->_pageClearances);
@@ -589,9 +589,9 @@ class CMS_profile extends CMS_grandFather
 	function addPageClearance($pageId, $clearance, $overwrite)
 	{
 		if (!SensitiveIO::isInSet($clearance, $this->getAllPageClearances())) {
-			$this->raiseError("Invalid Page Clearance: ".$clearance);	
+			$this->setError("Invalid Page Clearance: ".$clearance);	
 		} else if (!SensitiveIO::isPositiveInteger($pageId)) {
-			$this->raiseError("Invalid Page Id Clearance: ".$pageId);	
+			$this->setError("Invalid Page Id Clearance: ".$pageId);	
 		} else {
 			if ($this->_pageClearances->getElementsWithOneValue($pageId, 1)) {
 				if ($overwrite) {
@@ -616,7 +616,7 @@ class CMS_profile extends CMS_grandFather
 		if (is_a($moduleClearances, "CMS_stack")) {
 			$this->_moduleClearances = $moduleClearances;
 		} else {
-			$this->raiseError('Stack object required');
+			$this->setError('Stack object required');
 		}
 	}
 	
@@ -630,7 +630,7 @@ class CMS_profile extends CMS_grandFather
 	function addModuleClearances($moduleClearances)
 	{
 		if (!is_a($moduleClearances, "CMS_stack")) {
-			$this->raiseError('Stack object required: '.$moduleClearances);
+			$this->setError('Stack object required: '.$moduleClearances);
 			return false;
 		}
 		$this->_moduleClearances = $this->_addStackClearances($moduleClearances, $this->_moduleClearances);
@@ -701,7 +701,7 @@ class CMS_profile extends CMS_grandFather
 	{
 		$clearances = $this->getAllModuleClearances();
 		if (!isset($clearances[$clearance])) {
-			$this->raiseError("Invalid Module Clearance: ".$clearance);	
+			$this->setError("Invalid Module Clearance: ".$clearance);	
 		} else {
 			if ($this->_moduleClearances->getElementsWithOneValue($moduleCodename, 1)) {
 				if ($overwrite) {
@@ -738,7 +738,7 @@ class CMS_profile extends CMS_grandFather
 	function addValidationClearances($validationClearances)
 	{
 		if (!is_a($validationClearances, "CMS_stack")) {
-			$this->raiseError('Stack object required: '.$validationClearances);
+			$this->setError('Stack object required: '.$validationClearances);
 			return false;
 		}
 		$this->_validationClearances = $this->_addStackClearances($validationClearances, $this->_validationClearances);
@@ -860,7 +860,7 @@ class CMS_profile extends CMS_grandFather
 				$this->_templateGroupsDenied = $templateGroupsDenied;
 			}
 		} else {
-			$this->raiseError("Stack object with one value by atom is required");
+			$this->setError("Stack object with one value by atom is required");
 			return false;
 		}
 	}
@@ -875,11 +875,11 @@ class CMS_profile extends CMS_grandFather
 	function addTemplateGroupsDenied($templateGroupsDenied)
 	{
 		if (!is_a($templateGroupsDenied, "CMS_stack")) {
-			$this->raiseError('Stack object required');
+			$this->setError('Stack object required');
 			return false;
 		}
 		if($templateGroupsDenied->getValuesByAtom() != 1 || $this->_templateGroupsDenied->getValuesByAtom() != 1) {
-			$this->raiseError('Can\'t add stack objects without the same value by atom number ...');
+			$this->setError('Can\'t add stack objects without the same value by atom number ...');
 			return false;
 		}
 		//add clearances (in this case it is in fact a difference between clearances)
@@ -953,7 +953,7 @@ class CMS_profile extends CMS_grandFather
 				$this->_rowGroupsDenied = $rowGroupsDenied;
 			}
 		} else {
-			$this->raiseError('Stack object with one value by atom is required');
+			$this->setError('Stack object with one value by atom is required');
 			return false;
 		}
 	}
@@ -969,11 +969,11 @@ class CMS_profile extends CMS_grandFather
 	function addRowGroupsDenied($rowGroupsDenied)
 	{
 		if (!is_a($rowGroupsDenied, "CMS_stack")) {
-			$this->raiseError('Stack object required');
+			$this->setError('Stack object required');
 			return false;
 		}
 		if($rowGroupsDenied->getValuesByAtom() != 1 || $this->_rowGroupsDenied->getValuesByAtom() != 1) {
-			$this->raiseError('Can\'t add stack objects without the same value by atom number ...');
+			$this->setError('Can\'t add stack objects without the same value by atom number ...');
 			return false;
 		}
 		//add clearances (in this case it is in fact a difference between clearances)
@@ -1067,7 +1067,7 @@ class CMS_profile extends CMS_grandFather
 			$group = CMS_profile_usersGroupsCatalog::getByID($group);
 		}
 		if (!is_a($group, 'CMS_profile_usersGroup')) {
-			$this->raiseError('Invalid group value to add : '.$group);
+			$this->setError('Invalid group value to add : '.$group);
 			return false;
 		}
 		return $group->addToUserAndWriteToPersistence($this);
@@ -1082,11 +1082,11 @@ class CMS_profile extends CMS_grandFather
 	  */
 	protected function _addStackClearances($stack1, $stack2) {
 		if (!is_a($stack1, "CMS_stack")) {
-			$this->raiseError('Stack1 must be a valid stack object : '.$stack1);
+			$this->setError('Stack1 must be a valid stack object : '.$stack1);
 			return false;
 		}
 		if (!is_a($stack2, "CMS_stack")) {
-			$this->raiseError('Stack2 must be a valid stack object : '.$stack2);
+			$this->setError('Stack2 must be a valid stack object : '.$stack2);
 			return false;
 		}
 		if ($stack1->getValuesByAtom() == 2 && $stack2->getValuesByAtom() == 2) {
@@ -1137,7 +1137,7 @@ class CMS_profile extends CMS_grandFather
 			}
 			return $addedClearances;
 		} else {
-			$this->raiseError('Can\'t add stack objects without the same value by atom number ...');
+			$this->setError('Can\'t add stack objects without the same value by atom number ...');
 			return false;
 		}
 	}
@@ -1170,7 +1170,7 @@ class CMS_profile extends CMS_grandFather
 			$this->_moduleCategoriesClearances = $clearances;
 			return true;
 		} else {
-			$this->raiseError("CMS_moduleCategoriesClearances object expected");
+			$this->setError("CMS_moduleCategoriesClearances object expected");
 			return false;
 		}
 	}
@@ -1199,7 +1199,7 @@ class CMS_profile extends CMS_grandFather
 		if (is_a($clearances, "CMS_stack")) {
 			$this->_moduleCategoriesClearances->setCategoriesClearances($clearances);
 		} else {
-			$this->raiseError("CMS_stack object expected");
+			$this->setError("CMS_stack object expected");
 			return false;
 		}
 	}
@@ -1214,13 +1214,13 @@ class CMS_profile extends CMS_grandFather
 	function addModuleCategoriesClearancesStack($clearances)
 	{
 		if (!is_a($clearances, "CMS_stack")) {
-			$this->raiseError('CMS_stack object expected');
+			$this->setError('CMS_stack object expected');
 			return false;
 		}
 		if ($catClearance = $this->_addStackClearances($clearances, $this->_moduleCategoriesClearances->getCategoriesClearances())) {
 			$this->_moduleCategoriesClearances->setCategoriesClearances($catClearance);
 		} else {
-			$this->raiseError('Can\'t add clearances stacks');
+			$this->setError('Can\'t add clearances stacks');
 			return false;
 		}
 		return true;
@@ -1237,7 +1237,7 @@ class CMS_profile extends CMS_grandFather
 		if ($this->_moduleCategoriesClearances->deleteCategoriesClearances()) {
 			return true;
 		} else {
-			$this->raiseError("Can't delete categories clearance");
+			$this->setError("Can't delete categories clearance");
 			return false;
 		}
 	}
@@ -1535,7 +1535,7 @@ class CMS_profile extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function getAllAdminClearances()
+	public static function getAllAdminClearances()
 	{
 		return array(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL 	=> array('label' => self::MESSAGE_CLEARANCE_ADMINISTRATION_EDITVALIDATEALL,	'description' => self::MESSAGE_CLEARANCE_ADMINISTRATION_EDITVALIDATEALL_DESCRIPTION),
 					 CLEARANCE_ADMINISTRATION_REGENERATEPAGES 	=> array('label' => self::MESSAGE_CLEARANCE_ADMINISTRATION_REGENERATEPAGES,	'description' => self::MESSAGE_CLEARANCE_ADMINISTRATION_REGENERATEPAGES_DESCRIPTION),
@@ -1555,7 +1555,7 @@ class CMS_profile extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function getAllModuleClearances() {
+	public static function getAllModuleClearances() {
 		return array(CLEARANCE_MODULE_NONE => array('label' => self::MESSAGE_CLEARANCE_MODULE_NONE,	'description' => self::MESSAGE_CLEARANCE_MODULE_NONE_DESCRIPTION),
 					 CLEARANCE_MODULE_VIEW => array('label' => self::MESSAGE_CLEARANCE_MODULE_VIEW, 'description' => self::MESSAGE_CLEARANCE_MODULE_VIEW_DESCRIPTION),
 					 CLEARANCE_MODULE_EDIT => array('label' => self::MESSAGE_CLEARANCE_MODULE_EDIT, 'description' => self::MESSAGE_CLEARANCE_MODULE_EDIT_DESCRIPTION),
@@ -1569,7 +1569,7 @@ class CMS_profile extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function getAllModuleCategoriesClearances()
+	public static function getAllModuleCategoriesClearances()
 	{
 		return array(self::MESSAGE_CLEARANCE_MODULE_CATEGORIES_NONE 	=> CLEARANCE_MODULE_NONE,
 		             self::MESSAGE_CLEARANCE_MODULE_CATEGORIES_VIEW 	=> CLEARANCE_MODULE_VIEW,
@@ -1585,7 +1585,7 @@ class CMS_profile extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function getAllPageClearances()
+	public static function getAllPageClearances()
 	{
 		return array(self::MESSAGE_CLEARANCE_PAGE_NONE => CLEARANCE_PAGE_NONE,
 					 self::MESSAGE_CLEARANCE_PAGE_VIEW => CLEARANCE_PAGE_VIEW, 

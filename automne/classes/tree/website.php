@@ -140,7 +140,7 @@ class CMS_website extends CMS_grandFather
 		if ($id) {
 			if (($id == 1 && !is_object($applicationWebroot)) || $id != 1) {
 				if (!SensitiveIO::isPositiveInteger($id)) {
-					$this->raiseError("Id is not a positive integer");
+					$this->setError("Id is not a positive integer");
 					return;
 				}
 				$sql = "
@@ -179,7 +179,7 @@ class CMS_website extends CMS_grandFather
 					$this->_meta['favicon'] = $data["favicon_web"];
 					$this->_meta['metas'] = $data["metas_web"];
 				} else {
-					$this->raiseError("Unknown ID :".$id);
+					$this->setError("Unknown ID :".$id);
 				}
 				if ($id == 1) {
 					$applicationWebroot = $this;
@@ -220,7 +220,7 @@ class CMS_website extends CMS_grandFather
 	  */
 	function getMeta($meta) {
 		if (!isset($this->_meta[$meta])) {
-			$this->raiseError("Unknown meta to get : ".$meta);
+			$this->setError("Unknown meta to get : ".$meta);
 			return false;
 		}
 		return $this->_meta[$meta];
@@ -236,7 +236,7 @@ class CMS_website extends CMS_grandFather
 	  */
 	function setMeta($meta, $value) {
 		if (!isset($this->_meta[$meta])) {
-			$this->raiseError("Unknown meta to set : ".$meta);
+			$this->setError("Unknown meta to set : ".$meta);
 			return false;
 		}
 		$this->_meta[$meta] = $value;
@@ -376,7 +376,7 @@ class CMS_website extends CMS_grandFather
 	{
 		//codename should'nt be changed once set
 		if ($this->_id) {
-			$this->raiseError("Trying to change the codename of a website already existing");
+			$this->setError("Trying to change the codename of a website already existing");
 			return false;
 		}
 		if ($codename) {
@@ -386,13 +386,13 @@ class CMS_website extends CMS_grandFather
 			//now test to see if a directory already exists with that name (Because codename must _not_ be moveable once set)
 			if (!$this->_isMain && CMS_websitesCatalog::getByCodename($this->_codename)) {
 				$this->_codename = $old_codename;
-				$this->raiseError("Codename to set has same directory for pages than a previously set one.");
+				$this->setError("Codename to set has same directory for pages than a previously set one.");
 				return false;
 			} else {
 				return true;
 			}
 		} else {
-			$this->raiseError("Codename can't be empty");
+			$this->setError("Codename can't be empty");
 			return false;
 		}
 	}
@@ -541,14 +541,14 @@ class CMS_website extends CMS_grandFather
 		if (is_a($page, "CMS_page")) {
 			$ws = CMS_tree::getPageWebsite($page);
 			if ($ws->getRoot() == $page && $ws->getID() != $this->_id) {
-				$this->raiseError("Root page to set is already a root page for the website : ".$ws->getLabel());
+				$this->setError("Root page to set is already a root page for the website : ".$ws->getLabel());
 				return false;
 			} else {
 				$this->_root = $page;
 				return true;
 			}
 		} else {
-			$this->raiseError("Root page to set is not a page");
+			$this->setError("Root page to set is not a page");
 			return false;
 		}
 	}
@@ -568,20 +568,20 @@ class CMS_website extends CMS_grandFather
 				if ($this->_isMain) {
 					if (!is_dir(PATH_PAGES_FS)) {
 						if (!CMS_file::makeDir(PATH_PAGES_FS)) {
-							$this->raiseError('Can\'t create pages dir : '.PATH_PAGES_FS);
+							$this->setError('Can\'t create pages dir : '.PATH_PAGES_FS);
 						}
 					}
 					return $relative;
 				} else {
 					if (!is_dir(PATH_PAGES_FS."/".io::sanitizeAsciiString($this->_codename))) {
 						if (!CMS_file::makeDir(PATH_PAGES_FS."/".io::sanitizeAsciiString($this->_codename))) {
-							$this->raiseError('Can\'t create pages dir : '.PATH_PAGES_FS.'/'.io::sanitizeAsciiString($this->_codename));
+							$this->setError('Can\'t create pages dir : '.PATH_PAGES_FS.'/'.io::sanitizeAsciiString($this->_codename));
 						}
 					}
 					return $relative.'/'.io::sanitizeAsciiString($this->_codename);
 				}
 			} else {
-				$this->raiseError("Can't give pages path relative to anything other than WR or FS");
+				$this->setError("Can't give pages path relative to anything other than WR or FS");
 				return false;
 			}
 		} else {
@@ -602,7 +602,7 @@ class CMS_website extends CMS_grandFather
 			$relative = ($relativeTo == PATH_RELATIVETO_WEBROOT) ? PATH_PAGES_HTML_WR : PATH_PAGES_HTML_FS;
 			return $relative;
 		} else {
-			$this->raiseError("Can't give pages path relative to anything other than WR or FS");
+			$this->setError("Can't give pages path relative to anything other than WR or FS");
 			return false;
 		}
 	}

@@ -233,7 +233,7 @@ class CMS_object_email extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function checkMandatory($values,$prefixName) {
+	function checkMandatory($values, $prefixName, $newFormat = false) {
 		return true;
 	}
 	
@@ -247,12 +247,12 @@ class CMS_object_email extends CMS_object_common
 		$params = $this->getParamsValues();
 		
 		if (!is_object($this->_subfieldValues[0])) {
-			$this->raiseError("No subField to get for label : ".print_r($this->_subfieldValues,true));
+			$this->setError("No subField to get for label : ".print_r($this->_subfieldValues,true));
 			return false;
 		}
 		global $cms_language;
 		if (!is_object($cms_language)) {
-			$this->raiseError("Language currently instancied");
+			$this->setError("Language currently instancied");
 			return $this->_subfieldValues[0]->getValue();
 		}
 		if ($params['chooseSendEmail']) {
@@ -921,12 +921,12 @@ class CMS_object_email extends CMS_object_common
 					//send a page
 					$page = CMS_tree::getPageById($params['emailBody']['pageID']);
 					if (!$page || $page->hasError()) {
-						$this->raiseError('Page ID is not a valid page : '.$params['emailBody']['pageID']);
+						$this->setError('Page ID is not a valid page : '.$params['emailBody']['pageID']);
 						return false;
 					}
 					$pageHTMLFile = new CMS_file($page->getHTMLURL(false, false, PATH_RELATIVETO_FILESYSTEM));
 					if (!$pageHTMLFile->exists()) {
-						$this->raiseError('Page HTML file does not exists : '.$page->getHTMLURL(false, false, PATH_RELATIVETO_FILESYSTEM));
+						$this->setError('Page HTML file does not exists : '.$page->getHTMLURL(false, false, PATH_RELATIVETO_FILESYSTEM));
 						return false;
 					}
 					$body = $pageHTMLFile->readContent();
@@ -953,7 +953,7 @@ class CMS_object_email extends CMS_object_common
 					$body = str_replace(array_keys($replace), $replace, $body);
 					
 				} else {
-					$this->raiseError('No valid email type to send : '.$params['emailBody']['type']);
+					$this->setError('No valid email type to send : '.$params['emailBody']['type']);
 					return false;
 				}
 				if (isset($sendmail)) {
@@ -966,7 +966,7 @@ class CMS_object_email extends CMS_object_common
 				
 				//if no body for email or if sendmail var is set to false, quit
 				if (!$body) {
-					$this->raiseError('No email body to send ... Email parameters : user : '.$parameters['user'].' - object '.$parameters['object']);
+					$this->setError('No email body to send ... Email parameters : user : '.$parameters['user'].' - object '.$parameters['object']);
 					return false;
 				}
 				
@@ -1010,7 +1010,7 @@ class CMS_object_email extends CMS_object_common
 				}
 			break;
 			default:
-				$this->raiseError('No valid task given : '.$parameters['task']);
+				$this->setError('No valid task given : '.$parameters['task']);
 				return false;
 			break;
 		}

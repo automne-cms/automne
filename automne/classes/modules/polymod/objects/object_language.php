@@ -230,8 +230,8 @@ class CMS_object_language extends CMS_object_common
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language, $objectName) {
-		$labels = parent::getLabelsStructure($language);
+	function getLabelsStructure(&$language, $objectName = '') {
+		$labels = parent::getLabelsStructure($language, $objectName);
 		$labels['function']['selectOptions'] = $language->getMessage(self::MESSAGE_OBJECT_LANGUAGE_FUNCTION_SELECTEDOPTIONS_DESCRIPTION,array('{'.$objectName.'}'),MOD_POLYMOD_CODENAME);
 		return $labels;
 	}
@@ -293,7 +293,7 @@ class CMS_object_language extends CMS_object_common
 		$statusSuffix = ($public) ? "_public":"_edited";
 		$supportedOperator = array();
 		if ($operator && !in_array($operator, $supportedOperator)) {
-			$this->raiseError("Unkown search operator : ".$operator.", use default search instead");
+			$this->setError("Unkown search operator : ".$operator.", use default search instead");
 			$operator = false;
 		}
 		$sql = '';

@@ -40,7 +40,7 @@ class CMS_gzip_file extends CMS_tar_file
 	function __construct($name)
 	{
 		if (trim($name) == '') {
-			$this->raiseError("Not a valid name given to archive ".$name);
+			$this->setError("Not a valid name given to archive ".$name);
 			return;
 		}
 		$this->CMS_tar_file($name);
@@ -65,7 +65,7 @@ class CMS_gzip_file extends CMS_tar_file
 				gzclose($fp);
 				chdir($pwd);
 			} else {
-				$this->raiseError("Could not open {$this->options['name']} for writing.");
+				$this->setError("Could not open {$this->options['name']} for writing.");
 				chdir($pwd);
 				return false;
 			}

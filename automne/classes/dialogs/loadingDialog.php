@@ -25,7 +25,7 @@
   */
 class CMS_LoadingDialog extends CMS_dialog
 {
-	function startLoadingMode()
+	static function startLoadingMode()
 	{
 		@set_time_limit(0);
 		@ini_set('output_buffering','Off');
@@ -39,7 +39,7 @@ class CMS_LoadingDialog extends CMS_dialog
 	  * @var string $text : the text to send
 	  * @access public
 	  */
-	function sendToUser($text)
+	static function sendToUser($text)
 	{
 		echo $text;
 		@ob_start();
@@ -66,7 +66,7 @@ class CMS_LoadingDialog extends CMS_dialog
 	  *
 	  * @access public
 	  */
-	function closeDialog()
+	static function closeDialog()
 	{
 		echo '</div></body></html>';
 		exit;

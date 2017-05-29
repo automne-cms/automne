@@ -10,8 +10,8 @@
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr> &            |
-// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &    |
-// | Author: Cédric Soret <cedric.soret@ws-interactive.fr>                |
+// | Author: SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr> &    |
+// | Author: CÃ©dric Soret <cedric.soret@ws-interactive.fr>                |
 // +----------------------------------------------------------------------+
 //
 // $Id: module.php,v 1.9 2010/03/08 16:43:30 sebastien Exp $
@@ -25,8 +25,8 @@
   * @package Automne
   * @subpackage modules
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &
-  * @author Cédric Soret <cedric.soret@ws-interactive.fr>
+  * @author SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr> &
+  * @author CÃ©dric Soret <cedric.soret@ws-interactive.fr>
   */
 
 class CMS_module extends CMS_grandFather
@@ -122,7 +122,7 @@ class CMS_module extends CMS_grandFather
 						$this->_isPolymod = $data["isPolymod_mod"];
 						$modules[$codename] = $this;
 					} else {
-						$this->raiseError("Unknown codename : ".SensitiveIO::sanitizeAsciiString($codename));
+						$this->setError("Unknown codename : ".SensitiveIO::sanitizeAsciiString($codename));
 					}
 				}
 			}
@@ -162,7 +162,7 @@ class CMS_module extends CMS_grandFather
 	function getLabel($language)
 	{
 		if (!is_object($language)) {
-			$this->raiseError("Missing language to get module label ... ");
+			$this->setError("Missing language to get module label ... ");
 			return '';
 		}
 		return $language->getMessage($this->_labelMessageID, false, $this->_codename);
@@ -192,7 +192,7 @@ class CMS_module extends CMS_grandFather
 			$this->_labelMessageID = $labelMessageID;
 			return true;
 		} else {
-			$this->raiseError("Label must be a positive integer");
+			$this->setError("Label must be a positive integer");
 			return false;
 		}
 	}
@@ -280,7 +280,7 @@ class CMS_module extends CMS_grandFather
 						}
 					}
 				} else {
-					$this->raiseError('Malformed definition file : '.PATH_MODULES_FS.'/'.$this->_codename.'_rc.xml');
+					$this->setError('Malformed definition file : '.PATH_MODULES_FS.'/'.$this->_codename.'_rc.xml');
 					$moduleParameters[$this->_codename] = array();
 				}
 			}
@@ -307,7 +307,7 @@ class CMS_module extends CMS_grandFather
 	function setAndWriteParameters($parameters)
 	{
 		if (!is_array($parameters)) {
-			$this->raiseError("Parameters not an array");
+			$this->setError("Parameters not an array");
 			return false;
 		}
 
@@ -334,7 +334,7 @@ class CMS_module extends CMS_grandFather
 				return true;
 			}
 		}
-		$this->raiseError("File not found or writable");
+		$this->setError("File not found or writable");
 		return false;
 	}
 
@@ -362,7 +362,7 @@ class CMS_module extends CMS_grandFather
 			$this->_codename = $codename;
 			return true;
 		} else {
-			$this->raiseError("Can't set a null codename");
+			$this->setError("Can't set a null codename");
 			return false;
 		}
 	}
@@ -384,7 +384,7 @@ class CMS_module extends CMS_grandFather
 			$base_path = PATH_ADMIN_MODULES_WR;
 			break;
 		default:
-			$this->raiseError("RelativeTo unknown");
+			$this->setError("RelativeTo unknown");
 			return false;
 			break;
 		}
@@ -424,7 +424,7 @@ class CMS_module extends CMS_grandFather
 			$this->_administrationFrontend = $adminFrontend;
 			return true;
 		} else {
-			$this->raiseError("File doesn't exists : ".$adminFrontend);
+			$this->setError("File doesn't exists : ".$adminFrontend);
 			return false;
 		}
 	}
@@ -436,10 +436,10 @@ class CMS_module extends CMS_grandFather
 	  * @return CMS_resource The CMS_resource subclassed object
 	  * @access public
 	  */
-	function getResourceByID($resourceID)
+	public static function getResourceByID($resourceID)
 	{
 		if (!SensitiveIO::isPositiveInteger($resourceID)) {
-			$this->raiseError("Resource ID is not a positive integer");
+			$this->setError("Resource ID is not a positive integer");
 			return false;
 		}
 	}
@@ -479,11 +479,11 @@ class CMS_module extends CMS_grandFather
 	function processValidation($resourceValidation, $result, $lastValidation = true)
 	{
 		if (!($resourceValidation instanceof CMS_resourceValidation)) {
-			$this->raiseError("ResourceValidation is not a valid CMS_resourceValidation object");
+			$this->setError("ResourceValidation is not a valid CMS_resourceValidation object");
 			return false;
 		}
 		if (!SensitiveIO::isInSet($result, CMS_resourceValidation::getAllValidationOptions())) {
-			$this->raiseError("Result is not a valid validation option");
+			$this->setError("Result is not a valid validation option");
 			return false;
 		}
 
@@ -520,9 +520,9 @@ class CMS_module extends CMS_grandFather
 						break;
 					}
 					//first, move edited
-					$this->_changeDataLocation($resource, RESOURCE_DATA_LOCATION_EDITED, $locationTo);
+					CMS_module_standard::_changeDataLocation($resource, RESOURCE_DATA_LOCATION_EDITED, $locationTo);
 					//then delete public
-					$this->_changeDataLocation($resource, RESOURCE_DATA_LOCATION_PUBLIC, RESOURCE_DATA_LOCATION_DEVNULL);
+					CMS_module_standard::_changeDataLocation($resource, RESOURCE_DATA_LOCATION_PUBLIC, RESOURCE_DATA_LOCATION_DEVNULL);
 				} else {
 					if ($resource->getProposedLocation() == RESOURCE_LOCATION_USERSPACE) {
 						//Pushing resource to USERSPACE
@@ -536,10 +536,10 @@ class CMS_module extends CMS_grandFather
 						}
 						//if resource was published, copy data to public table
 						if ($resource->getPublication() != RESOURCE_PUBLICATION_NEVERVALIDATED) {
-							$this->_changeDataLocation($resource, $locationFrom, RESOURCE_DATA_LOCATION_PUBLIC, true);
+							CMS_module_standard::_changeDataLocation($resource, $locationFrom, RESOURCE_DATA_LOCATION_PUBLIC, true);
 						}
 						//move data from its location to edited
-						$this->_changeDataLocation($resource, $locationFrom, RESOURCE_DATA_LOCATION_EDITED);
+						CMS_module_standard::_changeDataLocation($resource, $locationFrom, RESOURCE_DATA_LOCATION_EDITED);
 					} else {
 						//the move entirely takes place outside of USERSPACE (archived to deleted hopefully)
 						switch ($resource->getLocation()) {
@@ -558,14 +558,15 @@ class CMS_module extends CMS_grandFather
 							$locationTo = RESOURCE_DATA_LOCATION_DELETED;
 							break;
 						}
-						$this->_changeDataLocation($resource, $locationFrom, $locationTo);
+						CMS_module_standard::_changeDataLocation($resource, $locationFrom, $locationTo);
 					}
 				}
 
 				$resource->validateProposedLocation();
 			} else {
 				$all_editions = CMS_resourceStatus::getAllEditions();
-				$this->_changeDataLocation($resource, RESOURCE_DATA_LOCATION_EDITED, RESOURCE_DATA_LOCATION_PUBLIC, true);
+				CMS_module_standard::_changeDataLocation($resource, RESOURCE_DATA_LOCATION_EDITED, RESOURCE_DATA_LOCATION_PUBLIC, true);
+
 
 				foreach ($all_editions as $aEdition) {
 					if ($aEdition & $editions) {
@@ -587,7 +588,7 @@ class CMS_module extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function processDailyRoutine()
+	public static function processDailyRoutine()
 	{
 	}
 
@@ -601,17 +602,18 @@ class CMS_module extends CMS_grandFather
 	  * @return void
 	  * @access private
 	  */
-	protected function _changeDataLocation($resource, $locationFrom, $locationTo, $copyOnly = false)
+	protected static function _changeDataLocation($resource, $locationFrom, $locationTo, $copyOnly = false)
 	{
 		if (!($resource instanceof CMS_resource)) {
-			$this->raiseError("Resource is not a CMS_resource");
+			CMS_grandFather::raiseError("Resource is not a CMS_resource");
 			return false;
 		}
 		if (!SensitiveIO::isInSet($locationFrom, CMS_resource::getAllDataLocations())
 			|| !SensitiveIO::isInSet($locationTo, CMS_resource::getAllDataLocations())) {
-			$this->raiseError("Locations are not in the set");
+			CMS_grandFather::raiseError("Locations are not in the set");
 			return false;
 		}
+
 
 		return true;
 	}
@@ -625,19 +627,16 @@ class CMS_module extends CMS_grandFather
 	  * @return array(CMS_moduleCategory)
 	  * @static
 	  */
-	function getModuleCategories($attrs)
+	public static function getModuleCategories($attrs)
 	{
-		if ((!isset($attrs["module"]) || !$attrs["module"]) && $this->_codename) {
-			$attrs["module"] = $this->_codename;
-		}
-		if (!$attrs["module"]) {
+		if (!array_key_exists('module', $attrs) || !$attrs["module"]) {
 			CMS_grandFather::raiseError("No codename defined to get its categories");
-			return false;
+			return array();
 		}
 		if (APPLICATION_ENFORCES_ACCESS_CONTROL != false
 				&& !($attrs["cms_user"] instanceof CMS_profile)) {
 			CMS_grandFather::raiseError("Not valid CMS_profile given as enforced access control is active");
-			return false;
+			return array();
 		}
 		if (isset($attrs["cms_user"]) && ($attrs["cms_user"] instanceof CMS_profile)
 				&& $attrs["cms_user"]->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
@@ -809,15 +808,15 @@ class CMS_module extends CMS_grandFather
 		switch ($treatmentMode) {
 			case MODULE_TREATMENT_CLIENTSPACE_TAGS:
 				if (!($treatedObject instanceof CMS_pageTemplate)) {
-					$this->raiseError('$treatedObject must be a CMS_pageTemplate object');
+					$this->setError('$treatedObject must be a CMS_pageTemplate object');
 					return false;
 				}
 				if (!($treatmentParameters["page"] instanceof CMS_page)) {
-					$this->raiseError('$treatmentParameters["page"] must be a CMS_page object');
+					$this->setError('$treatmentParameters["page"] must be a CMS_page object');
 					return false;
 				}
 				if (!($treatmentParameters["language"] instanceof CMS_language)) {
-					$this->raiseError('$treatmentParameters["language"] must be a CMS_language object');
+					$this->setError('$treatmentParameters["language"] must be a CMS_language object');
 					return false;
 				}
 				switch ($tag->getName()) {
@@ -844,7 +843,7 @@ class CMS_module extends CMS_grandFather
 					case 'block':
 						$attributes = $tag->getAttributes();
 						if (!isset($attributes['id'])) {
-							$this->raiseError('Missing attribute id in block tag');
+							$this->setError('Missing attribute id in block tag');
 							return false;
 						}
 						//create the block data
@@ -877,19 +876,19 @@ class CMS_module extends CMS_grandFather
 			break;
 			case MODULE_TREATMENT_BLOCK_TAGS:
 				if (!($treatedObject instanceof CMS_row)) {
-					$this->raiseError('$treatedObject must be a CMS_row object');
+					$this->setError('$treatedObject must be a CMS_row object');
 					return false;
 				}
 				if (!($treatmentParameters["page"] instanceof CMS_page)) {
-					$this->raiseError('$treatmentParameters["page"] must be a CMS_page object');
+					$this->setError('$treatmentParameters["page"] must be a CMS_page object');
 					return false;
 				}
 				if (!($treatmentParameters["language"] instanceof CMS_language)) {
-					$this->raiseError('$treatmentParameters["language"] must be a CMS_language object');
+					$this->setError('$treatmentParameters["language"] must be a CMS_language object');
 					return false;
 				}
 				if (!($treatmentParameters["clientSpace"] instanceof CMS_moduleClientspace)) {
-					$this->raiseError('$treatmentParameters["clientSpace"] must be a CMS_moduleClientspace object');
+					$this->setError('$treatmentParameters["clientSpace"] must be a CMS_moduleClientspace object');
 					return false;
 				}
 				$attributes = $tag->getAttributes();
@@ -1202,12 +1201,12 @@ class CMS_module extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function moduleUsage($pageID, $module = '', $setUseage = false, $reset = false) {
+	public static function moduleUsage($pageID, $module = '', $setUseage = false, $reset = false) {
 		static $moduleUseage;
 		if(!$module && $this->_codename) {
 			$module = $this->_codename;
 		} elseif(!$module) {
-			$this->raiseError('$module not set');
+			$this->setError('$module not set');
 			return false;
 		}
 		if ($reset && isset($moduleUseage[$module]["pageUseModule"][$pageID])) {
@@ -1279,9 +1278,9 @@ class CMS_module extends CMS_grandFather
 			global $cms_user;
 			if (APPLICATION_ENFORCES_ACCESS_CONTROL != false
 				&& isset($cms_user)) {
-				$categories = $this->getModuleCategories(array('language' => $defaultLanguage, 'root' => 0, 'cms_user' => $cms_user));
+				$categories = CMS_module::getModuleCategories(array('language' => $defaultLanguage, 'root' => 0, 'cms_user' => $cms_user));
 			} else {
-				$categories = $this->getModuleCategories(array('language' => $defaultLanguage, 'root' => 0));
+				$categories = CMS_module::getModuleCategories(array('language' => $defaultLanguage, 'root' => 0));
 			}
 			foreach ($categories as $category) {
 				$aModule['categories'][] = $category->asArray($params, $files);
@@ -1372,7 +1371,7 @@ class CMS_module extends CMS_grandFather
 		if ((!$this->getID() && (!isset($params['create']) || $params['create'] == true)) || ($this->getID() && (!isset($params['update']) || $params['update'] == true))) {
 			if (isset($data['labels'])) {
 				//create labels
-				$this->setLabel($cms_language->createMessage($this->_codename, $data['labels']));
+				$this->setLabel(CMS_language::createMessage($this->_codename, $data['labels']));
 			}
 			if (!$this->writeToPersistence()) {
 				$infos .= 'Error writing module ...'."\n";

@@ -9,7 +9,7 @@
 // | LICENSE-GPL, and is available through the world-wide-web at		  |
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
-// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// | Author: SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 
 /**
@@ -19,7 +19,7 @@
   *
   * @package Automne
   * @subpackage polymod
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
 class CMS_poly_object extends CMS_resource
@@ -191,7 +191,7 @@ class CMS_poly_object extends CMS_resource
 			//set $this->_objectResourceStatus
 			$this->_objectResourceStatus = $objectDef->getValue("resourceUsage");
 		} else {
-			$this->raiseError("ObjectID is not a positive Integer : ".$objectID);
+			$this->setError("ObjectID is not a positive Integer : ".$objectID);
 			return;
 		}
 		//set $this->_public
@@ -246,7 +246,7 @@ class CMS_poly_object extends CMS_resource
 		$datas = $search->search(CMS_object_search::POLYMOD_SEARCH_RETURN_DATAS);
 		unset($search);
 		if (!$this->_public && (!$datas || !$datas[$this->_ID])) {
-			$this->raiseError('No datas found for edited item '.$this->_ID.'. Current user should have no rights on this item...');
+			$this->setError('No datas found for edited item '.$this->_ID.'. Current user should have no rights on this item...');
 			return false;
 		}
 		//then populate object(s) values
@@ -264,7 +264,7 @@ class CMS_poly_object extends CMS_resource
 	  */
 	protected function _populateSubObjectsValues($datas) {
 		if (!is_array($datas)) {
-			$this->raiseError("Datas need to be an array : ".print_r($datas,true));
+			$this->setError("Datas need to be an array : ".print_r($datas,true));
 			return false;
 		}
 		if (isset($datas[$this->_ID]) && $datas[$this->_ID]) {
@@ -303,11 +303,11 @@ class CMS_poly_object extends CMS_resource
 						}
 						$this->_objectValues[$fieldID] = new $type($subFieldsValues, $field, $this->_public);
 					} else {
-						$this->raiseError("Unknown field type : ".$type);
+						$this->setError("Unknown field type : ".$type);
 						return;
 					}
 				} else {
-					$this->raiseError("Unknown fieldID for object : ".$fieldID);
+					$this->setError("Unknown fieldID for object : ".$fieldID);
 					return false;
 				}
 			}
@@ -362,7 +362,7 @@ class CMS_poly_object extends CMS_resource
 	  */
 	protected function _populateSubObjectsDefinitions() {
 		if (!$this->_objectFieldsDefinition) {
-			$this->raiseError("No fields for objectID : ".$this->_objectID." in catalog");
+			$this->setError("No fields for objectID : ".$this->_objectID." in catalog");
 			return false;
 		}
 		//get all subDefinitions for fields
@@ -373,12 +373,12 @@ class CMS_poly_object extends CMS_resource
 					$typeObject = new CMS_poly_object($type);
 					$this->_subObjectsDefinitions[$fieldID] = $typeObject->getSubFieldsDefinition($this->_ID);
 				} elseif (io::strpos($type,"multi|") !== false) { //multi objects
-					$this->_subObjectsDefinitions[$fieldID] = CMS_multi_poly_object::getSubFieldsDefinition(io::substr($type,6),$this->_ID,$this->_objectFieldsDefinition[$fieldID]);
+					$this->_subObjectsDefinitions[$fieldID] = CMS_multi_poly_object::getSubFieldsDef(io::substr($type,6),$this->_ID,$this->_objectFieldsDefinition[$fieldID]);
 				} elseif (class_exists($type)) { //object
 					$typeObject = new $type(array(),$this->_objectFieldsDefinition[$fieldID]);
 					$this->_subObjectsDefinitions[$fieldID] = $typeObject->getSubFieldsDefinition($this->_ID);
 				} else {
-					$this->raiseError("Unknown field type : ".$type);
+					$this->setError("Unknown field type : ".$type);
 					return false;
 				}
 			}
@@ -565,7 +565,7 @@ class CMS_poly_object extends CMS_resource
 				$subFieldDefinition = $this->_objectValues[$subFieldID]->getSubFieldsDefinition($this->_ID);
 			} else {
 				$type = $this->_objectFieldsDefinition[$subFieldID]->getValue('type');
-				$subFieldDefinition = CMS_multi_poly_object::getSubFieldsDefinition(io::substr($type,6),$this->_ID,$this->_objectFieldsDefinition[$subFieldID]);
+				$subFieldDefinition = CMS_multi_poly_object::getSubFieldsDef(io::substr($type,6),$this->_ID,$this->_objectFieldsDefinition[$subFieldID]);
 			}
 			$subFieldsDefinition = array_merge($subFieldsDefinition,$subFieldDefinition);
 		}
@@ -1318,11 +1318,11 @@ class CMS_poly_object extends CMS_resource
 	function writeToPersistence($treatResource = true, $emailValidators = true, $onlyCreateID = false) {
 		global $cms_user;
 		if ($this->_public) {
-			$this->raiseError("Can't write public object");
+			$this->setError("Can't write public object");
 			return false;
 		}
 		if ($this->hasError()) {
-			$this->raiseError("Can't write object with error");
+			$this->setError("Can't write object with error");
 			return false;
 		}
 
@@ -1345,7 +1345,7 @@ class CMS_poly_object extends CMS_resource
 				";
 			$q = new CMS_query($sql);
 			if ($q->hasError()) {
-				$this->raiseError("Can't save object");
+				$this->setError("Can't save object");
 				return false;
 			} elseif (!$this->_ID) {
 				//set ID
@@ -1449,12 +1449,17 @@ class CMS_poly_object extends CMS_resource
 				//Log action
 				$log = new CMS_log();
 				$language = $cms_user->getLanguage();
-				$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_EDIT_CONTENT, $cms_user, $polyModuleCodename, $this->getStatus(), 'Item \''.$this->getLabel().'\' ('.$objectDef->getLabel($language).')', $this);
+				$status = $this->getStatus();
+				$labelLocal = $this->getLabel();
+				$objectDefLabel = $objectDef->getLabel($language);
+				$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_EDIT_CONTENT, $cms_user, $polyModuleCodename, $status, 'Item \''.$labelLocal.'\' ('.$objectDefLabel.')', $this);
 			} else {
 				//Log action
 				$log = new CMS_log();
 				$language = $cms_user->getLanguage();
-				$log->logMiscAction(CMS_log::LOG_ACTION_RESOURCE_EDIT_CONTENT, $cms_user, 'Item \''.$this->getLabel().'\' ('.$objectDef->getLabel($language).')', $polyModuleCodename);
+				$labelLocal = $this->getLabel();
+				$objectDefLabel = $objectDef->getLabel($language);
+				$log->logMiscAction(CMS_log::LOG_ACTION_RESOURCE_EDIT_CONTENT, $cms_user, 'Item \''.$labelLocal.'\' ('.$objectDefLabel.')', $polyModuleCodename);
 			}
 			//Clear polymod cache
 			//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $polyModuleCodename));
@@ -1576,7 +1581,8 @@ class CMS_poly_object extends CMS_resource
 				//Log action
 				$log = new CMS_log();
 				$language = $cms_user->getLanguage();
-				$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_DELETE, $cms_user, $polyModuleCodename, $this->getStatus(), 'Item \''.$this->getLabel().'\' ('.$objectDef->getLabel($language).')', $this);
+				$status = $this->getStatus();
+				$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_DELETE, $cms_user, $polyModuleCodename, $status, 'Item \''.$this->getLabel().'\' ('.$objectDef->getLabel($language).')', $this);
 
 				//Clear polymod cache
 				//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $polyModuleCodename));
@@ -1636,7 +1642,7 @@ class CMS_poly_object extends CMS_resource
 	function getAllSecondaryResourcesForPrimaryResource() {
 		//here we check if this object is really a primary resource, cause secondary resources must be attached to a primary resource
 		if ($this->_objectResourceStatus != 1) {
-			$this->raiseError("This (id : ".$this->getID().") is not a primary resource.");
+			$this->setError("This (id : ".$this->getID().") is not a primary resource.");
 			return array();
 		}
 		$secondaryResourcesIds = array();
@@ -1729,7 +1735,7 @@ class CMS_poly_object extends CMS_resource
 			if (!isset($this->_objectValues[$fieldID])) {
 				global $cms_language;
 				$language = $cms_language ? $cms_language : CMS_languagesCatalog::getDefaultLanguage();
-				$this->raiseError('Object field with ID '.$fieldID.' does not exists as a field of object '.$this->getFieldLabel($language).' ('.$this->_objectID.') - '.io::getCallInfos(3));
+				$this->setError('Object field with ID '.$fieldID.' does not exists as a field of object '.$this->getFieldLabel($language).' ('.$this->_objectID.') - '.io::getCallInfos(3));
 				//return dummy object field (correct bug 536)
 				return new CMS_poly_object($this->_objectID);
 			}
@@ -1877,28 +1883,28 @@ class CMS_poly_object extends CMS_resource
 			//field related values, may not exists ...
 			case 'fieldID':
 				if (!is_a($this->_field, 'CMS_poly_object_field')) {
-					$this->raiseError("Can't get 'fieldID' value for an object which is not a field of another object ...");
+					$this->setError("Can't get 'fieldID' value for an object which is not a field of another object ...");
 					return '';
 				}
 				return $this->_field->getID();
 			break;
 			case 'description':
 				if (!is_a($this->_field, 'CMS_poly_object_field')) {
-					$this->raiseError("Can't get 'description' value for an object which is not a field of another object ...");
+					$this->setError("Can't get 'description' value for an object which is not a field of another object ...");
 					return '';
 				}
 				return io::htmlspecialchars($this->_field->getFieldDescription($cms_language));
 				break;
 			case 'required':
 				if (!is_a($this->_field, 'CMS_poly_object_field')) {
-					$this->raiseError("Can't get 'required' value for an object which is not a field of another object ...");
+					$this->setError("Can't get 'required' value for an object which is not a field of another object ...");
 					return false;
 				}
 				return ($this->_field->getValue("required")) ? true : false;
 			break;
 			case 'fieldname':
 				if (!is_a($this->_field, 'CMS_poly_object_field')) {
-					$this->raiseError("Can't get 'fieldname' value for an object which is not a field of another object ...");
+					$this->setError("Can't get 'fieldname' value for an object which is not a field of another object ...");
 					return '';
 				}
 				//get label of current field
@@ -1906,7 +1912,7 @@ class CMS_poly_object extends CMS_resource
 				return $fieldLabel->getValue($cms_language->getCode());
 			break;
 			default:
-				$this->raiseError("Unknown value to get : ".$name);
+				$this->setError("Unknown value to get : ".$name);
 				return false;
 			break;
 		}
@@ -1945,7 +1951,7 @@ class CMS_poly_object extends CMS_resource
 	function loadObject($values, $tags) {
 		global $object;
 		if (!sensitiveIO::isPositiveInteger($values['value'])) {
-			$this->raiseError("Value parameter must be a valid category ID : ".$values['value']);
+			$this->setError("Value parameter must be a valid category ID : ".$values['value']);
 			return false;
 		}
 		$object[$this->_objectID] = new CMS_poly_object($this->_objectID, $values["value"], array(), true, true);
@@ -1965,12 +1971,12 @@ class CMS_poly_object extends CMS_resource
 	function rss($values, $tags) {
 		global $cms_language;
 		if (!sensitiveIO::isPositiveInteger($values['selected'])) {
-			$this->raiseError("Selected value parameter must be a valid RSS Feed ID : ".$values['selected']);
+			$this->setError("Selected value parameter must be a valid RSS Feed ID : ".$values['selected']);
 			return false;
 		}
 		$RSSDefinition = new CMS_poly_rss_definitions($values['selected']);
 		if ($RSSDefinition->hasError()) {
-			$this->raiseError("Selected value parameter must be a valid RSS Feed ID : ".$values['selected']);
+			$this->setError("Selected value parameter must be a valid RSS Feed ID : ".$values['selected']);
 			return false;
 		}
 		$linkParameters='';
@@ -1998,7 +2004,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language, $objectName) {
+	function getLabelsStructure(&$language, $objectName = '') {
 		$labels = array();
 		$labels['structure']['id'] = $language->getMessage(self::MESSAGE_POLYOBJECT_ID_DESCRIPTION,false,MOD_POLYMOD_CODENAME);
 		$labels['structure']['label'] = $language->getMessage(self::MESSAGE_POLYOBJECT_LABEL_DESCRIPTION,false,MOD_POLYMOD_CODENAME);
@@ -2181,7 +2187,7 @@ class CMS_poly_object extends CMS_resource
 								$group_email->sendMessages();
 							break;
 							default:
-								$this->raiseError('Unknown script task to do : '.print_r($parameters,true));
+								$this->setError('Unknown script task to do : '.print_r($parameters,true));
 								return false;
 							break;
 						}
@@ -2189,7 +2195,7 @@ class CMS_poly_object extends CMS_resource
 					return true;
 				break;
 				default:
-					$this->raiseError('Unknown script task to do : '.print_r($parameters,true));
+					$this->setError('Unknown script task to do : '.print_r($parameters,true));
 					return false;
 				break;
 			}
@@ -2225,7 +2231,7 @@ class CMS_poly_object extends CMS_resource
 					}
 				break;
 				default:
-					$this->raiseError('Unknown script task to do : '.print_r($parameters,true));
+					$this->setError('Unknown script task to do : '.print_r($parameters,true));
 					return false;
 				break;
 			}
@@ -2249,7 +2255,7 @@ class CMS_poly_object extends CMS_resource
 		//operators are not supported for now : TODO
 		$supportedOperator = array();
 		if ($operator && !in_array($operator, $supportedOperator)) {
-			$this->raiseError("Unknown search operator : ".$operator.", use default search instead");
+			$this->setError("Unknown search operator : ".$operator.", use default search instead");
 			$operator = false;
 		}
 		$sql = '';

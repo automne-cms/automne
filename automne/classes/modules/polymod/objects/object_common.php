@@ -121,11 +121,11 @@ abstract class CMS_object_common extends CMS_grandFather
 	{
 		//check object defined internal vars
 		if (sizeof($this->_subfields) != sizeof($this->_subfieldValues)) {
-			$this->raiseError('Object internal vars hasn\'t the same count of subfields, check $_subfields, $_subfieldValues.');
+			$this->setError('Object internal vars hasn\'t the same count of subfields, check $_subfields, $_subfieldValues.');
 			return;
 		}
 		if (!is_array($datas)) {
-			$this->raiseError("Datas need to be an array : ".print_r($datas,true));
+			$this->setError("Datas need to be an array : ".print_r($datas,true));
 			return;
 		}
 		//Set public values
@@ -160,7 +160,7 @@ abstract class CMS_object_common extends CMS_grandFather
       * @access public
 	  * @static
       */
-	function serializeHTMLParameters($inputParams) {
+	public static function serializeHTMLParameters($inputParams) {
 		$htmlParameters = '';		
 		if(is_array($inputParams)){
 		    foreach ($inputParams as $k => $v) {
@@ -344,7 +344,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  */
 	function getLabel() {
 		if (!is_object($this->_subfieldValues[0])) {
-			$this->raiseError("No subField to get for label : ".print_r($this->_subfieldValues,true));
+			$this->setError("No subField to get for label : ".print_r($this->_subfieldValues,true));
 			return false;
 		}
 		return $this->_subfieldValues[0]->getValue();
@@ -457,7 +457,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  */
 	function getHTMLSubFieldsParameters($language, $prefixName) {
 		if (!is_a($language,'CMS_language')) {
-			$this->raiseError("Language must be a CMS_language object : ".print_r($language,true));
+			$this->setError("Language must be a CMS_language object : ".print_r($language,true));
 			return false;
 		}
 		$values = $this->_parameterValues;
@@ -505,7 +505,7 @@ abstract class CMS_object_common extends CMS_grandFather
 						$method = "getHTMLSubFieldsParameters".$parameter['type'];
 						$input = $this->$method($language, $prefixName, $parameter);
 					} else {
-						$this->raiseError("Can't get parameter HTML for type : ".$parameter['type']);
+						$this->setError("Can't get parameter HTML for type : ".$parameter['type']);
 						return false;
 					}
 				break;
@@ -659,7 +659,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  */
 	function writeToPersistence() {
 		if ($this->_public) {
-			$this->raiseError("Can't write public object");
+			$this->setError("Can't write public object");
 			return false;
 		}
 		$ok = true;
@@ -722,7 +722,7 @@ abstract class CMS_object_common extends CMS_grandFather
 				return $this->_field->getID();
 			break;
 			default:
-				$this->raiseError("Unknown value to get : ".$name);
+				$this->setError("Unknown value to get : ".$name);
 				return false;
 			break;
 		}
@@ -846,7 +846,7 @@ abstract class CMS_object_common extends CMS_grandFather
 
 		$supportedOperator = array();
 		if ($operator && !in_array($operator, $supportedOperator)) {
-			$this->raiseError("Unkown search operator : ".$operator.", use default search instead");
+			$this->setError("Unkown search operator : ".$operator.", use default search instead");
 			$operator = false;
 		}
 
@@ -924,7 +924,7 @@ abstract class CMS_object_common extends CMS_grandFather
 		$statusSuffix = ($public) ? "_public":"_edited";
 		$supportedOperator = array();
 		if ($operator && !in_array($operator, $supportedOperator)) {
-			$this->raiseError("Unknown search operator : ".$operator.", use default search instead");
+			$this->setError("Unknown search operator : ".$operator.", use default search instead");
 			$operator = false;
 		}
 		$sql = '';

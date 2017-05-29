@@ -103,11 +103,11 @@ class CMS_linxCondition extends CMS_grandFather
 					$this->_valueScalar = $value->nodeValue;
 				}
 			} else {
-				$this->raiseError("Malformed innerContent");
+				$this->setError("Malformed innerContent");
 				return;
 			}
 		} else {
-			$this->raiseError("Unknown property : ".$property);
+			$this->setError("Unknown property : ".$property);
 		}
 	}
 
@@ -161,14 +161,14 @@ class CMS_linxCondition extends CMS_grandFather
 	{
 		//set the condition value
 		if (!$this->_valueIsScalar || $this->_pageProperty != "lvl") {
-			$this->raiseError("Incorrect linx condition");
+			$this->setError("Incorrect linx condition");
 			return false;
 		}
 		//build the body of the test function
 		if ($func = @create_function('', 'return ('.$level.' '.$this->_operator.' '.$this->_valueScalar.');')) {
 			return $func();
 		} else {
-			$this->raiseError('Error during creation of runtime-function : return ('.$level.' '.$this->_operator.' '.$this->_valueScalar.');');
+			$this->setError('Error during creation of runtime-function : return ('.$level.' '.$this->_operator.' '.$this->_valueScalar.');');
 			return false;
 		}
 	}
@@ -185,7 +185,7 @@ class CMS_linxCondition extends CMS_grandFather
 	protected function _getPageProperty(&$page, $property, $public)
 	{
 		if (!is_a($page, "CMS_page")) {
-			$this->raiseError("Page parameter must be an object");
+			$this->setError("Page parameter must be an object");
 			return;
 		}
 		switch ($property) {
@@ -221,7 +221,7 @@ class CMS_linxCondition extends CMS_grandFather
 			return false;
 		}
 		if (!$tag->hasAttribute("property") || !$tag->hasAttribute("operator")) {
-			$this->raiseError('Condition property is not well formed');
+			$this->setError('Condition property is not well formed');
 			return false;
 		}
 		return new CMS_linxCondition($tag);

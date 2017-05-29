@@ -630,7 +630,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	 * )
 	 * @return array(CMS_moduleCategory)
 	 */
-	 function getAll($attrs) {
+	 public static function getAll($attrs) {
 		$items = array();
 		if (!$attrs["module"]) {
 			CMS_grandFather::raiseError("Not a valid module codename given");
@@ -802,7 +802,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	  * @return array(string) the statements or false if profile hasn't any access to any categories
 	  * @static
 	  */
-	function getAllCategoriesAsArray(&$cms_user, $cms_module, $cms_language, $level = 0, $root = -1, $clearanceLevel = false, $strict = false, $crossLanguage = false) {
+	public static function getAllCategoriesAsArray(&$cms_user, $cms_module, $cms_language, $level = 0, $root = -1, $clearanceLevel = false, $strict = false, $crossLanguage = false) {
 		if (!is_a($cms_user, 'CMS_profile') 
 				|| !$cms_module
 				|| !is_a($cms_language, 'CMS_language')) {
@@ -916,7 +916,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	  * @return array(string) the statements or false if profile hasn't any access to any categories
 	  * @static
 	  */
-	function getSiblingCategoriesAsArray(&$category, $count, &$cms_user, $cms_module, $cms_language, $clearanceLevel = false, $strict = false) {
+	static function getSiblingCategoriesAsArray(&$category, $count, &$cms_user, $cms_module, $cms_language, $clearanceLevel = false, $strict = false) {
 		$count++;
 		$attrs = array(
 			"module" 		=> $cms_module,

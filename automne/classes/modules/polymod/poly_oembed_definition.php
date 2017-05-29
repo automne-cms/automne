@@ -87,7 +87,7 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 
 		$q = new CMS_query($sql);
 		if ($q->hasError()) {
-			$this->raiseError("Can't save object");
+			$this->setError("Can't save object");
 			return false;
 		} elseif (!$this->id) {
 			$this->id = $q->getLastInsertedID();
@@ -105,7 +105,7 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 			$sql = "DELETE FROM mod_object_oembed_definition WHERE id_mood = '".$this->id."'";
 			$q = new CMS_query($sql);
 			if ($q->hasError()) {
-				$this->raiseError("Can't delete datas of table mod_object_oembed_definition for object : ".$this->id);
+				$this->setError("Can't delete datas of table mod_object_oembed_definition for object : ".$this->id);
 				return false;
 			}
 		}

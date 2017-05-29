@@ -409,8 +409,8 @@ class CMS_object_google_coordinates extends CMS_object_common
       * @return array : the labels of object structure and functions
       * @access public
       */
-    function getLabelsStructure(&$language) {
-		$labels = parent::getLabelsStructure($language);
+    function getLabelsStructure(&$language, $objectName = '') {
+		$labels = parent::getLabelsStructure($language, $objectName);
 		$params = $this->getParamsValues();
 		unset($labels['structure']['value']);
 		$labels['structure']['longitude'] = $language->getMessage(self::MESSAGE_OBJECT_COORDINATES_LONGITUDE_DESCRIPTION,false ,$this->_messagesModule);

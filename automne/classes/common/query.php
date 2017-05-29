@@ -99,7 +99,7 @@
 					$clean_sql = str_replace("\n", "", $this->_sql);
 					$clean_sql = preg_replace("#\t+#", " ", $clean_sql);
 					$errorInfo = isset($errorInfos[2]) ? $errorInfos[2] : 'No error returned';
-					$this->raiseError('Database querying failed : '.$errorInfo."\nQuery : ".$clean_sql);
+					$this->setError('Database querying failed : '.$errorInfo."\nQuery : ".$clean_sql);
 				}
 			} else {
 				$this->_result = $this->_db->query($this->_sql);
@@ -110,7 +110,7 @@
 					$clean_sql = preg_replace("#\t+#", " ", $clean_sql);
 					$errorInfos = $this->_db->errorInfo();
 					$errorInfo = isset($errorInfos[2]) ? $errorInfos[2] : 'No error returned';
-					$this->raiseError('Database querying failed : '.$errorInfo."\nQuery : ".$clean_sql."\nFrom : ".io::getCallInfos(3));
+					$this->setError('Database querying failed : '.$errorInfo."\nQuery : ".$clean_sql."\nFrom : ".io::getCallInfos(3));
 				}
 			}
 			/*only for stats*/
@@ -151,7 +151,7 @@
 		$clean_sql = preg_replace("#\t+#", " ", $clean_sql);
 		$errorInfos = $this->_db->errorInfo();
 		$errorInfo = isset($errorInfos[2]) ? $errorInfos[2] : 'no error returned';
-		$this->raiseError('Prepared query failed : '.$errorInfo."\nQuery : ".$clean_sql."\nParameters : ".print_r($params,true));
+		$this->setError('Prepared query failed : '.$errorInfo."\nQuery : ".$clean_sql."\nParameters : ".print_r($params,true));
 		return false;
 	}
 	
@@ -166,7 +166,7 @@
 		$connectID = md5($dsn.$user.$pass);
 		if (!isset(self::$_connection[$connectID])) {
 			if (!defined('PDO::MYSQL_ATTR_USE_BUFFERED_QUERY')) {
-				$this->raiseError('PDO MySQL driver not loaded ... please check your PHP configuration.');
+				$this->setError('PDO MySQL driver not loaded ... please check your PHP configuration.');
 				if (SYSTEM_DEBUG) {
 					die('<pre><b>'.self::SYSTEM_LABEL.' '.AUTOMNE_VERSION.' error : PDO MySQL driver not loaded ... please check your PHP configuration.'."</b></pre>\n");
 				}
@@ -176,7 +176,7 @@
 				self::$_connection[$connectID] = new PDO($dsn, $user, $pass, array(PDO::ATTR_PERSISTENT => APPLICATION_DB_PERSISTENT_CONNNECTION, PDO::ERRMODE_EXCEPTION => true, PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true));
 			} catch (PDOException $e) {
 				unset(self::$_connection[$connectID]);
-				$this->raiseError($e->getMessage());
+				$this->setError($e->getMessage());
 				if (SYSTEM_DEBUG) {
 					die('<pre><b>'.self::SYSTEM_LABEL.' '.AUTOMNE_VERSION.' error : '.$e->getMessage()."</b></pre>\n");
 				}

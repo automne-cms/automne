@@ -17,7 +17,7 @@
 /**
   * PHP controler : Receive validations actions
   * Used accross an Ajax request to process one or more validations pending
-  * 
+  *
   * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
@@ -189,7 +189,7 @@ switch ($action) {
 					$group_email = new CMS_emailsCatalog();
 					$group_email->setUserMessages($users, $bodies, $subjects, ALERT_LEVEL_VALIDATION, $validation->getModuleCodename());
 					$group_email->sendMessages();
-					
+
 					//check if resource still exists
 					$resUpdated = $validation->getResource();
 					$deleted = true;
@@ -199,7 +199,10 @@ switch ($action) {
 					}
 					//log action
 					$log = new CMS_log();
-					$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_VALIDATE_EDITION, $cms_user, $validation->getModuleCodename(), $res->getStatus(), "", $res);
+					//$moduleCodename = $validation->getByCodename();
+					$moduleCodename = $validation->getModuleCodename();
+					$resStatus = $res->getStatus();
+					$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_VALIDATE_EDITION, $cms_user, $moduleCodename, $resStatus, "", $res);
 					if (!$deleted && $res->getStatus()) {
 						//Replace all the status icons by the new one across the whole interface
 						$status = $res->getStatus()->getHTML(false, $cms_user, $validation->getModuleCodename(), $res->getID());

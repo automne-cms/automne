@@ -10,7 +10,7 @@
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
 // | Author: Andre Haynes <andre.haynes@ws-interactive.fr> &              |
-// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// | Author: SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
 // $Id: email.php,v 1.11 2010/03/08 16:43:27 sebastien Exp $
@@ -25,7 +25,7 @@
   * @package Automne
   * @subpackage common
   * @author Andre Haynes <andre.haynes@ws-interactive.fr> &
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   *
   * Methods EncodeHeader, EncodeQP, EncodeQ, FixEOL are based on phpmailer version 2.0.0RC1
   * See phpmailer.sourceforge.net for license (LGPL) informations and authors.
@@ -287,7 +287,7 @@ class CMS_email extends CMS_grandFather
 			$this->_template = $template;
 			return true;
 		} else {
-			$this->raiseError('Cannot get template file : '.$template);
+			$this->setError('Cannot get template file : '.$template);
 			return false;
 		}
 	}
@@ -313,13 +313,13 @@ class CMS_email extends CMS_grandFather
 	{
 		if (!is_array($emailTo)) {
 			if (!sensitiveIO::isValidEmail($emailTo)) {
-				//$this->raiseError('Invalid emailTo : '.$emailTo);
+				//$this->setError('Invalid emailTo : '.$emailTo);
 				return false;
 			}
 		} else {
 			foreach ($emailTo as $email) {
 				if (!sensitiveIO::isValidEmail($email)) {
-					$this->raiseError('Invalid emailTo : '.$email);
+					$this->setError('Invalid emailTo : '.$email);
 					return false;
 				}
 			}
@@ -339,13 +339,13 @@ class CMS_email extends CMS_grandFather
 	{
 		if (!is_array($emailCc)) {
 			if (!sensitiveIO::isValidEmail($emailCc)) {
-				//$this->raiseError('Invalid emailTo : '.$emailTo);
+				//$this->setError('Invalid emailTo : '.$emailTo);
 				return false;
 			}
 		} else {
 			foreach ($emailCc as $email) {
 				if (!sensitiveIO::isValidEmail($email)) {
-					$this->raiseError('Invalid emailTo : '.$email);
+					$this->setError('Invalid emailTo : '.$email);
 					return false;
 				}
 			}
@@ -365,13 +365,13 @@ class CMS_email extends CMS_grandFather
 	{
 		if (!is_array($emailBcc)) {
 			if (!sensitiveIO::isValidEmail($emailBcc)) {
-				//$this->raiseError('Invalid emailTo : '.$emailTo);
+				//$this->setError('Invalid emailTo : '.$emailTo);
 				return false;
 			}
 		} else {
 			foreach ($emailBcc as $email) {
 				if (!sensitiveIO::isValidEmail($email)) {
-					$this->raiseError('Invalid emailTo : '.$email);
+					$this->setError('Invalid emailTo : '.$email);
 					return false;
 				}
 			}
@@ -498,27 +498,43 @@ class CMS_email extends CMS_grandFather
 	  */
 	function convertTextToHTML($body)
 	{
-		$HTMLBody = preg_replace(
-				array(
-					'/(?(?=<a[^>]*>.+<\/a>)
-					(?:<a[^>]*>.+<\/a>)
-					|
-					([^="\']?)((?:https?|ftp|bf2|):\/\/[^<> \n\r]+)
-					)/iex',
-					'/<a([^>]*)target="?[^"\']+"?/i',
-					'/<a([^>]+)>/i',
-					'/(^|\s)(www.[^<> \n\r]+)/iex',
-					'/(([_A-Za-z0-9-]+)(\\.[_A-Za-z0-9-]+)*@([A-Za-z0-9-]+)
-					(\\.[A-Za-z0-9-]+)*)/iex'
-				),
-				array(
-					"stripslashes((io::strlen('\\2')>0?'\\1<a href=\"\\2\">\\2</a>\\3':'\\0'))",
-					'<a\\1',
-					'<a\\1 target="_blank">',
-					"stripslashes((io::strlen('\\2')>0?'\\1<a href=\"http://\\2\">\\2</a>\\3':'\\0'))",
-					"stripslashes((io::strlen('\\2')>0?'<a href=\"mailto:\\0\">\\0</a>':'\\0'))"
-				),$body);
-		return nl2br($HTMLBody);
+		$body = preg_replace_callback(
+			'/(?(?=<a[^>]*>.+<\/a>)(?:<a[^>]*>.+<\/a>)|([^="\']?)((?:https?|ftp|bf2|):\/\/[^<> \n\r]+))/ix',
+			function($matches) {
+				return stripslashes((io::strlen($matches[2]) > 0 ? $matches[1] . '<a href=\"' . $matches[2] . '\">' . $matches[2] . '</a>' : $matches[0] ));
+			},
+			$body
+		);
+		$body = preg_replace_callback(
+			'/<a([^>]*)target="?[^"\']+"?/i',
+			function($matches) {
+				return '<a' . $matches[1];
+			},
+			$body
+		);
+		$body = preg_replace_callback(
+			'/<a([^>]+)>/i',
+			function($matches) {
+				return '<a' . $matches[1] . ' target="_blank">';
+			},
+			$body
+		);
+		$body = preg_replace_callback(
+			'/(^|\s)(www.[^<> \n\r]+)/ix',
+			function($matches) {
+				return stripslashes((io::strlen($matches[2]) > 0 ? $matches[1] . '<a href=\"http://' . $matches[2] . '\">' . $matches[2] . '</a>' : $matches[0] ));
+			},
+			$body
+		);
+		$body = preg_replace_callback(
+			'/(([_A-Za-z0-9-]+)(\\.[_A-Za-z0-9-]+)*@([A-Za-z0-9-]+)(\\.[A-Za-z0-9-]+)*)/ix',
+			function($matches) {
+				return stripslashes((io::strlen($matches[2]) > 0 ? '<a href=\"mailto:' . $matches[0] . '\">' . $matches[0] . '</a>' : $matches[0] ));
+			},
+			$body
+		);
+
+		return nl2br($body);
 	}
 	
 	/**
@@ -529,12 +545,12 @@ class CMS_email extends CMS_grandFather
 	  */
 	function sendEmail(){
 		if ($this->hasError()) {
-			$this->raiseError('Cannot send email, error appened');
+			$this->setError('Cannot send email, error appened');
 			return false;
 		}
 		$emailSent = true;
 		if (!$this->_emailTo) {
-			$this->raiseError('emailTo can not be null');
+			$this->setError('emailTo can not be null');
 			return false;
 		}
 		
@@ -674,7 +690,7 @@ class CMS_email extends CMS_grandFather
 						$log = new CMS_log();
 						$log->logMiscAction(CMS_log::LOG_ACTION_SEND_EMAIL, $user, 'Email To '.$to.', From : '.$From.', Subject : '.$Subject.', Sent : No, Dropped because sender or receiver address is under Automne drop address list');
 					} else {
-						$this->raiseError('Email to '.$to.', from : '.$From.' (subject : '.$Subject.'), Dropped because sender or receiver address is under Automne drop address list');
+						$this->setError('Email to '.$to.', from : '.$From.' (subject : '.$Subject.'), Dropped because sender or receiver address is under Automne drop address list');
 					}
 				}
 			} else {
@@ -682,12 +698,12 @@ class CMS_email extends CMS_grandFather
 					$log = new CMS_log();
 					$log->logMiscAction(CMS_log::LOG_ACTION_SEND_EMAIL, $user, 'Email To '.$to.', From : '.$From.', Subject : '.$Subject.', Sent : No, Dropped because receiver address is not valid');
 				} else {
-					$this->raiseError('Email to '.$to.', from : '.$From.' (subject : '.$Subject.'), Dropped because receiver address is not valid');
+					$this->setError('Email to '.$to.', from : '.$From.' (subject : '.$Subject.'), Dropped because receiver address is not valid');
 				}
 			}
 		}
 		if (!$emailSent) {
-			$this->raiseError('Email was not sent, please check your sendmail configuration or SMTP connection in php.ini');
+			$this->setError('Email was not sent, please check your sendmail configuration or SMTP connection in php.ini');
 		}
 		return $emailSent;
 	}
@@ -751,15 +767,29 @@ class CMS_email extends CMS_grandFather
 		if (io::substr($encoded, -(io::strlen($this->LE))) != $this->LE) {
 			$encoded .= $this->LE;
 		}
-		
+
 		/* Replace every high ascii, control and = characters */
-		$encoded = preg_replace('/([\000-\010\013\014\016-\037\075\177-\377])/e', "'='.sprintf('%02X', ord('\\1'))", $encoded);
+		// $encoded = preg_replace('/([\000-\010\013\014\016-\037\075\177-\377])/e', "'='.sprintf('%02X', ord('\\1'))", $encoded);
+		$encoded = preg_replace_callback(
+			'/([\000-\010\013\014\016-\037\075\177-\377])/',
+			function($matches) {
+				return "'='.sprintf('%02X', ord('".$matches[1]."'))";
+			},
+			$encoded
+		);
 		/* Replace every spaces and tabs when it's the last character on a line */
-		$encoded = preg_replace("/([\011\040])".$this->LE."/e", "'='.sprintf('%02X', ord('\\1')).'".$this->LE."'", $encoded);
-		
+		// $encoded = preg_replace("/([\011\040])".$this->LE."/e", "'='.sprintf('%02X', ord('\\1')).'".$this->LE."'", $encoded);
+		$encoded = preg_replace_callback(
+			'/([\011\040])' . $this->LE . '/',
+			function($matches) {
+				return "'='.sprintf('%02X', ord('".$matches[1]."')).'".$this->LE."'";
+			},
+			$encoded
+		);
+
 		/* Maximum line length of 76 characters before CRLF (74 + space + '=') */
 		//$encoded = $this->WrapText($encoded, 74, true);
-		
+
 		return $encoded;
 	}
 	
@@ -772,17 +802,37 @@ class CMS_email extends CMS_grandFather
 		$encoded = preg_replace("[\r\n]", '', $str);
 		
 		switch (io::strtolower($position)) {
-				case 'phrase':
-				$encoded = preg_replace("/([^A-Za-z0-9!*+\/ -])/e", "'='.sprintf('%02X', ord('\\1'))", $encoded);
-			break;
-				case 'comment':
-				$encoded = preg_replace("/([\(\)\"])/e", "'='.sprintf('%02X', ord('\\1'))", $encoded);
-				case 'text':
-				default:
+			case 'phrase':
+				// $encoded = preg_replace("/([^A-Za-z0-9!*+\/ -])/e", "'='.sprintf('%02X', ord('\\1'))", $encoded);
+				$encoded = preg_replace_callback(
+					'/([^A-Za-z0-9!*+\/ -])/',
+					function($matches) {
+						return "'='.sprintf('%02X', ord('".$matches[1]."'))";
+					},
+					$encoded
+				);
+				break;
+			case 'comment':
+				// $encoded = preg_replace("/([\(\)\"])/e", "'='.sprintf('%02X', ord('\\1'))", $encoded);
+				$encoded = preg_replace_callback(
+					'/([\(\)\"])/',
+					function($matches) {
+						return "'='.sprintf('%02X', ord('".$matches[1]."'))";
+					},
+					$encoded
+				);
+			case 'text':
+			default:
 				/* Replace every high ascii, control =, ? and _ characters */
-				$encoded = preg_replace('/([\000-\011\013\014\016-\037\075\077\137\177-\377])/e',
-			      "'='.sprintf('%02X', ord('\\1'))", $encoded);
-			break;
+				//$encoded = preg_replace('/([\000-\011\013\014\016-\037\075\077\137\177-\377])/e', "'='.sprintf('%02X', ord('\\1'))", $encoded);
+				$encoded = preg_replace_callback(
+					'/([\(\)\"])/',
+					function($matches) {
+						return "'='.sprintf('%02X', ord('".$matches[1]."'))";
+					},
+					$encoded
+				);
+				break;
 		}
 		
 		/* Replace every spaces to _ (more readable than =20) */

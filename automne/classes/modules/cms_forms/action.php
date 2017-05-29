@@ -203,7 +203,7 @@ class CMS_forms_action extends CMS_superResource
 	  * @access public
 	  * @static
 	  */
-	function getAllTypes()
+	static function getAllTypes()
 	{
 		return array(
 			self::ACTION_ALREADY_FOLD	=> self::MESSAGE_CMS_FORMS_ACTION_ALREADY_FOLD,

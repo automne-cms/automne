@@ -35,7 +35,7 @@ class CMS_blocksCatalog extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function moveBlocks(&$page, $locationFrom, $locationTo, $copyOnly = false)
+	public static function moveBlocks(&$page, $locationFrom, $locationTo, $copyOnly = false)
 	{
 		if (!is_a($page, "CMS_page")) {
 			CMS_grandFather::raiseError("Page is not a CMS_page");
@@ -160,7 +160,7 @@ class CMS_blocksCatalog extends CMS_grandFather
 	  * @param boolean $public, if only public datas are concerned
 	  * @return array of CMS_block
 	  */
-	function getAllBlocksForPage(&$page, $public=false)
+	static function getAllBlocksForPage(&$page, $public=false)
 	{
 		$_blocks = array();
 		//@var : array ( array(Table prefix, Class name) )

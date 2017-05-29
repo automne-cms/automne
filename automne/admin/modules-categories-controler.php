@@ -221,7 +221,7 @@ switch ($action) {
 			}
 		} else {
 			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_ERROR_PROTECTED);
-			$item->raiseError('Error during modification of category '.$item->getID().'. Category is protected.');
+			$item->setError('Error during modification of category '.$item->getID().'. Category is protected.');
 		}
 	break;
 	case 'delete':
@@ -236,7 +236,7 @@ switch ($action) {
 			}
 		} else {
 			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_ERROR_PROTECTED);
-			$category->raiseError('Error during modification of category '.$category->getID().'. Category is protected.');
+			$category->setError('Error during modification of category '.$category->getID().'. Category is protected.');
 		}
 	break;
 	case 'move':
@@ -254,7 +254,7 @@ switch ($action) {
 			}
 		} else {
 			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_ERROR_PROTECTED);
-			$category->raiseError('Error during modification of category '.$category->getID().'. Category is protected.');
+			$category->setError('Error during modification of category '.$category->getID().'. Category is protected.');
 		}
 	break;
 	default:

@@ -9,7 +9,7 @@
 // | LICENSE-GPL, and is available through the world-wide-web at		  |
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
-// | Author: Sebastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
 // $Id: poly_definition_parsing.php,v 1.18 2010/03/08 16:43:30 sebastien Exp $
@@ -21,7 +21,7 @@
   *
   * @package Automne
   * @subpackage polymod
-  * @author S�bastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
 class CMS_polymod_definition_parsing extends CMS_grandFather
@@ -184,6 +184,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			}
 			//parse definiton
 			$this->_parser = new CMS_xml2Array($definition, CMS_xml2Array::XML_ENCLOSE | CMS_xml2Array::XML_PROTECT_ENTITIES);
+
 			$this->_definitionArray = $this->_parser->getParsedArray();
 			//compute definition
 			$this->_definition = $this->computeTags($this->_definitionArray);
@@ -192,7 +193,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				$this->_definition = CMS_XMLTag::cleanComputedDefinition($this->_definition);
 			}
 		} else {
-			$this->_definition = $this->preReplaceVars(str_replace('"','&quot;', $definition), false, true);
+			$this->_definition = CMS_polymod_definition_parsing::preReplaceVars(str_replace('"','&quot;', $definition), false, true);
 		}
 	}
 	
@@ -230,7 +231,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			$languageObject = $blockAttributes = $pageID = $pluginSelection = $polyobjectsDefinitions = '';
 			//load all poly objects for module
 			if (!$this->_parameters['module']) {
-				$this->raiseError("Missing valid module codename in parameters.");
+				$this->setError("Missing valid module codename in parameters.");
 			} else {
 				//set module as cached element
 				$this->_elements['module'][] = $this->_parameters['module'];
@@ -314,7 +315,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 						$this->_headCallBack['footcode'] = $footers;
 						CMS_module::moduleUsage($this->_parameters['pageID'], $this->_parameters['module'], array('headCallback' => array($this->_headCallBack)));
 					} else {
-						$this->raiseError('Missing valid pageID or module codename or language code in parameters to use header callback.');
+						$this->setError('Missing valid pageID or module codename or language code in parameters to use header callback.');
 						return false;
 					}
 				}
@@ -355,7 +356,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 					$return = eval(sensitiveIO::sanitizeExecCommand($this->_definition));
 				} else {
 					if (!is_object($this->_parameters['item'])) {
-						$this->raiseError('Missing valid item in parameters.');
+						$this->setError('Missing valid item in parameters.');
 						return false;
 					}
 					//make object available
@@ -364,13 +365,13 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 					$return = eval(sensitiveIO::sanitizeExecCommand('return "'.$this->_definition.'";'));
 				}
 				if (isset($ckeck) && $ckeck === false) {
-					$this->raiseError('Can\'t eval content type to return : '.$this->_definition);
+					$this->setError('Can\'t eval content type to return : '.$this->_definition);
 					return false;
 				}
 				return $return;
 			break;
 			default:
-				$this->raiseError('Unknown content type to return : '.$type);
+				$this->setError('Unknown content type to return : '.$type);
 				return false;
 			break;
 		}
@@ -471,7 +472,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 							}
 						}
 					} else {
-						$this->raiseError('Unknown compute callback method : '.$this->_tagsCallBack[$definition[$key]['nodename']].' for tag '.$definition[$key]['nodename']);
+						$this->setError('Unknown compute callback method : '.$this->_tagsCallBack[$definition[$key]['nodename']].' for tag '.$definition[$key]['nodename']);
 						return false;
 					}
 				} elseif (isset($definition[$key]['phpnode'])) {
@@ -500,7 +501,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				$this->_parsingError .= "\n".'Malformed definition to compute';
 				return false;
 			} else {
-				$this->raiseError("Malformed definition to compute : ".print_r($definition, true));
+				$this->setError("Malformed definition to compute : ".print_r($definition, true));
 				return false;
 			}
 		}
@@ -553,7 +554,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 				$this->_parsingError .= "\n"."Malformed atm-search tag : no children tags found";
 				return;
 			} else {
-				$this->raiseError("Malformed atm-search tag : no children tags found");
+				$this->setError("Malformed atm-search tag : no children tags found");
 				return;
 			}
 		}
@@ -901,7 +902,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			$objects = CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']["object"], false, true, false, true);
 			if (is_array($objects) && $objects) {
 				$return .='
-				$object_'.$uniqueID.' = &'.array_pop($objects).';
+				$object_'.$uniqueID.' = '.array_pop($objects).';
 				if (method_exists($object_'.$uniqueID.', "'.$tag['attributes']["function"].'")) {
 					$content .= CMS_polymod_definition_parsing::replaceVars($object_'.$uniqueID.'->'.$tag['attributes']["function"].'($parameters_'.$uniqueID.', '.CMS_polymod_definition_parsing::preReplaceVars(var_export($childrens ,true), true).'), $replace);
 				} else {
@@ -944,7 +945,8 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			$reverse = '$loopcondition_'.$uniqueID.' = array_reverse ( $loopcondition_'.$uniqueID.' , true );';
 		}
 		//get loop on attribute
-		$on = array_pop(CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['on'], false, false, false, true));
+		$preReplaceOn = CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['on'], false, false, false, true);
+		$on = array_pop($preReplaceOn);
 		//get key name
 		$matches = array();
 		preg_match("#\(([n0-9]+)\)->getValue\(#U", $on, $matches);
@@ -1546,7 +1548,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @return text : the text replaced
 	  * @access public
 	  */
-	function preReplaceVars($text, $reverse = false, $cleanNotMatches = false, $matchCallback = array('CMS_polymod_definition_parsing', 'encloseString'), $returnMatchedVarsArray = false) {
+	public static function preReplaceVars($text, $reverse = false, $cleanNotMatches = false, $matchCallback = array('CMS_polymod_definition_parsing', 'encloseString'), $returnMatchedVarsArray = false) {
 		static $replacements;
 		//if no text => return
 		if (!$text || !trim($text)) {
@@ -1589,13 +1591,13 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			//create vars conversion table
 			$replace = array();
 			if ($matchesValues) {
-				if (isset($this->_parameters['module'])) {
+				/*if (isset($this->_parameters['module'])) {
 					$externalReferences = CMS_poly_object_catalog::getFieldsReferencesUsage($this->_parameters['module']);
-				} else {
+				} else {*/
 					$externalReferences = CMS_poly_object_catalog::getFieldsReferencesUsage();
-				}
+				/*}*/
 				foreach ($matches as $key => $match) {
-					//record external references for cache reference
+					/*//record external references for cache reference
 					if ($externalReferences) {
 						foreach ($externalReferences as $id => $type) {
 							if (strpos($match , '[\'fields\']['.$id.']') !== false || strpos($match , '[\\\'fields\\\']['.$id.']') !== false) {
@@ -1612,7 +1614,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 					//record used users for cache reference
 					if (strpos($match, '{user:') !== false) {
 						$this->_elements['resource'][] = 'users';
-					}
+					}*/
 					if ($match != $matchesValues[$key]) {
 						$matchValue = $matchesValues[$key];
 					} else {
@@ -1731,7 +1733,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  */
 	function checkTagRequirements(&$tag, $requirements) {
 		if (!is_array($requirements)) {
-			$this->raiseError('Tag requirements must be an array');
+			$this->setError('Tag requirements must be an array');
 			return false;
 		}
 		foreach ($requirements as $name => $requirementType) {
@@ -1741,7 +1743,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 					$this->_parsingError .= "\n".'Malformed '.$tag['nodename'].' tag : missing \''.$name.'\' attribute';
 					return false;
 				} else {
-					$this->raiseError('Malformed '.$tag['nodename'].' tag : missing \''.$name.'\' attribute');
+					$this->setError('Malformed '.$tag['nodename'].' tag : missing \''.$name.'\' attribute');
 					return false;
 				}
 			} elseif ($requirementType !== true) {//if any, check value requirement
@@ -1752,7 +1754,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 								$this->_parsingError .= "\n".'Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute must only be composed with alphanumeric caracters (0-9a-z_) : '.$tag['attributes'][$name];
 								return false;
 							} else {
-								$this->raiseError('Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute must only be composed with alphanumeric caracters (0-9a-z_) : '.$tag['attributes'][$name]);
+								$this->setError('Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute must only be composed with alphanumeric caracters (0-9a-z_) : '.$tag['attributes'][$name]);
 								return false;
 							}
 						}
@@ -1768,7 +1770,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 								$this->_parsingError .= "\n".'Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute must only be a valid language code : '.$tag['attributes'][$name];
 								return false;
 							} else {
-								$this->raiseError('Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute must only be a valid language code : '.$tag['attributes'][$name]);
+								$this->setError('Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute must only be a valid language code : '.$tag['attributes'][$name]);
 								return false;
 							}
 						}
@@ -1779,7 +1781,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 								$this->_parsingError .= "\n".'Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute does not represent a valid object';
 								return false;
 							} else {
-								$this->raiseError('Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute does not represent a valid object');
+								$this->setError('Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute does not represent a valid object');
 								return false;
 							}
 						}
@@ -1790,7 +1792,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 								$this->_parsingError .= "\n".'Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute does not represent a valid object field';
 								return false;
 							} else {
-								$this->raiseError('Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute does not represent a valid object field');
+								$this->setError('Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute does not represent a valid object field');
 								return false;
 							}
 						}
@@ -1801,7 +1803,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 								$this->_parsingError .= "\n".'Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute, must be one of these values : '.implode(', ', CMS_object_search::getStaticSearchConditionTypes());
 								return false;
 							} else {
-								$this->raiseError('Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute, must be one of these values : '.implode(', ', CMS_object_search::getStaticSearchConditionTypes()));
+								$this->setError('Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute, must be one of these values : '.implode(', ', CMS_object_search::getStaticSearchConditionTypes()));
 								return false;
 							}
 						}
@@ -1812,7 +1814,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 								$this->_parsingError .= "\n".'Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute, must be one of these values : '.implode(', ', CMS_object_search::getStaticOrderConditionTypes());
 								return false;
 							} else {
-								$this->raiseError('Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute, must be one of these values : '.implode(', ', CMS_object_search::getStaticOrderConditionTypes()));
+								$this->setError('Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute, must be one of these values : '.implode(', ', CMS_object_search::getStaticOrderConditionTypes()));
 								return false;
 							}
 						}
@@ -1823,7 +1825,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 								$this->_parsingError .= "\n".'Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute must match expression \''.$requirementType.'\' : '.$tag['attributes'][$name];
 								return false;
 							} else {
-								$this->raiseError('Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute must match expression \''.$requirementType.'\' : '.$tag['attributes'][$name]);
+								$this->setError('Malformed '.$tag['nodename'].' tag : \''.$name.'\' attribute must match expression \''.$requirementType.'\' : '.$tag['attributes'][$name]);
 								return false;
 							}
 						}
@@ -1837,7 +1839,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 
 	protected function checkTagValues(&$tag, $requirements) {
 		if (!is_array($requirements)) {
-			$this->raiseError('Tag requirements must be an array');
+			$this->setError('Tag requirements must be an array');
 			return false;
 		}
 		foreach ($requirements as $name => $requirementType) {
@@ -1847,7 +1849,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 					$this->_parsingError .= "\n".'Malformed '.$tag['nodename'].' tag : missing \''.$name.'\' attribute';
 					return false;
 				} else {
-					$this->raiseError('Malformed '.$tag['nodename'].' tag : missing \''.$name.'\' attribute');
+					$this->setError('Malformed '.$tag['nodename'].' tag : missing \''.$name.'\' attribute');
 					return false;
 				}
 			}
@@ -1917,7 +1919,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 						$this->_parsingError .= "\n<br />".$message;
 						return false;
 					} else {
-						$this->raiseError($message);
+						$this->setError($message);
 						return false;
 					}
 				}
@@ -2020,9 +2022,6 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 			$tag['attributes']['label'] = eval(sensitiveIO::sanitizeExecCommand('return "'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['label']).'";'));
 			if(isset($tag['attributes']['description'])){
 				$tag['attributes']['description'] = eval(sensitiveIO::sanitizeExecCommand('return "'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['description']).'";'));
-			}
-			if(isset($tag['attributes']['possibleValues'])){
-				$tag['attributes']['possibleValues'] = eval(sensitiveIO::sanitizeExecCommand('return "'.CMS_polymod_definition_parsing::preReplaceVars($tag['attributes']['possibleValues']).'";'));
 			}
 			$this->_blockParams['var'][$tag['attributes']['id']][$tag['attributes']['varname'] ] =  $tag['attributes'];
 		}

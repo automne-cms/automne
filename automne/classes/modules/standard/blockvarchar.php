@@ -173,7 +173,7 @@ class CMS_block_varchar extends CMS_block
 		
 		$table = $this->_getDataTableName($location, $public);
 		if (!$table) {
-			$this->raiseError("unknown table");
+			$this->setError("unknown table");
 			return false;
 		}
 		$sql = "
@@ -326,10 +326,10 @@ class CMS_block_varchar extends CMS_block
 				$q = new CMS_query($sql);
 				return !$q->hasError();
 			} else {
-				$this->raiseError("Duplicate, insertion failed: ".$sql);
+				$this->setError("Duplicate, insertion failed: ".$sql);
 			}
 		} else {
-			$this->raiseError("Duplicate, object does not have a DB ID, not initialized");
+			$this->setError("Duplicate, object does not have a DB ID, not initialized");
 		}
 		return false;
 	}

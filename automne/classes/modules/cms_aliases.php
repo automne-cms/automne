@@ -58,7 +58,7 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 	  * @return CMS_resource The CMS_resource subclassed object
 	  * @access public
 	  */
-	function getResourceByID($resourceID)
+	public static function getResourceByID($resourceID)
 	{
 		parent::getResourceByID($resourceID);
 		return new CMS_resource_cms_aliases($resourceID);
@@ -183,7 +183,8 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 		//strip final slash from path
 		$urlinfo['path'] = substr($urlinfo['path'], -1) == '/' ? substr($urlinfo['path'], 0, -1) : $urlinfo['path'];
 		//get aliases for current folder
-		$dirname = array_pop(explode('/', $urlinfo['path']));
+		$array_temp = explode('/', $urlinfo['path']);
+		$dirname = array_pop($array_temp);
 		$aliases = CMS_module_cms_aliases::getByName($dirname);
 		if (!$aliases) {
 			return false;
@@ -405,9 +406,10 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 	* @access public
 	* @static
 	*/
-	function redirect() {
+	static function redirect() {
 		//get aliases for current folder
-		$dirname = array_pop(explode(DIRECTORY_SEPARATOR, dirname($_SERVER['SCRIPT_NAME'])));
+		$arrayDirname = explode(DIRECTORY_SEPARATOR, dirname($_SERVER['SCRIPT_NAME']));
+		$dirname = array_pop($arrayDirname);
 		$aliases = CMS_module_cms_aliases::getByName($dirname);
 		if (!$aliases) {
 			//no alias found, go to 404
@@ -452,12 +454,12 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 				$page = CMS_tree::getPageById($matchAlias->getPageID());
 			} else {
 				//no valid page set, go to 404
-				$matchAlias->raiseError('No page set for alias '.$matchAlias->getID());
+				$matchAlias->setError('No page set for alias '.$matchAlias->getID());
 				CMS_view::redirect(PATH_SPECIAL_PAGE_NOT_FOUND_WR, true, 301);
 			}
 			if (!$page || $page->hasError()) {
 				//no valid page found, go to 404
-				$matchAlias->raiseError('Invalid page '.$matchAlias->getPageID().' for alias '.$matchAlias->getID());
+				$matchAlias->setError('Invalid page '.$matchAlias->getPageID().' for alias '.$matchAlias->getID());
 				CMS_view::redirect(PATH_SPECIAL_PAGE_NOT_FOUND_WR, true, 301);
 			}
 			//return page path
@@ -473,7 +475,7 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 				}
 			}
 			//no valid url page found, go to 404
-			$matchAlias->raiseError('Invalid url page '.$matchAlias->getPageID().' for alias '.$matchAlias->getID());
+			$matchAlias->setError('Invalid url page '.$matchAlias->getPageID().' for alias '.$matchAlias->getID());
 			CMS_view::redirect(PATH_SPECIAL_PAGE_NOT_FOUND_WR, true, 301);
 		} else {
 			//this is a redirection
@@ -490,12 +492,12 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 						CMS_view::redirect($pageURL.$params, true, ($matchAlias->isPermanent() ? 301 : 302));
 					} else {
 						//no valid url page found, go to 404
-						$matchAlias->raiseError('Invalid url page '.$matchAlias->getPageID().' for alias '.$matchAlias->getID());
+						$matchAlias->setError('Invalid url page '.$matchAlias->getPageID().' for alias '.$matchAlias->getID());
 						CMS_view::redirect(PATH_SPECIAL_PAGE_NOT_FOUND_WR, true, 301);
 					}
 				}  else {
 					//no valid page found, go to 404
-					$matchAlias->raiseError('Invalid page '.$matchAlias->getPageID().' for alias '.$matchAlias->getID());
+					$matchAlias->setError('Invalid page '.$matchAlias->getPageID().' for alias '.$matchAlias->getID());
 					CMS_view::redirect(PATH_SPECIAL_PAGE_NOT_FOUND_WR, true, 301);
 				}
 			} elseif ($matchAlias->getURL()) {
@@ -503,7 +505,7 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 				CMS_view::redirect($matchAlias->getURL(), true, ($matchAlias->isPermanent() ? 301 : 302));
 			} else {
 				//no valid redirection found, go to 404
-				$matchAlias->raiseError('Invalid redirection for alias '.$matchAlias->getID());
+				$matchAlias->setError('Invalid redirection for alias '.$matchAlias->getID());
 				CMS_view::redirect(PATH_SPECIAL_PAGE_NOT_FOUND_WR, true, 301);
 			}
 		}

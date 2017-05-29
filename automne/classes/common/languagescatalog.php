@@ -297,7 +297,7 @@ class CMS_languagesCatalog extends CMS_grandFather
 	  * @return array(code => label)
 	  * @access public
 	  */
-	function getAllLanguagesCodes() {
+	public static function getAllLanguagesCodes() {
 		if (!file_exists(PATH_PACKAGES_FS.'/files/iso639-1.txt')) {
 			return array();
 		}

@@ -9,7 +9,7 @@
 // | LICENSE-GPL, and is available through the world-wide-web at		  |
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
-// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// | Author: S�bastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 
 /**
@@ -19,7 +19,7 @@
   *
   * @package Automne
   * @subpackage user
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author S�bastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
 class CMS_session extends CMS_grandFather
@@ -109,46 +109,14 @@ class CMS_session extends CMS_grandFather
 
 		//check session dir as writable
 		$sessionPath = session_save_path();
-		if ($sessionPath && @is_dir($sessionPath) && !@is_writable($sessionPath)) {
+		if ($sessionPath && !@is_writable($sessionPath)) {
 			if(PATH_PHP_TMP && @is_dir(PATH_PHP_TMP) && is_object(@dir(PATH_PHP_TMP)) && is_writable(PATH_PHP_TMP)) {
 				$sessionPath = PATH_PHP_TMP;
 			} elseif (@is_dir(PATH_TMP_FS) && is_object(@dir(PATH_TMP_FS)) && is_writable(PATH_TMP_FS)){
 				$sessionPath = PATH_TMP_FS;
 			} else {
-				CMS_grandFather::raiseError('Can\'t find writable session path ...');
+				CMS_grandFather::raiseError('Can\'t found writable session path ...');
 			}
-		}
-		else {
-			// $sessionPath is not a directory, we need to specify the save handler to Zend_Session
-			$iniHandler = ini_get('session.save_handler');
-			switch ($iniHandler) {
-				case 'memcached':
-				case 'memcache':
-                    $saveHandler = new Zend_Session_SaveHandler_Cache();
-                    $urlParts = parse_url($sessionPath);
-                    $backendOptions = array();
-                    if($urlParts !== false && isset($urlParts['host']) && isset($urlParts['port'])) {
-                        $backendOptions = array(
-                        'servers' => array(array(
-                            'host'   => $urlParts['host'],
-                            'port'   => $urlParts['port'],
-                        ))
-                      );
-                    }
-                    $backendName = ($iniHandler === 'memcached') ? 'Libmemcached' : 'Memcached';
-                    $_cache = Zend_Cache::factory('Core', $backendName, array(), $backendOptions);
-                    $saveHandler->setCache($_cache);
-                    Zend_Session::setSaveHandler($saveHandler);
-
-                    // disable phpmyadmin link as the sso mecanism isn't working
-                    if(!defined('DISABLE_PHP_MYADMIN')) {
-                        define('DISABLE_PHP_MYADMIN',true);
-                    }
-				default:
-					// do nothing
-					break;
-			}
-
 		}
 
 		Zend_Session::setOptions(array(
@@ -262,10 +230,6 @@ class CMS_session extends CMS_grandFather
 					$auth->getStorage()->write($storageValue);
 					//get module auth adapter
 					$authAdapter = $module->getAuthAdapter($params);
-                    if(!$authAdapter) {
-                        $module = array_pop($modules);
-                        continue;
-                    }
 
 					//authenticate user
 					self::$_result = $auth->authenticate($authAdapter);
@@ -420,7 +384,7 @@ class CMS_session extends CMS_grandFather
 	  * @return void
 	  * @access private
 	  */
-	protected function _cleanSessions() {
+	protected static function _cleanSessions() {
 		//fetch all deletable sessions
 		$sql = "
 			select
@@ -564,7 +528,7 @@ class CMS_session extends CMS_grandFather
 		if (io::isPositiveInteger($bookmark)) {
 			self::$_bookmark = $bookmark;
 		} else {
-			$this->raiseError("Incorrect bookmark type");
+			$this->setError("Incorrect bookmark type");
 		}
 	}
 
@@ -589,7 +553,7 @@ class CMS_session extends CMS_grandFather
 		if (SensitiveIO::isPositiveInteger($howMany)) {
 			self::$_recordsPerPage = $howMany;
 		} else {
-			$this->raiseError("Not a positive value");
+			$this->setError("Not a positive value");
 		}
 	}
 
@@ -615,7 +579,7 @@ class CMS_session extends CMS_grandFather
 			$sessionNS = new Zend_Session_Namespace('atm-page');
 			$sessionNS->pageId = $page->getID();
 		} else {
-			$this->raiseError("Incorrect Page type");
+			$this->setError("Incorrect Page type");
 		}
 	}
 
@@ -781,7 +745,7 @@ class CMS_session extends CMS_grandFather
 			if (file_exists($extLocaleFile)) {
 				$fileContent = file_get_contents($extLocaleFile);
 				//remove BOM if any
-				if(substr($fileContent, 0, 3) == 'ï»¿') {
+				if(substr($fileContent, 0, 3) == '﻿') {
 					$fileContent = substr($fileContent, 3);
 				}
 				$locales .= (io::strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? utf8_decode($fileContent) : $fileContent;

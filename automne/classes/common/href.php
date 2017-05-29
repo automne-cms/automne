@@ -154,7 +154,7 @@ class CMS_href extends CMS_grandFather
 				}
 				return;
 			} else {
-				$this->raiseError('Not a valid formated href definition given : '.$textDefinition);
+				$this->setError('Not a valid formated href definition given : '.$textDefinition);
 			}
 		}
 	}
@@ -273,7 +273,7 @@ class CMS_href extends CMS_grandFather
 	function setLinkType($type)
 	{
 		if (!SensitiveIO::isInSet($type, CMS_resource::getAllLinkTypes())) {
-			$this->raiseError("Type not in the valid set");
+			$this->setError("Type not in the valid set");
 			return false;
 		}
 		$this->_linkType = $type;
@@ -380,7 +380,7 @@ class CMS_href extends CMS_grandFather
 			if (class_exists("CMS_resource")) {
 				if (!SensitiveIO::isInSet($dataLocation, CMS_resource::getAllDataLocations())
 					|| $dataLocation == RESOURCE_DATA_LOCATION_DEVNULL) {
-					$this->raiseError("DataLocation not in the valid set : ".$dataLocation);
+					$this->setError("DataLocation not in the valid set : ".$dataLocation);
 					return false;
 				}
 			} else {
@@ -470,7 +470,7 @@ class CMS_href extends CMS_grandFather
 			$this->_attributes = $attrs;
 			return true;
 		}
-		$this->raiseError("Bad attributes array given, not an array");
+		$this->setError("Bad attributes array given, not an array");
 		return false;
 	}
 	

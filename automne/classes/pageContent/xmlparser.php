@@ -28,12 +28,12 @@ class CMS_XMLParser extends CMS_grandFather
 {
 	function __construct()
 	{
-		$this->raiseError(__CLASS__.' class is no longer available in this version of Automne');
+		$this->setError(__CLASS__.' class is no longer available in this version of Automne');
 		return false;
 	}
 	function __call($name, $parameters)
 	{
-		$this->raiseError(__CLASS__.' : method '.$name.' is no longer available in this version of Automne');
+		$this->setError(__CLASS__.' : method '.$name.' is no longer available in this version of Automne');
 		return false;
 	}
 }

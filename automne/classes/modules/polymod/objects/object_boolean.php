@@ -164,7 +164,7 @@ class CMS_object_boolean extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName) {
+	function setValues($values,$prefixName, $newFormat = false) {
 		if (is_object($this->_subfieldValues[0])) {
 			$value = isset($values[$prefixName.$this->_field->getID().'_0']) ? $values[$prefixName.$this->_field->getID().'_0'] : 0;
 			// Convert boolean to integer
@@ -220,7 +220,7 @@ class CMS_object_boolean extends CMS_object_common
 	function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
 		$supportedOperator = array();
 		if ($operator && !in_array($operator, $supportedOperator)) {
-			$this->raiseError("Unknown search operator : ".$operator.", use default search instead");
+			$this->setError("Unknown search operator : ".$operator.", use default search instead");
 			$operator = false;
 		}
 		$statusSuffix = ($public) ? "_public":"_edited";

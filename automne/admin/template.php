@@ -134,6 +134,8 @@ $fileDatas = array(
 	'extension'		=> '',
 );
 
+$fileDatas = sensitiveIO::jsonEncode($fileDatas);
+
 //Groups
 $allGroups = CMS_pageTemplatesCatalog::getAllGroups();
 $groupsfield = '';

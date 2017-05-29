@@ -128,7 +128,7 @@ class CMS_XMLTag extends CMS_grandFather
 		$this->_parameters = $parameters;
 		$this->_children = $children;
 		if (!is_array($attributes)) {
-			$this->raiseError("Attributes given are not an array. Fixed by setting an empty array.");
+			$this->setError("Attributes given are not an array. Fixed by setting an empty array.");
 			$this->_attributes = array();
 		} else {
 			$this->_attributes = $attributes;
@@ -200,7 +200,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  */
 	function setAttribute($attribute, $value) {
 		if (io::sanitizeAsciiString($attribute, '', '') != $attribute) {
-			$this->raiseError('Tag attribute must be ascii only : '.$attribute);
+			$this->setError('Tag attribute must be ascii only : '.$attribute);
 			return false;
 		}
 		
@@ -217,7 +217,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  */
 	function __call($name, $parameters)
 	{
-		$this->raiseError(__CLASS__.' : Method '.$name.' is not available in this version of Automne');
+		$this->setError(__CLASS__.' : Method '.$name.' is not available in this version of Automne');
 		return false;
 	}
 	
@@ -235,7 +235,7 @@ class CMS_XMLTag extends CMS_grandFather
 			$this->_textContent = $content;
 			return true;
 		} else {
-			$this->raiseError("Content is empty or does not contain self tag");
+			$this->setError("Content is empty or does not contain self tag");
 			return false;
 		}
 	}
@@ -465,7 +465,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  */
 	function checkTagRequirements($requirements) {
 		if (!is_array($requirements)) {
-			$this->raiseError('Tag requirements must be an array');
+			$this->setError('Tag requirements must be an array');
 			return false;
 		}
 		foreach ($requirements as $name => $requirementType) {
@@ -537,7 +537,6 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @param mixed $matchCallback : function name or array(object classname, object method) which represent a valid callback function to execute on matches
 	  * @return text : the text replaced
 	  * @access public
-	  * @static
 	  */
 	function replaceVars($text, $reverse = false, $cleanNotMatches = false, $matchCallback = null, $returnMatchedVarsArray = false) {
 		static $replacements;
@@ -728,7 +727,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function indentPHP($phpcode) {
+	public static function indentPHP($phpcode) {
 		$phparray = array_map('trim',explode("\n",$phpcode));
 		$level = 0;
 		foreach ($phparray as $linenb => $phpline) {

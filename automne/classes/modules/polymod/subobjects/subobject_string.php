@@ -51,7 +51,7 @@ class CMS_subobject_string extends CMS_subobject_common
 		//add some complementary checks on values
 		if ($this->_constructorValues['value'] && io::strlen($this->_constructorValues['value']) > 255) {
 			$this->_value='';
-			$this->raiseError("Setting a too long string for string value : max 255 cars, set : ".io::strlen($this->_constructorValues['value']));
+			$this->setError("Setting a too long string for string value : max 255 cars, set : ".io::strlen($this->_constructorValues['value']));
 			return;
 		}
 	}
@@ -67,7 +67,7 @@ class CMS_subobject_string extends CMS_subobject_common
 	{
 		//add some complementary checks on values
 		if ($value && io::strlen($value) > 255) {
-			$this->raiseError("Setting a too long string for string value : max 255 cars, set : ".io::strlen($value));
+			$this->setError("Setting a too long string for string value : max 255 cars, set : ".io::strlen($value));
 			return false;
 		}
 		

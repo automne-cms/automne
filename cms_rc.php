@@ -15,14 +15,14 @@
 
 /**
   * AUTOMNE rc file : contains all default constants
-  * 
+  *
   * @package Automne
   * @subpackage config
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr> &
   * @author Cédric Soret <cedric.soret@ws-interactive.fr>
   */
-  
+
 //check this file for inclusion
 if (!defined('APPLICATION_USER_TYPE')) {
 	die('Cannot include /cms_rc.php directly. You must include /cms_rc_frontend.php or /cms_rc_admin.php.');
@@ -268,7 +268,7 @@ if (!defined('PATH_REALROOT_FS')) {
   * RewriteCond %{REQUEST_FILENAME} !-f
   * RewriteCond %{REQUEST_FILENAME} !-d
   * RewriteRule ^([^\.]+)$ $1.php [NC,L]
-  *	Default : false. 
+  *	Default : false.
   */
 if (!defined("STRIP_PHP_EXTENSION")) {
 	define("STRIP_PHP_EXTENSION", false);
@@ -324,7 +324,7 @@ if (!defined("PATH_PHP_CLI_UNIX")) {
   *	Path to the PHP temp.
   * Required on Windows system.
   * Empty if session.save_path is useable on Unix system.
-  * 
+  *
   *	Default : 'c:\tmp\\' (windows) or '\tmp' (unix) or $_SERVER["DOCUMENT_ROOT"]."/tmp"
   */
 if (!defined("PATH_PHP_TMP")) {
@@ -332,8 +332,8 @@ if (!defined("PATH_PHP_TMP")) {
 }
 
 /**
-  * Defines files and directories permissions when written (used for PHP 
-  * files, so check your security configuration) 
+  * Defines files and directories permissions when written (used for PHP
+  * files, so check your security configuration)
   *	Default : directory : 0775 and file : 0664
   */
 if (!defined("FILES_CHMOD")) {
@@ -384,7 +384,7 @@ if (!defined("MINIMUM_PASSWORD_LENGTH")) {
   *	Application cookie path
   * Used to share authentification cookie between multiple sub domains
   * Use value like : ".domain.tld" (do not forget the trailing dot)
-  *	Default : "". 
+  *	Default : "".
   */
 if (!defined("APPLICATION_COOKIE_DOMAIN")) {
 	define("APPLICATION_COOKIE_DOMAIN", '');
@@ -394,7 +394,7 @@ if (!defined("APPLICATION_COOKIE_DOMAIN")) {
   *	Application oembed frame domain
   * Used to display oembed objets with a specific cookieless frame to avoid XSS
   * Use specific domain for this usage (like embed.yourdomain.org)
-  *	Default : "". 
+  *	Default : "".
   */
 if (!defined("APPLICATION_EMBED_DOMAIN")) {
 	define("APPLICATION_EMBED_DOMAIN", '');
@@ -427,18 +427,18 @@ if (isset($_SERVER["HTTP_X_REAL_IP"])) {
 	$_SERVER["REMOTE_ADDR"] = $_SERVER["HTTP_X_REAL_IP"];
 }
 if (isset($_SERVER['HTTP_CLIENT_IP'])) {
-	$_SERVER["REMOTE_ADDR"] = $_SERVER['HTTP_CLIENT_IP']; 
+	$_SERVER["REMOTE_ADDR"] = $_SERVER['HTTP_CLIENT_IP'];
 } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && preg_match_all('#\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}#s', $_SERVER['HTTP_X_FORWARDED_FOR'], $matches)) {
 	// make sure we dont pick up an internal or local IP
-	foreach ($matches[0] as $ip) { 
-		if (!preg_match('#^(10|127\.0\.0|172\.16|192\.168)\.#', $ip)) { 
-			$_SERVER["REMOTE_ADDR"] = $ip; 
+	foreach ($matches[0] as $ip) {
+		if (!preg_match('#^(10|127\.0\.0|172\.16|192\.168)\.#', $ip)) {
+			$_SERVER["REMOTE_ADDR"] = $ip;
 			break;
 		}
 	}
 	unset($ip);
-} elseif (isset($_SERVER['HTTP_FROM'])) { 
-	$_SERVER["REMOTE_ADDR"] = $_SERVER['HTTP_FROM']; 
+} elseif (isset($_SERVER['HTTP_FROM'])) {
+	$_SERVER["REMOTE_ADDR"] = $_SERVER['HTTP_FROM'];
 }
 
 /**
@@ -472,7 +472,7 @@ if (!defined("PATH_MODULES_FILES_STANDARD_FS")) {
 	define ('PATH_MODULES_FILES_STANDARD_FS', PATH_MODULES_FILES_FS."/standard");
 }
 /**
-  *	Pages main root, where the pages from the main website will be located. 
+  *	Pages main root, where the pages from the main website will be located.
   * Other websites are set to use subdirectories of this one.
   *	Default : PATH_MAIN_xx."/web"
   */
@@ -484,7 +484,7 @@ if (!defined("PATH_PAGES_FS")) {
 }
 
 /**
-  *	HTML Pages main root, where the html pages from the main website will be located. 
+  *	HTML Pages main root, where the html pages from the main website will be located.
   * Other websites are set to use subdirectories of this one.
   *	Default : PATH_MAIN_xx."/html"
   */
@@ -762,7 +762,7 @@ if (!defined("PATH_TEMPLATES_IMAGES_FS")) {
 }
 
 /**
-  * Pages linx files path, where the linx files are located. 
+  * Pages linx files path, where the linx files are located.
   * Other websites are set to use subdirectories of this one.
   *	Default : PATH_MAIN_xx."/linx"
   */
@@ -774,7 +774,7 @@ if (!defined("PATH_PAGES_LINXFILES_FS")) {
 }
 
 /**
-  * Windows Binary and bat files path, where usefull binary files are located. 
+  * Windows Binary and bat files path, where usefull binary files are located.
   *	Default : PATH_MAIN_xx."/bin"
   */
 if (!defined("PATH_WINDOWS_BIN_WR")) {
@@ -938,7 +938,7 @@ define("MODULE_TREATMENT_PAGEHEADER_TAGS", 64);
 define("PATH_RELATIVETO_WEBROOT", 1);
 define("PATH_RELATIVETO_FILESYSTEM", 2);
 /**
-  * Resource locations. 
+  * Resource locations.
   * 	Userspace : resource can be used (edited, seen) by users
   * 	Archived : resource in in archive tables. Can't be seen by users except for administrators that can restore it.
   * 	Deleted : Resource is in deletion tables. Can't be seen by nobody.
@@ -963,7 +963,7 @@ define("RESOURCE_EDITION_MOVE", 16);
 /**
   * Resource publications statuses.
   * 	Nevervalidated : the page was created and no validator moved it into public space.
-  * 	validated : It has been already validated, but is not currently into its "window" of publication" defined by its publication dates.	
+  * 	validated : It has been already validated, but is not currently into its "window" of publication" defined by its publication dates.
   * 	Public : It has been validated and is currently visible by the public
   */
 define("RESOURCE_PUBLICATION_NEVERVALIDATED", 0);
@@ -1176,7 +1176,7 @@ if (STATS_DEBUG && APPLICATION_EXEC_TYPE != 'cli') {
   * If magic quotes is active, rewrite all super globals
   */
 if (get_magic_quotes_gpc()) {
-	// Strip slashes in content 
+	// Strip slashes in content
 	function atm_stripslashes($value) {
 		$value = is_array($value) ? array_map('atm_stripslashes', $value) : stripslashes($value) ;
 		return $value;
@@ -1191,7 +1191,7 @@ if (get_magic_quotes_gpc()) {
   * If application APPLICATION_DEFAULT_ENCODING is not UTF-8, we need to decode all ajax requests
   */
 if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])
-	&& strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8' 
+	&& strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8'
 	&& $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
 	function atm_utf8_decode_callback (&$input, $index = '') {
 		if (is_string($input)) {
@@ -1265,7 +1265,7 @@ if (!defined('HTML_COMPRESSION_STARTED') && APPLICATION_EXEC_TYPE != 'cli') {
 
 //Session operations
 if (APPLICATION_CONFIG_LOADED && APPLICATION_EXEC_TYPE == 'http') {
-	//Start Automne session	
+	//Start Automne session
 	CMS_session::init();
 	//load current user if exists
 	$cms_user = CMS_session::getUser();

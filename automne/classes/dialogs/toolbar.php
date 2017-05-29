@@ -143,13 +143,13 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 	function __construct($id = 0, &$user)
 	{
 		if (!is_a($user, 'CMS_profile_user') || $user->hasError()) {
-			$this->raiseError("User is not a valid CMS_profile_user");
+			$this->setError("User is not a valid CMS_profile_user");
 			return;
 		}
 		$this->_user = $user;
 		if ($id) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
-				$this->raiseError("Id is not a positive integer");
+				$this->setError("Id is not a positive integer");
 				return;
 			}
 			$sql = "
@@ -168,7 +168,7 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 				$this->_label = $data["label_tool"];
 				$this->_toolbarElements = explode('|',$data["elements_tool"]);
 			} else {
-				$this->raiseError("Unknown ID :".$id);
+				$this->setError("Unknown ID :".$id);
 			}
 		} else {
 			$this->_toolbarElements = array_keys($this->_elements);
@@ -456,12 +456,13 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function getAllElements($user = '') {
-		if (isset($this)) {
+	public static function getAllElements($user = '') {
+		/*if (isset($this)) {
 			$modulesElements = $this->_getModulesElements();
 			$defaultElements = $this->_getDefaultElements();
 			$language = $this->_user->getLanguage();
-		} elseif (is_a($user, 'CMS_profile_user')) {
+		} else*/
+		if (is_a($user, 'CMS_profile_user')) {
 			$tmp = new CMS_wysiwyg_toolbar(0, $user);
 			$modulesElements = $tmp->_getModulesElements();
 			$defaultElements = $tmp->_getDefaultElements();
@@ -484,7 +485,7 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function getAll(&$user)
+	public static function getAll(&$user)
 	{
 		$sql = "
 			select
@@ -514,7 +515,7 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function getByCode($code, &$user) {
+	public static function getByCode($code, &$user) {
 		$sql = "
 			select
 				id_tool

@@ -286,7 +286,7 @@ class CMS_object_file extends CMS_object_common
 	  */
 	function getLabel() {
 		if (!is_object($this->_subfieldValues[0])) {
-			$this->raiseError("No subField to get for label : ".print_r($this->_subfieldValues,true));
+			$this->setError("No subField to get for label : ".print_r($this->_subfieldValues,true));
 			return false;
 		}
 		return $this->_subfieldValues[0]->getValue();
@@ -700,7 +700,7 @@ class CMS_object_file extends CMS_object_common
 	  */
 	function setValues($values, $prefixName, $newFormat = false, $objectID = '') {
 		if (!sensitiveIO::isPositiveInteger($objectID)) {
-			$this->raiseError('ObjectID must be a positive integer : '.$objectID);
+			$this->setError('ObjectID must be a positive integer : '.$objectID);
 			return false;
 		}
 		//get field parameters
@@ -1463,8 +1463,8 @@ class CMS_object_file extends CMS_object_common
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language) {
-		$labels = parent::getLabelsStructure($language);
+	function getLabelsStructure(&$language, $objectName = '') {
+		$labels = parent::getLabelsStructure($language, $objectName);
 		unset($labels['structure']['value']);
 		
 		$labels['structure']['file|width,height'] = $language->getMessage(self::MESSAGE_OBJECT_FILE_FILE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
@@ -1504,7 +1504,7 @@ class CMS_object_file extends CMS_object_common
 		//operators are not supported for now : TODO
 		$supportedOperator = array();
 		if ($operator && !in_array($operator, $supportedOperator)) {
-			$this->raiseError("Unkown search operator : ".$operator.", use default search instead");
+			$this->setError("Unkown search operator : ".$operator.", use default search instead");
 			$operator = false;
 		}
 		$sql = '';

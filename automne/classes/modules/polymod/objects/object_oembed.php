@@ -203,7 +203,7 @@ class CMS_object_oembed extends CMS_object_common
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language, $objectName) {
+	function getLabelsStructure(&$language, $objectName = '') {
 		$labels = parent::getLabelsStructure($language, $objectName);
 		unset($labels['structure']['set']);
 		unset($labels['structure']['label']);

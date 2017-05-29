@@ -140,10 +140,10 @@ class CMS_linx extends CMS_grandFather
 	function __construct($type, $tagContent, $page, $publicTree = false, $args = array())
 	{
 		if (!SensitiveIO::isInSet($type, CMS_linxesCatalog::getAllTypes())) {
-			$this->raiseError("Constructor has an unknown type : ".$type);
+			$this->setError("Constructor has an unknown type : ".$type);
 			return;
 		} elseif (!is_a($page, "CMS_page")) {
-			$this->raiseError("Constructor was not given a valid CMS_page");
+			$this->setError("Constructor was not given a valid CMS_page");
 			return;
 		} else {
 			$this->_args = $args;
@@ -182,7 +182,7 @@ class CMS_linx extends CMS_grandFather
 			try {
 				$domdocument->loadXML($tagContent);
 			} catch (DOMException $e) {
-				$this->raiseError('Malformed atm-linx content in page '.$page->getID().' : '.$e->getMessage()."\n".$tagContent, true);
+				$this->setError('Malformed atm-linx content in page '.$page->getID().' : '.$e->getMessage()."\n".$tagContent, true);
 				return false;
 			}
 			$selections = $domdocument->getElementsByTagName('selection');
@@ -190,7 +190,7 @@ class CMS_linx extends CMS_grandFather
 				$selection = $selections->item(0);
 				//parse the selection for nodespecs and condition
 				if (!$this->_parseSelection($selection)) {
-					$this->raiseError();
+					$this->setError();
 					return;
 				}
 			}
@@ -274,7 +274,7 @@ class CMS_linx extends CMS_grandFather
 			try {
 				$domdocument->loadXML('<linx>'.$output.'</linx>');
 			} catch (DOMException $e) {
-				$this->raiseError('Parse error for linx : '.$e->getMessage()." :\n".io::htmlspecialchars($output));
+				$this->setError('Parse error for linx : '.$e->getMessage()." :\n".io::htmlspecialchars($output));
 				return '';
 			}
 			$rowNodes = $domdocument->getElementsByTagName('linx');
@@ -403,7 +403,7 @@ class CMS_linx extends CMS_grandFather
 				}
 			}
 		} else {
-			$this->raiseError('SelectionTag is not a DOMElement instance');
+			$this->setError('SelectionTag is not a DOMElement instance');
 			return false;
 		}
 		return true;
@@ -431,7 +431,7 @@ class CMS_linx extends CMS_grandFather
 			break;
 		case "desclinks":
 			if (!$this->_selectionStopPage) {
-				//$this->raiseError("No stop page found for desclinks");
+				//$this->setError("No stop page found for desclinks");
 				return false;
 			}
 			foreach ($this->_selectionStartPages as $start) {

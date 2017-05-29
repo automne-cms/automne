@@ -150,7 +150,7 @@ switch ($action) {
 			}
 		} else {
 			$cms_message = $cms_language->getMessage(MESSAGE_ERROR_ALIAS_PROTECTED, false, 'cms_aliases');
-			$item->raiseError('Error during modification of alias '.$item->getID().'. Alias is protected.');
+			$item->setError('Error during modification of alias '.$item->getID().'. Alias is protected.');
 		}
 	break;
 	case 'delete':
@@ -169,7 +169,7 @@ switch ($action) {
 			}
 		} else {
 			$cms_message = $cms_language->getMessage(MESSAGE_ERROR_ALIAS_PROTECTED, false, 'cms_aliases');
-			$category->raiseError('Error during modification of alias '.$item->getID().'. Alias is protected.');
+			$category->setError('Error during modification of alias '.$item->getID().'. Alias is protected.');
 		}
 	break;
 	default:

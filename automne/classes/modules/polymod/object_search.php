@@ -197,7 +197,7 @@ class CMS_object_search extends CMS_grandFather
             $objectDefinition = CMS_poly_object_catalog::getObjectDefinition($objectDefinition);
         }
 		if (!is_a($objectDefinition,'CMS_poly_object_definition')) {
-			$this->raiseError('ObjectDefinition must be a valid CMS_poly_object_definition.');
+			$this->setError('ObjectDefinition must be a valid CMS_poly_object_definition.');
 			return false;
 		}
 		$this->_object = $objectDefinition;
@@ -311,7 +311,7 @@ class CMS_object_search extends CMS_grandFather
 		switch($type) {
 		case "object":
 			if ($value && !is_a($value,'CMS_poly_object_definition')) {
-				$this->raiseError('Value must be a valid CMS_poly_object_definition.');
+				$this->setError('Value must be a valid CMS_poly_object_definition.');
 				return false;
 			}
 			$this->_object = $value;
@@ -319,14 +319,14 @@ class CMS_object_search extends CMS_grandFather
 			break;
 		case "item":
 			if (!sensitiveIO::isPositiveInteger($value)) {
-				$this->raiseError("Value must be a positive Integer.");
+				$this->setError("Value must be a positive Integer.");
 				return false;
 			}
 			$this->_whereConditions['item'][] = array('value' => $value, 'operator' => $operator);
 			break;
 		case "items":
 			if (!$value) {
-				$this->raiseError('Value must be a populated array.');
+				$this->setError('Value must be a populated array.');
 				return false;
 			}
 			$this->_whereConditions['items'][] = array('value' => $value, 'operator' => $operator);
@@ -339,7 +339,7 @@ class CMS_object_search extends CMS_grandFather
 		break;
 		case "itemsOrdered":
 			if (!$value) {
-				$this->raiseError('Value must be a populated array.');
+				$this->setError('Value must be a populated array.');
 				return false;
 			}
 			$this->_whereConditions['items'][] = array('value' => $value, 'operator' => $operator);
@@ -347,7 +347,7 @@ class CMS_object_search extends CMS_grandFather
 			break;
 		case "profile":
 			if (!is_a($value,'CMS_profile_user')) {
-				$this->raiseError('Value must be a valid CMS_profile_user.');
+				$this->setError('Value must be a valid CMS_profile_user.');
 				return false;
 			}
 			$this->_whereConditions['profile'][] = array('value' => $value, 'operator' => $operator);
@@ -368,7 +368,7 @@ class CMS_object_search extends CMS_grandFather
 		case "publication date after": // Date start
 			if ($this->_object->isPrimaryResource()) {
 				if (!is_a($value, 'CMS_date')) {
-					$this->raiseError('Value must be a valid CMS_date.');
+					$this->setError('Value must be a valid CMS_date.');
 					return false;
 				}
 				$this->_whereConditions['publication date after'][] = array('value' => $value, 'operator' => $operator);
@@ -377,7 +377,7 @@ class CMS_object_search extends CMS_grandFather
 		case "publication date before": // Date End
 			if ($this->_object->isPrimaryResource()) {
 				if (!is_a($value, 'CMS_date')) {
-					$this->raiseError('Value must be a valid CMS_date.');
+					$this->setError('Value must be a valid CMS_date.');
 					return false;
 				}
 				$this->_whereConditions['publication date before'][] = array('value' => $value, 'operator' => $operator);
@@ -386,7 +386,7 @@ class CMS_object_search extends CMS_grandFather
 		case "publication date end": // End Date of publication
 			if ($this->_object->isPrimaryResource()) {
 				if (!is_a($value, 'CMS_date')) {
-					$this->raiseError('Value must be a valid CMS_date.');
+					$this->setError('Value must be a valid CMS_date.');
 					return false;
 				}
 				$this->_whereConditions['publication date end'][] = array('value' => $value, 'operator' => $operator);
@@ -395,7 +395,7 @@ class CMS_object_search extends CMS_grandFather
 		case "status": // Publication status
 			if ($this->_object->isPrimaryResource()) {
 				if (!in_array($value, array('online', 'offline', 'validated', 'awaiting'))) {
-					$this->raiseError('Status value must be one of them : online, offline, public, awaiting');
+					$this->setError('Status value must be one of them : online, offline, public, awaiting');
 					return false;
 				}
 				$this->_whereConditions['status'][] = array('value' => $value, 'operator' => $operator);
@@ -406,7 +406,7 @@ class CMS_object_search extends CMS_grandFather
 				$this->_whereConditions[$type][] = array('value' => $value, 'operator' => $operator);
 				break;
 			}
-			$this->raiseError('Unknown type : '.$type.' or value '.$value);
+			$this->setError('Unknown type : '.$type.' or value '.$value);
 			return false;
 			break;
 		}
@@ -472,7 +472,7 @@ class CMS_object_search extends CMS_grandFather
 			if (class_exists('CMS_module_ase') && CMS_module_ase::isActive()) {
 				$this->_orderConditions['relevance'] = $value;
 			} else {
-				$this->raiseError('Sorting by relevance is not active if module ASE does not exists ... ');
+				$this->setError('Sorting by relevance is not active if module ASE does not exists ... ');
 				return false;
 			}
 			break;
@@ -481,7 +481,7 @@ class CMS_object_search extends CMS_grandFather
 				$this->_orderConditions[$type] = $value;
 				break;
 			}
-			$this->raiseError('Unknown type : '.$type);
+			$this->setError('Unknown type : '.$type);
 			return false;
 			break;
 		}
@@ -495,7 +495,7 @@ class CMS_object_search extends CMS_grandFather
 	 */
 	function getNumRows() {
 		if (!isset($this->_numRows)) {
-			$this->raiseError('Can\'t get numRows if search is not done');
+			$this->setError('Can\'t get numRows if search is not done');
 			return false;
 		}
 		return $this->_numRows;
@@ -564,7 +564,7 @@ class CMS_object_search extends CMS_grandFather
 						'<',
 					);
 					if ($operator && !in_array($operator, $supportedOperator)) {
-						$this->raiseError("Unknown search operator : ".$operator.", use default search instead");
+						$this->setError("Unknown search operator : ".$operator.", use default search instead");
 						$operator = false;
 					}
 					if (!$operator) {
@@ -613,7 +613,7 @@ class CMS_object_search extends CMS_grandFather
 						'not in'
 					);
 					if ($operator && !in_array($operator, $supportedOperator)) {
-						$this->raiseError("Unknown search operator : ".$operator.", use default search instead");
+						$this->setError("Unknown search operator : ".$operator.", use default search instead");
 						$operator = false;
 					}
 					if (!$operator) {
@@ -808,7 +808,7 @@ class CMS_object_search extends CMS_grandFather
 							'beginswith',
 						);
 						if ($operator && !in_array($operator, $supportedOperator)) {
-							$this->raiseError("Unkown search operator : ".$operator.", use default search instead");
+							$this->setError("Unkown search operator : ".$operator.", use default search instead");
 							$operator = 'any';
 						} elseif(!$operator) {
 							$operator = 'any';
@@ -839,7 +839,7 @@ class CMS_object_search extends CMS_grandFather
 							
 							//load module interface
 							if (!($moduleInterface = CMS_ase_interface_catalog::getModuleInterface($module))) {
-								$this->raiseError('No active Xapian interface for module : '.$module);
+								$this->setError('No active Xapian interface for module : '.$module);
 								return false;
 							}
 							//add previously found IDs to search filters
@@ -853,7 +853,7 @@ class CMS_object_search extends CMS_grandFather
 							$maxResults = 1000;
 							//then search
 							if (!$search->query($page, $maxResults)) {
-								$this->raiseError('Error in Xapian query for search : '.io::htmlspecialchars($value));
+								$this->setError('Error in Xapian query for search : '.io::htmlspecialchars($value));
 								return false;
 							}
 							//pr($search->getQueryDesc(true));
@@ -1128,14 +1128,14 @@ class CMS_object_search extends CMS_grandFather
 						$objectField = $this->_fieldsDefinitions[$type]->getTypeObject();
 						$sql = $objectField->getFieldSearchSQL($type, $value, $operator, $where, $this->_public);
 					} else {
-						$this->raiseError('Unknown field '.$type.' to filter with value '.print_r($value, true));
+						$this->setError('Unknown field '.$type.' to filter with value '.print_r($value, true));
 					}
 					break;
 				}
 				if ($sql || isset($xapianResults) || isset($fullTextResults)) {
 				    if ($sql) {
 						//pr($sql);
-					   	//$this->raiseError($sql);
+					   	//$this->setError($sql);
 					    $q = new CMS_query($sql);
 					    $IDs = array();
 					    if (!$q->hasError()) {
@@ -1384,7 +1384,7 @@ class CMS_object_search extends CMS_grandFather
 								$operator = isset($operator) ? $operator : '';
 								$sql = $objectField->getFieldOrderSQL($type, $direction, $operator, $where, $this->_public);
 							} else {
-								$this->raiseError('Unknown field '.$type.' to use as order with value '.print_r($value, true));
+								$this->setError('Unknown field '.$type.' to use as order with value '.print_r($value, true));
 							}
 						}
 					break;
@@ -1535,7 +1535,7 @@ class CMS_object_search extends CMS_grandFather
 	function search($return = self::POLYMOD_SEARCH_RETURN_OBJECTS, $loadSubObjects = false) {
 		global $cms_user;
 		if ($return == self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT && !$this->_public) {
-			$this->raiseError('Return type can\'t be self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT in a non-public search.');
+			$this->setError('Return type can\'t be self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT in a non-public search.');
 			$return = self::POLYMOD_SEARCH_RETURN_OBJECTS;
 		}
 		//this is a hack to allow light search in edited userspace. /!\ Objects must not be saved after /!\
@@ -1551,7 +1551,7 @@ class CMS_object_search extends CMS_grandFather
 		// Check module rights : to get any results, user should has at least CLEARANCE_MODULE_VIEW
 		if((!$this->_public || ($this->_public && APPLICATION_ENFORCES_ACCESS_CONTROL)) && (!is_object($cms_user) || !$cms_user->hasModuleClearance($this->_object->getValue('module'),CLEARANCE_MODULE_VIEW))){
 			if (!is_object($cms_user)) {
-				$this->_raiseError(__CLASS__.' : '.__FUNCTION__.' : cms_user not loaded when trying to get objects subject to rights ...');
+				$this->_setError(__CLASS__.' : '.__FUNCTION__.' : cms_user not loaded when trying to get objects subject to rights ...');
 			}
 			return ($return == self::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS) ? false : $items;
 		}
@@ -1630,7 +1630,7 @@ class CMS_object_search extends CMS_grandFather
 	 */
 	function getNextResult($return = self::POLYMOD_SEARCH_RETURN_OBJECTS, $loadSubObjects = false) {
 		if ($return == self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT && !$this->_public) {
-			$this->raiseError('Return type can\'t be self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT in a non-public search.');
+			$this->setError('Return type can\'t be self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT in a non-public search.');
 			$return = self::POLYMOD_SEARCH_RETURN_OBJECTS;
 		}
 		//this is a hack to allow light search in edited userspace. /!\ Objects must not be saved after /!\
@@ -1638,7 +1638,7 @@ class CMS_object_search extends CMS_grandFather
 			$return = self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT;
 		}
 		if ($this->_searchMode !== self::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS) {
-			$this->raiseError('You cannot use this method if search was not launched with mode self::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS');
+			$this->setError('You cannot use this method if search was not launched with mode self::POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS');
 			return false;
 		}
 		if ($return == self::POLYMOD_SEARCH_RETURN_IDS) {

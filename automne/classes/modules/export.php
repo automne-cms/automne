@@ -76,7 +76,7 @@ class CMS_module_export extends CMS_grandFather
 	 */
 	function __construct($codename) {
 		if (!in_array($codename, CMS_modulesCatalog::getAllCodenames())) {
-			$this->raiseError('Unknown module : '.$codename);
+			$this->setError('Unknown module : '.$codename);
 			return false;
 		}
 		$this->_module = $codename;
@@ -233,13 +233,13 @@ class CMS_module_export extends CMS_grandFather
 					if ($archive->create_archive()) {
 						$return = $archiveFile;
 					} else {
-						$this->raiseError('Error during archive creation ...');
+						$this->setError('Error during archive creation ...');
 					}
 					//delete tmp file
 					$datas->delete();
 				break;
 				default:
-					$this->raiseError('Unknown format : '.$format);
+					$this->setError('Unknown format : '.$format);
 					return false;
 				break;
 			}

@@ -74,10 +74,10 @@ class CMS_object_i18nm extends CMS_grandFather
 	{
 		static $i18nm;
 		//load available languages
-		$this->getAvailableLanguages();
+		$this->getAvailableLanguages_this();
 		if ($id) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
-				$this->raiseError("Id is not a positive integer : ".$id);
+				$this->setError("Id is not a positive integer : ".$id);
 				return;
 			}
 			if (!isset($i18nm[$id])) {
@@ -98,7 +98,7 @@ class CMS_object_i18nm extends CMS_grandFather
 							$this->_DBKnown[] = $arr["code_i18nm"];
 						}
 					} else {
-						$this->raiseError("Unknown ID :".$id);
+						$this->setError("Unknown ID :".$id);
 						return;
 					}
 				} elseif($id && is_array($dbValues) && $dbValues) {
@@ -136,7 +136,7 @@ class CMS_object_i18nm extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function getAvailableLanguages() {
+	public static function getAvailableLanguages() {
 		static $availableLanguages, $languagesPriority;
 		if (!is_array($availableLanguages)) {
 			$availableLanguages = array();
@@ -154,10 +154,37 @@ class CMS_object_i18nm extends CMS_grandFather
 				$languagesPriority[] = $language->getCode();
 			}
 		}
-		if(isset($this)) {
-			$this->_languageLabels = $availableLanguages;
-			$this->_languageCodesPriority = $languagesPriority;
+		return array_keys($availableLanguages);
+	}
+
+	/**
+	  * Get available languages codes
+	  *
+	  * @return array, the available languages codes
+	  * @access public
+	  * Use for a non-static call of getAvailableLanguages
+	  */
+	// TODO : renommer la methode
+	public function getAvailableLanguages_this(){
+		static $availableLanguages, $languagesPriority;
+		if (!is_array($availableLanguages)) {
+			$availableLanguages = array();
+			//check for polymod properly loaded
+			$module =  (class_exists('CMS_polymod')) ? MOD_POLYMOD_CODENAME : '';
+			//order by dateFormat to get fr in first place
+			$languages = CMS_languagesCatalog::getAllLanguages($module);
+			//set default language as first one
+			$firstLanguage = $languages[APPLICATION_DEFAULT_LANGUAGE];
+			unset($languages[APPLICATION_DEFAULT_LANGUAGE]);
+			$languages = array_merge(array(APPLICATION_DEFAULT_LANGUAGE => $firstLanguage), $languages);
+			
+			foreach ($languages as $language) {
+				$availableLanguages[$language->getCode()] = $language->getLabel();
+				$languagesPriority[] = $language->getCode();
+			}
 		}
+		$this->_languageLabels = $availableLanguages;
+		$this->_languageCodesPriority = $languagesPriority;
 		return array_keys($availableLanguages);
 	}
 	
@@ -172,7 +199,7 @@ class CMS_object_i18nm extends CMS_grandFather
 	function setValue($languageCode, $value)
 	{
 		if (io::strlen($languageCode) > 5) {
-			$this->raiseError("Can't use a language code longuer than 5 caracters : ".$languageCode);
+			$this->setError("Can't use a language code longuer than 5 caracters : ".$languageCode);
 			return false;
 		}
 		$this->_values[$languageCode] = $value;
@@ -208,7 +235,7 @@ class CMS_object_i18nm extends CMS_grandFather
 	  * @return	array	 the values
 	  * @access	public
 	  */
-	public function getValues($id)
+	public static function getValues($id)
 	{
 		$aLabels = array();
 		$oQuery = new CMS_query('
@@ -289,7 +316,7 @@ class CMS_object_i18nm extends CMS_grandFather
 					";
 					$q = new CMS_query($sql);
 					if ($q->hasError()) {
-						$this->raiseError("Can't update value for code : ".$aKownCode);
+						$this->setError("Can't update value for code : ".$aKownCode);
 						$ok = false;
 					} else {
 						unset($valuesToSet[$aKownCode]);
@@ -320,7 +347,7 @@ class CMS_object_i18nm extends CMS_grandFather
 					}
 					$q = new CMS_query($sql);
 					if ($q->hasError()) {
-						$this->raiseError("Can't save object");
+						$this->setError("Can't save object");
 						$ok = false;
 					} elseif (!$this->_ID) {
 						$this->_ID = $q->getLastInsertedID();
@@ -330,7 +357,7 @@ class CMS_object_i18nm extends CMS_grandFather
 			unset($GLOBALS["polyModule"]["i18nm"][$this->_ID]);
 			return $ok;
 		} else {
-			$this->raiseError("No values to write");
+			$this->setError("No values to write");
 			return false;
 		}
 	}
@@ -350,7 +377,7 @@ class CMS_object_i18nm extends CMS_grandFather
 			";
 			$q = new CMS_query($sql);
 			if ($q->hasError()) {
-				$this->raiseError("Can't destroy object");
+				$this->setError("Can't destroy object");
 				return false;
 			}
 		}

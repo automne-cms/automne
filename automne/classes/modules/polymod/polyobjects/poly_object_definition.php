@@ -123,7 +123,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 		$datas = array();
 		if ($id && !$dbValues) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
-				$this->raiseError("Id is not a positive integer : ".$id);
+				$this->setError("Id is not a positive integer : ".$id);
 				return;
 			}
 			$sql = "
@@ -138,7 +138,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 			if ($q->getNumRows()) {
 				$datas = $q->getArray();
 			} else {
-				$this->raiseError("Unknown ID :".$id);
+				$this->setError("Unknown ID :".$id);
 				return;
 			}
 		} elseif (is_array($dbValues) && $dbValues) {
@@ -184,11 +184,11 @@ class CMS_poly_object_definition extends CMS_grandFather
 	function setValue($valueName, $value)
 	{
 		if (!in_array($valueName,array_keys($this->_objectValues))) {
-			$this->raiseError("Unknown valueName to set :".$valueName);
+			$this->setError("Unknown valueName to set :".$valueName);
 			return false;
 		}
 		if ($valueName == 'uuid') {
-			$this->raiseError("Cannot change UUID");
+			$this->setError("Cannot change UUID");
 			return false;
 		}
 		if ($valueName == 'indexURL') {
@@ -243,7 +243,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	function getValue($valueName)
 	{
 		if (!in_array($valueName,array_keys($this->_objectValues))) {
-			$this->raiseError("Unknown valueName to get :".$valueName);
+			$this->setError("Unknown valueName to get :".$valueName);
 			return false;
 		}
 		return $this->_objectValues[$valueName];
@@ -300,7 +300,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  */
 	function getSubFieldParameters () {
 		if (!$this->_parametersLoaded) {
-			$this->raiseError("Parameters must be loaded first (use loadParameters method)");
+			$this->setError("Parameters must be loaded first (use loadParameters method)");
 			return false;
 		}
 		return $this->_parameters;
@@ -342,11 +342,11 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  */
 	function getHTMLSubFieldsParameters($language, $prefixName) {
 		if (!is_a($language,'CMS_language')) {
-			$this->raiseError("Language must be a CMS_language object : ".print_r($language,true));
+			$this->setError("Language must be a CMS_language object : ".print_r($language,true));
 			return false;
 		}
 		if (!$this->_parametersLoaded) {
-			$this->raiseError("Parameters must be loaded first (use loadParameters method)");
+			$this->setError("Parameters must be loaded first (use loadParameters method)");
 			return false;
 		}
 		$values = $this->_parameterValues;
@@ -372,7 +372,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 						$method = "getHTMLSubFieldsParameters".$parameter['type'];
 						$input = $this->$method($language, $prefixName);
 					} else {
-						$this->raiseError("Can't get parameter HTML for type : ".$parameter['type']);
+						$this->setError("Can't get parameter HTML for type : ".$parameter['type']);
 						return false;
 					}
 				break;
@@ -497,7 +497,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 	  */
 	function getParamsValues() {
 		if (!$this->_parametersLoaded) {
-			$this->raiseError("Parameters must be loaded first (use loadParameters method)");
+			$this->setError("Parameters must be loaded first (use loadParameters method)");
 			return false;
 		}
 		$parameters = $this->getSubFieldParameters();
@@ -603,7 +603,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 		}
 		$q = new CMS_query($sql);
 		if ($q->hasError()) {
-			$this->raiseError("Can't save object");
+			$this->setError("Can't save object");
 			return false;
 		} elseif (!$this->_ID) {
 			$this->_ID = $q->getLastInsertedID();
@@ -635,7 +635,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 			";
 			$q = new CMS_query($sql);
 			if ($q->hasError()) {
-				$this->raiseError("Can't delete datas of table mod_object_polyobjects for object : ".$this->_ID);
+				$this->setError("Can't delete datas of table mod_object_polyobjects for object : ".$this->_ID);
 				return false;
 			}
 			
@@ -658,7 +658,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 			";
 			$q = new CMS_query($sql);
 			if ($q->hasError()) {
-				$this->raiseError("Can't delete datas of table mod_object_definition for object : ".$this->_ID);
+				$this->setError("Can't delete datas of table mod_object_definition for object : ".$this->_ID);
 				return false;
 			}
 			//unset objects catalog in cache

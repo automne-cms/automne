@@ -67,7 +67,7 @@ class CMS_patch extends CMS_grandFather
 							if ($versionFile->exists()) {
 								$return = (in_array(trim($patchFile->readContent("string")),$versions)) ? $return:false;
 							} else {
-								$this->raiseError("Version file does not exist : ".$checkParams[2]);
+								$this->setError("Version file does not exist : ".$checkParams[2]);
 								return false;
 							}
 						}
@@ -79,7 +79,7 @@ class CMS_patch extends CMS_grandFather
 			}
 			return $return;
 		} else {
-			$this->raiseError("Param must be an array");
+			$this->setError("Param must be an array");
 			return false;
 		}
 	}
@@ -112,7 +112,7 @@ class CMS_patch extends CMS_grandFather
 				if ($updateDenyFile->exists()) {
 					$updateDeny = $updateDenyFile->readContent("array");
 				} else {
-					$this->raiseError("File ".UPDATE_DENY." does not exist");
+					$this->setError("File ".UPDATE_DENY." does not exist");
 					return false;
 				}
 				//if we don't have parameter and line not a comment
@@ -167,7 +167,7 @@ class CMS_patch extends CMS_grandFather
 								} else {
 									if (file_exists($originalFile)) {
 										//check if file is writable
-										if (!CMS_FILE::makeWritable($originalFile)) {
+										if (!CMS_file::makeWritable($originalFile)) {
 											$error .= "Error at line : ".$line.", file ".$originalFile." is not writable<br />";
 											$errorsInfo[] = array('no' => 6, 'line' => $line, 'command' => $aInstallCheck);
 											unset($array[$line-1]);
@@ -175,7 +175,7 @@ class CMS_patch extends CMS_grandFather
 									} else {
 										//check if parent directory is writable
 										$parent = CMS_file::getParent($originalFile);
-										if (!CMS_FILE::makeWritable($parent)) {
+										if (!CMS_file::makeWritable($parent)) {
 											$error .= "Error at line : ".$line.", file ".dirname($originalFile)." is not writable<br />";
 											$errorsInfo[] = array('no' => 7, 'line' => $line, 'command' => $aInstallCheck);
 											unset($array[$line-1]);
@@ -201,13 +201,13 @@ class CMS_patch extends CMS_grandFather
 									if (file_exists($originalFile)) {
 										//check if file or directory is deletable
 										if (is_file($originalFile)) {
-											if (!CMS_FILE::makeWritable($originalFile)) {
+											if (!CMS_file::makeWritable($originalFile)) {
 												$error .= "Error at line : ".$line.", file ".$originalFile." is not deletable<br />";
 												$errorsInfo[] = array('no' => 10, 'line' => $line, 'command' => $aInstallCheck);
 												unset($array[$line-1]);
 											}
 										} elseif(is_dir($originalFile)) {
-											if (!CMS_FILE::deltreeSimulation($originalFile,true)) {
+											if (!CMS_file::deltreeSimulation($originalFile,true)) {
 												$error .= "Error at line : ".$line.", directory ".$originalFile." is not deletable<br />";
 												$errorsInfo[] = array('no' => 11, 'line' => $line, 'command' => $aInstallCheck);
 												unset($array[$line-1]);
@@ -268,7 +268,7 @@ class CMS_patch extends CMS_grandFather
 								}
 								if (io::substr($patchFile,-4,4)=='.sql') {
 									//make a simulation on the sql script
-									if (!$this->executeSqlScript($patchFile,true)) {
+									if (!CMS_patch::executeSqlScript($patchFile,true)) {
 										$error .= "Error at line : ".$line.", on ".$patchFile.", no SQL request found...";
 										$errorsInfo[] = array('no' => 20, 'line' => $line, 'command' => $aInstallCheck);
 										unset($array[$line-1]);
@@ -325,7 +325,7 @@ class CMS_patch extends CMS_grandFather
 			}
 			return $error;
 		} else {
-			$this->raiseError("Param must be an array");
+			$this->setError("Param must be an array");
 			return false;
 		}
 	}
@@ -362,7 +362,7 @@ class CMS_patch extends CMS_grandFather
 					switch ($installParams[0]) {
 						case ">": //add or update a file or folder
 							//copy file or folder
-							if (CMS_FILE::copyTo($patchFile,$originalFile)) {
+							if (CMS_file::copyTo($patchFile,$originalFile)) {
 								$this->_verbose(' -> File '.$patchFile.' successfully copied to '.$originalFile);
 							} else {
 								$this->_report('Error during copy of '.$patchFile.' to '.$originalFile,true);
@@ -393,7 +393,7 @@ class CMS_patch extends CMS_grandFather
 							}
 						break;
 						case "<": //delete a file or folder (recursively)
-							if (file_exists($originalFile) && CMS_FILE::deleteFile($originalFile)) {
+							if (file_exists($originalFile) && CMS_file::deleteFile($originalFile)) {
 								$this->_verbose(' -> File '.$originalFile.' successfully deleted');
 							} else {
 								$this->_verbose(' -> Cannot delete '.$originalFile.'. It does not exists.');
@@ -430,7 +430,7 @@ class CMS_patch extends CMS_grandFather
 						case "x": //execute SQL or PHP file
 							//exec sql script with help of some phpMyAdmin classes
 							if (io::substr($patchFile,-4,4)=='.sql') {
-								if ($this->executeSqlScript($patchFile)) {
+								if (CMS_patch::executeSqlScript($patchFile)) {
 									$this->_verbose(' -> File '.$patchFile.' successfully executed');
 								} else {
 									$this->_report('Error during execution of '.$patchFile,true);
@@ -513,7 +513,7 @@ class CMS_patch extends CMS_grandFather
 						break;
 						default:
 							if (io::substr($installParams[0],0,1)!='#') {
-								$this->raiseError("Unknown parameter : ".$installParams[0]);
+								$this->setError("Unknown parameter : ".$installParams[0]);
 								return false;
 							}
 						break;
@@ -524,7 +524,7 @@ class CMS_patch extends CMS_grandFather
 				}
 			}
 		} else {
-			$this->raiseError("Param must be an array");
+			$this->setError("Param must be an array");
 			return false;
 		}
 		//at end of any patch process, update Automne subversion to force reload of JS and CSS cache from client
@@ -542,7 +542,7 @@ class CMS_patch extends CMS_grandFather
 	 * @return boolean, true on success, false on failure
 	 * @access public
 	 */
-	function executeSqlScript($script, $simulation=false)
+	public static function executeSqlScript($script, $simulation=false)
 	{
 		//include PMA import functions
 		require_once(PATH_PACKAGES_FS.'/files/sqlDump.php');
@@ -638,7 +638,7 @@ class CMS_patch extends CMS_grandFather
 	 * @return string, the return of the command, false on failure
 	 * @access public
 	 */
-	function executeCommand($command, &$error)
+	public static function executeCommand($command, &$error)
 	{
 		//change current dir
 		$pwd = getcwd();

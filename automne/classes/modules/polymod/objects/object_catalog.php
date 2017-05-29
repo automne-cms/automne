@@ -35,7 +35,7 @@ class CMS_object_catalog
 	  * @access public
 	  * @static
 	  */
-	function getObjects(&$field, $sort=false) {
+	public static function getObjects(&$field, $sort=false) {
 		$objectsNames = CMS_object_catalog::getObjectsNames();
 		$return = array();
 		foreach($objectsNames as $anObjectName) {
@@ -67,7 +67,7 @@ class CMS_object_catalog
 	  * @access public
 	  * @static
 	  */
-	function getObjectsNames() {
+	public static function getObjectsNames() {
 		//Automatic listing
 		$excludedFiles = array(
 			'object_catalog.php', //this file

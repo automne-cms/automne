@@ -36,7 +36,7 @@ class CMS_profile_user extends CMS_profile
 	const MESSAGE_PAGE_EMAIL = 102;
 	const MESSAGE_PAGE_WRITE_TO = 1624;
 	const MESSAGE_PAGE_GROUPS = 837;
-
+	
 	/**
 	  * Id of user profile in database
 	  *
@@ -52,7 +52,7 @@ class CMS_profile_user extends CMS_profile
 	  * @access private
 	  */
 	protected $_login;
-
+	
 	/**
 	  * password of User
 	  *
@@ -60,7 +60,7 @@ class CMS_profile_user extends CMS_profile
 	  * @access private
 	  */
 	protected $_password;
-
+	
 	/**
 	  * firstName of User
 	  *
@@ -68,7 +68,7 @@ class CMS_profile_user extends CMS_profile
 	  * @access private
 	  */
 	protected $_firstName;
-
+	
 	/**
 	  * lastName of User
 	  *
@@ -76,7 +76,7 @@ class CMS_profile_user extends CMS_profile
 	  * @access private
 	  */
 	protected $_lastName;
-
+	
 	/**
 	  * contactData
 	  *
@@ -84,23 +84,23 @@ class CMS_profile_user extends CMS_profile
 	  * @access private
 	  */
 	protected $_contactData;
-
+		
 	/**
-	  * validationChange, determines whether validations have been changed
+	  * validationChange, determines whether validations have been changed 
 	  *
 	  * @var boolean
 	  * @access private
 	  */
 	protected $_validationChange = false;
-
+	
 	/**
-	  * language, that user prefers to work with
+	  * language, that user prefers to work with 
 	  *
 	  * @var CMS_language : default French
 	  * @access private
 	  */
 	protected $_language;
-
+	
 	/**
 	  * Is the user active ?
 	  *
@@ -108,7 +108,7 @@ class CMS_profile_user extends CMS_profile
 	  * @access private
 	  */
 	protected $_active = true;
-
+	
 	/**
 	  * Is the user "deleted" ?
 	  *
@@ -116,7 +116,7 @@ class CMS_profile_user extends CMS_profile
 	  * @access private
 	  */
 	protected $_deleted = false;
-
+	
 	/**
 	  * Level of alerts
 	  *
@@ -124,7 +124,7 @@ class CMS_profile_user extends CMS_profile
 	  * @access private
 	  */
 	protected $_alerts = false;
-
+	
 	/**
 	  * Pages favorites
 	  *
@@ -132,7 +132,7 @@ class CMS_profile_user extends CMS_profile
 	  * @access private
 	  */
 	protected $_favorites = array();
-
+	
 	/**
 	  * Constructor.
 	  * Loads all Id variables if
@@ -147,7 +147,7 @@ class CMS_profile_user extends CMS_profile
 		$this->_alerts = new CMS_stack();
 		if ($id) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
-				$this->raiseError("Id is not a positive integer");
+				$this->setError("Id is not a positive integer");
 				return;
 			}
 			$sql = "
@@ -166,7 +166,7 @@ class CMS_profile_user extends CMS_profile
 			if ($q->getNumRows()) {
 				$data = $q->getArray();
 			} else {
-				$this->raiseError("Unknown DB ID : ".$id);
+				$this->setError("Unknown DB ID : ".$id);
 				$this->_language = new CMS_language();
 				$this->_contactData = CMS_contactDatas_catalog::getByUser(array());
 				// Initialize super class
@@ -193,7 +193,7 @@ class CMS_profile_user extends CMS_profile
 			parent::__construct();
 		}
 	}
-
+	
 	/**
 	  * Get Id
 	  *
@@ -204,7 +204,7 @@ class CMS_profile_user extends CMS_profile
 	{
 		return $this->_userId;
 	}
-
+	
 	/**
 	  * Is the user active ?
 	  *
@@ -215,7 +215,7 @@ class CMS_profile_user extends CMS_profile
 	{
 		return $this->_active;
 	}
-
+	
 	/**
 	  * Is the user deleted ?
 	  *
@@ -226,7 +226,7 @@ class CMS_profile_user extends CMS_profile
 	{
 		return $this->_deleted;
 	}
-
+	
 	/**
 	  * Set The active flag
 	  *
@@ -240,7 +240,7 @@ class CMS_profile_user extends CMS_profile
 		$this->_validationChange = true;
 		return true;
 	}
-
+	
 	/**
 	  * Set The deleted flag
 	  * Sets the login to nothing, so this login could be reused in the future
@@ -254,7 +254,7 @@ class CMS_profile_user extends CMS_profile
 		$this->_deleted = ($deleted) ? true : false;
 		return true;
 	}
-
+	
 	/**
 	  * Is page a favorite for user ?
 	  *
@@ -265,7 +265,7 @@ class CMS_profile_user extends CMS_profile
 	function isFavorite($pageId) {
 		return in_array(trim($pageId), $this->_favorites);
 	}
-
+	
 	/**
 	  * Set page a favorite status for user
 	  *
@@ -276,7 +276,7 @@ class CMS_profile_user extends CMS_profile
 	  */
 	function setFavorite($status, $pageId) {
 		if (!sensitiveIO::isPositiveInteger($pageId)) {
-			$this->raiseError("Page Id must be an integer : ".$pageId);
+			$this->setError("Page Id must be an integer : ".$pageId);
 			return false;
 		}
 		if (in_array($pageId, $this->_favorites)) {
@@ -290,7 +290,7 @@ class CMS_profile_user extends CMS_profile
 		}
 		return true;
 	}
-
+	
 	/**
 	  * Get pages favorites for user
 	  *
@@ -300,7 +300,7 @@ class CMS_profile_user extends CMS_profile
 	function getFavorites() {
 		return $this->_favorites;
 	}
-
+	
 	/**
 	  * Get Login
 	  *
@@ -311,39 +311,40 @@ class CMS_profile_user extends CMS_profile
 	{
 		return $this->_login;
 	}
-
+	
 	/**
-   * Check if the login is valid
-   *
-   * @param string $login
-   * @return boolean true on success, false on failure
-   * @access public
-   */
-  public function checkLogin($login){
-    return io::isValidLogin( $login );
-  }
-
+      * Check if the login is valid
+      *
+      * @param string $login
+      * @return boolean true on success, false on failure
+      * @access public
+      */
+    public static function checkLogin($login){
+        return io::isValidLogin( $login ); 
+    }
+	
 	/**
-   * Set Login
-   *
-   * @param string $login
-   * @return void
-   * @access public
-   */
-  public function setLogin($login) {
-    if (!CMS_profile_user::checkLogin($login)) {
-      $this->raiseError('Login is invalid. A login may not start or end by a space nor contain a non-printable character');
-      return false;
-    }
-    // Check if login allready exists
-    if (CMS_profile_usersCatalog::loginExists($login, $this)){
-      $this->raiseError('Login allready exists. Choose another one');
-      return false;
-    }
-    $this->_login = $login;
-    return true;
-  }
-
+      * Set Login
+      *
+      * @param string $login
+      * @return void
+      * @access public
+      */
+    function setLogin($login)
+    {
+        if (!CMS_profile_user::checkLogin($login)) {
+            $this->setError('Login is invalid. A login must use only alphanumerics caracters');
+            return false;
+        }
+        // Check if login allready exists
+        if (CMS_profile_usersCatalog::loginExists($login, $this)){
+            $this->setError('Login allready exists. Choose another one');
+            return false;
+        }
+        $this->_login = $login;
+        return true;
+    } 
+	
 	/**
 	  * Set Password
 	  *
@@ -355,13 +356,13 @@ class CMS_profile_user extends CMS_profile
 	function setPassword($password, $encode = true) {
 		// Check password validity
 	    if ($encode && !SensitiveIO::isValidPassword($password)) {
-			$this->raiseError('Invalid password. Length must be > '.MINIMUM_PASSWORD_LENGTH);
+			$this->setError('Invalid password. Length must be > '.MINIMUM_PASSWORD_LENGTH);
 			return false;
 		}
 		$this->_password = $encode ? '{sha}'.sha1($password) : $password;
 		return true;
 	}
-
+	
 	/**
 	  * Get Password
 	  *
@@ -372,7 +373,7 @@ class CMS_profile_user extends CMS_profile
 	{
 		return $this->_password;
 	}
-
+	
 	/**
 	  * have Password
 	  *
@@ -383,7 +384,7 @@ class CMS_profile_user extends CMS_profile
 	{
 		return ($this->_password) ? true:false;
 	}
-
+	
 	/**
 	  * Get user fullname (firstname then last name)
 	  *
@@ -396,7 +397,7 @@ class CMS_profile_user extends CMS_profile
 		(($this->_firstName && $this->_lastName) ? ' ' : '').
 		($this->_lastName ? ucfirst($this->_lastName) : '');
 	}
-
+	
 	/**
 	  * Get First Name
 	  *
@@ -407,7 +408,7 @@ class CMS_profile_user extends CMS_profile
 	{
 		return $this->_firstName;
 	}
-
+	
 	/**
 	  * Set First Name
 	  *
@@ -420,7 +421,7 @@ class CMS_profile_user extends CMS_profile
 		$this->_firstName = $firstName;
 		return true;
 	}
-
+	
 	/**
 	  * Get Last Name
 	  *
@@ -431,7 +432,7 @@ class CMS_profile_user extends CMS_profile
 	{
 		return $this->_lastName;
 	}
-
+	
 	/**
 	  * Set Last Name
 	  *
@@ -444,7 +445,7 @@ class CMS_profile_user extends CMS_profile
 		$this->_lastName = $lastName;
 		return true;
 	}
-
+	
 	/**
 	  * Get Contact Data
 	  *
@@ -455,7 +456,7 @@ class CMS_profile_user extends CMS_profile
 	{
 		return $this->_contactData;
 	}
-
+	
 	/**
 	  * Set Contact Data
 	  *
@@ -470,11 +471,11 @@ class CMS_profile_user extends CMS_profile
 			$this->_contactData = $contactData;
 			return true;
 		} else {
-			$this->raiseError("Try to set an invalid Contact data object or object has an error: ".print_r($contactData, true));
+			$this->setError("Try to set an invalid Contact data object or object has an error: ".print_r($contactData, true));
 		}
 		return false;
 	}
-
+	
 	/**
 	  * Get Contact Data part : the email (often used)
 	  *
@@ -485,31 +486,31 @@ class CMS_profile_user extends CMS_profile
 	{
 		return $this->_contactData->getEmail();
 	}
-
+	
 	/**
 	  * Get Language
 	  *
 	  * @return CMS_language
 	  * @access public
 	  */
-
+	 
 	function getLanguage()
 	{
 		return $this->_language;
 	}
-
+	
 	/**
 	  * Get Language
 	  *
 	  * @return CMS_language
 	  * @access public
 	  */
-
+	 
 	function getLanguageCode()
 	{
 		return $this->_language->getCode();
 	}
-
+	
 	/**
 	  * Set language
 	  *
@@ -530,15 +531,15 @@ class CMS_profile_user extends CMS_profile
 		        return true;
 		    }
 		}
-		$this->raiseError("Object required, or available language code : ".$language);
+		$this->setError("Object required, or available language code : ".$language);
 		return false;
 	}
-
+	
 	/**
 	  * Add Validation Clearance
 	  * Overwrite super class function to update validation catalog
 	  *
-	  * @param integer $moduleid
+	  * @param integer $moduleid 
 	  * @return boolean
 	  * @access public
 	  */
@@ -552,11 +553,11 @@ class CMS_profile_user extends CMS_profile
 			}
 			return true;
 		} else {
-			$this->raiseError("Invalid module name :".$moduleName);
+			$this->setError("Invalid module name :".$moduleName);
 		}
 		return false;
 	}
-
+	
 	/**
 	  * Del Validation Clearance
 	  * Overwrite super class function to update validation catalog
@@ -569,13 +570,13 @@ class CMS_profile_user extends CMS_profile
 	{
 		$hasValidation = parent::hasValidationClearance($moduleId);
 		parent::delValidationClearance($moduleId);
-
+		
 		// Remove from validation catalog if no validations
 		if ($hasValidation) {
 			$this->_validationChange = true;
 		}
 	}
-
+	
 	/**
 	  * Del Validation Clearances
 	  * Overwrite super class function to update validation catalog
@@ -588,12 +589,12 @@ class CMS_profile_user extends CMS_profile
 		$validationClearances = parent::getValidationClearances();
 		$prevElements = $validationClearances->getElements();
 		parent::delValidationClearances();
-
+		
 		if ($prevElements) {
 			$this->_validationChange = true;
 		}
 	}
-
+	
 	/**
 	  * Sets Validation Clearances
 	  * Overwrite super class function to update validation catalog
@@ -609,11 +610,11 @@ class CMS_profile_user extends CMS_profile
 			$this->_validationChange = true;
 			return true;
 		} else {
-			$this->raiseError("Validation object required");
+			$this->setError("Validation object required");
 		}
 		return false;
 	}
-
+	
 	/**
 	  * Short hand to get values by property name
 	  *
@@ -645,13 +646,13 @@ class CMS_profile_user extends CMS_profile
 				} else if (method_exists($this->_contactData, $method)) {
 					return $this->_contactData->{$method}();
 				} else {
-					$this->raiseError('Unknown property to get : "'.$property.'"');
+					$this->setError('Unknown property to get : "'.$property.'"');
 				}
 			break;
 		}
 		return false;
 	}
-
+	
 	/**
 	  * Short hand to set values by property name
 	  *
@@ -667,27 +668,27 @@ class CMS_profile_user extends CMS_profile
 				if (method_exists($this, $method)) {
 					return $this->{$method}($value);
 				} else {
-					$this->raiseError('Unknown property to set : "'.$property.'"');
+					$this->setError('Unknown property to set : "'.$property.'"');
 				}
 			break;
 		}
 		return false;
 	}
-
+	
 	/**
 	 * Set user by xml definition. Return XML
-	 *
+	 * 
 	 * @access public
 	 * @param string $xmlInput XML definition to define user properties
 	 * @return boolean True on success, false on failure
 	 */
 	function setSoapValues($domdocument){
 	    $view = CMS_view::getInstance();
-
+	    
 	    $contactData = new CMS_contactData();
         $currentPassword = '';
         $newGroups = array();
-
+        
 	    foreach($domdocument->childNodes as $childNode) {
 	        if($childNode->nodeType == XML_ELEMENT_NODE) {
 		        switch($childNode->tagName){
@@ -749,10 +750,10 @@ class CMS_profile_user extends CMS_profile
 	        if($contactData->writeToPersistence() && $this->setValue('contactData', $contactData)){
 	            // Get current user groups ids
 	            $userGroupIds = CMS_profile_usersGroupsCatalog::getGroupsOfUser($this, true, true);
-
+			    
 		        // First reset profile clearances
 		        $this->resetClearances();
-
+		        
 		        // Second, loop through user groups to remove group
 		        foreach ($userGroupIds as $oldGroupId) {
 			        if (!in_array($oldGroupId, $newGroups)) {
@@ -764,7 +765,7 @@ class CMS_profile_user extends CMS_profile
 				        }
 			        }
 		        }
-
+		        
 	            // Third, loop through user groups to add groups
 	            foreach ($newGroups as $newGroupId) {
 		            if (!in_array($newGroupId, $userGroupIds)) {
@@ -778,11 +779,11 @@ class CMS_profile_user extends CMS_profile
 			            }
 		            }
 	            }
-
+	            
 				//Clear polymod cache
 				//CMS_cache::clearTypeCacheByMetas('polymod', array('resource' => 'users'));
 				CMS_cache::clearTypeCache('polymod');
-
+				
 	            return true;
 	        } else {
 	            $view->addError('Error saving contactData.');
@@ -793,7 +794,7 @@ class CMS_profile_user extends CMS_profile
 	    }
         return false;
 	}
-
+	
 	/**
 	  * Writes the  user Data into persistence (MySQL for now).
 	  *
@@ -821,7 +822,7 @@ class CMS_profile_user extends CMS_profile
 			alerts_pru='".SensitiveIO::sanitizeSQLString($this->_alerts->getTextDefinition())."',
 			favorites_pru='".SensitiveIO::sanitizeSQLString(implode(',',$this->_favorites))."'
 		";
-
+		
 		if ($this->_userId) {
 			$sql = "
 				update
@@ -844,22 +845,22 @@ class CMS_profile_user extends CMS_profile
 		} elseif (!$this->_userId) {
 			$this->_userId = $q->getLastInsertedID();
 		}
-
+		
 		// Update validation catalog
 		if ($this->_validationChange || $this->_deleted) {
 				$sql = "
-				delete
+				delete 
 				from
 					profilesUsers_validators
 				where
 					userId_puv='".$this->_userId."'
 				";
 				$q = new CMS_query($sql);
-
+				
 				if ($this->_active) {
 					//loop through validationClearances
 					$validationClearances = parent::getValidationClearances();
-					$elements = $validationClearances->getElements();
+					$elements = $validationClearances->getElements(); 
 					$sql = '';
 					foreach ($elements as $value) {
 						$sql .= ($sql) ? ', ':'';
@@ -869,7 +870,7 @@ class CMS_profile_user extends CMS_profile
 						$sql = "
 							insert into
 								profilesUsers_validators (userId_puv, module_puv)
-							values
+							values 
 								".$sql;
 						$q = new CMS_query($sql);
 					}
@@ -879,7 +880,7 @@ class CMS_profile_user extends CMS_profile
 		//if deleted, must remove user from group list
 		if ($this->_deleted) {
 			$sql = "
-				delete
+				delete 
 				from
 					profileUsersByGroup
 				where
@@ -890,10 +891,10 @@ class CMS_profile_user extends CMS_profile
 		//Clear polymod cache
 		//CMS_cache::clearTypeCacheByMetas('polymod', array('resource' => 'users'));
 		CMS_cache::clearTypeCache('polymod');
-
+		
 		return true;
 	}
-
+	
 	/**
 	  * Writes the profile Data into persistence (MySQL for now).
 	  *
@@ -903,7 +904,7 @@ class CMS_profile_user extends CMS_profile
 	function writeProfileToPersistence() {
 		return parent::writeToPersistence();
 	}
-
+	
 	/**
       * Checks if the user is in a given group
       * @param integer $group_id
@@ -913,7 +914,7 @@ class CMS_profile_user extends CMS_profile
 		$groups = CMS_profile_usersGroupsCatalog::getGroupsOfUser($this, true);
 		return in_array($groupId, $groups);
 	}
-
+	
 	/**
 	  * Does user has the queried alert level set
 	  *
@@ -929,7 +930,7 @@ class CMS_profile_user extends CMS_profile
 		}
 		return false;
 	}
-
+	
 	/**
 	  * Sets Alert Level
 	  *
@@ -943,7 +944,7 @@ class CMS_profile_user extends CMS_profile
 		$this->_alerts->add($module, $level);
 		return true;
 	}
-
+	
 	/**
 	  * Reset Alert Level
 	  *
@@ -955,7 +956,7 @@ class CMS_profile_user extends CMS_profile
 		$this->_alerts = new CMS_stack();
 		return true;
 	}
-
+	
 	function getJSonDescription($user, $cms_language) {
 		//groups of user
 		$userGroups = array();

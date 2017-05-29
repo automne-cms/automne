@@ -279,12 +279,12 @@ class CMS_JSDialog extends CMS_grandFather
 					}
 				}
 			</script>';
-		if (isset($this) && is_a($this, 'CMS_dialog')) {
+		/*if (isset($this) && is_a($this, 'CMS_dialog')) {*/
 			$this->setJavascript($changeColor);
 			return true;
-		} else {
+		/*} else {
 			return $changeColor;
-		}
+		}*/
 	}
 
 	/**
@@ -573,12 +573,13 @@ class CMS_JSDialog extends CMS_grandFather
 					var pr = parent.pr;
 				}
 			</script>';
-		if (isset($this) && is_a($this, 'CMS_dialog')) {
+		/*if (isset($this) && is_a($this, 'CMS_dialog')) {*/
+		if(is_a($this, 'CMS_dialog')){
 			$this->changeColor();
 			$this->setJavascript($javascriptCheck);
 			return true;
-		} else {
-			return $javascriptCheck.CMS_dialog::changeColor();
+		/*} else {
+			return $javascriptCheck.CMS_dialog::changeColor();*/
 		}
 	}
 

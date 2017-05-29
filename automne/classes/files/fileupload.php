@@ -151,21 +151,21 @@ class CMS_fileUpload extends CMS_grandFather
 	  */
 	protected function _checkDestinationPath() {
 		if (!$this->_pathes["destination"]) {
-			$this->raiseError("Destination path cannot be empty");
+			$this->setError("Destination path cannot be empty");
 			return false;
 		}
 		if (!@is_dir($this->getPathBasedir()) || !@is_writable($this->getPathBasedir())) {
-			$this->raiseError("Destination dir doesn't exist or is not writable (".$this->getPathBasedir().")");
+			$this->setError("Destination dir doesn't exist or is not writable (".$this->getPathBasedir().")");
 			return false;
 		}
 		if (@is_file($this->_pathes["destination"])) {
 			if ($this->_overwrite) {
 				if (!@unlink($this->_pathes["destination"])) {
-					$this->raiseError("Destination file already exists (".$this->_pathes["destination"].") and cannot be deleted");
+					$this->setError("Destination file already exists (".$this->_pathes["destination"].") and cannot be deleted");
 					return false;
 				}
 			} else {
-				$this->raiseError("Destination file exists (".$this->_pathes["destination"]."), better force its deletion first");
+				$this->setError("Destination file exists (".$this->_pathes["destination"]."), better force its deletion first");
 				return false;
 			}
 		}
@@ -185,14 +185,14 @@ class CMS_fileUpload extends CMS_grandFather
 			return false;
 		} elseif (@is_file($this->_pathes[$key])) {
 			if (!CMS_file::deleteFile($this->_pathes[$key])) {
-				$this->raiseError("File exists (".$this->_pathes[$key].") but cannot be deleted");
+				$this->setError("File exists (".$this->_pathes[$key].") but cannot be deleted");
 				return false;
 			} else {
 				$this->_pathes[$key] = false;
 				return true;
 			}
 		} else {
-			$this->raiseError("File does not exists (".$this->_pathes[$key].")");
+			$this->setError("File does not exists (".$this->_pathes[$key].")");
 			return false;
 		}
 	}
@@ -330,17 +330,17 @@ class CMS_fileUpload extends CMS_grandFather
 			if ($this->_checkDestinationPath()) {
 				// Check file size and server max uploading file size
 				if ($this->inputFileTooWide()) {
-					$this->raiseError("File too wide for server (".$this->getInputValue("name")."), upload failed");
+					$this->setError("File too wide for server (".$this->getInputValue("name")."), upload failed");
 					return false;
 				}
 				//move uploaded file
 				$fileDatas = CMS_file::uploadFile($this->getInputValue("tmp_name"), PATH_TMP_FS);
 				if ($fileDatas['error']) {
-					$this->raiseError("Move uploaded file ".$this->getInputValue("tmp_name")." to ".$this->_pathes["destination"]." failed");
+					$this->setError("Move uploaded file ".$this->getInputValue("tmp_name")." to ".$this->_pathes["destination"]." failed");
 					return false;
 				}
 				if (!CMS_file::moveTo(PATH_TMP_FS.'/'.$fileDatas['filename'], $this->_pathes["destination"])) {
-					$this->raiseError("Move uploaded file ".$this->getInputValue("tmp_name")." to ".$this->_pathes["destination"]." failed");
+					$this->setError("Move uploaded file ".$this->getInputValue("tmp_name")." to ".$this->_pathes["destination"]." failed");
 					return false;
 				}
 				$this->file = new CMS_file($this->_pathes["destination"]);

@@ -74,7 +74,7 @@ class CMS_dialog_href extends CMS_grandFather
 	function __construct($href, $prefixname = '')
 	{
 		if (!is_a($href, "CMS_href")) {
-			$this->raiseError("Bad CMS_href given to constructor");
+			$this->setError("Bad CMS_href given to constructor");
 		}
 		$this->_href = $href;
 		$this->_prefix = $prefixname;
@@ -102,7 +102,7 @@ class CMS_dialog_href extends CMS_grandFather
 	function setHref($href)
 	{
 		if (!is_a($href, "CMS_href")) {
-			$this->raiseError("Bad CMS_href given to constructor");
+			$this->setError("Bad CMS_href given to constructor");
 			return false;
 		}
 		$this->_href = $href;
@@ -148,7 +148,7 @@ class CMS_dialog_href extends CMS_grandFather
 			//remove the old file if any
 			if (is_file($this->_href->getFileLink(true, $module, $locationType, PATH_RELATIVETO_FILESYSTEM))) {
 				if (!unlink($this->_href->getFileLink(true, $module, $locationType, PATH_RELATIVETO_FILESYSTEM))) {
-					$this->raiseError("Could not delete linked file");
+					$this->setError("Could not delete linked file");
 				}
 			}
 			if ($_FILES[$this->_prefix.'link_file']['name'] != '' && $resourceID > 0) {
@@ -238,7 +238,7 @@ class CMS_dialog_href extends CMS_grandFather
 				//remove the old file if any
 				if (is_file($this->_href->getFileLink(true, $module, $locationType, PATH_RELATIVETO_FILESYSTEM))) {
 					if (!unlink($this->_href->getFileLink(true, $module, $locationType, PATH_RELATIVETO_FILESYSTEM))) {
-						$this->raiseError("Could not delete old linked file");
+						$this->setError("Could not delete old linked file");
 					}
 				}
 			} elseif ($datas[3]) {
@@ -249,7 +249,7 @@ class CMS_dialog_href extends CMS_grandFather
 				//remove the old file if any
 				if (is_file($this->_href->getFileLink(true, $module, $locationType, PATH_RELATIVETO_FILESYSTEM))) {
 					if (!unlink($this->_href->getFileLink(true, $module, $locationType, PATH_RELATIVETO_FILESYSTEM))) {
-						$this->raiseError("Could not delete old linked file");
+						$this->setError("Could not delete old linked file");
 					}
 				}
 			}
@@ -257,7 +257,7 @@ class CMS_dialog_href extends CMS_grandFather
 		} elseif (is_file($this->_href->getFileLink(true, $module, $locationType, PATH_RELATIVETO_FILESYSTEM))) {
 			//remove the old file
 			if (!unlink($this->_href->getFileLink(true, $module, $locationType, PATH_RELATIVETO_FILESYSTEM))) {
-				$this->raiseError("Could not delete old linked file");
+				$this->setError("Could not delete old linked file");
 			}
 		}
 		// Target and Popup > (width, height)
@@ -290,7 +290,7 @@ class CMS_dialog_href extends CMS_grandFather
 	function getHTML($module = MOD_STANDARD_CODENAME, $dataLocation = RESOURCE_DATA_LOCATION_EDITED)
 	{
 		if (!is_a($this->_href, 'CMS_href')) {
-			$this->raiseError("\$this->_href isn't a CMS_href");
+			$this->setError("\$this->_href isn't a CMS_href");
 			return '';
 		}
 		return $this->_href->getHTML(false, $module, $dataLocation);
@@ -321,7 +321,7 @@ class CMS_dialog_href extends CMS_grandFather
 	{
 		global $cms_user;
 		if (!is_a($this->_href, 'CMS_href')) {
-			$this->raiseError("\$this->_href isn't a CMS_href");
+			$this->setError("\$this->_href isn't a CMS_href");
 			return '';
 		}
 		$tdClass = $tdClassLight = $tdClassDark = $inputClass = '';

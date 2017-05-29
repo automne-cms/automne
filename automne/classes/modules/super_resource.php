@@ -131,7 +131,7 @@ class CMS_superResource extends CMS_resource
 		}
 		if ($id) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
-				$this->raiseError("Id is not a positive integer");
+				$this->setError("Id is not a positive integer");
 				return false;
 			}
 			if ($this->_hasResource()) {
@@ -192,7 +192,7 @@ class CMS_superResource extends CMS_resource
 					}
 				}
 			} else {
-				$this->raiseError("Unknown ID :".$id);
+				$this->setError("Unknown ID :".$id);
 				return false;
 			}
 		} else {
@@ -321,7 +321,7 @@ class CMS_superResource extends CMS_resource
 		if (in_array($this->_tableData[$string][0],$this->_classString)) {
 			return $this->_tableData[$string][1];
 		} else {
-			$this->raiseError("Unknown string :".$string);
+			$this->setError("Unknown string :".$string);
 			return false;
 		}
 	}
@@ -347,7 +347,7 @@ class CMS_superResource extends CMS_resource
                     }
 
 					if (!SensitiveIO::isValidEmail($stringValue)) {
-						$this->raiseError("Try to set an uncorrect email format :".$stringValue);
+						$this->setError("Try to set an uncorrect email format :".$stringValue);
 						return false;
 					}
 				break;
@@ -358,14 +358,14 @@ class CMS_superResource extends CMS_resource
 					//$stringValue = $stringValue;
 				break;
 				default:
-					$this->raiseError("Unknown string or not a string dataType :".$stringName);
+					$this->setError("Unknown string or not a string dataType :".$stringName);
 					return false;
 				break;
 			}
 			$this->_tableData[$stringName][1]=$stringValue;
 			return true;
 		} else {
-			$this->raiseError("Unknown string or not a string dataType :".$stringName);
+			$this->setError("Unknown string or not a string dataType :".$stringName);
 			return false;
 		}
 	}
@@ -382,7 +382,7 @@ class CMS_superResource extends CMS_resource
 		if ($this->_tableData[$boolean][0]=="boolean") {
 			return ($this->_tableData[$boolean][1]) ? true:false;
 		} else {
-			$this->raiseError("Unknown boolean :".$boolean);
+			$this->setError("Unknown boolean :".$boolean);
 			return false;
 		}
 	}
@@ -402,11 +402,11 @@ class CMS_superResource extends CMS_resource
 				$this->_tableData[$booleanName][1]= ($booleanValue==1 || $booleanValue===true) ? true:false;
 				return true;
 			} else {
-				$this->raiseError("Invalid boolean value :".$booleanValue);
+				$this->setError("Invalid boolean value :".$booleanValue);
 				return false;
 			}
 		} else {
-			$this->raiseError("Unknown boolean or not a boolean dataType :".$booleanName);
+			$this->setError("Unknown boolean or not a boolean dataType :".$booleanName);
 			return false;
 		}
 	}
@@ -423,7 +423,7 @@ class CMS_superResource extends CMS_resource
 		if (isset($this->_tableData[$integer]) && ($this->_tableData[$integer][0]=="integer" || $this->_tableData[$integer][0]=="positiveInteger")) {
 			return $this->_tableData[$integer][1];
 		} else {
-			$this->raiseError("Unknown integer :".$integer);
+			$this->setError("Unknown integer :".$integer);
 			return false;
 		}
 	}
@@ -449,25 +449,25 @@ class CMS_superResource extends CMS_resource
 			switch ($this->_tableData[$integerName][0]) {
 				case "integer":
 					if (!(SensitiveIO::isPositiveInteger($integerValue) || $integerValue === 0 || $integerValue === '0' || !$integerValue || (is_numeric($integerValue) && SensitiveIO::isPositiveInteger(abs($integerValue))))) {
-					 	$this->raiseError("Try to set an integer with uncorrect format :".$integerValue);
+					 	$this->setError("Try to set an integer with uncorrect format :".$integerValue);
 						return false;
 					}
 				break;
 				case "positiveInteger":
 					if (!SensitiveIO::isPositiveInteger($integerValue)) {
-						$this->raiseError("Try to set an uncorrect positiveInteger value :".$integerValue);
+						$this->setError("Try to set an uncorrect positiveInteger value :".$integerValue);
 						return false;
 					}
 				break;
 				default:
-					$this->raiseError("Unknown integer or not an integer dataType :".$integerName);
+					$this->setError("Unknown integer or not an integer dataType :".$integerName);
 					return false;
 				break;
 			}
 			$this->_tableData[$integerName][1]=$integerValue;
 			return true;
 		} else {
-			$this->raiseError("Unknown integer or not an integer dataType :".$integerName);
+			$this->setError("Unknown integer or not an integer dataType :".$integerName);
 			return false;
 		}
 	}
@@ -484,7 +484,7 @@ class CMS_superResource extends CMS_resource
 		if(class_exists($this->_tableData[$object][0])) {
 			return $this->_tableData[$object][1];
 		} else {
-			$this->raiseError("Unknown object or not a valid class type :".$object);
+			$this->setError("Unknown object or not a valid class type :".$object);
 			return false;
 		}
 	}
@@ -507,20 +507,20 @@ class CMS_superResource extends CMS_resource
 					$this->_tableData[$objectName][1]=$objectValue;
 					return true;
 				} else {
-					$this->raiseError("Object given not match the attempt type :".$this->_tableData[$objectName][0]);
+					$this->setError("Object given not match the attempt type :".$this->_tableData[$objectName][0]);
 				}
 			} else {
 				//then instanciate object and set it
 				$this->_tableData[$objectName][1]=new $this->_tableData[$objectName][0]($objectValue);
 				if (!is_object($this->_tableData[$objectName][1]) || $this->_tableData[$objectName][1]->hasError()) {
-					$this->raiseError("Object not set, data error :".$objectName);
+					$this->setError("Object not set, data error :".$objectName);
 				} else {
 					return true;
 				}
 			}
 			return false;
 		} else {
-			$this->raiseError("Unknown object or not a valid class type :".$objectName);
+			$this->setError("Unknown object or not a valid class type :".$objectName);
 			return false;
 		}
 	}
@@ -537,7 +537,7 @@ class CMS_superResource extends CMS_resource
 		if(class_exists("CMS_date") && is_a($this->_tableData[$date][1],"CMS_date")) {
 			return $this->_tableData[$date][1];
 		} else {
-			$this->raiseError("Unknown date or class CMS_date not exist :".$object);
+			$this->setError("Unknown date or class CMS_date not exist :".$object);
 			return false;
 		}
 	}
@@ -556,13 +556,13 @@ class CMS_superResource extends CMS_resource
 			//then instanciate object and set it
 			$this->_tableData[$dateName][1]=$dateValue;
 			if (!is_object($this->_tableData[$dateName][1]) || $this->_tableData[$dateName][1]->hasError()) {
-				$this->raiseError("Date not set, data error :".$dateName);
+				$this->setError("Date not set, data error :".$dateName);
 			} else {
 				return true;
 			}
 			return false;
 		} else {
-			$this->raiseError("Unknown class CMS_date or not a valid CMS_date type :".$dateName);
+			$this->setError("Unknown class CMS_date or not a valid CMS_date type :".$dateName);
 			return false;
 		}
 	}
@@ -584,7 +584,7 @@ class CMS_superResource extends CMS_resource
 					return $this->_tableData[$label][1];
 				}
 			}
-			$this->raiseError("Can not found order field in database");
+			$this->setError("Can not found order field in database");
 			return false;
 		}
 	}
@@ -609,11 +609,11 @@ class CMS_superResource extends CMS_resource
 						return true;
 					}
 				}
-				$this->raiseError("Can not found order field in database");
+				$this->setError("Can not found order field in database");
 				return false;
 			}
 		} else {
-			$this->raiseError("Order need to be a positive integer");
+			$this->setError("Order need to be a positive integer");
 			return false;
 		}
 	}
@@ -639,7 +639,7 @@ class CMS_superResource extends CMS_resource
 						$orderFieldName = $label.$this->_tableSufix;
 				}
 			}
-			$this->raiseError("Can not found order field in database");
+			$this->setError("Can not found order field in database");
 			return false;
 		}
 		
@@ -671,7 +671,7 @@ class CMS_superResource extends CMS_resource
 		";
 		$q = new CMS_query($sql);
 		if ($q->hasError()) {
-			$this->raiseError("Database query error");
+			$this->setError("Database query error");
 			return false;
 		} else {
 			$max = $q->getarray();
@@ -700,7 +700,7 @@ class CMS_superResource extends CMS_resource
 						$orderFieldName = $label.$this->_tableSufix;
 				}
 			}
-			$this->raiseError("Can not found order field in database");
+			$this->setError("Can not found order field in database");
 			return false;
 		}
 		//if order = 0 then item is at top level then do nothing
@@ -770,7 +770,7 @@ class CMS_superResource extends CMS_resource
 						$orderFieldName = $label.$this->_tableSufix;
 				}
 			}
-			$this->raiseError("Can not found order field in database");
+			$this->setError("Can not found order field in database");
 			return false;
 		}
 		//if order = maxOrder then item is at bottom level then do nothing
@@ -841,7 +841,7 @@ class CMS_superResource extends CMS_resource
 						$orderFieldName = $label.$this->_tableSufix;
 				}
 			}
-			$this->raiseError("Can not found order field in database");
+			$this->setError("Can not found order field in database");
 			return false;
 		}
 		//if want to move to an impossible location then do nothing
@@ -909,7 +909,7 @@ class CMS_superResource extends CMS_resource
 				
 				if (!SensitiveIO::isInSet($dataLocation, CMS_resource::getAllDataLocations())
 					|| $dataLocation == RESOURCE_DATA_LOCATION_DEVNULL) {
-					$this->raiseError("DataLocation not in the valid set");
+					$this->setError("DataLocation not in the valid set");
 					return false;
 				}
 				switch ($relativeTo) {
@@ -930,7 +930,7 @@ class CMS_superResource extends CMS_resource
 				return $this->_tableData[$imageName][1];
 			}
 		} else {
-			$this->raiseError("Unknown image or not an image dataType :".$imageName);
+			$this->setError("Unknown image or not an image dataType :".$imageName);
 			return false;
 		}
 	}
@@ -949,7 +949,7 @@ class CMS_superResource extends CMS_resource
 			$this->_tableData[$imageName][1] = $filename;
 			return true;
 		} else {
-			$this->raiseError("Unknown image or not an image dataType :".$imageName);
+			$this->setError("Unknown image or not an image dataType :".$imageName);
 			return false;
 		}
 	}
@@ -972,7 +972,7 @@ class CMS_superResource extends CMS_resource
 			if ($withPath) {
 				if (!SensitiveIO::isInSet($dataLocation, CMS_resource::getAllDataLocations())
 					|| $dataLocation == RESOURCE_DATA_LOCATION_DEVNULL) {
-					$this->raiseError("DataLocation not in the valid set");
+					$this->setError("DataLocation not in the valid set");
 					return false;
 				}
 				switch ($relativeTo) {
@@ -993,7 +993,7 @@ class CMS_superResource extends CMS_resource
 				return $this->_tableData[$name][1];
 			}
 		} else {
-			$this->raiseError("Unknown file or not an file dataType :".$name);
+			$this->setError("Unknown file or not an file dataType :".$name);
 			return false;
 		}
 	}
@@ -1012,7 +1012,7 @@ class CMS_superResource extends CMS_resource
 			$this->_tableData[$name][1] = $filename;
 			return true;
 		} else {
-			$this->raiseError("Unknown file or not an file dataType :".$name);
+			$this->setError("Unknown file or not an file dataType :".$name);
 			return false;
 		}
 	}
@@ -1049,7 +1049,7 @@ class CMS_superResource extends CMS_resource
 	function setLink($linkName,$linkType,$linkValue)
 	{
 		if (!SensitiveIO::isInSet($type, CMS_resource::getAllLinkTypes())) {
-			$this->raiseError("Type not in the valid set");
+			$this->setError("Type not in the valid set");
 			return false;
 		}
 		$this->_linkType = $type;
@@ -1149,12 +1149,12 @@ class CMS_superResource extends CMS_resource
                     if (method_exists($this, $method)) {
                         return $this->{$method}($name);
                     } else {
-                        $this->raiseError('Unknown method to use : "'.$method.'" for property "'.$name.'"');
+                        $this->setError('Unknown method to use : "'.$method.'" for property "'.$name.'"');
                     }
                 break;
             }
         } else {
-            $this->raiseError("Unknown property :".$name);
+            $this->setError("Unknown property :".$name);
             return false;
         }
     }
@@ -1183,12 +1183,12 @@ class CMS_superResource extends CMS_resource
                     if (method_exists($this, $method)) {
                         return $this->{$method}($name, $value);
                     } else {
-                        $this->raiseError('Unknown method to use : "'.$method.'" for property "'.$name.'"');
+                        $this->setError('Unknown method to use : "'.$method.'" for property "'.$name.'"');
                     }
                 break;
             }
         } else {
-            $this->raiseError("Unknown property :".$name);
+            $this->setError("Unknown property :".$name);
             return false;
         }
     }
@@ -1242,7 +1242,7 @@ class CMS_superResource extends CMS_resource
 		if (is_array($stringName)) {
 			foreach ($stringName as $aStringName) {
 				if (!in_array($this->_tableData[$aStringName][0],$this->_classString) && $aStringName != $this->_idName) {
-					$this->raiseError("Unknown string or not a string dataType :".$aStringName);
+					$this->setError("Unknown string or not a string dataType :".$aStringName);
 					return false;
 				}
 			}
@@ -1277,7 +1277,7 @@ class CMS_superResource extends CMS_resource
 			return $r;
 		} else {
 			if (!in_array($this->_tableData[$stringName][0],$this->_classString)) {
-				$this->raiseError("Unknown string or not a string dataType :".$stringName);
+				$this->setError("Unknown string or not a string dataType :".$stringName);
 				return false;
 			}
 			// the sql request
@@ -1446,7 +1446,7 @@ class CMS_superResource extends CMS_resource
 						} elseif (method_exists($this->_tableData[$label][1],"getTextDefinition")) {
 							$sql_fields .= " `".$label.$this->_tableSufix."`='".SensitiveIO::sanitizeSQLString($this->_tableData[$label][1]->getTextDefinition())."'";
 						} else {
-							$this->raiseError("Unknown save method for object ".$aData[0]);
+							$this->setError("Unknown save method for object ".$aData[0]);
 							return false;
 						}
 					} else {
@@ -1477,7 +1477,7 @@ class CMS_superResource extends CMS_resource
 		//pr($sql);
 		$q = new CMS_query($sql);
 		if ($q->hasError()) {
-			$this->raiseError("Database write error");
+			$this->setError("Database write error");
 			return false;
 		} elseif (!$this->_ID) {
 			$this->_ID = $q->getLastInsertedID();
@@ -1501,11 +1501,11 @@ class CMS_superResource extends CMS_resource
 					unset($this);
 					return true;
 				} else {
-					$this->raiseError("Resource deletion error");
+					$this->setError("Resource deletion error");
 					return false;
 				}
 			} else {
-				$this->raiseError("Need a valid cms_user to destroy an object with a resource");
+				$this->setError("Need a valid cms_user to destroy an object with a resource");
 				return false;
 			}
 		 } else {

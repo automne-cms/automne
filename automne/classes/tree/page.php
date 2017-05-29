@@ -137,7 +137,7 @@ class CMS_page extends CMS_resource
 
 		if ($id) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
-				$this->raiseError("Id is not a positive integer");
+				$this->setError("Id is not a positive integer");
 				return;
 			}
 			$sql = "
@@ -168,9 +168,9 @@ class CMS_page extends CMS_resource
 			} else {
 				//display this error only if we are in HTTP mode (not cli) because it is only relevant in this mode
 				if (!defined('APPLICATION_EXEC_TYPE') || APPLICATION_EXEC_TYPE == 'http') {
-					$this->raiseError("Unknown ID :".$id.' from '.io::getCallInfos(3));
+					$this->setError("Unknown ID :".$id.' from '.io::getCallInfos(3));
 				} else {
-					$this->raiseError();
+					$this->setError();
 				}
 			}
 		} else {
@@ -250,7 +250,7 @@ class CMS_page extends CMS_resource
 	function setTemplate($templateID)
 	{
 		if (!SensitiveIO::isPositiveInteger($templateID)) {
-			$this->raiseError("TemplateID is not a positive integer");
+			$this->setError("TemplateID is not a positive integer");
 			return false;
 		}
 		//comment this because this is not submitted to validation...
@@ -343,7 +343,7 @@ class CMS_page extends CMS_resource
 	function setRemindedEditorsStack($editorsStack)
 	{
 		if (!is_a($editorsStack, "CMS_stack")) {
-			$this->raiseError("EditorsStack is not a stack");
+			$this->setError("EditorsStack is not a stack");
 			return false;
 		}
 		$this->_remindedEditors = $editorsStack;
@@ -475,7 +475,7 @@ class CMS_page extends CMS_resource
 		if (SensitiveIO::isInSet($relativeTo, array(PATH_RELATIVETO_WEBROOT, PATH_RELATIVETO_FILESYSTEM))) {
 			return ($relativeTo == PATH_RELATIVETO_WEBROOT) ? PATH_PAGES_HTML_WR : PATH_PAGES_HTML_FS;
 		} else {
-			$this->raiseError("Can't give pages path relative to anything other than WR or FS");
+			$this->setError("Can't give pages path relative to anything other than WR or FS");
 			return false;
 		}
 	}
@@ -498,7 +498,7 @@ class CMS_page extends CMS_resource
 					//no public title found, to avoid error, try to use the edited one.
 					$title = $this->getTitle(false);
 					if (!$title) {
-						$this->raiseError("Can't get page title for page ".$this->getID()." to create page filename ...");
+						$this->setError("Can't get page title for page ".$this->getID()." to create page filename ...");
 						return false;
 					}
 				}
@@ -558,7 +558,7 @@ class CMS_page extends CMS_resource
 	  */
 	function getContent(&$language, $visualizationMode = false) {
 		if (!($language instanceof CMS_language) || !SensitiveIO::isInSet($visualizationMode, CMS_page::getAllVisualizationModes())) {
-			$this->raiseError("Language must be a valid language and visualization mode in the set of possibles");
+			$this->setError("Language must be a valid language and visualization mode in the set of possibles");
 			return false;
 		}
 		$this->_checkTemplate();
@@ -630,7 +630,7 @@ class CMS_page extends CMS_resource
 		//should we regenerate the linx file ?
 		if ($fromScratch || !$linxFile->exists()) {
 			if (!$this->_template) {
-				$this->raiseError('Can\'t find page template for page '.$this->getID());
+				$this->setError('Can\'t find page template for page '.$this->getID());
 				return false;
 			}
 			if (!$this->writeLinxFile()) {
@@ -657,7 +657,7 @@ class CMS_page extends CMS_resource
 				CMS_websitesCatalog::writeRootRedirection();
 			}
 		} else {
-			$this->raiseError('Malformed linx file');
+			$this->setError('Malformed linx file');
 			return false;
 		}
 
@@ -691,7 +691,7 @@ class CMS_page extends CMS_resource
 					$printFile->setContent($content);
 					$printFile->writeToPersistence();
 				} else {
-					$this->raiseError('Malformed print linx file');
+					$this->setError('Malformed print linx file');
 					return false;
 				}
 				//write significant url print page
@@ -700,7 +700,7 @@ class CMS_page extends CMS_resource
 				$redirectionFile->setContent($this->redirectionCode($printHTMLPath));
 				$redirectionFile->writeToPersistence();
 			} else {
-				$this->raiseError('Malformed print linx file');
+				$this->setError('Malformed print linx file');
 				return false;
 			}
 		}
@@ -724,7 +724,7 @@ class CMS_page extends CMS_resource
 		$linxFile = new CMS_file($this->getLinxFilePath());
 		$linxFile->setContent($pageContent);
 		if (!$linxFile->writeToPersistence()) {
-			$this->raiseError("Can't write linx file : ".$this->getLinxFilePath());
+			$this->setError("Can't write linx file : ".$this->getLinxFilePath());
 			return false;
 		}
 		//writes the "print" linx file if any
@@ -735,7 +735,7 @@ class CMS_page extends CMS_resource
 			$linxFile = new CMS_file($this->getLinxFilePath().".print", CMS_file::FILE_SYSTEM, CMS_file::TYPE_FILE);
 			$linxFile->setContent($printPageContent);
 			if (!$linxFile->writeToPersistence()) {
-				$this->raiseError("Can't write print linx file : ".$this->getLinxFilePath().".print");
+				$this->setError("Can't write print linx file : ".$this->getLinxFilePath().".print");
 				return false;
 			}
 		}
@@ -927,11 +927,11 @@ class CMS_page extends CMS_resource
 	function setTitle($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
-			$this->raiseError("Didn't received a valid user");
+			$this->setError("Didn't received a valid user");
 			return false;
 		}
 		if (!$data) {
-			$this->raiseError("Try to set an empty title for page");
+			$this->setError("Try to set an empty title for page");
 			return false;
 		}
 		if (!$this->_checkBaseData(false)) {
@@ -969,7 +969,7 @@ class CMS_page extends CMS_resource
 	function setLinkTitle($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
-			$this->raiseError("Didn't received a valid user");
+			$this->setError("Didn't received a valid user");
 			return false;
 		}
 		if (!$this->_checkBaseData(false)) {
@@ -1009,7 +1009,7 @@ class CMS_page extends CMS_resource
 	function setRefreshUrl($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
-			$this->raiseError("Didn't received a valid user");
+			$this->setError("Didn't received a valid user");
 			return false;
 		}
 		if (!$this->_checkBaseData(false)) {
@@ -1077,22 +1077,22 @@ class CMS_page extends CMS_resource
 	  */
 	function setCodename($data, &$user, $checkForDuplicate = true) {
 		if (!is_a($user, "CMS_profile_user")) {
-			$this->raiseError("Didn't received a valid user");
+			$this->setError("Didn't received a valid user");
 			return false;
 		}
 		if (strtolower(io::sanitizeAsciiString($data)) != $data) {
-			$this->raiseError("Page codename must be alphanumeric only");
+			$this->setError("Page codename must be alphanumeric only");
 			return false;
 		}
 		if (strlen($data) > 100) {
-			$this->raiseError("Page codename must have 100 characters max");
+			$this->setError("Page codename must have 100 characters max");
 			return false;
 		}
 		//check if codename already exists
 		if ($checkForDuplicate && $data) {
 			$pageId = CMS_tree::getPageByCodename($data, $this->getWebsite(), false, false);
 			if ($pageId && ((!$this->getID() && $pageId) || ($this->getID() != $pageId))) {
-				$this->raiseError("Page codename already exists in current website");
+				$this->setError("Page codename already exists in current website");
 				return false;
 			}
 		}
@@ -1181,7 +1181,7 @@ class CMS_page extends CMS_resource
 	function setKeywords($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
-			$this->raiseError("Didn't received a valid user");
+			$this->setError("Didn't received a valid user");
 			return false;
 		}
 		if (!$this->_checkBaseData(false)) {
@@ -1221,7 +1221,7 @@ class CMS_page extends CMS_resource
 	function setDescription($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
-			$this->raiseError("Didn't received a valid user");
+			$this->setError("Didn't received a valid user");
 			return false;
 		}
 		if (!$this->_checkBaseData(false)) {
@@ -1261,7 +1261,7 @@ class CMS_page extends CMS_resource
 	function setCategory($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
-			$this->raiseError("Didn't received a valid user");
+			$this->setError("Didn't received a valid user");
 			return false;
 		}
 		if (!$this->_checkBaseData(false)) {
@@ -1301,7 +1301,7 @@ class CMS_page extends CMS_resource
 	function setAuthor($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
-			$this->raiseError("Didn't received a valid user");
+			$this->setError("Didn't received a valid user");
 			return false;
 		}
 		if (!$this->_checkBaseData(false)) {
@@ -1342,7 +1342,7 @@ class CMS_page extends CMS_resource
 	function setReplyto($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
-			$this->raiseError("Didn't received a valid user");
+			$this->setError("Didn't received a valid user");
 			return false;
 		}
 		if (!$this->_checkBaseData(false)) {
@@ -1383,7 +1383,7 @@ class CMS_page extends CMS_resource
 	function setMetas($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
-			$this->raiseError("Didn't received a valid user");
+			$this->setError("Didn't received a valid user");
 			return false;
 		}
 		if (!$this->_checkBaseData(false)) {
@@ -1424,7 +1424,7 @@ class CMS_page extends CMS_resource
 	function setCopyright($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
-			$this->raiseError("Didn't received a valid user");
+			$this->setError("Didn't received a valid user");
 			return false;
 		}
 		if (!$this->_checkBaseData(false)) {
@@ -1471,7 +1471,7 @@ class CMS_page extends CMS_resource
 	function setLanguage($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
-			$this->raiseError("Didn't received a valid user");
+			$this->setError("Didn't received a valid user");
 			return false;
 		}
 		if (!$this->_checkBaseData(false)) {
@@ -1510,7 +1510,7 @@ class CMS_page extends CMS_resource
 	function setRobots($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
-			$this->raiseError("Didn't received a valid user");
+			$this->setError("Didn't received a valid user");
 			return false;
 		}
 		if (!$this->_checkBaseData(false)) {
@@ -1550,7 +1550,7 @@ class CMS_page extends CMS_resource
 	function setPragma($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
-			$this->raiseError("Didn't received a valid user");
+			$this->setError("Didn't received a valid user");
 			return false;
 		}
 		if (!$this->_checkBaseData(false)) {
@@ -1590,7 +1590,7 @@ class CMS_page extends CMS_resource
 	function setRefresh($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
-			$this->raiseError("Didn't received a valid user");
+			$this->setError("Didn't received a valid user");
 			return false;
 		}
 		if (!$this->_checkBaseData(false)) {
@@ -1630,7 +1630,7 @@ class CMS_page extends CMS_resource
 	function setReminderPeriodicity($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
-			$this->raiseError("Didn't received a valid user");
+			$this->setError("Didn't received a valid user");
 			return false;
 		}
 		if (!$this->_checkBaseData(false)) {
@@ -1641,7 +1641,7 @@ class CMS_page extends CMS_resource
 			$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
 			return true;
 		} else {
-			$this->raiseError("Value is not a positive integer or zero");
+			$this->setError("Value is not a positive integer or zero");
 			return false;
 		}
 	}
@@ -1674,7 +1674,7 @@ class CMS_page extends CMS_resource
 	function setReminderOn($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
-			$this->raiseError("Didn't received a valid user");
+			$this->setError("Didn't received a valid user");
 			return false;
 		}
 		if (!$this->_checkBaseData(false)) {
@@ -1686,7 +1686,7 @@ class CMS_page extends CMS_resource
 			$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
 			return true;
 		} else {
-			$this->raiseError("Value is not a CMS_date");
+			$this->setError("Value is not a CMS_date");
 			return false;
 		}
 	}
@@ -1719,7 +1719,7 @@ class CMS_page extends CMS_resource
 	function setReminderOnMessage($data, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
-			$this->raiseError("Didn't received a valid user");
+			$this->setError("Didn't received a valid user");
 			return false;
 		}
 		if (!$this->_checkBaseData(false)) {
@@ -1758,7 +1758,7 @@ class CMS_page extends CMS_resource
 	function setRedirectLink($link, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
-			$this->raiseError("Didn't received a valid user");
+			$this->setError("Didn't received a valid user");
 			return false;
 		}
 		if (!$this->_checkBaseData(false)) {
@@ -1770,7 +1770,7 @@ class CMS_page extends CMS_resource
 			$this->addEdition(RESOURCE_EDITION_BASEDATA, $user);
 			return true;
 		} else {
-			$this->raiseError("Value is not a CMS_href");
+			$this->setError("Value is not a CMS_href");
 			return false;
 		}
 	}
@@ -1915,7 +1915,7 @@ class CMS_page extends CMS_resource
 				($this->_status->getLocation() == RESOURCE_LOCATION_ARCHIVED ||
 				$this->_status->getLocation() == RESOURCE_LOCATION_DELETED)) {
 
-				//$this->raiseError('Page '.$this->getID().' : Can\'t get edited base data from DELETED or ARCHIVED locations');
+				//$this->setError('Page '.$this->getID().' : Can\'t get edited base data from DELETED or ARCHIVED locations');
 				return false;
 			}
 
@@ -2015,7 +2015,7 @@ class CMS_page extends CMS_resource
 			$this->_website = CMS_tree::getPageWebsite($this->_pageID);
 		}
 		if (!is_object($this->_website)) {
-			$this->raiseError('No website found for page : '.$this->_pageID);
+			$this->setError('No website found for page : '.$this->_pageID);
 			return false;
 		}
 		return true;
@@ -2094,7 +2094,46 @@ class CMS_page extends CMS_resource
 		} elseif (!$this->_pageID) {
 			$this->_pageID = $q->getLastInsertedID();
 		}
+/*
+		// Save edited content in block public table
+		$blocks = CMS_blockscatalog::getAllBlocksForPage($this, false);
+		foreach($blocks as $block){
+			$data = array();
+			$pageID = $this->_pageID;
+			$clientSpaceID = $block->_clientSpaceID;
+			$rowID = $block->_rowID;
+			$public = true;
+			$location = RESOURCE_LOCATION_USERSPACE;
 
+			$block->initializeFromBasicAttributes($block->getTagID());
+			//CMS_grandfather::log($block);
+
+			$rawData = $block->getRawData($pageID, $clientSpaceID, $rowID, $location, false);
+
+			// special case for these 3 blocks because of data value (last parameter in writeToPersistence method)
+			if($block instanceof CMS_block_image || $block instanceof CMS_block_flash || $block instanceof CMS_block_file){
+				$data["file"] = $rawData["file"];
+				if($block instanceof CMS_block_image){
+					$data["label"] = $rawData["label"];
+					$data["enlargedFile"] = $rawData["enlargedFile"];
+					$data["externalLink"] = $rawData["externalLink"];
+				}elseif ($block instanceof CMS_block_flash) {
+					$data["name"] = $rawData["name"];
+					$data["width"] = $rawData["width"];
+					$data["height"] = $rawData["height"];
+					$data["version"] = $rawData["version"];
+					$data["params"] = $rawData["params"];
+					$data["flashvars"] = $rawData["flashvars"];
+					$data["attributes"] = $rawData["attributes"];
+				}else{
+					$data["label"] = $rawData["label"];
+				}
+			}else{
+				$data["value"] = $rawData["value"];
+			}
+			$block->writeToPersistence($pageID, $clientSpaceID, $rowID, $location, $public, $data);
+		}
+*/
 		//save base data if modified
 		if ($this->_editedBaseData) {
 			$sql_fields = "
@@ -2175,7 +2214,7 @@ class CMS_page extends CMS_resource
 				$newTpl = CMS_pageTemplatesCatalog::getCloneFromID($templateID, false, true, false, $this->_templateID);
 			}
 			if (!is_a($newTpl, 'CMS_pageTemplate') || $newTpl->hasError()) {
-				$this->raiseError("Error during template clone creation.");
+				$this->setError("Error during template clone creation.");
 			} else {
 				$pg->setTemplate($newTpl->getID()) ;
 			}
@@ -2209,7 +2248,7 @@ class CMS_page extends CMS_resource
 				$this->duplicateContent($user, $pg);
 			}
 		} else {
-			$this->raiseError("User doesn't have rights to do this creation");
+			$this->setError("User doesn't have rights to do this creation");
 		}
 		return $pg;
 	}

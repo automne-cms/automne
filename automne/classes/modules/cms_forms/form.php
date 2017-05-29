@@ -92,7 +92,7 @@ class CMS_forms_formular extends CMS_grandFather {
 	function __construct($id, $cms_user = false) {
 		if ($id) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
-				$this->raiseError("Id is not a positive integer");
+				$this->setError("Id is not a positive integer");
 				return;
 			}
 			$sql = "
@@ -116,7 +116,7 @@ class CMS_forms_formular extends CMS_grandFather {
 				$this->_responses = (int) $data["responses_frm"];
 				
 			} else {
-				$this->raiseError("Unknown ID :".$id);
+				$this->setError("Unknown ID :".$id);
 			}
 		} else {
 			$this->_public = true;
@@ -341,7 +341,7 @@ class CMS_forms_formular extends CMS_grandFather {
 				}
 			}
 		} else {
-			$this->raiseError("Malformed definition to compute : ".print_r($definition, true));
+			$this->setError("Malformed definition to compute : ".print_r($definition, true));
 			return false;
 		}
 	}
@@ -389,7 +389,7 @@ class CMS_forms_formular extends CMS_grandFather {
 				}
 			}
 		} else {
-			$this->raiseError("Malformed definition to compute : ".print_r($definition, true));
+			$this->setError("Malformed definition to compute : ".print_r($definition, true));
 			return false;
 		}
 	}
@@ -469,7 +469,7 @@ class CMS_forms_formular extends CMS_grandFather {
 				}
 			}
 		} else {
-			$this->raiseError("Malformed definition to compute : ".print_r($definition, true));
+			$this->setError("Malformed definition to compute : ".print_r($definition, true));
 			return false;
 		}
 	}
@@ -548,7 +548,7 @@ class CMS_forms_formular extends CMS_grandFather {
 				}
 			}
 		} else {
-			$this->raiseError("Malformed definition to compute : ".print_r($definition, true));
+			$this->setError("Malformed definition to compute : ".print_r($definition, true));
 			return false;
 		}
 	}
@@ -639,7 +639,7 @@ class CMS_forms_formular extends CMS_grandFather {
 			$err += 16;
 		}
 		if ($err) {
-			$this->raiseError("Failed to delete form. ID : ".$this->getID().". Error code : ".$err);
+			$this->setError("Failed to delete form. ID : ".$this->getID().". Error code : ".$err);
 			return false;
 		}
 		unset($this);
@@ -681,7 +681,7 @@ class CMS_forms_formular extends CMS_grandFather {
 		}
 		$q = new CMS_query($sql);
 		if ($q->hasError()) {
-			$this->raiseError("Failed to write");
+			$this->setError("Failed to write");
 			return false;
 		} elseif (!$this->_formID) {
 			$this->_formID = $q->getLastInsertedID();
@@ -840,7 +840,7 @@ class CMS_forms_formular extends CMS_grandFather {
 		if (!$field->hasError()) {
 			return $field;
 		}
-		$this->raiseError('Can\'t find field ID '.$fieldId.' for current form ...');
+		$this->setError('Can\'t find field ID '.$fieldId.' for current form ...');
 		return false;
 	}
 	
@@ -960,7 +960,7 @@ class CMS_forms_formular extends CMS_grandFather {
 	 * @return boolean
 	 * @static
 	 */
-	function cleanEmptyForms() {
+	static function cleanEmptyForms() {
 		$sql = "
 			delete 
 			from 

@@ -185,7 +185,7 @@ switch ($action) {
 			if (!$dt_set_1 = $dt_beg->setLocalizedDate($pubStart, true)) {
 				$cms_message .= "\n".$cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD,
 							array($cms_language->getMessage(MESSAGE_PAGE_FIELD_PUBDATE_BEG)));
-			} 
+			}
 			if (!$dt_set_2 = $dt_end->setLocalizedDate($pubEnd, true)) {
 				$cms_message .= "\n".$cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_FIELD,
 						array($cms_language->getMessage(MESSAGE_PAGE_FIELD_PUBDATE_END)));
@@ -223,10 +223,13 @@ switch ($action) {
 						$validation = new CMS_resourceValidation($codename, RESOURCE_EDITION_CONTENT, $item);
 						$mod = CMS_modulesCatalog::getByCodename($codename);
 						$mod->processValidation($validation, VALIDATION_OPTION_ACCEPT);
-						
+
 						//Log action
 						$log = new CMS_log();
-						$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_DIRECT_VALIDATION, $cms_user, $codename, $item->getStatus(), 'Item \''.$item->getLabel().'\' ('.$item->getObjectDefinition()->getLabel($cms_language).')', $item);
+						$itemStatus = $item->getStatus();
+						$itemLabel = $item->getLabel();
+						$itemObjDefLabel = $item->getObjectDefinition()->getLabel($cms_language);
+						$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_DIRECT_VALIDATION, $cms_user, $codename, $itemStatus, 'Item \''.$itemLabel.'\' ('.$itemObjDefLabel.')', $item);
 					}
 				}
 			}
@@ -234,7 +237,7 @@ switch ($action) {
 	break;
 	case 'pluginSelection':
 		$view->setDisplayMode(CMS_view::SHOW_RAW);
-		
+
 		$selectedContent = sensitiveIO::request('content');
 		$pluginId = sensitiveIO::request('plugin');
 		$selectedPlugin = new CMS_poly_plugin_definitions($pluginId);
@@ -281,9 +284,9 @@ switch ($action) {
 		$blockClass = sensitiveIO::request('blockClass');
 		$value = sensitiveIO::request('value', 'is_array');
 		$codename = sensitiveIO::request('module', CMS_modulesCatalog::getAllCodenames());
-		
+
 		$cms_page = CMS_tree::getPageByID($currentPage);
-		
+
 		//RIGHTS CHECK
 		if (!is_object($cms_page) || $cms_page->hasError()
 			|| !$cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)
@@ -291,13 +294,13 @@ switch ($action) {
 			CMS_grandFather::raiseError('Insufficient rights on page '.$cms_page->getID());
 			break;
 		}
-		
+
 		//CHECKS user has module clearance
 		if (!$cms_user->hasModuleClearance($codename, CLEARANCE_MODULE_EDIT)) {
 			CMS_grandFather::raiseError('Error, user has no rights on module : '.$codename);
 			break;
 		}
-		
+
 		//ARGUMENTS CHECK
 		if (!$cs
 			|| !$rowTag
@@ -308,7 +311,6 @@ switch ($action) {
 		}
 		//instanciate block
 		$cms_block = new CMS_block_polymod();
-		
 		$cms_block->initializeFromID($blockId, $rowId);
 		//instanciate block module
 		$cms_module = CMS_modulesCatalog::getByCodename($codename);
@@ -316,10 +318,10 @@ switch ($action) {
 		$data = $cms_block->getRawData($cms_page->getID(), $cs, $rowTag, RESOURCE_LOCATION_EDITION, false);
 		//get block parameters requirements
 		$blockParamsDefinition = $cms_block->getBlockParametersRequirement($data["value"], $cms_page, true);
-		
+
 		//instanciate row
 		$row = new CMS_row($rowId);
-		
+
 		//checks and assignments
 		$formok = true;
 		if (isset($blockParamsDefinition['search'])) {

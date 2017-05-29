@@ -9,7 +9,7 @@
 // | LICENSE-GPL, and is available through the world-wide-web at		  |
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
-// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// | Author: SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
 // $Id: polymod_object_infos.php,v 1.3 2010/03/08 16:41:40 sebastien Exp $
@@ -20,7 +20,7 @@
   *
   * @package Automne
   * @subpackage admin-v3
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
 require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
@@ -120,7 +120,8 @@ function createHTMLStructure($objectID, $objectsStructure) {
 				$style = _getColorsForLevel($level);
 				$html .= '<li style="'.$style['field'].'"><strong>'.$objectsStructure['objectInfos'][$objectFieldID]->getObjectLabel($cms_language).'</strong>&nbsp;&nbsp;&nbsp;<small>('.$objectsStructure['objectInfos'][$objectField]->getObjectLabel($cms_language).')</small></li>';
 			} elseif (is_array($objectField)) {
-				$object = array_shift(array_keys($objectField));
+				$arrayKeysObjectField = array_keys($objectField);
+				$object = array_shift($arrayKeysObjectField);
 				if (strpos($object, 'object') === 0) {
 					//here check if object as parameter to force loading of subobjects, if so, remove one level
 					//TODO : check this function in condition, maybe we should remove two level instead

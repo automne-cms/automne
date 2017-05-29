@@ -75,7 +75,7 @@ class CMS_archive extends CMS_grandFather
 	 */
 	function CMS_archive($name) {
 		if (trim($name) == '') {
-			$this->raiseError("Not a valid name given to archive ".$name);
+			$this->setError("Not a valid name given to archive ".$name);
 			return;
 		}
 		$this->options = array (
@@ -122,7 +122,7 @@ class CMS_archive extends CMS_grandFather
 				$this->options['prepend'] = preg_replace("/\/$/", "", $this->options['prepend'])."/";
 			}
 		} else {
-			$this->raiseError("Not a valid optins array given");
+			$this->setError("Not a valid optins array given");
 		}
 	}
 
@@ -140,13 +140,13 @@ class CMS_archive extends CMS_grandFather
 			$pwd = getcwd();
 			chdir($this->options['basedir']);
 			if ($this->options['overwrite'] == 0 && file_exists($this->options['name']. ($this->options['type'] == "gzip" || $this->options['type'] == "bzip" ? ".tmp" : ""))) {
-				$this->raiseError("File {$this->options['name']} already exists.");
+				$this->setError("File {$this->options['name']} already exists.");
 				chdir($pwd);
 				return 0;
 			} elseif ($this->CMS_archive = @ fopen($this->options['name']. ($this->options['type'] == "gzip" || $this->options['type'] == "bzip" ? ".tmp" : ""), "wb+")) {
 					chdir($pwd);
 				} else {
-					$this->raiseError("Could not open {$this->options['name']} for writing.");
+					$this->setError("Could not open {$this->options['name']} for writing.");
 					chdir($pwd);
 					return false;
 				}
@@ -157,33 +157,33 @@ class CMS_archive extends CMS_grandFather
 		switch ($this->options['type']) {
 			case "zip" :
 				if (!$this->create_zip()) {
-					$this->raiseError("Could not create zip file.");
+					$this->setError("Could not create zip file.");
 					return false;
 				}
 				break;
 			case "bzip" :
 				if (!$this->create_tar()) {
-					$this->raiseError("Could not create tar file.");
+					$this->setError("Could not create tar file.");
 					return false;
 				}
 				if (!$this->create_bzip()) {
-					$this->raiseError("Could not create bzip2 file.");
+					$this->setError("Could not create bzip2 file.");
 					return false;
 				}
 				break;
 			case "gzip" :
 				if (!$this->create_tar()) {
-					$this->raiseError("Could not create tar file.");
+					$this->setError("Could not create tar file.");
 					return false;
 				}
 				if (!$this->create_gzip()) {
-					$this->raiseError("Could not create gzip file.");
+					$this->setError("Could not create gzip file.");
 					return false;
 				}
 				break;
 			case "tar" :
 				if (!$this->create_tar()) {
-					$this->raiseError("Could not create tar file.");
+					$this->setError("Could not create tar file.");
 					return false;
 				}
 		}
@@ -391,7 +391,7 @@ class CMS_archive extends CMS_grandFather
 	 */
 	function download_file() {
 		if ($this->options['inmemory'] == 0) {
-			$this->raiseError("Can only use download_file() if archive is in memory. Redirect to file otherwise, it is faster.");
+			$this->setError("Can only use download_file() if archive is in memory. Redirect to file otherwise, it is faster.");
 			return;
 		}
 		switch ($this->options['type']) {

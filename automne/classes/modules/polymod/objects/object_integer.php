@@ -158,7 +158,7 @@ class CMS_object_integer extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName) {
+	function setValues($values,$prefixName, $newFormat = false) {
 		$params = $this->getParamsValues();
 		foreach ($this->_subfields as $subFieldID => $subFieldDefinition) {
 			if (is_object($this->_subfieldValues[$subFieldID])) {
@@ -307,8 +307,8 @@ class CMS_object_integer extends CMS_object_common
       * @return array : the labels of object structure and functions
       * @access public
       */
-    function getLabelsStructure(&$language) {
-		$labels = parent::getLabelsStructure($language);
+    function getLabelsStructure(&$language, $objectName = '') {
+		$labels = parent::getLabelsStructure($language, $objectName);
 		$params = $this->getParamsValues();
 		//unset($labels['structure']['value']);
 		$labels['operator']['&lt;, &gt;,&lt;=, &gt;= '] = $language->getMessage(self::MESSAGE_OBJECT_INTEGER_OPERATOR_OTHERS_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
@@ -337,7 +337,7 @@ class CMS_object_integer extends CMS_object_common
 			'>=',
 		);
 		if ($operator && !in_array($operator, $supportedOperator)) {
-			$this->_raiseError(get_class($this)." : getFieldSearchSQL : unkown search operator : ".$operator.", use default search instead");
+			$this->_setError(get_class($this)." : getFieldSearchSQL : unkown search operator : ".$operator.", use default search instead");
 			$operator = false;
 		}
 		if (!$operator) {

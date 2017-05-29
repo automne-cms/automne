@@ -207,7 +207,7 @@ class CMS_forms_sendingsSearch extends CMS_grandFather {
 	 */
 	protected function _getResultsCount() {
 		if (!$this->_buildSQL()) {
-			$this->raiseError("Error while constructing query");
+			$this->setError("Error while constructing query");
 			return null;
 		}
 		$sql = str_replace('{{select}}', 'COUNT(*) as c', $this->_sql);

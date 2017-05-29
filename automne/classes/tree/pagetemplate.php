@@ -151,7 +151,7 @@ class CMS_pageTemplate extends CMS_grandFather
 		$this->_websitesdenied = new CMS_stack();
 		if ($id) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
-				$this->raiseError("Id is not a positive integer");
+				$this->setError("Id is not a positive integer");
 				return;
 			}
 			$sql = "
@@ -177,7 +177,7 @@ class CMS_pageTemplate extends CMS_grandFather
 				$this->_description = $data["description_pt"];
 				$this->_websitesdenied->setTextDefinition($data["websitesdenied_pt"]);
 			} else {
-				$this->raiseError("Unknown ID :".$id);
+				$this->setError("Unknown ID :".$id);
 			}
 		}
 	}
@@ -217,7 +217,7 @@ class CMS_pageTemplate extends CMS_grandFather
 			$this->_label = $label;
 			return true;
 		} else {
-			$this->raiseError("Label can't be empty");
+			$this->setError("Label can't be empty");
 			return false;
 		}
 	}
@@ -276,7 +276,7 @@ class CMS_pageTemplate extends CMS_grandFather
 			
 			return true;
 		} else {
-			$this->raiseError("Label can't be empty");
+			$this->setError("Label can't be empty");
 			return false;
 		}
 	}
@@ -411,7 +411,7 @@ class CMS_pageTemplate extends CMS_grandFather
 			}
 			return true;
 		} else {
-			$this->raiseError("Trying to deny an invalid website");
+			$this->setError("Trying to deny an invalid website");
 			return false;
 		}
 	}
@@ -429,7 +429,7 @@ class CMS_pageTemplate extends CMS_grandFather
 			$this->_websitesdenied->del($website);
 			return true;
 		} else {
-			$this->raiseError("Trying to remove an empty website");
+			$this->setError("Trying to remove an empty website");
 			return false;
 		}
 	}
@@ -532,7 +532,7 @@ class CMS_pageTemplate extends CMS_grandFather
 			}
 			return true;
 		} else {
-			$this->raiseError("Trying to set an empty group or which contains illegal characters");
+			$this->setError("Trying to set an empty group or which contains illegal characters");
 			return false;
 		}
 	}
@@ -550,7 +550,7 @@ class CMS_pageTemplate extends CMS_grandFather
 			$this->_groups->del($group);
 			return true;
 		} else {
-			$this->raiseError("Trying to remove an empty group");
+			$this->setError("Trying to remove an empty group");
 			return false;
 		}
 	}
@@ -602,11 +602,11 @@ class CMS_pageTemplate extends CMS_grandFather
 				}
 				return false;
 			} else {
-				$this->raiseError("Can't set definition file that doesn't exist or is not readable : ".$filename);
+				$this->setError("Can't set definition file that doesn't exist or is not readable : ".$filename);
 				return "XMLParser : Unreadable file";
 			}
 		} else {
-			$this->raiseError("Can't set definition file which contains illegal characters : ".$filename);
+			$this->setError("Can't set definition file which contains illegal characters : ".$filename);
 			return "XMLParser : Filename contains illegal characters";
 		}
 	}
@@ -659,7 +659,7 @@ class CMS_pageTemplate extends CMS_grandFather
 		$file = new CMS_file(PATH_TEMPLATES_FS."/".$filename);
 		$file->setContent($definition);
 		if (!$file->writeToPersistence()) {
-			$this->raiseError("Can't write definition file : ".PATH_TEMPLATES_FS."/".$filename);
+			$this->setError("Can't write definition file : ".PATH_TEMPLATES_FS."/".$filename);
 			return false;
 		} else {
 			$this->_definitionFile = $filename;
@@ -692,7 +692,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	function getContent(&$language, &$page, $visualizationMode)
 	{
 		if (!($page instanceof CMS_page) || !SensitiveIO::isInSet($visualizationMode, CMS_page::getAllvisualizationModes())) {
-			$this->raiseError("Page must be a CMS_page and visualization mode in the possibles");
+			$this->setError("Page must be a CMS_page and visualization mode in the possibles");
 			return false;
 		}
 		$returnIndexableContent = false;
@@ -774,7 +774,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	function setPrintingClientSpaces($CSTagsIDs)
 	{
 		if (!is_array($CSTagsIDs)) {
-			$this->_raiseError('$CSTagsIDs must be an array of CS Ids.');
+			$this->_setError('$CSTagsIDs must be an array of CS Ids.');
 			return false;
 		}
 		$this->_printingClientSpaces = $CSTagsIDs;
@@ -870,7 +870,7 @@ class CMS_pageTemplate extends CMS_grandFather
 		$filename = PATH_TEMPLATES_FS."/".$this->_definitionFile;
 		$tpl = new CMS_file(PATH_TEMPLATES_FS."/".$this->_definitionFile);
 		if (!$tpl->exists()) {
-			$this->raiseError('Can not found template file '.PATH_TEMPLATES_FS."/".$this->_definitionFile);
+			$this->setError('Can not found template file '.PATH_TEMPLATES_FS."/".$this->_definitionFile);
 			return false;
 		}
 		$definition = $tpl->readContent();
@@ -925,7 +925,7 @@ class CMS_pageTemplate extends CMS_grandFather
 			}
 			return true;
 		} else {
-			$this->raiseError("Malformed definition file : ".$this->_definitionFile."<br />".$modulesTreatment->getParsingError());
+			$this->setError("Malformed definition file : ".$this->_definitionFile."<br />".$modulesTreatment->getParsingError());
 			return $modulesTreatment->getParsingError();
 		}
 	}

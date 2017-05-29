@@ -200,7 +200,7 @@ class CMS_object_page extends CMS_object_integer
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName) {
+	function setValues($values,$prefixName, $newFormat = false) {
 		if (empty($values[$prefixName.$this->_field->getID().'_0'])) {
 			$values[$prefixName.$this->_field->getID().'_0'] = 0;
 		}
@@ -283,7 +283,7 @@ class CMS_object_page extends CMS_object_integer
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language, $objectName) {
+	function getLabelsStructure(&$language, $objectName = '') {
 		$params = $this->getParamsValues();
 		$labels = parent::getLabelsStructure($language, $objectName);
 		$labels['structure']['pageTitle'] = $language->getMessage(self::MESSAGE_OBJECT_PAGE_PAGE_TITLE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);

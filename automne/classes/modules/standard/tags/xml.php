@@ -9,7 +9,7 @@
 // | LICENSE-GPL, and is available through the world-wide-web at		  |
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
-// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// | Author: SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 
 /**
@@ -19,7 +19,7 @@
   *
   * @package Automne
   * @subpackage polymod
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 class CMS_XMLTag_xml extends CMS_XMLTag
 {
@@ -70,7 +70,8 @@ class CMS_XMLTag_xml extends CMS_XMLTag
 		if ($this->_parameters['context'] == CMS_XMLTag::HTML_CONTEXT) {
 			$ajaxCode.= 'ob_start();';
 			$xml = new CMS_xml2Array($return);
-			$ajaxCode .= $xml->toXML($xml->getParsedArray(), false, true).'<?php ';
+			$xmlParsedArray = $xml->getParsedArray();
+			$ajaxCode .= $xml->toXML($xmlParsedArray, false, true).'<?php ';
 			$ajaxCode.= '$content = ob_get_contents();
 			ob_end_clean();
 			$replace=array();';

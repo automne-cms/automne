@@ -53,7 +53,7 @@ class CMS_moduleClientspace extends CMS_grandFather
 		if ($attributes && is_array($attributes)) {
 			$this->_attributes = $attributes;
 		} else {
-			$this->raiseError("Attributes not a valid array");
+			$this->setError("Attributes not a valid array");
 			return;
 		}
 	}
@@ -111,7 +111,7 @@ class CMS_moduleClientspace extends CMS_grandFather
 		// Prints wanted template
 		$tpl_name = "mod_".$codename."_".io::strtolower($this->_attributes["type"]).".php";
 		if (!is_file(PATH_TEMPLATES_FS."/".$tpl_name)) {
-			$this->raiseError("Not a valid file found : ".$tpl_name);
+			$this->setError("Not a valid file found : ".$tpl_name);
 			return false;
 		} else {
 			$data = $this->_parseTemplateForParameters($tpl_name);
@@ -153,7 +153,7 @@ class CMS_moduleClientspace extends CMS_grandFather
 	{
 		$module = CMS_modulesCatalog::getByCodename($this->_attributes["module"]);
 		if (!($module instanceof CMS_module)) {
-			$this->raiseError("No module defined for the clientspace");
+			$this->setError("No module defined for the clientspace");
 			return false;
 		}
 		$parameters = $module->getParameters();
@@ -177,7 +177,7 @@ class CMS_moduleClientspace extends CMS_grandFather
 					try {
 						$domdocument->loadXML('<dummy>'.$regs[2].'</dummy>');
 					} catch (DOMException $e) {
-						$this->raiseError('Parse error during search for module-param parameters : '.$e->getMessage()." :\n".io::htmlspecialchars($regs[2]));
+						$this->setError('Parse error during search for module-param parameters : '.$e->getMessage()." :\n".io::htmlspecialchars($regs[2]));
 						return false;
 					}
 					$paramsTags = $domdocument->getElementsByTagName('module-param');
@@ -192,7 +192,7 @@ class CMS_moduleClientspace extends CMS_grandFather
 			$cdata = str_replace("§§", "\n", $cdata_pcre);
 			return $cdata;
 		} else {
-			$this->raiseError("Template ".$filename." isn't readable");
+			$this->setError("Template ".$filename." isn't readable");
 			return false;
 		}
 	}

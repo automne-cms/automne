@@ -73,7 +73,7 @@ class backgroundScript extends CMS_grandFather
 				if (is_array($files)) {
 					foreach($files as $file) {
 						if (!CMS_file::deleteFile($file)) {
-							$this->raiseError("Can't delete file ".$file);
+							$this->setError("Can't delete file ".$file);
 						}
 					}
 				}
@@ -82,22 +82,22 @@ class backgroundScript extends CMS_grandFather
 		//write script process PID File
 		if ($this->_processManager->writePIDFile()) {
 			if ($this->_debug) {
-				$this->raiseError("PID file successfully written (".$this->_processManager->getPIDFileName().").");
+				$this->setError("PID file successfully written (".$this->_processManager->getPIDFileName().").");
 			}
 			//start script process
 			$this->activate($this->_debug);
 			//delete script process PID File
 			if ($this->_processManager->deletePIDFile()) {
 				if ($this->_debug) {
-					$this->raiseError("PID file successfully deleted (".$this->_processManager->getPIDFileName().").");
+					$this->setError("PID file successfully deleted (".$this->_processManager->getPIDFileName().").");
 				}
 			} else {
-				$this->raiseError("Can not delete PID file (".$this->_processManager->getPIDFileName().").");
+				$this->setError("Can not delete PID file (".$this->_processManager->getPIDFileName().").");
 			}
 			exit;
 		} else {
 			if ($this->_debug) {
-				$this->raiseError("PID file already exists or impossible to write (".$this->_processManager->getPIDFileName().").");
+				$this->setError("PID file already exists or impossible to write (".$this->_processManager->getPIDFileName().").");
 			}
 			exit;
 		}

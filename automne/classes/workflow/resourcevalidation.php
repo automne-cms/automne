@@ -144,7 +144,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	{
 		//validation tests
 		if (!is_a($resource, "CMS_resource")) {
-			$this->raiseError("Resource must be a valid CMS_resource object");
+			$this->setError("Resource must be a valid CMS_resource object");
 			return;
 		}
 		$this->_validationOptions = VALIDATION_OPTION_ACCEPT + VALIDATION_OPTION_REFUSE + VALIDATION_OPTION_TRANSFER;
@@ -231,7 +231,7 @@ class CMS_resourceValidation extends CMS_grandFather
 				return false;
 			}
 		} else {
-			$this->raiseError("Can't construct ID, missing datas");
+			$this->setError("Can't construct ID, missing datas");
 			return false;
 		}
 	}
@@ -379,7 +379,8 @@ class CMS_resourceValidation extends CMS_grandFather
 	function getResource()
 	{
 		if ($module = CMS_modulesCatalog::getByCodename($this->_moduleCodename)) {
-			return $module->getResourceByID($this->_resourceID);
+			$class = get_class($module);
+			return $class::getResourceByID($this->_resourceID);
 		} else {
 			return false;
 		}
@@ -418,7 +419,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	function setEditorsStack($stack)
 	{
 		if (!is_a($stack, "CMS_stack")) {
-			$this->raiseError("Stack is not a CMS_stack");
+			$this->setError("Stack is not a CMS_stack");
 			return false;
 		} else {
 			$this->_editorsStack = $stack;
@@ -431,7 +432,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	  *
 	  * @access public
 	  */
-	function cleanOldValidations ()
+	public static function cleanOldValidations ()
 	{
 		//cleans old validations
 		$timeOut=self::VALIDATION_PERSISTENCE_TIMEOUT * 60;
@@ -486,7 +487,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	  * @return aray(integer=>integer) The validation options constants indexed by message ID
 	  * @access public
 	  */
-	function getAllValidationOptions()
+	public static function getAllValidationOptions()
 	{
 		return array(	self::MESSAGE_VALIDATION_ACCEPT	=> VALIDATION_OPTION_ACCEPT,
 						self::MESSAGE_VALIDATION_REFUSE	=> VALIDATION_OPTION_REFUSE,

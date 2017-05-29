@@ -76,7 +76,7 @@ class CMS_forms_record extends CMS_grandFather {
 	function __construct($id = 0) {
 		if ($id) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
-				$this->raiseError("Id is not a positive integer");
+				$this->setError("Id is not a positive integer");
 				return;
 			}
 			$sql = "
@@ -95,7 +95,7 @@ class CMS_forms_record extends CMS_grandFather {
 				$this->_senderID = $data["sending_rec"];
 				$this->_value = $data["value_rec"];
 			} else {
-				$this->raiseError("Unknown ID :".$id);
+				$this->setError("Unknown ID :".$id);
 			}
 		}
 	}
@@ -164,7 +164,7 @@ class CMS_forms_record extends CMS_grandFather {
 		}
 		$q = new CMS_query($sql);
 		if ($q->hasError()) {
-			$this->raiseError("Failed to write");
+			$this->setError("Failed to write");
 			return false;
 		} elseif (!$this->_recordID) {
 			$this->_recordID = $q->getLastInsertedID();

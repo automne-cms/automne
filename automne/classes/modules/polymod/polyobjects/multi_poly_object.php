@@ -184,11 +184,11 @@ class CMS_multi_poly_object extends CMS_object_common
 		}
 		//check object defined internal vars
 		if (sizeof($this->_subfields) != sizeof($this->_subfieldValues)) {
-			$this->raiseError('Object internal vars hasn\'t the same count of parameters, check $_subfields, $_subfieldValues.');
+			$this->setError('Object internal vars hasn\'t the same count of parameters, check $_subfields, $_subfieldValues.');
 			return;
 		}
 		if (!is_array($datas)) {
-			$this->raiseError("Datas need to be an array : ".print_r($datas,true));
+			$this->setError("Datas need to be an array : ".print_r($datas,true));
 			return;
 		}
 		//check object type id
@@ -196,7 +196,7 @@ class CMS_multi_poly_object extends CMS_object_common
 			//set $this->_objectID
 			$this->_objectID = $objectID;
 		} else {
-			$this->raiseError("ObjectID is not a positive Integer : ".$objectID);
+			$this->setError("ObjectID is not a positive Integer : ".$objectID);
 			return;
 		}
 		//Set public values
@@ -267,7 +267,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  */
 	function populateSubObjectsValues($datas) {
 		if (!is_array($datas)) {
-			$this->raiseError("Datas need to be an array : ".print_r($datas,true));
+			$this->setError("Datas need to be an array : ".print_r($datas,true));
 			return false;
 		}
 		$params = $this->getParamsValues();
@@ -951,7 +951,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @return array(integer "subFieldID" =>  array("type" => string [integer|string|text|date], "objectID" => integer, "fieldID" => integer, "subFieldID" => integer))
 	  * @access public
 	  */
-	function getSubFieldsDefinition($objectTypeID,$objectID,$field) {
+	public static function getSubFieldsDef($objectTypeID,$objectID,$field) {
 		$subFieldsDefinition=array();
 		$subFieldsDefinition[0] = array('type' 		=> $objectTypeID,
 										'objectID'	=> $objectID,
@@ -986,7 +986,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  */
 	function writeToPersistence() {
 		if ($this->_public) {
-			$this->raiseError("Can't write public object");
+			$this->setError("Can't write public object");
 			return false;
 		}
 		$ok = true;
@@ -1030,7 +1030,7 @@ class CMS_multi_poly_object extends CMS_object_common
 			global $cms_language;
 			$language = $cms_language ? $cms_language : CMS_languagesCatalog::getDefaultLanguage();
 			$objectDef = $this->getObjectDefinition();
-			$this->raiseError('Object field with ID '.$fieldID.' does not exists as a field of object '.$objectDef->getObjectLabel($language));
+			$this->setError('Object field with ID '.$fieldID.' does not exists as a field of object '.$objectDef->getObjectLabel($language));
 			return $this;
 		}
 		return $this->_objectValues[$fieldID];
@@ -1094,7 +1094,7 @@ class CMS_multi_poly_object extends CMS_object_common
 				return io::htmlspecialchars($this->getFieldDescription($cms_language));
 			break;
 			default:
-				$this->raiseError("Unknown value to get : ".$name);
+				$this->setError("Unknown value to get : ".$name);
 				return false;
 			break;
 		}
@@ -1127,7 +1127,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language, $objectName) {
+	function getLabelsStructure(&$language, $objectName = '') {
 		$labels = array();
 		$object = new CMS_poly_object($this->_objectID);
 		$labels['structure']['label'] = $language->getMessage(self::MESSAGE_MULTI_OBJECT_LABEL_DESCRIPTION,false,MOD_POLYMOD_CODENAME);

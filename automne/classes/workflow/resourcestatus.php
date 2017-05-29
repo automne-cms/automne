@@ -172,7 +172,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 					//We must adjust the publication because of the publication dates
 					$this->_adjustPublication();
 				} else {
-					$this->raiseError("Unknown ID :".$id);
+					$this->setError("Unknown ID :".$id);
 				}
 			} elseif (is_array($id)) {
 				$data=$id;
@@ -193,7 +193,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 				//We must adjust the publication because of the publication dates
 				$this->_adjustPublication();
 			} else {
-				$this->raiseError("Id is not a positive integer");
+				$this->setError("Id is not a positive integer");
 				return;
 			}
 		} else {
@@ -261,7 +261,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 			$this->_location = $location;
 			return true;
 		} else {
-			$this->raiseError("Unknown location : ".$location);
+			$this->setError("Unknown location : ".$location);
 			return false;
 		}
 	}
@@ -290,7 +290,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 			$this->_proposedFor = $location;
 			return true;
 		} else {
-			$this->raiseError("Unknown location for proposedFor : ".$location);
+			$this->setError("Unknown location for proposedFor : ".$location);
 			return false;
 		}
 	}
@@ -329,15 +329,15 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function addEdition($edition)
+	public function addEdition($edition)
 	{
-		if (SensitiveIO::isInSet($edition, $this->getAllEditions())) {
+		if (SensitiveIO::isInSet($edition, CMS_resourceStatus::getAllEditions())) {
 			if (!$this->hasEdition($edition)) {
 				$this->_editions += $edition;
 			}
 			return true;
 		} else {
-			$this->raiseError("Unknown edition : ".$edition);
+			$this->setError("Unknown edition : ".$edition);
 			return false;
 		}
 	}
@@ -351,13 +351,13 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  */
 	function delEdition($edition)
 	{
-		if (SensitiveIO::isInSet($edition, $this->getAllEditions())) {
+		if (SensitiveIO::isInSet($edition, CMS_resourceStatus::getAllEditions())) {
 			if ($this->hasEdition($edition)) {
 				$this->_editions -= $edition;
 			}
 			return true;
 		} else {
-			$this->raiseError("Unknown edition : ".$edition);
+			$this->setError("Unknown edition : ".$edition);
 			return false;
 		}
 	}
@@ -423,13 +423,13 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  */
 	function addValidationRefused($edition)
 	{
-		if (SensitiveIO::isInSet($edition, $this->getAllEditions())) {
+		if (SensitiveIO::isInSet($edition, CMS_resourceStatus::getAllEditions())) {
 			if (!$this->hasValidationRefused($edition)) {
 				$this->_validationsRefused += $edition;
 			}
 			return true;
 		} else {
-			$this->raiseError("Unknown edition : ".$edition);
+			$this->setError("Unknown edition : ".$edition);
 			return false;
 		}
 	}
@@ -443,13 +443,13 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  */
 	function delValidationRefused($edition)
 	{
-		if (SensitiveIO::isInSet($edition, $this->getAllEditions())) {
+		if (SensitiveIO::isInSet($edition, CMS_resourceStatus::getAllEditions())) {
 			if ($this->hasValidationRefused($edition)) {
 				$this->_validationsRefused -= $edition;
 			}
 			return true;
 		} else {
-			$this->raiseError("Unknown edition : ".$edition);
+			$this->setError("Unknown edition : ".$edition);
 			return false;
 		}
 	}
@@ -817,7 +817,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 		$onclick = '';
 		if ($modCodeName && $resourceID && $modified) {
 			if (!is_a($user, "CMS_profile_user")) {
-				$this->raiseError("User is not a valid CMS_profile_user object");
+				$this->setError("User is not a valid CMS_profile_user object");
 			} elseif ($img_status != 'draft') {
 				if ($modCodeName != MOD_STANDARD_CODENAME) {
 					//if its a module
@@ -1035,7 +1035,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return array(integer=>integer) All the locations indexed by their message DB ID
 	  * @access public
 	  */
-	function getAllLocations()
+	public static function getAllLocations()
 	{
 		return array(
 			self::MESSAGE_RESOURCE_LOCATION_USERSPACE	=> RESOURCE_LOCATION_USERSPACE,
@@ -1051,7 +1051,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return array(integer=>integer) All the editions indexed by their message DB ID
 	  * @access public
 	  */
-	function getAllEditions()
+	public static function getAllEditions()
 	{
 		return array(
 			self::MESSAGE_RESOURCE_EDITION_BASEDATA			=> RESOURCE_EDITION_BASEDATA,

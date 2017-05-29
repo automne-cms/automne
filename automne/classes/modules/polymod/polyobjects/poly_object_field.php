@@ -9,7 +9,7 @@
 // | LICENSE-GPL, and is available through the world-wide-web at		  |
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
-// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// | Author: SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
 // $Id: poly_object_field.php,v 1.3 2010/03/08 16:43:33 sebastien Exp $
@@ -21,7 +21,7 @@
   *
   * @package Automne
   * @subpackage polymod
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
 class CMS_poly_object_field extends CMS_poly_object_definition
@@ -75,7 +75,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 		$datas = array();
 		if ($id && !$dbValues) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
-				$this->raiseError("Id is not a positive integer : ".$id);
+				$this->setError("Id is not a positive integer : ".$id);
 				return;
 			}
 			$sql = "
@@ -92,7 +92,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 			if ($q->getNumRows()) {
 				$datas = $q->getArray();
 			} else {
-				$this->raiseError("Unknown ID :".$id);
+				$this->setError("Unknown ID :".$id);
 				return;
 			}
 		} elseif (is_array($dbValues) && $dbValues) {
@@ -150,11 +150,11 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	  */
 	function setValue($valueName, $value) {
 		if (!isset($this->_objectFieldValues[$valueName])) {
-			$this->raiseError("Unknown valueName to set :".$valueName);
+			$this->setError("Unknown valueName to set :".$valueName);
 			return false;
 		}
 		if ($valueName == 'uuid') {
-			$this->raiseError("Cannot change UUID");
+			$this->setError("Cannot change UUID");
 			return false;
 		}
 		$this->_objectFieldValues[$valueName] = $value;
@@ -169,8 +169,8 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	  * @access public
 	  */
 	function getValue($valueName) {
-		if (!isset($this->_objectFieldValues[$valueName])) {
-			$this->raiseError("Unknown valueName to get : ".$valueName);
+		if (!array_key_exists($valueName,$this->_objectFieldValues )) {
+			$this->setError("Unknown valueName to get : ".$valueName);
 			return false;
 		}
 		return $this->_objectFieldValues[$valueName];
@@ -306,7 +306,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 		}
 		$q = new CMS_query($sql);
 		if ($q->hasError()) {
-			$this->raiseError("Can't save object");
+			$this->setError("Can't save object");
 			return false;
 		} elseif (!$this->_fieldID) {
 			$this->_fieldID = $q->getLastInsertedID();
@@ -338,7 +338,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 				//then delete them
 				foreach($filesList as $aFile) {
 					if (!CMS_file::deleteFile($aFile['name'])) {
-						$this->raiseError("Can't delete file ".$aFile['name']." for field : ".$this->_fieldID);
+						$this->setError("Can't delete file ".$aFile['name']." for field : ".$this->_fieldID);
 						return false;
 					}
 				}
@@ -368,7 +368,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 				";
 				$q = new CMS_query($sql);
 				if ($q->hasError()) {
-					$this->raiseError("Can't delete datas of table ".$aTable." for field : ".$this->_fieldID);
+					$this->setError("Can't delete datas of table ".$aTable." for field : ".$this->_fieldID);
 					return false;
 				}
 			}
@@ -387,7 +387,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 			";
 			$q = new CMS_query($sql);
 			if ($q->hasError()) {
-				$this->raiseError("Can't delete datas of table mod_object_field for field : ".$this->_fieldID);
+				$this->setError("Can't delete datas of table mod_object_field for field : ".$this->_fieldID);
 				return false;
 			}
 			

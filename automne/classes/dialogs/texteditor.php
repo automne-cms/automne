@@ -193,7 +193,7 @@ class CMS_textEditor extends CMS_grandFather
 	 * of this class or an attribute to fckeditor
 	 * @return CMS_textEditor or null if error
 	 */
-	function getEditorFromParams($attrs)
+	static function getEditorFromParams($attrs)
 	{
 		if (!is_array($attrs)) {
 			CMS_grandFather::raiseError("None array of attributes passed to factory");
@@ -226,7 +226,7 @@ class CMS_textEditor extends CMS_grandFather
 	  * @return string the text with plugins tags adapted for fckeditor
 	  * @access public
 	  */
-	function parseInnerContent($value, $module = MOD_STANDARD_CODENAME) {
+	public static function parseInnerContent($value, $module = MOD_STANDARD_CODENAME) {
 		$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_WYSIWYG_INNER_TAGS, RESOURCE_DATA_LOCATION_EDITION, $this);
 		$wantedTags = $modulesTreatment->getWantedTags();
 		//create regular expression on wanted tags
@@ -255,7 +255,7 @@ class CMS_textEditor extends CMS_grandFather
 	  * @return string the text with all plugin tags
 	  * @access public
 	  */
-	function parseOuterContent($text, $module = MOD_STANDARD_CODENAME) {
+	public static function parseOuterContent($text, $module = MOD_STANDARD_CODENAME) {
 		//if post only contain a space or empty div or paragraph then the block is empty.
 		$cleanedText = trim(str_replace(array('&#160;', '&nbsp;', ' ') , '', $text));
 		if ($cleanedText == '<p></p>' || $cleanedText == '<div></div>') {

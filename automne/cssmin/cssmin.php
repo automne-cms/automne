@@ -56,7 +56,7 @@ class cssmin {
 		}
   	}
 	
-	function min($v) {
+	public static function min($v) {
 		$v = trim($v);
 		$v = str_replace("\r\n", "\n", $v);
         $search = array("/\/\*[\d\D]*?\*\/|\t+/", "/\s+/", "/\}\s+/");

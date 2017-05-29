@@ -164,13 +164,13 @@ class CMS_contactData extends CMS_grandFather
 				if ($q->getNumRows()) {
 					$data = $q->getArray();
 				} else {
-					$this->raiseError("Unknown DB ID : ".$id);
+					$this->setError("Unknown DB ID : ".$id);
 					return;
 				}
 			} elseif (is_array($id)) {
 				$data = $id;
 			} else {
-				$this->raiseError("Id is not a positive integer nor array");
+				$this->setError("Id is not a positive integer nor array");
 				return;
 			}
 			$this->_id = $data["id_cd"];
@@ -583,7 +583,7 @@ class CMS_contactData extends CMS_grandFather
 				if (method_exists($this, $method)) {
 					return $this->{$method}();
 				} else {
-					$this->raiseError('Unknown property to get : "'.$property.'"');
+					$this->setError('Unknown property to get : "'.$property.'"');
 				}
 			break;
 		}
@@ -605,7 +605,7 @@ class CMS_contactData extends CMS_grandFather
 				if (method_exists($this, $method)) {
 					return $this->{$method}($value);
 				} else {
-					$this->raiseError('Unknown property to set : "'.$property.'"');
+					$this->setError('Unknown property to set : "'.$property.'"');
 				}
 			break;
 		}

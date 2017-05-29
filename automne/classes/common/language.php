@@ -107,7 +107,7 @@ class CMS_language extends CMS_grandFather
 					$this->_availableForBackoffice = $data["availableForBackoffice_lng"];
 					$this->_modulesDenied = explode(';', $data["modulesDenied_lng"]);
 				} else {
-					$this->raiseError("Unknown code: ".$code.' - '.io::getCallInfos(3));
+					$this->setError("Unknown code: ".$code.' - '.io::getCallInfos(3));
 				}
 				$languageObject[$code] = $this;
 			} else {
@@ -190,11 +190,11 @@ class CMS_language extends CMS_grandFather
 				if ($q->getNumRows()) {
 					$string = $this->_getOldMessage($messageId, $parameters, $module);
 					if (!$string) {
-						$this->raiseError("Unknown message Id : ".$messageId." for module:".$module);
+						$this->setError("Unknown message Id : ".$messageId." for module:".$module);
 						return '';
 					}
 				} else {
-					$this->raiseError("Unknown message Id : ".$messageId." for module:".$module);
+					$this->setError("Unknown message Id : ".$messageId." for module:".$module);
 					return '';
 				}
 				return $string;
@@ -211,7 +211,7 @@ class CMS_language extends CMS_grandFather
 				}
 			}
 		} else {
-			$this->raiseError("messageId is not a positive integer : ".$messageId);
+			$this->setError("messageId is not a positive integer : ".$messageId);
 			return $messageId;
 		}
 	}
@@ -227,7 +227,7 @@ class CMS_language extends CMS_grandFather
 	  */
 	public static function getMessages($messageId, $module=MOD_STANDARD_CODENAME) {
 		if (!SensitiveIO::isPositiveInteger($messageId)) {
-			$this->raiseError("messageId is not a positive integer : ".$messageId);
+			$this->setError("messageId is not a positive integer : ".$messageId);
 			return false;
 		}
 		$oQuery = new CMS_query('
@@ -299,7 +299,7 @@ class CMS_language extends CMS_grandFather
 				}
 			}
 		} else {
-			$this->raiseError("messageId is not a positive integer : ".$messageId);
+			$this->setError("messageId is not a positive integer : ".$messageId);
 			return $messageId;
 		}
 	}
@@ -434,7 +434,7 @@ class CMS_language extends CMS_grandFather
 	function writeToPersistence()
 	{
 		if (!$this->_code) {
-			$this->raiseError("missing language code");
+			$this->setError("missing language code");
 			return false;
 		}
 		$sql_fields = "
@@ -502,7 +502,7 @@ class CMS_language extends CMS_grandFather
 			return false;
 		}
 		if (!isset($this->_prefetchStatus[$module]) || !is_array($this->_prefetchStatus[$module])) {
-			$this->raiseError("Try to end message prefetch which not already started");
+			$this->setError("Try to end message prefetch which not already started");
 			return false;
 		}
 		$diff = array_diff_assoc((array) @$constants, $this->_prefetchStatus[$module]);
@@ -561,7 +561,7 @@ class CMS_language extends CMS_grandFather
 	 * Return the next module message id
 	 * @return	the highest module message id + 1
 	 */
-	public function getNextMessageId($sCodename) {
+	static public function getNextMessageId($sCodename) {
 		$oQuery = new CMS_query("
 			SELECT max(id_mes) as max
 			FROM messages
@@ -580,7 +580,7 @@ class CMS_language extends CMS_grandFather
 	 * @param	array	$aMessages	Localised message. $sLanguageCode => $sMessage
 	 * @return					Id of the inserted message.
 	 */
-	public function createMessage($sCodename, $aMessages) {
+	public static function createMessage($sCodename, $aMessages) {
 		$iId = CMS_language::getNextMessageId($sCodename);
 		foreach ($aMessages as $sLanguageCode => $sMessage) {
 			$oQuery = new CMS_query("
@@ -603,7 +603,7 @@ class CMS_language extends CMS_grandFather
 	 * @param	array	$aMessages	Localised message. $sLanguageCode => $sMessage
 	 * @return					boolean
 	 */
-	public function updateMessage($sCodename, $iId, $aMessages) {
+	public static function updateMessage($sCodename, $iId, $aMessages) {
 		foreach ($aMessages as $sLanguageCode => $sMessage) {
 			$oQuery = new CMS_query("
 				replace into
@@ -627,7 +627,7 @@ class CMS_language extends CMS_grandFather
 	 * @var	integer	$iId		Messages id.
 	 * @return					boolean
 	 */
-	public function deleteMessage($sCodename, $iId) {
+	public static function deleteMessage($sCodename, $iId) {
 		$oQuery = new CMS_query("
 			delete from
 				messages

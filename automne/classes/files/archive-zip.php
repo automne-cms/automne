@@ -40,7 +40,7 @@ class CMS_zip_file extends CMS_archive
 	function CMS_zip_file($name)
 	{
 		if (trim($name) == '') {
-			$this->raiseError("Not a valid name given to archive ".$name);
+			$this->setError("Not a valid name given to archive ".$name);
 			return;
 		}
 		$this->CMS_archive($name);
@@ -66,7 +66,7 @@ class CMS_zip_file extends CMS_archive
 				$offset += io::strlen($temp);
 				unset ($temp);
 			} else {
-				$this->raiseError("Could not open sfx module from {$this->options['sfx']}.");
+				$this->setError("Could not open sfx module from {$this->options['sfx']}.");
 			}
 		}
 
@@ -163,7 +163,7 @@ class CMS_zip_file extends CMS_archive
 						$files ++;
 						$offset += (30 + io::strlen($current['name2']) + $size);
 					} else {
-						$this->raiseError("Could not open file {$current['name']} for reading. It was not added.");
+						$this->setError("Could not open file {$current['name']} for reading. It was not added.");
 					}
 		}
 		$this->add_data($central);

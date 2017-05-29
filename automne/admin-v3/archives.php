@@ -10,7 +10,7 @@
 // | http://www.gnu.org/copyleft/gpl.html.								  |
 // +----------------------------------------------------------------------+
 // | Author: Antoine Pouch <antoine.pouch@ws-interactive.fr> &            |
-// | Author: Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
+// | Author: SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>      |
 // +----------------------------------------------------------------------+
 //
 // $Id: archives.php,v 1.2 2010/03/08 16:41:39 sebastien Exp $
@@ -22,7 +22,7 @@
   * @package Automne
   * @subpackage admin-v3
   * @author Antoine Pouch <antoine.pouch@ws-interactive.fr> &
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author SÃ©bastien Pauchet <sebastien.pauchet@ws-interactive.fr>
   */
 
 require_once(dirname(__FILE__).'/../../cms_rc_admin.php');
@@ -118,7 +118,8 @@ case "unarchive":
 			$archives = CMS_tree::getArchivedPagesData();
 
 			$log = new CMS_log();
-			$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_UNARCHIVE, $cms_user, MOD_STANDARD_CODENAME, $pg->getStatus(), "", $pg);
+			$pgStatus = $pg->getStatus();
+			$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_UNARCHIVE, $cms_user, MOD_STANDARD_CODENAME, $pgStatus, "", $pg);
 		}
 	}
 	break;

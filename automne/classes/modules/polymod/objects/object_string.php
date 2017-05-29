@@ -216,10 +216,11 @@ class CMS_object_string extends CMS_object_common
 	  *
 	  * @param array $values : the POST result values
 	  * @param string prefixname : the prefix used for post names
+	  * @param boolean newFormat : new automne v4 format (default false for compatibility)
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName) {
+	function setValues($values,$prefixName, $new_format = false) {
 		$params = $this->getParamsValues();
 		if (isset($values[$prefixName.$this->_field->getID().'_0']) && $values[$prefixName.$this->_field->getID().'_0']) {
 			//check string length parameter
@@ -273,7 +274,7 @@ class CMS_object_string extends CMS_object_common
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language, $objectName) {
+	function getLabelsStructure(&$language, $objectName = '') {
 		$labels = parent::getLabelsStructure($language, $objectName);
 		$labels['operator']['like'] = $language->getMessage(self::MESSAGE_OBJECT_STRING_OPERATOR_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['operator']['!= '] = $language->getMessage(self::MESSAGE_OBJECT_STRING_OPERATOR_COMPARAISON_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
@@ -319,12 +320,12 @@ class CMS_object_string extends CMS_object_common
 		}
 		// Check supported operators
 		if ($operator && !in_array($operator, array_merge($supportedOperator, $supportedOperatorForArray))) {
-			$this->raiseError("Unknown search operator : ".$operator.", use default search instead");
+			$this->setError("Unknown search operator : ".$operator.", use default search instead");
 			$operator = false;
 		}
 		// Check operators for array value
 		if (is_array($value) && $operator && !in_array($operator, $supportedOperatorForArray)) {
-			$this->raiseError("Can't use this operator : ".$operator." with an array value, return empty sql");
+			$this->setError("Can't use this operator : ".$operator." with an array value, return empty sql");
 			return '';
 		}
 		$statusSuffix = ($public) ? "_public":"_edited";

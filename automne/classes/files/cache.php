@@ -110,11 +110,11 @@ class CMS_cache extends CMS_grandFather {
 		try {
 			$this->_cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
 		} catch (Zend_Cache_Exception $e) {
-			$this->raiseError($e->getMessage());
+			$this->setError($e->getMessage());
 			return false;
 		}
 		if (!isset($this->_cache) || !is_object($this->_cache)) {
-			$this->raiseError('Error : Zend cache object does not exists');
+			$this->setError('Error : Zend cache object does not exists');
 			return false;
 		}
 	}
@@ -127,13 +127,13 @@ class CMS_cache extends CMS_grandFather {
 	  */
 	function exist() {
 		if (!isset($this->_cache) || !is_object($this->_cache)) {
-			$this->raiseError('Error : Zend cache object does not exists');
+			$this->setError('Error : Zend cache object does not exists');
 			return false;
 		}
 		try {
 			return (!$this->_context || !$_POST) && !isset($_REQUEST['atm-skip-cache']) && $this->_cache->test($this->_parameters['hash']);
 		} catch (Zend_Cache_Exception $e) {
-			$this->raiseError($e->getMessage());
+			$this->setError($e->getMessage());
 			return false;
 		}
 	}
@@ -146,13 +146,13 @@ class CMS_cache extends CMS_grandFather {
 	  */
 	function load() {
 		if (!isset($this->_cache) || !is_object($this->_cache)) {
-			$this->raiseError('Error : Zend cache object does not exists');
+			$this->setError('Error : Zend cache object does not exists');
 			return false;
 		}
 		try {
 			return $this->_cache->load($this->_parameters['hash']);
 		} catch (Zend_Cache_Exception $e) {
-			$this->raiseError($e->getMessage());
+			$this->setError($e->getMessage());
 			return false;
 		}
 	}
@@ -167,14 +167,14 @@ class CMS_cache extends CMS_grandFather {
 	  */
 	function save($content, $metas = array()) {
 		if (!isset($this->_cache) || !is_object($this->_cache)) {
-			$this->raiseError('Error : Zend cache object does not exists');
+			$this->setError('Error : Zend cache object does not exists');
 			return false;
 		}
-		$tags = $this->_createTags($metas);
+		$tags = CMS_cache::_createTags($metas);
 		try {
 			return $this->_cache->save($content, $this->_parameters['hash'], $tags);
 		} catch (Zend_Cache_Exception $e) {
-			$this->raiseError($e->getMessage());
+			$this->setError($e->getMessage());
 			return false;
 		}
 	}
@@ -192,16 +192,16 @@ class CMS_cache extends CMS_grandFather {
 	  */
 	function clear($metas = array(), $mode = Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG) {
 		if (!isset($this->_cache) || !is_object($this->_cache)) {
-			$this->raiseError('Error : Zend cache object does not exists');
+			$this->setError('Error : Zend cache object does not exists');
 			return false;
 		}
 		if ($metas) {
 			//delete some module cache which match all given metas
-			$tags = $this->_createTags($metas);
+			$tags = CMS_cache::_createTags($metas);
 			try {
 				return $this->_cache->clean($mode, $tags);
 			} catch (Zend_Cache_Exception $e) {
-				$this->raiseError($e->getMessage());
+				$this->setError($e->getMessage());
 				return false;
 			}
 		} else {
@@ -223,14 +223,14 @@ class CMS_cache extends CMS_grandFather {
 	  */
 	function getByMetas($metas, $mode = Zend_Cache::CLEANING_MODE_MATCHING_TAG) {
 		if (!isset($this->_cache) || !is_object($this->_cache)) {
-			$this->raiseError('Error : Zend cache object does not exists');
+			$this->setError('Error : Zend cache object does not exists');
 			return false;
 		}
-		$tags = $this->_createTags($metas);
+		$tags = CMS_cache::_createTags($metas);
 		try {
 			return $this->_cache->getIdsMatchingTags($mode, $tags);
 		} catch (Zend_Cache_Exception $e) {
-			$this->raiseError($e->getMessage());
+			$this->setError($e->getMessage());
 			return false;
 		}
 	}
@@ -242,7 +242,7 @@ class CMS_cache extends CMS_grandFather {
 	  * @return array Zend cache tags
 	  * @access private
 	  */
-	protected function _createTags($metas) {
+	protected static function _createTags($metas) {
 		$tags = array();
 		if (!is_array($metas)) {
 			return $tags;
@@ -318,7 +318,7 @@ class CMS_cache extends CMS_grandFather {
 	  * @access public
 	  * @static
 	  */
-	function clearTypeCache($type) {
+	public static function clearTypeCache($type) {
 		$type = io::sanitizeAsciiString($type);
 		if (!$type) {
 			CMS_grandFather::raiseError('$type must be a valid cache type');
@@ -358,7 +358,7 @@ class CMS_cache extends CMS_grandFather {
 	  * @access public
 	  * @static
 	  */
-	function clearTypeCacheByMetas($type, $metas, $mode = Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG) {
+	public static function clearTypeCacheByMetas($type, $metas, $mode = Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG) {
 		$type = io::sanitizeAsciiString($type);
 		//Convert metas into tags
 		$tags = CMS_cache::_createTags($metas);

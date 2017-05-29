@@ -38,7 +38,7 @@ define('MESSAGE_MOD_CMS_FORMS_PLUGIN', 87);
 class CMS_module_cms_forms extends CMS_moduleValidation
 {
 	const MESSAGE_CMS_FORMS_FORMS = 1;
-	
+
 	/**
 	  * Gets a form by its internal ID
 	  *
@@ -46,10 +46,10 @@ class CMS_module_cms_forms extends CMS_moduleValidation
 	  * @return CMS_forms_formular
 	  * @access public
 	  */
-	function getResourceByID($ID) {
+	public static function getResourceByID($ID) {
 		return new CMS_forms_formular($ID);
 	}
-	
+
 	/**
 	  * Gets a tag representation instance
 	  *
@@ -58,7 +58,7 @@ class CMS_module_cms_forms extends CMS_moduleValidation
 	  * @return object The module tag representation instance
 	  * @access public
 	  */
-	function getTagRepresentation($tag, $args)
+	function getTagRepresentation($tag, $args, $compatArgs = false)
 	{
 		switch ($tag->getName()) {
 		case "block":
@@ -67,7 +67,7 @@ class CMS_module_cms_forms extends CMS_moduleValidation
 			if (class_exists($class_name)) {
 				$instance = new $class_name();
 			} else {
-				$this->raiseError("Unknown block type : CMS_block_cms_forms");
+				$this->setError("Unknown block type : CMS_block_cms_forms");
 				return false;
 			}
 			$instance->initializeFromTag($tag->getAttributes(), $tag->getInnerContent());
@@ -83,10 +83,10 @@ class CMS_module_cms_forms extends CMS_moduleValidation
 			break;
 		}
 	}
-	
+
 	/**
 	  * Return the module code for the specified treatment mode, visualization mode and object.
-	  * 
+	  *
 	  * @param mixed $modulesCode the previous modules codes (usually string)
 	  * @param integer $treatmentMode The current treatment mode (see constants on top of this file for accepted values).
 	  * @param integer $visualizationMode The current visualization mode (see constants on top of cms_page class for accepted values).
@@ -103,11 +103,11 @@ class CMS_module_cms_forms extends CMS_moduleValidation
 				if ($treatmentParameters["editor"] == "fckeditor") {
 					$languages = implode(',',array_keys(CMS_languagesCatalog::getAllLanguages(MOD_CMS_FORMS_CODENAME)));
 					//This is an exception of the method, because here we return an array, see admin/fckeditor/fckconfig.php for the detail
-					
+
 					// add cms_form wizard
 					$modulesCode["modulesDeclaration"][] = "FCKConfig.Plugins.Add( 'cms_forms', '".$languages."' );";
 					// create specific cms_form toolbar
-					$modulesCode["ToolbarSets"][] = 
+					$modulesCode["ToolbarSets"][] =
 							"FCKConfig.ToolbarSets['cms_forms'] = [
 								['Source','-','Preview'],//['Source','DocProps','-','Save','NewPage','Preview','-','Templates'],
 								['Cut','Copy','Paste','PasteText','PasteWord','-','Print'], //'SpellCheck'],
@@ -149,7 +149,7 @@ class CMS_module_cms_forms extends CMS_moduleValidation
 		}
 		return $modulesCode;
 	}
-	
+
 	/**
 	  * Module autoload handler
 	  *
@@ -181,7 +181,7 @@ class CMS_module_cms_forms extends CMS_moduleValidation
 		}
 		return $file;
 	}
-	
+
 	/**
 	  * Return a list of objects infos to be displayed in module index according to user privileges
 	  *
@@ -204,7 +204,7 @@ class CMS_module_cms_forms extends CMS_moduleValidation
 							'class'			=> 'atm-elements',
 							'frame'			=> true
 						);
-						
+
 		}
 		//Categories
 		//if user has some categories to manage

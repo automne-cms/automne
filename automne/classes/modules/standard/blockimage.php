@@ -332,7 +332,7 @@ class CMS_block_image extends CMS_block
 		
 		$table = $this->_getDataTableName($location, $public);
 		if (!$table) {
-			$this->raiseError("Unknown table");
+			$this->setError("Unknown table");
 			return false;
 		}
 		$sql = "
@@ -400,7 +400,7 @@ class CMS_block_image extends CMS_block
 	function delFromLocation($pageID, $clientSpaceID, $rowID, $location, $public = false, $withfile = false)
 	{
 		if (!SensitiveIO::isInSet($location, CMS_resourceStatus::getAllLocations())) {
-			$this->raiseError("DelFromLocation was given a bad location");
+			$this->setError("DelFromLocation was given a bad location");
 			return false;
 		}
 		if ($withfile) {
@@ -484,6 +484,17 @@ class CMS_block_image extends CMS_block
 		if ($q->hasError()) {
 			return false;
 		} else {
+
+			// todo : copier l'image qui est dans edition/edited dans le dossier public
+			if($location === RESOURCE_LOCATION_USERSPACE && $public){
+				$fromFile = PATH_MODULES_FILES_STANDARD_FS . '/' . $this->_getFolderName($location, false) . '/' . $data['file'];
+				$toFile = PATH_MODULES_FILES_STANDARD_FS . '/' . $this->_getFolderName($location, $public) . '/' . $data['file'];
+				if(CMS_file::copyTo($fromFile, $toFile)){
+					return true;
+				}else{
+					return false;
+				}
+			}
 			return true;
 		}
 	}
@@ -572,7 +583,7 @@ class CMS_block_image extends CMS_block
 				if ($public) {
 					if (!@copy(PATH_MODULES_FILES_STANDARD_FS."/public/".$this->_file, PATH_MODULES_FILES_STANDARD_FS."/public/".$_newFilename)
 						|| !@chmod (PATH_MODULES_FILES_STANDARD_FS."/public/".$_newFilename, octdec(FILES_CHMOD)) ) {
-						$this->raiseError("Duplicate, copy of new file failed : ".PATH_MODULES_FILES_STANDARD_FS."/public/".$_newFilename);
+						$this->setError("Duplicate, copy of new file failed : ".PATH_MODULES_FILES_STANDARD_FS."/public/".$_newFilename);
 					}
 				}
 				$_newEnlargedFilename = '';
@@ -584,13 +595,13 @@ class CMS_block_image extends CMS_block
 					//Edited
 					if (!@copy(PATH_MODULES_FILES_STANDARD_FS."/edited/".$this->_enlargedFile, PATH_MODULES_FILES_STANDARD_FS."/edited/".$_newEnlargedFilename)
 						|| !@chmod (PATH_MODULES_FILES_STANDARD_FS."/edited/".$_newEnlargedFilename, octdec(FILES_CHMOD)) ) {
-						$this->raiseError("Duplicate, copy of new enlarged file failed : ".PATH_MODULES_FILES_STANDARD_FS."/edited/".$_newEnlargedFilename);
+						$this->setError("Duplicate, copy of new enlarged file failed : ".PATH_MODULES_FILES_STANDARD_FS."/edited/".$_newEnlargedFilename);
 					}
 					//Public
 					if ($public) {
 						if (!@copy(PATH_MODULES_FILES_STANDARD_FS."/public/".$this->_enlargedFile, PATH_MODULES_FILES_STANDARD_FS."/public/".$_newEnlargedFilename)
 							|| !@chmod (PATH_MODULES_FILES_STANDARD_FS."/public/".$_newEnlargedFilename, octdec(FILES_CHMOD)) ) {
-							$this->raiseError("Duplicate, copy of new enlarged file failed : ".PATH_MODULES_FILES_STANDARD_FS."/public/".$_newEnlargedFilename);
+							$this->setError("Duplicate, copy of new enlarged file failed : ".PATH_MODULES_FILES_STANDARD_FS."/public/".$_newEnlargedFilename);
 						}
 					}
 				}
@@ -625,10 +636,10 @@ class CMS_block_image extends CMS_block
 					$q = new CMS_query($sql);
 					return !$q->hasError();
 				} else {
-					$this->raiseError("Duplicate, SQL insertion of new filename failed : ".$sql);
+					$this->setError("Duplicate, SQL insertion of new filename failed : ".$sql);
 				}
 			} else {
-				$this->raiseError("Duplicate, copy of file failed :".PATH_MODULES_FILES_STANDARD_FS."/edited/".$this->_file);
+				$this->setError("Duplicate, copy of file failed :".PATH_MODULES_FILES_STANDARD_FS."/edited/".$this->_file);
 			}
 		}
 		return false;

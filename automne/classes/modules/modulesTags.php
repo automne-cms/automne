@@ -87,7 +87,7 @@ class CMS_modulesTags extends CMS_grandFather
 		foreach ($this->_modules as $codename => $aModule) {
 			$moduleTreatment = $aModule->getWantedTags($this->_treatmentMode, $this->_visualizationMode, $this->_treatedObject);
 			if ($treatmentMode == MODULE_TREATMENT_PAGECONTENT_TAGS && isset($moduleTreatment['atm-meta-tags'])) {
-				$this->raiseError("Tag atm-meta-tags must be treated in MODULE_TREATMENT_PAGEHEADER_TAGS mode. Module ".$codename." try to use atm-meta-tags in MODULE_TREATMENT_PAGECONTENT_TAGS mode which is deprecated since Automne V4.0.0RC3. Edit file ".$codename.".php and change MODULE_TREATMENT_PAGECONTENT_TAGS by MODULE_TREATMENT_PAGEHEADER_TAGS in methods getWantedTags and treatWantedTag for tag atm-meta-tags");
+				$this->setError("Tag atm-meta-tags must be treated in MODULE_TREATMENT_PAGEHEADER_TAGS mode. Module ".$codename." try to use atm-meta-tags in MODULE_TREATMENT_PAGECONTENT_TAGS mode which is deprecated since Automne V4.0.0RC3. Edit file ".$codename.".php and change MODULE_TREATMENT_PAGECONTENT_TAGS by MODULE_TREATMENT_PAGEHEADER_TAGS in methods getWantedTags and treatWantedTag for tag atm-meta-tags");
 				unset($moduleTreatment['atm-meta-tags']);
 			}
 			if (is_array($moduleTreatment) && $moduleTreatment) {
@@ -137,11 +137,11 @@ class CMS_modulesTags extends CMS_grandFather
 	function treatWantedTag(&$tag, $treatmentParameters = array()) 
 	{
 		if (!$this->_modules || !$this->_modulesTreatment) {
-			$this->raiseError("Object not initialized");
+			$this->setError("Object not initialized");
 			return false;
 		}
 		if (!($tag instanceof CMS_XMLTag)) {
-			$this->raiseError("Tag parameter must be a CMS_XMLTag object");
+			$this->setError("Tag parameter must be a CMS_XMLTag object");
 			return false;
 		}
 		if ($treatmentParameters) {
@@ -203,7 +203,7 @@ class CMS_modulesTags extends CMS_grandFather
 	
 	protected function _parse($options) {
 		if (!$this->_definition) {
-			$this->raiseError('Can\'t parse empty definition');
+			$this->setError('Can\'t parse empty definition');
 			return false;
 		}
 		//load wanted tags if not already done
@@ -211,7 +211,7 @@ class CMS_modulesTags extends CMS_grandFather
 		//parse definiton
 		$this->_parser = new CMS_xml2Array($this->_definition, $options);
 		if ($this->_parser->hasError()) {
-			$this->raiseError('Malformed definition to compute : '.$this->_parser->getParsingError());
+			$this->setError('Malformed definition to compute : '.$this->_parser->getParsingError());
 			return false;
 		}
 		//get parsed definition array
@@ -238,7 +238,7 @@ class CMS_modulesTags extends CMS_grandFather
 			$this->_parse($options);
 		}
 		if (!$this->_definitionArray) {
-			$this->raiseError('Can\'t treat empty definition');
+			$this->setError('Can\'t treat empty definition');
 			return false;
 		}
 		//then return tags definition
@@ -265,7 +265,7 @@ class CMS_modulesTags extends CMS_grandFather
 				if (isset($definition[$key]['nodename']) && $this->_isWanted($definition[$key]) && (!$tagFilters || in_array($definition[$key]['nodename'], $tagFilters))) {
 					$className = isset($this->_tagsCallback[$definition[$key]['nodename']]) ? $this->_tagsCallback[$definition[$key]['nodename']] : 'CMS_XMLTag';
 					if (!class_exists($className)) {
-						$this->raiseError('Unknown class '.$className.'. Cannot compute tag '.$definition[$key]['nodename']);
+						$this->setError('Unknown class '.$className.'. Cannot compute tag '.$definition[$key]['nodename']);
 						return false;
 					}
 					$xmlTag = new $className(
@@ -298,7 +298,7 @@ class CMS_modulesTags extends CMS_grandFather
 			$this->_parse($options);
 		}
 		if (!$this->_definitionArray) {
-			$this->raiseError('Can\'t treat empty definition');
+			$this->setError('Can\'t treat empty definition');
 			return false;
 		}
 		//then return computed definition
@@ -321,7 +321,7 @@ class CMS_modulesTags extends CMS_grandFather
 				if (isset($definition[$key]['nodename']) && $this->_isWanted($definition[$key]) && !isset($definition[$key]['childrens'])) {
 					$className = isset($this->_tagsCallback[$definition[$key]['nodename']]) ? $this->_tagsCallback[$definition[$key]['nodename']] : 'CMS_XMLTag';
 					if (!class_exists($className)) {
-						$this->raiseError('Unknown class '.$className.'. Cannot compute tag '.$definition[$key]['nodename']);
+						$this->setError('Unknown class '.$className.'. Cannot compute tag '.$definition[$key]['nodename']);
 						return false;
 					}
 					$xmlTag = new $className(
@@ -342,7 +342,7 @@ class CMS_modulesTags extends CMS_grandFather
 					if (isset($definition[$key]['nodename']) && $this->_isWanted($definition[$key])) {
 						$className = isset($this->_tagsCallback[$definition[$key]['nodename']]) ? $this->_tagsCallback[$definition[$key]['nodename']] : 'CMS_XMLTag';
 						if (!class_exists($className)) {
-							$this->raiseError('Unknown class '.$className.'. Cannot compute tag '.$definition[$key]['nodename']);
+							$this->setError('Unknown class '.$className.'. Cannot compute tag '.$definition[$key]['nodename']);
 							return false;
 						}
 						$xmlTag = new $className(

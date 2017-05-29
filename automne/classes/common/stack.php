@@ -87,7 +87,7 @@
 			$this->emptyStack();
 			$atomsCount = preg_match_all("#([^,;]+)\,?([^,;]*)#", $text , $atoms);
 			if (sizeof($atoms[1]) != $atomsCount || sizeof($atoms[2]) != $atomsCount) {
-				$this->raiseError('Stack malformed : feeded with mixed one-value and two-values definition text');
+				$this->setError('Stack malformed : feeded with mixed one-value and two-values definition text');
 				return false;
 			} else {
 				//guess the number of values by atom

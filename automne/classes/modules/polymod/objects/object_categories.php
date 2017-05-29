@@ -181,11 +181,11 @@ class CMS_object_categories extends CMS_object_common
 	{
 		//check object defined internal vars
 		if (sizeof($this->_subfields) != sizeof($this->_subfieldValues)) {
-			$this->raiseError('Object internal vars hasn\'t the same count of parameters, check $_subfields, $_subfieldValues.');
+			$this->setError('Object internal vars hasn\'t the same count of parameters, check $_subfields, $_subfieldValues.');
 			return;
 		}
 		if (!is_array($datas)) {
-			$this->raiseError("Datas need to be an array : ".print_r($datas,true));
+			$this->setError("Datas need to be an array : ".print_r($datas,true));
 			return;
 		}
 		//Set public values
@@ -488,10 +488,11 @@ class CMS_object_categories extends CMS_object_common
 	  *
 	  * @param array $values : the POST result values
 	  * @param string prefixname : the prefix used for post names
+	  * @param boolean newFormat : new automne v4 format (default false for compatibility)
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function checkMandatory($values,$prefixName) {
+	function checkMandatory($values, $prefixName, $newFormat = false) {
 		//if field is required check values
 		if ($this->_field->getValue('required')) {
 			if (!$values['list'.$prefixName.$this->_field->getID().'_0']) {
@@ -506,10 +507,11 @@ class CMS_object_categories extends CMS_object_common
 	  *
 	  * @param array $values : the POST result values
 	  * @param string prefixname : the prefix used for post names
+	  * @param boolean newFormat : new automne v4 format (default false for compatibility)
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName) {
+	function setValues($values,$prefixName, $new_format = false) {
 		if (isset($values['list'.$prefixName.$this->_field->getID().'_0'])) {
 			$values['list'.$prefixName.$this->_field->getID().'_0'] = str_replace(',',';',$values['list'.$prefixName.$this->_field->getID().'_0']);
 			$valuesArray = explode(';',$values['list'.$prefixName.$this->_field->getID().'_0']);
@@ -618,7 +620,7 @@ class CMS_object_categories extends CMS_object_common
 	  */
 	function writeToPersistence() {
 		if ($this->_public) {
-			$this->raiseError("Can't write public object");
+			$this->setError("Can't write public object");
 			return false;
 		}
 		$ok = true;
@@ -647,7 +649,7 @@ class CMS_object_categories extends CMS_object_common
 	  * @return array(string) the statements or false if profile hasn't any access to any categories
 	  * @access public
 	  */
-	function getAllCategoriesAsArray($language = false, $restrictToUsedCat = false, $module = false, $clearanceLevel = false, $categoriesRoot = false, $strict = false, $usedByItemsIds = false, $crossLanguage = false) {
+	public function getAllCategoriesAsArray($language = false, $restrictToUsedCat = false, $module = false, $clearanceLevel = false, $categoriesRoot = false, $strict = false, $usedByItemsIds = false, $crossLanguage = false) {
 		global $cms_user;
 		$params = $this->getParamsValues();
 		$categoriesRoot = ($categoriesRoot) ? $categoriesRoot : $params['rootCategory'];
@@ -664,7 +666,7 @@ class CMS_object_categories extends CMS_object_common
 			$module = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
 		}
 		if (APPLICATION_ENFORCES_ACCESS_CONTROL && !is_object($cms_user)) {
-			$this->raiseError("Valid user missing");
+			$this->setError("Valid user missing");
 			return false;
 		}
 		if(/*($params['bypassRights'] && $clearanceLevel === false) || */!is_object($cms_user)) {
@@ -722,6 +724,99 @@ class CMS_object_categories extends CMS_object_common
 		
 		return $categories;
 	}
+
+	/**
+	  * Returns each category ID and label in a module given user can see
+	  *
+	  * @param CMS_language $cms_language, the language of the labels
+	  * @param boolean $restrictToUsedCat, restrict returned categories to used ones only (default false)
+	  * @param string $cms_module, the module codename (optional)
+	  * @param boolean $editableOnly, return only user editable categories (default false : viewvable ones)
+	  * @param mixed $clearanceLevel 
+	  * - false : CLEARANCE_MODULE_VIEW
+	  * - true : CLEARANCE_MODULE_EDIT
+	  * - constant value : clearanceLevel value
+	  * @param mixed $categoriesRoot, root category ID to use (default : false : the field root category)
+	  * @param boolean $strict, return strict categories available for user for this field (without the parent tree). default false
+	  * @param mixed (boolean or array) $usedByItemsIds, This parameters is used only if $restrictToUsedCat is used. False to restrict to only used categories (default)
+	  * @return array(string) the statements or false if profile hasn't any access to any categories
+	  * @access public
+	  */
+	public static function getAllCategoriesAsArrayStatic($language = false, $restrictToUsedCat = false, $module = false, $clearanceLevel = false, $categoriesRoot = false, $strict = false, $usedByItemsIds = false, $crossLanguage = false) {
+		global $cms_user;
+		/*$params = $this->getParamsValues();*/
+		$categoriesRoot = ($categoriesRoot) ? $categoriesRoot : $params['rootCategory'];
+		//check category root
+		if ($categoriesRoot) {
+			 $cat = CMS_moduleCategories_catalog::getByID($categoriesRoot);
+			 if (!$cat || $cat->hasError()) {
+			 	$categoriesRoot = false;
+			 }
+		}
+		
+		//get module if none passed
+		/*if (!$module) {
+			$module = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
+		}
+		if (APPLICATION_ENFORCES_ACCESS_CONTROL && !is_object($cms_user)) {
+			$this->setError("Valid user missing");
+			return false;
+		}*/
+		if(/*($params['bypassRights'] && $clearanceLevel === false) || */!is_object($cms_user)) {
+			//TODO : ugly but missing time (need to redo the getAllCategoriesAsArray to accept no valid cms_user : append only in frontend without APPLICATION_ENFORCES_ACCESS_CONTROL. Medias module already doing something like this)
+			$user = new CMS_profile_user(ROOT_PROFILEUSER_ID);
+			$categories = CMS_moduleCategories_catalog::getAllCategoriesAsArray($user, $module, $language, $categoriesRoot, -1, $clearanceLevel, $strict, $crossLanguage);
+		} else {
+			$user = $cms_user;
+			$categories = CMS_moduleCategories_catalog::getAllCategoriesAsArray($user, $module, $language, $categoriesRoot, -1, $clearanceLevel, $strict, $crossLanguage);
+		}
+		if ($restrictToUsedCat) {
+			
+			//pr($usedCategories);
+			
+			/*//filter categories by items ids
+			if (is_array($usedByItemsIds)) {
+				//Get all used categories IDS for this object field and givens items ids
+				$usedCategories = $this->getAllUsedCategoriesForField($usedByItemsIds);
+			} else {
+				//Get all used categories IDS for this object field
+				$usedCategories = $this->getAllUsedCategoriesForField();
+			}*/
+			
+			if (is_array($usedCategories) && $usedCategories) {
+				//get all categories lineage
+				$catArbo = CMS_moduleCategories_catalog::getViewvableCategoriesForProfile($user, $module, true, $clearanceLevel, $strict);
+				//pr($catArbo);
+				
+				//need to remove all unused categories from list
+				$categoriesToKeep = array();
+				foreach ($usedCategories as $catID) {
+					$cats = isset($catArbo[$catID]) ? explode(';',$catArbo[$catID]) : array();
+					foreach ($cats as $aCat) {
+						$categoriesToKeep[$aCat] = $aCat;
+					}
+				}
+				//pr($categoriesToKeep);
+				//then remove unused categories from initial list
+				if (is_array($categories)) {
+					foreach (array_keys($categories) as $catID) {
+						if (!isset($categoriesToKeep[$catID])) {
+							unset($categories[$catID]);
+						}
+					}
+				}
+				//pr($categories);
+			} else {
+				//no categories used
+				$categories = array();
+			}
+			if (!$categories) {
+				return array();
+			}
+		}
+		
+		return $categories;
+	}
 	
 	/**
 	  * Returns all categories IDs who has used by this type of object (ie : this field)
@@ -731,7 +826,7 @@ class CMS_object_categories extends CMS_object_common
 	  * @return array(interger id => integer id) the object ids
 	  * @static
 	  */
-	function getAllUsedCategoriesForField($restrictToItemsIds = false) {
+	public function getAllUsedCategoriesForField($restrictToItemsIds = false) {
 		if (is_array($restrictToItemsIds) && (!$restrictToItemsIds || !implode($restrictToItemsIds, ', '))) {
 			//restrict to no ids so return nothing
 			return array();
@@ -813,7 +908,7 @@ class CMS_object_categories extends CMS_object_common
 			//if this field is not only one which use categories
 			global $cms_user;
 			if (APPLICATION_ENFORCES_ACCESS_CONTROL && !is_object($cms_user)) {
-				$this->raiseError("Valid user missing");
+				$this->setError("Valid user missing");
 				return false;
 			}
 			if(/*$params['bypassRights'] || */!is_object($cms_user)) {
@@ -1123,8 +1218,8 @@ class CMS_object_categories extends CMS_object_common
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language, $objectName) {
-		$labels = parent::getLabelsStructure($language);
+	function getLabelsStructure(&$language, $objectName = '') {
+		$labels = parent::getLabelsStructure($language, $objectName);
 		unset($labels['structure']['values']);
 		$params = $this->getParamsValues();
 		$labels['structure']['start'] = $language->getMessage(self::MESSAGE_OBJECT_CATEGORY_START_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
@@ -1187,17 +1282,17 @@ class CMS_object_categories extends CMS_object_common
       
         $return = "";
         if (!sensitiveIO::isPositiveInteger($values['category'])) {
-            $this->raiseError("Category value parameter must be a valid category ID : ".$values['category']);
+            $this->setError("Category value parameter must be a valid category ID : ".$values['category']);
             return false;
         }
         if (!isset($tags[0]['textnode'])) {
-            $this->raiseError("atm-function tag must have a content");
+            $this->setError("atm-function tag must have a content");
             return false;
         }
         $params = $this->getParamsValues();
         $category = new CMS_moduleCategory($values['category']);
         if ($category->hasError()) {
-            $this->raiseError("Category ".$values['category']." has an error ...");
+            $this->setError("Category ".$values['category']." has an error ...");
             return false;
         }
         $replace = array(
@@ -1228,12 +1323,12 @@ class CMS_object_categories extends CMS_object_common
 		
 		$return = "";
 		if (!sensitiveIO::isPositiveInteger($values['category'])) {
-			$this->raiseError("Category value parameter must be a valid category ID : ".$values['category']);
+			$this->setError("Category value parameter must be a valid category ID : ".$values['category']);
 			return false;
 		}
 		$params = $this->getParamsValues();
 		if ((isset($values['root']) && !sensitiveIO::isPositiveInteger($values['root'])) && !sensitiveIO::isPositiveInteger($params['rootCategory'])) {
-			$this->_raiseError(get_class($this)." : categoryLineage : root value parameter must be a valid category ID : ".$values['root'].". Or specify a root category from field properties : ".$params['rootCategory']);
+			$this->_setError(get_class($this)." : categoryLineage : root value parameter must be a valid category ID : ".$values['root'].". Or specify a root category from field properties : ".$params['rootCategory']);
 			return false;
 		}
 		$fullLineage = CMS_moduleCategories_catalog::getLineageOfCategory($values['category']);
@@ -1252,7 +1347,7 @@ class CMS_object_categories extends CMS_object_common
 			$ancestorPattern = $xml2Array->getXMLInTag($tags, 'ancestor');
 			$selfPattern = $xml2Array->getXMLInTag($tags, 'self');
 			if (!$ancestorPattern) {
-				$this->raiseError("No 'ancestor' tag found or tag empty");
+				$this->setError("No 'ancestor' tag found or tag empty");
 				return false;
 			}
 			if (!$selfPattern) {
@@ -1299,7 +1394,7 @@ class CMS_object_categories extends CMS_object_common
 		$return = "";
 		$params = $this->getParamsValues();
 		if ((!isset($values['root']) || !sensitiveIO::isPositiveInteger($values['root'])) && (!isset($params['rootCategory']) || !sensitiveIO::IsPositiveInteger($params['rootCategory']))) {
-			$this->raiseError("Root value parameter must be a valid category ID");
+			$this->setError("Root value parameter must be a valid category ID");
 			return false;
 		} elseif ((!isset($values['root']) || !sensitiveIO::isPositiveInteger($values['root'])) && (isset($params['rootCategory']) && sensitiveIO::IsPositiveInteger($params['rootCategory']))) {
 			$values['root'] = $params['rootCategory'];
@@ -1328,11 +1423,11 @@ class CMS_object_categories extends CMS_object_common
 		}
 		
 		if (!$itemPattern) {
-			$this->raiseError("No 'item' tag found or tag empty");
+			$this->setError("No 'item' tag found or tag empty");
 			return false;
 		}
 		if (!$templatePattern) {
-			$this->raiseError("No 'template' tag found or tag empty");
+			$this->setError("No 'template' tag found or tag empty");
 			return false;
 		}
 		
@@ -1550,7 +1645,7 @@ class CMS_object_categories extends CMS_object_common
 			'not in strict',
 		);
 		if ($operator && !in_array($operator, $supportedOperator)) {
-			$this->raiseError("Unkown search operator : ".$operator.", use default search instead");
+			$this->setError("Unkown search operator : ".$operator.", use default search instead");
 			$operator = false;
 		}
 		
@@ -1753,11 +1848,11 @@ class CMS_object_categories extends CMS_object_common
 		$statusSuffix = ($public) ? "_public":"_edited";
 		$supportedOperator = array('label','atmorder');
 		if ($operator && !in_array($operator, $supportedOperator)) {
-			$this->_raiseError(get_class($this)." : getFieldSearchSQL : unkown search operator : ".$operator.", use default search instead");
+			$this->_setError(get_class($this)." : getFieldSearchSQL : unkown search operator : ".$operator.", use default search instead");
 			$operator = false;
 		}
 		if ($operator == 'label' && !is_object($cms_language)) {
-			$this->_raiseError(get_class($this)." : getFieldSearchSQL : unkown cms_language to use for label search order, use default search instead");
+			$this->_setError(get_class($this)." : getFieldSearchSQL : unkown cms_language to use for label search order, use default search instead");
 			$operator = false;
 		}
 		

@@ -100,7 +100,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	{
 		if ($id) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
-				$this->raiseError("Id is not a positive integer");
+				$this->setError("Id is not a positive integer");
 				return;
 			}
 			$sql = "
@@ -124,10 +124,10 @@ class CMS_resource_cms_aliases extends CMS_resource
 				$this->_permanent = $data["permanent_ma"] ? true : false;
 				$this->_protected = $data["protected_ma"] ? true : false;
 				if (!$this->_checkfiles()) {
-					$this->raiseError('Alias files does not exists and cannot be recreated: '.$this->getPath(true, PATH_RELATIVETO_FILESYSTEM));
+					$this->setError('Alias files does not exists and cannot be recreated: '.$this->getPath(true, PATH_RELATIVETO_FILESYSTEM));
 				}
 			} else {
-				$this->raiseError("Unknown ID :".$id);
+				$this->setError("Unknown ID :".$id);
 			}
 		}
 	}
@@ -368,7 +368,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  */
 	function setWebsites($websites) {
 		if (!is_array($websites)) {
-			$this->raiseError('websites must be an array');
+			$this->setError('websites must be an array');
 			return false;
 		}
 		$this->_websites = implode(';', $websites);
@@ -576,11 +576,11 @@ class CMS_resource_cms_aliases extends CMS_resource
 	private function _createFolder() 
 	{
 		if (!$this->getAlias()) {
-			$this->raiseError("Must have an alias name to create directory");
+			$this->setError("Must have an alias name to create directory");
 			return false;
 		}
 		if (!CMS_file::makeDir($this->getPath(true, PATH_RELATIVETO_FILESYSTEM))) {
-			$this->raiseError("Cannot create directory ".$this->getPath(true, PATH_RELATIVETO_FILESYSTEM));
+			$this->setError("Cannot create directory ".$this->getPath(true, PATH_RELATIVETO_FILESYSTEM));
 			return false;
 		}
 		return true;

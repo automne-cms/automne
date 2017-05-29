@@ -124,7 +124,7 @@ class CMS_linxDisplay extends CMS_grandFather
 				} else {
 					$tplName = 'No template set !';
 				}
-				$this->raiseError("Page parameter not defined\n - Page : ".$parsedPage->getID()."\n - Template : ".$tplName."\n");
+				$this->setError("Page parameter not defined\n - Page : ".$parsedPage->getID()."\n - Template : ".$tplName."\n");
 			}
 			return false;
 		}

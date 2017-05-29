@@ -210,14 +210,14 @@ class CMS_log extends CMS_grandFather
 					$this->_id = $id;
 					$data = $q->getArray();
 				} else {
-					$this->raiseError("Unknown DB ID : ".$id);
+					$this->setError("Unknown DB ID : ".$id);
 					return;
 				}
 			} elseif (is_array($id)) {
 				$data = $id;
 				$this->_id = $data['id_log'];
 			} else {
-				$this->raiseError("Id is not a positive integer nor array");
+				$this->setError("Id is not a positive integer nor array");
 				return;
 			}
 			if (is_array($data) && $data) {
@@ -324,7 +324,7 @@ class CMS_log extends CMS_grandFather
 				$this->_id = $q->getLastInsertedID();
 			}
 		} else {
-			$this->raiseError("Incorrect parameter types");
+			$this->setError("Incorrect parameter types");
 		}
 	}
 
@@ -374,7 +374,7 @@ class CMS_log extends CMS_grandFather
 				$this->_id = $q->getLastInsertedID();
 			}
 		} else {
-			$this->raiseError("Incorrect paramater types");
+			$this->setError("Incorrect paramater types");
 		}
 	}
 	
@@ -403,7 +403,7 @@ class CMS_log extends CMS_grandFather
 		if (is_a($user, "CMS_profile_user")) {
 			$this->_user = $user;
 		} else {
-			$this->raiseError("User object required: ");
+			$this->setError("User object required: ");
 		}
 	}
 	
@@ -430,7 +430,7 @@ class CMS_log extends CMS_grandFather
 		if (SensitiveIO::isPositiveInteger($action)) {
 			$this->_action = $action;
 		} else {
-			$this->raiseError("Action is not a positive integer");
+			$this->setError("Action is not a positive integer");
 		}
 	}
 	
@@ -457,7 +457,7 @@ class CMS_log extends CMS_grandFather
 		if (is_a($resourceStatus, "CMS_resourceStatus")) {
 			$this->_resourceStatusAfter = $resourceStatus;
 		} else {
-			$this->raiseError("Resource status object required: ");
+			$this->setError("Resource status object required: ");
 		}
 	}
 	
@@ -485,7 +485,7 @@ class CMS_log extends CMS_grandFather
 		if (is_a($datetime, "CMS_date")) {
 			$this->_datetime = $datetime;
 		} else {
-			$this->raiseError("Date time object required: ");
+			$this->setError("Date time object required: ");
 		}
 	}
 	
@@ -576,7 +576,7 @@ class CMS_log extends CMS_grandFather
 	{
 		$mod = $this->getModule();
 		if (is_a($mod, "CMS_module") && io::isPositiveInteger($this->_resource)) {
-			return $mod->getResourceByID($this->_resource);
+			return CMS_module::getResourceByID($this->_resource);
 		} else {
 			return false;
 		}
@@ -598,7 +598,7 @@ class CMS_log extends CMS_grandFather
 			$this->_resource = $resource;
 		}
 		 else {
-			$this->raiseError("Resource object required: ");
+			$this->setError("Resource object required: ");
 		}
 	}
 	

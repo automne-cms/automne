@@ -173,11 +173,11 @@ class CMS_object_usergroup extends CMS_object_common
 	{
 		//check object defined internal vars
 		if (sizeof($this->_subfields) != sizeof($this->_subfieldValues)) {
-			$this->raiseError('Object internal vars hasn\'t the same count of parameters, check $_subfields, $_subfieldValues.');
+			$this->setError('Object internal vars hasn\'t the same count of parameters, check $_subfields, $_subfieldValues.');
 			return;
 		}
 		if (!is_array($datas)) {
-			$this->raiseError("Datas need to be an array : ".print_r($datas,true));
+			$this->setError("Datas need to be an array : ".print_r($datas,true));
 			return;
 		}
 		//Set public values
@@ -455,7 +455,7 @@ class CMS_object_usergroup extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function checkMandatory($values,$prefixName) {
+	function checkMandatory($values, $prefixName, $newFormat = false) {
 		$params = $this->getParamsValues();
 		//if field is required check values
 		if (!$params['isCurrentUser'] && !$params['creationUser'] && $this->_field->getValue('required')) {
@@ -474,7 +474,7 @@ class CMS_object_usergroup extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName) {
+	function setValues($values,$prefixName, $newFormat = false) {
 		$params = $this->getParamsValues();
 		if (isset($values['list'.$prefixName.$this->_field->getID().'_0']) || $params['isCurrentUser'] || $params['creationUser']) {
 			// If params : set userID
@@ -591,7 +591,7 @@ class CMS_object_usergroup extends CMS_object_common
 	  */
 	function writeToPersistence() {
 		if ($this->_public) {
-			$this->raiseError("Can't write public object");
+			$this->setError("Can't write public object");
 			return false;
 		}
 		$ok = true;
@@ -726,8 +726,8 @@ class CMS_object_usergroup extends CMS_object_common
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language, $objectName) {
-		$labels = parent::getLabelsStructure($language);
+	function getLabelsStructure(&$language, $objectName = '') {
+		$labels = parent::getLabelsStructure($language, $objectName);
 		$params = $this->getParamsValues();
 		unset($labels['structure']['value']);
 		if ($params['multiUserGroup']) {
@@ -1015,7 +1015,7 @@ class CMS_object_usergroup extends CMS_object_common
 		//operators are not supported for now : TODO
 		$supportedOperator = array();
 		if ($operator && !in_array($operator, $supportedOperator)) {
-			$this->_raiseError(get_class($this)." : getFieldSearchSQL : unkown search operator : ".$operator.", use default search instead");
+			$this->_setError(get_class($this)." : getFieldSearchSQL : unkown search operator : ".$operator.", use default search instead");
 			$operator = false;
 		}
 		$sql = '';

@@ -34,7 +34,7 @@ class CMS_block_text extends CMS_block
 	  * @access private
 	  */
 	protected $_hasContent;
-	
+
 	/**
 	  * Constructor
 	  * Used while getting all datas from database
@@ -48,11 +48,11 @@ class CMS_block_text extends CMS_block
 	function __construct($id=0, $location=RESOURCE_LOCATION_USERSPACE, $public=false)
 	{
 		parent::__construct();
-		
+
 		if (SensitiveIO::isPositiveInteger($id)) {
 			//Select table
 			$table = $this->_getDataTableName($location, $public);
-			
+
 			$sql = "
 				select
 					*
@@ -73,7 +73,7 @@ class CMS_block_text extends CMS_block
 			}
 		}
 	}
-	
+
 	/**
 	  * Gets the data in HTML mode.
 	  *
@@ -88,7 +88,7 @@ class CMS_block_text extends CMS_block
 	function getData(&$language, &$page, &$clientSpace, &$row, $visualizationMode)
 	{
 		parent::getData($language, $page, $clientSpace, $row, $visualizationMode);
-		
+
 		//get the data
 		switch ($visualizationMode) {
 		case PAGE_VISUALMODE_HTML_PUBLIC:
@@ -104,7 +104,7 @@ class CMS_block_text extends CMS_block
 			$data = $this->getRawData($page->getID(), $clientSpace->getTagID(), $row->getTagID(), RESOURCE_LOCATION_EDITION, false);
 			break;
 		}
-		
+
 		//We need to encode { and } to avoid vars detection in texts blocks
 		$replace = array(
 			'{' => '&#123;',
@@ -142,7 +142,7 @@ class CMS_block_text extends CMS_block
 				'||bovd||{jsdata||bcvd||}' => io::sanitizeJSString($html),
 			);
 			$this->_definition = preg_replace ('#{([a-zA-Z0-9._{}:-]*)}#U' , '||bovd||\1||bcvd||', $this->_definition);
-			
+
 			$form_data = str_replace(array_keys($replace), $replace, $this->_definition);
 			$this->_hasContent = ($data && $data["value"]) ? true:false;
 			$this->_editable = true;
@@ -167,7 +167,7 @@ class CMS_block_text extends CMS_block
 			break;
 		}
 	}
-	
+
 	/**
 	  * Get the HTML form given the block HTML example data.
 	  *
@@ -184,10 +184,10 @@ class CMS_block_text extends CMS_block
 		global $cms_user;
 		$rawDatas = $this->getRawData($page->getID(), $clientSpace->getTagID(), $row->getTagID(), RESOURCE_LOCATION_EDITION, false);
 		$this->_jsBlockClass = 'Automne.blockText';
-		
+
 		$this->_value = CMS_textEditor::parseInnerContent($rawDatas['value']);
 		$this->_value = base64_encode($this->_value);
-		
+
 		//set editor options
 		$this->_options = array(
 			'styles' 		=> (isset($this->_attributes['styles']) ? $this->_attributes['styles'] : ''),
@@ -196,23 +196,23 @@ class CMS_block_text extends CMS_block
 			'atmToolbar'	=> (isset($this->_attributes['toolbar']) ? $this->_attributes['toolbar'] : ''),
 			'utf8'			=> (strtolower(APPLICATION_DEFAULT_ENCODING) == 'utf-8'),
 		);
-		
+
 		$this->_administrable = false;
 		$html = parent::_getHTMLForm($language, $page, $clientSpace, $row, $blockID, $data);
-		
+
 		//encode brackets to avoid vars ( {something:type:var} ) to be interpretted
 		//decoded into CMS_row::getData
 		$html = preg_replace ('#{([a-zA-Z0-9._{}:-]*)}#U' , '||bo||\1||bc||', $html);
-		
+
 		$replace = array(
 			'||bovd||'		=> '&#123;',
 			'||bcvd||'		=> '&#125;',
 		);
 		$html = str_replace(array_keys($replace), $replace, $html);
-		
+
 		return $html;
 	}
-	
+
 	/**
 	  * Gets the data in array mode.
 	  *
@@ -227,10 +227,10 @@ class CMS_block_text extends CMS_block
 	function getRawData($pageID, $clientSpaceID, $rowID, $location, $public)
 	{
 		parent::getRawData($pageID, $clientSpaceID, $rowID, $location, $public);
-		
+
 		$table = $this->_getDataTableName($location, $public);
 		if (!$table) {
-			$this->raiseError("Unknown table");
+			$this->setError("Unknown table");
 			return false;
 		}
 		$sql = "
@@ -255,7 +255,7 @@ class CMS_block_text extends CMS_block
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Gets the table name which depends of the page location
 	  *
@@ -282,7 +282,7 @@ class CMS_block_text extends CMS_block
 		}
 		return $table;
 	}
-	
+
 	/**
 	  * Writes the block data into persistence (destroys previous and insert new)
 	  *
@@ -291,7 +291,7 @@ class CMS_block_text extends CMS_block
 	  * @param integer $rowID The row which contains the block, DB ID
 	  * @param integer $location The location we want to completly remove the block from
 	  * @param boolean $public The precision needed for USERSPACE location
-	  * @param array(mixed=>mixed) $data The data indexed by data type (value, file, alt_tag, ...), 
+	  * @param array(mixed=>mixed) $data The data indexed by data type (value, file, alt_tag, ...),
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
@@ -300,9 +300,9 @@ class CMS_block_text extends CMS_block
 		parent::writeToPersistence($pageID, $clientSpaceID, $rowID, $location, $public, $data);
 		//delete the old data
 		$this->delFromLocation($pageID, $clientSpaceID, $rowID, $location, $public);
-		
+
 		$table = $this->_getDataTableName($location, $public);
-		
+
 		$sql = "
 			insert into
 				".$table."
@@ -320,7 +320,7 @@ class CMS_block_text extends CMS_block
 			return true;
 		}
 	}
-	
+
 	/**
 	  * Duplicate this block
 	  * Used to duplicate a CMS_page.
@@ -359,10 +359,10 @@ class CMS_block_text extends CMS_block
 				$q = new CMS_query($sql);
 				return !$q->hasError();
 			} else {
-				$this->raiseError("Duplicate, insertion failed: ".$sql);
+				$this->setError("Duplicate, insertion failed: ".$sql);
 			}
 		} else {
-			$this->raiseError("Duplicate, object does not have a DB ID, not initialized");
+			$this->setError("Duplicate, object does not have a DB ID, not initialized");
 		}
 		return false;
 	}

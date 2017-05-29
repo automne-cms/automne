@@ -50,7 +50,7 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 	 */
 	function __construct(&$resource) {
 		if ($resource && !is_a($resource, 'CMS_forms_formular')) {
-			$this->raiseError("Not a valid CMS_forms_formular given");
+			$this->setError("Not a valid CMS_forms_formular given");
 		}
 		$this->_form = $resource;
 	}
@@ -76,7 +76,7 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 	 */
 	function setAttribute($name, $value) {
 		if ($this->_public) {
-			$this->raiseError("Object is public, read-only !");
+			$this->setError("Object is public, read-only !");
 			return false;
 		}
 		$name = '_'.$name;
@@ -96,7 +96,7 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 			$this->_public = true;
 		}
 		if (!is_a($this->_form, 'CMS_forms_formular')) {
-			$this->raiseError("Not a valid CMS_forms_formular given");
+			$this->setError("Not a valid CMS_forms_formular given");
 			return $this->_categories;
 		}
 		if (sizeof($this->_categories) <= 0
@@ -153,7 +153,7 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 	 */
 	function categoryExists(&$obj) {
 		if (!is_a($obj, 'CMS_moduleCategory')) {
-			$this->raiseError("No a valid CMS_moduleCategory given");
+			$this->setError("No a valid CMS_moduleCategory given");
 			return false;
 		}
 		if (!isset($this->_categories)) {
@@ -171,15 +171,15 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 	 */
 	function addCategory(&$obj) {
 		if ($this->_public) {
-			$this->raiseError("Object is public, read-only !");
+			$this->setError("Object is public, read-only !");
 			return false;
 		}
 		if (!is_a($obj, 'CMS_moduleCategory')) {
-			$this->raiseError("No a valid CMS_moduleCategory given");
+			$this->setError("No a valid CMS_moduleCategory given");
 			return false;
 		}
 		if ($this->categoryExists($obj)) {
-			$this->raiseError("Category to add already exists in list");
+			$this->setError("Category to add already exists in list");
 			return false;
 		} else {
 			$this->_categories[$obj->getID()] = $obj;
@@ -196,15 +196,15 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 	 */
 	function delCategory(&$obj) {
 		if ($this->_public) {
-			$this->raiseError("Object is public, read-only !");
+			$this->setError("Object is public, read-only !");
 			return false;
 		}
 		if (!is_a($obj, 'CMS_moduleCategory')) {
-			$this->raiseError("No a valid CMS_moduleCategory given");
+			$this->setError("No a valid CMS_moduleCategory given");
 			return false;
 		}
 		if (!$this->categoryExists($obj)) {
-			$this->raiseError("Category to delete not in list");
+			$this->setError("Category to delete not in list");
 			return false;
 		} else {
 			unset($this->_categories[$obj->getId()]);
@@ -220,11 +220,11 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 	 */
 	function writeToPersistence() {
 		if ($this->_public) {
-			$this->raiseError("Object is public, read-only !");
+			$this->setError("Object is public, read-only !");
 			return false;
 		}
 		if (!is_a($this->_form, 'CMS_forms_formular') || $this->_form->getID() <= 0) {
-			$this->raiseError("No CMS_forms_formular found");
+			$this->setError("No CMS_forms_formular found");
 			return false;
 		}
 		
@@ -238,7 +238,7 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 		";
 		$qD = new CMS_query($sql);
 		if ($qD->hasError()) {
-			$this->raiseError("Error deleting previous relations");
+			$this->setError("Error deleting previous relations");
 			return false;
 		}
 		// Insert
@@ -258,7 +258,7 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 					$q = new CMS_query($sql);
 					if ($q->hasError()) {
 						$err++;
-						$this->raiseError("Error inserting relation for cateogry : ".$obj->getID());
+						$this->setError("Error inserting relation for cateogry : ".$obj->getID());
 					}
 				}
 			}
@@ -285,7 +285,7 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 	  * @param boolean $restrictToUsedCat, restrict returned categories to used ones only (default false)
 	  * @return array(string) the statements or false if profile hasn't any access to any categories
 	  */
-	function getAllCategoriesAsArray($language = false, $restrictToUsedCat = false) {
+	public static function getAllCategoriesAsArray($language = false, $restrictToUsedCat = false) {
 		global $cms_user;
 		
 		$categories = CMS_moduleCategories_catalog::getAllCategoriesAsArray($cms_user, MOD_CMS_FORMS_CODENAME, $language);
@@ -333,7 +333,7 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 	  * @return array(interger id => integer id) the object ids
 	  * @static
 	  */
-	function getAllUsedCategoriesForField($language = false) {
+	public static function getAllUsedCategoriesForField($language = false) {
 		$sql = "
 			select
 				distinct category_fca as cat

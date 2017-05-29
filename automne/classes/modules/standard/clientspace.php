@@ -123,7 +123,7 @@ class CMS_moduleClientspace_standard extends CMS_moduleClientspace
 	{
 		if ($this->_templateID && $this->_tagID) {
 			if (!SensitiveIO::isPositiveInteger($this->_templateID)) {
-				$this->raiseError("id is not a positive integer");
+				$this->setError("id is not a positive integer");
 				return;
 			}
 			$this->_rows = array();
@@ -306,7 +306,7 @@ class CMS_moduleClientspace_standard extends CMS_moduleClientspace
 			$this->_rows = array_merge($rows, $after);
 			return $row;
 		} else {
-			$this->raiseError("Row addition was not given a valid rowID");
+			$this->setError("Row addition was not given a valid rowID");
 			return false;
 		}
 	}

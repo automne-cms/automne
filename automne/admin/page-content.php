@@ -62,11 +62,13 @@ if (!$cms_page->isDraft()) {
 	CMS_blocksCatalog::moveBlocks($cms_page, RESOURCE_DATA_LOCATION_EDITED, RESOURCE_DATA_LOCATION_EDITION, true);
 	//log action
 	$log = new CMS_log();
-	$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_START_DRAFT, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getStatus(), "(Start new draft for page)", $cms_page);
+	$status = $cms_page->getStatus();
+	$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_START_DRAFT, $cms_user, MOD_STANDARD_CODENAME, $status, "(Start new draft for page)", $cms_page);
 } else {
 	//log action
 	$log = new CMS_log();
-	$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_EDIT_DRAFT, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getStatus(), "(Continue existing page draft)", $cms_page);
+	$cmsPageStatus = $cms_page->getStatus();
+	$log->logResourceAction(CMS_log::LOG_ACTION_RESOURCE_EDIT_DRAFT, $cms_user, MOD_STANDARD_CODENAME, $cmsPageStatus, "(Continue existing page draft)", $cms_page);
 }
 
 //add ext and edit JS files

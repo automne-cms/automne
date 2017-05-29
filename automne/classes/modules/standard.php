@@ -127,7 +127,7 @@ class CMS_module_standard extends CMS_module
 	  * @return CMS_resource The CMS_resource subclassed object
 	  * @access public
 	  */
-	function getResourceByID($resourceID)
+	public static function getResourceByID($resourceID)
 	{
 		parent::getResourceByID($resourceID);
 		return CMS_tree::getPageByID($resourceID);
@@ -161,7 +161,7 @@ class CMS_module_standard extends CMS_module
 	  * @return object The module tag representation instance
 	  * @access public
 	  */
-	function getTagRepresentation($tag, $args)
+	function getTagRepresentation($tag, $args, $compatArg = false)
 	{
 		switch ($tag->getName()) {
 		case "atm-clientspace":
@@ -183,7 +183,7 @@ class CMS_module_standard extends CMS_module
 					//not found. Place here block types requiring special attention
 					switch ($tag->getAttribute("type")) {
 					default:
-						$this->raiseError("Unknown block type : ".$tag->getAttribute("type"));
+						$this->setError("Unknown block type : ".$tag->getAttribute("type"));
 						return false;
 						break;
 					}
@@ -207,7 +207,7 @@ class CMS_module_standard extends CMS_module
 	function getValidations($user)
 	{
 		if (!($user instanceof CMS_profile_user)) {
-			$this->raiseError("User is not a valid CMS_profile_user object");
+			$this->setError("User is not a valid CMS_profile_user object");
 			return false;
 		}
 		if (!$user->hasValidationClearance($this->_codename)) {
@@ -252,7 +252,7 @@ class CMS_module_standard extends CMS_module
 	function getValidationsInfo($user)
 	{
 		if (!($user instanceof CMS_profile_user)) {
-			$this->raiseError("User is not a valid CMS_profile_user object");
+			$this->setError("User is not a valid CMS_profile_user object");
 			return false;
 		}
 		if (!$user->hasValidationClearance($this->_codename)) {
@@ -299,7 +299,7 @@ class CMS_module_standard extends CMS_module
 	function getValidationByID($pageID, &$user, $getEditionType=false)
 	{
 		if (!($user instanceof CMS_profile_user)) {
-			$this->raiseError("User is not a valid CMS_profile_user object");
+			$this->setError("User is not a valid CMS_profile_user object");
 			return false;
 		}
 		if (!$user->hasValidationClearance($this->_codename)) {
@@ -344,7 +344,7 @@ class CMS_module_standard extends CMS_module
 
 				$language = $user->getLanguage();
 
-				$page = $this->getResourceByID($id);
+				$page = CMS_module_standard::getResourceByID($id);
 				$validation = new CMS_resourceValidation($this->_codename, RESOURCE_EDITION_LOCATION, $page);
 				if (!$validation->hasError()) {
 					$validation->setValidationTypeLabel($language->getMessage(self::MESSAGE_MOD_STANDARD_VALIDATION_LOCATIONCHANGE));
@@ -383,7 +383,7 @@ class CMS_module_standard extends CMS_module
 
 				$editions = $r["editions"];//RESOURCE_EDITION_CONTENT + RESOURCE_EDITION_BASEDATA;
 
-				$page = $this->getResourceByID($id);
+				$page = CMS_module_standard::getResourceByID($id);
 				$validation = new CMS_resourceValidation($this->_codename, $editions, $page);
 				if (!$validation->hasError()) {
 					$validation->setValidationTypeLabel($language->getMessage(self::MESSAGE_MOD_STANDARD_VALIDATION_EDITION));
@@ -419,7 +419,7 @@ class CMS_module_standard extends CMS_module
 
 				$editions = RESOURCE_EDITION_SIBLINGSORDER;
 
-				$page = $this->getResourceByID($id);
+				$page = CMS_module_standard::getResourceByID($id);
 				$validation = new CMS_resourceValidation($this->_codename, $editions, $page);
 				if (!$validation->hasError()) {
 					$validation->setValidationTypeLabel($language->getMessage(self::MESSAGE_MOD_STANDARD_VALIDATION_SIBLINGSORDER));
@@ -455,7 +455,7 @@ class CMS_module_standard extends CMS_module
 
 				$editions = RESOURCE_EDITION_MOVE;
 
-				$page = $this->getResourceByID($id);
+				$page = CMS_module_standard::getResourceByID($id);
 				$validation = new CMS_resourceValidation($this->_codename, $editions, $page);
 				if (!$validation->hasError()) {
 					$validation->setValidationTypeLabel($language->getMessage(self::MESSAGE_MOD_STANDARD_VALIDATION_MOVE));
@@ -479,7 +479,7 @@ class CMS_module_standard extends CMS_module
 		} elseif ($q->getNumRows() ==0) {
 			return false;
 		} else {
-			$this->raiseError("Can't have more than one page for a given ID");
+			$this->setError("Can't have more than one page for a given ID");
 			return false;
 		}
 	}
@@ -519,7 +519,7 @@ class CMS_module_standard extends CMS_module
 					continue;
 				}
 
-				//$page = $this->getResourceByID($id);
+				//$page = CMS_module_standard::getResourceByID($id);
 				$validation = new CMS_resourceValidationInfo($this->_codename, RESOURCE_EDITION_LOCATION, $id);
 				if (!$validation->hasError()) {
 					$validation->setValidationTypeLabel($language->getMessage(self::MESSAGE_MOD_STANDARD_VALIDATION_LOCATIONCHANGE));
@@ -558,7 +558,7 @@ class CMS_module_standard extends CMS_module
 				}
 				//check if the page is not in draft only state. If it is, can't validate it
 				if ($data['publication_rs'] == RESOURCE_PUBLICATION_NEVERVALIDATED) {
-					$page = $this->getResourceByID($id);
+					$page = CMS_module_standard::getResourceByID($id);
 					if ($page->isDraft()) {
 						continue;
 					}
@@ -600,7 +600,7 @@ class CMS_module_standard extends CMS_module
 
 				$editions = RESOURCE_EDITION_SIBLINGSORDER;
 
-				//$page = $this->getResourceByID($id);
+				//$page = CMS_module_standard::getResourceByID($id);
 				$validation = new CMS_resourceValidationInfo($this->_codename, $editions, $id);
 				if (!$validation->hasError()) {
 					$validation->setValidationTypeLabel($language->getMessage(self::MESSAGE_MOD_STANDARD_VALIDATION_SIBLINGSORDER));
@@ -755,7 +755,7 @@ class CMS_module_standard extends CMS_module
 					continue;
 				}
 
-				$page = $this->getResourceByID($id);
+				$page = CMS_module_standard::getResourceByID($id);
 				$validation = new CMS_resourceValidation($this->_codename, RESOURCE_EDITION_LOCATION, $page);
 				if (!$validation->hasError()) {
 					$validation->setValidationTypeLabel($language->getMessage(self::MESSAGE_MOD_STANDARD_VALIDATION_LOCATIONCHANGE));
@@ -787,7 +787,7 @@ class CMS_module_standard extends CMS_module
 
 				$editions = RESOURCE_EDITION_CONTENT + RESOURCE_EDITION_BASEDATA;
 
-				$page = $this->getResourceByID($id);
+				$page = CMS_module_standard::getResourceByID($id);
 				$validation = new CMS_resourceValidation($this->_codename, $editions, $page);
 				if (!$validation->hasError()) {
 					$validation->setValidationTypeLabel($language->getMessage(self::MESSAGE_MOD_STANDARD_VALIDATION_EDITION));
@@ -819,7 +819,7 @@ class CMS_module_standard extends CMS_module
 
 				$editions = RESOURCE_EDITION_SIBLINGSORDER;
 
-				$page = $this->getResourceByID($id);
+				$page = CMS_module_standard::getResourceByID($id);
 				$validation = new CMS_resourceValidation($this->_codename, $editions, $page);
 				if (!$validation->hasError()) {
 					$validation->setValidationTypeLabel($language->getMessage(self::MESSAGE_MOD_STANDARD_VALIDATION_SIBLINGSORDER));
@@ -851,7 +851,7 @@ class CMS_module_standard extends CMS_module
 
 				$editions = RESOURCE_EDITION_MOVE;
 
-				$page = $this->getResourceByID($id);
+				$page = CMS_module_standard::getResourceByID($id);
 				$validation = new CMS_resourceValidation($this->_codename, $editions, $page);
 				if (!$validation->hasError()) {
 					$validation->setValidationTypeLabel($language->getMessage(self::MESSAGE_MOD_STANDARD_VALIDATION_MOVE));
@@ -890,7 +890,7 @@ class CMS_module_standard extends CMS_module
 	function processValidation($resourceValidation, $result, $lastValidation = true)
 	{
 		if (!($resourceValidation instanceof CMS_resourceValidation)) {
-			$this->raiseError("ResourceValidation is not a valid CMS_resourceValidation object");
+			$this->setError("ResourceValidation is not a valid CMS_resourceValidation object");
 			return false;
 		}
 
@@ -1045,7 +1045,7 @@ class CMS_module_standard extends CMS_module
 	  * @return void
 	  * @access public
 	  */
-	function processDailyRoutine()
+	public static function processDailyRoutine()
 	{
 		//see if the action was done today
 		$sql = "
@@ -1095,7 +1095,7 @@ class CMS_module_standard extends CMS_module
 	  * @return void
 	  * @access private
 	  */
-	protected function _dailyRoutinePublish()
+	protected static function _dailyRoutinePublish()
 	{
 		$today = new CMS_date();
 		$today->setNow();
@@ -1158,7 +1158,7 @@ class CMS_module_standard extends CMS_module
 	  * @return void
 	  * @access private
 	  */
-	protected function _dailyRoutineUnpublish()
+	protected static function _dailyRoutineUnpublish()
 	{
 		$today = new CMS_date();
 		$today->setNow();
@@ -1222,7 +1222,7 @@ class CMS_module_standard extends CMS_module
 	  * @return void
 	  * @access private
 	  */
-	protected function _dailyRoutineReminders()
+	protected static function _dailyRoutineReminders()
 	{
 		$today = new CMS_date();
 		$today->setNow();
@@ -1296,7 +1296,7 @@ class CMS_module_standard extends CMS_module
 	  * @return void
 	  * @access private
 	  */
-	protected function _dailyRoutineOptimize() {
+	protected static function _dailyRoutineOptimize() {
 		$sql = "show tables";
 		$q = new CMS_query($sql);
 		$tables = array();
@@ -1317,7 +1317,7 @@ class CMS_module_standard extends CMS_module
 	  * @return void
 	  * @access private
 	  */
-	protected function _dailyRoutineClean() {
+	protected static function _dailyRoutineClean() {
 		//clean all files older than 4h in both uploads directories
 		$yesterday = time() - 14400; //4h
 		try{
@@ -1375,7 +1375,7 @@ class CMS_module_standard extends CMS_module
 	  * @return void
 	  * @access private
 	  */
-	function _changeDataLocation($resource, $locationFrom, $locationTo, $copyOnly = false) {
+	static function _changeDataLocation($resource, $locationFrom, $locationTo, $copyOnly = false) {
 		if (!parent::_changeDataLocation($resource, $locationFrom, $locationTo, $copyOnly)) {
 			return false;
 		}
@@ -1551,19 +1551,19 @@ class CMS_module_standard extends CMS_module
 		switch ($treatmentMode) {
 			case MODULE_TREATMENT_BLOCK_TAGS:
 				if (!($treatedObject instanceof CMS_row)) {
-					$this->raiseError('$treatedObject must be a CMS_row object');
+					$this->setError('$treatedObject must be a CMS_row object');
 					return false;
 				}
 				if (!($treatmentParameters["page"] instanceof CMS_page)) {
-					$this->raiseError('$treatmentParameters["page"] must be a CMS_page object');
+					$this->setError('$treatmentParameters["page"] must be a CMS_page object');
 					return false;
 				}
 				if (!($treatmentParameters["language"] instanceof CMS_language)) {
-					$this->raiseError('$treatmentParameters["language"] must be a CMS_language object');
+					$this->setError('$treatmentParameters["language"] must be a CMS_language object');
 					return false;
 				}
 				if (!($treatmentParameters["clientSpace"] instanceof CMS_moduleClientspace)) {
-					$this->raiseError('$treatmentParameters["clientSpace"] must be a CMS_moduleClientspace object');
+					$this->setError('$treatmentParameters["clientSpace"] must be a CMS_moduleClientspace object');
 					return false;
 				}
 				if ($tag->getName() == 'row') {
@@ -1577,15 +1577,15 @@ class CMS_module_standard extends CMS_module
 			break;
 			case MODULE_TREATMENT_CLIENTSPACE_TAGS:
 				if (!($treatedObject instanceof CMS_pageTemplate)) {
-					$this->raiseError('$treatedObject must be a CMS_pageTemplate object');
+					$this->setError('$treatedObject must be a CMS_pageTemplate object');
 					return false;
 				}
 				if (!($treatmentParameters["page"] instanceof CMS_page)) {
-					$this->raiseError('$treatmentParameters["page"] must be a CMS_page object');
+					$this->setError('$treatmentParameters["page"] must be a CMS_page object');
 					return false;
 				}
 				if (!($treatmentParameters["language"] instanceof CMS_language)) {
-					$this->raiseError('$treatmentParameters["language"] must be a CMS_language object');
+					$this->setError('$treatmentParameters["language"] must be a CMS_language object');
 					return false;
 				}
 				$args = array("template"=>$treatedObject->getID());
@@ -1639,7 +1639,7 @@ class CMS_module_standard extends CMS_module
 			break;
 			case MODULE_TREATMENT_PAGECONTENT_TAGS:
 				if (!($treatedObject instanceof CMS_page)) {
-					$this->raiseError('$treatedObject must be a CMS_page object');
+					$this->setError('$treatedObject must be a CMS_page object');
 					return false;
 				}
 				switch ($tag->getName()) {
@@ -1712,7 +1712,7 @@ class CMS_module_standard extends CMS_module
 			break;
 			case MODULE_TREATMENT_PAGEHEADER_TAGS:
 				if (!($treatedObject instanceof CMS_page)) {
-					$this->raiseError('$treatedObject must be a CMS_page object');
+					$this->setError('$treatedObject must be a CMS_page object');
 					return false;
 				}
 				switch ($tag->getName()) {
@@ -1856,7 +1856,7 @@ class CMS_module_standard extends CMS_module
 							'</script>';
 							//append JS from current view instance
 							$view = CMS_view::getInstance();
-							$metaDatas .= $view->getJavascript();
+							$metaDatas .= $view->getJS(); // $metaDatas .= $view->getJavascript();
 							$metaDatas .= CMS_view::getCSS(array('edit'));
 						} else if ($visualizationMode == PAGE_VISUALMODE_CLIENTSPACES_FORM) {
 							//add needed javascripts
@@ -1871,7 +1871,7 @@ class CMS_module_standard extends CMS_module
 							'</script>';
 							//append JS from current view instance
 							$view = CMS_view::getInstance();
-							$metaDatas .= $view->getJavascript();
+							$metaDatas .= $view->getJS(); // $metaDatas .= $view->getJavascript();
 							$metaDatas .= CMS_view::getCSS(array('edit'));
 						}
 						//if page template already use atm-js-tags tag, no need to add JS again
@@ -1892,7 +1892,7 @@ class CMS_module_standard extends CMS_module
 					try {
 						$domdocument->loadXML('<html>'.$tag->getContent().'</html>');
 					} catch (DOMException $e) {
-						$this->raiseError('Parse error for atm-linx : '.$e->getMessage()." :\n".io::htmlspecialchars($tag->getContent()));
+						$this->setError('Parse error for atm-linx : '.$e->getMessage()." :\n".io::htmlspecialchars($tag->getContent()));
 						return '';
 					}
 					$nodespecs = $domdocument->getElementsByTagName('nodespec');
@@ -2281,8 +2281,7 @@ class CMS_module_standard extends CMS_module
 	  * @access public
 	  */
 	function search ($keyword, &$user, $public = false, &$score = array()) {
-		$search = new CMS_search();
-		$pageResults = $search->getSearch($keyword, $user, $public, true);
+		$pageResults = CMS_search::getSearch($keyword, $user, $public, true);
 		$score = $pageResults['score'];
 		return $pageResults['results'];
 	}

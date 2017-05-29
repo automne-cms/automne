@@ -103,7 +103,7 @@ class CMS_auth extends CMS_grandFather implements Zend_Auth_Adapter_Interface
 								} else {
 									$this->_messages[] = self::AUTH_INVALID_USER;
 									$this->_result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE, null, $this->_messages);
-									$this->raiseError("user_id found don't instanciate a valid user object. ID : ".$userId);
+									$this->setError("user_id found don't instanciate a valid user object. ID : ".$userId);
 								}
 							} else {
 								$this->_messages[] = self::AUTH_INVALID_CREDENTIALS;
@@ -185,7 +185,7 @@ class CMS_auth extends CMS_grandFather implements Zend_Auth_Adapter_Interface
 									}
 								}
 							} else {
-								$this->raiseError('Cannot call SSO method/function: '.MOD_STANDARD_SSO_FUNCTION);
+								$this->setError('Cannot call SSO method/function: '.MOD_STANDARD_SSO_FUNCTION);
 							}
 						}
 					}
@@ -269,7 +269,7 @@ class CMS_auth extends CMS_grandFather implements Zend_Auth_Adapter_Interface
 	  * @access public
 	  * @static
 	  */
-	function autoLoginActive() {
+	public static function autoLoginActive() {
 		if (!isset($_COOKIE[CMS_session::getAutoLoginCookieName()])) {
 			return false;
 		}

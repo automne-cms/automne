@@ -89,7 +89,7 @@ class CMS_profile_usersGroup extends CMS_profile
 		$this->_users = array();
 		if ($id) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
-				$this->raiseError('Id is not a positive integer');
+				$this->setError('Id is not a positive integer');
 				return;
 			}
 			
@@ -131,7 +131,7 @@ class CMS_profile_usersGroup extends CMS_profile
 				}
 				$this->_usersOld = $this->_users;
 			} else {
-				$this->raiseError('Unknown DB ID : '.$id);
+				$this->setError('Unknown DB ID : '.$id);
 			}
 		} else {
 			// initialize super class object and users
@@ -173,7 +173,7 @@ class CMS_profile_usersGroup extends CMS_profile
 		if ($label) {
 			$this->_label = $label;
 		} else {
-			$this->raiseError('Label must be string > 0');
+			$this->setError('Label must be string > 0');
 		}
 	}
 	
@@ -265,7 +265,7 @@ class CMS_profile_usersGroup extends CMS_profile
 				$this->_users[] = $user;
 			}
 		} else {
-			$this->raiseError('Incorrect input type');
+			$this->setError('Incorrect input type');
 		}
 	}
 	
@@ -305,7 +305,7 @@ class CMS_profile_usersGroup extends CMS_profile
 				}
 			}
 		} else {
-			$this->raiseError('Incorrect user type');
+			$this->setError('Incorrect user type');
 			return false;
 		}
 		//Clear polymod cache
@@ -358,7 +358,7 @@ class CMS_profile_usersGroup extends CMS_profile
 					";
 					$q = new CMS_query($sql);
 					if ($q->hasError()) {
-						$this->raiseError('Insertion failed');
+						$this->setError('Insertion failed');
 					} else {
 						return true;
 					}
@@ -366,10 +366,10 @@ class CMS_profile_usersGroup extends CMS_profile
 					return true;
 				}
 			} else {
-				$this->raiseError('User error when adding group values');
+				$this->setError('User error when adding group values');
 			}
 		} else {
-			$this->raiseError('Incorrect user given');
+			$this->setError('Incorrect user given');
 		}
 		return false;
 	}

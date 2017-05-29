@@ -78,23 +78,23 @@ class CMS_linxNodespec extends CMS_grandFather
 		$authorized_string_values = array("self", "brother", "father", "root");
 		$this->_crosswebsite = $crosswebsite;
 		if (!SensitiveIO::isInSet($type, $authorized_types)) {
-			$this->raiseError("Type unknown : ".$type);
+			$this->setError("Type unknown : ".$type);
 			return;
 		}
 		if ($type == 'node' && !SensitiveIO::isPositiveInteger($value)) {
-			$this->raiseError("Bad value for 'node' type : ".$value);
+			$this->setError("Bad value for 'node' type : ".$value);
 			return;
 		}
 		if ($type == 'relative' && !SensitiveIO::isInSet($value, $authorized_string_values)) {
-			$this->raiseError("Bad value for 'relative' type : ".$value);
+			$this->setError("Bad value for 'relative' type : ".$value);
 			return;
 		}
 		if ($type == 'codename' && strtolower(io::sanitizeAsciiString($value)) != $value) {
-			$this->raiseError("Bad value for 'codename' type : ".$value);
+			$this->setError("Bad value for 'codename' type : ".$value);
 			return;
 		}
 		if ($type == 'codename' && strtolower(io::sanitizeAsciiString($website)) != $website) {
-			$this->raiseError("Bad value for 'website' : ".$website);
+			$this->setError("Bad value for 'website' : ".$website);
 			return;
 		}
 		$this->_type = $type;

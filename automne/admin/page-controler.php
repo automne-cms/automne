@@ -17,7 +17,7 @@
 /**
   * PHP page : Receive pages updates
   * Used accross an Ajax request by an inline editor to update a page value
-  * 
+  *
   * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
@@ -108,7 +108,7 @@ switch ($action) {
 		$title = sensitiveIO::request('title');
 		$linktitle = sensitiveIO::request('linktitle');
 		$emptytpl = (sensitiveIO::request('emptytpl') == 1) ? true : false;
-		
+
 		$cms_page = new CMS_page();
 		$cms_father = CMS_tree::getPageByID($father);
 		if (!$cms_father || $cms_father->hasError()) {
@@ -133,7 +133,7 @@ switch ($action) {
 		CMS_tree::attachPageToTree($cms_page, $cms_father, false);
 		//clone the template
 		$pageTpl = CMS_pageTemplatesCatalog::getCloneFromID($template, false, true, $emptytpl);
-		
+
 		if ($cms_page->setTemplate($pageTpl->getID())) {
 			$cms_page->writeToPersistence();
 			//goto copied page
@@ -151,14 +151,14 @@ switch ($action) {
 		$copyContent = (sensitiveIO::request('copyContent') == 1) ? true : false;
 		$copiedPage = sensitiveIO::request('copiedPage', 'sensitiveIO::isPositiveInteger', false);
 		$template = sensitiveIO::request('template', 'sensitiveIO::isPositiveInteger', false);
-		
+
 		if (!$copiedPage || !$template) {
 			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ERROR_MISSING_DATA);
-			$cms_page->raiseError('Error during copy of page. Copied page id : '.$copiedPage.' or template page id : '.$template.' not set.');
+			$cms_page->setError('Error during copy of page. Copied page id : '.$copiedPage.' or template page id : '.$template.' not set.');
 		}
 		if (!$cms_user->hasPageClearance($copiedPage, CLEARANCE_PAGE_VIEW)) {
 			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ERROR_RIGHT);
-			$cms_page->raiseError('Error during copy of page '.$copiedPage.'. User has no view rights on page.');
+			$cms_page->setError('Error during copy of page '.$copiedPage.'. User has no view rights on page.');
 		}
 		//Proceeds with tree duplication
 		if (!$cms_page->hasError()) {
@@ -211,11 +211,11 @@ switch ($action) {
 					$view->addJavascript($jscontent);
 				} else {
 					$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ERROR_COPY);
-					$cms_page->raiseError('Error during copy of page '.$copiedPage.'. attachPageToTree method return false.');
+					$cms_page->setError('Error during copy of page '.$copiedPage.'. attachPageToTree method return false.');
 				}
 			} else {
 				$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ERROR_COPY);
-				$cms_page->raiseError('Error during copy of page '.$copiedPage.'. duplicate method return false or an invalid page.');
+				$cms_page->setError('Error during copy of page '.$copiedPage.'. duplicate method return false or an invalid page.');
 			}
 		}
 	break;
@@ -240,7 +240,7 @@ switch ($action) {
 			$tpl = $cms_page->getTemplate();
 			CMS_moduleClientSpace_standard_catalog::moveClientSpaces($tpl->getID(), RESOURCE_DATA_LOCATION_EDITION, RESOURCE_DATA_LOCATION_DEVNULL, false);
 			CMS_blocksCatalog::moveBlocks($cms_page, RESOURCE_DATA_LOCATION_EDITION, RESOURCE_DATA_LOCATION_DEVNULL, false);
-			
+
 			$logAction = CMS_log::LOG_ACTION_RESOURCE_DELETE_DRAFT;
 			$edited = true;
 			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
@@ -336,10 +336,10 @@ switch ($action) {
 		$tpl = $cms_page->getTemplate();
 		CMS_moduleClientSpace_standard_catalog::moveClientSpaces($tpl->getID(), RESOURCE_DATA_LOCATION_PUBLIC, RESOURCE_DATA_LOCATION_EDITED, true);
 		CMS_blocksCatalog::moveBlocks($cms_page, RESOURCE_DATA_LOCATION_PUBLIC, RESOURCE_DATA_LOCATION_EDITED, true);
-		
+
 		$cms_page->cancelAllEditions();
 		$cms_page->writeToPersistence();
-		
+
 		$edited = true;
 		$logAction = CMS_log::LOG_ACTION_RESOURCE_CANCEL_EDITIONS;
 		$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
@@ -355,7 +355,7 @@ switch ($action) {
 			}
 		} else {
 			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_ERROR_PAGE_PROTECTED);
-			$cms_page->raiseError('Error during modification of page '.$cms_page->getID().'. Page is protected.');
+			$cms_page->setError('Error during modification of page '.$cms_page->getID().'. Page is protected.');
 		}
 	break;
 	case "archive":
@@ -369,13 +369,13 @@ switch ($action) {
 			}
 		} else {
 			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_ERROR_PAGE_PROTECTED);
-			$cms_page->raiseError('Error during modification of page '.$cms_page->getID().'. Page is protected.');
+			$cms_page->setError('Error during modification of page '.$cms_page->getID().'. Page is protected.');
 		}
     break;
 	case "unarchive":
 		$cms_page->removeProposedLocation();
 		$cms_page->writeToPersistence();
-		
+
 		$edited = true;
 		$logAction = CMS_log::LOG_ACTION_RESOURCE_UNARCHIVE;
 		$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
@@ -383,7 +383,7 @@ switch ($action) {
 	case "undelete":
 		$cms_page->removeProposedLocation();
 		$cms_page->writeToPersistence();
-		
+
 		$edited = true;
 		$logAction = CMS_log::LOG_ACTION_RESOURCE_UNDELETE;
 		$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
@@ -407,11 +407,11 @@ switch ($action) {
 				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 			} else {
 				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
-				$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : unpublish page');
+				$cms_page->setError('Error during writing of page '.$cms_page->getID().'. Action : unpublish page');
 			}
 		} else {
 			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_ERROR_PAGE_PROTECTED);
-			$cms_page->raiseError('Error during modification of page '.$cms_page->getID().'. Page is protected.');
+			$cms_page->setError('Error during modification of page '.$cms_page->getID().'. Page is protected.');
 		}
 	break;
 	case "publish":
@@ -426,16 +426,16 @@ switch ($action) {
 			$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 		} else {
 			$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
-			$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : re-publish page');
+			$cms_page->setError('Error during writing of page '.$cms_page->getID().'. Action : re-publish page');
 		}
 	break;
 	case 'move':
 		$newParent = sensitiveIO::request('newParent');
 		$oldParent = sensitiveIO::request('oldParent');
-		
+
 		if (!sensitiveIO::isPositiveInteger($newParent) || !sensitiveIO::isPositiveInteger($oldParent)) {
 			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_SIBLINGMOVE_ERROR);
-			$cms_page->raiseError('Error during move of page '.$cms_page->getID().'. Value set : '.$value);
+			$cms_page->setError('Error during move of page '.$cms_page->getID().'. Value set : '.$value);
 		} else {
 			if ($cms_user->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)) {
 				//check for codename duplication
@@ -479,7 +479,7 @@ switch ($action) {
 						$view->show();
 					}
 					$initialStatus = $cms_page->getStatus()->getHTML(false, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getID());
-					
+
 					$newPagesOrder = explode(',',$value);
 					if (CMS_tree::changePagesOrder($newPagesOrder, $cms_user)) {
 						$edited = RESOURCE_EDITION_SIBLINGSORDER;
@@ -488,29 +488,30 @@ switch ($action) {
 						$cms_page = CMS_tree::getPageByID($cms_page->getID());
 					} else {
 						$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_SIBLINGMOVE_ERROR);
-						$cms_page->raiseError('Error during move of page '.$cms_page->getID().'. Can\'t apply new order.');
+						$cms_page->setError('Error during move of page '.$cms_page->getID().'. Can\'t apply new order.');
 					}
 				} else {
 					if (!$cms_page->isProtected()) {
 						//this is a page moving
 						$newPagesOrder = explode(',',$value);
-						if (CMS_tree::movePage($cms_page, CMS_tree::getPageByID($newParent), $newPagesOrder, $cms_user)) {
+						$newParentPageID = CMS_tree::getPageById($newParent);
+						if (CMS_tree::movePage($cms_page, $newParentPageID, $newPagesOrder, $cms_user)) {
 							$edited = RESOURCE_EDITION_MOVE;
 							$logAction = CMS_log::LOG_ACTION_RESOURCE_EDIT_MOVE;
 							//must reload page
 							$cms_page = CMS_tree::getPageByID($cms_page->getID());
 						} else {
 							$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_MOVE_ERROR);
-							$cms_page->raiseError('Error during move of page '.$cms_page->getID().'.');
+							$cms_page->setError('Error during move of page '.$cms_page->getID().'.');
 						}
 					} else {
 						$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_ERROR_PAGE_PROTECTED);
-						$cms_page->raiseError('Error during modification of page '.$cms_page->getID().'. Page is protected.');
+						$cms_page->setError('Error during modification of page '.$cms_page->getID().'. Page is protected.');
 					}
 				}
 			} else {
 				$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_MOVE_ERROR_NO_RIGHTS);
-				$cms_page->raiseError('Error during move of page '.$cms_page->getID().'. User does not have edition rights on current page.');
+				$cms_page->setError('Error during move of page '.$cms_page->getID().'. User does not have edition rights on current page.');
 			}
 		}
 	break;
@@ -539,15 +540,15 @@ switch ($action) {
 				 || $cms_page->getCodename($codename) != $codename) {
 				if (!$cms_page->setTitle($title, $cms_user)) {
 					$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT)."<br />";
-					$cms_page->raiseError('Error during set title for page '.$cms_page->getID().'. Value set : '.$title);
+					$cms_page->setError('Error during set title for page '.$cms_page->getID().'. Value set : '.$title);
 				}
 				if (!$cms_page->setLinkTitle($linktitle, $cms_user)) {
 					$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT)."<br />";
-					$cms_page->raiseError('Error during set link title for page '.$cms_page->getID().'. Value set : '.$linktitle);
+					$cms_page->setError('Error during set link title for page '.$cms_page->getID().'. Value set : '.$linktitle);
 				}
 				if (!$cms_page->setRefreshUrl($updateURL, $cms_user)) {
 					$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT)."<br />";
-					$cms_page->raiseError('Error during set refresh url for page '.$cms_page->getID().'. Value set : '.$updateURL);
+					$cms_page->setError('Error during set refresh url for page '.$cms_page->getID().'. Value set : '.$updateURL);
 				}
 				$redirection = new CMS_href($redirection);
 				if ($redirection->getLinkType() != RESOURCE_LINK_TYPE_INTERNAL || $redirection->getInternalLink() != $cms_page->getID()) {
@@ -557,14 +558,14 @@ switch ($action) {
 					$page = CMS_tree::getPageByCodename($codename, $cms_page->getWebsite(), false, true);
 					if ($page && ((!$cms_page->getID() && $page->getID()) || ($cms_page->getID() != $page->getID()))) {
 						$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CODENAME_EXISTS, array('"'.$page->getTitle(true).'" ('.$page->getID().')'))."<br />";
-						$cms_page->raiseError('Error during set codename for page '.$cms_page->getID().'. Value set : '.$codename);
+						$cms_page->setError('Error during set codename for page '.$cms_page->getID().'. Value set : '.$codename);
 					} elseif (!$cms_page->setCodename($codename, $cms_user)) {
 						$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CODENAME)."<br />";
-						$cms_page->raiseError('Error during set codename for page '.$cms_page->getID().'. Value set : '.$codename);
+						$cms_page->setError('Error during set codename for page '.$cms_page->getID().'. Value set : '.$codename);
 					}
 				} elseif (!$cms_page->setCodename($codename, $cms_user)) {
 					$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CODENAME)."<br />";
-					$cms_page->raiseError('Error during set codename for page '.$cms_page->getID().'. Value set : '.$codename);
+					$cms_page->setError('Error during set codename for page '.$cms_page->getID().'. Value set : '.$codename);
 				}
 				if (!$cms_page->hasError() && $cms_page->writeToPersistence()) {
 					$edited = RESOURCE_EDITION_BASEDATA;
@@ -572,7 +573,7 @@ switch ($action) {
 					$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 				} else {
 					$cms_message .= $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
-					$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : update pageContent');
+					$cms_page->setError('Error during writing of page '.$cms_page->getID().'. Action : update pageContent');
 				}
 			}
 			//Page template update
@@ -584,7 +585,7 @@ switch ($action) {
 					$tpl_original = new CMS_pageTemplate();
 				}
 				$tpl = new CMS_pageTemplate($template);
-				
+
 				$tpl_copy = CMS_pageTemplatesCatalog::getCloneFromID($tpl->getID(), false, true, false, $tpl_original->getID());
 				$cms_page->setTemplate($tpl_copy->getID());
 				//destroy old template only if it's a copy
@@ -594,7 +595,7 @@ switch ($action) {
 				//save the page data
 				if (!$cms_page->writeToPersistence()) {
 					$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
-					$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : update template. New template set : '.$template);
+					$cms_page->setError('Error during writing of page '.$cms_page->getID().'. Action : update template. New template set : '.$template);
 				} else {
 					$cms_page->regenerate(true);
 					$jscontent = '
@@ -615,7 +616,7 @@ switch ($action) {
 			}
 		} else {
 			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_ERROR_PAGE_PROTECTED);
-			$cms_page->raiseError('Error during modification of page '.$cms_page->getID().'. Page is protected.');
+			$cms_page->setError('Error during modification of page '.$cms_page->getID().'. Page is protected.');
 		}
 	break;
 	case 'pageDates':
@@ -625,24 +626,24 @@ switch ($action) {
 			$reminderdate = sensitiveIO::request('reminderdate');
 			$reminderdelay = sensitiveIO::request('reminderdelay', 'sensitiveIO::isPositiveInteger', 0);
 			$remindertext = strip_tags(sensitiveIO::request('remindertext'));
-			
+
 			$reminderDate = $cms_page->getReminderOn();
 			$dt_remind = new CMS_date();
 			$dt_remind->setDebug(false);
 			$dt_remind->setFormat($cms_language->getDateFormat());
 			$dt_remind->setLocalizedDate($reminderdate, true);
-			
+
 			if (!$cms_page->setReminderOnMessage($remindertext, $cms_user)) {
 				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
-				$cms_page->raiseError('Error during set reminder message for page '.$cms_page->getID().'. Value set : '.$remindertext);
+				$cms_page->setError('Error during set reminder message for page '.$cms_page->getID().'. Value set : '.$remindertext);
 			}
 			if (!$cms_page->setReminderPeriodicity($reminderdelay, $cms_user)) {
 				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
-				$cms_page->raiseError('Error during set reminder delay for page '.$cms_page->getID().'. Value set : '.$reminderdelay);
+				$cms_page->setError('Error during set reminder delay for page '.$cms_page->getID().'. Value set : '.$reminderdelay);
 			}
 			if (!$dt_remind->setLocalizedDate($reminderdate, true)) {
 				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
-				$cms_page->raiseError('Error during set reminderdate for page '.$cms_page->getID().'. Value set : '.$reminderdate);
+				$cms_page->setError('Error during set reminderdate for page '.$cms_page->getID().'. Value set : '.$reminderdate);
 			} else {
 				$cms_page->setReminderOn($dt_remind, $cms_user);
 			}
@@ -652,25 +653,25 @@ switch ($action) {
 				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 			} else {
 				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
-				$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : update pageMetas');
+				$cms_page->setError('Error during writing of page '.$cms_page->getID().'. Action : update pageMetas');
 			}
-			
+
 			$dt_beg = new CMS_date();
 			$dt_beg->setDebug(false);
 			$dt_beg->setFormat($cms_language->getDateFormat());
 			$dateStart = $cms_page->getPublicationDateStart(false);
-			
+
 			$dt_end = new CMS_date();
 			$dt_end->setDebug(false);
 			$dt_end->setFormat($cms_language->getDateFormat());
 			$dateEnd = $cms_page->getPublicationDateEnd(false);
-			
+
 			if ($dt_beg->setLocalizedDate($pubdatestart, false) && $dt_end->setLocalizedDate($pubdateend, true)) {
 				//check if dates has changed
 				if (!CMS_date::compare($dateStart, $dt_beg, '==') || !CMS_date::compare($dateEnd, $dt_end, '==')) {
 					if (!$dt_end->isNull() && CMS_date::compare($dt_beg, $dt_end, '>')) {
 						$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_MALFORMED_DATES);
-						$cms_page->raiseError('Error during set pubdatestart : date start is higher than date end. Values set for date start : '.$pubdatestart.', for date end : '.$pubdateend);
+						$cms_page->setError('Error during set pubdatestart : date start is higher than date end. Values set for date start : '.$pubdatestart.', for date end : '.$pubdateend);
 					} else {
 						$cms_page->setPublicationDates($dt_beg, $dt_end);
 						if ($cms_page->writeToPersistence()) {
@@ -679,17 +680,17 @@ switch ($action) {
 							$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 						} else {
 							$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
-							$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : update pubdatestart, value : '.$pubdatestart);
+							$cms_page->setError('Error during writing of page '.$cms_page->getID().'. Action : update pubdatestart, value : '.$pubdatestart);
 						}
 					}
 				}
 			} else {
 				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
-				$cms_page->raiseError('Error during set publication dates start/end for page '.$cms_page->getID().'. Values set for date start : '.$pubdatestart.', for date end : '.$pubdateend);
+				$cms_page->setError('Error during set publication dates start/end for page '.$cms_page->getID().'. Values set for date start : '.$pubdatestart.', for date end : '.$pubdateend);
 			}
 		} else {
 			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_ERROR_PAGE_PROTECTED);
-			$cms_page->raiseError('Error during modification of page '.$cms_page->getID().'. Page is protected.');
+			$cms_page->setError('Error during modification of page '.$cms_page->getID().'. Page is protected.');
 		}
 	break;
 	case 'pageSearchEngines':
@@ -698,22 +699,22 @@ switch ($action) {
 			$descriptiontext = str_replace('"','',strip_tags(sensitiveIO::request('descriptiontext')));
 			$keywordstext = str_replace('"','',strip_tags(sensitiveIO::request('keywordstext')));
 			$robotstext = str_replace('"','',strip_tags(sensitiveIO::request('robotstext')));
-			
+
 			if (!$cms_page->setCategory($categorytext, $cms_user)) {
 				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
-				$cms_page->raiseError('Error during set category for page '.$cms_page->getID().'. Value set : '.$categorytext);
+				$cms_page->setError('Error during set category for page '.$cms_page->getID().'. Value set : '.$categorytext);
 			}
 			if (!$cms_page->setDescription($descriptiontext, $cms_user)) {
 				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
-				$cms_page->raiseError('Error during set description for page '.$cms_page->getID().'. Value set : '.$descriptiontext);
+				$cms_page->setError('Error during set description for page '.$cms_page->getID().'. Value set : '.$descriptiontext);
 			}
 			if (!$cms_page->setKeywords($keywordstext, $cms_user)) {
 				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
-				$cms_page->raiseError('Error during set keywords for page '.$cms_page->getID().'. Value set : '.$keywordstext);
+				$cms_page->setError('Error during set keywords for page '.$cms_page->getID().'. Value set : '.$keywordstext);
 			}
 			if (!$cms_page->setRobots($robotstext, $cms_user)) {
 				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
-				$cms_page->raiseError('Error during set robots for page '.$cms_page->getID().'. Value set : '.$robotstext);
+				$cms_page->setError('Error during set robots for page '.$cms_page->getID().'. Value set : '.$robotstext);
 			}
 			if (!$cms_page->hasError() && $cms_page->writeToPersistence()) {
 				$edited = RESOURCE_EDITION_BASEDATA;
@@ -721,11 +722,11 @@ switch ($action) {
 				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 			} else {
 				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
-				$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : update pageSearchEngines');
+				$cms_page->setError('Error during writing of page '.$cms_page->getID().'. Action : update pageSearchEngines');
 			}
 		} else {
 			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_ERROR_PAGE_PROTECTED);
-			$cms_page->raiseError('Error during modification of page '.$cms_page->getID().'. Page is protected.');
+			$cms_page->setError('Error during modification of page '.$cms_page->getID().'. Page is protected.');
 		}
 	break;
 	case 'pageMetas':
@@ -736,30 +737,30 @@ switch ($action) {
 			$metatext = sensitiveIO::request('metatext');
 			$replytotext = str_replace('"','',strip_tags(sensitiveIO::request('replytotext', 'sensitiveIO::isValidEmail')));
 			$pragma = sensitiveIO::request('pragmatext', 'sensitiveIO::isPositiveInteger', 0);
-			
+
 			if (!$cms_page->setAuthor($authortext, $cms_user)) {
 				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
-				$cms_page->raiseError('Error during set author for page '.$cms_page->getID().'. Value set : '.$authortext);
+				$cms_page->setError('Error during set author for page '.$cms_page->getID().'. Value set : '.$authortext);
 			}
 			if (!$cms_page->setCopyright($copyrighttext, $cms_user)) {
 				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
-				$cms_page->raiseError('Error during set copyright for page '.$cms_page->getID().'. Value set : '.$copyrighttext);
+				$cms_page->setError('Error during set copyright for page '.$cms_page->getID().'. Value set : '.$copyrighttext);
 			}
 			if (!$cms_page->setLanguage($language, $cms_user)) {
 				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
-				$cms_page->raiseError('Error during set language for page '.$cms_page->getID().'. Value set : '.$language);
+				$cms_page->setError('Error during set language for page '.$cms_page->getID().'. Value set : '.$language);
 			}
 			if (!$cms_page->setMetas($metatext, $cms_user)) {
 				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
-				$cms_page->raiseError('Error during set metas for page '.$cms_page->getID().'. Value set : '.$metatext);
+				$cms_page->setError('Error during set metas for page '.$cms_page->getID().'. Value set : '.$metatext);
 			}
 			if (!$cms_page->setReplyto($replytotext, $cms_user)) {
 				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
-				$cms_page->raiseError('Error during set replyto for page '.$cms_page->getID().'. Value set : '.$replytotext);
+				$cms_page->setError('Error during set replyto for page '.$cms_page->getID().'. Value set : '.$replytotext);
 			}
 			if (!$cms_page->setPragma($pragma, $cms_user)) {
 				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_CONTENT);
-				$cms_page->raiseError('Error during set pragma for page '.$cms_page->getID().'. Value set : '.$pragma);
+				$cms_page->setError('Error during set pragma for page '.$cms_page->getID().'. Value set : '.$pragma);
 			}
 			if (!$cms_page->hasError() && $cms_page->writeToPersistence()) {
 				$edited = RESOURCE_EDITION_BASEDATA;
@@ -767,17 +768,17 @@ switch ($action) {
 				$cms_message = $cms_language->getMessage(MESSAGE_ACTION_OPERATION_DONE);
 			} else {
 				$cms_message = $cms_language->getMessage(MESSAGE_FORM_ERROR_WRITING);
-				$cms_page->raiseError('Error during writing of page '.$cms_page->getID().'. Action : update pageMetas');
+				$cms_page->setError('Error during writing of page '.$cms_page->getID().'. Action : update pageMetas');
 			}
 		} else {
 			$cms_message = $cms_language->getMessage(MESSAGE_PAGE_ACTION_ERROR_PAGE_PROTECTED);
-			$cms_page->raiseError('Error during modification of page '.$cms_page->getID().'. Page is protected.');
+			$cms_page->setError('Error during modification of page '.$cms_page->getID().'. Page is protected.');
 		}
 	break;
 	case 'tree-duplicate':
 		$pageFromId = sensitiveIO::request('pageFrom', 'sensitiveIO::isPositiveInteger', false);
 		$pageToId = sensitiveIO::request('pageTo', 'sensitiveIO::isPositiveInteger', false);
-		
+
 		//CHECKS user has duplication clearance
 		if (!$cms_user->hasAdminClearance(CLEARANCE_ADMINISTRATION_DUPLICATE_BRANCH)) {
 			CMS_grandFather::raiseError('User has no rights to duplicate branch...');
@@ -787,14 +788,14 @@ switch ($action) {
 			@set_time_limit(9000);
 			//ignore user abort to avoid interuption of process
 			@ignore_user_abort(true);
-			
+
 			//Proceeds with tree duplication
 			//First node page
 			$pageFrom = CMS_tree::getPageByID($pageFromId);
 			//First destination page
 			$pageTo = CMS_tree::getPageByID($pageToId);
 			$pageDuplicated = array();
-			
+
 			function duplicatePage($user, $page, $pageToAttachTo) {
 				global $pageDuplicated, $duplicatedCodenames, $cms_user;
 				if (is_a($page, "CMS_page") && is_a($pageToAttachTo, "CMS_page") && $page->getTemplate()) {
@@ -938,7 +939,7 @@ if ($edited) {
 					break;
 				}
 				$potentialValidators = CMS_profile_usersCatalog::getValidators(MOD_STANDARD_CODENAME);
-				
+
 				$validators = array();
 				foreach ($potentialValidators as $aPotentialValidator) {
 					if ($aPotentialValidator->hasPageClearance($cms_page->getID(), CLEARANCE_PAGE_EDIT)) {
@@ -957,7 +958,8 @@ if ($edited) {
 	//log event
 	if ($logAction) {
 		$log = new CMS_log();
-		$log->logResourceAction($logAction, $cms_user, MOD_STANDARD_CODENAME, $cms_page->getStatus(), "", $cms_page);
+		$cmsPageStatus = $cms_page->getStatus();
+		$log->logResourceAction($logAction, $cms_user, MOD_STANDARD_CODENAME, $cmsPageStatus, "", $cms_page);
 	}
 }
 $view->show();

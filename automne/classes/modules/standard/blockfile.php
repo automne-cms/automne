@@ -229,7 +229,7 @@ class CMS_block_file extends CMS_block
 		
 		$table = $this->_getDataTableName($location, $public);
 		if (!$table) {
-			$this->raiseError("Unknown table");
+			$this->setError("Unknown table");
 			return false;
 		}
 		$sql = "
@@ -297,7 +297,7 @@ class CMS_block_file extends CMS_block
 	function delFromLocation($pageID, $clientSpaceID, $rowID, $location, $public = false, $withfile = false)
 	{
 		if (!SensitiveIO::isInSet($location, CMS_resourceStatus::getAllLocations())) {
-			$this->raiseError("DelFromLocation was given a bad location");
+			$this->setError("DelFromLocation was given a bad location");
 			return false;
 		}
 		if($withfile) {
@@ -449,7 +449,7 @@ class CMS_block_file extends CMS_block
 				if ($public) {
 					if (!@copy(PATH_MODULES_FILES_STANDARD_FS."/public/".$this->_file, PATH_MODULES_FILES_STANDARD_FS."/public/".$_newFilename)
 						|| !@chmod (PATH_MODULES_FILES_STANDARD_FS."/public/".$_newFilename, octdec(FILES_CHMOD))) {
-						$this->raiseError("Duplicate, file copy failed : ".PATH_MODULES_FILES_STANDARD_FS."/public/".$this->_file);
+						$this->setError("Duplicate, file copy failed : ".PATH_MODULES_FILES_STANDARD_FS."/public/".$this->_file);
 					}
 				}
 				//Save new datas
@@ -480,10 +480,10 @@ class CMS_block_file extends CMS_block
 					$q = new CMS_query($sql);
 					return !$q->hasError();
 				} else {
-					$this->raiseError("Duplicate, SQL insertion of new filename failed: ".$sql);
+					$this->setError("Duplicate, SQL insertion of new filename failed: ".$sql);
 				}
 			} else {
-				$this->raiseError("Duplicate, copy of file failed :".PATH_MODULES_FILES_STANDARD_FS."/edited/".$this->_file);
+				$this->setError("Duplicate, copy of file failed :".PATH_MODULES_FILES_STANDARD_FS."/edited/".$this->_file);
 			}
 		}
 		return false;

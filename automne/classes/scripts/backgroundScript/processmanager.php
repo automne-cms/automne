@@ -244,7 +244,7 @@ class processManager
 	  * @return array
 	  * @access public
 	  */
-	function getRunningScript()
+	static function getRunningScript()
 	{
 		//check temporary dir for orchan PID files
 		//get temporary path
@@ -328,7 +328,7 @@ class processManager
 	  * @return boolean
 	  * @access public
 	  */
-	function hasRunningScript()
+	public static function hasRunningScript()
 	{
 	    //check the table
 	    $sql = "
@@ -349,7 +349,7 @@ class processManager
 	  * @return string the sanitized codename
 	  * @access public
 	  */
-	function getAppCode() {
+	public static function getAppCode() {
 		return io::sanitizeAsciiString(APPLICATION_LABEL);
 	}
 }

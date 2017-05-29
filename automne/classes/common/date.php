@@ -146,7 +146,7 @@ class CMS_date extends CMS_grandFather
 	{
 	
 		if (!$this->_format) {
-			$this->raiseError("Format not set");
+			$this->setError("Format not set");
 			return false;
 		}
 		if (!$date) {
@@ -155,7 +155,7 @@ class CMS_date extends CMS_grandFather
 				$this->_year = "0000";
 				return true;
 			} else {
-				$this->raiseError("Date null");
+				$this->setError("Date null");
 				return false;
 			}
 		}
@@ -236,7 +236,7 @@ class CMS_date extends CMS_grandFather
 	function setYear($value)
 	{
 		if(!ctype_digit((string) $value)){
-			$this->_raiseError(__CLASS__.' : '.__FUNCTION__.' : value must be numeric : '.$value);
+			$this->_setError(__CLASS__.' : '.__FUNCTION__.' : value must be numeric : '.$value);
 			return false;
 		}
 		//$value = $this->_fillWithZeros($value, 4);
@@ -245,7 +245,7 @@ class CMS_date extends CMS_grandFather
 			$value += ($value > 30) ? 1900 : 2000;
 		}
 		if (!$value || io::strlen((string) $value) != 4) {
-			$this->_raiseError("Date : incorrect year : ".$value);
+			$this->_setError("Date : incorrect year : ".$value);
 			return false;
 		} else {
 			$this->_year = $value;
@@ -274,12 +274,12 @@ class CMS_date extends CMS_grandFather
 	function setMonth($value)
 	{
 		if(!ctype_digit((string) $value)){
-			$this->raiseError('Value must be numeric : '.$value);
+			$this->setError('Value must be numeric : '.$value);
 			return false;
   	    }
 		$m = $this->_fillWithZeros($value, 2);
 		if ($m === false || $m > 12) {
-			$this->raiseError("Incorrect month : ".$value);
+			$this->setError("Incorrect month : ".$value);
 			return false;
 		} else {
 			$this->_month = $m;
@@ -330,12 +330,12 @@ class CMS_date extends CMS_grandFather
 	function setDay($value)
 	{
 		if(!ctype_digit((string) $value)){
-			$this->raiseError('Value must be numeric : '.$value);
+			$this->setError('Value must be numeric : '.$value);
 			return false;
 		}
 		$d = $this->_fillWithZeros($value, 2);
 		if ($d === false || $d > 31) {
-			$this->raiseError("Incorrect day : ".$value);
+			$this->setError("Incorrect day : ".$value);
 			return false;
 		} else {
 			$this->_day = $d;
@@ -365,7 +365,7 @@ class CMS_date extends CMS_grandFather
 	{
 		$h = $this->_fillWithZeros($value, 2);
 		if ($h === false || $h > 23) {
-			$this->raiseError("Incorrect hour : ".$value);
+			$this->setError("Incorrect hour : ".$value);
 			return false;
 		} else {
 			$this->_hour = $h;
@@ -395,7 +395,7 @@ class CMS_date extends CMS_grandFather
 	{
 		$m = $this->_fillWithZeros($value, 2);
 		if ($m === false || $m > 59) {
-			$this->raiseError("Incorrect minute : ".$value);
+			$this->setError("Incorrect minute : ".$value);
 			return false;
 		} else {
 			$this->_minutes = $m;
@@ -425,7 +425,7 @@ class CMS_date extends CMS_grandFather
 	{
 		$s = $this->_fillWithZeros($value, 2);
 		if ($s === false || $s > 59) {
-			$this->raiseError("Incorrect seconds : ".$value);
+			$this->setError("Incorrect seconds : ".$value);
 			return false;
 		} else {
 			$this->_seconds = $s;
@@ -526,13 +526,13 @@ class CMS_date extends CMS_grandFather
 	function moveDate($moveTo)
 	{
 		if ($this->isNull()) {
-			$this->raiseError("Can't move a null date");
+			$this->setError("Can't move a null date");
 			return false;
 		}
 		$timestamp = $this->getTimestamp();
 		$movedTimestamp = strtotime($moveTo, $timestamp);
 		if ($movedTimestamp === -1) {
-			$this->raiseError("Invalid moveTo parameter, need to be a valid PHP strtotime() function parameter (see www.php.net for more)");
+			$this->setError("Invalid moveTo parameter, need to be a valid PHP strtotime() function parameter (see www.php.net for more)");
 			return false;
 		} else {
 			$this->setFromDBValue(date('Y-m-d H:i:s',$movedTimestamp));

@@ -99,18 +99,18 @@ class automne_script extends backgroundScript
 				$q = new CMS_query($sql_delete);
 				
 				if ($this->_debug) {
-					$this->raiseError($this->_processManager->getPIDFilePath()." : task ".$_SERVER['argv']['2']." seems ".((!$task) ? 'NOT ':'')."done !");
-					$this->raiseError($this->_processManager->getPIDFilePath()." : PID file exists ? ".(@file_exists($this->_processManager->getPIDFilePath())));
+					$this->setError($this->_processManager->getPIDFilePath()." : task ".$_SERVER['argv']['2']." seems ".((!$task) ? 'NOT ':'')."done !");
+					$this->setError($this->_processManager->getPIDFilePath()." : PID file exists ? ".(@file_exists($this->_processManager->getPIDFilePath())));
 				}
 				$fpath = $this->_processManager->getPIDFilePath().'.ok';
 				if (@touch($fpath) && @chmod($fpath, octdec(FILES_CHMOD))) {
 					$f = @fopen($fpath, 'a');
 					if (!@fwrite($f, 'Script OK')) {
-						$this->raiseError($this->_processManager->getPIDFilePath()." : Can't write into file: ".$fpath);
+						$this->setError($this->_processManager->getPIDFilePath()." : Can't write into file: ".$fpath);
 					}
 					@fclose($f);
 				} else {
-					$this->raiseError($this->_processManager->getPIDFilePath()." : Can't create file: ".$fpath);
+					$this->setError($this->_processManager->getPIDFilePath()." : Can't create file: ".$fpath);
 				}
 			}
 		} else {
@@ -159,7 +159,7 @@ class automne_script extends backgroundScript
 							}
 							$PIDfile = $this->_processManager->getTempPath()."/" . SCRIPT_CODENAME . "_" . $data["id_reg"];
 							if ($this->_debug) {
-								$this->raiseError(processManager::MASTER_SCRIPT_NAME." : Executes system(".$sub_system.")");
+								$this->setError(processManager::MASTER_SCRIPT_NAME." : Executes system(".$sub_system.")");
 							}
 							//sleep a little 
 							@sleep(SLEEP_TIME);
@@ -168,7 +168,7 @@ class automne_script extends backgroundScript
 							//Create the BAT file
 							$command = '@echo off'."\r\n".'@start /B /BELOWNORMAL '.realpath(PATH_PHP_CLI_WINDOWS). ' ' . realpath(PATH_PACKAGES_FS . '\scripts\script.php').' -s '.$data["id_reg"];
 							if (!@touch(realpath(PATH_WINDOWS_BIN_FS). DIRECTORY_SEPARATOR ."sub_script.bat")) {
-								$this->raiseError(processManager::MASTER_SCRIPT_NAME." : Create file error : sub_script.bat");
+								$this->setError(processManager::MASTER_SCRIPT_NAME." : Create file error : sub_script.bat");
 							}
 							
 							$replace = array(
@@ -194,7 +194,7 @@ class automne_script extends backgroundScript
 							@sleep(SLEEP_TIME);
 						}
 						if ($this->_debug) {
-							$this->raiseError(processManager::MASTER_SCRIPT_NAME." : script : ".$data["id_reg"]." - sub_system : ".$sub_system);
+							$this->setError(processManager::MASTER_SCRIPT_NAME." : script : ".$data["id_reg"]." - sub_system : ".$sub_system);
 						}
 						$scriptsArray[] = array(
 									"PID" 			=> $PIDfile,
@@ -211,7 +211,7 @@ class automne_script extends backgroundScript
 						if (is_array($files)) {
 							foreach($files as $file) {
 								if (!CMS_file::deleteFile($file)) {
-									$this->raiseError("Can't delete file ".$file);
+									$this->setError("Can't delete file ".$file);
 									return false;
 								}
 							}
@@ -231,25 +231,25 @@ class automne_script extends backgroundScript
 					$break = false;
 					$timeStop = CMS_stats::getmicrotime();
 					if ($this->_debug) {
-						$this->raiseError(processManager::MASTER_SCRIPT_NAME." Scripts in progress : ".sizeof($scriptsArray));
+						$this->setError(processManager::MASTER_SCRIPT_NAME." Scripts in progress : ".sizeof($scriptsArray));
 					}
 					foreach ($scriptsArray as $nb => $aScript) {
 						if ($this->_debug) {
-							$this->raiseError(processManager::MASTER_SCRIPT_NAME." PID : ".$aScript["PID"]." - time : ".($timeStop-$aScript["startTime"]));
+							$this->setError(processManager::MASTER_SCRIPT_NAME." PID : ".$aScript["PID"]." - time : ".($timeStop-$aScript["startTime"]));
 						}
 						$ok = '';
 						$ok = is_file($aScript["PID"].'.ok');
 						if ($ok) {
 							//$break = true;
 							if ($this->_debug) {
-								$this->raiseError(processManager::MASTER_SCRIPT_NAME." Script : ".$aScript["PID"]." OK !");
+								$this->setError(processManager::MASTER_SCRIPT_NAME." Script : ".$aScript["PID"]." OK !");
 							}
 							unset($scriptsArray[$nb]);
 						} elseif(($timeStop - $aScript["startTime"]) >= SUB_SCRIPT_TIME_OUT) {
 							if ($this->_debug) {
-								$this->raiseError(processManager::MASTER_SCRIPT_NAME." : Script : ".$aScript["PID"]." NOT OK !");
+								$this->setError(processManager::MASTER_SCRIPT_NAME." : Script : ".$aScript["PID"]." NOT OK !");
 							}
-							$this->raiseError(processManager::MASTER_SCRIPT_NAME.' : Error on task : '.$aScript["scriptID"].' ... skip it. Task parameters : '.print_r($aScript['scriptDatas'], true));
+							$this->setError(processManager::MASTER_SCRIPT_NAME.' : Error on task : '.$aScript["scriptID"].' ... skip it. Task parameters : '.print_r($aScript['scriptDatas'], true));
 							//$break = true;
 							unset($scriptsArray[$nb]);
 							

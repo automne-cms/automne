@@ -106,7 +106,7 @@ class CMS_oembed extends CMS_grandFather
 			$url = 'http://'.$url;
 		}
 		if (!@parse_url($url)) {
-			$this->raiseError('Malformed url: '.$url);
+			$this->setError('Malformed url: '.$url);
 			return;
 		}
 		if ($embedlyKey) {
@@ -130,7 +130,7 @@ class CMS_oembed extends CMS_grandFather
 			return true;
 		}
 		if (!$this->_url) {
-			$this->raiseError('No valid url given');
+			$this->setError('No valid url given');
 			return false;
 		}
 		$regreplace = array(
@@ -206,16 +206,16 @@ class CMS_oembed extends CMS_grandFather
 				$client->request();
 				$response = $client->getLastResponse();
 			} catch (Zend_Http_Client_Exception $e) {
-				$this->raiseError('Error for url: '.$this->_embedlyRegexpService.' - '.$e->getMessage());
+				$this->setError('Error for url: '.$this->_embedlyRegexpService.' - '.$e->getMessage());
 			}
 			if (isset($response) && $response->isSuccessful()) {
 				$jsonString = $response->getBody();
 				$jsonResponse = json_decode($jsonString, true);
 			} else {
 				if (isset($response)) {
-					$this->raiseError('Error for url: '.$this->_embedlyRegexpService.' - '.$response->getStatus().' - '.$response->getMessage());
+					$this->setError('Error for url: '.$this->_embedlyRegexpService.' - '.$response->getStatus().' - '.$response->getMessage());
 				} else {
-					$this->raiseError('Error for url: '.$this->_embedlyRegexpService.' - no response object');
+					$this->setError('Error for url: '.$this->_embedlyRegexpService.' - no response object');
 				}
 			}
 			if (!isset($jsonResponse) && $cache) {
@@ -337,16 +337,16 @@ class CMS_oembed extends CMS_grandFather
 				$client->request();
 				$response = $client->getLastResponse();
 			} catch (Zend_Http_Client_Exception $e) {
-				$this->raiseError('Error for url: '.$this->_url.' - '.$e->getMessage());
+				$this->setError('Error for url: '.$this->_url.' - '.$e->getMessage());
 			}
 			if (isset($response) && $response->isSuccessful()) {
 				$jsonString = $response->getBody();
 				$datas = json_decode($jsonString, true);
 			} else {
 				if (isset($response)) {
-					$this->raiseError('Error for oembed url: '.$this->_url.' (Provider: '.$this->getProvider().') - '.$response->getStatus().' - '.$response->getMessage());
+					$this->setError('Error for oembed url: '.$this->_url.' (Provider: '.$this->getProvider().') - '.$response->getStatus().' - '.$response->getMessage());
 				} else {
-					$this->raiseError('Error for oembed url: '.$this->_url.' (Provider: '.$this->getProvider().') - no response object');
+					$this->setError('Error for oembed url: '.$this->_url.' (Provider: '.$this->getProvider().') - no response object');
 				}
 				//create error datas
 				$datas = array(
@@ -398,7 +398,7 @@ class CMS_oembed extends CMS_grandFather
 			return '';
 		}
 		if (!isset($datas['type'])) {
-			$this->raiseError('Missing datas type: '.$datas['type'].' for url: '.$this->_url);
+			$this->setError('Missing datas type: '.$datas['type'].' for url: '.$this->_url);
 			return '';
 		}
 		if ($datas['type'] == 'error') {
@@ -447,7 +447,7 @@ class CMS_oembed extends CMS_grandFather
 				return '<a href="'.io::htmlspecialchars($datas['url']).'"'.$style.$attr.(isset($datas['description']) && !isset($attributes['title']) ? ' title="'.io::htmlspecialchars($datas['description']).'"' : '').'>'.$datas['title'].'</a>';
 			break;
 			default :
-				$this->raiseError('Unkown datas type: '.$datas['type'].' for url: '.$this->_url);
+				$this->setError('Unkown datas type: '.$datas['type'].' for url: '.$this->_url);
 				return '';
 			break;
 		}
@@ -466,7 +466,7 @@ class CMS_oembed extends CMS_grandFather
 			return '';
 		}
 		if (!isset($datas['type'])) {
-			$this->raiseError('Missing datas type: '.$datas['type'].' for url: '.$this->_url);
+			$this->setError('Missing datas type: '.$datas['type'].' for url: '.$this->_url);
 			return '';
 		}
 		if ($datas['type'] == 'error') {

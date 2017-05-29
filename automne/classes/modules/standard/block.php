@@ -35,7 +35,7 @@ class CMS_block extends CMS_grandFather
 	  * Messages
 	  */
 	const MESSAGE_BLOCK_CONTENT_ERROR = 1598;
-	
+
 	/**
 	  * From what the tag was initialized ? One of "basic" (from basic attributes), "definition" (from inner content), false (not initialized)
 	  * @var string
@@ -63,20 +63,20 @@ class CMS_block extends CMS_grandFather
 	  * @access private
 	  */
 	protected $_definition = '';
-	
+
 	protected $_hasContent = false;
-	
+
 	protected $_editable = true;
-	
+
 	protected $_administrable = false;
-	
+
 	protected $_value = '';
-	
+
 	protected $_jsBlockClass = 'Automne.block';
-	
+
 	protected $_options = array();
-	
-	
+
+
 	/**
 	  * Constructor, unset by default
 	  * Only used for each sub class while getting all datas from database
@@ -90,7 +90,7 @@ class CMS_block extends CMS_grandFather
 	function CMS_block($id=0, $location=RESOURCE_LOCATION_USERSPACE, $public=false)
 	{
 	}
-	
+
 	/**
 	  * Pseudo-constructor, sets the base attributes.
 	  * initializes the block with the tag ID and repeat attributes.
@@ -106,11 +106,11 @@ class CMS_block extends CMS_grandFather
 			$this->_initialized = "basic";
 			return true;
 		} else {
-			$this->raiseError("Initialization tag ID empty");
+			$this->setError("Initialization tag ID empty");
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Pseudo-constructor, initializes the tag with its definition.
 	  *
@@ -132,16 +132,16 @@ class CMS_block extends CMS_grandFather
 				}
 			}
 		} else {
-			$this->raiseError("Initialization attributes not an array");
+			$this->setError("Initialization attributes not an array");
 			return false;
 		}
-		
+
 		//The tag definition
 		$this->_definition = $tagInnerContent;
 		$this->_initialized = "definition";
 		return true;
 	}
-	
+
 	/**
 	  * Pseudo-constructor, initializes the tag with its definition from tag and row id
 	  *
@@ -152,20 +152,20 @@ class CMS_block extends CMS_grandFather
 	  */
 	function initializeFromID($blockID, $rowID) {
 		if (!sensitiveIO::isPositiveInteger($rowID)) {
-			$this->raiseError("rowID must be a positive integer : ".$rowID);
+			$this->setError("rowID must be a positive integer : ".$rowID);
 			return false;
 		}
 		//instanciate row to get block definition
 		$row = new CMS_row($rowID);
 		$blockTag = $row->getBlockTagById($blockID);
 		if (!is_object($blockTag)) {
-			$this->raiseError('Can\'t get block '.$blockID.' from row id : '.$rowID);
+			$this->setError('Can\'t get block '.$blockID.' from row id : '.$rowID);
 			return false;
 		}
 		$this->initializeFromTag($blockTag->getAttributes(), $blockTag->getInnerContent());
 		return true;
 	}
-	
+
 	/**
 	  * Gets the data in HTML mode.
 	  *
@@ -180,11 +180,11 @@ class CMS_block extends CMS_grandFather
 	function getData(&$language, &$page, &$clientSpace, &$row, $visualizationMode)
 	{
 		if ($this->_initialized != "definition") {
-			$this->raiseError("Try to retrieve HTML data from a tag not initialized by definition");
+			$this->setError("Try to retrieve HTML data from a tag not initialized by definition");
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Gets the data in array mode.
 	  *
@@ -199,11 +199,11 @@ class CMS_block extends CMS_grandFather
 	function getRawData($pageID, $clientSpaceID, $rowID, $location, $public)
 	{
 		if (!$this->_initialized) {
-			$this->raiseError("Try to retrieve HTML data from a tag not initialized");
+			$this->setError("Try to retrieve HTML data from a tag not initialized");
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Gets the folder name which depends of the page location
 	  *
@@ -229,7 +229,7 @@ class CMS_block extends CMS_grandFather
 		}
 		return $folder;
 	}
-	
+
 	/**
 	  * Deletes the block from a location (public, archived, deleted, edited)
 	  *
@@ -244,10 +244,10 @@ class CMS_block extends CMS_grandFather
 	function delFromLocation($pageID, $clientSpaceID, $rowID, $location, $public = false)
 	{
 		if (!SensitiveIO::isInSet($location, CMS_resourceStatus::getAllLocations())) {
-			$this->raiseError("DelFromLocation was given a bad location");
+			$this->setError("DelFromLocation was given a bad location");
 			return false;
 		}
-		
+
 		$table = $this->_getDataTableName($location, $public);
 		$sql = "
 			delete from
@@ -261,7 +261,7 @@ class CMS_block extends CMS_grandFather
 		$q = new CMS_query($sql);
 		return true;
 	}
-	
+
 	/**
 	  * Change the clientspace of block from a location (public, archived, deleted, edited)
 	  *
@@ -276,13 +276,14 @@ class CMS_block extends CMS_grandFather
 	  */
 	function changeClientSpace($pageID, $oldClientSpaceID, $newClientSpaceID, $rowID, $location, $public = false)
 	{
+		CMS_grandFather::log('je change');
 		if (!SensitiveIO::isInSet($location, CMS_resourceStatus::getAllLocations())) {
-			$this->raiseError("DelFromLocation was given a bad location");
+			$this->setError("DelFromLocation was given a bad location");
 			return false;
 		}
 		$table = $this->_getDataTableName($location, $public);
 		$sql = "
-			update 
+			update
 				".$table."
 			set
 				clientSpaceID='".$newClientSpaceID."'
@@ -296,8 +297,8 @@ class CMS_block extends CMS_grandFather
 		$this->_clientSpaceID = $newClientSpaceID;
 		return true;
 	}
-	
-	
+
+
 	/**
 	  * Writes the block data into persistence (destroys previous and insert new)
 	  *
@@ -306,18 +307,18 @@ class CMS_block extends CMS_grandFather
 	  * @param integer $rowID The row which contains the block, DB ID
 	  * @param integer $location The location we want to completly remove the block from
 	  * @param boolean $public The precision needed for USERSPACE location
-	  * @param array(mixed=>mixed) $data The data indexed by data type (value, file, alt_tag, ...), 
+	  * @param array(mixed=>mixed) $data The data indexed by data type (value, file, alt_tag, ...),
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
 	function writeToPersistence($pageID, $clientSpaceID, $rowID, $location, $public, $data)
 	{
 		if (!SensitiveIO::isInSet($location, CMS_resourceStatus::getAllLocations())) {
-			$this->raiseError("writeToPersistence was given a bad location");
+			$this->setError("writeToPersistence was given a bad location");
 			return false;
 		}
 	}
-	
+
 	/**
 	  * Get the HTML form given the block HTML example data.
 	  *
@@ -332,13 +333,13 @@ class CMS_block extends CMS_grandFather
 	  */
 	protected function _getHTMLForm($language, &$page, &$clientSpace, &$row, $blockID, $data){
 		global $cms_user;
-		
+
 		//append atm-block class and block-id to all first level tags found in block datas
 		$domdocument = new CMS_DOMDocument();
 		try {
 			$domdocument->loadXML('<block>'.$data.'</block>');
 		} catch (DOMException $e) {
-			$this->raiseError('Parse error for '.get_class($this).' : Page '.$page->getID().' - Row "'.$row->getTagID().'" - Block "'.$blockID.'" : '.$e->getMessage());
+			$this->setError('Parse error for '.get_class($this).' : Page '.$page->getID().' - Row "'.$row->getTagID().'" - Block "'.$blockID.'" : '.$e->getMessage());
 			$data = '<div class="atm-error-block atm-block-helper">'.$language->getMessage(self::MESSAGE_BLOCK_CONTENT_ERROR).'</div>';
 			$domdocument = new CMS_DOMDocument();
 			$domdocument->loadXML('<block>'.$data.'</block>');
@@ -361,14 +362,14 @@ class CMS_block extends CMS_grandFather
 				$hasNode = false;
 			}
 		}
-		
+
 		if (!$hasNode) {
 			//append div with atm-empty-block class around datas
 			$domdocument = new CMS_DOMDocument();
 			try {
 				$domdocument->loadXML('<block><div class="atm-empty-block atm-block-helper">'.$data.'</div></block>');
 			} catch (DOMException $e) {
-				$this->raiseError('Parse error for block : '.$e->getMessage()." :\n".$data, true);
+				$this->setError('Parse error for block : '.$e->getMessage()." :\n".$data, true);
 				return '';
 			}
 			$blockNodes = $domdocument->getElementsByTagName('block');
@@ -376,7 +377,7 @@ class CMS_block extends CMS_grandFather
 				$blockXML = $blockNodes->item(0);
 			}
 		}
-		
+
 		$elements = array();
 		$uniqueId = 'block-'.md5(mt_rand().microtime());
 		foreach($blockXML->childNodes as $blockChildNode) {
@@ -413,7 +414,7 @@ class CMS_block extends CMS_grandFather
 		'.$data;
 		return $data;
 	}
-	
+
 	/**
 	  * Duplicate this block, all datas rebnamed and saved
 	  * Used to duplicate a CMS_page.
@@ -424,9 +425,9 @@ class CMS_block extends CMS_grandFather
 	  */
 	function duplicate(&$destinationPage, $public = false)
 	{
-		
+
 	}
-	
+
 	/**
 	  * Get the value of an attribute.
 	  *
@@ -441,6 +442,17 @@ class CMS_block extends CMS_grandFather
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	  * Get the tag ID.
+	  *
+	  * @return string The tagID value
+	  * @access public
+	  */
+	function getTagID()
+	{
+		return $this->_tagID;
 	}
 }
 ?>

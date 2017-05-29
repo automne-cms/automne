@@ -151,7 +151,7 @@ class CMS_object_date extends CMS_object_common
 	function getLabel() {
 		global $cms_language;
 		if (!is_object($this->_subfieldValues[0])) {
-			$this->raiseError("No subField to get for label : ".print_r($this->_subfieldValues,true));
+			$this->setError("No subField to get for label : ".print_r($this->_subfieldValues,true));
 			return false;
 		}
 		$date = new CMS_date();
@@ -178,7 +178,7 @@ class CMS_object_date extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function checkMandatory($values,$prefixName) {
+	function checkMandatory($values, $prefixName, $newFormat = false) {
 		global $cms_language;
 		$date = new CMS_date();
 		$date->setFormat($cms_language->getDateFormat());
@@ -375,7 +375,7 @@ class CMS_object_date extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName) {
+	function setValues($values,$prefixName, $newFormat = false) {
 		global $cms_language;
 		$params = $this->getParamsValues();
 		$date = new CMS_date();
@@ -521,7 +521,7 @@ class CMS_object_date extends CMS_object_common
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language, $objectName) {
+	function getLabelsStructure(&$language, $objectName = '') {
 		$labels = parent::getLabelsStructure($language, $objectName);
 		$labels['structure']['formatedValue|format'] = $language->getMessage(self::MESSAGE_OBJECT_DATE_FORMATEDVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['notNull'] = $language->getMessage(self::MESSAGE_OBJECT_DATE_HASVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
@@ -558,7 +558,7 @@ class CMS_object_date extends CMS_object_common
 			'beginswith'
 		);
 		if ($operator && !in_array($operator, $supportedOperator)) {
-			$this->raiseError("Unknown search operator : ".$operator.", use default search instead");
+			$this->setError("Unknown search operator : ".$operator.", use default search instead");
 			$operator = false;
 		}
 		if (!$operator) {
@@ -616,7 +616,7 @@ class CMS_object_date extends CMS_object_common
 		$statusSuffix = ($public) ? "_public":"_edited";
 		$supportedOperator = array();
 		if ($operator && !in_array($operator, $supportedOperator)) {
-			$this->raiseError("Unknown search operator : ".$operator.", use default search instead");
+			$this->setError("Unknown search operator : ".$operator.", use default search instead");
 			$operator = false;
 		}
 		// create sql

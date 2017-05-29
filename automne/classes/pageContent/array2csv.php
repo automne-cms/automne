@@ -71,14 +71,14 @@ class CMS_array2csv extends CMS_grandFather
 		if (is_dir($filepath) && is_writable($filepath)) {
 			$this->_filepath = $filepath;
 		} else {
-			$this->raiseError('File path does not exists or is not writable : '.$filepath);
+			$this->setError('File path does not exists or is not writable : '.$filepath);
 			return false;
 		}
 		$this->_filename = io::sanitizeAsciiString($filename);
 		$this->_separator = $separator;
 		$this->_enclosure = $enclosure;
 		if (!($this->_file = @fopen($this->_filepath.'/'.$this->_filename, 'ab+'))) {
-			$this->raiseError('Cannot open file '.($this->_filepath.'/'.$this->_filename).' for writing');
+			$this->setError('Cannot open file '.($this->_filepath.'/'.$this->_filename).' for writing');
 			return false;
 		}
 	}
@@ -103,7 +103,7 @@ class CMS_array2csv extends CMS_grandFather
 	 */
 	function addDatas($datas) {
 		if (@ftell($this->_file) === false) {
-			$this->raiseError('Cannot add datas to a file already closed');
+			$this->setError('Cannot add datas to a file already closed');
 			return false;
 		}
 		$multiline = true;
@@ -132,7 +132,7 @@ class CMS_array2csv extends CMS_grandFather
 		if ($file->exists()) {
 			return $file;
 		} else {
-			$this->raiseError('File '.($this->_filepath.'/'.$this->_filename).' does not exists');
+			$this->setError('File '.($this->_filepath.'/'.$this->_filename).' does not exists');
 			return false;
 		}
 	}

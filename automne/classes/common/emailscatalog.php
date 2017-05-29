@@ -66,7 +66,7 @@ class CMS_emailsCatalog extends CMS_grandFather
 					$email->setTemplate($template);
 					$this->_messages[] = $email;
 				} else {
-					$this->raiseError("Email Catalog: email invalid (".$user->getEmail().") for user : ".$user->getFullName());
+					$this->setError("Email Catalog: email invalid (".$user->getEmail().") for user : ".$user->getFullName());
 				}
 			}
 		}
@@ -90,7 +90,7 @@ class CMS_emailsCatalog extends CMS_grandFather
 				$email->setBody($message);
 				$this->_messages[] = $email;
 			} else {
-				$this->raiseError("Email Catalog: mail not registered:".$address);
+				$this->setError("Email Catalog: mail not registered:".$address);
 			}
 		}
 	}

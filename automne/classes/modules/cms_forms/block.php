@@ -173,7 +173,7 @@ class CMS_block_cms_forms extends CMS_block
 		
 		$table = $this->_getDataTableName($location, $public);
 		if (!$table) {
-			$this->raiseError("Unknown table");
+			$this->setError("Unknown table");
 			return false;
 		}
 		$sql = "
@@ -248,7 +248,7 @@ class CMS_block_cms_forms extends CMS_block
 	function delFromLocation($pageID, $clientSpaceID, $rowID, $location, $public = false)
 	{
 		if (!SensitiveIO::isInSet($location, CMS_resourceStatus::getAllLocations())) {
-			$this->raiseError("DelFromLocation was given a bad location");
+			$this->setError("DelFromLocation was given a bad location");
 			return false;
 		}
 		
@@ -385,10 +385,10 @@ class CMS_block_cms_forms extends CMS_block
 				$q = new CMS_query($sql);
 				return !$q->hasError();
 			} else {
-				$this->raiseError("Duplicate, insertion failed: ".$sql);
+				$this->setError("Duplicate, insertion failed: ".$sql);
 			}
 		} else {
-			$this->raiseError("Duplicate, object does not have a DB ID, not initialized");
+			$this->setError("Duplicate, object does not have a DB ID, not initialized");
 		}
 		return false;
 	}

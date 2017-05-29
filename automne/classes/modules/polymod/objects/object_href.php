@@ -101,7 +101,7 @@ class CMS_object_href extends CMS_object_common
 	  */
 	function getLabel() {
 		if (!is_object($this->_subfieldValues[0])) {
-			$this->raiseError("No subField to get for label : ".print_r($this->_subfieldValues,true));
+			$this->setError("No subField to get for label : ".print_r($this->_subfieldValues,true));
 			return false;
 		}
 		//create object CMS_href & CMS_dialog_href
@@ -257,7 +257,7 @@ class CMS_object_href extends CMS_object_common
 	  */
 	function setValues($values,$prefixName, $newFormat = false, $objectID = '') {
 		if (!sensitiveIO::isPositiveInteger($objectID)) {
-			$this->raiseError('ObjectID must be a positive integer : '.$objectID);
+			$this->setError('ObjectID must be a positive integer : '.$objectID);
 			return false;
 		}
 		//get module codename
@@ -402,8 +402,8 @@ class CMS_object_href extends CMS_object_common
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language) {
-		$labels = parent::getLabelsStructure($language);
+	function getLabelsStructure(&$language, $objectName = '') {
+		$labels = parent::getLabelsStructure($language, $objectName);
 		unset($labels['structure']['value']);
 		$labels['structure']['validhref'] = $language->getMessage(self::MESSAGE_OBJECT_HREF_VALIDHREF_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['hrefvalue'] = $language->getMessage(self::MESSAGE_OBJECT_HREF_HREFVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);

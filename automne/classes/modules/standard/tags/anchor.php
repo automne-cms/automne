@@ -57,7 +57,7 @@ class CMS_XMLTag_anchor extends CMS_XMLTag {
 	  * @return string the HTML content
 	  * @access private
 	  */
-	function anchorStart($tagName, $anchor, $attributes) {
+	public static function anchorStart($tagName, $anchor, $attributes) {
 		if (strpos($_SERVER['SCRIPT_NAME'], PATH_ADMIN_WR) !== false && strpos($_SERVER['SCRIPT_NAME'], 'page-previsualization.php') === false) {
 			return '<'.$tagName.' href="'.$anchor.'"'.$attributes.'>';
 		}
@@ -70,7 +70,7 @@ class CMS_XMLTag_anchor extends CMS_XMLTag {
 	  * @return string the HTML content
 	  * @access private
 	  */
-	function anchorEnd($tagName) {
+	public static function anchorEnd($tagName) {
 		return '</'.$tagName.'>';
 	}
 }

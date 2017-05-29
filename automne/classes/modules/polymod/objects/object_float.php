@@ -129,7 +129,7 @@ class CMS_object_float extends CMS_object_string {
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName) {
+	function setValues($values,$prefixName, $newFormat = false) {
 		$params = $this->getParamsValues();
 		if ($values[$prefixName.$this->_field->getID().'_0']) {
 			//check string length parameter
@@ -221,7 +221,7 @@ class CMS_object_float extends CMS_object_string {
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language, $objectName) {
+	function getLabelsStructure(&$language, $objectName = '') {
 		$params = $this->getParamsValues();
 		$labels = parent::getLabelsStructure($language, $objectName);
 		$labels['operator']['&lt;, &gt;,&lt;=, &gt;=, like '] = $language->getMessage(self::MESSAGE_OBJECT_FLOAT_OPERATOR_OTHERS_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
@@ -315,7 +315,7 @@ class CMS_object_float extends CMS_object_string {
 		//operators are not supported for now : TODO
 		$supportedOperator = array();
 		if ($operator && !in_array($operator, $supportedOperator)) {
-			$this->raiseError('Unkown search operator : '.$operator.', use default search instead');
+			$this->setError('Unkown search operator : '.$operator.', use default search instead');
 			$operator = false;
 		}
 		$sql = '';

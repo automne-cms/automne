@@ -82,36 +82,36 @@ class CMS_resource extends CMS_grandFather
 					$this->_id = $id;
 					$this->_status = new CMS_resourceStatus($data);
 					if ($this->_status->hasError()) {
-						$this->raiseError("Unfound status :".$data["status_res"]);
+						$this->setError("Unfound status :".$data["status_res"]);
 						return;
 					}
 					
 					//build editors stack. If stack is malformed, it's a minor error, so proceed.
 					$this->_editors = new CMS_stack();
 					if (!$this->_editors->setTextDefinition($data["editorsStack_res"])) {
-						$this->raiseError("Editors stack malformed");
+						$this->setError("Editors stack malformed");
 						$this->_editors->emptyStack();
 					}
 				} else {
-					$this->raiseError("Unknown ID :".$id);
+					$this->setError("Unknown ID :".$id);
 				}
 			} elseif (is_array($id)) {
 				$data = $id;
 				$this->_id = $data["id_res"];
 				$this->_status = new CMS_resourceStatus($data);
 				if ($this->_status->hasError()) {
-					$this->raiseError("Unfound status :".$data["status_res"]);
+					$this->setError("Unfound status :".$data["status_res"]);
 					return;
 				}
 				
 				//build editors stack. If stack is malformed, it's a minor error, so proceed.
 				$this->_editors = new CMS_stack();
 				if (!$this->_editors->setTextDefinition($data["editorsStack_res"])) {
-					$this->raiseError("Editors stack malformed");
+					$this->setError("Editors stack malformed");
 					$this->_editors->emptyStack();
 				}
 			} else {
-				$this->raiseError("Id is not a positive integer nor array");
+				$this->setError("Id is not a positive integer nor array");
 				return;
 			}
 		} else {
@@ -214,7 +214,7 @@ class CMS_resource extends CMS_grandFather
 	function addEdition($edition, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
-			$this->raiseError("Edition addition didn't received a valid user");
+			$this->setError("Edition addition didn't received a valid user");
 			return false;
 		}
 		if ($this->_status->addEdition($edition)) {
@@ -386,7 +386,7 @@ class CMS_resource extends CMS_grandFather
 	function setProposedLocation($location, &$user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
-			$this->raiseError("Didn't received a valid user");
+			$this->setError("Didn't received a valid user");
 			return false;
 		}
 		
@@ -551,7 +551,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return array(integer=>integer) The link types indexed by their translation messages DB ID
 	  * @access public
 	  */
-	function getAllLinkTypes()
+	public static function getAllLinkTypes()
 	{
 		return array(	self::MESSAGE_RESOURCE_LINK_TYPE_NONE		=> RESOURCE_LINK_TYPE_NONE,
 						self::MESSAGE_RESOURCE_LINK_TYPE_INTERNAL	=> RESOURCE_LINK_TYPE_INTERNAL,
@@ -566,7 +566,7 @@ class CMS_resource extends CMS_grandFather
 	  * @return array(integer) The Data locations
 	  * @access public
 	  */
-	function getAllDataLocations()
+	public static function getAllDataLocations()
 	{
 		return array(	RESOURCE_DATA_LOCATION_EDITED,
 						RESOURCE_DATA_LOCATION_EDITION,

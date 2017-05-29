@@ -100,7 +100,7 @@ abstract class CMS_subobject_common extends CMS_grandFather
 		$datas = array();
 		if ($id && !$dbValues && !$objectIDs) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
-				$this->raiseError("Id is not a positive integer : ".$id);
+				$this->setError("Id is not a positive integer : ".$id);
 				return;
 			}
 			$sql = "
@@ -115,20 +115,20 @@ abstract class CMS_subobject_common extends CMS_grandFather
 			if ($q->getNumRows()) {
 				$datas = $q->getArray();
 			} else {
-				$this->raiseError("Unknown ID :".$id);
+				$this->setError("Unknown ID :".$id);
 				return;
 			}
 		} elseif (!$dbValues && is_array($objectIDs) && $objectIDs) {
 			if (!SensitiveIO::isPositiveInteger($objectIDs['objectID'])) {
-				$this->raiseError("ObjectID is not a positive integer : ".$objectIDs['objectID']);
+				$this->setError("ObjectID is not a positive integer : ".$objectIDs['objectID']);
 				return;
 			}
 			if (!SensitiveIO::isPositiveInteger($objectIDs['objectFieldID'])) {
-				$this->raiseError("ObjectFieldID is not a positive integer : ".$objectIDs['objectFieldID']);
+				$this->setError("ObjectFieldID is not a positive integer : ".$objectIDs['objectFieldID']);
 				return;
 			}
 			if (!SensitiveIO::isPositiveInteger($objectIDs['objectSubFieldID'])) {
-				$this->raiseError("ObjectSubFieldID is not a positive integer : ".$objectIDs['objectSubFieldID']);
+				$this->setError("ObjectSubFieldID is not a positive integer : ".$objectIDs['objectSubFieldID']);
 				return;
 			}
 			$sql = "
@@ -145,7 +145,7 @@ abstract class CMS_subobject_common extends CMS_grandFather
 			if ($q->getNumRows()) {
 				$datas = $q->getArray();
 			} else {
-				$this->raiseError("Unknown objectIDs :".print_r($objectIDs,true));
+				$this->setError("Unknown objectIDs :".print_r($objectIDs,true));
 				return;
 			}
 		} elseif (is_array($dbValues) && $dbValues) {
@@ -217,7 +217,7 @@ abstract class CMS_subobject_common extends CMS_grandFather
 	function setObjectID($objectID)
 	{
 		if (!sensitiveIO::IsPositiveInteger($objectID)) {
-			$this->raiseError("ObjectID must be a positive integer :".$objectID);
+			$this->setError("ObjectID must be a positive integer :".$objectID);
 			return false;
 		}
 		$this->_objectID = $objectID;
@@ -234,7 +234,7 @@ abstract class CMS_subobject_common extends CMS_grandFather
 	function setObjectFieldID($objectFieldID)
 	{
 		if (!is_numeric($objectFieldID)) {
-			$this->raiseError("ObjectFieldID must be an integer :".$objectFieldID);
+			$this->setError("ObjectFieldID must be an integer :".$objectFieldID);
 			return false;
 		}
 		$this->_objectFieldID = $objectFieldID;
@@ -251,7 +251,7 @@ abstract class CMS_subobject_common extends CMS_grandFather
 	function setObjectSubFieldID($objectSubFieldID)
 	{
 		if (!is_numeric($objectSubFieldID)) {
-			$this->raiseError("ObjectSubFieldID must be an integer :".$objectSubFieldID);
+			$this->setError("ObjectSubFieldID must be an integer :".$objectSubFieldID);
 			return false;
 		}
 		$this->_objectSubFieldID = $objectSubFieldID;
@@ -305,7 +305,7 @@ abstract class CMS_subobject_common extends CMS_grandFather
 	function writeToPersistence()
 	{
 		if ($this->_public) {
-			$this->raiseError("Can't write public object");
+			$this->setError("Can't write public object");
 			return false;
 		}
 		
@@ -335,7 +335,7 @@ abstract class CMS_subobject_common extends CMS_grandFather
 		}
 		$q = new CMS_query($sql);
 		if ($q->hasError()) {
-			$this->raiseError("Can't save object");
+			$this->setError("Can't save object");
 			return false;
 		} elseif (!$this->_ID) {
 			$this->_ID = $q->getLastInsertedID();
@@ -351,7 +351,7 @@ abstract class CMS_subobject_common extends CMS_grandFather
 	  */
 	function destroy() {
 		if ($this->_public) {
-			$this->raiseError("Resource is public, read-only !");
+			$this->setError("Resource is public, read-only !");
 			return false;
 		}
 		

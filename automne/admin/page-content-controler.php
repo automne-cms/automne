@@ -17,7 +17,7 @@
 /**
   * PHP controler : Receive actions on page content
   * Used accross an Ajax request to process one page content action
-  * 
+  *
   * @package Automne
   * @subpackage admin
   * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
@@ -128,7 +128,7 @@ switch ($action) {
 					}
 				}
 			}
-			
+
 			$view->setContent($datas);
 			$edited = true;
 		} else {
@@ -214,7 +214,7 @@ switch ($action) {
 				$datas = $modulesTreatment->treatContent(true);
 				//set datas as returned content
 				$view->setContent($datas);
-				
+
 				$edited = true;
 			} else {
 				CMS_grandFather::raiseError('Can\'t get row type '.$rowId.' from clientspace '.$cs.' of page '.$cms_page->getID().' with row id '.$rowTag);
@@ -294,7 +294,6 @@ switch ($action) {
 					$modulesTreatment->setDefinition($datas);
 					$datas = $modulesTreatment->treatContent(true);
 				}
-				//CMS_grandFather::log($datas);
 				//set datas as returned content
 				$view->setContent($datas);
 				$edited = true;
@@ -322,7 +321,7 @@ switch ($action) {
 				'label'=> ($filelabel) ? $filelabel : pathinfo($filename, PATHINFO_BASENAME)
 			);
 			if ($filename && io::strpos($filename, PATH_UPLOAD_WR.'/') !== false) {
-				//move and rename uploaded file 
+				//move and rename uploaded file
 				$filename = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $filename);
 				$basename = pathinfo($filename, PATHINFO_BASENAME);
 				$newFilename = $cms_block->getFilePath($basename, $cms_page, $cs, $rowTag, $blockId, true);
@@ -383,7 +382,7 @@ switch ($action) {
 				'attributes'=> $attributes,
 			);
 			if ($filename && io::strpos($filename, PATH_UPLOAD_WR.'/') !== false) {
-				//move and rename uploaded file 
+				//move and rename uploaded file
 				$filename = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $filename);
 				$basename = pathinfo($filename, PATHINFO_BASENAME);
 				$newFilename = $cms_block->getFilePath($basename, $cms_page, $cs, $rowTag, $blockId, true);
@@ -446,7 +445,7 @@ switch ($action) {
 			);
 			//Image
 			if ($filename && io::strpos($filename, PATH_UPLOAD_WR.'/') !== false) {
-				//move and rename uploaded file 
+				//move and rename uploaded file
 				$filename = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $filename);
 				$basename = pathinfo($filename, PATHINFO_BASENAME);
 				$newFilename = $cms_block->getFilePath($basename, $cms_page, $cs, $rowTag, $blockId, true);
@@ -461,7 +460,7 @@ switch ($action) {
 			}
 			//Image Zoom
 			if ($zoomname && io::strpos($zoomname, PATH_UPLOAD_WR.'/') !== false) {
-				//move and rename uploaded file 
+				//move and rename uploaded file
 				$zoomname = str_replace(PATH_UPLOAD_WR.'/', PATH_UPLOAD_FS.'/', $zoomname);
 				$basename = pathinfo($zoomname, PATHINFO_BASENAME);
 				$newFilename = $cms_block->getFilePath($basename, $cms_page, $cs, $rowTag, $blockId, true);
@@ -480,7 +479,7 @@ switch ($action) {
 			$linkDialog->create($imagelink, MOD_STANDARD_CODENAME, $cms_page->getID());
 			$link = $linkDialog->getHref();
 			$data['externalLink'] = $link->getTextDefinition();
-			
+
 			$cms_block->writeToPersistence($cms_page->getID(), $cs, $rowTag, RESOURCE_LOCATION_EDITION, false, $data);
 			//instanciate the clientspace
 			$clientSpace = CMS_moduleClientSpace_standard_catalog::getByTemplateAndTagID($tpl, $cs, $visualMode == PAGE_VISUALMODE_FORM);
@@ -519,7 +518,7 @@ switch ($action) {
 			$linkDialog->create($linktext, MOD_STANDARD_CODENAME, $cms_page->getID());
 			$link = $linkDialog->getHref();
 			$data['value'] = $link->getTextDefinition();
-			
+
 			$cms_block->writeToPersistence($cms_page->getID(), $cs, $rowTag, RESOURCE_LOCATION_EDITION, false, $data);
 			//instanciate the clientspace
 			$clientSpace = CMS_moduleClientSpace_standard_catalog::getByTemplateAndTagID($tpl, $cs, $visualMode == PAGE_VISUALMODE_FORM);

@@ -52,7 +52,7 @@ class CMS_search extends CMS_grandFather {
 	  * @return array of CMS_search search codes
 	  * @access public
 	  */
-	function getAllCodes(){
+	public static function getAllCodes(){
 		return array(
 			self::SEARCH_TYPE_DEFAULT,
 			self::SEARCH_TYPE_LINKTO,
@@ -69,7 +69,7 @@ class CMS_search extends CMS_grandFather {
 	  * @return array of CMS_page the result pages
 	  * @access public
 	  */
-	function getSearch($keywords, $user, $public = false, $withPageContent = false){
+	static function getSearch($keywords, $user, $public = false, $withPageContent = false){
 		if(is_a($user,'CMS_profile_user')){
 			$cms_language = $user->getLanguage();
 		} else {

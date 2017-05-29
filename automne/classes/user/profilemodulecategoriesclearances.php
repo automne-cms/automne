@@ -88,7 +88,7 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 					$this->_categoriesClearances->add($datas['categoryID'], $datas['clearance']);
 				}
 			} else {
-				$this->raiseError("Id is not a positive integer");
+				$this->setError("Id is not a positive integer");
 				return;
 			}
 		}
@@ -244,7 +244,7 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 			$this->_categoriesClearances = $clearances;
 			return true;
 		} else {
-			$this->raiseError("Stack object required : " . var_dump($clearances));
+			$this->setError("Stack object required : " . var_dump($clearances));
 			return false;
 		}
 	}
@@ -261,7 +261,7 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 			$this->_categoriesClearances->del($categoryID);
 			return true;
 		} else {
-			$this->raiseError("Category ID required : ".var_dump($categoryID));
+			$this->setError("Category ID required : ".var_dump($categoryID));
 			return false;
 		}
 	} 
@@ -284,7 +284,7 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 			}
 			return true;
 		} else {
-			$this->raiseError("Stack object required : " . var_dump($clearances));
+			$this->setError("Stack object required : " . var_dump($clearances));
 			return false;
 		}
 	}
@@ -319,7 +319,7 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 			";
 			$q = new CMS_query($sql);
 			if ($q->hasError()) {
-				$this->raiseError("Error on sql statement : " . var_dump($sql));
+				$this->setError("Error on sql statement : " . var_dump($sql));
 				return false;
 			}
 		}
@@ -348,7 +348,7 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 			$q = new CMS_query($sql);
 			if ($q->hasError()) {
 				$err++;
-				$this->raiseError("Error on sql statement : " . var_dump($sql));
+				$this->setError("Error on sql statement : " . var_dump($sql));
 			}
 			// Insert new ones
 			$elements = $this->_categoriesClearances->getElements();
@@ -366,7 +366,7 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 				$q = new CMS_query($sql);
 				if ($q->hasError()) {
 					$err++;
-					$this->raiseError("Error on sql statement : " . var_dump($sql));
+					$this->setError("Error on sql statement : " . var_dump($sql));
 				}
 			}
 			return (!$err) ? true : false ;

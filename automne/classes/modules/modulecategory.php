@@ -147,7 +147,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	function __construct($id=0, $language = false, $parentCategory = false, $rootCategory = false) {
 		if ($id) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
-				$this->raiseError("Id is not a positive integer");
+				$this->setError("Id is not a positive integer");
 				return;
 			}
 			$sql = "
@@ -172,7 +172,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 				$this->_uuid = $data["uuid_mca"];
 				$this->_protected = $data["protected_mca"] ? true : false;
 			} else {
-				$this->raiseError("unknown ID :".$id);
+				$this->setError("unknown ID :".$id);
 			}
 		}
 		if (is_a($language, 'CMS_language')) {
@@ -218,7 +218,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	  */
 	function setAttribute($name, $value) {
 		if ($name == 'uuid') {
-			$this->raiseError("Cannot change UUID");
+			$this->setError("Cannot change UUID");
 			return false;
 		}
 		$name = '_'.$name;
@@ -810,7 +810,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 				$qD = new CMS_query($sql);
 				if ($qD->hasError()) {
 					$err++;
-					$this->raiseError("Error deleting label in language : `$lang`");
+					$this->setError("Error deleting label in language : `$lang`");
 				}
 				// Insert
 				$sql = "
@@ -826,7 +826,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 				$q = new CMS_query($sql);
 				if ($q->hasError()) {
 					$err++;
-					$this->raiseError("Error inserting label in language : `$lang`");
+					$this->setError("Error inserting label in language : `$lang`");
 				}
 			}
 
@@ -879,7 +879,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 			$q = new CMS_query($sql);
 			if ($q->hasError()) {
 				$err++;
-				$this->raiseError("Error deleting category.");
+				$this->setError("Error deleting category.");
 			}
 			$sql = "
 				delete
@@ -891,7 +891,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 			$q = new CMS_query($sql);
 			if ($q->hasError()) {
 				$err++;
-				$this->raiseError("Error deleting category labels.");
+				$this->setError("Error deleting category labels.");
 			}
 			$sql = "
 				delete
@@ -903,7 +903,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 			$q = new CMS_query($sql);
 			if ($q->hasError()) {
 				$err++;
-				$this->raiseError("Error deleting category clearances.");
+				$this->setError("Error deleting category clearances.");
 			}
 
 			//Clear polymod cache

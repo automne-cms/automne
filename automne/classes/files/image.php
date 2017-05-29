@@ -62,7 +62,7 @@ class CMS_image extends CMS_file
 	function __construct($name, $from=self::FILE_SYSTEM, $type=self::TYPE_FILE) {
 		parent::__construct($name, $from, $type);
 		if (!in_array($this->getExtension(), array('gif', 'png', 'jpg', 'jpe', 'jpeg'))) {
-			$this->raiseError('File extension is not a valid image extension : '.$this->getExtension());
+			$this->setError('File extension is not a valid image extension : '.$this->getExtension());
 			return false;
 		}
 	}
@@ -121,7 +121,7 @@ class CMS_image extends CMS_file
 		$sizeX = $this->getWidth();
 		$sizeY = $this->getHeight();
 		if (!io::isPositiveInteger($sizeX) || !io::isPositiveInteger($sizeY)) {
-			$this->raiseError('Unkown image size ...');
+			$this->setError('Unkown image size ...');
 			return false;
 		}
 		//if no resize needed
@@ -259,7 +259,7 @@ class CMS_image extends CMS_file
 		$sizeX = $this->getWidth();
 		$sizeY = $this->getHeight();
 		if (!io::isPositiveInteger($sizeX) || !io::isPositiveInteger($sizeY)) {
-			$this->raiseError('Unkown image size ...');
+			$this->setError('Unkown image size ...');
 			return false;
 		}
 		//if no crop needed

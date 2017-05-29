@@ -38,7 +38,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	const MESSAGE_PAGE_WORKING_TAGS_EXPLANATION = 1703;
 	const MESSAGE_PAGE_BLOCK_GENERAL_VARS = 1706;
 	const MESSAGE_PAGE_BLOCK_GENERAL_VARS_EXPLANATION = 1705;
-	
+
 	/**
 	  * Polymod Messages
 	  */
@@ -57,7 +57,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	const MESSAGE_ALERT_LEVEL_VALIDATION_DESCRIPTION = 513;
 	const MESSAGE_PAGE_RSS_TAG_EXPLANATION = 313;
 	const MESSAGE_PAGE_ROW_TAGS_CHOOSE = 519;
-	
+
 	/**
 	  * Gets resource by its internal ID (not the resource table DB ID)
 	  * This function need to stay here because sometimes it is directly queried
@@ -66,7 +66,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return CMS_resource The CMS_resource subclassed object
 	  * @access public
 	  */
-	function getResourceByID($resourceID)
+	public static function getResourceByID($resourceID)
 	{
 		//parent::getResourceByID($resourceID);
 		return CMS_poly_object_catalog::getObjectByID($resourceID);
@@ -81,7 +81,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	function getObjects() {
 		return CMS_poly_object_catalog::getObjectsForModule($this->_codename);
 	}
-	
+
 	/**
 	  * Gets module ressource name method (method to get the name of resource objects of the module)
 	  *
@@ -91,7 +91,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	function getRessourceNameMethod() {
 		return 'getLabel';
 	}
-	
+
 	/**
 	  * Gets module ressource type method (method to get the type of resource objects of the module)
 	  *
@@ -124,7 +124,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 				$return["atm-start-tag"] 	= array("selfClosed" => true,	"parameters" => array(), 'class' => 'CMS_XMLTag_start');
 				$return["atm-end-tag"] 		= array("selfClosed" => true,	"parameters" => array(), 'class' => 'CMS_XMLTag_end');
 				$return["atm-setvar"] 		= array("selfClosed" => true,	"parameters" => array(), 'class' => 'CMS_XMLTag_setvar');
-				
+
 			break;
 			case MODULE_TREATMENT_WYSIWYG_OUTER_TAGS :
 			case MODULE_TREATMENT_WYSIWYG_INNER_TAGS :
@@ -163,7 +163,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			break;
 			case MODULE_TREATMENT_PAGECONTENT_TAGS :
 				if (!($treatedObject instanceof CMS_page)) {
-					$this->raiseError('$treatedObject must be a CMS_page object');
+					$this->setError('$treatedObject must be a CMS_page object');
 					return false;
 				}
 				switch ($tag->getName()) {
@@ -199,7 +199,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 							if ($parameters['public']) {
 								//create definition hash
 								$cacheHash = md5(serialize(array(
-									'definition' => $tagContent, 
+									'definition' => $tagContent,
 									'parameters' => $parameters,
 								)));
 								$tagContent = CMS_cache::wrapCode($cacheHash, $tagContent);
@@ -497,7 +497,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return object The module tag representation instance
 	  * @access public
 	  */
-	function getTagRepresentation($tag, $args)
+	function getTagRepresentation($tag, $args, $compatArgs = false)
 	{
 		switch ($tag->getName()) {
 		case "block":
@@ -506,7 +506,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			if (class_exists($class_name)) {
 				$instance = new $class_name();
 			} else {
-				$this->raiseError("Unknown block type : CMS_block_polymod");
+				$this->setError("Unknown block type : CMS_block_polymod");
 				return false;
 			}
 			//pr(io::htmlspecialchars($tag->getInnerContent()));
@@ -661,7 +661,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return string : the file to use for required classname
 	  * @access public
 	  */
-	function load($classname) {
+	static function load($classname) {
 		static $classes;
 		if (!isset($classes)) {
 			$classes = array(
@@ -771,7 +771,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 		}
 		return $objectsInfos;
 	}
-	
+
 	/**
 	  * Module replacements vars
 	  *
@@ -788,9 +788,9 @@ class CMS_polymod extends CMS_modulePolymodValidation
 		$replace["#\['fields'\]\[([n0-9]+)\]\}?#"] 							= '->objectValues(\1)';
 		$replace["#\['values'\]\[([n0-9]+)\]\['([a-zA-Z]+)'\]\}$#U"]		= '->getValue(\'\1\',\'\2\')';
 		$replace["#\['([a-zA-Z]+)'\]\|?\"\.([^|}]*)\.\"\}$#U"] 				= '->getValue(\'\1\',\2)';
-		
+
 		$replace["#\['([a-zA-Z]+)'\]\|?([^|}]*)\}$#U"] 						= '->getValue(\'\1\',\'\2\')';
-		
+
 		$replace["#^\{\['object([0-9]+)'\]#U"] 								= '$object[\1]';
 		$replace["#\[([n0-9]+)]}$#U"] 										= '[\1]';
 		//replace the loop 'n' value by $key
@@ -798,7 +798,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 		$replace["#\(([n0-9]+)\)->getValue\(('n')#U"] 						= '(\1)->getValue(isset($key_\1) ? $key_\1 : 0';
 		return $replace;
 	}
-	
+
 	/**
 	  * Search module objects by Id
 	  *
@@ -825,7 +825,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 		}
 		return $results;
 	}
-	
+
 	/**
 	  * Get search results objects for module by Id
 	  *
@@ -876,7 +876,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 						$itemsResourcesFiles .= '<script type="text/javascript" src="'.$jsfile.'"></script>'."\n";
 					}
 				}
-				
+
 			} else {
 				//load fields objects for object
 				$objectFields = CMS_poly_object_catalog::getFieldsDefinition($object->getID());
@@ -956,14 +956,14 @@ class CMS_polymod extends CMS_modulePolymodValidation
 		}
 		return $results;
 	}
-	
+
 	/**
 	  * Force compilation for all stored definitions
 	  *
 	  * @return void
 	  * @access public
 	  */
-	function compileDefinitions() {
+	public static function compileDefinitions() {
 		//foreach definition, plugin and rss, recompile stored values if exists
 		$modules = CMS_modulesCatalog::getAll("id", true);
 		$hasPolyModule = false;
@@ -1000,7 +1000,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			}
 		}
 	}
-	
+
 	/**
 	  * Get object as an array structure used for export
 	  *
@@ -1038,7 +1038,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 							$objectDatas['plugins'][] = $plugin->asArray($params, $files);
 						}
 					}
-					
+
 					$aModule['objects'][] = $objectDatas;
 				}
 			}
@@ -1046,7 +1046,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 		$aModule['polymod'] = true;
 		return $aModule;
 	}
-	
+
 	/**
 	  * Import module from given array datas
 	  *
@@ -1100,7 +1100,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 		}
 		return $return;
 	}
-	
+
 	/**
 	  * Does this module is destroyable ?
 	  *
@@ -1137,7 +1137,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 		}
 		return true;
 	}
-	
+
 	/**
 	  * Destroy the module
 	  *
@@ -1159,9 +1159,9 @@ class CMS_polymod extends CMS_modulePolymodValidation
 				$row->destroy();
 			}
 		}
-		
+
 		// TREAT CATEGORIES
-		$attrs = array ( 
+		$attrs = array (
 			"module" => $this->_codename,
 			"language" => CMS_languagesCatalog::getDefaultLanguage(),
 			"level" => -1,
@@ -1177,10 +1177,10 @@ class CMS_polymod extends CMS_modulePolymodValidation
 				$cat->destroy();
 			}
 		}
-		
+
 		// TREAT MODULE & VALIDATIONS RIGHTS
 		$sql = "
-			select 
+			select
 				*
 			from
 				profiles
@@ -1198,7 +1198,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			}
 		}
 		$sql = "
-			select 
+			select
 				*
 			from
 				profiles
@@ -1216,12 +1216,12 @@ class CMS_polymod extends CMS_modulePolymodValidation
 				$qInsert = new CMS_query("update profiles set validationClearancesStack_pr='".io::sanitizeSQLString($stack->getTextDefinition())."' where id_pr='".$r['id_pr']."'");
 			}
 		}
-		
+
 		//remove module files
 		if (CMS_file::deltreeSimulation(PATH_MODULES_FILES_FS.'/'.$this->_codename, true)) {
 			CMS_file::deltree(PATH_MODULES_FILES_FS.'/'.$this->_codename, true);
 		}
-		
+
 		//remove JS and CSS
 		if (is_dir(PATH_JS_FS.'/modules/'.$this->_codename) && CMS_file::deltreeSimulation(PATH_JS_FS.'/modules/'.$this->_codename, true)) {
 			CMS_file::deltree(PATH_JS_FS.'/modules/'.$this->_codename, true);
@@ -1238,7 +1238,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 		//Clear polymod cache
 		//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_codename));
 		CMS_cache::clearTypeCache('polymod');
-		
+
 		// Destroy module
 		return parent::destroy();
 	}

@@ -178,7 +178,7 @@ class CMS_tree extends CMS_grandFather
 			return false;
 		}
 		if (strtolower(io::sanitizeAsciiString($codename)) != $codename) {
-			$this->raiseError("Page codename must be alphanumeric only");
+			$this->setError("Page codename must be alphanumeric only");
 			return false;
 		}
 		if (!isset($pagesInfos[$codename][$referencePageId])) {
@@ -912,7 +912,8 @@ class CMS_tree extends CMS_grandFather
 		";
 		$q = new CMS_query($sql);
 		// compact old siblings order
-		CMS_tree::compactSiblingOrder(CMS_tree::getPageById($father));
+		$fatherPage = CMS_tree::getPageById($father);
+		CMS_tree::compactSiblingOrder($fatherPage);
 		//get current order of siblings for old father
 		$sql = 
 			"select 
@@ -1071,7 +1072,8 @@ class CMS_tree extends CMS_grandFather
 		";
 		$q = new CMS_query($sql);
 		// compact old public siblings order
-		CMS_tree::compactSiblingOrder(CMS_tree::getPageById($oldFather), true);
+		$oldFatherPage = CMS_tree::getPageById($oldFather);
+		CMS_tree::compactSiblingOrder($oldFatherPage, true);
 		//get current order of siblings for new father
 		$sql = 
 			"select 
@@ -1318,26 +1320,26 @@ class CMS_tree extends CMS_grandFather
 	{
 		//check arguments are pages
 		if (!is_a($page, "CMS_page") || !is_a($newFather, "CMS_page")) {
-			CMS_grandFather::raiseError("CMS_tree : movePage : ancestor and page must be instances of CMS_page");
+			CMS_grandFather::_raiseError("CMS_tree : movePage : ancestor and page must be instances of CMS_page");
 			return false;
 		}
 		//get page current father
 		$father = CMS_tree::getAncestor($page, 1);
 		//can't move page to the same father (useless...)
 		if (is_object($father) && $newFather->getID() == $father->getID()) {
-			CMS_grandFather::raiseError("CMS_tree : movePage : can't move page under the same father (use changePagesOrder instead)");
+			CMS_grandFather::_raiseError("CMS_tree : movePage : can't move page under the same father (use changePagesOrder instead)");
 			return false;
 		}
 		//check that the page to move ain't the root.
 		$root = CMS_tree::getRoot();
 		if ($root->getID() == $page->getID()) {
-			CMS_grandFather::raiseError("CMS_tree : movePage : can't move root");
+			CMS_grandFather::_raiseError("CMS_tree : movePage : can't move root");
 			return false;
 		}
 		//check that the page to move ain't an ancestor of new father.
 		$lineage = CMS_tree::getLineage($page, $newFather);
 		if ($lineage) {
-			CMS_grandFather::raiseError("CMS_tree : movePage : can't move a page to a descendant of it");
+			CMS_grandFather::_raiseError("CMS_tree : movePage : can't move a page to a descendant of it");
 			return false;
 		}
 		

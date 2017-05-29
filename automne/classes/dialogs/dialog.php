@@ -256,7 +256,7 @@ class CMS_dialog extends CMS_JSDialog
 	function setTreeRoot($treeRoot)
 	{
 		if (!SensitiveIO::isPositiveInteger($treeRoot)) {
-			$this->raiseError("Root is not a positive integer");
+			$this->setError("Root is not a positive integer");
 			return false;
 		} else {
 			$this->_treeRoot = $treeRoot;
@@ -333,7 +333,7 @@ class CMS_dialog extends CMS_JSDialog
 		if (SensitiveIO::isPositiveInteger($bookmark)) {
 			$this->_bookmark = $bookmark;
 		} else {
-			$this->raiseError("Incorrect bookmark type");
+			$this->setError("Incorrect bookmark type");
 		}
 	}
 	
@@ -1052,7 +1052,7 @@ class CMS_dialog extends CMS_JSDialog
 				try {
 					$domdocument->loadXML('<dummy>'.$regs[0].'</dummy>');
 				} catch (DOMException $e) {
-					$this->raiseError('Parse error during search for module-param parameters : '.$e->getMessage()." :\n".io::htmlspecialchars($regs[2]));
+					$this->setError('Parse error during search for module-param parameters : '.$e->getMessage()." :\n".io::htmlspecialchars($regs[2]));
 					return $this->_content;
 				}
 				$paramsTags = $domdocument->getElementsByTagName('dialog-title');
@@ -1082,7 +1082,7 @@ class CMS_dialog extends CMS_JSDialog
 				try {
 					$domdocument->loadXML('<dummy>'.$regs[0].'</dummy>');
 				} catch (DOMException $e) {
-					$this->raiseError('Parse error during search for dialog-pages parameters : '.$e->getMessage()." :\n".io::htmlspecialchars($regs[2]));
+					$this->setError('Parse error during search for dialog-pages parameters : '.$e->getMessage()." :\n".io::htmlspecialchars($regs[2]));
 					return $this->_content;
 				}
 				$paramsTags = $domdocument->getElementsByTagName('dialog-pages');
@@ -1143,7 +1143,7 @@ class CMS_dialog extends CMS_JSDialog
 			$this->_subMenu = $submenu;
 			return true;
 		} else {
-			$this->raiseError("Submenu is not a valid CMS_subMenus object");
+			$this->setError("Submenu is not a valid CMS_subMenus object");
 			return false;
 		}
 	}

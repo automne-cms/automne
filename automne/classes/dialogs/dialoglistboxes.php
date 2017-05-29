@@ -49,7 +49,7 @@ class CMS_dialog_listboxes extends CMS_grandFather
 	  * @param mixed array() $args, This array contains all parameters.
 	  * @return string, XHTML formated
 	  */
-	function getListBox($args) {
+	public static function getListBox($args) {
 		if (!$args || !$args['items_possible']) {
 			return '';
 		}
@@ -116,7 +116,7 @@ class CMS_dialog_listboxes extends CMS_grandFather
 	  * @param mixed array() $args, This array contains all parameters.
 	  * @return string, XHTML formated
 	  */
-	function getListBoxes($args) {
+	public static function getListBoxes($args) {
 
 		// Prepare arguments
 		$s_hiddenField = $args['field_name'];

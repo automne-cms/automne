@@ -90,7 +90,7 @@ class CMS_forms_sender extends CMS_grandFather {
 	function __construct($id = 0) {
 		if ($id) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
-				$this->raiseError("Id is not a positive integer");
+				$this->setError("Id is not a positive integer");
 				return;
 			}
 			$sql = "
@@ -114,7 +114,7 @@ class CMS_forms_sender extends CMS_grandFather {
 					$this->_dateInserted = new CMS_date(date("m-d-Y H:m:s", $data["dateInserted_snd"]));
 				}
 			} else {
-				$this->raiseError("Unknown ID :".$id);
+				$this->setError("Unknown ID :".$id);
 			}
 		} else {
 			$this->_dateInserted = new CMS_date();
@@ -193,7 +193,7 @@ class CMS_forms_sender extends CMS_grandFather {
 		}
 		$q = new CMS_query($sql);
 		if ($q->hasError()) {
-			$this->raiseError("Failed to write");
+			$this->setError("Failed to write");
 			return false;
 		} elseif (!$this->_senderID) {
 			$this->_senderID = $q->getLastInsertedID();
@@ -206,7 +206,7 @@ class CMS_forms_sender extends CMS_grandFather {
 	 * 
 	 * @return CMS_forms_sender 
 	 */
-	function getSenderForContext() {
+	public static function getSenderForContext() {
 		//sender does not exists in DB so create a new one*/
 		$obj = new CMS_forms_sender();
 		$obj->setAttribute('sessionID', Zend_Session::getId());

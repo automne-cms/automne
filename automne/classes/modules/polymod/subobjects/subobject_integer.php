@@ -51,7 +51,7 @@ class CMS_subobject_integer extends CMS_subobject_common
 		//add some complementary checks on values
 		if ($this->_constructorValues['value'] && !is_numeric($this->_constructorValues['value'])) {
 			$this->_value='';
-			$this->raiseError("Setting a non-integer for integer value : ".$this->_constructorValues['value']);
+			$this->setError("Setting a non-integer for integer value : ".$this->_constructorValues['value']);
 			return;
 		}
 	}
@@ -66,7 +66,7 @@ class CMS_subobject_integer extends CMS_subobject_common
 	function setValue($value)
 	{
 		if (!is_null($value) && !is_numeric($value)) {
-			$this->raiseError("Setting a non-integer for integer value : ".$value);
+			$this->setError("Setting a non-integer for integer value : ".$value);
 			return false;
 		}
 		$this->_value = $value;

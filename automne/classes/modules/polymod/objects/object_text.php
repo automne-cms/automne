@@ -316,10 +316,11 @@ class CMS_object_text extends CMS_object_common
 	  *
 	  * @param array $values : the POST result values
 	  * @param string prefixname : the prefix used for post names
+	  * @param boolean newFormat : new automne v4 format (default false for compatibility)
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName) {
+	function setValues($values,$prefixName, $new_format = false) {
 		$params = $this->getParamsValues();
 		if (!$params['html']) {
 			//remove html characters if any then convert line breaks to <br /> tags
@@ -356,7 +357,7 @@ class CMS_object_text extends CMS_object_common
 	  */
 	function getLabel() {
 		if (!is_object($this->_subfieldValues[0])) {
-			$this->raiseError("No subField to get for label : ".print_r($this->_subfieldValues,true));
+			$this->setError("No subField to get for label : ".print_r($this->_subfieldValues,true));
 			return false;
 		}
 		//return $this->_subfieldValues[0]->getValue();
@@ -444,8 +445,8 @@ class CMS_object_text extends CMS_object_common
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language) {
-		$labels = parent::getLabelsStructure($language);
+	function getLabelsStructure(&$language, $objectName = '') {
+		$labels = parent::getLabelsStructure($language, $objectName);
 		$labels['structure']['htmlvalue'] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_HTMLVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['txtvalue'] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_TXTVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['hasvalue'] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_HASVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
@@ -494,12 +495,12 @@ class CMS_object_text extends CMS_object_common
 		}
 		// Check supported operators
 		if ($operator && !in_array($operator, array_merge($supportedOperator, $supportedOperatorForArray))) {
-			$this->raiseError("Unknown search operator : ".$operator.", use default search instead");
+			$this->setError("Unknown search operator : ".$operator.", use default search instead");
 			$operator = false;
 		}
 		// Check operators for array value
 		if (is_array($value) && $operator && !in_array($operator, $supportedOperatorForArray)) {
-			$this->raiseError("Can't use this operator : ".$operator." with an array value, return empty sql");
+			$this->setError("Can't use this operator : ".$operator." with an array value, return empty sql");
 			return '';
 		}
 		$statusSuffix = ($public) ? "_public":"_edited";
