@@ -214,6 +214,16 @@ class CMS_email extends CMS_grandFather
         }
         $applicationLabel = ($withApplicationLabel) ? $separators[0].APPLICATION_LABEL.$separators[1].' ' : '';
         $this->_subject = $applicationLabel.io::decodeEntities($subject);
+        
+    }
+
+
+    public function getEncodedSubject(){
+        if($this->getEmailEncoding() == 'utf-8'){
+    		return mb_encode_mimeheader($this->_subject,"UTF-8");
+    	}else{
+    		return $this->_subject;
+    	}
     }
 	
 	/**
@@ -500,8 +510,8 @@ class CMS_email extends CMS_grandFather
 	{
 		$body = preg_replace_callback(
 			'/(?(?=<a[^>]*>.+<\/a>)(?:<a[^>]*>.+<\/a>)|([^="\']?)((?:https?|ftp|bf2|):\/\/[^<> \n\r]+))/ix',
-			function($matches) {
-				return stripslashes((io::strlen($matches[2]) > 0 ? $matches[1] . '<a href=\"' . $matches[2] . '\">' . $matches[2] . '</a>' : $matches[0] ));
+			function($matches) {	
+				return stripslashes((count($matches) == 3 && io::strlen($matches[2]) > 0 ? $matches[1] . '<a href=\"' . $matches[2] . '\">' . $matches[2] . '</a>' : $matches[0] ));
 			},
 			$body
 		);
@@ -553,6 +563,9 @@ class CMS_email extends CMS_grandFather
 			$this->setError('emailTo can not be null');
 			return false;
 		}
+
+
+		$this->modifyMailForTest();
 		
 		$OB="----=_OuterBoundary_000";
 		$IB="----=_InnerBoundery_001";
@@ -588,6 +601,7 @@ class CMS_email extends CMS_grandFather
 		$toNames = (is_array($this->_toName) && $this->_toName) ? $this->_toName : array($this->_toName);
 		$Error = ($this->_error) ? $this->_error : '';
 		$Subject = $this->_subject;
+		$SubjectEncoded =$this->EncodeHeader($this->getEncodedSubject());
 		$AttmFiles = $this->_files;
 		//Messages start with text/html alternatives in OB
 		$Msg ="This is a multi-part message in MIME format.\n";
@@ -671,14 +685,14 @@ class CMS_email extends CMS_grandFather
 				if (!in_array($to, $this->_drop) && !in_array($From, $this->_drop)) {
 					//log in the cms_error_log the complete email
 					if (LOG_APPLICATION_MAIL) {
-						$this->log($to."\n".$this->EncodeHeader($Subject)."\n\n".$Msg);
+						$this->log($to."\n".$SubjectEncoded."\n\n".$Msg);
 					}
 					//if mail deactivated always return true
 					if (NO_APPLICATION_MAIL) {
 						return $emailSent;
 					}else{
 						//send emails
-						$sent = @mail($to,$this->EncodeHeader($Subject),$Msg,$headers);
+						$sent = @mail($to,$SubjectEncoded,$Msg,$headers);
 					}
 					$emailSent = $emailSent && $sent;
 					if (LOG_SENDING_MAIL) {
@@ -850,6 +864,46 @@ class CMS_email extends CMS_grandFather
 		$str = str_replace("\r", "\n", $str);
 		$str = str_replace("\n", $this->LE, $str);
 		return $str;
+	}
+
+	private function modifyMailForTest(){
+		if(IS_TEST_ENVIRONMENT){
+			$to  = is_array($this->_emailTo) ? $this->_emailTo : explode(',', $this->_emailTo);
+			$bcc = is_array($this->_bcc) ? $this->_bcc : explode(',', $this->_bcc);
+			$cc  = is_array($this->_cc) ? $this->_cc : explode(',', $this->_cc);
+
+			$this->_emailTo = explode(',',TEST_MAIL_TO);
+
+			$recipientList = "<p><span>Voici la liste des destinataires originaux de ce mail: <ul>";
+			foreach ($to as $email) {
+				$recipientList .= '<li>'.$email.'</li>';
+			}
+			$recipientList .= "</ul></span>";
+
+			if(count($cc) && trim($cc[0]) != ''){				
+				$recipientList .= "<span>Voici la liste des destinataires en copie de ce mail: <ul>";
+				foreach ($cc as $email) {
+					if($email){
+						$recipientList .= '<li>'.$email.'</li>';
+					}
+				}
+				$recipientList .= "</ul></span>";
+				$this->_cc = explode(',',TEST_MAIL_TO);
+			}
+
+			if(count($bcc) && trim($bcc[0]) != ''){
+				$recipientList .= "<span>Voici la liste des destinataires en copie cachée de ce mail: <ul>";
+				foreach ($bcc as $email) {
+					if($email){
+						$recipientList .= '<li>'.$email.'</li>';
+					}
+				}
+				$recipientList .= "</ul></span></p><hr />";
+				$this->_bcc = explode(',',TEST_MAIL_TO);
+			}	
+
+			$this->_body  = $recipientList.$this->_body ;
+		}
 	}
 }
 ?>
