@@ -76,7 +76,12 @@ $separator = (strtolower(APPLICATION_DEFAULT_ENCODING) != 'utf-8') ? "\xa7\xa7" 
 //if page has forms
 if (is_array($mod_cms_forms["usedforms"]) && $mod_cms_forms["usedforms"]) {
 	$sender = CMS_forms_sender::getSenderForContext();
+	$alreadyParsed = array();
 	foreach($mod_cms_forms["usedforms"] as $formID) {
+		if(in_array($formID, $alreadyParsed)){
+			continue;
+		}
+		$alreadyParsed[] = $formID;
 		$form = new CMS_forms_formular($formID);
 		$cms_forms_msg[$form->getID()] = $cms_forms_error_msg[$form->getID()] = $cms_forms_token[$form->getID()] = '';
 		//if form exists and is public
