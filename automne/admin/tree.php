@@ -106,6 +106,12 @@ if (!is_object($root) || $root->hasError()) {
 	$view->show();
 }
 
+/* Check if page is useable, if not we use the root page */
+$page = CMS_tree::getPageByID($currentPage);
+if(!$page || !$page->isUseable()){
+	$currentPage = $rootId;
+}
+
 //pageProperty : must be inside the page_properties array
 $pageProperties = array("last_creation_date", "template");
 if ($pageProperty && !SensitiveIO::isInSet($pageProperty, $pageProperties)) {
