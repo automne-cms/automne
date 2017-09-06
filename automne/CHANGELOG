@@ -1,3 +1,16 @@
+V4.4.1 :
+[BUGFIX] : Prevent to send multiple e-mail when using CMS_form
+[BUGFIX] : Fix issue when deleting page and try to use tree in admin
+[BUGFIX] : Fix email subject displayed as UTF-8 code in activity logs
+[BUGFIX] : Fix base href markup
+
+V4.4.0 :
+[FEATURE] : PHP 5.6 compatibility
+*** Changelog lost ***
+
+V4.3.0 : 
+*** Changelog lost ***
+
 V4.2.2
 [BUG] : various bugfixes
 [FEATURE] : Allow modules to interact with page / category / polyobject insertion or update
