@@ -595,7 +595,7 @@ class CMS_tree extends CMS_grandFather
 		$currentPageID = ($IO_CMS_page) ? $page->getID() : $page;
 		$ancestorPageID = ($IO_CMS_page) ? $ancestor->getID() : $ancestor;
 		$table = ($publicTree) ? 'linx_tree_public' : 'linx_tree_edited';
-		while ($currentPageID != APPLICATION_ROOT_PAGE_ID && $currentPageID != $ancestorPageID) {
+		while ($currentPageID != APPLICATION_ROOT_PAGE_ID && $currentPageID != $ancestorPageID && $currentPageID) {
 			if (!isset($fathers[$currentPageID])) {
 				$father = CMS_tree::getFather($currentPageID, false, $publicTree);
 				$fathers[$currentPageID] = $father;
