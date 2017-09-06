@@ -1691,9 +1691,10 @@ class CMS_module_standard extends CMS_module
 						'$atmPort = null;'."\n".
 						'if(isset($_SERVER["HTTP_HOST"])) {'."\n".
 						'	$atmHost = @parse_url($_SERVER["HTTP_HOST"], PHP_URL_HOST) ? @parse_url($_SERVER["HTTP_HOST"], PHP_URL_HOST) : $_SERVER["HTTP_HOST"];'."\n".
+						'	if(!preg_match("/^http/",$atmHost)){$atmHost = "http".(empty($_SERVER["HTTPS"])?"":"s") . "://". $atmHost;}'."\n".
 						'	$atmPort = @parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_PORT) ? \':\'.@parse_url($_SERVER[\'HTTP_HOST\'], PHP_URL_PORT) : \'\';'."\n".
 						'}'."\n".
-						'echo "\t".\'<base href="//\'.$atmHost.$atmPort.PATH_REALROOT_WR.\'/" />\'."\n";'."\n".
+						'echo "\t".\'<base href="\'.$atmHost.$atmPort.PATH_REALROOT_WR.\'/" />\'."\n";'."\n".
 						' ?>';
 						//Append base code
 						return preg_replace('#<head([^>]*)>#', '<head\1>'."\n".$headCode, $tag->getContent());
