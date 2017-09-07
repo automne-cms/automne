@@ -1,0 +1,49 @@
+v1.35
+[FEATURE] : Add template usage for email actions
+[FEATURE] : Add form variables parsing in email subject, header and footer
+
+v1.34
+[BUG] : Correct a bug in select tag : values containing commas are not allowed
+
+v1.33
+[FEATURE] : Add specific PHP code inclusion in forms actions
+
+v1.32
+[BUG] : Correct some bugs with IE and with form edition
+[REFACTOR] : Add max size on file upload
+
+v1.31
+[BUG] : In fields labels with accentued caracters
+[REFACTOR] : UTF-8 support
+
+v1.30
+[BUG] : In exported CSV file format. Do not work correctly in excel for multi-line values
+[BUG] : If a login attempt is done just before a failed login attempt, user is redirected to 403 page even if his credentials are correctly entered
+[REFACTOR] : Add field order management (more consistent for email, error messages, etc.)
+[REFACTOR] : Add sender email address for email actions
+[REFACTOR] : Remove module specific sendmail class, now use CMS_email Automne class
+[REFACTOR] : Add submission date into csv export
+[FEATURE] : Add hidden fields
+[FEATURE] : Add default value to all fields
+[FEATURE] : Add support for meta vars (same as polymod, like {var:type:name})
+[FEATURE] : Add forms fields modification (right clic on a form field to add or modify a field)
+
+v1.21
+[FEATURE] : Catch the referer sent by the standard module during deconnection to redirect user to this referer after reconnection
+
+v1.2
+[BUG] : some minor bugs corrected
+
+v1.1
+[BUG] If form XHTML code contain a quote (in field label), wizard can't create it
+[FEATURE] Add user authentification action
+[FEATURE] Add file upload management
+
+v1.01
+[BUG] Correct some bugs on IE (sometimes, type attribute disappear on input tags)
+
+v1.0
+First module release
+
+v0.1
+Initial import

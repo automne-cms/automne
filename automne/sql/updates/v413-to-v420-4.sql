@@ -1,0 +1,1 @@
+ALTER TABLE  `mod_object_definition` ADD  `multilanguage_mod` INT( 1 ) NOT NULL AFTER  `indexable_mod` ;

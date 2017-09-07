@@ -1,0 +1,760 @@
+/*$Id: main.css,v 1.12 2010/01/19 15:41:26 sebastien Exp $*/
+body {
+	font-family:		tahoma,arial,helvetica,sans-serif;
+	font-size:			small;
+	height:				100%;
+	width:				100%;
+	margin:				0;
+	padding:			0;
+}
+strong {
+	font-weight:		bold;
+}
+.atm-alert {
+	position:			absolute;
+	top:				0px;
+	left:				0px;
+	width:				465px;
+	text-align:			center;
+	background:			#FFFFFF url(../automne/admin/img/logo_small.gif) top right no-repeat;
+	padding:			30px;
+	left:				-150px;
+	margin:				0 auto 0 auto;
+	border-radius: 			10px;
+	-moz-border-radius:		10px;
+	-webkit-border-radius:	10px;
+	box-shadow:				3px 3px 5px #888;
+	-moz-box-shadow:		3px 3px 5px #888;
+	-webkit-box-shadow:		3px 3px 5px #888;
+}
+.atm-frame-green {
+	background:			#FFFFFF url(../automne/admin/img/frame-error.png) 5px 8px no-repeat;
+	padding:			20px 20px 20px 80px;
+}
+.atm-alert ul {
+	list-style:			none;
+}
+.no-ie6 .atm-alert {
+	width:				760px;
+	left:				-340px;
+	border:				2px solid #dde6cb;
+}
+.no-ie6 img {
+	float:				left;
+	margin:				-30px;
+}
+.atm-text-alert {
+	color:				red !important;
+	font-weight:		bold !important;
+}
+.atm-help {
+	cursor:				help;
+}
+.atm-debug {
+	height:				100px;
+	width:				516px;
+	overflow:			auto;
+	background-color:	white;
+	border:				1px solid grey;
+	padding:			2px;
+}
+a.atm-link,
+a.atm-link:link {
+	color:				#6aa408;
+	display:			block;
+	font-size:			11px;
+	font-weight:		bold;
+	text-decoration:	none;
+}
+a.atm-link:hover{
+	color:				#4b7800;
+}
+.search-item .atm-help,
+.atm-result .atm-help {
+	background:			url(../automne/admin/img/atm-help.png) top left no-repeat;
+	padding-left:		6px;
+}
+.x-form-item .atm-help,
+.x-fieldset-header-text .atm-help {
+	background:			#FFFFFF url(../automne/admin/img/atm-help.png) top left no-repeat;
+	padding-left:		6px;
+}
+.x-form-item img.atm-help {
+	background:			none;
+	padding-left:		0;
+}
+.atm-right {
+	float:				right;
+	clear:				both;
+}
+.atm-red {
+	color:				red;
+}
+#atm-main {
+	height:				100%;
+	width:				100%;
+}
+#atm-loading-mask{
+	position:			absolute;
+	left:				0;
+	top:				0;
+    width:				100%;
+    height:				100%;
+    z-index:			20000;
+    background-color:	white;
+}
+#atm-center{
+	position:			absolute;
+	left:				45%;
+	top:				40%;
+	padding:			2px;
+	z-index:			20001;
+    height:				auto;
+}
+#atm-center.no-ie6 {
+	top:				10%;
+}
+.atm-loading-indicator {
+	font:				bold 13px tahoma,arial,helvetica;
+	color:				#555;
+	margin:				0;
+	background-image:	url(../automne/admin/img/logo_small.gif);
+    background-repeat:	no-repeat;
+    background-position:top left;
+    padding:			10px 10px 10px 35px;
+	height:				auto;
+	text-align:			left;
+}
+#atm-server-call {
+	position:			absolute;
+	bottom:				6px;
+	right:				14px;
+	height:				35px;
+	width:				35px;
+	background:			#F3F3F3 url(../automne/admin/img/loading.gif) no-repeat;
+	z-index:			20002;
+	display:			none;
+	border:				1px solid grey;
+	opacity:			0.8;
+	filter:				alpha(opacity=80);
+}
+/*MESSAGE*/
+#atm-msg-div {
+	position:			absolute;
+	left:				0%;
+	top:				10px;
+	width:				300px;
+	z-index:			20000;
+}
+#atm-msg-div h3 {
+	white-space:		nowrap;
+}
+/*STATUS*/
+span.atm-status,
+span.atm-status-tiny {
+	display:			inline;
+	position:			relative;
+}
+.atm-status {
+	height:				20px;
+	margin:				0;
+	padding-top:		0;
+}
+.atm-status-tiny {
+	height:				14px;
+	margin:				0;
+	padding-top:		0;
+}
+.atm-status-draft {
+	position:			absolute;
+}
+.atm-status .atm-status-draft {
+	top:				15px;
+	left:				15px;
+}
+.atm-status-tiny .atm-status-draft {
+	top:				8px;
+	left:				9px;
+}
+.atm-status-lock {
+	position:			absolute;
+	left:				0px;
+}
+.atm-status-siblings {
+	display:			inline;
+	position:			relative;
+}
+/*TABS*/
+#tabPanels .x-tab-panel-header span.x-tab-strip-text {
+	padding-top:		7px;
+	padding-bottom:		7px;
+}
+#tabPanels .x-tab-panel-header .x-tab-with-icon span.x-tab-strip-text {
+	padding-left:		28px;
+}
+span.atm-tab {
+	white-space:		nowrap;
+	height:				16px;
+}
+span.atm-tab .atm-status-tiny {
+	margin-top:			2px;
+}
+span.atm-tab * {
+	float:				left;
+}
+/*FRAMES*/
+#editedFrame {
+	border:				3px solid orange;
+}
+#editionFrame {
+	border:				3px dashed orange;
+}
+#editFrame {
+	border:				3px solid red;
+}
+#atm-page-redirect {
+	height:				100%;
+	width:				100%;
+}
+/*BIG PICTOS*/
+.atm-pic-big-search, .atm-pic-big-tree, .atm-pic-big-favorite, .atm-pic-big-action, .atm-pic-big-add,
+.atm-pic-big-properties, .atm-pic-big-edit, .atm-pic-big-draft, .atm-pic-big-edited{
+	background-image:	url(../automne/admin/img/pictos/big/bigPictos.png);
+}
+
+.x-tab-strip .x-tab-with-icon span.atm-pic-big-search{
+	background-position:5px 3px;
+}
+.x-tab-strip .x-tab-with-icon span.atm-pic-big-tree{
+	background-position:5px -27px;
+}
+.x-tab-strip .x-tab-with-icon span.atm-pic-big-favorite{
+	background-position:5px -57px;
+}
+.x-tab-strip .x-tab-with-icon span.atm-pic-big-action{
+	background-position:0px -87px;
+}
+.x-tab-strip .x-tab-with-icon span.atm-pic-big-add{
+	background-position:0px -117px;
+}
+.x-tab-strip .x-tab-with-icon span.atm-pic-big-properties{
+	background-position:0px -147px;
+}
+.x-tab-strip .x-tab-with-icon span.atm-pic-big-edit{
+	background-position:0px -207px;
+}
+.x-tab-strip .x-tab-with-icon span.atm-pic-big-draft{
+	background-position:0px -237px;
+}
+.x-tab-strip .x-tab-with-icon span.atm-pic-big-edited{
+	background-position:0px -177px;
+}
+.x-tab-strip .x-tab-strip-active span.atm-pic-big-search{
+	background-position:5px -297px;
+}
+.x-tab-strip .x-tab-strip-active span.atm-pic-big-tree{
+	background-position:5px -327px;
+}
+.x-tab-strip .x-tab-strip-active span.atm-pic-big-favorite{
+	background-position:5px -357px;
+}
+.x-tab-strip .x-tab-strip-active span.atm-pic-big-action{
+	background-position:0px -387px;
+}
+.x-tab-strip .x-tab-strip-active span.atm-pic-big-add{
+	background-position:0px -417px;
+}
+.x-tab-strip .x-tab-strip-active span.atm-pic-big-properties{
+	background-position:0px -447px;
+}
+.x-tab-strip .x-tab-strip-active span.atm-pic-big-edit{
+	background-position:0px -507px;
+}
+.x-tab-strip .x-tab-strip-active span.atm-pic-big-draft{
+	background-position:0px -537px;
+}
+.x-tab-strip .x-tab-strip-active span.atm-pic-big-edited{
+	background-position:0px -477px;
+}
+.atm-block-control {
+	display:			inline-block;
+	cursor:				pointer;
+	background-image:	url(../automne/admin/img/row-control.png);
+	background-repeat:	no-repeat;
+	width:				16px;
+	height:				16px;
+	margin:				2px;
+}
+.atm-block-control-del {
+	background-position: 0px -144px;
+}
+.atm-block-control-del-on {
+	background-position: -16px -144px;
+}
+.atm-block-control-modify {
+	background-position: 0px -160px;
+}
+.atm-block-control-modify-on {
+	background-position: -16px -160px;
+}
+.atm-block-control-autoupdate {
+	background-position: 0px -208px;
+}
+.atm-block-control-autoupdate-on {
+	background-position: -16px -208px;
+}
+/*SMALL PICTOS*/
+.atm-pic-logo {
+	background:			url(../automne/admin/img/pictos/logo.gif) no-repeat 0px 4px !important;
+}
+.atm-pic-edit {
+	background:			url(../automne/admin/img/pictos/edit.png) no-repeat 0px 4px !important;
+}
+.atm-pic-tree {
+	background:			url(../automne/admin/img/pictos/tree.png) no-repeat 0px 4px !important;
+}
+.atm-pic-help {
+	background:			url(../automne/admin/img/help.gif) no-repeat 0px 0px !important;
+}
+.atm-upload-file {
+	background: 		url(../automne/admin/img/help.gif) no-repeat 0 0 !important;
+}
+/*TREE*/
+.x-tree-node {
+	margin:				2px 0px 2px 0px;
+}
+.atm-tree-page {
+	font-size:			12px;
+}
+.x-tree-node .atm-status-tiny {
+	margin:				0px 6px 2px 2px;
+}
+.x-tree-node .atm-status-lock {
+	top:				-3px;
+}
+.atm-tree-highlight {
+	background-color:	#EBEBEA;
+}
+.x-tree-node .atm-tree-disabled a {
+	color:				gray	!important;
+	cursor:				default !important;
+}
+.atm-drag {
+	background:			url(../automne/admin/img/drag.gif) no-repeat right 2px !important;
+	cursor:				move !important;
+	padding-right:		15px;
+}
+/*SEARCH*/
+.atm-search-item {
+	border-color:		#FFFFFF rgb(255, 255, 255) rgb(238, 238, 238);
+	border-style:		solid;
+	border-width:		1px;
+	color:				#555555;
+	font-family:		tahoma,arial,helvetica,sans-serif;
+	font-size:			11px;
+	font-size-adjust:	none;
+	font-stretch:		normal;
+	font-style:			normal;
+	font-variant:		normal;
+	font-weight:		normal;
+	line-height:		normal;
+	padding:			3px 10px;
+	white-space:		normal;
+}
+/*Properties table*/
+.atm-table {
+	width:				100%;
+	height:				100%;
+	font-size:			13px;
+}
+.atm-table th {
+	font-weight:		bold !important;
+	width:				120px;
+	text-align:			right;
+	cursor:				help;
+}
+.atm-table th,
+.atm-table td {
+	padding:			6px;
+	vertical-align:		top;
+}
+tr.atm-odd {
+	background-color:	#EFEFEF;
+}
+tr.atm-even {
+	background-color:	#E0E0E0;
+}
+.atm-editable {
+	cursor:				pointer;
+	background-image:	url(../automne/admin/img/pictos/edit.png);
+	background-repeat:	no-repeat;
+	background-position:top right;
+}
+.atm-validate-field {
+	cursor:				pointer;
+	position:			absolute;
+	width:				20px;
+	height:				20px;
+	bottom:				0px;
+	right:				2px;
+	background-image:	url(../automne/admin/img/valider.gif);
+	background-repeat:	no-repeat;
+	background-position:top left;
+}
+.atm-table em {
+	font-style:			italic;
+}
+/*CHOOSER*/
+#atm-chooser-dlg .details{
+    padding: 			10px;
+    text-align: 		center;
+}
+#atm-chooser-dlg .details-info{
+    border-top: 		1px solid #cccccc;
+    font: 				11px Arial, Helvetica, sans-serif;
+    margin-top: 		5px;
+    padding-top: 		5px;
+    text-align: 		left;
+}
+#atm-chooser-dlg .details-info b{
+    color: 				#555555;
+    display: 			block;
+    margin-bottom: 		4px;
+}
+#atm-chooser-dlg .details-info span{
+    display: 			block;
+    margin-bottom: 		5px;
+    margin-left: 		5px;
+}
+
+#atm-chooser-view{
+    background: 		white;
+    font: 				11px Arial, Helvetica, sans-serif;
+}
+#atm-chooser-view .thumb{
+    background: 		#dddddd;
+    padding: 			3px;
+}
+#atm-chooser-view .thumb img{
+    height: 			60px;
+    width: 				80px;
+}
+#atm-chooser-view .thumb-wrap{
+    float: 				left;
+    margin: 			4px;
+    margin-right: 		0;
+    padding: 			5px;
+}
+#atm-chooser-view .thumb-wrap span{
+    display: 			block;
+    overflow: 			hidden;
+    text-align: 		center;
+}
+#atm-chooser-view .x-view-over{
+    border:				1px solid #dddddd;
+    background: 		#efefef url(../automne/ext/resources/images/default/grid/row-over.gif) repeat-x left top;
+    padding: 			4px;
+}
+#atm-chooser-view .x-view-selected{
+    background: 		#DFEDFF;
+    border: 			1px solid #6593cf;
+    padding: 			4px;
+}
+#atm-chooser-view .x-view-selected .thumb{
+    background:			transparent;
+}
+#atm-chooser-view .x-view-selected span{
+    color:				#1A4D8F;
+}
+#atm-chooser-view .loading-indicator {
+    font-size:			11px;
+    background-image:	url('../automne/admin/img/resources/images/grid/loading.gif');
+    background-repeat: 	no-repeat;
+    background-position:left;
+    padding-left:		20px;
+    margin:				10px;
+}
+/*SIDE PANEL*/
+#sidePanel .x-panel {
+	margin-bottom:		3px;
+	margin-right:		2px;
+}
+#sidePanel li {
+	margin-bottom:		5px;
+	margin-top:			3px;
+	font:				bold 11px tahoma,arial,helvetica;
+	color:				#333333;
+}
+/*MENU*/
+.x-menu-text {
+	background:			#F0F0F0;
+	font-weight:		bold;
+}
+/*link field*/
+.atm-link-field {
+	border-left:		1px solid #B5B8C8;
+}
+/*PAGES AND CATEGORIES RIGHTS TREE*/
+.categoriesList ul {
+	padding:			0px;
+	margin:				0 0 0 15px;
+}
+.categoriesList li {
+	margin:				1px 0 1px 0;
+	padding:			0px;
+	list-style-type:	none;
+	border:				1px solid #333333;
+	height:				8px;
+}
+.categoriesList li li {
+	border-right:		0px;
+}
+.categoriesList>li,
+.categoriesList ul>li {
+	height:				auto;
+}
+.categoriesList span {
+	padding:			0;
+	margin:				0;
+}
+.categoriesList table,
+.categoriesList table td {
+	padding:			0;
+	margin:				0;
+	border-collapse:	collapse;
+	font-size:			11px;
+	color:				black;
+	font-weight:		bold;
+}
+ul.categoriesList {
+	list-style-type:	none;
+	padding-left:		0px;
+	padding:			0px;
+	margin:				0 0 0 0;
+}
+.categoriesList table {
+	opacity:			0.8;
+	filter:				alpha(opacity=80);
+	margin:				0;
+}
+.categoriesList input {
+	margin:				3px 0px;
+}
+.categoriesList a,
+.categoriesList a:link {
+	display:			inline;
+	padding:			3px;
+	text-decoration:	none;
+	color:				black;
+}
+/*Modules Search Results Panel*/
+.atm-result{
+	margin:			7px 5px 10px 7px;
+	clear:			both;
+	border:			1px solid #c0c7cb;
+	cursor:			pointer;
+}
+.atm-result .atm-title{
+	font-weight:	bold !important;
+	font-size:		13px !important;
+	margin:			0;
+	display:		block;
+	letter-spacing: 0 !important;
+	color:			#555 !important;
+	text-align:		left;
+	background:		#e3e5e6 url(../automne/admin/img/panel/atm-result.gif) repeat-x left bottom;
+	padding:		3px;
+	border-bottom:	1px solid #e5e8ea;
+}
+.atm-result .atm-title table{
+	width:			100%;
+}
+.atm-result .atm-title .atm-label{
+	width:			100%;
+}
+.atm-result .atm-label .atm-status{
+	vertical-align:	middle;
+}
+.atm-result {
+	background:		#f1f1f1 url(../automne/admin/img/livedata/bg.gif) repeat-x;
+}
+.atm-result .atm-type{
+	border-bottom:	1px solid #e5e8ea;
+	border-top:		1px solid #FFFFFF;
+	font-weight:	bold;
+	font-size:		11px;
+	color:			#F28300;
+	padding:		1px 8px 1px 3px;
+}
+.atm-result .atm-pubrange {
+	font-size:		11px;
+	font-weight:	normal;
+}
+.atm-result .atm-description {
+	margin-top:		0;
+	font-size:		11px;
+	line-height:	18px;
+	zoom:			1;
+	padding:		3px 8px 3px 3px;
+	border-top:		1px solid #fff;
+}
+.atm-result .atm-description .atm-text-alert {
+	float:			right;
+}
+.atm-results .x-view-over .atm-title,
+.x-list-over .atm-result .atm-title{
+	background:		#dce2e5 url(../automne/admin/img/panel/atm-result-over.gif) repeat-x left bottom;
+}
+.atm-results .x-view-selected .atm-title,
+.x-list-selected .atm-result .atm-title{
+	background:		#c6e57a url(../automne/admin/img/panel/atm-result-selected.gif) repeat-x left bottom;
+}
+.atm-results .atm-inactive {
+	color:			#555;
+	opacity:		0.6;
+	filter:			alpha(opacity=60);
+}
+.atm-code {
+	font-family:	monospace,courier,sans-serif;
+}
+.MultiselectDD .atm-result{
+	margin:			2px 3px 2px 3px;
+}
+.MultiselectDD .atm-result .atm-title{
+	font-size:		11px !important;
+	padding:		2px;
+}
+.MultiselectDD .atm-drag {
+	background-position:	right top !important;
+}
+/*HELP panels*/
+.atm-help-panel .rowComment{
+	font-size:		12px;
+	font-weight:	normal;
+	color:			#000000;
+}
+.atm-help-panel .rowComment h1{
+	font-size:		15px;
+	font-weight:	bold;
+	color:			#9FD143;
+	padding:		5px 0 10px 0;
+	text-decoration:underline;
+}
+.atm-help-panel .rowComment h2{
+	font-size:		14px;
+	font-weight:	bold;
+	color:			#9DD03E;
+	padding:		5px 0 10px 0;
+	text-decoration:underline;
+}
+.atm-help-panel .rowComment h3{
+	font-size:		13px;
+	font-weight:	bold;
+	color:			#333333;
+	padding:		10px 0 10px 0;
+	text-decoration:underline;
+}
+.atm-help-panel .rowComment .code{
+	display:		block;
+	width:			95%;
+	font-size:		12px;
+	font-weight:	normal;
+	color:			#000000;
+	background-color:#EEEEEE;
+	border:			solid 1px #CCCCCC;
+	padding:		10px;
+	white-space:	nowrap;
+	overflow:		auto;
+	font-family:	monospace,courier,sans-serif;
+
+}
+.atm-help-panel .keyword{
+	font-size:		12px;
+	font-weight:	bold;
+	color:			#BB1111;
+}
+.atm-help-panel .code .keyword{
+	font-size:		12px;
+	font-weight:	normal;
+	font-style:		italic;
+	color:			#BB1111;
+}
+.atm-help-panel .rowComment ul{
+	padding:		10px 0 0 0;
+	margin:			10px 0 0 25px;
+}
+.atm-help-panel .rowComment li{
+	padding:		0 0 3px 10px;
+}
+.atm-help-panel .vertclair{
+	color:			#339900;
+}
+.atm-help-panel .retrait{
+	margin:			0 0 0 22px;
+}
+.atm-help-panel ul {
+	padding-left:	40px;
+	list-style-type:circle;
+}
+.atm-help-panel li {
+	list-style-type:circle;
+}
+.atm-help-panel table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+.atm-help-panel th {
+	color:				#4B7800;
+	font-weight:		bold;
+	font-size:			12px;
+	text-align:			center;
+}
+.atm-help-panel th,.atm-help-panel td {
+	padding: .5em;
+}
+.atm-help-panel em {
+	font-style:			italic;
+}
+/*server page*/
+ul.atm-server {
+	padding:			10px 0 0 0;
+}
+ul.atm-server li {
+	background-repeat:	no-repeat;
+    background-position:top left;
+	padding:			2px 0 6px 20px;
+}
+.x-panel-body h1 {
+	color:				#4B7800;
+	font-weight:		bold;
+	font-size:			13px;
+	padding-bottom:		10px;
+}
+.x-panel-body {
+	font-size:			12px;
+}
+.x-panel-body h2 {
+	color:				#4B7800;
+	font-weight:		bold;
+	font-size:			12px;
+	padding-bottom:		6px;
+}
+#blackbird .mainBody a {
+	color:				white;
+}
+.CodeMirror-line-numbers {
+	width: 2.2em;
+	color: #aaa;
+	background-color: #eee;
+	text-align: right;
+	padding-right: .3em;
+	font-size: 10pt;
+	font-family: monospace;
+	padding-top: .4em;
+}
+#tabPanels ul.x-tab-strip {
+	width:	auto;
+}
+#tabPanels ul.x-tab-strip-top {
+	background:#DBDBDB url(../automne/admin/img/tabs/tab-strip-bg-atm.gif) no-repeat right top;
+}

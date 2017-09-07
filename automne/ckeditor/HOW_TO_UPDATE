@@ -1,0 +1,5 @@
+- Add //<< ... //!>> arround all content in ckeditor.js file content to preserve CKeditor code from minification
+- Renamme ckeditor_php5.php into ckeditor.php (and delete original ckeditor.php)
+- Keep config.php, templates.php and .htaccess
+- Keep plugins/automneLinks and plugins/polymod directories
+- Delete config.js

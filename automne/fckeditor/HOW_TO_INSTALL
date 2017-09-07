@@ -1,0 +1,48 @@
+Pour mettre à jour fckeditor :
+
+1- sauvegarder le repertoire /automne/fckeditor, il sera nommé dans la suite de ce document comme étant l'original.
+2- renommer fckconfig.js en fckconfig.php
+3- rechercher dans les sources (editor/) fckconfig.js et le renommer en fckconfig.php
+4- reprendre la configuration présente dans le fckconfig.php original
+5- mettre à jour le fichier /automne/classes/dialogs/fckeditor.php avec le nouveau fichier fckeditor.php distribué en conservant les modifications faites dans la méthode Create() et en ajoutant la méthode createAutomneLinks().
+6- ajouter le repertoire automnePlugin présent dans fckeditor original dans la nouvelle version et déclarer les modules dans le fichier fckconfig.php
+7- reprendre le /automne/fckeditor/editor/css/fck_editorarea.css modifié pour Automne (appelé par /css/editor.css)
+8- modifier le filemanager (supprimer les connecteurs autre que PHP et changer les fichiers de configuration en conséquence).
+9- protéger la licence du fichier fckeditor.js par //<< ... //!>>
+
+10- dans le fichier editor/js/fckeditorcode_gecko.js, reprendre (depuis les sources de l'éditeur) toute la fonction FCKPanel.prototype.Show (fichier editor/_source/classes/fckpanel.js) pour y ajouter le support du positionnement des iframes par rapport à un élement parent scrollable (overflow:auto).
+	Pour ce faire, ajouter au calcul de position les lignes suivantes :
+	//MODIFIED FOR AUTOMNE : Append scrollpositionned offset if any
+	if (!FCK.Config.doNotFollowScroll && relElement.nodeType == 9) {
+		try {
+			var scroll = 0;
+			scroll = this._Window.Ext.getCmp(FCK.Name).ownerCt.container.dom.scrollTop;
+			y += scroll;
+		} catch (e){}
+	}
+	//!MODIFIED FOR AUTOMNE
+
+11- dans le fichier fckeditor.js, protéger le commentaire conditionnel en fin de fichier avec des //<< ... //!>> :
+	//<<
+	// Internet Explorer 5.5+
+	if ( /*@cc_on!@*/false && sAgent.indexOf("mac") == -1 )
+	{
+		var sBrowserVersion = navigator.appVersion.match(/MSIE (.\..)/)[1] ;
+		return ( sBrowserVersion >= 5.5 ) ;
+	}
+	//!>>
+	
+12- Dans le fichier editor/fckeditor.html, identifier la ligne comportant la variable JS FCK_InternalCSS.
+	Dans cette variable JS, ajouter à toutes les règles CSS appliquées sur a[name] le flag !important
+	Cela permet de remettre en place l'icône "ancre" sur les ancres dans l'édition des pages.
+	
+13- Ajouter dans le fichier editor/dialog/fck_paste.html les deux lignes suivantes :
+<!-- Added for Automne : specific cleanword function -->
+<script src="../../automnePlugin/fck_cleanword.js" type="text/javascript"></script>
+
+-- Optionnel --
+
+1- zipper les langues inutiles (dans editor/lang/) pour alléger l'archive
+2- zipper le code source (editor/_source)
+3- supprimer les smileys (editor/images/smiley)
+4- supprimer les skins inutiles (editor/skins/...) et les exemples de plugins (editor/plugins)

@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+	<head>
+		<!--
+		Automne tag atm-constant.
+		Replaced by an Automne constant value (here : the application label)
+		-->
+		<title><atm-website name="title" /> - <atm-title /></title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<!--
+		An example of a specific stylesheet used in this template,
+		Must be placed after `main.css` if ever we redefine some styles 
+		(especially body set to `silver` by default)
+		-->
+		<link rel="stylesheet" type="text/css" href="/css/index.css" />
+		<!--
+		Automne tag atm-meta-tags.
+		Replaced by all meta tags of the page.
+		/!\ This tag is required in all templates !
+		-->
+		<atm-meta-tags />
+	</head>
+	<body>
+		<!--
+		Automne tag atm-title.
+		Replaced by the title of the page
+		-->
+		<h1><atm-title /></h1>
+		<h2>Current website properties:</h2>
+		<ul>
+			<li>Website label : <atm-website name="title" /></li>
+			<li>Website root : <atm-website name="root" /></li>
+			<li>Website domain : <atm-website name="domain" /></li>
+			<li>Website codename : <atm-website name="codename" /></li>
+			<li>Website description : <atm-website name="description" /></li>
+			<li>Website language : <atm-website name="language" /></li>
+			<li>Website favicon : <atm-website name="favicon" /></li>
+		</ul>
+		<h2>Current page properties:</h2>
+		<ul>
+			<li>Page ID : <atm-page name="id" /></li>
+			<li>Page URL : <atm-page name="url" /></li>
+			<li>Page title : <atm-page name="title" /></li>
+			<li>Page linktitle : <atm-page name="linktitle" /></li>
+			<li>Page codename : <atm-page name="codename" /></li>
+			<li>Page description : <atm-page name="description" /></li>
+			<li>Page language : <atm-page name="language" /></li>
+			<li>Page author : <atm-page name="author" /></li>		
+		</ul>
+		<!--
+		Automne tag atm-linx type="direct".
+		Replaced by a link to the root page
+		-->
+		<atm-linx type="direct">
+			<selection>
+				<start><nodespec type="relative" value="root" /></start>
+			</selection>
+			<display>
+				<htmltemplate><a href="{{href}}">{{title}}</a></htmltemplate>
+			</display>
+		</atm-linx>
+		<br />
+		<!--
+		Automne tag atm-linx type="desclinks".
+		Replaced by an history link from the root to the current page. All pages are links, except the current
+		-->
+		<atm-linx type="desclinks">
+			<selection>
+				<start><nodespec type="relative" value="root" reloffset="1" /></start>
+				<stop><nodespec type="relative" value="self" /></stop>
+			</selection>
+			<display>
+				<condition property="id" operator="!=">
+					<value type="nodeproperty" property="id"><nodespec type="relative" value="self" /></value>
+				</condition>
+				<htmltemplate>
+					<a href="{{href}}" class="link_nav">{{title}}</a> &gt;
+				</htmltemplate>
+			</display>
+			<display>
+				<condition property="id" operator="==">
+					<value type="nodeproperty" property="id"><nodespec type="relative" value="self" /></value>
+				</condition>
+				<htmltemplate>
+					{{title}}
+				</htmltemplate>
+			</display>
+		</atm-linx>
+		<br />
+		<!--
+		Automne tag atm-linx type="sublinks".
+		Replaced by links to all subpages of the current page.
+		-->
+		<atm-linx type="sublinks">
+			<selection>
+				<start><nodespec type="relative" value="self" /></start>
+			</selection>
+			<display>
+				<htmltemplate><li>&nbsp;<a href="{{href}}" class="sublinks">{{title}}</a></li></htmltemplate>
+				<subleveltemplate><ul>{{sublevel}}</ul></subleveltemplate>
+			</display>
+		</atm-linx>
+		<br />
+		<!--
+		Automne tag atm-linx type="recursivelinks".
+		Replaced by recursive links to all subpages of the current page (limited to the first three levels).
+		-->
+		<atm-linx type="recursivelinks">
+			<selection>
+				<start><nodespec type="relative" value="self" /></start>
+				<condition property="lvl" operator="&lt;=">
+					<value type="data">3</value>
+				</condition>
+			</selection>
+			<display mode="close">
+				<htmltemplate><li class="{{lvlClass}} {{typeClass}}"><a id="{{currentID}}" href="{{href}}">{{title}}</a>{{sublevel}}</li></htmltemplate>
+				<subleveltemplate><ul class="{{lvlClass}}">{{sublevel}}</ul></subleveltemplate>
+			</display>
+		</atm-linx>
+		
+		<!--
+		Automne tag atm-clientspace.
+		-->
+		<div>
+			<!-- Replaced by all content for this page from standard module. -->
+			<atm-clientspace module="standard" id="first" />
+		</div>
+		<br /><br />
+		<!--
+		Automne tag atm-print-link.
+		Replaced by a link to the printable page (which use the print.xml template).
+		-->
+		<atm-print-link keeprequest="true">&nbsp;<a href="{{href}}" target="_blank">Print</a></atm-print-link><br />
+		<!--
+		Automne tag atm-last-update.
+		Replaced by a the date of page last modification.
+		{{date}} : the last modification date (formated by format attribute in atm-last-update tag)
+		{{firstname}} : firstname of page modification author
+		{{lastname}} : lastname of page modification author
+		-->
+		<atm-last-update format="m/d/Y H:i:s"><small>Last update : {{date}} by {{firstname}} {{lastname}}</small></atm-last-update>
+	</body>
+</html>

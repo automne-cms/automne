@@ -1,0 +1,11 @@
+User-agent: *
+Disallow: /automne/
+Disallow: /imagezoom.php
+Disallow: /image-file.php
+Disallow: /is_alive.php
+
+Disallow: /harming/humans
+Disallow: /ignoring/human/orders
+Disallow: /harm/to/self
+
+Allow: /

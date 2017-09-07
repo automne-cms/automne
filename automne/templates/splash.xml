@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+<head>
+	<?php echo '<meta http-equiv="Content-Type" content="text/html; charset='.strtoupper(APPLICATION_DEFAULT_ENCODING).'" />'; ?>
+	<atm-meta-tags />
+	<style type="text/css">
+		body{
+			background-color:	#e9f1da;
+			font-family:		arial,verdana,helvetica,sans-serif;
+			font-size:			12px;
+			margin:				0;
+			padding:			0;
+		}
+		#atm-center{
+			position:			absolute;
+			left:				45%;
+			top:				40%;
+			padding:			2px;
+			z-index:			20001;
+		    height:				auto;
+		}
+		.atm-alert {
+			position:			absolute;
+			top:				0px;
+			left:				0px;
+			width:				400px;
+			border:				1px solid #dde6cb;
+			text-align:			center;
+			background:			#FFFFFF url(<?php echo PATH_ADMIN_WR; ?>/img/logo_small.gif) top right no-repeat;
+			padding:			20px;
+			left:				-150px;
+			margin:				0 auto 0 auto;
+		}
+		hr {
+			border:				1px solid #dde6cb;
+		}
+	</style>
+</head>
+<body>
+<!-- empty template, only used for pages with redirection -->
+<div id="atm-center">
+	<div class="atm-alert">Cette page utilise le mod&egrave;le "Splash" qui ne comporte aucun contenu.<hr />This page use template "Splash" which does not have any content.</div>
+</div>
+</body>
+</html>

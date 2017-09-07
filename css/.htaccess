@@ -1,0 +1,4 @@
+<IfModule mod_negotiation.c>
+	#because IE9 is strict on this point
+	Options -MultiViews
+</IfModule>

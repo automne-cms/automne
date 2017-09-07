@@ -1,0 +1,15 @@
+<config>
+    <param name="showstop" value="1"/>
+    <param name="showvolume" value="1"/>
+    <param name="showtime" value="1"/>
+	<param name="bgcolor1" value="e8e8e8"/>
+    <param name="bgcolor2" value="696969"/>
+    <param name="playercolor" value="bababa"/>
+    <param name="buttonovercolor" value="ffffff"/>
+    <param name="slidercolor1" value="e6e6e6"/>
+    <param name="slidercolor2" value="f7f7f7"/>
+    <param name="sliderovercolor" value="545454"/>
+    <param name="showiconplay" value="1"/>
+	<param name="loadingcolor" value="00bd00"/>
+	<param name="showfullscreen" value="1"/>
+</config>

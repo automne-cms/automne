@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset={{charset}}" />
+	<title>{{subject}}</title>
+	<style type="text/css">
+		body{
+			background-color:	#e9f1da;
+			font-family:		arial,verdana,helvetica,sans-serif;
+			font-size:			12px;
+			margin:				0;
+			padding:			0;
+		}
+		a{
+			text-decoration:	none;
+			color:				#5f900b;
+		}
+		#main{
+			width:				489px;
+			margin:				auto;
+		}
+		#content{
+			background:			url({{href}}/automne/templates/mail/images/logo.jpg) no-repeat 0 0;
+			margin:				auto;
+			background-color:	#ffffff;
+			width:				489px;
+			border-left:		1px solid #dde6cb;
+			border-right:		1px solid #dde6cb;
+			border-bottom:		1px solid #dde6cb;
+			color:				#5d5856;
+			padding-top:		118px;
+			padding-bottom:		20px;
+		}
+		#text {
+			padding-left:		35px;
+			padding-right:		15px;
+		}
+		h1{
+			background:			url({{href}}/automne/templates/mail/images/puce.gif) no-repeat 0 5px;
+			font-size:			16px;
+			color:				#8cbe35;
+			padding-left:		21px;
+			margin-bottom:		20px;
+		}
+		#footer{
+			color:				#5a6266;
+			height:				60px;
+			width:				489px;
+			margin:				auto;
+			padding-top:		8px;
+			text-align:			center;
+			font-size:			11px;
+		}
+	</style>
+</head>
+<body>
+	<div id="main">
+		<div id="content">
+			<div id="text">
+				<h1>{{subject}}</h1>
+				{{body}}
+			</div>
+		</div>
+		<div id="footer">
+			{{footer}}
+		</div>
+	</div>
+</body>
+</html>
+ 

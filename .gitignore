@@ -1,0 +1,44 @@
+# Dev files
+test.php
+test*.php
+config.php
+automne/cms_error_log
+automne/SUBVERSION
+automne/UPDATE.DENY
+utils
+# Automne generated files
+automne/cache/*
+automne/logs/*
+automne/upload/*
+automne/tmp/*
+automne/linx/*
+automne/html/*
+web/*
+html/*
+# Mac OS X files
+.DS_Store
+._*
+# Windows files
+Thumbs.db
+#Module files
+files/*/*/p*_*.*
+files/*/*/r*_*.*
+automne_modules_files/*/*/*.*
+automne_modules_files/*/*.*
+automne_modules_files/*
+#ASE (search engine) files
+automne/ase/*
+# Misc. files
+*.tgz
+*.tar.gz
+*.zip
+# Demo files
+automne/templates/pt*.xml
+automne/templates/rows/r*.xml
+automne/sql/demo*
+css/modules/*
+css/demo/*
+img/demo/*
+js/demo/*
+js/modules/pmedia/pmedia-demo.js
+js/modules/pnews/*
