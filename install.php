@@ -1304,7 +1304,7 @@ $configContent .= '
 			if ($moduleParameters['USE_BACKGROUND_REGENERATOR'][0] == 1 && (!isset($_POST["cliPath"]) || !$_POST["cliPath"])) {
 				$error .= $error_step7_CLI_path.'<br />';
 			} else {
-				$cliPath = $_POST["cliPath"];
+				$cliPath = isset($_POST["cliPath"]) ? $_POST["cliPath"] : "php";
 				//test for CLI proveded
 				if (APPLICATION_IS_WINDOWS) {
 					$return = CMS_patch::executeCommand('"'.$cliPath.'" -v',$error);
