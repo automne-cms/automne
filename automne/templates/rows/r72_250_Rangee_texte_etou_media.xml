@@ -1,0 +1,141 @@
+<row>
+	
+	<!-- message edit -->
+	<atm-edit>
+		<atm-start-tag tag="div" class="alert alert-info text-center" />Choix du style de média
+		<br/>
+	</atm-edit>
+	
+	<!-- variable de choix de bloc -->
+	<?php $align = 'center'; ?>
+	<block module="pmedia" id="mediasChoice" cache="0">
+		<atm-blockvar id="align" vartype="string" varname="align" label="Alignement des médias" description="Choisir l'alignement désiré" mandatory="true" default="center" possibleValues="left:Texte et média à gauche|right:Texte et média à droite|center:Média centré" />
+		<atm-edit>
+			<br/>
+			<br/>
+			Bloc choisi : 
+			<atm-if what="{var:string:align} == 'right'"><b>Texte et média à droite</b></atm-if>
+			<atm-if what="{var:string:align} == 'left'"><b>Texte et média à gauche</b></atm-if>
+			<atm-if what="{var:string:align} == 'center'"><b>Média centré</b></atm-if>
+		</atm-edit>
+	</block>
+	<atm-edit>
+		<atm-end-tag tag="div" />
+	</atm-edit>
+	
+	<!-- gestion de la taille des crop (a adapter selon projet) -->
+	<!-- si media centré choisi -->
+	<atm-if what="{var:string:align} == 'center'" name="centered">
+		<atm-setvar vartype="var" varname="cropSize" value="900" />
+	</atm-if>
+	<!-- sinon -->
+	<atm-else for="centered">
+		<atm-setvar vartype="var" varname="cropSize" value="400" />
+	</atm-else>
+	
+	<!-- affichage du media -->
+	<block module="pmedia" id="medias" cache="0">
+		<atm-search what="{['object2']}" name="mediaresult">
+			<atm-search-param search="mediaresult" type="item" value="block" mandatory="true" />
+			<atm-result search="mediaresult">
+				<div class="pmedia-item pmedia-{var:string:align}">
+					
+					<!-- si oembed -->
+					<atm-if name="oembed" what="{['object2']['fields'][10]['hasValue']}">
+						<div class="pmedia-oembed">{['object2']['fields'][10]['html']|450,300}</div>
+						
+						<!-- oembed legend -->
+						<atm-if what="{['object2']['fields'][10]['type']} != 'link' &amp;&amp; ({['object2']['fields'][10]['authorName']} || {['object2']['fields'][10]['title']})">
+							<div class="pmedia-oembed-legend">
+								<atm-if name="oembedTitle" what="{['object2']['fields'][10]['url']} &amp;&amp; {['object2']['fields'][10]['title']}">
+									<a href="{['object2']['fields'][10]['url']}" target="_blank">{['object2']['fields'][10]['title']}</a>
+								</atm-if>
+								<atm-else for="oembedTitle" what="{['object2']['fields'][10]['title']}">
+									{['object2']['fields'][10]['title']}
+								</atm-else>
+								<atm-if what="{['object2']['fields'][10]['authorName']} &amp;&amp; {['object2']['fields'][10]['title']}"> - </atm-if>
+								<atm-if name="oembedAuthor" what="{['object2']['fields'][10]['authorName']} &amp;&amp; {['object2']['fields'][10]['authorUrl']}">
+									<a href="{['object2']['fields'][10]['authorUrl']}" target="_blank">{['object2']['fields'][10]['authorName']}</a>
+								</atm-if>
+								<atm-else for="oembedAuthor" what="{['object2']['fields'][10]['authorName']}">
+									{['object2']['fields'][10]['authorName']}
+								</atm-else>
+							</div>
+						</atm-if>
+					</atm-if>
+					
+					
+					<!-- si pas oembed -->
+					<atm-else for="oembed">
+						
+						<!-- fichier autre que flv, mp3, jpg, gif et png -->
+						<atm-if what="{['object2']['fields'][9]['filename']} &amp;&amp; {['object2']['fields'][9]['fileExtension']} &amp;&amp; {['object2']['fields'][9]['fileExtension']} != 'flv' &amp;&amp; {['object2']['fields'][9]['fileExtension']} != 'mp3' &amp;&amp; {['object2']['fields'][9]['fileExtension']} != 'jpg' &amp;&amp; {['object2']['fields'][9]['fileExtension']} != 'gif' &amp;&amp; {['object2']['fields'][9]['fileExtension']} != 'png'">
+							<a class="file-legend " href="{['object2']['fields'][9]['file']}" target="_blank" title="{['object2']['label']}">
+								<!-- vignette du fichier -->
+								<atm-if what="{['object2']['fields'][9]['thumbname']}">
+									<img src="{['object2']['fields'][9]['thumb']|200}" alt="{['object2']['label']}" />
+								</atm-if>
+								<!-- nom et icône du fichier -->
+								<span class="file-name">
+									<atm-if what="{['object2']['fields'][9]['fileIcon']}"><img src="{['object2']['fields'][9]['fileIcon']}" alt="Fichier {['object2']['fields'][9]['fileExtension']}" /></atm-if>
+									{['object2']['label']}
+								</span>
+							</a>
+						</atm-if>
+						
+						<!-- fichier flv -->
+						<atm-if what="{['object2']['fields'][9]['fileExtension']} == 'flv'">
+							<script type="text/javascript">
+								swfobject.embedSWF('automne/playerflv/player_flv.swf', 'media-{['object2']['id']}', '320', '200', '9.0.0', 'automne/swfobject/expressInstall.swf', {flv:'{['object2']['fields'][9]['file']}', configxml:'automne/playerflv/config_playerflv.xml', startimage:'{['object2']['fields'][9]['thumb']}'}, {allowfullscreen:true, wmode:'transparent'}, {'style':'float:right;'});
+							</script>
+							<!-- get flash -->
+							<div id="media-{['object2']['id']}" class="pmedia-video" >
+								<p><a href="http://www.adobe.com/go/getflashplayer" target="_blank"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a></p>
+							</div>
+						</atm-if>
+						
+						<!-- fichier mp3 -->
+						<atm-if what="{['object2']['fields'][9]['fileExtension']} == 'mp3'">
+							<!-- vignette -->
+							<atm-if what="{['object2']['fields'][9]['thumbname']}">
+								<img src="{['object2']['fields'][9]['thumb']|200}" alt="{['object2']['label']}" />
+							</atm-if>
+							<!-- lecteur -->
+							<script type="text/javascript">
+								swfobject.embedSWF('automne/playermp3/player_mp3.swf', 'media-{['object2']['id']}', '200', '20', '9.0.0', 'automne/swfobject/expressInstall.swf', {mp3:'{['object2']['fields'][9]['file']}', configxml:'automne/playermp3/config_playermp3.xml'}, {wmode:'transparent'}, {'style':'float:right;'});
+							</script>
+							<!-- get flash -->
+							<div id="media-{['object2']['id']}" class="pmedia-audio" >
+								<p><a href="http://www.adobe.com/go/getflashplayer" target="_blank"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a></p>
+							</div>
+						</atm-if>
+						
+						<!-- fichier image -->
+						<atm-if what="{['object2']['fields'][9]['fileExtension']} == 'jpg' || {['object2']['fields'][9]['fileExtension']} == 'gif' || {['object2']['fields'][9]['fileExtension']} == 'png'">
+							<!-- si vignette possibilite de zoom -->
+							<atm-if what="{['object2']['fields'][9]['thumbWidth']}" name="hasThumb">
+								<a href="{['object2']['fields'][9]['file']}" class="enlarge fancybox" target="_blank" title="{['object2']['label']}"><img class="img-responsive" src="{['object2']['fields'][9]['thumb']|{var:int:cropSize}}" alt="{['object2']['label']}" /></a>
+								<!-- si media centré et présence de description alors on l'affiche -->
+								<atm-if what="{['object2']['fields'][7]['htmlvalue']} &amp;&amp; {var:string:align} == 'center'"><span class="media-desc">{['object2']['fields'][7]['htmlvalue']}</span></atm-if>
+							</atm-if>
+							<!-- si pas vignette pas de zoom -->
+							<atm-else for="hasThumb">
+								<img class="img-responsive" src="{['object2']['fields'][9]['file']|{var:int:cropSize}}" alt="{['object2']['label']}" />
+								<!-- si media centré et présence de description alors on l'affiche -->
+								<atm-if what="{['object2']['fields'][7]['htmlvalue']} &amp;&amp; {var:string:align} == 'center'"><span class="media-desc">{['object2']['fields'][7]['htmlvalue']}</span></atm-if>
+							</atm-else>
+						</atm-if>
+					</atm-else>
+				</div>
+			</atm-result>
+		</atm-search>
+	</block>
+	
+	<!-- si média centré on propose pas de bloc texte -->
+	<atm-if what="{var:string:align} != 'center'">
+		<block module="standard" type="text" id="texte">
+			<div class="clearfix text-media">{{data}}</div>
+		</block>
+	</atm-if>
+	
+</row>
