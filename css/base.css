@@ -41,3 +41,65 @@ html[xmlns] .clearfix {
 	height:					400px;
 	border:					1px solid black;
 }
+
+/* CSS for row Medias 250 */
+.pmedia-item {
+    max-width: 100%; /* prevent responsive width */
+    margin: 10px 0;
+    padding-top: 5px;
+    &.pmedia-center {
+        text-align: center;
+        .enlarge {
+        }
+    }
+    &.pmedia-right {
+        float: right;
+        margin-left: 20px;
+    }
+    &.pmedia-left {
+        float: left;
+        margin-right: 20px;
+        z-index: 50;
+    }
+    .pmedia-oembed,
+    .pmedia-oembed-legend {
+        text-align: center; /* a coordonner avec la largeur de la video dans la rangee */
+        .atm-embed {
+            margin: 0 auto;
+        }
+    }
+    .file-legend {
+        display: block;
+        margin: 0 auto;
+        max-width: 200px; /* a coordonner avec la largeur de la vignette du fichier dans la rangee */
+    }
+    .file-name {
+        display: inline-block;
+        margin-top: 3px;
+        vertical-align: middle;
+        img {
+            display: inline-block;
+            vertical-align: middle;
+        }
+    }
+    object {
+        /* center oembed in his container */
+        float: none !important;
+        margin: 0 auto;
+        display: block;
+    }
+    > img {
+        /* center alone images in his container like sound thumbs */
+        display: block;
+        margin: 0 auto;
+    }
+    img {
+        border: 5px solid @w;
+        .box-shadow(0 0 5px rgba(92,83,83,.68));
+    }
+}
+.text-media {
+    margin: 10px 0 20px;
+    padding-top: 10px;
+    z-index: 1;
+}

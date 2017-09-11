@@ -1654,19 +1654,6 @@ CREATE TABLE `resources` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Structure de la table `scriptsStatuses`
---
-
-DROP TABLE IF EXISTS `scriptsStatuses`;
-CREATE TABLE `scriptsStatuses` (
-  `scriptName_ss` varchar(255) NOT NULL DEFAULT '',
-  `launchDate_ss` datetime DEFAULT NULL,
-  `pidFileName_ss` varchar(255) NOT NULL DEFAULT '',
-  `module_ss` varchar(255) NOT NULL DEFAULT '',
-  `parameters_ss` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
---
 -- Structure de la table `sessions`
 --
 
@@ -1683,6 +1670,19 @@ CREATE TABLE `sessions` (
   KEY `phpid_ses` (`phpid_ses`),
   KEY `user_ses` (`user_ses`),
   KEY `cookie_expire_ses` (`cookie_expire_ses`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Structure de la table `scriptsStatuses`
+--
+
+DROP TABLE IF EXISTS `scriptsStatuses`;
+CREATE TABLE `scriptsStatuses` (
+  `scriptName_ss` varchar(255) NOT NULL DEFAULT '',
+  `launchDate_ss` datetime DEFAULT NULL,
+  `pidFileName_ss` varchar(255) NOT NULL DEFAULT '',
+  `module_ss` varchar(255) NOT NULL DEFAULT '',
+  `parameters_ss` text NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
@@ -1996,6 +1996,7 @@ INSERT INTO `mod_standard_rows` (`id_row`, `uuid_row`, `label_row`, `definitionF
 INSERT INTO `mod_standard_rows` (`id_row`, `uuid_row`, `label_row`, `definitionFile_row`, `modulesStack_row`, `groupsStack_row`, `image_row`, `description_row`, `tplfilter_row`, `useable_row`) VALUES(69, 'e5aeadb6-0baa-102e-80e2-001a6470da26', '230 Texte et Média à Droite', 'r69_Texte_-_Media_a_droite.xml', 'pmedia;standard', '', 'text-mod-right.gif', 'Cette rangée permet d''insérer du texte qu''on pourra mettre en forme via l''éditeur Wysiwyg avec,  aligné à droite, un élément issu du module médiathèque', '', 1);
 INSERT INTO `mod_standard_rows` (`id_row`, `uuid_row`, `label_row`, `definitionFile_row`, `modulesStack_row`, `groupsStack_row`, `image_row`, `description_row`, `tplfilter_row`, `useable_row`) VALUES(70, 'e5aeb0b8-0baa-102e-80e2-001a6470da26', '240 Texte et Média à Gauche', 'r70_240_Texte_et_Media_a_Gauche.xml', 'pmedia;standard', '', 'text-mod-left.gif', 'Cette rangée permet d''insérer du texte qu''on pourra mettre en forme via l''éditeur Wysiwyg avec,  aligné à gauche, un élément issu du module médiathèque', '', 1);
 INSERT INTO `mod_standard_rows` (`id_row`, `uuid_row`, `label_row`, `definitionFile_row`, `modulesStack_row`, `groupsStack_row`, `image_row`, `description_row`, `tplfilter_row`, `useable_row`) VALUES(71, '02163c06-9082-102e-80e2-001a6470da26', '300 Média Centré', 'r71_300_Media_centre.xml', 'pmedia', '', 'module.gif', 'Cette rangée permet d''insérer un élément issu du module médiathèque centré dans la page.', '', 1);
+INSERT INTO `mod_standard_rows` (`id_row`, `uuid_row`, `label_row`, `definitionFile_row`, `modulesStack_row`, `groupsStack_row`, `image_row`, `description_row`, `tplfilter_row`, `useable_row`) VALUES(72, 'fe1e2ad6-e217-11e6-8031-001b21d52ae5', '250 Rangée texte et/ou média', 'r72_250_Rangee_texte_etou_media.xml', 'pmedia', '', 'module.gif', 'Rangée permettant d\'afficher un média centré, un média avec texte à gauche ou un média avec texte à droite', '', 1);
 
 --
 -- Contenu de la table `modulesCategories_i18nm`
