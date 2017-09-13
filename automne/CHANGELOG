@@ -1,3 +1,7 @@
+V4.4.2
+[FEATURE] : New row "Media"
+[FEATURE] : Add extension for video HTML5 to mime.types and whitelist.txt 
+
 V4.4.1 :
 [BUGFIX] : Prevent to send multiple e-mail when using CMS_form
 [BUGFIX] : Fix issue when deleting page and try to use tree in admin
