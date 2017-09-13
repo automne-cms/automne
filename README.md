@@ -4,7 +4,7 @@ Open-Source Content Management System released under the [GNU Public License](ht
 
 ## Requirements
 
- - PHP version ~5.6 (>=5.6 <7)
+ - PHP version >= 7.1
  - MySQL version 5.0.x or greater
  - Apache 1.3.x or greater
 	
