@@ -3,28 +3,29 @@
 /**
  * Functions for displaying user preferences pages
  *
- * @package phpMyAdmin
+ * @package PhpMyAdmin
  */
+if (! defined('PHPMYADMIN')) {
+    exit;
+}
 
 /**
  * Common initialization for user preferences modification pages
  *
- * @uses ConfigFile::getInstance()
- * @uses ConfigFile::resetConfigData()
- * @uses ConfigFile::setAllowedKeys()
- * @uses ConfigFile::setCfgUpdateReadMapping()
- * @uses ConfigFile::updateWithGlobalConfig()
- * @uses PMA_read_userprefs_fieldnames()
+ * @return void
  */
-function PMA_userprefs_pageinit()
+function PMA_userprefsPageInit()
 {
-    $forms_all_keys = PMA_read_userprefs_fieldnames($GLOBALS['forms']);
+    $forms_all_keys = PMA_readUserprefsFieldNames($GLOBALS['forms']);
     $cf = ConfigFile::getInstance();
     $cf->resetConfigData(); // start with a clean instance
     $cf->setAllowedKeys($forms_all_keys);
-    $cf->setCfgUpdateReadMapping(array(
-        'Server/hide_db' => 'Servers/1/hide_db',
-        'Server/only_db' => 'Servers/1/only_db'));
+    $cf->setCfgUpdateReadMapping(
+        array(
+            'Server/hide_db' => 'Servers/1/hide_db',
+            'Server/only_db' => 'Servers/1/only_db'
+        )
+    );
     $cf->updateWithGlobalConfig($GLOBALS['cfg']);
 }
 
@@ -36,22 +37,14 @@ function PMA_userprefs_pageinit()
  * * mtime - last modification time
  * * type - 'db' (config read from pmadb) or 'session' (read from user session)
  *
- * @uses $_SESSION['userconfig']
- * @uses $GLOBALS['controllink']
- * @uses PMA_array_merge_recursive
- * @uses PMA_backquote()
- * @uses PMA_DBI_fetch_single_row()
- * @uses PMA_getRelationsParam()
- * @uses PMA_sqlAddslashes()
- * @uses $GLOBALS['controllink']
  * @return array
  */
-function PMA_load_userprefs()
+function PMA_loadUserprefs()
 {
     $cfgRelation = PMA_getRelationsParam();
-    if (!$cfgRelation['userconfigwork']) {
+    if (! $cfgRelation['userconfigwork']) {
         // no pmadb table, use session storage
-        if (!isset($_SESSION['userconfig'])) {
+        if (! isset($_SESSION['userconfig'])) {
             $_SESSION['userconfig'] = array(
                 'db' => array(),
                 'ts' => time());
@@ -62,11 +55,12 @@ function PMA_load_userprefs()
             'type' => 'session');
     }
     // load configuration from pmadb
-    $query_table = PMA_backquote($cfgRelation['db']) . '.' . PMA_backquote($cfgRelation['userconfig']);
+    $query_table = PMA_Util::backquote($cfgRelation['db']) . '.'
+        . PMA_Util::backquote($cfgRelation['userconfig']);
     $query = '
         SELECT `config_data`, UNIX_TIMESTAMP(`timevalue`) ts
         FROM ' . $query_table . '
-          WHERE `username` = \'' . PMA_sqlAddslashes($cfgRelation['user']) . '\'';
+          WHERE `username` = \'' . PMA_Util::sqlAddSlashes($cfgRelation['user']) . '\'';
     $row = PMA_DBI_fetch_single_row($query, 'ASSOC', $GLOBALS['controllink']);
 
     return array(
@@ -78,62 +72,48 @@ function PMA_load_userprefs()
 /**
  * Saves user preferences
  *
- * @uses $_SESSION['cache'][...]['userprefs']
- * @uses $_SESSION['userconfig']
- * @uses $GLOBALS['cfg']['ServerDefault']
- * @uses $GLOBALS['controllink']
- * @uses $GLOBALS['server']
- * @uses ConfigFile::getConfigArray()
- * @uses ConfigFile::getInstance()
- * @uses PMA_backquote()
- * @uses PMA_DBI_fetch_value
- * @uses PMA_DBI_getError()
- * @uses PMA_DBI_try_query()
- * @uses PMA_Message::addMessage()
- * @uses PMA_Message::error()
- * @uses PMA_Message::rawError()
- * @uses PMA_sqlAddslashes()
- * @uses PMA_getRelationsParam()
- * @param array $config_data
+ * @param array $config_array configuration array
+ *
  * @return true|PMA_Message
  */
-function PMA_save_userprefs(array $config_array)
+function PMA_saveUserprefs(array $config_array)
 {
     $cfgRelation = PMA_getRelationsParam();
     $server = isset($GLOBALS['server'])
         ? $GLOBALS['server']
         : $GLOBALS['cfg']['ServerDefault'];
     $cache_key = 'server_' . $server;
-    if (!$cfgRelation['userconfigwork']) {
+    if (! $cfgRelation['userconfigwork']) {
         // no pmadb table, use session storage
         $_SESSION['userconfig'] = array(
             'db' => $config_array,
             'ts' => time());
         if (isset($_SESSION['cache'][$cache_key]['userprefs'])) {
-           unset($_SESSION['cache'][$cache_key]['userprefs']);
+            unset($_SESSION['cache'][$cache_key]['userprefs']);
         }
         return true;
     }
 
     // save configuration to pmadb
-    $query_table = PMA_backquote($cfgRelation['db']) . '.' . PMA_backquote($cfgRelation['userconfig']);
+    $query_table = PMA_Util::backquote($cfgRelation['db']) . '.'
+        . PMA_Util::backquote($cfgRelation['userconfig']);
     $query = '
         SELECT `username`
         FROM ' . $query_table . '
-          WHERE `username` = \'' . PMA_sqlAddslashes($cfgRelation['user']) . '\'';
+          WHERE `username` = \'' . PMA_Util::sqlAddSlashes($cfgRelation['user']) . '\'';
 
     $has_config = PMA_DBI_fetch_value($query, 0, 0, $GLOBALS['controllink']);
     $config_data = json_encode($config_array);
     if ($has_config) {
         $query = '
             UPDATE ' . $query_table . '
-            SET `config_data` = \'' . PMA_sqlAddslashes($config_data) . '\'
-            WHERE `username` = \'' . PMA_sqlAddslashes($cfgRelation['user']) . '\'';
+            SET `config_data` = \'' . PMA_Util::sqlAddSlashes($config_data) . '\'
+            WHERE `username` = \'' . PMA_Util::sqlAddSlashes($cfgRelation['user']) . '\'';
     } else {
         $query = '
             INSERT INTO ' . $query_table . ' (`username`, `config_data`)
-            VALUES (\'' . PMA_sqlAddslashes($cfgRelation['user']) . '\',
-                \'' . PMA_sqlAddslashes($config_data) . '\')';
+            VALUES (\'' . PMA_Util::sqlAddSlashes($cfgRelation['user']) . '\',
+                \'' . PMA_Util::sqlAddSlashes($config_data) . '\')';
     }
     if (isset($_SESSION['cache'][$cache_key]['userprefs'])) {
         unset($_SESSION['cache'][$cache_key]['userprefs']);
@@ -141,7 +121,9 @@ function PMA_save_userprefs(array $config_array)
     if (!PMA_DBI_try_query($query, $GLOBALS['controllink'])) {
         $message = PMA_Message::error(__('Could not save configuration'));
         $message->addMessage('<br /><br />');
-        $message->addMessage(PMA_Message::rawError(PMA_DBI_getError($GLOBALS['controllink'])));
+        $message->addMessage(
+            PMA_Message::rawError(PMA_DBI_getError($GLOBALS['controllink']))
+        );
         return $message;
     }
     return true;
@@ -151,12 +133,11 @@ function PMA_save_userprefs(array $config_array)
  * Returns a user preferences array filtered by $cfg['UserprefsDisallow']
  * (blacklist) and keys from user preferences form (whitelist)
  *
- * @uses PMA_array_write()
- * @uses PMA_read_userprefs_fieldnames()
  * @param array $config_data path => value pairs
+ *
  * @return array
  */
-function PMA_apply_userprefs(array $config_data)
+function PMA_applyUserprefs(array $config_data)
 {
     $cfg = array();
     $blacklist = array_flip($GLOBALS['cfg']['UserprefsDisallow']);
@@ -166,7 +147,7 @@ function PMA_apply_userprefs(array $config_data)
         $blacklist['Error_Handler/gather'] = true;
         $blacklist['DBG/sql'] = true;
     }
-    $whitelist = array_flip(PMA_read_userprefs_fieldnames());
+    $whitelist = array_flip(PMA_readUserprefsFieldNames());
     // whitelist some additional fields which are custom handled
     $whitelist['ThemeDefault'] = true;
     $whitelist['fontsize'] = true;
@@ -175,10 +156,10 @@ function PMA_apply_userprefs(array $config_data)
     $whitelist['Server/hide_db'] = true;
     $whitelist['Server/only_db'] = true;
     foreach ($config_data as $path => $value) {
-        if (!isset($whitelist[$path]) || isset($blacklist[$path])) {
+        if (! isset($whitelist[$path]) || isset($blacklist[$path])) {
             continue;
         }
-        PMA_array_write($path, $cfg, $value);
+        PMA_arrayWrite($path, $cfg, $value);
     }
     return $cfg;
 }
@@ -187,9 +168,10 @@ function PMA_apply_userprefs(array $config_data)
  * Reads user preferences field names
  *
  * @param array|null $forms
+ *
  * @return array
  */
-function PMA_read_userprefs_fieldnames(array $forms = null)
+function PMA_readUserprefsFieldNames(array $forms = null)
 {
     static $names;
 
@@ -217,15 +199,15 @@ function PMA_read_userprefs_fieldnames(array $forms = null)
  *
  * No validation is done!
  *
- * @uses PMA_load_userprefs()
- * @uses PMA_save_userprefs()
- * @param string $cfg_name
- * @param mixed $value
+ * @param string $path          configuration
+ * @param mixed  $value         value
+ * @param mixed  $default_value default value
+ *
  * @return void
  */
-function PMA_persist_option($path, $value, $default_value)
+function PMA_persistOption($path, $value, $default_value)
 {
-    $prefs = PMA_load_userprefs();
+    $prefs = PMA_loadUserprefs();
     if ($value === $default_value) {
         if (isset($prefs['config_data'][$path])) {
             unset($prefs['config_data'][$path]);
@@ -235,82 +217,72 @@ function PMA_persist_option($path, $value, $default_value)
     } else {
         $prefs['config_data'][$path] = $value;
     }
-    PMA_save_userprefs($prefs['config_data']);
+    PMA_saveUserprefs($prefs['config_data']);
 }
 
 /**
  * Redirects after saving new user preferences
  *
- * @uses ConfigFile::getConfigArray()
- * @uses ConfigFile::getInstance()
- * @uses PMA_generate_common_url()
- * @uses PMA_sendHeaderLocation()
- * @param array  $forms
- * @param array  $old_settings
  * @param string $file_name
  * @param array  $params
  * @param string $hash
+ *
+ * @return void
  */
-function PMA_userprefs_redirect(array $forms, array $old_settings, $file_name, $params = null, $hash = null)
-{
-    $reload_left_frame = isset($params['reload_left_frame']) && $params['reload_left_frame'];
-    if (!$reload_left_frame) {
-        // compute differences and check whether left frame should be refreshed
-        $old_settings = isset($old_settings['config_data'])
-                ? $old_settings['config_data']
-                : array();
-        $new_settings = ConfigFile::getInstance()->getConfigArray();
-        $diff_keys = array_keys(array_diff_assoc($old_settings, $new_settings)
-                + array_diff_assoc($new_settings, $old_settings));
-        $check_keys = array('NaturalOrder', 'MainPageIconic', 'DefaultTabDatabase',
-            'Server/hide_db', 'Server/only_db');
-        $check_keys = array_merge($check_keys, $forms['Left_frame']['Left_frame'],
-             $forms['Left_frame']['Left_databases']);
-        $diff = array_intersect($check_keys, $diff_keys);
-        $reload_left_frame = !empty($diff);
-    }
-
+function PMA_userprefsRedirect($file_name,
+    $params = null, $hash = null
+) {
     // redirect
-    $url_params = array(
-        'saved' => 1,
-        'reload_left_frame' => $reload_left_frame);
+    $url_params = array('saved' => 1);
     if (is_array($params)) {
         $url_params = array_merge($params, $url_params);
     }
     if ($hash) {
         $hash = '#' . urlencode($hash);
     }
-    PMA_sendHeaderLocation($GLOBALS['cfg']['PmaAbsoluteUri'] . $file_name
-            . PMA_generate_common_url($url_params, '&') . $hash);
+    PMA_sendHeaderLocation(
+        $GLOBALS['cfg']['PmaAbsoluteUri'] . $file_name
+        . PMA_generate_common_url($url_params, '&') . $hash
+    );
 }
 
 /**
- * Shows form which allows to quickly load settings stored in browser's local storage
+ * Shows form which allows to quickly load
+ * settings stored in browser's local storage
  *
- * @uses $_REQUEST['prefs_autoload']
- * @uses $_SESSION['userprefs_autoload']
- * @uses PMA_generate_common_hidden_inputs()
+ * @return string
  */
-function PMA_userprefs_autoload_header()
+function PMA_userprefsAutoloadGetHeader()
 {
-    if (isset($_REQUEST['prefs_autoload']) && $_REQUEST['prefs_autoload'] == 'hide') {
+    $retval = '';
+
+    if (isset($_REQUEST['prefs_autoload'])
+        && $_REQUEST['prefs_autoload'] == 'hide'
+    ) {
         $_SESSION['userprefs_autoload'] = true;
-        exit;
+    } else {
+        $script_name = basename(basename($GLOBALS['PMA_PHP_SELF']));
+        $return_url = htmlspecialchars(
+            $script_name . '?' . http_build_query($_GET, '', '&')
+        );
+
+        $retval .= '<div id="prefs_autoload" class="notice" style="display:none">';
+        $retval .= '<form action="prefs_manage.php" method="post">';
+        $retval .= PMA_generate_common_hidden_inputs();
+        $retval .= '<input type="hidden" name="json" value="" />';
+        $retval .= '<input type="hidden" name="submit_import" value="1" />';
+        $retval .= '<input type="hidden" name="return_url" value="' . $return_url . '" />';
+        $retval .=  __(
+            'Your browser has phpMyAdmin configuration for this domain. '
+            . 'Would you like to import it for current session?'
+        );
+        $retval .= '<br />';
+        $retval .= '<a href="#yes">' . __('Yes') . '</a>';
+        $retval .= ' / ';
+        $retval .= '<a href="#no">' . __('No') . '</a>';
+        $retval .= '</form>';
+        $retval .= '</div>';
     }
-    $script_name = basename(basename($GLOBALS['PMA_PHP_SELF']));
-    $return_url = $script_name . '?' . http_build_query($_GET, '', '&');
-    ?>
-    <div id="prefs_autoload" class="notice" style="display:none">
-        <form action="prefs_manage.php" method="post">
-            <?php echo PMA_generate_common_hidden_inputs() . "\n"; ?>
-            <input type="hidden" name="json" value="" />
-            <input type="hidden" name="submit_import" value="1" />
-            <input type="hidden" name="return_url" value="<?php echo htmlspecialchars($return_url) ?>" />
-            <?php echo __('Your browser has phpMyAdmin configuration for this domain. Would you like to import it for current session?') ?>
-            <br />
-            <a href="#yes"><?php echo __('Yes') ?></a> / <a href="#no"><?php echo __('No') ?></a>
-        </form>
-    </div>
-    <?php
+    return $retval;
 }
 ?>

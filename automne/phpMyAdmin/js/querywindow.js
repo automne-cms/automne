@@ -1,2 +1,25 @@
-function PMA_queryAutoCommit(){document.getElementById("sqlqueryform").target=window.opener.frame_content.name;document.getElementById("sqlqueryform").submit()}function PMA_querywindowCommit(a){document.getElementById("hiddenqueryform").querydisplay_tab.value=a;document.getElementById("hiddenqueryform").submit();return false}function PMA_querywindowSetFocus(){document.getElementById("sqlquery").focus()}
-function PMA_querywindowResize(){if(typeof self.sizeToContent=="function"){self.sizeToContent();self.resizeBy(10,50)}else if(document.getElementById&&typeof document.getElementById("querywindowcontainer")!="undefined"){var a=document.getElementById("querywindowcontainer").offsetWidth,b=document.getElementById("querywindowcontainer").offsetHeight;self.resizeTo(a+45,b+75)}};
+/* vim: set expandtab sw=4 ts=4 sts=4: */
+function PMA_queryAutoCommit()
+{
+    var sqlqueryform = document.getElementById('sqlqueryform');
+    sqlqueryform.target = window.opener.frame_content.name;
+    sqlqueryform.submit();
+    return;
+}
+
+function PMA_querywindowCommit(tab)
+{
+    var $hiddenqueryform = $('#hiddenqueryform');
+    $hiddenqueryform.find("input[name='querydisplay_tab']").val(tab);
+    $hiddenqueryform.addClass('disableAjax').submit();
+    return false;
+}
+
+function PMA_querywindowSetFocus()
+{
+    $('#sqlquery').focus();
+}
+
+$(function () {
+    $('#topmenucontainer').css('padding', 0);
+});

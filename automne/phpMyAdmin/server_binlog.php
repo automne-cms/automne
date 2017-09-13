@@ -3,42 +3,18 @@
 /**
  * display the binary logs and the content of the selected
  *
- * @uses    $cfg['MainPageIconic']
- * @uses    $cfg['NavigationBarIconic']
- * @uses    $cfg['MaxRows']
- * @uses    $cfg['LimitChars']
- * @uses    $pmaThemeImage
- * @uses    $binary_logs
- * @uses    PMA_generate_common_hidden_inputs()
- * @uses    PMA_generate_common_url()
- * @uses    PMA_formatByteDown()
- * @uses    PMA_DBI_fetch_assoc()
- * @uses    PMA_strlen()
- * @uses    PMA_substr()
- * @uses    $_REQUEST['pos']
- * @uses    $_REQUEST['log']
- * @uses    $_REQUEST['dontlimitchars']
- * @uses    count()
- * @uses    array_key_exists()
- * @uses    implode()
- * @uses    htmlspecialchars()
- * @package phpMyAdmin
+ * @package PhpMyAdmin
  */
 
 /**
  *
  */
-require_once './libraries/common.inc.php';
+require_once 'libraries/common.inc.php';
 
 /**
  * Does the common work, provides $binary_logs
  */
-require_once './libraries/server_common.inc.php';
-
-/**
- * Displays the links
- */
-require_once './libraries/server_links.inc.php';
+require_once 'libraries/server_common.inc.php';
 
 $url_params = array();
 
@@ -52,7 +28,9 @@ if (! isset($_REQUEST['pos'])) {
     $pos = (int) $_REQUEST['pos'];
 }
 
-if (! isset($_REQUEST['log']) || ! array_key_exists($_REQUEST['log'], $binary_logs)) {
+if (! isset($_REQUEST['log'])
+    || ! array_key_exists($_REQUEST['log'], $binary_logs)
+) {
     $_REQUEST['log'] = '';
 } else {
     $url_params['log'] = $_REQUEST['log'];
@@ -92,7 +70,7 @@ if (empty($_REQUEST['dontlimitchars'])) {
  * Displays the sub-page heading
  */
 echo '<h2>' . "\n"
-   . ($GLOBALS['cfg']['MainPageIconic'] ? '<img src="' . $pmaThemeImage . 's_tbl.png" width="16" height="16" border="0" hspace="2" align="middle" alt="" />' : '')
+   . PMA_Util::getImage('s_tbl.png')
    . '    ' . __('Binary log') . "\n"
    . '</h2>' . "\n";
 
@@ -107,21 +85,30 @@ if (count($binary_logs) > 1) {
     echo '</legend><select name="log">';
     $full_size = 0;
     foreach ($binary_logs as $each_log) {
-        echo '<option value="' . $each_log['Log_name'] . '"';
+        echo '<option value="' . htmlspecialchars($each_log['Log_name']) . '"';
         if ($each_log['Log_name'] == $_REQUEST['log']) {
             echo ' selected="selected"';
         }
-        echo '>' . $each_log['Log_name'];
+        echo '>' . htmlspecialchars($each_log['Log_name']);
         if (isset($each_log['File_size'])) {
             $full_size += $each_log['File_size'];
-            echo ' (' . implode(' ', PMA_formatByteDown($each_log['File_size'], 3, 2)) . ')';
+            echo ' ('
+                . implode(
+                    ' ',
+                    PMA_Util::formatByteDown(
+                        $each_log['File_size'], 3, 2
+                    )
+                )
+                . ')';
         }
         echo '</option>';
     }
     echo '</select> ';
     echo count($binary_logs) . ' ' . __('Files') . ', ';
     if ($full_size > 0) {
-        echo implode(' ', PMA_formatByteDown($full_size));
+        echo implode(
+            ' ', PMA_Util::formatByteDown($full_size)
+        );
     }
     echo '</fieldset>';
     echo '<fieldset class="tblFooters">';
@@ -130,17 +117,16 @@ if (count($binary_logs) > 1) {
     echo '</form>';
 }
 
-PMA_showMessage(PMA_Message::success());
+echo PMA_Util::getMessage(PMA_Message::success());
 
 /**
  * Displays the page
  */
-?>
-<table border="0" cellpadding="2" cellspacing="1">
-<thead>
-<tr>
-    <td colspan="6" align="center">
-<?php
+echo '<table cellpadding="2" cellspacing="1">'
+    . '<thead>'
+    . '<tr>'
+    . '<td colspan="6" class="center">';
+
 // we do not now how much rows are in the binlog
 // so we can just force 'NEXT' button
 if ($pos > 0) {
@@ -149,11 +135,16 @@ if ($pos > 0) {
         $this_url_params['pos'] = $pos - $GLOBALS['cfg']['MaxRows'];
     }
 
-    echo '<a href="./server_binlog.php' . PMA_generate_common_url($this_url_params) . '"';
-    if ($GLOBALS['cfg']['NavigationBarIconic']) {
-        echo ' title="' . __('Previous') . '">';
+    echo '<a href="server_binlog.php'
+        . PMA_generate_common_url($this_url_params) . '"';
+    if (in_array(
+        $GLOBALS['cfg']['TableNavigationLinksMode'],
+        array('icons', 'both')
+        )
+    ) {
+        echo ' title="' . _pgettext('Previous page', 'Previous') . '">';
     } else {
-        echo '>' . __('Previous');
+        echo '>' . _pgettext('Previous page', 'Previous');
     } // end if... else...
     echo ' &lt; </a> - ';
 }
@@ -164,74 +155,73 @@ if ($pos > 0) {
 }
 if ($dontlimitchars) {
     unset($this_url_params['dontlimitchars']);
-    ?>
-        <a href="./server_binlog.php<?php echo PMA_generate_common_url($this_url_params); ?>"
-            title="<?php __('Truncate Shown Queries'); ?>">
-                <img src="<?php echo $pmaThemeImage; ?>s_partialtext.png"
-                    alt="<?php echo __('Truncate Shown Queries'); ?>" /></a>
-    <?php
+    $tempTitle = __('Truncate Shown Queries');
+    $tempImgMode = 'partial';
 } else {
     $this_url_params['dontlimitchars'] = 1;
-    ?>
-        <a href="./server_binlog.php<?php echo PMA_generate_common_url($this_url_params); ?>"
-            title="<?php __('Show Full Queries'); ?>">
-                <img src="<?php echo $pmaThemeImage; ?>s_fulltext.png"
-                    alt="<?php echo __('Show Full Queries'); ?>" /></a>
-    <?php
+    $tempTitle = __('Show Full Queries');
+    $tempImgMode = 'full';
 }
+echo '<a href="server_binlog.php' . PMA_generate_common_url($this_url_params)
+    . '" title="' . $tempTitle . '">'
+    . '<img src="' .$pmaThemeImage . 's_' . $tempImgMode . 'text.png"'
+    . 'alt="' . $tempTitle . '" /></a>';
+
 // we do not now how much rows are in the binlog
 // so we can just force 'NEXT' button
 if ($num_rows >= $GLOBALS['cfg']['MaxRows']) {
     $this_url_params = $url_params;
     $this_url_params['pos'] = $pos + $GLOBALS['cfg']['MaxRows'];
-    echo ' - <a href="./server_binlog.php' . PMA_generate_common_url($this_url_params) . '"';
-    if ($GLOBALS['cfg']['NavigationBarIconic']) {
-        echo ' title="' . __('Next') . '">';
+    echo ' - <a href="server_binlog.php' . PMA_generate_common_url($this_url_params)
+        . '"';
+    if (in_array(
+        $GLOBALS['cfg']['TableNavigationLinksMode'],
+        array('icons', 'both')
+        )
+    ) {
+        echo ' title="' . _pgettext('Next page', 'Next') . '">';
     } else {
-        echo '>' . __('Next');
+        echo '>' . _pgettext('Next page', 'Next');
     } // end if... else...
     echo ' &gt; </a>';
 }
-?>
-    </td>
-</tr>
-<tr>
-    <th><?php echo __('Log name'); ?></th>
-    <th><?php echo __('Position'); ?></th>
-    <th><?php echo __('Event type'); ?></th>
-    <th><?php echo __('Server ID'); ?></th>
-    <th><?php echo __('Original position'); ?></th>
-    <th><?php echo __('Information'); ?></th>
-</tr>
-</thead>
-<tbody>
-<?php
+
+echo  '</td>'
+    . '</tr>'
+    . '<tr>'
+    . '<th>' . __('Log name') . '</th>'
+    . '<th>' . __('Position') . '</th>'
+    . '<th>' . __('Event type') . '</th>'
+    . '<th>' . __('Server ID') . '</th>'
+    . '<th>' . __('Original position') . '</th>'
+    . '<th>' . __('Information') . '</th>'
+    . '</tr>'
+    . '</thead>'
+    . '<tbody>';
+
 $odd_row = true;
 while ($value = PMA_DBI_fetch_assoc($result)) {
-    if (! $dontlimitchars && PMA_strlen($value['Info']) > $GLOBALS['cfg']['LimitChars']) {
-        $value['Info'] = PMA_substr($value['Info'], 0, $GLOBALS['cfg']['LimitChars']) . '...';
+    if (! $dontlimitchars
+        && PMA_strlen($value['Info']) > $GLOBALS['cfg']['LimitChars']
+    ) {
+        $value['Info'] = PMA_substr(
+            $value['Info'], 0, $GLOBALS['cfg']['LimitChars']
+        ) . '...';
     }
-    ?>
-<tr class="noclick <?php echo $odd_row ? 'odd' : 'even'; ?>">
-    <td>&nbsp;<?php echo $value['Log_name']; ?>&nbsp;</td>
-    <td align="right">&nbsp;<?php echo $value['Pos']; ?>&nbsp;</td>
-    <td>&nbsp;<?php echo $value['Event_type']; ?>&nbsp;</td>
-    <td align="right">&nbsp;<?php echo $value['Server_id']; ?>&nbsp;</td>
-    <td align="right">&nbsp;<?php echo isset($value['Orig_log_pos']) ? $value['Orig_log_pos'] : $value['End_log_pos']; ?>&nbsp;</td>
-    <td>&nbsp;<?php echo htmlspecialchars($value['Info']); ?>&nbsp;</td>
-</tr>
-    <?php
+
+    echo '<tr class="noclick ' . ($odd_row ? 'odd' : 'even') . '">'
+        . '<td>&nbsp;' . $value['Log_name'] . '&nbsp;</td>'
+        . '<td class="right">&nbsp;' . $value['Pos'] . '&nbsp;</td>'
+        . '<td>&nbsp;' . $value['Event_type'] . '&nbsp;</td>'
+        . '<td class="right">&nbsp;' . $value['Server_id'] . '&nbsp;</td>'
+        . '<td class="right">&nbsp;'
+        . (isset($value['Orig_log_pos'])
+        ? $value['Orig_log_pos'] : $value['End_log_pos'])
+        . '&nbsp;</td>'
+        . '<td>&nbsp;' . htmlspecialchars($value['Info']) . '&nbsp;</td>'
+        . '</tr>';
+
     $odd_row = !$odd_row;
 }
-?>
-</tbody>
-</table>
-<?php
-
-
-/**
- * Sends the footer
- */
-require './libraries/footer.inc.php';
-
-?>
+echo '</tbody>'
+    . '</table>';

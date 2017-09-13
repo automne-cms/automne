@@ -1,9 +1,10 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * generate an WebApp file for Prism / WebRunner
  *
- * @see http://wiki.mozilla.org/Prism
- * @package phpMyAdmin
+ * @package PhpMyAdmin
+ * @see     http://wiki.mozilla.org/Prism
  */
 
 /**
@@ -44,11 +45,11 @@ foreach ($parameters as $key => $value) {
     $ini_file .= $key . '=' . $value . "\n";
 }
 
-$zip = new zipfile;
+PMA_downloadHeader($name, 'application/webapp', 0, false);
+
+$zip = new ZipFile;
+$zip->setDoWrite();
 $zip->addFile($ini_file, 'webapp.ini');
 $zip->addFile(file_get_contents($icon), 'phpMyAdmin.ico');
-
-header('Content-Type: application/webapp');
-header('Content-Disposition: attachment; filename="' . $name . '"');
-echo $zip->file();
+$zip->file();
 ?>

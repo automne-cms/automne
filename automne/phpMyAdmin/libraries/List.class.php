@@ -3,14 +3,17 @@
 /**
  * hold the PMA_List base class
  *
- * @package phpMyAdmin
+ * @package PhpMyAdmin
  */
+if (! defined('PHPMYADMIN')) {
+    exit;
+}
 
 /**
  * @todo add caching
- * @since phpMyAdmin 2.9.10
  * @abstract
- * @package phpMyAdmin
+ * @package PhpMyAdmin
+ * @since   phpMyAdmin 2.9.10
  */
 abstract class PMA_List extends ArrayObject
 {
@@ -27,10 +30,7 @@ abstract class PMA_List extends ArrayObject
     /**
      * returns item only if there is only one in the list
      *
-     * @uses    count()
-     * @uses    reset()
-     * @uses    PMA_List::getEmpty() to return it
-     * @return  single item
+     * @return single item
      */
     public function getSingleItem()
     {
@@ -44,8 +44,7 @@ abstract class PMA_List extends ArrayObject
     /**
      * defines what is an empty item (0, '', false or null)
      *
-     * @uses    PMA_List::$item_empty as return value
-     * @return  mixed   an empty item
+     * @return mixed   an empty item
      */
     public function getEmpty()
     {
@@ -56,11 +55,7 @@ abstract class PMA_List extends ArrayObject
      * checks if the given db names exists in the current list, if there is
      * missing at least one item it returns false otherwise true
      *
-     * @uses    PMA_List::$items to check for existence of specific item
-     * @uses    func_get_args()
-     * @uses    in_array() to check if given arguments exists in PMA_List::$items
-     * @param   string  $db_name,..     one or more mysql result resources
-     * @return  boolean true if all items exists, otheriwse false
+     * @return boolean true if all items exists, otheriwse false
      */
     public function exists()
     {
@@ -77,12 +72,11 @@ abstract class PMA_List extends ArrayObject
     /**
      * returns HTML <option>-tags to be used inside <select></select>
      *
-     * @uses    PMA_List::$items to build up the option items
-     * @uses    PMA_List::getDefault() to mark this as selected if requested
-     * @uses    htmlspecialchars() to escape items
-     * @param   mixed   $selected   the selected db or true for selecting current db
-     * @param   boolean $include_information_schema
-     * @return  string  HTML option tags
+     * @param mixed   $selected                   the selected db or true for
+     *                                            selecting current db
+     * @param boolean $include_information_schema whether include information schema
+     *
+     * @return string  HTML option tags
      */
     public function getHtmlOptions($selected = '', $include_information_schema = true)
     {
@@ -92,7 +86,9 @@ abstract class PMA_List extends ArrayObject
 
         $options = '';
         foreach ($this as $each_item) {
-            if (false === $include_information_schema && 'information_schema' === $each_item) {
+            if (false === $include_information_schema
+                && PMA_is_system_schema($each_item)
+            ) {
                 continue;
             }
             $options .= '<option value="' . htmlspecialchars($each_item) . '"';
@@ -108,8 +104,7 @@ abstract class PMA_List extends ArrayObject
     /**
      * returns default item
      *
-     * @uses    PMA_List::getEmpty() as fallback
-     * @return  string  default item
+     * @return string  default item
      */
     public function getDefault()
     {
@@ -119,6 +114,7 @@ abstract class PMA_List extends ArrayObject
     /**
      * builds up the list
      *
+     * @return void
      */
     abstract public function build();
 }
