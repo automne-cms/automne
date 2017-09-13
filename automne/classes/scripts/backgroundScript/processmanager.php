@@ -59,7 +59,7 @@ class processManager
 	  * @return void
 	  * @access public
 	  */
-	function processManager($scriptName)
+	function __construct($scriptName)
 	{
 		if (!$scriptName) {
 			return;

@@ -58,7 +58,7 @@ class CMS_moduleValidation extends CMS_module
 	  * @return void
 	  * @access public
 	  */
-	function CMS_moduleValidation($codename)
+	public function __construct($codename)
 	{
 		//Initialize object.
 		parent::__construct($codename);
@@ -72,7 +72,7 @@ class CMS_moduleValidation extends CMS_module
 	  * @return object The module tag representation instance
 	  * @access public
 	  */
-	function getTagRepresentation($tag, $args, $compatArg = false)
+	public function getTagRepresentation($tag, $args, $compatArg = false)
 	{
 		switch ($tag->getName()) {
 			case "atm-clientspace":
@@ -94,7 +94,7 @@ class CMS_moduleValidation extends CMS_module
 	  * @return array(CMS_resourceValidation) The resourceValidations objects, false if none found
 	  * @access public
 	  */
-	function getValidations($user)
+	public function getValidations($user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("User is not a valid CMS_profile_user object");
@@ -131,7 +131,7 @@ class CMS_moduleValidation extends CMS_module
 	  * @return array(CMS_resourceValidation) The resourceValidations objects, false if none found
 	  * @access public
 	  */
-	function getValidationsInfo($user)
+	public function getValidationsInfo($user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("User is not a valid CMS_profile_user object");
@@ -168,7 +168,7 @@ class CMS_moduleValidation extends CMS_module
 	  * @return integer
 	  * @access public
 	  */
-	function getValidationsCount($user)
+	public function getValidationsCount($user)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("User is not a valid CMS_profile_user object");
@@ -193,7 +193,7 @@ class CMS_moduleValidation extends CMS_module
 	  * @return array(CMS_resourceValidation) The resourceValidations objects, false if noen found
 	  * @access public
 	  */
-	function getValidationsByEditions(&$user, $editions)
+	public function getValidationsByEditions(&$user, $editions)
 	{
 		$language = $user->getLanguage();
 		$validations = array();
@@ -280,7 +280,7 @@ class CMS_moduleValidation extends CMS_module
 	  * @return array(CMS_resourceValidation) The resourceValidations objects, false if noen found
 	  * @access public
 	  */
-	function getValidationsInfoByEditions(&$user, $editions, $returnCount = false)
+	public function getValidationsInfoByEditions(&$user, $editions, $returnCount = false)
 	{
 		$language = $user->getLanguage();
 		$validations = array();
@@ -362,7 +362,7 @@ class CMS_moduleValidation extends CMS_module
 	  * @return array(CMS_resourceValidation) The resourceValidations objects, false if none found for the given user.
 	  * @access public
 	  */
-	function getValidationByID($itemID, &$user, $getEditionType=false)
+	public function getValidationByID($itemID, &$user, $getEditionType=false)
 	{
 		if (!is_a($user, "CMS_profile_user")) {
 			$this->setError("User is not a valid CMS_profile_user object");
@@ -471,7 +471,7 @@ class CMS_moduleValidation extends CMS_module
 	  * @return boolean true on success, false on failure to process
 	  * @access public
 	  */
-	function processValidation($resourceValidation, $result, $lastValidation = true)
+	public function processValidation($resourceValidation, $result, $lastValidation = true)
 	{
 		if (!is_a($resourceValidation, "CMS_resourceValidation")) {
 			$this->setError("ResourceValidation is not a valid CMS_resourceValidation object");
@@ -516,7 +516,7 @@ class CMS_moduleValidation extends CMS_module
 	  * @return the constant value
 	  * @access public
 	  */
-	function getModuleValidationLabel($label)
+	public function getModuleValidationLabel($label)
 	{
 		$labels = array(
 			"edition" 					=> constant("MESSAGE_MOD_".io::strtoupper($this->getCodename())."_VALIDATION_EDITION"),
@@ -540,7 +540,7 @@ class CMS_moduleValidation extends CMS_module
 	  * @return array
 	  * @access public
 	  */
-	function getPrimaryResourceInfo()
+	public function getPrimaryResourceInfo()
 	{
 		if (is_array($this->_resourceInfo) && $this->_resourceInfo) {
 			$resourceTables = array_keys($this->_resourceInfo);

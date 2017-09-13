@@ -642,7 +642,7 @@ class CMS_forms_formular extends CMS_grandFather {
 			$this->setError("Failed to delete form. ID : ".$this->getID().". Error code : ".$err);
 			return false;
 		}
-		unset($this);
+		$this->__destroy();
 		return (!$err) ? true : false;
 	}
 	

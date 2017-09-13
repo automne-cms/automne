@@ -37,7 +37,7 @@ class CMS_zip_file extends CMS_archive
 	 * @param string $name, the full filename of the archive
 	 * @return void
 	 */
-	function CMS_zip_file($name)
+	function __construct($name)
 	{
 		if (trim($name) == '') {
 			$this->setError("Not a valid name given to archive ".$name);

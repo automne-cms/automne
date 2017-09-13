@@ -227,7 +227,7 @@ class CMS_textEditor extends CMS_grandFather
 	  * @access public
 	  */
 	public static function parseInnerContent($value, $module = MOD_STANDARD_CODENAME) {
-		$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_WYSIWYG_INNER_TAGS, RESOURCE_DATA_LOCATION_EDITION, $this);
+		$modulesTreatment = new CMS_modulesTags(MODULE_TREATMENT_WYSIWYG_INNER_TAGS, RESOURCE_DATA_LOCATION_EDITION);
 		$wantedTags = $modulesTreatment->getWantedTags();
 		//create regular expression on wanted tags
 		$exp = '';

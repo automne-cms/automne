@@ -401,7 +401,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 		//unset fields catalog in cache
 		CMS_cache::clearTypeCacheByMetas('atm-polymod-structure', array('type' => 'fields'));
 		//finally destroy object instance
-		unset($this);
+		$this->__destroy();
 		return true;
 	}
 	

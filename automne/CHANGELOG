@@ -1,8 +1,14 @@
+V4.5.0
+[FEATURE] PHP 7.1+ compatibility
+
+V4.4.2
+[FEATURE] : New row "Media"
+[FEATURE] : Add extension for video HTML5 to mime.types and whitelist.txt
+
 V4.4.1 :
 [BUGFIX] : Prevent to send multiple e-mail when using CMS_form
 [BUGFIX] : Fix issue when deleting page and try to use tree in admin
 [BUGFIX] : Fix email subject displayed as UTF-8 code in activity logs
-[BUGFIX] : Fix base href markup
 
 V4.4.0 :
 [FEATURE] : PHP 5.6 compatibility

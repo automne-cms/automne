@@ -726,7 +726,7 @@ class CMS_row extends CMS_grandFather
 		if ($this->_definitionFile) {
 			@unlink(PATH_TEMPLATES_ROWS_FS."/".$this->_definitionFile);
 		}
-		unset($this);
+		$this->__destroy();
 	}
 
 	/**

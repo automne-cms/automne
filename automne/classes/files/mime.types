@@ -82,7 +82,6 @@ application/ocsp-request
 application/ocsp-response
 application/octet-stream			bin
 application/oda					oda
-application/ogg					ogg
 application/parityfec
 application/pdf					pdf
 application/pgp-encrypted
@@ -724,6 +723,7 @@ video/mpeg					mpeg mpg mpe
 video/mp4					mp4
 video/quicktime					qt mov
 video/mp4v-es
+video/ogg					ogg ogv
 video/parityfec
 video/pointer
 video/vnd.fvt
@@ -733,6 +733,7 @@ video/vnd.mpegurl				mxu
 video/vnd.mts
 video/vnd.nokia.interleaved-multimedia
 video/vnd.vivo
+video/webm					webm
 video/x-la-asf					lsf lsx
 video/x-mng					mng
 video/x-ms-asf					asf asx

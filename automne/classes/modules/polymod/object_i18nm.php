@@ -381,7 +381,7 @@ class CMS_object_i18nm extends CMS_grandFather
 				return false;
 			}
 		}
-		unset($this);
+		$this->__destroy();
 		return true;
 	}
 }

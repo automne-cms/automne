@@ -78,7 +78,7 @@ class CMS_modulesTags extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($treatmentMode, $visualizationMode, &$treatedObject) 
+	function __construct($treatmentMode, $visualizationMode, &$treatedObject=null) 
 	{
 		$this->_treatmentMode = $treatmentMode;
 		$this->_visualizationMode = $visualizationMode;
