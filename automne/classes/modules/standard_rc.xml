@@ -17,4 +17,5 @@
 	<param name="NO_PAGES_EXTENDED_META_TAGS" type="boolean">0</param>
 	<param name="ALLOW_SPECIFIC_PAGE_HTTPS" type="boolean">0</param>
 	<param name="ALTERNATIVE_DOMAIN" type="text"></param>
+	<param name="GOOGLE_MAP_API_KEY" type="text"></param>
 </cms-module-parameters>
