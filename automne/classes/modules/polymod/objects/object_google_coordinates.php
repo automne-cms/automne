@@ -58,14 +58,14 @@ class CMS_object_google_coordinates extends CMS_object_common
 	  * @var integer
 	  * @access private
 	  */
-	protected $_objectLabel = self::MESSAGE_OBJECT_COORDINATES_LABEL;
+	protected $_objectLabel = static::MESSAGE_OBJECT_COORDINATES_LABEL;
 	
 	/**
 	  * object description
 	  * @var integer
 	  * @access private
 	  */
-	protected $_objectDescription = self::MESSAGE_OBJECT_COORDINATES_DESCRIPTION;
+	protected $_objectDescription = static::MESSAGE_OBJECT_COORDINATES_DESCRIPTION;
 	
 	/**
 	  * all subFields definition
@@ -100,15 +100,15 @@ class CMS_object_google_coordinates extends CMS_object_common
 										'type' 			=> 'boolean',
 										'required' 		=> false,
 										'internalName'	=> 'useFieldsAsAddress',
-										'externalName'	=> self::MESSAGE_OBJECT_COORDINATES_PARAMETER_USE_FIELDS,
-										'description'	=> self::MESSAGE_OBJECT_COORDINATES_PARAMETER_USE_FIELDS_DESC,
+										'externalName'	=> static::MESSAGE_OBJECT_COORDINATES_PARAMETER_USE_FIELDS,
+										'description'	=> static::MESSAGE_OBJECT_COORDINATES_PARAMETER_USE_FIELDS_DESC,
 									),
 									1 => array(
 										'type' 			=> 'fields',
 										'required' 		=> false,
 										'internalName'	=> 'fieldsForAddress',
-										'externalName'	=> self::MESSAGE_OBJECT_COORDINATES_PARAMETER_FIELDS,
-										'description'	=> self::MESSAGE_OBJECT_COORDINATES_PARAMETER_FIELDS_DESC,
+										'externalName'	=> static::MESSAGE_OBJECT_COORDINATES_PARAMETER_FIELDS,
+										'description'	=> static::MESSAGE_OBJECT_COORDINATES_PARAMETER_FIELDS_DESC,
 									),
 								);
 	
@@ -129,7 +129,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 	  * @return void
 	  * @access public
 	  */
-	function __construct($datas=array(), &$field, $public=false)
+	public function __construct($datas=array(), &$field, $public=false)
 	{
 		parent::__construct($datas, $field, $public);
 	}
@@ -143,14 +143,18 @@ class CMS_object_google_coordinates extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLAdmin($fieldID, $language, $prefixName) {
+	public function getHTMLAdmin($fieldID, $language, $prefixName) {
+		if(!defined(GOOGLE_MAP_API_KEY)){
+			CMS_grandFather::raiseError("GOOGLE_MAP_API_KEY is not defined ! (it can be defined in standard_rc.xml in modules folder)");
+		}
+
 		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
 		$params = $this->getParamsValues();
 		
 		unset($return['items'][0]['hideLabel']);
 		unset($return['items'][1]['hideLabel']);
-		$return['items'][0]['fieldLabel'] = $language->getMessage(self::MESSAGE_OBJECT_COORDINATES_LONGITUDE_DESCRIPTION,false ,$this->_messagesModule);
-		$return['items'][1]['fieldLabel'] = $language->getMessage(self::MESSAGE_OBJECT_COORDINATES_LATITUDE_DESCRIPTION,false ,$this->_messagesModule);
+		$return['items'][0]['fieldLabel'] = $language->getMessage(static::MESSAGE_OBJECT_COORDINATES_LONGITUDE_DESCRIPTION,false ,$this->_messagesModule);
+		$return['items'][1]['fieldLabel'] = $language->getMessage(static::MESSAGE_OBJECT_COORDINATES_LATITUDE_DESCRIPTION,false ,$this->_messagesModule);
 		
 		$ids = 'coord-'.md5(mt_rand().microtime());
 		$return['items'][0]['id'] = $ids.'-long';
@@ -174,7 +178,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 		if ($params['useFieldsAsAddress']) {
 			$return['items'][0]['items'][] = array(
 				'xtype'		=> 'button',
-				'text'		=> $language->getMessage(self::MESSAGE_OBJECT_COORDINATES_FIELD_UPDATE_FROM_ADDRESS,false ,$this->_messagesModule),
+				'text'		=> $language->getMessage(static::MESSAGE_OBJECT_COORDINATES_FIELD_UPDATE_FROM_ADDRESS,false ,$this->_messagesModule),
 				'handler'	=> sensitiveIO::sanitizeJSString('function(button){
 					var addrFields = \''.$params['fieldsForAddress'].'\'.split(\';\');
 					var form = button.findParentByType(\'atmForm\').form;
@@ -197,7 +201,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 							Ext.get(\''.$ids.'-view\').update(\'<img style="border:1px solid #C0C7CB;" src="http://maps.google.com/maps/api/staticmap?center=\'+results[0].geometry.location.lat()+\',\'+results[0].geometry.location.lng()+\'&zoom=15&size=600x200&markers=\'+results[0].geometry.location.lat()+\',\'+results[0].geometry.location.lng()+\'&sensor=false" />\');
 						} else {
 							Automne.message.popup({
-								msg: 				String.format(\''.$language->getJsMessage(self::MESSAGE_OBJECT_COORDINATES_FIELD_UNKOWN_ADDRESS,false ,$this->_messagesModule).'\', addr),
+								msg: 				String.format(\''.$language->getJsMessage(static::MESSAGE_OBJECT_COORDINATES_FIELD_UNKOWN_ADDRESS,false ,$this->_messagesModule).'\', addr),
 								buttons: 			Ext.MessageBox.OK,
 								closable: 			false,
 								icon: 				Ext.MessageBox.ERROR
@@ -211,14 +215,14 @@ class CMS_object_google_coordinates extends CMS_object_common
 		$return['items'][0]['items'][] = '->';
 		$return['items'][0]['items'][] = array(
 			'xtype'		=> 'button',
-			'text'		=> $language->getMessage(self::MESSAGE_OBJECT_COORDINATES_FIELD_PUT_ON_MAP,false ,$this->_messagesModule),
+			'text'		=> $language->getMessage(static::MESSAGE_OBJECT_COORDINATES_FIELD_PUT_ON_MAP,false ,$this->_messagesModule),
 			'handler'	=> sensitiveIO::sanitizeJSString('function(button){
 				var lat = Ext.getCmp(\''.$ids.'-lat\').getValue();
 				var long = Ext.getCmp(\''.$ids.'-long\').getValue();
 				if (lat && long) {
 					var mapwin = new Automne.Window({
 		                layout: \'fit\',
-		                title: \''.$language->getJSMessage(self::MESSAGE_OBJECT_COORDINATES_FIELD_MAP_WINDOW,false ,$this->_messagesModule).'\',
+		                title: \''.$language->getJSMessage(static::MESSAGE_OBJECT_COORDINATES_FIELD_MAP_WINDOW,false ,$this->_messagesModule).'\',
 		                modal:true,
 						width:600,
 		                height:600,
@@ -250,7 +254,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 					   	if (button == \'ok\') {
 							var mapwin = new Automne.Window({
 				                layout: \'fit\',
-				                title: \''.$language->getJSMessage(self::MESSAGE_OBJECT_COORDINATES_FIELD_MAP_WINDOW,false ,$this->_messagesModule).'\',
+				                title: \''.$language->getJSMessage(static::MESSAGE_OBJECT_COORDINATES_FIELD_MAP_WINDOW,false ,$this->_messagesModule).'\',
 				                modal:true,
 								width:600,
 				                height:600,
@@ -278,14 +282,14 @@ class CMS_object_google_coordinates extends CMS_object_common
 							mapwin.show();
 						}
 					};
-					Ext.MessageBox.prompt(\''.$language->getJSMessage(self::MESSAGE_OBJECT_COORDINATES_FIELD_ADDRESS,false ,$this->_messagesModule).'\', \''.$language->getJSMessage(self::MESSAGE_OBJECT_COORDINATES_FIELD_ENTER_ADDRESS,false ,$this->_messagesModule).'\', gmapWindow);
+					Ext.MessageBox.prompt(\''.$language->getJSMessage(static::MESSAGE_OBJECT_COORDINATES_FIELD_ADDRESS,false ,$this->_messagesModule).'\', \''.$language->getJSMessage(static::MESSAGE_OBJECT_COORDINATES_FIELD_ENTER_ADDRESS,false ,$this->_messagesModule).'\', gmapWindow);
 				}
 			}', false, false),
 			'listeners'	=> array('render' => sensitiveIO::sanitizeJSString('function(){
 				if (typeof google == \'undefined\' || typeof google.maps == \'undefined\' || typeof google.maps.Map == \'undefined\') {
 					var script = document.createElement("script");
 				    script.type = "text/javascript";
-				    script.src = "http://maps.google.com/maps/api/js?sensor=false&callback=isNaN";
+				    script.src = "http://maps.google.com/maps/api/js?callback=isNaN&key='.GOOGLE_MAP_API_KEY.'";
 				    document.body.appendChild(script);
 				}
 			}', false, false)),
@@ -299,25 +303,13 @@ class CMS_object_google_coordinates extends CMS_object_common
 		return $return;
 	}
 
-	/**
-	  * get object HTML description for admin search detail, composed of latitude and longitude
-	  *
-	  * @return string : object HTML description
-	  * @access public
-	  */
-	function getHTMLDescription() {
-		$latitude = $this->getValue("latitude");
-		$longitude = $this->getValue("longitude");
-		return $latitude . '<br />' . $longitude;
-	}
-
     /**
       * get object values structure available with getValue method
       *
       * @return multidimentionnal array : the object values structure
       * @access public
       */
-    function getStructure() {
+    public function getStructure() {
 		$structure = parent::getStructure();
 		unset($structure['value']);
 		$structure['longitude'] = '';
@@ -333,7 +325,7 @@ class CMS_object_google_coordinates extends CMS_object_common
       * @return multidimentionnal array : the object values structure
       * @access public
       */
-    function getValue($name, $parameters = '') {
+    public function getValue($name, $parameters = '') {
 		switch($name) {
 		    case "longitude" :
 		        return $this->_subfieldValues[0]->getValue();
@@ -356,7 +348,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 	  * @return string : the form field HTML tag
 	  * @access public
 	  */
-   function getInput($fieldID, $language, $inputParams) {
+    public function getInput($fieldID, $language, $inputParams) {
 		$params = $this->getParamsValues();
 		$polymodDebug = '';
 		
@@ -385,11 +377,11 @@ class CMS_object_google_coordinates extends CMS_object_common
 		<div class="m-atmMap">
 			<div class="s-map"></div>
 			<div class="m-longitude">
-				<label for="'.$prefixName.$this->_field->getID().'_0"> '.$language->getMessage(self::MESSAGE_OBJECT_COORDINATES_LONGITUDE_DESCRIPTION, false, MOD_POLYMOD_CODENAME).'</label>
+				<label for="'.$prefixName.$this->_field->getID().'_0"> '.$language->getMessage(static::MESSAGE_OBJECT_COORDINATES_LONGITUDE_DESCRIPTION, false, MOD_POLYMOD_CODENAME).'</label>
 			    <input class="s-longitude" '.$htmlParameters.' id="'.$prefixName.$this->_field->getID().'_0" name="'.$prefixName.$this->_field->getID().'_0" value="'.$this->_subfieldValues[0]->getValue().'" type="text" />
 			</div>
 			<div class="m-latitude">
-			    <label for="'.$prefixName.$this->_field->getID().'_1"> '.$language->getMessage(self::MESSAGE_OBJECT_COORDINATES_LATITUDE_DESCRIPTION, false, MOD_POLYMOD_CODENAME).'</label>
+			    <label for="'.$prefixName.$this->_field->getID().'_1"> '.$language->getMessage(static::MESSAGE_OBJECT_COORDINATES_LATITUDE_DESCRIPTION, false, MOD_POLYMOD_CODENAME).'</label>
 			    <input class="s-latitude" '.$htmlParameters.' id="'.$prefixName.$this->_field->getID().'_1" name="'.$prefixName.$this->_field->getID().'_1" value="'.$this->_subfieldValues[1]->getValue().'" type="text" />
 			</div>
 			'.$polymodDebug.'
@@ -409,12 +401,12 @@ class CMS_object_google_coordinates extends CMS_object_common
       * @return array : the labels of object structure and functions
       * @access public
       */
-    function getLabelsStructure(&$language, $objectName = '') {
-		$labels = parent::getLabelsStructure($language, $objectName);
+    public function getLabelsStructure(&$language) {
+		$labels = parent::getLabelsStructure($language);
 		$params = $this->getParamsValues();
 		unset($labels['structure']['value']);
-		$labels['structure']['longitude'] = $language->getMessage(self::MESSAGE_OBJECT_COORDINATES_LONGITUDE_DESCRIPTION,false ,$this->_messagesModule);
-		$labels['structure']['latitude'] = $language->getMessage(self::MESSAGE_OBJECT_COORDINATES_LATITUDE_DESCRIPTION,false ,$this->_messagesModule);
+		$labels['structure']['longitude'] = $language->getMessage(static::MESSAGE_OBJECT_COORDINATES_LONGITUDE_DESCRIPTION,false ,$this->_messagesModule);
+		$labels['structure']['latitude'] = $language->getMessage(static::MESSAGE_OBJECT_COORDINATES_LATITUDE_DESCRIPTION,false ,$this->_messagesModule);
 		return $labels;
     }
 	
@@ -488,7 +480,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 	  * @return array : the treated parameters
 	  * @access public
 	  */
-	function importParams($params, $cms_language, &$idsRelation, &$infos) {
+	public function importParams($params, $cms_language, &$idsRelation, &$infos) {
 		if (isset($params['fieldsForAddress']) && $params['fieldsForAddress']) {
 			$fieldsIds = explode(';', $params['fieldsForAddress']);
 			$convertedFieldsIds = array();
