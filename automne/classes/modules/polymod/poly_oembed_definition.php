@@ -109,7 +109,7 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 				return false;
 			}
 		}
-		unset($this);
+		$this->__destroy();
 		return true;
 	}
 

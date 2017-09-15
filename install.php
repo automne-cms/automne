@@ -30,6 +30,8 @@ error_reporting(E_ALL);
 @ini_set('session.gc_probability', 0);
 @ini_set('allow_call_time_pass_reference', 0);
 
+$MINIMAL_PHP_VERSION = '5.6.0';
+
 /**
   *	Path of the REAL document root
   *	Default : $_SERVER["DOCUMENT_ROOT"]
@@ -77,7 +79,7 @@ if (!isset($_GET['file'])) {
 		<fieldset>
 			<legend>Tests for all needed parameters to run Automne V4</legend>
 						<ul class="atm-server">';
-			if (version_compare(PHP_VERSION, "5.2.0") === -1) {
+			if (version_compare(PHP_VERSION, $MINIMAL_PHP_VERSION) === -1) {
 				$content .= '<li class="atm-pic-cancel"><strong style="color:red">Error</strong>, PHP version ('.PHP_VERSION.') not match</li>';
 			} else {
 				$content .= '<li class="atm-pic-ok">PHP version <strong style="color:green">OK</strong> ('.PHP_VERSION.')</li>';
@@ -186,7 +188,7 @@ if (!isset($_GET['file'])) {
 						$content .= '<li class="atm-pic-cancel"><strong style="color:orange">Warning</strong>, installed php is not the CLI version : '.$return."\n";
 					} else {
 						$cliversion = trim(str_replace('php ', '', substr(strtolower($return), 0, strpos(strtolower($return), '(cli)'))));
-						if (version_compare($cliversion, "5.2.0") === -1) {
+						if (version_compare($cliversion, $MINIMAL_PHP_VERSION) === -1) {
 							$content .= '<li class="atm-pic-cancel"><strong style="color:orange">Warning</strong>, PHP CLI version ('.$cliversion.') not match</li>';
 						} else {
 							$content .= '<li class="atm-pic-ok">PHP CLI version <strong style="color:green">OK</strong> ('.$cliversion.')</li>';
@@ -242,7 +244,7 @@ if (!isset($_GET['file'])) {
 			
 			//STEP check
 			$error_docroot = "Erreur, Automne doit &ecirc;tre install&eacute; &agrave; la racine de votre serveur web : %s.<br />Vous devriez cr&eacute;er un h&ocirc;te virtuel sp&eacute;cifique pour Automne dans votre configuration d'Apache.";
-			$error_stepCheck_php_error = 'Erreur, Votre version de PHP ('.phpversion().') n\'est pas compatible avec Automne. Vous devez avoir une version sup&eacute;rieure &agrave; la 5.2.0.';
+			$error_stepCheck_php_error = 'Erreur, Votre version de PHP ('.phpversion().') n\'est pas compatible avec Automne. Vous devez avoir une version sup&eacute;rieure &agrave; la '.$MINIMAL_PHP_VERSION.'.';
 			$error_stepCheck_dir_not_writable_error = 'Erreur, Apache ne poss&egrave;de pas les droits d\'&eacute;criture sur le r&eacute;pertoire racine (%s) de votre site web.';
 			$error_stepCheck_safe_mode_error = 'Attention ! L\'option "safe_mode" est active sur votre configuration de PHP. Cette option est incompatible avec Automne. V&eacute;rifiez votre installation de PHP.';
 			$error_stepCheck_pdo_error = 'Attention, l\'extension PDO pour PHP n\'est pas disponible sur votre serveur. Veuillez v&eacute;rifier la <a href="http://www.php.net/manual/book.pdo.php" target="_blank">configuration de PHP et ajouter le support de PDO</a>.';
@@ -300,6 +302,7 @@ if (!isset($_GET['file'])) {
 			$step2_DB_user = 'Utilisateur de la base de donn&eacute;es';
 			$step2_DB_password = 'Mot de passe de la base de donn&eacute;es';
 			$step2_DB_password_confirm = 'Confirmation';
+			$step2_PHPCLI_name = 'Chemin absolu de votre PHP CLI (facultatif)';
 			
 			//STEP 3
 			$error_step3_must_choose_option = 'Erreur, vous devez choisir une option ...';
@@ -416,7 +419,7 @@ if (!isset($_GET['file'])) {
 			
 			//STEP check
 			$error_docroot = "Error, Automne must be installed at the server Document Root: %s.<br />You should create a specific Virtual Host for Automne in your Apache configuration.";
-			$error_stepCheck_php_error = 'Error, Your PHP version ('.phpversion().') is not compatible with Automne. You must have a version greater than 5.2.0.';
+			$error_stepCheck_php_error = 'Error, Your PHP version ('.phpversion().') is not compatible with Automne. You must have a version greater than '.$MINIMAL_PHP_VERSION.'.';
 			$error_stepCheck_dir_not_writable_error = 'Error, Apache does not have write permissions on your website root directory (%s).';
 			$error_stepCheck_safe_mode_error = 'Beware! The "safe_mode" option is active on your PHP configuration. This option is not compatible with Automne. Please Check your PHP installation.';
 			$error_stepCheck_pdo_error = 'Error, PDO extension is not installed on your server. Please check your <a href="http://www.php.net/manual/book.pdo.php" target="_blank">PHP installation and add it PDO extension</a>.';
@@ -473,6 +476,7 @@ if (!isset($_GET['file'])) {
 			$step2_DB_user = 'Database User';
 			$step2_DB_password = 'Database Password';
 			$step2_DB_password_confirm = 'Confirm';
+			$step2_PHPCLI_name = 'PHP Cli asbolute path (optional)';
 			
 			//STEP 3
 			$error_step3_must_choose_option = 'Error, You must choose an option ...';
@@ -593,7 +597,7 @@ if (!isset($_GET['file'])) {
 	// +----------------------------------------------------------------------+
 	if ($step === 'check') {
 		//check for php compatibility
-		if (version_compare(phpversion(), "5.2.0") !== -1) {
+		if (version_compare(phpversion(), $MINIMAL_PHP_VERSION) !== -1) {
 			//check for document root writing
 			if (!is_writable(realpath(dirname(__FILE__)))) {
 				$error .= sprintf($error_stepCheck_dir_not_writable_error, realpath(dirname(__FILE__))).'<br /><br />';
@@ -883,7 +887,7 @@ if (!isset($_GET['file'])) {
 		}
 		
 		if ($error || $cms_action != "dbinfos") {
-			$dbhostValue = isset($_POST["dbhost"]) ? $_POST["dbhost"]:'localhost';
+			$dbhostValue = isset($_POST["dbhost"]) ? $_POST["dbhost"]:'127.0.0.1';
 			$title ='<h1>'.$step2_title.'</h1>';
 			if ($error) {
 				$content .= '<span class="error">'.$error.'</span><br />';
@@ -900,6 +904,8 @@ if (!isset($_GET['file'])) {
 					<label for="dbuser">'.$step2_DB_user.' * : <input id="dbuser" type="text" name="dbuser" value="'.htmlspecialchars(@$_POST["dbuser"]).'" /></label><br />
 					<label for="dbpass">'.$step2_DB_password.' : <input id="dbpass" type="password" name="dbpass" value="'.htmlspecialchars(@$_POST["dbpass"]).'" /></label><br />
 					<label for="dbpass2">'.$step2_DB_password_confirm.' : <input id="dbpass2" type="password" name="dbpass2" value="'.htmlspecialchars(@$_POST["dbpass2"]).'" /></label><br />
+					<br/>
+					<label for="phpcli">'.$step2_PHPCLI_name.' : <input id="phpcli" name="phpcli" type="text" value="'.@$_POST['phpcli'].'" /></label><br/>
 					<input type="submit" class="submit" value="'.$label_next.'" />
 				</div>
 			</form>
@@ -925,7 +931,16 @@ define("APPLICATION_DB_HOST", "'.$_POST["dbhost"].'");
 define("APPLICATION_DB_NAME", "'.$_POST["dbname"].'");
 define("APPLICATION_DB_USER", "'.$_POST["dbuser"].'");
 define("APPLICATION_DB_PASSWORD", "'.$_POST["dbpass"].'");
+
+
 ';
+if(isset($_POST["phpcli"])){
+	$configContent .= '
+//Custom PHP cli path
+define("PATH_PHP_CLI_UNIX","'.$_POST["phpcli"].'");
+';
+
+}
 if (realpath($_SERVER["DOCUMENT_ROOT"]) != realpath(dirname(__FILE__))) {
 	//append path info if needed
 	$configContent .= 'define("PATH_REALROOT_WR", \''.pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME).'\');';
@@ -1233,6 +1248,11 @@ $configContent .= '
 			
 			//detect CLI
 			$windows = false;
+
+			$phpclibinary = 'php';
+			if(PATH_PHP_CLI_UNIX){
+				$phpclibinary = PATH_PHP_CLI_UNIX;
+			}
 			if (!(function_exists('exec') || !function_exists('passthru')) && !function_exists('system')) {
 				$clidetection = $step6_CLIDetection_nosystem;
 				$cliAvailable = false;
@@ -1241,12 +1261,12 @@ $configContent .= '
 				$cliAvailable = true;
 				$windows = true;
 			} else {
-				if (substr(CMS_patch::executeCommand('which php 2>&1',$error),0,1) == '/' && !$error) {
+				if (substr(CMS_patch::executeCommand('which '.$phpclibinary.' 2>&1',$error),0,1) == '/' && !$error) {
 					//test CLI version
-					$return = CMS_patch::executeCommand('php -v',$error);
+					$return = CMS_patch::executeCommand($phpclibinary.' -v',$error);
 					if (strpos(strtolower($return), '(cli)') !== false) {
-						$cliversion = trim(str_replace('php ', '', substr(strtolower($return), 0, strpos(strtolower($return), '(cli)'))));
-						if (version_compare($cliversion, "5.2.0") === -1) {
+						$cliversion = trim(str_replace($phpclibinary.' ', '', substr(strtolower($return), 0, strpos(strtolower($return), '(cli)'))));
+						if (version_compare($cliversion, $MINIMAL_PHP_VERSION) === -1) {
 							$clidetection = $step6_CLIDetection_version_not_match.' ('.$cliversion.')';
 							$cliAvailable = false;
 						} else {
@@ -1316,7 +1336,7 @@ $configContent .= '
 					$error .= $error_step7_CLI_path.'<br />';
 				} else {
 					$cliversion = trim(str_replace('php ', '', substr(strtolower($return), 0, strpos(strtolower($return), '(cli)'))));
-					if (version_compare($cliversion, "5.2.0") === -1) {
+					if (version_compare($cliversion, $MINIMAL_PHP_VERSION) === -1) {
 						$error .= $step6_CLIDetection_version_not_match.' ('.$cliversion.')<br />';
 					} else {
 						if (APPLICATION_IS_WINDOWS) {
@@ -2457,7 +2477,7 @@ class CMS_archive_install
 	 * @param string $name, the full filename of the archive
 	 * @return void
 	 */
-	function CMS_archive_install($name) {
+	function __construct($name) {
 		if (trim($name) == '') {
 			$this->_raiseError(get_class($this)." : Not a valid name given to archive ".$name);
 			return;
@@ -2666,13 +2686,13 @@ class CMS_tar_file_install extends CMS_archive_install
 	 * @param string $name, the full filename of the archive
 	 * @return void
 	 */
-	function CMS_tar_file_install($name)
+	function __construct($name)
 	{
 		if (trim($name) == '') {
 			$this->_raiseError(get_class($this)." : Not a valid name given to archive ".$name);
 			return;
 		}
-		$this->CMS_archive_install($name);
+		parent::__construct($name);
 		$this->options['type'] = "tar";
 	}
 	/**
@@ -2691,7 +2711,7 @@ class CMS_tar_file_install extends CMS_archive_install
 			}
 			while ($block = fread($fp, 512)) {
 				$temp = unpack("a100name/a8mode/a8uid/a8gid/a12size/a12mtime/a8checksum/a1type/a100temp/a6magic/a2temp/a32temp/a32temp/a8temp/a8temp/a155prefix/a12temp", $block);
-				$file = array ('name' => $temp['prefix'].$temp['name'], 'stat' => array (2 => $temp['mode'], 4 => octdec($temp['uid']), 5 => octdec($temp['gid']), 7 => octdec($temp['size']), 9 => octdec($temp['mtime']),), 'checksum' => octdec($temp['checksum']), 'type' => $temp['type'], 'magic' => $temp['magic'],);
+				$file = array ('name' => trim($temp['prefix'].$temp['name']), 'stat' => array (2 => $temp['mode'], 4 => octdec($temp['uid']), 5 => octdec($temp['gid']), 7 => octdec($temp['size']), 9 => octdec($temp['mtime']),), 'checksum' => octdec($temp['checksum']), 'type' => $temp['type'], 'magic' => $temp['magic'],);
 				if ($file['checksum'] == 0x00000000) {
 					break;
 				} else
@@ -2728,7 +2748,7 @@ class CMS_tar_file_install extends CMS_archive_install
 						if ($this->options['overwrite'] == 0 && file_exists($file['name'])) {
 							$this->_raiseError(get_class($this)." : extract_files : {$file['name']} already exists.");
 						} else
-							if ($new = @fopen($file['name'], "wb")) {
+							if ($new = fopen($file['name'], "wb")) {
 								@fwrite($new, @fread($fp, $file['stat'][7]));
 								@fread($fp, (512 - $file['stat'][7] % 512) == 512 ? 0 : (512 - $file['stat'][7] % 512));
 								@fclose($new);
@@ -2770,13 +2790,13 @@ class CMS_gzip_file_install extends CMS_tar_file_install
 	 * @param string $name, the full filename of the archive
 	 * @return void
 	 */
-	function CMS_gzip_file($name)
+	function __construct($name)
 	{
 		if (trim($name) == '') {
 			$this->_raiseError(get_class($this)." : Not a valid name given to archive ".$name);
 			return;
 		}
-		$this->CMS_tar_file_install($name);
+		parent::__construct($name);
 		$this->options['type'] = "gzip";
 	}
 	/**

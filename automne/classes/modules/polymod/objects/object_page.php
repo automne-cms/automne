@@ -111,7 +111,7 @@ class CMS_object_page extends CMS_object_integer
 	  * @return void
 	  * @access public
 	  */
-	function CMS_object_page($datas=array(), &$field, $public=false)
+	function __construct($datas=array(), &$field, $public=false)
 	{
 		parent::__construct($datas, $field, $public);
 	}

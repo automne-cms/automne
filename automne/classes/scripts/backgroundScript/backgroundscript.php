@@ -53,7 +53,7 @@ class backgroundScript extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function backgroundScript($debug = false, $scriptID='Master')
+	function __construct($debug = false, $scriptID='Master')
 	{
 		$this->_debug = $debug;
 		

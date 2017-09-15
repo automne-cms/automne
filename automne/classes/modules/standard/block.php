@@ -87,7 +87,7 @@ class CMS_block extends CMS_grandFather
 	  * @param boolean $public The needed precision for USERSPACE location
 	  * @access public
 	  */
-	function CMS_block($id=0, $location=RESOURCE_LOCATION_USERSPACE, $public=false)
+	function __construct($id=0, $location=RESOURCE_LOCATION_USERSPACE, $public=false)
 	{
 	}
 

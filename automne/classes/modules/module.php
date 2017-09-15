@@ -90,7 +90,7 @@ class CMS_module extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function CMS_module($datas = '') {
+	public function __construct($datas = '') {
 		static $modules;
 		if (is_string($datas)) {
 			$codename = $datas;
@@ -147,7 +147,7 @@ class CMS_module extends CMS_grandFather
 	  * @return integer the DB id
 	  * @access public
 	  */
-	function getID()
+	public function getID()
 	{
 		return $this->_id;
 	}
@@ -159,7 +159,7 @@ class CMS_module extends CMS_grandFather
 	  * @return string The label
 	  * @access public
 	  */
-	function getLabel($language)
+	public function getLabel($language)
 	{
 		if (!is_object($language)) {
 			$this->setError("Missing language to get module label ... ");
@@ -174,7 +174,7 @@ class CMS_module extends CMS_grandFather
 	  * @return integer The label id
 	  * @access public
 	  */
-	function getLabelID()
+	public function getLabelID()
 	{
 		return $this->_labelMessageID;
 	}
@@ -186,7 +186,7 @@ class CMS_module extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setLabel($labelMessageID)
+	public function setLabel($labelMessageID)
 	{
 		if (SensitiveIO::isPositiveInteger($labelMessageID)) {
 			$this->_labelMessageID = $labelMessageID;
@@ -203,7 +203,7 @@ class CMS_module extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function hasParameters()
+	public function hasParameters()
 	{
 		return $this->_hasParameters;
 	}
@@ -215,7 +215,7 @@ class CMS_module extends CMS_grandFather
 	  * @return boolean true if yes, false otherwise
 	  * @access public
 	  */
-	function isPolymod() {
+	public function isPolymod() {
 		return ($this->_isPolymod) ? true : false;
 	}
 
@@ -226,7 +226,7 @@ class CMS_module extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setPolymod($isPolymod) {
+	public function setPolymod($isPolymod) {
 		$this->_isPolymod = ($isPolymod) ? true : false;
 		return true;
 	}
@@ -239,7 +239,7 @@ class CMS_module extends CMS_grandFather
 	  * @return String the language codename
 	  * @access public
 	  */
-	function getDefaultLanguageCodename()
+	public function getDefaultLanguageCodename()
 	{
 		if ($this->hasParameters() && $s = $this->getParameters(io::strtolower("default_language"))) {
 			define("MOD_".io::strtoupper($this->getCodename())."_DEFAULT_LANGUAGE", io::strtolower($s));
@@ -256,7 +256,7 @@ class CMS_module extends CMS_grandFather
 	  * @return array(string=>string) The parameters from the file, or false if no file found
 	  * @access public
 	  */
-	function getParameters($onlyOne = false, $withType=false, $reset = false) {
+	public function getParameters($onlyOne = false, $withType=false, $reset = false) {
 		if ($this->_hasParameters) {
 			if ($reset) {
 				unset($moduleParameters);
@@ -304,7 +304,7 @@ class CMS_module extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setAndWriteParameters($parameters)
+	public function setAndWriteParameters($parameters)
 	{
 		if (!is_array($parameters)) {
 			$this->setError("Parameters not an array");
@@ -344,7 +344,7 @@ class CMS_module extends CMS_grandFather
 	  * @return string The codename
 	  * @access public
 	  */
-	function getCodename()
+	public function getCodename()
 	{
 		return $this->_codename;
 	}
@@ -356,7 +356,7 @@ class CMS_module extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setCodename($codename)
+	public function setCodename($codename)
 	{
 		if ($codename) {
 			$this->_codename = $codename;
@@ -374,7 +374,7 @@ class CMS_module extends CMS_grandFather
 	  * @return string The administration frontend path
 	  * @access public
 	  */
-	function getAdminFrontendPath($relativeTo)
+	public function getAdminFrontendPath($relativeTo)
 	{
 		switch ($relativeTo) {
 		case PATH_RELATIVETO_FILESYSTEM:
@@ -401,7 +401,7 @@ class CMS_module extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function hasAdmin()
+	public function hasAdmin()
 	{
 		if (!$this->_administrationFrontend || $this->_administrationFrontend == '' || $this->_administrationFrontend == 'false' || $this->_administrationFrontend == false) {
 			return false;
@@ -417,7 +417,7 @@ class CMS_module extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setAdminFrontend($adminFrontend)
+	public function setAdminFrontend($adminFrontend)
 	{
 		$directory = ($this->_isPolymod) ? 'polymod' : $this->_codename;
 		if (file_exists(PATH_ADMIN_MODULES_FS."/".$directory."/".$adminFrontend)) {
@@ -452,7 +452,7 @@ class CMS_module extends CMS_grandFather
 	  * @return object The module tag representation instance
 	  * @access public
 	  */
-	function getTagRepresentation($tagName, $tagAttributes, $args = false)
+	public function getTagRepresentation($tagName, $tagAttributes, $args = false)
 	{
 	}
 
@@ -463,7 +463,7 @@ class CMS_module extends CMS_grandFather
 	  * @return array(CMS_resourceValidation) The resourceValidations objects, false if none found
 	  * @access public
 	  */
-	function getValidations($user)
+	public function getValidations($user)
 	{
 	}
 
@@ -476,7 +476,7 @@ class CMS_module extends CMS_grandFather
 	  * @return boolean true on success, false on failure to process
 	  * @access public
 	  */
-	function processValidation($resourceValidation, $result, $lastValidation = true)
+	public function processValidation($resourceValidation, $result, $lastValidation = true)
 	{
 		if (!($resourceValidation instanceof CMS_resourceValidation)) {
 			$this->setError("ResourceValidation is not a valid CMS_resourceValidation object");
@@ -655,7 +655,7 @@ class CMS_module extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function useCategories() {
+	public function useCategories() {
 		$sql = "
 			select
 				1
@@ -675,7 +675,7 @@ class CMS_module extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function isDestroyable() {
+	public function isDestroyable() {
 		//@TODO
 		return false;
 	}
@@ -686,7 +686,7 @@ class CMS_module extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function destroy() {
+	public function destroy() {
 		if ($this->_id) {
 			//delete module params if any
 			$filename = PATH_MODULES_FS."/".$this->_codename."_rc.xml";
@@ -724,7 +724,7 @@ class CMS_module extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		$sql_fields = "
 			label_mod='".SensitiveIO::sanitizeSQLString($this->_labelMessageID)."',
@@ -767,7 +767,7 @@ class CMS_module extends CMS_grandFather
 	  * @return array of tags to be treated.
 	  * @access public
 	  */
-	function getWantedTags($treatmentMode, $visualizationMode)
+	public function getWantedTags($treatmentMode, $visualizationMode)
 	{
 		$return = array();
 		switch ($treatmentMode) {
@@ -803,7 +803,7 @@ class CMS_module extends CMS_grandFather
 	  * @return string the tag content treated.
 	  * @access public
 	  */
-	function treatWantedTag(&$tag, $tagContent, $treatmentMode, $visualizationMode, &$treatedObject, $treatmentParameters)
+	public function treatWantedTag(&$tag, $tagContent, $treatmentMode, $visualizationMode, &$treatedObject, $treatmentParameters)
 	{
 		switch ($treatmentMode) {
 			case MODULE_TREATMENT_CLIENTSPACE_TAGS:
@@ -1038,7 +1038,7 @@ class CMS_module extends CMS_grandFather
 	  * @return array of replacements values (pattern to replace => replacement)
 	  * @access public
 	  */
-	function getModuleReplacements() {
+	public function getModuleReplacements() {
 		return array();
 	}
 
@@ -1048,7 +1048,7 @@ class CMS_module extends CMS_grandFather
 	  * @return array : the module js file in /js/modules/codename
 	  * @access public
 	  */
-	function getJSFiles($pageId = '', $allFiles = false) {
+	public function getJSFiles($pageId = '', $allFiles = false) {
 		$files = array();
 		$dirname = PATH_JS_FS.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$this->_codename;
 		if (@is_dir($dirname)) {
@@ -1092,7 +1092,7 @@ class CMS_module extends CMS_grandFather
 	  * @return array : the module css file in /css/modules/codename
 	  * @access public
 	  */
-	function getCSSFiles($pageId = '', $allFiles = false) {
+	public function getCSSFiles($pageId = '', $allFiles = false) {
 		$files = array();
 		$medias = array('all', 'aural', 'braille', 'embossed', 'handheld', 'print', 'projection', 'screen', 'tty', 'tv');
 		//get generic files
@@ -1170,7 +1170,7 @@ class CMS_module extends CMS_grandFather
 	  * @return string : the module code to add
 	  * @access public
 	  */
-	function getModuleCode($modulesCode, $treatmentMode, $visualizationMode, &$treatedObject, $treatmentParameters)
+	public function getModuleCode($modulesCode, $treatmentMode, $visualizationMode, &$treatedObject, $treatmentParameters)
 	{
 		//nothing
 		return $modulesCode;
@@ -1183,7 +1183,7 @@ class CMS_module extends CMS_grandFather
 	  * @return Boolean true/false
 	  * @access public
 	  */
-	function isCategoryUsed($category)
+	public function isCategoryUsed($category)
 	{
 		//we don't know it here so assume yes to avoid errors
 		return true;
@@ -1234,7 +1234,7 @@ class CMS_module extends CMS_grandFather
 	  * @return Boolean true/false
 	  * @access public
 	  */
-	function scriptTask($parameters) {
+	public function scriptTask($parameters) {
 		return true;
 	}
 
@@ -1245,7 +1245,7 @@ class CMS_module extends CMS_grandFather
 	  * @return string : scripts infos
 	  * @access public
 	  */
-	function scriptInfo($parameters) {
+	public function scriptInfo($parameters) {
 		return 'Unknown script for module '.$this->_codename;
 	}
 
@@ -1357,7 +1357,7 @@ class CMS_module extends CMS_grandFather
 	  * @return boolean : true on success, false on failure
 	  * @access public
 	  */
-	function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
+	public function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
 		if (!$this->getID()) {
 			if (!isset($params['create']) || $params['create'] == true) {
 				//if module does not exists yet, add codename and default admin frontend
@@ -1466,7 +1466,7 @@ class CMS_module extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function createModuleFiles() {
+	public function createModuleFiles() {
 		$moduledir = new CMS_file(PATH_MODULES_FILES_FS.'/'.$this->_codename, CMS_file::FILE_SYSTEM, CMS_file::TYPE_DIRECTORY);
 		$moduleDeleted = new CMS_file(PATH_MODULES_FILES_FS.'/'.$this->_codename.'/deleted', CMS_file::FILE_SYSTEM, CMS_file::TYPE_DIRECTORY);
 		$moduleEdited = new CMS_file(PATH_MODULES_FILES_FS.'/'.$this->_codename.'/edited', CMS_file::FILE_SYSTEM, CMS_file::TYPE_DIRECTORY);

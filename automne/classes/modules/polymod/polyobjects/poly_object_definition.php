@@ -669,7 +669,7 @@ class CMS_poly_object_definition extends CMS_grandFather
 			CMS_cache::clearTypeCache('polymod');
 			
 		}
-		unset($this);
+		$this->__destroy();
 		return true;
 	}
 	

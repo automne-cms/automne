@@ -630,7 +630,7 @@ class CMS_contactData extends CMS_grandFather
 			";
 			$q = new CMS_query($sql);
 		}
-		unset($this);
+		$this->__destroy();
 	}
 	
 	/**

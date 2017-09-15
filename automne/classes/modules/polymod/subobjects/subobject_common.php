@@ -366,7 +366,7 @@ abstract class CMS_subobject_common extends CMS_grandFather
 			$q = new CMS_query($sql);
 		}
 		//finally destroy object instance
-		unset($this);
+		$this->__destroy();
 		return true;
 	}
 }

@@ -1,32 +1,439 @@
-var $data_a;function PMA_urldecode(e){return decodeURIComponent(e.replace(/\+/g,"%20"))}function PMA_urlencode(e){return encodeURIComponent(e.replace(/\%20/g,"+"))}function getFieldName(e,c){if(c=="vertical"){var a=e.siblings("th").find("a").text();if(""==a)a=e.siblings("th").text()}else{var d=e.index();a=$("#table_results").find("thead").find("th:nth("+(d-4)+") a").text();if(""==a)a=$("#table_results").find("thead").find("th:nth("+(d-4)+")").text()}return a=$.trim(a)}
-function appendInlineAnchor(){if($("#top_direction_dropdown").val()=="vertical"){$("#table_results tr").find(".edit_row_anchor").removeClass("edit_row_anchor").parent().each(function(){var e=$(this),c=e.clone(),a=c.find("img:first").attr("title",PMA_messages.strInlineEdit);if(a.length!=0){var d=a.attr("src").replace(/b_edit/,"b_inline_edit");a.attr("src",d)}c.find("td").addClass("inline_edit_anchor").find("a").attr("href","#");d=c.find('span:contains("'+PMA_messages.strEdit+'")');var g=c.find("a").find("span");
-if(d.length>0){g.text(" "+PMA_messages.strInlineEdit);g.prepend(a)}else{g.text("");g.append(a)}c.insertAfter(e)});$("#rowsDeleteForm").find("tbody").find("th").each(function(){var e=$(this);e.attr("rowspan")==4&&e.attr("rowspan","5")})}else{$(".edit_row_anchor").each(function(){var e=$(this);e.removeClass("edit_row_anchor");var c=e.clone(),a=c.find("img").attr("title",PMA_messages.strInlineEdit);if(a.length!=0){var d=a.attr("src").replace(/b_edit/,"b_inline_edit");a.attr("src",d);c.find("a").attr("href",
-"#");d=c.find('span:contains("'+PMA_messages.strEdit+'")');var g=c.find("a").find("span");if(d.length>0){g.text(" "+PMA_messages.strInlineEdit);g.prepend(a)}else{g.text("");g.append(a)}}else{c.find("a").attr("href","#");c.find("a span").text(PMA_messages.strInlineEdit);a=c.find("input:image").attr("title",PMA_messages.strInlineEdit);if(a.length>0){d=a.attr("src").replace(/b_edit/,"b_inline_edit");a.attr("src",d)}c.find(".clickprevimage").text(" "+PMA_messages.strInlineEdit)}c.addClass("inline_edit_anchor");
-e.after(c)});$("#rowsDeleteForm").find("thead, tbody").find("th").each(function(){var e=$(this);e.attr("colspan")==4&&e.attr("colspan","5")})}}
-$(document).ready(function(){$.ajaxSetup({cache:"false"});var e=$("#top_direction_dropdown").val();$("#top_direction_dropdown, #bottom_direction_dropdown").live("change",function(){e=$(this).val()});$("#sqlqueryresults").live("appendAnchor",function(){appendInlineAnchor()});$("#sqlqueryresults.ajax").trigger("appendAnchor");if(!$("#sqlqueryform").find("a").is("#togglequerybox")){$('<a id="togglequerybox"></a>').html(PMA_messages.strHideQueryBox).appendTo("#sqlqueryform").hide();$("#togglequerybox").bind("click",
-function(){var c=$(this);c.siblings().slideToggle("fast");if(c.text()==PMA_messages.strHideQueryBox){c.text(PMA_messages.strShowQueryBox);$("#togglequerybox_spacer").remove();c.before('<br id="togglequerybox_spacer" />')}else c.text(PMA_messages.strHideQueryBox);return false})}$("#sqlqueryform.ajax").live("submit",function(c){c.preventDefault();$form=$(this);if(!checkSqlQuery($form[0]))return false;$(".error").remove();var a=PMA_ajaxShowMessage();PMA_prepareForAjaxRequest($form);$.post($(this).attr("action"),
-$(this).serialize(),function(d){if(d.success==true){$(".success").fadeOut();$(".sqlquery_message").fadeOut();if(typeof d.sql_query!="undefined"){$('<div class="sqlquery_message"></div>').html(d.sql_query).insertBefore("#sqlqueryform");$(".notice").remove()}else $("#sqlqueryform").before(d.message);$("#sqlqueryresults").show();if(typeof d.reload!="undefined"){$("#sqlqueryform.ajax").die("submit");$form.find("input[name=db]").val(d.db);$form.find("input[name=ajax_request]").remove();$form.append('<input type="hidden" name="reload" value="true" />');
-$.post("db_sql.php",$form.serialize(),function(g){$("body").html(g)})}}else if(d.success==false){$("#sqlqueryform").before(d.error);$("#sqlqueryresults").hide()}else{$(".success").fadeOut();$(".sqlquery_message").fadeOut();$received_data=$(d);$zero_row_results=$received_data.find('textarea[name="sql_query"]');if($zero_row_results.length>0)$("#sqlquery").val($zero_row_results.val());else{$("#sqlqueryresults").show();$("#sqlqueryresults").html(d);$("#sqlqueryresults").trigger("appendAnchor");$("#togglequerybox").show();
-$("#togglequerybox").siblings(":visible").length>0&&$("#togglequerybox").trigger("click");PMA_init_slider()}}PMA_ajaxRemoveMessage(a)})});$("input[name=navig].ajax").live("click",function(c){c.preventDefault();var a=PMA_ajaxShowMessage();c=$(this).parent("form");c.append('<input type="hidden" name="ajax_request" value="true" />');$.post(c.attr("action"),c.serialize(),function(d){$("#sqlqueryresults").html(d);$("#sqlqueryresults").trigger("appendAnchor");PMA_init_slider();PMA_ajaxRemoveMessage(a)})});
-$("#pageselector").live("change",function(c){var a=$(this).parent("form");if($(this).hasClass("ajax")){c.preventDefault();var d=PMA_ajaxShowMessage();$.post(a.attr("action"),a.serialize()+"&ajax_request=true",function(g){$("#sqlqueryresults").html(g);$("#sqlqueryresults").trigger("appendAnchor");PMA_init_slider();PMA_ajaxRemoveMessage(d)})}else a.submit()});$("#table_results.ajax").find("a[title=Sort]").live("click",function(c){c.preventDefault();var a=PMA_ajaxShowMessage();$anchor=$(this);$.get($anchor.attr("href"),
-$anchor.serialize()+"&ajax_request=true",function(d){$("#sqlqueryresults").html(d).trigger("appendAnchor");PMA_ajaxRemoveMessage(a)})});$("#displayOptionsForm.ajax").live("submit",function(c){c.preventDefault();$form=$(this);$.post($form.attr("action"),$form.serialize()+"&ajax_request=true",function(a){$("#sqlqueryresults").html(a).trigger("appendAnchor");PMA_init_slider()})});$(".inline_edit_anchor span a").live("click",function(c){c.preventDefault();c=$(this).parents("td");c.removeClass("inline_edit_anchor").addClass("inline_edit_active").parent("tr").addClass("noclick");
-var a=c.children("span.nowrap").children("a").children("span.nowrap");$data_a=c.children("span.nowrap").children("a").clone();var d=a.find("img");a.parent("a").find('span:contains("'+PMA_messages.strInlineEdit+'")').length>0?a.text(" "+PMA_messages.strSave):a.empty();if(d.length>0){d.attr("title",PMA_messages.strSave);var g=d.attr("src").replace(/b_inline_edit/,"b_save");d.attr("src",g);a.prepend(d)}a=c.children("span.nowrap").children("a").clone().attr("id","hide");var n=a.find("span");d=a.find("span img");
-a.find('span:contains("'+PMA_messages.strSave+'")').length>0?n.text(" "+PMA_messages.strHide):n.empty();if(d.length>0){d.attr("title",PMA_messages.strHide);g=d.attr("src").replace(/b_save/,"b_close");d.attr("src",g);n.prepend(d)}c.children("span.nowrap").append($("<br /><br />")).append(a);if(e!="vertical")$("#table_results tbody tr td span a#hide").click(function(){var f=$(this).parents("td"),b=f.find("span");b.find("a, br").remove();b.append($data_a.clone());f.removeClass("inline_edit_active hover").addClass("inline_edit_anchor");
-f.parent().removeClass("hover noclick");f.siblings().removeClass("hover");b=f.siblings().length;for(var i="",h=4;h<b;h++)if(f.siblings("td:eq("+h+")").hasClass("inline_edit")!=false){i=f.siblings("td:eq("+h+")").data("original_data");if(f.siblings("td:eq("+h+")").children().length!=0){f.siblings("td:eq("+h+")").empty();f.siblings("td:eq("+h+")").append(i)}}$(this).prev().prev().remove();$(this).prev().remove();$(this).remove()});else{var k="",r=c.parent().siblings().length;$("#table_results tbody tr td span a#hide").click(function(){var f=
-$(this),b=f.parents("td").index();f=f.parent();f.find("a, br").remove();f.append($data_a.clone());f=f.parents("tr");f.siblings("tr:eq(3) td:eq("+b+")").removeClass("inline_edit_active").addClass("inline_edit_anchor");f.parent("tbody").find("tr").find("td:eq("+b+")").removeClass("marked hover");for(var i=6;i<=r+2;i++)if(f.siblings("tr:eq("+i+") td:eq("+b+")").hasClass("inline_edit")!=false){k=f.siblings("tr:eq("+i+") td:eq("+b+")").data("original_data");f.siblings("tr:eq("+i+") td:eq("+b+")").empty();
-f.siblings("tr:eq("+i+") td:eq("+b+")").append(k)}$(this).prev().remove();$(this).prev().remove();$(this).remove()})}if(e=="vertical"){var l=c.index();d=c.parents("tbody").find("tr").find(".inline_edit:nth("+l+")");var q=c.parents("tbody").find("tr").find(".where_clause:nth("+l+")").val()}else{l=c.parent().index();d=c.parent("tr").find(".inline_edit");q=c.parent("tr").find(".where_clause").val()}d.each(function(){var f=$(this).html(),b=$(this),i=getFieldName(b,e),h=b.find("a").text(),t=b.find("a").attr("title"),
-s=b.text();if(b.is(":not(.not_null)")){b.html('<div class="null_div">Null :<input type="checkbox" class="checkbox_null_'+i+"_"+l+'"></div>');b.is(".null")&&$(".checkbox_null_"+i+"_"+l).attr("checked",true);if(b.is(".enum, .set"))b.find("select").live("change",function(){$(".checkbox_null_"+i+"_"+l).attr("checked",false)});else if(b.is(".relation")){b.find("select").live("change",function(){$(".checkbox_null_"+i+"_"+l).attr("checked",false)});b.find(".browse_foreign").live("click",function(){$(".checkbox_null_"+
-i+"_"+l).attr("checked",false)})}else b.find("textarea").live("keypress",function(){$(".checkbox_null_"+i+"_"+l).attr("checked",false)});$(".checkbox_null_"+i+"_"+l).bind("click",function(){if(b.is(".enum"))b.find("select").attr("value","");else if(b.is(".set"))b.find("select").find("option").each(function(){$(this).attr("selected",false)});else if(b.is(".relation"))b.find("select").length>0?b.find("select").attr("value",""):b.find("span.curr_value").empty();else b.find("textarea").val("")})}else b.html('<div class="null_div"></div>');
-if(b.is(":not(.truncated, .transformed, .relation, .enum, .set, .null)")){value=f.replace("<br>","\n");b.append("<textarea>"+value+"</textarea>");b.data("original_data",f)}else if(b.is(".truncated, .transformed")){h="SELECT `"+i+"` FROM `"+window.parent.table+"` WHERE "+PMA_urldecode(q);$.post("sql.php",{token:window.parent.token,db:window.parent.db,ajax_request:true,sql_query:h,inline_edit:true},function(o){if(o.success==true){b.append("<textarea>"+o.value+"</textarea>");b.data("original_data",f)}else PMA_ajaxShowMessage(o.error)})}else if(b.is(".relation")){h=
-{ajax_request:true,get_relational_values:true,db:window.parent.db,table:window.parent.table,column:i,token:window.parent.token,curr_value:h,relation_key_or_display_column:t};$.post("sql.php",h,function(o){b.append(o.dropdown);b.data("original_data",f)})}else if(b.is(".enum")){h={ajax_request:true,get_enum_values:true,db:window.parent.db,table:window.parent.table,column:i,token:window.parent.token,curr_value:s};$.post("sql.php",h,function(o){b.append(o.dropdown);b.data("original_data",f)})}else if(b.is(".set")){h=
-{ajax_request:true,get_set_values:true,db:window.parent.db,table:window.parent.table,column:i,token:window.parent.token,curr_value:s};$.post("sql.php",h,function(o){b.append(o.select);b.data("original_data",f)})}else if(b.is(".null")){b.append("<textarea></textarea>");b.data("original_data","NULL")}})});$(".inline_edit_active span a").live("click",function(c){c.preventDefault();var a=$(this).parent().parent(),d="";if(e=="vertical")var g=a.index(),n=a.parents("tbody").find("tr").find(".inline_edit:nth("+
-g+")"),k=a.parents("tbody").find("tr").find(".where_clause:nth("+g+")").val();else{n=a.parent("tr").find(".inline_edit");k=a.parent("tr").find(".where_clause").val()}c=a.is(".nonunique")?0:1;var r={},l=$("#relational_display_K").attr("checked")?"K":"D",q={},f=false,b="UPDATE `"+window.parent.table+"` SET ",i=false,h="";n.each(function(){var j=$(this),m=getFieldName(j,e),p={};if(j.is(".transformed"))f=true;var u=true;if(j.find("input:checkbox").is(":checked")){b+=" `"+m+"`=NULL , ";i=true}else{if(j.is(":not(.relation, .enum, .set, .bit)")){p[m]=
-j.find("textarea").val();j.is(".transformed")&&$.extend(q,p)}else if(j.is(".bit")){p[m]="0b"+j.find("textarea").val();u=false}else if(j.is(".set")){d=j.find("select");p[m]=d.map(function(){return $(this).val()}).get().join(",")}else{d=j.find("select");if(d.length!=0)p[m]=d.val();d=j.find("span.curr_value");if(d.length!=0)p[m]=d.text();j.is(".relation")&&$.extend(r,p)}if(k.indexOf(m)>-1)h+="`"+window.parent.table+"`.`"+m+"` = '"+p[m].replace(/'/g,"''")+"' AND ";if(p[m]!=j.data("original_data")){b+=
-u==true?" `"+m+"`='"+p[m].replace(/'/g,"''")+"', ":" `"+m+"`="+p[m].replace(/'/g,"''")+", ";i=true}}});b=b.replace(/,\s$/,"");b=b.replace(/\\/g,"\\\\");h=h.substring(0,h.length-5);h=PMA_urlencode(h);b+=" WHERE "+PMA_urldecode(k);b+=" LIMIT 1";var t=$.param(r),s=$.param(q),o=$(this).parent(),v=$(this);i?$.post("tbl_replace.php",{ajax_request:true,sql_query:b,disp_direction:e,token:window.parent.token,db:window.parent.db,table:window.parent.table,clause_is_unique:c,where_clause:k,rel_fields_list:t,
-do_transformations:f,transform_fields_list:s,relational_display:l,"goto":"sql.php",submit_type:"save"},function(j){if(j.success==true){PMA_ajaxShowMessage(j.message);e=="vertical"?a.parents("tbody").find("tr").find(".where_clause:nth("+g+")").attr("value",h):a.parent("tr").find(".where_clause").attr("value",h);$("#result_query").remove();typeof j.sql_query!="undefined"&&$("#sqlqueryresults").prepend(j.sql_query);PMA_unInlineEditRow(o,v,a,n,j,e)}else PMA_ajaxShowMessage(j.error)}):PMA_unInlineEditRow(o,
-v,a,n,"",e)})},"top.frame_content");
-function PMA_unInlineEditRow(e,c,a,d,g,n){e.find("a, br").remove();e.append($data_a.clone());a.removeClass("inline_edit_active").addClass("inline_edit_anchor");a.parent("tr").removeClass("noclick");n!="vertical"?a.parent("tr").removeClass("hover").find("td").removeClass("hover"):a.parents("tbody").find("tr").find("td:eq("+a.index()+")").removeClass("marked hover");d.each(function(){$this_sibling=$(this);if($this_sibling.find("input:checkbox").is(":checked")){$this_sibling.html("NULL");$this_sibling.addClass("null")}else{$this_sibling.removeClass("null");
-if($this_sibling.is(":not(.relation, .enum, .set)")){var k=$this_sibling.find("textarea").val();if($this_sibling.is(".transformed")){var r=getFieldName($this_sibling,n);typeof g.transformations!="undefined"&&$.each(g.transformations,function(q,f){if(q==r){if($this_sibling.is(".text_plain, .application_octetstream"))k=f;else{var b=$this_sibling.find("textarea").val();k=$(f).append(b)}return false}})}}else{var l=k="";$test_element=$this_sibling.find("select");if($test_element.length!=0)l=$test_element.val();
-$test_element=$this_sibling.find("span.curr_value");if($test_element.length!=0)l=$test_element.text();if($this_sibling.is(".relation")){r=getFieldName($this_sibling,n);typeof g.relations!="undefined"&&$.each(g.relations,function(q,f){if(q==r){k=$(f);return false}})}else if($this_sibling.is(".enum"))k=l;else if($this_sibling.is(".set"))if(l!=null){$.each(l,function(q,f){k=k+f+","});k=k.substring(0,k.length-1)}}$this_sibling.html(k)}})}
-function PMA_changeClassForColumn(e,c){var a=e.index();!e.closest("tr").children(":first").hasClass("column_heading")&&a--;a=e.closest("table").find("tbody tr").find("td.data:eq("+a+")");if(e.data("has_class_"+c)){a.removeClass(c);e.data("has_class_"+c,false)}else{a.addClass(c);e.data("has_class_"+c,true)}}
-$(document).ready(function(){$(".browse_foreign").live("click",function(e){e.preventDefault();window.open(this.href,"foreigners","width=640,height=240,scrollbars=yes,resizable=yes");$anchor=$(this);$anchor.addClass("browse_foreign_clicked");return false});$(".column_heading.pointer").live("hover",function(){PMA_changeClassForColumn($(this),"hover")});$(".column_heading.marker").live("click",function(){PMA_changeClassForColumn($(this),"marked")})});
+/* vim: set expandtab sw=4 ts=4 sts=4: */
+/**
+ * @fileoverview    functions used wherever an sql query form is used
+ *
+ * @requires    jQuery
+ * @requires    js/functions.js
+ *
+ */
+
+var $data_a;
+
+/**
+ * decode a string URL_encoded
+ *
+ * @param string str
+ * @return string the URL-decoded string
+ */
+function PMA_urldecode(str)
+{
+    return decodeURIComponent(str.replace(/\+/g, '%20'));
+}
+
+/**
+ * endecode a string URL_decoded
+ *
+ * @param string str
+ * @return string the URL-encoded string
+ */
+function PMA_urlencode(str)
+{
+    return encodeURIComponent(str).replace(/\%20/g, '+');
+}
+
+/**
+ * Get the field name for the current field.  Required to construct the query
+ * for grid editing
+ *
+ * @param $this_field  jQuery object that points to the current field's tr
+ */
+function getFieldName($this_field)
+{
+
+    var this_field_index = $this_field.index();
+    // ltr or rtl direction does not impact how the DOM was generated
+    // check if the action column in the left exist
+    var left_action_exist = !$('#table_results').find('th:first').hasClass('draggable');
+    // number of column span for checkbox and Actions
+    var left_action_skip = left_action_exist ? $('#table_results').find('th:first').attr('colspan') - 1 : 0;
+    var field_name = $('#table_results').find('thead').find('th:eq('+ (this_field_index - left_action_skip) + ') a').text();
+    // happens when just one row (headings contain no a)
+    if ("" == field_name) {
+        var $heading = $('#table_results').find('thead').find('th:eq('+ (this_field_index - left_action_skip) + ')').children('span');
+        // may contain column comment enclosed in a span - detach it temporarily to read the column name
+        var $tempColComment = $heading.children().detach();
+        field_name = $heading.text();
+        // re-attach the column comment
+        $heading.append($tempColComment);
+    }
+
+    field_name = $.trim(field_name);
+
+    return field_name;
+}
+
+/**
+ * Unbind all event handlers before tearing down a page
+ */
+AJAX.registerTeardown('sql.js', function() {
+    $('a.delete_row.ajax').unbind('click');
+    $('#bookmarkQueryForm').die('submit');
+    $('input#bkm_label').unbind('keyup');
+    $("#sqlqueryresults").die('makegrid');
+    $("#togglequerybox").unbind('click');
+    $("#button_submit_query").die('click');
+    $("input[name=bookmark_variable]").unbind("keypress");
+    $("#sqlqueryform.ajax").die('submit');
+    $("input[name=navig].ajax").die('click');
+    $("#pageselector").die('change');
+    $("#table_results.ajax").find("a[title=Sort]").die('click');
+    $("#displayOptionsForm.ajax").die('submit');
+    $('a.browse_foreign').die('click');
+    $('th.column_heading.pointer').die('hover');
+    $('th.column_heading.marker').die('click');
+});
+
+/**
+ * @description <p>Ajax scripts for sql and browse pages</p>
+ *
+ * Actions ajaxified here:
+ * <ul>
+ * <li>Retrieve results of an SQL query</li>
+ * <li>Paginate the results table</li>
+ * <li>Sort the results table</li>
+ * <li>Change table according to display options</li>
+ * <li>Grid editing of data</li>
+ * <li>Saving a bookmark</li>
+ * </ul>
+ *
+ * @name        document.ready
+ * @memberOf    jQuery
+ */
+AJAX.registerOnload('sql.js', function() {
+    // Delete row from SQL results
+    $('a.delete_row.ajax').click(function (e) {
+        e.preventDefault();
+        var question = $.sprintf(PMA_messages['strDoYouReally'], escapeHtml($(this).closest('td').find('div').text()));
+        var $link = $(this);
+        $link.PMA_confirm(question, $link.attr('href'), function (url) {
+            $msgbox = PMA_ajaxShowMessage();
+            $.get(url, {'ajax_request':true, 'is_js_confirmed': true}, function (data) {
+                if (data.success) {
+                    PMA_ajaxShowMessage(data.message);
+                    $link.closest('tr').remove();
+                } else {
+                    PMA_ajaxShowMessage(data.error, false);
+                }
+            })
+        });
+    });
+
+    // Ajaxification for 'Bookmark this SQL query'
+    $('#bookmarkQueryForm').live('submit', function (e) {
+        e.preventDefault();
+        PMA_ajaxShowMessage();
+        $.post($(this).attr('action'), 'ajax_request=1&' + $(this).serialize(), function (data) {
+            if (data.success) {
+                PMA_ajaxShowMessage(data.message);
+            } else {
+                PMA_ajaxShowMessage(data.error, false);
+            }
+        });
+    });
+
+    /* Hides the bookmarkoptions checkboxes when the bookmark label is empty */
+    $('input#bkm_label').keyup(function() {
+        $('input#id_bkm_all_users, input#id_bkm_replace')
+            .parent()
+            .toggle($(this).val().length > 0);
+    }).trigger('keyup');
+
+    /**
+     * Attach the {@link makegrid} function to a custom event, which will be
+     * triggered manually everytime the table of results is reloaded
+     * @memberOf    jQuery
+     */
+    $("#sqlqueryresults").live('makegrid', function() {
+        PMA_makegrid($('#table_results')[0]);
+    });
+
+    /**
+     * Append the "Show/Hide query box" message to the query input form
+     *
+     * @memberOf jQuery
+     * @name    appendToggleSpan
+     */
+    // do not add this link more than once
+    if (! $('#sqlqueryform').find('a').is('#togglequerybox')) {
+        $('<a id="togglequerybox"></a>')
+        .html(PMA_messages['strHideQueryBox'])
+        .appendTo("#sqlqueryform")
+        // initially hidden because at this point, nothing else
+        // appears under the link
+        .hide();
+
+        // Attach the toggling of the query box visibility to a click
+        $("#togglequerybox").bind('click', function() {
+            var $link = $(this);
+            $link.siblings().slideToggle("fast");
+            if ($link.text() == PMA_messages['strHideQueryBox']) {
+                $link.text(PMA_messages['strShowQueryBox']);
+                // cheap trick to add a spacer between the menu tabs
+                // and "Show query box"; feel free to improve!
+                $('#togglequerybox_spacer').remove();
+                $link.before('<br id="togglequerybox_spacer" />');
+            } else {
+                $link.text(PMA_messages['strHideQueryBox']);
+            }
+            // avoid default click action
+            return false;
+        });
+    }
+
+
+    /**
+     * Event handler for sqlqueryform.ajax button_submit_query
+     *
+     * @memberOf    jQuery
+     */
+    $("#button_submit_query").live('click', function(event) {
+        var $form = $(this).closest("form");
+        // the Go button related to query submission was clicked,
+        // instead of the one related to Bookmarks, so empty the
+        // id_bookmark selector to avoid misinterpretation in
+        // import.php about what needs to be done
+        $form.find("select[name=id_bookmark]").val("");
+        // let normal event propagation happen
+    });
+
+    /**
+     * Event handler for hitting enter on sqlqueryform bookmark_variable
+     * (the Variable textfield in Bookmarked SQL query section)
+     *
+     * @memberOf    jQuery
+     */
+    $("input[name=bookmark_variable]").bind("keypress", function(event) {
+        // force the 'Enter Key' to implicitly click the #button_submit_bookmark
+        var keycode = (event.keyCode ? event.keyCode : (event.which ? event.which : event.charCode));
+        if (keycode == 13) { // keycode for enter key
+            // When you press enter in the sqlqueryform, which
+            // has 2 submit buttons, the default is to run the
+            // #button_submit_query, because of the tabindex
+            // attribute.
+            // This submits #button_submit_bookmark instead,
+            // because when you are in the Bookmarked SQL query
+            // section and hit enter, you expect it to do the
+            // same action as the Go button in that section.
+            $("#button_submit_bookmark").click();
+           return false;
+        } else  {
+           return true;
+        }
+    });
+
+    /**
+     * Ajax Event handler for 'SQL Query Submit'
+     *
+     * @see         PMA_ajaxShowMessage()
+     * @memberOf    jQuery
+     * @name        sqlqueryform_submit
+     */
+    $("#sqlqueryform.ajax").live('submit', function(event) {
+        event.preventDefault();
+
+        var $form = $(this);
+        if (! checkSqlQuery($form[0])) {
+            return false;
+        }
+
+        // remove any div containing a previous error message
+        $('div.error').remove();
+
+        var $msgbox = PMA_ajaxShowMessage();
+        var $sqlqueryresults = $('#sqlqueryresults');
+
+        PMA_prepareForAjaxRequest($form);
+
+        $.post($form.attr('action'), $form.serialize() , function(data) {
+            if (data.success == true) {
+                // success happens if the query returns rows or not
+                //
+                // fade out previous messages, if any
+                $('div.success, div.sqlquery_message').fadeOut();
+                if ($('#result_query').length) {
+                    $('#result_query').remove();
+                }
+
+                // show a message that stays on screen
+                if (typeof data.action_bookmark != 'undefined') {
+                    // view only
+                    if ('1' == data.action_bookmark) {
+                        $('#sqlquery').text(data.sql_query);
+                        // send to codemirror if possible
+                        setQuery(data.sql_query);
+                    }
+                    // delete
+                    if ('2' == data.action_bookmark) {
+                        $("#id_bookmark option[value='" + data.id_bookmark + "']").remove();
+                    }
+                    $sqlqueryresults
+                     .show()
+                     .html(data.message);
+                } else if (typeof data.sql_query != 'undefined') {
+                    $('<div class="sqlquery_message"></div>')
+                     .html(data.sql_query)
+                     .insertBefore('#sqlqueryform');
+                    // unnecessary div that came from data.sql_query
+                    $('div.notice').remove();
+                } else {
+                    $sqlqueryresults
+                     .show()
+                     .html(data.message);
+                }
+
+                if (typeof data.ajax_reload != 'undefined') {
+                    if (data.ajax_reload.reload) {
+                        if (data.ajax_reload.table_name) {
+                            PMA_commonParams.set('table', data.ajax_reload.table_name);
+                            PMA_commonActions.refreshMain();
+                        } else {
+                            PMA_reloadNavigation();
+                        }
+                    }
+                } else if (typeof data.reload != 'undefined') {
+                    // this happens if a USE or DROP command was typed
+                    PMA_commonActions.setDb(data.db);
+                    var url;
+                    if (data.db) {
+                        if (data.table) {
+                            url = 'table_sql.php';
+                        } else {
+                            url = 'db_sql.php';
+                        }
+                    } else {
+                        url = 'server_sql.php';
+                    }
+                    PMA_commonActions.refreshMain(url, function () {
+                        if ($('#result_query').length) {
+                            $('#result_query').remove();
+                        }
+                        if (data.sql_query) {
+                            $('<div id="result_query"></div>')
+                                .html(data.sql_query)
+                                .prependTo('#page_content');
+                        }
+                    });
+                }
+
+                $sqlqueryresults.show().trigger('makegrid');
+                $('#togglequerybox').show();
+                PMA_init_slider();
+
+                if (typeof data.action_bookmark == 'undefined') {
+                    if ( $('#sqlqueryform input[name="retain_query_box"]').is(':checked') != true ) {
+                        if ($("#togglequerybox").siblings(":visible").length > 0) {
+                            $("#togglequerybox").trigger('click');
+                        }
+                    }
+                }
+            } else if (data.success == false ) {
+                // show an error message that stays on screen
+                $('#sqlqueryform').before(data.error);
+                $sqlqueryresults.hide();
+            }
+            PMA_ajaxRemoveMessage($msgbox);
+        }); // end $.post()
+    }); // end SQL Query submit
+
+    /**
+     * Paginate results with Page Selector dropdown
+     * @memberOf    jQuery
+     * @name        paginate_dropdown_change
+     */
+    $("#pageselector").live('change', function(event) {
+        var $form = $(this).parent("form");
+        $form.submit();
+    }); // end Paginate results with Page Selector
+
+    /**
+     * Ajax Event handler for the display options
+     * @memberOf    jQuery
+     * @name        displayOptionsForm_submit
+     */
+    $("#displayOptionsForm.ajax").live('submit', function(event) {
+        event.preventDefault();
+
+        $form = $(this);
+
+        $.post($form.attr('action'), $form.serialize() + '&ajax_request=true' , function(data) {
+            $("#sqlqueryresults")
+             .html(data.message)
+             .trigger('makegrid');
+            PMA_init_slider();
+        }); // end $.post()
+    }); //end displayOptionsForm handler
+}); // end $()
+
+
+/**
+ * Starting from some th, change the class of all td under it.
+ * If isAddClass is specified, it will be used to determine whether to add or remove the class.
+ */
+function PMA_changeClassForColumn($this_th, newclass, isAddClass)
+{
+    // index 0 is the th containing the big T
+    var th_index = $this_th.index();
+    var has_big_t = !$this_th.closest('tr').children(':first').hasClass('column_heading');
+    // .eq() is zero-based
+    if (has_big_t) {
+        th_index--;
+    }
+    var $tds = $this_th.closest('table').find('tbody tr').find('td.data:eq('+th_index+')');
+    if (isAddClass == undefined) {
+        $tds.toggleClass(newclass);
+    } else {
+        $tds.toggleClass(newclass, isAddClass);
+    }
+}
+
+AJAX.registerOnload('sql.js', function() {
+
+    $('a.browse_foreign').live('click', function(e) {
+        e.preventDefault();
+        window.open(this.href, 'foreigners', 'width=640,height=240,scrollbars=yes,resizable=yes');
+        $anchor = $(this);
+        $anchor.addClass('browse_foreign_clicked');
+    });
+
+    /**
+     * vertical column highlighting in horizontal mode when hovering over the column header
+     */
+    $('th.column_heading.pointer').live('hover', function(e) {
+        PMA_changeClassForColumn($(this), 'hover', e.type == 'mouseenter');
+        });
+
+    /**
+     * vertical column marking in horizontal mode when clicking the column header
+     */
+    $('th.column_heading.marker').live('click', function() {
+        PMA_changeClassForColumn($(this), 'marked');
+        });
+
+    /**
+     * create resizable table
+     */
+    $("#sqlqueryresults").trigger('makegrid');
+});
+
+/*
+ * Profiling Chart
+ */
+function makeProfilingChart()
+{
+    if ($('#profilingchart').length == 0
+        || $('#profilingchart').html().length != 0
+    ) {
+        return;
+    }
+
+    var data = [];
+    $.each(jQuery.parseJSON($('#profilingChartData').html()),function(key,value) {
+        data.push([key,parseFloat(value)]);
+    });
+
+    // Remove chart and data divs contents
+    $('#profilingchart').html('').show();
+    $('#profilingChartData').html('');
+
+    PMA_createProfilingChartJqplot('profilingchart', data);
+}

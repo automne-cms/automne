@@ -22,7 +22,7 @@
  * warnings about the lack of privileges for CREATE TABLE. Tested
  * on MySQL 5.0.18.
  *
- * @package phpMyAdmin
+ * @package PhpMyAdmin
  */
 if (! defined('PHPMYADMIN')) {
     exit;
@@ -36,14 +36,18 @@ require_once './libraries/check_user_privileges.lib.php';
 $is_create_table_priv = true;
 
 ?>
-    <form id="create_table_form_minimal" method="post" action="tbl_create.php"<?php echo ($GLOBALS['cfg']['AjaxEnable'] ? ' class="ajax"' : ''); ?>>
+    <form id="create_table_form_minimal" method="post" action="tbl_create.php">
 <fieldset>
     <legend>
 <?php
-if ($GLOBALS['cfg']['PropertiesIconic']) {
-    echo '<img class="icon" src="' . $pmaThemeImage . 'b_newtbl.png" width="16" height="16" alt="" />';
+if (in_array(
+        $GLOBALS['cfg']['ActionLinksMode'],
+        array('icons', 'both')
+    )
+) {
+    echo PMA_Util::getImage('b_newtbl.png');
 }
-echo sprintf(__('Create table on database %s'), PMA_getDbLink());
+echo __('Create table');
 ?>
     </legend>
     <?php echo PMA_generate_common_hidden_inputs($db); ?>

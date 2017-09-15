@@ -124,7 +124,7 @@ class CMS_superResource extends CMS_resource
 	  * @return void
 	  * @access public
 	  */
-	function CMS_superResource($id = 0,$public=false)
+	function __construct($id = 0,$public=false)
 	{
 		if (!class_exists("CMS_date") || !class_exists("SensitiveIO")) {
 			die("CMS_superResource need at least CMS_date and SensitiveIO to run ...");
@@ -1498,7 +1498,7 @@ class CMS_superResource extends CMS_resource
 				//change the article proposed location
 				if ($this->setProposedLocation(RESOURCE_LOCATION_DELETED, $cms_user)) {
 					$this->writeToPersistence();
-					unset($this);
+					$this->__destroy();
 					return true;
 				} else {
 					$this->setError("Resource deletion error");
@@ -1517,7 +1517,7 @@ class CMS_superResource extends CMS_resource
 					".$this->_idName.$this->_tableSufix."='".$this->_ID."'
 				";
 			$q = new CMS_query($sql);
-			unset($this);
+			$this->__destroy();
 			return true;
 		}
 	}
