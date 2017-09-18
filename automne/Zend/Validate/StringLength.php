@@ -199,8 +199,8 @@ class Zend_Validate_StringLength extends Zend_Validate_Abstract
     public function setEncoding($encoding = null)
     {
         if ($encoding !== null) {
-            $orig   = iconv_get_encoding('internal_encoding');
-            $result = iconv_set_encoding('internal_encoding', $encoding);
+            $orig   = iconv_get_encoding('default_charset');
+            $result = iconv_set_encoding('default_charset', $encoding);
             if (!$result) {
                 require_once 'Zend/Validate/Exception.php';
                 throw new Zend_Validate_Exception('Given encoding not supported on this OS!');
