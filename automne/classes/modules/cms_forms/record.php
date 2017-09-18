@@ -73,10 +73,10 @@ class CMS_forms_record extends CMS_grandFather {
 	 * @param integer $id
 	 * @return void 
 	 */
-	function __construct($id = 0) {
+	public function __construct($id = 0) {
 		if ($id) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
-				$this->setError("Id is not a positive integer");
+				$this->raiseError("Id is not a positive integer");
 				return;
 			}
 			$sql = "
@@ -95,7 +95,7 @@ class CMS_forms_record extends CMS_grandFather {
 				$this->_senderID = $data["sending_rec"];
 				$this->_value = $data["value_rec"];
 			} else {
-				$this->setError("Unknown ID :".$id);
+				$this->raiseError("Unknown ID :".$id);
 			}
 		}
 	}
@@ -105,7 +105,7 @@ class CMS_forms_record extends CMS_grandFather {
 	 * @access public
 	 * @return integer
 	 */
-	function getID() {
+	public function getID() {
 		return $this->_recordID;
 	}
 	
@@ -116,7 +116,7 @@ class CMS_forms_record extends CMS_grandFather {
 	 * @param string $name
 	 * @return string
 	 */
-	function getAttribute($name) {
+	public function getAttribute($name) {
 		$name = '_'.$name;
 		return $this->$name;
 	}
@@ -128,7 +128,7 @@ class CMS_forms_record extends CMS_grandFather {
 	 * @param string $name name of attribute to set
 	 * @param $value , the value to give
 	 */
-	function setAttribute($name, $value) {
+	public function setAttribute($name, $value) {
 		$name = '_'.$name;
 		$this->$name = $value;
 		return true;
@@ -140,7 +140,7 @@ class CMS_forms_record extends CMS_grandFather {
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		$sql_fields = "
 			sending_rec='".SensitiveIO::sanitizeSQLString($this->_senderID)."',
@@ -164,7 +164,7 @@ class CMS_forms_record extends CMS_grandFather {
 		}
 		$q = new CMS_query($sql);
 		if ($q->hasError()) {
-			$this->setError("Failed to write");
+			$this->raiseError("Failed to write");
 			return false;
 		} elseif (!$this->_recordID) {
 			$this->_recordID = $q->getLastInsertedID();

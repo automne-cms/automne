@@ -133,10 +133,10 @@ class CMS_forms_field extends CMS_grandFather {
 	 * @param integer $id
 	 * @return void 
 	 */
-	function __construct($id = 0, $formID = false) {
+	public function __construct($id = 0, $formID = false) {
 		if ($id) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
-				$this->setError("Id is not a positive integer");
+				$this->raiseError("Id is not a positive integer");
 				return;
 			}
 			$sql = "
@@ -171,7 +171,7 @@ class CMS_forms_field extends CMS_grandFather {
 				$this->_order = $data["order_fld"];
 				$this->_params = unserialize($data["params_fld"]);
 			} else {
-				$this->setError("Unknown ID :".$id);
+				$this->raiseError("Unknown ID :".$id);
 				/*
 				if (SensitiveIO::isPositiveInteger($formID)) {
 					$this->_formID = $formID;
@@ -192,7 +192,7 @@ class CMS_forms_field extends CMS_grandFather {
 	 * @access public
 	 * @return integer
 	 */
-	function getID() {
+	public function getID() {
 		return $this->_fieldID;
 	}
 	
@@ -203,7 +203,7 @@ class CMS_forms_field extends CMS_grandFather {
 	 * @param string $name
 	 * @return string
 	 */
-	function getAttribute($name) {
+	public function getAttribute($name) {
 		$name = '_'.$name;
 		return $this->$name;
 	}
@@ -215,7 +215,7 @@ class CMS_forms_field extends CMS_grandFather {
 	 * @param string $name name of attribute to set
 	 * @param $value , the value to give
 	 */
-	function setAttribute($name, $value) {
+	public function setAttribute($name, $value) {
 	    $name = '_'.$name;
 		$this->$name = $value;
 		return true;
@@ -226,7 +226,7 @@ class CMS_forms_field extends CMS_grandFather {
 	 *
 	 * @access public
 	 */
-	function desactivate() {
+	public function desactivate() {
 		$this->_active = false;
 		return true;
 	}
@@ -237,7 +237,7 @@ class CMS_forms_field extends CMS_grandFather {
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		$sql_fields = "
 			form_fld='".SensitiveIO::sanitizeSQLString($this->_formID)."',
@@ -270,7 +270,7 @@ class CMS_forms_field extends CMS_grandFather {
 		}
 		$q = new CMS_query($sql);
 		if ($q->hasError()) {
-			$this->setError("Failed to write");
+			$this->raiseError("Failed to write");
 			return false;
 		} elseif (!$this->_fieldID) {
 			$this->_fieldID = $q->getLastInsertedID();
@@ -293,7 +293,7 @@ class CMS_forms_field extends CMS_grandFather {
 		$q = new CMS_query();
 		$q->executePreparedQuery($sql, $sqlParameters);
 		if ($q->hasError()) {
-			$this->setError("Failed to write");
+			$this->raiseError("Failed to write");
 			return false;
 		}*/
 		return true;
@@ -461,7 +461,7 @@ class CMS_forms_field extends CMS_grandFather {
 	 * @param string $fieldIDDatas the encoded field id datas to analyse
 	 * @return integer the field id found
 	 */
-	public static function extractEncodedID($fieldIDDatas) {
+	protected static function extractEncodedID($fieldIDDatas) {
 		$fieldIDDatas = CMS_forms_field::decodeFieldIdDatas($fieldIDDatas);
 		$id = false;
 		if (is_array($fieldIDDatas)) {
@@ -471,7 +471,7 @@ class CMS_forms_field extends CMS_grandFather {
 		}
 		if (!$id) {
 			if (is_object($this)) {
-				$this->setError("No positive integer id found");
+				$this->raiseError("No positive integer id found");
 				return false;
 			} else {
 				CMS_grandFather::raiseError("No positive integer id found");
@@ -488,9 +488,9 @@ class CMS_forms_field extends CMS_grandFather {
 	 * @param CMS_forms_field $fieldObject the object to analyse
 	 * @return string base64 encoded xhtml identifier
 	 */
-	function generateFieldIdDatas() {
+	public function generateFieldIdDatas() {
 		if (!$this->getID()) {
-			$this->setError("Field need an id");
+			$this->raiseError("Field need an id");
 			return false;
 		}
 		
@@ -511,7 +511,7 @@ class CMS_forms_field extends CMS_grandFather {
 	 * @param string $datas base64 encoded xhtml identifier
 	 * @return array : decoded datas
 	 */
-	static function decodeFieldIdDatas($datas) {
+	public static function decodeFieldIdDatas($datas) {
 		return explode('_',base64_decode(io::substr($datas,1)));
 	}
 	
@@ -524,9 +524,9 @@ class CMS_forms_field extends CMS_grandFather {
 	 * @access public
 	 * @return array of CMS_forms_field
 	 */
-	static function getAll($formID, $outputobjects = false, $withDesactivedFields = false) {
+	public static function getAll($formID, $outputobjects = false, $withDesactivedFields = false) {
 		if (!sensitiveIO::isPositiveInteger($formID)) {
-			$this->setError("FormID must be a positive integer : ".$formID);
+			$this->raiseError("FormID must be a positive integer : ".$formID);
 			return false;
 		}
 		$sql = "
@@ -560,7 +560,7 @@ class CMS_forms_field extends CMS_grandFather {
 	 * @param CMS_language $formLanguage : the language for messages
 	 * @return array array(label, input)
 	 */
-	function getFieldXHTML($formLanguage = '') {
+	public function getFieldXHTML($formLanguage = '') {
 	    // Language
 	    global $cms_language;
 	    if(!$formLanguage){

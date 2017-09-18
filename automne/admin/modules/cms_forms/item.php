@@ -108,6 +108,10 @@ case "validate":
 	
 	$public = ($_POST["public"] > -1) ? true : false ;
 	$item->setAttribute('public', $public);
+	$protected = ($_POST['protected'] == 1) ? true : false;
+
+	$item->setAttribute('protected', $protected);
+
 	$item->setAttribute("responses",(int) $_POST["responses"]);
 	// If new item set current user as media owner
 	if ($item->getAttribute('ownerID') <= 0) {
@@ -207,6 +211,10 @@ $public = array ();
 $public[1] = ($item->getAttribute('public') === true) ? ' checked="checked"' : '' ;
 $public[0] = ($item->getAttribute('public') === false) ? ' checked="checked"' : '' ;
 
+$protected = array();
+$protected[0] = ($item->getAttribute('protected') === true) ? ' checked="checked"' : '';
+$protected[1] = ($item->getAttribute('protected') === false) ? ' checked="checked"' : '';
+
 $content = '
 	<table border="0" cellpadding="3" cellspacing="2">
 	<form name="frmitem" action="'.$_SERVER["SCRIPT_NAME"].'" method="post" enctype="multipart/form-data" onSubmit="getSelectedOptionsInField_ids();">
@@ -225,6 +233,17 @@ $content = '
 	<td class="admin">
 		<input id="frm_open" type="radio" name="public" value="1"'.$public[1].' /><label for="frm_open">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_FORM_OPEN, false, MOD_CMS_FORMS_CODENAME).'</label>
 		<input id="frm_closed" type="radio" name="public" value="-1"'.$public[0].' /><label for="frm_closed">'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_FORM_CLOSED, false, MOD_CMS_FORMS_CODENAME).'</label>
+	</td>
+</tr>
+<tr>
+	<td class="admin" align="right">
+		<span class="admin_text_alert">*</span> Captcha :
+	</td>
+	<td class="admin">
+		<input id="protected_false" type="radio" name="protected" value="1"' . $protected[0] .' /><label for="protected_false">' . $cms_language->getMessage(MESSAGE_PAGE_FIELD_FORM_OPEN, false,
+		MOD_CMS_FORMS_CODENAME) . '</label>
+		<input id="protected_true" type="radio" name="protected" value="0"' . $protected[1] .' /><labl for="protected_true">' . $cms_language->getMessage(MESSAGE_PAGE_FIELD_FORM_CLOSED, false,
+		MOD_CMS_FORMS_CODENAME) . '</label>
 	</td>
 </tr>
 	<tr>

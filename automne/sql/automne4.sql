@@ -787,6 +787,7 @@ CREATE TABLE `mod_cms_forms_formulars` (
   `destinationType_frm` int(2) NOT NULL DEFAULT '0',
   `DestinationData_frm` mediumtext NOT NULL,
   `responses_frm` int(11) unsigned NOT NULL DEFAULT '0',
+  `protected_frm` TINYINT NOT NULL DEFAULT  '0',
   PRIMARY KEY (`id_frm`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 

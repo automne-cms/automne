@@ -49,12 +49,22 @@ if ($form->getID() && $form->isPublic()) {
 		$cms_forms_error_msg[$form->getID()] .= $cms_language->getMessage(CMS_forms_formular::MESSAGE_CMS_FORMS_TOKEN_EXPIRED, false, MOD_CMS_FORMS_CODENAME);
 	}
 	//Create or append (from header) form required message
-	if (isset($cms_forms_required[$form->getID()]) && $cms_forms_required[$form->getID()] && is_array($cms_forms_required[$form->getID()])) {
+	if (isset($cms_forms_required[$form->getID()]) 
+		&& $cms_forms_required[$form->getID()] 
+		&& is_array($cms_forms_required[$form->getID()])
+		|| ($form->getAttribute('protected') && isset($captchaError) && $captchaError === true)
+		) {
 		$cms_forms_error_msg[$form->getID()] .= $cms_language->getMessage(CMS_forms_formular::MESSAGE_CMS_FORMS_REQUIRED_FIELDS, false, MOD_CMS_FORMS_CODENAME).'<ul>';
-		foreach ($cms_forms_required[$form->getID()] as $fieldName) {
-			$field = $form->getFieldByName($fieldName, true);
-			$cms_forms_error_msg[$form->getID()] .= '<li>'.$field->getAttribute('label').'</li>';
-			$cms_forms_error_ids[] .= $field->generateFieldIdDatas();
+		if(is_array($cms_forms_required[$form->getID()])) {
+			foreach ($cms_forms_required[$form->getID()] as $fieldName) {
+				$field = $form->getFieldByName($fieldName, true);
+				$cms_forms_error_msg[$form->getID()] .= '<li>'.$field->getAttribute('label').'</li>';
+				$cms_forms_error_ids[] .= $field->generateFieldIdDatas();
+			}
+		}
+
+		if($form->getAttribute('protected') && isset($captchaError) && $captchaError === true){
+			$cms_forms_error_msg[$form->getID()] .= '<li>Captcha Error</li>';
 		}
 		$cms_forms_error_msg[$form->getID()] .= '</ul>';
 	}
@@ -81,6 +91,10 @@ if ($form->getID() && $form->isPublic()) {
 	}
 	if (isset($cms_forms_msg[$form->getID()]) && $cms_forms_msg[$form->getID()]) {
 		echo '<div class="cms_forms_msg">'.evalPolymodVars($cms_forms_msg[$form->getID()], $cms_language->getCode()).'</div>';
+	}
+	if($form->getAttribute('protected')) {
+		// add Recaptcha JS
+		echo '<script type="text/javascript" src="https://www.google.com/recaptcha/api.js?hl='.$cms_language->getCode().'"></script>';
 	}
 }
 ?>
