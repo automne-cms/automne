@@ -160,7 +160,7 @@ Ext.extend(Automne.block, Ext.util.Observable, {
 			}
 		}
 		this.getBox();
-		var y = (this.size.height - 20 > 0) ? this.position.y + 2 : this.position.y; 
+		var y = (this.size.height == 0) ? this.position.y - 40 : this.position.y; 
 		this.mask.setStyle('position', 'absolute');
 		this.mask.setDisplayed('block');
 		this.mask.setBounds(this.position.x + parseInt((this.size.width - (position + 4)) / 2), y, (position + 4), 20);

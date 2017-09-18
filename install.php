@@ -1402,6 +1402,7 @@ $configContent .= '
 			$moduleParameters = $module->getParameters(false,true, true);
 			//found CLI path
 			$needCliPath = false;
+			$cliPath = "";
 			if ($moduleParameters['USE_BACKGROUND_REGENERATOR'][0] == 1) {
 				if (APPLICATION_IS_WINDOWS) {
 					$needCliPath = true;
