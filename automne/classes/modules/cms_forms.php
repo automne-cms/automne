@@ -58,7 +58,7 @@ class CMS_module_cms_forms extends CMS_moduleValidation
 	  * @return object The module tag representation instance
 	  * @access public
 	  */
-	public static function getTagRepresentation($tag, $args,$compatArg=null)
+	public function getTagRepresentation($tag, $args,$compatArg=null)
 	{
 		switch ($tag->getName()) {
 		case "block":
