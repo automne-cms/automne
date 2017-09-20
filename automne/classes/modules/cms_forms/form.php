@@ -121,7 +121,7 @@ class CMS_forms_formular extends CMS_grandFather {
 				$this->_ownerID = (int) $data["owner_frm"];
 				$this->_language = new CMS_language($data["language_frm"]);
 				$this->_responses = (int) $data["responses_frm"];
-				$this->_protected = ($data["protected_frm"] == 0) ? false : true;
+				$this->_protected = (!isset($data["protected_frm"]) || !$data["protected_frm"]) ? false : true;
 
 			} else {
 				$this->raiseError("Unknown ID :".$id);
