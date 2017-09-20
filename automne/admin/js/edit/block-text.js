@@ -27,7 +27,7 @@ Automne.blockText = Ext.extend(Automne.block, {
 		//check x-y position to avoid editor to exit frame
 		var docbox = bd.getBox();
 		if(box.x + box.width > docbox.width) {
-			box.x = docbox.width - box.width - 5;
+			box.x = docbox.width - box.width + 10;
 		}
 		var cont = bd.createChild({cls: 'atm-edit-content atm-edit-text-content'});
 		var tb = bd.createChild({id:'cktoolbar'});
@@ -146,7 +146,7 @@ Automne.blockText = Ext.extend(Automne.block, {
 		}
 		//append stylesheet to editor (use events because addCss only works before editor exists)
 		var loadStyles = function (e) {
-			e.editor.addCss(stylesheet);
+			CKEDITOR.addCss(stylesheet);
 		}
 		CKEDITOR.on( 'instanceCreated', loadStyles);
 		CKEDITOR.on( 'instanceDestroyed', function (e) {
