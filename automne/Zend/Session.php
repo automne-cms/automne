@@ -15,9 +15,9 @@
  *
  * @category   Zend
  * @package    Zend_Session
- * @copyright  Copyright (c) 2005-2011 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Session.php 24196 2011-07-05 15:58:11Z matthew $
+ * @version    $Id$
  * @since      Preview Release 0.2
  */
 
@@ -43,7 +43,7 @@ require_once 'Zend/Session/SaveHandler/Interface.php';
  *
  * @category   Zend
  * @package    Zend_Session
- * @copyright  Copyright (c) 2005-2011 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Session extends Zend_Session_Abstract
@@ -259,6 +259,7 @@ class Zend_Session extends Zend_Session_Abstract
      * setSaveHandler() - Session Save Handler assignment
      *
      * @param Zend_Session_SaveHandler_Interface $interface
+     * @throws Zend_Session_Exception When the session_set_save_handler call fails
      * @return void
      */
     public static function setSaveHandler(Zend_Session_SaveHandler_Interface $saveHandler)
@@ -269,7 +270,7 @@ class Zend_Session extends Zend_Session_Abstract
             return;
         }
 
-        session_set_save_handler(
+        $result = session_set_save_handler(
             array(&$saveHandler, 'open'),
             array(&$saveHandler, 'close'),
             array(&$saveHandler, 'read'),
@@ -277,6 +278,10 @@ class Zend_Session extends Zend_Session_Abstract
             array(&$saveHandler, 'destroy'),
             array(&$saveHandler, 'gc')
             );
+
+        if (!$result) {
+            throw new Zend_Session_Exception('Unable to set session handler');
+        }
     }
 
 
@@ -383,9 +388,9 @@ class Zend_Session extends Zend_Session_Abstract
      */
     public static function sessionExists()
     {
-        if (ini_get('session.use_cookies') == '1' && isset($_COOKIE[session_name()])) {
+        if ((bool)ini_get('session.use_cookies') == true && isset($_COOKIE[session_name()])) {
             return true;
-        } elseif (!empty($_REQUEST[session_name()])) {
+        } elseif ((bool)ini_get('session.use_only_cookies') == false && isset($_REQUEST[session_name()])) {
             return true;
         } elseif (self::$_unitTestEnabled) {
             return true;
@@ -415,6 +420,14 @@ class Zend_Session extends Zend_Session_Abstract
      */
     public static function start($options = false)
     {
+        // Check to see if we've been passed an invalid session ID
+        if ( self::getId() && !self::_checkId(self::getId()) ) {
+            // Generate a valid, temporary replacement
+            self::setId(md5(self::getId()));
+            // Force a regenerate after session is started
+            self::$_regenerateIdState = -1;
+        }
+
         if (self::$_sessionStarted && self::$_destroyed) {
             require_once 'Zend/Session/Exception.php';
             throw new Zend_Session_Exception('The session was explicitly destroyed during this request, attempting to re-start is not allowed.');
@@ -445,11 +458,7 @@ class Zend_Session extends Zend_Session_Abstract
         }
 
         // See http://www.php.net/manual/en/ref.session.php for explanation
-		// Guillaume Filliere 2012-03-27 : added a check on the session_name
-		// if the session was opened and closed earlier, SID would already be defined and cause a crash here.
-		// Necessary for automne usage with SimpleSAML
-		// Hopefully in php 5.4 we will be able to use http://php.net/manual/fr/function.session-status.php
-        if (!self::$_unitTestEnabled && defined('SID') && session_name() !== 'AutomneSession') {
+        if (!self::$_unitTestEnabled && defined('SID')) {
             /** @see Zend_Session_Exception */
             require_once 'Zend/Session/Exception.php';
             throw new Zend_Session_Exception('session has already been started by session.auto-start or session_start()');
@@ -501,6 +510,34 @@ class Zend_Session extends Zend_Session_Abstract
         }
 
         self::_processStartupMetadataGlobal();
+    }
+
+    /**
+     * Perform a hash-bits check on the session ID
+     *
+     * @param string $id Session ID
+     * @return bool
+     */
+    protected static function _checkId($id)
+    {
+        $saveHandler = ini_get('session.save_handler');
+        if ($saveHandler == 'cluster') { // Zend Server SC, validate only after last dash
+            $dashPos = strrpos($id, '-');
+            if ($dashPos) {
+                $id = substr($id, $dashPos + 1);
+            }
+        }
+
+        $hashBitsPerChar = ini_get('session.hash_bits_per_character');
+        if (!$hashBitsPerChar) {
+            $hashBitsPerChar = 5; // the default value
+        }
+        switch($hashBitsPerChar) {
+            case 4: $pattern = '^[0-9a-f]*$'; break;
+            case 5: $pattern = '^[0-9a-v]*$'; break;
+            case 6: $pattern = '^[0-9a-zA-Z-,]*$'; break;
+        }
+        return preg_match('#'.$pattern.'#', $id);
     }
 
 
@@ -568,7 +605,7 @@ class Zend_Session extends Zend_Session_Abstract
                         unset($_SESSION['__ZF'][$namespace]['ENVGH']);
                     }
                 }
-
+                
                 if (isset($namespace) && empty($_SESSION['__ZF'][$namespace])) {
                     unset($_SESSION['__ZF'][$namespace]);
                 }
@@ -774,9 +811,9 @@ class Zend_Session extends Zend_Session_Abstract
             }
             $validator = new $validator_name;
             if ($validator->validate() === false) {
-                /** @see Zend_Session_Exception */
-                require_once 'Zend/Session/Exception.php';
-                throw new Zend_Session_Exception("This session is not valid according to {$validator_name}.");
+                /** @see Zend_Session_Validator_Exception */
+                require_once 'Zend/Session/Validator/Exception.php';
+                throw new Zend_Session_Validator_Exception("This session is not valid according to {$validator_name}.");
             }
         }
     }
