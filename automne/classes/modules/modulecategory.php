@@ -144,7 +144,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * @param CMS_moduleCategory $parentCategory
 	 * @param CMS_moduleCategory $rootCategory
 	 */
-	function __construct($id=0, $language = false, $parentCategory = false, $rootCategory = false) {
+	public function __construct($id=0, $language = false, $parentCategory = false, $rootCategory = false) {
 		if ($id) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
 				$this->setError("Id is not a positive integer");
@@ -193,7 +193,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	  * @access public
 	  * @return integer
 	  */
-	function getID() {
+	public function getID() {
 		return $this->_categoryID;
 	}
 
@@ -204,7 +204,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	  * @param string $name
 	  * @return string
 	  */
-	function getAttribute($name) {
+	public function getAttribute($name) {
 		$name = '_'.$name;
 		return $this->$name;
 	}
@@ -216,7 +216,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	  * @param string $name name of attribute to set
 	  * @param $value , the value to give
 	  */
-	function setAttribute($name, $value) {
+	public function setAttribute($name, $value) {
 		if ($name == 'uuid') {
 			$this->setError("Cannot change UUID");
 			return false;
@@ -232,7 +232,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	  * @return boolean
 	  * @access public
 	  */
-	function isProtected() {
+	public function isProtected() {
 		return $this->_protected ? true : false;
 	}
 
@@ -243,7 +243,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	  * @return boolean
 	  * @access public
 	  */
-	function setProtected($protected) {
+	public function setProtected($protected) {
 		$this->_protected = $protected ? true : false;
 		return true;
 	}
@@ -256,7 +256,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	  * @param boolean $returnObjects, return CMS_moduleCategory on true, or id on false
 	  * @return array(CMS_moduleCategory or id)
 	  */
-	function getSiblings($returnObjects = true) {
+	public function getSiblings($returnObjects = true) {
 		$items = array();
 		$sql = "
 			select
@@ -289,7 +289,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	  * @access public
 	  * @return array(CMS_moduleCategory)
 	  */
-	function getLineage() {
+	public function getLineage() {
 		$lineage = array();
 		$stack = $this->getLineageStack();
 		while (list($k, $id) = @each($stack)) {
@@ -308,7 +308,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	  * @access public
 	  * @return array(integer)
 	  */
-	function getLineageStack() {
+	public function getLineageStack() {
 		if (!$this->_lineageStack) {
 			$this->_lineageStack = CMS_moduleCategories_catalog::getLineageOfCategory($this->_categoryID, true);
 		}
@@ -321,7 +321,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	  * @access public
 	  * @param integer or CMS_moduleCateogry $category, the category to search in lineage
 	  */
-	function hasAncestor($category) {
+	public function hasAncestor($category) {
 		if (is_a($category, 'CMS_moduleCategory')) {
 			$category_id = $category->getID();
 		} elseif (SensitiveIO::isPositiveInteger($category)) {
@@ -336,7 +336,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	  * @access public
 	  * @return CMS_moduleCategory
 	  */
-	function getParent() {
+	public function getParent() {
 		if (sensitiveIO::isPositiveInteger($this->_parentID)) {
 			return CMS_moduleCategories_catalog::getById($this->_parentID);
 		} else {
@@ -352,7 +352,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * @access public
 	 * @return CMS_moduleCategory
 	 */
-	function getRoot() {
+	public function getRoot() {
 		if ($this->isRoot()) {
 			return null;
 		} else {
@@ -367,7 +367,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * @param CMS_moduleCategory $category
 	 * @return boolean
 	 */
-	function hasParent($category) {
+	public function hasParent($category) {
 		if (is_a($category, 'CMS_moduleCategory')
 					&& $category->getID() == $this->_parentID) {
 			return true;
@@ -381,7 +381,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * @access public
 	 * @param CMS_moduleCategory $category
 	 */
-	function hasRoot($category) {
+	public function hasRoot($category) {
 		if (is_a($category, 'CMS_moduleCategory')
 					&& $category->getID() == $this->_rootID) {
 			return true;
@@ -397,7 +397,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * @access public
 	 * @return boolean
 	 */
-	function isRoot() {
+	public function isRoot() {
 		return ($this->_categoryID > 0 && $this->_rootID == 0 && $this->_parentID == 0);
 	}
 
@@ -456,7 +456,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * @param CMS_language $language
 	 * @return string
 	 */
-	function getLabel($language = false, $useAlternative = true) {
+	public function getLabel($language = false, $useAlternative = true) {
 		if (!$this->_labels) {
 			$this->_retrieveLabels();
 		}
@@ -494,7 +494,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * @param string $value
 	 * @param mixed $language : CMS_language or language code
 	 */
-	function setLabel($value, $language = false) {
+	public function setLabel($value, $language = false) {
 		if (!$this->_labels) {
 			$this->_retrieveLabels();
 		}
@@ -519,7 +519,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * @param CMS_language $language
 	 * @return string
 	 */
-	function getDescription($language = false, $useAlternative = true, $pluginsCode = true) {
+	public function getDescription($language = false, $useAlternative = true, $pluginsCode = true) {
 		if(!$this->_descriptions) {
 			$this->_retrieveLabels();
 		}
@@ -554,7 +554,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * @param string $value
 	 * @param mixed $language : CMS_language or language code
 	 */
-	function setDescription($value, $language = false) {
+	public function setDescription($value, $language = false) {
 		if(!$this->_descriptions) {
 			$this->_retrieveLabels();
 		}
@@ -579,7 +579,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * @param CMS_language $language
 	 * @return string
 	 */
-	function getFile($language = false) {
+	public function getFile($language = false) {
 		if(!$this->_files) {
 			$this->_retrieveLabels();
 		}
@@ -600,7 +600,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * @param string $value
 	 * @param mixed $language : CMS_language or language code
 	 */
-	function setFile($value, $language = false) {
+	public function setFile($value, $language = false) {
 		if(!$this->_files) {
 			$this->_retrieveLabels();
 		}
@@ -629,7 +629,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * @param boolean $withFilename Should the function return the filename too or only the path ?
 	 * @return string
 	 */
-	function getFilePath($language = false, $withPath = true, $relativeTo = PATH_RELATIVETO_WEBROOT, $withFilename = true) {
+	public function getFilePath($language = false, $withPath = true, $relativeTo = PATH_RELATIVETO_WEBROOT, $withFilename = true) {
 		if(!$this->_files) {
 			$this->_retrieveLabels();
 		}
@@ -674,7 +674,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * @param boolean $withFilename Should the function return the filename too or only the path ?
 	 * @return string
 	 */
-	function getIconPath($withPath = true, $relativeTo = PATH_RELATIVETO_WEBROOT, $withFilename = true) {
+	public function getIconPath($withPath = true, $relativeTo = PATH_RELATIVETO_WEBROOT, $withFilename = true) {
 		if ($withPath) {
 			switch ($relativeTo) {
 			case PATH_RELATIVETO_WEBROOT:
@@ -701,7 +701,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * @access public
 	 * @return boolean
 	 */
-	function hasSiblings() {
+	public function hasSiblings() {
 		$items = array();
 		$sql = "
 			select
@@ -721,7 +721,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence() {
+	public function writeToPersistence() {
 		if (!$this->_uuid) {
 			$this->_uuid = io::uuid();
 		}
@@ -866,7 +866,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	 * @access public
 	 * @return boolean
 	 */
-	function destroy() {
+	public function destroy() {
 		if ($this->_categoryID > 0) {
 			$err = 0;
 			$sql = "
@@ -989,7 +989,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 	  * @return boolean : true on success, false on failure
 	  * @access public
 	  */
-	function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
+	public function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
 		if (!isset($params['module'])) {
 			$infos .= 'Error : missing module codename for categories importation ...'."\n";
 			return false;

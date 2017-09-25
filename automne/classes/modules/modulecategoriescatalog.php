@@ -34,7 +34,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	  * @param CMS_language $language
 	  * @return CMS_moduleCategory
 	  */
-	static function getByID($id, $language=false) {
+	public static function getByID($id, $language=false) {
 		static $categories;
 		$languageCode = (is_object($language)) ? $language->getCode() : 'none';
 		if (!isset($categories[$id][$languageCode])) {
@@ -53,7 +53,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	 * 
 	 * @return array(CMS_moduleCategory)
 	 */
-	static function getDeletedCategories($module = false, $return_objects = false) {
+	public static function getDeletedCategories($module = false, $return_objects = false) {
 		static $deletedCategories;
 		$items = array();
 		$moduleName = ($module) ? $module:'none';
@@ -93,7 +93,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	 * @param integer $parentCategoryID, ID of parent category to count order of
 	 * @return integer
 	 */
-	static function getLastSiblingOrder($parentCategoryID=0) {
+	public static function getLastSiblingOrder($parentCategoryID=0) {
 		$rootID = (int) $parentCategoryID;
 		$sql = "
 			select
@@ -116,7 +116,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	 * @param CMS_moduleCategory $parentCategory 
 	 * @return boolean true on success, false on failure
 	 */
-	static function attachCategory(&$category, &$parentCategory) {
+	public static function attachCategory(&$category, &$parentCategory) {
 		if (!($parentCategory instanceof CMS_moduleCategory)) {
 			CMS_grandFather::raiseError("Bad parent given, not a valid CMS_moduleCategory instance");
 			return false;
@@ -148,7 +148,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	 * @param CMS_moduleCategory $category 
 	 * @return boolean true on success, false on failure
 	 */
-	static function detachCategory(&$category) {
+	public static function detachCategory(&$category) {
 		if (!($category instanceof CMS_moduleCategory)) {
 			CMS_grandFather::raiseError("Bad category given, not a valid CMS_moduleCategory instance");
 			return false;
@@ -195,7 +195,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	 * @param integer $index : the new index for the new parent (if false, put the category at last position)
 	 * @return boolean true on success, false on failure
 	 */
-	static function moveCategory(&$category, &$newParentCategory, $index = false) {
+	public static function moveCategory(&$category, &$newParentCategory, $index = false) {
 		if (!($newParentCategory instanceof CMS_moduleCategory)) {
 			CMS_grandFather::raiseError("Bad parent given, not a valid CMS_moduleCategory instance");
 			return false;
@@ -241,7 +241,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	 * @access public
 	 * @return boolean
 	 */
-	static function compactSiblingsOrder($category, $codename = false) {
+	public static function compactSiblingsOrder($category, $codename = false) {
 		if ($category instanceof CMS_moduleCategory) {
 			$categoryId = $category->getID();
 			$codename = $category->getAttribute('moduleCodename');
@@ -320,7 +320,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	 * @param integer $index values (start to 1)
 	 * @return boolean true on succes, false on failure
 	 */
-	static function moveCategoryIndex($category, $index) {
+	public static function moveCategoryIndex($category, $index) {
 		// Checks : pages must be CMS_moduleCategory and offset in (1, -1)
 		if (!($category instanceof CMS_moduleCategory)) {
 			CMS_grandFather::raiseError("Category to move not valid.");
@@ -398,7 +398,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	 * @param integer $moveOffset values 1 or -1 expected
 	 * @return boolean true on succes, false on failure
 	 */
-	static function moveCategoryOrder(&$siblingCategory, $moveOffset) {
+	public static function moveCategoryOrder(&$siblingCategory, $moveOffset) {
 		// Checks : pages must be CMS_moduleCategory and offset in (1, -1)
 		if (!($siblingCategory instanceof CMS_moduleCategory)) {
 			CMS_grandFather::raiseError("Category to move not valid.");
@@ -479,7 +479,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	 * @param boolean $reset, force cache reloading : default false (used by writeToPersistence in CMS_moduleCategory)
 	 * @return false if nothing found, or integer parentID
 	 */
-	static function getParentIdOf($categoryID, $reset = false) {
+	public static function getParentIdOf($categoryID, $reset = false) {
 		static $categoriesTree;
 		if (!SensitiveIO::isPositiveInteger($categoryID)) {
 			CMS_grandFather::raiseError("Bad category ID given : ". $categoryID);
@@ -527,7 +527,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	  * @return array(integer)
 	  * @static
 	  */
-	static function getLineageOfCategory($categoryID, $reset = false) {
+	public static function getLineageOfCategory($categoryID, $reset = false) {
 		static $categoriesLineages;
 		if (!SensitiveIO::isPositiveInteger($categoryID)) {
 			CMS_grandFather::raiseError('Bad category ID given');
@@ -574,7 +574,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	  * @return string
 	  * @static
 	  */
-	static function getLineageOfCategoryAsString($category_id, $separator = ";")
+	public static function getLineageOfCategoryAsString($category_id, $separator = ";")
 	{
 		static $modulesCategories;
 		if (!$separator) {
@@ -601,7 +601,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	  * @return integer $category_id, the category ID
 	  * @static
 	  */
-	static function getCategoryIdFromLineage($lineage, $level = 0) {
+	public static function getCategoryIdFromLineage($lineage, $level = 0) {
 		if (false !== ($a_lineage = explode(';', $lineage))) {
 			if (sizeof($a_lineage) > $level) {
 				return (int) $a_lineage[$level];
@@ -630,7 +630,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	 * )
 	 * @return array(CMS_moduleCategory)
 	 */
-	 public static function getAll($attrs) {
+	public static function getAll($attrs) {
 		$items = array();
 		if (!$attrs["module"]) {
 			CMS_grandFather::raiseError("Not a valid module codename given");
@@ -724,7 +724,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	 * @return array(catID => array(catID => array(...)))
 	 * @static
 	 */
-	static function getViewvableCategoriesForProfile (&$cms_user, $module = false, $returnLineageArray = false, $clearanceLevel = false, $strict = false) {
+	public static function getViewvableCategoriesForProfile (&$cms_user, $module = false, $returnLineageArray = false, $clearanceLevel = false, $strict = false) {
 		static $viewvableCats;
 		$type = ($module) ? $module:'all';
 		if ($clearanceLevel === false || $clearanceLevel === '' || $clearanceLevel === null) {
@@ -916,7 +916,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	  * @return array(string) the statements or false if profile hasn't any access to any categories
 	  * @static
 	  */
-	static function getSiblingCategoriesAsArray(&$category, $count, &$cms_user, $cms_module, $cms_language, $clearanceLevel = false, $strict = false) {
+	public static function getSiblingCategoriesAsArray(&$category, $count, &$cms_user, $cms_module, $cms_language, $clearanceLevel = false, $strict = false) {
 		$count++;
 		$attrs = array(
 			"module" 		=> $cms_module,
@@ -953,7 +953,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	  * @param mixed array() $args, This array contains all parameters.
 	  * @return string, XHTML formated
 	  */
-	static function getListBox($args) {
+	public static function getListBox($args) {
 		return CMS_dialog_listboxes::getListBox($args);
 	}
 	
@@ -963,7 +963,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	  * @param mixed array() $args, This array contains all parameters.
 	  * @return string, XHTML formated
 	  */
-	static function getListBoxes($args) {
+	public static function getListBoxes($args) {
 		return CMS_dialog_listboxes::getListBoxes($args);
 	}
 	
@@ -984,7 +984,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	  * @return boolean : true on success, false on failure
 	  * @access public
 	  */
-	static function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
+	public static function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
 		if (!isset($params['module'])) {
 			$infos .= 'Error : missing module codename for categories importation ...'."\n";
 			return false;
@@ -1059,7 +1059,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	  * @return mixed : integer id if exists, false otherwise
 	  * @access public
 	  */
-	static function categoryExists($module, $uuid) {
+	public static function categoryExists($module, $uuid) {
 		if (!$module) {
 			CMS_grandFather::raiseError("module must be set");
 			return false;
@@ -1090,7 +1090,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 	  * @return boolean
 	  * @access public
 	  */
-	static function uuidExists($uuid) {
+	public static function uuidExists($uuid) {
 		if (!$uuid) {
 			CMS_grandFather::raiseError("uuid must be set");
 			return false;

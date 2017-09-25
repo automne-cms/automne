@@ -74,7 +74,7 @@ class CMS_module_export extends CMS_grandFather
 	 * @param string $codename, the codename of the module to export datas
 	 * @return void
 	 */
-	function __construct($codename) {
+	public function __construct($codename) {
 		if (!in_array($codename, CMS_modulesCatalog::getAllCodenames())) {
 			$this->setError('Unknown module : '.$codename);
 			return false;
@@ -100,7 +100,7 @@ class CMS_module_export extends CMS_grandFather
 	 * 
 	 * @return boolean
 	 */
-	function hasExport() {
+	public function hasExport() {
 		return $this->_hasExport;
 	}
 	
@@ -111,7 +111,7 @@ class CMS_module_export extends CMS_grandFather
 	 * @param mixed $value, the parameter value to set
 	 * @return void
 	 */
-	function setParameter($parameter, $value) {
+	public function setParameter($parameter, $value) {
 		$this->_parameters[$parameter] = $value;
 	}
 	
@@ -121,7 +121,7 @@ class CMS_module_export extends CMS_grandFather
 	 * @param string $parameter, the parameter name to get
 	 * @return mixed : the current parameter value
 	 */
-	function getParameter($parameter) {
+	public function getParameter($parameter) {
 		if (isset($this->_parameters[$parameter])) {
 			return $this->_parameters[$parameter];
 		}
@@ -134,7 +134,7 @@ class CMS_module_export extends CMS_grandFather
 	 * @param array $parameters, the parameters to set
 	 * @return void
 	 */
-	function setParameters($parameters) {
+	public function setParameters($parameters) {
 		$this->_parameters = $parameters;
 	}
 	
@@ -143,7 +143,7 @@ class CMS_module_export extends CMS_grandFather
 	 * 
 	 * @return array : the current parameters values
 	 */
-	function getParameters() {
+	public function getParameters() {
 		return $this->_parameters;
 	}
 	
@@ -152,7 +152,7 @@ class CMS_module_export extends CMS_grandFather
 	 * 
 	 * @return array : the default parameters names
 	 */
-	function getDefaultParameters() {
+	public function getDefaultParameters() {
 		return $this->_defaultParameters;
 	}
 	
@@ -162,7 +162,7 @@ class CMS_module_export extends CMS_grandFather
 	 * @param CMS_language $cms_language, the label language
 	 * @return array : the parameters names and labels
 	 */
-	function getAvailableParameters($cms_language) {
+	public function getAvailableParameters($cms_language) {
 		$return = array();
 		foreach ($this->_availableParameters as $key => $label) {
 			$return[$key] = $cms_language->getMessage($label);
@@ -176,7 +176,7 @@ class CMS_module_export extends CMS_grandFather
 	 * @param string $format, the export format in : php (default), xml, patch
 	 * @return mixed : the exported datas
 	 */
-	function export($format = 'php') {
+	public function export($format = 'php') {
 		$aExport = array();
 		if ($this->_hasExport) {
 			//force default language loading to overwrite user language
