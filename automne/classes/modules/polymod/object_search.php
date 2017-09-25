@@ -191,7 +191,7 @@ class CMS_object_search extends CMS_grandFather
 	  * @param $objectDefinition CMS_poly_object_definition the current search object definition or the ID of the CMS_poly_object_definition
 	  * @param boolean $public
 	  */
-	function __construct($objectDefinition, $public = false) {
+	public function __construct($objectDefinition, $public = false) {
 		global $cms_user;
 		if (io::isPositiveInteger($objectDefinition)) {
             $objectDefinition = CMS_poly_object_catalog::getObjectDefinition($objectDefinition);
@@ -230,7 +230,7 @@ class CMS_object_search extends CMS_grandFather
 	 * @param string $name
 	 * @return string
 	 */
-	function getAttribute($name) {
+	public function getAttribute($name) {
 		$name = '_'.$name;
 		return $this->$name;
 	}
@@ -242,7 +242,7 @@ class CMS_object_search extends CMS_grandFather
 	 * @param string $name name of attribute to set
 	 * @param $value , the value to give
 	 */
-	function setAttribute($name, $value) {
+	public function setAttribute($name, $value) {
 		if ($name == 'page' && $value < 0) {
 			$value = 0;
 		}
@@ -258,7 +258,7 @@ class CMS_object_search extends CMS_grandFather
 	 * @access public
 	 * @static
 	 */
-	static function getStaticSearchConditionTypes() {
+	public static function getStaticSearchConditionTypes() {
 		return array(
 			"object",
 			"item",
@@ -281,7 +281,7 @@ class CMS_object_search extends CMS_grandFather
 	 * @return array of results score array(integer $resultId => float score)
 	 * @access public
 	 */
-	function getScore() {
+	public function getScore() {
 		return $this->_score;
 	}
 	
@@ -296,7 +296,7 @@ class CMS_object_search extends CMS_grandFather
 	 * @param string $operator, additional optional search operator
 	 * @return void or false if an error occured
 	 */
-	function addWhereCondition($type, $value, $operator = false) {
+	public function addWhereCondition($type, $value, $operator = false) {
 		if (!$type || (!$value && !$operator)) {
 			return;
 		}
@@ -419,7 +419,7 @@ class CMS_object_search extends CMS_grandFather
 	 * @access public
 	 * @static
 	 */
-	static function getStaticOrderConditionTypes() {
+	public static function getStaticOrderConditionTypes() {
 		$orderConditions = array(
 			"objectID",
 			"random",
@@ -444,7 +444,7 @@ class CMS_object_search extends CMS_grandFather
 	 * @param string $direction , the direction to give (asc or desc, default is asc)
 	 * @return void or false if an error occured
 	 */
-	function addOrderCondition($type, $direction = 'asc', $operator = false) {
+	public function addOrderCondition($type, $direction = 'asc', $operator = false) {
 		if (!$type || !in_array($direction,array('asc','desc'))) {
 			return;
 		}
@@ -493,7 +493,7 @@ class CMS_object_search extends CMS_grandFather
 	 * @access public
 	 * @return integer
 	 */
-	function getNumRows() {
+	public function getNumRows() {
 		if (!isset($this->_numRows)) {
 			$this->setError('Can\'t get numRows if search is not done');
 			return false;
@@ -508,7 +508,7 @@ class CMS_object_search extends CMS_grandFather
 	 * @access public
 	 * @return integer
 	 */
-	function getMaxPages() {
+	public function getMaxPages() {
 		if (!isset($this->_numRows)) {
 			return 0;
 		}
@@ -1532,7 +1532,7 @@ class CMS_object_search extends CMS_grandFather
 	 * 	/!\ CAUTION : Pass this option to true can generate a lot of subqueries /!\
 	 * @return mixed array(CMS_poly_object) or boolean (for POLYMOD_SEARCH_RETURN_INDIVIDUALS_OBJECTS)
 	 */
-	function search($return = self::POLYMOD_SEARCH_RETURN_OBJECTS, $loadSubObjects = false) {
+	public function search($return = self::POLYMOD_SEARCH_RETURN_OBJECTS, $loadSubObjects = false) {
 		global $cms_user;
 		if ($return == self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT && !$this->_public) {
 			$this->setError('Return type can\'t be self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT in a non-public search.');
@@ -1628,7 +1628,7 @@ class CMS_object_search extends CMS_grandFather
 	 * 	/!\ CAUTION : Pass this option to true can generate a lot of subqueries /!\
 	 * @return array(CMS_poly_object)
 	 */
-	function getNextResult($return = self::POLYMOD_SEARCH_RETURN_OBJECTS, $loadSubObjects = false) {
+	public function getNextResult($return = self::POLYMOD_SEARCH_RETURN_OBJECTS, $loadSubObjects = false) {
 		if ($return == self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT && !$this->_public) {
 			$this->setError('Return type can\'t be self::POLYMOD_SEARCH_RETURN_OBJECTSLIGHT in a non-public search.');
 			$return = self::POLYMOD_SEARCH_RETURN_OBJECTS;
@@ -1680,7 +1680,7 @@ class CMS_object_search extends CMS_grandFather
 	 * @return boolean
 	 * @access public
 	 */
-	function isLastResult() {
+	public function isLastResult() {
 		return $this->_objectsCount == sizeof($this->_sortedResultsIds);
 	}
 	
@@ -1689,7 +1689,7 @@ class CMS_object_search extends CMS_grandFather
 	 * @return void
 	 * @access public
 	 */
-	function resetResultStack() {
+	public function resetResultStack() {
 		reset($this->_sortedResultsIds);
 	}
 	
@@ -1700,7 +1700,7 @@ class CMS_object_search extends CMS_grandFather
 	 * @param string $searchConditions XML definition to search with
 	 * @return string XML definition of results IDs
 	 */
-	function soapSearch($searchConditions = '') {
+	public function soapSearch($searchConditions = '') {
 	    $xml = '';
 	    
 	    if($searchConditions){

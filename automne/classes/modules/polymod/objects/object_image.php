@@ -219,7 +219,7 @@ class CMS_object_image extends CMS_object_common
 	  * @return void
 	  * @access public
 	  */
-	function __construct($datas=array(), &$field, $public=false)
+	public function __construct($datas=array(), &$field, $public=false)
 	{
 		parent::__construct($datas, $field, $public);
 	}
@@ -230,7 +230,7 @@ class CMS_object_image extends CMS_object_common
 	  * @return string : the label
 	  * @access public
 	  */
-	function getLabel() {
+	public function getLabel() {
 		if (!is_object($this->_subfieldValues[1])) {
 			$this->setError("No subField to get for label : ".print_r($this->_subfieldValues,true));
 			return false;
@@ -246,7 +246,7 @@ class CMS_object_image extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function checkMandatory($values,$prefixName, $newFormat = false) {
+	public function checkMandatory($values,$prefixName, $newFormat = false) {
 		if ($newFormat) {
 			//check for image extension before doing anything
 			if (isset($values[$prefixName.$this->_field->getID().'_0'])
@@ -316,7 +316,7 @@ class CMS_object_image extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLAdmin($fieldID, $language, $prefixName) {
+	public function getHTMLAdmin($fieldID, $language, $prefixName) {
 		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
 		$params = $this->getParamsValues();
 		$maxFileSize = CMS_file::getMaxUploadFileSize('K');
@@ -481,7 +481,7 @@ class CMS_object_image extends CMS_object_common
       * @return string : the form field HTML tag
       * @access public
       */
-	function getInput($fieldID, $language, $inputParams) {
+	public function getInput($fieldID, $language, $inputParams) {
 		//hidden field : use parent method
 		if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
 			return parent::getInput($fieldID, $language, $inputParams);
@@ -574,7 +574,7 @@ class CMS_object_image extends CMS_object_common
 	  * @return void
 	  * @access public
 	  */
-	function needIDToSetValues() {
+	public function needIDToSetValues() {
 		return void;
 	}
 
@@ -588,7 +588,7 @@ class CMS_object_image extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName, $newFormat = false, $objectID = '') {
+	public function setValues($values,$prefixName, $newFormat = false, $objectID = '') {
 		if (!sensitiveIO::isPositiveInteger($objectID)) {
 			$this->setError('ObjectID must be a positive integer : '.$objectID);
 			return false;
@@ -1011,7 +1011,7 @@ class CMS_object_image extends CMS_object_common
 	  * @return string : object HTML description
 	  * @access public
 	  */
-	function getHTMLDescription() {
+	public function getHTMLDescription() {
 		//image tag with link to image or image zoom if any
 		$img = '';
 		if ($this->_subfieldValues[0]->getValue()) {
@@ -1042,7 +1042,7 @@ class CMS_object_image extends CMS_object_common
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getStructure() {
+	public function getStructure() {
 		$structure = parent::getStructure();
 		unset($structure['value']);
 		$structure['image'] = '';
@@ -1072,7 +1072,7 @@ class CMS_object_image extends CMS_object_common
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getValue($name, $parameters = '') {
+	public function getValue($name, $parameters = '') {
 		switch($name) {
 			case 'label':
 				return $this->getLabel();
@@ -1247,7 +1247,7 @@ class CMS_object_image extends CMS_object_common
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language, $objectName = '') {
+	public function getLabelsStructure(&$language, $objectName = '') {
 		$labels = parent::getLabelsStructure($language, $objectName);
 		unset($labels['structure']['value']);
 
@@ -1281,7 +1281,7 @@ class CMS_object_image extends CMS_object_common
       * @return string : the SQL request
       * @access public
       */
-    function getFieldOrderSQL($fieldID, $direction, $operator, $where, $public = false) {
+    public function getFieldOrderSQL($fieldID, $direction, $operator, $where, $public = false) {
             $statusSuffix = ($public) ? "_public":"_edited";
             //operators are not supported for now : TODO
             $supportedOperator = array();

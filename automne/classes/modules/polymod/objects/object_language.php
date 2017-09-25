@@ -80,7 +80,7 @@ class CMS_object_language extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLAdmin($fieldID, $language, $prefixName) {
+	public function getHTMLAdmin($fieldID, $language, $prefixName) {
 		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
 		//get module
 		$module = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
@@ -125,7 +125,7 @@ class CMS_object_language extends CMS_object_common
       * @return string : the form field HTML tag
       * @access public
       */
-	function getInput($fieldID, $language, $inputParams) {
+	public function getInput($fieldID, $language, $inputParams) {
 		//hidden field : use parent method
 		if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
 			return parent::getInput($fieldID, $language, $inputParams);
@@ -181,7 +181,7 @@ class CMS_object_language extends CMS_object_common
 	  * @return string : object HTML description
 	  * @access public
 	  */
-	function getHTMLDescription() {
+	public function getHTMLDescription() {
 		if (!$this->_subfieldValues[0]->getValue()) {
 			return '';
 		}
@@ -198,7 +198,7 @@ class CMS_object_language extends CMS_object_common
 	  * @return string : the language label
 	  * @access public
 	  */
-	function getLabel() {
+	public function getLabel() {
 		return $this->getHTMLDescription();
 	}
 	
@@ -210,7 +210,7 @@ class CMS_object_language extends CMS_object_common
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getValue($name, $parameters = '') {
+	public function getValue($name, $parameters = '') {
 		switch($name) {
 			case 'label':
 				return $this->getLabel();
@@ -230,7 +230,7 @@ class CMS_object_language extends CMS_object_common
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language, $objectName = '') {
+	public function getLabelsStructure(&$language, $objectName = '') {
 		$labels = parent::getLabelsStructure($language, $objectName);
 		$labels['function']['selectOptions'] = $language->getMessage(self::MESSAGE_OBJECT_LANGUAGE_FUNCTION_SELECTEDOPTIONS_DESCRIPTION,array('{'.$objectName.'}'),MOD_POLYMOD_CODENAME);
 		return $labels;
@@ -245,7 +245,7 @@ class CMS_object_language extends CMS_object_common
 	  * @access public
 	  * @static
 	  */
-	function getListOfNamesForObject($public = false, $searchConditions = array()) {
+	public function getListOfNamesForObject($public = false, $searchConditions = array()) {
 		//get module
 		$module = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
 		// Get languages
@@ -266,7 +266,7 @@ class CMS_object_language extends CMS_object_common
 	  * @return string : options tag list
 	  * @access public
 	  */
-	function selectOptions($values, $tags) {
+	public function selectOptions($values, $tags) {
 		$all_languages = $this->getListOfNamesForObject();
 		$return = "";
 		if (is_array($all_languages) && $all_languages) {
@@ -289,7 +289,7 @@ class CMS_object_language extends CMS_object_common
 	  * @return string : the SQL request
 	  * @access public
 	  */
-	function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
+	public function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
 		$statusSuffix = ($public) ? "_public":"_edited";
 		$supportedOperator = array();
 		if ($operator && !in_array($operator, $supportedOperator)) {

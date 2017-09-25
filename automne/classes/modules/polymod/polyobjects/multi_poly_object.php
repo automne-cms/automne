@@ -175,7 +175,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @return void
 	  * @access public
 	  */
-	function __construct($objectID, $datas = array(), $field, $public = false)
+	public function __construct($objectID, $datas = array(), $field, $public = false)
 	{
 		//first, remove paramters 3 if no module ASE found
 		if (!class_exists('CMS_module_ase')) {
@@ -223,7 +223,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @return integer, the DB object ID
 	  * @access public
 	  */
-	function getObjectID()
+	public function getObjectID()
 	{
 		return $this->_objectID;
 	}
@@ -234,7 +234,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @return array, the associated object ids
 	  * @access public
 	  */
-	function getIDs() {
+	public function getIDs() {
 		$ids = array();
 		foreach ($this->_subfieldValues as $subFieldID => $aSubFieldData) {
 			$value = $this->_subfieldValues[$subFieldID]->getValue();
@@ -252,7 +252,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @return integer, the object resource status
 	  * @access public
 	  */
-	function getObjectResourceStatus() {
+	public function getObjectResourceStatus() {
 		$objectDef = $this->getObjectDefinition();
 		return $objectDef->getValue("resourceUsage");
 	}
@@ -265,7 +265,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access private
 	  */
-	function populateSubObjectsValues($datas) {
+	public function populateSubObjectsValues($datas) {
 		if (!is_array($datas)) {
 			$this->setError("Datas need to be an array : ".print_r($datas,true));
 			return false;
@@ -339,7 +339,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @return CMS_poly_object_definition
 	  * @access public
 	  */
-	function getObjectDefinition () {
+	public function getObjectDefinition () {
 		//create cache object
 		$cache = new CMS_cache('object'.$this->_objectID, 'atm-polymod-structure', 2592000, false);
 		$datas = '';
@@ -360,7 +360,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @return string, the label
 	  * @access public
 	  */
-	function getObjectLabel($language) {
+	public function getObjectLabel($language) {
 		//get object definition
 		$objectDef = $this->getObjectDefinition();
 		if (is_a($language, "CMS_language")) {
@@ -378,7 +378,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @return string, the description
 	  * @access public
 	  */
-	function getDescription($language) {
+	public function getDescription($language) {
 		//get object definition
 		$objectDef = $this->getObjectDefinition();
 		$description = new CMS_object_i18nm($objectDef->getValue("descriptionID"));
@@ -398,7 +398,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLSubFieldsParametersSearch($language, $prefixName) {
+	public function getHTMLSubFieldsParametersSearch($language, $prefixName) {
 		global $polymodCodename;
 		$input = '';
 
@@ -449,7 +449,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLAdmin($fieldID, $language, $prefixName) {
+	public function getHTMLAdmin($fieldID, $language, $prefixName) {
 		global $cms_user;
 		$params = $this->getParamsValues();
 		
@@ -799,7 +799,7 @@ class CMS_multi_poly_object extends CMS_object_common
       * @return string : the form field HTML tag
       * @access public
       */
-	function getInput($fieldID, $language, $inputParams) {
+	public function getInput($fieldID, $language, $inputParams) {
 		$params = $this->getParamsValues();
 		if (isset($inputParams['prefix'])) {
 			$prefixName = $inputParams['prefix'];
@@ -867,7 +867,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @return string : object HTML description
 	  * @access public
 	  */
-	function getHTMLDescription($glue = '') {
+	public function getHTMLDescription($glue = '') {
 		$labels = array();
 		foreach (array_keys($this->_subfieldValues) as $subFieldID) {
 			if (isset($this->_subfieldValues[$subFieldID]) && is_object($this->_subfieldValues[$subFieldID]) && isset($this->_objectValues[$subFieldID]) && is_object($this->_objectValues[$subFieldID])) {
@@ -891,7 +891,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function checkMandatory($values,$prefixName, $newFormat = false) {
+	public function checkMandatory($values,$prefixName, $newFormat = false) {
 		//if field is required check values
 		if ($this->_field->getValue('required')) {
 			//if this multi object hasn't editable param
@@ -914,7 +914,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName, $newFormat = false) {
+	public function setValues($values,$prefixName, $newFormat = false) {
 		if (isset($values['list'.$prefixName.$this->_field->getID().'_0'])) {
 			$values['list'.$prefixName.$this->_field->getID().'_0'] = str_replace(',',';',$values['list'.$prefixName.$this->_field->getID().'_0']);
 			$valuesArray = explode(';',$values['list'.$prefixName.$this->_field->getID().'_0']);
@@ -968,7 +968,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setSubFieldsDefinition($subFieldsDefinition) {
+	public function setSubFieldsDefinition($subFieldsDefinition) {
 		foreach(array_keys($this->_subfieldValues) as $subFieldID) {
 			if (is_object($this->_subfieldValues[$subFieldID])) {
 				$subFieldsDefinition[0]['subFieldID'] = $subFieldID;
@@ -984,7 +984,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence() {
+	public function writeToPersistence() {
 		if ($this->_public) {
 			$this->setError("Can't write public object");
 			return false;
@@ -1004,7 +1004,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getStructure() {
+	public function getStructure() {
 		$structure = array();
 		$structure['label'] = '';
 		$structure['fieldname'] = '';
@@ -1025,7 +1025,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @return mixed : the object field
 	  * @access public
 	  */
-	function objectValues($fieldID) {
+	public function objectValues($fieldID) {
 		if (!isset($this->_objectValues[$fieldID])) {
 			global $cms_language;
 			$language = $cms_language ? $cms_language : CMS_languagesCatalog::getDefaultLanguage();
@@ -1044,7 +1044,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getValue($name, $parameters = '') {
+	public function getValue($name, $parameters = '') {
 		global $cms_language;
 		switch ($name) {
 			case 'label':
@@ -1109,7 +1109,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @return string : options tag list
 	  * @access public
 	  */
-	function selectOptions($values, $tags) {
+	public function selectOptions($values, $tags) {
 		$objectValues = CMS_poly_object_catalog::getListOfNamesForObject($this->_objectID, true);
 		$return = "";
 		if (is_array($objectValues) && $objectValues) {
@@ -1127,7 +1127,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language, $objectName = '') {
+	public function getLabelsStructure(&$language, $objectName = '') {
 		$labels = array();
 		$object = new CMS_poly_object($this->_objectID);
 		$labels['structure']['label'] = $language->getMessage(self::MESSAGE_MULTI_OBJECT_LABEL_DESCRIPTION,false,MOD_POLYMOD_CODENAME);
@@ -1155,7 +1155,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @access public
 	  * @static
 	  */
-	function getListOfNamesForObject($public = false, $searchConditions = array()) {
+	public function getListOfNamesForObject($public = false, $searchConditions = array()) {
 		return CMS_poly_object_catalog::getListOfNamesForObject(io::substr($this->_field->getValue('type'),6), $public, $searchConditions);
 	}
 
@@ -1170,7 +1170,7 @@ class CMS_multi_poly_object extends CMS_object_common
 	  * @return string : the SQL request
 	  * @access public
 	  */
-	function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
+	public function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
 		$statusSuffix = ($public) ? "_public":"_edited";
 		$sql = "
 		select

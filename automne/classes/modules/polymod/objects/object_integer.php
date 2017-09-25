@@ -114,7 +114,7 @@ class CMS_object_integer extends CMS_object_common
 	  * @return void
 	  * @access public
 	  */
-	function __construct($datas=array(), &$field, $public=false)
+	public function __construct($datas=array(), &$field, $public=false)
 	{
 		parent::__construct($datas, $field, $public);
 	}
@@ -128,7 +128,7 @@ class CMS_object_integer extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function checkMandatory($values, $prefixName, $newFormat = false) {
+	public function checkMandatory($values, $prefixName, $newFormat = false) {
 		$params = $this->getParamsValues();
 		//if field is required check values
 		foreach ($this->_subfields as $subFieldID => $subFieldDefinition) {
@@ -158,7 +158,7 @@ class CMS_object_integer extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName, $newFormat = false) {
+	public function setValues($values,$prefixName, $newFormat = false) {
 		$params = $this->getParamsValues();
 		foreach ($this->_subfields as $subFieldID => $subFieldDefinition) {
 			if (is_object($this->_subfieldValues[$subFieldID])) {
@@ -197,7 +197,7 @@ class CMS_object_integer extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLAdmin($fieldID, $language, $prefixName) {
+	public function getHTMLAdmin($fieldID, $language, $prefixName) {
 		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
 		$params = $this->getParamsValues();
 		$return['xtype'] =	'numberfield';
@@ -225,7 +225,7 @@ class CMS_object_integer extends CMS_object_common
       * @return multidimentionnal array : the object values structure
       * @access public
       */
-    function getStructure() {
+    public function getStructure() {
 		$structure = parent::getStructure();
 		//unset($structure['value']);
 		$structure['unit'] = '';
@@ -240,7 +240,7 @@ class CMS_object_integer extends CMS_object_common
       * @return multidimentionnal array : the object values structure
       * @access public
       */
-    function getValue($name, $parameters = '') {
+    public function getValue($name, $parameters = '') {
 		switch($name) {
 			case 'unit':
 				//get field parameters
@@ -254,15 +254,15 @@ class CMS_object_integer extends CMS_object_common
     }
 
     /**
-  * Return the needed form field tag for current object field
-  *
-  * @param array $values : parameters values array(parameterName => parameterValue) in :
-  *     id : the form field id to set
-  * @param multidimentionnal array $tags : xml2Array content of atm-function tag
-  * @return string : the form field HTML tag
-  * @access public
-  */
-    function getInput($fieldID, $language, $inputParams) {
+	  * Return the needed form field tag for current object field
+	  *
+	  * @param array $values : parameters values array(parameterName => parameterValue) in :
+	  *     id : the form field id to set
+	  * @param multidimentionnal array $tags : xml2Array content of atm-function tag
+	  * @return string : the form field HTML tag
+	  * @access public
+	 */
+    public function getInput($fieldID, $language, $inputParams) {
 		//hidden field : use parent method
 		if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
 			return parent::getInput($fieldID, $language, $inputParams);
@@ -307,7 +307,7 @@ class CMS_object_integer extends CMS_object_common
       * @return array : the labels of object structure and functions
       * @access public
       */
-    function getLabelsStructure(&$language, $objectName = '') {
+    public function getLabelsStructure(&$language, $objectName = '') {
 		$labels = parent::getLabelsStructure($language, $objectName);
 		$params = $this->getParamsValues();
 		//unset($labels['structure']['value']);
@@ -329,7 +329,7 @@ class CMS_object_integer extends CMS_object_common
 	  * @return string : the SQL request
 	  * @access public
 	  */
-	function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
+	public function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
 		$supportedOperator = array(
 			'<',
 			'<=',

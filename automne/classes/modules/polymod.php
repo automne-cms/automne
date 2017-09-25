@@ -78,7 +78,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return array(CMS_poly_object_definition)
 	  * @access public
 	  */
-	function getObjects() {
+	public function getObjects() {
 		return CMS_poly_object_catalog::getObjectsForModule($this->_codename);
 	}
 
@@ -88,7 +88,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return string : the method name to get objects label
 	  * @access public
 	  */
-	function getRessourceNameMethod() {
+	public function getRessourceNameMethod() {
 		return 'getLabel';
 	}
 
@@ -98,7 +98,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return string : the method type to get objects type label
 	  * @access public
 	  */
-	function getRessourceTypeLabelMethod() {
+	public function getRessourceTypeLabelMethod() {
 		return 'getTypeLabel';
 	}
 
@@ -109,7 +109,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return array of tags to be treated.
 	  * @access public
 	  */
-	function getWantedTags($treatmentMode, $visualizationMode)
+	public function getWantedTags($treatmentMode, $visualizationMode)
 	{
 		$return = parent::getWantedTags($treatmentMode, $visualizationMode);
 		switch ($treatmentMode) {
@@ -152,7 +152,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return string the tag content treated.
 	  * @access public
 	  */
-	function treatWantedTag(&$tag, $tagContent, $treatmentMode, $visualizationMode, &$treatedObject, $treatmentParameters)
+	public function treatWantedTag(&$tag, $tagContent, $treatmentMode, $visualizationMode, &$treatedObject, $treatmentParameters)
 	{
 		switch ($treatmentMode) {
 			case MODULE_TREATMENT_BLOCK_TAGS:
@@ -298,7 +298,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return string : the module code to add
 	  * @access public
 	  */
-	function getModuleCode($modulesCode, $treatmentMode, $visualizationMode, &$treatedObject, $treatmentParameters)
+	public function getModuleCode($modulesCode, $treatmentMode, $visualizationMode, &$treatedObject, $treatmentParameters)
 	{
 		switch ($treatmentMode) {
 			case MODULE_TREATMENT_PAGECONTENT_HEADER_CODE :
@@ -497,7 +497,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return object The module tag representation instance
 	  * @access public
 	  */
-	function getTagRepresentation($tag, $args, $compatArgs = false)
+	public function getTagRepresentation($tag, $args, $compatArgs = false)
 	{
 		switch ($tag->getName()) {
 		case "block":
@@ -526,7 +526,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return string : the module definition string converted
 	  * @access public
 	  */
-	function convertDefinitionString($definition, $toHumanReadableFormat, $reset = false) {
+	public function convertDefinitionString($definition, $toHumanReadableFormat, $reset = false) {
 		global $cms_language;
 		static $modulesConversionTable;
 		$count = 1;
@@ -561,7 +561,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return Boolean true/false
 	  * @access public
 	  */
-	function isCategoryUsed($category)
+	public function isCategoryUsed($category)
 	{
 		static $moduleUseCategories, $moduleFieldsCategories;
 		if (!isset($moduleUseCategories)) {
@@ -614,7 +614,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return Boolean true/false
 	  * @access public
 	  */
-	function scriptTask($parameters) {
+	public function scriptTask($parameters) {
 		if (!isset($parameters['object']) || !sensitiveIO::isPositiveInteger($parameters['object'])) {
 			return false;
 		}
@@ -639,7 +639,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return string : HTML scripts infos
 	  * @access public
 	  */
-	function scriptInfo($parameters) {
+	public function scriptInfo($parameters) {
 		if (!isset($parameters['object']) || !sensitiveIO::isPositiveInteger($parameters['object'])) {
 			return parent::scriptInfo($parameters);
 		}
@@ -661,7 +661,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return string : the file to use for required classname
 	  * @access public
 	  */
-	static function load($classname) {
+	public static function load($classname) {
 		static $classes;
 		if (!isset($classes)) {
 			$classes = array(
@@ -709,7 +709,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return string : HTML scripts infos
 	  * @access public
 	  */
-	function getObjectsInfos($user) {
+	public function getObjectsInfos($user) {
 		$objectsInfos = array();
 		$cms_language = $user->getLanguage();
 		$catFieldsNames = array();
@@ -778,7 +778,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return array of replacements values (pattern to replace => replacement)
 	  * @access public
 	  */
-	function getModuleReplacements() {
+	public function getModuleReplacements() {
 		$replace = array();
 		//replace {plugin:selection} values
 		$replace["#^\{plugin:selection\}$#U"]								= '$parameters[\'selection\']';
@@ -809,7 +809,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return array : results elements Ids
 	  * @access public
 	  */
-	function search ($keyword, &$user, $public = false, &$score = array()) {
+	public function search($keyword, &$user, $public = false, &$score = array()) {
 		//objects
 		$objects = $this->getObjects();
 		$results = array();
@@ -833,7 +833,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return array : results elements (cms_page)
 	  * @access public
 	  */
-	function getSearchResults($resultsIds, &$user) {
+	public function getSearchResults($resultsIds, &$user) {
 		if (!$resultsIds || !is_array($resultsIds)) {
 			return array();
 		}
@@ -1063,7 +1063,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return boolean : true on success, false on failure
 	  * @access public
 	  */
-	function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
+	public function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
 		$this->setPolymod(true);
 		$return = true;
 		$return &= parent::fromArray($data, $params, $cms_language, $idsRelation, $infos);
@@ -1107,7 +1107,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return boolean
 	  * @access public
 	  */
-	function isDestroyable() {
+	public function isDestroyable() {
 		global $cms_user;
 		// Check module exists and is polymod
 		if($this->hasError() || !$this->isPolymod()){
@@ -1144,7 +1144,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 	  * @return void
 	  * @access public
 	  */
-	function destroy () {
+	public function destroy () {
 		global $cms_user;
 		// Check module exists and is polymod
 		if (!$this->isDestroyable()) {
@@ -1198,8 +1198,7 @@ class CMS_polymod extends CMS_modulePolymodValidation
 			}
 		}
 		$sql = "
-			select
-				*
+			select *
 			from
 				profiles
 			where

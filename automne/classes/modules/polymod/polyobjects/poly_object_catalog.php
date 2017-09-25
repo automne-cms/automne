@@ -33,7 +33,7 @@ class CMS_poly_object_catalog
 	  * @return CMS_poly_object or false if not found
 	  * @access public
 	  */
-	static function getObjectByID($itemID, $returnDefinition = false, $public = false)
+	public static function getObjectByID($itemID, $returnDefinition = false, $public = false)
 	{
 		if (!sensitiveIO::isPositiveInteger($itemID)) {
 			CMS_grandFather::raiseError("itemID is not a positive integer : ".$itemID);
@@ -62,7 +62,7 @@ class CMS_poly_object_catalog
 	  * @return object definition (type) ID
 	  * @access public
 	  */
-	static function getObjectDefinitionByID($itemID, $returnObject = false) {
+	public static function getObjectDefinitionByID($itemID, $returnObject = false) {
 		if (!sensitiveIO::isPositiveInteger($itemID)) {
 			CMS_grandFather::raiseError("itemID is not a positive integer : ".$itemID);
 			return false;
@@ -86,7 +86,7 @@ class CMS_poly_object_catalog
 	  * @return object CMS_poly_object_definition
 	  * @access public
 	  */
-	static function getObjectDefinition($objectID) {
+	public static function getObjectDefinition($objectID) {
 		static $objectDefinitions;
 		if (!isset($objectDefinitions[$objectID])) {
 			if (!sensitiveIO::isPositiveInteger($objectID)) {
@@ -110,7 +110,7 @@ class CMS_poly_object_catalog
 	  * @access public
 	  * @static
 	  */
-	static function getObjectsForModule($codename) {
+	public static function getObjectsForModule($codename) {
 		$sql = "select
 					*
 				from
@@ -142,7 +142,7 @@ class CMS_poly_object_catalog
 	  * @access public
 	  * @static
 	  */
-	static function getModuleCodenameForObject($itemID) {
+	public static function getModuleCodenameForObject($itemID) {
 		static $moduleCodenameForObject;
 		if (!sensitiveIO::isPositiveInteger($itemID)) {
 			CMS_grandFather::raiseError("itemID is not a positive integer : ".$itemID);
@@ -173,7 +173,7 @@ class CMS_poly_object_catalog
 	  * @access public
 	  * @static
 	  */
-	static function getModuleCodenameForObjectType($objectID) {
+	public static function getModuleCodenameForObjectType($objectID) {
 		static $moduleCodenameForObjectType;
 		if (!sensitiveIO::isPositiveInteger($objectID)) {
 			CMS_grandFather::raiseError("ObjectID is not a positive integer : ".$objectID);
@@ -202,7 +202,7 @@ class CMS_poly_object_catalog
 	  * @access public
 	  * @static
 	  */
-	static function hasPrimaryResource($codename) {
+	public static function hasPrimaryResource($codename) {
 		$sql = "select
 					1
 				from
@@ -223,7 +223,7 @@ class CMS_poly_object_catalog
 	  * @access public
 	  * @static
 	  */
-	static function getPrimaryResourceObjectType($codename) {
+	public static function getPrimaryResourceObjectType($codename) {
 		$sql = "select
 					id_mod
 				from
@@ -248,7 +248,7 @@ class CMS_poly_object_catalog
 	  * @access public
 	  * @static
 	  */
-	static function objectHasLanguageField($objectID) {
+	public static function objectHasLanguageField($objectID) {
 		static $objectHasLanguageField;
 		if (!sensitiveIO::isPositiveInteger($objectID)) {
 			CMS_grandFather::raiseError("ObjectID is not a positive integer : ".$objectID);
@@ -287,7 +287,7 @@ class CMS_poly_object_catalog
 	  * @access public
 	  * @static
 	  */
-	static function objectHasCategories($objectID) {
+	public static function objectHasCategories($objectID) {
 		static $objectUsesCategories;
 		if (!sensitiveIO::isPositiveInteger($objectID)) {
 			CMS_grandFather::raiseError("ObjectID is not a positive integer : ".$objectID);
@@ -323,7 +323,7 @@ class CMS_poly_object_catalog
 	  * @access public
 	  * @static
 	  */
-	static function moduleHasCategories($codename) {
+	public static function moduleHasCategories($codename) {
 		static $moduleHasCategories;
 		if (!isset($moduleHasCategories[$codename])) {
 			$sql = "select
@@ -356,7 +356,7 @@ class CMS_poly_object_catalog
 	  * @access public
 	  * @static
 	  */
-	static function getParentsObject($objectID) {
+	public static function getParentsObject($objectID) {
 		static $parentObject;
 		if (!sensitiveIO::isPositiveInteger($objectID)) {
 			CMS_grandFather::raiseError("objectID is not a positive integer : ".$objectID);
@@ -393,7 +393,7 @@ class CMS_poly_object_catalog
 	  * @access public
 	  * @static
 	  */
-	static function getFieldsDefinition($objectID, $reset = false) {
+	public static function getFieldsDefinition($objectID, $reset = false) {
 		static $datas;
 		if (!$reset && isset($datas[$objectID])) {
 			return $datas[$objectID];
@@ -441,7 +441,7 @@ class CMS_poly_object_catalog
 	  * @access public
 	  * @static
 	  */
-	static function getAllObjects($objectID, $public = false, $searchConditions = array(), $returnObjects = true, $searchMethod = false) {
+	public static function getAllObjects($objectID, $public = false, $searchConditions = array(), $returnObjects = true, $searchMethod = false) {
 		$return = array();
 		if (io::strpos($objectID,'multi|') !== false) {
 			$objectID = io::substr($objectID, 6);
@@ -482,7 +482,7 @@ class CMS_poly_object_catalog
 	  * @access public
 	  * @static
 	  */
-	static function getListOfNamesForObject($objectID, $public = false, $searchConditions = array(), $loadSubObjects = false) {
+	public static function getListOfNamesForObject($objectID, $public = false, $searchConditions = array(), $loadSubObjects = false) {
 		static $listNames;
 		$paramsHash = md5(serialize(func_get_args()));
 		if (isset($listNames[$paramsHash])) {
@@ -511,8 +511,9 @@ class CMS_poly_object_catalog
 		uasort($listNames[$paramsHash], array('CMS_poly_object_catalog','_natecasecomp'));
 		return $listNames[$paramsHash];
 	}
+	
 	//Callback function for natural sorting without care of accentuation
-	static function _natecasecomp($str1, $str2) {
+	public static function _natecasecomp($str1, $str2) {
 		$str1 = sensitiveIO::sanitizeAsciiString($str1);
 		$str2 = sensitiveIO::sanitizeAsciiString($str2);
 		return strnatcasecmp($str1, $str2);
@@ -526,7 +527,7 @@ class CMS_poly_object_catalog
 	  * @access public
 	  * @static
 	  */
-	static function getModuleCodenameForField($fieldID) {
+	public static function getModuleCodenameForField($fieldID) {
 		static $moduleCodenameForField;
 		if (sensitiveIO::isPositiveInteger($fieldID)) {
 			if (!isset($moduleCodenameForField[$fieldID])) {
@@ -577,7 +578,7 @@ class CMS_poly_object_catalog
 	  * @access public
 	  * @static
 	  */
-	static function getObjectIDForField($fieldID) {
+	public static function getObjectIDForField($fieldID) {
 		static $objectIDForField;
 		if (sensitiveIO::isPositiveInteger($fieldID)) {
 			if (!isset($objectIDForField[$fieldID])) {
@@ -610,7 +611,7 @@ class CMS_poly_object_catalog
 	  * @access public
 	  * @static
 	  */
-	static function getObjectUsage($objectID, $returnObjectsDefinition = false) {
+	public static function getObjectUsage($objectID, $returnObjectsDefinition = false) {
 		if (!sensitiveIO::isPositiveInteger($objectID)) {
 			CMS_grandFather::raiseError("objectID is not a positive integer : ".$objectID);
 			return false;
@@ -644,7 +645,7 @@ class CMS_poly_object_catalog
 	  * @access public
 	  * @static
 	  */
-	static function hardDeleteObjects($objectID, $itemIDs) {
+	public static function hardDeleteObjects($objectID, $itemIDs) {
 		if (!sensitiveIO::isPositiveInteger($objectID)) {
 			CMS_grandFather::raiseError("objectID is not a positive integer : ".$objectID);
 			return false;
@@ -756,7 +757,7 @@ class CMS_poly_object_catalog
 	  * @access public
 	  * @static
 	  */
-	static function getAllPluginDefinitionsForObject($objectID = false) {
+	public static function getAllPluginDefinitionsForObject($objectID = false) {
 		if ($objectID && !sensitiveIO::isPositiveInteger($objectID)) {
 			CMS_grandFather::raiseError("objectID is not a positive integer : ".$objectID);
 			return false;
@@ -788,7 +789,7 @@ class CMS_poly_object_catalog
 	  * @access public
 	  * @static
 	  */
-	static function getAllPluginDefIDForModule($codename) {
+	public static function getAllPluginDefIDForModule($codename) {
 		static $pluginsIDs;
 		if (!isset($pluginsIDs[$codename])) {
 			$sql = "select
@@ -817,7 +818,7 @@ class CMS_poly_object_catalog
 	  * @access public
 	  * @static
 	  */
-	static function getAllRSSDefinitionsForObject($objectID = false) {
+	public static function getAllRSSDefinitionsForObject($objectID = false) {
 		if ($objectID && !sensitiveIO::isPositiveInteger($objectID)) {
 			CMS_grandFather::raiseError("objectID is not a positive integer : ".$objectID);
 			return false;
@@ -849,7 +850,7 @@ class CMS_poly_object_catalog
 	  * @return array(integer objectID => integer objectID)
 	  * @access public
 	  */
-	static function getUsedObjectsID($fieldID, $public = false) {
+	public static function getUsedObjectsID($fieldID, $public = false) {
 		$return = array();
 		if (sensitiveIO::isPositiveInteger($fieldID)) { 
 			$statusSuffix = ($public) ? "_public":"_edited";
@@ -880,7 +881,7 @@ class CMS_poly_object_catalog
 	  * @return array(CMS_poly_object)
 	  * @access public
 	  */
-	static function getPrimaryItemsWhichUsesSecondaryItem($secondaryItemId, $returnObject = true, $public=false) {
+	public static function getPrimaryItemsWhichUsesSecondaryItem($secondaryItemId, $returnObject = true, $public=false) {
 		//get secondary item module
 		$codename = CMS_poly_object_catalog::getModuleCodenameForObject($secondaryItemId);
 		if (!$codename) {
@@ -931,7 +932,7 @@ class CMS_poly_object_catalog
 	  * @return array(int refID => string ref type)
 	  * @access public
 	  */
-	static function getFieldsReferencesUsage($codename = false) {
+	public static function getFieldsReferencesUsage($codename = false) {
 		static $moduleReferences;
 		if (!$codename) {
 			$codename = 'all';
@@ -982,7 +983,7 @@ class CMS_poly_object_catalog
 	  * @return boolean : true on success, false on failure
 	  * @access public
 	  */
-	static function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
+	public static function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
 		if (!isset($params['module'])) {
 			$infos .= 'Error : missing module codename for objects importation ...'."\n";
 			return false;
@@ -1079,7 +1080,7 @@ class CMS_poly_object_catalog
 	  * @return mixed : integer id if exists, false otherwise
 	  * @access public
 	  */
-	static function objectExists($module, $uuid) {
+	public static function objectExists($module, $uuid) {
 		if (!$module) {
 			CMS_grandFather::raiseError("module must be set");
 			return false;
@@ -1111,7 +1112,7 @@ class CMS_poly_object_catalog
 	  * @return boolean
 	  * @access public
 	  */
-	static function objectUuidExists($uuid) {
+	public static function objectUuidExists($uuid) {
 		if (!$uuid) {
 			CMS_grandFather::raiseError("uuid must be set");
 			return false;
@@ -1136,7 +1137,7 @@ class CMS_poly_object_catalog
 	  * @return mixed : integer id if exists, false otherwise
 	  * @access public
 	  */
-	static function fieldExists($module, $uuid) {
+	public static function fieldExists($module, $uuid) {
 		if (!$module) {
 			CMS_grandFather::raiseError("module must be set");
 			return false;
@@ -1169,7 +1170,7 @@ class CMS_poly_object_catalog
 	  * @return boolean
 	  * @access public
 	  */
-	static function fieldUuidExists($uuid) {
+	public static function fieldUuidExists($uuid) {
 		if (!$uuid) {
 			CMS_grandFather::raiseError("uuid must be set");
 			return false;
@@ -1194,7 +1195,7 @@ class CMS_poly_object_catalog
 	  * @return mixed : integer id if exists, false otherwise
 	  * @access public
 	  */
-	static function rssExists($module, $uuid) {
+	public static function rssExists($module, $uuid) {
 		if (!$uuid) {
 			CMS_grandFather::raiseError("uuid must be set");
 			return false;
@@ -1227,7 +1228,7 @@ class CMS_poly_object_catalog
 	  * @return boolean
 	  * @access public
 	  */
-	static function rssUuidExists($uuid) {
+	public static function rssUuidExists($uuid) {
 		if (!$uuid) {
 			CMS_grandFather::raiseError("uuid must be set");
 			return false;
@@ -1252,7 +1253,7 @@ class CMS_poly_object_catalog
 	  * @return mixed : integer id if exists, false otherwise
 	  * @access public
 	  */
-	static function pluginExists($module, $uuid) {
+	public static function pluginExists($module, $uuid) {
 		if (!$uuid) {
 			CMS_grandFather::raiseError("uuid must be set");
 			return false;
@@ -1285,7 +1286,7 @@ class CMS_poly_object_catalog
 	  * @return boolean
 	  * @access public
 	  */
-	static function pluginUuidExists($uuid) {
+	public static function pluginUuidExists($uuid) {
 		if (!$uuid) {
 			CMS_grandFather::raiseError("uuid must be set");
 			return false;
@@ -1308,7 +1309,7 @@ class CMS_poly_object_catalog
 	  * @return CMS_poly_object_definition|boolean
 	  * @access public
 	  */
-	public static function getDefinitionFromUuid($uuid) {
+	public public static function getDefinitionFromUuid($uuid) {
 		if (!$uuid) {
 			CMS_grandFather::raiseError("uuid must be set");
 			return false;

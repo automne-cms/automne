@@ -158,7 +158,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($definition, $parse = true, $mode = self::PARSE_MODE, $module = false, $visualizationMode = PAGE_VISUALMODE_HTML_PUBLIC) {
+	public function __construct($definition, $parse = true, $mode = self::PARSE_MODE, $module = false, $visualizationMode = PAGE_VISUALMODE_HTML_PUBLIC) {
 		if (!trim($definition)) {
 			return;
 		}
@@ -216,7 +216,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @return string the PHP / HTML content parsed
 	  * @access public
 	  */
-	function getContent($type = self::OUTPUT_RESULT, &$parameters) {
+	public function getContent($type = self::OUTPUT_RESULT, &$parameters) {
 		if (!trim($this->_definition)) {
 			return ;
 		}
@@ -384,7 +384,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @return string the parsing errors
 	  * @access public
 	  */
-	function getParsingError() {
+	public function getParsingError() {
 		return $this->_parsingError;
 	}
 	
@@ -395,7 +395,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @return multidimentionnal array the block params
 	  * @access public
 	  */
-	function getBlockParams() {
+	public function getBlockParams() {
 		return $this->_blockParams;
 	}
 	
@@ -408,7 +408,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @return string the PHP / HTML content computed
 	  * @access public
 	  */
-	function computeTags($definition, $level = 0) {
+	public function computeTags($definition, $level = 0) {
 		$code = '';
 		if ($level == 0) {
 			$code .= '$content .="';
@@ -816,7 +816,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access private
 	  * @static
 	  */
-	static function addSearchCondition(&$search, $tagAttributes) {
+	public static function addSearchCondition(&$search, $tagAttributes) {
 		global $cms_language;
 		
 		if (!isset($tagAttributes['type'])) {
@@ -1519,7 +1519,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	static function replaceVars($text, $replacement) {
+	public static function replaceVars($text, $replacement) {
 		//if no text => return
 		if (!$text) {
 			return '';
@@ -1668,7 +1668,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	static function prepareVar($var) {
+	public static function prepareVar($var) {
 		if (is_array($var)) {
 			return sizeof($var);
 		} elseif (is_scalar($var)) {
@@ -1685,7 +1685,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	static function encloseWithPrepareVar($var) {
+	public static function encloseWithPrepareVar($var) {
 		return CMS_polymod_definition_parsing::encloseString("CMS_polymod_definition_parsing::prepareVar(".$var.")",false);
 	}
 	
@@ -1698,7 +1698,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	static function encloseString($var, $reverse) {
+	public static function encloseString($var, $reverse) {
 		return ($reverse) ? "'.".$var.".'" : '".'.$var.'."';
 	}
 	
@@ -1710,7 +1710,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	function getUniqueID () {
+	public function getUniqueID () {
 		static $count;
 		$count++;
 		return ($count+1).'_'.io::substr(md5(mt_rand().microtime()),0,6);
@@ -1731,7 +1731,7 @@ class CMS_polymod_definition_parsing extends CMS_grandFather
 	  * @return string indented php code
 	  * @access public
 	  */
-	function checkTagRequirements(&$tag, $requirements) {
+	public function checkTagRequirements(&$tag, $requirements) {
 		if (!is_array($requirements)) {
 			$this->setError('Tag requirements must be an array');
 			return false;

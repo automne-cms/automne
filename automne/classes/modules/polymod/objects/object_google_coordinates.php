@@ -418,7 +418,7 @@ class CMS_object_google_coordinates extends CMS_object_common
 	 * @return array of coordonate
 	 * @access protected
 	 */
-	public static function getCoordinates (&$language,  $address = '' , $sCcTld = false ){
+	public static function getCoordinates(&$language,  $address = '' , $sCcTld = false ){
 		$lat = $long = '';
 		//for the moment the adress is mandatory but we'll set it optionnal in the future
 		if(!$address){

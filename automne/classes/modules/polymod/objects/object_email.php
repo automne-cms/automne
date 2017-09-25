@@ -220,7 +220,7 @@ class CMS_object_email extends CMS_object_common
 	  * @return void
 	  * @access public
 	  */
-	function __construct($datas=array(), &$field, $public=false)
+	public function __construct($datas=array(), &$field, $public=false)
 	{
 		parent::__construct($datas, $field, $public);
 	}
@@ -233,7 +233,7 @@ class CMS_object_email extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function checkMandatory($values, $prefixName, $newFormat = false) {
+	public function checkMandatory($values, $prefixName, $newFormat = false) {
 		return true;
 	}
 	
@@ -243,7 +243,7 @@ class CMS_object_email extends CMS_object_common
 	  * @return string : the label
 	  * @access public
 	  */
-	function getLabel() {
+	public function getLabel() {
 		$params = $this->getParamsValues();
 		
 		if (!is_object($this->_subfieldValues[0])) {
@@ -278,7 +278,7 @@ class CMS_object_email extends CMS_object_common
 	  * @return array, the treated datas
 	  * @access public
 	  */
-	function treatParams($post, $prefix) {
+	public function treatParams($post, $prefix) {
 		global $moduleCodename;
 		$parameters = $this->getSubFieldParameters();
 		//treat all parameters by parent method
@@ -340,7 +340,7 @@ class CMS_object_email extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLSubFieldsParametersDisableUsers($language, $prefixName) {
+	public function getHTMLSubFieldsParametersDisableUsers($language, $prefixName) {
 		$params = $this->getParamsValues();
 		$values = $this->_parameterValues;
 		$input = '';
@@ -383,7 +383,7 @@ class CMS_object_email extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLSubFieldsParametersDisableGroups($language, $prefixName) {
+	public function getHTMLSubFieldsParametersDisableGroups($language, $prefixName) {
 		$params = $this->getParamsValues();
 		$values = $this->_parameterValues;
 		$input = '';
@@ -425,7 +425,7 @@ class CMS_object_email extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLSubFieldsParametersUsersGroupsField($language, $prefixName) {
+	public function getHTMLSubFieldsParametersUsersGroupsField($language, $prefixName) {
 		$params = $this->getParamsValues();
 		$values = $this->_parameterValues;
 		$input = '';
@@ -466,7 +466,7 @@ class CMS_object_email extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLSubFieldsParametersEmailSubject($language, $prefixName) {
+	public function getHTMLSubFieldsParametersEmailSubject($language, $prefixName) {
 		global $moduleCodename;
 		$module = CMS_modulesCatalog::getByCodename($moduleCodename);
 		$params = $this->getParamsValues();
@@ -481,7 +481,8 @@ class CMS_object_email extends CMS_object_common
 		}
 		return $input;
 	}
-	function getHTMLSubFieldsParametersEmailBody($language, $prefixName) {
+
+	public function getHTMLSubFieldsParametersEmailBody($language, $prefixName) {
 		global $cms_language, $moduleCodename, $object;
 		$module = CMS_modulesCatalog::getByCodename($moduleCodename);
 		$params = $this->getParamsValues();
@@ -569,7 +570,8 @@ class CMS_object_email extends CMS_object_common
 		$input.='</fieldset>';
 		return $input;
 	}
-	function getHTMLSubFieldsParametersSendEmailOn($language, $prefixName) {
+
+	public function getHTMLSubFieldsParametersSendEmailOn($language, $prefixName) {
 		global $cms_language;
 		$params = $this->getParamsValues();
 		$values = $this->_parameterValues;
@@ -601,7 +603,7 @@ class CMS_object_email extends CMS_object_common
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getValue($name, $parameters = '') {
+	public function getValue($name, $parameters = '') {
 		switch($name) {
 			case 'label':
 				return $this->getLabel();
@@ -624,7 +626,7 @@ class CMS_object_email extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLAdmin($fieldID, $language, $prefixName) {
+	public function getHTMLAdmin($fieldID, $language, $prefixName) {
 		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
 		$params = $this->getParamsValues();
 		
@@ -708,7 +710,7 @@ class CMS_object_email extends CMS_object_common
       * @return string : the form field HTML tag
       * @access public
       */
-	function getInput($fieldID, $language, $inputParams) {
+	public function getInput($fieldID, $language, $inputParams) {
 		//hidden field : use parent method
 		if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
 			return parent::getInput($fieldID, $language, $inputParams);
@@ -761,7 +763,7 @@ class CMS_object_email extends CMS_object_common
 	  * @return boolean
 	  * @access public
 	  */
-	function afterValidation($validationResult, &$validatedObject) {
+	public function afterValidation($validationResult, &$validatedObject) {
 		$params = $this->getParamsValues();
 		// Check if sending is done by validation, if object validation is accepted, object is in user space, and fieldValue is checked
 		if ($params['sendEmailOn'] == self::OBJECT_EMAIL_PARAMETER_SEND_ON_VALIDATION 
@@ -863,7 +865,7 @@ class CMS_object_email extends CMS_object_common
 	  * @return Boolean true/false
 	  * @access public
 	  */
-	function scriptTask($parameters) {
+	public function scriptTask($parameters) {
 		switch ($parameters['task']) {
 			case 'emailNotification':
 				@set_time_limit(300);
@@ -1015,6 +1017,7 @@ class CMS_object_email extends CMS_object_common
 			break;
 		}
 	}
+	
 	protected function _getFieldsFiles($item, &$files) {
 		//get object fields definitions
 		$objectFields = CMS_poly_object_catalog::getFieldsDefinition($item->getObjectID());
@@ -1056,7 +1059,7 @@ class CMS_object_email extends CMS_object_common
 	  * @return string : HTML scripts infos
 	  * @access public
 	  */
-	function scriptInfo($parameters) {
+	public function scriptInfo($parameters) {
 		global $cms_language;
 		if ($parameters['task'] == 'emailNotification') {
 			return $cms_language->getMessage(self::MESSAGE_OBJECT_EMAIL_TASK_PREPARE_EMAIL_NOTIFICATION, false, MOD_POLYMOD_CODENAME);

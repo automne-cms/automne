@@ -71,7 +71,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	  * @return void
 	  * @access public
 	  */
-	function __construct($id = 0, $dbValues=array()) {
+	public function __construct($id = 0, $dbValues=array()) {
 		$datas = array();
 		if ($id && !$dbValues) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
@@ -126,7 +126,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	  * @return integer, the DB object ID
 	  * @access public
 	  */
-	function getID() {
+	public function getID() {
 		return $this->_fieldID;
 	}
 	
@@ -136,7 +136,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	  * @return integer, the DB object ID
 	  * @access public
 	  */
-	function getObjectID() {
+	public function getObjectID() {
 		return parent::getID();
 	}
 	
@@ -148,7 +148,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValue($valueName, $value) {
+	public function setValue($valueName, $value) {
 		if (!isset($this->_objectFieldValues[$valueName])) {
 			$this->setError("Unknown valueName to set :".$valueName);
 			return false;
@@ -168,7 +168,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	  * @return mixed, the value
 	  * @access public
 	  */
-	function getValue($valueName) {
+	public function getValue($valueName) {
 		if (!array_key_exists($valueName,$this->_objectFieldValues )) {
 			$this->setError("Unknown valueName to get : ".$valueName);
 			return false;
@@ -183,7 +183,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	  * @return string, the label or false if none defined
 	  * @access public
 	  */
-	function getFieldDescription($language) {
+	public function getFieldDescription($language) {
 		if (!sensitiveIO::isPositiveInteger($this->getValue("descriptionID"))) {
 			return false;
 		}
@@ -203,7 +203,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	  * @return mixed, the parameter value
 	  * @access public
 	  */
-	function getParameter($internalName) {
+	public function getParameter($internalName) {
 		return isset($this->_objectFieldValues["params"][$internalName]) ? $this->_objectFieldValues["params"][$internalName] : null;
 	}
 	
@@ -214,7 +214,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	  * @return mixed, the object instance
 	  * @access public
 	  */
-	function getTypeObject($returnDefinition=false, $public = false) {
+	public function getTypeObject($returnDefinition=false, $public = false) {
 		if (!$this->_objectFieldValues['type']) {
 			return false;
 		}
@@ -241,7 +241,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	  * @access public
 	  * @static
 	  */
-	function getFieldsNextOrder() {
+	public function getFieldsNextOrder() {
 		if (sensitiveIO::isPositiveInteger($this->_objectFieldValues["objectID"])) {
 			$sql = "
 				select
@@ -263,7 +263,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence() {
+	public function writeToPersistence() {
 		//get Order if needed
 		if (!$this->_objectFieldValues["order"] && sensitiveIO::isPositiveInteger($this->_objectFieldValues["objectID"])) {
 			$this->_objectFieldValues["order"] = $this->getFieldsNextOrder();
@@ -327,7 +327,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function destroy() {
+	public function destroy() {
 		if ($this->_fieldID) {
 			//delete all files of objects for this field
 			$module = CMS_poly_object_catalog::getModuleCodenameForField($this->_fieldID);
@@ -480,7 +480,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	  * @return boolean : true on success, false on failure
 	  * @access public
 	  */
-	function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
+	public function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
 		if (isset($data['labels'])) {
 			$label = new CMS_object_i18nm($this->getValue("labelID"));
 			$label->setValues($data['labels']);
@@ -602,7 +602,7 @@ class CMS_poly_object_field extends CMS_poly_object_definition
 	  * @return boolean : true on success, false on failure
 	  * @access public
 	  */
-	function convertDefinitions($module) {
+	public function convertDefinitions($module) {
 		$GLOBALS['moduleCodename'] = $module->getCodename();
 		$params = $this->getValue("params");
 		if ($params) {

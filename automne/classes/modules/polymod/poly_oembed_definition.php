@@ -1,9 +1,9 @@
 <?php
 /**
-  * Class CMS_polymod_oembed_definition
-  * Represent an Oembed definition for an object
-  *
-  */
+	* Class CMS_polymod_oembed_definition
+	* Represent an Oembed definition for an object
+	*
+	*/
 
 class CMS_polymod_oembed_definition extends CMS_grandFather
 {
@@ -16,7 +16,7 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 	public $uuid             = null;
 	public $validationFailures = array();
 
-	function __construct() {
+	public function __construct() {
 
 	}
 
@@ -95,12 +95,12 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 	}
 
 	/**
-	  * Destroy this object in DB
-	  *
-	  * @return boolean true on success, false on failure
-	  * @access public
-	  */
-	function destroy() {
+		* Destroy this object in DB
+		*
+		* @return boolean true on success, false on failure
+		* @access public
+		*/
+	public function destroy() {
 		if ($this->id) {
 			$sql = "DELETE FROM mod_object_oembed_definition WHERE id_mood = '".$this->id."'";
 			$q = new CMS_query($sql);
@@ -247,9 +247,7 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 		if($v !== null && is_numeric($v)) {
 			$v = (string) $v;
 		}
-
 		$this->html = $v;
-
 		return $this;
 	}
 
@@ -266,14 +264,14 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 	 * @return  the current object
 	 */
 	public function setUUID($UUID) {
-	 	$this->uuid = $UUID;
+		$this->uuid = $UUID;
 		return $this;
 	}
 
 	public static function getServiceUrl() {
-		return CMS_websitesCatalog::getCurrentDomain().'/embed/oembed'.(!STRIP_PHP_EXTENSION ? '.php' : '').
-					'?url='.
-					rawurlencode(CMS_websitesCatalog::getCurrentDomain().$_SERVER['REQUEST_URI']);
+		return CMS_websitesCatalog::getCurrentDomain().'/embed/oembed'.(!STRIP_PHP_EXTENSION ? '.php' : '')
+			.'?url='
+			.rawurlencode(CMS_websitesCatalog::getCurrentDomain().$_SERVER['REQUEST_URI']);
 	}
 
 	public static function getObjectName() {
@@ -302,44 +300,43 @@ class CMS_polymod_oembed_definition extends CMS_grandFather
 	}
 
 	public static function getResults($props) {
-	  $defaults = array(
-	    'type' => 'rich',
-	    'version' => '1.0',
-	    'provider_name' => APPLICATION_LABEL,
-	    'width' => 0,
-	    'height' => 0,
-	  );
-	  $result = array_merge($defaults, $props);
-	  return $result;
+		$defaults = array(
+			'type' => 'rich',
+			'version' => '1.0',
+			'provider_name' => APPLICATION_LABEL,
+			'width' => 0,
+			'height' => 0,
+		);
+		$result = array_merge($defaults, $props);
+		return $result;
 	}
 
 	public static function format_xml_elements($array) {
-	  $output = '';
-	  foreach ($array as $key => $value) {
-	    if (is_numeric($key)) {
-	      if ($value['key']) {
-	        $output .= ' <' . $value['key'];
-	        if (isset($value['attributes']) && is_array($value['attributes'])) {
-	          $output .= drupal_attributes($value['attributes']);
-	        }
-
-	        if (isset($value['value']) && $value['value'] != '') {
-	          $output .= '>' . (is_array($value['value']) ? self::format_xml_elements($value['value']) : self::check_plain($value['value'])) . '</' . $value['key'] . ">\n";
-	        }
-	        else {
-	          $output .= " />\n";
-	        }
-	      }
-	    }
-	    else {
-	      $output .= ' <' . $key . '>' . (is_array($value) ? self::format_xml_elements($value) : self::check_plain($value)) . "</$key>\n";
-	    }
-	  }
-	  return $output;
+		$output = '';
+		foreach ($array as $key => $value) {
+			if (is_numeric($key)) {
+				if ($value['key']) {
+					$output .= ' <' . $value['key'];
+					if (isset($value['attributes']) && is_array($value['attributes'])) {
+						$output .= drupal_attributes($value['attributes']);
+					}
+					if (isset($value['value']) && $value['value'] != '') {
+						$output .= '>' . (is_array($value['value']) ? self::format_xml_elements($value['value']) : self::check_plain($value['value'])) . '</' . $value['key'] . ">\n";
+					}
+					else {
+						$output .= " />\n";
+					}
+				}
+			}
+			else {
+					$output .= ' <' . $key . '>' . (is_array($value) ? self::format_xml_elements($value) : self::check_plain($value)) . "</$key>\n";
+			}
+		}
+		return $output;
 	}
 
 	public static function check_plain($text) {
-  	return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+			return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 	}
 
 }

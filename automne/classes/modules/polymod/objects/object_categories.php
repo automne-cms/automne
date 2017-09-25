@@ -177,7 +177,7 @@ class CMS_object_categories extends CMS_object_common
 	  * @return void
 	  * @access public
 	  */
-	function __construct($datas=array(), &$field, $public=false)
+	public function __construct($datas=array(), &$field, $public=false)
 	{
 		//check object defined internal vars
 		if (sizeof($this->_subfields) != sizeof($this->_subfieldValues)) {
@@ -225,7 +225,7 @@ class CMS_object_categories extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLAdmin($fieldID, $language, $prefixName) {
+	public function getHTMLAdmin($fieldID, $language, $prefixName) {
 		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
 		global $cms_user;
 		$params = $this->getParamsValues();
@@ -363,7 +363,7 @@ class CMS_object_categories extends CMS_object_common
       * @return string : the form field HTML tag
       * @access public
       */
-	function getInput($fieldID, $language, $inputParams) {
+	public function getInput($fieldID, $language, $inputParams) {
 		global $cms_user;
 		$params = $this->getParamsValues();
 		$prefixName = (isset($inputParams['prefix'])) ? $inputParams['prefix'] : '';
@@ -478,8 +478,9 @@ class CMS_object_categories extends CMS_object_common
 		}
 		return $html;
 	}
+	
 	//Callback function for natural sorting without care of accentuation
-	function _natecasecomp($str1, $str2) {
+	public function _natecasecomp($str1, $str2) {
 		return strnatcasecmp(sensitiveIO::sanitizeAsciiString($str1), sensitiveIO::sanitizeAsciiString($str2));
 	}
 	
@@ -492,7 +493,7 @@ class CMS_object_categories extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function checkMandatory($values, $prefixName, $newFormat = false) {
+	public function checkMandatory($values, $prefixName, $newFormat = false) {
 		//if field is required check values
 		if ($this->_field->getValue('required')) {
 			if (!$values['list'.$prefixName.$this->_field->getID().'_0']) {
@@ -511,7 +512,7 @@ class CMS_object_categories extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName, $new_format = false) {
+	public function setValues($values,$prefixName, $new_format = false) {
 		if (isset($values['list'.$prefixName.$this->_field->getID().'_0'])) {
 			$values['list'.$prefixName.$this->_field->getID().'_0'] = str_replace(',',';',$values['list'.$prefixName.$this->_field->getID().'_0']);
 			$valuesArray = explode(';',$values['list'.$prefixName.$this->_field->getID().'_0']);
@@ -544,7 +545,7 @@ class CMS_object_categories extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setSubFieldsDefinition($subFieldsDefinition) {
+	public function setSubFieldsDefinition($subFieldsDefinition) {
 		foreach(array_keys($this->_subfieldValues) as $subFieldID) {
 			if (is_object($this->_subfieldValues[$subFieldID])) {
 				$subFieldsDefinition[0]['subFieldID'] = $subFieldID;
@@ -560,7 +561,7 @@ class CMS_object_categories extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLSubFieldsParametersCategories($language, $prefixName, $parameter) {
+	public function getHTMLSubFieldsParametersCategories($language, $prefixName, $parameter) {
 		global $cms_user,$polymod;
 		
 		$params = $this->getParamsValues();
@@ -593,7 +594,7 @@ class CMS_object_categories extends CMS_object_common
 	  * @return string : object HTML description
 	  * @access public
 	  */
-	function getHTMLDescription() {
+	public function getHTMLDescription() {
 		global $cms_language;
 		$labels = array();
 		foreach (array_keys($this->_subfieldValues) as $subFieldID) {
@@ -618,7 +619,7 @@ class CMS_object_categories extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence() {
+	public function writeToPersistence() {
 		if ($this->_public) {
 			$this->setError("Can't write public object");
 			return false;
@@ -980,7 +981,7 @@ class CMS_object_categories extends CMS_object_common
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getStructure() {
+	public function getStructure() {
 		$structure = parent::getStructure();
 		$params = $this->getParamsValues();
 		$structure['start'] = '';
@@ -1017,7 +1018,7 @@ class CMS_object_categories extends CMS_object_common
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getValue($name, $parameters = '') {
+	public function getValue($name, $parameters = '') {
 		global $cms_language, $cms_user;
 		$name = ($name !== 0) ? $name : "0";
 		switch ($name) {
@@ -1218,7 +1219,7 @@ class CMS_object_categories extends CMS_object_common
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language, $objectName = '') {
+	public function getLabelsStructure(&$language, $objectName = '') {
 		$labels = parent::getLabelsStructure($language, $objectName);
 		unset($labels['structure']['values']);
 		$params = $this->getParamsValues();
@@ -1277,7 +1278,7 @@ class CMS_object_categories extends CMS_object_common
       * @return string : the category
       * @access public
       */
-    function category($values, $tags) {
+    public function category($values, $tags) {
         global $cms_language;
       
         $return = "";
@@ -1318,7 +1319,7 @@ class CMS_object_categories extends CMS_object_common
 	  * @return string : the category lineage
 	  * @access public
 	  */
-	function categoryLineage($values, $tags) {
+	public function categoryLineage($values, $tags) {
 		global $cms_language;
 		
 		$return = "";
@@ -1384,7 +1385,7 @@ class CMS_object_categories extends CMS_object_common
 	  * @return string : the sub tree of the given category
 	  * @access public
 	  */
-	function categoriesTree($values, $tags) {
+	public function categoriesTree($values, $tags) {
 		global $cms_user, $cms_language;
 		if (!isset($values['usedcategories']) || $values['usedcategories'] == 'true' || $values['usedcategories'] == '1') {
 			$restrictToUsedCategories = true;
@@ -1552,7 +1553,7 @@ class CMS_object_categories extends CMS_object_common
 	  * @return string : options tag list
 	  * @access public
 	  */
-	function selectOptions($values, $tags) {
+	public function selectOptions($values, $tags) {
 		global $cms_language;
 		if (!isset($values['usedcategories']) || $values['usedcategories'] == 'true' || $values['usedcategories'] == '1') {
 			$usedCategories = true;
@@ -1635,7 +1636,7 @@ class CMS_object_categories extends CMS_object_common
 	  * @return string : the SQL request
 	  * @access public
 	  */
-	function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
+	public function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
 		$statusSuffix = ($public) ? "_public":"_edited";
 		
 		$supportedOperator = array(
@@ -1843,7 +1844,7 @@ class CMS_object_categories extends CMS_object_common
 	  * @return string : the SQL request
 	  * @access public
 	  */
-	function getFieldOrderSQL($fieldID, $direction, $operator, $where, $public = false) {
+	public function getFieldOrderSQL($fieldID, $direction, $operator, $where, $public = false) {
 		global $cms_language;
 		$statusSuffix = ($public) ? "_public":"_edited";
 		$supportedOperator = array('label','atmorder');
@@ -1962,7 +1963,7 @@ class CMS_object_categories extends CMS_object_common
 	  * @access public
 	  * @static
 	  */
-	function getListOfNamesForObject($public = false, $searchConditions = array(), $restrictToUsedCat = true) {
+	public function getListOfNamesForObject($public = false, $searchConditions = array(), $restrictToUsedCat = true) {
 		global $cms_language;
 		$module = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
 		if (APPLICATION_ENFORCES_ACCESS_CONTROL && !$public)  {
@@ -1991,7 +1992,7 @@ class CMS_object_categories extends CMS_object_common
 	  * @return array : the treated parameters
 	  * @access public
 	  */
-	function importParams($params, $cms_language, &$idsRelation, &$infos) {
+	public function importParams($params, $cms_language, &$idsRelation, &$infos) {
 		//here we need to convert categories ids used in parameters
 		$params = parent::treatParams($params, '');
 		//then try to convert categories ids if needed

@@ -174,7 +174,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return void
 	  * @access public
 	  */
-	function __construct($objectID, $id = 0, $datas = array(), $public = false, $loadObject=true, $loadSubObjectsValues=true)
+	public function __construct($objectID, $id = 0, $datas = array(), $public = false, $loadObject=true, $loadSubObjectsValues=true)
 	{
 		//check object type id
 		if (sensitiveIO::isPositiveInteger($objectID)) {
@@ -392,7 +392,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return integer, the DB object ID
 	  * @access public
 	  */
-	function getID()
+	public function getID()
 	{
 		return $this->_ID;
 	}
@@ -403,7 +403,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return integer, the DB object ID
 	  * @access public
 	  */
-	function getObjectID()
+	public function getObjectID()
 	{
 		return $this->_objectID;
 	}
@@ -414,7 +414,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return array of mixed cms_object_{type}
 	  * @access public
 	  */
-	function getFieldsObjects() {
+	public function getFieldsObjects() {
 		return $this->_objectValues;
 	}
 
@@ -425,7 +425,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return integer, the object resource status
 	  * @access public
 	  */
-	function getObjectResourceStatus() {
+	public function getObjectResourceStatus() {
 		return $this->_objectResourceStatus;
 	}
 
@@ -436,7 +436,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return void
 	  * @access public
 	  */
-	function setField($field) {
+	public function setField($field) {
 		//set $this->_field
 		$this->_field = &$field;
 	}
@@ -447,7 +447,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return integer, the object resource status
 	  * @access public
 	  */
-	function getLanguage() {
+	public function getLanguage() {
 		static $languageFieldIDForObjectType;
 		//find language field for this type of object
 		if (!isset($languageFieldIDForObjectType[$this->_objectID])) {
@@ -475,7 +475,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return array of supported languages codes or false if only one language is supported
 	  * @access public
 	  */
-	function getLanguages() {
+	public function getLanguages() {
 		static $languages;
 		//find language field for this type of object
 		if (!isset($languageFieldIDForObjectType[$this->_objectID])) {
@@ -515,7 +515,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return CMS_date, the publication date object if any (false otherwise)
 	  * @access public
 	  */
-	function getPublicationDate() {
+	public function getPublicationDate() {
 		static $pubFieldIDForObjectType;
 		if ($this->getObjectResourceStatus() == 1) {
 			return $this->getPublicationDateStart();
@@ -547,7 +547,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return CMS_poly_object_definition
 	  * @access public
 	  */
-	function getObjectDefinition () {
+	public function getObjectDefinition () {
 		return CMS_poly_object_catalog::getObjectDefinition($this->_objectID);
 	}
 
@@ -558,7 +558,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return array(integer "subFieldID" =>  array("type" => string [integer|string|text|date], "objectID" => integer, "fieldID" => integer, "subFieldID" => integer))
 	  * @access public
 	  */
-	function getSubFieldsDefinition($objectID = "") {
+	public function getSubFieldsDefinition($objectID = "") {
 		$subFieldsDefinition=array();
 		foreach(array_keys($this->_objectValues) as $subFieldID) {
 			if (!is_a($this->_objectValues[$subFieldID],'CMS_multi_poly_object')) {
@@ -581,7 +581,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return string $xml XML definition
 	  * @access public
 	  */
-	function getSoapValues($fieldID, $language) {
+	public function getSoapValues($fieldID, $language) {
 		$xml = '';
 		$xmlFields = '';
 
@@ -633,7 +633,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setSoapValues($fieldID, $domdocument) {
+	public function setSoapValues($fieldID, $domdocument) {
 	    $view = CMS_view::getInstance();
 		$return = true;
 		$itemId = '';
@@ -696,7 +696,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLAdmin($fieldID, $language, $prefixName) {
+	public function getHTMLAdmin($fieldID, $language, $prefixName) {
 		global $cms_user;
 		if (is_object($this->_objectFieldsDefinition[$fieldID])) {
 			if (is_a($this->_objectValues[$fieldID],'CMS_poly_object')) {
@@ -1048,7 +1048,7 @@ class CMS_poly_object extends CMS_resource
       * @return string : the form field HTML tag
       * @access public
       */
-	function getInput($fieldID, $language, $inputParams) {
+	public function getInput($fieldID, $language, $inputParams) {
 		if (isset($this->_objectValues[$fieldID])) {
 			if (is_a($this->_objectValues[$fieldID],'CMS_poly_object')) {
 				if (isset($inputParams['prefix'])) {
@@ -1108,7 +1108,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function checkMandatory($fieldID, $values, $prefixName, $newFormat = false) {
+	public function checkMandatory($fieldID, $values, $prefixName, $newFormat = false) {
 		if (is_object($this->_objectFieldsDefinition[$fieldID])) {
 			if (is_a($this->_objectValues[$fieldID],'CMS_poly_object')) {
 				//check values for poly object field
@@ -1134,7 +1134,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return string : the object name
 	  * @access public
 	  */
-	function getLabel() {
+	public function getLabel() {
 		//if object have a composed name return it
 		if ($this->_composedLabel) {
 			//$parameters = array('object' => &$this);
@@ -1160,7 +1160,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return string : the object name
 	  * @access public
 	  */
-	function getTypeLabel($language) {
+	public function getTypeLabel($language) {
 		return $this->getObjectDefinition()->getLabel($language);
 	}
 
@@ -1171,7 +1171,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return string : the object previzualisation URL or false if none set
 	  * @access public
 	  */
-	function getPrevizPageURL($addPrevizParameter = true) {
+	public function getPrevizPageURL($addPrevizParameter = true) {
 		//get Object definition
 		$objectDef = $this->getObjectDefinition();
 		if (!$objectDef->getValue("previewURL")) {
@@ -1226,7 +1226,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return string : object HTML description
 	  * @access public
 	  */
-	function getHTMLDescription() {
+	public function getHTMLDescription() {
 		return $this->getLabel();
 	}
 
@@ -1240,7 +1240,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($fieldID, $values, $prefix, $newFormat = false) {
+	public function setValues($fieldID, $values, $prefix, $newFormat = false) {
 		if (isset($this->_objectValues[$fieldID]) && is_object($this->_objectValues[$fieldID])) {
 			if (is_a($this->_objectValues[$fieldID],'CMS_poly_object')) {
 				//set values for poly object field in $this->_polyObjectValues
@@ -1279,7 +1279,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return string, the label
 	  * @access public
 	  */
-	function getFieldLabel($language) {
+	public function getFieldLabel($language) {
 		//get label of current field
 		$label = new CMS_object_i18nm($this->_objectName);
 		if (is_a($language, "CMS_language")) {
@@ -1296,7 +1296,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return string, the description
 	  * @access public
 	  */
-	function getFieldDesc($language) {
+	public function getFieldDesc($language) {
 		//get label of current field
 		$label = new CMS_object_i18nm($this->_objectDesc);
 		if (is_a($language, "CMS_language")) {
@@ -1315,7 +1315,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence($treatResource = true, $emailValidators = true, $onlyCreateID = false) {
+	public function writeToPersistence($treatResource = true, $emailValidators = true, $onlyCreateID = false) {
 		global $cms_user;
 		if ($this->_public) {
 			$this->setError("Can't write public object");
@@ -1485,7 +1485,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function delete($hardDelete = false) {
+	public function delete($hardDelete = false) {
 		global $cms_user;
 		//get Object definition
 		$objectDef = $this->getObjectDefinition();
@@ -1601,7 +1601,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function isDeleted() {
+	public function isDeleted() {
 		return CMS_modulePolymodValidation::isDeletedItem($this->getID());
 	}
 
@@ -1611,7 +1611,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function undelete() {
+	public function undelete() {
 		if ($this->_objectResourceStatus != 1) {
 			return false;
 		}
@@ -1639,7 +1639,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return array of secondary resource poly_object ids
 	  * @access public
 	  */
-	function getAllSecondaryResourcesForPrimaryResource() {
+	public function getAllSecondaryResourcesForPrimaryResource() {
 		//here we check if this object is really a primary resource, cause secondary resources must be attached to a primary resource
 		if ($this->_objectResourceStatus != 1) {
 			$this->setError("This (id : ".$this->getID().") is not a primary resource.");
@@ -1674,7 +1674,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function isInUserSpace() {
+	public function isInUserSpace() {
 		if (!$this->_ID) {
 			return false;
 		}
@@ -1695,7 +1695,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getStructure() {
+	public function getStructure() {
 		//
 		// YOU MUST UPDATE getStructure() method of CMS_poly_object_definition accordingly !
 		//
@@ -1728,7 +1728,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return mixed : the object field or an array of the object fields
 	  * @access public
 	  */
-	function objectValues($fieldID = '') {
+	public function objectValues($fieldID = '') {
 		if (!$fieldID) {
 			return $this->_objectValues;
 		} else {
@@ -1751,7 +1751,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return mixed : the object values structure
 	  * @access public
 	  */
-	function getValue($name, $parameters = '') {
+	public function getValue($name, $parameters = '') {
 		global $cms_language;
 		// @TODOV4 : Manage language into database !
 		$languages = array();
@@ -1927,7 +1927,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return string : options tag list
 	  * @access public
 	  */
-	function selectOptions($values, $tags) {
+	public function selectOptions($values, $tags) {
 		$objectValues = CMS_poly_object_catalog::getListOfNamesForObject($this->_objectID, true);
 		$return = "";
 		if (is_array($objectValues) && $objectValues) {
@@ -1948,7 +1948,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return void
 	  * @access public
 	  */
-	function loadObject($values, $tags) {
+	public function loadObject($values, $tags) {
 		global $object;
 		if (!sensitiveIO::isPositiveInteger($values['value'])) {
 			$this->setError("Value parameter must be a valid category ID : ".$values['value']);
@@ -1968,7 +1968,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return string : the RSS feed informations
 	  * @access public
 	  */
-	function rss($values, $tags) {
+	public function rss($values, $tags) {
 		global $cms_language;
 		if (!sensitiveIO::isPositiveInteger($values['selected'])) {
 			$this->setError("Selected value parameter must be a valid RSS Feed ID : ".$values['selected']);
@@ -2004,7 +2004,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language, $objectName = '') {
+	public function getLabelsStructure(&$language, $objectName = '') {
 		$labels = array();
 		$labels['structure']['id'] = $language->getMessage(self::MESSAGE_POLYOBJECT_ID_DESCRIPTION,false,MOD_POLYMOD_CODENAME);
 		$labels['structure']['label'] = $language->getMessage(self::MESSAGE_POLYOBJECT_LABEL_DESCRIPTION,false,MOD_POLYMOD_CODENAME);
@@ -2052,7 +2052,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return string : the SQL request
 	  * @access public
 	  */
-	function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
+	public function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
 		$statusSuffix = ($public) ? "_public":"_edited";
 		$sql = "
 		select
@@ -2076,7 +2076,7 @@ class CMS_poly_object extends CMS_resource
 	  * @access public
 	  * @static
 	  */
-	function getListOfNamesForObject($public = false, $searchConditions = array()) {
+	public function getListOfNamesForObject($public = false, $searchConditions = array()) {
 		return CMS_poly_object_catalog::getListOfNamesForObject($this->_objectID, $public, $searchConditions);
 	}
 
@@ -2088,7 +2088,7 @@ class CMS_poly_object extends CMS_resource
 	  * @access public
 	  * @static
 	  */
-	function afterValidation($validationResult) {
+	public function afterValidation($validationResult) {
 		$return = true;
 		//check object fields for validation action
 		foreach(array_keys($this->_objectValues) as $fieldID) {
@@ -2110,7 +2110,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return Boolean true/false
 	  * @access public
 	  */
-	function scriptTask($parameters) {
+	public function scriptTask($parameters) {
 		//if script concern a field, pass to it
 		if (isset($parameters['field']) && sensitiveIO::isPositiveInteger($parameters['field'])) {
 			if (!is_object($this->_objectValues[$parameters['field']]) || !method_exists($this->_objectValues[$parameters['field']],'scriptTask')) {
@@ -2212,7 +2212,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return string : HTML scripts infos
 	  * @access public
 	  */
-	function scriptInfo($parameters) {
+	public function scriptInfo($parameters) {
 		if (isset($parameters['field']) && sensitiveIO::isPositiveInteger($parameters['field'])) {
 			if (!is_object($this->_objectValues[$parameters['field']]) || !method_exists($this->_objectValues[$parameters['field']],'scriptInfo')) {
 				return false;
@@ -2250,7 +2250,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return string : the SQL request
 	  * @access public
 	  */
-	function getFieldOrderSQL($fieldID, $direction, $operator, $where, $public = false) {
+	public function getFieldOrderSQL($fieldID, $direction, $operator, $where, $public = false) {
 		$statusSuffix = ($public) ? "_public":"_edited";
 		//operators are not supported for now : TODO
 		$supportedOperator = array();
@@ -2285,7 +2285,7 @@ class CMS_poly_object extends CMS_resource
 	  * @return boolean
 	  * @access public
 	  */
-	function userHasClearance($user, $clearance = CLEARANCE_MODULE_VIEW, $checkParent = false) {
+	public function userHasClearance($user, $clearance = CLEARANCE_MODULE_VIEW, $checkParent = false) {
 		if (!$this->_public || APPLICATION_ENFORCES_ACCESS_CONTROL === true){
 			//user is an administrator?
 			if ($user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITVALIDATEALL)) {
