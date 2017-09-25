@@ -123,7 +123,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($name, $attributes = array(), $children = array(), $parameters = array()) {
+	public function __construct($name, $attributes = array(), $children = array(), $parameters = array()) {
 		$this->_name = $name;
 		$this->_parameters = $parameters;
 		$this->_children = $children;
@@ -141,7 +141,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @return string the tag name
 	  * @access public
 	  */
-	function getName()
+	public function getName()
 	{
 		return $this->_name;
 	}
@@ -152,7 +152,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @return array(string=>string) the tag attributes
 	  * @access public
 	  */
-	function getAttributes() {
+	public function getAttributes() {
 		return $this->_attributes;
 	}
 	
@@ -162,7 +162,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @return array(string=>string) the tag children
 	  * @access public
 	  */
-	function getChildren() {
+	public function getChildren() {
 		return $this->_children;
 	}
 	
@@ -172,7 +172,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @return array(string=>string) the tag parameters
 	  * @access public
 	  */
-	function getParameters() {
+	public function getParameters() {
 		return $this->_parameters;
 	}
 	
@@ -183,7 +183,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @return string The attribute value
 	  * @access public
 	  */
-	function getAttribute($attribute) {
+	public function getAttribute($attribute) {
 		if (isset($this->_attributes[$attribute])) {
 			return $this->_attributes[$attribute];
 		} else {
@@ -198,7 +198,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function setAttribute($attribute, $value) {
+	public function setAttribute($attribute, $value) {
 		if (io::sanitizeAsciiString($attribute, '', '') != $attribute) {
 			$this->setError('Tag attribute must be ascii only : '.$attribute);
 			return false;
@@ -215,7 +215,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @return integer the start byte
 	  * @access public
 	  */
-	function __call($name, $parameters)
+	public function __call($name, $parameters)
 	{
 		$this->setError(__CLASS__.' : Method '.$name.' is not available in this version of Automne');
 		return false;
@@ -228,7 +228,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @return boolean true on success, false on failure to set it
 	  * @access public
 	  */
-	function setTextContent($content)
+	public function setTextContent($content)
 	{
 		$content = trim($content);
 		if ($content && io::substr($content, 1, io::strlen($this->_name)) == $this->_name) {
@@ -246,7 +246,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @return string the XML
 	  * @access public
 	  */
-	function getContent()
+	public function getContent()
 	{
 		if (!$this->_textContent || $this->_textContentInvalid) {
 			$xml = array(
@@ -270,7 +270,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @return string the inner HTML
 	  * @access public
 	  */
-	function getInnerContent()
+	public function getInnerContent()
 	{
 		$regexp = "#<".$this->_name."[^>]*>(.*)</".$this->_name.">#is";
 		preg_match($regexp, $this->getContent(), $args);
@@ -288,7 +288,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @return object An instanciated object of the correct class.
 	  * @access public
 	  */
-	function getRepresentationInstance($args = false)
+	public function getRepresentationInstance($args = false)
 	{
 		//if it's a module tag, ask the representation to the module
 		if (isset($this->_attributes["module"]) && $this->_attributes["module"]) {
@@ -336,13 +336,13 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @access private
 	  * @static
 	  */
-	function compute($parameters = array()) {
+	public function compute($parameters = array()) {
 		$this->_computeParams = (array) $parameters;
 		$this->_uniqueID = CMS_XMLTag::getUniqueID();
 		return $this->_returnComputedDatas($this->_compute());
 	}
 	
-	function _returnComputedDatas($datas) {
+	public function _returnComputedDatas($datas) {
 		$return = '';
 		if (isset($this->_parameters['context']) && $this->_parameters['context'] && $this->_parameters['context'] != $this->_context) {
 			if ($this->_context == CMS_XMLTag::PHP_CONTEXT) {
@@ -413,7 +413,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	static function getUniqueID () {
+	public static function getUniqueID () {
 		static $count;
 		$count++;
 		return ($count+1).'_'.io::substr(md5(mt_rand().microtime()),0,6);
@@ -425,7 +425,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @return string the parsing errors
 	  * @access public
 	  */
-	function getTagError() {
+	public function getTagError() {
 		return $this->_tagError;
 	}
 	
@@ -435,7 +435,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @return array the tag references
 	  * @access public
 	  */
-	function getTagReferences() {
+	public function getTagReferences() {
 		return $this->_tagReferences;
 	}
 	
@@ -445,7 +445,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @return array
 	  * @access public
 	  */
-	function getHeaderCode() {
+	public function getHeaderCode() {
 		return $this->_tagHeaderCode;
 	}
 	
@@ -463,7 +463,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @return string indented php code
 	  * @access public
 	  */
-	function checkTagRequirements($requirements) {
+	public function checkTagRequirements($requirements) {
 		if (!is_array($requirements)) {
 			$this->setError('Tag requirements must be an array');
 			return false;
@@ -538,7 +538,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @return text : the text replaced
 	  * @access public
 	  */
-	function replaceVars($text, $reverse = false, $cleanNotMatches = false, $matchCallback = null, $returnMatchedVarsArray = false) {
+	public function replaceVars($text, $reverse = false, $cleanNotMatches = false, $matchCallback = null, $returnMatchedVarsArray = false) {
 		static $replacements;
 		$enclosePHP = false;
 		if ($matchCallback === null) {
@@ -676,7 +676,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @return mixed : the var enclosed
 	  * @access public
 	  */
-	function encloseWithPrepareVar($var) {
+	public function encloseWithPrepareVar($var) {
 		return $this->encloseString("CMS_polymod_definition_parsing::prepareVar(".$var.")",false);
 	}
 	
@@ -688,7 +688,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @return mixed : the var enclosed
 	  * @access public
 	  */
-	function encloseString($var, $reverse) {
+	public function encloseString($var, $reverse) {
 		return ($reverse) ? "'.".$var.".'" : '".'.$var.'."';
 	}
 	
@@ -700,7 +700,7 @@ class CMS_XMLTag extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	 static function cleanComputedDefinition($definition) {
+	public static function cleanComputedDefinition($definition) {
 		$replace = array(
 			'$content .="";' => '',
 			'("".' 	=> '(',

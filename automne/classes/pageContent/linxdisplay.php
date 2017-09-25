@@ -64,7 +64,7 @@ class CMS_linxDisplay extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($tag)
+	public function __construct($tag)
 	{
 		$conditions = $tag->getElementsByTagName('condition');
 		$htmltemplates = $tag->getElementsByTagName('htmltemplate');
@@ -114,7 +114,7 @@ class CMS_linxDisplay extends CMS_grandFather
 	  * @return string The html or false if page fails to pass the condition
 	  * @access public
 	  */
-	function getOutput(&$parsedPage, &$page, $public, $rank, $noerror = false, $noselection = false)
+	public function getOutput(&$parsedPage, &$page, $public, $rank, $noerror = false, $noselection = false)
 	{
 		if (!is_a($page,"CMS_page")) {
 			if (!$noerror) {
@@ -201,7 +201,7 @@ class CMS_linxDisplay extends CMS_grandFather
 	  * @return string The html sourrounded
 	  * @access public
 	  */
-	function getSubLevelOutput($html) {
+	public function getSubLevelOutput($html) {
 		if ($html && io::strpos($this->_subleveltemplate , "{{sublevel}}") !== false) {
 			$replace = array(
 				"{{sublevel}}" 	=> $html
@@ -223,7 +223,7 @@ class CMS_linxDisplay extends CMS_grandFather
 	  * @return string The html of the recursive link
 	  * @access public
 	  */
-	function getRecursiveOutput(&$parsedPage, $level=0, $recursiveTree, &$pages, $public, $lineage=array())
+	public function getRecursiveOutput(&$parsedPage, $level=0, $recursiveTree, &$pages, $public, $lineage=array())
 	{
 		$html = '';
 		if (is_array($recursiveTree) && $recursiveTree) {
@@ -387,7 +387,7 @@ class CMS_linxDisplay extends CMS_grandFather
 	  * @return boolean true if the page passes conditions, false otherwise
 	  * @access public
 	  */
-	function pagePassesConditions(&$parsedPage, &$page, $public, $rank)
+	public function pagePassesConditions(&$parsedPage, &$page, $public, $rank)
 	{
 		$passesConditions = true;
 		foreach($this->_conditions as $aCondition) {
@@ -405,7 +405,7 @@ class CMS_linxDisplay extends CMS_grandFather
 	  * @return boolean true if yes, false if no
 	  * @access public
 	  */
-	function hasCondition()
+	public function hasCondition()
 	{
 		return $this->_conditions ? true : false;
 	}

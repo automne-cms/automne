@@ -137,7 +137,7 @@ class CMS_linx extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($type, $tagContent, $page, $publicTree = false, $args = array())
+	public function __construct($type, $tagContent, $page, $publicTree = false, $args = array())
 	{
 		if (!SensitiveIO::isInSet($type, CMS_linxesCatalog::getAllTypes())) {
 			$this->setError("Constructor has an unknown type : ".$type);
@@ -226,7 +226,7 @@ class CMS_linx extends CMS_grandFather
 	  * @return string The HTML
 	  * @access public
 	  */
-	function getOutput($register = false)
+	public function getOutput($register = false)
 	{
 		if ($this->hasError()) {
 			return '';
