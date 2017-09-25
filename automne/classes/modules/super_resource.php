@@ -124,7 +124,7 @@ class CMS_superResource extends CMS_resource
 	  * @return void
 	  * @access public
 	  */
-	function CMS_superResource($id = 0,$public=false)
+	public function __construct($id = 0,$public=false)
 	{
 		if (!class_exists("CMS_date") || !class_exists("SensitiveIO")) {
 			die("CMS_superResource need at least CMS_date and SensitiveIO to run ...");
@@ -206,7 +206,7 @@ class CMS_superResource extends CMS_resource
 	  * @return integer the DB id
 	  * @access public
 	  */
-	function getID()
+	public function getID()
 	{
 		return $this->_ID;
 	}
@@ -217,7 +217,7 @@ class CMS_superResource extends CMS_resource
 	  * @return array() the DB data
 	  * @access public
 	  */
-	function getTableData()
+	public function getTableData()
 	{
 		return $this->_tableData;
 	}
@@ -228,7 +228,7 @@ class CMS_superResource extends CMS_resource
 	  * @return string the default value of the data
 	  * @access public
 	  */
-	function getDefaultValue($name)
+	public function getDefaultValue($name)
 	{
 		return $this->_default[$name][1];
 	}
@@ -316,7 +316,7 @@ class CMS_superResource extends CMS_resource
 	  * @return string The wanted string
 	  * @access public
 	  */
-	function getString($string)
+	public function getString($string)
 	{
 		if (in_array($this->_tableData[$string][0],$this->_classString)) {
 			return $this->_tableData[$string][1];
@@ -334,7 +334,7 @@ class CMS_superResource extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setString($stringName,$stringValue)
+	public function setString($stringName,$stringValue)
 	{
 		if (in_array($this->_tableData[$stringName][0],$this->_classString)) {
 			//here you can verifiy string data
@@ -377,7 +377,7 @@ class CMS_superResource extends CMS_resource
 	  * @return boolean The wanted boolean
 	  * @access public
 	  */
-	function getBoolean($boolean)
+	public function getBoolean($boolean)
 	{
 		if ($this->_tableData[$boolean][0]=="boolean") {
 			return ($this->_tableData[$boolean][1]) ? true:false;
@@ -395,7 +395,7 @@ class CMS_superResource extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setBoolean($booleanName,$booleanValue)
+	public function setBoolean($booleanName,$booleanValue)
 	{
 		if ($this->_tableData[$booleanName][0]=="boolean") {
 			if ($booleanValue==1 || $booleanValue===true || $booleanValue==0 || $booleanValue===false) {
@@ -418,7 +418,7 @@ class CMS_superResource extends CMS_resource
 	  * @return integer The wanted integer
 	  * @access public
 	  */
-	function getInteger($integer)
+	public function getInteger($integer)
 	{
 		if (isset($this->_tableData[$integer]) && ($this->_tableData[$integer][0]=="integer" || $this->_tableData[$integer][0]=="positiveInteger")) {
 			return $this->_tableData[$integer][1];
@@ -436,7 +436,7 @@ class CMS_superResource extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setInteger($integerName,$integerValue)
+	public function setInteger($integerName,$integerValue)
 	{
 		if ($this->_tableData[$integerName][0]=="integer" || $this->_tableData[$integerName][0]=="positiveInteger") {
 			//null case
@@ -479,7 +479,7 @@ class CMS_superResource extends CMS_resource
 	  * @return CMS_object The wanted object
 	  * @access public
 	  */
-	function getObject($object)
+	public function getObject($object)
 	{
 		if(class_exists($this->_tableData[$object][0])) {
 			return $this->_tableData[$object][1];
@@ -498,7 +498,7 @@ class CMS_superResource extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setObject($objectName,$objectValue,$valueIsObject=false)
+	public function setObject($objectName,$objectValue,$valueIsObject=false)
 	{
 		if(class_exists($this->_tableData[$objectName][0])) {
 			if ($valueIsObject) {
@@ -532,7 +532,7 @@ class CMS_superResource extends CMS_resource
 	  * @return CMS_date The wanted object
 	  * @access public
 	  */
-	function getTheDate($date)
+	public function getTheDate($date)
 	{
 		if(class_exists("CMS_date") && is_a($this->_tableData[$date][1],"CMS_date")) {
 			return $this->_tableData[$date][1];
@@ -550,7 +550,7 @@ class CMS_superResource extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setDate($dateName,$dateValue)
+	public function setDate($dateName,$dateValue)
 	{
 		if(class_exists("CMS_date") && is_a($this->_tableData[$dateName][1],"CMS_date")) {
 			//then instanciate object and set it
@@ -573,7 +573,7 @@ class CMS_superResource extends CMS_resource
 	  * @return integer the object order
 	  * @access public
 	  */
-	function getOrder()
+	public function getOrder()
 	{
 		//search order field
 		if ($this->_tableData['order'][0]=='order') {
@@ -595,7 +595,7 @@ class CMS_superResource extends CMS_resource
 	  * @return integer the object order
 	  * @access public
 	  */
-	function setOrder($order)
+	public function setOrder($order)
 	{
 		if (sensitiveIO::isPositiveInteger($order)) {
 			//search order field
@@ -626,7 +626,7 @@ class CMS_superResource extends CMS_resource
 	  * @return integer the max order
 	  * @access public
 	  */
-	function getOrderMax($whereConditions=array(),$public=false)
+	public function getOrderMax($whereConditions=array(),$public=false)
 	{
 		//search order field
 		if ($this->_tableData['order'][0]=='order') {
@@ -687,7 +687,7 @@ class CMS_superResource extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function moveUp($whereConditions=array(),$public=false)
+	public function moveUp($whereConditions=array(),$public=false)
 	{
 		//search order field
 		if ($this->_tableData['order'][0]=='order') {
@@ -757,7 +757,7 @@ class CMS_superResource extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function moveDown($whereConditions=array(),$public=false)
+	public function moveDown($whereConditions=array(),$public=false)
 	{
 		//search order field
 		if ($this->_tableData['order'][0]=='order') {
@@ -828,7 +828,7 @@ class CMS_superResource extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function moveTo($moveTo,$whereConditions=array(),$public=false)
+	public function moveTo($moveTo,$whereConditions=array(),$public=false)
 	{
 		//search order field
 		if ($this->_tableData['order'][0]=='order') {
@@ -902,7 +902,7 @@ class CMS_superResource extends CMS_resource
 	  * @return string The image path, false on error
 	  * @access public
 	  */
-	function getImagePath($imageName, $withPath = false, $dataLocation = RESOURCE_DATA_LOCATION_EDITED, $relativeTo = PATH_RELATIVETO_WEBROOT, $withFilename = true)
+	public function getImagePath($imageName, $withPath = false, $dataLocation = RESOURCE_DATA_LOCATION_EDITED, $relativeTo = PATH_RELATIVETO_WEBROOT, $withFilename = true)
 	{
 		if ($this->_tableData[$imageName][0]=='image') {
 			if ($withPath) {
@@ -943,7 +943,7 @@ class CMS_superResource extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setImage($imageName,$filename)
+	public function setImage($imageName,$filename)
 	{
 		if ($this->_tableData[$imageName][0]=='image') {
 			$this->_tableData[$imageName][1] = $filename;
@@ -966,7 +966,7 @@ class CMS_superResource extends CMS_resource
 	  * @return string The image path, false on error
 	  * @access public
 	  */
-	function getFilePath($name, $withPath = false, $dataLocation = RESOURCE_DATA_LOCATION_EDITED, $relativeTo = PATH_RELATIVETO_WEBROOT, $withFilename = true)
+	public function getFilePath($name, $withPath = false, $dataLocation = RESOURCE_DATA_LOCATION_EDITED, $relativeTo = PATH_RELATIVETO_WEBROOT, $withFilename = true)
 	{
 		if ($this->_tableData[$name][0]=='file') {
 			if ($withPath) {
@@ -1006,7 +1006,7 @@ class CMS_superResource extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setFile($name,$filename)
+	public function setFile($name,$filename)
 	{
 		if ($this->_tableData[$name][0]=='file') {
 			$this->_tableData[$name][1] = $filename;
@@ -1023,7 +1023,7 @@ class CMS_superResource extends CMS_resource
 	  * @return string The link type
 	  * @access public
 	  */
-	function getLinkType($linkName)
+	public function getLinkType($linkName)
 	{
 		return $this->_linkType;
 	}
@@ -1034,7 +1034,7 @@ class CMS_superResource extends CMS_resource
 	  * @return array(linkType,linkValue)
 	  * @access public
 	  */
-	function getLink($linkName)
+	public function getLink($linkName)
 	{
 		return $this->_internalLink;
 	}
@@ -1046,7 +1046,7 @@ class CMS_superResource extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setLink($linkName,$linkType,$linkValue)
+	public function setLink($linkName,$linkType,$linkValue)
 	{
 		if (!SensitiveIO::isInSet($type, CMS_resource::getAllLinkTypes())) {
 			$this->setError("Type not in the valid set");
@@ -1056,15 +1056,13 @@ class CMS_superResource extends CMS_resource
 		return true;
 	}
 	
-	
-	
 	/**
 	  * Gets the internal link (a page or false if no link)
 	  *
 	  * @return CMS_page
 	  * @access public
 	  */
-	function getInternalLinkPage()
+	public function getInternalLinkPage()
 	{
 		if ($this->_internalLink) {
 			return CMS_tree::getPageByID($this->_internalLink);
@@ -1080,7 +1078,7 @@ class CMS_superResource extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setInternalLink($pageID)
+	public function setInternalLink($pageID)
 	{
 		$this->_internalLink = $pageID;
 		return true;
@@ -1092,7 +1090,7 @@ class CMS_superResource extends CMS_resource
 	  * @return string The URL
 	  * @access public
 	  */
-	function getExternalLink()
+	public function getExternalLink()
 	{
 		return $this->_externalLink;
 	}
@@ -1104,7 +1102,7 @@ class CMS_superResource extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setExternalLink($url)
+	public function setExternalLink($url)
 	{
 		if (io::substr($url, 0, 4) == "http") {
 			$this->_externalLink = $url;
@@ -1121,7 +1119,7 @@ class CMS_superResource extends CMS_resource
       * @return mixed The attribute or false if it does not exist
       * @access public
       */
-    function getValue($name){
+    public function getValue($name){
         if(strtolower($name) == 'id' || strtolower($name) == $this->_idName){
             return $this->getID();
         }
@@ -1167,7 +1165,7 @@ class CMS_superResource extends CMS_resource
       * @return mixed The attribute or false if it does not exist
       * @access public
       */
-    function setValue($name, $value = null){
+    public function setValue($name, $value = null){
         if(isset($this->_tableData[$name])){
             $datatype = $this->_tableData[$name][0];
             switch($datatype){
@@ -1206,7 +1204,7 @@ class CMS_superResource extends CMS_resource
 	  * @return array() The list of string ordered
 	  * @access public
 	  */
-	function getList($stringName,$whereConditions=array(),$orderConditions=array(),$public=false, $withIndex = false)
+	public function getList($stringName,$whereConditions=array(),$orderConditions=array(),$public=false, $withIndex = false)
 	{
 		$where = $order = $from = '';
 		//from clause
@@ -1317,7 +1315,7 @@ class CMS_superResource extends CMS_resource
 	  * @return array() array of objects or array of object IDs (function of outputObjects value)
 	  * @access public
 	  */
-	function search($searchConditions=array(),$orderConditions=array(),$outputObjects=false,$public=false,$operator="=")
+	public function search($searchConditions=array(),$orderConditions=array(),$outputObjects=false,$public=false,$operator="=")
 	{
 		//where clause
 		if (count($searchConditions)) {
@@ -1391,7 +1389,7 @@ class CMS_superResource extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		if ($this->_hasResource()) {
 			//write parent
@@ -1491,7 +1489,7 @@ class CMS_superResource extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function destroy($cms_user=false)
+	public function destroy($cms_user=false)
 	{
 		 if ($this->_hasResource()) {
 		 	if (is_a($cms_user,"CMS_profile_user")) {
