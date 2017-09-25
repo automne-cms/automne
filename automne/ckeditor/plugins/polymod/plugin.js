@@ -4,7 +4,7 @@
   *
   * @package CMS
   * @subpackage CKEditor
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author S?astien Pauchet <sebastien.pauchet@ws-interactive.fr>
   * @author CKSource - Frederico Knabben.
   */
 CKEDITOR.plugins.add( 'polymod',
@@ -13,7 +13,7 @@ CKEDITOR.plugins.add( 'polymod',
 	lang : [ 'en', 'fr' ],
 	init : function( editor )
 	{
-		var lang = editor.lang.polymod;
+		var lang = editor.lang.polymod.polymod;
 
 		editor.addCommand( 'createPlugin', new CKEDITOR.dialogCommand( 'createPlugin' ) );
 		editor.addCommand( 'editPlugin', new CKEDITOR.dialogCommand( 'editPlugin' ) );
@@ -59,7 +59,7 @@ CKEDITOR.plugins.add( 'polymod',
 				if ( CKEDITOR.plugins.polymod.getSelectedPlugin( editor ) )
 					evt.data.dialog = 'editPlugin';
 			});
-		editor.addCss(
+		CKEDITOR.addCss(
 			'.polymod' +
 			'{' +
 				'border-bottom:		1px dotted #008000;' +

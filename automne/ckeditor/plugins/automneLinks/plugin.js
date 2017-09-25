@@ -3,7 +3,7 @@
   *
   * @package CMS
   * @subpackage CKEditor
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author S?astien Pauchet <sebastien.pauchet@ws-interactive.fr>
   * @author CKSource - Frederico Knabben.
   */
 
@@ -17,7 +17,7 @@ CKEDITOR.plugins.add( 'automneLinks',
 		editor.addCommand( 'automneLinks', new CKEDITOR.dialogCommand( 'automneLinks' ) );
 		editor.ui.addButton( 'automneLinks',
 			{
-				label : editor.lang.automneLinks.toolbar,
+				label : editor.lang.automneLinks.automneLinks.toolbar,
 				command : 'automneLinks',
 				icon : this.path + 'automneLinks.gif'
 			} );
