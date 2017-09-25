@@ -33,14 +33,14 @@ class backgroundScript extends CMS_grandFather
 	  * @var processManager
 	  * @access private
 	  */
-	var $_processManager;
+	protected $_processManager;
 
 	/**
 	  * Is it debug-time ?
 	  * @var boolean
 	  * @access private
 	  */
-	var $_debug;
+	protected $_debug;
 
 	
 	/**
@@ -53,7 +53,7 @@ class backgroundScript extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function backgroundScript($debug = false, $scriptID='Master')
+	public function __construct($debug = false, $scriptID='Master')
 	{
 		$this->_debug = $debug;
 		
@@ -109,7 +109,7 @@ class backgroundScript extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function activate()
+	public function activate()
 	{
 		if ($this->_debug) {
 			CMS_grandFather::raiseError("Script Activation launched");

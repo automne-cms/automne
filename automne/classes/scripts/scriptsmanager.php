@@ -36,7 +36,7 @@ class CMS_scriptsManager
 	  * @access public
 	  * @static
 	  */
-	static function addScript($module, $parameters, $id=false) {
+	public static function addScript($module, $parameters, $id=false) {
 		if ($module && is_array($parameters) && $parameters) {
 			$sqlFields = "
 				module_reg='".sensitiveIO::sanitizeSQLString($module)."',
@@ -71,7 +71,7 @@ class CMS_scriptsManager
 	  * @access public
 	  * @static
 	  */
-	static function getScripts($module=false) {
+	public static function getScripts($module=false) {
 		$sql = "
 			select
 				*
@@ -98,7 +98,7 @@ class CMS_scriptsManager
 	  * @access public
 	  * @static
 	  */
-	static function startScript($force = false)
+	public static function startScript($force = false)
 	{
 		if (USE_BACKGROUND_REGENERATOR) {
 			$forceRestart = '';
@@ -185,7 +185,7 @@ class CMS_scriptsManager
 	  * @access public
 	  * @static
 	  */
-	static function clearScripts()
+	public static function clearScripts()
 	{
 		$sql = "
 			delete
@@ -203,7 +203,7 @@ class CMS_scriptsManager
 	  * @access public
 	  * @static
 	  */
-	static function getScriptsNumberLeft()
+	public static function getScriptsNumberLeft()
 	{
 		$sql = "
 			select
@@ -222,7 +222,7 @@ class CMS_scriptsManager
 	  * @access public
 	  * @static
 	  */
-	static function getScriptsLeft()
+	public static function getScriptsLeft()
 	{
 		$sql = "
 			select
@@ -253,7 +253,7 @@ class CMS_scriptsManager
 	  * @access public
 	  * @static
 	  */
-	static function runQueuedScripts() {
+	public static function runQueuedScripts() {
 		//the sql which selects scripts to regenerate at a time
 		$sql_select = "
 			select

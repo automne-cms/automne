@@ -35,21 +35,21 @@ class processManager
 	  * @var string
 	  * @access private
 	  */
-	var $_scriptName;
+	private $_scriptName;
 
 	/**
 	  * The tmp path : where to store 'PID' files ?
 	  * @var string
 	  * @access private
 	  */
-	var $_tmpPath;
+	protected $_tmpPath;
 
 	/**
 	  * The launch date : can be used to know what is the time after launch
 	  * @var timestamp
 	  * @access private
 	  */
-	var $_startDate;
+	protected $_startDate;
 	
 	/**
 	  * Constructor.
@@ -59,7 +59,7 @@ class processManager
 	  * @return void
 	  * @access public
 	  */
-	function processManager($scriptName)
+	public function __construct($scriptName)
 	{
 		if (!$scriptName) {
 			return;
@@ -81,7 +81,7 @@ class processManager
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setParameters($module, $parameters) {
+	public function setParameters($module, $parameters) {
 		if (!$this->_scriptName) {
 			return false;
 		}
@@ -103,7 +103,7 @@ class processManager
 	  * @return boolean true if creation went well, false otherwise
 	  * @access public
 	  */
-	function writePIDFile()
+	public function writePIDFile()
 	{
 		if (!$this->_scriptName) {
 			return false;
@@ -148,7 +148,7 @@ class processManager
 	  * @return boolean true if deletion went well, false otherwise
 	  * @access public
 	  */
-	function deletePIDFile()
+	public function deletePIDFile()
 	{
 		if (!$this->_scriptName) {
 			return true;
@@ -189,7 +189,7 @@ class processManager
 	  * @return string
 	  * @access public
 	  */
-	function getPIDFilePath()
+	public function getPIDFilePath()
 	{
 		if (!$this->_scriptName) {
 			return false;
@@ -203,7 +203,7 @@ class processManager
 	  * @return string
 	  * @access public
 	  */
-	function getPIDFileName()
+	public function getPIDFileName()
 	{
 		if (!$this->_scriptName) {
 			return false;
@@ -217,7 +217,7 @@ class processManager
 	  * @return string
 	  * @access public
 	  */
-	function getTempPath()
+	public function getTempPath()
 	{
 		if ($this->_tmpPath) {
 			return $this->_tmpPath;
@@ -233,7 +233,7 @@ class processManager
 	  * @return integer
 	  * @access public
 	  */
-	function getExecutionTime()
+	public function getExecutionTime()
 	{
 		return CMS_stats::getmicrotime() - $this->_startDate;
 	}
@@ -244,7 +244,7 @@ class processManager
 	  * @return array
 	  * @access public
 	  */
-	static function getRunningScript()
+	public static function getRunningScript()
 	{
 		//check temporary dir for orchan PID files
 		//get temporary path
