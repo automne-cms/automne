@@ -140,7 +140,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($moduleCodename, $editions, &$resource)
+	public function __construct($moduleCodename, $editions, &$resource)
 	{
 		//validation tests
 		if (!is_a($resource, "CMS_resource")) {
@@ -161,7 +161,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function removeValidationOption($option)
+	public function removeValidationOption($option)
 	{
 		if ($this->_validationOptions & $option) {
 			$this->_validationOptions -= $option;
@@ -175,7 +175,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	  * @return true if it's part of the current options, false otherwise
 	  * @access public
 	  */
-	function hasValidationOption($option)
+	public function hasValidationOption($option)
 	{
 		if ($this->_validationOptions & $option) {
 			return true;
@@ -190,7 +190,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	  * @return integer the validation id (from DB for old system or from validation Infos for the new one)
 	  * @access public
 	  */
-	function getID()
+	public function getID()
 	{
 		if (!$this->_id) {
 			if (!$this->_constructValidationID()) {
@@ -207,7 +207,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setID($id)
+	public function setID($id)
 	{
 		$this->_id = $id;
 	}
@@ -242,7 +242,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	  * @return string the module codename
 	  * @access public
 	  */
-	function getModuleCodename()
+	public function getModuleCodename()
 	{
 		return $this->_moduleCodename;
 	}
@@ -253,7 +253,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	  * @return string the label
 	  * @access public
 	  */
-	function getValidationLabel()
+	public function getValidationLabel()
 	{
 		return $this->_validationLabel;
 	}
@@ -264,7 +264,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	  * @return string the short label
 	  * @access public
 	  */
-	function getValidationShortLabel()
+	public function getValidationShortLabel()
 	{
 		return ($this->_validationShortLabel) ? $this->_validationShortLabel:$this->_validationLabel;
 	}
@@ -276,7 +276,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	  * @return boolean true on success to set it, false otherwise.
 	  * @access public
 	  */
-	function setValidationLabel($label)
+	public function setValidationLabel($label)
 	{
 		$this->_validationLabel = SensitiveIO::sanitizeHTMLString($label);
 		return true;
@@ -289,7 +289,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	  * @return boolean true on success to set it, false otherwise.
 	  * @access public
 	  */
-	function setValidationShortLabel($label)
+	public function setValidationShortLabel($label)
 	{
 		$this->_validationShortLabel = SensitiveIO::sanitizeHTMLString($label);
 		return true;
@@ -301,7 +301,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	  * @return array(string=>string) the help URLs
 	  * @access public
 	  */
-	function getHelpURLs()
+	public function getHelpURLs()
 	{
 		return $this->_helpURLs;
 	}
@@ -315,7 +315,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	  * @return boolean true on success to set it, false otherwise.
 	  * @access public
 	  */
-	function addHelpURL($label, $url='', $target="_blank", $js = '')
+	public function addHelpURL($label, $url='', $target="_blank", $js = '')
 	{
 		$label = SensitiveIO::sanitizeHTMLString($label);
 		$url = SensitiveIO::sanitizeHTMLString($url);
@@ -330,7 +330,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	  * @return integer the sum of REOURCE_EDITION constants
 	  * @access public
 	  */
-	function getEditions()
+	public function getEditions()
 	{
 		return $this->_editions;
 	}
@@ -341,7 +341,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	  * @return integer the internal type of validation label (module-wide range)
 	  * @access public
 	  */
-	function getValidationTypeLabel()
+	public function getValidationTypeLabel()
 	{
 		return $this->_validationTypeLabel;
 	}
@@ -353,7 +353,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	  * @return boolean true on success to set it, false otherwise.
 	  * @access public
 	  */
-	function setValidationTypeLabel($label)
+	public function setValidationTypeLabel($label)
 	{
 		$this->_validationTypeLabel = SensitiveIO::sanitizeHTMLString($label);
 		return true;
@@ -365,7 +365,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	  * @return integer the internal id of the resource (module-wide range)
 	  * @access public
 	  */
-	function getResourceID()
+	public function getResourceID()
 	{
 		return $this->_resourceID;
 	}
@@ -376,7 +376,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	  * @return CMS_resource The resource object, i.e. the subclassed resource object. Return false on failure to retrieve it.
 	  * @access public
 	  */
-	function getResource()
+	public function getResource()
 	{
 		if ($module = CMS_modulesCatalog::getByCodename($this->_moduleCodename)) {
 			$class = get_class($module);
@@ -393,7 +393,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	  * @return string the status HTML representation
 	  * @access public
 	  */
-	function getStatusRepresentation($tinyOutput = false, $user=false, $modCodeName=false, $resourceID=false)
+	public function getStatusRepresentation($tinyOutput = false, $user=false, $modCodeName=false, $resourceID=false)
 	{
 		return $this->_status->getHTML($tinyOutput, $user, $modCodeName, $resourceID);
 	}
@@ -404,7 +404,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	  * @return CMS_stack the users ids stack.
 	  * @access public
 	  */
-	function getEditorsStack()
+	public function getEditorsStack()
 	{
 		return $this->_editorsStack;
 	}
@@ -416,7 +416,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	  * @return boolean true on success to set it, false otherwise.
 	  * @access public
 	  */
-	function setEditorsStack($stack)
+	public function setEditorsStack($stack)
 	{
 		if (!is_a($stack, "CMS_stack")) {
 			$this->setError("Stack is not a CMS_stack");
@@ -454,7 +454,7 @@ class CMS_resourceValidation extends CMS_grandFather
 	  * @return integer the DB id of the inserted validation.
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		//insert this one into persistence : first insert key data
 		$sql = "

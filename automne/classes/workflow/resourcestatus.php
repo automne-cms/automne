@@ -140,7 +140,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return void
 	  * @access public
 	  */
-	function __construct($id=0)
+	public function __construct($id=0)
 	{
 		if ($id) {
 			if (SensitiveIO::isPositiveInteger($id)) {
@@ -210,7 +210,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return integer the DB id
 	  * @access public
 	  */
-	function getID()
+	public function getID()
 	{
 		return $this->_id;
 	}
@@ -222,7 +222,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setDraft($draft) {
+	public function setDraft($draft) {
 		$this->_draft = ($draft) ? true : false;
 		return true;
 	}
@@ -233,7 +233,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return boolean : the draft status
 	  * @access public
 	  */
-	function getDraft() {
+	public function getDraft() {
 		return $this->_draft;
 	}
 	
@@ -243,7 +243,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return integer The resource location
 	  * @access public
 	  */
-	function getLocation()
+	public function getLocation()
 	{
 		return $this->_location;
 	}
@@ -255,7 +255,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setLocation($location)
+	public function setLocation($location)
 	{
 		if (SensitiveIO::isInSet($location, $this->getAllLocations())) {
 			$this->_location = $location;
@@ -272,7 +272,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return integer The proposedFor location.
 	  * @access public
 	  */
-	function getProposedFor()
+	public function getProposedFor()
 	{
 		return $this->_proposedFor;
 	}
@@ -284,7 +284,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setProposedFor($location)
+	public function setProposedFor($location)
 	{
 		if (SensitiveIO::isInSet($location, $this->getAllLocations()) || $location === 0) {
 			$this->_proposedFor = $location;
@@ -301,7 +301,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return integer The editions, all added in one integer.
 	  * @access public
 	  */
-	function getEditions()
+	public function getEditions()
 	{
 		return $this->_editions;
 	}
@@ -313,7 +313,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return boolean true if the edition was made on the resource, false otherwise
 	  * @access public
 	  */
-	function hasEdition($edition)
+	public function hasEdition($edition)
 	{
 		if ($this->_editions & $edition) {
 			return true;
@@ -349,7 +349,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function delEdition($edition)
+	public function delEdition($edition)
 	{
 		if (SensitiveIO::isInSet($edition, CMS_resourceStatus::getAllEditions())) {
 			if ($this->hasEdition($edition)) {
@@ -368,7 +368,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return void
 	  * @access public
 	  */
-	function delAllEditions()
+	public function delAllEditions()
 	{
 		$this->_editions = 0;
 	}
@@ -380,7 +380,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return void
 	  * @access public
 	  */
-	function setAllEditions($allEditions)
+	public function setAllEditions($allEditions)
 	{
 		if (SensitiveIO::isPositiveInteger($allEditions)) {
 			$this->_editions = $allEditions;
@@ -394,7 +394,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return boolean true if the validations refused contains the edition, false otherwise
 	  * @access public
 	  */
-	function hasValidationRefused($edition)
+	public function hasValidationRefused($edition)
 	{
 		if ($this->_validationsRefused & $edition) {
 			return true;
@@ -409,7 +409,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return array(integer)
 	  * @access public
 	  */
-	function getValidationRefused()
+	public function getValidationRefused()
 	{
 		return	$this->_validationsRefused;
 	}
@@ -421,7 +421,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function addValidationRefused($edition)
+	public function addValidationRefused($edition)
 	{
 		if (SensitiveIO::isInSet($edition, CMS_resourceStatus::getAllEditions())) {
 			if (!$this->hasValidationRefused($edition)) {
@@ -441,7 +441,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function delValidationRefused($edition)
+	public function delValidationRefused($edition)
 	{
 		if (SensitiveIO::isInSet($edition, CMS_resourceStatus::getAllEditions())) {
 			if ($this->hasValidationRefused($edition)) {
@@ -461,7 +461,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return void
 	  * @access public
 	  */
-	function setAllValidationsRefused($allEditions)
+	public function setAllValidationsRefused($allEditions)
 	{
 		if (SensitiveIO::isPositiveInteger($allEditions)) {
 			$this->_validationsRefused = $allEditions;
@@ -474,7 +474,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return integer The publication status.
 	  * @access public
 	  */
-	function getPublication()
+	public function getPublication()
 	{
 		return $this->_publication;
 	}
@@ -486,7 +486,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return void
 	  * @access public
 	  */
-	function setValidated()
+	public function setValidated()
 	{
 		$this->_publication = RESOURCE_PUBLICATION_VALIDATED;
 		$this->_adjustPublication();
@@ -499,7 +499,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return void
 	  * @access public
 	  */
-	function setPublication($status)
+	public function setPublication($status)
 	{
 		$this->_publication = $status;
 	}
@@ -545,7 +545,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return CMS_date the publication date start.
 	  * @access public
 	  */
-	function getPublicationDateStart($public = true)
+	public function getPublicationDateStart($public = true)
 	{
 		return $public ? $this->_publicationDateStart : $this->_publicationDateStartEdited;
 	}
@@ -557,7 +557,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setPublicationDateStart($date)
+	public function setPublicationDateStart($date)
 	{
 		if (is_a($date, "CMS_date")) {
 			$this->_publicationDateStartEdited = $date;
@@ -574,7 +574,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return CMS_date the publication date end.
 	  * @access public
 	  */
-	function getPublicationDateEnd($public = true)
+	public function getPublicationDateEnd($public = true)
 	{
 		return $public ? $this->_publicationDateEnd : $this->_publicationDateEndEdited;
 	}
@@ -586,7 +586,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setPublicationDateEnd($date)
+	public function setPublicationDateEnd($date)
 	{
 		if (is_a($date, "CMS_date")) {
 			$this->_publicationDateEndEdited = $date;
@@ -603,7 +603,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return void
 	  * @access public
 	  */
-	function validatePublicationDates() {
+	public function validatePublicationDates() {
 		$this->_publicationDateStart = $this->_publicationDateStartEdited;
 		$this->_publicationDateEnd = $this->_publicationDateEndEdited;
 	}
@@ -615,7 +615,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return string The publication range
 	  * @access public
 	  */
-	function getPublicationRange($userLanguage, $public = true)
+	public function getPublicationRange($userLanguage, $public = true)
 	{
 		if ($public) {
 			$this->_publicationDateStart->setFormat($userLanguage->getDateFormat());
@@ -647,7 +647,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return integer the locksmithData : DB ID of the user who placed the lock
 	  * @access public
 	  */
-	function getLock()
+	public function getLock()
 	{
 		if (!isset($this->_lockStatus)) {
 			$sql = "
@@ -670,7 +670,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return CMS_date the locksmithData : date where the lock was placed
 	  * @access public
 	  */
-	function getLockDate()
+	public function getLockDate()
 	{
 		if (!isset($this->_lockDate) || !is_object($this->_lockDate)) {
 			$this->_lockDate = new CMS_date();
@@ -698,7 +698,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function lock(&$user)
+	public function lock(&$user)
 	{
 		if ($this->getLock()) {
 			return false;
@@ -725,7 +725,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return void
 	  * @access public
 	  */
-	function unlock()
+	public function unlock()
 	{
 		$sql = "
 			delete from
@@ -749,7 +749,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return string HTML data
 	  * @access public
 	  */
-	function getHTML($tiny = false, $user=false, $modCodeName=false, $resourceID=false, $checkLock = true, $withQTip = true)
+	public function getHTML($tiny = false, $user=false, $modCodeName=false, $resourceID=false, $checkLock = true, $withQTip = true)
 	{
 		$modified = false;
 		//Hack : check for non-sense status (usually it is a page which creation is not properly done)
@@ -879,7 +879,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return string label
 	  * @access public
 	  */
-	function getStatusLabel($language)
+	public function getStatusLabel($language)
 	{
 		//Hack : check for non-sense status (usually it is a page which creation is not properly done)
 		if ($this->_publication == RESOURCE_PUBLICATION_NEVERVALIDATED && !$this->_editions) {
@@ -953,7 +953,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return void
 	  * @access public
 	  */
-	function getStatusId($module, $resourceId) {
+	public function getStatusId($module, $resourceId) {
 		return 'status-'.$module.'-'.$resourceId;
 	}
 	
@@ -963,7 +963,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return void
 	  * @access public
 	  */
-	function destroy()
+	public function destroy()
 	{
 		if ($this->_id) {
 			$sql = "
@@ -984,7 +984,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		//first adjust publication and start publication date
 		$this->_adjustPublication();
@@ -1068,7 +1068,7 @@ class CMS_resourceStatus extends CMS_grandFather {
 	  * @return array(integer=>integer) All the publications indexed by their message DB ID
 	  * @access public
 	  */
-	function getAllPublications()
+	public function getAllPublications()
 	{
 		return array(
 			self::MESSAGE_RESOURCE_PUBLICATION_NEVERVALIDATED	=> RESOURCE_PUBLICATION_NEVERVALIDATED,
