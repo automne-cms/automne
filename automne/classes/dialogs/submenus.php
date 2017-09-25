@@ -43,7 +43,7 @@ class CMS_subMenus extends CMS_grandFather
 	  * @return CMS_action The added action.
 	  * @access public
 	  */
-	function &addAction($group, $label, $formAction, $picto=false)
+	public function &addAction($group, $label, $formAction, $picto=false)
 	{
 		$added_action = new CMS_subMenu($label, $formAction, $picto);
 		$this->_actions[$group][] =& $added_action;
@@ -57,7 +57,7 @@ class CMS_subMenus extends CMS_grandFather
 	  * @return string The Menu HTML code.
 	  * @access public
 	  */
-	function getContent($withlabel=false)
+	public function getContent($withlabel=false)
 	{
 		if (is_array($this->_actions) && $this->_actions) {
 			if ($withlabel) {
@@ -118,7 +118,7 @@ class CMS_subMenus extends CMS_grandFather
 		}
 	}
 	
-	function getDHTMLMenu($popup=false)
+	public function getDHTMLMenu($popup=false)
 	{
 		if (is_array($this->_actions) && $this->_actions) {
 			$content = '

@@ -185,7 +185,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return void
 	  * @access public
 	  */
-	function __construct()
+	public function __construct()
 	{
 		$this->_context = $_SESSION["cms_context"];
 		
@@ -202,7 +202,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return void
 	  * @access public
 	  */
-	function setTitle($title, $picto=false)
+	public function setTitle($title, $picto=false)
 	{
 		$this->_title = $title;
 		if ($picto) {
@@ -217,7 +217,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return void
 	  * @access public
 	  */
-	function setSubTitle($subtitle)
+	public function setSubTitle($subtitle)
 	{
 		$this->_subTitle = $subtitle;
 	}
@@ -229,7 +229,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return void
 	  * @access public
 	  */
-	function setTextBeforeBody($text)
+	public function setTextBeforeBody($text)
 	{
 		$this->_beforeBody .= $text;
 	}
@@ -240,7 +240,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return string
 	  * @access public
 	  */
-	function getTitle()
+	public function getTitle()
 	{
 		$title = ($this->_subTitle) ? $this->_title.' - '.$this->_subTitle:$this->_title;
 		return $title;
@@ -253,7 +253,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setTreeRoot($treeRoot)
+	public function setTreeRoot($treeRoot)
 	{
 		if (!SensitiveIO::isPositiveInteger($treeRoot)) {
 			$this->setError("Root is not a positive integer");
@@ -270,7 +270,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return integer the tree root DB ID
 	  * @access public
 	  */
-	function getTreeRoot()
+	public function getTreeRoot()
 	{
 		return $this->_treeRoot;
 	}
@@ -282,7 +282,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return void
 	  * @access public
 	  */
-	function setMenu($menu)
+	public function setMenu($menu)
 	{
 		$this->_menu = ($menu) ? true : false;
 	}
@@ -294,7 +294,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return void
 	  * @access public
 	  */
-	function setLogo($logo)
+	public function setLogo($logo)
 	{
 		$this->_logo = $logo;
 	}
@@ -305,7 +305,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return boolean
 	  * @access public
 	  */
-	function hasLogo()
+	public function hasLogo()
 	{
 		return $this->_logo;
 	}
@@ -316,7 +316,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return CMS_context
 	  * @access public
 	  */
-	function getContext()
+	public function getContext()
 	{
 		return $this->_context;
 	}
@@ -328,7 +328,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return void
 	  * @access public
 	  */
-	function setBookmark($bookmark)
+	public function setBookmark($bookmark)
 	{
 		if (SensitiveIO::isPositiveInteger($bookmark)) {
 			$this->_bookmark = $bookmark;
@@ -343,7 +343,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return integer
 	  * @access public
 	  */
-	function getBookmark()
+	public function getBookmark()
 	{
 		return $this->_bookmark;
 	}
@@ -356,7 +356,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return void
 	  * @access public
 	  */
-	function setContent($content, $dontParse = false)
+	public function setContent($content, $dontParse = false)
 	{
 		$this->_dontParse = $dontParse;
 		$this->_content = $content;
@@ -368,7 +368,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return integer
 	  * @access public
 	  */
-	function getcontent()
+	public function getcontent()
 	{
 		return $this->_content;
 	}	
@@ -380,7 +380,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return void
 	  * @access public
 	  */
-	function setBackLink($backLink)
+	public function setBackLink($backLink)
 	{
 		$this->_backLink = $backLink;
 	}
@@ -391,7 +391,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return string
 	  * @access public
 	  */
-	function getBackLink()
+	public function getBackLink()
 	{
 		return $this->_backLink;
 	}
@@ -403,7 +403,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return true
 	  * @access public
 	  */
-	function setMain($main)
+	public function setMain($main)
 	{
 		$this->_mainFrame=$main;
 		return true;
@@ -415,7 +415,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return void
 	  * @access public
 	  */
-	function showFrames()
+	public function showFrames()
 	{
 		if (!$this->_context->getSessionVar('largeur')) {
 			$this->_context->setSessionVar('largeur','200');
@@ -604,7 +604,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return string : the javascript to add
 	  * @access private
 	  */
-	function dontMakeFocus()
+	protected function dontMakeFocus()
 	{
 		$this->_makeFocus = false;
 		return true;
@@ -616,7 +616,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return string : the copyright to add
 	  * @access private
 	  */
-	function copyright()
+	protected function copyright()
 	{
 		$copyright = "\n<!-- \n"
 		."+----------------------------------------------------------------------+\n"
@@ -665,7 +665,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return void
 	  * @access public
 	  */
-	function show($mode = false)
+	public function show($mode = false)
 	{
 		$this->_displayMode = $mode;
 		switch ($this->_displayMode) {
@@ -919,7 +919,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return void
 	  * @access private
 	  */
-	function setActionMessage($message)
+	protected function setActionMessage($message)
 	{
 		$this->_actionMessage = $message;
 	}
@@ -931,7 +931,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return void
 	  * @access private
 	  */
-	function getActionMessage()
+	protected function getActionMessage()
 	{
 		return $this->_actionMessage;
 	}
@@ -1136,7 +1136,7 @@ class CMS_dialog extends CMS_JSDialog
 	 * @var CMS_subMenus $submenu
 	 * @return string
 	 */
-	function setSubMenu($submenu)
+	public function setSubMenu($submenu)
 	{
 		if (is_a($submenu, "CMS_subMenus")) {
 			$this->addDHTMLMenu();
@@ -1161,7 +1161,7 @@ class CMS_dialog extends CMS_JSDialog
 	  * @return void
 	  * @access public
 	  */
-	function addSubMenuItem($link,$title='',$attribute=false,$target="_self",$picto=false)
+	public function addSubMenuItem($link,$title='',$attribute=false,$target="_self",$picto=false)
 	{
 		$this->_subMenu[] = array('link'=>$link,'title'=>$title,'attribute'=>$attribute,'target'=>$target,'picto'=>$picto);
 		return true;

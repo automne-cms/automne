@@ -85,29 +85,29 @@ class CMS_subMenu extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($label, $action, $picto=false)
+	public function __construct($label, $action, $picto=false)
 	{
 		$this->_label = $label;
 		$this->_formAction = $action;
 		$this->_picto = $picto;
 	}
 	
-	function addHidden($name, $value)
+	public function addHidden($name, $value)
 	{
 		$this->_formHiddens[$name] = $value;
 	}
 	
-	function addText($name, $value='', $size='30', $arroundCode='')
+	public function addText($name, $value='', $size='30', $arroundCode='')
 	{
 		$this->_formTexts[$name] = array("value"=>$value, "size"=>$size, "code"=>$arroundCode);
 	}
 	
-	function addAttribute($name, $value)
+	public function addAttribute($name, $value)
 	{
 		$this->_formAttributes[$name] = $value;
 	}
 	
-	function getContent($type='menu')
+	public function getContent($type='menu')
 	{
 		//create a random name (useful for onSubmit purposes among other)
 		$form_name = md5(mt_rand());
