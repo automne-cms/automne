@@ -65,7 +65,7 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($profileID = false)
+	public function __construct($profileID = false)
 	{
 		$this->_categoriesClearances = new CMS_stack();
 		if ($profileID) {
@@ -100,7 +100,7 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 	  * @return integer
 	  * @access public
 	  */
-	function getProfileID() {
+	public function getProfileID() {
 		return $this->_profileID;
 	} 
 
@@ -111,7 +111,7 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 	  * @return boolean true on success
 	  * @access public
 	  */
-	function setProfileID($profileID) {
+	public function setProfileID($profileID) {
 		if (SensitiveIO::isPositiveInteger($profileID)) {
 			$this->_profileID = $profileID;
 			return true;
@@ -127,7 +127,7 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 	  * @return boolean true on success
 	  * @access public
 	  */
-	function setAdminLevel($isAdmin) {
+	public function setAdminLevel($isAdmin) {
 		$this->_isAdmin = ($isAdmin) ? true : false;
 		if ($this->_isAdmin) {
 			//reset all categories clearances
@@ -154,7 +154,7 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function getAdminLevel($isAdmin) {
+	public function getAdminLevel($isAdmin) {
 		return $this->_isAdmin;
 	}
 	
@@ -164,7 +164,7 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 	  * @return string
 	  * @access public
 	  */
-	function getModuleCodename() {
+	public function getModuleCodename() {
 		return $this->_moduleCodename;
 	} 
 
@@ -175,7 +175,7 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 	  * @return boolean true on success
 	  * @access public
 	  */
-	function setModuleCodename($moduleCodename) {
+	public function setModuleCodename($moduleCodename) {
 		$this->_moduleCodename = $moduleCodename;
 		return true;
 	}
@@ -187,7 +187,7 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 	  * @return CMS_stack
 	  * @access public
 	  */
-	function getCategoriesClearances($moduleCodename = false) {
+	public function getCategoriesClearances($moduleCodename = false) {
 		static $getCategoriesClearances;
 		// Limit output to one module
 		if ($moduleCodename) {
@@ -239,7 +239,7 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 	  * @return boolean true on success
 	  * @access public
 	  */
-	function setCategoriesClearances($clearances) {
+	public function setCategoriesClearances($clearances) {
 		if (is_a($clearances, "CMS_stack")) {
 			$this->_categoriesClearances = $clearances;
 			return true;
@@ -256,7 +256,7 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 	  * @return boolean true on success
 	  * @access public 
 	  */
-	function del($categoryID) {
+	public function del($categoryID) {
 		if (SensitiveIO::isPositiveInteger($categoryID)) {
 			$this->_categoriesClearances->del($categoryID);
 			return true;
@@ -273,7 +273,7 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 	  * @return boolean true on success
 	  * @access public
 	  */
-	function add($clearances) {
+	public function add($clearances) {
 		if (is_a($clearances, "CMS_stack")) {
 			$arr = $clearances->getElements();
 			if (is_array($arr) && $arr) {
@@ -295,7 +295,7 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 	  * @return string
 	  * @access public
 	  */
-	function toString()
+	public function toString()
 	{
 		return $this->_profileID.':'.$this->_categoriesClearances->getTextDefinition();
 	}
@@ -306,7 +306,7 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 	  * @return boolean true on success
 	  * @access public
 	  */
-	function deleteCategoriesClearances() 
+	public function deleteCategoriesClearances() 
 	{
 		if ($this->_profileID) {
 			// Delete old clearances
@@ -333,7 +333,7 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		if ($this->_profileID && is_a($this->_categoriesClearances, "CMS_stack")) {
 			$err = 0;

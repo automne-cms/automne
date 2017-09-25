@@ -210,7 +210,7 @@ class CMS_auth extends CMS_grandFather implements Zend_Auth_Adapter_Interface
 	  * @return CMS_profile_user, false otherwise
 	  * @access public
 	  */
-    function getUser($userId) {
+    public function getUser($userId) {
     	return CMS_profile_usersCatalog::getByID($userId);
     }
 	
@@ -220,7 +220,7 @@ class CMS_auth extends CMS_grandFather implements Zend_Auth_Adapter_Interface
 	  * @return boolean true if autologin accepted, false otherwise
 	  * @access private
 	  */
-	function _autoLogin() {
+	public function _autoLogin() {
 		$attrs = @explode("|", base64_decode($_COOKIE[CMS_session::getAutoLoginCookieName()]));
 		$id_ses = (int) $attrs[0];
 		$session_id = $attrs[1];
@@ -312,7 +312,7 @@ class CMS_auth extends CMS_grandFather implements Zend_Auth_Adapter_Interface
 	  * @return void
 	  * @access private
 	  */
-	function _checkSession($userId)
+	public function _checkSession($userId)
 	{
 		if (io::isPositiveInteger($userId)) {
 			$sql = "
