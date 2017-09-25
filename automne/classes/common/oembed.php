@@ -69,7 +69,7 @@ class CMS_oembed extends CMS_grandFather
 			'scheme'	=> array('http://www.polleverywhere.com/polls/*', 'http://www.polleverywhere.com/multiple_choice_polls/*', 'http://www.polleverywhere.com/free_text_polls/*')
 		),
 		array(
-			'api'		=> 'http://www.dailymotion.com/services/oembed',
+			'api'		=> 'https://www.dailymotion.com/services/oembed',
 			'scheme'	=> array('http://www.dailymotion.com/video/*')
 		),
 		array(
