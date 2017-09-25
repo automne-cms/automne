@@ -70,7 +70,7 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 	  * @return string : HTML scripts infos
 	  * @access public
 	  */
-	function getObjectsInfos($user) {
+	public function getObjectsInfos($user) {
 		$objectsInfos = array();
 		$cms_language = $user->getLanguage();
 		if (APPLICATION_ENFORCES_ACCESS_CONTROL === false ||
@@ -96,7 +96,7 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 	  * @return string : the file to use for required classname
 	  * @access public
 	  */
-	function load($classname) {
+	public function load($classname) {
 		static $classes;
 		if (!isset($classes)) {
 			$classes = array(
@@ -119,7 +119,7 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 	  * @return string : HTML scripts infos
 	  * @access public
 	  */
-	function getPageTabsProperties($page, $user) {
+	public function getPageTabsProperties($page, $user) {
 		$objectsInfos = array();
 		$cms_language = $user->getLanguage();
 		if ($user->hasModuleClearance($this->getCodename(), CLEARANCE_MODULE_EDIT)) {
@@ -145,7 +145,7 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 	  * @return string : the alias page url or false if none found
 	  * @access public
 	  */
-	function getPageURL($page, $relativeTo = PATH_RELATIVETO_WEBROOT) {
+	public function getPageURL($page, $relativeTo = PATH_RELATIVETO_WEBROOT) {
 		$pageId = is_object($page) ? $page->getID() : $page;
 		$sql = "
 			select 
@@ -174,7 +174,7 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 	  * @return CMS_page if page found, false otherwise
 	  * @access public
 	  */
-	function getPageFromURL($pageUrl, $useDomain = true) {
+	public function getPageFromURL($pageUrl, $useDomain = true) {
 		$urlinfo = @parse_url($pageUrl);
 		if (!isset($urlinfo['path'])) {
 			//no alias can exists without path
@@ -234,7 +234,7 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 	  * @access public
 	  * @static
 	  */
-	static function getAll($parent, $returnObject=false) {
+	public static function getAll($parent, $returnObject=false) {
 		if (io::isPositiveInteger($parent)) {
 			$id = $parent;
 		} elseif (is_a($parent, "CMS_resource_cms_aliases")) {
@@ -279,7 +279,7 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 	  * @access public
 	  * @static
 	  */
-	static function getAllByPage($parent, $pageId, $returnObject=false) {
+	public static function getAllByPage($parent, $pageId, $returnObject=false) {
 		if (io::isPositiveInteger($parent)) {
 			$id = $parent;
 		} elseif (is_a($parent, "CMS_resource_cms_aliases")) {
@@ -348,7 +348,7 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 	  * @access public
 	  * @static
 	  */
-	static function getByName($name, $returnObject = true) {
+	public static function getByName($name, $returnObject = true) {
 		if (!$name || $name != sensitiveIO::sanitizeAsciiString($name, '@')) {
 			return array();
 		}
@@ -383,7 +383,7 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 	  * @access public
 	  * @static
 	  */
-	static function getByID($id, $reset = false) {
+	public static function getByID($id, $reset = false) {
 		if (!SensitiveIO::isPositiveInteger($id)) {
 			CMS_grandFather::raiseError("Id must be positive integer : ".$id.' - '.io::getCallInfos());
 			return false;
@@ -406,7 +406,7 @@ class CMS_module_cms_aliases extends CMS_moduleValidation
 	* @access public
 	* @static
 	*/
-	static function redirect() {
+	public static function redirect() {
 		//get aliases for current folder
 		$arrayDirname = explode(DIRECTORY_SEPARATOR, dirname($_SERVER['SCRIPT_NAME']));
 		$dirname = array_pop($arrayDirname);
