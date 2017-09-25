@@ -148,7 +148,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($id=0)
+	public function __construct($id=0)
 	{
 		if ($id) {
 			if (SensitiveIO::isPositiveInteger($id)) {
@@ -198,7 +198,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return integer the DB id
 	  * @access public
 	  */
-	function getID()
+	public function getID()
 	{
 		return $this->_id;
 	}
@@ -209,7 +209,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return string The service
 	  * @access public
 	  */
-	function getService()
+	public function getService()
 	{
 		return $this->_service;
 	}
@@ -221,7 +221,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setService($newService)
+	public function setService($newService)
 	{
 		$this->_service = $newService;
 		return true;
@@ -233,7 +233,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return string the job title
 	  * @access public
 	  */
-	function getJobTitle()
+	public function getJobTitle()
 	{
 		return $this->_jobTitle;
 	}
@@ -245,7 +245,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return boolean true on success, false on failure to set it
 	  * @access public
 	  */
-	function setJobTitle($newJobTitle)
+	public function setJobTitle($newJobTitle)
 	{
 		$this->_jobTitle = $newJobTitle;
 		return true;
@@ -257,7 +257,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return string the address field 1
 	  * @access public
 	  */
-	function getAddressField1()
+	public function getAddressField1()
 	{
 		return $this->_addressField1;
 	}
@@ -269,7 +269,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return boolean true on success, false on failure to set it
 	  * @access public
 	  */
-	function setAddressField1($newValue)
+	public function setAddressField1($newValue)
 	{
 		$this->_addressField1 = $newValue;
 		return true;
@@ -281,7 +281,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return string the address field 2
 	  * @access public
 	  */
-	function getAddressField2()
+	public function getAddressField2()
 	{
 		return $this->_addressField2;
 	}
@@ -293,7 +293,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return boolean true on success, false on failure to set it
 	  * @access public
 	  */
-	function setAddressField2($newValue)
+	public function setAddressField2($newValue)
 	{
 		$this->_addressField2 = $newValue;
 		return true;
@@ -305,7 +305,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return string the address field 3
 	  * @access public
 	  */
-	function getAddressField3()
+	public function getAddressField3()
 	{
 		return $this->_addressField3;
 	}
@@ -317,7 +317,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return boolean true on success, false on failure to set it
 	  * @access public
 	  */
-	function setAddressField3($newValue)
+	public function setAddressField3($newValue)
 	{
 		$this->_addressField3 = $newValue;
 		return true;
@@ -329,7 +329,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return string the zip code
 	  * @access public
 	  */
-	function getZip()
+	public function getZip()
 	{
 		return $this->_zip;
 	}
@@ -341,7 +341,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return boolean true on success, false on failure to set it
 	  * @access public
 	  */
-	function setZip($newZip)
+	public function setZip($newZip)
 	{
 		$this->_zip = $newZip;
 		return true;
@@ -353,7 +353,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return string the city
 	  * @access public
 	  */
-	function getCity()
+	public function getCity()
 	{
 		return $this->_city;
 	}
@@ -365,7 +365,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return boolean true on success, false on failure to set it
 	  * @access public
 	  */
-	function setCity($newCity)
+	public function setCity($newCity)
 	{
 		$this->_city = $newCity;
 		return true;
@@ -377,7 +377,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return string the state name
 	  * @access public
 	  */
-	function getState()
+	public function getState()
 	{
 		return $this->_state;
 	}
@@ -389,7 +389,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return boolean true on success, false on failure to set it
 	  * @access public
 	  */
-	function setState($newState)
+	public function setState($newState)
 	{
 		$this->_state = $newState;
 		return true;
@@ -401,7 +401,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return string the country name
 	  * @access public
 	  */
-	function getCountry()
+	public function getCountry()
 	{
 		return $this->_country;
 	}
@@ -413,7 +413,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return boolean true on success, false on failure to set it
 	  * @access public
 	  */
-	function setCountry($newCountry)
+	public function setCountry($newCountry)
 	{
 		$this->_country = $newCountry;
 		return true;
@@ -425,7 +425,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return string the phone number
 	  * @access public
 	  */
-	function getPhone()
+	public function getPhone()
 	{
 		return $this->_phone;
 	}
@@ -437,7 +437,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return boolean true on success, false on failure to set it
 	  * @access public
 	  */
-	function setPhone($newPhone)
+	public function setPhone($newPhone)
 	{
 		$this->_phone = $newPhone;
 		return true;
@@ -449,7 +449,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return string the cellphone number
 	  * @access public
 	  */
-	function getCellphone()
+	public function getCellphone()
 	{
 		return $this->_cellphone;
 	}
@@ -461,7 +461,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return boolean true on success, false on failure to set it
 	  * @access public
 	  */
-	function setCellphone($newCellphone)
+	public function setCellphone($newCellphone)
 	{
 		$this->_cellphone = $newCellphone;
 		return true;
@@ -473,7 +473,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return string the fax number
 	  * @access public
 	  */
-	function getFax()
+	public function getFax()
 	{
 		return $this->_fax;
 	}
@@ -485,7 +485,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return boolean true on success, false on failure to set it
 	  * @access public
 	  */
-	function setFax($newFax)
+	public function setFax($newFax)
 	{
 		$this->_fax = $newFax;
 		return true;
@@ -497,7 +497,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return string the email address
 	  * @access public
 	  */
-	function getEmail()
+	public function getEmail()
 	{
 		return $this->_email;
 	}
@@ -509,7 +509,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return boolean true on success, false on failure to set it
 	  * @access public
 	  */
-	function setEmail($newEmail)
+	public function setEmail($newEmail)
 	{
 		if(SensitiveIO::isValidEmail($newEmail)){
 		    $this->_email = $newEmail;
@@ -524,7 +524,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return string the company
 	  * @access public
 	  */
-	function getCompany()
+	public function getCompany()
 	{
 		return $this->_company;
 	}
@@ -536,7 +536,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return boolean true on success, false on failure to set it
 	  * @access public
 	  */
-	function setCompany($company)
+	public function setCompany($company)
 	{
 		$this->_company = $company;
 		return true;
@@ -548,7 +548,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return string the gender
 	  * @access public
 	  */
-	function getGender()
+	public function getGender()
 	{
 		return $this->_gender;
 	}
@@ -560,7 +560,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return boolean true on success, false on failure to set it
 	  * @access public
 	  */
-	function setGender($gender)
+	public function setGender($gender)
 	{
 		$this->_gender = $gender;
 		return true;
@@ -573,7 +573,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return mixed See functions for more details
 	  * @access public
 	  */
-	function getValue($property){
+	public function getValue($property){
 		switch($property){
 		    case 'id':
 		        return $this->getID();
@@ -598,7 +598,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValue($property, $value){
+	public function setValue($property, $value){
 		switch($property){
 		    default:
 				$method = 'set'.ucfirst($property);
@@ -618,7 +618,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function destroy()
+	public function destroy()
 	{
 		if ($this->_id) {
 			$sql = "
@@ -639,7 +639,7 @@ class CMS_contactData extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		$sql_fields = "
 			service_cd='".SensitiveIO::sanitizeSQLString($this->_service)."',
