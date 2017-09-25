@@ -59,7 +59,7 @@ class CMS_image extends CMS_file
 	 * @param integer $type, the type of the current object : self::TYPE_FILE for a file, self::TYPE_DIRECTORY for a dir, false for undefined
 	 * @return void
 	 */
-	function __construct($name, $from=self::FILE_SYSTEM, $type=self::TYPE_FILE) {
+	public function __construct($name, $from=self::FILE_SYSTEM, $type=self::TYPE_FILE) {
 		parent::__construct($name, $from, $type);
 		if (!in_array($this->getExtension(), array('gif', 'png', 'jpg', 'jpe', 'jpeg'))) {
 			$this->setError('File extension is not a valid image extension : '.$this->getExtension());
@@ -73,7 +73,7 @@ class CMS_image extends CMS_file
 	 * @return integer : the current image width
 	 * @access public
 	 */
-	function getWidth() {
+	public function getWidth() {
 		if ($this->_width === null) {
 			$this->_loadImageSize();
 		}
@@ -86,7 +86,7 @@ class CMS_image extends CMS_file
 	 * @return integer : the current image height
 	 * @access public
 	 */
-	function getHeight() {
+	public function getHeight() {
 		if ($this->_height === null) {
 			$this->_loadImageSize();
 		}
@@ -116,7 +116,7 @@ class CMS_image extends CMS_file
 	 * @return boolean true on success, false on failure
 	 * @access public
 	 */
-	function resize($newSizeX, $newSizeY, $saveToPathFS = '', $keepRatio = true, $crop = false) {
+	public function resize($newSizeX, $newSizeY, $saveToPathFS = '', $keepRatio = true, $crop = false) {
 		$imagepathFS = $this->getFilename();
 		$sizeX = $this->getWidth();
 		$sizeY = $this->getHeight();
@@ -254,7 +254,7 @@ class CMS_image extends CMS_file
 	 * @return boolean true on success, false on failure
 	 * @access public
 	 */
-	function crop($cropTop, $cropBottom, $cropLeft, $cropRight, $saveToPathFS = '') {
+	public function crop($cropTop, $cropBottom, $cropLeft, $cropRight, $saveToPathFS = '') {
 		$imagepathFS = $this->getFilename();
 		$sizeX = $this->getWidth();
 		$sizeY = $this->getHeight();

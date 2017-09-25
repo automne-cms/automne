@@ -73,7 +73,7 @@ class CMS_archive extends CMS_grandFather
 	 * @param string $name, the full filename of the archive
 	 * @return void
 	 */
-	function CMS_archive($name) {
+	public function __construct($name) {
 		if (trim($name) == '') {
 			$this->setError("Not a valid name given to archive ".$name);
 			return;
@@ -101,7 +101,7 @@ class CMS_archive extends CMS_grandFather
 	 * @var mixed array, @see $options attributes for details
 	 * @return void
 	 */
-	function set_options($options) {
+	public function set_options($options) {
 		if (is_array($options)) {
 			foreach ($options as $key => $value) {
 				$this->options[$key] = $value;
@@ -133,7 +133,7 @@ class CMS_archive extends CMS_grandFather
 	 * 
 	 * @return boolean true on success, false on failure
 	 */
-	function create_archive() {
+	public function create_archive() {
 		$this->make_list();
 
 		if ($this->options['inmemory'] == 0) {
@@ -203,7 +203,7 @@ class CMS_archive extends CMS_grandFather
 	 * @param string $data 
 	 * @return void 
 	 */
-	function add_data($data) {
+	public function add_data($data) {
 		if ($this->options['inmemory'] == 0) {
 			fwrite($this->CMS_archive, $data);
 		} else {
@@ -217,7 +217,7 @@ class CMS_archive extends CMS_grandFather
 	 * 
 	 * @return void
 	 */
-	function make_list() {
+	public function make_list() {
 		if (!empty ($this->exclude)) {
 			foreach ($this->files as $key => $value) {
 				foreach ($this->exclude as $current) {
@@ -245,7 +245,7 @@ class CMS_archive extends CMS_grandFather
 	 * @param array $list, an array of files to add 
 	 * @return void
 	 */
-	function add_files($list) {
+	public function add_files($list) {
 		$temp = $this->list_files($list);
 		foreach ($temp as $current) {
 			$this->files[] = $current;
@@ -258,7 +258,7 @@ class CMS_archive extends CMS_grandFather
 	 * @param array $list, an array of files to add 
 	 * @return void
 	 */
-	function exclude_files($list) {
+	public function exclude_files($list) {
 		$temp = $this->list_files($list);
 		foreach ($temp as $current) {
 			$this->exclude[] = $current;
@@ -271,7 +271,7 @@ class CMS_archive extends CMS_grandFather
 	 * @param array $list, all files to list in an array 
 	 * @return array, sorted with sort_files method
 	 */
-	function store_files($list) {
+	public function store_files($list) {
 		$temp = $this->list_files($list);
 		foreach ($temp as $current) {
 			$this->storeonly[] = $current;
@@ -284,7 +284,7 @@ class CMS_archive extends CMS_grandFather
 	 * @param array $list, all files to list in an array 
 	 * @return array, files to list
 	 */
-	function list_files($list) {
+	public function list_files($list) {
 		if (!is_array($list)) {
 			$temp = $list;
 			$list = array ($temp);
@@ -333,7 +333,7 @@ class CMS_archive extends CMS_grandFather
 	 * @param string $dirname, name of the directory to parse
 	 * @return array $files found in the directory
 	 */
-	function parse_dir($dirname) {
+	public function parse_dir($dirname) {
 		if ($this->options['storepaths'] == 1 && !preg_match("/^(\.+\/*)+$/", $dirname)) {
 			$files = array (array ('name' => $dirname, 'name2' => $this->options['prepend'].preg_replace("/(\.+\/+)+/", "", ($this->options['storepaths'] == 0 && strstr($dirname, "/")) ? io::substr($dirname, strrpos($dirname, "/") + 1) : $dirname), 'type' => 5, 'stat' => stat($dirname)));
 		} else {
@@ -367,7 +367,7 @@ class CMS_archive extends CMS_grandFather
 	 * @param  string $b
 	 * @return integer, 0 if nothing sorted
 	 */
-	function sort_files($a, $b) {
+	public function sort_files($a, $b) {
 		if ($a['type'] != $b['type']) {
 			return $a['type'] > $b['type'] ? -1 : 1;
 		} elseif ($a['type'] == 5) {
@@ -389,7 +389,7 @@ class CMS_archive extends CMS_grandFather
 	 * 
 	 * @return binary file content to be downloaded
 	 */
-	function download_file() {
+	public function download_file() {
 		if ($this->options['inmemory'] == 0) {
 			$this->setError("Can only use download_file() if archive is in memory. Redirect to file otherwise, it is faster.");
 			return;

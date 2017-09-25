@@ -60,7 +60,7 @@ class CMS_cache extends CMS_grandFather {
 	  * @return void
 	  * @access public
 	  */
-	function __construct($hash, $type, $lifetime = null, $contextAware = false) {
+	public function __construct($hash, $type, $lifetime = null, $contextAware = false) {
 		if ($contextAware) {
 			$this->_parameters['hash'] = $hash.'_'.CMS_session::getContextHash();
 			$this->_context = true;
@@ -125,7 +125,7 @@ class CMS_cache extends CMS_grandFather {
 	  * @return boolean
 	  * @access public
 	  */
-	function exist() {
+	public function exist() {
 		if (!isset($this->_cache) || !is_object($this->_cache)) {
 			$this->setError('Error : Zend cache object does not exists');
 			return false;
@@ -144,7 +144,7 @@ class CMS_cache extends CMS_grandFather {
 	  * @return string : the cache content
 	  * @access public
 	  */
-	function load() {
+	public function load() {
 		if (!isset($this->_cache) || !is_object($this->_cache)) {
 			$this->setError('Error : Zend cache object does not exists');
 			return false;
@@ -165,7 +165,7 @@ class CMS_cache extends CMS_grandFather {
 	  * @return boolean
 	  * @access public
 	  */
-	function save($content, $metas = array()) {
+	public function save($content, $metas = array()) {
 		if (!isset($this->_cache) || !is_object($this->_cache)) {
 			$this->setError('Error : Zend cache object does not exists');
 			return false;
@@ -190,7 +190,7 @@ class CMS_cache extends CMS_grandFather {
 	  * @return boolean
 	  * @access public
 	  */
-	function clear($metas = array(), $mode = Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG) {
+	public function clear($metas = array(), $mode = Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG) {
 		if (!isset($this->_cache) || !is_object($this->_cache)) {
 			$this->setError('Error : Zend cache object does not exists');
 			return false;
@@ -221,7 +221,7 @@ class CMS_cache extends CMS_grandFather {
 	  * @return array of Zend cache ids
 	  * @access public
 	  */
-	function getByMetas($metas, $mode = Zend_Cache::CLEANING_MODE_MATCHING_TAG) {
+	public function getByMetas($metas, $mode = Zend_Cache::CLEANING_MODE_MATCHING_TAG) {
 		if (!isset($this->_cache) || !is_object($this->_cache)) {
 			$this->setError('Error : Zend cache object does not exists');
 			return false;
@@ -270,7 +270,7 @@ class CMS_cache extends CMS_grandFather {
 	  * @return void
 	  * @access public
 	  */
-	function start() {
+	public function start() {
 		ob_start();
 	}
 
@@ -280,7 +280,7 @@ class CMS_cache extends CMS_grandFather {
 	  * @return string : the buffered content saved into cache
 	  * @access public
 	  */
-	function endSave() {
+	public function endSave() {
 		$content = ob_get_contents();
 		ob_end_clean();
 		if (!$_POST && !isset($_REQUEST['atm-skip-cache'])) {
@@ -410,7 +410,7 @@ class CMS_cache extends CMS_grandFather {
 	  * @access public
 	  * @static
 	  */
-	static function wrapCode($hash, $content, $lifetime = 'auto') {
+	public static function wrapCode($hash, $content, $lifetime = 'auto') {
 		return '<?php'."\n".
 		'$cache_'.$hash.' = new CMS_cache(\''.$hash.'\', \'polymod\', \''.$lifetime.'\', true);'."\n".
 		'if ($cache_'.$hash.'->exist()):'."\n".
