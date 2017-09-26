@@ -88,7 +88,7 @@ class CMS_date extends CMS_grandFather
 	  * @return string the value needed by MySQL for a datetime field
 	  * @access public
 	  */
-	function getDBValue($dateOnly = false)
+	public function getDBValue($dateOnly = false)
 	{
 		$value = $this->_year."-".$this->_month."-".$this->_day;
 		if (!$dateOnly && ($this->_hour || $this->_minutes || $this->_seconds)) {
@@ -104,7 +104,7 @@ class CMS_date extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setFromDBValue($value)
+	public function setFromDBValue($value)
 	{
 		$this->_year = $this->_fillWithZeros(io::substr($value, 0, 4), 4);
 		$this->_month = $this->_fillWithZeros(io::substr($value, 5, 2), 2);
@@ -121,7 +121,7 @@ class CMS_date extends CMS_grandFather
 	  * @return string the date value formatted for user viewing according to the language format
 	  * @access public
 	  */
-	function getLocalizedDate($format = false)
+	public function getLocalizedDate($format = false)
 	{
 		if ($format) {
 			$this->_format = $format;
@@ -142,7 +142,7 @@ class CMS_date extends CMS_grandFather
 	  * @return boolean true is successful to set it
 	  * @access public
 	  */
-	function setLocalizedDate($date, $canBeNull = false)
+	public function setLocalizedDate($date, $canBeNull = false)
 	{
 	
 		if (!$this->_format) {
@@ -209,7 +209,7 @@ class CMS_date extends CMS_grandFather
 	  * @return string the unix timestamp for the date
 	  * @access public
 	  */
-	function getTimestamp()
+	public function getTimestamp()
 	{
 		$year = ($this->_year == '0000') ? '70' : $this->_year;
 		return mktime($this->_hour, $this->_minutes, $this->_seconds, $this->_month, $this->_day, $year);
@@ -221,7 +221,7 @@ class CMS_date extends CMS_grandFather
 	  * @return string the year, 0-left-filled to 4 chars
 	  * @access public
 	  */
-	function getYear()
+	public function getYear()
 	{
 		return $this->_year;
 	}
@@ -233,7 +233,7 @@ class CMS_date extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setYear($value)
+	public function setYear($value)
 	{
 		if(!ctype_digit((string) $value)){
 			$this->_setError(__CLASS__.' : '.__FUNCTION__.' : value must be numeric : '.$value);
@@ -259,7 +259,7 @@ class CMS_date extends CMS_grandFather
 	  * @return string the month, 0-left-filled to 2 chars
 	  * @access public
 	  */
-	function getMonth()
+	public function getMonth()
 	{
 		return $this->_month;
 	}
@@ -271,7 +271,7 @@ class CMS_date extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setMonth($value)
+	public function setMonth($value)
 	{
 		if(!ctype_digit((string) $value)){
 			$this->setError('Value must be numeric : '.$value);
@@ -293,7 +293,7 @@ class CMS_date extends CMS_grandFather
 	  * @return string the week
 	  * @access public
 	  */
-	function getWeek()
+	public function getWeek()
 	{
 		return date("W",$this->getTimestamp());
 	}
@@ -304,7 +304,7 @@ class CMS_date extends CMS_grandFather
 	  * @return string the day of the week
 	  * @access public
 	  */
-	function getDayOfWeek()
+	public function getDayOfWeek()
 	{
 		return date("w",$this->getTimestamp());
 	}
@@ -315,7 +315,7 @@ class CMS_date extends CMS_grandFather
 	  * @return string the day, 0-left-filled to 2 chars
 	  * @access public
 	  */
-	function getDay()
+	public function getDay()
 	{
 		return $this->_day;
 	}
@@ -327,7 +327,7 @@ class CMS_date extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setDay($value)
+	public function setDay($value)
 	{
 		if(!ctype_digit((string) $value)){
 			$this->setError('Value must be numeric : '.$value);
@@ -349,7 +349,7 @@ class CMS_date extends CMS_grandFather
 	  * @return string the hour, 0-left-filled to 2 chars
 	  * @access public
 	  */
-	function getHour()
+	public function getHour()
 	{
 		return  $this->_fillWithZeros($this->_hour,2);
 	}
@@ -361,7 +361,7 @@ class CMS_date extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setHour($value)
+	public function setHour($value)
 	{
 		$h = $this->_fillWithZeros($value, 2);
 		if ($h === false || $h > 23) {
@@ -379,7 +379,7 @@ class CMS_date extends CMS_grandFather
 	  * @return string the minutes, 0-left-filled to 2 chars
 	  * @access public
 	  */
-	function getMinute()
+	public function getMinute()
 	{
 		return $this->_fillWithZeros($this->_minutes,2);
 	}
@@ -391,7 +391,7 @@ class CMS_date extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setMinute($value)
+	public function setMinute($value)
 	{
 		$m = $this->_fillWithZeros($value, 2);
 		if ($m === false || $m > 59) {
@@ -409,7 +409,7 @@ class CMS_date extends CMS_grandFather
 	  * @return string the seconds, 0-left-filled to 2 chars
 	  * @access public
 	  */
-	function getSecond()
+	public function getSecond()
 	{
 		return $this->_fillWithZeros($this->_seconds,2);
 	}
@@ -421,7 +421,7 @@ class CMS_date extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setSecond($value)
+	public function setSecond($value)
 	{
 		$s = $this->_fillWithZeros($value, 2);
 		if ($s === false || $s > 59) {
@@ -440,7 +440,7 @@ class CMS_date extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setNow($dateOnly = false)
+	public function setNow($dateOnly = false)
 	{
 		$now = time();
 		if (!$dateOnly) {
@@ -460,7 +460,7 @@ class CMS_date extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setFormat($format)
+	public function setFormat($format)
 	{
 		$this->_format = $format;
 	}
@@ -471,7 +471,7 @@ class CMS_date extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function isNull()
+	public function isNull()
 	{
 		//return $this->getTimestamp() <= 1; //bugy with dates before 01/01/1970 (unix timestamp start)
 		return !((int) $this->_day && (int) $this->_month && (int) $this->_year);
@@ -500,7 +500,7 @@ class CMS_date extends CMS_grandFather
 	  * @return boolean true if the comparison is true, false otherwise
 	  * @access public
 	  */
-	static function compare($date1, $date2, $operator)
+	public static function compare($date1, $date2, $operator)
 	{
 		$allowed_operators = array("==", ">=", ">", "<", "<=");
 		if (SensitiveIO::isInSet($operator, $allowed_operators)) {
@@ -523,7 +523,7 @@ class CMS_date extends CMS_grandFather
 	  * 
 	  * @return cms_date object moved
 	  */
-	function moveDate($moveTo)
+	public function moveDate($moveTo)
 	{
 		if ($this->isNull()) {
 			$this->setError("Can't move a null date");

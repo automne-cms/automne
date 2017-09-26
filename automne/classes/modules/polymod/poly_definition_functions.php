@@ -38,7 +38,7 @@ class CMS_poly_definition_functions
 	  * @access public
 	  * @static
 	  */
-	static function pages($values, $tags) {
+	public static function pages($values, $tags) {
 		if (!sensitiveIO::isPositiveInteger($values['maxpages'])) {
 			//no pages to display so return
 			return '';
@@ -124,7 +124,7 @@ class CMS_poly_definition_functions
 	  * @access public
 	  * @static
 	  */
-	static function getRequest($name, $type) {
+	public static function getRequest($name, $type) {
 		if ($type == 'string') {
 			$type = 'safestring'; //To avoid XSS
 		}
@@ -140,7 +140,7 @@ class CMS_poly_definition_functions
 	  * @access public
 	  * @static
 	  */
-	static function getSession($name, $type) {
+	public static function getSession($name, $type) {
 		return CMS_poly_definition_functions::getVarContent('session', $name, $type);
 	}
 	
@@ -153,7 +153,7 @@ class CMS_poly_definition_functions
 	  * @access public
 	  * @static
 	  */
-	static function getVar($name, $type) {
+	public static function getVar($name, $type) {
 		return CMS_poly_definition_functions::getVarContent('var', $name, $type);
 	}
 	
@@ -166,7 +166,7 @@ class CMS_poly_definition_functions
 	  * @access public
 	  * @static
 	  */
-	static function getConstant($name, $type) {
+	public static function getConstant($name, $type) {
 		return CMS_poly_definition_functions::getVarContent('constant', $name, $type);
 	}
 	
@@ -179,7 +179,7 @@ class CMS_poly_definition_functions
 	  * @access public
 	  * @static
 	  */
-	static function getServer($name, $type) {
+	public static function getServer($name, $type) {
 		return CMS_poly_definition_functions::getVarContent('server', $name, $type);
 	}
 	
@@ -194,7 +194,7 @@ class CMS_poly_definition_functions
 	  * @access public
 	  * @static
 	  */
-	static function getVarContent($varType, $name, $dataType, $varValue = '') {
+	public static function getVarContent($varType, $name, $dataType, $varValue = '') {
 		if (!$name || !$dataType) {
 			return false;
 		}
@@ -304,7 +304,7 @@ class CMS_poly_definition_functions
 	  * @access public
 	  * @static
 	  */
-	static function pluginCode($pluginID, $itemID, $selection, $public = false, $pluginView = false) {
+	public static function pluginCode($pluginID, $itemID, $selection, $public = false, $pluginView = false) {
 		global $cms_user;
 		//then create the code to paste for the current selected object if any
 		if (sensitiveIO::isPositiveInteger($itemID) && sensitiveIO::isPositiveInteger($pluginID)) {
@@ -350,7 +350,7 @@ class CMS_poly_definition_functions
 	  * @access public
 	  * @static
 	  */
-	static function formActions($formIDs, $pageID, $languageCode, $public, &$polymodFormsError, &$polymodFormsItems) {
+	public static function formActions($formIDs, $pageID, $languageCode, $public, &$polymodFormsError, &$polymodFormsItems) {
 		global $cms_language, $cms_user;
 		
 		if (!is_array($formIDs)) {
@@ -498,7 +498,7 @@ class CMS_poly_definition_functions
 	  * @access public
 	  * @static
 	  */
-	static function helper($helper, $value) {
+	public static function helper($helper, $value) {
 		//split params if any
 		$params = (io::strpos($value, '|') !== false) ? explode('|', $value) : array($value);
 		if (is_callable($helper, false)) {//check if function/method name exists. false to adress bug 1389

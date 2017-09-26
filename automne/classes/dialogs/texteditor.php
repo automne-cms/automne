@@ -99,7 +99,7 @@ class CMS_textEditor extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($form, $field, $initialContent, $userAgent, $preferredEditor, &$language, $textareaWidth = 750, $textareaRows = 15)
+	public function __construct($form, $field, $initialContent, $userAgent, $preferredEditor, &$language, $textareaWidth = 750, $textareaRows = 15)
 	{
 		$this->_form = $form;
 		$this->_formField = $field;
@@ -117,7 +117,7 @@ class CMS_textEditor extends CMS_grandFather
 	 * is an attribute of class FCKeditor
 	 * @return void
 	 */
-	function setEditorAttributes($attrs)
+	public function setEditorAttributes($attrs)
 	{
 		if (is_array($attrs)) {
 			$this->_editorAttributes = $attrs;
@@ -132,7 +132,7 @@ class CMS_textEditor extends CMS_grandFather
 	 * is an attribute of class FCKeditor
 	 * @return void
 	 */
-	function setEditorConfigAttributes($attrs)
+	public function setEditorConfigAttributes($attrs)
 	{
 		if (is_array($attrs)) {
 			$this->_editorConfigAttributes = $attrs;
@@ -145,7 +145,7 @@ class CMS_textEditor extends CMS_grandFather
 	  * @return string
 	  * @access public
 	  */
-	function getHTML() {
+	public function getHTML() {
 		$value = $this->_initialContent;
 		// Editor base path
 		$sBasePath = PATH_MAIN_WR.'/fckeditor/';
@@ -177,7 +177,7 @@ class CMS_textEditor extends CMS_grandFather
 	  * @return string
 	  * @access public
 	  */
-	function getJavascript()
+	public function getJavascript()
 	{
 		//include modules javascript codes in output file
 		$modulesCodes = new CMS_modulesCodes();
@@ -193,7 +193,7 @@ class CMS_textEditor extends CMS_grandFather
 	 * of this class or an attribute to fckeditor
 	 * @return CMS_textEditor or null if error
 	 */
-	static function getEditorFromParams($attrs)
+	public static function getEditorFromParams($attrs)
 	{
 		if (!is_array($attrs)) {
 			CMS_grandFather::raiseError("None array of attributes passed to factory");

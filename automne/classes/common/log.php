@@ -192,7 +192,7 @@ class CMS_log extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($id = 0, $user = false)
+	public function __construct($id = 0, $user = false)
 	{
 		// Loads up CMS_log with Id from database or with DB array
 		if ($id) {
@@ -256,7 +256,7 @@ class CMS_log extends CMS_grandFather
 		}
 	}
 	
-	function getID() {
+	public function getID() {
 		return $this->_id;
 	}
 	
@@ -272,7 +272,7 @@ class CMS_log extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function logResourceAction($action, &$user, $module, &$resourceStatusAfter, $textData, $resource)
+	public function logResourceAction($action, &$user, $module, &$resourceStatusAfter, $textData, $resource)
 	{
 		$this->setLogAction($action);
 		$this->_setUser($user);
@@ -338,7 +338,7 @@ class CMS_log extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function logMiscAction($action, &$user, $textData, $module = '') {
+	public function logMiscAction($action, &$user, $textData, $module = '') {
 		$this->setLogAction($action);
 		$this->_setUser($user);
 		$this->setTextData($textData);
@@ -385,7 +385,7 @@ class CMS_log extends CMS_grandFather
 	  * @return cms_profile_user
 	  * @access public
 	  */
-	function getUser()
+	public function getUser()
 	{
 		return $this->_user;
 	}
@@ -413,7 +413,7 @@ class CMS_log extends CMS_grandFather
 	  * @return integer
 	  * @access public
 	  */
-	function getLogAction()
+	public function getLogAction()
 	{
 		return $this->_action;
 	}
@@ -425,7 +425,7 @@ class CMS_log extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setLogAction($action)
+	public function setLogAction($action)
 	{
 		if (SensitiveIO::isPositiveInteger($action)) {
 			$this->_action = $action;
@@ -440,7 +440,7 @@ class CMS_log extends CMS_grandFather
 	  * @return CMS_resourceStatus
 	  * @access public
 	  */
-	function getResourceStatusAfter()
+	public function getResourceStatusAfter()
 	{
 		return $this->_resourceStatusAfter;
 	}
@@ -467,7 +467,7 @@ class CMS_log extends CMS_grandFather
 	  * @return CMS_date
 	  * @access public
 	  */
-	function getDateTime()
+	public function getDateTime()
 	{
 		return $this->_datetime;
 	}
@@ -479,7 +479,7 @@ class CMS_log extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setDateTime($datetime)
+	public function setDateTime($datetime)
 	{
 		// Check if CMS_date object
 		if (is_a($datetime, "CMS_date")) {
@@ -495,7 +495,7 @@ class CMS_log extends CMS_grandFather
 	  * @return string
 	  * @access public
 	  */
-	function getTextData()
+	public function getTextData()
 	{
 		return $this->_textData;
 	}
@@ -507,7 +507,7 @@ class CMS_log extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setTextData($textData)
+	public function setTextData($textData)
 	{
 		$this->_textData = $textData;
 	}
@@ -518,7 +518,7 @@ class CMS_log extends CMS_grandFather
 	  * @return string
 	  * @access public
 	  */
-	function getLabel()
+	public function getLabel()
 	{
 		return $this->_label;
 	}
@@ -530,7 +530,7 @@ class CMS_log extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setLabel($label)
+	public function setLabel($label)
 	{
 		$this->_label = $label;
 	}
@@ -541,7 +541,7 @@ class CMS_log extends CMS_grandFather
 	  * @return CMS_module
 	  * @access public
 	  */
-	function getModule()
+	public function getModule()
 	{
 		if ($this->_module) {
 			return CMS_modulesCatalog::getByCodename($this->_module);
@@ -572,7 +572,7 @@ class CMS_log extends CMS_grandFather
 	  * @return integer
 	  * @access public
 	  */
-	function getResource()
+	public function getResource()
 	{
 		$mod = $this->getModule();
 		if (is_a($mod, "CMS_module") && io::isPositiveInteger($this->_resource)) {
@@ -589,7 +589,7 @@ class CMS_log extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setResource($resource)
+	public function setResource($resource)
 	{
 		// Check if CMS_module object
 		if (is_a($resource, "CMS_resource")) {
@@ -608,7 +608,7 @@ class CMS_log extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function destroy()
+	public function destroy()
 	{
 		if ($this->_id) {
 			$sql = "
@@ -631,7 +631,7 @@ class CMS_log extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		$sql_fields = "
 				user_log='".SensitiveIO::sanitizeSQLString($this->_user->getUserId())."',

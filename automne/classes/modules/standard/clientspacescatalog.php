@@ -35,7 +35,7 @@ class CMS_moduleClientspace_standard_catalog extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	static function getByTemplateAndTagID($templateID, $tagID, $editionMode = false)
+	public static function getByTemplateAndTagID($templateID, $tagID, $editionMode = false)
 	{
 		return new CMS_moduleClientspace_standard($templateID, $tagID, $editionMode);
 	}
@@ -51,7 +51,7 @@ class CMS_moduleClientspace_standard_catalog extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	static function moveClientSpaces($templateID, $locationFrom, $locationTo, $copyOnly = false, $forceblank = false)
+	public static function moveClientSpaces($templateID, $locationFrom, $locationTo, $copyOnly = false, $forceblank = false)
 	{
 		if (!SensitiveIO::isInSet($locationFrom, CMS_resource::getAllDataLocations())
 			|| !SensitiveIO::isInSet($locationTo, CMS_resource::getAllDataLocations())) {

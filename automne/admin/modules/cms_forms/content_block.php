@@ -98,7 +98,7 @@ if ($_POST["cms_action"] == 'search') {
 	CMS_session::setSessionVar("items_ctg", $_POST["items_ctg"]);
 }
 
-//Action management
+//Action management	
 switch ($_POST["cms_action"]) {
 case "validate":
 	//checks and assignments
@@ -170,7 +170,7 @@ $content .= '
 $content .= '
 	<tr>
 		<td width="150" class="admin">
-			'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_LANGUAGE).' :</td>
+			'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_LANGUAGE).' :</td>	
 		<td width="350" class="admin">';
 $all_languages = CMS_languagesCatalog::getAllLanguages(MOD_CMS_FORMS_CODENAME);
 foreach ($all_languages as $aLanguage) {
@@ -222,7 +222,7 @@ if (!sizeof($items)) {
 			<th class="admin">
 				'.$cms_language->getMessage(MESSAGE_PAGE_FIELD_ACTIONS).'</th>
 		</tr>';
-
+	
 	$count = 0;
 	@reset($items);
 	foreach ($items as $obj) {
@@ -281,7 +281,7 @@ if (!sizeof($items)) {
 			</tr>
 		';
 	}
-
+	
 	$content .= '
 		</table>';
 }

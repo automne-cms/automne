@@ -87,7 +87,7 @@ class CMS_object_boolean extends CMS_object_common
 	  * @return void
 	  * @access public
 	  */
-	function __construct($datas=array(), &$field, $public=false)
+	public function __construct($datas=array(), &$field, $public=false)
 	{
 		parent::__construct($datas, $field, $public);
 	}
@@ -101,7 +101,7 @@ class CMS_object_boolean extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLAdmin($fieldID, $language, $prefixName) {
+	public function getHTMLAdmin($fieldID, $language, $prefixName) {
 		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
 		$return['xtype'] =	'checkbox';
 		$return['checked'] = !!$this->_subfieldValues[0]->getValue();
@@ -120,7 +120,7 @@ class CMS_object_boolean extends CMS_object_common
       * @return string : the form field HTML tag
       * @access public
       */
-	function getInput($fieldID, $language, $inputParams) {
+	public function getInput($fieldID, $language, $inputParams) {
 		//hidden field : use parent method
 		if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
 			return parent::getInput($fieldID, $language, $inputParams);
@@ -164,7 +164,7 @@ class CMS_object_boolean extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName, $newFormat = false) {
+	public function setValues($values,$prefixName, $newFormat = false) {
 		if (is_object($this->_subfieldValues[0])) {
 			$value = isset($values[$prefixName.$this->_field->getID().'_0']) ? $values[$prefixName.$this->_field->getID().'_0'] : 0;
 			// Convert boolean to integer
@@ -182,7 +182,7 @@ class CMS_object_boolean extends CMS_object_common
 	  * @return string : object HTML description
 	  * @access public
 	  */
-	function getHTMLDescription() {
+	public function getHTMLDescription() {
 		global $cms_language;
 		if (is_object($this->_subfieldValues[0])) {
 			return $this->_subfieldValues[0]->getValue() ? $cms_language->getMessage(self::MESSAGE_OBJECT_BOOLEAN_YES) : $cms_language->getMessage(self::MESSAGE_OBJECT_BOOLEAN_NO);
@@ -199,7 +199,7 @@ class CMS_object_boolean extends CMS_object_common
 	  * @access public
 	  * @static
 	  */
-	function getListOfNamesForObject($public = false, $searchConditions = array(), $restrictToUsedCat = true) {
+	public function getListOfNamesForObject($public = false, $searchConditions = array(), $restrictToUsedCat = true) {
 		global $cms_language;
 		$a_boolean['-'] = $cms_language->getMessage(self::MESSAGE_OBJECT_BOOLEAN_NO);
 		$a_boolean[1] = $cms_language->getMessage(self::MESSAGE_OBJECT_BOOLEAN_YES);
@@ -217,7 +217,7 @@ class CMS_object_boolean extends CMS_object_common
 	  * @return string : the SQL request
 	  * @access public
 	  */
-	function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
+	public function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
 		$supportedOperator = array();
 		if ($operator && !in_array($operator, $supportedOperator)) {
 			$this->setError("Unknown search operator : ".$operator.", use default search instead");

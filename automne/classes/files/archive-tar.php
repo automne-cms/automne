@@ -39,7 +39,7 @@ class CMS_tar_file extends CMS_archive
 	 * @param string $name, the full filename of the archive
 	 * @return void
 	 */
-	function __construct($name)
+	public function __construct($name)
 	{
 		if (trim($name) == '') {
 			$this->raiseError("Not a valid name given to archive ".$name);
@@ -54,7 +54,7 @@ class CMS_tar_file extends CMS_archive
 	 * 
 	 * @return true on success, false on failure
 	 */
-	function create_tar()
+	public function create_tar()
 	{
 		$pwd = getcwd();
 		chdir($this->options['basedir']);
@@ -110,7 +110,7 @@ class CMS_tar_file extends CMS_archive
 	 * 
 	 * @return true on success
 	 */
-	function extract_files() 
+	public function extract_files() 
 	{
 		$pwd = getcwd();
 		chdir($this->options['basedir']);
@@ -216,7 +216,7 @@ class CMS_tar_file extends CMS_archive
 	 * 
 	 * @return true on success, false on failure
 	 */
-	function open_archive()
+	public function open_archive()
 	{
 		return @fopen($this->options['name'], "rb");
 	}

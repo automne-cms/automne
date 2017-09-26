@@ -67,7 +67,7 @@ class CMS_array2csv extends CMS_grandFather
 	 * @param string $enclosure, the CSV fields enclosure (default ")
 	 * @return void
 	 */
-	function __construct($filename, $filepath = PATH_TMP_FS, $separator = ';', $enclosure = '"') {
+	public function __construct($filename, $filepath = PATH_TMP_FS, $separator = ';', $enclosure = '"') {
 		if (is_dir($filepath) && is_writable($filepath)) {
 			$this->_filepath = $filepath;
 		} else {
@@ -83,7 +83,7 @@ class CMS_array2csv extends CMS_grandFather
 		}
 	}
 	
-	function getFilename($withpath = false) {
+	public function getFilename($withpath = false) {
 		if ($withpath) {
 			return $this->_filepath.'/'.$this->_filename;
 		} else {
@@ -91,7 +91,7 @@ class CMS_array2csv extends CMS_grandFather
 		}
 	}
 	
-	function getFilepath() {
+	public function getFilepath() {
 		return $this->_filepath;
 	}
 	
@@ -101,7 +101,7 @@ class CMS_array2csv extends CMS_grandFather
 	 * @param array $datas, the datas to add to current csv file. Allow use of array(array(datas)) to add multi lines to CSV file in one pass
 	 * @return boolean
 	 */
-	function addDatas($datas) {
+	public function addDatas($datas) {
 		if (@ftell($this->_file) === false) {
 			$this->setError('Cannot add datas to a file already closed');
 			return false;
@@ -126,7 +126,7 @@ class CMS_array2csv extends CMS_grandFather
 	 * 
 	 * @return CMS_file : the CSV file
 	 */
-	function getFile() {
+	public function getFile() {
 		@fclose ($this->_file);
 		$file = new CMS_file($this->_filepath.'/'.$this->_filename);
 		if ($file->exists()) {

@@ -71,7 +71,7 @@ class CMS_dialog_href extends CMS_grandFather
 	  * @return  void
 	  * @access public
 	  */
-	function __construct($href, $prefixname = '')
+	public function __construct($href, $prefixname = '')
 	{
 		if (!is_a($href, "CMS_href")) {
 			$this->setError("Bad CMS_href given to constructor");
@@ -87,7 +87,7 @@ class CMS_dialog_href extends CMS_grandFather
 	  * @return CMS_href
 	  * @access public
 	  */
-	function &getHref()
+	public function &getHref()
 	{
 		return $this->_href;
 	}
@@ -99,7 +99,7 @@ class CMS_dialog_href extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setHref($href)
+	public function setHref($href)
 	{
 		if (!is_a($href, "CMS_href")) {
 			$this->setError("Bad CMS_href given to constructor");
@@ -122,7 +122,7 @@ class CMS_dialog_href extends CMS_grandFather
 	 * @return boolean true on success, false on failure
 	 * @access public
 	 */
-	function doPost($module = MOD_STANDARD_CODENAME, $resourceID, $fieldID = '')
+	public function doPost($module = MOD_STANDARD_CODENAME, $resourceID, $fieldID = '')
 	{
 		$linkLabel = (isset($_POST[$this->_prefix.'link_label'])) ? $_POST[$this->_prefix.'link_label'] : '';
 		$linkType = (isset($_POST[$this->_prefix.'link_type'])) ? $_POST[$this->_prefix.'link_type'] : '';
@@ -201,7 +201,7 @@ class CMS_dialog_href extends CMS_grandFather
 	 * @return boolean true on success, false on failure
 	 * @access public
 	 */
-	function create($datas = '', $module = MOD_STANDARD_CODENAME, $resourceID, $fieldID = '')
+	public function create($datas = '', $module = MOD_STANDARD_CODENAME, $resourceID, $fieldID = '')
 	{
 		$datas = explode($this->_href->getSeparator(), $datas);
 		
@@ -287,7 +287,7 @@ class CMS_dialog_href extends CMS_grandFather
 	  * @return string, the XHTML Tag
 	  * @access public
 	  */
-	function getHTML($module = MOD_STANDARD_CODENAME, $dataLocation = RESOURCE_DATA_LOCATION_EDITED)
+	public function getHTML($module = MOD_STANDARD_CODENAME, $dataLocation = RESOURCE_DATA_LOCATION_EDITED)
 	{
 		if (!is_a($this->_href, 'CMS_href')) {
 			$this->setError("\$this->_href isn't a CMS_href");
@@ -317,7 +317,7 @@ class CMS_dialog_href extends CMS_grandFather
 	 * @return string HTML formated expected
 	 * @access public
 	 */
-	function getHTMLFields($cms_language, $module = MOD_STANDARD_CODENAME, $dataLocation = RESOURCE_DATA_LOCATION_EDITED, $options = false)
+	public function getHTMLFields($cms_language, $module = MOD_STANDARD_CODENAME, $dataLocation = RESOURCE_DATA_LOCATION_EDITED, $options = false)
 	{
 		global $cms_user;
 		if (!is_a($this->_href, 'CMS_href')) {

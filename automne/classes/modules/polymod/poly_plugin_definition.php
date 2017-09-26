@@ -56,7 +56,7 @@ class CMS_poly_plugin_definitions extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($id = 0, $dbValues=array())
+	public function __construct($id = 0, $dbValues=array())
 	{
 		$datas = array();
 		if ($id && !$dbValues) {
@@ -105,7 +105,7 @@ class CMS_poly_plugin_definitions extends CMS_grandFather
 	  * @return integer, the DB object ID
 	  * @access public
 	  */
-	function getID()
+	public function getID()
 	{
 		return $this->_ID;
 	}
@@ -118,7 +118,7 @@ class CMS_poly_plugin_definitions extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValue($valueName, $value)
+	public function setValue($valueName, $value)
 	{
 		if (!in_array($valueName,array_keys($this->_objectValues))) {
 			$this->setError("Unknown valueName to set :".$valueName);
@@ -153,7 +153,7 @@ class CMS_poly_plugin_definitions extends CMS_grandFather
 	  * @return mixed, the value
 	  * @access public
 	  */
-	function getValue($valueName)
+	public function getValue($valueName)
 	{
 		if (!in_array($valueName,array_keys($this->_objectValues))) {
 			$this->setError("Unknown valueName to get :".$valueName);
@@ -169,7 +169,7 @@ class CMS_poly_plugin_definitions extends CMS_grandFather
 	  * @return string, the label
 	  * @access public
 	  */
-	function getLabel($language = '') {
+	public function getLabel($language = '') {
 		$label = new CMS_object_i18nm($this->getValue("labelID"));
 		if (is_a($language, "CMS_language")) {
 			return $label->getValue($language->getCode());
@@ -185,7 +185,7 @@ class CMS_poly_plugin_definitions extends CMS_grandFather
 	  * @return string, the description
 	  * @access public
 	  */
-	function getDescription($language) {
+	public function getDescription($language) {
 		$description = new CMS_object_i18nm($this->getValue("descriptionID"));
 		if (is_a($language, "CMS_language")) {
 			return $description->getValue($language->getCode());
@@ -200,7 +200,7 @@ class CMS_poly_plugin_definitions extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function needSelection() {
+	public function needSelection() {
 		if (io::strpos($this->getValue('definition'), '{plugin:selection}') !== false) {
 			return true;
 		}
@@ -213,7 +213,7 @@ class CMS_poly_plugin_definitions extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function compileDefinition() {
+	public function compileDefinition() {
 		$parameters = array();
 		$parameters['module'] = CMS_poly_object_catalog::getModuleCodenameForObjectType($this->getValue('objectID'));
 		$parameters['objectID'] = $this->getValue('objectID');
@@ -229,7 +229,7 @@ class CMS_poly_plugin_definitions extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		if (!$this->_objectValues["uuid"]) {
 			$this->_objectValues["uuid"] = io::uuid();
@@ -283,7 +283,7 @@ class CMS_poly_plugin_definitions extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function destroy() {
+	public function destroy() {
 		if ($this->_ID) {
 			//first delete definition
 			$sql = "
@@ -362,7 +362,7 @@ class CMS_poly_plugin_definitions extends CMS_grandFather
 	  * @return boolean : true on success, false on failure
 	  * @access public
 	  */
-	function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
+	public function fromArray($data, $params, $cms_language, &$idsRelation, &$infos) {
 		if (!isset($params['module'])) {
 			$infos .= 'Error : missing module codename for rss feed importation ...'."\n";
 			return false;
@@ -441,7 +441,7 @@ class CMS_poly_plugin_definitions extends CMS_grandFather
 	  * @return boolean : true on success, false on failure
 	  * @access public
 	  */
-	function convertDefinitions($module) {
+	public function convertDefinitions($module) {
 		$this->setValue("definition", $module->convertDefinitionString($this->getValue("definition"), false, true));
 		return $this->writeToPersistence();
 	}

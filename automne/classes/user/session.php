@@ -437,7 +437,7 @@ class CMS_session extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	static function deleteSession($force = false) {
+	public static function deleteSession($force = false) {
 		//clear session storage
 		$authStorage = new Zend_Auth_Storage_Session('atm-auth');
 		$authStorage->clear();

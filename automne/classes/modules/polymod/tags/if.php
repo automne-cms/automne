@@ -38,7 +38,7 @@ class CMS_XMLTag_if extends CMS_XMLTag
 	  * @return void
 	  * @access public
 	  */
-	function __construct($name, $attributes, $children, $parameters) {
+	public function __construct($name, $attributes, $children, $parameters) {
 		parent::__construct($name, $attributes, $children, $parameters);
 		//check tags requirements
 		if (!$this->checkTagRequirements(array(

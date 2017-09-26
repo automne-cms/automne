@@ -72,7 +72,7 @@ class CMS_linxNodespec extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($type, $value, $relativeOffset, $crosswebsite = false, $website = '')
+	public function __construct($type, $value, $relativeOffset, $crosswebsite = false, $website = '')
 	{
 		$authorized_types = array("node", "relative", "codename");
 		$authorized_string_values = array("self", "brother", "father", "root");
@@ -111,7 +111,7 @@ class CMS_linxNodespec extends CMS_grandFather
 	  * @return string The relative type, or false if not relative
 	  * @access public
 	  */
-	function getRelativeType()
+	public function getRelativeType()
 	{
 		if ($this->_type == "relative") {
 			return $this->_value;
@@ -128,7 +128,7 @@ class CMS_linxNodespec extends CMS_grandFather
 	  * @return CMS_page The target page, of false if no target.
 	  * @access public
 	  */
-	function getTarget(&$page, $publicTree)
+	public function getTarget(&$page, $publicTree)
 	{
 		$pg = false;
 		switch ($this->_type) {
@@ -208,7 +208,7 @@ class CMS_linxNodespec extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	static function createNodespec($tag, $crosswebsite = false) {
+	public static function createNodespec($tag, $crosswebsite = false) {
 		if (!is_a($tag, "DOMElement")) {
 			CMS_grandFather::raiseError('Tag is not a DOMElement instance');
 			return false;

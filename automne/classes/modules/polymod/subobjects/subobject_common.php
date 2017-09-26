@@ -93,7 +93,7 @@ abstract class CMS_subobject_common extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($id = 0, $objectIDs = array(), $dbValues=array(), $public = false)
+	public function __construct($id = 0, $objectIDs = array(), $dbValues=array(), $public = false)
 	{
 		//Set public values
 		$this->_public = $public;
@@ -169,7 +169,7 @@ abstract class CMS_subobject_common extends CMS_grandFather
 	  * @return integer the DB id
 	  * @access public
 	  */
-	function getID()
+	public function getID()
 	{
 		return $this->_ID;
 	}
@@ -180,7 +180,7 @@ abstract class CMS_subobject_common extends CMS_grandFather
 	  * @return integer the DB object id
 	  * @access public
 	  */
-	function getObjectID()
+	public function getObjectID()
 	{
 		return $this->_objectID;
 	}
@@ -191,7 +191,7 @@ abstract class CMS_subobject_common extends CMS_grandFather
 	  * @return integer the DB object field id
 	  * @access public
 	  */
-	function getObjectFieldID()
+	public function getObjectFieldID()
 	{
 		return $this->_objectFieldID;
 	}
@@ -202,7 +202,7 @@ abstract class CMS_subobject_common extends CMS_grandFather
 	  * @return integer the DB object subfield id
 	  * @access public
 	  */
-	function getObjectSubFieldID()
+	public function getObjectSubFieldID()
 	{
 		return $this->_objectSubFieldID;
 	}
@@ -214,7 +214,7 @@ abstract class CMS_subobject_common extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setObjectID($objectID)
+	public function setObjectID($objectID)
 	{
 		if (!sensitiveIO::IsPositiveInteger($objectID)) {
 			$this->setError("ObjectID must be a positive integer :".$objectID);
@@ -231,7 +231,7 @@ abstract class CMS_subobject_common extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setObjectFieldID($objectFieldID)
+	public function setObjectFieldID($objectFieldID)
 	{
 		if (!is_numeric($objectFieldID)) {
 			$this->setError("ObjectFieldID must be an integer :".$objectFieldID);
@@ -248,7 +248,7 @@ abstract class CMS_subobject_common extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setObjectSubFieldID($objectSubFieldID)
+	public function setObjectSubFieldID($objectSubFieldID)
 	{
 		if (!is_numeric($objectSubFieldID)) {
 			$this->setError("ObjectSubFieldID must be an integer :".$objectSubFieldID);
@@ -265,7 +265,7 @@ abstract class CMS_subobject_common extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setDefinition($fieldDefinition) {
+	public function setDefinition($fieldDefinition) {
 		if ($this->setObjectID($fieldDefinition['objectID'])
 			&& $this->setObjectFieldID($fieldDefinition['fieldID'])
 			&& $this->setObjectSubFieldID($fieldDefinition['subFieldID'])) {
@@ -280,7 +280,7 @@ abstract class CMS_subobject_common extends CMS_grandFather
 	  * @return string the DB table name
 	  * @access public
 	  */
-	function getTableName()
+	public function getTableName()
 	{
 		return $this->_table . (($this->_public) ? '_public':'_edited');
 	}
@@ -291,7 +291,7 @@ abstract class CMS_subobject_common extends CMS_grandFather
 	  * @return string the string value
 	  * @access public
 	  */
-	function getValue()
+	public function getValue()
 	{
 		return $this->_value;
 	}
@@ -302,7 +302,7 @@ abstract class CMS_subobject_common extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		if ($this->_public) {
 			$this->setError("Can't write public object");
@@ -349,7 +349,7 @@ abstract class CMS_subobject_common extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function destroy() {
+	public function destroy() {
 		if ($this->_public) {
 			$this->setError("Resource is public, read-only !");
 			return false;

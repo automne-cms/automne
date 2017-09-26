@@ -117,7 +117,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($datas=array(), &$field, $public=false)
+	public function __construct($datas=array(), &$field, $public=false)
 	{
 		//check object defined internal vars
 		if (sizeof($this->_subfields) != sizeof($this->_subfieldValues)) {
@@ -186,7 +186,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLAdmin($fieldID, $language, $prefixName) {
+	public function getHTMLAdmin($fieldID, $language, $prefixName) {
 		//is this field mandatory ?
 		$mandatory = $this->_field->getValue('required') ? '<span class="atm-red">*</span> ' : '';
 		$desc = $this->getFieldDescription($language);
@@ -253,7 +253,7 @@ abstract class CMS_object_common extends CMS_grandFather
       * @return string : the form field HTML tag
       * @access public
       */
-	function getInput($fieldID, $language, $inputParams) {
+	public function getInput($fieldID, $language, $inputParams) {
 		if (isset($inputParams['prefix'])) {
 			$prefixName = $inputParams['prefix'];
 			unset($inputParams['prefix']);
@@ -299,7 +299,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName, $newFormat = false) {
+	public function setValues($values,$prefixName, $newFormat = false) {
 		foreach ($this->_subfields as $subFieldID => $subFieldDefinition) {
 			if (is_object($this->_subfieldValues[$subFieldID])) {
 				//if no value set for it, return false
@@ -320,7 +320,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function checkMandatory($values, $prefixName, $newFormat = false) {
+	public function checkMandatory($values, $prefixName, $newFormat = false) {
 		//if field is required check values
 		if ($this->_field->getValue('required')) {
 			//check each subfield values
@@ -342,7 +342,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return string : the label
 	  * @access public
 	  */
-	function getLabel() {
+	public function getLabel() {
 		if (!is_object($this->_subfieldValues[0])) {
 			$this->setError("No subField to get for label : ".print_r($this->_subfieldValues,true));
 			return false;
@@ -357,7 +357,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return string, the label
 	  * @access public
 	  */
-	function getObjectLabel($language) {
+	public function getObjectLabel($language) {
 		if (is_a($language, "CMS_language")) {
 			return $language->getMessage($this->_objectLabel, false, $this->_messagesModule);
 		} else {
@@ -372,7 +372,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return string : object HTML description
 	  * @access public
 	  */
-	function getHTMLDescription() {
+	public function getHTMLDescription() {
 		return $this->getLabel();
 	}
 
@@ -383,7 +383,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return string, the label
 	  * @access public
 	  */
-	function getFieldLabel($language) {
+	public function getFieldLabel($language) {
 		//get label of current field
 		$label = new CMS_object_i18nm($this->_field->getValue("labelID"));
 		if (is_a($language, "CMS_language")) {
@@ -400,7 +400,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return string, the label or false if none defined
 	  * @access public
 	  */
-	function getFieldDescription($language) {
+	public function getFieldDescription($language) {
 		if (!sensitiveIO::isPositiveInteger($this->_field->getValue("descriptionID"))) {
 			return false;
 		}
@@ -420,7 +420,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return string, the description
 	  * @access public
 	  */
-	function getDescription($language) {
+	public function getDescription($language) {
 		if (is_a($language, "CMS_language")) {
 			return $language->getMessage($this->_objectDescription, false, $this->_messagesModule);
 		} else {
@@ -435,7 +435,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return array(integer parameterID => array parameter) : the subfield parameters
 	  * @access public
 	  */
-	function getSubFieldParameters () {
+	public function getSubFieldParameters () {
 		return $this->_parameters;
 	}
 
@@ -445,7 +445,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function hasParameters() {
+	public function hasParameters() {
 		return $this->_parameters ? true:false;
 	}
 
@@ -455,7 +455,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLSubFieldsParameters($language, $prefixName) {
+	public function getHTMLSubFieldsParameters($language, $prefixName) {
 		if (!is_a($language,'CMS_language')) {
 			$this->setError("Language must be a CMS_language object : ".print_r($language,true));
 			return false;
@@ -535,7 +535,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return array, the treated datas
 	  * @access public
 	  */
-	function treatParams($post, $prefix) {
+	public function treatParams($post, $prefix) {
 		$parameters = $this->getSubFieldParameters();
 		$treatedParams = array();
 		foreach($parameters as $aParameter) {
@@ -578,7 +578,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return array(string internalName => mixed parameter value)
 	  * @access public
 	  */
-	function getParamsValues() {
+	public function getParamsValues() {
 		$parameters = $this->getSubFieldParameters();
 		$params = array();
 		foreach($parameters as $parameterID => $parameter) {
@@ -595,7 +595,7 @@ abstract class CMS_object_common extends CMS_grandFather
       * @return boolean : true on success, false on failure
       * @access public
       */
-	function setParamValue($name,$value) {
+	public function setParamValue($name,$value) {
 		$parameters = $this->getSubFieldParameters();
 		foreach($parameters as $parameterID => $parameter) {
 			if($parameter['internalName']==$name) {
@@ -612,7 +612,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return mixed : the parameter value or null if it does not exists
 	  * @access public
 	  */
-	function getParamValue($paramName) {
+	public function getParamValue($paramName) {
 		return (isset($this->_parameters[$paramName])) ? $this->_parameters[$paramName] : null;
 	}
 
@@ -623,7 +623,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return array(integer "subFieldID" =>  array("type" => string [integer|string|text|date], "objectID" => integer, "fieldID" => integer, "subFieldID" => integer))
 	  * @access public
 	  */
-	function getSubFieldsDefinition($objectID) {
+	public function getSubFieldsDefinition($objectID) {
 		$subFieldsDefinition=array();
 		foreach($this->_subfields as $subFieldID => $subFieldDefinition) {
 			$subFieldsDefinition[$subFieldID] = array(	'type' 		=> $subFieldDefinition['type'],
@@ -642,7 +642,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setSubFieldsDefinition($subFieldsDefinition) {
+	public function setSubFieldsDefinition($subFieldsDefinition) {
 		foreach($this->_subfieldValues as $subFieldID => $subFieldObject) {
 			if (is_object($this->_subfieldValues[$subFieldID])) {
 				$this->_subfieldValues[$subFieldID]->setDefinition($subFieldsDefinition[$subFieldID]);
@@ -657,7 +657,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence() {
+	public function writeToPersistence() {
 		if ($this->_public) {
 			$this->setError("Can't write public object");
 			return false;
@@ -677,7 +677,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getStructure() {
+	public function getStructure() {
 		$structure = array();
 		$structure['label'] = '';
 		$structure['fieldname'] = '';
@@ -697,7 +697,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getValue($name, $parameters = '') {
+	public function getValue($name, $parameters = '') {
 		global $cms_language;
 		switch($name) {
 			case 'label':
@@ -734,7 +734,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return string $xml XML definition
 	  * @access public
 	  */
-	function getSoapValues($fieldID, $language) {
+	public function getSoapValues($fieldID, $language) {
 		$xml = '<field id="'.$fieldID.'" label="'.sensitiveIO::sanitizeHTMLString($this->getFieldLabel($language)).'" required="'.$this->_field->getValue('required').'">'."\n";
 		
 		foreach ($this->_subfields as $subFieldID => $subFieldDefinition) {
@@ -768,7 +768,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return boolean true or false
 	  * @access public
 	  */
-	function setSoapValues($fieldID, $domdocument, $itemId = '') {
+	public function setSoapValues($fieldID, $domdocument, $itemId = '') {
 	    $view = CMS_view::getInstance();
 		$fieldValues = array();
 		// subfield
@@ -818,7 +818,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language, $objectName = '') {
+	public function getLabelsStructure(&$language, $objectName = '') {
 		$labels = array();
 		$labels['structure']['label'] = $language->getMessage(self::MESSAGE_OBJECT_COMMON_LABEL_DESCRIPTION,false,MOD_POLYMOD_CODENAME);
 		$labels['structure']['fieldname'] = $language->getMessage(self::MESSAGE_OBJECT_COMMON_FIELDNAME_DESCRIPTION,array(io::htmlspecialchars($this->getFieldLabel($language))),MOD_POLYMOD_CODENAME);
@@ -841,7 +841,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return string : the SQL request
 	  * @access public
 	  */
-	function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
+	public function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
 		$statusSuffix = ($public) ? "_public":"_edited";
 
 		$supportedOperator = array();
@@ -920,7 +920,7 @@ abstract class CMS_object_common extends CMS_grandFather
 	  * @return string : the SQL request
 	  * @access public
 	  */
-	function getFieldOrderSQL($fieldID, $direction, $operator, $where, $public = false) {
+	public function getFieldOrderSQL($fieldID, $direction, $operator, $where, $public = false) {
 		$statusSuffix = ($public) ? "_public":"_edited";
 		$supportedOperator = array();
 		if ($operator && !in_array($operator, $supportedOperator)) {

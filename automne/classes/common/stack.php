@@ -56,7 +56,7 @@
 	  * @return string The text definition based on the current elements
 	  * @access public
 	  */
-	function getTextDefinition()
+	public function getTextDefinition()
 	{
 		$text = '';
 		foreach ($this->_elements as $atom) {
@@ -78,9 +78,9 @@
 	  *
 	  * @param string $text The text definition. 
 	  * @return boolean false on malformed string, true else.
-	  * @access private
+	  * @access public
 	  */
-	function setTextDefinition($text)
+	public function setTextDefinition($text)
 	{
 		$text = trim($text);
 		if ($text) {
@@ -108,7 +108,7 @@
 	  * @return void
 	  * @access public
 	  */
-	function add($value1, $value2 = false)
+	public function add($value1, $value2 = false)
 	{
 		//if stack is empty, we must analyse this element to know if it's a one- or two-values stack
 		if (!$this->_elements) {
@@ -129,7 +129,7 @@
 	  * @return void
 	  * @access public
 	  */
-	function del($value1, $value2 = false)
+	public function del($value1, $value2 = false)
 	{
 		if ($this->_valuesByAtom == 2) {
 			$tobedeleted = array($value1, $value2);
@@ -153,7 +153,7 @@
 	  * @return void
 	  * @access public
 	  */
-	function delAllWithOneKey($key)
+	public function delAllWithOneKey($key)
 	{
 		$newElements = array();
 		foreach ($this->_elements as $atom) {
@@ -172,7 +172,7 @@
 	  * @return void
 	  * @access public
 	  */
-	function delAllWithOneValue($value, $position)
+	public function delAllWithOneValue($value, $position)
 	{
 		$newElements = array();
 		foreach ($this->_elements as $atom) {
@@ -189,7 +189,7 @@
 	  * @return array(array(mixed=>mixed)) the elements of the stack.
 	  * @access public
 	  */
-	function getElements()
+	public function getElements()
 	{
 		return $this->_elements;
 	}
@@ -201,7 +201,7 @@
 	  * @return mixed, the value of the stack matching the key given
 	  * @access public
 	  */
-	function getElementValueFromKey($key)
+	public function getElementValueFromKey($key)
 	{
 		foreach ($this->_elements as $element) {
 			if ($element[0] == $key) {
@@ -219,7 +219,7 @@
 	  * @return array(array(mixed=>mixed)) the elements of the stack matching the value at the position.
 	  * @access public
 	  */
-	function getElementsWithOneValue($value, $position)
+	public function getElementsWithOneValue($value, $position)
 	{
 		$elts = array();
 		foreach ($this->_elements as $element) {
@@ -236,7 +236,7 @@
 	  * @return void
 	  * @access public
 	  */
-	function emptyStack()
+	public function emptyStack()
 	{
 		$this->_elements = array();
 		$this->_valuesByAtom = 2;
@@ -249,7 +249,7 @@
 	  * @return void
 	  * @access public
 	  */
-	function setValuesByAtom($nElem)
+	public function setValuesByAtom($nElem)
 	{
 		$this->_valuesByAtom = $nElem;
 	}
@@ -260,7 +260,7 @@
 	  * @return integer
 	  * @access public
 	  */
-	function getValuesByAtom()
+	public function getValuesByAtom()
 	{
 		return $this->_valuesByAtom;
 	}

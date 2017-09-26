@@ -53,7 +53,7 @@ class CMS_modulePolymodValidation extends CMS_module
 	  * @return void
 	  * @access public
 	  */
-	function __construct($codename = '')
+	public function __construct($codename = '')
 	{
 		//Initialize object.
 		parent::__construct($codename);
@@ -67,7 +67,7 @@ class CMS_modulePolymodValidation extends CMS_module
 	  * @return object The module tag representation instance
 	  * @access public
 	  */
-	function getTagRepresentation($tag, $args, $compatArgs = false)
+	public function getTagRepresentation($tag, $args, $compatArgs = false)
 	{
 		switch ($tag->getName()) {
 			case "atm-clientspace":
@@ -89,7 +89,7 @@ class CMS_modulePolymodValidation extends CMS_module
 	  * @return array(CMS_resourceValidation) The resourceValidations objects, false if none found
 	  * @access public
 	  */
-	function getValidations($user)
+	public function getValidations($user)
 	{
 		if (!($user instanceof CMS_profile_user)) {
 			$this->setError("User is not a valid CMS_profile_user object");
@@ -127,7 +127,7 @@ class CMS_modulePolymodValidation extends CMS_module
 	  * @return array(CMS_resourceValidation) The resourceValidations objects, false if none found
 	  * @access public
 	  */
-	function getValidationsInfo($user)
+	public function getValidationsInfo($user)
 	{
 		if (!($user instanceof CMS_profile_user)) {
 			$this->setError("User is not a valid CMS_profile_user object");
@@ -165,7 +165,7 @@ class CMS_modulePolymodValidation extends CMS_module
 	  * @return integer
 	  * @access public
 	  */
-	function getValidationsCount($user)
+	public function getValidationsCount($user)
 	{
 		if (!($user instanceof CMS_profile_user)) {
 			$this->setError("User is not a valid CMS_profile_user object");
@@ -190,7 +190,7 @@ class CMS_modulePolymodValidation extends CMS_module
 	  * @return array(CMS_resourceValidation) The resourceValidations objects, false if noen found
 	  * @access public
 	  */
-	function getValidationsByEditions(&$user, $editions)
+	public function getValidationsByEditions(&$user, $editions)
 	{
 		$language = $user->getLanguage();
 		$validations = array();
@@ -303,7 +303,7 @@ class CMS_modulePolymodValidation extends CMS_module
 	  * @return array(CMS_resourceValidation) The resourceValidations objects, false if noen found
 	  * @access public
 	  */
-	function getValidationsInfoByEditions(&$user, $editions, $returnCount = false)
+	public function getValidationsInfoByEditions(&$user, $editions, $returnCount = false)
 	{
 		$language = $user->getLanguage();
 		$validations = array();
@@ -410,7 +410,7 @@ class CMS_modulePolymodValidation extends CMS_module
 	  * @return array(CMS_resourceValidation) The resourceValidations objects, false if none found for the given user.
 	  * @access public
 	  */
-	function getValidationByID($itemID, &$user, $getEditionType=false)
+	public function getValidationByID($itemID, &$user, $getEditionType=false)
 	{
 		if (!($user instanceof CMS_profile_user)) {
 			$this->setError("User is not a valid CMS_profile_user object");
@@ -546,7 +546,7 @@ class CMS_modulePolymodValidation extends CMS_module
 	  * @return boolean true on success, false on failure to process
 	  * @access public
 	  */
-	function processValidation($resourceValidation, $result, $lastValidation = true) {
+	public function processValidation($resourceValidation, $result, $lastValidation = true) {
 		if (!CMS_poly_object_catalog::hasPrimaryResource($this->getCodename())) {
 			$this->setError("Module have not any primary resource !");
 			return false;
@@ -871,7 +871,7 @@ class CMS_modulePolymodValidation extends CMS_module
 	  * @return String the language codename
 	  * @access public
 	  */
-	function getDefaultLanguageCodename()
+	public function getDefaultLanguageCodename()
 	{
 		if (!defined("MOD_".io::strtoupper($this->getCodename())."_DEFAULT_LANGUAGE")) {
 			$polymodLanguages = CMS_object_i18nm::getAvailableLanguages();
@@ -886,7 +886,7 @@ class CMS_modulePolymodValidation extends CMS_module
 	  * @return boolean true
 	  * @access public
 	  */
-	function getPrimaryResourceDefinition()
+	public function getPrimaryResourceDefinition()
 	{
 		if (!($this->_primaryResourceObjectDefinition instanceof CMS_poly_object_definition)) {
 			$this->_primaryResourceObjectDefinition = CMS_poly_object_catalog::getObjectDefinition(CMS_poly_object_catalog::getPrimaryResourceObjectType($this->getCodename()));

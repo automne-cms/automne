@@ -84,7 +84,7 @@ class CMS_profile_usersGroup extends CMS_profile
 	  * @return  void
 	  * @access public
 	  */
-	function __construct($id = false)
+	public function __construct($id = false)
 	{
 		$this->_users = array();
 		if ($id) {
@@ -145,7 +145,7 @@ class CMS_profile_usersGroup extends CMS_profile
 	  * @return integer
 	  * @access public
 	  */
-	function getGroupId()
+	public function getGroupId()
 	{
 		return $this->_groupId;
 	}
@@ -156,7 +156,7 @@ class CMS_profile_usersGroup extends CMS_profile
 	  * @return string
 	  * @access public
 	  */
-	function getLabel()
+	public function getLabel()
 	{
 		return $this->_label;
 	}
@@ -168,7 +168,7 @@ class CMS_profile_usersGroup extends CMS_profile
 	  * @return void
 	  * @access public
 	  */
-	function setLabel($label)
+	public function setLabel($label)
 	{
 		if ($label) {
 			$this->_label = $label;
@@ -183,7 +183,7 @@ class CMS_profile_usersGroup extends CMS_profile
 	  * @return string
 	  * @access public
 	  */
-	function getDescription()
+	public function getDescription()
 	{
 		return $this->_description;
 	}
@@ -195,7 +195,7 @@ class CMS_profile_usersGroup extends CMS_profile
 	  * @return void
 	  * @access public
 	  */
-	function setDescription($description)
+	public function setDescription($description)
 	{
 		$this->_description = (string) $description;
 		return true;
@@ -207,7 +207,7 @@ class CMS_profile_usersGroup extends CMS_profile
 	  * @return array(CMS_profileuser)
 	  * @access public
 	  */
-	function getUsers($returnIDs = false)
+	public function getUsers($returnIDs = false)
 	{
 		$users = array();
 		foreach ($this->_users as $user) {
@@ -230,7 +230,7 @@ class CMS_profile_usersGroup extends CMS_profile
 	  * @return void
 	  * @access public
 	  */
-	function setUsers($users)
+	public function setUsers($users)
 	{
 		foreach ($users as $user) {
 			$this->addUser($user);
@@ -243,7 +243,7 @@ class CMS_profile_usersGroup extends CMS_profile
 	  * @return array(integer)
 	  * @access public
 	  */
-	function getUsersRef()
+	public function getUsersRef()
 	{
 		return $this->_users;
 	}
@@ -254,7 +254,7 @@ class CMS_profile_usersGroup extends CMS_profile
 	  * @var integer|CMS_profile_user $user
 	  * @access public
 	  */
-	function addUser(&$user)
+	public function addUser(&$user)
 	{
 		if (is_a($user,"CMS_profile_user")) {
 			if (!SensitiveIO::isInSet($user->getUserId(), $this->_users)) {
@@ -275,7 +275,7 @@ class CMS_profile_usersGroup extends CMS_profile
 	  * @var integer or CMS_profile_user
 	  * @access public
 	  */
-	function removeUser(&$user)
+	public function removeUser(&$user)
 	{
 		if (is_a($user,"CMS_profile_user")) {
 			if (SensitiveIO::isInSet($user->getUserId(), $this->_users)) {
@@ -323,7 +323,7 @@ class CMS_profile_usersGroup extends CMS_profile
 	  * @return true on success, false on failure
 	  * @access public
 	  */
-	function addToUserAndWriteToPersistence(&$user, $writeUser = true)
+	public function addToUserAndWriteToPersistence(&$user, $writeUser = true)
 	{
 		if (is_a($user,"CMS_profile_user") && !$user->hasError()) {
 			//Get current user groups ids
@@ -382,7 +382,7 @@ class CMS_profile_usersGroup extends CMS_profile
 	  * @return true on success, false on failure
 	  * @access public
 	  */
-	function removeToUserAndWriteToPersistence(&$user) {
+	public function removeToUserAndWriteToPersistence(&$user) {
 		//Get current user groups ids
 		$userGroupIds = CMS_profile_usersGroupsCatalog::getGroupsOfUser($user, true, true);
 		//first reset profile clearances
@@ -415,7 +415,7 @@ class CMS_profile_usersGroup extends CMS_profile
 	  * @return void
 	  * @access public
 	  */
-	function applyToUsers() {
+	public function applyToUsers() {
 		if (!$this->_users) {
 			return true;
 		}
@@ -600,7 +600,7 @@ class CMS_profile_usersGroup extends CMS_profile
 	  * @return void
 	  * @access public
 	  */
-	function destroy()
+	public function destroy()
 	{
 		parent::destroy();
 		
@@ -639,7 +639,7 @@ class CMS_profile_usersGroup extends CMS_profile
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		parent::writeToPersistence();
 		$sql_fields = "
@@ -700,7 +700,7 @@ class CMS_profile_usersGroup extends CMS_profile
 		return true;
 	}
 	
-	function getJSonDescription($user, $cms_language) {
+	public function getJSonDescription($user, $cms_language) {
 		$users = $this->getUsersRef();
 		$groupUsers = ($users) ? '<a href="#" onclick="Automne.view.search(\'group:'.$this->getGroupId().'\');return false;" ext:qtip="'.$cms_language->getMessage(self::MESSAGE_PAGE_CLICK_TO_VIEW_USER).'" class="atm-help">'.$cms_language->getMessage(self::MESSAGE_PAGE_CLICK_TO_VIEW_USER, array(sizeof($users))).'</a>' : $cms_language->getMessage(self::MESSAGE_PAGE_NONE);
 		if ($user->hasAdminClearance(CLEARANCE_ADMINISTRATION_EDITUSERS)) {

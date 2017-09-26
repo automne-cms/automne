@@ -91,6 +91,7 @@ CKEDITOR.editorConfig = function( config )
 		}
 		$content .= 'config.stylesSet = '.io::jsonEncode($styles).';'."\n";
 	}
+	$content .='config.allowedContent = true;';
 	$content .= '
 	config.templates_files = [\''.PATH_MAIN_WR.'/ckeditor/templates.php\'];
 	config.menu_groups = \'clipboard,tablecell,tablecellproperties,tablerow,tablecolumn,table,anchor,link,automneLinks,editPlugin\';

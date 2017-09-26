@@ -101,7 +101,7 @@ class CMS_forms_sendingsSearch extends CMS_grandFather {
 	 * @param integer $itemsPerPage
 	 * @param boolean $public 
 	 */
-	function __construct($where = false, $orderBy = false, $page = false, $itemsPerPage = false) {
+	public function __construct($where = false, $orderBy = false, $page = false, $itemsPerPage = false) {
 		if (is_array($where)) {
 			$this->_where = $where;
 		}
@@ -123,7 +123,7 @@ class CMS_forms_sendingsSearch extends CMS_grandFather {
 	 * @param string $name
 	 * @return string
 	 */
-	function getAttribute($name) {
+	public function getAttribute($name) {
 		$name = '_'.$name;
 		return $this->{$name};
 	}
@@ -135,7 +135,7 @@ class CMS_forms_sendingsSearch extends CMS_grandFather {
 	 * @param string $name name of attribute to set
 	 * @param $value , the value to give
 	 */
-	function setAttribute($name, $value) {
+	public function setAttribute($name, $value) {
 		$name = '_'.$name;
 		$this->$name = $value;
 		return true;
@@ -151,7 +151,7 @@ class CMS_forms_sendingsSearch extends CMS_grandFather {
 	 * @param string $key name of statement to set
 	 * @param string $value , the value to give
 	 */
-	function addWhereCondition($type, $value) {
+	public function addWhereCondition($type, $value) {
 		switch($type) {
 		case "formular":
 			$value = $this->_sanitizeSQLString($value);
@@ -207,7 +207,7 @@ class CMS_forms_sendingsSearch extends CMS_grandFather {
 	 */
 	protected function _getResultsCount() {
 		if (!$this->_buildSQL()) {
-			$this->setError("Error while constructing query");
+			$this->raiseError("Error while constructing query");
 			return null;
 		}
 		$sql = str_replace('{{select}}', 'COUNT(*) as c', $this->_sql);
@@ -234,7 +234,7 @@ class CMS_forms_sendingsSearch extends CMS_grandFather {
 	 * @access public
 	 * @return integer
 	 */
-	function getNumRows() {
+	public function getNumRows() {
 		if (!isset($this->_numRows)) {
 			$this->_numRows = $this->_getResultsCount();
 		}
@@ -248,7 +248,7 @@ class CMS_forms_sendingsSearch extends CMS_grandFather {
 	 * @access public
 	 * @return integer
 	 */
-	function getMaxPages() {
+	public function getMaxPages() {
 		if (!isset($this->_numRows)) {
 			return 0;
 		}
@@ -263,7 +263,7 @@ class CMS_forms_sendingsSearch extends CMS_grandFather {
 	 * @access public
 	 * @return array(CMS_resources_cms_news)
 	 */
-	function search() {
+	public function search() {
 		$items = array();
 		if (!$this->_sql) {
 			$this->_buildSQL();

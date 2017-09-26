@@ -79,7 +79,7 @@ class CMS_linxCondition extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($tag)
+	public function __construct($tag)
 	{
 		$authorized_properties =array("rank", "title", "id", "lvl", "father", "website", "codename");
 		$property = $tag->getAttribute('property');
@@ -121,7 +121,7 @@ class CMS_linxCondition extends CMS_grandFather
 	  * @return boolean true if the page passes the condition, false otherwise
 	  * @access public
 	  */
-	function pagePasses(&$parsedPage, &$page, $publicTree, $rank)
+	public function pagePasses(&$parsedPage, &$page, $publicTree, $rank)
 	{
 		//set the condition value
 		if ($this->_valueIsScalar) {
@@ -157,7 +157,7 @@ class CMS_linxCondition extends CMS_grandFather
 	  * @return boolean true if the level passes the condition, false otherwise
 	  * @access public
 	  */
-	function levelPasses($level)
+	public function levelPasses($level)
 	{
 		//set the condition value
 		if (!$this->_valueIsScalar || $this->_pageProperty != "lvl") {
@@ -215,7 +215,7 @@ class CMS_linxCondition extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	static function createCondition($tag) {
+	public static function createCondition($tag) {
 		if (!is_a($tag, "DOMElement")) {
 			CMS_grandFather::raiseError('Tag is not a DOMElement instance');
 			return false;

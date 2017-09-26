@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<Styles>
+	<Style name="Texte Rouge" element="span">
+		<Attribute name="class" value="keyword" />
+	</Style>
+	<Style name="Texte Vert" element="span">
+		<Attribute name="class" value="vertclair" />
+	</Style>
+	<Style name="Bloc en retrait" element="div">
+		<Attribute name="class" value="retrait" />
+	</Style>
+	<Style name="Bloc de code" element="div">
+		<Attribute name="class" value="code" />
+	</Style>
+</Styles>

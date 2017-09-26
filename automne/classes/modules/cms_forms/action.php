@@ -161,7 +161,7 @@ class CMS_forms_action extends CMS_superResource
 	 * @param integer $id
 	 * @return void 
 	 */
-	function __construct($id = 0) {
+	public function __construct($id = 0) {
 		//set class name
 		$this->_className = get_class($this);
 		//initialize super-class
@@ -171,7 +171,7 @@ class CMS_forms_action extends CMS_superResource
 	/**
 	 * Returns an array of all CMS_forms_action associated to a given formular ID and ordered by type
 	 */
-	function getAll($formularID = false, $returnObject = false, $actionType = false) {
+	public static function getAll($formularID = false, $returnObject = false, $actionType = false) {
 		$items = array();
 		$type = ($actionType) ? " and type_act='".$actionType."'":'';
 		$sql = "
@@ -203,7 +203,7 @@ class CMS_forms_action extends CMS_superResource
 	  * @access public
 	  * @static
 	  */
-	static function getAllTypes()
+	public static function getAllTypes()
 	{
 		return array(
 			self::ACTION_ALREADY_FOLD	=> self::MESSAGE_CMS_FORMS_ACTION_ALREADY_FOLD,

@@ -78,7 +78,7 @@ class CMS_modulesTags extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($treatmentMode, $visualizationMode, &$treatedObject=null) 
+	public function __construct($treatmentMode, $visualizationMode, &$treatedObject) 
 	{
 		$this->_treatmentMode = $treatmentMode;
 		$this->_visualizationMode = $visualizationMode;
@@ -107,7 +107,7 @@ class CMS_modulesTags extends CMS_grandFather
 	  * @return array of tags to be treated.
 	  * @access public
 	  */
-	function getWantedTags() {
+	public function getWantedTags() {
 		if (!isset($this->_wantedTags)) {
 			$this->_wantedTags = array();
 			if (is_array($this->_modules) && $this->_modules) {
@@ -134,7 +134,7 @@ class CMS_modulesTags extends CMS_grandFather
 	  * @return string the tag content treated.
 	  * @access public
 	  */
-	function treatWantedTag(&$tag, $treatmentParameters = array()) 
+	public function treatWantedTag(&$tag, $treatmentParameters = array()) 
 	{
 		if (!$this->_modules || !$this->_modulesTreatment) {
 			$this->setError("Object not initialized");
@@ -192,12 +192,12 @@ class CMS_modulesTags extends CMS_grandFather
 		return $tagContents;
 	}
 	
-	function setTreatmentParameters($treatmentParameters = array()) {
+	public function setTreatmentParameters($treatmentParameters = array()) {
 		$this->_treatmentParameters = $treatmentParameters;
 		return true;
 	}
 	
-	function setDefinition($definition) {
+	public function setDefinition($definition) {
 		$this->_definition = trim($definition);
 	}
 	
@@ -218,14 +218,14 @@ class CMS_modulesTags extends CMS_grandFather
 		$this->_definitionArray = $this->_parser->getParsedArray();
 	}
 	
-	function getParsingError() {
+	public function getParsingError() {
 		if (!is_object($this->_parser)) {
 			return false;
 		}
 		return $this->_parser->getParsingError();
 	}
 	
-	function getTags($tagFilters = array(), $enclose = false) {
+	public function getTags($tagFilters = array(), $enclose = false) {
 		if (!$this->_parser) {
 			if ($enclose) {
 				$options = CMS_xml2Array::XML_PROTECT_ENTITIES
@@ -285,7 +285,7 @@ class CMS_modulesTags extends CMS_grandFather
 		return $tags;
 	}
 	
-	function treatContent($enclose = false) {
+	public function treatContent($enclose = false) {
 		if (!$this->_parser) {
 			if ($enclose) {
 				$options = CMS_xml2Array::XML_PROTECT_ENTITIES
@@ -313,7 +313,7 @@ class CMS_modulesTags extends CMS_grandFather
 	  * @param integer $level : the current level of recursion (default : 0)
 	  * @return string the PHP / HTML content computed
 	  */
-	function computeTags($definition, $level = 0) {
+	public function computeTags($definition, $level = 0) {
 		$code = '';
 		if (is_array($definition) && is_array($definition[0])) {
 			//loop on subtags

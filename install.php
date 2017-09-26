@@ -30,7 +30,8 @@ error_reporting(E_ALL);
 @ini_set('session.gc_probability', 0);
 @ini_set('allow_call_time_pass_reference', 0);
 
-$MINIMAL_PHP_VERSION = '5.6.0';
+//Set minimal version PHP 5.6.29
+$MINIMAL_PHP_VERSION = '5.6.29';
 
 /**
   *	Path of the REAL document root
@@ -833,6 +834,10 @@ if (!isset($_GET['file'])) {
 	//Load all Automne classes
 	if (file_exists(dirname(__FILE__).'/cms_rc_frontend.php')) {
 		//Remove session if exists
+		if($step < 4){
+			//prevent error due to tables sessions and modules missing on cms_rc_frontend.php inclusion
+			define("APPLICATION_CONFIG_LOADED",false);
+		}
 		require_once(dirname(__FILE__).'/cms_rc_frontend.php');
 		//if file config.php exists then go to next step
 		if ($step == 2 && file_exists(dirname(__FILE__).'/config.php')) {
@@ -982,6 +987,7 @@ $configContent .= '
 			show tables
 			";
 		$q = new CMS_query($sql);
+
 		if ($q->getNumRows()) {
 			//tables exists then scripts are allready executed so skip to next step
 			$exists = true;
@@ -1422,6 +1428,7 @@ $configContent .= '
 			$moduleParameters = $module->getParameters(false,true, true);
 			//found CLI path
 			$needCliPath = false;
+			$cliPath = "";
 			if ($moduleParameters['USE_BACKGROUND_REGENERATOR'][0] == 1) {
 				if (APPLICATION_IS_WINDOWS) {
 					$needCliPath = true;
@@ -2695,6 +2702,7 @@ class CMS_tar_file_install extends CMS_archive_install
 		parent::__construct($name);
 		$this->options['type'] = "tar";
 	}
+
 	/**
 	 * Extract files from the archive
 	 * 
@@ -2771,6 +2779,7 @@ class CMS_tar_file_install extends CMS_archive_install
 		chdir($pwd);
 		return true;
 	}
+
 	/**
 	 * Opens archive by opening/decompressing file
 	 * 
@@ -2799,6 +2808,7 @@ class CMS_gzip_file_install extends CMS_tar_file_install
 		parent::__construct($name);
 		$this->options['type'] = "gzip";
 	}
+
 	/**
 	 * Opens archive by opening/decompressing file
 	 * 

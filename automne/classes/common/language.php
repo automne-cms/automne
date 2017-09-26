@@ -84,7 +84,7 @@ class CMS_language extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($code = '') {
+	public function __construct($code = '') {
 		static $languageObject;
 		if ($code) {
 			if (!isset($languageObject[$code])) {
@@ -130,7 +130,7 @@ class CMS_language extends CMS_grandFather
 	  * @return string
 	  * @access public
 	  */
-	function getMessage($messageId, $parameters = false, $module = MOD_STANDARD_CODENAME, $usePriority = true) {
+	public function getMessage($messageId, $parameters = false, $module = MOD_STANDARD_CODENAME, $usePriority = true) {
 		if (SensitiveIO::isPositiveInteger($messageId)) {
 			if (!($string = $this->_getPrefetchedMessage($messageId, $module))) {
 				$sql = "
@@ -313,7 +313,7 @@ class CMS_language extends CMS_grandFather
 	  * @return string
 	  * @access public
 	  */
-	function getJsMessage($messageId, $parameters = false, $module = MOD_STANDARD_CODENAME) {
+	public function getJsMessage($messageId, $parameters = false, $module = MOD_STANDARD_CODENAME) {
 		return sensitiveIO::sanitizeJSString($this->getMessage($messageId, $parameters, $module));
 	}
 	
@@ -323,7 +323,7 @@ class CMS_language extends CMS_grandFather
 	  * @return string The language code
 	  * @access public
 	  */
-	function getCode() {
+	public function getCode() {
 		return $this->_code;
 	}
 	
@@ -333,7 +333,7 @@ class CMS_language extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function setCode($code) {
+	public function setCode($code) {
 		$this->_code = $code;
 		return true;
 	}
@@ -344,7 +344,7 @@ class CMS_language extends CMS_grandFather
 	  * @return string The language label
 	  * @access public
 	  */
-	function getLabel() {
+	public function getLabel() {
 		return $this->_label;
 	}
 	
@@ -354,7 +354,7 @@ class CMS_language extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function setLabel($label) {
+	public function setLabel($label) {
 		$this->_label = $label;
 		return true;
 	}
@@ -365,7 +365,7 @@ class CMS_language extends CMS_grandFather
 	  * @return string The language date format
 	  * @access public
 	  */
-	function getDateFormat() {
+	public function getDateFormat() {
 		return $this->_dateFormat;
 	}
 	
@@ -375,7 +375,7 @@ class CMS_language extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function setDateFormat($format) {
+	public function setDateFormat($format) {
 		$this->_dateFormat = $format;
 		return true;
 	}
@@ -386,7 +386,7 @@ class CMS_language extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function isAvailableForBackoffice() {
+	public function isAvailableForBackoffice() {
 		return $this->_availableForBackoffice;
 	}
 	
@@ -396,7 +396,7 @@ class CMS_language extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function setAvailableForBackoffice($status) {
+	public function setAvailableForBackoffice($status) {
 		$this->_availableForBackoffice = $status ? true : false;
 		return true;
 	}
@@ -407,7 +407,7 @@ class CMS_language extends CMS_grandFather
 	  * @return array(string)
 	  * @access public
 	  */
-	function getModulesDenied() {
+	public function getModulesDenied() {
 		return $this->_modulesDenied;
 	}
 	
@@ -417,7 +417,7 @@ class CMS_language extends CMS_grandFather
 	  * @return array(string)
 	  * @access public
 	  */
-	function setModulesDenied($modules) {
+	public function setModulesDenied($modules) {
 		if (!is_array($modules)) {
 			return false;
 		}
@@ -431,7 +431,7 @@ class CMS_language extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		if (!$this->_code) {
 			$this->setError("missing language code");
@@ -462,7 +462,7 @@ class CMS_language extends CMS_grandFather
 	  * @return string The language date format mask
 	  * @access public
 	  */
-	function getDateFormatMask() {
+	public function getDateFormatMask() {
 		$mask = str_replace("d", $this->getMessage(MESSAGE_ABBREVIATION_DAY), $this->_dateFormat);
 		$mask = str_replace("m", $this->getMessage(MESSAGE_ABBREVIATION_MONTH), $mask);
 		$mask = str_replace("Y", $this->getMessage(MESSAGE_ABBREVIATION_YEAR), $mask);
@@ -477,7 +477,7 @@ class CMS_language extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function startPrefetch($module = MOD_STANDARD_CODENAME) {
+	public function startPrefetch($module = MOD_STANDARD_CODENAME) {
 		$constants = get_defined_constants();
 		if (is_array($constants)) {
 			$this->_prefetchStatus[$module] = $constants;
@@ -496,7 +496,7 @@ class CMS_language extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function endPrefetch($module = MOD_STANDARD_CODENAME) {
+	public function endPrefetch($module = MOD_STANDARD_CODENAME) {
 		$constants = get_defined_constants();
 		if (!is_array($constants)) {
 			return false;
@@ -561,7 +561,7 @@ class CMS_language extends CMS_grandFather
 	 * Return the next module message id
 	 * @return	the highest module message id + 1
 	 */
-	static public function getNextMessageId($sCodename) {
+	public static function getNextMessageId($sCodename) {
 		$oQuery = new CMS_query("
 			SELECT max(id_mes) as max
 			FROM messages

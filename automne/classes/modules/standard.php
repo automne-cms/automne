@@ -115,7 +115,7 @@ class CMS_module_standard extends CMS_module
 	  * @return string The administration frontend path
 	  * @access public
 	  */
-	function getAdminFrontendPath($relativeTo)
+	public function getAdminFrontendPath($relativeTo)
 	{
 		return false;
 	}
@@ -139,7 +139,7 @@ class CMS_module_standard extends CMS_module
 	  * @return string : the method name to get objects label
 	  * @access public
 	  */
-	function getRessourceNameMethod() {
+	public function getRessourceNameMethod() {
 		return 'getTitle';
 	}
 
@@ -149,7 +149,7 @@ class CMS_module_standard extends CMS_module
 	  * @return string : the method type to get objects type label
 	  * @access public
 	  */
-	function getRessourceTypeLabelMethod() {
+	public function getRessourceTypeLabelMethod() {
 		return 'getTypeLabel';
 	}
 
@@ -161,7 +161,7 @@ class CMS_module_standard extends CMS_module
 	  * @return object The module tag representation instance
 	  * @access public
 	  */
-	function getTagRepresentation($tag, $args, $compatArg = false)
+	public function getTagRepresentation($tag, $args, $compatArg = false)
 	{
 		switch ($tag->getName()) {
 		case "atm-clientspace":
@@ -204,7 +204,7 @@ class CMS_module_standard extends CMS_module
 	  * @return array(CMS_resourceValidation) The resourceValidations objects, false if none found
 	  * @access public
 	  */
-	function getValidations($user)
+	public function getValidations($user)
 	{
 		if (!($user instanceof CMS_profile_user)) {
 			$this->setError("User is not a valid CMS_profile_user object");
@@ -249,7 +249,7 @@ class CMS_module_standard extends CMS_module
 	  * @return array(CMS_resourceValidation) The resourceValidations objects, false if none found
 	  * @access public
 	  */
-	function getValidationsInfo($user)
+	public function getValidationsInfo($user)
 	{
 		if (!($user instanceof CMS_profile_user)) {
 			$this->setError("User is not a valid CMS_profile_user object");
@@ -296,7 +296,7 @@ class CMS_module_standard extends CMS_module
 	  * @return array(CMS_resourceValidation) The resourceValidations objects, false if none found for the given user.
 	  * @access public
 	  */
-	function getValidationByID($pageID, &$user, $getEditionType=false)
+	public function getValidationByID($pageID, &$user, $getEditionType=false)
 	{
 		if (!($user instanceof CMS_profile_user)) {
 			$this->setError("User is not a valid CMS_profile_user object");
@@ -492,7 +492,7 @@ class CMS_module_standard extends CMS_module
 	  * @return array(CMS_resourceValidation) The resourceValidations objects, false if noen found
 	  * @access public
 	  */
-	function getValidationsInfoByEditions(&$user, $editions)
+	public function getValidationsInfoByEditions(&$user, $editions)
 	{
 		$language = $user->getLanguage();
 		$validations = array();
@@ -655,7 +655,7 @@ class CMS_module_standard extends CMS_module
 	  * @return array(CMS_resourceValidation) The resourceValidations objects, false if noen found
 	  * @access public
 	  */
-	function getValidationsByEditions(&$user, $editions)
+	public function getValidationsByEditions(&$user, $editions)
 	{
 		$language = $user->getLanguage();
 		$validations = array();
@@ -887,7 +887,7 @@ class CMS_module_standard extends CMS_module
 	  * @return boolean true on success, false on failure to process
 	  * @access public
 	  */
-	function processValidation($resourceValidation, $result, $lastValidation = true)
+	public function processValidation($resourceValidation, $result, $lastValidation = true)
 	{
 		if (!($resourceValidation instanceof CMS_resourceValidation)) {
 			$this->setError("ResourceValidation is not a valid CMS_resourceValidation object");
@@ -1375,7 +1375,7 @@ class CMS_module_standard extends CMS_module
 	  * @return void
 	  * @access private
 	  */
-	static function _changeDataLocation($resource, $locationFrom, $locationTo, $copyOnly = false) {
+	protected static function _changeDataLocation($resource, $locationFrom, $locationTo, $copyOnly = false) {
 		if (!parent::_changeDataLocation($resource, $locationFrom, $locationTo, $copyOnly)) {
 			return false;
 		}
@@ -1432,7 +1432,7 @@ class CMS_module_standard extends CMS_module
 	  * @return boolean false
 	  * @access public
 	  */
-	function destroy()
+	public function destroy()
 	{
 		return false;
 	}
@@ -1443,7 +1443,7 @@ class CMS_module_standard extends CMS_module
 	  * @return boolean false
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		return false;
 	}
@@ -1455,7 +1455,7 @@ class CMS_module_standard extends CMS_module
 	  * @return array of tags to be treated.
 	  * @access public
 	  */
-	function getWantedTags($treatmentMode, $visualizationMode)
+	public function getWantedTags($treatmentMode, $visualizationMode)
 	{
 		$return = array();
 		switch ($treatmentMode) {
@@ -1546,7 +1546,7 @@ class CMS_module_standard extends CMS_module
 	  * @return string the tag content treated.
 	  * @access public
 	  */
-	function treatWantedTag(&$tag, $tagContent, $treatmentMode, $visualizationMode, &$treatedObject, $treatmentParameters)
+	public function treatWantedTag(&$tag, $tagContent, $treatmentMode, $visualizationMode, &$treatedObject, $treatmentParameters)
 	{
 		switch ($treatmentMode) {
 			case MODULE_TREATMENT_BLOCK_TAGS:
@@ -1999,7 +1999,7 @@ class CMS_module_standard extends CMS_module
 	  * @return string : the module code to add
 	  * @access public
 	  */
-	function getModuleCode($modulesCode, $treatmentMode, $visualizationMode, &$treatedObject, $treatmentParameters)
+	public function getModuleCode($modulesCode, $treatmentMode, $visualizationMode, &$treatedObject, $treatmentParameters)
 	{
 		switch ($treatmentMode) {
 			case MODULE_TREATMENT_PAGECONTENT_HEADER_CODE :
@@ -2211,7 +2211,7 @@ class CMS_module_standard extends CMS_module
 	  * @return array of replacements values (pattern to replace => replacement)
 	  * @access public
 	  */
-	function getModuleReplacements() {
+	public function getModuleReplacements() {
 		$replace = array();
 
 		//replace '{vartype:type:name}' value by corresponding var call
@@ -2239,7 +2239,7 @@ class CMS_module_standard extends CMS_module
 	  * @return Boolean true/false
 	  * @access public
 	  */
-	function scriptTask($parameters) {
+	public function scriptTask($parameters) {
 		//regenerates the page (suppressing errors, we want the regenerator to continue unharmed. Of course, we can't have regeneration results this way)
 		$page = @CMS_tree::getPageByID($parameters['pageid']);
 
@@ -2259,7 +2259,7 @@ class CMS_module_standard extends CMS_module
 	  * @return string : HTML scripts infos
 	  * @access public
 	  */
-	function scriptInfo($parameters) {
+	public function scriptInfo($parameters) {
 		global $cms_language;
 		//regenerates the page (suppressing errors, we want the regenerator to continue unharmed. Of course, we can't have regeneration results this way)
 		$page = @CMS_tree::getPageByID($parameters['pageid']);
@@ -2281,7 +2281,7 @@ class CMS_module_standard extends CMS_module
 	  * @return array : results elements Ids
 	  * @access public
 	  */
-	function search ($keyword, &$user, $public = false, &$score = array()) {
+	public function search ($keyword, &$user, $public = false, &$score = array()) {
 		$pageResults = CMS_search::getSearch($keyword, $user, $public, true);
 		$score = $pageResults['score'];
 		return $pageResults['results'];
@@ -2294,7 +2294,7 @@ class CMS_module_standard extends CMS_module
 	  * @return array : results elements (cms_page)
 	  * @access public
 	  */
-	function getSearchResults($resultsIds, $user) {
+	public function getSearchResults($resultsIds, $user) {
 		$results = array();
 		$cms_language = $user->getLanguage();
 		foreach ($resultsIds as $id) {
@@ -2384,7 +2384,7 @@ class CMS_module_standard extends CMS_module
 	  * @return CMS_auth : the module authentification adapter
 	  * @access public
 	  */
-	function getAuthAdapter($params) {
+	public function getAuthAdapter($params) {
 		//create auth adapter with params
 		return new CMS_auth($params);
 	}

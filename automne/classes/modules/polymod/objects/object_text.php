@@ -131,7 +131,7 @@ class CMS_object_text extends CMS_object_common
 	  * @return void
 	  * @access public
 	  */
-	function __construct($datas=array(), &$field, $public=false)
+	public function __construct($datas=array(), &$field, $public=false)
 	{
 		parent::__construct($datas, $field, $public);
 	}
@@ -144,7 +144,7 @@ class CMS_object_text extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function checkMandatory($values,$prefixName, $newFormat = false) {
+	public function checkMandatory($values,$prefixName, $newFormat = false) {
 		//if field is required check values
 		$params = $this->getParamsValues();
 		if ($this->_field->getValue('required')) {
@@ -175,7 +175,7 @@ class CMS_object_text extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLSubFieldsParametersToolbar($language, $prefixName) {
+	public function getHTMLSubFieldsParametersToolbar($language, $prefixName) {
 		global $cms_user;
 		$values = $this->_parameterValues;
 		$input = '';
@@ -209,7 +209,7 @@ class CMS_object_text extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLAdmin($fieldID, $language, $prefixName) {
+	public function getHTMLAdmin($fieldID, $language, $prefixName) {
 		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
 		$params = $this->getParamsValues();
 		if ($params['html']) {
@@ -254,7 +254,7 @@ class CMS_object_text extends CMS_object_common
       * @return string : the form field HTML tag
       * @access public
       */
-	function getInput($fieldID, $language, $inputParams) {
+	public function getInput($fieldID, $language, $inputParams) {
 		//hidden field : use parent method
 		if (isset($inputParams['hidden']) && ($inputParams['hidden'] == 'true' || $inputParams['hidden'] == 1)) {
 			return parent::getInput($fieldID, $language, $inputParams);
@@ -320,7 +320,7 @@ class CMS_object_text extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName, $new_format = false) {
+	public function setValues($values,$prefixName, $new_format = false) {
 		$params = $this->getParamsValues();
 		if (!$params['html']) {
 			//remove html characters if any then convert line breaks to <br /> tags
@@ -340,7 +340,7 @@ class CMS_object_text extends CMS_object_common
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getStructure() {
+	public function getStructure() {
 		$structure = parent::getStructure();
 		$structure['htmlvalue'] = '';
 		$structure['txtvalue'] = '';
@@ -355,7 +355,7 @@ class CMS_object_text extends CMS_object_common
 	  * @return string : the label
 	  * @access public
 	  */
-	function getLabel() {
+	public function getLabel() {
 		if (!is_object($this->_subfieldValues[0])) {
 			$this->setError("No subField to get for label : ".print_r($this->_subfieldValues,true));
 			return false;
@@ -372,7 +372,7 @@ class CMS_object_text extends CMS_object_common
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getValue($name, $parameters = '') {
+	public function getValue($name, $parameters = '') {
 		$params = $this->getParamsValues();
 		switch($name) {
 			case 'label':
@@ -445,7 +445,7 @@ class CMS_object_text extends CMS_object_common
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language, $objectName = '') {
+	public function getLabelsStructure(&$language, $objectName = '') {
 		$labels = parent::getLabelsStructure($language, $objectName);
 		$labels['structure']['htmlvalue'] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_HTMLVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
 		$labels['structure']['txtvalue'] = $language->getMessage(self::MESSAGE_OBJECT_TEXT_TXTVALUE_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);
@@ -472,7 +472,7 @@ class CMS_object_text extends CMS_object_common
 	  * @return string : the SQL request
 	  * @access public
 	  */
-	function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
+	public function getFieldSearchSQL($fieldID, $value, $operator, $where, $public = false) {
 		$supportedOperator = array(
 			'like',
 			'!=',
@@ -612,7 +612,7 @@ class CMS_object_text extends CMS_object_common
 	  * @return array, the treated datas
 	  * @access public
 	  */
-	function treatParams($post, $prefix) {
+	public function treatParams($post, $prefix) {
 		$parameters = $this->getSubFieldParameters();
 		$treatedParams = array();
 		foreach($parameters as $aParameter) {
@@ -633,7 +633,7 @@ class CMS_object_text extends CMS_object_common
 	  * @return string : object HTML description
 	  * @access public
 	  */
-	function getHTMLDescription() {
+	public function getHTMLDescription() {
 		return io::ellipsis(strip_tags($this->getLabel()), 500, '...', false, false);
 	}
 }

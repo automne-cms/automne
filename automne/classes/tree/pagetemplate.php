@@ -144,7 +144,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($id = 0)
+	public function __construct($id = 0)
 	{
 		$this->_groups = new CMS_stack();
 		$this->_modules = new CMS_stack();
@@ -188,7 +188,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return integer the DB id
 	  * @access public
 	  */
-	function getID()
+	public function getID()
 	{
 		return $this->_id;
 	}
@@ -199,7 +199,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return string The label
 	  * @access public
 	  */
-	function getLabel()
+	public function getLabel()
 	{
 		return $this->_label;
 	}
@@ -211,7 +211,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setLabel($label)
+	public function setLabel($label)
 	{
 		if ($label) {
 			$this->_label = $label;
@@ -228,7 +228,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return string The label
 	  * @access public
 	  */
-	function getDescription()
+	public function getDescription()
 	{
 		return $this->_description;
 	}
@@ -240,7 +240,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setDescription($description)
+	public function setDescription($description)
 	{
 		$this->_description = $description;
 		return true;
@@ -253,7 +253,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function renameTemplate($label)
+	public function renameTemplate($label)
 	{
 		if ($label) {
 			$this->_label = $label;
@@ -287,7 +287,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return boolean 
 	  * @access public
 	  */
-	function isUseable()
+	public function isUseable()
 	{
 		return $this->_useable;
 	}
@@ -299,7 +299,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setUsability($usability)
+	public function setUsability($usability)
 	{
 		$this->_useable = ($usability) ? true : false;
 		return true;
@@ -312,7 +312,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setPrivate($private)
+	public function setPrivate($private)
 	{
 		$this->_private = ($private) ? true : false;
 		return true;
@@ -324,7 +324,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function isPrivate()
+	public function isPrivate()
 	{
 		return $this->_private;
 	}
@@ -335,7 +335,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return string the image file name
 	  * @access public
 	  */
-	function getImage()
+	public function getImage()
 	{
 		return $this->_image;
 	}
@@ -347,7 +347,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setImage($image = 'nopicto.gif')
+	public function setImage($image = 'nopicto.gif')
 	{
 		if (!trim($image)) {
 			$image = 'nopicto.gif';
@@ -368,7 +368,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return array(string) The groups represented by their string in an array
 	  * @access public
 	  */
-	function getGroups()
+	public function getGroups()
 	{
 		$groups_arrayed = $this->_groups->getElements();
 		$groups = array();
@@ -385,7 +385,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return array(integer) The websites denied id
 	  * @access public
 	  */
-	function getWebsitesDenied()
+	public function getWebsitesDenied()
 	{
 		$websitesDenied = $this->_websitesdenied->getElements();
 		$websites = array();
@@ -402,7 +402,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function denyWebsite($website)
+	public function denyWebsite($website)
 	{
 		if (sensitiveIO::isPositiveInteger($website) && CMS_websitesCatalog::getById($website)) {
 			$websites = $this->getWebsitesDenied();
@@ -423,7 +423,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function delDeniedWebsite($website)
+	public function delDeniedWebsite($website)
 	{
 		if ($website) {
 			$this->_websitesdenied->del($website);
@@ -440,7 +440,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function delAllWebsiteDenied()
+	public function delAllWebsiteDenied()
 	{
 		$this->_websitesdenied = new CMS_stack();
 	}
@@ -451,7 +451,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return array(CMS_xmlTag) The tag interpreted by parser, a client space
 	  * @access public
 	  */
-	function getClientSpacesTags()
+	public function getClientSpacesTags()
 	{
 		if (!$this->_definitionFile) {
 			return array();
@@ -471,7 +471,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return array(codename => CMS_module) The modules present in the template via module client spaces
 	  * @access public
 	  */
-	function getModules($returnObject = true) {
+	public function getModules($returnObject = true) {
 		$elements = $this->_modules->getElements();
 		$modules = array();
 		foreach ($elements as $element) {
@@ -492,7 +492,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function hasModule($codename) {
+	public function hasModule($codename) {
 		$elements = $this->_modules->getElements();
 		foreach ($elements as $element) {
 			if ($element[0] == $codename) {
@@ -510,7 +510,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return boolean true if the template belongs to that group, false otherwise
 	  * @access public
 	  */
-	function belongsToGroup($group)
+	public function belongsToGroup($group)
 	{
 		$grps = $this->_groups->getElementsWithOneValue($group, 1);
 		return (is_array($grps) && $grps);
@@ -523,7 +523,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function addGroup($group)
+	public function addGroup($group)
 	{
 		if ($group && $group == SensitiveIO::sanitizeSQLString($group)) {
 			$groups = $this->getGroups();
@@ -544,7 +544,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function delGroup($group)
+	public function delGroup($group)
 	{
 		if ($group) {
 			$this->_groups->del($group);
@@ -561,7 +561,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function delAllGroups()
+	public function delAllGroups()
 	{
 		$this->_groups = new CMS_stack();
 	}
@@ -572,7 +572,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return string The definition file name.
 	  * @access public
 	  */
-	function getDefinitionFile()
+	public function getDefinitionFile()
 	{
 		return $this->_definitionFile;
 	}
@@ -584,7 +584,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return string the parsing error if any, false otherwise
 	  * @access public
 	  */
-	function setDefinitionFile($filename)
+	public function setDefinitionFile($filename)
 	{
 		if ($filename == SensitiveIO::sanitizeAsciiString($filename)) {
 			$fp = @fopen(PATH_TEMPLATES_FS."/".$filename, 'rb');
@@ -617,7 +617,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return string the definition
 	  * @access public
 	  */
-	function getDefinition()
+	public function getDefinition()
 	{
 		if ($filename = $this->getDefinitionFile()) {
 			$file = new CMS_file(PATH_TEMPLATES_FS."/".$filename);
@@ -642,7 +642,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setDefinition($definition)
+	public function setDefinition($definition)
 	{
 		$filename = $this->getDefinitionFile();
 		if (!$filename) {
@@ -689,7 +689,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return string the content
 	  * @access private
 	  */
-	function getContent(&$language, &$page, $visualizationMode)
+	public function getContent(&$language, &$page, $visualizationMode)
 	{
 		if (!($page instanceof CMS_page) || !SensitiveIO::isInSet($visualizationMode, CMS_page::getAllvisualizationModes())) {
 			$this->setError("Page must be a CMS_page and visualization mode in the possibles");
@@ -739,7 +739,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function isDraft() {
+	public function isDraft() {
 		if (!sensitiveIO::isPositiveInteger($this->getID())) {
 			return false;
 		}
@@ -759,7 +759,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return array(string) The clientspaces tag IDs attributes
 	  * @access public
 	  */
-	function getPrintingClientSpaces()
+	public function getPrintingClientSpaces()
 	{
 		return $this->_printingClientSpaces;
 	}
@@ -771,7 +771,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setPrintingClientSpaces($CSTagsIDs)
+	public function setPrintingClientSpaces($CSTagsIDs)
 	{
 		if (!is_array($CSTagsIDs)) {
 			$this->_setError('$CSTagsIDs must be an array of CS Ids.');
@@ -786,7 +786,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function hasPages()
+	public function hasPages()
 	{
 		if (!$this->_id || !$this->_definitionFile) {
 			return false;
@@ -817,7 +817,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return array(CMS_page) The pages
 	  * @access private
 	  */
-	function getPages($withClones = false)
+	public function getPages($withClones = false)
 	{
 		if (!$this->_id || !$this->_definitionFile) {
 			return array();
@@ -936,7 +936,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function destroy($withDefinitionFile=false)
+	public function destroy($withDefinitionFile=false)
 	{
 		if ($this->_id) {
 			//destroy the template from its table
@@ -996,7 +996,7 @@ class CMS_pageTemplate extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		$sql_fields = "
 			label_pt='".SensitiveIO::sanitizeSQLString($this->_label)."',
@@ -1053,7 +1053,7 @@ class CMS_pageTemplate extends CMS_grandFather
 		return true;
 	}
 	
-	function getJSonDescription($user, $cms_language, $withDefinition = false) {
+	public function getJSonDescription($user, $cms_language, $withDefinition = false) {
 		//get websites
 		$websites = CMS_websitesCatalog::getAll();
 		$hasPages = $this->hasPages();

@@ -141,7 +141,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return  void
 	  * @access public
 	  */
-	function __construct($id = false)
+	public function __construct($id = false)
 	{
 		// Initiate Stack objects
 		$this->_alerts = new CMS_stack();
@@ -200,7 +200,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return integer
 	  * @access public
 	  */
-	function getUserId()
+	public function getUserId()
 	{
 		return $this->_userId;
 	}
@@ -211,7 +211,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return string
 	  * @access public
 	  */
-	function isActive()
+	public function isActive()
 	{
 		return $this->_active;
 	}
@@ -222,7 +222,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return string
 	  * @access public
 	  */
-	function isDeleted()
+	public function isDeleted()
 	{
 		return $this->_deleted;
 	}
@@ -234,7 +234,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return boolean
 	  * @access public
 	  */
-	function setActive($active)
+	public function setActive($active)
 	{
 		$this->_active = ($active) ? true : false;
 		$this->_validationChange = true;
@@ -249,7 +249,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return boolean
 	  * @access public
 	  */
-	function setDeleted($deleted)
+	public function setDeleted($deleted)
 	{
 		$this->_deleted = ($deleted) ? true : false;
 		return true;
@@ -262,7 +262,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return boolean
 	  * @access public
 	  */
-	function isFavorite($pageId) {
+	public function isFavorite($pageId) {
 		return in_array(trim($pageId), $this->_favorites);
 	}
 	
@@ -274,7 +274,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return boolean
 	  * @access public
 	  */
-	function setFavorite($status, $pageId) {
+	public function setFavorite($status, $pageId) {
 		if (!sensitiveIO::isPositiveInteger($pageId)) {
 			$this->setError("Page Id must be an integer : ".$pageId);
 			return false;
@@ -297,7 +297,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return array(pageIds)
 	  * @access public
 	  */
-	function getFavorites() {
+	public function getFavorites() {
 		return $this->_favorites;
 	}
 	
@@ -307,7 +307,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return string
 	  * @access public
 	  */
-	function getLogin()
+	public function getLogin()
 	{
 		return $this->_login;
 	}
@@ -330,7 +330,7 @@ class CMS_profile_user extends CMS_profile
       * @return void
       * @access public
       */
-    function setLogin($login)
+    public function setLogin($login)
     {
         if (!CMS_profile_user::checkLogin($login)) {
             $this->setError('Login is invalid. A login must use only alphanumerics caracters');
@@ -353,7 +353,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return boolean
 	  * @access public
 	  */
-	function setPassword($password, $encode = true) {
+	public function setPassword($password, $encode = true) {
 		// Check password validity
 	    if ($encode && !SensitiveIO::isValidPassword($password)) {
 			$this->setError('Invalid password. Length must be > '.MINIMUM_PASSWORD_LENGTH);
@@ -369,7 +369,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return string The SHA1 user password
 	  * @access public
 	  */
-	function getPassword()
+	public function getPassword()
 	{
 		return $this->_password;
 	}
@@ -380,7 +380,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return  void
 	  * @access public
 	  */
-	function havePassword()
+	public function havePassword()
 	{
 		return ($this->_password) ? true:false;
 	}
@@ -391,7 +391,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return string
 	  * @access public
 	  */
-	function getFullName()
+	public function getFullName()
 	{
 		return ($this->_firstName ? ucfirst($this->_firstName) : '').
 		(($this->_firstName && $this->_lastName) ? ' ' : '').
@@ -404,7 +404,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return string
 	  * @access public
 	  */
-	function getFirstName()
+	public function getFirstName()
 	{
 		return $this->_firstName;
 	}
@@ -416,7 +416,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return boolean
 	  * @access public
 	  */
-	function setFirstName($firstName)
+	public function setFirstName($firstName)
 	{
 		$this->_firstName = $firstName;
 		return true;
@@ -428,7 +428,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return string
 	  * @access public
 	  */
-	function getLastName()
+	public function getLastName()
 	{
 		return $this->_lastName;
 	}
@@ -440,7 +440,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return boolean
 	  * @access public
 	  */
-	function setLastName($lastName)
+	public function setLastName($lastName)
 	{
 		$this->_lastName = $lastName;
 		return true;
@@ -452,7 +452,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return CMS_contactData
 	  * @access public
 	  */
-	function getContactData()
+	public function getContactData()
 	{
 		return $this->_contactData;
 	}
@@ -464,7 +464,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return boolean
 	  * @access public
 	  */
-	function setContactData($contactData)
+	public function setContactData($contactData)
 	{
 		// Check if CMS_contactData object
 		if (is_a($contactData, "CMS_contactData") && !$contactData->hasError()) {
@@ -482,7 +482,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return string The email
 	  * @access public
 	  */
-	function getEmail()
+	public function getEmail()
 	{
 		return $this->_contactData->getEmail();
 	}
@@ -494,7 +494,7 @@ class CMS_profile_user extends CMS_profile
 	  * @access public
 	  */
 	 
-	function getLanguage()
+	public function getLanguage()
 	{
 		return $this->_language;
 	}
@@ -506,7 +506,7 @@ class CMS_profile_user extends CMS_profile
 	  * @access public
 	  */
 	 
-	function getLanguageCode()
+	public function getLanguageCode()
 	{
 		return $this->_language->getCode();
 	}
@@ -518,7 +518,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return boolean
 	  * @access public
 	  */
-	function setLanguage($language)
+	public function setLanguage($language)
 	{
 		// Check if CMS_contactData object
 		if (is_a($language, "CMS_language") && !$language->hasError()) {
@@ -543,7 +543,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return boolean
 	  * @access public
 	  */
-	function addValidationClearance($moduleName)
+	public function addValidationClearance($moduleName)
 	{
 		if ($moduleName) {
 			$hasValidation = parent::hasValidationClearance($moduleName);
@@ -566,7 +566,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return void
 	  * @access public
 	  */
-	function delValidationClearance($moduleId)
+	public function delValidationClearance($moduleId)
 	{
 		$hasValidation = parent::hasValidationClearance($moduleId);
 		parent::delValidationClearance($moduleId);
@@ -584,7 +584,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return void
 	  * @access public
 	  */
-	function delValidationClearances()
+	public function delValidationClearances()
 	{
 		$validationClearances = parent::getValidationClearances();
 		$prevElements = $validationClearances->getElements();
@@ -603,7 +603,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return boolean
 	  * @access public
 	  */
-	function setValidationClearances($validationClearances)
+	public function setValidationClearances($validationClearances)
 	{
 		if (is_a($validationClearances, 'CMS_stack')) {
 			parent::setValidationClearances($validationClearances);
@@ -622,7 +622,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return mixed See functions for more details
 	  * @access public
 	  */
-	function getValue($property){
+	public function getValue($property){
 		switch($property){
 		    case 'id':
 		        return $this->getUserId();
@@ -661,7 +661,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValue($property, $value){
+	public function setValue($property, $value){
 		switch($property){
 		    default:
 				$method = 'set'.ucfirst($property);
@@ -682,7 +682,7 @@ class CMS_profile_user extends CMS_profile
 	 * @param string $xmlInput XML definition to define user properties
 	 * @return boolean True on success, false on failure
 	 */
-	function setSoapValues($domdocument){
+	public function setSoapValues($domdocument){
 	    $view = CMS_view::getInstance();
 	    
 	    $contactData = new CMS_contactData();
@@ -801,7 +801,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		$this->writeProfileToPersistence();
 		$this->_contactData->writeToPersistence();
@@ -901,7 +901,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeProfileToPersistence() {
+	public function writeProfileToPersistence() {
 		return parent::writeToPersistence();
 	}
 	
@@ -923,7 +923,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return void
 	  * @access public
 	  */
-	function hasAlertLevel($level, $module) {
+	public function hasAlertLevel($level, $module) {
 		$moduleLevel = $this->_alerts->getElementValueFromKey($module);
 		if ($moduleLevel & $level) {
 			return true;
@@ -939,7 +939,7 @@ class CMS_profile_user extends CMS_profile
 	  * @return true
 	  * @access public
 	  */
-	function setAlertLevel($level, $module) {
+	public function setAlertLevel($level, $module) {
 		$this->_alerts->delAllWithOneKey($module);
 		$this->_alerts->add($module, $level);
 		return true;
@@ -951,13 +951,13 @@ class CMS_profile_user extends CMS_profile
 	  * @return true
 	  * @access public
 	  */
-	function resetAlertLevel() {
+	public function resetAlertLevel() {
 		// Initiate Stack objects
 		$this->_alerts = new CMS_stack();
 		return true;
 	}
 	
-	function getJSonDescription($user, $cms_language) {
+	public function getJSonDescription($user, $cms_language) {
 		//groups of user
 		$userGroups = array();
 		$groups = CMS_profile_usersGroupsCatalog::getGroupsOfUser($this);

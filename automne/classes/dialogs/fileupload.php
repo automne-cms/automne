@@ -112,7 +112,7 @@ class CMS_fileUpload_dialog extends CMS_grandFather
 	 * responding to $destinationPath before uploading new one
 	 * @return void
 	 */
-	function __construct($fieldname = false, $overwrite = false) {
+	public function __construct($fieldname = false, $overwrite = false) {
 		$this->_overwrite = ($overwrite !== false) ? true : false ;
 		$this->_fileUpload = new CMS_fileUpload((string) $fieldname, $this->_overwrite);
 	}
@@ -123,7 +123,7 @@ class CMS_fileUpload_dialog extends CMS_grandFather
 	  * @access public
 	  * @return string
 	  */
-	function getOrigin() {
+	public function getOrigin() {
 		return $this->_fileUpload->getPath('origin');
 	}
 	
@@ -134,7 +134,7 @@ class CMS_fileUpload_dialog extends CMS_grandFather
 	  * @param string $value, value to set
 	  * @return boolean true on success, false otherwise
 	  */
-	function setOrigin($value, $overwrite = false) {
+	public function setOrigin($value, $overwrite = false) {
 		if ($overwrite) {
 			$this->_overwrite = true;
 			$this->_fileUpload->setAttribute('overwrite', $this->_overwrite);
@@ -148,7 +148,7 @@ class CMS_fileUpload_dialog extends CMS_grandFather
 	  * @access public
 	  * @return string
 	  */
-	function getDestination() {
+	public function getDestination() {
 		return $this->_fileUpload->getPath('destination');
 	}
 	
@@ -159,7 +159,7 @@ class CMS_fileUpload_dialog extends CMS_grandFather
 	  * @param string $value, value to set
 	  * @return boolean true on success, false otherwise
 	  */
-	function setDestination($value) {
+	public function setDestination($value) {
 		return $this->_fileUpload->setPath('destination', $value);
 	}
 	
@@ -169,7 +169,7 @@ class CMS_fileUpload_dialog extends CMS_grandFather
 	  * @return string, the filename
 	  * @access public
 	  */
-	function getFilename() {
+	public function getFilename() {
 		return $this->_fileUpload->getFilename();
 	}
 	
@@ -179,7 +179,7 @@ class CMS_fileUpload_dialog extends CMS_grandFather
 	  * @return boolean true if ready to move upload
 	  * @access public
 	  */
-	function ready() {
+	public function ready() {
 		return $this->_fileUpload->ready();
 	}
 	
@@ -189,7 +189,7 @@ class CMS_fileUpload_dialog extends CMS_grandFather
 	  * @access public
 	  * @return string
 	  */
-	function getErrorMessage(&$cms_language) {
+	public function getErrorMessage(&$cms_language) {
 		if (!is_a($cms_language, 'CMS_language')) {
 			return false;
 		}
@@ -206,7 +206,7 @@ class CMS_fileUpload_dialog extends CMS_grandFather
 	  * @return boolean true if file upload successfully done, false otherwise
 	  * @access public
 	  */
-	function doUpload()
+	public function doUpload()
 	{
 		if ($this->_overwrite) {
 			$this->_fileUpload->deleteOrigin();
@@ -237,7 +237,7 @@ class CMS_fileUpload_dialog extends CMS_grandFather
 	  * @param integer $maxwidth, maxwidth allowed for an image
 	  * @return boolean true on success, false otherwise
 	  */
-	function doUploadForResource(&$obj, $moduleCodename, $originPath = false, $overwrite = false, $maxwidth = false) {
+	public function doUploadForResource(&$obj, $moduleCodename, $originPath = false, $overwrite = false, $maxwidth = false) {
 		
 		if ($overwrite) {
 			$this->_overwrite = true;

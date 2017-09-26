@@ -37,7 +37,7 @@ class CMS_context extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($login = '', $password = '', $permanent_cookie=0, $token = null)
+	public function __construct($login = '', $password = '', $permanent_cookie=0, $token = null)
 	{
 		if ($login && $password) {
 			$params = array(
@@ -52,7 +52,7 @@ class CMS_context extends CMS_grandFather
 		}
 	}
 	
-	function __call($name, $arguments) {
+	public function __call($name, $arguments) {
 		if (is_callable(array('CMS_session', $name))) {
 			return call_user_func_array(array('CMS_session', $name) , $arguments );
 		} else {
@@ -67,7 +67,7 @@ class CMS_context extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	static function resetSessionCookies() {
+	public static function resetSessionCookies() {
 		// Disconnect user
 		CMS_session::authenticate(array('disconnect'=> true));
 	}
@@ -80,7 +80,7 @@ class CMS_context extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	static function setSessionVar($name, $value) {
+	public static function setSessionVar($name, $value) {
 		return CMS_session::setSessionVar($name, $value);
 	}
 	
@@ -91,7 +91,7 @@ class CMS_context extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	static function getSessionVar($name) {
+	public static function getSessionVar($name) {
 		return CMS_session::getSessionVar($name);
 	}
 	
@@ -102,7 +102,7 @@ class CMS_context extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	static function autoLoginSucceeded() {
+	public static function autoLoginSucceeded() {
 		return CMS_session::autoLoginSucceeded();
 	}
 	
@@ -117,7 +117,7 @@ class CMS_context extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	static function setCookie($name, $value=false, $expire=false) {
+	public static function setCookie($name, $value=false, $expire=false) {
 		return CMS_session::setCookie($name, $value, $expire);
 	}
 	
@@ -128,7 +128,7 @@ class CMS_context extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	static function getAutoLoginCookieName() {
+	public static function getAutoLoginCookieName() {
 		return CMS_session::getAutoLoginCookieName();
 	}
 	
@@ -139,7 +139,7 @@ class CMS_context extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	static function getSessionInfos() {
+	public static function getSessionInfos() {
 		return CMS_session::getSessionInfos();
 	}
 	
@@ -149,7 +149,7 @@ class CMS_context extends CMS_grandFather
 	  * @return string : JS locales
 	  * @access public
 	  */
-	static function getJSLocales() {
+	public static function getJSLocales() {
 		return CMS_session::getJSLocales();
 	}
 	
@@ -160,7 +160,7 @@ class CMS_context extends CMS_grandFather
 	  * @return string : Token value
 	  * @access public
 	  */
-	static function getToken ($name) {
+	public static function getToken ($name) {
 		return CMS_session::getToken($name);
 	}
 	
@@ -172,7 +172,7 @@ class CMS_context extends CMS_grandFather
 	  * @return boolean : true if token is valid or false otherwise
 	  * @access public
 	  */
-	static function checkToken ($name, $token) {
+	public static function checkToken ($name, $token) {
 		return CMS_session::checkToken($name, $token);
 	}
 	
@@ -183,7 +183,7 @@ class CMS_context extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	static function expireToken($name) {
+	public static function expireToken($name) {
 		return CMS_session::expireToken($name);
 	}
 	
@@ -194,7 +194,7 @@ class CMS_context extends CMS_grandFather
 	  * @return boolean : true if token is expired or false otherwise
 	  * @access public
 	  */
-	static function tokenIsExpired ($name) {
+	public static function tokenIsExpired ($name) {
 		return CMS_session::tokenIsExpired($name);
 	}
 	
@@ -206,7 +206,7 @@ class CMS_context extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	static function getContextHash($datas = array()) {
+	public static function getContextHash($datas = array()) {
 		return CMS_session::getContextHash($datas);
 	}
 }

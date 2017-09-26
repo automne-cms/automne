@@ -43,7 +43,7 @@ class CMS_xml2Array extends CMS_grandFather
 	
 	protected $_parsingError;
 	
-	function __construct($xml = '', $params = self::XML_ENCLOSE)
+	public function __construct($xml = '', $params = self::XML_ENCLOSE)
 	{
 		$this->_params = $params;
 		if ($xml) {
@@ -132,7 +132,7 @@ class CMS_xml2Array extends CMS_grandFather
 	  * @return array
 	  * @access public
 	  */
-	function getAutoClosedTagsList() {
+	public function getAutoClosedTagsList() {
 		return CMS_xml2Array::$autoClosedTagsList;
 	}
 	
@@ -187,7 +187,7 @@ class CMS_xml2Array extends CMS_grandFather
 		return str_replace(array_keys($replace), $replace, $data);
 	}
 	
-	function getParsingError() {
+	public function getParsingError() {
 		return $this->_parsingError;
 	}
 	
@@ -242,7 +242,7 @@ class CMS_xml2Array extends CMS_grandFather
 		}
 	}
 	
-	function toXML(&$definition, $part = false, $replaceVars = false) {
+	public function toXML(&$definition, $part = false, $replaceVars = false) {
 		//return back xml
 		$result = "";
 		if(!$definition && is_object($this)){
@@ -317,7 +317,7 @@ class CMS_xml2Array extends CMS_grandFather
 		return $result;
 	}
 	
-	function getParsedArray() {
+	public function getParsedArray() {
 		if ($this->_params & self::XML_ENCLOSE) {
 			//remove enclose tag
 			return isset($this->_arrOutput[0]['childrens']) ? $this->_arrOutput[0]['childrens'] : array();
@@ -326,7 +326,7 @@ class CMS_xml2Array extends CMS_grandFather
 		}
 	}
 	
-	function getXMLInTag($definition, $tagname) {
+	public function getXMLInTag($definition, $tagname) {
 		//jump directly to childrens
 		if (isset($definition['childrens'])) {
 			$definition = $definition['childrens'];

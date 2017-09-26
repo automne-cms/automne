@@ -38,7 +38,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	static function getByID($id, $reset = false)
+	public static function getByID($id, $reset = false)
 	{
 		static $groups;
 		if($reset){
@@ -60,7 +60,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	  * @return array(CMS_profile_usersGroup)
 	  * @access public
 	  */
-	static function getAll()
+	public static function getAll()
 	{
 		$sql = "
 			select
@@ -95,7 +95,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	  * @return array(CMS_profile_usersGroup)
 	  * @access public
 	  */
-	static function search($search = '', $letter = '', $userId = false, $groupsIds = array(), $order = '', $direction = 'asc', $start = 0, $limit = 0, $returnObjects = true, &$score = array()) {
+	public static function search($search = '', $letter = '', $userId = false, $groupsIds = array(), $order = '', $direction = 'asc', $start = 0, $limit = 0, $returnObjects = true, &$score = array()) {
 		$start = (int) $start;
 		$limit = (int) $limit;
 		$direction = (in_array(io::strtolower($direction), array('asc', 'desc'))) ? io::strtolower($direction) : 'asc';
@@ -215,7 +215,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	  * @return array(groupID => CMS_profile_usersGroup)
 	  * @access public
 	  */
-	static function getGroupsOfUser($user, $returnIds = false, $reset = false) {
+	public static function getGroupsOfUser($user, $returnIds = false, $reset = false) {
 		static $userGroups;
 		if ($reset) {
 			unset($userGroups);
@@ -270,7 +270,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	  * @return CMS_profile_usersGroup
 	  * @access public
 	  */
-	static function getGroupOfUser($user) {
+	public static function getGroupOfUser($user) {
 		CMS_grandFather::raiseError('This function is deprecated since Automne 3.3.0, You must use getGroupsOfUser instead !');
 		$groups = CMS_profile_usersGroupsCatalog::getGroupsOfUser($user);
 		if (is_array($groups) && $groups) {
@@ -288,7 +288,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	  * @param integer $groupId
 	  * @access public
 	  */
-	static function labelExists($label, $groupId=0)
+	public static function labelExists($label, $groupId=0)
 	{
 		if ((SensitiveIO::isPositiveInteger($groupId) 
 								|| $groupId==0) && $label) {
@@ -322,7 +322,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	  * @param boolean returnObjects : return CMS_profile_user objects (default) or array of userId
 	  * @access public
 	  */
-	static function getGroupUsers($groupID, $returnObjects = true)
+	public static function getGroupUsers($groupID, $returnObjects = true)
 	{
 		$sql = "
 			select
@@ -361,7 +361,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	  * @return array(string)
 	  * @access public
 	  */
-	static function getLettersForTitle()
+	public static function getLettersForTitle()
 	{
 		$sql = "
 			select
@@ -390,7 +390,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	static function userBelongsToGroup($userID, $groupID) {
+	public static function userBelongsToGroup($userID, $groupID) {
 		if (!sensitiveIO::isPositiveInteger($userID) || !sensitiveIO::isPositiveInteger($groupID)) {
 			CMS_grandFather::raiseError('User id and group id must be positive integers');
 			return false;
@@ -415,7 +415,7 @@ class CMS_profile_usersGroupsCatalog extends CMS_grandFather
 	  * @access public
 	  * @static
 	  */
-	static function getGroupsLabels() {
+	public static function getGroupsLabels() {
 		$sql = "
 			select
 				id_prg as id,

@@ -69,7 +69,7 @@ class CMS_search extends CMS_grandFather {
 	  * @return array of CMS_page the result pages
 	  * @access public
 	  */
-	static function getSearch($keywords, $user, $public = false, $withPageContent = false){
+	public static function getSearch($keywords, $user, $public = false, $withPageContent = false){
 		if(is_a($user,'CMS_profile_user')){
 			$cms_language = $user->getLanguage();
 		} else {

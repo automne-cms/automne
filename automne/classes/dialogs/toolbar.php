@@ -140,7 +140,7 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($id = 0, &$user)
+	public function __construct($id = 0, &$user)
 	{
 		if (!is_a($user, 'CMS_profile_user') || $user->hasError()) {
 			$this->setError("User is not a valid CMS_profile_user");
@@ -181,7 +181,7 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 	  * @return integer the DB id
 	  * @access public
 	  */
-	function getID() {
+	public function getID() {
 		return $this->_id;
 	}
 	
@@ -191,7 +191,7 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 	  * @return CMS_profile_user the user
 	  * @access public
 	  */
-	function getUser() {
+	public function getUser() {
 		return $this->_user;
 	}
 	
@@ -217,7 +217,7 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function hasModulePlugins() {
+	public function hasModulePlugins() {
 		$modulesElements = $this->_getModulesElements();
 		if (!$this->_getModulesElements()) {
 			return false;
@@ -246,7 +246,7 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 	  * @return string the toolbar code
 	  * @access public
 	  */
-	function getCode() {
+	public function getCode() {
 		return $this->_code;
 	}
 	
@@ -257,7 +257,7 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setCode($code) {
+	public function setCode($code) {
 		$this->_code = io::substr(sensitiveIO::sanitizeAsciiString($code),0,20);
 		return true;
 	}
@@ -268,7 +268,7 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 	  * @return array the toolbar elements
 	  * @access public
 	  */
-	function getElements() {
+	public function getElements() {
 		//ckeditor => fckeditor
 		$conversion = array(
 			'PasteFromWord' => 'PasteWord',
@@ -297,7 +297,7 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setElements($elements) {
+	public function setElements($elements) {
 		$this->_toolbarElements = (array) $elements;
 		return true;
 	}
@@ -309,7 +309,7 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function setLabel($label) {
+	public function setLabel($label) {
 		$this->_label = $label;
 		return true;
 	}
@@ -320,7 +320,7 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 	  * @return string the toolbar code
 	  * @access public
 	  */
-	function getLabel() {
+	public function getLabel() {
 		return $this->_label;
 	}
 	
@@ -331,7 +331,7 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 	  * @return string the toolbar code
 	  * @access public
 	  */
-	function getDefinition($fckEditor = false) {
+	public function getDefinition($fckEditor = false) {
 		$modulesElements = $this->_getModulesElements();
 		$defaultElements = $this->_getDefaultElements();
 		$availableElements = array_merge($defaultElements, $modulesElements);
@@ -397,7 +397,7 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function destroy() {
+	public function destroy() {
 		if ($this->_id) {
 			$sql = "
 				delete
@@ -417,7 +417,7 @@ class CMS_wysiwyg_toolbar extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence() {
+	public function writeToPersistence() {
 		$sql_fields = "
 			code_tool='".SensitiveIO::sanitizeSQLString($this->_code)."',
 			label_tool='".SensitiveIO::sanitizeSQLString($this->_label)."',

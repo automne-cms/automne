@@ -2,8 +2,10 @@ V4.5.0
 [FEATURE] PHP 7.1+ compatibility
 
 V4.4.2
+[FEATURE] : Add CMS_i18n module by defaut
 [FEATURE] : New row "Media"
-[FEATURE] : Add extension for video HTML5 to mime.types and whitelist.txt
+[FEATURE] : Add extension for video HTML5 to mime.types and whitelist.txt 
+[FEATURE] : Add GOOGLE MAP API Key configuration option
 
 V4.4.1 :
 [BUGFIX] : Prevent to send multiple e-mail when using CMS_form

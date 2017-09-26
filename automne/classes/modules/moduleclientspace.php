@@ -48,7 +48,7 @@ class CMS_moduleClientspace extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($attributes)
+	public function __construct($attributes)
 	{
 		if ($attributes && is_array($attributes)) {
 			$this->_attributes = $attributes;
@@ -64,7 +64,7 @@ class CMS_moduleClientspace extends CMS_grandFather
 	  * @return integer the tag ID attribute
 	  * @access public
 	  */
-	function getTagID()
+	public function getTagID()
 	{
 		return $this->_tagID;
 	}
@@ -78,7 +78,7 @@ class CMS_moduleClientspace extends CMS_grandFather
 	  * @return string the data from the rows.
 	  * @access public
 	  */
-	function getData(&$language, &$page, $visualizationMode)
+	public function getData(&$language, &$page, $visualizationMode)
 	{
 	}
 	
@@ -92,7 +92,7 @@ class CMS_moduleClientspace extends CMS_grandFather
 	  * @return string, The data returned by all rows as a string
 	  * @access public
 	  */
-	function getRawData(&$language, &$page, $visualizationMode, $templateHasPages=false)
+	public function getRawData(&$language, &$page, $visualizationMode, $templateHasPages=false)
 	{
 	}
 	
@@ -106,7 +106,7 @@ class CMS_moduleClientspace extends CMS_grandFather
 	  * @return string the data from the rows.
 	  * @access public
 	  */
-	function getClientspaceData($codename, &$language, &$page, $visualizationMode)
+	public function getClientspaceData($codename, &$language, &$page, $visualizationMode)
 	{
 		// Prints wanted template
 		$tpl_name = "mod_".$codename."_".io::strtolower($this->_attributes["type"]).".php";

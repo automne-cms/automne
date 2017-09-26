@@ -87,7 +87,7 @@ class CMS_block extends CMS_grandFather
 	  * @param boolean $public The needed precision for USERSPACE location
 	  * @access public
 	  */
-	function __construct($id=0, $location=RESOURCE_LOCATION_USERSPACE, $public=false)
+	public function __construct($id=0, $location=RESOURCE_LOCATION_USERSPACE, $public=false)
 	{
 	}
 
@@ -99,7 +99,7 @@ class CMS_block extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function initializeFromBasicAttributes($blockID)
+	public function initializeFromBasicAttributes($blockID)
 	{
 		if ($blockID) {
 			$this->_tagID = $blockID;
@@ -118,7 +118,7 @@ class CMS_block extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function initializeFromTag($attributes, $tagInnerContent)
+	public function initializeFromTag($attributes, $tagInnerContent)
 	{
 		if (is_array($attributes)) {
 			foreach ($attributes as $name => $value) {
@@ -150,7 +150,7 @@ class CMS_block extends CMS_grandFather
 	  * @return boolean true on success, false on failure.
 	  * @access public
 	  */
-	function initializeFromID($blockID, $rowID) {
+	public function initializeFromID($blockID, $rowID) {
 		if (!sensitiveIO::isPositiveInteger($rowID)) {
 			$this->setError("rowID must be a positive integer : ".$rowID);
 			return false;
@@ -177,7 +177,7 @@ class CMS_block extends CMS_grandFather
 	  * @return string the HTML data
 	  * @access public
 	  */
-	function getData(&$language, &$page, &$clientSpace, &$row, $visualizationMode)
+	public function getData(&$language, &$page, &$clientSpace, &$row, $visualizationMode)
 	{
 		if ($this->_initialized != "definition") {
 			$this->setError("Try to retrieve HTML data from a tag not initialized by definition");
@@ -196,7 +196,7 @@ class CMS_block extends CMS_grandFather
 	  * @return array(string=>mixed) The data indexed by data type (value, file, alt_tag, ...), or false on failure (table not found)
 	  * @access public
 	  */
-	function getRawData($pageID, $clientSpaceID, $rowID, $location, $public)
+	public function getRawData($pageID, $clientSpaceID, $rowID, $location, $public)
 	{
 		if (!$this->_initialized) {
 			$this->setError("Try to retrieve HTML data from a tag not initialized");
@@ -241,7 +241,7 @@ class CMS_block extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function delFromLocation($pageID, $clientSpaceID, $rowID, $location, $public = false)
+	public function delFromLocation($pageID, $clientSpaceID, $rowID, $location, $public = false)
 	{
 		if (!SensitiveIO::isInSet($location, CMS_resourceStatus::getAllLocations())) {
 			$this->setError("DelFromLocation was given a bad location");
@@ -274,7 +274,7 @@ class CMS_block extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function changeClientSpace($pageID, $oldClientSpaceID, $newClientSpaceID, $rowID, $location, $public = false)
+	public function changeClientSpace($pageID, $oldClientSpaceID, $newClientSpaceID, $rowID, $location, $public = false)
 	{
 		CMS_grandFather::log('je change');
 		if (!SensitiveIO::isInSet($location, CMS_resourceStatus::getAllLocations())) {
@@ -311,7 +311,7 @@ class CMS_block extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence($pageID, $clientSpaceID, $rowID, $location, $public, $data)
+	public function writeToPersistence($pageID, $clientSpaceID, $rowID, $location, $public, $data)
 	{
 		if (!SensitiveIO::isInSet($location, CMS_resourceStatus::getAllLocations())) {
 			$this->setError("writeToPersistence was given a bad location");
@@ -423,7 +423,7 @@ class CMS_block extends CMS_grandFather
 	  * @param boolean $public The precision needed for USERSPACE location
 	  * @return CMS_block object
 	  */
-	function duplicate(&$destinationPage, $public = false)
+	public function duplicate(&$destinationPage, $public = false)
 	{
 
 	}
@@ -435,7 +435,7 @@ class CMS_block extends CMS_grandFather
 	  * @return string The attribute value
 	  * @access public
 	  */
-	function getAttribute($attribute)
+	public function getAttribute($attribute)
 	{
 		if (is_array($this->_attributes)) {
 			return $this->_attributes[$attribute];
@@ -450,7 +450,7 @@ class CMS_block extends CMS_grandFather
 	  * @return string The tagID value
 	  * @access public
 	  */
-	function getTagID()
+	public function getTagID()
 	{
 		return $this->_tagID;
 	}

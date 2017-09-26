@@ -45,7 +45,7 @@ class CMS_block_text extends CMS_block
 	  * @param boolean $public The needed precision for USERSPACE location
 	  * @access public
 	  */
-	function __construct($id=0, $location=RESOURCE_LOCATION_USERSPACE, $public=false)
+	public function __construct($id=0, $location=RESOURCE_LOCATION_USERSPACE, $public=false)
 	{
 		parent::__construct();
 
@@ -85,7 +85,7 @@ class CMS_block_text extends CMS_block
 	  * @return string the HTML data
 	  * @access public
 	  */
-	function getData(&$language, &$page, &$clientSpace, &$row, $visualizationMode)
+	public function getData(&$language, &$page, &$clientSpace, &$row, $visualizationMode)
 	{
 		parent::getData($language, $page, $clientSpace, $row, $visualizationMode);
 
@@ -224,7 +224,7 @@ class CMS_block_text extends CMS_block
 	  * @return array(mixed=>mixed) The data indexed by data type (value, file, alt_tag, ...), or false on failure (table not found)
 	  * @access public
 	  */
-	function getRawData($pageID, $clientSpaceID, $rowID, $location, $public)
+	public function getRawData($pageID, $clientSpaceID, $rowID, $location, $public)
 	{
 		parent::getRawData($pageID, $clientSpaceID, $rowID, $location, $public);
 
@@ -295,7 +295,7 @@ class CMS_block_text extends CMS_block
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence($pageID, $clientSpaceID, $rowID, $location, $public, $data)
+	public function writeToPersistence($pageID, $clientSpaceID, $rowID, $location, $public, $data)
 	{
 		parent::writeToPersistence($pageID, $clientSpaceID, $rowID, $location, $public, $data);
 		//delete the old data
@@ -329,7 +329,7 @@ class CMS_block_text extends CMS_block
 	  * @param boolean $public The precision needed for USERSPACE location
 	  * @return CMS_block object
 	  */
-	function duplicate(&$destinationPage, $public = false)
+	public function duplicate(&$destinationPage, $public = false)
 	{
 		if (SensitiveIO::isPositiveInteger($this->_dbID)) {
 			$table = $this->_getDataTableName(RESOURCE_LOCATION_USERSPACE, $public);

@@ -119,7 +119,7 @@ class CMS_object_oembed extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLAdmin($fieldID, $language, $prefixName) {
+	public function getHTMLAdmin($fieldID, $language, $prefixName) {
 		//get module codename
 		$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
 		//is this field mandatory ?
@@ -203,7 +203,7 @@ class CMS_object_oembed extends CMS_object_common
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language, $objectName = '') {
+	public function getLabelsStructure(&$language, $objectName = '') {
 		$labels = parent::getLabelsStructure($language, $objectName);
 		unset($labels['structure']['set']);
 		unset($labels['structure']['label']);
@@ -231,7 +231,7 @@ class CMS_object_oembed extends CMS_object_common
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getStructure() {
+	public function getStructure() {
 		$structure = parent::getStructure();
 		unset($structure['set']);
 		unset($structure['label']);
@@ -261,7 +261,7 @@ class CMS_object_oembed extends CMS_object_common
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getValue($name, $parameters = '') {
+	public function getValue($name, $parameters = '') {
 		if (in_array($name, array('fieldname', 'required', 'fieldID', 'value'))) {
 			return parent::getValue($name, $parameters);
 		}

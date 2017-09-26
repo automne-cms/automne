@@ -3,7 +3,7 @@
   *
   * @package CMS
   * @subpackage CKEditor
-  * @author Sébastien Pauchet <sebastien.pauchet@ws-interactive.fr>
+  * @author S?astien Pauchet <sebastien.pauchet@ws-interactive.fr>
   * @author CKSource - Frederico Knabben.
   */
 
@@ -28,12 +28,12 @@ CKEDITOR.dialog.add( 'automneLinks', function( editor )
 		switch ( value )
  		{
 			case 'frame' :
-				targetName.setLabel( editor.lang.automneLinks.targetFrameName );
+				targetName.setLabel( editor.lang.automneLinks.automneLinks.targetFrameName );
 				targetName.getElement().show();
 				break;
 			case 'popup' :
 				popupFeatures.show();
-				targetName.setLabel( editor.lang.automneLinks.targetPopupName );
+				targetName.setLabel( editor.lang.automneLinks.automneLinks.targetPopupName );
 				targetName.getElement().show();
 				break;
 			default :
@@ -196,7 +196,9 @@ CKEDITOR.dialog.add( 'automneLinks', function( editor )
 	}
 
 	var commonLang = editor.lang.common,
-		linkLang = editor.lang.automneLinks;
+		linkLang = editor.lang.automneLinks.automneLinks;
+
+		console.log(editor.lang);
 
 	return {
 		title : linkLang.title,

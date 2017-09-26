@@ -38,7 +38,7 @@ class CMS_patch extends CMS_grandFather
 	 * 
 	 * @return void
 	 */
-	function __construct() 
+	public function __construct() 
 	{
 		//nothing
 	}
@@ -50,7 +50,7 @@ class CMS_patch extends CMS_grandFather
 	 * @return true on success, false on failure
 	 * @access public
 	 */
-	function checkPatch($array) {
+	public function checkPatch($array) {
 		if (is_array($array)) {
 			$return = true;
 			foreach ($array as $aPatchCheck) {
@@ -92,7 +92,7 @@ class CMS_patch extends CMS_grandFather
 	 * @return string errors found in install array
 	 * @access public
 	 */
-	function checkInstall(&$array,&$errorsInfo)
+	public function checkInstall(&$array,&$errorsInfo)
 	{
 		if (is_array($array)) {
 			$errorsInfo = array();
@@ -347,7 +347,7 @@ class CMS_patch extends CMS_grandFather
 	 * @return void
 	 * @access public
 	 */
-	function doInstall(&$array,$excludeCommand=array(), $stopOnErrors = true)
+	public function doInstall(&$array,$excludeCommand=array(), $stopOnErrors = true)
 	{
 		if (is_array($array)) {
 			foreach ($array as $line => $aInstallCheck) {
@@ -606,7 +606,7 @@ class CMS_patch extends CMS_grandFather
 	 * @return string, the return of the script, false on failure
 	 * @access public
 	 */
-	function executePhpScript($script)
+	public function executePhpScript($script)
 	{
 		//change current dir
 		$pwd = getcwd();
@@ -709,7 +709,7 @@ class CMS_patch extends CMS_grandFather
 	 * @return string, the files who can't apply the chmod, else nothing if all is done.
 	 * @access public
 	 */
-	function applyChmod($right,$files)
+	public function applyChmod($right,$files)
 	{
 		$filesList = CMS_file::getFileList($files);
 		if (is_array($filesList) && $filesList) {
@@ -744,7 +744,7 @@ class CMS_patch extends CMS_grandFather
 	 * @return string, the files who can't apply the chmod, else nothing if all is done.
 	 * @access public
 	 */
-	function changeOwner($owner,$files)
+	public function changeOwner($owner,$files)
 	{
 		$filesList = CMS_file::getFileList($files);
 		if (is_array($filesList) && $filesList) {
@@ -766,7 +766,7 @@ class CMS_patch extends CMS_grandFather
 	 * @return string, the files who can't apply the chmod, else nothing if all is done.
 	 * @access public
 	 */
-	function changeGroup($group,$files)
+	public function changeGroup($group,$files)
 	{
 		$filesList = CMS_file::getFileList($files);
 		if (is_array($filesList) && $filesList) {
@@ -786,7 +786,7 @@ class CMS_patch extends CMS_grandFather
 	 * @return boolean true on success, false on failure.
 	 * @access public
 	 */
-	function automneGeneralScript()
+	public function automneGeneralScript()
 	{
 		$chmodScript = new CMS_file(PATH_AUTOMNE_CHMOD_SCRIPT_FS);
 		if ($chmodScript->exists()) {
@@ -811,7 +811,7 @@ class CMS_patch extends CMS_grandFather
 		}
 	}
 	
-	function getReturn() {
+	public function getReturn() {
 		return $this->_return;
 	}
 	
@@ -822,7 +822,7 @@ class CMS_patch extends CMS_grandFather
 	 * @return boolean true on success, false on failure.
 	 * @access public
 	 */
-	function canCorrectErrors($errorsInfos)
+	public function canCorrectErrors($errorsInfos)
 	{
 		$canCorrect = true;
 		if (is_array($errorsInfos) && $errorsInfos) {

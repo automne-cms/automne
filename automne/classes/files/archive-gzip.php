@@ -37,7 +37,7 @@ class CMS_gzip_file extends CMS_tar_file
 	 * @param string $name, the full filename of the archive
 	 * @return void
 	 */
-	function __construct($name)
+	public function __construct($name)
 	{
 		if (trim($name) == '') {
 			$this->setError("Not a valid name given to archive ".$name);
@@ -52,7 +52,7 @@ class CMS_gzip_file extends CMS_tar_file
 	 * 
 	 * @return true on success, false on failure
 	 */
-	function create_gzip()
+	public function create_gzip()
 	{
 		if ($this->options['inmemory'] == 0) {
 			$pwd = getcwd();
@@ -80,7 +80,7 @@ class CMS_gzip_file extends CMS_tar_file
 	 * 
 	 * @return true on success, false on failure
 	 */
-	function open_archive() {
+	public function open_archive() {
 		return @gzopen($this->options['name'], "rb");
 	}
 }

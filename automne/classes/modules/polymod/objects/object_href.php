@@ -88,7 +88,7 @@ class CMS_object_href extends CMS_object_common
 	  * @return void
 	  * @access public
 	  */
-	function __construct($datas=array(), &$field, $public=false)
+	public function __construct($datas=array(), &$field, $public=false)
 	{
 		parent::__construct($datas, $field, $public);
 	}
@@ -99,7 +99,7 @@ class CMS_object_href extends CMS_object_common
 	  * @return string : the label
 	  * @access public
 	  */
-	function getLabel() {
+	public function getLabel() {
 		if (!is_object($this->_subfieldValues[0])) {
 			$this->setError("No subField to get for label : ".print_r($this->_subfieldValues,true));
 			return false;
@@ -118,7 +118,7 @@ class CMS_object_href extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function checkMandatory($values,$prefixName, $newFormat = false) {
+	public function checkMandatory($values,$prefixName, $newFormat = false) {
 		//if field is required check values
 		if ($this->_field->getValue('required')) {
 			if ($newFormat) {
@@ -147,7 +147,7 @@ class CMS_object_href extends CMS_object_common
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLAdmin($fieldID, $language, $prefixName) {
+	public function getHTMLAdmin($fieldID, $language, $prefixName) {
 		$return = parent::getHTMLAdmin($fieldID, $language, $prefixName);
 		//$params = $this->getParamsValues();
 		//get module codename
@@ -180,7 +180,7 @@ class CMS_object_href extends CMS_object_common
       * @return string : the form field HTML tag
       * @access public
       */
-	function getInput($fieldID, $language, $inputParams) {
+	public function getInput($fieldID, $language, $inputParams) {
 		$params = $this->getParamsValues();
 		if (isset($inputParams['prefix'])) {
 			$prefixName = $inputParams['prefix'];
@@ -241,7 +241,7 @@ class CMS_object_href extends CMS_object_common
 	  * @return void
 	  * @access public
 	  */
-	function needIDToSetValues() {
+	public function needIDToSetValues() {
 		return void;
 	}
 	
@@ -255,7 +255,7 @@ class CMS_object_href extends CMS_object_common
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValues($values,$prefixName, $newFormat = false, $objectID = '') {
+	public function setValues($values,$prefixName, $newFormat = false, $objectID = '') {
 		if (!sensitiveIO::isPositiveInteger($objectID)) {
 			$this->setError('ObjectID must be a positive integer : '.$objectID);
 			return false;
@@ -303,7 +303,7 @@ class CMS_object_href extends CMS_object_common
 	  * @return string : object HTML description
 	  * @access public
 	  */
-	function getHTMLDescription() {
+	public function getHTMLDescription() {
 		//get module codename
 		$moduleCodename = CMS_poly_object_catalog::getModuleCodenameForField($this->_field->getID());
 		//create object CMS_href & CMS_dialog_href
@@ -319,7 +319,7 @@ class CMS_object_href extends CMS_object_common
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getStructure() {
+	public function getStructure() {
 		$structure = parent::getStructure();
 		//unset($structure['value']);
 		$structure['validhref'] = '';
@@ -341,7 +341,7 @@ class CMS_object_href extends CMS_object_common
 	  * @return multidimentionnal array : the object values structure
 	  * @access public
 	  */
-	function getValue($name, $parameters = '') {
+	public function getValue($name, $parameters = '') {
 		$href = new CMS_href($this->_subfieldValues[0]->getValue());
 		switch($name) {
 			case 'validhref':
@@ -402,7 +402,7 @@ class CMS_object_href extends CMS_object_common
 	  * @return array : the labels of object structure and functions
 	  * @access public
 	  */
-	function getLabelsStructure(&$language, $objectName = '') {
+	public function getLabelsStructure(&$language, $objectName = '') {
 		$labels = parent::getLabelsStructure($language, $objectName);
 		unset($labels['structure']['value']);
 		$labels['structure']['validhref'] = $language->getMessage(self::MESSAGE_OBJECT_HREF_VALIDHREF_DESCRIPTION,false ,MOD_POLYMOD_CODENAME);

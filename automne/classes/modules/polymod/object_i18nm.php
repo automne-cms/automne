@@ -70,7 +70,7 @@ class CMS_object_i18nm extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($id = 0, $dbValues=array())
+	public function __construct($id = 0, $dbValues=array())
 	{
 		static $i18nm;
 		//load available languages
@@ -124,7 +124,7 @@ class CMS_object_i18nm extends CMS_grandFather
 	  * @return integer, the DB object ID
 	  * @access public
 	  */
-	function getID()
+	public function getID()
 	{
 		return isset($this->_ID) ? $this->_ID : null;
 	}
@@ -196,7 +196,7 @@ class CMS_object_i18nm extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setValue($languageCode, $value)
+	public function setValue($languageCode, $value)
 	{
 		if (io::strlen($languageCode) > 5) {
 			$this->setError("Can't use a language code longuer than 5 caracters : ".$languageCode);
@@ -214,7 +214,7 @@ class CMS_object_i18nm extends CMS_grandFather
 	  * @return string, the value
 	  * @access public
 	  */
-	function getValue($languageCode = '', $usePriority = true)
+	public function getValue($languageCode = '', $usePriority = true)
 	{
 		if ($languageCode && isset($this->_values[$languageCode]) && $this->_values[$languageCode]) {
 			return $this->_values[$languageCode];
@@ -272,7 +272,7 @@ class CMS_object_i18nm extends CMS_grandFather
 	  * @return string : the html admin
 	  * @access public
 	  */
-	function getHTMLAdmin($prefixName, $textareaInput=false) {
+	public function getHTMLAdmin($prefixName, $textareaInput=false) {
 		$html = '<table border="0" cellpadding="3" cellspacing="0" style="border-left:1px solid #4d4d4d; width:400px;">';
 		$count = 0;
 		foreach ($this->_languageLabels as $languageCode => $languageLabel) {
@@ -297,7 +297,7 @@ class CMS_object_i18nm extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		$valuesToSet = $this->_values;
 		$ok = true;
@@ -368,7 +368,7 @@ class CMS_object_i18nm extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function destroy () {
+	public function destroy () {
 		if ($this->_ID) {
 			$sql = "delete from
 						mod_object_i18nm

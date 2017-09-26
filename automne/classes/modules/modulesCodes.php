@@ -68,7 +68,7 @@ class CMS_modulesCodes extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct()
+	public function __construct()
 	{
 		//get all modules
 		$this->_modules = CMS_modulesCatalog::getAll("id");
@@ -84,7 +84,7 @@ class CMS_modulesCodes extends CMS_grandFather
 	  * @return string : the modules codes to add
 	  * @access public
 	  */
-	function getModulesCodes($treatmentMode, $visualizationMode='', $treatedObject = false, $treatmentParameters = array())
+	public function getModulesCodes($treatmentMode, $visualizationMode='', $treatedObject = false, $treatmentParameters = array())
 	{
 		$this->_treatmentMode = $treatmentMode;
 		$this->_visualizationMode = $visualizationMode;

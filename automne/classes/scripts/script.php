@@ -62,7 +62,7 @@ class automne_script extends backgroundScript
 	  * @return void
 	  * @access public
 	  */
-	function activate()
+	public function activate()
 	{
 		parent::activate();
 		

@@ -96,7 +96,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return void
 	  * @access public
 	  */
-	function __construct($id = 0)
+	public function __construct($id = 0)
 	{
 		if ($id) {
 			if (!SensitiveIO::isPositiveInteger($id)) {
@@ -139,7 +139,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return integer the DB id
 	  * @access public
 	  */
-	function getID()
+	public function getID()
 	{
 		return $this->_ID;
 	}
@@ -150,7 +150,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return string The title
 	  * @access public
 	  */
-	function getAlias()
+	public function getAlias()
 	{
 		return $this->_alias;
 	}
@@ -162,7 +162,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setAlias($alias) {
+	public function setAlias($alias) {
 		//clean alias characters
 		$alias = sensitiveIO::sanitizeAsciiString($alias, '@');
 		//check if alias directory already exists
@@ -224,7 +224,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return string : the alias path
 	  * @access public
 	  */
-	function getPath($withName = true, $relativeTo = PATH_RELATIVETO_WEBROOT) {
+	public function getPath($withName = true, $relativeTo = PATH_RELATIVETO_WEBROOT) {
 		$path = ($relativeTo == PATH_RELATIVETO_WEBROOT) ? PATH_REALROOT_WR.'/' : PATH_REALROOT_FS.'/';
 		if ($withName) {
 			return $path.$this->getAliasLineAge().$this->getAlias().'/';
@@ -240,7 +240,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setParent($parent)
+	public function setParent($parent)
 	{
 		if (is_a($parent, "CMS_resource_cms_aliases")) {
 			//delete old alias files if any
@@ -271,7 +271,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return integer of The parent
 	  * @access public
 	  */
-	function getParent()
+	public function getParent()
 	{
 		return $this->_parentID;
 	}
@@ -282,7 +282,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return string the URL
 	  * @access public
 	  */
-	function getURL()
+	public function getURL()
 	{
 		return $this->_url;
 	}
@@ -293,7 +293,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setURL($url)
+	public function setURL($url)
 	{
 		$this->_url = (io::substr($url,0,4) == 'http') ? $url : 'http://'.$url;
 		$this->_pageID ='';
@@ -306,7 +306,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return integer The ID of the page
 	  * @access public
 	  */
-	function getPageID()
+	public function getPageID()
 	{
 		return $this->_pageID;
 	}
@@ -318,7 +318,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setPage($page)
+	public function setPage($page)
 	{
 		if (is_a($page, "CMS_page") && !$page->hasError()) {
 			if ($this->_replace) {
@@ -354,7 +354,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return array of websites codenames
 	  * @access public
 	  */
-	function getWebsites() {
+	public function getWebsites() {
 		return $this->_websites ? explode(';', $this->_websites) : array();
 	}
 	
@@ -366,7 +366,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setWebsites($websites) {
+	public function setWebsites($websites) {
 		if (!is_array($websites)) {
 			$this->setError('websites must be an array');
 			return false;
@@ -381,7 +381,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return boolean
 	  * @access public
 	  */
-	function urlReplaced() {
+	public function urlReplaced() {
 		return $this->_replace ? true : false;
 	}
 	
@@ -392,7 +392,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setReplaceURL($replace) {
+	public function setReplaceURL($replace) {
 		if ($this->_replace && !$replace) {
 			$this->_needRegen = true;
 		}
@@ -406,7 +406,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return boolean
 	  * @access public
 	  */
-	function isPermanent() {
+	public function isPermanent() {
 		return $this->_permanent ? true : false;
 	}
 	
@@ -417,7 +417,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setPermanent($permanent) {
+	public function setPermanent($permanent) {
 		$this->_permanent = $permanent ? true : false;
 		return true;
 	}
@@ -428,7 +428,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return boolean
 	  * @access public
 	  */
-	function isProtected() {
+	public function isProtected() {
 		return $this->_protected ? true : false;
 	}
 	
@@ -439,7 +439,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setProtected($protected) {
+	public function setProtected($protected) {
 		$this->_protected = $protected ? true : false;
 		return true;
 	}
@@ -450,7 +450,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function writeToPersistence()
+	public function writeToPersistence()
 	{
 		//save data
 		$sql_fields = "
@@ -499,7 +499,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return array or string
 	  * @access public
 	  */
-	function getAliasLineAge($returnObject=false, $reset = false) {
+	public function getAliasLineAge($returnObject=false, $reset = false) {
 		static $aliasesLineAge;
 		if ($reset || !isset($aliasesLineAge[$this->getID()])) {
 			$aliasesLineAge[$this->getID()] = array();
@@ -534,7 +534,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return boolean true or false
 	  * @access public
 	  */
-	function hasSubAliases() 
+	public function hasSubAliases() 
 	{
 		if (!$this->getID()) {
 			return false;
@@ -592,7 +592,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function createRedirectionFile() {
+	public function createRedirectionFile() {
 		if (!$this->_createFolder()) {
 			return false;
 		}
@@ -618,7 +618,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function destroy()
+	public function destroy()
 	{
 		//1- delete alias files
 		if (!$this->_deleteFiles()) {
@@ -679,7 +679,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return boolean
 	  * @access public
 	  */
-	function hasParent($id) {
+	public function hasParent($id) {
 		$lineage = $this->getAliasLineAge(true);
 		return isset($lineage[$id]);
 	}
@@ -690,7 +690,7 @@ class CMS_resource_cms_aliases extends CMS_resource
 	  * @return string
 	  * @access public
 	  */
-	function redirect() {
+	public function redirect() {
 		return CMS_module_cms_aliases::redirect();
 	}
 	

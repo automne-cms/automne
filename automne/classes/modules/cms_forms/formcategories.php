@@ -48,9 +48,9 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 	 * @param CMS_forms_formular $resource
 	 * @return void 
 	 */
-	function __construct(&$resource) {
+	public function __construct(&$resource) {
 		if ($resource && !is_a($resource, 'CMS_forms_formular')) {
-			$this->setError("Not a valid CMS_forms_formular given");
+			$this->raiseError("Not a valid CMS_forms_formular given");
 		}
 		$this->_form = $resource;
 	}
@@ -62,7 +62,7 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 	 * @param string $name
 	 * @return string
 	 */
-	function getAttribute($name) {
+	public function getAttribute($name) {
 		$name = '_'.$name;
 		return $this->$name;
 	}
@@ -74,9 +74,9 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 	 * @param string $name name of attribute to set
 	 * @param $value , the value to give
 	 */
-	function setAttribute($name, $value) {
+	public function setAttribute($name, $value) {
 		if ($this->_public) {
-			$this->setError("Object is public, read-only !");
+			$this->raiseError("Object is public, read-only !");
 			return false;
 		}
 		$name = '_'.$name;
@@ -91,12 +91,12 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 	 * @param boolean $public
 	 * @return array(CMS_categories_medias)
 	 */
-	function getCategories($public = false) {
+	public function getCategories($public = false) {
 		if ($public) {
 			$this->_public = true;
 		}
 		if (!is_a($this->_form, 'CMS_forms_formular')) {
-			$this->setError("Not a valid CMS_forms_formular given");
+			$this->raiseError("Not a valid CMS_forms_formular given");
 			return $this->_categories;
 		}
 		if (sizeof($this->_categories) <= 0
@@ -132,7 +132,7 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 	 * @param boolean $public, to get only public datas
 	 * @return array(integer)
 	 */
-	function getCategoriesIds($public = false) {
+	public function getCategoriesIds($public = false) {
 		$a_ctgs = $this->getCategories($public);
 		if (sizeof($a_ctgs) > 0) {
 			$ids = array();
@@ -151,9 +151,9 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 	 * @param CMS_moduleCategory $category 
 	 * @return boolean true if already exists in set
 	 */
-	function categoryExists(&$obj) {
+	public function categoryExists(&$obj) {
 		if (!is_a($obj, 'CMS_moduleCategory')) {
-			$this->setError("No a valid CMS_moduleCategory given");
+			$this->raiseError("No a valid CMS_moduleCategory given");
 			return false;
 		}
 		if (!isset($this->_categories)) {
@@ -169,17 +169,17 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 	 * @param CMS_moduleCategory $category 
 	 * @return boolean
 	 */
-	function addCategory(&$obj) {
+	public function addCategory(&$obj) {
 		if ($this->_public) {
-			$this->setError("Object is public, read-only !");
+			$this->raiseError("Object is public, read-only !");
 			return false;
 		}
 		if (!is_a($obj, 'CMS_moduleCategory')) {
-			$this->setError("No a valid CMS_moduleCategory given");
+			$this->raiseError("No a valid CMS_moduleCategory given");
 			return false;
 		}
 		if ($this->categoryExists($obj)) {
-			$this->setError("Category to add already exists in list");
+			$this->raiseError("Category to add already exists in list");
 			return false;
 		} else {
 			$this->_categories[$obj->getID()] = $obj;
@@ -194,17 +194,17 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 	 * @param CMS_moduleCategory $category
 	 * @return boolean
 	 */
-	function delCategory(&$obj) {
+	public function delCategory(&$obj) {
 		if ($this->_public) {
-			$this->setError("Object is public, read-only !");
+			$this->raiseError("Object is public, read-only !");
 			return false;
 		}
 		if (!is_a($obj, 'CMS_moduleCategory')) {
-			$this->setError("No a valid CMS_moduleCategory given");
+			$this->raiseError("No a valid CMS_moduleCategory given");
 			return false;
 		}
 		if (!$this->categoryExists($obj)) {
-			$this->setError("Category to delete not in list");
+			$this->raiseError("Category to delete not in list");
 			return false;
 		} else {
 			unset($this->_categories[$obj->getId()]);
@@ -218,13 +218,13 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 	 * @access public
 	 * @return boolean true on success, false on failure
 	 */
-	function writeToPersistence() {
+	public function writeToPersistence() {
 		if ($this->_public) {
-			$this->setError("Object is public, read-only !");
+			$this->raiseError("Object is public, read-only !");
 			return false;
 		}
 		if (!is_a($this->_form, 'CMS_forms_formular') || $this->_form->getID() <= 0) {
-			$this->setError("No CMS_forms_formular found");
+			$this->raiseError("No CMS_forms_formular found");
 			return false;
 		}
 		
@@ -238,7 +238,7 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 		";
 		$qD = new CMS_query($sql);
 		if ($qD->hasError()) {
-			$this->setError("Error deleting previous relations");
+			$this->raiseError("Error deleting previous relations");
 			return false;
 		}
 		// Insert
@@ -258,7 +258,7 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 					$q = new CMS_query($sql);
 					if ($q->hasError()) {
 						$err++;
-						$this->setError("Error inserting relation for cateogry : ".$obj->getID());
+						$this->raiseError("Error inserting relation for cateogry : ".$obj->getID());
 					}
 				}
 			}
@@ -273,7 +273,7 @@ class CMS_forms_formularCategories extends CMS_grandFather {
 	 * @access public
 	 * @return void
 	 */
-	function init() {
+	public function init() {
 		$this->_categories = array();
 	}
 	

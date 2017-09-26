@@ -26,12 +26,13 @@
 
 class CMS_XMLParser extends CMS_grandFather
 {
-	function __construct()
+	public function __construct()
 	{
 		$this->setError(__CLASS__.' class is no longer available in this version of Automne');
 		return false;
 	}
-	function __call($name, $parameters)
+	
+	public function __call($name, $parameters)
 	{
 		$this->setError(__CLASS__.' : method '.$name.' is no longer available in this version of Automne');
 		return false;

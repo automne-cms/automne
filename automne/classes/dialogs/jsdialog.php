@@ -43,7 +43,7 @@ class CMS_JSDialog extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function setJavascript($javascript)
+	public function setJavascript($javascript)
 	{
 		$this->_javascript .= $javascript;
 	}
@@ -54,7 +54,7 @@ class CMS_JSDialog extends CMS_grandFather
 	  * @return string : the javascript to add
 	  * @access private
 	  */
-	function addFrameCheck()
+	protected function addFrameCheck()
 	{
 		$frameCheck ='
 			<!-- checkFrameSize to verify the width/height of all frames and launch reloading using frameChecker if necessary -->
@@ -97,7 +97,7 @@ class CMS_JSDialog extends CMS_grandFather
 	  * @return string : the javascript to add
 	  * @access private
 	  */
-	function addOnglet()
+	protected function addOnglet()
 	{
 		$onglet = '
 			<!-- addOnglet add all javascript Tab functions -->
@@ -204,7 +204,7 @@ class CMS_JSDialog extends CMS_grandFather
 	  * @return void
 	  * @access private
 	  */
-	function reloadTree()
+	protected function reloadTree()
 	{
 		$reloadTree = '
 			<!-- reloadTree reload the tree Frame -->
@@ -226,7 +226,7 @@ class CMS_JSDialog extends CMS_grandFather
 	  * @return void
 	  * @access private
 	  */
-	function reloadAll()
+	protected function reloadAll()
 	{
 		$reloadAll = '
 			<!-- reloadAll reload all Frames -->
@@ -245,7 +245,7 @@ class CMS_JSDialog extends CMS_grandFather
 	  * @return void
 	  * @access private
 	  */
-	function reloadModules()
+	protected function reloadModules()
 	{
 		$reloadModules = '
 			<!-- reloadModules reload the modules Frame -->
@@ -263,7 +263,7 @@ class CMS_JSDialog extends CMS_grandFather
 	  * @return void
 	  * @access private
 	  */
-	function changeColor()
+	protected function changeColor()
 	{
 		$changeColor = '
 			<!-- Switch color of an item -->
@@ -294,7 +294,7 @@ class CMS_JSDialog extends CMS_grandFather
 	  * @return void
 	  * @access private
 	  */
-	function addSearchCheck()
+	protected function addSearchCheck()
 	{
 		$searchCheck = '
 			<!-- searchCheck Emptying and filling search field, Setting default value to search field -->
@@ -321,7 +321,7 @@ class CMS_JSDialog extends CMS_grandFather
 	  * @return void
 	  * @access private
 	  */
-	function addDHTMLMenu()
+	protected function addDHTMLMenu()
 	{
 		$DHTMLMenu = '
 			<!-- showMenu needed to show the DHTML menu -->
@@ -369,7 +369,7 @@ class CMS_JSDialog extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function addCalendar()
+	public function addCalendar()
 	{
 		$calendar = '
 		<link rel="stylesheet" type="text/css" href="'.PATH_ADMIN_WR.'/v3/css/calendar.css" />
@@ -384,7 +384,7 @@ class CMS_JSDialog extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function addPopupImage() {
+	public function addPopupImage() {
 		$popupimage = '
 		<script type="text/javascript">
 			function CMS_openPopUpImage(href)
@@ -404,7 +404,7 @@ class CMS_JSDialog extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function addAjaxAPI() {
+	public function addAjaxAPI() {
 		$ajaxAPI = '
 			<link rel="stylesheet" href="'.PATH_ADMIN_WR.'/v3/css/editPage.css" media="screen" type="text/css" />
 			<script type="text/javascript" src="/js/serverCall.php?'.session_name().'='.session_id().'"></script>';
@@ -418,7 +418,7 @@ class CMS_JSDialog extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function addStopTab() {
+	public function addStopTab() {
 		$stoptab = '
 		<script type="text/javascript">
 			function setSelectionRange(input, selectionStart, selectionEnd) {
@@ -478,7 +478,7 @@ class CMS_JSDialog extends CMS_grandFather
 	  * @return string : the javascript to add
 	  * @access private
 	  */
-	function addJavascriptCheck($makeFocus=true)
+	protected function addJavascriptCheck($makeFocus=true)
 	{
 		$javascriptCheck ='
 			<!-- javascriptCheck usefull initialisation javascript functions -->
@@ -589,7 +589,7 @@ class CMS_JSDialog extends CMS_grandFather
 	  * @return string : the javascript to add
 	  * @access private
 	  */
-	function launchScriptPopup() {
+	protected function launchScriptPopup() {
 		return true;
 	}
 
@@ -599,7 +599,7 @@ class CMS_JSDialog extends CMS_grandFather
 	  * @return string : the javascript to add
 	  * @access private
 	  */
-	function switchRows() {
+	protected function switchRows() {
 		$switchRows =
 		'<script type="text/javascript">
 			var viewWhat = "'.CMS_session::getSessionVar('viewWhat').'";
@@ -668,7 +668,7 @@ class CMS_JSDialog extends CMS_grandFather
 	  * @return string : the javascript to add
 	  * @access private
 	  */
-	function linksBlocker($pageID) {
+	protected function linksBlocker($pageID) {
 		global $cms_language;
 		$linksBlocker =
 		'<script type="text/javascript">

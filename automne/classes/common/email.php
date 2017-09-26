@@ -161,7 +161,7 @@ class CMS_email extends CMS_grandFather
 	  * @access public
 	  * 
 	  */
-	function __construct()
+	public function __construct()
 	{
 		//Do Nothing
 	}
@@ -173,7 +173,7 @@ class CMS_email extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setErrorReturn($error)
+	public function setErrorReturn($error)
 	{
 		$this->_error = $error;
 		return true;
@@ -186,7 +186,7 @@ class CMS_email extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setFile($file)
+	public function setFile($file)
 	{
 		if (file_exists($file)) {
 			$this->_files[] = $file;
@@ -207,7 +207,7 @@ class CMS_email extends CMS_grandFather
       * @access public
       * 
       */
-    function setSubject($subject, $withApplicationLabel = false, $separators=array('[',']'))
+    public function setSubject($subject, $withApplicationLabel = false, $separators=array('[',']'))
     {
         if($withApplicationLabel){
             $separators = (!is_array($separators) || !$separators || count($separators) < 2) ? array('','') : $separators;
@@ -231,7 +231,7 @@ class CMS_email extends CMS_grandFather
 	  * @return String
 	  * @access public
 	  */
-	function getSubject()
+	public function getSubject()
 	{
 		return $this->_subject;
 	}
@@ -245,7 +245,7 @@ class CMS_email extends CMS_grandFather
 	  * @access public
 	  * 
 	  */
-	function setBody($body)
+	public function setBody($body)
 	{
 		$this->_body = io::decodeEntities($body);
 	}
@@ -255,7 +255,7 @@ class CMS_email extends CMS_grandFather
 	  * @return String
 	  * @access public
 	  */
-	function getBody()
+	public function getBody()
 	{
 		return $this->_body;
 	}
@@ -268,7 +268,7 @@ class CMS_email extends CMS_grandFather
 	  * @access public
 	  * 
 	  */
-	function setFooter($footer)
+	public function setFooter($footer)
 	{
 		$this->_footer = io::decodeEntities($footer);
 	}
@@ -278,7 +278,7 @@ class CMS_email extends CMS_grandFather
 	  * @return String
 	  * @access public
 	  */
-	function getFooter()
+	public function getFooter()
 	{
 		return $this->_footer;
 	}
@@ -291,7 +291,7 @@ class CMS_email extends CMS_grandFather
 	  * @access public
 	  * 
 	  */
-	function setTemplate($template)
+	public function setTemplate($template)
 	{
 		if (is_file($template)) {
 			$this->_template = $template;
@@ -307,7 +307,7 @@ class CMS_email extends CMS_grandFather
 	  * @return String
 	  * @access public
 	  */
-	function getTemplate()
+	public function getTemplate()
 	{
 		return $this->_template;
 	}
@@ -319,7 +319,7 @@ class CMS_email extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function setEmailTo($emailTo)
+	public function setEmailTo($emailTo)
 	{
 		if (!is_array($emailTo)) {
 			if (!sensitiveIO::isValidEmail($emailTo)) {
@@ -345,7 +345,7 @@ class CMS_email extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function setCC($emailCc)
+	public function setCC($emailCc)
 	{
 		if (!is_array($emailCc)) {
 			if (!sensitiveIO::isValidEmail($emailCc)) {
@@ -371,7 +371,7 @@ class CMS_email extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function setBCC($emailBcc)
+	public function setBCC($emailBcc)
 	{
 		if (!is_array($emailBcc)) {
 			if (!sensitiveIO::isValidEmail($emailBcc)) {
@@ -396,7 +396,7 @@ class CMS_email extends CMS_grandFather
 	  * @return String
 	  * @access public
 	  */
-	function getEmailTo()
+	public function getEmailTo()
 	{
 		return $this->_emailTo;
 	}
@@ -409,7 +409,7 @@ class CMS_email extends CMS_grandFather
 	  * @access public
 	  * 
 	  */
-	function setEmailFrom($emailFrom = APPLICATION_POSTMASTER_EMAIL)
+	public function setEmailFrom($emailFrom = APPLICATION_POSTMASTER_EMAIL)
 	{
 		$this->_emailFrom = $emailFrom;
 	}
@@ -419,7 +419,7 @@ class CMS_email extends CMS_grandFather
 	  * @return String
 	  * @access public
 	  */
-	function getEmailEncoding()
+	public function getEmailEncoding()
 	{
 		return $this->_emailEncoding;
 	}
@@ -431,7 +431,7 @@ class CMS_email extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setFromName($from)
+	public function setFromName($from)
 	{
 		//from name should not contain comma
 		$this->_fromName = str_replace(',', '', $from);
@@ -445,7 +445,7 @@ class CMS_email extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function setToName($to)
+	public function setToName($to)
 	{
 		$this->_toName = $to;
 		return true;
@@ -459,7 +459,7 @@ class CMS_email extends CMS_grandFather
 	  * @access public
 	  * 
 	  */
-	function setEmailEncoding($emailEncoding = APPLICATION_DEFAULT_ENCODING)
+	public function setEmailEncoding($emailEncoding = APPLICATION_DEFAULT_ENCODING)
 	{
 		$this->_emailEncoding = $emailEncoding;
 	}
@@ -470,7 +470,7 @@ class CMS_email extends CMS_grandFather
 	  * @return mixed (false if no html set, html string otherwise)
 	  * @access public
 	  */
-	function getEmailHTML()
+	public function getEmailHTML()
 	{
 		return $this->_emailHTML;
 	}
@@ -484,7 +484,7 @@ class CMS_email extends CMS_grandFather
 	  * @access public
 	  * 
 	  */
-	function setEmailHTML($emailHTML = false)
+	public function setEmailHTML($emailHTML = false)
 	{
 		$this->_emailHTML = $emailHTML;
 	}
@@ -494,7 +494,7 @@ class CMS_email extends CMS_grandFather
 	  * @return String
 	  * @access public
 	  */
-	function getEmailFrom()
+	public function getEmailFrom()
 	{
 		return $this->_emailFrom;
 	}
@@ -506,7 +506,7 @@ class CMS_email extends CMS_grandFather
 	  * @return string, the body converted in html
 	  * @access public
 	  */
-	function convertTextToHTML($body)
+	public function convertTextToHTML($body)
 	{
 		$body = preg_replace_callback(
 			'/(?(?=<a[^>]*>.+<\/a>)(?:<a[^>]*>.+<\/a>)|([^="\']?)((?:https?|ftp|bf2|):\/\/[^<> \n\r]+))/ix',
@@ -553,7 +553,7 @@ class CMS_email extends CMS_grandFather
 	  * @return boolean true on success, false on failure
 	  * @access public
 	  */
-	function sendEmail(){
+	public function sendEmail(){
 		if ($this->hasError()) {
 			$this->setError('Cannot send email, error appened');
 			return false;
@@ -726,7 +726,7 @@ class CMS_email extends CMS_grandFather
 	 * @access private
 	 * @return string
 	 */
-	function EncodeHeader ($str, $position = 'text') {
+	public function EncodeHeader ($str, $position = 'text') {
 		$x = 0;
 		switch (io::strtolower($position)) {
 			case 'phrase':
@@ -776,7 +776,7 @@ class CMS_email extends CMS_grandFather
 	 * @access private
 	 * @return string
 	 */
-	function EncodeQP ($str) {
+	public function EncodeQP ($str) {
 		$encoded = $this->FixEOL($str);
 		if (io::substr($encoded, -(io::strlen($this->LE))) != $this->LE) {
 			$encoded .= $this->LE;
@@ -811,7 +811,7 @@ class CMS_email extends CMS_grandFather
 	 * @access private
 	 * @return string
 	 */
-	function EncodeQ ($str, $position = 'text') {
+	public function EncodeQ ($str, $position = 'text') {
 		/* There should not be any EOL in the string */
 		$encoded = preg_replace("[\r\n]", '', $str);
 		
@@ -859,7 +859,7 @@ class CMS_email extends CMS_grandFather
 	 * @access private
 	 * @return string
 	 */
-	function FixEOL($str) {
+	private function FixEOL($str) {
 		$str = str_replace("\r\n", "\n", $str);
 		$str = str_replace("\r", "\n", $str);
 		$str = str_replace("\n", $this->LE, $str);

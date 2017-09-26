@@ -69,7 +69,7 @@ class CMS_oembed extends CMS_grandFather
 			'scheme'	=> array('http://www.polleverywhere.com/polls/*', 'http://www.polleverywhere.com/multiple_choice_polls/*', 'http://www.polleverywhere.com/free_text_polls/*')
 		),
 		array(
-			'api'		=> 'http://www.dailymotion.com/services/oembed',
+			'api'		=> 'https://www.dailymotion.com/services/oembed',
 			'scheme'	=> array('http://www.dailymotion.com/video/*')
 		),
 		array(
@@ -100,7 +100,7 @@ class CMS_oembed extends CMS_grandFather
 	  * @return void
 	  * @access public
 	  */
-	function __construct($url, $maxwidth='', $maxheight='', $embedlyKey = '') {
+	public function __construct($url, $maxwidth='', $maxheight='', $embedlyKey = '') {
 		$url = trim($url);
 		if (strtolower(substr($url, 0, 4)) != 'http') {
 			$url = 'http://'.$url;
@@ -257,7 +257,7 @@ class CMS_oembed extends CMS_grandFather
 	  * @return boolean
 	  * @access public
 	  */
-	function hasProvider() {
+	public function hasProvider() {
 		//load provider if needed
 		if (!$this->_getProvider()) {
 			return false;
@@ -271,7 +271,7 @@ class CMS_oembed extends CMS_grandFather
 	  * @return string the provider API url
 	  * @access public
 	  */
-	function getProvider() {
+	public function getProvider() {
 		//load provider if needed
 		if (!$this->_getProvider()) {
 			return false;
@@ -376,7 +376,7 @@ class CMS_oembed extends CMS_grandFather
 	  * @return array the medias datas returned by provider
 	  * @access public
 	  */
-	function getDatas() {
+	public function getDatas() {
 		//load datas if needed
 		if (!$this->_retrieveDatas()) {
 			return array();
@@ -392,7 +392,7 @@ class CMS_oembed extends CMS_grandFather
 	  * @return string the html embed code (framed if needed)
 	  * @access public
 	  */
-	function getHTML($attributes = array(), $inframe = false) {
+	public function getHTML($attributes = array(), $inframe = false) {
 		//load datas
 		if (!($datas = $this->getDatas())) {
 			return '';
@@ -460,7 +460,7 @@ class CMS_oembed extends CMS_grandFather
 	  * @return string the html thumbnail code
 	  * @access public
 	  */
-	function getThumbnail($attributes = array()) {
+	public function getThumbnail($attributes = array()) {
 		//load datas
 		if (!($datas = $this->getDatas())) {
 			return '';
@@ -504,7 +504,7 @@ class CMS_oembed extends CMS_grandFather
 	  * @return string the media title
 	  * @access public
 	  */
-	function getTitle() {
+	public function getTitle() {
 		//load datas
 		if (!($datas = $this->getDatas())) {
 			return '';
@@ -518,7 +518,7 @@ class CMS_oembed extends CMS_grandFather
 	  * @return string the media provider name
 	  * @access public
 	  */
-	function getProviderName() {
+	public function getProviderName() {
 		//load datas
 		if (!($datas = $this->getDatas())) {
 			return '';
@@ -535,7 +535,7 @@ class CMS_oembed extends CMS_grandFather
 	  * @return array the media datas
 	  * @access public
 	  */
-	function getData($name) {
+	public function getData($name) {
 		//load datas
 		if (!($datas = $this->getDatas())) {
 			return '';
