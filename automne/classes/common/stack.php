@@ -78,9 +78,9 @@
 	  *
 	  * @param string $text The text definition. 
 	  * @return boolean false on malformed string, true else.
-	  * @access private
+	  * @access public
 	  */
-	protected function setTextDefinition($text)
+	public function setTextDefinition($text)
 	{
 		$text = trim($text);
 		if ($text) {

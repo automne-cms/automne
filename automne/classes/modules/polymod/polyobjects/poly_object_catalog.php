@@ -1309,7 +1309,7 @@ class CMS_poly_object_catalog
 	  * @return CMS_poly_object_definition|boolean
 	  * @access public
 	  */
-	public public static function getDefinitionFromUuid($uuid) {
+	public static function getDefinitionFromUuid($uuid) {
 		if (!$uuid) {
 			CMS_grandFather::raiseError("uuid must be set");
 			return false;

@@ -182,16 +182,15 @@ class CMS_profile extends CMS_grandFather
 					
 					//Get values Catch errors?
 					if (
-					  	!$this->_pageClearances->
-					    	setTextDefinition($data["pageClearancesStack_pr"]) ||
-						!$this->_validationClearances->
-					  		setTextDefinition($data["validationClearancesStack_pr"]) ||
-						!$this->_moduleClearances->
-							setTextDefinition($data["moduleClearancesStack_pr"]) ||
-						!$this->_templateGroupsDenied->
-							setTextDefinition($data["templateGroupsDeniedStack_pr"]) ||
-						!$this->_rowGroupsDenied->
-							setTextDefinition($data["rowGroupsDeniedStack_pr"])) {
+					  	!$this->_pageClearances->setTextDefinition($data["pageClearancesStack_pr"])
+					  	||
+						!$this->_validationClearances->setTextDefinition($data["validationClearancesStack_pr"])
+						||
+						!$this->_moduleClearances->setTextDefinition($data["moduleClearancesStack_pr"])
+						||
+						!$this->_templateGroupsDenied->setTextDefinition($data["templateGroupsDeniedStack_pr"])
+						||
+						!$this->_rowGroupsDenied->setTextDefinition($data["rowGroupsDeniedStack_pr"])) {
 							
 						$this->setError("Incorrect Stack formation in profile id ".$id);
 					}
@@ -210,18 +209,13 @@ class CMS_profile extends CMS_grandFather
 				
 				//Get values Catch errors?
 				if (
-				  	!$this->_pageClearances->
-				    	setTextDefinition($data["pageClearancesStack_pr"]) ||
-					!$this->_validationClearances->
-				  		setTextDefinition($data["validationClearancesStack_pr"]) ||
-					!$this->_moduleClearances->
-						setTextDefinition($data["moduleClearancesStack_pr"]) ||
-					!$this->_templateGroupsDenied->
-						setTextDefinition($data["templateGroupsDeniedStack_pr"]) ||
-					!$this->_rowGroupsDenied->
-						setTextDefinition($data["rowGroupsDeniedStack_pr"])) {
+				  	!$this->_pageClearances->setTextDefinition($data["pageClearancesStack_pr"]) ||
+					!$this->_validationClearances->setTextDefinition($data["validationClearancesStack_pr"]) ||
+					!$this->_moduleClearances->setTextDefinition($data["moduleClearancesStack_pr"]) ||
+					!$this->_templateGroupsDenied->setTextDefinition($data["templateGroupsDeniedStack_pr"]) ||
+					!$this->_rowGroupsDenied->setTextDefinition($data["rowGroupsDeniedStack_pr"])) {
 						
-					$this->setError("Incorrect Stack formation in profile id ".$id);
+					$this->setError("Incorrect Stack formation in profile id ".$this->_id);
 				}
 			} else {
 				$this->setError("Id is not a positive integer nor array");
