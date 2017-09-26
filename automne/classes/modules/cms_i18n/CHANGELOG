@@ -1,0 +1,39 @@
+v0.22
+[FEATURE] : Add an option to view used keys during frontend navigation
+
+v0.21
+[BUG] : key labels should have # and _ allowed.
+
+v0.20
+[BUG] : "New" button stay disabled after closing an edition window
+
+v0.19
+[REFACTOR] : If a message is missing in queried language, send a message if SYSTEM_DEBUG is active or send default language instead.
+
+v0.18
+[BUG] : Correct bug 2474
+
+v0.17
+[FEATURE] : Add methods to create/update/delete translations using keys instead of ids
+
+v0.16
+[BUG] : Correct bug number: 2108 (see http://www.automne-cms.org/bug/)
+
+v0.15
+[BUG] : Error if language code is missing from vars (default language do not work)
+
+v0.14
+[BUG] : Correct a bug in getModuleReplacements
+[BUG] : Correct a bug in setContext
+
+v0.13
+[BUG] : Correct a bug when inserting rows using this module in page edition
+
+v0.12
+[REFACTOR] : Add some options to wysiwyg used for HTML edition
+
+v0.11
+[BUG] : Correct a bug on Google translation when id column is selected
+[BUG] : Correct an incorrect label
+
+v0.1 : Initial Import, based on Automne 4.1.0a3
