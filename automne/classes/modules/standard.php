@@ -1354,15 +1354,17 @@ class CMS_module_standard extends CMS_module
 				if ($file->isDir() && $file->getFilename() != "." && $file->getFilename() != "..") @rmdir($file->getPathname());
 			}
 		} catch(Exception $e) {}
+
+		// ERROR LOG ROTATION HAS BEEN MOVED IN CMS_grandFather::rotateLog() and used in CMS_grandFather::_raiseError()
 		//rotate error log file
-		try{
-			$source = PATH_MAIN_FS.'/'.CMS_grandFather::ERROR_LOG;
-			$dest = PATH_LOGS_FS.'/'.CMS_grandFather::ERROR_LOG.'-'.date('Y-m-d').'.gz';
-			if (is_file($source) && !is_file($dest) && CMS_file::gzipfile($source, $dest, 3)) {
-				//erase error log file
-				@unlink($source);
-			}
-		} catch(Exception $e) {}
+		// try{
+		// 	$source = PATH_MAIN_FS.'/'.CMS_grandFather::ERROR_LOG;
+		// 	$dest = PATH_LOGS_FS.'/'.CMS_grandFather::ERROR_LOG.'-'.date('Y-m-d').'.gz';
+		// 	if (is_file($source) && !is_file($dest) && CMS_file::gzipfile($source, $dest, 3)) {
+		// 		//erase error log file
+		// 		@unlink($source);
+		// 	}
+		// } catch(Exception $e) {}
 	}
 
 	/**

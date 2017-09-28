@@ -101,19 +101,44 @@ class CMS_grandFather
 				$view->addError(array('error' => $outputMessage, 'backtrace' => $backTraceLink));
 			}
 
+			$errorLogFile = PATH_MAIN_FS.'/'.self::ERROR_LOG;
+			if(is_file($errorLogFile)){
+				//Check if file must be rotate
+				$lastModificationDate = date ("Y-m-d", filemtime($errorLogFile));
+				$today = date("Y-m-d");
+				if($lastModificationDate != $today){
+					static::rotateLog();
+				}
+			}
+
 			//second condition are for static calls (made by static methods)
 			/*if (!isset($this) || !isset($this->_log) || $this->_log) {*/
-				if (@file_put_contents(PATH_MAIN_FS.'/'.self::ERROR_LOG , date("Y-m-d H:i:s", time()).'|'.APPLICATION_EXEC_TYPE.'|'.$errorMessage."\n", FILE_APPEND) !== false) {
-					CMS_file::chmodFile(FILES_CHMOD, PATH_MAIN_FS.'/'.self::ERROR_LOG);
-				} else {
-					die('<pre><b>'.CMS_view::SYSTEM_LABEL.' '.AUTOMNE_VERSION.' error : /automne dir is not writable'."</b></pre>\n");
-				}
+			if (@file_put_contents(PATH_MAIN_FS.'/'.self::ERROR_LOG , date("Y-m-d H:i:s", time()).'|'.APPLICATION_EXEC_TYPE.'|'.$errorMessage."\n", FILE_APPEND) !== false) {
+				CMS_file::chmodFile(FILES_CHMOD, PATH_MAIN_FS.'/'.self::ERROR_LOG);
+			} else {
+				die('<pre><b>'.CMS_view::SYSTEM_LABEL.' '.AUTOMNE_VERSION.' error : /automne dir is not writable'."</b></pre>\n");
+			}
 			/*}*/
 		}
 		/*//must be at the end because it interferes with the static calls conditions above
 		if ($error && isset($this)) {
 			$this->_errRaised = true;
 		}*/
+	}
+
+	public static function rotateLog(){
+
+		$errorLogFile = PATH_MAIN_FS.'/'.self::ERROR_LOG;
+		$lastModificationDate = date ("Y-m-d", filemtime($errorLogFile));
+
+		try{
+			$source = PATH_MAIN_FS.'/'.self::ERROR_LOG;
+			$dest = PATH_LOGS_FS.'/'.self::ERROR_LOG.'-'.$lastModificationDate.'.gz';
+			if (is_file($source) && !is_file($dest) && CMS_file::gzipfile($source, $dest, 3)) {
+				//erase error log file
+				@unlink($source);
+			}
+		} catch(Exception $e) {}
 	}
 
 	/**
