@@ -110,7 +110,23 @@ class CMS_tar_file extends CMS_archive
 	 * 
 	 * @return true on success
 	 */
-	function extract_files() 
+	function extract_files(){
+		if(APPLICATION_IS_WINDOWS){
+			return $this->extract_files_windows();
+		}else{
+			$pwd = getcwd();
+			chdir($this->options['basedir']);
+			$stdout = exec("tar -zxf ".$this->options['name'] . " && echo OK || echo KO");
+			if(preg_match('/OK/',$stdout)){
+				return true;
+			}else{
+				return false;
+			}
+			chdir($pwd);
+		}
+	}
+
+	function extract_files_windows() 
 	{
 		$pwd = getcwd();
 		chdir($this->options['basedir']);
