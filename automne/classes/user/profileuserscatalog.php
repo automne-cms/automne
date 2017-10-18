@@ -98,6 +98,9 @@ class CMS_profile_usersCatalog extends CMS_grandFather
 	  */
 	public static function getUserValue($id, $type, $currentUserId = null) {
 		static $userInfos;
+		if($id == 'self' && !$currentUserId){
+			$currentUserId = ANONYMOUS_PROFILEUSER_ID;
+		}
 		if ($id == 'self' && SensitiveIO::isPositiveInteger($currentUserId)) {
 			$id = $currentUserId;
 		} elseif (!SensitiveIO::isPositiveInteger($id)) {
