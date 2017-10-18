@@ -2686,33 +2686,64 @@ class CMS_tar_file_install extends CMS_archive_install
 	 * 
 	 * @return true on success
 	 */
-	function extract_files() 
+	function extract_files(){
+		if(APPLICATION_IS_WINDOWS){
+			return $this->extract_files_windows();
+		}else{
+			$pwd = getcwd();
+			chdir($this->options['basedir']);
+			$stdout = exec("tar -zxf ".$this->options['name'] . " && echo OK || echo KO");
+			if(preg_match('/OK/',$stdout)){
+				return true;
+			}else{
+				return false;
+			}
+			chdir($pwd);
+		}
+	}
+
+	function extract_files_windows() 
 	{
 		$pwd = getcwd();
 		chdir($this->options['basedir']);
-		
+
 		if ($fp = $this->open_archive()) {
 			if ($this->options['inmemory'] == 1) {
 				$this->files = array ();
 			}
+
 			while ($block = fread($fp, 512)) {
 				$temp = unpack("a100name/a8mode/a8uid/a8gid/a12size/a12mtime/a8checksum/a1type/a100temp/a6magic/a2temp/a32temp/a32temp/a8temp/a8temp/a155prefix/a12temp", $block);
-				$file = array ('name' => $temp['prefix'].$temp['name'], 'stat' => array (2 => $temp['mode'], 4 => octdec($temp['uid']), 5 => octdec($temp['gid']), 7 => octdec($temp['size']), 9 => octdec($temp['mtime']),), 'checksum' => octdec($temp['checksum']), 'type' => $temp['type'], 'magic' => $temp['magic'],);
+				$file = array (
+					'name' => trim($temp['prefix'].$temp['name']),
+					'stat' => array (
+						2 => $temp['mode'], 
+						4 => octdec($temp['uid']), 
+						5 => octdec($temp['gid']), 
+						7 => octdec($temp['size']), 
+						9 => octdec($temp['mtime']),
+					), 
+					'checksum' => octdec($temp['checksum']), 
+					'type' => $temp['type'], 
+					'magic' => $temp['magic'],
+				);
+				
 				if ($file['checksum'] == 0x00000000) {
 					break;
 				} else
 					/*if ($file['magic'] != "ustar") {
-						$this->_raiseError(get_class($this)." : extract_files : This script does not support extracting this type of tar file.");
+						$this->raiseError("This script does not support extracting this type of tar file.");
 						break;
 					}*/
 				$block = substr_replace($block, "        ", 148, 8);
 				$checksum = 0;
 				for ($i = 0; $i < 512; $i ++) {
-					$checksum += ord(substr($block, $i, 1));
+					$checksum += ord(io::substr($block, $i, 1));
 				}
 				if ($file['checksum'] != $checksum) {
-					$this->_raiseError(get_class($this)." : extract_files : Could not extract from {$this->options['name']}, it is corrupt.");
+					$this->raiseError("Could not extract from {$this->options['name']}, it is corrupt.");
 				}
+
 				if ($this->options['inmemory'] == 1) {
 					$file['data'] = @fread($fp, $file['stat'][7]);
 					@fread($fp, (512 - $file['stat'][7] % 512) == 512 ? 0 : (512 - $file['stat'][7] % 512));
@@ -2722,37 +2753,51 @@ class CMS_tar_file_install extends CMS_archive_install
 					if ($file['type'] == 5) {
 						if (!is_dir($file['name'])) {
 							
+							/*if ($this->options['forceWriting']) {
+								chmod($file['name'], 1777);
+							}*/
 							if (!$this->options['dontUseFilePerms']) {
 								@mkdir($file['name'], $file['stat'][2]);
+								//pr($file['name'].' : '.$file['stat'][4]);
+								//pr($file['name'].' : '.$file['stat'][5]);
 								@chown($file['name'], $file['stat'][4]);
 								@chgrp($file['name'], $file['stat'][5]);
 							} else {
 								@mkdir($file['name']);
 							}
 						}
-					} else
+					} else {
 						if ($this->options['overwrite'] == 0 && file_exists($file['name'])) {
-							$this->_raiseError(get_class($this)." : extract_files : {$file['name']} already exists.");
-						} else
+							$this->raiseError("{$file['name']} already exists.");
+						} else {
+							//check if destination dir exists
+							$dirname = dirname($file['name']);
+							if (!is_dir($dirname)) {
+								CMS_file::makeDir($dirname);
+							}
 							if ($new = @fopen($file['name'], "wb")) {
 								@fwrite($new, @fread($fp, $file['stat'][7]));
 								@fread($fp, (512 - $file['stat'][7] % 512) == 512 ? 0 : (512 - $file['stat'][7] % 512));
 								@fclose($new);
+								//pr($file['name'].' : '.$file['stat'][2]);
 								if (!$this->options['dontUseFilePerms']) {
 									@chmod($file['name'], $file['stat'][2]);
 									@chown($file['name'], $file['stat'][4]);
 									@chgrp($file['name'], $file['stat'][5]);
 								}
-								//need to send datas to browser else we can loose connection ...
-								echo $file['name']." done ...<br />";
+								/*if ($this->options['forceWriting']) {
+									chmod($file['name'], 0777);
+								}*/
 							} else {
-								$this->_raiseError(get_class($this)." : extract_files : Could not open {$file['name']} for writing.");
+								$this->raiseError("Could not open {$file['name']} for writing.");
 							}
+						}
+					}
 				}
 				unset ($file);
 			}
 		} else {
-			$this->_raiseError(get_class($this)." : extract_files : Could not open file {$this->options['name']}");
+			$this->raiseError("Could not open file {$this->options['name']}");
 		}
 		chdir($pwd);
 		return true;
