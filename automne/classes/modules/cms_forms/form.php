@@ -884,7 +884,7 @@ class CMS_forms_formular extends CMS_grandFather {
 	 * @access public
 	 * @return multidimentionnal array
 	 */
-	public static function getAllRecordDatas($withDesactivedFields = false, $withDate = false) {
+	public function getAllRecordDatas($withDesactivedFields = false, $withDate = false) {
 		$sql = "
 			select
 				field_rec,
