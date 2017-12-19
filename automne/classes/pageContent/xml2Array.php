@@ -280,7 +280,7 @@ class CMS_xml2Array extends CMS_grandFather
 				if (!$part || $part == self::ARRAY2XML_START_TAG) {
 					$tagOpening = '<' . $definition[$c]["nodename"];
 					if(is_array($definition[$c]["attributes"])) {
-						while (list($key, $value) = each($definition[$c]["attributes"])){
+						foreach($definition[$c]["attributes"] as $key => $value){
 							$tagOpening .=' ' . $key.'="' . $value . '"';
 						}
 					}
