@@ -1116,7 +1116,7 @@ $configContent .= '
 				}
 			}
 			//go to next step
-			if (APPLICATION_IS_WINDOWS) {
+			if (defined('APPLICATION_IS_WINDOWS') && APPLICATION_IS_WINDOWS) {
 				//skip chmod step on windows platform
 				$step = 6;
 			}  else {
@@ -2687,7 +2687,7 @@ class CMS_tar_file_install extends CMS_archive_install
 	 * @return true on success
 	 */
 	function extract_files(){
-		if(APPLICATION_IS_WINDOWS){
+		if (defined('APPLICATION_IS_WINDOWS') && APPLICATION_IS_WINDOWS) {
 			return $this->extract_files_windows();
 		}else{
 			$pwd = getcwd();

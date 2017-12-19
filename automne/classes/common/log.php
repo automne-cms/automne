@@ -620,7 +620,7 @@ class CMS_log extends CMS_grandFather
 			";
 			$q = new CMS_query($sql);
 		}
-		unset($this);
+		parent::destroy();
 	}
 	
 	

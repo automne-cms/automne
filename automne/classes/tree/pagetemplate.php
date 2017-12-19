@@ -987,7 +987,7 @@ class CMS_pageTemplate extends CMS_grandFather
 				}
 			}
 		}
-		unset($this);
+		parent::destroy();
 	}
 	
 	/**
