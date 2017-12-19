@@ -713,7 +713,7 @@ class CMS_session extends CMS_grandFather
 		$sessionInfos['sessionDuration'] = APPLICATION_SESSION_TIMEOUT;
 		$sessionInfos['permanent'] = CMS_session::getPermanent();
 		$sessionInfos['path'] = PATH_REALROOT_WR;
-		$sessionInfos['debug'] = '';
+		$sessionInfos['debug'] = 0;
 		$sessionInfos['debug'] += (SYSTEM_DEBUG) ? 1 : 0;
 		$sessionInfos['debug'] += (STATS_DEBUG) ? 2 : 0;
 		$sessionInfos['debug'] += (POLYMOD_DEBUG) ? 4 : 0;

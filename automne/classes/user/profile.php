@@ -1276,7 +1276,7 @@ class CMS_profile extends CMS_grandFather
 			}
 			if (isset($elements) && is_array($elements) && $elements) {
 				$items = array();
-				while (list($k, $v) = each($elements)) {
+				foreach($elements as $k => $v){
 					$categoryID = $v[0];
 					$categoryClearance = $v[1];
 					if ($categoryID && (
