@@ -502,17 +502,27 @@ class CMS_date extends CMS_grandFather
 	  */
 	public static function compare($date1, $date2, $operator)
 	{
-		$allowed_operators = array("==", ">=", ">", "<", "<=");
-		if (SensitiveIO::isInSet($operator, $allowed_operators)) {
-			$func_body = sprintf('if (%s %s %s) { return true ; } else { return false ; }',
-							$date1->getTimestamp(), $operator, $date2->getTimestamp()) ;
-			$func = create_function('', $func_body);
-			if (!$func) {
+		$dt1 = $date1->getTimestamp();
+		$dt2 = $date2->getTimestamp();
+		switch ($operator) {
+			case '==':
+				return ($dt1 == $dt2 ) ? true : false;
+				break;
+			case '>=':
+				return ($dt1 >= $dt2 ) ? true : false;
+				break;
+			case '<=':
+				return ($dt1 <= $dt2 ) ? true : false;
+				break;
+			case '<':
+				return ($dt1 < $dt2 ) ? true : false;
+				break;
+			case '>':
+				return ($dt1 > $dt2 ) ? true : false;
+				break;
+			default:
 				return false;
-			}
-			return $func();
-		} else {
-			return false;
+				break;
 		}
 	}
 	

@@ -910,7 +910,7 @@ class CMS_moduleCategory extends CMS_grandFather {
 			//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $this->_moduleCodename));
 			CMS_cache::clearTypeCache('polymod');
 
-			unset($this);
+			parent::destroy();
 			return ($err <= 0);
 		}
 		return false;

@@ -1546,7 +1546,7 @@ class CMS_poly_object extends CMS_resource
 			$log->logMiscAction(CMS_log::LOG_ACTION_RESOURCE_DELETE, $cms_user, 'Item \''.$this->getLabel().'\' ('.$objectDef->getLabel($language).')', $polyModuleCodename);
 
 			if ($hardDelete) {
-				unset($this);
+				parent::destroy();
 			}
 			//Clear polymod cache
 			//CMS_cache::clearTypeCacheByMetas('polymod', array('module' => $polyModuleCodename));
