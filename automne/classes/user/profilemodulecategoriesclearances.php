@@ -277,7 +277,7 @@ class CMS_moduleCategoriesClearances extends CMS_grandFather
 		if (is_a($clearances, "CMS_stack")) {
 			$arr = $clearances->getElements();
 			if (is_array($arr) && $arr) {
-				while (list($k, $v) = each($arr)) {
+				foreach($arr as $k => $v){
 					$this->_categoriesClearances->delAllWithOneValue($v[1], 1);
 					$this->_categoriesClearances->add($v[1], $v[2]);
 				}

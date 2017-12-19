@@ -292,7 +292,10 @@ class CMS_moduleCategory extends CMS_grandFather {
 	public function getLineage() {
 		$lineage = array();
 		$stack = $this->getLineageStack();
-		while (list($k, $id) = @each($stack)) {
+		if(!$stack || !is_array($stack)){
+			return null;
+		}
+		foreach($stack as $k => $id){
 			 $obj = CMS_moduleCategories_catalog::getByID($id);
 			 if (!$obj->hasError()) {
 				 $lineage[$k] = $obj;

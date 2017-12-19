@@ -890,7 +890,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 				$obj->setAttribute('language', $cms_language);
 				$ctgs[$obj->getID()] = io::htmlspecialchars($obj->getLabel());
 				if (false !== ($a_siblings = CMS_moduleCategories_catalog::getSiblingCategoriesAsArray($obj, 0, $cms_user, $cms_module, $cms_language, $clearanceLevel, $strict))) {
-					while(list($id, $lbl) = each($a_siblings)) {
+					foreach ($a_siblings as $id => $lbl){
 						if ($id) {
 							$ctgs[$id] = $lbl;
 						}
@@ -933,7 +933,7 @@ class CMS_moduleCategories_catalog extends CMS_grandFather {
 			foreach ($siblings as $obj) {
 				$ctgs[$obj->getID()] = str_repeat('-&nbsp;', $count).''.io::htmlspecialchars($obj->getLabel());
 				if (false !== ($a_sibling = CMS_moduleCategories_catalog::getSiblingCategoriesAsArray($obj, $count, $cms_user, $cms_module, $cms_language, $clearanceLevel, $strict))) {
-					while(list($id, $lbl) = each($a_sibling)) {
+					foreach($a_sibling as $id=>$lbl){
 						if ($id) {
 							$ctgs[$id] = $lbl;
 						}

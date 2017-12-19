@@ -155,14 +155,14 @@ class CMS_textEditor extends CMS_grandFather
 		$oFCKeditor->Config['DefaultLanguage'] = $this->_language->getCode();
 		$oFCKeditor->Value = $value;
 		if (is_array($this->_editorAttributes)) {
-			while (list($k, $v) = @each($this->_editorAttributes)) {
+			foreach($this->_editorAttributes as $k => $v){
 				if ($v != '') {
 					$oFCKeditor->{$k} = $v ;
 				}
 			}
 		}
 		if (is_array($this->_editorConfigAttributes)) {
-			while (list($k, $v) = @each($this->_editorConfigAttributes)) {
+			foreach($this->_editorConfigAttributes as $k => $v){
 				if ($v != '') {
 					$oFCKeditor->Config[$k] = $v;
 				}
